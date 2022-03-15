@@ -1,0 +1,81 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 3211419 */
+  src: url('@/static/iconfont.ttf?t=1646104148814') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-check:before {
+  content: "\e60b";
+}
+
+.icon-loading:before {
+  content: "\e62b";
+}
+
+.icon-search:before {
+  content: "\e648";
+}
+
+.icon-saoyisao:before {
+  content: "\e62e";
+}
+
+.icon-xinhao:before {
+  content: "\e60a";
+}
+
+.icon-bluetoothoff:before {
+  content: "\e697";
+}
+
+.icon-bluetoothon:before {
+  content: "\e698";
+}
+
+.icon-bluetooth_link:before {
+  content: "\e699";
+}
+
+.icon-close:before {
+  content: "\e69e";
+}
+
+.icon-increase:before {
+  content: "\e69f";
+}
+
+.icon-restore:before {
+  content: "\e6a0";
+}
+
+.icon-next:before {
+  content: "\e6a2";
+}
+
+.icon-back:before {
+  content: "\e6db";
+}
+
+.icon-checkmore:before {
+  content: "\e6dc";
+}
+
+.icon-connectdevice:before {
+  content: "\e6e7";
+}
+
+.icon-disconnectdevice:before {
+  content: "\e6ea";
+}
+
+.icon-setting:before {
+  content: "\e6f0";
+}
+
