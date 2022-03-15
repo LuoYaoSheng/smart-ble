@@ -1,141 +1,138 @@
 <template>
-	<view>
-		<view class="flex align-center justify-center" :style="{height: windowHeight + 'px'}" v-if="!isContented">
-			<spread :w="windowWidth" :h="windowHeight"></spread>
+	<view class="flex flex-column" v-if="!isMp">
+		<!-- Service -->
+		<text class="list-title">Service</text>
+		<view class="list-input flex flex-row">
+			<text class="list-input-title">服务UUID</text>
+			<input class="list-input-value flex-1" type="text" :value="Service.uuid" placeholder="请输入服务UUID" />
 		</view>
 
-		<view v-else>
-			<block v-for="(obj,idx) in list" :key="idx">
-				<divider></divider>
-				<item :itemObj="obj"></item>
-			</block>
+		<!-- Characteristic -->
+		<text class="list-title">Characteristic</text>
+		<view class="list-input flex flex-row">
+			<text class="list-input-title">服务UUID</text>
+			<input class="list-input-value flex-1" type="text" :value="Characteristic.uuid1" placeholder="请输入服务UUID" />
+		</view>
+		<divider></divider>
+		<view class="list-input flex flex-row">
+			<text class="list-input-title">特征UUID</text>
+			<input class="list-input-value flex-1" type="text" :value="Characteristic.uuid2" placeholder="请输入特征UUID" />
+		</view>
+		<divider></divider>
+		<view class="list-input flex flex-row">
+			<text class="list-input-title">特征数据</text>
+			<input class="list-input-value flex-1" type="text" :value="Characteristic.data1" placeholder="请输入特征数据" />
+		</view>
+		<divider></divider>
+		<view class="list-input flex flex-row">
+			<text class="list-input-title">通知数据</text>
+			<input class="list-input-value flex-1" type="text" :value="Characteristic.data2" placeholder="请输入通知数据" />
 		</view>
 
-		<uni-fab v-if="isMp" :pattern="pattern" :content="content" :horizontal="horizontal" :vertical="vertical"
-			:direction="direction" @trigger="trigger">
-		</uni-fab>
+		<!-- 按钮 -->
+		<button class="btn v-spacing-large corner-radius-md font-size-title" @click="btnAction()">开始广播</button>
+	</view>
+	<view class="flex flex-column" v-else>
+		<!-- Service -->
+		<text class="list-title">Service</text>
+		<view class="list-input flex flex-row">
+			<text class="list-input-title">服务名称</text>
+			<input class="list-input-value flex-1" type="text" :value="Service.name" @input="nameVal"
+				placeholder="请输入服务名称" />
+		</view>
+		<!-- 按钮 -->
+		<button :loading=serverState class="btn v-spacing-large corner-radius-md font-size-title"
+			@click="btnAction()">{{btnTitle}}</button>
 	</view>
 </template>
 
 <script>
-	// 引用组件
-	import spread from '@/components/spread.vue';
-	import item from '@/components/logItem.vue';
-
 	export default {
-		components: {
-			spread,
-			item
-		},
 		data() {
 			return {
 				isMp: false,
-				// #ifdef MP
-				pattern: {
-					color: '#7A7E83',
-					backgroundColor: '#fff',
-					selectedColor: '#1677ff',
-					buttonColor: '#fff',
-					iconColor: '#1677ff'
+				Service: {
+					name: 'LightBLE',
+					uuid: ''
 				},
-				directionStr: '垂直',
-				horizontal: 'right',
-				vertical: 'bottom',
-				direction: 'horizontal',
-				content: [{
-						iconPath: '/static/imgs/upload.png',
-						active: false
-					},
-					{
-						iconPath: '/static/imgs/classification.png',
-						active: false
-					}
-				],
-				// #endif
+				Characteristic: {
+					uuid1: '',
+					uuid2: '',
+					data1: '0123456789',
+					data2: '9876543210'
+				},
 
-				isClear: false,
-				isStop: false,
-
-				isContented: true,
-				windowWidth: 0,
-				windowHeight: 0,
-				list: [{
-						time: '14:11:05.815',
-						uuid: '4D:3E:DF:07:01',
-						content: '已连接',
-						type: 0
-					},
-					{
-						time: '14:11:05.820',
-						uuid: '4D:2E:ED:D2:07',
-						content: 'Notification开启',
-						type: 1
-					},
-					{
-						time: '14:11:05.900',
-						uuid: '4D:3E:DF:07:01',
-						content: '读取特征值',
-						type: 2
-					},
-					{
-						time: '14:11:05.910',
-						uuid: '4D:3E:DF:07:01',
-						content: '68 65 6C 6C 6F',
-						type: 3
-					},
-					{
-						time: '14:11:05.998',
-						uuid: '4D:3E:DF:07:01',
-						content: '06 05 04 03 02 01',
-						type: 4
-					},
-				]
+				serverState: false
+			}
+		},
+		computed: {
+			btnTitle: function() {
+				return this.serverState ? "停止广播" : "开始广播"
 			}
 		},
 		methods: {
-			getSystemInfo: function() {
 
-				// #ifdef MP
-				this.isMp = true
-				// #endif
+			nameVal: function(e) {
+				this.Service.name = e.target.value
+			},
+			btnAction: function() {
+				let that = this
+				if (this.serverState) {
+					// #ifdef MP-WEIXIN
+					wx.closeBluetoothAdapter({
+						mode: 'peripheral',
+						complete: (result) => {
+							console.log("closeBluetoothAdapter:", result);
+						}
+					})
+					// #endif
+					this.serverState = false
+					return
+				}
 
-				var that = this
-				uni.getSystemInfo({
-					success: function(res) {
-						that.windowWidth = res.windowWidth
-						that.windowHeight = res.windowHeight
+
+				// #ifdef MP-WEIXIN
+				wx.openBluetoothAdapter({
+					mode: 'peripheral',
+					success(res) {
+						// #ifdef MP-WEIXIN
+						that.wxCreateBLEPeripheralServer()
+						// #endif
+						// #ifdef APP || H5
+						uni.navigateTo({
+							url: '../advertiser/advertiser'
+						})
+						// #endif
+					},
+					fail(res) {
+						if (res.errMsg == 'openBluetoothAdapter:fail already opened') {
+							// #ifdef MP-WEIXIN
+							that.wxCreateBLEPeripheralServer()
+							// #endif
+							// #ifdef APP || H5
+							uni.navigateTo({
+								url: '../advertiser/advertiser'
+							})
+							// #endif
+						} else {
+							uni.showToast({
+								icon: 'none',
+								title: res.errMsg
+							})
+						}
 					}
 				})
-			},
-			exportAction: function() {
-				uni.showToast({
-					title: "导出"
-				})
-			},
-			setttingAction: function() {
-				uni.navigateTo({
-					url: "./setting?isStop=" + this.isStop
-				})
-			},
-			trigger: function(e) {
-				switch (e.index) {
-					case 0:
-						this.exportAction()
-						break
-					case 1:
-						this.setttingAction()
-						break
-				}
+				// #endif
 			},
 
-			// 蓝牙相关
 			wxCreateBLEPeripheralServer: function() {
+				let that = this
 				// #ifdef MP-WEIXIN
 				wx.createBLEPeripheralServer({
 					success: (result) => {
 						console.log('create success')
 						let server = result.server
-						let name = 'LightBLE'
+						let name = that.Service.name
 						server.startAdvertising({
 							advertiseRequest: {
 								connected: true,
@@ -144,6 +141,7 @@
 						}).then(
 							(res) => {
 								console.log('advertising', res)
+								that.serverState = true
 							},
 							(res) => {
 								console.warn('ad fail', res)
@@ -151,52 +149,36 @@
 						)
 					},
 					fail: (res) => {
-						console.log('creat fail')
+						uni.showToast({
+							icon: 'none',
+							title: '创建服务失败'
+						})
 					}
 				})
 				// #endif
 			}
+
 		},
 		onLoad() {
-			this.getSystemInfo()
+			// #ifdef MP
+			this.isMp = true
+			// #endif
 
-			this.wxCreateBLEPeripheralServer()
-		},
-		onShow() {
-			console.log('------ 广播操作的更新 -----')
-			if (this.isClear) {
-				console.log('---- 执行清屏操作 ----')
-				this.isClear = true
-			}
-			if (this.isStop) {
-				console.log('---- 停止广播 ----')
-			} else {
-				console.log('---- 开启广播 ----')
-			}
-		},
-		onHide() {
-			// #ifdef MP-WEIXIN
-			wx.closeBluetoothAdapter({
-				success: (result) => {
-					console.log("success:", result);
-				},
-				fail: (result) => {
-					console.log("fail:", result);
-				}
-			})
-			// #endif	
-		},
-		onNavigationBarButtonTap(e) {
-			this.trigger(e)
-		},
-		onPullDownRefresh() {
-			console.log('---------- 刷新 ---------')
-			this.isStop = false
-			uni.stopPullDownRefresh()
+			// 初始化几个UUID
+			this.Service.uuid = this.$Tool.udid()
+			this.Characteristic.uuid1 = this.$Tool.udid()
+			this.Characteristic.uuid2 = this.$Tool.udid()
 		}
 	}
 </script>
 
 <style>
-
+	.btn {
+		top: 76rpx;
+		height: 98rpx;
+		line-height: 98rpx;
+		background-color: #1677FF;
+		color: #FFFFFF;
+	}
 </style>
+
