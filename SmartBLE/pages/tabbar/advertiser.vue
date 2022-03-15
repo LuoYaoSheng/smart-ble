@@ -37,10 +37,12 @@
 		<text class="list-title">Service</text>
 		<view class="list-input flex flex-row">
 			<text class="list-input-title">服务名称</text>
-			<input class="list-input-value flex-1" type="text" :value="Service.name" placeholder="请输入服务名称" />
+			<input class="list-input-value flex-1" type="text" :value="Service.name" @input="nameVal"
+				placeholder="请输入服务名称" />
 		</view>
 		<!-- 按钮 -->
-		<button  :loading=serverState class="btn v-spacing-large corner-radius-md font-size-title" @click="btnAction()">{{btnTitle}}</button>
+		<button :loading=serverState class="btn v-spacing-large corner-radius-md font-size-title"
+			@click="btnAction()">{{btnTitle}}</button>
 	</view>
 </template>
 
@@ -69,6 +71,10 @@
 			}
 		},
 		methods: {
+
+			nameVal: function(e) {
+				this.Service.name = e.target.value
+			},
 			btnAction: function() {
 				let that = this
 				if (this.serverState) {
@@ -126,7 +132,7 @@
 					success: (result) => {
 						console.log('create success')
 						let server = result.server
-						let name = 'LightBLE'
+						let name = that.Service.name
 						server.startAdvertising({
 							advertiseRequest: {
 								connected: true,
@@ -157,7 +163,7 @@
 			// #ifdef MP
 			this.isMp = true
 			// #endif
-			
+
 			// 初始化几个UUID
 			this.Service.uuid = this.$Tool.udid()
 			this.Characteristic.uuid1 = this.$Tool.udid()
