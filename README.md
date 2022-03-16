@@ -15,9 +15,7 @@
 
 #### 快速体验
 
-SmartBLE 小程序
-
- ![gh_0ff609784b9e_258](/Users/lys/Downloads/gh_0ff609784b9e_258.jpg)
+ ![SmartBLE 小程序](https://tva1.sinaimg.cn/large/e6c9d24ely1h0bxl6x1nkj2076076weq.jpg)
 
 #### 教程讲解
 
