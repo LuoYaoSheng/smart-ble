@@ -8,7 +8,7 @@ const devices = [{
 		serviceData: {}
 	},
 	{
-		name: '设备2-3格',
+		name: '',
 		deviceId: '213456',
 		RSSI: -66,
 		advertisData: [],
