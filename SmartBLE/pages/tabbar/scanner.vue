@@ -7,7 +7,7 @@
 		<view v-else>
 			<block v-for="(obj,idx) in showList" :key="idx">
 				<divider></divider>
-				<item :itemObj="obj" @click.native="itemAction(idx)"></item>
+				<item :itemObj="obj" @click.native="itemAction(obj)"></item>
 			</block>
 		</view>
 
@@ -96,13 +96,22 @@
 				})
 				// #endif
 				// #ifdef APP-PLUS || MP-WEIXIN
+
+				let that = this
+				let url = "/pages/scanner/equipment"
 				uni.scanCode({
 					success: function(res) {
-						// 获得 uuid 快速连接
-						let msg = '类型:' + res.scanType + ' 内容:' + res.result
-						uni.showToast({
-							title: msg
-						})
+
+						if (res.scanType != 'QR_CODE') {
+							uni.showToast({
+								icon: 'none',
+								title: "当前仅支持二维码扫码识别"
+							})
+						} else {
+							// let obj = JSON.parse(res.result)
+							let obj = that.showList[0]
+							that.itemAction(obj)
+						}
 					}
 				})
 				// #endif
@@ -122,8 +131,8 @@
 					url: "../scanner/filter"
 				})
 			},
-			itemAction: function(idx) {
-				let url = "../scanner/equipment?item=" + JSON.stringify(this.list[idx])
+			itemAction: function(obj) {
+				let url = "../scanner/equipment?item=" + JSON.stringify(obj)
 				uni.navigateTo({
 					url: url
 				})

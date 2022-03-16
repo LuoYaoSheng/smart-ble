@@ -108,6 +108,7 @@
 						})
 					},
 					fail(res) {
+						console.log(res);
 						uni.showToast({
 							icon: 'none',
 							title: '连接失败，请重试'
@@ -138,9 +139,16 @@
 				let key = this.$Config.Conf.LogFileName
 				uni.getStorage({
 					key: key,
-					complete(res) {
+					success(res) {
+						let list = res.data
+						list.push(log)
+						uni.setStorage({
+							key: key,
+							data: list
+						})
+					},
+					fail(res) {
 						let list = []
-						if (res.data != "") list = res.data
 						list.push(log)
 						uni.setStorage({
 							key: key,
@@ -160,8 +168,17 @@
 			// #endif
 
 			// #ifdef MP || APP
-			this.itemObj = JSON.parse(option.item)
-			this.createBLEConnection()
+			if (option.item) {
+				this.itemObj = JSON.parse(option.item)
+				this.createBLEConnection()
+			} else {
+				uni.showToast({
+					icon: 'none',
+					title: '连接失败'
+				})
+				uni.navigateBack()
+			}
+
 			// #endif
 		},
 		onBackPress(res) {

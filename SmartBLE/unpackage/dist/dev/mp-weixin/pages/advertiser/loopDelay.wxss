@@ -1,0 +1,8 @@
+
+.item {
+	height: 96rpx;
+	background-color: #FFFFFF;
+	padding-left: 24rpx;
+	padding-right: 24rpx;
+}
+

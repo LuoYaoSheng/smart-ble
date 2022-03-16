@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "广播设置",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "sk-switch": "/components/sk-switch"
+  }
+}

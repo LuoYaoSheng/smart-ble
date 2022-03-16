@@ -199,9 +199,16 @@
 				let key = this.$Config.Conf.LogFileName
 				uni.getStorage({
 					key: key,
-					complete(res) {
+					success(res) {
+						let list = res.data
+						list.push(log)
+						uni.setStorage({
+							key: key,
+							data: list
+						})
+					},
+					fail(res) {
 						let list = []
-						if (res.data != "") list = res.data
 						list.push(log)
 						uni.setStorage({
 							key: key,
