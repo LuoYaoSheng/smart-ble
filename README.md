@@ -4,7 +4,7 @@
 
 ​	一个功能比较全面的蓝牙调试工具。支持所有使用蓝牙4.0低功耗的设备接入调试，提供蓝牙设备搜索、读取服务、浏览特征等操作。
 
-​    当前支持[iPhone](https://apps.apple.com/us/app/smartble-free/id1614439113)、[安卓](https://gitee.com/luoyaosheng/ble-education/attach_files/998022/download/smartBLE.apk)及[微信小程序](https://i2kai.com/SmartBLE)，后续将陆续支持Mac、Windows、Linux、网页端Chrome及其他可能使用的系统。
+​    当前支持[iPhone](https://apps.apple.com/us/app/smartble-free/id1614439113)、[安卓](https://gitee.com/luoyaosheng/smart-ble/attach_files/998543/download/LightBLE.apk)及[微信小程序](https://i2kai.com/SmartBLE)，后续将陆续支持Mac、Windows、Linux、网页端Chrome及其他可能使用的系统。
 
 ​	当前版本使用 uni-APP 开发。其他语言版本待定。
 
