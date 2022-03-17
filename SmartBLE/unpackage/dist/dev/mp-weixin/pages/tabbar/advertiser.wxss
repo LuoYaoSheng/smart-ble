@@ -1,9 +1,0 @@
-
-.btn {
-	top: 76rpx;
-	height: 98rpx;
-	line-height: 98rpx;
-	background-color: #1677FF;
-	color: #FFFFFF;
-}
-

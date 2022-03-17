@@ -1,7 +1,0 @@
-{
-  "navigationBarTitleText": "特征",
-  "enablePullDownRefresh": false,
-  "usingComponents": {
-    "sk-switch": "/components/sk-switch"
-  }
-}
