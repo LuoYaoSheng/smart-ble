@@ -4,7 +4,7 @@ const Conf = {
 	GitHubUrl: 'https://github.com/LuoYaoSheng/SimpleBLE',
 	FeedbackUrl: 'https://github.com/LuoYaoSheng/SimpleBLE/issues',
 	PrivacyPolicyUrl: 'https://github.com/LuoYaoSheng/SimpleBLE/wiki/privacy',
-	EvaluateUrl: 'https://i2kai.com',
+	EvaluateUrl: 'https://weibo.com/u/3319790374',
 
 	// 默认值
 	FilterName: '', // 过滤器 - 名称
