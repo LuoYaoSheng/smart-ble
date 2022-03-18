@@ -21,7 +21,7 @@
 
 #### 教程讲解
 
-连接跳转到 付费地址
+[资源及项目讲解](https://gitbook.cn/m/mazi/activity/6233fb8dc0de21254113028e?utm_source=weixinNotification)
 
 #### UI设计图
 
