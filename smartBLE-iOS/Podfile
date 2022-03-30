@@ -1,0 +1,13 @@
+platform :ios, ‘14.0’
+def pods
+  pod 'SVProgressHUD'
+  pod 'BabyBluetooth'
+  pod 'MJRefresh'
+  pod 'IQKeyboardManager'
+  pod 'Toast'
+  pod 'QRCodeUIKit'
+  pod 'FSTextView'
+end
+target 'smartBLE’ do
+pods
+end

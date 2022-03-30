@@ -1,0 +1,19 @@
+//
+//  PrefixHeader.pch
+//  smartBLE
+//
+//  Created by lys on 2022/3/25.
+//
+
+#ifndef PrefixHeader_pch
+#define PrefixHeader_pch
+
+#import "WaveView.h"
+#import "BabyBluetooth.h"
+#import "Toast.h"
+#import "SVProgressHUD.h"
+#import "MJRefresh.h"
+
+#import "Common.h"
+
+#endif /* PrefixHeader_pch */
