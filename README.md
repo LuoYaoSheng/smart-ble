@@ -6,7 +6,7 @@
 
 ​    当前支持[iPhone](https://apps.apple.com/us/app/lightble/id1614439113)、[安卓](https://gitee.com/luoyaosheng/smart-ble/attach_files/998543/download/LightBLE.apk)及[微信小程序](https://i2kai.com/SmartBLE)，后续将陆续支持Mac、Windows、Linux、网页端Chrome及其他可能使用的系统。
 
-​	当前版本使用 uni-APP 开发。
+​	当前版本：uni-app，支持小程序、iOS和安卓。
 
 ​	uni-APP 源码地址：[Github](https://github.com/LuoYaoSheng/smart-ble) / [Gitee](https://gitee.com/luoyaosheng/smart-ble)
 
