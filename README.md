@@ -28,7 +28,7 @@
 
 #### 教程讲解
 
-[资源及项目讲解](https://gitbook.cn/m/mazi/activity/6233fb8dc0de21254113028e?utm_source=weixinNotification)
+[资源及项目讲解](https://juejin.cn/post/7084238740402470943)
 
 #### UI设计图
 
