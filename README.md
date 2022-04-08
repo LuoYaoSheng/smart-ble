@@ -14,10 +14,9 @@
 - [x] 低功耗蓝牙订阅、读取和写入
 - [x] 作为外设（uni仅微信小程序支持，且不能自定义）
 
-
 #### 快速体验
 
- ![SmartBLE 小程序](https://tva1.sinaimg.cn/large/e6c9d24ely1h0bxl6x1nkj2076076weq.jpg)
+#### ![SmartBLE 二维码](https://tva1.sinaimg.cn/large/e6c9d24ely1h12l2i1zc1j20ub0beq5l.jpg)
 
 #### 教程讲解
 
