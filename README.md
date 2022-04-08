@@ -16,7 +16,7 @@
 
 #### 快速体验
 
-#### ![SmartBLE 二维码](https://tva1.sinaimg.cn/large/e6c9d24ely1h12l2i1zc1j20ub0beq5l.jpg)
+![SmartBLE 二维码](https://tva1.sinaimg.cn/large/e6c9d24ely1h12l2i1zc1j20ub0beq5l.jpg)
 
 #### 教程讲解
 
