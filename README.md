@@ -5,7 +5,15 @@
 
 ​    当前支持[iPhone](https://apps.apple.com/us/app/lightble/id1614439113)、[安卓](https://gitee.com/luoyaosheng/smart-ble/attach_files/998543/download/LightBLE.apk)及[微信小程序](https://i2kai.com/SmartBLE)，后续将陆续支持Mac、Windows、Linux、网页端Chrome及其他可能使用的系统。
 
-​	当前版本使用 uni-APP 开发。其他语言版本待定。
+​	当前版本使用 uni-APP 开发。
+
+​	uni-APP 源码地址：[Github](https://github.com/LuoYaoSheng/smart-ble) / [Gitee](https://gitee.com/luoyaosheng/smart-ble)
+
+​	iOS 源码地址：[Github](https://github.com/LuoYaoSheng/smart-ble-iOS) / [Gitee](https://gitee.com/luoyaosheng/smart-ble-i-os)
+
+​	Mac 源码地址：- 计划中 -
+
+​	Android 源码地址：- 计划中 -
 
 #### 功能
 - [x] 低功耗蓝牙搜索、连接
