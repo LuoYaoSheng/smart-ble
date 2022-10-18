@@ -46,7 +46,7 @@ Github：<https://github.com/LuoYaoSheng>
 
 码云：<https://gitee.com/luoyaosheng>
 
-私人微信号：fjgc1988 
+私人微信号：iot-runThings 
 
 交流QQ群：941235341
 
