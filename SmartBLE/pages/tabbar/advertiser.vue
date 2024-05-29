@@ -168,6 +168,20 @@
 			this.Service.uuid = this.$Tool.udid()
 			this.Characteristic.uuid1 = this.$Tool.udid()
 			this.Characteristic.uuid2 = this.$Tool.udid()
+		},
+		onShareAppMessage() {
+			return {
+				title: '开源的极致蓝牙调试小工具',
+				path: '/pages/tabbar/scanner',
+				imageUrl: '/static/logo.png'
+			}
+		},
+		onShareTimeline() {
+			return {
+				title: '开源的极致蓝牙调试小工具',
+				path: '/pages/tabbar/scanner',
+				imageUrl: '/static/logo.png'
+			}
 		}
 	}
 </script>

@@ -1,0 +1,1 @@
+<view class="flex flex-column align-center"><view class="flex flex-column align-center"><image class="logo corner-radius-md" src="../../static/imgs/about.png" mode="aspectFit"></image><text class="title1 font-size-title color-text-title">{{name}}</text><text class="title2 font-size-content color-text-subtitle">{{"v "+version}}</text></view></view>

@@ -1,0 +1,17 @@
+
+.logo {
+	width: 336rpx;
+	height: 336rpx;
+	margin-top: 182rpx;
+}
+.title1 {
+	margin-top: 42rpx;
+	height: 50rpx;
+	line-height: 50rpx;
+}
+.title2 {
+	margin-top: 24rpx;
+	height: 36rpx;
+	line-height: 36rpx;
+}
+

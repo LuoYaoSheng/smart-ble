@@ -1,0 +1,26 @@
+
+.item {
+	height: 204rpx;
+	background-color: #FFFFFF;
+	padding-left: 24rpx;
+	padding-right: 24rpx;
+}
+.top {
+	/* background-color: #0056B3; */
+}
+.top .item-1 {
+	height: 54rpx;
+	line-height: 54rpx;
+}
+.left-item {
+	width: 80rpx;
+}
+.signal {
+	width: 46rpx;
+	height: 42rpx;
+}
+.bottom {
+	height: 48rpx;
+	line-height: 48rpx;
+}
+

@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "广播",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "uni-fab": "/uni_modules/uni-fab/components/uni-fab/uni-fab",
+    "spread": "/components/spread",
+    "item": "/components/logItem"
+  }
+}

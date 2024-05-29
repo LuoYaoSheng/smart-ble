@@ -113,6 +113,20 @@
 			// #ifndef H5
 			this.getLogs()
 			// #endif
+		},
+		onShareAppMessage() {
+			return {
+				title: '开源的极致蓝牙调试小工具',
+				path: '/pages/tabbar/scanner',
+				imageUrl: '/static/logo.png'
+			}
+		},
+		onShareTimeline() {
+			return {
+				title: '开源的极致蓝牙调试小工具',
+				path: '/pages/tabbar/scanner',
+				imageUrl: '/static/logo.png'
+			}
 		}
 	}
 </script>
