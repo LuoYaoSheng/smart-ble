@@ -104,7 +104,11 @@
             "minified" : true
         },
         "usingComponents" : true,
-        "permission" : {},
+        "permission" : {
+            "scope.userLocation" : {
+                "desc" : "获取周围蓝牙设备"
+            }
+        },
         "uniStatistics" : {
             "enable" : false
         }

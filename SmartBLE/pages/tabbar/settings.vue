@@ -51,7 +51,7 @@
 			return {
 				checked: true,
 				interval: '30',
-				version: '1.0.0',
+				version: '1.0.1',
 
 				GitHubUrl: 'https://github.com/LuoYaoSheng/SimpleBLE',
 				FeedbackUrl: 'https://github.com/LuoYaoSheng/SimpleBLE/issues',
