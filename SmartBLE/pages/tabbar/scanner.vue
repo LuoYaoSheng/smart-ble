@@ -210,21 +210,6 @@
 
 				// #ifdef MP || APP 
 				that.bleOpenBluetoothAdapter()
-				// uni.getBluetoothAdapterState({
-				// 	fail(res) {
-				// 		uni.showToast({
-				// 			icon: 'none',
-				// 			title: '请查看蓝牙是否开启'
-				// 		})
-				// 	},
-				// 	success(res) {
-				// 		that.bleOpenBluetoothAdapter()
-				// 	}
-				// })
-
-				// setInterval(function() {
-				// 	console.log('------ 蓝牙状态 ----')
-				// }, 300)
 				// #endif
 			},
 
@@ -300,6 +285,17 @@
 			// 监听寻找到新设备的事件
 			bleOnBluetoothDeviceFound: function() {
 				let that = this
+
+				// 修复Android 偶尔无法搜索到设备的问题
+				uni.getBluetoothDevices({
+					success: (res) => {
+						res.devices.forEach(device => {
+							that.belDeviceAdd(device)
+						})
+						that.dataRegularization()
+					}
+				})
+
 				uni.onBluetoothDeviceFound(function(obj) {
 					let list = obj.devices
 					for (let i = 0; i < list.length; i++) {
