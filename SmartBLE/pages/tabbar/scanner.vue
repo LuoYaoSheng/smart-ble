@@ -5,10 +5,12 @@
 		</view>
 
 		<view v-else>
-			<block v-for="(obj,idx) in showList" :key="idx">
-				<divider></divider>
-				<item :itemObj="obj" @click.native="itemAction(obj)"></item>
-			</block>
+			<uni-list>
+				<uni-list-item v-for="(obj,idx) in showList" :key="idx">
+					<divider></divider>
+					<item :itemObj="obj" @click.native="itemAction(obj)"></item>
+				</uni-list-item>
+			</uni-list>
 		</view>
 
 		<uni-fab v-if="isMp" :pattern="pattern" :content="content" :horizontal="horizontal" :vertical="vertical"
