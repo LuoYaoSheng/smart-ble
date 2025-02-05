@@ -20,7 +20,7 @@
 
 #### 教程讲解
 
-[资源及项目讲解](https://gitbook.cn/m/mazi/activity/6233fb8dc0de21254113028e?utm_source=weixinNotification)
+[资源及项目讲解]([https://gitbook.cn/m/mazi/activity/6233fb8dc0de21254113028e?utm_source=weixinNotification](https://www.jianshu.com/p/3a8b80005261))
 
 #### UI设计图
 
