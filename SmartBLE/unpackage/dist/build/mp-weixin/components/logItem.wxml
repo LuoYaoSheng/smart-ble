@@ -1,1 +1,0 @@
-<view class="item flex flex-row align-center"><text class="left-text font-size-content color-text-subtitle v-spacing-standard-right">{{timeTxt+" >"}}</text><text class="{{['flex-1','font-size-content',txtColor]}}">{{txt}}</text></view>

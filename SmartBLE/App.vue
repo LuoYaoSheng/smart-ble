@@ -13,12 +13,5 @@
 </script>
 
 <style>
-	/* 自定义图标库 */
-	@import "./common/iconfont.css";
-	/* 动画库 */
-	@import "./common/animate.css";
-	/* 自定义样式库 */
-	@import "./common/free.css";
-	/* 全局样式 */
-	@import "./common/common.css";
+	/*每个页面公共css */
 </style>

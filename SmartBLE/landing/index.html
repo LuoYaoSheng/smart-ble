@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BLE广播演示 - 多平台蓝牙广播解决方案</title>
+    <style>
+        :root {
+            --primary-color: #007AFF;
+            --secondary-color: #5856D6;
+            --text-color: #333;
+            --light-bg: #f7f8fa;
+            --gradient-primary: linear-gradient(135deg, #007AFF 0%, #409EFF 100%);
+            --gradient-secondary: linear-gradient(135deg, #5856D6 0%, #5E5CE6 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-bg);
+        }
+
+        .header {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="1" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+            opacity: 0.2;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header-text {
+            text-align: left;
+            flex: 1;
+            max-width: 600px;
+        }
+
+        .header h1 {
+            font-size: 38px;
+            margin-bottom: 15px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header h1::before {
+            content: '';
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            background: url('data:image/svg+xml,<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="white" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/></svg>') no-repeat center;
+        }
+
+        .header p {
+            font-size: 18px;
+            opacity: 0.9;
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .header-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .primary-button {
+            background: white;
+            color: var(--primary-color);
+        }
+
+        .secondary-button {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 60px 0;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: var(--gradient-secondary);
+            opacity: 0.1;
+            border-radius: 50%;
+            transform: translate(30%, 30%);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-secondary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .feature-icon svg {
+            width: 30px;
+            height: 30px;
+            fill: white;
+        }
+
+        .feature-card h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: var(--secondary-color);
+        }
+
+        .feature-card p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .platforms {
+            background: white;
+            padding: 80px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .platforms::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: var(--light-bg);
+            transform: skewY(-5deg);
+            transform-origin: 0;
+        }
+
+        .platforms h2 {
+            font-size: 36px;
+            margin-bottom: 40px;
+            color: var(--secondary-color);
+            position: relative;
+        }
+
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .platform-item {
+            padding: 30px;
+            border-radius: 16px;
+            background: var(--light-bg);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .platform-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 80px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .platform-item.wechat::before {
+            background-image: url('data:image/svg+xml,<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="%2307C160" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>');
+        }
+
+        .platform-item.ios::before {
+            background-image: url('data:image/svg+xml,<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="%23000000" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>');
+        }
+
+        .platform-item.android::before {
+            background-image: url('data:image/svg+xml,<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="%233DDC84" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>');
+        }
+
+        .platform-item:hover {
+            transform: scale(1.05);
+        }
+
+        .platform-item h3 {
+            font-size: 20px;
+            margin: 90px 0 10px;
+            color: var(--text-color);
+        }
+
+        .platform-item p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .cta-section {
+            text-align: center;
+            padding: 80px 0;
+            background: var(--gradient-secondary);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="1" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+            opacity: 0.1;
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-section h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .cta-section p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 15px 40px;
+            background: white;
+            color: var(--secondary-color);
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 18px;
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+        }
+
+        .download-section {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .download-options {
+            display: flex;
+            gap: 20px;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .download-buttons {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .download-button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            background: white;
+            color: var(--secondary-color);
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .download-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+        }
+
+        .download-button svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        .qrcode-container {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .qrcode-container:hover {
+            transform: translateY(-2px);
+        }
+
+        .qrcode-image {
+            width: 180px;
+            height: 180px;
+            background: var(--light-bg);
+            border-radius: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: url('data:image/svg+xml,<svg width="180" height="180" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg"><rect width="180" height="180" fill="%23f7f8fa"/><path d="M60 60h20v20H60zM60 90h20v20H60zM90 60h20v20H90zM90 90h20v20H90z" fill="%235856D6"/></svg>');
+        }
+
+        .qrcode-text {
+            color: var(--secondary-color);
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        footer {
+            background: #2c3e50;
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        footer p {
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 30px 0;
+            }
+
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+
+            .header-text {
+                text-align: center;
+            }
+
+            .header h1 {
+                font-size: 32px;
+                justify-content: center;
+            }
+
+            .header p {
+                font-size: 16px;
+                padding: 0 20px;
+            }
+
+            .header-buttons {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .platform-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .download-section {
+                flex-direction: column;
+                align-items: center;
+                gap: 30px;
+            }
+
+            .download-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .qrcode-container {
+                transform: scale(0.9);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="header-text">
+                <h1>LightBLE</h1>
+                <p>多平台BLE调试工具，支持微信小程序、iOS和Android原生应用</p>
+                <div class="header-buttons">
+                    <a href="docs.html" class="header-button primary-button">
+                        <svg viewBox="0 0 24 24" width="20" height="20">
+                            <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-4h2v2h-2zm1.61-9.96c-2.06-.3-3.88.97-4.43 2.79-.18.58.26 1.17.87 1.17h.2c.41 0 .74-.29.88-.67.32-.89 1.27-1.5 2.3-1.28.95.2 1.65 1.13 1.57 2.1-.1 1.34-1.62 1.63-2.45 2.88 0 .01-.01.01-.01.02-.01.02-.02.03-.03.05-.09.15-.18.32-.25.5-.01.03-.03.05-.04.08-.01.02-.01.04-.02.07-.12.34-.2.75-.2 1.25h2c0-.42.11-.77.28-1.07.02-.03.03-.06.05-.09.08-.14.18-.27.28-.39.01-.01.02-.03.03-.04.1-.12.21-.23.33-.34.96-.91 2.26-1.65 1.99-3.56-.24-1.74-1.61-3.21-3.35-3.47z"/>
+                        </svg>
+                        插件文档
+                    </a>
+                    <a href="#download" class="header-button secondary-button">
+                        <svg viewBox="0 0 24 24" width="20" height="20">
+                            <path fill="currentColor" d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                        </svg>
+                        立即下载
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="container">
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm4.59-12.42L10 14.17l-2.59-2.58L6 13l4 4 8-8z"/></svg>
+                </div>
+                <h3>多平台支持</h3>
+                <p>完整支持微信小程序、iOS和Android原生应用，提供统一的API接口，轻松实现跨平台开发。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18l7 3.12v5.7c0 4.83-3.4 9.16-7 10.35-3.6-1.2-7-5.52-7-10.35V6.3l7-3.12z"/></svg>
+                </div>
+                <h3>安全可靠</h3>
+                <p>内置权限管理，自动处理蓝牙和定位权限请求，确保应用符合各平台的安全要求。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                </div>
+                <h3>灵活配置</h3>
+                <p>支持自定义广播数据、设备名称、服务UUID等参数，提供丰富的预设配置，满足不同场景需求。</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="platforms">
+        <div class="container">
+            <h2>支持的平台</h2>
+            <div class="platform-grid">
+                <div class="platform-item wechat">
+                    <h3>微信小程序</h3>
+                    <p>使用微信小程序原生API，支持iOS和Android平台的蓝牙广播功能。</p>
+                </div>
+                <div class="platform-item ios">
+                    <h3>iOS原生</h3>
+                    <p>基于CoreBluetooth框架，提供完整的iOS蓝牙广播支持。</p>
+                </div>
+                <div class="platform-item android">
+                    <h3>Android原生</h3>
+                    <p>支持Android 5.0及以上版本，提供全面的BLE广播功能。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2>开始使用</h2>
+                <p>立即体验多平台BLE调试工具</p>
+                <a href="docs.html" class="cta-button">插件文档</a>
+                
+                <div class="download-section">
+                    <div class="download-options">
+                        <h3>下载应用</h3>
+                        <div class="download-buttons">
+                            <a href="#" class="download-button">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 14.49 3.51 6.91 9.07 6.91c1.15-.03 2.24.74 2.93.75 1.11 0 2.13-.78 3.19-.75 1.83.06 3.14.78 4.01 1.86-3.53 2.03-2.94 7.26.85 8.76-.82 1.85-1.87 3.69-3 2.75zM12.03 6.88c-.09-2.47 2.01-4.64 4.42-4.88.26 2.83-2.44 4.97-4.42 4.88z"/>
+                                </svg>
+                                iOS版本
+                            </a>
+                            <a href="#" class="download-button">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M17.523 15.34l2.097 3.63a.502.502 0 01-.435.75.5.5 0 01-.432-.247l-2.122-3.675a7.369 7.369 0 01-3.163.714c-1.118 0-2.171-.256-3.111-.706l-2.125 3.667a.499.499 0 01-.431.247.498.498 0 01-.432-.75l2.097-3.63A7.426 7.426 0 016.504 12c0-4.097 3.318-7.416 7.416-7.416 4.097 0 7.416 3.319 7.416 7.416 0 1.31-.34 2.537-.934 3.6zm-11.019-3.34c0 3.311 2.688 6 6 6s6-2.689 6-6-2.688-6-6-6-6 2.689-6 6zm4.5 2h3a.5.5 0 000-1h-3a.5.5 0 000 1zm0-2h3a.5.5 0 000-1h-3a.5.5 0 000 1zm0-2h3a.5.5 0 000-1h-3a.5.5 0 000 1z"/>
+                                </svg>
+                                Android版本
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="qrcode-container">
+                        <div class="qrcode-image"></div>
+                        <div class="qrcode-text">扫码使用小程序版本</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>© 2025 LightBLE. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html> 

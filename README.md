@@ -1,54 +1,179 @@
-# SmartBLE
-## 预计更名：LightBLE
+# LightBLE
 
-#### 介绍
-​	一个功能比较全面的蓝牙调试工具。支持所有使用蓝牙4.0低功耗的设备接入调试，提供蓝牙设备搜索、读取服务、浏览特征等操作。
+一个功能强大的多平台蓝牙低功耗(BLE)调试工具。
 
-​    当前支持[iPhone](https://apps.apple.com/us/app/lightble/id1614439113)、[安卓](https://gitee.com/luoyaosheng/smart-ble/attach_files/998543/download/LightBLE.apk)及[微信小程序](https://i2kai.com/SmartBLE)，后续将陆续支持Mac、Windows、Linux、网页端Chrome及其他可能使用的系统。
+A powerful multi-platform Bluetooth Low Energy (BLE) debugging tool.
 
-​	当前版本：uni-app，支持小程序、iOS和安卓。
+## 功能特点 | Features
 
-​	uni-APP 源码地址：[Github](https://github.com/LuoYaoSheng/smart-ble) / [Gitee](https://gitee.com/luoyaosheng/smart-ble)
+### 多平台支持 | Multi-platform Support
 
-​	iOS 源码地址：[Github](https://github.com/LuoYaoSheng/smart-ble-iOS) / [Gitee](https://gitee.com/luoyaosheng/smart-ble-i-os)
+- 微信小程序 | WeChat Mini Program
 
-​	Mac 源码地址：- 计划中 -
+- iOS 原生应用 | iOS Native App
 
-​	Android 源码地址：- 计划中 -
+- Android 原生应用 | Android Native App
 
-#### 功能
-- [x] 低功耗蓝牙搜索、连接
-- [x] 低功耗蓝牙订阅、读取和写入
-- [x] 作为外设（uni仅微信小程序支持，且不能自定义）
+### 核心功能 | Core Features
 
+- 🔍 BLE 设备扫描与发现 | BLE Device Scanning and Discovery
 
-#### 快速体验
+- 📡 广播数据配置与发送 | Broadcasting Data Configuration and Transmission
 
-#### ![二维码](https://camo.githubusercontent.com/1ef4c0f76b8ae7bc1389120b332ee9b8de93b1fd52f6b1ff50eecf42ad24727e/68747470733a2f2f747661312e73696e61696d672e636e2f6c617267652f65366339643234656c79316831326c3269317a63316a3230756230626571356c2e6a7067)
+- 🔐 自动化权限管理 | Automated Permission Management
 
-#### 教程讲解
+- 📱 跨平台统一 API | Cross-platform Unified API
 
-[资源及项目讲解](https://juejin.cn/post/7084238740402470943)
+- ⚡ 实时数据监控 | Real-time Data Monitoring
 
-#### UI设计图
+- 🛠️ 灵活的参数配置 | Flexible Parameter Configuration
 
-![UI设计图](https://camo.githubusercontent.com/7a105631b761c8acf5cd150202e5258322a8cd914950703f643ceb17d30cd832/68747470733a2f2f747661312e73696e61696d672e636e2f6c617267652f65366339643234656c7931677a746231393331676f6a32307977306f673076672e6a7067)
+## 快速开始 | Quick Start
 
-## About
+### 安装 | Installation
 
-主网：<https://i2kai.com>
+#### 微信小程序 | WeChat Mini Program
 
-微博：<https://weibo.com/u/3319790374>
+1. 扫描下方二维码使用 | Scan QR code below to use
 
-Email：[1034639560@qq.com](1034639560@qq.com)
+2. 或在微信开发者工具中导入项目 | Or import project in WeChat DevTools
 
-Github：<https://github.com/LuoYaoSheng>  
+```bash
 
-码云：<https://gitee.com/luoyaosheng>
+# 克隆项目 | Clone the project
 
-私人微信号：iot-runThings 
+git  clone  https://github.com/your-username/LightBLE.git
+```
 
-交流QQ群：941235341
+#### iOS & Android
 
- ![SmartBLE交流群群二维码](https://camo.githubusercontent.com/c06c19029dc1799d5c3a87191fe07cf33afddcbf74a7d900d49df062eb5efe32/68747470733a2f2f747661312e73696e61696d672e636e2f6c617267652f65366339643234656c793168303973356d6c7839756a323036613038327439352e6a7067)
+从应用商店下载 | Download from App Store/Google Play
 
+- [iOS App Store](#)
+
+- [Google Play](#)
+
+### 基础使用 | Basic Usage
+
+```javascript
+
+// 初始化 BLE | Initialize BLE
+const  ble  =  new  LightBLE();
+
+// 开始广播 | Start Broadcasting
+await  ble.startBroadcast({
+ name:  'MyDevice',
+ serviceUUIDs:  ['YOUR_SERVICE_UUID'],
+ manufacturerData:  'YOUR_DATA'
+});
+
+// 停止广播 | Stop Broadcasting
+await  ble.stopBroadcast();
+```
+
+## API 文档 | API Documentation
+
+详细的 API 文档请访问：[在线文档](docs.html)
+
+For detailed API documentation, please visit: [Online Documentation](docs.html)
+
+## 配置说明 | Configuration
+
+### 广播参数 | Broadcasting Parameters
+
+```javascript
+{
+    name: string,            // 设备名称 | Device name
+    serviceUUIDs: string[],  // 服务 UUID | Service UUIDs
+    manufacturerData: string,// 厂商数据 | Manufacturer data
+    txPowerLevel: number,    // 发射功率 | Transmission power
+interval: number // 广播间隔 | Broadcasting interval
+}
+```
+
+## 平台差异 | Platform Differences
+
+### 微信小程序 | WeChat Mini Program
+
+- 需要在 `app.json` 中声明蓝牙权限
+
+- Bluetooth permission declaration required in `app.json`
+
+### iOS
+
+- 需要在 `Info.plist` 中添加蓝牙使用权限声明
+
+- Bluetooth usage permission required in `Info.plist`
+
+### Android
+
+- 需要 Android 5.0 (API 21) 及以上版本
+
+- Android 5.0 (API 21) or above required
+
+- 需要位置权限用于扫描设备
+
+- Location permission required for device scanning
+
+## 示例代码 | Example Code
+
+```javascript
+
+// 完整示例 | Complete example
+const  ble  =  new  LightBLE();
+
+try {
+ // 检查权限 | Check permissions
+ await  ble.checkPermissions();
+ // 配置广播参数 | Configure broadcasting parameters
+ const  config  = {
+     name:  'TestDevice',
+     serviceUUIDs:  ['1234'],
+     manufacturerData:  'test-data'
+  };
+
+ // 开始广播 | Start broadcasting
+ await  ble.startBroadcast(config);
+ // 30秒后停止 | Stop after 30 seconds
+ setTimeout(async () => {
+     await  ble.stopBroadcast();
+    }, 30000);
+
+} catch (error) {
+ console.error('BLE Error:', error);
+}
+```
+
+## 问题反馈 | Feedback
+
+如果您在使用过程中遇到任何问题，请提交 Issue 或联系我们。
+
+If you encounter any problems during use, please submit an issue or contact us.
+
+## 许可证 | License
+
+本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详细信息
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+
+## 贡献指南 | Contributing
+
+我们欢迎任何形式的贡献，包括但不限于：
+
+- 报告问题
+
+- 提交功能建议
+
+- 提交代码改进
+
+- 完善文档
+
+We welcome all forms of contributions, including but not limited to:
+
+- Bug reports
+
+- Feature suggestions
+
+- Code improvements
+
+- Documentation improvements
