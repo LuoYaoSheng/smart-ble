@@ -39,10 +39,8 @@ A powerful multi-platform Bluetooth Low Energy (BLE) debugging tool.
 2. 或在微信开发者工具中导入项目 | Or import project in WeChat DevTools
 
 ```bash
-
 # 克隆项目 | Clone the project
-
-git  clone  https://github.com/your-username/LightBLE.git
+git  clone  https://gitee.com/luoyaosheng/smart-ble/tree/AI/
 ```
 
 #### iOS & Android
