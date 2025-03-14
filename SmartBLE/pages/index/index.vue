@@ -5,10 +5,10 @@
 			<view class="filter-header">
 				<text class="filter-title">过滤设置</text>
 				<!-- #ifdef MP-WEIXIN -->
-				<button class="broadcast-nav-btn" @click="goBroadcast">
-					<text class="button-icon">📡</text>
-					<text>广播</text>
-				</button>
+				<view class="mp-buttons">
+					<button class="mp-btn mp-btn-broadcast" @click="goBroadcast">广播</button>
+					<button class="mp-btn mp-btn-about" @click="goAbout">关于</button>
+				</view>
 				<!-- #endif -->
 			</view>
 			
@@ -191,8 +191,10 @@
 		},
 		// 导航栏按钮点击事件处理
 		onNavigationBarButtonTap(e) {
-			if (e.index === 0) {
+			if (e.text === '广播') {
 				this.goBroadcast();
+			} else if (e.text === '关于') {
+				this.goAbout();
 			}
 		},
 		methods: {
@@ -502,7 +504,13 @@
 				return deviceId;
 				// 只显示设备ID的后12位，前面用...代替
 				return deviceId.length > 12 ? '...' + deviceId.slice(-12) : deviceId;
-			}
+			},
+
+			goAbout() {
+				uni.navigateTo({
+					url: '/pages/about/index'
+				});
+			},
 		},
 		onUnload() {
 			// 页面卸载时断开连接
@@ -536,7 +544,7 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		margin-bottom: 24rpx;
+		margin-bottom: 20rpx;
 	}
 	
 	.filter-title {
@@ -545,29 +553,32 @@
 		color: #333;
 	}
 	
-	.broadcast-nav-btn {
+	.mp-buttons {
 		display: flex;
-		align-items: center;
-		justify-content: center;
-		background: linear-gradient(135deg, #5856D6 0%, #5E5CE6 100%);
-		color: #fff;
-		font-size: 26rpx;
-		padding: 8rpx 20rpx;
-		border-radius: 100rpx;
+		gap: 20rpx;
+	}
+
+	.mp-btn {
 		margin: 0;
-		height: 60rpx;
-		line-height: 1;
-		box-shadow: 0 4rpx 12rpx rgba(88,86,214,0.2);
-	}
-	
-	.broadcast-nav-btn .button-icon {
+		padding: 0 24rpx;
+		height: 64rpx;
+		line-height: 64rpx;
 		font-size: 28rpx;
-		margin-right: 6rpx;
+		border-radius: 32rpx;
+		border: none;
+		color: #fff;
 	}
-	
-	.broadcast-nav-btn:active {
-		transform: translateY(2rpx);
-		opacity: 0.9;
+
+	.mp-btn-broadcast {
+		background: linear-gradient(135deg, #007AFF 0%, #409EFF 100%);
+	}
+
+	.mp-btn-about {
+		background: linear-gradient(135deg, #FF9500 0%, #FF9F0A 100%);
+	}
+
+	.mp-btn::after {
+		border: none;
 	}
 
 	.filter-item {

@@ -8,12 +8,24 @@
     <a href="#应用截图">应用截图</a> ·
     <a href="#主要功能">功能介绍</a>
   </p>
+  <p>
+    <img src="https://img.shields.io/badge/版本-1.0.0-blue.svg" alt="版本" />
+    <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="协议" />
+    <img src="https://img.shields.io/badge/platform-iOS%20%7C%20Android%20%7C%20小程序-lightgrey.svg" alt="平台" />
+  </p>
 </div>
 
 <div align="center">
   <img src="https://lightble.i2kai.com/qr_code.jpg" alt="微信小程序码" width="200" />
   <p>扫码使用微信小程序版本</p>
 </div>
+
+## 🌐 相关链接
+
+- **官方网站**：[https://lightble.i2kai.com](https://lightble.i2kai.com)
+- **问题反馈**：[Issues](https://github.com/your-username/smart-ble/issues)
+- **开发文档**：[Documentation](https://lightble.i2kai.com/docs)
+- **更新日志**：[Changelog](#版本记录)
 
 ## 💡 项目简介
 
@@ -52,6 +64,49 @@ LightBLE 是一款专业的蓝牙调试工具，基于 uni-app + Vue 3 开发，
 - 📊 广播数据和扫描响应配置
 - ⚙️ 灵活的参数配置
 - ⚡ 实时数据监控
+
+## 📋 版本记录
+
+### v1.0.0 (2024-03-14)
+- 🎉 首次发布
+- ✨ 支持蓝牙设备扫描与发现
+- 🔄 支持自定义蓝牙广播
+- 📊 支持数据可视化展示
+- 🛠️ 支持多平台部署
+
+### v0.9.0 (2024-03-01)
+- 🧪 内测版本发布
+- 🔧 修复已知问题
+- 📱 优化用户界面
+
+### v0.8.0 (2024-02-15)
+- 💫 Beta 版本发布
+- 🎨 界面改版优化
+- 🔍 新增搜索功能
+
+## 👨‍💻 开发者其他应用
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <img src="https://lightble.i2kai.com/apps/app1_qr.jpg" width="100" alt="应用1二维码"/><br/>
+        <b>智能家居助手</b><br/>
+        <small>智能家居设备管理工具</small>
+      </td>
+      <td align="center">
+        <img src="https://lightble.i2kai.com/apps/app2_qr.jpg" width="100" alt="应用2二维码"/><br/>
+        <b>WiFi调试大师</b><br/>
+        <small>专业的WiFi网络分析工具</small>
+      </td>
+      <td align="center">
+        <img src="https://lightble.i2kai.com/apps/app3_qr.jpg" width="100" alt="应用3二维码"/><br/>
+        <b>串口调试助手</b><br/>
+        <small>多功能串口通信工具</small>
+      </td>
+    </tr>
+  </table>
+</div>
 
 ## 🔧 技术实现
 

@@ -3,17 +3,27 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "BLE调试工具",
-				"navigationBarTextStyle": "black",
+				"navigationBarTitleText": "LightBLE",
 				"navigationBarBackgroundColor": "#FFFFFF",
+				"navigationBarTextStyle": "black",
 				"navigationStyle": "default",
+				"navigationBarShadow": {
+					"colorType": "grey"
+				},
 				"app-plus": {
 					"titleNView": {
 						"buttons": [{
 							"text": "广播",
 							"fontSize": "14px",
 							"color": "#007AFF",
-							"width": "60px"
+							"width": "46px",
+							"float": "left"
+						}, {
+							"text": "关于",
+							"float": "right",
+							"fontSize": "14px",
+							"width": "46px",
+							"color": "#007AFF"
 						}]
 					}
 				},
@@ -36,6 +46,22 @@
 				"navigationBarTitleText": "BLE广播",
 				"navigationBarBackgroundColor": "#ffffff",
 				"navigationBarTextStyle": "black"
+			}
+		},
+		{
+			"path": "pages/about/index",
+			"style": {
+				"navigationBarTitleText": "关于",
+				"navigationBarTextStyle": "black",
+				"navigationBarBackgroundColor": "#FFFFFF"
+			}
+		},
+		{
+			"path": "pages/about/version",
+			"style": {
+				"navigationBarTitleText": "版本记录",
+				"navigationBarTextStyle": "black",
+				"navigationBarBackgroundColor": "#FFFFFF"
 			}
 		}
 	],
