@@ -27,14 +27,14 @@ LightBLE 是一款专业的蓝牙调试工具，基于 uni-app + Vue 3 开发，
 
 <div align="center">
   <div>
-    <img src="./images/默认页.jpg" alt="默认界面" width="200" style="margin: 5px;" />
-    <img src="./images/搜索设备.jpg" alt="搜索设备" width="200" style="margin: 5px;" />
-    <img src="./images/广播页.jpg" alt="广播页" width="200" style="margin: 5px;" />
+    <img src="./doc/images/默认页.jpg" alt="默认界面" width="200" style="margin: 5px;" />
+    <img src="./doc/images/搜索设备.jpg" alt="搜索设备" width="200" style="margin: 5px;" />
+    <img src="./doc/images/广播页.jpg" alt="广播页" width="200" style="margin: 5px;" />
   </div>
   <div style="margin-top: 10px;">
-    <img src="./images/连接详情1.jpg" alt="设备详情" width="200" style="margin: 5px;" />
-    <img src="./images/连接详情2.jpg" alt="服务列表" width="200" style="margin: 5px;" />
-    <img src="./images/连接详情3.jpg" alt="特征值操作" width="200" style="margin: 5px;" />
+    <img src="./doc/images/连接详情1.jpg" alt="设备详情" width="200" style="margin: 5px;" />
+    <img src="./doc/images/连接详情2.jpg" alt="服务列表" width="200" style="margin: 5px;" />
+    <img src="./doc/images/连接详情3.jpg" alt="特征值操作" width="200" style="margin: 5px;" />
   </div>
 </div>
 
