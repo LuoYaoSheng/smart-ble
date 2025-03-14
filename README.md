@@ -1,188 +1,177 @@
-# LightBLE
+# LightBLE 蓝牙调试工具
 
-一个功能强大的多平台蓝牙低功耗(BLE)调试工具。
+<div align="center">
+  <h3>多平台BLE调试工具，支持微信小程序、iOS和Android原生应用</h3>
+  <p>
+    <a href="https://lightble.i2kai.com/">官方网站</a> ·
+    <a href="#快速开始">快速开始</a> ·
+    <a href="#应用截图">应用截图</a> ·
+    <a href="#主要功能">功能介绍</a>
+  </p>
+</div>
 
-A powerful multi-platform Bluetooth Low Energy (BLE) debugging tool.
+<div align="center">
+  <img src="https://lightble.i2kai.com/qr_code.jpg" alt="微信小程序码" width="200" />
+  <p>扫码使用微信小程序版本</p>
+</div>
 
-## 功能特点 | Features
+## 💡 项目简介
 
-### 多平台支持 | Multi-platform Support
+LightBLE 是一款专业的蓝牙调试工具，基于 uni-app + Vue 3 开发，支持多平台部署。
 
-- 微信小程序 | WeChat Mini Program
+- 版本：1.0.0
+- 框架：uni-app + Vue 3
+- 开源协议：MIT
 
-- iOS 原生应用 | iOS Native App
+## 📱 应用截图
 
-- Android 原生应用 | Android Native App
+<div align="center">
+  <div>
+    <img src="./images/默认页.jpg" alt="默认界面" width="200" style="margin: 5px;" />
+    <img src="./images/搜索设备.jpg" alt="搜索设备" width="200" style="margin: 5px;" />
+    <img src="./images/广播页.jpg" alt="广播页" width="200" style="margin: 5px;" />
+  </div>
+  <div style="margin-top: 10px;">
+    <img src="./images/连接详情1.jpg" alt="设备详情" width="200" style="margin: 5px;" />
+    <img src="./images/连接详情2.jpg" alt="服务列表" width="200" style="margin: 5px;" />
+    <img src="./images/连接详情3.jpg" alt="特征值操作" width="200" style="margin: 5px;" />
+  </div>
+</div>
 
-### 核心功能 | Core Features
+## ✨ 主要功能
 
-- 🔍 BLE 设备扫描与发现 | BLE Device Scanning and Discovery
-- 📡 广播数据配置与发送 | Broadcasting Data Configuration and Transmission
-- 🔐 自动化权限管理 | Automated Permission Management
-- 📱 跨平台统一 API | Cross-platform Unified API
-- ⚡ 实时数据监控 | Real-time Data Monitoring
-- 🛠️ 灵活的参数配置 | Flexible Parameter Configuration
+### 🌐 多平台支持
+- 完整支持微信小程序、iOS和Android原生应用
+- 提供统一的API接口，轻松实现跨平台开发
+- 内置权限管理，自动处理蓝牙和定位权限请求
 
-#### 图片展示 | Images
+### 🛠️ 核心功能
+- 🔍 蓝牙设备扫描与发现
+- 📱 设备详情查看
+- 📡 自定义蓝牙广播
+- 📊 广播数据和扫描响应配置
+- ⚙️ 灵活的参数配置
+- ⚡ 实时数据监控
 
-<img src="./images/默认页.jpg" alt="默认界面" style="zoom:25%;" />
+## 🔧 技术实现
 
-<img src="./images/连接详情1.jpg" alt="连接详情1" style="zoom:25%;" />
+### 技术栈
+- 前端框架：Vue 3
+- UI 框架：@dcloudio/uni-ui
+- 原生插件：BLE-Module（自定义蓝牙广播插件）
 
-<img src="./images/连接详情2.jpg" alt="连接详情2" style="zoom:25%;" />
+### 平台支持
+- **微信小程序**：使用微信小程序原生API
+- **iOS原生**：基于CoreBluetooth框架
+- **Android原生**：支持Android 5.0及以上版本
 
-<img src="./images/连接详情3.jpg" alt="连接详情3" style="zoom:25%;" />
+## 📦 项目结构
 
-<img src="./images/搜索设备.jpg" alt="搜索设备" style="zoom:25%;" />
-
-<img src="./images/广播页.jpg" alt="广播页" style="zoom:25%;" />
-
-
-
-## 快速开始 | Quick Start
-
-### 安装 | Installation
-
-#### 微信小程序 | WeChat Mini Program
-
-1. 扫描下方二维码使用 | Scan QR code below to use
-
-2. 或在微信开发者工具中导入项目 | Or import project in WeChat DevTools
-
-```bash
-# 克隆项目 | Clone the project
-git  clone  https://gitee.com/luoyaosheng/smart-ble/tree/AI/
+```
+smart-ble/
+├── SmartBLE/              # 主项目目录
+│   ├── pages/            # 页面文件
+│   │   ├── index/       # 主页（设备列表）
+│   │   ├── device/      # 设备详情页
+│   │   └── broadcast/   # 广播配置页
+│   ├── static/          # 静态资源
+│   ├── utils/          # 工具函数
+│   ├── nativeplugins/  # 原生插件
+│   └── App.vue         # 应用入口
+└── docs/               # 文档和资源
 ```
 
-#### iOS & Android
+## 🚀 快速开始
 
-从应用商店下载 | Download from App Store/Google Play
+### 安装
+```bash
+cd SmartBLE
+npm install
+```
 
-- [iOS App Store](#)
+### 运行
+```bash
+# H5版本
+npm run dev:h5
 
-- [Google Play](#)
+# 微信小程序
+npm run dev:mp-weixin
 
-### 基础使用 | Basic Usage
+# App开发
+npm run dev:app
+```
 
+### 使用示例
 ```javascript
-
-// 初始化 BLE | Initialize BLE
-const  ble  =  new  LightBLE();
-
-// 开始广播 | Start Broadcasting
-await  ble.startBroadcast({
- name:  'MyDevice',
- serviceUUIDs:  ['YOUR_SERVICE_UUID'],
- manufacturerData:  'YOUR_DATA'
+// 初始化蓝牙模块
+uni.openBluetoothAdapter({
+  success: () => {
+    console.log('蓝牙初始化成功');
+    // 开始搜索设备
+    uni.startBluetoothDevicesDiscovery({
+      success: () => {
+        console.log('开始搜索设备');
+      }
+    });
+  }
 });
 
-// 停止广播 | Stop Broadcasting
-await  ble.stopBroadcast();
-```
+// 监听设备发现事件
+uni.onBluetoothDeviceFound((devices) => {
+  console.log('发现新设备:', devices);
+});
 
-## API 文档 | API Documentation
-
-详细的 API 文档请访问：[在线文档](docs.html)
-
-For detailed API documentation, please visit: [Online Documentation](docs.html)
-
-## 配置说明 | Configuration
-
-### 广播参数 | Broadcasting Parameters
-
-```javascript
-{
-    name: string,            // 设备名称 | Device name
-    serviceUUIDs: string[],  // 服务 UUID | Service UUIDs
-    manufacturerData: string,// 厂商数据 | Manufacturer data
-    txPowerLevel: number,    // 发射功率 | Transmission power
-interval: number // 广播间隔 | Broadcasting interval
+// 连接设备
+function connectDevice(deviceId) {
+  uni.createBLEConnection({
+    deviceId: deviceId,
+    success: () => {
+      console.log('连接成功');
+      // 获取设备服务
+      uni.getBLEDeviceServices({
+        deviceId: deviceId,
+        success: (res) => {
+          console.log('设备服务列表:', res.services);
+        }
+      });
+    }
+  });
 }
 ```
 
-## 平台差异 | Platform Differences
+## 📝 权限说明
 
-### 微信小程序 | WeChat Mini Program
+### Android 权限
+- 蓝牙权限（BLUETOOTH）
+- 蓝牙管理权限（BLUETOOTH_ADMIN）
+- 位置权限（ACCESS_FINE_LOCATION）
+- 蓝牙扫描权限（BLUETOOTH_SCAN）
+- 蓝牙广播权限（BLUETOOTH_ADVERTISE）
+- 蓝牙连接权限（BLUETOOTH_CONNECT）
 
-- 需要在 `app.json` 中声明蓝牙权限
+### iOS 权限
+- 蓝牙权限（用于搜索和连接蓝牙设备）
 
-- Bluetooth permission declaration required in `app.json`
+## ⚠️ 注意事项
 
-### iOS
+1. Android 设备需要定位权限才能搜索蓝牙设备
+2. iOS 需要在 Info.plist 中配置蓝牙权限描述
+3. 微信小程序需要在开发者后台配置蓝牙相关权限
 
-- 需要在 `Info.plist` 中添加蓝牙使用权限声明
+## 📥 下载安装
 
-- Bluetooth usage permission required in `Info.plist`
+- [iOS App Store](#)
+- [Google Play](#)
+- 微信小程序：扫描顶部二维码
 
-### Android
+## 🤝 贡献指南
 
-- 需要 Android 5.0 (API 21) 及以上版本
+欢迎提交问题和改进建议！我们欢迎任何形式的贡献：
+- 🐛 报告问题
+- 💡 提交功能建议
+- 🔧 提交代码改进
+- 📖 完善文档
 
-- Android 5.0 (API 21) or above required
+## 📄 开源协议
 
-- 需要位置权限用于扫描设备
-
-- Location permission required for device scanning
-
-## 示例代码 | Example Code
-
-```javascript
-
-// 完整示例 | Complete example
-const  ble  =  new  LightBLE();
-
-try {
- // 检查权限 | Check permissions
- await  ble.checkPermissions();
- // 配置广播参数 | Configure broadcasting parameters
- const  config  = {
-     name:  'TestDevice',
-     serviceUUIDs:  ['1234'],
-     manufacturerData:  'test-data'
-  };
-
- // 开始广播 | Start broadcasting
- await  ble.startBroadcast(config);
- // 30秒后停止 | Stop after 30 seconds
- setTimeout(async () => {
-     await  ble.stopBroadcast();
-    }, 30000);
-
-} catch (error) {
- console.error('BLE Error:', error);
-}
-```
-
-## 问题反馈 | Feedback
-
-如果您在使用过程中遇到任何问题，请提交 Issue 或联系我们。
-
-If you encounter any problems during use, please submit an issue or contact us.
-
-## 许可证 | License
-
-本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详细信息
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
-
-## 贡献指南 | Contributing
-
-我们欢迎任何形式的贡献，包括但不限于：
-
-- 报告问题
-
-- 提交功能建议
-
-- 提交代码改进
-
-- 完善文档
-
-We welcome all forms of contributions, including but not limited to:
-
-- Bug reports
-
-- Feature suggestions
-
-- Code improvements
-
-- Documentation improvements
+本项目采用 [MIT License](LICENSE) 开源协议 
