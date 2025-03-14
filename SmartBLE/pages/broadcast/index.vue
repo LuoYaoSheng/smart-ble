@@ -980,7 +980,23 @@
 			// 取消微信小程序的监听
 			wx.offBLEPeripheralConnectionStateChanged();
 			// #endif
+		},
+		// #ifdef MP-WEIXIN
+		onShareAppMessage() {
+			return {
+				title: '智能蓝牙助手',
+				path: '/pages/broadcast/index',
+				imageUrl: '/static/logo.png'
+			}
+		},
+		onShareTimeline() {
+			return {
+				title: '智能蓝牙助手',
+				query: '',
+				imageUrl: '/static/logo.png'
+			}
 		}
+		// #endif
 	}
 </script>
 

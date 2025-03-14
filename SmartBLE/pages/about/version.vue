@@ -69,7 +69,23 @@
 				};
 				return typeMap[type] || '';
 			}
+		},
+		// #ifdef MP-WEIXIN
+		onShareAppMessage() {
+			return {
+				title: '智能蓝牙助手',
+				path: '/pages/about/version',
+				imageUrl: '/static/logo.png'
+			}
+		},
+		onShareTimeline() {
+			return {
+				title: '智能蓝牙助手',
+				query: '',
+				imageUrl: '/static/logo.png'
+			}
 		}
+		// #endif
 	}
 </script>
 

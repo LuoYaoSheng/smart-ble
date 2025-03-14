@@ -148,11 +148,6 @@
 					android: {
 						packageName: 'com.i2kai.serialdebug',
 						url: 'https://play.google.com/store/apps/details?id=com.i2kai.serialdebug'
-					},
-					miniProgram: {
-						appId: 'wx1234567892',
-						path: 'pages/index/index',
-						envVersion: 'release'
 					}
 				}]
 			}
@@ -445,16 +440,16 @@
 		// #ifdef MP-WEIXIN
 		onShareAppMessage() {
 			return {
-				title: this.shareInfo.title,
-				path: '/pages/index/index',
-				imageUrl: this.shareInfo.imageUrl
+				title: '智能蓝牙助手',
+				path: '/pages/about/index',
+				imageUrl: '/static/logo.png'
 			}
 		},
 		onShareTimeline() {
 			return {
-				title: this.shareInfo.title,
+				title: '智能蓝牙助手',
 				query: '',
-				imageUrl: this.shareInfo.imageUrl
+				imageUrl: '/static/logo.png'
 			}
 		}
 		// #endif
