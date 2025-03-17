@@ -87,7 +87,7 @@
 									@blur="validateInterval" />
 							</view>
 						</view>
-						<button type="primary" @click="sendData" :disabled="!currentService || !currentCharacteristic">
+						<button type="primary" @click="sendDataToDevice" :disabled="!currentService || !currentCharacteristic">
 							{{!currentService || !currentCharacteristic ? '请先选择特征值' : '发送'}}
 						</button>
 					</view>
@@ -779,6 +779,84 @@
 						icon: 'error'
 					});
 				}
+			},
+
+			// 处理自动发送切换
+			onAutoSendChange(e) {
+				this.autoSend = e.detail.value;
+				
+				if (this.autoSend) {
+					this.startAutoSend();
+				} else if (this.autoSendTimer) {
+					clearInterval(this.autoSendTimer);
+					this.autoSendTimer = null;
+				}
+			},
+			
+			// 验证发送间隔
+			validateInterval() {
+				const interval = parseInt(this.sendInterval);
+				if (isNaN(interval) || interval < 100) {
+					this.sendInterval = 100;
+					uni.showToast({
+						title: '最小间隔为100ms',
+						icon: 'none'
+					});
+				} else if (interval > 10000) {
+					this.sendInterval = 10000;
+					uni.showToast({
+						title: '最大间隔为10000ms',
+						icon: 'none'
+					});
+				}
+				
+				// 如果正在自动发送，重新启动定时器
+				if (this.autoSend) {
+					this.startAutoSend();
+				}
+			},
+			
+			// 开始自动发送
+			startAutoSend() {
+				// 清除可能存在的旧定时器
+				if (this.autoSendTimer) {
+					clearInterval(this.autoSendTimer);
+				}
+				
+				// 设置新定时器
+				this.autoSendTimer = setInterval(() => {
+					this.sendDataToDevice();
+				}, parseInt(this.sendInterval) || 1000);
+			},
+			
+			// 发送数据到设备
+			sendDataToDevice() {
+				if (!this.currentService || !this.currentCharacteristic || !this.sendData.trim()) {
+					uni.showToast({
+						title: '请选择特征值并输入数据',
+						icon: 'none'
+					});
+					return;
+				}
+				
+				// 根据模式处理数据
+				const isHexMode = this.sendType === 'hex';
+				let data = this.sendData.trim();
+				
+				if (isHexMode) {
+					// 验证HEX格式
+					const hexRegex = /^([0-9A-Fa-f]{2}\s*)+$/;
+					if (!hexRegex.test(data)) {
+						uni.showToast({
+							title: 'HEX格式不正确',
+							icon: 'none'
+						});
+						return;
+					}
+				}
+				
+				// 写入数据
+				this.writeCharacteristic(this.currentService, this.currentCharacteristic, data, isHexMode);
 			},
 		},
 		onUnload() {
