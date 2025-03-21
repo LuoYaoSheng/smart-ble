@@ -7,17 +7,17 @@
 					<view class="name-container">
 						<text class="device-name">{{deviceInfo.name || '未知设备'}}</text>
 						<view class="status-dot" :class="{'connected': isConnected}"></view>
-					</view>
+				</view>
 					<view class="device-id-container">
 						<text class="device-id-label">设备ID:</text>
 						<text class="device-id">{{deviceInfo.deviceId}}</text>
-					</view>
 				</view>
+			</view>
 				<view class="device-actions">
 					<button class="action-btn" :class="{'connected': isConnected}" @click="toggleConnection">
 						{{isConnected ? '断开连接' : '连接设备'}}
-					</button>
-				</view>
+				</button>
+			</view>
 			</view>
 		</view>
 
@@ -28,24 +28,24 @@
 				<view class="panel-header">
 					<text class="panel-title">服务列表</text>
 					<text class="toggle-btn" @click="toggleAllServices">{{showAllServices ? '收起列表' : '展开列表'}}</text>
-				</view>
+					</view>
 				<view class="services-list">
 					<view v-for="(service, sIndex) in services" :key="sIndex" class="service-item">
-						<view class="service-header" @click="toggleService(sIndex)">
-							<view class="service-info">
+					<view class="service-header" @click="toggleService(sIndex)">
+						<view class="service-info">
 								<text class="service-name">服务 {{sIndex + 1}}</text>
-								<text class="service-uuid">{{service.uuid}}</text>
-							</view>
-							<text class="arrow">{{service.isOpen ? '▼' : '▶'}}</text>
+							<text class="service-uuid">{{service.uuid}}</text>
 						</view>
-						<view v-if="service.isOpen" class="characteristics-list">
-							<view v-for="(characteristic, cIndex) in service.characteristics" 
-								:key="cIndex" 
-								class="characteristic-item">
+							<text class="arrow">{{service.isOpen ? '▼' : '▶'}}</text>
+					</view>
+					<view v-if="service.isOpen" class="characteristics-list">
+						<view v-for="(characteristic, cIndex) in service.characteristics" 
+							:key="cIndex" 
+							class="characteristic-item">
 								<view class="characteristic-info">
-									<text class="characteristic-name">特征值 {{cIndex + 1}}</text>
+									<text class="characteristic-name">{{characteristic.name || '特征值 ' + (cIndex + 1)}}</text>
 									<text class="characteristic-uuid">{{characteristic.uuid}}</text>
-								</view>
+									</view>
 								<view class="characteristic-props">
 									<button class="prop-btn read" 
 										v-if="characteristic.properties.read"
@@ -82,9 +82,9 @@
 					</view>
 				</view>
 				<scroll-view class="log-content" scroll-y>
-					<view v-for="(log, index) in logs" :key="index" class="log-item">
-						<text class="log-time">{{log.time}}</text>
-						<text class="log-type" :class="log.type">{{log.type}}</text>
+						<view v-for="(log, index) in logs" :key="index" class="log-item">
+							<text class="log-time">{{log.time}}</text>
+							<text class="log-type" :class="log.type">{{log.type}}</text>
 						<text class="log-message">{{log.message}}</text>
 					</view>
 				</scroll-view>
@@ -109,21 +109,23 @@
 								<radio value="hex" :checked="sendType === 'hex'" />HEX
 							</label>
 						</radio-group>
-					</view>
+						</view>
 					<view class="input-group">
 						<text class="input-label">数据内容：</text>
 						<input type="text" 
 							v-model="sendData" 
 							:placeholder="sendType === 'text' ? '请输入文本数据' : '请输入HEX数据，如：FF 00 01'"
-							class="data-input" />
-					</view>
-				</view>
+							class="data-input"
+							ref="dataInput"
+							@focus="onInputFocus" />
+								</view>
+							</view>
 				<view class="modal-footer">
 					<button class="modal-btn cancel" @click="closeWriteModal">取消</button>
 					<button class="modal-btn confirm" @click="confirmWrite">确定</button>
-				</view>
+						</view>
+					</view>
 			</view>
-		</view>
 	</view>
 </template>
 
@@ -211,34 +213,7 @@
 					})
 					
 					// 获取服务
-					const services = await uni.getBLEDeviceServices({
-						deviceId: this.deviceInfo.deviceId
-					})
-					
-					// 处理服务列表
-					this.services = services.services.map(service => ({
-						...service,
-						isOpen: false,
-						characteristics: []
-					}))
-					
-					// 获取每个服务的特征值
-					for (const service of this.services) {
-						try {
-							const characteristics = await uni.getBLEDeviceCharacteristics({
-								deviceId: this.deviceInfo.deviceId,
-								serviceId: service.uuid
-							})
-							
-							service.characteristics = characteristics.characteristics.map(char => ({
-								...char,
-								notifying: false
-							}))
-						} catch (error) {
-							this.addLog('错误', `获取服务 ${service.uuid} 的特征值失败：${error.errMsg}`)
-							service.characteristics = []
-						}
-					}
+					await this.getServices()
 					
 					this.isConnected = true
 					this.connectionRetryCount = 0 // 重置重试计数
@@ -315,23 +290,89 @@
 			},
 
 			// 写入特征值
-			async writeCharacteristic(serviceId, characteristicId, value) {
+			async writeCharacteristic(serviceId, characteristicId, data) {
 				try {
-					const buffer = new ArrayBuffer(value.length)
-					const dataView = new DataView(buffer)
-					for (let i = 0; i < value.length; i++) {
-						dataView.setUint8(i, value.charCodeAt(i))
+					this.addLog('系统', `准备写入数据到特征值: ${characteristicId}`);
+					
+					// 根据发送类型处理数据
+					let buffer;
+					if (this.sendType === 'hex') {
+						// 处理HEX格式
+						const hexString = data.replace(/\s/g, '').toUpperCase();
+						if (!/^[0-9A-F]+$/.test(hexString)) {
+							throw new Error('无效的HEX格式');
+						}
+						buffer = new ArrayBuffer(hexString.length / 2);
+						const dataView = new DataView(buffer);
+						for (let i = 0; i < hexString.length; i += 2) {
+							dataView.setUint8(i / 2, parseInt(hexString.substr(i, 2), 16));
+						}
+					} else {
+						// 处理文本格式，使用 UTF-8 编码
+						// 将字符串转换为 UTF-8 编码的字节数组
+						const bytes = [];
+						for (let i = 0; i < data.length; i++) {
+							const charCode = data.charCodeAt(i);
+							if (charCode < 0x80) {
+								// ASCII 字符
+								bytes.push(charCode);
+							} else if (charCode < 0x800) {
+								// 2字节 UTF-8
+								bytes.push(0xC0 | (charCode >> 6));
+								bytes.push(0x80 | (charCode & 0x3F));
+							} else if (charCode < 0x10000) {
+								// 3字节 UTF-8
+								bytes.push(0xE0 | (charCode >> 12));
+								bytes.push(0x80 | ((charCode >> 6) & 0x3F));
+								bytes.push(0x80 | (charCode & 0x3F));
+							} else if (charCode < 0x110000) {
+								// 4字节 UTF-8
+								bytes.push(0xF0 | (charCode >> 18));
+								bytes.push(0x80 | ((charCode >> 12) & 0x3F));
+								bytes.push(0x80 | ((charCode >> 6) & 0x3F));
+								bytes.push(0x80 | (charCode & 0x3F));
+							}
+						}
+						buffer = new ArrayBuffer(bytes.length);
+						const dataView = new DataView(buffer);
+						for (let i = 0; i < bytes.length; i++) {
+							dataView.setUint8(i, bytes[i]);
+						}
 					}
 					
+					this.addLog('系统', `数据长度: ${buffer.byteLength} 字节`);
+					
+					// 写入数据
 					await uni.writeBLECharacteristicValue({
 						deviceId: this.deviceInfo.deviceId,
-						serviceId,
-						characteristicId,
-						value: buffer
-					})
-					this.addLog('写入', `写入数据成功：${value}`)
+						serviceId: serviceId,
+						characteristicId: characteristicId,
+						value: buffer,
+						writeType: 'write'  // 使用有应答写入
+					});
+					
+					// 记录发送的日志
+					const hexString = Array.from(new Uint8Array(buffer))
+						.map(b => b.toString(16).padStart(2, '0').toUpperCase())
+						.join(' ');
+						
+					this.addLog('写入', this.sendType === 'hex' ? 
+						`HEX: ${hexString}` : 
+						`TEXT: ${data} (HEX: ${hexString})`);
+					
+					// 显示成功提示
+					uni.showToast({
+						title: '发送成功',
+						icon: 'success'
+					});
+					
 				} catch (error) {
-					this.addLog('错误', `写入数据失败：${error.errMsg}`)
+					this.addLog('错误', `写入特征值失败: ${error.errMsg}`);
+					uni.showToast({
+						title: error.message || '发送失败',
+						icon: 'none'
+					});
+					throw error;
 				}
 			},
 			
@@ -346,7 +387,7 @@
 				try {
 					await uni.notifyBLECharacteristicValueChange({
 						deviceId: this.deviceInfo.deviceId,
-						serviceId,
+					serviceId,
 						characteristicId,
 						state: !characteristic.notifying
 					})
@@ -438,7 +479,7 @@
 						// 只转换可打印的ASCII字符
 						if (byte >= 32 && byte <= 126) {
 							textString += String.fromCharCode(byte)
-						} else {
+				} else {
 							textString += '.'
 						}
 					}
@@ -449,7 +490,7 @@
 					this.addLog('错误', '数据解析失败：' + error.message)
 				}
 			},
-			
+
 			// 添加日志
 			addLog(type, message) {
 				const now = new Date()
@@ -565,7 +606,7 @@
 					})
 					return
 				}
-				
+
 				// 格式化日志内容
 				const logContent = this.logs.map(log => {
 					return `[${log.time}] [${log.type}] ${log.message}`
@@ -574,14 +615,14 @@
 				// 复制到剪贴板
 				uni.setClipboardData({
 					data: logContent,
-					success: () => {
-						uni.showToast({
+							success: () => {
+								uni.showToast({
 							title: '日志已复制',
-							icon: 'success'
+									icon: 'success'
 						})
-					},
-					fail: () => {
-						uni.showToast({
+							},
+							fail: () => {
+								uni.showToast({
 							title: '复制失败',
 							icon: 'none'
 						})
@@ -598,15 +639,25 @@
 				this.sendType = 'text'
 			},
 			
+			// 处理发送类型切换
+			onSendTypeChange(e) {
+				this.sendType = e.detail.value
+				// 清空输入框
+				this.sendData = ''
+			},
+			
+			// 处理输入框获得焦点
+			onInputFocus() {
+				// 如果输入框为空，可以在这里添加一些默认值
+				if (!this.sendData) {
+					this.sendData = ''
+				}
+			},
+			
 			// 关闭写入数据模态框
 			closeWriteModal() {
 				this.showWriteDataModal = false
 				this.sendData = ''
-			},
-			
-			// 处理发送类型切换
-			onSendTypeChange(e) {
-				this.sendType = e.detail.value
 			},
 			
 			// 确认写入数据
@@ -626,8 +677,174 @@
 					console.error('写入数据失败:', error)
 				}
 			},
+
+			// 获取特征值名称
+			getCharacteristicName(uuid) {
+				// 从UUID中提取最后4位
+				const last4 = uuid.slice(-4).toLowerCase();
+				
+				// 根据最后4位判断特征值类型
+				switch(last4) {
+					case '26a8':
+						return 'LED控制(常亮)';
+					case '26a9':
+						return 'LED控制(慢闪)';
+					case '26b0':
+						return '只读特征';
+					case '26b1':
+						return '只写特征';
+					case '26b2':
+						return '只通知特征';
+					case '26b3':
+						return '读写特征';
+					case '26b4':
+						return '读和通知特征';
+					case '26b5':
+						return '写和通知特征';
+					case '26b6':
+						return '读写和通知特征';
+					default:
+						return '未知特征';
+				}
+			},
+
+			// 获取服务列表
+			async getServices() {
+				try {
+					this.addLog('系统', '开始获取服务列表...');
+					
+					// 添加延迟，等待服务发现完成
+					await new Promise(resolve => setTimeout(resolve, 2000));
+					
+					// 获取服务列表
+					const services = await uni.getBLEDeviceServices({
+						deviceId: this.deviceInfo.deviceId
+					});
+					
+					this.addLog('系统', `获取到 ${services.services.length} 个服务`);
+					
+					// 清空现有服务列表
+					this.services = [];
+					
+					// 过滤掉系统服务（通常以 1800 开头）
+					const filteredServices = services.services.filter(service => {
+						const isSystemService = service.uuid.toLowerCase().startsWith('1800');
+						if (isSystemService) {
+							this.addLog('系统', `跳过系统服务: ${service.uuid}`);
+						}
+						return !isSystemService;
+					});
+					
+					this.addLog('系统', `过滤后剩余 ${filteredServices.length} 个服务`);
+					
+					// 遍历每个服务
+					for (const service of filteredServices) {
+						this.addLog('系统', `正在处理服务: ${service.uuid}`);
+						
+						const serviceInfo = {
+							uuid: service.uuid,
+							isPrimary: service.isPrimary,
+							isOpen: false,
+							characteristics: []
+						};
+						
+						try {
+							// 添加延迟，等待特征值发现完成
+							await new Promise(resolve => setTimeout(resolve, 1000));
+							
+							// 获取该服务的特征值列表
+							const characteristics = await uni.getBLEDeviceCharacteristics({
+								deviceId: this.deviceInfo.deviceId,
+								serviceId: service.uuid
+							});
+							
+							this.addLog('系统', `服务 ${service.uuid} 的特征值数量: ${characteristics.characteristics.length}`);
+							
+							// 遍历特征值
+							for (const characteristic of characteristics.characteristics) {
+								// 过滤掉系统特征值（通常以 2A 开头）
+								if (characteristic.uuid.toLowerCase().startsWith('2a')) {
+									this.addLog('系统', `跳过系统特征值: ${characteristic.uuid}`);
+									continue;
+								}
+								
+								const charInfo = {
+									uuid: characteristic.uuid,
+									properties: characteristic.properties,
+									value: '',
+									notifying: false,
+									name: this.getCharacteristicName(characteristic.uuid)
+								};
+								
+								this.addLog('系统', `特征值: ${charInfo.name} (${characteristic.uuid})`);
+								
+								// 如果是可读特征值，尝试读取其值
+								if (characteristic.properties.read) {
+									try {
+										// 添加延迟，等待读取操作完成
+										await new Promise(resolve => setTimeout(resolve, 500));
+										
+										await uni.readBLECharacteristicValue({
+											deviceId: this.deviceInfo.deviceId,
+											serviceId: service.uuid,
+											characteristicId: characteristic.uuid
+										});
+										this.addLog('读取', `已请求读取特征值: ${charInfo.name}`);
+									} catch (error) {
+										this.addLog('错误', `读取特征值失败: ${error.errMsg}`);
+									}
+								}
+								
+								serviceInfo.characteristics.push(charInfo);
+							}
+						} catch (error) {
+							this.addLog('错误', `获取特征值失败: ${error.errMsg}`);
+							// 即使获取特征值失败，也继续处理下一个服务
+							continue;
+						}
+						
+						this.services.push(serviceInfo);
+					}
+					
+					this.addLog('系统', `服务列表获取完成，共 ${this.services.length} 个服务`);
+					
+				} catch (error) {
+					this.addLog('错误', `获取服务列表失败: ${error.errMsg}`);
+					uni.showToast({
+						title: '获取服务列表失败',
+						icon: 'none'
+					});
+				}
+			},
+
+			// 字节数组转字符串
+			bytesToString(bytes) {
+				if (!bytes || bytes.length === 0) return '';
+				
+				// 尝试UTF-8解码
+				try {
+					const decoder = new TextDecoder('utf-8');
+					return decoder.decode(new Uint8Array(bytes));
+				} catch (error) {
+					console.error('UTF-8解码失败:', error);
+				}
+				
+				// 如果UTF-8解码失败，尝试HEX格式
+				try {
+					return Array.from(bytes)
+						.map(byte => byte.toString(16).padStart(2, '0'))
+						.join(' ');
+				} catch (error) {
+					console.error('HEX转换失败:', error);
+				}
+				
+				return '无法解析';
+			},
 		},
 		onUnload() {
+			// 设置用户主动断开标志
+			this.isUserDisconnected = true
+			
 			// 清除自动发送定时器
 			if (this.autoSendTimer) {
 				clearInterval(this.autoSendTimer)
@@ -870,7 +1087,7 @@
 	}
 
 	.log-panel {
-		height: 400rpx;
+		height: 970rpx;
 	}
 
 	.log-content {
@@ -966,6 +1183,7 @@
 		background-color: #fff;
 		border-radius: 20rpx;
 		overflow: hidden;
+		margin-top: -200rpx; /* 整体上移 */
 	}
 
 	.modal-header {
@@ -1052,5 +1270,19 @@
 	.modal-btn.confirm {
 		background: linear-gradient(135deg, #007AFF 0%, #409EFF 100%);
 		color: #fff;
+	}
+
+	.log-area {
+		background-color: #f5f5f5;
+		padding: 10px;
+		border-radius: 5px;
+		margin-top: 10px;
+		height: 300px;
+		overflow-y: auto;
+		font-family: monospace;
+		font-size: 12px;
+		line-height: 1.4;
+		white-space: pre-wrap;
+		word-break: break-all;
 	}
 </style> 
