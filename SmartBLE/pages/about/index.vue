@@ -6,7 +6,7 @@
 			<text class="app-name">LightBLE</text>
 			<text class="version">Version {{appVersion}}</text>
 		</view>
-		
+
 		<!-- 应用信息 -->
 		<view class="section">
 			<view class="info-list">
@@ -24,7 +24,7 @@
 				</view>
 			</view>
 		</view>
-		
+
 		<!-- 功能列表 -->
 		<view class="section">
 			<view class="section-title">相关链接</view>
@@ -59,13 +59,14 @@
 				</view>
 			</view>
 		</view>
-		
+
 		<!-- 开发者其他应用 -->
 		<view class="section">
 			<view class="section-title">开发者其他应用</view>
 			<scroll-view class="apps-scroll" scroll-x show-scrollbar="false" enhanced>
 				<view class="apps-list">
-					<view class="app-item" hover-class="app-item-hover" v-for="(app, index) in otherApps" :key="index" @click="openApp(app)">
+					<view class="app-item" hover-class="app-item-hover" v-for="(app, index) in otherApps" :key="index"
+						@click="openApp(app)">
 						<image class="app-icon" :src="app.icon" mode="aspectFill"></image>
 						<view class="app-info">
 							<text class="app-name">{{app.name}}</text>
@@ -76,7 +77,7 @@
 				</view>
 			</scroll-view>
 		</view>
-		
+
 		<!-- 底部信息 -->
 		<view class="footer">
 			<text class="copyright">© {{currentYear}} LightBLE. All rights reserved.</text>
@@ -99,55 +100,42 @@
 					platforms: ['weixin', 'qq', 'sinaweibo', 'email']
 				},
 				otherApps: [{
-					name: 'BLE调试助手Pro',
-					description: '专业版蓝牙调试工具，支持更多高级功能',
-					icon: 'https://picsum.photos/96?random=1',
-					tag: '付费',
-					url: 'https://example.com/ble-pro',
+					name: '萌喵圈',
+					description: '汇集海量精选萌宠图片，随时随地为您提供快乐与治愈',
+					icon: 'https://cat.i2kai.com/images/logo.png',
+					// tag: '付费',
+					url: 'https://cat.i2kai.com/',
 					ios: {
-						appId: 'id1234567890',
-						url: 'https://apps.apple.com/cn/app/id1234567890',
-						scheme: 'blepro'
+						appId: '',
+						url: '',
+						scheme: ''
 					},
 					android: {
-						packageName: 'com.i2kai.blepro',
-						url: 'https://play.google.com/store/apps/details?id=com.i2kai.blepro'
+						packageName: 'o',
+						url: ''
 					},
 					miniProgram: {
-						appId: 'wx1234567890',
+						appId: 'wxe0ed0e6727a0a5cd',
 						path: 'pages/index/index',
 						envVersion: 'release'
 					}
 				}, {
-					name: 'WiFi调试助手',
-					description: 'WiFi网络调试工具，支持抓包分析',
-					icon: 'https://picsum.photos/96?random=2',
+					name: '宝宝点滴',
+					description: '记录宝宝生活的屎尿屁点点滴滴',
+					icon: '',
 					ios: {
-						appId: 'id1234567891',
-						url: 'https://apps.apple.com/cn/app/id1234567891',
-						scheme: 'wifidebug'
+						appId: '',
+						url: '',
+						scheme: ''
 					},
 					android: {
-						packageName: 'com.i2kai.wifidebug',
-						url: 'https://play.google.com/store/apps/details?id=com.i2kai.wifidebug'
+						packageName: '',
+						url: ''
 					},
 					miniProgram: {
-						appId: 'wx1234567891',
+						appId: 'wx1bb2d5c6821a7883',
 						path: 'pages/index/index',
 						envVersion: 'release'
-					}
-				}, {
-					name: '串口调试助手',
-					description: '串口通信调试工具，支持多协议',
-					icon: 'https://picsum.photos/96?random=3',
-					ios: {
-						appId: 'id1234567892',
-						url: 'https://apps.apple.com/cn/app/id1234567892',
-						scheme: 'serialdebug'
-					},
-					android: {
-						packageName: 'com.i2kai.serialdebug',
-						url: 'https://play.google.com/store/apps/details?id=com.i2kai.serialdebug'
 					}
 				}]
 			}
@@ -161,7 +149,8 @@
 				try {
 					const info = uni.getSystemInfoSync();
 					this.systemInfo = {
-						platform: info.platform === 'android' ? 'Android' : info.platform === 'ios' ? 'iOS' : info.platform,
+						platform: info.platform === 'android' ? 'Android' : info.platform === 'ios' ? 'iOS' : info
+							.platform,
 						system: info.system,
 						model: info.model
 					};
@@ -175,7 +164,7 @@
 					this.appVersion = widgetInfo.version;
 				});
 				// #endif
-				
+
 				// #ifdef MP-WEIXIN
 				const accountInfo = uni.getAccountInfoSync();
 				this.appVersion = accountInfo.miniProgram.version || '1.0.0';
@@ -195,12 +184,14 @@
 										shareServices.push(services[i]);
 									}
 								}
-								
+
 								if (shareServices.length > 0) {
 									plus.nativeUI.actionSheet({
 										title: '分享到',
 										cancel: '取消',
-										buttons: shareServices.map(s => ({ title: s.description })),
+										buttons: shareServices.map(s => ({
+											title: s.description
+										})),
 									}, (e) => {
 										if (e.index > 0) {
 											let service = shareServices[e.index - 1];
@@ -243,7 +234,7 @@
 					}
 				});
 				// #endif
-				
+
 				// #ifdef MP-WEIXIN
 				uni.showShareMenu({
 					withShareTicket: true,
@@ -256,7 +247,7 @@
 					}
 				});
 				// #endif
-				
+
 				// #ifdef H5
 				if (navigator.share) {
 					navigator.share({
@@ -271,7 +262,7 @@
 				}
 				// #endif
 			},
-			
+
 			systemShare() {
 				uni.share({
 					provider: "system",
@@ -295,7 +286,7 @@
 					}
 				});
 			},
-			
+
 			copyShareInfo() {
 				const shareText = `${this.shareInfo.title}\n${this.shareInfo.summary}\n${this.shareInfo.href}`;
 				uni.setClipboardData({
@@ -308,18 +299,18 @@
 					}
 				});
 			},
-			
+
 			openWebsite() {
 				const url = 'https://lightble.i2kai.com/';
-				
+
 				// #ifdef APP-PLUS
 				plus.runtime.openURL(url);
 				// #endif
-				
+
 				// #ifdef H5
 				window.open(url, '_blank');
 				// #endif
-				
+
 				// #ifdef MP-WEIXIN
 				uni.setClipboardData({
 					data: url,
@@ -332,24 +323,24 @@
 				});
 				// #endif
 			},
-			
+
 			goVersion() {
 				uni.navigateTo({
 					url: '/pages/about/version'
 				});
 			},
-			
+
 			openFeedback() {
 				const url = 'https://gitee.com/luoyaosheng/smart-ble/issues';
-				
+
 				// #ifdef APP-PLUS
 				plus.runtime.openURL(url);
 				// #endif
-				
+
 				// #ifdef H5
 				window.open(url, '_blank');
 				// #endif
-				
+
 				// #ifdef MP-WEIXIN
 				uni.setClipboardData({
 					data: url,
@@ -362,7 +353,7 @@
 				});
 				// #endif
 			},
-			
+
 			openApp(app) {
 				// #ifdef APP-PLUS
 				const platform = uni.getSystemInfoSync().platform;
@@ -407,7 +398,7 @@
 					});
 				}
 				// #endif
-				
+
 				// #ifdef MP-WEIXIN
 				if (app.miniProgram && app.miniProgram.appId) {
 					uni.navigateToMiniProgram({
@@ -431,7 +422,7 @@
 					});
 				}
 				// #endif
-				
+
 				// #ifdef H5
 				window.open(app.url, '_blank');
 				// #endif
@@ -462,7 +453,7 @@
 		min-height: 100vh;
 		background-color: #f7f8fa;
 	}
-	
+
 	.header {
 		display: flex;
 		flex-direction: column;
@@ -471,45 +462,45 @@
 		background: linear-gradient(135deg, #007AFF 0%, #409EFF 100%);
 		border-radius: 20rpx;
 		margin-bottom: 30rpx;
-		box-shadow: 0 8rpx 24rpx rgba(0,122,255,0.15);
+		box-shadow: 0 8rpx 24rpx rgba(0, 122, 255, 0.15);
 	}
-	
+
 	.logo {
 		width: 120rpx;
 		height: 120rpx;
 		border-radius: 24rpx;
 		margin-bottom: 20rpx;
 		background-color: #fff;
-		box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.1);
+		box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
 	}
-	
+
 	.app-name {
 		font-size: 36rpx;
 		font-weight: 600;
 		color: #fff;
 		margin-bottom: 8rpx;
-		text-shadow: 0 2rpx 4rpx rgba(0,0,0,0.1);
+		text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
 	}
-	
+
 	.version {
 		font-size: 24rpx;
-		color: rgba(255,255,255,0.8);
+		color: rgba(255, 255, 255, 0.8);
 	}
-	
+
 	.section {
 		background-color: #fff;
 		border-radius: 20rpx;
 		padding: 30rpx;
 		margin-bottom: 30rpx;
-		box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.04);
+		box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
 	}
-	
+
 	.info-list {
 		display: flex;
 		flex-direction: column;
 		gap: 16rpx;
 	}
-	
+
 	.info-item {
 		display: flex;
 		justify-content: space-between;
@@ -517,35 +508,35 @@
 		padding: 16rpx 0;
 		border-bottom: 2rpx solid #f5f5f5;
 	}
-	
+
 	.info-item:last-child {
 		border-bottom: none;
 	}
-	
+
 	.info-label {
 		font-size: 28rpx;
 		color: #666;
 	}
-	
+
 	.info-value {
 		font-size: 28rpx;
 		color: #333;
 		font-weight: 500;
 	}
-	
+
 	.section-title {
 		font-size: 32rpx;
 		font-weight: 600;
 		color: #333;
 		margin-bottom: 24rpx;
 	}
-	
+
 	.menu-list {
 		display: flex;
 		flex-direction: column;
 		gap: 20rpx;
 	}
-	
+
 	.menu-item {
 		display: flex;
 		justify-content: space-between;
@@ -555,43 +546,43 @@
 		border-radius: 16rpx;
 		transition: all 0.3s;
 	}
-	
+
 	.menu-item-hover {
 		transform: translateY(2rpx);
 		opacity: 0.9;
 		background-color: #f5f5f5;
 	}
-	
+
 	.menu-left {
 		display: flex;
 		align-items: center;
 		gap: 16rpx;
 	}
-	
+
 	.menu-icon {
 		font-size: 36rpx;
 	}
-	
+
 	.menu-text {
 		font-size: 28rpx;
 		color: #333;
 	}
-	
+
 	.menu-arrow {
 		font-size: 24rpx;
 		color: #999;
 	}
-	
+
 	.apps-scroll {
 		width: 100%;
 	}
-	
+
 	.apps-list {
 		display: flex;
 		padding: 20rpx 0;
 		gap: 24rpx;
 	}
-	
+
 	.app-item {
 		position: relative;
 		width: 400rpx;
@@ -604,33 +595,33 @@
 		flex-shrink: 0;
 		transition: all 0.3s;
 	}
-	
+
 	.app-item-hover {
 		transform: translateY(2rpx);
 		opacity: 0.9;
 		background-color: #f5f5f5;
 	}
-	
+
 	.app-icon {
 		width: 96rpx;
 		height: 96rpx;
 		border-radius: 20rpx;
 		background-color: #fff;
-		box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.08);
+		box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
 	}
-	
+
 	.app-info {
 		flex: 1;
 		min-width: 0;
 	}
-	
+
 	.app-info .app-name {
 		font-size: 28rpx;
 		font-weight: 600;
 		color: #333;
 		margin-bottom: 8rpx;
 	}
-	
+
 	.app-desc {
 		font-size: 24rpx;
 		color: #666;
@@ -639,7 +630,7 @@
 		-webkit-box-orient: vertical;
 		overflow: hidden;
 	}
-	
+
 	.app-tag {
 		position: absolute;
 		top: 24rpx;
@@ -651,14 +642,14 @@
 		border-radius: 100rpx;
 		font-weight: 500;
 	}
-	
+
 	.footer {
 		text-align: center;
 		padding: 30rpx 0;
 	}
-	
+
 	.copyright {
 		font-size: 24rpx;
 		color: #999;
 	}
-</style> 
+</style>
