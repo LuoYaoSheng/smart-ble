@@ -12,18 +12,26 @@
 				<!-- #endif -->
 			</view>
 			
-			<view class="filter-item">
-				<text>信号强度过滤</text>
-				<slider :value="filterRSSI" :min="-100" :max="0" :step="1" show-value @change="onRSSIChange" />
-			</view>
 			<view class="filter-options">
-				<view class="filter-option">
-					<text>名称前缀过滤</text>
-					<input type="text" v-model="filterPrefix" placeholder="输入设备名称前缀" class="prefix-input" />
+				<view class="filter-row">
+					<view class="filter-option large">
+						<text>信号强度过滤</text>
+						<slider :value="filterRSSI" :min="-100" :max="0" :step="1" show-value @change="onRSSIChange" />
+					</view>
+					<view class="filter-option small">
+						<text>搜索超时</text>
+						<switch :checked="enableScanTimeout" @change="onScanTimeoutChange" color="#007AFF" style="transform: scale(0.7);" />
+					</view>
 				</view>
-				<view class="filter-option">
-					<text>隐藏无名称设备</text>
-					<switch :checked="hideNoName" @change="onHideNoNameChange" color="#007AFF" style="transform: scale(0.7);" />
+				<view class="filter-row">
+					<view class="filter-option large">
+						<text>名称前缀</text>
+						<input type="text" v-model="filterPrefix" placeholder="输入前缀" class="prefix-input" />
+					</view>
+					<view class="filter-option small">
+						<text>设备名称</text>
+						<switch :checked="hideNoName" @change="onHideNoNameChange" color="#007AFF" style="transform: scale(0.7);" />
+					</view>
 				</view>
 			</view>
 		</view>
@@ -47,7 +55,7 @@
 				<text class="scan-status" :class="{'active': isScanning}">{{isScanning ? '扫描中' : '未扫描'}}</text>
 			</view>
 			<scroll-view scroll-y class="device-scroll">
-				<view class="device-item" v-for="(device, index) in filteredDevices" :key="index" @click="connectDevice(device)">
+				<view class="device-item" v-for="(device, index) in filteredDevices" :key="index" @click="goToDetail(device)">
 					<view class="device-main">
 						<view class="device-info">
 							<view class="name-container">
@@ -144,7 +152,14 @@
 				currentCharacteristic: '',
 				filterRSSI: -100,
 				filterPrefix: '',
-				hideNoName: false
+				hideNoName: false,
+				scanTimer: null,
+				scanTimeout: null,
+				scanRetryCount: 0,
+				maxRetryCount: 3,
+				scanInterval: 10000, // 搜索超时时间，10秒
+				connectedDevices: new Set(),
+				enableScanTimeout: false // 添加搜索超时开关
 			}
 		},
 		computed: {
@@ -188,6 +203,18 @@
 					.join('');
 				this.addLog('接收', `收到数据：${value}`);
 			});
+			
+			// 初始化蓝牙适配器
+			uni.openBluetoothAdapter({
+				success: () => {
+					this.addLog('系统', '蓝牙适配器初始化成功')
+					// 断开所有已连接的设备
+					this.disconnectAllDevices()
+				},
+				fail: (error) => {
+					this.addLog('错误', '蓝牙适配器初始化失败：' + error.errMsg)
+				}
+			})
 		},
 		// 导航栏按钮点击事件处理
 		onNavigationBarButtonTap(e) {
@@ -275,58 +302,139 @@
 				this.hideNoName = e.detail.value;
 			},
 
-			// 开始扫描
-			startScan() {
-				this.isScanning = true;
-				this.devices = [];
-				
-				uni.openBluetoothAdapter({
-					success: () => {
-						this.addLog('系统', '初始化蓝牙适配器成功');
-						uni.startBluetoothDevicesDiscovery({
-							success: () => {
-								this.addLog('系统', '开始搜索设备');
-								uni.onBluetoothDeviceFound(res => {
-									const devices = res.devices;
-									devices.forEach(device => {
-										if (!this.devices.find(d => d.deviceId === device.deviceId)) {
-											this.devices.push(device);
-										}
-									});
-								});
-							},
-							fail: err => {
-								this.addLog('错误', '搜索设备失败：' + JSON.stringify(err));
-							}
-						});
-					},
-					fail: err => {
-						this.addLog('错误', '初始化蓝牙适配器失败：' + JSON.stringify(err));
-						this.isScanning = false;
-					}
-				});
+			// 处理搜索超时开关变化
+			onScanTimeoutChange(e) {
+				this.enableScanTimeout = e.detail.value;
 			},
 
+			// 开始扫描
+			startScan() {
+				if (this.isScanning) return
+				
+				this.isScanning = true
+				this.devices = []
+				this.scanRetryCount = 0
+				
+				// 初始化蓝牙适配器
+				uni.openBluetoothAdapter({
+					success: () => {
+						this.addLog('系统', '初始化蓝牙适配器成功')
+						
+						// 先断开所有已连接的设备
+						this.disconnectAllDevices().then(() => {
+							// 设置搜索参数
+							uni.startBluetoothDevicesDiscovery({
+								allowDuplicatesKey: true, // 允许重复上报设备
+								services: [], // 搜索所有服务
+								success: () => {
+									this.addLog('系统', '开始搜索设备')
+									
+									// 监听发现新设备
+									uni.onBluetoothDeviceFound(res => {
+										const devices = res.devices
+										devices.forEach(device => {
+											// 检查设备是否已存在
+											const existingDevice = this.devices.find(d => d.deviceId === device.deviceId)
+											if (!existingDevice) {
+												// 新设备，添加到列表
+												this.devices.push(device)
+												this.addLog('系统', `发现新设备：${device.name || device.deviceId}`)
+											} else {
+												// 更新已存在设备的RSSI
+												existingDevice.RSSI = device.RSSI
+											}
+										})
+									})
+									
+									// 如果启用了搜索超时，则设置超时
+									if (this.enableScanTimeout) {
+										this.scanTimeout = setTimeout(() => {
+											this.handleScanTimeout()
+										}, this.scanInterval)
+									}
+								},
+								fail: err => {
+									this.addLog('错误', '搜索设备失败：' + JSON.stringify(err))
+									this.handleScanError()
+								}
+							})
+						}).catch(error => {
+							this.addLog('错误', '断开设备失败：' + error.errMsg)
+							this.handleScanError()
+						})
+					},
+					fail: err => {
+						this.addLog('错误', '初始化蓝牙适配器失败：' + JSON.stringify(err))
+						this.handleScanError()
+					}
+				})
+			},
+			
+			// 处理搜索超时
+			handleScanTimeout() {
+				this.addLog('系统', '搜索超时，准备重试...')
+				this.stopScan()
+				
+				if (this.scanRetryCount < this.maxRetryCount) {
+					this.scanRetryCount++
+					this.addLog('系统', `第 ${this.scanRetryCount} 次重试搜索...`)
+					
+					// 延迟1秒后重试
+					setTimeout(() => {
+						this.startScan()
+					}, 1000)
+				} else {
+					this.addLog('错误', '搜索重试次数已达上限')
+					this.isScanning = false
+					uni.showToast({
+						title: '搜索失败，请重试',
+						icon: 'none'
+					})
+				}
+			},
+			
+			// 处理搜索错误
+			handleScanError() {
+				this.stopScan()
+				
+				if (this.scanRetryCount < this.maxRetryCount) {
+					this.scanRetryCount++
+					this.addLog('系统', `第 ${this.scanRetryCount} 次重试搜索...`)
+					
+					// 延迟1秒后重试
+					setTimeout(() => {
+						this.startScan()
+					}, 1000)
+				} else {
+					this.addLog('错误', '搜索重试次数已达上限')
+					this.isScanning = false
+					uni.showToast({
+						title: '搜索失败，请重试',
+						icon: 'none'
+					})
+				}
+			},
+			
 			// 停止扫描
 			stopScan() {
+				if (this.scanTimeout) {
+					clearTimeout(this.scanTimeout)
+					this.scanTimeout = null
+				}
+				
 				uni.stopBluetoothDevicesDiscovery({
 					success: () => {
-						this.isScanning = false;
-						this.addLog('系统', '停止搜索设备');
+						this.isScanning = false
+						this.addLog('系统', '停止搜索设备')
 						// #ifdef MP-WEIXIN
-						wx.offBluetoothDeviceFound();
+						wx.offBluetoothDeviceFound()
 						// #endif
 					},
 					fail: err => {
-						this.addLog('错误', '停止搜索失败：' + JSON.stringify(err));
-						// 即使失败也要更新状态
-						this.isScanning = false;
-					},
-					complete: () => {
-						// 确保状态被重置
-						this.isScanning = false;
+						this.addLog('错误', '停止搜索失败：' + JSON.stringify(err))
+						this.isScanning = false
 					}
-				});
+				})
 			},
 
 			// 连接设备
@@ -511,13 +619,66 @@
 					url: '/pages/about/index'
 				});
 			},
+
+			// 跳转到详情页
+			goToDetail(device) {
+				// 将设备信息编码后传递
+				const deviceInfo = encodeURIComponent(JSON.stringify(device))
+				uni.navigateTo({
+					url: `/pages/device/detail?deviceInfo=${deviceInfo}`
+				})
+			},
+
+			// 断开所有已连接的设备
+			async disconnectAllDevices() {
+				try {
+					// 获取所有已连接的设备
+					const connectedDevices = await uni.getConnectedBluetoothDevices()
+					
+					if (connectedDevices.devices && connectedDevices.devices.length > 0) {
+						this.addLog('系统', `发现 ${connectedDevices.devices.length} 个已连接的设备，正在断开...`)
+						
+						// 断开每个设备
+						for (const device of connectedDevices.devices) {
+							try {
+								await uni.closeBLEConnection({
+									deviceId: device.deviceId
+								})
+								this.addLog('系统', `已断开设备：${device.name || device.deviceId}`)
+							} catch (error) {
+								this.addLog('错误', `断开设备 ${device.name || device.deviceId} 失败：${error.errMsg}`)
+							}
+						}
+						
+						this.addLog('系统', '所有设备已断开连接')
+					} else {
+						this.addLog('系统', '没有已连接的设备')
+					}
+					
+					// 等待一段时间确保设备状态更新
+					await new Promise(resolve => setTimeout(resolve, 1000))
+				} catch (error) {
+					this.addLog('错误', '获取已连接设备失败：' + error.errMsg)
+					throw error
+				}
+			},
 		},
 		onUnload() {
-			// 页面卸载时断开连接
-			if (this.currentDevice) {
-				this.disconnectDevice();
+			// 停止扫描
+			if (this.isScanning) {
+				this.stopScan()
 			}
-			uni.closeBluetoothAdapter();
+			
+			// 清除定时器
+			if (this.scanTimeout) {
+				clearTimeout(this.scanTimeout)
+			}
+			
+			// 断开所有连接的设备
+			this.disconnectAllDevices()
+			
+			// 关闭蓝牙适配器
+			uni.closeBluetoothAdapter()
 		},
 		// #ifdef MP-WEIXIN
 		onShareAppMessage() {
@@ -597,37 +758,46 @@
 		border: none;
 	}
 
-	.filter-item {
-		margin-bottom: 30rpx;
-	}
-
 	.filter-options {
 		display: flex;
-		gap: 30rpx;
+		flex-direction: column;
+		gap: 16rpx;
+	}
+
+	.filter-row {
+		display: flex;
+		gap: 20rpx;
 	}
 
 	.filter-option {
-		flex: 1;
 		display: flex;
 		flex-direction: column;
-		gap: 12rpx;
+		gap: 8rpx;
+	}
+
+	.filter-option.large {
+		flex: 2;
+	}
+
+	.filter-option.small {
+		flex: 1;
 	}
 
 	.filter-item text,
 	.filter-option text {
-		font-size: 28rpx;
+		font-size: 26rpx;
 		color: #333;
 		font-weight: 500;
-		margin-bottom: 12rpx;
+		margin-bottom: 8rpx;
 		display: block;
 	}
 
 	.prefix-input {
-		height: 76rpx;
+		height: 64rpx;
 		border: 2rpx solid #eee;
 		border-radius: 12rpx;
-		padding: 0 24rpx;
-		font-size: 28rpx;
+		padding: 0 20rpx;
+		font-size: 26rpx;
 		background-color: #f9f9f9;
 		transition: all 0.3s;
 	}

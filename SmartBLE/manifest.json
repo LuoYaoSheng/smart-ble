@@ -90,22 +90,7 @@
                 }
             }
         },
-        "nativePlugins" : {
-            "BLE-Module" : {
-                "__plugin_info__" : {
-                    "name" : "BLE-Module",
-                    "description" : "BLE广播插件，支持自定义广播数据、扫描响应等功能",
-                    "platforms" : "Android,iOS",
-                    "url" : "",
-                    "android_package_name" : "",
-                    "ios_bundle_id" : "",
-                    "isCloud" : false,
-                    "bought" : -1,
-                    "pid" : "",
-                    "parameters" : {}
-                }
-            }
-        }
+        "nativePlugins" : {}
     },
     "quickapp" : {},
     "mp-weixin" : {
