@@ -105,14 +105,18 @@ class WriteCharacteristicCallbacks: public NimBLECharacteristicCallbacks {
     void onWrite(NimBLECharacteristic* pCharacteristic) {
         std::string value = pCharacteristic->getValue();
         if (value.length() > 0) {
-            // 检查是否为HEX格式
-            if (value.length() == 4 && value[0] == 'F' && value[1] == 'F') {
-                if (value == "FF01") {
-                    blinkPattern = 1;  // 常亮
-                    digitalWrite(LED_PIN, HIGH);
-                } else if (value == "FF00") {
-                    blinkPattern = 0;  // 关闭
-                    digitalWrite(LED_PIN, LOW);
+            // 检查是否为HEX格式（2字节）
+            if (value.length() == 2) {
+                uint8_t cmd = value[0];
+                uint8_t param = value[1];
+                if (cmd == 0xFF) {
+                    if (param == 0x01) {
+                        blinkPattern = 1;  // 常亮
+                        digitalWrite(LED_PIN, HIGH);
+                    } else if (param == 0x00) {
+                        blinkPattern = 0;  // 关闭
+                        digitalWrite(LED_PIN, LOW);
+                    }
                 }
             } else {
                 // 文本命令
@@ -128,7 +132,13 @@ class WriteCharacteristicCallbacks: public NimBLECharacteristicCallbacks {
             // 发送响应
             StaticJsonDocument<200> doc;
             doc["type"] = "write_response";
-            doc["command"] = value.c_str();
+            if (value.length() == 2) {
+                char hexStr[8];
+                snprintf(hexStr, sizeof(hexStr), "FF%02X", value[1]);
+                doc["command"] = hexStr;
+            } else {
+                doc["command"] = value.c_str();
+            }
             doc["led_state"] = digitalRead(LED_PIN) ? "on" : "off";
             doc["blink_pattern"] = blinkPattern;
             doc["mode"] = "常亮";
@@ -160,13 +170,17 @@ class NotifyCharacteristicCallbacks: public NimBLECharacteristicCallbacks {
     void onWrite(NimBLECharacteristic* pCharacteristic) {
         std::string value = pCharacteristic->getValue();
         if (value.length() > 0) {
-            // 检查是否为HEX格式
-            if (value.length() == 4 && value[0] == 'F' && value[1] == 'F') {
-                if (value == "FF01") {
-                    blinkPattern = 3;  // 慢闪
-                } else if (value == "FF00") {
-                    blinkPattern = 0;  // 关闭
-                    digitalWrite(LED_PIN, LOW);
+            // 检查是否为HEX格式（2字节）
+            if (value.length() == 2) {
+                uint8_t cmd = value[0];
+                uint8_t param = value[1];
+                if (cmd == 0xFF) {
+                    if (param == 0x01) {
+                        blinkPattern = 3;  // 慢闪
+                    } else if (param == 0x00) {
+                        blinkPattern = 0;  // 关闭
+                        digitalWrite(LED_PIN, LOW);
+                    }
                 }
             } else {
                 // 文本命令
@@ -181,7 +195,13 @@ class NotifyCharacteristicCallbacks: public NimBLECharacteristicCallbacks {
             // 发送响应
             StaticJsonDocument<200> doc;
             doc["type"] = "write_response";
-            doc["command"] = value.c_str();
+            if (value.length() == 2) {
+                char hexStr[8];
+                snprintf(hexStr, sizeof(hexStr), "FF%02X", value[1]);
+                doc["command"] = hexStr;
+            } else {
+                doc["command"] = value.c_str();
+            }
             doc["led_state"] = digitalRead(LED_PIN) ? "on" : "off";
             doc["blink_pattern"] = blinkPattern;
             doc["mode"] = "慢闪";
