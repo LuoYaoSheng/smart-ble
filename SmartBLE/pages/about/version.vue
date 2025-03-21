@@ -22,6 +22,25 @@
 		data() {
 			return {
 				versionHistory: [{
+					version: 'v1.0.1',
+					date: '2024-03-21',
+					updates: [{
+						type: '新增',
+						content: '支持 UTF-8 编码的文本数据写入'
+					}, {
+						type: '新增',
+						content: '支持 HEX 格式数据写入'
+					}, {
+						type: '优化',
+						content: '优化写入数据模态框位置'
+					}, {
+						type: '优化',
+						content: '优化日志显示区域高度'
+					}, {
+						type: '优化',
+						content: '改进数据格式切换体验'
+					}]
+				}, {
 					version: 'v1.0.0',
 					date: '2024-03-14',
 					updates: [{

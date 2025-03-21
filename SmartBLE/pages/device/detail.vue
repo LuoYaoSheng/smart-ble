@@ -255,7 +255,7 @@
 				this.addLog('系统', `第 ${this.connectionRetryCount} 次重试连接...`)
 				
 				// 延迟2秒后重试
-				setTimeout(() => {
+							setTimeout(() => {
 					this.connectDevice()
 				}, 2000)
 			},
@@ -280,7 +280,7 @@
 				try {
 					await uni.readBLECharacteristicValue({
 						deviceId: this.deviceInfo.deviceId,
-						serviceId,
+					serviceId,
 						characteristicId
 					})
 					this.addLog('读取', `开始读取特征值：${characteristicId}`)
@@ -295,7 +295,7 @@
 					this.addLog('系统', `准备写入数据到特征值: ${characteristicId}`);
 					
 					// 根据发送类型处理数据
-					let buffer;
+				let buffer;
 					if (this.sendType === 'hex') {
 						// 处理HEX格式
 						const hexString = data.replace(/\s/g, '').toUpperCase();
@@ -303,11 +303,11 @@
 							throw new Error('无效的HEX格式');
 						}
 						buffer = new ArrayBuffer(hexString.length / 2);
-						const dataView = new DataView(buffer);
+					const dataView = new DataView(buffer);
 						for (let i = 0; i < hexString.length; i += 2) {
 							dataView.setUint8(i / 2, parseInt(hexString.substr(i, 2), 16));
 						}
-					} else {
+				} else {
 						// 处理文本格式，使用 UTF-8 编码
 						// 将字符串转换为 UTF-8 编码的字节数组
 						const bytes = [];
@@ -334,7 +334,7 @@
 							}
 						}
 						buffer = new ArrayBuffer(bytes.length);
-						const dataView = new DataView(buffer);
+					const dataView = new DataView(buffer);
 						for (let i = 0; i < bytes.length; i++) {
 							dataView.setUint8(i, bytes[i]);
 						}
@@ -347,7 +347,7 @@
 						deviceId: this.deviceInfo.deviceId,
 						serviceId: serviceId,
 						characteristicId: characteristicId,
-						value: buffer,
+					value: buffer,
 						writeType: 'write'  // 使用有应答写入
 					});
 					
@@ -573,15 +573,15 @@
 						})
 						this.isConnected = false
 						this.addLog('系统', '设备已断开连接')
-						uni.showToast({
+								uni.showToast({
 							title: '设备已断开',
-							icon: 'success'
+									icon: 'success'
 						})
 					} catch (error) {
 						this.addLog('错误', '断开连接失败：' + error.errMsg)
-						uni.showToast({
+								uni.showToast({
 							title: '断开连接失败',
-							icon: 'error'
+									icon: 'error'
 						})
 					}
 				} else {
@@ -600,7 +600,7 @@
 			// 分享日志
 			shareLogs() {
 				if (this.logs.length === 0) {
-					uni.showToast({
+				uni.showToast({
 						title: '暂无日志可分享',
 						icon: 'none'
 					})
