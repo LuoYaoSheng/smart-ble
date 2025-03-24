@@ -1,0 +1,6 @@
+framework module LysBlePeripheral {
+  umbrella header "LysBlePeripheral-umbrella.h"
+
+  export *
+  module * { export * }
+}

@@ -10,8 +10,8 @@
 #endif
 #endif
 
-#import "LuoUniBleCommonObject.h"
+#import "LysBlePeripheralModule.h"
 
-FOUNDATION_EXPORT double BLE_ModuleVersionNumber;
-FOUNDATION_EXPORT const unsigned char BLE_ModuleVersionString[];
+FOUNDATION_EXPORT double LysBlePeripheralVersionNumber;
+FOUNDATION_EXPORT const unsigned char LysBlePeripheralVersionString[];
 

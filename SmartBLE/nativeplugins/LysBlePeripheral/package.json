@@ -1,0 +1,33 @@
+{
+    "name": "LysBlePeripheral",
+    "id": "LysBlePeripheral",
+    "version": "1.0.0",
+    "description": "BLE广播插件，支持自定义广播数据、扫描响应等功能",
+    "_dp_type": "nativeplugin",
+    "_dp_nativeplugin": {
+        "ios": {
+            "plugins": [
+                {
+                    "type": "module",
+                    "name": "LysBlePeripheral",
+                    "class": "LysBlePeripheralModule"
+                }
+            ],
+            "integrateType": "framework",
+            "frameworks": [
+                "CoreBluetooth.framework"
+            ],
+            "capabilities": {
+                "plists": {
+                    "NSBluetoothAlwaysUsageDescription": "此应用需要使用蓝牙进行BLE广播",
+                    "NSBluetoothPeripheralUsageDescription": "此应用需要使用蓝牙进行BLE广播"
+                }
+            },
+            "deploymentTarget": "10.0",
+            "validArchitectures": [
+                "arm64",
+                "arm64e"
+            ]
+        }
+    }
+} 

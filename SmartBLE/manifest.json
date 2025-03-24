@@ -52,7 +52,13 @@
                         "description" : "用于搜索和连接蓝牙设备"
                     }
                 },
-                "dSYMs" : false
+                "dSYMs" : false,
+                "privacyDescription" : {
+                    "NSBluetoothPeripheralUsageDescription" : "蓝牙兰阿姨",
+                    "NSBluetoothAlwaysUsageDescription" : "蓝牙兰阿姨2",
+                    "NSLocationAlwaysAndWhenInUseUsageDescription" : "位置2",
+                    "NSLocationWhenInUseUsageDescription" : "位置"
+                }
             },
             "sdkConfigs" : {
                 "ad" : {}
@@ -90,7 +96,22 @@
                 }
             }
         },
-        "nativePlugins" : {}
+        "nativePlugins" : {
+            "LysBlePeripheral" : {
+                "__plugin_info__" : {
+                    "name" : "LysBlePeripheral",
+                    "description" : "BLE广播插件，支持自定义广播数据、扫描响应等功能",
+                    "platforms" : "iOS",
+                    "url" : "",
+                    "android_package_name" : "",
+                    "ios_bundle_id" : "",
+                    "isCloud" : false,
+                    "bought" : -1,
+                    "pid" : "",
+                    "parameters" : {}
+                }
+            }
+        }
     },
     "quickapp" : {},
     "mp-weixin" : {

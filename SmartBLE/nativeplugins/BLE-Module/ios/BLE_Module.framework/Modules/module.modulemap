@@ -1,6 +1,0 @@
-framework module BLE_Module {
-  umbrella header "BLE-Module-umbrella.h"
-
-  export *
-  module * { export * }
-}
