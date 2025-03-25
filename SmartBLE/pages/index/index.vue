@@ -5,33 +5,30 @@
 			<view class="filter-header">
 				<text class="filter-title">过滤设置</text>
 				<!-- #ifdef MP-WEIXIN -->
-				<view class="mp-buttons">
-					<button class="mp-btn mp-btn-broadcast" @click="goBroadcast">广播</button>
-					<button class="mp-btn mp-btn-about" @click="goAbout">关于</button>
-				</view>
+				<button class="broadcast-nav-btn" @click="goBroadcast">
+					<text class="button-icon">📡</text>
+					<text>广播</text>
+				</button>
+				<button class="broadcast-nav-btn" @click="goAbout">
+					<text class="button-icon">📡</text>
+					<text>关于</text>
+				</button>
 				<!-- #endif -->
 			</view>
-			
+
+			<view class="filter-item">
+				<text>信号强度过滤</text>
+				<slider :value="filterRSSI" :min="-100" :max="0" :step="1" show-value @change="onRSSIChange" />
+			</view>
 			<view class="filter-options">
-				<view class="filter-row">
-					<view class="filter-option large">
-						<text>信号强度过滤</text>
-						<slider :value="filterRSSI" :min="-100" :max="0" :step="1" show-value @change="onRSSIChange" />
-					</view>
-					<view class="filter-option small">
-						<text>搜索超时</text>
-						<switch :checked="enableScanTimeout" @change="onScanTimeoutChange" color="#007AFF" style="transform: scale(0.7);" />
-					</view>
+				<view class="filter-option">
+					<text>名称前缀过滤</text>
+					<input type="text" v-model="filterPrefix" placeholder="输入设备名称前缀" class="prefix-input" />
 				</view>
-				<view class="filter-row">
-					<view class="filter-option large">
-						<text>名称前缀</text>
-						<input type="text" v-model="filterPrefix" placeholder="输入前缀" class="prefix-input" />
-					</view>
-					<view class="filter-option small">
-						<text>设备名称</text>
-						<switch :checked="hideNoName" @change="onHideNoNameChange" color="#007AFF" style="transform: scale(0.7);" />
-					</view>
+				<view class="filter-option">
+					<text>隐藏无名称设备</text>
+					<switch :checked="hideNoName" @change="onHideNoNameChange" color="#007AFF"
+						style="transform: scale(0.7);" />
 				</view>
 			</view>
 		</view>
@@ -55,7 +52,8 @@
 				<text class="scan-status" :class="{'active': isScanning}">{{isScanning ? '扫描中' : '未扫描'}}</text>
 			</view>
 			<scroll-view scroll-y class="device-scroll">
-				<view class="device-item" v-for="(device, index) in filteredDevices" :key="index" @click="goToDetail(device)">
+				<view class="device-item" v-for="(device, index) in filteredDevices" :key="index"
+					@click="connectDevice(device)">
 					<view class="device-main">
 						<view class="device-info">
 							<view class="name-container">
@@ -97,19 +95,15 @@
 						<text class="arrow">{{service.isOpen ? '▼' : '▶'}}</text>
 					</view>
 					<view v-if="service.isOpen" class="characteristics-list">
-						<view v-for="(characteristic, cIndex) in service.characteristics" 
-							:key="cIndex" 
+						<view v-for="(characteristic, cIndex) in service.characteristics" :key="cIndex"
 							class="characteristic-item">
 							<text>特征值: {{characteristic.uuid}}</text>
 							<view class="characteristic-props">
-								<button size="mini" 
-									v-if="characteristic.properties.read"
+								<button size="mini" v-if="characteristic.properties.read"
 									@click="readCharacteristic(service.uuid, characteristic.uuid)">读取</button>
-								<button size="mini" 
-									v-if="characteristic.properties.write"
+								<button size="mini" v-if="characteristic.properties.write"
 									@click="showWriteModal(service.uuid, characteristic.uuid)">写入</button>
-								<button size="mini" 
-									v-if="characteristic.properties.notify"
+								<button size="mini" v-if="characteristic.properties.notify"
 									@click="toggleNotify(service.uuid, characteristic.uuid)">
 									{{characteristic.notifying ? '停止监听' : '监听'}}
 								</button>
@@ -152,14 +146,7 @@
 				currentCharacteristic: '',
 				filterRSSI: -100,
 				filterPrefix: '',
-				hideNoName: false,
-				scanTimer: null,
-				scanTimeout: null,
-				scanRetryCount: 0,
-				maxRetryCount: 3,
-				scanInterval: 10000, // 搜索超时时间，10秒
-				connectedDevices: new Set(),
-				enableScanTimeout: false // 添加搜索超时开关
+				hideNoName: false
 			}
 		},
 		computed: {
@@ -170,17 +157,17 @@
 					if (device.RSSI < this.filterRSSI) {
 						return false;
 					}
-					
+
 					// 过滤无名称设备
 					if (this.hideNoName && !device.name) {
 						return false;
 					}
-					
+
 					// 名称前缀过滤
 					if (this.filterPrefix && device.name) {
 						return device.name.toLowerCase().startsWith(this.filterPrefix.toLowerCase());
 					}
-					
+
 					return true;
 				});
 			}
@@ -190,12 +177,12 @@
 			uni.setNavigationBarTitle({
 				title: 'BLE调试工具'
 			});
-			
+
 			// #ifdef MP-WEIXIN
 			// 请求蓝牙和定位权限
 			this.requestWxPermissions();
 			// #endif
-			
+
 			// 监听特征值变化
 			uni.onBLECharacteristicValueChange(res => {
 				const value = Array.from(new Uint8Array(res.value))
@@ -203,25 +190,13 @@
 					.join('');
 				this.addLog('接收', `收到数据：${value}`);
 			});
-			
-			// 初始化蓝牙适配器
-			uni.openBluetoothAdapter({
-				success: () => {
-					this.addLog('系统', '蓝牙适配器初始化成功')
-					// 断开所有已连接的设备
-					this.disconnectAllDevices()
-				},
-				fail: (error) => {
-					this.addLog('错误', '蓝牙适配器初始化失败：' + error.errMsg)
-				}
-			})
 		},
 		// 导航栏按钮点击事件处理
 		onNavigationBarButtonTap(e) {
-			if (e.text === '广播') {
+			if (e.index === 0) {
 				this.goBroadcast();
-			} else if (e.text === '关于') {
-				this.goAbout();
+			}else{
+				this.goAbout()
 			}
 		},
 		methods: {
@@ -255,7 +230,7 @@
 								}
 							});
 						}
-						
+
 						// 请求蓝牙权限
 						if (!res.authSetting['scope.bluetooth']) {
 							wx.authorize({
@@ -285,13 +260,21 @@
 				});
 			},
 			// #endif
-			
+
 			// 跳转到广播页面
 			goBroadcast() {
 				uni.navigateTo({
 					url: '/pages/broadcast/index'
 				});
 			},
+			
+			// 跳转到关于页面
+			goAbout(){
+				uni.navigateTo({
+					url: '/pages/about/index'
+				});
+			},
+			
 			// 信号强度滑块变化处理
 			onRSSIChange(e) {
 				this.filterRSSI = e.detail.value;
@@ -302,139 +285,59 @@
 				this.hideNoName = e.detail.value;
 			},
 
-			// 处理搜索超时开关变化
-			onScanTimeoutChange(e) {
-				this.enableScanTimeout = e.detail.value;
-			},
-
 			// 开始扫描
 			startScan() {
-				if (this.isScanning) return
-				
-				this.isScanning = true
-				this.devices = []
-				this.scanRetryCount = 0
-				
-				// 初始化蓝牙适配器
+				this.isScanning = true;
+				this.devices = [];
+
 				uni.openBluetoothAdapter({
 					success: () => {
-						this.addLog('系统', '初始化蓝牙适配器成功')
-						
-						// 先断开所有已连接的设备
-						this.disconnectAllDevices().then(() => {
-							// 设置搜索参数
-							uni.startBluetoothDevicesDiscovery({
-								allowDuplicatesKey: true, // 允许重复上报设备
-								services: [], // 搜索所有服务
-								success: () => {
-									this.addLog('系统', '开始搜索设备')
-									
-									// 监听发现新设备
-									uni.onBluetoothDeviceFound(res => {
-										const devices = res.devices
-										devices.forEach(device => {
-											// 检查设备是否已存在
-											const existingDevice = this.devices.find(d => d.deviceId === device.deviceId)
-											if (!existingDevice) {
-												// 新设备，添加到列表
-												this.devices.push(device)
-												this.addLog('系统', `发现新设备：${device.name || device.deviceId}`)
-											} else {
-												// 更新已存在设备的RSSI
-												existingDevice.RSSI = device.RSSI
-											}
-										})
-									})
-									
-									// 如果启用了搜索超时，则设置超时
-									if (this.enableScanTimeout) {
-										this.scanTimeout = setTimeout(() => {
-											this.handleScanTimeout()
-										}, this.scanInterval)
-									}
-								},
-								fail: err => {
-									this.addLog('错误', '搜索设备失败：' + JSON.stringify(err))
-									this.handleScanError()
-								}
-							})
-						}).catch(error => {
-							this.addLog('错误', '断开设备失败：' + error.errMsg)
-							this.handleScanError()
-						})
+						this.addLog('系统', '初始化蓝牙适配器成功');
+						uni.startBluetoothDevicesDiscovery({
+							success: () => {
+								this.addLog('系统', '开始搜索设备');
+								uni.onBluetoothDeviceFound(res => {
+									const devices = res.devices;
+									devices.forEach(device => {
+										if (!this.devices.find(d => d.deviceId ===
+												device.deviceId)) {
+											this.devices.push(device);
+										}
+									});
+								});
+							},
+							fail: err => {
+								this.addLog('错误', '搜索设备失败：' + JSON.stringify(err));
+							}
+						});
 					},
 					fail: err => {
-						this.addLog('错误', '初始化蓝牙适配器失败：' + JSON.stringify(err))
-						this.handleScanError()
+						this.addLog('错误', '初始化蓝牙适配器失败：' + JSON.stringify(err));
+						this.isScanning = false;
 					}
-				})
+				});
 			},
-			
-			// 处理搜索超时
-			handleScanTimeout() {
-				this.addLog('系统', '搜索超时，准备重试...')
-				this.stopScan()
-				
-				if (this.scanRetryCount < this.maxRetryCount) {
-					this.scanRetryCount++
-					this.addLog('系统', `第 ${this.scanRetryCount} 次重试搜索...`)
-					
-					// 延迟1秒后重试
-					setTimeout(() => {
-						this.startScan()
-					}, 1000)
-				} else {
-					this.addLog('错误', '搜索重试次数已达上限')
-					this.isScanning = false
-					uni.showToast({
-						title: '搜索失败，请重试',
-						icon: 'none'
-					})
-				}
-			},
-			
-			// 处理搜索错误
-			handleScanError() {
-				this.stopScan()
-				
-				if (this.scanRetryCount < this.maxRetryCount) {
-					this.scanRetryCount++
-					this.addLog('系统', `第 ${this.scanRetryCount} 次重试搜索...`)
-					
-					// 延迟1秒后重试
-					setTimeout(() => {
-						this.startScan()
-					}, 1000)
-				} else {
-					this.addLog('错误', '搜索重试次数已达上限')
-					this.isScanning = false
-					uni.showToast({
-						title: '搜索失败，请重试',
-						icon: 'none'
-					})
-				}
-			},
-			
+
 			// 停止扫描
 			stopScan() {
-				if (this.scanTimeout) {
-					clearTimeout(this.scanTimeout)
-					this.scanTimeout = null
-				}
-				
 				uni.stopBluetoothDevicesDiscovery({
 					success: () => {
-						this.isScanning = false
-						this.addLog('系统', '停止搜索设备')
+						this.isScanning = false;
+						this.addLog('系统', '停止搜索设备');
 						// #ifdef MP-WEIXIN
-						wx.offBluetoothDeviceFound()
+						wx.offBluetoothDeviceFound();
 						// #endif
 					},
 					fail: err => {
-						this.addLog('错误', '停止搜索失败：' + JSON.stringify(err))
-						this.isScanning = false
+						this.addLog('错误', '停止搜索失败：' + JSON.stringify(err));
+						// 即使失败也要更新状态
+						this.isScanning = false;
+					},
+					complete: () => {
+						// 确保状态被重置
+						this.isScanning = false;
 					}
-				})
+				});
 			},
 
 			// 连接设备
@@ -448,7 +351,7 @@
 			// 断开连接
 			disconnectDevice() {
 				if (!this.currentDevice) return;
-				
+
 				uni.closeBLEConnection({
 					deviceId: this.currentDevice.deviceId,
 					success: () => {
@@ -510,7 +413,7 @@
 				for (let i = 0; i < value.length; i++) {
 					dataView.setUint8(i, value.charCodeAt(i));
 				}
-				
+
 				uni.writeBLECharacteristicValue({
 					deviceId: this.currentDevice.deviceId,
 					serviceId,
@@ -530,7 +433,7 @@
 				const characteristic = this.services
 					.find(s => s.uuid === serviceId)
 					?.characteristics.find(c => c.uuid === characteristicId);
-				
+
 				if (!characteristic) return;
 
 				if (!characteristic.notifying) {
@@ -583,7 +486,11 @@
 			addLog(type, message) {
 				const now = new Date();
 				const time = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
-				this.logs.push({ time, type, message });
+				this.logs.push({
+					time,
+					type,
+					message
+				});
 			},
 
 			// 清除日志
@@ -605,97 +512,22 @@
 				if (name.toLowerCase().includes('bluetooth')) return 'BT';
 				return '';
 			},
-			
+
 			// 格式化设备ID显示
 			formatDeviceId(deviceId) {
 				if (!deviceId) return '';
 				return deviceId;
 				// 只显示设备ID的后12位，前面用...代替
 				return deviceId.length > 12 ? '...' + deviceId.slice(-12) : deviceId;
-			},
-
-			goAbout() {
-				uni.navigateTo({
-					url: '/pages/about/index'
-				});
-			},
-
-			// 跳转到详情页
-			goToDetail(device) {
-				// 将设备信息编码后传递
-				const deviceInfo = encodeURIComponent(JSON.stringify(device))
-				uni.navigateTo({
-					url: `/pages/device/detail?deviceInfo=${deviceInfo}`
-				})
-			},
-
-			// 断开所有已连接的设备
-			async disconnectAllDevices() {
-				try {
-					// 获取所有已连接的设备
-					const connectedDevices = await uni.getConnectedBluetoothDevices()
-					
-					if (connectedDevices.devices && connectedDevices.devices.length > 0) {
-						this.addLog('系统', `发现 ${connectedDevices.devices.length} 个已连接的设备，正在断开...`)
-						
-						// 断开每个设备
-						for (const device of connectedDevices.devices) {
-							try {
-								await uni.closeBLEConnection({
-									deviceId: device.deviceId
-								})
-								this.addLog('系统', `已断开设备：${device.name || device.deviceId}`)
-							} catch (error) {
-								this.addLog('错误', `断开设备 ${device.name || device.deviceId} 失败：${error.errMsg}`)
-							}
-						}
-						
-						this.addLog('系统', '所有设备已断开连接')
-					} else {
-						this.addLog('系统', '没有已连接的设备')
-					}
-					
-					// 等待一段时间确保设备状态更新
-					await new Promise(resolve => setTimeout(resolve, 1000))
-				} catch (error) {
-					this.addLog('错误', '获取已连接设备失败：' + error.errMsg)
-					throw error
-				}
-			},
+			}
 		},
 		onUnload() {
-			// 停止扫描
-			if (this.isScanning) {
-				this.stopScan()
+			// 页面卸载时断开连接
+			if (this.currentDevice) {
+				this.disconnectDevice();
 			}
-			
-			// 清除定时器
-			if (this.scanTimeout) {
-				clearTimeout(this.scanTimeout)
-			}
-			
-			// 断开所有连接的设备
-			this.disconnectAllDevices()
-			
-			// 关闭蓝牙适配器
-			uni.closeBluetoothAdapter()
-		},
-		// #ifdef MP-WEIXIN
-		onShareAppMessage() {
-			return {
-				title: '智能蓝牙助手',
-				path: '/pages/index/index',
-				imageUrl: '/static/logo.png'
-			}
-		},
-		onShareTimeline() {
-			return {
-				title: '智能蓝牙助手',
-				query: '',
-				imageUrl: '/static/logo.png'
-			}
+			uni.closeBluetoothAdapter();
 		}
-		// #endif
 	}
 </script>
 
@@ -714,90 +546,78 @@
 		background-color: #fff;
 		padding: 30rpx;
 		border-radius: 20rpx;
-		box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.04);
+		box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
 	}
 
 	.filter-header {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		margin-bottom: 20rpx;
+		margin-bottom: 24rpx;
 	}
-	
+
 	.filter-title {
 		font-size: 32rpx;
 		font-weight: 600;
 		color: #333;
 	}
-	
-	.mp-buttons {
+
+	.broadcast-nav-btn {
 		display: flex;
-		gap: 20rpx;
-	}
-
-	.mp-btn {
-		margin: 0;
-		padding: 0 24rpx;
-		height: 64rpx;
-		line-height: 64rpx;
-		font-size: 28rpx;
-		border-radius: 32rpx;
-		border: none;
+		align-items: center;
+		justify-content: center;
+		background: linear-gradient(135deg, #5856D6 0%, #5E5CE6 100%);
 		color: #fff;
+		font-size: 26rpx;
+		padding: 8rpx 20rpx;
+		border-radius: 100rpx;
+		margin: 0;
+		height: 60rpx;
+		line-height: 1;
+		box-shadow: 0 4rpx 12rpx rgba(88, 86, 214, 0.2);
 	}
 
-	.mp-btn-broadcast {
-		background: linear-gradient(135deg, #007AFF 0%, #409EFF 100%);
+	.broadcast-nav-btn .button-icon {
+		font-size: 28rpx;
+		margin-right: 6rpx;
 	}
 
-	.mp-btn-about {
-		background: linear-gradient(135deg, #FF9500 0%, #FF9F0A 100%);
+	.broadcast-nav-btn:active {
+		transform: translateY(2rpx);
+		opacity: 0.9;
 	}
 
-	.mp-btn::after {
-		border: none;
+	.filter-item {
+		margin-bottom: 30rpx;
 	}
 
 	.filter-options {
 		display: flex;
-		flex-direction: column;
-		gap: 16rpx;
-	}
-
-	.filter-row {
-		display: flex;
-		gap: 20rpx;
+		gap: 30rpx;
 	}
 
 	.filter-option {
+		flex: 1;
 		display: flex;
 		flex-direction: column;
-		gap: 8rpx;
-	}
-
-	.filter-option.large {
-		flex: 2;
-	}
-
-	.filter-option.small {
-		flex: 1;
+		gap: 12rpx;
 	}
 
 	.filter-item text,
 	.filter-option text {
-		font-size: 26rpx;
+		font-size: 28rpx;
 		color: #333;
 		font-weight: 500;
-		margin-bottom: 8rpx;
+		margin-bottom: 12rpx;
 		display: block;
 	}
 
 	.prefix-input {
-		height: 64rpx;
+		height: 76rpx;
 		border: 2rpx solid #eee;
 		border-radius: 12rpx;
-		padding: 0 20rpx;
-		font-size: 26rpx;
+		padding: 0 24rpx;
+		font-size: 28rpx;
 		background-color: #f9f9f9;
 		transition: all 0.3s;
 	}
@@ -824,7 +644,7 @@
 		font-weight: 600;
 		border-radius: 20rpx;
 		transition: all 0.3s;
-		box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.08);
+		box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
 		border: none;
 	}
 
@@ -834,7 +654,7 @@
 
 	.action-buttons button[type="primary"]:active {
 		transform: translateY(2rpx);
-		box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.12);
+		box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.12);
 	}
 
 	.action-buttons button[type="primary"].scanning {
@@ -859,13 +679,15 @@
 
 	@keyframes pulse {
 		0% {
-			box-shadow: 0 4rpx 16rpx rgba(52,199,89,0.2);
+			box-shadow: 0 4rpx 16rpx rgba(52, 199, 89, 0.2);
 		}
+
 		50% {
-			box-shadow: 0 4rpx 24rpx rgba(52,199,89,0.4);
+			box-shadow: 0 4rpx 24rpx rgba(52, 199, 89, 0.4);
 		}
+
 		100% {
-			box-shadow: 0 4rpx 16rpx rgba(52,199,89,0.2);
+			box-shadow: 0 4rpx 16rpx rgba(52, 199, 89, 0.2);
 		}
 	}
 
@@ -873,7 +695,7 @@
 		flex: 1;
 		background-color: #fff;
 		border-radius: 20rpx;
-		box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.04);
+		box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
 		overflow: hidden;
 		display: flex;
 		flex-direction: column;
@@ -1017,10 +839,21 @@
 		transition: all 0.3s;
 	}
 
-	.signal-bar:nth-child(1) { height: 8rpx; }
-	.signal-bar:nth-child(2) { height: 14rpx; }
-	.signal-bar:nth-child(3) { height: 20rpx; }
-	.signal-bar:nth-child(4) { height: 24rpx; }
+	.signal-bar:nth-child(1) {
+		height: 8rpx;
+	}
+
+	.signal-bar:nth-child(2) {
+		height: 14rpx;
+	}
+
+	.signal-bar:nth-child(3) {
+		height: 20rpx;
+	}
+
+	.signal-bar:nth-child(4) {
+		height: 24rpx;
+	}
 
 	.signal-bar.active {
 		background: linear-gradient(to top, #007AFF 0%, #0066DD 100%);
@@ -1040,7 +873,7 @@
 		flex-direction: column;
 		background-color: #fff;
 		border-radius: 20rpx;
-		box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.04);
+		box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
 		overflow: hidden;
 	}
 
@@ -1069,7 +902,7 @@
 		margin-bottom: 20rpx;
 		border-radius: 12rpx;
 		overflow: hidden;
-		box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.02);
+		box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.02);
 	}
 
 	.service-header {
@@ -1146,30 +979,30 @@
 	.log-type.system {
 		background: linear-gradient(135deg, #007AFF 0%, #409EFF 100%);
 		color: white;
-		box-shadow: 0 2rpx 8rpx rgba(0,122,255,0.2);
+		box-shadow: 0 2rpx 8rpx rgba(0, 122, 255, 0.2);
 	}
 
 	.log-type.error {
 		background: linear-gradient(135deg, #FF3B30 0%, #FF2D55 100%);
 		color: white;
-		box-shadow: 0 2rpx 8rpx rgba(255,59,48,0.2);
+		box-shadow: 0 2rpx 8rpx rgba(255, 59, 48, 0.2);
 	}
 
 	.log-type.read {
 		background: linear-gradient(135deg, #34C759 0%, #30D158 100%);
 		color: white;
-		box-shadow: 0 2rpx 8rpx rgba(52,199,89,0.2);
+		box-shadow: 0 2rpx 8rpx rgba(52, 199, 89, 0.2);
 	}
 
 	.log-type.write {
 		background: linear-gradient(135deg, #FF9500 0%, #FF9F0A 100%);
 		color: white;
-		box-shadow: 0 2rpx 8rpx rgba(255,149,0,0.2);
+		box-shadow: 0 2rpx 8rpx rgba(255, 149, 0, 0.2);
 	}
 
 	.log-type.receive {
 		background: linear-gradient(135deg, #5856D6 0%, #5E5CE6 100%);
 		color: white;
-		box-shadow: 0 2rpx 8rpx rgba(88,86,214,0.2);
+		box-shadow: 0 2rpx 8rpx rgba(88, 86, 214, 0.2);
 	}
 </style>
