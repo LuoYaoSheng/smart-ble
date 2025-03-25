@@ -5,14 +5,16 @@
 			<view class="filter-header">
 				<text class="filter-title">过滤设置</text>
 				<!-- #ifdef MP-WEIXIN -->
-				<button class="broadcast-nav-btn" @click="goBroadcast">
-					<text class="button-icon">📡</text>
-					<text>广播</text>
-				</button>
-				<button class="broadcast-nav-btn" @click="goAbout">
-					<text class="button-icon">📡</text>
-					<text>关于</text>
-				</button>
+				<view class="nav-buttons">
+					<button class="nav-btn" @click="goBroadcast">
+						<text class="button-icon">📡</text>
+						<text>广播</text>
+					</button>
+					<button class="nav-btn" @click="goAbout">
+						<text class="button-icon">ℹ️</text>
+						<text>关于</text>
+					</button>
+				</view>
 				<!-- #endif -->
 			</view>
 
@@ -562,29 +564,34 @@
 		color: #333;
 	}
 
-	.broadcast-nav-btn {
+	.nav-buttons {
+		display: flex;
+		gap: 16rpx;
+	}
+
+	.nav-btn {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: linear-gradient(135deg, #5856D6 0%, #5E5CE6 100%);
-		color: #fff;
-		font-size: 26rpx;
-		padding: 8rpx 20rpx;
+		background: #f5f5f5;
+		border: none;
+		padding: 12rpx 24rpx;
 		border-radius: 100rpx;
-		margin: 0;
-		height: 60rpx;
+		font-size: 24rpx;
+		color: #333;
 		line-height: 1;
-		box-shadow: 0 4rpx 12rpx rgba(88, 86, 214, 0.2);
+		margin: 0;
+		transition: all 0.3s;
 	}
 
-	.broadcast-nav-btn .button-icon {
-		font-size: 28rpx;
-		margin-right: 6rpx;
-	}
-
-	.broadcast-nav-btn:active {
+	.nav-btn:active {
+		opacity: 0.8;
 		transform: translateY(2rpx);
-		opacity: 0.9;
+	}
+
+	.nav-btn .button-icon {
+		font-size: 28rpx;
+		margin-right: 8rpx;
 	}
 
 	.filter-item {
