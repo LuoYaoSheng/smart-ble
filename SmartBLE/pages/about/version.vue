@@ -22,6 +22,19 @@
 		data() {
 			return {
 				versionHistory: [{
+					version: 'v1.0.2',
+					date: '2024-03-28',
+					updates: [{
+						type: '修复',
+						content: '修复Android设备上蓝牙广播权限请求问题'
+					}, {
+						type: '优化',
+						content: '优化Android平台权限检查和申请流程'
+					}, {
+						type: '优化',
+						content: '改进蓝牙广播稳定性和错误处理'
+					}]
+				}, {
 					version: 'v1.0.1',
 					date: '2024-03-21',
 					updates: [{

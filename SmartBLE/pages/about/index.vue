@@ -3,7 +3,7 @@
 		<!-- 头部信息 -->
 		<view class="header">
 			<image class="logo" src="/static/logo.png" mode="aspectFit"></image>
-			<text class="app-name">LightBLE</text>
+			<text class="app-name">BLE Toolkit+</text>
 			<text class="version">Version {{appVersion}}</text>
 		</view>
 
@@ -80,7 +80,7 @@
 
 		<!-- 底部信息 -->
 		<view class="footer">
-			<text class="copyright">© {{currentYear}} LightBLE. All rights reserved.</text>
+			<text class="copyright">© {{currentYear}} BLE Toolkit+. All rights reserved.</text>
 		</view>
 	</view>
 </template>
@@ -93,7 +93,7 @@
 				systemInfo: {},
 				currentYear: new Date().getFullYear(),
 				shareInfo: {
-					title: 'LightBLE - 多平台BLE调试工具',
+					title: 'BLE Toolkit+ - 多平台BLE调试工具',
 					summary: '支持微信小程序、iOS和Android原生应用的BLE调试工具',
 					imageUrl: '/static/share.png',
 					href: 'https://lightble.i2kai.com/',

@@ -1,6 +1,6 @@
 {
     "name" : "BLE Toolkit+",
-    "appid" : "__UNI__F2E70FE",
+    "appid" : "__UNI__F150954",
     "description" : "蓝牙调试工具",
     "versionName" : "1.0.2",
     "versionCode" : "100",
@@ -28,7 +28,8 @@
                     "<uses-permission android:name=\"android.permission.BLUETOOTH_SCAN\"/>",
                     "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\"/>",
                     "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\"/>",
-                    "<uses-permission android:name=\"android.permission.ACCESS_BACKGROUND_LOCATION\"/>"
+                    "<uses-permission android:name=\"android.permission.ACCESS_BACKGROUND_LOCATION\"/>",
+                    "<uses-feature  android:name=\"android.hardware.bluetooth_le\"  android:required=\"true\" />"
                 ],
                 "minSdkVersion" : 21
             },
@@ -109,8 +110,13 @@
         "permission" : {
             "scope.userLocation" : {
                 "desc" : "获取周围蓝牙设备"
+            },
+            "scope.bluetooth" : {
+                "desc" : "使用蓝牙功能进行设备连接和数据传输"
             }
-        }
+        },
+        "requiredPrivateInfos" : [ "getLocation", "onLocationChange", "startLocationUpdateBackground" ],
+        "lazyCodeLoading" : "requiredComponents"
     },
     "mp-alipay" : {
         "usingComponents" : true

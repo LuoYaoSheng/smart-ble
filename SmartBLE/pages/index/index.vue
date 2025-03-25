@@ -29,8 +29,7 @@
 				</view>
 				<view class="filter-option">
 					<text>隐藏无名称设备</text>
-					<switch :checked="hideNoName" @change="onHideNoNameChange" color="#007AFF"
-						style="transform: scale(0.7);" />
+					<switch :checked="hideNoName" @change="onHideNoNameChange" color="#007AFF" class="custom-switch" />
 				</view>
 			</view>
 		</view>
@@ -177,7 +176,7 @@
 		onLoad() {
 			// 设置导航栏标题
 			uni.setNavigationBarTitle({
-				title: 'BLE调试工具'
+				title: 'BLE Toolkit+'
 			});
 
 			// #ifdef MP-WEIXIN
@@ -1011,5 +1010,16 @@
 		background: linear-gradient(135deg, #5856D6 0%, #5E5CE6 100%);
 		color: white;
 		box-shadow: 0 2rpx 8rpx rgba(88, 86, 214, 0.2);
+	}
+
+	.custom-switch {
+		transform: none;
+		width: 52px;
+		height: 32px;
+	}
+
+	.custom-switch::before {
+		width: 30px;
+		height: 30px;
 	}
 </style>

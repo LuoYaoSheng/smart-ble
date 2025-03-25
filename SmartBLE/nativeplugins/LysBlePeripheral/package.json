@@ -12,7 +12,17 @@
 				"class": "com.lys.bleperipheral.LysBlePeripheralModule"
 			}],
 			"integrateType": "aar",
-			"dependencies": [],
+			"dependencies": [{
+					"groupId": "com.alibaba",
+					"artifactId": "fastjson",
+					"version": "1.1.46.android"
+				},
+				{
+					"groupId": "androidx.appcompat",
+					"artifactId": "appcompat",
+					"version": "1.6.1"
+				}
+			],
 			"permissions": [
 				"android.permission.BLUETOOTH",
 				"android.permission.BLUETOOTH_ADMIN",
@@ -25,7 +35,11 @@
 				"sourceCompatibility": "1.8",
 				"targetCompatibility": "1.8"
 			},
-			"minSdkVersion": "21"
+			"minSdkVersion": "21",
+			"features": [{
+				"name": "android.hardware.bluetooth_le",
+				"required": true
+			}]
 		},
 		"ios": {
 			"plugins": [{

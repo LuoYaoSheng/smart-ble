@@ -168,8 +168,6 @@
 			}
 		},
 		onLoad(options) {
-			
-			console.log(options);
 			if (options.device) {
 				try {
 					this.deviceInfo = JSON.parse(decodeURIComponent(options.device))
@@ -209,7 +207,6 @@
 			async connectDevice() {
 				try {
 					this.addLog('系统', '正在连接设备...')
-					console.log(this.deviceInfo);
 					await uni.createBLEConnection({
 						deviceId: this.deviceInfo.deviceId,
 						timeout: 10000 // 设置超时时间为10秒
