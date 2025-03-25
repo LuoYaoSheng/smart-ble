@@ -1,35 +1,35 @@
-# LightBLE 蓝牙调试工具
+# BLE Toolkit+ 蓝牙调试工具
 
 <div align="center">
-  <h3>多平台BLE调试工具，支持微信小程序、iOS和Android原生应用</h3>
+  <h3>专业的蓝牙调试工具，支持微信小程序、iOS和Android原生应用</h3>
   <p>
-    <a href="https://lightble.i2kai.com/">官方网站</a> ·
+    <a href="https://bletoolkit.i2kai.com/">官方网站</a> ·
     <a href="#快速开始">快速开始</a> ·
     <a href="#应用截图">应用截图</a> ·
     <a href="#主要功能">功能介绍</a>
   </p>
   <p>
-    <img src="https://img.shields.io/badge/版本-1.0.0-blue.svg" alt="版本" />
+    <img src="https://img.shields.io/badge/版本-1.0.1-blue.svg" alt="版本" />
     <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="协议" />
     <img src="https://img.shields.io/badge/platform-iOS%20%7C%20Android%20%7C%20小程序-lightgrey.svg" alt="平台" />
   </p>
 </div>
 
 <div align="center">
-  <img src="https://lightble.i2kai.com/qr_code.jpg" alt="微信小程序码" width="200" />
+  <img src="https://bletoolkit.i2kai.com/qr_code.jpg" alt="微信小程序码" width="200" />
   <p>扫码使用微信小程序版本</p>
 </div>
 
 ## 🌐 相关链接
 
-- **官方网站**：[https://lightble.i2kai.com](https://lightble.i2kai.com)
-- **问题反馈**：[Issues](https://github.com/your-username/smart-ble/issues)
-- **开发文档**：[Documentation](https://lightble.i2kai.com/docs)
+- **官方网站**：[https://bletoolkit.i2kai.com](https://bletoolkit.i2kai.com)
+- **问题反馈**：[Issues](https://github.com/your-username/ble-toolkit/issues)
+- **开发文档**：[Documentation](https://bletoolkit.i2kai.com/docs)
 - **更新日志**：[Changelog](#版本记录)
 
 ## 💡 项目简介
 
-LightBLE 是一款专业的蓝牙调试工具，基于 uni-app + Vue 3 开发，支持多平台部署。本工具主要用于蓝牙设备的调试和开发，支持设备扫描、服务发现、特征值读写等功能。
+BLE Toolkit+ 是一款专业的蓝牙调试工具，基于 uni-app + Vue 3 开发，支持多平台部署。本工具主要用于蓝牙设备的调试和开发，支持设备扫描、服务发现、特征值读写等功能。
 
 - 版本：1.0.1
 - 框架：uni-app + Vue 3
@@ -68,6 +68,18 @@ LightBLE 是一款专业的蓝牙调试工具，基于 uni-app + Vue 3 开发，
 
 ## 📋 版本记录
 
+### v1.0.2 (2024-03-25)
+- ✨ 集成 EspBLE 蓝牙开发板支持
+- 📡 支持 ESP32 设备的蓝牙通信
+- 🔧 优化硬件交互体验
+- 📚 新增硬件开发文档
+
+### v1.0.1-patch1 (2024-03-23)
+- 🎉 集成 LysBlePeripheral 原生插件
+- ✨ 支持 Android/iOS 原生蓝牙广播
+- 🛠️ 优化广播参数配置界面
+- 📊 新增广播状态实时监控
+
 ### v1.0.1 (2024-03-21)
 - ✨ 支持 UTF-8 编码的文本数据写入
 - ✨ 支持 HEX 格式数据写入
@@ -98,17 +110,17 @@ LightBLE 是一款专业的蓝牙调试工具，基于 uni-app + Vue 3 开发，
   <table>
     <tr>
       <td align="center">
-        <img src="https://lightble.i2kai.com/apps/app1_qr.jpg" width="100" alt="应用1二维码"/><br/>
+        <img src="https://bletoolkit.i2kai.com/apps/app1_qr.jpg" width="100" alt="应用1二维码"/><br/>
         <b>智能家居助手</b><br/>
         <small>智能家居设备管理工具</small>
       </td>
       <td align="center">
-        <img src="https://lightble.i2kai.com/apps/app2_qr.jpg" width="100" alt="应用2二维码"/><br/>
+        <img src="https://bletoolkit.i2kai.com/apps/app2_qr.jpg" width="100" alt="应用2二维码"/><br/>
         <b>WiFi调试大师</b><br/>
         <small>专业的WiFi网络分析工具</small>
       </td>
       <td align="center">
-        <img src="https://lightble.i2kai.com/apps/app3_qr.jpg" width="100" alt="应用3二维码"/><br/>
+        <img src="https://bletoolkit.i2kai.com/apps/app3_qr.jpg" width="100" alt="应用3二维码"/><br/>
         <b>串口调试助手</b><br/>
         <small>多功能串口通信工具</small>
       </td>
@@ -131,8 +143,8 @@ LightBLE 是一款专业的蓝牙调试工具，基于 uni-app + Vue 3 开发，
 ## 📦 项目结构
 
 ```
-smart-ble/
-├── SmartBLE/              # 主项目目录
+ble-toolkit/
+├── BLEToolkit/              # 主项目目录
 │   ├── pages/            # 页面文件
 │   │   ├── index/       # 主页（设备列表）
 │   │   ├── device/      # 设备详情页
@@ -181,7 +193,7 @@ smart-ble/
 
 ### 安装
 ```bash
-cd SmartBLE
+cd BLEToolkit
 npm install
 ```
 

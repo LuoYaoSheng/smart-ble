@@ -1,68 +1,70 @@
 <template>
-	<view class="container">
-		<view class="title">BLE外设广播示例</view>
-
-		<!-- 状态显示 -->
-		<view class="status-section">
-			<view class="status-item">
-				<text class="label">设备支持状态：</text>
-				<text :class="['value', supported ? 'success' : 'error']">
-					{{ supported ? '支持' : '不支持' }}
-				</text>
+	<view class="content">
+		<view class="title">
+			<text>BLE Toolkit+ 广播工具</text>
+			<text class="platform">({{platform}})</text>
 			</view>
-			<view class="status-item">
-				<text class="label">广播状态：</text>
-				<text :class="['value', isAdvertising ? 'success' : 'info']">
-					{{ isAdvertising ? '正在广播' : '未广播' }}
-				</text>
-			</view>
-		</view>
 
-		<!-- 配置表单 -->
-		<view class="form-section">
+		<view class="form">
+			<!-- 基础参数 -->
 			<view class="form-item">
-				<text class="label">本地名称</text>
-				<input type="text" v-model="formData.localName" placeholder="请输入设备名称" class="input" />
+				<text class="label">设备名称：</text>
+				<input type="text" v-model="deviceName" placeholder="请输入设备名称" />
 			</view>
 
 			<view class="form-item">
-				<text class="label">服务UUID</text>
-				<input type="text" v-model="formData.serviceUUID" placeholder="请输入服务UUID" class="input" />
+				<text class="label">服务UUID：</text>
+				<input type="text" v-model="serviceUUID" placeholder="请输入服务UUID" />
 			</view>
 
 			<view class="form-item">
-				<text class="label">厂商ID</text>
-				<input type="text" v-model="formData.manufacturerId" placeholder="请输入厂商ID(十六进制)" class="input" />
+				<text class="label">厂商ID：</text>
+				<input type="text" v-model="manufacturerId" placeholder="请输入厂商ID(hex)" />
 			</view>
 
 			<view class="form-item">
-				<text class="label">厂商数据</text>
-				<input type="text" v-model="formData.manufacturerData" placeholder="请输入厂商数据" class="input" />
+				<text class="label">厂商数据：</text>
+				<input type="text" v-model="manufacturerData" placeholder="请输入厂商数据" />
 			</view>
-		</view>
 
-		<!-- 操作按钮 -->
-		<view class="button-section">
-			<button class="btn check-btn" @click="checkSupport" :disabled="isAdvertising">
-				检查设备支持
-			</button>
+			<!-- Android 特有参数 -->
+			<template v-if="platform === 'android'">
+			<view class="form-item">
+					<text class="label">广播模式：</text>
+					<picker @change="onModeChange" :value="modeIndex" :range="modeOptions">
+						<view class="picker">{{modeOptions[modeIndex]}}</view>
+				</picker>
+			</view>
 
-			<button class="btn start-btn" @click="startAdvertising" :disabled="!supported || isAdvertising">
-				开始广播
-			</button>
+				<view class="form-item">
+					<text class="label">发射功率：</text>
+					<picker @change="onPowerChange" :value="powerIndex" :range="powerOptions">
+						<view class="picker">{{powerOptions[powerIndex]}}</view>
+					</picker>
+			</view>
 
-			<button class="btn stop-btn" @click="stopAdvertising" :disabled="!isAdvertising">
-				停止广播
-			</button>
-		</view>
-
-		<!-- 日志显示 -->
-		<view class="log-section">
-			<view class="log-title">操作日志</view>
-			<scroll-view scroll-y class="log-content" :scroll-top="scrollTop" @scrolltoupper="loadMoreLogs">
-				<view v-for="(log, index) in logs" :key="index" class="log-item">
-					{{ log }}
+				<view class="form-item">
+					<text class="label">可连接：</text>
+					<switch :checked="androidSettings.connectable" @change="onConnectableChange" />
 				</view>
+			</template>
+			</view>
+
+		<view class="button-group">
+			<button type="primary" @click="startAdvertising" :disabled="!isSupported">开始广播</button>
+			<button type="default" @click="stopAdvertising" :disabled="!advertising">停止广播</button>
+			<button type="default" @click="checkAdvertisingStatus">检查状态</button>
+			</view>
+
+		<view class="status">
+			<text>设备支持状态：{{isSupported ? '支持' : '不支持'}}</text>
+			<text>广播状态：{{advertising ? '正在广播' : '已停止'}}</text>
+		</view>
+
+		<view class="log">
+			<text class="log-title">日志信息：</text>
+			<scroll-view class="log-content" scroll-y>
+				<text>{{log}}</text>
 			</scroll-view>
 		</view>
 	</view>
@@ -72,259 +74,306 @@
 	export default {
 		data() {
 			return {
+				advertising: false,
+				log: '',
 				blePeripheral: null,
-				supported: false,
-				isAdvertising: false,
-				formData: {
-					localName: 'LysBleDevice',
-					serviceUUID: 'FFE0',
-					manufacturerId: '0A00',
-					manufacturerData: 'LysBleTest'
+				platform: '',
+				isSupported: false,
+				// Android 参数
+				androidSettings: {
+					advertiseMode: 2, // 0-低功耗，1-平衡，2-低延迟
+					txPowerLevel: 3, // 0-超低，1-低，2-中，3-高
+					connectable: true
 				},
-				logs: [
-					'示例日志：',
-					'1. 点击"检查设备支持"按钮检查设备是否支持BLE广播',
-					'2. 可以修改默认配置或使用默认值',
-					'3. 点击"开始广播"按钮开始广播',
-					'4. 使用其他BLE扫描工具（如nRF Connect）扫描设备',
-					'5. 点击"停止广播"按钮停止广播'
-				],
-				scrollTop: 0
+				androidAdvertiseData: {
+				includeDeviceName: true,
+					manufacturerId: 0x0001,
+					manufacturerData: "BLEToolkit_Test"
+				},
+				// iOS 参数
+				iosSettings: {
+					localName: "BLEToolkit_iOS",
+					services: ["FFE0"],
+					manufacturerData: {
+						id: 0x0A00,
+						data: "BLEToolkit_Test"
+					}
+				},
+				// UI 显示参数
+				deviceName: '',
+				serviceUUID: '',
+				modeIndex: 2, // 默认低延迟模式
+				powerIndex: 3, // 默认高功率
+				modeOptions: ['低功耗', '平衡', '低延迟'],
+				powerOptions: ['超低功率', '低功率', '中功率', '高功率'],
+				manufacturerId: '',
+				manufacturerData: '',
+				timeout: 0
 			}
 		},
 		onLoad() {
+			// 获取平台信息
+					// #ifdef APP-PLUS
+			const systemInfo = uni.getSystemInfoSync()
+			this.platform = systemInfo.platform
+			// 根据平台设置默认值
+			if (this.platform === 'android') {
+				this.deviceName = 'BLEToolkit_Android'
+				this.serviceUUID = '0000FFE0-0000-1000-8000-00805F9B34FB'
+				this.manufacturerId = '0001'
+				this.manufacturerData = 'BLEToolkit_Test'
+			} else if (this.platform === 'ios') {
+				this.deviceName = 'BLEToolkit_iOS'
+				this.serviceUUID = 'FFE0'
+				this.manufacturerId = '0A00'
+				this.manufacturerData = 'BLEToolkit_Test'
+					}
+					// #endif
+
 			// 获取插件实例
 			this.blePeripheral = uni.requireNativePlugin('LysBlePeripheral')
-			this.addLog('插件初始化完成')
 
-			// 自动检查设备支持状态
+			// 检查设备支持状态
 			this.checkSupport()
 		},
 		methods: {
-			// 添加日志
-			addLog(message) {
-				const time = new Date().toLocaleTimeString()
-				this.logs.unshift('[' + time + '] ' + message)
-				this.scrollTop = 0
-			},
-
-			// 加载更多日志
-			loadMoreLogs() {
-				// 可以在这里实现加载历史日志的逻辑
-			},
-
-			// 检查设备支持
+			// 检查设备支持状态
 			checkSupport() {
-				this.addLog('正在检查设备支持状态...')
+				if (!this.blePeripheral) {
+					this.addLog('错误：插件未初始化')
+					this.isSupported = false
+					return
+				}
+
 				this.blePeripheral.isSupported((result) => {
-					this.supported = result.code === 0 && result.supported
-					this.addLog('设备支持状态: ' + (this.supported ? '支持' : '不支持'))
+					this.isSupported = result.code === 0 && result.supported
+					this.addLog(this.isSupported ? '设备支持低功耗蓝牙广播' : '设备不支持低功耗蓝牙广播')
 				})
 			},
 
 			// 开始广播
 			startAdvertising() {
-				if (!this.supported) {
-					uni.showToast({
-						title: '设备不支持BLE广播',
-						icon: 'none'
-					})
+				if (!this.blePeripheral) {
+					this.addLog('错误：插件未初始化')
 					return
 				}
 
-				this.addLog('正在启动广播...')
+				// 验证参数
+				if (!this.deviceName) {
+					this.addLog('错误：请输入设备名称')
+					return
+				}
 
-				// 构建广播选项
-				const options = {
-					localName: this.formData.localName,
-					services: [this.formData.serviceUUID],
-					manufacturerData: {
-						id: parseInt(this.formData.manufacturerId, 16),
-						data: this.formData.manufacturerData
+				if (!this.serviceUUID) {
+					this.addLog('错误：请输入服务UUID')
+					return
+				}
+
+				// 构建广播参数
+				let options = {}
+
+				if (this.platform === 'android') {
+					// Android 平台参数
+					options = {
+						settings: {
+							advertiseMode: this.modeIndex,
+							txPowerLevel: this.powerIndex,
+							connectable: this.androidSettings.connectable
+						},
+						advertiseData: {
+							includeDeviceName: true,
+							manufacturerId: parseInt(this.manufacturerId, 16),
+							manufacturerData: this.manufacturerData
+						}
+					}
+				} else if (this.platform === 'ios') {
+					// iOS 平台参数
+					options = {
+						localName: this.deviceName,
+						services: [this.serviceUUID],
+						manufacturerData: {
+							id: parseInt(this.manufacturerId, 16),
+							data: this.manufacturerData
+						}
 					}
 				}
 
 				this.blePeripheral.startAdvertising(options, (result) => {
 					if (result.code === 0) {
-						this.isAdvertising = true
+						this.advertising = true
 						this.addLog('广播启动成功')
 					} else {
-						this.addLog('广播启动失败: ' + result.message)
-						uni.showToast({
-							title: result.message,
-							icon: 'none'
-						})
+						this.addLog('广播启动失败：' + (result.message || '未知错误'))
 					}
 				})
 			},
 
 			// 停止广播
 			stopAdvertising() {
-				this.addLog('正在停止广播...')
+				if (!this.blePeripheral) {
+					this.addLog('错误：插件未初始化')
+					return
+				}
+
 				this.blePeripheral.stopAdvertising((result) => {
 					if (result.code === 0) {
-						this.isAdvertising = false
-						this.addLog('广播已停止')
+						this.advertising = false
+						this.addLog('停止广播成功')
 					} else {
-						this.addLog('停止广播失败: ' + result.message)
-						uni.showToast({
-							title: result.message,
-							icon: 'none'
-						})
+						this.addLog('停止广播失败：' + (result.message || '未知错误'))
 					}
 				})
+			},
+
+			// 检查广播状态
+			checkAdvertisingStatus() {
+				if (!this.blePeripheral) {
+					this.addLog('错误：插件未初始化')
+					return false
+				}
+
+				this.blePeripheral.isAdvertising((result) => {
+					this.advertising = result.code === 0 && result.advertising
+					this.addLog(this.advertising ? '当前正在广播中' : '当前未在广播')
+				})
+			},
+
+			// 广播模式选择
+			onModeChange(e) {
+				this.modeIndex = parseInt(e.detail.value)
+			},
+
+			// 发射功率选择
+			onPowerChange(e) {
+				this.powerIndex = parseInt(e.detail.value)
+			},
+
+			// 连接状态切换
+			onConnectableChange(e) {
+				this.androidSettings.connectable = e.detail.value
+			},
+
+			// 添加日志方法
+			addLog(message) {
+				const time = new Date().toLocaleTimeString()
+				this.log = `[${time}] ${message}\n${this.log}`
 			}
 		},
 		onUnload() {
 			// 页面卸载时停止广播
-			if (this.isAdvertising) {
-				this.stopAdvertising()
+			if (this.advertising && this.blePeripheral) {
+				this.blePeripheral.stopAdvertising()
 			}
 		}
 	}
 </script>
 
 <style>
-	.container {
+	.content {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
 		padding: 20px;
 	}
 
 	.title {
 		font-size: 20px;
 		font-weight: bold;
-		text-align: center;
-		margin-bottom: 20px;
-	}
-
-	.status-section {
-		background-color: #f5f5f5;
-		padding: 15px;
-		border-radius: 8px;
-		margin-bottom: 20px;
-	}
-
-	.status-item {
+		margin-bottom: 30px;
 		display: flex;
-		justify-content: space-between;
-		margin-bottom: 10px;
+		align-items: center;
 	}
 
-	.status-item:last-child {
-		margin-bottom: 0;
-	}
-
-	.label {
+	.platform {
+		font-size: 14px;
 		color: #666;
+		margin-left: 10px;
 	}
 
-	.value {
-		font-weight: bold;
-	}
-
-	.success {
-		color: #4CAF50;
-	}
-
-	.error {
-		color: #F44336;
-	}
-
-	.info {
-		color: #2196F3;
-	}
-
-	.form-section {
-		background-color: #fff;
-		padding: 15px;
-		border-radius: 8px;
-		margin-bottom: 20px;
-		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	.form {
+		width: 100%;
+		margin-bottom: 30px;
 	}
 
 	.form-item {
+		display: flex;
+		align-items: center;
 		margin-bottom: 15px;
 	}
 
-	.form-item:last-child {
-		margin-bottom: 0;
+	.label {
+		width: 80px;
+		font-size: 14px;
+		color: #666;
 	}
 
-	.form-item .label {
-		display: block;
-		margin-bottom: 5px;
-	}
-
-	.input {
-		width: 100%;
+	input {
+		flex: 1;
 		height: 40px;
+		padding: 0 10px;
 		border: 1px solid #ddd;
 		border-radius: 4px;
-		padding: 0 10px;
 		font-size: 14px;
 	}
 
-	.button-section {
+	.picker {
+		flex: 1;
+		height: 40px;
+		line-height: 40px;
+		padding: 0 10px;
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		font-size: 14px;
+	}
+
+	.button-group {
 		display: flex;
 		flex-direction: column;
 		gap: 10px;
 		margin-bottom: 20px;
-	}
-
-	.btn {
 		width: 100%;
-		height: 44px;
-		line-height: 44px;
-		text-align: center;
-		border-radius: 4px;
-		font-size: 16px;
-		color: #fff;
 	}
 
-	.check-btn {
-		background-color: #2196F3;
+	.button-group button {
+		width: 100%;
 	}
 
-	.start-btn {
-		background-color: #4CAF50;
+	.button-group button[disabled] {
+		opacity: 0.5;
 	}
 
-	.stop-btn {
-		background-color: #F44336;
+	.status {
+		margin-bottom: 20px;
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		width: 100%;
 	}
 
-	.btn[disabled] {
-		background-color: #ccc;
-		opacity: 0.7;
-	}
-
-	.log-section {
-		background-color: #fff;
-		padding: 15px;
-		border-radius: 8px;
-		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	.log {
+		width: 100%;
+		padding: 10px;
+		background-color: #f5f5f5;
+		border-radius: 5px;
 	}
 
 	.log-title {
-		font-size: 16px;
-		font-weight: bold;
+		font-size: 14px;
+		color: #666;
 		margin-bottom: 10px;
+		display: block;
 	}
 
 	.log-content {
-		height: 200px;
-		background-color: #f5f5f5;
-		padding: 10px;
-		border-radius: 4px;
+		max-height: 200px;
 	}
 
-	.log-item {
-		font-size: 12px;
-		color: #666;
+	.log-content text {
+		display: block;
 		margin-bottom: 5px;
+		font-size: 12px;
+		color: #333;
+		white-space: pre-wrap;
 		word-break: break-all;
-	}
-
-	.log-item:last-child {
-		margin-bottom: 0;
 	}
 </style>

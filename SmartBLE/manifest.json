@@ -1,8 +1,8 @@
 {
-    "name" : "LightBLE",
+    "name" : "BLE Toolkit+",
     "appid" : "__UNI__F2E70FE",
     "description" : "蓝牙调试工具",
-    "versionName" : "1.0.0",
+    "versionName" : "1.0.2",
     "versionCode" : "100",
     "transformPx" : false,
     "app-plus" : {
@@ -23,26 +23,12 @@
                 "permissions" : [
                     "<uses-permission android:name=\"android.permission.BLUETOOTH\"/>",
                     "<uses-permission android:name=\"android.permission.BLUETOOTH_ADMIN\"/>",
-                    "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\"/>",
-                    "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\"/>",
-                    "<uses-permission android:name=\"android.permission.BLUETOOTH_SCAN\"/>",
                     "<uses-permission android:name=\"android.permission.BLUETOOTH_ADVERTISE\"/>",
                     "<uses-permission android:name=\"android.permission.BLUETOOTH_CONNECT\"/>",
-                    "<uses-permission android:name=\"android.permission.CHANGE_NETWORK_STATE\"/>",
-                    "<uses-permission android:name=\"android.permission.MOUNT_UNMOUNT_FILESYSTEMS\"/>",
-                    "<uses-permission android:name=\"android.permission.VIBRATE\"/>",
-                    "<uses-permission android:name=\"android.permission.READ_LOGS\"/>",
-                    "<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"/>",
-                    "<uses-feature android:name=\"android.hardware.camera.autofocus\"/>",
-                    "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>",
-                    "<uses-permission android:name=\"android.permission.CAMERA\"/>",
-                    "<uses-permission android:name=\"android.permission.GET_ACCOUNTS\"/>",
-                    "<uses-permission android:name=\"android.permission.READ_PHONE_STATE\"/>",
-                    "<uses-permission android:name=\"android.permission.CHANGE_WIFI_STATE\"/>",
-                    "<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>",
-                    "<uses-permission android:name=\"android.permission.FLASHLIGHT\"/>",
-                    "<uses-feature android:name=\"android.hardware.camera\"/>",
-                    "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
+                    "<uses-permission android:name=\"android.permission.BLUETOOTH_SCAN\"/>",
+                    "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\"/>",
+                    "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\"/>",
+                    "<uses-permission android:name=\"android.permission.ACCESS_BACKGROUND_LOCATION\"/>"
                 ],
                 "minSdkVersion" : 21
             },
@@ -54,14 +40,14 @@
                 },
                 "dSYMs" : false,
                 "privacyDescription" : {
-                    "NSBluetoothPeripheralUsageDescription" : "蓝牙兰阿姨",
-                    "NSBluetoothAlwaysUsageDescription" : "蓝牙兰阿姨2",
-                    "NSLocationAlwaysAndWhenInUseUsageDescription" : "位置2",
-                    "NSLocationWhenInUseUsageDescription" : "位置"
+                    "NSBluetoothPeripheralUsageDescription" : "用于扫描和连接蓝牙设备",
+                    "NSLocationAlwaysAndWhenInUseUsageDescription" : "用于获取设备的位置信息，以便确定设备与蓝牙设备之间的距离",
+                    "NSBluetoothAlwaysUsageDescription" : "用于扫描和连接蓝牙设备"
                 }
             },
             "sdkConfigs" : {
-                "ad" : {}
+                "ad" : {},
+                "share" : {}
             },
             "icons" : {
                 "android" : {
@@ -101,7 +87,7 @@
                 "__plugin_info__" : {
                     "name" : "LysBlePeripheral",
                     "description" : "BLE广播插件，支持自定义广播数据、扫描响应等功能",
-                    "platforms" : "iOS",
+                    "platforms" : "Android,iOS",
                     "url" : "",
                     "android_package_name" : "",
                     "ios_bundle_id" : "",

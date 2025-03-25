@@ -33,7 +33,7 @@
 #define CHARACTERISTIC_ALL_NAME "读写和通知特征值"
 
 // 设备信息
-#define DEVICE_NAME "ESP32-BLE-Server"
+#define DEVICE_NAME "BLEToolkit-Server"
 #define FIRMWARE_VERSION "1.0.0"
 
 // LED引脚定义

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BLE广播演示 - 文档</title>
+    <title>BLE Toolkit+ - 使用文档</title>
     <style>
         :root {
             --primary-color: #007AFF;
@@ -195,221 +195,231 @@
     </style>
 </head>
 <body>
-    <nav class="nav">
-        <div class="nav-header">
-            <h1>BLE广播演示</h1>
+    <header>
+        <nav>
+            <div class="logo">BLE Toolkit+</div>
+        </nav>
+    </header>
+    <main>
+        <div class="sidebar">
+            <h3>BLE Toolkit+</h3>
+            <div class="nav">
+                <div class="nav-header">
+                    <h1>BLE Toolkit+</h1>
+                </div>
+                <div class="nav-links">
+                    <div class="nav-section">
+                        <h2>入门指南</h2>
+                        <ul>
+                            <li><a href="#introduction">项目介绍</a></li>
+                            <li><a href="#quick-start">快速开始</a></li>
+                            <li><a href="#installation">安装说明</a></li>
+                        </ul>
+                    </div>
+                    <div class="nav-section">
+                        <h2>平台指南</h2>
+                        <ul>
+                            <li><a href="#wechat">微信小程序</a></li>
+                            <li><a href="#ios">iOS原生</a></li>
+                            <li><a href="#android">Android原生</a></li>
+                        </ul>
+                    </div>
+                    <div class="nav-section">
+                        <h2>API文档</h2>
+                        <ul>
+                            <li><a href="#api-overview">API概览</a></li>
+                            <li><a href="#initialization">初始化</a></li>
+                            <li><a href="#broadcasting">广播控制</a></li>
+                            <li><a href="#configuration">参数配置</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="nav-links">
-            <div class="nav-section">
-                <h2>入门指南</h2>
+        <div class="content">
+            <h1>BLE Toolkit+ 使用文档</h1>
+            <section id="introduction" class="section">
+                <h1>项目介绍</h1>
+                <p>BLE Toolkit+是一个多平台蓝牙广播解决方案，支持微信小程序、iOS和Android原生应用。本项目提供统一的API接口，帮助开发者快速实现跨平台的BLE广播功能。</p>
+                
+                <h2>主要特性</h2>
                 <ul>
-                    <li><a href="#introduction">项目介绍</a></li>
-                    <li><a href="#quick-start">快速开始</a></li>
-                    <li><a href="#installation">安装说明</a></li>
+                    <li>支持多平台：微信小程序、iOS原生和Android原生</li>
+                    <li>统一的API接口，降低学习成本</li>
+                    <li>内置权限管理，自动处理权限请求</li>
+                    <li>支持自定义广播数据和参数配置</li>
+                    <li>提供丰富的预设配置</li>
                 </ul>
-            </div>
-            <div class="nav-section">
-                <h2>平台指南</h2>
-                <ul>
-                    <li><a href="#wechat">微信小程序</a></li>
-                    <li><a href="#ios">iOS原生</a></li>
-                    <li><a href="#android">Android原生</a></li>
-                </ul>
-            </div>
-            <div class="nav-section">
-                <h2>API文档</h2>
-                <ul>
-                    <li><a href="#api-overview">API概览</a></li>
-                    <li><a href="#initialization">初始化</a></li>
-                    <li><a href="#broadcasting">广播控制</a></li>
-                    <li><a href="#configuration">参数配置</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+            </section>
 
-    <main class="main-content">
-        <section id="introduction" class="section">
-            <h1>项目介绍</h1>
-            <p>BLE广播演示是一个多平台蓝牙广播解决方案，支持微信小程序、iOS和Android原生应用。本项目提供统一的API接口，帮助开发者快速实现跨平台的BLE广播功能。</p>
-            
-            <h2>主要特性</h2>
-            <ul>
-                <li>支持多平台：微信小程序、iOS原生和Android原生</li>
-                <li>统一的API接口，降低学习成本</li>
-                <li>内置权限管理，自动处理权限请求</li>
-                <li>支持自定义广播数据和参数配置</li>
-                <li>提供丰富的预设配置</li>
-            </ul>
-        </section>
+            <section id="quick-start" class="section">
+                <h2>快速开始</h2>
+                <p>以下是快速开始使用BLE广播功能的步骤：</p>
+                
+                <h3>1. 初始化广播器</h3>
+                <div class="code-block">
+                    <code>
+    // 初始化广播插件
+    await this.initializeAdvertiser();
+                    </code>
+                </div>
 
-        <section id="quick-start" class="section">
-            <h2>快速开始</h2>
-            <p>以下是快速开始使用BLE广播功能的步骤：</p>
-            
-            <h3>1. 初始化广播器</h3>
-            <div class="code-block">
-                <code>
-// 初始化广播插件
-await this.initializeAdvertiser();
-                </code>
-            </div>
+                <h3>2. 配置广播参数</h3>
+                <div class="code-block">
+                    <code>
+    // 设置广播参数
+    this.broadcastName = 'BLE-Device';
+    this.serviceUuid = 'FFF0';
+    this.manufacturerId = '004E';
+    this.manufacturerData = '4E001101';
+                    </code>
+                </div>
 
-            <h3>2. 配置广播参数</h3>
-            <div class="code-block">
-                <code>
-// 设置广播参数
-this.broadcastName = 'BLE-Device';
-this.serviceUuid = 'FFF0';
-this.manufacturerId = '004E';
-this.manufacturerData = '4E001101';
-                </code>
-            </div>
+                <h3>3. 开始广播</h3>
+                <div class="code-block">
+                    <code>
+    // 启动广播
+    await this.startBroadcast();
+                    </code>
+                </div>
+            </section>
 
-            <h3>3. 开始广播</h3>
-            <div class="code-block">
-                <code>
-// 启动广播
-await this.startBroadcast();
-                </code>
-            </div>
-        </section>
-
-        <section id="installation" class="section">
-            <h2>安装说明</h2>
-            <h3>微信小程序</h3>
-            <div class="code-block">
-                <code>
-// 在app.json中配置
-{
-  "plugins": {
-    "BLE-Module": {
-      "version": "1.0.0",
-      "provider": "wx******"
+            <section id="installation" class="section">
+                <h2>安装说明</h2>
+                <h3>微信小程序</h3>
+                <div class="code-block">
+                    <code>
+    // 在app.json中配置
+    {
+      "plugins": {
+        "BLE-Module": {
+          "version": "1.0.0",
+          "provider": "wx******"
+        }
+      }
     }
-  }
-}
-                </code>
-            </div>
+                    </code>
+                </div>
 
-            <h3>iOS原生</h3>
-            <div class="code-block">
-                <code>
-// 在Info.plist中添加权限描述
-NSBluetoothAlwaysUsageDescription
-NSBluetoothPeripheralUsageDescription
-                </code>
-            </div>
+                <h3>iOS原生</h3>
+                <div class="code-block">
+                    <code>
+    // 在Info.plist中添加权限描述
+    NSBluetoothAlwaysUsageDescription
+    NSBluetoothPeripheralUsageDescription
+                    </code>
+                </div>
 
-            <h3>Android原生</h3>
-            <div class="code-block">
-                <code>
-// 在AndroidManifest.xml中添加权限
-&lt;uses-permission android:name="android.permission.BLUETOOTH"/>
-&lt;uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-&lt;uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE"/>
-                </code>
-            </div>
-        </section>
+                <h3>Android原生</h3>
+                <div class="code-block">
+                    <code>
+    // 在AndroidManifest.xml中添加权限
+    &lt;uses-permission android:name="android.permission.BLUETOOTH"/>
+    &lt;uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    &lt;uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE"/>
+                    </code>
+                </div>
+            </section>
 
-        <section id="api-overview" class="section">
-            <h2>API概览</h2>
-            <table class="api-table">
-                <tr>
-                    <th>方法名</th>
-                    <th>说明</th>
-                    <th>平台支持</th>
-                </tr>
-                <tr>
-                    <td>initializeAdvertiser()</td>
-                    <td>初始化广播器</td>
-                    <td>全平台</td>
-                </tr>
-                <tr>
-                    <td>startBroadcast()</td>
-                    <td>开始广播</td>
-                    <td>全平台</td>
-                </tr>
-                <tr>
-                    <td>stopBroadcast()</td>
-                    <td>停止广播</td>
-                    <td>全平台</td>
-                </tr>
-            </table>
+            <section id="api-overview" class="section">
+                <h2>API概览</h2>
+                <table class="api-table">
+                    <tr>
+                        <th>方法名</th>
+                        <th>说明</th>
+                        <th>平台支持</th>
+                    </tr>
+                    <tr>
+                        <td>initializeAdvertiser()</td>
+                        <td>初始化广播器</td>
+                        <td>全平台</td>
+                    </tr>
+                    <tr>
+                        <td>startBroadcast()</td>
+                        <td>开始广播</td>
+                        <td>全平台</td>
+                    </tr>
+                    <tr>
+                        <td>stopBroadcast()</td>
+                        <td>停止广播</td>
+                        <td>全平台</td>
+                    </tr>
+                </table>
 
-            <div class="note">
-                <strong>注意：</strong> 不同平台的具体实现可能略有差异，请参考各平台具体文档。
-            </div>
-        </section>
+                <div class="note">
+                    <strong>注意：</strong> 不同平台的具体实现可能略有差异，请参考各平台具体文档。
+                </div>
+            </section>
 
-        <section id="broadcasting" class="section">
-            <h2>广播控制</h2>
-            <h3>开始广播</h3>
-            <p>调用startBroadcast()方法开始广播。该方法会根据当前平台自动选择合适的实现方式：</p>
-            <div class="code-block">
-                <code>
-async startBroadcast() {
-    // 检查初始化状态
-    if (!this.isInitialized) {
-        const initialized = await this.initializeAdvertiser();
-        if (!initialized) {
-            return;
+            <section id="broadcasting" class="section">
+                <h2>广播控制</h2>
+                <h3>开始广播</h3>
+                <p>调用startBroadcast()方法开始广播。该方法会根据当前平台自动选择合适的实现方式：</p>
+                <div class="code-block">
+                    <code>
+    async startBroadcast() {
+        // 检查初始化状态
+        if (!this.isInitialized) {
+            const initialized = await this.initializeAdvertiser();
+            if (!initialized) {
+                return;
+            }
+        }
+
+        // 根据平台调用相应的广播方法
+        if (this.isNativeIOS) {
+            this.startIOSBroadcast();
+        } else if (this.isNativeAndroid) {
+            this.startAndroidBroadcast();
+        } else if (this.isWechat) {
+            this.startWechatBroadcast();
         }
     }
+                    </code>
+                </div>
 
-    // 根据平台调用相应的广播方法
-    if (this.isNativeIOS) {
-        this.startIOSBroadcast();
-    } else if (this.isNativeAndroid) {
-        this.startAndroidBroadcast();
-    } else if (this.isWechat) {
-        this.startWechatBroadcast();
-    }
-}
-                </code>
-            </div>
+                <div class="tip">
+                    <strong>提示：</strong> 建议在开始广播前检查蓝牙和定位权限是否已获取。
+                </div>
+            </section>
 
-            <div class="tip">
-                <strong>提示：</strong> 建议在开始广播前检查蓝牙和定位权限是否已获取。
-            </div>
-        </section>
-
-        <section id="configuration" class="section">
-            <h2>参数配置</h2>
-            <h3>可配置参数</h3>
-            <table class="api-table">
-                <tr>
-                    <th>参数名</th>
-                    <th>类型</th>
-                    <th>说明</th>
-                </tr>
-                <tr>
-                    <td>broadcastName</td>
-                    <td>String</td>
-                    <td>广播设备名称</td>
-                </tr>
-                <tr>
-                    <td>serviceUuid</td>
-                    <td>String</td>
-                    <td>服务UUID</td>
-                </tr>
-                <tr>
-                    <td>manufacturerId</td>
-                    <td>String</td>
-                    <td>厂商ID（十六进制）</td>
-                </tr>
-                <tr>
-                    <td>manufacturerData</td>
-                    <td>String</td>
-                    <td>厂商数据（十六进制）</td>
-                </tr>
-                <tr>
-                    <td>powerLevel</td>
-                    <td>Number</td>
-                    <td>发送功率级别（0-3）</td>
-                </tr>
-            </table>
-        </section>
+            <section id="configuration" class="section">
+                <h2>参数配置</h2>
+                <h3>可配置参数</h3>
+                <table class="api-table">
+                    <tr>
+                        <th>参数名</th>
+                        <th>类型</th>
+                        <th>说明</th>
+                    </tr>
+                    <tr>
+                        <td>broadcastName</td>
+                        <td>String</td>
+                        <td>广播设备名称</td>
+                    </tr>
+                    <tr>
+                        <td>serviceUuid</td>
+                        <td>String</td>
+                        <td>服务UUID</td>
+                    </tr>
+                    <tr>
+                        <td>manufacturerId</td>
+                        <td>String</td>
+                        <td>厂商ID（十六进制）</td>
+                    </tr>
+                    <tr>
+                        <td>manufacturerData</td>
+                        <td>String</td>
+                        <td>厂商数据（十六进制）</td>
+                    </tr>
+                    <tr>
+                        <td>powerLevel</td>
+                        <td>Number</td>
+                        <td>发送功率级别（0-3）</td>
+                    </tr>
+                </table>
+            </section>
+        </div>
     </main>
 </body>
 </html>
