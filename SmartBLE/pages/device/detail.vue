@@ -168,9 +168,11 @@
 			}
 		},
 		onLoad(options) {
-			if (options.deviceInfo) {
+			
+			console.log(options);
+			if (options.device) {
 				try {
-					this.deviceInfo = JSON.parse(decodeURIComponent(options.deviceInfo))
+					this.deviceInfo = JSON.parse(decodeURIComponent(options.device))
 					this.initBluetoothAdapter()
 				} catch (error) {
 					this.addLog('错误', '设备信息解析失败：' + error.message)
@@ -207,6 +209,7 @@
 			async connectDevice() {
 				try {
 					this.addLog('系统', '正在连接设备...')
+					console.log(this.deviceInfo);
 					await uni.createBLEConnection({
 						deviceId: this.deviceInfo.deviceId,
 						timeout: 10000 // 设置超时时间为10秒
@@ -234,6 +237,7 @@
 					})
 					
 				} catch (error) {
+					console.log(error);
 					this.addLog('错误', '连接失败：' + error.errMsg)
 					this.isConnected = false
 					this.retryConnection()

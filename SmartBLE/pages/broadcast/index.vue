@@ -1,10 +1,5 @@
 <template>
 	<view class="content">
-		<view class="title">
-			<text>BLE Toolkit+ 广播工具</text>
-			<text class="platform">({{platform}})</text>
-			</view>
-
 		<view class="form">
 			<!-- 基础参数 -->
 			<view class="form-item">
