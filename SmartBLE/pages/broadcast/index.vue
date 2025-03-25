@@ -24,7 +24,7 @@
 
 			<!-- Android 特有参数 -->
 			<template v-if="platform === 'android'">
-				<view class="form-item">
+			<view class="form-item">
 					<text class="label">广播模式：</text>
 					<picker @change="onModeChange" :value="modeIndex" :range="modeOptions">
 						<view class="picker-container">
@@ -32,22 +32,32 @@
 							<text class="picker-icon">▼</text>
 						</view>
 					</picker>
-				</view>
+			</view>
 
-				<view class="form-item">
+			<view class="form-item">
 					<text class="label">发射功率：</text>
 					<picker @change="onPowerChange" :value="powerIndex" :range="powerOptions">
 						<view class="picker-container">
 							<text class="picker-text">{{powerOptions[powerIndex]}}</text>
 							<text class="picker-icon">▼</text>
 						</view>
-					</picker>
-				</view>
+				</picker>
+			</view>
 
 				<view class="form-item switch-item">
 					<text class="label">可连接：</text>
 					<switch color="#007AFF" :checked="androidSettings.connectable" @change="onConnectableChange" />
-				</view>
+			</view>
+			
+			<view class="form-item switch-item">
+				<text class="label">包含设备名称：</text>
+				<switch color="#007AFF" :checked="androidSettings.includeDeviceName" @change="onIncludeDeviceNameChange" />
+			</view>
+			
+			<view class="form-item switch-item">
+				<text class="label">跳过权限检查：</text>
+				<switch color="#007AFF" :checked="skipPermissionCheck" @change="onSkipPermissionCheckChange" />
+			</view>
 			</template>
 			</view>
 
@@ -59,14 +69,14 @@
 				:class="{'button-advertising': advertising}"
 			>
 				{{ advertising ? '停止广播' : '开始广播' }}
-			</button>
+				</button>
 			<button type="default" @click="checkAdvertisingStatus">检查状态</button>
 		</view>
 
 		<view class="status">
 			<text>设备支持状态：{{isSupported ? '支持' : '不支持'}}</text>
 			<text>广播状态：{{advertising ? '正在广播' : '已停止'}}</text>
-		</view>
+				</view>
 
 		<view class="log">
 			<text class="log-title">日志信息：</text>
@@ -117,7 +127,9 @@
 				powerOptions: ['超低功率', '低功率', '中功率', '高功率'],
 				manufacturerId: '',
 				manufacturerData: '',
-				timeout: 0
+				timeout: 0,
+				// 权限控制
+				skipPermissionCheck: true
 			}
 		},
 		onLoad() {
@@ -125,35 +137,31 @@
 			// #ifdef APP-PLUS
 			const systemInfo = uni.getSystemInfoSync()
 			this.platform = systemInfo.platform
+			
+			// 获取插件实例
+			this.blePeripheral = uni.requireNativePlugin('LysBlePeripheral')
+			
 			// 根据平台设置默认值
 			if (this.platform === 'android') {
 				this.deviceName = 'BLEToolkit_Android'
 				this.serviceUUID = '0000FFE0-0000-1000-8000-00805F9B34FB'
 				this.manufacturerId = '0001'
 				this.manufacturerData = 'BLEToolkit_Test'
-				
-				// Android 6.0+ 需要动态请求权限
-				this.requestAndroidPermissions()
 			} else if (this.platform === 'ios') {
 				this.deviceName = 'BLEToolkit_iOS'
 				this.serviceUUID = 'FFE0'
 				this.manufacturerId = '0A00'
 				this.manufacturerData = 'BLEToolkit_Test'
 			}
-			// #endif
-			
-			// #ifdef MP-WEIXIN
+					// #endif
+
+					// #ifdef MP-WEIXIN
 			this.platform = 'weixin'
 			this.deviceName = 'BLEToolkit_WeChat'
 			this.serviceUUID = '0000FFE0-0000-1000-8000-00805F9B34FB'
 			this.manufacturerId = '0001'
 			this.manufacturerData = 'BLEToolkit_Test'
-			// #endif
-
-			// 获取插件实例
-			// #ifdef APP-PLUS
-			this.blePeripheral = uni.requireNativePlugin('LysBlePeripheral')
-			// #endif
+					// #endif
 
 			// 检查设备支持状态
 			this.checkSupport()
@@ -161,7 +169,7 @@
 		methods: {
 			// 检查设备支持状态
 			checkSupport() {
-				// #ifdef APP-PLUS
+					// #ifdef APP-PLUS
 				if (!this.blePeripheral) {
 					this.addLog('错误：插件未初始化')
 					this.isSupported = false
@@ -171,9 +179,14 @@
 				this.blePeripheral.isSupported((result) => {
 					this.isSupported = result.code === 0 && result.supported
 					this.addLog(this.isSupported ? '设备支持低功耗蓝牙广播' : '设备不支持低功耗蓝牙广播')
+					
+					// 检查支持后再请求权限
+					if (this.isSupported && this.platform === 'android') {
+						this.requestAndroidPermissions()
+					}
 				})
-				// #endif
-				
+					// #endif
+
 				// #ifdef MP-WEIXIN
 				// 微信小程序端检查BLE广播支持
 				this.checkWxBleSupport()
@@ -215,7 +228,7 @@
 					}
 				})
 			},
-			// #endif
+				// #endif
 
 			// 请求Android所需权限
 			requestAndroidPermissions() {
@@ -223,6 +236,13 @@
 				
 				this.addLog('检查Android权限...')
 				
+				// 确保blePeripheral已初始化
+				if (!this.blePeripheral) {
+					this.addLog('错误：插件未初始化')
+					return
+				}
+				
+				// 不再使用不存在的setSkipPermissionCheck方法
 				try {
 					// 使用Android原生API检查权限
 					const main = plus.android.runtimeMainActivity()
@@ -347,36 +367,46 @@
 							return
 						}
 						
-						// 检查权限
-						try {
-							const context = plus.android.runtimeMainActivity()
-							const PackageManager = plus.android.importClass("android.content.pm.PackageManager")
-							
-							// 检查基本权限
-							const hasLocPerm = (context.checkSelfPermission("android.permission.ACCESS_FINE_LOCATION") === PackageManager.PERMISSION_GRANTED)
-							
-							if (!hasLocPerm) {
-								this.addLog('缺少位置权限，Android需要位置权限才能使用蓝牙功能')
-								uni.showModal({
-									title: '权限不足',
-									content: '蓝牙广播需要位置权限，请在系统设置中授予权限',
-									confirmText: '去设置',
-									success: (res) => {
-										if (res.confirm) {
-											this.openAppSettings()
-										}
-									}
-								})
-								return
-							}
-							
-							// 直接尝试启动广播
-							this.startAndroidBroadcastDirect()
-						} catch (e) {
-							this.addLog('检查权限失败: ' + e.message)
-							// 直接尝试启动广播
-							this.startAndroidBroadcastDirect()
+						// 检查位置权限
+						const context = plus.android.runtimeMainActivity()
+						const PackageManager = plus.android.importClass("android.content.pm.PackageManager")
+						const locationPermission = "android.permission.ACCESS_FINE_LOCATION"
+						
+						if (context.checkSelfPermission(locationPermission) !== PackageManager.PERMISSION_GRANTED) {
+							this.addLog('缺少位置权限，Android需要位置权限才能使用蓝牙功能')
+							this.showPermissionDialog()
+							return
 						}
+						
+						// 修改广播选项，移除不存在的skipPermissionCheck选项
+						const options = {
+							settings: {
+								advertiseMode: this.modeIndex,
+								txPowerLevel: this.powerIndex,
+								connectable: this.androidSettings.connectable
+							},
+							advertiseData: {
+								includeDeviceName: this.androidSettings.includeDeviceName,
+								manufacturerId: parseInt(this.manufacturerId, 16),
+								manufacturerData: this.manufacturerData
+							}
+						}
+						
+						// 执行广播
+						this.blePeripheral.startAdvertising(options, (result) => {
+							if (result.code === 0) {
+								this.advertising = true
+								this.addLog('Android广播启动成功')
+							} else {
+								this.addLog('Android广播启动失败：' + (result.message || '未知错误'))
+								
+								// 如果收到权限相关错误
+								if (result.message && result.message.includes('permission')) {
+									this.addLog('广播失败原因：缺少权限')
+									this.showPermissionDialog()
+								}
+							}
+						})
 					} catch (e) {
 						this.addLog('处理蓝牙状态时出错: ' + e.message)
 						return
@@ -536,8 +566,8 @@
 						console.log('微信小程序广播启动成功', res)
 						this.advertising = true
 						this.addLog('微信小程序广播启动成功')
-					},
-					fail: (err) => {
+								},
+								fail: (err) => {
 						console.error('微信小程序广播启动失败', err)
 						this.addLog('微信小程序广播启动失败：' + JSON.stringify(err))
 						
@@ -599,21 +629,21 @@
 				}
 
 				this.blePeripheral.stopAdvertising((result) => {
-					if (result.code === 0) {
+						if (result.code === 0) {
 						this.advertising = false
 						this.addLog('停止广播成功')
-					} else {
+						} else {
 						this.addLog('停止广播失败：' + (result.message || '未知错误'))
 					}
 				})
 				// #endif
-				
+
 				// #ifdef MP-WEIXIN
 				// 微信小程序停止广播
 				this.stopWxAdvertising()
 				// #endif
 			},
-			
+
 			// #ifdef MP-WEIXIN
 			// 微信小程序停止广播
 			stopWxAdvertising() {
@@ -669,6 +699,21 @@
 				this.androidSettings.connectable = e.detail.value
 			},
 
+			// 包含设备名称设置
+			onIncludeDeviceNameChange(e) {
+				this.androidSettings.includeDeviceName = e.detail.value
+				if (this.androidSettings.includeDeviceName) {
+					this.addLog('警告：包含设备名称会占用大量广播空间，可能导致广播失败')
+				}
+			},
+
+			// 设置跳过权限检查
+			onSkipPermissionCheckChange(e) {
+				this.skipPermissionCheck = e.detail.value
+				this.addLog(`跳过权限检查: ${this.skipPermissionCheck ? '是' : '否'}`)
+				// 不再调用不存在的方法，仅记录设置变更
+			},
+
 			// 添加日志方法
 			addLog(message) {
 				const time = new Date().toLocaleTimeString()
@@ -720,9 +765,9 @@
 			toggleAdvertising() {
 				if (this.advertising) {
 					this.stopAdvertising()
-				} else {
+			} else {
 					this.startAdvertising()
-				}
+			}
 			},
 		},
 		onUnload() {
@@ -813,7 +858,7 @@
 		font-size: 14px;
 		color: #333;
 	}
-	
+
 	.picker-icon {
 		font-size: 12px;
 		color: #999;

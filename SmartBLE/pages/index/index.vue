@@ -35,14 +35,14 @@
 		</view>
 
 		<!-- 操作按钮组 -->
-		<view class="action-buttons">
-			<button type="primary" @click="startScan" :disabled="isScanning" :class="{'scanning': isScanning}">
-				<text class="button-icon">🔍</text>
-				<text>{{isScanning ? '扫描中...' : '搜索设备'}}</text>
-			</button>
-			<button type="default" @click="stopScan" v-if="isScanning">
-				<text class="button-icon">⏹</text>
-				<text>停止扫描</text>
+		<view class="button-group">
+			<button 
+				:type="isScanning ? 'warn' : 'primary'" 
+				@click="toggleScan" 
+				:disabled="false"
+				:class="{'button-scanning': isScanning}"
+			>
+				{{ isScanning ? '停止扫描' : '搜索设备' }}
 			</button>
 		</view>
 
@@ -339,6 +339,15 @@
 						this.isScanning = false;
 					}
 				});
+			},
+
+			// 添加切换扫描按钮的方法
+			toggleScan() {
+				if (this.isScanning) {
+					this.stopScan();
+				} else {
+					this.startScan();
+				}
 			},
 
 			// 连接设备
@@ -1021,5 +1030,33 @@
 	.custom-switch::before {
 		width: 30px;
 		height: 30px;
+	}
+
+	.button-group {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		margin-bottom: 20px;
+		width: 100%;
+	}
+
+	.button-group button {
+		width: 100%;
+		height: 88rpx;
+		font-size: 32rpx;
+		font-weight: 600;
+		border-radius: 20rpx;
+		transition: all 0.3s;
+		box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+		border: none;
+	}
+
+	.button-group button[disabled] {
+		opacity: 0.5;
+	}
+	
+	.button-scanning {
+		background: linear-gradient(to right, #ff3b30, #ff9500) !important;
+		box-shadow: 0 2px 6px rgba(255, 59, 48, 0.4);
 	}
 </style>
