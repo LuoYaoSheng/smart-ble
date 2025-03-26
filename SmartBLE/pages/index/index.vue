@@ -1045,7 +1045,7 @@
 		height: 88rpx;
 		font-size: 32rpx;
 		font-weight: 600;
-		border-radius: 20rpx;
+		border-radius: 4px;
 		transition: all 0.3s;
 		box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
 		border: none;

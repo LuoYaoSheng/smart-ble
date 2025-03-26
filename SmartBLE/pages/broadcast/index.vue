@@ -48,18 +48,23 @@
 					<text class="label">可连接：</text>
 					<switch color="#007AFF" :checked="androidSettings.connectable" @change="onConnectableChange" />
 			</view>
-			
+
 			<view class="form-item switch-item">
 				<text class="label">包含设备名称：</text>
 				<switch color="#007AFF" :checked="androidSettings.includeDeviceName" @change="onIncludeDeviceNameChange" />
 			</view>
-			
+
 			<view class="form-item switch-item">
 				<text class="label">跳过权限检查：</text>
 				<switch color="#007AFF" :checked="skipPermissionCheck" @change="onSkipPermissionCheckChange" />
 			</view>
-			</template>
+
+			<view class="form-item switch-item">
+				<text class="label">添加服务UUID：</text>
+				<switch color="#007AFF" :checked="androidSettings.addServiceUuid" @change="onAddServiceUuidChange" />
 			</view>
+			</template>
+		</view>
 
 		<view class="button-group">
 			<button 
@@ -71,12 +76,12 @@
 				{{ advertising ? '停止广播' : '开始广播' }}
 				</button>
 			<button type="default" @click="checkAdvertisingStatus">检查状态</button>
-		</view>
+				</view>
 
 		<view class="status">
 			<text>设备支持状态：{{isSupported ? '支持' : '不支持'}}</text>
 			<text>广播状态：{{advertising ? '正在广播' : '已停止'}}</text>
-				</view>
+			</view>
 
 		<view class="log">
 			<text class="log-title">日志信息：</text>
@@ -102,10 +107,11 @@
 				androidSettings: {
 					advertiseMode: 2, // 0-低功耗，1-平衡，2-低延迟
 					txPowerLevel: 3, // 0-超低，1-低，2-中，3-高
-					connectable: true
+					connectable: true,
+					includeDeviceName: false, // 默认不包含设备名称
+					addServiceUuid: false // 默认不添加服务UUID
 				},
 				androidAdvertiseData: {
-				includeDeviceName: true,
 					manufacturerId: 0x0001,
 					manufacturerData: "BLEToolkit_Test"
 				},
@@ -187,10 +193,10 @@
 				})
 					// #endif
 
-				// #ifdef MP-WEIXIN
+					// #ifdef MP-WEIXIN
 				// 微信小程序端检查BLE广播支持
 				this.checkWxBleSupport()
-				// #endif
+					// #endif
 			},
 			
 			// #ifdef MP-WEIXIN
@@ -228,7 +234,7 @@
 					}
 				})
 			},
-				// #endif
+					// #endif
 
 			// 请求Android所需权限
 			requestAndroidPermissions() {
@@ -242,43 +248,40 @@
 					return
 				}
 				
-				// 不再使用不存在的setSkipPermissionCheck方法
 				try {
 					// 使用Android原生API检查权限
 					const main = plus.android.runtimeMainActivity()
-					const Context = plus.android.importClass("android.content.Context")
 					const PackageManager = plus.android.importClass("android.content.pm.PackageManager")
+					const Build = plus.android.importClass("android.os.Build")
 					
 					// 获取所有需要的权限
-					const locationPermission = "android.permission.ACCESS_FINE_LOCATION"
+					const permissions = []
 					
-					// 检查是否有位置权限（最关键的权限）
-					if (main.checkSelfPermission(locationPermission) !== PackageManager.PERMISSION_GRANTED) {
-						this.addLog('缺少位置权限')
-						
-						// 请求位置权限
-						try {
-							const permissions = [locationPermission]
-							const Array = plus.android.importClass("java.lang.reflect.Array")
-							const StringClass = plus.android.importClass("java.lang.String")
-							
-							// 创建字符串数组
-							const permissionsArray = Array.newInstance(StringClass, permissions.length)
-							for (let i = 0; i < permissions.length; i++) {
-								Array.set(permissionsArray, i, permissions[i])
-							}
-							
-							// 请求权限
-							main.requestPermissions(permissionsArray, 1)
-							
-							// 提示用户
-							this.addLog('正在申请位置权限，请在弹出的对话框中选择"允许"')
-						} catch (e) {
-							this.addLog('请求权限失败: ' + e.message)
-							this.showPermissionDialog()
+					// 基础权限
+					permissions.push("android.permission.ACCESS_FINE_LOCATION")
+					
+					// Android 12及以上需要的蓝牙权限
+					if (Build.VERSION.SDK_INT >= 31) {
+						permissions.push("android.permission.BLUETOOTH_ADVERTISE")
+						permissions.push("android.permission.BLUETOOTH_CONNECT")
+						permissions.push("android.permission.BLUETOOTH_SCAN")
+					}
+					
+					// 检查是否有所需权限
+					const missingPermissions = []
+					for (const permission of permissions) {
+						if (main.checkSelfPermission(permission) !== PackageManager.PERMISSION_GRANTED) {
+							missingPermissions.push(permission)
 						}
+					}
+					
+					if (missingPermissions.length > 0) {
+						this.addLog('缺少以下权限：' + missingPermissions.join(', '))
+						
+						// 使用uni-app的方法逐个请求权限
+						this.requestPermissionsOneByOne(missingPermissions, 0)
 					} else {
-						this.addLog('已有位置权限')
+						this.addLog('已获得所有必要权限')
 					}
 				} catch (e) {
 					this.addLog('检查权限失败: ' + e.message)
@@ -286,11 +289,84 @@
 				}
 			},
 			
+			// 逐个请求权限
+			requestPermissionsOneByOne(permissions, index) {
+				if (index >= permissions.length) {
+					// 所有权限都已请求完毕，重新检查权限状态
+					this.checkPermissionsAfterRequest()
+					return
+				}
+				
+				const permission = permissions[index]
+				this.addLog('正在请求权限：' + permission)
+				
+				// 使用uni-app的方法请求权限
+					plus.android.requestPermissions(
+						[permission],
+					(result) => {
+						// result.granted 表示用户是否授予权限
+						if (result.granted) {
+							this.addLog('权限 ' + permission + ' 已授予')
+						} else {
+							this.addLog('权限 ' + permission + ' 被拒绝')
+						}
+						// 继续请求下一个权限
+						this.requestPermissionsOneByOne(permissions, index + 1)
+					},
+					(error) => {
+						this.addLog('请求权限 ' + permission + ' 失败：' + error.message)
+						// 继续请求下一个权限
+						this.requestPermissionsOneByOne(permissions, index + 1)
+					}
+				)
+			},
+			
+			// 权限请求完成后重新检查权限状态
+			checkPermissionsAfterRequest() {
+				try {
+					const main = plus.android.runtimeMainActivity()
+					const PackageManager = plus.android.importClass("android.content.pm.PackageManager")
+					const Build = plus.android.importClass("android.os.Build")
+					
+					const permissions = ["android.permission.ACCESS_FINE_LOCATION"]
+					if (Build.VERSION.SDK_INT >= 31) {
+						permissions.push("android.permission.BLUETOOTH_ADVERTISE")
+						permissions.push("android.permission.BLUETOOTH_CONNECT")
+						permissions.push("android.permission.BLUETOOTH_SCAN")
+					}
+					
+					let allGranted = true
+					const missingPermissions = []
+					
+					for (const permission of permissions) {
+						if (main.checkSelfPermission(permission) !== PackageManager.PERMISSION_GRANTED) {
+							allGranted = false
+							missingPermissions.push(permission)
+						}
+					}
+					
+					if (!allGranted) {
+						this.addLog('仍然缺少以下权限：' + missingPermissions.join(', '))
+						this.showPermissionDialog()
+					} else {
+						this.addLog('所有必要权限已获得，可以开始广播')
+					}
+				} catch (e) {
+					this.addLog('检查权限状态失败：' + e.message)
+					this.showPermissionDialog()
+				}
+			},
+
 			// 显示权限提示对话框
 			showPermissionDialog() {
+				const Build = plus.android.importClass("android.os.Build")
+				const content = Build.VERSION.SDK_INT >= 31 ? 
+					'需要蓝牙广播、蓝牙连接、蓝牙扫描和位置权限才能使用广播功能，请在系统设置中手动开启' :
+					'需要蓝牙和位置权限才能使用广播功能，请在系统设置中手动开启'
+				
 				uni.showModal({
 					title: '权限请求',
-					content: '需要蓝牙和位置权限才能使用广播功能，请在系统设置中手动开启',
+					content: content,
 					confirmText: '去设置',
 					success: (res) => {
 						if (res.confirm) {
@@ -358,7 +434,7 @@
 											const Intent = plus.android.importClass("android.content.Intent")
 											const enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
 											plus.android.runtimeMainActivity().startActivityForResult(enableIntent, 1)
-										} catch (e) {
+						} catch (e) {
 											this.addLog('请求开启蓝牙失败: ' + e.message)
 										}
 									}
@@ -367,18 +443,37 @@
 							return
 						}
 						
-						// 检查位置权限
+						// 检查权限
 						const context = plus.android.runtimeMainActivity()
 						const PackageManager = plus.android.importClass("android.content.pm.PackageManager")
-						const locationPermission = "android.permission.ACCESS_FINE_LOCATION"
+						const Build = plus.android.importClass("android.os.Build")
 						
-						if (context.checkSelfPermission(locationPermission) !== PackageManager.PERMISSION_GRANTED) {
-							this.addLog('缺少位置权限，Android需要位置权限才能使用蓝牙功能')
+						const permissions = []
+						permissions.push("android.permission.ACCESS_FINE_LOCATION")
+						
+						// Android 12及以上需要的蓝牙权限
+						if (Build.VERSION.SDK_INT >= 31) {
+							permissions.push("android.permission.BLUETOOTH_ADVERTISE")
+							permissions.push("android.permission.BLUETOOTH_CONNECT")
+							permissions.push("android.permission.BLUETOOTH_SCAN")
+						}
+						
+						// 检查是否有所需权限
+						let hasAllPermissions = true
+						for (const permission of permissions) {
+							if (!this.skipPermissionCheck && context.checkSelfPermission(permission) !== PackageManager.PERMISSION_GRANTED) {
+								hasAllPermissions = false
+								this.addLog('缺少权限：' + permission)
+							}
+						}
+						
+						if (!hasAllPermissions) {
+							this.addLog('缺少必要权限，Android需要相关权限才能使用蓝牙功能')
 							this.showPermissionDialog()
 							return
 						}
 						
-						// 修改广播选项，移除不存在的skipPermissionCheck选项
+						// 优化广播选项构建，参考示例文件
 						const options = {
 							settings: {
 								advertiseMode: this.modeIndex,
@@ -392,18 +487,46 @@
 							}
 						}
 						
+						// 如果启用了添加服务UUID选项，添加到广播数据中
+						if (this.androidSettings.addServiceUuid && this.serviceUUID) {
+							options.advertiseData.serviceUuid = this.serviceUUID
+							this.addLog('已添加服务UUID到广播数据')
+						}
+						
+						this.addLog('准备开始广播，模式: ' + this.modeOptions[this.modeIndex] + 
+							', 功率: ' + this.powerOptions[this.powerIndex] + 
+							', 可连接: ' + (this.androidSettings.connectable ? '是' : '否'))
+						
 						// 执行广播
 						this.blePeripheral.startAdvertising(options, (result) => {
+							console.log(result);
 							if (result.code === 0) {
 								this.advertising = true
 								this.addLog('Android广播启动成功')
-							} else {
+						} else {
 								this.addLog('Android广播启动失败：' + (result.message || '未知错误'))
 								
 								// 如果收到权限相关错误
 								if (result.message && result.message.includes('permission')) {
 									this.addLog('广播失败原因：缺少权限')
-									this.showPermissionDialog()
+									if (!this.skipPermissionCheck) {
+										// 建议用户启用跳过权限检查
+										this.addLog('尝试启用"跳过权限检查"选项可能解决此问题')
+										uni.showModal({
+											title: '权限问题',
+											content: '是否启用"跳过权限检查"选项尝试解决问题？',
+											success: (res) => {
+												if (res.confirm) {
+													this.skipPermissionCheck = true
+													this.addLog('已启用"跳过权限检查"，请再次尝试广播')
+												} else {
+													this.showPermissionDialog()
+												}
+											}
+										})
+									} else {
+										this.showPermissionDialog()
+									}
 								}
 							}
 						})
@@ -714,6 +837,14 @@
 				// 不再调用不存在的方法，仅记录设置变更
 			},
 
+			// 添加服务UUID设置
+			onAddServiceUuidChange(e) {
+				this.androidSettings.addServiceUuid = e.detail.value
+				if (this.androidSettings.addServiceUuid) {
+					this.addLog('提示：添加服务UUID会占用广播空间，请确保数据不会过大')
+				}
+			},
+
 			// 添加日志方法
 			addLog(message) {
 				const time = new Date().toLocaleTimeString()
@@ -742,7 +873,7 @@
 					if (result.code === 0) {
 						this.advertising = true
 						this.addLog('Android广播启动成功')
-					} else {
+						} else {
 						this.addLog('Android广播启动失败：' + (result.message || '未知错误'))
 						if (result.message && result.message.includes('permission')) {
 							this.addLog('广播失败原因：缺少权限')
