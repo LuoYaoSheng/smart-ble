@@ -188,7 +188,7 @@
 					
 					// 检查支持后再请求权限
 					if (this.isSupported && this.platform === 'android') {
-						this.requestAndroidPermissions()
+						// this.requestAndroidPermissions() // 移除这里的调用
 					}
 				})
 					// #endif
@@ -237,14 +237,19 @@
 					// #endif
 
 			// 请求Android所需权限
-			requestAndroidPermissions() {
-				if (this.platform !== 'android') return
+			requestAndroidPermissions(onGranted, onDenied) { // 添加回调参数
+				if (this.platform !== 'android') {
+					// 非Android平台直接认为成功
+					if(onGranted) onGranted(); 
+					return;
+				}
 				
 				this.addLog('检查Android权限...')
 				
 				// 确保blePeripheral已初始化
 				if (!this.blePeripheral) {
 					this.addLog('错误：插件未初始化')
+					if(onDenied) onDenied('插件未初始化');
 					return
 				}
 				
@@ -264,7 +269,7 @@
 					if (Build.VERSION.SDK_INT >= 31) {
 						permissions.push("android.permission.BLUETOOTH_ADVERTISE")
 						permissions.push("android.permission.BLUETOOTH_CONNECT")
-						permissions.push("android.permission.BLUETOOTH_SCAN")
+						// permissions.push("android.permission.BLUETOOTH_SCAN") // 广播似乎不需要SCAN权限
 					}
 					
 					// 检查是否有所需权限
@@ -277,23 +282,23 @@
 					
 					if (missingPermissions.length > 0) {
 						this.addLog('缺少以下权限：' + missingPermissions.join(', '))
-						
-						// 使用uni-app的方法逐个请求权限
-						this.requestPermissionsOneByOne(missingPermissions, 0)
+						this.requestPermissionsOneByOne(missingPermissions, 0, onGranted, onDenied)
 					} else {
 						this.addLog('已获得所有必要权限')
+						if(onGranted) onGranted();
 					}
 				} catch (e) {
 					this.addLog('检查权限失败: ' + e.message)
+					if(onDenied) onDenied('检查权限失败: ' + e.message);
 					this.showPermissionDialog()
 				}
 			},
 			
 			// 逐个请求权限
-			requestPermissionsOneByOne(permissions, index) {
+			requestPermissionsOneByOne(permissions, index, onGranted, onDenied) { // 添加回调参数
 				if (index >= permissions.length) {
-					// 所有权限都已请求完毕，重新检查权限状态
-					this.checkPermissionsAfterRequest()
+					// 所有权限都已请求完毕，重新检查最终状态
+					this.checkPermissionsAfterRequest(onGranted, onDenied);
 					return
 				}
 				
@@ -301,28 +306,29 @@
 				this.addLog('正在请求权限：' + permission)
 				
 				// 使用uni-app的方法请求权限
-					plus.android.requestPermissions(
-						[permission],
+				plus.android.requestPermissions(
+					[permission],
 					(result) => {
-						// result.granted 表示用户是否授予权限
-						if (result.granted) {
+						if (result && result.granted && result.granted.includes(permission)) {
 							this.addLog('权限 ' + permission + ' 已授予')
+						} else if (result && result.deniedAlways && result.deniedAlways.includes(permission)){
+							this.addLog('权限 ' + permission + ' 被永久拒绝')
 						} else {
 							this.addLog('权限 ' + permission + ' 被拒绝')
 						}
 						// 继续请求下一个权限
-						this.requestPermissionsOneByOne(permissions, index + 1)
+						this.requestPermissionsOneByOne(permissions, index + 1, onGranted, onDenied)
 					},
 					(error) => {
 						this.addLog('请求权限 ' + permission + ' 失败：' + error.message)
-						// 继续请求下一个权限
-						this.requestPermissionsOneByOne(permissions, index + 1)
+						// 即使失败也继续请求下一个权限
+						this.requestPermissionsOneByOne(permissions, index + 1, onGranted, onDenied)
 					}
 				)
 			},
 			
 			// 权限请求完成后重新检查权限状态
-			checkPermissionsAfterRequest() {
+			checkPermissionsAfterRequest(onGranted, onDenied) { // 添加回调参数
 				try {
 					const main = plus.android.runtimeMainActivity()
 					const PackageManager = plus.android.importClass("android.content.pm.PackageManager")
@@ -332,7 +338,7 @@
 					if (Build.VERSION.SDK_INT >= 31) {
 						permissions.push("android.permission.BLUETOOTH_ADVERTISE")
 						permissions.push("android.permission.BLUETOOTH_CONNECT")
-						permissions.push("android.permission.BLUETOOTH_SCAN")
+						// permissions.push("android.permission.BLUETOOTH_SCAN")
 					}
 					
 					let allGranted = true
@@ -346,13 +352,16 @@
 					}
 					
 					if (!allGranted) {
-						this.addLog('仍然缺少以下权限：' + missingPermissions.join(', '))
+						this.addLog('请求后仍然缺少以下权限：' + missingPermissions.join(', '))
+						if(onDenied) onDenied('缺少权限: ' + missingPermissions.join(', '));
 						this.showPermissionDialog()
 					} else {
-						this.addLog('所有必要权限已获得，可以开始广播')
+						this.addLog('所有必要权限已获得')
+						if(onGranted) onGranted();
 					}
 				} catch (e) {
 					this.addLog('检查权限状态失败：' + e.message)
+					if(onDenied) onDenied('检查权限状态失败: ' + e.message);
 					this.showPermissionDialog()
 				}
 			},
@@ -416,64 +425,10 @@
 					return
 				}
 				
-				// Android平台先检查权限
 				if (this.platform === 'android') {
+					// 权限检查和蓝牙状态检查已移至 checkBluetoothAndPermissionsBeforeAdvertise
 					try {
-						// 检查蓝牙是否已开启
-						const BluetoothAdapter = plus.android.importClass("android.bluetooth.BluetoothAdapter")
-						const bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-						if (!bluetoothAdapter.isEnabled()) {
-							this.addLog('蓝牙未开启，请先打开蓝牙')
-							uni.showModal({
-								title: '提示',
-								content: '请先开启蓝牙',
-								success: (res) => {
-									if (res.confirm) {
-										// 请求打开蓝牙
-										try {
-											const Intent = plus.android.importClass("android.content.Intent")
-											const enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-											plus.android.runtimeMainActivity().startActivityForResult(enableIntent, 1)
-						} catch (e) {
-											this.addLog('请求开启蓝牙失败: ' + e.message)
-										}
-									}
-								}
-							})
-							return
-						}
-						
-						// 检查权限
-						const context = plus.android.runtimeMainActivity()
-						const PackageManager = plus.android.importClass("android.content.pm.PackageManager")
-						const Build = plus.android.importClass("android.os.Build")
-						
-						const permissions = []
-						permissions.push("android.permission.ACCESS_FINE_LOCATION")
-						
-						// Android 12及以上需要的蓝牙权限
-						if (Build.VERSION.SDK_INT >= 31) {
-							permissions.push("android.permission.BLUETOOTH_ADVERTISE")
-							permissions.push("android.permission.BLUETOOTH_CONNECT")
-							permissions.push("android.permission.BLUETOOTH_SCAN")
-						}
-						
-						// 检查是否有所需权限
-						let hasAllPermissions = true
-						for (const permission of permissions) {
-							if (!this.skipPermissionCheck && context.checkSelfPermission(permission) !== PackageManager.PERMISSION_GRANTED) {
-								hasAllPermissions = false
-								this.addLog('缺少权限：' + permission)
-							}
-						}
-						
-						if (!hasAllPermissions) {
-							this.addLog('缺少必要权限，Android需要相关权限才能使用蓝牙功能')
-							this.showPermissionDialog()
-							return
-						}
-						
-						// 优化广播选项构建，参考示例文件
+						// 构建广播选项
 						const options = {
 							settings: {
 								advertiseMode: this.modeIndex,
@@ -482,7 +437,7 @@
 							},
 							advertiseData: {
 								includeDeviceName: this.androidSettings.includeDeviceName,
-								manufacturerId: parseInt(this.manufacturerId, 16),
+								manufacturerId: parseInt(this.manufacturerId, 16) || 0, // 添加默认值以防解析失败
 								manufacturerData: this.manufacturerData
 							}
 						}
@@ -503,45 +458,27 @@
 							if (result.code === 0) {
 								this.advertising = true
 								this.addLog('Android广播启动成功')
-						} else {
+							} else {
 								this.addLog('Android广播启动失败：' + (result.message || '未知错误'))
-								
-								// 如果收到权限相关错误
+								// 权限问题在请求时处理，这里只显示错误
 								if (result.message && result.message.includes('permission')) {
-									this.addLog('广播失败原因：缺少权限')
-									if (!this.skipPermissionCheck) {
-										// 建议用户启用跳过权限检查
-										this.addLog('尝试启用"跳过权限检查"选项可能解决此问题')
-										uni.showModal({
-											title: '权限问题',
-											content: '是否启用"跳过权限检查"选项尝试解决问题？',
-											success: (res) => {
-												if (res.confirm) {
-													this.skipPermissionCheck = true
-													this.addLog('已启用"跳过权限检查"，请再次尝试广播')
-												} else {
-													this.showPermissionDialog()
-												}
-											}
-										})
-									} else {
-										this.showPermissionDialog()
-									}
+									this.addLog('广播失败原因可能与权限相关，请检查应用权限设置')
+									// this.showPermissionDialog() // 不再自动弹出
 								}
 							}
 						})
 					} catch (e) {
-						this.addLog('处理蓝牙状态时出错: ' + e.message)
+						this.addLog('执行广播时出错: ' + e.message)
 						return
 					}
 				} else if (this.platform === 'ios') {
-					// iOS直接执行广播
+					// iOS直接执行广播 (iOS 权限通常在调用 API 时系统处理)
 					this.startIosBroadcast()
 				}
 				// #endif
 				
 				// #ifdef MP-WEIXIN
-				// 微信小程序广播逻辑
+				// 微信小程序广播逻辑 (蓝牙状态检查已移至 checkBluetoothAndPermissionsBeforeAdvertise)
 				this.startWxAdvertising()
 				// #endif
 			},
@@ -896,9 +833,87 @@
 			toggleAdvertising() {
 				if (this.advertising) {
 					this.stopAdvertising()
-			} else {
-					this.startAdvertising()
-			}
+				} else {
+					// 点击开始广播时，先检查蓝牙和权限
+					this.checkBluetoothAndPermissionsBeforeAdvertise();
+				}
+			},
+			
+			// 检查蓝牙状态和权限（广播前）
+			checkBluetoothAndPermissionsBeforeAdvertise() {
+				// 1. 检查蓝牙状态
+				// #ifdef APP-PLUS
+				try {
+					const BluetoothAdapter = plus.android.importClass("android.bluetooth.BluetoothAdapter")
+					const bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+					if (!bluetoothAdapter || !bluetoothAdapter.isEnabled()) {
+						this.addLog('蓝牙未开启，请先打开蓝牙')
+						uni.showModal({
+							title: '提示',
+							content: '请先开启系统蓝牙',
+							confirmText: '去开启',
+							success: (res) => {
+								if (res.confirm) {
+									// 尝试请求打开蓝牙
+									try {
+										const Intent = plus.android.importClass("android.content.Intent")
+										const enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+										plus.android.runtimeMainActivity().startActivityForResult(enableIntent, 1)
+									} catch (e) {
+										this.addLog('请求开启蓝牙失败: ' + e.message)
+										// 无法自动开启，提示用户手动开启
+										uni.showToast({ title: '请在系统设置中打开蓝牙', icon: 'none' })
+									}
+								}
+							}
+						})
+						return; // 蓝牙未开启，停止后续操作
+					}
+					// 蓝牙已开启，继续检查权限
+					this.addLog('蓝牙已开启');
+					this.requestAndroidPermissions(
+						() => { // onGranted
+							this.addLog('权限检查通过，开始广播...');
+							this.startAdvertising();
+						},
+						(errMsg) => { // onDenied
+							this.addLog('权限检查未通过: ' + errMsg + ', 无法开始广播');
+							// 可以在这里添加额外的提示
+						}
+					);
+				} catch (e) {
+					this.addLog('检查蓝牙状态时出错: ' + e.message)
+				}
+				// #endif
+				
+				// #ifdef MP-WEIXIN
+				wx.openBluetoothAdapter({
+					mode: 'peripheral',
+					success: (res) => {
+						this.addLog('微信小程序蓝牙适配器已开启');
+						// 微信小程序广播权限通常在创建Server时处理
+						if (this.wxBLEServer) {
+							this.startWxAdvertising();
+						} else {
+							this.addLog('错误：微信BLE服务器未创建，请稍后重试');
+							// 尝试重新创建
+							this.createBLEPeripheralServer(() => {
+								this.startWxAdvertising();
+							});
+						}
+					},
+					fail: (err) => {
+						this.addLog('错误: 微信小程序蓝牙适配器未开启或异常: ' + JSON.stringify(err));
+						if (err.errCode === 10001) {
+							uni.showModal({
+								title: '提示',
+								content: '请先开启系统蓝牙',
+								showCancel: false
+							});
+						}
+					}
+				});
+				// #endif
 			},
 		},
 		onUnload() {

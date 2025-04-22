@@ -180,10 +180,6 @@
 			});
 
 			// #ifdef MP-WEIXIN
-			// 请求蓝牙和定位权限
-			this.requestWxPermissions();
-			// #endif
-
 			// 监听特征值变化
 			uni.onBLECharacteristicValueChange(res => {
 				const value = Array.from(new Uint8Array(res.value))
@@ -191,6 +187,7 @@
 					.join('');
 				this.addLog('接收', `收到数据：${value}`);
 			});
+			// #endif
 		},
 		// 导航栏按钮点击事件处理
 		onNavigationBarButtonTap(e) {
@@ -202,36 +199,10 @@
 		},
 		methods: {
 			// #ifdef MP-WEIXIN
-			// 请求微信小程序的蓝牙和定位权限
+			// 请求微信小程序的蓝牙权限（移除了定位权限请求）
 			requestWxPermissions() {
-				// 请求定位权限
 				wx.getSetting({
 					success: (res) => {
-						if (!res.authSetting['scope.userLocation']) {
-							wx.authorize({
-								scope: 'scope.userLocation',
-								success: () => {
-									console.log('定位权限授权成功');
-									this.addLog('system', '定位权限授权成功');
-								},
-								fail: (err) => {
-									console.error('定位权限授权失败', err);
-									this.addLog('error', '定位权限授权失败，请在设置中开启');
-									// 引导用户去设置页面开启权限
-									wx.showModal({
-										title: '提示',
-										content: '需要获取您的地理位置，请在设置中开启定位权限',
-										confirmText: '去设置',
-										success: (res) => {
-											if (res.confirm) {
-												wx.openSetting();
-											}
-										}
-									});
-								}
-							});
-						}
-
 						// 请求蓝牙权限
 						if (!res.authSetting['scope.bluetooth']) {
 							wx.authorize({
@@ -288,6 +259,56 @@
 
 			// 开始扫描
 			startScan() {
+				// #ifdef MP-WEIXIN
+				// 微信小程序需要先检查并请求定位权限
+				wx.getSetting({
+					success: (res) => {
+						if (!res.authSetting['scope.userLocation']) {
+							this.addLog('系统', '请求定位权限...');
+							wx.authorize({
+								scope: 'scope.userLocation',
+								success: () => {
+									this.addLog('系统', '定位权限授权成功');
+									// 权限获取成功后，继续执行扫描
+									this.executeScan();
+								},
+								fail: (err) => {
+									console.error('定位权限授权失败', err);
+									this.addLog('错误', '定位权限授权失败，无法开始扫描');
+									this.isScanning = false; // 重置扫描状态
+									wx.showModal({
+										title: '提示',
+										content: '蓝牙扫描需要获取您的地理位置，请在设置中开启定位权限',
+										confirmText: '去设置',
+										success: (modalRes) => {
+											if (modalRes.confirm) {
+												wx.openSetting();
+											}
+										}
+									});
+								}
+							});
+						} else {
+							// 已有定位权限，直接执行扫描
+							this.executeScan();
+						}
+					},
+					fail: (err) => {
+						console.error('检查定位权限设置失败', err);
+						this.addLog('错误', '检查定位权限设置失败');
+						this.isScanning = false; // 重置扫描状态
+					}
+				});
+				// #endif
+				
+				// #ifndef MP-WEIXIN
+				// 其他平台直接执行扫描
+				this.executeScan();
+				// #endif
+			},
+			
+			// 实际执行扫描的操作
+			executeScan(){
 				this.isScanning = true;
 				this.devices = [];
 
@@ -309,6 +330,7 @@
 							},
 							fail: err => {
 								this.addLog('错误', '搜索设备失败：' + JSON.stringify(err));
+								this.isScanning = false; // 重置扫描状态
 							}
 						});
 					},
@@ -346,9 +368,85 @@
 				if (this.isScanning) {
 					this.stopScan();
 				} else {
-					this.startScan();
+					// 点击开始扫描时，先检查蓝牙状态和权限
+					this.checkBluetoothAndPermissionsBeforeScan();
 				}
 			},
+
+			// 检查蓝牙状态和权限（扫描前）
+			checkBluetoothAndPermissionsBeforeScan() {
+				uni.openBluetoothAdapter({
+					success: (res) => {
+						this.addLog('系统', '蓝牙适配器已开启');
+						// 蓝牙正常，继续检查权限（仅微信小程序需要显式检查定位）
+						// #ifdef MP-WEIXIN
+						this.checkAndRequestWxLocationPermission();
+						// #endif
+						// #ifndef MP-WEIXIN
+						// 其他平台直接开始扫描 (App平台通常在API调用时隐式处理权限)
+						this.executeScan();
+						// #endif
+					},
+					fail: (err) => {
+						this.addLog('错误', '蓝牙适配器未开启或异常: ' + JSON.stringify(err));
+						// 检查是否是蓝牙未开启的常见错误码 (微信: 10001)
+						if (err.errCode === 10001) {
+							uni.showModal({
+								title: '提示',
+								content: '请先开启系统蓝牙',
+								showCancel: false
+							});
+						} else {
+							uni.showToast({
+								title: '蓝牙初始化失败',
+								icon: 'none'
+							});
+						}
+					}
+				});
+			},
+			
+			// #ifdef MP-WEIXIN
+			// 检查并请求微信小程序的定位权限
+			checkAndRequestWxLocationPermission() {
+				wx.getSetting({
+					success: (res) => {
+						if (!res.authSetting['scope.userLocation']) {
+							this.addLog('系统', '请求定位权限...');
+							wx.authorize({
+								scope: 'scope.userLocation',
+								success: () => {
+									this.addLog('系统', '定位权限授权成功');
+									this.executeScan(); // 权限获取成功，开始扫描
+								},
+								fail: (err) => {
+									console.error('定位权限授权失败', err);
+									this.addLog('错误', '定位权限授权失败，无法开始扫描');
+									wx.showModal({
+										title: '提示',
+										content: '蓝牙扫描需要获取您的地理位置，请在设置中开启定位权限',
+										confirmText: '去设置',
+										success: (modalRes) => {
+											if (modalRes.confirm) {
+												wx.openSetting();
+											}
+										}
+									});
+								}
+							});
+						} else {
+							// 已有定位权限，直接执行扫描
+							this.addLog('系统', '已有定位权限');
+							this.executeScan();
+						}
+					},
+					fail: (err) => {
+						console.error('检查定位权限设置失败', err);
+						this.addLog('错误', '检查定位权限设置失败');
+					}
+				});
+			},
+			// #endif
 
 			// 连接设备
 			connectDevice(device) {

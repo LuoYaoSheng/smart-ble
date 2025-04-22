@@ -1,5 +1,5 @@
 {
-	"name": "LysBlePeripheral",
+	"name": "BLE广播多端兼容版",
 	"id": "LysBlePeripheral",
 	"version": "1.0.0",
 	"description": "BLE广播插件，支持自定义广播数据、扫描响应等功能",
