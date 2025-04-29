@@ -429,12 +429,13 @@
 			}
 		},
 		// #ifdef MP-WEIXIN
-		onShareAppMessage() {
+		onShareAppMessage(res) {
+			console.log('分享来源:', res.from);
 			return {
-				title: '智能蓝牙助手',
-				path: '/pages/about/index',
-				imageUrl: '/static/logo.png'
-			}
+				title: '关于 BLE Toolkit+ 应用', // 分享标题
+				path: '/pages/about/index', // 用户点击分享卡片后跳转的页面路径
+				// imageUrl: '/static/logo.png' // 可选：自定义分享图片路径
+			};
 		},
 		onShareTimeline() {
 			return {

@@ -21,7 +21,21 @@
 	export default {
 		data() {
 			return {
-				versionHistory: [{
+				versionHistory: [
+				{
+					version: 'v1.0.3',
+					date: '2024-04-29',
+					updates: [
+						{ type: '优化', content: '权限请求优化：按需请求权限（如地理位置、蓝牙广播），符合平台规范' },
+						{ type: '优化', content: '权限流程优化：增加蓝牙状态检查，优化Android 12+蓝牙权限处理' },
+						{ type: '优化', content: '首页交互优化：点击设备列表项查看实时广播数据，增加独立连接按钮' },
+						{ type: '新增', content: '新增广播信息弹窗复制代码功能，并优化弹窗布局' },
+						{ type: '新增', content: '微信小程序端所有主要页面增加分享功能' },
+						{ type: '修复', content: '修正应用名称显示为 \"BLE Toolkit+\"' },
+						{ type: '优化', content: '统一首页和广播页按钮样式' }
+					]
+				}, 
+				{
 					version: 'v1.0.2',
 					date: '2024-03-28',
 					updates: [{

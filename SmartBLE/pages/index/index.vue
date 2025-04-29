@@ -54,7 +54,7 @@
 			</view>
 			<scroll-view scroll-y class="device-scroll">
 				<view class="device-item" v-for="(device, index) in filteredDevices" :key="index"
-					@click="connectDevice(device)">
+					@click="showAdvertisingData(device)">
 					<view class="device-main">
 						<view class="device-info">
 							<view class="name-container">
@@ -63,8 +63,12 @@
 							</view>
 							<text class="device-id">{{formatDeviceId(device.deviceId)}}</text>
 						</view>
-						<view class="device-status" :class="{'connected': device.connected}">
-							<text>{{device.connected ? '已连接' : '点击连接'}}</text>
+						<view class="device-actions">
+							<button class="connect-btn" size="mini" type="primary" 
+								:disabled="device.connected" 
+								@click.stop="connectDevice(device)">
+								{{device.connected ? '已连接' : '连接'}}
+							</button>
 						</view>
 					</view>
 					<view class="device-details">
@@ -129,6 +133,23 @@
 				</scroll-view>
 			</view>
 		</view>
+
+		<!-- 广播信息弹窗 -->
+		<view class="modal-overlay" v-if="showAdvDataModal" @click.stop="closeAdvDataModal">
+			<view class="modal-content" @click.stop>
+				<view class="modal-header">
+					<text class="modal-title">广播信息</text>
+					<text class="modal-close" @click="closeAdvDataModal">×</text>
+				</view>
+				<scroll-view scroll-y class="modal-scroll">
+					<textarea class="modal-textarea" :value="advDataModalContent" disabled selectable></textarea>
+				</scroll-view>
+				<view class="modal-actions">
+					<button class="modal-button modal-button-copy" type="primary" @click="copyAdvData">复制代码</button>
+					<button class="modal-button modal-button-close" @click="closeAdvDataModal">关闭</button>
+				</view>
+			</view>
+		</view>
 	</view>
 </template>
 
@@ -147,7 +168,11 @@
 				currentCharacteristic: '',
 				filterRSSI: -100,
 				filterPrefix: '',
-				hideNoName: false
+				hideNoName: false,
+				// 自定义弹窗相关
+				showAdvDataModal: false,
+				advDataModalContent: '',
+				modalDeviceId: null // 新增：记录当前弹窗对应的设备ID
 			}
 		},
 		computed: {
@@ -320,10 +345,32 @@
 								this.addLog('系统', '开始搜索设备');
 								uni.onBluetoothDeviceFound(res => {
 									const devices = res.devices;
-									devices.forEach(device => {
-										if (!this.devices.find(d => d.deviceId ===
-												device.deviceId)) {
-											this.devices.push(device);
+									devices.forEach(newDevice => { // 使用newDevice避免覆盖外部device变量
+										const existingDeviceIndex = this.devices.findIndex(d => d.deviceId === newDevice.deviceId);
+										let updatedDeviceData; // 存储更新后的设备数据
+										
+										if (existingDeviceIndex === -1) {
+											// 添加新设备，包含广播数据
+											updatedDeviceData = {
+												...newDevice,
+												advertisDataHex: this.ab2hex(newDevice.advertisData), // 存储为Hex字符串
+												advertisServiceUUIDs: newDevice.advertisServiceUUIDs || []
+											};
+											this.devices.push(updatedDeviceData);
+										} else {
+											// 更新现有设备的RSSI和广播数据 (某些设备广播内容会变)
+											updatedDeviceData = {
+												...this.devices[existingDeviceIndex], // 保留原有信息如连接状态
+												...newDevice, // 更新蓝牙模块报告的信息（RSSI, name等）
+												advertisDataHex: this.ab2hex(newDevice.advertisData),
+												advertisServiceUUIDs: newDevice.advertisServiceUUIDs || []
+											};
+											this.$set(this.devices, existingDeviceIndex, updatedDeviceData);
+										}
+										
+										// 如果弹窗打开且对应当前设备，则更新弹窗内容
+										if (this.showAdvDataModal && this.modalDeviceId === newDevice.deviceId) {
+											this.updateModalContent(updatedDeviceData);
 										}
 									});
 								});
@@ -624,10 +671,71 @@
 			// 格式化设备ID显示
 			formatDeviceId(deviceId) {
 				if (!deviceId) return '';
-				return deviceId;
-				// 只显示设备ID的后12位，前面用...代替
 				return deviceId.length > 12 ? '...' + deviceId.slice(-12) : deviceId;
+			},
+
+			// ArrayBuffer转16进制字符串
+			ab2hex(buffer) {
+				if (!buffer) return '';
+				const hexArr = Array.prototype.map.call(
+					new Uint8Array(buffer),
+					function(bit) {
+						return ('00' + bit.toString(16)).slice(-2)
+					}
+				)
+				return hexArr.join('');
+			},
+			
+			// 显示广播数据
+			showAdvertisingData(device) {
+				let content = `设备ID: ${this.formatDeviceId(device.deviceId)}\n`;
+				content += `名称: ${device.name || 'N/A'}\n`;
+				content += `RSSI: ${device.RSSI} dBm\n\n`;
+				content += `广播服务UUIDs:\n${device.advertisServiceUUIDs.length > 0 ? device.advertisServiceUUIDs.join('\n') : '无'}\n\n`;
+				content += `广播数据 (Hex):\n${device.advertisDataHex || 'N/A'}`;
+				
+				// 更新弹窗内容并显示
+				this.advDataModalContent = content;
+				this.showAdvDataModal = true;
+				this.modalDeviceId = device.deviceId; // 记录当前显示的设备ID
+			},
+			
+			// 关闭广播信息弹窗
+			closeAdvDataModal() {
+				this.showAdvDataModal = false;
+				this.modalDeviceId = null; // 清除记录
+			},
+			
+			// 更新弹窗内容（用于实时刷新）
+			updateModalContent(device) {
+				let content = `设备ID: ${this.formatDeviceId(device.deviceId)}\n`;
+				content += `名称: ${device.name || 'N/A'}\n`;
+				content += `RSSI: ${device.RSSI} dBm\n\n`; // RSSI 也会实时更新
+				content += `广播服务UUIDs:\n${device.advertisServiceUUIDs.length > 0 ? device.advertisServiceUUIDs.join('\n') : '无'}\n\n`;
+				content += `广播数据 (Hex):\n${device.advertisDataHex || 'N/A'}`;
+				this.advDataModalContent = content;
+			},
+			
+			// 复制代码到剪贴板
+			copyAdvData() {
+				uni.setClipboardData({
+					data: this.advDataModalContent,
+					success: () => {
+						uni.showToast({ title: '已复制', icon: 'success', duration: 1500 });
+					}
+				});
+			},
+			
+			// #ifdef MP-WEIXIN
+			onShareAppMessage(res) {
+				console.log('分享来源:', res.from);
+				return {
+					title: '分享一个好用的BLE工具: BLE Toolkit+', // 分享标题
+					path: '/pages/index/index', // 用户点击分享卡片后跳转的页面路径
+					// imageUrl: '/static/logo.png' // 可选：自定义分享图片路径
+				};
 			}
+			// #endif
 		},
 		onUnload() {
 			// 页面卸载时断开连接
@@ -907,20 +1015,24 @@
 		white-space: nowrap;
 	}
 
-	.device-status {
-		padding: 8rpx 20rpx;
-		border-radius: 100rpx;
-		background-color: #f5f5f5;
-		font-size: 24rpx;
-		color: #666;
-		font-weight: 500;
-		transition: all 0.3s;
+	.device-actions {
+		display: flex;
+		align-items: center;
 	}
 
-	.device-status.connected {
-		background: linear-gradient(135deg, #34C759 0%, #30D158 100%);
-		color: #fff;
-		box-shadow: 0 2rpx 8rpx rgba(52, 199, 89, 0.3);
+	.connect-btn {
+		margin-left: 20rpx; /* 与设备信息保持距离 */
+		line-height: 1.8; /* 调整按钮内文字行高 */
+		padding: 0 24rpx; /* 调整按钮内边距 */
+		border-radius: 100rpx; /* 圆形按钮 */
+		font-size: 24rpx;
+		font-weight: 500;
+	}
+
+	.connect-btn[disabled] {
+		background-color: #c8c7cc !important; /* 禁用状态颜色 */
+		color: #ffffff !important;
+		opacity: 0.7;
 	}
 
 	.device-details {
@@ -1156,5 +1268,98 @@
 	.button-scanning {
 		background: linear-gradient(to right, #ff3b30, #ff9500) !important;
 		box-shadow: 0 2px 6px rgba(255, 59, 48, 0.4);
+	}
+
+	/* 自定义弹窗样式 */
+	.modal-overlay {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: rgba(0, 0, 0, 0.5);
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		z-index: 999;
+	}
+
+	.modal-content {
+		background-color: #fff;
+		padding: 40rpx;
+		border-radius: 20rpx;
+		width: 80%;
+		max-width: 600rpx;
+		box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.1);
+		display: flex;
+		flex-direction: column;
+	}
+
+	.modal-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 30rpx;
+	}
+
+	.modal-title {
+		font-size: 34rpx;
+		font-weight: 600;
+		color: #333;
+	}
+
+	.modal-close {
+		font-size: 40rpx;
+		color: #999;
+		cursor: pointer;
+	}
+
+	.modal-scroll {
+		max-height: 80vh; /* 再次增加滚动区域最大高度 */
+		margin-bottom: 20rpx; /* 减少与下方按钮组的间距 */
+	}
+
+	.modal-textarea {
+		width: 100%;
+		min-height: 200rpx; /* 最小高度 */
+		max-height: 70vh; /* 再次增加文本域最大高度 */
+		padding: 20rpx;
+		border: 1px solid #eee;
+		border-radius: 10rpx;
+		font-size: 26rpx;
+		line-height: 1.6;
+		background-color: #f9f9f9;
+		color: #333;
+		box-sizing: border-box;
+	}
+
+	.modal-button {
+		margin-top: 10rpx; /* 按钮间距 */
+	}
+
+	.modal-button-close {
+		background-color: #f0f0f0;
+		color: #333;
+	}
+
+	.modal-button-close:active {
+		background-color: #e0e0e0;
+	}
+
+	.modal-actions {
+		display: flex;
+		justify-content: space-between; /* 或 space-around, 或 gap */
+		gap: 20rpx; /* 按钮之间的间距 */
+		margin-top: 20rpx; /* 按钮组与上方内容的间距 */
+	}
+
+	.modal-actions .modal-button {
+		flex: 1; /* 让按钮平分宽度 */
+		margin-top: 0; /* 移除单个按钮的上边距 */
+	}
+
+	/* 可以为复制代码按钮单独加个类，如果需要特定样式 */
+	.modal-button-copy {
+		/* 自定义复制代码按钮样式 */
 	}
 </style>

@@ -915,6 +915,17 @@
 				});
 				// #endif
 			},
+			
+			// #ifdef MP-WEIXIN
+			onShareAppMessage(res) {
+				console.log('分享来源:', res.from);
+				return {
+					title: '分享一个好用的BLE工具: BLE Toolkit+ - 广播', // 分享标题
+					path: '/pages/index/index', // 用户点击分享卡片后跳转的页面路径
+					// imageUrl: '/static/logo.png' // 可选：自定义分享图片路径
+				};
+			}
+			// #endif
 		},
 		onUnload() {
 			// 页面卸载时停止广播

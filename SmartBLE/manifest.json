@@ -2,7 +2,7 @@
     "name" : "BLE Toolkit+",
     "appid" : "__UNI__F150954",
     "description" : "蓝牙调试工具",
-    "versionName" : "1.0.2",
+    "versionName" : "1.0.3",
     "versionCode" : "100",
     "transformPx" : false,
     "app-plus" : {

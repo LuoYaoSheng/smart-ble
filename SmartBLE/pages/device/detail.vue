@@ -841,6 +841,21 @@
 				
 				return '无法解析';
 			},
+
+			// #ifdef MP-WEIXIN
+			onShareAppMessage(res) {
+				console.log('分享来源:', res.from);
+				const title = this.device ? `分享设备: ${this.device.name || this.device.deviceId}` : '分享一个好用的BLE工具: BLE Toolkit+';
+				// 分享当前设备详情页可能意义不大，通常会分享首页让其他人扫描
+				// 如果确实需要分享详情页，需要确保路径参数正确传递和处理
+				return {
+					title: title,
+					path: '/pages/index/index', // 统一分享到首页
+					// path: `/pages/device/detail?deviceId=${this.deviceId}`, // 如果要分享详情页
+					// imageUrl: '/static/logo.png' 
+				};
+			}
+			// #endif
 		},
 		onUnload() {
 			// 设置用户主动断开标志
