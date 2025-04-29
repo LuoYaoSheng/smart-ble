@@ -23,6 +23,16 @@
 			return {
 				versionHistory: [
 				{
+					version: 'v1.0.4',
+					date: '2024-04-29',
+					updates: [
+						{ type: '优化', content: '扫描性能优化：实现设备发现节流处理，防止UI卡死' },
+						{ type: '优化', content: '扫描性能优化：增加扫描超时自动停止功能（默认5秒）' },
+						{ type: '优化', content: '扫描性能优化：限制设备列表显示数量（信号最强100个）' },
+						{ type: '优化', content: '扫描性能优化：调整节流间隔，平衡响应速度与稳定性' }
+					]
+				},
+				{
 					version: 'v1.0.3',
 					date: '2024-04-29',
 					updates: [

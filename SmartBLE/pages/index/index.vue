@@ -172,7 +172,14 @@
 				// 自定义弹窗相关
 				showAdvDataModal: false,
 				advDataModalContent: '',
-				modalDeviceId: null // 新增：记录当前弹窗对应的设备ID
+				modalDeviceId: null, // 新增：记录当前弹窗对应的设备ID
+				// 节流相关
+				deviceBuffer: [],
+				throttleTimeout: null,
+				throttleInterval: 1000, // ms, 缩短节流间隔以加快显示
+				// 自动停止扫描相关
+				scanDuration: 5000, // ms, 自动停止扫描的时长，例如20秒
+				scanStopTimer: null
 			}
 		},
 		computed: {
@@ -336,6 +343,12 @@
 			executeScan(){
 				this.isScanning = true;
 				this.devices = [];
+				// 清空缓冲区和定时器
+				this.deviceBuffer = [];
+				if (this.throttleTimeout) clearTimeout(this.throttleTimeout);
+				if (this.scanStopTimer) clearTimeout(this.scanStopTimer);
+				this.throttleTimeout = null;
+				this.scanStopTimer = null;
 
 				uni.openBluetoothAdapter({
 					success: () => {
@@ -345,35 +358,24 @@
 								this.addLog('系统', '开始搜索设备');
 								uni.onBluetoothDeviceFound(res => {
 									const devices = res.devices;
-									devices.forEach(newDevice => { // 使用newDevice避免覆盖外部device变量
-										const existingDeviceIndex = this.devices.findIndex(d => d.deviceId === newDevice.deviceId);
-										let updatedDeviceData; // 存储更新后的设备数据
-										
-										if (existingDeviceIndex === -1) {
-											// 添加新设备，包含广播数据
-											updatedDeviceData = {
-												...newDevice,
-												advertisDataHex: this.ab2hex(newDevice.advertisData), // 存储为Hex字符串
-												advertisServiceUUIDs: newDevice.advertisServiceUUIDs || []
-											};
-											this.devices.push(updatedDeviceData);
-										} else {
-											// 更新现有设备的RSSI和广播数据 (某些设备广播内容会变)
-											updatedDeviceData = {
-												...this.devices[existingDeviceIndex], // 保留原有信息如连接状态
-												...newDevice, // 更新蓝牙模块报告的信息（RSSI, name等）
-												advertisDataHex: this.ab2hex(newDevice.advertisData),
-												advertisServiceUUIDs: newDevice.advertisServiceUUIDs || []
-											};
-											this.$set(this.devices, existingDeviceIndex, updatedDeviceData);
-										}
-										
-										// 如果弹窗打开且对应当前设备，则更新弹窗内容
-										if (this.showAdvDataModal && this.modalDeviceId === newDevice.deviceId) {
-											this.updateModalContent(updatedDeviceData);
-										}
-									});
+									// 不直接处理，先放入缓冲区
+									this.deviceBuffer.push(...devices);
+									
+									// 如果节流计时器未启动，则启动它
+									if (!this.throttleTimeout) {
+										this.throttleTimeout = setTimeout(() => {
+											this.processDeviceBuffer();
+										}, this.throttleInterval);
+									}
 								});
+								
+								// 设置自动停止扫描的定时器
+								this.scanStopTimer = setTimeout(() => {
+									this.addLog('系统', `扫描达到${this.scanDuration / 1000}秒，自动停止`);
+									if (this.isScanning) { // 只有仍在扫描时才停止
+										this.stopScan();
+									}
+								}, this.scanDuration);
 							},
 							fail: err => {
 								this.addLog('错误', '搜索设备失败：' + JSON.stringify(err));
@@ -390,6 +392,12 @@
 
 			// 停止扫描
 			stopScan() {
+				// 清除自动停止定时器
+				if (this.scanStopTimer) {
+					clearTimeout(this.scanStopTimer);
+					this.scanStopTimer = null;
+				}
+				
 				uni.stopBluetoothDevicesDiscovery({
 					success: () => {
 						this.isScanning = false;
@@ -397,15 +405,30 @@
 						// #ifdef MP-WEIXIN
 						wx.offBluetoothDeviceFound();
 						// #endif
+						
+						// 处理最后剩余的设备
+						this.processDeviceBuffer(); 
 					},
 					fail: err => {
 						this.addLog('错误', '停止搜索失败：' + JSON.stringify(err));
-						// 即使失败也要更新状态
+						// 即使失败也要更新状态和清除定时器
 						this.isScanning = false;
+						if (this.scanStopTimer) {
+							clearTimeout(this.scanStopTimer);
+							this.scanStopTimer = null;
+						}
+						if (this.throttleTimeout) {
+							clearTimeout(this.throttleTimeout);
+							this.throttleTimeout = null;
+						}
 					},
 					complete: () => {
 						// 确保状态被重置
 						this.isScanning = false;
+						if (this.scanStopTimer) {
+							clearTimeout(this.scanStopTimer);
+							this.scanStopTimer = null;
+						}
 					}
 				});
 			},
@@ -686,6 +709,73 @@
 				return hexArr.join('');
 			},
 			
+			// 处理设备缓冲区（节流核心）
+			processDeviceBuffer() {
+				if (this.deviceBuffer.length === 0) {
+					this.throttleTimeout = null; // 如果缓冲区为空，重置定时器标志
+					return;
+				}
+				
+				const currentBuffer = [...this.deviceBuffer]; // 复制缓冲区内容进行处理
+				this.deviceBuffer = []; // 清空缓冲区
+				let modalDeviceLatestData = null; // 存储当前弹窗设备的最新数据
+				
+				// 使用 Map 优化查找和更新
+				const deviceMap = new Map(this.devices.map(d => [d.deviceId, d]));
+				
+				currentBuffer.forEach(newDevice => {
+					const deviceId = newDevice.deviceId;
+					const advertisDataHex = this.ab2hex(newDevice.advertisData);
+					const advertisServiceUUIDs = newDevice.advertisServiceUUIDs || [];
+					
+					const existingDevice = deviceMap.get(deviceId);
+					let processedData;
+					
+					if (existingDevice) {
+						// 更新现有设备
+						processedData = {
+							...existingDevice,
+							...newDevice, // 更新RSSI, name等
+							advertisDataHex: advertisDataHex,
+							advertisServiceUUIDs: advertisServiceUUIDs
+						};
+					} else {
+						// 添加新设备
+						processedData = {
+							...newDevice,
+							advertisDataHex: advertisDataHex,
+							advertisServiceUUIDs: advertisServiceUUIDs,
+							connected: false // 确保新设备状态正确
+						};
+					}
+					deviceMap.set(deviceId, processedData);
+					
+					// 如果是当前弹窗的设备，记录其最新数据
+					if (this.showAdvDataModal && this.modalDeviceId === deviceId) {
+						modalDeviceLatestData = processedData;
+					}
+				});
+				
+				// 将 Map 转回数组并更新 this.devices
+				// 按信号强度排序，并限制显示数量
+				let sortedDevices = Array.from(deviceMap.values()).sort((a, b) => b.RSSI - a.RSSI);
+				const displayLimit = 100; // 设置显示上限
+				this.devices = sortedDevices.slice(0, displayLimit);
+				
+				// 如果需要，更新弹窗内容 (检查限制后的列表是否还包含该设备)
+				if (modalDeviceLatestData && this.devices.some(d => d.deviceId === this.modalDeviceId)) {
+					// modalDeviceLatestData 可能不在排序后的前100里，但为了弹窗一致性，仍用其最新数据更新
+					// 或者只在 modalDeviceLatestData 仍在 this.devices 中时才更新
+					this.updateModalContent(modalDeviceLatestData);
+				} else if (this.showAdvDataModal && !this.devices.some(d => d.deviceId === this.modalDeviceId)){
+					// 如果弹窗对应的设备被过滤掉了，可以选择关闭弹窗或提示
+					// this.closeAdvDataModal(); 
+					// 或者保留弹窗内容不变
+				}
+				
+				this.throttleTimeout = null; // 处理完成，重置定时器标志
+			},
+			
 			// 显示广播数据
 			showAdvertisingData(device) {
 				let content = `设备ID: ${this.formatDeviceId(device.deviceId)}\n`;
@@ -738,6 +828,16 @@
 			// #endif
 		},
 		onUnload() {
+			// 清除节流定时器
+			if (this.throttleTimeout) {
+				clearTimeout(this.throttleTimeout);
+				this.throttleTimeout = null;
+			}
+			// 清除自动停止扫描定时器
+			if (this.scanStopTimer) {
+				clearTimeout(this.scanStopTimer);
+				this.scanStopTimer = null;
+			}
 			// 页面卸载时断开连接
 			if (this.currentDevice) {
 				this.disconnectDevice();
