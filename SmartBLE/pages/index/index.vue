@@ -798,7 +798,7 @@
 			
 			// 更新弹窗内容（用于实时刷新）
 			updateModalContent(device) {
-				let content = `设备ID: ${this.formatDeviceId(device.deviceId)}\n`;
+				let content = `设备ID: ${this.formatDeviceId(device.deviceId)}\n`; // 显示时仍然格式化
 				content += `名称: ${device.name || 'N/A'}\n`;
 				content += `RSSI: ${device.RSSI} dBm\n\n`; // RSSI 也会实时更新
 				content += `广播服务UUIDs:\n${device.advertisServiceUUIDs.length > 0 ? device.advertisServiceUUIDs.join('\n') : '无'}\n\n`;
@@ -808,8 +808,22 @@
 			
 			// 复制代码到剪贴板
 			copyAdvData() {
+				// 找到当前弹窗对应的设备
+				const currentModalDevice = this.devices.find(d => d.deviceId === this.modalDeviceId);
+				if (!currentModalDevice) {
+					uni.showToast({ title: '未找到设备信息', icon: 'none' });
+					return;
+				}
+
+				// 构建要复制的完整内容
+				let fullContent = `设备ID: ${currentModalDevice.deviceId}\n`; // 使用完整的 deviceId
+				fullContent += `名称: ${currentModalDevice.name || 'N/A'}\n`;
+				fullContent += `RSSI: ${currentModalDevice.RSSI} dBm\n\n`;
+				fullContent += `广播服务UUIDs:\n${currentModalDevice.advertisServiceUUIDs.length > 0 ? currentModalDevice.advertisServiceUUIDs.join('\n') : '无'}\n\n`;
+				fullContent += `广播数据 (Hex):\n${currentModalDevice.advertisDataHex || 'N/A'}`;
+				
 				uni.setClipboardData({
-					data: this.advDataModalContent,
+					data: fullContent,
 					success: () => {
 						uni.showToast({ title: '已复制', icon: 'success', duration: 1500 });
 					}
