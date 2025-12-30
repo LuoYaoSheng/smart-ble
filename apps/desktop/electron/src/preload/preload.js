@@ -15,23 +15,20 @@ contextBridge.exposeInMainWorld('bleAPI', {
 
   // 连接
   connect: (deviceId) => ipcRenderer.invoke('ble:connect', deviceId),
-  disconnect: (deviceId) => ipcRenderer.invoke('ble:disconnect', deviceId),
+  disconnect: () => ipcRenderer.invoke('ble:disconnect'),
 
   // 服务
-  discoverServices: (deviceId) => ipcRenderer.invoke('ble:discoverServices', deviceId),
+  discoverServices: () => ipcRenderer.invoke('ble:discoverServices'),
 
   // 特征值操作
-  readCharacteristic: (deviceId, serviceUuid, charUuid) =>
-    ipcRenderer.invoke('ble:readCharacteristic', deviceId, serviceUuid, charUuid),
+  readCharacteristic: (serviceUuid, charUuid) =>
+    ipcRenderer.invoke('ble:readCharacteristic', serviceUuid, charUuid),
 
-  writeCharacteristic: (deviceId, serviceUuid, charUuid, data, withoutResponse) =>
-    ipcRenderer.invoke('ble:writeCharacteristic', deviceId, serviceUuid, charUuid, data, withoutResponse),
+  writeCharacteristic: (serviceUuid, charUuid, data, withoutResponse) =>
+    ipcRenderer.invoke('ble:writeCharacteristic', serviceUuid, charUuid, data, withoutResponse),
 
-  notifyCharacteristic: (deviceId, serviceUuid, charUuid, notify) =>
-    ipcRenderer.invoke('ble:notifyCharacteristic', deviceId, serviceUuid, charUuid, notify),
-
-  // 权限
-  requestPermissions: () => ipcRenderer.invoke('ble:requestPermissions'),
+  notifyCharacteristic: (serviceUuid, charUuid, notify) =>
+    ipcRenderer.invoke('ble:notifyCharacteristic', serviceUuid, charUuid, notify),
 
   // 事件监听
   onStateChange: (callback) => {
@@ -68,6 +65,12 @@ contextBridge.exposeInMainWorld('bleAPI', {
     const listener = (event, data) => callback(data);
     ipcRenderer.on('ble:characteristicValueChanged', listener);
     return () => ipcRenderer.removeListener('ble:characteristicValueChanged', listener);
+  },
+
+  onWarning: (callback) => {
+    const listener = (event, data) => callback(data);
+    ipcRenderer.on('ble:warning', listener);
+    return () => ipcRenderer.removeListener('ble:warning', listener);
   }
 });
 

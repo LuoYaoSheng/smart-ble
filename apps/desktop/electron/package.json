@@ -11,15 +11,18 @@
     "build:mac": "electron-builder --mac",
     "build:linux": "electron-builder --linux"
   },
-  "keywords": ["ble", "bluetooth", "electron"],
+  "keywords": [
+    "ble",
+    "bluetooth",
+    "electron"
+  ],
   "author": "SmartBLE",
   "license": "MIT",
   "dependencies": {
-    "@abandonware/noble": "^1.9.2-15",
-    "noble-uwp": "^0.5.0"
+    "@abandonware/noble": "^1.9.2-15"
   },
   "devDependencies": {
-    "electron": "^27.0.0",
+    "electron": "^27.3.11",
     "electron-builder": "^24.6.4"
   },
   "build": {
@@ -34,16 +37,26 @@
       "package.json"
     ],
     "win": {
-      "target": ["nsis", "portable"],
+      "target": [
+        "nsis",
+        "portable"
+      ],
       "icon": "assets/icon.ico"
     },
     "mac": {
-      "target": ["dmg", "zip"],
+      "target": [
+        "dmg",
+        "zip"
+      ],
       "icon": "assets/icon.icns",
       "category": "public.app-category.developer-tools"
     },
     "linux": {
-      "target": ["AppImage", "deb", "rpm"],
+      "target": [
+        "AppImage",
+        "deb",
+        "rpm"
+      ],
       "icon": "assets/icon.png",
       "category": "Development"
     }
