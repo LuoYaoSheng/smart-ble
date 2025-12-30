@@ -1,0 +1,68 @@
+{
+	"name": "BLE广播多端兼容版",
+	"id": "LysBlePeripheral",
+	"version": "1.0.0",
+	"description": "BLE广播插件，支持自定义广播数据、扫描响应等功能",
+	"_dp_type": "nativeplugin",
+	"_dp_nativeplugin": {
+		"android": {
+			"plugins": [{
+				"type": "module",
+				"name": "LysBlePeripheral",
+				"class": "com.lys.bleperipheral.LysBlePeripheralModule"
+			}],
+			"integrateType": "aar",
+			"dependencies": [{
+					"groupId": "com.alibaba",
+					"artifactId": "fastjson",
+					"version": "1.1.46.android"
+				},
+				{
+					"groupId": "androidx.appcompat",
+					"artifactId": "appcompat",
+					"version": "1.6.1"
+				}
+			],
+			"permissions": [
+				"android.permission.BLUETOOTH",
+				"android.permission.BLUETOOTH_ADMIN",
+				"android.permission.BLUETOOTH_ADVERTISE",
+				"android.permission.BLUETOOTH_CONNECT",
+				"android.permission.ACCESS_FINE_LOCATION",
+				"android.permission.ACCESS_COARSE_LOCATION",
+				"android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE"
+			],
+			"compileOptions": {
+				"sourceCompatibility": "1.8",
+				"targetCompatibility": "1.8"
+			},
+			"minSdkVersion": "21",
+			"features": [{
+				"name": "android.hardware.bluetooth_le",
+				"required": true
+			}]
+		},
+		"ios": {
+			"plugins": [{
+				"type": "module",
+				"name": "LysBlePeripheral",
+				"class": "LysBlePeripheralModule"
+			}],
+			"integrateType": "framework",
+			"frameworks": [
+				"CoreBluetooth.framework"
+			],
+			"capabilities": {
+				"plists": {
+					"NSBluetoothAlwaysUsageDescription": "此应用需要使用蓝牙进行BLE广播",
+					"NSBluetoothPeripheralUsageDescription": "此应用需要使用蓝牙进行BLE广播"
+				}
+			},
+			"deploymentTarget": "10.0",
+			"validArchitectures": [
+				"arm64",
+				"arm64e"
+			]
+		}
+	}
+}
