@@ -69,11 +69,19 @@ function createWindow() {
 
 // BLE 事件设置
 function setupBLEEvents() {
-  // 状态变化
-  bleModule.on('stateChange', (state) => {
+  // 状态变化 - 立即发送当前状态
+  const sendState = (state) => {
     console.log('BLE State:', state);
     sendToRenderer('ble:stateChanged', { state });
-  });
+  };
+
+  // 监听状态变化
+  bleModule.on('stateChange', sendState);
+
+  // 立即发送当前状态（避免错过初始状态）
+  if (bleModule.state) {
+    setTimeout(() => sendState(bleModule.state), 100);
+  }
 
   // 发现设备
   bleModule.on('discover', (peripheral) => {
@@ -115,6 +123,15 @@ function getDevice(deviceId) {
 // IPC 处理器
 ipcMain.handle('ble:init', async () => {
   const loaded = await loadBLEModule();
+
+  // 等待一小段时间确保 noble 状态已初始化
+  await new Promise(resolve => setTimeout(resolve, 200));
+
+  // 发送当前状态
+  if (bleModule && bleModule.state) {
+    sendToRenderer('ble:stateChanged', { state: bleModule.state });
+  }
+
   return { success: loaded, platform: process.platform };
 });
 
