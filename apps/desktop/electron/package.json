@@ -1,0 +1,51 @@
+{
+  "name": "smart-ble-desktop",
+  "version": "1.0.0",
+  "description": "Smart BLE - Desktop Application",
+  "main": "src/main/index.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win",
+    "build:mac": "electron-builder --mac",
+    "build:linux": "electron-builder --linux"
+  },
+  "keywords": ["ble", "bluetooth", "electron"],
+  "author": "SmartBLE",
+  "license": "MIT",
+  "dependencies": {
+    "@abandonware/noble": "^1.9.2-15",
+    "noble-uwp": "^0.5.0"
+  },
+  "devDependencies": {
+    "electron": "^27.0.0",
+    "electron-builder": "^24.6.4"
+  },
+  "build": {
+    "appId": "com.smartble.desktop",
+    "productName": "SmartBLE",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "public/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": ["nsis", "portable"],
+      "icon": "assets/icon.ico"
+    },
+    "mac": {
+      "target": ["dmg", "zip"],
+      "icon": "assets/icon.icns",
+      "category": "public.app-category.developer-tools"
+    },
+    "linux": {
+      "target": ["AppImage", "deb", "rpm"],
+      "icon": "assets/icon.png",
+      "category": "Development"
+    }
+  }
+}

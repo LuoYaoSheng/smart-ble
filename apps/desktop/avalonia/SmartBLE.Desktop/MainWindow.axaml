@@ -1,0 +1,219 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:SmartBLE.Desktop.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+        x:Class="SmartBLE.Desktop.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="SmartBLE"
+        Icon="/Assets/icon.png"
+        MinWidth="900" MinHeight="600"
+        Width="1200" Height="800">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Title Bar -->
+        <Grid Grid.Row="0" Background="#F5F5F5" Height="52">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="20,0">
+                <PathIcon Data="M7 7h10M7 12h10M7 17h10M17 7l4-4M21 7l-4 4"
+                          Foreground="#007AFF" Width="24" Height="24" Stretch="Uniform"/>
+                <TextBlock Text="SmartBLE" FontSize="18" FontWeight="SemiBold"
+                          Margin="10,0,0,0" VerticalAlignment="Center"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="20,0">
+                <Ellipse Width="8" Height="8" Fill="{Binding BluetoothStatusColor}" Margin="0,0,8,0"/>
+                <TextBlock Text="{Binding BluetoothStatusText}" FontSize="13" Foreground="#8E8E93"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Main Content -->
+        <Grid Grid.Row="1">
+            <Carousel SelectedIndex="{Binding CurrentViewIndex}">
+                <!-- Device List View -->
+                <Grid>
+                    <Grid RowDefinitions="Auto,*">
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="20,16" Spacing="12">
+                            <Button Classes="Primary" Command="{Binding StartScanCommand}">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <TextBlock Text="🔍"/>
+                                    <TextBlock Text="{Binding ScanButtonText}"/>
+                                </StackPanel>
+                            </Button>
+                            <Border Classes="DeviceCount">
+                                <TextBlock Text="{Binding DeviceCountText}" Margin="12,6"/>
+                            </Border>
+                        </StackPanel>
+
+                        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
+                            <ItemsControl ItemsSource="{Binding Devices}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Classes="DeviceCard" Margin="20,0,20,12">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <Border Grid.Column="0" Width="56" Height="56"
+                                                        Background="#007AFF" CornerRadius="12">
+                                                    <TextBlock Text="📡" FontSize="24"
+                                                              HorizontalAlignment="Center"
+                                                              VerticalAlignment="Center"/>
+                                                </Border>
+
+                                                <StackPanel Grid.Column="1" Margin="16,0">
+                                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold"/>
+                                                    <TextBlock Text="{Binding Id}" FontSize="12"
+                                                              Foreground="#8E8E93"/>
+                                                </StackPanel>
+
+                                                <StackPanel Grid.Column="2" HorizontalAlignment="Right">
+                                                    <TextBlock Text="{Binding RssiText}" FontSize="12"
+                                                              FontWeight="Medium"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+
+                        <!-- Empty State -->
+                        <Grid IsVisible="{Binding IsDeviceListEmpty}"
+                              Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <StackPanel Spacing="16">
+                                <TextBlock Text="📡" FontSize="64" Opacity="0.5"/>
+                                <TextBlock Text="暂无设备" FontSize="18" Foreground="#8E8E93"/>
+                                <TextBlock Text="点击上方按钮开始扫描" FontSize="14"
+                                          Foreground="#8E8E93" Opacity="0.7"/>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </Grid>
+
+                <!-- Device Detail View -->
+                <Grid>
+                    <Grid RowDefinitions="Auto,Auto,*,Auto">
+                        <!-- Detail Header -->
+                        <Grid Grid.Row="0" Margin="20,16" ColumnDefinitions="Auto,*,Auto">
+                            <Button Grid.Column="0" Classes="Secondary"
+                                    Command="{Binding GoBackCommand}">
+                                <TextBlock Text="← 返回"/>
+                            </Button>
+
+                            <StackPanel Grid.Column="1" Margin="16,0">
+                                <TextBlock Text="{Binding CurrentDeviceName}"
+                                          FontWeight="SemiBold" FontSize="18"/>
+                                <TextBlock Text="{Binding CurrentDeviceId}"
+                                          FontSize="13" Foreground="#8E8E93"/>
+                            </StackPanel>
+
+                            <Border Grid.Column="2" Classes="StatusBadge"
+                                    Background="{Binding ConnectionStatusColor}">
+                                <TextBlock Text="{Binding ConnectionStatusText}"
+                                          Padding="12,6" FontSize="13"/>
+                            </Border>
+                        </Grid>
+
+                        <!-- Detail Controls -->
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="20,0,20,16" Spacing="12">
+                            <Button Classes="Secondary" Command="{Binding ClearLogsCommand}">
+                                <TextBlock Text="清空日志"/>
+                            </Button>
+                            <Button Classes="Danger" Command="{Binding DisconnectCommand}">
+                                <TextBlock Text="断开连接"/>
+                            </Button>
+                        </StackPanel>
+
+                        <!-- Services List -->
+                        <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled">
+                            <ItemsControl ItemsSource="{Binding Services}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Classes="ServiceCard" Margin="20,0,20,12">
+                                            <StackPanel>
+                                                <!-- Service Header -->
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <Border Grid.Column="0" Width="44" Height="44"
+                                                            Background="#E8F2FF" CornerRadius="10">
+                                                        <TextBlock Text="⚙️" FontSize="20"
+                                                                  HorizontalAlignment="Center"
+                                                                  VerticalAlignment="Center"/>
+                                                    </Border>
+
+                                                    <StackPanel Grid.Column="1" Margin="12,0">
+                                                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold"/>
+                                                        <TextBlock Text="{Binding Uuid}" FontSize="12"
+                                                                  Foreground="#8E8E93"/>
+                                                    </StackPanel>
+
+                                                    <Border Grid.Column="2" Classes="ServiceCount">
+                                                        <TextBlock Text="{Binding CharacteristicCountText}"
+                                                                  Padding="12,6"/>
+                                                    </Border>
+                                                </Grid>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+
+                        <!-- Log Panel -->
+                        <Border Grid.Row="3" Classes="LogPanel" IsVisible="{Binding HasLogs}">
+                            <Grid RowDefinitions="Auto,*">
+                                <Grid Grid.Row="0" Background="#F2F2F7" Padding="16,8">
+                                    <TextBlock Text="操作日志" FontWeight="Medium"/>
+                                    <TextBlock Text="{Binding LogCountText}" HorizontalAlignment="Right"
+                                              FontSize="12" Foreground="#8E8E93"/>
+                                </Grid>
+                                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                                    <ItemsControl ItemsSource="{Binding Logs}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid Margin="12,4">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="16"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" Text="{Binding Icon}"
+                                                              FontSize="12"/>
+                                                    <StackPanel Grid.Column="1">
+                                                        <TextBlock Text="{Binding Message}" FontSize="12"/>
+                                                        <TextBlock Text="{Binding Timestamp}" FontSize="11"
+                                                                  Foreground="#8E8E93"/>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </Carousel>
+        </Grid>
+    </Grid>
+</Window>
