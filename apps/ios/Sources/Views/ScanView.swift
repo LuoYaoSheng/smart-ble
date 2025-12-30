@@ -62,7 +62,7 @@ struct ScanView: View {
             .disabled(bleManager.bluetoothState != .poweredOn)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.gray.opacity(0.1))
     }
 
     private var emptyState: some View {
@@ -127,7 +127,7 @@ struct DeviceCard: View {
                     .foregroundColor(.secondary)
 
                 if !device.serviceUUIDs.isEmpty {
-                    Text(device.serviceUUIDs.prefix(3).joined(", "))
+                    Text(device.serviceUUIDs.prefix(3).joined(separator: ", "))
                         .font(.caption2)
                         .foregroundColor(.blue)
                 }
@@ -151,7 +151,7 @@ struct DeviceCard: View {
             }
         }
         .padding()
-        .background(Color(.systemGray6))
+        .background(Color.gray.opacity(0.15))
         .cornerRadius(12)
     }
 }
@@ -177,7 +177,9 @@ struct DeviceDetailSheet: View {
                 .padding()
             }
             .navigationTitle(device.name)
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("关闭") {
@@ -209,7 +211,7 @@ struct DeviceDetailSheet: View {
             InfoRow(label: "可连接", value: device.connectable ? "是" : "否")
         }
         .padding()
-        .background(Color(.systemGray6))
+        .background(Color.gray.opacity(0.15))
         .cornerRadius(12)
     }
 
@@ -242,8 +244,7 @@ struct DeviceDetailSheet: View {
                         .foregroundColor(.secondary)
 
                     Text(manufacturerData.map { String(format: "%02x", $0) }.joined(separator: " ").uppercased())
-                        .font(.caption)
-                        .fontFamily(.monospaced)
+                        .font(.system(.caption, design: .monospaced))
                         .padding(.horizontal, 12)
                         .padding(.vertical, 6)
                         .background(Color.orange.opacity(0.1))
@@ -252,7 +253,7 @@ struct DeviceDetailSheet: View {
             }
         }
         .padding()
-        .background(Color(.systemGray6))
+        .background(Color.gray.opacity(0.15))
         .cornerRadius(12)
     }
 }
@@ -270,20 +271,5 @@ struct InfoRow: View {
                 .fontWeight(.medium)
         }
         .font(.subheadline)
-    }
-}
-
-// Extension View for sheet
-extension View {
-    func sheetDevice<Content: View>(
-        isPresented: Binding<Bool>,
-        device: ScanResult?,
-        @ViewBuilder content: (ScanResult) -> Content
-    ) -> some View {
-        self.sheet(isPresented: isPresented) {
-            if let device = device {
-                content(device)
-            }
-        }
     }
 }

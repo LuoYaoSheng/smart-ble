@@ -55,8 +55,7 @@ class BLEManager: NSObject, ObservableObject {
             "2A28": "Software Revision",
             "2A19": "Battery Level",
             "2A04": "PPP Central",
-            "2A05": "PPP Peripheral",
-            "2A00": "Device Name"
+            "2A05": "PPP Peripheral"
         ]
         return characteristics[uuid.uuidString.uppercased()] ?? "Unknown Characteristic"
     }
@@ -155,11 +154,11 @@ class BLEManager: NSObject, ObservableObject {
         guard let peripheral = connectedPeripheral,
               let service = peripheral.services?.first(where: { $0.uuid.uuidString == serviceUUID }),
               let characteristic = service.characteristics?.first(where: { $0.uuid.uuidString == characteristicUUID }) else {
-            log("Reading characteristic: \(characteristicUUID)", type: .send)
-            peripheral.readValue(for: characteristic)
+            log("Characteristic not found", type: .error)
             return
         }
-        log("Characteristic not found", type: .error)
+        log("Reading characteristic: \(characteristicUUID)", type: .send)
+        peripheral.readValue(for: characteristic)
     }
 
     // MARK: - Write Characteristic
@@ -167,12 +166,12 @@ class BLEManager: NSObject, ObservableObject {
         guard let peripheral = connectedPeripheral,
               let service = peripheral.services?.first(where: { $0.uuid.uuidString == serviceUUID }),
               let characteristic = service.characteristics?.first(where: { $0.uuid.uuidString == characteristicUUID }) else {
-            log("Writing to characteristic: \(characteristicUUID)", type: .send)
-            let type: CBCharacteristicWriteType = withoutResponse ? .withoutResponse : .withResponse
-            peripheral.writeValue(data, for: characteristic, type: type)
+            log("Characteristic not found", type: .error)
             return
         }
-        log("Characteristic not found", type: .error)
+        log("Writing to characteristic: \(characteristicUUID)", type: .send)
+        let type: CBCharacteristicWriteType = withoutResponse ? .withoutResponse : .withResponse
+        peripheral.writeValue(data, for: characteristic, type: type)
     }
 
     // MARK: - Notify Characteristic
@@ -180,11 +179,12 @@ class BLEManager: NSObject, ObservableObject {
         guard let peripheral = connectedPeripheral,
               let service = peripheral.services?.first(where: { $0.uuid.uuidString == serviceUUID }),
               let characteristic = service.characteristics?.first(where: { $0.uuid.uuidString == characteristicUUID }) else {
-            log("\(enabled ? "Enabling" : "Disabling") + " notifications for: \(characteristicUUID)", type: .info)
-            peripheral.setNotifyValue(enabled, for: characteristic)
+            log("Characteristic not found", type: .error)
             return
         }
-        log("Characteristic not found", type: .error)
+        let action = enabled ? "Enabling" : "Disabling"
+        log("\(action) notifications for: \(characteristicUUID)", type: .info)
+        peripheral.setNotifyValue(enabled, for: characteristic)
     }
 
     // MARK: - Advertising (Peripheral Mode)
@@ -256,12 +256,12 @@ class BLEManager: NSObject, ObservableObject {
                         uuid: characteristic.uuid.uuidString,
                         name: getCharacteristicName(for: characteristic.uuid),
                         serviceUUID: service.uuid.uuidString,
-                        properties: CharacteristicProperties(rawValue: characteristic.properties.rawValue)
+                        properties: CharacteristicProperties(rawValue: UInt8(truncatingIfNeeded: characteristic.properties.rawValue))
                     )
                     charModel.peripheralCharacteristic = characteristic
 
                     if let value = characteristic.value {
-                        charModel.value = value as? String ?? dataToHexString(value)
+                        charModel.value = String(data: value, encoding: .utf8) ?? dataToHexString(value)
                     }
 
                     serviceModel.characteristics.append(charModel)

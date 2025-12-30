@@ -55,7 +55,7 @@ struct DeviceDetailView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.gray.opacity(0.1))
     }
 
     private var connectionText: String {
@@ -185,7 +185,7 @@ struct ServiceCard: View {
             }
         }
         .padding()
-        .background(Color(.systemGray6))
+        .background(Color.gray.opacity(0.15))
         .cornerRadius(12)
     }
 }
@@ -239,11 +239,10 @@ struct CharacteristicRow: View {
                                 .foregroundColor(.secondary)
 
                             Text(value)
-                                .font(.caption)
-                                .fontFamily(.monospaced)
+                                .font(.system(.caption, design: .monospaced))
                                 .padding(.horizontal, 8)
                                 .padding(.vertical, 4)
-                                .background(Color(.systemBackground))
+                                .background(Color.gray.opacity(0.15))
                                 .cornerRadius(6)
                         }
                     }
@@ -305,7 +304,7 @@ struct CharacteristicRow: View {
         }
         .padding(.vertical, 8)
         .padding(.horizontal, 12)
-        .background(Color(.systemBackground))
+        .background(Color.gray.opacity(0.15))
         .cornerRadius(10)
         .sheet(isPresented: $showingWriteDialog) {
             writeDialog
@@ -342,7 +341,9 @@ struct CharacteristicRow: View {
                 }
             }
             .navigationTitle("写入特征值")
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("取消") {

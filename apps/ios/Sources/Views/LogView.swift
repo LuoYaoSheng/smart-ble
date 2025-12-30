@@ -25,7 +25,6 @@ struct LogView: View {
                 }
             }
             .padding()
-            .background(Color(.systemBackground))
 
             // Logs
             if bleManager.logs.isEmpty {

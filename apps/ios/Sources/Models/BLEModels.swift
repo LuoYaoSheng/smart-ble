@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import CoreBluetooth
 
 // MARK: - BLE State
 enum BLEState: String {

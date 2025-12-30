@@ -35,7 +35,7 @@ struct BroadcastView: View {
                         .disabled(isAdvertising)
                 }
                 .padding()
-                .background(Color(.systemGray6))
+                .background(Color.gray.opacity(0.15))
                 .cornerRadius(12)
 
                 // Service UUID Input
@@ -45,7 +45,9 @@ struct BroadcastView: View {
 
                     TextField("FFF0", text: $serviceUUID)
                         .textFieldStyle(.roundedBorder)
+                        #if os(iOS)
                         .autocapitalization(.allCharacters)
+                        #endif
                         .disabled(isAdvertising)
 
                     Text("16位或128位UUID")
@@ -53,7 +55,7 @@ struct BroadcastView: View {
                         .foregroundColor(.secondary)
                 }
                 .padding()
-                .background(Color(.systemGray6))
+                .background(Color.gray.opacity(0.15))
                 .cornerRadius(12)
 
                 // Status
@@ -69,7 +71,7 @@ struct BroadcastView: View {
                     Spacer()
                 }
                 .padding()
-                .background(Color(.systemGray6))
+                .background(Color.gray.opacity(0.15))
                 .cornerRadius(12)
 
                 // Start/Stop Button
@@ -103,11 +105,11 @@ struct BroadcastView: View {
 
                 // Info
                 VStack(alignment: .leading, spacing: 8) {
-                    InfoRow(icon: "info.circle", title: "广播说明", text: "设备将以设置的名称和UUID进行广播")
+                    BroadcastInfoRow(icon: "info.circle", title: "广播说明", text: "设备将以设置的名称和UUID进行广播")
 
-                    InfoRow(icon: "antenna.radiowaves.left.and.right", title: "设备发现", text: "其他设备可以通过扫描发现此广播")
+                    BroadcastInfoRow(icon: "antenna.radiowaves.left.and.right", title: "设备发现", text: "其他设备可以通过扫描发现此广播")
 
-                    InfoRow(icon: "checkmark.circle", title: "连接支持", text: "支持其他设备的连接和数据传输")
+                    BroadcastInfoRow(icon: "checkmark.circle", title: "连接支持", text: "支持其他设备的连接和数据传输")
                 }
                 .padding()
                 .background(Color.blue.opacity(0.1))
@@ -121,7 +123,7 @@ struct BroadcastView: View {
     }
 }
 
-struct InfoRow: View {
+struct BroadcastInfoRow: View {
     let icon: String
     let title: String
     let text: String
