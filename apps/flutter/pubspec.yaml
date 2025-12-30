@@ -1,0 +1,48 @@
+name: smart_ble
+description: Smart BLE - 跨平台蓝牙调试工具
+publish_to: 'none'
+version: 2.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # BLE 库
+  flutter_blue_plus: ^1.32.0
+
+  # 状态管理
+  riverpod: ^2.4.9
+  flutter_riverpod: ^2.4.9
+
+  # UI 组件
+  cupertino_icons: ^1.0.6
+  google_fonts: ^6.1.0
+
+  # 工具类
+  permission_handler: ^11.1.0
+  shared_preferences: ^2.2.2
+  intl: ^0.18.1
+
+  # 平台特定
+  flutter_platform_widgets: ^6.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.1
+
+# Flutter 配置
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/icons/
+
+  # fonts:
+  #   - family: CustomFont
+  #     fonts:
+  #       - asset: fonts/CustomFont-Regular.ttf
