@@ -1,9 +1,0 @@
-{
-  "name": "LightBLE",
-  "version": "1.0.0",
-  "description": "BLE调试工具",
-  "main": "main.js",
-  "dependencies": {
-    "@dcloudio/uni-ui": "^1.5.7"
-  }
-}
