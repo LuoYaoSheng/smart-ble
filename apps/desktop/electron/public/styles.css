@@ -252,7 +252,38 @@ body {
 }
 
 .rssi-indicator {
-    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+}
+
+.signal-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 16px;
+}
+
+.signal-bar {
+    width: 4px;
+    background: var(--text-tertiary);
+    border-radius: 2px;
+}
+
+.signal-bar:nth-child(1) { height: 4px; }
+.signal-bar:nth-child(2) { height: 8px; }
+.signal-bar:nth-child(3) { height: 12px; }
+.signal-bar:nth-child(4) { height: 16px; }
+
+.signal-bars.excellent .signal-bar.active { background: var(--success); }
+.signal-bars.good .signal-bar.active { background: var(--success); }
+.signal-bars.fair .signal-bar.active { background: var(--warning); }
+.signal-bars.weak .signal-bar.active { background: var(--error); }
+
+.rssi-text {
+    font-size: 11px;
+    color: var(--text-secondary);
 }
 
 .rssi-value {
@@ -658,4 +689,76 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--text-secondary);
+}
+
+/* Toast Notifications */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 2000;
+}
+
+.toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+.toast-info {
+    background: var(--surface);
+    color: var(--text-primary);
+}
+
+.toast-success {
+    background: var(--success);
+    color: white;
+}
+
+.toast-error {
+    background: var(--error);
+    color: white;
+}
+
+.toast-warning {
+    background: var(--warning);
+    color: white;
+}
+
+/* Characteristic Highlight */
+.characteristic.highlight {
+    background: rgba(0, 122, 255, 0.1);
+    animation: highlight-pulse 1s ease;
+}
+
+@keyframes highlight-pulse {
+    0% { background: rgba(0, 122, 255, 0.2); }
+    100% { background: transparent; }
+}
+
+/* Spinner */
+.spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid var(--border);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Notifying Button State */
+.btn-icon.notifying {
+    background: rgba(52, 199, 89, 0.15);
+    color: var(--success);
 }
