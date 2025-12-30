@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Smart BLE</string>
+
+    <!-- Device List -->
+    <string name="scan_devices">扫描设备</string>
+    <string name="stop_scan">停止扫描</string>
+    <string name="devices_found">发现 %d 台设备</string>
+    <string name="no_devices">暂无设备</string>
+    <string name="tap_to_scan">点击上方按钮开始扫描</string>
+    <string name="connecting">连接中…</string>
+    <string name="connected">已连接</string>
+    <string name="disconnected">未连接</string>
+    <string name="connection_failed">连接失败</string>
+
+    <!-- BLE State -->
+    <string name="ble_on">蓝牙已开启</string>
+    <string name="ble_off">蓝牙已关闭</string>
+    <string name="ble_unavailable">蓝牙不可用</string>
+    <string name="ble_unauthorized">未授权</string>
+
+    <!-- Device Detail -->
+    <string name="services">服务</string>
+    <string name="characteristics">特征值</string>
+    <string name="no_services">未发现服务</string>
+    <string name="no_characteristics">无特征值</string>
+    <string name="clear_logs">清空日志</string>
+    <string name="disconnect">断开连接</string>
+
+    <!-- Characteristic -->
+    <string name="read">读取</string>
+    <string name="write">写入</string>
+    <string name="notify">通知</string>
+    <string name="notifying">通知中</string>
+    <string name="enable_notify">启用通知</string>
+    <string name="disable_notify">禁用通知</string>
+    <string name="read_success">读取成功</string>
+    <string name="read_failed">读取失败</string>
+    <string name="write_success">写入成功</string>
+    <string name="write_failed">写入失败</string>
+    <string name="write_data">写入数据</string>
+    <string name="hex_data">HEX 数据 (例: FF 01)</string>
+    <string name="utf8_data">UTF-8 文本</string>
+
+    <!-- Properties -->
+    <string name="property_read">Read</string>
+    <string name="property_write">Write</string>
+    <string name="property_notify">Notify</string>
+    <string name="property_indicate">Indicate</string>
+    <string name="no_permissions">无权限</string>
+
+    <!-- Logs -->
+    <string name="operation_logs">操作日志</string>
+    <string name="log_count">%d 条</string>
+
+    <!-- Common -->
+    <string name="cancel">取消</string>
+    <string name="confirm">确认</string>
+    <string name="retry">重试</string>
+    <string name="error">错误</string>
+
+    <!-- Permissions -->
+    <string name="permission_required">需要权限</string>
+    <string name="permission_ble_required">需要蓝牙权限才能扫描设备</string>
+    <string name="permission_location_required">需要位置权限才能扫描蓝牙设备</string>
+    <string name="permission_denied">权限被拒绝</string>
+    <string name="goto_settings">去设置</string>
+</resources>

@@ -1,72 +1,110 @@
-# Smart BLE - Android 原生版本
+# SmartBLE Android
+
+Smart BLE 调试工具的原生 Android 实现。
 
 ## 技术栈
 
 - **语言**: Kotlin
-- **最小 SDK**: 21 (Android 5.0)
+- **最小 SDK**: 24 (Android 7.0)
 - **目标 SDK**: 34 (Android 14)
-- **BLE API**: BluetoothLeScanner (Android 5.0+)
-- **架构**: MVVM + Repository Pattern
+- **UI 框架**: Jetpack Compose + Material 3
+- **架构**: MVVM + ViewModel
+- **蓝牙**: Android BluetoothLeScanner API
 - **异步处理**: Kotlin Coroutines + Flow
-- **依赖注入**: Hilt (可选)
 
 ## 项目结构
 
 ```
-java/com/smartble/
-├── core/                    # BLE 核心
-│   ├── ble/                 # BLE 实现
-│   │   ├── BleAdapter.kt    # BLE 适配器
-│   │   ├── BleScanner.kt    # 扫描器
-│   │   ├── BleConnection.kt # 连接管理
-│   │   └── BleGattCallback.kt
-│   ├── model/               # 数据模型
-│   │   ├── BleDevice.kt
-│   │   ├── BleService.kt
-│   │   └── BleCharacteristic.kt
-│   └── utils/               # 工具类
-│       ├── DataConverter.kt
-│       └── UUIDHelper.kt
-├── ui/                      # UI 层
-│   ├── activities/          # Activity
-│   │   ├── MainActivity.kt
-│   │   ├── ScanActivity.kt
-│   │   └── DeviceDetailActivity.kt
-│   ├── fragments/           # Fragment
-│   │   ├── DeviceListFragment.kt
-│   │   └── LogFragment.kt
-│   ├── adapters/            # RecyclerView 适配器
-│   │   └── DeviceAdapter.kt
-│   └── viewmodel/           # ViewModel
-│       └── MainViewModel.kt
-└── SmartBLEApp.kt
+app/src/main/java/com/smartble/
+├── core/                      # 核心业务逻辑
+│   ├── ble/                  # BLE 管理
+│   │   └── BleManager.kt     # BLE 核心管理器
+│   └── model/                # 数据模型
+│       ├── BleDevice.kt      # 设备模型
+│       └── BleService.kt     # 服务和特征值模型
+├── ui/                       # UI 层
+│   ├── MainActivity.kt       # 主 Activity
+│   ├── screen/               # 页面
+│   │   ├── DeviceListScreen.kt
+│   │   └── DeviceDetailScreen.kt
+│   ├── viewmodel/            # ViewModel
+│   │   ├── DeviceListViewModel.kt
+│   │   └── DeviceDetailViewModel.kt
+│   └── theme/                # 主题
+│       ├── Color.kt
+│       ├── Theme.kt
+│       └── Type.kt
+└── utils/                    # 工具类
 ```
 
-## 权限
+## 构建和运行
 
-```xml
-<!-- Android 12+ -->
-<uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
-<uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+### 使用 Android Studio
 
-<!-- Android 11 及以下 -->
-<uses-permission android:name="android.permission.BLUETOOTH" />
-<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-```
+1. 用 Android Studio 打开 `apps/android` 目录
+2. 等待 Gradle 同步完成
+3. 连接 Android 设备或启动模拟器
+4. 点击 Run 按钮
 
-## 开发计划
-
-- [ ] 初始化 Android 项目
-- [ ] 实现 BLE 扫描
-- [ ] 实现 BLE 连接
-- [ ] 实现服务/特征值读写
-- [ ] 实现 UI 界面
-- [ ] 权限处理
-
-## 运行
+### 使用命令行
 
 ```bash
+cd apps/android
+
+# 构建 Debug APK
 ./gradlew assembleDebug
+
+# 安装到设备
 ./gradlew installDebug
+
+# 运行测试
+./gradlew test
 ```
+
+## 功能特性
+
+- [x] 蓝牙设备扫描
+- [x] 设备连接/断开
+- [x] 服务发现
+- [x] 特征值读取
+- [x] 特征值写入
+- [x] 通知订阅
+- [x] 操作日志
+- [x] Material 3 设计
+
+## 权限说明
+
+应用需要以下权限：
+
+- `BLUETOOTH_SCAN` (Android 12+) - 扫描蓝牙设备
+- `BLUETOOTH_CONNECT` (Android 12+) - 连接蓝牙设备
+- `ACCESS_FINE_LOCATION` - 获取位置（BLE 扫描需要）
+
+## 开发说明
+
+### BLE 核心类
+
+**BleManager** 是 BLE 操作的核心类，提供：
+
+- `startScan()` - 开始扫描
+- `stopScan()` - 停止扫描
+- `connect(deviceId)` - 连接设备
+- `disconnect()` - 断开连接
+- `discoverServices()` - 发现服务
+- `readCharacteristic()` - 读取特征值
+- `writeCharacteristic()` - 写入特征值
+- `setNotification()` - 设置通知
+
+### 数据流
+
+```
+BleManager (Kotlin Flow)
+    ↓
+ViewModel (StateFlow)
+    ↓
+Compose UI (collectAsState)
+```
+
+## License
+
+MIT License
