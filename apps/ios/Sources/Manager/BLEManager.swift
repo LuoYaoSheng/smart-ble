@@ -4,6 +4,7 @@
 
 import Foundation
 import CoreBluetooth
+import Combine
 
 // MARK: - BLE Manager
 @MainActor
@@ -11,12 +12,20 @@ class BLEManager: NSObject, ObservableObject {
     // MARK: - Published Properties
     @Published var bluetoothState: BLEState = .unknown
     @Published var scanResults: [ScanResult] = []
+    @Published var filteredScanResults: [ScanResult] = []
     @Published var isScanning = false
     @Published var connectionState: ConnectionState = .disconnected
     @Published var connectedDevice: ScanResult?
     @Published var services: [BLEService] = []
     @Published var logs: [LogEntry] = []
     @Published var isAdvertising = false
+
+    // MARK: - Filter Settings
+    @Published var filterRSSI: Int = -100
+    @Published var filterNamePrefix: String = ""
+    @Published var hideNoNameDevices: Bool = false
+    @Published var autoStopScanDuration: TimeInterval = 10.0  // seconds, 0 = no auto-stop
+    @Published var maxDeviceCount: Int = 100
 
     // MARK: - CoreBluetooth Properties
     private var centralManager: CBCentralManager!
@@ -25,6 +34,12 @@ class BLEManager: NSObject, ObservableObject {
     private var connectedPeripheral: CBPeripheral?
     private var discoveredPeripherals: [String: CBPeripheral] = [:]
     private var characteristicsMap: [String: CBCharacteristic] = [:]
+
+    // MARK: - Timer
+    private var autoStopTimer: Timer?
+
+    // MARK: - Notify State Tracking
+    private var notifyingCharacteristics: Set<String> = []  // "serviceUUID:characteristicUUID"
 
     // MARK: - UUID Helper
     private func getServiceName(for uuid: CBUUID) -> String {
@@ -95,6 +110,7 @@ class BLEManager: NSObject, ObservableObject {
         }
 
         scanResults.removeAll()
+        filteredScanResults.removeAll()
         discoveredPeripherals.removeAll()
 
         centralManager.scanForPeripherals(withServices: nil, options: [
@@ -103,12 +119,55 @@ class BLEManager: NSObject, ObservableObject {
 
         isScanning = true
         log("Started scanning", type: .info)
+
+        // Start auto-stop timer if duration > 0
+        if autoStopScanDuration > 0 {
+            autoStopTimer = Timer.scheduledTimer(withTimeInterval: autoStopScanDuration, repeats: false) { [weak self] _ in
+                self?.stopScan()
+                self?.log("Auto-stop scan after \(self?.autoStopScanDuration ?? 0)s", type: .info)
+            }
+        }
     }
 
     func stopScan() {
+        autoStopTimer?.invalidate()
+        autoStopTimer = nil
+
         centralManager.stopScan()
         isScanning = false
         log("Stopped scanning", type: .info)
+    }
+
+    // MARK: - Filtering
+    func applyFilters() {
+        // First apply filters
+        let filtered = scanResults.filter { device in
+            // RSSI filter - only filter if RSSI threshold is greater than minimum
+            if filterRSSI > -100 && device.rssi < filterRSSI {
+                return false
+            }
+
+            // Hide no name devices
+            if hideNoNameDevices && (device.name.isEmpty || device.name == "Unknown Device") {
+                return false
+            }
+
+            // Name prefix filter
+            if !filterNamePrefix.isEmpty {
+                return device.name.lowercased().hasPrefix(filterNamePrefix.lowercased())
+            }
+
+            return true
+        }
+
+        // Sort by discovery order (stable) - don't re-sort by RSSI to avoid jumping
+        // New devices are appended to the end, maintaining stable positions
+        filteredScanResults = filtered
+
+        // Limit device count
+        if filteredScanResults.count > maxDeviceCount {
+            filteredScanResults = Array(filteredScanResults.prefix(maxDeviceCount))
+        }
     }
 
     // MARK: - Connection
@@ -149,6 +208,16 @@ class BLEManager: NSObject, ObservableObject {
         peripheral.discoverServices(nil)
     }
 
+    func discoverCharacteristics(for service: CBService) {
+        guard let peripheral = connectedPeripheral else {
+            log("No device connected", type: .error)
+            return
+        }
+
+        log("Discovering characteristics for service: \(service.uuid)", type: .info)
+        peripheral.discoverCharacteristics(nil, for: service)
+    }
+
     // MARK: - Read Characteristic
     func readCharacteristic(serviceUUID: String, characteristicUUID: String) {
         guard let peripheral = connectedPeripheral,
@@ -185,6 +254,25 @@ class BLEManager: NSObject, ObservableObject {
         let action = enabled ? "Enabling" : "Disabling"
         log("\(action) notifications for: \(characteristicUUID)", type: .info)
         peripheral.setNotifyValue(enabled, for: characteristic)
+
+        // Track notify state
+        let key = "\(serviceUUID):\(characteristicUUID)"
+        if enabled {
+            notifyingCharacteristics.insert(key)
+        } else {
+            notifyingCharacteristics.remove(key)
+        }
+    }
+
+    // Check if a characteristic is currently notifying
+    func isNotifying(serviceUUID: String, characteristicUUID: String) -> Bool {
+        let key = "\(serviceUUID):\(characteristicUUID)"
+        return notifyingCharacteristics.contains(key)
+    }
+
+    // Clear all notify states on disconnect
+    private func clearNotifyStates() {
+        notifyingCharacteristics.removeAll()
     }
 
     // MARK: - Advertising (Peripheral Mode)
@@ -344,44 +432,49 @@ extension BLEManager: CBCentralManagerDelegate {
         let txPowerLevel = advertisementData[CBAdvertisementDataTxPowerLevelKey] as? NSNumber
         let connectable = advertisementData[CBAdvertisementDataIsConnectable] as? Bool ?? true
 
-        // Update or add scan result
-        if let index = scanResults.firstIndex(where: { $0.id == peripheral.identifier.uuidString }) {
-            scanResults[index] = ScanResult(
-                id: peripheral.identifier.uuidString,
-                name: name,
-                rssi: RSSI.intValue,
-                peripheral: peripheral,
-                serviceUUIDs: serviceUUIDs,
-                serviceData: serviceData,
-                manufacturerData: manufacturerData,
-                txPowerLevel: txPowerLevel?.intValue,
-                connectable: connectable
-            )
+        // Create scan result
+        let result = ScanResult(
+            id: peripheral.identifier.uuidString,
+            name: name,
+            rssi: RSSI.intValue,
+            peripheral: peripheral,
+            serviceUUIDs: serviceUUIDs,
+            serviceData: serviceData,
+            manufacturerData: manufacturerData,
+            txPowerLevel: txPowerLevel?.intValue,
+            connectable: connectable
+        )
+
+        // Update or add to scan results immediately
+        if let index = scanResults.firstIndex(where: { $0.id == result.id }) {
+            scanResults[index] = result
         } else {
-            let result = ScanResult(
-                id: peripheral.identifier.uuidString,
-                name: name,
-                rssi: RSSI.intValue,
-                peripheral: peripheral,
-                serviceUUIDs: serviceUUIDs,
-                serviceData: serviceData,
-                manufacturerData: manufacturerData,
-                txPowerLevel: txPowerLevel?.intValue,
-                connectable: connectable
-            )
             scanResults.append(result)
+        }
+
+        // Store peripheral for connection
+        if discoveredPeripherals[peripheral.identifier.uuidString] == nil {
             discoveredPeripherals[peripheral.identifier.uuidString] = peripheral
         }
+
+        // Apply filters and update UI immediately
+        applyFilters()
     }
 
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         connectedPeripheral = peripheral
         connectionState = .connected
 
+        // CRITICAL: Set delegate to receive peripheral callbacks
+        peripheral.delegate = self
+
         let device = scanResults.first { $0.id == peripheral.identifier.uuidString }
         connectedDevice = device
 
-        log("Connected to \(peripheral.name ?? "Unknown Device")", type: .success)
+        log("Connected to \(peripheral.name ?? "Unknown Device"), discovering services...", type: .success)
+
+        // Auto-discover services immediately after connection
+        peripheral.discoverServices(nil)
     }
 
     func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
@@ -396,6 +489,7 @@ extension BLEManager: CBCentralManagerDelegate {
         connectionState = .disconnected
         connectedDevice = nil
         services.removeAll()
+        clearNotifyStates()  // Clear notify tracking
 
         if let error = error {
             log("Disconnected: \(error.localizedDescription)", type: .error)

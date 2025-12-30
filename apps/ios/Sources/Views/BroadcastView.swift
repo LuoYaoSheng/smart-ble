@@ -8,7 +8,6 @@ struct BroadcastView: View {
     @EnvironmentObject var bleManager: BLEManager
     @State private var advertiseName = "SmartBLE"
     @State private var serviceUUID = "FFF0"
-    @State private var isAdvertising = false
 
     var body: some View {
         VStack(spacing: 20) {
@@ -32,7 +31,7 @@ struct BroadcastView: View {
 
                     TextField("设备名称", text: $advertiseName)
                         .textFieldStyle(.roundedBorder)
-                        .disabled(isAdvertising)
+                        .disabled(bleManager.isAdvertising)
                 }
                 .padding()
                 .background(Color.gray.opacity(0.15))
@@ -48,7 +47,7 @@ struct BroadcastView: View {
                         #if os(iOS)
                         .autocapitalization(.allCharacters)
                         #endif
-                        .disabled(isAdvertising)
+                        .disabled(bleManager.isAdvertising)
 
                     Text("16位或128位UUID")
                         .font(.caption)
@@ -61,10 +60,10 @@ struct BroadcastView: View {
                 // Status
                 HStack {
                     Circle()
-                        .fill(isAdvertising ? Color.green : Color.gray)
+                        .fill(bleManager.isAdvertising ? Color.green : Color.gray)
                         .frame(width: 12, height: 12)
 
-                    Text(isAdvertising ? "正在广播" : "未广播")
+                    Text(bleManager.isAdvertising ? "正在广播" : "未广播")
                         .font(.subheadline)
                         .foregroundColor(.secondary)
 
@@ -76,29 +75,27 @@ struct BroadcastView: View {
 
                 // Start/Stop Button
                 Button(action: {
-                    if isAdvertising {
+                    if bleManager.isAdvertising {
                         bleManager.stopAdvertising()
-                        isAdvertising = false
                     } else {
                         // Validate UUID
                         if serviceUUID.isEmpty || serviceUUID.count < 4 {
                             return
                         }
                         bleManager.startAdvertising(name: advertiseName, serviceUUIDs: [serviceUUID])
-                        isAdvertising = true
                     }
                 }) {
                     HStack {
-                        Image(systemName: isAdvertising ? "stop.circle.fill" : "play.circle.fill")
+                        Image(systemName: bleManager.isAdvertising ? "stop.circle.fill" : "play.circle.fill")
                             .font(.title3)
 
-                        Text(isAdvertising ? "停止广播" : "开始广播")
+                        Text(bleManager.isAdvertising ? "停止广播" : "开始广播")
                             .fontWeight(.semibold)
                     }
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(isAdvertising ? Color.red : Color.blue)
+                    .background(bleManager.isAdvertising ? Color.red : Color.blue)
                     .cornerRadius(12)
                 }
                 .disabled(serviceUUID.isEmpty)

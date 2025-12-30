@@ -65,26 +65,34 @@ struct BLECharacteristic: Identifiable, Equatable {
 }
 
 // MARK: - Characteristic Properties
+// Must match CoreBluetooth CBCharacteristic.Properties bit values
 struct CharacteristicProperties: OptionSet {
     let rawValue: UInt8
 
-    static let read = CharacteristicProperties(rawValue: 1 << 0)
-    static let write = CharacteristicProperties(rawValue: 1 << 1)
-    static let writeWithoutResponse = CharacteristicProperties(rawValue: 1 << 2)
-    static let notify = CharacteristicProperties(rawValue: 1 << 3)
-    static let indicate = CharacteristicProperties(rawValue: 1 << 4)
-    static let broadcast = CharacteristicProperties(rawValue: 1 << 5)
-    static let authenticatedSignedWrites = CharacteristicProperties(rawValue: 1 << 6)
-    static let extendedProperties = CharacteristicProperties(rawValue: 1 << 7)
+    // CBCharacteristic.Properties bit values (lower 8 bits)
+    static let broadcast = CharacteristicProperties(rawValue: 1 << 0)  // 0x01
+    static let read = CharacteristicProperties(rawValue: 1 << 1)       // 0x02
+    static let writeWithoutResponse = CharacteristicProperties(rawValue: 1 << 2)  // 0x04
+    static let write = CharacteristicProperties(rawValue: 1 << 3)       // 0x08
+    static let notify = CharacteristicProperties(rawValue: 1 << 4)      // 0x10
+    static let indicate = CharacteristicProperties(rawValue: 1 << 5)    // 0x20
+    static let authenticatedSignedWrites = CharacteristicProperties(rawValue: 1 << 6)  // 0x40
+    static let extendedProperties = CharacteristicProperties(rawValue: 1 << 7)  // 0x80
+
+    // Additional encryption-required properties (not stored in UInt8, but defined for completeness)
+    // static let notifyEncryptionRequired = CharacteristicProperties(rawValue: 1 << 8)
+    // static let indicateEncryptionRequired = CharacteristicProperties(rawValue: 1 << 9)
 
     var description: [String] {
         var result: [String] = []
+        if contains(.broadcast) { result.append("Broadcast") }
         if contains(.read) { result.append("Read") }
+        if contains(.writeWithoutResponse) { result.append("Write No Response") }
         if contains(.write) { result.append("Write") }
-        if contains(.writeWithoutResponse) { result.append("Write Without Response") }
         if contains(.notify) { result.append("Notify") }
         if contains(.indicate) { result.append("Indicate") }
-        if contains(.broadcast) { result.append("Broadcast") }
+        if contains(.authenticatedSignedWrites) { result.append("Auth Signed Writes") }
+        if contains(.extendedProperties) { result.append("Extended Props") }
         return result
     }
 }

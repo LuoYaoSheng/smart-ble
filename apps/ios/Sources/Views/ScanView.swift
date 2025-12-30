@@ -3,25 +3,41 @@
 //
 
 import SwiftUI
+import AppKit
 
 struct ScanView: View {
     @EnvironmentObject var bleManager: BLEManager
     @State private var selectedDevice: ScanResult?
     @State private var showingDeviceDetails = false
+    @State private var showFilterPanel = false
 
     var body: some View {
         VStack(spacing: 0) {
             // Header
             header
 
+            // Filter Panel (collapsible)
+            if showFilterPanel {
+                filterPanel
+            }
+
             // Device List
-            if bleManager.scanResults.isEmpty {
+            if bleManager.filteredScanResults.isEmpty {
                 emptyState
             } else {
                 deviceList
             }
         }
         .navigationTitle("蓝牙设备")
+        .sheet(isPresented: $showingDeviceDetails) {
+            if let device = selectedDevice {
+                DeviceDetailSheet(device: device)
+                    .environmentObject(bleManager)
+            }
+        }
+        .onChange(of: bleManager.filterRSSI) { _ in bleManager.applyFilters() }
+        .onChange(of: bleManager.filterNamePrefix) { _ in bleManager.applyFilters() }
+        .onChange(of: bleManager.hideNoNameDevices) { _ in bleManager.applyFilters() }
     }
 
     private var header: some View {
@@ -31,14 +47,27 @@ struct ScanView: View {
                     .font(.caption)
                     .foregroundColor(.secondary)
 
-                if !bleManager.scanResults.isEmpty {
-                    Text("发现 \(bleManager.scanResults.count) 台设备")
+                if !bleManager.filteredScanResults.isEmpty {
+                    Text("发现 \(bleManager.filteredScanResults.count) 台设备")
                         .font(.subheadline)
                         .fontWeight(.medium)
                 }
             }
 
             Spacer()
+
+            // Filter toggle button
+            Button(action: {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    showFilterPanel.toggle()
+                }
+            }) {
+                Image(systemName: showFilterPanel ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle")
+                    .font(.title3)
+                    .foregroundColor(showFilterPanel ? .blue : .secondary)
+            }
+            .buttonStyle(.plain)
+            .help("过滤设置")
 
             Button(action: {
                 if bleManager.isScanning {
@@ -65,6 +94,53 @@ struct ScanView: View {
         .background(Color.gray.opacity(0.1))
     }
 
+    private var filterPanel: some View {
+        VStack(spacing: 12) {
+            // RSSI Filter
+            HStack {
+                Text("信号强度过滤: \(bleManager.filterRSSI) dBm")
+                    .font(.subheadline)
+                Spacer()
+            }
+            HStack {
+                Text("-100")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+                Slider(value: Binding(
+                    get: { Double(bleManager.filterRSSI) },
+                    set: { bleManager.filterRSSI = Int($0) }
+                ), in: -100...0, step: 5)
+                Text("0")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+            }
+
+            HStack(spacing: 16) {
+                // Name prefix filter
+                HStack {
+                    Text("名称前缀:")
+                        .font(.subheadline)
+                    TextField("输入前缀", text: $bleManager.filterNamePrefix)
+                        .textFieldStyle(.roundedBorder)
+                        .frame(width: 120)
+                }
+
+                Spacer()
+
+                // Hide no name toggle
+                HStack {
+                    Text("隐藏无名设备")
+                        .font(.subheadline)
+                    Toggle("", isOn: $bleManager.hideNoNameDevices)
+                        .toggleStyle(.switch)
+                }
+            }
+        }
+        .padding()
+        .background(Color.blue.opacity(0.08))
+        .transition(.opacity.combined(with: .move(edge: .top)))
+    }
+
     private var emptyState: some View {
         VStack(spacing: 16) {
             Image(systemName: "antenna.radiowaves.left.and.right")
@@ -85,7 +161,7 @@ struct ScanView: View {
     private var deviceList: some View {
         ScrollView {
             LazyVStack(spacing: 12) {
-                ForEach(bleManager.scanResults) { device in
+                ForEach(bleManager.filteredScanResults) { device in
                     DeviceCard(device: device)
                         .environmentObject(bleManager)
                         .onTapGesture {
@@ -119,8 +195,13 @@ struct DeviceCard: View {
 
             // Info
             VStack(alignment: .leading, spacing: 4) {
-                Text(device.name)
-                    .font(.headline)
+                HStack(spacing: 6) {
+                    Text(device.name)
+                        .font(.headline)
+
+                    // Device type label
+                    deviceTypeLabel
+                }
 
                 Text(device.id.prefix(8) + "...")
                     .font(.caption)
@@ -154,6 +235,28 @@ struct DeviceCard: View {
         .background(Color.gray.opacity(0.15))
         .cornerRadius(12)
     }
+
+    private var deviceTypeLabel: some View {
+        Group {
+            if device.name.lowercased().contains("ble") {
+                Text("BLE")
+                    .font(.caption2)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(Color.blue.opacity(0.8))
+                    .foregroundColor(.white)
+                    .cornerRadius(4)
+            } else if device.name.lowercased().contains("bluetooth") {
+                Text("BT")
+                    .font(.caption2)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(Color.blue.opacity(0.8))
+                    .foregroundColor(.white)
+                    .cornerRadius(4)
+            }
+        }
+    }
 }
 
 // MARK: - Device Detail Sheet
@@ -163,7 +266,33 @@ struct DeviceDetailSheet: View {
     let device: ScanResult
 
     var body: some View {
-        NavigationView {
+        VStack(spacing: 0) {
+            // Header
+            HStack {
+                Text(device.name)
+                    .font(.headline)
+
+                Spacer()
+
+                Button("关闭") {
+                    dismiss()
+                }
+                .buttonStyle(.borderless)
+
+                Button(bleManager.connectionState == .connected ? "已连接" : "连接") {
+                    if bleManager.connectionState == .connected {
+                        bleManager.disconnect()
+                    } else {
+                        bleManager.connect(to: device)
+                    }
+                }
+                .buttonStyle(.borderless)
+                .disabled(bleManager.connectionState == .connecting || bleManager.connectionState == .disconnecting)
+            }
+            .padding()
+            .background(Color.gray.opacity(0.1))
+
+            // Content
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     // Device Info
@@ -176,35 +305,24 @@ struct DeviceDetailSheet: View {
                 }
                 .padding()
             }
-            .navigationTitle(device.name)
-            #if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
-            #endif
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("关闭") {
-                        dismiss()
-                    }
-                }
-
-                ToolbarItem(placement: .primaryAction) {
-                    Button(bleManager.connectionState == .connected ? "已连接" : "连接") {
-                        if bleManager.connectionState == .connected {
-                            bleManager.disconnect()
-                        } else {
-                            bleManager.connect(to: device)
-                        }
-                    }
-                    .disabled(bleManager.connectionState == .connecting || bleManager.connectionState == .disconnecting)
-                }
-            }
         }
+        .frame(minWidth: 450, minHeight: 350)
     }
 
     private var deviceInfoSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("设备信息")
-                .font(.headline)
+            HStack {
+                Text("设备信息")
+                    .font(.headline)
+
+                Spacer()
+
+                Button(action: copyDeviceInfo) {
+                    Label("复制", systemImage: "doc.on.doc")
+                        .font(.caption)
+                }
+                .buttonStyle(.borderless)
+            }
 
             InfoRow(label: "设备 ID", value: device.id)
             InfoRow(label: "信号强度", value: "\(device.rssi) dBm (\(bleManager.getRssiText(rssi: device.rssi)))")
@@ -217,8 +335,18 @@ struct DeviceDetailSheet: View {
 
     private var advertisementSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("广播数据")
-                .font(.headline)
+            HStack {
+                Text("广播数据")
+                    .font(.headline)
+
+                Spacer()
+
+                Button(action: copyAdvData) {
+                    Label("复制", systemImage: "doc.on.doc")
+                        .font(.caption)
+                }
+                .buttonStyle(.borderless)
+            }
 
             if !device.serviceUUIDs.isEmpty {
                 VStack(alignment: .leading, spacing: 8) {
@@ -255,6 +383,41 @@ struct DeviceDetailSheet: View {
         .padding()
         .background(Color.gray.opacity(0.15))
         .cornerRadius(12)
+    }
+
+    private func copyDeviceInfo() {
+        let info = """
+        设备 ID: \(device.id)
+        名称: \(device.name)
+        信号强度: \(device.rssi) dBm
+        可连接: \(device.connectable ? "是" : "否")
+        """
+        copyToClipboard(info)
+    }
+
+    private func copyAdvData() {
+        var content = "设备 ID: \(device.id)\n"
+        content += "名称: \(device.name)\n"
+        content += "信号强度: \(device.rssi) dBm\n\n"
+        content += "服务 UUIDs:\n"
+        if device.serviceUUIDs.isEmpty {
+            content += "  无\n"
+        } else {
+            for uuid in device.serviceUUIDs {
+                content += "  \(uuid)\n"
+            }
+        }
+        if let manufacturerData = device.manufacturerData {
+            content += "\n厂商数据:\n  "
+            content += manufacturerData.map { String(format: "%02x", $0) }.joined(separator: " ").uppercased()
+        }
+        copyToClipboard(content)
+    }
+
+    private func copyToClipboard(_ string: String) {
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        pasteboard.setString(string, forType: .string)
     }
 }
 

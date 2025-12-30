@@ -16,6 +16,5 @@ struct SmartBLEApp: App {
                     bleManager.log("SmartBLE Started", type: .info)
                 }
         }
-        .windowStyle(.hiddenTitleBar)
     }
 }
