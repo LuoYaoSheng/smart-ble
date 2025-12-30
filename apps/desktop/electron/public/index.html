@@ -28,6 +28,18 @@
 
         <!-- 主内容区 -->
         <main class="main">
+            <!-- 标签页导航 -->
+            <div class="tab-nav">
+                <button class="tab-btn active" data-tab="scan">
+                    <span class="icon">📡</span>
+                    <span>扫描设备</span>
+                </button>
+                <button class="tab-btn" data-tab="broadcast" id="broadcastTab" style="display: none;">
+                    <span class="icon">📢</span>
+                    <span>创建广播</span>
+                </button>
+            </div>
+
             <!-- 设备列表视图 -->
             <div id="deviceListView" class="view active">
                 <div class="controls">
@@ -43,6 +55,52 @@
                         <div class="empty-icon">📡</div>
                         <div class="empty-text">暂无设备</div>
                         <div class="empty-hint">点击上方按钮开始扫描</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 广播视图 -->
+            <div id="broadcastView" class="view">
+                <div class="broadcast-container">
+                    <div class="broadcast-card">
+                        <div class="card-header">
+                            <h3>创建 BLE 广播</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>广播名称</label>
+                                <input type="text" id="broadcastName" class="input" placeholder="MyDevice" value="SmartBLE">
+                            </div>
+                            <div class="form-group">
+                                <label>服务 UUID</label>
+                                <input type="text" id="broadcastServiceUuid" class="input" placeholder="FFF0" value="FFF0">
+                                <small class="input-hint">自定义 128 位 UUID 或标准 16 位 UUID</small>
+                            </div>
+                            <div class="broadcast-status" id="broadcastStatus">
+                                <span class="status-dot"></span>
+                                <span class="status-text">未广播</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button id="startBroadcastButton" class="btn btn-primary">
+                                <span class="icon">📢</span>
+                                <span>开始广播</span>
+                            </button>
+                            <button id="stopBroadcastButton" class="btn btn-danger" style="display: none;">
+                                <span class="icon">⏹</span>
+                                <span>停止广播</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="broadcast-info">
+                        <h4>广播说明</h4>
+                        <ul>
+                            <li>设备将以设置的名称和 UUID 进行广播</li>
+                            <li>其他设备可以通过扫描发现此广播</li>
+                            <li>macOS 上可能需要额外权限</li>
+                            <li>广播时无法扫描其他设备</li>
+                        </ul>
                     </div>
                 </div>
             </div>

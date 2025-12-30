@@ -4,6 +4,16 @@
 
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
+const fs = require('fs');
+
+// Debug logging to file
+const debugLogPath = '/tmp/electron-main-debug.log';
+function debugLog(...args) {
+  const msg = args.map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(' ');
+  fs.appendFileSync(debugLogPath, new Date().toISOString() + ' ' + msg + '\n');
+  console.log(...args);
+}
+debugLog('=== Electron Main Process Started ===');
 
 let mainWindow = null;
 let bleModule = null;
@@ -14,26 +24,44 @@ const discoveredDevices = new Map();
 let connectedPeripheral = null;
 
 // 加载 BLE 模块
+let bleModuleLoaded = false;
+
 async function loadBLEModule() {
   const platform = process.platform;
 
+  // 如果已经加载过，直接返回
+  if (bleModuleLoaded) {
+    debugLog('BLE module already loaded');
+    return true;
+  }
+
   try {
+    debugLog('Loading noble module...');
     const noble = require('@abandonware/noble');
     bleModule = noble;
+    bleModuleLoaded = true;
+    debugLog('Noble loaded, state:', bleModule.state);
 
-    if (bleModule) {
-      setupBLEEvents();
-    }
+    // 先设置事件监听，再获取状态
+    setupBLEEvents();
+
+    // 延迟获取状态，确保监听器已设置
+    await new Promise(resolve => setTimeout(resolve, 200));
+
+    // 主动发送当前状态
+    debugLog('Sending initial state:', bleModule.state, 'to renderer');
+    sendToRenderer('ble:stateChanged', { state: bleModule.state });
 
     return true;
   } catch (error) {
-    console.error('Failed to load BLE module:', error.message);
+    debugLog('Failed to load BLE module:', error.message);
     return false;
   }
 }
 
 // 创建主窗口
 function createWindow() {
+  debugLog('Creating main window...');
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
@@ -59,6 +87,7 @@ function createWindow() {
   }
 
   mainWindow.once('ready-to-show', () => {
+    debugLog('Window ready to show');
     mainWindow.show();
   });
 
@@ -69,33 +98,46 @@ function createWindow() {
 
 // BLE 事件设置
 function setupBLEEvents() {
-  // 状态变化 - 立即发送当前状态
-  const sendState = (state) => {
-    console.log('BLE State:', state);
+  debugLog('Setting up BLE events');
+
+  // 状态变化监听
+  bleModule.on('stateChange', (state) => {
+    debugLog('BLE State changed:', state);
     sendToRenderer('ble:stateChanged', { state });
-  };
-
-  // 监听状态变化
-  bleModule.on('stateChange', sendState);
-
-  // 立即发送当前状态（避免错过初始状态）
-  if (bleModule.state) {
-    setTimeout(() => sendState(bleModule.state), 100);
-  }
+  });
 
   // 发现设备
   bleModule.on('discover', (peripheral) => {
-    // 存储设备
-    if (!discoveredDevices.has(peripheral.id)) {
+    // 存储设备（如果不存在或者需要更新）
+    const existing = discoveredDevices.get(peripheral.id);
+    if (!existing || peripheral.rssi !== existing.rssi) {
       discoveredDevices.set(peripheral.id, peripheral);
     }
 
+    const adv = peripheral.advertisement || {};
+
+    // 解析广播数据
     const device = {
       id: peripheral.id,
-      name: peripheral.advertisement.localName || '未知设备',
+      name: adv.localName || '未知设备',
       rssi: peripheral.rssi,
       address: peripheral.address,
-      connectionState: peripheral.state === 'connected' ? 'connected' : 'disconnected'
+      connectionState: peripheral.state === 'connected' ? 'connected' : 'disconnected',
+      // 广播数据
+      advertisement: {
+        txPowerLevel: adv.txPowerLevel,
+        serviceUuids: adv.serviceUuids || [],
+        serviceData: (adv.serviceData || []).map(sd => ({
+          uuid: sd.uuid,
+          data: sd.data ? sd.data.toString('hex') : null
+        })),
+        manufacturerData: adv.manufacturerData ? adv.manufacturerData.toString('hex') : null,
+        // 标志位
+        solicitedServiceUuids: adv.solicitedServiceUuids || [],
+        // 其他数据
+        connectable: adv.connectable !== false,
+        scannable: adv.scannable !== false
+      }
     };
 
     sendToRenderer('ble:deviceDiscovered', device);
@@ -103,15 +145,22 @@ function setupBLEEvents() {
 
   // 连接警告处理
   bleModule.on('warning', (message) => {
-    console.log('BLE Warning:', message);
+    debugLog('BLE Warning:', message);
     sendToRenderer('ble:warning', { message });
   });
 }
 
 // 发送消息到渲染进程
 function sendToRenderer(channel, data) {
-  if (mainWindow && !mainWindow.isDestroyed()) {
-    mainWindow.webContents.send(channel, data);
+  if (mainWindow && !mainWindow.isDestroyed() && !mainWindow.webContents.isDestroyed()) {
+    debugLog(`[Main -> Renderer] ${channel}:`, data);
+    try {
+      mainWindow.webContents.send(channel, data);
+    } catch (e) {
+      debugLog(`[Main -> Renderer] Send error:`, e.message);
+    }
+  } else {
+    debugLog(`[Main -> Renderer] Failed: window not available for ${channel}`);
   }
 }
 
@@ -122,16 +171,9 @@ function getDevice(deviceId) {
 
 // IPC 处理器
 ipcMain.handle('ble:init', async () => {
+  debugLog('IPC: ble:init called');
   const loaded = await loadBLEModule();
-
-  // 等待一小段时间确保 noble 状态已初始化
-  await new Promise(resolve => setTimeout(resolve, 200));
-
-  // 发送当前状态
-  if (bleModule && bleModule.state) {
-    sendToRenderer('ble:stateChanged', { state: bleModule.state });
-  }
-
+  debugLog('IPC: ble:init result:', loaded);
   return { success: loaded, platform: process.platform };
 });
 
@@ -164,6 +206,83 @@ ipcMain.handle('ble:stopScan', async () => {
   }
 });
 
+// 广播状态
+let advertisingService = null;
+
+ipcMain.handle('ble:startAdvertising', async (event, name, serviceUuids) => {
+  // 检查平台支持
+  if (process.platform !== 'linux') {
+    return { success: false, error: `Advertising is not supported on ${process.platform}. Only Linux with bleno supports peripheral mode.` };
+  }
+
+  if (!bleModule) return { success: false, error: 'BLE module not loaded' };
+
+  try {
+    // 检查 noble 是否支持广播
+    if (typeof bleModule.startAdvertising !== 'function') {
+      return { success: false, error: 'BLE module does not support advertising. Use bleno on Linux.' };
+    }
+
+    // 先停止扫描
+    bleModule.stopScanning();
+
+    // 停止现有广播
+    if (advertisingService) {
+      await bleModule.stopAdvertising();
+      advertisingService = null;
+    }
+
+    debugLog('Starting advertising:', name, serviceUuids);
+
+    // 创建广播服务
+    const uuid = serviceUuids && serviceUuids.length > 0 ? serviceUuids[0] : 'FFF0';
+    advertisingService = {
+      uuid: uuid,
+      characteristics: []
+    };
+
+    // 开始广播
+    await new Promise((resolve, reject) => {
+      bleModule.startAdvertising({
+        name: name || 'SmartBLE',
+        serviceUuids: [uuid]
+      }, (error) => {
+        if (error) {
+          debugLog('Advertising error:', error);
+          reject(error);
+        } else {
+          debugLog('Advertising started');
+          resolve();
+        }
+      });
+    });
+
+    return { success: true };
+  } catch (error) {
+    debugLog('Start advertising failed:', error.message);
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('ble:stopAdvertising', async () => {
+  if (process.platform !== 'linux') {
+    return { success: false, error: `Advertising is not supported on ${process.platform}` };
+  }
+
+  if (!bleModule) return { success: false };
+
+  try {
+    if (advertisingService && typeof bleModule.stopAdvertising === 'function') {
+      await bleModule.stopAdvertising();
+      advertisingService = null;
+      debugLog('Advertising stopped');
+    }
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
 ipcMain.handle('ble:connect', async (event, deviceId) => {
   if (!bleModule) return { success: false, error: 'BLE module not loaded' };
 
@@ -179,7 +298,7 @@ ipcMain.handle('ble:connect', async (event, deviceId) => {
     bleModule.stopScanning();
 
     // 设置连接回调
-    const onConnect = (error) => {
+    const onConnect = async (error) => {
       peripheral.removeListener('connect', onConnect);
 
       if (error) {
@@ -187,7 +306,12 @@ ipcMain.handle('ble:connect', async (event, deviceId) => {
         resolve({ success: false, error: error.message });
       } else {
         connectedPeripheral = peripheral;
-        console.log('Connected to:', peripheral.id);
+        debugLog('Connected to:', peripheral.id);
+
+        // 连接后先更新 peripheral 的状态，确保 noble 内部状态正确
+        // 小延迟后再发送连接成功事件
+        await new Promise(r => setTimeout(r, 200));
+
         sendToRenderer('ble:deviceConnected', { id: peripheral.id });
         resolve({ success: true });
       }
@@ -227,73 +351,140 @@ ipcMain.handle('ble:disconnect', async () => {
 
 ipcMain.handle('ble:discoverServices', async (event) => {
   if (!connectedPeripheral) {
+    debugLog('No peripheral connected for service discovery');
     return { success: false, services: [] };
   }
+
+  debugLog('Starting service discovery for:', connectedPeripheral.id);
 
   return new Promise((resolve) => {
     const peripheral = connectedPeripheral;
 
-    const onServicesDiscovered = async (error, services) => {
-      peripheral.removeListener('servicesDiscovered', onServicesDiscovered);
+    // 设置超时
+    const timeout = setTimeout(() => {
+      debugLog('Service discovery timeout');
+      resolve({ success: false, services: [], error: 'Timeout discovering services' });
+    }, 30000);
 
-      if (error) {
-        console.error('Service discovery error:', error);
-        resolve({ success: false, services: [] });
-        return;
-      }
+    // 直接使用回调方式
+    const discoverWithCallback = () => {
+      try {
+        debugLog('Calling peripheral.discoverServices() with callback');
+        peripheral.discoverServices([], async (error, services) => {
+          clearTimeout(timeout);
 
-      console.log('Discovered', services.length, 'services');
-
-      const servicesData = [];
-
-      for (const service of services) {
-        const serviceData = {
-          uuid: service.uuid,
-          name: getServiceName(service.uuid),
-          characteristics: []
-        };
-
-        // 发现特征值
-        try {
-          const characteristics = await discoverCharacteristics(service);
-
-          for (const char of characteristics) {
-            serviceData.characteristics.push({
-              uuid: char.uuid,
-              name: getCharacteristicName(char.uuid),
-              properties: getCharacteristicProperties(char.properties)
-            });
+          if (error) {
+            debugLog('Service discovery error:', error);
+            resolve({ success: false, services: [], error: error.message });
+            return;
           }
-        } catch (charError) {
-          console.error('Characteristic discovery error:', charError);
-        }
 
-        servicesData.push(serviceData);
+          debugLog('Discovered', services?.length || 0, 'services');
+
+          if (!services || services.length === 0) {
+            debugLog('No services found');
+            sendToRenderer('ble:servicesDiscovered', {
+              deviceId: peripheral.id,
+              services: []
+            });
+            resolve({ success: true, services: [] });
+            return;
+          }
+
+          // 立即发送服务列表（不含特征值）
+          const servicesData = services.map(service => ({
+            uuid: service.uuid,
+            name: getServiceName(service.uuid),
+            characteristics: []
+          }));
+
+          // 保存服务引用
+          if (!peripheral.services) {
+            peripheral.services = [];
+          }
+
+          // 发送初始服务列表
+          sendToRenderer('ble:servicesDiscovered', {
+            deviceId: peripheral.id,
+            services: servicesData
+          });
+
+          // 异步发现特征值
+          for (let i = 0; i < services.length; i++) {
+            const service = services[i];
+            try {
+              const characteristics = await discoverCharacteristics(service);
+              debugLog('Service', service.uuid, 'has', characteristics.length, 'characteristics');
+
+              // 更新服务数据
+              const charData = characteristics.map(char => ({
+                uuid: char.uuid,
+                name: getCharacteristicName(char.uuid),
+                properties: getCharacteristicProperties(char.properties)
+              }));
+
+              servicesData[i].characteristics = charData;
+              service.characteristics = characteristics;
+              peripheral.services.push(service);
+
+              // 发送更新后的服务列表
+              sendToRenderer('ble:servicesDiscovered', {
+                deviceId: peripheral.id,
+                services: [...servicesData] // 创建副本
+              });
+            } catch (charError) {
+              debugLog('Characteristic discovery error for service', service.uuid, ':', charError);
+            }
+          }
+
+          debugLog('Service discovery completed, total services:', servicesData.length);
+          resolve({ success: true, services: servicesData });
+        });
+      } catch (e) {
+        clearTimeout(timeout);
+        debugLog('discoverServices() exception:', e);
+        resolve({ success: false, services: [], error: e.message });
       }
-
-      sendToRenderer('ble:servicesDiscovered', {
-        deviceId: peripheral.id,
-        services: servicesData
-      });
-
-      resolve({ success: true, services: servicesData });
     };
 
-    peripheral.once('servicesDiscovered', onServicesDiscovered);
-    peripheral.discoverServices();
+    // 延迟调用，确保连接稳定
+    setTimeout(discoverWithCallback, 500);
   });
 });
 
 // 辅助函数：发现特征值
 function discoverCharacteristics(service) {
-  return new Promise((resolve, reject) => {
-    service.discoverCharacteristics((error, characteristics) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(characteristics || []);
-      }
-    });
+  return new Promise((resolve) => {
+    // 检查服务是否已有特征值（noble 有时会自动填充）
+    if (service.characteristics && Array.isArray(service.characteristics) && service.characteristics.length > 0) {
+      debugLog('Service', service.uuid, 'already has', service.characteristics.length, 'characteristics');
+      resolve(service.characteristics);
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      debugLog('Characteristic discovery timeout for service:', service.uuid);
+      resolve([]); // 超时返回空数组
+    }, 5000); // 5秒超时
+
+    try {
+      // 使用空数组发现所有特征值
+      service.discoverCharacteristics([], (error, characteristics) => {
+        clearTimeout(timeout);
+        if (error) {
+          debugLog('Characteristic discovery error for service', service.uuid, ':', error.message || error);
+          resolve([]);
+        } else {
+          const chars = characteristics || [];
+          debugLog('Discovered', chars.length, 'characteristics for service:', service.uuid);
+          resolve(chars);
+        }
+      });
+    } catch (e) {
+      clearTimeout(timeout);
+      debugLog('discoverCharacteristics exception:', e.message || e);
+      resolve([]);
+    }
   });
 }
 
@@ -461,7 +652,6 @@ function getCharacteristicProperties(props) {
 // App 事件
 app.whenReady().then(() => {
   createWindow();
-  loadBLEModule();
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {

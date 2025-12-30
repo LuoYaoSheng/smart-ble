@@ -30,10 +30,20 @@ contextBridge.exposeInMainWorld('bleAPI', {
   notifyCharacteristic: (serviceUuid, charUuid, notify) =>
     ipcRenderer.invoke('ble:notifyCharacteristic', serviceUuid, charUuid, notify),
 
+  // 广播
+  startAdvertising: (name, serviceUuids) =>
+    ipcRenderer.invoke('ble:startAdvertising', name, serviceUuids),
+  stopAdvertising: () =>
+    ipcRenderer.invoke('ble:stopAdvertising'),
+
   // 事件监听
   onStateChange: (callback) => {
-    const listener = (event, data) => callback(data);
+    const listener = (event, data) => {
+      console.log('[Preload] ble:stateChanged received:', data);
+      callback(data);
+    };
     ipcRenderer.on('ble:stateChanged', listener);
+    console.log('[Preload] onStateChange listener registered');
     return () => ipcRenderer.removeListener('ble:stateChanged', listener);
   },
 

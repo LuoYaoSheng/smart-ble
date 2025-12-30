@@ -11,19 +11,34 @@ class App {
         this.isScanning = false;
         this.writeDialogCallback = null;
         this.characteristicsMap = new Map(); // 存储特征值引用以便更新状态
+        this.isBroadcasting = false; // 广播状态
 
         this.init();
     }
 
     async init() {
         this.bindEvents();
-        await this.initBLE();
+        this.setupEventListeners(); // 先设置监听器
+        await this.initBLE(); // 再初始化 BLE
     }
 
     bindEvents() {
+        // Tab 切换
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => this.switchTab(btn.dataset.tab));
+        });
+
         // Scan button
         document.getElementById('scanButton')?.addEventListener('click', () => {
             this.toggleScan();
+        });
+
+        // Broadcast buttons
+        document.getElementById('startBroadcastButton')?.addEventListener('click', () => {
+            this.startBroadcast();
+        });
+        document.getElementById('stopBroadcastButton')?.addEventListener('click', () => {
+            this.stopBroadcast();
         });
 
         // Back button
@@ -53,12 +68,96 @@ class App {
         dialogConfirm?.addEventListener('click', () => this.confirmWrite());
     }
 
+    switchTab(tab) {
+        // 更新标签按钮状态
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.tab === tab);
+        });
+
+        // 切换视图
+        const deviceListView = document.getElementById('deviceListView');
+        const broadcastView = document.getElementById('broadcastView');
+
+        if (tab === 'scan') {
+            deviceListView?.classList.add('active');
+            broadcastView?.classList.remove('active');
+        } else if (tab === 'broadcast') {
+            // 切换到广播时停止扫描
+            if (this.isScanning) {
+                this.stopScan();
+            }
+            deviceListView?.classList.remove('active');
+            broadcastView?.classList.add('active');
+        }
+    }
+
+    async startBroadcast() {
+        const name = document.getElementById('broadcastName')?.value || 'SmartBLE';
+        const serviceUuid = document.getElementById('broadcastServiceUuid')?.value || 'FFF0';
+
+        try {
+            const result = await window.bleAPI.startAdvertising(name, [serviceUuid]);
+            if (result.success) {
+                this.isBroadcasting = true;
+                this.updateBroadcastStatus(true);
+                this.showToast('广播已启动', 'success');
+            } else {
+                this.showToast(`启动失败: ${result.error}`, 'error');
+            }
+        } catch (error) {
+            this.showToast(`启动失败: ${error.message}`, 'error');
+        }
+    }
+
+    async stopBroadcast() {
+        try {
+            const result = await window.bleAPI.stopAdvertising();
+            if (result.success) {
+                this.isBroadcasting = false;
+                this.updateBroadcastStatus(false);
+                this.showToast('广播已停止', 'info');
+            }
+        } catch (error) {
+            this.showToast(`停止失败: ${error.message}`, 'error');
+        }
+    }
+
+    updateBroadcastStatus(isBroadcasting) {
+        const statusEl = document.getElementById('broadcastStatus');
+        const startBtn = document.getElementById('startBroadcastButton');
+        const stopBtn = document.getElementById('stopBroadcastButton');
+
+        if (!statusEl) return;
+
+        const dot = statusEl.querySelector('.status-dot');
+        const text = statusEl.querySelector('.status-text');
+
+        if (isBroadcasting) {
+            if (dot) dot.className = 'status-dot active';
+            if (text) text.textContent = '正在广播';
+            if (startBtn) startBtn.style.display = 'none';
+            if (stopBtn) stopBtn.style.display = 'inline-flex';
+        } else {
+            if (dot) dot.className = 'status-dot';
+            if (text) text.textContent = '未广播';
+            if (startBtn) startBtn.style.display = 'inline-flex';
+            if (stopBtn) stopBtn.style.display = 'none';
+        }
+    }
+
     async initBLE() {
         try {
+            console.log('Initializing BLE...');
             const result = await window.bleAPI.init();
             console.log('BLE initialized:', result);
-            this.setupEventListeners();
+
+            // 根据平台显示/隐藏广播功能
+            // Linux (bleno) 支持广播，macOS 和 Windows 不支持
+            if (window.platform?.platform === 'linux') {
+                document.getElementById('broadcastTab').style.display = 'flex';
+            }
         } catch (error) {
+            console.error('BLE init error:', error);
             this.showError('初始化失败: ' + error.message);
         }
     }
@@ -101,8 +200,12 @@ class App {
     }
 
     updateBluetoothStatus(state) {
+        console.log('updateBluetoothStatus called with state:', state);
         const statusEl = document.getElementById('bluetoothStatus');
-        if (!statusEl) return;
+        if (!statusEl) {
+            console.log('bluetoothStatus element not found');
+            return;
+        }
 
         const dot = statusEl.querySelector('.status-dot');
         const text = statusEl.querySelector('.status-text');
@@ -115,6 +218,7 @@ class App {
         };
 
         const status = stateMap[state] || { text: '状态未知', class: '' };
+        console.log('Setting status to:', status);
         if (text) text.textContent = status.text;
         if (dot) dot.className = 'status-dot ' + status.class;
     }
@@ -177,8 +281,42 @@ class App {
     }
 
     onDeviceDiscovered(device) {
+        // 检查是否是新设备
+        const isNew = !this.devices.has(device.id);
+
         this.devices.set(device.id, device);
-        this.updateDeviceList();
+
+        if (isNew) {
+            // 新设备才重新渲染列表
+            this.updateDeviceList();
+        } else {
+            // 已存在的设备只更新 RSSI
+            this.updateDeviceRSSI(device);
+        }
+    }
+
+    updateDeviceRSSI(device) {
+        // 找到对应的设备卡片并更新 RSSI
+        const deviceList = document.getElementById('deviceList');
+        if (!deviceList) return;
+
+        // 查找对应 ID 的卡片
+        const cards = deviceList.querySelectorAll('.device-card');
+        cards.forEach(card => {
+            const idEl = card.querySelector('.device-id');
+            if (idEl && idEl.textContent === this.formatShortUuid(device.id)) {
+                // 更新 RSSI
+                const rssiText = card.querySelector('.rssi-text');
+                const signalBars = card.querySelector('.signal-bars');
+                if (rssiText) rssiText.textContent = `${device.rssi} dBm`;
+
+                // 更新信号条
+                if (signalBars) {
+                    signalBars.className = `signal-bars ${this.getRssiClass(device.rssi)}`;
+                    signalBars.innerHTML = this.getSignalBars(device.rssi);
+                }
+            }
+        });
     }
 
     updateDeviceList() {
@@ -202,10 +340,27 @@ class App {
 
         if (!list) return;
 
-        list.innerHTML = '';
+        // 检查是否有空状态提示，如果有则清空
+        const emptyState = list.querySelector('.empty-state');
+        if (emptyState) {
+            list.innerHTML = '';
+        }
+
+        // 只添加还没有显示的设备
+        const existingIds = new Set();
+        list.querySelectorAll('.device-card').forEach(card => {
+            const idEl = card.querySelector('.device-id');
+            if (idEl) {
+                existingIds.add(idEl.textContent);
+            }
+        });
+
         Array.from(this.devices.values()).forEach(device => {
-            const card = this.createDeviceCard(device);
-            list.appendChild(card);
+            const shortId = this.formatShortUuid(device.id);
+            if (!existingIds.has(shortId)) {
+                const card = this.createDeviceCard(device);
+                list.appendChild(card);
+            }
         });
     }
 
@@ -215,12 +370,28 @@ class App {
 
         const rssiClass = this.getRssiClass(device.rssi);
         const rssiText = this.getRssiText(device.rssi);
+        const adv = device.advertisement || {};
+
+        // 构建服务 UUID 列表
+        let serviceInfo = '';
+        if (adv.serviceUuids && adv.serviceUuids.length > 0) {
+            serviceInfo = `<div class="device-services">${adv.serviceUuids.map(uuid => this.formatShortUuid(uuid)).join(' · ')}</div>`;
+        }
+
+        // 构建厂商信息
+        let manufacturerInfo = '';
+        if (adv.manufacturerData) {
+            const companyCode = this.parseManufacturerData(adv.manufacturerData);
+            manufacturerInfo = `<div class="device-manufacturer">厂商: ${companyCode} · ${adv.manufacturerData.substring(0, 8)}...</div>`;
+        }
 
         card.innerHTML = `
             <div class="device-icon">📡</div>
             <div class="device-info">
                 <div class="device-name">${device.name || '未知设备'}</div>
-                <div class="device-id">${device.id}</div>
+                <div class="device-id">${this.formatShortUuid(device.id)}</div>
+                ${serviceInfo}
+                ${manufacturerInfo}
             </div>
             <div class="device-meta">
                 <div class="rssi-indicator">
@@ -229,14 +400,148 @@ class App {
                     </div>
                     <span class="rssi-text">${device.rssi} dBm</span>
                 </div>
+                <button class="btn-connect" title="连接设备">→</button>
             </div>
         `;
 
-        card.addEventListener('click', () => {
-            this.connectToDevice(device);
+        // 点击整个卡片展开详情
+        card.addEventListener('click', (e) => {
+            // 如果点击的是连接按钮，则连接设备
+            if (e.target.classList.contains('btn-connect')) {
+                this.connectToDevice(device);
+                e.stopPropagation();
+                return;
+            }
+
+            // 切换详情展开/收起
+            const existingDetails = card.nextElementSibling;
+            if (existingDetails && existingDetails.classList.contains('device-details')) {
+                // 已展开，收起
+                existingDetails.remove();
+                card.classList.remove('expanded');
+            } else {
+                // 未展开，先关闭其他已展开的
+                document.querySelectorAll('.device-details').forEach(el => el.remove());
+                document.querySelectorAll('.device-card.expanded').forEach(el => el.classList.remove('expanded'));
+
+                // 展开当前
+                this.showDeviceDetails(card, device);
+                card.classList.add('expanded');
+            }
         });
 
         return card;
+    }
+
+    formatShortUuid(uuid) {
+        // 对于 128 位 UUID，只显示前 8 位
+        if (uuid.length > 8) {
+            return uuid.substring(0, 8) + '...';
+        }
+        return uuid;
+    }
+
+    parseManufacturerData(hex) {
+        // 厂商 ID 是前两个字节（小端序）
+        if (hex && hex.length >= 4) {
+            const companyId = parseInt(hex.substring(2, 4) + hex.substring(0, 2), 16);
+            const companies = {
+                0x004C: 'Apple',
+                0x00E0: 'Google',
+                0x006D: 'Microsoft',
+                0x0087: 'Garmin',
+                0x0006: 'Microsoft',
+                0x00D6: 'Cyble',
+                0xFFFF: 'Test'
+            };
+            return companies[companyId] || `0x${companyId.toString(16).toUpperCase().padStart(4, '0')}`;
+        }
+        return 'Unknown';
+    }
+
+    showDeviceDetails(card, device) {
+        const adv = device.advertisement || {};
+
+        let detailsHtml = `
+            <div class="device-details">
+                <div class="details-section">
+                    <h4>设备信息</h4>
+                    <div class="detail-row"><span>设备 ID:</span><span class="mono">${device.id}</span></div>
+                    <div class="detail-row"><span>地址:</span><span class="mono">${device.address || 'N/A'}</span></div>
+                    <div class="detail-row"><span>RSSI:</span><span>${device.rssi} dBm</span></div>
+                    <div class="detail-row"><span>可连接:</span><span>${adv.connectable ? '是' : '否'}</span></div>
+                    <div class="detail-row"><span>可扫描:</span><span>${adv.scannable ? '是' : '否'}</span></div>
+                    ${adv.txPowerLevel !== undefined ? `<div class="detail-row"><span>TX Power:</span><span>${adv.txPowerLevel} dBm</span></div>` : ''}
+                </div>
+        `;
+
+        // 服务 UUIDs
+        if (adv.serviceUuids && adv.serviceUuids.length > 0) {
+            detailsHtml += `
+                <div class="details-section">
+                    <h4>广播服务 UUIDs (${adv.serviceUuids.length})</h4>
+                    ${adv.serviceUuids.map(uuid => `
+                        <div class="detail-row">
+                            <span class="mono">${uuid}</span>
+                            <span class="service-name">${this.getServiceName(uuid)}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // 服务数据
+        if (adv.serviceData && adv.serviceData.length > 0) {
+            detailsHtml += `
+                <div class="details-section">
+                    <h4>服务数据</h4>
+                    ${adv.serviceData.map(sd => `
+                        <div class="detail-row">
+                            <span class="mono">${sd.uuid}</span>
+                            <span class="mono">${sd.data || 'N/A'}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // 厂商数据
+        if (adv.manufacturerData) {
+            detailsHtml += `
+                <div class="details-section">
+                    <h4>厂商数据</h4>
+                    <div class="detail-row">
+                        <span>公司:</span>
+                        <span>${this.parseManufacturerData(adv.manufacturerData)}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="mono">${adv.manufacturerData}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        detailsHtml += `</div>`;
+
+        // 在卡片后面插入详情
+        card.insertAdjacentHTML('afterend', detailsHtml);
+    }
+
+    getServiceName(uuid) {
+        const shortUuid = uuid.substring(4, 8);
+        const services = {
+            '1800': 'Generic Access',
+            '1801': 'Generic Attribute',
+            '180A': 'Device Information',
+            '180F': 'Battery Service',
+            '1812': 'HID',
+            '180D': 'Heart Rate',
+            '181C': 'User Data',
+            '1809': 'Health Thermometer',
+            '181A': 'Automation IO',
+            '181B': 'Object Transfer'
+        };
+        return services[shortUuid] || '';
     }
 
     getRssiClass(rssi) {
@@ -677,9 +982,9 @@ class App {
             'disconnected': { text: '未连接', class: 'disconnected' }
         };
 
-        const status = statusMap[status] || { text: '未知', class: '' };
-        statusEl.textContent = status.text;
-        statusEl.className = 'status-badge ' + status.class;
+        const statusInfo = statusMap[status] || { text: '未知', class: '' };
+        statusEl.textContent = statusInfo.text;
+        statusEl.className = 'status-badge ' + statusInfo.class;
     }
 
     addLog(message, type = 'info') {
