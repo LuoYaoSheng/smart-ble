@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SmartBLE.Desktop.ViewModels;
@@ -34,6 +35,22 @@ public partial class MainWindowViewModel : ObservableObject
     private bool _isDeviceListEmpty = true;
 
     [ObservableProperty]
+    private bool _showFilterPanel;
+
+    // Filter properties
+    [ObservableProperty]
+    private int _filterRssi = -100;
+
+    [ObservableProperty]
+    private string _filterNamePrefix = string.Empty;
+
+    [ObservableProperty]
+    private bool _filterHideUnnamed;
+
+    [ObservableProperty]
+    private int _filteredDeviceCount;
+
+    [ObservableProperty]
     private string _currentDeviceName = string.Empty;
 
     [ObservableProperty]
@@ -51,9 +68,31 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     private string _logCountText = "0 条";
 
+    // Write dialog properties
+    [ObservableProperty]
+    private bool _showWriteDialog;
+
+    [ObservableProperty]
+    private string _writeDialogTitle = string.Empty;
+
+    [ObservableProperty]
+    private string _writeInputText = string.Empty;
+
+    [ObservableProperty]
+    private bool _isHexWriteMode = true;
+
+    [ObservableProperty]
+    private string _writeHintText = "输入十六进制数据 (例: FF 01 AA)";
+
+    private string _currentWriteServiceUuid = string.Empty;
+    private string _currentWriteCharacteristicUuid = string.Empty;
+
     public ObservableCollection<BleDeviceViewModel> Devices { get; } = new();
+    public ObservableCollection<BleDeviceViewModel> FilteredDevices { get; } = new();
     public ObservableCollection<BleServiceViewModel> Services { get; } = new();
     public ObservableCollection<LogEntry> Logs { get; } = new();
+
+    private readonly Dictionary<string, bool> _notifyingCharacteristics = new();
 
     public MainWindowViewModel()
     {
@@ -62,6 +101,8 @@ public partial class MainWindowViewModel : ObservableObject
         _bleService.DeviceConnected += OnDeviceConnected;
         _bleService.DeviceDisconnected += OnDeviceDisconnected;
         _bleService.ServiceDiscovered += OnServiceDiscovered;
+        _bleService.CharacteristicValueChanged += OnCharacteristicValueChanged;
+        _bleService.LogMessage += OnLogMessage;
 
         InitializeAsync();
     }
@@ -107,9 +148,74 @@ public partial class MainWindowViewModel : ObservableObject
                 existing.Update(device);
             }
 
-            DeviceCountText = $"发现 {Devices.Count} 台设备";
-            IsDeviceListEmpty = Devices.Count == 0;
+            ApplyFilters();
         });
+    }
+
+    private void ApplyFilters()
+    {
+        FilteredDevices.Clear();
+
+        foreach (var device in Devices)
+        {
+            // RSSI filter
+            if (FilterRssi > -100 && device.Rssi < FilterRssi)
+                continue;
+
+            // Name prefix filter
+            if (!string.IsNullOrEmpty(FilterNamePrefix) &&
+                !string.IsNullOrEmpty(device.Name) &&
+                !device.Name.StartsWith(FilterNamePrefix, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            // Hide unnamed filter
+            if (FilterHideUnnamed && string.IsNullOrEmpty(device.Name))
+                continue;
+
+            FilteredDevices.Add(device);
+        }
+
+        // Sort by RSSI (strongest first)
+        var sorted = FilteredDevices.OrderByDescending(d => d.Rssi).ToList();
+        FilteredDevices.Clear();
+        foreach (var device in sorted)
+        {
+            FilteredDevices.Add(device);
+        }
+
+        DeviceCountText = FilteredDevices.Count == Devices.Count
+            ? $"发现 {Devices.Count} 台设备"
+            : $"显示 {FilteredDevices.Count} / {Devices.Count} 台";
+        IsDeviceListEmpty = FilteredDevices.Count == 0;
+    }
+
+    partial void OnFilterRssiChanged(int value)
+    {
+        ApplyFilters();
+    }
+
+    partial void OnFilterNamePrefixChanged(string value)
+    {
+        ApplyFilters();
+    }
+
+    partial void OnFilterHideUnnamedChanged(bool value)
+    {
+        ApplyFilters();
+    }
+
+    [RelayCommand]
+    private void ResetFilters()
+    {
+        FilterRssi = -100;
+        FilterNamePrefix = string.Empty;
+        FilterHideUnnamed = false;
+    }
+
+    [RelayCommand]
+    private void ToggleFilterPanel()
+    {
+        ShowFilterPanel = !ShowFilterPanel;
     }
 
     private void OnDeviceConnected(string deviceId)
@@ -126,6 +232,7 @@ public partial class MainWindowViewModel : ObservableObject
     {
         Dispatcher.UIThread.Post(() =>
         {
+            _notifyingCharacteristics.Clear();
             AddLog("设备已断开", LogType.Info);
         });
     }
@@ -144,6 +251,23 @@ public partial class MainWindowViewModel : ObservableObject
         });
     }
 
+    private void OnCharacteristicValueChanged(string characteristicUuid, byte[] data)
+    {
+        Dispatcher.UIThread.Post(() =>
+        {
+            var hex = BitConverter.ToString(data).Replace('-', ' ');
+            AddLog($"收到数据: {hex}", LogType.Receive);
+        });
+    }
+
+    private void OnLogMessage(string title, string message)
+    {
+        Dispatcher.UIThread.Post(() =>
+        {
+            AddLog(message, message.Contains("成功") ? LogType.Success : LogType.Error);
+        });
+    }
+
     [RelayCommand]
     private async Task StartScanAsync()
     {
@@ -156,6 +280,7 @@ public partial class MainWindowViewModel : ObservableObject
         else
         {
             Devices.Clear();
+            FilteredDevices.Clear();
             IsDeviceListEmpty = true;
             DeviceCountText = "发现 0 台设备";
 
@@ -189,6 +314,7 @@ public partial class MainWindowViewModel : ObservableObject
         CurrentViewIndex = 0;
         Services.Clear();
         Logs.Clear();
+        _notifyingCharacteristics.Clear();
         HasLogs = false;
     }
 
@@ -204,6 +330,152 @@ public partial class MainWindowViewModel : ObservableObject
     {
         Logs.Clear();
         HasLogs = false;
+        LogCountText = "0 条";
+    }
+
+    [RelayCommand]
+    private async Task ReadCharacteristicAsync(string parameter)
+    {
+        var parts = parameter?.Split('|');
+        if (parts?.Length != 2) return;
+
+        var serviceUuid = parts[0];
+        var characteristicUuid = parts[1];
+
+        AddLog($"读取特征值 {GetShortUuid(characteristicUuid)}...", LogType.Info);
+        var data = await _bleService.ReadCharacteristicAsync(serviceUuid, characteristicUuid);
+        if (data != null)
+        {
+            var hex = BitConverter.ToString(data).Replace('-', ' ');
+            AddLog($"读取成功: {hex}", LogType.Success);
+        }
+    }
+
+    partial void OnIsHexWriteModeChanged(bool value)
+    {
+        WriteHintText = value ? "输入十六进制数据 (例: FF 01 AA)" : "输入文本数据 (UTF-8)";
+    }
+
+    [RelayCommand]
+    private void ShowWriteDialog(string parameter)
+    {
+        var parts = parameter?.Split('|');
+        if (parts?.Length != 2) return;
+
+        _currentWriteServiceUuid = parts[0];
+        _currentWriteCharacteristicUuid = parts[1];
+
+        WriteDialogTitle = $"写入特征值 {GetShortUuid(parts[1])}";
+        WriteInputText = string.Empty;
+        IsHexWriteMode = true;
+        WriteHintText = "输入十六进制数据 (例: FF 01 AA)";
+        ShowWriteDialog = true;
+    }
+
+    [RelayCommand]
+    private void CloseWriteDialog()
+    {
+        ShowWriteDialog = false;
+        WriteInputText = string.Empty;
+    }
+
+    [RelayCommand]
+    private async Task ExecuteWriteAsync()
+    {
+        var text = WriteInputText.Trim();
+        if (string.IsNullOrEmpty(text)) return;
+
+        byte[] data;
+
+        if (IsHexWriteMode)
+        {
+            // HEX mode
+            var cleanHex = text.Replace(" ", "").Replace("-", "");
+            if (cleanHex.Length % 2 != 0)
+            {
+                AddLog("HEX 数据长度必须是偶数", LogType.Error);
+                return;
+            }
+
+            if (!System.Text.RegularExpressions.Regex.IsMatch(cleanHex, @"^[0-9A-Fa-f]+$"))
+            {
+                AddLog("HEX 数据只能包含 0-9 和 A-F", LogType.Error);
+                return;
+            }
+
+            data = HexStringToBytes(cleanHex);
+        }
+        else
+        {
+            // UTF-8 mode
+            data = Encoding.UTF8.GetBytes(text);
+        }
+
+        AddLog($"写入 {GetShortUuid(_currentWriteCharacteristicUuid)}: {WriteInputText}", LogType.Info);
+
+        var success = await _bleService.WriteCharacteristicAsync(
+            _currentWriteServiceUuid,
+            _currentWriteCharacteristicUuid,
+            data
+        );
+
+        if (success)
+        {
+            CloseWriteDialog();
+        }
+    }
+
+    private byte[] HexStringToBytes(string hex)
+    {
+        var bytes = new byte[hex.Length / 2];
+        for (var i = 0; i < bytes.Length; i++)
+        {
+            bytes[i] = Convert.ToByte(hex.Substring(i * 2, 2), 16);
+        }
+        return bytes;
+    }
+
+    [RelayCommand]
+    private async Task ToggleNotificationAsync(string parameter)
+    {
+        var parts = parameter?.Split('|');
+        if (parts?.Length != 2) return;
+
+        var serviceUuid = parts[0];
+        var characteristicUuid = parts[1];
+
+        var key = $"{serviceUuid}-{characteristicUuid}";
+        var currentState = _notifyingCharacteristics.ContainsKey(key) && _notifyingCharacteristics[key];
+
+        if (currentState)
+        {
+            AddLog($"停止通知 {GetShortUuid(characteristicUuid)}...", LogType.Info);
+            var success = await _bleService.SetNotificationAsync(serviceUuid, characteristicUuid, false);
+            if (success)
+            {
+                _notifyingCharacteristics[key] = false;
+            }
+        }
+        else
+        {
+            AddLog($"启用通知 {GetShortUuid(characteristicUuid)}...", LogType.Info);
+            var success = await _bleService.SetNotificationAsync(serviceUuid, characteristicUuid, true);
+            if (success)
+            {
+                _notifyingCharacteristics[key] = true;
+            }
+        }
+    }
+
+    public bool IsNotifying(string serviceUuid, string characteristicUuid)
+    {
+        var key = $"{serviceUuid}-{characteristicUuid}";
+        return _notifyingCharacteristics.ContainsKey(key) && _notifyingCharacteristics[key];
+    }
+
+    private string GetShortUuid(string uuid)
+    {
+        return uuid.Length > 8 ? uuid.Substring(4, 4) : uuid;
     }
 
     private void AddLog(string message, LogType type)

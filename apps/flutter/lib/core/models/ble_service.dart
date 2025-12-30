@@ -15,7 +15,7 @@ class BleService {
   /// 是否展开（UI 状态）
   bool expanded;
 
-  const BleService({
+  BleService({
     required this.uuid,
     this.isPrimary = false,
     this.name,
@@ -104,7 +104,7 @@ class BleCharacteristic {
   /// 特征值名称（标准特征值会显示名称）
   final String? name;
 
-  const BleCharacteristic({
+  BleCharacteristic({
     required this.uuid,
     required this.serviceUuid,
     this.properties = const [],

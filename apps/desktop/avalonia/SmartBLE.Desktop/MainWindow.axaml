@@ -43,7 +43,7 @@
             <Carousel SelectedIndex="{Binding CurrentViewIndex}">
                 <!-- Device List View -->
                 <Grid>
-                    <Grid RowDefinitions="Auto,*">
+                    <Grid RowDefinitions="Auto,Auto,*">
                         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="20,16" Spacing="12">
                             <Button Classes="Primary" Command="{Binding StartScanCommand}">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
@@ -51,13 +51,56 @@
                                     <TextBlock Text="{Binding ScanButtonText}"/>
                                 </StackPanel>
                             </Button>
+                            <Button Classes="Secondary" Command="{Binding ToggleFilterPanelCommand}">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <TextBlock Text="🔽"/>
+                                    <TextBlock Text="过滤条件"/>
+                                </StackPanel>
+                            </Button>
                             <Border Classes="DeviceCount">
                                 <TextBlock Text="{Binding DeviceCountText}" Margin="12,6"/>
                             </Border>
                         </StackPanel>
 
-                        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
-                            <ItemsControl ItemsSource="{Binding Devices}">
+                        <!-- Filter Panel -->
+                        <Border Grid.Row="1" Classes="FilterPanel" IsVisible="{Binding ShowFilterPanel}"
+                                Margin="20,0,20,12">
+                            <StackPanel Spacing="16" Margin="16">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBlock Text="过滤条件" Grid.Column="0" FontWeight="SemiBold"/>
+                                    <Button Grid.Column="1" Content="重置" Command="{Binding ResetFiltersCommand}"
+                                            Classes="TextButton" Padding="8,4"/>
+                                </Grid>
+
+                                <!-- RSSI Filter -->
+                                <StackPanel Spacing="8">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBlock Text="信号强度" Grid.Column="0" FontSize="13"/>
+                                        <TextBlock Grid.Column="1" FontSize="12" Foreground="#007AFF">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}≥ {0} dBm">
+                                                    <Binding Path="FilterRssi"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </Grid>
+                                    <Slider Value="{Binding FilterRssi}" Minimum="-100" Maximum="-30"
+                                            TickFrequency="10" IsSnapToTickEnabled="True"/>
+                                </StackPanel>
+
+                                <!-- Name Filter -->
+                                <StackPanel Spacing="8">
+                                    <TextBlock Text="名称前缀" FontSize="13"/>
+                                    <TextBox Text="{Binding FilterNamePrefix}" WatermarkText="输入设备名称前缀..."/>
+                                </StackPanel>
+
+                                <!-- Hide Unnamed -->
+                                <CheckBox Content="隐藏无名设备" IsChecked="{Binding FilterHideUnnamed}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled">
+                            <ItemsControl ItemsSource="{Binding FilteredDevices}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Border Classes="DeviceCard" Margin="20,0,20,12">
@@ -94,7 +137,7 @@
 
                         <!-- Empty State -->
                         <Grid IsVisible="{Binding IsDeviceListEmpty}"
-                              Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                              Grid.RowSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center">
                             <StackPanel Spacing="16">
                                 <TextBlock Text="📡" FontSize="64" Opacity="0.5"/>
                                 <TextBlock Text="暂无设备" FontSize="18" Foreground="#8E8E93"/>
@@ -145,13 +188,12 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Border Classes="ServiceCard" Margin="20,0,20,12">
-                                            <StackPanel>
+                                            <StackPanel Spacing="12">
                                                 <!-- Service Header -->
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
 
@@ -173,6 +215,86 @@
                                                                   Padding="12,6"/>
                                                     </Border>
                                                 </Grid>
+
+                                                <!-- Characteristics -->
+                                                <ItemsControl ItemsSource="{Binding Characteristics}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Border Background="#F5F5F5" CornerRadius="8"
+                                                                    Padding="12,8" Margin="4,0">
+                                                                <Grid ColumnDefinitions="Auto,*,Auto">
+                                                                    <!-- Icon -->
+                                                                    <Border Grid.Column="0" Width="32" Height="32"
+                                                                            Background="White" CornerRadius="6"
+                                                                            BorderBrush="#E0E0E0" BorderThickness="1"
+                                                                            Margin="0,0,10,0">
+                                                                        <TextBlock Text="📡" FontSize="14"
+                                                                                  HorizontalAlignment="Center"
+                                                                                  VerticalAlignment="Center"/>
+                                                                    </Border>
+
+                                                                    <!-- Characteristic Info -->
+                                                                    <StackPanel Grid.Column="1" Spacing="2">
+                                                                        <TextBlock Text="{Binding Name}" FontSize="13"
+                                                                                  FontWeight="Medium"/>
+                                                                        <TextBlock Text="{Binding Uuid}" FontSize="11"
+                                                                                  Foreground="#8E8E93"/>
+                                                                        <!-- Properties -->
+                                                                        <ItemsControl ItemsSource="{Binding Properties}">
+                                                                            <ItemsControl.ItemsPanel>
+                                                                                <ItemsPanelTemplate>
+                                                                                    <WrapPanel Orientation="Horizontal"/>
+                                                                                </ItemsPanelTemplate>
+                                                                            </ItemsControl.ItemsPanel>
+                                                                            <ItemsControl.ItemTemplate>
+                                                                                <DataTemplate>
+                                                                                    <Border Background="#007AFF" CornerRadius="3"
+                                                                                            Padding="5,2" Margin="0,0,4,0">
+                                                                                        <TextBlock Text="{Binding}" FontSize="9"
+                                                                                                  Foreground="White"/>
+                                                                                    </Border>
+                                                                                </DataTemplate>
+                                                                            </ItemsControl.ItemTemplate>
+                                                                        </ItemsControl>
+                                                                    </StackPanel>
+
+                                                                    <!-- Action Buttons -->
+                                                                    <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6">
+                                                                        <!-- Read Button -->
+                                                                        <Button Classes="CharButton"
+                                                                                Command="{Binding $parent[UserControl].((ViewModels.MainWindowViewModel)DataContext).ReadCharacteristicCommand}"
+                                                                                CommandParameter="{Binding $parent[ContentControl].((ViewModels.BleServiceViewModel)DataContext).Uuid + '|' + $parent[ContentControl].((ViewModels.BleCharacteristicInfo)DataContext).Uuid}">
+                                                                            <StackPanel Spacing="2">
+                                                                                <TextBlock Text="📥" FontSize="12"/>
+                                                                                <TextBlock Text="读" FontSize="9"/>
+                                                                            </StackPanel>
+                                                                        </Button>
+
+                                                                        <!-- Write Button -->
+                                                                        <Button Classes="CharButton"
+                                                                                Command="{Binding $parent[UserControl].((ViewModels.MainWindowViewModel)DataContext).ShowWriteDialogCommand}"
+                                                                                CommandParameter="{Binding $parent[ContentControl].((ViewModels.BleServiceViewModel)DataContext).Uuid + '|' + $parent[ContentControl].((ViewModels.BleCharacteristicInfo)DataContext).Uuid}">
+                                                                            <StackPanel Spacing="2">
+                                                                                <TextBlock Text="📤" FontSize="12"/>
+                                                                                <TextBlock Text="写" FontSize="9"/>
+                                                                            </StackPanel>
+                                                                        </Button>
+
+                                                                        <!-- Notify Button -->
+                                                                        <Button Classes="CharButton"
+                                                                                Command="{Binding $parent[UserControl].((ViewModels.MainWindowViewModel)DataContext).ToggleNotificationCommand}"
+                                                                                CommandParameter="{Binding $parent[ContentControl].((ViewModels.BleServiceViewModel)DataContext).Uuid + '|' + $parent[ContentControl].((ViewModels.BleCharacteristicInfo)DataContext).Uuid}">
+                                                                            <StackPanel Spacing="2">
+                                                                                <TextBlock Text="🔔" FontSize="12"/>
+                                                                                <TextBlock Text="通知" FontSize="9"/>
+                                                                            </StackPanel>
+                                                                        </Button>
+                                                                    </StackPanel>
+                                                                </Grid>
+                                                            </Border>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
                                             </StackPanel>
                                         </Border>
                                     </DataTemplate>
@@ -215,5 +337,46 @@
                 </Grid>
             </Carousel>
         </Grid>
+    </Grid>
+
+    <!-- Write Dialog -->
+    <Grid IsVisible="{Binding ShowWriteDialog}" ZIndex="1000">
+        <Border Background="#80000000"/>
+        <Border Background="White" CornerRadius="12" BoxShadow="0,8,32,#40000000"
+                HorizontalAlignment="Center" VerticalAlignment="Center"
+                Width="400" Padding="24">
+            <StackPanel Spacing="16">
+                <!-- Dialog Title -->
+                <TextBlock Text="{Binding WriteDialogTitle}" FontSize="18" FontWeight="SemiBold"/>
+
+                <!-- Format Toggle -->
+                <StackPanel Spacing="8">
+                    <TextBlock Text="格式:" FontSize="13" FontWeight="Medium"/>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <ToggleButton Content="HEX" IsChecked="{Binding IsHexWriteMode}"
+                                     Padding="12,6" Classes="FormatToggle"/>
+                        <ToggleButton Content="UTF-8" IsChecked="{Binding !IsHexWriteMode}"
+                                     Padding="12,6" Classes="FormatToggle"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Input Field -->
+                <StackPanel Spacing="8">
+                    <TextBlock Text="数据:" FontSize="13" FontWeight="Medium"/>
+                    <TextBox Text="{Binding WriteInputText, Mode=TwoWay}"
+                             AcceptsReturn="True" TextWrapping="Wrap"
+                             Height="80"/>
+                    <TextBlock Text="{Binding WriteHintText}" FontSize="11" Foreground="#8E8E93"/>
+                </StackPanel>
+
+                <!-- Buttons -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                    <Button Content="取消" Command="{Binding CloseWriteDialogCommand}"
+                            Classes="Secondary" Padding="20,10"/>
+                    <Button Content="写入" Command="{Binding ExecuteWriteCommand}"
+                            Classes="Primary" Padding="20,10"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>

@@ -12,10 +12,12 @@ dependencies:
 
   # BLE 库
   flutter_blue_plus: ^1.32.0
+  flutter_ble_peripheral: ^2.0.1
 
   # 状态管理
   riverpod: ^2.4.9
   flutter_riverpod: ^2.4.9
+  rxdart: ^0.27.7
 
   # UI 组件
   cupertino_icons: ^1.0.6

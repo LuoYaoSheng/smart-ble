@@ -3,6 +3,10 @@ bin-debug/
 bin-release/
 [Oo]bj/
 [Bb]in/
+.build/
+build/
+obj/
+bin/
 
 # Other files and folders
 .settings/
@@ -11,10 +15,33 @@ bin-release/
 *.swf
 *.air
 *.ipa
-# *.apk
+*.apk
+*.dll
+*.exe
 
-# Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
-# should NOT be excluded as they contain compiler settings and other important
-# information for Eclipse / Flash Builder.
+# IDE
+.metadata
+.idea/
+.vscode/
+*.iml
+*.user
+*.suo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node
+node_modules/
+package-lock.json
+
+# Flutter/Dart
+.pub-cache/
+.pub/
+.flutter-plugins
+.flutter-plugins-dependencies
+dart_tool/
+
+# Project files
 /SmartBLE/unpackage
 SmartBLE/.DS_Store

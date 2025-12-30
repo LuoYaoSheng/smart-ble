@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.Advertisement;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
+using Windows.Storage.Streams;
 
 namespace SmartBLE.Desktop.ViewModels;
 
@@ -15,12 +16,15 @@ public class BleService
 {
     private BluetoothLEAdvertisementWatcher? _watcher;
     private BluetoothLEDevice? _currentDevice;
+    private Dictionary<string, GattCharacteristic> _characteristics = new();
 
     public event Action<string>? StateChanged;
     public event Action<BleDevice>? DeviceDiscovered;
     public event Action<string>? DeviceConnected;
     public event Action<string>? DeviceDisconnected;
     public event Action<BleServiceInfo[]?>? ServiceDiscovered;
+    public event Action<string, byte[]>? CharacteristicValueChanged;
+    public event Action<string, string>? LogMessage;
 
     public async Task InitializeAsync()
     {
@@ -84,12 +88,14 @@ public class BleService
         }
         catch (Exception ex)
         {
+            LogMessage?.Invoke("连接失败", $"连接失败: {ex.Message}");
             System.Diagnostics.Debug.WriteLine($"Connect error: {ex.Message}");
         }
     }
 
     public async Task DisconnectAsync()
     {
+        _characteristics.Clear();
         _currentDevice?.Dispose();
         _currentDevice = null;
     }
@@ -100,8 +106,7 @@ public class BleService
 
         try
         {
-            var servicesResult = await _currentDevice.GetGattServicesForUuidAsync(
-                BluetoothUuidHelper.FromShortId(0x1800));
+            var servicesResult = await _currentDevice.GetGattServicesAsync();
 
             if (servicesResult.Status == GattCommunicationStatus.Success)
             {
@@ -116,6 +121,10 @@ public class BleService
                     {
                         foreach (var char in characteristicsResult.Characteristics)
                         {
+                            // Store for later access
+                            var key = $"{service.Uuid}-{char.Uuid}";
+                            _characteristics[key] = char;
+
                             var props = new List<string>();
                             if (char.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Read))
                                 props.Add("read");
@@ -148,13 +157,146 @@ public class BleService
         }
         catch (Exception ex)
         {
+            LogMessage?.Invoke("发现服务失败", $"发现服务失败: {ex.Message}");
             System.Diagnostics.Debug.WriteLine($"Discover services error: {ex.Message}");
         }
     }
 
+    public async Task<byte[]?> ReadCharacteristicAsync(string serviceUuid, string characteristicUuid)
+    {
+        try
+        {
+            var key = $"{serviceUuid}-{characteristicUuid}";
+            if (!_characteristics.ContainsKey(key))
+            {
+                LogMessage?.Invoke("读取失败", "特征值未找到");
+                return null;
+            }
+
+            var characteristic = _characteristics[key];
+            var result = await characteristic.ReadValueAsync();
+
+            if (result.Status == GattCommunicationStatus.Success)
+            {
+                var data = new byte[result.Value.Length];
+                DataReader.FromBuffer(result.Value).ReadBytes(data);
+                LogMessage?.Invoke("读取成功", $"读取成功: {BitConverter.ToString(data).Replace('-', ' ')}");
+                return data;
+            }
+            else
+            {
+                LogMessage?.Invoke("读取失败", $"读取失败: {result.Status}");
+            }
+        }
+        catch (Exception ex)
+        {
+            LogMessage?.Invoke("读取失败", $"读取失败: {ex.Message}");
+        }
+
+        return null;
+    }
+
+    public async Task<bool> WriteCharacteristicAsync(string serviceUuid, string characteristicUuid, byte[] data, bool withResponse = true)
+    {
+        try
+        {
+            var key = $"{serviceUuid}-{characteristicUuid}";
+            if (!_characteristics.ContainsKey(key))
+            {
+                LogMessage?.Invoke("写入失败", "特征值未找到");
+                return false;
+            }
+
+            var characteristic = _characteristics[key];
+            var writer = new DataWriter();
+            writer.WriteBytes(data);
+
+            GattCommunicationStatus result;
+            if (withResponse)
+            {
+                result = await characteristic.WriteValueAsync(writer.DetachBuffer());
+            }
+            else
+            {
+                result = await characteristic.WriteValueAsync(writer.DetachBuffer(), GattWriteOption.WriteWithoutResponse);
+            }
+
+            if (result == GattCommunicationStatus.Success)
+            {
+                LogMessage?.Invoke("写入成功", $"写入成功: {BitConverter.ToString(data).Replace('-', ' ')}");
+                return true;
+            }
+            else
+            {
+                LogMessage?.Invoke("写入失败", $"写入失败: {result}");
+            }
+        }
+        catch (Exception ex)
+        {
+            LogMessage?.Invoke("写入失败", $"写入失败: {ex.Message}");
+        }
+
+        return false;
+    }
+
+    public async Task<bool> SetNotificationAsync(string serviceUuid, string characteristicUuid, bool enable)
+    {
+        try
+        {
+            var key = $"{serviceUuid}-{characteristicUuid}";
+            if (!_characteristics.ContainsKey(key))
+            {
+                LogMessage?.Invoke("设置通知失败", "特征值未找到");
+                return false;
+            }
+
+            var characteristic = _characteristics[key];
+
+            if (enable)
+            {
+                // Subscribe to value changes
+                characteristic.ValueChanged += (sender, args) =>
+                {
+                    var data = new byte[args.CharacteristicValue.Length];
+                    DataReader.FromBuffer(args.CharacteristicValue).ReadBytes(data);
+                    CharacteristicValueChanged?.Invoke(characteristicUuid, data);
+                    LogMessage?.Invoke("收到通知", $"收到通知: {BitConverter.ToString(data).Replace('-', ' ')}");
+                };
+
+                var result = await characteristic.WriteClientCharacteristicConfigurationDescriptorAsync(
+                    GattClientCharacteristicConfigurationDescriptorValue.Notify);
+
+                if (result == GattCommunicationStatus.Success)
+                {
+                    LogMessage?.Invoke("通知已启用", "通知已启用");
+                    return true;
+                }
+            }
+            else
+            {
+                characteristic.ValueChanged -= (sender, args) => { };
+
+                var result = await characteristic.WriteClientCharacteristicConfigurationDescriptorAsync(
+                    GattClientCharacteristicConfigurationDescriptorValue.None);
+
+                if (result == GattCommunicationStatus.Success)
+                {
+                    LogMessage?.Invoke("通知已禁用", "通知已禁用");
+                    return true;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            LogMessage?.Invoke("设置通知失败", $"设置通知失败: {ex.Message}");
+        }
+
+        return false;
+    }
+
     private static string GetServiceName(string uuid)
     {
-        var shortUuid = uuid.Length > 8 ? uuid[4..8] : uuid;
+        var shortUuid = uuid.Length > 8 ? uuid.Substring(4, 4) : uuid;
         return shortUuid switch
         {
             "1800" => "Generic Access",
@@ -168,7 +310,7 @@ public class BleService
 
     private static string GetCharacteristicName(string uuid)
     {
-        var shortUuid = uuid.Length > 8 ? uuid[4..8] : uuid;
+        var shortUuid = uuid.Length > 8 ? uuid.Substring(4, 4) : uuid;
         return shortUuid switch
         {
             "2A00" => "Device Name",

@@ -99,9 +99,29 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
 
       final hex = value.map((b) => b.toRadixString(16).padLeft(2, '0').toUpperCase()).join(' ');
       _addLog('读取成功: $hex', LogType.success);
+
+      // 更新特征值
+      _updateCharacteristicValue(service.uuid, characteristic.uuid, value);
     } catch (e) {
       _addLog('读取失败: $e', LogType.error);
     }
+  }
+
+  void _updateCharacteristicValue(String serviceUuid, String characteristicUuid, List<int> value) {
+    setState(() {
+      final serviceIndex = _services.indexWhere((s) => s.uuid == serviceUuid);
+      if (serviceIndex >= 0) {
+        final charIndex = _services[serviceIndex].characteristics
+            .indexWhere((c) => c.uuid == characteristicUuid);
+        if (charIndex >= 0) {
+          _services[serviceIndex] = _services[serviceIndex].copyWith(
+            characteristics: List<BleCharacteristic>.from(
+              _services[serviceIndex].characteristics
+            )..[charIndex] = _services[serviceIndex].characteristics[charIndex].copyWith(value: value),
+          );
+        }
+      }
+    });
   }
 
   Future<void> _writeCharacteristic(BleService service, BleCharacteristic characteristic) async {
@@ -109,7 +129,7 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
 
     if (!mounted) return;
 
-    final result = await showDialog<String>(
+    final result = await showDialog<WriteResult>(
       context: context,
       builder: (context) => _WriteDialog(
         characteristic: characteristic,
@@ -117,18 +137,20 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
       ),
     );
 
-    if (result != null && result.isNotEmpty) {
+    if (result != null && result.data.isNotEmpty) {
       try {
-        // 转换 HEX 字符串为字节数组
-        final bytes = _hexToBytes(result);
+        final bytes = result.isHexMode
+            ? _hexToBytes(result.data)
+            : result.data.codeUnits;
 
-        _addLog('写入 ${characteristic.displayName}: $result', LogType.info);
+        _addLog('写入 ${characteristic.displayName}: ${result.data}', LogType.info);
 
         await _bleManager.writeCharacteristic(
           deviceId: widget.deviceId,
           serviceUuid: service.uuid,
           characteristicUuid: characteristic.uuid,
           data: bytes,
+          withoutResponse: !characteristic.properties.contains(BleCharacteristicProperty.write),
         );
 
         _addLog('写入成功', LogType.success);
@@ -347,25 +369,15 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
   }
 }
 
-/// 日志条目
-class LogEntry {
-  final String message;
-  final LogType type;
-  final DateTime timestamp;
+/// 写入结果
+class WriteResult {
+  final String data;
+  final bool isHexMode;
 
-  LogEntry({
-    required this.message,
-    required this.type,
-    required this.timestamp,
+  const WriteResult({
+    required this.data,
+    required this.isHexMode,
   });
-}
-
-/// 日志类型
-enum LogType {
-  info,
-  success,
-  error,
-  receive,
 }
 
 /// 写入对话框
@@ -395,8 +407,9 @@ class _WriteDialogState extends State<_WriteDialog> {
           TextField(
             controller: widget.controller,
             decoration: InputDecoration(
-              labelText: _isHexMode ? 'HEX 数据 (例: FF 01)' : '文本数据',
+              labelText: _isHexMode ? 'HEX 数据 (例: FF 01 AA)' : '文本数据 (UTF-8)',
               border: const OutlineInputBorder(),
+              hintText: _isHexMode ? '输入十六进制数据，空格分隔' : '输入要发送的文本',
             ),
             keyboardType: _isHexMode ? TextInputType.text : TextInputType.text,
             maxLines: 3,
@@ -404,7 +417,7 @@ class _WriteDialogState extends State<_WriteDialog> {
           const SizedBox(height: 12),
           Row(
             children: [
-              const Text('格式: '),
+              const Text('格式: ', style: TextStyle(fontSize: 14)),
               SegmentedButton<bool>(
                 segments: const [
                   ButtonSegment(value: true, label: Text('HEX')),
@@ -412,7 +425,10 @@ class _WriteDialogState extends State<_WriteDialog> {
                 ],
                 selected: {_isHexMode},
                 onSelectionChanged: (Set<bool> selected) {
-                  setState(() => _isHexMode = selected.first);
+                  setState(() {
+                    _isHexMode = selected.first;
+                    widget.controller.clear();
+                  });
                 },
               ),
             ],
@@ -427,9 +443,29 @@ class _WriteDialogState extends State<_WriteDialog> {
         ElevatedButton(
           onPressed: () {
             final value = widget.controller.text.trim();
-            if (value.isNotEmpty) {
-              Navigator.pop(context, value);
+            if (value.isEmpty) return;
+
+            // 验证 HEX 输入
+            if (_isHexMode) {
+              final clean = value.replaceAll(' ', '');
+              if (clean.length % 2 != 0) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('HEX 数据长度必须是偶数')),
+                );
+                return;
+              }
+              if (!RegExp(r'^[0-9A-Fa-f\s]+$').hasMatch(value)) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('HEX 数据只能包含 0-9 和 A-F')),
+                );
+                return;
+              }
             }
+
+            Navigator.pop(context, WriteResult(
+              data: value,
+              isHexMode: _isHexMode,
+            ));
           },
           child: const Text('写入'),
         ),

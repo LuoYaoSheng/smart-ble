@@ -30,7 +30,10 @@ class _ServiceTileState extends State<ServiceTile> {
         data: Theme.of(context).copyWith(
           dividerColor: Colors.transparent,
           expansionTileTheme: const ExpansionTileThemeData(
-            shape: Border.none,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.zero,
+              side: BorderSide.none,
+            ),
           ),
         ),
         child: ExpansionTile(
@@ -183,7 +186,31 @@ class _CharacteristicTile extends StatelessWidget {
             ),
           ],
         ),
-        subtitle: _buildPropertiesChips(),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildPropertiesChips(),
+            if (characteristic.value != null && characteristic.value!.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 6),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: AppTheme.successColor.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    characteristic.value!.map((b) => b.toRadixString(16).padLeft(2, '0').toUpperCase()).join(' '),
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontFamily: 'monospace',
+                      color: AppTheme.successColor,
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
         trailing: _buildActionButtons(),
       ),
     );

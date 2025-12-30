@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:rxdart/rxdart.dart';
 import '../models/ble_device.dart';
 import '../models/ble_service.dart';
+import '../models/ble_scan_result.dart' as models;
 
 /// BLE 状态
 enum BleState {
@@ -26,17 +28,30 @@ enum BleState {
 /// 封装 flutter_blue_plus，提供简化的 BLE 操作接口
 class BleManager {
   /// 单例实例
-  static final BleManager _instance = BleManager._internal();
-  factory BleManager() => _instance;
-  BleManager._internal();
+  static BleManager? _instance;
+  static BleManager get instance => _instance ??= BleManager._internal();
+  factory BleManager() => instance;
+
+  BleManager._internal() {
+    _initializeControllers();
+  }
 
   /// 状态变化流控制器
-  final _stateController = StreamController<BleState>.broadcast();
-  final _scanResultsController = StreamController<List<BleScanResult>>.broadcast();
-  final _connectionStateController = StreamController<ConnectionState>.broadcast();
+  late StreamController<BleState> _stateController;
+  late StreamController<List<models.BleScanResult>> _scanResultsController;
+  late StreamController<BluetoothConnectionState> _connectionStateController;
+
+  /// 是否已初始化
+  bool _isInitialized = false;
+
+  void _initializeControllers() {
+    _stateController = StreamController<BleState>.broadcast();
+    _scanResultsController = StreamController<List<models.BleScanResult>>.broadcast();
+    _connectionStateController = StreamController<BluetoothConnectionState>.broadcast();
+  }
 
   /// 当前扫描到的设备
-  final Map<String, BleScanResult> _scannedDevices = {};
+  final Map<String, models.BleScanResult> _scannedDevices = {};
 
   /// 当前连接的设备
   BleDevice? _connectedDevice;
@@ -50,11 +65,12 @@ class BleManager {
   /// 状态流
   Stream<BleState> get stateStream => _stateController.stream;
 
-  /// 扫描结果流
-  Stream<List<BleScanResult>> get scanResultsStream => _scanResultsController.stream;
+  /// 扫描结果流（带防抖，避免频繁更新导致列表跳动）
+  Stream<List<models.BleScanResult>> get scanResultsStream => _scanResultsController.stream
+      .debounceTime(const Duration(milliseconds: 300));
 
   /// 连接状态流
-  Stream<ConnectionState> get connectionStateStream => _connectionStateController.stream;
+  Stream<BluetoothConnectionState> get connectionStateStream => _connectionStateController.stream;
 
   /// 当前连接的设备
   BleDevice? get connectedDevice => _connectedDevice;
@@ -67,6 +83,17 @@ class BleManager {
 
   /// 初始化 BLE
   Future<bool> initialize() async {
+    // 如果控制器已关闭，重新初始化
+    if (_stateController.isClosed ||
+        _scanResultsController.isClosed ||
+        _connectionStateController.isClosed) {
+      _initializeControllers();
+      _isInitialized = false;
+    }
+
+    // 如果已经初始化，直接返回成功
+    if (_isInitialized) return true;
+
     try {
       // 检查蓝牙是否可用
       if (await FlutterBluePlus.isSupported == false) {
@@ -75,31 +102,53 @@ class BleManager {
       }
 
       // 监听蓝牙状态
-      FlutterBluePlus.state.listen((state) {
-        _stateController.add(_convertBleState(state));
+      FlutterBluePlus.adapterState.listen((state) {
+        if (!_stateController.isClosed) {
+          _stateController.add(_convertBleState(state));
+        }
       });
 
       // 监听扫描结果
       FlutterBluePlus.scanResults.listen((results) {
-        _scannedDevices.clear();
+        // 不清空现有列表，只更新已存在的设备或添加新设备
+        // 这样可以避免列表跳动
         for (ScanResult r in results) {
           final device = r.device;
-          _scannedDevices[device.remoteId.toString()] = BleScanResult(
-            deviceId: device.remoteId.toString(),
-            name: device.localName ?? '',
-            rssi: r.rssi,
-            advertisData: r.advertisementData.manufacturerData,
-            serviceUuids: r.advertisementData.serviceUuids.map((u) => u.toString()).toList(),
-            timestamp: DateTime.now(),
-          );
+          final deviceId = device.remoteId.toString();
+
+          // Convert manufacturerData Map to List<int>
+          List<int>? manuData;
+          if (r.advertisementData.manufacturerData.isNotEmpty) {
+            manuData = r.advertisementData.manufacturerData.values.first;
+          }
+
+          // 只有当设备是新设备或数据有变化时才更新
+          final existing = _scannedDevices[deviceId];
+          if (existing == null ||
+              existing.rssi != r.rssi ||
+              existing.name != (device.platformName ?? '')) {
+            _scannedDevices[deviceId] = models.BleScanResult(
+              deviceId: deviceId,
+              name: device.platformName ?? '',
+              rssi: r.rssi,
+              advertisData: manuData,
+              serviceUuids: r.advertisementData.serviceUuids.map((u) => u.toString()).toList(),
+              timestamp: DateTime.now(),
+            );
+          }
         }
-        _scanResultsController.add(_scannedDevices.values.toList());
+        if (!_scanResultsController.isClosed) {
+          _scanResultsController.add(_scannedDevices.values.toList());
+        }
       });
 
       // 初始化状态
-      final state = await FlutterBluePlus.state.first;
-      _stateController.add(_convertBleState(state));
+      final state = await FlutterBluePlus.adapterState.first;
+      if (!_stateController.isClosed) {
+        _stateController.add(_convertBleState(state));
+      }
 
+      _isInitialized = true;
       return true;
     } catch (e) {
       print('BleManager 初始化失败: $e');
@@ -109,7 +158,7 @@ class BleManager {
 
   /// 获取当前状态
   Future<BleState> getState() async {
-    final state = await FlutterBluePlus.state.first;
+    final state = await FlutterBluePlus.adapterState.first;
     return _convertBleState(state);
   }
 
@@ -121,7 +170,8 @@ class BleManager {
     if (_isScanning) return;
 
     _isScanning = true;
-    _scannedDevices.clear();
+    // 不清空现有设备，让用户可以看到之前的设备
+    // _scannedDevices.clear();
 
     try {
       await FlutterBluePlus.startScan(
@@ -175,7 +225,7 @@ class BleManager {
     try {
       final device = BluetoothDevice.fromId(deviceId);
       await device.discoverServices();
-      final services = await device.servicesList;
+      final services = device.servicesList;
 
       _services = services.map((s) => BleService(
         uuid: s.uuid.toString(),
@@ -204,11 +254,15 @@ class BleManager {
   }) async {
     try {
       final device = BluetoothDevice.fromId(deviceId);
-      final service = device.getService(Guid(serviceUuid));
-      if (service == null) throw Exception('服务未找到: $serviceUuid');
+      final service = device.servicesList.firstWhere(
+        (s) => s.uuid.toString().toLowerCase() == serviceUuid.toLowerCase(),
+        orElse: () => throw Exception('服务未找到: $serviceUuid'),
+      );
 
-      final characteristic = service.getCharacteristic(Guid(characteristicUuid));
-      if (characteristic == null) throw Exception('特征值未找到: $characteristicUuid');
+      final characteristic = service.characteristics.firstWhere(
+        (c) => c.uuid.toString().toLowerCase() == characteristicUuid.toLowerCase(),
+        orElse: () => throw Exception('特征值未找到: $characteristicUuid'),
+      );
 
       final value = await characteristic.read();
       return value;
@@ -228,11 +282,15 @@ class BleManager {
   }) async {
     try {
       final device = BluetoothDevice.fromId(deviceId);
-      final service = device.getService(Guid(serviceUuid));
-      if (service == null) throw Exception('服务未找到: $serviceUuid');
+      final service = device.servicesList.firstWhere(
+        (s) => s.uuid.toString().toLowerCase() == serviceUuid.toLowerCase(),
+        orElse: () => throw Exception('服务未找到: $serviceUuid'),
+      );
 
-      final characteristic = service.getCharacteristic(Guid(characteristicUuid));
-      if (characteristic == null) throw Exception('特征值未找到: $characteristicUuid');
+      final characteristic = service.characteristics.firstWhere(
+        (c) => c.uuid.toString().toLowerCase() == characteristicUuid.toLowerCase(),
+        orElse: () => throw Exception('特征值未找到: $characteristicUuid'),
+      );
 
       await characteristic.write(data, withoutResponse: withoutResponse);
     } catch (e) {
@@ -250,13 +308,17 @@ class BleManager {
   }) async {
     try {
       final device = BluetoothDevice.fromId(deviceId);
-      final service = device.getService(Guid(serviceUuid));
-      if (service == null) throw Exception('服务未找到: $serviceUuid');
+      final service = device.servicesList.firstWhere(
+        (s) => s.uuid.toString().toLowerCase() == serviceUuid.toLowerCase(),
+        orElse: () => throw Exception('服务未找到: $serviceUuid'),
+      );
 
-      final characteristic = service.getCharacteristic(Guid(characteristicUuid));
-      if (characteristic == null) throw Exception('特征值未找到: $characteristicUuid');
+      final characteristic = service.characteristics.firstWhere(
+        (c) => c.uuid.toString().toLowerCase() == characteristicUuid.toLowerCase(),
+        orElse: () => throw Exception('特征值未找到: $characteristicUuid'),
+      );
 
-      await characteristic.setNotifyState(enable);
+      await characteristic.setNotifyValue(enable);
     } catch (e) {
       print('设置通知失败: $e');
       rethrow;
@@ -271,11 +333,15 @@ class BleManager {
   }) {
     try {
       final device = BluetoothDevice.fromId(deviceId);
-      final service = device.getService(Guid(serviceUuid));
-      if (service == null) return null;
+      final service = device.servicesList.firstWhere(
+        (s) => s.uuid.toString().toLowerCase() == serviceUuid.toLowerCase(),
+        orElse: () => throw Exception('服务未找到: $serviceUuid'),
+      );
 
-      final characteristic = service.getCharacteristic(Guid(characteristicUuid));
-      if (characteristic == null) return null;
+      final characteristic = service.characteristics.firstWhere(
+        (c) => c.uuid.toString().toLowerCase() == characteristicUuid.toLowerCase(),
+        orElse: () => throw Exception('特征值未找到: $characteristicUuid'),
+      );
 
       return characteristic.onValueReceived;
     } catch (e) {
@@ -290,45 +356,60 @@ class BleManager {
     await _stateController.close();
     await _scanResultsController.close();
     await _connectionStateController.close();
+
+    // 重置状态，允许重新初始化
+    _isInitialized = false;
+    _scannedDevices.clear();
   }
 
   /// 转换蓝牙状态
-  BleState _convertBleState(BleBluetoothState state) {
-    switch (state) {
-      case BleBluetoothState.unknown:
-        return BleState.unknown;
-      case BleBluetoothState.unavailable:
-        return BleState.unavailable;
-      case BleBluetoothState.unauthorized:
-        return BleState.unauthorized;
-      case BleBluetoothState.turningOn:
-        return BleState.turningOn;
-      case BleBluetoothState.on:
-        return BleState.on;
-      case BleBluetoothState.turningOff:
-        return BleState.turningOff;
-      case BleBluetoothState.off:
-        return BleState.off;
+  BleState _convertBleState(dynamic state) {
+    if (state is BluetoothAdapterState) {
+      switch (state) {
+        case BluetoothAdapterState.unknown:
+          return BleState.unknown;
+        case BluetoothAdapterState.unavailable:
+          return BleState.unavailable;
+        case BluetoothAdapterState.unauthorized:
+          return BleState.unauthorized;
+        case BluetoothAdapterState.turningOn:
+          return BleState.turningOn;
+        case BluetoothAdapterState.on:
+          return BleState.on;
+        case BluetoothAdapterState.turningOff:
+          return BleState.turningOff;
+        case BluetoothAdapterState.off:
+          return BleState.off;
+        default:
+          return BleState.unknown;
+      }
     }
+    return BleState.unknown;
   }
 
   /// 转换特征值属性
-  List<BleCharacteristicProperty> _convertProperties(List<CharacteristicProperty> properties) {
+  List<BleCharacteristicProperty> _convertProperties(dynamic properties) {
     final result = <BleCharacteristicProperty>[];
-    for (var p in properties) {
-      switch (p) {
-        case CharacteristicProperty.read:
-          result.add(BleCharacteristicProperty.read);
-        case CharacteristicProperty.write:
-          result.add(BleCharacteristicProperty.write);
-        case CharacteristicProperty.writeNoResponse:
-          result.add(BleCharacteristicProperty.writeNoResponse);
-        case CharacteristicProperty.notify:
-          result.add(BleCharacteristicProperty.notify);
-        case CharacteristicProperty.indicate:
-          result.add(BleCharacteristicProperty.indicate);
-      }
+
+    // CharacteristicProperties has boolean properties for each attribute
+    final props = properties as CharacteristicProperties;
+
+    if (props.read) {
+      result.add(BleCharacteristicProperty.read);
     }
+    if (props.write) {
+      result.add(BleCharacteristicProperty.write);
+    }
+    if (props.writeWithoutResponse) {
+      result.add(BleCharacteristicProperty.writeNoResponse);
+    }
+    if (props.notify) {
+      result.add(BleCharacteristicProperty.notify);
+    }
+    if (props.indicate) {
+      result.add(BleCharacteristicProperty.indicate);
+    }
+
     return result;
   }
 
@@ -365,25 +446,4 @@ class BleManager {
     }
     return null;
   }
-}
-
-// 导出扫描结果模型
-class BleScanResult {
-  final String deviceId;
-  final String name;
-  final int rssi;
-  final List<int>? advertisData;
-  final List<String> serviceUuids;
-  final DateTime timestamp;
-
-  const BleScanResult({
-    required this.deviceId,
-    required this.name,
-    required this.rssi,
-    this.advertisData,
-    this.serviceUuids = const [],
-    required this.timestamp,
-  });
-
-  String get displayName => name.isNotEmpty ? name : '未知设备';
 }

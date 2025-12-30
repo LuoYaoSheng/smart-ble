@@ -120,4 +120,40 @@
         <Setter Property="Height" Value="150"/>
     </Style>
 
+    <!-- Characteristic Buttons -->
+    <Style Selector="button.charbutton">
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="BorderBrush" Value="#E0E0E0"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="6,4"/>
+        <Setter Property="CornerRadius" Value="6"/>
+        <Setter Property="MinWidth" Value="40"/>
+    </Style>
+    <Style Selector="button.charbutton:hover">
+        <Setter Property="Background" Value="#F5F5F5"/>
+        <Setter Property="BorderBrush" Value="#D0D0D0"/>
+    </Style>
+    <Style Selector="button.charbutton stackpanel">
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+    </Style>
+
+    <!-- FilterPanel -->
+    <Style Selector="border.filterpanel">
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="BoxShadow">
+            <BoxShadow OffsetX="0" OffsetY="2" Blur="8" Color="#10000000"/>
+        </Setter>
+    </Style>
+
+    <!-- TextButton -->
+    <Style Selector="button.textbutton">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="#007AFF"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    <Style Selector="button.textbutton:pointerover">
+        <Setter Property="Foreground" Value="#0051D5"/>
+    </Style>
+
 </Styles>

@@ -5,12 +5,14 @@ import '../../themes/app_theme.dart';
 /// 设备卡片组件
 class DeviceCard extends StatelessWidget {
   final BleScanResult device;
-  final VoidCallback onTap;
+  final VoidCallback onConnect;
+  final VoidCallback onShowInfo;
 
   const DeviceCard({
     super.key,
     required this.device,
-    required this.onTap,
+    required this.onConnect,
+    required this.onShowInfo,
   });
 
   @override
@@ -18,7 +20,7 @@ class DeviceCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: InkWell(
-        onTap: onTap,
+        onTap: onShowInfo, // 点击卡片显示详情
         borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -66,6 +68,21 @@ class DeviceCard extends StatelessWidget {
 
               // 信号强度
               _buildRssiIndicator(),
+
+              const SizedBox(width: 12),
+
+              // 连接按钮
+              IconButton(
+                onPressed: onConnect,
+                icon: const Icon(Icons.link, size: 20),
+                style: IconButton.styleFrom(
+                  backgroundColor: AppTheme.primaryColor.withOpacity(0.1),
+                  foregroundColor: AppTheme.primaryColor,
+                  padding: const EdgeInsets.all(8),
+                  minimumSize: const Size(36, 36),
+                ),
+                tooltip: '连接设备',
+              ),
             ],
           ),
         ),
@@ -103,8 +120,8 @@ class DeviceCard extends StatelessWidget {
 
   IconData _getRssiIcon() {
     if (device.rssi >= -50) return Icons.signal_wifi_4_bar;
-    if (device.rssi >= -70) return Icons.signal_wifi_3_bar;
-    if (device.rssi >= -90) return Icons.signal_wifi_2_bar;
-    return Icons.signal_wifi_1_bar;
+    if (device.rssi >= -70) return Icons.network_wifi_3_bar;
+    if (device.rssi >= -90) return Icons.network_wifi_2_bar;
+    return Icons.network_wifi_1_bar;
   }
 }
