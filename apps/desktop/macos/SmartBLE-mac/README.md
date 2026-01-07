@@ -1,53 +1,98 @@
-# Smart BLE - macOS 原生版本
+# SmartBLE Desktop for macOS
 
-## 技术栈
+Native macOS BLE debugging tool built with AppKit and CoreBluetooth.
 
-- **语言**: Swift 5.x
-- **最小版本**: macOS 10.15+
-- **BLE API**: CoreBluetooth
-- **架构**: MVVM + Combine
-- **UI**: SwiftUI (macOS)
-- **包管理**: Swift Package Manager
+## Features
 
-## 项目结构
+- **Device Scanning**: Scan for nearby BLE devices with real-time RSSI updates
+- **Device Connection**: Connect to discovered devices
+- **Service Discovery**: Discover services and characteristics
+- **Read/Write**: Read and write characteristic values
+- **Notifications**: Subscribe to characteristic notifications
+- **Operation Log**: View detailed operation logs
+
+## Requirements
+
+- macOS 13.0+
+- Xcode 14.0+
+
+## Building
+
+### Using Swift Package Manager
+
+```bash
+cd apps/desktop/macos/SmartBLE-mac
+swift build
+swift run
+```
+
+### Using Xcode
+
+1. Open Terminal and navigate to the project:
+   ```bash
+   cd apps/desktop/macos/SmartBLE-mac
+   ```
+
+2. Generate an Xcode project:
+   ```bash
+   swift package generate-xcodeproj
+   ```
+
+3. Open the project:
+   ```bash
+   open SmartBLE-mac.xcodeproj
+   ```
+
+4. Select the "SmartBLE-mac" scheme and run (Cmd+R).
+
+## Permissions
+
+The app requires Bluetooth permissions. On first run, macOS will prompt you to allow Bluetooth access.
+
+## Project Structure
 
 ```
 SmartBLE-mac/
-├── SmartBLE/
-│   ├── Core/                # BLE 核心（与 iOS 共享）
-│   ├── UI/                  # macOS 专用 UI
-│   │   ├── Views/
-│   │   │   ├── MainView.swift
-│   │   │   ├── ScanView.swift
-│   │   │   └── DeviceDetailView.swift
-│   │   ├── ViewModels/
-│   │   │   └── BLEViewModel.swift
-│   │   └── Components/
-│   │       ├── DeviceRow.swift
-│   │       └── LogPanel.swift
-│   ├── Assets.xcassets/
-│   ├── Info.plist
-│   └── SmartBLEApp.swift
-└── Package.swift
+├── Package.swift           # Swift Package Manager manifest
+├── Sources/
+│   ├── main.swift          # Entry point
+│   ├── Core/
+│   │   ├── AppDelegate.swift        # Application delegate
+│   │   └── BLEManager.swift         # BLE core logic
+│   └── UI/
+│       ├── MainWindowController.swift      # Main window
+│       ├── ScanViewController.swift         # Device scan view
+│       ├── DeviceDetailViewController.swift # Device details view
+│       └── LogViewController.swift           # Operation log view
+└── README.md
 ```
 
-## 与 iOS 的差异
+## Usage
 
-1. **UI 差异**: macOS 使用 NSTableView、NSList 等
-2. **窗口管理**: macOS 需要处理多窗口
-3. **权限**: macOS 需要蓝牙权限
+1. Click "Start Scan" to begin scanning for BLE devices
+2. Select a device from the list to connect
+3. Browse services and characteristics in the detail view
+4. Use Read/Write/Notify buttons to interact with characteristics
+5. View operation logs in the log panel
 
-## 开发计划
+## Differences from iOS Version
 
-- [ ] 初始化 macOS 项目
-- [ ] 复用 iOS BLE 核心代码
-- [ ] 实现 macOS SwiftUI UI
-- [ ] 窗口管理
-- [ ] 菜单栏集成
+- Uses **AppKit** instead of SwiftUI (for better desktop experience and text input)
+- Split-view interface for better screen utilization
+- Toolbar-based actions
+- Separate log window
 
-## 运行
+## Troubleshooting
 
-```bash
-xcodebuild -scheme SmartBLE-mac
-open SmartBLE-mac.xcodeproj
-```
+**Bluetooth not working:**
+- Make sure Bluetooth is enabled in System Settings
+- Check that the app has Bluetooth permissions
+- Try restarting Bluetooth (turn off/on)
+
+**Can't see devices:**
+- Make sure devices are advertising and in range
+- Try clicking "Stop Scan" then "Start Scan" again
+
+## License
+
+MIT

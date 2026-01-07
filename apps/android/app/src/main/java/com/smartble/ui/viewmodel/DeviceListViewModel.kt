@@ -39,6 +39,9 @@ class DeviceListViewModel(application: Application) : AndroidViewModel(applicati
     private val _connectedDevice = MutableStateFlow<BleDevice?>(null)
     val connectedDevice: StateFlow<BleDevice?> = _connectedDevice.asStateFlow()
 
+    private val _connectionState = MutableStateFlow<ConnectionState>(ConnectionState.Disconnected)
+    val connectionState: StateFlow<ConnectionState> = _connectionState.asStateFlow()
+
     init {
         observeBluetoothState()
         observeScanResults()
@@ -71,6 +74,7 @@ class DeviceListViewModel(application: Application) : AndroidViewModel(applicati
     private fun observeConnectionState() {
         viewModelScope.launch {
             bleManager.connectionState.collect { state ->
+                _connectionState.value = state
                 when (state) {
                     ConnectionState.Connected -> {
                         // Connected state will be handled by DeviceDetailViewModel

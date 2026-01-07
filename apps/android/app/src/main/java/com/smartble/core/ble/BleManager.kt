@@ -71,9 +71,6 @@ class BleManager(private val context: Context) {
     // Scan result storage
     private val scanResultsMap = mutableMapOf<String, ScanResult>()
 
-    // Connection callbacks
-    private val connectionCallbackChannel = Channel<BleGattCallback>()
-
     /**
      * 获取蓝牙状态
      */
@@ -289,10 +286,8 @@ class BleManager(private val context: Context) {
                 state = ConnectionState.Disconnected,
                 scanRecord = ScanRecord(
                     serviceUuids = scanRecord?.serviceUuids?.map { it.uuid.toString() },
-                    manufacturerData = scanRecord?.manufacturerSpecificData?.let { data ->
-                        mapOf(data.companyId to data.bytes)
-                    },
-                    serviceData = scanRecord?.serviceData?.mapKeys { it.key.uuid.toString() },
+                    manufacturerData = null,  // Simplified for now
+                    serviceData = scanRecord?.serviceData?.mapKeys { it.key.toString() },
                     txPowerLevel = scanRecord?.txPowerLevel,
                 ),
             )
@@ -312,7 +307,7 @@ class BleManager(private val context: Context) {
         }
 
         override fun onBatchScanResults(results: List<LeScanResult>) {
-            results.forEach { onScanResult ScanSettings.CALLBACK_TYPE_ALL_MATCHES, it) }
+            results.forEach { onScanResult(ScanSettings.CALLBACK_TYPE_ALL_MATCHES, it) }
         }
     }
 

@@ -134,7 +134,7 @@ class DeviceDetailViewModel(
             val service = _services.value.find { it.uuid == serviceUuid }
             val characteristic = service?.characteristics?.find { it.uuid == characteristicUuid }
 
-            val newState = !characteristic.isNotifying
+            val newState = !(characteristic?.isNotifying ?: false)
             val action = if (newState) "启用" else "禁用"
 
             addLog("$action 通知 ${characteristic?.displayName ?: characteristicUuid}...", LogType.Info)

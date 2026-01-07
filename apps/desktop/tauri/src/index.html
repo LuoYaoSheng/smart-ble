@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartBLE Desktop</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M7 7h10M7 12h10M7 17h10M17 7l4-4M21 7l-4 4"/>
+                    </svg>
+                    <span>SmartBLE</span>
+                </div>
+                <div class="status-bar">
+                    <div id="bluetoothStatus" class="status-indicator">
+                        <span class="status-dot"></span>
+                        <span class="status-text">初始化中...</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Tab Navigation -->
+            <div class="tab-nav">
+                <button class="tab-btn active" data-tab="scan">
+                    <span class="icon"> Scanner</span>
+                    <span>Scan Devices</span>
+                </button>
+                <button class="tab-btn" data-tab="broadcast">
+                    <span class="icon"> Broadcast</span>
+                    <span>Peripheral Mode</span>
+                </button>
+                <button class="tab-btn" data-tab="about">
+                    <span class="icon"> Info</span>
+                    <span>About</span>
+                </button>
+            </div>
+
+            <!-- Device List View -->
+            <div id="deviceListView" class="view active">
+                <!-- Filter Panel -->
+                <div class="filter-panel">
+                    <div class="filter-header">
+                        <span>Filter Settings</span>
+                        <button id="resetFilterButton" class="btn-mini">Reset</button>
+                    </div>
+                    <div class="filter-item">
+                        <label>Signal Strength: <span id="rssiValue">-100</span> dBm</label>
+                        <input type="range" id="rssiFilter" class="slider" min="-100" max="-30" value="-100">
+                        <div class="filter-presets">
+                            <button class="btn-mini preset-btn" data-value="-100">All</button>
+                            <button class="btn-mini preset-btn" data-value="-90">-90</button>
+                            <button class="btn-mini preset-btn" data-value="-70">-70</button>
+                            <button class="btn-mini preset-btn" data-value="-50">-50</button>
+                        </div>
+                    </div>
+                    <div class="filter-item">
+                        <label>Name Prefix</label>
+                        <input type="text" id="namePrefixFilter" class="input" placeholder="Filter by name prefix...">
+                    </div>
+                    <div class="filter-item">
+                        <label class="checkbox">
+                            <input type="checkbox" id="hideUnnamedFilter">
+                            <span>Hide devices without name</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <button id="scanButton" class="btn btn-primary">
+                        <span class="icon"> Search</span>
+                        <span class="text">Start Scan</span>
+                    </button>
+                    <div id="deviceCount" class="device-count">Found 0 devices</div>
+                </div>
+
+                <div id="deviceList" class="device-list">
+                    <div class="empty-state">
+                        <div class="empty-icon"> Scanner</div>
+                        <div class="empty-text">No devices</div>
+                        <div class="empty-hint">Click button above to start scanning</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Broadcast View -->
+            <div id="broadcastView" class="view">
+                <div class="broadcast-container">
+                    <div class="broadcast-card">
+                        <div class="card-header">
+                            <h3>Create BLE Broadcast</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Device Name</label>
+                                <input type="text" id="broadcastName" class="input" placeholder="MyDevice" value="SmartBLE">
+                            </div>
+                            <div class="form-group">
+                                <label>Service UUID</label>
+                                <input type="text" id="broadcastServiceUuid" class="input" placeholder="FFF0" value="FFF0">
+                                <small class="input-hint">Custom 128-bit UUID or standard 16-bit UUID</small>
+                            </div>
+                            <div class="broadcast-status" id="broadcastStatus">
+                                <span class="status-dot"></span>
+                                <span class="status-text">Not broadcasting</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button id="startBroadcastButton" class="btn btn-primary">
+                                <span class="icon"> Broadcast</span>
+                                <span>Start</span>
+                            </button>
+                            <button id="stopBroadcastButton" class="btn btn-danger" style="display: none;">
+                                <span class="icon"> Stop</span>
+                                <span>Stop</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="broadcast-info">
+                        <h4>Broadcast Info</h4>
+                        <ul>
+                            <li>Device will broadcast with the configured name and UUID</li>
+                            <li>Other devices can discover this broadcast by scanning</li>
+                            <li>macOS may require additional permissions</li>
+                            <li>Cannot scan while broadcasting</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About View -->
+            <div id="aboutView" class="view">
+                <div class="about-container">
+                    <div class="about-logo">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M7 7h10M7 12h10M7 17h10M17 7l4-4M21 7l-4 4"/>
+                            <path d="M12 2v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                    </div>
+                    <h1 class="about-title">SmartBLE Desktop</h1>
+                    <p class="about-version">Version 1.0.0</p>
+
+                    <div class="about-description">
+                        <p>跨平台 BLE 调试工具</p>
+                        <p>Cross-platform BLE debugging tool for macOS, Windows, and Linux</p>
+                    </div>
+
+                    <div class="about-features">
+                        <h3>Features</h3>
+                        <div class="feature-grid">
+                            <div class="feature-item">
+                                <span class="feature-icon"> Scanner</span>
+                                <span>Device Scanning</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon"> Link</span>
+                                <span>Connect/Disconnect</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon"> List</span>
+                                <span>Services & Characteristics</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon"> Edit</span>
+                                <span>Read/Write Data</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon"> Bell</span>
+                                <span>Notification Listening</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon"> Filter</span>
+                                <span>Signal & Name Filtering</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="about-tech">
+                        <h3>Technology Stack</h3>
+                        <div class="tech-badges">
+                            <span class="tech-badge">Tauri 1.5</span>
+                            <span class="tech-badge">Rust</span>
+                            <span class="tech-badge">btleplug</span>
+                            <span class="tech-badge">JavaScript</span>
+                        </div>
+                    </div>
+
+                    <div class="about-links">
+                        <a href="https://github.com" class="about-link" target="_blank">
+                            <span>GitHub Repository</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                                <polyline points="15 3 21 3 21 9"/>
+                                <line x1="10" y1="14" x2="21" y2="3"/>
+                            </svg>
+                        </a>
+                    </div>
+
+                    <p class="about-copyright">© 2025 SmartBLE. All rights reserved.</p>
+                </div>
+            </div>
+
+            <!-- Device Detail View -->
+            <div id="deviceDetailView" class="view">
+                <div class="detail-header">
+                    <button id="backButton" class="btn btn-secondary"> Back</button>
+                    <div class="device-info">
+                        <h2 id="deviceName">Device Name</h2>
+                        <span id="deviceId" class="device-id">Device ID</span>
+                    </div>
+                    <div id="connectionStatus" class="status-badge">Disconnected</div>
+                </div>
+
+                <div class="detail-controls">
+                    <button id="connectButton" class="btn btn-primary" style="display: none;"> Connect</button>
+                    <button id="disconnectButton" class="btn btn-danger" style="display: none;"> Disconnect</button>
+                    <button id="clearLogsButton" class="btn btn-secondary">Clear Logs</button>
+                </div>
+
+                <div id="servicesList" class="services-list">
+                    <div class="loading-state">Discovering services...</div>
+                </div>
+
+                <div id="logPanel" class="log-panel" style="display: none;">
+                    <div class="log-header">
+                        <span>Operation Log</span>
+                        <span id="logCount">0 entries</span>
+                    </div>
+                    <div id="logList" class="log-list"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Write Data Dialog -->
+    <div id="writeDialog" class="dialog-overlay" style="display: none;">
+        <div class="dialog">
+            <div class="dialog-header">
+                <h3>Write Characteristic</h3>
+                <button class="dialog-close">--></button>
+            </div>
+            <div class="dialog-body">
+                <div class="form-group">
+                    <label id="writeCharLabel">Characteristic: </label>
+                    <input type="text" id="writeDataInput" class="input" placeholder="FF 01 02">
+                </div>
+                <div class="format-toggle">
+                    <label class="radio">
+                        <input type="radio" name="format" value="hex" checked>
+                        <span>HEX</span>
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="format" value="utf8">
+                        <span>UTF-8</span>
+                    </label>
+                </div>
+            </div>
+            <div class="dialog-footer">
+                <button class="btn btn-secondary dialog-cancel">Cancel</button>
+                <button class="btn btn-primary dialog-confirm">Write</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Device Info Dialog -->
+    <div id="deviceInfoDialog" class="dialog-overlay" style="display: none;">
+        <div class="dialog dialog-large">
+            <div class="dialog-header">
+                <h3>Device Advertising Data</h3>
+                <button class="dialog-close">--></button>
+            </div>
+            <div class="dialog-body">
+                <div class="info-row">
+                    <label>Device Name:</label>
+                    <span id="infoDeviceName">-</span>
+                </div>
+                <div class="info-row">
+                    <label>Device ID:</label>
+                    <span id="infoDeviceId">-</span>
+                </div>
+                <div class="info-row">
+                    <label>Signal Strength:</label>
+                    <span id="infoRssi">-</span>
+                </div>
+                <div class="info-row">
+                    <label>Service UUIDs:</label>
+                    <span id="infoServiceUuids">-</span>
+                </div>
+                <div class="info-row">
+                    <label>Advertising Data (Hex):</label>
+                    <pre id="infoAdvData" class="hex-data">-</pre>
+                </div>
+            </div>
+            <div class="dialog-footer">
+                <button class="btn btn-secondary dialog-close">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', () => init().catch(console.error));</script>
+</body>
+</html>

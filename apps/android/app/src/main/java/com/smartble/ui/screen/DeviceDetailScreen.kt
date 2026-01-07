@@ -29,6 +29,7 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.NotificationsActive
 import androidx.compose.material.icons.filled.NotificationsNone
 import androidx.compose.material.icons.filled.SettingsInputAntenna
+import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -65,6 +66,7 @@ import com.smartble.ui.theme.Primary
 import com.smartble.ui.theme.Success
 import com.smartble.ui.theme.TextSecondary
 import com.smartble.ui.theme.Warning
+import com.smartble.ui.viewmodel.DeviceDetailViewModel
 import com.smartble.ui.viewmodel.LogEntry
 import com.smartble.ui.viewmodel.LogType
 
@@ -73,7 +75,7 @@ import com.smartble.ui.viewmodel.LogType
 fun DeviceDetailScreen(
     deviceId: String,
     deviceName: String,
-    viewModel: DeviceListViewModel,
+    viewModel: DeviceDetailViewModel,
     onBack: () -> Unit
 ) {
     val connectionState by viewModel.connectionState.collectAsState()
@@ -362,7 +364,7 @@ fun ServiceCard(
             // Characteristics
             if (expanded) {
                 Divider()
-                if (service.characteristics.isEmpty) {
+                if (service.characteristics.isEmpty()) {
                     Text(
                         "无特征值",
                         style = MaterialTheme.typography.bodyMedium,
@@ -468,7 +470,7 @@ fun CharacteristicItem(
                 if (characteristic.canWrite) {
                     IconButton(onClick = onWrite, modifier = Modifier.size(32.dp)) {
                         Icon(
-                            Icons.Default.Upload,
+                            Icons.Default.ArrowUpward,
                             contentDescription = "写入",
                             tint = Warning,
                             modifier = Modifier.size(18.dp)
