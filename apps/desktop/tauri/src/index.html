@@ -108,6 +108,22 @@
                                 <input type="text" id="broadcastServiceUuid" class="input" placeholder="FFF0" value="FFF0">
                                 <small class="input-hint">Custom 128-bit UUID or standard 16-bit UUID</small>
                             </div>
+                            <div class="form-group">
+                                <label>Manufacturer ID (hex)</label>
+                                <input type="text" id="broadcastManufacturerId" class="input" placeholder="0x0A00" value="0A00">
+                                <small class="input-hint">Company identifier (e.g., 0x0A00 for testing)</small>
+                            </div>
+                            <div class="form-group">
+                                <label>Manufacturer Data</label>
+                                <input type="text" id="broadcastManufacturerData" class="input" placeholder="Test123" value="SmartBLE_Broadcast">
+                                <small class="input-hint">Custom data to include in advertisement</small>
+                            </div>
+                            <div class="form-group">
+                                <label class="checkbox">
+                                    <input type="checkbox" id="broadcastIncludeName" checked>
+                                    <span>Include device name in advertisement</span>
+                                </label>
+                            </div>
                             <div class="broadcast-status" id="broadcastStatus">
                                 <span class="status-dot"></span>
                                 <span class="status-text">Not broadcasting</span>
@@ -126,12 +142,9 @@
                     </div>
 
                     <div class="broadcast-info">
-                        <h4>Broadcast Info</h4>
+                        <h4>平台说明</h4>
                         <ul>
-                            <li>Device will broadcast with the configured name and UUID</li>
-                            <li>Other devices can discover this broadcast by scanning</li>
-                            <li>macOS may require additional permissions</li>
-                            <li>Cannot scan while broadcasting</li>
+                            <li>正在加载平台信息...</li>
                         </ul>
                     </div>
                 </div>
@@ -233,7 +246,11 @@
                 <div id="logPanel" class="log-panel" style="display: none;">
                     <div class="log-header">
                         <span>Operation Log</span>
-                        <span id="logCount">0 entries</span>
+                        <div class="log-actions">
+                            <span id="logCount">0 entries</span>
+                            <button id="exportLogsButton" class="btn-mini">Export</button>
+                            <button id="clearLogsButton" class="btn-mini">Clear</button>
+                        </div>
                     </div>
                     <div id="logList" class="log-list"></div>
                 </div>

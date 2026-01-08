@@ -2,6 +2,33 @@
 
 let invoke, listen;
 
+// Platform detection - matches Flutter pattern
+const PLATFORM = {
+    isMacOS: typeof process !== 'undefined' && process.platform === 'darwin',
+    isWindows: typeof process !== 'undefined' && process.platform === 'win32',
+    isLinux: typeof process !== 'undefined' && process.platform === 'linux',
+    isUnsupported: false
+};
+
+// Check if peripheral mode is supported on this platform
+const PERIPHERAL_SUPPORT = {
+    supported: PLATFORM.isMacOS, // Only macOS has some support via native APIs
+    message: PLATFORM.isMacOS
+        ? 'macOS 支持外设模式，但需使用原生应用获取完整功能'
+        : PLATFORM.isWindows
+            ? 'Windows 平台暂不支持外设模式'
+            : PLATFORM.isLinux
+                ? 'Linux 平台暂不支持外设模式'
+                : '当前平台不支持外设模式',
+    // Based on Flutter: Android uses actual device name, iOS/macOS support custom name
+    nameWarning: PLATFORM.isMacOS
+        ? 'macOS 支持自定义广播名称'
+        : '自定义广播名称在此平台上可能无效',
+    recommendation: PLATFORM.isMacOS
+        ? '建议使用 apps/desktop/macos/SmartBLE-mac 原生应用'
+        : '请使用对应平台的原生应用获取完整支持'
+};
+
 // App State
 const state = {
     bluetoothReady: false,
@@ -21,7 +48,9 @@ const state = {
     // Scan timer for auto-stop
     scanTimer: null,
     // Maximum devices to display
-    maxDevices: 100
+    maxDevices: 100,
+    // Platform info
+    platform: PLATFORM
 };
 
 // DOM Elements
@@ -40,11 +69,15 @@ const elements = {
     logPanel: document.getElementById('logPanel'),
     logList: document.getElementById('logList'),
     logCount: document.getElementById('logCount'),
+    exportLogsButton: document.getElementById('exportLogsButton'),
     writeDialog: document.getElementById('writeDialog'),
     writeDataInput: document.getElementById('writeDataInput'),
     writeCharLabel: document.getElementById('writeCharLabel'),
     broadcastName: document.getElementById('broadcastName'),
     broadcastServiceUuid: document.getElementById('broadcastServiceUuid'),
+    broadcastManufacturerId: document.getElementById('broadcastManufacturerId'),
+    broadcastManufacturerData: document.getElementById('broadcastManufacturerData'),
+    broadcastIncludeName: document.getElementById('broadcastIncludeName'),
     broadcastStatus: document.getElementById('broadcastStatus'),
     startBroadcastButton: document.getElementById('startBroadcastButton'),
     stopBroadcastButton: document.getElementById('stopBroadcastButton'),
@@ -110,6 +143,7 @@ async function init() {
         }
 
         setupEventListeners();
+        updateBroadcastPlatformInfo(); // Update broadcast UI based on platform
         await initBluetooth();
         setupTauriListeners();
     } catch (error) {
@@ -133,6 +167,7 @@ function setupEventListeners() {
     document.getElementById('connectButton')?.addEventListener('click', () => connectDevice(state.currentDevice?.id));
     document.getElementById('disconnectButton')?.addEventListener('click', disconnectDevice);
     document.getElementById('clearLogsButton')?.addEventListener('click', clearLogs);
+    elements.exportLogsButton?.addEventListener('click', exportLogs);
 
     // Broadcast buttons
     elements.startBroadcastButton?.addEventListener('click', startAdvertising);
@@ -326,57 +361,99 @@ function updateScanButton(scanning) {
     }
 }
 
-// Render Device List
+// Render Device List - Smart update to prevent flickering
 function renderDeviceList() {
     if (!elements.deviceList) return;
 
     // Apply filters and get device list
     const filteredDevices = applyFilters();
 
+    // Update device count
+    if (elements.deviceCount) {
+        elements.deviceCount.textContent = `Found ${filteredDevices.length} device${filteredDevices.length !== 1 ? 's' : ''}`;
+    }
+
+    // Handle empty state
     if (filteredDevices.length === 0) {
-        const hasDevices = state.devices.size > 0;
-        elements.deviceList.innerHTML = `
-            <div class="empty-state">
-                <div class="empty-icon"> Scanner</div>
-                <div class="empty-text">${hasDevices ? 'No devices match filters' : 'No devices found'}</div>
-                <div class="empty-hint">${state.scanning ? 'Scanning...' : 'Click scan to start'}</div>
-            </div>
-        `;
-    } else {
-        elements.deviceList.innerHTML = filteredDevices.map(device => `
-            <div class="device-item" data-id="${device.id}">
+        if (!elements.deviceList.querySelector('.empty-state')) {
+            const hasDevices = state.devices.size > 0;
+            elements.deviceList.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon"> Scanner</div>
+                    <div class="empty-text">${hasDevices ? 'No devices match filters' : 'No devices found'}</div>
+                    <div class="empty-hint">${state.scanning ? 'Scanning...' : 'Click scan to start'}</div>
+                </div>
+            `;
+        }
+        return;
+    }
+
+    // Clear empty state if it exists
+    const emptyState = elements.deviceList.querySelector('.empty-state');
+    if (emptyState) {
+        emptyState.remove();
+    }
+
+    // Track current device IDs
+    const currentIds = new Set();
+    elements.deviceList.querySelectorAll('.device-item').forEach(item => {
+        currentIds.add(item.dataset.id);
+    });
+
+    // Get new device IDs
+    const newIds = new Set(filteredDevices.map(d => d.id));
+
+    // Remove devices that are no longer in the filtered list
+    currentIds.forEach(id => {
+        if (!newIds.has(id)) {
+            const item = elements.deviceList.querySelector(`.device-item[data-id="${id}"]`);
+            if (item) item.remove();
+        }
+    });
+
+    // Update or add devices
+    filteredDevices.forEach(device => {
+        let item = elements.deviceList.querySelector(`.device-item[data-id="${device.id}"]`);
+
+        if (!item) {
+            // Create new device item
+            item = document.createElement('div');
+            item.className = 'device-item';
+            item.dataset.id = device.id;
+            item.innerHTML = `
                 <div class="device-item-header">
                     <span class="device-item-name">${escapeHtml(device.name || 'Unknown')}</span>
                     <span class="device-item-rssi">${device.rssi || 0} dBm</span>
                 </div>
                 <div class="device-item-id">${escapeHtml(device.id)}</div>
                 <button class="btn btn-mini btn-connect" data-action="connect" data-id="${device.id}"> Connect</button>
-            </div>
-        `).join('');
+            `;
 
-        // Add click handlers
-        elements.deviceList.querySelectorAll('.device-item').forEach(item => {
-            // Card click shows device info
+            // Add click handlers
             item.addEventListener('click', (e) => {
                 if (!e.target.classList.contains('btn-connect')) {
-                    showDeviceInfoDialog(item.dataset.id);
+                    showDeviceInfoDialog(device.id);
                 }
             });
 
-            // Connect button handler
             const connectBtn = item.querySelector('.btn-connect');
             if (connectBtn) {
                 connectBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    connectDevice(item.dataset.id);
+                    connectDevice(device.id);
                 });
             }
-        });
-    }
 
-    if (elements.deviceCount) {
-        elements.deviceCount.textContent = `Found ${filteredDevices.length} device${filteredDevices.length !== 1 ? 's' : ''}`;
-    }
+            elements.deviceList.appendChild(item);
+        } else {
+            // Update existing device item (only RSSI and name might change)
+            const nameEl = item.querySelector('.device-item-name');
+            const rssiEl = item.querySelector('.device-item-rssi');
+
+            if (nameEl) nameEl.textContent = device.name || 'Unknown';
+            if (rssiEl) rssiEl.textContent = `${device.rssi || 0} dBm`;
+        }
+    });
 }
 
 // Apply filters to device list
@@ -473,36 +550,61 @@ async function connectDevice(deviceId) {
         state.currentDevice = device;
         showDeviceDetail();
         updateConnectionStatus(false, true);
+        updateDeviceButtons();
 
         const result = await invoke('connect', { deviceId });
         if (result.success) {
             state.connected = true;
             updateConnectionStatus(true);
+            updateDeviceButtons();
             await discoverServices(deviceId);
             addLog('success', `Connected to ${state.currentDevice?.name || 'device'}`);
         } else {
             updateConnectionStatus(false);
+            updateDeviceButtons();
             addLog('error', `Connect failed: ${result.error}`);
         }
     } catch (error) {
         updateConnectionStatus(false);
+        updateDeviceButtons();
         addLog('error', `Connect error: ${error}`);
     }
 }
 
-// Disconnect Device
+// Disconnect Device - just disconnect, stay on detail view
 async function disconnectDevice() {
     try {
         const result = await invoke('disconnect');
         if (result.success) {
             state.connected = false;
-            state.currentDevice = null;
-            state.services = [];
-            goBack();
+            updateConnectionStatus(false);
+            updateDeviceButtons();
             addLog('info', 'Disconnected');
+
+            // Note: We don't restart scan here to avoid conflicts
+            // User can manually scan or click back to list
         }
     } catch (error) {
         addLog('error', `Disconnect error: ${error}`);
+    }
+}
+
+// Update device connect/disconnect button visibility
+function updateDeviceButtons() {
+    console.log('[updateDeviceButtons] connected:', state.connected);
+    console.log('[updateDeviceButtons] connectButton:', elements.connectButton);
+    console.log('[updateDeviceButtons] disconnectButton:', elements.disconnectButton);
+
+    if (elements.connectButton) {
+        elements.connectButton.style.display = state.connected ? 'none' : 'block';
+        console.log('[updateDeviceButtons] connectButton display:', elements.connectButton.style.display);
+    }
+    if (elements.disconnectButton) {
+        elements.disconnectButton.style.display = state.connected ? 'block' : 'none';
+        console.log('[updateDeviceButtons] disconnectButton display:', elements.disconnectButton.style.display);
+    }
+    if (!state.connected && elements.servicesList) {
+        elements.servicesList.innerHTML = '<div class="empty-state"><div class="empty-text">Connect to discover services</div></div>';
     }
 }
 
@@ -521,20 +623,7 @@ function showDeviceDetail() {
     }
     // Update status based on actual connection state
     updateConnectionStatus(state.connected);
-
-    // Show/hide connect and disconnect buttons
-    if (elements.connectButton) {
-        elements.connectButton.style.display = state.connected ? 'none' : 'block';
-    }
-    if (elements.disconnectButton) {
-        elements.disconnectButton.style.display = state.connected ? 'block' : 'none';
-    }
-
-    if (!state.connected && elements.servicesList) {
-        elements.servicesList.innerHTML = '<div class="empty-state"><div class="empty-text">Connect to discover services</div></div>';
-    } else if (elements.servicesList) {
-        elements.servicesList.innerHTML = '<div class="loading-state"><div class="spinner"></div><div style="margin-top:12px">Discovering services...</div></div>';
-    }
+    updateDeviceButtons();
 }
 
 function updateConnectionStatus(connected, connecting = false) {
@@ -551,14 +640,6 @@ function updateConnectionStatus(connected, connecting = false) {
     } else {
         elements.connectionStatus.textContent = 'Disconnected';
         elements.connectionStatus.classList.remove('connected', 'connecting');
-    }
-
-    // Update button visibility
-    if (elements.connectButton) {
-        elements.connectButton.style.display = connected ? 'none' : 'block';
-    }
-    if (elements.disconnectButton) {
-        elements.disconnectButton.style.display = connected ? 'block' : 'none';
     }
 }
 
@@ -768,22 +849,101 @@ function updateCharacteristicValue(serviceUuid, charUuid, value) {
     valueDiv.textContent = value || '(empty)';
 }
 
-// Advertising
+// Update broadcast UI based on platform - matches Flutter pattern
+function updateBroadcastPlatformInfo() {
+    const broadcastInfo = document.querySelector('.broadcast-info ul');
+    if (!broadcastInfo) return;
+
+    // Platform-specific messages based on Flutter implementation
+    let infoItems = [];
+
+    if (PLATFORM.isMacOS) {
+        infoItems = [
+            '<li><strong>macOS 平台：</strong>支持自定义广播名称</li>',
+            '<li>其他设备可以扫描发现此广播</li>',
+            '<li class="warning-item">⚠️ 此 Tauri 版本外设模式功能受限</li>',
+            '<li class="info-item">💡 建议使用 <code>apps/desktop/macos/SmartBLE-mac</code> 原生应用</li>',
+            '<li>btleplug 库对 macOS 外设模式支持有限</li>'
+        ];
+    } else if (PLATFORM.isWindows) {
+        infoItems = [
+            '<li><strong>Windows 平台暂不支持外设模式</strong></li>',
+            '<li class="error-item">❌ btleplug 库在 Windows 上不支持广播功能</li>',
+            '<li class="info-item">💡 请使用 Android/iOS/macOS 原生应用进行广播</li>',
+            '<li>扫描功能正常可用</li>'
+        ];
+    } else if (PLATFORM.isLinux) {
+        infoItems = [
+            '<li><strong>Linux 平台暂不支持外设模式</strong></li>',
+            '<li class="error-item">❌ 需要 BlueZ 外设模式支持（当前未实现）</li>',
+            '<li class="info-item">💡 请使用 Android/iOS/macOS 原生应用进行广播</li>',
+            '<li>扫描功能正常可用</li>'
+        ];
+    } else {
+        infoItems = [
+            '<li><strong>当前平台不支持外设模式</strong></li>',
+            '<li>请使用对应平台的原生应用</li>',
+            '<li>扫描功能正常可用</li>'
+        ];
+    }
+
+    broadcastInfo.innerHTML = infoItems.join('');
+}
+
+// Advertising - Aligned with UniApp broadcast options
+// Platform-specific messaging matches Flutter pattern
 async function startAdvertising() {
     const name = elements.broadcastName?.value || 'SmartBLE';
     const serviceUuid = elements.broadcastServiceUuid?.value || 'FFF0';
+    const manufacturerId = elements.broadcastManufacturerId?.value || '0A00';
+    const manufacturerData = elements.broadcastManufacturerData?.value || 'SmartBLE_Broadcast';
+    const includeName = elements.broadcastIncludeName?.checked !== false;
+
+    // Show platform-specific warning before attempting
+    if (PLATFORM.isWindows) {
+        addLog('warning', 'Windows 平台暂不支持外设模式');
+        addLog('info', '💡 请使用 Android/iOS/macOS 原生应用进行广播');
+    } else if (PLATFORM.isLinux) {
+        addLog('warning', 'Linux 平台暂不支持外设模式');
+        addLog('info', '💡 请使用 Android/iOS/macOS 原生应用进行广播');
+    } else if (PLATFORM.isMacOS) {
+        addLog('warning', 'macOS 外设模式需要原生应用支持');
+        addLog('info', '💡 建议使用 apps/desktop/macos/SmartBLE-mac 原生应用');
+    }
 
     try {
-        const result = await invoke('start_advertising', { name, serviceUuids: [serviceUuid] });
+        const result = await invoke('start_advertising', {
+            name,
+            serviceUuids: [serviceUuid],
+            manufacturerId,
+            manufacturerData,
+            includeName
+        });
         if (result.success) {
             state.advertising = true;
             updateAdvertisingUI(true);
-            addLog('success', 'Advertising started');
+            // Platform-specific success message (like Flutter)
+            if (PLATFORM.isMacOS) {
+                addLog('success', `开始广播: ${name}`);
+            } else {
+                addLog('success', `Advertising started as "${name}"`);
+            }
         } else {
-            addLog('error', `Advertising failed: ${result.error}`);
+            // Platform-specific error messages
+            if (PLATFORM.isMacOS) {
+                addLog('error', `macOS 外设模式需要原生应用支持: ${result.error}`);
+            } else if (PLATFORM.isWindows) {
+                addLog('error', `Windows 不支持外设模式: ${result.error}`);
+            } else if (PLATFORM.isLinux) {
+                addLog('error', `Linux 不支持外设模式: ${result.error}`);
+            } else {
+                addLog('error', `Advertising failed: ${result.error}`);
+            }
+            addLog('info', PERIPHERAL_SUPPORT.recommendation);
         }
     } catch (error) {
         addLog('error', `Advertising error: ${error}`);
+        addLog('info', PERIPHERAL_SUPPORT.recommendation);
     }
 }
 
@@ -852,15 +1012,75 @@ function clearLogs() {
     renderLogs();
 }
 
-// Navigation
-function goBack() {
+// Export logs to file - Aligned with UniApp
+function exportLogs() {
+    if (state.logs.length === 0) {
+        addLog('error', 'No logs to export');
+        return;
+    }
+
+    // Create log content
+    const lines = [
+        'SmartBLE Operation Log',
+        `Exported: ${new Date().toISOString()}`,
+        `Total entries: ${state.logs.length}`,
+        '-------------------',
+        ''
+    ];
+
+    state.logs.forEach(log => {
+        const typeIcon = {
+            'success': '✓',
+            'error': '✗',
+            'info': 'ℹ',
+            'warning': '⚠'
+        }[log.type] || '•';
+
+        lines.push(`[${log.timestamp}] ${typeIcon} [${log.type.toUpperCase()}] ${log.message}`);
+    });
+
+    const content = lines.join('\n');
+
+    // Create download link
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `smartble-log-${new Date().toISOString().replace(/[:.]/g, '-')}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    addLog('success', 'Logs exported');
+}
+
+// Navigation - go back to device list
+// Aligned with UniApp: Connection persists when navigating back
+async function goBack() {
+    // UniApp pattern: Keep connection alive when going back to list
+    // User can manually disconnect from detail view if needed
+
+    // Clear current device reference but keep connection state
+    state.currentDevice = null;
+
+    // Navigate back to device list
     if (elements.deviceDetailView && elements.deviceListView) {
         elements.deviceDetailView.classList.remove('active');
         elements.deviceListView.classList.add('active');
     }
-    state.connected = false;
-    state.currentDevice = null;
-    state.services = [];
+
+    // Restart scan to refresh device list (scan works while connected on most platforms)
+    if (!state.scanning) {
+        try {
+            await startScan();
+        } catch (e) {
+            // Scan might fail if already connected on some platforms
+            addLog('info', 'Note: Scan while connected may not work on all platforms');
+        }
+    }
+
+    addLog('info', state.connected ? 'Returned to list (connection active)' : 'Returned to list');
 }
 
 // Utility

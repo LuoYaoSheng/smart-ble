@@ -37,6 +37,10 @@ struct DeviceInfo {
     name: String,
     rssi: i16,
     connected: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    service_uuids: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    adv_data: Option<String>,
 }
 
 // Service info
@@ -113,6 +117,17 @@ async fn start_scan(
 ) -> Result<Response<Vec<DeviceInfo>>, String> {
     let mut ble_state = state.lock().await;
 
+    // If already scanning, just return success
+    if ble_state.scanning {
+        eprintln!("[BLE] Already scanning");
+        return Ok(Response {
+            success: true,
+            data: Some(vec![]),
+            error: None,
+            value: None,
+        });
+    }
+
     // Cancel any existing scan task
     if let Some(handle) = ble_state.scan_handle.take() {
         handle.abort();
@@ -130,17 +145,19 @@ async fn start_scan(
         }
     };
 
+    eprintln!("[BLE] Starting scan...");
+
     let result = central.start_scan(btleplug::api::ScanFilter::default()).await;
 
     match result {
         Ok(_) => {
+            eprintln!("[BLE] Scan started successfully");
             ble_state.scanning = true;
             drop(ble_state);
 
-            // Create a channel for stopping the scan loop
-            let (_stop_tx, mut stop_rx) = tokio::sync::oneshot::channel::<()>();
             let on_discovered = window.clone();
             let central_clone = central.clone();
+            let state_clone = Arc::clone(state.inner());
 
             // Start a task to collect discovered devices
             let handle = tokio::spawn(async move {
@@ -148,43 +165,88 @@ async fn start_scan(
                 tick.tick().await; // Skip first immediate tick
 
                 loop {
-                    tokio::select! {
-                        _ = tick.tick() => {
-                            let peripherals_result = central_clone.peripherals().await;
-                            if let Ok(peripherals) = peripherals_result {
-                                let mut devices = Vec::new();
+                    tick.tick().await;
 
-                                for p in &peripherals {
-                                    let is_connected = p.is_connected().await.unwrap_or(false);
-                                    let props = p.properties().await.ok().flatten();
+                    // Check if still scanning BEFORE calling peripherals
+                    let is_scanning = {
+                        let ble_state = state_clone.lock().await;
+                        ble_state.scanning
+                    };
 
-                                    let device = DeviceInfo {
-                                        id: p.id().to_string(),
-                                        name: props
-                                            .as_ref()
-                                            .and_then(|pr| pr.local_name.clone())
-                                            .unwrap_or_else(|| "Unknown".to_string()),
-                                        rssi: props.as_ref().and_then(|pr| pr.rssi).unwrap_or(0),
-                                        connected: is_connected,
-                                    };
-                                    devices.push(device);
-                                }
+                    if !is_scanning {
+                        eprintln!("[BLE] Scan stopped, exiting loop");
+                        break;
+                    }
 
-                                let _ = on_discovered.emit("device-discovered", devices);
+                    // Use a timeout to avoid hanging
+                    let peripherals_result = tokio::time::timeout(
+                        Duration::from_secs(2),
+                        central_clone.peripherals()
+                    ).await;
+
+                    match peripherals_result {
+                        Ok(Ok(peripherals)) => {
+                            eprintln!("[BLE] Found {} peripherals", peripherals.len());
+                            let mut devices = Vec::new();
+
+                            for p in peripherals {
+                                let is_connected = p.is_connected().await.unwrap_or(false);
+                                let props_result = p.properties().await;
+                                let props = props_result.as_ref().ok().and_then(|p| p.as_ref());
+
+                                // Extract service UUIDs from advertising data
+                                let service_uuids: Option<Vec<String>> = props.as_ref().and_then(|pr| {
+                                    if !pr.services.is_empty() {
+                                        Some(pr.services.iter().map(|u| u.to_string()).collect())
+                                    } else {
+                                        None
+                                    }
+                                });
+
+                                // Convert advertising data to hex string
+                                let adv_data: Option<String> = props.as_ref().and_then(|pr| {
+                                    pr.manufacturer_data.iter().next().map(|(company_id, data)| {
+                                        let mut hex = format!("{:04X}", company_id);
+                                        for byte in data {
+                                            hex.push_str(&format!("{:02X}", byte));
+                                        }
+                                        hex
+                                    })
+                                });
+
+                                let device = DeviceInfo {
+                                    id: p.id().to_string(),
+                                    name: props
+                                        .as_ref()
+                                        .and_then(|pr| pr.local_name.clone())
+                                        .unwrap_or_else(|| "Unknown".to_string()),
+                                    rssi: props.as_ref().and_then(|pr| pr.rssi).unwrap_or(0),
+                                    connected: is_connected,
+                                    service_uuids,
+                                    adv_data,
+                                };
+                                eprintln!("[BLE] Device: {} - RSSI: {}", device.name, device.rssi);
+                                devices.push(device);
+                            }
+
+                            let emit_result = on_discovered.emit("device-discovered", devices);
+                            if let Err(e) = &emit_result {
+                                eprintln!("[BLE] Failed to emit event: {:?}", e);
                             }
                         }
-                        _ = &mut stop_rx => {
-                            // Stop signal received
-                            break;
+                        Ok(Err(e)) => {
+                            eprintln!("[BLE] Failed to get peripherals: {:?}", e);
+                        }
+                        Err(_) => {
+                            eprintln!("[BLE] Peripherals call timed out");
                         }
                     }
                 }
             });
 
-            // Store the handle and stop sender
+            // Store the handle
             let mut ble_state = state.lock().await;
             ble_state.scan_handle = Some(handle);
-            // We can't store stop_tx directly, so we'll use abort on stop_scan
 
             Ok(Response {
                 success: true,
@@ -193,12 +255,15 @@ async fn start_scan(
                 value: None,
             })
         }
-        Err(e) => Ok(Response {
-            success: false,
-            data: None,
-            error: Some(format!("Scan failed: {}", e)),
-            value: None,
-        }),
+        Err(e) => {
+            eprintln!("[BLE] Scan failed: {:?}", e);
+            Ok(Response {
+                success: false,
+                data: None,
+                error: Some(format!("Scan failed: {}", e)),
+                value: None,
+            })
+        }
     }
 }
 
@@ -676,21 +741,67 @@ async fn notify_characteristic(
     }
 }
 
-// Advertising (Peripheral mode) - placeholder
+// Advertising (Peripheral mode)
+// Note: btleplug has limited peripheral mode support
+// For production use, consider using the native macOS implementation instead
 #[tauri::command]
 #[allow(non_snake_case)]
 async fn start_advertising(
     name: String,
     serviceUuids: Vec<String>,
+    manufacturerId: Option<String>,
+    manufacturerData: Option<String>,
+    includeName: Option<bool>,
 ) -> Result<Response<bool>, String> {
     let _name = name;
     let _service_uuids = serviceUuids;
-    Ok(Response {
-        success: false,
-        data: None,
-        error: Some("Advertising not yet supported in Tauri version".to_string()),
-        value: None,
-    })
+    let _manufacturer_id = manufacturerId;
+    let _manufacturer_data = manufacturerData;
+    let _include_name = includeName;
+
+    #[cfg(target_os = "macos")]
+    {
+        // macOS: Requires CoreBluetooth peripheral mode (not exposed by btleplug)
+        // Use the native macOS SmartBLE app for full peripheral support
+        return Ok(Response {
+            success: false,
+            data: None,
+            error: Some("Peripheral mode requires the native macOS app. btleplug library has limited peripheral support - use apps/desktop/macos for full broadcasting features.".to_string()),
+            value: None,
+        });
+    }
+
+    #[cfg(target_os = "windows")]
+    {
+        // Windows: BLE peripheral mode requires platform-specific implementation
+        return Ok(Response {
+            success: false,
+            data: None,
+            error: Some("Peripheral mode not yet supported on Windows. btleplug has limited peripheral support.".to_string()),
+            value: None,
+        });
+    }
+
+    #[cfg(target_os = "linux")]
+    {
+        // Linux: Requires BlueZ peripheral mode support
+        return Ok(Response {
+            success: false,
+            data: None,
+            error: Some("Peripheral mode not yet supported on Linux. Requires BlueZ peripheral mode.".to_string()),
+            value: None,
+        });
+    }
+
+    #[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "linux")))]
+    {
+        Ok(Response {
+            success: false,
+            data: None,
+            error: Some("Peripheral mode not supported on this platform.".to_string()),
+            value: None,
+        })
+    }
 }
 
 #[tauri::command]

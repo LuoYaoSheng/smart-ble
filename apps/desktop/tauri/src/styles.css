@@ -410,6 +410,42 @@ body {
     left: 0;
 }
 
+/* Platform-specific broadcast info items */
+.broadcast-info li.warning-item {
+    color: var(--warning);
+    padding-left: 0;
+}
+
+.broadcast-info li.warning-item:before {
+    content: none;
+}
+
+.broadcast-info li.error-item {
+    color: var(--danger);
+    padding-left: 0;
+}
+
+.broadcast-info li.error-item:before {
+    content: none;
+}
+
+.broadcast-info li.info-item {
+    color: var(--primary);
+    padding-left: 0;
+}
+
+.broadcast-info li.info-item:before {
+    content: none;
+}
+
+.broadcast-info code {
+    background: var(--bg-primary);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 11px;
+}
+
 /* Device Detail View */
 .detail-header {
     display: flex;
@@ -591,6 +627,17 @@ body {
     font-weight: 500;
 }
 
+.log-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.log-actions span {
+    color: var(--text-secondary);
+    font-size: 11px;
+}
+
 .log-list {
     flex: 1;
     overflow-y: auto;
@@ -619,6 +666,10 @@ body {
 
 .log-entry.info .log-message {
     color: var(--primary);
+}
+
+.log-entry.warning .log-message {
+    color: var(--warning);
 }
 
 /* Dialog */
