@@ -58,6 +58,21 @@ index.html (single page)
 **Navigation Pattern:** Single-page application with tab switching
 **Status:** ⚠️ **DIFFERENT** - Uses tab-based navigation instead of page navigation
 
+### Desktop Projects
+```
+apps/desktop/
+├── electron/           # JavaScript/TypeScript (Electron)
+├── tauri/              # Rust + Web (Tauri)
+├── avalonia/           # C# (Avalonia UI - Windows)
+└── macos/              # Swift (AppKit - macOS native)
+```
+
+**Status:**
+- ✅ **Electron** - ALIGNED - 5s auto-stop, filter panel added
+- ✅ **Tauri** - ALIGNED - 5s auto-stop, connection persists
+- ✅ **Avalonia** - ALIGNED - 5s auto-stop, complete filter panel
+- ✅ **macOS** - ALIGNED - 5s auto-stop, split view architecture
+
 ---
 
 ## 2. Scan Flow Comparison
@@ -103,6 +118,17 @@ index.html (single page)
 | Stop on Connect | ✅ Yes |
 
 **Status:** ✅ **ALIGNED** - Matches UniApp's 5-second auto-stop
+
+### Desktop Projects
+
+| Platform | Start Scan | Auto-stop | Device Updates | Stop on Connect |
+|----------|-----------|-----------|----------------|-----------------|
+| Electron | `bleAPI.startScan()` | ✅ After 5 seconds | Real-time | ✅ Yes |
+| Tauri | `central.start_scan()` | ✅ After 5 seconds | Every 1 second | ✅ Yes |
+| Avalonia | `BluetoothLEAdvertisementWatcher.Start()` | ✅ After 5 seconds | Real-time | ✅ Yes |
+| macOS | `centralManager.scanForPeripherals()` | ✅ After 5 seconds | Real-time via `didDiscover` | ✅ Yes |
+
+**Status:** ✅ **ALL ALIGNED** - All desktop projects have 5-second auto-stop
 
 ---
 
@@ -168,6 +194,17 @@ DeviceListView → DeviceDetailView
 
 **Status:** ✅ **ALIGNED** - Connection persists when going back (like UniApp)
 
+### Desktop Projects
+```
+All desktop projects maintain connection when navigating back:
+├── Electron: showDeviceList() doesn't disconnect
+├── Tauri: goBack() maintains connection
+├── Avalonia: GoBack() doesn't disconnect
+└── macOS: Split view architecture, no back navigation needed
+```
+
+**Status:** ✅ **ALL ALIGNED** - Connection persists on back navigation
+
 ---
 
 ## 4. Device Info Display
@@ -215,6 +252,12 @@ Filter Panel
 
 ### Tauri
 **Status:** ✅ **ALIGNED** - Complete filter panel with all features
+
+### Desktop Projects
+**Status:** ✅ **ALL ALIGNED**
+- **Electron**: ✅ Filter panel added (RSSI slider, presets, name prefix, hide unnamed, reset)
+- **Avalonia**: ✅ Complete filter panel in MainWindowViewModel
+- **macOS**: ✅ Filter properties in BLEManager (RSSI, name prefix, hide unnamed)
 
 ---
 
@@ -344,11 +387,29 @@ All platforms should follow these UniApp patterns:
 **Key Changes Made:**
 1. **Android:** Added 5-second auto-stop scan, complete filter panel with all features
 2. **iOS/macOS:** Changed scan timeout from 10s to 5s, added preset buttons and reset to filter panel
-3. **Tauri:** Connection persistence already aligned, added platform-specific warnings for broadcast
+3. **Tauri:** Connection persistence aligned, added platform-specific warnings for broadcast
+4. **Electron:** Added 5-second auto-stop scan, complete filter panel
+5. **Avalonia:** Added 5-second auto-stop scan
+6. **macOS Native:** Added 5-second auto-stop scan
 
 **Remaining Minor Differences:**
 - iOS broadcast has limited advanced options (platform constraint)
-- Tauri uses tab-based navigation instead of multi-page (SPA architecture)
-- Some platforms have different export mechanisms
+- Tauri/Electron use tab-based navigation instead of multi-page (SPA architecture)
+- Desktop platforms have platform-specific broadcast capabilities
 
-All critical features (scanning, filtering, connection flow, device info) are now consistent across platforms.
+**All critical features (scanning with auto-stop, filtering, connection flow, device info) are now consistent across all platforms.**
+
+---
+
+### Supported Platforms Summary
+
+| Platform | Tech Stack | Scan Auto-Stop | Filter Panel | Connection Persistence |
+|----------|-----------|----------------|--------------|----------------------|
+| UniApp | Vue.js | ✅ 5s | ✅ | ✅ |
+| Flutter | Dart | ✅ 5s | ✅ | ✅ |
+| Android | Kotlin + Jetpack Compose | ✅ 5s | ✅ | ✅ |
+| iOS | Swift + SwiftUI | ✅ 5s | ✅ | ✅ |
+| Electron | JavaScript | ✅ 5s | ✅ | ✅ |
+| Tauri | Rust + Web | ✅ 5s | ✅ | ✅ |
+| Avalonia | C# | ✅ 5s | ✅ | ✅ |
+| macOS Native | Swift + AppKit | ✅ 5s | ✅ | ✅ |

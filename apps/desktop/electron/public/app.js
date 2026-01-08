@@ -13,6 +13,14 @@ class App {
         this.characteristicsMap = new Map(); // 存储特征值引用以便更新状态
         this.isBroadcasting = false; // 广播状态
 
+        // Filter state - aligned with UniApp
+        this.filterRSSI = -100;
+        this.filterNamePrefix = '';
+        this.hideUnnamed = false;
+
+        // Auto-stop scan timer
+        this.autoStopTimer = null;
+
         this.init();
     }
 
@@ -56,6 +64,38 @@ class App {
             if (this.currentDevice) {
                 this.disconnect();
             }
+        });
+
+        // Filter controls - aligned with UniApp
+        document.getElementById('rssiFilter')?.addEventListener('input', (e) => {
+            this.filterRSSI = parseInt(e.target.value);
+            document.getElementById('rssiValue').textContent = this.filterRSSI;
+            this.updateDeviceList();
+        });
+
+        document.getElementById('namePrefixFilter')?.addEventListener('input', (e) => {
+            this.filterNamePrefix = e.target.value;
+            this.updateDeviceList();
+        });
+
+        document.getElementById('hideUnnamedFilter')?.addEventListener('change', (e) => {
+            this.hideUnnamed = e.target.checked;
+            this.updateDeviceList();
+        });
+
+        document.getElementById('resetFilterButton')?.addEventListener('click', () => {
+            this.resetFilters();
+        });
+
+        // Preset buttons
+        document.querySelectorAll('.preset-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const value = parseInt(e.target.dataset.value);
+                this.filterRSSI = value;
+                document.getElementById('rssiFilter').value = value;
+                document.getElementById('rssiValue').textContent = value;
+                this.updateDeviceList();
+            });
         });
 
         // Write dialog
@@ -244,6 +284,9 @@ class App {
                 this.showError('扫描失败: ' + result.error);
                 this.isScanning = false;
                 this.updateScanButton();
+            } else {
+                // Auto-stop after 5 seconds - aligned with UniApp
+                this.scheduleAutoStop();
             }
         } catch (error) {
             this.showError('扫描失败: ' + error.message);
@@ -253,6 +296,12 @@ class App {
     }
 
     async stopScan() {
+        // Clear auto-stop timer
+        if (this.autoStopTimer) {
+            clearTimeout(this.autoStopTimer);
+            this.autoStopTimer = null;
+        }
+
         try {
             await window.bleAPI.stopScan();
             this.isScanning = false;
@@ -260,6 +309,56 @@ class App {
         } catch (error) {
             this.showError('停止扫描失败: ' + error.message);
         }
+    }
+
+    // Auto-stop scan after 5 seconds - aligned with UniApp
+    scheduleAutoStop() {
+        if (this.autoStopTimer) {
+            clearTimeout(this.autoStopTimer);
+        }
+        this.autoStopTimer = setTimeout(async () => {
+            if (this.isScanning) {
+                await this.stopScan();
+                this.addLog('自动停止扫描（5秒）', 'info');
+            }
+        }, 5000);
+    }
+
+    // Reset filters - aligned with UniApp
+    resetFilters() {
+        this.filterRSSI = -100;
+        this.filterNamePrefix = '';
+        this.hideUnnamed = false;
+
+        // Update UI
+        document.getElementById('rssiFilter').value = -100;
+        document.getElementById('rssiValue').textContent = '-100';
+        document.getElementById('namePrefixFilter').value = '';
+        document.getElementById('hideUnnamedFilter').checked = false;
+
+        this.updateDeviceList();
+    }
+
+    // Apply filters and get filtered devices - aligned with UniApp
+    getFilteredDevices() {
+        return Array.from(this.devices.values()).filter(device => {
+            // RSSI filter
+            if (this.filterRSSI > -100 && device.rssi < this.filterRSSI) {
+                return false;
+            }
+
+            // Hide unnamed filter
+            if (this.hideUnnamed && (!device.name || device.name === '未知设备')) {
+                return false;
+            }
+
+            // Name prefix filter
+            if (this.filterNamePrefix && !device.name?.toLowerCase().startsWith(this.filterNamePrefix.toLowerCase())) {
+                return false;
+            }
+
+            return true;
+        }).sort((a, b) => b.rssi - a.rssi); // Sort by RSSI (strongest first)
     }
 
     updateScanButton() {
@@ -323,9 +422,19 @@ class App {
         const list = document.getElementById('deviceList');
         const count = document.getElementById('deviceCount');
 
-        if (count) count.textContent = `发现 ${this.devices.size} 台设备`;
+        // Get filtered devices - aligned with UniApp
+        const filteredDevices = this.getFilteredDevices();
+        const allDevices = Array.from(this.devices.values());
 
-        if (this.devices.size === 0) {
+        if (count) {
+            if (filteredDevices.length === allDevices.length) {
+                count.textContent = `发现 ${allDevices.length} 台设备`;
+            } else {
+                count.textContent = `显示 ${filteredDevices.length} / ${allDevices.length} 台`;
+            }
+        }
+
+        if (allDevices.length === 0) {
             if (list) {
                 list.innerHTML = `
                     <div class="empty-state">
@@ -338,29 +447,27 @@ class App {
             return;
         }
 
-        if (!list) return;
-
-        // 检查是否有空状态提示，如果有则清空
-        const emptyState = list.querySelector('.empty-state');
-        if (emptyState) {
-            list.innerHTML = '';
+        if (filteredDevices.length === 0) {
+            if (list) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🔍</div>
+                        <div class="empty-text">没有符合过滤条件的设备</div>
+                        <div class="empty-hint">尝试调整过滤条件</div>
+                    </div>
+                `;
+            }
+            return;
         }
 
-        // 只添加还没有显示的设备
-        const existingIds = new Set();
-        list.querySelectorAll('.device-card').forEach(card => {
-            const idEl = card.querySelector('.device-id');
-            if (idEl) {
-                existingIds.add(idEl.textContent);
-            }
-        });
+        if (!list) return;
 
-        Array.from(this.devices.values()).forEach(device => {
-            const shortId = this.formatShortUuid(device.id);
-            if (!existingIds.has(shortId)) {
-                const card = this.createDeviceCard(device);
-                list.appendChild(card);
-            }
+        // Rebuild list with filtered devices
+        list.innerHTML = '';
+
+        filteredDevices.forEach(device => {
+            const card = this.createDeviceCard(device);
+            list.appendChild(card);
         });
     }
 

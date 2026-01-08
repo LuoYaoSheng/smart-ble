@@ -105,6 +105,9 @@ class BLEManager: NSObject, ObservableObject {
     private var peripheralManager: CBPeripheralManager?
     private var connectedPeripheral: CBPeripheral?
 
+    // Auto-stop scan timer - aligned with UniApp (5 seconds)
+    private var autoStopTimer: Timer?
+
     // Notification tracking
     private var notifyingCharacteristics: Set<String> = []
 
@@ -140,9 +143,21 @@ class BLEManager: NSObject, ObservableObject {
         centralManager.scanForPeripherals(withServices: nil, options: [
             CBCentralManagerScanOptionAllowDuplicatesKey: true
         ])
+
+        // Auto-stop after 5 seconds - aligned with UniApp
+        autoStopTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { [weak self] _ in
+            if self?.isScanning == true {
+                self?.stopScan()
+                self?.log("Auto-stop scan (5 seconds)", type: .info)
+            }
+        }
     }
 
     func stopScan() {
+        // Cancel auto-stop timer
+        autoStopTimer?.invalidate()
+        autoStopTimer = nil
+
         centralManager?.stopScan()
         isScanning = false
         log("Scan stopped")

@@ -6,6 +6,7 @@ using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.Advertisement;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Storage.Streams;
+using Windows.UI.Xaml;
 
 namespace SmartBLE.Desktop.ViewModels;
 
@@ -17,6 +18,9 @@ public class BleService
     private BluetoothLEAdvertisementWatcher? _watcher;
     private BluetoothLEDevice? _currentDevice;
     private Dictionary<string, GattCharacteristic> _characteristics = new();
+
+    // Auto-stop scan timer - aligned with UniApp (5 seconds)
+    private DispatcherTimer? _autoStopTimer;
 
     public event Action<string>? StateChanged;
     public event Action<BleDevice>? DeviceDiscovered;
@@ -50,10 +54,26 @@ public class BleService
 
         _watcher.Received += OnAdvertisementReceived;
         _watcher.Start();
+
+        // Auto-stop after 5 seconds - aligned with UniApp
+        _autoStopTimer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromSeconds(5)
+        };
+        _autoStopTimer.Tick += async (s, e) =>
+        {
+            await StopScanAsync();
+            LogMessage?.Invoke("自动停止", "扫描已自动停止（5秒）");
+        };
+        _autoStopTimer.Start();
     }
 
     public async Task StopScanAsync()
     {
+        // Stop auto-stop timer
+        _autoStopTimer?.Stop();
+        _autoStopTimer = null;
+
         _watcher?.Stop();
         _watcher = null;
     }
