@@ -24,7 +24,7 @@ class BLEManager: NSObject, ObservableObject {
     @Published var filterRSSI: Int = -100
     @Published var filterNamePrefix: String = ""
     @Published var hideNoNameDevices: Bool = false
-    @Published var autoStopScanDuration: TimeInterval = 10.0  // seconds, 0 = no auto-stop
+    @Published var autoStopScanDuration: TimeInterval = 5.0  // seconds, 0 = no auto-stop - aligned with UniApp
     @Published var maxDeviceCount: Int = 100
 
     // MARK: - CoreBluetooth Properties

@@ -11,6 +11,7 @@ import com.smartble.core.model.ScanResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 /**
@@ -42,10 +43,25 @@ class DeviceListViewModel(application: Application) : AndroidViewModel(applicati
     private val _connectionState = MutableStateFlow<ConnectionState>(ConnectionState.Disconnected)
     val connectionState: StateFlow<ConnectionState> = _connectionState.asStateFlow()
 
+    // Filter state - aligned with UniApp reference
+    private val _filterRSSI = MutableStateFlow(-100)  // -100 means show all
+    val filterRSSI: StateFlow<Int> = _filterRSSI.asStateFlow()
+
+    private val _filterNamePrefix = MutableStateFlow("")
+    val filterNamePrefix: StateFlow<String> = _filterNamePrefix.asStateFlow()
+
+    private val _hideUnnamed = MutableStateFlow(false)
+    val hideUnnamed: StateFlow<Boolean> = _hideUnnamed.asStateFlow()
+
+    // Filtered results - combines scan results with filter state
+    private val _filteredScanResults = MutableStateFlow<List<BleDevice>>(emptyList())
+    val filteredScanResults: StateFlow<List<BleDevice>> = _filteredScanResults.asStateFlow()
+
     init {
         observeBluetoothState()
         observeScanResults()
         observeConnectionState()
+        observeFilters()
     }
 
     private fun observeBluetoothState() {
@@ -67,6 +83,48 @@ class DeviceListViewModel(application: Application) : AndroidViewModel(applicati
         viewModelScope.launch {
             bleManager.isScanning.collect { scanning ->
                 _isScanning.value = scanning
+            }
+        }
+    }
+
+    // Apply filters whenever scan results or filter criteria change - aligned with UniApp
+    private fun observeFilters() {
+        viewModelScope.launch {
+            combine(
+                _scanResults,
+                _filterRSSI,
+                _filterNamePrefix,
+                _hideUnnamed
+            ) { results, rssi, namePrefix, hideUnnamed ->
+                applyFilters(results, rssi, namePrefix, hideUnnamed)
+            }.collect { filtered ->
+                _filteredScanResults.value = filtered
+            }
+        }
+    }
+
+    private fun applyFilters(
+        devices: List<BleDevice>,
+        rssiThreshold: Int,
+        namePrefix: String,
+        hideUnnamed: Boolean
+    ): List<BleDevice> {
+        return devices.filter { device ->
+            // RSSI filter - only filter if threshold > -100 (not "show all")
+            if (rssiThreshold > -100 && device.rssi < rssiThreshold) {
+                return@filter false
+            }
+
+            // Hide unnamed filter
+            if (hideUnnamed && (device.name.isNullOrEmpty() || device.name == "Unknown Device")) {
+                return@filter false
+            }
+
+            // Name prefix filter
+            if (namePrefix.isNotEmpty()) {
+                device.name?.startsWith(namePrefix, ignoreCase = true) != false
+            } else {
+                true
             }
         }
     }
@@ -127,6 +185,25 @@ class DeviceListViewModel(application: Application) : AndroidViewModel(applicati
 
     fun clearError() {
         _errorMessage.value = null
+    }
+
+    // Filter methods - aligned with UniApp
+    fun setFilterRSSI(value: Int) {
+        _filterRSSI.value = value.coerceIn(-100, -30)
+    }
+
+    fun setFilterNamePrefix(value: String) {
+        _filterNamePrefix.value = value
+    }
+
+    fun setHideUnnamed(value: Boolean) {
+        _hideUnnamed.value = value
+    }
+
+    fun resetFilters() {
+        _filterRSSI.value = -100
+        _filterNamePrefix.value = ""
+        _hideUnnamed.value = false
     }
 
     private fun updateUiState() {

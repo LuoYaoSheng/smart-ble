@@ -17,6 +17,8 @@ import android.bluetooth.le.ScanSettings
 import android.content.Context
 import android.os.Build
 import android.os.ParcelUuid
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import com.smartble.core.model.BleCharacteristic
 import com.smartble.core.model.BleDevice
@@ -43,6 +45,9 @@ class BleManager(private val context: Context) {
 
         // CCC Descriptor UUID
         private val CCC_DESCRIPTOR_UUID = UUID.fromString("00002902-0000-1000-8000-00805F9B34FB")
+
+        // Auto-stop scan duration - aligned with UniApp (5 seconds)
+        private const val AUTO_STOP_SCAN_DURATION_MS = 5000L
     }
 
     private val bluetoothManager: BluetoothManager =
@@ -51,6 +56,10 @@ class BleManager(private val context: Context) {
     private val bluetoothLeScanner: BluetoothLeScanner? = bluetoothAdapter?.bluetoothLeScanner
 
     private var gattConnection: BluetoothGatt? = null
+
+    // Auto-stop scan timer - aligned with UniApp behavior
+    private val autoStopHandler = Handler(Looper.getMainLooper())
+    private var autoStopRunnable: Runnable? = null
 
     // State flows
     private val _scanResults = MutableSharedFlow<List<ScanResult>>(replay = 1)
@@ -126,6 +135,9 @@ class BleManager(private val context: Context) {
             _isScanning.value = true
             _scanResults.tryEmit(emptyList())
             Log.i(TAG, "Scan started")
+
+            // Auto-stop scan after 5 seconds - aligned with UniApp
+            scheduleAutoStopScan()
         } catch (e: Exception) {
             Log.e(TAG, "Failed to start scan", e)
         }
@@ -138,6 +150,9 @@ class BleManager(private val context: Context) {
     fun stopScan() {
         val scanner = bluetoothLeScanner ?: return
 
+        // Cancel auto-stop timer
+        cancelAutoStopScan()
+
         if (!_isScanning.value) {
             return
         }
@@ -149,6 +164,32 @@ class BleManager(private val context: Context) {
         } catch (e: Exception) {
             Log.e(TAG, "Failed to stop scan", e)
         }
+    }
+
+    /**
+     * 安排自动停止扫描（5秒后）- 与 UniApp 对齐
+     */
+    private fun scheduleAutoStopScan() {
+        cancelAutoStopScan()
+        autoStopRunnable = Runnable {
+            if (_isScanning.value) {
+                stopScan()
+                Log.i(TAG, "Auto-stop scan after ${AUTO_STOP_SCAN_DURATION_MS}ms")
+            }
+        }
+        autoStopRunnable?.let {
+            autoStopHandler.postDelayed(it, AUTO_STOP_SCAN_DURATION_MS)
+        }
+    }
+
+    /**
+     * 取消自动停止扫描
+     */
+    private fun cancelAutoStopScan() {
+        autoStopRunnable?.let {
+            autoStopHandler.removeCallbacks(it)
+        }
+        autoStopRunnable = null
     }
 
     /**

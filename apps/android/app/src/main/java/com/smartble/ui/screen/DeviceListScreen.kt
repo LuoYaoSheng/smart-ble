@@ -109,11 +109,17 @@ fun DeviceListContent(
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val scanResults by viewModel.scanResults.collectAsState()
+    val filteredScanResults by viewModel.filteredScanResults.collectAsState()
     val isScanning by viewModel.isScanning.collectAsState()
     val bluetoothState by viewModel.bluetoothState.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
     val connectionState by viewModel.connectionState.collectAsState()
+
+    // Filter state
+    val filterRSSI by viewModel.filterRSSI.collectAsState()
+    val filterNamePrefix by viewModel.filterNamePrefix.collectAsState()
+    val hideUnnamed by viewModel.hideUnnamed.collectAsState()
+    var filterExpanded by remember { mutableStateOf(false) }
 
     // Bottom sheet state
     val scaffoldState = rememberBottomSheetScaffoldState()
@@ -165,19 +171,32 @@ fun DeviceListContent(
                     )
                     is DeviceListUiState.BluetoothUnavailable -> BluetoothUnavailableCard()
                     else -> {
+                        // Filter panel - aligned with UniApp
+                        FilterPanel(
+                            expanded = filterExpanded,
+                            onToggleExpanded = { filterExpanded = !filterExpanded },
+                            filterRSSI = filterRSSI,
+                            onFilterRSSIChange = { viewModel.setFilterRSSI(it) },
+                            filterNamePrefix = filterNamePrefix,
+                            onFilterNamePrefixChange = { viewModel.setFilterNamePrefix(it) },
+                            hideUnnamed = hideUnnamed,
+                            onHideUnnamedChange = { viewModel.setHideUnnamed(it) },
+                            onReset = { viewModel.resetFilters() }
+                        )
+
                         // Scan controls
                         ScanControlsCard(
                             isScanning = isScanning,
-                            deviceCount = scanResults.size,
+                            deviceCount = filteredScanResults.size,
                             onToggleScan = { viewModel.toggleScan() }
                         )
 
                         // Device list
-                        if (scanResults.isEmpty()) {
+                        if (filteredScanResults.isEmpty()) {
                             EmptyState()
                         } else {
                             DeviceList(
-                                devices = scanResults,
+                                devices = filteredScanResults,
                                 onDeviceClick = { device ->
                                     selectedDevice = device
                                     scope.launch {
