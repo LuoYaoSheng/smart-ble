@@ -64,7 +64,7 @@ class FilterPanel extends ConsumerWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                       decoration: BoxDecoration(
-                        color: AppTheme.primaryColor.withOpacity(0.1),
+                        color: AppTheme.primaryColor.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
@@ -178,7 +178,7 @@ class FilterPanel extends ConsumerWidget {
           controller: TextEditingController(text: value)..selection = TextSelection.fromPosition(TextPosition(offset: value.length)),
           decoration: InputDecoration(
             hintText: '输入设备名称前缀...',
-            hintStyle: TextStyle(color: AppTheme.textSecondary.withOpacity(0.6)),
+            hintStyle: TextStyle(color: AppTheme.textSecondary.withValues(alpha: 0.6)),
             prefixIcon: const Icon(Icons.search, size: 18),
             suffixIcon: value.isNotEmpty
                 ? IconButton(
@@ -188,15 +188,15 @@ class FilterPanel extends ConsumerWidget {
                 : null,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: AppTheme.borderColor),
+              borderSide: const BorderSide(color: AppTheme.borderColor),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: AppTheme.borderColor),
+              borderSide: const BorderSide(color: AppTheme.borderColor),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: AppTheme.primaryColor),
+              borderSide: const BorderSide(color: AppTheme.primaryColor),
             ),
             contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             isDense: true,

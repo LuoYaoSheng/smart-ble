@@ -33,7 +33,7 @@ Thumbs.db
 
 # Node
 node_modules/
-package-lock.json
+apps/desktop/electron/node_modules/
 
 # Flutter/Dart
 .pub-cache/
@@ -41,7 +41,22 @@ package-lock.json
 .flutter-plugins
 .flutter-plugins-dependencies
 dart_tool/
+apps/flutter/.dart_tool/
+apps/flutter/build/
+apps/flutter/macos/Pods/
 
 # Project files
 /SmartBLE/unpackage
 SmartBLE/.DS_Store
+
+# Android/Gradle
+.gradle/
+apps/android/.gradle/
+apps/android/app/build/
+
+# SwiftPM
+apps/ios/.build/
+apps/desktop/macos/SmartBLE-mac/.build/
+
+# Rust/Cargo
+apps/desktop/tauri/src-tauri/target/

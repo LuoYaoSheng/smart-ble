@@ -57,7 +57,7 @@ class DeviceCard extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       device.deviceId,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 12,
                         color: AppTheme.textSecondary,
                       ),
@@ -76,7 +76,7 @@ class DeviceCard extends StatelessWidget {
                 onPressed: onConnect,
                 icon: const Icon(Icons.link, size: 20),
                 style: IconButton.styleFrom(
-                  backgroundColor: AppTheme.primaryColor.withOpacity(0.1),
+                  backgroundColor: AppTheme.primaryColor.withValues(alpha: 0.1),
                   foregroundColor: AppTheme.primaryColor,
                   padding: const EdgeInsets.all(8),
                   minimumSize: const Size(36, 36),

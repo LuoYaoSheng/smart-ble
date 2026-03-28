@@ -1,9 +1,9 @@
 package com.smartble.ui.screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -108,10 +108,7 @@ fun FilterPanel(
                 OutlinedButton(
                     onClick = onReset,
                     modifier = Modifier.height(32.dp),
-                    contentPadding = ButtonDefaults.OutlinedButtonContentPadding(
-                        start = 8.dp,
-                        end = 8.dp
-                    )
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp)
                 ) {
                     Icon(
                         Icons.Default.Refresh,
@@ -132,7 +129,7 @@ fun FilterPanel(
                         value = filterRSSI.toFloat(),
                         onValueChange = { onFilterRSSIChange(it.toInt()) },
                         valueRange = -100f..-30f,
-                        step = 5f
+                        steps = 13
                     )
 
                     // Preset buttons - aligned with UniApp
@@ -251,12 +248,7 @@ private fun PresetButton(
             containerColor = if (selected) Primary else MaterialTheme.colorScheme.surfaceVariant
         ),
         shape = RoundedCornerShape(6.dp),
-        contentPadding = ButtonDefaults.ButtonContentPadding(
-            start = 4.dp,
-            end = 4.dp,
-            top = 0.dp,
-            bottom = 0.dp
-        )
+        contentPadding = PaddingValues(horizontal = 4.dp, vertical = 0.dp)
     ) {
         Text(
             label,

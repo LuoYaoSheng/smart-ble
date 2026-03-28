@@ -28,7 +28,7 @@ class AboutPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: [
                   BoxShadow(
-                    color: AppTheme.primaryColor.withOpacity(0.3),
+                    color: AppTheme.primaryColor.withValues(alpha: 0.3),
                     blurRadius: 16,
                     offset: const Offset(0, 8),
                   ),
@@ -53,7 +53,7 @@ class AboutPage extends StatelessWidget {
             const SizedBox(height: 8),
 
             // Version
-            Text(
+            const Text(
               '版本 2.0.0',
               style: TextStyle(
                 fontSize: 14,
@@ -72,7 +72,7 @@ class AboutPage extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 12),
-            Text(
+            const Text(
               '支持扫描、连接、读写特征值、\n通知监听等功能',
               style: TextStyle(
                 fontSize: 14,
@@ -141,7 +141,7 @@ class AboutPage extends StatelessWidget {
               '© 2025 Smart BLE\nReleased under MIT License',
               style: TextStyle(
                 fontSize: 12,
-                color: AppTheme.textSecondary.withOpacity(0.7),
+                color: AppTheme.textSecondary.withValues(alpha: 0.7),
               ),
               textAlign: TextAlign.center,
             ),
@@ -177,7 +177,7 @@ class AboutPage extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: AppTheme.primaryColor.withOpacity(0.1),
+              color: AppTheme.primaryColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(icon, color: AppTheme.primaryColor, size: 20),
@@ -196,7 +196,7 @@ class AboutPage extends StatelessWidget {
                 ),
                 Text(
                   description,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 12,
                     color: AppTheme.textSecondary,
                   ),
@@ -241,7 +241,7 @@ class AboutPage extends StatelessWidget {
               ),
             ),
             const Spacer(),
-            Icon(Icons.open_in_new, size: 16, color: AppTheme.textSecondary),
+            const Icon(Icons.open_in_new, size: 16, color: AppTheme.textSecondary),
           ],
         ),
       ),

@@ -5,6 +5,7 @@ Smart BLE 调试工具的原生 Android 实现。
 ## 技术栈
 
 - **语言**: Kotlin
+- **JDK**: 17 或 21（不要使用 JDK 25）
 - **最小 SDK**: 24 (Android 7.0)
 - **目标 SDK**: 34 (Android 14)
 - **UI 框架**: Jetpack Compose + Material 3
@@ -42,6 +43,7 @@ app/src/main/java/com/smartble/
 ### 使用 Android Studio
 
 1. 用 Android Studio 打开 `apps/android` 目录
+2. 确认 Gradle JDK 使用 Android Studio 自带 JBR 17/21，或本机 JDK 17/21
 2. 等待 Gradle 同步完成
 3. 连接 Android 设备或启动模拟器
 4. 点击 Run 按钮
@@ -50,6 +52,9 @@ app/src/main/java/com/smartble/
 
 ```bash
 cd apps/android
+
+# 如本机默认 Java 版本过高，可显式使用 Android Studio 自带 JBR
+export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
 
 # 构建 Debug APK
 ./gradlew assembleDebug
@@ -60,6 +65,8 @@ cd apps/android
 # 运行测试
 ./gradlew test
 ```
+
+> 说明：当前工程已验证可在 Android Studio 自带的 JDK 21 下成功执行 `assembleDebug`。若使用 JDK 25，Gradle/Kotlin DSL 初始化阶段会失败。
 
 ## 功能特性
 

@@ -9,7 +9,7 @@ Smart BLE 调试工具的桌面端实现，支持多个技术栈。
 | **Electron** | JavaScript/Node.js | Windows/macOS/Linux | ✅ 完整 | 快速开发、跨平台 |
 | **Tauri** | Rust + Web | Windows/macOS/Linux | ✅ 完整 | 轻量级、高性能 |
 | **macOS Native** | Swift + AppKit | macOS 13+ | ✅ 新增 | macOS 原生体验 |
-| **Avalonia** | .NET 8 + C# | Windows (优先) | ✅ | Windows 用户 |
+| **Avalonia** | .NET 8 + C# | Windows (优先) | 🚧 部分实现 | Windows 原型验证 |
 
 ---
 
@@ -94,7 +94,7 @@ swift run
 - Windows 优先设计
 
 **缺点:**
-- 功能不完整（特征值读写待实现）
+- 当前仍是原型，特征值读写和通知流程未完成
 
 **技术栈:** .NET 8 + Avalonia UI 11
 
@@ -126,9 +126,9 @@ dotnet run
 
 ### Windows
 
-推荐版本: **Avalonia** 或 **Electron**
+推荐版本: **Electron** 或 **Tauri**
 
-- Avalonia: 使用原生 Windows BLE API，性能最佳
+- Avalonia: 当前更适合作为原型参考，不建议作为默认发行版本
 - Electron: 使用 noble-uwp，兼容性好
 - Tauri: 轻量级选择
 
@@ -202,8 +202,8 @@ apps/desktop/
 │       └── Info.plist
 ├── avalonia/          # Avalonia (.NET) 版本
 │   └── SmartBLE.Desktop/
-├── windows/           # Windows 原生版本
-├── linux/             # Linux 原生版本
+├── windows/           # Windows 原生方案占位（README）
+├── linux/             # Linux 原生方案占位（README）
 └── README.md
 ```
 

@@ -47,7 +47,7 @@ smart-ble/
 │   ├── electron/         # JavaScript ✅
 │   ├── tauri/            # Rust ✅
 │   ├── macos/            # Swift ✅
-│   └── avalonia/         # .NET ✅
+│   └── avalonia/         # .NET 🚧
 ├── 🔌 硬件
 │   └── esp32/            # ESP32 固件 ✅
 ├── 📚 文档
@@ -67,7 +67,7 @@ smart-ble/
 | **Electron** | noble | ✅ 完成 | Win/Mac/Linux |
 | **Tauri** | Rust + btleplug | ✅ 完成 | 轻量级 (~10MB) |
 | **macOS 原生** | AppKit | ✅ 完成 | 原生体验 |
-| **Avalonia** | .NET 8 + C# | ✅ 完成 | Windows 优先 |
+| **Avalonia** | .NET 8 + C# | 🚧 部分实现 | Windows 原型验证 |
 | **Android 原生** | Kotlin + Jetpack | 🚧 开发中 | 原生体验 |
 | **iOS 原生** | Swift + SwiftUI | 🚧 开发中 | 原生体验 |
 

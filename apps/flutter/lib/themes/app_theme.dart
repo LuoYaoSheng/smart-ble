@@ -40,7 +40,6 @@ class AppTheme {
         primary: primaryColor,
         secondary: secondaryColor,
         error: errorColor,
-        background: backgroundColor,
         surface: cardColor,
       ),
       scaffoldBackgroundColor: backgroundColor,
@@ -144,7 +143,6 @@ class AppTheme {
         primary: primaryColor,
         secondary: secondaryColor,
         error: errorColor,
-        background: Color(0xFF000000),
         surface: Color(0xFF1C1C1E),
       ),
       scaffoldBackgroundColor: const Color(0xFF000000),
@@ -159,7 +157,7 @@ class AppTheme {
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
-          side: BorderSide(color: Colors.white.withOpacity(0.1), width: 0.5),
+          side: BorderSide(color: Colors.white.withValues(alpha: 0.1), width: 0.5),
         ),
       ),
     );
@@ -171,7 +169,7 @@ class AppStyles {
   /// 卡片阴影
   static List<BoxShadow> get cardShadow => [
         BoxShadow(
-          color: Colors.black.withOpacity(0.05),
+          color: Colors.black.withValues(alpha: 0.05),
           blurRadius: 10,
           offset: const Offset(0, 2),
         ),

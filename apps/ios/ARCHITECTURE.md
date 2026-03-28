@@ -4,6 +4,8 @@
 
 SmartBLE iOS is a native iOS/macOS BLE (Bluetooth Low Energy) debugging tool built with SwiftUI and CoreBluetooth.
 
+The canonical source tree is `apps/ios/Sources/`, which is the only code path wired into `Package.swift`. The parallel `apps/ios/SmartBLE/` tree is a legacy snapshot kept temporarily for reference and should not receive new feature work.
+
 **Tech Stack:**
 - **Language**: Swift
 - **UI Framework**: SwiftUI
@@ -57,6 +59,7 @@ ios/
 │       ├── DeviceDetailView.swift # Service/char operations
 │       ├── BroadcastView.swift   # Broadcasting UI
 │       └── LogView.swift         # Log panel
+├── SmartBLE/                     # Legacy snapshot, not used by Package.swift
 └── Package.swift                 # Swift Package Manager config
 ```
 

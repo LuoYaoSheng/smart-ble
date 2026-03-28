@@ -1,6 +1,7 @@
 package com.smartble.ui.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,10 +36,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -421,7 +423,7 @@ fun BroadcastSettingsCard(
                 placeholder = { Text("输入 128 位 UUID") },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(10.dp),
-                colors = TextFieldDefaults.outlinedTextFieldColors(
+                colors = OutlinedTextFieldDefaults.colors(
                     disabledBorderColor = MaterialTheme.colorScheme.outlineVariant,
                     disabledTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
                 ),
@@ -501,7 +503,7 @@ fun ReadOnlyField(
             enabled = false,
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(10.dp),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
+            colors = OutlinedTextFieldDefaults.colors(
                 disabledBorderColor = MaterialTheme.colorScheme.outlineVariant,
                 disabledTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
             ),

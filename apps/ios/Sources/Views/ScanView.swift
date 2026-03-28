@@ -131,7 +131,7 @@ struct ScanView: View {
                     Slider(value: Binding(
                         get: { Double(bleManager.filterRSSI) },
                         set: { bleManager.filterRSSI = Int($0) }
-                    ), in: -100...-30, step: 5)
+                    ), in: -100 ... -30, step: 5)
                     Text("-30")
                         .font(.caption2)
                         .foregroundColor(.secondary)

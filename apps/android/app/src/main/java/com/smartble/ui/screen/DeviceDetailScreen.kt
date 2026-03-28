@@ -144,7 +144,7 @@ fun DeviceDetailScreen(
                 ServicesList(
                     services = services,
                     onRead = { service, char -> viewModel.readCharacteristic(service.uuid, char.uuid) },
-                    onWrite = { service, char -> /* Show write dialog */ },
+                    onWrite = { _, _ -> /* Show write dialog */ },
                     onToggleNotify = { service, char -> viewModel.toggleNotification(service.uuid, char.uuid) },
                     modifier = Modifier.weight(1f)
                 )

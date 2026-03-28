@@ -115,6 +115,7 @@ class BleManager {
         for (ScanResult r in results) {
           final device = r.device;
           final deviceId = device.remoteId.toString();
+          final deviceName = device.platformName;
 
           // Convert manufacturerData Map to List<int>
           List<int>? manuData;
@@ -126,10 +127,10 @@ class BleManager {
           final existing = _scannedDevices[deviceId];
           if (existing == null ||
               existing.rssi != r.rssi ||
-              existing.name != (device.platformName ?? '')) {
+              existing.name != deviceName) {
             _scannedDevices[deviceId] = models.BleScanResult(
               deviceId: deviceId,
-              name: device.platformName ?? '',
+              name: deviceName,
               rssi: r.rssi,
               advertisData: manuData,
               serviceUuids: r.advertisementData.serviceUuids.map((u) => u.toString()).toList(),
@@ -380,8 +381,6 @@ class BleManager {
           return BleState.turningOff;
         case BluetoothAdapterState.off:
           return BleState.off;
-        default:
-          return BleState.unknown;
       }
     }
     return BleState.unknown;

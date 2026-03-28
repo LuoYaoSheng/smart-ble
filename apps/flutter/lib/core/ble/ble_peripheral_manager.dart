@@ -3,9 +3,6 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter_ble_peripheral/flutter_ble_peripheral.dart';
 
-/// 导入常量
-import 'package:flutter_ble_peripheral/src/models/constants.dart';
-
 /// BLE 外设管理器
 ///
 /// 使用 flutter_ble_peripheral v2.0+ 实现广播模式
@@ -28,7 +25,7 @@ class BlePeripheralManager {
   Stream<PeripheralState>? get stateStream => _blePeripheral.onPeripheralStateChanged;
 
   /// 是否正在广播 (返回 Future，需要 await)
-  Future<bool> get isAdvertising async => await _blePeripheral.isAdvertising ?? false;
+  Future<bool> get isAdvertising async => await _blePeripheral.isAdvertising;
 
   /// 数据接收流 (flutter_ble_peripheral v2 不支持此功能)
   Stream<List<int>> get dataStream => const Stream.empty();
@@ -50,7 +47,7 @@ class BlePeripheralManager {
 
   /// 检查是否支持广播 (运行时检查)
   Future<bool> isPlatformSupported() async {
-    return await _blePeripheral.isSupported ?? false;
+    return await _blePeripheral.isSupported;
   }
 
   /// 初始化外设管理器
@@ -58,7 +55,7 @@ class BlePeripheralManager {
     if (!isSupported) return false;
 
     try {
-      final supported = await _blePeripheral.isSupported ?? false;
+      final supported = await _blePeripheral.isSupported;
       return supported;
     } catch (e) {
       print('BlePeripheralManager 初始化失败: $e');
@@ -84,7 +81,7 @@ class BlePeripheralManager {
 
     try {
       // 检查是否已经在广播
-      final isAdv = await _blePeripheral.isAdvertising ?? false;
+      final isAdv = await _blePeripheral.isAdvertising;
       if (isAdv) {
         await stopAdvertising();
       }
@@ -112,7 +109,7 @@ class BlePeripheralManager {
         txPowerLevel: txPowerHigh,
       );
 
-      final platform = Platform.isAndroid ? "Android" : (Platform.isIOS ? "iOS" : "macOS");
+      final platform = Platform.isAndroid ? 'Android' : (Platform.isIOS ? 'iOS' : 'macOS');
       print('开始广播: name=$name, uuid=$serviceUuid, platform=$platform');
 
       await _blePeripheral.start(

@@ -230,7 +230,7 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
             Text(widget.deviceName, style: const TextStyle(fontSize: 17)),
             Text(
               widget.deviceId,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 12,
                 color: AppTheme.textSecondary,
               ),
@@ -246,7 +246,7 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: _isConnected ? AppTheme.successColor.withOpacity(0.1) : AppTheme.errorColor.withOpacity(0.1),
+                  color: _isConnected ? AppTheme.successColor.withValues(alpha: 0.1) : AppTheme.errorColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Row(

@@ -93,6 +93,7 @@ class BleManager(private val context: Context) {
     /**
      * 启用蓝牙
      */
+    @Suppress("DEPRECATION")
     fun enableBluetooth(): Boolean {
         return bluetoothAdapter?.enable() ?: false
     }
@@ -252,6 +253,7 @@ class BleManager(private val context: Context) {
      * 写入特征值
      */
     @SuppressLint("MissingPermission")
+    @Suppress("DEPRECATION")
     fun writeCharacteristic(serviceUuid: String, characteristicUuid: String, value: ByteArray): Boolean {
         val gatt = gattConnection ?: return false
         val characteristic = getCharacteristic(gatt, serviceUuid, characteristicUuid) ?: return false
@@ -277,6 +279,7 @@ class BleManager(private val context: Context) {
      * 设置通知
      */
     @SuppressLint("MissingPermission")
+    @Suppress("DEPRECATION")
     fun setNotification(serviceUuid: String, characteristicUuid: String, enable: Boolean): Boolean {
         val gatt = gattConnection ?: return false
         val characteristic = getCharacteristic(gatt, serviceUuid, characteristicUuid) ?: return false
@@ -435,6 +438,7 @@ class BleManager(private val context: Context) {
         }
 
         @SuppressLint("MissingPermission")
+        @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
         override fun onDescriptorRead(gatt: BluetoothGatt, descriptor: BluetoothGattDescriptor, status: Int) {
             Log.d(TAG, "onDescriptorRead: ${descriptor.uuid}, status=$status")
         }
@@ -461,6 +465,7 @@ class BleManager(private val context: Context) {
     }
 
     @SuppressLint("MissingPermission")
+    @Suppress("DEPRECATION")
     private fun mapBleCharacteristic(serviceUuid: String, gattChar: BluetoothGattCharacteristic): BleCharacteristic {
         val properties = mutableSetOf<Property>()
 

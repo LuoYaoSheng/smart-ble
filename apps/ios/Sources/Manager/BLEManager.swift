@@ -122,9 +122,13 @@ class BLEManager: NSObject, ObservableObject {
 
         // Start auto-stop timer if duration > 0
         if autoStopScanDuration > 0 {
-            autoStopTimer = Timer.scheduledTimer(withTimeInterval: autoStopScanDuration, repeats: false) { [weak self] _ in
-                self?.stopScan()
-                self?.log("Auto-stop scan after \(self?.autoStopScanDuration ?? 0)s", type: .info)
+            let duration = autoStopScanDuration
+            autoStopTimer = Timer.scheduledTimer(withTimeInterval: duration, repeats: false) { [weak self] _ in
+                Task { @MainActor in
+                    guard let self else { return }
+                    self.stopScan()
+                    self.log("Auto-stop scan after \(duration)s", type: .info)
+                }
             }
         }
     }
@@ -390,7 +394,7 @@ class BLEManager: NSObject, ObservableObject {
 }
 
 // MARK: - CBCentralManagerDelegate
-extension BLEManager: CBCentralManagerDelegate {
+extension BLEManager: @preconcurrency CBCentralManagerDelegate {
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         switch central.state {
         case .unknown:
@@ -500,7 +504,7 @@ extension BLEManager: CBCentralManagerDelegate {
 }
 
 // MARK: - CBPeripheralDelegate
-extension BLEManager: CBPeripheralDelegate {
+extension BLEManager: @preconcurrency CBPeripheralDelegate {
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
         if let error = error {
             log("Service discovery failed: \(error.localizedDescription)", type: .error)
@@ -551,20 +555,20 @@ extension BLEManager: CBPeripheralDelegate {
     }
 
     func peripheralDidUpdateName(_ peripheral: CBPeripheral) {
-        if let index = scanResults.firstIndex(where: { $0.id == peripheral.identifier.uuidString }) {
+        if scanResults.contains(where: { $0.id == peripheral.identifier.uuidString }) {
             // Update will trigger refresh
         }
     }
 
     func peripheral(_ peripheral: CBPeripheral, didReadRSSI RSSI: NSNumber, error: Error?) {
-        if let index = scanResults.firstIndex(where: { $0.id == peripheral.identifier.uuidString }) {
+        if scanResults.contains(where: { $0.id == peripheral.identifier.uuidString }) {
             // Update RSSI
         }
     }
 }
 
 // MARK: - CBPeripheralManagerDelegate
-extension BLEManager: CBPeripheralManagerDelegate {
+extension BLEManager: @preconcurrency CBPeripheralManagerDelegate {
     func peripheralManagerDidUpdateState(_ peripheral: CBPeripheralManager) {
         switch peripheral.state {
         case .unknown:

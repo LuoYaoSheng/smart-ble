@@ -172,9 +172,9 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
               margin: const EdgeInsets.all(16),
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: AppTheme.errorColor.withOpacity(0.1),
+                color: AppTheme.errorColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: AppTheme.errorColor.withOpacity(0.3)),
+                border: Border.all(color: AppTheme.errorColor.withValues(alpha: 0.3)),
               ),
               child: Row(
                 children: [
@@ -314,7 +314,7 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: AppTheme.primaryColor.withOpacity(0.1),
+        color: AppTheme.primaryColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
@@ -336,12 +336,12 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
           Icon(
             hasDevices ? Icons.filter_list_off : Icons.bluetooth_searching,
             size: 64,
-            color: AppTheme.textSecondary.withOpacity(0.5),
+            color: AppTheme.textSecondary.withValues(alpha: 0.5),
           ),
           const SizedBox(height: 16),
           Text(
             hasDevices ? '无匹配设备' : '暂无设备',
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 18,
               color: AppTheme.textSecondary,
             ),
@@ -351,7 +351,7 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
             hasDevices ? '尝试调整过滤条件' : '点击上方按钮开始扫描',
             style: TextStyle(
               fontSize: 14,
-              color: AppTheme.textSecondary.withOpacity(0.7),
+              color: AppTheme.textSecondary.withValues(alpha: 0.7),
             ),
           ),
         ],
@@ -496,7 +496,7 @@ class DeviceInfoDialog extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppTheme.primaryColor.withOpacity(0.1),
+              color: AppTheme.primaryColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(

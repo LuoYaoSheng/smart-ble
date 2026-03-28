@@ -79,7 +79,6 @@ fun DeviceListScreen(
     viewModel: DeviceListViewModel,
     onDeviceClick: (String, String) -> Unit
 ) {
-    val scanResults by viewModel.scanResults.collectAsState()
     val bluetoothState by viewModel.bluetoothState.collectAsState()
 
     Scaffold(
@@ -111,7 +110,6 @@ fun DeviceListContent(
     val uiState by viewModel.uiState.collectAsState()
     val filteredScanResults by viewModel.filteredScanResults.collectAsState()
     val isScanning by viewModel.isScanning.collectAsState()
-    val bluetoothState by viewModel.bluetoothState.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
     val connectionState by viewModel.connectionState.collectAsState()
 
@@ -166,12 +164,13 @@ fun DeviceListContent(
 
                 // Bluetooth state
                 when (uiState) {
+                    is DeviceListUiState.Initializing -> ConnectingCard(message = "正在初始化蓝牙...")
                     is DeviceListUiState.BluetoothOff -> BluetoothOffCard(
                         onEnableClick = { viewModel.enableBluetooth() }
                     )
                     is DeviceListUiState.BluetoothUnavailable -> BluetoothUnavailableCard()
-                    else -> {
-                        // Filter panel - aligned with UniApp
+                    is DeviceListUiState.BluetoothUnauthorized -> BluetoothUnauthorizedCard()
+                    is DeviceListUiState.Ready -> {
                         FilterPanel(
                             expanded = filterExpanded,
                             onToggleExpanded = { filterExpanded = !filterExpanded },
@@ -184,14 +183,12 @@ fun DeviceListContent(
                             onReset = { viewModel.resetFilters() }
                         )
 
-                        // Scan controls
                         ScanControlsCard(
                             isScanning = isScanning,
                             deviceCount = filteredScanResults.size,
                             onToggleScan = { viewModel.toggleScan() }
                         )
 
-                        // Device list
                         if (filteredScanResults.isEmpty()) {
                             EmptyState()
                         } else {
@@ -213,7 +210,6 @@ fun DeviceListContent(
                 }
             }
         }
-    }
 
     // Navigate to detail page when connected
     LaunchedEffect(connectionState) {
@@ -226,6 +222,11 @@ fun DeviceListContent(
 
 @Composable
 fun ConnectingCard() {
+    ConnectingCard(message = "正在连接设备...")
+}
+
+@Composable
+fun ConnectingCard(message: String) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -244,11 +245,40 @@ fun ConnectingCard() {
         )
         Spacer(modifier = Modifier.width(12.dp))
         Text(
-            "正在连接设备...",
+            message,
             style = MaterialTheme.typography.bodyMedium,
             color = Primary
         )
     }
+    }
+}
+
+@Composable
+fun BluetoothUnauthorizedCard() {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Error.copy(alpha = 0.1f)
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(
+                "蓝牙权限未授权",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = Error
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                "请在系统设置中授予蓝牙扫描和连接权限后重试。",
+                style = MaterialTheme.typography.bodyMedium,
+                color = TextSecondary
+            )
+        }
     }
 }
 
@@ -331,7 +361,6 @@ fun DeviceDetailSheet(
             ConnectionState.Connecting -> "连接中..."
             ConnectionState.Disconnected -> "未连接"
             ConnectionState.Disconnecting -> "断开中..."
-            else -> "未知"
         })
 
         // Scan record info

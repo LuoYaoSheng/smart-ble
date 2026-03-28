@@ -68,9 +68,6 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
   /// 是否为 Android 平台
   bool get _isAndroid => Platform.isAndroid;
 
-  /// 是否为 Darwin 平台 (iOS/macOS)
-  bool get _isDarwin => Platform.isIOS || Platform.isMacOS;
-
   /// 获取设备名称显示文本
   String get _deviceNameText {
     if (_isAndroid) {
@@ -80,15 +77,6 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
       return 'SmartBLE (macOS)';
     }
     return 'SmartBLE';
-  }
-
-  /// 获取平台警告信息
-  String get _platformWarning {
-    if (_isAndroid) {
-      return 'Android 平台限制：由于系统限制，广播时会显示设备的实际蓝牙名称，而非自定义名称。\n\n'
-          '如需修改广播名称，请前往系统设置 → 蓝牙 → 修改设备名称。';
-    }
-    return 'iOS 平台支持自定义广播名称。';
   }
 
   Future<void> _toggleAdvertising() async {
@@ -199,9 +187,9 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
                       margin: const EdgeInsets.only(bottom: 16),
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: AppTheme.errorColor.withOpacity(0.1),
+                        color: AppTheme.errorColor.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: AppTheme.errorColor.withOpacity(0.3)),
+                        border: Border.all(color: AppTheme.errorColor.withValues(alpha: 0.3)),
                       ),
                       child: Row(
                         children: [
@@ -253,12 +241,12 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: isAndroid
-              ? [const Color(0xFFFF9800).withOpacity(0.15), const Color(0xFFFF9800).withOpacity(0.05)]
-              : [AppTheme.primaryColor.withOpacity(0.1), AppTheme.primaryColor.withOpacity(0.05)],
+              ? [const Color(0xFFFF9800).withValues(alpha: 0.15), const Color(0xFFFF9800).withValues(alpha: 0.05)]
+              : [AppTheme.primaryColor.withValues(alpha: 0.1), AppTheme.primaryColor.withValues(alpha: 0.05)],
         ),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: isAndroid ? const Color(0xFFFF9800).withOpacity(0.3) : AppTheme.primaryColor.withOpacity(0.2),
+          color: isAndroid ? const Color(0xFFFF9800).withValues(alpha: 0.3) : AppTheme.primaryColor.withValues(alpha: 0.2),
         ),
       ),
       child: Row(
@@ -303,14 +291,14 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.blue.withOpacity(0.05),
+        color: Colors.blue.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.blue.withOpacity(0.2)),
+        border: Border.all(color: Colors.blue.withValues(alpha: 0.2)),
       ),
-      child: Column(
+      child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
               Icon(Icons.scanner, size: 18, color: Colors.blue),
               SizedBox(width: 8),
@@ -324,8 +312,8 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
               ),
             ],
           ),
-          const SizedBox(height: 12),
-          const Text(
+          SizedBox(height: 12),
+          Text(
             '1. 点击"开始广播"按钮\n'
             '2. 使用另一台设备打开 BLE 扫描功能\n'
             '3. 搜索包含 UUID "0000FFF0" 的设备\n'
@@ -353,7 +341,7 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                color: AppTheme.warningColor.withOpacity(0.1),
+                color: AppTheme.warningColor.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: const Icon(
@@ -371,11 +359,11 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
               ),
             ),
             const SizedBox(height: 16),
-            Text(
+            const Text(
               '当前平台暂不支持 BLE 广播功能。\n\n'
               'flutter_ble_peripheral 库支持：Android、iOS、macOS。',
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
                 height: 1.6,
                 color: AppTheme.textSecondary,
@@ -408,7 +396,7 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
         boxShadow: isAdvertisingState
             ? [
                 BoxShadow(
-                  color: AppTheme.successColor.withOpacity(0.3),
+                  color: AppTheme.successColor.withValues(alpha: 0.3),
                   blurRadius: 16,
                   offset: const Offset(0, 4),
                 ),
@@ -421,7 +409,7 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
             width: 64,
             height: 64,
             decoration: BoxDecoration(
-              color: isAdvertisingState ? Colors.white : AppTheme.primaryColor.withOpacity(0.1),
+              color: isAdvertisingState ? Colors.white : AppTheme.primaryColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Icon(
@@ -444,7 +432,7 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
             isAdvertisingState ? '其他设备可以扫描到此设备' : '点击开始启动BLE广播',
             style: TextStyle(
               fontSize: 13,
-              color: isAdvertisingState ? Colors.white.withOpacity(0.9) : AppTheme.textSecondary,
+              color: isAdvertisingState ? Colors.white.withValues(alpha: 0.9) : AppTheme.textSecondary,
             ),
             textAlign: TextAlign.center,
           ),
@@ -563,7 +551,7 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: labelColor!.withOpacity(0.15),
+                  color: labelColor!.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
@@ -583,14 +571,14 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: TextStyle(
-              color: AppTheme.textSecondary.withOpacity(0.6),
+              color: AppTheme.textSecondary.withValues(alpha: 0.6),
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
             ),
             disabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(color: AppTheme.borderColor),
+              borderSide: const BorderSide(color: AppTheme.borderColor),
             ),
             filled: true,
             fillColor: AppTheme.backgroundColor,
@@ -643,22 +631,22 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: TextStyle(
-              color: AppTheme.textSecondary.withOpacity(0.6),
+              color: AppTheme.textSecondary.withValues(alpha: 0.6),
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(color: AppTheme.borderColor),
+              borderSide: const BorderSide(color: AppTheme.borderColor),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(color: AppTheme.primaryColor),
+              borderSide: const BorderSide(color: AppTheme.primaryColor),
             ),
             disabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(
+              borderSide: const BorderSide(
                 color: AppTheme.borderColor,
                 width: 1,
               ),

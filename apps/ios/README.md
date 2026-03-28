@@ -2,6 +2,8 @@
 
 使用 SwiftUI + CoreBluetooth 实现的原生 macOS/iOS BLE 调试工具。
 
+> 当前源码入口以 `apps/ios/Sources/` 为准，`apps/ios/SmartBLE/` 目录仅作为旧版本参考保留，不应继续新增或修改功能。
+
 ## 功能特性
 
 ### 扫描功能 (Central 模式)
@@ -41,3 +43,6 @@ Sources/
 └── Models/
     └── BLEModels.swift       # 数据模型
 ```
+
+Legacy reference:
+- `SmartBLE/`：旧代码树，当前不参与 `Package.swift` 构建

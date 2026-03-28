@@ -49,7 +49,7 @@ class _ServiceTileState extends State<ServiceTile> {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: AppTheme.primaryColor.withOpacity(0.1),
+              color: AppTheme.primaryColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
             ),
             child: const Icon(
@@ -71,7 +71,7 @@ class _ServiceTileState extends State<ServiceTile> {
               const SizedBox(height: 2),
               Text(
                 widget.service.shortUuid,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 12,
                   color: AppTheme.textSecondary,
                   fontFamily: 'monospace',
@@ -104,7 +104,7 @@ class _ServiceTileState extends State<ServiceTile> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: AppTheme.primaryColor.withOpacity(0.1),
+        color: AppTheme.primaryColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
@@ -148,7 +148,7 @@ class _CharacteristicTile extends StatelessWidget {
           height: 36,
           decoration: BoxDecoration(
             color: characteristic.notifying
-                ? AppTheme.successColor.withOpacity(0.1)
+                ? AppTheme.successColor.withValues(alpha: 0.1)
                 : Colors.white,
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
@@ -178,7 +178,7 @@ class _CharacteristicTile extends StatelessWidget {
             ),
             Text(
               characteristic.shortUuid,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 11,
                 color: AppTheme.textSecondary,
                 fontFamily: 'monospace',
@@ -196,12 +196,12 @@ class _CharacteristicTile extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppTheme.successColor.withOpacity(0.1),
+                    color: AppTheme.successColor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
                     characteristic.value!.map((b) => b.toRadixString(16).padLeft(2, '0').toUpperCase()).join(' '),
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 10,
                       fontFamily: 'monospace',
                       color: AppTheme.successColor,
@@ -227,10 +227,10 @@ class _CharacteristicTile extends StatelessWidget {
     final chips = <Widget>[];
 
     if (characteristic.canRead) {
-      chips.add(_PropertyChip(label: 'Read', color: AppTheme.primaryColor));
+      chips.add(const _PropertyChip(label: 'Read', color: AppTheme.primaryColor));
     }
     if (characteristic.canWrite) {
-      chips.add(_PropertyChip(label: 'Write', color: AppTheme.warningColor));
+      chips.add(const _PropertyChip(label: 'Write', color: AppTheme.warningColor));
     }
     if (characteristic.canNotify) {
       chips.add(_PropertyChip(
@@ -305,9 +305,9 @@ class _PropertyChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: color.withOpacity(0.3), width: 0.5),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 0.5),
       ),
       child: Text(
         label,

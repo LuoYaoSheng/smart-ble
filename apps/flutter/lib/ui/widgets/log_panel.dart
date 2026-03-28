@@ -38,7 +38,7 @@ class LogPanel extends StatelessWidget {
     }
 
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Colors.white,
         border: Border(
           top: BorderSide(color: AppTheme.borderColor, width: 1),
@@ -49,7 +49,7 @@ class LogPanel extends StatelessWidget {
           // 标题栏
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: AppTheme.backgroundColor,
               border: Border(
                 bottom: BorderSide(color: AppTheme.borderColor, width: 0.5),
