@@ -48,6 +48,10 @@ class BleManager(private val context: Context) {
 
         // Auto-stop scan duration - aligned with UniApp (5 seconds)
         private const val AUTO_STOP_SCAN_DURATION_MS = 5000L
+
+        // Auto reconnect policy
+        private const val AUTO_RECONNECT_DELAY_MS = 2000L
+        private const val MAX_AUTO_RECONNECT_ATTEMPTS = 3
     }
 
     private val bluetoothManager: BluetoothManager =
@@ -60,6 +64,14 @@ class BleManager(private val context: Context) {
     // Auto-stop scan timer - aligned with UniApp behavior
     private val autoStopHandler = Handler(Looper.getMainLooper())
     private var autoStopRunnable: Runnable? = null
+
+    // Auto reconnect state
+    private val reconnectHandler = Handler(Looper.getMainLooper())
+    private var reconnectRunnable: Runnable? = null
+    private var reconnectAttempts = 0
+    private var lastConnectedDeviceId: String? = null
+    private var autoReconnectEnabled = false
+    private var userInitiatedDisconnect = false
 
     // State flows
     private val _scanResults = MutableSharedFlow<List<ScanResult>>(replay = 1)
@@ -113,6 +125,7 @@ class BleManager(private val context: Context) {
             return
         }
 
+        disableAutoReconnect()
         scanResultsMap.clear()
 
         val scanSettings = ScanSettings.Builder().apply {
@@ -198,6 +211,16 @@ class BleManager(private val context: Context) {
      */
     @SuppressLint("MissingPermission")
     fun connect(deviceId: String): Boolean {
+        reconnectAttempts = 0
+        autoReconnectEnabled = true
+        userInitiatedDisconnect = false
+        lastConnectedDeviceId = deviceId
+        cancelAutoReconnect()
+        return connectInternal(deviceId)
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun connectInternal(deviceId: String): Boolean {
         val device = bluetoothAdapter?.getRemoteDevice(deviceId) ?: run {
             Log.e(TAG, "Device not found: $deviceId")
             return false
@@ -223,6 +246,8 @@ class BleManager(private val context: Context) {
      */
     @SuppressLint("MissingPermission")
     fun disconnect() {
+        userInitiatedDisconnect = true
+        disableAutoReconnect()
         gattConnection?.disconnect()
         gattConnection?.close()
         gattConnection = null
@@ -316,6 +341,39 @@ class BleManager(private val context: Context) {
         return service.getCharacteristic(UUID.fromString(characteristicUuid))
     }
 
+    private fun scheduleAutoReconnect() {
+        val deviceId = lastConnectedDeviceId ?: return
+        if (!autoReconnectEnabled || reconnectAttempts >= MAX_AUTO_RECONNECT_ATTEMPTS) {
+            Log.w(TAG, "Auto reconnect skipped: enabled=$autoReconnectEnabled, attempts=$reconnectAttempts")
+            return
+        }
+
+        cancelAutoReconnect()
+        reconnectAttempts += 1
+        val attempt = reconnectAttempts
+        reconnectRunnable = Runnable {
+            Log.i(TAG, "Auto reconnect attempt $attempt/$MAX_AUTO_RECONNECT_ATTEMPTS for $deviceId")
+            connectInternal(deviceId)
+        }
+        reconnectRunnable?.let {
+            reconnectHandler.postDelayed(it, AUTO_RECONNECT_DELAY_MS)
+        }
+    }
+
+    private fun cancelAutoReconnect() {
+        reconnectRunnable?.let {
+            reconnectHandler.removeCallbacks(it)
+        }
+        reconnectRunnable = null
+    }
+
+    private fun disableAutoReconnect() {
+        cancelAutoReconnect()
+        autoReconnectEnabled = false
+        reconnectAttempts = 0
+        lastConnectedDeviceId = null
+    }
+
     // Scan callback
     private val scanCallback = object : ScanCallback() {
         @SuppressLint("MissingPermission")
@@ -363,13 +421,41 @@ class BleManager(private val context: Context) {
 
             when (newState) {
                 BluetoothGatt.STATE_CONNECTED -> {
+                    cancelAutoReconnect()
+                    reconnectAttempts = 0
+                    userInitiatedDisconnect = false
                     _connectionState.value = ConnectionState.Connected
                     // 自动发现服务
                     discoverServices()
                 }
                 BluetoothGatt.STATE_DISCONNECTED -> {
+                    val deviceId = device.address
+                    val shouldReconnect = !userInitiatedDisconnect &&
+                        autoReconnectEnabled &&
+                        lastConnectedDeviceId == deviceId &&
+                        reconnectAttempts < MAX_AUTO_RECONNECT_ATTEMPTS
+
+                    gatt.close()
+                    if (gattConnection == gatt) {
+                        gattConnection = null
+                    }
+
                     _connectionState.value = ConnectionState.Disconnected
                     _services.value = emptyList()
+
+                    if (shouldReconnect) {
+                        Log.w(
+                            TAG,
+                            "Disconnected unexpectedly (status=$status), scheduling reconnect ${reconnectAttempts + 1}/$MAX_AUTO_RECONNECT_ATTEMPTS"
+                        )
+                        scheduleAutoReconnect()
+                    } else {
+                        Log.i(
+                            TAG,
+                            "Disconnected without auto reconnect (userInitiated=$userInitiatedDisconnect, status=$status)"
+                        )
+                        reconnectAttempts = 0
+                    }
                 }
                 BluetoothGatt.STATE_CONNECTING -> {
                     _connectionState.value = ConnectionState.Connecting
@@ -522,6 +608,7 @@ class BleManager(private val context: Context) {
      */
     fun release() {
         stopScan()
+        disableAutoReconnect()
         disconnect()
     }
 }

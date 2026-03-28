@@ -72,6 +72,7 @@ export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
 
 - [x] 蓝牙设备扫描
 - [x] 设备连接/断开
+- [x] 异常断开自动重连（最多 3 次）
 - [x] 服务发现
 - [x] 特征值读取
 - [x] 特征值写入
