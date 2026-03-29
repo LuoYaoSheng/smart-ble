@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../themes/app_theme.dart';
 
 /// 关于页面
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});
+
+  static const _repositoryUrl = 'https://github.com/luoyaosheng/smart-ble';
+  static const _docsUrl = 'https://github.com/luoyaosheng/smart-ble/tree/main/docs';
+  static const _issuesUrl = 'https://github.com/luoyaosheng/smart-ble/issues';
 
   @override
   Widget build(BuildContext context) {
@@ -117,19 +122,22 @@ class AboutPage extends StatelessWidget {
               '相关链接',
               [
                 _buildLinkItem(
+                  context,
                   Icons.code,
                   '源代码',
-                  'https://github.com/yourusername/smart-ble',
+                  _repositoryUrl,
                 ),
                 _buildLinkItem(
+                  context,
                   Icons.description,
                   '使用文档',
-                  'https://github.com/yourusername/smart-ble/wiki',
+                  _docsUrl,
                 ),
                 _buildLinkItem(
+                  context,
                   Icons.bug_report,
                   '问题反馈',
-                  'https://github.com/yourusername/smart-ble/issues',
+                  _issuesUrl,
                 ),
               ],
             ),
@@ -221,11 +229,9 @@ class AboutPage extends StatelessWidget {
     );
   }
 
-  Widget _buildLinkItem(IconData icon, String title, String url) {
+  Widget _buildLinkItem(BuildContext context, IconData icon, String title, String url) {
     return InkWell(
-      onTap: () {
-        // TODO: Open URL in browser
-      },
+      onTap: () => _openLink(context, url),
       borderRadius: BorderRadius.circular(8),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
@@ -246,5 +252,15 @@ class AboutPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _openLink(BuildContext context, String url) async {
+    final uri = Uri.parse(url);
+    final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (!opened && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('无法打开链接')),
+      );
+    }
   }
 }

@@ -27,6 +27,7 @@ dependencies:
   permission_handler: ^11.1.0
   shared_preferences: ^2.2.2
   intl: ^0.18.1
+  url_launcher: ^6.3.2
 
   # 平台特定
   flutter_platform_widgets: ^6.0.2

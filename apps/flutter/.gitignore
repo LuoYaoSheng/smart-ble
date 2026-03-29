@@ -46,7 +46,6 @@ app.*.map.json
 
 # Additional
 .metadata
-pubspec.lock
 node_modules/
 ../../node_modules/
 ../../package-lock.json
