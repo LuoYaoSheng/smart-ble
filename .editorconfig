@@ -1,0 +1,24 @@
+root = true
+
+[*.{js,ts,tsx,jsx,kt,kts,swift,rs,dart,java,c,cpp,h,hpp,md,yml,yaml,json}]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
+
+[Makefile]
+indent_style = tab
+
+[*.md]
+trim_trailing_whitespace = false
+
+[*.json]
+indent_size = 2
+
+[*.yml]
+indent_size = 2
+
+[*.yaml]
+indent_size = 2

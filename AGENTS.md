@@ -3,8 +3,18 @@
 ## Project Structure & Module Organization
 `apps/` contains platform clients: `android/` (Kotlin + Compose), `flutter/` (Dart + Riverpod), `uniapp/` (Vue/uni-app), `desktop/electron/`, `desktop/tauri/`, `desktop/macos/`, and `ios/`. Shared BLE abstractions live in `core/ble-core/` and protocol definitions in `core/protocols/`. Hardware examples are under `hardware/esp32/LightBLE/`. Product specs, flow docs, and manual test notes live in `docs/`.
 
+Platform tiers:
+- Primary: `apps/android`, `apps/flutter`, `apps/ios/Sources`, `apps/desktop/tauri`
+- Secondary: `apps/desktop/electron`, `apps/desktop/macos`
+- Experimental: `apps/desktop/avalonia`
+- Placeholder: `apps/desktop/windows`, `apps/desktop/linux`
+
+For iOS, treat `apps/ios/Sources/` as the only active source tree. `apps/ios/SmartBLE/` is legacy reference code.
+
 ## Build, Test, and Development Commands
-There is no single root build; work from the target app directory.
+Use the root `Makefile` when possible; platform-specific commands remain available when you need to scope work.
+
+- `make verify` runs the main repository checks for Flutter, Android, iOS Swift, and Tauri.
 
 - `cd apps/android && ./gradlew assembleDebug test` builds the Android app and runs JVM tests.
 - `cd apps/flutter && flutter pub get && flutter analyze && flutter test` installs deps, runs static analysis, and executes Flutter tests.

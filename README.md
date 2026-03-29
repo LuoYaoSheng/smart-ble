@@ -73,6 +73,17 @@ smart-ble/
 
 ---
 
+## 🧭 平台分级
+
+| 分级 | 平台 | 说明 |
+|------|------|------|
+| **主维护** | Android、Flutter、iOS (`Sources`)、Tauri | 优先保证功能、测试和构建可用 |
+| **次维护** | Electron、macOS Native | 保持可运行，按需补功能 |
+| **实验性** | Avalonia | 用于 Windows 原型验证 |
+| **占位/规划** | Windows Native、Linux Native | 当前主要保留方案和文档 |
+
+---
+
 ## 📊 功能对比
 
 | 功能 | uni-app | Flutter | Electron | Tauri | macOS | Avalonia |
@@ -200,6 +211,12 @@ idf.py -p /dev/ttyUSB0 flash monitor
 - 💡 [功能建议](https://github.com/luoyaosheng/smart-ble/issues)
 - 🔧 [提交 PR](https://github.com/luoyaosheng/smart-ble/pulls)
 - 📖 [完善文档](https://github.com/luoyaosheng/smart-ble)
+
+统一本地验证入口：
+
+```bash
+make verify
+```
 
 ---
 
