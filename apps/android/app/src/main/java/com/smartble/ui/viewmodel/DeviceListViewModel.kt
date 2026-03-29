@@ -87,35 +87,9 @@ class DeviceListViewModel(application: Application) : AndroidViewModel(applicati
                 _filterNamePrefix,
                 _hideUnnamed
             ) { results, rssi, namePrefix, hideUnnamed ->
-                applyFilters(results, rssi, namePrefix, hideUnnamed)
+                filterDevices(results, rssi, namePrefix, hideUnnamed)
             }.collect { filtered ->
                 _filteredScanResults.value = filtered
-            }
-        }
-    }
-
-    private fun applyFilters(
-        devices: List<BleDevice>,
-        rssiThreshold: Int,
-        namePrefix: String,
-        hideUnnamed: Boolean
-    ): List<BleDevice> {
-        return devices.filter { device ->
-            // RSSI filter - only filter if threshold > -100 (not "show all")
-            if (rssiThreshold > -100 && device.rssi < rssiThreshold) {
-                return@filter false
-            }
-
-            // Hide unnamed filter
-            if (hideUnnamed && (device.name.isNullOrEmpty() || device.name == "Unknown Device")) {
-                return@filter false
-            }
-
-            // Name prefix filter
-            if (namePrefix.isNotEmpty()) {
-                device.name?.startsWith(namePrefix, ignoreCase = true) != false
-            } else {
-                true
             }
         }
     }
