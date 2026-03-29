@@ -1,7 +1,10 @@
 package com.smartble.ui.screen
 
 import android.content.Intent
+import android.provider.OpenableColumns
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -43,6 +46,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -76,6 +80,7 @@ import com.smartble.ui.theme.Warning
 import com.smartble.ui.viewmodel.DeviceDetailViewModel
 import com.smartble.ui.viewmodel.LogEntry
 import com.smartble.ui.viewmodel.LogType
+import com.smartble.ui.viewmodel.OtaUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -91,7 +96,15 @@ fun DeviceDetailScreen(
     val logs by viewModel.logs.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
+    val otaState by viewModel.otaState.collectAsState()
     var pendingWriteTarget by remember { mutableStateOf<WriteTarget?>(null) }
+    val otaFilePicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) {
+            queryDocumentMeta(context, uri)?.let { (displayName, size) ->
+                viewModel.selectOtaFile(uri, displayName, size)
+            } ?: Toast.makeText(context, "无法读取固件文件信息", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -133,6 +146,15 @@ fun DeviceDetailScreen(
                     },
                     onClearLogs = { viewModel.clearLogs() },
                     onDisconnect = { viewModel.disconnect(); onBack() }
+                )
+            }
+
+            if (connectionState == ConnectionState.Connected) {
+                OtaCard(
+                    state = otaState,
+                    onSelectFile = { otaFilePicker.launch(arrayOf("*/*")) },
+                    onStart = { viewModel.startOtaTransfer() },
+                    onCancel = { viewModel.cancelOtaTransfer() }
                 )
             }
 
@@ -202,6 +224,24 @@ private data class WriteTarget(
 private enum class WriteInputMode {
     Text,
     Hex,
+}
+
+private fun queryDocumentMeta(context: android.content.Context, uri: android.net.Uri): Pair<String, Long>? {
+    context.contentResolver.query(
+        uri,
+        arrayOf(OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE),
+        null,
+        null,
+        null
+    )?.use { cursor ->
+        if (!cursor.moveToFirst()) return null
+        val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+        val sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE)
+        val name = if (nameIndex >= 0) cursor.getString(nameIndex) else "firmware.bin"
+        val size = if (sizeIndex >= 0) cursor.getLong(sizeIndex) else 0L
+        return name to size
+    }
+    return null
 }
 
 @Composable
@@ -299,6 +339,100 @@ fun ActionButtons(
             }
         }
     }
+}
+
+@Composable
+fun OtaCard(
+    state: OtaUiState,
+    onSelectFile: () -> Unit,
+    onStart: () -> Unit,
+    onCancel: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text(
+                "BLE OTA 升级",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold
+            )
+
+            Text(
+                state.statusMessage,
+                style = MaterialTheme.typography.bodySmall,
+                color = if (state.errorMessage != null) Error else TextSecondary
+            )
+
+            if (state.fileName != null) {
+                Text(
+                    "固件文件: ${state.fileName} (${formatBytes(state.fileSize)})",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = TextSecondary
+                )
+            }
+
+            LinearProgressIndicator(
+                progress = state.progressPercent / 100f,
+                modifier = Modifier.fillMaxWidth(),
+            )
+
+            Text(
+                "${state.progressPercent}% (${formatBytes(state.sentBytes)} / ${formatBytes(state.totalBytes)})",
+                style = MaterialTheme.typography.labelSmall,
+                color = TextSecondary
+            )
+
+            state.errorMessage?.let { error ->
+                Text(
+                    error,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Error
+                )
+            }
+
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                OutlinedButton(
+                    onClick = onSelectFile,
+                    enabled = !state.isInProgress,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("选择固件")
+                }
+
+                if (state.isInProgress) {
+                    Button(
+                        onClick = onCancel,
+                        colors = ButtonDefaults.buttonColors(containerColor = Error),
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text("取消 OTA")
+                    }
+                } else {
+                    Button(
+                        onClick = onStart,
+                        enabled = state.fileUri != null,
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text("开始 OTA")
+                    }
+                }
+            }
+        }
+    }
+}
+
+private fun formatBytes(bytes: Long): String {
+    if (bytes <= 0L) return "0 B"
+    if (bytes < 1024L) return "$bytes B"
+    if (bytes < 1024L * 1024L) return String.format("%.1f KB", bytes / 1024f)
+    return String.format("%.1f MB", bytes / (1024f * 1024f))
 }
 
 @Composable

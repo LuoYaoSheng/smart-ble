@@ -349,6 +349,16 @@ class BleManager private constructor(private val context: Context) {
         return gattConnections[deviceId]?.readRemoteRssi() ?: false
     }
 
+    @SuppressLint("MissingPermission")
+    fun requestMtu(deviceId: String, mtu: Int): Boolean {
+        val gatt = gattConnections[deviceId] ?: return false
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            gatt.requestMtu(mtu)
+        } else {
+            false
+        }
+    }
+
     private fun getCharacteristic(
         gatt: BluetoothGatt,
         serviceUuid: String,

@@ -100,6 +100,7 @@ object BleUuids {
     const val SERVICE_DEVICE_INFORMATION = "0000180A-0000-1000-8000-00805F9B34FB"
     const val SERVICE_BATTERY = "0000180F-0000-1000-8000-00805F9B34FB"
     const val SERVICE_HUMAN_INTERFACE_DEVICE = "00001812-0000-1000-8000-00805F9B34FB"
+    const val SERVICE_OTA = "4fafc201-1fb5-459e-8fcc-c5c9c331914d"
 
     // 通用特征值 UUID
     const val CHARACTERISTIC_DEVICE_NAME = "00002A00-0000-1000-8000-00805F9B34FB"
@@ -121,12 +122,18 @@ object BleUuids {
     // 电池服务特征值
     const val CHARACTERISTIC_BATTERY_LEVEL = "00002A19-0000-1000-8000-00805F9B34FB"
 
+    // OTA 特征值
+    const val CHARACTERISTIC_OTA_CONTROL = "beb5483e-36e1-4688-b7f5-ea07361b26c0"
+    const val CHARACTERISTIC_OTA_DATA = "beb5483e-36e1-4688-b7f5-ea07361b26c1"
+    const val CHARACTERISTIC_OTA_STATUS = "beb5483e-36e1-4688-b7f5-ea07361b26c2"
+
     private val serviceNames = mapOf(
         SERVICE_GENERIC_ACCESS to "Generic Access",
         SERVICE_GENERIC_ATTRIBUTE to "Generic Attribute",
         SERVICE_DEVICE_INFORMATION to "Device Information",
         SERVICE_BATTERY to "Battery Service",
         SERVICE_HUMAN_INTERFACE_DEVICE to "HID",
+        SERVICE_OTA to "OTA Service",
     )
 
     private val characteristicNames = mapOf(
@@ -144,6 +151,9 @@ object BleUuids {
         CHARACTERISTIC_SOFTWARE_REVISION to "Software Revision",
         CHARACTERISTIC_SYSTEM_ID to "System ID",
         CHARACTERISTIC_BATTERY_LEVEL to "Battery Level",
+        CHARACTERISTIC_OTA_CONTROL to "OTA Control",
+        CHARACTERISTIC_OTA_DATA to "OTA Data",
+        CHARACTERISTIC_OTA_STATUS to "OTA Status",
     )
 
     fun getServiceName(uuid: String): String {

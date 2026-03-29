@@ -227,6 +227,39 @@ UUID: beb5483e-36e1-4688-b7f5-ea07361b26a9
 | beb5483e-36e1-4688-b7f5-ea07361b26b5 | WriteNotify | Write, Notify | 写和通知特征值 |
 | beb5483e-36e1-4688-b7f5-ea07361b26b6 | All | Read, Write, Notify | 读写和通知特征值 |
 
+### 5.3 OTA 服务
+
+#### 服务定义
+```
+服务 UUID: 4fafc201-1fb5-459e-8fcc-c5c9c331914d
+服务名称: OTA Service
+```
+
+#### 特征值定义
+
+| UUID | 名称 | 属性 | 说明 |
+|------|------|------|------|
+| beb5483e-36e1-4688-b7f5-ea07361b26c0 | OTA Control | Read, Write, Notify | 控制 OTA 生命周期 |
+| beb5483e-36e1-4688-b7f5-ea07361b26c1 | OTA Data | Write | 传输固件分包 |
+| beb5483e-36e1-4688-b7f5-ea07361b26c2 | OTA Status | Read, Notify | 返回 OTA 状态与进度 |
+
+#### 控制消息示例
+
+```json
+{ "action": "start", "size": 786432, "chunk_size": 180, "firmware_version": "1.1.0" }
+{ "action": "commit" }
+{ "action": "abort" }
+```
+
+#### 状态通知示例
+
+```json
+{ "type": "ota", "status": "ready" }
+{ "type": "ota", "status": "progress", "received": 32768, "total": 786432, "percent": 4 }
+{ "type": "ota", "status": "success", "rebooting": true }
+{ "type": "ota", "status": "error", "message": "size_mismatch" }
+```
+
 ---
 
 ## 6. UUID 工具函数

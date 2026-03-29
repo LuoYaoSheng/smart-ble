@@ -3,6 +3,7 @@
 #include <NimBLEServer.h>
 #include <NimBLEUtils.h>
 #include <ArduinoJson.h>
+#include <Update.h>
 
 // BLE 服务和特征 UUID
 #define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
@@ -18,6 +19,12 @@
 #define CHARACTERISTIC_UUID_READ_NOTIFY "beb5483e-36e1-4688-b7f5-ea07361b26b4" // 读和通知
 #define CHARACTERISTIC_UUID_WRITE_NOTIFY "beb5483e-36e1-4688-b7f5-ea07361b26b5" // 写和通知
 #define CHARACTERISTIC_UUID_ALL "beb5483e-36e1-4688-b7f5-ea07361b26b6"  // 读写和通知
+
+// OTA service and characteristics
+#define SERVICE_UUID_OTA "4fafc201-1fb5-459e-8fcc-c5c9c331914d"
+#define CHARACTERISTIC_UUID_OTA_CONTROL "beb5483e-36e1-4688-b7f5-ea07361b26c0"
+#define CHARACTERISTIC_UUID_OTA_DATA "beb5483e-36e1-4688-b7f5-ea07361b26c1"
+#define CHARACTERISTIC_UUID_OTA_STATUS "beb5483e-36e1-4688-b7f5-ea07361b26c2"
 
 // 服务和特征值名称
 #define SERVICE_NAME        "智能蓝牙服务"
@@ -50,11 +57,200 @@ NimBLECharacteristic* pCharacteristicReadWrite = nullptr;   // 读写特征
 NimBLECharacteristic* pCharacteristicReadNotify = nullptr;  // 读和通知特征
 NimBLECharacteristic* pCharacteristicWriteNotify = nullptr; // 写和通知特征
 NimBLECharacteristic* pCharacteristicAll = nullptr;        // 读写和通知特征
+NimBLECharacteristic* pCharacteristicOtaControl = nullptr;
+NimBLECharacteristic* pCharacteristicOtaData = nullptr;
+NimBLECharacteristic* pCharacteristicOtaStatus = nullptr;
 bool deviceConnected = false;
 bool oldDeviceConnected = false;
 bool ledState = false;
 unsigned long lastBlinkTime = 0;
 int blinkPattern = 0;  // 0: 关闭, 1: 常亮, 2: 快闪, 3: 慢闪
+
+// OTA state
+bool otaInProgress = false;
+bool otaRestartPending = false;
+size_t otaExpectedSize = 0;
+size_t otaReceivedSize = 0;
+size_t otaChunkSize = 180;
+String otaTargetVersion = "";
+unsigned long otaLastProgressNotify = 0;
+unsigned long otaRestartAt = 0;
+
+void notifyOtaStatus(
+    const char* status,
+    const char* message = nullptr,
+    bool includeProgress = false,
+    bool rebooting = false
+) {
+    if (!pCharacteristicOtaStatus) {
+        return;
+    }
+
+    StaticJsonDocument<256> doc;
+    doc["type"] = "ota";
+    doc["status"] = status;
+    if (message != nullptr) {
+        doc["message"] = message;
+    }
+    if (includeProgress) {
+        doc["received"] = otaReceivedSize;
+        doc["total"] = otaExpectedSize;
+        doc["percent"] = otaExpectedSize == 0 ? 0 : (otaReceivedSize * 100) / otaExpectedSize;
+    }
+    if (rebooting) {
+        doc["rebooting"] = true;
+    }
+
+    String jsonString;
+    serializeJson(doc, jsonString);
+    pCharacteristicOtaStatus->setValue(jsonString.c_str());
+    pCharacteristicOtaStatus->notify();
+}
+
+void resetOtaState(bool abortUpdate) {
+    if (abortUpdate && otaInProgress) {
+        Update.abort();
+    }
+    otaInProgress = false;
+    otaRestartPending = false;
+    otaExpectedSize = 0;
+    otaReceivedSize = 0;
+    otaChunkSize = 180;
+    otaTargetVersion = "";
+    otaLastProgressNotify = 0;
+    otaRestartAt = 0;
+}
+
+// OTA control callback
+class OtaControlCallbacks: public NimBLECharacteristicCallbacks {
+    void onRead(NimBLECharacteristic* pCharacteristic) {
+        StaticJsonDocument<200> doc;
+        doc["type"] = "ota";
+        doc["status"] = otaInProgress ? "receiving" : "idle";
+        doc["received"] = otaReceivedSize;
+        doc["total"] = otaExpectedSize;
+        doc["firmware_version"] = FIRMWARE_VERSION;
+        String jsonString;
+        serializeJson(doc, jsonString);
+        pCharacteristic->setValue(jsonString.c_str());
+    }
+
+    void onWrite(NimBLECharacteristic* pCharacteristic) {
+        std::string value = pCharacteristic->getValue();
+        if (value.empty()) {
+            notifyOtaStatus("error", "empty_control_payload");
+            return;
+        }
+
+        StaticJsonDocument<256> doc;
+        DeserializationError error = deserializeJson(doc, value.data(), value.length());
+        if (error) {
+            notifyOtaStatus("error", "invalid_control_json");
+            return;
+        }
+
+        const char* action = doc["action"];
+        if (action == nullptr) {
+            notifyOtaStatus("error", "missing_action");
+            return;
+        }
+
+        if (strcmp(action, "start") == 0) {
+            if (otaInProgress) {
+                resetOtaState(true);
+            }
+
+            size_t size = doc["size"] | 0;
+            if (size == 0) {
+                notifyOtaStatus("error", "invalid_size");
+                return;
+            }
+
+            otaChunkSize = doc["chunk_size"] | 180;
+            otaTargetVersion = String(doc["firmware_version"] | "");
+
+            if (!Update.begin(size)) {
+                notifyOtaStatus("error", "update_begin_failed");
+                return;
+            }
+
+            otaExpectedSize = size;
+            otaReceivedSize = 0;
+            otaInProgress = true;
+            otaLastProgressNotify = millis();
+            notifyOtaStatus("ready");
+            return;
+        }
+
+        if (strcmp(action, "commit") == 0) {
+            if (!otaInProgress) {
+                notifyOtaStatus("error", "ota_not_started");
+                return;
+            }
+
+            if (otaReceivedSize != otaExpectedSize) {
+                resetOtaState(true);
+                notifyOtaStatus("error", "size_mismatch");
+                return;
+            }
+
+            if (!Update.end(true)) {
+                resetOtaState(true);
+                notifyOtaStatus("error", "update_end_failed");
+                return;
+            }
+
+            otaInProgress = false;
+            otaRestartPending = true;
+            otaRestartAt = millis() + 1500;
+            notifyOtaStatus("success", nullptr, true, true);
+            return;
+        }
+
+        if (strcmp(action, "abort") == 0) {
+            resetOtaState(true);
+            notifyOtaStatus("aborted");
+            return;
+        }
+
+        notifyOtaStatus("error", "unknown_action");
+    }
+};
+
+// OTA data callback
+class OtaDataCallbacks: public NimBLECharacteristicCallbacks {
+    void onWrite(NimBLECharacteristic* pCharacteristic) {
+        std::string value = pCharacteristic->getValue();
+        if (!otaInProgress) {
+            notifyOtaStatus("error", "ota_not_started");
+            return;
+        }
+
+        if (value.empty()) {
+            notifyOtaStatus("error", "empty_chunk");
+            return;
+        }
+
+        size_t written = Update.write(reinterpret_cast<const uint8_t*>(value.data()), value.length());
+        if (written != value.length()) {
+            resetOtaState(true);
+            notifyOtaStatus("error", "chunk_write_failed");
+            return;
+        }
+
+        otaReceivedSize += written;
+        if (otaReceivedSize > otaExpectedSize) {
+            resetOtaState(true);
+            notifyOtaStatus("error", "overflow");
+            return;
+        }
+
+        if (millis() - otaLastProgressNotify >= 250 || otaReceivedSize == otaExpectedSize) {
+            otaLastProgressNotify = millis();
+            notifyOtaStatus("progress", nullptr, true);
+        }
+    }
+};
 
 // 连接状态回调
 class ServerCallbacks: public NimBLEServerCallbacks {
@@ -451,10 +647,39 @@ void setup() {
     // 启动服务2
     pServicePermissions->start();
 
+    // 创建服务3：OTA 服务
+    NimBLEService* pServiceOta = pServer->createService(SERVICE_UUID_OTA);
+
+    pCharacteristicOtaControl = pServiceOta->createCharacteristic(
+        CHARACTERISTIC_UUID_OTA_CONTROL,
+        NIMBLE_PROPERTY::READ |
+        NIMBLE_PROPERTY::WRITE |
+        NIMBLE_PROPERTY::NOTIFY
+    );
+    pCharacteristicOtaControl->setCallbacks(new OtaControlCallbacks());
+    pCharacteristicOtaControl->setValue("{\"type\":\"ota\",\"status\":\"idle\"}");
+
+    pCharacteristicOtaData = pServiceOta->createCharacteristic(
+        CHARACTERISTIC_UUID_OTA_DATA,
+        NIMBLE_PROPERTY::WRITE
+    );
+    pCharacteristicOtaData->setCallbacks(new OtaDataCallbacks());
+    pCharacteristicOtaData->setValue("ota_data");
+
+    pCharacteristicOtaStatus = pServiceOta->createCharacteristic(
+        CHARACTERISTIC_UUID_OTA_STATUS,
+        NIMBLE_PROPERTY::READ |
+        NIMBLE_PROPERTY::NOTIFY
+    );
+    pCharacteristicOtaStatus->setValue("{\"type\":\"ota\",\"status\":\"idle\"}");
+
+    pServiceOta->start();
+
     // 启动广播
     NimBLEAdvertising* pAdvertising = NimBLEDevice::getAdvertising();
     pAdvertising->addServiceUUID(SERVICE_UUID);
     pAdvertising->addServiceUUID(SERVICE_UUID_PERMISSIONS);
+    pAdvertising->addServiceUUID(SERVICE_UUID_OTA);
     pAdvertising->setScanResponse(true);
     pAdvertising->setMinPreferred(0x06);  // 设置最小连接间隔
     pAdvertising->setMinPreferred(0x12);  // 设置最小连接间隔
@@ -514,6 +739,10 @@ void loop() {
             pCharacteristicNotify->notify();
             lastStatusTime = millis();
         }
+    }
+
+    if (otaRestartPending && millis() >= otaRestartAt) {
+        ESP.restart();
     }
 
     delay(10);
