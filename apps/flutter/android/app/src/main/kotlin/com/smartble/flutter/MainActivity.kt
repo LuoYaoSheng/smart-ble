@@ -1,4 +1,4 @@
-package com.example.smart_ble
+package com.smartble.flutter
 
 import io.flutter.embedding.android.FlutterActivity
 
