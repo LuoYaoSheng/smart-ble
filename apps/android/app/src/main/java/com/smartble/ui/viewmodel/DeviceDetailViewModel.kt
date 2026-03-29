@@ -24,7 +24,7 @@ class DeviceDetailViewModel(
     val deviceName: String
 ) : AndroidViewModel(application) {
 
-    private val bleManager = BleManager(application)
+    private val bleManager = BleManager.getInstance(application)
 
     private val _connectionState = MutableStateFlow<ConnectionState>(ConnectionState.Disconnected)
     val connectionState: StateFlow<ConnectionState> = _connectionState.asStateFlow()
@@ -52,11 +52,11 @@ class DeviceDetailViewModel(
 
     private fun observeConnectionState() {
         viewModelScope.launch {
-            bleManager.connectionState.collect { state ->
+            bleManager.connectionState(deviceId).collect { state ->
                 _connectionState.value = state
-                if (state == ConnectionState.Connected) {
-                    // 自动发现服务
-                    bleManager.discoverServices()
+                _isLoading.value = state == ConnectionState.Connecting || state == ConnectionState.Disconnecting
+                if (state == ConnectionState.Connected && _services.value.isEmpty()) {
+                    bleManager.discoverServices(deviceId)
                 }
             }
         }
@@ -64,9 +64,11 @@ class DeviceDetailViewModel(
 
     private fun observeServices() {
         viewModelScope.launch {
-            bleManager.services.collect { serviceList ->
+            bleManager.services(deviceId).collect { serviceList ->
                 _services.value = serviceList
-                _isLoading.value = false
+                if (serviceList.isNotEmpty()) {
+                    _isLoading.value = false
+                }
                 if (serviceList.isNotEmpty()) {
                     addLog("发现 ${serviceList.size} 个服务", LogType.Info)
                 }
@@ -77,6 +79,7 @@ class DeviceDetailViewModel(
     private fun observeCharacteristicChanges() {
         viewModelScope.launch {
             bleManager.characteristicChanges.collect { event ->
+                if (event.deviceId != deviceId) return@collect
                 val hex = event.value.toHexString()
                 addLog("收到通知: $hex", LogType.Receive)
             }
@@ -95,7 +98,7 @@ class DeviceDetailViewModel(
 
     fun disconnect() {
         addLog("断开连接", LogType.Info)
-        bleManager.disconnect()
+        bleManager.disconnect(deviceId)
     }
 
     fun readCharacteristic(serviceUuid: String, characteristicUuid: String) {
@@ -105,7 +108,7 @@ class DeviceDetailViewModel(
 
             addLog("读取 ${characteristic?.displayName ?: characteristicUuid}...", LogType.Info)
 
-            val success = bleManager.readCharacteristic(serviceUuid, characteristicUuid)
+            val success = bleManager.readCharacteristic(deviceId, serviceUuid, characteristicUuid)
             if (!success) {
                 addLog("读取失败", LogType.Error)
             }
@@ -119,7 +122,7 @@ class DeviceDetailViewModel(
 
             addLog("写入 ${characteristic?.displayName ?: characteristicUuid}: ${data.toHexString()}", LogType.Info)
 
-            val success = bleManager.writeCharacteristic(serviceUuid, characteristicUuid, data)
+            val success = bleManager.writeCharacteristic(deviceId, serviceUuid, characteristicUuid, data)
             if (success) {
                 addLog("写入成功", LogType.Success)
             } else {
@@ -138,7 +141,7 @@ class DeviceDetailViewModel(
 
             addLog("$action 通知 ${characteristic?.displayName ?: characteristicUuid}...", LogType.Info)
 
-            val success = bleManager.setNotification(serviceUuid, characteristicUuid, newState)
+            val success = bleManager.setNotification(deviceId, serviceUuid, characteristicUuid, newState)
 
             // 更新本地状态
             val updatedServices = _services.value.map { s ->
@@ -221,7 +224,6 @@ class DeviceDetailViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        bleManager.release()
     }
 }
 

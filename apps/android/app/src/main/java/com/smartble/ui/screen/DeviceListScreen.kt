@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bluetooth
 import androidx.compose.material.icons.filled.BluetoothDisabled
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Link
@@ -111,7 +112,6 @@ fun DeviceListContent(
     val filteredScanResults by viewModel.filteredScanResults.collectAsState()
     val isScanning by viewModel.isScanning.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
-    val connectionState by viewModel.connectionState.collectAsState()
 
     // Filter state
     val filterRSSI by viewModel.filterRSSI.collectAsState()
@@ -123,18 +123,21 @@ fun DeviceListContent(
     val scaffoldState = rememberBottomSheetScaffoldState()
     val scope = rememberCoroutineScope()
     var selectedDevice by remember { mutableStateOf<BleDevice?>(null) }
+    val currentSheetDevice = selectedDevice?.let { selected ->
+        filteredScanResults.find { it.id == selected.id } ?: selected
+    }
 
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
         sheetContent = {
-            selectedDevice?.let { device ->
+            currentSheetDevice?.let { device ->
                 DeviceDetailSheet(
                     device = device,
-                    connectionState = connectionState,
                     onConnect = {
-                        viewModel.connect(device.id)
+                        selectedDevice = null
+                        onDeviceClick(device.id, device.displayName)
                         scope.launch {
-                            kotlinx.coroutines.delay(500)
+                            scaffoldState.bottomSheetState.partialExpand()
                         }
                     },
                     onDismiss = {
@@ -155,11 +158,6 @@ fun DeviceListContent(
                 // Error message
                 errorMessage?.let { message ->
                     ErrorMessageCard(message = message, onDismiss = { viewModel.clearError() })
-                }
-
-                // Connection in progress
-                if (connectionState == ConnectionState.Connecting) {
-                    ConnectingCard()
                 }
 
                 // Bluetooth state
@@ -201,23 +199,15 @@ fun DeviceListContent(
                                     }
                                 },
                                 onConnectClick = { deviceId ->
-                                    viewModel.connect(deviceId)
+                                    val target = filteredScanResults.find { it.id == deviceId } ?: return@DeviceList
+                                    onDeviceClick(target.id, target.displayName)
                                 },
-                                connectionState = connectionState
                             )
                         }
                     }
                 }
             }
         }
-
-    // Navigate to detail page when connected
-    LaunchedEffect(connectionState) {
-        if (connectionState == ConnectionState.Connected && selectedDevice != null) {
-            onDeviceClick(selectedDevice!!.id, selectedDevice!!.displayName)
-            selectedDevice = null
-        }
-    }
 }
 
 @Composable
@@ -286,7 +276,6 @@ fun BluetoothUnauthorizedCard() {
 @Composable
 fun DeviceDetailSheet(
     device: BleDevice,
-    connectionState: ConnectionState,
     onConnect: () -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -356,7 +345,7 @@ fun DeviceDetailSheet(
 
         // Device details
         DetailRow("信号强度", "${device.rssi} dBm")
-        DetailRow("设备状态", when (connectionState) {
+        DetailRow("设备状态", when (device.state) {
             ConnectionState.Connected -> "已连接"
             ConnectionState.Connecting -> "连接中..."
             ConnectionState.Disconnected -> "未连接"
@@ -391,23 +380,27 @@ fun DeviceDetailSheet(
                 onConnect()
             },
             modifier = Modifier.fillMaxWidth(),
-            enabled = connectionState != ConnectionState.Connecting && connectionState != ConnectionState.Connected,
+            enabled = device.state != ConnectionState.Connecting && device.state != ConnectionState.Connected,
             colors = ButtonDefaults.buttonColors(
                 containerColor = Primary
             ),
             shape = RoundedCornerShape(12.dp)
         ) {
-            if (connectionState == ConnectionState.Connecting) {
+            if (device.state == ConnectionState.Connecting) {
                 CircularProgressIndicator(
                     modifier = Modifier.size(20.dp),
                     color = Color.White
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text("连接中...")
+            } else if (device.state == ConnectionState.Connected) {
+                Icon(Icons.Default.CheckCircle, contentDescription = null)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("已连接")
             } else {
                 Icon(Icons.Default.Link, contentDescription = null)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("连接设备")
+                Text("连接并进入")
             }
         }
 
@@ -661,7 +654,6 @@ fun DeviceList(
     devices: List<BleDevice>,
     onDeviceClick: (BleDevice) -> Unit,
     onConnectClick: (String) -> Unit,
-    connectionState: ConnectionState
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -673,7 +665,6 @@ fun DeviceList(
                 device = device,
                 onDeviceClick = onDeviceClick,
                 onConnectClick = onConnectClick,
-                connectionState = connectionState
             )
         }
     }
@@ -685,7 +676,6 @@ fun DeviceCard(
     device: BleDevice,
     onDeviceClick: (BleDevice) -> Unit,
     onConnectClick: (String) -> Unit,
-    connectionState: ConnectionState
 ) {
     val rssiColor = when (device.rssiLevel) {
         RssiLevel.Excellent -> RssiExcellent
@@ -695,8 +685,8 @@ fun DeviceCard(
     }
 
     val rssiIcon = Icons.Outlined.SignalCellularAlt
-    val isConnectingThis = connectionState == ConnectionState.Connecting
-    val isConnected = connectionState == ConnectionState.Connected
+    val isConnectingThis = device.state == ConnectionState.Connecting
+    val isConnected = device.state == ConnectionState.Connected
 
     Card(
         modifier = Modifier
@@ -780,9 +770,9 @@ fun DeviceCard(
                     )
                 } else {
                     Icon(
-                        Icons.Default.Link,
-                        contentDescription = "连接",
-                        tint = Primary,
+                        if (isConnected) Icons.Default.CheckCircle else Icons.Default.Link,
+                        contentDescription = if (isConnected) "已连接" else "连接",
+                        tint = if (isConnected) Success else Primary,
                         modifier = Modifier.size(20.dp)
                     )
                 }

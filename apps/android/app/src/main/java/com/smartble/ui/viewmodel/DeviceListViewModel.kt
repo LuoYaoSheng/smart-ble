@@ -6,8 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.smartble.core.ble.BleManager
 import com.smartble.core.ble.BluetoothState
 import com.smartble.core.model.BleDevice
-import com.smartble.core.model.ConnectionState
-import com.smartble.core.model.ScanResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,7 +17,7 @@ import kotlinx.coroutines.launch
  */
 class DeviceListViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val bleManager = BleManager(application)
+    private val bleManager = BleManager.getInstance(application)
 
     // UI State
     private val _uiState = MutableStateFlow<DeviceListUiState>(DeviceListUiState.Initializing)
@@ -36,12 +34,6 @@ class DeviceListViewModel(application: Application) : AndroidViewModel(applicati
 
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
-
-    private val _connectedDevice = MutableStateFlow<BleDevice?>(null)
-    val connectedDevice: StateFlow<BleDevice?> = _connectedDevice.asStateFlow()
-
-    private val _connectionState = MutableStateFlow<ConnectionState>(ConnectionState.Disconnected)
-    val connectionState: StateFlow<ConnectionState> = _connectionState.asStateFlow()
 
     // Filter state - aligned with UniApp reference
     private val _filterRSSI = MutableStateFlow(-100)  // -100 means show all
@@ -60,7 +52,6 @@ class DeviceListViewModel(application: Application) : AndroidViewModel(applicati
     init {
         observeBluetoothState()
         observeScanResults()
-        observeConnectionState()
         observeFilters()
     }
 
@@ -129,23 +120,6 @@ class DeviceListViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
-    private fun observeConnectionState() {
-        viewModelScope.launch {
-            bleManager.connectionState.collect { state ->
-                _connectionState.value = state
-                when (state) {
-                    ConnectionState.Connected -> {
-                        // Connected state will be handled by DeviceDetailViewModel
-                    }
-                    ConnectionState.Disconnected -> {
-                        _connectedDevice.value = null
-                    }
-                    else -> {}
-                }
-            }
-        }
-    }
-
     fun startScan() {
         if (bleManager.bluetoothState != BluetoothState.On) {
             _errorMessage.value = "蓝牙未开启"
@@ -166,15 +140,6 @@ class DeviceListViewModel(application: Application) : AndroidViewModel(applicati
         } else {
             startScan()
         }
-    }
-
-    fun connect(deviceId: String): Boolean {
-        _errorMessage.value = null
-        val success = bleManager.connect(deviceId)
-        if (!success) {
-            _errorMessage.value = "连接失败"
-        }
-        return success
     }
 
     fun enableBluetooth() {
