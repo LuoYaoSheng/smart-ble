@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -239,13 +238,9 @@ class DeviceDetailViewModel(
 
                 delay(200)
 
-                val startPayload = JSONObject()
-                    .put("action", "start")
-                    .put("size", totalBytes)
-                    .put("chunk_size", OTA_CHUNK_SIZE)
-                    .put("firmware_version", "teaching-build")
-                    .toString()
-                    .toByteArray()
+                val startPayload = """
+                    {"action":"start","size":$totalBytes,"chunk_size":$OTA_CHUNK_SIZE,"firmware_version":"teaching-build"}
+                """.trimIndent().toByteArray()
 
                 val started = bleManager.writeCharacteristic(
                     deviceId,
@@ -337,37 +332,14 @@ class DeviceDetailViewModel(
 
     fun buildExportText(): String {
         val exportTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
-        val servicesSummary = if (_services.value.isEmpty()) {
-            "无"
-        } else {
-            _services.value.joinToString(separator = "\n") { service ->
-                "- ${service.displayName} (${service.shortUuid}) / ${service.characteristics.size} 个特征值"
-            }
-        }
-
-        val logsSummary = if (_logs.value.isEmpty()) {
-            "无"
-        } else {
-            _logs.value.joinToString(separator = "\n") { log ->
-                "[${log.timestamp}] ${log.type.name}: ${log.message}"
-            }
-        }
-
-        return buildString {
-            appendLine("SmartBLE 数据导出")
-            appendLine("导出时间: $exportTime")
-            appendLine()
-            appendLine("设备信息")
-            appendLine("名称: $deviceName")
-            appendLine("ID: $deviceId")
-            appendLine("连接状态: ${connectionStateText(_connectionState.value)}")
-            appendLine()
-            appendLine("服务摘要")
-            appendLine(servicesSummary)
-            appendLine()
-            appendLine("操作日志")
-            appendLine(logsSummary)
-        }.trim()
+        return buildDeviceExportText(
+            deviceId = deviceId,
+            deviceName = deviceName,
+            connectionState = _connectionState.value,
+            services = _services.value,
+            logs = _logs.value,
+            exportTime = exportTime
+        )
     }
 
     private fun addLog(message: String, type: LogType) {
@@ -381,77 +353,11 @@ class DeviceDetailViewModel(
 
     private fun handleOtaStatus(raw: ByteArray) {
         val payload = runCatching { String(raw) }.getOrNull() ?: return
-        val json = runCatching { JSONObject(payload) }.getOrNull() ?: return
-        if (json.optString("type") != "ota") return
-
-        val status = json.optString("status")
-        val message = json.optString("message")
-        val received = json.optLong("received", _otaState.value.sentBytes)
-        val total = json.optLong("total", _otaState.value.totalBytes)
-        val percent = json.optInt(
-            "percent",
-            if (total > 0) ((received * 100) / total).toInt() else _otaState.value.progressPercent
-        )
-
-        when (status) {
-            "ready" -> {
-                _otaState.value = _otaState.value.copy(
-                    statusMessage = "设备已进入 OTA 模式",
-                    errorMessage = null
-                )
-                addLog("OTA 设备已就绪", LogType.Success)
-            }
-
-            "progress" -> {
-                _otaState.value = _otaState.value.copy(
-                    sentBytes = received,
-                    totalBytes = total,
-                    progressPercent = percent,
-                    statusMessage = "设备正在写入固件..."
-                )
-            }
-
-            "success" -> {
-                _otaState.value = _otaState.value.copy(
-                    isInProgress = false,
-                    isCompleted = true,
-                    sentBytes = total.coerceAtLeast(_otaState.value.sentBytes),
-                    totalBytes = total.coerceAtLeast(_otaState.value.totalBytes),
-                    progressPercent = 100,
-                    statusMessage = "OTA 成功，设备即将重启",
-                    errorMessage = null
-                )
-                addLog("OTA 成功，设备即将重启", LogType.Success)
-            }
-
-            "aborted" -> {
-                _otaState.value = _otaState.value.copy(
-                    isInProgress = false,
-                    isCompleted = false,
-                    statusMessage = "OTA 已中止",
-                    errorMessage = null
-                )
-                addLog("OTA 已中止", LogType.Info)
-            }
-
-            "error" -> {
-                val errorText = if (message.isBlank()) "设备返回 OTA 错误" else message
-                _otaState.value = _otaState.value.copy(
-                    isInProgress = false,
-                    isCompleted = false,
-                    statusMessage = "OTA 失败",
-                    errorMessage = errorText
-                )
-                addLog("OTA 错误: $errorText", LogType.Error)
-            }
+        val transition = applyOtaStatusPayload(_otaState.value, payload) ?: return
+        _otaState.value = transition.state
+        if (transition.logMessage != null && transition.logType != null) {
+            addLog(transition.logMessage, transition.logType)
         }
-    }
-
-    private fun connectionStateText(state: ConnectionState): String = when (state) {
-        ConnectionState.Connected -> "已连接"
-        ConnectionState.Connecting -> "连接中"
-        ConnectionState.Disconnected -> "未连接"
-        ConnectionState.Disconnecting -> "断开中"
     }
 
     override fun onCleared() {
