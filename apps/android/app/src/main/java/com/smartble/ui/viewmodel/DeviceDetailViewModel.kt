@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.smartble.core.ble.BleManager
-import com.smartble.core.ble.CharacteristicChangeEvent
 import com.smartble.core.model.BleCharacteristic
 import com.smartble.core.model.BleService
 import com.smartble.core.model.ConnectionState
@@ -169,6 +168,41 @@ class DeviceDetailViewModel(
         _logs.value = emptyList()
     }
 
+    fun buildExportText(): String {
+        val exportTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
+        val servicesSummary = if (_services.value.isEmpty()) {
+            "无"
+        } else {
+            _services.value.joinToString(separator = "\n") { service ->
+                "- ${service.displayName} (${service.shortUuid}) / ${service.characteristics.size} 个特征值"
+            }
+        }
+
+        val logsSummary = if (_logs.value.isEmpty()) {
+            "无"
+        } else {
+            _logs.value.joinToString(separator = "\n") { log ->
+                "[${log.timestamp}] ${log.type.name}: ${log.message}"
+            }
+        }
+
+        return buildString {
+            appendLine("SmartBLE 数据导出")
+            appendLine("导出时间: $exportTime")
+            appendLine()
+            appendLine("设备信息")
+            appendLine("名称: $deviceName")
+            appendLine("ID: $deviceId")
+            appendLine("连接状态: ${connectionStateText(_connectionState.value)}")
+            appendLine()
+            appendLine("服务摘要")
+            appendLine(servicesSummary)
+            appendLine()
+            appendLine("操作日志")
+            appendLine(logsSummary)
+        }.trim()
+    }
+
     private fun addLog(message: String, type: LogType) {
         val entry = LogEntry(
             message = message,
@@ -176,6 +210,13 @@ class DeviceDetailViewModel(
             timestamp = timeFormat.format(Date())
         )
         _logs.value = _logs.value + entry
+    }
+
+    private fun connectionStateText(state: ConnectionState): String = when (state) {
+        ConnectionState.Connected -> "已连接"
+        ConnectionState.Connecting -> "连接中"
+        ConnectionState.Disconnected -> "未连接"
+        ConnectionState.Disconnecting -> "断开中"
     }
 
     override fun onCleared() {

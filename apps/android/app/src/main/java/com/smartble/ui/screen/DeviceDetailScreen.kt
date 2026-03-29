@@ -1,5 +1,6 @@
 package com.smartble.ui.screen
 
+import android.content.Intent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -55,6 +56,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -78,6 +80,7 @@ fun DeviceDetailScreen(
     viewModel: DeviceDetailViewModel,
     onBack: () -> Unit
 ) {
+    val context = LocalContext.current
     val connectionState by viewModel.connectionState.collectAsState()
     val services by viewModel.services.collectAsState()
     val logs by viewModel.logs.collectAsState()
@@ -109,8 +112,19 @@ fun DeviceDetailScreen(
                 .padding(paddingValues)
         ) {
             // Action buttons
-            if (connectionState == ConnectionState.Connected) {
+            if (connectionState == ConnectionState.Connected || logs.isNotEmpty() || services.isNotEmpty()) {
                 ActionButtons(
+                    canExport = logs.isNotEmpty() || services.isNotEmpty(),
+                    canClearLogs = logs.isNotEmpty(),
+                    isConnected = connectionState == ConnectionState.Connected,
+                    onExport = {
+                        val exportIntent = Intent(Intent.ACTION_SEND).apply {
+                            type = "text/plain"
+                            putExtra(Intent.EXTRA_SUBJECT, "SmartBLE 导出 - $deviceName")
+                            putExtra(Intent.EXTRA_TEXT, viewModel.buildExportText())
+                        }
+                        context.startActivity(Intent.createChooser(exportIntent, "导出设备数据"))
+                    },
                     onClearLogs = { viewModel.clearLogs() },
                     onDisconnect = { viewModel.disconnect(); onBack() }
                 )
@@ -199,36 +213,58 @@ fun ConnectionStatusBadge(state: ConnectionState) {
 
 @Composable
 fun ActionButtons(
+    canExport: Boolean,
+    canClearLogs: Boolean,
+    isConnected: Boolean,
+    onExport: () -> Unit,
     onClearLogs: () -> Unit,
     onDisconnect: () -> Unit
 ) {
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        OutlinedButton(
-            onClick = onClearLogs,
-            modifier = Modifier.weight(1f)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Icon(Icons.Default.Clear, contentDescription = null, modifier = Modifier.size(18.dp))
-            Spacer(modifier = Modifier.width(8.dp))
-            Text("清空日志")
+            OutlinedButton(
+                onClick = onExport,
+                enabled = canExport,
+                modifier = Modifier.weight(1f)
+            ) {
+                Icon(Icons.Default.Download, contentDescription = null, modifier = Modifier.size(18.dp))
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("导出数据")
+            }
+
+            OutlinedButton(
+                onClick = onClearLogs,
+                enabled = canClearLogs,
+                modifier = Modifier.weight(1f)
+            ) {
+                Icon(Icons.Default.Clear, contentDescription = null, modifier = Modifier.size(18.dp))
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("清空日志")
+            }
         }
 
-        Button(
-            onClick = onDisconnect,
-            colors = ButtonDefaults.buttonColors(containerColor = Error),
-            modifier = Modifier.weight(1f)
-        ) {
-            Icon(
-                Icons.Default.BluetoothDisabled,
-                contentDescription = null,
-                modifier = Modifier.size(18.dp)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text("断开连接")
+        if (isConnected) {
+            Button(
+                onClick = onDisconnect,
+                colors = ButtonDefaults.buttonColors(containerColor = Error),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(
+                    Icons.Default.BluetoothDisabled,
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("断开连接")
+            }
         }
     }
 }

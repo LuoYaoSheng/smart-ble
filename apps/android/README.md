@@ -77,6 +77,7 @@ export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
 - [x] 特征值读取
 - [x] 特征值写入
 - [x] 通知订阅
+- [x] 数据导出（设备信息 + 服务摘要 + 操作日志）
 - [x] 操作日志
 - [x] Material 3 设计
 
