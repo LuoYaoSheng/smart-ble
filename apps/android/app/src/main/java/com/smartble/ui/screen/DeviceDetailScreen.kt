@@ -1,6 +1,7 @@
 package com.smartble.ui.screen
 
 import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,6 +32,7 @@ import androidx.compose.material.icons.filled.NotificationsActive
 import androidx.compose.material.icons.filled.NotificationsNone
 import androidx.compose.material.icons.filled.SettingsInputAntenna
 import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -46,6 +48,8 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -63,6 +67,7 @@ import androidx.compose.ui.unit.dp
 import com.smartble.core.model.BleCharacteristic
 import com.smartble.core.model.BleService
 import com.smartble.core.model.ConnectionState
+import com.smartble.core.model.hexToByteArray
 import com.smartble.ui.theme.Error
 import com.smartble.ui.theme.Primary
 import com.smartble.ui.theme.Success
@@ -86,6 +91,7 @@ fun DeviceDetailScreen(
     val logs by viewModel.logs.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
+    var pendingWriteTarget by remember { mutableStateOf<WriteTarget?>(null) }
 
     Scaffold(
         topBar = {
@@ -158,7 +164,7 @@ fun DeviceDetailScreen(
                 ServicesList(
                     services = services,
                     onRead = { service, char -> viewModel.readCharacteristic(service.uuid, char.uuid) },
-                    onWrite = { _, _ -> /* Show write dialog */ },
+                    onWrite = { service, char -> pendingWriteTarget = WriteTarget(service, char) },
                     onToggleNotify = { service, char -> viewModel.toggleNotification(service.uuid, char.uuid) },
                     modifier = Modifier.weight(1f)
                 )
@@ -170,6 +176,32 @@ fun DeviceDetailScreen(
             }
         }
     }
+
+    pendingWriteTarget?.let { target ->
+        WriteCharacteristicDialog(
+            target = target,
+            onDismiss = { pendingWriteTarget = null },
+            onConfirm = { payload ->
+                viewModel.writeCharacteristic(
+                    serviceUuid = target.service.uuid,
+                    characteristicUuid = target.characteristic.uuid,
+                    data = payload
+                )
+                Toast.makeText(context, "写入请求已发送", Toast.LENGTH_SHORT).show()
+                pendingWriteTarget = null
+            }
+        )
+    }
+}
+
+private data class WriteTarget(
+    val service: BleService,
+    val characteristic: BleCharacteristic
+)
+
+private enum class WriteInputMode {
+    Text,
+    Hex,
 }
 
 @Composable
@@ -289,6 +321,101 @@ fun ErrorView(message: String, onRetry: () -> Unit) {
             Text("重试")
         }
     }
+}
+
+@Composable
+private fun WriteCharacteristicDialog(
+    target: WriteTarget,
+    onDismiss: () -> Unit,
+    onConfirm: (ByteArray) -> Unit
+) {
+    var input by remember(target) { mutableStateOf("") }
+    var inputMode by remember(target) { mutableStateOf(WriteInputMode.Text) }
+
+    val validationError = when {
+        input.isBlank() -> "请输入要写入的数据"
+        inputMode == WriteInputMode.Hex && !isValidHexInput(input) -> "HEX 格式无效，请输入偶数长度十六进制，例如 FF00AA"
+        else -> null
+    }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Column {
+                Text("写入特征值")
+                Text(
+                    target.characteristic.displayName,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = TextSecondary
+                )
+            }
+        },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedButton(
+                        onClick = { inputMode = WriteInputMode.Text },
+                        enabled = inputMode != WriteInputMode.Text
+                    ) {
+                        Text("TEXT")
+                    }
+                    OutlinedButton(
+                        onClick = { inputMode = WriteInputMode.Hex },
+                        enabled = inputMode != WriteInputMode.Hex
+                    ) {
+                        Text("HEX")
+                    }
+                }
+
+                TextField(
+                    value = input,
+                    onValueChange = { input = it },
+                    singleLine = false,
+                    minLines = 3,
+                    maxLines = 6,
+                    label = {
+                        Text(if (inputMode == WriteInputMode.Text) "UTF-8 文本" else "十六进制数据")
+                    },
+                    placeholder = {
+                        Text(if (inputMode == WriteInputMode.Text) "例如：hello" else "例如：FF 00 AA")
+                    },
+                )
+
+                Text(
+                    validationError ?: "当前模式：${if (inputMode == WriteInputMode.Text) "TEXT" else "HEX"}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = if (validationError != null) Error else TextSecondary
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    val payload = when (inputMode) {
+                        WriteInputMode.Text -> input.toByteArray()
+                        WriteInputMode.Hex -> input.hexToByteArray()
+                    }
+                    onConfirm(payload)
+                },
+                enabled = validationError == null
+            ) {
+                Text("写入")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("取消")
+            }
+        }
+    )
+}
+
+private fun isValidHexInput(value: String): Boolean {
+    val clean = value.replace(" ", "")
+    if (clean.isEmpty() || clean.length % 2 != 0) {
+        return false
+    }
+    return clean.all { it.isDigit() || it.lowercaseChar() in 'a'..'f' }
 }
 
 @Composable

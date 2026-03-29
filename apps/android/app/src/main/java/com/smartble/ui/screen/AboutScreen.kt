@@ -1,5 +1,7 @@
 package com.smartble.ui.screen
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,6 +45,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -312,6 +315,8 @@ fun PlatformChip(
 
 @Composable
 fun LinkSection() {
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -325,17 +330,41 @@ fun LinkSection() {
 
         LinkItem(
             icon = Icons.Default.Code,
-            title = "源代码"
+            title = "源代码",
+            onClick = {
+                context.startActivity(
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("https://github.com/luoyaosheng/smart-ble")
+                    )
+                )
+            }
         )
 
         LinkItem(
             icon = Icons.Default.Description,
-            title = "使用文档"
+            title = "使用文档",
+            onClick = {
+                context.startActivity(
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("https://github.com/luoyaosheng/smart-ble#readme")
+                    )
+                )
+            }
         )
 
         LinkItem(
             icon = Icons.Default.BugReport,
-            title = "问题反馈"
+            title = "问题反馈",
+            onClick = {
+                context.startActivity(
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("https://github.com/luoyaosheng/smart-ble/issues")
+                    )
+                )
+            }
         )
     }
 }
@@ -344,13 +373,14 @@ fun LinkSection() {
 @Composable
 fun LinkItem(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
-    title: String
+    title: String,
+    onClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth(),
         shape = RoundedCornerShape(8.dp),
-        onClick = { /* TODO: Open URL */ }
+        onClick = onClick
     ) {
         Row(
             modifier = Modifier.padding(vertical = 12.dp, horizontal = 16.dp),
