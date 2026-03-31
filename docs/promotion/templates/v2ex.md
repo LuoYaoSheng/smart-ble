@@ -54,7 +54,7 @@
 ## 项目地址
 
 GitHub: https://github.com/luoyaosheng/smart-ble
-Gitee: https://gitee.com/luoyaosheng/smart-ble
+Gitee: https://gitee.com/luoyaosheng/lys-smart-ble
 
 ## 适用人群
 

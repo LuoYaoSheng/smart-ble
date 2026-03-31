@@ -96,7 +96,7 @@ npm run dev:mp-weixin
 ## Links
 
 - **GitHub**: https://github.com/luoyaosheng/smart-ble
-- **Gitee**: https://gitee.com/luoyaosheng/smart-ble/tree/refactor%2Fmulti-platform/
+- **Gitee**: https://gitee.com/luoyaosheng/lys-smart-ble/tree/refactor%2Fmulti-platform/
 - **Docs**: https://github.com/luoyaosheng/smart-ble/tree/main/docs
 
 ## Who is this for?

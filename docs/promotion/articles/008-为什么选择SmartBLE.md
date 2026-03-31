@@ -153,7 +153,7 @@ Smart BLE 不是一个人的项目：
 # 克隆项目
 git clone https://github.com/luoyaosheng/smart-ble.git
 # 或
-git clone https://gitee.com/luoyaosheng/smart-ble.git
+git clone https://gitee.com/luoyaosheng/lys-smart-ble.git
 
 # uni-app 版本
 cd smart-ble/apps/uniapp
@@ -199,7 +199,7 @@ idf.py build && idf.py flash monitor
 ## 项目地址
 
 - **GitHub**: https://github.com/luoyaosheng/smart-ble
-- **Gitee**: https://gitee.com/luoyaosheng/smart-ble/tree/refactor%2Fmulti-platform/
+- **Gitee**: https://gitee.com/luoyaosheng/lys-smart-ble/tree/refactor%2Fmulti-platform/
 
 **如果觉得有帮助，请给一个 Star ⭐**
 

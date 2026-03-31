@@ -331,7 +331,7 @@ Smart BLE 不是为了重复造轮子，而是：
 ## 项目地址
 
 - **GitHub**: https://github.com/luoyaosheng/smart-ble
-- **Gitee**: https://gitee.com/luoyaosheng/smart-ble/tree/refactor%2Fmulti-platform/
+- **Gitee**: https://gitee.com/luoyaosheng/lys-smart-ble/tree/refactor%2Fmulti-platform/
 
 ---
 

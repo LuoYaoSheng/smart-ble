@@ -68,7 +68,7 @@ npm run dev:mp-weixin
 ## 项目地址
 
 GitHub: https://github.com/luoyaosheng/smart-ble
-Gitee: https://gitee.com/luoyaosheng/smart-ble/tree/refactor%2Fmulti-platform/
+Gitee: https://gitee.com/luoyaosheng/lys-smart-ble/tree/refactor%2Fmulti-platform/
 
 ## 适用人群
 

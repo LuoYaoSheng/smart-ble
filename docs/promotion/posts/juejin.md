@@ -282,7 +282,7 @@ idf.py -p /dev/ttyUSB0 flash monitor
 ## 项目地址
 
 **GitHub**: https://github.com/luoyaosheng/smart-ble
-**Gitee**: https://gitee.com/luoyaosheng/smart-ble/tree/refactor%2Fmulti-platform/
+**Gitee**: https://gitee.com/luoyaosheng/lys-smart-ble/tree/refactor%2Fmulti-platform/
 
 ---
 
