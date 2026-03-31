@@ -1,247 +1,216 @@
 # Smart BLE
 
-<div align="center">
+> `lys: 跨平台 BLE 调试工具与实践样板项目`
+>
+> Part of the lys personal open source system.
 
-  # 🎧 跨平台蓝牙(BLE)调试工具
-  # 8+ 种实现 · 硬件固件 · 完全开源
-
-  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-  [![版本](https://img.shields.io/badge/版本-2.0.0--dev-blue.svg)](https://github.com/luoyaosheng/smart-ble)
-  [![平台](https://img.shields.io/badge/平台-iOS%20%7C%20Android%20%7C%20Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)](https://github.com/luoyaosheng/smart-ble)
-  [![Star](https://img.shields.io/github/stars/luoyaosheng/smart-ble?style=social)](https://github.com/luoyaosheng/smart-ble)
-[![Gitee](https://img.shields.io/badge/Gitee-smart--ble-red?logo=gitee&logoColor=white)](https://gitee.com/luoyaosheng/smart-ble/tree/refactor%2Fmulti-platform/)
-
-  **专业的 BLE 调试工具 | 跨平台开发最佳实践 | 教学友好**
-
-  [功能特性](#-功能特性) · [快速开始](#-快速开始) · [文档](#-文档) · [贡献](#-贡献指南)
-
-  <img src="./qr_code.jpg" alt="微信小程序" width="180" />
-
-  扫码体验微信小程序版本
-
-</div>
+跨平台 BLE 调试工具，覆盖小程序、跨平台移动、原生移动、桌面端和硬件示例。  
+这个仓库不是单一实现，而是一个围绕 BLE 调试、教学和跨平台实践展开的产品家族。
 
 ---
 
-## ✨ 为什么选择 Smart BLE？
+## 项目定位
 
-| 痛点 | Smart BLE 解决方案 |
-|------|-------------------|
-| 🔴 调试工具不统一 | 🟢 **8+ 种实现**，覆盖所有主流平台 |
-| 🔴 代码不完整/闭源 | 🟢 **完全开源**，硬件固件也开放 |
-| 🔴 学习资料零散 | 🟢 **完整文档** + 真实硬件示例 |
-| 🔴 软硬件分离 | 🟢 **端到端方案**，App + ESP32 固件 |
+`Smart BLE` 解决的不是“某个平台缺一个调试工具”，而是：
+
+- BLE 调试工具分散，体验不统一
+- 学习资料零散，软硬件脱节
+- 不同平台实现难以横向对比
+
+因此这个仓库同时提供：
+
+- 可直接使用的 BLE 调试工具
+- 多平台实现对照样例
+- 硬件示例与协议参考
 
 ---
 
-## 🏗️ 项目架构
+## 快速选择
 
+根据你的目标直接进入对应入口：
+
+- 微信小程序 / H5 / uni-app App：[`apps/uniapp/`](./apps/uniapp/)
+- 跨平台移动版：[`apps/flutter/`](./apps/flutter/)
+- Android 原生版：[`apps/android/`](./apps/android/)
+- iOS / macOS 原生版：[`apps/ios/`](./apps/ios/)
+- 轻量桌面版：[`apps/desktop/tauri/`](./apps/desktop/tauri/)
+- 全功能桌面版：[`apps/desktop/electron/`](./apps/desktop/electron/)
+- macOS 原生桌面版：[`apps/desktop/macos/`](./apps/desktop/macos/)
+- 硬件示例：[`hardware/esp32/`](./hardware/esp32/)
+
+---
+
+## 产品家族说明
+
+这个仓库当前包含多种实现：
+
+| 方向 | 技术栈 | 角色 |
+|------|--------|------|
+| uni-app | Vue 3 + uni-ui | 小程序与轻量传播入口 |
+| Flutter | Flutter + Dart | 跨平台移动主线 |
+| Android 原生 | Kotlin + Jetpack Compose | 原生 Android 探索与增强 |
+| iOS 原生 | Swift Package + SwiftUI + CoreBluetooth | 原生 iOS / macOS 探索与增强 |
+| Tauri | Rust + btleplug | 轻量桌面入口 |
+| Electron | Node.js + noble | 全功能桌面实现 |
+| macOS Native | Swift + AppKit | 原生 macOS 桌面体验 |
+| Avalonia | .NET 8 + C# | Windows 原型验证 |
+| ESP32 | PlatformIO + Arduino | 硬件联动与协议示例 |
+
+对外主入口只有一个：`lys-smart-ble`。  
+历史仓库 `LightBLE`、`SmartBLE-iOS` 只保留迁移与历史资产价值。
+
+---
+
+## 多分支多模式定位
+
+`smart-ble` 的核心特点不是“支持很多平台”这么简单，而是它本身就是一个多分支、多模式的 BLE 工具家族：
+
+```text
+lys-smart-ble
+├── 小程序版       → uni-app（Vue 3）
+├── 移动版         → Flutter（跨平台）
+├── 桌面轻量版     → Tauri（Rust）
+├── 桌面完整版     → Electron（JavaScript）
+├── macOS 原生版   → Swift（AppKit）
+├── iOS 原生版     → Swift（开发中，已有实现）
+├── Android 原生   → Kotlin（开发中，已有实现）
+├── ESP32 固件     → PlatformIO + Arduino
+└── STM32 固件     → 规划中
 ```
+
+这也是为什么这个仓库需要同时保留：
+
+- 多平台并行维护
+- 代码开源
+- 教学友好
+- 硬件固件开放
+
+---
+
+## 仓库结构
+
+```text
 smart-ble/
-├── 📱 移动端
-│   ├── uniapp/           # Vue 3 ✅
-│   ├── flutter/          # Flutter ✅
-│   ├── android/          # Kotlin 🚧
-│   └── ios/              # Swift 🚧
-├── 💻 桌面端
-│   ├── electron/         # JavaScript ✅
-│   ├── tauri/            # Rust ✅
-│   ├── macos/            # Swift ✅
-│   └── avalonia/         # .NET 🚧
-├── 🔌 硬件
-│   └── esp32/            # ESP32 固件 ✅
-├── 📚 文档
-│   └── wechat-articles/  # 公众号系列文章
-└── 🔧 核心
-    └── ble-core/         # BLE 抽象层
+├── apps/
+│   ├── uniapp/
+│   ├── flutter/
+│   ├── android/
+│   ├── ios/
+│   └── desktop/
+│       ├── tauri/
+│       ├── electron/
+│       ├── macos/
+│       ├── windows/
+│       └── linux/
+├── core/
+├── hardware/
+│   ├── common/
+│   └── esp32/
+└── docs/
 ```
 
 ---
 
-## 🚀 支持的平台
+## 维护分层
 
-| 平台 | 技术栈 | 状态 | 说明 |
-|------|--------|------|------|
-| **uni-app** | Vue 3 + uni-ui | ✅ 完成 | 小程序/App/H5 一套代码 |
-| **Flutter** | flutter_blue_plus | ✅ 完成 | Android/iOS/macOS |
-| **Electron** | noble | ✅ 完成 | Win/Mac/Linux |
-| **Tauri** | Rust + btleplug | ✅ 完成 | 轻量级 (~10MB) |
-| **macOS 原生** | AppKit | ✅ 完成 | 原生体验 |
-| **Avalonia** | .NET 8 + C# | 🚧 部分实现 | Windows 原型验证 |
-| **Android 原生** | Kotlin + Jetpack | 🚧 开发中 | 原生体验 |
-| **iOS 原生** | Swift + SwiftUI | 🚧 开发中 | 原生体验 |
-
----
-
-## 🧭 平台分级
-
-| 分级 | 平台 | 说明 |
+| 层级 | 平台 | 说明 |
 |------|------|------|
-| **主维护** | Android、Flutter、iOS (`Sources`)、Tauri | 优先保证功能、测试和构建可用 |
-| **次维护** | Electron、macOS Native | 保持可运行，按需补功能 |
-| **实验性** | Avalonia | 用于 Windows 原型验证 |
-| **占位/规划** | Windows Native、Linux Native | 当前主要保留方案和文档 |
+| 主要入口 | uni-app、Flutter、Tauri | 当前优先保证可用性和对外表达 |
+| 增强与对照 | Android 原生、iOS 原生、Electron、macOS Native | 已有实现，承担原生探索、教学和历史兼容价值 |
+| 实验性 | Avalonia、其他未来探索 | 原型验证，不承诺同等投入 |
 
 ---
 
-## 📊 功能对比
+## 核心能力
 
-| 功能 | uni-app | Flutter | Electron | Tauri | macOS | Avalonia |
-|:----:|:-------:|:-------:|:--------:|:-----:|:-----:|:--------:|
-| 扫描设备 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| 连接管理 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| 服务发现 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| 特征值读写 | ✅ | ✅ | ✅ | ✅ | ✅ | ⏳ |
-| 通知订阅 | ✅ | ✅ | ✅ | ✅ | ✅ | ⏳ |
-| BLE 广播 | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ |
-| 操作日志 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-
----
-
-## ✨ 功能特性
-
-### 🔍 智能设备扫描
-- 实时扫描附近 BLE 设备
-- 信号强度过滤（-100dBm ~ 0dBm）
-- 设备名称/前缀过滤
-- 自动节流，防止 UI 卡顿
-
-### 🔌 设备连接管理
-- 一键连接/断开
-- 服务自动发现
+- BLE 设备扫描与过滤
+- 连接 / 断开与服务发现
 - 特征值读写（UTF-8 / HEX）
-- 通知订阅，实时数据监控
-
-### 📡 BLE 广播（外设模式）
-- 自定义设备名称、UUID
-- 厂商数据配置
-- 手机变身蓝牙设备，用于测试
-
-### 📖 实时操作日志
-- 按类型分类（信息/成功/错误）
-- 完整记录每一步操作
-- 问题排查，一秒定位
-
-### 🤖 硬件深度支持
-- **ESP32 完整固件**，直接可用
-- LED 控制（常亮/快闪/慢闪）
-- JSON 格式数据交互
-- 多权限特征值演示
+- 通知订阅与实时日志
+- 外设模式 / BLE 广播（依平台能力而定）
+- ESP32 示例固件与协议联动
 
 ---
 
-## 🚀 快速开始
+## 快速开始
 
-### 方式一：uni-app 版本（推荐新手）
+### uni-app
 
 ```bash
-# 克隆项目
-git clone https://github.com/luoyaosheng/smart-ble.git
-cd smart-ble/apps/uniapp
-
-# 安装依赖
+cd apps/uniapp
 npm install
-
-# 微信小程序
 npm run dev:mp-weixin
-
-# H5 版本
-npm run dev:h5
-
-# App
-npm run dev:app
 ```
 
-### 方式二：Flutter 版本
+### Flutter
 
 ```bash
-cd smart-ble/apps/flutter
+cd apps/flutter
 flutter pub get
 flutter run
 ```
 
-### 方式三：桌面端 Electron
+### Android 原生
 
 ```bash
-cd smart-ble/apps/desktop/electron
+cd apps/android
+./gradlew assembleDebug
+```
+
+### iOS / macOS 原生
+
+```bash
+cd apps/ios
+swift run
+```
+
+### Tauri 桌面版
+
+```bash
+cd apps/desktop/tauri
+cargo tauri dev
+```
+
+### Electron 桌面版
+
+```bash
+cd apps/desktop/electron
 npm install
 npm start
 ```
 
-### 方式四：ESP32 硬件
+### ESP32 硬件示例
 
 ```bash
-cd smart-ble/hardware/esp32
-idf.py build
-idf.py -p /dev/ttyUSB0 flash monitor
+cd hardware/esp32/LightBLE
+pio run
+pio run --target upload
+pio device monitor
 ```
 
 ---
 
-## 📚 文档
+## 文档
 
-| 文档 | 描述 |
-|------|------|
-| [功能规格](./docs/01-functional-specs.md) | 功能清单、优先级、权限说明 |
-| [数据流图](./docs/02-data-flow.md) | 扫描/连接/读写/广播流程 |
-| [BLE 协议](./docs/03-ble-protocol.md) | 标准 UUID、ESP32 协议 |
-| [UI 流程](./docs/04-ui-flows.md) | 页面布局、组件结构 |
-| [平台差异](./docs/05-platform-differences.md) | 各平台差异说明 |
-| [公众号系列](./docs/wechat-articles/README.md) | 项目介绍文章系列 |
+- [功能规格](./docs/01-functional-specs.md)
+- [数据流图](./docs/02-data-flow.md)
+- [BLE 协议](./docs/03-ble-protocol.md)
+- [UI 流程](./docs/04-ui-flows.md)
+- [平台差异](./docs/05-platform-differences.md)
+- [公众号系列](./docs/wechat-articles/README.md)
 
 ---
 
-## 🎯 适用场景
+## 适用人群
 
-| 用户类型 | 推荐使用方式 |
-|---------|-------------|
-| **蓝牙设备开发者** | 直接使用 App 作为日常调试工具 |
-| **跨平台开发者** | 参考代码，移植到自己的项目 |
-| **嵌入式工程师** | 使用 ESP32 固件作为开发模板 |
-| **蓝牙学习者** | 阅读代码 + 烧录硬件，实践学习 |
-| **企业用户** | 基于 MIT 协议进行二次开发 |
+- BLE 设备开发者
+- 跨平台客户端开发者
+- 嵌入式工程师
+- BLE 学习者
+- 需要教学样例和多实现对照的人
 
 ---
 
-## 🤝 贡献指南
-
-我们欢迎任何形式的贡献！
-
-- 🐛 [报告问题](https://github.com/luoyaosheng/smart-ble/issues)
-- 💡 [功能建议](https://github.com/luoyaosheng/smart-ble/issues)
-- 🔧 [提交 PR](https://github.com/luoyaosheng/smart-ble/pulls)
-- 📖 [完善文档](https://github.com/luoyaosheng/smart-ble)
-
-统一本地验证入口：
-
-```bash
-make verify
-```
-
----
-
-## 📄 开源协议
+## 许可协议
 
 [MIT License](LICENSE)
-
----
-
-## 🌟 Star 历史
-
-<a href="https://star-history.com/#luoyaosheng/smart-ble&Date">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=luoyaosheng/smart-ble&type=Date&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=luoyaosheng/smart-ble&type=Date&theme=light" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=luoyaosheng/smart-ble&type=Date" />
-  </picture>
-</a>
-
----
-
-<div align="center">
-
-  **如果这个项目对你有帮助，请给一个 Star ⭐**
-
-  [官网](https://github.com/luoyaosheng/smart-ble) · [Gitee](https://gitee.com/luoyaosheng/smart-ble/tree/refactor%2Fmulti-platform/) · [文档](./docs) · [问题反馈](https://github.com/luoyaosheng/smart-ble/issues) · [更新日志](./docs/changelog.md)
-
-</div>

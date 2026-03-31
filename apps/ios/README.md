@@ -4,6 +4,18 @@
 
 > 当前源码入口以 `apps/ios/Sources/` 为准，`apps/ios/SmartBLE/` 目录仅作为旧版本参考保留，不应继续新增或修改功能。
 
+---
+
+## 在产品家族中的角色
+
+这个版本承担的是 `smart-ble` 家族里的原生 Apple 平台路线：
+
+- 验证原生 iOS / macOS BLE 体验
+- 提供与 Flutter、uni-app 的对照实现
+- 沉淀 Apple 平台 BLE 教学内容
+
+它不只是“一个客户端”，也是理解 CoreBluetooth、SwiftUI / Swift Package 实践的学习入口。
+
 ## 功能特性
 
 ### 扫描功能 (Central 模式)
@@ -19,6 +31,14 @@
 - ✅ 创建 BLE 广播
 - ✅ 设置广播名称和服务 UUID
 - ✅ macOS/iOS 完整支持
+
+---
+
+## 适合谁
+
+- 想做原生 iOS BLE 工具的人
+- 想研究 Apple 平台 BLE 细节的人
+- 想和 Flutter / uni-app 对照学习的人
 
 ## 构建和运行
 
@@ -46,3 +66,14 @@ Sources/
 
 Legacy reference:
 - `SmartBLE/`：旧代码树，当前不参与 `Package.swift` 构建
+
+---
+
+## 教学说明
+
+这个目录需要同时保留两层信息：
+
+- `Sources/`：当前真实主入口
+- `SmartBLE/`：历史代码参考
+
+因为 `smart-ble` 不只是产品，也有很强的教学和演进记录价值，所以历史实现不应简单抹掉，而应明确标注“当前入口”和“历史参考”的边界。

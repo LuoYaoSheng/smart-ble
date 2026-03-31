@@ -1,8 +1,15 @@
-# SmartBLE Platform Comparison & Alignment Guide
+# SmartBLE Platform Comparison & Teaching Alignment Guide
 
 ## Overview
 
-This document compares all SmartBLE implementations with the **UniApp version as the reference implementation**. It identifies key differences in flow, structure, operations, and UI/UX patterns.
+This document compares SmartBLE implementations for two purposes:
+
+1. keep cross-platform behavior roughly aligned
+2. preserve the project's teaching value by making implementation differences explicit
+
+The **UniApp version is used as a historical teaching reference**, not as a statement that every platform must blindly follow it forever. Some platforms may intentionally diverge when native UX or platform constraints make that the better choice.
+
+For the product-family framing, see the repository root README first.
 
 ---
 

@@ -1,15 +1,55 @@
-# Smart BLE 项目推广材料
+# Smart BLE 推广与分发中心
 
-## 📋 项目信息卡片
+> 用途：统一管理 Smart BLE 的对外传播材料
+> 角色：兼顾项目推广、教学引流和多实现定位说明
 
-```
+---
+
+## 先说定位
+
+`Smart BLE` 的推广材料不能只按“卖一个产品”来写。
+
+因为这个项目同时是：
+
+- 可直接使用的 BLE 调试工具
+- 多平台实现对照样板
+- 教学和学习内容载体
+- 历史分支和演进记录的汇总点
+
+所以对外传播时，建议同时讲 3 个卖点：
+
+1. **工具价值**：它能直接解决 BLE 调试问题
+2. **学习价值**：它提供多实现、多平台、多教程
+3. **开源价值**：它保留了代码、硬件示例和演进路径
+
+---
+
+## 项目信息卡片
+
+```text
 项目名称：Smart BLE
-一句话介绍：跨平台蓝牙(BLE)调试工具 - 8+ 种实现 + 硬件固件 + 完全开源
-GitHub：https://github.com/luoyaosheng/smart-ble
-Gitee：https://gitee.com/luoyaosheng/smart-ble
+一句话介绍：跨平台 BLE 调试工具与实践样板项目
+核心特点：多实现、硬件联动、教学友好、完全开源
 协议：MIT
 状态：活跃开发中
 ```
+
+---
+
+## 对外主叙事
+
+### 标准说法
+
+> Smart BLE 是一个跨平台 BLE 调试工具与实践样板项目。  
+> 它不仅能直接用于 BLE 调试，还保留了 uni-app、Flutter、原生移动、桌面端和硬件示例等多条实现路线，适合开发者学习、选型和二次开发。
+
+### 不建议只讲成
+
+- “一个 BLE 调试 App”
+- “一个 Tauri 项目”
+- “一个小程序工具”
+
+这些说法都会把项目最有价值的部分压缩掉。
 
 ---
 
@@ -17,123 +57,138 @@ Gitee：https://gitee.com/luoyaosheng/smart-ble
 
 | 卖点 | 说明 |
 |------|------|
-| 🎯 **8+ 种实现** | uni-app、Flutter、Electron、Tauri、macOS、Avalonia... |
-| 🔓 **完全开源** | 前端、桌面、硬件固件全部开放 |
-| 🤖 **硬件支持** | ESP32 完整固件，端到端方案 |
-| 📚 **教学友好** | 完整文档 + 系列教程 + 代码注释 |
-| 🆓 **MIT 协议** | 商用无忧，可自由修改 |
+| **多实现产品家族** | 同一个 BLE 工具保留多平台、多技术路线实现 |
+| **完全开源** | 客户端、桌面端、硬件示例、协议资料都可见 |
+| **教学友好** | 有文档、教程、平台对照和历史演进内容 |
+| **硬件联动** | 提供 ESP32 示例，方便软硬件一起学习 |
+| **可二次开发** | 适合作为 BLE 工具、教学样例、跨平台参考项目 |
 
 ---
 
-## 标签/关键词
+## 面向不同受众的话术
 
-```
-#BLE #蓝牙 #调试工具 #开源 #ESP32 #Flutter #uni-app #Tauri
-#跨平台 #物联网 #IoT #嵌入式 #低功耗蓝牙 #开发者工具
-#Bluetooth #DeveloperTool #OpenSource #ESP32 #Flutter #Electron
-```
+### 面向工具用户
+
+强调：
+
+- 这是一个可直接使用的 BLE 调试工具
+- 不同平台都有入口
+- 适合日常调试和设备联动验证
+
+### 面向开发者
+
+强调：
+
+- 这是一个多实现实践样板
+- 可以横向比较 uni-app / Flutter / 原生 / 桌面路线
+- 适合参考架构和交互设计
+
+### 面向教学读者
+
+强调：
+
+- 项目保留了多分支和历史实现
+- 有文章、对比文档、硬件示例
+- 适合按学习路径逐步深入
 
 ---
 
-## 短描述（用于各平台）
+## 短描述建议
 
 | 长度 | 描述 |
 |------|------|
-| 10字 | 跨平台蓝牙调试工具 |
-| 30字 | 8+ 种实现的跨平台 BLE 调试工具，含 ESP32 固件，完全开源 |
-| 50字 | Smart BLE 是一款跨平台蓝牙调试工具，支持 uni-app/Flutter/Electron/Tauri 等多种实现，内置 ESP32 固件，MIT 协议开源 |
-| 100字 | Smart BLE 是专业的低功耗蓝牙调试工具，提供 8+ 种跨平台实现（uni-app、Flutter、Electron、Tauri、macOS、Avalonia 等），内置 ESP32 完整固件，完全开源，适合蓝牙开发调试和跨平台学习 |
+| 10 字 | 跨平台 BLE 调试工具 |
+| 30 字 | 多实现的跨平台 BLE 调试工具与实践样板 |
+| 50 字 | Smart BLE 是一个跨平台 BLE 调试工具，同时保留多平台实现和硬件示例，适合调试、学习与二次开发 |
+| 100 字 | Smart BLE 不只是 BLE 调试工具，也是一个多实现、多平台、教学友好的实践样板项目。它覆盖 uni-app、Flutter、原生移动、桌面端和 ESP32 示例，适合 BLE 开发者、跨平台学习者和开源二次开发场景 |
 
 ---
 
-## 平台清单
+## 推荐传播路径
 
-### 国际平台
+### 第一层：项目入口传播
 
-| 平台 | 类型 | URL | 状态 |
-|------|------|-----|------|
-| GitHub | 代码托管 | https://github.com/luoyaosheng/smart-ble | ✅ |
-| Reddit r/Bluetooth | 论坛 | https://reddit.com/r/Bluetooth | 待发布 |
-| Reddit r/ESP32 | 论坛 | https://reddit.com/r/esp32 | 待发布 |
-| Hacker News | 新闻 | https://news.ycombinator.com | 待发布 |
-| Product Hunt | 产品 | https://producthunt.com | 待发布 |
-| Indie Hackers | 社区 | https://indiehackers.com | 待发布 |
-| Dev.to | 开发者 | https://dev.to | 待发布 |
-| Lobsters | 新闻 | https://lobste.rs | 待发布 |
+适合平台：
 
-### 国内平台
+- GitHub
+- Gitee
+- Product Hunt
+- V2EX
+- Reddit
 
-| 平台 | 类型 | URL | 状态 |
-|------|------|-----|------|
-| Gitee | 代码托管 | https://gitee.com/luoyaosheng/smart-ble | ✅ |
-| 掘金 | 技术社区 | https://juejin.cn | 待发布 |
-| V2EX | 开发者社区 | https://www.v2ex.com | 待发布 |
-| SegmentFault | 技术问答 | https://segmentfault.com | 待发布 |
-| 知乎 | 问答社区 | https://www.zhihu.com | 待发布 |
-| CSDN | 技术博客 | https://www.csdn.net | 待发布 |
-| 简书 | 写作平台 | https://www.jianshu.com | 待发布 |
-| 博客园 | 技术博客 | https://www.cnblogs.com | 待发布 |
-| OSChina | 开源社区 | https://www.oschina.net | 待发布 |
-| 君泊 | 开源社区 | https://juejin.cn/open-source | 待发布 |
-| HiLinux | 开源社区 | https://www.hilinux.com | 待发布 |
+主要目的：
 
-### 专业社区
+- 让更多人知道项目存在
+- 建立“这不是普通 BLE 小工具”的第一印象
 
-| 平台 | 类型 | URL | 状态 |
-|------|------|-----|------|
-| ESP32 论坛 | 嵌入式 | https://esp32.com | 待发布 |
-| Raspberry Pi 论坛 | 嵌入式 | https://raspberrypi.org/forums | 待发布 |
-| 嵌入式开发论坛 | 嵌入式 | https://bbs.21ic.com | 待发布 |
-| 电子发烧友 | 嵌入式 | https://www.elecfans.com | 待发布 |
+### 第二层：教学内容传播
 
-### 社交媒体
+适合平台：
 
-| 平台 | 类型 | 账号/标签 | 状态 |
-|------|------|-----------|------|
-| Twitter/X | 社交 | @SmartBLE | 待创建 |
-| 微信公众号 | 公众号 | (待定) | 待发布 |
-| 知乎专栏 | 专栏 | Smart BLE | 待创建 |
-| B站 | 视频 | (待定) | 待创建 |
+- 掘金
+- 知乎
+- CSDN
+- Dev.to
+- Medium
+
+主要目的：
+
+- 引导读者进入文章和教程
+- 建立长期搜索流量
+
+### 第三层：社区与持续更新
+
+适合平台：
+
+- 微信公众号
+- 知乎专栏
+- B站
+- X / Twitter
+
+主要目的：
+
+- 让项目保持“持续建设中”的状态感
 
 ---
 
-## 发布检查清单
+## 发布前检查
 
-### 发布前检查
-
-- [ ] README.md 更新完整
-- [ ] LICENSE 文件正确
-- [ ] .gitignore 配置合理
-- [ ] Issues/PRs 模板创建
-- [ ] GitHub Topics 配置
-- [ ] 截图/演示视频准备
-- [ ] Release 创建（首个版本）
+- [ ] 主 README 已更新为产品家族入口写法
+- [ ] 平台子 README 已有角色说明
+- [ ] 教学入口文档可用
+- [ ] 关键截图 / 演示视频可用
+- [ ] 历史仓库迁移说明已准备
 - [ ] 文档链接有效
 
-### 发布时检查
+---
 
-- [ ] 正确选择分类/标签
-- [ ] 添加合适的 hashtags
-- [ ] 检查格式和排版
-- [ ] 预览确认无误
-- [ ] 保存发布链接
+## 传播素材入口
 
-### 发布后跟进
+### 文章
 
-- [ ] 及时回复评论
-- [ ] 收集反馈
-- [ ] 更新 FAQ
-- [ ] 记录发布数据
+- [articles/README.md](./articles/README.md)
+
+### 平台发帖模板
+
+- [posts/INDEX.md](./posts/INDEX.md)
+
+### 模板
+
+- [templates/article.md](./templates/article.md)
+- [templates/github-release.md](./templates/github-release.md)
+- [templates/reddit.md](./templates/reddit.md)
+- [templates/v2ex.md](./templates/v2ex.md)
 
 ---
 
-## 发布模板
+## 与教学内容的关系
 
-查看各平台的发布模板：
+这份文档负责“怎么传播”，但 `Smart BLE` 的外部传播不应该脱离教学体系。
 
-- [GitHub Release 模板](./templates/github-release.md)
-- [掘金/知乎 文章模板](./templates/article.md)
-- [V2EX 发帖模板](./templates/v2ex.md)
-- [Reddit 发帖模板](./templates/reddit.md)
-- [Product Hunt 模板](./templates/product-hunt.md)
-- [Hacker News 模板](./templates/hacker-news.md)
+建议和下面内容配合：
+
+- [../wechat-articles/README.md](../wechat-articles/README.md)
+- [../../COMPARISON.md](../../COMPARISON.md)
+- 根 README
+
+这样外部读者进来后，不会只看到营销话术，而能继续进入学习路径和实现对照。

@@ -2,6 +2,18 @@
 
 Smart BLE 调试工具的原生 Android 实现。
 
+---
+
+## 在产品家族中的角色
+
+这个版本是 `smart-ble` 家族里的原生 Android 路线：
+
+- 提供更接近 Android 产品级体验的 BLE 工具实现
+- 作为 Flutter / uni-app 之外的重要对照实现
+- 承担 Android BLE 教学和原生能力验证价值
+
+它既是产品实现，也是学习 Kotlin + Compose + Android BLE 的入口。
+
 ## 技术栈
 
 - **语言**: Kotlin
@@ -82,6 +94,14 @@ export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
 - [x] 实验性 BLE OTA（文件选择、分包发送、进度展示）
 - [x] 操作日志
 - [x] Material 3 设计
+
+---
+
+## 适合谁
+
+- 想做原生 Android BLE 应用的人
+- 想研究 Kotlin + Compose BLE 架构的人
+- 想和 Flutter / iOS 原生实现对照学习的人
 
 ## 权限说明
 
