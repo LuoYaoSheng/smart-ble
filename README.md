@@ -9,6 +9,18 @@
 
 ---
 
+## 命名说明
+
+- `Smart BLE`：总项目名、主入口名
+- `BLE Toolkit+`：微信小程序当前对外显示名
+- `LightBLE`：历史命名与旧仓库线
+
+如果你是第一次进入，建议先看：
+
+- [Start Here](./docs/START_HERE.md)
+
+---
+
 ## 项目定位
 
 `Smart BLE` 解决的不是“某个平台缺一个调试工具”，而是：
@@ -29,7 +41,7 @@
 
 根据你的目标直接进入对应入口：
 
-- 微信小程序 / H5 / uni-app App：[`apps/uniapp/`](./apps/uniapp/)
+- 微信小程序 `BLE Toolkit+` / H5 / uni-app App：[`apps/uniapp/`](./apps/uniapp/)
 - 跨平台移动版：[`apps/flutter/`](./apps/flutter/)
 - Android 原生版：[`apps/android/`](./apps/android/)
 - iOS / macOS 原生版：[`apps/ios/`](./apps/ios/)
@@ -192,6 +204,9 @@ pio device monitor
 
 ## 文档
 
+- [Start Here](./docs/START_HERE.md)
+- [平台选择指南](./docs/PLATFORM_SELECTION.md)
+- [BLE FAQ](./docs/BLE_FAQ.md)
 - [功能规格](./docs/01-functional-specs.md)
 - [数据流图](./docs/02-data-flow.md)
 - [BLE 协议](./docs/03-ble-protocol.md)
