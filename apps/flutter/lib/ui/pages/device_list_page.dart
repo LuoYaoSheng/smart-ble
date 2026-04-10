@@ -8,7 +8,7 @@ import '../../core/models/ble_scan_result.dart';
 import '../../themes/app_theme.dart';
 import '../widgets/device_card.dart';
 import '../widgets/filter_panel.dart';
-import 'about_page.dart';
+
 import 'device_detail_page.dart';
 
 /// BLE 状态提供者
