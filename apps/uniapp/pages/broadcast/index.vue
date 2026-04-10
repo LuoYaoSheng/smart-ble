@@ -1,86 +1,83 @@
-<template>
-	<view class="content">
-		<view class="form">
-			<!-- 基础参数 -->
-			<view class="form-item">
-				<text class="label">设备名称：</text>
-				<input type="text" v-model="deviceName" placeholder="请输入设备名称" />
+﻿<template>
+	<scroll-view class="page-container" scroll-y>
+		<!-- 状态卡片（与 Flutter BroadcastPage 对齐） -->
+		<view class="status-card" :class="{ 'status-card-active': advertising }">
+			<view class="status-icon-wrap" :class="{ 'icon-active': advertising }">
+				<text class="status-icon">{{ advertising ? 'LIVE' : 'OFF' }}</text>
 			</view>
-
-			<view class="form-item">
-				<text class="label">服务UUID：</text>
-				<input type="text" v-model="serviceUUID" placeholder="请输入服务UUID" />
-			</view>
-
-			<view class="form-item">
-				<text class="label">厂商ID：</text>
-				<input type="text" v-model="manufacturerId" placeholder="请输入厂商ID(hex)" />
-			</view>
-
-			<view class="form-item">
-				<text class="label">厂商数据：</text>
-				<input type="text" v-model="manufacturerData" placeholder="请输入厂商数据" />
-			</view>
-
-			<!-- Android 特有参数 -->
-			<template v-if="platform === 'android'">
-			<view class="form-item">
-					<text class="label">广播模式：</text>
-					<picker @change="onModeChange" :value="modeIndex" :range="modeOptions">
-						<view class="picker-container">
-							<text class="picker-text">{{modeOptions[modeIndex]}}</text>
-							<text class="picker-icon">▼</text>
-						</view>
-					</picker>
-			</view>
-
-			<view class="form-item">
-					<text class="label">发射功率：</text>
-					<picker @change="onPowerChange" :value="powerIndex" :range="powerOptions">
-						<view class="picker-container">
-							<text class="picker-text">{{powerOptions[powerIndex]}}</text>
-							<text class="picker-icon">▼</text>
-						</view>
-				</picker>
-			</view>
-
-				<view class="form-item switch-item">
-					<text class="label">可连接：</text>
-					<switch color="#007AFF" :checked="androidSettings.connectable" @change="onConnectableChange" />
-			</view>
-
-			<view class="form-item switch-item">
-				<text class="label">包含设备名称：</text>
-				<switch color="#007AFF" :checked="androidSettings.includeDeviceName" @change="onIncludeDeviceNameChange" />
-			</view>
-
-			<view class="form-item switch-item">
-				<text class="label">跳过权限检查：</text>
-				<switch color="#007AFF" :checked="skipPermissionCheck" @change="onSkipPermissionCheckChange" />
-			</view>
-
-			<view class="form-item switch-item">
-				<text class="label">添加服务UUID：</text>
-				<switch color="#007AFF" :checked="androidSettings.addServiceUuid" @change="onAddServiceUuidChange" />
-			</view>
-			</template>
+			<text class="status-title" :class="{ 'title-active': advertising }">{{ advertising ? '正在广播' : '未广播' }}</text>
+			<text class="status-subtitle" :class="{ 'subtitle-active': advertising }">{{ advertising ? '其他设备可以扫描到此设备' : '点击开始启动BLE广播' }}</text>
 		</view>
 
-		<view class="button-group">
-			<button 
-				:type="advertising ? 'warn' : 'primary'" 
-				@click="toggleAdvertising" 
-				:disabled="!isSupported"
-				:class="{'button-advertising': advertising}"
-			>
-				{{ advertising ? '停止广播' : '开始广播' }}
-				</button>
-			<button type="default" @click="checkAdvertisingStatus">检查状态</button>
+		<!-- 平台说明卡片 -->
+		<view class="platform-card">
+			<view class="platform-left">
+				<text class="platform-icon-text">{{ platform === 'android' ? 'A' : platform === 'ios' ? 'i' : 'W' }}</text>
+			</view>
+			<view class="platform-info">
+				<text class="platform-title">{{ platform === 'android' ? 'Android 平台说明' : platform === 'ios' ? 'iOS 平台说明' : '微信小程序平台说明' }}</text>
+				<text class="platform-msg">{{ platform === 'android' ? '广播将显示设备的实际蓝牙名称' : '支持自定义广播名称' }}</text>
+			</view>
+		</view>
+
+		<!-- 广播设置 -->
+		<view class="settings-section">
+			<text class="section-title">广播设置</text>
+
+			<view class="field-group">
+				<text class="field-label">设备名称</text>
+				<input class="field-input" :value="deviceName" :disabled="advertising"
+					placeholder="自定义名称或系统蓝牙名称"
+					@input="e => deviceName = e.detail.value" />
+			</view>
+
+			<view class="field-group">
+				<text class="field-label">服务UUID</text>
+				<input class="field-input" v-model="serviceUUID" :disabled="advertising"
+					placeholder="输入服务UUID (128位)" />
+			</view>
+
+			<!-- UUID格式校验提示 -->
+			<view class="uuid-hint" v-if="serviceUUID && !isUUIDValid">
+				<text class="uuid-hint-text">⚠️ UUID 格式无效，应为 128-bit (如：12345678-1234-1234-1234-123456789012) 或 短 UUID (如：FFE0)</text>
+			</view>
+
+			<template v-if="platform === 'android'">
+				<view class="field-group">
+					<text class="field-label">广播模式</text>
+					<picker @change="onModeChange" :value="modeIndex" :range="modeOptions">
+						<view class="field-picker">
+							<text>{{modeOptions[modeIndex]}}</text>
+							<text class="picker-arrow">▼</text>
+						</view>
+					</picker>
 				</view>
 
-		<view class="status">
-			<text>设备支持状态：{{isSupported ? '支持' : '不支持'}}</text>
-			<text>广播状态：{{advertising ? '正在广播' : '已停止'}}</text>
+				<view class="field-group">
+					<text class="field-label">发射功率</text>
+					<picker @change="onPowerChange" :value="powerIndex" :range="powerOptions">
+						<view class="field-picker">
+							<text>{{powerOptions[powerIndex]}}</text>
+							<text class="picker-arrow">▼</text>
+						</view>
+					</picker>
+				</view>
+
+				<view class="switch-row">
+					<text class="switch-label">可连接</text>
+					<switch color="#007AFF" :checked="androidSettings.connectable" @change="onConnectableChange" />
+				</view>
+				<view class="switch-row">
+					<text class="switch-label">包含设备名称</text>
+					<switch color="#007AFF" :checked="androidSettings.includeDeviceName" @change="onIncludeDeviceNameChange" />
+				</view>
+				<view class="switch-row">
+					<text class="switch-label">添加服务UUID</text>
+					<switch color="#007AFF" :checked="androidSettings.addServiceUuid" @change="onAddServiceUuidChange" />
+				</view>
+			</template>
+
+��在广播' : '已停止'}}</text>
 			</view>
 
 		<view class="log">
@@ -171,6 +168,15 @@
 
 			// 检查设备支持状态
 			this.checkSupport()
+		},
+		computed: {
+			isUUIDValid() {
+				if (!this.serviceUUID) return true; // 空值不显示错误
+				const uuid = this.serviceUUID.trim();
+				const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+				const shortUuidRegex = /^[0-9a-f]{4}([0-9a-f]{4})?$/i;
+				return uuidRegex.test(uuid) || shortUuidRegex.test(uuid);
+			}
 		},
 		methods: {
 			// 检查设备支持状态
@@ -834,6 +840,16 @@
 				if (this.advertising) {
 					this.stopAdvertising()
 				} else {
+					// UUID 格式校验
+					if (this.serviceUUID && !this.isUUIDValid) {
+						uni.showToast({
+							title: 'UUID 格式无效，请输入 128-bit 或短 UUID',
+							icon: 'none',
+							duration: 2500
+						});
+						this.addLog('错误：UUID 格式无效：' + this.serviceUUID);
+						return;
+					}
 					// 点击开始广播时，先检查蓝牙和权限
 					this.checkBluetoothAndPermissionsBeforeAdvertise();
 				}
@@ -1088,4 +1104,18 @@
 		background: linear-gradient(to right, #ff3b30, #ff9500) !important;
 		box-shadow: 0 2px 6px rgba(255, 59, 48, 0.4);
 	}
+
+/* UUID 格式校验提示 */
+.uuid-hint {
+	margin: -8rpx 0 16rpx 0;
+	padding: 12rpx 16rpx;
+	background: #FFF3CD;
+	border-radius: 8rpx;
+	border-left: 4rpx solid #FF9500;
+}
+.uuid-hint-text {
+	font-size: 22rpx;
+	color: #664D03;
+	line-height: 1.5;
+}
 </style>

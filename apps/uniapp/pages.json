@@ -4,18 +4,7 @@
 			"path": "pages/index/index",
 			"style": {
 				"navigationBarTitleText": "BLE Toolkit+",
-				"navigationBarBackgroundColor": "#FFFFFF",
-				"navigationBarTextStyle": "black",
-				"navigationStyle": "default",
-				"navigationBarShadow": {
-					"colorType": "grey"
-				},
-				"app-plus": {
-					"titleNView": false
-				},
-				"mp-weixin": {
-					"navigationBarTitleText": "BLE调试工具"
-				}
+				"navigationStyle": "custom"
 			}
 		},
 		{
@@ -72,14 +61,20 @@
 		"list": [
 			{
 				"pagePath": "pages/index/index",
+				"iconPath": "static/tabs/device.png",
+				"selectedIconPath": "static/tabs/device_active.png",
 				"text": "设备"
 			},
 			{
 				"pagePath": "pages/broadcast/index",
+				"iconPath": "static/tabs/broadcast.png",
+				"selectedIconPath": "static/tabs/broadcast_active.png",
 				"text": "广播"
 			},
 			{
 				"pagePath": "pages/about/index",
+				"iconPath": "static/tabs/about.png",
+				"selectedIconPath": "static/tabs/about_active.png",
 				"text": "关于"
 			}
 		]

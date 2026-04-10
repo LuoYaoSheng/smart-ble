@@ -18,7 +18,6 @@ class OtaUpgradeDialog extends ConsumerWidget {
       title: const Text('OTA 固件升级'),
       content: SizedBox(
         width: 300,
-        mainAxisSize: MainAxisSize.min,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -66,7 +65,7 @@ class OtaUpgradeDialog extends ConsumerWidget {
                   if (!state.isInProgress)
                     TextButton(
                       onPressed: () async {
-                        FilePickerResult? result = await FilePicker.platform.pickFiles(
+                        FilePickerResult? result = await FilePicker.pickFiles(
                           type: FileType.any, // .bin filters are restrictive on some OS
                         );
                         if (result != null && result.files.single.path != null) {

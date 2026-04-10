@@ -13,12 +13,17 @@
 						<text class="device-id">{{deviceInfo.deviceId}}</text>
 				</view>
 			</view>
-				<view class="device-actions">
+				<view class="device-actions-top">
 					<button class="action-btn" v-if="hasOtaService" @click="showOtaModal = true">固件更新</button>
-					<button class="action-btn" :class="{'connected': isConnected}" @click="toggleConnection">
-						{{isConnected ? '断开连接' : '连接设备'}}
-				</button>
 			</view>
+			</view>
+			<!-- 统一操作按钮行 -->
+			<view class="device-actions-row">
+				<button class="row-btn clear" @click="clearLogs">清空</button>
+				<button class="row-btn share" @click="shareLogs">导出</button>
+				<button class="row-btn" :class="{'connected': isConnected}" @click="toggleConnection">
+					{{isConnected ? '断开连接' : '连接设备'}}
+				</button>
 			</view>
 		</view>
 
@@ -73,24 +78,21 @@
 				</view>
 			</view>
 
-			<!-- 通信日志 -->
-			<view class="log-panel">
-				<view class="panel-header">
-					<text class="panel-title">通信日志</text>
-					<view class="log-actions">
-						<button class="action-btn share" @click="shareLogs">导出</button>
-						<button class="action-btn clear" @click="clearLogs">清除</button>
-					</view>
-				</view>
-				<scroll-view class="log-content" scroll-y>
-						<view v-for="(log, index) in logs" :key="index" class="log-item">
-							<text class="log-time">{{log.time}}</text>
-							<text class="log-type" :class="log.type">{{log.type}}</text>
-						<text class="log-message">{{log.message}}</text>
-					</view>
-				</scroll-view>
-			</view>
 		</scroll-view>
+
+		<!-- 通信日志（固定底部）-->
+		<view class="log-panel">
+			<view class="panel-header">
+				<text class="panel-title">通信日志</text>
+			</view>
+			<scroll-view class="log-content" scroll-y>
+				<view v-for="(log, index) in logs" :key="index" class="log-item">
+					<text class="log-time">{{log.time}}</text>
+					<text class="log-type" :class="log.type">{{log.type}}</text>
+					<text class="log-message">{{log.message}}</text>
+				</view>
+			</scroll-view>
+		</view>
 
 		<!-- 写入数据模态框 -->
 		<view class="modal" v-if="showWriteDataModal">
@@ -973,9 +975,42 @@
 		word-break: break-all;
 	}
 
-	.device-actions {
+	.device-actions-top {
 		display: flex;
 		gap: 16rpx;
+	}
+
+	.device-actions-row {
+		display: flex;
+		gap: 16rpx;
+		margin-top: 24rpx;
+		width: 100%;
+	}
+
+	.row-btn {
+		flex: 1;
+		margin: 0;
+		padding: 0;
+		height: 72rpx;
+		line-height: 72rpx;
+		font-size: 28rpx;
+		border-radius: 12rpx;
+		background: #f0f6ff;
+		color: #007AFF;
+		border: 1rpx solid #007AFF;
+		text-align: center;
+	}
+
+	.row-btn.connected {
+		background: #fff0f0;
+		color: #ff3b30;
+		border-color: #ff3b30;
+	}
+
+	.row-btn.clear, .row-btn.share {
+		background: #f8f8f8;
+		color: #333;
+		border-color: #ddd;
 	}
 
 	.action-btn {
@@ -998,14 +1033,18 @@
 	.main-content {
 		flex: 1;
 		height: 0;
+		min-height: 0;
 	}
 
 	.services-panel, .log-panel {
 		background-color: #fff;
-		margin-bottom: 20rpx;
-		border-radius: 20rpx;
-		box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.04);
+		height: 300rpx;
+		flex-shrink: 0;
+		border-top: 1rpx solid rgba(0,0,0,0.08);
+		box-shadow: 0 -2rpx 12rpx rgba(0,0,0,0.06);
 		overflow: hidden;
+		display: flex;
+		flex-direction: column;
 	}
 
 	.panel-header {
@@ -1130,7 +1169,8 @@
 	}
 
 	.log-content {
-		height: calc(100% - 88rpx);
+		flex: 1;
+		height: 0;
 		padding: 20rpx;
 	}
 

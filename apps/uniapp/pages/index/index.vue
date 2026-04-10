@@ -1,47 +1,74 @@
-<template>
 	<view class="container">
-		<!-- 过滤选项 -->
-		<view class="filter-panel">
-			<view class="filter-header">
-				<text class="filter-title">过滤设置</text>
-			</view>
-
-			<view class="filter-item">
-				<text>信号强度过滤</text>
-				<slider :value="filterRSSI" :min="-100" :max="0" :step="1" show-value @change="onRSSIChange" />
-			</view>
-			<view class="filter-options">
-				<view class="filter-option">
-					<text>名称前缀过滤</text>
-					<input type="text" v-model="filterPrefix" placeholder="输入设备名称前缀" class="prefix-input" />
-				</view>
-				<view class="filter-option">
-					<text>隐藏无名称设备</text>
-					<switch :checked="hideNoName" @change="onHideNoNameChange" color="#007AFF" class="custom-switch" />
+		<!-- 自定义导航栏 -->
+		<view class="custom-navbar">
+			<view class="status-bar" :style="{ height: statusBarHeight + 'px' }"></view>
+			<view class="nav-content" :style="{ height: navBarHeight + 'px' }">
+				<text class="nav-title">BLE Toolkit+</text>
+				<view class="nav-actions">
+					<view class="ble-status-indicator" v-if="bleState === 'on'">
+						<view class="status-dot green"></view>
+						<text class="status-text">蓝牙已开启</text>
+					</view>
+					<view class="ble-status-indicator" v-else>
+						<view class="status-dot grey"></view>
+						<text class="status-text">蓝牙已关闭</text>
+					</view>
 				</view>
 			</view>
 		</view>
 
-		<!-- 操作按钮组 -->
-		<view class="button-group">
-			<button 
-				:type="isScanning ? 'warn' : 'primary'" 
-				@click="toggleScan" 
-				:disabled="false"
-				:class="{'button-scanning': isScanning}"
-			>
-				{{ isScanning ? '停止扫描' : '搜索设备' }}
-			</button>
+		<view class="page-content">
+			<!-- 过滤选项 -->
+			<view class="filter-panel">
+				<view class="filter-header" @click="filterExpanded = !filterExpanded">
+					<text class="filter-title">过滤设置</text>
+					<text class="filter-arrow">{{ filterExpanded ? '▲' : '▼' }}</text>
+				</view>
+
+				<view v-if="filterExpanded" class="filter-body">
+					<view class="filter-item">
+						<text>信号强度过滤</text>
+						<slider :value="filterRSSI" :min="-100" :max="0" :step="1" show-value @change="onRSSIChange" />
+					</view>
+					<view class="filter-options">
+						<view class="filter-option">
+							<text>名称前缀过滤</text>
+							<input type="text" v-model="filterPrefix" placeholder="输入设备名称前缀" class="prefix-input" />
+						</view>
+						<view class="filter-option">
+							<text>隐藏无名称设备</text>
+							<switch :checked="hideNoName" @change="onHideNoNameChange" color="#007AFF" class="custom-switch" />
+						</view>
+					</view>
+				</view>
+			</view>
+
+		<!-- 操作控制行 -->
+		<view class="scan-control-row">
+			<view class="scan-btn-container">
+				<button 
+					:class="['scan-btn', isScanning ? 'scanning' : 'primary']"
+					@click="toggleScan" 
+				>
+					<text class="scan-icon">{{ isScanning ? '■' : '🔍' }}</text>
+					<text>{{ isScanning ? '停止扫描' : '开始扫描' }}</text>
+				</button>
+			</view>
+			<view class="device-badge">
+				<text v-if="filteredDevices.length === devices.length">发现 {{filteredDevices.length}} 台设备</text>
+				<text v-else>显示 {{filteredDevices.length}} / {{devices.length}} 台</text>
+			</view>
 		</view>
 
 		<!-- 设备列表 -->
 		<view class="device-list">
-			<view class="list-header">
-				<text class="list-title">发现设备 ({{filteredDevices.length}})</text>
-				<text class="scan-status" :class="{'active': isScanning}">{{isScanning ? '扫描中' : '未扫描'}}</text>
-			</view>
 			<scroll-view scroll-y class="device-scroll">
-				<view class="device-item" v-for="(device, index) in filteredDevices" :key="index"
+				<view v-if="filteredDevices.length === 0" class="empty-state">
+					<text class="empty-icon">{{ devices.length > 0 ? '📭' : '📡' }}</text>
+					<text class="empty-title">{{ devices.length > 0 ? '无匹配设备' : '暂无设备' }}</text>
+					<text class="empty-sub">{{ devices.length > 0 ? '尝试调整过滤条件' : '点击上方按钮开始扫描' }}</text>
+				</view>
+				<view v-else class="device-item" v-for="(device, index) in filteredDevices" :key="index"
 					@click="showAdvertisingData(device)">
 					<view class="device-main">
 						<view class="device-info">
@@ -71,55 +98,6 @@
 					</view>
 				</view>
 			</scroll-view>
-		</view>
-
-		<!-- 已连接设备的操作面板 -->
-		<view class="control-panel" v-if="currentDevice">
-			<view class="panel-header">
-				<text class="panel-title">当前设备: {{currentDevice.name || '未知设备'}}</text>
-				<button type="warn" size="mini" @click="disconnectDevice">断开连接</button>
-			</view>
-
-			<!-- 服务列表 -->
-			<scroll-view class="services-list" scroll-y>
-				<view v-for="(service, sIndex) in services" :key="sIndex" class="service-item">
-					<view class="service-header" @click="toggleService(sIndex)">
-						<text>服务: {{service.uuid}}</text>
-						<text class="arrow">{{service.isOpen ? '▼' : '▶'}}</text>
-					</view>
-					<view v-if="service.isOpen" class="characteristics-list">
-						<view v-for="(characteristic, cIndex) in service.characteristics" :key="cIndex"
-							class="characteristic-item">
-							<text>特征值: {{characteristic.uuid}}</text>
-							<view class="characteristic-props">
-								<button size="mini" v-if="characteristic.properties.read"
-									@click="readCharacteristic(service.uuid, characteristic.uuid)">读取</button>
-								<button size="mini" v-if="characteristic.properties.write"
-									@click="showWriteModal(service.uuid, characteristic.uuid)">写入</button>
-								<button size="mini" v-if="characteristic.properties.notify"
-									@click="toggleNotify(service.uuid, characteristic.uuid)">
-									{{characteristic.notifying ? '停止监听' : '监听'}}
-								</button>
-							</view>
-						</view>
-					</view>
-				</view>
-			</scroll-view>
-
-			<!-- 数据收发日志 -->
-			<view class="log-panel">
-				<view class="log-header">
-					<text>操作日志</text>
-					<button size="mini" @click="clearLogs">清除</button>
-				</view>
-				<scroll-view class="log-content" scroll-y>
-					<view v-for="(log, index) in logs" :key="index" class="log-item">
-						<text class="log-time">{{log.time}}</text>
-						<text class="log-type" :class="log.type">{{log.type}}</text>
-						<text class="log-message">{{log.message}}</text>
-					</view>
-				</scroll-view>
-			</view>
 		</view>
 
 		<!-- 广播信息弹窗 -->
@@ -166,8 +144,16 @@
 				throttleTimeout: null,
 				throttleInterval: 1000, // ms, 缩短节流间隔以加快显示
 				// 自动停止扫描相关
-				scanDuration: 5000, // ms, 自动停止扫描的时长，例如20秒
-				scanStopTimer: null
+				scanDuration: 5000,
+				scanStopTimer: null,
+				
+				// 导航栏相关
+				statusBarHeight: uni.getSystemInfoSync().statusBarHeight || 20,
+				navBarHeight: 44,
+				bleState: 'off',
+				
+				// 过滤面板默认折叠（与 Flutter 一致）
+				filterExpanded: false
 			}
 		},
 		computed: {
@@ -194,9 +180,17 @@
 			}
 		},
 		onLoad() {
-			// 设置导航栏标题
-			uni.setNavigationBarTitle({
-				title: 'BLE Toolkit+'
+			// #ifdef MP-WEIXIN
+			const menuButtonInfo = uni.getMenuButtonBoundingClientRect();
+			this.navBarHeight = (menuButtonInfo.top - this.statusBarHeight) * 2 + menuButtonInfo.height;
+			// #endif
+
+			// 初始化时检查蓝牙状态
+			this.checkBluetoothState();
+			
+			// 监听蓝牙适配器状态变化
+			uni.onBluetoothAdapterStateChange(res => {
+				this.bleState = res.available ? 'on' : 'off';
 			});
 
 			// #ifdef MP-WEIXIN
@@ -214,6 +208,18 @@
 			// TabBar 模式下，自定义顶部按钮失效或移除处理
 		},
 		methods: {
+			// 检查蓝牙状态
+			checkBluetoothState() {
+				uni.getBluetoothAdapterState({
+					success: (res) => {
+						this.bleState = res.available ? 'on' : 'off';
+					},
+					fail: () => {
+						this.bleState = 'off';
+					}
+				});
+			},
+			
 			// #ifdef MP-WEIXIN
 			// 请求微信小程序的蓝牙权限（移除了定位权限请求）
 			requestWxPermissions() {
@@ -835,13 +841,70 @@
 
 <style>
 	.container {
-		padding: 30rpx;
 		height: 100vh;
-		box-sizing: border-box;
 		display: flex;
 		flex-direction: column;
-		gap: 24rpx;
 		background-color: #f7f8fa;
+	}
+
+	.custom-navbar {
+		background-color: #ffffff;
+		box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.05);
+		z-index: 100;
+	}
+
+	.nav-content {
+		height: 44px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0 30rpx;
+	}
+
+	.nav-title {
+		font-size: 34rpx;
+		font-weight: 600;
+		color: #333;
+	}
+
+	.nav-actions {
+		display: flex;
+		align-items: center;
+	}
+
+	.ble-status-indicator {
+		display: flex;
+		align-items: center;
+		gap: 8rpx;
+	}
+
+	.status-dot {
+		width: 16rpx;
+		height: 16rpx;
+		border-radius: 50%;
+	}
+
+	.status-dot.green {
+		background-color: #34C759;
+		box-shadow: 0 0 8rpx rgba(52, 199, 89, 0.4);
+	}
+
+	.status-dot.grey {
+		background-color: #999999;
+	}
+
+	.status-text {
+		font-size: 24rpx;
+		color: #666;
+	}
+
+	.page-content {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		padding: 30rpx;
+		gap: 24rpx;
+		height: 0;
 	}
 
 	.filter-panel {
@@ -849,13 +912,29 @@
 		padding: 30rpx;
 		border-radius: 20rpx;
 		box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
+		flex-shrink: 0;
 	}
 
 	.filter-header {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		margin-bottom: 24rpx;
+		margin-bottom: 0;
+		padding: 4rpx 0;
+	}
+
+	.filter-header:active {
+		opacity: 0.7;
+	}
+
+	.filter-arrow {
+		font-size: 22rpx;
+		color: #999;
+		transition: all 0.2s;
+	}
+
+	.filter-body {
+		margin-top: 24rpx;
 	}
 
 	.filter-title {
@@ -1008,35 +1087,7 @@
 		flex-direction: column;
 	}
 
-	.list-header {
-		padding: 24rpx 30rpx;
-		border-bottom: 2rpx solid #f5f5f5;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		background: linear-gradient(to right, #fff, #f9f9f9);
-	}
 
-	.list-title {
-		font-size: 32rpx;
-		font-weight: 600;
-		color: #333;
-	}
-
-	.scan-status {
-		font-size: 24rpx;
-		color: #999;
-		padding: 6rpx 20rpx;
-		border-radius: 100rpx;
-		background-color: #f5f5f5;
-		transition: all 0.3s;
-	}
-
-	.scan-status.active {
-		color: #fff;
-		background: linear-gradient(135deg, #34C759 0%, #30D158 100%);
-		box-shadow: 0 2rpx 8rpx rgba(52, 199, 89, 0.3);
-	}
 
 	.device-scroll {
 		flex: 1;
@@ -1175,146 +1226,79 @@
 		color: #666;
 	}
 
-	/* 控制面板样式优化 */
-	.control-panel {
-		margin-top: 24rpx;
-		border-top: 2rpx solid #f5f5f5;
+	.scan-control-row {
+		display: flex;
+		align-items: center;
+		padding: 0 10rpx;
+		margin-bottom: 24rpx;
+	}
+
+	.scan-btn-container {
 		flex: 1;
+		margin-right: 24rpx;
+	}
+
+	.scan-btn {
+		height: 80rpx;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 12rpx;
+		font-size: 30rpx;
+		font-weight: 500;
+		border-radius: 16rpx;
+		color: #fff;
+		border: none;
+		transition: all 0.3s;
+	}
+
+	.scan-btn.primary {
+		background-color: #007AFF;
+	}
+
+	.scan-btn.scanning {
+		background-color: #FF3B30;
+	}
+
+	.scan-icon {
+		font-size: 32rpx;
+	}
+
+	.device-badge {
+		background-color: rgba(0, 122, 255, 0.1);
+		padding: 12rpx 24rpx;
+		border-radius: 40rpx;
+	}
+
+	.device-badge text {
+		color: #007AFF;
+		font-size: 26rpx;
+		font-weight: 500;
+	}
+
+	.empty-state {
 		display: flex;
 		flex-direction: column;
-		background-color: #fff;
-		border-radius: 20rpx;
-		box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
-		overflow: hidden;
-	}
-
-	.panel-header {
-		padding: 24rpx 30rpx;
-		display: flex;
-		justify-content: space-between;
 		align-items: center;
-		border-bottom: 2rpx solid #f5f5f5;
-		background: linear-gradient(to right, #fff, #f9f9f9);
+		justify-content: center;
+		height: 400rpx;
 	}
 
-	.panel-title {
-		font-size: 32rpx;
-		font-weight: 600;
-		color: #333;
-	}
-
-	.services-list {
-		flex: 1;
-		overflow-y: auto;
-		padding: 20rpx;
-	}
-
-	.service-item {
+	.empty-icon {
+		font-size: 80rpx;
 		margin-bottom: 20rpx;
-		border-radius: 12rpx;
-		overflow: hidden;
-		box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.02);
+		opacity: 0.5;
 	}
 
-	.service-header {
-		padding: 20rpx;
-		background: linear-gradient(to right, #f8f8f8, #f5f5f5);
-		display: flex;
-		justify-content: space-between;
-		font-size: 28rpx;
-		color: #333;
-		font-weight: 500;
-	}
-
-	.characteristics-list {
-		padding: 16rpx;
-		background-color: #fff;
-	}
-
-	.characteristic-item {
-		padding: 16rpx;
-		border-bottom: 2rpx solid #f5f5f5;
-	}
-
-	.characteristic-props {
-		margin-top: 12rpx;
-		display: flex;
-		gap: 12rpx;
-	}
-
-	.characteristic-props button {
-		font-size: 24rpx;
-		padding: 4rpx 16rpx;
-		border-radius: 8rpx;
-	}
-
-	.log-panel {
-		height: 300rpx;
-		border-top: 2rpx solid #f5f5f5;
-		margin-top: 24rpx;
-	}
-
-	.log-header {
-		padding: 16rpx 20rpx;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		background: linear-gradient(to right, #fff, #f9f9f9);
-	}
-
-	.log-content {
-		height: calc(100% - 60rpx);
-		padding: 16rpx;
-		background-color: #f9f9f9;
-	}
-
-	.log-item {
-		font-size: 24rpx;
-		margin-bottom: 8rpx;
-		display: flex;
-		align-items: flex-start;
-	}
-
-	.log-time {
+	.empty-title {
+		font-size: 32rpx;
 		color: #999;
-		margin-right: 12rpx;
+		margin-bottom: 12rpx;
 	}
 
-	.log-type {
-		margin: 0 12rpx;
-		padding: 2rpx 12rpx;
-		border-radius: 6rpx;
-		font-weight: 500;
-	}
-
-	.log-type.system {
-		background: linear-gradient(135deg, #007AFF 0%, #409EFF 100%);
-		color: white;
-		box-shadow: 0 2rpx 8rpx rgba(0, 122, 255, 0.2);
-	}
-
-	.log-type.error {
-		background: linear-gradient(135deg, #FF3B30 0%, #FF2D55 100%);
-		color: white;
-		box-shadow: 0 2rpx 8rpx rgba(255, 59, 48, 0.2);
-	}
-
-	.log-type.read {
-		background: linear-gradient(135deg, #34C759 0%, #30D158 100%);
-		color: white;
-		box-shadow: 0 2rpx 8rpx rgba(52, 199, 89, 0.2);
-	}
-
-	.log-type.write {
-		background: linear-gradient(135deg, #FF9500 0%, #FF9F0A 100%);
-		color: white;
-		box-shadow: 0 2rpx 8rpx rgba(255, 149, 0, 0.2);
-	}
-
-	.log-type.receive {
-		background: linear-gradient(135deg, #5856D6 0%, #5E5CE6 100%);
-		color: white;
-		box-shadow: 0 2rpx 8rpx rgba(88, 86, 214, 0.2);
+	.empty-sub {
+		font-size: 24rpx;
+		color: #ccc;
 	}
 
 	.custom-switch {
@@ -1328,33 +1312,7 @@
 		height: 30px;
 	}
 
-	.button-group {
-		display: flex;
-		flex-direction: column;
-		gap: 10px;
-		margin-bottom: 20px;
-		width: 100%;
-	}
 
-	.button-group button {
-		width: 100%;
-		height: 88rpx;
-		font-size: 32rpx;
-		font-weight: 600;
-		border-radius: 4px;
-		transition: all 0.3s;
-		box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
-		border: none;
-	}
-
-	.button-group button[disabled] {
-		opacity: 0.5;
-	}
-	
-	.button-scanning {
-		background: linear-gradient(to right, #ff3b30, #ff9500) !important;
-		box-shadow: 0 2px 6px rgba(255, 59, 48, 0.4);
-	}
 
 	/* 自定义弹窗样式 */
 	.modal-overlay {

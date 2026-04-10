@@ -1,8 +1,10 @@
-<template>
+﻿<template>
 	<view class="container">
 		<!-- 头部信息 -->
 		<view class="header">
-			<image class="logo" src="/static/logo.png" mode="aspectFit"></image>
+			<view class="logo-box">
+				<image class="logo-img" src="/static/logo.png" mode="aspectFit"></image>
+			</view>
 			<text class="app-name">BLE Toolkit+</text>
 			<text class="version">Version {{appVersion}}</text>
 			<view class="tech-stack">
@@ -29,7 +31,34 @@
 			</view>
 		</view>
 
-		<!-- 功能列表 -->
+		<!-- 功能特性列表 -->
+		<view class="section">
+			<view class="section-title">功能特性</view>
+			<view class="feature-list">
+				<view class="feature-item" v-for="(feature, index) in features" :key="index">
+					<view class="feature-icon-wrap">
+						<text class="feature-icon">{{feature.icon}}</text>
+					</view>
+					<view class="feature-content">
+						<text class="feature-title">{{feature.title}}</text>
+						<text class="feature-desc">{{feature.desc}}</text>
+					</view>
+				</view>
+			</view>
+		</view>
+
+		<!-- 支持平台 -->
+		<view class="section">
+			<view class="section-title">支持平台</view>
+			<view class="platform-chips">
+				<view class="platform-chip" v-for="(pf, index) in supportedPlatforms" :key="index">
+					<text class="chip-icon">{{pf.icon}}</text>
+					<text class="chip-label">{{pf.name}}</text>
+				</view>
+			</view>
+		</view>
+
+		<!-- 相关链接 -->
 		<view class="section">
 			<view class="section-title">相关链接</view>
 			<view class="menu-list">
@@ -96,6 +125,22 @@
 				appVersion: '1.0.0',
 				systemInfo: {},
 				currentYear: new Date().getFullYear(),
+			features: [
+				{ icon: '🔍', title: '设备扫描', desc: '自动发现附近蓝牙 BLE 设备' },
+				{ icon: '🎛️', title: '智能过滤', desc: '按信号强度、名称过滤设备' },
+				{ icon: '🔗', title: '快速连接', desc: '一键连接设备并自动发现服务' },
+				{ icon: '✏️', title: '数据读写', desc: '支持 HEX/UTF-8 格式读写' },
+				{ icon: '🔔', title: '通知监听', desc: '实时接收设备通知数据' },
+				{ icon: '📡', title: '广播模式', desc: '模拟 BLE 外设设备' },
+			],
+			supportedPlatforms: [
+				{ icon: '🤖', name: 'Android' },
+				{ icon: '📱', name: 'iOS' },
+				{ icon: '🪟', name: 'Windows' },
+				{ icon: '🍎', name: 'macOS' },
+				{ icon: '🐧', name: 'Linux' },
+				{ icon: '💬', name: '微信小程序' },
+			],
 				shareInfo: {
 					title: 'BLE Toolkit+ - 多平台BLE调试工具',
 					summary: '支持微信小程序、iOS和Android原生应用的BLE调试工具',
@@ -463,50 +508,53 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		padding: 60rpx 0;
-		background: linear-gradient(135deg, #007AFF 0%, #409EFF 100%);
-		border-radius: 20rpx;
-		margin-bottom: 30rpx;
-		box-shadow: 0 8rpx 24rpx rgba(0, 122, 255, 0.15);
+		padding: 48rpx 0 20rpx 0;
 	}
 
-	.logo {
-		width: 120rpx;
-		height: 120rpx;
-		border-radius: 24rpx;
-		margin-bottom: 20rpx;
-		background-color: #fff;
-		box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
+	.logo-box {
+		width: 180rpx;
+		height: 180rpx;
+		border-radius: 40rpx;
+		background: linear-gradient(135deg, #007AFF 0%, #5AC8FA 100%);
+		box-shadow: 0 16rpx 32rpx rgba(0, 122, 255, 0.3);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin-bottom: 32rpx;
+	}
+
+	.logo-img {
+		width: 100rpx;
+		height: 100rpx;
 	}
 
 	.app-name {
-		font-size: 36rpx;
-		font-weight: 600;
-		color: #fff;
-		margin-bottom: 8rpx;
-		text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
+		font-size: 44rpx;
+		font-weight: bold;
+		color: #333;
+		margin-bottom: 12rpx;
 	}
 
 	.version {
-		font-size: 24rpx;
-		color: rgba(255, 255, 255, 0.8);
-		margin-bottom: 20rpx;
+		font-size: 28rpx;
+		color: #999;
+		margin-bottom: 24rpx;
 	}
 
 	.tech-stack {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		background: rgba(255, 255, 255, 0.2);
-		padding: 8rpx 20rpx;
-		border-radius: 12rpx;
-		gap: 4rpx;
+		background: rgba(0, 122, 255, 0.08);
+		padding: 12rpx 32rpx;
+		border-radius: 20rpx;
+		gap: 8rpx;
 	}
 
 	.tech-text {
-		font-size: 20rpx;
-		color: #fff;
-		font-weight: 500;
+		font-size: 24rpx;
+		color: #007AFF;
+		font-weight: 600;
 	}
 
 	.section {
@@ -674,4 +722,79 @@
 		font-size: 24rpx;
 		color: #999;
 	}
+
+/* 功能特性列表 */
+.feature-list {
+	padding: 0 24rpx;
+}
+.feature-item {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	padding: 20rpx 0;
+	border-bottom: 1rpx solid rgba(0,0,0,0.06);
+}
+.feature-item:last-child {
+	border-bottom: none;
+}
+.feature-icon-wrap {
+	width: 72rpx;
+	height: 72rpx;
+	background: linear-gradient(135deg, #007AFF22, #5AC8FA22);
+	border-radius: 18rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	margin-right: 24rpx;
+}
+.feature-icon {
+	font-size: 34rpx;
+	line-height: 1;
+}
+.feature-content {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+.feature-title {
+	font-size: 28rpx;
+	font-weight: 600;
+	color: #1a1a1a;
+	margin-bottom: 6rpx;
+}
+.feature-desc {
+	font-size: 24rpx;
+	color: #888;
+	line-height: 1.4;
+}
+
+/* 支持平台 Chips */
+.platform-chips {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	gap: 16rpx;
+	padding: 0 24rpx;
+}
+.platform-chip {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	background: #f0f6ff;
+	border: 1rpx solid #d0e4ff;
+	border-radius: 50rpx;
+	padding: 10rpx 24rpx;
+	gap: 8rpx;
+}
+.chip-icon {
+	font-size: 28rpx;
+	line-height: 1;
+}
+.chip-label {
+	font-size: 24rpx;
+	font-weight: 500;
+	color: #007AFF;
+}
 </style>
