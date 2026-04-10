@@ -9,7 +9,7 @@ Platform tiers:
 - Experimental: `apps/desktop/avalonia`
 - Placeholder: `apps/desktop/windows`, `apps/desktop/linux`
 
-For iOS, treat `apps/ios/Sources/` as the only active source tree. `apps/ios/SmartBLE/` is legacy reference code.
+For iOS, treat `apps/ios/Sources/` as the only active source tree.
 
 ## Build, Test, and Development Commands
 Use the root `Makefile` when possible; platform-specific commands remain available when you need to scope work.

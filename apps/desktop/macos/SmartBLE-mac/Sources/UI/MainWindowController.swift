@@ -39,7 +39,7 @@ class MainWindowController: NSWindowController, NSWindowDelegate {
             backing: .buffered,
             defer: false
         )
-        window.title = "SmartBLE Desktop"
+        window.title = "BLE Toolkit+"
         window.center()
         window.minSize = NSSize(width: 700, height: 500)
         window.delegate = self

@@ -54,7 +54,7 @@ struct ContentView: View {
 struct AboutView: View {
     var body: some View {
         VStack(spacing: 20) {
-            Text("SmartBLE")
+            Text("BLE Toolkit+")
                 .font(.largeTitle)
                 .fontWeight(.bold)
 
@@ -69,6 +69,19 @@ struct AboutView: View {
                 Text("版本 1.0.0")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
+
+                VStack(spacing: 4) {
+                    Text("Framework: SwiftUI")
+                    Text("Language: Swift")
+                }
+                .font(.caption)
+                .fontWeight(.semibold)
+                .foregroundColor(.blue)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(Color.blue.opacity(0.1))
+                .cornerRadius(8)
+                .padding(.top, 4)
             }
 
             VStack(alignment: .leading, spacing: 12) {
@@ -89,7 +102,7 @@ struct AboutView: View {
 
             Spacer()
 
-            Text("© 2025 SmartBLE")
+            Text("© 2025 BLE Toolkit+")
                 .font(.caption)
                 .foregroundColor(.secondary)
         }

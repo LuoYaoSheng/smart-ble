@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'themes/app_theme.dart';
 import 'ui/pages/device_list_page.dart';
+import 'ui/pages/connected_devices_page.dart';
 import 'ui/pages/broadcast_page.dart';
 import 'ui/pages/about_page.dart';
 
@@ -17,7 +18,7 @@ class SmartBLEApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Smart BLE',
+      title: 'BLE Toolkit+',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
@@ -64,6 +65,7 @@ class _MainScreenState extends State<MainScreen> {
         },
         children: const [
           DeviceListPage(),
+          ConnectedDevicesPage(),
           BroadcastPage(),
           AboutPage(),
         ],
@@ -81,6 +83,11 @@ class _MainScreenState extends State<MainScreen> {
             icon: Icon(Icons.bluetooth_searching),
             activeIcon: Icon(Icons.bluetooth),
             label: '扫描',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.devices_other_outlined),
+            activeIcon: Icon(Icons.devices_other),
+            label: '连接',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.broadcast_on_personal_outlined),

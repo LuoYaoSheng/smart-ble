@@ -139,7 +139,7 @@ fun DeviceDetailScreen(
                     onExport = {
                         val exportIntent = Intent(Intent.ACTION_SEND).apply {
                             type = "text/plain"
-                            putExtra(Intent.EXTRA_SUBJECT, "SmartBLE 导出 - $deviceName")
+                            putExtra(Intent.EXTRA_SUBJECT, "BLE Toolkit+ 导出 - $deviceName")
                             putExtra(Intent.EXTRA_TEXT, viewModel.buildExportText())
                         }
                         context.startActivity(Intent.createChooser(exportIntent, "导出设备数据"))
@@ -450,6 +450,26 @@ fun ErrorView(message: String, onRetry: () -> Unit) {
     }
 }
 
+/**
+ * 发送模式
+ */
+private enum class SendMode {
+    Single,
+    Batch,
+    Loop,
+}
+
+/**
+ * 写入结果
+ */
+private data class WriteDialogResult(
+    val data: String,
+    val isHexMode: Boolean,
+    val sendMode: SendMode = SendMode.Single,
+    val loopCount: Int = 1,
+    val intervalMs: Int = 50,
+)
+
 @Composable
 private fun WriteCharacteristicDialog(
     target: WriteTarget,
@@ -458,9 +478,19 @@ private fun WriteCharacteristicDialog(
 ) {
     var input by remember(target) { mutableStateOf("") }
     var inputMode by remember(target) { mutableStateOf(WriteInputMode.Text) }
+    var sendMode by remember(target) { mutableStateOf(SendMode.Single) }
+    var loopCount by remember(target) { mutableStateOf("10") }
+    var intervalMs by remember(target) { mutableStateOf("50") }
+    var infiniteLoop by remember(target) { mutableStateOf(false) }
 
     val validationError = when {
         input.isBlank() -> "请输入要写入的数据"
+        inputMode == WriteInputMode.Hex && sendMode == SendMode.Batch -> {
+            // Validate each line
+            val lines = input.split("\n").map { it.trim() }.filter { it.isNotEmpty() }
+            val invalidLine = lines.firstOrNull { !isValidHexInput(it) }
+            if (invalidLine != null) "HEX 格式无效: $invalidLine" else null
+        }
         inputMode == WriteInputMode.Hex && !isValidHexInput(input) -> "HEX 格式无效，请输入偶数长度十六进制，例如 FF00AA"
         else -> null
     }
@@ -479,6 +509,7 @@ private fun WriteCharacteristicDialog(
         },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                // 格式选择
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedButton(
                         onClick = { inputMode = WriteInputMode.Text },
@@ -494,19 +525,97 @@ private fun WriteCharacteristicDialog(
                     }
                 }
 
+                // 发送模式选择
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    listOf(
+                        SendMode.Single to "单次",
+                        SendMode.Batch to "批量",
+                        SendMode.Loop to "循环"
+                    ).forEach { (mode, label) ->
+                        OutlinedButton(
+                            onClick = { sendMode = mode },
+                            enabled = sendMode != mode
+                        ) {
+                            Text(label)
+                        }
+                    }
+                }
+
+                // 数据输入
                 TextField(
                     value = input,
                     onValueChange = { input = it },
                     singleLine = false,
-                    minLines = 3,
-                    maxLines = 6,
+                    minLines = if (sendMode == SendMode.Batch) 5 else 3,
+                    maxLines = if (sendMode == SendMode.Batch) 8 else 6,
                     label = {
-                        Text(if (inputMode == WriteInputMode.Text) "UTF-8 文本" else "十六进制数据")
+                        Text(when {
+                            sendMode == SendMode.Batch && inputMode == WriteInputMode.Hex -> "HEX 指令 (每行一条)"
+                            sendMode == SendMode.Batch -> "文本数据 (每行一条)"
+                            inputMode == WriteInputMode.Text -> "UTF-8 文本"
+                            else -> "十六进制数据"
+                        })
                     },
                     placeholder = {
-                        Text(if (inputMode == WriteInputMode.Text) "例如：hello" else "例如：FF 00 AA")
+                        Text(when {
+                            sendMode == SendMode.Batch && inputMode == WriteInputMode.Hex -> "FF 01 AA\n00 02 BB\n03 CC DD"
+                            sendMode == SendMode.Batch -> "第一行\n第二行\n第三行"
+                            inputMode == WriteInputMode.Text -> "例如：hello"
+                            else -> "例如：FF 00 AA"
+                        })
                     },
                 )
+
+                // 循环模式选项
+                if (sendMode == SendMode.Loop) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text("次数:", style = MaterialTheme.typography.bodySmall)
+                        if (!infiniteLoop) {
+                            TextField(
+                                value = loopCount,
+                                onValueChange = { loopCount = it.filter { c -> c.isDigit() } },
+                                modifier = Modifier.width(80.dp),
+                                singleLine = true,
+                                textStyle = MaterialTheme.typography.bodySmall,
+                            )
+                        }
+                        TextButton(onClick = { infiniteLoop = !infiniteLoop }) {
+                            Text(if (infiniteLoop) "✓ 无限循环" else "无限循环")
+                        }
+                    }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text("间隔:", style = MaterialTheme.typography.bodySmall)
+                        TextField(
+                            value = intervalMs,
+                            onValueChange = { intervalMs = it.filter { c -> c.isDigit() } },
+                            modifier = Modifier.width(80.dp),
+                            singleLine = true,
+                            textStyle = MaterialTheme.typography.bodySmall,
+                            suffix = { Text("ms") }
+                        )
+                        // 快捷按钮
+                        listOf("20", "50", "100", "500").forEach { ms ->
+                            TextButton(onClick = { intervalMs = ms }) {
+                                Text(ms, style = MaterialTheme.typography.labelSmall)
+                            }
+                        }
+                    }
+                }
+
+                // 批量模式提示
+                if (sendMode == SendMode.Batch) {
+                    Text(
+                        "每行一条指令，按顺序发送",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = TextSecondary
+                    )
+                }
 
                 Text(
                     validationError ?: "当前模式：${if (inputMode == WriteInputMode.Text) "TEXT" else "HEX"}",
@@ -523,10 +632,15 @@ private fun WriteCharacteristicDialog(
                         WriteInputMode.Hex -> input.hexToByteArray()
                     }
                     onConfirm(payload)
+                    // TODO: For batch/loop modes, integrate with CommandQueue in ViewModel
                 },
                 enabled = validationError == null
             ) {
-                Text("写入")
+                Text(when (sendMode) {
+                    SendMode.Single -> "写入"
+                    SendMode.Batch -> "批量发送"
+                    SendMode.Loop -> "开始循环"
+                })
             }
         },
         dismissButton = {

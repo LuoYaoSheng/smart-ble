@@ -74,9 +74,9 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
       return 'Android 设备 (显示实际蓝牙名称)';
     }
     if (Platform.isMacOS) {
-      return 'SmartBLE (macOS)';
+      return 'BLE Toolkit+ (macOS)';
     }
-    return 'SmartBLE';
+    return 'BLE Toolkit+';
   }
 
   Future<void> _toggleAdvertising() async {
@@ -104,7 +104,7 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
 
     try {
       final success = await _peripheralManager.startAdvertising(
-        name: 'SmartBLE', // 名称由系统处理
+        name: 'BLE Toolkit+', // 名称由系统处理
         serviceUuid: uuid,
       );
 
@@ -114,7 +114,7 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
           ref.read(isAdvertisingProvider.notifier).state = true;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(_isAndroid ? '开始广播（设备实际名称）' : '开始广播: SmartBLE'),
+              content: Text(_isAndroid ? '开始广播（设备实际名称）' : '开始广播: BLE Toolkit+'),
               backgroundColor: AppTheme.successColor,
             ),
           );

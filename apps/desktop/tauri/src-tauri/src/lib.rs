@@ -1,5 +1,6 @@
 //
 // SmartBLE Desktop - Tauri (Rust)
+// Multi-device concurrent connection support
 //
 
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
@@ -7,6 +8,7 @@
 use btleplug::api::{Central, Manager as _, Peripheral as _, Characteristic, WriteType};
 use btleplug::platform::Manager;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 use std::time::Duration;
@@ -16,10 +18,12 @@ use tauri::State;
 struct BleState {
     manager: Option<Manager>,
     central: Option<btleplug::platform::Adapter>,
-    connected_peripheral: Option<btleplug::platform::Peripheral>,
+    /// Multi-device: deviceId -> Peripheral
+    connected_peripherals: HashMap<String, btleplug::platform::Peripheral>,
     scanning: bool,
     scan_handle: Option<tokio::task::JoinHandle<()>>,
-    notify_handle: Option<tokio::task::JoinHandle<()>>,
+    /// Multi-device: deviceId -> notify task handle
+    notify_handles: HashMap<String, tokio::task::JoinHandle<()>>,
 }
 
 // Write format
@@ -320,9 +324,9 @@ async fn connect(
                 drop(ble_state);
                 match peripheral.connect().await {
                     Ok(_) => {
-                        // Store connected peripheral
+                        // Store connected peripheral in HashMap (multi-device)
                         let mut state = state.lock().await;
-                        state.connected_peripheral = Some(peripheral.clone());
+                        state.connected_peripherals.insert(device_id.clone(), peripheral.clone());
                         Ok(Response {
                             success: true,
                             data: Some(true),
@@ -364,33 +368,44 @@ async fn connect(
 }
 
 #[tauri::command]
+#[allow(non_snake_case)]
 async fn disconnect(
+    deviceId: Option<String>,
     state: State<'_, Arc<Mutex<BleState>>>,
 ) -> Result<Response<bool>, String> {
     let mut ble_state = state.lock().await;
 
-    // Abort notification stream
-    if let Some(handle) = ble_state.notify_handle.take() {
-        handle.abort();
-    }
+    // Determine which device to disconnect
+    let target_id = deviceId.or_else(|| ble_state.connected_peripherals.keys().next().cloned());
 
-    if let Some(peripheral) = &ble_state.connected_peripheral {
-        let peripheral = peripheral.clone();
-        ble_state.connected_peripheral = None;
+    if let Some(device_id) = target_id {
+        // Abort notification stream for this device
+        if let Some(handle) = ble_state.notify_handles.remove(&device_id) {
+            handle.abort();
+        }
 
-        match peripheral.disconnect().await {
-            Ok(_) => Ok(Response {
+        if let Some(peripheral) = ble_state.connected_peripherals.remove(&device_id) {
+            match peripheral.disconnect().await {
+                Ok(_) => Ok(Response {
+                    success: true,
+                    data: Some(true),
+                    error: None,
+                    value: None,
+                }),
+                Err(e) => Ok(Response {
+                    success: false,
+                    data: None,
+                    error: Some(format!("Disconnect failed: {}", e)),
+                    value: None,
+                }),
+            }
+        } else {
+            Ok(Response {
                 success: true,
                 data: Some(true),
                 error: None,
                 value: None,
-            }),
-            Err(e) => Ok(Response {
-                success: false,
-                data: None,
-                error: Some(format!("Disconnect failed: {}", e)),
-                value: None,
-            }),
+            })
         }
     } else {
         Ok(Response {
@@ -408,11 +423,10 @@ async fn discover_services(
     deviceId: String,
     state: State<'_, Arc<Mutex<BleState>>>,
 ) -> Result<Response<Vec<ServiceInfo>>, String> {
-    let _device_id = deviceId; // Currently unused
-    // Clone the peripheral before dropping the lock
+    // Look up the specific device's peripheral from HashMap
     let peripheral = {
         let ble_state = state.lock().await;
-        ble_state.connected_peripheral.clone()
+        ble_state.connected_peripherals.get(&deviceId).cloned()
     };
 
     if let Some(peripheral) = peripheral {
@@ -470,6 +484,7 @@ async fn discover_services(
 #[tauri::command]
 #[allow(non_snake_case)]
 async fn read_characteristic(
+    deviceId: String,
     serviceUuid: String,
     charUuid: String,
     state: State<'_, Arc<Mutex<BleState>>>,
@@ -478,7 +493,7 @@ async fn read_characteristic(
     let char_uuid = charUuid;
     let ble_state = state.lock().await;
 
-    if let Some(peripheral) = &ble_state.connected_peripheral {
+    if let Some(peripheral) = ble_state.connected_peripherals.get(&deviceId) {
         let characteristics = peripheral.characteristics();
 
         let characteristic = characteristics
@@ -535,6 +550,7 @@ async fn read_characteristic(
 #[tauri::command]
 #[allow(non_snake_case)]
 async fn write_characteristic(
+    deviceId: String,
     serviceUuid: String,
     charUuid: String,
     data: String,
@@ -545,7 +561,7 @@ async fn write_characteristic(
     let char_uuid = charUuid;
     let ble_state = state.lock().await;
 
-    if let Some(peripheral) = &ble_state.connected_peripheral {
+    if let Some(peripheral) = ble_state.connected_peripherals.get(&deviceId) {
         let characteristics = peripheral.characteristics();
 
         let characteristic = characteristics
@@ -606,6 +622,7 @@ async fn write_characteristic(
 #[tauri::command]
 #[allow(non_snake_case)]
 async fn notify_characteristic(
+    deviceId: String,
     serviceUuid: String,
     charUuid: String,
     notify: bool,
@@ -616,8 +633,8 @@ async fn notify_characteristic(
     let char_uuid = charUuid;
     let mut ble_state = state.lock().await;
 
-    // Get the peripheral we need
-    let peripheral = ble_state.connected_peripheral.clone();
+    // Get the peripheral for this device from HashMap
+    let peripheral = ble_state.connected_peripherals.get(&deviceId).cloned();
 
     // Find the characteristic
     let char_option = peripheral.as_ref().and_then(|p| {
@@ -631,7 +648,7 @@ async fn notify_characteristic(
     if let Some(char) = char_option {
         // Cancel existing notification stream if stopping
         if !notify {
-            if let Some(handle) = ble_state.notify_handle.take() {
+            if let Some(handle) = ble_state.notify_handles.remove(&deviceId) {
                 handle.abort();
             }
             drop(ble_state);
@@ -708,8 +725,8 @@ async fn notify_characteristic(
                         }
                     });
 
-                    // Store the handle
-                    ble_state.notify_handle = Some(handle);
+                    // Store the handle per-device
+                    ble_state.notify_handles.insert(deviceId.clone(), handle);
                     drop(ble_state);
 
                     Ok(Response {
@@ -885,10 +902,10 @@ pub fn run() {
     let ble_state = Arc::new(Mutex::new(BleState {
         manager: None,
         central: None,
-        connected_peripheral: None,
+        connected_peripherals: HashMap::new(),
         scanning: false,
         scan_handle: None,
-        notify_handle: None,
+        notify_handles: HashMap::new(),
     }));
 
     tauri::Builder::default()

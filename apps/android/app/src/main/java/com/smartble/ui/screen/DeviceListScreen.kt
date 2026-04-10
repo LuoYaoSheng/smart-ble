@@ -85,7 +85,7 @@ fun DeviceListScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Smart BLE") },
+                title = { Text("BLE Toolkit+") },
                 actions = {
                     BluetoothStateIndicator(bluetoothState)
                 }

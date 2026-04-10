@@ -2,6 +2,7 @@ package com.smartble.ui.screen
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -103,7 +104,7 @@ fun AboutContent(modifier: Modifier = Modifier) {
 
         // App Name
         Text(
-            "Smart BLE",
+            "BLE Toolkit+",
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold
         )
@@ -117,7 +118,24 @@ fun AboutContent(modifier: Modifier = Modifier) {
             color = TextSecondary
         )
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(12.dp))
+
+        // Framework & Language
+        androidx.compose.material3.Surface(
+            color = Primary.copy(alpha = 0.1f),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Text(
+                "Framework: Jetpack Compose\nLanguage: Kotlin",
+                style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold),
+                color = Primary,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                lineHeight = 18.sp
+            )
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
 
         // Description
         Text(
@@ -155,7 +173,7 @@ fun AboutContent(modifier: Modifier = Modifier) {
 
         // Copyright
         Text(
-            "© 2025 Smart BLE\nReleased under MIT License",
+            "© 2025 BLE Toolkit+\nReleased under MIT License",
             style = MaterialTheme.typography.bodySmall,
             color = TextSecondary.copy(alpha = 0.7f),
             textAlign = TextAlign.Center,
@@ -273,6 +291,7 @@ fun PlatformSection() {
         Spacer(modifier = Modifier.height(12.dp))
 
         Row(
+            modifier = Modifier.horizontalScroll(rememberScrollState()),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             PlatformChip(name = "Android", icon = Icons.Default.Android)

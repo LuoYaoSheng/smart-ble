@@ -2,8 +2,6 @@
 
 使用 SwiftUI + CoreBluetooth 实现的原生 macOS/iOS BLE 调试工具。
 
-> 当前源码入口以 `apps/ios/Sources/` 为准，`apps/ios/SmartBLE/` 目录仅作为旧版本参考保留，不应继续新增或修改功能。
-
 ---
 
 ## 在产品家族中的角色
@@ -63,17 +61,3 @@ Sources/
 └── Models/
     └── BLEModels.swift       # 数据模型
 ```
-
-Legacy reference:
-- `SmartBLE/`：旧代码树，当前不参与 `Package.swift` 构建
-
----
-
-## 教学说明
-
-这个目录需要同时保留两层信息：
-
-- `Sources/`：当前真实主入口
-- `SmartBLE/`：历史代码参考
-
-因为 `smart-ble` 不只是产品，也有很强的教学和演进记录价值，所以历史实现不应简单抹掉，而应明确标注“当前入口”和“历史参考”的边界。

@@ -60,3 +60,8 @@ apps/desktop/macos/SmartBLE-mac/.build/
 
 # Rust/Cargo
 apps/desktop/tauri/src-tauri/target/
+
+# Local Project Ignore
+local.properties
+*.log
+apps/uniapp/unpackage/

@@ -49,10 +49,15 @@ class DeviceListViewModel(application: Application) : AndroidViewModel(applicati
     private val _filteredScanResults = MutableStateFlow<List<BleDevice>>(emptyList())
     val filteredScanResults: StateFlow<List<BleDevice>> = _filteredScanResults.asStateFlow()
 
+    // Connected devices - for ConnectedDevicesScreen
+    private val _connectedDevices = MutableStateFlow<List<BleDevice>>(emptyList())
+    val connectedDevices: StateFlow<List<BleDevice>> = _connectedDevices.asStateFlow()
+
     init {
         observeBluetoothState()
         observeScanResults()
         observeFilters()
+        observeConnectedDevices()
     }
 
     private fun observeBluetoothState() {
@@ -90,6 +95,26 @@ class DeviceListViewModel(application: Application) : AndroidViewModel(applicati
                 filterDevices(results, rssi, namePrefix, hideUnnamed)
             }.collect { filtered ->
                 _filteredScanResults.value = filtered
+            }
+        }
+    }
+
+    private fun observeConnectedDevices() {
+        viewModelScope.launch {
+            bleManager.connectionStates.collect { states ->
+                val connected = states
+                    .filter { it.value == com.smartble.core.model.ConnectionState.Connected }
+                    .keys
+                val devices = connected.map { deviceId ->
+                    _scanResults.value.find { it.id == deviceId }
+                        ?: BleDevice(
+                            id = deviceId,
+                            name = "",
+                            rssi = 0,
+                            state = com.smartble.core.model.ConnectionState.Connected
+                        )
+                }
+                _connectedDevices.value = devices
             }
         }
     }
@@ -143,6 +168,14 @@ class DeviceListViewModel(application: Application) : AndroidViewModel(applicati
         _filterRSSI.value = -100
         _filterNamePrefix.value = ""
         _hideUnnamed.value = false
+    }
+
+    fun disconnectDevice(deviceId: String) {
+        bleManager.disconnect(deviceId)
+    }
+
+    fun disconnectAll() {
+        bleManager.disconnectAll()
     }
 
     private fun updateUiState() {

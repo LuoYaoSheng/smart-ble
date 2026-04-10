@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../core/ble/ble_manager.dart';
 import '../../core/models/ble_scan_result.dart';
 import '../../themes/app_theme.dart';
@@ -49,6 +51,14 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
 
   Future<void> _initializeBle() async {
     try {
+      if (Platform.isAndroid) {
+        await [
+          Permission.location,
+          Permission.bluetoothScan,
+          Permission.bluetoothConnect,
+        ].request();
+      }
+
       final success = await _bleManager.initialize();
       if (mounted) {
         setState(() {
@@ -72,10 +82,10 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
     try {
       setState(() => _errorMessage = null);
       ref.read(scanningProvider.notifier).state = true;
-      await _bleManager.startScan(timeout: const Duration(seconds: 10));
+      await _bleManager.startScan(timeout: const Duration(seconds: 5));
 
-      // 10秒后自动停止扫描
-      Timer(const Duration(seconds: 10), () {
+      // 5秒后自动停止扫描 — 与 UniApp/Android/iOS/Tauri 全平台保持一致
+      Timer(const Duration(seconds: 5), () {
         if (mounted) {
           ref.read(scanningProvider.notifier).state = false;
         }
@@ -145,7 +155,7 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Smart BLE'),
+        title: const Text('BLE Toolkit+'),
         actions: [
           // 蓝牙状态指示器
           bleState.when(
@@ -153,15 +163,7 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
             loading: () => const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)),
             error: (_, __) => const Icon(Icons.bluetooth_disabled, color: AppTheme.errorColor),
           ),
-          const SizedBox(width: 8),
-          // 关于按钮
-          IconButton(
-            icon: const Icon(Icons.info_outline),
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (_) => const AboutPage()));
-            },
-          ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 16),
         ],
       ),
       body: Column(
@@ -238,6 +240,7 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
                     return DeviceCard(
                       key: ValueKey(device.deviceId),
                       device: device,
+                      isConnected: _bleManager.isDeviceConnected(device.deviceId),
                       onConnect: () => _connectToDevice(device),
                       onShowInfo: () => _showDeviceInfo(device),
                     );

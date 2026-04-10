@@ -1,5 +1,6 @@
 //
 // SmartBLE Desktop - Main Process
+// Multi-device concurrent connection support
 //
 
 const { app, BrowserWindow, ipcMain } = require('electron');
@@ -20,8 +21,8 @@ let bleModule = null;
 
 // 存储发现的设备
 const discoveredDevices = new Map();
-// 当前连接的设备
-let connectedPeripheral = null;
+// 多设备并发连接 (deviceId -> peripheral)
+const connectedPeripherals = new Map();
 
 // 加载 BLE 模块
 let bleModuleLoaded = false;
@@ -305,7 +306,8 @@ ipcMain.handle('ble:connect', async (event, deviceId) => {
         console.error('Connection error:', error);
         resolve({ success: false, error: error.message });
       } else {
-        connectedPeripheral = peripheral;
+        // 存入多设备 Map
+        connectedPeripherals.set(deviceId, peripheral);
         debugLog('Connected to:', peripheral.id);
 
         // 连接后先更新 peripheral 的状态，确保 noble 内部状态正确
@@ -322,17 +324,23 @@ ipcMain.handle('ble:connect', async (event, deviceId) => {
   });
 });
 
-ipcMain.handle('ble:disconnect', async () => {
+ipcMain.handle('ble:disconnect', async (event, deviceId) => {
   if (!bleModule) return { success: false };
 
   return new Promise((resolve) => {
-    if (!connectedPeripheral) {
+    // If no deviceId provided, disconnect first connected device
+    let targetId = deviceId;
+    if (!targetId && connectedPeripherals.size > 0) {
+      targetId = connectedPeripherals.keys().next().value;
+    }
+
+    const peripheral = targetId ? connectedPeripherals.get(targetId) : null;
+    if (!peripheral) {
       resolve({ success: true });
       return;
     }
 
-    const peripheral = connectedPeripheral;
-    connectedPeripheral = null;
+    connectedPeripherals.delete(targetId);
 
     const onDisconnect = (error) => {
       peripheral.removeListener('disconnect', onDisconnect);
@@ -349,16 +357,19 @@ ipcMain.handle('ble:disconnect', async () => {
   });
 });
 
-ipcMain.handle('ble:discoverServices', async (event) => {
-  if (!connectedPeripheral) {
+ipcMain.handle('ble:discoverServices', async (event, deviceId) => {
+  // Look up from multi-device Map
+  const targetPeripheral = deviceId ? connectedPeripherals.get(deviceId) : connectedPeripherals.values().next().value;
+
+  if (!targetPeripheral) {
     debugLog('No peripheral connected for service discovery');
     return { success: false, services: [] };
   }
 
-  debugLog('Starting service discovery for:', connectedPeripheral.id);
+  debugLog('Starting service discovery for:', targetPeripheral.id);
 
   return new Promise((resolve) => {
-    const peripheral = connectedPeripheral;
+    const peripheral = targetPeripheral;
 
     // 设置超时
     const timeout = setTimeout(() => {
@@ -488,13 +499,15 @@ function discoverCharacteristics(service) {
   });
 }
 
-ipcMain.handle('ble:readCharacteristic', async (event, serviceUuid, charUuid) => {
-  if (!connectedPeripheral) {
+ipcMain.handle('ble:readCharacteristic', async (event, deviceId, serviceUuid, charUuid) => {
+  const targetPeripheral = deviceId ? connectedPeripherals.get(deviceId) : connectedPeripherals.values().next().value;
+
+  if (!targetPeripheral) {
     return { success: false, error: 'No device connected' };
   }
 
   return new Promise((resolve) => {
-    const service = connectedPeripheral.services.find(s => s.uuid === serviceUuid);
+    const service = targetPeripheral.services.find(s => s.uuid === serviceUuid);
     if (!service) {
       resolve({ success: false, error: 'Service not found' });
       return;
@@ -526,13 +539,15 @@ ipcMain.handle('ble:readCharacteristic', async (event, serviceUuid, charUuid) =>
   });
 });
 
-ipcMain.handle('ble:writeCharacteristic', async (event, serviceUuid, charUuid, data, withoutResponse) => {
-  if (!connectedPeripheral) {
+ipcMain.handle('ble:writeCharacteristic', async (event, deviceId, serviceUuid, charUuid, data, withoutResponse) => {
+  const targetPeripheral = deviceId ? connectedPeripherals.get(deviceId) : connectedPeripherals.values().next().value;
+
+  if (!targetPeripheral) {
     return { success: false, error: 'No device connected' };
   }
 
   return new Promise((resolve) => {
-    const service = connectedPeripheral.services.find(s => s.uuid === serviceUuid);
+    const service = targetPeripheral.services.find(s => s.uuid === serviceUuid);
     if (!service) {
       resolve({ success: false, error: 'Service not found' });
       return;
@@ -559,13 +574,15 @@ ipcMain.handle('ble:writeCharacteristic', async (event, serviceUuid, charUuid, d
   });
 });
 
-ipcMain.handle('ble:notifyCharacteristic', async (event, serviceUuid, charUuid, notify) => {
-  if (!connectedPeripheral) {
+ipcMain.handle('ble:notifyCharacteristic', async (event, deviceId, serviceUuid, charUuid, notify) => {
+  const targetPeripheral = deviceId ? connectedPeripherals.get(deviceId) : connectedPeripherals.values().next().value;
+
+  if (!targetPeripheral) {
     return { success: false, error: 'No device connected' };
   }
 
   return new Promise((resolve) => {
-    const service = connectedPeripheral.services.find(s => s.uuid === serviceUuid);
+    const service = targetPeripheral.services.find(s => s.uuid === serviceUuid);
     if (!service) {
       resolve({ success: false, error: 'Service not found' });
       return;
@@ -670,8 +687,10 @@ app.on('window-all-closed', () => {
 app.on('before-quit', () => {
   if (bleModule) {
     bleModule.stopScanning();
-    if (connectedPeripheral) {
-      connectedPeripheral.disconnect();
+    // Disconnect all connected devices
+    for (const [id, peripheral] of connectedPeripherals) {
+      peripheral.disconnect();
     }
+    connectedPeripherals.clear();
   }
 });

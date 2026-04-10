@@ -7,12 +7,14 @@ class DeviceCard extends StatelessWidget {
   final BleScanResult device;
   final VoidCallback onConnect;
   final VoidCallback onShowInfo;
+  final bool isConnected;
 
   const DeviceCard({
     super.key,
     required this.device,
     required this.onConnect,
     required this.onShowInfo,
+    this.isConnected = false,
   });
 
   @override
@@ -47,12 +49,37 @@ class DeviceCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      device.displayName,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            device.displayName,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        if (isConnected) ...[
+                          const SizedBox(width: 6),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: AppTheme.successColor.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: const Text(
+                              '已连接',
+                              style: TextStyle(
+                                fontSize: 10,
+                                color: AppTheme.successColor,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
                     const SizedBox(height: 4),
                     Text(
@@ -74,14 +101,19 @@ class DeviceCard extends StatelessWidget {
               // 连接按钮
               IconButton(
                 onPressed: onConnect,
-                icon: const Icon(Icons.link, size: 20),
+                icon: Icon(
+                  isConnected ? Icons.check_circle : Icons.link,
+                  size: 20,
+                ),
                 style: IconButton.styleFrom(
-                  backgroundColor: AppTheme.primaryColor.withValues(alpha: 0.1),
-                  foregroundColor: AppTheme.primaryColor,
+                  backgroundColor: isConnected
+                      ? AppTheme.successColor.withValues(alpha: 0.1)
+                      : AppTheme.primaryColor.withValues(alpha: 0.1),
+                  foregroundColor: isConnected ? AppTheme.successColor : AppTheme.primaryColor,
                   padding: const EdgeInsets.all(8),
                   minimumSize: const Size(36, 36),
                 ),
-                tooltip: '连接设备',
+                tooltip: isConnected ? '已连接' : '连接设备',
               ),
             ],
           ),

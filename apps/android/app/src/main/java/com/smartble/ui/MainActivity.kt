@@ -14,7 +14,9 @@ import androidx.compose.material.icons.filled.Bluetooth
 import androidx.compose.material.icons.filled.BluetoothSearching
 import androidx.compose.material.icons.filled.BroadcastOnPersonal
 import androidx.compose.material.icons.filled.Campaign
+import androidx.compose.material.icons.filled.DevicesOther
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.outlined.DevicesOther
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Campaign
 import androidx.compose.material3.Icon
@@ -52,6 +54,7 @@ import com.smartble.ui.screen.BluetoothStateIndicator
 import com.smartble.ui.screen.DeviceDetailScreen
 import com.smartble.ui.screen.DeviceListContent
 import com.smartble.ui.screen.DeviceListScreen
+import com.smartble.ui.screen.ConnectedDevicesContent
 import com.smartble.ui.theme.SmartBLETheme
 import com.smartble.ui.viewmodel.BroadcastViewModel
 import com.smartble.ui.viewmodel.DeviceDetailViewModel
@@ -89,11 +92,12 @@ sealed class BottomNavItem(
     val label: String
 ) {
     data object Scan : BottomNavItem("scan", Icons.Default.BluetoothSearching, Icons.Default.Bluetooth, "扫描")
+    data object Connected : BottomNavItem("connected", Icons.Outlined.DevicesOther, Icons.Default.DevicesOther, "连接")
     data object Broadcast : BottomNavItem("broadcast", Icons.Outlined.Campaign, Icons.Default.BroadcastOnPersonal, "广播")
     data object About : BottomNavItem("about", Icons.Outlined.Info, Icons.Default.Info, "关于")
 
     companion object {
-        val entries: List<BottomNavItem> = listOf(Scan, Broadcast, About)
+        val entries: List<BottomNavItem> = listOf(Scan, Connected, Broadcast, About)
     }
 }
 
@@ -177,6 +181,16 @@ fun SmartBLEApp(
                 )
             }
 
+            // Connected tab
+            composable(BottomNavItem.Connected.route) {
+                ConnectedDevicesContent(
+                    viewModel = deviceListViewModel,
+                    onDeviceClick = { deviceId, deviceName ->
+                        navController.navigate("device_detail/$deviceId/$deviceName")
+                    }
+                )
+            }
+
             // Broadcast tab
             composable(BottomNavItem.Broadcast.route) {
                 val factory = ViewModelProvider.AndroidViewModelFactory(application)
@@ -231,10 +245,11 @@ fun SmartBLEApp(
 
 fun getTitle(selectedItem: Int): String {
     return when (selectedItem) {
-        0 -> "Smart BLE"
-        1 -> "BLE 广播"
-        2 -> "关于"
-        else -> "Smart BLE"
+        0 -> "BLE Toolkit+"
+        1 -> "已连接设备"
+        2 -> "BLE 广播"
+        3 -> "关于"
+        else -> "BLE Toolkit+"
     }
 }
 

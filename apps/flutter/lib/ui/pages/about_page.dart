@@ -49,7 +49,7 @@ class AboutPage extends StatelessWidget {
 
             // App Name
             const Text(
-              'Smart BLE',
+              'BLE Toolkit+',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -65,7 +65,27 @@ class AboutPage extends StatelessWidget {
                 color: AppTheme.textSecondary,
               ),
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 8),
+
+            // Framework & Language
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              decoration: BoxDecoration(
+                color: AppTheme.primaryColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Text(
+                'Framework: Flutter\nLanguage: Dart',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: AppTheme.primaryColor,
+                  height: 1.5,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            const SizedBox(height: 24),
 
             // Description
             const Text(
@@ -107,11 +127,15 @@ class AboutPage extends StatelessWidget {
             _buildSection(
               '支持平台',
               [
-                _buildPlatformItem('Android', 'assets/icons/android.png', Icons.android),
-                _buildPlatformItem('iOS', 'assets/icons/ios.png', Icons.phone_iphone),
-                _buildPlatformItem('macOS', 'assets/icons/macos.png', Icons.laptop_mac),
-                _buildPlatformItem('Windows', 'assets/icons/windows.png', Icons.computer),
-                _buildPlatformItem('Linux', 'assets/icons/linux.png', Icons.computer),
+                Wrap(
+                  children: [
+                    _buildPlatformItem('Android', 'assets/icons/android.png', Icons.android),
+                    _buildPlatformItem('iOS', 'assets/icons/ios.png', Icons.phone_iphone),
+                    _buildPlatformItem('macOS', 'assets/icons/macos.png', Icons.laptop_mac),
+                    _buildPlatformItem('Windows', 'assets/icons/windows.png', Icons.computer),
+                    _buildPlatformItem('Linux', 'assets/icons/linux.png', Icons.computer),
+                  ],
+                ),
               ],
             ),
 
@@ -146,7 +170,7 @@ class AboutPage extends StatelessWidget {
 
             // Copyright
             Text(
-              '© 2025 Smart BLE\nReleased under MIT License',
+              '© 2025 BLE Toolkit+\nReleased under MIT License',
               style: TextStyle(
                 fontSize: 12,
                 color: AppTheme.textSecondary.withValues(alpha: 0.7),

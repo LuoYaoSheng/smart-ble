@@ -6,7 +6,7 @@ import SwiftUI
 
 struct BroadcastView: View {
     @EnvironmentObject var bleManager: BLEManager
-    @State private var advertiseName = "SmartBLE"
+    @State private var advertiseName = "BLE Toolkit+"
     @State private var serviceUUID = "FFF0"
 
     var body: some View {

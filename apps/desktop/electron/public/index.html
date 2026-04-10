@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartBLE Desktop</title>
+    <title>BLE Toolkit+</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -15,7 +15,7 @@
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M7 7h10M7 12h10M7 17h10M17 7l4-4M21 7l-4 4"/>
                     </svg>
-                    <span>SmartBLE</span>
+                    <span>BLE Toolkit+</span>
                 </div>
                 <div class="status-bar">
                     <div id="bluetoothStatus" class="status-indicator">
@@ -37,6 +37,10 @@
                 <button class="tab-btn" data-tab="broadcast" id="broadcastTab" style="display: none;">
                     <span class="icon">📢</span>
                     <span>创建广播</span>
+                </button>
+                <button class="tab-btn" data-tab="about" id="aboutTab">
+                    <span class="icon">ℹ️</span>
+                    <span>关于</span>
                 </button>
             </div>
 
@@ -130,6 +134,27 @@
                             <li>广播时无法扫描其他设备</li>
                         </ul>
                     </div>
+                </div>
+            </div>
+
+            <!-- 关于视图 -->
+            <div id="aboutView" class="view" style="display: none;">
+                <div class="about-container" style="padding: 40px; text-align: center;">
+                    <div style="font-size: 48px; color: #007AFF; margin-bottom: 20px;">ℹ️</div>
+                    <h1 class="about-title" style="margin-bottom: 10px;">BLE Toolkit+</h1>
+                    <p class="about-version" style="color: #666; margin-bottom: 20px;">Version 1.0.0</p>
+                    
+                    <div class="about-stack-info" style="background-color: rgba(0,122,255,0.1); padding: 12px 24px; border-radius: 8px; margin: 20px auto; max-width: 300px;">
+                        <p style="margin: 0; font-size: 14px; font-weight: 600; color: #007AFF;">Framework: Electron</p>
+                        <p style="margin: 6px 0 0 0; font-size: 14px; font-weight: 600; color: #007AFF;">Language: Node.js + JavaScript</p>
+                    </div>
+
+                    <div class="about-description" style="color: #444; line-height: 1.6; margin-bottom: 30px;">
+                        <p>跨平台 BLE 调试工具 (Web/Electron 实验版)</p>
+                        <p>Cross-platform BLE debugging tool.</p>
+                    </div>
+
+                    <p class="about-copyright" style="color: #999; font-size: 12px;">© 2025 SmartBLE. All rights reserved.</p>
                 </div>
             </div>
 

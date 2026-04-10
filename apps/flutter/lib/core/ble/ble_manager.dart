@@ -1,7 +1,7 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:rxdart/rxdart.dart';
-import '../models/ble_device.dart';
 import '../models/ble_service.dart';
 import '../models/ble_scan_result.dart' as models;
 
@@ -25,7 +25,8 @@ enum BleState {
 
 /// BLE 管理器
 ///
-/// 封装 flutter_blue_plus，提供简化的 BLE 操作接口
+/// 封装 flutter_blue_plus，提供简化的 BLE 操作接口。
+/// 支持多设备并发连接，每个设备独立管理连接状态和自动重连。
 class BleManager {
   /// 单例实例
   static BleManager? _instance;
@@ -39,44 +40,78 @@ class BleManager {
   /// 状态变化流控制器
   late StreamController<BleState> _stateController;
   late StreamController<List<models.BleScanResult>> _scanResultsController;
-  late StreamController<BluetoothConnectionState> _connectionStateController;
+  late StreamController<Map<String, BluetoothConnectionState>>
+      _connectionStatesController;
 
   /// 是否已初始化
   bool _isInitialized = false;
 
   void _initializeControllers() {
     _stateController = StreamController<BleState>.broadcast();
-    _scanResultsController = StreamController<List<models.BleScanResult>>.broadcast();
-    _connectionStateController = StreamController<BluetoothConnectionState>.broadcast();
+    _scanResultsController =
+        StreamController<List<models.BleScanResult>>.broadcast();
+    _connectionStatesController =
+        StreamController<Map<String, BluetoothConnectionState>>.broadcast();
   }
 
   /// 当前扫描到的设备
   final Map<String, models.BleScanResult> _scannedDevices = {};
 
-  /// 当前连接的设备
-  BleDevice? _connectedDevice;
+  /// 多设备服务列表 (deviceId -> services)
+  final Map<String, List<BleService>> _servicesByDevice = {};
 
-  /// 当前连接的设备服务
-  List<BleService> _services = [];
+  /// 多设备连接状态 (deviceId -> state)
+  final Map<String, BluetoothConnectionState> _connectionStates = {};
+
+  /// 多设备连接状态订阅 (deviceId -> subscription)
+  final Map<String, StreamSubscription> _connectionStateSubs = {};
 
   /// 是否正在扫描
   bool _isScanning = false;
+
+  /// 自动重连相关（per-device）
+  static const int _maxReconnectAttempts = 3;
+  final Map<String, int> _reconnectAttempts = {};
+  final Map<String, Timer> _reconnectTimers = {};
+  final Set<String> _userInitiatedDisconnects = {};
+  bool _autoReconnectEnabled = true;
 
   /// 状态流
   Stream<BleState> get stateStream => _stateController.stream;
 
   /// 扫描结果流（带防抖，避免频繁更新导致列表跳动）
-  Stream<List<models.BleScanResult>> get scanResultsStream => _scanResultsController.stream
-      .debounceTime(const Duration(milliseconds: 300));
+  Stream<List<models.BleScanResult>> get scanResultsStream =>
+      _scanResultsController.stream
+          .debounceTime(const Duration(milliseconds: 300));
 
-  /// 连接状态流
-  Stream<BluetoothConnectionState> get connectionStateStream => _connectionStateController.stream;
+  /// 所有设备连接状态流
+  Stream<Map<String, BluetoothConnectionState>> get connectionStatesStream =>
+      _connectionStatesController.stream;
 
-  /// 当前连接的设备
-  BleDevice? get connectedDevice => _connectedDevice;
+  /// 获取指定设备的连接状态
+  BluetoothConnectionState connectionStateFor(String deviceId) {
+    return _connectionStates[deviceId] ??
+        BluetoothConnectionState.disconnected;
+  }
 
-  /// 服务列表
-  List<BleService> get services => List.unmodifiable(_services);
+  /// 判断指定设备是否已连接
+  bool isDeviceConnected(String deviceId) {
+    return _connectionStates[deviceId] ==
+        BluetoothConnectionState.connected;
+  }
+
+  /// 获取所有已连接设备 ID
+  List<String> get connectedDeviceIds {
+    return _connectionStates.entries
+        .where((e) => e.value == BluetoothConnectionState.connected)
+        .map((e) => e.key)
+        .toList();
+  }
+
+  /// 获取指定设备的服务列表
+  List<BleService> servicesFor(String deviceId) {
+    return List.unmodifiable(_servicesByDevice[deviceId] ?? []);
+  }
 
   /// 是否正在扫描
   bool get isScanning => _isScanning;
@@ -86,7 +121,7 @@ class BleManager {
     // 如果控制器已关闭，重新初始化
     if (_stateController.isClosed ||
         _scanResultsController.isClosed ||
-        _connectionStateController.isClosed) {
+        _connectionStatesController.isClosed) {
       _initializeControllers();
       _isInitialized = false;
     }
@@ -133,7 +168,9 @@ class BleManager {
               name: deviceName,
               rssi: r.rssi,
               advertisData: manuData,
-              serviceUuids: r.advertisementData.serviceUuids.map((u) => u.toString()).toList(),
+              serviceUuids: r.advertisementData.serviceUuids
+                  .map((u) => u.toString())
+                  .toList(),
               timestamp: DateTime.now(),
             );
           }
@@ -164,15 +201,15 @@ class BleManager {
   }
 
   /// 开始扫描
+  ///
+  /// 默认扫描超时 5 秒，与 UniApp/Android/iOS/Tauri 等所有平台保持一致。
   Future<void> startScan({
-    Duration timeout = const Duration(seconds: 10),
+    Duration timeout = const Duration(seconds: 5),
     List<String>? serviceUuids,
   }) async {
     if (_isScanning) return;
 
     _isScanning = true;
-    // 不清空现有设备，让用户可以看到之前的设备
-    // _scannedDevices.clear();
 
     try {
       await FlutterBluePlus.startScan(
@@ -180,7 +217,7 @@ class BleManager {
         androidUsesFineLocation: true,
       );
     } catch (e) {
-      print('开始扫描失败: $e');
+      debugPrint('开始扫描失败: $e');
       _isScanning = false;
       rethrow;
     }
@@ -199,25 +236,106 @@ class BleManager {
   }
 
   /// 连接设备
-  Future<void> connect(String deviceId, {Duration timeout = const Duration(seconds: 30)}) async {
+  ///
+  /// 支持多设备并发连接。连接成功后会自动监听连接状态，
+  /// 异常断开时触发自动重连（最多 [_maxReconnectAttempts] 次）。
+  Future<void> connect(String deviceId,
+      {Duration timeout = const Duration(seconds: 30)}) async {
+    _userInitiatedDisconnects.remove(deviceId);
+    _reconnectAttempts[deviceId] = 0;
+    _cancelReconnect(deviceId);
+
     try {
       final device = BluetoothDevice.fromId(deviceId);
       await device.connect(timeout: timeout);
+
+      // 更新连接状态
+      _updateConnectionState(deviceId, BluetoothConnectionState.connected);
+
+      // 监听连接状态变化，用于自动重连
+      _connectionStateSubs[deviceId]?.cancel();
+      _connectionStateSubs[deviceId] = device.connectionState.listen((state) {
+        _updateConnectionState(deviceId, state);
+
+        if (state == BluetoothConnectionState.disconnected &&
+            !_userInitiatedDisconnects.contains(deviceId) &&
+            _autoReconnectEnabled) {
+          _attemptReconnect(deviceId);
+        }
+      });
     } catch (e) {
-      print('连接失败: $e');
+      debugPrint('连接失败: $e');
       rethrow;
     }
   }
 
-  /// 断开连接
-  Future<void> disconnect() async {
-    if (_connectedDevice == null) return;
+  /// 尝试自动重连（per-device）
+  void _attemptReconnect(String deviceId) {
+    final attempts = _reconnectAttempts[deviceId] ?? 0;
+    if (attempts >= _maxReconnectAttempts) {
+      debugPrint('设备 $deviceId 已达最大重连次数 ($_maxReconnectAttempts)，停止重连');
+      _reconnectAttempts.remove(deviceId);
+      return;
+    }
+
+    final nextAttempt = attempts + 1;
+    _reconnectAttempts[deviceId] = nextAttempt;
+    final delay = Duration(seconds: nextAttempt * 2); // 指数退避: 2s, 4s, 6s
+    debugPrint(
+        '设备 $deviceId 将在 ${delay.inSeconds}s 后尝试第 $nextAttempt 次重连...');
+
+    _cancelReconnect(deviceId);
+    _reconnectTimers[deviceId] = Timer(delay, () async {
+      try {
+        debugPrint('正在重连 $deviceId (第 $nextAttempt 次)...');
+        final device = BluetoothDevice.fromId(deviceId);
+        await device.connect(timeout: const Duration(seconds: 10));
+        _reconnectAttempts[deviceId] = 0;
+        _updateConnectionState(deviceId, BluetoothConnectionState.connected);
+        debugPrint('重连成功: $deviceId');
+      } catch (e) {
+        debugPrint('重连失败: $deviceId - $e');
+        // 递归尝试下一次
+        _attemptReconnect(deviceId);
+      }
+    });
+  }
+
+  /// 取消指定设备的重连定时器
+  void _cancelReconnect(String deviceId) {
+    _reconnectTimers[deviceId]?.cancel();
+    _reconnectTimers.remove(deviceId);
+  }
+
+  /// 设置是否启用自动重连
+  set autoReconnectEnabled(bool value) => _autoReconnectEnabled = value;
+
+  /// 断开指定设备的连接
+  ///
+  /// 用户主动断开时不会触发自动重连。
+  Future<void> disconnect(String deviceId) async {
+    _userInitiatedDisconnects.add(deviceId);
+    _cancelReconnect(deviceId);
+    _reconnectAttempts.remove(deviceId);
+    _connectionStateSubs[deviceId]?.cancel();
+    _connectionStateSubs.remove(deviceId);
 
     try {
-      final device = BluetoothDevice.fromId(_connectedDevice!.id);
+      final device = BluetoothDevice.fromId(deviceId);
       await device.disconnect();
     } catch (e) {
-      print('断开连接失败: $e');
+      debugPrint('断开连接失败: $e');
+    }
+
+    _updateConnectionState(deviceId, BluetoothConnectionState.disconnected);
+    _servicesByDevice.remove(deviceId);
+  }
+
+  /// 断开所有设备
+  Future<void> disconnectAll() async {
+    final deviceIds = _connectionStates.keys.toList();
+    for (final deviceId in deviceIds) {
+      await disconnect(deviceId);
     }
   }
 
@@ -228,19 +346,24 @@ class BleManager {
       await device.discoverServices();
       final services = device.servicesList;
 
-      _services = services.map((s) => BleService(
-        uuid: s.uuid.toString(),
-        isPrimary: s.isPrimary,
-        name: _getServiceName(s.uuid.toString()),
-        characteristics: s.characteristics.map((c) => BleCharacteristic(
-          uuid: c.uuid.toString(),
-          serviceUuid: s.uuid.toString(),
-          properties: _convertProperties(c.properties),
-          name: _getCharacteristicName(c.uuid.toString()),
-        )).toList(),
-      )).toList();
+      final bleServices = services
+          .map((s) => BleService(
+                uuid: s.uuid.toString(),
+                isPrimary: s.isPrimary,
+                name: _getServiceName(s.uuid.toString()),
+                characteristics: s.characteristics
+                    .map((c) => BleCharacteristic(
+                          uuid: c.uuid.toString(),
+                          serviceUuid: s.uuid.toString(),
+                          properties: _convertProperties(c.properties),
+                          name: _getCharacteristicName(c.uuid.toString()),
+                        ))
+                    .toList(),
+              ))
+          .toList();
 
-      return _services;
+      _servicesByDevice[deviceId] = bleServices;
+      return bleServices;
     } catch (e) {
       print('发现服务失败: $e');
       return [];
@@ -261,7 +384,9 @@ class BleManager {
       );
 
       final characteristic = service.characteristics.firstWhere(
-        (c) => c.uuid.toString().toLowerCase() == characteristicUuid.toLowerCase(),
+        (c) =>
+            c.uuid.toString().toLowerCase() ==
+            characteristicUuid.toLowerCase(),
         orElse: () => throw Exception('特征值未找到: $characteristicUuid'),
       );
 
@@ -289,7 +414,9 @@ class BleManager {
       );
 
       final characteristic = service.characteristics.firstWhere(
-        (c) => c.uuid.toString().toLowerCase() == characteristicUuid.toLowerCase(),
+        (c) =>
+            c.uuid.toString().toLowerCase() ==
+            characteristicUuid.toLowerCase(),
         orElse: () => throw Exception('特征值未找到: $characteristicUuid'),
       );
 
@@ -315,7 +442,9 @@ class BleManager {
       );
 
       final characteristic = service.characteristics.firstWhere(
-        (c) => c.uuid.toString().toLowerCase() == characteristicUuid.toLowerCase(),
+        (c) =>
+            c.uuid.toString().toLowerCase() ==
+            characteristicUuid.toLowerCase(),
         orElse: () => throw Exception('特征值未找到: $characteristicUuid'),
       );
 
@@ -340,7 +469,9 @@ class BleManager {
       );
 
       final characteristic = service.characteristics.firstWhere(
-        (c) => c.uuid.toString().toLowerCase() == characteristicUuid.toLowerCase(),
+        (c) =>
+            c.uuid.toString().toLowerCase() ==
+            characteristicUuid.toLowerCase(),
         orElse: () => throw Exception('特征值未找到: $characteristicUuid'),
       );
 
@@ -351,16 +482,45 @@ class BleManager {
     }
   }
 
+  /// 更新连接状态并通知
+  void _updateConnectionState(
+      String deviceId, BluetoothConnectionState state) {
+    if (state == BluetoothConnectionState.disconnected) {
+      _connectionStates.remove(deviceId);
+    } else {
+      _connectionStates[deviceId] = state;
+    }
+    if (!_connectionStatesController.isClosed) {
+      _connectionStatesController.add(Map.from(_connectionStates));
+    }
+  }
+
   /// 释放资源
   Future<void> dispose() async {
+    // 取消所有重连定时器
+    for (final timer in _reconnectTimers.values) {
+      timer.cancel();
+    }
+    _reconnectTimers.clear();
+    _reconnectAttempts.clear();
+    _userInitiatedDisconnects.clear();
+
+    // 取消所有连接状态订阅
+    for (final sub in _connectionStateSubs.values) {
+      sub.cancel();
+    }
+    _connectionStateSubs.clear();
+
     await stopScan();
     await _stateController.close();
     await _scanResultsController.close();
-    await _connectionStateController.close();
+    await _connectionStatesController.close();
 
     // 重置状态，允许重新初始化
     _isInitialized = false;
     _scannedDevices.clear();
+    _connectionStates.clear();
+    _servicesByDevice.clear();
   }
 
   /// 转换蓝牙状态

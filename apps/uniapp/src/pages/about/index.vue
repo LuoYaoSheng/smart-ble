@@ -5,6 +5,10 @@
 			<image class="logo" src="/static/logo.png" mode="aspectFit"></image>
 			<text class="app-name">BLE Toolkit+</text>
 			<text class="version">Version {{appVersion}}</text>
+			<view class="tech-stack">
+				<text class="tech-text">Framework: UniApp (Vue3)</text>
+				<text class="tech-text">Language: JavaScript / Vue</text>
+			</view>
 		</view>
 
 		<!-- 应用信息 -->
@@ -486,6 +490,23 @@
 	.version {
 		font-size: 24rpx;
 		color: rgba(255, 255, 255, 0.8);
+		margin-bottom: 20rpx;
+	}
+
+	.tech-stack {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		background: rgba(255, 255, 255, 0.2);
+		padding: 8rpx 20rpx;
+		border-radius: 12rpx;
+		gap: 4rpx;
+	}
+
+	.tech-text {
+		font-size: 20rpx;
+		color: #fff;
+		font-weight: 500;
 	}
 
 	.section {

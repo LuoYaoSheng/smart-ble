@@ -13,7 +13,7 @@ struct SmartBLEApp: App {
             ContentView()
                 .environmentObject(bleManager)
                 .onAppear {
-                    bleManager.log("SmartBLE Started", type: .info)
+                    bleManager.log("BLE Toolkit+ Started", type: .info)
                 }
         }
     }

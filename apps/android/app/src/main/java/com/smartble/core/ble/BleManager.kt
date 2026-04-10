@@ -273,6 +273,25 @@ class BleManager private constructor(private val context: Context) {
     }
 
     /**
+     * 获取所有已连接设备 ID
+     */
+    val connectedDeviceIds: List<String>
+        get() = _connectionStates.value
+            .filter { it.value == ConnectionState.Connected }
+            .keys
+            .toList()
+
+    /**
+     * 断开所有已连接设备
+     */
+    @SuppressLint("MissingPermission")
+    fun disconnectAll() {
+        val deviceIds = connectedDeviceIds.toList()
+        for (deviceId in deviceIds) {
+            disconnect(deviceId)
+        }
+    }
+    /**
      * 发现服务
      */
     @SuppressLint("MissingPermission")
@@ -693,11 +712,11 @@ class BleManager private constructor(private val context: Context) {
     fun release() {
         stopScan()
         disableAllAutoReconnect()
-        disconnectAll()
+        cleanupAllConnections()
     }
 
     @SuppressLint("MissingPermission")
-    private fun disconnectAll() {
+    private fun cleanupAllConnections() {
         val deviceIds = gattConnections.keys.toList()
         deviceIds.forEach { deviceId ->
             userInitiatedDisconnects.add(deviceId)

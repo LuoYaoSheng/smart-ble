@@ -1,6 +1,6 @@
 //
 // SmartBLE - BLE Manager
-//
+// Multi-device concurrent connection support
 
 import Foundation
 import CoreBluetooth
@@ -14,11 +14,54 @@ class BLEManager: NSObject, ObservableObject {
     @Published var scanResults: [ScanResult] = []
     @Published var filteredScanResults: [ScanResult] = []
     @Published var isScanning = false
-    @Published var connectionState: ConnectionState = .disconnected
-    @Published var connectedDevice: ScanResult?
-    @Published var services: [BLEService] = []
-    @Published var logs: [LogEntry] = []
     @Published var isAdvertising = false
+    @Published var logs: [LogEntry] = []
+
+    // MARK: - Multi-device connection state
+    /// Per-device connection state (deviceId -> ConnectionState)
+    @Published var connectionStates: [String: ConnectionState] = [:]
+    /// Per-device connected info (deviceId -> ScanResult)
+    @Published var connectedDevices: [String: ScanResult] = [:]
+    /// Per-device services (deviceId -> [BLEService])
+    @Published var servicesByDevice: [String: [BLEService]] = [:]
+
+    // MARK: - Backward compatibility (single-device convenience)
+    /// Returns the first connected device (for views that only show one)
+    var connectedDevice: ScanResult? {
+        connectedDevices.values.first
+    }
+
+    /// Returns the connection state of the first connected (or connecting) device
+    var connectionState: ConnectionState {
+        if let connecting = connectionStates.first(where: { $0.value == .connecting }) {
+            return connecting.value
+        }
+        if let connected = connectionStates.first(where: { $0.value == .connected }) {
+            return connected.value
+        }
+        if let disconnecting = connectionStates.first(where: { $0.value == .disconnecting }) {
+            return disconnecting.value
+        }
+        return .disconnected
+    }
+
+    /// Returns services of the first connected device
+    var services: [BLEService] {
+        if let first = connectedDevices.keys.first {
+            return servicesByDevice[first] ?? []
+        }
+        return []
+    }
+
+    /// All connected device IDs
+    var connectedDeviceIds: [String] {
+        connectionStates.filter { $0.value == .connected }.map { $0.key }
+    }
+
+    /// Check if a specific device is connected
+    func isDeviceConnected(_ deviceId: String) -> Bool {
+        connectionStates[deviceId] == .connected
+    }
 
     // MARK: - Filter Settings
     @Published var filterRSSI: Int = -100
@@ -31,15 +74,18 @@ class BLEManager: NSObject, ObservableObject {
     private var centralManager: CBCentralManager!
     private var peripheralManager: CBPeripheralManager!
 
-    private var connectedPeripheral: CBPeripheral?
+    /// Per-device peripheral references (deviceId -> CBPeripheral)
+    private var connectedPeripherals: [String: CBPeripheral] = [:]
     private var discoveredPeripherals: [String: CBPeripheral] = [:]
+    /// Per-device characteristics cache (deviceId:serviceUUID:charUUID -> CBCharacteristic)
     private var characteristicsMap: [String: CBCharacteristic] = [:]
 
     // MARK: - Timer
     private var autoStopTimer: Timer?
 
     // MARK: - Notify State Tracking
-    private var notifyingCharacteristics: Set<String> = []  // "serviceUUID:characteristicUUID"
+    /// "deviceId:serviceUUID:characteristicUUID" -> Bool
+    private var notifyingCharacteristics: Set<String> = []
 
     // MARK: - UUID Helper
     private func getServiceName(for uuid: CBUUID) -> String {
@@ -174,47 +220,76 @@ class BLEManager: NSObject, ObservableObject {
         }
     }
 
-    // MARK: - Connection
+    // MARK: - Connection (Multi-device)
     func connect(to device: ScanResult) {
         guard centralManager.state == .poweredOn else {
             log("Bluetooth not ready", type: .error)
             return
         }
 
-        connectionState = .connecting
+        connectionStates[device.id] = .connecting
         stopScan()
 
         centralManager.connect(device.peripheral, options: nil)
         log("Connecting to \(device.name)", type: .info)
     }
 
-    func disconnect() {
-        guard let peripheral = connectedPeripheral else {
-            connectionState = .disconnected
-            connectedDevice = nil
-            services.removeAll()
+    /// Disconnect a specific device by ID
+    func disconnect(deviceId: String) {
+        guard let peripheral = connectedPeripherals[deviceId] else {
+            connectionStates.removeValue(forKey: deviceId)
+            connectedDevices.removeValue(forKey: deviceId)
+            servicesByDevice.removeValue(forKey: deviceId)
             return
         }
 
-        connectionState = .disconnecting
+        connectionStates[deviceId] = .disconnecting
         centralManager.cancelPeripheralConnection(peripheral)
-        log("Disconnecting...", type: .info)
+        log("Disconnecting from \(deviceId)...", type: .info)
+    }
+
+    /// Disconnect all connected devices
+    func disconnectAll() {
+        for deviceId in connectedPeripherals.keys {
+            disconnect(deviceId: deviceId)
+        }
+    }
+
+    /// Backward-compatible disconnect (disconnects first connected device)
+    func disconnect() {
+        if let first = connectedPeripherals.keys.first {
+            disconnect(deviceId: first)
+        } else {
+            // Fallback: clear all state
+            connectionStates.removeAll()
+            connectedDevices.removeAll()
+            servicesByDevice.removeAll()
+        }
     }
 
     // MARK: - Service Discovery
-    func discoverServices() {
-        guard let peripheral = connectedPeripheral else {
-            log("No device connected", type: .error)
+    func discoverServices(for deviceId: String) {
+        guard let peripheral = connectedPeripherals[deviceId] else {
+            log("Device \(deviceId) not connected", type: .error)
             return
         }
 
-        log("Discovering services...", type: .info)
+        log("Discovering services for \(deviceId)...", type: .info)
         peripheral.discoverServices(nil)
     }
 
-    func discoverCharacteristics(for service: CBService) {
-        guard let peripheral = connectedPeripheral else {
+    /// Backward-compatible: discover services for first connected device
+    func discoverServices() {
+        if let first = connectedPeripherals.keys.first {
+            discoverServices(for: first)
+        } else {
             log("No device connected", type: .error)
+        }
+    }
+
+    func discoverCharacteristics(for service: CBService) {
+        guard let peripheral = service.peripheral else {
+            log("No peripheral for service", type: .error)
             return
         }
 
@@ -222,9 +297,9 @@ class BLEManager: NSObject, ObservableObject {
         peripheral.discoverCharacteristics(nil, for: service)
     }
 
-    // MARK: - Read Characteristic
-    func readCharacteristic(serviceUUID: String, characteristicUUID: String) {
-        guard let peripheral = connectedPeripheral,
+    // MARK: - Read Characteristic (Multi-device)
+    func readCharacteristic(deviceId: String, serviceUUID: String, characteristicUUID: String) {
+        guard let peripheral = connectedPeripherals[deviceId],
               let service = peripheral.services?.first(where: { $0.uuid.uuidString == serviceUUID }),
               let characteristic = service.characteristics?.first(where: { $0.uuid.uuidString == characteristicUUID }) else {
             log("Characteristic not found", type: .error)
@@ -234,9 +309,18 @@ class BLEManager: NSObject, ObservableObject {
         peripheral.readValue(for: characteristic)
     }
 
-    // MARK: - Write Characteristic
-    func writeCharacteristic(serviceUUID: String, characteristicUUID: String, data: Data, withoutResponse: Bool = false) {
-        guard let peripheral = connectedPeripheral,
+    /// Backward-compatible read (uses first connected device)
+    func readCharacteristic(serviceUUID: String, characteristicUUID: String) {
+        if let first = connectedPeripherals.keys.first {
+            readCharacteristic(deviceId: first, serviceUUID: serviceUUID, characteristicUUID: characteristicUUID)
+        } else {
+            log("No device connected", type: .error)
+        }
+    }
+
+    // MARK: - Write Characteristic (Multi-device)
+    func writeCharacteristic(deviceId: String, serviceUUID: String, characteristicUUID: String, data: Data, withoutResponse: Bool = false) {
+        guard let peripheral = connectedPeripherals[deviceId],
               let service = peripheral.services?.first(where: { $0.uuid.uuidString == serviceUUID }),
               let characteristic = service.characteristics?.first(where: { $0.uuid.uuidString == characteristicUUID }) else {
             log("Characteristic not found", type: .error)
@@ -247,9 +331,18 @@ class BLEManager: NSObject, ObservableObject {
         peripheral.writeValue(data, for: characteristic, type: type)
     }
 
-    // MARK: - Notify Characteristic
-    func setNotification(serviceUUID: String, characteristicUUID: String, enabled: Bool) {
-        guard let peripheral = connectedPeripheral,
+    /// Backward-compatible write (uses first connected device)
+    func writeCharacteristic(serviceUUID: String, characteristicUUID: String, data: Data, withoutResponse: Bool = false) {
+        if let first = connectedPeripherals.keys.first {
+            writeCharacteristic(deviceId: first, serviceUUID: serviceUUID, characteristicUUID: characteristicUUID, data: data, withoutResponse: withoutResponse)
+        } else {
+            log("No device connected", type: .error)
+        }
+    }
+
+    // MARK: - Notify Characteristic (Multi-device)
+    func setNotification(deviceId: String, serviceUUID: String, characteristicUUID: String, enabled: Bool) {
+        guard let peripheral = connectedPeripherals[deviceId],
               let service = peripheral.services?.first(where: { $0.uuid.uuidString == serviceUUID }),
               let characteristic = service.characteristics?.first(where: { $0.uuid.uuidString == characteristicUUID }) else {
             log("Characteristic not found", type: .error)
@@ -259,8 +352,8 @@ class BLEManager: NSObject, ObservableObject {
         log("\(action) notifications for: \(characteristicUUID)", type: .info)
         peripheral.setNotifyValue(enabled, for: characteristic)
 
-        // Track notify state
-        let key = "\(serviceUUID):\(characteristicUUID)"
+        // Track notify state (per-device)
+        let key = "\(deviceId):\(serviceUUID):\(characteristicUUID)"
         if enabled {
             notifyingCharacteristics.insert(key)
         } else {
@@ -268,15 +361,32 @@ class BLEManager: NSObject, ObservableObject {
         }
     }
 
-    // Check if a characteristic is currently notifying
-    func isNotifying(serviceUUID: String, characteristicUUID: String) -> Bool {
-        let key = "\(serviceUUID):\(characteristicUUID)"
+    /// Backward-compatible setNotification (uses first connected device)
+    func setNotification(serviceUUID: String, characteristicUUID: String, enabled: Bool) {
+        if let first = connectedPeripherals.keys.first {
+            setNotification(deviceId: first, serviceUUID: serviceUUID, characteristicUUID: characteristicUUID, enabled: enabled)
+        } else {
+            log("No device connected", type: .error)
+        }
+    }
+
+    // Check if a characteristic is currently notifying (per-device)
+    func isNotifying(deviceId: String, serviceUUID: String, characteristicUUID: String) -> Bool {
+        let key = "\(deviceId):\(serviceUUID):\(characteristicUUID)"
         return notifyingCharacteristics.contains(key)
     }
 
-    // Clear all notify states on disconnect
-    private func clearNotifyStates() {
-        notifyingCharacteristics.removeAll()
+    /// Backward-compatible isNotifying (uses first connected device)
+    func isNotifying(serviceUUID: String, characteristicUUID: String) -> Bool {
+        if let first = connectedPeripherals.keys.first {
+            return isNotifying(deviceId: first, serviceUUID: serviceUUID, characteristicUUID: characteristicUUID)
+        }
+        return false
+    }
+
+    // Clear all notify states for a specific device
+    private func clearNotifyStates(for deviceId: String) {
+        notifyingCharacteristics = notifyingCharacteristics.filter { !$0.hasPrefix("\(deviceId):") }
     }
 
     // MARK: - Advertising (Peripheral Mode)
@@ -326,8 +436,10 @@ class BLEManager: NSObject, ObservableObject {
 
     // MARK: - Helper Methods
     private func updateServices(for peripheral: CBPeripheral) {
+        let deviceId = peripheral.identifier.uuidString
+
         guard let services = peripheral.services else {
-            self.services = []
+            servicesByDevice[deviceId] = []
             return
         }
 
@@ -358,16 +470,16 @@ class BLEManager: NSObject, ObservableObject {
 
                     serviceModel.characteristics.append(charModel)
 
-                    // Store for quick access
-                    characteristicsMap["\(service.uuid.uuidString):\(characteristic.uuid.uuidString)"] = characteristic
+                    // Store for quick access (per-device key)
+                    characteristicsMap["\(deviceId):\(service.uuid.uuidString):\(characteristic.uuid.uuidString)"] = characteristic
                 }
             }
 
             result.append(serviceModel)
         }
 
-        self.services = result
-        log("Discovered \(result.count) services", type: .success)
+        servicesByDevice[deviceId] = result
+        log("Discovered \(result.count) services for device \(deviceId.prefix(8))...", type: .success)
     }
 
     private func dataToHexString(_ data: Data) -> String {
@@ -466,14 +578,18 @@ extension BLEManager: @preconcurrency CBCentralManagerDelegate {
     }
 
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-        connectedPeripheral = peripheral
-        connectionState = .connected
+        let deviceId = peripheral.identifier.uuidString
+
+        connectedPeripherals[deviceId] = peripheral
+        connectionStates[deviceId] = .connected
 
         // CRITICAL: Set delegate to receive peripheral callbacks
         peripheral.delegate = self
 
-        let device = scanResults.first { $0.id == peripheral.identifier.uuidString }
-        connectedDevice = device
+        let device = scanResults.first { $0.id == deviceId }
+        if let device = device {
+            connectedDevices[deviceId] = device
+        }
 
         log("Connected to \(peripheral.name ?? "Unknown Device"), discovering services...", type: .success)
 
@@ -482,23 +598,26 @@ extension BLEManager: @preconcurrency CBCentralManagerDelegate {
     }
 
     func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
-        connectionState = .disconnected
+        let deviceId = peripheral.identifier.uuidString
+        connectionStates[deviceId] = .disconnected
         if let error = error {
             log("Failed to connect: \(error.localizedDescription)", type: .error)
         }
     }
 
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
-        connectedPeripheral = nil
-        connectionState = .disconnected
-        connectedDevice = nil
-        services.removeAll()
-        clearNotifyStates()  // Clear notify tracking
+        let deviceId = peripheral.identifier.uuidString
+
+        connectedPeripherals.removeValue(forKey: deviceId)
+        connectionStates.removeValue(forKey: deviceId)
+        connectedDevices.removeValue(forKey: deviceId)
+        servicesByDevice.removeValue(forKey: deviceId)
+        clearNotifyStates(for: deviceId)
 
         if let error = error {
-            log("Disconnected: \(error.localizedDescription)", type: .error)
+            log("Disconnected from \(deviceId.prefix(8))...: \(error.localizedDescription)", type: .error)
         } else {
-            log("Disconnected", type: .info)
+            log("Disconnected from \(deviceId.prefix(8))...", type: .info)
         }
     }
 }
