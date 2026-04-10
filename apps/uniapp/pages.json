@@ -11,24 +11,9 @@
 					"colorType": "grey"
 				},
 				"app-plus": {
-					"titleNView": {
-						"buttons": [{
-							"text": "广播",
-							"fontSize": "14px",
-							"color": "#007AFF",
-							"width": "46px",
-							"float": "left"
-						}, {
-							"text": "关于",
-							"float": "right",
-							"fontSize": "14px",
-							"width": "46px",
-							"color": "#007AFF"
-						}]
-					}
+					"titleNView": false
 				},
 				"mp-weixin": {
-					"navigationBarButtonStyle": "black",
 					"navigationBarTitleText": "BLE调试工具"
 				}
 			}
@@ -78,5 +63,25 @@
 			"^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue",
 			"^fui-(.*)": "@/components/firstui/fui-$1/fui-$1.vue"
 		}
+	},
+	"tabBar": {
+		"color": "#7A7E83",
+		"selectedColor": "#007AFF",
+		"backgroundColor": "#ffffff",
+		"borderStyle": "black",
+		"list": [
+			{
+				"pagePath": "pages/index/index",
+				"text": "设备"
+			},
+			{
+				"pagePath": "pages/broadcast/index",
+				"text": "广播"
+			},
+			{
+				"pagePath": "pages/about/index",
+				"text": "关于"
+			}
+		]
 	}
 }

@@ -4,18 +4,6 @@
 		<view class="filter-panel">
 			<view class="filter-header">
 				<text class="filter-title">过滤设置</text>
-				<!-- #ifdef MP-WEIXIN -->
-				<view class="nav-buttons">
-					<button class="nav-btn" @click="goBroadcast">
-						<text class="button-icon">📡</text>
-						<text>广播</text>
-					</button>
-					<button class="nav-btn" @click="goAbout">
-						<text class="button-icon">ℹ️</text>
-						<text>关于</text>
-					</button>
-				</view>
-				<!-- #endif -->
 			</view>
 
 			<view class="filter-item">
@@ -223,11 +211,7 @@
 		},
 		// 导航栏按钮点击事件处理
 		onNavigationBarButtonTap(e) {
-			if (e.index === 0) {
-				this.goBroadcast();
-			}else{
-				this.goAbout()
-			}
+			// TabBar 模式下，自定义顶部按钮失效或移除处理
 		},
 		methods: {
 			// #ifdef MP-WEIXIN
@@ -265,20 +249,8 @@
 			},
 			// #endif
 
-			// 跳转到广播页面
-			goBroadcast() {
-				uni.navigateTo({
-					url: '/pages/broadcast/index'
-				});
-			},
-			
-			// 跳转到关于页面
-			goAbout(){
-				uni.navigateTo({
-					url: '/pages/about/index'
-				});
-			},
-			
+			// #endif
+
 			// 信号强度滑块变化处理
 			onRSSIChange(e) {
 				this.filterRSSI = e.detail.value;
