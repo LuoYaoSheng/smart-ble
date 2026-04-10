@@ -214,6 +214,7 @@ pio device monitor
 - [BLE 协议](./docs/03-ble-protocol.md)
 - [UI 流程](./docs/04-ui-flows.md)
 - [平台差异](./docs/05-platform-differences.md)
+- [微信小程序开发避坑指南](./docs/06-wechat-miniprogram-pitfalls.md)
 - [公众号系列](./docs/wechat-articles/README.md)
 
 ---
