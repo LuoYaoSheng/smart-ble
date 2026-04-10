@@ -35,8 +35,8 @@ const state = {
     scanning: false,
     devices: new Map(),
     currentDevice: null,
-    connected: false,
-    services: [],
+    connectedDevices: new Set(),
+    servicesByDevice: new Map(),
     logs: [],
     advertising: false,
     // Filter options
@@ -226,9 +226,9 @@ async function setupTauriListeners() {
 
     // Listen for notification data
     await listen('notification-received', (event) => {
-        const { serviceUuid, charUuid, value } = event.payload;
-        addLog('info', `Received from ${charUuid.slice(0, 8)}...: ${value}`);
-        updateCharacteristicValue(serviceUuid, charUuid, value);
+        const { deviceId, serviceUuid, charUuid, value } = event.payload;
+        addLog('info', `[${deviceId}] Received from ${charUuid.slice(0, 8)}...: ${value}`);
+        updateCharacteristicValue(deviceId, serviceUuid, charUuid, value);
     });
 }
 
@@ -545,7 +545,6 @@ async function connectDevice(deviceId) {
     if (state.scanning) await stopScan();
 
     try {
-        // Show connecting status
         const device = state.devices.get(deviceId);
         state.currentDevice = device;
         showDeviceDetail();
@@ -554,35 +553,36 @@ async function connectDevice(deviceId) {
 
         const result = await invoke('connect', { deviceId });
         if (result.success) {
-            state.connected = true;
+            state.connectedDevices.add(deviceId);
             updateConnectionStatus(true);
             updateDeviceButtons();
             await discoverServices(deviceId);
             addLog('success', `Connected to ${state.currentDevice?.name || 'device'}`);
         } else {
+            state.connectedDevices.delete(deviceId);
             updateConnectionStatus(false);
             updateDeviceButtons();
             addLog('error', `Connect failed: ${result.error}`);
         }
     } catch (error) {
+        state.connectedDevices.delete(deviceId);
         updateConnectionStatus(false);
         updateDeviceButtons();
         addLog('error', `Connect error: ${error}`);
     }
 }
 
-// Disconnect Device - just disconnect, stay on detail view
+// Disconnect Device
 async function disconnectDevice() {
+    if (!state.currentDevice) return;
+    const deviceId = state.currentDevice.id;
     try {
-        const result = await invoke('disconnect');
+        const result = await invoke('disconnect', { deviceId });
         if (result.success) {
-            state.connected = false;
+            state.connectedDevices.delete(deviceId);
             updateConnectionStatus(false);
             updateDeviceButtons();
-            addLog('info', 'Disconnected');
-
-            // Note: We don't restart scan here to avoid conflicts
-            // User can manually scan or click back to list
+            addLog('info', `Disconnected ${deviceId}`);
         }
     } catch (error) {
         addLog('error', `Disconnect error: ${error}`);
@@ -591,19 +591,15 @@ async function disconnectDevice() {
 
 // Update device connect/disconnect button visibility
 function updateDeviceButtons() {
-    console.log('[updateDeviceButtons] connected:', state.connected);
-    console.log('[updateDeviceButtons] connectButton:', elements.connectButton);
-    console.log('[updateDeviceButtons] disconnectButton:', elements.disconnectButton);
+    const isConn = state.currentDevice ? state.connectedDevices.has(state.currentDevice.id) : false;
 
     if (elements.connectButton) {
-        elements.connectButton.style.display = state.connected ? 'none' : 'block';
-        console.log('[updateDeviceButtons] connectButton display:', elements.connectButton.style.display);
+        elements.connectButton.style.display = isConn ? 'none' : 'block';
     }
     if (elements.disconnectButton) {
-        elements.disconnectButton.style.display = state.connected ? 'block' : 'none';
-        console.log('[updateDeviceButtons] disconnectButton display:', elements.disconnectButton.style.display);
+        elements.disconnectButton.style.display = isConn ? 'block' : 'none';
     }
-    if (!state.connected && elements.servicesList) {
+    if (!isConn && elements.servicesList) {
         elements.servicesList.innerHTML = '<div class="empty-state"><div class="empty-text">Connect to discover services</div></div>';
     }
 }
@@ -621,9 +617,12 @@ function showDeviceDetail() {
     if (elements.deviceId) {
         elements.deviceId.textContent = state.currentDevice?.id || '';
     }
-    // Update status based on actual connection state
-    updateConnectionStatus(state.connected);
+    
+    const isConn = state.currentDevice ? state.connectedDevices.has(state.currentDevice.id) : false;
+    updateConnectionStatus(isConn);
     updateDeviceButtons();
+    
+    renderServices();
 }
 
 function updateConnectionStatus(connected, connecting = false) {
@@ -648,29 +647,35 @@ async function discoverServices(deviceId) {
     try {
         const result = await invoke('discover_services', { deviceId });
         if (result.success && result.data) {
-            state.services = result.data;
-            renderServices();
-            addLog('success', `Found ${state.services.length} service${state.services.length !== 1 ? 's' : ''}`);
+            state.servicesByDevice.set(deviceId, result.data);
+            if (state.currentDevice && state.currentDevice.id === deviceId) {
+                renderServices();
+                addLog('success', `Found ${result.data.length} service(s) for ${deviceId}`);
+            }
         } else {
             addLog('error', `Service discovery failed: ${result.error}`);
-            renderServices();
+            if (state.currentDevice && state.currentDevice.id === deviceId) renderServices();
         }
     } catch (error) {
         addLog('error', `Service discovery error: ${error}`);
-        renderServices();
+        if (state.currentDevice && state.currentDevice.id === deviceId) renderServices();
     }
 }
 
 // Render Services
 function renderServices() {
     if (!elements.servicesList) return;
+    
+    if (!state.currentDevice) return;
+    const deviceId = state.currentDevice.id;
+    const currentServices = state.servicesByDevice.get(deviceId) || [];
 
-    if (state.services.length === 0) {
+    if (currentServices.length === 0) {
         elements.servicesList.innerHTML = '<div class="empty-state"><div class="empty-text">No services found</div></div>';
         return;
     }
 
-    elements.servicesList.innerHTML = state.services.map((service, sIdx) => `
+    elements.servicesList.innerHTML = currentServices.map((service, sIdx) => `
         <div class="service-card" data-service-idx="${sIdx}">
             <div class="service-header">
                 <div class="service-info">
@@ -745,12 +750,14 @@ elements.servicesList?.addEventListener('click', async (e) => {
 
 // Read Characteristic
 async function readCharacteristic(serviceUuid, charUuid) {
+    if (!state.currentDevice) return;
+    const deviceId = state.currentDevice.id;
     try {
         addLog('info', `Reading characteristic ${charUuid}`);
-        const result = await invoke('read_characteristic', { serviceUuid, charUuid });
+        const result = await invoke('read_characteristic', { deviceId, serviceUuid, charUuid });
         if (result.success) {
             addLog('success', `Read: ${result.value || '(empty)'}`);
-            updateCharacteristicValue(serviceUuid, charUuid, result.value);
+            updateCharacteristicValue(deviceId, serviceUuid, charUuid, result.value);
         } else {
             addLog('error', `Read failed: ${result.error}`);
         }
@@ -783,7 +790,8 @@ function closeWriteDialog() {
 
 // Write Data
 async function writeData() {
-    if (!currentWriteChar) return;
+    if (!currentWriteChar || !state.currentDevice) return;
+    const deviceId = state.currentDevice.id;
 
     const data = elements.writeDataInput?.value.trim();
     if (!data) return;
@@ -792,6 +800,7 @@ async function writeData() {
 
     try {
         const result = await invoke('write_characteristic', {
+            deviceId,
             serviceUuid: currentWriteChar.serviceUuid,
             charUuid: currentWriteChar.charUuid,
             data,
@@ -811,11 +820,14 @@ async function writeData() {
 
 // Toggle Notify
 async function toggleNotify(serviceUuid, charUuid, btn) {
+    if (!state.currentDevice) return;
+    const deviceId = state.currentDevice.id;
     const isNotifying = btn.classList.contains('active');
     const newState = !isNotifying;
 
     try {
         const result = await invoke('notify_characteristic', {
+            deviceId,
             serviceUuid,
             charUuid,
             notify: newState
@@ -834,7 +846,8 @@ async function toggleNotify(serviceUuid, charUuid, btn) {
 }
 
 // Update Characteristic Value
-function updateCharacteristicValue(serviceUuid, charUuid, value) {
+function updateCharacteristicValue(deviceId, serviceUuid, charUuid, value) {
+    if (!state.currentDevice || state.currentDevice.id !== deviceId) return;
     const charItem = elements.servicesList?.querySelector(
         `[data-service-uuid="${serviceUuid}"][data-char-uuid="${charUuid}"]`
     );

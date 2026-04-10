@@ -528,6 +528,7 @@ ipcMain.handle('ble:readCharacteristic', async (event, deviceId, serviceUuid, ch
         console.log('Read result:', hexValue);
 
         sendToRenderer('ble:characteristicValueChanged', {
+          deviceId: targetPeripheral.id,
           serviceUuid,
           characteristicUuid: charUuid,
           value: hexValue
@@ -604,6 +605,7 @@ ipcMain.handle('ble:notifyCharacteristic', async (event, deviceId, serviceUuid, 
         console.log('Notification received:', hexValue);
 
         sendToRenderer('ble:characteristicValueChanged', {
+          deviceId: targetPeripheral.id,
           serviceUuid,
           characteristicUuid: charUuid,
           value: hexValue

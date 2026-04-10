@@ -15,20 +15,20 @@ contextBridge.exposeInMainWorld('bleAPI', {
 
   // 连接
   connect: (deviceId) => ipcRenderer.invoke('ble:connect', deviceId),
-  disconnect: () => ipcRenderer.invoke('ble:disconnect'),
+  disconnect: (deviceId) => ipcRenderer.invoke('ble:disconnect', deviceId),
 
   // 服务
-  discoverServices: () => ipcRenderer.invoke('ble:discoverServices'),
+  discoverServices: (deviceId) => ipcRenderer.invoke('ble:discoverServices', deviceId),
 
   // 特征值操作
-  readCharacteristic: (serviceUuid, charUuid) =>
-    ipcRenderer.invoke('ble:readCharacteristic', serviceUuid, charUuid),
+  readCharacteristic: (deviceId, serviceUuid, charUuid) =>
+    ipcRenderer.invoke('ble:readCharacteristic', deviceId, serviceUuid, charUuid),
 
-  writeCharacteristic: (serviceUuid, charUuid, data, withoutResponse) =>
-    ipcRenderer.invoke('ble:writeCharacteristic', serviceUuid, charUuid, data, withoutResponse),
+  writeCharacteristic: (deviceId, serviceUuid, charUuid, data, withoutResponse) =>
+    ipcRenderer.invoke('ble:writeCharacteristic', deviceId, serviceUuid, charUuid, data, withoutResponse),
 
-  notifyCharacteristic: (serviceUuid, charUuid, notify) =>
-    ipcRenderer.invoke('ble:notifyCharacteristic', serviceUuid, charUuid, notify),
+  notifyCharacteristic: (deviceId, serviceUuid, charUuid, notify) =>
+    ipcRenderer.invoke('ble:notifyCharacteristic', deviceId, serviceUuid, charUuid, notify),
 
   // 广播
   startAdvertising: (name, serviceUuids) =>

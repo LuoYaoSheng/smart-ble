@@ -5,7 +5,8 @@
 class App {
     constructor() {
         this.devices = new Map();
-        this.services = [];
+        this.servicesByDevice = new Map();
+        this.connectedDevices = new Set();
         this.logs = [];
         this.currentDevice = null;
         this.isScanning = false;
@@ -695,32 +696,42 @@ class App {
     }
 
     onDeviceConnected(deviceId) {
-        this.addLog('设备已连接', 'success');
-        this.updateConnectionStatus('connected');
+        this.connectedDevices.add(deviceId);
+        
+        if (this.currentDevice && this.currentDevice.id === deviceId) {
+            this.addLog('设备已连接', 'success');
+            this.updateConnectionStatus('connected');
+        }
 
         // Automatically discover services
-        this.discoverServices();
+        this.discoverServices(deviceId);
     }
 
     onDeviceDisconnected(deviceId) {
-        this.addLog('设备已断开', 'info');
-        this.updateConnectionStatus('disconnected');
+        this.connectedDevices.delete(deviceId);
+        if (this.currentDevice && this.currentDevice.id === deviceId) {
+            this.addLog('设备已断开', 'info');
+            this.updateConnectionStatus('disconnected');
+        }
     }
 
     async disconnect() {
+        if (!this.currentDevice) return;
+        const deviceId = this.currentDevice.id;
         try {
-            const result = await window.bleAPI.disconnect();
+            const result = await window.bleAPI.disconnect(deviceId);
             if (result.success) {
-                this.showDeviceList();
+                // Not returning to list immediately to allow viewing context
+                this.updateConnectionStatus('disconnected');
             }
         } catch (error) {
             this.showError('断开连接失败: ' + error.message);
         }
     }
 
-    async discoverServices() {
+    async discoverServices(deviceId) {
         try {
-            const result = await window.bleAPI.discoverServices();
+            const result = await window.bleAPI.discoverServices(deviceId);
             if (!result.success) {
                 this.addLog(`发现服务失败: ${result.error}`, 'error');
             }
@@ -730,14 +741,17 @@ class App {
     }
 
     onServicesDiscovered(data) {
-        this.services = data.services || [];
-        this.characteristicsMap.clear();
-
+        if (!data || !data.deviceId) return;
+        const deviceId = data.deviceId;
+        const services = data.services || [];
+        this.servicesByDevice.set(deviceId, services);
+        
         // Build characteristics map
-        this.services.forEach(service => {
+        services.forEach(service => {
             service.characteristics.forEach(char => {
-                const key = `${service.uuid}:${char.uuid}`;
+                const key = `${deviceId}:${service.uuid}:${char.uuid}`;
                 this.characteristicsMap.set(key, {
+                    deviceId: deviceId,
                     service: service,
                     characteristic: char,
                     notifying: false
@@ -745,16 +759,21 @@ class App {
             });
         });
 
-        this.renderServices();
-        this.addLog(`发现 ${this.services.length} 个服务`, 'success');
+        if (this.currentDevice && this.currentDevice.id === deviceId) {
+            this.renderServices();
+            this.addLog(`发现 ${services.length} 个服务`, 'success');
+        }
     }
 
     renderServices() {
         const list = document.getElementById('servicesList');
 
         if (!list) return;
+        if (!this.currentDevice) return;
+        
+        const currentServices = this.servicesByDevice.get(this.currentDevice.id) || [];
 
-        if (this.services.length === 0) {
+        if (currentServices.length === 0) {
             list.innerHTML = `
                 <div class="empty-state">
                     <div class="empty-icon">⚙️</div>
@@ -766,7 +785,7 @@ class App {
         }
 
         list.innerHTML = '';
-        this.services.forEach(service => {
+        currentServices.forEach(service => {
             const card = this.createServiceCard(service);
             list.appendChild(card);
         });
@@ -890,11 +909,12 @@ class App {
 
     async readCharacteristic(serviceUuid, charUuid) {
         if (!this.currentDevice) return;
+        const deviceId = this.currentDevice.id;
 
         this.addLog(`正在读取特征值...`, 'info');
 
         try {
-            const result = await window.bleAPI.readCharacteristic(serviceUuid, charUuid);
+            const result = await window.bleAPI.readCharacteristic(deviceId, serviceUuid, charUuid);
 
             if (result.success) {
                 const value = result.value || '空';
@@ -967,6 +987,7 @@ class App {
 
         try {
             const result = await window.bleAPI.writeCharacteristic(
+                this.currentDevice.id,
                 this.writeDialogCallback.serviceUuid,
                 this.writeDialogCallback.charUuid,
                 writeData,
@@ -1000,7 +1021,7 @@ class App {
         this.addLog(`${newState ? '启用' : '禁用'}通知...`, 'info');
 
         try {
-            const result = await window.bleAPI.notifyCharacteristic(serviceUuid, charUuid, newState);
+            const result = await window.bleAPI.notifyCharacteristic(this.currentDevice.id, serviceUuid, charUuid, newState);
 
             if (result.success) {
                 if (state) {
@@ -1023,6 +1044,8 @@ class App {
     }
 
     onCharacteristicValueChanged(data) {
+        if (!this.currentDevice || this.currentDevice.id !== data.deviceId) return;
+        
         const hex = data.value || '';
         this.addLog(`收到通知: ${hex}`, 'receive');
 
@@ -1045,7 +1068,7 @@ class App {
         if (deviceDetailView) deviceDetailView.classList.remove('active');
 
         this.currentDevice = null;
-        this.services = [];
+        this.servicesByDevice.clear();
         this.logs = [];
         this.characteristicsMap.clear();
 

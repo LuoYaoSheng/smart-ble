@@ -706,6 +706,7 @@ async fn notify_characteristic(
                                                 .join(" ");
 
                                             let payload = serde_json::json!({
+                                                "deviceId": deviceId,
                                                 "serviceUuid": service_uuid_clone,
                                                 "charUuid": char_uuid_clone,
                                                 "value": formatted
