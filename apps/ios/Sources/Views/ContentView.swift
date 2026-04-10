@@ -16,9 +16,9 @@ struct ContentView: View {
                 }
                 .tag(0)
 
-            DeviceDetailView()
+            ConnectedDevicesView()
                 .tabItem {
-                    Label("设备", systemImage: "cpu")
+                    Label("已连接", systemImage: "link")
                 }
                 .tag(1)
 
@@ -41,9 +41,10 @@ struct ContentView: View {
                 .tag(4)
         }
         .tint(.blue)
-        .onChange(of: bleManager.connectionState) { newState in
-            // Auto-switch to device detail tab when connected
-            if newState == .connected && selectedTab != 1 {
+        .onChange(of: bleManager.connectionStates) { _ in
+            // Auto-switch to connected devices tab when at least one device is connected
+            let hasConnected = !bleManager.connectedDeviceIds.isEmpty
+            if hasConnected && selectedTab != 1 {
                 selectedTab = 1
             }
         }

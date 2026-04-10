@@ -324,15 +324,18 @@ struct DeviceDetailSheet: View {
                 }
                 .buttonStyle(.borderless)
 
-                Button(bleManager.connectionState == .connected ? "已连接" : "连接") {
-                    if bleManager.connectionState == .connected {
-                        bleManager.disconnect()
+                let isConnected = bleManager.isDeviceConnected(device.id)
+                let deviceConnectionState = bleManager.connectionStates[device.id] ?? .disconnected
+
+                Button(isConnected ? "已连接" : "连接") {
+                    if isConnected {
+                        bleManager.disconnect(deviceId: device.id)
                     } else {
                         bleManager.connect(to: device)
                     }
                 }
                 .buttonStyle(.borderless)
-                .disabled(bleManager.connectionState == .connecting || bleManager.connectionState == .disconnecting)
+                .disabled(deviceConnectionState == .connecting || deviceConnectionState == .disconnecting)
             }
             .padding()
             .background(Color.gray.opacity(0.1))

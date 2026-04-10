@@ -6,6 +6,7 @@ import SwiftUI
 
 struct DeviceDetailView: View {
     @EnvironmentObject var bleManager: BLEManager
+    let deviceId: String
 
     var body: some View {
         VStack(spacing: 0) {
@@ -13,7 +14,7 @@ struct DeviceDetailView: View {
             header
 
             // Content
-            if bleManager.connectedDevice != nil {
+            if bleManager.connectedDevices[deviceId] != nil {
                 servicesContent
             } else {
                 noDeviceContent
@@ -24,7 +25,7 @@ struct DeviceDetailView: View {
     private var header: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
-                if let device = bleManager.connectedDevice {
+                if let device = bleManager.connectedDevices[deviceId] {
                     Text(device.name)
                         .font(.headline)
 
@@ -39,9 +40,9 @@ struct DeviceDetailView: View {
 
             Spacer()
 
-            if bleManager.connectedDevice != nil {
+            if bleManager.connectedDevices[deviceId] != nil {
                 Button(action: {
-                    bleManager.disconnect()
+                    bleManager.disconnect(deviceId: deviceId)
                 }) {
                     Text("断开")
                         .font(.subheadline)
@@ -59,7 +60,7 @@ struct DeviceDetailView: View {
     }
 
     private var connectionText: String {
-        switch bleManager.connectionState {
+        switch bleManager.connectionStates[deviceId] ?? .disconnected {
         case .connected:
             return "已连接"
         case .connecting:
@@ -72,7 +73,7 @@ struct DeviceDetailView: View {
     }
 
     private var connectionColor: Color {
-        switch bleManager.connectionState {
+        switch bleManager.connectionStates[deviceId] ?? .disconnected {
         case .connected:
             return .green
         case .connecting:
@@ -90,11 +91,11 @@ struct DeviceDetailView: View {
                 .font(.system(size: 50))
                 .foregroundColor(.gray.opacity(0.5))
 
-            Text("请先连接设备")
+            Text("此设备已断开连接")
                 .font(.headline)
                 .foregroundColor(.secondary)
 
-            Text("在扫描页面点击设备进行连接")
+            Text("请返回扫描页面重新连接")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
         }
@@ -103,20 +104,20 @@ struct DeviceDetailView: View {
 
     private var servicesContent: some View {
         Group {
-            if bleManager.services.isEmpty {
+            let services = bleManager.servicesByDevice[deviceId] ?? []
+            if services.isEmpty {
                 VStack(spacing: 16) {
                     ProgressView()
-                    Text(bleManager.connectionState == .connected ? "正在发现服务..." : "请先连接设备")
+                    Text(bleManager.connectionStates[deviceId] == .connected ? "正在发现服务..." : "请先连接设备")
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                // Services are auto-discovered on connection
             } else {
                 ScrollView {
                     LazyVStack(spacing: 12) {
-                        ForEach(bleManager.services) { service in
-                            ServiceCard(serviceId: service.id)
+                        ForEach(services) { service in
+                            ServiceCard(deviceId: deviceId, serviceId: service.id)
                                 .environmentObject(bleManager)
                         }
                     }
@@ -130,13 +131,14 @@ struct DeviceDetailView: View {
 // MARK: - Service Card
 struct ServiceCard: View {
     @EnvironmentObject var bleManager: BLEManager
+    let deviceId: String
     let serviceId: String  // Use ID to look up latest data
     @State private var isExpanded = false
     @State private var hasDiscoveredCharacteristics = false
 
     // Computed property to get latest service data
     private var service: BLEService? {
-        bleManager.services.first { $0.id == serviceId }
+        bleManager.servicesByDevice[deviceId]?.first { $0.id == serviceId }
     }
 
     var body: some View {
@@ -171,6 +173,7 @@ struct ServiceCard: View {
                     } else if let service = service {
                         ForEach(service.characteristics) { characteristic in
                             CharacteristicRow(
+                                deviceId: deviceId,
                                 serviceId: serviceId,
                                 characteristicId: characteristic.id
                             )
@@ -214,6 +217,7 @@ struct ServiceCard: View {
 // MARK: - Characteristic Row
 struct CharacteristicRow: View {
     @EnvironmentObject var bleManager: BLEManager
+    let deviceId: String
     let serviceId: String
     let characteristicId: String
     @State private var isExpanded = false
@@ -221,7 +225,7 @@ struct CharacteristicRow: View {
 
     // Computed property to get latest characteristic data
     private var characteristic: BLECharacteristic? {
-        guard let service = bleManager.services.first(where: { $0.id == serviceId }) else {
+        guard let service = bleManager.servicesByDevice[deviceId]?.first(where: { $0.id == serviceId }) else {
             return nil
         }
         return service.characteristics.first { $0.id == characteristicId }
@@ -287,6 +291,7 @@ struct CharacteristicRow: View {
                         if let characteristic = characteristic, characteristic.properties.contains(.read) {
                             Button("读取") {
                                 bleManager.readCharacteristic(
+                                    deviceId: deviceId,
                                     serviceUUID: serviceId,
                                     characteristicUUID: characteristic.uuid
                                 )
@@ -310,6 +315,7 @@ struct CharacteristicRow: View {
                            characteristic.properties.contains(.notify) || characteristic.properties.contains(.indicate) {
                             Button(isNotifying ? "停止通知" : "通知") {
                                 bleManager.setNotification(
+                                    deviceId: deviceId,
                                     serviceUUID: serviceId,
                                     characteristicUUID: characteristic.uuid,
                                     enabled: !isNotifying
@@ -338,6 +344,7 @@ struct CharacteristicRow: View {
             if let characteristic = characteristic {
                 WriteCharacteristicSheet(
                     characteristic: characteristic,
+                    deviceId: deviceId,
                     serviceId: serviceId,
                     isPresented: $showWriteSheet
                 )
@@ -348,7 +355,7 @@ struct CharacteristicRow: View {
 
     private var isNotifying: Bool {
         guard let characteristic = characteristic else { return false }
-        return bleManager.isNotifying(serviceUUID: serviceId, characteristicUUID: characteristic.uuid)
+        return bleManager.isNotifying(deviceId: deviceId, serviceUUID: serviceId, characteristicUUID: characteristic.uuid)
     }
 }
 
@@ -356,6 +363,7 @@ struct CharacteristicRow: View {
 struct WriteCharacteristicSheet: View {
     @EnvironmentObject var bleManager: BLEManager
     let characteristic: BLECharacteristic
+    let deviceId: String
     let serviceId: String
     @Binding var isPresented: Bool
 
@@ -482,6 +490,7 @@ struct WriteCharacteristicSheet: View {
         }
 
         bleManager.writeCharacteristic(
+            deviceId: deviceId,
             serviceUUID: serviceId,
             characteristicUUID: characteristic.uuid,
             data: data
