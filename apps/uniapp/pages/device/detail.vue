@@ -14,6 +14,7 @@
 				</view>
 			</view>
 				<view class="device-actions">
+					<button class="action-btn" v-if="hasOtaService" @click="showOtaModal = true">固件更新</button>
 					<button class="action-btn" :class="{'connected': isConnected}" @click="toggleConnection">
 						{{isConnected ? '断开连接' : '连接设备'}}
 				</button>
@@ -126,11 +127,22 @@
 						</view>
 					</view>
 			</view>
+			
+		<ota-dialog 
+			:visible="showOtaModal" 
+			:deviceId="deviceInfo.deviceId" 
+			@close="showOtaModal = false" 
+		/>
 	</view>
 </template>
 
 <script>
+	import OtaDialog from '../../components/ota-dialog/ota-dialog.vue';
+
 	export default {
+		components: {
+			OtaDialog
+		},
 		data() {
 			return {
 				deviceInfo: {},
@@ -154,6 +166,8 @@
 				showWriteDataModal: false,
 				writeServiceId: '',
 				writeCharacteristicId: '',
+				hasOtaService: false,
+				showOtaModal: false,
 			}
 		},
 		computed: {
@@ -221,15 +235,19 @@
 					
 					// 监听通知
 					uni.onBLECharacteristicValueChange((res) => {
-						this.handleReceivedData(res.value)
+						if (res.deviceId === this.deviceInfo.deviceId) {
+							this.handleReceivedData(res.value)
+						}
 					})
 					
 					// 监听连接状态
 					uni.onBLEConnectionStateChange((res) => {
-						this.isConnected = res.connected
-						this.addLog('系统', res.connected ? '设备已连接' : '设备已断开')
-						if (!res.connected && !this.isUserDisconnected) {
-							this.retryConnection()
+						if (res.deviceId === this.deviceInfo.deviceId) {
+							this.isConnected = res.connected
+							this.addLog('系统', res.connected ? '设备已连接' : '设备已断开')
+							if (!res.connected && !this.isUserDisconnected) {
+								this.retryConnection()
+							}
 						}
 					})
 					
@@ -732,6 +750,11 @@
 						const isSystemService = service.uuid.toLowerCase().startsWith('1800');
 						if (isSystemService) {
 							this.addLog('系统', `跳过系统服务: ${service.uuid}`);
+						}
+						
+						if (service.uuid.toLowerCase() === '4fafc201-1fb5-459e-8fcc-c5c9c331914d') {
+							this.hasOtaService = true;
+							this.addLog('系统', '发现 OTA 升级服务');
 						}
 						return !isSystemService;
 					});
