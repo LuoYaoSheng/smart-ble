@@ -9,6 +9,7 @@ import '../../core/models/ble_service.dart';
 import '../../themes/app_theme.dart';
 import '../widgets/service_tile.dart';
 import '../widgets/log_panel.dart';
+import '../widgets/ota_dialog.dart';
 
 /// 设备详情页
 class DeviceDetailPage extends ConsumerStatefulWidget {
@@ -35,6 +36,8 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
   String? _errorMessage;
   StreamSubscription? _connectionStatesSub;
   late CommandQueue _commandQueue;
+
+  bool get _hasOtaService => _services.any((s) => s.uuid.toLowerCase() == '4fafc201-1fb5-459e-8fcc-c5c9c331914d');
 
   @override
   void initState() {
@@ -420,6 +423,20 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
         ),
         elevation: 0,
         actions: [
+          if (_hasOtaService && _isConnected)
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: IconButton(
+                icon: const Icon(Icons.system_update_alt, color: AppTheme.primaryColor),
+                tooltip: 'OTA 固件升级',
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (ctx) => OtaUpgradeDialog(deviceId: widget.deviceId),
+                  );
+                },
+              ),
+            ),
           // 连接状态
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),

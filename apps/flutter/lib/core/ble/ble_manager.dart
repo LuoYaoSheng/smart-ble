@@ -455,6 +455,16 @@ class BleManager {
     }
   }
 
+  /// 请求 MTU 调整
+  Future<void> requestMtu(String deviceId, int desiredMtu) async {
+    try {
+      final device = BluetoothDevice.fromId(deviceId);
+      await device.requestMtu(desiredMtu);
+    } catch (e) {
+      print('请求 MTU 失败 ($deviceId): $e');
+    }
+  }
+
   /// 监听特征值变化
   Stream<List<int>>? listenCharacteristicValue({
     required String deviceId,

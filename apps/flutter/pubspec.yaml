@@ -31,6 +31,7 @@ dependencies:
 
   # 平台特定
   flutter_platform_widgets: ^6.0.2
+  file_picker: ^11.0.2
 
 dev_dependencies:
   flutter_test:
