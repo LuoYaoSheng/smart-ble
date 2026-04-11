@@ -398,15 +398,3 @@ enum class LogType {
     Error,
     Receive,
 }
-
-/**
- * ByteArray 扩展函数
- */
-fun ByteArray.toHexString(): String {
-    return joinToString(" ") { "%02X".format(it) }
-}
-
-fun String.hexToByteArray(): ByteArray {
-    val clean = replace(" ", "")
-    return clean.chunked(2).map { it.toInt(16).toByte() }.toByteArray()
-}

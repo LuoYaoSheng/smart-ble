@@ -127,11 +127,11 @@ struct WriteDialog: View {
         switch selectedFormat {
         case .hex:
             let cleanHex = text.replacingOccurrences(of: " ", with: "")
-            guard cleanHex.count % 2 == 0, cleanHex.allSatisfy({ $0.isHexDigit }) else {
+            guard DataConverter.isValidHex(cleanHex) else {
                 bleManager.log("Invalid hex input", type: .error)
                 return
             }
-            data = Data(hex: cleanHex)
+            data = DataConverter.hexToBytes(cleanHex)
         case .utf8:
             data = text.data(using: .utf8) ?? Data()
         }
@@ -146,19 +146,4 @@ struct WriteDialog: View {
     }
 }
 
-// MARK: - Data Extension for hex
-extension Data {
-    init(hex: String) {
-        let cleanHex = hex
-        self.init()
 
-        var index = cleanHex.startIndex
-        while index < cleanHex.endIndex {
-            let nextIndex = cleanHex.index(index, offsetBy: 2)
-            if let byte = UInt8(cleanHex[index..<nextIndex], radix: 16) {
-                append(byte)
-            }
-            index = nextIndex
-        }
-    }
-}

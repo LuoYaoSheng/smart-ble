@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import '../../core/utils/data_converter.dart';
 
 /// 指令队列项
 class CommandItem {
@@ -289,17 +291,8 @@ class CommandQueue {
   }
 
   /// 解析 HEX 字符串为字节列表
-  ///
-  /// 支持格式: "FF 01 AA" 或 "FF01AA"
   static List<int> parseHex(String hex) {
-    final clean = hex.replaceAll(RegExp(r'\s+'), '');
-    if (clean.length % 2 != 0) {
-      throw FormatException('HEX 数据长度必须是偶数: $hex');
-    }
-    return List.generate(
-      clean.length ~/ 2,
-      (i) => int.parse(clean.substring(i * 2, i * 2 + 2), radix: 16),
-    );
+    return DataConverter.hexToBytes(hex);
   }
 
   /// 解析多行 HEX 文本为多条指令
@@ -316,8 +309,6 @@ class CommandQueue {
 
   /// 格式化字节为 HEX 显示字符串
   static String formatHex(List<int> data) {
-    return data
-        .map((b) => b.toRadixString(16).padLeft(2, '0').toUpperCase())
-        .join(' ');
+    return DataConverter.bytesToHex(data, separator: true);
   }
 }

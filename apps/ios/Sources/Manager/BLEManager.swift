@@ -481,7 +481,7 @@ class BLEManager: NSObject, ObservableObject {
                     charModel.peripheralCharacteristic = characteristic
 
                     if let value = characteristic.value {
-                        charModel.value = String(data: value, encoding: .utf8) ?? dataToHexString(value)
+                        charModel.value = DataConverter.bytesToString(value)
                     }
 
                     serviceModel.characteristics.append(charModel)
@@ -498,9 +498,7 @@ class BLEManager: NSObject, ObservableObject {
         log("Discovered \(result.count) services for device \(deviceId.prefix(8))...", type: .success)
     }
 
-    private func dataToHexString(_ data: Data) -> String {
-        return data.map { String(format: "%02x", $0) }.joined(separator: " ").uppercased()
-    }
+
 
     // MARK: - T06: Auto-Reconnect helpers
     private func attemptReconnect(deviceId: String, peripheral: CBPeripheral) {
@@ -533,24 +531,6 @@ class BLEManager: NSObject, ObservableObject {
     private func cancelReconnect(deviceId: String) {
         reconnectTimers[deviceId]?.invalidate()
         reconnectTimers.removeValue(forKey: deviceId)
-    }
-
-    private func hexStringToData(_ hex: String) -> Data {
-        let cleanHex = hex.replacingOccurrences(of: " ", with: "")
-        guard cleanHex.count % 2 == 0 else { return Data() }
-
-        var data = Data()
-        var index = cleanHex.startIndex
-
-        while index < cleanHex.endIndex {
-            let nextIndex = cleanHex.index(index, offsetBy: 2)
-            let byteString = String(cleanHex[index..<nextIndex])
-            guard let byte = UInt8(byteString, radix: 16) else { return Data() }
-            data.append(byte)
-            index = nextIndex
-        }
-
-        return data
     }
 }
 
@@ -702,7 +682,7 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
         let value = characteristic.value ?? Data()
         let deviceId = peripheral.identifier.uuidString
         // T03+T05: HEX + TEXT 双行格式，嵌入 per-device 日志
-        let hexString = dataToHexString(value)
+        let hexString = DataConverter.bytesToHex(value)
         let textString = String(bytes: value, encoding: .utf8) ??
             value.map { $0 >= 32 && $0 <= 126 ? String(UnicodeScalar($0)) : "." }.joined()
         let msg = "HEX: \(hexString)\nTEXT: \(textString)"

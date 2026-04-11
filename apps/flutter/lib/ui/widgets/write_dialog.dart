@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/models/ble_service.dart';
+import '../../core/utils/data_converter.dart';
 
 /// 发送模式
 enum SendMode {
@@ -250,16 +251,9 @@ class _WriteDataDialogState extends State<WriteDataDialog> {
           : [value];
 
        for (final line in lines) {
-        final clean = line.replaceAll(' ', '');
-        if (clean.length % 2 != 0) {
+        if (!DataConverter.isValidHex(line)) {
           ScaffoldMessenger.of(context).showSnackBar(
-             SnackBar(content: Text('HEX 数据长度必须是偶数: $line')),
-          );
-          return;
-        }
-        if (!RegExp(r'^[0-9A-Fa-f\s]+$').hasMatch(line)) {
-           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('HEX 数据只能包含 0-9 和 A-F: $line')),
+             SnackBar(content: Text('HEX 格式错误 (需要偶数长度的合法16进制字符): $line')),
           );
           return;
         }

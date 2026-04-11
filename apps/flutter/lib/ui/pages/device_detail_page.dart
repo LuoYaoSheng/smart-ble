@@ -7,6 +7,7 @@ import '../../core/ble/ble_manager.dart';
 import '../../core/ble/command_queue.dart';
 import '../../core/models/ble_service.dart';
 import '../../core/models/log_entry.dart';
+import '../../core/utils/data_converter.dart';
 import '../../themes/app_theme.dart';
 import '../widgets/service_tile.dart';
 import '../widgets/log_panel.dart';
@@ -162,9 +163,8 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
         characteristicUuid: characteristic.uuid,
       );
 
-      final hex = value.map((b) => b.toRadixString(16).padLeft(2, '0').toUpperCase()).join(' ');
-      // T03: 统一 HEX + TEXT 双格式
-      final text = _tryDecodeUtf8(value);
+      final hex = DataConverter.bytesToHex(value);
+      final text = DataConverter.bytesToString(value);
       _addLog('HEX: $hex\nTEXT: $text', LogType.success);
 
       // 更新特征值
@@ -211,8 +211,8 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
         case SendMode.single:
           // 单次发送
           final bytes = result.isHexMode
-              ? _hexToBytes(result.data)
-              : result.data.codeUnits;
+              ? DataConverter.hexToBytes(result.data)
+              : DataConverter.stringToBytes(result.data);
 
           _addLog('写入 ${characteristic.displayName}: ${result.data}', LogType.info);
 
@@ -238,8 +238,8 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
 
           final commands = lines.asMap().entries.map((entry) {
             final bytes = result.isHexMode
-                ? _hexToBytes(entry.value)
-                : entry.value.codeUnits;
+                ? DataConverter.hexToBytes(entry.value)
+                : DataConverter.stringToBytes(entry.value);
             return CommandItem(
               id: 'batch_${DateTime.now().millisecondsSinceEpoch}_${entry.key}',
               deviceId: widget.deviceId,
@@ -258,8 +258,8 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
         case SendMode.loop:
           // 循环发送
           final bytes = result.isHexMode
-              ? _hexToBytes(result.data)
-              : result.data.codeUnits;
+              ? DataConverter.hexToBytes(result.data)
+              : DataConverter.stringToBytes(result.data);
 
           final loopDesc = result.loopCount == 0 ? '无限' : '${result.loopCount}次';
           _addLog('循环发送 ($loopDesc, 间隔${result.intervalMs}ms)...', LogType.info);
@@ -283,18 +283,7 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
     }
   }
 
-  List<int> _hexToBytes(String hex) {
-    final clean = hex.replaceAll(' ', '');
-    return List.generate(
-      clean.length ~/ 2,
-      (i) => int.parse(clean.substring(i * 2, i * 2 + 2), radix: 16),
-    );
-  }
 
-  /// T03: 尝试将字节解码为 UTF-8 文本，不可打印字符用「.」替代
-  String _tryDecodeUtf8(List<int> value) {
-    return value.map((b) => (b >= 32 && b <= 126) ? String.fromCharCode(b) : '.').join();
-  }
 
   Future<void> _toggleNotification(BleService service, BleCharacteristic characteristic) async {
     try {
@@ -337,9 +326,8 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
         );
 
         stream?.listen((value) {
-          final hex = value.map((b) => b.toRadixString(16).padLeft(2, '0').toUpperCase()).join(' ');
-          // T03: 统一 HEX + TEXT 双格式
-          final text = _tryDecodeUtf8(value);
+          final hex = DataConverter.bytesToHex(value);
+          final text = DataConverter.bytesToString(value);
           _addLog('HEX: $hex\nTEXT: $text', LogType.receive);
         });
       }

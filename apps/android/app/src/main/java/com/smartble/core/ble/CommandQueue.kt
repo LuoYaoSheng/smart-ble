@@ -1,5 +1,6 @@
 package com.smartble.core.ble
 
+import com.smartble.core.utils.DataConverter
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -265,11 +266,7 @@ class CommandQueue(
          * 解析 HEX 字符串为字节数组
          */
         fun parseHex(hex: String): ByteArray {
-            val clean = hex.replace("\\s+".toRegex(), "")
-            require(clean.length % 2 == 0) { "HEX 数据长度必须是偶数: $hex" }
-            return ByteArray(clean.length / 2) { i ->
-                clean.substring(i * 2, i * 2 + 2).toInt(16).toByte()
-            }
+            return DataConverter.hexToBytes(hex)
         }
 
         /**
@@ -286,7 +283,7 @@ class CommandQueue(
          * 格式化字节为 HEX 显示字符串
          */
         fun formatHex(data: ByteArray): String {
-            return data.joinToString(" ") { "%02X".format(it) }
+            return DataConverter.bytesToHex(data)
         }
     }
 }

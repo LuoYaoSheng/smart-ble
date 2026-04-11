@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../core/ble/ble_manager.dart';
 import '../../core/models/ble_scan_result.dart';
+import '../../core/utils/data_converter.dart';
 import '../../themes/app_theme.dart';
 import '../widgets/device_card.dart';
 import '../widgets/filter_panel.dart';
@@ -478,9 +479,7 @@ class DeviceInfoDialog extends StatelessWidget {
   }
 
   Widget _buildAdvertisData() {
-    final hexString = device.advertisData!
-        .map((b) => b.toRadixString(16).padLeft(2, '0').toUpperCase())
-        .join(' ');
+    final hexString = DataConverter.bytesToHex(device.advertisData!, separator: true);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),

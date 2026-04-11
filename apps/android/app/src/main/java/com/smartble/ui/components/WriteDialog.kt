@@ -21,8 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.smartble.core.model.BleCharacteristic
-import com.smartble.core.model.hexToByteArray
+import com.smartble.core.utils.DataConverter
 import com.smartble.ui.theme.Error
 import com.smartble.ui.theme.TextSecondary
 
@@ -36,12 +35,6 @@ data class WriteDialogResult(
     val loopCount: Int = 1,
     val intervalMs: Int = 50,
 )
-
-fun isValidHexInput(input: String): Boolean {
-    val clean = input.replace(" ", "")
-    if (clean.length % 2 != 0) return false
-    return clean.matches(Regex("^[0-9A-Fa-f]+$"))
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,10 +54,10 @@ fun WriteCharacteristicDialog(
         input.isBlank() -> "请输入要写入的数据"
         inputMode == WriteInputMode.Hex && sendMode == SendMode.Batch -> {
             val lines = input.split("\n").map { it.trim() }.filter { it.isNotEmpty() }
-            val invalidLine = lines.firstOrNull { !isValidHexInput(it) }
+            val invalidLine = lines.firstOrNull { !DataConverter.isValidHex(it) }
             if (invalidLine != null) "HEX 格式无效: $invalidLine" else null
         }
-        inputMode == WriteInputMode.Hex && !isValidHexInput(input) -> "HEX 格式无效，请输入偶数长度十六进制，例如 FF00AA"
+        inputMode == WriteInputMode.Hex && !DataConverter.isValidHex(input) -> "HEX 格式无效，请输入偶数长度十六进制，例如 FF00AA"
         else -> null
     }
 
@@ -184,8 +177,8 @@ fun WriteCharacteristicDialog(
             TextButton(
                 onClick = {
                     val payload = when (inputMode) {
-                        WriteInputMode.Text -> input.toByteArray()
-                        WriteInputMode.Hex -> input.hexToByteArray()
+                        WriteInputMode.Hex -> DataConverter.hexToBytes(input)
+                        WriteInputMode.Text -> DataConverter.stringToBytes(input)
                     }
                     onConfirm(payload)
                 },
