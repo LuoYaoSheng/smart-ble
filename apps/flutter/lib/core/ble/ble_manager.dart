@@ -37,6 +37,9 @@ class BleManager {
   BleManager._internal() {
     _initializeControllers();
   }
+  
+  /// 是否启用 E2E 测试 Mock 模式
+  static const bool useMockBLE = bool.fromEnvironment('USE_MOCK_BLE', defaultValue: false);
 
   /// 状态变化流控制器
   late StreamController<BleState> _stateController;
@@ -217,10 +220,25 @@ class BleManager {
     _isScanning = true;
 
     try {
-      await FlutterBluePlus.startScan(
-        timeout: timeout,
-        androidUsesFineLocation: true,
-      );
+      if (useMockBLE) {
+        debugPrint('[MOCK] Injecting dummy device Dummy-BLE-01');
+        _scannedDevices['MOCK-11:22:33:44:55:66'] = models.BleScanResult(
+          deviceId: 'MOCK-11:22:33:44:55:66',
+          name: 'Dummy-BLE-01',
+          rssi: -45,
+          advertisData: [0x01, 0x02, 0x03],
+          serviceUuids: ['180D', '180A'],
+          timestamp: DateTime.now(),
+        );
+        if (!_scanResultsController.isClosed) {
+          _scanResultsController.add(_scannedDevices.values.toList());
+        }
+      } else {
+        await FlutterBluePlus.startScan(
+          timeout: timeout,
+          androidUsesFineLocation: true,
+        );
+      }
     } catch (e) {
       debugPrint('开始扫描失败: $e');
       _isScanning = false;

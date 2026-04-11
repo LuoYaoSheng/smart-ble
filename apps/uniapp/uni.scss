@@ -14,27 +14,24 @@
 
 /* 颜色变量 */
 
-/* 行为相关颜色 */
-$uni-color-primary: #007aff;
-$uni-color-success: #4cd964;
-$uni-color-warning: #f0ad4e;
-$uni-color-error: #dd524d;
+/* 颜色变量映射到 CSS Variables (为支持 Dark Mode 动态切换) */
+$uni-color-primary: var(--uni-color-primary, #007aff);
+$uni-color-success: var(--uni-color-success, #4cd964);
+$uni-color-warning: var(--uni-color-warning, #f0ad4e);
+$uni-color-error: var(--uni-color-error, #dd524d);
 
-/* 文字基本颜色 */
-$uni-text-color:#333;//基本色
-$uni-text-color-inverse:#fff;//反色
-$uni-text-color-grey:#999;//辅助灰色，如加载更多的提示信息
-$uni-text-color-placeholder: #808080;
-$uni-text-color-disable:#c0c0c0;
+$uni-text-color: var(--uni-text-color, #333);
+$uni-text-color-inverse: var(--uni-text-color-inverse, #fff);
+$uni-text-color-grey: var(--uni-text-color-grey, #999);
+$uni-text-color-placeholder: var(--uni-text-color-placeholder, #808080);
+$uni-text-color-disable: var(--uni-text-color-disable, #c0c0c0);
 
-/* 背景颜色 */
-$uni-bg-color:#ffffff;
-$uni-bg-color-grey:#f8f8f8;
-$uni-bg-color-hover:#f1f1f1;//点击状态颜色
-$uni-bg-color-mask:rgba(0, 0, 0, 0.4);//遮罩颜色
+$uni-bg-color: var(--uni-bg-color, #ffffff);
+$uni-bg-color-grey: var(--uni-bg-color-grey, #f8f8f8);
+$uni-bg-color-hover: var(--uni-bg-color-hover, #f1f1f1);
+$uni-bg-color-mask: var(--uni-bg-color-mask, rgba(0, 0, 0, 0.4));
 
-/* 边框颜色 */
-$uni-border-color:#c8c7cc;
+$uni-border-color: var(--uni-border-color, #c8c7cc);
 
 /* 尺寸变量 */
 

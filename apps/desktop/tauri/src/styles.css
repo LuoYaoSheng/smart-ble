@@ -16,6 +16,24 @@
     --shadow: rgba(0, 0, 0, 0.1);
 }
 
+@media (prefers-color-scheme: dark) {
+    :root {
+        --primary: #0A84FF;
+        --primary-hover: #007AFF;
+        --danger: #FF453A;
+        --danger-hover: #FF3B30;
+        --success: #30D158;
+        --warning: #FF9F0A;
+        --bg-primary: #000000;
+        --bg-secondary: #1C1C1E;
+        --bg-tertiary: #2C2C2E;
+        --text-primary: #FFFFFF;
+        --text-secondary: #EBEBF5;
+        --border: #38383A;
+        --shadow: rgba(255, 255, 255, 0.05);
+    }
+}
+
 * {
     margin: 0;
     padding: 0;

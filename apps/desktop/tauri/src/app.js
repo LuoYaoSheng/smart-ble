@@ -57,7 +57,9 @@ const state = {
         attempts: new Map(),      // deviceId -> attempt count
         timers: new Map(),        // deviceId -> setTimeout handle
         userDisconnected: new Set() // deviceId -> user initiated, skip reconnect
-    }
+    },
+    // Mock testing
+    useMockBLE: window.location.search.includes('mock=true')
 };
 
 // DOM Elements
@@ -450,6 +452,19 @@ async function toggleScan() {
         await stopScan();
     } else {
         await startScan();
+        
+        // CI MOCK INJECTION
+        if (state.useMockBLE) {
+            console.log('[MOCK] Injecting dummy device Dummy-BLE-01');
+            state.devices.set('MOCK-11:22:33:44:55:66', {
+                id: 'MOCK-11:22:33:44:55:66',
+                name: 'Dummy-BLE-01',
+                rssi: -45,
+                serviceUuids: ['180D', '180A'],
+                advData: 'Mock Hex Data'
+            });
+            renderDeviceList();
+        }
     }
 }
 

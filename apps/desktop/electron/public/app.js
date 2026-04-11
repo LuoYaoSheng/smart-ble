@@ -4,6 +4,9 @@
 
 class App {
     constructor() {
+        // E2E UI Testing Mock Flag
+        this.USE_MOCK_BLE = window.location.search.includes('mock=true');
+        
         this.devices = new Map();
         this.servicesByDevice = new Map();
         this.connectedDevices = new Set();
@@ -385,6 +388,19 @@ class App {
             await this.stopScan();
         } else {
             await this.startScan();
+            
+            // CI MOCK INJECTION
+            // Generates a fake device for automated UI E2E testing
+            if (this.USE_MOCK_BLE) {
+                console.log('[MOCK] Injecting dummy device Dummy-BLE-01');
+                this.onDeviceDiscovered({
+                    id: 'MOCK-11:22:33:44:55:66',
+                    name: 'Dummy-BLE-01',
+                    rssi: -45,
+                    connectable: true,
+                    services: ['FFF0', '180A']
+                });
+            }
         }
     }
 

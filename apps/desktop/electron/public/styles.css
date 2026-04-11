@@ -15,6 +15,23 @@
     --text-tertiary: #C7C7CC;
 }
 
+@media (prefers-color-scheme: dark) {
+    :root {
+        --primary: #0A84FF; /* Brighter blue for dark mode */
+        --primary-dark: #007AFF;
+        --primary-light: rgba(10, 132, 255, 0.15);
+        --success: #30D158;
+        --warning: #FF9F0A;
+        --error: #FF453A;
+        --background: #000000;
+        --surface: #1C1C1E;
+        --border: #38383A;
+        --text-primary: #FFFFFF;
+        --text-secondary: #EBEBF5;
+        --text-tertiary: #EBEBF54D;
+    }
+}
+
 * {
     margin: 0;
     padding: 0;
