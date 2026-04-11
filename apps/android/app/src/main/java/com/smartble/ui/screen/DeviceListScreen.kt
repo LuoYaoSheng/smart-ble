@@ -71,6 +71,7 @@ import com.smartble.ui.theme.Success
 import com.smartble.ui.theme.TextSecondary
 import com.smartble.ui.viewmodel.DeviceListUiState
 import com.smartble.ui.viewmodel.DeviceListViewModel
+import com.smartble.ui.components.*
 import kotlinx.coroutines.launch
 
 // === Main Screen with Scaffold ===
@@ -664,119 +665,8 @@ fun DeviceList(
             DeviceCard(
                 device = device,
                 onDeviceClick = onDeviceClick,
-                onConnectClick = onConnectClick,
+                onAction = onConnectClick,
             )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun DeviceCard(
-    device: BleDevice,
-    onDeviceClick: (BleDevice) -> Unit,
-    onConnectClick: (String) -> Unit,
-) {
-    val rssiColor = when (device.rssiLevel) {
-        RssiLevel.Excellent -> RssiExcellent
-        RssiLevel.Good -> RssiGood
-        RssiLevel.Fair -> RssiFair
-        RssiLevel.Weak -> RssiWeak
-    }
-
-    val rssiIcon = Icons.Outlined.SignalCellularAlt
-    val isConnectingThis = device.state == ConnectionState.Connecting
-    val isConnected = device.state == ConnectionState.Connected
-
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onDeviceClick(device) },
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Device icon
-            Card(
-                colors = CardDefaults.cardColors(containerColor = Primary)
-            ) {
-                Box(
-                    modifier = Modifier.size(48.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        Icons.Default.Bluetooth,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            // Device info
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    device.displayName,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.W600
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    device.id,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = TextSecondary
-                )
-            }
-
-            Spacer(modifier = Modifier.width(12.dp))
-
-            // RSSI indicator
-            Column(horizontalAlignment = Alignment.End) {
-                Icon(
-                    rssiIcon,
-                    contentDescription = null,
-                    tint = rssiColor,
-                    modifier = Modifier.size(20.dp)
-                )
-                Spacer(modifier = Modifier.height(2.dp))
-                Text(
-                    "${device.rssi} dBm",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = rssiColor,
-                    fontWeight = FontWeight.W500
-                )
-            }
-
-            Spacer(modifier = Modifier.width(8.dp))
-
-            // Connect button
-            IconButton(
-                onClick = {
-                    onConnectClick(device.id)
-                },
-                enabled = !isConnectingThis && !isConnected,
-                modifier = Modifier.size(40.dp)
-            ) {
-                if (isConnectingThis) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(20.dp),
-                        color = Primary
-                    )
-                } else {
-                    Icon(
-                        if (isConnected) Icons.Default.CheckCircle else Icons.Default.Link,
-                        contentDescription = if (isConnected) "已连接" else "连接",
-                        tint = if (isConnected) Success else Primary,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
-            }
         }
     }
 }

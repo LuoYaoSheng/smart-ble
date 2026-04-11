@@ -100,6 +100,13 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
       return;
     }
 
+    // T08: 校验广播数据总长度（BLE 规范限制 31 字节）
+    final totalBytes = _calcAdvertiseBytes(uuid);
+    if (totalBytes > 31) {
+      setState(() => _errorMessage = '广播数据超限：当前 $totalBytes 字节，BLE 最多支持 31 字节');
+      return;
+    }
+
     setState(() => _errorMessage = null);
 
     try {
@@ -128,6 +135,15 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
       }
     }
   }
+
+  /// T08: 估算广播包占用字节数（BLE ADV_IND payload 上限 31 字节）
+  int _calcAdvertiseBytes(String uuid) {
+    // 服务UUID字段: 2字节头 + UUID长度（short=2, 128-bit=16）
+    final isShort = uuid.length <= 8;
+    final uuidBytes = isShort ? 2 : 16;
+    return 2 + uuidBytes; // AD type header(2) + UUID
+  }
+
 
   Future<void> _stopAdvertising() async {
     try {

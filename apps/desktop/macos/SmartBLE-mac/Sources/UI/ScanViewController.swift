@@ -19,14 +19,7 @@ class ScanViewController: NSViewController {
     private var deviceCountLabel: NSTextField!
     private var filterButton: NSButton!
 
-    // Filter panel
-    private var filterPanel: NSView!
-    private var rssiSlider: NSSlider!
-    private var rssiValueLabel: NSTextField!
-    private var namePrefixField: NSTextField!
-    private var hideUnnamedCheckbox: NSButton!
-    private var resetFiltersButton: NSButton!
-
+    private var filterPanel: FilterPanel!
     private var devices: [BLEDevice] = []
 
     // MARK: - Lifecycle
@@ -77,7 +70,8 @@ class ScanViewController: NSViewController {
         controlsView.addSubview(deviceCountLabel)
 
         // Filter panel (initially hidden)
-        filterPanel = createFilterPanel()
+        filterPanel = FilterPanel()
+        filterPanel.delegate = self
         filterPanel.translatesAutoresizingMaskIntoConstraints = false
         filterPanel.isHidden = true
         view.addSubview(filterPanel)
@@ -101,16 +95,14 @@ class ScanViewController: NSViewController {
         tableView.backgroundColor = .clear
         scrollView.documentView = tableView
 
-        // Table columns
-        let nameColumn = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("name"))
-        nameColumn.title = "Device"
-        nameColumn.width = 200
-        tableView.addTableColumn(nameColumn)
-
-        let infoColumn = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("info"))
-        infoColumn.title = "Info"
-        infoColumn.width = 150
-        tableView.addTableColumn(infoColumn)
+        // Table column (single column for DeviceCard)
+        let column = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("DeviceCard"))
+        column.title = "Devices"
+        column.width = 400
+        tableView.addTableColumn(column)
+        
+        // Remove headers
+        tableView.headerView = nil
 
         // Set background color for empty state
         tableView.backgroundColor = .controlBackgroundColor
@@ -151,118 +143,7 @@ class ScanViewController: NSViewController {
         ])
     }
 
-    private func createFilterPanel() -> NSView {
-        let panel = NSView()
-        panel.wantsLayer = true
-        panel.layer?.backgroundColor = NSColor.controlBackgroundColor.withAlphaComponent(0.5).cgColor
-        panel.layer?.cornerRadius = 8
-
-        // RSSI Filter
-        let rssiLabel = NSTextField(labelWithString: "Signal Strength: -100 dBm")
-        rssiLabel.font = .systemFont(ofSize: 11)
-        rssiLabel.translatesAutoresizingMaskIntoConstraints = false
-        panel.addSubview(rssiLabel)
-
-        rssiSlider = NSSlider(value: -100, minValue: -100, maxValue: -30, target: self, action: #selector(rssiSliderChanged))
-        rssiSlider.translatesAutoresizingMaskIntoConstraints = false
-        panel.addSubview(rssiSlider)
-
-        rssiValueLabel = NSTextField(labelWithString: "-100")
-        rssiValueLabel.font = .systemFont(ofSize: 11, weight: .medium)
-        rssiValueLabel.translatesAutoresizingMaskIntoConstraints = false
-        rssiValueLabel.isEditable = false
-        rssiValueLabel.isBordered = false
-        rssiValueLabel.backgroundColor = .clear
-        panel.addSubview(rssiValueLabel)
-
-        // Preset buttons
-        let presetStack = NSStackView()
-        presetStack.orientation = .horizontal
-        presetStack.spacing = 4
-        presetStack.translatesAutoresizingMaskIntoConstraints = false
-        panel.addSubview(presetStack)
-
-        let presets = [-100, -90, -70, -50]
-        let presetLabels = ["All", "-90", "-70", "-50"]
-        for (value, label) in zip(presets, presetLabels) {
-            let btn = NSButton(title: label, target: self, action: #selector(rssiPresetClicked(_:)))
-            btn.tag = value
-            btn.bezelStyle = .rounded
-            btn.font = .systemFont(ofSize: 10)
-            btn.translatesAutoresizingMaskIntoConstraints = false
-            presetStack.addArrangedSubview(btn)
-        }
-
-        // Name prefix filter
-        let nameLabel = NSTextField(labelWithString: "Name Prefix:")
-        nameLabel.font = .systemFont(ofSize: 11)
-        nameLabel.translatesAutoresizingMaskIntoConstraints = false
-        panel.addSubview(nameLabel)
-
-        namePrefixField = NSTextField()
-        namePrefixField.placeholderString = "Filter by name prefix..."
-        namePrefixField.font = .systemFont(ofSize: 11)
-        namePrefixField.delegate = self
-        namePrefixField.translatesAutoresizingMaskIntoConstraints = false
-        panel.addSubview(namePrefixField)
-
-        // Hide unnamed checkbox
-        hideUnnamedCheckbox = NSButton(checkboxWithTitle: "Hide devices without name", target: self, action: #selector(hideUnnamedToggled))
-        hideUnnamedCheckbox.state = .off
-        hideUnnamedCheckbox.font = .systemFont(ofSize: 11)
-        hideUnnamedCheckbox.translatesAutoresizingMaskIntoConstraints = false
-        panel.addSubview(hideUnnamedCheckbox)
-
-        // Reset button
-        resetFiltersButton = NSButton(title: "Reset", target: self, action: #selector(resetFiltersClicked))
-        resetFiltersButton.bezelStyle = .rounded
-        resetFiltersButton.font = .systemFont(ofSize: 10)
-        resetFiltersButton.translatesAutoresizingMaskIntoConstraints = false
-        panel.addSubview(resetFiltersButton)
-
-        NSLayoutConstraint.activate([
-            // RSSI label
-            rssiLabel.topAnchor.constraint(equalTo: panel.topAnchor, constant: 12),
-            rssiLabel.leadingAnchor.constraint(equalTo: panel.leadingAnchor, constant: 12),
-
-            // RSSI value and reset button on right
-            resetFiltersButton.topAnchor.constraint(equalTo: panel.topAnchor, constant: 8),
-            resetFiltersButton.trailingAnchor.constraint(equalTo: panel.trailingAnchor, constant: -12),
-            resetFiltersButton.widthAnchor.constraint(equalToConstant: 50),
-
-            rssiValueLabel.centerYAnchor.constraint(equalTo: rssiLabel.centerYAnchor),
-            rssiValueLabel.trailingAnchor.constraint(equalTo: resetFiltersButton.leadingAnchor, constant: -12),
-
-            // RSSI slider
-            rssiSlider.topAnchor.constraint(equalTo: rssiLabel.bottomAnchor, constant: 4),
-            rssiSlider.leadingAnchor.constraint(equalTo: panel.leadingAnchor, constant: 12),
-            rssiSlider.trailingAnchor.constraint(equalTo: rssiValueLabel.leadingAnchor, constant: -8),
-
-            // Preset buttons
-            presetStack.topAnchor.constraint(equalTo: rssiSlider.bottomAnchor, constant: 4),
-            presetStack.leadingAnchor.constraint(equalTo: panel.leadingAnchor, constant: 12),
-
-            // Name filter row
-            nameLabel.topAnchor.constraint(equalTo: presetStack.bottomAnchor, constant: 12),
-            nameLabel.leadingAnchor.constraint(equalTo: panel.leadingAnchor, constant: 12),
-            nameLabel.widthAnchor.constraint(equalToConstant: 80),
-
-            namePrefixField.centerYAnchor.constraint(equalTo: nameLabel.centerYAnchor),
-            namePrefixField.leadingAnchor.constraint(equalTo: nameLabel.trailingAnchor, constant: 8),
-            namePrefixField.trailingAnchor.constraint(equalTo: panel.trailingAnchor, constant: -12),
-            namePrefixField.heightAnchor.constraint(equalToConstant: 24),
-
-            // Hide unnamed checkbox
-            hideUnnamedCheckbox.topAnchor.constraint(equalTo: namePrefixField.bottomAnchor, constant: 8),
-            hideUnnamedCheckbox.leadingAnchor.constraint(equalTo: panel.leadingAnchor, constant: 12),
-
-            // Panel bottom
-            panel.bottomAnchor.constraint(equalTo: hideUnnamedCheckbox.bottomAnchor, constant: 12),
-            panel.heightAnchor.constraint(greaterThanOrEqualToConstant: 100)
-        ])
-
-        return panel
-    }
+    // Removed monolithic createFilterPanel(), replaced by FilterPanel component
 
     // MARK: - Actions
     @objc private func toggleFilterPanel() {
@@ -270,36 +151,7 @@ class ScanViewController: NSViewController {
         filterButton.contentTintColor = filterPanel.isHidden ? .secondaryLabelColor : .controlAccentColor
     }
 
-    @objc private func rssiSliderChanged() {
-        let value = Int(rssiSlider.intValue)
-        rssiValueLabel.stringValue = "\(value)"
-        bleManager?.filterRSSI = value
-        updateDeviceList()
-    }
-
-    @objc private func rssiPresetClicked(_ sender: NSButton) {
-        let value = sender.tag
-        rssiSlider.integerValue = value
-        rssiValueLabel.stringValue = "\(value)"
-        bleManager?.filterRSSI = value
-        updateDeviceList()
-    }
-
-    @objc private func hideUnnamedToggled() {
-        let enabled = hideUnnamedCheckbox.state == .on
-        bleManager?.hideNoNameDevices = enabled
-        updateDeviceList()
-    }
-
-    @objc private func resetFiltersClicked() {
-        rssiSlider.integerValue = -100
-        rssiValueLabel.stringValue = "-100"
-        namePrefixField.stringValue = ""
-        hideUnnamedCheckbox.state = .off
-
-        bleManager?.resetFilters()
-        updateDeviceList()
-    }
+    // Filter panel actions are now handled by FilterPanelDelegate
 
     private func createEmptyState() -> NSView {
         let view = NSView()
@@ -436,16 +288,7 @@ class ScanViewController: NSViewController {
     }
 }
 
-// MARK: - NSTextFieldDelegate
-extension ScanViewController: NSTextFieldDelegate {
-    func controlTextDidChange(_ obj: Notification) {
-        guard let textField = obj.object as? NSTextField,
-              textField == namePrefixField else { return }
-
-        bleManager?.filterNamePrefix = textField.stringValue
-        updateDeviceList()
-    }
-}
+// Filter Panel actions are deleted here
 
 // MARK: - NSTableViewDataSource
 extension ScanViewController: NSTableViewDataSource {
@@ -460,61 +303,22 @@ extension ScanViewController: NSTableViewDelegate {
         guard row < devices.count else { return nil }
         let device = devices[row]
 
-        if tableColumn?.identifier.rawValue == "name" {
-            let cellView = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier("DeviceCell"), owner: self) as? NSTableCellView ?? NSTableCellView()
-
-            // Create name field
-            let nameField = NSTextField(labelWithString: device.name)
-            nameField.font = .systemFont(ofSize: 13, weight: .medium)
-            nameField.translatesAutoresizingMaskIntoConstraints = false
-            nameField.isEditable = false
-            nameField.isBordered = false
-            nameField.backgroundColor = .clear
-
-            // Create ID field
-            let idField = NSTextField(labelWithString: String(device.id.prefix(8)))
-            idField.font = .monospacedSystemFont(ofSize: 10, weight: .regular)
-            idField.textColor = .secondaryLabelColor
-            idField.translatesAutoresizingMaskIntoConstraints = false
-            idField.isEditable = false
-            idField.isBordered = false
-            idField.backgroundColor = .clear
-
-            cellView.addSubview(nameField)
-            cellView.addSubview(idField)
-            cellView.textField = nameField
-
-            NSLayoutConstraint.activate([
-                nameField.leadingAnchor.constraint(equalTo: cellView.leadingAnchor, constant: 4),
-                nameField.topAnchor.constraint(equalTo: cellView.topAnchor, constant: 8),
-
-                idField.leadingAnchor.constraint(equalTo: cellView.leadingAnchor, constant: 4),
-                idField.topAnchor.constraint(equalTo: nameField.bottomAnchor, constant: 2)
-            ])
-
-            return cellView
-
-        } else {
-            let cellView = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier("InfoCell"), owner: self) as? NSTableCellView ?? NSTableCellView()
-
-            let rssiField = NSTextField(labelWithString: "\(device.rssi) dBm")
-            rssiField.font = .systemFont(ofSize: 11)
-            rssiField.textColor = .secondaryLabelColor
-            rssiField.translatesAutoresizingMaskIntoConstraints = false
-            rssiField.isEditable = false
-            rssiField.isBordered = false
-            rssiField.backgroundColor = .clear
-
-            cellView.addSubview(rssiField)
-            cellView.textField = rssiField
-
-            NSLayoutConstraint.activate([
-                rssiField.leadingAnchor.constraint(equalTo: cellView.leadingAnchor, constant: 4),
-                rssiField.centerYAnchor.constraint(equalTo: cellView.centerYAnchor)
-            ])
-
-            return cellView
+        let identifier = NSUserInterfaceItemIdentifier("DeviceCard")
+        var view = tableView.makeView(withIdentifier: identifier, owner: self) as? DeviceCard
+        
+        if view == nil {
+            view = DeviceCard(frame: NSRect(x: 0, y: 0, width: tableView.frame.width, height: 60))
+            view?.identifier = identifier
         }
+        
+        let state = bleManager?.connectionState ?? .disconnected
+        // Ensure connection state logic highlights the correct connected device, but we just pass standard state for now
+        // A real app would check if device.id == bleManager.connectedDeviceId
+        
+        view?.configure(with: device, connectionState: .disconnected)
+        view?.delegate = self
+        
+        return view
     }
 
     func tableViewSelectionDidChange(_ notification: Notification) {
@@ -523,5 +327,37 @@ extension ScanViewController: NSTableViewDelegate {
 
         let device = devices[selectedRow]
         delegate?.scanViewController(self, didSelectDevice: device)
+    }
+}
+
+// MARK: - DeviceCardDelegate
+extension ScanViewController: DeviceCardDelegate {
+    func deviceCardDidClickConnect(_ card: DeviceCard, device: BLEDevice) {
+        // Find existing MainWindowController logic or implement a connect flow here
+        delegate?.scanViewController(self, didSelectDevice: device)
+        bleManager?.connect(to: device)
+    }
+}
+
+// MARK: - FilterPanelDelegate
+extension ScanViewController: FilterPanelDelegate {
+    func filterPanel(_ panel: FilterPanel, didChangeRSSI value: Int) {
+        bleManager?.filterRSSI = value
+        updateDeviceList()
+    }
+    
+    func filterPanel(_ panel: FilterPanel, didChangeNamePrefix prefix: String) {
+        bleManager?.filterNamePrefix = prefix
+        updateDeviceList()
+    }
+    
+    func filterPanel(_ panel: FilterPanel, didToggleHideUnnamed isHidden: Bool) {
+        bleManager?.hideNoNameDevices = isHidden
+        updateDeviceList()
+    }
+    
+    func filterPanelDidReset(_ panel: FilterPanel) {
+        bleManager?.resetFilters()
+        updateDeviceList()
     }
 }

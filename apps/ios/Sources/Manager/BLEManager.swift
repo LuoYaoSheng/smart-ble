@@ -16,6 +16,8 @@ class BLEManager: NSObject, ObservableObject {
     @Published var isScanning = false
     @Published var isAdvertising = false
     @Published var logs: [LogEntry] = []
+    /// T05: Per-device 日志（deviceId -> [LogEntry]）
+    @Published var logsByDevice: [String: [LogEntry]] = [:]
 
     // MARK: - Multi-device connection state
     /// Per-device connection state (deviceId -> ConnectionState)
@@ -83,42 +85,58 @@ class BLEManager: NSObject, ObservableObject {
     // MARK: - Timer
     private var autoStopTimer: Timer?
 
+    // MARK: - T06: Auto-Reconnect (aligned with Flutter: max 3 attempts, exponential backoff)
+    private let maxReconnectAttempts = 3
+    private var reconnectAttempts: [String: Int] = [:]     // deviceId -> attempt count
+    private var reconnectTimers: [String: Timer] = [:]     // deviceId -> pending timer
+    private var userInitiatedDisconnects: Set<String> = [] // do NOT reconnect these
+    var autoReconnectEnabled = true
+
     // MARK: - Notify State Tracking
     /// "deviceId:serviceUUID:characteristicUUID" -> Bool
     private var notifyingCharacteristics: Set<String> = []
 
     // MARK: - UUID Helper
+    // T07: 服务 UUID 中文名称表（对齐 Android BleUuids）
     private func getServiceName(for uuid: CBUUID) -> String {
+        let short = uuid.uuidString.uppercased()
         let services: [String: String] = [
-            "1800": "Generic Access",
-            "1801": "Generic Attribute",
-            "180A": "Device Information",
-            "180F": "Battery Service",
-            "1812": "HID",
-            "180D": "Heart Rate",
-            "1809": "Health Thermometer",
-            "181C": "User Data",
-            "181A": "Automation IO",
-            "181B": "Object Transfer"
+            "1800": "通用访问",
+            "1801": "通用属性",
+            "180A": "设备信息",
+            "180F": "电池服务",
+            "1812": "人机界面(HID)",
+            "180D": "心率服务",
+            "1809": "健康温度计",
+            "181C": "用户数据",
+            "4FAFC201": "OTA 升级服务",
         ]
-        return services[uuid.uuidString.uppercased()] ?? "Unknown Service"
+        // 先尝试短 UUID（如 1800）
+        let shortId = short.count == 4 ? short : String(short.prefix(4))
+        return services[shortId] ?? services[short] ?? "未知服务"
     }
 
+    // T07: 特征値 UUID 中文名称表（对齐 Android BleUuids）
     private func getCharacteristicName(for uuid: CBUUID) -> String {
+        let short = uuid.uuidString.uppercased()
         let characteristics: [String: String] = [
-            "2A00": "Device Name",
-            "2A01": "Appearance",
-            "2A29": "Manufacturer Name",
-            "2A24": "Model Number",
-            "2A25": "Serial Number",
-            "2A27": "Hardware Revision",
-            "2A26": "Firmware Revision",
-            "2A28": "Software Revision",
-            "2A19": "Battery Level",
-            "2A04": "PPP Central",
-            "2A05": "PPP Peripheral"
+            "2A00": "设备名称",
+            "2A01": "外观",
+            "2A02": "隐私标志",
+            "2A03": "重连地址",
+            "2A04": "连接参数",
+            "2A05": "服务变更",
+            "2A19": "电池电量",
+            "2A23": "系统标识符",
+            "2A24": "型号",
+            "2A25": "序列号",
+            "2A26": "固件版本",
+            "2A27": "硬件版本",
+            "2A28": "软件版本",
+            "2A29": "制造商",
+            "BEB5483E": "OTA 控制",
         ]
-        return characteristics[uuid.uuidString.uppercased()] ?? "Unknown Characteristic"
+        return characteristics[short] ?? "未知特征値"
     }
 
     // MARK: - Initialization
@@ -141,11 +159,31 @@ class BLEManager: NSObject, ObservableObject {
     func log(_ message: String, type: LogEntry.LogType = .info) {
         let entry = LogEntry(message: message, type: type)
         logs.append(entry)
+        if logs.count > 100 { logs.removeFirst() }
         print("[BLE] \(message)")
+    }
+
+    /// T05: Per-device 日志
+    func logForDevice(_ deviceId: String, _ message: String, type: LogEntry.LogType = .info) {
+        let entry = LogEntry(message: message, type: type)
+        if logsByDevice[deviceId] == nil {
+            logsByDevice[deviceId] = []
+        }
+        logsByDevice[deviceId]!.insert(entry, at: 0)
+        if (logsByDevice[deviceId]?.count ?? 0) > 100 {
+            logsByDevice[deviceId]?.removeLast()
+        }
+        // 同步到全局日志
+        log(message, type: type)
     }
 
     func clearLogs() {
         logs.removeAll()
+    }
+
+    /// T05: 清空指定设备日志
+    func clearDeviceLogs(_ deviceId: String) {
+        logsByDevice[deviceId] = []
     }
 
     // MARK: - Scanning
@@ -227,6 +265,11 @@ class BLEManager: NSObject, ObservableObject {
             return
         }
 
+        // T06: 标记为用户主动连接，允许自动重连
+        userInitiatedDisconnects.remove(device.id)
+        reconnectAttempts[device.id] = 0
+        cancelReconnect(deviceId: device.id)
+
         connectionStates[device.id] = .connecting
         stopScan()
 
@@ -242,6 +285,11 @@ class BLEManager: NSObject, ObservableObject {
             servicesByDevice.removeValue(forKey: deviceId)
             return
         }
+
+        // T06: 标记用户主动断开，不触发自动重连
+        userInitiatedDisconnects.insert(deviceId)
+        cancelReconnect(deviceId: deviceId)
+        reconnectAttempts.removeValue(forKey: deviceId)
 
         connectionStates[deviceId] = .disconnecting
         centralManager.cancelPeripheralConnection(peripheral)
@@ -486,6 +534,39 @@ class BLEManager: NSObject, ObservableObject {
         return data.map { String(format: "%02x", $0) }.joined(separator: " ").uppercased()
     }
 
+    // MARK: - T06: Auto-Reconnect helpers
+    private func attemptReconnect(deviceId: String, peripheral: CBPeripheral) {
+        guard autoReconnectEnabled, !userInitiatedDisconnects.contains(deviceId) else { return }
+
+        let attempts = reconnectAttempts[deviceId] ?? 0
+        guard attempts < maxReconnectAttempts else {
+            log("Device \(deviceId.prefix(8))... reached max reconnect attempts (\(maxReconnectAttempts)), giving up", type: .error)
+            reconnectAttempts.removeValue(forKey: deviceId)
+            return
+        }
+
+        let nextAttempt = attempts + 1
+        reconnectAttempts[deviceId] = nextAttempt
+        // 指数退避：2s, 4s, 6s
+        let delay = Double(nextAttempt * 2)
+        log("Will reconnect to \(deviceId.prefix(8))... in \(Int(delay))s (attempt \(nextAttempt)/\(maxReconnectAttempts))", type: .info)
+
+        cancelReconnect(deviceId: deviceId)
+        reconnectTimers[deviceId] = Timer.scheduledTimer(withTimeInterval: delay, repeats: false) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                self.log("Reconnecting to \(deviceId.prefix(8))... (attempt \(nextAttempt))", type: .info)
+                self.connectionStates[deviceId] = .connecting
+                self.centralManager.connect(peripheral, options: nil)
+            }
+        }
+    }
+
+    private func cancelReconnect(deviceId: String) {
+        reconnectTimers[deviceId]?.invalidate()
+        reconnectTimers.removeValue(forKey: deviceId)
+    }
+
     private func hexStringToData(_ hex: String) -> Data {
         let cleanHex = hex.replacingOccurrences(of: " ", with: "")
         guard cleanHex.count % 2 == 0 else { return Data() }
@@ -616,6 +697,8 @@ extension BLEManager: @preconcurrency CBCentralManagerDelegate {
 
         if let error = error {
             log("Disconnected from \(deviceId.prefix(8))...: \(error.localizedDescription)", type: .error)
+            // T06: 异常断开 → 触发自动重连
+            attemptReconnect(deviceId: deviceId, peripheral: peripheral)
         } else {
             log("Disconnected from \(deviceId.prefix(8))...", type: .info)
         }
@@ -649,18 +732,24 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
         }
 
         let value = characteristic.value ?? Data()
+        let deviceId = peripheral.identifier.uuidString
+        // T03+T05: HEX + TEXT 双行格式，嵌入 per-device 日志
         let hexString = dataToHexString(value)
-        log("Received: \(hexString)", type: .receive)
+        let textString = String(bytes: value, encoding: .utf8) ??
+            value.map { $0 >= 32 && $0 <= 126 ? String(UnicodeScalar($0)) : "." }.joined()
+        let msg = "HEX: \(hexString)\nTEXT: \(textString)"
+        logForDevice(deviceId, msg, type: .receive)
 
         // Update service/characteristic in UI
         updateServices(for: peripheral)
     }
 
     func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
+        let deviceId = peripheral.identifier.uuidString
         if let error = error {
-            log("Write failed: \(error.localizedDescription)", type: .error)
+            logForDevice(deviceId, "Write failed: \(error.localizedDescription)", type: .error)
         } else {
-            log("Write success", type: .success)
+            logForDevice(deviceId, "Write success", type: .success)
         }
     }
 

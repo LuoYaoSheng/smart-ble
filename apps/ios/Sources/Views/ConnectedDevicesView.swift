@@ -54,38 +54,16 @@ struct ConnectedDevicesView: View {
         List {
             ForEach(Array(bleManager.connectedDevices.values), id: \.id) { device in
                 NavigationLink(destination: DeviceDetailView(deviceId: device.id)) {
-                    ConnectedDeviceRow(device: device)
+                    DeviceCard(
+                        device: device,
+                        isConnectionTab: true,
+                        onAction: {
+                            bleManager.disconnect(deviceId: device.id)
+                        }
+                    )
                 }
             }
         }
         .listStyle(PlainListStyle())
-    }
-}
-
-struct ConnectedDeviceRow: View {
-    let device: ScanResult
-    @EnvironmentObject var bleManager: BLEManager
-    
-    var body: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(device.name.isEmpty ? "Unknown Device" : device.name)
-                    .font(.headline)
-                
-                Text(device.id)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-            
-            Spacer()
-            
-            Button("断开") {
-                bleManager.disconnect(deviceId: device.id)
-            }
-            .buttonStyle(.borderedProminent)
-            .tint(.red)
-            .controlSize(.small)
-        }
-        .padding(.vertical, 4)
     }
 }

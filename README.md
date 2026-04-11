@@ -15,9 +15,9 @@
 - `BLE Toolkit+`：微信小程序当前对外显示名
 - `LightBLE`：历史命名与旧仓库线
 
-如果你是第一次进入，建议先看：
+如果你是第一次进入，建议先看我们的底层设计与架构标准：
 
-- [Start Here](./docs/START_HERE.md)
+- [架构规范与跨平台统一矩阵 (MASTER ARCHITECTURE)](./docs/MASTER_ARCHITECTURE.md)
 
 ---
 
@@ -206,16 +206,14 @@ pio device monitor
 
 ## 文档
 
-- [Start Here](./docs/START_HERE.md)
-- [平台选择指南](./docs/PLATFORM_SELECTION.md)
-- [BLE FAQ](./docs/BLE_FAQ.md)
-- [功能规格](./docs/01-functional-specs.md)
-- [数据流图](./docs/02-data-flow.md)
-- [BLE 协议](./docs/03-ble-protocol.md)
-- [UI 流程](./docs/04-ui-flows.md)
-- [平台差异](./docs/05-platform-differences.md)
-- [微信小程序开发避坑指南](./docs/06-wechat-miniprogram-pitfalls.md)
-- [公众号系列](./docs/wechat-articles/README.md)
+> ⚠️ 旧有的碎片化设计稿件已被悉数清理合并。所有跨端逻辑、状态流和 UI 组件粒度，均统一参考下方唯一的 Master 架构指南：
+
+- [⭐ 核心架构与全平台统一规范 (MASTER ARCHITECTURE)](./docs/MASTER_ARCHITECTURE.md)
+- [🧩 UI 组件交互与数据流规范 (COMPONENT SPEC)](./docs/COMPONENT_INTERACTION_SPEC.md)
+- [BLE 常见问题 (FAQ)](./docs/BLE_FAQ.md)
+- [功能回归测试表单 (QA Checklist)](./docs/test-checklist.md)
+- [微信小程序专属开发避坑指南](./docs/wechat-pitfalls.md)
+- [周边资料：公众号系列文档](./docs/wechat-articles/README.md)
 
 ---
 

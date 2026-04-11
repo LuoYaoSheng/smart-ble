@@ -28,17 +28,12 @@ struct ContentView: View {
                 }
                 .tag(2)
 
-            LogView()
-                .tabItem {
-                    Label("日志", systemImage: "doc.text")
-                }
-                .tag(3)
-
+            // T05: 日志已移至 DeviceDetailView 内联，此处去掉独立日志 Tab
             AboutView()
                 .tabItem {
                     Label("关于", systemImage: "info.circle")
                 }
-                .tag(4)
+                .tag(3)
         }
         .tint(.blue)
         .onChange(of: bleManager.connectionStates) { _ in

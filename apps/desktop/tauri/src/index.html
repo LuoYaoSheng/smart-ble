@@ -32,47 +32,43 @@
             <div class="tab-nav">
                 <button class="tab-btn active" data-tab="scan">
                     <span class="icon"> Scanner</span>
-                    <span>Scan Devices</span>
+                    <span>扫描设备</span>
+                </button>
+                <button class="tab-btn" data-tab="connected" id="connectedTabBtn">
+                    <span class="icon"> Link</span>
+                    <span>已连接 <span id="connectedBadge" class="badge" style="display:none">0</span></span>
                 </button>
                 <button class="tab-btn" data-tab="broadcast">
                     <span class="icon"> Broadcast</span>
-                    <span>Peripheral Mode</span>
+                    <span>外设模式</span>
                 </button>
                 <button class="tab-btn" data-tab="about">
                     <span class="icon"> Info</span>
-                    <span>About</span>
+                    <span>关于</span>
                 </button>
+            </div>
+
+            <!-- Connected Devices View (T13) -->
+            <div id="connectedView" class="view">
+                <div style="padding:16px">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+                        <h3 style="margin:0;font-size:16px">已连接设备</h3>
+                        <button id="disconnectAllBtn" class="btn btn-danger" style="display:none;font-size:12px;padding:4px 10px">全部断开</button>
+                    </div>
+                    <div id="connectedDeviceList">
+                        <div class="empty-state">
+                            <div class="empty-icon"> Link</div>
+                            <div class="empty-text">暂无已连接设备</div>
+                            <div class="empty-hint">在扫描页面点击设备进行连接</div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Device List View -->
             <div id="deviceListView" class="view active">
-                <!-- Filter Panel -->
-                <div class="filter-panel">
-                    <div class="filter-header">
-                        <span>Filter Settings</span>
-                        <button id="resetFilterButton" class="btn-mini">Reset</button>
-                    </div>
-                    <div class="filter-item">
-                        <label>Signal Strength: <span id="rssiValue">-100</span> dBm</label>
-                        <input type="range" id="rssiFilter" class="slider" min="-100" max="-30" value="-100">
-                        <div class="filter-presets">
-                            <button class="btn-mini preset-btn" data-value="-100">All</button>
-                            <button class="btn-mini preset-btn" data-value="-90">-90</button>
-                            <button class="btn-mini preset-btn" data-value="-70">-70</button>
-                            <button class="btn-mini preset-btn" data-value="-50">-50</button>
-                        </div>
-                    </div>
-                    <div class="filter-item">
-                        <label>Name Prefix</label>
-                        <input type="text" id="namePrefixFilter" class="input" placeholder="Filter by name prefix...">
-                    </div>
-                    <div class="filter-item">
-                        <label class="checkbox">
-                            <input type="checkbox" id="hideUnnamedFilter">
-                            <span>Hide devices without name</span>
-                        </label>
-                    </div>
-                </div>
+                <!-- Filter Panel Component -->
+                <filter-panel id="mainFilterPanel"></filter-panel>
 
                 <div class="controls">
                     <button id="scanButton" class="btn btn-primary">
@@ -244,54 +240,16 @@
                     <button id="clearLogsButton" class="btn btn-secondary">Clear Logs</button>
                 </div>
 
-                <div id="servicesList" class="services-list">
-                    <div class="loading-state">Discovering services...</div>
-                </div>
+                <!-- Service Panel Component -->
+                <service-panel id="mainServicePanel"></service-panel>
 
-                <div id="logPanel" class="log-panel" style="display: none;">
-                    <div class="log-header">
-                        <span>Operation Log</span>
-                        <div class="log-actions">
-                            <span id="logCount">0 entries</span>
-                            <button id="exportLogsButton" class="btn-mini">Export</button>
-                            <button id="clearLogsButton" class="btn-mini">Clear</button>
-                        </div>
-                    </div>
-                    <div id="logList" class="log-list"></div>
-                </div>
+                <log-panel id="mainLogPanel"></log-panel>
             </div>
         </main>
     </div>
 
-    <!-- Write Data Dialog -->
-    <div id="writeDialog" class="dialog-overlay" style="display: none;">
-        <div class="dialog">
-            <div class="dialog-header">
-                <h3>Write Characteristic</h3>
-                <button class="dialog-close">--></button>
-            </div>
-            <div class="dialog-body">
-                <div class="form-group">
-                    <label id="writeCharLabel">Characteristic: </label>
-                    <input type="text" id="writeDataInput" class="input" placeholder="FF 01 02">
-                </div>
-                <div class="format-toggle">
-                    <label class="radio">
-                        <input type="radio" name="format" value="hex" checked>
-                        <span>HEX</span>
-                    </label>
-                    <label class="radio">
-                        <input type="radio" name="format" value="utf8">
-                        <span>UTF-8</span>
-                    </label>
-                </div>
-            </div>
-            <div class="dialog-footer">
-                <button class="btn btn-secondary dialog-cancel">Cancel</button>
-                <button class="btn btn-primary dialog-confirm">Write</button>
-            </div>
-        </div>
-    </div>
+    <!-- Write Data Dialog Component -->
+    <write-dialog id="mainWriteDialog"></write-dialog>
 
     <!-- Device Info Dialog -->
     <div id="deviceInfoDialog" class="dialog-overlay" style="display: none;">
@@ -328,6 +286,11 @@
         </div>
     </div>
 
+    <script src="components/ServicePanel.js"></script>
+    <script src="components/WriteDialog.js"></script>
+    <script src="components/LogPanel.js"></script>
+    <script src="components/FilterPanel.js"></script>
+    <script src="components/DeviceCard.js"></script>
     <script src="app.js"></script>
     <script>document.addEventListener('DOMContentLoaded', () => init().catch(console.error));</script>
 </body>

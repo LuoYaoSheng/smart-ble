@@ -625,38 +625,43 @@ ipcMain.handle('ble:notifyCharacteristic', async (event, deviceId, serviceUuid, 
   });
 });
 
-// UUID 辅助函数
+// T07: UUID 辅助函数（中文名称，对齐 Android BleUuids）
 function getServiceName(uuid) {
-  const shortUuid = uuid.substring(4, 8);
+  const short = (uuid.length === 4 ? uuid : uuid.substring(4, 8)).toUpperCase();
   const services = {
-    '1800': 'Generic Access',
-    '1801': 'Generic Attribute',
-    '180A': 'Device Information',
-    '180F': 'Battery Service',
-    '1812': 'HID',
-    '180D': 'Device Information',
-    '181C': 'User Data'
+    '1800': '通用访问',
+    '1801': '通用属性',
+    '180A': '设备信息',
+    '180F': '电池服务',
+    '1812': '人机界面(HID)',
+    '180D': '心率服务',
+    '1809': '健康温度计',
+    '181C': '用户数据',
   };
-  return services[shortUuid] || 'Unknown Service';
+  return services[short] || '未知服务';
 }
 
 function getCharacteristicName(uuid) {
-  const shortUuid = uuid.substring(4, 8);
+  const short = (uuid.length === 4 ? uuid : uuid.substring(4, 8)).toUpperCase();
   const characteristics = {
-    '2A00': 'Device Name',
-    '2A01': 'Appearance',
-    '2A29': 'Manufacturer Name',
-    '2A24': 'Model Number',
-    '2A25': 'Serial Number',
-    '2A27': 'Hardware Revision',
-    '2A26': 'Firmware Revision',
-    '2A28': 'Software Revision',
-    '2A19': 'Battery Level',
-    '2A04': 'PPP Central',
-    '2A05': 'PPP Peripheral'
+    '2A00': '设备名称',
+    '2A01': '外观',
+    '2A02': '隐私标志',
+    '2A03': '重连地址',
+    '2A04': '连接参数',
+    '2A05': '服务变更',
+    '2A19': '电池电量',
+    '2A23': '系统标识符',
+    '2A24': '型号',
+    '2A25': '序列号',
+    '2A26': '固件版本',
+    '2A27': '硬件版本',
+    '2A28': '软件版本',
+    '2A29': '制造商',
   };
-  return characteristics[shortUuid] || 'Unknown Characteristic';
+  return characteristics[short] || '未知特征值';
 }
+
 
 function getCharacteristicProperties(props) {
   const properties = [];

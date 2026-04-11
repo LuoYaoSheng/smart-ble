@@ -50,7 +50,14 @@ const state = {
     // Maximum devices to display
     maxDevices: 100,
     // Platform info
-    platform: PLATFORM
+    platform: PLATFORM,
+    // T06: Auto-reconnect state (aligned with Flutter: max 3 attempts, exponential backoff)
+    reconnect: {
+        enabled: true,
+        attempts: new Map(),      // deviceId -> attempt count
+        timers: new Map(),        // deviceId -> setTimeout handle
+        userDisconnected: new Set() // deviceId -> user initiated, skip reconnect
+    }
 };
 
 // DOM Elements
@@ -61,18 +68,13 @@ const elements = {
     deviceList: document.getElementById('deviceList'),
     deviceListView: document.getElementById('deviceListView'),
     deviceDetailView: document.getElementById('deviceDetailView'),
+    connectedView: document.getElementById('connectedView'),    // T13
     broadcastView: document.getElementById('broadcastView'),
     deviceName: document.getElementById('deviceName'),
     deviceId: document.getElementById('deviceId'),
     connectionStatus: document.getElementById('connectionStatus'),
-    servicesList: document.getElementById('servicesList'),
-    logPanel: document.getElementById('logPanel'),
-    logList: document.getElementById('logList'),
-    logCount: document.getElementById('logCount'),
-    exportLogsButton: document.getElementById('exportLogsButton'),
-    writeDialog: document.getElementById('writeDialog'),
-    writeDataInput: document.getElementById('writeDataInput'),
-    writeCharLabel: document.getElementById('writeCharLabel'),
+    // Removed elements.servicesList
+    // Removed old write elements
     broadcastName: document.getElementById('broadcastName'),
     broadcastServiceUuid: document.getElementById('broadcastServiceUuid'),
     broadcastManufacturerId: document.getElementById('broadcastManufacturerId'),
@@ -83,12 +85,7 @@ const elements = {
     stopBroadcastButton: document.getElementById('stopBroadcastButton'),
     connectButton: document.getElementById('connectButton'),
     disconnectButton: document.getElementById('disconnectButton'),
-    // Filter elements
-    rssiFilter: document.getElementById('rssiFilter'),
-    rssiValue: document.getElementById('rssiValue'),
-    namePrefixFilter: document.getElementById('namePrefixFilter'),
-    hideUnnamedFilter: document.getElementById('hideUnnamedFilter'),
-    resetFilterButton: document.getElementById('resetFilterButton'),
+    // Filter elements (removed as they are now encapsulated in the Web Component)
     // Device info dialog
     deviceInfoDialog: document.getElementById('deviceInfoDialog'),
     infoDeviceName: document.getElementById('infoDeviceName'),
@@ -166,37 +163,62 @@ function setupEventListeners() {
     document.getElementById('backButton')?.addEventListener('click', goBack);
     document.getElementById('connectButton')?.addEventListener('click', () => connectDevice(state.currentDevice?.id));
     document.getElementById('disconnectButton')?.addEventListener('click', disconnectDevice);
-    document.getElementById('clearLogsButton')?.addEventListener('click', clearLogs);
-    elements.exportLogsButton?.addEventListener('click', exportLogs);
 
     // Broadcast buttons
     elements.startBroadcastButton?.addEventListener('click', startAdvertising);
     elements.stopBroadcastButton?.addEventListener('click', stopAdvertising);
 
-    // Filter controls
-    elements.rssiFilter?.addEventListener('input', (e) => {
-        state.filters.rssi = parseInt(e.target.value);
-        elements.rssiValue.textContent = e.target.value;
-        renderDeviceList();
-    });
-    elements.namePrefixFilter?.addEventListener('input', (e) => {
-        state.filters.namePrefix = e.target.value;
-        renderDeviceList();
-    });
-    elements.hideUnnamedFilter?.addEventListener('change', (e) => {
-        state.filters.hideUnnamed = e.target.checked;
-        renderDeviceList();
-    });
-    elements.resetFilterButton?.addEventListener('click', resetFilters);
-    document.querySelectorAll('.preset-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const value = parseInt(btn.dataset.value);
-            elements.rssiFilter.value = value;
-            state.filters.rssi = value;
-            elements.rssiValue.textContent = value;
+    // Filter controls (via Web Component)
+    const filterPanel = document.getElementById('mainFilterPanel');
+    if (filterPanel) {
+        filterPanel.addEventListener('filter-change', (e) => {
+            state.filters = e.detail;
             renderDeviceList();
         });
-    });
+    }
+
+    // Write Dialog Web Component
+    const writeDialog = document.getElementById('mainWriteDialog');
+    if (writeDialog) {
+        writeDialog.addEventListener('write', async (e) => {
+            if (!state.currentDevice) return;
+            const { serviceUuid, charUuid, data, format } = e.detail;
+            const deviceId = state.currentDevice.id;
+
+            try {
+                const result = await invoke('write_characteristic', {
+                    deviceId, serviceUuid, charUuid, data, format
+                });
+                if (result.success) {
+                    addLog('success', `Write successful`);
+                    writeDialog.close();
+                } else {
+                    addLog('error', `Write failed: ${result.error}`);
+                }
+            } catch (error) {
+                addLog('error', `Write error: ${error}`);
+            }
+        });
+    }
+
+    // Service Panel Web Component events
+    const servicePanel = document.getElementById('mainServicePanel');
+    if (servicePanel) {
+        servicePanel.addEventListener('char-action', async (e) => {
+            const { serviceUuid, charUuid, action, btn } = e.detail;
+            switch (action) {
+                case 'read':
+                    await readCharacteristic(serviceUuid, charUuid);
+                    break;
+                case 'write':
+                    showWriteDialog(serviceUuid, charUuid);
+                    break;
+                case 'notify':
+                    await toggleNotify(serviceUuid, charUuid, btn);
+                    break;
+            }
+        });
+    }
 
     // Device info dialog
     elements.deviceInfoDialog?.querySelectorAll('.dialog-close').forEach(btn => {
@@ -230,6 +252,71 @@ async function setupTauriListeners() {
         addLog('info', `[${deviceId}] Received from ${charUuid.slice(0, 8)}...: ${value}`);
         updateCharacteristicValue(deviceId, serviceUuid, charUuid, value);
     });
+
+    // T06: Listen for unexpected disconnections and trigger auto-reconnect
+    await listen('device-disconnected', (event) => {
+        const { deviceId } = event.payload;
+        state.connectedDevices.delete(deviceId);
+        if (state.currentDevice && state.currentDevice.id === deviceId) {
+            updateConnectionUI(false);
+        }
+        renderConnectedDevicesPanel(); // T13: 更新已连接面板
+        addLog('info', `Device disconnected: ${deviceId}`);
+
+        // Start reconnection if not user initiated
+        if (!state.reconnect.userDisconnected.has(deviceId)) {
+            attemptReconnect(deviceId);
+        }
+    });
+}
+
+// T06: Auto-Reconnect (aligned with Flutter: max 3 attempts, 2s/4s/6s backoff)
+const MAX_RECONNECT_ATTEMPTS = 3;
+
+function attemptReconnect(deviceId) {
+    const rc = state.reconnect;
+    if (!rc.enabled || rc.userDisconnected.has(deviceId)) return;
+
+    const attempts = rc.attempts.get(deviceId) || 0;
+    if (attempts >= MAX_RECONNECT_ATTEMPTS) {
+        addLog('error', `Max reconnect attempts (${MAX_RECONNECT_ATTEMPTS}) reached for ${deviceId}, giving up`);
+        rc.attempts.delete(deviceId);
+        return;
+    }
+
+    const nextAttempt = attempts + 1;
+    rc.attempts.set(deviceId, nextAttempt);
+    const delayMs = nextAttempt * 2000; // 2s, 4s, 6s
+    addLog('info', `Will reconnect to ${deviceId} in ${delayMs / 1000}s (attempt ${nextAttempt}/${MAX_RECONNECT_ATTEMPTS})`);
+
+    // Cancel any pending timer
+    if (rc.timers.has(deviceId)) {
+        clearTimeout(rc.timers.get(deviceId));
+    }
+
+    rc.timers.set(deviceId, setTimeout(async () => {
+        rc.timers.delete(deviceId);
+        addLog('info', `Reconnecting to ${deviceId} (attempt ${nextAttempt})...`);
+        try {
+            const result = await invoke('connect', { deviceId });
+            if (result.success) {
+                rc.attempts.set(deviceId, 0);
+                state.connectedDevices.add(deviceId);
+                if (state.currentDevice && state.currentDevice.id === deviceId) {
+                    updateConnectionUI(true);
+                }
+                renderConnectedDevicesPanel(); // T13: 更新已连接面板
+                addLog('success', `Reconnected successfully`);
+                await discoverServices(deviceId);
+            } else {
+                addLog('error', `Reconnect failed: ${result.error}`);
+                attemptReconnect(deviceId);
+            }
+        } catch (e) {
+            addLog('error', `Reconnect error: ${e}`);
+            attemptReconnect(deviceId);
+        }
+    }, delayMs));
 }
 
 // Initialize Bluetooth
@@ -285,12 +372,75 @@ function switchTab(tab) {
 
     if (tab === 'scan') {
         elements.deviceListView.classList.add('active');
+    } else if (tab === 'connected') {
+        // T13: 已连接设备 Tab
+        elements.connectedView?.classList.add('active');
+        renderConnectedDevicesPanel();
     } else if (tab === 'broadcast') {
         elements.broadcastView.classList.add('active');
     } else if (tab === 'about') {
         document.getElementById('aboutView').classList.add('active');
     }
 }
+
+// T13: 渲染已连接设备面板
+function renderConnectedDevicesPanel() {
+    const list = document.getElementById('connectedDeviceList');
+    const badge = document.getElementById('connectedBadge');
+    const disconnectAllBtn = document.getElementById('disconnectAllBtn');
+    if (!list) return;
+
+    const count = state.connectedDevices.size;
+    if (badge) {
+        badge.textContent = count;
+        badge.style.display = count > 0 ? 'inline' : 'none';
+    }
+    if (disconnectAllBtn) {
+        disconnectAllBtn.style.display = count > 1 ? 'inline-block' : 'none';
+    }
+
+    if (count === 0) {
+        list.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon"> Link</div>
+                <div class="empty-text">暂无已连接设备</div>
+                <div class="empty-hint">在扫描页面点击设备进行连接</div>
+            </div>`;
+        return;
+    }
+
+    list.innerHTML = '';
+    [...state.connectedDevices].forEach(deviceId => {
+        const device = state.devices.get(deviceId) || { id: deviceId, name: deviceId.slice(0, 16) };
+        const card = document.createElement('device-card');
+        card.setAttribute('is-connection-tab', 'true');
+        card.device = device;
+        card.addEventListener('show-detail', (e) => navigateToDevice(e.detail.id));
+        card.addEventListener('disconnect', (e) => disconnectFromPanel(e.detail.id));
+        list.appendChild(card);
+    });
+}
+
+async function disconnectFromPanel(deviceId) {
+    state.reconnect.userDisconnected.add(deviceId);
+    state.reconnect.attempts.delete(deviceId);
+    if (state.reconnect.timers.has(deviceId)) {
+        clearTimeout(state.reconnect.timers.get(deviceId));
+        state.reconnect.timers.delete(deviceId);
+    }
+    try {
+        await invoke('disconnect', { deviceId });
+        state.connectedDevices.delete(deviceId);
+        renderConnectedDevicesPanel();
+        addLog('info', `Disconnected ${deviceId}`);
+    } catch (e) { addLog('error', `Disconnect error: ${e}`); }
+}
+
+function navigateToDevice(deviceId) {
+    const device = state.devices.get(deviceId);
+    if (device) { state.currentDevice = device; showDeviceDetail(device); }
+}
+
 
 // Toggle Scan
 async function toggleScan() {
@@ -396,7 +546,7 @@ function renderDeviceList() {
 
     // Track current device IDs
     const currentIds = new Set();
-    elements.deviceList.querySelectorAll('.device-item').forEach(item => {
+    elements.deviceList.querySelectorAll('device-card').forEach(item => {
         currentIds.add(item.dataset.id);
     });
 
@@ -406,52 +556,28 @@ function renderDeviceList() {
     // Remove devices that are no longer in the filtered list
     currentIds.forEach(id => {
         if (!newIds.has(id)) {
-            const item = elements.deviceList.querySelector(`.device-item[data-id="${id}"]`);
+            const item = elements.deviceList.querySelector(`device-card[data-id="${id}"]`);
             if (item) item.remove();
         }
     });
 
     // Update or add devices
     filteredDevices.forEach(device => {
-        let item = elements.deviceList.querySelector(`.device-item[data-id="${device.id}"]`);
+        let card = elements.deviceList.querySelector(`device-card[data-id="${device.id}"]`);
 
-        if (!item) {
-            // Create new device item
-            item = document.createElement('div');
-            item.className = 'device-item';
-            item.dataset.id = device.id;
-            item.innerHTML = `
-                <div class="device-item-header">
-                    <span class="device-item-name">${escapeHtml(device.name || 'Unknown')}</span>
-                    <span class="device-item-rssi">${device.rssi || 0} dBm</span>
-                </div>
-                <div class="device-item-id">${escapeHtml(device.id)}</div>
-                <button class="btn btn-mini btn-connect" data-action="connect" data-id="${device.id}"> Connect</button>
-            `;
-
-            // Add click handlers
-            item.addEventListener('click', (e) => {
-                if (!e.target.classList.contains('btn-connect')) {
-                    showDeviceInfoDialog(device.id);
-                }
-            });
-
-            const connectBtn = item.querySelector('.btn-connect');
-            if (connectBtn) {
-                connectBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    connectDevice(device.id);
-                });
-            }
-
-            elements.deviceList.appendChild(item);
+        if (!card) {
+            // Create new device card using Web Component
+            card = document.createElement('device-card');
+            card.dataset.id = device.id;
+            card.device = device;
+            
+            card.addEventListener('connect', (e) => connectDevice(e.detail.id));
+            card.addEventListener('show-detail', (e) => showDeviceInfoDialog(e.detail.id));
+            
+            elements.deviceList.appendChild(card);
         } else {
-            // Update existing device item (only RSSI and name might change)
-            const nameEl = item.querySelector('.device-item-name');
-            const rssiEl = item.querySelector('.device-item-rssi');
-
-            if (nameEl) nameEl.textContent = device.name || 'Unknown';
-            if (rssiEl) rssiEl.textContent = `${device.rssi || 0} dBm`;
+            // Update existing device card properties
+            card.device = device;
         }
     });
 }
@@ -490,18 +616,6 @@ function applyFilters() {
     return devices;
 }
 
-// Reset filters
-function resetFilters() {
-    state.filters.rssi = -100;
-    state.filters.namePrefix = '';
-    state.filters.hideUnnamed = false;
-
-    if (elements.rssiFilter) elements.rssiFilter.value = -100;
-    if (elements.rssiValue) elements.rssiValue.textContent = '-100';
-    if (elements.namePrefixFilter) elements.namePrefixFilter.value = '';
-    if (elements.hideUnnamedFilter) elements.hideUnnamedFilter.checked = false;
-
-    renderDeviceList();
 }
 
 // Show Device Info Dialog
@@ -554,8 +668,10 @@ async function connectDevice(deviceId) {
         const result = await invoke('connect', { deviceId });
         if (result.success) {
             state.connectedDevices.add(deviceId);
-            updateConnectionStatus(true);
-            updateDeviceButtons();
+            updateConnectionUI(true);
+            renderConnectedDevicesPanel(); // T13: 更新已连接面板
+            
+            // Fetch services after successful connection
             await discoverServices(deviceId);
             addLog('success', `Connected to ${state.currentDevice?.name || 'device'}`);
         } else {
@@ -576,13 +692,21 @@ async function connectDevice(deviceId) {
 async function disconnectDevice() {
     if (!state.currentDevice) return;
     const deviceId = state.currentDevice.id;
+    // T06: mark user-initiated, skip reconnect
+    state.reconnect.userDisconnected.add(deviceId);
+    state.reconnect.attempts.delete(deviceId);
+    if (state.reconnect.timers.has(deviceId)) {
+        clearTimeout(state.reconnect.timers.get(deviceId));
+        state.reconnect.timers.delete(deviceId);
+    }
     try {
         const result = await invoke('disconnect', { deviceId });
         if (result.success) {
             state.connectedDevices.delete(deviceId);
-            updateConnectionStatus(false);
-            updateDeviceButtons();
-            addLog('info', `Disconnected ${deviceId}`);
+            updateConnectionUI(false);
+            renderConnectedDevicesPanel(); // T13: 更新已连接面板
+            renderServices([]);
+            addLog('success', 'Disconnected successfully');
         }
     } catch (error) {
         addLog('error', `Disconnect error: ${error}`);
@@ -599,8 +723,9 @@ function updateDeviceButtons() {
     if (elements.disconnectButton) {
         elements.disconnectButton.style.display = isConn ? 'block' : 'none';
     }
-    if (!isConn && elements.servicesList) {
-        elements.servicesList.innerHTML = '<div class="empty-state"><div class="empty-text">Connect to discover services</div></div>';
+    if (!isConn) {
+        const servicePanel = document.getElementById('mainServicePanel');
+        if (servicePanel) servicePanel.services = [];
     }
 }
 
@@ -664,89 +789,18 @@ async function discoverServices(deviceId) {
 
 // Render Services
 function renderServices() {
-    if (!elements.servicesList) return;
+    const servicePanel = document.getElementById('mainServicePanel');
+    if (!servicePanel) return;
     
-    if (!state.currentDevice) return;
+    if (!state.currentDevice) {
+        servicePanel.services = [];
+        return;
+    }
     const deviceId = state.currentDevice.id;
     const currentServices = state.servicesByDevice.get(deviceId) || [];
 
-    if (currentServices.length === 0) {
-        elements.servicesList.innerHTML = '<div class="empty-state"><div class="empty-text">No services found</div></div>';
-        return;
-    }
-
-    elements.servicesList.innerHTML = currentServices.map((service, sIdx) => `
-        <div class="service-card" data-service-idx="${sIdx}">
-            <div class="service-header">
-                <div class="service-info">
-                    <h4>${escapeHtml(service.name)}</h4>
-                    <div class="service-uuid">${escapeHtml(service.uuid)}</div>
-                </div>
-                <span class="service-expand">-</span>
-            </div>
-            <div class="characteristics-list">
-                ${service.characteristics && service.characteristics.length > 0
-                    ? service.characteristics.map((char, cIdx) => renderCharacteristic(service.uuid, char, cIdx)).join('')
-                    : '<div style="padding:12px;color:var(--text-secondary);font-size:12px">No characteristics</div>'
-                }
-            </div>
-        </div>
-    `).join('');
-
-    // Service expand toggle
-    elements.servicesList.querySelectorAll('.service-header').forEach(header => {
-        header.addEventListener('click', () => {
-            const card = header.closest('.service-card');
-            card.classList.toggle('expanded');
-        });
-    });
+    servicePanel.services = currentServices;
 }
-
-function renderCharacteristic(serviceUuid, char, idx) {
-    const props = char.properties || [];
-    const propBadges = props.map(p => `<span class="prop-badge">${escapeHtml(p)}</span>`).join('');
-
-    return `
-        <div class="characteristic-item" data-service-uuid="${serviceUuid}" data-char-uuid="${char.uuid}">
-            <div class="characteristic-header">
-                <div>
-                    <div class="characteristic-name">${escapeHtml(char.name)}</div>
-                    <div class="characteristic-uuid">${escapeHtml(char.uuid)}</div>
-                </div>
-                <div class="char-props">${propBadges}</div>
-            </div>
-            ${char.value ? `<div class="characteristic-value">${escapeHtml(char.value)}</div>` : ''}
-            <div class="characteristic-actions">
-                ${props.includes('read') ? `<button class="btn btn-sm btn-secondary" data-action="read">Read</button>` : ''}
-                ${props.includes('write') || props.includes('writeWithoutResponse') ? `<button class="btn btn-sm btn-primary" data-action="write">Write</button>` : ''}
-                ${props.includes('notify') || props.includes('indicate') ? `<button class="btn btn-sm btn-secondary" data-action="notify">Notify</button>` : ''}
-            </div>
-        </div>
-    `;
-}
-
-// Characteristic Actions
-elements.servicesList?.addEventListener('click', async (e) => {
-    const btn = e.target.closest('[data-action]');
-    if (!btn) return;
-
-    const charItem = btn.closest('.characteristic-item');
-    const serviceUuid = charItem.dataset.serviceUuid;
-    const charUuid = charItem.dataset.charUuid;
-    const action = btn.dataset.action;
-
-    switch (action) {
-        case 'read':
-            await readCharacteristic(serviceUuid, charUuid);
-            break;
-        case 'write':
-            showWriteDialog(serviceUuid, charUuid);
-            break;
-        case 'notify':
-            await toggleNotify(serviceUuid, charUuid, btn);
-            break;
-    }
-});
 
 // Read Characteristic
 async function readCharacteristic(serviceUuid, charUuid) {
@@ -768,55 +822,10 @@ async function readCharacteristic(serviceUuid, charUuid) {
 
 // Show Write Dialog
 function showWriteDialog(serviceUuid, charUuid) {
-    currentWriteChar = { serviceUuid, charUuid };
-    if (elements.writeCharLabel) {
-        elements.writeCharLabel.textContent = `Characteristic: ${charUuid}`;
-    }
-    if (elements.writeDataInput) {
-        elements.writeDataInput.value = '';
-    }
-    if (elements.writeDialog) {
-        elements.writeDialog.style.display = 'flex';
-        elements.writeDataInput?.focus();
-    }
+    const dialog = document.getElementById('mainWriteDialog');
+    if (dialog) dialog.show(serviceUuid, charUuid);
 }
-
-function closeWriteDialog() {
-    if (elements.writeDialog) {
-        elements.writeDialog.style.display = 'none';
-    }
-    currentWriteChar = null;
-}
-
-// Write Data
-async function writeData() {
-    if (!currentWriteChar || !state.currentDevice) return;
-    const deviceId = state.currentDevice.id;
-
-    const data = elements.writeDataInput?.value.trim();
-    if (!data) return;
-
-    const format = document.querySelector('input[name="format"]:checked')?.value || 'hex';
-
-    try {
-        const result = await invoke('write_characteristic', {
-            deviceId,
-            serviceUuid: currentWriteChar.serviceUuid,
-            charUuid: currentWriteChar.charUuid,
-            data,
-            format
-        });
-
-        if (result.success) {
-            addLog('success', `Write successful`);
-            closeWriteDialog();
-        } else {
-            addLog('error', `Write failed: ${result.error}`);
-        }
-    } catch (error) {
-        addLog('error', `Write error: ${error}`);
-    }
-}
+// writeData is now handled by the 'write' event listener in setupEventListeners
 
 // Toggle Notify
 async function toggleNotify(serviceUuid, charUuid, btn) {
@@ -848,18 +857,10 @@ async function toggleNotify(serviceUuid, charUuid, btn) {
 // Update Characteristic Value
 function updateCharacteristicValue(deviceId, serviceUuid, charUuid, value) {
     if (!state.currentDevice || state.currentDevice.id !== deviceId) return;
-    const charItem = elements.servicesList?.querySelector(
-        `[data-service-uuid="${serviceUuid}"][data-char-uuid="${charUuid}"]`
-    );
-    if (!charItem) return;
-
-    let valueDiv = charItem.querySelector('.characteristic-value');
-    if (!valueDiv) {
-        valueDiv = document.createElement('div');
-        valueDiv.className = 'characteristic-value';
-        charItem.appendChild(valueDiv);
+    const panel = document.getElementById('mainServicePanel');
+    if (panel) {
+        panel.updateCharacteristicValue(serviceUuid, charUuid, value);
     }
-    valueDiv.textContent = value || '(empty)';
 }
 
 // Update broadcast UI based on platform - matches Flutter pattern
@@ -903,7 +904,7 @@ function updateBroadcastPlatformInfo() {
     broadcastInfo.innerHTML = infoItems.join('');
 }
 
-// Advertising - Aligned with UniApp broadcast options
+// T08+T09: Advertising - aligned with UniApp broadcast options
 // Platform-specific messaging matches Flutter pattern
 async function startAdvertising() {
     const name = elements.broadcastName?.value || 'SmartBLE';
@@ -911,6 +912,13 @@ async function startAdvertising() {
     const manufacturerId = elements.broadcastManufacturerId?.value || '0A00';
     const manufacturerData = elements.broadcastManufacturerData?.value || 'SmartBLE_Broadcast';
     const includeName = elements.broadcastIncludeName?.checked !== false;
+
+    // T08: 统一广播数据超限校验（BLE ADV payload 上限 31 字节）
+    const totalBytes = calcAdvertiseBytesJs(serviceUuid, manufacturerData);
+    if (totalBytes > 31) {
+        addLog('error', `广播数据超限：当前 ${totalBytes} 字节，BLE 最多支持 31 字节`);
+        return;
+    }
 
     // Show platform-specific warning before attempting
     if (PLATFORM.isWindows) {
@@ -973,6 +981,20 @@ async function stopAdvertising() {
     }
 }
 
+// T08: 计算广播包字节数（BLE ADV payload 上限 31 字节）
+function calcAdvertiseBytesJs(serviceUuid, manufacturerData) {
+    let total = 0;
+    if (serviceUuid) {
+        const isShort = serviceUuid.replace(/-/g, '').length <= 8;
+        total += 2 + (isShort ? 2 : 16);
+    }
+    if (manufacturerData) {
+        const dataBytes = new TextEncoder().encode(manufacturerData).length;
+        total += 2 + 2 + dataBytes; // AD头(2) + 厂商ID(2) + 数据
+    }
+    return total;
+}
+
 function updateAdvertisingUI(advertising) {
     const statusDot = elements.broadcastStatus?.querySelector('.status-dot');
     const statusText = elements.broadcastStatus?.querySelector('.status-text');
@@ -996,76 +1018,18 @@ function updateAdvertisingUI(advertising) {
 
 // Log Functions
 function addLog(type, message) {
-    const timestamp = new Date().toLocaleTimeString();
-    state.logs.unshift({ type, message, timestamp });
-    renderLogs();
-}
-
-function renderLogs() {
-    if (!elements.logList) return;
-
-    if (state.logs.length === 0) {
-        if (elements.logPanel) elements.logPanel.style.display = 'none';
-        return;
-    }
-
-    if (elements.logPanel) elements.logPanel.style.display = 'flex';
-    if (elements.logCount) elements.logCount.textContent = `${state.logs.length} entries`;
-
-    elements.logList.innerHTML = state.logs.slice(0, 100).map(log => `
-        <div class="log-entry ${log.type}">
-            <span class="log-time">[${log.timestamp}]</span>
-            <span class="log-message">${escapeHtml(log.message)}</span>
-        </div>
-    `).join('');
+    const panel = document.getElementById('mainLogPanel');
+    if (panel) panel.addLog(type, message);
 }
 
 function clearLogs() {
-    state.logs = [];
-    renderLogs();
+    const panel = document.getElementById('mainLogPanel');
+    if (panel) panel.clearLogs();
 }
 
-// Export logs to file - Aligned with UniApp
 function exportLogs() {
-    if (state.logs.length === 0) {
-        addLog('error', 'No logs to export');
-        return;
-    }
-
-    // Create log content
-    const lines = [
-        'SmartBLE Operation Log',
-        `Exported: ${new Date().toISOString()}`,
-        `Total entries: ${state.logs.length}`,
-        '-------------------',
-        ''
-    ];
-
-    state.logs.forEach(log => {
-        const typeIcon = {
-            'success': '✓',
-            'error': '✗',
-            'info': 'ℹ',
-            'warning': '⚠'
-        }[log.type] || '•';
-
-        lines.push(`[${log.timestamp}] ${typeIcon} [${log.type.toUpperCase()}] ${log.message}`);
-    });
-
-    const content = lines.join('\n');
-
-    // Create download link
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `smartble-log-${new Date().toISOString().replace(/[:.]/g, '-')}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-
-    addLog('success', 'Logs exported');
+    const panel = document.getElementById('mainLogPanel');
+    if (panel) panel.exportLogs();
 }
 
 // Navigation - go back to device list

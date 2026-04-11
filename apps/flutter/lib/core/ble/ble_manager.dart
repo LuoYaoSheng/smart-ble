@@ -582,37 +582,47 @@ class BleManager {
     return result;
   }
 
-  /// 获取标准服务名称
+  /// T07: 获取标准服务名称（中文，对齐 Android BleUuids）
   String? _getServiceName(String uuid) {
-    final short = uuid.toLowerCase().replaceAll('-', '');
+    final s = uuid.toLowerCase().replaceAll('-', '');
+    // 取短UUID的4-8位（标准128-bit规则）
+    final short = s.length >= 8 ? s.substring(0, 8) : s;
     const serviceNames = {
-      '000018000000': '通用访问',
-      '000018010000': '通用属性',
-      '0000180a0000': '设备信息',
-      '0000180f0000': '电池服务',
+      '00001800': '通用访问',
+      '00001801': '通用属性',
+      '0000180a': '设备信息',
+      '0000180f': '电池服务',
+      '00001812': '人机界面(HID)',
+      '0000180d': '心率服务',
+      '00001809': '健康温度计',
+      '4fafc201': 'OTA 升级服务',
     };
-    for (var entry in serviceNames.entries) {
-      if (short.startsWith(entry.key.substring(0, 8))) {
-        return entry.value;
-      }
-    }
-    return null;
+    return serviceNames[short];
   }
 
-  /// 获取标准特征值名称
+  /// T07: 获取标准特征值名称（中文，对齐 Android BleUuids）
   String? _getCharacteristicName(String uuid) {
-    final short = uuid.toLowerCase().replaceAll('-', '');
+    final s = uuid.toLowerCase().replaceAll('-', '');
+    // 取5-8位（Bluetooth SIG 特征值短UUID位置）
+    final short = s.length >= 8 ? s.substring(4, 8) : s;
     const charNames = {
-      '00002a000000': '设备名称',
-      '00002a190000': '电池电量',
-      '00002a270000': '硬件版本',
-      '00002a280000': '软件版本',
+      '2a00': '设备名称',
+      '2a01': '外观',
+      '2a02': '隐私标志',
+      '2a03': '重连地址',
+      '2a04': '连接参数',
+      '2a05': '服务变更',
+      '2a19': '电池电量',
+      '2a23': '系统标识符',
+      '2a24': '型号',
+      '2a25': '序列号',
+      '2a26': '固件版本',
+      '2a27': '硬件版本',
+      '2a28': '软件版本',
+      '2a29': '制造商',
+      'beb5': 'OTA 控制',
     };
-    for (var entry in charNames.entries) {
-      if (short.startsWith(entry.key.substring(0, 8))) {
-        return entry.value;
-      }
-    }
-    return null;
+    return charNames[short];
   }
 }
+

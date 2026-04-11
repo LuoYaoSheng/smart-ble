@@ -11,8 +11,7 @@ class LogViewController: NSViewController {
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - UI Components
-    private var scrollView: NSScrollView!
-    private var textView: NSTextView!
+    private var logPanel: LogPanel!
     private var clearButton: NSButton!
     private var countLabel: NSTextField!
 
@@ -51,27 +50,10 @@ class LogViewController: NSViewController {
         countLabel.backgroundColor = .clear
         toolbar.addSubview(countLabel)
 
-        // Scroll view
-        scrollView = NSScrollView()
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.hasVerticalScroller = true
-        scrollView.hasHorizontalScroller = false
-        scrollView.borderType = .noBorder
-        view.addSubview(scrollView)
-
-        // Text view
-        textView = NSTextView()
-        textView.isEditable = false
-        textView.isSelectable = true
-        textView.font = .monospacedSystemFont(ofSize: 10, weight: .regular)
-        textView.textColor = .labelColor
-        textView.backgroundColor = .textBackgroundColor
-        textView.textContainer?.containerSize = NSSize(width: scrollView.contentSize.width, height: CGFloat.greatestFiniteMagnitude)
-        textView.textContainer?.widthTracksTextView = true
-        textView.textContainer?.heightTracksTextView = false
-        textView.isAutomaticQuoteSubstitutionEnabled = false
-        textView.isAutomaticDashSubstitutionEnabled = false
-        scrollView.documentView = textView
+        // Log panel
+        logPanel = LogPanel()
+        logPanel.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(logPanel)
 
         NSLayoutConstraint.activate([
             // Toolbar
@@ -86,11 +68,11 @@ class LogViewController: NSViewController {
             countLabel.trailingAnchor.constraint(equalTo: toolbar.trailingAnchor),
             countLabel.centerYAnchor.constraint(equalTo: toolbar.centerYAnchor),
 
-            // Scroll view
-            scrollView.topAnchor.constraint(equalTo: toolbar.bottomAnchor, constant: 8),
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            // Log panel
+            logPanel.topAnchor.constraint(equalTo: toolbar.bottomAnchor, constant: 8),
+            logPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            logPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            logPanel.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
 
@@ -110,11 +92,10 @@ class LogViewController: NSViewController {
     }
 
     private func updateLogs(_ logs: [BLEManager.LogEntry]) {
-        guard let textView = textView else { return }
+        // Clear panel first using its method (or manually clear string)
+        logPanel.clearLogs()
 
-        let attributedString = NSMutableAttributedString()
-
-        for log in logs.reversed() {
+        for log in logs { // Use ascending if LogPanel appends, or reversed depending on desired visual
             let timestamp = DateFormatter.localizedString(from: log.timestamp, dateStyle: .none, timeStyle: .medium)
             let prefix = "[\(timestamp)] "
 
@@ -126,21 +107,11 @@ class LogViewController: NSViewController {
             case .warning: color = .systemOrange
             }
 
-            let entry = NSAttributedString(
-                string: "\(prefix)\(log.message)\n",
-                attributes: [.foregroundColor: color]
-            )
-            attributedString.append(entry)
+            logPanel.appendLog("\(prefix)\(log.message)", color: color)
         }
-
-        textView.textStorage?.setAttributedString(attributedString)
 
         // Update count
         countLabel.stringValue = "\(logs.count) entries"
-
-        // Scroll to top
-        let clipView = scrollView.contentView
-        textView.scroll(NSPoint(x: 0, y: clipView.bounds.height))
     }
 
     @objc private func clearLogs() {

@@ -18,7 +18,7 @@ struct ScanView: View {
 
             // Filter Panel (collapsible)
             if showFilterPanel {
-                filterPanel
+                FilterPanel()
             }
 
             // Device List
@@ -94,97 +94,7 @@ struct ScanView: View {
         .background(Color.gray.opacity(0.1))
     }
 
-    private var filterPanel: some View {
-        VStack(spacing: 12) {
-            // Filter header with reset button
-            HStack {
-                Text("过滤条件")
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
 
-                Spacer()
-
-                Button(action: resetFilters) {
-                    Text("重置")
-                        .font(.caption)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(Color.gray.opacity(0.2))
-                        .cornerRadius(6)
-                }
-                .buttonStyle(.plain)
-            }
-
-            // RSSI Filter - aligned with UniApp (-100 to -30)
-            VStack(alignment: .leading, spacing: 8) {
-                HStack {
-                    Text("信号强度: \(bleManager.filterRSSI) dBm")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    Spacer()
-                }
-
-                HStack {
-                    Text("-100")
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
-                    Slider(value: Binding(
-                        get: { Double(bleManager.filterRSSI) },
-                        set: { bleManager.filterRSSI = Int($0) }
-                    ), in: -100 ... -30, step: 5)
-                    Text("-30")
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
-                }
-
-                // Preset buttons - aligned with UniApp
-                HStack(spacing: 8) {
-                    ForEach([-100, -90, -70, -50], id: \.self) { value in
-                        Button(action: { bleManager.filterRSSI = value }) {
-                            Text(value == -100 ? "全部" : "\(value)")
-                                .font(.caption2)
-                                .padding(.horizontal, 10)
-                                .padding(.vertical, 4)
-                                .background(bleManager.filterRSSI == value ? Color.blue : Color.gray.opacity(0.2))
-                                .foregroundColor(bleManager.filterRSSI == value ? .white : .primary)
-                                .cornerRadius(6)
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
-            }
-
-            // Name prefix filter
-            HStack(spacing: 12) {
-                Text("名称前缀:")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                TextField("输入前缀", text: $bleManager.filterNamePrefix)
-                    .textFieldStyle(.roundedBorder)
-                    .frame(width: 120)
-                    .font(.caption)
-
-                Spacer()
-
-                // Hide no name toggle
-                HStack(spacing: 8) {
-                    Text("隐藏无名设备")
-                        .font(.caption)
-                    Toggle("", isOn: $bleManager.hideNoNameDevices)
-                        .toggleStyle(.switch)
-                }
-            }
-        }
-        .padding()
-        .background(Color.blue.opacity(0.08))
-        .transition(.opacity.combined(with: .move(edge: .top)))
-    }
-
-    private func resetFilters() {
-        bleManager.filterRSSI = -100
-        bleManager.filterNamePrefix = ""
-        bleManager.hideNoNameDevices = false
-    }
 
     private var emptyState: some View {
         VStack(spacing: 16) {
@@ -220,89 +130,7 @@ struct ScanView: View {
     }
 }
 
-// MARK: - Device Card
-struct DeviceCard: View {
-    @EnvironmentObject var bleManager: BLEManager
-    let device: ScanResult
 
-    var body: some View {
-        HStack(spacing: 12) {
-            // Icon
-            ZStack {
-                Circle()
-                    .fill(Color.blue.opacity(0.1))
-                    .frame(width: 50, height: 50)
-
-                Image(systemName: "antenna.radiowaves.left.and.right")
-                    .font(.title3)
-                    .foregroundColor(.blue)
-            }
-
-            // Info
-            VStack(alignment: .leading, spacing: 4) {
-                HStack(spacing: 6) {
-                    Text(device.name)
-                        .font(.headline)
-
-                    // Device type label
-                    deviceTypeLabel
-                }
-
-                Text(device.id.prefix(8) + "...")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-
-                if !device.serviceUUIDs.isEmpty {
-                    Text(device.serviceUUIDs.prefix(3).joined(separator: ", "))
-                        .font(.caption2)
-                        .foregroundColor(.blue)
-                }
-            }
-
-            Spacer()
-
-            // RSSI
-            VStack(alignment: .trailing, spacing: 4) {
-                HStack(spacing: 2) {
-                    ForEach(0..<4) { i in
-                        RoundedRectangle(cornerRadius: 2)
-                            .fill(i < bleManager.getSignalBars(rssi: device.rssi) ? Color.green : Color.gray.opacity(0.3))
-                            .frame(width: 4, height: CGFloat(4 + i * 3))
-                    }
-                }
-
-                Text("\(device.rssi) dBm")
-                    .font(.caption2)
-                    .foregroundColor(.secondary)
-            }
-        }
-        .padding()
-        .background(Color.gray.opacity(0.15))
-        .cornerRadius(12)
-    }
-
-    private var deviceTypeLabel: some View {
-        Group {
-            if device.name.lowercased().contains("ble") {
-                Text("BLE")
-                    .font(.caption2)
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 2)
-                    .background(Color.blue.opacity(0.8))
-                    .foregroundColor(.white)
-                    .cornerRadius(4)
-            } else if device.name.lowercased().contains("bluetooth") {
-                Text("BT")
-                    .font(.caption2)
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 2)
-                    .background(Color.blue.opacity(0.8))
-                    .foregroundColor(.white)
-                    .cornerRadius(4)
-            }
-        }
-    }
-}
 
 // MARK: - Device Detail Sheet
 struct DeviceDetailSheet: View {

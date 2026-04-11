@@ -1,4 +1,4 @@
-package com.smartble.ui.screen
+package com.smartble.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

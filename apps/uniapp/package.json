@@ -4,6 +4,7 @@
   "description": "BLE调试工具",
   "main": "main.js",
   "dependencies": {
-    "@dcloudio/uni-ui": "^1.5.7"
+    "@dcloudio/uni-ui": "^1.5.7",
+    "pinia": "^3.0.4"
   }
 }

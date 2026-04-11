@@ -832,48 +832,45 @@ async fn stop_advertising() -> Result<Response<bool>, String> {
     })
 }
 
-// Helper functions
+// T07: Helper functions - 中文名称（对齐 Android BleUuids）
 fn get_service_name(uuid: &str) -> String {
-    if uuid.len() > 8 {
-        match &uuid[4..8] {
-            "1800" => "Generic Access",
-            "1801" => "Generic Attribute",
-            "180A" => "Device Information",
-            "180F" => "Battery Service",
-            "180D" => "Heart Rate",
-            "1812" => "HID",
-            "181C" => "User Data",
-            "1819" => "Location",
-            _ => "Unknown Service",
-        }.to_string()
-    } else {
-        "Unknown Service".to_string()
-    }
+    let short = if uuid.len() > 8 { &uuid[4..8] } else { uuid };
+    match short.to_uppercase().as_str() {
+        "1800" => "通用访问",
+        "1801" => "通用属性",
+        "180A" => "设备信息",
+        "180F" => "电池服务",
+        "180D" => "心率服务",
+        "1812" => "人机界面(HID)",
+        "1809" => "健康温度计",
+        "181C" => "用户数据",
+        _ => "未知服务",
+    }.to_string()
 }
 
 fn get_characteristic_name(uuid: &str) -> String {
-    if uuid.len() > 8 {
-        match &uuid[4..8] {
-            "2A00" => "Device Name",
-            "2A01" => "Appearance",
-            "2A29" => "Manufacturer Name",
-            "2A24" => "Model Number",
-            "2A25" => "Serial Number",
-            "2A27" => "Hardware Revision",
-            "2A26" => "Firmware Revision",
-            "2A28" => "Software Revision",
-            "2A19" => "Battery Level",
-            "2A04" => "PPP Central",
-            "2A05" => "PPP Peripheral",
-            "2A37" => "Heart Rate Measurement",
-            "2A38" => "Body Sensor Location",
-            "2A3D" => "Alert Level",
-            _ => "Unknown Characteristic",
-        }.to_string()
-    } else {
-        "Unknown Characteristic".to_string()
-    }
+    let short = if uuid.len() > 8 { &uuid[4..8] } else { uuid };
+    match short.to_uppercase().as_str() {
+        "2A00" => "设备名称",
+        "2A01" => "外观",
+        "2A02" => "隐私标志",
+        "2A03" => "重连地址",
+        "2A04" => "连接参数",
+        "2A05" => "服务变更",
+        "2A19" => "电池电量",
+        "2A23" => "系统标识符",
+        "2A24" => "型号",
+        "2A25" => "序列号",
+        "2A26" => "固件版本",
+        "2A27" => "硬件版本",
+        "2A28" => "软件版本",
+        "2A29" => "制造商",
+        "2A37" => "心率测量",
+        "2A38" => "身体传感器位置",
+        _ => "未知特征值",
+    }.to_string()
 }
+
 
 fn get_properties(char: &Characteristic) -> Vec<String> {
     let mut props = Vec::new();

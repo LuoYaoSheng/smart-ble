@@ -67,46 +67,64 @@ class App {
             }
         });
 
-        // Filter controls - aligned with UniApp
-        document.getElementById('rssiFilter')?.addEventListener('input', (e) => {
-            this.filterRSSI = parseInt(e.target.value);
-            document.getElementById('rssiValue').textContent = this.filterRSSI;
-            this.updateDeviceList();
-        });
-
-        document.getElementById('namePrefixFilter')?.addEventListener('input', (e) => {
-            this.filterNamePrefix = e.target.value;
-            this.updateDeviceList();
-        });
-
-        document.getElementById('hideUnnamedFilter')?.addEventListener('change', (e) => {
-            this.hideUnnamed = e.target.checked;
-            this.updateDeviceList();
-        });
-
-        document.getElementById('resetFilterButton')?.addEventListener('click', () => {
-            this.resetFilters();
-        });
-
-        // Preset buttons
-        document.querySelectorAll('.preset-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const value = parseInt(e.target.dataset.value);
-                this.filterRSSI = value;
-                document.getElementById('rssiFilter').value = value;
-                document.getElementById('rssiValue').textContent = value;
+        // Filter controls via Web Component
+        const filterPanel = document.getElementById('mainFilterPanel');
+        if (filterPanel) {
+            filterPanel.addEventListener('filter-change', (e) => {
+                this.filterRSSI = e.detail.rssi;
+                this.filterNamePrefix = e.detail.namePrefix;
+                this.hideUnnamed = e.detail.hideUnnamed;
                 this.updateDeviceList();
             });
+        }
+
+        // Write dialog via Web Component
+        const writeDialog = document.getElementById('mainWriteDialog');
+        if (writeDialog) {
+            writeDialog.addEventListener('write', async (e) => {
+                const { serviceUuid, charUuid, data, format } = e.detail;
+                if (!this.currentDevice) return;
+                
+                try {
+                    const result = await window.bleAPI.writeCharacteristic(
+                        this.currentDevice.id,
+                        serviceUuid,
+                        charUuid,
+                        data,
+                        format
+                    );
+                    if (result.success) {
+                        this.addLog(`写入成功: ${data}`, 'success');
+                        writeDialog.close();
+                    } else {
+                        this.addLog(`写入失败: ${result.error}`, 'error');
+                    }
+                } catch (error) {
+                    this.addLog(`写入失败: ${error.message}`, 'error');
+                }
+            });
+        }
+
+        // Setup Detail View Buttons
+        document.getElementById('backButton')?.addEventListener('click', () => this.goBack());
+        document.getElementById('disconnectButton')?.addEventListener('click', () => {
+            if (this.currentDevice) this.disconnectDevice(this.currentDevice.id);
         });
 
-        // Write dialog
-        const dialogClose = document.querySelector('.dialog-close');
-        const dialogCancel = document.querySelector('.dialog-cancel');
-        const dialogConfirm = document.querySelector('.dialog-confirm');
-
-        dialogClose?.addEventListener('click', () => this.closeWriteDialog());
-        dialogCancel?.addEventListener('click', () => this.closeWriteDialog());
-        dialogConfirm?.addEventListener('click', () => this.confirmWrite());
+        // Service panel via Web Component
+        const servicePanel = document.getElementById('mainServicePanel');
+        if (servicePanel) {
+            servicePanel.addEventListener('read', (e) => {
+                this.readCharacteristic(e.detail.serviceUuid, e.detail.charUuid);
+            });
+            servicePanel.addEventListener('write', (e) => {
+                const writeDialog = document.getElementById('mainWriteDialog');
+                if (writeDialog) writeDialog.open(e.detail.serviceUuid, e.detail.charUuid);
+            });
+            servicePanel.addEventListener('notify', (e) => {
+                this.toggleNotify(e.detail.serviceUuid, e.detail.charUuid, e.detail.enabled);
+            });
+        }
     }
 
     switchTab(tab) {
@@ -118,17 +136,106 @@ class App {
         // 切换视图
         const deviceListView = document.getElementById('deviceListView');
         const broadcastView = document.getElementById('broadcastView');
+        const connectedView = document.getElementById('connectedView'); // T14
+        const aboutView = document.getElementById('aboutView');
+
+        // Hide all views first
+        deviceListView?.classList.remove('active');
+        deviceListView.style.display = 'none';
+        broadcastView?.classList.remove('active');
+        broadcastView.style.display = 'none';
+        connectedView?.classList.remove('active');
+        connectedView.style.display = 'none';
+        aboutView?.classList.remove('active');
+        aboutView.style.display = 'none';
 
         if (tab === 'scan') {
             deviceListView?.classList.add('active');
-            broadcastView?.classList.remove('active');
+            deviceListView.style.display = 'block';
+        } else if (tab === 'connected') {
+            // T14: 显示已连接列表
+            connectedView?.classList.add('active');
+            connectedView.style.display = 'block';
+            this.renderConnectedDevicesPanel();
         } else if (tab === 'broadcast') {
             // 切换到广播时停止扫描
             if (this.isScanning) {
                 this.stopScan();
             }
-            deviceListView?.classList.remove('active');
             broadcastView?.classList.add('active');
+            broadcastView.style.display = 'block';
+        } else if (tab === 'about') {
+            aboutView?.classList.add('active');
+            aboutView.style.display = 'block';
+        }
+    }
+
+    // T14: 渲染已连接设备面板
+    renderConnectedDevicesPanel() {
+        const list = document.getElementById('connectedDeviceList');
+        const badge = document.getElementById('connectedBadge');
+        const disconnectAllBtn = document.getElementById('disconnectAllBtn');
+        if (!list) return;
+
+        const count = this.connectedDevices.size;
+        if (badge) {
+            badge.textContent = count;
+            badge.style.display = count > 0 ? 'inline' : 'none';
+        }
+        if (disconnectAllBtn) {
+            disconnectAllBtn.style.display = count > 1 ? 'inline-block' : 'none';
+            disconnectAllBtn.onclick = () => {
+                [...this.connectedDevices].forEach(id => {
+                    this.currentDevice = this.devices.get(id) || { id };
+                    this.disconnect();
+                });
+            };
+        }
+
+        if (count === 0) {
+            list.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">🔗</div>
+                    <div class="empty-text">暂无已连接设备</div>
+                    <div class="empty-hint">在扫描页面点击设备进行连接</div>
+                </div>`;
+            return;
+        }
+
+        list.innerHTML = [...this.connectedDevices].map(deviceId => {
+            const device = this.devices.get(deviceId);
+            const name = device?.name || deviceId;
+            return `
+                <div class="device-card" style="margin-bottom:10px;padding:14px;border-radius:10px;border:1px solid rgba(0,0,0,0.1)">
+                    <div style="display:flex;align-items:center;gap:12px">
+                        <div style="width:40px;height:40px;border-radius:10px;background:rgba(52,199,89,0.1);display:flex;align-items:center;justify-content:center;color:#34C759">●</div>
+                        <div style="flex:1">
+                            <div style="font-weight:600">${name}</div>
+                            <div style="font-size:12px;color:#666">${deviceId}</div>
+                        </div>
+                        <button class="btn btn-secondary" style="font-size:12px;padding:4px 10px" onclick="window.appInstance.showDeviceDetailPanel('${deviceId}')">详情</button>
+                        <button class="btn btn-danger" style="font-size:12px;padding:4px 10px" onclick="window.appInstance.disconnectDeviceFromPanel('${deviceId}')">断开</button>
+                    </div>
+                </div>`;
+        }).join('');
+    }
+
+    showDeviceDetailPanel(deviceId) {
+        const device = this.devices.get(deviceId);
+        if (device) {
+            this.currentDevice = device;
+            this.showDeviceDetail();
+        }
+    }
+
+    async disconnectDeviceFromPanel(deviceId) {
+        try {
+            await window.bleAPI.disconnect(deviceId);
+            this.connectedDevices.delete(deviceId);
+            this.renderConnectedDevicesPanel();
+            this.addLog(`断开连接: ${deviceId}`, 'info');
+        } catch (error) {
+            this.showError('断开连接失败: ' + error.message);
         }
     }
 
@@ -325,21 +432,6 @@ class App {
         }, 5000);
     }
 
-    // Reset filters - aligned with UniApp
-    resetFilters() {
-        this.filterRSSI = -100;
-        this.filterNamePrefix = '';
-        this.hideUnnamed = false;
-
-        // Update UI
-        document.getElementById('rssiFilter').value = -100;
-        document.getElementById('rssiValue').textContent = '-100';
-        document.getElementById('namePrefixFilter').value = '';
-        document.getElementById('hideUnnamedFilter').checked = false;
-
-        this.updateDeviceList();
-    }
-
     // Apply filters and get filtered devices - aligned with UniApp
     getFilteredDevices() {
         return Array.from(this.devices.values()).filter(device => {
@@ -396,25 +488,15 @@ class App {
     }
 
     updateDeviceRSSI(device) {
-        // 找到对应的设备卡片并更新 RSSI
+        // Find the device card and update it using its property
         const deviceList = document.getElementById('deviceList');
         if (!deviceList) return;
 
-        // 查找对应 ID 的卡片
-        const cards = deviceList.querySelectorAll('.device-card');
+        const cards = deviceList.querySelectorAll('device-card');
         cards.forEach(card => {
-            const idEl = card.querySelector('.device-id');
-            if (idEl && idEl.textContent === this.formatShortUuid(device.id)) {
-                // 更新 RSSI
-                const rssiText = card.querySelector('.rssi-text');
-                const signalBars = card.querySelector('.signal-bars');
-                if (rssiText) rssiText.textContent = `${device.rssi} dBm`;
-
-                // 更新信号条
-                if (signalBars) {
-                    signalBars.className = `signal-bars ${this.getRssiClass(device.rssi)}`;
-                    signalBars.innerHTML = this.getSignalBars(device.rssi);
-                }
+            if (card.device && card.device.id === device.id) {
+                // Because we assign the whole object, the internal Watcher updates the UI
+                card.device = device;
             }
         });
     }
@@ -472,209 +554,39 @@ class App {
         });
     }
 
-    createDeviceCard(device) {
-        const card = document.createElement('div');
-        card.className = 'device-card';
+    // Select Device - navigate to detail view
+    selectDevice(deviceId) {
+        const device = this.devices.get(deviceId);
+        if (!device) return;
 
-        const rssiClass = this.getRssiClass(device.rssi);
-        const rssiText = this.getRssiText(device.rssi);
-        const adv = device.advertisement || {};
+        this.currentDevice = device;
 
-        // 构建服务 UUID 列表
-        let serviceInfo = '';
-        if (adv.serviceUuids && adv.serviceUuids.length > 0) {
-            serviceInfo = `<div class="device-services">${adv.serviceUuids.map(uuid => this.formatShortUuid(uuid)).join(' · ')}</div>`;
-        }
-
-        // 构建厂商信息
-        let manufacturerInfo = '';
-        if (adv.manufacturerData) {
-            const companyCode = this.parseManufacturerData(adv.manufacturerData);
-            manufacturerInfo = `<div class="device-manufacturer">厂商: ${companyCode} · ${adv.manufacturerData.substring(0, 8)}...</div>`;
-        }
-
-        card.innerHTML = `
-            <div class="device-icon">📡</div>
-            <div class="device-info">
-                <div class="device-name">${device.name || '未知设备'}</div>
-                <div class="device-id">${this.formatShortUuid(device.id)}</div>
-                ${serviceInfo}
-                ${manufacturerInfo}
-            </div>
-            <div class="device-meta">
-                <div class="rssi-indicator">
-                    <div class="signal-bars ${rssiClass}">
-                        ${this.getSignalBars(device.rssi)}
-                    </div>
-                    <span class="rssi-text">${device.rssi} dBm</span>
-                </div>
-                <button class="btn-connect" title="连接设备">→</button>
-            </div>
-        `;
-
-        // 点击整个卡片展开详情
-        card.addEventListener('click', (e) => {
-            // 如果点击的是连接按钮，则连接设备
-            if (e.target.classList.contains('btn-connect')) {
-                this.connectToDevice(device);
-                e.stopPropagation();
-                return;
-            }
-
-            // 切换详情展开/收起
-            const existingDetails = card.nextElementSibling;
-            if (existingDetails && existingDetails.classList.contains('device-details')) {
-                // 已展开，收起
-                existingDetails.remove();
-                card.classList.remove('expanded');
-            } else {
-                // 未展开，先关闭其他已展开的
-                document.querySelectorAll('.device-details').forEach(el => el.remove());
-                document.querySelectorAll('.device-card.expanded').forEach(el => el.classList.remove('expanded'));
-
-                // 展开当前
-                this.showDeviceDetails(card, device);
-                card.classList.add('expanded');
-            }
+        // Navigate to detail view
+        document.querySelectorAll('.view').forEach(view => {
+            view.classList.remove('active');
         });
+        document.getElementById('deviceDetailView').classList.add('active');
 
-        return card;
+        // Update header
+        const nameEl = document.getElementById('deviceName');
+        const idEl = document.getElementById('deviceId');
+        if (nameEl) nameEl.textContent = device.name || '未知设备';
+        if (idEl) idEl.textContent = device.id;
+
+        const isConn = this.connectedDevices.has(deviceId);
+        this.updateConnectionStatus(isConn);
+
+        // Render services
+        this.renderServices();
     }
 
-    formatShortUuid(uuid) {
-        // 对于 128 位 UUID，只显示前 8 位
-        if (uuid.length > 8) {
-            return uuid.substring(0, 8) + '...';
-        }
-        return uuid;
-    }
-
-    parseManufacturerData(hex) {
-        // 厂商 ID 是前两个字节（小端序）
-        if (hex && hex.length >= 4) {
-            const companyId = parseInt(hex.substring(2, 4) + hex.substring(0, 2), 16);
-            const companies = {
-                0x004C: 'Apple',
-                0x00E0: 'Google',
-                0x006D: 'Microsoft',
-                0x0087: 'Garmin',
-                0x0006: 'Microsoft',
-                0x00D6: 'Cyble',
-                0xFFFF: 'Test'
-            };
-            return companies[companyId] || `0x${companyId.toString(16).toUpperCase().padStart(4, '0')}`;
-        }
-        return 'Unknown';
-    }
-
-    showDeviceDetails(card, device) {
-        const adv = device.advertisement || {};
-
-        let detailsHtml = `
-            <div class="device-details">
-                <div class="details-section">
-                    <h4>设备信息</h4>
-                    <div class="detail-row"><span>设备 ID:</span><span class="mono">${device.id}</span></div>
-                    <div class="detail-row"><span>地址:</span><span class="mono">${device.address || 'N/A'}</span></div>
-                    <div class="detail-row"><span>RSSI:</span><span>${device.rssi} dBm</span></div>
-                    <div class="detail-row"><span>可连接:</span><span>${adv.connectable ? '是' : '否'}</span></div>
-                    <div class="detail-row"><span>可扫描:</span><span>${adv.scannable ? '是' : '否'}</span></div>
-                    ${adv.txPowerLevel !== undefined ? `<div class="detail-row"><span>TX Power:</span><span>${adv.txPowerLevel} dBm</span></div>` : ''}
-                </div>
-        `;
-
-        // 服务 UUIDs
-        if (adv.serviceUuids && adv.serviceUuids.length > 0) {
-            detailsHtml += `
-                <div class="details-section">
-                    <h4>广播服务 UUIDs (${adv.serviceUuids.length})</h4>
-                    ${adv.serviceUuids.map(uuid => `
-                        <div class="detail-row">
-                            <span class="mono">${uuid}</span>
-                            <span class="service-name">${this.getServiceName(uuid)}</span>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
-
-        // 服务数据
-        if (adv.serviceData && adv.serviceData.length > 0) {
-            detailsHtml += `
-                <div class="details-section">
-                    <h4>服务数据</h4>
-                    ${adv.serviceData.map(sd => `
-                        <div class="detail-row">
-                            <span class="mono">${sd.uuid}</span>
-                            <span class="mono">${sd.data || 'N/A'}</span>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
-
-        // 厂商数据
-        if (adv.manufacturerData) {
-            detailsHtml += `
-                <div class="details-section">
-                    <h4>厂商数据</h4>
-                    <div class="detail-row">
-                        <span>公司:</span>
-                        <span>${this.parseManufacturerData(adv.manufacturerData)}</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="mono">${adv.manufacturerData}</span>
-                    </div>
-                </div>
-            `;
-        }
-
-        detailsHtml += `</div>`;
-
-        // 在卡片后面插入详情
-        card.insertAdjacentHTML('afterend', detailsHtml);
-    }
-
-    getServiceName(uuid) {
-        const shortUuid = uuid.substring(4, 8);
-        const services = {
-            '1800': 'Generic Access',
-            '1801': 'Generic Attribute',
-            '180A': 'Device Information',
-            '180F': 'Battery Service',
-            '1812': 'HID',
-            '180D': 'Heart Rate',
-            '181C': 'User Data',
-            '1809': 'Health Thermometer',
-            '181A': 'Automation IO',
-            '181B': 'Object Transfer'
-        };
-        return services[shortUuid] || '';
-    }
-
-    getRssiClass(rssi) {
-        if (rssi >= -50) return 'excellent';
-        if (rssi >= -70) return 'good';
-        if (rssi >= -90) return 'fair';
-        return 'weak';
-    }
-
-    getRssiText(rssi) {
-        if (rssi >= -50) return '极佳';
-        if (rssi >= -70) return '良好';
-        if (rssi >= -90) return '一般';
-        return '微弱';
-    }
-
-    getSignalBars(rssi) {
-        const bars = 4;
-        const activeBars = Math.min(4, Math.max(0, Math.ceil((100 + rssi) / 20)));
-        let html = '';
-        for (let i = 0; i < bars; i++) {
-            const active = i < activeBars ? 'active' : '';
-            html += `<div class="signal-bar ${active}"></div>`;
-        }
-        return html;
+    goBack() {
+        this.currentDevice = null;
+        document.querySelectorAll('.view').forEach(view => {
+            view.classList.remove('active');
+        });
+        document.getElementById('deviceListView').classList.add('active');
+        this.updateDeviceList();
     }
 
     async connectToDevice(device) {
@@ -703,6 +615,8 @@ class App {
             this.updateConnectionStatus('connected');
         }
 
+        this.renderConnectedDevicesPanel(); // T14 更新已连接面板
+
         // Automatically discover services
         this.discoverServices(deviceId);
     }
@@ -713,6 +627,7 @@ class App {
             this.addLog('设备已断开', 'info');
             this.updateConnectionStatus('disconnected');
         }
+        this.renderConnectedDevicesPanel(); // T14 更新已连接面板
     }
 
     async disconnect() {
@@ -791,120 +706,27 @@ class App {
         });
     }
 
-    createServiceCard(service) {
-        const card = document.createElement('div');
-        card.className = 'service-card';
-        card.dataset.serviceUuid = service.uuid;
+    renderServices() {
+        const servicePanel = document.getElementById('mainServicePanel');
+        if (!servicePanel) return;
+        
+        if (!this.currentDevice) {
+            servicePanel.services = [];
+            return;
+        }
 
-        const shortUuid = service.uuid.substring(4, 8);
-
-        card.innerHTML = `
-            <div class="service-header">
-                <div class="service-icon">⚙️</div>
-                <div class="service-info">
-                    <div class="service-name">${service.name}</div>
-                    <div class="service-uuid">${service.uuid}</div>
-                </div>
-                <div class="service-count">${service.characteristics.length} 特征值</div>
-                <div class="service-expand">▼</div>
-            </div>
-            <div class="service-characteristics"></div>
-        `;
-
-        const header = card.querySelector('.service-header');
-        const charsContainer = card.querySelector('.service-characteristics');
-
-        // Click to expand/collapse
-        header.addEventListener('click', () => {
-            const isExpanded = card.classList.toggle('expanded');
-            const expandIcon = header.querySelector('.service-expand');
-            if (expandIcon) {
-                expandIcon.textContent = isExpanded ? '▲' : '▼';
-            }
-        });
-
-        // Add characteristics
-        if (service.characteristics.length > 0) {
-            service.characteristics.forEach(char => {
-                const charEl = this.createCharacteristicElement(service.uuid, char);
-                charsContainer.appendChild(charEl);
+        try {
+            window.bleAPI.discoverServices(this.currentDevice.id).then(result => {
+                if (result.success && result.data) {
+                    servicePanel.services = result.data;
+                } else {
+                    servicePanel.services = [];
+                }
             });
-        } else {
-            charsContainer.innerHTML = `
-                <div style="padding: 16px; color: var(--text-secondary); text-align: center;">
-                    无特征值
-                </div>
-            `;
+        } catch (e) {
+            console.error(e);
+            servicePanel.services = [];
         }
-
-        return card;
-    }
-
-    createCharacteristicElement(serviceUuid, char) {
-        const div = document.createElement('div');
-        div.className = 'characteristic';
-        div.dataset.serviceUuid = serviceUuid;
-        div.dataset.charUuid = char.uuid;
-
-        const canRead = char.properties.includes('read');
-        const canWrite = char.properties.includes('write') || char.properties.includes('writeWithoutResponse');
-        const canNotify = char.properties.includes('notify') || char.properties.includes('indicate');
-
-        const propertyChips = [];
-        if (canRead) propertyChips.push({ label: 'READ', class: 'read' });
-        if (canWrite) propertyChips.push({ label: 'WRITE', class: 'write' });
-        if (canNotify) propertyChips.push({ label: 'NOTIFY', class: 'notify' });
-
-        div.innerHTML = `
-            <div class="char-icon">
-                ${canNotify ? '🔔' : canRead ? '📖' : canWrite ? '✏️' : '📄'}
-            </div>
-            <div class="char-info">
-                <div class="char-name">${char.name}</div>
-                <div class="char-uuid">${char.uuid}</div>
-                <div class="char-properties">
-                    ${propertyChips.map(p => `<span class="property-chip ${p.class}">${p.label}</span>`).join('')}
-                </div>
-            </div>
-            <div class="char-actions"></div>
-        `;
-
-        const actions = div.querySelector('.char-actions');
-
-        // Read button
-        if (canRead) {
-            const btn = this.createActionButton('📥', '读取', () => this.readCharacteristic(serviceUuid, char.uuid));
-            actions.appendChild(btn);
-        }
-
-        // Write button
-        if (canWrite) {
-            const btn = this.createActionButton('📤', '写入', () => this.showWriteDialog(serviceUuid, char.uuid));
-            actions.appendChild(btn);
-        }
-
-        // Notify button
-        if (canNotify) {
-            const btn = this.createActionButton('🔔', '通知', () => this.toggleNotify(serviceUuid, char.uuid));
-            actions.appendChild(btn);
-        }
-
-        // Store reference for notify toggle
-        if (canNotify) {
-            const key = `${serviceUuid}:${char.uuid}`;
-            this.characteristicsMap.set(key + ':btn', actions.lastChild);
-        }
-
-        return div;
-    }
-
-    createActionButton(icon, title, onClick) {
-        const btn = document.createElement('button');
-        btn.className = 'btn-icon';
-        btn.innerHTML = icon;
-        btn.title = title;
-        btn.addEventListener('click', onClick);
-        return btn;
     }
 
     async readCharacteristic(serviceUuid, charUuid) {
@@ -919,8 +741,7 @@ class App {
             if (result.success) {
                 const value = result.value || '空';
                 this.addLog(`读取成功: ${value}`, 'success');
-                // Show value in a toast/notification
-                this.showToast(`读取值: ${value}`, 'success');
+                this.updateCharacteristicValue(serviceUuid, charUuid, value);
             } else {
                 this.addLog(`读取失败: ${result.error}`, 'error');
                 this.showToast(`读取失败: ${result.error}`, 'error');
@@ -930,111 +751,16 @@ class App {
         }
     }
 
-    showWriteDialog(serviceUuid, charUuid) {
-        this.writeDialogCallback = { serviceUuid, charUuid };
-        const dialog = document.getElementById('writeDialog');
-        const input = document.getElementById('writeDataInput');
-
-        if (dialog && input) {
-            dialog.style.display = 'flex';
-            input.value = '';
-            input.focus();
-
-            // Set format to hex by default
-            const hexRadio = document.querySelector('input[name="format"][value="hex"]');
-            if (hexRadio) hexRadio.checked = true;
-        }
-    }
-
-    closeWriteDialog() {
-        const dialog = document.getElementById('writeDialog');
-        if (dialog) dialog.style.display = 'none';
-        this.writeDialogCallback = null;
-    }
-
-    async confirmWrite() {
-        if (!this.writeDialogCallback || !this.currentDevice) return;
-
-        const input = document.getElementById('writeDataInput');
-        const formatRadio = document.querySelector('input[name="format"]:checked');
-
-        if (!input) return;
-
-        const data = input.value.trim();
-        if (!data) {
-            this.showToast('请输入数据', 'warning');
-            return;
-        }
-
-        let writeData = data;
-        if (formatRadio?.value === 'utf8') {
-            // Convert UTF-8 to HEX
-            writeData = Array.from(new TextEncoder().encode(data))
-                .map(b => b.toString(16).padStart(2, '0').toUpperCase())
-                .join(' ');
-        }
-
-        // Validate hex format
-        if (formatRadio?.value === 'hex') {
-            const clean = data.replace(/\s/g, '');
-            if (!/^[0-9A-Fa-f]*$/.test(clean)) {
-                this.showToast('HEX 格式不正确', 'error');
-                return;
-            }
-        }
-
-        this.addLog(`正在写入: ${writeData}`, 'info');
-
-        try {
-            const result = await window.bleAPI.writeCharacteristic(
-                this.currentDevice.id,
-                this.writeDialogCallback.serviceUuid,
-                this.writeDialogCallback.charUuid,
-                writeData,
-                false
-            );
-
-            if (result.success) {
-                this.addLog('写入成功', 'success');
-                this.showToast('写入成功', 'success');
-            } else {
-                this.addLog(`写入失败: ${result.error}`, 'error');
-                this.showToast(`写入失败: ${result.error}`, 'error');
-            }
-        } catch (error) {
-            this.addLog(`写入失败: ${error.message}`, 'error');
-        }
-
-        this.closeWriteDialog();
-    }
-
-    async toggleNotify(serviceUuid, charUuid) {
+    async toggleNotify(serviceUuid, charUuid, enabled) {
         if (!this.currentDevice) return;
 
-        const key = `${serviceUuid}:${charUuid}`;
-        const state = this.characteristicsMap.get(key);
-        const btn = state?.btn;
-
-        const isNotifying = state?.notifying || false;
-        const newState = !isNotifying;
-
-        this.addLog(`${newState ? '启用' : '禁用'}通知...`, 'info');
+        this.addLog(`${enabled ? '启用' : '禁用'}通知...`, 'info');
 
         try {
-            const result = await window.bleAPI.notifyCharacteristic(this.currentDevice.id, serviceUuid, charUuid, newState);
+            const result = await window.bleAPI.notifyCharacteristic(this.currentDevice.id, serviceUuid, charUuid, enabled);
 
             if (result.success) {
-                if (state) {
-                    state.notifying = newState;
-                }
-
-                if (btn) {
-                    btn.classList.toggle('notifying', newState);
-                    btn.innerHTML = newState ? '🔕' : '🔔';
-                    btn.style.color = newState ? 'var(--success-color)' : '';
-                }
-
-                this.addLog(`通知已${newState ? '启用' : '禁用'}`, 'success');
+                this.addLog(`通知已${enabled ? '启用' : '禁用'}`, 'success');
             } else {
                 this.addLog(`设置通知失败: ${result.error}`, 'error');
             }
@@ -1043,18 +769,19 @@ class App {
         }
     }
 
+    updateCharacteristicValue(serviceUuid, charUuid, value) {
+        const panel = document.getElementById('mainServicePanel');
+        if (panel) panel.updateCharacteristicValue(serviceUuid, charUuid, value);
+    }
+
     onCharacteristicValueChanged(data) {
         if (!this.currentDevice || this.currentDevice.id !== data.deviceId) return;
         
         const hex = data.value || '';
         this.addLog(`收到通知: ${hex}`, 'receive');
 
-        // Highlight the changed characteristic
-        const charEl = document.querySelector(`[data-service-uuid="${data.serviceUuid}"][data-char-uuid="${data.characteristicUuid}"]`);
-        if (charEl) {
-            charEl.classList.add('highlight');
-            setTimeout(() => charEl.classList.remove('highlight'), 1000);
-        }
+        // Update the characteristic value in the panel
+        this.updateCharacteristicValue(data.serviceUuid, data.characteristicUuid, hex);
 
         // Show notification
         this.showToast(`收到数据: ${hex}`, 'info');
@@ -1073,33 +800,12 @@ class App {
         this.characteristicsMap.clear();
 
         // Hide log panel
-        const logPanel = document.getElementById('logPanel');
-        if (logPanel) logPanel.style.display = 'none';
+        const logPanel = document.getElementById('mainLogPanel');
+        if (logPanel) logPanel.clearLogs();
     }
 
     showDeviceDetail() {
-        const deviceListView = document.getElementById('deviceListView');
-        const deviceDetailView = document.getElementById('deviceDetailView');
-
-        if (deviceListView) deviceListView.classList.remove('active');
-        if (deviceDetailView) deviceDetailView.classList.add('active');
-
-        const nameEl = document.getElementById('deviceName');
-        const idEl = document.getElementById('deviceId');
-        const servicesList = document.getElementById('servicesList');
-
-        if (nameEl) nameEl.textContent = this.currentDevice?.name || '未知设备';
-        if (idEl) idEl.textContent = this.currentDevice?.id || '';
-
-        // Show loading state
-        if (servicesList) {
-            servicesList.innerHTML = `
-                <div class="loading-state">
-                    <div class="spinner"></div>
-                    <div>正在发现服务...</div>
-                </div>
-            `;
-        }
+        // Redundant since selectDevice already manages view changes and sets up state
     }
 
     updateConnectionStatus(status) {
@@ -1118,48 +824,16 @@ class App {
     }
 
     addLog(message, type = 'info') {
-        const timestamp = new Date().toLocaleTimeString('zh-CN', { hour12: false });
-        this.logs.push({ message, type, timestamp });
-        this.renderLogs();
+        const panel = document.getElementById('mainLogPanel');
+        if (panel) panel.addLog(type, message);
     }
 
     renderLogs() {
-        const panel = document.getElementById('logPanel');
-        const list = document.getElementById('logList');
-        const count = document.getElementById('logCount');
-
-        if (!panel || !list || !count) return;
-
-        if (this.logs.length === 0) {
-            panel.style.display = 'none';
-            return;
-        }
-
-        panel.style.display = 'flex';
-        count.textContent = `${this.logs.length} 条`;
-
-        list.innerHTML = '';
-        this.logs.slice().reverse().forEach(log => {
-            const item = document.createElement('div');
-            item.className = 'log-item';
-
-            const icons = { info: 'ℹ️', success: '✅', error: '❌', receive: '📥' };
-
-            item.innerHTML = `
-                <div class="log-icon ${log.type}">${icons[log.type]}</div>
-                <div class="log-content">
-                    <div class="log-message">${log.message}</div>
-                    <div class="log-time">${log.timestamp}</div>
-                </div>
-            `;
-
-            list.appendChild(item);
-        });
+        // Handled by Web Component
     }
-
     clearLogs() {
-        this.logs = [];
-        this.renderLogs();
+        const panel = document.getElementById('mainLogPanel');
+        if (panel) panel.clearLogs();
     }
 
     showToast(message, type = 'info') {
@@ -1193,5 +867,5 @@ class App {
 
 // Initialize app when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    new App();
+    window.appInstance = new App();
 });

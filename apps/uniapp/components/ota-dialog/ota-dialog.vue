@@ -30,165 +30,159 @@
   </view>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, watch } from 'vue';
 import { OtaManager } from '../../utils/ota_manager.js';
 
-export default {
-  name: 'OtaDialog',
-  props: {
-    visible: {
-      type: Boolean,
-      default: false
-    },
-    deviceId: {
-      type: String,
-      required: true
-    }
+const props = defineProps({
+  visible: {
+    type: Boolean,
+    default: false
   },
-  data() {
-    return {
-      fileName: '',
-      fileBuffer: null,
-      isTransmitting: false,
-      sentBytes: 0,
-      totalBytes: 0,
-      statusText: '',
-      statusType: 'info', // info, success, error
-      manager: null
-    };
-  },
-  computed: {
-    progressPercent() {
-      if (this.totalBytes === 0) return 0;
-      return Math.floor((this.sentBytes / this.totalBytes) * 100);
-    }
-  },
-  watch: {
-    visible(newVal) {
-      if (newVal) {
-        this.reset();
-      }
-    }
-  },
-  methods: {
-    reset() {
-      this.fileName = '';
-      this.fileBuffer = null;
-      this.isTransmitting = false;
-      this.sentBytes = 0;
-      this.totalBytes = 0;
-      this.statusText = '';
-      this.statusType = 'info';
-      if (this.manager) {
-        this.manager.cancel();
-        this.manager = null;
-      }
-    },
-    
-    selectFile() {
-      // #ifdef MP-WEIXIN
-      wx.chooseMessageFile({
-        count: 1,
-        type: 'file',
-        extension: ['.bin'],
-        success: (res) => {
-          const file = res.tempFiles[0];
-          this.fileName = file.name;
-          this.readFile(file.path);
-        },
-        fail: (err) => {
-          console.error("Choose file failed", err);
-        }
-      });
-      // #endif
-
-      // #ifndef MP-WEIXIN
-      uni.chooseFile({
-        count: 1,
-        extension: ['.bin'],
-        success: (res) => {
-          const file = res.tempFiles[0];
-          this.fileName = file.name;
-          this.readFile(res.tempFilePaths[0]);
-        }
-      });
-      // #endif
-    },
-    
-    readFile(path) {
-      // #ifdef MP-WEIXIN
-      wx.getFileSystemManager().readFile({
-        filePath: path,
-        success: (res) => {
-          this.fileBuffer = res.data;
-          this.statusText = '文件加载成功，可开始升级';
-          this.statusType = 'success';
-        },
-        fail: (err) => {
-          this.statusText = '文件读取失败';
-          this.statusType = 'error';
-        }
-      });
-      // #endif
-      
-      // #ifndef MP-WEIXIN
-      uni.getFileSystemManager().readFile({
-        filePath: path,
-        success: (res) => {
-          this.fileBuffer = res.data;
-          this.statusText = '文件加载成功，可开始升级';
-          this.statusType = 'success';
-        },
-        fail: (err) => {
-          this.statusText = '文件读取失败';
-          this.statusType = 'error';
-        }
-      });
-      // #endif
-    },
-
-    startOta() {
-      if (!this.fileBuffer) return;
-      
-      this.manager = new OtaManager(this.deviceId, (type, msg) => {
-        console.log(`[${type}] ${msg}`);
-      });
-
-      this.isTransmitting = true;
-      this.statusText = '准备刷写...';
-      this.statusType = 'info';
-
-      this.manager.startOta(
-        this.fileBuffer,
-        (sent, total) => {
-          this.sentBytes = sent;
-          this.totalBytes = total;
-          this.statusText = '正在传输固件...';
-        },
-        (errMsg) => {
-          this.isTransmitting = false;
-          this.statusText = `升级失败: ${errMsg}`;
-          this.statusType = 'error';
-        },
-        () => {
-          this.isTransmitting = false;
-          this.statusText = '升级完毕！';
-          this.statusType = 'success';
-          setTimeout(() => {
-            this.$emit('close');
-          }, 2000);
-        }
-      );
-    },
-
-    cancel() {
-      if (this.manager) {
-        this.manager.cancel();
-      }
-      this.$emit('close');
-    }
+  deviceId: {
+    type: String,
+    required: true
   }
-}
+});
+
+const emit = defineEmits(['close']);
+
+const fileName = ref('');
+const fileBuffer = ref(null);
+const isTransmitting = ref(false);
+const sentBytes = ref(0);
+const totalBytes = ref(0);
+const statusText = ref('');
+const statusType = ref('info'); // info, success, error
+let manager = null;
+
+const progressPercent = computed(() => {
+  if (totalBytes.value === 0) return 0;
+  return Math.floor((sentBytes.value / totalBytes.value) * 100);
+});
+
+watch(() => props.visible, (newVal) => {
+  if (newVal) {
+    reset();
+  }
+});
+
+const reset = () => {
+  fileName.value = '';
+  fileBuffer.value = null;
+  isTransmitting.value = false;
+  sentBytes.value = 0;
+  totalBytes.value = 0;
+  statusText.value = '';
+  statusType.value = 'info';
+  if (manager) {
+    manager.cancel();
+    manager = null;
+  }
+};
+
+const selectFile = () => {
+  // #ifdef MP-WEIXIN
+  wx.chooseMessageFile({
+    count: 1,
+    type: 'file',
+    extension: ['.bin'],
+    success: (res) => {
+      const file = res.tempFiles[0];
+      fileName.value = file.name;
+      readFile(file.path);
+    },
+    fail: (err) => {
+      console.error("Choose file failed", err);
+    }
+  });
+  // #endif
+
+  // #ifndef MP-WEIXIN
+  uni.chooseFile({
+    count: 1,
+    extension: ['.bin'],
+    success: (res) => {
+      const file = res.tempFiles[0];
+      fileName.value = file.name;
+      readFile(res.tempFilePaths[0]);
+    }
+  });
+  // #endif
+};
+
+const readFile = (path) => {
+  // #ifdef MP-WEIXIN
+  wx.getFileSystemManager().readFile({
+    filePath: path,
+    success: (res) => {
+      fileBuffer.value = res.data;
+      statusText.value = '文件加载成功，可开始升级';
+      statusType.value = 'success';
+    },
+    fail: (err) => {
+      statusText.value = '文件读取失败';
+      statusType.value = 'error';
+    }
+  });
+  // #endif
+  
+  // #ifndef MP-WEIXIN
+  uni.getFileSystemManager().readFile({
+    filePath: path,
+    success: (res) => {
+      fileBuffer.value = res.data;
+      statusText.value = '文件加载成功，可开始升级';
+      statusType.value = 'success';
+    },
+    fail: (err) => {
+      statusText.value = '文件读取失败';
+      statusType.value = 'error';
+    }
+  });
+  // #endif
+};
+
+const startOta = () => {
+  if (!fileBuffer.value) return;
+  
+  manager = new OtaManager(props.deviceId, (type, msg) => {
+    console.log(`[${type}] ${msg}`);
+  });
+
+  isTransmitting.value = true;
+  statusText.value = '准备刷写...';
+  statusType.value = 'info';
+
+  manager.startOta(
+    fileBuffer.value,
+    (sent, total) => {
+      sentBytes.value = sent;
+      totalBytes.value = total;
+      statusText.value = '正在传输固件...';
+    },
+    (errMsg) => {
+      isTransmitting.value = false;
+      statusText.value = `升级失败: ${errMsg}`;
+      statusType.value = 'error';
+    },
+    () => {
+      isTransmitting.value = false;
+      statusText.value = '升级完毕！';
+      statusType.value = 'success';
+      setTimeout(() => {
+        emit('close');
+      }, 2000);
+    }
+  );
+};
+
+const cancel = () => {
+  if (manager) {
+    manager.cancel();
+  }
+  emit('close');
+};
 </script>
 
 <style scoped>

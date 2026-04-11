@@ -10,6 +10,8 @@ import '../../themes/app_theme.dart';
 import '../widgets/service_tile.dart';
 import '../widgets/log_panel.dart';
 import '../widgets/ota_dialog.dart';
+import '../widgets/write_dialog.dart';
+import '../widgets/service_list.dart';
 
 /// 设备详情页
 class DeviceDetailPage extends ConsumerStatefulWidget {
@@ -160,7 +162,9 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
       );
 
       final hex = value.map((b) => b.toRadixString(16).padLeft(2, '0').toUpperCase()).join(' ');
-      _addLog('读取成功: $hex', LogType.success);
+      // T03: 统一 HEX + TEXT 双格式
+      final text = _tryDecodeUtf8(value);
+      _addLog('HEX: $hex\nTEXT: $text', LogType.success);
 
       // 更新特征值
       _updateCharacteristicValue(service.uuid, characteristic.uuid, value);
@@ -193,7 +197,7 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
 
     final result = await showDialog<WriteResult>(
       context: context,
-      builder: (context) => _WriteDialog(
+      builder: (context) => WriteDataDialog(
         characteristic: characteristic,
         controller: controller,
       ),
@@ -286,6 +290,11 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
     );
   }
 
+  /// T03: 尝试将字节解码为 UTF-8 文本，不可打印字符用「.」替代
+  String _tryDecodeUtf8(List<int> value) {
+    return value.map((b) => (b >= 32 && b <= 126) ? String.fromCharCode(b) : '.').join();
+  }
+
   Future<void> _toggleNotification(BleService service, BleCharacteristic characteristic) async {
     try {
       final newState = !characteristic.notifying;
@@ -328,7 +337,9 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
 
         stream?.listen((value) {
           final hex = value.map((b) => b.toRadixString(16).padLeft(2, '0').toUpperCase()).join(' ');
-          _addLog('收到通知: $hex', LogType.receive);
+          // T03: 统一 HEX + TEXT 双格式
+          final text = _tryDecodeUtf8(value);
+          _addLog('HEX: $hex\nTEXT: $text', LogType.receive);
         });
       }
 
@@ -619,298 +630,20 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
   }
 
   Widget _buildServicesList() {
-    if (_services.isEmpty) {
-      return const Center(
-        child: Text('未发现服务', style: TextStyle(color: AppTheme.textSecondary)),
-      );
-    }
-
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: _services.length,
-      itemBuilder: (context, index) {
-        final service = _services[index];
-        return ServiceTile(
-          service: service,
-          onRead: (char) => _readCharacteristic(service, char),
-          onWrite: (char) => _writeCharacteristic(service, char),
-          onToggleNotify: (char) => _toggleNotification(service, char),
-        );
+    return ServiceListWidget(
+      services: _services,
+      onRead: (char) {
+        final service = _services.firstWhere((s) => s.characteristics.contains(char));
+        _readCharacteristic(service, char);
+      },
+      onWrite: (char) {
+        final service = _services.firstWhere((s) => s.characteristics.contains(char));
+        _writeCharacteristic(service, char);
+      },
+      onToggleNotify: (char) {
+        final service = _services.firstWhere((s) => s.characteristics.contains(char));
+        _toggleNotification(service, char);
       },
     );
-  }
-}
-
-/// 发送模式
-enum SendMode {
-  /// 单次发送
-  single,
-  /// 批量发送（每行一条指令）
-  batch,
-  /// 循环发送
-  loop,
-}
-
-/// 写入结果
-class WriteResult {
-  final String data;
-  final bool isHexMode;
-  final SendMode sendMode;
-  final int loopCount; // 0 = 无限循环
-  final int intervalMs;
-
-  const WriteResult({
-    required this.data,
-    required this.isHexMode,
-    this.sendMode = SendMode.single,
-    this.loopCount = 1,
-    this.intervalMs = 50,
-  });
-}
-
-/// 增强写入对话框
-///
-/// 支持:
-/// - 单次发送（默认）
-/// - 批量发送: 每行一条 HEX 指令，顺序执行
-/// - 循环发送: 重复发送 N 次或无限循环
-class _WriteDialog extends StatefulWidget {
-  final BleCharacteristic characteristic;
-  final TextEditingController controller;
-
-  const _WriteDialog({
-    required this.characteristic,
-    required this.controller,
-  });
-
-  @override
-  State<_WriteDialog> createState() => _WriteDialogState();
-}
-
-class _WriteDialogState extends State<_WriteDialog> {
-  bool _isHexMode = true;
-  SendMode _sendMode = SendMode.single;
-  int _loopCount = 10;
-  int _intervalMs = 50;
-  bool _infiniteLoop = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text('写入 ${widget.characteristic.displayName}'),
-      content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 格式选择
-            Row(
-              children: [
-                const Text('格式: ', style: TextStyle(fontSize: 14)),
-                SegmentedButton<bool>(
-                  segments: const [
-                    ButtonSegment(value: true, label: Text('HEX')),
-                    ButtonSegment(value: false, label: Text('UTF-8')),
-                  ],
-                  selected: {_isHexMode},
-                  onSelectionChanged: (Set<bool> selected) {
-                    setState(() {
-                      _isHexMode = selected.first;
-                      widget.controller.clear();
-                    });
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-
-            // 发送模式选择
-            Row(
-              children: [
-                const Text('模式: ', style: TextStyle(fontSize: 14)),
-                Expanded(
-                  child: SegmentedButton<SendMode>(
-                    segments: const [
-                      ButtonSegment(value: SendMode.single, label: Text('单次')),
-                      ButtonSegment(value: SendMode.batch, label: Text('批量')),
-                      ButtonSegment(value: SendMode.loop, label: Text('循环')),
-                    ],
-                    selected: {_sendMode},
-                    onSelectionChanged: (Set<SendMode> selected) {
-                      setState(() {
-                        _sendMode = selected.first;
-                      });
-                    },
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-
-            // 数据输入
-            TextField(
-              controller: widget.controller,
-              decoration: InputDecoration(
-                labelText: _getInputLabel(),
-                border: const OutlineInputBorder(),
-                hintText: _getInputHint(),
-              ),
-              keyboardType: TextInputType.text,
-              maxLines: _sendMode == SendMode.batch ? 6 : 3,
-            ),
-
-            // 循环模式额外选项
-            if (_sendMode == SendMode.loop) ...[
-              const SizedBox(height: 12),
-              // 循环次数
-              Row(
-                children: [
-                  Checkbox(
-                    value: _infiniteLoop,
-                    onChanged: (v) => setState(() => _infiniteLoop = v ?? false),
-                  ),
-                  const Text('无限循环'),
-                  const SizedBox(width: 16),
-                  if (!_infiniteLoop) ...[
-                    const Text('次数: '),
-                    SizedBox(
-                      width: 80,
-                      child: TextField(
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                          isDense: true,
-                        ),
-                        keyboardType: TextInputType.number,
-                        controller: TextEditingController(text: '$_loopCount'),
-                        onChanged: (v) {
-                          _loopCount = int.tryParse(v) ?? 10;
-                        },
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-              // 发送间隔
-              Row(
-                children: [
-                  const Text('间隔: '),
-                  SizedBox(
-                    width: 80,
-                    child: TextField(
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                        isDense: true,
-                        suffixText: 'ms',
-                      ),
-                      keyboardType: TextInputType.number,
-                      controller: TextEditingController(text: '$_intervalMs'),
-                      onChanged: (v) {
-                        _intervalMs = int.tryParse(v) ?? 50;
-                      },
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  // 快捷间隔按钮
-                  ...[20, 50, 100, 500].map((ms) => Padding(
-                    padding: const EdgeInsets.only(right: 4),
-                    child: InkWell(
-                      onTap: () => setState(() => _intervalMs = ms),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: _intervalMs == ms
-                              ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)
-                              : Colors.grey.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(4),
-                          border: Border.all(
-                            color: _intervalMs == ms
-                                ? Theme.of(context).colorScheme.primary
-                                : Colors.transparent,
-                          ),
-                        ),
-                        child: Text('$ms', style: const TextStyle(fontSize: 11)),
-                      ),
-                    ),
-                  )),
-                ],
-              ),
-            ],
-
-            // 批量模式提示
-            if (_sendMode == SendMode.batch)
-              const Padding(
-                padding: EdgeInsets.only(top: 8),
-                child: Text(
-                  '每行一条指令，按顺序发送',
-                  style: TextStyle(fontSize: 12, color: Colors.grey),
-                ),
-              ),
-          ],
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('取消'),
-        ),
-        ElevatedButton(
-          onPressed: _onSubmit,
-          child: Text(_sendMode == SendMode.single ? '写入' :
-                     _sendMode == SendMode.batch ? '批量发送' : '开始循环'),
-        ),
-      ],
-    );
-  }
-
-  String _getInputLabel() {
-    if (_sendMode == SendMode.batch) {
-      return _isHexMode ? 'HEX 指令 (每行一条)' : '文本数据 (每行一条)';
-    }
-    return _isHexMode ? 'HEX 数据 (例: FF 01 AA)' : '文本数据 (UTF-8)';
-  }
-
-  String _getInputHint() {
-    if (_sendMode == SendMode.batch) {
-      return _isHexMode ? 'FF 01 AA\n00 02 BB\n03 CC DD' : '第一行\n第二行\n第三行';
-    }
-    return _isHexMode ? '输入十六进制数据，空格分隔' : '输入要发送的文本';
-  }
-
-  void _onSubmit() {
-    final value = widget.controller.text.trim();
-    if (value.isEmpty) return;
-
-    // 验证 HEX 输入
-    if (_isHexMode) {
-      final lines = _sendMode == SendMode.batch
-          ? value.split('\n').map((l) => l.trim()).where((l) => l.isNotEmpty)
-          : [value];
-
-      for (final line in lines) {
-        final clean = line.replaceAll(' ', '');
-        if (clean.length % 2 != 0) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('HEX 数据长度必须是偶数: $line')),
-          );
-          return;
-        }
-        if (!RegExp(r'^[0-9A-Fa-f\s]+$').hasMatch(line)) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('HEX 数据只能包含 0-9 和 A-F: $line')),
-          );
-          return;
-        }
-      }
-    }
-
-    Navigator.pop(context, WriteResult(
-      data: value,
-      isHexMode: _isHexMode,
-      sendMode: _sendMode,
-      loopCount: _infiniteLoop ? 0 : _loopCount,
-      intervalMs: _intervalMs,
-    ));
   }
 }
