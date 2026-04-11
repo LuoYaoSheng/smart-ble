@@ -125,7 +125,7 @@ fun DeviceListContent(
     val scope = rememberCoroutineScope()
     var selectedDevice by remember { mutableStateOf<BleDevice?>(null) }
     val currentSheetDevice = selectedDevice?.let { selected ->
-        filteredScanResults.find { it.id == selected.id } ?: selected
+        filteredScanResults.find { it.deviceId == selected.deviceId } ?: selected
     }
 
     BottomSheetScaffold(
@@ -136,7 +136,7 @@ fun DeviceListContent(
                     device = device,
                     onConnect = {
                         selectedDevice = null
-                        onDeviceClick(device.id, device.displayName)
+                        onDeviceClick(device.deviceId, device.displayName)
                         scope.launch {
                             scaffoldState.bottomSheetState.partialExpand()
                         }
@@ -200,8 +200,8 @@ fun DeviceListContent(
                                     }
                                 },
                                 onConnectClick = { deviceId ->
-                                    val target = filteredScanResults.find { it.id == deviceId } ?: return@DeviceList
-                                    onDeviceClick(target.id, target.displayName)
+                                    val target = filteredScanResults.find { it.deviceId == deviceId } ?: return@DeviceList
+                                    onDeviceClick(target.deviceId, target.displayName)
                                 },
                             )
                         }
@@ -335,7 +335,7 @@ fun DeviceDetailSheet(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    device.id,
+                    device.deviceId,
                     style = MaterialTheme.typography.bodyMedium,
                     color = TextSecondary
                 )

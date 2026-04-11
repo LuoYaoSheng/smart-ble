@@ -4,7 +4,7 @@ package com.smartble.core.model
  * BLE 设备
  */
 data class BleDevice(
-    val id: String,
+    val deviceId: String,
     val name: String?,
     val rssi: Int,
     val state: ConnectionState = ConnectionState.Disconnected,

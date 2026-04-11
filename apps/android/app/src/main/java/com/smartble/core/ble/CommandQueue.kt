@@ -236,7 +236,7 @@ class CommandQueue(
 
         val newCommands = loopTemplate!!.map { template ->
             CommandItem(
-                id = "${template.id}_loop$currentLoop",
+                id = "${template.deviceId}_loop$currentLoop",
                 deviceId = template.deviceId,
                 serviceUuid = template.serviceUuid,
                 characteristicUuid = template.characteristicUuid,

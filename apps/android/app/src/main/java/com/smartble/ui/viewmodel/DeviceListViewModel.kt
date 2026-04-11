@@ -106,9 +106,9 @@ class DeviceListViewModel(application: Application) : AndroidViewModel(applicati
                     .filter { it.value == com.smartble.core.model.ConnectionState.Connected }
                     .keys
                 val devices = connected.map { deviceId ->
-                    _scanResults.value.find { it.id == deviceId }
+                    _scanResults.value.find { it.deviceId == deviceId }
                         ?: BleDevice(
-                            id = deviceId,
+                            deviceId = deviceId,
                             name = "",
                             rssi = 0,
                             state = com.smartble.core.model.ConnectionState.Connected

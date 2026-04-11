@@ -6,6 +6,7 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import '../../core/ble/ble_manager.dart';
 import '../../core/ble/command_queue.dart';
 import '../../core/models/ble_service.dart';
+import '../../core/models/log_entry.dart';
 import '../../themes/app_theme.dart';
 import '../widgets/service_tile.dart';
 import '../widgets/log_panel.dart';
@@ -297,7 +298,7 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
 
   Future<void> _toggleNotification(BleService service, BleCharacteristic characteristic) async {
     try {
-      final newState = !characteristic.notifying;
+      final newState = !characteristic.isNotifying;
 
       if (newState) {
         _addLog('启用通知 ${characteristic.displayName}...', LogType.info);
@@ -321,7 +322,7 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
           setState(() {
             _services[serviceIndex].characteristics[charIndex] =
                 _services[serviceIndex].characteristics[charIndex].copyWith(
-                      notifying: newState,
+                      isNotifying: newState,
                     );
           });
         }

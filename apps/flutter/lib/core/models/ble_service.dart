@@ -99,7 +99,7 @@ class BleCharacteristic {
   final List<int>? value;
 
   /// 是否正在监听通知
-  bool notifying;
+  bool isNotifying;
 
   /// 特征值名称（标准特征值会显示名称）
   final String? name;
@@ -109,7 +109,7 @@ class BleCharacteristic {
     required this.serviceUuid,
     this.properties = const [],
     this.value,
-    this.notifying = false,
+    this.isNotifying = false,
     this.name,
   });
 
@@ -147,7 +147,7 @@ class BleCharacteristic {
     String? serviceUuid,
     List<BleCharacteristicProperty>? properties,
     List<int>? value,
-    bool? notifying,
+    bool? isNotifying,
     String? name,
   }) {
     return BleCharacteristic(
@@ -155,7 +155,7 @@ class BleCharacteristic {
       serviceUuid: serviceUuid ?? this.serviceUuid,
       properties: properties ?? this.properties,
       value: value ?? this.value,
-      notifying: notifying ?? this.notifying,
+      isNotifying: isNotifying ?? this.isNotifying,
       name: name ?? this.name,
     );
   }
@@ -173,6 +173,6 @@ class BleCharacteristic {
 
   @override
   String toString() {
-    return 'BleCharacteristic(uuid: $uuid, properties: ${properties.length}, notifying: $notifying)';
+    return 'BleCharacteristic(uuid: $uuid, properties: ${properties.length}, isNotifying: $isNotifying)';
   }
 }

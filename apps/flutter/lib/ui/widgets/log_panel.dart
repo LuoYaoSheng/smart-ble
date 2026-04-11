@@ -1,28 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../core/models/ble_service.dart';
+import '../../core/models/log_entry.dart';
 import '../../themes/app_theme.dart';
-
-/// 日志条目
-class LogEntry {
-  final String message;
-  final LogType type;
-  final DateTime timestamp;
-
-  LogEntry({
-    required this.message,
-    required this.type,
-    required this.timestamp,
-  });
-}
-
-/// 日志类型
-enum LogType {
-  info,
-  success,
-  error,
-  receive,
-}
 
 /// 日志面板组件
 class LogPanel extends StatelessWidget {
@@ -52,8 +32,10 @@ class LogPanel extends StatelessWidget {
       final typeLabel = switch (entry.type) {
         LogType.info => '系统',
         LogType.success => '成功',
+        LogType.warning => '警告',
         LogType.error => '错误',
         LogType.receive => '接收',
+        LogType.send => '发送',
       };
       buffer.writeln('[$time] [$typeLabel] ${entry.message}');
     }
@@ -90,8 +72,10 @@ class LogPanel extends StatelessWidget {
             final typeLabel = switch (log.type) {
               LogType.info => 'Info',
               LogType.success => 'Success',
+              LogType.warning => 'Warning',
               LogType.error => 'Error',
               LogType.receive => 'Receive',
+              LogType.send => 'Send',
             };
             return '[$time] $typeLabel: ${log.message}';
           }).join('\n');
@@ -253,10 +237,14 @@ class _LogItem extends StatelessWidget {
         return (Icons.info_outline, AppTheme.primaryColor);
       case LogType.success:
         return (Icons.check_circle_outline, AppTheme.successColor);
+      case LogType.warning:
+        return (Icons.warning_amber_rounded, AppTheme.warningColor);
       case LogType.error:
         return (Icons.error_outline, AppTheme.errorColor);
       case LogType.receive:
         return (Icons.arrow_downward, AppTheme.secondaryColor);
+      case LogType.send:
+        return (Icons.arrow_upward, AppTheme.primaryColor);
     }
   }
 

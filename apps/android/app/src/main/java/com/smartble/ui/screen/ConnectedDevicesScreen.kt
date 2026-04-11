@@ -95,10 +95,10 @@ fun ConnectedDevicesContent(
 
             items(connectedDevices) { device ->
                 ConnectedDeviceCard(
-                    deviceId = device.id,
+                    deviceId = device.deviceId,
                     deviceName = device.displayName,
-                    onTap = { onDeviceClick(device.id, device.displayName) },
-                    onDisconnect = { viewModel.disconnectDevice(device.id) }
+                    onTap = { onDeviceClick(device.deviceId, device.displayName) },
+                    onDisconnect = { viewModel.disconnectDevice(device.deviceId) }
                 )
             }
         }

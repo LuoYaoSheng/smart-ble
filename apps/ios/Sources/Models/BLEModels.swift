@@ -113,6 +113,6 @@ struct LogEntry: Identifiable {
     let timestamp = Date()
 
     enum LogType {
-        case info, success, error, receive, send
+        case info, success, warning, error, receive, send
     }
 }

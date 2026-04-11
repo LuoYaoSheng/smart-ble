@@ -103,7 +103,7 @@ fun DeviceCard(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    device.id,
+                    device.deviceId,
                     style = MaterialTheme.typography.bodySmall,
                     color = TextSecondary
                 )

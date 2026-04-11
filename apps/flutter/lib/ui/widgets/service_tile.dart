@@ -147,12 +147,12 @@ class _CharacteristicTile extends StatelessWidget {
           width: 36,
           height: 36,
           decoration: BoxDecoration(
-            color: characteristic.notifying
+            color: characteristic.isNotifying
                 ? AppTheme.successColor.withValues(alpha: 0.1)
                 : Colors.white,
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
-              color: characteristic.notifying
+              color: characteristic.isNotifying
                   ? AppTheme.successColor
                   : AppTheme.borderColor,
               width: 1,
@@ -161,7 +161,7 @@ class _CharacteristicTile extends StatelessWidget {
           child: Icon(
             _getIcon(),
             size: 18,
-            color: characteristic.notifying
+            color: characteristic.isNotifying
                 ? AppTheme.successColor
                 : AppTheme.textSecondary,
           ),
@@ -217,7 +217,7 @@ class _CharacteristicTile extends StatelessWidget {
   }
 
   IconData _getIcon() {
-    if (characteristic.notifying) return Icons.notifications_active;
+    if (characteristic.isNotifying) return Icons.notifications_active;
     if (characteristic.canRead) return Icons.read_more;
     if (characteristic.canWrite) return Icons.edit;
     return Icons.settings_input_component;
@@ -234,8 +234,8 @@ class _CharacteristicTile extends StatelessWidget {
     }
     if (characteristic.canNotify) {
       chips.add(_PropertyChip(
-        label: characteristic.notifying ? 'Notifying' : 'Notify',
-        color: characteristic.notifying ? AppTheme.successColor : AppTheme.textSecondary,
+        label: characteristic.isNotifying ? 'Notifying' : 'Notify',
+        color: characteristic.isNotifying ? AppTheme.successColor : AppTheme.textSecondary,
       ));
     }
 
@@ -279,14 +279,14 @@ class _CharacteristicTile extends StatelessWidget {
         if (characteristic.canNotify)
           IconButton(
             icon: Icon(
-              characteristic.notifying ? Icons.notifications_active : Icons.notifications_none,
+              characteristic.isNotifying ? Icons.notifications_active : Icons.notifications_none,
               size: 18,
             ),
             onPressed: onToggleNotify,
-            tooltip: characteristic.notifying ? '停止通知' : '启用通知',
+            tooltip: characteristic.isNotifying ? '停止通知' : '启用通知',
             constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
             padding: const EdgeInsets.all(4),
-            color: characteristic.notifying ? AppTheme.successColor : null,
+            color: characteristic.isNotifying ? AppTheme.successColor : null,
           ),
       ],
     );
