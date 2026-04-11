@@ -78,8 +78,8 @@ import com.smartble.ui.theme.Success
 import com.smartble.ui.theme.TextSecondary
 import com.smartble.ui.theme.Warning
 import com.smartble.ui.viewmodel.DeviceDetailViewModel
-import com.smartble.ui.viewmodel.LogEntry
-import com.smartble.ui.viewmodel.LogType
+import com.smartble.core.model.LogEntry
+import com.smartble.core.model.LogType
 import com.smartble.ui.viewmodel.OtaUiState
 import com.smartble.ui.components.*
 

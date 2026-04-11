@@ -6,6 +6,7 @@ import SwiftUI
 
 struct DeviceDetailView: View {
     @EnvironmentObject var bleManager: BLEManager
+    @ObservedObject var logger = Logger.shared
     let deviceId: String
 
     var body: some View {
@@ -23,9 +24,9 @@ struct DeviceDetailView: View {
             // T05: 统一的日志面板（对齐全平台组件）
             LogPanel(
                 deviceId: deviceId,
-                logs: bleManager.logsByDevice[deviceId] ?? []
+                logs: logger.logsByDevice[deviceId] ?? []
             ) {
-                bleManager.clearDeviceLogs(deviceId)
+                logger.clearForDevice(deviceId)
             }
         }
     }

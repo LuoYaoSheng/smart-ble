@@ -209,7 +209,9 @@ pio device monitor
 > ⚠️ 旧有的碎片化设计稿件已被悉数清理合并。所有跨端逻辑、状态流和 UI 组件粒度，均统一参考下方唯一的 Master 架构指南：
 
 - [⭐ 核心架构与全平台统一规范 (MASTER ARCHITECTURE)](./docs/MASTER_ARCHITECTURE.md)
-- [🧩 UI 组件交互与数据流规范 (COMPONENT SPEC)](./docs/COMPONENT_INTERACTION_SPEC.md)
+- [🏗️ 大统一核心底层逻辑栈指南 (CORE LOGIC GUIDE)](./docs/CORE_LOGIC_GUIDE.md)
+- [🧩 跨平台前端原子化组件拆分解读 (UI COMPONENTS GUIDE)](./docs/UI_COMPONENTS_GUIDE.md)
+- [🔄 UI 组件交互与数据流规范 (COMPONENT SPEC)](./docs/COMPONENT_INTERACTION_SPEC.md)
 - [BLE 常见问题 (FAQ)](./docs/BLE_FAQ.md)
 - [功能回归测试表单 (QA Checklist)](./docs/test-checklist.md)
 - [微信小程序专属开发避坑指南](./docs/wechat-pitfalls.md)

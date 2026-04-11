@@ -56,6 +56,7 @@
 import { ref, computed, nextTick } from 'vue';
 import { onLoad, onUnload, onShow, onShareAppMessage } from '@dcloudio/uni-app';
 import { useBleStore } from '../../store/ble';
+import { logger } from '../../../core/ble-core/utils/logger';
 import OtaDialog from '../../components/ota-dialog/ota-dialog.vue';
 import ServicePanel from '../../components/service-panel/service-panel.vue';
 import LogPanel from '../../components/log-panel/log-panel.vue';
@@ -76,6 +77,7 @@ const isSending = ref(false);
 const logScrollTop = ref(0);
 
 const deviceId = ref('');
+let unsubLogger = null;
 
 onLoad((options) => {
 	if (options.device) {
@@ -91,6 +93,20 @@ onLoad((options) => {
 			uni.showToast({ title: '设备信息无效', icon: 'none' });
 		}
 	}
+	
+	const deviceVal = deviceId.value;
+	// 绑定 Logger 流
+	logs.value = [...logger.getHistory(deviceVal)];
+	unsubLogger = logger.subscribe(entry => {
+		logs.value.unshift(entry);
+		nextTick(() => { logScrollTop.value = 99999; });
+	}, deviceVal);
+});
+
+onUnload(() => {
+	if (unsubLogger) {
+		unsubLogger();
+	}
 });
 
 const storeDevice = computed(() => {
@@ -100,7 +116,7 @@ const storeDevice = computed(() => {
 const deviceInfo = computed(() => storeDevice.value);
 const isConnected = computed(() => storeDevice.value.isConnected);
 const services = computed(() => storeDevice.value.services || []);
-const logs = computed(() => storeDevice.value.logs || []);
+const logs = ref([]);
 
 const addLog = (type, message) => {
 	bleStore.addDeviceLog(deviceId.value, type, message);
@@ -108,7 +124,8 @@ const addLog = (type, message) => {
 };
 
 const clearLogs = () => {
-	if (storeDevice.value.logs) storeDevice.value.logs = [];
+	logger.clear(deviceId.value);
+	logs.value = [];
 	logScrollTop.value = 0;
 	addLog('系统', '日志已清除');
 };
@@ -118,7 +135,7 @@ const shareLogs = () => {
 		uni.showToast({ title: '暂无日志', icon: 'none' });
 		return;
 	}
-	const content = logs.value.map(l => `[${l.time}] [${l.type}] ${l.message}`).join('\n');
+	const content = logs.value.map(l => `[${l.timestamp}] [${l.type}] ${l.message}`).join('\n');
 	uni.setClipboardData({
 		data: content,
 		success: () => uni.showToast({ title: '日志已复制', icon: 'success' })

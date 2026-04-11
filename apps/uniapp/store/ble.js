@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref, reactive, computed } from 'vue';
+import { logger } from '../../../core/ble-core/utils/logger';
 
 export const useBleStore = defineStore('ble', () => {
   // --- 状态(State) ---
@@ -33,18 +34,16 @@ export const useBleStore = defineStore('ble', () => {
   };
 
   const addDeviceLog = (deviceId, type, message) => {
-    if (!connectedDevicesMap[deviceId]) return;
-    
-    const now = new Date();
-    const time = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
-    
     if (message.includes('监听特征值')) {
       type = 'notify';
     }
 
-    connectedDevicesMap[deviceId].logs.unshift({ time, type, message });
-    if (connectedDevicesMap[deviceId].logs.length > 100) {
-      connectedDevicesMap[deviceId].logs.pop();
+    switch(type) {
+      case '错误': logger.error(message, deviceId); break;
+      case '成功': logger.success(message, deviceId); break;
+      case '接收': logger.receive(message, deviceId); break;
+      case '写入': logger.send(message, deviceId); break;
+      default: logger.info(message, deviceId); break; // type is passed visually in UI, fallback to info
     }
   };
 
@@ -55,8 +54,7 @@ export const useBleStore = defineStore('ble', () => {
         name: device.name || '未知设备',
         RSSI: device.RSSI || 0,
         isConnected: false,
-        services: [],
-        logs: []
+        services: []
       };
     }
     return connectedDevicesMap[device.deviceId];
@@ -143,7 +141,26 @@ export const useBleStore = defineStore('ble', () => {
     throttleTimeout = null;
   };
 
-  const startScan = (duration = 5000) => {
+  const _openAdapterWithRetry = (retryCount = 0, maxRetries = 3) => {
+    return new Promise((resolve, reject) => {
+      uni.openBluetoothAdapter({
+        success: resolve,
+        fail: err => {
+          if (retryCount < maxRetries) {
+            const delay = Math.pow(2, retryCount) * 1000;
+            console.warn(`蓝牙适配器初始化失败，${delay}ms 后尝试重试... (${retryCount+1}/${maxRetries})`);
+            setTimeout(() => {
+              _openAdapterWithRetry(retryCount + 1, maxRetries).then(resolve).catch(reject);
+            }, delay);
+          } else {
+            reject(err);
+          }
+        }
+      });
+    });
+  };
+
+  const startScan = async (duration = 5000) => {
     if (isScanning.value) return;
     
     isScanning.value = true;
@@ -155,36 +172,34 @@ export const useBleStore = defineStore('ble', () => {
     throttleTimeout = null;
     scanStopTimer = null;
 
-    uni.openBluetoothAdapter({
-      success: () => {
-        uni.startBluetoothDevicesDiscovery({
-          success: () => {
-            uni.onBluetoothDeviceFound(res => {
-              deviceBuffer.push(...res.devices);
-              if (!throttleTimeout) {
-                throttleTimeout = setTimeout(() => {
-                  processDeviceBuffer();
-                }, throttleInterval);
-              }
-            });
-            
-            scanStopTimer = setTimeout(() => {
-              if (isScanning.value) {
-                stopScan();
-              }
-            }, duration);
-          },
-          fail: err => {
-            console.error('搜索设备失败:', err);
-            isScanning.value = false;
-          }
-        });
-      },
-      fail: err => {
-        console.error('初始化蓝牙适配器失败:', err);
-        isScanning.value = false;
-      }
-    });
+    try {
+      await _openAdapterWithRetry();
+      uni.startBluetoothDevicesDiscovery({
+        success: () => {
+          uni.onBluetoothDeviceFound(res => {
+            deviceBuffer.push(...res.devices);
+            if (!throttleTimeout) {
+              throttleTimeout = setTimeout(() => {
+                processDeviceBuffer();
+              }, throttleInterval);
+            }
+          });
+          
+          scanStopTimer = setTimeout(() => {
+            if (isScanning.value) {
+              stopScan();
+            }
+          }, duration);
+        },
+        fail: err => {
+          console.error('搜索设备失败:', err);
+          isScanning.value = false;
+        }
+      });
+    } catch (err) {
+      console.error('初始化蓝牙适配器失败:', err);
+      isScanning.value = false;
+    }
   };
 
   const stopScan = () => {

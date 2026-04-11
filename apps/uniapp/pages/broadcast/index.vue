@@ -88,21 +88,23 @@
 			<scroll-view class="log-panel-brd-content" scroll-y>
 				<view v-if="logs.length === 0" class="log-brd-empty"><text>暂无日志</text></view>
 				<view v-for="(entry, idx) in logs" :key="idx" class="log-brd-entry">
-					<text class="log-brd-time">{{entry.time}}</text>
+					<text class="log-brd-time">[{{entry.timestamp}}]</text>
 					<text class="log-brd-type" :class="'log-brd-type-' + entry.type">[{{entry.type}}]</text>
 					<text class="log-brd-msg">{{entry.message}}</text>
 				</view>
 			</scroll-view>
 		</view>
-	</view>
+	</scroll-view>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { onLoad, onUnload, onShareAppMessage } from '@dcloudio/uni-app';
+import { logger } from '../../../core/ble-core/utils/logger';
 
 const advertising = ref(false);
 const logs = ref([]);
+let unsubLogger = null;
 const blePeripheral = ref(null);
 const platform = ref('');
 const isSupported = ref(false);
@@ -117,21 +119,6 @@ const androidSettings = ref({
 	addServiceUuid: false
 });
 
-const androidAdvertiseData = ref({
-	manufacturerId: 0x0001,
-	manufacturerData: "BLEToolkit_Test"
-});
-
-// iOS 参数
-const iosSettings = ref({
-	localName: "BLEToolkit_iOS",
-	services: ["FFE0"],
-	manufacturerData: {
-		id: 0x0A00,
-		data: "BLEToolkit_Test"
-	}
-});
-
 // UI 显示参数
 const deviceName = ref('');
 const serviceUUID = ref('');
@@ -141,7 +128,6 @@ const modeOptions = ['低功耗', '平衡', '低延迟'];
 const powerOptions = ['超低功率', '低功率', '中功率', '高功率'];
 const manufacturerId = ref('');
 const manufacturerData = ref('');
-const skipPermissionCheck = ref(true);
 
 const isUUIDValid = computed(() => {
 	if (!serviceUUID.value) return true;
@@ -151,31 +137,31 @@ const isUUIDValid = computed(() => {
 	return uuidRegex.test(uuid) || shortUuidRegex.test(uuid);
 });
 
-const addLog = (message, type = '系统') => {
-	const now = new Date();
-	const h = now.getHours().toString().padStart(2, '0');
-	const m = now.getMinutes().toString().padStart(2, '0');
-	const s = now.getSeconds().toString().padStart(2, '0');
-	if (type === '系统' && message.startsWith('错误')) type = '错误';
-	else if (type === '系统' && message.includes('成功')) type = '成功';
-	logs.value.unshift({ time: `${h}:${m}:${s}`, type, message });
-	if (logs.value.length > 100) logs.value.pop();
+const addLog = (type, message) => {
+	switch(type) {
+		case '错误': logger.error(message, 'broadcast'); break;
+		case '成功': logger.success(message, 'broadcast'); break;
+		case '接收': logger.receive(message, 'broadcast'); break;
+		case '操作': logger.send(message, 'broadcast'); break;
+		default: logger.info(message, 'broadcast'); break;
+	}
 };
 
 const clearLogs = () => {
+	logger.clear('broadcast');
 	logs.value = [];
 };
 
 const checkSupport = () => {
 	// #ifdef APP-PLUS
 	if (!blePeripheral.value) {
-		addLog('错误：插件未初始化');
+		addLog('错误', '插件未初始化');
 		isSupported.value = false;
 		return;
 	}
 	blePeripheral.value.isSupported((result) => {
 		isSupported.value = result.code === 0 && result.supported;
-		addLog(isSupported.value ? '设备支持低功耗蓝牙广播' : '设备不支持低功耗蓝牙广播');
+		addLog(isSupported.value ? '系统' : '错误', isSupported.value ? '设备支持低功耗蓝牙广播' : '设备不支持低功耗蓝牙广播');
 	});
 	// #endif
 
@@ -189,14 +175,12 @@ const checkWxBleSupport = () => {
 	wx.openBluetoothAdapter({
 		mode: 'peripheral',
 		success: () => {
-			addLog('初始化蓝牙从机模式成功');
+			addLog('系统', '初始化蓝牙从机模式成功');
 			isSupported.value = true;
 			createBLEPeripheralServer();
 		},
 		fail: (err) => {
-			console.error('蓝牙初始化失败', err);
-			addLog('错误：蓝牙从机模式初始化失败');
-			addLog('错误信息：' + JSON.stringify(err));
+			addLog('错误', '蓝牙从机模式初始化失败: ' + JSON.stringify(err));
 			isSupported.value = false;
 		}
 	});
@@ -206,12 +190,11 @@ const createBLEPeripheralServer = (onSuccess) => {
 	wx.createBLEPeripheralServer({
 		success: (res) => {
 			wxBLEServer.value = res.server;
-			addLog('创建BLE外围设备服务器成功');
+			addLog('系统', '创建BLE外围设备服务器成功');
 			if (onSuccess) onSuccess();
 		},
 		fail: (err) => {
-			console.error('创建外围设备服务器失败', err);
-			addLog('创建BLE外围设备服务器失败');
+			addLog('错误', '创建BLE外围设备服务器失败');
 		}
 	});
 };
@@ -230,7 +213,7 @@ const openAppSettings = () => {
 		intent.setData(uri);
 		mainActivity.startActivity(intent);
 	} catch (e) {
-		addLog('打开设置页面失败: ' + e.message);
+		addLog('错误', '打开设置页面失败: ' + e.message);
 	}
 };
 
@@ -269,11 +252,11 @@ const checkPermissionsAfterRequest = (onGranted, onDenied) => {
 			}
 		}
 		if (!allGranted) {
-			addLog('请求后仍缺权限：' + missing.join(', '));
+			addLog('错误', '请求后仍缺权限：' + missing.join(', '));
 			if (onDenied) onDenied('缺少权限: ' + missing.join(', '));
 			showPermissionDialog();
 		} else {
-			addLog('所有必要权限已获得');
+			addLog('系统', '所有必要权限已获得');
 			if (onGranted) onGranted();
 		}
 	} catch (e) {
@@ -368,10 +351,10 @@ const retryWithSimpleAdvertising = () => {
 		powerLevel: 'low',
 		success: () => {
 			advertising.value = true;
-			addLog('简化广播启动成功');
+			addLog('成功', '简化广播启动成功');
 		},
 		fail: (err) => {
-			addLog('简化广播也失败：' + JSON.stringify(err));
+			addLog('错误', '简化广播也失败：' + JSON.stringify(err));
 		}
 	});
 };
@@ -402,13 +385,13 @@ const startWxAdvertising = () => {
 		powerLevel: getPowerLevel(),
 		success: () => {
 			advertising.value = true;
-			addLog('微信小程序广播启动成功');
+			addLog('成功', '微信小程序广播启动成功');
 		},
 		fail: (err) => {
 			if (err.errCode === 10008) {
 				retryWithSimpleAdvertising();
 			} else {
-				addLog('微信小程序广播启动失败');
+				addLog('错误', '微信小程序广播启动失败');
 			}
 		}
 	});
@@ -418,7 +401,7 @@ const stopWxAdvertising = () => {
 	wxBLEServer.value.stopAdvertising({
 		success: () => {
 			advertising.value = false;
-			addLog('小程序广播已停止');
+			addLog('系统', '小程序广播已停止');
 		}
 	});
 };
@@ -437,9 +420,9 @@ const startIosBroadcast = () => {
 	blePeripheral.value.startAdvertising(options, (result) => {
 		if (result.code === 0) {
 			advertising.value = true;
-			addLog('iOS广播启动成功');
+			addLog('成功', 'iOS广播启动成功');
 		} else {
-			addLog('iOS广播启动失败');
+			addLog('错误', 'iOS广播启动失败');
 		}
 	});
 };
@@ -472,9 +455,9 @@ const startAdvertising = () => {
 		blePeripheral.value.startAdvertising(options, (result) => {
 			if (result.code === 0) {
 				advertising.value = true;
-				addLog('Android广播启动成功');
+				addLog('成功', 'Android广播启动成功');
 			} else {
-				addLog('Android广播启动失败');
+				addLog('错误', 'Android广播启动失败');
 			}
 		});
 	} else if (platform.value === 'ios') {
@@ -493,7 +476,7 @@ const stopAdvertising = () => {
 		blePeripheral.value.stopAdvertising((result) => {
 			if (result.code === 0) {
 				advertising.value = false;
-				addLog('广播已停止');
+				addLog('系统', '广播已停止');
 			}
 		});
 	}
@@ -590,14 +573,19 @@ onLoad(() => {
 	checkSupport();
 });
 
+onMounted(() => {
+	logs.value = [...logger.getHistory('broadcast')];
+	unsubLogger = logger.subscribe(entry => {
+		logs.value.unshift(entry);
+	}, 'broadcast');
+});
+
+onUnmounted(() => {
+	if (unsubLogger) unsubLogger();
+	stopAdvertising();
+});
+
 onUnload(() => {
-	// #ifdef APP-PLUS
-	if (advertising.value && blePeripheral.value) {
-		blePeripheral.value.stopAdvertising();
-	}
-	// #endif
-	// #ifdef MP-WEIXIN
-	if (advertising.value && wxBLEServer.value) {
 		wxBLEServer.value.stopAdvertising();
 	}
 	wx.closeBluetoothAdapter();

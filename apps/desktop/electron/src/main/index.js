@@ -49,6 +49,19 @@ async function loadBLEModule() {
     // 延迟获取状态，确保监听器已设置
     await new Promise(resolve => setTimeout(resolve, 200));
 
+    // Windows startup resilience (Task 6)
+    if (process.platform === 'win32' && (bleModule.state === 'unknown' || bleModule.state === 'poweredOff')) {
+       debugLog('Windows BLE state is unknown/poweredOff. Waiting to see if module wakes up...');
+       for (let i = 0; i < 10; i++) {
+           await new Promise(resolve => setTimeout(resolve, 1000));
+           if (bleModule.state === 'poweredOn') {
+               debugLog(`BLE recovered after retry ${i + 1}`);
+               break;
+           }
+           debugLog(`Retry ${i + 1}, state is still ${bleModule.state}`);
+       }
+    }
+
     // 主动发送当前状态
     debugLog('Sending initial state:', bleModule.state, 'to renderer');
     sendToRenderer('ble:stateChanged', { state: bleModule.state });

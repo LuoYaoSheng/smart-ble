@@ -8,6 +8,7 @@ import '../../core/ble/command_queue.dart';
 import '../../core/models/ble_service.dart';
 import '../../core/models/log_entry.dart';
 import '../../core/utils/data_converter.dart';
+import '../../core/utils/logger.dart';
 import '../../themes/app_theme.dart';
 import '../widgets/service_tile.dart';
 import '../widgets/log_panel.dart';
@@ -33,13 +34,13 @@ class DeviceDetailPage extends ConsumerStatefulWidget {
 class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
   final BleManager _bleManager = BleManager();
   final List<BleService> _services = [];
-  final List<LogEntry> _logs = [];
+  CommandQueue? _commandQueue;
+  StreamSubscription<LogEntry>? _logSubscription;
   bool _isLoading = true;
   bool _isConnected = false;
   bool _isReconnecting = false;
   String? _errorMessage;
   StreamSubscription? _connectionStatesSub;
-  late CommandQueue _commandQueue;
 
   bool get _hasOtaService => _services.any((s) => s.uuid.toLowerCase() == '4fafc201-1fb5-459e-8fcc-c5c9c331914d');
 
@@ -57,17 +58,17 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
       ),
       intervalMs: 50,
       onCommandStart: (cmd) {
-        _addLog('发送: ${cmd.displayHex}', LogType.info);
+        logger.info('发送: ${cmd.displayHex}');
       },
       onCommandComplete: (cmd) {
-        _addLog('发送成功', LogType.success);
+        logger.success('发送成功');
       },
       onCommandError: (cmd) {
-        _addLog('发送失败: ${cmd.error}', LogType.error);
+        logger.error('发送失败: ${cmd.error}');
       },
       onQueueEmpty: () {
         if (mounted) {
-          _addLog('指令队列完成', LogType.success);
+          logger.success('指令队列完成');
           setState(() {});
         }
       },
@@ -77,6 +78,13 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
     );
     _listenConnectionState();
     _checkConnectionAndDiscoverServices();
+    _listenLogs();
+  }
+
+  void _listenLogs() {
+    _logSubscription = logger.logStream.listen((_) {
+      if (mounted) setState(() {});
+    });
   }
 
   /// 监听连接状态变化
@@ -97,7 +105,7 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
       });
 
       if (state == BluetoothConnectionState.disconnected && !_isReconnecting) {
-        _addLog('连接已断开', LogType.error);
+        logger.error('连接已断开');
       }
     });
   }
@@ -116,7 +124,7 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
           _isConnected = true;
           _isLoading = false;
         });
-        _addLog('发现 ${services.length} 个服务', LogType.info);
+        logger.info('发现 ${services.length} 个服务');
       }
     } catch (e) {
       if (mounted) {
@@ -125,19 +133,9 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
           _isConnected = false;
           _errorMessage = '发现服务失败: $e';
         });
-        _addLog('发现服务失败: $e', LogType.error);
+        logger.error('发现服务失败: $e');
       }
     }
-  }
-
-  void _addLog(String message, LogType type) {
-    setState(() {
-      _logs.add(LogEntry(
-        message: message,
-        type: type,
-        timestamp: DateTime.now(),
-      ));
-    });
   }
 
   Future<void> _disconnect() async {
@@ -145,17 +143,17 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
       await _bleManager.disconnect(widget.deviceId);
       if (mounted) {
         setState(() => _isConnected = false);
-        _addLog('已断开连接', LogType.info);
+        logger.info('已断开连接');
         Navigator.of(context).pop();
       }
     } catch (e) {
-      _addLog('断开连接失败: $e', LogType.error);
+      logger.error('断开连接失败: $e');
     }
   }
 
   Future<void> _readCharacteristic(BleService service, BleCharacteristic characteristic) async {
     try {
-      _addLog('读取 ${characteristic.displayName}...', LogType.info);
+      logger.info('读取 ${characteristic.displayName}...');
 
       final value = await _bleManager.readCharacteristic(
         deviceId: widget.deviceId,
@@ -165,12 +163,12 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
 
       final hex = DataConverter.bytesToHex(value);
       final text = DataConverter.bytesToString(value);
-      _addLog('HEX: $hex\nTEXT: $text', LogType.success);
+      logger.success('HEX: $hex\nTEXT: $text');
 
       // 更新特征值
       _updateCharacteristicValue(service.uuid, characteristic.uuid, value);
     } catch (e) {
-      _addLog('读取失败: $e', LogType.error);
+      logger.error('读取失败: $e');
     }
   }
 
@@ -214,7 +212,7 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
               ? DataConverter.hexToBytes(result.data)
               : DataConverter.stringToBytes(result.data);
 
-          _addLog('写入 ${characteristic.displayName}: ${result.data}', LogType.info);
+          logger.info('写入 ${characteristic.displayName}: ${result.data}');
 
           await _bleManager.writeCharacteristic(
             deviceId: widget.deviceId,
@@ -224,7 +222,7 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
             withoutResponse: !characteristic.properties.contains(BleCharacteristicProperty.write),
           );
 
-          _addLog('写入成功', LogType.success);
+          logger.success('写入成功');
           break;
 
         case SendMode.batch:
@@ -234,7 +232,7 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
               .where((l) => l.isNotEmpty)
               .toList();
 
-          _addLog('批量发送 ${lines.length} 条指令...', LogType.info);
+          logger.info('批量发送 ${lines.length} 条指令...');
 
           final commands = lines.asMap().entries.map((entry) {
             final bytes = result.isHexMode
@@ -251,8 +249,8 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
             );
           }).toList();
 
-          _commandQueue.intervalMs = result.intervalMs;
-          _commandQueue.enqueueBatch(commands);
+          _commandQueue?.intervalMs = result.intervalMs;
+          _commandQueue?.enqueueBatch(commands);
           break;
 
         case SendMode.loop:
@@ -262,7 +260,7 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
               : DataConverter.stringToBytes(result.data);
 
           final loopDesc = result.loopCount == 0 ? '无限' : '${result.loopCount}次';
-          _addLog('循环发送 ($loopDesc, 间隔${result.intervalMs}ms)...', LogType.info);
+          logger.info('循环发送 ($loopDesc, 间隔${result.intervalMs}ms)...');
 
           final template = [CommandItem(
             id: 'loop_${DateTime.now().millisecondsSinceEpoch}',
@@ -274,25 +272,23 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
             displayHex: result.isHexMode ? result.data : CommandQueue.formatHex(bytes),
           )];
 
-          _commandQueue.intervalMs = result.intervalMs;
-          _commandQueue.startLoop(template, loopCount: result.loopCount);
+          _commandQueue?.intervalMs = result.intervalMs;
+          _commandQueue?.startLoop(template, loopCount: result.loopCount);
           break;
       }
     } catch (e) {
-      _addLog('写入失败: $e', LogType.error);
+      logger.error('写入失败: $e');
     }
   }
-
-
 
   Future<void> _toggleNotification(BleService service, BleCharacteristic characteristic) async {
     try {
       final newState = !characteristic.isNotifying;
 
       if (newState) {
-        _addLog('启用通知 ${characteristic.displayName}...', LogType.info);
+        logger.info('启用通知 ${characteristic.displayName}...');
       } else {
-        _addLog('禁用通知 ${characteristic.displayName}...', LogType.info);
+        logger.info('禁用通知 ${characteristic.displayName}...');
       }
 
       await _bleManager.setNotification(
@@ -328,72 +324,27 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
         stream?.listen((value) {
           final hex = DataConverter.bytesToHex(value);
           final text = DataConverter.bytesToString(value);
-          _addLog('HEX: $hex\nTEXT: $text', LogType.receive);
+          logger.receive('HEX: $hex\nTEXT: $text');
         });
       }
 
-      _addLog(newState ? '通知已启用' : '通知已禁用', LogType.success);
+      logger.success(newState ? '通知已启用' : '通知已禁用');
     } catch (e) {
-      _addLog('设置通知失败: $e', LogType.error);
+      logger.error('设置通知失败: $e');
     }
   }
 
-  /// 导出日志（增强版：含设备信息、服务摘要）
-  void _exportLogs() {
-    if (_logs.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('没有日志可导出')),
-      );
-      return;
-    }
-
+  void _exportData() {
     final text = LogPanel.formatDeviceExportText(
       deviceId: widget.deviceId,
       deviceName: widget.deviceName,
       isConnected: _isConnected,
       services: _services,
-      logs: _logs,
+      logs: logger.history,
     );
-
-    // 显示导出选项
-    showModalBottomSheet(
-      context: context,
-      builder: (ctx) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.copy),
-              title: const Text('复制到剪贴板'),
-              onTap: () {
-                Clipboard.setData(ClipboardData(text: text));
-                Navigator.pop(ctx);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('已复制到剪贴板'),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.share),
-              title: const Text('分享'),
-              subtitle: const Text('通过系统分享发送数据'),
-              onTap: () {
-                Clipboard.setData(ClipboardData(text: text));
-                Navigator.pop(ctx);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('数据已复制到剪贴板，请通过系统分享发送'),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
+    Clipboard.setData(ClipboardData(text: text));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('设备数据已复制到剪贴板')),
     );
   }
 

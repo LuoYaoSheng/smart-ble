@@ -15,9 +15,7 @@ class BLEManager: NSObject, ObservableObject {
     @Published var filteredScanResults: [ScanResult] = []
     @Published var isScanning = false
     @Published var isAdvertising = false
-    @Published var logs: [LogEntry] = []
-    /// T05: Per-device 日志（deviceId -> [LogEntry]）
-    @Published var logsByDevice: [String: [LogEntry]] = [:]
+
 
     // MARK: - Multi-device connection state
     /// Per-device connection state (deviceId -> ConnectionState)
@@ -123,35 +121,35 @@ class BLEManager: NSObject, ObservableObject {
         peripheralManager = CBPeripheralManager(delegate: self, queue: nil)
     }
 
-    // MARK: - Logging
+    // MARK: - Logging (Delegated to Logger Bus)
     func log(_ message: String, type: LogEntry.LogType = .info) {
-        let entry = LogEntry(message: message, type: type)
-        logs.append(entry)
-        if logs.count > 100 { logs.removeFirst() }
-        print("[BLE] \(message)")
+        switch type {
+        case .info: Logger.shared.info(message)
+        case .success: Logger.shared.success(message)
+        case .error: Logger.shared.error(message)
+        case .warning: Logger.shared.warning(message)
+        case .receive: break // Usually targeted
+        case .send: break
+        }
     }
 
     /// T05: Per-device 日志
     func logForDevice(_ deviceId: String, _ message: String, type: LogEntry.LogType = .info) {
-        let entry = LogEntry(message: message, type: type)
-        if logsByDevice[deviceId] == nil {
-            logsByDevice[deviceId] = []
+        switch type {
+        case .info: Logger.shared.info(message, deviceId: deviceId)
+        case .success: Logger.shared.success(message, deviceId: deviceId)
+        case .error: Logger.shared.error(message, deviceId: deviceId)
+        case .warning: Logger.shared.warning(message, deviceId: deviceId)
+        case .receive: Logger.shared.receive(message, deviceId: deviceId)
+        case .send: Logger.shared.send(message, deviceId: deviceId)
         }
-        logsByDevice[deviceId]!.insert(entry, at: 0)
-        if (logsByDevice[deviceId]?.count ?? 0) > 100 {
-            logsByDevice[deviceId]?.removeLast()
-        }
-        // 同步到全局日志
-        log(message, type: type)
     }
 
     func clearLogs() {
-        logs.removeAll()
     }
 
     /// T05: 清空指定设备日志
     func clearDeviceLogs(_ deviceId: String) {
-        logsByDevice[deviceId] = []
     }
 
     // MARK: - Scanning

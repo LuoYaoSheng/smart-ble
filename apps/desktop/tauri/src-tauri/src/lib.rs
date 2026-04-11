@@ -85,14 +85,17 @@ async fn init_ble(state: State<'_, Arc<Mutex<BleState>>>) -> Result<Response<Str
         Ok(manager) => {
             let mut adapters = manager.adapters().await.unwrap_or_default();
             
-            // Retry a few times if empty (common on Windows startup)
+            // Retry mechanism for Windows startup delay (Task 6)
             if adapters.is_empty() {
-                for _ in 0..5 {
-                    tokio::time::sleep(tokio::time::Duration::from_millis(500)).await;
+                println!("[BLE] No adapters found on first check. Retrying for up to 10 seconds...");
+                for i in 1..=10 {
+                    tokio::time::sleep(tokio::time::Duration::from_millis(1000)).await;
                     adapters = manager.adapters().await.unwrap_or_default();
                     if !adapters.is_empty() {
+                        println!("[BLE] Adapter discovered after {} retries.", i);
                         break;
                     }
+                    println!("[BLE] Retry {}/10: Still no adapters found...", i);
                 }
             }
 

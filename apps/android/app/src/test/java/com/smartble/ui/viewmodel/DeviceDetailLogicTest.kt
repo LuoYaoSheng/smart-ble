@@ -3,6 +3,8 @@ package com.smartble.ui.viewmodel
 import com.smartble.core.model.BleCharacteristic
 import com.smartble.core.model.BleService
 import com.smartble.core.model.ConnectionState
+import com.smartble.core.model.LogEntry
+import com.smartble.core.model.LogType
 import com.smartble.core.model.Property
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull

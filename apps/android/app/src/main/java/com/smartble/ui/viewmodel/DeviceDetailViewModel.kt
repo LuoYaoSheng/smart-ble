@@ -2,6 +2,10 @@ package com.smartble.ui.viewmodel
 
 import android.app.Application
 import android.net.Uri
+package com.smartble.ui.viewmodel
+
+import android.app.Application
+import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.smartble.core.ble.BleManager
@@ -9,6 +13,10 @@ import com.smartble.core.model.BleCharacteristic
 import com.smartble.core.model.BleService
 import com.smartble.core.model.BleUuids
 import com.smartble.core.model.ConnectionState
+import com.smartble.core.model.LogEntry
+import com.smartble.core.model.LogType
+import com.smartble.core.utils.DataConverter
+import com.smartble.core.utils.Logger
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -35,8 +43,8 @@ class DeviceDetailViewModel(
     private val _services = MutableStateFlow<List<BleService>>(emptyList())
     val services: StateFlow<List<BleService>> = _services.asStateFlow()
 
-    private val _logs = MutableStateFlow<List<LogEntry>>(emptyList())
-    val logs: StateFlow<List<LogEntry>> = _logs.asStateFlow()
+    // 绑定至全局总线
+    val logs: StateFlow<List<LogEntry>> = Logger.logs
 
     private val _isLoading = MutableStateFlow(true)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
@@ -46,8 +54,6 @@ class DeviceDetailViewModel(
 
     private val _otaState = MutableStateFlow(OtaUiState())
     val otaState: StateFlow<OtaUiState> = _otaState.asStateFlow()
-
-    private val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
 
     init {
         observeConnectionState()
@@ -76,7 +82,7 @@ class DeviceDetailViewModel(
                     _isLoading.value = false
                 }
                 if (serviceList.isNotEmpty()) {
-                    addLog("发现 ${serviceList.size} 个服务", LogType.Info)
+                    Logger.info("发现 ${serviceList.size} 个服务")
                 }
             }
         }
@@ -93,24 +99,24 @@ class DeviceDetailViewModel(
                     handleOtaStatus(event.value)
                     return@collect
                 }
-                val hex = event.value.toHexString()
-                addLog("收到通知: $hex", LogType.Receive)
+                val hex = DataConverter.bytesToHex(event.value)
+                Logger.receive("收到通知: $hex")
             }
         }
     }
 
     private fun connectToDevice() {
-        addLog("正在连接设备...", LogType.Info)
+        Logger.info("正在连接设备...")
         val success = bleManager.connect(deviceId)
         if (!success) {
-            addLog("连接失败", LogType.Error)
+            Logger.error("连接失败")
             _errorMessage.value = "连接失败"
             _isLoading.value = false
         }
     }
 
     fun disconnect() {
-        addLog("断开连接", LogType.Info)
+        Logger.info("断开连接")
         bleManager.disconnect(deviceId)
     }
 
@@ -119,11 +125,11 @@ class DeviceDetailViewModel(
             val service = _services.value.find { it.uuid == serviceUuid }
             val characteristic = service?.characteristics?.find { it.uuid == characteristicUuid }
 
-            addLog("读取 ${characteristic?.displayName ?: characteristicUuid}...", LogType.Info)
+            Logger.info("读取 ${characteristic?.displayName ?: characteristicUuid}...")
 
             val success = bleManager.readCharacteristic(deviceId, serviceUuid, characteristicUuid)
             if (!success) {
-                addLog("读取失败", LogType.Error)
+                Logger.error("读取失败")
             }
         }
     }
@@ -133,13 +139,13 @@ class DeviceDetailViewModel(
             val service = _services.value.find { it.uuid == serviceUuid }
             val characteristic = service?.characteristics?.find { it.uuid == characteristicUuid }
 
-            addLog("写入 ${characteristic?.displayName ?: characteristicUuid}: ${data.toHexString()}", LogType.Info)
+            Logger.info("写入 ${characteristic?.displayName ?: characteristicUuid}: ${DataConverter.bytesToHex(data)}")
 
             val success = bleManager.writeCharacteristic(deviceId, serviceUuid, characteristicUuid, data)
             if (success) {
-                addLog("写入成功", LogType.Success)
+                Logger.success("写入成功")
             } else {
-                addLog("写入失败", LogType.Error)
+                Logger.error("写入失败")
             }
         }
     }
@@ -152,7 +158,7 @@ class DeviceDetailViewModel(
             val newState = !(characteristic?.isNotifying ?: false)
             val action = if (newState) "启用" else "禁用"
 
-            addLog("$action 通知 ${characteristic?.displayName ?: characteristicUuid}...", LogType.Info)
+            Logger.info("$action 通知 ${characteristic?.displayName ?: characteristicUuid}...")
 
             val success = bleManager.setNotification(deviceId, serviceUuid, characteristicUuid, newState)
 
@@ -173,15 +179,15 @@ class DeviceDetailViewModel(
             _services.value = updatedServices
 
             if (success) {
-                addLog("通知已${action}", LogType.Success)
+                Logger.success("通知已${action}")
             } else {
-                addLog("设置通知失败", LogType.Error)
+                Logger.error("设置通知失败")
             }
         }
     }
 
     fun clearLogs() {
-        _logs.value = emptyList()
+        Logger.clear()
     }
 
     fun selectOtaFile(uri: Uri, displayName: String, size: Long) {
@@ -196,7 +202,7 @@ class DeviceDetailViewModel(
             isCompleted = false,
             errorMessage = null
         )
-        addLog("选择 OTA 文件: $displayName (${size} bytes)", LogType.Info)
+        Logger.info("选择 OTA 文件: $displayName (${size} bytes)")
     }
 
     fun startOtaTransfer() {
@@ -226,7 +232,7 @@ class DeviceDetailViewModel(
                     statusMessage = "正在初始化 OTA...",
                     errorMessage = null
                 )
-                addLog("开始 OTA 传输", LogType.Info)
+                Logger.info("开始 OTA 传输")
 
                 bleManager.requestMtu(deviceId, 247)
                 bleManager.setNotification(
@@ -300,7 +306,7 @@ class DeviceDetailViewModel(
                     progressPercent = 100,
                     statusMessage = "固件已发送，等待设备完成升级..."
                 )
-                addLog("OTA 固件已发送完成，等待设备确认", LogType.Info)
+                Logger.info("OTA 固件已发送完成，等待设备确认")
             } catch (e: Exception) {
                 _otaState.value = _otaState.value.copy(
                     isInProgress = false,
@@ -308,7 +314,7 @@ class DeviceDetailViewModel(
                     statusMessage = "OTA 失败",
                     errorMessage = e.message ?: "未知错误"
                 )
-                addLog("OTA 失败: ${e.message}", LogType.Error)
+                Logger.error("OTA 失败: ${e.message}")
             }
         }
     }
@@ -326,7 +332,7 @@ class DeviceDetailViewModel(
                 statusMessage = "已取消 OTA",
                 errorMessage = null
             )
-            addLog("已取消 OTA 传输", LogType.Info)
+            Logger.info("已取消 OTA 传输")
         }
     }
 
@@ -337,18 +343,9 @@ class DeviceDetailViewModel(
             deviceName = deviceName,
             connectionState = _connectionState.value,
             services = _services.value,
-            logs = _logs.value,
+            logs = Logger.logs.value,
             exportTime = exportTime
         )
-    }
-
-    private fun addLog(message: String, type: LogType) {
-        val entry = LogEntry(
-            message = message,
-            type = type,
-            timestamp = timeFormat.format(Date())
-        )
-        _logs.value = _logs.value + entry
     }
 
     private fun handleOtaStatus(raw: ByteArray) {
@@ -356,7 +353,12 @@ class DeviceDetailViewModel(
         val transition = applyOtaStatusPayload(_otaState.value, payload) ?: return
         _otaState.value = transition.state
         if (transition.logMessage != null && transition.logType != null) {
-            addLog(transition.logMessage, transition.logType)
+            when (transition.logType) {
+                LogType.Info -> Logger.info(transition.logMessage)
+                LogType.Success -> Logger.success(transition.logMessage)
+                LogType.Error -> Logger.error(transition.logMessage)
+                else -> Logger.info(transition.logMessage)
+            }
         }
     }
 
@@ -379,22 +381,3 @@ data class OtaUiState(
     val statusMessage: String = "未开始 OTA",
     val errorMessage: String? = null,
 )
-
-/**
- * 日志条目
- */
-data class LogEntry(
-    val message: String,
-    val type: LogType,
-    val timestamp: String
-)
-
-/**
- * 日志类型
- */
-enum class LogType {
-    Info,
-    Success,
-    Error,
-    Receive,
-}

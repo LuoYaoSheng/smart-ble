@@ -34,8 +34,8 @@ import com.smartble.ui.theme.Error
 import com.smartble.ui.theme.Primary
 import com.smartble.ui.theme.Success
 import com.smartble.ui.theme.TextSecondary
-import com.smartble.ui.viewmodel.LogEntry
-import com.smartble.ui.viewmodel.LogType
+import com.smartble.core.model.LogEntry
+import com.smartble.core.model.LogType
 
 @Composable
 fun LogPanel(logs: List<LogEntry>) {
