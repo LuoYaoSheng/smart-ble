@@ -4,6 +4,7 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:rxdart/rxdart.dart';
 import '../models/ble_service.dart';
 import '../models/ble_scan_result.dart' as models;
+import '../models/ble_uuids.dart';
 
 /// BLE 状态
 enum BleState {
@@ -354,13 +355,13 @@ class BleManager {
           .map((s) => BleService(
                 uuid: s.uuid.toString(),
                 isPrimary: s.isPrimary,
-                name: _getServiceName(s.uuid.toString()),
+                name: BleUuids.getServiceName(s.uuid.toString()),
                 characteristics: s.characteristics
                     .map((c) => BleCharacteristic(
                           uuid: c.uuid.toString(),
                           serviceUuid: s.uuid.toString(),
                           properties: _convertProperties(c.properties),
-                          name: _getCharacteristicName(c.uuid.toString()),
+                          name: BleUuids.getCharacteristicName(c.uuid.toString()),
                         ))
                     .toList(),
               ))
@@ -586,47 +587,5 @@ class BleManager {
     return result;
   }
 
-  /// T07: 获取标准服务名称（中文，对齐 Android BleUuids）
-  String? _getServiceName(String uuid) {
-    final s = uuid.toLowerCase().replaceAll('-', '');
-    // 取短UUID的4-8位（标准128-bit规则）
-    final short = s.length >= 8 ? s.substring(0, 8) : s;
-    const serviceNames = {
-      '00001800': '通用访问',
-      '00001801': '通用属性',
-      '0000180a': '设备信息',
-      '0000180f': '电池服务',
-      '00001812': '人机界面(HID)',
-      '0000180d': '心率服务',
-      '00001809': '健康温度计',
-      '4fafc201': 'OTA 升级服务',
-    };
-    return serviceNames[short];
-  }
-
-  /// T07: 获取标准特征值名称（中文，对齐 Android BleUuids）
-  String? _getCharacteristicName(String uuid) {
-    final s = uuid.toLowerCase().replaceAll('-', '');
-    // 取5-8位（Bluetooth SIG 特征值短UUID位置）
-    final short = s.length >= 8 ? s.substring(4, 8) : s;
-    const charNames = {
-      '2a00': '设备名称',
-      '2a01': '外观',
-      '2a02': '隐私标志',
-      '2a03': '重连地址',
-      '2a04': '连接参数',
-      '2a05': '服务变更',
-      '2a19': '电池电量',
-      '2a23': '系统标识符',
-      '2a24': '型号',
-      '2a25': '序列号',
-      '2a26': '固件版本',
-      '2a27': '硬件版本',
-      '2a28': '软件版本',
-      '2a29': '制造商',
-      'beb5': 'OTA 控制',
-    };
-    return charNames[short];
-  }
 }
 

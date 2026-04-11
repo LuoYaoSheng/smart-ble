@@ -99,44 +99,12 @@ class BLEManager: NSObject, ObservableObject {
     // MARK: - UUID Helper
     // T07: 服务 UUID 中文名称表（对齐 Android BleUuids）
     private func getServiceName(for uuid: CBUUID) -> String {
-        let short = uuid.uuidString.uppercased()
-        let services: [String: String] = [
-            "1800": "通用访问",
-            "1801": "通用属性",
-            "180A": "设备信息",
-            "180F": "电池服务",
-            "1812": "人机界面(HID)",
-            "180D": "心率服务",
-            "1809": "健康温度计",
-            "181C": "用户数据",
-            "4FAFC201": "OTA 升级服务",
-        ]
-        // 先尝试短 UUID（如 1800）
-        let shortId = short.count == 4 ? short : String(short.prefix(4))
-        return services[shortId] ?? services[short] ?? "未知服务"
+        return BLEUuids.getServiceName(for: uuid)
     }
 
     // T07: 特征値 UUID 中文名称表（对齐 Android BleUuids）
     private func getCharacteristicName(for uuid: CBUUID) -> String {
-        let short = uuid.uuidString.uppercased()
-        let characteristics: [String: String] = [
-            "2A00": "设备名称",
-            "2A01": "外观",
-            "2A02": "隐私标志",
-            "2A03": "重连地址",
-            "2A04": "连接参数",
-            "2A05": "服务变更",
-            "2A19": "电池电量",
-            "2A23": "系统标识符",
-            "2A24": "型号",
-            "2A25": "序列号",
-            "2A26": "固件版本",
-            "2A27": "硬件版本",
-            "2A28": "软件版本",
-            "2A29": "制造商",
-            "BEB5483E": "OTA 控制",
-        ]
-        return characteristics[short] ?? "未知特征値"
+        return BLEUuids.getCharacteristicName(for: uuid)
     }
 
     // MARK: - Initialization

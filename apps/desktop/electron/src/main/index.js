@@ -627,7 +627,8 @@ ipcMain.handle('ble:notifyCharacteristic', async (event, deviceId, serviceUuid, 
 
 // T07: UUID 辅助函数（中文名称，对齐 Android BleUuids）
 function getServiceName(uuid) {
-  const short = (uuid.length === 4 ? uuid : uuid.substring(4, 8)).toUpperCase();
+  const uuidUpper = uuid.toUpperCase();
+  const short = (uuidUpper.length === 4 ? uuidUpper : uuidUpper.substring(4, 8));
   const services = {
     '1800': '通用访问',
     '1801': '通用属性',
@@ -638,11 +639,15 @@ function getServiceName(uuid) {
     '1809': '健康温度计',
     '181C': '用户数据',
   };
+  if (uuidUpper.startsWith('4FAFC201')) {
+    return 'OTA 升级服务';
+  }
   return services[short] || '未知服务';
 }
 
 function getCharacteristicName(uuid) {
-  const short = (uuid.length === 4 ? uuid : uuid.substring(4, 8)).toUpperCase();
+  const uuidUpper = uuid.toUpperCase();
+  const short = (uuidUpper.length === 4 ? uuidUpper : uuidUpper.substring(4, 8));
   const characteristics = {
     '2A00': '设备名称',
     '2A01': '外观',
@@ -658,7 +663,12 @@ function getCharacteristicName(uuid) {
     '2A27': '硬件版本',
     '2A28': '软件版本',
     '2A29': '制造商',
+    '2A37': '心率测量',
+    '2A38': '身体传感器位置',
   };
+  if (uuidUpper.startsWith('BEB5') || uuidUpper.startsWith('BEB5483E')) {
+    return 'OTA 控制';
+  }
   return characteristics[short] || '未知特征值';
 }
 

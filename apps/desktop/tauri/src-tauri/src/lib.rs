@@ -846,8 +846,9 @@ async fn stop_advertising() -> Result<Response<bool>, String> {
 
 // T07: Helper functions - 中文名称（对齐 Android BleUuids）
 fn get_service_name(uuid: &str) -> String {
-    let short = if uuid.len() > 8 { &uuid[4..8] } else { uuid };
-    match short.to_uppercase().as_str() {
+    let uuid_upper = uuid.to_uppercase();
+    let short = if uuid_upper.len() > 8 { &uuid_upper[4..8] } else { uuid_upper.as_str() };
+    match short {
         "1800" => "通用访问",
         "1801" => "通用属性",
         "180A" => "设备信息",
@@ -856,13 +857,16 @@ fn get_service_name(uuid: &str) -> String {
         "1812" => "人机界面(HID)",
         "1809" => "健康温度计",
         "181C" => "用户数据",
-        _ => "未知服务",
+        _ => {
+            if uuid_upper.starts_with("4FAFC201") { "OTA 升级服务" } else { "未知服务" }
+        }
     }.to_string()
 }
 
 fn get_characteristic_name(uuid: &str) -> String {
-    let short = if uuid.len() > 8 { &uuid[4..8] } else { uuid };
-    match short.to_uppercase().as_str() {
+    let uuid_upper = uuid.to_uppercase();
+    let short = if uuid_upper.len() > 8 { &uuid_upper[4..8] } else { uuid_upper.as_str() };
+    match short {
         "2A00" => "设备名称",
         "2A01" => "外观",
         "2A02" => "隐私标志",
@@ -879,7 +883,9 @@ fn get_characteristic_name(uuid: &str) -> String {
         "2A29" => "制造商",
         "2A37" => "心率测量",
         "2A38" => "身体传感器位置",
-        _ => "未知特征值",
+        _ => {
+            if uuid_upper.starts_with("BEB5") || uuid_upper.starts_with("BEB5483E") { "OTA 控制" } else { "未知特征值" }
+        }
     }.to_string()
 }
 
