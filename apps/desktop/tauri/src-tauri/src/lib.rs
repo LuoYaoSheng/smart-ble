@@ -83,7 +83,19 @@ async fn init_ble(state: State<'_, Arc<Mutex<BleState>>>) -> Result<Response<Str
 
     match Manager::new().await {
         Ok(manager) => {
-            let adapters = manager.adapters().await.unwrap();
+            let mut adapters = manager.adapters().await.unwrap_or_default();
+            
+            // Retry a few times if empty (common on Windows startup)
+            if adapters.is_empty() {
+                for _ in 0..5 {
+                    tokio::time::sleep(tokio::time::Duration::from_millis(500)).await;
+                    adapters = manager.adapters().await.unwrap_or_default();
+                    if !adapters.is_empty() {
+                        break;
+                    }
+                }
+            }
+
             if let Some(adapter) = adapters.first() {
                 let central = adapter.clone();
 
@@ -100,7 +112,7 @@ async fn init_ble(state: State<'_, Arc<Mutex<BleState>>>) -> Result<Response<Str
                 Ok(Response {
                     success: false,
                     data: None,
-                    error: Some("No Bluetooth adapter found".to_string()),
+                    error: Some("No Bluetooth adapter found. On Windows, ensure Bluetooth is turned ON in settings.".to_string()),
                     value: None,
                 })
             }

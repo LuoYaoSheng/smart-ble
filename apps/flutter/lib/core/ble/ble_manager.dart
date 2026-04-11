@@ -131,9 +131,13 @@ class BleManager {
 
     try {
       // 检查蓝牙是否可用
-      if (await FlutterBluePlus.isSupported == false) {
-        _stateController.add(BleState.unavailable);
-        return false;
+      // Windows 平台特殊性：如果系统蓝牙开关关闭，isSupported 会返回 false
+      // 因此我们不直接 return false 中断流程，而是继续注册监听器以便热恢复
+      final isSupported = await FlutterBluePlus.isSupported;
+      if (!isSupported) {
+        if (!_stateController.isClosed) {
+          _stateController.add(BleState.unavailable);
+        }
       }
 
       // 监听蓝牙状态
