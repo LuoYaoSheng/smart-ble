@@ -78,7 +78,10 @@ struct Response<T> {
 
 // Tauri commands
 #[tauri::command]
-async fn init_ble(state: State<'_, Arc<Mutex<BleState>>>) -> Result<Response<String>, String> {
+async fn init_ble(
+    state: State<'_, Arc<Mutex<BleState>>>,
+    window: tauri::Window,
+) -> Result<Response<String>, String> {
     let mut ble_state = state.lock().await;
 
     match Manager::new().await {
@@ -104,6 +107,33 @@ async fn init_ble(state: State<'_, Arc<Mutex<BleState>>>) -> Result<Response<Str
 
                 ble_state.manager = Some(manager);
                 ble_state.central = Some(central.clone());
+
+                let central_events = central.clone();
+                let window_clone = window.clone();
+                let state_clone = Arc::clone(&state.inner());
+                
+                // Track BLE events in background to emit disconnection
+                tokio::spawn(async move {
+                    use btleplug::api::{Central, CentralEvent};
+                    use futures::stream::StreamExt;
+                    
+                    if let Ok(mut events) = central_events.events().await {
+                        while let Some(event) = events.next().await {
+                            if let CentralEvent::DeviceDisconnected(id) = event {
+                                eprintln!("[BLE] Device disconnected: {:?}", id);
+                                
+                                // Remove from connected_peripherals cleanly
+                                let mut ble_state_lock = state_clone.lock().await;
+                                ble_state_lock.connected_peripherals.remove(&id.to_string());
+                                drop(ble_state_lock);
+                                
+                                let mut payload = std::collections::HashMap::new();
+                                payload.insert("deviceId", id.to_string());
+                                let _ = window_clone.emit("device-disconnected", payload);
+                            }
+                        }
+                    }
+                });
 
                 Ok(Response {
                     success: true,

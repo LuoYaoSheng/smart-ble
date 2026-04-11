@@ -22,6 +22,12 @@ class App {
         // Auto-stop scan timer
         this.autoStopTimer = null;
 
+        // Auto-reconnect state
+        this.reconnectAttempts = new Map();
+        this.reconnectTimers = new Map();
+        this.userDisconnected = new Set();
+        this.autoReconnectEnabled = true;
+
         this.init();
     }
 
@@ -242,9 +248,12 @@ class App {
     async startBroadcast() {
         const name = document.getElementById('broadcastName')?.value || 'SmartBLE';
         const serviceUuid = document.getElementById('broadcastServiceUuid')?.value || 'FFF0';
+        const manufacturerId = document.getElementById('broadcastManufacturerId')?.value || '0A00';
+        const manufacturerData = document.getElementById('broadcastManufacturerData')?.value || 'SmartBLE_Broadcast';
+        const includeName = document.getElementById('broadcastIncludeName')?.checked ?? true;
 
         try {
-            const result = await window.bleAPI.startAdvertising(name, [serviceUuid]);
+            const result = await window.bleAPI.startAdvertising(name, [serviceUuid], manufacturerId, manufacturerData, includeName);
             if (result.success) {
                 this.isBroadcasting = true;
                 this.updateBroadcastStatus(true);
@@ -591,6 +600,13 @@ class App {
 
     async connectToDevice(device) {
         try {
+            this.userDisconnected.delete(device.id);
+            this.reconnectAttempts.set(device.id, 0);
+            if (this.reconnectTimers.has(device.id)) {
+                clearTimeout(this.reconnectTimers.get(device.id));
+                this.reconnectTimers.delete(device.id);
+            }
+
             this.currentDevice = device;
             this.showDeviceDetail();
             this.updateConnectionStatus('connecting');
@@ -628,11 +644,41 @@ class App {
             this.updateConnectionStatus('disconnected');
         }
         this.renderConnectedDevicesPanel(); // T14 更新已连接面板
+
+        // Handle auto reconnect
+        if (this.autoReconnectEnabled && !this.userDisconnected.has(deviceId)) {
+            const attempts = this.reconnectAttempts.get(deviceId) || 0;
+            if (attempts < 3) {
+                const nextAttempt = attempts + 1;
+                this.reconnectAttempts.set(deviceId, nextAttempt);
+                const delay = nextAttempt * 2000; // 2s, 4s, 6s
+
+                this.addLog(`设备 ${deviceId} 意外断开，将在 ${delay/1000}s 后尝试重连... (第 ${nextAttempt}/3 次)`, 'warning');
+                
+                if (this.reconnectTimers.has(deviceId)) clearTimeout(this.reconnectTimers.get(deviceId));
+                this.reconnectTimers.set(deviceId, setTimeout(() => {
+                    this.addLog(`尝试自动重连 ${deviceId}... (第 ${nextAttempt}/3 次)`, 'info');
+                    const device = this.devices.get(deviceId);
+                    if (device) this.connectToDevice(device);
+                }, delay));
+            } else {
+                this.addLog(`设备 ${deviceId} 已达到最大重连次数，放弃重连。`, 'error');
+                this.reconnectAttempts.delete(deviceId);
+            }
+        }
     }
 
     async disconnect() {
         if (!this.currentDevice) return;
         const deviceId = this.currentDevice.id;
+        
+        this.userDisconnected.add(deviceId);
+        if (this.reconnectTimers.has(deviceId)) {
+            clearTimeout(this.reconnectTimers.get(deviceId));
+            this.reconnectTimers.delete(deviceId);
+        }
+        this.reconnectAttempts.delete(deviceId);
+
         try {
             const result = await window.bleAPI.disconnect(deviceId);
             if (result.success) {
@@ -681,32 +727,6 @@ class App {
     }
 
     renderServices() {
-        const list = document.getElementById('servicesList');
-
-        if (!list) return;
-        if (!this.currentDevice) return;
-        
-        const currentServices = this.servicesByDevice.get(this.currentDevice.id) || [];
-
-        if (currentServices.length === 0) {
-            list.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-icon">⚙️</div>
-                    <div class="empty-text">未发现服务</div>
-                    <div class="empty-hint">请确保设备支持 BLE</div>
-                </div>
-            `;
-            return;
-        }
-
-        list.innerHTML = '';
-        currentServices.forEach(service => {
-            const card = this.createServiceCard(service);
-            list.appendChild(card);
-        });
-    }
-
-    renderServices() {
         const servicePanel = document.getElementById('mainServicePanel');
         if (!servicePanel) return;
         
@@ -719,6 +739,28 @@ class App {
             window.bleAPI.discoverServices(this.currentDevice.id).then(result => {
                 if (result.success && result.data) {
                     servicePanel.services = result.data;
+                    
+                    // Check for OTA service
+                    const otaUuid = '4FAFC201-1FB5-459E-8FCC-C5C9C331914D'.toLowerCase();
+                    const hasOta = result.data.some(s => s.uuid.toLowerCase() === otaUuid);
+                    
+                    let otaBtn = document.getElementById('otaActionBtn');
+                    if (hasOta) {
+                        if (!otaBtn) {
+                            otaBtn = document.createElement('button');
+                            otaBtn.id = 'otaActionBtn';
+                            otaBtn.className = 'icon-btn';
+                            otaBtn.innerHTML = '⬆️ OTA升级';
+                            otaBtn.style.marginRight = '10px';
+                            otaBtn.onclick = () => document.getElementById('otaDialog').show(this.currentDevice.id);
+                            
+                            const disconnectBtn = document.getElementById('disconnectButton');
+                            disconnectBtn.parentNode.insertBefore(otaBtn, disconnectBtn);
+                        }
+                        otaBtn.style.display = 'inline-block';
+                    } else if (otaBtn) {
+                        otaBtn.style.display = 'none';
+                    }
                 } else {
                     servicePanel.services = [];
                 }

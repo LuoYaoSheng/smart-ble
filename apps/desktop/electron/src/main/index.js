@@ -223,10 +223,10 @@ ipcMain.handle('ble:stopScan', async () => {
 // 广播状态
 let advertisingService = null;
 
-ipcMain.handle('ble:startAdvertising', async (event, name, serviceUuids) => {
+ipcMain.handle('ble:startAdvertising', async (event, name, serviceUuids, manufacturerId, manufacturerData, includeName) => {
   // 检查平台支持
   if (process.platform !== 'linux') {
-    return { success: false, error: `Advertising is not supported on ${process.platform}. Only Linux with bleno supports peripheral mode.` };
+    return { success: false, error: `Advertising is not supported on ${process.platform}. True peripheral mode requires native apps (e.g., macOS SmartBLE) or Linux with bleno.` };
   }
 
   if (!bleModule) return { success: false, error: 'BLE module not loaded' };
@@ -246,7 +246,7 @@ ipcMain.handle('ble:startAdvertising', async (event, name, serviceUuids) => {
       advertisingService = null;
     }
 
-    debugLog('Starting advertising:', name, serviceUuids);
+    debugLog('Starting advertising:', { name, serviceUuids, manufacturerId, manufacturerData, includeName });
 
     // 创建广播服务
     const uuid = serviceUuids && serviceUuids.length > 0 ? serviceUuids[0] : 'FFF0';
@@ -255,12 +255,20 @@ ipcMain.handle('ble:startAdvertising', async (event, name, serviceUuids) => {
       characteristics: []
     };
 
+    // 构建广播配置 (适配支持的底层库)
+    const advConfig = {
+        name: includeName ? (name || 'SmartBLE') : undefined,
+        serviceUuids: [uuid]
+    };
+    if (manufacturerId && manufacturerData) {
+        // 部分底层库支持通过 buffer 传输 ManufacturerData
+        advConfig.manufacturerData = Buffer.from(manufacturerId.replace('0x', '') + manufacturerData, 'hex').toString() !== 'Invalid' ? 
+                                     Buffer.from(manufacturerId.replace('0x', '') + Buffer.from(manufacturerData).toString('hex'), 'hex') : null;
+    }
+
     // 开始广播
     await new Promise((resolve, reject) => {
-      bleModule.startAdvertising({
-        name: name || 'SmartBLE',
-        serviceUuids: [uuid]
-      }, (error) => {
+      bleModule.startAdvertising(advConfig, (error) => {
         if (error) {
           debugLog('Advertising error:', error);
           reject(error);
@@ -322,6 +330,13 @@ ipcMain.handle('ble:connect', async (event, deviceId) => {
         // 存入多设备 Map
         connectedPeripherals.set(deviceId, peripheral);
         debugLog('Connected to:', peripheral.id);
+        
+        // Listen for unexpected disconnects
+        peripheral.on('disconnect', () => {
+          debugLog('Peripheral disconnected unexpectedly:', peripheral.id);
+          connectedPeripherals.delete(peripheral.id);
+          sendToRenderer('ble:deviceDisconnected', { id: peripheral.id });
+        });
 
         // 连接后先更新 peripheral 的状态，确保 noble 内部状态正确
         // 小延迟后再发送连接成功事件
@@ -356,7 +371,7 @@ ipcMain.handle('ble:disconnect', async (event, deviceId) => {
     connectedPeripherals.delete(targetId);
 
     const onDisconnect = (error) => {
-      peripheral.removeListener('disconnect', onDisconnect);
+      peripheral.removeAllListeners('disconnect'); // Clean up all disconnect listeners
       if (error) {
         resolve({ success: false, error: error.message });
       } else {

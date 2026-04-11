@@ -207,12 +207,13 @@ const connectDevice = async () => {
 
 const retryConnection = () => {
 	if (connectionRetryCount.value >= maxRetryCount) {
-		addLog('错误', '自动重连次数达上限');
+		addLog('错误', '自动重连次数达上限，放弃重连');
 		return;
 	}
 	connectionRetryCount.value++;
-	addLog('系统', `正在自动重连 (${connectionRetryCount.value}/${maxRetryCount})...`);
-	setTimeout(connectDevice, 2000);
+	const delay = connectionRetryCount.value * 2000;
+	addLog('系统', `设备断线，将在 ${delay/1000}s 后进行第 ${connectionRetryCount.value}/${maxRetryCount} 次重连...`);
+	setTimeout(connectDevice, delay);
 };
 
 const getServices = () => {

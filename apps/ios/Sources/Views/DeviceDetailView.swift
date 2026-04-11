@@ -7,6 +7,8 @@ import SwiftUI
 struct DeviceDetailView: View {
     @EnvironmentObject var bleManager: BLEManager
     @ObservedObject var logger = Logger.shared
+    @State private var showingOtaDialog = false
+    
     let deviceId: String
 
     var body: some View {
@@ -29,6 +31,12 @@ struct DeviceDetailView: View {
                 logger.clearForDevice(deviceId)
             }
         }
+        .sheet(isPresented: $showingOtaDialog) {
+            OtaUpgradeDialog(
+                otaManager: OtaManager(deviceId: deviceId, bleManager: bleManager),
+                isPresented: $showingOtaDialog
+            )
+        }
     }
 
     private var header: some View {
@@ -49,7 +57,19 @@ struct DeviceDetailView: View {
 
             Spacer()
 
-            if bleManager.connectedDevices[deviceId] != nil {
+            if let device = bleManager.connectedDevices[deviceId] {
+                // OTA Button
+                if hasOtaService {
+                    Button(action: {
+                        showingOtaDialog = true
+                    }) {
+                        Image(systemName: "arrow.up.circle.fill")
+                            .font(.title2)
+                            .foregroundColor(.blue)
+                    }
+                    .padding(.trailing, 8)
+                }
+                
                 Button(action: {
                     bleManager.disconnect(deviceId: deviceId)
                 }) {
@@ -66,6 +86,13 @@ struct DeviceDetailView: View {
         }
         .padding()
         .background(Color.gray.opacity(0.1))
+    }
+    
+    private var hasOtaService: Bool {
+        guard let device = bleManager.connectedDevices[deviceId] else { return false }
+        // check if any service matches OTA uuid
+        let otaUuid = "4FAFC201-1FB5-459E-8FCC-C5C9C331914D"
+        return device.services.contains(where: { $0.uuid.uppercased() == otaUuid.uppercased() })
     }
 
     private var connectionText: String {

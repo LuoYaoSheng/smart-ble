@@ -15,6 +15,8 @@ class MainWindowController: NSWindowController, NSWindowDelegate {
     private var scanViewController: ScanViewController!
     private var detailViewController: DeviceDetailViewController!
     private var logViewController: LogViewController!
+    private var rightSplitController: NSSplitViewController!
+    private var logSplitItem: NSSplitViewItem!
 
     // MARK: - Initialization
     override init(window: NSWindow?) {
@@ -64,15 +66,28 @@ class MainWindowController: NSWindowController, NSWindowDelegate {
         scanItem.minimumThickness = 300
 
         // Create detail view (right/bottom)
-        detailViewController = DeviceDetailViewController()
-        let detailItem = NSSplitViewItem(viewController: detailViewController)
-
         // Create log view
         logViewController = LogViewController()
 
-        // Add items
+        // Create right split view (vertical stack)
+        rightSplitController = NSSplitViewController()
+        rightSplitController.splitView.isVertical = false // Stack vertically
+
+        // Create detail view (right/bottom)
+        detailViewController = DeviceDetailViewController()
+        let detailItem = NSSplitViewItem(viewController: detailViewController)
+        
+        logSplitItem = NSSplitViewItem(viewController: logViewController)
+        logSplitItem.canCollapse = true
+        logSplitItem.isCollapsed = false // Open by default or false? Let's leave it open by default to match other platforms!
+        
+        rightSplitController.addSplitViewItem(detailItem)
+        rightSplitController.addSplitViewItem(logSplitItem)
+
+        // Add items to main split
+        let rightItem = NSSplitViewItem(viewController: rightSplitController)
         splitViewController.addSplitViewItem(scanItem)
-        splitViewController.addSplitViewItem(detailItem)
+        splitViewController.addSplitViewItem(rightItem)
 
         // Set as content
         window?.contentViewController = splitViewController
@@ -116,20 +131,15 @@ class MainWindowController: NSWindowController, NSWindowDelegate {
         // Handle resize
     }
 
-    // Show log panel
+    // Show/Toggle log panel inline
     func showLogPanel() {
-        let logWindow = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 500, height: 300),
-            styleMask: [.titled, .closable, .resizable],
-            backing: .buffered,
-            defer: false
-        )
-        logWindow.title = "Operation Log"
-        logWindow.center()
-
-        let controller = NSWindowController(window: logWindow)
-        logWindow.contentViewController = logViewController
-        controller.showWindow(self)
+        if let logItem = logSplitItem {
+            NSAnimationContext.runAnimationGroup({ context in
+                context.duration = 0.25
+                context.allowsImplicitAnimation = true
+                logItem.isCollapsed.toggle()
+            }, completionHandler: nil)
+        }
     }
 }
 

@@ -88,6 +88,7 @@ const elements = {
     // Filter elements (removed as they are now encapsulated in the Web Component)
     // Device info dialog
     deviceInfoDialog: document.getElementById('deviceInfoDialog'),
+    otaDialog: document.getElementById('otaDialog'),
     infoDeviceName: document.getElementById('infoDeviceName'),
     infoDeviceId: document.getElementById('infoDeviceId'),
     infoRssi: document.getElementById('infoRssi'),
@@ -195,6 +196,7 @@ function setupEventListeners() {
                 } else {
                     addLog('error', `Write failed: ${result.error}`);
                 }
+        
             } catch (error) {
                 addLog('error', `Write error: ${error}`);
             }
@@ -800,6 +802,28 @@ function renderServices() {
     const currentServices = state.servicesByDevice.get(deviceId) || [];
 
     servicePanel.services = currentServices;
+    
+    // Check for OTA service
+    const otaUuid = '4FAFC201-1FB5-459E-8FCC-C5C9C331914D'.toLowerCase();
+    const hasOta = currentServices.some(s => s.uuid.toLowerCase() === otaUuid);
+    
+    // Add OTA button to header dynamically if it doesn't exist
+    let otaBtn = document.getElementById('otaActionBtn');
+    if (hasOta) {
+        if (!otaBtn) {
+            otaBtn = document.createElement('button');
+            otaBtn.id = 'otaActionBtn';
+            otaBtn.className = 'icon-btn';
+            otaBtn.innerHTML = '⬆️ OTA升级';
+            otaBtn.style.marginRight = '10px';
+            otaBtn.onclick = () => document.getElementById('otaDialog').show(deviceId);
+            
+            elements.disconnectButton.parentNode.insertBefore(otaBtn, elements.disconnectButton);
+        }
+        otaBtn.style.display = 'inline-block';
+    } else if (otaBtn) {
+        otaBtn.style.display = 'none';
+    }
 }
 
 // Read Characteristic

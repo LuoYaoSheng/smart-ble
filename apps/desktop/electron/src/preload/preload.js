@@ -31,8 +31,8 @@ contextBridge.exposeInMainWorld('bleAPI', {
     ipcRenderer.invoke('ble:notifyCharacteristic', deviceId, serviceUuid, charUuid, notify),
 
   // 广播
-  startAdvertising: (name, serviceUuids) =>
-    ipcRenderer.invoke('ble:startAdvertising', name, serviceUuids),
+  startAdvertising: (name, serviceUuids, manufacturerId, manufacturerData, includeName) =>
+    ipcRenderer.invoke('ble:startAdvertising', name, serviceUuids, manufacturerId, manufacturerData, includeName),
   stopAdvertising: () =>
     ipcRenderer.invoke('ble:stopAdvertising'),
 
