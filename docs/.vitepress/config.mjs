@@ -1,59 +1,67 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
-  title: "Smart BLE Toolkit+",
-  description: "最强跨终端低功耗蓝牙大一统测试库",
+  title: "Smart BLE",
+  description: "跨平台低功耗蓝牙调试工具与大一统测试库",
   themeConfig: {
     logo: '/icon.png',
     
     // 导航栏
     nav: [
-      { text: '首页 Home', link: '/' },
-      { text: '零基础入门指南', link: '/tutorials/series/EP01_Quick_Start_And_UI' },
-      { text: '实战大系', link: '/tutorials/platforms/Flutter_HandsOn' }
+      { text: '首页', link: '/' },
+      { text: '快速上手', link: '/tutorials/01_introduction_and_setup' },
+      { text: 'API/架构参考', link: '/MASTER_ARCHITECTURE' }
     ],
 
-    // 侧边树结构大编排
+    // 侧边树结构正规化大纲
     sidebar: [
       {
-        text: '🔥 核心阶梯心法系列',
+        text: '📘 第一章：简介与起步 (Introduction)',
         items: [
-          { text: 'EP01: 全平台下载与神级UI鉴赏', link: '/tutorials/series/EP01_Quick_Start_And_UI' },
-          { text: 'EP02: 绝命防死锁实验与 STM32 控制', link: '/tutorials/series/EP02_Hardware_Battle_And_STM32' },
-          { text: 'EP03: 不用连接！跨越极限的纯广播点灯', link: '/tutorials/series/EP03_Advanced_Broadcast_And_SSOT' }
+          { text: '什么是 Smart BLE?', link: '/tutorials/01_introduction_and_setup' }
         ]
       },
       {
-        text: '🛠️ 开发者跨端引擎演练室',
+        text: '🖥️ 第二章：客户端操作指南 (User Guide)',
         items: [
-          { text: 'Flutter 跨端高精度权限索取', link: '/tutorials/platforms/Flutter_HandsOn' },
-          { text: 'UniApp 微信小程序的避坑救命谈', link: '/tutorials/platforms/UniApp_HandsOn' },
-          { text: 'Tauri / Electron 桌面猛兽实操', link: '/tutorials/platforms/Desktop_HandsOn' },
-          { text: 'Native 极致原生防黑科技 (iOS/And)', link: '/tutorials/platforms/Native_HandsOn' }
+          { text: '高并发纯广播点灯技巧与生态', link: '/tutorials/02_advanced_usage_and_broadcast' }
         ]
       },
       {
-        text: '📚 核心引擎与大一统架构书',
+        text: '🛠️ 第三章：多端编译与开发指南 (Developer Guide)',
         items: [
-          { text: '多端大一统架构书 (MASTER)', link: '/MASTER_ARCHITECTURE' },
-          { text: '多端蓝牙API大映射 (CROSS)', link: '/CROSS_PLATFORM_BLE_GUIDE' },
-          { text: '蓝牙核心队列逻辑 (WATCHDOG)', link: '/CORE_LOGIC_GUIDE' },
-          { text: '核心组件交互细则 (INTERACTION)', link: '/COMPONENT_INTERACTION_SPEC' },
-          { text: '跨平台 UI 组件规约 (UI)', link: '/UI_COMPONENTS_GUIDE' }
+          { text: 'Flutter 编译与高精度权限避坑', link: '/tutorials/platforms/flutter' },
+          { text: 'UniApp/微信小程序隐私限制处理', link: '/tutorials/platforms/uniapp' },
+          { text: 'Tauri & Electron 桌面双核实操', link: '/tutorials/platforms/desktop' },
+          { text: 'iOS/Android 原生硬核开发通道', link: '/tutorials/platforms/native_mobile' }
         ]
       },
       {
-        text: '🔬 工业防灾与测试基建',
+        text: '🔩 第四章：硬件底盘与固件开发 (Hardware SDK)',
+        collapsed: false,
         items: [
-          { text: '端到端 STM32 联调规范', link: '/E2E_MOCK_INSTRUCTIONS' },
-          { text: '发版前回归测试天书', link: '/test-checklist' }
+          { text: '双芯选型哲学与低成本验证', link: '/tutorials/hardware/01_Hardware_Philosophy' },
+          { text: 'C 语言下位机工业规范', link: '/tutorials/hardware/02_C_Architecture' },
+          { text: '零延迟战报与防卡死验证', link: '/tutorials/hardware/03_Zero_Delay_Protocol' }
         ]
       },
       {
-        text: '❓ 疑难杂症与奇技淫巧',
+        text: '🌌 第五章：底层架构白皮书 (Architecture & Core)',
         items: [
+          { text: '全栈跨端架构蓝图 (MASTER)', link: '/MASTER_ARCHITECTURE' },
+          { text: '跨框架 BLE API 全景映射', link: '/CROSS_PLATFORM_BLE_GUIDE' },
+          { text: '端到端防御性队列与 WatchDog', link: '/CORE_LOGIC_GUIDE' },
+          { text: '跨平台 UI 与组件流转规约', link: '/UI_COMPONENTS_GUIDE' },
+          { text: '核心业务数据中台交互', link: '/COMPONENT_INTERACTION_SPEC' }
+        ]
+      },
+      {
+        text: '🔬 附录：自动化测试与疑难杂症',
+        items: [
+          { text: '端到端 Mock 模拟联调指导', link: '/E2E_MOCK_INSTRUCTIONS' },
+          { text: '发版前回归测试天书', link: '/test-checklist' },
           { text: '开发大盘百问百科 (FAQ)', link: '/BLE_FAQ' },
-          { text: '微信小程序史诗级血泪指南', link: '/wechat-pitfalls' }
+          { text: '微信开发特例与隐蔽大坑', link: '/wechat-pitfalls' }
         ]
       }
     ],

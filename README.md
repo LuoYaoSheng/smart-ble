@@ -5,17 +5,21 @@
 [![Android Version](https://img.shields.io/badge/Android-APK-green?style=for-the-badge&logo=android)](https://github.com/luoyaosheng/smart-ble/releases)
 [![iOS TestFlight](https://img.shields.io/badge/iOS-TestFlight-black?style=for-the-badge&logo=apple)](https://github.com/luoyaosheng/smart-ble/releases)
 
-> 💡 **首次接入？请直接享用保姆级「阶梯三部曲」教程！** 
-> * 🟢 [EP01] 入门降维局：[防坑下载指南与神级深色模式鉴赏](./docs/tutorials/series/EP01_Quick_Start_And_UI.md)
-> * 🔴 [EP02] 软硬对抗局：[跨端极限压测！极客联调与防死锁实战](./docs/tutorials/series/EP02_Hardware_Battle_And_STM32.md)
-> * 🟣 [EP03] 生态创世局：[破除蓝牙限制！群控广播灯牌与生态衍生揭秘](./docs/tutorials/series/EP03_Advanced_Broadcast_And_SSOT.md)
-> * 🎬 [全系配套视频实战分镜库入口](./docs/promotion/video_series/)
+> 💡 **官方文档与教程快速导航** 
+> * 🟢 [项目介绍与快速起步](./docs/tutorials/01_introduction_and_setup.md)
+> * 🟣 [客户端：高级编排与广播操作演示](./docs/tutorials/02_advanced_usage_and_broadcast.md)
+> * 🎬 [多平台配套实录分镜文档库](./docs/promotion/video_series/)
 > 
-> 🛠️ **开发者二开防坑专线 (分端实弹演练)**
-> * 🎯 [Flutter 开发必读避险手册](./docs/tutorials/platforms/Flutter_HandsOn.md)
-> * 🎯 [UniApp / 微信小程序必读避险手册](./docs/tutorials/platforms/UniApp_HandsOn.md)
-> * 🎯 [Tauri & Electron 桌面双端必读手册](./docs/tutorials/platforms/Desktop_HandsOn.md)
-> * 🎯 [纯原生！iOS / Android 硬核巨佬通道](./docs/tutorials/platforms/Native_HandsOn.md)
+> 🛠️ **多级平台独立开发指南 (Client SDK)**
+> * 🎯 [Flutter 编译与原生权限开发手册](./docs/tutorials/platforms/flutter.md)
+> * 🎯 [UniApp 隐私规避与框架开发手册](./docs/tutorials/platforms/uniapp.md)
+> * 🎯 [Tauri / Electron 桌面双核开发指南](./docs/tutorials/platforms/desktop.md)
+> * 🎯 [iOS / Android 原生应用集成专线](./docs/tutorials/platforms/native_mobile.md)
+>
+> 🔩 **自研底层下位机体系 (Hardware SDK)**
+> * ⚙️ [低成本软硬双核：双芯设计哲学](./docs/tutorials/hardware/01_Hardware_Philosophy.md)
+> * ⚙️ [跨协议工业级 C 语言模块化规约](./docs/tutorials/hardware/02_C_Architecture.md)
+> * ⚙️ [系统鲁棒防灾验证与无延迟解析测试](./docs/tutorials/hardware/03_Zero_Delay_Protocol.md)
 
 ---
 
