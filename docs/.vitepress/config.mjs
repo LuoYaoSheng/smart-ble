@@ -61,7 +61,8 @@ export default defineConfig({
           { text: '端到端 Mock 模拟联调指导', link: '/E2E_MOCK_INSTRUCTIONS' },
           { text: '发版前回归测试天书', link: '/test-checklist' },
           { text: '开发大盘百问百科 (FAQ)', link: '/BLE_FAQ' },
-          { text: '微信开发特例与隐蔽大坑', link: '/wechat-pitfalls' }
+          { text: '微信开发特例与隐蔽大坑', link: '/wechat-pitfalls' },
+          { text: '社区贡献指北 (Contributing)', link: '/CONTRIBUTING_GUIDE' }
         ]
       }
     ],
