@@ -10,14 +10,14 @@ hero:
     alt: Smart BLE Logo
   actions:
     - theme: brand
-      text: 快速开始 (Getting Started)
+      text: 全端下载入口与快速开始
       link: /tutorials/01_introduction_and_setup
     - theme: alt
-      text: API 与 核心架构
-      link: /MASTER_ARCHITECTURE
+      text: 🌍 访问官方主页
+      link: https://lightble.i2kai.com/
     - theme: alt
-      text: 查看 GitHub
-      link: https://github.com/luoyaosheng/smart-ble
+      text: 框架结构参考
+      link: /MASTER_ARCHITECTURE
 
 features:
   - title: 📱 统一的跨终端架构 (Cross-Platform)

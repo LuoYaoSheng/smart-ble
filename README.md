@@ -5,9 +5,10 @@
 [![Android Version](https://img.shields.io/badge/Android-APK-green?style=for-the-badge&logo=android)](https://github.com/luoyaosheng/smart-ble/releases)
 [![iOS TestFlight](https://img.shields.io/badge/iOS-TestFlight-black?style=for-the-badge&logo=apple)](https://github.com/luoyaosheng/smart-ble/releases)
 
-> 💡 **官方文档与教程快速导航** 
-> * 🟢 [项目介绍与快速起步](./docs/tutorials/01_introduction_and_setup.md)
-> * 🟣 [客户端：高级编排与广播操作演示](./docs/tutorials/02_advanced_usage_and_broadcast.md)
+> 💡 **官方导航与全量分发矩阵** 
+> * 🌍 **项目官方主页**: [https://lightble.i2kai.com](https://lightble.i2kai.com/) (含各版本直链下载)
+> * 🟢 [快速起步与基础教案](./docs/tutorials/01_introduction_and_setup.md)
+> * 🟣 [广播放大与生态创世指引](./docs/tutorials/02_advanced_usage_and_broadcast.md)
 > * 🎬 [多平台配套实录分镜文档库](./docs/promotion/video_series/)
 > 
 > 🛠️ **多级平台独立开发指南 (Client SDK)**
