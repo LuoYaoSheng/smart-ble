@@ -1,11 +1,28 @@
-# Smart BLE
+# Smart BLE Toolkit+ 🚀
 
-> `lys: 跨平台 BLE 调试工具与实践样板项目`
+[![Windows Version](https://img.shields.io/badge/Windows-Download-blue?style=for-the-badge&logo=windows)](https://github.com/luoyaosheng/smart-ble/releases)
+[![macOS Version](https://img.shields.io/badge/macOS-Download-lightgrey?style=for-the-badge&logo=apple)](https://github.com/luoyaosheng/smart-ble/releases)
+[![Android Version](https://img.shields.io/badge/Android-APK-green?style=for-the-badge&logo=android)](https://github.com/luoyaosheng/smart-ble/releases)
+[![iOS TestFlight](https://img.shields.io/badge/iOS-TestFlight-black?style=for-the-badge&logo=apple)](https://github.com/luoyaosheng/smart-ble/releases)
+
+> 💡 **首次接入？请直接享用保姆级「阶梯三部曲」教程！** 
+> * 🟢 [EP01] 入门降维局：[防坑下载指南与神级深色模式鉴赏](./docs/tutorials/series/EP01_Quick_Start_And_UI.md)
+> * 🔴 [EP02] 软硬对抗局：[跨端极限压测！极客联调与防死锁实战](./docs/tutorials/series/EP02_Hardware_Battle_And_STM32.md)
+> * 🟣 [EP03] 生态创世局：[破除蓝牙限制！群控广播灯牌与生态衍生揭秘](./docs/tutorials/series/EP03_Advanced_Broadcast_And_SSOT.md)
+> * 🎬 [全系配套视频实战分镜库入口](./docs/promotion/video_series/)
+> 
+> 🛠️ **开发者二开防坑专线 (分端实弹演练)**
+> * 🎯 [Flutter 开发必读避险手册](./docs/tutorials/platforms/Flutter_HandsOn.md)
+> * 🎯 [UniApp / 微信小程序必读避险手册](./docs/tutorials/platforms/UniApp_HandsOn.md)
+> * 🎯 [Tauri & Electron 桌面双端必读手册](./docs/tutorials/platforms/Desktop_HandsOn.md)
+> * 🎯 [纯原生！iOS / Android 硬核巨佬通道](./docs/tutorials/platforms/Native_HandsOn.md)
+
+---
+
+> `lys: 最纯净、颜值最高的跨平台 BLE 调试工具与实践样板项目`
 >
-> Part of the lys personal open source system.
-
-跨平台 BLE 调试工具，覆盖小程序、跨平台移动、原生移动、桌面端和硬件示例。  
-这个仓库不是单一实现，而是一个围绕 BLE 调试、教学和跨平台实践展开的产品家族。
+> 覆盖微信小程序、跨平台移动、原生移动、桌面端和 C 语言下位机参考。
+> 这个仓库不是单一实现，而是一个围绕 BLE 调试、教学、多框架大一统实践展开的开源产品家族。
 
 ---
 

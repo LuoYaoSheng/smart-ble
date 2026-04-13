@@ -1,0 +1,8 @@
+/* docs/.vitepress/theme/style.css */
+:root {
+  --vp-c-brand: #016FFF; /* Master blue */
+  --vp-c-brand-light: #2c8aff;
+  --vp-c-brand-lighter: #54a1ff;
+  --vp-c-brand-dark: #0056cc;
+  --vp-c-brand-darker: #003d99;
+}
