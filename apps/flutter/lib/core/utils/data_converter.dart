@@ -11,7 +11,7 @@ enum DataFormat {
 class DataConverter {
   /// Hex 字符串转字节数组
   static List<int> hexToBytes(String hex) {
-    final cleanHex = hex.replaceAll(RegExp(r'[^0-9A-Fa-f]'), '');
+    final cleanHex = hex.replaceAll(RegExp(r'0x', caseSensitive: false), '').replaceAll(RegExp(r'[^0-9A-Fa-f]'), '');
     if (cleanHex.length % 2 != 0) {
       throw const FormatException('Hex 字符串长度必须为偶数');
     }

@@ -238,6 +238,59 @@ function getCharName(uuid) {
     return '未知特征值';
 }
 
+// ─── Concurrency & Stability (Watchdog) ───────────────────────────────────────
+/**
+ * Watchdog timeout wrapper for BLE Promises (Read/Write).
+ * Prevents UI deadlock if a BLE operation gets stuck pending indefinitely due to silent link drops.
+ * @param {Promise} promise  The internal BLE promise
+ * @param {number} ms  Timeout in milliseconds (e.g. 3000)
+ * @param {string} [timeoutMessage='BLE Operation Timed Out']  Error message
+ * @returns {Promise}
+ */
+function withTimeout(promise, ms, timeoutMessage = 'BLE Operation Timed Out') {
+    let timer;
+    const timeoutPromise = new Promise((_, reject) => {
+        timer = setTimeout(() => reject(new Error(timeoutMessage)), ms);
+    });
+    return Promise.race([
+        promise,
+        timeoutPromise
+    ]).finally(() => clearTimeout(timer));
+}
+
+/**
+ * Creates a debouncer/throttler using requestAnimationFrame (with setTimeout fallback).
+ * Designed to throttle high-frequency 10Hz+ BLE Notify packets from multiple devices,
+ * preventing UI thread and WebView bridge freeze.
+ * @returns {Function} A wrapper function that limits execution rate.
+ */
+function createThrottler() {
+    let pending = false;
+    let lastContext = null;
+    let lastArgs = null;
+    let lastCallback = null;
+    
+    // Determine the next tick mechanism based on environment
+    const nextTick = (typeof window !== 'undefined' && window.requestAnimationFrame) 
+        ? window.requestAnimationFrame 
+        : (cb) => setTimeout(cb, 16);
+
+    return function throttled(callback, ...args) {
+        lastContext = this;
+        lastArgs = args;
+        lastCallback = callback;
+        if (!pending) {
+            pending = true;
+            nextTick(() => {
+                pending = false;
+                if (lastCallback) {
+                    lastCallback.apply(lastContext, lastArgs);
+                }
+            });
+        }
+    }
+}
+
 // ─── Misc ─────────────────────────────────────────────────────────────────────
 /**
  * Promise-based sleep.
@@ -294,6 +347,9 @@ const BleUtils = {
     getCharName,
     // Reconnect
     reconnectDelay,
+    // Concurrency
+    withTimeout,
+    createThrottler,
     // Misc
     sleep,
     escapeHtml,

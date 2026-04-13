@@ -1,0 +1,81 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-flutter:
+    name: Build Flutter APK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          
+      - name: Build APK
+        working-directory: apps/flutter
+        run: |
+          flutter pub get
+          flutter build apk --release
+          
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: SmartBLE-Android.apk
+          path: apps/flutter/build/app/outputs/flutter-apk/app-release.apk
+
+  build-tauri:
+    name: Build Tauri Windows
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        
+      - name: Build Tauri
+        working-directory: apps/desktop/tauri
+        run: |
+          npm install
+          npm run tauri build
+          
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: SmartBLE-Windows.msi
+          path: apps/desktop/tauri/src-tauri/target/release/bundle/msi/*.msi
+
+  release:
+    name: Create GitHub Release
+    needs: [build-flutter, build-tauri]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          path: artifacts
+          
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            artifacts/SmartBLE-Android.apk/app-release.apk
+            artifacts/SmartBLE-Windows.msi/*.msi
+          draft: false
+          prerelease: false
+          generate_release_notes: true

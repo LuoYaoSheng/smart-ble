@@ -6,10 +6,10 @@ import 'ble_manager.dart';
 
 /// 统一定义与 Android 侧完全一致的 OtaUUIDs
 class OtaUuids {
-  static const String service = "4fafc201-1fb5-459e-8fcc-c5c9c331914d";
-  static const String control = "beb5483e-36e1-4688-b7f5-ea07361b26c0";
-  static const String data = "beb5483e-36e1-4688-b7f5-ea07361b26c1";
-  static const String status = "beb5483e-36e1-4688-b7f5-ea07361b26c2";
+  static const String service = '4fafc201-1fb5-459e-8fcc-c5c9c331914d';
+  static const String control = 'beb5483e-36e1-4688-b7f5-ea07361b26c0';
+  static const String data = 'beb5483e-36e1-4688-b7f5-ea07361b26c1';
+  static const String status = 'beb5483e-36e1-4688-b7f5-ea07361b26c2';
 }
 
 /// 发送协议常量
@@ -38,7 +38,7 @@ class OtaState {
     this.sentBytes = 0,
     this.totalBytes = 0,
     this.progressPercent = 0,
-    this.statusMessage = "未开始 OTA",
+    this.statusMessage = '未开始 OTA',
     this.errorMessage,
   });
 
@@ -100,7 +100,7 @@ class OtaManager extends StateNotifier<OtaState> {
       progressPercent: 0,
       sentBytes: 0,
       totalBytes: size,
-      statusMessage: "已选择固件",
+      statusMessage: '已选择固件',
       isCompleted: false,
       clearError: true,
     );
@@ -109,10 +109,10 @@ class OtaManager extends StateNotifier<OtaState> {
   void cancelOta() {
     if (state.isInProgress) {
       _isCancelled = true;
-      _sendCommand({"action": "abort"});
+      _sendCommand({'action': 'abort'});
       state = state.copyWith(
         isInProgress: false,
-        statusMessage: "已取消 OTA",
+        statusMessage: '已取消 OTA',
       );
     }
   }
@@ -120,12 +120,12 @@ class OtaManager extends StateNotifier<OtaState> {
   Future<void> startOta() async {
     final file = state.selectedFile;
     if (file == null) {
-      state = state.copyWith(errorMessage: "未选择固件");
+      state = state.copyWith(errorMessage: '未选择固件');
       return;
     }
 
     if (!_bleManager.isDeviceConnected(deviceId)) {
-      state = state.copyWith(errorMessage: "设备已断开");
+      state = state.copyWith(errorMessage: '设备已断开');
       return;
     }
 
@@ -135,7 +135,7 @@ class OtaManager extends StateNotifier<OtaState> {
       isCompleted: false,
       progressPercent: 0,
       sentBytes: 0,
-      statusMessage: "正在初始化 OTA...",
+      statusMessage: '正在初始化 OTA...',
       clearError: true,
     );
 
@@ -165,10 +165,10 @@ class OtaManager extends StateNotifier<OtaState> {
       // 3. 发送 Start 命令
       final totalBytes = state.fileSize;
       await _sendCommand({
-        "action": "start",
-        "size": totalBytes,
-        "chunk_size": _otaChunkSize,
-        "firmware_version": "flutter-bin"
+        'action': 'start',
+        'size': totalBytes,
+        'chunk_size': _otaChunkSize,
+        'firmware_version': 'flutter-bin'
       });
 
       await Future.delayed(const Duration(milliseconds: 200));
@@ -179,7 +179,7 @@ class OtaManager extends StateNotifier<OtaState> {
 
       for (int i = 0; i < bytes.length; i += _otaChunkSize) {
         if (_isCancelled) {
-          throw Exception("用户手动取消");
+          throw Exception('用户手动取消');
         }
 
         final end = (i + _otaChunkSize < bytes.length)
@@ -201,7 +201,7 @@ class OtaManager extends StateNotifier<OtaState> {
         state = state.copyWith(
           sentBytes: sent,
           progressPercent: percent,
-          statusMessage: "正在发送分包...",
+          statusMessage: '正在发送分包...',
         );
 
         // 延时保证 ESP32 消化数据
@@ -209,18 +209,18 @@ class OtaManager extends StateNotifier<OtaState> {
       }
 
       // 5. 提交完成
-      await _sendCommand({"action": "commit"});
+      await _sendCommand({'action': 'commit'});
 
       state = state.copyWith(
         sentBytes: totalBytes,
         progressPercent: 100,
-        statusMessage: "发送完成，等待设备验证...",
+        statusMessage: '发送完成，等待设备验证...',
       );
     } catch (e) {
       if (_isCancelled) return;
       state = state.copyWith(
         isInProgress: false,
-        statusMessage: "传输中断",
+        statusMessage: '传输中断',
         errorMessage: e.toString(),
       );
     }
@@ -251,13 +251,13 @@ class OtaManager extends StateNotifier<OtaState> {
           isInProgress: false,
           isCompleted: true,
           progressPercent: 100,
-          statusMessage: "OTA 成功，设备即将重启",
+          statusMessage: 'OTA 成功，设备即将重启',
         );
       } else if (status == 'error') {
         state = state.copyWith(
           isInProgress: false,
-          statusMessage: "设备反馈错误",
-          errorMessage: msg ?? "未知系统错误",
+          statusMessage: '设备反馈错误',
+          errorMessage: msg ?? '未知系统错误',
         );
       }
     } catch (_) {} // 忽略非 JSON 数据

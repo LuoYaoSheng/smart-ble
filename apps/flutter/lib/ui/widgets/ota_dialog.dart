@@ -7,7 +7,7 @@ import '../../core/ble/ota_manager.dart';
 class OtaUpgradeDialog extends ConsumerWidget {
   final String deviceId;
 
-  const OtaUpgradeDialog({Key? key, required this.deviceId}) : super(key: key);
+  const OtaUpgradeDialog({super.key, required this.deviceId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -25,7 +25,7 @@ class OtaUpgradeDialog extends ConsumerWidget {
               Container(
                 margin: const EdgeInsets.only(bottom: 16),
                 padding: const EdgeInsets.all(8),
-                color: Colors.red.withOpacity(0.1),
+                color: Colors.red.withValues(alpha: 0.1),
                 child: Text(
                   state.errorMessage!,
                   style: const TextStyle(color: Colors.red, fontSize: 13),
@@ -49,14 +49,14 @@ class OtaUpgradeDialog extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          state.fileName ?? "未选择固件",
+                          state.fileName ?? '未选择固件',
                           style: const TextStyle(fontWeight: FontWeight.bold),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                         if (state.fileSize > 0)
                           Text(
-                            "${(state.fileSize / 1024).toStringAsFixed(1)} KB",
+                            '${(state.fileSize / 1024).toStringAsFixed(1)} KB',
                             style: const TextStyle(
                                 fontSize: 12, color: Colors.grey),
                           ),
@@ -98,7 +98,7 @@ class OtaUpgradeDialog extends ConsumerWidget {
                         ? state.sentBytes / state.totalBytes
                         : 0,
                     strokeWidth: 8,
-                    backgroundColor: Colors.blue.withOpacity(0.1),
+                    backgroundColor: Colors.blue.withValues(alpha: 0.1),
                     color: state.isCompleted ? Colors.green : Colors.blue,
                   ),
                 ),
@@ -106,7 +106,7 @@ class OtaUpgradeDialog extends ConsumerWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      "${state.progressPercent}%",
+                      '${state.progressPercent}%',
                       style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,

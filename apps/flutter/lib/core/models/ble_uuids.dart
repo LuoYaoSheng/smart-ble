@@ -1,60 +1,60 @@
 class BleUuids {
   // 通用服务 UUID
   static const String serviceGenericAccess =
-      "00001800-0000-1000-8000-00805f9b34fb";
+      '00001800-0000-1000-8000-00805f9b34fb';
   static const String serviceGenericAttribute =
-      "00001801-0000-1000-8000-00805f9b34fb";
+      '00001801-0000-1000-8000-00805f9b34fb';
   static const String serviceDeviceInformation =
-      "0000180a-0000-1000-8000-00805f9b34fb";
-  static const String serviceBattery = "0000180f-0000-1000-8000-00805f9b34fb";
+      '0000180a-0000-1000-8000-00805f9b34fb';
+  static const String serviceBattery = '0000180f-0000-1000-8000-00805f9b34fb';
   static const String serviceHumanInterfaceDevice =
-      "00001812-0000-1000-8000-00805f9b34fb";
-  static const String serviceHeartRate = "0000180d-0000-1000-8000-00805f9b34fb";
+      '00001812-0000-1000-8000-00805f9b34fb';
+  static const String serviceHeartRate = '0000180d-0000-1000-8000-00805f9b34fb';
   static const String serviceHealthThermometer =
-      "00001809-0000-1000-8000-00805f9b34fb";
-  static const String serviceOta = "4fafc201-1fb5-459e-8fcc-c5c9c331914d";
+      '00001809-0000-1000-8000-00805f9b34fb';
+  static const String serviceOta = '4fafc201-1fb5-459e-8fcc-c5c9c331914d';
 
   // 通用特征值 UUID
   static const String characteristicDeviceName =
-      "00002a00-0000-1000-8000-00805f9b34fb";
+      '00002a00-0000-1000-8000-00805f9b34fb';
   static const String characteristicAppearance =
-      "00002a01-0000-1000-8000-00805f9b34fb";
+      '00002a01-0000-1000-8000-00805f9b34fb';
   static const String characteristicPeripheralPrivacyFlag =
-      "00002a02-0000-1000-8000-00805f9b34fb";
+      '00002a02-0000-1000-8000-00805f9b34fb';
   static const String characteristicReconnectionAddress =
-      "00002a03-0000-1000-8000-00805f9b34fb";
+      '00002a03-0000-1000-8000-00805f9b34fb';
   static const String characteristicPeripheralPreferredConnectionParameters =
-      "00002a04-0000-1000-8000-00805f9b34fb";
+      '00002a04-0000-1000-8000-00805f9b34fb';
   static const String characteristicServiceChanged =
-      "00002a05-0000-1000-8000-00805f9b34fb";
+      '00002a05-0000-1000-8000-00805f9b34fb';
 
   // 设备信息服务特征值
   static const String characteristicManufacturerName =
-      "00002a29-0000-1000-8000-00805f9b34fb";
+      '00002a29-0000-1000-8000-00805f9b34fb';
   static const String characteristicModelNumber =
-      "00002a24-0000-1000-8000-00805f9b34fb";
+      '00002a24-0000-1000-8000-00805f9b34fb';
   static const String characteristicSerialNumber =
-      "00002a25-0000-1000-8000-00805f9b34fb";
+      '00002a25-0000-1000-8000-00805f9b34fb';
   static const String characteristicHardwareRevision =
-      "00002a27-0000-1000-8000-00805f9b34fb";
+      '00002a27-0000-1000-8000-00805f9b34fb';
   static const String characteristicFirmwareRevision =
-      "00002a26-0000-1000-8000-00805f9b34fb";
+      '00002a26-0000-1000-8000-00805f9b34fb';
   static const String characteristicSoftwareRevision =
-      "00002a28-0000-1000-8000-00805f9b34fb";
+      '00002a28-0000-1000-8000-00805f9b34fb';
   static const String characteristicSystemId =
-      "00002a23-0000-1000-8000-00805f9b34fb";
+      '00002a23-0000-1000-8000-00805f9b34fb';
 
   // 电池服务特征值
   static const String characteristicBatteryLevel =
-      "00002a19-0000-1000-8000-00805f9b34fb";
+      '00002a19-0000-1000-8000-00805f9b34fb';
 
   // OTA 服务特征值
   static const String characteristicOtaControl =
-      "beb5483e-36e1-4688-b7f5-ea07361b26c0";
+      'beb5483e-36e1-4688-b7f5-ea07361b26c0';
   static const String characteristicOtaData =
-      "beb5483e-36e1-4688-b7f5-ea07361b26c1";
+      'beb5483e-36e1-4688-b7f5-ea07361b26c1';
   static const String characteristicOtaStatus =
-      "beb5483e-36e1-4688-b7f5-ea07361b26c2";
+      'beb5483e-36e1-4688-b7f5-ea07361b26c2';
 
   static final Map<String, String> _serviceNames = {
     '00001800': '通用访问',
