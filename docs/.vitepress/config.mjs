@@ -48,6 +48,7 @@ export default defineConfig({
       {
         text: '🌌 第五章：底层架构白皮书 (Architecture & Core)',
         items: [
+          { text: '纯广播无极群控生态蓝图 (NEW)', link: '/ARCHITECTURE_BROADCAST_CONTROL' },
           { text: '全栈跨端架构蓝图 (MASTER)', link: '/MASTER_ARCHITECTURE' },
           { text: '跨框架 BLE API 全景映射', link: '/CROSS_PLATFORM_BLE_GUIDE' },
           { text: '端到端防御性队列与 WatchDog', link: '/CORE_LOGIC_GUIDE' },
