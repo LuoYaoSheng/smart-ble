@@ -166,6 +166,22 @@ function setupEventListeners() {
     document.getElementById('backButton')?.addEventListener('click', goBack);
     document.getElementById('connectButton')?.addEventListener('click', () => connectDevice(state.currentDevice?.id));
     document.getElementById('disconnectButton')?.addEventListener('click', disconnectDevice);
+    document.getElementById('clearLogsButton')?.addEventListener('click', () => clearLogs());
+    document.getElementById('otaButton')?.addEventListener('click', () => {
+        if (state.currentDevice) {
+            // Correct id is 'mainOtaDialog', not 'otaDialog'
+            const otaDialog = document.getElementById('mainOtaDialog');
+            if (otaDialog) otaDialog.show(state.currentDevice.id);
+        }
+    });
+
+    // Connected devices panel — "Disconnect All" button
+    document.getElementById('disconnectAllBtn')?.addEventListener('click', async () => {
+        const ids = [...state.connectedDevices];
+        for (const deviceId of ids) {
+            await disconnectFromPanel(deviceId);
+        }
+    });
 
     // Broadcast buttons
     elements.startBroadcastButton?.addEventListener('click', startAdvertising);
@@ -231,14 +247,6 @@ function setupEventListeners() {
     elements.deviceInfoDialog?.addEventListener('click', (e) => {
         if (e.target === elements.deviceInfoDialog) closeDeviceInfoDialog();
     });
-
-    // Write dialog
-    document.querySelector('.dialog-close')?.addEventListener('click', closeWriteDialog);
-    document.querySelector('.dialog-cancel')?.addEventListener('click', closeWriteDialog);
-    document.querySelector('.dialog-confirm')?.addEventListener('click', writeData);
-    elements.writeDialog?.addEventListener('click', (e) => {
-        if (e.target === elements.writeDialog) closeWriteDialog();
-    });
 }
 
 // Setup Tauri Event Listeners
@@ -275,7 +283,8 @@ async function setupTauriListeners() {
 }
 
 // T06: Auto-Reconnect (aligned with Flutter: max 3 attempts, 2s/4s/6s backoff)
-const MAX_RECONNECT_ATTEMPTS = 3;
+// MAX_RECONNECT_ATTEMPTS is defined in BleUtils.js (shared with Electron)
+const MAX_RECONNECT_ATTEMPTS = (window.BleUtils && window.BleUtils.MAX_RECONNECT_ATTEMPTS) || 3;
 
 function attemptReconnect(deviceId) {
     const rc = state.reconnect;
@@ -382,8 +391,35 @@ function switchTab(tab) {
         renderConnectedDevicesPanel();
     } else if (tab === 'broadcast') {
         elements.broadcastView.classList.add('active');
+        checkBroadcastSupport();
     } else if (tab === 'about') {
         document.getElementById('aboutView').classList.add('active');
+    }
+}
+
+// T14: OS Support Verification for Peripheral Broadcaster
+function checkBroadcastSupport() {
+    // navigator.platform is deprecated but userAgent serves equally well
+    const uc = navigator.userAgent.toLowerCase();
+    const isMac = uc.includes('mac') || uc.includes('darwin');
+    
+    const startBtn = document.getElementById('startBroadcastButton');
+    const statusEl = document.getElementById('broadcastStatus');
+    
+    // Disable on Windows and Linux fallback
+    if (!isMac) {
+        let osName = uc.includes('win') ? 'Windows' : 'Linux';
+        if (startBtn) {
+            startBtn.disabled = true;
+            startBtn.style.opacity = '0.5';
+            startBtn.style.cursor = 'not-allowed';
+        }
+        if (statusEl) {
+            statusEl.innerHTML = `
+                <span class="status-dot error"></span>
+                <span class="status-text" style="color:var(--error)">当前操作系统（${osName}）底层严格限制 BLE 外设广播。<br/>请使用手机客户端执行虚拟外设测试。</span>
+            `;
+        }
     }
 }
 
@@ -406,7 +442,7 @@ function renderConnectedDevicesPanel() {
     if (count === 0) {
         list.innerHTML = `
             <div class="empty-state">
-                <div class="empty-icon"> Link</div>
+                <img src="placeholders/empty_connected.svg" class="empty-icon-img" alt="connected" style="width: 80px; height: 80px; opacity: 0.7; margin-bottom: 12px;">
                 <div class="empty-text">暂无已连接设备</div>
                 <div class="empty-hint">在扫描页面点击设备进行连接</div>
             </div>`;
@@ -455,13 +491,20 @@ async function toggleScan() {
         
         // CI MOCK INJECTION
         if (state.useMockBLE) {
-            console.log('[MOCK] Injecting dummy device Dummy-BLE-01');
+            console.log('[MOCK] Injecting dummy device Dummy-BLE-01 and Dummy-BLE-02');
             state.devices.set('MOCK-11:22:33:44:55:66', {
                 id: 'MOCK-11:22:33:44:55:66',
                 name: 'Dummy-BLE-01',
                 rssi: -45,
-                serviceUuids: ['180D', '180A'],
+                serviceUuids: ['180D', '180A', '4FAFC201-1FB5-459E-8FCC-C5C9C331914D'],
                 advData: 'Mock Hex Data'
+            });
+            state.devices.set('MOCK-AA:BB:CC:DD:EE:FF', {
+                id: 'MOCK-AA:BB:CC:DD:EE:FF',
+                name: 'Dummy-BLE-02',
+                rssi: -60,
+                serviceUuids: ['FFF0'],
+                advData: 'Mock Hex Data 02'
             });
             renderDeviceList();
         }
@@ -546,9 +589,9 @@ function renderDeviceList() {
             const hasDevices = state.devices.size > 0;
             elements.deviceList.innerHTML = `
                 <div class="empty-state">
-                    <div class="empty-icon"> Scanner</div>
-                    <div class="empty-text">${hasDevices ? 'No devices match filters' : 'No devices found'}</div>
-                    <div class="empty-hint">${state.scanning ? 'Scanning...' : 'Click scan to start'}</div>
+                    <img src="placeholders/empty_scan.svg" class="empty-icon-img" alt="scan" style="width: 80px; height: 80px; opacity: 0.7; margin-bottom: 12px;">
+                    <div class="empty-text">${hasDevices ? '没有符合过滤条件的设备' : '暂无发现设备'}</div>
+                    <div class="empty-hint">${state.scanning ? '正在扫描发现周边设备...' : '尝试调整过滤条件或开始扫描'}</div>
                 </div>
             `;
         }
@@ -631,8 +674,6 @@ function applyFilters() {
     }
 
     return devices;
-}
-
 }
 
 // Show Device Info Dialog
@@ -782,6 +823,12 @@ function updateConnectionStatus(connected, connecting = false) {
         elements.connectionStatus.textContent = 'Disconnected';
         elements.connectionStatus.classList.remove('connected', 'connecting');
     }
+}
+
+// Convenience alias used throughout: sync both connection display + button states
+function updateConnectionUI(connected) {
+    updateConnectionStatus(connected);
+    updateDeviceButtons();
 }
 
 // Discover Services
@@ -1096,12 +1143,23 @@ async function goBack() {
         }
     }
 
-    addLog('info', state.connected ? 'Returned to list (connection active)' : 'Returned to list');
+    addLog('info', state.connectedDevices.size > 0 ? 'Returned to list (connection active)' : 'Returned to list');
 }
 
-// Utility
+// Utility — delegates to BleUtils when available, falls back to inline
 function escapeHtml(text) {
+    if (window.BleUtils) return window.BleUtils.escapeHtml(text);
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
 }
+
+// ── Entry Point ───────────────────────────────────────────────
+// Initialize i18n first, then kick off the main Tauri BLE app.
+// Mirrors the Electron pattern in public/app.js (DOMContentLoaded).
+document.addEventListener('DOMContentLoaded', async () => {
+    if (window.i18n) {
+        await window.i18n.init();
+    }
+    await init();
+});

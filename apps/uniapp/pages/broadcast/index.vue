@@ -75,10 +75,44 @@
 					<text class="switch-label">添加服务UUID</text>
 					<switch color="#007AFF" :checked="androidSettings.addServiceUuid" @change="onAddServiceUuidChange" />
 				</view>
-			</template>
-
-��在广播' : '已停止'}}</text>
+			<!-- 厂商ID + 厂商数据（通用字段，对齐 Flutter BroadcastPage） -->
+			<view class="field-group">
+				<text class="field-label">厂商ID (HEX)</text>
+				<input class="field-input" v-model="manufacturerId" :disabled="advertising" placeholder="如：0001" />
 			</view>
+			<view class="field-group">
+				<text class="field-label">厂商数据</text>
+				<input class="field-input" v-model="manufacturerData" :disabled="advertising" placeholder="广播携带的数据" />
+			</view>
+			<!-- 广播字节数实时提示 -->
+			<view class="bytes-hint" v-if="serviceUUID || manufacturerData">
+				<text class="bytes-hint-text">预计广播包大小：{{ calcAdvertiseBytes() }} / 31 字节</text>
+				<text class="bytes-hint-warn" v-if="calcAdvertiseBytes() > 31">⚠ 超出限制！</text>
+			</view>
+		</view>
+
+		<!-- 广播操作按钮 -->
+		<view class="action-section">
+			<button
+				class="btn-advertise"
+				:class="advertising ? 'btn-stop' : ''"
+				@click="toggleAdvertising">
+				<text>{{ advertising ? '停止广播' : '开始广播' }}</text>
+			</button>
+			<button class="btn-check" @click="checkSupport">检查支持</button>
+		</view>
+
+		<!-- 广播状态栏 -->
+		<view
+			class="broadcast-status-bar"
+			:class="advertising ? 'status-bar-active' : ''">
+			<view
+				class="status-indicator-dot"
+				:class="advertising ? 'dot-active' : ''"></view>
+			<text class="status-bar-text">{{ advertising ? '广播中' : '已停止' }}</text>
+			<text class="status-bar-tip" v-if="isSupported">{{ advertising ? '其他设备可扫描到此设备' : '点击开始广播' }}</text>
+			<text class="status-bar-tip status-bar-tip-warn" v-else>当前平台不支持广播</text>
+		</view>
 
 		<view class="log-panel-brd">
 			<view class="log-panel-brd-header">
@@ -586,9 +620,11 @@ onUnmounted(() => {
 });
 
 onUnload(() => {
-		wxBLEServer.value.stopAdvertising();
+	// #ifdef MP-WEIXIN
+	if (wxBLEServer.value) {
+		wxBLEServer.value.stopAdvertising({});
 	}
-	wx.closeBluetoothAdapter();
+	wx.closeBluetoothAdapter({});
 	// #endif
 });
 
@@ -826,5 +862,97 @@ onShareAppMessage(() => ({
 	flex: 1;
 	word-break: break-all;
 }
+
+/* 字节数提示 */
+.bytes-hint {
+	margin: 0 0 16rpx;
+	padding: 12rpx 16rpx;
+	background: #E5F1FF;
+	border-radius: 8rpx;
+	display: flex;
+	align-items: center;
+	gap: 12rpx;
+}
+.bytes-hint-text { font-size: 24rpx; color: #007AFF; }
+.bytes-hint-warn { font-size: 24rpx; color: #FF3B30; font-weight: 600; }
+
+/* 广播操作按钮区 */
+.action-section {
+	margin: 20rpx 30rpx;
+	display: flex;
+	flex-direction: column;
+	gap: 20rpx;
+}
+.btn-advertise {
+	height: 96rpx;
+	border-radius: 48rpx;
+	background: linear-gradient(135deg, #007AFF 0%, #5AC8FA 100%);
+	color: #fff;
+	font-size: 32rpx;
+	font-weight: 600;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 12rpx;
+	border: none;
+	box-shadow: 0 8rpx 24rpx rgba(0, 122, 255, 0.25);
+}
+.btn-advertise::after { border: none; }
+.btn-advertise.btn-stop {
+	background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
+	box-shadow: 0 8rpx 24rpx rgba(255, 59, 48, 0.25);
+}
+.btn-check {
+	height: 80rpx;
+	border-radius: 40rpx;
+	background: #f5f5f5;
+	color: #666;
+	font-size: 28rpx;
+	border: none;
+}
+.btn-check::after { border: none; }
+
+/* 广播状态栏 */
+.broadcast-status-bar {
+	margin: 0 30rpx 20rpx;
+	padding: 24rpx 30rpx;
+	background: #fff;
+	border-radius: 16rpx;
+	display: flex;
+	align-items: center;
+	gap: 16rpx;
+	box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.04);
+}
+.broadcast-status-bar.status-bar-active {
+	background: linear-gradient(135deg, #f0fff4 0%, #e8f5ff 100%);
+	border: 2rpx solid #34C759;
+}
+.status-indicator-dot {
+	width: 20rpx;
+	height: 20rpx;
+	border-radius: 50%;
+	background: #ccc;
+	flex-shrink: 0;
+}
+.status-indicator-dot.dot-active {
+	background: #34C759;
+	box-shadow: 0 0 12rpx rgba(52, 199, 89, 0.5);
+	animation: pulseDot 1.5s ease-in-out infinite;
+}
+@keyframes pulseDot {
+	0%, 100% { transform: scale(1); opacity: 1; }
+	50% { transform: scale(1.3); opacity: 0.7; }
+}
+.status-bar-text {
+	font-size: 28rpx;
+	font-weight: 600;
+	color: #333;
+}
+.status-bar-tip {
+	font-size: 24rpx;
+	color: #999;
+	margin-left: auto;
+}
+.status-bar-tip-warn { color: #FF9500; }
 
 </style>

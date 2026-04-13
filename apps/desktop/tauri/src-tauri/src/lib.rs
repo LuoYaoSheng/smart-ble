@@ -5,8 +5,9 @@
 
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use btleplug::api::{Central, Manager as _, Peripheral as _, Characteristic, WriteType};
+use btleplug::api::{Central, Manager as _, Peripheral as _, Characteristic, WriteType, ValueNotification};
 use btleplug::platform::Manager;
+use futures::stream::StreamExt;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -114,8 +115,7 @@ async fn init_ble(
                 
                 // Track BLE events in background to emit disconnection
                 tokio::spawn(async move {
-                    use btleplug::api::{Central, CentralEvent};
-                    use futures::stream::StreamExt;
+                    use btleplug::api::CentralEvent;
                     
                     if let Ok(mut events) = central_events.events().await {
                         while let Some(event) = events.next().await {
@@ -424,9 +424,16 @@ async fn disconnect(
     let target_id = deviceId.or_else(|| ble_state.connected_peripherals.keys().next().cloned());
 
     if let Some(device_id) = target_id {
-        // Abort notification stream for this device
-        if let Some(handle) = ble_state.notify_handles.remove(&device_id) {
-            handle.abort();
+        // Abort ALL notification streams for this device (key format: "deviceId::charUuid")
+        let prefix = format!("{}::", device_id);
+        let notify_keys: Vec<String> = ble_state.notify_handles.keys()
+            .filter(|k| k.starts_with(&prefix))
+            .cloned()
+            .collect();
+        for key in notify_keys {
+            if let Some(handle) = ble_state.notify_handles.remove(&key) {
+                handle.abort();
+            }
         }
 
         if let Some(peripheral) = ble_state.connected_peripherals.remove(&device_id) {
@@ -664,6 +671,69 @@ async fn write_characteristic(
     }
 }
 
+/// Write raw bytes (for OTA firmware transfer).
+/// `data` is a byte array; `writeWithResponse` controls WriteType.
+#[tauri::command]
+#[allow(non_snake_case)]
+async fn write_raw(
+    deviceId: String,
+    serviceUuid: String,
+    charUuid: String,
+    data: Vec<u8>,
+    writeWithResponse: bool,
+    state: State<'_, Arc<Mutex<BleState>>>,
+) -> Result<Response<bool>, String> {
+    let service_uuid = serviceUuid;
+    let char_uuid = charUuid;
+    let ble_state = state.lock().await;
+
+    if let Some(peripheral) = ble_state.connected_peripherals.get(&deviceId) {
+        let characteristics = peripheral.characteristics();
+        let characteristic = characteristics
+            .iter()
+            .find(|c| c.uuid.to_string() == char_uuid && c.service_uuid.to_string() == service_uuid);
+
+        if let Some(char) = characteristic {
+            let write_type = if writeWithResponse {
+                WriteType::WithResponse
+            } else {
+                WriteType::WithoutResponse
+            };
+            let peripheral = peripheral.clone();
+            drop(ble_state);
+
+            match peripheral.write(&char, &data, write_type).await {
+                Ok(_) => Ok(Response {
+                    success: true,
+                    data: Some(true),
+                    error: None,
+                    value: None,
+                }),
+                Err(e) => Ok(Response {
+                    success: false,
+                    data: None,
+                    error: Some(format!("Write raw failed: {}", e)),
+                    value: None,
+                }),
+            }
+        } else {
+            Ok(Response {
+                success: false,
+                data: None,
+                error: Some("Characteristic not found".to_string()),
+                value: None,
+            })
+        }
+    } else {
+        Ok(Response {
+            success: false,
+            data: None,
+            error: Some("No device connected".to_string()),
+            value: None,
+        })
+    }
+}
+
 #[tauri::command]
 #[allow(non_snake_case)]
 async fn notify_characteristic(
@@ -693,7 +763,8 @@ async fn notify_characteristic(
     if let Some(char) = char_option {
         // Cancel existing notification stream if stopping
         if !notify {
-            if let Some(handle) = ble_state.notify_handles.remove(&deviceId) {
+            let notify_key = format!("{}::{}", deviceId, char_uuid);
+            if let Some(handle) = ble_state.notify_handles.remove(&notify_key) {
                 handle.abort();
             }
             drop(ble_state);
@@ -722,68 +793,72 @@ async fn notify_characteristic(
                 })
             }
         } else {
-            // Subscribe and start polling for notifications
+            // Subscribe and listen for BLE notification push via peripheral.notifications()
             let service_uuid_clone = service_uuid.clone();
             let char_uuid_clone = char_uuid.clone();
+            let peripheral_ref = peripheral.as_ref().unwrap().clone();
+            // char_uuid_filter: only forward notifications from the subscribed characteristic
+            let char_uuid_filter = char_uuid.clone();
+            drop(ble_state); // release lock before async subscribe
 
-            match peripheral.as_ref().unwrap().subscribe(&char).await {
+            match peripheral_ref.subscribe(&char).await {
                 Ok(_) => {
-                    // Start a task to poll for notification values
-                    let handle = tokio::spawn(async move {
-                        let mut tick = tokio::time::interval(Duration::from_millis(500));
-                        tick.tick().await; // Skip first tick
-
-                        loop {
-                            tick.tick().await;
-
-                            // Try to read the characteristic value (this is how btleplug exposes notifications)
-                            if let Some(peripheral) = &peripheral {
-                                match peripheral.read(&char).await {
-                                    Ok(data) => {
-                                        if !data.is_empty() {
-                                            let hex_value = hex::encode(&data);
-                                            let formatted: String = hex_value
-                                                .chars()
-                                                .collect::<Vec<char>>()
-                                                .chunks(2)
-                                                .map(|c| c.iter().collect::<String>())
-                                                .collect::<Vec<String>>()
-                                                .join(" ");
-
-                                            let payload = serde_json::json!({
-                                                "deviceId": deviceId,
-                                                "serviceUuid": service_uuid_clone,
-                                                "charUuid": char_uuid_clone,
-                                                "value": formatted
-                                            });
-
-                                            let _ = window.emit("notification-received", payload);
-                                        }
+                    // Get notification stream — btleplug pushes ValueNotification items here
+                    match peripheral_ref.notifications().await {
+                        Ok(mut notif_stream) => {
+                            let handle = tokio::spawn(async move {
+                                while let Some(ValueNotification { uuid, value }) = notif_stream.next().await {
+                                    // Filter: only forward notifications for our subscribed char
+                                    if uuid.to_string() != char_uuid_filter {
+                                        continue;
                                     }
-                                    Err(_) => {
-                                        // Read might fail if device disconnected or not notifying
-                                        break;
+                                    if !value.is_empty() {
+                                        let hex_value = hex::encode(&value);
+                                        let formatted: String = hex_value
+                                            .chars()
+                                            .collect::<Vec<char>>()
+                                            .chunks(2)
+                                            .map(|c| c.iter().collect::<String>())
+                                            .collect::<Vec<String>>()
+                                            .join(" ");
+
+                                        let payload = serde_json::json!({
+                                            "deviceId": deviceId,
+                                            "serviceUuid": service_uuid_clone,
+                                            "charUuid": char_uuid_clone,
+                                            "value": formatted
+                                        });
+
+                                        let _ = window.emit("notification-received", payload);
                                     }
                                 }
-                            } else {
-                                break;
-                            }
+                                // Stream ended (device disconnected or unsubscribed)
+                                eprintln!("[BLE] Notification stream ended for char {}", char_uuid_clone);
+                            });
+
+                            // Store handle keyed by "deviceId::charUuid" (supports multi-char notify)
+                            let notify_key = format!("{}::{}", deviceId, char_uuid);
+                            let mut ble_state = state.lock().await;
+                            ble_state.notify_handles.insert(notify_key, handle);
+
+                            Ok(Response {
+                                success: true,
+                                data: Some(true),
+                                error: None,
+                                value: None,
+                            })
                         }
-                    });
-
-                    // Store the handle per-device
-                    ble_state.notify_handles.insert(deviceId.clone(), handle);
-                    drop(ble_state);
-
-                    Ok(Response {
-                        success: true,
-                        data: Some(true),
-                        error: None,
-                        value: None,
-                    })
+                        Err(e) => {
+                            Ok(Response {
+                                success: false,
+                                data: None,
+                                error: Some(format!("Failed to get notification stream: {}", e)),
+                                value: None,
+                            })
+                        }
+                    }
                 }
                 Err(e) => {
-                    drop(ble_state);
                     Ok(Response {
                         success: false,
                         data: None,
@@ -857,14 +932,22 @@ async fn start_advertising(
     }
 
     #[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "linux")))]
-    {
-        Ok(Response {
-            success: false,
-            data: None,
-            error: Some("Peripheral mode not supported on this platform.".to_string()),
-            value: None,
-        })
-    }
+    return Ok(Response {
+        success: false,
+        data: None,
+        error: Some("Peripheral mode not supported on this platform.".to_string()),
+        value: None,
+    });
+
+    // This line is only reached if none of the cfg blocks above matched,
+    // which in practice cannot happen since all platforms are covered.
+    #[allow(unreachable_code)]
+    Ok(Response {
+        success: false,
+        data: None,
+        error: Some("Peripheral mode not supported.".to_string()),
+        value: None,
+    })
 }
 
 #[tauri::command]
@@ -968,6 +1051,7 @@ pub fn run() {
             discover_services,
             read_characteristic,
             write_characteristic,
+            write_raw,
             notify_characteristic,
             start_advertising,
             stop_advertising,

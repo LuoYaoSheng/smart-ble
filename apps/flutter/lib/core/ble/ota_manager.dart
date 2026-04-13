@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'ble_manager.dart';
 
@@ -73,7 +71,8 @@ class OtaState {
 }
 
 /// 状态提供者
-final otaStateProvider = StateNotifierProvider.family<OtaManager, OtaState, String>((ref, deviceId) {
+final otaStateProvider =
+    StateNotifierProvider.family<OtaManager, OtaState, String>((ref, deviceId) {
   return OtaManager(deviceId);
 });
 
@@ -81,7 +80,7 @@ final otaStateProvider = StateNotifierProvider.family<OtaManager, OtaState, Stri
 class OtaManager extends StateNotifier<OtaState> {
   final String deviceId;
   final BleManager _bleManager = BleManager.instance;
-  
+
   StreamSubscription? _statusSub;
   bool _isCancelled = false;
 
@@ -124,7 +123,7 @@ class OtaManager extends StateNotifier<OtaState> {
       state = state.copyWith(errorMessage: "未选择固件");
       return;
     }
-    
+
     if (!_bleManager.isDeviceConnected(deviceId)) {
       state = state.copyWith(errorMessage: "设备已断开");
       return;
@@ -143,7 +142,7 @@ class OtaManager extends StateNotifier<OtaState> {
     try {
       // 1. 请求放大 MTU，确保 180 字节负载安全通过
       await _bleManager.requestMtu(deviceId, 247);
-      
+
       // 2. 监听 Status
       await _bleManager.setNotification(
         deviceId: deviceId,
@@ -151,13 +150,15 @@ class OtaManager extends StateNotifier<OtaState> {
         characteristicUuid: OtaUuids.status,
         enable: true,
       );
-      
+
       _statusSub?.cancel();
-      _statusSub = _bleManager.listenCharacteristicValue(
-        deviceId: deviceId,
-        serviceUuid: OtaUuids.service,
-        characteristicUuid: OtaUuids.status,
-      )?.listen(_handleStatusUpdate);
+      _statusSub = _bleManager
+          .listenCharacteristicValue(
+            deviceId: deviceId,
+            serviceUuid: OtaUuids.service,
+            characteristicUuid: OtaUuids.status,
+          )
+          ?.listen(_handleStatusUpdate);
 
       await Future.delayed(const Duration(milliseconds: 200));
 
@@ -175,15 +176,17 @@ class OtaManager extends StateNotifier<OtaState> {
       // 4. 读取文件并分包发送
       final bytes = await file.readAsBytes();
       int sent = 0;
-      
+
       for (int i = 0; i < bytes.length; i += _otaChunkSize) {
         if (_isCancelled) {
           throw Exception("用户手动取消");
         }
-        
-        final end = (i + _otaChunkSize < bytes.length) ? i + _otaChunkSize : bytes.length;
+
+        final end = (i + _otaChunkSize < bytes.length)
+            ? i + _otaChunkSize
+            : bytes.length;
         final chunk = bytes.sublist(i, end);
-        
+
         // 阻塞发送
         await _bleManager.writeCharacteristic(
           deviceId: deviceId,
@@ -192,7 +195,7 @@ class OtaManager extends StateNotifier<OtaState> {
           data: chunk,
           withoutResponse: true, // 数据通道默认可以 noResponse
         );
-        
+
         sent += chunk.length;
         final percent = ((sent / totalBytes) * 100).toInt().clamp(0, 99);
         state = state.copyWith(
@@ -200,20 +203,19 @@ class OtaManager extends StateNotifier<OtaState> {
           progressPercent: percent,
           statusMessage: "正在发送分包...",
         );
-        
+
         // 延时保证 ESP32 消化数据
         await Future.delayed(const Duration(milliseconds: _chunkDelayMs));
       }
 
       // 5. 提交完成
       await _sendCommand({"action": "commit"});
-      
+
       state = state.copyWith(
         sentBytes: totalBytes,
         progressPercent: 100,
         statusMessage: "发送完成，等待设备验证...",
       );
-      
     } catch (e) {
       if (_isCancelled) return;
       state = state.copyWith(
@@ -238,7 +240,7 @@ class OtaManager extends StateNotifier<OtaState> {
     try {
       final jsonStr = utf8.decode(raw);
       final map = jsonDecode(jsonStr);
-      
+
       if (map['type'] != 'ota') return;
 
       final status = map['status'];

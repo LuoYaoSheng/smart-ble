@@ -18,16 +18,8 @@ serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 hex = "0.4"
 tokio = { version = "1", features = ["full"] }
-
-# BLE dependencies (platform-specific)
-[target.'cfg(target_os = "windows")'.dependencies]
-btleplug = "0.11"
-
-[target.'cfg(target_os = "macos")'.dependencies]
-btleplug = "0.11"
-
-[target.'cfg(target_os = "linux")'.dependencies]
-btleplug = "0.11"
+futures = "0.3"  # for StreamExt used in peripheral.notifications() stream
+btleplug = "0.11" # cross-platform BLE: Windows (WinRT) / macOS (CoreBluetooth) / Linux (BlueZ)
 
 [features]
 default = ["custom-protocol"]

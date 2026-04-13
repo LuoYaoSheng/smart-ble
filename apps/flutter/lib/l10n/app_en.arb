@@ -1,0 +1,41 @@
+{
+  "@@locale": "en",
+  "app_name": "BLE Toolkit+",
+  "tab_scan": "Scan",
+  "tab_connected": "Connected",
+  "tab_broadcast": "Broadcast",
+  "tab_about": "About",
+  "btn_start_scan": "Start Scan",
+  "btn_stop_scan": "Stop Scan",
+  "btn_connect": "Connect",
+  "btn_disconnect": "Disconnect",
+  "btn_detail": "Details",
+  "device_unknown": "Unknown Device",
+  "status_connected": "Connected",
+  "status_disconnected": "Disconnected",
+  "status_connecting": "Connecting",
+  "status_init": "Initializing...",
+  "status_bt_on": "Bluetooth ON",
+  "status_bt_off": "Bluetooth OFF",
+  "status_unauthorized": "Unauthorized",
+  "empty_device_list": "No Devices Found",
+  "empty_device_hint": "Click the button above to start scanning",
+  "empty_filtered_device": "No matching devices",
+  "empty_filtered_hint": "Try adjusting your filters",
+  "empty_connected_list": "No connected devices",
+  "empty_connected_hint": "Click a device on the scan page to connect",
+  "connection_success": "Successfully connected to {device_name}",
+  "@connection_success": {
+    "placeholders": {
+      "device_name": {
+        "type": "String"
+      }
+    }
+  },
+  "broadcast_limitation": "OS restricts low-level BLE peripheral broadcasting",
+  "filter_rssi": "RSSI Filter",
+  "filter_unnamed": "Hide Unnamed",
+  "btn_write": "Write Data",
+  "btn_ota": "OTA Update",
+  "log_title": "Device Logs"
+}

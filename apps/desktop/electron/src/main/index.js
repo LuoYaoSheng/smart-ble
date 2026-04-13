@@ -7,11 +7,20 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
-// Debug logging to file
-const debugLogPath = '/tmp/electron-main-debug.log';
+// Debug logging to file (cross-platform path)
+const { app: _app } = require('electron');
+let debugLogPath;
+function getLogPath() {
+  if (!debugLogPath) {
+    debugLogPath = require('path').join(_app.getPath('logs'), 'electron-main-debug.log');
+  }
+  return debugLogPath;
+}
 function debugLog(...args) {
   const msg = args.map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(' ');
-  fs.appendFileSync(debugLogPath, new Date().toISOString() + ' ' + msg + '\n');
+  try {
+    fs.appendFileSync(getLogPath(), new Date().toISOString() + ' ' + msg + '\n');
+  } catch (_) { /* ignore log write errors */ }
   console.log(...args);
 }
 debugLog('=== Electron Main Process Started ===');
@@ -368,14 +377,17 @@ ipcMain.handle('ble:disconnect', async (event, deviceId) => {
       return;
     }
 
-    connectedPeripherals.delete(targetId);
+    // Keep a local reference before removing from map
+    const peripheralId = peripheral.id;
 
     const onDisconnect = (error) => {
       peripheral.removeAllListeners('disconnect'); // Clean up all disconnect listeners
+      // Remove from map only after disconnect event fires
+      connectedPeripherals.delete(targetId);
       if (error) {
         resolve({ success: false, error: error.message });
       } else {
-        sendToRenderer('ble:deviceDisconnected', { id: peripheral.id });
+        sendToRenderer('ble:deviceDisconnected', { id: peripheralId });
         resolve({ success: true });
       }
     };
@@ -597,6 +609,30 @@ ipcMain.handle('ble:writeCharacteristic', async (event, deviceId, serviceUuid, c
         resolve({ success: false, error: error.message });
       } else {
         console.log('Write success');
+        resolve({ success: true });
+      }
+    });
+  });
+});
+
+// ble:writeRaw — writes raw byte array (for OTA firmware chunking)
+ipcMain.handle('ble:writeRaw', async (event, deviceId, serviceUuid, charUuid, data, withoutResponse) => {
+  const targetPeripheral = deviceId ? connectedPeripherals.get(deviceId) : connectedPeripherals.values().next().value;
+  if (!targetPeripheral) return { success: false, error: 'No device connected' };
+
+  return new Promise((resolve) => {
+    const service = targetPeripheral.services.find(s => s.uuid === serviceUuid);
+    if (!service) { resolve({ success: false, error: 'Service not found' }); return; }
+
+    const characteristic = service.characteristics.find(c => c.uuid === charUuid);
+    if (!characteristic) { resolve({ success: false, error: 'Characteristic not found' }); return; }
+
+    // data is already a byte array — convert directly to Buffer
+    const buffer = Buffer.from(data);
+    characteristic.write(buffer, withoutResponse, (error) => {
+      if (error) {
+        resolve({ success: false, error: error.message });
+      } else {
         resolve({ success: true });
       }
     });

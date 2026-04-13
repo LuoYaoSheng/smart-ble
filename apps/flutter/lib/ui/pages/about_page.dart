@@ -7,7 +7,8 @@ class AboutPage extends StatelessWidget {
   const AboutPage({super.key});
 
   static const _repositoryUrl = 'https://github.com/luoyaosheng/smart-ble';
-  static const _docsUrl = 'https://github.com/luoyaosheng/smart-ble/tree/main/docs';
+  static const _docsUrl =
+      'https://github.com/luoyaosheng/smart-ble/tree/main/docs';
   static const _issuesUrl = 'https://github.com/luoyaosheng/smart-ble/issues';
 
   @override
@@ -114,10 +115,13 @@ class AboutPage extends StatelessWidget {
               [
                 _buildFeatureItem(Icons.search, '设备扫描', '自动发现附近的 BLE 设备'),
                 _buildFeatureItem(Icons.filter_list, '智能过滤', '按信号强度、名称过滤设备'),
-                _buildFeatureItem(Icons.connect_without_contact, '快速连接', '一键连接设备并自动发现服务'),
+                _buildFeatureItem(
+                    Icons.connect_without_contact, '快速连接', '一键连接设备并自动发现服务'),
                 _buildFeatureItem(Icons.edit_note, '数据读写', '支持 HEX/UTF-8 格式读写'),
-                _buildFeatureItem(Icons.notifications_active, '通知监听', '实时接收设备通知数据'),
-                _buildFeatureItem(Icons.broadcast_on_personal, '广播模式', '模拟 BLE 外设设备'),
+                _buildFeatureItem(
+                    Icons.notifications_active, '通知监听', '实时接收设备通知数据'),
+                _buildFeatureItem(
+                    Icons.broadcast_on_personal, '广播模式', '模拟 BLE 外设设备'),
               ],
             ),
 
@@ -129,11 +133,16 @@ class AboutPage extends StatelessWidget {
               [
                 Wrap(
                   children: [
-                    _buildPlatformItem('Android', 'assets/icons/android.png', Icons.android),
-                    _buildPlatformItem('iOS', 'assets/icons/ios.png', Icons.phone_iphone),
-                    _buildPlatformItem('macOS', 'assets/icons/macos.png', Icons.laptop_mac),
-                    _buildPlatformItem('Windows', 'assets/icons/windows.png', Icons.computer),
-                    _buildPlatformItem('Linux', 'assets/icons/linux.png', Icons.computer),
+                    _buildPlatformItem(
+                        'Android', 'assets/icons/android.png', Icons.android),
+                    _buildPlatformItem(
+                        'iOS', 'assets/icons/ios.png', Icons.phone_iphone),
+                    _buildPlatformItem(
+                        'macOS', 'assets/icons/macos.png', Icons.laptop_mac),
+                    _buildPlatformItem(
+                        'Windows', 'assets/icons/windows.png', Icons.computer),
+                    _buildPlatformItem(
+                        'Linux', 'assets/icons/linux.png', Icons.computer),
                   ],
                 ),
               ],
@@ -253,7 +262,8 @@ class AboutPage extends StatelessWidget {
     );
   }
 
-  Widget _buildLinkItem(BuildContext context, IconData icon, String title, String url) {
+  Widget _buildLinkItem(
+      BuildContext context, IconData icon, String title, String url) {
     return InkWell(
       onTap: () => _openLink(context, url),
       borderRadius: BorderRadius.circular(8),
@@ -271,7 +281,8 @@ class AboutPage extends StatelessWidget {
               ),
             ),
             const Spacer(),
-            const Icon(Icons.open_in_new, size: 16, color: AppTheme.textSecondary),
+            const Icon(Icons.open_in_new,
+                size: 16, color: AppTheme.textSecondary),
           ],
         ),
       ),

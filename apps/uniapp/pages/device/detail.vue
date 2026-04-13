@@ -83,9 +83,10 @@ onLoad((options) => {
 	if (options.device) {
 		try {
 			const parsedDevice = JSON.parse(decodeURIComponent(options.device));
-			deviceId.value = parsedDevice.deviceId;
+			deviceId.value = parsedDevice.deviceId;   // set first
 			bleStore.initConnectedDevice(parsedDevice);
 			
+			// Now storeDevice computed is valid because deviceId.value is set
 			if (!storeDevice.value.isConnected) {
 				initBluetoothAdapter();
 			}
@@ -225,9 +226,10 @@ const getServices = () => {
 					addLog('系统', `获取到 ${res.services.length} 个服务`);
 					let srvs = [];
 					let otaFound = false;
+					const OTA_SERVICE_UUID = '4FAFC201-1FB5-459E-8FCC-C5C9C331914B';
 					for (let i = 0; i < res.services.length; i++) {
 						const service = res.services[i];
-						if (service.uuid.toUpperCase().includes('FFD0')) otaFound = true;
+						if (service.uuid.toUpperCase() === OTA_SERVICE_UUID.toUpperCase()) otaFound = true;
 						try {
 							const chars = await getCharacteristics(service.uuid);
 							srvs.push({ ...service, characteristics: chars });

@@ -41,9 +41,13 @@ class ServicePanel extends HTMLElement {
         if (!this._services || this._services.length === 0) {
             this.shadowRoot.innerHTML = `
                 <style>
-                    .empty-state { text-align: center; padding: 40px 20px; color: #8e8e93; }
+                    .empty-state { text-align: center; padding: 40px 20px; color: #8e8e93; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+                    .empty-state img { width: 64px; height: 64px; opacity: 0.5; margin-bottom: 12px; }
                 </style>
-                <div class="empty-state">No services found or connect to discover</div>
+                <div class="empty-state">
+                    <img src="placeholders/empty_services.svg" alt="no services">
+                    <div>No services found or connect to discover</div>
+                </div>
             `;
             return;
         }

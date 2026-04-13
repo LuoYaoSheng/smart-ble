@@ -10,7 +10,6 @@ import '../../core/models/log_entry.dart';
 import '../../core/utils/data_converter.dart';
 import '../../core/utils/logger.dart';
 import '../../themes/app_theme.dart';
-import '../widgets/service_tile.dart';
 import '../widgets/log_panel.dart';
 import '../widgets/ota_dialog.dart';
 import '../widgets/write_dialog.dart';
@@ -41,6 +40,22 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
   bool _isReconnecting = false;
   String? _errorMessage;
   StreamSubscription? _connectionStatesSub;
+
+  /// Convenience accessor — delegated to the global logger history.
+  List<LogEntry> get _logs => logger.history;
+
+  void _addLog(String message, LogType type) {
+    switch (type) {
+      case LogType.info:    logger.info(message);    break;
+      case LogType.success: logger.success(message); break;
+      case LogType.error:   logger.error(message);   break;
+      case LogType.receive: logger.receive(message); break;
+      case LogType.warning: logger.warning(message); break;
+      case LogType.send:    logger.send(message);    break;
+    }
+  }
+
+  void _exportLogs() => _exportData();
 
   bool get _hasOtaService => _services.any((s) => s.uuid.toLowerCase() == '4fafc201-1fb5-459e-8fcc-c5c9c331914d');
 
@@ -351,7 +366,8 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
   @override
   void dispose() {
     _connectionStatesSub?.cancel();
-    _commandQueue.clear();
+    _logSubscription?.cancel();
+    _commandQueue?.clear();
     super.dispose();
   }
 
@@ -452,9 +468,10 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
                   // 清空日志
                   Expanded(
                     child: OutlinedButton.icon(
-                      onPressed: () => setState(() {
-                        _logs.clear();
-                      }),
+                      onPressed: () {
+                        logger.clear();
+                        setState(() {});
+                      },
                       icon: const Icon(Icons.clear, size: 18),
                       label: const Text('清空'),
                     ),
@@ -485,7 +502,7 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
             ),
 
           // 指令队列状态栏
-          if (_commandQueue.isRunning || _commandQueue.isLooping || _commandQueue.pendingCount > 0)
+          if ((_commandQueue?.isRunning ?? false) || (_commandQueue?.isLooping ?? false) || (_commandQueue?.pendingCount ?? 0) > 0)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               color: AppTheme.primaryColor.withValues(alpha: 0.08),
@@ -499,27 +516,27 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      _commandQueue.isLooping
-                          ? '循环发送中 (${_commandQueue.currentLoop}/${_commandQueue.targetLoopCount == 0 ? "∞" : _commandQueue.targetLoopCount}) | 待发送: ${_commandQueue.pendingCount}'
-                          : '发送中 | 待发送: ${_commandQueue.pendingCount}',
+                      (_commandQueue?.isLooping ?? false)
+                          ? '循环发送中 (${_commandQueue?.currentLoop}/${(_commandQueue?.targetLoopCount ?? 0) == 0 ? "∞" : _commandQueue?.targetLoopCount}) | 待发送: ${_commandQueue?.pendingCount ?? 0}'
+                          : '发送中 | 待发送: ${_commandQueue?.pendingCount ?? 0}',
                       style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
                     ),
                   ),
-                  if (_commandQueue.isPaused)
+                  if (_commandQueue?.isPaused ?? false)
                     TextButton.icon(
-                      onPressed: () => _commandQueue.resume(),
+                      onPressed: () => _commandQueue?.resume(),
                       icon: const Icon(Icons.play_arrow, size: 16),
                       label: const Text('继续', style: TextStyle(fontSize: 12)),
                     )
                   else
                     TextButton.icon(
-                      onPressed: () => _commandQueue.pause(),
+                      onPressed: () => _commandQueue?.pause(),
                       icon: const Icon(Icons.pause, size: 16),
                       label: const Text('暂停', style: TextStyle(fontSize: 12)),
                     ),
                   TextButton.icon(
                     onPressed: () {
-                      _commandQueue.clear();
+                      _commandQueue?.clear();
                       _addLog('指令队列已停止', LogType.info);
                     },
                     icon: const Icon(Icons.stop, size: 16, color: AppTheme.errorColor),

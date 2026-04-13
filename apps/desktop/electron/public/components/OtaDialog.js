@@ -1,3 +1,9 @@
+/**
+ * OtaDialog Web Component — Electron版
+ * 固件升级流程: start → chunk → commit
+ * 通过 window.bleAPI.writeRaw (preload暴露) 发送原始字节数组
+ * CSS token 与 SSOT 对齐 (--primary / --surface / --border / --error)
+ */
 class OtaDialog extends HTMLElement {
     constructor() {
         super();
@@ -5,91 +11,111 @@ class OtaDialog extends HTMLElement {
         this.deviceId = null;
         this.fileBuffer = null;
         this.chunkSize = 180;
+        this._cancelled = false;
 
-        // Ota Service UUID definitions
-        this.otaServiceUuid = "4FAFC201-1FB5-459E-8FCC-C5C9C331914D".toLowerCase();
-        this.charControlUuid = "BEB5483E-36E1-4688-B7F5-EA07361B26C0".toLowerCase();
-        this.charDataUuid = "BEB5483E-36E1-4688-B7F5-EA07361B26C1".toLowerCase();
-        
+        this.otaServiceUuid  = '4fafc201-1fb5-459e-8fcc-c5c9c331914d';
+        this.charControlUuid = 'beb5483e-36e1-4688-b7f5-ea07361b26c0';
+        this.charDataUuid    = 'beb5483e-36e1-4688-b7f5-ea07361b26c1';
+
         this.shadowRoot.innerHTML = `
             <style>
+                :host { display: contents; }
+
                 .overlay {
                     display: none;
                     position: fixed;
-                    top: 0; left: 0; width: 100vw; height: 100vh;
+                    inset: 0;
                     background: rgba(0,0,0,0.5);
                     z-index: 2000;
                     align-items: center;
                     justify-content: center;
                 }
                 .overlay.visible { display: flex; }
+
                 .dialog {
-                    background: var(--bg-primary);
+                    background: var(--surface, #fff);
+                    color: var(--text-primary, #000);
+                    border-radius: 16px;
                     padding: 24px;
-                    border-radius: 12px;
-                    width: 400px;
-                    color: var(--text-primary);
-                    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                    width: 420px;
+                    max-width: 92vw;
+                    box-shadow: 0 16px 48px rgba(0,0,0,0.25);
+                    animation: fadeIn 0.2s ease-out;
                 }
-                h3 { margin-top: 0; }
-                .file-upload {
-                    border: 2px dashed var(--border-color);
-                    padding: 20px;
+
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(-12px); }
+                    to   { opacity: 1; transform: translateY(0); }
+                }
+
+                h3 {
+                    margin: 0 0 20px;
+                    font-size: 18px;
+                    font-weight: 600;
+                }
+
+                .drop-zone {
+                    border: 2px dashed var(--border, #e5e5ea);
+                    border-radius: 12px;
+                    padding: 24px 16px;
                     text-align: center;
                     cursor: pointer;
-                    margin-bottom: 20px;
-                    border-radius: 8px;
+                    margin-bottom: 16px;
+                    transition: border-color 0.2s, background 0.2s;
                 }
-                .file-upload:hover { border-color: var(--accent-color); }
-                .progress-bar-container {
-                    width: 100%;
-                    height: 10px;
-                    background: var(--border-color);
-                    border-radius: 5px;
-                    overflow: hidden;
-                    margin: 10px 0;
+                .drop-zone:hover,
+                .drop-zone.drag-over {
+                    border-color: var(--primary, #007aff);
+                    background: rgba(0, 122, 255, 0.05);
                 }
-                .progress-bar {
+                .drop-zone .drop-icon  { font-size: 28px; margin-bottom: 8px; }
+                .drop-zone .drop-hint  { font-size: 13px; color: var(--text-secondary, #8e8e93); }
+                .drop-zone .file-name  { font-size: 14px; font-weight: 500; color: var(--primary, #007aff); margin-top: 6px; }
+
+                .status-row { font-size: 13px; color: var(--text-secondary, #8e8e93); margin-bottom: 10px; min-height: 18px; }
+                .status-row.error   { color: var(--error, #ff3b30); }
+                .status-row.success { color: var(--success, #34c759); }
+
+                .progress-track {
+                    width: 100%; height: 8px;
+                    background: var(--border, #e5e5ea);
+                    border-radius: 4px; overflow: hidden; margin-bottom: 16px;
+                }
+                .progress-fill {
                     height: 100%;
-                    background: var(--accent-color);
-                    width: 0%;
-                    transition: width 0.2s;
+                    background: var(--primary, #007aff);
+                    width: 0%; border-radius: 4px;
+                    transition: width 0.15s linear;
                 }
-                .buttons {
-                    display: flex;
-                    justify-content: flex-end;
-                    gap: 10px;
-                    margin-top: 20px;
-                }
-                button {
-                    padding: 8px 16px;
-                    border-radius: 6px;
-                    border: none;
-                    cursor: pointer;
-                    background: var(--accent-color);
-                    color: white;
-                }
-                button.secondary { background: var(--border-color); color: var(--text-primary); }
-                button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+                .btn-row { display: flex; justify-content: flex-end; gap: 10px; margin-top: 4px; }
+                button { padding: 9px 18px; border-radius: 8px; border: none; font-size: 14px; font-weight: 500; cursor: pointer; transition: opacity 0.15s; }
+                button:disabled { opacity: 0.45; cursor: not-allowed; }
+                .btn-cancel { background: var(--border, #e5e5ea); color: var(--text-primary, #000); }
+                .btn-start  { background: var(--primary, #007aff); color: #fff; }
+                .btn-cancel:hover:not(:disabled) { opacity: 0.8; }
+                .btn-start:hover:not(:disabled)  { opacity: 0.88; }
             </style>
-            
+
             <div class="overlay" id="overlay">
                 <div class="dialog">
                     <h3>固件升级 (OTA)</h3>
+
                     <input type="file" id="fileInput" accept=".bin" style="display:none;" />
-                    
-                    <div class="file-upload" id="uploadDropArea">
-                        <span id="fileName">点击选择 .bin 固件文件</span>
+                    <div class="drop-zone" id="dropZone">
+                        <div class="drop-icon">📦</div>
+                        <div class="drop-hint">点击选择 .bin 文件，或将文件拖入此处</div>
+                        <div class="file-name" id="fileName"></div>
                     </div>
-                    
-                    <div id="statusText" style="font-size: 14px; margin-bottom: 5px; color: var(--text-secondary);">等待选择文件...</div>
-                    <div class="progress-bar-container">
-                        <div class="progress-bar" id="progressBar"></div>
+
+                    <div class="status-row" id="statusText">等待选择固件文件……</div>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="progressFill"></div>
                     </div>
-                    
-                    <div class="buttons">
-                        <button class="secondary" id="cancelBtn">取消</button>
-                        <button id="startBtn" disabled>开始升级</button>
+
+                    <div class="btn-row">
+                        <button class="btn-cancel" id="cancelBtn">取消</button>
+                        <button class="btn-start"  id="startBtn" disabled>开始升级</button>
                     </div>
                 </div>
             </div>
@@ -97,120 +123,157 @@ class OtaDialog extends HTMLElement {
     }
 
     connectedCallback() {
-        this.overlay = this.shadowRoot.getElementById('overlay');
-        this.fileInput = this.shadowRoot.getElementById('fileInput');
-        this.uploadDropArea = this.shadowRoot.getElementById('uploadDropArea');
-        this.fileNameSpan = this.shadowRoot.getElementById('fileName');
-        this.statusText = this.shadowRoot.getElementById('statusText');
-        this.progressBar = this.shadowRoot.getElementById('progressBar');
-        this.startBtn = this.shadowRoot.getElementById('startBtn');
-        this.cancelBtn = this.shadowRoot.getElementById('cancelBtn');
+        const sr = this.shadowRoot;
+        this.overlay      = sr.getElementById('overlay');
+        this.fileInput    = sr.getElementById('fileInput');
+        this.dropZone     = sr.getElementById('dropZone');
+        this.fileNameEl   = sr.getElementById('fileName');
+        this.statusText   = sr.getElementById('statusText');
+        this.progressFill = sr.getElementById('progressFill');
+        this.startBtn     = sr.getElementById('startBtn');
+        this.cancelBtn    = sr.getElementById('cancelBtn');
 
-        this.uploadDropArea.addEventListener('click', () => this.fileInput.click());
-        this.fileInput.addEventListener('change', (e) => this.handleFileSelect(e.target.files[0]));
-        
-        this.cancelBtn.addEventListener('click', () => this.hide());
-        this.startBtn.addEventListener('click', () => this.startOta());
+        this.dropZone.addEventListener('click', () => this.fileInput.click());
+        this.fileInput.addEventListener('change', (e) => this._handleFile(e.target.files[0]));
+
+        this.dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            this.dropZone.classList.add('drag-over');
+        });
+        this.dropZone.addEventListener('dragleave', () => this.dropZone.classList.remove('drag-over'));
+        this.dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            this.dropZone.classList.remove('drag-over');
+            const f = e.dataTransfer.files[0];
+            if (f) this._handleFile(f);
+        });
+
+        this.cancelBtn.addEventListener('click', () => {
+            this._cancelled = true;
+            this.hide();
+        });
+        this.startBtn.addEventListener('click', () => this._startOta());
     }
 
     show(deviceId) {
         this.deviceId = deviceId;
         this.fileBuffer = null;
-        this.fileNameSpan.textContent = '点击选择 .bin 固件文件';
-        this.statusText.textContent = '等待选择文件...';
-        this.progressBar.style.width = '0%';
+        this._cancelled = false;
+        this.fileNameEl.textContent = '';
+        this._setStatus('等待选择固件文件……', '');
+        this._setProgress(0);
         this.startBtn.disabled = true;
         this.overlay.classList.add('visible');
     }
 
     hide() {
         this.overlay.classList.remove('visible');
+        if (this.fileInput) this.fileInput.value = '';
     }
 
-    handleFileSelect(file) {
+    _setStatus(msg, type = '') {
+        this.statusText.textContent = msg;
+        this.statusText.className = 'status-row' + (type ? ` ${type}` : '');
+    }
+
+    _setProgress(pct) {
+        this.progressFill.style.width = `${pct}%`;
+    }
+
+    _handleFile(file) {
         if (!file) return;
-        this.fileNameSpan.textContent = file.name;
-        this.statusText.textContent = \`正在读取 \${file.name}...\`;
-        
+        if (!file.name.endsWith('.bin')) {
+            this._setStatus('请选择 .bin 格式的固件文件', 'error');
+            return;
+        }
+        this.fileNameEl.textContent = file.name;
+        this._setStatus(`正在读取 ${file.name} …`);
+
         const reader = new FileReader();
         reader.onload = (e) => {
             this.fileBuffer = new Uint8Array(e.target.result);
-            this.statusText.textContent = \`读取成功: \${this.fileBuffer.length} Bytes\`;
+            this._setStatus(`已就绪：${this.fileBuffer.length.toLocaleString()} 字节`);
             this.startBtn.disabled = false;
         };
-        reader.onerror = () => {
-            this.statusText.textContent = '文件读取失败';
-        };
+        reader.onerror = () => this._setStatus('文件读取失败', 'error');
         reader.readAsArrayBuffer(file);
     }
 
-    async startOta() {
+    async _writeRaw(charUuid, bytes, withoutResponse) {
+        const result = await window.bleAPI.writeRaw(
+            this.deviceId,
+            this.otaServiceUuid,
+            charUuid,
+            Array.from(bytes),
+            withoutResponse,
+        );
+        if (!result.success) throw new Error(result.error || 'writeRaw failed');
+    }
+
+    async _startOta() {
         if (!this.fileBuffer || !this.deviceId) return;
+        this._cancelled = false;
         this.startBtn.disabled = true;
-        this.uploadDropArea.style.pointerEvents = 'none';
+        this.dropZone.style.pointerEvents = 'none';
+        this._setProgress(0);
+
+        const encoder = new TextEncoder();
+        const total   = this.fileBuffer.length;
 
         try {
-            this.statusText.textContent = '发送 OTA 开始指令...';
-            // Start payload
-            const startPayload = \`{"action":"start","size":\${this.fileBuffer.length},"chunk_size":\${this.chunkSize},"firmware_version":"electron-build"}\`;
-            
-            await window.bleAPI.writeString(
-                this.deviceId,
-                this.otaServiceUuid,
+            // 1. Start
+            this._setStatus('发送 OTA 开始指令……');
+            await this._writeRaw(
                 this.charControlUuid,
-                startPayload
+                encoder.encode(JSON.stringify({
+                    action: 'start', size: total,
+                    chunk_size: this.chunkSize, firmware_version: 'electron-build',
+                })),
+                false, // WithoutResponse for speed; firmware ACKs via notify
             );
+            await this._sleep(200);
 
-            await this.sleep(200);
-            
-            // Send chunks
+            // 2. Chunks
             let sent = 0;
-            const total = this.fileBuffer.length;
-            
             while (sent < total) {
-                const end = Math.min(sent + this.chunkSize, total);
+                if (this._cancelled) throw new Error('用户已取消');
+
+                const end   = Math.min(sent + this.chunkSize, total);
                 const chunk = this.fileBuffer.slice(sent, end);
-                
-                await window.bleAPI.writeCharacteristic(
-                    this.deviceId,
-                    this.otaServiceUuid,
-                    this.charDataUuid,
-                    Array.from(chunk),
-                    'hex' // window.bleAPI takes 'hex' or 'utf8', wait!
-                );
-                
+                await this._writeRaw(this.charDataUuid, chunk, true); // WithoutResponse for throughput
+
                 sent = end;
-                const percent = Math.floor((sent / total) * 100);
-                this.progressBar.style.width = \`\${percent}%\`;
-                this.statusText.textContent = \`发送分包... \${percent}%\`;
-                
-                // throttle
-                await this.sleep(20);
+                const pct = Math.floor((sent / total) * 100);
+                this._setProgress(pct);
+                this._setStatus(`传输中... ${pct}%  (${sent.toLocaleString()} / ${total.toLocaleString()} 字节)`);
+                await this._sleep(20);
             }
 
-            // Commit payload
-            this.statusText.textContent = '发送结束指令...等待设备确认';
-            const commitPayload = \`{"action":"commit"}\`;
-            await window.bleAPI.writeString(
-                this.deviceId,
-                this.otaServiceUuid,
+            // 3. Commit
+            this._setStatus('发送提交指令，等待设备重启……');
+            await this._writeRaw(
                 this.charControlUuid,
-                commitPayload
+                encoder.encode(JSON.stringify({ action: 'commit' })),
+                false,
             );
 
-            this.statusText.textContent = 'OTA 传输成功！';
-            setTimeout(() => this.hide(), 2000);
+            this._setProgress(100);
+            this._setStatus('✅ OTA 传输完成！设备正在重启……', 'success');
+            setTimeout(() => this.hide(), 3000);
 
-        } catch (e) {
-            this.statusText.textContent = \`OTA 失败: \${e.message || e}\`;
-            this.statusText.style.color = 'red';
+        } catch (err) {
+            if (this._cancelled) {
+                this._setStatus('已取消', '');
+            } else {
+                this._setStatus(`❌ OTA 失败: ${err.message || err}`, 'error');
+            }
         } finally {
-            this.uploadDropArea.style.pointerEvents = 'auto';
+            this.dropZone.style.pointerEvents = 'auto';
             this.startBtn.disabled = false;
         }
     }
 
-    sleep(ms) {
+    _sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 }

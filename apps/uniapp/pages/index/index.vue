@@ -40,7 +40,7 @@
 				<view class="device-list">
 					<scroll-view scroll-y class="device-scroll">
 						<view v-if="filteredDevices.length === 0" class="empty-state">
-							<text class="empty-icon">{{ devices.length > 0 ? '📭' : '📡' }}</text>
+							<image src="/static/placeholders/empty_scan.svg" class="empty-icon-img" mode="aspectFit"></image>
 							<text class="empty-title">{{ devices.length > 0 ? '无匹配设备' : '暂无设备' }}</text>
 							<text class="empty-sub">{{ devices.length > 0 ? '尝试调整过滤条件' : '点击上方按钮开始扫描' }}</text>
 						</view>
@@ -59,7 +59,7 @@
 			<view v-show="currentTab === 1" class="tab-content connected-tab-content">
 				<scroll-view scroll-y class="device-scroll">
 					<view v-if="connectedDevicesList.length === 0" class="empty-state">
-						<text class="empty-icon">🔌</text>
+						<image src="/static/placeholders/empty_connected.svg" class="empty-icon-img" mode="aspectFit"></image>
 						<text class="empty-title">无连接设备</text>
 						<text class="empty-sub">请在发现列表中连接设备</text>
 					</view>
@@ -280,7 +280,7 @@ const copyAdvData = () => {
 .device-list { flex: 1; display: flex; flex-direction: column; overflow: hidden; margin-top: 10rpx; }
 .device-scroll { flex: 1; height: 100%; }
 .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 100rpx 0; }
-.empty-icon { font-size: 100rpx; margin-bottom: 20rpx; }
+.empty-icon-img { width: 160rpx; height: 160rpx; opacity: 0.7; margin-bottom: 24rpx; }
 .empty-title { font-size: 32rpx; color: #333; font-weight: bold; margin-bottom: 10rpx; }
 .empty-sub { font-size: 26rpx; color: #999; }
 .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000; }

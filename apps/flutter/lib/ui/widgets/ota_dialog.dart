@@ -57,7 +57,8 @@ class OtaUpgradeDialog extends ConsumerWidget {
                         if (state.fileSize > 0)
                           Text(
                             "${(state.fileSize / 1024).toStringAsFixed(1)} KB",
-                            style: const TextStyle(fontSize: 12, color: Colors.grey),
+                            style: const TextStyle(
+                                fontSize: 12, color: Colors.grey),
                           ),
                       ],
                     ),
@@ -66,12 +67,15 @@ class OtaUpgradeDialog extends ConsumerWidget {
                     TextButton(
                       onPressed: () async {
                         FilePickerResult? result = await FilePicker.pickFiles(
-                          type: FileType.any, // .bin filters are restrictive on some OS
+                          type: FileType
+                              .any, // .bin filters are restrictive on some OS
                         );
-                        if (result != null && result.files.single.path != null) {
+                        if (result != null &&
+                            result.files.single.path != null) {
                           File file = File(result.files.single.path!);
                           int size = await file.length();
-                          notifier.selectFile(file, result.files.single.name, size);
+                          notifier.selectFile(
+                              file, result.files.single.name, size);
                         }
                       },
                       child: const Text('选择'),
@@ -90,7 +94,9 @@ class OtaUpgradeDialog extends ConsumerWidget {
                   width: 120,
                   height: 120,
                   child: CircularProgressIndicator(
-                    value: state.totalBytes > 0 ? state.sentBytes / state.totalBytes : 0,
+                    value: state.totalBytes > 0
+                        ? state.sentBytes / state.totalBytes
+                        : 0,
                     strokeWidth: 8,
                     backgroundColor: Colors.blue.withOpacity(0.1),
                     color: state.isCompleted ? Colors.green : Colors.blue,
@@ -107,14 +113,15 @@ class OtaUpgradeDialog extends ConsumerWidget {
                       ),
                     ),
                     if (state.isCompleted)
-                      const Icon(Icons.check_circle, color: Colors.green, size: 24),
+                      const Icon(Icons.check_circle,
+                          color: Colors.green, size: 24),
                   ],
                 ),
               ],
             ),
 
             const SizedBox(height: 16),
-            
+
             Text(
               state.statusMessage,
               style: const TextStyle(color: Colors.grey, fontSize: 13),
@@ -131,19 +138,19 @@ class OtaUpgradeDialog extends ConsumerWidget {
               }
               Navigator.pop(context);
             },
-            child: Text(state.isInProgress ? '取消并关闭' : '关闭', style: const TextStyle(color: Colors.grey)),
+            child: Text(state.isInProgress ? '取消并关闭' : '关闭',
+                style: const TextStyle(color: Colors.grey)),
           ),
-        
         if (state.isCompleted)
           ElevatedButton(
             onPressed: () => Navigator.pop(context),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
             child: const Text('完成', style: TextStyle(color: Colors.white)),
           ),
-
         if (!state.isInProgress && !state.isCompleted)
           ElevatedButton(
-            onPressed: state.selectedFile == null ? null : () => notifier.startOta(),
+            onPressed:
+                state.selectedFile == null ? null : () => notifier.startOta(),
             child: const Text('开始刷入'),
           ),
       ],

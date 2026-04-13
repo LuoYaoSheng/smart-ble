@@ -66,12 +66,40 @@ class LogPanel extends HTMLElement {
     }
 
     render() {
+        this.style.display = 'flex';
+        
         if (this._logs.length === 0) {
-            this.shadowRoot.innerHTML = '';
-            this.style.display = 'none';
+            this.shadowRoot.innerHTML = `
+                <style>
+                    :host {
+                        display: flex;
+                        flex-direction: column;
+                        background: #f8f9fa;
+                        border-radius: 12px;
+                        border: 1px solid rgba(0,0,0,0.05);
+                        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+                        margin-top: 20px;
+                        min-height: 120px;
+                    }
+                    .empty-state {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        height: 100%;
+                        flex: 1;
+                        color: #8e8e93;
+                        font-size: 13px;
+                    }
+                    .empty-state img { width: 48px; height: 48px; opacity: 0.5; margin-bottom: 8px; }
+                </style>
+                <div class="empty-state">
+                    <img src="placeholders/empty_log.svg" alt="no logs">
+                    <div>No log entries yet</div>
+                </div>
+            `;
             return;
         }
-        this.style.display = 'flex';
 
         this.shadowRoot.innerHTML = `
             <style>

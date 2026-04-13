@@ -1,0 +1,41 @@
+{
+  "@@locale": "zh",
+  "app_name": "BLE Toolkit+",
+  "tab_scan": "扫描设备",
+  "tab_connected": "已连接",
+  "tab_broadcast": "创建广播",
+  "tab_about": "关于",
+  "btn_start_scan": "开始扫描",
+  "btn_stop_scan": "停止扫描",
+  "btn_connect": "连接设备",
+  "btn_disconnect": "断开连接",
+  "btn_detail": "详情",
+  "device_unknown": "未知设备",
+  "status_connected": "已连接",
+  "status_disconnected": "已断开",
+  "status_connecting": "连接中",
+  "status_init": "初始化中...",
+  "status_bt_on": "蓝牙已开启",
+  "status_bt_off": "蓝牙已关闭",
+  "status_unauthorized": "未授权",
+  "empty_device_list": "暂无设备",
+  "empty_device_hint": "点击上方按钮开始扫描",
+  "empty_filtered_device": "没有符合过滤条件的设备",
+  "empty_filtered_hint": "尝试调整过滤条件",
+  "empty_connected_list": "暂无已连接设备",
+  "empty_connected_hint": "在扫描页面点击设备进行连接",
+  "connection_success": "成功连接设备 {device_name}",
+  "@connection_success": {
+    "placeholders": {
+      "device_name": {
+        "type": "String"
+      }
+    }
+  },
+  "broadcast_limitation": "底层严格限制 BLE 外设广播",
+  "filter_rssi": "信号强度过滤",
+  "filter_unnamed": "隐藏未知设备",
+  "btn_write": "写入数据",
+  "btn_ota": "OTA 更新",
+  "log_title": "设备日志"
+}

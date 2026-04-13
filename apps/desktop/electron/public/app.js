@@ -31,6 +31,42 @@ class App {
         this.userDisconnected = new Set();
         this.autoReconnectEnabled = true;
 
+        // E2E UI Testing Mock Fallback (Polyfill bleAPI if running strictly in browser)
+        if (this.USE_MOCK_BLE && !window.bleAPI) {
+            console.warn('[MOCK] Polyfilling window.bleAPI for Playwright test environment');
+            window.bleAPI = {
+                init: async () => ({ success: true }),
+                startScan: async () => ({ success: true }),
+                stopScan: async () => ({ success: true }),
+                connect: async (id) => {
+                    setTimeout(() => window.appInstance.onDeviceConnected(id), 500);
+                    return { success: true };
+                },
+                disconnect: async (id) => {
+                    setTimeout(() => window.appInstance.onDeviceDisconnected(id), 100);
+                    return { success: true };
+                },
+                discoverServices: async (id) => {
+                    const data = [
+                        { uuid: '180A', name: 'Device Info', characteristics: [{ uuid: '2A29', properties: ['read'] }] },
+                        { uuid: '4FAFC201-1FB5-459E-8FCC-C5C9C331914D', name: 'OTA Service', characteristics: [] }
+                    ];
+                    setTimeout(() => window.appInstance.onServicesDiscovered({ deviceId: id, services: data }), 100);
+                    return { success: true, data };
+                },
+                readCharacteristic: async () => ({ success: true, value: 'Mock Data' }),
+                writeCharacteristic: async () => ({ success: true }),
+                writeRaw: async () => ({ success: true }),
+                notifyCharacteristic: async () => ({ success: true }),
+                onStateChange: () => {},
+                onDeviceDiscovered: () => {},
+                onDeviceConnected: () => {},
+                onDeviceDisconnected: () => {},
+                onServicesDiscovered: () => {},
+                onCharacteristicValueChanged: () => {}
+            };
+        }
+
         this.init();
     }
 
@@ -204,29 +240,29 @@ class App {
         if (count === 0) {
             list.innerHTML = `
                 <div class="empty-state">
-                    <div class="empty-icon">🔗</div>
+                    <img src="placeholders/empty_connected.svg" class="empty-icon-img" alt="connected" style="width: 80px; height: 80px; opacity: 0.7; margin-bottom: 12px;">
                     <div class="empty-text">暂无已连接设备</div>
                     <div class="empty-hint">在扫描页面点击设备进行连接</div>
                 </div>`;
             return;
         }
 
-        list.innerHTML = [...this.connectedDevices].map(deviceId => {
-            const device = this.devices.get(deviceId);
-            const name = device?.name || deviceId;
-            return `
-                <div class="device-card" style="margin-bottom:10px;padding:14px;border-radius:10px;border:1px solid rgba(0,0,0,0.1)">
-                    <div style="display:flex;align-items:center;gap:12px">
-                        <div style="width:40px;height:40px;border-radius:10px;background:rgba(52,199,89,0.1);display:flex;align-items:center;justify-content:center;color:#34C759">●</div>
-                        <div style="flex:1">
-                            <div style="font-weight:600">${name}</div>
-                            <div style="font-size:12px;color:#666">${deviceId}</div>
-                        </div>
-                        <button class="btn btn-secondary" style="font-size:12px;padding:4px 10px" onclick="window.appInstance.showDeviceDetailPanel('${deviceId}')">详情</button>
-                        <button class="btn btn-danger" style="font-size:12px;padding:4px 10px" onclick="window.appInstance.disconnectDeviceFromPanel('${deviceId}')">断开</button>
-                    </div>
-                </div>`;
-        }).join('');
+        list.innerHTML = '';
+        [...this.connectedDevices].forEach(deviceId => {
+            const device = this.devices.get(deviceId) || { id: deviceId, name: deviceId.slice(0, 16) };
+            const card = document.createElement('device-card');
+            card.setAttribute('is-connection-tab', 'true');
+            card.device = device;
+            card.addEventListener('show-detail', (e) => {
+                e.stopPropagation();
+                this.showDeviceDetailPanel(e.detail.id);
+            });
+            card.addEventListener('disconnect', (e) => {
+                e.stopPropagation();
+                this.disconnectDeviceFromPanel(e.detail.id);
+            });
+            list.appendChild(card);
+        });
     }
 
     showDeviceDetailPanel(deviceId) {
@@ -392,13 +428,20 @@ class App {
             // CI MOCK INJECTION
             // Generates a fake device for automated UI E2E testing
             if (this.USE_MOCK_BLE) {
-                console.log('[MOCK] Injecting dummy device Dummy-BLE-01');
+                console.log('[MOCK] Injecting dummy device Dummy-BLE-01 and Dummy-BLE-02');
                 this.onDeviceDiscovered({
                     id: 'MOCK-11:22:33:44:55:66',
                     name: 'Dummy-BLE-01',
                     rssi: -45,
                     connectable: true,
-                    services: ['FFF0', '180A']
+                    services: ['FFF0', '180A', '4FAFC201-1FB5-459E-8FCC-C5C9C331914D']
+                });
+                this.onDeviceDiscovered({
+                    id: 'MOCK-AA:BB:CC:DD:EE:FF',
+                    name: 'Dummy-BLE-02',
+                    rssi: -60,
+                    connectable: true,
+                    services: ['FFF0']
                 });
             }
         }
@@ -546,7 +589,7 @@ class App {
             if (list) {
                 list.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-icon">📡</div>
+                        <img src="placeholders/empty_scan.svg" class="empty-icon-img" alt="scan" style="width: 80px; height: 80px; opacity: 0.7; margin-bottom: 12px;">
                         <div class="empty-text">暂无设备</div>
                         <div class="empty-hint">点击上方按钮开始扫描</div>
                     </div>
@@ -559,7 +602,7 @@ class App {
             if (list) {
                 list.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-icon">🔍</div>
+                        <img src="placeholders/empty_scan.svg" class="empty-icon-img" alt="search" style="width: 80px; height: 80px; opacity: 0.7; margin-bottom: 12px;">
                         <div class="empty-text">没有符合过滤条件的设备</div>
                         <div class="empty-hint">尝试调整过滤条件</div>
                     </div>
@@ -577,6 +620,20 @@ class App {
             const card = this.createDeviceCard(device);
             list.appendChild(card);
         });
+    }
+
+    createDeviceCard(device) {
+        const card = document.createElement('device-card');
+        card.device = device;
+        card.addEventListener('connect', (e) => {
+            e.stopPropagation();
+            this.connectToDevice({ id: e.detail.id, name: device.name });
+        });
+        card.addEventListener('show-detail', (e) => {
+            e.stopPropagation();
+            this.selectDevice(e.detail.id);
+        });
+        return card;
     }
 
     // Select Device - navigate to detail view
@@ -664,16 +721,18 @@ class App {
         // Handle auto reconnect
         if (this.autoReconnectEnabled && !this.userDisconnected.has(deviceId)) {
             const attempts = this.reconnectAttempts.get(deviceId) || 0;
-            if (attempts < 3) {
+            const maxAttempts = (window.BleUtils && window.BleUtils.MAX_RECONNECT_ATTEMPTS) || 3;
+            
+            if (attempts < maxAttempts) {
                 const nextAttempt = attempts + 1;
                 this.reconnectAttempts.set(deviceId, nextAttempt);
-                const delay = nextAttempt * 2000; // 2s, 4s, 6s
+                const delay = window.BleUtils ? window.BleUtils.reconnectDelay(nextAttempt) : (nextAttempt * 2000);
 
-                this.addLog(`设备 ${deviceId} 意外断开，将在 ${delay/1000}s 后尝试重连... (第 ${nextAttempt}/3 次)`, 'warning');
+                this.addLog(`设备 ${deviceId} 意外断开，将在 ${delay/1000}s 后尝试重连... (第 ${nextAttempt}/${maxAttempts} 次)`, 'warning');
                 
                 if (this.reconnectTimers.has(deviceId)) clearTimeout(this.reconnectTimers.get(deviceId));
                 this.reconnectTimers.set(deviceId, setTimeout(() => {
-                    this.addLog(`尝试自动重连 ${deviceId}... (第 ${nextAttempt}/3 次)`, 'info');
+                    this.addLog(`尝试自动重连 ${deviceId}... (第 ${nextAttempt}/${maxAttempts} 次)`, 'info');
                     const device = this.devices.get(deviceId);
                     if (device) this.connectToDevice(device);
                 }, delay));
@@ -924,6 +983,10 @@ class App {
 }
 
 // Initialize app when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    // Initialize localization before app
+    if (window.i18n) {
+        await window.i18n.init();
+    }
     window.appInstance = new App();
 });

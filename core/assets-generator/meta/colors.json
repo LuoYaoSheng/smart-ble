@@ -1,0 +1,16 @@
+{
+  "theme": {
+    "primary": { "light": "#007AFF", "dark": "#0A84FF" },
+    "primary_dark": { "light": "#0051D5", "dark": "#007AFF" },
+    "primary_light": { "light": "#E8F2FF", "dark": "rgba(10, 132, 255, 0.15)" },
+    "background": { "light": "#F2F2F7", "dark": "#000000" },
+    "surface": { "light": "#FFFFFF", "dark": "#1C1C1E" },
+    "border": { "light": "#E5E5EA", "dark": "#38383A" },
+    "text_primary": { "light": "#000000", "dark": "#FFFFFF" },
+    "text_secondary": { "light": "#8E8E93", "dark": "#EBEBF5" },
+    "text_tertiary": { "light": "#C7C7CC", "dark": "rgba(235, 235, 245, 0.3)" },
+    "success": { "light": "#34C759", "dark": "#30D158" },
+    "warning": { "light": "#FF9500", "dark": "#FF9F0A" },
+    "error": { "light": "#FF3B30", "dark": "#FF453A" }
+  }
+}

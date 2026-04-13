@@ -19,22 +19,24 @@ SmartBLE Tauri is a cross-platform desktop BLE (Bluetooth Low Energy) applicatio
 | BLE Initialization | ✅ | ✅ | ✅ | Initialize BLE adapter on app start |
 | Device Scanning | ✅ | ✅ | ✅ | Scan for nearby BLE devices with RSSI updates |
 | Device Filtering | ✅ | ✅ | ✅ | Filter by RSSI, name prefix, hide unnamed devices |
-| Device Connection | ✅ | ✅ | ✅ | Connect to discovered BLE peripherals |
+| Device Connection | ✅ | ✅ | ✅ | Multi-device concurrent connection (HashMap) |
 | Service Discovery | ✅ | ✅ | ✅ | Discover services and characteristics after connection |
 | Characteristic Read | ✅ | ✅ | ✅ | Read values from characteristics |
-| Characteristic Write | ✅ | ✅ | ✅ | Write values to characteristics |
-| Characteristic Notify | ✅ | ✅ | ✅ | Poll for characteristic value changes |
-| Device Disconnection | ✅ | ✅ | ✅ | Disconnect from connected device |
-| BLE Broadcasting | ✅ | ❌ | ❌ | Advertise as BLE peripheral (macOS only) |
-| About Page | ✅ | ✅ | ✅ | Show app info, features, and tech stack |
+| Characteristic Write | ✅ | ✅ | ✅ | Write values to characteristics (auto Write/WriteWithoutResponse) |
+| Characteristic Notify | ✅ | ✅ | ✅ | **Event-driven** via `peripheral.notifications()` stream (btleplug 0.11) |
+| Device Disconnection | ✅ | ✅ | ✅ | Disconnect from connected device; auto-reconnect (max 3, 2/4/6s backoff) |
+| BLE Broadcasting | ✅ | ❌ | ❌ | Advertise as BLE peripheral (macOS only via btleplug) |
+| About Page | ✅ | ✅ | ✅ | Show app info — Tauri 1.5 / Rust + btleplug 0.11 |
 
 ### UI Features
 - Real-time device list updates (no flickering with smart DOM updates)
 - Connection status indicator with animations
-- Service/characteristic tree view
-- Log panel for debugging
+- Service/characteristic tree view (Web Components)
+- Log panel for debugging (Web Component)
 - Filter panel with presets (-50, -70, -90 dBm)
-- Loading animations for scanning, connecting
+- Multi-device management: "Connected" tab view
+- Auto-reconnect: 3 attempts with 2s/4s/6s exponential backoff
+- SSOT CSS tokens aligned with Electron + Flutter AppColors palette
 
 ---
 
