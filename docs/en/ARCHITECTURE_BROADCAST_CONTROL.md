@@ -1,87 +1,78 @@
-﻿> [!NOTE]
-> English translation is currently work-in-progress. Displaying the original Chinese text for now.
+# 🌌 Smart BLE: Connectionless Broadcasting & Ecology Blueprint
 
-# 馃寣 Smart BLE: 鏃犺繛鎺ョ函骞挎挱缇ゆ帶鐢熸€佹灦鏋勭櫧鐨功
+> **Version**: v1.0.0-draft  
+> **Core Architecture**: `GAP Broadcaster/Observer` Topology, `Manufacturer Specific Data` Payload Hijacking, Extreme Event Throttling.
 
-> **鏂囨。鐗堟湰**: v1.0.0-draft  
-> **鏍稿績姒傚康**: `GAP Broadcaster/Observer` 鎷撴墤銆乣Manufacturer Specific Data` 杞借嵎绐冨惉銆佹瀬閫熻妭娴佹帶鍒?(Throttler)銆?
+Traditional Bluetooth Low Energy (BLE) environments typically rely on point-to-point GATT (Master-Slave connection). When we need to simultaneously control 100 synchronized RGB ambient lights within a stadium, relying on connected handshakes will trigger an instantaneous latency avalanche and system collapse.
 
-浼犵粺鐨?Bluetooth Low Energy (BLE) 宸ヤ笟鎺у埗澶氶噰鐢?**鐐瑰鐐?GATT (涓讳粠鍗曢摼)**銆傚綋鎴戜滑闇€瑕佹帶鍒朵竴涓満棣嗗唴鐨?100 鐩忔皼鍥寸伅鏃讹紝濡傛灉閲囩敤杩炴帴妯″紡锛屼笉璁烘槸鎵嬫満鎿嶄綔杩樻槸杩炴帴鑰楁椂閮藉皢瀵艰嚧绯荤粺闆穿宕╂簝銆?
-涓鸿В鍐冲ぇ鑸晫缇ゆ帶闇€姹傦紝鏈伐绋嬬嫭绔嬭緹鍑?*銆愰浂寤惰繜鏁ｅ彂缇ゆ帶鐢熸€併€?*锛屽嵆鎵嬫満鍙彂涓嶈繛锛屾墍鏈夌殑缁堢鐏叿/寮€鍏抽潤榛樼洃鍚紝瑙ｆ瀽骞惰Е鍙戞満鍒讹紒
+To resolve this mass-control obstacle, this engineering repository carved out an independent framework: **[Zero-Latency Peerless Broadcast Ecology]**. The smartphone acts purely as a broadcaster without making connections, and all terminal appliances/switches operate as silent observers, parsing signals and triggering execution asynchronously!
 
 ---
 
-## 1. 鏍稿績閫氳灏佽锛氬巶鍟嗙壒瀹氬瓧娈?(Manufacturer Data) 鍔寔
+## 1. Topography Concept: Manufacturer Data Hijacking
 
-鎴戜滑鎽掑純鏈嶅姟 `Service UUID / Characteristic` 杩炴帴鍐欏叆锛岃浆鐢?BLE 瑙勮寖閲屾渶鍒濆鐨?`Advertising Payload`锛堝箍鎾皝鍖咃級涓殑 `Manufacturer Specific Data (0xFF)` 杩涜鏁版嵁涓嬪彂銆?
+We actively bypass explicit `Service UUID / Characteristic` Write connections. Instead, we hijack the most fundamental `Advertising Payload` utilizing the `Manufacturer Specific Data (0xFF)` flag.
 
-姣忎釜骞挎挱鍖呮渶澶氬寘鍚瀬鍏舵湁闄愮殑鏈夋晥瀛楄妭锛堜紶缁?BLE 涓?31 瀛楄妭锛岄櫎鍘诲熀纭€浣嶅悗鐣欑粰鍘傚鐨勪粎鍓?20 澶氬瓧鑺傦級銆?
-鎴戜滑瀹氫箟鐨?*绱у噾鎸囦护闆嗗寘瑙勭害**濡備笅锛?
+Each broadcast packet possesses an extremely limited capacity (around 20-25 usable Bytes). Our **Compact Instruction Set (CIS)** protocol is defined below:
 
 ```text
 +----------+----------+--------+-------------------------------------+
-| 闀挎爣璇嗙 | 鏁版嵁绫诲瀷 | 鍘傚晢 ID|  鑷畾鎸囦护闆?Data (18 Bytes)         |
+| Length   | Data Type| Vendor | Custom Instruction Payload (18 B)   |
 +----------+----------+--------+-------------------------------------+
 | e.g. 0x1A| 0xFF     | 0xABCD | [CMD] [P1] [P2] [P3] ... [Checksum] |
 +----------+----------+--------+-------------------------------------+
 ```
 
-### 銆愰€氫俊杞借嵎 (Payload) 瀹氫箟琛ㄣ€?
-* **`0xABCD` 鍙戝ご**锛氫綔涓鸿繃婊ゆ爣蹇椼€傛墍鏈夋垜浠嚭浜х殑涓嬩綅鏈虹‖浠跺鏋滃湪骞挎挱閲岀湅鍒板墠甯?`0xABCD` 鐨勭數娉紝灏变細绔嬪埢鎹曡幏銆?
-* **`CMD` 鎸囦护妲?*锛?
-  * `0x01` (鐏叿缁熶竴鍒囨崲寮€鍏? -> 鍙傛暟 P1: `0 (鍏抽棴) / 1 (鎵撳紑)`
-  * `0x02` (鍏ㄥ眬姘涘洿鐏棤绾ц皟鑹? -> 鍙傛暟 P1,P2,P3: `R`, `G`, `B` 鍊?(0~255)
-* **`Checksum` 鏍￠獙鍜?*锛氬鎶楃數纾佺幆澧冩薄鏌撶殑鏈€缁堟牎楠屽瓧銆?
+### 【Payload Command Definitions】
+* **`0xABCD` Magic Header**: Acts as a filtering signature. Any hardware peripheral identifying `0xABCD` within the radio spectrum immediately awakens and captures the payload.
+* **`CMD` Instruction Register**:
+  * `0x01` (Universal Toggle Switch) -> Parameter P1: `0 (OFF) / 1 (ON)`
+  * `0x02` (Global RGB Ambient Light) -> Parameters P1, P2, P3: `R`, `G`, `B` values (0~255)
+* **`Checksum`**: The final parity verifier defending against electromagnetic pollution.
 
 ---
 
-## 2. 鍓嶇鍙戝皠涓灑涓庨檷鍣槻鍗℃ (Throttler)
+## 2. Frontend Emitter Matrix & Throttlers
 
-鍦ㄦ墜鏈?妗岄潰绔紝涓荤晫闈㈠皢琛嶇敓鍑轰笓闂ㄧ殑 **[缇ょ粍璋冭壊鐩榏 / [鐗╃悊鎬绘帶寮€鍏砞** UI銆?
-鐢ㄦ埛鍦ㄥ睆骞曚笂澶ц寖鍥存粦鍔ㄩ€夊彇娓愬彉鑹叉椂锛屾瀬瀹规槗瑙﹀彂姣忕閽熶笂鐧炬閲嶅彂瑕佹眰锛岀洿鎺ュ皢 Android 鎴?iOS 鐨勮摑鐗欏熀甯︽墦姝绘垨鎶ラ敊锛坄Advertise Error`锛夈€?
+Within the Dart or Vue UIs, developers will construct specific **[Macro Color Palettes]** or **[Master Physical Switches]**.
+When users aggressively slide their fingers across gradient color pickers, they unintentionally generate hundreds of parameter changes per second. This directly suffocates Android/iOS Bluetooth basebands, firing `Advertise Error` crashes.
 
-### 寤虹珛 `BroadcastThrottler` (寮曟搸鍙戞簮姹?
-鍦?`core/ble-core/` 鎴?`ble_manager.dart` 鍐咃紝蹇呴』寮曞叆闃插啿鍒峰彂娴佸櫒锛?
+### Embedding the `BroadcastThrottler`
+We explicitly require frontend UI architectures to implement an anti-flood engine inside `core/ble-core/` or `ble_manager.dart`:
 ```javascript
-// 浼唬鐮佹灦鏋勶細
+// Pseudo-code implementation
 class BroadcastThrottler {
    private payload = null;
    private isAdvertising = false;
    
-   // 鎸傝浇 RequestAnimationFrame 灞傜骇鐨勯檺娴?
+   // Bound to requestAnimationFrame lifecycle limits
    updateGroupColor(r, g, b) {
       this.payload = [0x02, r, g, b];
-      this.throttleFlush(); // 姣?100ms 鍙厑璁稿己鍒惰鐩栨洿鏂颁竴娆¤摑鐗欏箍鎾ぉ绾跨殑 Payload
+      this.throttleFlush(); // Strictly permits overriding the BLE antenna payload ONLY once every 100ms.
    }
 }
 ```
 
 ---
 
-## 3. 纭欢涓嬩綅鏈猴細鏃犳瀬绐冨惉鑰呮灦鏋?
+## 3. Peripheral Hardware: Observer Mode
 
-浠ュ線鐨勫崟鐗囨満纭欢鏄杩炴帴绔?(`Slave/Peripheral`)銆?
-鐜板湪鐨勫崟鐗囨満妯″潡锛?*蹇呴』鍏峰 Scan / Observer (瑙傚療鑰? 鑳藉姏锛?*
+Historically, cheap microcontrollers act strictly as slaves/peripherals waiting to be connected. In the Smart BLE ecosystem, end-node MCU logic **MUST** implement active Scanning / Observer capabilities!
 
-浼犵粺寤変环鐗?`JDY-23` 鍑哄巶琚皝浣忎簡 Scan 鐨勮兘鍔涖€傛垜浠帹鑽愭湭鏉ヨ繖濂楁墦娉曞繀椤伙細
-1. **妯″潡鍗囩骇**锛氫娇鐢?`ESP32`銆乣STM32WB`锛屾垨鑰呭湪 `JDY-24` 涓婂彂閫?`AT+ROLE=1` (璁句负涓绘満瑙傚療妯″紡)銆?
-2. **搴曞眰杩囨护閫昏緫鏀归€?* (`Protocols/`)锛?
-   鍦ㄥ崟鐗囨満 C 璇█绔紝鎴戜滑灏嗕笉鍐嶆帴鏀朵覆鍙ｉ噷鐨勯€忎紶鐐瑰鐐逛俊鎭€?
+1. **Hardware Selection**: Highly recommend upgrading to `ESP32` or `STM32WB`, or issuing `AT+ROLE=1` (Central Observer Mode) on modules like `JDY-24`.
+2. **Deep Filter Logic**: Embedded C modules will completely ignore standard Serial AT pass-throughs.
+   
 ```c
-// 纭欢 C 灞備腑鏂埅鑾?
+// Hardware C-Level Intercept Interrupt
 void on_ble_adv_report_scanned(BleAdvReport* report) {
-    // 1. 鏄惁鏄?Manufacturer Data锛熸槸鍚﹀ご閮ㄤ负 0xABCD锛?
+    // 1. Is it Manufacturer Data? Is the header 0xABCD?
     if(check_smart_ble_signature(report->data)) {
-        // 2. 鍓ョ寰楀埌 [CMD] [P1] [P2] [P3]
+        // 2. Strip to isolate [CMD] [P1] [P2] [P3]
         if(report->cmd == 0x02) {
-             // 3. 鐩存帴閫氳繃 Bsp 椹卞姩鏃犵紳鍙樺厜锛侊紒鍏ㄥ眿涓婄櫨鐩忕瓑鍚屽抚鐜囧搷搴旓紒
+             // 3. Directly bypass networking overhead -> instantly change LED color
+             // Hundreds of bulbs physically respond identically at ultra-high framerates!
              BSP_LED_Color(report->p1, report->p2, report->p3);
         }
     }
 }
 ```
-
-## 4. 鐢熸€佸睍鏈?
-
-涓€鏃﹁繖濂楄法绔兢鎺у熀搴曟惌寤哄畬鎴愶紝椤圭洰灏卞皢姝ｅ紡韪忚冻楂樼骇鍟嗕笟鍦鸿銆傚畠鑳界灛闂翠粠鍗曡皟鐨勫伐鍏峰簲鐢紝鏃犳劅琛嶇敓鍑?*鈥滈珮瀹氭櫤鑳界數绔炰粨鈥濄€佲€滆溅杞界嫭绔嬪璁惧睆寰嬪姩鎺у埗鈥濄€佲€滃満棣嗗叏灞€鐭╅樀鎵撳厜鍣ㄢ€?*绛夎秴绾у満鏅紒
-

@@ -1,38 +1,45 @@
-﻿> [!NOTE]
-> English translation is currently work-in-progress. Displaying the original Chinese text for now.
+# Logging Specifications & Ecosystem Metrics
 
-# 璺ㄥ钩鍙拌摑鐗欐棩蹇楁姄鍙栦笌娌夋穩瑙勮寖 (Logging Specification)
+When deploying Bluetooth logic to physical commercial sectors, identifying the root cause of connectivity crashes within polluted BLE radio wave zones is incredibly difficult. Relying exclusively on console terminal outputs is inadequate. 
 
-钃濈墮搴旂敤鍦ㄧ幇鍦洪儴缃叉椂寰€寰€闈复鏋佸害鎭跺姡鐨勪俊鍙风幆澧冧笌纭欢纰庣墖鍖栭棶棰樸€備负浜嗙‘淇濆紑鍙戣€呰兘绗竴鏃堕棿閫氳繃鏃ュ織澶嶇洏骞舵函婧愬穿婧冭妭鐐癸紝鎵€鏈夌殑 Smart BLE 鍓嶇 SDK锛團lutter, UniApp, Tauri, Native锛夊繀椤诲己鍒堕伒寰笅杩扮粨鏋勫寲鐨勬棩蹇楄鑼冿紙Logging Spec锛夈€?
+Smart BLE enforces a rigorous, structured UI Memory Logging protocol across every frontend library (Flutter, UniApp, Tauri Native) to guarantee hardware developers can easily retro-trace their transmission failures.
+
 ---
 
-## 1. 鍏骇鐘舵€佹睜鏈哄埗 (6-Level Typed Pool)
+## 1. 6-Level Typed Pool Mechanics
 
-鎵€鏈夌殑搴曞眰鍒嗗彂蹇呴』鍖呭惈涓ユ牸鐨?6 绉嶇被鍨嬪垽瀹氥€傜姝㈤殢鎰忎娇鐢ㄤ竾鑳界殑 `.log()` 杈撳嚭搴熻瘽锛屾瘡鏉℃棩蹇楀繀椤诲寘鍚椂闂存埑鍜屽噯纭殑鏍囩鏍囪瘑銆?
-| 绾у埆鍒嗙被 | 鏍囪瘑鑹?/ UI 琛ㄥ緛 | 閫傜敤鍦烘櫙 |
+A total ban stands against generically printing unclassified strings into the console pipeline. Every log dumped into the local ring buffer must be aggressively typed into one of 6 identifiers containing absolute precision UTC timestamps.
+
+| Status Level | Hex Identifier & UI Binding | Scenario Requirements |
 | :--- | :--- | :--- |
-| `INFO` | 鈿?鐧借壊 / 鐏拌壊 | 涓€鑸簨浠惰妭鐐广€傚锛氣€滅郴缁熷凡灏辩华鈥濄€佲€滃彂鐜版湇鍔?180A鈥?|
-| `SUCCESS` | 馃煝 缁胯壊 | 鏋佸叾鍏抽敭鐨勯噷绋嬬瀹ｅ憡銆傚锛氣€滃崄鍏繘鍒?OTA 鍖呭垏鐗囧彂閫佸畬姣曗€濄€佲€滆澶囬厤瀵规垚鍔熲€?|
-| `WARNING` | 馃煛 姗欒壊 | 涓嶅紩鍙戝穿婧冧絾闈為鏈熺殑鐜拌薄銆傚锛氣€淐RC8 鏍￠獙閿欒锛屾姏寮冮敊甯р€濄€佲€滀俊閬撴柇娴侀噸浼犫€?|
-| `ERROR` | 馃敶 绾㈣壊 | 涓ラ噸閿欒銆佷腑鏂€傚锛氣€滆繛鎺ョ湅闂ㄧ嫍瓒呮椂鏂紑鈥濄€佲€滆澶囨嫆鏀跺懡浠も€?|
-| `SEND` | 馃數 钃濊壊 (甯﹀彂閫佸浘鏍? | **涓婅閫氶亾**锛氬悜 `Write`/`WriteNoResponse` 鐗瑰緛鍐欏叆鐨勬暟鎹祦銆傚繀椤诲惈鏈夊搴旂殑 HEX |
-| `RECEIVE`| 馃煟 绱壊 (甯︽帴鏀跺浘鏍? | **涓嬭閫氶亾**锛氫粠 `Notify`/`Indicate`/`Read` 鏀跺埌鐨勭‖浠舵暟鎹祦銆傚繀椤诲惈鏈夊搴旂殑 HEX |
+| `INFO` | ⚪ White / Neutral Grey | Basic flow nodes: i.e. "System is booting up", "Discovered GATT 180A". |
+| `SUCCESS` | 🟢 Green | Critical E2E milestones: i.e. "Final OTA byte sequence complete", "Connected successfully". |
+| `WARNING` | 🟡 Orange | Non-fatal breaks: i.e. "CRC8 calculation failed - discarding erroneous frame", "Retry limit triggered". |
+| `ERROR` | 🔴 Crimson Red | Catastrophic failures: i.e. "WatchDog timeout disconnected", "Hardware rejected chunk". |
+| `SEND` | 🔵 Blue (Upload Icon) | **TX Uplink**: Emitted ONLY when passing bits down `Write` or `WriteNoResponse`. MUST contain Hex. |
+| `RECEIVE`| 🟣 Violet (Downlink) | **RX Downlink**: Fired when intercepting chunks from `Notify`, `Indicate`, or `Read`. MUST contain Hex. |
 
-## 2. 鍐呭瓨鐜舰璋冨害 (Ring-Buffer Sandboxing)
+## 2. In-Memory Ring-Buffer Sandboxing
 
-鐢变簬绉诲姩绔澶囩殑璧勬簮鏋佷负鍙楅檺锛屽挨鍏舵槸鍚庡彴闈欓粯璁板綍浣庡姛鑰楄摑鐗欓暱鏃堕棿鐨勫績鐢靛浘/娓╂箍搴︽洸绾挎椂鏋佹槗閫犳垚 Out of Memory (OOM)銆?
-**寮哄埗瑙勭害锛?*鍏ㄧ缁勪欢蹇呴』搴旂敤鏈€澶?**1,000 ~ 5,000 鏉?*锛堝彇鍐充簬鐩爣鎿嶄綔绯荤粺鐨勫彲鐢ㄥ熀纭€ RAM锛夌殑寰幆闃熷垪瑕嗙洊鍐欏叆妯″瀷銆傚綋鍐呭瓨瓒呰浇瓒婄晫鏃讹紝鍓旈櫎鏈€鏃╂湡璁板綍锛屾案涓嶅鑷磋澶囩槴鐥€?
-## 3. 鎸佷箙鍖栦笌鎺掗殰瀵煎嚭鍗忚 (Export Protocol)
+Since Edge mobile platforms (particularly WeChat Miniprogram environments) suffer under highly strained runtime footprints, blindly pushing millions of IoT sensor reads into standard application Lists will guarantee an Out-Of-Memory (OOM) app crash within hours.
 
-浠呬粎渚濊禆 `console.log` 鐨勮法绔簲鐢ㄥ皢瀹屽叏澶卞幓鐪熷疄鍦烘櫙鑱旇皟鐨勬満浼氥€傛垜浠殑鏍稿績瀹氫綅鏄晢涓氱骇浜や粯鍣紝绯荤粺蹇呴』鍏锋湁璺ㄧ淮搴︾殑鍙嶆煡鎵嬫锛?
-### (1). 瀵煎嚭鍐呭缂栨帓
-瀵煎嚭鐨勬棩蹇楀苟涓嶆槸涓€鍫嗙函绮圭殑鏂囨湰锛屼负浜嗘柟渚?`LogStash` 鎴栨槸鍏跺畠鑷爺宸ュ叿鏌ラ槄姣斿锛屽鍑哄崗璁殑鏍煎紡寮虹儓寤鸿鍏煎 **JSON-Lines (NDJSON)** 骞堕檮甯︽槗璇荤殑绾枃鏈墠缂€鍏冩暟鎹€?
+**The Strict Ruling:** All Logging logic MUST natively bind to a continuous `1,000 to 5,000 entry max` Ring Buffer array. If hardware overspills past the threshold, the tail end slices discard oldest memory footprints silently.
+
+## 3. Persistent Extraction Protocol
+
+Raw terminal debug outputs are utterly useless when physical clients complain in the wild. The application logic must support exporting sandbox traces dynamically for engineering diagnostic sessions.
+
+### (1). JSON Formatted Slices
+While the front-end draws colorful widgets, the underlying export stream formatting should comply strictly with JSON-Lines (NDJSON), retaining machine readability for tools like LogStash.
+
 ```json
 { "timestamp": "2026-04-14T03:32:01.002Z", "type": "SEND", "device": "F1:A2:33", "hex": "BE B5 01 02", "msg": "Send command chunk" }
 ```
 
-### (2). 骞冲彴璋冪敤鐭╅樀
-绂佹浣跨敤鍗曚竴鐨勨€滃鍒跺埌鍓创鏉库€濇潵绯婂紕鏅€氱敤鎴凤紙鏂囨湰寰€寰€鏋佸ぇ锛屽壀璐存澘瑁呰浇澶辫触鐜囨瀬楂橈級銆?
-* **绉诲姩绔?(Flutter / UniApp)**
-  - 蹇呴』鍒╃敤鍘熺敓璋冭捣 `ShareFiles` 鍔ㄤ綔锛佺敓鎴?`.log` 鎴?`.txt` 鏂囦欢鐩存帴璋冪敤绯荤粺鍒嗕韩寮圭獥銆傚紑鍙戣€呮垨鐢ㄦ埛鍙€熸涓€閿涔?/ 寰俊 / 閭欢涓浆鏃ュ織鏂囨湰銆?* **妗岄潰璺ㄧ (Electron / Tauri)**
-  - 蹇呴』鍞ゅ嚭鎿嶄綔绯荤粺鐨?**Save Dialog 璧勬簮妗?*锛屽己鍒朵互浜岃繘鍒舵垨 UTF-8 娴佸瓨鍏ョ‖鐩橈紝鏂逛究杩涜闀挎椂闂寸殑澶ц妯¤褰曟寕鏈烘祴璇曘€?
+### (2). System Matrix Bindings
+Under NO circumstances should extracting heavy telemetry data rely exclusively on raw "Clipboard Copying" capabilities, which easily truncate under size caps.
+
+* **Mobile (Flutter / UniApp)**
+  - Logic must inherently pipe text string blobs into OS-level `.txt` temp-files, and then force Native Mobile "Share Sheet" dialog boxes. This allows field-test operators to instantly forward debug files through WeChat, WhatsApp, or Outlook to hardware teams.
+* **Desktop (Electron / Tauri)**
+  - Logic must utilize operating system `File Save Dialog (Save-As)` GUIs, forcing heavy binary or NDJSON writes directly back to C-Drive permanent storage buffers for limitless analytical deep-tracing during heavy validation runs.
