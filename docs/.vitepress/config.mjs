@@ -78,6 +78,7 @@ export default withMermaid(
                 { text: 'Release Regression Checklist', link: '/en/test-checklist' },
                 { text: 'Smart BLE FAQ', link: '/en/BLE_FAQ' },
                 { text: 'WeChat Mini Program Pitfalls', link: '/en/wechat-pitfalls' },
+                { text: 'Global I18n Standards', link: '/en/I18N_GUIDELINES' },
                 { text: 'Contributing Guide', link: '/en/CONTRIBUTING_GUIDE' }
               ]
             }
@@ -201,6 +202,7 @@ export default withMermaid(
             { text: '发版前回归测试天书', link: '/test-checklist' },
             { text: '开发大盘百问百科 (FAQ)', link: '/BLE_FAQ' },
             { text: '微信开发特例与隐蔽大坑', link: '/wechat-pitfalls' },
+            { text: '国际化 (I18n) 标准化协议', link: '/I18N_GUIDELINES' },
             { text: '社区贡献指北 (Contributing)', link: '/CONTRIBUTING_GUIDE' }
           ]
         }
