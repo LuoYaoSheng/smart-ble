@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import '../../core/ble/ble_manager.dart';
 import '../../core/ble/command_queue.dart';
 import '../../core/models/ble_service.dart';
@@ -108,18 +107,21 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
         _bleManager.connectionStatesStream.listen((states) {
       if (!mounted) return;
 
-      final state = states[widget.deviceId];
-      final connected = state == BluetoothConnectionState.connected;
-      final reconnecting = !connected &&
+      final connectionState = _bleManager.connectionStateFor(widget.deviceId);
+      final isConnected = connectionState == BleConnectionState.connected;
+      final isDisconnected = connectionState == BleConnectionState.disconnected || 
+                            connectionState == BleConnectionState.disconnecting;
+      
+      final reconnecting = !isConnected &&
           !_bleManager.isDeviceConnected(widget.deviceId) &&
           _isConnected; // 之前是连接状态，现在断开了 → 可能在重连
 
       setState(() {
-        _isConnected = connected;
+        _isConnected = isConnected;
         _isReconnecting = reconnecting;
       });
 
-      if (state == BluetoothConnectionState.disconnected && !_isReconnecting) {
+      if (isDisconnected && !_isReconnecting) {
         logger.error('连接已断开');
       }
     });

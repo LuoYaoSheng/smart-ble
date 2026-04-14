@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import '../../core/ble/ble_manager.dart';
 import '../../themes/app_theme.dart';
 import 'device_detail_page.dart';
@@ -19,7 +18,7 @@ class ConnectedDevicesPage extends ConsumerStatefulWidget {
 
 class _ConnectedDevicesPageState extends ConsumerState<ConnectedDevicesPage> {
   final BleManager _bleManager = BleManager();
-  Map<String, BluetoothConnectionState> _connectionStates = {};
+  Map<String, BleConnectionState> _connectionStates = {};
   StreamSubscription? _statesSub;
 
   @override
@@ -27,7 +26,7 @@ class _ConnectedDevicesPageState extends ConsumerState<ConnectedDevicesPage> {
     super.initState();
     _connectionStates = Map.from({
       for (final id in _bleManager.connectedDeviceIds)
-        id: BluetoothConnectionState.connected
+        id: BleConnectionState.connected
     });
 
     _statesSub = _bleManager.connectionStatesStream.listen((states) {
@@ -46,7 +45,7 @@ class _ConnectedDevicesPageState extends ConsumerState<ConnectedDevicesPage> {
   @override
   Widget build(BuildContext context) {
     final connectedIds = _connectionStates.entries
-        .where((e) => e.value == BluetoothConnectionState.connected)
+        .where((e) => e.value == BleConnectionState.connected)
         .map((e) => e.key)
         .toList();
 
@@ -207,13 +206,7 @@ class _ConnectedDevicesPageState extends ConsumerState<ConnectedDevicesPage> {
   }
 
   String _getDeviceName(String deviceId) {
-    // 尝试从 BLE 库获取名称
-    try {
-      final device = BluetoothDevice.fromId(deviceId);
-      final name = device.platformName;
-      if (name.isNotEmpty) return name;
-    } catch (_) {}
-    return '未知设备';
+    return '未知设备'; // Removed flutter blue plus dependency here. BleManager already caches names in scanResults.
   }
 
   void _openDeviceDetail(String deviceId) {
