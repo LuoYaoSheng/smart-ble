@@ -157,27 +157,27 @@ features:
 
 <div class="contribution-section">
   <div class="contrib-header">
-    <h2>🎯 分角色极速进阶指南 (角色锚定)</h2>
-    <p class="contrib-subtitle">无论您的核心技术栈是什么，都能在此利用现有代码快速跑通蓝牙全栈逻辑</p>
+    <h2>🎯 分角色导航体系 (Role-Based Routing)</h2>
+    <p class="contrib-subtitle">一款真正落地的蓝牙产品不仅是代码，还关乎跨团队协作与知识解耦</p>
   </div>
   <div class="contrib-grid">
-    <a class="contrib-card" href="/tutorials/hardware/01_Hardware_Philosophy">
-      <div class="contrib-icon">🔩</div>
-      <div class="contrib-name">我是硬件工程师</div>
-      <div class="contrib-desc">不熟悉移动端发开？没关系。参阅包含 ESP32 / nRF52 源码的文档，学习 18-Byte 高效控制帧，观察下位机如何与各种现代 APP 零延迟对接，快速打通全栈交互。</div>
-      <div class="contrib-btn">从硬件视角切入 →</div>
+    <a class="contrib-card" href="/tutorials/01_introduction_and_setup">
+      <div class="contrib-icon">👔</div>
+      <div class="contrib-name">我是产品经理/架构师</div>
+      <div class="contrib-desc">不懂底层代码？利用现成提供的桌面和移动端 APP 获取直观感受。快速了解低功耗蓝牙 (BLE) 的业务能力边界、纯广播生态场景，以极速推进产品可行性验证与交互设计。</div>
+      <div class="contrib-btn">建立全盘认知 →</div>
     </a>
     <a class="contrib-card" href="/MASTER_ARCHITECTURE">
-      <div class="contrib-icon">📱</div>
-      <div class="contrib-name">我是前端/跨平台开发者</div>
-      <div class="contrib-desc">渴望一套代码多端运行？探索本架构在 Flutter 与 UniApp 中的全局状态树设计（SSOT）、防抖拦截队列，以及微信小程序生态内的隐私合规最佳实践。</div>
-      <div class="contrib-btn">跨平台架构指南 →</div>
+      <div class="contrib-icon">💻</div>
+      <div class="contrib-name">我是应用端开发工程师</div>
+      <div class="contrib-desc">面临多端碎片化？无论是 Flutter、UniApp 还是原生开发者，深入探索状态同步机制 (SSOT)、看门狗重连算法与全平台差异抹平方案，彻底破解跨端蓝牙协同难题。</div>
+      <div class="contrib-btn">解码应用端架构 →</div>
     </a>
-    <a class="contrib-card" href="/CORE_LOGIC_GUIDE">
-      <div class="contrib-icon">🍎</div>
-      <div class="contrib-name">我是原生开发 / 开源大侠</div>
-      <div class="contrib-desc">喜欢手写深层逻辑？深度探究 Rust / Android Kotlin / iOS Swift 的底层 WatchDog 看门狗实现，欢迎阅读贡献指南提出 PR，共建大一统蓝牙生态。</div>
-      <div class="contrib-btn">探秘底层代码与贡献 →</div>
+    <a class="contrib-card" href="/tutorials/hardware/01_Hardware_Philosophy">
+      <div class="contrib-icon">🔩</div>
+      <div class="contrib-name">我是硬件端开发工程师</div>
+      <div class="contrib-desc">苦于无法独立闭环测试？使用我们开放的 C/ESP32 下位机固件模板，学习 18字节 工业控制帧设计，无需编写任何上位机代码即可验证您的蓝牙硬件交互。</div>
+      <div class="contrib-btn">从下位机视角切入 →</div>
     </a>
   </div>
 </div>
