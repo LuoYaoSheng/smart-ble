@@ -4,6 +4,9 @@ export default defineConfig({
   title: "Smart BLE",
   description: "跨平台低功耗蓝牙调试工具与大一统测试库，覆盖 Flutter / Tauri / UniApp / iOS / Android 全端生态",
   base: '/',
+  ignoreDeadLinks: true,
+  lastUpdated: true,
+
 
   // ═══ SEO 与社交元数据全装甲 ═══
   head: [
