@@ -147,8 +147,9 @@ export default withMermaid(
           ]
         },
         {
-          text: '🔬 附录：自动化测试与疑难杂症',
+          text: '🔬 附录与开源社区 (Community)',
           items: [
+            { text: '🗺️ 官方开源演进路线图 (ROADMAP)', link: '/ROADMAP' },
             { text: '端到端 Mock 模拟联调指导', link: '/E2E_MOCK_INSTRUCTIONS' },
             { text: '发版前回归测试天书', link: '/test-checklist' },
             { text: '开发大盘百问百科 (FAQ)', link: '/BLE_FAQ' },
