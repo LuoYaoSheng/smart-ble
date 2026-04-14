@@ -66,6 +66,7 @@ export default withMermaid(
                 { text: 'Full-Stack Architecture (MASTER)', link: '/en/MASTER_ARCHITECTURE' },
                 { text: 'Cross Platform BLE APIs', link: '/en/CROSS_PLATFORM_BLE_GUIDE' },
                 { text: 'E2E Defenses & WatchDog', link: '/en/CORE_LOGIC_GUIDE' },
+                { text: 'Logging Specs & Exportation (NEW)', link: '/en/LOGGING_SPEC' },
                 { text: 'UI Components Strategy', link: '/en/UI_COMPONENTS_GUIDE' },
                 { text: 'Component Interaction Spec', link: '/en/COMPONENT_INTERACTION_SPEC' }
               ]
@@ -190,6 +191,7 @@ export default withMermaid(
             { text: '全栈跨端架构蓝图 (MASTER)', link: '/MASTER_ARCHITECTURE' },
             { text: '跨框架 BLE API 全景映射', link: '/CROSS_PLATFORM_BLE_GUIDE' },
             { text: '端到端防御性队列与 WatchDog', link: '/CORE_LOGIC_GUIDE' },
+            { text: '跨端蓝牙日志抓取与导出规范 (NEW)', link: '/LOGGING_SPEC' },
             { text: '跨平台 UI 与组件流转规约', link: '/UI_COMPONENTS_GUIDE' },
             { text: '核心业务数据中台交互', link: '/COMPONENT_INTERACTION_SPEC' }
           ]
