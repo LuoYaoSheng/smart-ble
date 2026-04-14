@@ -1,0 +1,13 @@
+[package]
+name = "smart-ble-protocol-parser"
+version = "1.0.0"
+edition = "2021"
+authors = ["Smart BLE Community"]
+description = "SSOT core 18-Byte protocol parser for all Smart BLE frontends (via WASM/FFI)"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+wasm-bindgen = "0.2"
+crc = "3.0.0"
