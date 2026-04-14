@@ -157,27 +157,27 @@ features:
 
 <div class="contribution-section">
   <div class="contrib-header">
-    <h2>🛠️ 二次开发与开源建构指南</h2>
-    <p class="contrib-subtitle">项目底层架构完全开放，学习研究与二开接入的知识金矿</p>
+    <h2>🎯 分角色极速进阶指南 (角色锚定)</h2>
+    <p class="contrib-subtitle">无论您的核心技术栈是什么，都能在此利用现有代码快速跑通蓝牙全栈逻辑</p>
   </div>
   <div class="contrib-grid">
-    <a class="contrib-card" href="/CONTRIBUTING_GUIDE">
-      <div class="contrib-icon">🤝</div>
-      <div class="contrib-name">社区贡献指北 (Contributing)</div>
-      <div class="contrib-desc">查阅代码规范、分支管理及参与开源项目共建的最佳实践路径。</div>
-      <div class="contrib-btn">开始参与 →</div>
+    <a class="contrib-card" href="/tutorials/hardware/01_Hardware_Philosophy">
+      <div class="contrib-icon">🔩</div>
+      <div class="contrib-name">我是硬件工程师</div>
+      <div class="contrib-desc">不熟悉移动端发开？没关系。参阅包含 ESP32 / nRF52 源码的文档，学习 18-Byte 高效控制帧，观察下位机如何与各种现代 APP 零延迟对接，快速打通全栈交互。</div>
+      <div class="contrib-btn">从硬件视角切入 →</div>
     </a>
     <a class="contrib-card" href="/MASTER_ARCHITECTURE">
-      <div class="contrib-icon">🧭</div>
-      <div class="contrib-name">核心架构白皮书</div>
-      <div class="contrib-desc">透视跨平台大一统状态树、UI 流转规则与七大框架同宗同源的架构艺术。</div>
-      <div class="contrib-btn">阅读白皮书 →</div>
+      <div class="contrib-icon">📱</div>
+      <div class="contrib-name">我是前端/跨平台开发者</div>
+      <div class="contrib-desc">渴望一套代码多端运行？探索本架构在 Flutter 与 UniApp 中的全局状态树设计（SSOT）、防抖拦截队列，以及微信小程序生态内的隐私合规最佳实践。</div>
+      <div class="contrib-btn">跨平台架构指南 →</div>
     </a>
     <a class="contrib-card" href="/CORE_LOGIC_GUIDE">
-      <div class="contrib-icon">⚙️</div>
-      <div class="contrib-name">底层特征栈探索手册</div>
-      <div class="contrib-desc">深度解析 WatchDog 看门狗、防抖风暴拦截队列与极端场景优化手段。</div>
-      <div class="contrib-btn">进阶深潜 →</div>
+      <div class="contrib-icon">🍎</div>
+      <div class="contrib-name">我是原生开发 / 开源大侠</div>
+      <div class="contrib-desc">喜欢手写深层逻辑？深度探究 Rust / Android Kotlin / iOS Swift 的底层 WatchDog 看门狗实现，欢迎阅读贡献指南提出 PR，共建大一统蓝牙生态。</div>
+      <div class="contrib-btn">探秘底层代码与贡献 →</div>
     </a>
   </div>
 </div>
