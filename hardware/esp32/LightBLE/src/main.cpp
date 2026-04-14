@@ -532,6 +532,47 @@ class AllCallbacks: public NimBLECharacteristicCallbacks {
     }
 };
 
+// ----------------------------------------------------
+// PHASE 6: 零延迟无连接广播窃听者 (Broadcast Observer)
+// ----------------------------------------------------
+class BroadcastScanCallbacks: public NimBLEScanCallbacks {
+    void onResult(NimBLEAdvertisedDevice* advertisedDevice) {
+        // 核心：拦截特定厂商数据的 ManufacturerData (劫持法)
+        if(advertisedDevice->haveManufacturerData()) {
+            std::string strManufacturerData = advertisedDevice->getManufacturerData();
+            uint8_t* payload = (uint8_t*)strManufacturerData.data();
+            size_t length = strManufacturerData.length();
+            
+            // 我们在架构中规定 Vendor ID 为 0x0A00 (小端序为 [0x00, 0x0A])
+            if(length >= 4 && payload[0] == 0x00 && payload[1] == 0x0A) {
+                uint8_t cmd = payload[2];
+                
+                // CMD 0x01: 统一切换开关 (Toggle)
+                if (cmd == 0x01 && length >= 4) {
+                    uint8_t state = payload[3];
+                    blinkPattern = state == 0 ? 0 : 1;
+                    digitalWrite(LED_PIN, state == 0 ? LOW : HIGH);
+                    Serial.printf("🚀 [Broadcast Intercept] Toggle Command: %d\n", state);
+                } 
+                // CMD 0x02: 氛围灯无级调色 (RGB)
+                else if (cmd == 0x02 && length >= 6) {
+                    uint8_t r = payload[3];
+                    uint8_t g = payload[4];
+                    uint8_t b = payload[5];
+                    Serial.printf("🌈 [Broadcast Intercept] RGB Update: %d, %d, %d\n", r, g, b);
+                    // 模拟硬件 PWM 输出反应，RGB任意值大于0则使其变为快闪生态
+                    if(r > 0 || g > 0 || b > 0) {
+                        blinkPattern = 2; // 快闪
+                    } else {
+                        blinkPattern = 0; // 熄灭
+                        digitalWrite(LED_PIN, LOW);
+                    }
+                }
+            }
+        }
+    }
+};
+
 void setup() {
     Serial.begin(115200);
     Serial.println("Starting BLE Server...");
@@ -686,6 +727,21 @@ void setup() {
     NimBLEDevice::startAdvertising();
 
     Serial.println("BLE Server is ready!");
+
+    // ----------------------------------------------------
+    // PHASE 6: 激活窃听阵列 (Active Scan Engine)
+    // 允许我们在不连接蓝牙的情况下，直接控制硬件集群！
+    // ----------------------------------------------------
+    NimBLEScan* pScan = NimBLEDevice::getScan();
+    // false = 不需要重复调用相同设备的扫描，只要 ManufacturerData 变了触发即可，但为了保证流畅可以设为 false 并在外部节流。
+    // 我们在此设为 false（防止日志爆炸），依赖前端手机端 100ms 下发更新 MAC 序列或直接强制 true 走底层
+    pScan->setScanCallbacks(new BroadcastScanCallbacks(), false);
+    pScan->setActiveScan(true); 
+    pScan->setInterval(97); // 适合与 Server 共存的间隙
+    pScan->setWindow(37);
+    pScan->start(0, nullptr, false); // 0 = 永久后台窃听
+
+    Serial.println("🛸 BLE Broadcast Observer Matrix activated - Standing by for connectionless commands!");
 }
 
 void loop() {

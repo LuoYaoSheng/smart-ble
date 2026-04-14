@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import '../models/ble_service.dart';
 import '../models/ble_scan_result.dart' as models;
+import '../utils/logger.dart';
 import 'ble_manager.dart';
 
 /// 模拟虚拟外设环境 (Mock Environment)
@@ -170,6 +171,7 @@ class MockBleAdapter implements BleManager {
   @override
   Future<void> writeCharacteristic({required String deviceId, required String serviceUuid, required String characteristicUuid, required List<int> data, bool withoutResponse = false}) async {
     debugPrint("[MOCK] writing to $characteristicUuid: $data");
+    logger.send("MOCK_WRITE: $data");
     await Future.delayed(const Duration(milliseconds: 100));
   }
 

@@ -227,7 +227,7 @@ class FlutterBlueAdapter implements BleManager {
     await device.requestMtu(desiredMtu);
   }
 
-  BluetoothGattCharacteristic _getChar(String deviceId, String serviceUuid, String characteristicUuid) {
+  BluetoothCharacteristic _getChar(String deviceId, String serviceUuid, String characteristicUuid) {
     final device = BluetoothDevice.fromId(deviceId);
     final service = device.servicesList.firstWhere((s) => s.uuid.toString().toLowerCase() == serviceUuid.toLowerCase());
     return service.characteristics.firstWhere((c) => c.uuid.toString().toLowerCase() == characteristicUuid.toLowerCase());
