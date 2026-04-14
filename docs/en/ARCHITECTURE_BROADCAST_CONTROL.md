@@ -55,12 +55,20 @@ class BroadcastThrottler {
 
 ---
 
-## 3. Peripheral Hardware: Observer Mode
+## 3. Peripheral Hardware: Observer Mode & Hardware Tiers
 
-Historically, cheap microcontrollers act strictly as slaves/peripherals waiting to be connected. In the Smart BLE ecosystem, end-node MCU logic **MUST** implement active Scanning / Observer capabilities!
+Within the Smart BLE ecology, to maintain backward compatibility with various low-cost hardware architectures while still providing top-tier IoT capabilities, hardware implementations are divided into **Two Primary Compatibility Tiers**:
 
-1. **Hardware Selection**: Highly recommend upgrading to `ESP32` or `STM32WB`, or issuing `AT+ROLE=1` (Central Observer Mode) on modules like `JDY-24`.
-2. **Deep Filter Logic**: Embedded C modules will completely ignore standard Serial AT pass-throughs.
+### Tier A: Native Wireless SOCs (e.g., ESP32 / STM32WBA) -> Supports Zero-Latency Broadcast Hijacking
+Only SOCs with native access to the BLE baseband stack can activate **Scan / Observer** capabilities while simultaneously keeping normal profiles active. 
+Within our official reference firmwares (`hardware/esp32/LightBLE/src/main.cpp`), this is fully realized. We seamlessly intercept any packet containing the `0xABCD` signature via `NimBLEScanCallbacks`. This forces hundreds of separate IoT devices to update their PWM RGB colors simultaneously in zero latency, entirely skipping the GATT handshakes payload overhead.
+
+### Tier B: MCU + Transparent UART Modules (e.g., STM32F103 + JDY-23) -> Standard GATT Connection Control
+Traditional dual-board architectural designs (like our official `hardware/stm32/BlePeripheralMock` mock project) rely on black-boxed UART modules. **These modules fundamentally lack the physical capability to sniff environmental manufacturer data**. 
+For this class of hardware, Smart BLE safely degrades to **Standard Point-to-Point Connection Protocols**. While they cannot participate in the synchronized mass Broadcast logic physically, once a mobile application connects to them directly, they perfectly map and comprehend the identical protocol commands (e.g., parsing traditional `0x02, R, G, B` payloads locally in C).
+
+### Deep Filter Logic (For Tier A Devices)
+Embedded C modules will completely ignore standard Serial AT pass-throughs when adopting the Observer strategy:
    
 ```c
 // Hardware C-Level Intercept Interrupt

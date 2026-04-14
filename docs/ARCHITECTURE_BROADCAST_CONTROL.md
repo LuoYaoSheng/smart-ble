@@ -55,15 +55,20 @@ class BroadcastThrottler {
 
 ---
 
-## 3. 硬件下位机：无极窃听者架构
+## 3. 硬件下位机：无极窃听者架构与硬件分水岭 (Hardware Compatibility)
 
-以往的单片机硬件是被连接端 (`Slave/Peripheral`)。
-现在的单片机模块，**必须具备 Scan / Observer (观察者) 能力！**
+在 Smart BLE 生态中，为了兼容不同成本和性能的下位机硬件，我们在硬件接收端划分了 **两大阵营 (Tiered Compatibility Strategy)**：
 
-传统廉价版 `JDY-23` 出厂被封住了 Scan 的能力。我们推荐未来这套打法必须：
-1. **模块升级**：使用 `ESP32`、`STM32WB`，或者在 `JDY-24` 上发送 `AT+ROLE=1` (设为主机观察模式)。
-2. **底层过滤逻辑改造** (`Protocols/`)：
-   在单片机 C 语言端，我们将不再接收串口里的透传点对点信息。
+### 阵营 A: 原生无线芯片 (如 ESP32 / STM32WBA) -> 支持零延迟广播群控
+只有具备自持射频基带 (Baseband) 的硬件，单片机才能直接在蓝牙等待模式下开启 **Scan / Observer (观察者)** 能力。
+我们在项目自带的 `hardware/esp32/LightBLE/src/main.cpp` 中已全面实现：通过 `NimBLEScanCallbacks` 静默拦截带有 `0xABCD` 前缀的 Manufacturer Specific Data 帧。让上百盏灯无需建立连接，瞬间解析出 RGB 并驱动 PWM 同步变色，这是该架构最高级的商用体现。
+
+### 阵营 B: 独立主控+透传天线模块 (如 STM32F103 + JDY-23) -> 仅支持经典 GATT 连接控制
+传统的双模拼接板架构（如我们官方演示工程 `hardware/stm32/BlePeripheralMock`）中，蓝牙模块 (JDY-23 等) 出厂固件被焊死，**物理层级上不支持向下位机主控开放外界环境的广播窃听数据流**。
+针对这类下位机，Smart BLE 生态框架会自动使其降级为“标准点对点网络”。它们**物理上无法参与**零延迟广播矩阵，但在手机主控单一配对连上后，仍旧能通过内部 C 协议解析器正常吃掉相同的控制协议包（常规下发的 `0x02, R, G, B` 发包）。
+
+### 底层过滤改造代码示例 (针对阵营 A芯片)
+在单片机 C 语言端，将截获点对点数据，映射为主机观察者模式：
 ```c
 // 硬件 C 层中断截获
 void on_ble_adv_report_scanned(BleAdvReport* report) {
