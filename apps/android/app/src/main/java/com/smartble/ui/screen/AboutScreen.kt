@@ -385,6 +385,19 @@ fun LinkSection() {
                 )
             }
         )
+
+        LinkItem(
+            icon = Icons.Default.Description,
+            title = "官方文档门户",
+            onClick = {
+                context.startActivity(
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("http://lightble.i2kai.com/")
+                    )
+                )
+            }
+        )
     }
 }
 

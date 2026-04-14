@@ -10,6 +10,7 @@ class AboutPage extends StatelessWidget {
   static const _docsUrl =
       'https://github.com/luoyaosheng/smart-ble/tree/main/docs';
   static const _issuesUrl = 'https://github.com/luoyaosheng/smart-ble/issues';
+  static const _officialSiteUrl = 'http://lightble.i2kai.com/';
 
   @override
   Widget build(BuildContext context) {
@@ -171,6 +172,12 @@ class AboutPage extends StatelessWidget {
                   Icons.bug_report,
                   '问题反馈',
                   _issuesUrl,
+                ),
+                _buildLinkItem(
+                  context,
+                  Icons.language,
+                  '官方门户',
+                  _officialSiteUrl,
                 ),
               ],
             ),
