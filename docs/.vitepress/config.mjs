@@ -62,6 +62,7 @@ export default withMermaid(
               text: '🌌 Chapter 5: Architecture & Core',
               items: [
                 { text: 'Broadcast Ecology Blueprint', link: '/en/ARCHITECTURE_BROADCAST_CONTROL' },
+                { text: 'OTA Hardware Architecture (NEW)', link: '/en/ARCHITECTURE_OTA' },
                 { text: 'Full-Stack Architecture (MASTER)', link: '/en/MASTER_ARCHITECTURE' },
                 { text: 'Cross Platform BLE APIs', link: '/en/CROSS_PLATFORM_BLE_GUIDE' },
                 { text: 'E2E Defenses & WatchDog', link: '/en/CORE_LOGIC_GUIDE' },
@@ -184,6 +185,7 @@ export default withMermaid(
           text: '🌌 第五章：底层架构白皮书 (Architecture & Core)',
           items: [
             { text: '纯广播无极群控生态蓝图 (NEW)', link: '/ARCHITECTURE_BROADCAST_CONTROL' },
+            { text: '商业级 OTA 与固件分发架构 (NEW)', link: '/ARCHITECTURE_OTA' },
             { text: '全栈跨端架构蓝图 (MASTER)', link: '/MASTER_ARCHITECTURE' },
             { text: '跨框架 BLE API 全景映射', link: '/CROSS_PLATFORM_BLE_GUIDE' },
             { text: '端到端防御性队列与 WatchDog', link: '/CORE_LOGIC_GUIDE' },
