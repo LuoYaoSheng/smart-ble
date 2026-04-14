@@ -9,6 +9,34 @@ export default withMermaid(
     ignoreDeadLinks: true,
     lastUpdated: true,
 
+    // ═══ 国际化 (i18n) / 多语言支持 ═══
+    locales: {
+      root: {
+        label: '简体中文',
+        lang: 'zh-CN'
+      },
+      en: {
+        label: 'English',
+        lang: 'en-US',
+        link: '/en/',
+        themeConfig: {
+          nav: [
+            { text: 'Home', link: '/en/' },
+            { text: 'Getting Started', link: '/en/tutorials/01_introduction_and_setup' },
+            { text: 'Architecture Master', link: '/en/MASTER_ARCHITECTURE' }
+          ],
+          sidebar: [
+            {
+              text: 'Welcome',
+              items: [
+                { text: 'Introduction', link: '/en/tutorials/01_introduction_and_setup' }
+              ]
+            }
+          ]
+        }
+      }
+    },
+
     // ═══ SEO 与社交元数据全装甲 ═══
     head: [
       // Favicon
