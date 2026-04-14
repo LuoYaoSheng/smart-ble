@@ -48,7 +48,7 @@ features:
 
   <div class="platform-grid">
     <div class="platform-card flutter">
-      <div class="platform-icon">🐦</div>
+      <div class="platform-icon"><img src="https://cdn.simpleicons.org/flutter/54c5f8" style="height: 36px; width: 36px;" /></div>
       <div class="platform-name">Flutter</div>
       <div class="platform-lang">Dart + Riverpod</div>
       <div class="platform-badge primary">主力平台</div>
@@ -60,7 +60,7 @@ features:
       </div>
     </div>
     <div class="platform-card tauri">
-      <div class="platform-icon">🦀</div>
+      <div class="platform-icon"><img src="https://cdn.simpleicons.org/rust/ff8c00" style="height: 36px; width: 36px;" /></div>
       <div class="platform-name">Tauri / Rust</div>
       <div class="platform-lang">Rust + btleplug</div>
       <div class="platform-badge primary">主力平台</div>
@@ -72,7 +72,7 @@ features:
       </div>
     </div>
     <div class="platform-card android">
-      <div class="platform-icon">🤖</div>
+      <div class="platform-icon"><img src="https://cdn.simpleicons.org/android/3ddc84" style="height: 36px; width: 36px;" /></div>
       <div class="platform-name">Android</div>
       <div class="platform-lang">Kotlin + Compose</div>
       <div class="platform-badge primary">主力平台</div>
@@ -84,7 +84,7 @@ features:
       </div>
     </div>
     <div class="platform-card ios">
-      <div class="platform-icon">🍎</div>
+      <div class="platform-icon"><img src="https://cdn.simpleicons.org/apple/6e6e73" style="height: 36px; width: 36px;" /></div>
       <div class="platform-name">iOS / macOS</div>
       <div class="platform-lang">Swift + CoreBluetooth</div>
       <div class="platform-badge primary">主力平台</div>
@@ -96,7 +96,7 @@ features:
       </div>
     </div>
     <div class="platform-card uniapp">
-      <div class="platform-icon">📱</div>
+      <div class="platform-icon"><img src="https://cdn.simpleicons.org/vue.js/43a048" style="height: 36px; width: 36px;" /></div>
       <div class="platform-name">UniApp / 微信</div>
       <div class="platform-lang">Vue + uni-app</div>
       <div class="platform-badge primary">主力平台</div>
@@ -108,7 +108,7 @@ features:
       </div>
     </div>
     <div class="platform-card hardware">
-      <div class="platform-icon">🔩</div>
+      <div class="platform-icon"><img src="https://cdn.simpleicons.org/c/ff6b35" style="height: 36px; width: 36px;" /></div>
       <div class="platform-name">硬件 SDK</div>
       <div class="platform-lang">C / ESP32 / nRF52840</div>
       <div class="platform-badge hardware-badge">硬件生态</div>
@@ -129,25 +129,25 @@ features:
   </div>
   <div class="dl-grid">
     <a class="dl-card" href="https://github.com/luoyaosheng/smart-ble/releases/latest" target="_blank">
-      <div class="dl-icon">🤖</div>
+      <div class="dl-icon"><img src="https://cdn.simpleicons.org/android/3ddc84" style="height: 40px; width: 40px;" /></div>
       <div class="dl-name">Android APK</div>
       <div class="dl-desc">支持 Android 6.0+<br>开箱即用 · BLE 全功能</div>
       <div class="dl-btn">立即下载 →</div>
     </a>
     <a class="dl-card" href="https://github.com/luoyaosheng/smart-ble/releases/latest" target="_blank">
-      <div class="dl-icon">🦀</div>
+      <div class="dl-icon"><img src="https://cdn.simpleicons.org/windows/0078D6" style="height: 40px; width: 40px;" /></div>
       <div class="dl-name">Windows 桌面版</div>
       <div class="dl-desc">Tauri 原生打包<br>极轻体积 · 持久连接</div>
       <div class="dl-btn">立即下载 →</div>
     </a>
     <a class="dl-card" href="https://github.com/luoyaosheng/smart-ble/releases/latest" target="_blank">
-      <div class="dl-icon">🍎</div>
+      <div class="dl-icon"><img src="https://cdn.simpleicons.org/apple/6e6e73" style="height: 40px; width: 40px;" /></div>
       <div class="dl-name">macOS 应用</div>
       <div class="dl-desc">Tauri / 原生 Swift 双版<br>支持 M1/M2/Intel</div>
       <div class="dl-btn">立即下载 →</div>
     </a>
     <a class="dl-card source" href="https://github.com/luoyaosheng/smart-ble" target="_blank">
-      <div class="dl-icon">📦</div>
+      <div class="dl-icon"><img src="https://cdn.simpleicons.org/github/181717" style="height: 40px; width: 40px;" /></div>
       <div class="dl-name">源码 (GitHub)</div>
       <div class="dl-desc">MIT 开源协议<br>Star ⭐ 支持项目成长</div>
       <div class="dl-btn">查看仓库 →</div>
