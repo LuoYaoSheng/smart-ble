@@ -26,13 +26,58 @@ export default withMermaid(
           nav: [
             { text: 'Home', link: '/en/' },
             { text: 'Getting Started', link: '/en/tutorials/01_introduction_and_setup' },
-            { text: 'Architecture Master', link: '/en/MASTER_ARCHITECTURE' }
+            { text: 'API & Architecture', link: '/en/MASTER_ARCHITECTURE' }
           ],
           sidebar: [
             {
-              text: 'Welcome',
+              text: '📘 Chapter 1: Introduction',
               items: [
-                { text: 'Introduction', link: '/en/tutorials/01_introduction_and_setup' }
+                { text: 'What is Smart BLE?', link: '/en/tutorials/01_introduction_and_setup' }
+              ]
+            },
+            {
+              text: '🖥️ Chapter 2: User Guide',
+              items: [
+                { text: 'Advanced Broadcast ecosystem', link: '/en/tutorials/02_advanced_usage_and_broadcast' }
+              ]
+            },
+            {
+              text: '🛠️ Chapter 3: Developer Guide',
+              items: [
+                { text: 'Flutter Compilation & Permissions', link: '/en/tutorials/platforms/flutter' },
+                { text: 'UniApp Privacy Handing', link: '/en/tutorials/platforms/uniapp' },
+                { text: 'Tauri & Electron Setup', link: '/en/tutorials/platforms/desktop' },
+                { text: 'iOS/Android Native Base', link: '/en/tutorials/platforms/native_mobile' }
+              ]
+            },
+            {
+              text: '🔩 Chapter 4: Hardware SDK',
+              items: [
+                { text: 'Dual-Chip Hardware Philosophy', link: '/en/tutorials/hardware/01_Hardware_Philosophy' },
+                { text: 'C Architecture Specification', link: '/en/tutorials/hardware/02_C_Architecture' },
+                { text: 'Zero Delay Protocol WatchDog', link: '/en/tutorials/hardware/03_Zero_Delay_Protocol' }
+              ]
+            },
+            {
+              text: '🌌 Chapter 5: Architecture & Core',
+              items: [
+                { text: 'Broadcast Ecology Blueprint', link: '/en/ARCHITECTURE_BROADCAST_CONTROL' },
+                { text: 'Full-Stack Architecture (MASTER)', link: '/en/MASTER_ARCHITECTURE' },
+                { text: 'Cross Platform BLE APIs', link: '/en/CROSS_PLATFORM_BLE_GUIDE' },
+                { text: 'E2E Defenses & WatchDog', link: '/en/CORE_LOGIC_GUIDE' },
+                { text: 'UI Components Strategy', link: '/en/UI_COMPONENTS_GUIDE' },
+                { text: 'Component Interaction Spec', link: '/en/COMPONENT_INTERACTION_SPEC' }
+              ]
+            },
+            {
+              text: '🔬 Appendix & Community',
+              items: [
+                { text: '🗺️ Official OSS Roadmap (ROADMAP)', link: '/en/ROADMAP' },
+                { text: 'E2E Mock Instruction', link: '/en/E2E_MOCK_INSTRUCTIONS' },
+                { text: 'Release Regression Checklist', link: '/en/test-checklist' },
+                { text: 'Smart BLE FAQ', link: '/en/BLE_FAQ' },
+                { text: 'WeChat Mini Program Pitfalls', link: '/en/wechat-pitfalls' },
+                { text: 'Contributing Guide', link: '/en/CONTRIBUTING_GUIDE' }
               ]
             }
           ]
