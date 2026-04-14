@@ -6,3 +6,12 @@
   --vp-c-brand-dark: #0056cc;
   --vp-c-brand-darker: #003d99;
 }
+
+/* 修复 Mermaid 复杂架构图在不同屏幕尺寸下超出边界的问题 */
+.mermaid {
+  overflow-x: auto;
+  max-width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 1.5rem 0;
+}

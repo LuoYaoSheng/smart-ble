@@ -99,7 +99,7 @@ features:
       <div class="platform-icon">📱</div>
       <div class="platform-name">UniApp / 微信</div>
       <div class="platform-lang">Vue + uni-app</div>
-      <div class="platform-badge secondary">次要平台</div>
+      <div class="platform-badge primary">主力平台</div>
       <div class="platform-features">
         <span>✅ 微信小程序 BLE</span>
         <span>✅ H5/APP 兼容</span>
@@ -155,6 +155,33 @@ features:
   </div>
 </div>
 
+<div class="contribution-section">
+  <div class="contrib-header">
+    <h2>🛠️ 二次开发与开源建构指南</h2>
+    <p class="contrib-subtitle">项目底层架构完全开放，学习研究与二开接入的知识金矿</p>
+  </div>
+  <div class="contrib-grid">
+    <a class="contrib-card" href="/CONTRIBUTING_GUIDE">
+      <div class="contrib-icon">🤝</div>
+      <div class="contrib-name">社区贡献指北 (Contributing)</div>
+      <div class="contrib-desc">查阅代码规范、分支管理及参与开源项目共建的最佳实践路径。</div>
+      <div class="contrib-btn">开始参与 →</div>
+    </a>
+    <a class="contrib-card" href="/MASTER_ARCHITECTURE">
+      <div class="contrib-icon">🧭</div>
+      <div class="contrib-name">核心架构白皮书</div>
+      <div class="contrib-desc">透视跨平台大一统状态树、UI 流转规则与七大框架同宗同源的架构艺术。</div>
+      <div class="contrib-btn">阅读白皮书 →</div>
+    </a>
+    <a class="contrib-card" href="/CORE_LOGIC_GUIDE">
+      <div class="contrib-icon">⚙️</div>
+      <div class="contrib-name">底层特征栈探索手册</div>
+      <div class="contrib-desc">深度解析 WatchDog 看门狗、防抖风暴拦截队列与极端场景优化手段。</div>
+      <div class="contrib-btn">进阶深潜 →</div>
+    </a>
+  </div>
+</div>
+
 <style>
 /* ── 平台生态图谱 ── */
 .ecosystem-section {
@@ -168,8 +195,8 @@ features:
 
 .platform-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
 }
 .platform-card {
   border-radius: 16px;
@@ -264,10 +291,49 @@ features:
 .dl-card:hover .dl-btn { opacity: 0.88; }
 .dl-card.source .dl-btn { background: #42b883; }
 
+/* ── 二次开发 / 贡献专区 ── */
+.contribution-section {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+.contrib-header { text-align: center; margin-bottom: 40px; }
+.contrib-header h2 { font-size: 2rem; font-weight: 700; margin-bottom: 12px; }
+.contrib-subtitle { color: var(--vp-c-text-2); font-size: 1.05rem; }
+
+.contrib-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.contrib-card {
+  display: flex; flex-direction: column;
+  padding: 32px 24px;
+  border-radius: 12px;
+  border: 1px solid var(--vp-c-divider);
+  background: var(--vp-c-bg-soft);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.22s ease, border-color 0.22s ease;
+}
+.contrib-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--vp-c-brand-1);
+}
+.contrib-icon { font-size: 2.2rem; margin-bottom: 16px; }
+.contrib-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; }
+.contrib-desc { font-size: 0.85rem; color: var(--vp-c-text-2); line-height: 1.6; flex: 1; }
+.contrib-btn { font-size: 0.88rem; font-weight: 600; color: var(--vp-c-brand-1); margin-top: 24px; }
+
 /* 响应式 */
-@media (max-width: 640px) {
+@media (max-width: 900px) {
   .platform-grid { grid-template-columns: repeat(2, 1fr); }
-  .dl-grid { grid-template-columns: repeat(2, 1fr); }
-  .eco-header h2, .dl-header h2 { font-size: 1.5rem; }
+  .contrib-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .platform-grid { grid-template-columns: 1fr; }
+  .dl-grid { grid-template-columns: 1fr; }
+  .contrib-grid { grid-template-columns: 1fr; }
+  .eco-header h2, .dl-header h2, .contrib-header h2 { font-size: 1.5rem; }
 }
 </style>

@@ -818,7 +818,7 @@ flowchart TD
     LOC_RESULT -->|允许| PROCEED[继续操作]
     LOC_OK -->|是| PROCEED
 
-    PLATFORM -->|Android (APP-PLUS)| CHK_ANDROID[检查运行时权限]
+    PLATFORM -->|"Android (APP-PLUS)"| CHK_ANDROID[检查运行时权限]
     CHK_ANDROID -->|Android 12+| NEED_NEW[BLUETOOTH_SCAN, BLUETOOTH_CONNECT,<br/>BLUETOOTH_ADVERTISE, ACCESS_FINE_LOCATION]
     CHK_ANDROID -->|Android 11及以下| NEED_OLD[BLUETOOTH, BLUETOOTH_ADMIN,<br/>ACCESS_FINE_LOCATION]
     NEED_NEW --> REQ_PERM[plus.android.requestPermissions]
