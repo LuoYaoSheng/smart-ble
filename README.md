@@ -1,33 +1,28 @@
-# Smart BLE Toolkit+ 🚀
+# Smart BLE
 
 [![Windows Version](https://img.shields.io/badge/Windows-Download-blue?style=for-the-badge&logo=windows)](https://github.com/luoyaosheng/smart-ble/releases)
 [![macOS Version](https://img.shields.io/badge/macOS-Download-lightgrey?style=for-the-badge&logo=apple)](https://github.com/luoyaosheng/smart-ble/releases)
 [![Android Version](https://img.shields.io/badge/Android-APK-green?style=for-the-badge&logo=android)](https://github.com/luoyaosheng/smart-ble/releases)
 [![iOS TestFlight](https://img.shields.io/badge/iOS-TestFlight-black?style=for-the-badge&logo=apple)](https://github.com/luoyaosheng/smart-ble/releases)
 
-> 💡 **官方导航与全量分发矩阵** 
-> * 🌍 **项目官方主页**: [https://lightble.i2kai.com](https://lightble.i2kai.com/) (含各版本直链下载)
-> * 🟢 [快速起步与基础教案](./docs/tutorials/01_introduction_and_setup.md)
-> * 🟣 [广播放大与生态创世指引](./docs/tutorials/02_advanced_usage_and_broadcast.md)
-> * 🎬 [多平台配套实录分镜文档库](./docs/promotion/video_series/)
-> 
-> 🛠️ **多级平台独立开发指南 (Client SDK)**
-> * 🎯 [Flutter 编译与原生权限开发手册](./docs/tutorials/platforms/flutter.md)
-> * 🎯 [UniApp 隐私规避与框架开发手册](./docs/tutorials/platforms/uniapp.md)
-> * 🎯 [Tauri / Electron 桌面双核开发指南](./docs/tutorials/platforms/desktop.md)
-> * 🎯 [iOS / Android 原生应用集成专线](./docs/tutorials/platforms/native_mobile.md)
+> `Smart BLE` 是总项目名和主入口名。
 >
-> 🔩 **自研底层下位机体系 (Hardware SDK)**
-> * ⚙️ [低成本软硬双核：双芯设计哲学](./docs/tutorials/hardware/01_Hardware_Philosophy.md)
-> * ⚙️ [跨协议工业级 C 语言模块化规约](./docs/tutorials/hardware/02_C_Architecture.md)
-> * ⚙️ [系统鲁棒防灾验证与无延迟解析测试](./docs/tutorials/hardware/03_Zero_Delay_Protocol.md)
+> `BLE Toolkit+` 是微信小程序当前对外名称。
+>
+> `LightBLE` 是历史命名与旧仓库线。
+
+`smart-ble` 不是单一实现仓库，而是一个围绕 BLE 调试、教学、多平台对照和硬件联动展开的产品家族。
 
 ---
 
-> `lys: 最纯净、颜值最高的跨平台 BLE 调试工具与实践样板项目`
->
-> 覆盖微信小程序、跨平台移动、原生移动、桌面端和 C 语言下位机参考。
-> 这个仓库不是单一实现，而是一个围绕 BLE 调试、教学、多框架大一统实践展开的开源产品家族。
+## 第一次进入先看这里
+
+- 只想直接体验：访问 [项目主页](https://lightble.i2kai.com/) 或 GitHub Releases
+- 想先学 BLE 基础：先看 [快速起步与基础教案](./docs/tutorials/01_introduction_and_setup.md)
+- 想看广播、外设模式和更深入玩法：看 [进阶与广播指引](./docs/tutorials/02_advanced_usage_and_broadcast.md)
+- 想按平台选实现：直接看下方“快速选择”和各平台指南
+- 想看硬件与协议侧：从 [硬件设计哲学](./docs/tutorials/hardware/01_Hardware_Philosophy.md) 开始
+- 想先理解整体设计：看 [MASTER ARCHITECTURE](./docs/MASTER_ARCHITECTURE.md)
 
 ---
 
@@ -37,9 +32,7 @@
 - `BLE Toolkit+`：微信小程序当前对外显示名
 - `LightBLE`：历史命名与旧仓库线
 
-如果你是第一次进入，建议先看我们的底层设计与架构标准：
-
-- [架构规范与跨平台统一矩阵 (MASTER ARCHITECTURE)](./docs/MASTER_ARCHITECTURE.md)
+如果你是第一次进入，建议先固定这三个名字，再进入对应平台或文档。
 
 ---
 
@@ -145,13 +138,13 @@ smart-ble/
 
 ---
 
-## 维护分层
+## 平台状态（2026-04）
 
-| 层级 | 平台 | 说明 |
+| 等级 | 平台 | 说明 |
 |------|------|------|
-| 主要入口 | uni-app、Flutter、Tauri | 当前优先保证可用性和对外表达 |
-| 增强与对照 | Android 原生、iOS 原生、Electron、macOS Native | 已有实现，承担原生探索、教学和历史兼容价值 |
-| 实验性 | Avalonia、其他未来探索 | 原型验证，不承诺同等投入 |
+| P0 | uni-app、Flutter、Tauri | 当前优先保证可用性、学习入口和对外表达 |
+| P1 | Android 原生、iOS 原生、Electron、macOS Native | 已有实现，承担原生探索、教学对照和历史兼容价值 |
+| P2 | Avalonia、其他未来探索 | 原型验证，不承诺同等投入 |
 
 ---
 
