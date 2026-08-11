@@ -8,6 +8,34 @@
 			}
 		},
 		{
+			"path": "pages/hid/index",
+			"style": {
+				"navigationBarTitleText": "Smart HID",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/hid/add",
+			"style": {
+				"navigationBarTitleText": "配置 Smart HID",
+				"navigationBarTextStyle": "black"
+			}
+		},
+		{
+			"path": "pages/hid/detail",
+			"style": {
+				"navigationBarTitleText": "设备详情",
+				"navigationBarTextStyle": "black"
+			}
+		},
+		{
+			"path": "pages/hid/diagnostics",
+			"style": {
+				"navigationBarTitleText": "诊断",
+				"navigationBarTextStyle": "black"
+			}
+		},
+		{
 			"path": "pages/device/detail",
 			"style": {
 				"navigationBarTitleText": "设备详情",
@@ -64,6 +92,12 @@
 				"iconPath": "static/tabs/device.png",
 				"selectedIconPath": "static/tabs/device_active.png",
 				"text": "设备"
+			},
+			{
+				"pagePath": "pages/hid/index",
+				"iconPath": "static/tabs/hid.png",
+				"selectedIconPath": "static/tabs/hid_active.png",
+				"text": "HID"
 			},
 			{
 				"pagePath": "pages/broadcast/index",
