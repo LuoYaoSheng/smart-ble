@@ -1,18 +1,6 @@
 <template>
 	<view class="ble-shell">
-		<view class="custom-navbar">
-			<view class="status-bar" :style="{ height: statusBarHeight + 'px' }"></view>
-			<view class="nav-content" :style="{ height: navBarHeight + 'px' }">
-				<view class="nav-copy">
-					<text class="nav-kicker">Smart HID</text>
-					<text class="nav-title">蓝牙配网与维护</text>
-				</view>
-				<view class="ble-status-indicator" :class="bleState === 'on' ? 'active' : ''">
-					<view class="status-dot" :class="bleState === 'on' ? 'green' : 'grey'"></view>
-					<text class="status-text">{{ bleState === 'on' ? '蓝牙就绪' : '蓝牙未开启' }}</text>
-				</view>
-			</view>
-		</view>
+		<app-navbar kicker="Smart HID" title="蓝牙配网与维护" :status-active="bleState === 'on'" :status-text="bleState === 'on' ? '蓝牙就绪' : '蓝牙未开启'" />
 
 		<view class="ble-content">
 			<view class="hero-card ble-card-hero">
@@ -42,11 +30,7 @@
 				</button>
 			</view>
 
-			<view v-if="!hasConfiguredDevice" class="ble-empty-card">
-				<image src="/static/placeholders/empty_scan.png" class="ble-empty-image" mode="aspectFit"></image>
-				<text class="ble-empty-title">还没有已配置的 Smart HID 设备</text>
-				<text class="ble-empty-copy">首次配网会通过附近 BLE 搜索识别设备，不需要二维码；完成后会把最近一次配置记录留在这里。</text>
-			</view>
+			<empty-state v-if="!hasConfiguredDevice" image="/static/placeholders/empty_scan.png" title="还没有已配置的 Smart HID 设备" description="首次配网会通过附近 BLE 搜索识别设备；完成后会把最近一次配置记录留在这里。" />
 
 			<view v-else class="history-panel ble-card">
 				<view class="panel-header">
@@ -78,15 +62,14 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { useBleStore } from '../../store/ble';
 import { useHidStore } from '../../store/hid';
+import AppNavbar from '../../components/common/app-navbar.vue';
+import EmptyState from '../../components/common/empty-state.vue';
 
 const bleStore = useBleStore();
 const hidStore = useHidStore();
-
-const statusBarHeight = ref(uni.getSystemInfoSync().statusBarHeight || 20);
-const navBarHeight = ref(44);
 
 const bleState = computed(() => bleStore.bleState);
 const knownDevices = computed(() => hidStore.knownDevices);
@@ -103,71 +86,6 @@ const goDetail = (device) => {
 </script>
 
 <style scoped>
-.custom-navbar {
-	background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(246, 250, 255, 0.92) 100%);
-	border-bottom: 1rpx solid rgba(20, 76, 136, 0.08);
-}
-
-.nav-content {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding: 0 28rpx;
-}
-
-.nav-copy {
-	display: flex;
-	flex-direction: column;
-	gap: 4rpx;
-}
-
-.nav-kicker {
-	font-size: 18rpx;
-	letter-spacing: 3rpx;
-	color: var(--ble-text-muted);
-	text-transform: uppercase;
-}
-
-.nav-title {
-	font-size: 34rpx;
-	font-weight: 700;
-	color: var(--ble-text);
-}
-
-.ble-status-indicator {
-	display: flex;
-	align-items: center;
-	gap: 10rpx;
-	padding: 12rpx 18rpx;
-	border-radius: 999rpx;
-	background: rgba(96, 117, 141, 0.08);
-}
-
-.ble-status-indicator.active {
-	background: rgba(23, 199, 168, 0.12);
-}
-
-.status-dot {
-	width: 16rpx;
-	height: 16rpx;
-	border-radius: 50%;
-}
-
-.status-dot.green {
-	background: var(--ble-mint);
-	box-shadow: 0 0 18rpx rgba(23, 199, 168, 0.48);
-}
-
-.status-dot.grey {
-	background: #9aa8b6;
-}
-
-.status-text {
-	font-size: 22rpx;
-	font-weight: 600;
-	color: var(--ble-text-subtle);
-}
-
 .hero-card {
 	padding: 34rpx;
 	display: flex;
