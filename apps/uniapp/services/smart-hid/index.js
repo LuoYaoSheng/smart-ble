@@ -112,9 +112,9 @@ export async function scanSmartHid() {
   logger.info('[SmartHID] scanSmartHid start');
   const stopWatch = watch(() => bleStore.scannedDevices, refresh, { deep: true });
   try {
-    await bleStore.startScan();
+    const result = await bleStore.startScan(5000, 'smart-hid');
+    if (!result?.ok) throw result?.error || new Error('Smart HID 扫描失败');
     refresh();
-    await bleStore.waitForScanComplete();
     refresh();
     logger.info(`[SmartHID] scanSmartHid done, found ${hidStore.smartDevices.length}`);
     return hidStore.smartDevices;
@@ -234,7 +234,7 @@ export async function diagnose() {
     { key: 'wifi', label: 'Wi-Fi', state: 'pending', detail: '' },
     { key: 'hub', label: 'ControlHub', state: 'pending', detail: '' },
     { key: 'conn', label: '控制连接 (MQTT)', state: 'pending', detail: '' },
-    { key: 'usb', label: 'USB HID', state: 'pending', detail: '' }
+    { key: 'usb', label: '设备 Ready 状态', state: 'pending', detail: 'BLE 状态不等同于 USB HID 真机验收' }
   ];
   if (!session) {
     hidStore.setDiagnostic(items);

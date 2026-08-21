@@ -3,14 +3,19 @@ import { ref, reactive, computed } from 'vue';
 import { logger } from '../../../core/ble-core/utils/logger';
 import {
   onDiscovery,
+  onAdapterState,
   openAdapter,
   startDiscovery as runtimeStartDiscovery,
   stopDiscovery as runtimeStopDiscovery
 } from '../services/ble-runtime/index.js';
+import { createScanSessionController } from '../services/ble-runtime/scan-session.js';
+import { normalizeAdvertisement } from '../services/ble-runtime/advertisement.js';
 
 export const useBleStore = defineStore('ble', () => {
   // --- 状态(State) ---
   const isScanning = ref(false);
+  const scanState = ref('idle'); // idle | starting | scanning | stopping | failed
+  const scanError = ref(null);
   const bleState = ref('off');
   
   // 发现的所有设备列表
@@ -32,12 +37,14 @@ export const useBleStore = defineStore('ble', () => {
   const connectedDevicesMap = reactive({});
   
   // Getters
-  const connectedDevicesList = computed(() => Object.values(connectedDevicesMap));
+  const connectedDevicesList = computed(() => Object.values(connectedDevicesMap).filter((device) => device.isConnected));
 
   // --- 动作(Actions) ---
   const setBleState = (state) => {
     bleState.value = state;
   };
+
+  onAdapterState((res) => setBleState(res?.available ? 'on' : 'off'));
 
   const addDeviceLog = (deviceId, type, message) => {
     if (message.includes('监听特征值')) {
@@ -85,26 +92,12 @@ export const useBleStore = defineStore('ble', () => {
   };
 
   // ----- 扫描相关逻辑 -----
-  let scanStopTimer = null;
   let throttleTimeout = null;
   let deviceBuffer = [];
   let stopDiscoveryListener = null;
   let scanCompletion = Promise.resolve([]);
-  let resolveScanCompletion = null;
   const throttleInterval = 1000;
   
-  // 转换ArrayBuffer为Hex
-  const ab2hex = (buffer) => {
-    if (!buffer) return '';
-    const hexArr = Array.prototype.map.call(
-      new Uint8Array(buffer),
-      function(bit) {
-        return ('00' + bit.toString(16)).slice(-2)
-      }
-    )
-    return hexArr.join('');
-  };
-
   const processDeviceBuffer = () => {
     if (deviceBuffer.length === 0) {
       throttleTimeout = null;
@@ -119,8 +112,9 @@ export const useBleStore = defineStore('ble', () => {
     
     currentBuffer.forEach(newDevice => {
       const deviceId = newDevice.deviceId;
-      const advertisDataHex = ab2hex(newDevice.advertisData);
-      const advertisServiceUUIDs = newDevice.advertisServiceUUIDs || [];
+      const advertisement = normalizeAdvertisement(newDevice);
+      const advertisDataHex = advertisement.advertisData.hex;
+      const advertisServiceUUIDs = advertisement.serviceUUIDs;
       
       const existingDevice = deviceMap.get(deviceId);
       let processedData;
@@ -129,12 +123,14 @@ export const useBleStore = defineStore('ble', () => {
         processedData = {
           ...existingDevice,
           ...newDevice,
+          advertisement,
           advertisDataHex,
           advertisServiceUUIDs
         };
       } else {
         processedData = {
           ...newDevice,
+          advertisement,
           advertisDataHex,
           advertisServiceUUIDs,
           connected: false
@@ -160,59 +156,44 @@ export const useBleStore = defineStore('ble', () => {
     });
   };
 
-  const startScan = async (duration = 5000) => {
-    if (isScanning.value) return;
-    
-    isScanning.value = true;
-    scannedDevices.value = [];
-    deviceBuffer = [];
-    
-    if (throttleTimeout) clearTimeout(throttleTimeout);
-    if (scanStopTimer) clearTimeout(scanStopTimer);
-    throttleTimeout = null;
-    scanStopTimer = null;
-    scanCompletion = new Promise((resolve) => { resolveScanCompletion = resolve; });
-
-    try {
-      await _openAdapterWithRetry();
-      if (!stopDiscoveryListener) {
-        stopDiscoveryListener = onDiscovery((devices) => {
-          deviceBuffer.push(...devices);
-          if (!throttleTimeout) {
-            throttleTimeout = setTimeout(processDeviceBuffer, throttleInterval);
-          }
-        });
+  const scanController = createScanSessionController({
+    open: _openAdapterWithRetry,
+    start: runtimeStartDiscovery,
+    stop: runtimeStopDiscovery,
+    onState: (state, session, error) => {
+      scanState.value = state;
+      isScanning.value = state === 'starting' || state === 'scanning' || state === 'stopping';
+      if (state === 'starting') {
+        scanError.value = null;
+        scannedDevices.value = [];
+        deviceBuffer = [];
+        if (throttleTimeout) clearTimeout(throttleTimeout);
+        throttleTimeout = null;
       }
-      await runtimeStartDiscovery();
-      scanStopTimer = setTimeout(() => {
-        if (isScanning.value) stopScan();
-      }, duration);
-    } catch (err) {
-      console.error('初始化蓝牙适配器失败:', err);
-      isScanning.value = false;
-      resolveScanCompletion?.(scannedDevices.value);
-      resolveScanCompletion = null;
-      return scannedDevices.value;
-    }
+      if (error) {
+        scanError.value = {
+          code: error?.errCode ?? error?.code ?? 'scan_failed',
+          message: error?.errMsg || error?.message || '扫描失败',
+          sessionId: session.id
+        };
+      }
+    },
+    onBeforeFinish: () => processDeviceBuffer()
+  });
+
+  if (!stopDiscoveryListener) {
+    stopDiscoveryListener = onDiscovery((devices) => {
+      deviceBuffer.push(...devices);
+      if (!throttleTimeout) throttleTimeout = setTimeout(processDeviceBuffer, throttleInterval);
+    });
+  }
+
+  const startScan = (duration = 5000, owner = 'generic') => {
+    scanCompletion = scanController.start({ owner, duration, discovery: { allowDuplicatesKey: true, interval: 0 } });
+    return scanCompletion;
   };
 
-  const stopScan = async () => {
-    if (scanStopTimer) {
-      clearTimeout(scanStopTimer);
-      scanStopTimer = null;
-    }
-    
-    try {
-      await runtimeStopDiscovery();
-    } catch (err) {
-      console.error('停止搜索失败:', err);
-    } finally {
-      isScanning.value = false;
-      processDeviceBuffer();
-      resolveScanCompletion?.(scannedDevices.value);
-      resolveScanCompletion = null;
-    }
-  };
+  const stopScan = (reason = 'user') => scanController.stop(reason);
 
   const waitForScanComplete = () => scanCompletion;
 
@@ -222,6 +203,8 @@ export const useBleStore = defineStore('ble', () => {
 
   return {
     isScanning,
+    scanState,
+    scanError,
     bleState,
     scannedDevices,
     connectedDevicesMap,

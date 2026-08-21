@@ -1,0 +1,268 @@
+:root {
+  --ble-brand: #1b6dff;
+  --ble-brand-deep: #134dbe;
+  --ble-brand-soft: #e7f1ff;
+  --ble-cyan: #7be0ff;
+  --ble-mint: #17c7a8;
+  --ble-orange: #ff9f43;
+  --ble-red: #f2555f;
+  --ble-bg-top: #f7fbff;
+  --ble-bg-bottom: #eaf2fb;
+  --ble-surface: rgba(255, 255, 255, 0.96);
+  --ble-surface-soft: rgba(245, 250, 255, 0.95);
+  --ble-surface-strong: #ffffff;
+  --ble-line: rgba(20, 76, 136, 0.1);
+  --ble-line-strong: rgba(20, 76, 136, 0.16);
+  --ble-text: #12263f;
+  --ble-text-subtle: #60758d;
+  --ble-text-muted: #93a2b4;
+  --ble-shadow-soft: 0 18rpx 44rpx rgba(17, 43, 78, 0.08);
+  --ble-shadow-brand: 0 18rpx 42rpx rgba(27, 109, 255, 0.18);
+  --ble-radius-sm: 18rpx;
+  --ble-radius-md: 26rpx;
+  --ble-radius-lg: 34rpx;
+  --ble-radius-xl: 42rpx;
+  --ble-gradient-brand: linear-gradient(135deg, #155dff 0%, #33b2ff 58%, #7be0ff 100%);
+  --ble-gradient-surface: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(242, 248, 255, 0.94) 100%);
+  --ble-gradient-hero: linear-gradient(135deg, rgba(21, 93, 255, 0.12) 0%, rgba(123, 224, 255, 0.18) 100%);
+  --ble-grid: rgba(27, 109, 255, 0.06);
+}
+
+page {
+  min-height: 100%;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(123, 224, 255, 0.24), transparent 32%),
+    radial-gradient(circle at 100% 0%, rgba(27, 109, 255, 0.14), transparent 28%),
+    linear-gradient(180deg, var(--ble-bg-top) 0%, var(--ble-bg-bottom) 100%);
+  color: var(--ble-text);
+  font-family: "Avenir Next", "PingFang SC", "Helvetica Neue", sans-serif;
+}
+
+view,
+text {
+  box-sizing: border-box;
+}
+
+image {
+  display: block;
+}
+
+.ble-shell {
+  min-height: 100vh;
+  position: relative;
+}
+
+.ble-content {
+  padding: 28rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.ble-card {
+  background: var(--ble-gradient-surface);
+  border: 1rpx solid var(--ble-line);
+  border-radius: var(--ble-radius-lg);
+  box-shadow: var(--ble-shadow-soft);
+}
+
+.ble-card-hero {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96) 0%, rgba(243, 249, 255, 0.96) 100%),
+    var(--ble-gradient-hero);
+  border: 1rpx solid rgba(27, 109, 255, 0.12);
+  border-radius: var(--ble-radius-xl);
+  box-shadow: var(--ble-shadow-brand);
+}
+
+.ble-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+  padding: 10rpx 18rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  line-height: 1;
+  font-weight: 600;
+}
+
+.ble-chip-soft {
+  background: rgba(27, 109, 255, 0.08);
+  color: var(--ble-brand);
+}
+
+.ble-chip-success {
+  background: rgba(23, 199, 168, 0.14);
+  color: #0e9c82;
+}
+
+.ble-chip-muted {
+  background: rgba(96, 117, 141, 0.1);
+  color: var(--ble-text-subtle);
+}
+
+.ble-section-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.ble-kicker {
+  font-size: 20rpx;
+  letter-spacing: 3rpx;
+  text-transform: uppercase;
+  color: var(--ble-brand);
+  font-weight: 700;
+}
+
+.ble-title {
+  font-size: 40rpx;
+  line-height: 1.18;
+  font-weight: 700;
+  color: var(--ble-text);
+}
+
+.ble-subtitle {
+  font-size: 25rpx;
+  line-height: 1.6;
+  color: var(--ble-text-subtle);
+}
+
+.ble-section-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: var(--ble-text);
+}
+
+.ble-section-caption {
+  font-size: 22rpx;
+  color: var(--ble-text-muted);
+}
+
+.ble-button-primary,
+.ble-button-secondary,
+.ble-button-ghost {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  height: 88rpx;
+  padding: 0 30rpx;
+  border: none;
+  border-radius: 999rpx;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.ble-button-primary {
+  color: #ffffff;
+  background: var(--ble-gradient-brand);
+  box-shadow: var(--ble-shadow-brand);
+}
+
+.ble-button-secondary {
+  color: var(--ble-brand);
+  background: rgba(27, 109, 255, 0.08);
+}
+
+.ble-button-ghost {
+  color: var(--ble-text-subtle);
+  background: rgba(96, 117, 141, 0.08);
+}
+
+.ble-button-primary::after,
+.ble-button-secondary::after,
+.ble-button-ghost::after {
+  border: none;
+}
+
+.ble-pill-tabs {
+  display: flex;
+  gap: 12rpx;
+  padding: 12rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.76);
+  border: 1rpx solid rgba(27, 109, 255, 0.08);
+}
+
+.ble-pill-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 72rpx;
+  border-radius: 999rpx;
+  font-size: 26rpx;
+  font-weight: 700;
+  color: var(--ble-text-subtle);
+  transition: all 0.2s ease;
+}
+
+.ble-pill-tab.active {
+  color: #ffffff;
+  background: var(--ble-gradient-brand);
+  box-shadow: 0 10rpx 24rpx rgba(27, 109, 255, 0.18);
+}
+
+.ble-empty-card {
+  margin-top: 18rpx;
+  min-height: 420rpx;
+  padding: 54rpx 36rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14rpx;
+  border-radius: var(--ble-radius-lg);
+  border: 2rpx dashed rgba(27, 109, 255, 0.16);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.88) 0%, rgba(237, 246, 255, 0.9) 100%);
+}
+
+.ble-empty-image {
+  width: 200rpx;
+  height: 200rpx;
+}
+
+.ble-empty-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--ble-text);
+}
+
+.ble-empty-copy {
+  font-size: 24rpx;
+  line-height: 1.6;
+  color: var(--ble-text-subtle);
+  text-align: center;
+}
+
+.ble-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16rpx;
+}
+
+.ble-stat-card {
+  padding: 22rpx 20rpx;
+  border-radius: 24rpx;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1rpx solid rgba(27, 109, 255, 0.08);
+}
+
+.ble-stat-value {
+  font-size: 34rpx;
+  line-height: 1;
+  font-weight: 700;
+  color: var(--ble-text);
+}
+
+.ble-stat-label {
+  margin-top: 10rpx;
+  font-size: 22rpx;
+  color: var(--ble-text-muted);
+}
+
+.ble-mono {
+  font-family: "SF Mono", "Roboto Mono", Menlo, monospace;
+}

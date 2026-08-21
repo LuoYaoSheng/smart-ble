@@ -15,6 +15,7 @@
 <style>
 	/* 引入自动生成的主题色彩体系 (Design Tokens) */
 	@import url('./app_theme.css');
+	@import url('./styles/design-system.css');
 
 	/*每个页面公共css */
 	page {

@@ -1,92 +1,143 @@
 <template>
-	<view class="container">
+	<view class="ble-shell index-shell">
 		<view class="custom-navbar">
 			<view class="status-bar" :style="{ height: statusBarHeight + 'px' }"></view>
 			<view class="nav-content" :style="{ height: navBarHeight + 'px' }">
-				<text class="nav-title">BLE Toolkit+</text>
-				<view class="nav-actions">
-					<view class="ble-status-indicator" v-if="bleState === 'on'">
-						<view class="status-dot green"></view>
-						<text class="status-text">蓝牙已开启</text>
-					</view>
-					<view class="ble-status-indicator" v-else>
-						<view class="status-dot grey"></view>
-						<text class="status-text">蓝牙已关闭</text>
-					</view>
+				<view class="nav-copy">
+					<text class="nav-kicker">SmartBLE Mini</text>
+					<text class="nav-title">BLE Toolkit+</text>
+				</view>
+				<view class="ble-status-indicator" :class="bleState === 'on' ? 'active' : ''">
+					<view class="status-dot" :class="bleState === 'on' ? 'green' : 'grey'"></view>
+					<text class="status-text">{{ bleState === 'on' ? '蓝牙就绪' : '蓝牙未开启' }}</text>
 				</view>
 			</view>
 		</view>
 
-		<view class="page-content">
-			<filter-panel v-model="filterSettings" />
+		<view class="ble-content page-content">
+			<view class="hero-card ble-card-hero">
+				<view class="ble-section-meta">
+					<text class="ble-kicker">Scan Console</text>
+					<text class="ble-title hero-title">更顺手的 BLE 扫描与接入面板</text>
+					<text class="ble-subtitle">把扫描、过滤、广播数据查看和连接入口收进一条清晰路径里，适合现场调试和快速排障。</text>
+				</view>
 
-			<view class="tab-control-container">
-				<uni-segmented-control :current="currentTab" :values="tabItems" @clickItem="onClickTab" style-type="text" active-color="#007AFF" />
-			</view>
-
-			<view v-show="currentTab === 0" class="tab-content scan-tab-content">
-				<view class="scan-control-row">
-					<view class="scan-btn-container">
-						<button :class="['scan-btn', isScanning ? 'scanning' : 'primary']" @click="toggleScan">
-							<text class="scan-icon">{{ isScanning ? '■' : '🔍' }}</text>
-							<text>{{ isScanning ? '停止扫描' : '开始扫描' }}</text>
-						</button>
+				<view class="ble-stat-grid">
+					<view class="ble-stat-card">
+						<text class="ble-stat-value">{{ filteredDevices.length }}</text>
+						<text class="ble-stat-label">当前结果</text>
 					</view>
-					<view class="device-badge">
-						<text v-if="filteredDevices.length === devices.length">发现 {{filteredDevices.length}} 台</text>
-						<text v-else>显示 {{filteredDevices.length}} / {{devices.length}} 台</text>
+					<view class="ble-stat-card">
+						<text class="ble-stat-value">{{ devices.length }}</text>
+						<text class="ble-stat-label">已发现设备</text>
+					</view>
+					<view class="ble-stat-card">
+						<text class="ble-stat-value">{{ connectedDevicesList.length }}</text>
+						<text class="ble-stat-label">已连接</text>
 					</view>
 				</view>
-				<view class="device-list">
+
+				<view class="hero-actions">
+					<button :class="['ble-button-primary', 'scan-btn', isScanning ? 'scanning' : '']" @click="toggleScan">
+						<text class="scan-icon">{{ isScanning ? '■' : '◉' }}</text>
+						<text>{{ isScanning ? '停止扫描' : '开始扫描' }}</text>
+					</button>
+					<view class="hero-tags">
+						<view class="ble-chip ble-chip-soft">
+							<text>筛选前缀 {{ filterSettings.prefix || '全部' }}</text>
+						</view>
+						<view class="ble-chip" :class="filterSettings.hideNoName ? 'ble-chip-success' : 'ble-chip-muted'">
+							<text>{{ filterSettings.hideNoName ? '隐藏无名设备' : '显示全部设备' }}</text>
+						</view>
+					</view>
+					<text v-if="scanError" class="scan-error">扫描失败（{{ scanError.code }}）：{{ scanError.message }}。请确认蓝牙/定位权限后重试。</text>
+				</view>
+			</view>
+
+			<filter-panel v-model="filterSettings" />
+
+			<view class="ble-pill-tabs">
+				<view
+					v-for="(item, index) in tabItems"
+					:key="item"
+					:class="['ble-pill-tab', currentTab === index ? 'active' : '']"
+					@click="currentTab = index"
+				>
+					{{ item }}
+				</view>
+			</view>
+
+			<view class="results-panel ble-card">
+				<view class="results-header">
+					<view class="ble-section-meta">
+						<text class="ble-section-title">{{ currentTab === 0 ? '附近设备' : '连接会话' }}</text>
+						<text class="ble-section-caption">
+							{{ currentTab === 0 ? '点开卡片查看广播原始数据，按按钮进入设备详情。' : '保留最近连接入口，继续调试服务与通信日志。' }}
+						</text>
+					</view>
+					<view class="ble-chip ble-chip-soft">
+						<text v-if="currentTab === 0">
+							{{ filteredDevices.length === devices.length ? `发现 ${filteredDevices.length} 台` : `显示 ${filteredDevices.length} / ${devices.length}` }}
+						</text>
+						<text v-else>{{ connectedDevicesList.length }} 台已连接</text>
+					</view>
+				</view>
+
+				<view v-show="currentTab === 0" class="tab-content">
 					<scroll-view scroll-y class="device-scroll">
-						<view v-if="filteredDevices.length === 0" class="empty-state">
-							<image src="/static/placeholders/empty_scan.svg" class="empty-icon-img" mode="aspectFit"></image>
-							<text class="empty-title">{{ devices.length > 0 ? '无匹配设备' : '暂无设备' }}</text>
-							<text class="empty-sub">{{ devices.length > 0 ? '尝试调整过滤条件' : '点击上方按钮开始扫描' }}</text>
+						<view v-if="filteredDevices.length === 0" class="ble-empty-card">
+							<image src="/static/placeholders/empty_scan.png" class="ble-empty-image" mode="aspectFit"></image>
+							<text class="ble-empty-title">{{ devices.length > 0 ? '当前没有匹配设备' : '还没有扫描结果' }}</text>
+							<text class="ble-empty-copy">{{ devices.length > 0 ? '试试放宽过滤条件，或者关闭“隐藏无名设备”。' : '先启动扫描，附近设备会实时出现在这里。' }}</text>
 						</view>
 						<template v-else>
-							<device-card 
-								v-for="device in filteredDevices" 
-								:key="device.deviceId" 
-								:device="device" 
-								@click="showAdvertisingData" 
-								@action="connectDevice" />
+							<device-card
+								v-for="device in filteredDevices"
+								:key="device.deviceId"
+								:device="device"
+								@click="showAdvertisingData"
+								@action="connectDevice"
+							/>
+						</template>
+					</scroll-view>
+				</view>
+
+				<view v-show="currentTab === 1" class="tab-content">
+					<scroll-view scroll-y class="device-scroll">
+						<view v-if="connectedDevicesList.length === 0" class="ble-empty-card">
+							<image src="/static/placeholders/empty_connected.png" class="ble-empty-image" mode="aspectFit"></image>
+							<text class="ble-empty-title">还没有连接中的设备</text>
+							<text class="ble-empty-copy">从“附近设备”里进入详情页并建立连接，这里会保留调试入口。</text>
+						</view>
+						<template v-else>
+							<device-card
+								v-for="device in connectedDevicesList"
+								:key="device.deviceId"
+								:device="device"
+								:isConnectionTab="true"
+								@click="connectDevice"
+								@action="disconnectDeviceFromList"
+							/>
 						</template>
 					</scroll-view>
 				</view>
 			</view>
 
-			<view v-show="currentTab === 1" class="tab-content connected-tab-content">
-				<scroll-view scroll-y class="device-scroll">
-					<view v-if="connectedDevicesList.length === 0" class="empty-state">
-						<image src="/static/placeholders/empty_connected.svg" class="empty-icon-img" mode="aspectFit"></image>
-						<text class="empty-title">无连接设备</text>
-						<text class="empty-sub">请在发现列表中连接设备</text>
-					</view>
-					<template v-else>
-						<device-card 
-							v-for="device in connectedDevicesList" 
-							:key="device.deviceId" 
-							:device="device" 
-							:isConnectionTab="true"
-							@click="connectDevice" 
-							@action="disconnectDeviceFromList" />
-					</template>
-				</scroll-view>
-			</view>
-
 			<view class="modal-overlay" v-if="showAdvDataModal" @click.stop="closeAdvDataModal">
 				<view class="modal-content" @click.stop>
 					<view class="modal-header">
-						<text class="modal-title">广播信息</text>
+						<view class="ble-section-meta">
+							<text class="ble-section-title">广播原始数据</text>
+							<text class="ble-section-caption">用于快速复制到日志、文档或排查脚本里。</text>
+						</view>
 						<text class="modal-close" @click="closeAdvDataModal">×</text>
 					</view>
 					<scroll-view scroll-y class="modal-scroll">
-						<textarea class="modal-textarea" :value="advDataModalContent" disabled selectable></textarea>
+						<textarea class="modal-textarea ble-mono" :value="advDataModalContent" disabled selectable></textarea>
 					</scroll-view>
 					<view class="modal-actions">
-						<button class="modal-button modal-button-copy" type="primary" @click="copyAdvData">复制代码</button>
-						<button class="modal-button modal-button-close" @click="closeAdvDataModal">关闭</button>
+						<button class="ble-button-primary modal-button" @click="copyAdvData">复制代码</button>
+						<button class="ble-button-secondary modal-button" @click="closeAdvDataModal">关闭</button>
 					</view>
 				</view>
 			</view>
@@ -96,7 +147,7 @@
 
 <script setup>
 import { computed, ref } from 'vue';
-import { onLoad, onShareAppMessage, onUnload } from '@dcloudio/uni-app';
+import { onLoad, onHide, onShareAppMessage, onUnload } from '@dcloudio/uni-app';
 import DeviceCard from '../../components/device-card/device-card.vue';
 import FilterPanel from '../../components/filter-panel/filter-panel.vue';
 import { useBleStore } from '../../store/ble';
@@ -121,21 +172,21 @@ const statusBarHeight = ref(uni.getSystemInfoSync().statusBarHeight || 20);
 const navBarHeight = ref(44);
 
 const isScanning = computed(() => bleStore.isScanning);
+const scanError = computed(() => bleStore.scanError);
 const bleState = computed(() => bleStore.bleState);
 const devices = computed(() => bleStore.scannedDevices);
-
 const connectedDevicesList = computed(() => bleStore.connectedDevicesList);
 
-const filteredDevices = computed(() => {
-	return devices.value.filter(device => {
+const filteredDevices = computed(() =>
+	devices.value.filter((device) => {
 		if (device.RSSI < filterSettings.value.rssi) return false;
 		if (filterSettings.value.hideNoName && !device.name) return false;
 		if (filterSettings.value.prefix && device.name) {
 			return device.name.toLowerCase().startsWith(filterSettings.value.prefix.toLowerCase());
 		}
 		return true;
-	});
-});
+	})
+);
 
 onLoad(() => {
 	// #ifdef MP-WEIXIN
@@ -144,21 +195,17 @@ onLoad(() => {
 	// #endif
 
 	checkBluetoothState();
-	uni.onBluetoothAdapterStateChange(res => {
-		bleStore.setBleState(res.available ? 'on' : 'off');
-	});
 });
 
+onHide(() => bleStore.stopScan());
 onUnload(() => bleStore.stopScan());
 
 // #ifdef MP-WEIXIN
 onShareAppMessage(() => ({
-	title: '分享一个好用的BLE工具: BLE Toolkit+',
+	title: '分享一个好用的 BLE 工具: BLE Toolkit+',
 	path: '/pages/index/index'
 }));
 // #endif
-
-const onClickTab = (e) => currentTab.value = e.currentIndex;
 
 const checkBluetoothState = () => {
 	uni.getBluetoothAdapterState({
@@ -176,24 +223,13 @@ const toggleScan = () => {
 };
 
 const checkBluetoothAndPermissionsBeforeScan = () => {
-	uni.openBluetoothAdapter({
-		success: () => {
-			bleStore.setBleState('on');
-			// #ifdef MP-WEIXIN
-			checkAndRequestWxLocationPermission();
-			// #endif
-			// #ifndef MP-WEIXIN
-			bleStore.startScan();
-			// #endif
-		},
-		fail: (err) => {
-			if (err.errCode === 10001) {
-				uni.showModal({ title: '提示', content: '请先开启系统蓝牙', showCancel: false });
-			} else {
-				uni.showToast({ title: '蓝牙初始化失败', icon: 'none' });
-			}
-		}
-	});
+	// 适配器打开与 discovery 生命周期只由 BLE Store/Runtime 持有。
+	// #ifdef MP-WEIXIN
+	checkAndRequestWxLocationPermission();
+	// #endif
+	// #ifndef MP-WEIXIN
+	bleStore.startScan();
+	// #endif
 };
 
 // #ifdef MP-WEIXIN
@@ -206,8 +242,12 @@ const checkAndRequestWxLocationPermission = () => {
 					success: () => bleStore.startScan(),
 					fail: () => {
 						wx.showModal({
-							title: '提示', content: '蓝牙扫描需要定位权限',
-							confirmText: '去设置', success: (mRes) => { if (mRes.confirm) wx.openSetting(); }
+							title: '提示',
+							content: '蓝牙扫描需要定位权限',
+							confirmText: '去设置',
+							success: (modalRes) => {
+								if (modalRes.confirm) wx.openSetting();
+							}
 						});
 					}
 				});
@@ -219,7 +259,8 @@ const checkAndRequestWxLocationPermission = () => {
 };
 // #endif
 
-const connectDevice = (device) => {
+const connectDevice = async (device) => {
+	await bleStore.stopScan('connect');
 	uni.navigateTo({
 		url: `/pages/device/detail?device=${encodeURIComponent(JSON.stringify(device))}`
 	});
@@ -234,10 +275,18 @@ const disconnectDeviceFromList = (device) => {
 		.catch((error) => uni.showToast({ title: error?.message || '断开失败', icon: 'none' }));
 };
 
-const formatDeviceId = (deviceId) => deviceId && deviceId.length > 12 ? '...' + deviceId.slice(-12) : deviceId;
+const formatDeviceId = (deviceId) => (deviceId && deviceId.length > 12 ? `...${deviceId.slice(-12)}` : deviceId);
 
 const showAdvertisingData = (device) => {
-	let content = `设备ID: ${formatDeviceId(device.deviceId)}\n名称: ${device.name || 'N/A'}\nRSSI: ${device.RSSI} dBm\n\n广播服务UUIDs:\n${device.advertisServiceUUIDs && device.advertisServiceUUIDs.length > 0 ? device.advertisServiceUUIDs.join('\n') : '无'}\n\n广播数据 (Hex):\n${device.advertisDataHex || 'N/A'}`;
+	const advertisement = device.advertisement || {};
+	const displayBytes = (item) => !item?.present ? '本轮微信 API 未提供此字段' : item.length === 0 ? '字段存在但长度为 0' : `${item.hex} (${item.length}B)`;
+	const manufacturer = advertisement.manufacturerData?.length
+		? advertisement.manufacturerData.map((item) => `ID ${item.id ?? '未知'}: ${displayBytes(item)}`).join('\n')
+		: '本轮微信 API 未提供 Manufacturer Data';
+	const serviceData = advertisement.serviceData?.length
+		? advertisement.serviceData.map((item) => `${item.uuid || '未知 UUID'}: ${displayBytes(item)}`).join('\n')
+		: '本轮微信 API 未提供 Service Data';
+	const content = `设备ID: ${formatDeviceId(device.deviceId)}\n名称: ${advertisement.localName || device.name || '本轮未提供'}\nRSSI: ${device.RSSI} dBm\n\n广播服务 UUIDs:\n${advertisement.serviceUUIDs?.length ? advertisement.serviceUUIDs.join('\n') : '本轮微信 API 未提供 Service UUID'}\n\n原始广播数据:\n${displayBytes(advertisement.advertisData)}\n\nManufacturer Data:\n${manufacturer}\n\nService Data:\n${serviceData}`;
 	advDataModalContent.value = content;
 	showAdvDataModal.value = true;
 	modalDeviceId.value = device.deviceId;
@@ -256,43 +305,201 @@ const copyAdvData = () => {
 };
 </script>
 
-<style>
-.container { height: 100vh; display: flex; flex-direction: column; background-color: #f7f8fa; }
-.custom-navbar { background-color: #ffffff; box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.05); z-index: 100; }
-.nav-content { display: flex; align-items: center; justify-content: space-between; padding: 0 30rpx; }
-.nav-title { font-size: 34rpx; font-weight: 600; color: #333; }
-.nav-actions { display: flex; align-items: center; }
-.ble-status-indicator { display: flex; align-items: center; gap: 8rpx; }
-.status-dot { width: 16rpx; height: 16rpx; border-radius: 50%; }
-.status-dot.green { background-color: #34C759; box-shadow: 0 0 8rpx rgba(52, 199, 89, 0.4); }
-.status-dot.grey { background-color: #999999; }
-.status-text { font-size: 24rpx; color: #666; }
-.page-content { flex: 1; display: flex; flex-direction: column; padding: 30rpx; gap: 24rpx; height: 0; }
-.tab-control-container { background-color: #fff; padding: 10px 20px; border-radius: 12rpx; flex-shrink: 0; }
-.tab-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-.scan-control-row { display: flex; justify-content: space-between; align-items: center; padding: 10rpx 0; flex-shrink: 0; }
-.scan-btn-container { width: 40%; }
-.scan-btn { display: flex; align-items: center; justify-content: center; gap: 8rpx; height: 80rpx; border-radius: 40rpx; font-size: 28rpx; font-weight: 600; color: #fff; background: linear-gradient(135deg, #007AFF 0%, #5AC8FA 100%); border: none; box-shadow: 0 8rpx 16rpx rgba(0, 122, 255, 0.2); transition: all 0.3s; }
-.scan-btn::after { border: none; }
-.scan-btn.scanning { background: #FF3B30; box-shadow: 0 8rpx 16rpx rgba(255, 59, 48, 0.2); animation: pulse 2s infinite; }
-.scan-icon { font-size: 32rpx; }
-.device-badge { background-color: #E5F1FF; color: #007AFF; padding: 6rpx 20rpx; border-radius: 20rpx; font-size: 24rpx; font-weight: 500; }
-.device-list { flex: 1; display: flex; flex-direction: column; overflow: hidden; margin-top: 10rpx; }
-.device-scroll { flex: 1; height: 100%; }
-.empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 100rpx 0; }
-.empty-icon-img { width: 160rpx; height: 160rpx; opacity: 0.7; margin-bottom: 24rpx; }
-.empty-title { font-size: 32rpx; color: #333; font-weight: bold; margin-bottom: 10rpx; }
-.empty-sub { font-size: 26rpx; color: #999; }
-.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000; }
-.modal-content { width: 85%; max-height: 80vh; background-color: #fff; border-radius: 24rpx; overflow: hidden; display: flex; flex-direction: column; }
-.modal-header { padding: 30rpx; display: flex; justify-content: space-between; align-items: center; border-bottom: 2rpx solid #f5f5f5; }
-.modal-title { font-size: 34rpx; font-weight: 600; color: #333; }
-.modal-close { font-size: 44rpx; color: #999; padding: 0 20rpx; line-height: 1; }
-.modal-scroll { flex: 1; min-height: 400rpx; padding: 30rpx; }
-.modal-textarea { width: 100%; height: 100%; font-size: 26rpx; color: #666; font-family: monospace; line-height: 1.6; }
-.modal-actions { display: flex; padding: 30rpx; gap: 20rpx; border-top: 2rpx solid #f5f5f5; }
-.modal-button { flex: 1; height: 80rpx; line-height: 80rpx; border-radius: 40rpx; font-size: 28rpx; }
-.modal-button-copy { background-color: #007AFF; color: #fff; }
-.modal-button-close { background-color: #f5f5f5; color: #666; }
-@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(0.98); } 100% { transform: scale(1); } }
+<style scoped>
+.page-content {
+	height: calc(100vh - 2rpx);
+}
+
+.scan-error {
+	font-size: 22rpx;
+	line-height: 1.5;
+	color: var(--ble-red);
+}
+
+.custom-navbar {
+	background:
+		linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(246, 250, 255, 0.92) 100%);
+	border-bottom: 1rpx solid rgba(20, 76, 136, 0.08);
+	backdrop-filter: blur(16rpx);
+}
+
+.nav-content {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 28rpx;
+}
+
+.nav-copy {
+	display: flex;
+	flex-direction: column;
+	gap: 4rpx;
+}
+
+.nav-kicker {
+	font-size: 18rpx;
+	letter-spacing: 3rpx;
+	color: var(--ble-text-muted);
+	text-transform: uppercase;
+}
+
+.nav-title {
+	font-size: 34rpx;
+	font-weight: 700;
+	color: var(--ble-text);
+}
+
+.ble-status-indicator {
+	display: flex;
+	align-items: center;
+	gap: 10rpx;
+	padding: 12rpx 18rpx;
+	border-radius: 999rpx;
+	background: rgba(96, 117, 141, 0.08);
+}
+
+.ble-status-indicator.active {
+	background: rgba(23, 199, 168, 0.12);
+}
+
+.status-dot {
+	width: 16rpx;
+	height: 16rpx;
+	border-radius: 50%;
+}
+
+.status-dot.green {
+	background: var(--ble-mint);
+	box-shadow: 0 0 18rpx rgba(23, 199, 168, 0.48);
+}
+
+.status-dot.grey {
+	background: #9aa8b6;
+}
+
+.status-text {
+	font-size: 22rpx;
+	font-weight: 600;
+	color: var(--ble-text-subtle);
+}
+
+.hero-card {
+	padding: 34rpx;
+	display: flex;
+	flex-direction: column;
+	gap: 28rpx;
+}
+
+.hero-title {
+	max-width: 12em;
+}
+
+.hero-actions {
+	display: flex;
+	flex-direction: column;
+	gap: 16rpx;
+}
+
+.hero-tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12rpx;
+}
+
+.scan-btn.scanning {
+	background: linear-gradient(135deg, #ff5e62 0%, #ff9f43 100%);
+	box-shadow: 0 18rpx 42rpx rgba(242, 85, 95, 0.22);
+}
+
+.scan-icon {
+	font-size: 32rpx;
+	line-height: 1;
+}
+
+.results-panel {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	padding: 26rpx;
+	min-height: 0;
+}
+
+.results-header {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 18rpx;
+	margin-bottom: 20rpx;
+}
+
+.tab-content {
+	flex: 1;
+	min-height: 0;
+}
+
+.device-scroll {
+	height: 100%;
+}
+
+.modal-overlay {
+	position: fixed;
+	inset: 0;
+	padding: 36rpx;
+	background: rgba(10, 20, 35, 0.42);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+}
+
+.modal-content {
+	width: 100%;
+	max-height: 78vh;
+	display: flex;
+	flex-direction: column;
+	border-radius: 34rpx;
+	background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(242, 248, 255, 0.96) 100%);
+	box-shadow: 0 24rpx 60rpx rgba(10, 20, 35, 0.18);
+}
+
+.modal-header {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 20rpx;
+	padding: 30rpx;
+	border-bottom: 1rpx solid rgba(20, 76, 136, 0.08);
+}
+
+.modal-close {
+	font-size: 46rpx;
+	line-height: 1;
+	color: var(--ble-text-muted);
+	padding: 0 8rpx;
+}
+
+.modal-scroll {
+	min-height: 420rpx;
+	padding: 0 30rpx;
+}
+
+.modal-textarea {
+	width: 100%;
+	min-height: 420rpx;
+	padding: 24rpx 0;
+	font-size: 24rpx;
+	line-height: 1.7;
+	color: var(--ble-text-subtle);
+}
+
+.modal-actions {
+	display: flex;
+	gap: 16rpx;
+	padding: 24rpx 30rpx 30rpx;
+	border-top: 1rpx solid rgba(20, 76, 136, 0.08);
+}
+
+.modal-button {
+	flex: 1;
+}
 </style>

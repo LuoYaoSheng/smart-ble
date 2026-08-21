@@ -65,15 +65,15 @@
 
 				<view class="switch-row">
 					<text class="switch-label">可连接</text>
-					<switch color="#007AFF" :checked="androidSettings.connectable" @change="onConnectableChange" />
+					<switch color="#1B6DFF" :checked="androidSettings.connectable" @change="onConnectableChange" />
 				</view>
 				<view class="switch-row">
 					<text class="switch-label">包含设备名称</text>
-					<switch color="#007AFF" :checked="androidSettings.includeDeviceName" @change="onIncludeDeviceNameChange" />
+					<switch color="#1B6DFF" :checked="androidSettings.includeDeviceName" @change="onIncludeDeviceNameChange" />
 				</view>
 				<view class="switch-row">
 					<text class="switch-label">添加服务UUID</text>
-					<switch color="#007AFF" :checked="androidSettings.addServiceUuid" @change="onAddServiceUuidChange" />
+					<switch color="#1B6DFF" :checked="androidSettings.addServiceUuid" @change="onAddServiceUuidChange" />
 				</view>
 			</template>
 			<!-- 厂商ID + 厂商数据（通用字段，对齐 Flutter BroadcastPage） -->
@@ -134,7 +134,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
-import { onLoad, onUnload, onShareAppMessage } from '@dcloudio/uni-app';
+import { onHide, onLoad, onUnload, onShareAppMessage } from '@dcloudio/uni-app';
 import { logger } from '../../../../core/ble-core/utils/logger';
 
 const advertising = ref(false);
@@ -584,21 +584,21 @@ const onAddServiceUuidChange = (e) => androidSettings.value.addServiceUuid = e.d
 
 onLoad(() => {
 	// #ifdef APP-PLUS
-	const systemInfo = uni.getSystemInfoSync();
-	platform.value = systemInfo.platform;
 	blePeripheral.value = uni.requireNativePlugin('LysBlePeripheral');
-	
-	if (platform.value === 'android') {
+	// #ifdef APP-ANDROID
+	platform.value = 'android';
 		deviceName.value = 'BLEToolkit_Android';
 		serviceUUID.value = '0000FFE0-0000-1000-8000-00805F9B34FB';
 		manufacturerId.value = '0001';
 		manufacturerData.value = 'BLEToolkit_Test';
-	} else if (platform.value === 'ios') {
+	// #endif
+	// #ifdef APP-IOS
+	platform.value = 'ios';
 		deviceName.value = 'BLEToolkit_iOS';
 		serviceUUID.value = 'FFE0';
 		manufacturerId.value = '0A00';
 		manufacturerData.value = 'BLEToolkit_Test';
-	}
+	// #endif
 	// #endif
 
 	// #ifdef MP-WEIXIN
@@ -624,13 +624,18 @@ onUnmounted(() => {
 	stopAdvertising();
 });
 
+onHide(() => {
+	if (advertising.value) stopAdvertising();
+});
+
 onUnload(() => {
 	// #ifdef MP-WEIXIN
-	if (wxBLEServer.value) {
-		wxBLEServer.value.stopAdvertising({});
-	}
-	wx.closeBluetoothAdapter({});
-	// #endif
+		if (wxBLEServer.value) {
+			wxBLEServer.value.stopAdvertising({});
+			wxBLEServer.value.close?.({});
+			wxBLEServer.value = null;
+		}
+		// #endif
 });
 
 // #ifdef MP-WEIXIN
@@ -642,322 +647,348 @@ onShareAppMessage(() => ({
 </script>
 
 <style>
-	.content {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		padding: 20px;
-	}
-
-	.title {
-		font-size: 20px;
-		font-weight: bold;
-		margin-bottom: 30px;
-		display: flex;
-		align-items: center;
-	}
-
-	.platform {
-		font-size: 14px;
-		color: #666;
-		margin-left: 10px;
-	}
-
-	.form {
-		width: 100%;
-		margin-bottom: 30px;
-	}
-
-	.form-item {
-		display: flex;
-		align-items: center;
-		margin-bottom: 15px;
-	}
-	
-	.switch-item {
-		margin-top: 5px;
-	}
-
-	.label {
-		width: 80px;
-		font-size: 14px;
-		color: #666;
-	}
-
-	input {
-		flex: 1;
-		height: 40px;
-		padding: 0 10px;
-		border: 1px solid #ddd;
-		border-radius: 4px;
-		font-size: 14px;
-	}
-
-	.picker-container {
-		flex: 1;
-		height: 40px;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		padding: 0 10px;
-		border: 1px solid #ddd;
-		border-radius: 4px;
-		background: linear-gradient(to bottom, #ffffff, #f9f9f9);
-		box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-	}
-	
-	.picker-text {
-		font-size: 14px;
-		color: #333;
-	}
-
-	.picker-icon {
-		font-size: 12px;
-		color: #999;
-		margin-left: 5px;
-	}
-	
-	/* 兼容旧的picker样式 */
-	.picker {
-		flex: 1;
-		height: 40px;
-		line-height: 40px;
-		padding: 0 10px;
-		border: 1px solid #ddd;
-		border-radius: 4px;
-		font-size: 14px;
-	}
-
-	.button-group {
-		display: flex;
-		flex-direction: column;
-		gap: 10px;
-		margin-bottom: 20px;
-		width: 100%;
-	}
-
-	.button-group button {
-		width: 100%;
-	}
-
-	.button-group button[disabled] {
-		opacity: 0.5;
-	}
-
-	.status {
-		margin-bottom: 20px;
-		display: flex;
-		flex-direction: column;
-		gap: 10px;
-		width: 100%;
-	}
-
-	.log {
-		width: 100%;
-		padding: 10px;
-		background-color: #f5f5f5;
-		border-radius: 5px;
-	}
-
-	.log-title {
-		font-size: 14px;
-		color: #666;
-		margin-bottom: 10px;
-		display: block;
-	}
-
-	.log-content {
-		max-height: 200px;
-	}
-
-	.log-content text {
-		display: block;
-		margin-bottom: 5px;
-		font-size: 12px;
-		color: #333;
-		white-space: pre-wrap;
-		word-break: break-all;
-	}
-
-	.button-advertising {
-		background: linear-gradient(to right, #ff3b30, #ff9500) !important;
-		box-shadow: 0 2px 6px rgba(255, 59, 48, 0.4);
-	}
-
-/* UUID 格式校验提示 */
-.uuid-hint {
-	margin: -8rpx 0 16rpx 0;
-	padding: 12rpx 16rpx;
-	background: #FFF3CD;
-	border-radius: 8rpx;
-	border-left: 4rpx solid #FF9500;
-}
-.uuid-hint-text {
-	font-size: 22rpx;
-	color: #664D03;
-	line-height: 1.5;
+.page-container {
+	min-height: 100vh;
+	padding: 28rpx;
+	box-sizing: border-box;
+	background: transparent;
 }
 
-/* T04: 广播页日志面板 */
+.status-card,
+.platform-card,
+.settings-section,
+.broadcast-status-bar,
 .log-panel-brd {
-	margin: 0 30rpx 30rpx;
-	background: #fff;
-	border-radius: 20rpx;
-	box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.04);
-	overflow: hidden;
-}
-.log-panel-brd-header {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 24rpx 30rpx 16rpx;
-	border-bottom: 2rpx solid #f5f5f5;
-}
-.log-panel-brd-title {
-	font-size: 30rpx;
-	font-weight: 600;
-	color: #333;
-}
-.log-clear-brd {
-	font-size: 26rpx;
-	color: #999;
-	padding: 6rpx 20rpx;
-	border: 2rpx solid #eee;
-	border-radius: 100rpx;
-}
-.log-clear-brd:active {
-	color: #FF3B30;
-	border-color: #FF3B30;
-}
-.log-panel-brd-content {
-	height: 300rpx;
-	padding: 16rpx 0;
-}
-.log-brd-empty {
-	display: flex;
-	justify-content: center;
-	padding: 40rpx 0;
-	color: #ccc;
-	font-size: 26rpx;
-}
-.log-brd-entry {
-	display: flex;
-	flex-wrap: nowrap;
-	align-items: flex-start;
-	padding: 10rpx 30rpx;
-	gap: 12rpx;
-	border-bottom: 1rpx solid #f9f9f9;
-}
-.log-brd-time {
-	font-size: 22rpx;
-	color: #bbb;
-	flex-shrink: 0;
-}
-.log-brd-type {
-	font-size: 22rpx;
-	font-weight: 600;
-	flex-shrink: 0;
-}
-.log-brd-type-sys { color: #007AFF; }
-.log-brd-type-err { color: #FF3B30; }
-.log-brd-type-ok { color: #34C759; }
-.log-brd-msg {
-	font-size: 24rpx;
-	color: #333;
-	flex: 1;
-	word-break: break-all;
+	background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(242, 248, 255, 0.95) 100%);
+	border: 1rpx solid rgba(20, 76, 136, 0.08);
+	border-radius: 32rpx;
+	box-shadow: 0 18rpx 40rpx rgba(17, 43, 78, 0.06);
 }
 
-/* 字节数提示 */
-.bytes-hint {
-	margin: 0 0 16rpx;
-	padding: 12rpx 16rpx;
-	background: #E5F1FF;
-	border-radius: 8rpx;
-	display: flex;
-	align-items: center;
-	gap: 12rpx;
-}
-.bytes-hint-text { font-size: 24rpx; color: #007AFF; }
-.bytes-hint-warn { font-size: 24rpx; color: #FF3B30; font-weight: 600; }
-
-/* 广播操作按钮区 */
-.action-section {
-	margin: 20rpx 30rpx;
+.status-card {
+	padding: 34rpx;
 	display: flex;
 	flex-direction: column;
-	gap: 20rpx;
+	align-items: center;
+	text-align: center;
+	gap: 14rpx;
 }
-.btn-advertise {
-	height: 96rpx;
-	border-radius: 48rpx;
-	background: linear-gradient(135deg, #007AFF 0%, #5AC8FA 100%);
-	color: #fff;
-	font-size: 32rpx;
-	font-weight: 600;
+
+.status-card.status-card-active {
+	background: linear-gradient(135deg, rgba(230, 255, 247, 0.98) 0%, rgba(236, 248, 255, 0.98) 100%);
+}
+
+.status-icon-wrap {
+	width: 138rpx;
+	height: 138rpx;
+	border-radius: 42rpx;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	gap: 12rpx;
-	border: none;
-	box-shadow: 0 8rpx 24rpx rgba(0, 122, 255, 0.25);
+	background: rgba(96, 117, 141, 0.08);
+	border: 1rpx solid rgba(20, 76, 136, 0.08);
 }
-.btn-advertise::after { border: none; }
-.btn-advertise.btn-stop {
-	background: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
-	box-shadow: 0 8rpx 24rpx rgba(255, 59, 48, 0.25);
-}
-.btn-check {
-	height: 80rpx;
-	border-radius: 40rpx;
-	background: #f5f5f5;
-	color: #666;
-	font-size: 28rpx;
-	border: none;
-}
-.btn-check::after { border: none; }
 
-/* 广播状态栏 */
+.status-icon-wrap.icon-active {
+	background: linear-gradient(135deg, rgba(21, 93, 255, 0.16) 0%, rgba(123, 224, 255, 0.22) 100%);
+	border-color: rgba(21, 93, 255, 0.16);
+}
+
+.status-icon {
+	font-size: 34rpx;
+	font-weight: 700;
+	color: var(--ble-brand);
+	letter-spacing: 2rpx;
+}
+
+.status-title {
+	font-size: 38rpx;
+	font-weight: 700;
+	color: var(--ble-text);
+}
+
+.status-subtitle {
+	font-size: 24rpx;
+	line-height: 1.6;
+	color: var(--ble-text-subtle);
+}
+
+.platform-card,
 .broadcast-status-bar {
-	margin: 0 30rpx 20rpx;
-	padding: 24rpx 30rpx;
-	background: #fff;
-	border-radius: 16rpx;
+	margin-top: 20rpx;
+	padding: 24rpx;
 	display: flex;
 	align-items: center;
-	gap: 16rpx;
-	box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.04);
+	gap: 18rpx;
 }
+
+.platform-left {
+	width: 88rpx;
+	height: 88rpx;
+	border-radius: 28rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: linear-gradient(135deg, rgba(21, 93, 255, 0.14) 0%, rgba(123, 224, 255, 0.2) 100%);
+}
+
+.platform-icon-text {
+	font-size: 32rpx;
+	font-weight: 700;
+	color: var(--ble-brand);
+}
+
+.platform-info {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 6rpx;
+}
+
+.platform-title {
+	font-size: 28rpx;
+	font-weight: 700;
+	color: var(--ble-text);
+}
+
+.platform-msg {
+	font-size: 23rpx;
+	line-height: 1.5;
+	color: var(--ble-text-subtle);
+}
+
+.settings-section {
+	margin-top: 20rpx;
+	padding: 28rpx;
+	display: flex;
+	flex-direction: column;
+	gap: 18rpx;
+}
+
+.section-title {
+	font-size: 30rpx;
+	font-weight: 700;
+	color: var(--ble-text);
+}
+
+.field-group {
+	display: flex;
+	flex-direction: column;
+	gap: 10rpx;
+}
+
+.field-label,
+.switch-label {
+	font-size: 25rpx;
+	font-weight: 600;
+	color: var(--ble-text);
+}
+
+.field-input,
+.field-picker {
+	height: 82rpx;
+	padding: 0 22rpx;
+	border-radius: 22rpx;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	background: rgba(241, 246, 252, 0.92);
+	border: 1rpx solid rgba(20, 76, 136, 0.08);
+	font-size: 25rpx;
+	color: var(--ble-text);
+}
+
+.picker-arrow {
+	font-size: 20rpx;
+	color: var(--ble-text-muted);
+}
+
+.switch-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 18rpx 0;
+	border-bottom: 1rpx solid rgba(20, 76, 136, 0.06);
+}
+
+.switch-row:last-of-type {
+	border-bottom: none;
+}
+
+.uuid-hint,
+.bytes-hint {
+	padding: 14rpx 18rpx;
+	border-radius: 22rpx;
+	display: flex;
+	align-items: center;
+	gap: 10rpx;
+}
+
+.uuid-hint {
+	background: rgba(255, 159, 67, 0.12);
+}
+
+.uuid-hint-text {
+	font-size: 22rpx;
+	line-height: 1.5;
+	color: #a6630a;
+}
+
+.bytes-hint {
+	background: rgba(27, 109, 255, 0.08);
+}
+
+.bytes-hint-text {
+	font-size: 23rpx;
+	color: var(--ble-brand);
+}
+
+.bytes-hint-warn {
+	font-size: 23rpx;
+	font-weight: 700;
+	color: var(--ble-red);
+}
+
+.action-section {
+	margin-top: 20rpx;
+	display: flex;
+	flex-direction: column;
+	gap: 14rpx;
+}
+
+.btn-advertise,
+.btn-check {
+	height: 88rpx;
+	border: none;
+	border-radius: 999rpx;
+	font-size: 28rpx;
+	font-weight: 700;
+}
+
+.btn-advertise {
+	color: #ffffff;
+	background: var(--ble-gradient-brand);
+	box-shadow: 0 18rpx 42rpx rgba(27, 109, 255, 0.18);
+}
+
+.btn-advertise.btn-stop {
+	background: linear-gradient(135deg, #f2555f 0%, #ff9f43 100%);
+	box-shadow: 0 18rpx 42rpx rgba(242, 85, 95, 0.18);
+}
+
+.btn-check {
+	color: var(--ble-brand);
+	background: rgba(27, 109, 255, 0.08);
+}
+
+.btn-advertise::after,
+.btn-check::after {
+	border: none;
+}
+
 .broadcast-status-bar.status-bar-active {
-	background: linear-gradient(135deg, #f0fff4 0%, #e8f5ff 100%);
-	border: 2rpx solid #34C759;
+	background: linear-gradient(135deg, rgba(230, 255, 247, 0.98) 0%, rgba(236, 248, 255, 0.98) 100%);
 }
+
 .status-indicator-dot {
 	width: 20rpx;
 	height: 20rpx;
 	border-radius: 50%;
-	background: #ccc;
+	background: #9aa8b6;
 	flex-shrink: 0;
 }
-.status-indicator-dot.dot-active {
-	background: #34C759;
-	box-shadow: 0 0 12rpx rgba(52, 199, 89, 0.5);
-	animation: pulseDot 1.5s ease-in-out infinite;
-}
-@keyframes pulseDot {
-	0%, 100% { transform: scale(1); opacity: 1; }
-	50% { transform: scale(1.3); opacity: 0.7; }
-}
-.status-bar-text {
-	font-size: 28rpx;
-	font-weight: 600;
-	color: #333;
-}
-.status-bar-tip {
-	font-size: 24rpx;
-	color: #999;
-	margin-left: auto;
-}
-.status-bar-tip-warn { color: #FF9500; }
 
+.status-indicator-dot.dot-active {
+	background: var(--ble-mint);
+	box-shadow: 0 0 16rpx rgba(23, 199, 168, 0.48);
+}
+
+.status-bar-text {
+	font-size: 27rpx;
+	font-weight: 700;
+	color: var(--ble-text);
+}
+
+.status-bar-tip {
+	margin-left: auto;
+	font-size: 22rpx;
+	color: var(--ble-text-subtle);
+}
+
+.status-bar-tip-warn {
+	color: #d37a12;
+}
+
+.log-panel-brd {
+	margin-top: 20rpx;
+	overflow: hidden;
+}
+
+.log-panel-brd-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 24rpx;
+	border-bottom: 1rpx solid rgba(20, 76, 136, 0.08);
+}
+
+.log-panel-brd-title {
+	font-size: 28rpx;
+	font-weight: 700;
+	color: var(--ble-text);
+}
+
+.log-clear-brd {
+	padding: 10rpx 18rpx;
+	border-radius: 999rpx;
+	background: rgba(242, 85, 95, 0.1);
+	color: var(--ble-red);
+	font-size: 22rpx;
+	font-weight: 700;
+}
+
+.log-panel-brd-content {
+	height: 320rpx;
+	padding: 12rpx 0 18rpx;
+}
+
+.log-brd-empty {
+	display: flex;
+	justify-content: center;
+	padding: 44rpx 0;
+	font-size: 24rpx;
+	color: var(--ble-text-muted);
+}
+
+.log-brd-entry {
+	display: flex;
+	align-items: flex-start;
+	gap: 10rpx;
+	padding: 12rpx 24rpx;
+	border-bottom: 1rpx solid rgba(20, 76, 136, 0.06);
+}
+
+.log-brd-time {
+	font-size: 21rpx;
+	color: var(--ble-text-muted);
+	flex-shrink: 0;
+}
+
+.log-brd-type {
+	font-size: 21rpx;
+	font-weight: 700;
+	flex-shrink: 0;
+}
+
+.log-brd-type-sys { color: var(--ble-brand); }
+.log-brd-type-err { color: var(--ble-red); }
+.log-brd-type-ok { color: #0e9c82; }
+
+.log-brd-msg {
+	font-size: 22rpx;
+	line-height: 1.55;
+	color: var(--ble-text-subtle);
+	flex: 1;
+	word-break: break-all;
+}
 </style>

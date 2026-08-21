@@ -1,18 +1,33 @@
 <template>
-	<view class="container">
+	<view class="ble-shell">
 		<view class="page-content">
-			<!-- 设备基本信息 -->
-			<view class="card">
+			<view class="hero-card ble-card-hero">
+				<view class="ble-section-meta">
+					<text class="ble-kicker">Smart HID Device</text>
+					<text class="ble-title">{{ device?.name || 'Smart HID 设备' }}</text>
+					<text class="ble-subtitle">查看最近一次配网信息、进入诊断，或者重新开始这一台设备的配置流程。</text>
+				</view>
+
+				<view class="hero-tags">
+					<view class="ble-chip ble-chip-soft">
+						<text class="ble-mono">{{ device?.deviceId || '—' }}</text>
+					</view>
+					<view class="ble-chip ble-chip-success">
+						<text>{{ device?.protocol || '协议未记录' }}</text>
+					</view>
+				</view>
+			</view>
+
+			<view class="card ble-card">
+				<view class="card-title-row">
+					<text class="card-title">设备资料</text>
+				</view>
 				<view class="card-row">
 					<text class="card-label">Device ID</text>
 					<text class="card-value mono">{{ device?.deviceId || '—' }}</text>
 				</view>
 				<view class="card-row">
-					<text class="card-label">硬件</text>
-					<text class="card-value">{{ device?.hardware || '—' }}</text>
-				</view>
-				<view class="card-row">
-					<text class="card-label">固件</text>
+					<text class="card-label">固件版本</text>
 					<text class="card-value">{{ device?.firmware || '—' }}</text>
 				</view>
 				<view class="card-row">
@@ -21,9 +36,10 @@
 				</view>
 			</view>
 
-			<!-- 配置状态 -->
-			<view class="card">
-				<view class="card-title">配置状态</view>
+			<view class="card ble-card">
+				<view class="card-title-row">
+					<text class="card-title">最近配置</text>
+				</view>
 				<view class="card-row">
 					<text class="card-label">Wi-Fi</text>
 					<text class="card-value">{{ device?.lastWifi || '—' }}</text>
@@ -34,18 +50,17 @@
 				</view>
 			</view>
 
-			<!-- 操作 -->
 			<view class="actions">
-				<button class="action-btn primary" @click="reconfigure">重新配置</button>
-				<button class="action-btn secondary" @click="goDiagnostics">诊断</button>
-				<button class="action-btn tertiary" @click="goAdvancedBle">高级 BLE 调试</button>
+				<button class="ble-button-primary" @click="reconfigure">重新配置</button>
+				<button class="ble-button-secondary" @click="goDiagnostics">运行诊断</button>
+				<button class="ble-button-ghost" @click="goAdvancedBle">高级 BLE 调试</button>
 			</view>
 		</view>
 	</view>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 import { useHidStore } from '../../store/hid';
 
@@ -53,12 +68,15 @@ const hidStore = useHidStore();
 const deviceId = ref('');
 
 const device = computed(() => {
-	const all = [hidStore.currentDevice, ...hidStore.knownDevices].filter(Boolean);
-	return all.find(d => d.deviceId === deviceId.value) || hidStore.currentDevice;
+	const allDevices = [hidStore.currentDevice, ...hidStore.knownDevices].filter(Boolean);
+	return allDevices.find((item) => item.deviceId === deviceId.value) || null;
 });
 
 onLoad((opts) => {
 	deviceId.value = opts.deviceId ? decodeURIComponent(opts.deviceId) : '';
+	if (!deviceId.value || !device.value) {
+		uni.showModal({ title: '设备记录不存在', content: '该历史设备记录已不存在，请返回设备列表。', showCancel: false, success: () => uni.navigateBack() });
+	}
 });
 
 const reconfigure = () => {
@@ -70,24 +88,75 @@ const goDiagnostics = () => {
 };
 
 const goAdvancedBle = () => {
-	// 高级 BLE 调试：跳到通用设备详情（复用现有 pages/device/detail）
-	uni.showToast({ title: '请从设备 Tab 进入通用 BLE 调试', icon: 'none' });
+	uni.switchTab({ url: '/pages/index/index' });
 };
 </script>
 
-<style>
-.container { height: 100vh; display: flex; flex-direction: column; background-color: #f7f8fa; }
-.page-content { flex: 1; display: flex; flex-direction: column; padding: 30rpx; gap: 24rpx; }
-.card { background-color: #fff; border-radius: 16rpx; padding: 24rpx 30rpx; display: flex; flex-direction: column; gap: 16rpx; }
-.card-title { font-size: 28rpx; font-weight: 600; color: #333; padding-bottom: 8rpx; border-bottom: 2rpx solid #f5f5f5; }
-.card-row { display: flex; justify-content: space-between; align-items: center; }
-.card-label { font-size: 26rpx; color: #999; }
-.card-value { font-size: 28rpx; color: #333; }
-.card-value.mono { font-family: monospace; }
-.actions { display: flex; flex-direction: column; gap: 16rpx; margin-top: 20rpx; }
-.action-btn { height: 84rpx; border-radius: 42rpx; font-size: 28rpx; font-weight: 500; border: none; }
-.action-btn::after { border: none; }
-.action-btn.primary { color: #fff; background: linear-gradient(135deg, #007AFF 0%, #5AC8FA 100%); box-shadow: 0 8rpx 16rpx rgba(0, 122, 255, 0.2); }
-.action-btn.secondary { color: #007AFF; background-color: #E5F1FF; }
-.action-btn.tertiary { color: #666; background-color: #f0f0f0; }
+<style scoped>
+.page-content {
+	padding: 28rpx;
+	display: flex;
+	flex-direction: column;
+	gap: 22rpx;
+}
+
+.hero-card {
+	padding: 34rpx;
+	display: flex;
+	flex-direction: column;
+	gap: 24rpx;
+}
+
+.hero-tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12rpx;
+}
+
+.card {
+	padding: 26rpx;
+	display: flex;
+	flex-direction: column;
+	gap: 18rpx;
+}
+
+.card-title-row {
+	padding-bottom: 8rpx;
+	border-bottom: 1rpx solid rgba(20, 76, 136, 0.08);
+}
+
+.card-title {
+	font-size: 28rpx;
+	font-weight: 700;
+	color: var(--ble-text);
+}
+
+.card-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16rpx;
+}
+
+.card-label {
+	font-size: 24rpx;
+	color: var(--ble-text-muted);
+}
+
+.card-value {
+	font-size: 26rpx;
+	font-weight: 600;
+	color: var(--ble-text);
+	text-align: right;
+}
+
+.card-value.mono {
+	font-family: "SF Mono", "Roboto Mono", Menlo, monospace;
+}
+
+.actions {
+	display: flex;
+	flex-direction: column;
+	gap: 14rpx;
+}
 </style>

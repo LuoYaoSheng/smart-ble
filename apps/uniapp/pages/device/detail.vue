@@ -70,6 +70,7 @@ import ServicePanel from '../../components/service-panel/service-panel.vue';
 import LogPanel from '../../components/log-panel/log-panel.vue';
 import WriteDialog from '../../components/write-dialog/write-dialog.vue';
 import { OTA_UUIDS } from '../../utils/ota_manager.js';
+import { utf8Decode, utf8Encode } from '../../../../core/ble-core/provisioning/framing.js';
 
 const bleStore = useBleStore();
 
@@ -88,6 +89,7 @@ const logScrollTop = ref(0);
 const deviceId = ref('');
 let unsubLogger = null;
 let bleSession = null;
+let reconnectTimer = null;
 const notifyUnsubscribers = new Map();
 
 onLoad((options) => {
@@ -102,8 +104,10 @@ onLoad((options) => {
 				initBluetoothAdapter();
 			}
 		} catch (error) {
-			uni.showToast({ title: '设备信息无效', icon: 'none' });
+			uni.showModal({ title: '无法打开设备', content: '设备参数无效，请返回扫描页重新选择。', showCancel: false, success: () => uni.navigateBack() });
 		}
+	} else {
+		uni.showModal({ title: '无法打开设备', content: '缺少设备参数，请返回扫描页重新选择。', showCancel: false, success: () => uni.navigateBack() });
 	}
 	
 	const deviceVal = deviceId.value;
@@ -121,9 +125,10 @@ onUnload(() => {
 	}
 	for (const unsubscribe of notifyUnsubscribers.values()) unsubscribe();
 	notifyUnsubscribers.clear();
+	if (reconnectTimer) clearTimeout(reconnectTimer);
 	const session = bleSession;
 	bleSession = null;
-	session?.close();
+	session?.close().finally(() => bleStore.updateDeviceConnectionStatus(deviceId.value, false));
 });
 
 const storeDevice = computed(() => {
@@ -227,7 +232,11 @@ const retryConnection = () => {
 	connectionRetryCount.value++;
 	const delay = connectionRetryCount.value * 2000;
 	addLog('系统', `设备断线，将在 ${delay/1000}s 后进行第 ${connectionRetryCount.value}/${maxRetryCount} 次重连...`);
-	setTimeout(connectDevice, delay);
+		if (reconnectTimer) clearTimeout(reconnectTimer);
+		reconnectTimer = setTimeout(() => {
+			reconnectTimer = null;
+			connectDevice();
+		}, delay);
 };
 
 const handleReceivedData = (buffer) => {
@@ -238,7 +247,7 @@ const handleReceivedData = (buffer) => {
 	}
 	const hexData = hexArr.join(' ');
 	let textData = '';
-	try { textData = decodeURIComponent(escape(String.fromCharCode.apply(null, new Uint8Array(buffer)))); } catch(e){}
+		try { textData = utf8Decode(buffer); } catch(e){}
 	addLog('接收', `HEX: ${hexData}\nTEXT: ${textData}`);
 };
 
@@ -272,11 +281,8 @@ const onConfirmWrite = async ({ type, data }) => {
 			dataView.setUint8(i / 2, parseInt(hexStr.substring(i, i + 2), 16));
 		}
 	} else {
-		buffer = new ArrayBuffer(data.length);
-		const dataView = new DataView(buffer);
-		for (let i = 0; i < data.length; i++) {
-			dataView.setUint8(i, data.charCodeAt(i));
-		}
+			const encoded = utf8Encode(data);
+			buffer = encoded.buffer.slice(encoded.byteOffset, encoded.byteOffset + encoded.byteLength);
 	}
 
 	try {
@@ -321,25 +327,144 @@ const onToggleNotify = ({ serviceId, charId }) => {
 </script>
 
 <style scoped>
-.container { height: 100vh; display: flex; flex-direction: column; background-color: #f7f8fa; }
-.device-panel { background-color: #fff; padding: 30rpx; border-bottom: 2rpx solid #eee; z-index: 10; flex-shrink: 0; box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.02); }
-.device-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24rpx; }
-.device-info { display: flex; flex-direction: column; gap: 8rpx; flex: 1; }
-.name-container { display: flex; align-items: center; gap: 16rpx; }
-.device-name { font-size: 36rpx; font-weight: bold; color: #333; }
-.status-dot { width: 16rpx; height: 16rpx; border-radius: 50%; background-color: #999; }
-.status-dot.connected { background-color: #34C759; box-shadow: 0 0 10rpx rgba(52,199,89,0.4); }
-.device-id-container { display: flex; align-items: center; gap: 8rpx; }
-.device-id-label { font-size: 24rpx; color: #999; }
-.device-id { font-size: 24rpx; color: #666; font-family: monospace; }
-.device-actions-top { margin-left: auto; }
-.action-btn { background-color: #FF9500; color: #fff; font-size: 24rpx; padding: 0 24rpx; height: 52rpx; line-height: 52rpx; border-radius: 26rpx; border: none; }
-.action-btn::after { border: none; }
-.device-actions-row { display: flex; gap: 20rpx; margin-top: 10rpx; }
-.row-btn { flex: 1; height: 72rpx; line-height: 72rpx; border-radius: 36rpx; font-size: 28rpx; border: none; background-color: #007AFF; color: #fff; }
-.row-btn::after { border: none; }
-.row-btn.clear { background-color: #f5f5f5; color: #666; flex: 0.8; }
-.row-btn.share { background-color: rgba(0,122,255,0.1); color: #007AFF; flex: 0.8; }
-.row-btn.connected { background-color: #FF3B30; }
-.main-content { flex: 1; height: 0; padding: 24rpx; }
+.container {
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	background: transparent;
+}
+
+.device-panel {
+	margin: 24rpx 24rpx 0;
+	padding: 28rpx;
+	border-radius: 34rpx;
+	background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(242, 248, 255, 0.95) 100%);
+	border: 1rpx solid rgba(20, 76, 136, 0.08);
+	box-shadow: 0 18rpx 40rpx rgba(17, 43, 78, 0.06);
+	z-index: 10;
+	flex-shrink: 0;
+}
+
+.device-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	gap: 16rpx;
+	margin-bottom: 22rpx;
+}
+
+.device-info {
+	display: flex;
+	flex-direction: column;
+	gap: 10rpx;
+	flex: 1;
+}
+
+.name-container {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 16rpx;
+}
+
+.device-name {
+	font-size: 36rpx;
+	line-height: 1.2;
+	font-weight: 700;
+	color: var(--ble-text);
+}
+
+.status-dot {
+	width: 18rpx;
+	height: 18rpx;
+	border-radius: 50%;
+	background: #9aa8b6;
+}
+
+.status-dot.connected {
+	background: var(--ble-mint);
+	box-shadow: 0 0 16rpx rgba(23, 199, 168, 0.48);
+}
+
+.device-id-container {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 8rpx;
+}
+
+.device-id-label {
+	font-size: 22rpx;
+	color: var(--ble-text-muted);
+}
+
+.device-id {
+	font-size: 22rpx;
+	color: var(--ble-text-subtle);
+	font-family: "SF Mono", "Roboto Mono", Menlo, monospace;
+}
+
+.device-actions-top {
+	margin-left: auto;
+}
+
+.action-btn {
+	height: 56rpx;
+	line-height: 56rpx;
+	padding: 0 22rpx;
+	border: none;
+	border-radius: 999rpx;
+	background: linear-gradient(135deg, #ff9f43 0%, #f2555f 100%);
+	color: #ffffff;
+	font-size: 22rpx;
+	font-weight: 700;
+	box-shadow: 0 12rpx 28rpx rgba(242, 85, 95, 0.14);
+}
+
+.action-btn::after {
+	border: none;
+}
+
+.device-actions-row {
+	display: flex;
+	gap: 14rpx;
+}
+
+.row-btn {
+	flex: 1;
+	height: 76rpx;
+	line-height: 76rpx;
+	border-radius: 999rpx;
+	font-size: 26rpx;
+	font-weight: 700;
+	border: none;
+	background: var(--ble-gradient-brand);
+	color: #ffffff;
+}
+
+.row-btn::after {
+	border: none;
+}
+
+.row-btn.clear {
+	background: rgba(96, 117, 141, 0.08);
+	color: var(--ble-text-subtle);
+	flex: 0.9;
+}
+
+.row-btn.share {
+	background: rgba(27, 109, 255, 0.08);
+	color: var(--ble-brand);
+	flex: 0.9;
+}
+
+.row-btn.connected {
+	background: linear-gradient(135deg, #f2555f 0%, #ff9f43 100%);
+}
+
+.main-content {
+	flex: 1;
+	height: 0;
+	padding: 24rpx;
+}
 </style>

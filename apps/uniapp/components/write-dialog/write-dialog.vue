@@ -78,22 +78,21 @@ const confirm = () => {
 </script>
 
 <style scoped>
-.modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.5); display: flex; justify-content: center; align-items: center; z-index: 1000; }
-.modal-content { width: 80%; background-color: #fff; border-radius: 20rpx; overflow: hidden; }
-.modal-header { padding: 30rpx; border-bottom: 2rpx solid #eee; display: flex; justify-content: space-between; align-items: center; }
-.modal-title { font-size: 32rpx; font-weight: bold; color: #333; }
-.modal-close { font-size: 40rpx; color: #999; line-height: 1; padding: 0 10rpx; }
-.modal-body { padding: 30rpx; }
-.input-group { margin-bottom: 30rpx; }
+.modal { position: fixed; inset: 0; background: rgba(10,20,35,.42); display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 32rpx; }
+.modal-content { width: 100%; background: linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(242,248,255,.96) 100%); border-radius: 34rpx; overflow: hidden; box-shadow: 0 24rpx 60rpx rgba(10,20,35,.18); }
+.modal-header { padding: 28rpx 30rpx; border-bottom: 1rpx solid rgba(20,76,136,.08); display: flex; justify-content: space-between; align-items: center; }
+.modal-title { font-size: 32rpx; font-weight: 700; color: var(--ble-text); }
+.modal-close { font-size: 40rpx; color: var(--ble-text-muted); line-height: 1; padding: 0 10rpx; }
+.modal-body { padding: 30rpx; display: flex; flex-direction: column; gap: 24rpx; }
 .input-group:last-child { margin-bottom: 0; }
-.input-label { font-size: 28rpx; color: #333; margin-bottom: 16rpx; display: block; }
-.radio-group { display: flex; gap: 40rpx; }
-.radio-label { display: flex; align-items: center; font-size: 28rpx; color: #666; }
-.data-input { background-color: #f5f5f5; height: 80rpx; border-radius: 12rpx; padding: 0 20rpx; font-size: 28rpx; }
-.modal-footer { display: flex; border-top: 2rpx solid #eee; }
-.modal-btn { flex: 1; height: 90rpx; line-height: 90rpx; font-size: 32rpx; text-align: center; border-radius: 0; background-color: transparent; }
+.input-label { font-size: 26rpx; font-weight: 600; color: var(--ble-text); margin-bottom: 14rpx; display: block; }
+.radio-group { display: flex; gap: 30rpx; }
+.radio-label { display: flex; align-items: center; font-size: 26rpx; color: var(--ble-text-subtle); }
+.data-input { background: rgba(241,246,252,.92); height: 82rpx; border-radius: 22rpx; padding: 0 20rpx; font-size: 26rpx; border: 1rpx solid rgba(20,76,136,.08); color: var(--ble-text); }
+.modal-footer { display: flex; gap: 14rpx; padding: 0 30rpx 30rpx; }
+.modal-btn { flex: 1; height: 84rpx; line-height: 84rpx; font-size: 28rpx; text-align: center; border-radius: 999rpx; background-color: transparent; border: none; }
 .modal-btn::after { border: none; }
-.modal-btn.cancel { color: #666; border-right: 2rpx solid #eee; }
-.modal-btn.confirm { color: #007AFF; font-weight: bold; }
-.modal-btn.confirm[disabled] { color: #999; }
+.modal-btn.cancel { color: var(--ble-text-subtle); background: rgba(96,117,141,.08); }
+.modal-btn.confirm { color: #ffffff; background: var(--ble-gradient-brand); font-weight: 700; }
+.modal-btn.confirm[disabled] { opacity: .56; }
 </style>

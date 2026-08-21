@@ -24,6 +24,20 @@ import { logger } from '../../../core/ble-core/utils/logger';
  * 敏感字段（hubInfo.token / Wi-Fi 密码等）不写入持久化存储。
  */
 export const useHidStore = defineStore('hid', () => {
+	const KNOWN_DEVICES_KEY = 'smart_ble.smart_hid.known_devices.v1';
+	const loadKnownDevices = () => {
+		try {
+			const value = uni.getStorageSync(KNOWN_DEVICES_KEY);
+			return Array.isArray(value) ? value.slice(0, 20) : [];
+		} catch {
+			return [];
+		}
+	};
+	const persistKnownDevices = (devices) => {
+		try { uni.setStorageSync(KNOWN_DEVICES_KEY, devices.slice(0, 20)); } catch (error) {
+			logger.warning(`[HID] 保存非敏感设备历史失败: ${error?.message || 'unknown'}`);
+		}
+	};
 	// --- State ---
 	const smartDevices = ref([]);
 	const currentDevice = ref(null);
@@ -32,7 +46,7 @@ export const useHidStore = defineStore('hid', () => {
 	const hubInfo = ref(null);            // 敏感：不持久化。V1 形态：{ token, host, port }
 	const provisionStatus = ref(null);    // 最新 { state, step, error }
 	const progress = ref({ wifi: 'pending', hub: 'pending', conn: 'pending', usb: 'pending' });
-	const knownDevices = ref([]);          // 本地历史，仅记录 deviceId / name / 元信息
+	const knownDevices = ref(loadKnownDevices()); // 仅持久化非敏感元信息
 	const diagnostic = ref(null);
 	const lastError = ref(null);
 
@@ -151,14 +165,17 @@ export const useHidStore = defineStore('hid', () => {
 		const idx = knownDevices.value.findIndex(d => d.deviceId === meta.deviceId);
 		if (idx >= 0) {
 			knownDevices.value[idx] = meta;
-		} else {
-			knownDevices.value.unshift(meta);
-		}
-	};
+			} else {
+				knownDevices.value.unshift(meta);
+			}
+			knownDevices.value = knownDevices.value.slice(0, 20);
+			persistKnownDevices(knownDevices.value);
+		};
 
-	const removeKnownDevice = (deviceId) => {
-		knownDevices.value = knownDevices.value.filter(d => d.deviceId !== deviceId);
-	};
+		const removeKnownDevice = (deviceId) => {
+			knownDevices.value = knownDevices.value.filter(d => d.deviceId !== deviceId);
+			persistKnownDevices(knownDevices.value);
+		};
 
 	const startProvisionSession = () => {
 		provisionSession.value = { active: true, startedAt: Date.now() };

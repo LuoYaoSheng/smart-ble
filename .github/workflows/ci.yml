@@ -153,6 +153,9 @@ jobs:
           node tests/unit/ble-runtime.test.mjs
           node tests/unit/provisioning-transport.test.mjs
           node tests/unit/smart-hid-profile.test.mjs
+          node tests/unit/scan-session.test.mjs
+          node tests/unit/advertisement.test.mjs
+          node scripts/check-uniapp-assets.mjs
       - name: Install UniApp compiler dependencies
         run: npm ci --prefix apps/uniapp
       - name: Compile UniApp Vue SFCs
@@ -164,7 +167,7 @@ jobs:
           import { parse, compileTemplate } from '@vue/compiler-sfc'
           async function files(dir) {
             const entries = await readdir(dir, { withFileTypes: true })
-            return (await Promise.all(entries.map((entry) => entry.isDirectory() ? files(join(dir, entry.name)) : entry.name.endsWith('.vue') ? [join(dir, entry.name)] : []))).flat()
+            return (await Promise.all(entries.map((entry) => entry.isDirectory() && !['node_modules', 'unpackage'].includes(entry.name) ? files(join(dir, entry.name)) : entry.name.endsWith('.vue') ? [join(dir, entry.name)] : []))).flat()
           }
           for (const file of await files('.')) {
             const source = await readFile(file, 'utf8')

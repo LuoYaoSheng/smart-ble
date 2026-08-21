@@ -131,7 +131,7 @@ const PROGRESS_LABELS = {
 	wifi: 'Wi-Fi 连接',
 	hub: 'ControlHub 配对',
 	conn: 'MQTT 连接',
-	usb: 'USB HID 就绪'
+	usb: '设备控制链路就绪'
 };
 const progressRows = computed(() =>
 	Object.entries(hidStore.progress).map(([key, state]) => ({ key, state, label: PROGRESS_LABELS[key] || key }))
@@ -286,47 +286,287 @@ onUnload(() => {
 </script>
 
 <style>
-.container { height: 100vh; display: flex; flex-direction: column; background-color: #f7f8fa; }
-.page-content { flex: 1; display: flex; flex-direction: column; padding: 30rpx; }
-.step-bar { display: flex; gap: 12rpx; margin-bottom: 30rpx; }
-.step-pill { flex: 1; height: 56rpx; border-radius: 28rpx; background-color: #eee; color: #999; font-size: 22rpx; display: flex; align-items: center; justify-content: center; font-weight: 600; }
-.step-pill.active { background: linear-gradient(135deg, #007AFF 0%, #5AC8FA 100%); color: #fff; }
-.step-pill.done { background-color: #34C759; color: #fff; }
-.step-title { font-size: 36rpx; font-weight: 600; color: #333; margin-bottom: 24rpx; }
-.step-body { display: flex; flex-direction: column; gap: 20rpx; }
-.step-desc { font-size: 28rpx; color: #666; }
-.check-item { display: flex; gap: 14rpx; font-size: 26rpx; color: #555; padding: 4rpx 0; }
-.check-item .dot { color: #007AFF; font-weight: bold; }
-.scanning-hint { font-size: 26rpx; color: #999; }
-.primary-btn { display: flex; align-items: center; justify-content: center; gap: 12rpx; height: 88rpx; border-radius: 44rpx; font-size: 30rpx; font-weight: 600; color: #fff; background: linear-gradient(135deg, #007AFF 0%, #5AC8FA 100%); border: none; box-shadow: 0 8rpx 16rpx rgba(0, 122, 255, 0.2); }
-.primary-btn::after { border: none; }
-.primary-btn[disabled] { opacity: 0.5; }
-.btn-icon { font-size: 30rpx; }
-.found-list { display: flex; flex-direction: column; gap: 12rpx; }
-.found-item { background-color: #fff; padding: 24rpx 28rpx; border-radius: 14rpx; display: flex; flex-direction: column; gap: 6rpx; border: 4rpx solid transparent; }
-.found-item.selected { border-color: #007AFF; background-color: #E5F1FF; }
-.found-name { font-size: 28rpx; color: #333; font-weight: 500; }
-.found-id { font-size: 22rpx; color: #999; font-family: monospace; }
-.info-card { background-color: #fff; padding: 24rpx 28rpx; border-radius: 14rpx; display: flex; flex-direction: column; gap: 6rpx; }
-.summary-card { background-color: #fff; padding: 24rpx 28rpx; border-radius: 14rpx; display: flex; flex-direction: column; gap: 6rpx; }
-.info-label { font-size: 22rpx; color: #999; }
-.info-value { font-size: 28rpx; color: #333; }
-.info-value.mono { font-family: monospace; }
-.pwd-input { height: 80rpx; background-color: #fff; border-radius: 14rpx; padding: 0 24rpx; font-size: 28rpx; }
-.progress-item { display: flex; align-items: center; gap: 16rpx; padding: 12rpx 0; }
-.progress-dot { width: 40rpx; height: 40rpx; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24rpx; font-weight: bold; }
-.progress-dot.pending { background-color: #eee; color: #999; }
-.progress-dot.active { background-color: #007AFF; color: #fff; }
-.progress-dot.done { background-color: #34C759; color: #fff; }
-.progress-dot.fail { background-color: #FF3B30; color: #fff; }
-.progress-dot.warn { background-color: #FF9500; color: #fff; }
-.progress-label { font-size: 28rpx; color: #555; }
-.error-box { background-color: #FFF5F5; border-radius: 12rpx; padding: 20rpx; display: flex; flex-direction: column; gap: 12rpx; }
-.error-text { font-size: 26rpx; color: #FF3B30; }
-.error-actions { display: flex; }
-.secondary-btn { height: 72rpx; border-radius: 36rpx; font-size: 26rpx; font-weight: 500; color: #007AFF; background-color: #E5F1FF; border: none; }
-.secondary-btn::after { border: none; }
-.done-icon { width: 120rpx; height: 120rpx; border-radius: 60rpx; background-color: #34C759; color: #fff; font-size: 60rpx; display: flex; align-items: center; justify-content: center; align-self: center; margin: 40rpx 0; }
-.done-title { font-size: 36rpx; color: #333; font-weight: 600; text-align: center; }
-.done-sub { font-size: 26rpx; color: #999; text-align: center; margin-bottom: 20rpx; }
+.container {
+	min-height: 100vh;
+	background: transparent;
+}
+
+.page-content {
+	padding: 28rpx;
+	display: flex;
+	flex-direction: column;
+	gap: 22rpx;
+}
+
+.step-bar {
+	display: grid;
+	grid-template-columns: repeat(6, minmax(0, 1fr));
+	gap: 10rpx;
+	padding: 12rpx;
+	border-radius: 999rpx;
+	background: rgba(255, 255, 255, 0.76);
+	border: 1rpx solid rgba(20, 76, 136, 0.08);
+}
+
+.step-pill {
+	height: 60rpx;
+	border-radius: 999rpx;
+	background: rgba(96, 117, 141, 0.08);
+	color: var(--ble-text-muted);
+	font-size: 20rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: 700;
+}
+
+.step-pill.active {
+	background: var(--ble-gradient-brand);
+	color: #ffffff;
+	box-shadow: 0 10rpx 24rpx rgba(27, 109, 255, 0.18);
+}
+
+.step-pill.done {
+	background: rgba(23, 199, 168, 0.18);
+	color: #0e9c82;
+}
+
+.step-title {
+	font-size: 40rpx;
+	line-height: 1.18;
+	font-weight: 700;
+	color: var(--ble-text);
+}
+
+.step-body {
+	display: flex;
+	flex-direction: column;
+	gap: 20rpx;
+	padding: 30rpx;
+	border-radius: 34rpx;
+	background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(242, 248, 255, 0.95) 100%);
+	border: 1rpx solid rgba(20, 76, 136, 0.08);
+	box-shadow: 0 18rpx 40rpx rgba(17, 43, 78, 0.06);
+}
+
+.step-desc {
+	font-size: 26rpx;
+	line-height: 1.7;
+	color: var(--ble-text-subtle);
+}
+
+.check-item {
+	display: flex;
+	align-items: flex-start;
+	gap: 12rpx;
+	font-size: 25rpx;
+	line-height: 1.6;
+	color: var(--ble-text-subtle);
+}
+
+.check-item .dot {
+	color: var(--ble-brand);
+	font-weight: 700;
+}
+
+.scanning-hint {
+	font-size: 24rpx;
+	color: var(--ble-text-muted);
+}
+
+.primary-btn,
+.secondary-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 12rpx;
+	height: 88rpx;
+	border: none;
+	border-radius: 999rpx;
+	font-size: 28rpx;
+	font-weight: 700;
+}
+
+.primary-btn {
+	color: #ffffff;
+	background: var(--ble-gradient-brand);
+	box-shadow: 0 18rpx 42rpx rgba(27, 109, 255, 0.18);
+}
+
+.secondary-btn {
+	color: var(--ble-brand);
+	background: rgba(27, 109, 255, 0.08);
+}
+
+.primary-btn::after,
+.secondary-btn::after {
+	border: none;
+}
+
+.primary-btn[disabled] {
+	opacity: 0.56;
+	box-shadow: none;
+}
+
+.btn-icon {
+	font-size: 30rpx;
+	line-height: 1;
+}
+
+.found-list {
+	display: flex;
+	flex-direction: column;
+	gap: 14rpx;
+}
+
+.found-item,
+.info-card,
+.summary-card {
+	padding: 24rpx;
+	border-radius: 26rpx;
+	background: rgba(255, 255, 255, 0.82);
+	border: 1rpx solid rgba(20, 76, 136, 0.08);
+	display: flex;
+	flex-direction: column;
+	gap: 8rpx;
+}
+
+.found-item.selected {
+	border-color: rgba(27, 109, 255, 0.28);
+	background: linear-gradient(135deg, rgba(229, 241, 255, 0.94) 0%, rgba(239, 248, 255, 0.98) 100%);
+	box-shadow: 0 14rpx 30rpx rgba(27, 109, 255, 0.1);
+}
+
+.found-name {
+	font-size: 27rpx;
+	font-weight: 700;
+	color: var(--ble-text);
+}
+
+.found-id {
+	font-size: 22rpx;
+	color: var(--ble-text-muted);
+	font-family: "SF Mono", "Roboto Mono", Menlo, monospace;
+}
+
+.info-label {
+	font-size: 21rpx;
+	color: var(--ble-text-muted);
+}
+
+.info-value {
+	font-size: 27rpx;
+	color: var(--ble-text);
+}
+
+.info-value.mono {
+	font-family: "SF Mono", "Roboto Mono", Menlo, monospace;
+}
+
+.pwd-input {
+	height: 82rpx;
+	padding: 0 22rpx;
+	border-radius: 22rpx;
+	background: rgba(241, 246, 252, 0.92);
+	border: 1rpx solid rgba(20, 76, 136, 0.08);
+	font-size: 26rpx;
+	color: var(--ble-text);
+}
+
+.progress-item {
+	display: flex;
+	align-items: center;
+	gap: 16rpx;
+	padding: 10rpx 0;
+}
+
+.progress-dot {
+	width: 42rpx;
+	height: 42rpx;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 22rpx;
+	font-weight: 700;
+}
+
+.progress-dot.pending {
+	background: rgba(96, 117, 141, 0.08);
+	color: var(--ble-text-muted);
+}
+
+.progress-dot.active {
+	background: rgba(27, 109, 255, 0.12);
+	color: var(--ble-brand);
+}
+
+.progress-dot.done {
+	background: rgba(23, 199, 168, 0.18);
+	color: #0e9c82;
+}
+
+.progress-dot.fail {
+	background: rgba(242, 85, 95, 0.16);
+	color: var(--ble-red);
+}
+
+.progress-dot.warn {
+	background: rgba(255, 159, 67, 0.18);
+	color: #d37a12;
+}
+
+.progress-label {
+	font-size: 26rpx;
+	color: var(--ble-text-subtle);
+}
+
+.error-box {
+	padding: 22rpx;
+	border-radius: 24rpx;
+	background: rgba(242, 85, 95, 0.08);
+	border: 1rpx solid rgba(242, 85, 95, 0.12);
+	display: flex;
+	flex-direction: column;
+	gap: 14rpx;
+}
+
+.error-text {
+	font-size: 24rpx;
+	line-height: 1.6;
+	color: var(--ble-red);
+}
+
+.error-actions {
+	display: flex;
+}
+
+.done-icon {
+	width: 128rpx;
+	height: 128rpx;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	align-self: center;
+	margin: 20rpx 0 8rpx;
+	font-size: 62rpx;
+	color: #ffffff;
+	background: linear-gradient(135deg, #17c7a8 0%, #6be5c6 100%);
+	box-shadow: 0 16rpx 34rpx rgba(23, 199, 168, 0.22);
+}
+
+.done-title {
+	font-size: 36rpx;
+	font-weight: 700;
+	text-align: center;
+	color: var(--ble-text);
+}
+
+.done-sub {
+	font-size: 24rpx;
+	line-height: 1.7;
+	text-align: center;
+	color: var(--ble-text-subtle);
+}
 </style>

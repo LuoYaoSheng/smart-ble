@@ -14,7 +14,7 @@
 				</view>
 
 				<view class="actions">
-					<button class="action-btn primary" @click="refresh">重新检测</button>
+						<button class="action-btn primary" :disabled="connecting" @click="refresh">{{ connecting ? '连接中…' : '重新检测' }}</button>
 					<button class="action-btn secondary" @click="toggleAdvanced">
 						{{ showAdvanced ? '隐藏错误码' : '显示错误码（详细信息）' }}
 					</button>
@@ -39,13 +39,14 @@ import { smartHidService } from '../../services/smart-hid/index.js';
 const hidStore = useHidStore();
 const deviceId = ref('');
 const showAdvanced = ref(false);
+const connecting = ref(false);
 
 const diagnosticItems = computed(() => hidStore.diagnostic || [
 	{ key: 'ble', label: 'BLE', state: 'pending', detail: '' },
 	{ key: 'wifi', label: 'Wi-Fi', state: 'pending', detail: '' },
 	{ key: 'hub', label: 'ControlHub', state: 'pending', detail: '' },
 	{ key: 'conn', label: '控制连接', state: 'pending', detail: '' },
-	{ key: 'usb', label: 'USB HID', state: 'pending', detail: '' }
+	{ key: 'usb', label: '设备 Ready 状态', state: 'pending', detail: '' }
 ]);
 const lastError = computed(() => hidStore.lastError);
 
@@ -62,7 +63,23 @@ const refresh = async () => {
 	try {
 		const items = await smartHidService.diagnose();
 		if (items[0] && items[0].state === 'fail') {
-			uni.showModal({ title: 'BLE 未连接', content: '诊断需要 BLE 连接。请返回配网向导重新连接设备后再试。', showCancel: false });
+			uni.showModal({
+				title: 'BLE 未连接',
+				content: '诊断需要设备处于可发现状态。是否尝试重新连接？',
+				confirmText: '尝试连接',
+				success: async (result) => {
+					if (!result.confirm || !deviceId.value) return;
+					connecting.value = true;
+					try {
+						await smartHidService.connect(deviceId.value);
+						await smartHidService.diagnose();
+					} catch (error) {
+						uni.showModal({ title: '连接失败', content: error?.message || '请让设备进入配网/恢复模式后重试。', showCancel: false });
+					} finally {
+						connecting.value = false;
+					}
+				}
+			});
 		}
 	} catch (e) {
 		uni.showToast({ title: e.message || '诊断失败', icon: 'none' });
@@ -73,28 +90,29 @@ const toggleAdvanced = () => { showAdvanced.value = !showAdvanced.value; };
 </script>
 
 <style>
-.container { height: 100vh; display: flex; flex-direction: column; background-color: #f7f8fa; }
-.page-content { flex: 1; display: flex; flex-direction: column; padding: 30rpx; }
-.card { background-color: #fff; border-radius: 16rpx; padding: 24rpx 30rpx; display: flex; flex-direction: column; gap: 20rpx; }
-.card-title { font-size: 30rpx; font-weight: 600; color: #333; padding-bottom: 12rpx; border-bottom: 2rpx solid #f5f5f5; }
-.diag-row { display: flex; flex-direction: column; gap: 6rpx; padding: 10rpx 0; }
+.container { min-height: 100vh; background: transparent; }
+.page-content { padding: 28rpx; }
+.card { background: linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(242,248,255,.95) 100%); border-radius: 32rpx; padding: 28rpx; display: flex; flex-direction: column; gap: 20rpx; border: 1rpx solid rgba(20,76,136,.08); box-shadow: 0 18rpx 40rpx rgba(17,43,78,.06); }
+.card-title { font-size: 30rpx; font-weight: 700; color: var(--ble-text); padding-bottom: 12rpx; border-bottom: 1rpx solid rgba(20,76,136,.08); }
+.diag-row { display: flex; flex-direction: column; gap: 8rpx; padding: 12rpx 0; border-bottom: 1rpx solid rgba(20,76,136,.06); }
+.diag-row:last-of-type { border-bottom: none; }
 .diag-head { display: flex; align-items: center; gap: 16rpx; }
-.diag-dot { width: 40rpx; height: 40rpx; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24rpx; font-weight: bold; }
-.diag-dot.ok { background-color: #34C759; color: #fff; }
-.diag-dot.warn { background-color: #FF9500; color: #fff; }
-.diag-dot.fail { background-color: #FF3B30; color: #fff; }
-.diag-dot.active { background-color: #007AFF; color: #fff; }
-.diag-dot.pending { background-color: #eee; color: #999; }
-.diag-label { flex: 1; font-size: 28rpx; color: #333; }
-.diag-state { font-size: 24rpx; color: #999; }
-.diag-detail { font-size: 24rpx; color: #999; padding-left: 56rpx; }
-.actions { display: flex; flex-direction: column; gap: 16rpx; margin-top: 10rpx; }
-.action-btn { height: 80rpx; border-radius: 40rpx; font-size: 28rpx; font-weight: 500; border: none; }
+.diag-dot { width: 42rpx; height: 42rpx; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22rpx; font-weight: 700; }
+.diag-dot.ok { background: rgba(23,199,168,.18); color: #0e9c82; }
+.diag-dot.warn { background: rgba(255,159,67,.18); color: #d37a12; }
+.diag-dot.fail { background: rgba(242,85,95,.16); color: var(--ble-red); }
+.diag-dot.active { background: rgba(27,109,255,.12); color: var(--ble-brand); }
+.diag-dot.pending { background: rgba(96,117,141,.08); color: var(--ble-text-muted); }
+.diag-label { flex: 1; font-size: 27rpx; color: var(--ble-text); font-weight: 600; }
+.diag-state { font-size: 23rpx; color: var(--ble-text-muted); }
+.diag-detail { font-size: 23rpx; line-height: 1.55; color: var(--ble-text-subtle); padding-left: 58rpx; }
+.actions { display: flex; flex-direction: column; gap: 14rpx; margin-top: 10rpx; }
+.action-btn { height: 84rpx; border-radius: 999rpx; font-size: 27rpx; font-weight: 700; border: none; }
 .action-btn::after { border: none; }
-.action-btn.primary { color: #fff; background: linear-gradient(135deg, #007AFF 0%, #5AC8FA 100%); }
-.action-btn.secondary { color: #007AFF; background-color: #E5F1FF; }
-.error-detail { background-color: #FFF5F5; border-radius: 12rpx; padding: 20rpx; display: flex; flex-direction: column; gap: 6rpx; }
-.error-title { font-size: 24rpx; color: #FF3B30; font-weight: 600; }
-.error-code { font-size: 24rpx; color: #FF3B30; font-family: monospace; }
-.error-msg { font-size: 24rpx; color: #999; }
+.action-btn.primary { color: #fff; background: var(--ble-gradient-brand); }
+.action-btn.secondary { color: var(--ble-brand); background: rgba(27,109,255,.08); }
+.error-detail { background: rgba(242,85,95,.08); border-radius: 24rpx; padding: 20rpx; display: flex; flex-direction: column; gap: 8rpx; border: 1rpx solid rgba(242,85,95,.12); }
+.error-title { font-size: 24rpx; color: var(--ble-red); font-weight: 700; }
+.error-code { font-size: 23rpx; color: var(--ble-red); font-family: "SF Mono", "Roboto Mono", Menlo, monospace; }
+.error-msg { font-size: 23rpx; line-height: 1.55; color: var(--ble-text-subtle); }
 </style>

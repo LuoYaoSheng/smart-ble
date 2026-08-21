@@ -14,13 +14,22 @@ const state = {
   valueListeners: new Map(),
   disconnectListeners: new Map(),
   pendingLocalDisconnects: new Map(),
-  discoveryListeners: new Set()
+  discoveryListeners: new Set(),
+  adapterStateListeners: new Set()
 };
 
 const normalize = (value) => String(value || '').toLowerCase();
 const valueKey = (deviceId, serviceId, characteristicId) => [deviceId, serviceId, characteristicId].map(normalize).join('|');
 const serviceKey = (deviceId, serviceId) => [deviceId, serviceId].map(normalize).join('|');
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+function markLocalDisconnect(deviceId) {
+  const marker = { expiresAt: Date.now() + 2000 };
+  state.pendingLocalDisconnects.set(deviceId, marker);
+  setTimeout(() => {
+    if (state.pendingLocalDisconnects.get(deviceId) === marker) state.pendingLocalDisconnects.delete(deviceId);
+  }, 2100);
+}
 
 function call(platform, method, options = {}) {
   return new Promise((resolve, reject) => {
@@ -58,9 +67,9 @@ function ensureCallbacks() {
 
   platform.onBLEConnectionStateChange((res) => {
     if (res.connected !== false) return;
-    const pending = state.pendingLocalDisconnects.get(res.deviceId) || 0;
-    if (pending > 0) {
-      state.pendingLocalDisconnects.set(res.deviceId, pending - 1);
+    const pending = state.pendingLocalDisconnects.get(res.deviceId);
+    if (pending && pending.expiresAt >= Date.now()) {
+      state.pendingLocalDisconnects.delete(res.deviceId);
       return;
     }
     const session = state.sessions.get(res.deviceId);
@@ -74,6 +83,16 @@ function ensureCallbacks() {
         callback(res.devices || []);
       } catch (error) {
         console.error('[ble-runtime] discovery callback failed', error);
+      }
+    }
+  });
+
+  platform.onBluetoothAdapterStateChange?.((res) => {
+    for (const callback of [...state.adapterStateListeners]) {
+      try {
+        callback(res);
+      } catch (error) {
+        console.error('[ble-runtime] adapter state callback failed', error);
       }
     }
   });
@@ -165,11 +184,20 @@ export async function connectDevice(deviceId, options = {}) {
   await call(platform, 'createBLEConnection', { deviceId, timeout: options.timeout || 10000 });
   let services = [];
   const expectedServiceUuid = normalize(options.expectedServiceUuid);
-  const discoveryAttempts = expectedServiceUuid ? 3 : 1;
-  for (let attempt = 0; attempt < discoveryAttempts; attempt++) {
-    if (attempt > 0) await sleep(400);
-    services = options.discover === false ? [] : await discoverServices(platform, deviceId);
-    if (!expectedServiceUuid || services.some((service) => normalize(service.uuid) === expectedServiceUuid)) break;
+  try {
+    const discoveryAttempts = expectedServiceUuid ? 3 : 1;
+    for (let attempt = 0; attempt < discoveryAttempts; attempt++) {
+      if (attempt > 0) await sleep(400);
+      services = options.discover === false ? [] : await discoverServices(platform, deviceId);
+      if (!expectedServiceUuid || services.some((service) => normalize(service.uuid) === expectedServiceUuid)) break;
+    }
+    if (expectedServiceUuid && !services.some((service) => normalize(service.uuid) === expectedServiceUuid)) {
+      throw new Error(`expected service not found: ${options.expectedServiceUuid}`);
+    }
+  } catch (error) {
+    markLocalDisconnect(deviceId);
+    await call(platform, 'closeBLEConnection', { deviceId }).catch(() => {});
+    throw error;
   }
   const session = {
     deviceId,
@@ -186,7 +214,7 @@ export async function connectDevice(deviceId, options = {}) {
     },
     async close() {
       if (this.dead) return;
-      state.pendingLocalDisconnects.set(this.deviceId, (state.pendingLocalDisconnects.get(this.deviceId) || 0) + 1);
+      markLocalDisconnect(this.deviceId);
       invalidateSession(this, 'BLE 连接已主动关闭');
       await call(platform, 'closeBLEConnection', { deviceId: this.deviceId }).catch(() => {});
     }
@@ -211,6 +239,13 @@ export function onDiscovery(callback) {
   return () => state.discoveryListeners.delete(callback);
 }
 
+export function onAdapterState(callback) {
+  if (typeof callback !== 'function') throw new Error('adapter state callback must be a function');
+  ensureCallbacks();
+  state.adapterStateListeners.add(callback);
+  return () => state.adapterStateListeners.delete(callback);
+}
+
 export async function openAdapter() {
   return call(ensureCallbacks(), 'openBluetoothAdapter');
 }
@@ -226,7 +261,7 @@ export async function stopDiscovery() {
 export async function closeDevice(deviceId) {
   const session = state.sessions.get(deviceId);
   if (session) return session.close();
-  state.pendingLocalDisconnects.set(deviceId, (state.pendingLocalDisconnects.get(deviceId) || 0) + 1);
+  markLocalDisconnect(deviceId);
   return call(ensureCallbacks(), 'closeBLEConnection', { deviceId });
 }
 
@@ -326,6 +361,7 @@ export function resetBleRuntimeForTesting() {
   state.disconnectListeners.clear();
   state.pendingLocalDisconnects.clear();
   state.discoveryListeners.clear();
+  state.adapterStateListeners.clear();
 }
 
 export function resetBlePlatformAndRuntimeForTesting() {

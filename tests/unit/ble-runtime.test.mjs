@@ -70,3 +70,9 @@ await run('read timeout removes its one-shot value listener', async () => {
   await assert.rejects(readValue(b, SERVICE, CHAR, 5), /超时/);
   assert.equal(getBleRuntimeSnapshotForTesting().valueListenerKeys, 1);
 });
+
+await run('missing expected service closes the half-open connection', async () => {
+  platform.setServices('device-missing', []);
+  await assert.rejects(connectDevice('device-missing', { expectedServiceUuid: SERVICE }), /expected service not found/);
+  assert.ok(platform.calls.some((call) => call.type === 'close' && call.deviceId === 'device-missing'));
+});

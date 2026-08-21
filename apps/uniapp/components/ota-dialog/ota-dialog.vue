@@ -15,7 +15,7 @@
         
         <view v-else class="ota-progress-container">
           <text class="ota-progress-text">{{progressPercent}}%</text>
-          <progress :percent="progressPercent" stroke-width="12" activeColor="#007AFF" />
+          <progress :percent="progressPercent" stroke-width="12" activeColor="#1B6DFF" />
           <text class="ota-progress-detail">{{sentBytes}} / {{totalBytes}} Bytes</text>
         </view>
         
@@ -192,51 +192,59 @@ const cancel = () => {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(10, 20, 35, 0.42);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 999;
+  padding: 32rpx;
 }
 .ota-modal-content {
-  width: 85%;
-  background: #fff;
-  border-radius: 12px;
+  width: 100%;
+  background: linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(242,248,255,.96) 100%);
+  border-radius: 34rpx;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 24rpx 60rpx rgba(10,20,35,.18);
 }
 .ota-header {
-  padding: 16px;
-  background-color: #f8f8f8;
-  border-bottom: 1px solid #eee;
+  padding: 28rpx 30rpx;
+  border-bottom: 1rpx solid rgba(20,76,136,.08);
   text-align: center;
 }
 .ota-title {
-  font-size: 16px;
-  font-weight: bold;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: var(--ble-text);
 }
 .ota-body {
-  padding: 20px;
-  min-height: 120px;
+  padding: 30rpx;
+  min-height: 260rpx;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: 16rpx;
 }
 .ota-desc {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 16px;
+  font-size: 24rpx;
+  line-height: 1.6;
+  color: var(--ble-text-subtle);
+  margin-bottom: 16rpx;
   display: block;
 }
 .ota-select-btn {
-  background-color: #f0f0f0;
-  color: #333;
-  font-size: 14px;
+  height: 84rpx;
+  border-radius: 999rpx;
+  border: none;
+  background: rgba(27,109,255,.08);
+  color: var(--ble-brand);
+  font-size: 26rpx;
+  font-weight: 700;
 }
+.ota-select-btn::after { border: none; }
 .ota-filename {
-  font-size: 12px;
-  color: #999;
-  margin-top: 8px;
+  font-size: 22rpx;
+  color: var(--ble-text-muted);
+  margin-top: 8rpx;
   word-break: break-all;
   display: block;
 }
@@ -246,45 +254,49 @@ const cancel = () => {
   align-items: center;
 }
 .ota-progress-text {
-  font-size: 24px;
-  font-weight: bold;
-  color: #007AFF;
-  margin-bottom: 10px;
+  font-size: 42rpx;
+  font-weight: 700;
+  color: var(--ble-brand);
+  margin-bottom: 12rpx;
 }
 .ota-progress-detail {
-  font-size: 12px;
-  color: #999;
-  margin-top: 8px;
+  font-size: 22rpx;
+  color: var(--ble-text-muted);
+  margin-top: 10rpx;
 }
 .ota-status-text {
-  font-size: 13px;
-  margin-top: 15px;
+  font-size: 22rpx;
+  margin-top: 10rpx;
   text-align: center;
   display: block;
 }
-.info { color: #007AFF; }
-.success { color: #4caf50; }
-.error { color: #f44336; }
+.info { color: var(--ble-brand); }
+.success { color: #0e9c82; }
+.error { color: var(--ble-red); }
 
 .ota-footer {
   display: flex;
-  border-top: 1px solid #eee;
+  gap: 14rpx;
+  padding: 0 30rpx 30rpx;
 }
 .ota-btn {
   flex: 1;
-  border-radius: 0;
+  border-radius: 999rpx;
   border: none;
-  font-size: 15px;
+  font-size: 27rpx;
+  height: 84rpx;
+  line-height: 84rpx;
+  font-weight: 700;
 }
 .ota-btn::after {
   border: none;
 }
 .cancel {
-  background-color: #fff;
-  color: #666;
+  background-color: rgba(96,117,141,.08);
+  color: var(--ble-text-subtle);
 }
 .confirm {
-  background-color: #007AFF;
+  background: var(--ble-gradient-brand);
   color: #fff;
 }
 button[disabled] {

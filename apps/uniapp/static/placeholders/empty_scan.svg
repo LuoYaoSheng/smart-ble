@@ -1,8 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
-  <path d="M12 2v20" stroke-opacity="0.2"/>
-  <path d="M2 12h20" stroke-opacity="0.2"/>
-  <circle cx="12" cy="12" r="8" stroke-dasharray="4 4" />
-  <circle cx="12" cy="12" r="3" fill="currentColor" fill-opacity="0.2"/>
-  <path d="M17.5 6.5l-2 2" />
-  <path d="M6.5 6.5l2 2" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none">
+  <defs>
+    <linearGradient id="scan-bg" x1="36" y1="28" x2="204" y2="208" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F7FBFF"/>
+      <stop offset="1" stop-color="#EAF4FF"/>
+    </linearGradient>
+    <linearGradient id="scan-accent" x1="74" y1="64" x2="174" y2="164" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1B6DFF"/>
+      <stop offset="1" stop-color="#7BE0FF"/>
+    </linearGradient>
+  </defs>
+  <rect x="24" y="24" width="192" height="192" rx="56" fill="url(#scan-bg)"/>
+  <circle cx="120" cy="120" r="58" stroke="#CBE0F6" stroke-width="8" stroke-dasharray="12 14"/>
+  <circle cx="120" cy="120" r="26" fill="#1B6DFF" fill-opacity=".1" stroke="#1B6DFF" stroke-width="8"/>
+  <circle cx="120" cy="120" r="10" fill="#1B6DFF"/>
+  <path d="M120 56v16M120 168v16M56 120h16M168 120h16" stroke="#8CB5E2" stroke-width="8" stroke-linecap="round"/>
+  <path d="M166 74 150 90M90 150 74 166M166 166 150 150M90 90 74 74" stroke="#9ACAF1" stroke-width="8" stroke-linecap="round"/>
+  <path d="M154 86a48 48 0 0 1 0 68M86 86a48 48 0 0 0 0 68" stroke="url(#scan-accent)" stroke-width="8" stroke-linecap="round"/>
 </svg>

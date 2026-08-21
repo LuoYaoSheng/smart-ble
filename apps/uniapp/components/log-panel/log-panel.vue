@@ -1,20 +1,32 @@
 <template>
 	<view class="log-panel">
 		<view class="panel-header">
-			<text class="panel-title">通信日志</text>
+			<view class="title-group">
+				<text class="panel-title">通信日志</text>
+				<text class="panel-caption">保留最近操作、返回结果和异常信息，便于复制排查。</text>
+			</view>
 		</view>
+
 		<scroll-view class="log-content" scroll-y :scroll-top="scrollTop">
-			<view v-for="(log, index) in logs" :key="index" class="log-item">
-				<text class="log-time">{{log.time}}</text>
-				<text class="log-type" :class="typeClass(log.type)">{{log.type}}</text>
-				<text class="log-message">{{log.message}}</text>
+			<view v-if="logs.length === 0" class="ble-empty-card log-empty">
+				<image src="/static/placeholders/empty_log.png" class="ble-empty-image" mode="aspectFit"></image>
+				<text class="ble-empty-title">还没有日志记录</text>
+				<text class="ble-empty-copy">连接设备、读写特征值或开启监听后，这里会持续追加通信日志。</text>
+			</view>
+
+			<view v-else>
+				<view v-for="(log, index) in logs" :key="index" class="log-item">
+					<text class="log-time ble-mono">{{ formatLogTime(log) }}</text>
+					<text class="log-type" :class="typeClass(log.type)">{{ log.type }}</text>
+					<text class="log-message ble-mono">{{ log.message }}</text>
+				</view>
 			</view>
 		</scroll-view>
 	</view>
 </template>
 
 <script setup>
-const props = defineProps({
+defineProps({
 	logs: {
 		type: Array,
 		default: () => []
@@ -25,8 +37,6 @@ const props = defineProps({
 	}
 });
 
-/* log.type 是中文（系统/错误/读取/写入/接收/成功），WXSS 类选择器不允许
- * 非 ASCII——映射为 ASCII 类名，样式见下方 .log-type.sys 等 */
 const TYPE_CLASS = {
 	'系统': 'sys',
 	'错误': 'err',
@@ -35,22 +45,117 @@ const TYPE_CLASS = {
 	'接收': 'recv',
 	'成功': 'ok'
 };
-const typeClass = (t) => TYPE_CLASS[t] || 'sys';
+
+const typeClass = (type) => TYPE_CLASS[type] || 'sys';
+const formatLogTime = (log) => log.timestamp || log.time || '--:--:--';
 </script>
 
 <style scoped>
-.log-panel { flex: 1; display: flex; flex-direction: column; background-color: #fff; margin-top: 20rpx; border-top-left-radius: 24rpx; border-top-right-radius: 24rpx; box-shadow: 0 -4rpx 16rpx rgba(0,0,0,0.04); overflow: hidden; }
-.panel-header { display: flex; justify-content: space-between; align-items: center; padding: 24rpx 30rpx; background-color: #f8f8f8; border-bottom: 2rpx solid #eee; }
-.panel-title { font-size: 30rpx; font-weight: bold; color: #333; }
-.log-content { flex: 1; padding: 20rpx 30rpx; height: 0; min-height: 200rpx; }
-.log-item { margin-bottom: 16rpx; display: flex; align-items: flex-start; font-size: 24rpx; font-family: monospace; line-height: 1.4; word-break: break-all; }
-.log-time { color: #999; margin-right: 12rpx; flex-shrink: 0; }
-.log-type { padding: 2rpx 8rpx; border-radius: 6rpx; margin-right: 12rpx; font-weight: bold; flex-shrink: 0; font-size: 20rpx; }
-.log-type.sys { background-color: rgba(0, 122, 255, 0.1); color: #007AFF; }
-.log-type.err { background-color: rgba(255, 59, 48, 0.1); color: #FF3B30; }
-.log-type.read { background-color: rgba(52, 199, 89, 0.1); color: #34C759; }
-.log-type.write { background-color: rgba(255, 149, 0, 0.1); color: #FF9500; }
-.log-type.recv { background-color: rgba(88, 86, 214, 0.1); color: #5856D6; }
-.log-type.ok { background-color: rgba(52, 199, 89, 0.1); color: #34C759; }
-.log-message { color: #333; flex: 1; white-space: pre-wrap; }
+.log-panel {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	margin-top: 20rpx;
+	border-radius: 30rpx 30rpx 0 0;
+	background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(242, 248, 255, 0.96) 100%);
+	box-shadow: 0 -12rpx 34rpx rgba(17, 43, 78, 0.06);
+	overflow: hidden;
+}
+
+.panel-header {
+	padding: 24rpx 28rpx 18rpx;
+	border-bottom: 1rpx solid rgba(20, 76, 136, 0.08);
+}
+
+.title-group {
+	display: flex;
+	flex-direction: column;
+	gap: 6rpx;
+}
+
+.panel-title {
+	font-size: 30rpx;
+	font-weight: 700;
+	color: var(--ble-text);
+}
+
+.panel-caption {
+	font-size: 22rpx;
+	line-height: 1.5;
+	color: var(--ble-text-muted);
+}
+
+.log-content {
+	flex: 1;
+	height: 0;
+	padding: 18rpx 28rpx 26rpx;
+}
+
+.log-empty {
+	min-height: 280rpx;
+}
+
+.log-item {
+	display: flex;
+	align-items: flex-start;
+	gap: 12rpx;
+	padding: 12rpx 0;
+	border-bottom: 1rpx solid rgba(20, 76, 136, 0.06);
+	font-size: 22rpx;
+	line-height: 1.65;
+}
+
+.log-item:last-child {
+	border-bottom: none;
+}
+
+.log-time {
+	flex-shrink: 0;
+	color: var(--ble-text-muted);
+}
+
+.log-type {
+	flex-shrink: 0;
+	padding: 4rpx 10rpx;
+	border-radius: 999rpx;
+	font-size: 20rpx;
+	font-weight: 700;
+}
+
+.log-type.sys {
+	background: rgba(27, 109, 255, 0.1);
+	color: var(--ble-brand);
+}
+
+.log-type.err {
+	background: rgba(242, 85, 95, 0.12);
+	color: var(--ble-red);
+}
+
+.log-type.read {
+	background: rgba(23, 199, 168, 0.12);
+	color: #0e9c82;
+}
+
+.log-type.write {
+	background: rgba(255, 159, 67, 0.14);
+	color: #d37a12;
+}
+
+.log-type.recv {
+	background: rgba(94, 118, 255, 0.12);
+	color: #5662d6;
+}
+
+.log-type.ok {
+	background: rgba(23, 199, 168, 0.12);
+	color: #0e9c82;
+}
+
+.log-message {
+	flex: 1;
+	white-space: pre-wrap;
+	word-break: break-all;
+	color: var(--ble-text-subtle);
+}
 </style>

@@ -2,7 +2,8 @@ export function createFakeBlePlatform() {
   const callbacks = {
     value: null,
     connection: null,
-    discovery: null
+    discovery: null,
+    adapter: null
   };
   const calls = [];
   const servicesByDevice = new Map();
@@ -36,6 +37,9 @@ export function createFakeBlePlatform() {
     },
     onBluetoothDeviceFound(cb) {
       callbacks.discovery = cb;
+    },
+    onBluetoothAdapterStateChange(cb) {
+      callbacks.adapter = cb;
     },
     openBluetoothAdapter(opts) {
       calls.push({ type: 'open-adapter', ...opts });
