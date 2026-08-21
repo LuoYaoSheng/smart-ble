@@ -200,8 +200,9 @@ image {
 }
 
 .ble-pill-tab.active {
-  color: #ffffff;
-  background: var(--ble-gradient-brand);
+  color: #ffffff !important;
+  background-color: #155dff;
+  background-image: linear-gradient(135deg, #155dff 0%, #258ff7 100%);
   box-shadow: 0 10rpx 24rpx rgba(27, 109, 255, 0.18);
 }
 

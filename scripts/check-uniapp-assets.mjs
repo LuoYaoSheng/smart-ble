@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { access, readFile, readdir } from 'node:fs/promises';
+import { access, readFile, readdir, stat } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -28,8 +28,20 @@ for (const tab of pages.tabBar?.list || []) {
 }
 
 const missing = [];
+const oversized = [];
+let pngBytes = 0;
 for (const reference of references) {
-  try { await access(join(uniapp, reference.slice(1))); } catch { missing.push(reference); }
+  const path = join(uniapp, reference.slice(1));
+  try {
+    await access(path);
+    if (reference.endsWith('.png')) {
+      const size = (await stat(path)).size;
+      pngBytes += size;
+      if (size > 250 * 1024) oversized.push(reference);
+    }
+  } catch { missing.push(reference); }
 }
 if (missing.length) throw new Error(`UniApp static assets missing:\n${missing.join('\n')}`);
-console.log(`UniApp asset gate PASS (${references.size} references)`);
+if (oversized.length) throw new Error(`UniApp PNG assets exceed 250 KiB; compress before commit:\n${oversized.join('\n')}`);
+if (pngBytes > 650 * 1024) throw new Error(`UniApp referenced PNG budget exceeded: ${pngBytes} bytes > 650 KiB`);
+console.log(`UniApp asset gate PASS (${references.size} references, ${pngBytes} PNG bytes)`);

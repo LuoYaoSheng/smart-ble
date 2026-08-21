@@ -7,10 +7,10 @@
 			<view class="device-info">
 				<view class="name-container">
 					<text class="device-name">{{ device.name || '未知设备' }}</text>
-					<text class="device-type">{{ isConnectionTab ? '连接中' : getDeviceType(device.name) }}</text>
+					<text class="device-type" :class="{ profile: device.profileId }">{{ isConnectionTab ? '连接中' : device.profileName || getDeviceType(device.name) }}</text>
 				</view>
 				<text class="device-id ble-mono">{{ formatDeviceId(device.deviceId) }}</text>
-				<text class="device-meta">{{ isConnectionTab ? '点击查看服务、特征值和通信日志' : '点击卡片查看广播原始数据' }}</text>
+				<text class="device-meta">{{ deviceMeta }}</text>
 			</view>
 		</view>
 
@@ -38,13 +38,17 @@
 			>
 				断开
 			</button>
+			<view v-else-if="device.profileId" class="profile-actions">
+				<button class="action-btn action-btn-secondary" size="mini" @click.stop="onGenericClick">通用调试</button>
+				<button class="action-btn action-btn-primary" size="mini" @click.stop="onProfileClick">{{ device.profileMatch >= 2 ? '专属配置' : '连接确认' }}</button>
+			</view>
 			<button
 				v-else
-					class="action-btn action-btn-primary"
+				class="action-btn action-btn-primary"
 					:class="{ disabled: device.connected }"
 				size="mini"
 				:disabled="device.connected"
-				@click.stop="onActionClick"
+				@click.stop="onGenericClick"
 			>
 				{{ device.connected ? '已连接' : '进入调试' }}
 			</button>
@@ -53,15 +57,27 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
+
 const props = defineProps({
 	device: { type: Object, required: true },
 	isConnectionTab: { type: Boolean, default: false }
 });
 
-const emit = defineEmits(['click', 'action']);
+const emit = defineEmits(['click', 'action', 'generic', 'profile']);
 
 const onClick = () => emit('click', props.device);
 const onActionClick = () => emit('action', props.device);
+const onGenericClick = () => emit('generic', props.device);
+const onProfileClick = () => emit('profile', props.device);
+
+const deviceMeta = computed(() => {
+	if (props.isConnectionTab) return '点击查看服务、特征值和通信日志';
+	if (props.device.profileId) return props.device.profileMatch >= 2
+		? '已匹配专属 Profile，也可以继续使用通用 BLE 调试。'
+		: '名称可能匹配专属 Profile，连接后需确认设备身份。';
+	return '点击卡片查看广播原始数据';
+});
 
 const formatDeviceId = (id) => (id ? (id.length > 17 ? `${id.substring(0, 17)}...` : id) : '未知 ID');
 
@@ -151,6 +167,8 @@ const getSignalLevel = (rssi) => {
 	font-weight: 700;
 }
 
+.device-type.profile { background: rgba(23,199,168,.14); color: #0e9c82; }
+
 .device-id {
 	font-size: 22rpx;
 	color: var(--ble-text-muted);
@@ -225,6 +243,9 @@ const getSignalLevel = (rssi) => {
 	background: var(--ble-gradient-brand);
 	box-shadow: 0 12rpx 28rpx rgba(27, 109, 255, 0.16);
 }
+
+.action-btn-secondary { color: var(--ble-brand); background: rgba(27,109,255,.08); }
+.profile-actions { display: flex; gap: 10rpx; margin-left: auto; }
 
 .action-btn-primary.disabled {
 	background: rgba(96, 117, 141, 0.16);

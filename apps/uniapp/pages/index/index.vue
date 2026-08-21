@@ -24,12 +24,6 @@
 							{{ currentTab === 0 ? '点开卡片查看广播原始数据，按按钮进入设备详情。' : '保留最近连接入口，继续调试服务与通信日志。' }}
 						</text>
 					</view>
-					<view class="ble-chip ble-chip-soft">
-						<text v-if="currentTab === 0">
-							{{ filteredDevices.length === devices.length ? `发现 ${filteredDevices.length} 台` : `显示 ${filteredDevices.length} / ${devices.length}` }}
-						</text>
-						<text v-else>{{ connectedDevicesList.length }} 台已连接</text>
-					</view>
 					<text v-if="currentTab === 0" class="filter-toggle" @click="showFilters = !showFilters">{{ showFilters ? '收起筛选' : '筛选' }}</text>
 				</view>
 				<filter-panel v-if="currentTab === 0 && showFilters" v-model="filterSettings" class="inline-filter" />
@@ -43,7 +37,8 @@
 								:key="device.deviceId"
 								:device="device"
 								@click="showAdvertisingData"
-								@action="connectDevice"
+								@generic="connectDevice"
+								@profile="openProfileDevice"
 							/>
 						</template>
 					</scroll-view>
@@ -81,17 +76,19 @@ import EmptyState from '../../components/common/empty-state.vue';
 import ScanSummary from '../../components/scan/scan-summary.vue';
 import AdvertisementDialog from '../../components/scan/advertisement-dialog.vue';
 import { useBleStore } from '../../store/ble';
+import { useHidStore } from '../../store/hid';
 import { closeDevice } from '../../services/ble-runtime/index.js';
 import { useBleScan } from '../../composables/use-ble-scan.js';
 
 const bleStore = useBleStore();
+const hidStore = useHidStore();
 
 const showAdvDataModal = ref(false);
 const selectedAdvertisementDevice = ref(null);
 const showFilters = ref(false);
 
 const currentTab = ref(0);
-const tabItems = ['扫描发现', '已连接'];
+const tabItems = ['扫描设备', '已连接'];
 
 
 const { filterSettings, devices, filteredDevices, connectedDevices: connectedDevicesList, isScanning, scanError, bleState, start: startScan, toggle: toggleScan, prepareConnect } = useBleScan();
@@ -108,6 +105,12 @@ const connectDevice = async (device) => {
 	uni.navigateTo({
 		url: `/pages/device/detail?device=${encodeURIComponent(JSON.stringify(device))}`
 	});
+};
+
+const openProfileDevice = async (device) => {
+	await prepareConnect();
+	hidStore.setCurrentDevice(device);
+	uni.navigateTo({ url: `/pages/hid/add?deviceId=${encodeURIComponent(device.deviceId)}` });
 };
 
 const disconnectDeviceFromList = (device) => {

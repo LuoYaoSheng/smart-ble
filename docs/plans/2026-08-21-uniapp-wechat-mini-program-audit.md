@@ -16,7 +16,7 @@
 | P1 | 广播查看空白且难判别“设备没发”还是“工具没取到” | `store/ble.js:122-123` 仅变换 `advertisData`、`advertisServiceUUIDs`；`pages/index/index.vue:290-294` 仅展示这两个字段 | 未显示 `localName`、`serviceData`、`manufacturerData`、原始字段存在性/长度 | 创建 `AdvertisementSnapshot`，显示“未提供/空 payload/长度 0”三个不同状态，并支持 service/manufacturer data 的 hex 解码 |
 | P1 | 关于页新图标/横幅不显示 | 源码资源存在：`static/brand/about-hero.png`、`static/other-apps/*.png`；当前 `unpackage/dist/dev/mp-weixin/static/brand/`、`other-apps/`、`share.png` 不存在 | 代码已经引用新绝对路径（`pages/about/index.vue:5,13,98,147`），但微信构建产物仍是旧资源集 | 先做可复现的 clean build；CI/assert 脚本检查所有静态 `src` 在 dist 中存在；页面提供 image error fallback |
 | P1 | `onBluetoothAdapterStateChange` 没有统一托管或注销 | `pages/index/index.vue:195-199` 页面直接注册 | 仍存在 Runtime 之外的全局 BLE listener，页面重建时可能堆叠 | Runtime 统一注册并暴露 `onAdapterState`；页面只订阅/取消订阅 |
-| P2 | Smart HID 入口把 BLE “已打开”显示成 “Ready” | `pages/hid/index.vue:30-37` | 适配器可用不代表设备已发现、已连接或可配网 | 用 `adapterReady`、`lastScan`、`session` 分开表达 |
+| P2 | 独立 Smart HID 入口把 BLE “已打开”显示成 “Ready” | 原 `pages/hid/index.vue` | 适配器可用不代表设备已发现、已连接或可配网 | 已移除独立入口；首页按 Profile 匹配和连接确认表达 |
 | P2 | 诊断页无法从历史设备自行建立会话 | `pages/hid/diagnostics.vue:59-66` | 已知设备页面跳诊断，但诊断只读内存 session | 诊断页用 deviceId 重连并验证 Profile，或将按钮改为“返回向导连接后诊断” |
 
 ## 2. 当前扫描流程
@@ -98,7 +98,7 @@ sequenceDiagram
 |---|---|---|---|---|
 | `pages/index/index` | 扫描、查看广播、进入通用 GATT 调试 | 主入口 | 双 adapter open、全局状态 listener、无 scan 失败面 | ScanSession 面板：状态、轮次、时间、错误、结果；广播 snapshot |
 | `pages/device/detail` | 通用 GATT 读写/notify | 已迁 Runtime | 需验证返回列表的连接状态同步 | 保持通用调试，不泄漏 Smart HID 语义 |
-| `pages/hid/index` | 第一方 Smart HID 方案入口 | 历史记录与入口已分开 | “已启用/Ready”措辞会误导为实时状态 | 历史/实时/可连接三个标签分离 |
+| 原 `pages/hid/index` | 第一方 Smart HID 独立入口 | 已移除 | 独立 Tab 与通用扫描重复 | 首页扫描卡片直接提供通用/专属入口 |
 | `pages/hid/add` | Smart HID 配网 | 用 Profile 过滤扫描 | 与通用扫描共用全局 session，无 session 状态文案 | 显示弱/强匹配、扫描错误、重试和取消 |
 | `pages/hid/detail` | 查看历史配网资料 | 可导航 | 没有实时会话建立 | 明示“历史记录”，提供连接后刷新 |
 | `pages/hid/diagnostics` | 读取当前设备状态 | 有 UI | 依赖内存连接，历史入口常失败 | 以 deviceId 建立/恢复 session 后诊断 |

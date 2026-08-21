@@ -8,7 +8,7 @@
 | F004 | GATT 调试 | 服务发现、读写、notify、OTA | P005、Runtime | BLE GATT | 🟡 E1/E2 单测局部 |
 | F005 | Smart HID 识别 | 从通用发现中筛选 Profile | P003/Profile | UUID、Device Info | 🟡 E1/E2 单测 |
 | F006 | Smart HID 配网 | Wi-Fi+Hub+Token 下发并等待结果 | P003/transport | BLE、相机扫码 | 🟡 E1/E2 协议单测 |
-| F007 | Smart HID 历史 | 看最近配置、不误解为在线 | P002/P004/Pinia | 无 | ⚠️ E1（不持久化） |
+| F007 | Smart HID 非敏感记录 | 配网后保留最近配置元数据 | P004/Pinia | 本地存储 | 🟡 E2；无独立顶级页面 |
 | F008 | Smart HID 诊断 | 从历史设备诊断 | P006 | BLE 重连/读 | ⚠️ E1 |
 | F009 | 手机外设广播 | 广播自定义数据 | P007 | 原生插件/微信 BLE peripheral | 🟡 E1，微信待证 |
 | F010 | 关于/资源 | 正常显示品牌/关联应用 | P008/static | image | ❌ E1+dist 检查 |

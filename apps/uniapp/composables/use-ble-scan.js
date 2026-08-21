@@ -1,6 +1,7 @@
 import { computed, ref } from 'vue';
 import { onHide, onLoad, onUnload } from '@dcloudio/uni-app';
 import { useBleStore } from '../store/ble';
+import { matchScannedDevices } from '../services/provisioning/profiles.js';
 
 export function requestBleScanPermission() {
   // #ifdef MP-WEIXIN
@@ -30,7 +31,18 @@ export function useBleScan() {
   const store = useBleStore();
   const filterSettings = ref({ rssi: -100, prefix: '', hideNoName: false });
 
-  const devices = computed(() => store.scannedDevices);
+  const devices = computed(() => {
+    const matches = new Map(matchScannedDevices(store.scannedDevices).map((match) => [match.device.deviceId, match]));
+    return store.scannedDevices.map((device) => {
+      const match = matches.get(device.deviceId);
+      return match ? {
+        ...device,
+        profileId: match.profile.id,
+        profileName: match.profile.displayName,
+        profileMatch: match.matchLevel
+      } : device;
+    });
+  });
   const filteredDevices = computed(() => devices.value.filter((device) => {
     if (device.RSSI < filterSettings.value.rssi) return false;
     if (filterSettings.value.hideNoName && !device.name) return false;

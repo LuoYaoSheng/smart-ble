@@ -118,11 +118,10 @@ This is the smallest complete SmartBLE runtime. It should be the mobile “contr
 +--------------------------------------------------+
 | Result panel                                     |
 |  - ordinary BLE card => generic detail/debug     |
-|  - Profile card => badge + mode choice           |
+|  - Profile card => badge + two direct actions    |
 |  - filter is a secondary/collapsible action      |
 +--------------------------------------------------+
 | Modal: advertisement raw data                    |
-| Modal: generic / Profile / detail mode choice    |
 +--------------------------------------------------+
 ```
 
@@ -141,12 +140,8 @@ This is the smallest complete SmartBLE runtime. It should be the mobile “contr
 +--------------------------------------------------+
 | Device card                                      |
 |  name | id | RSSI | Profile badge/confidence    |
-|  [Details] [Choose mode]                         |
-+--------------------------------------------------+
-| Mode choice                                      |
-|  Profile workflow (recommended when confirmed)   |
-|  Generic BLE debugging                           |
-|  Device detail                                   |
+|  tap card => Details                             |
+|  [Generic debug] [Profile workflow]              |
 +--------------------------------------------------+
 | Device detail                                    |
 |  Generic BLE capability section                  |

@@ -4,7 +4,7 @@
 flowchart TD
   A[P001 通用扫描] -->|设备卡片| B[广播 Snapshot]
   A -->|进入调试| C[P005 通用 GATT]
-  D[P002 Smart HID] --> E[P003 配网向导]
+  A -->|Smart HID 专属配置| E[P003 配网向导]
   E -->|完成| F[P004 HID 历史详情]
   F -->|重新配置| E
   F -->|诊断| G[P006 诊断]
