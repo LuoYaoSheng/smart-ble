@@ -1,27 +1,27 @@
 import { defineStore } from 'pinia';
-import { ref, reactive, computed } from 'vue';
+import { ref, computed } from 'vue';
 import { logger } from '../../../core/ble-core/utils/logger';
 
 /**
  * Smart HID 模块 Store
  *
- * 职责（依据 docs/smart-hid/MINIAPP_HID_MODULE.md §8）：
+ * 职责：
  *   - smartDevices        BLE 扫描过滤后的 Smart HID 设备列表
- *   - currentDevice       当前选中 / 正在配置的设备
+ *   - currentDevice       当前选中 / 正在配置的设备（含 Device Info 字段）
  *   - provisionSession    当前配网会话状态
  *   - currentStep         Add 向导当前步骤（W01-W06）
- *   - hubInfo             ControlHub 动态 QR 解析结果（敏感，不持久化）
- *   - wifiNetworks        ESP32 Wi-Fi Scan 结果
- *   - progress            W05 配置进度
+ *   - hubInfo             ControlHub 配对 QR 解析结果（敏感，不持久化）
+ *   - provisionStatus     设备 Provision Status 最新快照（notify 驱动）
+ *   - progress            W05 配置进度（由 provisionStatus 状态机映射）
  *   - knownDevices        最近配置过的设备（本地历史，非实时在线）
  *   - diagnostic          诊断结果
  *   - lastError           最近错误
  *
- * 约束（依据 §9 BLE 复用）：
- *   - 必须复用 store/ble.js 的 BLE 能力，不直接调用 uni.writeBLECharacteristicValue
- *   - 真实 Protocomm 在 services/smart-hid/index.js 接入，本 store 只持有状态
+ * 约束：
+ *   - 扫描复用 store/ble.js；GATT 原语统一走 services/provisioning 框架
+ *   - BLE 协议实现在 services/smart-hid/index.js，本 store 只持有状态
  *
- * 敏感字段（hubInfo / Wi-Fi 密码等）不写入持久化存储。
+ * 敏感字段（hubInfo.token / Wi-Fi 密码等）不写入持久化存储。
  */
 export const useHidStore = defineStore('hid', () => {
 	// --- State ---
@@ -29,8 +29,8 @@ export const useHidStore = defineStore('hid', () => {
 	const currentDevice = ref(null);
 	const provisionSession = ref({ active: false, startedAt: null });
 	const currentStep = ref(0);
-	const hubInfo = ref(null);            // 敏感：不持久化
-	const wifiNetworks = ref([]);
+	const hubInfo = ref(null);            // 敏感：不持久化。V1 形态：{ token, host, port }
+	const provisionStatus = ref(null);    // 最新 { state, step, error }
 	const progress = ref({ wifi: 'pending', hub: 'pending', conn: 'pending', usb: 'pending' });
 	const knownDevices = ref([]);          // 本地历史，仅记录 deviceId / name / 元信息
 	const diagnostic = ref(null);
@@ -49,13 +49,9 @@ export const useHidStore = defineStore('hid', () => {
 	};
 
 	const setHubInfo = (info) => {
-		// ControlHub 动态 QR 载荷：{ v, hub_id, host, pairing_port, token, expires_at }
+		// ControlHub 配对 QR 载荷（V1）：{ token, host, port }
 		// token 为一次性短期凭据，仅保存在内存中
 		hubInfo.value = info ? { ...info } : null;
-	};
-
-	const setWifiNetworks = (list) => {
-		wifiNetworks.value = Array.isArray(list) ? list : [];
 	};
 
 	const setProgress = (key, state) => {
@@ -66,6 +62,7 @@ export const useHidStore = defineStore('hid', () => {
 
 	const resetProgress = () => {
 		progress.value = { wifi: 'pending', hub: 'pending', conn: 'pending', usb: 'pending' };
+		provisionStatus.value = null;
 	};
 
 	const setDiagnostic = (items) => {
@@ -80,6 +77,52 @@ export const useHidStore = defineStore('hid', () => {
 	};
 
 	const clearError = () => { lastError.value = null; };
+
+	/**
+	 * 设备 Provision Status（V1 状态机）→ 向导进度行映射。
+	 *
+	 * 状态机：boot/load_config/unprovisioned/provisioning/connecting_wifi/
+	 *         pairing/mqtt_connecting/ready/recovery/error
+	 * 步骤：received/connecting_wifi/wifi_connected/pairing/pairing_success/
+	 *       mqtt_connecting/ready
+	 */
+	const applyProvisionStatus = (status) => {
+		if (!status || !status.state) return;
+		provisionStatus.value = { ...status, at: Date.now() };
+		const { state, error } = status;
+
+		// 错误码 → 对应行 fail（其他行保持当前值）
+		if (error) {
+			const rowByCode = {
+				wifi_failed: 'wifi',
+				invalid_payload: 'wifi',
+				controlhub_unreachable: 'hub',
+				pairing_invalid: 'hub',
+				pairing_expired: 'hub',
+				pairing_used: 'hub',
+				mqtt_invalid: 'conn',
+				storage_failed: 'conn'
+			};
+			const row = rowByCode[error];
+			if (row) progress.value[row] = 'fail';
+			return;
+		}
+
+		const map = {
+			ready: { wifi: 'done', hub: 'done', conn: 'done', usb: 'done' },
+			mqtt_connecting: { wifi: 'done', hub: 'done', conn: 'active', usb: 'pending' },
+			pairing_success: { wifi: 'done', hub: 'done', conn: 'pending', usb: 'pending' },
+			pairing: { wifi: 'done', hub: 'active', conn: 'pending', usb: 'pending' },
+			wifi_connected: { wifi: 'done', hub: 'pending', conn: 'pending', usb: 'pending' },
+			connecting_wifi: { wifi: 'active', hub: 'pending', conn: 'pending', usb: 'pending' },
+			provisioning: { wifi: 'pending', hub: 'pending', conn: 'pending', usb: 'pending' },
+			unprovisioned: { wifi: 'pending', hub: 'pending', conn: 'pending', usb: 'pending' },
+			recovery: { wifi: 'warn', hub: 'warn', conn: 'warn', usb: 'pending' },
+			error: { wifi: 'warn', hub: 'warn', conn: 'warn', usb: 'pending' }
+		};
+		const m = map[state];
+		if (m) progress.value = { ...progress.value, ...m };
+	};
 
 	/**
 	 * 配置完成后提交到 knownDevices（本地历史，非实时在线状态）
@@ -133,7 +176,7 @@ export const useHidStore = defineStore('hid', () => {
 		provisionSession,
 		currentStep,
 		hubInfo,
-		wifiNetworks,
+		provisionStatus,
 		progress,
 		knownDevices,
 		diagnostic,
@@ -144,9 +187,9 @@ export const useHidStore = defineStore('hid', () => {
 		setSmartDevices,
 		setCurrentDevice,
 		setHubInfo,
-		setWifiNetworks,
 		setProgress,
 		resetProgress,
+		applyProvisionStatus,
 		setDiagnostic,
 		setLastError,
 		clearError,

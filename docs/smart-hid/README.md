@@ -7,7 +7,7 @@
 
 | 文档 | 内容 | 协议事实源 |
 |------|------|-----------|
-| [BLE_PROVISIONING_PROTOCOL.md](./BLE_PROVISIONING_PROTOCOL.md) | Smart HID BLE 配网协议 v1.1 | [`core/protocols/hid-provisioning-protocol.ts`](../../core/protocols/hid-provisioning-protocol.ts) |
+| [BLE_PROVISIONING_PROTOCOL.md](./BLE_PROVISIONING_PROTOCOL.md) | Smart HID BLE 配网协议 V1 | [`core/protocols/hid-provisioning-protocol.ts`](../../core/protocols/hid-provisioning-protocol.ts) |
 | [MINIAPP_HID_MODULE.md](./MINIAPP_HID_MODULE.md) | BLE Toolkit+ 小程序 HID 模块页面结构 v1.2 | [`apps/uniapp/pages/hid/`](../../apps/uniapp/pages/hid/) |
 
 ## 与代码的对应关系

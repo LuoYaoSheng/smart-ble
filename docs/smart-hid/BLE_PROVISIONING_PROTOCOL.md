@@ -1,172 +1,99 @@
-# Smart HID BLE Provisioning Protocol v1.1
+# Smart HID BLE Provisioning Protocol V1
 
-> 修订重点：设备当前没有二维码。
+> **权威定义**：[`core/protocols/hid-provisioning-protocol.ts`](../../core/protocols/hid-provisioning-protocol.ts)（本仓库侧事实源）。
+> **跨仓库正典**：Smart-HID-Workspace `protocols/ble/PROVISIONING_V1.md`（固件与小程序共同遵守；两侧同步修改）。
+> 历史版本 v1.1（Protocomm endpoint / fe5a UUID / 数字错误码）已废弃，溯源见 Smart-HID-Workspace `docs/archive/03`。
 
-## 1. 目标
+## 1. 范围
 
-BLE 只负责：
-- 搜索 Smart HID
-- 建立 BLE 连接
-- 读取 Device Info
-- Wi-Fi 配置
-- 写入 ControlHub Pairing 信息
-- 查询状态
-- 诊断
-- 重启 / Reset Network / Reset Hub
+BLE 只负责：设备发现 / 配网 / 状态查询。**HID 实时控制不走 BLE**（走 ControlHub HTTP → MQTT）。
 
-BLE 不负责 HID 实时控制。
-
-## 2. 当前主流程
+## 2. 流程总览
 
 ```text
-Smart HID 进入 Provisioning Mode
-→ BLE Toolkit+ 搜索附近 Smart HID
-→ 根据 Smart HID Provisioning Service UUID 过滤
-→ 用户选择设备
-→ BLE 连接
-→ 读取 Device Info / Device ID
-→ 扫 ControlHub 动态 Pairing QR
-→ 写入 Hub Address + Pairing Token
-→ Wi-Fi Scan
-→ 用户选择 Wi-Fi
-→ 写 Wi-Fi Credential
-→ ESP32 连接 Wi-Fi
-→ Pair ControlHub
-→ 获取 MQTT Credential
-→ MQTT Connected
-→ USB HID Ready
-→ 完成
+BLE Toolkit+（小程序）
+  → 扫描 Provisioning Service UUID
+  → 连接（Just Works 配对加密）
+  → 读 Device Info
+  → 扫 ControlHub 动态 Pairing QR（shid://pair?token=…&host=…&port=…）
+  → 分帧写入 Provision Input（Wi-Fi + hub + token 一个 JSON）
+  → 订阅 Provision Status
+  → 设备：连 Wi-Fi → POST hub pairing → 拿 MQTT 凭据 → NVS commit → MQTT → READY
 ```
 
-## 3. 设备识别
+注意：配网候选是**单次写入**（Wi-Fi 凭据 + hub 地址 + 一次性 token 同一个 JSON）。
+MQTT 账号密码**不经过小程序**——设备连上 Wi-Fi 后用 token 调 ControlHub 配对接口，凭据在响应里签发给设备。
 
-不依赖 Device QR。
+## 3. GATT 结构
 
-BLE 广播：
-- 专属 Provisioning Service UUID
-- 设备名：`SHID-XXXXXX`
+| 项 | UUID | 权限 |
+|---|---|---|
+| Provisioning Service | `9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04` | — |
+| Device Info | `9f1d1002-e73b-4c8f-9d2a-6f0b5e8a1c04` | read + notify |
+| Provision Input | `9f1d1003-e73b-4c8f-9d2a-6f0b5e8a1c04` | **write（要求加密链路）** |
+| Provision Status | `9f1d1004-e73b-4c8f-9d2a-6f0b5e8a1c04` | read + notify |
 
-设备连接后通过 `hid-info/get_info` 获取：
+广播：ADV 携带 128-bit Service UUID（可据此过滤）；Scan Response 设备名 `SHID-XXXXXXXX`。
 
-```json
-{
-  "product": "smart-hid",
-  "device_id": "HID-A82F94C1",
-  "hardware": "S3-01",
-  "firmware": "1.0.0",
-  "protocol": "1.0",
-  "configured": false,
-  "usb_hid_ready": true
-}
+## 4. 分帧（Provision Input）
+
+```text
+帧 = [seq:u8][total:u8][len:u8][payload:len 字节]
 ```
 
-## 4. ControlHub QR
+- seq 从 0 递增；total = 总块数（1–64）；每块 payload ≤ 128B
+- 客户端按协商 MTU 切块（MTU 23 时每块 17B 同样合法）
+- 收到 seq=0 视为新传输开始（出错可从 0 整体重发）；乱序由设备丢弃报错
+- 组装上限 1024B
 
-整个流程当前只保留 ControlHub 动态二维码。
-
-逻辑载荷：
+## 5. Provision Input（组装后 JSON）
 
 ```json
 {
   "v": 1,
-  "hub_id": "CH-A82F1139",
-  "host": "192.168.1.8",
-  "pairing_port": 17892,
-  "token": "temporary-token",
-  "expires_at": 1786432000
+  "wifi_ssid": "home-net",
+  "wifi_password": "pass1234",
+  "hub_host": "192.168.1.8",
+  "hub_port": 17892,
+  "token": "0123456789abcdef0123456789abcdef"
 }
 ```
 
-Pairing Token：
-- 短期
-- 一次性
-- 随机
-- 成功后立即失效
+`hub_port` 可省略（默认 17892）；token 为 5 分钟一次性，设备不持久化到 active 配置。
 
-## 5. 自定义 Endpoint
+## 6. Device Info / Provision Status
 
-建议：
-- `hid-info`
-- `hub-config`
-- `hid-action`
-
-### hid-info
-- get_info
-
-### hub-config
-- set
-
-### hid-action
-- get_status
-- reboot
-- reset_network
-- reset_hub
-
-## 6. 配置状态
-
-```text
-Wi-Fi:
-unconfigured / connecting / connected / failed
-
-Hub:
-unconfigured / configured / pairing / paired / failed
-
-Control Connection:
-disconnected / connecting / connected
-
-USB:
-not_ready / ready / error
+```json
+{"product":"smart-hid","protocol":"1.0","device_id":"HID-ABCD1234","firmware":"1.1.0","state":"provisioning","provisioned":false}
 ```
 
-## 7. Security
-
-当前不把“每设备二维码凭据”写死为 V1 前提。
-
-开发阶段：
-- 完成 BLE Provisioning 功能闭环
-- Security 策略可配置
-
-量产阶段再确定：
-- 每设备 Setup Code
-- 包装二维码
-- 标签凭据
-- 其他带外凭据方式
-
-## 8. 错误码
-
-```text
-1001 INVALID_REQUEST
-1002 UNSUPPORTED_OPERATION
-1003 UNSUPPORTED_VERSION
-1004 INVALID_PARAMETER
-1005 INVALID_STATE
-
-2001 DEVICE_BUSY
-2002 CONFIG_WRITE_FAILED
-2003 NVS_ERROR
-
-3001 HUB_NOT_CONFIGURED
-3002 HUB_UNREACHABLE
-3003 PAIR_TOKEN_INVALID
-3004 PAIR_TOKEN_EXPIRED
-3005 PAIR_TOKEN_USED
-3006 HUB_REJECTED
-3007 MQTT_AUTH_FAILED
-3008 MQTT_CONNECT_FAILED
-
-4001 SECURITY_SESSION_REQUIRED
-4002 AUTH_FAILED
-4003 SESSION_EXPIRED
-4004 PERMISSION_DENIED
-
-5001 INTERNAL_ERROR
-5002 TIMEOUT
-5003 NETWORK_ERROR
+```json
+{"state":"connecting_wifi","step":"connecting_wifi","error":null}
+{"state":"provisioning","step":"wifi_failed","error":"wifi_failed"}
 ```
 
-## 9. 恢复原则
+状态机 `state`：boot / load_config / unprovisioned / provisioning / connecting_wifi / pairing / mqtt_connecting / ready / recovery / error
 
-- Wi-Fi 失败：只退回 Wi-Fi
-- Pair Token 过期：只重新获取 ControlHub QR
-- MQTT 失败：进入诊断，不重做 Wi-Fi
-- 微信切后台：恢复后重新连接并 GET STATUS
+步骤 `step`：received / connecting_wifi / wifi_connected / pairing / pairing_success / mqtt_connecting / ready
+
+## 7. 错误码（稳定字符串）
+
+| 错误码 | 含义 | 客户端提示 |
+|---|---|---|
+| `invalid_payload` | candidate JSON/字段非法 | 检查输入 |
+| `wifi_failed` | Wi-Fi 连不上 | 检查 SSID/密码 |
+| `controlhub_unreachable` | pairing 端点不可达 | 检查 ControlHub 运行 / 地址可达 |
+| `pairing_invalid` | HTTP 404 token 不存在 | 重新扫码 |
+| `pairing_expired` | HTTP 410 token 过期 | 重新扫码 |
+| `pairing_used` | HTTP 409 token 已消费 | 重新扫码 |
+| `mqtt_invalid` | MQTT 连接失败 | 进入诊断 |
+| `storage_failed` | NVS 写失败 / 版本未知 | 重试或联系支持 |
+
+恢复原则：Wi-Fi 失败只退回 Wi-Fi；token 失效只重新扫码；MQTT 失败进诊断不重做 Wi-Fi；小程序切后台恢复后重连并读 Status。
+
+## 8. 安全模型（如实声明）
+
+- Provision Input 要求加密链路：bonding + LE Secure Connections，Just Works（IO capability = NoInputNoOutput）
+- **Just Works ≠ MITM 抗性**：配对瞬间在场的攻击者理论上可介入（V1 已知取舍）
+- 设备身份根（出厂 Setup Code / Secure Boot / Flash Encryption）属后续 Production Security
+- 设备 READY 后停止 BLE 广播

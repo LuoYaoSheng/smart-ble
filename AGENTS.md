@@ -3,7 +3,7 @@
 ## Project Structure & Module Organization
 `apps/` contains platform clients: `android/` (Kotlin + Compose), `flutter/` (Dart + Riverpod), `uniapp/` (Vue/uni-app), `desktop/electron/`, `desktop/tauri/`, `desktop/macos/`, and `ios/`. Shared BLE abstractions live in `core/ble-core/` and protocol definitions in `core/protocols/`. Hardware examples are under `hardware/esp32/LightBLE/`. Product specs, flow docs, and manual test notes live in `docs/`.
 
-`apps/uniapp/` 已扩展 Smart HID 配网模块：新增 `pages/hid/`（index / add / detail / diagnostics 四页）、`store/hid.js`、`services/smart-hid/`，并在 TabBar 注入 HID 标签（顺序 `设备 | HID | 广播 | 关于`）。Smart HID 公开协议定义在 `core/protocols/hid-provisioning-protocol.ts` 与 `core/protocols/hid-command-schema.ts`，公开侧文档在 `docs/smart-hid/`。该模块复用现有 `store/ble.js` 的 BLE 能力，不直接调用 `uni.*` BLE API。
+`apps/uniapp/` 已扩展 Smart HID 配网模块：新增 `pages/hid/`（index / add / detail / diagnostics 四页）、`store/hid.js`、`services/smart-hid/`，并在 TabBar 注入 HID 标签（顺序 `设备 | HID | 广播 | 关于`）。Smart HID 公开协议定义在 `core/protocols/hid-provisioning-protocol.ts` 与 `core/protocols/hid-command-schema.ts`，公开侧文档在 `docs/smart-hid/`。该模块复用 `store/ble.js` 的扫描能力；GATT 原语统一收敛在 `apps/uniapp/services/provisioning/`（通用配网框架，transport + profile 注册表，Smart HID 是首个注册档案，后续设备家族按 profile 扩展）。
 
 Platform tiers:
 - Primary: `apps/android`, `apps/flutter`, `apps/ios/Sources`, `apps/desktop/tauri`

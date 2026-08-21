@@ -34,6 +34,7 @@
 import { ref, computed } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 import { useHidStore } from '../../store/hid';
+import { smartHidService } from '../../services/smart-hid/index.js';
 
 const hidStore = useHidStore();
 const deviceId = ref('');
@@ -56,8 +57,16 @@ const stateIcon = (s) => s === 'ok' ? '✓' : s === 'warn' ? '!' : s === 'active
 const stateText = (s) => ({ ok: '正常', warn: '异常', active: '检测中', pending: '待检测', fail: '失败' }[s] || s);
 
 const refresh = async () => {
-	// 真实实现：smartHidService.getStatus() → hidStore.setDiagnostic()
-	uni.showToast({ title: '检测中（占位）', icon: 'none' });
+	// V1：读 Device Info + Provision Status（需 BLE 已连接；未连接时提示从配网向导进入）
+	uni.showToast({ title: '检测中…', icon: 'none' });
+	try {
+		const items = await smartHidService.diagnose();
+		if (items[0] && items[0].state === 'fail') {
+			uni.showModal({ title: 'BLE 未连接', content: '诊断需要 BLE 连接。请返回配网向导重新连接设备后再试。', showCancel: false });
+		}
+	} catch (e) {
+		uni.showToast({ title: e.message || '诊断失败', icon: 'none' });
+	}
 };
 
 const toggleAdvanced = () => { showAdvanced.value = !showAdvanced.value; };

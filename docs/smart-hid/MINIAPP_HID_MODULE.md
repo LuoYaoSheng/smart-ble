@@ -77,7 +77,7 @@ W06 完成
 扫描 ControlHub 动态二维码。
 
 ### W04
-Wi-Fi 列表来自 ESP32 Wi-Fi Scan。
+手动输入 Wi-Fi SSID 与密码（V1 协议无设备侧 Wi-Fi 扫描特征）。
 
 ### W05
 显示人话进度：
@@ -151,8 +151,9 @@ store/hid.js
 ```text
 Page
 → hidStore
-→ smart-hid service
-→ bleStore / BLE Adapter
+→ smart-hid service（设备档案：UUID / QR / 状态语义）
+→ services/provisioning（通用配网框架：transport + profiles 注册表）
+→ bleStore（扫描）/ uni.* GATT 原语（收敛在框架层）
 ```
 
 ## 10. Service
@@ -163,16 +164,17 @@ Page
 services/smart-hid/index.js
 ```
 
-对 UI 暴露：
+对 UI 暴露（V1，已真实实现，基于 services/provisioning 通用框架）：
 
 ```text
-scanSmartHid()
-connect()
-getDeviceInfo()
-scanWifi()
-setWifi()
-setControlHub()
-getStatus()
+scanSmartHid()                 // 按 profile 过滤（serviceUuid / SHID- 名前缀）
+connect(deviceId)              // GATT 连接 + MTU + notify 订阅 + 读 Device Info
+getDeviceInfo()                // 读 info 特征
+provisionCandidate(input)      // 单次分帧写入 {v,wifi_ssid,wifi_password,hub_host,hub_port,token}
+waitForProvisionResult(ms)     // 等 ready / error（status notify 驱动）
+getStatus()                    // 读 status 特征
+diagnose()                     // info+status → 诊断行
+disconnect()
 ```
 
-真实 Protocomm 在后续接入。
+旧版 scanWifi / setWifi / setControlHub 两段式写入已随 V1 单次 candidate 移除。
