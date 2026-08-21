@@ -155,6 +155,7 @@ jobs:
           node tests/unit/smart-hid-profile.test.mjs
           node tests/unit/scan-session.test.mjs
           node tests/unit/advertisement.test.mjs
+          node tests/unit/ble-platform.test.mjs
           node scripts/check-uniapp-assets.mjs
       - name: Install UniApp compiler dependencies
         run: npm ci --prefix apps/uniapp

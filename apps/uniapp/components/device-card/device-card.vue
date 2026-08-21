@@ -40,7 +40,8 @@
 			</button>
 			<button
 				v-else
-				class="action-btn action-btn-primary"
+					class="action-btn action-btn-primary"
+					:class="{ disabled: device.connected }"
 				size="mini"
 				:disabled="device.connected"
 				@click.stop="onActionClick"
@@ -225,7 +226,7 @@ const getSignalLevel = (rssi) => {
 	box-shadow: 0 12rpx 28rpx rgba(27, 109, 255, 0.16);
 }
 
-.action-btn-primary[disabled] {
+.action-btn-primary.disabled {
 	background: rgba(96, 117, 141, 0.16);
 	color: var(--ble-text-muted);
 	box-shadow: none;
