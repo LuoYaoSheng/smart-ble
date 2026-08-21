@@ -39,7 +39,7 @@
 				断开
 			</button>
 			<view v-else-if="device.profileId" class="profile-actions">
-				<button class="action-btn action-btn-secondary" size="mini" @click.stop="onGenericClick">通用调试</button>
+				<button class="action-btn action-btn-secondary" size="mini" @click.stop="onGenericClick">连接</button>
 				<button class="action-btn action-btn-primary" size="mini" @click.stop="onProfileClick">{{ device.profileActionLabel || device.profileName }}</button>
 			</view>
 			<button
@@ -50,7 +50,7 @@
 				:disabled="device.connected"
 				@click.stop="onGenericClick"
 			>
-				{{ device.connected ? '已连接' : '进入调试' }}
+				{{ device.connected ? '已连接' : '连接' }}
 			</button>
 		</view>
 	</view>
@@ -74,7 +74,7 @@ const onProfileClick = () => emit('profile', props.device);
 const deviceMeta = computed(() => {
 	if (props.isConnectionTab) return '点击查看服务、特征值和通信日志';
 	if (props.device.profileId) return props.device.profileMatch >= 2
-		? `${props.device.profileActionDescription || '已匹配专属 Profile'}；也可以使用通用 BLE 调试。`
+		? `${props.device.profileActionDescription || '已匹配专属 Profile'}。`
 		: `可能支持${props.device.profileActionLabel || props.device.profileName}，进入后先连接确认身份。`;
 	return '点击卡片查看广播原始数据';
 });

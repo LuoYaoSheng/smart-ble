@@ -64,15 +64,15 @@ Expected steps:
 2. Profile registry classifies it as strong, weak, or no match
 3. list card shows a Profile badge and match confidence
 4. tapping the card opens advertisement data
-5. explicit buttons open generic BLE debugging or the Profile workflow
+5. every device has a `Connect` action; matched devices additionally expose the Profile task
 6. weak matches require service and Device Info verification before being treated as confirmed
 
 Must stay aligned:
 - no Profile owns a separate global scanner
-- generic GATT remains available for Profile devices
+- connection and GATT remain available for Profile devices
 - Profile-specific pages are secondary routes, not top-level product navigation
 - device detail contains a generic section and, when matched, a Profile capability section
-- do not add a second “choose mode” dialog when both direct actions fit on the card
+- do not label the common action “generic debugging”; the user-facing action is simply “Connect”
 - Profile buttons use the task name declared by the Profile, not a generic label such as “special mode”
 
 ### 2. Connected Flow
