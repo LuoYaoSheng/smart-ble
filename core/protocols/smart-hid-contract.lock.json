@@ -1,0 +1,8 @@
+{
+  "canonical_repository": "LuoYaoSheng/smart-hid-workspace",
+  "canonical_commit": "ef4506795b8f689da110b223cc7bcb7770e22e1a",
+  "contract_version": "1",
+  "contract_sha256": "c0b5a25bdf8a1cded7125888aa47145217e9d91cd2f1e4c332600e23815e3433",
+  "tested_smart_hid_version": "1.1.1",
+  "miniapp_version": "1.0.4"
+}

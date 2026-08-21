@@ -131,3 +131,48 @@ jobs:
       - name: Build firmware
         working-directory: hardware/esp32/LightBLE
         run: pio run
+
+  uniapp-contract:
+    name: UniApp Smart HID contract
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Checkout pinned Smart HID canonical contract
+        run: |
+          git clone --no-checkout https://github.com/LuoYaoSheng/smart-hid-workspace.git ../smart-hid-canonical
+          git -C ../smart-hid-canonical checkout --detach ef4506795b8f689da110b223cc7bcb7770e22e1a
+      - name: Verify compatibility lock
+        run: SMART_HID_WORKSPACE=../smart-hid-canonical node scripts/check-smart-hid-contract.mjs
+      - name: Run UniApp provisioning tests
+        run: |
+          node tests/unit/provisioning.test.mjs
+          node tests/unit/profile-contract.test.mjs
+          node tests/unit/ble-runtime.test.mjs
+          node tests/unit/provisioning-transport.test.mjs
+          node tests/unit/smart-hid-profile.test.mjs
+      - name: Install UniApp compiler dependencies
+        run: npm ci --prefix apps/uniapp
+      - name: Compile UniApp Vue SFCs
+        run: |
+          cd apps/uniapp
+          node --input-type=module <<'EOF'
+          import { readdir, readFile } from 'node:fs/promises'
+          import { join } from 'node:path'
+          import { parse, compileTemplate } from '@vue/compiler-sfc'
+          async function files(dir) {
+            const entries = await readdir(dir, { withFileTypes: true })
+            return (await Promise.all(entries.map((entry) => entry.isDirectory() ? files(join(dir, entry.name)) : entry.name.endsWith('.vue') ? [join(dir, entry.name)] : []))).flat()
+          }
+          for (const file of await files('.')) {
+            const source = await readFile(file, 'utf8')
+            const parsed = parse(source, { filename: file })
+            if (parsed.errors.length) throw new Error(`${file}: ${parsed.errors.join('\n')}`)
+            if (parsed.descriptor.template) {
+              const result = compileTemplate({ source: parsed.descriptor.template.content, filename: file, id: 'smart-ble' })
+              if (result.errors.length) throw new Error(`${file}: ${result.errors.join('\n')}`)
+            }
+          }
+          EOF
