@@ -75,6 +75,7 @@
 					<text class="switch-label">添加服务UUID</text>
 					<switch color="#007AFF" :checked="androidSettings.addServiceUuid" @change="onAddServiceUuidChange" />
 				</view>
+			</template>
 			<!-- 厂商ID + 厂商数据（通用字段，对齐 Flutter BroadcastPage） -->
 			<view class="field-group">
 				<text class="field-label">厂商ID (HEX)</text>
