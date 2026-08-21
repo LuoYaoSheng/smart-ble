@@ -1,6 +1,13 @@
 // OTA Manager for UniApp (ESP32 Firmware Flash Protocol)
 // Matches Flutter's MTU 247 + 20ms chunk ruleset.
 
+import {
+  getSession,
+  setMtu,
+  subscribe,
+  writeValue
+} from '../services/ble-runtime/index.js';
+
 export const OTA_UUIDS = {
   SERVICE_OTA: "4fafc201-1fb5-459e-8fcc-c5c9c331914d",
   CHAR_CTRL: "beb5483e-36e1-4688-b7f5-ea07361b26c0",
@@ -16,7 +23,14 @@ export class OtaManager {
     this.totalBytes = 0;
     this.sentBytes = 0;
     this._statusCallback = null;
+    this._statusUnsubscribe = null;
     this._progressCallback = null;
+  }
+
+  get session() {
+    const session = getSession(this.deviceId);
+    if (!session) throw new Error('OTA requires an active BLE session');
+    return session;
   }
 
   log(msg) {
@@ -25,49 +39,31 @@ export class OtaManager {
 
   // Request MTU expansion
   async requestMtu() {
-    return new Promise((resolve) => {
-      // WeChat Mini Program automatically handles MTU negotiated on iOS but on Android needs this:
-      uni.setBLEMTU({
-        deviceId: this.deviceId,
-        mtu: 247,
-        success: (res) => {
-          this.log('MTU expanded to 247');
-          resolve(true);
-        },
-        fail: (err) => {
-          this.log(`MTU expansion failed (or not supported): ${JSON.stringify(err)}`);
-          resolve(false); // Can still proceed, but slower chunks might be needed
-        }
-      });
-    });
+    try {
+      await setMtu(this.session, 247);
+      this.log('MTU expanded to 247');
+      return true;
+    } catch (error) {
+      this.log(`MTU expansion failed (or not supported): ${JSON.stringify(error)}`);
+      return false;
+    }
   }
 
   // Subscribe to status
   async setupStatusListener(onProgress, onError, onSuccess) {
     this._progressCallback = onProgress;
     
-    // First, toggle notify
-    await new Promise((resolve, reject) => {
-      uni.notifyBLECharacteristicValueChange({
-        deviceId: this.deviceId,
-        serviceId: OTA_UUIDS.SERVICE_OTA,
-        characteristicId: OTA_UUIDS.CHAR_STATUS,
-        state: true,
-        success: resolve,
-        fail: reject
-      });
-    });
-
-    // Then catch callbacks globally for this manager
+    this._statusUnsubscribe?.();
     this._statusCallback = (res) => {
-      if (res.deviceId === this.deviceId && res.characteristicId === OTA_UUIDS.CHAR_STATUS) {
-        // Interpret status here if needed
-        // The Flutter version often just auto-updates via chunks sent
-        const value = Array.from(new Uint8Array(res.value));
-        this.log(`OTA Status Data: ${value.join(',')}`);
-      }
+      const value = Array.from(new Uint8Array(res));
+      this.log(`OTA Status Data: ${value.join(',')}`);
     };
-    uni.onBLECharacteristicValueChange(this._statusCallback);
+    this._statusUnsubscribe = await subscribe(
+      this.session,
+      OTA_UUIDS.SERVICE_OTA,
+      OTA_UUIDS.CHAR_STATUS,
+      this._statusCallback
+    );
   }
 
   async startOta(fileBuffer, onProgress, onError, onSuccess) {
@@ -115,6 +111,8 @@ export class OtaManager {
       if (onError) onError(e.message);
     } finally {
       this.isTransmitting = false;
+      this._statusUnsubscribe?.();
+      this._statusUnsubscribe = null;
     }
   }
 
@@ -123,16 +121,12 @@ export class OtaManager {
   }
 
   _writeChunk(buffer) {
-    return new Promise((resolve, reject) => {
-      uni.writeBLECharacteristicValue({
-        deviceId: this.deviceId,
-        serviceId: OTA_UUIDS.SERVICE_OTA,
-        characteristicId: OTA_UUIDS.CHAR_DATA,
-        value: buffer,
-        writeType: 'writeNoResponse', // Fast stream
-        success: resolve,
-        fail: reject
-      });
-    });
+    return writeValue(
+      this.session,
+      OTA_UUIDS.SERVICE_OTA,
+      OTA_UUIDS.CHAR_DATA,
+      buffer,
+      { writeType: 'writeNoResponse' }
+    );
   }
 }

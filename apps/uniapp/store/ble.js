@@ -1,6 +1,12 @@
 import { defineStore } from 'pinia';
 import { ref, reactive, computed } from 'vue';
 import { logger } from '../../../core/ble-core/utils/logger';
+import {
+  onDiscovery,
+  openAdapter,
+  startDiscovery as runtimeStartDiscovery,
+  stopDiscovery as runtimeStopDiscovery
+} from '../services/ble-runtime/index.js';
 
 export const useBleStore = defineStore('ble', () => {
   // --- 状态(State) ---
@@ -82,6 +88,7 @@ export const useBleStore = defineStore('ble', () => {
   let scanStopTimer = null;
   let throttleTimeout = null;
   let deviceBuffer = [];
+  let stopDiscoveryListener = null;
   const throttleInterval = 1000;
   
   // 转换ArrayBuffer为Hex
@@ -142,21 +149,12 @@ export const useBleStore = defineStore('ble', () => {
   };
 
   const _openAdapterWithRetry = (retryCount = 0, maxRetries = 3) => {
-    return new Promise((resolve, reject) => {
-      uni.openBluetoothAdapter({
-        success: resolve,
-        fail: err => {
-          if (retryCount < maxRetries) {
-            const delay = Math.pow(2, retryCount) * 1000;
-            console.warn(`蓝牙适配器初始化失败，${delay}ms 后尝试重试... (${retryCount+1}/${maxRetries})`);
-            setTimeout(() => {
-              _openAdapterWithRetry(retryCount + 1, maxRetries).then(resolve).catch(reject);
-            }, delay);
-          } else {
-            reject(err);
-          }
-        }
-      });
+    return openAdapter().catch((err) => {
+      if (retryCount >= maxRetries) throw err;
+      const delay = Math.pow(2, retryCount) * 1000;
+      console.warn(`蓝牙适配器初始化失败，${delay}ms 后尝试重试... (${retryCount + 1}/${maxRetries})`);
+      return new Promise((resolve) => setTimeout(resolve, delay))
+        .then(() => _openAdapterWithRetry(retryCount + 1, maxRetries));
     });
   };
 
@@ -174,56 +172,39 @@ export const useBleStore = defineStore('ble', () => {
 
     try {
       await _openAdapterWithRetry();
-      uni.startBluetoothDevicesDiscovery({
-        success: () => {
-          uni.onBluetoothDeviceFound(res => {
-            deviceBuffer.push(...res.devices);
-            if (!throttleTimeout) {
-              throttleTimeout = setTimeout(() => {
-                processDeviceBuffer();
-              }, throttleInterval);
-            }
-          });
-          
-          scanStopTimer = setTimeout(() => {
-            if (isScanning.value) {
-              stopScan();
-            }
-          }, duration);
-        },
-        fail: err => {
-          console.error('搜索设备失败:', err);
-          isScanning.value = false;
-        }
-      });
+      if (!stopDiscoveryListener) {
+        stopDiscoveryListener = onDiscovery((devices) => {
+          deviceBuffer.push(...devices);
+          if (!throttleTimeout) {
+            throttleTimeout = setTimeout(processDeviceBuffer, throttleInterval);
+          }
+        });
+      }
+      await runtimeStartDiscovery();
+      scanStopTimer = setTimeout(() => {
+        if (isScanning.value) stopScan();
+      }, duration);
     } catch (err) {
       console.error('初始化蓝牙适配器失败:', err);
       isScanning.value = false;
+      throw err;
     }
   };
 
-  const stopScan = () => {
+  const stopScan = async () => {
     if (scanStopTimer) {
       clearTimeout(scanStopTimer);
       scanStopTimer = null;
     }
     
-    uni.stopBluetoothDevicesDiscovery({
-      success: () => {
-        isScanning.value = false;
-        // #ifdef MP-WEIXIN
-        wx.offBluetoothDeviceFound();
-        // #endif
-        processDeviceBuffer();
-      },
-      fail: err => {
-        console.error('停止搜索失败:', err);
-        isScanning.value = false;
-      },
-      complete: () => {
-        isScanning.value = false;
-      }
-    });
+    try {
+      await runtimeStopDiscovery();
+    } catch (err) {
+      console.error('停止搜索失败:', err);
+    } finally {
+      isScanning.value = false;
+      processDeviceBuffer();
+    }
   };
 
   const clearScannedDevices = () => {

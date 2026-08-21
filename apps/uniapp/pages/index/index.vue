@@ -95,11 +95,12 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import { onLoad, onUnload, onShow, onShareAppMessage } from '@dcloudio/uni-app';
-import { useBleStore } from '../../store/ble';
-import FilterPanel from '../../components/filter-panel/filter-panel.vue';
+import { computed, ref } from 'vue';
+import { onLoad, onShareAppMessage, onUnload } from '@dcloudio/uni-app';
 import DeviceCard from '../../components/device-card/device-card.vue';
+import FilterPanel from '../../components/filter-panel/filter-panel.vue';
+import { useBleStore } from '../../store/ble';
+import { closeDevice } from '../../services/ble-runtime/index.js';
 
 const bleStore = useBleStore();
 
@@ -225,13 +226,12 @@ const connectDevice = (device) => {
 };
 
 const disconnectDeviceFromList = (device) => {
-	uni.closeBLEConnection({
-		deviceId: device.deviceId,
-		success: () => {
+	closeDevice(device.deviceId)
+		.then(() => {
 			bleStore.removeConnectedDevice(device.deviceId);
 			uni.showToast({ title: '已断开', icon: 'success' });
-		}
-	});
+		})
+		.catch((error) => uni.showToast({ title: error?.message || '断开失败', icon: 'none' }));
 };
 
 const formatDeviceId = (deviceId) => deviceId && deviceId.length > 12 ? '...' + deviceId.slice(-12) : deviceId;

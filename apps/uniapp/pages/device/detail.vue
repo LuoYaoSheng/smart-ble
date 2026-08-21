@@ -57,10 +57,19 @@ import { ref, computed, nextTick } from 'vue';
 import { onLoad, onUnload, onShow, onShareAppMessage } from '@dcloudio/uni-app';
 import { useBleStore } from '../../store/ble';
 import { logger } from '../../../../core/ble-core/utils/logger';
+import {
+	connectDevice as connectBleDevice,
+	openAdapter as openBleAdapter,
+	readValue,
+	setNotifyEnabled,
+	subscribe as subscribeBleValue,
+	writeValue as writeBleValue
+} from '../../services/ble-runtime/index.js';
 import OtaDialog from '../../components/ota-dialog/ota-dialog.vue';
 import ServicePanel from '../../components/service-panel/service-panel.vue';
 import LogPanel from '../../components/log-panel/log-panel.vue';
 import WriteDialog from '../../components/write-dialog/write-dialog.vue';
+import { OTA_UUIDS } from '../../utils/ota_manager.js';
 
 const bleStore = useBleStore();
 
@@ -78,6 +87,8 @@ const logScrollTop = ref(0);
 
 const deviceId = ref('');
 let unsubLogger = null;
+let bleSession = null;
+const notifyUnsubscribers = new Map();
 
 onLoad((options) => {
 	if (options.device) {
@@ -108,6 +119,11 @@ onUnload(() => {
 	if (unsubLogger) {
 		unsubLogger();
 	}
+	for (const unsubscribe of notifyUnsubscribers.values()) unsubscribe();
+	notifyUnsubscribers.clear();
+	const session = bleSession;
+	bleSession = null;
+	session?.close();
 });
 
 const storeDevice = computed(() => {
@@ -148,10 +164,10 @@ const initBluetoothAdapter = async () => {
 	isInitializing.value = true;
 	try {
 		addLog('系统', '正在初始化蓝牙...');
-		await uni.openBluetoothAdapter();
+		await openBleAdapter();
 		await connectDevice();
 	} catch (error) {
-		addLog('错误', '蓝牙初始化失败: ' + error.errMsg);
+		addLog('错误', '蓝牙初始化失败: ' + (error?.errMsg || error?.message || '未知错误'));
 		retryConnection();
 	} finally {
 		isInitializing.value = false;
@@ -161,12 +177,11 @@ const initBluetoothAdapter = async () => {
 const toggleConnection = () => {
 	if (isConnected.value) {
 		isUserDisconnected.value = true;
-		uni.closeBLEConnection({
-			deviceId: deviceId.value,
-			success: () => {
-				bleStore.updateDeviceConnectionStatus(deviceId.value, false);
-				addLog('系统', '已手动断开连接');
-			}
+		const session = bleSession;
+		bleSession = null;
+		session?.close().finally(() => {
+			bleStore.updateDeviceConnectionStatus(deviceId.value, false);
+			addLog('系统', '已手动断开连接');
 		});
 	} else {
 		connectDevice();
@@ -176,31 +191,29 @@ const toggleConnection = () => {
 const connectDevice = async () => {
 	try {
 		addLog('系统', '正在连接...');
-		await uni.createBLEConnection({
-			deviceId: deviceId.value,
-			timeout: 10000
-		});
-		await getServices();
+		const session = await connectBleDevice(deviceId.value, { timeout: 10000 });
+		bleSession = session;
+		const srvs = session.services.map((service) => ({
+			...service,
+			characteristics: service.characteristics || []
+		}));
+		hasOtaService.value = srvs.some((service) => String(service.uuid).toLowerCase() === OTA_UUIDS.SERVICE_OTA);
+		bleStore.updateDeviceServices(deviceId.value, srvs);
+		addLog('系统', `获取到 ${srvs.length} 个服务`);
 		bleStore.updateDeviceConnectionStatus(deviceId.value, true);
 		connectionRetryCount.value = 0;
 		isUserDisconnected.value = false;
 		addLog('系统', '设备连接成功');
 
-		uni.onBLECharacteristicValueChange(res => {
-			if (res.deviceId === deviceId.value) handleReceivedData(res.value);
-		});
-
-		uni.onBLEConnectionStateChange(res => {
-			if (res.deviceId === deviceId.value) {
-				bleStore.updateDeviceConnectionStatus(deviceId.value, res.connected);
-				if (!res.connected) addLog('系统', '设备已断开连接');
-				if (!res.connected && !isUserDisconnected.value) {
-					retryConnection();
-				}
-			}
+		session.onDisconnect(() => {
+			if (bleSession !== session) return;
+			bleSession = null;
+			bleStore.updateDeviceConnectionStatus(deviceId.value, false);
+			addLog('系统', '设备已断开连接');
+			if (!isUserDisconnected.value) retryConnection();
 		});
 	} catch (error) {
-		addLog('错误', '连接失败: ' + error.errMsg);
+		addLog('错误', '连接失败: ' + (error?.errMsg || error?.message || '未知错误'));
 		bleStore.updateDeviceConnectionStatus(deviceId.value, false);
 		retryConnection();
 	}
@@ -217,53 +230,6 @@ const retryConnection = () => {
 	setTimeout(connectDevice, delay);
 };
 
-const getServices = () => {
-	return new Promise((resolve, reject) => {
-		setTimeout(() => {
-			uni.getBLEDeviceServices({
-				deviceId: deviceId.value,
-				success: async (res) => {
-					addLog('系统', `获取到 ${res.services.length} 个服务`);
-					let srvs = [];
-					let otaFound = false;
-					const OTA_SERVICE_UUID = '4FAFC201-1FB5-459E-8FCC-C5C9C331914B';
-					for (let i = 0; i < res.services.length; i++) {
-						const service = res.services[i];
-						if (service.uuid.toUpperCase() === OTA_SERVICE_UUID.toUpperCase()) otaFound = true;
-						try {
-							const chars = await getCharacteristics(service.uuid);
-							srvs.push({ ...service, characteristics: chars });
-						} catch (e) {
-							addLog('错误', `获取特征值失败: ${service.uuid}`);
-						}
-					}
-					hasOtaService.value = otaFound;
-					bleStore.updateDeviceServices(deviceId.value, srvs);
-					resolve();
-				},
-				fail: (err) => {
-					addLog('错误', '获取服务失败: ' + err.errMsg);
-					reject(err);
-				}
-			});
-		}, 1000);
-	});
-};
-
-const getCharacteristics = (serviceId) => {
-	return new Promise((resolve, reject) => {
-		uni.getBLEDeviceCharacteristics({
-			deviceId: deviceId.value,
-			serviceId,
-			success: (res) => {
-				const chars = res.characteristics.map(c => ({ ...c, notifying: false }));
-				resolve(chars);
-			},
-			fail: reject
-		});
-	});
-};
-
 const handleReceivedData = (buffer) => {
 	const dataView = new DataView(buffer);
 	const hexArr = [];
@@ -277,13 +243,11 @@ const handleReceivedData = (buffer) => {
 };
 
 const onReadCharacteristic = ({ serviceId, charId }) => {
-	uni.readBLECharacteristicValue({
-		deviceId: deviceId.value,
-		serviceId,
-		characteristicId: charId,
-		success: () => addLog('系统', '读请求已发送'),
-		fail: (err) => addLog('错误', '读请求失败: ' + err.errMsg)
-	});
+	if (!bleSession) return;
+	addLog('系统', '读请求已发送');
+	readValue(bleSession, serviceId, charId)
+		.then(handleReceivedData)
+		.catch((error) => addLog('错误', '读请求失败: ' + (error?.errMsg || error?.message || '未知错误')));
 };
 
 const onBeforeWriteCharacteristic = ({ serviceId, charId }) => {
@@ -292,7 +256,7 @@ const onBeforeWriteCharacteristic = ({ serviceId, charId }) => {
 	showWriteDataModal.value = true;
 };
 
-const onConfirmWrite = ({ type, data }) => {
+const onConfirmWrite = async ({ type, data }) => {
 	isSending.value = true;
 	let buffer;
 	if (type === 'hex') {
@@ -315,37 +279,44 @@ const onConfirmWrite = ({ type, data }) => {
 		}
 	}
 
-	uni.writeBLECharacteristicValue({
-		deviceId: deviceId.value,
-		serviceId: writeServiceId.value,
-		characteristicId: writeCharacteristicId.value,
-		value: buffer,
-		success: () => {
-			addLog('写入', `${type.toUpperCase()}: ${data}`);
-			uni.showToast({ title: '写入成功' });
-			showWriteDataModal.value = false;
-		},
-		fail: (err) => addLog('错误', '写入失败: ' + err.errMsg),
-		complete: () => { isSending.value = false; }
-	});
+	try {
+		if (!bleSession) throw new Error('设备未连接');
+		await writeBleValue(bleSession, writeServiceId.value, writeCharacteristicId.value, buffer);
+		addLog('写入', `${type.toUpperCase()}: ${data}`);
+		uni.showToast({ title: '写入成功' });
+		showWriteDataModal.value = false;
+	} catch (error) {
+		addLog('错误', '写入失败: ' + (error?.errMsg || error?.message || '未知错误'));
+	} finally {
+		isSending.value = false;
+	}
 };
 
 const onToggleNotify = ({ serviceId, charId }) => {
 	const service = services.value.find(s => s.uuid === serviceId);
+	if (!service || !bleSession) return;
 	const char = service.characteristics.find(c => c.uuid === charId);
-	const isOtaStatus = charId.toUpperCase().includes('FFD4');
-	
-	uni.notifyBLECharacteristicValueChange({
-		state: !char.notifying,
-		deviceId: deviceId.value,
-		serviceId,
-		characteristicId: charId,
-		success: () => {
-			char.notifying = !char.notifying;
-			addLog('系统', `${char.notifying ? '开启' : '关闭'}监听成功`);
-		},
-		fail: (err) => addLog('错误', '设置监听失败: ' + err.errMsg)
-	});
+	if (!char) return;
+	const key = `${serviceId}|${charId}`;
+	const enable = !char.notifying;
+	if (enable) {
+		subscribeBleValue(bleSession, serviceId, charId, handleReceivedData)
+			.then((unsubscribe) => {
+				notifyUnsubscribers.set(key, unsubscribe);
+				char.notifying = true;
+				addLog('系统', '开启监听成功');
+			})
+			.catch((error) => addLog('错误', '设置监听失败: ' + (error?.errMsg || error?.message || '未知错误')));
+		return;
+	}
+	setNotifyEnabled(bleSession, serviceId, charId, false)
+		.then(() => {
+			notifyUnsubscribers.get(key)?.();
+			notifyUnsubscribers.delete(key);
+			char.notifying = false;
+			addLog('系统', '关闭监听成功');
+		})
+		.catch((error) => addLog('错误', '设置监听失败: ' + (error?.errMsg || error?.message || '未知错误')));
 };
 </script>
 
