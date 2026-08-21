@@ -1,4 +1,4 @@
-# Smart BLE BLE FAQ
+# Smart BLE FAQ
 
 > 给第一次接触 BLE 和第一次进入 `Smart BLE` 的学习者。
 
@@ -88,4 +88,5 @@
 
 - [Start Here](./START_HERE.md)
 - [平台选择指南](./PLATFORM_SELECTION.md)
-- [BLE 协议](./03-ble-protocol.md)
+- [快速入门教程](./tutorials/01_introduction_and_setup.md)
+- [进阶与广播指引](./tutorials/02_advanced_usage_and_broadcast.md)
