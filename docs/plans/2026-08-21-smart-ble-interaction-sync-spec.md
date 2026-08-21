@@ -142,6 +142,8 @@ Must stay aligned:
 - About is product-facing, not a debug dump
 - brand hero or icon should be prominent
 - stack info can differ by platform, but section order should stay stable
+- prototypes and sibling runtimes must retain every established content block: brand/version, environment, features, supported platforms, links, sibling apps, version history entry, and footer
+- layout adaptation is allowed; silently deleting content to simplify a prototype is not
 
 ## Shared State Definitions
 
