@@ -1,7 +1,7 @@
 import { createSSRApp } from 'vue'
 import * as Pinia from 'pinia'
 import App from './App.vue'
-import { createI18n } from '@dcloudio/uni-i18n'
+import { createI18n } from 'vue-i18n'
 import en from './locale/en-US.json'
 import zh from './locale/zh-CN.json'
 
