@@ -24,10 +24,11 @@ That means:
 
 Primary runtime navigation should remain:
 
-1. `Scan`
-2. `Connected`
-3. `Broadcast`
-4. `About`
+1. `Device`
+2. `Broadcast`
+3. `About`
+
+`Scan` and `Connected` are two views inside `Device`; they are not separate TabBar destinations.
 
 Smart HID is not a top-level navigation item. It is a first-party Profile discovered through the shared Scan flow. A matched device gains additional actions without losing generic BLE capabilities.
 
@@ -42,15 +43,15 @@ Expected steps:
 1. user sees BLE status
 2. user starts scan
 3. user sees live results and counts
-4. user filters results
-5. user opens device detail or advertisement raw data
-6. when a Profile matches, user can choose generic debugging or the Profile-specific workflow
+4. user taps the device card to inspect advertisement data
+5. user taps `Connect` to open the common device session
+6. when a Profile matches, the card additionally exposes the Profile-specific task
 
 Must stay aligned across runtimes:
 - clear scan start / stop affordance
 - BLE status visibility
 - device count or equivalent feedback
-- filtering as a first-class action, not hidden deep in settings
+- filtering is an optional result-list utility and must not displace scan status or device data
 - Profile identity is visible on the device card
 - generic and Profile-specific modes remain explicit choices
 
@@ -256,5 +257,7 @@ Before merging a UI change on one surface, check:
 2. Update page wireframes if page structure changes
 3. Update interaction spec if behavior changes
 4. Then update runtime implementations
+
+The HTML prototype coverage matrix in `../prototypes/README.md` must be checked before step 4. A Tab-only prototype is not sufficient evidence for a runtime-wide interaction change.
 
 This is the order SmartBLE should follow going forward so UI work remains synchronized instead of becoming runtime-by-runtime drift.
