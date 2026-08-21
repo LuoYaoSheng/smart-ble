@@ -7,7 +7,7 @@
 			<view class="device-info">
 				<view class="name-container">
 					<text class="device-name">{{ device.name || '未知设备' }}</text>
-					<text class="device-type" :class="{ profile: device.profileId }">{{ isConnectionTab ? '连接中' : device.profileName || getDeviceType(device.name) }}</text>
+					<text class="device-type" :class="{ profile: device.profileId }">{{ isConnectionTab ? '连接中' : device.profileBadge || device.profileName || getDeviceType(device.name) }}</text>
 				</view>
 				<text class="device-id ble-mono">{{ formatDeviceId(device.deviceId) }}</text>
 				<text class="device-meta">{{ deviceMeta }}</text>
@@ -40,7 +40,7 @@
 			</button>
 			<view v-else-if="device.profileId" class="profile-actions">
 				<button class="action-btn action-btn-secondary" size="mini" @click.stop="onGenericClick">通用调试</button>
-				<button class="action-btn action-btn-primary" size="mini" @click.stop="onProfileClick">{{ device.profileMatch >= 2 ? '专属配置' : '连接确认' }}</button>
+				<button class="action-btn action-btn-primary" size="mini" @click.stop="onProfileClick">{{ device.profileActionLabel || device.profileName }}</button>
 			</view>
 			<button
 				v-else
@@ -74,8 +74,8 @@ const onProfileClick = () => emit('profile', props.device);
 const deviceMeta = computed(() => {
 	if (props.isConnectionTab) return '点击查看服务、特征值和通信日志';
 	if (props.device.profileId) return props.device.profileMatch >= 2
-		? '已匹配专属 Profile，也可以继续使用通用 BLE 调试。'
-		: '名称可能匹配专属 Profile，连接后需确认设备身份。';
+		? `${props.device.profileActionDescription || '已匹配专属 Profile'}；也可以使用通用 BLE 调试。`
+		: `可能支持${props.device.profileActionLabel || props.device.profileName}，进入后先连接确认身份。`;
 	return '点击卡片查看广播原始数据';
 });
 

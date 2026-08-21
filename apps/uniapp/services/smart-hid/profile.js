@@ -27,6 +27,11 @@ export const smartHidProfile = {
   mtu: 247,
   namePrefix: SMART_HID_NAME_PREFIX,
   transport: { framing: 'framed-v1' },
+  presentation: {
+    badge: 'Smart HID',
+    actionLabel: 'Smart HID 配网',
+    actionDescription: '配置 Wi-Fi 与 ControlHub 地址'
+  },
   parseQr: parsePairingQrPayload,
   matchAdvertisement(device) {
     const advertised = (device?.advertisServiceUUIDs || []).map((uuid) => String(uuid).toLowerCase());

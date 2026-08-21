@@ -63,8 +63,9 @@ Expected steps:
 1. shared scanner discovers a device
 2. Profile registry classifies it as strong, weak, or no match
 3. list card shows a Profile badge and match confidence
-4. the card exposes generic BLE and Profile actions directly; tapping the card opens device details
-5. weak matches require service and Device Info verification before being treated as confirmed
+4. tapping the card opens advertisement data
+5. explicit buttons open generic BLE debugging or the Profile workflow
+6. weak matches require service and Device Info verification before being treated as confirmed
 
 Must stay aligned:
 - no Profile owns a separate global scanner
@@ -72,6 +73,7 @@ Must stay aligned:
 - Profile-specific pages are secondary routes, not top-level product navigation
 - device detail contains a generic section and, when matched, a Profile capability section
 - do not add a second “choose mode” dialog when both direct actions fit on the card
+- Profile buttons use the task name declared by the Profile, not a generic label such as “special mode”
 
 ### 2. Connected Flow
 

@@ -39,7 +39,10 @@ export function useBleScan() {
         ...device,
         profileId: match.profile.id,
         profileName: match.profile.displayName,
-        profileMatch: match.matchLevel
+        profileMatch: match.matchLevel,
+        profileBadge: match.profile.presentation.badge,
+        profileActionLabel: match.profile.presentation.actionLabel,
+        profileActionDescription: match.profile.presentation.actionDescription
       } : device;
     });
   });

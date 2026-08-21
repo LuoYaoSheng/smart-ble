@@ -100,6 +100,11 @@ export function defineProvisioningProfile(input) {
     transport: Object.freeze({ ...(input?.transport || {}) }),
     codec: input?.codec || null,
     workflow: input?.workflow || null,
+    presentation: Object.freeze({
+      badge: String(input?.presentation?.badge || input?.displayName || id),
+      actionLabel: String(input?.presentation?.actionLabel || input?.displayName || id),
+      actionDescription: String(input?.presentation?.actionDescription || '')
+    }),
     parseQr: input?.parseQr || null,
     verifyDeviceInfo,
     matchAdvertisement

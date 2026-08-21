@@ -140,8 +140,8 @@ This is the smallest complete SmartBLE runtime. It should be the mobile “contr
 +--------------------------------------------------+
 | Device card                                      |
 |  name | id | RSSI | Profile badge/confidence    |
-|  tap card => Details                             |
-|  [Generic debug] [Profile workflow]              |
+|  tap card => Advertisement data                  |
+|  [Generic debug] [Profile task name]             |
 +--------------------------------------------------+
 | Device detail                                    |
 |  Generic BLE capability section                  |

@@ -33,6 +33,9 @@ run('Profile contract accepts Smart HID as an explicit first-party Profile', () 
   const profile = defineProvisioningProfile(smartHidProfile);
   assert.equal(profile.id, 'smart-hid');
   assert.equal(profile.codec.buildCandidate instanceof Function, true);
+  assert.equal(profile.presentation.badge, 'Smart HID');
+  assert.equal(profile.presentation.actionLabel, 'Smart HID 配网');
+  assert.equal(profile.presentation.actionDescription, '配置 Wi-Fi 与 ControlHub 地址');
 });
 
 run('workflow distinguishes terminal result and recovery action', () => {
