@@ -112,7 +112,7 @@ const currentStep = ref(0);
 
 const scanning = ref(false);
 const connecting = ref(false);
-const foundDevices = ref([]);
+const foundDevices = computed(() => hidStore.smartDevices);
 const selectedDeviceId = ref('');
 const deviceInfoSummary = ref('');
 
@@ -144,7 +144,6 @@ const onScan = async () => {
 		scanning.value = true;
 		try {
 			await smartHidService.scanSmartHid();
-			foundDevices.value = hidStore.smartDevices;
 			if (!foundDevices.value.length) {
 				uni.showToast({ title: '未发现 Smart HID 设备', icon: 'none' });
 			}
@@ -221,14 +220,20 @@ const onProvision = async () => {
 	resetProvision();
 	provisioning.value = true;
 	try {
+		let resultWaiter = null;
 		await smartHidService.provisionCandidate({
 			wifi_ssid: wifiSsid.value,
 			wifi_password: wifiPassword.value,
 			hub_host: hubInfo.value.host,
 			hub_port: hubInfo.value.port,
 			token: hubInfo.value.token
+		}, {
+			beforeWrite: () => {
+				resultWaiter = smartHidService.waitForProvisionResult(60000);
+				return resultWaiter;
+			}
 		});
-		const { ok, status } = await smartHidService.waitForProvisionResult(60000);
+		const { ok, status } = await resultWaiter;
 		provisioning.value = false;
 		if (ok) {
 			provisionDone.value = true;

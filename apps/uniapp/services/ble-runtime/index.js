@@ -155,7 +155,12 @@ function indexServices(services) {
 export async function connectDevice(deviceId, options = {}) {
   const platform = ensureCallbacks();
   const existing = state.sessions.get(deviceId);
-  if (existing && !existing.dead) return existing;
+  if (existing && !existing.dead) {
+    if (options.mtu && existing.mtu < options.mtu) {
+      await setMtu(existing, options.mtu).catch(() => {});
+    }
+    return existing;
+  }
 
   await call(platform, 'createBLEConnection', { deviceId, timeout: options.timeout || 10000 });
   let services = [];

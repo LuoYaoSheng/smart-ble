@@ -89,7 +89,7 @@ export const useHidStore = defineStore('hid', () => {
 	const applyProvisionStatus = (status) => {
 		if (!status || !status.state) return;
 		provisionStatus.value = { ...status, at: Date.now() };
-		const { state, error } = status;
+			const { state, step, error } = status;
 
 		// 错误码 → 对应行 fail（其他行保持当前值）
 		if (error) {
@@ -108,20 +108,28 @@ export const useHidStore = defineStore('hid', () => {
 			return;
 		}
 
-		const map = {
-			ready: { wifi: 'done', hub: 'done', conn: 'done', usb: 'done' },
-			mqtt_connecting: { wifi: 'done', hub: 'done', conn: 'active', usb: 'pending' },
-			pairing_success: { wifi: 'done', hub: 'done', conn: 'pending', usb: 'pending' },
-			pairing: { wifi: 'done', hub: 'active', conn: 'pending', usb: 'pending' },
-			wifi_connected: { wifi: 'done', hub: 'pending', conn: 'pending', usb: 'pending' },
-			connecting_wifi: { wifi: 'active', hub: 'pending', conn: 'pending', usb: 'pending' },
-			provisioning: { wifi: 'pending', hub: 'pending', conn: 'pending', usb: 'pending' },
+			const stateMap = {
+				ready: { wifi: 'done', hub: 'done', conn: 'done', usb: 'done' },
+				mqtt_connecting: { wifi: 'done', hub: 'done', conn: 'active', usb: 'pending' },
+				pairing: { wifi: 'done', hub: 'active', conn: 'pending', usb: 'pending' },
+				connecting_wifi: { wifi: 'active', hub: 'pending', conn: 'pending', usb: 'pending' },
+				provisioning: { wifi: 'pending', hub: 'pending', conn: 'pending', usb: 'pending' },
 			unprovisioned: { wifi: 'pending', hub: 'pending', conn: 'pending', usb: 'pending' },
 			recovery: { wifi: 'warn', hub: 'warn', conn: 'warn', usb: 'pending' },
-			error: { wifi: 'warn', hub: 'warn', conn: 'warn', usb: 'pending' }
-		};
-		const m = map[state];
-		if (m) progress.value = { ...progress.value, ...m };
+				error: { wifi: 'warn', hub: 'warn', conn: 'warn', usb: 'pending' }
+			};
+			const stepMap = {
+				received: { wifi: 'pending', hub: 'pending', conn: 'pending', usb: 'pending' },
+				connecting_wifi: { wifi: 'active' },
+				wifi_connected: { wifi: 'done', hub: 'pending', conn: 'pending', usb: 'pending' },
+				pairing: { wifi: 'done', hub: 'active', conn: 'pending', usb: 'pending' },
+				pairing_success: { wifi: 'done', hub: 'done', conn: 'pending', usb: 'pending' },
+				mqtt_connecting: { wifi: 'done', hub: 'done', conn: 'active', usb: 'pending' },
+				ready: { wifi: 'done', hub: 'done', conn: 'done', usb: 'done' }
+			};
+			const byState = stateMap[state];
+			const byStep = stepMap[step];
+			if (byState || byStep) progress.value = { ...progress.value, ...byState, ...byStep };
 	};
 
 	/**

@@ -89,6 +89,8 @@ export const useBleStore = defineStore('ble', () => {
   let throttleTimeout = null;
   let deviceBuffer = [];
   let stopDiscoveryListener = null;
+  let scanCompletion = Promise.resolve([]);
+  let resolveScanCompletion = null;
   const throttleInterval = 1000;
   
   // 转换ArrayBuffer为Hex
@@ -169,6 +171,7 @@ export const useBleStore = defineStore('ble', () => {
     if (scanStopTimer) clearTimeout(scanStopTimer);
     throttleTimeout = null;
     scanStopTimer = null;
+    scanCompletion = new Promise((resolve) => { resolveScanCompletion = resolve; });
 
     try {
       await _openAdapterWithRetry();
@@ -187,7 +190,9 @@ export const useBleStore = defineStore('ble', () => {
     } catch (err) {
       console.error('初始化蓝牙适配器失败:', err);
       isScanning.value = false;
-      throw err;
+      resolveScanCompletion?.(scannedDevices.value);
+      resolveScanCompletion = null;
+      return scannedDevices.value;
     }
   };
 
@@ -204,8 +209,12 @@ export const useBleStore = defineStore('ble', () => {
     } finally {
       isScanning.value = false;
       processDeviceBuffer();
+      resolveScanCompletion?.(scannedDevices.value);
+      resolveScanCompletion = null;
     }
   };
+
+  const waitForScanComplete = () => scanCompletion;
 
   const clearScannedDevices = () => {
     scannedDevices.value = [];
@@ -225,6 +234,7 @@ export const useBleStore = defineStore('ble', () => {
     removeConnectedDevice,
     startScan,
     stopScan,
+    waitForScanComplete,
     clearScannedDevices
   };
 });

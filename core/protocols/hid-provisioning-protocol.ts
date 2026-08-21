@@ -130,12 +130,18 @@ export function parsePairingQrPayload(text: string): PairingQrPayload | null {
   if (query && query[0] !== '?' && query[0] !== '&') return null
 
   const params: Record<string, string> = {}
-  query.replace(/^[?&]/, '').split('&').forEach((kv) => {
-    if (!kv) return
-    const eq = kv.indexOf('=')
-    if (eq <= 0) return
-    params[decodeURIComponent(kv.slice(0, eq)).toLowerCase()] = decodeURIComponent(kv.slice(eq + 1))
-  })
+  try {
+    query.replace(/^[?&]/, '').split('&').forEach((kv) => {
+      if (!kv) return
+      const eq = kv.indexOf('=')
+      if (eq <= 0) return
+      const key = decodeURIComponent(kv.slice(0, eq)).toLowerCase()
+      if (Object.prototype.hasOwnProperty.call(params, key)) throw new Error('duplicate query parameter')
+      params[key] = decodeURIComponent(kv.slice(eq + 1))
+    })
+  } catch {
+    return null
+  }
 
   const token = (params.token || '').toLowerCase()
   const host = (params.host || '').trim()

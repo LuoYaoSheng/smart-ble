@@ -133,6 +133,8 @@ run('parsePairingQrPayload: 拒绝非 shid:// 码 / 坏 token / 坏 port', () =>
 	assert.equal(parsePairingQrPayload('shid://pair?token=abc&host=1.2.3.4'), null);
 	assert.equal(parsePairingQrPayload('shid://pair?token=0123456789abcdef0123456789abcdef&host=1.2.3.4&port=99999'), null);
 	assert.equal(parsePairingQrPayload('shid://pair?host=1.2.3.4'), null);
+	assert.equal(parsePairingQrPayload('shid://pair?token=%E0%A4%A&host=1.2.3.4'), null);
+	assert.equal(parsePairingQrPayload('shid://pair?token=0123456789abcdef0123456789abcdef&token=0123456789abcdef0123456789abcdef&host=1.2.3.4'), null);
 });
 
 run('buildProvisionCandidateJson: 字段与默认端口', () => {

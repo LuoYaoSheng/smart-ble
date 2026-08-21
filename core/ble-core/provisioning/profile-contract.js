@@ -61,6 +61,8 @@ export function defineProvisioningProfile(input) {
   }
 
   const rawMatcher = input?.matchAdvertisement;
+  const verifyDeviceInfo = input?.verifyDeviceInfo || (() => true);
+  assertFunction(verifyDeviceInfo, 'verifyDeviceInfo', id);
   const matchAdvertisement = rawMatcher
     ? (device) => {
       const result = rawMatcher(device);
@@ -99,6 +101,7 @@ export function defineProvisioningProfile(input) {
     codec: input?.codec || null,
     workflow: input?.workflow || null,
     parseQr: input?.parseQr || null,
+    verifyDeviceInfo,
     matchAdvertisement
   };
 
