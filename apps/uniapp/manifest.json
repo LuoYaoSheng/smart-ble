@@ -111,9 +111,6 @@
         "permission" : {
             "scope.userLocation" : {
                 "desc" : "获取周围蓝牙设备"
-            },
-            "scope.bluetooth" : {
-                "desc" : "使用蓝牙功能进行设备连接和数据传输"
             }
         },
         "requiredPrivateInfos" : [ "getLocation", "onLocationChange", "startLocationUpdateBackground" ],
