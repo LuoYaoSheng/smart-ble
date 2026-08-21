@@ -124,7 +124,7 @@
 				<view v-if="logs.length === 0" class="log-brd-empty"><text>暂无日志</text></view>
 				<view v-for="(entry, idx) in logs" :key="idx" class="log-brd-entry">
 					<text class="log-brd-time">[{{entry.timestamp}}]</text>
-					<text class="log-brd-type" :class="'log-brd-type-' + entry.type">[{{entry.type}}]</text>
+					<text class="log-brd-type" :class="'log-brd-type-' + typeClass(entry.type)">[{{entry.type}}]</text>
 					<text class="log-brd-msg">{{entry.message}}</text>
 				</view>
 			</scroll-view>
@@ -163,6 +163,10 @@ const modeOptions = ['低功耗', '平衡', '低延迟'];
 const powerOptions = ['超低功率', '低功率', '中功率', '高功率'];
 const manufacturerId = ref('');
 const manufacturerData = ref('');
+
+/* 日志 type 是中文（系统/错误/成功），WXSS 类选择器不允许非 ASCII——映射为 ASCII 后缀 */
+const LOG_TYPE_CLASS = { '系统': 'sys', '错误': 'err', '成功': 'ok' };
+const typeClass = (t) => LOG_TYPE_CLASS[t] || 'sys';
 
 const isUUIDValid = computed(() => {
 	if (!serviceUUID.value) return true;
@@ -854,9 +858,9 @@ onShareAppMessage(() => ({
 	font-weight: 600;
 	flex-shrink: 0;
 }
-.log-brd-type-系统 { color: #007AFF; }
-.log-brd-type-错误 { color: #FF3B30; }
-.log-brd-type-成功 { color: #34C759; }
+.log-brd-type-sys { color: #007AFF; }
+.log-brd-type-err { color: #FF3B30; }
+.log-brd-type-ok { color: #34C759; }
 .log-brd-msg {
 	font-size: 24rpx;
 	color: #333;
