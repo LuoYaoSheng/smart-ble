@@ -21,7 +21,7 @@
  * @module services/provisioning/transport
  */
 
-import { utf8Decode, utf8Encode } from '../../../core/ble-core/provisioning/framing';
+import { utf8Decode, utf8Encode } from '../../../../core/ble-core/provisioning/framing';
 
 /* ---------------- 全局监听（幂等注册） ---------------- */
 

@@ -56,7 +56,7 @@
 import { ref, computed, nextTick } from 'vue';
 import { onLoad, onUnload, onShow, onShareAppMessage } from '@dcloudio/uni-app';
 import { useBleStore } from '../../store/ble';
-import { logger } from '../../../core/ble-core/utils/logger';
+import { logger } from '../../../../core/ble-core/utils/logger';
 import OtaDialog from '../../components/ota-dialog/ota-dialog.vue';
 import ServicePanel from '../../components/service-panel/service-panel.vue';
 import LogPanel from '../../components/log-panel/log-panel.vue';

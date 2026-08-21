@@ -135,7 +135,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { onLoad, onUnload, onShareAppMessage } from '@dcloudio/uni-app';
-import { logger } from '../../../core/ble-core/utils/logger';
+import { logger } from '../../../../core/ble-core/utils/logger';
 
 const advertising = ref(false);
 const logs = ref([]);
