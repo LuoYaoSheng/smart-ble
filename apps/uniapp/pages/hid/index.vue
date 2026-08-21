@@ -3,36 +3,9 @@
 		<app-navbar kicker="Smart HID" title="蓝牙配网与维护" :status-active="bleState === 'on'" :status-text="bleState === 'on' ? '蓝牙就绪' : '蓝牙未开启'" />
 
 		<view class="ble-content">
-			<view class="hero-card ble-card-hero">
-				<view class="ble-section-meta">
-					<text class="ble-kicker">Provisioning Flow</text>
-					<text class="ble-title">让 Smart HID 的配网流程看起来更像产品，而不是工具脚本</text>
-					<text class="ble-subtitle">从搜索设备、扫码绑定到 Wi-Fi 下发，入口先统一收敛到一个轻量向导里。</text>
-				</view>
+			<discovery-panel :devices="nearbyDevices" :scanning="scanning" :error="discoveryError" @scan="scan" @select="continueWith" />
 
-				<view class="ble-stat-grid">
-					<view class="ble-stat-card">
-						<text class="ble-stat-value">{{ knownDevices.length }}</text>
-						<text class="ble-stat-label">历史设备</text>
-					</view>
-					<view class="ble-stat-card">
-						<text class="ble-stat-value">{{ hasConfiguredDevice ? '已启用' : '未配置' }}</text>
-						<text class="ble-stat-label">当前状态</text>
-					</view>
-					<view class="ble-stat-card">
-						<text class="ble-stat-value">{{ bleState === 'on' ? 'Ready' : 'Off' }}</text>
-						<text class="ble-stat-label">蓝牙环境</text>
-					</view>
-				</view>
-
-				<button class="ble-button-primary hero-button" @click="goAdd">
-					<text>开始配置 Smart HID</text>
-				</button>
-			</view>
-
-			<empty-state v-if="!hasConfiguredDevice" image="/static/placeholders/empty_scan.png" title="还没有已配置的 Smart HID 设备" description="首次配网会通过附近 BLE 搜索识别设备；完成后会把最近一次配置记录留在这里。" />
-
-			<view v-else class="history-panel ble-card">
+			<view v-if="hasConfiguredDevice" class="history-panel ble-card">
 				<view class="panel-header">
 					<view class="ble-section-meta">
 						<text class="ble-section-title">最近配置</text>
@@ -53,8 +26,8 @@
 					</view>
 				</view>
 
-				<button class="ble-button-secondary history-button" @click="goAdd">
-					<text>配置新设备</text>
+				<button class="ble-button-secondary history-button" @click="scan">
+					<text>重新搜索设备</text>
 				</button>
 			</view>
 		</view>
@@ -66,7 +39,8 @@ import { computed } from 'vue';
 import { useBleStore } from '../../store/ble';
 import { useHidStore } from '../../store/hid';
 import AppNavbar from '../../components/common/app-navbar.vue';
-import EmptyState from '../../components/common/empty-state.vue';
+import DiscoveryPanel from '../../components/hid/discovery-panel.vue';
+import { useSmartHidDiscovery } from '../../composables/use-smart-hid-discovery.js';
 
 const bleStore = useBleStore();
 const hidStore = useHidStore();
@@ -74,10 +48,7 @@ const hidStore = useHidStore();
 const bleState = computed(() => bleStore.bleState);
 const knownDevices = computed(() => hidStore.knownDevices);
 const hasConfiguredDevice = computed(() => knownDevices.value.length > 0);
-
-const goAdd = () => {
-	uni.navigateTo({ url: '/pages/hid/add' });
-};
+const { devices: nearbyDevices, scanning, error: discoveryError, scan, continueWith } = useSmartHidDiscovery();
 
 const goDetail = (device) => {
 	hidStore.setCurrentDevice(device);
@@ -86,17 +57,6 @@ const goDetail = (device) => {
 </script>
 
 <style scoped>
-.hero-card {
-	padding: 34rpx;
-	display: flex;
-	flex-direction: column;
-	gap: 28rpx;
-}
-
-.hero-button {
-	margin-top: 4rpx;
-}
-
 .history-panel {
 	padding: 26rpx;
 	display: flex;

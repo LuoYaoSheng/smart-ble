@@ -2,6 +2,30 @@ import { computed, ref } from 'vue';
 import { onHide, onLoad, onUnload } from '@dcloudio/uni-app';
 import { useBleStore } from '../store/ble';
 
+export function requestBleScanPermission() {
+  // #ifdef MP-WEIXIN
+  return new Promise((resolve) => {
+    wx.getSetting({
+      success: (settings) => {
+        if (settings.authSetting['scope.userLocation']) return resolve(true);
+        wx.authorize({
+          scope: 'scope.userLocation', success: () => resolve(true),
+          fail: () => wx.showModal({
+            title: '需要定位权限', content: '微信在部分系统上要求定位权限才能发现附近 BLE 设备。',
+            confirmText: '去设置', success: (result) => { if (result.confirm) wx.openSetting(); resolve(false); },
+            fail: () => resolve(false)
+          })
+        });
+      },
+      fail: () => resolve(true)
+    });
+  });
+  // #endif
+  // #ifndef MP-WEIXIN
+  return Promise.resolve(true);
+  // #endif
+}
+
 export function useBleScan() {
   const store = useBleStore();
   const filterSettings = ref({ rssi: -100, prefix: '', hideNoName: false });
@@ -21,29 +45,9 @@ export function useBleScan() {
     });
   };
 
-  const start = () => {
-    // #ifdef MP-WEIXIN
-    wx.getSetting({
-      success: (settings) => {
-        if (settings.authSetting['scope.userLocation']) {
-          store.startScan();
-          return;
-        }
-        wx.authorize({
-          scope: 'scope.userLocation',
-          success: () => store.startScan(),
-          fail: () => wx.showModal({
-            title: '需要定位权限', content: '微信在部分系统上要求定位权限才能发现附近 BLE 设备。',
-            confirmText: '去设置', success: (result) => { if (result.confirm) wx.openSetting(); }
-          })
-        });
-      },
-      fail: () => store.startScan()
-    });
-    // #endif
-    // #ifndef MP-WEIXIN
-    store.startScan();
-    // #endif
+  const start = async () => {
+    if (await requestBleScanPermission()) return store.startScan();
+    return { ok: false, reason: 'permission_denied' };
   };
 
   const stop = (reason = 'user') => store.stopScan(reason);

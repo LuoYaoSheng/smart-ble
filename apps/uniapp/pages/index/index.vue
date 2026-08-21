@@ -3,9 +3,7 @@
 		<app-navbar kicker="SmartBLE Mini" title="BLE Toolkit+" :status-active="bleState === 'on'" :status-text="bleState === 'on' ? '蓝牙就绪' : '蓝牙未开启'" />
 
 		<view class="ble-content page-content">
-			<scan-summary :filtered-count="filteredDevices.length" :device-count="devices.length" :connected-count="connectedDevicesList.length" :scanning="isScanning" :prefix="filterSettings.prefix" :hide-no-name="filterSettings.hideNoName" :error="scanError" @toggle="toggleScan" @retry="startScan" />
-
-			<filter-panel v-model="filterSettings" />
+			<scan-summary :filtered-count="filteredDevices.length" :device-count="devices.length" :connected-count="connectedDevicesList.length" :scanning="isScanning" :error="scanError" @toggle="toggleScan" @retry="startScan" />
 
 			<view class="ble-pill-tabs">
 				<view
@@ -32,7 +30,9 @@
 						</text>
 						<text v-else>{{ connectedDevicesList.length }} 台已连接</text>
 					</view>
+					<text v-if="currentTab === 0" class="filter-toggle" @click="showFilters = !showFilters">{{ showFilters ? '收起筛选' : '筛选' }}</text>
 				</view>
+				<filter-panel v-if="currentTab === 0 && showFilters" v-model="filterSettings" class="inline-filter" />
 
 				<view v-show="currentTab === 0" class="tab-content">
 					<scroll-view scroll-y class="device-scroll">
@@ -88,6 +88,7 @@ const bleStore = useBleStore();
 
 const showAdvDataModal = ref(false);
 const selectedAdvertisementDevice = ref(null);
+const showFilters = ref(false);
 
 const currentTab = ref(0);
 const tabItems = ['扫描发现', '已连接'];
@@ -156,6 +157,9 @@ const copyAdvData = (content) => {
 	gap: 18rpx;
 	margin-bottom: 20rpx;
 }
+
+.filter-toggle { flex-shrink: 0; font-size: 23rpx; font-weight: 700; color: var(--ble-brand); }
+.inline-filter { margin-bottom: 18rpx; }
 
 .tab-content {
 	flex: 1;

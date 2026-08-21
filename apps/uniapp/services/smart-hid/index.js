@@ -106,7 +106,11 @@ export async function scanSmartHid() {
   const hidStore = useHidStore();
   const refresh = () => {
     const matched = matchScannedDevices(bleStore.scannedDevices || []);
-    hidStore.setSmartDevices(matched.map(({ device }) => device));
+    hidStore.setSmartDevices(matched.map(({ device, profile: matchedProfile, matchLevel }) => ({
+      ...device,
+      profileId: matchedProfile.id,
+      profileMatch: matchLevel
+    })));
   };
 
   logger.info('[SmartHID] scanSmartHid start');

@@ -6,9 +6,9 @@
 
 | 页面 | 核心功能 | 发现的问题 | 本批处理 | 当前状态 |
 |---|---|---|---|---|
-| P001 通用扫描 | 适配器、连续扫描、过滤、广播详情、连接入口 | 启停竞态、错误伪装为空、页面直接注册全局回调、广播字段缺失 | ScanSession 控制器、结构化结果、Runtime adapter listener、AdvertisementSnapshot、连接前 await stop | 🟡 E2；待两轮真机扫描 |
+| P001 通用扫描 | 适配器、连续扫描、过滤、广播详情、连接入口 | 启停竞态、错误伪装为空、页面直接注册全局回调、广播字段缺失；首屏被营销说明和筛选占据 | ScanSession 控制器、结构化结果、Runtime adapter listener、AdvertisementSnapshot、连接前 await stop；改为数据列表优先，筛选折叠 | 🟡 E2；待两轮真机扫描 |
 | P005 通用设备详情 | 连接、服务发现、读写、notify、OTA、日志 | 参数缺失无退出；离页关闭后 Store 仍显示连接；重连 timer 泄漏；UTF-8 写入按 UTF-16 截断 | 参数失败返回；离页同步连接状态；清 timer；统一 UTF-8 codec；连接发现失败清半开连接 | 🟡 E2；待 GATT 真机 |
-| P002 Smart HID 首页 | 配网入口、非敏感历史 | “免二维码”与实际扫码冲突；历史未持久化；adapter on 被描述为 Ready | 改为“蓝牙配网与维护”；最多持久化 20 条非敏感元数据 | 🟡 E2；待重启回归 |
+| P002 Smart HID 首页 | 搜索、选择、连接入口、非敏感历史 | “免二维码”与实际扫码冲突；历史未持久化；用户不知道如何搜索和连接 | 改为“蓝牙配网与维护”；首页直接给出三步流程、搜索结果、匹配等级和继续连接；最多持久化 20 条非敏感元数据 | 🟡 E2；待真机搜索/连接 |
 | P003 Smart HID 配网 | 扫描、Profile 验证、扫码、Wi-Fi、下发、状态恢复 | 复用扫描失败时无法区分空结果；“USB HID 就绪”超出 BLE 证据 | 使用 owner=`smart-hid` ScanSession 并检查 result.ok；文案改“设备控制链路就绪” | 🟡 协议单测通过；待真机 |
 | P004 Smart HID 详情 | 历史资料、重配、诊断、高级调试 | 展示协议不存在的 hardware；无效 deviceId 仍显示其它当前设备；高级入口只有 toast | 删除 hardware；严格按 ID；无记录退出；高级入口 switchTab | 🟡 E2 |
 | P006 Smart HID 诊断 | 读取 Info/Status 并解释 | 依赖旧内存 session；历史入口必然常失败；把 ready 当 USB HID 已验证 | 无 session 时允许尝试按 ID 重连，失败说明进入配网/恢复模式；“设备 Ready”不冒充 USB 真机验收 | 🟡 待设备可发现态真机 |

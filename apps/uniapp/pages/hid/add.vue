@@ -276,8 +276,15 @@ const goDetail = () => {
 	uni.redirectTo({ url: `/pages/hid/detail?deviceId=${encodeURIComponent(d?.deviceId || '')}` });
 };
 
-onLoad(() => {
+onLoad((options) => {
 	hidStore.startProvisionSession();
+	const requestedId = options?.deviceId ? decodeURIComponent(options.deviceId) : '';
+	const requestedDevice = foundDevices.value.find((device) => device.deviceId === requestedId)
+		|| (currentDevice.value?.deviceId === requestedId ? currentDevice.value : null);
+	if (requestedDevice) {
+		selectDevice(requestedDevice);
+		currentStep.value = 1;
+	}
 });
 onUnload(() => {
 	hidStore.endProvisionSession();
