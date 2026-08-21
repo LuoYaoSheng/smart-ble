@@ -155,17 +155,22 @@ There is no dedicated HID tab. Smart HID wizard/detail/diagnostics remain second
 
 ```text
 +--------------------------------------------------+
-| Step pills W01 W02 W03 W04 W05 W06               |
+| Steps: Connect | Configure | Status               |
 +--------------------------------------------------+
-| Step title                                       |
+| Connect                                          |
+|  auto-connect selected Profile device            |
 +--------------------------------------------------+
-| Step body card                                   |
-|  - instructions                                  |
-|  - form / list / progress                        |
-|  - primary CTA                                   |
-|  - recovery CTA if failed                        |
+| Configure                                        |
+|  Wi-Fi SSID | password | ControlHub address      |
+|  [Scan ControlHub QR] [Submit configuration]     |
++--------------------------------------------------+
+| Status                                           |
+|  Wi-Fi | Pairing | MQTT | Ready                  |
+|  recovery action or View device                  |
 +--------------------------------------------------+
 ```
+
+The selected device comes from the shared home scanner. The provisioning route must not start another Smart HID scan. The QR action provides the required one-time pairing token and may prefill the editable ControlHub address.
 
 ## 2.4 Miniapp Broadcast
 
@@ -193,13 +198,13 @@ There is no dedicated HID tab. Smart HID wizard/detail/diagnostics remain second
 ```text
 +--------------------------------------------------+
 | Brand card                                       |
-|  logo | version | stack info | hero image        |
+|  logo | version | summary | compact stack info   |
 +--------------------------------------------------+
-| Environment card                                 |
+| More mini programs                               |
+|  native WeChat jump cards                        |
 +--------------------------------------------------+
-| Features card                                    |
-+--------------------------------------------------+
-| Platforms card                                   |
+| Compact app information                          |
+|  environment | features | platforms              |
 +--------------------------------------------------+
 | Links card                                       |
 +--------------------------------------------------+

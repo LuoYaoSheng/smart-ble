@@ -14,7 +14,7 @@
 | P0 | tab 切换/隐藏后扫描可能留存 | 首页只在 `onUnload` 停止扫描（`pages/index/index.vue:201`）；tab 页面切换通常触发 `onHide` 而非 unload | 旧扫描仍占用 discovery，下一次开始竞争或被平台拒绝 | 首页及 Smart HID 向导在 `onHide`/应用 hide 时结束本 session；停止完成后才允许下一轮开始 |
 | P1 | 同时点扫描没有确定结果 | `startScan` 发现 `isScanning` 时直接 `return`（`store/ble.js:163-164`） | 调用者拿到 `undefined`，无法获知“复用、拒绝还是结束” | 返回现有 session 的 completion，或明确抛出 `ScanInProgressError`；不可静默 |
 | P1 | 广播查看空白且难判别“设备没发”还是“工具没取到” | `store/ble.js:122-123` 仅变换 `advertisData`、`advertisServiceUUIDs`；`pages/index/index.vue:290-294` 仅展示这两个字段 | 未显示 `localName`、`serviceData`、`manufacturerData`、原始字段存在性/长度 | 创建 `AdvertisementSnapshot`，显示“未提供/空 payload/长度 0”三个不同状态，并支持 service/manufacturer data 的 hex 解码 |
-| P1 | 关于页新图标/横幅不显示 | 源码资源存在：`static/brand/about-hero.png`、`static/other-apps/*.png`；当前 `unpackage/dist/dev/mp-weixin/static/brand/`、`other-apps/`、`share.png` 不存在 | 代码已经引用新绝对路径（`pages/about/index.vue:5,13,98,147`），但微信构建产物仍是旧资源集 | 先做可复现的 clean build；CI/assert 脚本检查所有静态 `src` 在 dist 中存在；页面提供 image error fallback |
+| P1 | 关于页推广图标曾不显示 | 其他小程序图标已纳入 `static/other-apps/*.png` 与资源门禁；不再使用占首屏的大横幅 | 运行页使用独立推广卡组件和首字 fallback，原型与运行页均将推广前置 | 保留资源门禁；微信构建产物与真实小程序跳转仍需人工验证 |
 | P1 | `onBluetoothAdapterStateChange` 没有统一托管或注销 | `pages/index/index.vue:195-199` 页面直接注册 | 仍存在 Runtime 之外的全局 BLE listener，页面重建时可能堆叠 | Runtime 统一注册并暴露 `onAdapterState`；页面只订阅/取消订阅 |
 | P2 | 独立 Smart HID 入口把 BLE “已打开”显示成 “Ready” | 原 `pages/hid/index.vue` | 适配器可用不代表设备已发现、已连接或可配网 | 已移除独立入口；首页按 Profile 匹配和连接确认表达 |
 | P2 | 诊断页无法从历史设备自行建立会话 | `pages/hid/diagnostics.vue:59-66` | 已知设备页面跳诊断，但诊断只读内存 session | 诊断页用 deviceId 重连并验证 Profile，或将按钮改为“返回向导连接后诊断” |
@@ -99,7 +99,7 @@ sequenceDiagram
 | `pages/index/index` | 扫描、查看广播、进入通用 GATT 调试 | 主入口 | 双 adapter open、全局状态 listener、无 scan 失败面 | ScanSession 面板：状态、轮次、时间、错误、结果；广播 snapshot |
 | `pages/device/detail` | 通用 GATT 读写/notify | 已迁 Runtime | 需验证返回列表的连接状态同步 | 保持通用调试，不泄漏 Smart HID 语义 |
 | 原 `pages/hid/index` | 第一方 Smart HID 独立入口 | 已移除 | 独立 Tab 与通用扫描重复 | 首页扫描卡片直接提供通用/专属入口 |
-| `pages/hid/add` | Smart HID 配网 | 用 Profile 过滤扫描 | 与通用扫描共用全局 session，无 session 状态文案 | 显示弱/强匹配、扫描错误、重试和取消 |
+| `pages/hid/add` | Smart HID 配网 | 从首页 Profile 设备进入 | 已移除第二套扫描与六步技术向导 | 自动连接 → 单页 Wi-Fi/ControlHub → 下发并查看状态；失败按 V1 错误恢复 |
 | `pages/hid/detail` | 查看历史配网资料 | 可导航 | 没有实时会话建立 | 明示“历史记录”，提供连接后刷新 |
 | `pages/hid/diagnostics` | 读取当前设备状态 | 有 UI | 依赖内存连接，历史入口常失败 | 以 deviceId 建立/恢复 session 后诊断 |
 | `pages/broadcast/index` | 手机作为 BLE 外设发广播 | 平台能力展示 | 不能与“扫描到的广播”混淆；微信小程序能力需如实降级 | 明确目标平台与支持矩阵，不承诺小程序可做外设广播 |
@@ -120,7 +120,7 @@ sequenceDiagram
 | 扫描两轮 | fake API 断言 `open → start → stop → start`，第二轮有独立 session | 连续点击两次，第二轮显示新 session、结果或明确错误 |
 | 页面切换 | fake API 断言 hide 后 stop 完成 | 扫描中切 tab 返回，再扫不被拒绝 |
 | 广播数据 | fixture：service/manufacturer/local name/空值 | 对比设备实际广播与 Snapshot 字段 |
-| 图标资源 | 编译后逐一检查静态 src 存在 | 关于页首屏、横幅、两个其他应用图标均显示 |
+| 图标资源 | 编译后逐一检查静态 src 存在 | 关于页应用图标、两个其他小程序图标均显示 |
 | Smart HID 诊断 | fake Profile re-connect + status read | 从历史设备进入诊断可明确成功或提示重连失败 |
 
 ## 7. 未验证边界

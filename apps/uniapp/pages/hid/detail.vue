@@ -80,7 +80,9 @@ onLoad((opts) => {
 });
 
 const reconfigure = () => {
-	uni.navigateTo({ url: '/pages/hid/add' });
+	if (!device.value) return;
+	hidStore.setCurrentDevice(device.value);
+	uni.navigateTo({ url: `/pages/hid/add?deviceId=${encodeURIComponent(device.value.deviceId)}` });
 };
 
 const goDiagnostics = () => {

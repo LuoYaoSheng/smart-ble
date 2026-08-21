@@ -76,6 +76,24 @@ Must stay aligned:
 - do not label the common action “generic debugging”; the user-facing action is simply “Connect”
 - Profile buttons use the task name declared by the Profile, not a generic label such as “special mode”
 
+### 1.2 Smart HID Provisioning Flow
+
+Intent:
+- configure a discovered Smart HID without exposing protocol implementation steps
+
+Expected stages:
+1. the Profile action opens the secondary route and automatically connects to the selected device
+2. one form collects Wi-Fi name, Wi-Fi password and editable ControlHub address
+3. scanning the ControlHub QR fills the address and keeps the required one-time token in memory
+4. one submit action writes the canonical V1 candidate
+5. the status stage shows Wi-Fi, pairing, MQTT and Ready progress, including recovery actions
+
+Must stay aligned:
+- do not run a second Smart HID scanner after the device was selected on the shared home page
+- preparation, QR, Wi-Fi and completion are not separate wizard pages
+- the pairing token remains required but is never logged, persisted or shown as a normal form value
+- changing the presentation must not change V1 UUIDs, framing, candidate fields, error codes or pairing API
+
 ### 2. Connected Flow
 
 Intent:
@@ -133,15 +151,13 @@ Intent:
 
 Expected blocks:
 1. brand / version
-2. environment or stack
-3. capabilities
-4. supported platforms
-5. external links
-6. sibling apps
+2. sibling mini-program promotion
+3. compact environment, capabilities and supported-platform information
+4. external links and version history
 
 Must stay aligned:
 - About is product-facing, not a debug dump
-- brand hero or icon should be prominent
+- the app icon should be prominent; a large decorative hero is not required
 - stack info can differ by platform, but section order should stay stable
 - prototypes and sibling runtimes must retain every established content block: brand/version, environment, features, supported platforms, links, sibling apps, version history entry, and footer
 - layout adaptation is allowed; silently deleting content to simplify a prototype is not

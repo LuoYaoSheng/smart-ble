@@ -1,86 +1,64 @@
-# Smart BLE - uni-app 版本
+# BLE Toolkit+（UniApp / 微信小程序）
 
-uni-app 版本是 `smart-ble` 产品家族里最适合传播和教学的入口之一。
+BLE Toolkit+ 是 Smart BLE 产品家族的微信生态和轻量跨端入口。它提供通用 BLE 扫描、连接、GATT 读写、通知、广播能力，并通过 Profile 注册表扩展 Smart HID 等设备专属任务。
 
-它承接了小程序、H5 和轻量 App 方向，也保留了 `LightBLE` 这条历史实现路线的教学价值。
+## 产品导航
 
----
+TabBar 固定为：
 
-## 在产品家族中的角色
+1. 设备
+2. 广播
+3. 关于
 
-- 微信生态和轻量入口
-- 对外最容易体验和传播的版本
-- 教学内容和历史演进的重要载体
+“扫描设备”和“已连接”是设备页内的两个视图。Smart HID 不占用独立 Tab，也不维护第二套扫描器。
 
-如果你想：
+首页设备卡片交互：
 
-- **先快速体验 Smart BLE**：优先看这个版本
-- **做小程序 / H5 版本 BLE 工具**：看这个版本
-- **理解 LightBLE 到 smart-ble 的演进**：也要看这个版本
+- 点击卡片：查看广播快照
+- 点击“连接”：进入通用 GATT 设备会话
+- 匹配到 Profile 时：额外显示 Profile 任务，例如“Smart HID 配网”
 
-## 技术栈
+## Smart HID 配网
 
-- **框架**: uni-app + Vue 3
-- **状态管理**: Pinia
-- **UI 组件**: uni-ui
-- **BLE API**: uni.openBluetoothAdapter
-- **支持平台**: 微信小程序、Android App、iOS App
+Smart HID 配网只有三个用户阶段：
 
-## 项目结构
+1. 自动连接首页选中的设备并读取 Device Info
+2. 在一个页面填写 Wi-Fi 名称、密码和 ControlHub 地址；扫描 ControlHub 二维码获取一次性 token
+3. 下发 canonical V1 candidate，并查看 Wi-Fi、配对、MQTT、Ready 状态
 
+Wi-Fi 密码和 pairing token 只存在于当前内存会话，不写入日志、路由或本地存储。BLE 只用于配网和诊断，HID 实时控制仍走 ControlHub → MQTT → ESP32。
+
+## 微信小程序专项处理
+
+- AppID：`wxf6c58b1dcac4c82d`
+- 使用微信 BLE API 完成扫描与连接
+- 关于页通过 `uni.navigateToMiniProgram` 打开开发者其他小程序
+- 微信端外部网址使用复制链接降级
+- 好友与朋友圈分享使用微信小程序原生钩子
+
+## 代码结构
+
+```text
+pages/                    页面与路由编排
+components/common/        通用状态与导航组件
+components/scan/          扫描和广播快照组件
+components/hid/           Smart HID 配网展示组件
+components/about/         关于页推广组件
+composables/              页面级生命周期和动作编排
+services/ble-runtime/     唯一 BLE Runtime 与扫描会话
+services/provisioning/    通用 GATT 配网 transport / Profile 注册表
+services/smart-hid/       Smart HID Profile 业务语义
+store/                    Pinia 状态
+static/                   小程序资源
 ```
-src/
-├── pages/           # 页面
-│   ├── index/       # 设备列表页（扫描、连接）
-│   ├── broadcast/   # 广播页
-│   └── log/         # 日志页
-├── components/      # 公共组件
-│   ├── device-card/ # 设备卡片
-│   ├── service-item/# 服务项
-│   └── log-panel/   # 日志面板
-├── services/        # BLE 服务
-│   └── ble-adapter.ts
-├── store/           # 状态管理
-│   ├── devices.ts   # 设备状态
-│   └── logs.ts      # 日志状态
-├── utils/           # 工具函数
-└── styles/          # 样式文件
-```
 
-## 开发计划
-
-- [x] 从 SmartBLE 迁移现有代码
-- [ ] 重构为 Vue 3 Composition API
-- [ ] 集成 Pinia 状态管理
-- [ ] 组件化改造
-- [ ] 代码注释完善
-
----
-
-## 教学价值
-
-这个版本对 `smart-ble` 的意义不只是“一个实现”，还包括：
-
-- 小程序 BLE 能力教学
-- 轻量跨端方案展示
-- 历史仓库 `LightBLE` 的内容承接
-- 与 Flutter / 原生移动的对照学习
-
-如果后续要做文章、演示或教学，uni-app 版本通常是最容易先讲清楚的一条线。
-
----
-
-## 适合谁
-
-- 微信小程序开发者
-- 需要快速演示 BLE 功能的人
-- 想学习 uni-app BLE 能力的开发者
-- 想看项目历史演进的人
-
-## 运行
+## 本地检查
 
 ```bash
-npm install
-npm run dev:mp-weixin  # 微信小程序
-npm run dev:app        # App
+node ../../tests/unit/provisioning.test.mjs
+node ../../tests/unit/smart-hid-provision-form.test.mjs
+node ../../scripts/check-smart-hid-contract.mjs
+node ../../scripts/check-uniapp-assets.mjs
 ```
+
+最终 BLE、扫码、小程序跳转和真机页面效果仍需在微信开发者工具与微信真机中验证。

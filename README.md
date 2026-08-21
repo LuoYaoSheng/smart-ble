@@ -254,14 +254,16 @@ pio device monitor
 
 `smart-ble` 作为 Smart HID 系统的**公开仓库**，持有 BLE 配网协议与小程序 HID 配置模块。
 
-- 小程序 HID 模块：[`apps/uniapp/pages/hid/`](./apps/uniapp/pages/hid/)（TabBar：`设备 | HID | 广播 | 关于`）
-- 配网协议事实源：[`core/protocols/hid-provisioning-protocol.ts`](./core/protocols/hid-provisioning-protocol.ts)、[`core/protocols/hid-command-schema.ts`](./core/protocols/hid-command-schema.ts)
+- 小程序 Smart HID 模块：[`apps/uniapp/pages/hid/`](./apps/uniapp/pages/hid/)；Smart HID 由首页通用扫描识别，不占用独立 Tab
+- BLE 配网跨仓正典：Smart-HID-Workspace `protocols/ble/PROVISIONING_V1.md`；[`core/protocols/hid-provisioning-protocol.ts`](./core/protocols/hid-provisioning-protocol.ts) 是小程序侧受锁定镜像
+- MQTT 命令公开定义：[`core/protocols/hid-command-schema.ts`](./core/protocols/hid-command-schema.ts)
 - 公开侧文档：[`docs/smart-hid/`](./docs/smart-hid/)
 
 设计要点：
 
 - 微信小程序是开源个人小程序，**不做**会员 / 支付 / 订单 / License。
-- Smart HID 设备当前**没有设备二维码**；小程序通过"搜索附近 Smart HID → BLE 连接 → 读取 Device Info"识别设备。
+- Smart HID 设备当前**没有设备二维码**；首页通用扫描识别 Profile，点击“Smart HID 配网”后自动连接并读取 Device Info。
+- 配网页面只有“连接 → 填写 Wi-Fi/ControlHub → 查看状态”三个阶段；ControlHub 二维码仅用于带入服务器信息和一次性 token。
 - BLE 只负责配置与诊断，**不负责 HID 实时控制**（实时控制走 ControlHub → MQTT → ESP32，由独立的私有仓库承载）。
 
 私有侧仓库（ControlHub / Firmware / Cloud / Web）在独立的 `Smart-HID-Workspace` 工作区，不在本仓库范围内。详见 [`docs/smart-hid/README.md`](./docs/smart-hid/README.md)。

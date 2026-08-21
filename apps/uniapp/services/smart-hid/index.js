@@ -160,7 +160,6 @@ export async function connect(deviceId) {
     await disconnect();
     throw new Error('目标设备不是兼容的 Smart HID Profile，已断开连接');
   }
-  hidStore.setCurrentStep(2);
   return { deviceId, info };
 }
 

@@ -7,7 +7,7 @@
 | Device scan | `pages/index/index.vue` | scan, advertisement dialog, connect, Profile action |
 | Connected devices | `pages/index/index.vue` | switch list, open device, disconnect |
 | Generic device session | `pages/device/detail.vue` | services, read, write dialog, Notify, logs, OTA dialog, disconnect |
-| Smart HID wizard W01-W06 | `pages/hid/add.vue` | prepare, identify, QR, Wi-Fi, provision progress, completion |
+| Smart HID provisioning | `pages/hid/add.vue` | auto-connect, one-page Wi-Fi/ControlHub form, QR token, provision status |
 | Smart HID detail | `pages/hid/detail.vue` | reconfigure, diagnostics, advanced BLE session |
 | Smart HID diagnostics | `pages/hid/diagnostics.vue` | refresh, state list, advanced error detail |
 | Broadcast | `pages/broadcast/index.vue` | capability, payload fields, size, start/stop, logs |

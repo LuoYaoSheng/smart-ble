@@ -9,7 +9,6 @@ import { logger } from '../../../core/ble-core/utils/logger';
  *   - smartDevices        BLE 扫描过滤后的 Smart HID 设备列表
  *   - currentDevice       当前选中 / 正在配置的设备（含 Device Info 字段）
  *   - provisionSession    当前配网会话状态
- *   - currentStep         Add 向导当前步骤（W01-W06）
  *   - hubInfo             ControlHub 配对 QR 解析结果（敏感，不持久化）
  *   - provisionStatus     设备 Provision Status 最新快照（notify 驱动）
  *   - progress            W05 配置进度（由 provisionStatus 状态机映射）
@@ -42,7 +41,6 @@ export const useHidStore = defineStore('hid', () => {
 	const smartDevices = ref([]);
 	const currentDevice = ref(null);
 	const provisionSession = ref({ active: false, startedAt: null });
-	const currentStep = ref(0);
 	const hubInfo = ref(null);            // 敏感：不持久化。V1 形态：{ token, host, port }
 	const provisionStatus = ref(null);    // 最新 { state, step, error }
 	const progress = ref({ wifi: 'pending', hub: 'pending', conn: 'pending', usb: 'pending' });
@@ -179,7 +177,6 @@ export const useHidStore = defineStore('hid', () => {
 
 	const startProvisionSession = () => {
 		provisionSession.value = { active: true, startedAt: Date.now() };
-		currentStep.value = 0;
 		resetProgress();
 		clearError();
 	};
@@ -190,16 +187,11 @@ export const useHidStore = defineStore('hid', () => {
 		hubInfo.value = null;
 	};
 
-	const setCurrentStep = (step) => {
-		currentStep.value = step;
-	};
-
 	return {
 		// state
 		smartDevices,
 		currentDevice,
 		provisionSession,
-		currentStep,
 		hubInfo,
 		provisionStatus,
 		progress,
@@ -221,7 +213,6 @@ export const useHidStore = defineStore('hid', () => {
 		commitKnownDevice,
 		removeKnownDevice,
 		startProvisionSession,
-		endProvisionSession,
-		setCurrentStep
+		endProvisionSession
 	};
 });

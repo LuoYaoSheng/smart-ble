@@ -32,7 +32,7 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import { onLoad } from '@dcloudio/uni-app';
+import { onLoad, onUnload } from '@dcloudio/uni-app';
 import { useHidStore } from '../../store/hid';
 import { smartHidService } from '../../services/smart-hid/index.js';
 
@@ -53,6 +53,7 @@ const lastError = computed(() => hidStore.lastError);
 onLoad((opts) => {
 	deviceId.value = opts.deviceId ? decodeURIComponent(opts.deviceId) : '';
 });
+onUnload(() => { smartHidService.disconnect().catch(() => {}); });
 
 const stateIcon = (s) => s === 'ok' ? '✓' : s === 'warn' ? '!' : s === 'active' ? '…' : '·';
 const stateText = (s) => ({ ok: '正常', warn: '异常', active: '检测中', pending: '待检测', fail: '失败' }[s] || s);
