@@ -240,7 +240,7 @@ class App {
         if (count === 0) {
             list.innerHTML = `
                 <div class="empty-state">
-                    <img src="placeholders/empty_connected.svg" class="empty-icon-img" alt="connected" style="width: 80px; height: 80px; opacity: 0.7; margin-bottom: 12px;">
+                    <img src="placeholders/empty_connected.png" class="empty-icon-img" alt="connected">
                     <div class="empty-text">暂无已连接设备</div>
                     <div class="empty-hint">在扫描页面点击设备进行连接</div>
                 </div>`;
@@ -589,7 +589,7 @@ class App {
             if (list) {
                 list.innerHTML = `
                     <div class="empty-state">
-                        <img src="placeholders/empty_scan.svg" class="empty-icon-img" alt="scan" style="width: 80px; height: 80px; opacity: 0.7; margin-bottom: 12px;">
+                        <img src="placeholders/empty_scan.png" class="empty-icon-img" alt="scan">
                         <div class="empty-text">暂无设备</div>
                         <div class="empty-hint">点击上方按钮开始扫描</div>
                     </div>
@@ -602,7 +602,7 @@ class App {
             if (list) {
                 list.innerHTML = `
                     <div class="empty-state">
-                        <img src="placeholders/empty_scan.svg" class="empty-icon-img" alt="search" style="width: 80px; height: 80px; opacity: 0.7; margin-bottom: 12px;">
+                        <img src="placeholders/empty_scan.png" class="empty-icon-img" alt="search">
                         <div class="empty-text">没有符合过滤条件的设备</div>
                         <div class="empty-hint">尝试调整过滤条件</div>
                     </div>

@@ -806,6 +806,7 @@ async fn notify_characteristic(
                     // Get notification stream — btleplug pushes ValueNotification items here
                     match peripheral_ref.notifications().await {
                         Ok(mut notif_stream) => {
+                            let device_id_for_event = deviceId.clone();
                             let handle = tokio::spawn(async move {
                                 while let Some(ValueNotification { uuid, value }) = notif_stream.next().await {
                                     // Filter: only forward notifications for our subscribed char
@@ -823,7 +824,7 @@ async fn notify_characteristic(
                                             .join(" ");
 
                                         let payload = serde_json::json!({
-                                            "deviceId": deviceId,
+                                            "deviceId": device_id_for_event,
                                             "serviceUuid": service_uuid_clone,
                                             "charUuid": char_uuid_clone,
                                             "value": formatted

@@ -4,6 +4,12 @@
 
 import SwiftUI
 
+#if os(macOS)
+private let connectedEmptyBackground = Color(NSColor.windowBackgroundColor)
+#else
+private let connectedEmptyBackground = Color(UIColor.systemBackground)
+#endif
+
 struct ConnectedDevicesView: View {
     @EnvironmentObject var bleManager: BLEManager
 
@@ -18,7 +24,7 @@ struct ConnectedDevicesView: View {
             }
             .navigationTitle("已连接设备")
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .primaryAction) {
                     if !bleManager.connectedDevices.isEmpty {
                         Button("全部断开") {
                             bleManager.disconnectAll()
@@ -47,7 +53,7 @@ struct ConnectedDevicesView: View {
                 .padding(.horizontal)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(NSColor.windowBackgroundColor))
+        .background(connectedEmptyBackground)
     }
 
     private var deviceList: some View {

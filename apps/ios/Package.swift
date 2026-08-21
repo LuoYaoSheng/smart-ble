@@ -3,6 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "SmartBLE",
+    defaultLocalization: "zh-Hans",
     platforms: [
         .macOS(.v13),
         .iOS(.v15)
@@ -18,7 +19,10 @@ let package = Package(
         .executableTarget(
             name: "SmartBLE",
             dependencies: [],
-            path: "Sources"
+            path: "Sources",
+            resources: [
+                .process("Resources")
+            ]
         )
     ]
 )

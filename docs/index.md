@@ -3,271 +3,215 @@ layout: home
 
 hero:
   name: "Smart BLE"
-  text: "跨平台低功耗蓝牙大一统开发库"
-  tagline: "一套协议内核，同时覆盖 Flutter · Tauri · UniApp · iOS · Android 与硬件下位机生态，开箱即用"
+  text: "跨平台 BLE 控制台与统一协议内核"
+  tagline: "一套调试工作流，同时覆盖 UniApp · Flutter · Tauri · Android · iOS · 硬件联动，把扫描、连接、广播和协议验证收进同一套产品语言。"
   image:
-    src: /icon.png
-    alt: Smart BLE Logo
+    src: /brand/icon.png
+    alt: Smart BLE Brand Icon
   actions:
     - theme: brand
-      text: 🚀 快速开始
+      text: 快速开始
       link: /tutorials/01_introduction_and_setup
     - theme: alt
-      text: 📥 下载所有端
-      link: '#download-hub'
+      text: 下载全部平台
+      link: "#download-hub"
     - theme: alt
-      text: 📐 架构白皮书
+      text: 架构白皮书
       link: /MASTER_ARCHITECTURE
-
-features:
-  - title: 📱 五大平台统一内核
-    details: Flutter、Tauri/Rust、UniApp/微信小程序、iOS Swift、Android Kotlin — 共享协议层，无需各平台重复造轮子。
-    icon: 🌍
-  - title: 🛡️ 企业级高容错设计
-    details: 内置 Watchdog + 防抖节流队列，从容应对硬件断电、高频数据风暴，保障 UI 永不崩溃。
-    icon: 🛡️
-  - title: 🎨 SSOT 单一真实数据源
-    details: 一键脚本全端分发主题/i18n/色彩 Token，多端样式始终高度一致，彻底告别"各端风格割裂"。
-    icon: 🎨
-  - title: 📡 纯广播无极群控
-    details: 基于 GAP Manufacturer Data 的广播协议，无需建立连接即可对千台设备群发指令，延迟极低。
-    icon: 📡
-  - title: ⚡ 零延迟硬件固件
-    details: ESP32/nRF52840 固件模板，经过生产验证的 18-Byte 紧凑控制帧，告别 ATT 连接开销。
-    icon: ⚡
-  - title: 🧪 端到端 Mock 测试
-    details: 内置 MockAdapter 替代真实硬件，CI/CD 流水线无需蓝牙设备也能全量回归测试。
-    icon: 🧪
 ---
 
-<div class="ecosystem-section">
-  <div class="eco-header">
-    <h2>🌐 全端覆盖生态图谱</h2>
-    <p class="eco-subtitle">Smart BLE 是业界罕见的横跨移动、桌面、Web 与硬件的蓝牙统一方案</p>
-  </div>
+<div class="smartble-home">
+  <section class="smartble-signal-band">
+    <div class="smartble-signal-card">
+      <div class="smartble-signal-value">6+</div>
+      <div class="smartble-signal-label">运行入口</div>
+      <p>UniApp、Flutter、Tauri、Electron、Android、iOS 与硬件示例同时维护。</p>
+    </div>
+    <div class="smartble-signal-card">
+      <div class="smartble-signal-value">1</div>
+      <div class="smartble-signal-label">协议核心</div>
+      <p>统一的 BLE 调试语义、状态流和资产生成器，减少多端割裂。</p>
+    </div>
+    <div class="smartble-signal-card">
+      <div class="smartble-signal-value">4</div>
+      <div class="smartble-signal-label">核心任务</div>
+      <p>扫描、连接、广播、服务调试，是所有端必须讲清楚的主流程。</p>
+    </div>
+    <div class="smartble-signal-card">
+      <div class="smartble-signal-value">SSOT</div>
+      <div class="smartble-signal-label">品牌分发</div>
+      <p>图标、主题和占位图通过共享生成器向多平台统一分发。</p>
+    </div>
+  </section>
 
-  <div class="platform-grid">
-    <div class="platform-card flutter">
-      <div class="platform-icon">🐦</div>
-      <div class="platform-name">Flutter</div>
-      <div class="platform-lang">Dart + Riverpod</div>
-      <div class="platform-badge primary">主力平台</div>
-      <div class="platform-features">
-        <span>✅ BLE 中心 / 周边模式</span>
-        <span>✅ OTA 固件升级</span>
-        <span>✅ 暗黑主题引擎</span>
-        <span>✅ 跨平台 UI 组件库</span>
+  <section class="smartble-product-hero">
+    <div class="smartble-product-copy">
+      <div class="smartble-kicker">Product Story</div>
+      <h2>不是某一端的 BLE 小工具，而是一整套跨平台调试控制台</h2>
+      <p>
+        Smart BLE 的核心价值不是“支持很多平台”，而是把不同平台都拉进同一套工作流：先发现设备，再建立连接，随后读写特征值、监听通知、切换广播模式，最后把协议和硬件联动验证闭环。
+      </p>
+      <div class="smartble-copy-grid">
+        <article>
+          <h3>对用户</h3>
+          <p>拿到就能用，不必每个平台重新学习一遍蓝牙调试路径。</p>
+        </article>
+        <article>
+          <h3>对开发者</h3>
+          <p>同一份设计与交互规范，可以同步落到小程序、桌面和原生端。</p>
+        </article>
       </div>
     </div>
-    <div class="platform-card tauri">
-      <div class="platform-icon">🦀</div>
-      <div class="platform-name">Tauri / Rust</div>
-      <div class="platform-lang">Rust + btleplug</div>
-      <div class="platform-badge primary">主力平台</div>
-      <div class="platform-features">
-        <span>✅ 原生桌面 BLE</span>
-        <span>✅ 事件驱动通知流</span>
-        <span>✅ 广播外设模拟</span>
-        <span>✅ 极低内存占用</span>
-      </div>
+    <div class="smartble-product-visual">
+      <img src="/brand/hero.png" alt="Smart BLE product hero">
     </div>
-    <div class="platform-card android">
-      <div class="platform-icon">🤖</div>
-      <div class="platform-name">Android</div>
-      <div class="platform-lang">Kotlin + Compose</div>
-      <div class="platform-badge primary">主力平台</div>
-      <div class="platform-features">
-        <span>✅ BLE GATT 全栈</span>
-        <span>✅ 权限自动管理</span>
-        <span>✅ 后台扫描服务</span>
-        <span>✅ Material 3 UI</span>
-      </div>
+  </section>
+
+  <section class="smartble-flow-lane">
+    <div class="smartble-section-head">
+      <div class="smartble-kicker">Workflow</div>
+      <h2>所有平台都应该讲同一条调试故事线</h2>
+      <p>视觉可以因平台变化，任务顺序和状态含义不能漂移。</p>
     </div>
-    <div class="platform-card ios">
-      <div class="platform-icon">🍎</div>
-      <div class="platform-name">iOS / macOS</div>
-      <div class="platform-lang">Swift + CoreBluetooth</div>
-      <div class="platform-badge primary">主力平台</div>
-      <div class="platform-features">
-        <span>✅ CoreBluetooth 原生</span>
-        <span>✅ SwiftUI 组件</span>
-        <span>✅ 状态机管理</span>
-        <span>✅ 后台通知支持</span>
-      </div>
+    <div class="smartble-flow-grid">
+      <article class="smartble-flow-card">
+        <span class="smartble-flow-index">01</span>
+        <h3>Scan</h3>
+        <p>确认蓝牙状态，开始扫描，结合过滤器缩小候选设备范围。</p>
+      </article>
+      <article class="smartble-flow-card">
+        <span class="smartble-flow-index">02</span>
+        <h3>Connect</h3>
+        <p>进入设备会话，发现服务树，保持连接状态和日志入口始终可见。</p>
+      </article>
+      <article class="smartble-flow-card">
+        <span class="smartble-flow-index">03</span>
+        <h3>Inspect</h3>
+        <p>读写特征值、开启通知、导出日志、执行 OTA 等高频调试动作。</p>
+      </article>
+      <article class="smartble-flow-card">
+        <span class="smartble-flow-index">04</span>
+        <h3>Broadcast</h3>
+        <p>配置名称、UUID 和 Manufacturer Data，在广播模式下验证设备侧行为。</p>
+      </article>
     </div>
-    <div class="platform-card uniapp">
-      <div class="platform-icon">📱</div>
-      <div class="platform-name">UniApp / 微信</div>
-      <div class="platform-lang">Vue + uni-app</div>
-      <div class="platform-badge secondary">次要平台</div>
-      <div class="platform-features">
-        <span>✅ 微信小程序 BLE</span>
-        <span>✅ H5/APP 兼容</span>
-        <span>✅ 隐私合规处理</span>
-        <span>✅ 并发监听隔离</span>
-      </div>
+  </section>
+
+  <section class="smartble-platform-matrix">
+    <div class="smartble-section-head">
+      <div class="smartble-kicker">Platform Matrix</div>
+      <h2>一个品牌系统，多个运行入口</h2>
+      <p>每条路线都有自己的角色，但不应该长成不同的产品。</p>
     </div>
-    <div class="platform-card hardware">
-      <div class="platform-icon">🔩</div>
-      <div class="platform-name">硬件 SDK</div>
-      <div class="platform-lang">C / ESP32 / nRF52840</div>
-      <div class="platform-badge hardware-badge">硬件生态</div>
-      <div class="platform-features">
-        <span>✅ 18-Byte 控制帧</span>
-        <span>✅ 广播群控内核</span>
-        <span>✅ PlatformIO 构建</span>
-        <span>✅ 零延迟验证</span>
-      </div>
+    <div class="smartble-platform-grid">
+      <article class="smartble-platform-card">
+        <div class="smartble-platform-top">
+          <span class="smartble-platform-icon">📱</span>
+          <span class="smartble-platform-badge">Public Entry</span>
+        </div>
+        <h3>UniApp / 微信小程序</h3>
+        <p>传播成本最低的入口，也是 Smart BLE 品牌层最先统一的运行面。</p>
+      </article>
+      <article class="smartble-platform-card">
+        <div class="smartble-platform-top">
+          <span class="smartble-platform-icon">🐦</span>
+          <span class="smartble-platform-badge">Mobile Mainline</span>
+        </div>
+        <h3>Flutter</h3>
+        <p>Android / iOS 的跨平台主线，适合把统一体验真正产品化。</p>
+      </article>
+      <article class="smartble-platform-card">
+        <div class="smartble-platform-top">
+          <span class="smartble-platform-icon">🦀</span>
+          <span class="smartble-platform-badge">Workbench</span>
+        </div>
+        <h3>Tauri / Electron</h3>
+        <p>面向长时间调试和桌面效率场景的工作台版本。</p>
+      </article>
+      <article class="smartble-platform-card">
+        <div class="smartble-platform-top">
+          <span class="smartble-platform-icon">🤖</span>
+          <span class="smartble-platform-badge">Native</span>
+        </div>
+        <h3>Android</h3>
+        <p>Kotlin + Compose 的原生实现，承接权限、后台扫描和原生能力验证。</p>
+      </article>
+      <article class="smartble-platform-card">
+        <div class="smartble-platform-top">
+          <span class="smartble-platform-icon">🍎</span>
+          <span class="smartble-platform-badge">Native</span>
+        </div>
+        <h3>iOS / macOS</h3>
+        <p>SwiftUI / CoreBluetooth 路线，负责 Apple 平台的原生可信体验。</p>
+      </article>
+      <article class="smartble-platform-card">
+        <div class="smartble-platform-top">
+          <span class="smartble-platform-icon">🔩</span>
+          <span class="smartble-platform-badge">Hardware</span>
+        </div>
+        <h3>ESP32 / 协议侧</h3>
+        <p>不是孤立示例，而是与上层调试工具配套联动的硬件闭环。</p>
+      </article>
     </div>
-  </div>
+  </section>
+
+  <section id="download-hub" class="smartble-download-hub">
+    <div class="smartble-section-head">
+      <div class="smartble-kicker">Download Hub</div>
+      <h2>先体验，再深入代码和架构</h2>
+      <p>如果你只是想快速验证设备、广播或协议链路，直接从这里选入口。</p>
+    </div>
+    <div class="smartble-download-grid">
+      <a class="smartble-download-card" href="https://github.com/luoyaosheng/smart-ble/releases/latest" target="_blank">
+        <span class="smartble-download-icon">🤖</span>
+        <h3>Android APK</h3>
+        <p>适合现场扫描、连接和服务调试的原生入口。</p>
+        <span class="smartble-download-cta">下载 Android 构建</span>
+      </a>
+      <a class="smartble-download-card" href="https://github.com/luoyaosheng/smart-ble/releases/latest" target="_blank">
+        <span class="smartble-download-icon">🦀</span>
+        <h3>Windows / 桌面版</h3>
+        <p>更适合长时间工作台式调试，保留更多并行信息密度。</p>
+        <span class="smartble-download-cta">查看最新 Releases</span>
+      </a>
+      <a class="smartble-download-card" href="https://github.com/luoyaosheng/smart-ble/releases/latest" target="_blank">
+        <span class="smartble-download-icon">🍎</span>
+        <h3>macOS 构建</h3>
+        <p>提供 Tauri 与原生 Swift 两条 Apple 平台路线。</p>
+        <span class="smartble-download-cta">下载 macOS 构建</span>
+      </a>
+      <a class="smartble-download-card smartble-download-card--source" href="https://github.com/luoyaosheng/smart-ble" target="_blank">
+        <span class="smartble-download-icon">📦</span>
+        <h3>源码与文档</h3>
+        <p>如果你要二开、学习架构或对照多平台实现，从仓库和白皮书开始。</p>
+        <span class="smartble-download-cta">进入 GitHub 仓库</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="smartble-learning-grid">
+    <div class="smartble-section-head">
+      <div class="smartble-kicker">Learning Paths</div>
+      <h2>把“能用”与“能学会”一起交付</h2>
+      <p>Smart BLE 不只是工具，也是一套围绕 BLE 软硬件协同的教学材料。</p>
+    </div>
+    <div class="smartble-learning-cards">
+      <a href="/tutorials/01_introduction_and_setup" class="smartble-learning-card">
+        <h3>快速上手</h3>
+        <p>第一次进入仓库，先从起步教程快速跑通扫描和连接。</p>
+      </a>
+      <a href="/tutorials/02_advanced_usage_and_broadcast" class="smartble-learning-card">
+        <h3>广播与进阶</h3>
+        <p>想理解外设模式、广播群控和更深入的 BLE 调试玩法，从这里进入。</p>
+      </a>
+      <a href="/MASTER_ARCHITECTURE" class="smartble-learning-card">
+        <h3>架构白皮书</h3>
+        <p>统一看协议内核、组件拆分、状态流和多端对齐策略。</p>
+      </a>
+      <a href="/tutorials/hardware/01_Hardware_Philosophy" class="smartble-learning-card">
+        <h3>硬件联动</h3>
+        <p>从 ESP32 和下位机侧理解 Smart BLE 为什么不是纯前端项目。</p>
+      </a>
+    </div>
+  </section>
 </div>
-
-<div id="download-hub" class="download-section">
-  <div class="dl-header">
-    <h2>📥 一键分发下载中枢</h2>
-    <p class="dl-subtitle">选择您的平台，开箱即用 — 无需额外配置</p>
-  </div>
-  <div class="dl-grid">
-    <a class="dl-card" href="https://github.com/luoyaosheng/smart-ble/releases/latest" target="_blank">
-      <div class="dl-icon">🤖</div>
-      <div class="dl-name">Android APK</div>
-      <div class="dl-desc">支持 Android 6.0+<br>开箱即用 · BLE 全功能</div>
-      <div class="dl-btn">立即下载 →</div>
-    </a>
-    <a class="dl-card" href="https://github.com/luoyaosheng/smart-ble/releases/latest" target="_blank">
-      <div class="dl-icon">🦀</div>
-      <div class="dl-name">Windows 桌面版</div>
-      <div class="dl-desc">Tauri 原生打包<br>极轻体积 · 持久连接</div>
-      <div class="dl-btn">立即下载 →</div>
-    </a>
-    <a class="dl-card" href="https://github.com/luoyaosheng/smart-ble/releases/latest" target="_blank">
-      <div class="dl-icon">🍎</div>
-      <div class="dl-name">macOS 应用</div>
-      <div class="dl-desc">Tauri / 原生 Swift 双版<br>支持 M1/M2/Intel</div>
-      <div class="dl-btn">立即下载 →</div>
-    </a>
-    <a class="dl-card source" href="https://github.com/luoyaosheng/smart-ble" target="_blank">
-      <div class="dl-icon">📦</div>
-      <div class="dl-name">源码 (GitHub)</div>
-      <div class="dl-desc">MIT 开源协议<br>Star ⭐ 支持项目成长</div>
-      <div class="dl-btn">查看仓库 →</div>
-    </a>
-  </div>
-</div>
-
-<style>
-/* ── 平台生态图谱 ── */
-.ecosystem-section {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 60px 24px 20px;
-}
-.eco-header { text-align: center; margin-bottom: 40px; }
-.eco-header h2 { font-size: 2rem; font-weight: 700; margin-bottom: 12px; }
-.eco-subtitle { color: var(--vp-c-text-2); font-size: 1.05rem; }
-
-.platform-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 20px;
-}
-.platform-card {
-  border-radius: 16px;
-  padding: 24px 18px;
-  border: 1px solid var(--vp-c-divider);
-  background: var(--vp-c-bg-soft);
-  transition: transform 0.22s ease, box-shadow 0.22s ease;
-  position: relative;
-  overflow: hidden;
-}
-.platform-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-}
-.platform-card.flutter::before  { background: linear-gradient(90deg, #54c5f8, #01579b); }
-.platform-card.tauri::before    { background: linear-gradient(90deg, #ff8c00, #c84b31); }
-.platform-card.android::before  { background: linear-gradient(90deg, #3ddc84, #00897b); }
-.platform-card.ios::before      { background: linear-gradient(90deg, #6e6e73, #1c1c1e); }
-.platform-card.uniapp::before   { background: linear-gradient(90deg, #2b9939, #43a048); }
-.platform-card.hardware::before { background: linear-gradient(90deg, #ff6b35, #f7c59f); }
-.platform-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 32px rgba(0,0,0,0.15);
-}
-.platform-icon { font-size: 2rem; margin-bottom: 8px; }
-.platform-name { font-size: 1.05rem; font-weight: 700; margin-bottom: 4px; }
-.platform-lang { font-size: 0.78rem; color: var(--vp-c-text-2); margin-bottom: 10px; }
-.platform-badge {
-  display: inline-block;
-  font-size: 0.7rem;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 20px;
-  margin-bottom: 14px;
-}
-.platform-badge.primary   { background: #646cff22; color: #646cff; }
-.platform-badge.secondary { background: #42b88322; color: #42b883; }
-.platform-badge.hardware-badge { background: #ff6b3522; color: #ff6b35; }
-.platform-features {
-  display: flex; flex-direction: column; gap: 4px;
-  font-size: 0.78rem; color: var(--vp-c-text-2);
-}
-
-/* ── 下载中心 ── */
-.download-section {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 60px 24px 80px;
-  scroll-margin-top: 80px;
-}
-.dl-header { text-align: center; margin-bottom: 40px; }
-.dl-header h2 { font-size: 2rem; font-weight: 700; margin-bottom: 12px; }
-.dl-subtitle { color: var(--vp-c-text-2); font-size: 1.05rem; }
-
-.dl-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-}
-.dl-card {
-  display: flex; flex-direction: column; align-items: center; text-align: center;
-  padding: 32px 20px;
-  border-radius: 16px;
-  border: 1px solid var(--vp-c-divider);
-  background: var(--vp-c-bg-soft);
-  text-decoration: none;
-  color: inherit;
-  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
-}
-.dl-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 16px 40px rgba(100, 108, 255, 0.18);
-  border-color: var(--vp-c-brand-1);
-}
-.dl-card.source:hover {
-  box-shadow: 0 16px 40px rgba(66, 184, 131, 0.18);
-  border-color: #42b883;
-}
-.dl-icon { font-size: 2.5rem; margin-bottom: 12px; }
-.dl-name { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
-.dl-desc { font-size: 0.82rem; color: var(--vp-c-text-2); line-height: 1.6; margin-bottom: 18px; flex: 1; }
-.dl-btn {
-  font-size: 0.85rem; font-weight: 600;
-  padding: 8px 18px;
-  border-radius: 8px;
-  background: var(--vp-c-brand-1);
-  color: #fff;
-  transition: opacity 0.15s;
-}
-.dl-card:hover .dl-btn { opacity: 0.88; }
-.dl-card.source .dl-btn { background: #42b883; }
-
-/* 响应式 */
-@media (max-width: 640px) {
-  .platform-grid { grid-template-columns: repeat(2, 1fr); }
-  .dl-grid { grid-template-columns: repeat(2, 1fr); }
-  .eco-header h2, .dl-header h2 { font-size: 1.5rem; }
-}
-</style>

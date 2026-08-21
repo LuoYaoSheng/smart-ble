@@ -469,7 +469,7 @@ class BleManager private constructor(private val context: Context) {
             val scanRecord = result.scanRecord
 
             val bleDevice = BleDevice(
-                id = device.address,
+                deviceId = device.address,
                 name = device.name,
                 rssi = result.rssi,
                 state = currentConnectionState(device.address),

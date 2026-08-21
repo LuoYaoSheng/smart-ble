@@ -2889,6 +2889,7 @@ name = "smart-ble-tauri"
 version = "1.0.0"
 dependencies = [
  "btleplug",
+ "futures",
  "hex",
  "serde",
  "serde_json",

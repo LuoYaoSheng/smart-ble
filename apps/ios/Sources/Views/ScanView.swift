@@ -3,7 +3,11 @@
 //
 
 import SwiftUI
+#if os(macOS)
 import AppKit
+#elseif os(iOS)
+import UIKit
+#endif
 
 struct ScanView: View {
     @EnvironmentObject var bleManager: BLEManager
@@ -291,9 +295,13 @@ struct DeviceDetailSheet: View {
     }
 
     private func copyToClipboard(_ string: String) {
+        #if os(macOS)
         let pasteboard = NSPasteboard.general
         pasteboard.clearContents()
         pasteboard.setString(string, forType: .string)
+        #else
+        UIPasteboard.general.string = string
+        #endif
     }
 }
 

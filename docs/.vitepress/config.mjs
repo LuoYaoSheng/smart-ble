@@ -10,7 +10,7 @@ export default defineConfig({
   // ═══ SEO 与社交元数据全装甲 ═══
   head: [
     // Favicon
-    ['link', { rel: 'icon', type: 'image/png', href: '/icon.png' }],
+    ['link', { rel: 'icon', type: 'image/png', href: '/brand/icon.png' }],
 
     // Canonical & Author
     ['meta', { name: 'author', content: 'luoyaosheng' }],
@@ -21,7 +21,7 @@ export default defineConfig({
     ['meta', { property: 'og:site_name',   content: 'Smart BLE' }],
     ['meta', { property: 'og:title',       content: 'Smart BLE — 跨平台低功耗蓝牙大一统开发库' }],
     ['meta', { property: 'og:description', content: '单一内核，覆盖 Flutter / Tauri / UniApp / iOS / Android 与硬件下位机生态。支持广播群控、高容错连接与 SSOT 主题引擎。' }],
-    ['meta', { property: 'og:image',       content: 'https://lightble.i2kai.com/icon.png' }],
+    ['meta', { property: 'og:image',       content: 'https://lightble.i2kai.com/brand/share.png' }],
     ['meta', { property: 'og:url',         content: 'https://lightble.i2kai.com/' }],
     ['meta', { property: 'og:locale',      content: 'zh_CN' }],
 
@@ -29,14 +29,14 @@ export default defineConfig({
     ['meta', { name: 'twitter:card',        content: 'summary_large_image' }],
     ['meta', { name: 'twitter:title',       content: 'Smart BLE — 跨平台低功耗蓝牙大一统开发库' }],
     ['meta', { name: 'twitter:description', content: '单一内核覆盖 Flutter / Tauri / UniApp / iOS / Android，开箱即用的开源 BLE SDK。' }],
-    ['meta', { name: 'twitter:image',       content: 'https://lightble.i2kai.com/icon.png' }],
+    ['meta', { name: 'twitter:image',       content: 'https://lightble.i2kai.com/brand/share.png' }],
 
     // 主题色 (PWA / 移动端浏览器工具栏)
-    ['meta', { name: 'theme-color', content: '#646cff' }],
+    ['meta', { name: 'theme-color', content: '#1B6DFF' }],
   ],
 
   themeConfig: {
-    logo: '/icon.png',
+    logo: '/brand/icon.png',
     
     // 导航栏
     nav: [

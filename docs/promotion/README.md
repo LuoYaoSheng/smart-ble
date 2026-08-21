@@ -170,7 +170,7 @@
 
 ### 平台发帖模板
 
-- [posts/INDEX.md](./posts/INDEX.md)
+- [posts/index.md](https://github.com/luoyaosheng/smart-ble/tree/main/docs/promotion/posts)
 
 ### 模板
 
@@ -188,7 +188,7 @@
 建议和下面内容配合：
 
 - [../wechat-articles/README.md](../wechat-articles/README.md)
-- [../../COMPARISON.md](../../COMPARISON.md)
+- [项目首页平台矩阵](/)
 - 根 README
 
 这样外部读者进来后，不会只看到营销话术，而能继续进入学习路径和实现对照。

@@ -1,5 +1,7 @@
 package com.smartble.core.model
 
+import com.smartble.core.utils.hexToByteArray
+import com.smartble.core.utils.toHexString
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue

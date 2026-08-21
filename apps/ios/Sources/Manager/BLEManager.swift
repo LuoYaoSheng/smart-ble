@@ -3,7 +3,7 @@
 // Multi-device concurrent connection support
 
 import Foundation
-import CoreBluetooth
+@preconcurrency import CoreBluetooth
 import Combine
 
 // MARK: - BLE Manager

@@ -665,7 +665,7 @@ fun DeviceList(
             DeviceCard(
                 device = device,
                 onDeviceClick = onDeviceClick,
-                onAction = onConnectClick,
+                onAction = { target -> onConnectClick(target.deviceId) },
             )
         }
     }

@@ -112,7 +112,14 @@ struct LogEntry: Identifiable {
     let type: LogType
     let timestamp = Date()
 
-    enum LogType {
-        case info, success, warning, error, receive, send
+    enum LogType: String {
+        case info = "info"
+        case success = "success"
+        case warning = "warning"
+        case error = "error"
+        case receive = "receive"
+        case send = "send"
+
+        var label: String { rawValue }
     }
 }

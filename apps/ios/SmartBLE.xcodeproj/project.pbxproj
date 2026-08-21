@@ -1,0 +1,499 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		02C1E9A863F5B0F75C07AAC3 /* FilterPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56BB7ACAD0145FCA623322D7 /* FilterPanel.swift */; };
+		034E5E5D025224B4D6451B32 /* OtaUpgradeDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52779D52F0DFC170465641E4 /* OtaUpgradeDialog.swift */; };
+		1BFF657A638115F8CBB179D2 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = E22A8998DC94EAC6893EC901 /* Logger.swift */; };
+		2CE70E0DA00FF8E86555F06B /* LogPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 137F253935B8138373A74D80 /* LogPanel.swift */; };
+		3B84C81AA4A1C69D6F02E4D3 /* ServicePanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 462DA3B443181DB32C47D13E /* ServicePanel.swift */; };
+		3CDB7BCA1DD5A74CEC88270B /* WriteDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A4DB018938F07D52FB634F /* WriteDialog.swift */; };
+		40B426BD179EFB99E60E7821 /* share_card.png in Resources */ = {isa = PBXBuildFile; fileRef = C147C380D7B5409A069AEE00 /* share_card.png */; };
+		53E924BCD78C282F5EA12FAF /* BroadcastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A6671DD294AC769FEBC338 /* BroadcastView.swift */; };
+		57537C7182D48D0BB032C814 /* about-hero.png in Resources */ = {isa = PBXBuildFile; fileRef = 1182918520BEA6E16E071F11 /* about-hero.png */; };
+		68DF476C49CA0238E0B54BD7 /* share.png in Resources */ = {isa = PBXBuildFile; fileRef = 379EDFD1A1865294CCF5CCBB /* share.png */; };
+		6F88CC4C9F9D9C85A883134C /* BLEModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8E7C88C56F5158B76242441 /* BLEModels.swift */; };
+		8414C3B75253591FB9951615 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A816227B7BB813884F682C /* ContentView.swift */; };
+		848E04F4CA4D5554B65EBE9C /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = BD8A44D01A06FE97C69A66BF /* Localizable.strings */; };
+		866C4AE30F140F29EA983246 /* DeviceCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D15368FDB6F074D15A8402 /* DeviceCard.swift */; };
+		867E847F34BD49BA30B88F77 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7824A16A76CDD2CC6CFCE21A /* icon.png */; };
+		86A678FF0DF9734FF19EEF3B /* DataConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3C8A3330117FC4EC6D55498 /* DataConverter.swift */; };
+		86DE1391F763FA1C6895A088 /* about_hero.png in Resources */ = {isa = PBXBuildFile; fileRef = DDDC19B0D22B1B8D86C4C147 /* about_hero.png */; };
+		9DF938C7F616441174818F61 /* OtaManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB8E6F17BFD1EA4EF3D1B8E /* OtaManager.swift */; };
+		A9F8C08269495D941B20F684 /* brand_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 16B84EDEAA2DEDB0F1D69892 /* brand_icon.png */; };
+		BD3B1F7ACB4B72188ABCAEFD /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E03F506E73F4818C8C49EE0B /* AboutView.swift */; };
+		BE99955DE93D1F5C3AAD8F47 /* DeviceDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DB8A6CEF567DD328E7BA62 /* DeviceDetailView.swift */; };
+		CE247E438536BF94BE0708EE /* BLEUuids.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A96626176E83F3A438B76B /* BLEUuids.swift */; };
+		D4CEBC4D886103DA81578CC6 /* SmartBLEApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D23893A779509A137E6E969 /* SmartBLEApp.swift */; };
+		D938AD1BAD032D40DD56B2F9 /* CommandQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DC41E4EFEC71424985D1200 /* CommandQueue.swift */; };
+		ECCD5E68DF06C2B9BF5500D7 /* ConnectedDevicesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3005D87D1119428FB1ECB66 /* ConnectedDevicesView.swift */; };
+		FD678CB4442BC9E2083C76BE /* BLEManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AF4F26029430920BAAF663F /* BLEManager.swift */; };
+		FE762B7F1B90CDBBC342B45C /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F15F8549CEC94A4D6D44FF1 /* ScanView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0006B12F2F5FEC51463E3F10 /* SmartBLEiOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SmartBLEiOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		07D15368FDB6F074D15A8402 /* DeviceCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceCard.swift; sourceTree = "<group>"; };
+		1182918520BEA6E16E071F11 /* about-hero.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "about-hero.png"; sourceTree = "<group>"; };
+		137F253935B8138373A74D80 /* LogPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogPanel.swift; sourceTree = "<group>"; };
+		16B84EDEAA2DEDB0F1D69892 /* brand_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = brand_icon.png; sourceTree = "<group>"; };
+		2D23893A779509A137E6E969 /* SmartBLEApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartBLEApp.swift; sourceTree = "<group>"; };
+		379EDFD1A1865294CCF5CCBB /* share.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = share.png; sourceTree = "<group>"; };
+		42A816227B7BB813884F682C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		462DA3B443181DB32C47D13E /* ServicePanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServicePanel.swift; sourceTree = "<group>"; };
+		4CC42244C97C0B70F43BD70C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		52779D52F0DFC170465641E4 /* OtaUpgradeDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtaUpgradeDialog.swift; sourceTree = "<group>"; };
+		56BB7ACAD0145FCA623322D7 /* FilterPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterPanel.swift; sourceTree = "<group>"; };
+		5AF4F26029430920BAAF663F /* BLEManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEManager.swift; sourceTree = "<group>"; };
+		5BB8E6F17BFD1EA4EF3D1B8E /* OtaManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtaManager.swift; sourceTree = "<group>"; };
+		73DB8A6CEF567DD328E7BA62 /* DeviceDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceDetailView.swift; sourceTree = "<group>"; };
+		7824A16A76CDD2CC6CFCE21A /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
+		7F15F8549CEC94A4D6D44FF1 /* ScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
+		9DC41E4EFEC71424985D1200 /* CommandQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandQueue.swift; sourceTree = "<group>"; };
+		A8E7C88C56F5158B76242441 /* BLEModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEModels.swift; sourceTree = "<group>"; };
+		C147C380D7B5409A069AEE00 /* share_card.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = share_card.png; sourceTree = "<group>"; };
+		C3005D87D1119428FB1ECB66 /* ConnectedDevicesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectedDevicesView.swift; sourceTree = "<group>"; };
+		C3A4DB018938F07D52FB634F /* WriteDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteDialog.swift; sourceTree = "<group>"; };
+		CAAC8A5AE64E60A45F81D477 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		D3C8A3330117FC4EC6D55498 /* DataConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataConverter.swift; sourceTree = "<group>"; };
+		D8A6671DD294AC769FEBC338 /* BroadcastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BroadcastView.swift; sourceTree = "<group>"; };
+		DDDC19B0D22B1B8D86C4C147 /* about_hero.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = about_hero.png; sourceTree = "<group>"; };
+		E03F506E73F4818C8C49EE0B /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
+		E1A96626176E83F3A438B76B /* BLEUuids.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEUuids.swift; sourceTree = "<group>"; };
+		E22A8998DC94EAC6893EC901 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		074619DEEB58FA52AE4B6055 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				07D15368FDB6F074D15A8402 /* DeviceCard.swift */,
+				56BB7ACAD0145FCA623322D7 /* FilterPanel.swift */,
+				137F253935B8138373A74D80 /* LogPanel.swift */,
+				462DA3B443181DB32C47D13E /* ServicePanel.swift */,
+				C3A4DB018938F07D52FB634F /* WriteDialog.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		1145D73BB312F3C2534CC4B9 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				9DC41E4EFEC71424985D1200 /* CommandQueue.swift */,
+				D3C8A3330117FC4EC6D55498 /* DataConverter.swift */,
+				E22A8998DC94EAC6893EC901 /* Logger.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		11A27E194B74622840C51A73 /* Brand */ = {
+			isa = PBXGroup;
+			children = (
+				DDDC19B0D22B1B8D86C4C147 /* about_hero.png */,
+				1182918520BEA6E16E071F11 /* about-hero.png */,
+				16B84EDEAA2DEDB0F1D69892 /* brand_icon.png */,
+				7824A16A76CDD2CC6CFCE21A /* icon.png */,
+				C147C380D7B5409A069AEE00 /* share_card.png */,
+				379EDFD1A1865294CCF5CCBB /* share.png */,
+			);
+			path = Brand;
+			sourceTree = "<group>";
+		};
+		1492C0988AC6DFA601A79B0C = {
+			isa = PBXGroup;
+			children = (
+				DC29378558504D916094B1C1 /* Sources */,
+				D4F575CA4A1F02C47DB76674 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		5B60B2FB338B0A2F8323C460 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				BD8A44D01A06FE97C69A66BF /* Localizable.strings */,
+				11A27E194B74622840C51A73 /* Brand */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		83C8021035DA3D27361A5DAA /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E03F506E73F4818C8C49EE0B /* AboutView.swift */,
+				D8A6671DD294AC769FEBC338 /* BroadcastView.swift */,
+				C3005D87D1119428FB1ECB66 /* ConnectedDevicesView.swift */,
+				42A816227B7BB813884F682C /* ContentView.swift */,
+				73DB8A6CEF567DD328E7BA62 /* DeviceDetailView.swift */,
+				52779D52F0DFC170465641E4 /* OtaUpgradeDialog.swift */,
+				7F15F8549CEC94A4D6D44FF1 /* ScanView.swift */,
+				074619DEEB58FA52AE4B6055 /* Components */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		9C98EB5DED394E8806520DC1 /* Manager */ = {
+			isa = PBXGroup;
+			children = (
+				5AF4F26029430920BAAF663F /* BLEManager.swift */,
+				5BB8E6F17BFD1EA4EF3D1B8E /* OtaManager.swift */,
+			);
+			path = Manager;
+			sourceTree = "<group>";
+		};
+		D4F575CA4A1F02C47DB76674 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0006B12F2F5FEC51463E3F10 /* SmartBLEiOS.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		DC29378558504D916094B1C1 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				2D23893A779509A137E6E969 /* SmartBLEApp.swift */,
+				9C98EB5DED394E8806520DC1 /* Manager */,
+				E41A79DB22F7A89D0340E2B5 /* Models */,
+				5B60B2FB338B0A2F8323C460 /* Resources */,
+				1145D73BB312F3C2534CC4B9 /* Utils */,
+				83C8021035DA3D27361A5DAA /* Views */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		E41A79DB22F7A89D0340E2B5 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A8E7C88C56F5158B76242441 /* BLEModels.swift */,
+				E1A96626176E83F3A438B76B /* BLEUuids.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		5D5E79DDF7640D48210797D7 /* SmartBLEiOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 43D39E903BB15960FB340C09 /* Build configuration list for PBXNativeTarget "SmartBLEiOS" */;
+			buildPhases = (
+				D8DD48684AB17B41843B6166 /* Sources */,
+				6832461B6C4AEAA28F6A20A9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SmartBLEiOS;
+			packageProductDependencies = (
+			);
+			productName = SmartBLEiOS;
+			productReference = 0006B12F2F5FEC51463E3F10 /* SmartBLEiOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9B59E989B69DB407E991FF5D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					5D5E79DDF7640D48210797D7 = {
+						DevelopmentTeam = "${IOS_DEVELOPMENT_TEAM}";
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = A56082D7BF03C9319A00BDC8 /* Build configuration list for PBXProject "SmartBLE" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+				"zh-Hans",
+			);
+			mainGroup = 1492C0988AC6DFA601A79B0C;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				5D5E79DDF7640D48210797D7 /* SmartBLEiOS */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		6832461B6C4AEAA28F6A20A9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				848E04F4CA4D5554B65EBE9C /* Localizable.strings in Resources */,
+				57537C7182D48D0BB032C814 /* about-hero.png in Resources */,
+				86DE1391F763FA1C6895A088 /* about_hero.png in Resources */,
+				A9F8C08269495D941B20F684 /* brand_icon.png in Resources */,
+				867E847F34BD49BA30B88F77 /* icon.png in Resources */,
+				68DF476C49CA0238E0B54BD7 /* share.png in Resources */,
+				40B426BD179EFB99E60E7821 /* share_card.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D8DD48684AB17B41843B6166 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BD3B1F7ACB4B72188ABCAEFD /* AboutView.swift in Sources */,
+				FD678CB4442BC9E2083C76BE /* BLEManager.swift in Sources */,
+				6F88CC4C9F9D9C85A883134C /* BLEModels.swift in Sources */,
+				CE247E438536BF94BE0708EE /* BLEUuids.swift in Sources */,
+				53E924BCD78C282F5EA12FAF /* BroadcastView.swift in Sources */,
+				D938AD1BAD032D40DD56B2F9 /* CommandQueue.swift in Sources */,
+				ECCD5E68DF06C2B9BF5500D7 /* ConnectedDevicesView.swift in Sources */,
+				8414C3B75253591FB9951615 /* ContentView.swift in Sources */,
+				86A678FF0DF9734FF19EEF3B /* DataConverter.swift in Sources */,
+				866C4AE30F140F29EA983246 /* DeviceCard.swift in Sources */,
+				BE99955DE93D1F5C3AAD8F47 /* DeviceDetailView.swift in Sources */,
+				02C1E9A863F5B0F75C07AAC3 /* FilterPanel.swift in Sources */,
+				2CE70E0DA00FF8E86555F06B /* LogPanel.swift in Sources */,
+				1BFF657A638115F8CBB179D2 /* Logger.swift in Sources */,
+				9DF938C7F616441174818F61 /* OtaManager.swift in Sources */,
+				034E5E5D025224B4D6451B32 /* OtaUpgradeDialog.swift in Sources */,
+				FE762B7F1B90CDBBC342B45C /* ScanView.swift in Sources */,
+				3B84C81AA4A1C69D6F02E4D3 /* ServicePanel.swift in Sources */,
+				D4CEBC4D886103DA81578CC6 /* SmartBLEApp.swift in Sources */,
+				3CDB7BCA1DD5A74CEC88270B /* WriteDialog.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		BD8A44D01A06FE97C69A66BF /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4CC42244C97C0B70F43BD70C /* en */,
+				CAAC8A5AE64E60A45F81D477 /* zh-Hans */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		069F14C5A885BF0EFCFEA04A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = SmartBLE/Resources/SmartBLE.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = SmartBLE/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.luoyaosheng.smartble.ios;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		52859278A4165C5CD9F30F24 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = "${IOS_DEVELOPMENT_TEAM}";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = SmartBLE/Resources/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Smart BLE";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 2.0.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.luoyaosheng.smartble.ios;
+				PRODUCT_DISPLAY_NAME = "Smart BLE";
+				PRODUCT_NAME = SmartBLE;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		D6F426C39E4CE3DD28D9BDF0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = SmartBLE/Resources/SmartBLE.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = SmartBLE/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.luoyaosheng.smartble.ios;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F6157FABD53930025EE2DE68 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = "${IOS_DEVELOPMENT_TEAM}";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = SmartBLE/Resources/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Smart BLE";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 2.0.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.luoyaosheng.smartble.ios;
+				PRODUCT_DISPLAY_NAME = "Smart BLE";
+				PRODUCT_NAME = SmartBLE;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		43D39E903BB15960FB340C09 /* Build configuration list for PBXNativeTarget "SmartBLEiOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D6F426C39E4CE3DD28D9BDF0 /* Debug */,
+				069F14C5A885BF0EFCFEA04A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A56082D7BF03C9319A00BDC8 /* Build configuration list for PBXProject "SmartBLE" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F6157FABD53930025EE2DE68 /* Debug */,
+				52859278A4165C5CD9F30F24 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 9B59E989B69DB407E991FF5D /* Project object */;
+}

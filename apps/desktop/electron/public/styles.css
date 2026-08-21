@@ -994,3 +994,149 @@ body {
     padding: 2px 8px;
     border-radius: 4px;
 }
+
+.logo-image {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    box-shadow: 0 10px 20px rgba(27, 109, 255, 0.18);
+}
+
+.empty-icon-img {
+    width: 92px;
+    height: 92px;
+    object-fit: contain;
+    margin-bottom: 12px;
+}
+
+.about-shell {
+    padding: 28px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.about-hero-card,
+.about-card {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(242, 248, 255, 0.95) 100%);
+    border: 1px solid rgba(20, 76, 136, 0.08);
+    border-radius: 24px;
+    box-shadow: 0 18px 42px rgba(17, 43, 78, 0.08);
+}
+
+.about-hero-card {
+    overflow: hidden;
+}
+
+.about-hero-image {
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+    display: block;
+}
+
+.about-hero-body {
+    padding: 24px;
+}
+
+.about-hero-head {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.about-app-icon {
+    width: 68px;
+    height: 68px;
+    border-radius: 18px;
+    box-shadow: 0 12px 24px rgba(27, 109, 255, 0.18);
+}
+
+.about-title {
+    margin: 0;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.about-subtitle {
+    margin: 4px 0 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.about-chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.about-chip {
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(27, 109, 255, 0.08);
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.about-copy {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.75;
+}
+
+.about-info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.about-card {
+    padding: 20px;
+}
+
+.about-card h3 {
+    margin: 0 0 12px;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.about-card p,
+.about-card li {
+    color: var(--text-secondary);
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.about-card ul {
+    margin: 0;
+    padding-left: 18px;
+}
+
+.about-link-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.about-link-list a {
+    color: var(--primary);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.about-link-list a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 980px) {
+    .about-info-grid {
+        grid-template-columns: 1fr;
+    }
+}

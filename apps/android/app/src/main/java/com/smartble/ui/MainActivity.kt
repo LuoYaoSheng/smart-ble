@@ -245,11 +245,11 @@ fun SmartBLEApp(
 
 fun getTitle(selectedItem: Int): String {
     return when (selectedItem) {
-        0 -> "BLE Toolkit+"
+        0 -> "Smart BLE"
         1 -> "已连接设备"
         2 -> "BLE 广播"
         3 -> "关于"
-        else -> "BLE Toolkit+"
+        else -> "Smart BLE"
     }
 }
 

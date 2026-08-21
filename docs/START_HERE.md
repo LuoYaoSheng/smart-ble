@@ -31,7 +31,7 @@
 ### 我只想最快体验一下
 
 - 先去项目站：`https://lightble.i2kai.com/`
-- 或从仓库首页开始看：[README](../README.md)
+- 或直接回到站点首页继续看：[Smart BLE 首页](/)
 
 ### 我想先学 BLE 的四个基本动作
 

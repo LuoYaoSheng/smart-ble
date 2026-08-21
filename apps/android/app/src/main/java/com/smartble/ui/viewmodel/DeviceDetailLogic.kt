@@ -3,6 +3,7 @@ package com.smartble.ui.viewmodel
 import com.smartble.core.model.BleService
 import com.smartble.core.model.ConnectionState
 import com.smartble.core.model.LogEntry
+import com.smartble.core.model.LogType
 import org.json.JSONObject
 
 data class OtaStatusTransition(

@@ -25,7 +25,7 @@ class Logger: ObservableObject {
         if logs.count > maxHistorySize {
             logs.removeFirst()
         }
-        print("[BLE] [\(type.rawValue)] \(message)")
+        print("[BLE] [\(type.label)] \(message)")
     }
 
     /// 特指某个设备的通信日志

@@ -97,8 +97,10 @@ fun LogItem(log: LogEntry) {
     val (icon, color) = when (log.type) {
         LogType.Info -> Icons.Default.Article to Primary
         LogType.Success -> Icons.Default.CheckCircle to Success
+        LogType.Warning -> Icons.Default.Error to com.smartble.ui.theme.Warning
         LogType.Error -> Icons.Default.Error to Error
         LogType.Receive -> Icons.Default.Download to Primary
+        LogType.Send -> Icons.Default.Download to Primary
     }
 
     Row(

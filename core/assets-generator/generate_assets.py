@@ -27,6 +27,7 @@ from pathlib import Path
 BASE_DIR     = Path(__file__).resolve().parent
 PROJECT_ROOT = BASE_DIR.parent.parent
 META_DIR     = BASE_DIR / "meta"
+GENERATED_DIR = META_DIR / "images" / "generated"
 COTAURI_SRC       = PROJECT_ROOT / "apps/desktop/tauri/src"
 WEB_COMPONENTS_DIR = PROJECT_ROOT / "core/ble-core/components"
 SHARED_JS_DIR      = PROJECT_ROOT / "core/ble-core/desktop-shared"
@@ -39,6 +40,9 @@ FLUTTER_ANDROID_MIPMAP = PROJECT_ROOT / "apps/flutter/android/app/src/main/res"
 TAURI_ICONS       = PROJECT_ROOT / "apps/desktop/tauri/src-tauri/icons"
 UNIAPP_RES        = PROJECT_ROOT / "apps/uniapp/unpackage/res/icons"
 UNIAPP_STATIC     = PROJECT_ROOT / "apps/uniapp/static"
+FLUTTER_ASSETS    = PROJECT_ROOT / "apps/flutter/assets"
+IOS_RESOURCES     = PROJECT_ROOT / "apps/ios/Sources/Resources"
+ANDROID_RES       = PROJECT_ROOT / "apps/android/app/src/main/res"
 
 
 ELECTRON_PUBLIC = PROJECT_ROOT / "apps/desktop/electron/public"
@@ -70,6 +74,13 @@ def copy_dir_contents(src_dir, dst_dir, pattern="*.js"):
         copy_file(f, dst_dir / f.name)
         copied.append(f.name)
     return copied
+
+def copy_if_exists(src, dst):
+    src = Path(src)
+    if src.exists():
+        copy_file(src, dst)
+        return True
+    return False
 
 # ── 1. Theme (CSS + Dart) ─────────────────────────────────────────────────────
 def generate_theme(colors_data):
@@ -228,13 +239,15 @@ def generate_graphics():
                 img.resize((256, 256), Image.Resampling.LANCZOS).save(TAURI_ICONS / "icon.ico", format="ICO")
             print("  ✓ Resized Icons → Tauri (src-tauri/icons/)")
 
-            # 2. UniApp Icons (1024, 192, 144, 96, 72, 48 + static/logo.png)
+            # 2. UniApp static logo always updates; packaged icons update when res dir exists
+            img.resize((512, 512), Image.Resampling.LANCZOS).save(UNIAPP_STATIC / "logo.png")
             if UNIAPP_RES.exists():
                 for size in [1024, 192, 180, 167, 152, 144, 120, 96, 87, 80, 76, 72, 60, 58, 40, 29, 20]:
                     out = UNIAPP_RES / f"{size}x{size}.png"
                     img.resize((size, size), Image.Resampling.LANCZOS).save(out)
-                img.resize((512, 512), Image.Resampling.LANCZOS).save(UNIAPP_STATIC / "logo.png")
                 print("  ✓ Resized Icons → UniApp (unpackage/res & static/)")
+            else:
+                print("  ✓ Resized Logo → UniApp static/logo.png")
 
             # 3. Flutter Android Mipmap
             mipmap_scales = {
@@ -250,20 +263,80 @@ def generate_graphics():
                     out_dir.mkdir(parents=True, exist_ok=True)
                     img.resize((size, size), Image.Resampling.LANCZOS).save(out_dir / "ic_launcher.png")
                 print("  ✓ Resized Icons → Flutter Android (mipmap resources)")
+
+            # 4. Shared Brand Assets
+            brand_targets = [
+                ELECTRON_PUBLIC / "brand",
+                TAURI_SRC / "brand",
+                FLUTTER_ASSETS / "brand",
+                IOS_RESOURCES / "Brand",
+            ]
+            for brand_target in brand_targets:
+                brand_target.mkdir(parents=True, exist_ok=True)
+
+            shared_brand_files = [
+                (PROJECT_ROOT / "apps/uniapp/static/logo.png", "icon.png"),
+                (GENERATED_DIR / "smartble-about-hero.png", "about-hero.png"),
+                (GENERATED_DIR / "smartble-share.png", "share.png"),
+            ]
+            copied_brand = []
+            for src, name in shared_brand_files:
+                if not src.exists():
+                    continue
+                for brand_target in brand_targets:
+                    copy_file(src, brand_target / name)
+                copied_brand.append(name)
+            if copied_brand:
+                print(f"  ✓ Synced Brand Assets ({', '.join(copied_brand)}) → Electron, Tauri, Flutter, iOS")
+
+            # iOS / SwiftPM-friendly aliases
+            ios_brand_dir = IOS_RESOURCES / "Brand"
+            ios_aliases = [
+                (PROJECT_ROOT / "apps/uniapp/static/logo.png", "brand_icon.png"),
+                (GENERATED_DIR / "smartble-about-hero.png", "about_hero.png"),
+                (GENERATED_DIR / "smartble-share.png", "share_card.png"),
+            ]
+            copied_ios_aliases = []
+            for src, name in ios_aliases:
+                if copy_if_exists(src, ios_brand_dir / name):
+                    copied_ios_aliases.append(name)
+            if copied_ios_aliases:
+                print(f"  ✓ Synced Brand Aliases ({', '.join(copied_ios_aliases)}) → iOS Resources/Brand")
+
+            # Flutter runtime app icon source
+            if FLUTTER_ASSETS.exists():
+                copy_file(PROJECT_ROOT / "apps/uniapp/static/logo.png", FLUTTER_ASSETS / "images/icon.png")
+                print("  ✓ Synced Logo → Flutter assets/images/icon.png")
+
+            # Android local drawable resources for Compose surfaces
+            android_drawable = ANDROID_RES / "drawable"
+            android_drawable.mkdir(parents=True, exist_ok=True)
+            android_brand_files = [
+                (PROJECT_ROOT / "apps/uniapp/static/logo.png", "brand_icon.png"),
+                (GENERATED_DIR / "smartble-about-hero.png", "brand_about_hero.png"),
+                (GENERATED_DIR / "smartble-share.png", "brand_share.png"),
+            ]
+            copied_android = []
+            for src, name in android_brand_files:
+                if copy_if_exists(src, android_drawable / name):
+                    copied_android.append(name)
+            if copied_android:
+                print(f"  ✓ Synced Brand Assets ({', '.join(copied_android)}) → Android drawable")
                 
-            # 4. Copy Vector Placeholders
+            # 5. Copy Placeholder Assets
             import shutil
             placeholders_src = IMAGE_SOURCE_DIR / "placeholders"
             if placeholders_src.exists():
+                placeholder_files = list(placeholders_src.glob("*.svg")) + list(placeholders_src.glob("*.png"))
                 for ph_target in [
                     ELECTRON_PUBLIC / "placeholders",
                     TAURI_SRC / "placeholders",
                     UNIAPP_STATIC / "placeholders"
                 ]:
                     ph_target.mkdir(parents=True, exist_ok=True)
-                    for svg_file in placeholders_src.glob("*.svg"):
-                        shutil.copy2(svg_file, ph_target / svg_file.name)
-                print("  ✓ Copied SVG Placeholders → Tauri, Electron, UniApp")
+                    for placeholder_file in placeholder_files:
+                        shutil.copy2(placeholder_file, ph_target / placeholder_file.name)
+                print("  ✓ Copied Placeholder Assets (.svg/.png) → Tauri, Electron, UniApp")
                 
     except Exception as e:
         print(f"  [ERROR] generating graphics: {e}")

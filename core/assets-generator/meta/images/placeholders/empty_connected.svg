@@ -1,5 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke-opacity="0.5"/>
-  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke-opacity="0.5"/>
-  <line x1="3" y1="3" x2="21" y2="21" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none">
+  <defs>
+    <linearGradient id="connected-bg" x1="34" y1="26" x2="208" y2="210" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F7FBFF"/>
+      <stop offset="1" stop-color="#EEF7FF"/>
+    </linearGradient>
+    <linearGradient id="connected-accent" x1="72" y1="82" x2="166" y2="154" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1B6DFF"/>
+      <stop offset="1" stop-color="#17C7A8"/>
+    </linearGradient>
+  </defs>
+  <rect x="24" y="24" width="192" height="192" rx="56" fill="url(#connected-bg)"/>
+  <circle cx="86" cy="118" r="34" fill="#1B6DFF" fill-opacity=".08" stroke="#1B6DFF" stroke-width="8"/>
+  <circle cx="154" cy="118" r="34" fill="#17C7A8" fill-opacity=".08" stroke="#17C7A8" stroke-width="8"/>
+  <path d="M107 96c12-14 26-14 38 0M107 140c12 14 26 14 38 0" stroke="url(#connected-accent)" stroke-width="10" stroke-linecap="round"/>
+  <path d="M66 84 54 72M66 152l-12 12M174 84l12-12M174 152l12 12" stroke="#9BC4EC" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="86" cy="118" r="10" fill="#1B6DFF"/>
+  <circle cx="154" cy="118" r="10" fill="#17C7A8"/>
 </svg>

@@ -34,6 +34,7 @@ Thumbs.db
 # Node
 node_modules/
 apps/desktop/electron/node_modules/
+docs/.vitepress/dist/
 
 # Flutter/Dart
 .pub-cache/

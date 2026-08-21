@@ -71,7 +71,7 @@ import androidx.compose.ui.unit.dp
 import com.smartble.core.model.BleCharacteristic
 import com.smartble.core.model.BleService
 import com.smartble.core.model.ConnectionState
-import com.smartble.core.model.hexToByteArray
+import com.smartble.core.utils.hexToByteArray
 import com.smartble.ui.theme.Error
 import com.smartble.ui.theme.Primary
 import com.smartble.ui.theme.Success
@@ -449,6 +449,4 @@ fun ErrorView(message: String, onRetry: () -> Unit) {
             Text("重试")
         }
     }
-}
-
 }

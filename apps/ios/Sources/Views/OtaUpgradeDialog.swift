@@ -6,6 +6,18 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
+#if os(macOS)
+private let otaHeaderBackground = Color(NSColor.windowBackgroundColor)
+private let otaPanelBackground = Color(NSColor.controlBackgroundColor)
+private let otaFieldBackground = Color(NSColor.textBackgroundColor)
+private let otaFieldBorder = Color(NSColor.separatorColor)
+#else
+private let otaHeaderBackground = Color(UIColor.systemGray6)
+private let otaPanelBackground = Color(UIColor.secondarySystemBackground)
+private let otaFieldBackground = Color(UIColor.systemBackground)
+private let otaFieldBorder = Color(UIColor.systemGray4)
+#endif
+
 struct OtaUpgradeDialog: View {
     @StateObject var otaManager: OtaManager
     @Binding var isPresented: Bool
@@ -29,7 +41,7 @@ struct OtaUpgradeDialog: View {
                 }
             }
             .padding()
-            .background(Color(.systemGray6))
+            .background(otaHeaderBackground)
             
             Divider()
             
@@ -64,11 +76,11 @@ struct OtaUpgradeDialog: View {
                         .buttonStyle(.bordered)
                     }
                     .padding()
-                    .background(Color(.systemBackground))
+                    .background(otaFieldBackground)
                     .cornerRadius(8)
                     .overlay(
                         RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color(.systemGray4), lineWidth: 1)
+                            .stroke(otaFieldBorder, lineWidth: 1)
                     )
                 }
                 
@@ -134,7 +146,7 @@ struct OtaUpgradeDialog: View {
             .padding()
         }
         .frame(maxWidth: 400)
-        .background(Color(.secondarySystemBackground))
+        .background(otaPanelBackground)
         .cornerRadius(12)
         .shadow(radius: 10)
         .fileImporter(

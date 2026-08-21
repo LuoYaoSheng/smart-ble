@@ -172,13 +172,13 @@ class OtaManager: ObservableObject {
             return
         }
         
-        ble.writeValue(
-            hexString: data.map { String(format: "%02hhx", $0) }.joined(),
-            to: characteristic.uuid, // Use characteristic UUID
-            serviceUuid: service.uuid,
-            type: withoutResponse ? .withoutResponse : .withResponse
+        ble.writeCharacteristic(
+            deviceId: deviceId,
+            serviceUUID: service.uuid,
+            characteristicUUID: characteristic.uuid,
+            data: data,
+            withoutResponse: withoutResponse
         )
-        // 假设同步执行写入进队列
         completion(true)
     }
     

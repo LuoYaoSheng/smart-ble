@@ -162,7 +162,7 @@
 建议配合下面文档一起使用：
 
 - 仓库根 README：产品家族入口
-- [../../COMPARISON.md](../../COMPARISON.md)：平台对照
+- [项目首页平台矩阵](/)：平台对照入口
 - [../promotion/README.md](../promotion/README.md)：推广和分发入口
 
 这样公众号内容就不会和项目主叙事脱节。

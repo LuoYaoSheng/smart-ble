@@ -1,5 +1,13 @@
 import SwiftUI
 
+#if os(macOS)
+private let logHeaderBackground = Color(NSColor.windowBackgroundColor)
+private let logPanelBackground = Color(NSColor.controlBackgroundColor)
+#else
+private let logHeaderBackground = Color(UIColor.systemBackground)
+private let logPanelBackground = Color(UIColor.secondarySystemBackground)
+#endif
+
 struct LogPanel: View {
     let deviceId: String
     let logs: [LogEntry]
@@ -23,7 +31,7 @@ struct LogPanel: View {
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 10)
-            .background(Color(.systemBackground))
+            .background(logHeaderBackground)
 
             Divider()
 
@@ -50,7 +58,7 @@ struct LogPanel: View {
                 .frame(height: 160)
             }
         }
-        .background(Color(.secondarySystemBackground))
+        .background(logPanelBackground)
         .overlay(Divider(), alignment: .top)
     }
 }
@@ -91,6 +99,7 @@ struct LogRow: View {
         switch entry.type {
         case .info:    return "[系统]"
         case .success: return "[成功]"
+        case .warning: return "[警告]"
         case .error:   return "[错误]"
         case .receive: return "[接收]"
         case .send:    return "[发送]"
@@ -101,6 +110,7 @@ struct LogRow: View {
         switch entry.type {
         case .info:    return .blue
         case .success: return .green
+        case .warning: return .orange
         case .error:   return .red
         case .receive: return .green
         case .send:    return .orange

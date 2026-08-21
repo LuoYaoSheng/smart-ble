@@ -57,7 +57,7 @@ struct DeviceDetailView: View {
 
             Spacer()
 
-            if let device = bleManager.connectedDevices[deviceId] {
+            if bleManager.connectedDevices[deviceId] != nil {
                 // OTA Button
                 if hasOtaService {
                     Button(action: {
@@ -89,10 +89,9 @@ struct DeviceDetailView: View {
     }
     
     private var hasOtaService: Bool {
-        guard let device = bleManager.connectedDevices[deviceId] else { return false }
-        // check if any service matches OTA uuid
+        guard let services = bleManager.servicesByDevice[deviceId] else { return false }
         let otaUuid = "4FAFC201-1FB5-459E-8FCC-C5C9C331914D"
-        return device.services.contains(where: { $0.uuid.uppercased() == otaUuid.uppercased() })
+        return services.contains(where: { $0.uuid.uppercased() == otaUuid.uppercased() })
     }
 
     private var connectionText: String {
@@ -142,6 +141,3 @@ struct DeviceDetailView: View {
         ServicePanel(deviceId: deviceId)
     }
 }
-
-}
-

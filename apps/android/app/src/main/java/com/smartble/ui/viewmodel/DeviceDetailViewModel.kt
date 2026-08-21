@@ -2,14 +2,9 @@ package com.smartble.ui.viewmodel
 
 import android.app.Application
 import android.net.Uri
-package com.smartble.ui.viewmodel
-
-import android.app.Application
-import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.smartble.core.ble.BleManager
-import com.smartble.core.model.BleCharacteristic
 import com.smartble.core.model.BleService
 import com.smartble.core.model.BleUuids
 import com.smartble.core.model.ConnectionState
@@ -37,13 +32,12 @@ class DeviceDetailViewModel(
 
     private val bleManager = BleManager.getInstance(application)
 
-    private val _connectionState = MutableStateFlow<ConnectionState>(ConnectionState.Disconnected)
+    private val _connectionState = MutableStateFlow(ConnectionState.Disconnected)
     val connectionState: StateFlow<ConnectionState> = _connectionState.asStateFlow()
 
     private val _services = MutableStateFlow<List<BleService>>(emptyList())
     val services: StateFlow<List<BleService>> = _services.asStateFlow()
 
-    // 绑定至全局总线
     val logs: StateFlow<List<LogEntry>> = Logger.logs
 
     private val _isLoading = MutableStateFlow(true)
@@ -80,8 +74,6 @@ class DeviceDetailViewModel(
                 _services.value = serviceList
                 if (serviceList.isNotEmpty()) {
                     _isLoading.value = false
-                }
-                if (serviceList.isNotEmpty()) {
                     Logger.info("发现 ${serviceList.size} 个服务")
                 }
             }
@@ -162,18 +154,17 @@ class DeviceDetailViewModel(
 
             val success = bleManager.setNotification(deviceId, serviceUuid, characteristicUuid, newState)
 
-            // 更新本地状态
-            val updatedServices = _services.value.map { s ->
-                if (s.uuid == serviceUuid) {
-                    s.copy(characteristics = s.characteristics.map { c ->
-                        if (c.uuid == characteristicUuid) {
-                            c.copyWithNotifying(newState)
+            val updatedServices = _services.value.map { currentService ->
+                if (currentService.uuid == serviceUuid) {
+                    currentService.copy(characteristics = currentService.characteristics.map { currentCharacteristic ->
+                        if (currentCharacteristic.uuid == characteristicUuid) {
+                            currentCharacteristic.copyWithNotifying(newState)
                         } else {
-                            c
+                            currentCharacteristic
                         }
                     })
                 } else {
-                    s
+                    currentService
                 }
             }
             _services.value = updatedServices
@@ -206,24 +197,24 @@ class DeviceDetailViewModel(
     }
 
     fun startOtaTransfer() {
-        val state = _otaState.value
-        val fileUri = state.fileUri ?: run {
-            _otaState.value = state.copy(errorMessage = "请先选择固件文件")
+        val currentState = _otaState.value
+        val fileUri = currentState.fileUri ?: run {
+            _otaState.value = currentState.copy(errorMessage = "请先选择固件文件")
             return
         }
-        val totalBytes = state.fileSize
+        val totalBytes = currentState.fileSize
         if (connectionState.value != ConnectionState.Connected) {
-            _otaState.value = state.copy(errorMessage = "请先连接设备")
+            _otaState.value = currentState.copy(errorMessage = "请先连接设备")
             return
         }
         if (totalBytes <= 0L) {
-            _otaState.value = state.copy(errorMessage = "固件文件大小无效")
+            _otaState.value = currentState.copy(errorMessage = "固件文件大小无效")
             return
         }
 
         viewModelScope.launch {
             try {
-                _otaState.value = state.copy(
+                _otaState.value = currentState.copy(
                     isInProgress = true,
                     isCompleted = false,
                     progressPercent = 0,
@@ -245,7 +236,7 @@ class DeviceDetailViewModel(
                 delay(200)
 
                 val startPayload = """
-                    {"action":"start","size":$totalBytes,"chunk_size":$OTA_CHUNK_SIZE,"firmware_version":"teaching-build"}
+                    {"action":"start","size":$totalBytes,"chunk_size":$OTA_CHUNK_SIZE,"firmware_version":"android-build"}
                 """.trimIndent().toByteArray()
 
                 val started = bleManager.writeCharacteristic(
@@ -356,14 +347,12 @@ class DeviceDetailViewModel(
             when (transition.logType) {
                 LogType.Info -> Logger.info(transition.logMessage)
                 LogType.Success -> Logger.success(transition.logMessage)
+                LogType.Warning -> Logger.warning(transition.logMessage)
                 LogType.Error -> Logger.error(transition.logMessage)
-                else -> Logger.info(transition.logMessage)
+                LogType.Receive -> Logger.receive(transition.logMessage)
+                LogType.Send -> Logger.send(transition.logMessage)
             }
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
     }
 }
 
