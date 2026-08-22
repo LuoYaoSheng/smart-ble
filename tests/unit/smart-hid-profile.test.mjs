@@ -27,6 +27,8 @@ run('Device Info must confirm product, protocol and device identity', () => {
   const valid = smartHidProfile.codec.parseDeviceInfo('{"product":"smart-hid","protocol":"1.0","device_id":"HID-ABCD1234","firmware":"1.1.0","state":"provisioning","provisioned":false}');
   assert.equal(smartHidProfile.verifyDeviceInfo(valid), true);
   assert.equal(smartHidProfile.verifyDeviceInfo({ ...valid, product: 'other' }), false);
+  assert.equal(smartHidProfile.verifyDeviceInfo({ ...valid, protocol: '2.0' }), false);
+  assert.equal(smartHidProfile.verifyDeviceInfo({ ...valid, device_id: 'wrong-id' }), false);
 });
 
 run('Profile contract accepts Smart HID as an explicit first-party Profile', () => {
@@ -40,6 +42,6 @@ run('Profile contract accepts Smart HID as an explicit first-party Profile', () 
 
 run('workflow distinguishes terminal result and recovery action', () => {
   assert.deepEqual(classifySmartHidStatus({ state: 'ready', step: 'ready', error: null }), { phase: 'ready', terminal: true });
-  assert.equal(smartHidRecoveryAction({ error: 'pairing_expired' }), 'pairing_qr');
+  assert.equal(smartHidRecoveryAction({ error: 'pairing_expired' }), 'pairing');
   assert.equal(smartHidRecoveryAction({ error: 'mqtt_invalid' }), 'diagnostics');
 });

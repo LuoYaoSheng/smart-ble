@@ -8,9 +8,9 @@
 import { utf8Decode, utf8Encode } from '../../../../core/ble-core/provisioning/framing.js';
 import {
   connectDevice,
+  listen as runtimeListen,
   readValue,
   setNotifyEnabled,
-  subscribe as runtimeSubscribe,
   writeValue as runtimeWriteValue
 } from '../ble-runtime/index.js';
 
@@ -51,15 +51,20 @@ export async function connect(deviceId, options = {}) {
 
   session.serviceId = service.uuid;
   session.chars = chars;
-  for (const uuid of notifyUuids) {
-    await setNotifyEnabled(session, session.serviceId, charFor(session, uuid), true);
+  try {
+    for (const uuid of notifyUuids) {
+      await setNotifyEnabled(session, session.serviceId, charFor(session, uuid), true);
+    }
+  } catch (error) {
+    await session.close().catch(() => {});
+    throw error;
   }
   return session;
 }
 
 /** 订阅特征值变化；callback 与 session 绑定，避免同 UUID 跨设备串线。 */
 export async function subscribe(session, charUuid, callback) {
-  const unsubscribe = await runtimeSubscribe(session, session.serviceId, charFor(session, charUuid), callback);
+  const unsubscribe = runtimeListen(session, session.serviceId, charFor(session, charUuid), callback);
   if (typeof callback === 'function') callbackUnsubscribers.set(callback, unsubscribe);
   return unsubscribe;
 }
@@ -69,7 +74,9 @@ export async function subscribe(session, charUuid, callback) {
  * unsubscribe(session, charUuid, callback)。实际解绑始终由 callback 对应 session 完成。
  */
 export function unsubscribe(sessionOrCharUuid, charUuidOrCallback, maybeCallback) {
-  const callback = maybeCallback || charUuidOrCallback;
+  const callback = typeof sessionOrCharUuid === 'function'
+    ? sessionOrCharUuid
+    : maybeCallback || charUuidOrCallback;
   if (typeof callback !== 'function') return;
   const unsubscribe = callbackUnsubscribers.get(callback);
   if (unsubscribe) {

@@ -264,7 +264,7 @@ onShareAppMessage(() => ({
 	path: '/pages/about/index'
 }));
 onShareTimeline(() => ({
-	title: '智能蓝牙助手',
+	title: 'BLE Toolkit+ - 开源跨平台 BLE 工具',
 	query: '',
 	imageUrl: '/static/logo.png'
 }));

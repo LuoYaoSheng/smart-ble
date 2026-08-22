@@ -27,10 +27,8 @@
 				</view>
 			</view>
 			<view class="modal-footer">
-				<button class="modal-btn cancel" @click="close">取消</button>
-				<button class="modal-btn confirm" :disabled="isSending" @click="confirm">
-					{{ isSending ? '发送中...' : '确定' }}
-				</button>
+				<button class="ble-btn ble-btn--ghost ble-btn--lg ble-btn--block modal-btn" @click="close">取消</button>
+				<button class="ble-btn ble-btn--primary ble-btn--lg ble-btn--block modal-btn" :class="{ 'ble-btn--disabled': isSending }" :disabled="isSending" @click="confirm">{{ isSending ? '发送中...' : '确定' }}</button>
 			</view>
 		</view>
 	</view>
@@ -90,9 +88,4 @@ const confirm = () => {
 .radio-label { display: flex; align-items: center; font-size: 26rpx; color: var(--ble-text-subtle); }
 .data-input { background: rgba(241,246,252,.92); height: 82rpx; border-radius: 22rpx; padding: 0 20rpx; font-size: 26rpx; border: 1rpx solid rgba(20,76,136,.08); color: var(--ble-text); }
 .modal-footer { display: flex; gap: 14rpx; padding: 0 30rpx 30rpx; }
-.modal-btn { flex: 1; height: 84rpx; line-height: 84rpx; font-size: 28rpx; text-align: center; border-radius: 999rpx; background-color: transparent; border: none; }
-.modal-btn::after { border: none; }
-.modal-btn.cancel { color: var(--ble-text-subtle); background: rgba(96,117,141,.08); }
-.modal-btn.confirm { color: #ffffff; background: var(--ble-gradient-brand); font-weight: 700; }
-.modal-btn.confirm[disabled] { opacity: .56; }
 </style>

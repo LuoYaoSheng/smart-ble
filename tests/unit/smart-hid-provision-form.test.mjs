@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 
 import {
   buildProvisionFormCandidate,
@@ -49,4 +50,21 @@ run('form candidate keeps the canonical V1 fields', () => {
     hub_port: 17892,
     token: '0123456789abcdef0123456789abcdef'
   });
+});
+
+run('persistent known-device metadata excludes token and Wi-Fi password', () => {
+  const storeSource = readFileSync(new URL('../../apps/uniapp/store/hid.js', import.meta.url), 'utf8');
+  const commitBlock = storeSource.slice(
+    storeSource.indexOf('const commitKnownDevice'),
+    storeSource.indexOf('const removeKnownDevice')
+  );
+  assert.doesNotMatch(commitBlock, /token|wifiPassword|wifi_password/);
+  assert.match(storeSource, /hubInfo\.value = null/);
+});
+
+run('late connect and QR callbacks are ignored after page disposal', () => {
+  const composableSource = readFileSync(new URL('../../apps/uniapp/composables/use-smart-hid-provisioning.js', import.meta.url), 'utf8');
+  assert.match(composableSource, /let disposed = false/);
+  assert.ok((composableSource.match(/if \(disposed\)/g) || []).length >= 3);
+  assert.match(composableSource, /const dispose = \(\) => \{\s*disposed = true/);
 });

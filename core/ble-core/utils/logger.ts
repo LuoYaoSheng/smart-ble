@@ -1,4 +1,10 @@
-import { LogEntry, LogType } from '../domain/device';
+export type LogType = 'info' | 'success' | 'error' | 'warning' | 'receive' | 'send';
+
+export interface LogEntry {
+    message: string;
+    type: LogType;
+    timestamp: string;
+}
 
 export type LogListener = (entry: LogEntry) => void;
 
@@ -67,12 +73,13 @@ class LoggerImpl {
     success(message: string, deviceId?: string) { this.emit(message, 'success', deviceId); }
     error(message: string, deviceId?: string) { this.emit(message, 'error', deviceId); }
     warning(message: string, deviceId?: string) { this.emit(message, 'warning', deviceId); }
+    warn(message: string, deviceId?: string) { this.warning(message, deviceId); }
     receive(message: string, deviceId: string) { this.emit(message, 'receive', deviceId); }
     send(message: string, deviceId: string) { this.emit(message, 'send', deviceId); }
 
     getHistory(deviceId?: string): LogEntry[] {
         if (deviceId) {
-            return this.historyByDevice.get(deviceId) || [];
+            return [...(this.historyByDevice.get(deviceId) || [])];
         }
         return [...this.history];
     }

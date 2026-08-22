@@ -4,6 +4,7 @@
 import {
   getSession,
   setMtu,
+  setNotifyEnabled,
   subscribe,
   writeValue
 } from '../services/ble-runtime/index.js';
@@ -15,8 +16,10 @@ export const OTA_UUIDS = {
   CHAR_STATUS: "beb5483e-36e1-4688-b7f5-ea07361b26c2"
 };
 
+const defaultRuntime = { getSession, setMtu, setNotifyEnabled, subscribe, writeValue };
+
 export class OtaManager {
-  constructor(deviceId, logCallback) {
+  constructor(deviceId, logCallback, options = {}) {
     this.deviceId = deviceId;
     this.logCallback = logCallback || (() => {});
     this.isTransmitting = false;
@@ -24,11 +27,15 @@ export class OtaManager {
     this.sentBytes = 0;
     this._statusCallback = null;
     this._statusUnsubscribe = null;
+    this._statusSession = null;
     this._progressCallback = null;
+    this._statusEnabled = false;
+    this.runtime = options.runtime || defaultRuntime;
+    this.delay = options.delay || ((milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds)));
   }
 
   get session() {
-    const session = getSession(this.deviceId);
+    const session = this.runtime.getSession(this.deviceId);
     if (!session) throw new Error('OTA requires an active BLE session');
     return session;
   }
@@ -40,7 +47,7 @@ export class OtaManager {
   // Request MTU expansion
   async requestMtu() {
     try {
-      await setMtu(this.session, 247);
+      await this.runtime.setMtu(this.session, 247);
       this.log('MTU expanded to 247');
       return true;
     } catch (error) {
@@ -58,22 +65,31 @@ export class OtaManager {
       const value = Array.from(new Uint8Array(res));
       this.log(`OTA Status Data: ${value.join(',')}`);
     };
-    this._statusUnsubscribe = await subscribe(
-      this.session,
+    const session = this.session;
+    this._statusSession = session;
+    this._statusUnsubscribe = await this.runtime.subscribe(
+      session,
       OTA_UUIDS.SERVICE_OTA,
       OTA_UUIDS.CHAR_STATUS,
       this._statusCallback
     );
+    this._statusEnabled = true;
   }
 
   async startOta(fileBuffer, onProgress, onError, onSuccess) {
     try {
+      if (!fileBuffer || !Number.isFinite(fileBuffer.byteLength) || fileBuffer.byteLength <= 0) {
+        throw new Error('firmware file is empty');
+      }
+      if (this.isTransmitting) throw new Error('OTA transfer already in progress');
       this.isTransmitting = true;
       this.totalBytes = fileBuffer.byteLength;
       this.sentBytes = 0;
 
       await this.requestMtu();
+      if (!this.isTransmitting) throw new Error('OTA Cancelled');
       await this.setupStatusListener(onProgress, onError, onSuccess);
+      if (!this.isTransmitting) throw new Error('OTA Cancelled');
 
       this.log(`Starting OTA transfer: ${this.totalBytes} bytes`);
 
@@ -100,17 +116,29 @@ export class OtaManager {
         }
 
         // Mandatory 20ms delay
-        await new Promise(r => setTimeout(r, 20));
+        await this.delay(20);
       }
 
       this.log('OTA Flash successful!');
       if (onSuccess) onSuccess();
+      return { ok: true, sentBytes: this.sentBytes, totalBytes: this.totalBytes };
 
     } catch (e) {
       this.log(`OTA Error: ${e.message}`);
       if (onError) onError(e.message);
+      return { ok: false, error: e };
     } finally {
       this.isTransmitting = false;
+      if (this._statusEnabled && this._statusSession) {
+        await this.runtime.setNotifyEnabled(
+          this._statusSession,
+          OTA_UUIDS.SERVICE_OTA,
+          OTA_UUIDS.CHAR_STATUS,
+          false
+        ).catch((error) => this.log(`OTA status cleanup failed: ${error?.message || error}`));
+      }
+      this._statusEnabled = false;
+      this._statusSession = null;
       this._statusUnsubscribe?.();
       this._statusUnsubscribe = null;
     }
@@ -121,7 +149,7 @@ export class OtaManager {
   }
 
   _writeChunk(buffer) {
-    return writeValue(
+    return this.runtime.writeValue(
       this.session,
       OTA_UUIDS.SERVICE_OTA,
       OTA_UUIDS.CHAR_DATA,

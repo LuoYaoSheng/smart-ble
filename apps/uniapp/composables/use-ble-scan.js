@@ -1,35 +1,14 @@
 import { computed, ref } from 'vue';
-import { onHide, onLoad, onUnload } from '@dcloudio/uni-app';
+import { onHide, onLoad, onShow, onUnload } from '@dcloudio/uni-app';
 import { useBleStore } from '../store/ble';
 import { matchScannedDevices } from '../services/provisioning/profiles.js';
-
-export function requestBleScanPermission() {
-  // #ifdef MP-WEIXIN
-  return new Promise((resolve) => {
-    wx.getSetting({
-      success: (settings) => {
-        if (settings.authSetting['scope.userLocation']) return resolve(true);
-        wx.authorize({
-          scope: 'scope.userLocation', success: () => resolve(true),
-          fail: () => wx.showModal({
-            title: '需要定位权限', content: '微信在部分系统上要求定位权限才能发现附近 BLE 设备。',
-            confirmText: '去设置', success: (result) => { if (result.confirm) wx.openSetting(); resolve(false); },
-            fail: () => resolve(false)
-          })
-        });
-      },
-      fail: () => resolve(true)
-    });
-  });
-  // #endif
-  // #ifndef MP-WEIXIN
-  return Promise.resolve(true);
-  // #endif
-}
+import { requestBleScanPermission } from '../services/scan-permission.js';
+import { filterBleDevices } from '../services/ble-runtime/device-filter.js';
 
 export function useBleScan() {
   const store = useBleStore();
   const filterSettings = ref({ rssi: -100, prefix: '', hideNoName: false });
+  const autoStopSeconds = 5;
 
   const devices = computed(() => {
     const matches = new Map(matchScannedDevices(store.scannedDevices).map((match) => [match.device.deviceId, match]));
@@ -46,23 +25,47 @@ export function useBleScan() {
       } : device;
     });
   });
-  const filteredDevices = computed(() => devices.value.filter((device) => {
-    if (device.RSSI < filterSettings.value.rssi) return false;
-    if (filterSettings.value.hideNoName && !device.name) return false;
-    const prefix = filterSettings.value.prefix.trim().toLowerCase();
-    return !prefix || String(device.name || '').toLowerCase().startsWith(prefix);
-  }));
+  const filteredDevices = computed(() => filterBleDevices(devices.value, filterSettings.value));
 
   const checkBluetoothState = () => {
     uni.getBluetoothAdapterState({
       success: (result) => store.setBleState(result.available ? 'on' : 'off'),
-      fail: () => store.setBleState('off')
+      fail: () => {
+        const systemSetting = uni.getSystemSetting?.();
+        store.setBleState(systemSetting?.bluetoothEnabled ? 'on' : 'off');
+      }
+    });
+  };
+
+  const showScanStartError = async (error) => {
+    const errCode = error?.errCode ?? error?.code;
+    const content = errCode === 10001
+      ? '请先打开系统蓝牙，再重新开始扫描。'
+      : error?.errMsg || error?.message || '扫描启动失败，请稍后重试。';
+
+    await new Promise((resolve) => {
+      uni.showModal({
+        title: '无法开始扫描',
+        content,
+        showCancel: false,
+        complete: resolve
+      });
     });
   };
 
   const start = async () => {
-    if (await requestBleScanPermission()) return store.startScan();
-    return { ok: false, reason: 'permission_denied' };
+    const permission = await requestBleScanPermission();
+    if (!permission.ok) {
+      checkBluetoothState();
+      return permission;
+    }
+
+    const result = await store.startScan(autoStopSeconds * 1000, 'home-scan');
+    checkBluetoothState();
+    if (!result?.ok) {
+      await showScanStartError(result.error);
+    }
+    return result;
   };
 
   const stop = (reason = 'user') => store.stopScan(reason);
@@ -70,6 +73,7 @@ export function useBleScan() {
   const prepareConnect = async () => { await stop('connect'); };
 
   onLoad(checkBluetoothState);
+  onShow(checkBluetoothState);
   onHide(() => stop('page_hide'));
   onUnload(() => stop('page_unload'));
 
@@ -79,6 +83,7 @@ export function useBleScan() {
     isScanning: computed(() => store.isScanning),
     scanError: computed(() => store.scanError),
     bleState: computed(() => store.bleState),
+    autoStopSeconds,
     start, stop, toggle, prepareConnect
   };
 }

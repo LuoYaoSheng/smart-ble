@@ -1,26 +1,10 @@
 <template>
 	<view class="ble-shell">
 		<view class="page-content">
-			<view class="hero-card ble-card-hero">
-				<view class="ble-section-meta">
-					<text class="ble-kicker">Smart HID Device</text>
-					<text class="ble-title">{{ device?.name || 'Smart HID 设备' }}</text>
-					<text class="ble-subtitle">查看最近一次配网信息、进入诊断，或者重新开始这一台设备的配置流程。</text>
-				</view>
-
-				<view class="hero-tags">
-					<view class="ble-chip ble-chip-soft">
-						<text class="ble-mono">{{ device?.deviceId || '—' }}</text>
-					</view>
-					<view class="ble-chip ble-chip-success">
-						<text>{{ device?.protocol || '协议未记录' }}</text>
-					</view>
-				</view>
-			</view>
-
 			<view class="card ble-card">
-				<view class="card-title-row">
-					<text class="card-title">设备资料</text>
+				<view class="device-title-row">
+					<text class="device-title">{{ device?.name || 'Smart HID 设备' }}</text>
+					<view class="ble-chip ble-chip-success"><text>{{ device?.protocol || '协议未记录' }}</text></view>
 				</view>
 				<view class="card-row">
 					<text class="card-label">Device ID</text>
@@ -29,10 +13,6 @@
 				<view class="card-row">
 					<text class="card-label">固件版本</text>
 					<text class="card-value">{{ device?.firmware || '—' }}</text>
-				</view>
-				<view class="card-row">
-					<text class="card-label">协议</text>
-					<text class="card-value">{{ device?.protocol || '—' }}</text>
 				</view>
 			</view>
 
@@ -51,9 +31,11 @@
 			</view>
 
 			<view class="actions">
-				<button class="ble-button-primary" @click="reconfigure">重新配置</button>
-				<button class="ble-button-secondary" @click="goDiagnostics">运行诊断</button>
-				<button class="ble-button-ghost" @click="goAdvancedBle">高级 BLE 调试</button>
+				<button class="ble-btn ble-btn--primary ble-btn--lg ble-btn--block" @click="reconfigure">重新配置</button>
+				<view class="secondary-actions">
+					<button class="ble-btn ble-btn--secondary ble-btn--md ble-btn--block" @click="goDiagnostics">运行诊断</button>
+					<button class="ble-btn ble-btn--ghost ble-btn--md ble-btn--block" @click="goAdvancedBle">高级 BLE 调试</button>
+				</view>
 			</view>
 		</view>
 	</view>
@@ -63,6 +45,11 @@
 import { computed, ref } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 import { useHidStore } from '../../store/hid';
+import {
+	buildGenericDeviceDetailUrl,
+	buildHidDiagnosticsUrl,
+	buildHidProvisionUrl
+} from '../../services/hid-navigation.js';
 
 const hidStore = useHidStore();
 const deviceId = ref('');
@@ -82,50 +69,46 @@ onLoad((opts) => {
 const reconfigure = () => {
 	if (!device.value) return;
 	hidStore.setCurrentDevice(device.value);
-	uni.navigateTo({ url: `/pages/hid/add?deviceId=${encodeURIComponent(device.value.deviceId)}` });
+	uni.navigateTo({ url: buildHidProvisionUrl(device.value.deviceId) });
 };
 
 const goDiagnostics = () => {
-	uni.navigateTo({ url: `/pages/hid/diagnostics?deviceId=${encodeURIComponent(deviceId.value)}` });
+	if (!device.value) return;
+	uni.navigateTo({ url: buildHidDiagnosticsUrl(device.value.deviceId) });
 };
 
 const goAdvancedBle = () => {
-	uni.switchTab({ url: '/pages/index/index' });
+	if (!device.value) return;
+	uni.navigateTo({ url: buildGenericDeviceDetailUrl(device.value) });
 };
 </script>
 
 <style scoped>
 .page-content {
-	padding: 28rpx;
+	padding: 20rpx;
 	display: flex;
 	flex-direction: column;
-	gap: 22rpx;
-}
-
-.hero-card {
-	padding: 34rpx;
-	display: flex;
-	flex-direction: column;
-	gap: 24rpx;
-}
-
-.hero-tags {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 12rpx;
+	gap: 16rpx;
 }
 
 .card {
-	padding: 26rpx;
+	padding: 22rpx;
 	display: flex;
 	flex-direction: column;
-	gap: 18rpx;
+	gap: 16rpx;
 }
 
+.device-title-row,
 .card-title-row {
-	padding-bottom: 8rpx;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 14rpx;
+	padding-bottom: 12rpx;
 	border-bottom: 1rpx solid rgba(20, 76, 136, 0.08);
 }
+
+.device-title { min-width: 0; color: var(--ble-text); font-size: 32rpx; font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .card-title {
 	font-size: 28rpx;
@@ -159,6 +142,9 @@ const goAdvancedBle = () => {
 .actions {
 	display: flex;
 	flex-direction: column;
-	gap: 14rpx;
+	gap: 12rpx;
 }
+
+.secondary-actions { display: flex; gap: 12rpx; }
+.secondary-actions .ble-btn { flex: 1; min-width: 0; padding: 0 16rpx; }
 </style>

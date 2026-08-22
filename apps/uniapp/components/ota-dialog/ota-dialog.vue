@@ -9,7 +9,7 @@
         <view v-if="!isTransmitting" class="ota-prompt">
           <text class="ota-desc">发现 OTA 升级服务。请选择对应的固件 (.bin) 文件进行刷写。</text>
           
-          <button class="ota-select-btn" @click="selectFile">选择文件</button>
+          <button class="ble-btn ble-btn--secondary ble-btn--lg ble-btn--block" @click="selectFile">选择文件</button>
           <text v-if="fileName" class="ota-filename">已选择: {{fileName}}</text>
         </view>
         
@@ -23,8 +23,8 @@
       </view>
 
       <view class="ota-footer">
-        <button class="ota-btn cancel" @click="cancel" :disabled="isTransmitting && progressPercent < 100">取消</button>
-        <button class="ota-btn confirm" type="primary" @click="startOta" :disabled="!fileBuffer || isTransmitting">开始升级</button>
+        <button class="ble-btn ble-btn--ghost ble-btn--lg ble-btn--block" :class="{ 'ble-btn--disabled': isTransmitting && progressPercent < 100 }" @click="cancel" :disabled="isTransmitting && progressPercent < 100">取消</button>
+        <button class="ble-btn ble-btn--primary ble-btn--lg ble-btn--block" :class="{ 'ble-btn--disabled': !fileBuffer || isTransmitting }" @click="startOta" :disabled="!fileBuffer || isTransmitting">开始升级</button>
       </view>
     </view>
   </view>
@@ -231,16 +231,6 @@ const cancel = () => {
   margin-bottom: 16rpx;
   display: block;
 }
-.ota-select-btn {
-  height: 84rpx;
-  border-radius: 999rpx;
-  border: none;
-  background: rgba(27,109,255,.08);
-  color: var(--ble-brand);
-  font-size: 26rpx;
-  font-weight: 700;
-}
-.ota-select-btn::after { border: none; }
 .ota-filename {
   font-size: 22rpx;
   color: var(--ble-text-muted);
@@ -278,28 +268,5 @@ const cancel = () => {
   display: flex;
   gap: 14rpx;
   padding: 0 30rpx 30rpx;
-}
-.ota-btn {
-  flex: 1;
-  border-radius: 999rpx;
-  border: none;
-  font-size: 27rpx;
-  height: 84rpx;
-  line-height: 84rpx;
-  font-weight: 700;
-}
-.ota-btn::after {
-  border: none;
-}
-.cancel {
-  background-color: rgba(96,117,141,.08);
-  color: var(--ble-text-subtle);
-}
-.confirm {
-  background: var(--ble-gradient-brand);
-  color: #fff;
-}
-button[disabled] {
-  opacity: 0.5;
 }
 </style>

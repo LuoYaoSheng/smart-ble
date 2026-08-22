@@ -1,37 +1,87 @@
 <template>
 	<view class="scan-toolbar ble-card">
-		<view class="scan-data">
-			<view class="scan-primary"><text class="scan-count">{{ filteredCount }}</text><text class="scan-label">附近设备</text></view>
-			<text class="scan-secondary">扫描到 {{ deviceCount }} 台 · 已连接 {{ connectedCount }} 台</text>
+		<view class="scan-head">
+			<view class="scan-title-group">
+				<text class="scan-label">扫描</text>
+				<text class="scan-state" :class="{ scanning, warning: !!error }">{{ stateText }}</text>
+			</view>
+			<text class="scan-secondary">{{ deviceCount }} 台设备 · {{ connectedCount }} 台已连接</text>
 		</view>
-		<view class="scan-actions">
-			<button :class="['ble-button-primary', 'scan-btn', scanning ? 'scanning' : '']" @click="$emit('toggle')">
-				<text class="scan-icon">{{ scanning ? '■' : '◉' }}</text><text>{{ scanning ? '停止扫描' : '开始扫描' }}</text>
-			</button>
-		</view>
+		<button class="ble-btn ble-btn--lg ble-btn--block" :class="scanning ? 'ble-btn--danger' : 'ble-btn--primary'" @click="$emit('toggle')">
+			{{ scanning ? '停止扫描' : '开始扫描' }}
+		</button>
 		<error-banner v-if="error" class="scan-error" :title="`扫描失败（${error.code}）`" :message="`${error.message}。请确认蓝牙/定位权限后重试。`" action-label="重试" @action="$emit('retry')" />
 	</view>
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import ErrorBanner from '../common/error-banner.vue';
-defineProps({
+const props = defineProps({
 	filteredCount: { type: Number, default: 0 }, deviceCount: { type: Number, default: 0 }, connectedCount: { type: Number, default: 0 },
 	scanning: { type: Boolean, default: false }, error: { type: Object, default: null }
 });
 defineEmits(['toggle', 'retry']);
+
+const stateText = computed(() => {
+	if (props.scanning) return '扫描中';
+	if (props.error) return '需重试';
+	return props.deviceCount > 0 ? '已完成' : '待开始';
+});
 </script>
 
 <style scoped>
-.scan-toolbar { padding: 22rpx 24rpx; display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: center; gap: 18rpx; }
-.scan-data { min-width: 0; display: flex; flex-direction: column; gap: 4rpx; }
-.scan-primary { display: flex; align-items: baseline; gap: 10rpx; }
-.scan-count { font-size: 46rpx; line-height: 1; font-weight: 800; color: var(--ble-text); }
-.scan-label { font-size: 25rpx; font-weight: 700; color: var(--ble-text); }
-.scan-secondary { font-size: 21rpx; color: var(--ble-text-muted); }
-.scan-actions { display: flex; align-items: center; }
-.scan-btn { min-width: 210rpx; }
-.scan-btn.scanning { background: linear-gradient(135deg, #ff5e62, #ff9f43); box-shadow: 0 18rpx 42rpx rgba(242,85,95,.22); }
-.scan-icon { font-size: 32rpx; line-height: 1; }
-.scan-error { grid-column: 1 / -1; }
+.scan-toolbar {
+	padding: 24rpx;
+	display: flex;
+	flex-direction: column;
+	gap: 18rpx;
+}
+
+.scan-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16rpx;
+}
+
+.scan-title-group {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 10rpx;
+}
+
+.scan-label {
+	font-size: 30rpx;
+	font-weight: 700;
+	color: var(--ble-text);
+}
+
+.scan-secondary {
+	font-size: 22rpx;
+	font-weight: 600;
+	color: var(--ble-text-muted);
+}
+
+.scan-state {
+	padding: 8rpx 16rpx;
+	border-radius: 999rpx;
+	background: rgba(96, 117, 141, 0.1);
+	font-size: 20rpx;
+	font-weight: 700;
+	color: var(--ble-text-subtle);
+}
+.scan-state.scanning {
+	background: rgba(23, 199, 168, 0.14);
+	color: #0e9c82;
+}
+.scan-state.warning {
+	background: rgba(242, 85, 95, 0.14);
+	color: #d14550;
+}
+
+.scan-error {
+	margin-top: 4rpx;
+}
 </style>

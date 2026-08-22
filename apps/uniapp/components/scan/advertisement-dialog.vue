@@ -3,7 +3,7 @@
 		<view class="modal-content" @click.stop>
 			<view class="modal-header"><view class="ble-section-meta"><text class="ble-section-title">广播原始数据</text><text class="ble-section-caption">字段来自本轮平台扫描结果，未提供与空数据会分别标注。</text></view><text class="modal-close" @click="$emit('close')">×</text></view>
 			<scroll-view scroll-y class="modal-scroll"><textarea class="modal-textarea ble-mono" :value="content" disabled selectable></textarea></scroll-view>
-			<view class="modal-actions"><button class="ble-button-primary modal-button" @click="$emit('copy', content)">复制数据</button><button class="ble-button-secondary modal-button" @click="$emit('close')">关闭</button></view>
+			<view class="modal-actions"><button class="ble-btn ble-btn--primary ble-btn--lg ble-btn--block modal-button" @click="$emit('copy', content)">复制数据</button><button class="ble-btn ble-btn--secondary ble-btn--lg ble-btn--block modal-button" @click="$emit('close')">关闭</button></view>
 		</view>
 	</view>
 </template>

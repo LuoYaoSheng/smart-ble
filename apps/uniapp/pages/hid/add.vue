@@ -16,8 +16,8 @@
 				</view>
 				<view v-if="connecting" class="status-line"><view class="status-dot active"></view><text>连接并确认设备中…</text></view>
 				<view v-if="connectionError" class="error-box"><text>{{ connectionError }}</text></view>
-				<button v-if="connectionError && currentDevice" class="primary-btn" :disabled="connecting" @click="connectDevice">重新连接</button>
-				<button v-if="connectionError" class="secondary-btn" @click="goDevices">返回设备列表</button>
+				<button v-if="connectionError && currentDevice" class="ble-btn ble-btn--primary ble-btn--lg ble-btn--block" :class="{ 'ble-btn--disabled': connecting }" :disabled="connecting" @click="connectDevice">重新连接</button>
+				<button v-if="connectionError" class="ble-btn ble-btn--secondary ble-btn--lg ble-btn--block" @click="goDevices">返回设备列表</button>
 			</view>
 
 			<view v-if="phase === 'configure'" class="panel">
@@ -40,17 +40,17 @@
 					<input class="form-input mono" type="text" v-model="hubAddress" placeholder="192.168.1.8:17892" />
 				</view>
 
-				<button class="qr-btn" @click="scanControlHubQr">
-					<text class="qr-icon">⌁</text>
-					<view class="qr-copy">
-						<text class="qr-title">{{ pairingReady ? '重新扫描 ControlHub 配对码' : '扫描 ControlHub 配对码' }}</text>
-						<text class="qr-desc">{{ pairingReady ? '一次性配对凭据已获取，服务器地址仍可修改' : '自动带入服务器地址和一次性配对凭据' }}</text>
+				<button class="ble-action-card-btn" @click="scanControlHubQr">
+					<view class="ble-action-card-btn__icon">⌁</view>
+					<view class="ble-action-card-btn__copy">
+						<text class="ble-action-card-btn__title">{{ pairingReady ? '重新扫描 ControlHub 配对码' : '扫描 ControlHub 配对码' }}</text>
+						<text class="ble-action-card-btn__desc">{{ pairingReady ? '一次性配对凭据已获取，服务器地址仍可修改' : '自动带入服务器地址和一次性配对凭据' }}</text>
 					</view>
-					<text class="qr-state">{{ pairingReady ? '已获取' : '必需' }}</text>
+					<text class="ble-action-card-btn__badge">{{ pairingReady ? '已获取' : '必需' }}</text>
 				</button>
 
 				<text class="privacy-note">Wi-Fi 密码和配对凭据只用于本次下发，不写入日志或本地存储。</text>
-				<button class="primary-btn" :disabled="!canSubmit" @click="provision">下发配置</button>
+				<button class="ble-btn ble-btn--primary ble-btn--lg ble-btn--block" :class="{ 'ble-btn--disabled': !canSubmit }" :disabled="!canSubmit" @click="provision">下发配置</button>
 			</view>
 
 			<view v-if="phase === 'status'" class="panel">
@@ -64,8 +64,8 @@
 					<view><text class="success-title">设备已就绪</text><text class="success-desc">HID 控制请通过 ControlHub 下发。</text></view>
 				</view>
 				<view v-if="errorMessage" class="error-box"><text>{{ errorMessage }}</text></view>
-				<button v-if="provisionDone" class="primary-btn" @click="goDetail">查看设备</button>
-				<button v-if="errorMessage" class="secondary-btn" @click="runRecovery">{{ recoveryLabel }}</button>
+				<button v-if="provisionDone" class="ble-btn ble-btn--primary ble-btn--lg ble-btn--block" @click="goDetail">查看设备</button>
+				<button v-if="errorMessage" class="ble-btn ble-btn--secondary ble-btn--lg ble-btn--block" @click="runRecovery">{{ recoveryLabel }}</button>
 			</view>
 		</view>
 	</view>
@@ -113,18 +113,7 @@ onUnload(dispose);
 .form-hint { color: var(--ble-text-muted); font-size: 20rpx; }
 .form-input { box-sizing: border-box; width: 100%; height: 86rpx; padding: 0 22rpx; border: 1rpx solid rgba(20, 76, 136, 0.1); border-radius: 22rpx; color: var(--ble-text); background: rgba(247, 250, 253, 0.96); font-size: 26rpx; }
 .mono { font-family: "SF Mono", "Roboto Mono", Menlo, monospace; }
-.qr-btn { display: grid; grid-template-columns: 56rpx 1fr auto; align-items: center; gap: 14rpx; min-height: 108rpx; margin: 2rpx 0 0; padding: 18rpx 20rpx; border: 1rpx solid rgba(27, 109, 255, 0.14); border-radius: 24rpx; color: var(--ble-text); background: rgba(27, 109, 255, 0.07); text-align: left; }
-.qr-btn::after, .primary-btn::after, .secondary-btn::after { border: none; }
-.qr-icon { display: flex; align-items: center; justify-content: center; width: 52rpx; height: 52rpx; border-radius: 16rpx; color: #fff; background: var(--ble-gradient-brand); font-size: 30rpx; font-weight: 800; }
-.qr-copy { min-width: 0; }
-.qr-title { display: block; font-size: 25rpx; font-weight: 750; }
-.qr-desc { display: block; margin-top: 5rpx; color: var(--ble-text-subtle); font-size: 20rpx; line-height: 1.45; }
-.qr-state { color: var(--ble-brand); font-size: 21rpx; font-weight: 750; }
 .privacy-note { color: var(--ble-text-muted); font-size: 21rpx; line-height: 1.55; }
-.primary-btn, .secondary-btn { display: flex; align-items: center; justify-content: center; height: 88rpx; border: none; border-radius: 999rpx; font-size: 28rpx; font-weight: 750; }
-.primary-btn { color: #fff; background: var(--ble-gradient-brand); box-shadow: 0 18rpx 42rpx rgba(27, 109, 255, 0.18); }
-.secondary-btn { color: var(--ble-brand); background: rgba(27, 109, 255, 0.08); }
-.primary-btn[disabled] { opacity: 0.5; box-shadow: none; }
 .error-box { padding: 20rpx 22rpx; border: 1rpx solid rgba(242, 85, 95, 0.14); border-radius: 22rpx; color: var(--ble-red); background: rgba(242, 85, 95, 0.08); font-size: 24rpx; line-height: 1.55; }
 .success-box { display: flex; align-items: center; gap: 18rpx; padding: 22rpx; border-radius: 24rpx; color: #087765; background: rgba(23, 199, 168, 0.12); }
 .success-icon { display: flex; align-items: center; justify-content: center; width: 58rpx; height: 58rpx; flex-shrink: 0; border-radius: 50%; color: #fff; background: #17b99b; font-size: 30rpx; font-weight: 800; }

@@ -5,6 +5,10 @@ import {
   buildProvisionFormCandidate,
   formatControlHubAddress
 } from '../services/smart-hid/provision-form.js';
+import {
+  describeSmartHidStatus,
+  smartHidRecoveryAction
+} from '../services/smart-hid/workflow.js';
 
 const STEPS = [
   { key: 'connect', label: '连接' },
@@ -19,25 +23,9 @@ const PROGRESS_LABELS = {
   usb: '设备控制链路就绪'
 };
 
-function describeStatus(status) {
-  if (!status) return '配网失败';
-  const hints = {
-    invalid_payload: '配置内容非法，请检查输入',
-    wifi_failed: 'Wi-Fi 连接失败，请检查名称和密码',
-    controlhub_unreachable: '无法访问 ControlHub，请检查服务器地址',
-    pairing_invalid: '配对凭据无效，请重新扫码',
-    pairing_expired: '配对凭据已过期，请重新扫码',
-    pairing_used: '配对凭据已使用，请重新扫码',
-    mqtt_invalid: 'MQTT 连接失败，请进入诊断',
-    storage_failed: '设备存储失败，请重试'
-  };
-  if (status.error) return hints[status.error] || `配网失败：${status.error}`;
-  if (status.state === 'recovery') return '设备进入恢复模式，请检查配置后重试';
-  return `配网未完成（${status.state || 'unknown'}）`;
-}
-
 export function useSmartHidProvisioning() {
   const hidStore = useHidStore();
+  let disposed = false;
   const phase = ref('connect');
   const connecting = ref(false);
   const connectionError = ref('');
@@ -85,11 +73,16 @@ export function useSmartHidProvisioning() {
     connectionError.value = '';
     try {
       const { info } = await smartHidService.connect(deviceId);
+      if (disposed) {
+        await smartHidService.disconnect().catch(() => {});
+        return;
+      }
       deviceInfoSummary.value = info
         ? `${info.device_id} · fw ${info.firmware} · ${info.state}`
         : deviceId;
       phase.value = 'configure';
     } catch (error) {
+      if (disposed) return;
       connectionError.value = error?.message || '连接失败，请靠近设备后重试。';
     } finally {
       connecting.value = false;
@@ -97,6 +90,7 @@ export function useSmartHidProvisioning() {
   };
 
   const initialize = async (options = {}) => {
+    disposed = false;
     hidStore.startProvisionSession();
     let requestedId = '';
     try { requestedId = options.deviceId ? decodeURIComponent(options.deviceId) : ''; } catch { requestedId = ''; }
@@ -112,6 +106,7 @@ export function useSmartHidProvisioning() {
       onlyFromCamera: false,
       scanType: ['qrCode'],
       success: (result) => {
+        if (disposed) return;
         const payload = smartHidService.parsePairingQrPayload(result.result);
         if (!payload) {
           uni.showModal({
@@ -160,35 +155,21 @@ export function useSmartHidProvisioning() {
     phase.value = 'status';
     provisioning.value = true;
     try {
-      let resultWaiter = null;
-      await smartHidService.provisionCandidate(candidate, {
-        beforeWrite: () => {
-          resultWaiter = smartHidService.waitForProvisionResult(60000);
-          return resultWaiter;
-        }
-      });
-      const { ok, status } = await resultWaiter;
+      const { ok, status } = await smartHidService.provisionAndWait(candidate, 60000);
       provisioning.value = false;
       if (ok) {
         provisionDone.value = true;
         rememberConfiguredDevice();
       } else {
-        errorMessage.value = describeStatus(status);
-        recoveryAction.value = recoveryFor(status?.error);
+        errorMessage.value = describeSmartHidStatus(status);
+        recoveryAction.value = smartHidRecoveryAction(status);
       }
     } catch (error) {
       provisioning.value = false;
       const code = hidStore.lastError?.code || error?.kind || '';
       errorMessage.value = error?.message || '配网失败';
-      recoveryAction.value = recoveryFor(code);
+      recoveryAction.value = smartHidRecoveryAction(code);
     }
-  };
-
-  const recoveryFor = (code) => {
-    if (code === 'mqtt_invalid') return 'diagnostics';
-    if (['pairing_invalid', 'pairing_expired', 'pairing_used', 'controlhub_unreachable'].includes(code)) return 'pairing';
-    if (['wifi_failed', 'invalid_payload'].includes(code)) return 'form';
-    return 'retry';
   };
 
   const recoveryLabel = computed(() => ({
@@ -225,6 +206,7 @@ export function useSmartHidProvisioning() {
   const goDevices = () => uni.switchTab({ url: '/pages/index/index' });
 
   const dispose = () => {
+    disposed = true;
     wifiPassword.value = '';
     hidStore.endProvisionSession();
     smartHidService.disconnect().catch(() => {});

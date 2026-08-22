@@ -140,41 +140,150 @@ image {
   color: var(--ble-text-muted);
 }
 
-.ble-button-primary,
-.ble-button-secondary,
-.ble-button-ghost {
+.ble-btn {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12rpx;
-  height: 88rpx;
+  margin: 0;
   padding: 0 30rpx;
+  width: auto;
+  box-sizing: border-box;
   border: none;
   border-radius: 999rpx;
-  font-size: 28rpx;
+  color: #12263f;
+  background: #ffffff;
   font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
 }
 
-.ble-button-primary {
-  color: #ffffff;
-  background: var(--ble-gradient-brand);
-  box-shadow: var(--ble-shadow-brand);
-}
-
-.ble-button-secondary {
-  color: var(--ble-brand);
-  background: rgba(27, 109, 255, 0.08);
-}
-
-.ble-button-ghost {
-  color: var(--ble-text-subtle);
-  background: rgba(96, 117, 141, 0.08);
-}
-
-.ble-button-primary::after,
-.ble-button-secondary::after,
-.ble-button-ghost::after {
+.ble-btn::after {
   border: none;
+  border-radius: 999rpx;
+}
+
+.ble-btn--block {
+  width: 100% !important;
+}
+
+.ble-btn--sm {
+  height: 60rpx;
+  line-height: 60rpx;
+  font-size: 24rpx;
+  padding: 0 24rpx;
+}
+
+.ble-btn--md {
+  height: 76rpx;
+  line-height: 76rpx;
+  font-size: 26rpx;
+}
+
+.ble-btn--lg {
+  height: 88rpx;
+  line-height: 88rpx;
+  font-size: 28rpx;
+}
+
+.ble-btn--primary {
+  color: #ffffff;
+  background: linear-gradient(135deg, #155dff 0%, #238eff 58%, #31adf5 100%);
+  box-shadow: 0 18rpx 42rpx rgba(27, 109, 255, 0.18);
+}
+
+.ble-btn--secondary {
+  color: #1b6dff;
+  background: rgba(27, 109, 255, 0.08);
+  box-shadow: none;
+}
+
+.ble-btn--ghost {
+  color: #60758d;
+  background: rgba(96, 117, 141, 0.08);
+  box-shadow: none;
+}
+
+.ble-btn--danger {
+  color: #ffffff;
+  background: linear-gradient(135deg, #f2555f 0%, #ff9f43 100%);
+  box-shadow: 0 12rpx 28rpx rgba(242, 85, 95, 0.18);
+}
+
+.ble-btn--disabled {
+  opacity: 0.54;
+  box-shadow: none;
+}
+
+.ble-btn--primary.ble-btn--disabled,
+.ble-btn--danger.ble-btn--disabled {
+  color: #60758d;
+  background: rgba(96, 117, 141, 0.16);
+}
+
+.ble-action-card-btn {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  margin: 0;
+  width: 100%;
+  min-height: 108rpx;
+  box-sizing: border-box;
+  padding: 18rpx 20rpx;
+  border: 1rpx solid rgba(27, 109, 255, 0.14);
+  border-radius: 24rpx;
+  color: #12263f;
+  background: rgba(27, 109, 255, 0.07);
+  text-align: left;
+}
+
+.ble-action-card-btn::after {
+  border: none;
+  border-radius: 24rpx;
+}
+
+.ble-action-card-btn__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52rpx;
+  height: 52rpx;
+  border-radius: 16rpx;
+  color: #ffffff;
+  background: linear-gradient(135deg, #155dff 0%, #238eff 58%, #31adf5 100%);
+  font-size: 30rpx;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.ble-action-card-btn__copy {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.ble-action-card-btn__title {
+  font-size: 25rpx;
+  font-weight: 750;
+  color: #12263f;
+}
+
+.ble-action-card-btn__desc {
+  margin-top: 5rpx;
+  color: #60758d;
+  font-size: 20rpx;
+  line-height: 1.45;
+}
+
+.ble-action-card-btn__badge {
+  color: #1b6dff;
+  font-size: 21rpx;
+  font-weight: 750;
+}
+
+.ble-action-card-btn--disabled {
+  opacity: 0.56;
 }
 
 .ble-pill-tabs {

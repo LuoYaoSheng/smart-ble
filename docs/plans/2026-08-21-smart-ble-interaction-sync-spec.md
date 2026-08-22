@@ -15,6 +15,8 @@ Visual layout can adapt per platform.
 
 Interaction meaning should not drift.
 
+Utility screens are information-dense by default: unique controls, device data, validation, and runtime feedback take priority over decorative summaries. Repeated titles, idle-state hero cards, and generic explanatory copy should be removed or moved inline.
+
 That means:
 - order may flex slightly
 - components may look different
@@ -24,11 +26,12 @@ That means:
 
 Primary runtime navigation should remain:
 
-1. `Device`
-2. `Broadcast`
-3. `About`
+1. `Scan`
+2. `Connected`
+3. `Broadcast`
+4. `About`
 
-`Scan` and `Connected` are two views inside `Device`; they are not separate TabBar destinations.
+`Scan` is the dedicated discovery surface. `Connected` is a separate top-level destination for resuming active sessions. They must not collapse back into one mixed screen unless the wireframe and prototype references are updated first.
 
 Smart HID is not a top-level navigation item. It is a first-party Profile discovered through the shared Scan flow. A matched device gains additional actions without losing generic BLE capabilities.
 
@@ -133,16 +136,20 @@ Intent:
 - configure and run BLE peripheral / advertisement mode
 
 Expected steps:
-1. see current broadcast state
-2. configure payload
-3. start / stop broadcast
-4. inspect runtime feedback and logs
+1. configure payload while seeing the compact current state
+2. start / stop broadcast
+3. inspect runtime feedback and logs
 
 Must stay aligned:
 - one obvious primary action
-- support / capability state visible
+- support / capability state visible in the settings header
 - payload fields grouped, not scattered
 - logs stay nearby
+- no separate hero, platform card, and status strip repeating the same broadcast state
+- platform restrictions appear beside the affected field or action
+- central scan mode and peripheral broadcast mode must hand off explicitly
+- entering broadcast must never close active connected-device sessions
+- leaving broadcast must release peripheral mode before Scan starts again
 
 ### 5. About Flow
 
@@ -216,6 +223,10 @@ These components can look different by runtime, but should keep the same job:
   - collect write payload and encoding choice
 - OTA Dialog
   - select firmware and track progress
+
+### Mini-program button implementation
+
+The UniApp implementation uses native mini-program `button` nodes with shared class-only design primitives. Button labels stay directly inside the native node. Do not reintroduce a wrapper that depends on cross-component slots, object-form `v-bind`, or CSS variables crossing WeChat component isolation.
 
 ## Asset Sync Rules
 

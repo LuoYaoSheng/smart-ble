@@ -13,14 +13,18 @@
 					</view>
 				</view>
 				<view class="device-actions-top">
-					<button class="action-btn" v-if="hasOtaService" @click="showOtaModal = true">固件更新</button>
+					<button v-if="hasOtaService" class="ble-btn ble-btn--danger ble-btn--sm" @click="showOtaModal = true">固件更新</button>
 				</view>
 			</view>
 			<view class="device-actions-row">
-				<button class="row-btn clear" @click="clearLogs">清空日志</button>
-				<button class="row-btn share" @click="shareLogs">导出日志</button>
-				<button class="row-btn" :class="{'connected': isConnected}" @click="toggleConnection">
-					{{isConnected ? '断开连接' : '连接设备'}}
+				<button class="ble-btn ble-btn--ghost ble-btn--md ble-btn--block" @click="clearLogs">清空日志</button>
+				<button class="ble-btn ble-btn--secondary ble-btn--md ble-btn--block" @click="shareLogs">导出日志</button>
+				<button
+					class="ble-btn ble-btn--md ble-btn--block"
+					:class="isConnected ? 'ble-btn--danger' : 'ble-btn--primary'"
+					@click="toggleConnection"
+				>
+					{{ isConnected ? '断开连接' : '连接设备' }}
 				</button>
 			</view>
 		</view>
@@ -70,7 +74,12 @@ import ServicePanel from '../../components/service-panel/service-panel.vue';
 import LogPanel from '../../components/log-panel/log-panel.vue';
 import WriteDialog from '../../components/write-dialog/write-dialog.vue';
 import { OTA_UUIDS } from '../../utils/ota_manager.js';
-import { utf8Decode, utf8Encode } from '../../../../core/ble-core/provisioning/framing.js';
+import { utf8Decode } from '../../../../core/ble-core/provisioning/framing.js';
+import {
+	createNotifyToggleController,
+	encodeWritePayload,
+	formatDeviceLogExport
+} from '../../services/device-session-operations.js';
 
 const bleStore = useBleStore();
 
@@ -90,7 +99,54 @@ const deviceId = ref('');
 let unsubLogger = null;
 let bleSession = null;
 let reconnectTimer = null;
-const notifyUnsubscribers = new Map();
+let pageDisconnectUnsubscribe = null;
+let pageActive = true;
+const notifyController = createNotifyToggleController({
+	subscribe: ({ session, serviceId, characteristicId, callback }) => subscribeBleValue(session, serviceId, characteristicId, callback),
+	disable: ({ session, serviceId, characteristicId }) => setNotifyEnabled(session, serviceId, characteristicId, false)
+});
+
+const describeServices = (session) => session.services.map((service) => ({
+	...service,
+	characteristics: service.characteristics || []
+}));
+
+const bindPageSession = (session, { announceConnected = false, announceResume = false } = {}) => {
+	bleSession = session;
+	const srvs = describeServices(session);
+	hasOtaService.value = srvs.some((service) => String(service.uuid).toLowerCase() === OTA_UUIDS.SERVICE_OTA);
+	bleStore.bindConnectedSession(
+		{
+			deviceId: deviceId.value,
+			name: deviceInfo.value.name || '未知设备',
+			RSSI: deviceInfo.value.RSSI || 0
+		},
+		session,
+		srvs
+	);
+
+	pageDisconnectUnsubscribe?.();
+	pageDisconnectUnsubscribe = session.onDisconnect(() => {
+		if (bleSession !== session) return;
+		bleSession = null;
+		if (!pageActive) return;
+		if (isUserDisconnected.value) {
+			addLog('系统', '已手动断开连接');
+			return;
+		}
+		addLog('系统', '设备已断开连接');
+		retryConnection();
+	});
+
+	connectionRetryCount.value = 0;
+	if (announceConnected) {
+		addLog('系统', `获取到 ${srvs.length} 个服务`);
+		addLog('系统', '设备连接成功');
+	}
+	if (announceResume) {
+		addLog('系统', '已恢复现有连接');
+	}
+};
 
 onLoad((options) => {
 	if (options.device) {
@@ -98,9 +154,14 @@ onLoad((options) => {
 			const parsedDevice = JSON.parse(decodeURIComponent(options.device));
 			deviceId.value = parsedDevice.deviceId;   // set first
 			bleStore.initConnectedDevice(parsedDevice);
-			
-			// Now storeDevice computed is valid because deviceId.value is set
-			if (!storeDevice.value.isConnected) {
+			const existingSession = bleStore.getRuntimeSession(deviceId.value);
+			if (existingSession && !existingSession.dead) {
+				isUserDisconnected.value = false;
+				bindPageSession(existingSession, { announceResume: true });
+			} else {
+				if (storeDevice.value.isConnected) {
+					bleStore.updateDeviceConnectionStatus(deviceId.value, false);
+				}
 				initBluetoothAdapter();
 			}
 		} catch (error) {
@@ -119,16 +180,25 @@ onLoad((options) => {
 	}, deviceVal);
 });
 
+onShow(() => {
+	pageActive = true;
+	if (!deviceId.value) return;
+	const existingSession = bleStore.getRuntimeSession(deviceId.value);
+	if (existingSession && !existingSession.dead && bleSession !== existingSession) {
+		bindPageSession(existingSession);
+	}
+});
+
 onUnload(() => {
+	pageActive = false;
 	if (unsubLogger) {
 		unsubLogger();
 	}
-	for (const unsubscribe of notifyUnsubscribers.values()) unsubscribe();
-	notifyUnsubscribers.clear();
+	notifyController.dispose().catch(() => {});
 	if (reconnectTimer) clearTimeout(reconnectTimer);
-	const session = bleSession;
+	pageDisconnectUnsubscribe?.();
+	pageDisconnectUnsubscribe = null;
 	bleSession = null;
-	session?.close().finally(() => bleStore.updateDeviceConnectionStatus(deviceId.value, false));
 });
 
 const storeDevice = computed(() => {
@@ -157,7 +227,7 @@ const shareLogs = () => {
 		uni.showToast({ title: '暂无日志', icon: 'none' });
 		return;
 	}
-	const content = logs.value.map(l => `[${l.timestamp}] [${l.type}] ${l.message}`).join('\n');
+	const content = formatDeviceLogExport(logs.value);
 	uni.setClipboardData({
 		data: content,
 		success: () => uni.showToast({ title: '日志已复制', icon: 'success' })
@@ -166,6 +236,12 @@ const shareLogs = () => {
 
 const initBluetoothAdapter = async () => {
 	if (isInitializing.value) return;
+	const existingSession = bleStore.getRuntimeSession(deviceId.value);
+	if (existingSession && !existingSession.dead) {
+		isUserDisconnected.value = false;
+		bindPageSession(existingSession);
+		return;
+	}
 	isInitializing.value = true;
 	try {
 		addLog('系统', '正在初始化蓝牙...');
@@ -182,12 +258,13 @@ const initBluetoothAdapter = async () => {
 const toggleConnection = () => {
 	if (isConnected.value) {
 		isUserDisconnected.value = true;
-		const session = bleSession;
-		bleSession = null;
-		session?.close().finally(() => {
-			bleStore.updateDeviceConnectionStatus(deviceId.value, false);
-			addLog('系统', '已手动断开连接');
-		});
+		if (reconnectTimer) clearTimeout(reconnectTimer);
+		reconnectTimer = null;
+		bleStore.disconnectConnectedDevice(deviceId.value, { remove: false })
+			.catch((error) => {
+				isUserDisconnected.value = false;
+				addLog('错误', '断开失败: ' + (error?.errMsg || error?.message || '未知错误'));
+			});
 	} else {
 		connectDevice();
 	}
@@ -195,28 +272,16 @@ const toggleConnection = () => {
 
 const connectDevice = async () => {
 	try {
+		const existingSession = bleStore.getRuntimeSession(deviceId.value);
+		if (existingSession && !existingSession.dead) {
+			isUserDisconnected.value = false;
+			bindPageSession(existingSession, { announceResume: true });
+			return;
+		}
 		addLog('系统', '正在连接...');
 		const session = await connectBleDevice(deviceId.value, { timeout: 10000 });
-		bleSession = session;
-		const srvs = session.services.map((service) => ({
-			...service,
-			characteristics: service.characteristics || []
-		}));
-		hasOtaService.value = srvs.some((service) => String(service.uuid).toLowerCase() === OTA_UUIDS.SERVICE_OTA);
-		bleStore.updateDeviceServices(deviceId.value, srvs);
-		addLog('系统', `获取到 ${srvs.length} 个服务`);
-		bleStore.updateDeviceConnectionStatus(deviceId.value, true);
-		connectionRetryCount.value = 0;
 		isUserDisconnected.value = false;
-		addLog('系统', '设备连接成功');
-
-		session.onDisconnect(() => {
-			if (bleSession !== session) return;
-			bleSession = null;
-			bleStore.updateDeviceConnectionStatus(deviceId.value, false);
-			addLog('系统', '设备已断开连接');
-			if (!isUserDisconnected.value) retryConnection();
-		});
+		bindPageSession(session, { announceConnected: true });
 	} catch (error) {
 		addLog('错误', '连接失败: ' + (error?.errMsg || error?.message || '未知错误'));
 		bleStore.updateDeviceConnectionStatus(deviceId.value, false);
@@ -267,25 +332,8 @@ const onBeforeWriteCharacteristic = ({ serviceId, charId }) => {
 
 const onConfirmWrite = async ({ type, data }) => {
 	isSending.value = true;
-	let buffer;
-	if (type === 'hex') {
-		const hexStr = data.replace(/\s+/g, '');
-		if (hexStr.length % 2 !== 0 || !/^[0-9A-Fa-f]+$/.test(hexStr)) {
-			uni.showToast({ title: 'HEX格式不正确', icon: 'none' });
-			isSending.value = false;
-			return;
-		}
-		buffer = new ArrayBuffer(hexStr.length / 2);
-		const dataView = new DataView(buffer);
-		for (let i = 0; i < hexStr.length; i += 2) {
-			dataView.setUint8(i / 2, parseInt(hexStr.substring(i, i + 2), 16));
-		}
-	} else {
-			const encoded = utf8Encode(data);
-			buffer = encoded.buffer.slice(encoded.byteOffset, encoded.byteOffset + encoded.byteLength);
-	}
-
 	try {
+		const buffer = encodeWritePayload(type, data);
 		if (!bleSession) throw new Error('设备未连接');
 		await writeBleValue(bleSession, writeServiceId.value, writeCharacteristicId.value, buffer);
 		addLog('写入', `${type.toUpperCase()}: ${data}`);
@@ -303,24 +351,13 @@ const onToggleNotify = ({ serviceId, charId }) => {
 	if (!service || !bleSession) return;
 	const char = service.characteristics.find(c => c.uuid === charId);
 	if (!char) return;
-	const key = `${serviceId}|${charId}`;
-	const enable = !char.notifying;
-	if (enable) {
-		subscribeBleValue(bleSession, serviceId, charId, handleReceivedData)
-			.then((unsubscribe) => {
-				notifyUnsubscribers.set(key, unsubscribe);
-				char.notifying = true;
-				addLog('系统', '开启监听成功');
-			})
-			.catch((error) => addLog('错误', '设置监听失败: ' + (error?.errMsg || error?.message || '未知错误')));
-		return;
-	}
-	setNotifyEnabled(bleSession, serviceId, charId, false)
-		.then(() => {
-			notifyUnsubscribers.get(key)?.();
-			notifyUnsubscribers.delete(key);
-			char.notifying = false;
-			addLog('系统', '关闭监听成功');
+	const target = { session: bleSession, serviceId, characteristicId: charId, callback: handleReceivedData };
+	if (notifyController.isPending(target)) return;
+	notifyController.toggle(target)
+		.then((enabled) => {
+			if (!pageActive || bleSession !== target.session) return;
+			char.notifying = enabled;
+			addLog('系统', enabled ? '开启监听成功' : '关闭监听成功');
 		})
 		.catch((error) => addLog('错误', '设置监听失败: ' + (error?.errMsg || error?.message || '未知错误')));
 };
@@ -408,58 +445,9 @@ const onToggleNotify = ({ serviceId, charId }) => {
 	margin-left: auto;
 }
 
-.action-btn {
-	height: 56rpx;
-	line-height: 56rpx;
-	padding: 0 22rpx;
-	border: none;
-	border-radius: 999rpx;
-	background: linear-gradient(135deg, #ff9f43 0%, #f2555f 100%);
-	color: #ffffff;
-	font-size: 22rpx;
-	font-weight: 700;
-	box-shadow: 0 12rpx 28rpx rgba(242, 85, 95, 0.14);
-}
-
-.action-btn::after {
-	border: none;
-}
-
 .device-actions-row {
 	display: flex;
 	gap: 14rpx;
-}
-
-.row-btn {
-	flex: 1;
-	height: 76rpx;
-	line-height: 76rpx;
-	border-radius: 999rpx;
-	font-size: 26rpx;
-	font-weight: 700;
-	border: none;
-	background: var(--ble-gradient-brand);
-	color: #ffffff;
-}
-
-.row-btn::after {
-	border: none;
-}
-
-.row-btn.clear {
-	background: rgba(96, 117, 141, 0.08);
-	color: var(--ble-text-subtle);
-	flex: 0.9;
-}
-
-.row-btn.share {
-	background: rgba(27, 109, 255, 0.08);
-	color: var(--ble-brand);
-	flex: 0.9;
-}
-
-.row-btn.connected {
-	background: linear-gradient(135deg, #f2555f 0%, #ff9f43 100%);
 }
 
 .main-content {

@@ -11,6 +11,7 @@ const state = {
   platform: null,
   callbacksRegistered: false,
   sessions: new Map(),
+  connectionAttempts: new Map(),
   valueListeners: new Map(),
   disconnectListeners: new Map(),
   pendingLocalDisconnects: new Map(),
@@ -19,6 +20,7 @@ const state = {
 };
 
 const normalize = (value) => String(value || '').toLowerCase();
+const isAlreadyOpenedError = (error) => /already opened|already open/i.test(error?.errMsg || error?.message || '');
 const valueKey = (deviceId, serviceId, characteristicId) => [deviceId, serviceId, characteristicId].map(normalize).join('|');
 const serviceKey = (deviceId, serviceId) => [deviceId, serviceId].map(normalize).join('|');
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -171,16 +173,8 @@ function indexServices(services) {
   return byId;
 }
 
-export async function connectDevice(deviceId, options = {}) {
+async function createDeviceSession(deviceId, options) {
   const platform = ensureCallbacks();
-  const existing = state.sessions.get(deviceId);
-  if (existing && !existing.dead) {
-    if (options.mtu && existing.mtu < options.mtu) {
-      await setMtu(existing, options.mtu).catch(() => {});
-    }
-    return existing;
-  }
-
   await call(platform, 'createBLEConnection', { deviceId, timeout: options.timeout || 10000 });
   let services = [];
   const expectedServiceUuid = normalize(options.expectedServiceUuid);
@@ -232,6 +226,40 @@ export async function connectDevice(deviceId, options = {}) {
   return session;
 }
 
+async function enforceSessionRequirements(session, options) {
+  const expectedServiceUuid = normalize(options.expectedServiceUuid);
+  if (expectedServiceUuid && !session.services.some((service) => normalize(service.uuid) === expectedServiceUuid)) {
+    throw new Error(`expected service not found: ${options.expectedServiceUuid}`);
+  }
+  if (options.mtu && session.mtu < options.mtu) {
+    await setMtu(session, options.mtu).catch(() => {});
+  }
+  return session;
+}
+
+export async function connectDevice(deviceId, options = {}) {
+  const existing = state.sessions.get(deviceId);
+  if (existing && !existing.dead) {
+    return enforceSessionRequirements(existing, options);
+  }
+
+  const pending = state.connectionAttempts.get(deviceId);
+  if (pending) {
+    const session = await pending;
+    return enforceSessionRequirements(session, options);
+  }
+
+  const attempt = createDeviceSession(deviceId, options);
+  state.connectionAttempts.set(deviceId, attempt);
+  try {
+    return await attempt;
+  } finally {
+    if (state.connectionAttempts.get(deviceId) === attempt) {
+      state.connectionAttempts.delete(deviceId);
+    }
+  }
+}
+
 export function onDiscovery(callback) {
   if (typeof callback !== 'function') throw new Error('discovery callback must be a function');
   ensureCallbacks();
@@ -247,7 +275,12 @@ export function onAdapterState(callback) {
 }
 
 export async function openAdapter() {
-  return call(ensureCallbacks(), 'openBluetoothAdapter');
+  try {
+    return await call(ensureCallbacks(), 'openBluetoothAdapter');
+  } catch (error) {
+    if (isAlreadyOpenedError(error)) return { alreadyOpened: true };
+    throw error;
+  }
 }
 
 export async function startDiscovery(options = {}) {
@@ -280,6 +313,12 @@ export async function subscribe(session, serviceId, characteristicId, callback) 
   return callback ? addValueListener(session, target.serviceId, target.characteristicId, callback) : () => {};
 }
 
+export function listen(session, serviceId, characteristicId, callback) {
+  if (session.dead) throw new Error('BLE 连接已断开');
+  const target = charFor(session, serviceId, characteristicId);
+  return addValueListener(session, target.serviceId, target.characteristicId, callback);
+}
+
 export async function setNotifyEnabled(session, serviceId, characteristicId, enabled) {
   if (session.dead) throw new Error('BLE 连接已断开');
   const platform = ensureCallbacks();
@@ -300,15 +339,20 @@ export function readValue(session, serviceId, characteristicId, timeoutMs = 3000
   const target = charFor(session, serviceId, characteristicId);
   return new Promise((resolve, reject) => {
     let settled = false;
+    let timer = null;
+    let unsubscribeValue = () => {};
+    let unsubscribeDisconnect = () => {};
     const settle = (fn, value) => {
       if (settled) return;
       settled = true;
       clearTimeout(timer);
-      unsubscribe();
+      unsubscribeValue();
+      unsubscribeDisconnect();
       fn(value);
     };
-    const unsubscribe = addValueListener(session, target.serviceId, target.characteristicId, (value) => settle(resolve, value));
-    const timer = setTimeout(() => settle(reject, new Error(`readValue 超时（${timeoutMs}ms）`)), timeoutMs);
+    unsubscribeValue = addValueListener(session, target.serviceId, target.characteristicId, (value) => settle(resolve, value));
+    unsubscribeDisconnect = session.onDisconnect((reason) => settle(reject, new Error(reason || 'BLE 连接已断开')));
+    timer = setTimeout(() => settle(reject, new Error(`readValue 超时（${timeoutMs}ms）`)), timeoutMs);
     call(platform, 'readBLECharacteristicValue', {
       deviceId: session.deviceId,
       serviceId: target.serviceId,
@@ -344,6 +388,7 @@ export function getSession(deviceId) {
 export function getBleRuntimeSnapshotForTesting() {
   return {
     sessions: state.sessions.size,
+    connectionAttempts: state.connectionAttempts.size,
     valueListenerKeys: state.valueListeners.size,
     discoveryListeners: state.discoveryListeners.size
   };
@@ -357,6 +402,7 @@ export function resetBleRuntimeForTesting() {
   state.platform = null;
   state.callbacksRegistered = false;
   state.sessions.clear();
+  state.connectionAttempts.clear();
   state.valueListeners.clear();
   state.disconnectListeners.clear();
   state.pendingLocalDisconnects.clear();

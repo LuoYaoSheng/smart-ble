@@ -2,8 +2,10 @@
 	<view class="container">
 		<view class="page-content">
 			<view class="card">
-				<view class="card-title">诊断</view>
-
+				<view class="diagnostic-status">
+					<text class="diagnostic-status-label">当前状态</text>
+					<text class="diagnostic-status-value">{{ diagnosticStateText }}</text>
+				</view>
 				<view class="diag-row" v-for="d in diagnosticItems" :key="d.key">
 					<view class="diag-head">
 						<text :class="['diag-dot', d.state]">{{ stateIcon(d.state) }}</text>
@@ -14,8 +16,10 @@
 				</view>
 
 				<view class="actions">
-						<button class="action-btn primary" :disabled="connecting" @click="refresh">{{ connecting ? '连接中…' : '重新检测' }}</button>
-					<button class="action-btn secondary" @click="toggleAdvanced">
+					<button class="ble-btn ble-btn--primary ble-btn--lg ble-btn--block" :class="{ 'ble-btn--disabled': connecting }" :disabled="connecting" @click="refresh">
+						{{ connecting ? '连接中…' : '重新检测' }}
+					</button>
+					<button class="ble-btn ble-btn--secondary ble-btn--lg ble-btn--block" @click="toggleAdvanced">
 						{{ showAdvanced ? '隐藏错误码' : '显示错误码（详细信息）' }}
 					</button>
 				</view>
@@ -40,6 +44,8 @@ const hidStore = useHidStore();
 const deviceId = ref('');
 const showAdvanced = ref(false);
 const connecting = ref(false);
+const diagnosticState = ref('idle');
+let ownsConnection = false;
 
 const diagnosticItems = computed(() => hidStore.diagnostic || [
 	{ key: 'ble', label: 'BLE', state: 'pending', detail: '' },
@@ -49,41 +55,72 @@ const diagnosticItems = computed(() => hidStore.diagnostic || [
 	{ key: 'usb', label: '设备 Ready 状态', state: 'pending', detail: '' }
 ]);
 const lastError = computed(() => hidStore.lastError);
+const diagnosticStateText = computed(() => ({
+	idle: '尚未检测',
+	connected: '设备已连接，可开始检测',
+	checking: '正在读取实时状态',
+	live: '实时检测完成',
+	offline: '设备未连接',
+	error: '检测失败'
+}[diagnosticState.value] || '尚未检测'));
 
 onLoad((opts) => {
 	deviceId.value = opts.deviceId ? decodeURIComponent(opts.deviceId) : '';
+	hidStore.setDiagnostic(null);
+	hidStore.clearError();
+	const knownDevice = [hidStore.currentDevice, ...hidStore.knownDevices]
+		.filter(Boolean)
+		.find((device) => device.deviceId === deviceId.value);
+	if (knownDevice) hidStore.setCurrentDevice(knownDevice);
+	const sessionState = smartHidService.getSessionState();
+	diagnosticState.value = sessionState.connected && sessionState.deviceId === deviceId.value ? 'connected' : 'idle';
 });
-onUnload(() => { smartHidService.disconnect().catch(() => {}); });
+onUnload(() => {
+	if (ownsConnection) smartHidService.disconnect().catch(() => {});
+});
 
 const stateIcon = (s) => s === 'ok' ? '✓' : s === 'warn' ? '!' : s === 'active' ? '…' : '·';
 const stateText = (s) => ({ ok: '正常', warn: '异常', active: '检测中', pending: '待检测', fail: '失败' }[s] || s);
 
 const refresh = async () => {
-	// V1：读 Device Info + Provision Status（需 BLE 已连接；未连接时提示从配网向导进入）
-	uni.showToast({ title: '检测中…', icon: 'none' });
-	try {
-		const items = await smartHidService.diagnose();
-		if (items[0] && items[0].state === 'fail') {
-			uni.showModal({
-				title: 'BLE 未连接',
-				content: '诊断需要设备处于可发现状态。是否尝试重新连接？',
-				confirmText: '尝试连接',
-				success: async (result) => {
-					if (!result.confirm || !deviceId.value) return;
-					connecting.value = true;
-					try {
-						await smartHidService.connect(deviceId.value);
-						await smartHidService.diagnose();
-					} catch (error) {
-						uni.showModal({ title: '连接失败', content: error?.message || '请让设备进入配网/恢复模式后重试。', showCancel: false });
-					} finally {
-						connecting.value = false;
-					}
+	const sessionState = smartHidService.getSessionState();
+	if (!sessionState.connected || sessionState.deviceId !== deviceId.value) {
+		diagnosticState.value = 'offline';
+		uni.showModal({
+			title: 'BLE 未连接',
+			content: '诊断需要重新连接当前设备。请让设备保持可发现状态后继续。',
+			confirmText: '连接并检测',
+			success: async (result) => {
+				if (!result.confirm || !deviceId.value) return;
+				connecting.value = true;
+				diagnosticState.value = 'checking';
+				try {
+					await smartHidService.connect(deviceId.value);
+					ownsConnection = true;
+					await smartHidService.diagnose();
+					diagnosticState.value = 'live';
+				} catch (error) {
+					diagnosticState.value = 'error';
+					hidStore.setLastError({ code: error?.kind || 'diagnostic_connect_failed', message: error?.message || '连接失败' });
+					uni.showModal({ title: '连接失败', content: error?.message || '请让设备进入配网/恢复模式后重试。', showCancel: false });
+				} finally {
+					connecting.value = false;
 				}
-			});
-		}
+			}
+		});
+		return;
+	}
+
+	connecting.value = true;
+	diagnosticState.value = 'checking';
+	try {
+		await smartHidService.diagnose();
+		diagnosticState.value = 'live';
 	} catch (e) {
+		diagnosticState.value = 'error';
 		uni.showToast({ title: e.message || '诊断失败', icon: 'none' });
+	} finally {
+		connecting.value = false;
 	}
 };
 
@@ -92,9 +129,11 @@ const toggleAdvanced = () => { showAdvanced.value = !showAdvanced.value; };
 
 <style>
 .container { min-height: 100vh; background: transparent; }
-.page-content { padding: 28rpx; }
-.card { background: linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(242,248,255,.95) 100%); border-radius: 32rpx; padding: 28rpx; display: flex; flex-direction: column; gap: 20rpx; border: 1rpx solid rgba(20,76,136,.08); box-shadow: 0 18rpx 40rpx rgba(17,43,78,.06); }
-.card-title { font-size: 30rpx; font-weight: 700; color: var(--ble-text); padding-bottom: 12rpx; border-bottom: 1rpx solid rgba(20,76,136,.08); }
+.page-content { padding: 20rpx; }
+.card { background: linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(242,248,255,.95) 100%); border-radius: 32rpx; padding: 22rpx; display: flex; flex-direction: column; gap: 14rpx; border: 1rpx solid rgba(20,76,136,.08); box-shadow: 0 18rpx 40rpx rgba(17,43,78,.06); }
+.diagnostic-status { display: flex; align-items: center; justify-content: space-between; gap: 16rpx; padding: 4rpx 0 12rpx; border-bottom: 1rpx solid rgba(20,76,136,.06); }
+.diagnostic-status-label { color: var(--ble-text-muted); font-size: 22rpx; }
+.diagnostic-status-value { color: var(--ble-brand); font-size: 23rpx; font-weight: 700; }
 .diag-row { display: flex; flex-direction: column; gap: 8rpx; padding: 12rpx 0; border-bottom: 1rpx solid rgba(20,76,136,.06); }
 .diag-row:last-of-type { border-bottom: none; }
 .diag-head { display: flex; align-items: center; gap: 16rpx; }
@@ -108,10 +147,6 @@ const toggleAdvanced = () => { showAdvanced.value = !showAdvanced.value; };
 .diag-state { font-size: 23rpx; color: var(--ble-text-muted); }
 .diag-detail { font-size: 23rpx; line-height: 1.55; color: var(--ble-text-subtle); padding-left: 58rpx; }
 .actions { display: flex; flex-direction: column; gap: 14rpx; margin-top: 10rpx; }
-.action-btn { height: 84rpx; border-radius: 999rpx; font-size: 27rpx; font-weight: 700; border: none; }
-.action-btn::after { border: none; }
-.action-btn.primary { color: #fff; background: var(--ble-gradient-brand); }
-.action-btn.secondary { color: var(--ble-brand); background: rgba(27,109,255,.08); }
 .error-detail { background: rgba(242,85,95,.08); border-radius: 24rpx; padding: 20rpx; display: flex; flex-direction: column; gap: 8rpx; border: 1rpx solid rgba(242,85,95,.12); }
 .error-title { font-size: 24rpx; color: var(--ble-red); font-weight: 700; }
 .error-code { font-size: 23rpx; color: var(--ble-red); font-family: "SF Mono", "Roboto Mono", Menlo, monospace; }

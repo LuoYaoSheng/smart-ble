@@ -40,21 +40,22 @@
 						<view class="characteristic-props">
 							<button
 								v-if="characteristic.properties.read"
-								class="prop-btn read"
+								class="ble-btn ble-btn--secondary ble-btn--sm prop-btn"
 								@click="() => readCharacteristic(service.uuid, characteristic.uuid)"
 							>
 								读取
 							</button>
 							<button
 								v-if="characteristic.properties.write"
-								class="prop-btn write"
+								class="ble-btn ble-btn--primary ble-btn--sm prop-btn"
 								@click="() => writeCharacteristic(service.uuid, characteristic.uuid)"
 							>
 								写入
 							</button>
 							<button
 								v-if="characteristic.properties.notify"
-								class="prop-btn notify"
+								class="ble-btn ble-btn--sm prop-btn"
+								:class="characteristic.notifying ? 'ble-btn--danger' : 'ble-btn--ghost'"
 								@click="() => toggleNotify(service.uuid, characteristic.uuid)"
 							>
 								{{ characteristic.notifying ? '停止监听' : '开始监听' }}

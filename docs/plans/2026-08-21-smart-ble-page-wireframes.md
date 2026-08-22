@@ -37,6 +37,10 @@ Across platforms, the top-level structure should remain:
 - Use landing page and desktop as the widest storytelling surfaces.
 - Use Flutter / native mobile as the polished long-term runtime references.
 - Keep labels and tab order aligned unless a platform has a hard constraint.
+- Mobile utility pages prioritize task information over decorative hero areas. The first viewport should expose the primary controls or data whenever possible.
+- Do not use a full card to repeat the page title, an idle state, or generic platform capability copy.
+- Status belongs beside the section it affects. Platform-specific constraints belong beside the affected field or action.
+- A large hero is justified only when it carries unique product content, onboarding, or a real result that cannot fit inline.
 
 ## 1. Public Landing Page
 
@@ -114,8 +118,6 @@ This is the smallest complete SmartBLE runtime. It should be the mobile “contr
 +--------------------------------------------------+
 | Compact scan control + result count              |
 +--------------------------------------------------+
-| Segmented tabs: Scan Results | Connected         |
-+--------------------------------------------------+
 | Result panel                                     |
 |  - ordinary BLE card => generic detail/debug     |
 |  - Profile card => badge + two direct actions    |
@@ -132,9 +134,26 @@ This is the smallest complete SmartBLE runtime. It should be the mobile “contr
 - scanning
 - scan results
 - filtered empty
-- connected list empty
 
-## 2.2 Profile-enhanced Device Card and Detail
+The primary Scan button must remain visible without scrolling in every required state.
+
+## 2.2 Miniapp Connected Page
+
+```text
++--------------------------------------------------+
+| Navbar                                           |
++--------------------------------------------------+
+| Multi-device summary (only when count > 1)       |
+|  count | bulk disconnect                         |
++--------------------------------------------------+
+| Connected device list                            |
+|  - open existing session                         |
+|  - disconnect from card action                   |
+|  - empty state tells user to connect from Scan   |
++--------------------------------------------------+
+```
+
+## 2.3 Profile-enhanced Device Card and Detail
 
 ```text
 +--------------------------------------------------+
@@ -144,6 +163,8 @@ This is the smallest complete SmartBLE runtime. It should be the mobile “contr
 |  [Connect] [Profile task name, when matched]     |
 +--------------------------------------------------+
 | Device detail                                    |
+|  Compact identity + protocol + firmware          |
+|  No separate decorative hero                     |
 |  Generic BLE capability section                  |
 |  Profile capability section (when matched)       |
 +--------------------------------------------------+
@@ -151,7 +172,7 @@ This is the smallest complete SmartBLE runtime. It should be the mobile “contr
 
 There is no dedicated HID tab. Smart HID wizard/detail/diagnostics remain secondary routes entered from a matched device.
 
-## 2.3 Miniapp Smart HID Wizard
+## 2.4 Miniapp Smart HID Wizard
 
 ```text
 +--------------------------------------------------+
@@ -172,28 +193,24 @@ There is no dedicated HID tab. Smart HID wizard/detail/diagnostics remain second
 
 The selected device comes from the shared home scanner. The provisioning route must not start another Smart HID scan. The QR action provides the required one-time pairing token and may prefill the editable ControlHub address.
 
-## 2.4 Miniapp Broadcast
+## 2.5 Miniapp Broadcast
 
 ```text
 +--------------------------------------------------+
-| Status card: OFF / LIVE                          |
-+--------------------------------------------------+
-| Platform explanation card                        |
-+--------------------------------------------------+
-| Broadcast settings card                          |
-|  name | service uuid | manufacturer data         |
+| Broadcast settings                               |
+|  title | compact state | platform tag             |
+|  name (+ inline platform constraint when needed) |
+|  service uuid | manufacturer id/data             |
 |  mode / power / switches where supported         |
-+--------------------------------------------------+
-| Primary actions                                  |
-|  start/stop | support check                      |
-+--------------------------------------------------+
-| Status strip                                     |
+|  [start/stop] [support check]                    |
 +--------------------------------------------------+
 | Log panel                                        |
 +--------------------------------------------------+
 ```
 
-## 2.5 Miniapp About
+The Broadcast page must not render a separate OFF/LIVE hero, generic platform explanation card, and status strip for the same state. One compact state in the settings header is the canonical display.
+
+## 2.6 Miniapp About
 
 ```text
 +--------------------------------------------------+
@@ -212,7 +229,7 @@ The selected device comes from the shared home scanner. The provisioning route m
 +--------------------------------------------------+
 ```
 
-## 2.6 Miniapp Device Detail
+## 2.7 Miniapp Device Detail
 
 ```text
 +--------------------------------------------------+
@@ -228,6 +245,19 @@ The selected device comes from the shared home scanner. The provisioning route m
 | Modal: ota dialog                                |
 +--------------------------------------------------+
 ```
+
+## Miniapp Information-Density Audit
+
+| Page | Density decision |
+|---|---|
+| Scan | Keep the compact scan controller because it contains the primary action, live state, counts, and errors. No additional hero. |
+| Connected | Show the summary only for multiple active sessions; otherwise start with the device list or empty state. |
+| Broadcast | Start with settings. State and platform are inline; no OFF/LIVE hero, platform explanation card, or repeated status strip. |
+| Generic device detail | Keep the identity/action panel because it carries connection, OTA, logs, and session controls. |
+| Smart HID provisioning | Keep the stepper and current phase because they communicate workflow progress; remove no operational fields or safety copy. |
+| Smart HID detail | Use one compact identity card plus recent configuration; no decorative hero. |
+| Smart HID diagnostics | Start directly with diagnostic states; the native page title already identifies the screen. |
+| About | Keep the compact brand card because product identity, version, summary, and sibling-app discovery are the page content rather than decoration. |
 
 ## 3. Desktop Runtime
 

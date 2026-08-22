@@ -5,11 +5,14 @@ import {
   onDiscovery,
   onAdapterState,
   openAdapter,
+  closeDevice as runtimeCloseDevice,
   startDiscovery as runtimeStartDiscovery,
   stopDiscovery as runtimeStopDiscovery
 } from '../services/ble-runtime/index.js';
 import { createScanSessionController } from '../services/ble-runtime/scan-session.js';
 import { normalizeAdvertisement } from '../services/ble-runtime/advertisement.js';
+import { mergeDeviceCollection } from '../services/ble-runtime/device-collection.js';
+import { createConnectedSessionRegistry } from '../services/connected-session-registry.js';
 
 export const useBleStore = defineStore('ble', () => {
   // --- 状态(State) ---
@@ -33,11 +36,18 @@ export const useBleStore = defineStore('ble', () => {
    *     logs: Array
    *   }
    * }
-   */
+  */
   const connectedDevicesMap = reactive({});
   
   // Getters
   const connectedDevicesList = computed(() => Object.values(connectedDevicesMap).filter((device) => device.isConnected));
+
+  const syncScannedDeviceConnectionStatus = (deviceId, status) => {
+    const next = scannedDevices.value.map((device) =>
+      device.deviceId === deviceId ? { ...device, connected: status } : device
+    );
+    scannedDevices.value = next;
+  };
 
   // --- 动作(Actions) ---
   const setBleState = (state) => {
@@ -77,7 +87,14 @@ export const useBleStore = defineStore('ble', () => {
     if (connectedDevicesMap[deviceId]) {
       connectedDevicesMap[deviceId].isConnected = status;
     }
+    syncScannedDeviceConnectionStatus(deviceId, status);
   };
+
+  const runtimeSessions = createConnectedSessionRegistry({
+    onDisconnect: ({ deviceId }) => updateDeviceConnectionStatus(deviceId, false)
+  });
+
+  const clearRuntimeSessionBinding = (deviceId) => runtimeSessions.remove(deviceId);
 
   const setDeviceServices = (deviceId, services) => {
     if (connectedDevicesMap[deviceId]) {
@@ -89,6 +106,31 @@ export const useBleStore = defineStore('ble', () => {
     if (connectedDevicesMap[deviceId]) {
       delete connectedDevicesMap[deviceId];
     }
+    clearRuntimeSessionBinding(deviceId);
+    syncScannedDeviceConnectionStatus(deviceId, false);
+  };
+
+  const bindConnectedSession = (device, session, services = session?.services || []) => {
+    if (!device?.deviceId || !session) return;
+
+    initConnectedDevice(device);
+
+    runtimeSessions.bind(device.deviceId, session);
+
+    setDeviceServices(device.deviceId, services);
+    updateDeviceConnectionStatus(device.deviceId, true);
+  };
+
+  const getRuntimeSession = (deviceId) => runtimeSessions.get(deviceId);
+
+  const disconnectConnectedDevice = async (deviceId, options = {}) => {
+    const { remove = false } = options;
+    await runtimeCloseDevice(deviceId);
+    if (remove) {
+      removeConnectedDevice(deviceId);
+      return;
+    }
+    updateDeviceConnectionStatus(deviceId, false);
   };
 
   // ----- 扫描相关逻辑 -----
@@ -107,41 +149,20 @@ export const useBleStore = defineStore('ble', () => {
     const currentBuffer = [...deviceBuffer];
     deviceBuffer = [];
     
-    // 使用 Map 去重/更新
-    const deviceMap = new Map(scannedDevices.value.map(d => [d.deviceId, d]));
-    
-    currentBuffer.forEach(newDevice => {
-      const deviceId = newDevice.deviceId;
+    const normalizedDevices = currentBuffer.map((newDevice) => {
       const advertisement = normalizeAdvertisement(newDevice);
-      const advertisDataHex = advertisement.advertisData.hex;
-      const advertisServiceUUIDs = advertisement.serviceUUIDs;
-      
-      const existingDevice = deviceMap.get(deviceId);
-      let processedData;
-      
-      if (existingDevice) {
-        processedData = {
-          ...existingDevice,
-          ...newDevice,
-          advertisement,
-          advertisDataHex,
-          advertisServiceUUIDs
-        };
-      } else {
-        processedData = {
-          ...newDevice,
-          advertisement,
-          advertisDataHex,
-          advertisServiceUUIDs,
-          connected: false
-        };
-      }
-      deviceMap.set(deviceId, processedData);
+      return {
+        ...newDevice,
+        advertisement,
+        advertisDataHex: advertisement.advertisData.hex,
+        advertisServiceUUIDs: advertisement.serviceUUIDs
+      };
     });
-    
-    let sortedDevices = Array.from(deviceMap.values()).sort((a, b) => b.RSSI - a.RSSI);
-    const displayLimit = 100;
-    scannedDevices.value = sortedDevices.slice(0, displayLimit);
+
+    const connectionStates = Object.fromEntries(
+      Object.entries(connectedDevicesMap).map(([deviceId, device]) => [deviceId, device.isConnected])
+    );
+    scannedDevices.value = mergeDeviceCollection(scannedDevices.value, normalizedDevices, { connectionStates });
     
     throttleTimeout = null;
   };
@@ -209,6 +230,9 @@ export const useBleStore = defineStore('ble', () => {
     scannedDevices,
     connectedDevicesMap,
     connectedDevicesList,
+    bindConnectedSession,
+    getRuntimeSession,
+    disconnectConnectedDevice,
     setBleState,
     addDeviceLog,
     initConnectedDevice,

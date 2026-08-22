@@ -36,6 +36,13 @@
 			}
 		},
 		{
+			"path": "pages/connected/index",
+			"style": {
+				"navigationBarTitleText": "已连接设备",
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path": "pages/broadcast/index",
 			"style": {
 				"navigationBarTitleText": "BLE广播",
@@ -84,7 +91,13 @@
 				"pagePath": "pages/index/index",
 				"iconPath": "static/tabs/device.png",
 				"selectedIconPath": "static/tabs/device_active.png",
-				"text": "设备"
+				"text": "扫描"
+			},
+			{
+				"pagePath": "pages/connected/index",
+				"iconPath": "static/tabs/hid.png",
+				"selectedIconPath": "static/tabs/hid_active.png",
+				"text": "已连接"
 			},
 			{
 				"pagePath": "pages/broadcast/index",

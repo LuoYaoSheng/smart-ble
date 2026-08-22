@@ -6,11 +6,12 @@ BLE Toolkit+ 是 Smart BLE 产品家族的微信生态和轻量跨端入口。�
 
 TabBar 固定为：
 
-1. 设备
-2. 广播
-3. 关于
+1. 扫描
+2. 已连接
+3. 广播
+4. 关于
 
-“扫描设备”和“已连接”是设备页内的两个视图。Smart HID 不占用独立 Tab，也不维护第二套扫描器。
+首页只负责扫描、过滤、查看广播快照与进入设备详情。“已连接”使用独立 TabBar 页面承接多设备会话入口。Smart HID 不占用独立 Tab，也不维护第二套扫描器。
 
 首页设备卡片交互：
 
@@ -35,6 +36,9 @@ Wi-Fi 密码和 pairing token 只存在于当前内存会话，不写入日志�
 - 关于页通过 `uni.navigateToMiniProgram` 打开开发者其他小程序
 - 微信端外部网址使用复制链接降级
 - 好友与朋友圈分享使用微信小程序原生钩子
+- 扫描前区分系统蓝牙关闭、微信蓝牙授权拒绝和定位授权拒绝，并给出对应设置入口
+- 扫描使用 central 模式，广播使用 peripheral 模式；无活动连接时由页面生命周期完成模式交接
+- 业务按钮使用原生 `button` 和 `styles/design-system.css` 的 `ble-btn` 类，避免自定义组件样式隔离导致文字不可见
 
 ## 代码结构
 
@@ -46,6 +50,7 @@ components/hid/           Smart HID 配网展示组件
 components/about/         关于页推广组件
 composables/              页面级生命周期和动作编排
 services/ble-runtime/     唯一 BLE Runtime 与扫描会话
+services/wx-peripheral-mode.js 微信 central/peripheral 模式所有权
 services/provisioning/    通用 GATT 配网 transport / Profile 注册表
 services/smart-hid/       Smart HID Profile 业务语义
 store/                    Pinia 状态
@@ -55,10 +60,27 @@ static/                   小程序资源
 ## 本地检查
 
 ```bash
-node ../../tests/unit/provisioning.test.mjs
-node ../../tests/unit/smart-hid-provision-form.test.mjs
-node ../../scripts/check-smart-hid-contract.mjs
-node ../../scripts/check-uniapp-assets.mjs
+bash ../../scripts/verify-uniapp.sh
 ```
 
-最终 BLE、扫码、小程序跳转和真机页面效果仍需在微信开发者工具与微信真机中验证。
+该命令统一运行单元测试、Smart HID 协议锁、静态资源检查、Vue SFC 解析与 Git 空白检查。HBuilderX 编译、微信开发者工具自动化，以及最终 BLE、扫码、小程序跳转和真机页面效果仍是独立验证阶段，不能由本地检查替代。
+
+完成 HBuilderX 微信编译后，可强制核对编译产物资源：
+
+```bash
+node ../../scripts/check-uniapp-assets.mjs --require-compiled
+```
+
+安装官方 HBuilderX 自动化测试插件及其测试环境后，运行微信页面自动化：
+
+```bash
+/Applications/HBuilderX.app/Contents/MacOS/cli uniapp.test mp-weixin \
+  --project /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/uniapp
+```
+
+验证基线与时序文档：
+
+- `../../docs/verification/uniapp-functional-map.md`
+- `../../docs/verification/uniapp-real-device-checklist.md`
+- `../../docs/plans/2026-08-22-uniapp-connected-session-sequence.md`
+- `../../docs/plans/2026-08-22-uniapp-smart-hid-sequence.md`

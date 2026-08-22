@@ -1,31 +1,22 @@
 <template>
 	<scroll-view class="page-container" scroll-y>
-		<!-- 状态卡片（与 Flutter BroadcastPage 对齐） -->
-		<view class="status-card" :class="{ 'status-card-active': advertising }">
-			<view class="status-icon-wrap" :class="{ 'icon-active': advertising }">
-				<text class="status-icon">{{ advertising ? 'LIVE' : 'OFF' }}</text>
-			</view>
-			<text class="status-title" :class="{ 'title-active': advertising }">{{ advertising ? '正在广播' : '未广播' }}</text>
-			<text class="status-subtitle" :class="{ 'subtitle-active': advertising }">{{ advertising ? '其他设备可以扫描到此设备' : '点击开始启动BLE广播' }}</text>
-		</view>
-
-		<!-- 平台说明卡片 -->
-		<view class="platform-card">
-			<view class="platform-left">
-				<text class="platform-icon-text">{{ platform === 'android' ? 'A' : platform === 'ios' ? 'i' : 'W' }}</text>
-			</view>
-			<view class="platform-info">
-				<text class="platform-title">{{ platform === 'android' ? 'Android 平台说明' : platform === 'ios' ? 'iOS 平台说明' : '微信小程序平台说明' }}</text>
-				<text class="platform-msg">{{ platform === 'android' ? '广播将显示设备的实际蓝牙名称' : '支持自定义广播名称' }}</text>
-			</view>
-		</view>
-
-		<!-- 广播设置 -->
 		<view class="settings-section">
-			<text class="section-title">广播设置</text>
+			<view class="settings-heading">
+				<text class="section-title">广播设置</text>
+				<view class="settings-meta">
+					<text class="platform-tag">{{ platformLabel }}</text>
+					<view class="runtime-state" :class="{ active: advertising, ready: !advertising && isSupported }">
+						<view class="status-indicator-dot"></view>
+						<text>{{ broadcastStateText }}</text>
+					</view>
+				</view>
+			</view>
 
 			<view class="field-group">
-				<text class="field-label">设备名称</text>
+				<view class="field-label-row">
+					<text class="field-label">设备名称</text>
+					<text v-if="platform === 'android'" class="field-hint">Android 使用系统蓝牙名称</text>
+				</view>
 				<input class="field-input" :value="deviceName" :disabled="advertising"
 					placeholder="自定义名称或系统蓝牙名称"
 					@input="e => deviceName = e.detail.value" />
@@ -37,9 +28,8 @@
 					placeholder="输入服务UUID (128位)" />
 			</view>
 
-			<!-- UUID格式校验提示 -->
-			<view class="uuid-hint" v-if="serviceUUID && !isUUIDValid">
-				<text class="uuid-hint-text">⚠️ UUID 格式无效，应为 128-bit (如：12345678-1234-1234-1234-123456789012) 或 短 UUID (如：FFE0)</text>
+			<view class="uuid-hint" v-if="payloadAnalysis.errors.length">
+				<text class="uuid-hint-text">{{ payloadAnalysis.errors[0] }}</text>
 			</view>
 
 			<template v-if="platform === 'android'">
@@ -88,31 +78,19 @@
 			<!-- 广播字节数实时提示 -->
 			<view class="bytes-hint" v-if="serviceUUID || manufacturerData">
 				<text class="bytes-hint-text">预计广播包大小：{{ calcAdvertiseBytes() }} / 31 字节</text>
-				<text class="bytes-hint-warn" v-if="calcAdvertiseBytes() > 31">⚠ 超出限制！</text>
+				<text class="bytes-hint-warn" v-if="calcAdvertiseBytes() > 31">超出限制</text>
 			</view>
-		</view>
 
-		<!-- 广播操作按钮 -->
-		<view class="action-section">
-			<button
-				class="btn-advertise"
-				:class="advertising ? 'btn-stop' : ''"
-				@click="toggleAdvertising">
-				<text>{{ advertising ? '停止广播' : '开始广播' }}</text>
-			</button>
-			<button class="btn-check" @click="checkSupport">检查支持</button>
-		</view>
-
-		<!-- 广播状态栏 -->
-		<view
-			class="broadcast-status-bar"
-			:class="advertising ? 'status-bar-active' : ''">
-			<view
-				class="status-indicator-dot"
-				:class="advertising ? 'dot-active' : ''"></view>
-			<text class="status-bar-text">{{ advertising ? '广播中' : '已停止' }}</text>
-			<text class="status-bar-tip" v-if="isSupported">{{ advertising ? '其他设备可扫描到此设备' : '点击开始广播' }}</text>
-			<text class="status-bar-tip status-bar-tip-warn" v-else>当前平台不支持广播</text>
+			<view class="action-section">
+				<button
+					class="ble-btn ble-btn--lg action-primary"
+					:class="advertising ? 'ble-btn--danger' : 'ble-btn--primary'"
+					@click="toggleAdvertising"
+				>
+					{{ advertising ? '停止广播' : '开始广播' }}
+				</button>
+				<button class="ble-btn ble-btn--secondary ble-btn--lg action-secondary" @click="checkSupport">检查支持</button>
+			</view>
 		</view>
 
 		<view class="log-panel-brd">
@@ -134,8 +112,18 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
-import { onHide, onLoad, onUnload, onShareAppMessage } from '@dcloudio/uni-app';
+import { onHide, onLoad, onShow, onUnload, onShareAppMessage } from '@dcloudio/uni-app';
 import { logger } from '../../../../core/ble-core/utils/logger';
+import { useBleStore } from '../../store/ble';
+import { createWxPeripheralAdapterController } from '../../services/wx-peripheral-mode.js';
+import { createWxPeripheralServerController } from '../../services/wx-peripheral-server.js';
+import {
+	DEFAULT_ADVERTISING_PAYLOAD,
+	analyzeAdvertisingPayload,
+	manufacturerDataBuffer
+} from '../../utils/advertising-payload.js';
+
+const bleStore = useBleStore();
 
 const advertising = ref(false);
 const logs = ref([]);
@@ -143,7 +131,14 @@ let unsubLogger = null;
 const blePeripheral = ref(null);
 const platform = ref('');
 const isSupported = ref(false);
-const wxBLEServer = ref(null);
+
+// #ifdef MP-WEIXIN
+const wxPeripheralAdapter = createWxPeripheralAdapterController({
+	platform: wx,
+	getConnectedCount: () => bleStore.connectedDevicesList.length
+});
+const wxPeripheralServer = createWxPeripheralServerController({ platform: wx });
+// #endif
 
 // Android 参数
 const androidSettings = ref({
@@ -163,19 +158,25 @@ const modeOptions = ['低功耗', '平衡', '低延迟'];
 const powerOptions = ['超低功率', '低功率', '中功率', '高功率'];
 const manufacturerId = ref('');
 const manufacturerData = ref('');
+const platformLabel = computed(() => ({ android: 'Android', ios: 'iOS', weixin: '微信' }[platform.value] || 'BLE'));
+const broadcastStateText = computed(() => {
+	if (advertising.value) return '广播中';
+	return isSupported.value ? '已就绪' : '未就绪';
+});
 
 /* 日志 type 是中文（系统/错误/成功），WXSS 类选择器不允许非 ASCII——映射为 ASCII 后缀 */
 const LOG_TYPE_CLASS = { '系统': 'sys', '错误': 'err', '成功': 'ok' };
 const typeClass = (t) => LOG_TYPE_CLASS[t] || 'sys';
 
-const isUUIDValid = computed(() => {
-	if (!serviceUUID.value) return true;
-	const uuid = serviceUUID.value.trim();
-	const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-	const shortUuidRegex = /^[0-9a-f]{4}([0-9a-f]{4})?$/i;
-	return uuidRegex.test(uuid) || shortUuidRegex.test(uuid);
-});
-
+const payloadAnalysis = computed(() => analyzeAdvertisingPayload({
+	deviceName: deviceName.value,
+	serviceUuid: serviceUUID.value,
+	manufacturerId: manufacturerId.value,
+	manufacturerData: manufacturerData.value
+}, {
+	includeDeviceName: platform.value === 'android' ? androidSettings.value.includeDeviceName : true,
+	includeServiceUuid: platform.value === 'android' ? androidSettings.value.addServiceUuid : true
+}));
 const addLog = (type, message) => {
 	switch(type) {
 		case '错误': logger.error(message, 'broadcast'); break;
@@ -210,32 +211,37 @@ const checkSupport = () => {
 };
 
 // #ifdef MP-WEIXIN
-const checkWxBleSupport = () => {
-	wx.openBluetoothAdapter({
-		mode: 'peripheral',
-		success: () => {
-			addLog('系统', '初始化蓝牙从机模式成功');
-			isSupported.value = true;
-			createBLEPeripheralServer();
-		},
-		fail: (err) => {
-			addLog('错误', '蓝牙从机模式初始化失败: ' + JSON.stringify(err));
-			isSupported.value = false;
-		}
-	});
+const checkWxBleSupport = async () => {
+	try {
+		await wxPeripheralAdapter.open();
+		await wxPeripheralServer.ensureCreated();
+		addLog('系统', '蓝牙从机模式已就绪');
+		isSupported.value = true;
+	} catch (error) {
+		if (error?.code === 'released_during_open') return;
+		const detail = error?.errMsg || error?.message || JSON.stringify(error);
+		if (isWeixinDevTools()) addLog('系统', '开发者工具不支持 BLE 外围服务，请使用真机调试广播功能');
+		else addLog('错误', '蓝牙从机模式初始化失败: ' + detail);
+		isSupported.value = false;
+	}
 };
 
-const createBLEPeripheralServer = (onSuccess) => {
-	wx.createBLEPeripheralServer({
-		success: (res) => {
-			wxBLEServer.value = res.server;
-			addLog('系统', '创建BLE外围设备服务器成功');
-			if (onSuccess) onSuccess();
-		},
-		fail: (err) => {
-			addLog('错误', '创建BLE外围设备服务器失败');
-		}
+const isWeixinDevTools = () => {
+	try {
+		return wx.getDeviceInfo?.().platform === 'devtools';
+	} catch {
+		return false;
+	}
+};
+
+const releaseWxPeripheralMode = async () => {
+	await wxPeripheralServer.close().catch((error) => {
+		addLog('错误', '关闭 BLE 外围服务器失败: ' + (error?.errMsg || error?.message || error));
 	});
+	advertising.value = false;
+	isSupported.value = false;
+	await wxPeripheralAdapter.release();
+	wxPeripheralServer.invalidate();
 };
 // #endif
 
@@ -351,98 +357,34 @@ const requestAndroidPermissions = (onGranted, onDenied) => {
 	}
 };
 
-const calcAdvertiseBytes = () => {
-	let total = 0;
-	if (serviceUUID.value) {
-		const isShort = serviceUUID.value.replace(/-/g, '').length <= 8;
-		total += 2 + (isShort ? 2 : 16);
-	}
-	if (manufacturerData.value) {
-		let dataBytes = 0;
-		try { dataBytes = new TextEncoder().encode(manufacturerData.value).length; } 
-		catch (e) { dataBytes = manufacturerData.value.length; }
-		total += 2 + 2 + dataBytes;
-	}
-	return total;
-};
+const calcAdvertiseBytes = () => payloadAnalysis.value.totalBytes;
 
 // #ifdef MP-WEIXIN
 const getPowerLevel = () => {
 	const levels = ['low', 'medium', 'high', 'high'];
 	return levels[powerIndex.value] || 'high';
 };
-const strToArrayBuffer = (str) => {
-	const buf = new ArrayBuffer(str.length);
-	const bufView = new Uint8Array(buf);
-	for (let i = 0; i < str.length; i++) {
-		bufView[i] = str.charCodeAt(i);
-	}
-	return buf;
-};
-const retryWithSimpleAdvertising = () => {
-	if (!wxBLEServer.value) return;
-	const simpleRequest = {
-		deviceName: deviceName.value.substring(0, 5),
-		serviceUuids: [serviceUUID.value.split('-')[0]]
+const startWxAdvertising = async () => {
+	const payload = payloadAnalysis.value;
+	if (!payload.valid) throw new Error(payload.errors[0]);
+	const advertiseRequest = {
+		deviceName: payload.normalized.deviceName,
+		serviceUuids: payload.normalized.serviceUuid ? [payload.normalized.serviceUuid] : []
 	};
-	wxBLEServer.value.startAdvertising({
-		advertiseRequest: simpleRequest,
-		powerLevel: 'low',
-		success: () => {
-			advertising.value = true;
-			addLog('成功', '简化广播启动成功');
-		},
-		fail: (err) => {
-			addLog('错误', '简化广播也失败：' + JSON.stringify(err));
-		}
-	});
-};
-const startWxAdvertising = () => {
-	if (!wxBLEServer.value) return;
-	if (!deviceName.value || !serviceUUID.value) return;
-	let shortenedDeviceName = deviceName.value;
-	if (shortenedDeviceName.length > 8) {
-		shortenedDeviceName = shortenedDeviceName.substring(0, 8);
-	}
-	let manufacturerDataObj = null;
-	if (manufacturerData.value && manufacturerId.value) {
-		let shortenedData = manufacturerData.value;
-		if (shortenedData.length > 4) shortenedData = shortenedData.substring(0, 4);
-		manufacturerDataObj = [{
-			manufacturerId: parseInt(manufacturerId.value, 16),
-			manufacturerSpecificData: strToArrayBuffer(shortenedData)
+	if (payload.normalized.manufacturerId != null) {
+		advertiseRequest.manufacturerData = [{
+			manufacturerId: payload.normalized.manufacturerId,
+			manufacturerSpecificData: manufacturerDataBuffer(payload.normalized.manufacturerData)
 		}];
 	}
-	const advertiseRequest = {
-		deviceName: shortenedDeviceName,
-		serviceUuids: [serviceUUID.value]
-	};
-	if (manufacturerDataObj) advertiseRequest.manufacturerData = manufacturerDataObj;
-
-	wxBLEServer.value.startAdvertising({
-		advertiseRequest,
-		powerLevel: getPowerLevel(),
-		success: () => {
-			advertising.value = true;
-			addLog('成功', '微信小程序广播启动成功');
-		},
-		fail: (err) => {
-			if (err.errCode === 10008) {
-				retryWithSimpleAdvertising();
-			} else {
-				addLog('错误', '微信小程序广播启动失败');
-			}
-		}
-	});
+	await wxPeripheralServer.start(advertiseRequest, getPowerLevel());
+	advertising.value = true;
+	addLog('成功', '微信小程序广播启动成功');
 };
-const stopWxAdvertising = () => {
-	if (!wxBLEServer.value) return;
-	wxBLEServer.value.stopAdvertising({
-		success: () => {
-			advertising.value = false;
-			addLog('系统', '小程序广播已停止');
-		}
-	});
+const stopWxAdvertising = async () => {
+	await wxPeripheralServer.stop();
+	advertising.value = false;
+	addLog('系统', '小程序广播已停止');
 };
 // #endif
 
@@ -470,9 +412,8 @@ const startIosBroadcast = () => {
 const startAdvertising = () => {
 	// #ifdef APP-PLUS
 	if (!blePeripheral.value || !deviceName.value || !serviceUUID.value) return;
-	const totalBytes = calcAdvertiseBytes();
-	if (totalBytes > 31) {
-		uni.showToast({ title: '广播数据超限', icon: 'none' });
+	if (!payloadAnalysis.value.valid) {
+		uni.showToast({ title: payloadAnalysis.value.errors[0], icon: 'none' });
 		return;
 	}
 	if (platform.value === 'android') {
@@ -504,8 +445,8 @@ const startAdvertising = () => {
 	}
 	// #endif
 	
-	// #ifdef MP-WEIXIN
-	startWxAdvertising();
+		// #ifdef MP-WEIXIN
+		startWxAdvertising().catch((error) => addLog('错误', '微信小程序广播启动失败: ' + (error?.errMsg || error?.message || error)));
 	// #endif
 };
 
@@ -521,7 +462,7 @@ const stopAdvertising = () => {
 	}
 	// #endif
 	// #ifdef MP-WEIXIN
-	stopWxAdvertising();
+	stopWxAdvertising().catch((error) => addLog('错误', '停止广播失败: ' + (error?.errMsg || error?.message || error)));
 	// #endif
 };
 
@@ -551,16 +492,15 @@ const checkBluetoothAndPermissionsBeforeAdvertise = () => {
 	} catch (e) {}
 	// #endif
 	// #ifdef MP-WEIXIN
-	wx.openBluetoothAdapter({
-		mode: 'peripheral',
-		success: () => {
-			if (wxBLEServer.value) startWxAdvertising();
-			else createBLEPeripheralServer(() => startWxAdvertising());
-		},
-		fail: (err) => {
-			if (err.errCode === 10001) uni.showModal({ title: '提示', content: '请开启蓝牙', showCancel: false });
-		}
-	});
+	wxPeripheralAdapter.open()
+			.then(() => wxPeripheralServer.ensureCreated())
+			.then(() => startWxAdvertising())
+		.catch((error) => {
+			const content = error?.code === 'active_connections'
+				? error.message
+				: error?.errCode === 10001 ? '请先开启系统蓝牙。' : '当前无法启动蓝牙广播。';
+			uni.showModal({ title: '无法开始广播', content, showCancel: false });
+		});
 	// #endif
 };
 
@@ -568,8 +508,8 @@ const toggleAdvertising = () => {
 	if (advertising.value) {
 		stopAdvertising();
 	} else {
-		if (serviceUUID.value && !isUUIDValid.value) {
-			uni.showToast({ title: 'UUID格式无效', icon: 'none' });
+		if (!payloadAnalysis.value.valid) {
+			uni.showToast({ title: payloadAnalysis.value.errors[0], icon: 'none' });
 			return;
 		}
 		checkBluetoothAndPermissionsBeforeAdvertise();
@@ -586,30 +526,38 @@ onLoad(() => {
 	// #ifdef APP-PLUS
 	blePeripheral.value = uni.requireNativePlugin('LysBlePeripheral');
 	// #ifdef APP-ANDROID
-	platform.value = 'android';
-		deviceName.value = 'BLEToolkit_Android';
-		serviceUUID.value = '0000FFE0-0000-1000-8000-00805F9B34FB';
-		manufacturerId.value = '0001';
-		manufacturerData.value = 'BLEToolkit_Test';
+		platform.value = 'android';
+		deviceName.value = 'SmartBLE-A';
+		serviceUUID.value = DEFAULT_ADVERTISING_PAYLOAD.serviceUuid;
+		manufacturerId.value = DEFAULT_ADVERTISING_PAYLOAD.manufacturerId;
+		manufacturerData.value = DEFAULT_ADVERTISING_PAYLOAD.manufacturerData;
 	// #endif
 	// #ifdef APP-IOS
-	platform.value = 'ios';
-		deviceName.value = 'BLEToolkit_iOS';
-		serviceUUID.value = 'FFE0';
-		manufacturerId.value = '0A00';
-		manufacturerData.value = 'BLEToolkit_Test';
+		platform.value = 'ios';
+		deviceName.value = 'SmartBLE-I';
+		serviceUUID.value = DEFAULT_ADVERTISING_PAYLOAD.serviceUuid;
+		manufacturerId.value = DEFAULT_ADVERTISING_PAYLOAD.manufacturerId;
+		manufacturerData.value = DEFAULT_ADVERTISING_PAYLOAD.manufacturerData;
 	// #endif
 	// #endif
 
 	// #ifdef MP-WEIXIN
 	platform.value = 'weixin';
-	deviceName.value = 'BLEToolkit_WeChat';
-	serviceUUID.value = '0000FFE0-0000-1000-8000-00805F9B34FB';
-	manufacturerId.value = '0001';
-	manufacturerData.value = 'BLEToolkit_Test';
+	deviceName.value = DEFAULT_ADVERTISING_PAYLOAD.deviceName;
+	serviceUUID.value = DEFAULT_ADVERTISING_PAYLOAD.serviceUuid;
+	manufacturerId.value = DEFAULT_ADVERTISING_PAYLOAD.manufacturerId;
+	manufacturerData.value = DEFAULT_ADVERTISING_PAYLOAD.manufacturerData;
 	// #endif
 
+	// #ifndef MP-WEIXIN
 	checkSupport();
+	// #endif
+});
+
+onShow(() => {
+	// #ifdef MP-WEIXIN
+	checkSupport();
+	// #endif
 });
 
 onMounted(() => {
@@ -625,17 +573,18 @@ onUnmounted(() => {
 });
 
 onHide(() => {
+	// #ifndef MP-WEIXIN
 	if (advertising.value) stopAdvertising();
+	// #endif
+	// #ifdef MP-WEIXIN
+	releaseWxPeripheralMode();
+	// #endif
 });
 
 onUnload(() => {
 	// #ifdef MP-WEIXIN
-		if (wxBLEServer.value) {
-			wxBLEServer.value.stopAdvertising({});
-			wxBLEServer.value.close?.({});
-			wxBLEServer.value = null;
-		}
-		// #endif
+	releaseWxPeripheralMode();
+	// #endif
 });
 
 // #ifdef MP-WEIXIN
@@ -649,15 +598,12 @@ onShareAppMessage(() => ({
 <style>
 .page-container {
 	min-height: 100vh;
-	padding: 28rpx;
+	padding: 20rpx;
 	box-sizing: border-box;
 	background: transparent;
 }
 
-.status-card,
-.platform-card,
 .settings-section,
-.broadcast-status-bar,
 .log-panel-brd {
 	background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(242, 248, 255, 0.95) 100%);
 	border: 1rpx solid rgba(20, 76, 136, 0.08);
@@ -665,104 +611,18 @@ onShareAppMessage(() => ({
 	box-shadow: 0 18rpx 40rpx rgba(17, 43, 78, 0.06);
 }
 
-.status-card {
-	padding: 34rpx;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	text-align: center;
-	gap: 14rpx;
-}
-
-.status-card.status-card-active {
-	background: linear-gradient(135deg, rgba(230, 255, 247, 0.98) 0%, rgba(236, 248, 255, 0.98) 100%);
-}
-
-.status-icon-wrap {
-	width: 138rpx;
-	height: 138rpx;
-	border-radius: 42rpx;
+.settings-heading {
 	display: flex;
 	align-items: center;
-	justify-content: center;
-	background: rgba(96, 117, 141, 0.08);
-	border: 1rpx solid rgba(20, 76, 136, 0.08);
-}
-
-.status-icon-wrap.icon-active {
-	background: linear-gradient(135deg, rgba(21, 93, 255, 0.16) 0%, rgba(123, 224, 255, 0.22) 100%);
-	border-color: rgba(21, 93, 255, 0.16);
-}
-
-.status-icon {
-	font-size: 34rpx;
-	font-weight: 700;
-	color: var(--ble-brand);
-	letter-spacing: 2rpx;
-}
-
-.status-title {
-	font-size: 38rpx;
-	font-weight: 700;
-	color: var(--ble-text);
-}
-
-.status-subtitle {
-	font-size: 24rpx;
-	line-height: 1.6;
-	color: var(--ble-text-subtle);
-}
-
-.platform-card,
-.broadcast-status-bar {
-	margin-top: 20rpx;
-	padding: 24rpx;
-	display: flex;
-	align-items: center;
-	gap: 18rpx;
-}
-
-.platform-left {
-	width: 88rpx;
-	height: 88rpx;
-	border-radius: 28rpx;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background: linear-gradient(135deg, rgba(21, 93, 255, 0.14) 0%, rgba(123, 224, 255, 0.2) 100%);
-}
-
-.platform-icon-text {
-	font-size: 32rpx;
-	font-weight: 700;
-	color: var(--ble-brand);
-}
-
-.platform-info {
-	flex: 1;
-	display: flex;
-	flex-direction: column;
-	gap: 6rpx;
-}
-
-.platform-title {
-	font-size: 28rpx;
-	font-weight: 700;
-	color: var(--ble-text);
-}
-
-.platform-msg {
-	font-size: 23rpx;
-	line-height: 1.5;
-	color: var(--ble-text-subtle);
+	justify-content: space-between;
+	gap: 16rpx;
 }
 
 .settings-section {
-	margin-top: 20rpx;
-	padding: 28rpx;
+	padding: 24rpx;
 	display: flex;
 	flex-direction: column;
-	gap: 18rpx;
+	gap: 14rpx;
 }
 
 .section-title {
@@ -771,10 +631,33 @@ onShareAppMessage(() => ({
 	color: var(--ble-text);
 }
 
+.settings-meta,
+.runtime-state,
+.field-label-row {
+	display: flex;
+	align-items: center;
+}
+
+.settings-meta { gap: 10rpx; }
+.field-label-row { justify-content: space-between; gap: 12rpx; }
+
+.platform-tag,
+.runtime-state {
+	padding: 8rpx 14rpx;
+	border-radius: 999rpx;
+	font-size: 20rpx;
+	font-weight: 700;
+}
+
+.platform-tag { color: var(--ble-brand); background: rgba(27, 109, 255, 0.08); }
+.runtime-state { gap: 8rpx; color: #a6630a; background: rgba(255, 159, 67, 0.12); }
+.runtime-state.ready { color: #0e8d75; background: rgba(23, 199, 168, 0.12); }
+.runtime-state.active { color: #ffffff; background: var(--ble-gradient-brand); }
+
 .field-group {
 	display: flex;
 	flex-direction: column;
-	gap: 10rpx;
+	gap: 8rpx;
 }
 
 .field-label,
@@ -784,9 +667,11 @@ onShareAppMessage(() => ({
 	color: var(--ble-text);
 }
 
+.field-hint { color: var(--ble-text-muted); font-size: 20rpx; }
+
 .field-input,
 .field-picker {
-	height: 82rpx;
+	height: 76rpx;
 	padding: 0 22rpx;
 	border-radius: 22rpx;
 	display: flex;
@@ -850,77 +735,24 @@ onShareAppMessage(() => ({
 }
 
 .action-section {
-	margin-top: 20rpx;
 	display: flex;
-	flex-direction: column;
-	gap: 14rpx;
+	align-items: center;
+	gap: 12rpx;
 }
 
-.btn-advertise,
-.btn-check {
-	height: 88rpx;
-	border: none;
-	border-radius: 999rpx;
-	font-size: 28rpx;
-	font-weight: 700;
-}
-
-.btn-advertise {
-	color: #ffffff;
-	background: var(--ble-gradient-brand);
-	box-shadow: 0 18rpx 42rpx rgba(27, 109, 255, 0.18);
-}
-
-.btn-advertise.btn-stop {
-	background: linear-gradient(135deg, #f2555f 0%, #ff9f43 100%);
-	box-shadow: 0 18rpx 42rpx rgba(242, 85, 95, 0.18);
-}
-
-.btn-check {
-	color: var(--ble-brand);
-	background: rgba(27, 109, 255, 0.08);
-}
-
-.btn-advertise::after,
-.btn-check::after {
-	border: none;
-}
-
-.broadcast-status-bar.status-bar-active {
-	background: linear-gradient(135deg, rgba(230, 255, 247, 0.98) 0%, rgba(236, 248, 255, 0.98) 100%);
-}
+.action-primary { flex: 1; min-width: 0; }
+.action-secondary { flex: 0 0 190rpx; padding: 0 18rpx; }
 
 .status-indicator-dot {
-	width: 20rpx;
-	height: 20rpx;
+	width: 14rpx;
+	height: 14rpx;
 	border-radius: 50%;
-	background: #9aa8b6;
+	background: currentColor;
 	flex-shrink: 0;
 }
 
-.status-indicator-dot.dot-active {
-	background: var(--ble-mint);
-	box-shadow: 0 0 16rpx rgba(23, 199, 168, 0.48);
-}
-
-.status-bar-text {
-	font-size: 27rpx;
-	font-weight: 700;
-	color: var(--ble-text);
-}
-
-.status-bar-tip {
-	margin-left: auto;
-	font-size: 22rpx;
-	color: var(--ble-text-subtle);
-}
-
-.status-bar-tip-warn {
-	color: #d37a12;
-}
-
 .log-panel-brd {
-	margin-top: 20rpx;
+	margin-top: 16rpx;
 	overflow: hidden;
 }
 

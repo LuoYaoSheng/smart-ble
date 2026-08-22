@@ -19,7 +19,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
+import { onShareAppMessage, onShareTimeline, onShow } from '@dcloudio/uni-app';
 
 const versionHistory = ref([
 	{
@@ -125,10 +125,12 @@ const getTypeClass = (type) => {
 	return typeMap[type] || '';
 };
 
+onShow(() => uni.pageScrollTo({ scrollTop: 0, duration: 0 }));
+
 // #ifdef MP-WEIXIN
 onShareAppMessage(() => {
 	return {
-		title: '智能蓝牙助手',
+		title: 'BLE Toolkit+ 版本记录',
 		path: '/pages/about/version',
 		imageUrl: '/static/logo.png'
 	};
@@ -136,7 +138,7 @@ onShareAppMessage(() => {
 
 onShareTimeline(() => {
 	return {
-		title: '智能蓝牙助手',
+		title: 'BLE Toolkit+ 版本记录',
 		query: '',
 		imageUrl: '/static/logo.png'
 	};
@@ -146,25 +148,23 @@ onShareTimeline(() => {
 
 <style>
 	.container {
-		padding: 30rpx;
-		background-color: #f7f8fa;
+		padding: 24rpx;
+		background: transparent;
 		min-height: 100vh;
 	}
 	
 	.version-list {
-		background-color: #fff;
-		border-radius: 20rpx;
-		box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.04);
-		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+		gap: 16rpx;
 	}
 	
 	.version-item {
-		padding: 30rpx;
-		border-bottom: 2rpx solid #f5f5f5;
-	}
-	
-	.version-item:last-child {
-		border-bottom: none;
+		padding: 26rpx;
+		border: 1rpx solid rgba(20, 76, 136, 0.08);
+		border-radius: 28rpx;
+		background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(242,248,255,.95));
+		box-shadow: 0 14rpx 32rpx rgba(17,43,78,.05);
 	}
 	
 	.version-header {
@@ -176,13 +176,13 @@ onShareTimeline(() => {
 	
 	.version-name {
 		font-size: 32rpx;
-		font-weight: 600;
-		color: #333;
+		font-weight: 800;
+		color: var(--ble-text);
 	}
 	
 	.version-date {
 		font-size: 24rpx;
-		color: #999;
+		color: var(--ble-text-muted);
 	}
 	
 	.version-content {
@@ -200,8 +200,8 @@ onShareTimeline(() => {
 	.update-type {
 		font-size: 24rpx;
 		padding: 4rpx 12rpx;
-		border-radius: 6rpx;
-		font-weight: 500;
+		border-radius: 999rpx;
+		font-weight: 700;
 	}
 	
 	.update-type.type-new {
@@ -221,7 +221,8 @@ onShareTimeline(() => {
 	
 	.update-text {
 		font-size: 28rpx;
-		color: #666;
+		color: var(--ble-text-subtle);
+		line-height: 1.55;
 		flex: 1;
 	}
-</style> 
+</style>

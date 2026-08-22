@@ -69,9 +69,9 @@ const currentYear = new Date().getFullYear();
 
 const getSystemInfo = () => {
 	try {
-		const info = uni.getSystemInfoSync();
+		const info = uni.getDeviceInfo?.() || {};
 		systemInfo.value = {
-			platform: info.osName || info.uniPlatform || info.platform || 'unknown',
+			platform: info.osName || info.platform || 'unknown',
 			system: info.system || 'unknown',
 			model: info.model || 'unknown'
 		};

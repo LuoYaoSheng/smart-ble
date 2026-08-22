@@ -32,21 +32,19 @@
 
 			<button
 				v-if="isConnectionTab"
-				class="action-btn action-btn-danger"
-				size="mini"
+				class="ble-btn ble-btn--danger ble-btn--sm action-btn"
 				@click.stop="onActionClick"
 			>
 				断开
 			</button>
 			<view v-else-if="device.profileId" class="profile-actions">
-				<button class="action-btn action-btn-secondary" size="mini" @click.stop="onGenericClick">连接</button>
-				<button class="action-btn action-btn-primary" size="mini" @click.stop="onProfileClick">{{ device.profileActionLabel || device.profileName }}</button>
+				<button class="ble-btn ble-btn--secondary ble-btn--sm action-btn" @click.stop="onGenericClick">连接</button>
+				<button class="ble-btn ble-btn--primary ble-btn--sm action-btn" @click.stop="onProfileClick">{{ device.profileActionLabel || device.profileName }}</button>
 			</view>
 			<button
 				v-else
-				class="action-btn action-btn-primary"
-					:class="{ disabled: device.connected }"
-				size="mini"
+				class="ble-btn ble-btn--primary ble-btn--sm action-btn"
+				:class="{ 'ble-btn--disabled': device.connected }"
 				:disabled="device.connected"
 				@click.stop="onGenericClick"
 			>
@@ -224,38 +222,10 @@ const getSignalLevel = (rssi) => {
 	color: var(--ble-text-subtle);
 }
 
-.action-btn {
-	height: 60rpx;
-	line-height: 60rpx;
-	padding: 0 26rpx;
-	border: none;
-	border-radius: 999rpx;
-	font-size: 24rpx;
-	font-weight: 700;
-}
-
-.action-btn::after {
-	border: none;
-}
-
-.action-btn-primary {
-	color: #ffffff;
-	background: var(--ble-gradient-brand);
-	box-shadow: 0 12rpx 28rpx rgba(27, 109, 255, 0.16);
-}
-
-.action-btn-secondary { color: var(--ble-brand); background: rgba(27,109,255,.08); }
-.profile-actions { display: flex; gap: 10rpx; margin-left: auto; }
-
-.action-btn-primary.disabled {
-	background: rgba(96, 117, 141, 0.16);
-	color: var(--ble-text-muted);
-	box-shadow: none;
-}
-
-.action-btn-danger {
-	color: #ffffff;
+.action-btn.ble-btn--danger {
 	background: linear-gradient(135deg, #f2555f 0%, #ff9f43 100%);
-	box-shadow: 0 12rpx 28rpx rgba(242, 85, 95, 0.16);
+	box-shadow: 0 12rpx 28rpx rgba(242, 85, 95, 0.18);
 }
+
+.profile-actions { display: flex; gap: 10rpx; margin-left: auto; }
 </style>

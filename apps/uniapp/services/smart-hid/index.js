@@ -19,11 +19,12 @@ import {
 } from '../provisioning/transport.js';
 import { getProfile, matchScannedDevices } from '../provisioning/profiles.js';
 import { SMART_HID_PROFILE_ID } from './profile.js';
+import { createSmartHidStatusWaiters, runSmartHidProvisionTransaction } from './workflow.js';
 
 let session = null;
 let onStatusCb = null;
 let onInfoCb = null;
-const waiters = [];
+const statusWaiters = createSmartHidStatusWaiters();
 
 function profile() {
   const value = getProfile(SMART_HID_PROFILE_ID);
@@ -37,30 +38,6 @@ function characteristic(alias) {
   return uuid;
 }
 
-function fireWaiters(status) {
-  for (let index = waiters.length - 1; index >= 0; index--) {
-    const waiter = waiters[index];
-    let matched = false;
-    try {
-      matched = waiter.predicate(status);
-    } catch {
-      matched = false;
-    }
-    if (!matched) continue;
-    waiters.splice(index, 1);
-    clearTimeout(waiter.timer);
-    waiter.resolve(status);
-  }
-}
-
-function failAllWaiters(reason) {
-  while (waiters.length) {
-    const waiter = waiters.shift();
-    clearTimeout(waiter.timer);
-    waiter.reject(new Error(reason));
-  }
-}
-
 function handleStatusValue(value) {
   const status = profile().codec.parseStatus(value);
   if (!status?.state) {
@@ -68,7 +45,7 @@ function handleStatusValue(value) {
     return;
   }
   useHidStore().applyProvisionStatus(status);
-  fireWaiters(status);
+  statusWaiters.emit(status);
 }
 
 function handleInfoValue(value) {
@@ -78,24 +55,7 @@ function handleInfoValue(value) {
 }
 
 export function waitForStatus(predicate, timeoutMs = 60000) {
-  let waiter;
-  const promise = new Promise((resolve, reject) => {
-    waiter = { predicate, resolve, reject, timer: null };
-    waiter.timer = setTimeout(() => {
-      const index = waiters.indexOf(waiter);
-      if (index >= 0) waiters.splice(index, 1);
-      reject(new Error(`等待设备状态超时（${timeoutMs}ms）`));
-    }, timeoutMs);
-    waiters.push(waiter);
-  });
-  promise.cancel = (reason = '等待已取消') => {
-    const index = waiters.indexOf(waiter);
-    if (index < 0) return;
-    waiters.splice(index, 1);
-    clearTimeout(waiter.timer);
-    waiter.reject(new Error(reason));
-  };
-  return promise;
+  return statusWaiters.waitFor(predicate, timeoutMs);
 }
 
 /**
@@ -133,6 +93,20 @@ export async function connect(deviceId) {
   const selectedProfile = profile();
   logger.info(`[SmartHID] connect ${deviceId}`);
 
+  if (session && !session.dead) {
+    if (session.deviceId === deviceId) {
+      try {
+        const info = await getDeviceInfo();
+        if (!selectedProfile.verifyDeviceInfo(info)) throw new Error('目标设备不是兼容的 Smart HID Profile');
+        return { deviceId, info };
+      } catch (error) {
+        await disconnect().catch(() => {});
+        throw error;
+      }
+    }
+    await disconnect();
+  }
+
   const connected = await gattConnect(deviceId, {
     serviceUuid: selectedProfile.serviceUuid,
     characteristicUuids: selectedProfile.required.map((alias) => selectedProfile.characteristics[alias]),
@@ -141,26 +115,31 @@ export async function connect(deviceId) {
   });
   session = connected;
 
-  if (onStatusCb) unsubscribe(onStatusCb);
-  if (onInfoCb) unsubscribe(onInfoCb);
-  onStatusCb = handleStatusValue;
-  onInfoCb = handleInfoValue;
-  await subscribe(connected, characteristic('STATUS'), onStatusCb);
-  await subscribe(connected, characteristic('INFO'), onInfoCb);
+  try {
+    if (onStatusCb) unsubscribe(onStatusCb);
+    if (onInfoCb) unsubscribe(onInfoCb);
+    onStatusCb = handleStatusValue;
+    onInfoCb = handleInfoValue;
+    await subscribe(connected, characteristic('STATUS'), onStatusCb);
+    await subscribe(connected, characteristic('INFO'), onInfoCb);
 
-  connected.onDisconnect(() => {
-    if (session !== connected) return;
-    session = null;
-    failAllWaiters('BLE 连接已断开');
-    hidStore.setLastError({ code: 'ble_disconnected', message: 'BLE 连接已断开' });
-  });
+    connected.onDisconnect(() => {
+      if (session !== connected) return;
+      session = null;
+      statusWaiters.failAll('BLE 连接已断开');
+      hidStore.setLastError({ code: 'ble_disconnected', message: 'BLE 连接已断开' });
+    });
 
-  const info = await getDeviceInfo();
-  if (!selectedProfile.verifyDeviceInfo(info)) {
-    await disconnect();
-    throw new Error('目标设备不是兼容的 Smart HID Profile，已断开连接');
+    const info = await getDeviceInfo();
+    if (!selectedProfile.verifyDeviceInfo(info)) {
+      throw new Error('目标设备不是兼容的 Smart HID Profile，已断开连接');
+    }
+    return { deviceId, info };
+  } catch (error) {
+    if (session === connected) await disconnect().catch(() => {});
+    else if (!connected.dead) await connected.close().catch(() => {});
+    throw error;
   }
-  return { deviceId, info };
 }
 
 export async function getDeviceInfo() {
@@ -221,12 +200,26 @@ export function waitForProvisionResult(timeoutMs = 60000) {
   }));
 }
 
+export function provisionAndWait(input, timeoutMs = 60000) {
+  return runSmartHidProvisionTransaction({
+    createWaiter: () => waitForProvisionResult(timeoutMs),
+    writeCandidate: (waiter) => provisionCandidate(input, { beforeWrite: () => waiter })
+  });
+}
+
 export async function getStatus() {
   if (!session) return null;
   const text = await readChar(session, characteristic('STATUS'));
   const status = profile().codec.parseStatus(text);
   if (status) useHidStore().applyProvisionStatus(status);
   return status;
+}
+
+export function getSessionState() {
+  return {
+    connected: Boolean(session && !session.dead),
+    deviceId: session && !session.dead ? session.deviceId : ''
+  };
 }
 
 /** Smart HID 专属诊断映射；通用 Runtime 只提供连接与读写能力。 */
@@ -265,7 +258,7 @@ export async function diagnose() {
 }
 
 export async function disconnect() {
-  failAllWaiters('BLE 已主动断开');
+  statusWaiters.failAll('BLE 已主动断开');
   if (onStatusCb) {
     unsubscribe(onStatusCb);
     onStatusCb = null;
@@ -287,9 +280,11 @@ export const smartHidService = {
   connect,
   getDeviceInfo,
   provisionCandidate,
+  provisionAndWait,
   waitForProvisionResult,
   waitForStatus,
   getStatus,
+  getSessionState,
   diagnose,
   disconnect,
   parsePairingQrPayload: (text) => profile().parseQr?.(text) || null
