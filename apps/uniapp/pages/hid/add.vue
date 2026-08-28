@@ -3,7 +3,7 @@
 		<view class="page-content">
 			<provision-stepper :steps="steps" :current="currentStep" />
 
-			<view v-if="phase === 'connect'" class="panel">
+			<view v-if="phase === 'connect'" class="panel ble-card">
 				<view class="panel-kicker">SMART HID</view>
 				<text class="panel-title">连接设备</text>
 				<text class="panel-desc">正在建立 BLE 连接并读取 Device Info，确认设备身份后会直接进入配置。</text>
@@ -16,11 +16,12 @@
 				</view>
 				<view v-if="connecting" class="status-line"><view class="status-dot active"></view><text>连接并确认设备中…</text></view>
 				<view v-if="connectionError" class="error-box"><text>{{ connectionError }}</text></view>
+				<text v-if="connectionError" class="ready-hint">已完成配置（READY）的设备会关闭蓝牙广播；如需重新配置，请先让设备进入配网/恢复模式后重试。</text>
 				<button v-if="connectionError && currentDevice" class="primary-btn" :disabled="connecting" @click="connectDevice">重新连接</button>
 				<button v-if="connectionError" class="secondary-btn" @click="goDevices">返回设备列表</button>
 			</view>
 
-			<view v-if="phase === 'configure'" class="panel">
+			<view v-if="phase === 'configure'" class="panel ble-card">
 				<view class="panel-heading">
 					<view><view class="panel-kicker">设备已连接</view><text class="panel-title">填写配网信息</text></view>
 					<view class="connected-badge">已连接</view>
@@ -53,7 +54,7 @@
 				<button class="primary-btn" :disabled="!canSubmit" @click="provision">下发配置</button>
 			</view>
 
-			<view v-if="phase === 'status'" class="panel">
+			<view v-if="phase === 'status'" class="panel ble-card">
 				<view class="panel-kicker">PROVISION STATUS</view>
 				<text class="panel-title">{{ provisionDone ? '配置完成' : provisioning ? '正在配置' : '配置结果' }}</text>
 				<text class="panel-desc">设备会依次连接 Wi-Fi、与 ControlHub 配对并建立 MQTT 控制链路。</text>
@@ -92,7 +93,8 @@ onUnload(dispose);
 <style scoped>
 .container { min-height: 100vh; background: transparent; }
 .page-content { display: flex; flex-direction: column; gap: 22rpx; padding: 28rpx; }
-.panel { display: flex; flex-direction: column; gap: 20rpx; padding: 30rpx; border: 1rpx solid rgba(20, 76, 136, 0.08); border-radius: 34rpx; background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(242, 248, 255, 0.95)); box-shadow: 0 18rpx 40rpx rgba(17, 43, 78, 0.06); }
+/* 卡片配方（渐变/描边/圆角/阴影）走 ble-card */
+.panel { display: flex; flex-direction: column; gap: 20rpx; padding: 30rpx; }
 .panel-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 20rpx; }
 .panel-kicker { margin-bottom: 8rpx; color: var(--ble-brand); font-size: 20rpx; font-weight: 800; letter-spacing: 2rpx; }
 .panel-title { display: block; color: var(--ble-text); font-size: 38rpx; font-weight: 800; line-height: 1.2; }
@@ -126,6 +128,7 @@ onUnload(dispose);
 .secondary-btn { color: var(--ble-brand); background: rgba(27, 109, 255, 0.08); }
 .primary-btn[disabled] { opacity: 0.5; box-shadow: none; }
 .error-box { padding: 20rpx 22rpx; border: 1rpx solid rgba(242, 85, 95, 0.14); border-radius: 22rpx; color: var(--ble-red); background: rgba(242, 85, 95, 0.08); font-size: 24rpx; line-height: 1.55; }
+.ready-hint { color: #d37a12; font-size: 22rpx; line-height: 1.55; }
 .success-box { display: flex; align-items: center; gap: 18rpx; padding: 22rpx; border-radius: 24rpx; color: #087765; background: rgba(23, 199, 168, 0.12); }
 .success-icon { display: flex; align-items: center; justify-content: center; width: 58rpx; height: 58rpx; flex-shrink: 0; border-radius: 50%; color: #fff; background: #17b99b; font-size: 30rpx; font-weight: 800; }
 .success-title { display: block; font-size: 27rpx; font-weight: 800; }

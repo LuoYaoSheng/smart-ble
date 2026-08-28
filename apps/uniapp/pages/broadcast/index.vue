@@ -1,7 +1,7 @@
 <template>
 	<scroll-view class="page-container" scroll-y>
 		<!-- 状态卡片（与 Flutter BroadcastPage 对齐） -->
-		<view class="status-card" :class="{ 'status-card-active': advertising }">
+		<view class="status-card ble-card" :class="{ 'status-card-active': advertising }">
 			<view class="status-icon-wrap" :class="{ 'icon-active': advertising }">
 				<text class="status-icon">{{ advertising ? 'LIVE' : 'OFF' }}</text>
 			</view>
@@ -10,7 +10,7 @@
 		</view>
 
 		<!-- 平台说明卡片 -->
-		<view class="platform-card">
+		<view class="platform-card ble-card">
 			<view class="platform-left">
 				<text class="platform-icon-text">{{ platform === 'android' ? 'A' : platform === 'ios' ? 'i' : 'W' }}</text>
 			</view>
@@ -21,7 +21,7 @@
 		</view>
 
 		<!-- 广播设置 -->
-		<view class="settings-section">
+		<view class="settings-section ble-card">
 			<text class="section-title">广播设置</text>
 
 			<view class="field-group">
@@ -105,7 +105,7 @@
 
 		<!-- 广播状态栏 -->
 		<view
-			class="broadcast-status-bar"
+			class="broadcast-status-bar ble-card"
 			:class="advertising ? 'status-bar-active' : ''">
 			<view
 				class="status-indicator-dot"
@@ -115,7 +115,7 @@
 			<text class="status-bar-tip status-bar-tip-warn" v-else>当前平台不支持广播</text>
 		</view>
 
-		<view class="log-panel-brd">
+		<view class="log-panel-brd ble-card">
 			<view class="log-panel-brd-header">
 				<text class="log-panel-brd-title">操作日志</text>
 				<text class="log-clear-brd" @click="clearLogs">清空</text>
@@ -654,17 +654,7 @@ onShareAppMessage(() => ({
 	background: transparent;
 }
 
-.status-card,
-.platform-card,
-.settings-section,
-.broadcast-status-bar,
-.log-panel-brd {
-	background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(242, 248, 255, 0.95) 100%);
-	border: 1rpx solid rgba(20, 76, 136, 0.08);
-	border-radius: 32rpx;
-	box-shadow: 0 18rpx 40rpx rgba(17, 43, 78, 0.06);
-}
-
+/* 卡片配方统一走 design-system.css 的 .ble-card；此处只保留各卡片的布局差异 */
 .status-card {
 	padding: 34rpx;
 	display: flex;

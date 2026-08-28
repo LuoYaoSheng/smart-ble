@@ -6,10 +6,13 @@
  */
 
 import { getBlePlatform, resetBlePlatformForTesting, setBlePlatformForTesting as setPlatform } from './platform.js';
+import { normalizeBleError } from './errors.js';
+import { getServiceName, getCharacteristicName } from '../../utils/ble-utils.js';
 
 const state = {
   platform: null,
   callbacksRegistered: false,
+  adapterReady: false,
   sessions: new Map(),
   valueListeners: new Map(),
   disconnectListeners: new Map(),
@@ -88,6 +91,7 @@ function ensureCallbacks() {
   });
 
   platform.onBluetoothAdapterStateChange?.((res) => {
+    state.adapterReady = Boolean(res?.available);
     for (const callback of [...state.adapterStateListeners]) {
       try {
         callback(res);
@@ -154,7 +158,12 @@ async function discoverServices(platform, deviceId) {
     const chars = await call(platform, 'getBLEDeviceCharacteristics', { deviceId, serviceId: service.uuid });
     services.push({
       ...service,
-      characteristics: (chars.characteristics || []).map((characteristic) => ({ ...characteristic, notifying: false }))
+      name: service.name || getServiceName(service.uuid),
+      characteristics: (chars.characteristics || []).map((characteristic) => ({
+        ...characteristic,
+        name: characteristic.name || getCharacteristicName(characteristic.uuid),
+        notifying: false
+      }))
     });
   }
   return services;
@@ -172,7 +181,7 @@ function indexServices(services) {
 }
 
 export async function connectDevice(deviceId, options = {}) {
-  const platform = ensureCallbacks();
+  const platform = await ensureAdapterReady();
   const existing = state.sessions.get(deviceId);
   if (existing && !existing.dead) {
     if (options.mtu && existing.mtu < options.mtu) {
@@ -181,7 +190,11 @@ export async function connectDevice(deviceId, options = {}) {
     return existing;
   }
 
-  await call(platform, 'createBLEConnection', { deviceId, timeout: options.timeout || 10000 });
+  try {
+    await call(platform, 'createBLEConnection', { deviceId, timeout: options.timeout || 10000 });
+  } catch (error) {
+    throw normalizeBleError(error, 'BLE 连接失败');
+  }
   let services = [];
   const expectedServiceUuid = normalize(options.expectedServiceUuid);
   try {
@@ -246,8 +259,24 @@ export function onAdapterState(callback) {
   return () => state.adapterStateListeners.delete(callback);
 }
 
+/**
+ * 幂等保证蓝牙适配器已初始化。连接路径（含 Smart HID 配网、通用调试详情页）
+ * 必须经由这里，避免冷启动直接 createBLEConnection 触发 errCode 10000。
+ */
+export async function ensureAdapterReady() {
+  const platform = ensureCallbacks();
+  if (state.sessions.size || state.adapterReady) return platform;
+  try {
+    await call(platform, 'openBluetoothAdapter');
+    state.adapterReady = true;
+    return platform;
+  } catch (error) {
+    throw normalizeBleError(error, '蓝牙适配器初始化失败');
+  }
+}
+
 export async function openAdapter() {
-  return call(ensureCallbacks(), 'openBluetoothAdapter');
+  return ensureAdapterReady();
 }
 
 export async function startDiscovery(options = {}) {
@@ -356,6 +385,7 @@ export function setBlePlatformForTesting(platform) {
 export function resetBleRuntimeForTesting() {
   state.platform = null;
   state.callbacksRegistered = false;
+  state.adapterReady = false;
   state.sessions.clear();
   state.valueListeners.clear();
   state.disconnectListeners.clear();

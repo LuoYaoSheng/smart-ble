@@ -3,30 +3,6 @@ import { onHide, onLoad, onUnload } from '@dcloudio/uni-app';
 import { useBleStore } from '../store/ble';
 import { matchScannedDevices } from '../services/provisioning/profiles.js';
 
-export function requestBleScanPermission() {
-  // #ifdef MP-WEIXIN
-  return new Promise((resolve) => {
-    wx.getSetting({
-      success: (settings) => {
-        if (settings.authSetting['scope.userLocation']) return resolve(true);
-        wx.authorize({
-          scope: 'scope.userLocation', success: () => resolve(true),
-          fail: () => wx.showModal({
-            title: '需要定位权限', content: '微信在部分系统上要求定位权限才能发现附近 BLE 设备。',
-            confirmText: '去设置', success: (result) => { if (result.confirm) wx.openSetting(); resolve(false); },
-            fail: () => resolve(false)
-          })
-        });
-      },
-      fail: () => resolve(true)
-    });
-  });
-  // #endif
-  // #ifndef MP-WEIXIN
-  return Promise.resolve(true);
-  // #endif
-}
-
 export function useBleScan() {
   const store = useBleStore();
   const filterSettings = ref({ rssi: -100, prefix: '', hideNoName: false });
@@ -60,10 +36,7 @@ export function useBleScan() {
     });
   };
 
-  const start = async () => {
-    if (await requestBleScanPermission()) return store.startScan();
-    return { ok: false, reason: 'permission_denied' };
-  };
+  const start = () => store.startScan();
 
   const stop = (reason = 'user') => store.stopScan(reason);
   const toggle = () => store.isScanning ? stop('user') : start();

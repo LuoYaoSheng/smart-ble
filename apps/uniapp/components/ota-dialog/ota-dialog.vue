@@ -1,11 +1,11 @@
 <template>
-  <view class="ota-modal" v-if="visible" @touchmove.stop.prevent>
-    <view class="ota-modal-content">
-      <view class="ota-header">
-        <text class="ota-title">固件更新 (OTA)</text>
+  <view class="ble-modal-mask" v-if="visible" @touchmove.stop.prevent>
+    <view class="ble-modal-sheet">
+      <view class="ble-modal-header centered">
+        <text class="ble-modal-title">固件更新 (OTA)</text>
       </view>
-      
-      <view class="ota-body">
+
+      <view class="ble-modal-body ota-body">
         <view v-if="!isTransmitting" class="ota-prompt">
           <text class="ota-desc">发现 OTA 升级服务。请选择对应的固件 (.bin) 文件进行刷写。</text>
           
@@ -22,9 +22,9 @@
         <text v-if="statusText" class="ota-status-text" :class="statusType">{{statusText}}</text>
       </view>
 
-      <view class="ota-footer">
-        <button class="ota-btn cancel" @click="cancel" :disabled="isTransmitting && progressPercent < 100">取消</button>
-        <button class="ota-btn confirm" type="primary" @click="startOta" :disabled="!fileBuffer || isTransmitting">开始升级</button>
+      <view class="ble-modal-footer">
+        <button class="ble-modal-btn cancel" @click="cancel" :disabled="isTransmitting && progressPercent < 100">取消</button>
+        <button class="ble-modal-btn confirm" type="primary" @click="startOta" :disabled="!fileBuffer || isTransmitting">开始升级</button>
       </view>
     </view>
   </view>
@@ -186,38 +186,8 @@ const cancel = () => {
 </script>
 
 <style scoped>
-.ota-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(10, 20, 35, 0.42);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
-  padding: 32rpx;
-}
-.ota-modal-content {
-  width: 100%;
-  background: linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(242,248,255,.96) 100%);
-  border-radius: 34rpx;
-  overflow: hidden;
-  box-shadow: 0 24rpx 60rpx rgba(10,20,35,.18);
-}
-.ota-header {
-  padding: 28rpx 30rpx;
-  border-bottom: 1rpx solid rgba(20,76,136,.08);
-  text-align: center;
-}
-.ota-title {
-  font-size: 30rpx;
-  font-weight: 700;
-  color: var(--ble-text);
-}
+/* 模态壳（遮罩/面板/头部/底部按钮）统一走 design-system.css 的 ble-modal-* */
 .ota-body {
-  padding: 30rpx;
   min-height: 260rpx;
   display: flex;
   flex-direction: column;
@@ -274,31 +244,6 @@ const cancel = () => {
 .success { color: #0e9c82; }
 .error { color: var(--ble-red); }
 
-.ota-footer {
-  display: flex;
-  gap: 14rpx;
-  padding: 0 30rpx 30rpx;
-}
-.ota-btn {
-  flex: 1;
-  border-radius: 999rpx;
-  border: none;
-  font-size: 27rpx;
-  height: 84rpx;
-  line-height: 84rpx;
-  font-weight: 700;
-}
-.ota-btn::after {
-  border: none;
-}
-.cancel {
-  background-color: rgba(96,117,141,.08);
-  color: var(--ble-text-subtle);
-}
-.confirm {
-  background: var(--ble-gradient-brand);
-  color: #fff;
-}
 button[disabled] {
   opacity: 0.5;
 }

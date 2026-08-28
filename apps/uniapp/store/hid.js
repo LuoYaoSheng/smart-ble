@@ -6,7 +6,7 @@ import { logger } from '../../../core/ble-core/utils/logger';
  * Smart HID 模块 Store
  *
  * 职责：
- *   - smartDevices        BLE 扫描过滤后的 Smart HID 设备列表
+ *   - smartDevices        预留给二期 Profile 扫描的设备列表（一期无写入方）
  *   - currentDevice       当前选中 / 正在配置的设备（含 Device Info 字段）
  *   - provisionSession    当前配网会话状态
  *   - hubInfo             ControlHub 配对 QR 解析结果（敏感，不持久化）
@@ -38,6 +38,8 @@ export const useHidStore = defineStore('hid', () => {
 		}
 	};
 	// --- State ---
+	// smartDevices：预留给二期 Profile 扫描写入（读取方：use-smart-hid-provisioning 的设备解析链）。
+	// 一期通用扫描的 Smart HID 识别在 use-ble-scan 内完成，不落此列表。
 	const smartDevices = ref([]);
 	const currentDevice = ref(null);
 	const provisionSession = ref({ active: false, startedAt: null });
@@ -52,10 +54,6 @@ export const useHidStore = defineStore('hid', () => {
 	const hasConfiguredDevice = computed(() => knownDevices.value.length > 0);
 
 	// --- Actions ---
-	const setSmartDevices = (list) => {
-		smartDevices.value = Array.isArray(list) ? list : [];
-	};
-
 	const setCurrentDevice = (device) => {
 		currentDevice.value = device ? { ...device } : null;
 	};
@@ -201,7 +199,6 @@ export const useHidStore = defineStore('hid', () => {
 		// getters
 		hasConfiguredDevice,
 		// actions
-		setSmartDevices,
 		setCurrentDevice,
 		setHubInfo,
 		setProgress,

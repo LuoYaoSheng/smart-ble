@@ -5,8 +5,6 @@
  * callback、GATT 原语由 services/ble-runtime 与 provisioning/transport 负责。
  */
 
-import { watch } from 'vue';
-import { useBleStore } from '../../store/ble';
 import { useHidStore } from '../../store/hid';
 import { logger } from '../../../../core/ble-core/utils/logger';
 import { chunkSizeForMtu, buildFrames, utf8Decode } from '../../../../core/ble-core/provisioning/framing.js';
@@ -17,7 +15,7 @@ import {
   unsubscribe,
   writeFrames
 } from '../provisioning/transport.js';
-import { getProfile, matchScannedDevices } from '../provisioning/profiles.js';
+import { getProfile } from '../provisioning/profiles.js';
 import { SMART_HID_PROFILE_ID } from './profile.js';
 
 let session = null;
@@ -96,35 +94,6 @@ export function waitForStatus(predicate, timeoutMs = 60000) {
     waiter.reject(new Error(reason));
   };
   return promise;
-}
-
-/**
- * 扫描附近 Smart HID。扫描结果变化时持续更新 hidStore，直到本轮通用扫描结束。
- */
-export async function scanSmartHid() {
-  const bleStore = useBleStore();
-  const hidStore = useHidStore();
-  const refresh = () => {
-    const matched = matchScannedDevices(bleStore.scannedDevices || []);
-    hidStore.setSmartDevices(matched.map(({ device, profile: matchedProfile, matchLevel }) => ({
-      ...device,
-      profileId: matchedProfile.id,
-      profileMatch: matchLevel
-    })));
-  };
-
-  logger.info('[SmartHID] scanSmartHid start');
-  const stopWatch = watch(() => bleStore.scannedDevices, refresh, { deep: true });
-  try {
-    const result = await bleStore.startScan(5000, 'smart-hid');
-    if (!result?.ok) throw result?.error || new Error('Smart HID 扫描失败');
-    refresh();
-    refresh();
-    logger.info(`[SmartHID] scanSmartHid done, found ${hidStore.smartDevices.length}`);
-    return hidStore.smartDevices;
-  } finally {
-    stopWatch();
-  }
 }
 
 /** 建立 Smart HID GATT 会话、订阅 info/status，并确认 Device Info 身份。 */
@@ -264,6 +233,11 @@ export async function diagnose() {
   return items;
 }
 
+/** 当前 Smart HID 会话是否仍可用（供 UI 判断"重新下发"前是否需要重连）。 */
+export function isConnected() {
+  return Boolean(session && !session.dead);
+}
+
 export async function disconnect() {
   failAllWaiters('BLE 已主动断开');
   if (onStatusCb) {
@@ -283,7 +257,6 @@ export async function disconnect() {
 }
 
 export const smartHidService = {
-  scanSmartHid,
   connect,
   getDeviceInfo,
   provisionCandidate,
@@ -291,6 +264,7 @@ export const smartHidService = {
   waitForStatus,
   getStatus,
   diagnose,
+  isConnected,
   disconnect,
   parsePairingQrPayload: (text) => profile().parseQr?.(text) || null
 };

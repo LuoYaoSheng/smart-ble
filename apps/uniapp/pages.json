@@ -17,7 +17,14 @@
 		{
 			"path": "pages/hid/detail",
 			"style": {
-				"navigationBarTitleText": "设备详情",
+				"navigationBarTitleText": "Smart HID 设备",
+				"navigationBarTextStyle": "black"
+			}
+		},
+		{
+			"path": "pages/hid/history",
+			"style": {
+				"navigationBarTitleText": "Smart HID 历史",
 				"navigationBarTextStyle": "black"
 			}
 		},

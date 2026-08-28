@@ -75,6 +75,11 @@ image {
   box-shadow: var(--ble-shadow-brand);
 }
 
+/* ble-card 的内边距变体：卡片配方统一走 .ble-card，padding 按需叠加 */
+.ble-card-pad {
+  padding: 30rpx;
+}
+
 .ble-chip {
   display: inline-flex;
   align-items: center;
@@ -266,4 +271,91 @@ image {
 
 .ble-mono {
   font-family: "SF Mono", "Roboto Mono", Menlo, monospace;
+}
+
+/* ---- 模态层（write-dialog / ota-dialog / advertisement-dialog 共用壳） ---- */
+
+.ble-modal-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32rpx;
+  background: rgba(10, 20, 35, 0.42);
+}
+
+.ble-modal-sheet {
+  width: 100%;
+  background: var(--ble-gradient-surface);
+  border-radius: var(--ble-radius-xl);
+  box-shadow: 0 24rpx 60rpx rgba(10, 20, 35, 0.18);
+  overflow: hidden;
+}
+
+.ble-modal-header {
+  padding: 28rpx 30rpx;
+  border-bottom: 1rpx solid var(--ble-line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.ble-modal-header.centered {
+  justify-content: center;
+}
+
+.ble-modal-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--ble-text);
+}
+
+.ble-modal-close {
+  font-size: 40rpx;
+  color: var(--ble-text-muted);
+  line-height: 1;
+  padding: 0 10rpx;
+}
+
+.ble-modal-body {
+  padding: 30rpx;
+}
+
+.ble-modal-footer {
+  display: flex;
+  gap: 14rpx;
+  padding: 0 30rpx 30rpx;
+}
+
+.ble-modal-btn {
+  flex: 1;
+  height: 84rpx;
+  line-height: 84rpx;
+  font-size: 28rpx;
+  text-align: center;
+  border-radius: 999rpx;
+  background: transparent;
+  border: none;
+}
+
+.ble-modal-btn::after {
+  border: none;
+}
+
+.ble-modal-btn.cancel {
+  color: var(--ble-text-subtle);
+  background: rgba(96, 117, 141, 0.08);
+}
+
+.ble-modal-btn.confirm {
+  color: #ffffff;
+  background: var(--ble-gradient-brand);
+  font-weight: 700;
+}
+
+.ble-modal-btn.confirm[disabled] {
+  opacity: 0.56;
 }

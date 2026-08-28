@@ -1,7 +1,7 @@
 <template>
 	<view class="container">
 		<view class="page-content">
-			<view class="card">
+			<view class="card ble-card">
 				<view class="card-title">诊断</view>
 
 				<view class="diag-row" v-for="d in diagnosticItems" :key="d.key">
@@ -40,6 +40,9 @@ const hidStore = useHidStore();
 const deviceId = ref('');
 const showAdvanced = ref(false);
 const connecting = ref(false);
+// 会话所有权：只有本页自己建立的连接才允许在卸载时断开，
+// 避免杀死配网向导（pages/hid/add）仍在使用的共享会话。
+let connectedHere = false;
 
 const diagnosticItems = computed(() => hidStore.diagnostic || [
 	{ key: 'ble', label: 'BLE', state: 'pending', detail: '' },
@@ -53,7 +56,12 @@ const lastError = computed(() => hidStore.lastError);
 onLoad((opts) => {
 	deviceId.value = opts.deviceId ? decodeURIComponent(opts.deviceId) : '';
 });
-onUnload(() => { smartHidService.disconnect().catch(() => {}); });
+onUnload(() => {
+	if (!connectedHere) return;
+	const stack = typeof getCurrentPages === 'function' ? getCurrentPages() : [];
+	const provisionOwnerAlive = stack.some((page) => String(page?.route || '').includes('pages/hid/add'));
+	if (!provisionOwnerAlive) smartHidService.disconnect().catch(() => {});
+});
 
 const stateIcon = (s) => s === 'ok' ? '✓' : s === 'warn' ? '!' : s === 'active' ? '…' : '·';
 const stateText = (s) => ({ ok: '正常', warn: '异常', active: '检测中', pending: '待检测', fail: '失败' }[s] || s);
@@ -66,16 +74,17 @@ const refresh = async () => {
 		if (items[0] && items[0].state === 'fail') {
 			uni.showModal({
 				title: 'BLE 未连接',
-				content: '诊断需要设备处于可发现状态。是否尝试重新连接？',
+				content: '诊断需要设备处于可发现状态（已完成配置的 READY 设备会关闭蓝牙广播）。是否尝试重新连接？',
 				confirmText: '尝试连接',
 				success: async (result) => {
 					if (!result.confirm || !deviceId.value) return;
 					connecting.value = true;
 					try {
 						await smartHidService.connect(deviceId.value);
+						connectedHere = true;
 						await smartHidService.diagnose();
 					} catch (error) {
-						uni.showModal({ title: '连接失败', content: error?.message || '请让设备进入配网/恢复模式后重试。', showCancel: false });
+						uni.showModal({ title: '连接失败', content: `${error?.message || '无法连接设备。'}\n提示：已完成配置（READY）的设备会关闭蓝牙广播，需先让它进入配网/恢复模式。`, showCancel: false });
 					} finally {
 						connecting.value = false;
 					}
@@ -93,7 +102,8 @@ const toggleAdvanced = () => { showAdvanced.value = !showAdvanced.value; };
 <style>
 .container { min-height: 100vh; background: transparent; }
 .page-content { padding: 28rpx; }
-.card { background: linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(242,248,255,.95) 100%); border-radius: 32rpx; padding: 28rpx; display: flex; flex-direction: column; gap: 20rpx; border: 1rpx solid rgba(20,76,136,.08); box-shadow: 0 18rpx 40rpx rgba(17,43,78,.06); }
+/* 卡片配方（渐变/描边/圆角/阴影）走 ble-card */
+.card { padding: 28rpx; display: flex; flex-direction: column; gap: 20rpx; }
 .card-title { font-size: 30rpx; font-weight: 700; color: var(--ble-text); padding-bottom: 12rpx; border-bottom: 1rpx solid rgba(20,76,136,.08); }
 .diag-row { display: flex; flex-direction: column; gap: 8rpx; padding: 12rpx 0; border-bottom: 1rpx solid rgba(20,76,136,.06); }
 .diag-row:last-of-type { border-bottom: none; }

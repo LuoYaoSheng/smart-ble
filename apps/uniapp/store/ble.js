@@ -47,10 +47,6 @@ export const useBleStore = defineStore('ble', () => {
   onAdapterState((res) => setBleState(res?.available ? 'on' : 'off'));
 
   const addDeviceLog = (deviceId, type, message) => {
-    if (message.includes('监听特征值')) {
-      type = 'notify';
-    }
-
     switch(type) {
       case '错误': logger.error(message, deviceId); break;
       case '成功': logger.success(message, deviceId); break;

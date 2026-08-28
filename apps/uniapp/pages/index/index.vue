@@ -5,6 +5,14 @@
 		<view class="ble-content page-content">
 			<scan-summary :filtered-count="filteredDevices.length" :device-count="devices.length" :connected-count="connectedDevicesList.length" :scanning="isScanning" :error="scanError" @toggle="toggleScan" @retry="startScan" />
 
+			<view v-if="hidStore.knownDevices.length > 0" class="hid-history-entry ble-card" @click="goHidHistory">
+				<view class="ble-section-meta">
+					<text class="ble-section-title">Smart HID 已配置设备</text>
+					<text class="ble-section-caption">{{ hidStore.knownDevices.length }} 台设备完成过配网，点击查看历史配置</text>
+				</view>
+				<text class="entry-arrow">›</text>
+			</view>
+
 			<view class="ble-pill-tabs">
 				<view
 					v-for="(item, index) in tabItems"
@@ -103,7 +111,7 @@ onShareAppMessage(() => ({
 const connectDevice = async (device) => {
 	await prepareConnect();
 	uni.navigateTo({
-		url: `/pages/device/detail?device=${encodeURIComponent(JSON.stringify(device))}`
+		url: `/pages/device/detail?deviceId=${encodeURIComponent(device.deviceId)}`
 	});
 };
 
@@ -111,6 +119,10 @@ const openProfileDevice = async (device) => {
 	await prepareConnect();
 	hidStore.setCurrentDevice(device);
 	uni.navigateTo({ url: `/pages/hid/add?deviceId=${encodeURIComponent(device.deviceId)}` });
+};
+
+const goHidHistory = () => {
+	uni.navigateTo({ url: '/pages/hid/history' });
 };
 
 const disconnectDeviceFromList = (device) => {
@@ -161,8 +173,23 @@ const copyAdvData = (content) => {
 	margin-bottom: 20rpx;
 }
 
-.filter-toggle { flex-shrink: 0; font-size: 23rpx; font-weight: 700; color: var(--ble-brand); }
-.inline-filter { margin-bottom: 18rpx; }
+	.filter-toggle { flex-shrink: 0; font-size: 23rpx; font-weight: 700; color: var(--ble-brand); }
+	.inline-filter { margin-bottom: 18rpx; }
+
+	.hid-history-entry {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 16rpx;
+		padding: 24rpx;
+	}
+
+	.entry-arrow {
+		flex-shrink: 0;
+		font-size: 44rpx;
+		line-height: 1;
+		color: var(--ble-text-muted);
+	}
 
 .tab-content {
 	flex: 1;

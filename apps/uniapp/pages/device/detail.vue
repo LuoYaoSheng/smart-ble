@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-		<view class="device-panel">
+		<view class="device-panel ble-card">
 			<view class="device-header">
 				<view class="device-info">
 					<view class="name-container">
@@ -59,7 +59,6 @@ import { useBleStore } from '../../store/ble';
 import { logger } from '../../../../core/ble-core/utils/logger';
 import {
 	connectDevice as connectBleDevice,
-	openAdapter as openBleAdapter,
 	readValue,
 	setNotifyEnabled,
 	subscribe as subscribeBleValue,
@@ -74,7 +73,6 @@ import { utf8Decode, utf8Encode } from '../../../../core/ble-core/provisioning/f
 
 const bleStore = useBleStore();
 
-const isInitializing = ref(false);
 const connectionRetryCount = ref(0);
 const maxRetryCount = 3;
 const isUserDisconnected = ref(false);
@@ -93,15 +91,23 @@ let reconnectTimer = null;
 const notifyUnsubscribers = new Map();
 
 onLoad((options) => {
-	if (options.device) {
+	if (options.deviceId) {
+		deviceId.value = decodeURIComponent(options.deviceId);
+		const device = bleStore.scannedDevices.find((item) => item.deviceId === deviceId.value)
+			|| bleStore.connectedDevicesMap[deviceId.value]
+			|| { deviceId: deviceId.value };
+		bleStore.initConnectedDevice(device);
+		if (!storeDevice.value.isConnected) {
+			connectDevice();
+		}
+	} else if (options.device) {
+		// 兼容旧的整对象 JSON 传参
 		try {
 			const parsedDevice = JSON.parse(decodeURIComponent(options.device));
-			deviceId.value = parsedDevice.deviceId;   // set first
+			deviceId.value = parsedDevice.deviceId;
 			bleStore.initConnectedDevice(parsedDevice);
-			
-			// Now storeDevice computed is valid because deviceId.value is set
 			if (!storeDevice.value.isConnected) {
-				initBluetoothAdapter();
+				connectDevice();
 			}
 		} catch (error) {
 			uni.showModal({ title: '无法打开设备', content: '设备参数无效，请返回扫描页重新选择。', showCancel: false, success: () => uni.navigateBack() });
@@ -164,21 +170,6 @@ const shareLogs = () => {
 	});
 };
 
-const initBluetoothAdapter = async () => {
-	if (isInitializing.value) return;
-	isInitializing.value = true;
-	try {
-		addLog('系统', '正在初始化蓝牙...');
-		await openBleAdapter();
-		await connectDevice();
-	} catch (error) {
-		addLog('错误', '蓝牙初始化失败: ' + (error?.errMsg || error?.message || '未知错误'));
-		retryConnection();
-	} finally {
-		isInitializing.value = false;
-	}
-};
-
 const toggleConnection = () => {
 	if (isConnected.value) {
 		isUserDisconnected.value = true;
@@ -218,7 +209,7 @@ const connectDevice = async () => {
 			if (!isUserDisconnected.value) retryConnection();
 		});
 	} catch (error) {
-		addLog('错误', '连接失败: ' + (error?.errMsg || error?.message || '未知错误'));
+		addLog('错误', '连接失败: ' + (error?.message || error?.errMsg || '未知错误'));
 		bleStore.updateDeviceConnectionStatus(deviceId.value, false);
 		retryConnection();
 	}
@@ -335,12 +326,9 @@ const onToggleNotify = ({ serviceId, charId }) => {
 }
 
 .device-panel {
+	/* 卡片配方（渐变/描边/圆角/阴影）走模板上的 ble-card */
 	margin: 24rpx 24rpx 0;
 	padding: 28rpx;
-	border-radius: 34rpx;
-	background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(242, 248, 255, 0.95) 100%);
-	border: 1rpx solid rgba(20, 76, 136, 0.08);
-	box-shadow: 0 18rpx 40rpx rgba(17, 43, 78, 0.06);
 	z-index: 10;
 	flex-shrink: 0;
 }

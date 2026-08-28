@@ -81,8 +81,19 @@ onLoad((opts) => {
 
 const reconfigure = () => {
 	if (!device.value) return;
-	hidStore.setCurrentDevice(device.value);
-	uni.navigateTo({ url: `/pages/hid/add?deviceId=${encodeURIComponent(device.value.deviceId)}` });
+	// 固件事实：设备 READY 后停止 BLE 广播（BLE_PROVISIONING_PROTOCOL.md），
+	// 直接跳配网向导对已配网设备必然失败，先引导用户让设备进入配网模式。
+	uni.showModal({
+		title: '重新配置',
+		content: '已完成配置（READY）的设备会关闭蓝牙广播。请先让设备进入配网/恢复模式（参考设备说明书），确认后再继续。',
+		confirmText: '已进入配网模式',
+		cancelText: '取消',
+		success: (result) => {
+			if (!result.confirm) return;
+			hidStore.setCurrentDevice(device.value);
+			uni.navigateTo({ url: `/pages/hid/add?deviceId=${encodeURIComponent(device.value.deviceId)}` });
+		}
+	});
 };
 
 const goDiagnostics = () => {

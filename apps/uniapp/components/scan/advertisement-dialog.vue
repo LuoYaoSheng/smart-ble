@@ -1,9 +1,18 @@
 <template>
-	<view v-if="visible" class="modal-overlay" @click.stop="$emit('close')">
-		<view class="modal-content" @click.stop>
-			<view class="modal-header"><view class="ble-section-meta"><text class="ble-section-title">广播原始数据</text><text class="ble-section-caption">字段来自本轮平台扫描结果，未提供与空数据会分别标注。</text></view><text class="modal-close" @click="$emit('close')">×</text></view>
+	<view v-if="visible" class="ble-modal-mask" @click.stop="$emit('close')">
+		<view class="ble-modal-sheet modal-sheet">
+			<view class="ble-modal-header">
+				<view class="ble-section-meta">
+					<text class="ble-section-title">广播原始数据</text>
+					<text class="ble-section-caption">字段来自本轮平台扫描结果，未提供与空数据会分别标注。</text>
+				</view>
+				<text class="ble-modal-close" @click="$emit('close')">×</text>
+			</view>
 			<scroll-view scroll-y class="modal-scroll"><textarea class="modal-textarea ble-mono" :value="content" disabled selectable></textarea></scroll-view>
-			<view class="modal-actions"><button class="ble-button-primary modal-button" @click="$emit('copy', content)">复制数据</button><button class="ble-button-secondary modal-button" @click="$emit('close')">关闭</button></view>
+			<view class="ble-modal-footer">
+				<button class="ble-button-primary modal-button" @click="$emit('copy', content)">复制数据</button>
+				<button class="ble-button-secondary modal-button" @click="$emit('close')">关闭</button>
+			</view>
 		</view>
 	</view>
 </template>
@@ -23,11 +32,9 @@ const content = computed(() => {
 </script>
 
 <style scoped>
-.modal-overlay { position: fixed; inset: 0; z-index: 999; display: flex; align-items: center; justify-content: center; padding: 28rpx; background: rgba(15,29,48,.5); }
-.modal-content { width: 100%; max-height: 78vh; padding: 28rpx; border-radius: 32rpx; background: #fff; display: flex; flex-direction: column; gap: 20rpx; }
-.modal-header,.modal-actions { display: flex; align-items: center; justify-content: space-between; gap: 16rpx; }
-.modal-close { font-size: 42rpx; color: var(--ble-text-muted); }
-.modal-scroll { max-height: 52vh; }
+/* 模态壳（遮罩/面板/头部/底部）统一走 design-system.css 的 ble-modal-* */
+.modal-sheet { max-height: 78vh; display: flex; flex-direction: column; }
+.modal-scroll { max-height: 52vh; padding: 24rpx 30rpx; box-sizing: border-box; }
 .modal-textarea { width: 100%; min-height: 520rpx; padding: 20rpx; box-sizing: border-box; border-radius: 20rpx; background: rgba(96,117,141,.06); font-size: 22rpx; }
 .modal-button { flex: 1; }
 </style>

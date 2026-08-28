@@ -23,6 +23,19 @@ import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 
 const versionHistory = ref([
 	{
+		version: 'v1.0.5',
+		date: '2026-08-28',
+		updates: [
+			{ type: '修复', content: '移除多余的定位权限要求：BLE 扫描不再触发定位授权弹窗，并清理了隐私接口声明' },
+			{ type: '修复', content: '修复冷启动直接连接设备时的"适配器未初始化"失败，连接前自动完成蓝牙初始化' },
+			{ type: '修复', content: '统一蓝牙错误提示为中文说明（区分蓝牙未开启、设备未找到、连接超时等场景）' },
+			{ type: '修复', content: '修复诊断页返回后配网向导"重新下发"失效的问题（诊断页不再误断共享连接）' },
+			{ type: '优化', content: '已配置（READY）的 Smart HID 会关闭蓝牙广播，重新配置/诊断前增加操作引导' },
+			{ type: '新增', content: '新增 Smart HID 历史设备列表：配网过的设备可从首页找回，支持查看与移除' },
+			{ type: '优化', content: '服务面板显示标准 GATT 服务/特征值的中文名称（如电池服务、设备名称）' }
+		]
+	},
+	{
 		version: 'v1.0.4',
 		date: '2024-04-29',
 		updates: [
@@ -128,7 +141,7 @@ const getTypeClass = (type) => {
 // #ifdef MP-WEIXIN
 onShareAppMessage(() => {
 	return {
-		title: '智能蓝牙助手',
+		title: 'BLE Toolkit+ 蓝牙工具',
 		path: '/pages/about/version',
 		imageUrl: '/static/logo.png'
 	};
@@ -136,7 +149,7 @@ onShareAppMessage(() => {
 
 onShareTimeline(() => {
 	return {
-		title: '智能蓝牙助手',
+		title: 'BLE Toolkit+ 蓝牙工具',
 		query: '',
 		imageUrl: '/static/logo.png'
 	};
@@ -205,17 +218,17 @@ onShareTimeline(() => {
 	}
 	
 	.update-type.type-new {
-		background: linear-gradient(135deg, #34C759 0%, #30D158 100%);
+		background: linear-gradient(135deg, #17c7a8 0%, #0e9c82 100%);
 		color: #fff;
 	}
-	
+
 	.update-type.type-optimize {
-		background: linear-gradient(135deg, #007AFF 0%, #409EFF 100%);
+		background: var(--ble-gradient-brand);
 		color: #fff;
 	}
-	
+
 	.update-type.type-fix {
-		background: linear-gradient(135deg, #FF9500 0%, #FF9F0A 100%);
+		background: linear-gradient(135deg, #ff9f43 0%, #d37a12 100%);
 		color: #fff;
 	}
 	

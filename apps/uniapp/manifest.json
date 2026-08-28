@@ -2,8 +2,8 @@
     "name" : "BLE Toolkit+",
     "appid" : "__UNI__F150954",
     "description" : "蓝牙调试工具",
-    "versionName" : "1.0.4",
-    "versionCode" : "100",
+    "versionName" : "1.0.5",
+    "versionCode" : "101",
     "transformPx" : false,
     "app-plus" : {
         "usingComponents" : true,
@@ -108,12 +108,6 @@
             "urlCheck" : false
         },
         "usingComponents" : true,
-        "permission" : {
-            "scope.userLocation" : {
-                "desc" : "获取周围蓝牙设备"
-            }
-        },
-        "requiredPrivateInfos" : [ "getLocation", "onLocationChange", "startLocationUpdateBackground" ],
         "lazyCodeLoading" : "requiredComponents"
     },
     "mp-alipay" : {
