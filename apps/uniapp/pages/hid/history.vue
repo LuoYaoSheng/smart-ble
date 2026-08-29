@@ -6,6 +6,8 @@
 				image="/static/placeholders/empty_connected.png"
 				title="还没有配置过的设备"
 				description="完成一次 Smart HID 配网后，设备会记录在这里，方便查看历史配置或重新进入配置流程。"
+				action-label="去扫描"
+				@action="goScan"
 			/>
 
 			<template v-else>
@@ -68,6 +70,10 @@ const confirmRemove = (device) => {
 			if (result.confirm) hidStore.removeKnownDevice(device.deviceId);
 		}
 	});
+};
+
+const goScan = () => {
+	uni.switchTab({ url: '/pages/index/index' });
 };
 </script>
 

@@ -67,6 +67,24 @@
 
 ---
 
+## Smart HID 与多设备 Profile
+
+- **Smart HID**（第一方 Profile）：配网 / 诊断 / 历史，协议与 [Smart-HID-Workspace](https://github.com/LuoYaoSheng/Smart-HID-Workspace) 通过契约锁对齐
+- **扩展新型号**：[docs/profiles/README.md](./docs/profiles/README.md)
+- **契约锁说明**：[docs/contracts/README.md](./docs/contracts/README.md)
+
+```text
+Smart-HID-Workspace (固件/ControlHub/协议正典)
+        │ contract SHA-256 lock
+        ▼
+smart-ble (开源 BLE Toolkit+ + Profile 注册表 + 通用 GATT)
+        │ 未来：更多第一方 Profile（ESP32 演示等）
+        ▼
+真机 / 微信小程序
+```
+
+---
+
 ## 产品家族说明
 
 这个仓库当前包含多种实现：

@@ -49,7 +49,8 @@ import EmptyState from '../../components/common/empty-state.vue';
 import { useBleStore } from '../../store/ble';
 import { useHidStore } from '../../store/hid';
 import { summarizeDisconnectAllResults } from '../../services/connected-disconnect.js';
-import { buildGenericDeviceDetailUrl } from '../../services/hid-navigation.js';
+import { buildConnectedDeviceOpenUrl } from '../../services/provisioning/profile-navigation.js';
+import { smartHidService } from '../../services/smart-hid/index.js';
 
 const bleStore = useBleStore();
 const hidStore = useHidStore();
@@ -69,16 +70,20 @@ const goScan = () => {
 
 const openConnectedDevice = (device) => {
 	uni.navigateTo({
-		url: buildGenericDeviceDetailUrl(device)
+		url: buildConnectedDeviceOpenUrl(device)
 	});
 };
 
-const disconnectDeviceFromList = (device) => {
-	bleStore.disconnectConnectedDevice(device.deviceId, { remove: true })
-		.then(() => {
-			uni.showToast({ title: '已断开', icon: 'success' });
-		})
-		.catch((error) => uni.showToast({ title: error?.message || '断开失败', icon: 'none' }));
+const disconnectDeviceFromList = async (device) => {
+	try {
+		if (device.profileId === 'smart-hid' && smartHidService.getSessionState().connected) {
+			await smartHidService.disconnect();
+		}
+		await bleStore.disconnectConnectedDevice(device.deviceId, { remove: true });
+		uni.showToast({ title: '已断开', icon: 'success' });
+	} catch (error) {
+		uni.showToast({ title: error?.message || '断开失败', icon: 'none' });
+	}
 };
 
 const disconnectAllDevices = async () => {

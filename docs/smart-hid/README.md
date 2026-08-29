@@ -1,26 +1,36 @@
 # Smart HID 公开侧文档
 
-本目录持有 `smart-ble` 仓库作为**事实源（Source of Truth）**的 Smart HID 公开协议与规格。
-私有侧设计（ControlHub / Firmware / Cloud / Web）在独立的 `Smart-HID-Workspace` 工作区。
+本目录是 **smart-ble 开源仓** 内 Smart HID 的说明与 TS 镜像索引。
+
+## 协议权威来源
+
+| 层级 | 位置 |
+|---|---|
+| **语义正典** | [Smart-HID-Workspace](https://github.com/LuoYaoSheng/Smart-HID-Workspace) `protocols/contracts/smart-hid-v1.json` + `PROVISIONING_V1.md` |
+| **兼容锁** | [`core/protocols/smart-hid-contract.lock.json`](../../core/protocols/smart-hid-contract.lock.json) |
+| **可执行镜像** | [`core/protocols/hid-provisioning-protocol.ts`](../../core/protocols/hid-provisioning-protocol.ts) |
+| **Runtime Profile** | [`apps/uniapp/services/smart-hid/profile.js`](../../apps/uniapp/services/smart-hid/profile.js) |
+
+修订流程见 [docs/contracts/README.md](../contracts/README.md)。
 
 ## 文档
 
-| 文档 | 内容 | 协议事实源 |
-|------|------|-----------|
-| [BLE_PROVISIONING_PROTOCOL.md](./BLE_PROVISIONING_PROTOCOL.md) | Smart HID BLE 配网协议 V1 | [`core/protocols/hid-provisioning-protocol.ts`](../../core/protocols/hid-provisioning-protocol.ts) |
-| [MINIAPP_HID_MODULE.md](./MINIAPP_HID_MODULE.md) | BLE Toolkit+ 小程序 HID 模块页面结构 v1.2 | [`apps/uniapp/pages/hid/`](https://github.com/luoyaosheng/smart-ble/tree/main/apps/uniapp/pages/hid) |
+| 文档 | 内容 |
+|---|---|
+| [BLE_PROVISIONING_PROTOCOL.md](./BLE_PROVISIONING_PROTOCOL.md) | Smart HID BLE 配网 V1（人类可读摘要） |
+| [MINIAPP_HID_MODULE.md](./MINIAPP_HID_MODULE.md) | 小程序 HID 页面结构 |
 
-## 与代码的对应关系
+## 与 smart-ble 开源定位
 
-- **BLE 配网协议**：Markdown 是人类可读说明；TypeScript 文件 `core/protocols/hid-provisioning-protocol.ts` 是权威定义（UUID、接口、错误码、状态枚举）。两者须保持一致；修订时先改 TypeScript，再同步文档。
-- **小程序 HID 模块**：`MINIAPP_HID_MODULE.md` 描述页面结构（`pages/hid/` 4 页 + `store/hid.js` + `services/smart-hid/`），实现位于 [`apps/uniapp/`](https://github.com/luoyaosheng/smart-ble/tree/main/apps/uniapp)。
+- **smart-ble**：通用 BLE 工具（扫描 / GATT / 广播 / OTA）+ 可注册多 Profile
+- **Smart HID**：内置第一方 Profile，可拔除；专属页面在 `pages/hid/`
+- 集成架构见主仓 [integration plan](https://github.com/LuoYaoSheng/Smart-HID-Workspace/blob/main/docs/plans/2026-08-21-smart-ble-smart-hid-integration.md)
+
+添加其它设备型号：[docs/profiles/README.md](../profiles/README.md)
 
 ## 设计基线
 
-来源：`smart-hid-development-pack-v1.0`（2026-08-11）。当前结论：
-
-- 微信小程序是开源个人小程序，不做会员 / 支付 / 订单 / License。
-- Smart HID 设备当前**没有设备二维码**；通过"搜索附近 Smart HID → BLE 连接 → 读取 Device Info"识别设备。
-- 当前唯一需要二维码的是 ControlHub 动态 Pairing QR。
-- BLE 只负责配置与诊断，**不负责 HID 实时控制**（实时控制走 ControlHub → MQTT → ESP32）。
-- 小程序底部导航：`设备 | HID | 广播 | 关于`。
+- 微信小程序为开源个人工具，无会员/支付
+- Smart HID 通过扫描 + Device Info 识别；ControlHub 配对码为唯一需扫码环节
+- BLE 负责配置与诊断；HID 实时控制走 ControlHub → MQTT
+- Tab：**扫描 | 已连接 | 广播 | 关于**（Smart HID 从扫描 Profile 入口进入）

@@ -21,6 +21,24 @@ function assertFunction(value, field, profileId) {
   }
 }
 
+function normalizeModel(input, profileId) {
+  const raw = input?.model || {};
+  const routes = raw.routes || {};
+  return Object.freeze({
+    productLine: String(raw.productLine || profileId),
+    capabilities: Object.freeze(
+      Array.isArray(raw.capabilities) ? raw.capabilities.map(String) : []
+    ),
+    routes: Object.freeze({
+      detail: routes.detail ? String(routes.detail) : '',
+      provision: routes.provision ? String(routes.provision) : '',
+      diagnostics: routes.diagnostics ? String(routes.diagnostics) : '',
+      history: routes.history ? String(routes.history) : ''
+    }),
+    connectedLabel: String(raw.connectedLabel || '')
+  });
+}
+
 function normalizeAliases(values, field, profileId) {
   if (!Array.isArray(values)) {
     throw new Error(`profile ${profileId}: ${field} must be an array`);
@@ -105,6 +123,7 @@ export function defineProvisioningProfile(input) {
       actionLabel: String(input?.presentation?.actionLabel || input?.displayName || id),
       actionDescription: String(input?.presentation?.actionDescription || '')
     }),
+    model: normalizeModel(input, id),
     parseQr: input?.parseQr || null,
     verifyDeviceInfo,
     matchAdvertisement

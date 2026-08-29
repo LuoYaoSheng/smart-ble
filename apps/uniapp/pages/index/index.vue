@@ -17,7 +17,10 @@
 			<view v-if="knownDevices.length" class="known-devices-panel ble-card">
 				<view class="results-header">
 					<view class="ble-section-meta"><text class="ble-section-title">已配置 Smart HID</text><text class="ble-section-caption">本机保存的非敏感历史记录，不代表设备当前在线。</text></view>
-					<text class="known-count">{{ knownDevices.length }} 台</text>
+					<view class="known-header-actions">
+						<text class="known-count">{{ knownDevices.length }} 台</text>
+						<button class="ble-btn ble-btn--ghost ble-btn--sm" @click="openHidHistory">全部历史</button>
+					</view>
 				</view>
 				<view v-for="device in knownDevices" :key="device.deviceId" class="known-device-row">
 					<view class="known-device-copy"><text class="known-device-name">{{ device.name || 'Smart HID' }}</text><text class="known-device-meta ble-mono">{{ device.deviceId }}</text></view>
@@ -70,7 +73,7 @@ import ScanSummary from '../../components/scan/scan-summary.vue';
 import AdvertisementDialog from '../../components/scan/advertisement-dialog.vue';
 import { useHidStore } from '../../store/hid';
 import { useBleScan } from '../../composables/use-ble-scan.js';
-import { buildHidDetailUrl, buildGenericDeviceDetailUrl } from '../../services/hid-navigation.js';
+import { buildHidDetailUrl, buildGenericDeviceDetailUrl, buildHidHistoryUrl, buildProfileActionUrl } from '../../services/provisioning/profile-navigation.js';
 
 const hidStore = useHidStore();
 const knownDevices = hidStore.knownDevices;
@@ -101,13 +104,19 @@ const connectDevice = async (device) => {
 
 const openProfileDevice = async (device) => {
 	await prepareConnect();
-	hidStore.setCurrentDevice(device);
-	uni.navigateTo({ url: `/pages/hid/add?deviceId=${encodeURIComponent(device.deviceId)}` });
+	if (device.profileId === 'smart-hid') {
+		hidStore.setCurrentDevice(device);
+	}
+	uni.navigateTo({ url: buildProfileActionUrl(device.profileId, device) });
 };
 
 const openKnownHidDevice = (device) => {
 	hidStore.setCurrentDevice(device);
 	uni.navigateTo({ url: buildHidDetailUrl(device.deviceId) });
+};
+
+const openHidHistory = () => {
+	uni.navigateTo({ url: buildHidHistoryUrl() });
 };
 
 const removeKnownHidDevice = (device) => {
@@ -162,6 +171,7 @@ const copyAdvData = (content) => {
 .filter-toggle { flex-shrink: 0; font-size: 23rpx; font-weight: 700; color: var(--ble-brand); }
 .inline-filter { margin-bottom: 18rpx; }
 .known-devices-panel { padding: 24rpx; }
+.known-header-actions { display: flex; flex-shrink: 0; align-items: center; gap: 12rpx; }
 .known-count { flex-shrink: 0; color: var(--ble-brand); font-size: 22rpx; font-weight: 700; }
 .known-device-row { display: flex; align-items: center; justify-content: space-between; gap: 16rpx; padding: 18rpx 0; border-top: 1rpx solid var(--ble-line-soft); }
 .known-device-copy { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 6rpx; }

@@ -7,7 +7,7 @@
 			<view class="device-info">
 				<view class="name-container">
 					<text class="device-name">{{ device.name || '未知设备' }}</text>
-					<text class="device-type" :class="{ profile: device.profileId }">{{ isConnectionTab ? '连接中' : device.profileBadge || device.profileName || getDeviceType(device.name) }}</text>
+					<text class="device-type" :class="{ profile: device.profileId }">{{ connectionTabLabel }}</text>
 				</view>
 				<text class="device-id ble-mono">{{ formatDeviceId(device.deviceId) }}</text>
 				<text class="device-meta">{{ deviceMeta }}</text>
@@ -56,6 +56,7 @@
 
 <script setup>
 import { computed } from 'vue';
+import { getProfile } from '../../services/provisioning/profiles.js';
 
 const props = defineProps({
 	device: { type: Object, required: true },
@@ -69,8 +70,26 @@ const onActionClick = () => emit('action', props.device);
 const onGenericClick = () => emit('generic', props.device);
 const onProfileClick = () => emit('profile', props.device);
 
+const connectionTabLabel = computed(() => {
+	if (!props.isConnectionTab) {
+		return props.device.profileBadge || props.device.profileName || getDeviceType(props.device.name);
+	}
+	if (props.device.profileId) {
+		const profile = getProfile(props.device.profileId);
+		return profile?.model?.connectedLabel || profile?.presentation?.badge || 'Profile';
+	}
+	return '通用 GATT';
+});
+
 const deviceMeta = computed(() => {
-	if (props.isConnectionTab) return '点击查看服务、特征值和通信日志';
+	if (props.isConnectionTab) {
+		if (props.device.profileId === 'smart-hid') return '点击查看 Smart HID 详情、诊断与高级 BLE';
+		if (props.device.profileId) {
+			const profile = getProfile(props.device.profileId);
+			return profile?.presentation?.actionDescription || '点击查看设备详情与 GATT 操作';
+		}
+		return '点击查看服务、特征值和通信日志';
+	}
 	if (props.device.profileId) return props.device.profileMatch >= 2
 		? `${props.device.profileActionDescription || '已匹配专属 Profile'}。`
 		: `可能支持${props.device.profileActionLabel || props.device.profileName}，进入后先连接确认身份。`;

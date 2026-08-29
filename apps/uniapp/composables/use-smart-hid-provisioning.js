@@ -29,6 +29,7 @@ export function useSmartHidProvisioning() {
   const hidStore = useHidStore();
   const bleStore = useBleStore();
   let disposed = false;
+  let keepSessionOnDispose = false;
   const phase = ref('connect');
   const connecting = ref(false);
   const connectionError = ref('');
@@ -210,6 +211,10 @@ export function useSmartHidProvisioning() {
   const cancelWaiting = () => {
     if (!provisioning.value) return;
     smartHidService.cancelProvisionWait('用户已取消等待');
+    provisioning.value = false;
+    phase.value = 'configure';
+    resetResult();
+    uni.showToast({ title: '已取消等待', icon: 'none' });
   };
 
   const confirmLeaveIfNeeded = () => new Promise((resolve) => {
@@ -258,13 +263,15 @@ export function useSmartHidProvisioning() {
     }
     // retry（重新下发）：BLE 会话可能已被设备断开，先重连，避免无限失败循环
     if (!smartHidService.isConnected()) {
+      resetResult();
       await connectDevice();
-      if (phase.value !== 'configure') return; // 重连失败：停留在连接阶段展示错误
+      if (phase.value !== 'configure') return;
     }
     provision();
   };
 
   const goDetail = () => {
+    keepSessionOnDispose = true;
     uni.redirectTo({ url: `/pages/hid/detail?deviceId=${encodeURIComponent(currentDevice.value?.deviceId || '')}` });
   };
 
@@ -283,7 +290,10 @@ export function useSmartHidProvisioning() {
     }
     wifiPassword.value = '';
     hidStore.endProvisionSession();
-    smartHidService.disconnect().catch(() => {});
+    if (!keepSessionOnDispose) {
+      smartHidService.disconnect().catch(() => {});
+    }
+    keepSessionOnDispose = false;
   };
 
   return {

@@ -73,8 +73,12 @@ export const useBleStore = defineStore('ble', () => {
         name: device.name || '未知设备',
         RSSI: device.RSSI || 0,
         isConnected: false,
-        services: []
+        services: [],
+        profileId: device.profileId || ''
       };
+    } else if (device.profileId) {
+      connectedDevicesMap[device.deviceId].profileId = device.profileId;
+      if (device.name) connectedDevicesMap[device.deviceId].name = device.name;
     }
     return connectedDevicesMap[device.deviceId];
   };

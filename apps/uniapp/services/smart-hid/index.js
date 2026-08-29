@@ -3,23 +3,27 @@
  *
  * 本文件只承载 Smart HID 的会话、状态和业务流程；通用 BLE 生命周期、全局
  * callback、GATT 原语由 services/ble-runtime 与 provisioning/transport 负责。
+ * 连接/写 candidate 走通用 orchestrator，便于后续多型号复用。
  */
 
 import { watch } from 'vue';
 import { useBleStore } from '../../store/ble';
 import { useHidStore } from '../../store/hid';
 import { logger } from '../../../../core/ble-core/utils/logger';
-import { chunkSizeForMtu, buildFrames, utf8Decode } from '../../../../core/ble-core/provisioning/framing.js';
+import { utf8Decode } from '../../../../core/ble-core/provisioning/framing.js';
 import {
-  connect as gattConnect,
   readChar,
   subscribe,
-  unsubscribe,
-  writeFrames
+  unsubscribe
 } from '../provisioning/transport.js';
+import {
+  connectProfileSession,
+  runProvisionTransaction,
+  writeProfileCandidate
+} from '../provisioning/orchestrator.js';
 import { getProfile, matchScannedDevices } from '../provisioning/profiles.js';
 import { SMART_HID_PROFILE_ID } from './profile.js';
-import { createSmartHidStatusWaiters, runSmartHidProvisionTransaction } from './workflow.js';
+import { createSmartHidStatusWaiters } from './workflow.js';
 
 let session = null;
 let onStatusCb = null;
@@ -32,6 +36,54 @@ export function onSessionDisconnect(callback) {
   if (typeof callback !== 'function') throw new Error('disconnect listener must be a function');
   sessionDisconnectListeners.add(callback);
   return () => sessionDisconnectListeners.delete(callback);
+}
+
+function releaseSessionCallbacks() {
+  if (onStatusCb) {
+    unsubscribe(onStatusCb);
+    onStatusCb = null;
+  }
+  if (onInfoCb) {
+    unsubscribe(onInfoCb);
+    onInfoCb = null;
+  }
+}
+
+function bindSmartHidConnectedStore(deviceId, connectedSession, info = null) {
+  const bleStore = useBleStore();
+  const hidStore = useHidStore();
+  const current = hidStore.currentDevice || {};
+  bleStore.bindConnectedSession({
+    deviceId,
+    name: current.name || info?.device_id || 'Smart HID',
+    RSSI: current.RSSI ?? 0,
+    profileId: SMART_HID_PROFILE_ID
+  }, connectedSession, connectedSession.services || []);
+  hidStore.setSessionOnline?.(true);
+}
+
+function notifyPassiveDisconnect(reason) {
+  for (const callback of [...sessionDisconnectListeners]) {
+    try {
+      callback(reason);
+    } catch (error) {
+      console.error('[SmartHID] session disconnect listener failed', error);
+    }
+  }
+}
+
+function handleSessionDisconnect(connected, reason = 'BLE 连接已断开') {
+  if (session !== connected) return;
+  session = null;
+  releaseSessionCallbacks();
+  statusWaiters.failAll(reason);
+  const hidStore = useHidStore();
+  hidStore.setLastError({ code: 'ble_disconnected', message: reason });
+  hidStore.setSessionOnline?.(false);
+  if (connected?.deviceId) {
+    useBleStore().updateDeviceConnectionStatus(connected.deviceId, false);
+  }
+  notifyPassiveDisconnect(reason);
 }
 
 function profile() {
@@ -87,7 +139,6 @@ export async function scanSmartHid() {
     const result = await bleStore.startScan(5000, 'smart-hid');
     if (!result?.ok) throw result?.error || new Error('Smart HID 扫描失败');
     refresh();
-    refresh();
     logger.info(`[SmartHID] scanSmartHid done, found ${hidStore.smartDevices.length}`);
     return hidStore.smartDevices;
   } finally {
@@ -97,7 +148,6 @@ export async function scanSmartHid() {
 
 /** 建立 Smart HID GATT 会话、订阅 info/status，并确认 Device Info 身份。 */
 export async function connect(deviceId) {
-  const hidStore = useHidStore();
   const selectedProfile = profile();
   logger.info(`[SmartHID] connect ${deviceId}`);
 
@@ -106,7 +156,7 @@ export async function connect(deviceId) {
       try {
         const info = await getDeviceInfo();
         if (!selectedProfile.verifyDeviceInfo(info)) throw new Error('目标设备不是兼容的 Smart HID Profile');
-        hidStore.setSessionOnline(true);
+        bindSmartHidConnectedStore(deviceId, session, info);
         return { deviceId, info };
       } catch (error) {
         await disconnect().catch(() => {});
@@ -116,12 +166,7 @@ export async function connect(deviceId) {
     await disconnect();
   }
 
-  const connected = await gattConnect(deviceId, {
-    serviceUuid: selectedProfile.serviceUuid,
-    characteristicUuids: selectedProfile.required.map((alias) => selectedProfile.characteristics[alias]),
-    mtu: selectedProfile.mtu,
-    notifyUuids: selectedProfile.notify
-  });
+  const connected = await connectProfileSession(deviceId, selectedProfile);
   session = connected;
 
   try {
@@ -132,26 +177,13 @@ export async function connect(deviceId) {
     await subscribe(connected, characteristic('STATUS'), onStatusCb);
     await subscribe(connected, characteristic('INFO'), onInfoCb);
 
-    connected.onDisconnect(() => {
-      if (session !== connected) return;
-      session = null;
-      statusWaiters.failAll('BLE 连接已断开');
-      hidStore.setLastError({ code: 'ble_disconnected', message: 'BLE 连接已断开' });
-      hidStore.setSessionOnline(false);
-      for (const callback of [...sessionDisconnectListeners]) {
-        try {
-          callback('BLE 连接已断开');
-        } catch (error) {
-          console.error('[SmartHID] session disconnect listener failed', error);
-        }
-      }
-    });
+    connected.onDisconnect(() => handleSessionDisconnect(connected));
 
     const info = await getDeviceInfo();
     if (!selectedProfile.verifyDeviceInfo(info)) {
       throw new Error('目标设备不是兼容的 Smart HID Profile，已断开连接');
     }
-    hidStore.setSessionOnline(true);
+    bindSmartHidConnectedStore(deviceId, connected, info);
     return { deviceId, info };
   } catch (error) {
     if (session === connected) await disconnect().catch(() => {});
@@ -179,32 +211,18 @@ export async function provisionCandidate(input, options = {}) {
   const hidStore = useHidStore();
   if (!session || session.dead) throw new Error('BLE 未连接');
 
-  const bytes = profile().codec.buildCandidate(input);
-  const frames = buildFrames(bytes, chunkSizeForMtu(session.mtu));
   hidStore.setLastError(null);
-  logger.info(`[SmartHID] provision candidate ${bytes.length}B → ${frames.length} 帧 (mtu=${session.mtu})`);
-  const resultWaiter = options.beforeWrite?.();
-
   try {
-    await writeFrames(session, characteristic('INPUT'), frames);
+    const result = await writeProfileCandidate(session, profile(), input, {
+      beforeWrite: options.beforeWrite,
+      onEncryptRetry: () => logger.warn('[SmartHID] 加密写失败，等待系统配对后重试')
+    });
+    logger.info(`[SmartHID] provision candidate ${result.bytes}B → ${result.frames} 帧 (mtu=${session.mtu}, framing=${result.framing})`);
+    return result;
   } catch (error) {
-    if (error?.kind === 'encrypt') {
-      logger.warn('[SmartHID] 加密写失败，等待系统配对后重试');
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      try {
-        await writeFrames(session, characteristic('INPUT'), frames);
-      } catch (retryError) {
-        hidStore.setLastError({ code: retryError?.kind || 'write_failed', message: retryError?.tip || retryError?.message });
-        resultWaiter?.cancel?.(retryError?.message || '候选写入失败');
-        throw retryError;
-      }
-    } else {
-      hidStore.setLastError({ code: error?.kind || 'write_failed', message: error?.tip || error?.message });
-      resultWaiter?.cancel?.(error?.message || '候选写入失败');
-      throw error;
-    }
+    hidStore.setLastError({ code: error?.kind || 'write_failed', message: error?.tip || error?.message });
+    throw error;
   }
-  return { ok: true, frames: frames.length, bytes: bytes.length };
 }
 
 /** 必须在 provisionCandidate 前调用，避免设备快速 status 在 waiter 建立前丢失。 */
@@ -219,7 +237,7 @@ export function waitForProvisionResult(timeoutMs = 60000) {
 }
 
 export function provisionAndWait(input, timeoutMs = 60000) {
-  return runSmartHidProvisionTransaction({
+  return runProvisionTransaction({
     createWaiter: () => waitForProvisionResult(timeoutMs),
     writeCandidate: (waiter) => provisionCandidate(input, { beforeWrite: () => waiter })
   });
@@ -238,6 +256,11 @@ export function getSessionState() {
     connected: Boolean(session && !session.dead),
     deviceId: session && !session.dead ? session.deviceId : ''
   };
+}
+
+/** 供 UI 判断当前 Smart HID GATT 是否仍可用（重试下发前是否需要重连）。 */
+export function isConnected() {
+  return getSessionState().connected;
 }
 
 /** Smart HID 专属诊断映射；通用 Runtime 只提供连接与读写能力。 */
@@ -280,20 +303,16 @@ export function cancelProvisionWait(reason = '用户已取消等待') {
 }
 
 export async function disconnect() {
-  useHidStore().setSessionOnline(false);
-  if (onStatusCb) {
-    unsubscribe(onStatusCb);
-    onStatusCb = null;
-  }
-  if (onInfoCb) {
-    unsubscribe(onInfoCb);
-    onInfoCb = null;
-  }
+  statusWaiters.failAll('BLE 已主动断开');
+  releaseSessionCallbacks();
+  useHidStore().setSessionOnline?.(false);
   if (session) {
     const active = session;
+    const deviceId = active.deviceId;
     session = null;
     await active.close();
     logger.info('[SmartHID] disconnected');
+    if (deviceId) useBleStore().updateDeviceConnectionStatus(deviceId, false);
   }
 }
 
@@ -308,6 +327,7 @@ export const smartHidService = {
   cancelProvisionWait,
   getStatus,
   getSessionState,
+  isConnected,
   diagnose,
   onSessionDisconnect,
   disconnect,

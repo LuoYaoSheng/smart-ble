@@ -1,6 +1,9 @@
 /** Smart HID Provision Status 的业务解释；不进入通用 BLE Runtime。 */
 
 import { PROVISIONING_ERROR_HINTS } from '../../../../core/protocols/hid-provisioning-protocol.ts';
+import { runProvisionTransaction } from '../provisioning/orchestrator.js';
+
+export { runProvisionTransaction as runSmartHidProvisionTransaction };
 
 export function classifySmartHidStatus(status) {
   if (!status?.state) return { phase: 'unknown', terminal: false };
@@ -95,16 +98,4 @@ export function createSmartHidStatusWaiters(options = {}) {
       return waiters.size;
     }
   };
-}
-
-export async function runSmartHidProvisionTransaction({ createWaiter, writeCandidate }) {
-  const waiter = createWaiter();
-  try {
-    await writeCandidate(waiter);
-    return await waiter;
-  } catch (error) {
-    waiter?.cancel?.(error?.message || '候选写入失败');
-    await waiter?.catch?.(() => {});
-    throw error;
-  }
 }

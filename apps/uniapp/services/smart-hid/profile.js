@@ -32,6 +32,17 @@ export const smartHidProfile = {
     actionLabel: 'Smart HID 配网',
     actionDescription: '配置 Wi-Fi 与 ControlHub 地址'
   },
+  model: {
+    productLine: 'smart-hid',
+    capabilities: ['provisioning', 'diagnostics', 'gatt-debug'],
+    connectedLabel: 'Smart HID',
+    routes: {
+      detail: '/pages/hid/detail',
+      provision: '/pages/hid/add',
+      diagnostics: '/pages/hid/diagnostics',
+      history: '/pages/hid/history'
+    }
+  },
   parseQr: parsePairingQrPayload,
   matchAdvertisement(device) {
     const advertised = (device?.advertisServiceUUIDs || []).map((uuid) => String(uuid).toLowerCase());

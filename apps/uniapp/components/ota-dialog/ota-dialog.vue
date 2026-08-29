@@ -23,7 +23,7 @@
       </view>
 
       <view class="ota-footer">
-        <button class="ble-btn ble-btn--ghost ble-btn--lg ble-btn--block" :class="{ 'ble-btn--busy': isTransmitting && progressPercent < 100 }" @click="cancel" :disabled="isTransmitting && progressPercent < 100">取消</button>
+        <button class="ble-btn ble-btn--ghost ble-btn--lg ble-btn--block" :class="{ 'ble-btn--busy': isTransmitting }" @click="cancel">取消</button>
         <button class="ble-btn ble-btn--primary ble-btn--lg ble-btn--block" :class="{ 'ble-btn--disabled': !fileBuffer, 'ble-btn--busy': isTransmitting }" @click="startOta" :disabled="!fileBuffer || isTransmitting">开始升级</button>
       </view>
     </view>

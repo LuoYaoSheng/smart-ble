@@ -82,9 +82,17 @@ assert.match(deviceDetailPage, /manualRetryConnection/);
 assert.match(deviceDetailPage, /useDeviceSession/);
 assert.equal(/JSON\.stringify\(device\)/.test(deviceDetailPage), false, 'device detail must not embed full device JSON routes');
 
+const smartHidSource = fs.readFileSync(path.join(uniappRoot, 'services/smart-hid/profile.js'), 'utf8');
+assert.match(smartHidSource, /model:\s*\{/);
+assert.match(smartHidSource, /routes:\s*\{/);
+
+const builtinsSource = fs.readFileSync(path.join(uniappRoot, 'services/provisioning/builtins.js'), 'utf8');
+assert.match(builtinsSource, /esp32DemoProfile/);
+
 const indexPage = fs.readFileSync(path.join(uniappRoot, 'pages/index/index.vue'), 'utf8');
 assert.match(indexPage, /buildGenericDeviceDetailUrl/);
 assert.match(indexPage, /pruneKnownDevices/);
+assert.match(indexPage, /buildProfileActionUrl|buildHidHistoryUrl|openHidHistory/);
 
 const hidAddPage = fs.readFileSync(path.join(uniappRoot, 'pages/hid/add.vue'), 'utf8');
 assert.match(hidAddPage, /取消等待/);
