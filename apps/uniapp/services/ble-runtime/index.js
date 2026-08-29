@@ -6,6 +6,7 @@
  */
 
 import { getBlePlatform, resetBlePlatformForTesting, setBlePlatformForTesting as setPlatform } from './platform.js';
+import { normalizeBleError } from './errors.js';
 
 const state = {
   platform: null,
@@ -175,7 +176,11 @@ function indexServices(services) {
 
 async function createDeviceSession(deviceId, options) {
   const platform = ensureCallbacks();
-  await call(platform, 'createBLEConnection', { deviceId, timeout: options.timeout || 10000 });
+  try {
+    await call(platform, 'createBLEConnection', { deviceId, timeout: options.timeout || 10000 });
+  } catch (error) {
+    throw normalizeBleError(error, 'BLE 连接失败');
+  }
   let services = [];
   const expectedServiceUuid = normalize(options.expectedServiceUuid);
   try {
@@ -279,7 +284,7 @@ export async function openAdapter() {
     return await call(ensureCallbacks(), 'openBluetoothAdapter');
   } catch (error) {
     if (isAlreadyOpenedError(error)) return { alreadyOpened: true };
-    throw error;
+    throw normalizeBleError(error, '蓝牙适配器初始化失败');
   }
 }
 

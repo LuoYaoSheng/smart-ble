@@ -224,7 +224,7 @@ export function useSmartHidProvisioning() {
     retry: '重新下发'
   }[recoveryAction.value] || '重试'));
 
-  const runRecovery = () => {
+  const runRecovery = async () => {
     if (recoveryAction.value === 'diagnostics') {
       uni.navigateTo({ url: `/pages/hid/diagnostics?deviceId=${encodeURIComponent(currentDevice.value?.deviceId || '')}` });
       return;
@@ -240,6 +240,11 @@ export function useSmartHidProvisioning() {
       phase.value = 'configure';
       resetResult();
       return;
+    }
+    // retry（重新下发）：BLE 会话可能已被设备断开，先重连，避免无限失败循环
+    if (!smartHidService.isConnected()) {
+      await connectDevice();
+      if (phase.value !== 'configure') return; // 重连失败：停留在连接阶段展示错误
     }
     provision();
   };

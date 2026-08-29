@@ -23,7 +23,7 @@
 			<view v-for="(service, sIndex) in localServices" :key="service.uuid || sIndex" class="service-item">
 				<view class="service-header" @click="toggleService(sIndex)">
 					<view class="service-info">
-						<text class="service-name">服务 {{ sIndex + 1 }}</text>
+						<text class="service-name">{{ service.name || ('服务 ' + (sIndex + 1)) }}</text>
 						<text class="service-uuid ble-mono">{{ service.uuid }}</text>
 					</view>
 					<view class="service-toggle">

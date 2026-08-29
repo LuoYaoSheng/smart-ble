@@ -1,6 +1,6 @@
 export const PRODUCT_INFO = {
   name: 'BLE Toolkit+',
-  versionFallback: '1.0.4',
+  versionFallback: '1.0.5',
   summary: '跨平台 BLE 工具，统一设备发现、连接、GATT 操作、广播与第一方 Profile 扩展。',
   website: 'https://lightble.i2kai.com/',
   feedback: 'https://gitee.com/luoyaosheng/smart-ble/issues'

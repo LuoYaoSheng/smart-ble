@@ -13,13 +13,7 @@
 </script>
 
 <style>
-	/* 引入自动生成的主题色彩体系 (Design Tokens) */
-	@import url('./app_theme.css');
+	/* design-system.css 的 --ble-* 是小程序侧唯一 token 来源；
+	   app_theme.css 为跨平台生成产物（Electron/Tauri 同源），小程序不消费其通用 token */
 	@import url('./styles/design-system.css');
-
-	/*每个页面公共css */
-	page {
-		background-color: var(--background);
-		color: var(--text-primary);
-	}
 </style>

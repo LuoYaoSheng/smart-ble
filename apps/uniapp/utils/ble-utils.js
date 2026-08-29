@@ -43,14 +43,14 @@ export const getShortUUID = (uuid) => {
     return formattedUUID;
 };
 
-// 获取服务名称
+// 获取服务名称；未收录的标准服务返回空字符串，由调用方 fallback（如"服务 1"）
 export const getServiceName = (uuid) => {
     const shortUUID = getShortUUID(uuid);
-    return BLE_SERVICES[shortUUID] || '未知服务';
+    return BLE_SERVICES[shortUUID] || '';
 };
 
-// 获取特征值名称
+// 获取特征值名称；未收录时返回空字符串，由调用方 fallback（如"特征值 2"）
 export const getCharacteristicName = (uuid) => {
     const shortUUID = getShortUUID(uuid);
-    return BLE_CHARACTERISTICS[shortUUID] || '未知特征值';
+    return BLE_CHARACTERISTICS[shortUUID] || '';
 }; 
