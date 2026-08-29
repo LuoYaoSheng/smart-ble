@@ -64,6 +64,15 @@ export function useBleScan() {
     checkBluetoothState();
     if (!result?.ok) {
       await showScanStartError(result.error);
+      return result;
+    }
+    // 只在到点自动结束时播报终态；用户主动停止/连接前停止不额外打扰（P001-I01）
+    if (result.reason === 'timeout') {
+      const count = store.scannedDevices.length;
+      uni.showToast({
+        title: count > 0 ? `扫描完成 · 发现 ${count} 台` : '扫描完成 · 未发现设备',
+        icon: 'none'
+      });
     }
     return result;
   };

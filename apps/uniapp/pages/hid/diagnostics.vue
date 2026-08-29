@@ -22,6 +22,8 @@
 					<button class="ble-btn ble-btn--secondary ble-btn--lg ble-btn--block" @click="toggleAdvanced">
 						{{ showAdvanced ? '隐藏错误码' : '显示错误码（详细信息）' }}
 					</button>
+					<button class="ble-btn ble-btn--secondary ble-btn--lg ble-btn--block" @click="goDeviceDetail">返回设备详情</button>
+					<button class="ble-btn ble-btn--secondary ble-btn--lg ble-btn--block" @click="reconfigure">重新配网</button>
 				</view>
 
 				<view v-if="showAdvanced && lastError" class="error-detail">
@@ -39,6 +41,7 @@ import { ref, computed } from 'vue';
 import { onLoad, onUnload } from '@dcloudio/uni-app';
 import { useHidStore } from '../../store/hid';
 import { smartHidService } from '../../services/smart-hid/index.js';
+import { buildHidDetailUrl, buildHidProvisionUrl } from '../../services/hid-navigation.js';
 
 const hidStore = useHidStore();
 const deviceId = ref('');
@@ -125,6 +128,38 @@ const refresh = async () => {
 };
 
 const toggleAdvanced = () => { showAdvanced.value = !showAdvanced.value; };
+
+// 页面栈感知导航：向导/详情页已在栈中时回退复用，避免叠加新页面实例
+const stackHas = (route) => {
+	const stack = typeof getCurrentPages === 'function' ? getCurrentPages() : [];
+	return stack.some((page) => String(page?.route || '').includes(route));
+};
+
+const goDeviceDetail = () => {
+	if (!deviceId.value) return;
+	if (stackHas('pages/hid/detail')) {
+		uni.navigateBack();
+		return;
+	}
+	uni.navigateTo({ url: buildHidDetailUrl(deviceId.value) });
+};
+
+const reconfigure = () => {
+	uni.showModal({
+		title: '重新配网',
+		content: '已完成配置（READY）的设备会关闭蓝牙广播。请先让设备进入配网/恢复模式（参考设备说明书），确认后再继续。',
+		confirmText: '已进入配网模式',
+		cancelText: '取消',
+		success: (result) => {
+			if (!result.confirm || !deviceId.value) return;
+			if (stackHas('pages/hid/add')) {
+				uni.navigateBack();
+				return;
+			}
+			uni.navigateTo({ url: buildHidProvisionUrl(deviceId.value) });
+		}
+	});
+};
 </script>
 
 <style>

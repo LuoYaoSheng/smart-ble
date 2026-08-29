@@ -36,6 +36,7 @@ export const useHidStore = defineStore('hid', () => {
 	const smartDevices = ref([]);
 	const currentDevice = ref(null);
 	const provisionSession = ref({ active: false, startedAt: null });
+	const sessionOnline = ref(false);         // Smart HID BLE 会话在线标志（service 层写入，首页计数消费）
 	const hubInfo = ref(null);
 	const provisionStatus = ref(null);
 	const progress = ref({ wifi: 'pending', hub: 'pending', conn: 'pending', usb: 'pending' });
@@ -163,10 +164,15 @@ export const useHidStore = defineStore('hid', () => {
 		hubInfo.value = null;
 	};
 
+	const setSessionOnline = (online) => {
+		sessionOnline.value = Boolean(online);
+	};
+
 	return {
 		smartDevices,
 		currentDevice,
 		provisionSession,
+		sessionOnline,
 		hubInfo,
 		provisionStatus,
 		progress,
@@ -187,6 +193,7 @@ export const useHidStore = defineStore('hid', () => {
 		removeKnownDevice,
 		pruneKnownDevices,
 		startProvisionSession,
-		endProvisionSession
+		endProvisionSession,
+		setSessionOnline
 	};
 });

@@ -1,5 +1,6 @@
 import { computed, ref } from 'vue';
 import { useHidStore } from '../store/hid';
+import { useBleStore } from '../store/ble';
 import { smartHidService } from '../services/smart-hid/index.js';
 import {
   buildProvisionFormCandidate,
@@ -26,10 +27,12 @@ const PROGRESS_LABELS = {
 
 export function useSmartHidProvisioning() {
   const hidStore = useHidStore();
+  const bleStore = useBleStore();
   let disposed = false;
   const phase = ref('connect');
   const connecting = ref(false);
   const connectionError = ref('');
+  const connectionLost = ref(false);
   const deviceInfoSummary = ref('');
   const wifiSsid = ref('');
   const wifiPassword = ref('');
@@ -82,6 +85,8 @@ export function useSmartHidProvisioning() {
         ? `${info.device_id} · fw ${info.firmware} · ${info.state}`
         : deviceId;
       phase.value = 'configure';
+      connectionLost.value = false;
+      bleStore.updateDeviceConnectionStatus(deviceId, true);
     } catch (error) {
       if (disposed) return;
       connectionError.value = error?.message || '连接失败，请靠近设备后重试。';
@@ -90,9 +95,19 @@ export function useSmartHidProvisioning() {
     }
   };
 
+  // configure 阶段断开此前无任何界面反馈（审计 P002-I02）：把会话断开即时推给向导 UI，
+  // 同时同步首页扫描列表的连接角标（不写入 connectedDevicesMap，避免通用详情页误关配网会话）。
+  const stopDisconnectWatch = smartHidService.onSessionDisconnect(() => {
+    bleStore.updateDeviceConnectionStatus(currentDevice.value?.deviceId, false);
+    if (disposed || phase.value !== 'configure') return;
+    connectionLost.value = true;
+    uni.showToast({ title: '设备连接已断开，请重新连接后再下发', icon: 'none' });
+  });
+
   const initialize = async (options = {}) => {
     disposed = false;
     hidStore.startProvisionSession();
+    connectionLost.value = false;
     let requestedId = '';
     try { requestedId = options.deviceId ? decodeURIComponent(options.deviceId) : ''; } catch { requestedId = ''; }
     const requestedDevice = hidStore.smartDevices.find((device) => device.deviceId === requestedId)
@@ -261,6 +276,8 @@ export function useSmartHidProvisioning() {
 
   const dispose = () => {
     disposed = true;
+    stopDisconnectWatch();
+    bleStore.updateDeviceConnectionStatus(currentDevice.value?.deviceId, false);
     if (provisioning.value) {
       smartHidService.cancelProvisionWait('页面已关闭');
     }
@@ -275,6 +292,7 @@ export function useSmartHidProvisioning() {
     currentStep,
     connecting,
     connectionError,
+    connectionLost,
     deviceInfoSummary,
     currentDevice,
     wifiSsid,

@@ -19,7 +19,7 @@
 							v-if="connectedDevicesList.length === 0"
 							image="/static/placeholders/empty_connected.png"
 							title="还没有连接中的设备"
-							description="先在“扫描”页找到设备并连接，这里会保留会话入口。"
+							:description="hidStore.sessionOnline ? 'Smart HID 配网连接进行中，这里列出通用调试连接。' : '先在“扫描”页找到设备并连接，这里会保留会话入口。'"
 							action-label="去扫描"
 							@action="goScan"
 						/>
@@ -47,10 +47,12 @@ import AppNavbar from '../../components/common/app-navbar.vue';
 import DeviceCard from '../../components/device-card/device-card.vue';
 import EmptyState from '../../components/common/empty-state.vue';
 import { useBleStore } from '../../store/ble';
+import { useHidStore } from '../../store/hid';
 import { summarizeDisconnectAllResults } from '../../services/connected-disconnect.js';
 import { buildGenericDeviceDetailUrl } from '../../services/hid-navigation.js';
 
 const bleStore = useBleStore();
+const hidStore = useHidStore();
 
 const connectedDevicesList = computed(() => bleStore.connectedDevicesList);
 

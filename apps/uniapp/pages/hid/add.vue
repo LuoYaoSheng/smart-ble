@@ -28,10 +28,17 @@
 
 			<view v-if="phase === 'configure'" class="panel">
 				<view class="panel-heading">
-					<view><view class="panel-kicker">设备已连接</view><text class="panel-title">填写配网信息</text></view>
-					<view class="connected-badge">已连接</view>
+					<view><view class="panel-kicker">{{ connectionLost ? '设备连接已断开' : '设备已连接' }}</view><text class="panel-title">填写配网信息</text></view>
+					<view :class="['connected-badge', { lost: connectionLost }]">{{ connectionLost ? '已断开' : '已连接' }}</view>
 				</view>
 				<text class="device-summary">{{ deviceInfoSummary }}</text>
+
+				<operation-state
+					v-if="connectionLost"
+					state="error"
+					description="设备 BLE 连接已断开。重新连接后可继续下发，已填写的配网信息不会丢失。"
+				/>
+				<button v-if="connectionLost" class="ble-btn ble-btn--primary ble-btn--lg ble-btn--block" :class="{ 'ble-btn--busy': connecting }" :disabled="connecting" @click="connectDevice">{{ connecting ? '重连中…' : '重新连接设备' }}</button>
 
 				<view class="form-group">
 					<text class="form-label">Wi-Fi 名称</text>
@@ -93,7 +100,7 @@ import OperationState from '../../components/common/operation-state.vue';
 import { useSmartHidProvisioning } from '../../composables/use-smart-hid-provisioning.js';
 
 const {
-	steps, phase, currentStep, connecting, connectionError, deviceInfoSummary,
+	steps, phase, currentStep, connecting, connectionError, connectionLost, deviceInfoSummary,
 	currentDevice, wifiSsid, wifiPassword, hubAddress, pairingReady,
 	provisioning, provisionDone, errorMessage, progressRows, canSubmit,
 	recoveryLabel, initialize, connectDevice, scanControlHubQr, provision,
@@ -121,6 +128,7 @@ onBackPress(() => {
 .panel-title { display: block; color: var(--ble-text); font-size: 38rpx; font-weight: 800; line-height: 1.2; }
 .panel-desc { color: var(--ble-text-subtle); font-size: 25rpx; line-height: 1.65; }
 .connected-badge { flex-shrink: 0; padding: 8rpx 14rpx; border-radius: 999rpx; color: #0e8f79; background: rgba(23, 199, 168, 0.16); font-size: 21rpx; font-weight: 700; }
+.connected-badge.lost { color: var(--ble-red); background: rgba(242, 85, 95, 0.12); }
 .device-card { display: flex; align-items: center; gap: 18rpx; padding: 22rpx; border-radius: var(--ble-radius-md); background: rgba(255, 255, 255, 0.84); border: 1rpx solid var(--ble-line-soft); }
 .device-mark { display: flex; align-items: center; justify-content: center; width: 82rpx; height: 82rpx; flex-shrink: 0; border-radius: 24rpx; color: #fff; background: var(--ble-gradient-brand); font-size: 23rpx; font-weight: 800; }
 .device-copy { min-width: 0; flex: 1; }

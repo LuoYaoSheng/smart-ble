@@ -25,6 +25,14 @@ let session = null;
 let onStatusCb = null;
 let onInfoCb = null;
 const statusWaiters = createSmartHidStatusWaiters();
+const sessionDisconnectListeners = new Set();
+
+/** 订阅 Smart HID BLE 会话意外断开（主动 disconnect 不触发），供向导等 UI 即时反馈。 */
+export function onSessionDisconnect(callback) {
+  if (typeof callback !== 'function') throw new Error('disconnect listener must be a function');
+  sessionDisconnectListeners.add(callback);
+  return () => sessionDisconnectListeners.delete(callback);
+}
 
 function profile() {
   const value = getProfile(SMART_HID_PROFILE_ID);
@@ -98,6 +106,7 @@ export async function connect(deviceId) {
       try {
         const info = await getDeviceInfo();
         if (!selectedProfile.verifyDeviceInfo(info)) throw new Error('目标设备不是兼容的 Smart HID Profile');
+        hidStore.setSessionOnline(true);
         return { deviceId, info };
       } catch (error) {
         await disconnect().catch(() => {});
@@ -128,12 +137,21 @@ export async function connect(deviceId) {
       session = null;
       statusWaiters.failAll('BLE 连接已断开');
       hidStore.setLastError({ code: 'ble_disconnected', message: 'BLE 连接已断开' });
+      hidStore.setSessionOnline(false);
+      for (const callback of [...sessionDisconnectListeners]) {
+        try {
+          callback('BLE 连接已断开');
+        } catch (error) {
+          console.error('[SmartHID] session disconnect listener failed', error);
+        }
+      }
     });
 
     const info = await getDeviceInfo();
     if (!selectedProfile.verifyDeviceInfo(info)) {
       throw new Error('目标设备不是兼容的 Smart HID Profile，已断开连接');
     }
+    hidStore.setSessionOnline(true);
     return { deviceId, info };
   } catch (error) {
     if (session === connected) await disconnect().catch(() => {});
@@ -260,6 +278,9 @@ export async function diagnose() {
 export function cancelProvisionWait(reason = '用户已取消等待') {
   statusWaiters.failAll(reason);
 }
+
+export async function disconnect() {
+  useHidStore().setSessionOnline(false);
   if (onStatusCb) {
     unsubscribe(onStatusCb);
     onStatusCb = null;
@@ -288,6 +309,7 @@ export const smartHidService = {
   getStatus,
   getSessionState,
   diagnose,
+  onSessionDisconnect,
   disconnect,
   parsePairingQrPayload: (text) => profile().parseQr?.(text) || null
 };

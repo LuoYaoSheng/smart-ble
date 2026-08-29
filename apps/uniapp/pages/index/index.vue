@@ -7,7 +7,7 @@
 				id="scan-summary"
 				:filtered-count="filteredDevices.length"
 				:device-count="devices.length"
-				:connected-count="connectedDevicesList.length"
+				:connected-count="connectedCount"
 				:scanning="isScanning"
 				:error="scanError"
 				@toggle="toggleScan"
@@ -60,7 +60,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { onShareAppMessage } from '@dcloudio/uni-app';
 import DeviceCard from '../../components/device-card/device-card.vue';
 import FilterPanel from '../../components/filter-panel/filter-panel.vue';
@@ -81,6 +81,9 @@ const selectedAdvertisementDevice = ref(null);
 const showFilters = ref(false);
 
 const { filterSettings, devices, filteredDevices, connectedDevices: connectedDevicesList, isScanning, scanError, bleState, start: startScan, toggle: toggleScan, prepareConnect } = useBleScan();
+
+// 已连接计数纳入 Smart HID 配网会话，避免“配网中却显示已连接 0”的口径漂移（P001-I04）
+const connectedCount = computed(() => connectedDevicesList.value.length + (hidStore.sessionOnline ? 1 : 0));
 
 // #ifdef MP-WEIXIN
 onShareAppMessage(() => ({
