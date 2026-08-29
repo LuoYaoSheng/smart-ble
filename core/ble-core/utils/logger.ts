@@ -9,9 +9,12 @@ export interface LogEntry {
 export type LogListener = (entry: LogEntry) => void;
 
 class LoggerImpl {
-    private readonly maxHistorySize = 1000;
+    private readonly maxHistorySize = 500;
+    private readonly maxDeviceHistorySize = 200;
+    private readonly maxTrackedDevices = 40;
     private history: LogEntry[] = [];
     private historyByDevice: Map<string, LogEntry[]> = new Map();
+    private deviceTouchOrder: string[] = [];
     private listeners: Set<LogListener> = new Set();
     private deviceListeners: Map<string, Set<LogListener>> = new Map();
 
@@ -28,6 +31,17 @@ class LoggerImpl {
         }
     }
 
+    private touchDevice(deviceId: string) {
+        const index = this.deviceTouchOrder.indexOf(deviceId);
+        if (index >= 0) this.deviceTouchOrder.splice(index, 1);
+        this.deviceTouchOrder.push(deviceId);
+        while (this.deviceTouchOrder.length > this.maxTrackedDevices) {
+            const oldest = this.deviceTouchOrder.shift();
+            if (!oldest) break;
+            this.historyByDevice.delete(oldest);
+        }
+    }
+
     private emit(message: string, type: LogType, deviceId?: string) {
         const entry: LogEntry = {
             message,
@@ -37,30 +51,30 @@ class LoggerImpl {
 
         this.history.unshift(entry);
         if (this.history.length > this.maxHistorySize) {
-            this.history.pop();
+            this.history.length = this.maxHistorySize;
         }
 
         if (deviceId) {
             if (!this.historyByDevice.has(deviceId)) {
                 this.historyByDevice.set(deviceId, []);
             }
+            this.touchDevice(deviceId);
             const devHistory = this.historyByDevice.get(deviceId)!;
             devHistory.unshift(entry);
-            if (devHistory.length > this.maxHistorySize) {
-                devHistory.pop();
+            if (devHistory.length > this.maxDeviceHistorySize) {
+                devHistory.length = this.maxDeviceHistorySize;
             }
             this.deviceListeners.get(deviceId)?.forEach(listener => listener(entry));
         }
 
         this.listeners.forEach(listener => listener(entry));
 
-        // Use standard console for debug printing
         const prefix = `[BLE][${type.toUpperCase()}]`;
         switch (type) {
             case 'error': console.error(`${prefix} ${message}`); break;
             case 'warning': console.warn(`${prefix} ${message}`); break;
-            case 'success': 
-            case 'info': 
+            case 'success':
+            case 'info':
             case 'receive':
             case 'send':
             default:
@@ -87,9 +101,11 @@ class LoggerImpl {
     clear(deviceId?: string) {
         if (deviceId) {
             this.historyByDevice.delete(deviceId);
+            this.deviceTouchOrder = this.deviceTouchOrder.filter((id) => id !== deviceId);
         } else {
             this.history = [];
             this.historyByDevice.clear();
+            this.deviceTouchOrder = [];
         }
     }
 }

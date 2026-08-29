@@ -13,11 +13,15 @@
   --ble-surface-strong: #ffffff;
   --ble-line: rgba(20, 76, 136, 0.1);
   --ble-line-strong: rgba(20, 76, 136, 0.16);
+  --ble-line-soft: rgba(20, 76, 136, 0.08);
+  --ble-line-faint: rgba(20, 76, 136, 0.06);
   --ble-text: #12263f;
   --ble-text-subtle: #60758d;
   --ble-text-muted: #93a2b4;
   --ble-shadow-soft: 0 18rpx 44rpx rgba(17, 43, 78, 0.08);
   --ble-shadow-brand: 0 18rpx 42rpx rgba(27, 109, 255, 0.18);
+  --ble-shadow-modal: 0 24rpx 60rpx rgba(10, 20, 35, 0.18);
+  --ble-input-bg: rgba(247, 250, 253, 0.96);
   --ble-radius-sm: 18rpx;
   --ble-radius-md: 26rpx;
   --ble-radius-lg: 34rpx;
@@ -189,7 +193,7 @@ image {
 .ble-btn--primary {
   color: #ffffff;
   background: linear-gradient(135deg, #155dff 0%, #238eff 58%, #31adf5 100%);
-  box-shadow: 0 18rpx 42rpx rgba(27, 109, 255, 0.18);
+  box-shadow: var(--ble-shadow-brand);
 }
 
 .ble-btn--secondary {
@@ -210,13 +214,16 @@ image {
   box-shadow: 0 12rpx 28rpx rgba(242, 85, 95, 0.18);
 }
 
-.ble-btn--disabled {
+.ble-btn--disabled,
+.ble-btn--busy {
   opacity: 0.54;
   box-shadow: none;
 }
 
 .ble-btn--primary.ble-btn--disabled,
-.ble-btn--danger.ble-btn--disabled {
+.ble-btn--danger.ble-btn--disabled,
+.ble-btn--primary.ble-btn--busy,
+.ble-btn--danger.ble-btn--busy {
   color: #60758d;
   background: rgba(96, 117, 141, 0.16);
 }
@@ -375,4 +382,85 @@ image {
 
 .ble-mono {
   font-family: "SF Mono", "Roboto Mono", Menlo, monospace;
+}
+
+.ble-status-line {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  color: var(--ble-text-subtle);
+  font-size: 24rpx;
+}
+
+.ble-status-dot {
+  width: 18rpx;
+  height: 18rpx;
+  border-radius: 50%;
+  background: var(--ble-text-muted);
+}
+
+.ble-status-dot.active {
+  background: var(--ble-brand);
+  box-shadow: 0 0 0 8rpx rgba(27, 109, 255, 0.1);
+}
+
+.ble-error-box {
+  padding: 20rpx 22rpx;
+  border: 1rpx solid rgba(242, 85, 95, 0.14);
+  border-radius: 22rpx;
+  color: var(--ble-red);
+  background: rgba(242, 85, 95, 0.08);
+  font-size: 24rpx;
+  line-height: 1.55;
+}
+
+.ble-success-box {
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+  padding: 22rpx;
+  border-radius: 24rpx;
+  color: #087765;
+  background: rgba(23, 199, 168, 0.12);
+}
+
+.ble-success-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 58rpx;
+  height: 58rpx;
+  flex-shrink: 0;
+  border-radius: 50%;
+  color: #fff;
+  background: #17b99b;
+  font-size: 30rpx;
+  font-weight: 800;
+}
+
+.ble-hairline-top {
+  border-top: 1rpx solid var(--ble-line-soft);
+}
+
+.ble-hairline-bottom {
+  border-bottom: 1rpx solid var(--ble-line-soft);
+}
+
+.ble-surface-item {
+  background: var(--ble-gradient-surface);
+  border: 1rpx solid var(--ble-line-soft);
+  border-radius: var(--ble-radius-md);
+  box-shadow: var(--ble-shadow-soft);
+}
+
+.ble-input {
+  box-sizing: border-box;
+  width: 100%;
+  height: 86rpx;
+  padding: 0 22rpx;
+  border: 1rpx solid var(--ble-line);
+  border-radius: 22rpx;
+  color: var(--ble-text);
+  background: var(--ble-input-bg);
+  font-size: 26rpx;
 }

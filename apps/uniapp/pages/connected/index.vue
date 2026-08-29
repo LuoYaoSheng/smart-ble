@@ -20,6 +20,8 @@
 							image="/static/placeholders/empty_connected.png"
 							title="还没有连接中的设备"
 							description="先在“扫描”页找到设备并连接，这里会保留会话入口。"
+							action-label="去扫描"
+							@action="goScan"
 						/>
 						<template v-else>
 							<device-card
@@ -45,6 +47,8 @@ import AppNavbar from '../../components/common/app-navbar.vue';
 import DeviceCard from '../../components/device-card/device-card.vue';
 import EmptyState from '../../components/common/empty-state.vue';
 import { useBleStore } from '../../store/ble';
+import { summarizeDisconnectAllResults } from '../../services/connected-disconnect.js';
+import { buildGenericDeviceDetailUrl } from '../../services/hid-navigation.js';
 
 const bleStore = useBleStore();
 
@@ -57,9 +61,13 @@ onShareAppMessage(() => ({
 }));
 // #endif
 
+const goScan = () => {
+	uni.switchTab({ url: '/pages/index/index' });
+};
+
 const openConnectedDevice = (device) => {
 	uni.navigateTo({
-		url: `/pages/device/detail?device=${encodeURIComponent(JSON.stringify(device))}`
+		url: buildGenericDeviceDetailUrl(device)
 	});
 };
 
@@ -78,20 +86,20 @@ const disconnectAllDevices = async () => {
 	const results = await Promise.allSettled(
 		devices.map((device) => bleStore.disconnectConnectedDevice(device.deviceId, { remove: true }))
 	);
-	let successCount = 0;
+	const summary = summarizeDisconnectAllResults(devices, results);
 
-	results.forEach((result, index) => {
-		if (result.status === 'fulfilled') {
-			successCount += 1;
-		}
-	});
-
-	if (successCount === devices.length) {
-		uni.showToast({ title: '已全部断开', icon: 'success' });
+	if (summary.allSucceeded) {
+		uni.showToast({ title: summary.title, icon: 'success' });
 		return;
 	}
 
-	uni.showToast({ title: `已断开 ${successCount}/${devices.length}`, icon: 'none' });
+	uni.showModal({
+		title: summary.title,
+		content: summary.failureSummary
+			? `失败设备：${summary.failureSummary}`
+			: '部分设备未能断开，请稍后重试。',
+		showCancel: false
+	});
 };
 </script>
 

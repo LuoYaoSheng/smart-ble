@@ -173,7 +173,7 @@ onShareTimeline(() => ({ title: 'BLE Toolkit+ - 开源跨平台 BLE 工具', que
 
 <style scoped>
 .container { min-height: 100vh; padding: 28rpx; background: transparent; }
-.header, .section { margin-bottom: 22rpx; border: 1rpx solid rgba(20, 76, 136, 0.08); border-radius: 32rpx; background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(242, 248, 255, 0.95)); box-shadow: 0 18rpx 40rpx rgba(17, 43, 78, 0.06); }
+.header, .section { margin-bottom: 22rpx; border: 1rpx solid var(--ble-line-soft); border-radius: var(--ble-radius-lg); background: var(--ble-gradient-surface); box-shadow: var(--ble-shadow-soft); }
 .header { display: flex; align-items: center; gap: 24rpx; padding: 30rpx; }
 .logo-box { display: flex; align-items: center; justify-content: center; width: 112rpx; height: 112rpx; flex-shrink: 0; border: 1rpx solid rgba(21, 93, 255, 0.12); border-radius: 30rpx; background: linear-gradient(135deg, rgba(21, 93, 255, 0.14), rgba(123, 224, 255, 0.18)); }
 .logo-img { width: 78rpx; height: 78rpx; }

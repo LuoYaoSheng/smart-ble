@@ -161,10 +161,10 @@ onShareTimeline(() => {
 	
 	.version-item {
 		padding: 26rpx;
-		border: 1rpx solid rgba(20, 76, 136, 0.08);
+		border: 1rpx solid var(--ble-line-soft);
 		border-radius: 28rpx;
-		background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(242,248,255,.95));
-		box-shadow: 0 14rpx 32rpx rgba(17,43,78,.05);
+		background: var(--ble-gradient-surface);
+		box-shadow: var(--ble-shadow-soft);
 	}
 	
 	.version-header {

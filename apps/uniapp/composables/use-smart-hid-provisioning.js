@@ -9,6 +9,7 @@ import {
   describeSmartHidStatus,
   smartHidRecoveryAction
 } from '../services/smart-hid/workflow.js';
+import { describeScanCodeFailure } from '../services/smart-hid/scan-code-feedback.js';
 
 const STEPS = [
   { key: 'connect', label: '连接' },
@@ -119,7 +120,19 @@ export function useSmartHidProvisioning() {
         hidStore.setHubInfo(payload);
         hubAddress.value = formatControlHubAddress(payload);
       },
-      fail: () => {}
+      fail: (error) => {
+        if (disposed) return;
+        const feedback = describeScanCodeFailure(error);
+        if (feedback.kind === 'cancel') {
+          uni.showToast({ title: feedback.title, icon: 'none' });
+          return;
+        }
+        uni.showModal({
+          title: feedback.title,
+          content: feedback.content,
+          showCancel: false
+        });
+      }
     });
   };
 
@@ -166,11 +179,43 @@ export function useSmartHidProvisioning() {
       }
     } catch (error) {
       provisioning.value = false;
+      const message = error?.message || '配网失败';
+      if (/取消|页面已关闭/.test(message)) {
+        phase.value = 'configure';
+        resetResult();
+        if (!disposed) uni.showToast({ title: '已取消等待', icon: 'none' });
+        return;
+      }
       const code = hidStore.lastError?.code || error?.kind || '';
-      errorMessage.value = error?.message || '配网失败';
+      errorMessage.value = message;
       recoveryAction.value = smartHidRecoveryAction(code);
     }
   };
+
+  const cancelWaiting = () => {
+    if (!provisioning.value) return;
+    smartHidService.cancelProvisionWait('用户已取消等待');
+  };
+
+  const confirmLeaveIfNeeded = () => new Promise((resolve) => {
+    if (!provisioning.value) {
+      resolve(true);
+      return;
+    }
+    uni.showModal({
+      title: '配网进行中',
+      content: '离开将取消等待设备状态。确定离开吗？',
+      success: (result) => {
+        if (result.confirm) {
+          cancelWaiting();
+          resolve(true);
+          return;
+        }
+        resolve(false);
+      },
+      fail: () => resolve(true)
+    });
+  });
 
   const recoveryLabel = computed(() => ({
     diagnostics: '进入诊断',
@@ -203,10 +248,17 @@ export function useSmartHidProvisioning() {
     uni.redirectTo({ url: `/pages/hid/detail?deviceId=${encodeURIComponent(currentDevice.value?.deviceId || '')}` });
   };
 
-  const goDevices = () => uni.switchTab({ url: '/pages/index/index' });
+  const goDevices = async () => {
+    const allowed = await confirmLeaveIfNeeded();
+    if (!allowed) return;
+    uni.switchTab({ url: '/pages/index/index' });
+  };
 
   const dispose = () => {
     disposed = true;
+    if (provisioning.value) {
+      smartHidService.cancelProvisionWait('页面已关闭');
+    }
     wifiPassword.value = '';
     hidStore.endProvisionSession();
     smartHidService.disconnect().catch(() => {});
@@ -234,6 +286,8 @@ export function useSmartHidProvisioning() {
     connectDevice,
     scanControlHubQr,
     provision,
+    cancelWaiting,
+    confirmLeaveIfNeeded,
     runRecovery,
     goDetail,
     goDevices,

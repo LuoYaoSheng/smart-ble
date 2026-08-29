@@ -14,9 +14,15 @@
 						<text class="device-id">{{ currentDevice.deviceId }}</text>
 					</view>
 				</view>
-				<view v-if="connecting" class="status-line"><view class="status-dot active"></view><text>连接并确认设备中…</text></view>
-				<view v-if="connectionError" class="error-box"><text>{{ connectionError }}</text></view>
-				<button v-if="connectionError && currentDevice" class="ble-btn ble-btn--primary ble-btn--lg ble-btn--block" :class="{ 'ble-btn--disabled': connecting }" :disabled="connecting" @click="connectDevice">重新连接</button>
+				<view v-if="connecting" class="status-wrap">
+					<operation-state state="loading" title="连接并确认设备中…" />
+				</view>
+				<operation-state
+					v-if="connectionError"
+					state="error"
+					:description="connectionError"
+				/>
+				<button v-if="connectionError && currentDevice" class="ble-btn ble-btn--primary ble-btn--lg ble-btn--block" :class="{ 'ble-btn--busy': connecting }" :disabled="connecting" @click="connectDevice">重新连接</button>
 				<button v-if="connectionError" class="ble-btn ble-btn--secondary ble-btn--lg ble-btn--block" @click="goDevices">返回设备列表</button>
 			</view>
 
@@ -59,11 +65,19 @@
 				<text class="panel-desc">设备会依次连接 Wi-Fi、与 ControlHub 配对并建立 MQTT 控制链路。</text>
 				<provision-progress :rows="progressRows" />
 
-				<view v-if="provisionDone" class="success-box">
-					<view class="success-icon">✓</view>
-					<view><text class="success-title">设备已就绪</text><text class="success-desc">HID 控制请通过 ControlHub 下发。</text></view>
+				<view v-if="provisionDone" class="success-wrap">
+					<operation-state
+						state="success"
+						title="设备已就绪"
+						description="HID 控制请通过 ControlHub 下发。"
+					/>
 				</view>
-				<view v-if="errorMessage" class="error-box"><text>{{ errorMessage }}</text></view>
+				<operation-state
+					v-if="errorMessage"
+					state="error"
+					:description="errorMessage"
+				/>
+				<button v-if="provisioning" class="ble-btn ble-btn--ghost ble-btn--lg ble-btn--block" @click="cancelWaiting">取消等待</button>
 				<button v-if="provisionDone" class="ble-btn ble-btn--primary ble-btn--lg ble-btn--block" @click="goDetail">查看设备</button>
 				<button v-if="errorMessage" class="ble-btn ble-btn--secondary ble-btn--lg ble-btn--block" @click="runRecovery">{{ recoveryLabel }}</button>
 			</view>
@@ -72,9 +86,10 @@
 </template>
 
 <script setup>
-import { onLoad, onUnload } from '@dcloudio/uni-app';
+import { onLoad, onUnload, onBackPress } from '@dcloudio/uni-app';
 import ProvisionStepper from '../../components/hid/provision-stepper.vue';
 import ProvisionProgress from '../../components/hid/provision-progress.vue';
+import OperationState from '../../components/common/operation-state.vue';
 import { useSmartHidProvisioning } from '../../composables/use-smart-hid-provisioning.js';
 
 const {
@@ -82,41 +97,41 @@ const {
 	currentDevice, wifiSsid, wifiPassword, hubAddress, pairingReady,
 	provisioning, provisionDone, errorMessage, progressRows, canSubmit,
 	recoveryLabel, initialize, connectDevice, scanControlHubQr, provision,
-	runRecovery, goDetail, goDevices, dispose
+	cancelWaiting, confirmLeaveIfNeeded, runRecovery, goDetail, goDevices, dispose
 } = useSmartHidProvisioning();
 
 onLoad((options) => { initialize(options); });
 onUnload(dispose);
+
+onBackPress(() => {
+	if (!provisioning.value) return false;
+	confirmLeaveIfNeeded().then((allowed) => {
+		if (allowed) uni.navigateBack();
+	});
+	return true;
+});
 </script>
 
 <style scoped>
 .container { min-height: 100vh; background: transparent; }
 .page-content { display: flex; flex-direction: column; gap: 22rpx; padding: 28rpx; }
-.panel { display: flex; flex-direction: column; gap: 20rpx; padding: 30rpx; border: 1rpx solid rgba(20, 76, 136, 0.08); border-radius: 34rpx; background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(242, 248, 255, 0.95)); box-shadow: 0 18rpx 40rpx rgba(17, 43, 78, 0.06); }
+.panel { display: flex; flex-direction: column; gap: 20rpx; padding: 30rpx; border: 1rpx solid var(--ble-line); border-radius: var(--ble-radius-lg); background: var(--ble-gradient-surface); box-shadow: var(--ble-shadow-soft); }
 .panel-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 20rpx; }
 .panel-kicker { margin-bottom: 8rpx; color: var(--ble-brand); font-size: 20rpx; font-weight: 800; letter-spacing: 2rpx; }
 .panel-title { display: block; color: var(--ble-text); font-size: 38rpx; font-weight: 800; line-height: 1.2; }
 .panel-desc { color: var(--ble-text-subtle); font-size: 25rpx; line-height: 1.65; }
 .connected-badge { flex-shrink: 0; padding: 8rpx 14rpx; border-radius: 999rpx; color: #0e8f79; background: rgba(23, 199, 168, 0.16); font-size: 21rpx; font-weight: 700; }
-.device-card { display: flex; align-items: center; gap: 18rpx; padding: 22rpx; border-radius: 26rpx; background: rgba(255, 255, 255, 0.84); border: 1rpx solid rgba(20, 76, 136, 0.08); }
+.device-card { display: flex; align-items: center; gap: 18rpx; padding: 22rpx; border-radius: var(--ble-radius-md); background: rgba(255, 255, 255, 0.84); border: 1rpx solid var(--ble-line-soft); }
 .device-mark { display: flex; align-items: center; justify-content: center; width: 82rpx; height: 82rpx; flex-shrink: 0; border-radius: 24rpx; color: #fff; background: var(--ble-gradient-brand); font-size: 23rpx; font-weight: 800; }
 .device-copy { min-width: 0; flex: 1; }
 .device-name { display: block; color: var(--ble-text); font-size: 28rpx; font-weight: 750; }
 .device-id, .device-summary { color: var(--ble-text-muted); font-family: "SF Mono", "Roboto Mono", Menlo, monospace; font-size: 21rpx; line-height: 1.5; word-break: break-all; }
 .device-id { display: block; margin-top: 6rpx; }
-.status-line { display: flex; align-items: center; gap: 12rpx; color: var(--ble-text-subtle); font-size: 24rpx; }
-.status-dot { width: 18rpx; height: 18rpx; border-radius: 50%; background: var(--ble-text-muted); }
-.status-dot.active { background: var(--ble-brand); box-shadow: 0 0 0 8rpx rgba(27, 109, 255, 0.1); }
 .form-group { display: flex; flex-direction: column; gap: 10rpx; }
 .label-row { display: flex; align-items: center; justify-content: space-between; gap: 16rpx; }
 .form-label { color: var(--ble-text); font-size: 25rpx; font-weight: 700; }
 .form-hint { color: var(--ble-text-muted); font-size: 20rpx; }
-.form-input { box-sizing: border-box; width: 100%; height: 86rpx; padding: 0 22rpx; border: 1rpx solid rgba(20, 76, 136, 0.1); border-radius: 22rpx; color: var(--ble-text); background: rgba(247, 250, 253, 0.96); font-size: 26rpx; }
+.form-input { box-sizing: border-box; width: 100%; height: 86rpx; padding: 0 22rpx; border: 1rpx solid var(--ble-line); border-radius: 22rpx; color: var(--ble-text); background: var(--ble-input-bg); font-size: 26rpx; }
 .mono { font-family: "SF Mono", "Roboto Mono", Menlo, monospace; }
 .privacy-note { color: var(--ble-text-muted); font-size: 21rpx; line-height: 1.55; }
-.error-box { padding: 20rpx 22rpx; border: 1rpx solid rgba(242, 85, 95, 0.14); border-radius: 22rpx; color: var(--ble-red); background: rgba(242, 85, 95, 0.08); font-size: 24rpx; line-height: 1.55; }
-.success-box { display: flex; align-items: center; gap: 18rpx; padding: 22rpx; border-radius: 24rpx; color: #087765; background: rgba(23, 199, 168, 0.12); }
-.success-icon { display: flex; align-items: center; justify-content: center; width: 58rpx; height: 58rpx; flex-shrink: 0; border-radius: 50%; color: #fff; background: #17b99b; font-size: 30rpx; font-weight: 800; }
-.success-title { display: block; font-size: 27rpx; font-weight: 800; }
-.success-desc { display: block; margin-top: 4rpx; font-size: 22rpx; }
 </style>

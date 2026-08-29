@@ -106,9 +106,9 @@ const getSignalLevel = (rssi) => {
 	padding: 26rpx;
 	margin-bottom: 18rpx;
 	border-radius: 30rpx;
-	background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(242, 248, 255, 0.96) 100%);
-	border: 1rpx solid rgba(20, 76, 136, 0.08);
-	box-shadow: 0 14rpx 32rpx rgba(17, 43, 78, 0.06);
+	background: var(--ble-gradient-surface);
+	border: 1rpx solid var(--ble-line-soft);
+	box-shadow: var(--ble-shadow-soft);
 }
 
 .device-main {
@@ -184,7 +184,7 @@ const getSignalLevel = (rssi) => {
 	justify-content: space-between;
 	gap: 16rpx;
 	padding-top: 18rpx;
-	border-top: 1rpx solid rgba(20, 76, 136, 0.06);
+	border-top: 1rpx solid var(--ble-line-faint);
 }
 
 .signal-box {

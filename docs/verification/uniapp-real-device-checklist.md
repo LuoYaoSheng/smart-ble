@@ -104,6 +104,44 @@ Use approved Smart HID firmware matching the canonical contract lock.
 
 Do not perform real OTA until D6 records an approved recoverable device, known-good firmware hash/version, recovery procedure, and power-loss policy. Fake transfer tests are not permission to flash hardware.
 
+### OTA confirm wait (Phase 1)
+
+- [ ] Transfer complete alone is **not** shown as success.
+- [ ] Firmware that emits JSON `{ "status": "success" }` reaches success UI only after that message.
+- [ ] Firmware without status: UI times out / fails honestly (no false success).
+- [ ] Cancel mid-transfer stops waiters and leaves a recoverable session (or clear disconnect).
+
+## Phase 1–5 regression addenda
+
+### Scan / knownDevices (Phase 1 + 3)
+
+- [ ] Configured Smart HID appears in Scan history with 查看 / 移除; token and Wi-Fi password never appear.
+- [ ] Re-entry from history opens detail/diagnostics without stale “live” when offline.
+- [ ] knownDevices: same ID keeps latest; entries older than 90 days pruned; list capped at 20.
+
+### Provision / leave (Phase 2)
+
+- [ ] Invalid QR explains failure; camera cancel leaves no token.
+- [ ] During provision wait, 取消等待 clears waiter without leaving orphaned BLE session.
+- [ ] Back / leave during wait shows confirm; confirm cancels wait and navigates safely.
+
+### Device detail / Connected (Phase 2 + 4 + 5)
+
+- [ ] Service panel always shows connecting / empty / error / retry (never blank when connected).
+- [ ] Manual retry re-runs discovery without duplicate connect storms.
+- [ ] Compact device URL (no full device JSON in query); ads restored via stash when needed.
+- [ ] Connected empty state shows 去扫描 and navigates to Scan.
+- [ ] Disconnect-all lists any failure items; successes clear from list.
+
+### Broadcast (Phase 1 + 5)
+
+- [ ] Start blocked by validation shows visible error (not silent fail).
+- [ ] Shared LogPanel clear works; hide/show still releases peripheral ownership.
+
+### Logs / memory (Phase 3)
+
+- [ ] Extended GATT/notify session does not unbounded-grow logs (caps: 200/device, 40 devices, 500 global).
+
 ## Result Record
 
 For each failure record:

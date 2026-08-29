@@ -3,16 +3,21 @@
 		<view class="panel-header">
 			<view class="title-group">
 				<text class="panel-title">服务与特征值</text>
-				<text class="panel-caption">{{ localServices.length }} 个服务，按需展开查看特征值能力。</text>
+				<text class="panel-caption">{{ headerCaption }}</text>
 			</view>
-			<text class="toggle-btn" @click="toggleAllServices">{{ showAllServices ? '全部收起' : '全部展开' }}</text>
+			<text v-if="state === 'ready'" class="toggle-btn" @click="toggleAllServices">{{ showAllServices ? '全部收起' : '全部展开' }}</text>
 		</view>
 
-		<view v-if="localServices.length === 0" class="ble-empty-card service-empty">
-			<image src="/static/placeholders/empty_services.png" class="ble-empty-image" mode="aspectFit"></image>
-			<text class="ble-empty-title">服务还没加载完成</text>
-			<text class="ble-empty-copy">建立连接并完成服务发现后，这里会展示 GATT 结构树。</text>
-		</view>
+		<operation-state
+			v-if="state !== 'ready'"
+			:state="operationState"
+			:title="emptyTitle"
+			:description="emptyDescription"
+			image="/static/placeholders/empty_services.png"
+			:action-label="showRetry ? '手动重试' : ''"
+			:action-disabled="retryDisabled"
+			@action="emit('retry')"
+		/>
 
 		<view v-else class="services-list">
 			<view v-for="(service, sIndex) in localServices" :key="service.uuid || sIndex" class="service-item">
@@ -69,21 +74,56 @@
 </template>
 
 <script setup>
-import { ref, watchEffect } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
+import { describeServicePanelState } from '../../services/device-session-ui.js';
+import OperationState from '../common/operation-state.vue';
 
 const props = defineProps({
 	services: {
 		type: Array,
-		required: true
+		default: () => []
+	},
+	state: {
+		type: String,
+		default: 'idle'
+	},
+	errorMessage: {
+		type: String,
+		default: ''
+	},
+	retryDisabled: {
+		type: Boolean,
+		default: false
 	}
 });
 
-const emit = defineEmits(['read', 'write', 'notifyToggle']);
+const emit = defineEmits(['read', 'write', 'notifyToggle', 'retry']);
 
 const localServices = ref([]);
 const showAllServices = ref(false);
 
+const emptyCopy = computed(() => describeServicePanelState(props.state, { errorMessage: props.errorMessage }));
+const emptyTitle = computed(() => emptyCopy.value.title);
+const emptyDescription = computed(() => emptyCopy.value.description);
+const showRetry = computed(() => emptyCopy.value.showRetry);
+const operationState = computed(() => {
+	if (props.state === 'connecting') return 'loading';
+	if (props.state === 'error') return 'error';
+	return 'empty';
+});
+const headerCaption = computed(() => {
+	if (props.state === 'ready') return `${localServices.value.length} 个服务，按需展开查看特征值能力。`;
+	if (props.state === 'connecting') return '正在连接并发现服务…';
+	if (props.state === 'empty') return '已连接，但服务列表为空。';
+	if (props.state === 'error') return '连接或服务发现遇到问题。';
+	return '连接成功后将展示 GATT 结构树。';
+});
+
 watchEffect(() => {
+	if (props.state !== 'ready') {
+		localServices.value = [];
+		return;
+	}
 	if (localServices.value.length === 0 && props.services.length > 0) {
 		localServices.value = props.services.map((service) => ({ ...service, isOpen: false }));
 	} else if (props.services.length > 0) {
@@ -155,6 +195,7 @@ const toggleNotify = (serviceId, charId) => emit('notifyToggle', { serviceId, ch
 
 .service-empty {
 	min-height: 360rpx;
+	gap: 16rpx;
 }
 
 .services-list {
@@ -165,9 +206,9 @@ const toggleNotify = (serviceId, charId) => emit('notifyToggle', { serviceId, ch
 
 .service-item {
 	border-radius: 28rpx;
-	background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(242, 248, 255, 0.95) 100%);
-	border: 1rpx solid rgba(20, 76, 136, 0.08);
-	box-shadow: 0 14rpx 30rpx rgba(17, 43, 78, 0.05);
+	background: var(--ble-gradient-surface);
+	border: 1rpx solid var(--ble-line-soft);
+	box-shadow: var(--ble-shadow-soft);
 	overflow: hidden;
 }
 
@@ -231,7 +272,7 @@ const toggleNotify = (serviceId, charId) => emit('notifyToggle', { serviceId, ch
 	padding: 20rpx;
 	border-radius: 22rpx;
 	background: rgba(255, 255, 255, 0.8);
-	border: 1rpx solid rgba(20, 76, 136, 0.06);
+	border: 1rpx solid var(--ble-line-faint);
 }
 
 .characteristic-info {
@@ -270,20 +311,5 @@ const toggleNotify = (serviceId, charId) => emit('notifyToggle', { serviceId, ch
 
 .prop-btn::after {
 	border: none;
-}
-
-.prop-btn.read {
-	background: rgba(23, 199, 168, 0.12);
-	color: #0e9c82;
-}
-
-.prop-btn.write {
-	background: rgba(255, 159, 67, 0.14);
-	color: #d37a12;
-}
-
-.prop-btn.notify {
-	background: rgba(27, 109, 255, 0.1);
-	color: var(--ble-brand);
 }
 </style>

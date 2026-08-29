@@ -16,7 +16,7 @@
 				</view>
 
 				<view class="actions">
-					<button class="ble-btn ble-btn--primary ble-btn--lg ble-btn--block" :class="{ 'ble-btn--disabled': connecting }" :disabled="connecting" @click="refresh">
+					<button class="ble-btn ble-btn--primary ble-btn--lg ble-btn--block" :class="{ 'ble-btn--busy': connecting }" :disabled="connecting" @click="refresh">
 						{{ connecting ? '连接中…' : '重新检测' }}
 					</button>
 					<button class="ble-btn ble-btn--secondary ble-btn--lg ble-btn--block" @click="toggleAdvanced">
@@ -130,11 +130,11 @@ const toggleAdvanced = () => { showAdvanced.value = !showAdvanced.value; };
 <style>
 .container { min-height: 100vh; background: transparent; }
 .page-content { padding: 20rpx; }
-.card { background: linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(242,248,255,.95) 100%); border-radius: 32rpx; padding: 22rpx; display: flex; flex-direction: column; gap: 14rpx; border: 1rpx solid rgba(20,76,136,.08); box-shadow: 0 18rpx 40rpx rgba(17,43,78,.06); }
-.diagnostic-status { display: flex; align-items: center; justify-content: space-between; gap: 16rpx; padding: 4rpx 0 12rpx; border-bottom: 1rpx solid rgba(20,76,136,.06); }
+.card { background: var(--ble-gradient-surface); border-radius: var(--ble-radius-lg); padding: 22rpx; display: flex; flex-direction: column; gap: 14rpx; border: 1rpx solid var(--ble-line-soft); box-shadow: var(--ble-shadow-soft); }
+.diagnostic-status { display: flex; align-items: center; justify-content: space-between; gap: 16rpx; padding: 4rpx 0 12rpx; border-bottom: 1rpx solid var(--ble-line-faint); }
 .diagnostic-status-label { color: var(--ble-text-muted); font-size: 22rpx; }
 .diagnostic-status-value { color: var(--ble-brand); font-size: 23rpx; font-weight: 700; }
-.diag-row { display: flex; flex-direction: column; gap: 8rpx; padding: 12rpx 0; border-bottom: 1rpx solid rgba(20,76,136,.06); }
+.diag-row { display: flex; flex-direction: column; gap: 8rpx; padding: 12rpx 0; border-bottom: 1rpx solid var(--ble-line-faint); }
 .diag-row:last-of-type { border-bottom: none; }
 .diag-head { display: flex; align-items: center; gap: 16rpx; }
 .diag-dot { width: 42rpx; height: 42rpx; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22rpx; font-weight: 700; }

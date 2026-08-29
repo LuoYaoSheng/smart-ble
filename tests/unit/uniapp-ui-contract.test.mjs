@@ -45,7 +45,51 @@ for (const { file, source } of runtimeSources) {
 const designSystem = fs.readFileSync(path.join(uniappRoot, 'styles/design-system.css'), 'utf8');
 assert.equal(/button\.ble-(?:btn|action-card-btn)/.test(designSystem), false, 'button selectors must stay class-only for mp-weixin');
 assert.match(designSystem, /\.ble-btn--primary\s*\{[\s\S]*?color:\s*#ffffff;[\s\S]*?background:/);
-assert.match(designSystem, /\.ble-btn--danger\s*\{[\s\S]*?color:\s*#ffffff;[\s\S]*?background:/);
+assert.match(designSystem, /\.ble-error-box\s*\{/);
+assert.match(designSystem, /\.ble-success-box\s*\{/);
+assert.match(designSystem, /\.ble-status-line\s*\{/);
+assert.match(designSystem, /--ble-gradient-surface:/);
+assert.match(designSystem, /--ble-line-soft:/);
+assert.match(designSystem, /--ble-line-faint:/);
+assert.match(designSystem, /--ble-shadow-soft:/);
+assert.match(designSystem, /--ble-shadow-modal:/);
+assert.match(designSystem, /--ble-input-bg:/);
+assert.match(designSystem, /\.ble-btn--busy\s*,|\.ble-btn--busy\s*\{/);
+assert.match(designSystem, /\.ble-surface-item\s*\{/);
+assert.match(designSystem, /\.ble-input\s*\{/);
+
+const connectedPage = fs.readFileSync(path.join(uniappRoot, 'pages/connected/index.vue'), 'utf8');
+assert.match(connectedPage, /去扫描/);
+assert.match(connectedPage, /summarizeDisconnectAllResults/);
+assert.match(connectedPage, /action-label="去扫描"|actionLabel="去扫描"|action-label='去扫描'/);
+
+const broadcastPageSource = fs.readFileSync(path.join(uniappRoot, 'pages/broadcast/index.vue'), 'utf8');
+assert.match(broadcastPageSource, /LogPanel|log-panel/);
+assert.equal(/log-panel-brd/.test(broadcastPageSource), false, 'broadcast page should reuse shared log-panel');
+
+const operationState = fs.readFileSync(path.join(uniappRoot, 'components/common/operation-state.vue'), 'utf8');
+assert.match(operationState, /state === 'loading'/);
+assert.match(operationState, /ble-error-box/);
+
+const hidAddSource = fs.readFileSync(path.join(uniappRoot, 'pages/hid/add.vue'), 'utf8');
+assert.match(hidAddSource, /OperationState|operation-state/);
+assert.equal(/class="error-box"/.test(hidAddSource), false, 'hid add should use shared operation-state/error tokens');
+
+const deviceDetailPage = fs.readFileSync(path.join(uniappRoot, 'pages/device/detail.vue'), 'utf8');
+assert.equal(/v-if="services\.length\s*>\s*0"/.test(deviceDetailPage), false, 'device detail must always render service panel states');
+assert.match(deviceDetailPage, /servicePanelState/);
+assert.match(deviceDetailPage, /manualRetryConnection/);
+assert.match(deviceDetailPage, /useDeviceSession/);
+assert.equal(/JSON\.stringify\(device\)/.test(deviceDetailPage), false, 'device detail must not embed full device JSON routes');
+
+const indexPage = fs.readFileSync(path.join(uniappRoot, 'pages/index/index.vue'), 'utf8');
+assert.match(indexPage, /buildGenericDeviceDetailUrl/);
+assert.match(indexPage, /pruneKnownDevices/);
+
+const hidAddPage = fs.readFileSync(path.join(uniappRoot, 'pages/hid/add.vue'), 'utf8');
+assert.match(hidAddPage, /取消等待/);
+assert.match(hidAddPage, /onBackPress/);
+assert.match(hidAddPage, /confirmLeaveIfNeeded/);
 
 const scanSummary = fs.readFileSync(path.join(uniappRoot, 'components/scan/scan-summary.vue'), 'utf8');
 assert.match(scanSummary, /停止扫描/);

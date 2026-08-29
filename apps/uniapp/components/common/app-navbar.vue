@@ -57,7 +57,7 @@ trailingSafeWidth.value = Math.max((windowInfo.windowWidth || 0) - menu.left + 1
 </script>
 
 <style scoped>
-.custom-navbar { background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(246,250,255,.92)); border-bottom: 1rpx solid rgba(20,76,136,.08); }
+.custom-navbar { background: var(--ble-gradient-surface); border-bottom: 1rpx solid var(--ble-line-soft); }
 .nav-content { display: flex; align-items: center; justify-content: space-between; gap: 20rpx; padding-left: 28rpx; }
 .nav-copy { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 4rpx; }
 .nav-kicker { font-size: 18rpx; letter-spacing: 3rpx; color: var(--ble-text-muted); text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

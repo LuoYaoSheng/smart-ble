@@ -29,3 +29,8 @@ logger.clear();
 assert.deepEqual(logger.getHistory(), []);
 assert.deepEqual(logger.getHistory('device-b'), []);
 console.log('  ✓ clears one device without clearing another, then clears all');
+
+logger.clear();
+for (let i = 0; i < 250; i += 1) logger.info(`row-${i}`, 'cap-device');
+assert.equal(logger.getHistory('cap-device').length, 200);
+console.log('  ✓ caps per-device history at 200 entries');

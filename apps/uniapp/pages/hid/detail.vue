@@ -105,7 +105,7 @@ const goAdvancedBle = () => {
 	justify-content: space-between;
 	gap: 14rpx;
 	padding-bottom: 12rpx;
-	border-bottom: 1rpx solid rgba(20, 76, 136, 0.08);
+	border-bottom: 1rpx solid var(--ble-line-soft);
 }
 
 .device-title { min-width: 0; color: var(--ble-text); font-size: 32rpx; font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

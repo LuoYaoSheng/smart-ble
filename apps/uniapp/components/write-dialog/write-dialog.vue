@@ -28,7 +28,7 @@
 			</view>
 			<view class="modal-footer">
 				<button class="ble-btn ble-btn--ghost ble-btn--lg ble-btn--block modal-btn" @click="close">取消</button>
-				<button class="ble-btn ble-btn--primary ble-btn--lg ble-btn--block modal-btn" :class="{ 'ble-btn--disabled': isSending }" :disabled="isSending" @click="confirm">{{ isSending ? '发送中...' : '确定' }}</button>
+				<button class="ble-btn ble-btn--primary ble-btn--lg ble-btn--block modal-btn" :class="{ 'ble-btn--busy': isSending }" :disabled="isSending" @click="confirm">{{ isSending ? '发送中...' : '确定' }}</button>
 			</view>
 		</view>
 	</view>
@@ -77,8 +77,8 @@ const confirm = () => {
 
 <style scoped>
 .modal { position: fixed; inset: 0; background: rgba(10,20,35,.42); display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 32rpx; }
-.modal-content { width: 100%; background: linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(242,248,255,.96) 100%); border-radius: 34rpx; overflow: hidden; box-shadow: 0 24rpx 60rpx rgba(10,20,35,.18); }
-.modal-header { padding: 28rpx 30rpx; border-bottom: 1rpx solid rgba(20,76,136,.08); display: flex; justify-content: space-between; align-items: center; }
+.modal-content { width: 100%; background: var(--ble-gradient-surface); border-radius: var(--ble-radius-lg); overflow: hidden; box-shadow: var(--ble-shadow-modal); }
+.modal-header { padding: 28rpx 30rpx; border-bottom: 1rpx solid var(--ble-line-soft); display: flex; justify-content: space-between; align-items: center; }
 .modal-title { font-size: 32rpx; font-weight: 700; color: var(--ble-text); }
 .modal-close { font-size: 40rpx; color: var(--ble-text-muted); line-height: 1; padding: 0 10rpx; }
 .modal-body { padding: 30rpx; display: flex; flex-direction: column; gap: 24rpx; }
@@ -86,6 +86,6 @@ const confirm = () => {
 .input-label { font-size: 26rpx; font-weight: 600; color: var(--ble-text); margin-bottom: 14rpx; display: block; }
 .radio-group { display: flex; gap: 30rpx; }
 .radio-label { display: flex; align-items: center; font-size: 26rpx; color: var(--ble-text-subtle); }
-.data-input { background: rgba(241,246,252,.92); height: 82rpx; border-radius: 22rpx; padding: 0 20rpx; font-size: 26rpx; border: 1rpx solid rgba(20,76,136,.08); color: var(--ble-text); }
+.data-input { background: rgba(241,246,252,.92); height: 82rpx; border-radius: 22rpx; padding: 0 20rpx; font-size: 26rpx; border: 1rpx solid var(--ble-line-soft); color: var(--ble-text); }
 .modal-footer { display: flex; gap: 14rpx; padding: 0 30rpx 30rpx; }
 </style>

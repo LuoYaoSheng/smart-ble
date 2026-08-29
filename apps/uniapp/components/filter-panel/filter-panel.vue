@@ -163,7 +163,7 @@ const resetFilter = () => {
 	gap: 22rpx;
 	margin-top: 20rpx;
 	padding-top: 20rpx;
-	border-top: 1rpx solid rgba(20, 76, 136, 0.08);
+	border-top: 1rpx solid var(--ble-line-soft);
 }
 
 .filter-item {
@@ -201,7 +201,7 @@ const resetFilter = () => {
 	padding: 0 22rpx;
 	border-radius: 20rpx;
 	background: rgba(241, 246, 252, 0.92);
-	border: 1rpx solid rgba(20, 76, 136, 0.08);
+	border: 1rpx solid var(--ble-line-soft);
 	font-size: 24rpx;
 	text-align: right;
 	color: var(--ble-text);

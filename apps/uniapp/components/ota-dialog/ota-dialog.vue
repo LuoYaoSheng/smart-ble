@@ -7,7 +7,7 @@
       
       <view class="ota-body">
         <view v-if="!isTransmitting" class="ota-prompt">
-          <text class="ota-desc">发现 OTA 升级服务。请选择对应的固件 (.bin) 文件进行刷写。</text>
+          <text class="ota-desc">发现 OTA 升级服务。选择固件 (.bin) 后开始传输；只有设备返回确认状态后才会显示升级成功。</text>
           
           <button class="ble-btn ble-btn--secondary ble-btn--lg ble-btn--block" @click="selectFile">选择文件</button>
           <text v-if="fileName" class="ota-filename">已选择: {{fileName}}</text>
@@ -23,8 +23,8 @@
       </view>
 
       <view class="ota-footer">
-        <button class="ble-btn ble-btn--ghost ble-btn--lg ble-btn--block" :class="{ 'ble-btn--disabled': isTransmitting && progressPercent < 100 }" @click="cancel" :disabled="isTransmitting && progressPercent < 100">取消</button>
-        <button class="ble-btn ble-btn--primary ble-btn--lg ble-btn--block" :class="{ 'ble-btn--disabled': !fileBuffer || isTransmitting }" @click="startOta" :disabled="!fileBuffer || isTransmitting">开始升级</button>
+        <button class="ble-btn ble-btn--ghost ble-btn--lg ble-btn--block" :class="{ 'ble-btn--busy': isTransmitting && progressPercent < 100 }" @click="cancel" :disabled="isTransmitting && progressPercent < 100">取消</button>
+        <button class="ble-btn ble-btn--primary ble-btn--lg ble-btn--block" :class="{ 'ble-btn--disabled': !fileBuffer, 'ble-btn--busy': isTransmitting }" @click="startOta" :disabled="!fileBuffer || isTransmitting">开始升级</button>
       </view>
     </view>
   </view>
@@ -156,10 +156,16 @@ const startOta = () => {
 
   manager.startOta(
     fileBuffer.value,
-    (sent, total) => {
+    (sent, total, meta) => {
       sentBytes.value = sent;
       totalBytes.value = total;
-      statusText.value = '正在传输固件...';
+      if (meta?.phase === 'confirm') {
+        statusText.value = '传输完成，等待设备确认...';
+      } else if (meta?.phase === 'device') {
+        statusText.value = '设备正在处理固件...';
+      } else {
+        statusText.value = '正在传输固件...';
+      }
     },
     (errMsg) => {
       isTransmitting.value = false;
@@ -168,7 +174,7 @@ const startOta = () => {
     },
     () => {
       isTransmitting.value = false;
-      statusText.value = '升级完毕！';
+      statusText.value = '设备已确认升级成功';
       statusType.value = 'success';
       setTimeout(() => {
         emit('close');
@@ -201,14 +207,14 @@ const cancel = () => {
 }
 .ota-modal-content {
   width: 100%;
-  background: linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(242,248,255,.96) 100%);
-  border-radius: 34rpx;
+  background: var(--ble-gradient-surface);
+  border-radius: var(--ble-radius-lg);
   overflow: hidden;
-  box-shadow: 0 24rpx 60rpx rgba(10,20,35,.18);
+  box-shadow: var(--ble-shadow-modal);
 }
 .ota-header {
   padding: 28rpx 30rpx;
-  border-bottom: 1rpx solid rgba(20,76,136,.08);
+  border-bottom: 1rpx solid var(--ble-line-soft);
   text-align: center;
 }
 .ota-title {

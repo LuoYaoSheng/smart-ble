@@ -257,8 +257,9 @@ export async function diagnose() {
   return items;
 }
 
-export async function disconnect() {
-  statusWaiters.failAll('BLE 已主动断开');
+export function cancelProvisionWait(reason = '用户已取消等待') {
+  statusWaiters.failAll(reason);
+}
   if (onStatusCb) {
     unsubscribe(onStatusCb);
     onStatusCb = null;
@@ -283,6 +284,7 @@ export const smartHidService = {
   provisionAndWait,
   waitForProvisionResult,
   waitForStatus,
+  cancelProvisionWait,
   getStatus,
   getSessionState,
   diagnose,

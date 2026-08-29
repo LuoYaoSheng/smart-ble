@@ -1,14 +1,16 @@
 import assert from 'node:assert/strict';
-import { OtaManager, OTA_UUIDS } from '../../apps/uniapp/utils/ota_manager.js';
+import { OtaManager, OTA_UUIDS, parseOtaStatusPayload } from '../../apps/uniapp/utils/ota_manager.js';
 
 function createHarness(overrides = {}) {
   const calls = [];
+  let statusCallback = null;
   const session = { deviceId: 'ota-device', dead: false };
   const runtime = {
     getSession: () => session,
     setMtu: async (_session, mtu) => calls.push(['mtu', mtu]),
-    subscribe: async () => {
+    subscribe: async (_session, _service, _char, callback) => {
       calls.push(['subscribe']);
+      statusCallback = callback;
       return () => calls.push(['unsubscribe']);
     },
     setNotifyEnabled: async (_session, serviceId, characteristicId, enabled) => {
@@ -19,7 +21,16 @@ function createHarness(overrides = {}) {
     },
     ...overrides
   };
-  return { calls, session, runtime };
+  return {
+    calls,
+    session,
+    runtime,
+    emitStatus(payload) {
+      const text = typeof payload === 'string' ? payload : JSON.stringify(payload);
+      const bytes = Uint8Array.from([...text].map((ch) => ch.charCodeAt(0)));
+      statusCallback?.(bytes.buffer);
+    }
+  };
 }
 
 const run = async (name, fn) => {
@@ -34,6 +45,12 @@ const run = async (name, fn) => {
 
 console.log('[OTA manager]');
 
+await run('parses documented JSON status payloads and ignores non-JSON', async () => {
+  assert.equal(parseOtaStatusPayload(Uint8Array.from([...JSON.stringify({ status: 'success' })].map((c) => c.charCodeAt(0)))).kind, 'success');
+  assert.equal(parseOtaStatusPayload(Uint8Array.from([...JSON.stringify({ type: 'ota', status: 'error', message: 'crc' })].map((c) => c.charCodeAt(0)))).kind, 'failure');
+  assert.equal(parseOtaStatusPayload(Uint8Array.from([1, 2, 3])).kind, 'ignored');
+});
+
 await run('rejects missing or empty firmware before MTU, Notify, or transfer', async () => {
   const { calls, runtime } = createHarness();
   const errors = [];
@@ -43,23 +60,104 @@ await run('rejects missing or empty firmware before MTU, Notify, or transfer', a
   assert.deepEqual(calls, []);
 });
 
-await run('chunks transfer, bounds progress, and disables status Notify on completion', async () => {
-  const { calls, runtime } = createHarness();
+await run('does not succeed after bytes alone; requires status success notification', async () => {
+  const harness = createHarness();
   const progress = [];
   let completed = 0;
-  const manager = new OtaManager('ota-device', null, { runtime, delay: async () => {} });
-  await manager.startOta(new ArrayBuffer(181), (sent, total) => progress.push([sent, total]), null, () => { completed += 1; });
+  const errors = [];
+  const manager = new OtaManager('ota-device', null, {
+    runtime: harness.runtime,
+    delay: async () => {},
+    confirmTimeoutMs: 50
+  });
 
-  assert.deepEqual(progress, [[180, 181], [181, 181]]);
+  const result = manager.startOta(
+    new ArrayBuffer(181),
+    (sent, total, meta) => progress.push([sent, total, meta?.phase]),
+    (message) => errors.push(message),
+    () => { completed += 1; }
+  );
+
+  await new Promise((resolve) => setTimeout(resolve, 5));
+  assert.equal(completed, 0);
+  assert.ok(progress.some((entry) => entry[2] === 'confirm'));
+
+  harness.emitStatus({ status: 'success' });
+  const outcome = await result;
+  assert.equal(outcome.ok, true);
   assert.equal(completed, 1);
-  assert.deepEqual(calls.filter(([type]) => type === 'write').map(([, service, char, bytes, writeType]) => [service, char, bytes, writeType]), [
+  assert.equal(errors.length, 0);
+  assert.deepEqual(progress.filter((entry) => entry[2] === 'transfer'), [[180, 181, 'transfer'], [181, 181, 'transfer']]);
+  assert.deepEqual(harness.calls.filter(([type]) => type === 'write').map(([, service, char, bytes, writeType]) => [service, char, bytes, writeType]), [
     [OTA_UUIDS.SERVICE_OTA, OTA_UUIDS.CHAR_DATA, 180, 'writeNoResponse'],
     [OTA_UUIDS.SERVICE_OTA, OTA_UUIDS.CHAR_DATA, 1, 'writeNoResponse']
   ]);
-  assert.deepEqual(calls.slice(-2).map(([type]) => type), ['notify', 'unsubscribe']);
+  assert.deepEqual(harness.calls.slice(-2).map(([type]) => type), ['notify', 'unsubscribe']);
 });
 
-await run('cancel before transfer and write rejection stop safely without success', async () => {
+await run('accepts success status that arrives before the confirm wait starts', async () => {
+  let statusCallback = null;
+  const calls = [];
+  const session = { deviceId: 'ota-device', dead: false };
+  const runtime = {
+    getSession: () => session,
+    setMtu: async () => {},
+    subscribe: async (_s, _svc, _ch, callback) => {
+      statusCallback = callback;
+      return () => calls.push(['unsubscribe']);
+    },
+    setNotifyEnabled: async () => { calls.push(['notify']); },
+    writeValue: async () => {
+      const text = JSON.stringify({ status: 'success' });
+      const bytes = Uint8Array.from([...text].map((ch) => ch.charCodeAt(0)));
+      statusCallback?.(bytes.buffer);
+    }
+  };
+  let completed = 0;
+  const manager = new OtaManager('ota-device', null, { runtime, delay: async () => {}, confirmTimeoutMs: 200 });
+  const outcome = await manager.startOta(new ArrayBuffer(10), null, null, () => { completed += 1; });
+  assert.equal(outcome.ok, true);
+  assert.equal(completed, 1);
+});
+
+await run('timeout, device failure, cancel, and write rejection never report success', async () => {
+  const timeoutHarness = createHarness();
+  const timeoutErrors = [];
+  let timeoutSuccess = 0;
+  const timeoutManager = new OtaManager('ota-device', null, {
+    runtime: timeoutHarness.runtime,
+    delay: async () => {},
+    confirmTimeoutMs: 20
+  });
+  await timeoutManager.startOta(
+    new ArrayBuffer(20),
+    null,
+    (message) => timeoutErrors.push(message),
+    () => { timeoutSuccess += 1; }
+  );
+  assert.match(timeoutErrors[0], /超时/);
+  assert.equal(timeoutSuccess, 0);
+
+  const failHarness = createHarness();
+  const failErrors = [];
+  let failSuccess = 0;
+  const failManager = new OtaManager('ota-device', null, {
+    runtime: failHarness.runtime,
+    delay: async () => {},
+    confirmTimeoutMs: 200
+  });
+  const failing = failManager.startOta(
+    new ArrayBuffer(20),
+    null,
+    (message) => failErrors.push(message),
+    () => { failSuccess += 1; }
+  );
+  await new Promise((resolve) => setTimeout(resolve, 5));
+  failHarness.emitStatus({ status: 'error', message: 'crc mismatch' });
+  await failing;
+  assert.match(failErrors[0], /crc mismatch/);
+  assert.equal(failSuccess, 0);
+
   let releaseMtu;
   const cancelled = createHarness({
     setMtu: () => new Promise((resolve) => { releaseMtu = resolve; })
