@@ -90,14 +90,22 @@ const builtinsSource = fs.readFileSync(path.join(uniappRoot, 'services/provision
 assert.match(builtinsSource, /esp32DemoProfile/);
 
 const indexPage = fs.readFileSync(path.join(uniappRoot, 'pages/index/index.vue'), 'utf8');
+const scanComposable = fs.readFileSync(path.join(uniappRoot, 'composables/use-ble-scan.js'), 'utf8');
+const scanPermission = fs.readFileSync(path.join(uniappRoot, 'services/scan-permission.js'), 'utf8');
+assert.match(indexPage, /bleState\.value === 'unsupported'/);
+assert.match(scanComposable, /typeof uni\.getBluetoothAdapterState !== 'function'/);
+assert.match(scanPermission, /reason:\s*'ble_not_supported'/);
 assert.match(indexPage, /buildGenericDeviceDetailUrl/);
 assert.match(indexPage, /pruneKnownDevices/);
+assert.match(indexPage, /const knownDevices = computed\(\(\) => hidStore\.knownDevices\)/);
 assert.match(indexPage, /buildProfileActionUrl|buildHidHistoryUrl|openHidHistory/);
 
 const hidAddPage = fs.readFileSync(path.join(uniappRoot, 'pages/hid/add.vue'), 'utf8');
+const provisionStepper = fs.readFileSync(path.join(uniappRoot, 'components/hid/provision-stepper.vue'), 'utf8');
 assert.match(hidAddPage, /取消等待/);
 assert.match(hidAddPage, /onBackPress/);
 assert.match(hidAddPage, /confirmLeaveIfNeeded/);
+assert.match(provisionStepper, /var\(--ble-gradient-brand,\s*linear-gradient/);
 
 const scanSummary = fs.readFileSync(path.join(uniappRoot, 'components/scan/scan-summary.vue'), 'utf8');
 assert.match(scanSummary, /停止扫描/);
@@ -107,6 +115,8 @@ const broadcastPage = fs.readFileSync(path.join(uniappRoot, 'pages/broadcast/ind
 assert.equal(/status-card|platform-card|broadcast-status-bar/.test(broadcastPage), false, 'broadcast page must keep one compact canonical status');
 assert.equal(/substring\(0,\s*(?:4|5|8)\)|retryWithSimpleAdvertising/.test(broadcastPage), false, 'broadcast must not silently replace or truncate the visible payload');
 assert.match(broadcastPage, /DEFAULT_ADVERTISING_PAYLOAD/);
+assert.match(broadcastPage, /platform\.value === 'web'/);
+assert.match(broadcastPage, /当前平台不支持 BLE 广播/);
 
 const hidDetailPage = fs.readFileSync(path.join(uniappRoot, 'pages/hid/detail.vue'), 'utf8');
 assert.equal(/hero-card|ble-card-hero/.test(hidDetailPage), false, 'Smart HID detail must start with task information, not a decorative hero');
@@ -121,7 +131,8 @@ assert.match(productSource, /cute-meow-circle\.png/);
 assert.match(productSource, /baby-diary\.png/);
 
 const versionSource = fs.readFileSync(path.join(uniappRoot, 'pages/about/version.vue'), 'utf8');
-assert.equal((versionSource.match(/version:\s*'v\d+\.\d+\.\d+'/g) || []).length, 7, 'Version History must keep all seven established releases');
+assert.equal((versionSource.match(/version:\s*'v\d+\.\d+\.\d+'/g) || []).length, 8, 'Version History must include the current release and all seven established releases');
+assert.match(versionSource, /version:\s*'v1\.0\.5'/);
 assert.equal(versionSource.includes('智能蓝牙助手'), false, 'Version History share title must use the current product identity');
 assert.match(versionSource, /BLE Toolkit\+/);
 

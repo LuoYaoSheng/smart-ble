@@ -1,6 +1,12 @@
-.PHONY: verify verify-flutter verify-android verify-apple verify-tauri verify-hardware
+.PHONY: verify verify-uniapp verify-uniapp-pages verify-flutter verify-android verify-apple verify-tauri verify-hardware
 
-verify: verify-flutter verify-android verify-apple verify-tauri
+verify: verify-uniapp verify-flutter verify-android verify-apple verify-tauri
+
+verify-uniapp:
+	./scripts/verify-uniapp.sh
+
+verify-uniapp-pages:
+	./scripts/verify-uniapp-pages.sh
 
 verify-flutter:
 	cd apps/flutter && flutter pub get && flutter analyze && flutter test

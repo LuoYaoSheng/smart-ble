@@ -29,7 +29,7 @@ defineProps({
 	height: 66rpx;
 	border-radius: 20rpx;
 	background: rgba(96, 117, 141, 0.08);
-	color: var(--ble-text-muted);
+	color: var(--ble-text-muted, #93a2b4);
 }
 
 .step-index {
@@ -51,7 +51,7 @@ defineProps({
 
 .step.active {
 	color: #ffffff;
-	background: var(--ble-gradient-brand);
+	background: var(--ble-gradient-brand, linear-gradient(135deg, #155dff 0%, #33b2ff 58%, #7be0ff 100%));
 	box-shadow: 0 12rpx 28rpx rgba(27, 109, 255, 0.18);
 }
 

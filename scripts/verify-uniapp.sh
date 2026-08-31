@@ -36,6 +36,7 @@ run_check "UniApp Vue SFC parse" node scripts/check-uniapp-sfc.mjs
 run_check "UniAutomator config syntax" node --check apps/uniapp/env.js
 run_check "UniAutomator Jest syntax" node --check apps/uniapp/jest.config.js
 run_check "UniAutomator page-test syntax" node --check apps/uniapp/pages/index/index.test.js
+run_check "UniAutomator page-flow syntax" node --check apps/uniapp/pages/page-flow.test.js
 run_check "Git whitespace" git diff --check
 
-printf '\nUniApp verification PASS (%d unit files plus 8 static gates)\n' "${#test_files[@]}"
+printf '\nUniApp verification PASS (%d unit files plus 9 static gates)\n' "${#test_files[@]}"

@@ -56,7 +56,7 @@ function ensureCallbacks() {
     throw new Error('BLE platform cannot change while sessions are active');
   }
 
-  platform.onBLECharacteristicValueChange((res) => {
+  platform.onBLECharacteristicValueChange?.((res) => {
     const callbacks = state.valueListeners.get(valueKey(res.deviceId, res.serviceId, res.characteristicId));
     if (!callbacks) return;
     for (const callback of [...callbacks]) {
@@ -68,7 +68,7 @@ function ensureCallbacks() {
     }
   });
 
-  platform.onBLEConnectionStateChange((res) => {
+  platform.onBLEConnectionStateChange?.((res) => {
     if (res.connected !== false) return;
     const pending = state.pendingLocalDisconnects.get(res.deviceId);
     if (pending && pending.expiresAt >= Date.now()) {
@@ -80,7 +80,7 @@ function ensureCallbacks() {
     invalidateSession(session, 'BLE 连接已断开');
   });
 
-  platform.onBluetoothDeviceFound((res) => {
+  platform.onBluetoothDeviceFound?.((res) => {
     for (const callback of [...state.discoveryListeners]) {
       try {
         callback(res.devices || []);

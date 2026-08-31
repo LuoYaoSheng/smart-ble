@@ -65,6 +65,12 @@ bash ../../scripts/verify-uniapp.sh
 
 该命令统一运行单元测试、Smart HID 协议锁、静态资源检查、Vue SFC 解析与 Git 空白检查。HBuilderX 编译、微信开发者工具自动化，以及最终 BLE、扫码、小程序跳转和真机页面效果仍是独立验证阶段，不能由本地检查替代。
 
+当前 10 个注册页面及主要跳转回归：
+
+```bash
+bash ../../scripts/verify-uniapp-pages.sh
+```
+
 完成 HBuilderX 微信编译后，可强制核对编译产物资源：
 
 ```bash

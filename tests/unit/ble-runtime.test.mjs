@@ -69,6 +69,17 @@ await run('routes discovery through the single BLE runtime listener', async () =
   unsubscribe();
 });
 
+await run('unsupported web runtimes can mount before a BLE operation is requested', async () => {
+  resetBleRuntimeForTesting();
+  setBlePlatformForTesting({});
+  const unsubscribe = onDiscovery(() => {});
+
+  assert.equal(getBleRuntimeSnapshotForTesting().discoveryListeners, 1);
+  await assert.rejects(openAdapter(), /does not implement openBluetoothAdapter/);
+  unsubscribe();
+  setBlePlatformForTesting(platform);
+});
+
 await run('opening an already-open adapter is idempotent while real open errors remain visible', async () => {
   resetBleRuntimeForTesting();
   const originalOpen = platform.openBluetoothAdapter;

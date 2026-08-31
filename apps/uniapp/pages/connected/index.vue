@@ -16,6 +16,7 @@
 				<view class="tab-content">
 					<scroll-view scroll-y class="device-scroll">
 						<empty-state
+							id="connected-empty"
 							v-if="connectedDevicesList.length === 0"
 							image="/static/placeholders/empty_connected.png"
 							title="还没有连接中的设备"

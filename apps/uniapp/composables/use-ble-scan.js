@@ -28,6 +28,10 @@ export function useBleScan() {
   const filteredDevices = computed(() => filterBleDevices(devices.value, filterSettings.value));
 
   const checkBluetoothState = () => {
+    if (typeof uni.getBluetoothAdapterState !== 'function') {
+      store.setBleState('unsupported');
+      return;
+    }
     uni.getBluetoothAdapterState({
       success: (result) => store.setBleState(result.available ? 'on' : 'off'),
       fail: () => {
@@ -57,6 +61,9 @@ export function useBleScan() {
     const permission = await requestBleScanPermission();
     if (!permission.ok) {
       checkBluetoothState();
+      if (permission.reason === 'ble_not_supported') {
+        await showScanStartError(permission.error);
+      }
       return permission;
     }
 

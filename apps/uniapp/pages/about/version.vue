@@ -23,6 +23,16 @@ import { onShareAppMessage, onShareTimeline, onShow } from '@dcloudio/uni-app';
 
 const versionHistory = ref([
 	{
+		version: 'v1.0.5',
+		date: '2026-08-29',
+		updates: [
+			{ type: '新增', content: '接入 Smart HID 第一方 Profile，支持配网、设备历史与诊断流程' },
+			{ type: '新增', content: '建立可扩展设备 Profile 注册表与跨仓协议契约锁' },
+			{ type: '优化', content: '统一扫描、连接、GATT 读写、通知与多设备会话生命周期' },
+			{ type: '修复', content: '补齐空状态、失败反馈、页面返回与广播模式切换处理' }
+		]
+	},
+	{
 		version: 'v1.0.4',
 		date: '2024-04-29',
 		updates: [

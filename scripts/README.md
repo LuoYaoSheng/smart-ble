@@ -1,5 +1,17 @@
 # Smart BLE - 构建脚本
 
+## UniApp 验证
+
+```bash
+# 快速单测与静态门禁；根级 make verify 也会执行
+./scripts/verify-uniapp.sh
+
+# 当前 10 页微信模拟器回归（需要 HBuilderX 与微信开发者工具）
+./scripts/verify-uniapp-pages.sh
+```
+
+页面回归覆盖全部注册路由和主要往返链路：已连接空态返回扫描、Smart HID 历史进入详情并前往配网/诊断/通用 GATT、已连接设备进入通用详情、关于进入版本记录，以及广播页面。
+
 ## 脚本说明
 
 ### setup.sh

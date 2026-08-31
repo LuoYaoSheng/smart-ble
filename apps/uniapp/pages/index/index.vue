@@ -1,6 +1,6 @@
 <template>
 	<view class="ble-shell index-shell">
-		<app-navbar kicker="SmartBLE Mini" title="BLE Toolkit+" :status-active="bleState === 'on'" :status-text="bleState === 'on' ? '蓝牙就绪' : '蓝牙未开启'" />
+		<app-navbar kicker="SmartBLE Mini" title="BLE Toolkit+" :status-active="bleState === 'on'" :status-text="bleStatusText" />
 
 		<view class="ble-content page-content">
 			<scan-summary
@@ -76,7 +76,7 @@ import { useBleScan } from '../../composables/use-ble-scan.js';
 import { buildHidDetailUrl, buildGenericDeviceDetailUrl, buildHidHistoryUrl, buildProfileActionUrl } from '../../services/provisioning/profile-navigation.js';
 
 const hidStore = useHidStore();
-const knownDevices = hidStore.knownDevices;
+const knownDevices = computed(() => hidStore.knownDevices);
 hidStore.pruneKnownDevices?.();
 
 const showAdvDataModal = ref(false);
@@ -84,6 +84,11 @@ const selectedAdvertisementDevice = ref(null);
 const showFilters = ref(false);
 
 const { filterSettings, devices, filteredDevices, connectedDevices: connectedDevicesList, isScanning, scanError, bleState, start: startScan, toggle: toggleScan, prepareConnect } = useBleScan();
+const bleStatusText = computed(() => {
+	if (bleState.value === 'on') return '蓝牙就绪';
+	if (bleState.value === 'unsupported') return '当前平台不支持 BLE';
+	return '蓝牙未开启';
+});
 
 // 已连接计数纳入 Smart HID 配网会话，避免“配网中却显示已连接 0”的口径漂移（P001-I04）
 const connectedCount = computed(() => connectedDevicesList.value.length + (hidStore.sessionOnline ? 1 : 0));

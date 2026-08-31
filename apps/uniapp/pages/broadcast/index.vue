@@ -157,9 +157,10 @@ const modeOptions = ['低功耗', '平衡', '低延迟'];
 const powerOptions = ['超低功率', '低功率', '中功率', '高功率'];
 const manufacturerId = ref('');
 const manufacturerData = ref('');
-const platformLabel = computed(() => ({ android: 'Android', ios: 'iOS', weixin: '微信' }[platform.value] || 'BLE'));
+const platformLabel = computed(() => ({ android: 'Android', ios: 'iOS', weixin: '微信', web: 'Web' }[platform.value] || 'BLE'));
 const broadcastStateText = computed(() => {
 	if (advertising.value) return '广播中';
+	if (platform.value === 'web') return '不支持';
 	return isSupported.value ? '已就绪' : '未就绪';
 });
 
@@ -208,6 +209,13 @@ const checkSupport = () => {
 
 	// #ifdef MP-WEIXIN
 	checkWxBleSupport();
+	// #endif
+
+	// #ifndef APP-PLUS
+	// #ifndef MP-WEIXIN
+	isSupported.value = false;
+	addLog('系统', '当前平台不支持 BLE 广播，请使用微信小程序或 App。');
+	// #endif
 	// #endif
 };
 
@@ -525,6 +533,10 @@ const checkBluetoothAndPermissionsBeforeAdvertise = () => {
 };
 
 const toggleAdvertising = () => {
+	if (platform.value === 'web') {
+		reportBroadcastError('当前平台不支持 BLE 广播，请使用微信小程序或 App。');
+		return;
+	}
 	if (advertising.value) {
 		stopAdvertising();
 	} else {
@@ -570,6 +582,9 @@ onLoad(() => {
 	// #endif
 
 	// #ifndef MP-WEIXIN
+	// #ifndef APP-PLUS
+	platform.value = 'web';
+	// #endif
 	checkSupport();
 	// #endif
 });
