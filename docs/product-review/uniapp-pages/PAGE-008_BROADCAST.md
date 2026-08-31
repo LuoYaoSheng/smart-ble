@@ -70,7 +70,7 @@ Tab 进入，无参数。无下级页。hide/unload 停止或释放 owner。
  → UI advertising + logger('broadcast')
 ```
 
-`useBroadcastSession.js` 存在但页面主要自管 logs；以页面为准。
+`useBroadcastSession.js` **无任何页面 import**（死代码）。广播起停、微信 owner 与 App 插件均在 `pages/broadcast/index.vue` 内联。
 
 ## I. 依赖
 

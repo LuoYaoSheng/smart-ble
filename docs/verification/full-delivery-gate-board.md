@@ -104,7 +104,7 @@ SCOPE: 18 条 App 链路 + WEB CTA
 TESTS: verify-uniapp 单测+SFC 通过；脚本 exit 2 因空白检查；docs:build 0
 EVIDENCE LEVEL: E1 逻辑；E3 网站构建；E5 无
 HARDWARE: NOT EXECUTED
-FIRST FAILURE: Observer 固件不存在 → OP-030/WEB-OP-010 BLOCKED
+FIRST FAILURE: Observer 固件不存在 → OP-030/WEB-OP-010 BLOCKED；OTA `CHAR_CTRL` 未接线 → OP-021 BLOCKED
 NEXT: 用户审阅 G1/G2
 ```
 

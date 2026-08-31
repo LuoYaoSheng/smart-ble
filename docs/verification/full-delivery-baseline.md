@@ -238,7 +238,8 @@ OTA 服务 `...914d`：
 ### 5.5 LED / OTA / 测试
 
 - LED 命令与契约 `FF 00/01/02/03` 在固件 write callback 中实现（需 E5 才能标 PASS）。
-- OTA 状态机在固件中存在；客户端要求 JSON status `success`。
+- OTA 状态机在固件中存在（含 Control）；UniApp 只订 STATUS、写 DATA，**不写 Control**。
+- `FIRMWARE_VERSION` 宏为 `1.0.0`，与 App 展示 1.0.5 不是同一版本线。
 - 故障注入模式：契约标记「待实现」；本轮未在 `main.cpp` 看到 `delayed_response` 等编译开关。
 - `test/`：无真实测试。ESP-008 仍是发布缺口。
 
@@ -370,7 +371,7 @@ CI 主线仍把 Flutter/Android 原生/Apple/Tauri 当默认检查；与首版�
 | P1-PAGE-09 | 页面 | 关于页「支持平台」列出 Windows/macOS/Linux 等未经验证能力 |
 | P1-PAGE-07 | 页面 | 已连接卡片文案「连接稳定」，契约禁止无健康指标时使用 |
 | P1-VER | 版本 | `package.json` 1.0.0 vs manifest/关于/版本记录 1.0.5 |
-| P1-OTA | OTA | 无安全恢复设备时仍展示「固件更新」入口（有 OTA service 即显示）；E5/回滚缺口 |
+| P1-OTA | OTA | 无安全恢复设备时仍展示「固件更新」；`OtaManager` 不写 `CHAR_CTRL`（无 start/commit/reboot），只写 DATA 并等 STATUS JSON；E5/回滚缺口 |
 
 ### P2
 
@@ -380,7 +381,7 @@ CI 主线仍把 Flutter/Android 原生/Apple/Tauri 当默认检查；与首版�
 | P2-DISC-04 | Runtime | 显示名未实现 AD 0x08/0x09 解析（功能目录 DISC-004 已标 Gap） |
 | P2-PAGE-03 | 页面 | PAGE-003 未标明「历史记录，不代表在线」 |
 | P2-PAGE-09 | 页面 | 「更多小程序」压在产品/开源信息之前；缺仓库/文档/ESP32/许可证入口 |
-| P2-ADV | 广播 | Android 名称提示「使用系统蓝牙名称」，字段是否真正可控待 E5 |
+| P2-ADV | 广播 | Android 名称可能系统接管；`useBroadcastSession.js` 无页面引用 |
 | P2-WS | 工作区 | 用户基线计划文件 trailing whitespace 使 `verify-uniapp.sh` 的 `git diff --check` 失败 |
 
 ---

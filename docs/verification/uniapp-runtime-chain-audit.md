@@ -164,7 +164,7 @@ E1 明确「断 A 留 B」。E5 需两台硬件。
 
 ## 14. Peripheral support / create / start / stop / close
 
-PAGE-008 检查/开始
+PAGE-008 检查/开始（页面内联；`useBroadcastSession.js` **无引用**）
 → App 插件；微信 adapter owner + server
 → 活动连接保护
 → hide：App 停广播；微信 release mode
@@ -175,12 +175,13 @@ PAGE-008 检查/开始
 ## 15. OTA file / ready / data / commit / success / reboot
 
 OTA 按钮仅 `hasOtaService`
-→ `ota_manager.js` setMTU、写 control/data、订 status
-→ 必须 JSON status success
-→ 无 success 不完成
+→ `ota-dialog.vue` 选文件 → `OtaManager.startOta`
+→ `setMtu(247)`（失败继续）→ 订阅 `CHAR_STATUS` → 只向 `CHAR_DATA` 分包 `writeNoResponse`（180B / 20ms）
+→ **不写入 `CHAR_CTRL`**：无 start / ready 握手 / commit / abort / reboot 控制写
+→ 等 STATUS JSON `status==="success"`；无 success 则超时失败，不把写完当成功
 → 重启回读版本：功能目录 OTA-007 Gap
-→ ESP32 OTA 服务存在；无故障注入；无官方恢复文档
-→ 第一断点：P1 无安全设备；协议 ts 无 OTA UUID
+→ ESP32 固件 OTA 服务含 Control 状态机，与 UniApp 客户端不对齐
+→ 第一断点：P1 无安全设备；协议 ts 无 OTA UUID；CTRL 未接线，固件若要求 start 则 E5 必 FAIL
 → 证据：E1 ota-manager；E5 BLOCKED
 
 ## 16. Smart HID matcher / Device Info / QR / candidate / status waiter

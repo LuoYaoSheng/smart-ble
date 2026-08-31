@@ -46,7 +46,7 @@
 | OP-018 | PAGE-006 | 连接状态 | 主动断开 | 已连接 | `toggleConnection` `remove:false` | `close` explicit | onDisconnect | 离线、不重连；007 因 isConnected 过滤 | 断开失败日志 | Notify/session | E5 | UNPROVEN | map 可能留离线条目 |
 | OP-019 | PAGE-006 | 连接状态 | ESP32 断电 | 已连接 | Runtime connection callback → `retryConnection` ×3 | passive → registry | 断电 | 离线或重连/耗尽 | 不显示在线 | pending 全拒绝 | E5 | UNPROVEN | |
 | OP-020 | PAGE-006 | OTA | 选择固件 | `hasOtaService` | `ota-dialog.vue` | file select | 版本/大小可识别 | 文件信息 | 空/非法不开始 | 句柄 | E4/E5 | UNPROVEN | 无服务则无按钮 |
-| OP-021 | PAGE-006 | OTA | Start/Ready/Data/Commit | 已批准可恢复设备 | `utils/ota_manager.js` | ota manager | ready/progress/success/reboot | success 后才完成 | timeout 不成功 | Notify/writer | E5 | BLOCKED | 需安全固件与恢复；OTA-007 回读 Gap |
+| OP-021 | PAGE-006 | OTA | Start/Ready/Data/Commit | 已批准可恢复设备 | `utils/ota_manager.js` `startOta` | 实际：STATUS notify + DATA chunks；**CHAR_CTRL 未写** | 固件期望 start/ready/commit；客户端未发 | success 后才完成 | timeout 不成功 | Notify/writer | E5 | BLOCKED | CTRL 未接线；需安全固件与恢复；OTA-007 回读 Gap |
 | OP-022 | PAGE-007 | 会话列表 | 打开已连接设备 | 真实活动 session | `buildConnectedDeviceOpenUrl` | registry → profile/generic | 连接保持 | 复用连接 | session 失效时 PAGE-006 处理 | 页面只加 UI listener | E5 | UNPROVEN | HID 配网 session 可能不在列表 |
 | OP-023 | PAGE-007 | 会话列表 | 单独断开 | 有目标 | `disconnectDeviceFromList`；HID 先 `smartHidService.disconnect` | disconnect target | 目标断开 | 只移除目标 | 失败保留 | 不影响其他 | E5 | UNPROVEN | |
 | OP-024 | PAGE-007 | 批量操作 | 全部断开 | 多 session | `disconnectAllDevices` **只** `bleStore.disconnectConnectedDevice` | allSettled | 多设备断开 | 成功清除、失败汇总 | 不误报全成功 | listener 对应清理 | E5 | UNPROVEN | 未调 smartHidService |

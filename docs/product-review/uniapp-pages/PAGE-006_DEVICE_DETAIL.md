@@ -60,7 +60,7 @@
 | OP-018 | 主动断开 | 已连接 | 连接中 | 见 OP-010 | 离线且不自动重连 | 断开失败日志 | PAGE-007 应同步 | Notify/session 按 store |
 | OP-019 | 被动断开 | 已连接 | N/A | Runtime callback → 有限 3 次重连 | 重连成功或耗尽 | 耗尽需手动重试 | 本页 | pending 拒绝 |
 | OP-020 | 选固件 | hasOtaService | 无服务则无按钮 | ota-dialog 选文件 | 文件信息 | 空/非法不开始 | 弹窗 | 句柄 |
-| OP-021 | OTA 传输 | 弹窗 | 协议/设备 | start/ready/data/commit | 需设备 success | 超时不成功 | 本页 | Notify/writer |
+| OP-021 | OTA 传输 | 弹窗 | 协议/设备 | 仅 DATA 分包 + STATUS 等待；**不写 CHAR_CTRL** | 需设备 JSON success | 超时不成功 | 本页 | Notify/writer |
 
 ## F. 状态表
 
@@ -90,7 +90,7 @@ LightBLE Peripheral：主服务、权限服务、Notify、可选 OTA。OTA E5 �
 ## J. 第一断点
 
 - P0：GATT E5 未做。
-- P1：OTA 无回滚方案仍暴露入口。
+- P1：OTA 无回滚方案仍暴露入口；客户端不写 `CHAR_CTRL`，与固件 start/commit 状态机不对齐。
 - P1：离页关闭 Notify 可能让用户以为「连接还在所以监听还在」。
 - P2：日志导出未做敏感扫描。
 
