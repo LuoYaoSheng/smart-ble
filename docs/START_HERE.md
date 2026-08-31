@@ -2,6 +2,8 @@
 
 > 给第一次体验 `BLE Toolkit+` 和第一次进入 `Smart BLE` 仓库的人。
 
+> 当前产品开发正典：[`product-contract/README.md`](./product-contract/README.md)。功能、页面、平台差异、ESP32 与测试声明以该目录为准。
+
 ---
 
 ## 先记住这三个名字

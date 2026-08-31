@@ -17,6 +17,7 @@
 
 ## 第一次进入先看这里
 
+- 产品、页面、平台、ESP32 和发布验收的当前正典：[`docs/product-contract/`](./docs/product-contract/)
 - 只想直接体验：访问 [项目主页](https://lightble.i2kai.com/) 或 GitHub Releases
 - 想先学 BLE 基础：先看 [快速起步与基础教案](./docs/tutorials/01_introduction_and_setup.md)
 - 想看广播、外设模式和更深入玩法：看 [进阶与广播指引](./docs/tutorials/02_advanced_usage_and_broadcast.md)

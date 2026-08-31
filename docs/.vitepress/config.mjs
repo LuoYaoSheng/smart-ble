@@ -41,12 +41,26 @@ export default defineConfig({
     // 导航栏
     nav: [
       { text: '首页', link: '/' },
+      { text: 'UniApp 产品规范', link: '/product-contract/' },
       { text: '快速上手', link: '/tutorials/01_introduction_and_setup' },
       { text: 'API/架构参考', link: '/MASTER_ARCHITECTURE' }
     ],
 
     // 侧边树结构正规化大纲
     sidebar: [
+      {
+        text: '📋 UniApp 第一完整版本（当前正典）',
+        collapsed: false,
+        items: [
+          { text: '产品契约入口', link: '/product-contract/' },
+          { text: '功能目录', link: '/product-contract/02_FEATURE_CATALOG' },
+          { text: '用户流程', link: '/product-contract/03_USER_FLOWS' },
+          { text: '页面契约', link: '/product-contract/04_PAGE_CONTRACTS' },
+          { text: '平台适配矩阵', link: '/product-contract/05_PLATFORM_MATRIX' },
+          { text: 'ESP32 参考硬件', link: '/product-contract/06_ESP32_REFERENCE' },
+          { text: '测试与发布门禁', link: '/product-contract/07_TEST_MATRIX' }
+        ]
+      },
       {
         text: '📘 第一章：简介与起步 (Introduction)',
         items: [

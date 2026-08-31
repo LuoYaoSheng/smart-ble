@@ -10,6 +10,9 @@ hero:
     alt: Smart BLE Brand Icon
   actions:
     - theme: brand
+      text: UniApp 产品规范
+      link: /product-contract/
+    - theme: alt
       text: 快速开始
       link: /tutorials/01_introduction_and_setup
     - theme: alt
