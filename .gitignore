@@ -69,3 +69,9 @@ apps/uniapp/unpackage/
 
 # TP-G2 local measurement artifacts
 .tmp/
+
+# Playwright / Page E4 local outputs (ENV-PLAYWRIGHT-001)
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/

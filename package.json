@@ -1,5 +1,18 @@
 {
+  "name": "smart-ble",
+  "private": true,
+  "engines": {
+    "node": ">=20 <25"
+  },
+  "scripts": {
+    "check:page-env": "node scripts/check-page-test-environment.mjs",
+    "verify:target:system": "node scripts/verify-target.mjs --mode=system --format=json",
+    "verify:target:current": "node scripts/verify-target.mjs --mode=current --format=json"
+  },
   "dependencies": {
     "@abandonware/noble": "^1.9.2-26"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.49.1"
   }
 }

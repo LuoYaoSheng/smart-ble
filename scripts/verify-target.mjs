@@ -228,6 +228,41 @@ function isPlaywrightAvailable() {
   }
 }
 
+function isPlaywrightConfigPresent() {
+  return existsSync(`${ROOT}/playwright.config.js`) || existsSync(`${ROOT}/playwright.config.mjs`) || existsSync(`${ROOT}/playwright.config.ts`);
+}
+
+function isChromiumPresent() {
+  try {
+    const { chromium } = require('playwright');
+    return existsSync(chromium.executablePath());
+  } catch {
+    return false;
+  }
+}
+
+function assessPageEnvironment() {
+  const playwright = isPlaywrightAvailable();
+  const config = isPlaywrightConfigPresent();
+  const browser = isChromiumPresent();
+  const testDir = existsSync(`${ROOT}/tests/target/pages`);
+  const driver = hasTargetDriverEnv();
+  const baseURL = Boolean(process.env.TARGET_PAGE_BASE_URL);
+  const toolchainReady = playwright && config && browser && testDir;
+  return {
+    playwright,
+    browser,
+    config,
+    testDir,
+    driver_env: driver,
+    base_url_set: baseURL,
+    status: toolchainReady ? 'READY_FOR_PAGE_E4' : 'BLOCKED_BY_TOOLCHAIN',
+    page_execution: !toolchainReady
+      ? 'BLOCKED_BY_TOOLCHAIN'
+      : (driver && baseURL ? 'RUNNABLE' : 'BLOCKED_BY_TARGET_DRIVER'),
+  };
+}
+
 function hasTargetDriverEnv() {
   return process.env.TARGET_PAGE_DRIVER === '1';
 }
@@ -498,6 +533,7 @@ if (format === 'json') {
     current: result.current,
     pages: result.pages,
     blocked: result.blocked,
+    page_environment: assessPageEnvironment(),
     first_breakpoints: result.first_breakpoints,
     SYSTEM_PASS: result.SYSTEM_PASS,
     SYSTEM_FAIL: result.SYSTEM_FAIL,
@@ -515,6 +551,7 @@ if (format === 'json') {
     console.log(`HARNESS pass=${result.HARNESS_PASS} fail=${result.HARNESS_FAIL}`);
     console.log(`TEST_INFRA_FAIL=${result.TEST_INFRA_FAIL}`);
   }
+  console.log(`PAGE_ENV ${JSON.stringify(assessPageEnvironment())}`);
   if (mode === 'current' || mode === 'all') {
     console.log(`CURRENT pass=${result.CURRENT_PASS} fail=${result.CURRENT_FAIL} cases=${result.current.cases.length}`);
   }
