@@ -80,7 +80,7 @@ reports/target-vs-current/
 | `03_CONTRACT_AND_STATIC_TEST_SPEC.md` | 文档、JSON、ID、路由、版本、公开状态和链接门禁 |
 | `04_UNIT_TEST_SPEC.md` | 纯逻辑和状态机测试目录 |
 | `05_INTEGRATION_AND_FAKE_RUNTIME_TEST_SPEC.md` | Runtime、Store、Workflow、Adapter、资源与错误测试 |
-| `06_PAGE_AUTOMATION_AND_VISUAL_TEST_SPEC.md` | 10 页、WEB-001、原型、状态、跳转、视觉和无障碍 |
+| `06_PAGE_AUTOMATION_AND_VISUAL_TEST_SPEC.md` | 页面行为契约 + 完整 State/Operation Playwright 定义（Driver 未实现时 BLOCKED） |
 | `07_ESP32_AUTOMATED_TEST_SPEC.md` | Peripheral/Observer、协议、LED、Notify、OTA、Fault |
 | `08_ANDROID_HARDWARE_TEST_MATRIX.md` | Android 页面与 OP E5 矩阵 |
 | `09_WECHAT_HARDWARE_TEST_MATRIX.md` | 微信权限、GATT、Peripheral、分享和平台差异 |

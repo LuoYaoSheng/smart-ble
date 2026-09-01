@@ -40,6 +40,8 @@ supersedes: []
 | ESM 桥 | tests/target/lib/import-target.mjs | data URL ≤3 层内联；uni/wx 可注入 |
 | 内存 ctx | scripts/target/lib/check-utils.mjs makeVirtualCtx | 故意错误只在内存副本；真实文档零修改 |
 | 平台缝 | ble-runtime setBlePlatformForTesting | 生产代码自带测试缝（非测试专用分支逻辑） |
+| 页面行为契约 | tests/target/pages/page-behavior.manifest.json | Expected 单源；Actual 仅 Page Driver 探测，禁止回填 |
+| 页面 Fixture | tests/target/pages/pages.manifest.json | 与 pages-target 对齐的断言维度 |
 
 ## 4. Fake Clock / Timer
 

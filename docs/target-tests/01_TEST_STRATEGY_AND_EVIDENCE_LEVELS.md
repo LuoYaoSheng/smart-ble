@@ -24,13 +24,13 @@ APPROVED Target（docs/target-product/**）→ Target Test（本目录+tests/tar
 
 | 等级 | 名称 | 自动化（TP-G1 已落地） | 真 机 / 手 工 |
 |---|---|---|---|
-| E0 | Contract/Static | scripts/target/ 7 checker + tests/target/contract/（39 用例含故意错误验证） | — |
-| E1 | Unit | tests/target/unit/ 15 文件（33 用例：目标接口导入+内联错误参照双层） | — |
-| E2 | Fake Runtime | tests/target/integration/ 12 文件（27 用例，平台注入 FakePlatform） | — |
+| E0 | Contract/Static | scripts/target/ 7 checker + tests/target/contract/（真实仓库零容忍）+ harness mutations | — |
+| E1 | Unit | tests/target/unit/（目标层）+ harness 参照层 | — |
+| E2 | Fake Runtime | tests/target/integration/ | — |
 | E3 | Build | 由 E6 模板覆盖（clean-install） | make verify / pio run |
-| E4 | Page | pages.manifest.json 断言（5 用例）+ 11 份 Playwright 骨架（BLOCKED 直到浏览器环境） | 原型走查 |
+| E4 | Page | page-behavior.manifest + 11 份完整 Playwright 定义（Driver 未实现时 BLOCKED_BY_TARGET_DRIVER / 无 Playwright 时 BLOCKED_BY_TOOLCHAIN） | 原型走查 |
 | E5 | Real Device | 固件静态前置（tests/target/firmware/） | 08/09/10 矩阵 + hardware/ 5 模板 |
-| E6 | Release | tests/target/release/ 静态 9 用例 | clean-install.test.md |
+| E6 | Release | tests/target/release/ 静态用例 | clean-install.test.md |
 
 ## 4. PASS / FAIL / BLOCKED 口径
 

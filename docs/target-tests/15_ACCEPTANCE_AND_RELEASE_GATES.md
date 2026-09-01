@@ -17,7 +17,8 @@ supersedes: []
 
 | Gate | 内容 | 退出判据 |
 |---|---|---|
-| TP-G2 | 差距报告（由 verify-target 输出生成正式 gap） | 全部差距分级+批次；用户批准修复计划 |
+| TP-G1 | 目标测试体系（含 R1/R2 校正） | System/Harness PASS；页面行为定义完整（逐 OP/State）；Driver 未实现可 BLOCKED |
+| TP-G2 | 差距报告（由 verify-target 输出生成正式 gap） | 全部差距分级+批次；用户批准修复计划；**不补写目标测试期望** |
 | TP-G3 | 修复实现 | P0=0；P1 闭环；目标测试目标层 FAIL→PASS（不许改目标） |
 | TP-G4 | 真机矩阵执行 | 08/09/10 矩阵全结论；平台差异回填 |
 | TP-G5 | Release 组装 | 产物+SHA+QR+Metadata 成对；五处同源 |

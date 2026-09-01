@@ -27,7 +27,7 @@ supersedes: []
 | TEST-C | E0 | 14 | scripts/target/ 7 checker + tests/target/contract/ 39 用例 |
 | TEST-U | E1 | 16 | tests/target/unit/ 15 文件 33 用例 |
 | TEST-I | E2 | 10 | tests/target/integration/ 12 文件 27 用例 |
-| TEST-P | E4 | 12 | pages.manifest.json 断言 + 11 Playwright 骨架 |
+| TEST-P | E4 | 12 | page-behavior.manifest 完整定义 + 11 Playwright specs（逐 State/Operation；Driver 未实现时 BLOCKED） |
 | TEST-E | E5 | 8 | tests/target/firmware/ 静态前置 + hardware 模板 |
 | TEST-A | E5 | 14 | hardware/android-run-template.md |
 | TEST-W | E5 | 10 | hardware/wechat-run-template.md |
@@ -182,4 +182,3 @@ supersedes: []
 | TEST-R-009 | 小程序码可用 | E6 | 是 | FEAT-075 WEB-001 FLOW-013 FLOW-014 CLAIM-027 | 矩阵/模板 |
 | TEST-R-010 | Web 无障碍走查 | E6 | 是 | REQ-061 FEAT-076 WEB-001 CLAIM-030 | 矩阵/模板 |
 | TEST-R-011 | 30 分钟 Clean Machine 端到端闭环（CLAIM-031） | E6 | 是 | CLAIM-031 | 矩阵/模板 |
-
