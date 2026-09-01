@@ -1,0 +1,996 @@
+{
+  "records": [
+    {
+      "target_id": "FEAT-004",
+      "target_type": "feature",
+      "gap_kind": "RELEASE",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "AUTOMATED_FAIL",
+      "severity": "P1",
+      "evidence_level": "E6",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-C-006",
+        "TEST-U-002",
+        "TEST-R-002"
+      ],
+      "test_results": [
+        {
+          "status": "AUTOMATED_FAIL",
+          "message": "NOT_IMPLEMENTED: [REQ-004/056 FEAT-004/066 18号] 第一断点: 仓库根 VERSION 单源文件缺失"
+        }
+      ],
+      "expected": "版本与构建渠道 (Must)",
+      "actual": "NOT_IMPLEMENTED: [REQ-004/056 FEAT-004/066 18号] 第一断点: 仓库根 VERSION 单源文件缺失",
+      "first_breakpoint": "仓库根 VERSION 单源文件缺失",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-RELEASE-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "FEAT-066",
+      "target_type": "feature",
+      "gap_kind": "RELEASE",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "AUTOMATED_FAIL",
+      "severity": "P1",
+      "evidence_level": "E6",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-C-006",
+        "TEST-P-010",
+        "TEST-R-002"
+      ],
+      "test_results": [],
+      "expected": "版本历史页 (Must)",
+      "actual": "存在部分实现路径，待按测试结果细分",
+      "first_breakpoint": "仓库根 VERSION 单源文件缺失",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-RELEASE-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "FEAT-075",
+      "target_type": "feature",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "AUTOMATED_FAIL",
+      "severity": "P0",
+      "evidence_level": "E6",
+      "implementation_refs": [
+        {
+          "path": "docs/index.md",
+          "symbol": "download-hub",
+          "line_hint": "releases/latest"
+        }
+      ],
+      "test_ids": [
+        "TEST-R-001",
+        "TEST-R-002",
+        "TEST-R-008",
+        "TEST-R-009"
+      ],
+      "test_results": [],
+      "expected": "下载/QR/SHA/证据/限制 (Must)",
+      "actual": "存在部分实现路径，待按测试结果细分",
+      "first_breakpoint": "docs/index.md 三卡均链 releases/latest 假主下载",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-LANDING-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "WEB-001",
+      "target_type": "page",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": "P0",
+      "evidence_level": "E6",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp//.vue",
+          "symbol": "WEB-001",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-R-001",
+        "TEST-R-002",
+        "TEST-R-003",
+        "TEST-R-005",
+        "TEST-R-006",
+        "TEST-R-007",
+        "TEST-R-008",
+        "TEST-R-009",
+        "TEST-R-010",
+        "TEST-R-011"
+      ],
+      "test_results": [],
+      "expected": "完整 4 states / 11 operations",
+      "actual": "自动化: BLOCKED_BY_TOOLCHAIN; blocked_cases≈21",
+      "first_breakpoint": "假主下载 releases/latest；另有 Playwright BLOCKED_BY_TOOLCHAIN",
+      "downstream_impact": [
+        "state_cases=4",
+        "operation_cases=11"
+      ],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-LANDING-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "STATE-W001-01",
+      "target_type": "state",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-001"
+      ],
+      "test_results": [],
+      "expected": "Release Metadata 完整且 E6 门通过",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "WEB-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-W001-02",
+      "target_type": "state",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-003"
+      ],
+      "test_results": [],
+      "expected": "产物未齐/E5 未全",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "WEB-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-W001-03",
+      "target_type": "state",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "AUTOMATED_FAIL",
+      "severity": "P0",
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-003"
+      ],
+      "test_results": [],
+      "expected": "无任何公开产物",
+      "actual": "下载区未按 NOT_RELEASED 降级",
+      "first_breakpoint": "NOT_RELEASED 无产物时应无下载链接；当前仍暴露 releases/latest",
+      "downstream_impact": [],
+      "dependencies": [
+        "WEB-001"
+      ],
+      "suggested_fix_id": "FIX-LANDING-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "STATE-W001-04",
+      "target_type": "state",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-006"
+      ],
+      "test_results": [],
+      "expected": "截图/原型缺失",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "WEB-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-W001-03",
+      "target_type": "operation",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "AUTOMATED_FAIL",
+      "severity": "P0",
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-001"
+      ],
+      "test_results": [],
+      "expected": "下载 Android APK; runtime=产物 URL",
+      "actual": "假主下载链路",
+      "first_breakpoint": "下载 CTA 指向 releases/latest 而非 NOT_RELEASED/真实产物",
+      "downstream_impact": [],
+      "dependencies": [
+        "WEB-001"
+      ],
+      "suggested_fix_id": "FIX-LANDING-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "OP-W001-04",
+      "target_type": "operation",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "AUTOMATED_FAIL",
+      "severity": "P0",
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-009"
+      ],
+      "test_results": [],
+      "expected": "微信小程序码; runtime=码图",
+      "actual": "假主下载链路",
+      "first_breakpoint": "下载 CTA 指向 releases/latest 而非 NOT_RELEASED/真实产物",
+      "downstream_impact": [],
+      "dependencies": [
+        "WEB-001"
+      ],
+      "suggested_fix_id": "FIX-LANDING-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "OP-W001-05",
+      "target_type": "operation",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "AUTOMATED_FAIL",
+      "severity": "P0",
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-008"
+      ],
+      "test_results": [],
+      "expected": "固件下载; runtime=产物 URL",
+      "actual": "假主下载链路",
+      "first_breakpoint": "下载 CTA 指向 releases/latest 而非 NOT_RELEASED/真实产物",
+      "downstream_impact": [],
+      "dependencies": [
+        "WEB-001"
+      ],
+      "suggested_fix_id": "FIX-LANDING-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "CLAIM-001",
+      "target_type": "claim",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E6",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-006"
+      ],
+      "test_results": [],
+      "expected": "产品定位一句话（Hero）",
+      "actual": "待 E6 发布门验证",
+      "first_breakpoint": "E6 NOT_EXECUTED",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-E6-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "CLAIM-002",
+      "target_type": "claim",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E6",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-002"
+      ],
+      "test_results": [],
+      "expected": "当前版本与渠道（Hero 徽标）",
+      "actual": "待 E6 发布门验证",
+      "first_breakpoint": "E6 NOT_EXECUTED",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-E6-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "CLAIM-003",
+      "target_type": "claim",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E6",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-007"
+      ],
+      "test_results": [],
+      "expected": "核心闭环七环节",
+      "actual": "待 E6 发布门验证",
+      "first_breakpoint": "E6 NOT_EXECUTED",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-E6-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "CLAIM-004",
+      "target_type": "claim",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E6",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-A-005",
+        "TEST-W-007",
+        "TEST-E-001"
+      ],
+      "test_results": [],
+      "expected": "扫描与广播解析",
+      "actual": "待 E6 发布门验证",
+      "first_breakpoint": "E6 NOT_EXECUTED",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-E6-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "CLAIM-005",
+      "target_type": "claim",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E6",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-A-005",
+        "TEST-W-007"
+      ],
+      "test_results": [],
+      "expected": "两轮扫描与筛选",
+      "actual": "待 E6 发布门验证",
+      "first_breakpoint": "E6 NOT_EXECUTED",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-E6-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "CLAIM-006",
+      "target_type": "claim",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E6",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-A-006",
+        "TEST-A-008",
+        "TEST-W-007",
+        "TEST-E-003"
+      ],
+      "test_results": [],
+      "expected": "连接与 GATT 读写/订阅",
+      "actual": "待 E6 发布门验证",
+      "first_breakpoint": "E6 NOT_EXECUTED",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-E6-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "CLAIM-007",
+      "target_type": "claim",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E6",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-E-003"
+      ],
+      "test_results": [],
+      "expected": "属性/权限组合教学服务",
+      "actual": "待 E6 发布门验证",
+      "first_breakpoint": "E6 NOT_EXECUTED",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-E6-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "CLAIM-008",
+      "target_type": "claim",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E6",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-A-008",
+        "TEST-W-008"
+      ],
+      "test_results": [],
+      "expected": "按设备通信日志与导出",
+      "actual": "待 E6 发布门验证",
+      "first_breakpoint": "E6 NOT_EXECUTED",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-E6-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "CLAIM-009",
+      "target_type": "claim",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E6",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-A-009",
+        "TEST-W-009"
+      ],
+      "test_results": [],
+      "expected": "多设备会话管理",
+      "actual": "待 E6 发布门验证",
+      "first_breakpoint": "E6 NOT_EXECUTED",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-E6-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "CLAIM-010",
+      "target_type": "claim",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E6",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-E-007",
+        "TEST-A-011"
+      ],
+      "test_results": [],
+      "expected": "OTA 完整事务+版本回读",
+      "actual": "待 E6 发布门验证",
+      "first_breakpoint": "E6 NOT_EXECUTED",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-E6-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "CLAIM-011",
+      "target_type": "claim",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E6",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-E-006",
+        "TEST-A-010"
+      ],
+      "test_results": [],
+      "expected": "手机广播+Observer 验证",
+      "actual": "待 E6 发布门验证",
+      "first_breakpoint": "E6 NOT_EXECUTED",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-E6-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "CLAIM-012",
+      "target_type": "claim",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E6",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-C-006",
+        "TEST-R-002"
+      ],
+      "test_results": [],
+      "expected": "版本透明（五处一致）",
+      "actual": "待 E6 发布门验证",
+      "first_breakpoint": "E6 NOT_EXECUTED",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-E6-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "CLAIM-013",
+      "target_type": "claim",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E6",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-003"
+      ],
+      "test_results": [],
+      "expected": "平台状态表",
+      "actual": "待 E6 发布门验证",
+      "first_breakpoint": "E6 NOT_EXECUTED",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-E6-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "CLAIM-014",
+      "target_type": "claim",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E6",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-H-001",
+        "TEST-H-002",
+        "TEST-H-003",
+        "TEST-H-004",
+        "TEST-H-005",
+        "TEST-H-006"
+      ],
+      "test_results": [],
+      "expected": "Smart HID 配网/诊断",
+      "actual": "待 E6 发布门验证",
+      "first_breakpoint": "E6 NOT_EXECUTED",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-E6-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "CLAIM-015",
+      "target_type": "claim",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E6",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-005"
+      ],
+      "test_results": [],
+      "expected": "开源 MIT 与源码可得",
+      "actual": "待 E6 发布门验证",
+      "first_breakpoint": "E6 NOT_EXECUTED",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-E6-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "CLAIM-016",
+      "target_type": "claim",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "AUTOMATED_FAIL",
+      "severity": "P0",
+      "evidence_level": "E6",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-E-008",
+        "TEST-R-008"
+      ],
+      "test_results": [],
+      "expected": "ESP32 双模式夹具",
+      "actual": "落地页/产物声明与证据不匹配或假下载",
+      "first_breakpoint": "docs/index.md download-hub → releases/latest",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-LANDING-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "CLAIM-017",
+      "target_type": "claim",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E6",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-005"
+      ],
+      "test_results": [],
+      "expected": "三条 5 分钟快速开始（Quick Start：前置条件已满足，不含工具链从零安装，19 号文档 2.1 节）",
+      "actual": "待 E6 发布门验证",
+      "first_breakpoint": "E6 NOT_EXECUTED",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-E6-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "CLAIM-018",
+      "target_type": "claim",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "AUTOMATED_FAIL",
+      "severity": "P0",
+      "evidence_level": "E6",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-001",
+        "TEST-R-008"
+      ],
+      "test_results": [],
+      "expected": "下载含 SHA 与设备清单",
+      "actual": "落地页/产物声明与证据不匹配或假下载",
+      "first_breakpoint": "docs/index.md download-hub → releases/latest",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-LANDING-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "CLAIM-019",
+      "target_type": "claim",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E6",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-003"
+      ],
+      "test_results": [],
+      "expected": "已知限制公开",
+      "actual": "待 E6 发布门验证",
+      "first_breakpoint": "E6 NOT_EXECUTED",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-E6-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "CLAIM-020",
+      "target_type": "claim",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E6",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-007"
+      ],
+      "test_results": [],
+      "expected": "证据可查（EVID 链接）",
+      "actual": "待 E6 发布门验证",
+      "first_breakpoint": "E6 NOT_EXECUTED",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-E6-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "CLAIM-021",
+      "target_type": "claim",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E6",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-003"
+      ],
+      "test_results": [],
+      "expected": "隐私立场（本地优先无云端）",
+      "actual": "待 E6 发布门验证",
+      "first_breakpoint": "E6 NOT_EXECUTED",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-E6-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "CLAIM-022",
+      "target_type": "claim",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E6",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-005"
+      ],
+      "test_results": [],
+      "expected": "安全披露渠道",
+      "actual": "待 E6 发布门验证",
+      "first_breakpoint": "E6 NOT_EXECUTED",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-E6-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "CLAIM-023",
+      "target_type": "claim",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E6",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-006"
+      ],
+      "test_results": [],
+      "expected": "在线交互原型",
+      "actual": "待 E6 发布门验证",
+      "first_breakpoint": "E6 NOT_EXECUTED",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-E6-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "CLAIM-024",
+      "target_type": "claim",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E6",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-006"
+      ],
+      "test_results": [],
+      "expected": "真实 App 截图",
+      "actual": "待 E6 发布门验证",
+      "first_breakpoint": "E6 NOT_EXECUTED",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-E6-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "CLAIM-025",
+      "target_type": "claim",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E6",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-005"
+      ],
+      "test_results": [],
+      "expected": "贡献指南与 Profile 扩展",
+      "actual": "待 E6 发布门验证",
+      "first_breakpoint": "E6 NOT_EXECUTED",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-E6-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "CLAIM-026",
+      "target_type": "claim",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E6",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-006"
+      ],
+      "test_results": [],
+      "expected": "无 JS 可读核心内容",
+      "actual": "待 E6 发布门验证",
+      "first_breakpoint": "E6 NOT_EXECUTED",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-E6-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "CLAIM-027",
+      "target_type": "claim",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E6",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-009"
+      ],
+      "test_results": [],
+      "expected": "微信小程序入口",
+      "actual": "待 E6 发布门验证",
+      "first_breakpoint": "E6 NOT_EXECUTED",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-E6-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "CLAIM-028",
+      "target_type": "claim",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "AUTOMATED_FAIL",
+      "severity": "P0",
+      "evidence_level": "E6",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-001"
+      ],
+      "test_results": [],
+      "expected": "Android APK 下载",
+      "actual": "落地页/产物声明与证据不匹配或假下载",
+      "first_breakpoint": "docs/index.md download-hub → releases/latest",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-LANDING-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "CLAIM-029",
+      "target_type": "claim",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E6",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-006"
+      ],
+      "test_results": [],
+      "expected": "SEO/OG/canonical 正确",
+      "actual": "待 E6 发布门验证",
+      "first_breakpoint": "E6 NOT_EXECUTED",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-E6-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "CLAIM-030",
+      "target_type": "claim",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E6",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-010"
+      ],
+      "test_results": [],
+      "expected": "无障碍承诺（对比度/键盘/alt）",
+      "actual": "待 E6 发布门验证",
+      "first_breakpoint": "E6 NOT_EXECUTED",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-E6-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "CLAIM-031",
+      "target_type": "claim",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E6",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-011"
+      ],
+      "test_results": [],
+      "expected": "新电脑 30 分钟 Clean Machine 端到端闭环（clone→依赖→build→flash→install→scan→connect→write→notify，19 号文档 2.2 节；与 CLAIM-017 Quick Start 使用不同测试 ID，不得互相冒充）",
+      "actual": "待 E6 发布门验证",
+      "first_breakpoint": "E6 NOT_EXECUTED",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-E6-001",
+      "release_blocking": true
+    }
+  ]
+}

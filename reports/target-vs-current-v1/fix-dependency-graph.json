@@ -1,0 +1,260 @@
+{
+  "nodes": [
+    {
+      "id": "FIX-TEST-001",
+      "title": "Target Page Driver 实现",
+      "gap_kind": "TESTABILITY",
+      "severity": "P1",
+      "order": 1,
+      "unlocks": "E4 page automation",
+      "gap_count": 0
+    },
+    {
+      "id": "FIX-TEST-002",
+      "title": "Playwright / H5 harness 工具链",
+      "gap_kind": "TOOLCHAIN",
+      "severity": "P2",
+      "order": 1,
+      "unlocks": "page runtime execution",
+      "gap_count": 166
+    },
+    {
+      "id": "FIX-LANDING-001",
+      "title": "落地页假下载与多端大一统误导",
+      "gap_kind": "LANDING",
+      "severity": "P0",
+      "order": 2,
+      "unlocks": "honest download hub",
+      "gap_count": 11
+    },
+    {
+      "id": "FIX-RELEASE-001",
+      "title": "Release Metadata / VERSION SSOT / UniApp 产物流水线",
+      "gap_kind": "RELEASE",
+      "severity": "P0",
+      "order": 2,
+      "unlocks": "PAGE-009/010 WEB claims",
+      "gap_count": 4
+    },
+    {
+      "id": "FIX-RUNTIME-001",
+      "title": "display-name 解析链模块",
+      "gap_kind": "RUNTIME",
+      "severity": "P1",
+      "order": 3,
+      "unlocks": "FEAT-013 PAGE-001",
+      "gap_count": 2
+    },
+    {
+      "id": "FIX-RUNTIME-002",
+      "title": "HEX validateHexInput 整体拒绝",
+      "gap_kind": "RUNTIME",
+      "severity": "P1",
+      "order": 3,
+      "unlocks": "FEAT-028 PAGE-006",
+      "gap_count": 2
+    },
+    {
+      "id": "FIX-RUNTIME-003",
+      "title": "log-redaction 脱敏",
+      "gap_kind": "RUNTIME",
+      "severity": "P1",
+      "order": 3,
+      "unlocks": "FEAT-040 SEC",
+      "gap_count": 4
+    },
+    {
+      "id": "FIX-RUNTIME-004",
+      "title": "write-queue MTU 分包队列",
+      "gap_kind": "RUNTIME",
+      "severity": "P1",
+      "order": 3,
+      "unlocks": "FEAT-030 FLOW-005",
+      "gap_count": 2
+    },
+    {
+      "id": "FIX-RUNTIME-005",
+      "title": "reconnect-policy 有限重连",
+      "gap_kind": "RUNTIME",
+      "severity": "P1",
+      "order": 3,
+      "unlocks": "FEAT-023/024",
+      "gap_count": 11
+    },
+    {
+      "id": "FIX-RUNTIME-006",
+      "title": "Registry subscription_count + 配网会话分类",
+      "gap_kind": "RUNTIME",
+      "severity": "P1",
+      "order": 3,
+      "unlocks": "PAGE-007 DEC-017",
+      "gap_count": 6
+    },
+    {
+      "id": "FIX-RUNTIME-007",
+      "title": "connectDevice 编排服务发现",
+      "gap_kind": "RUNTIME",
+      "severity": "P1",
+      "order": 3,
+      "unlocks": "FLOW-004 ERR-CONN-03",
+      "gap_count": 1
+    },
+    {
+      "id": "FIX-RUNTIME-008",
+      "title": "device-filter keyword 目标接口",
+      "gap_kind": "RUNTIME",
+      "severity": "P2",
+      "order": 4,
+      "unlocks": "FEAT-014 N/M",
+      "gap_count": 0
+    },
+    {
+      "id": "FIX-RUNTIME-009",
+      "title": "public-status / version-metadata 服务",
+      "gap_kind": "RUNTIME",
+      "severity": "P1",
+      "order": 3,
+      "unlocks": "PAGE-009/010 WEB",
+      "gap_count": 2
+    },
+    {
+      "id": "FIX-OTA-001",
+      "title": "OtaManager 写 CHAR_CTRL start/commit/abort",
+      "gap_kind": "RUNTIME",
+      "severity": "P0",
+      "order": 8,
+      "unlocks": "FLOW-009 OTA",
+      "gap_count": 15
+    },
+    {
+      "id": "FIX-OTA-002",
+      "title": "validateOtaPackage 六项传输前校验",
+      "gap_kind": "RUNTIME",
+      "severity": "P1",
+      "order": 8,
+      "unlocks": "FEAT-081 DEC-016",
+      "gap_count": 2
+    },
+    {
+      "id": "FIX-PAGE-008",
+      "title": "广播页改用 Owner/composable 非内联",
+      "gap_kind": "PAGE",
+      "severity": "P1",
+      "order": 7,
+      "unlocks": "PAGE-008 FEAT-041+",
+      "gap_count": 10
+    },
+    {
+      "id": "FIX-FW-001",
+      "title": "ESP32 fixture_observer 固件",
+      "gap_kind": "FIRMWARE",
+      "severity": "P0",
+      "order": 7,
+      "unlocks": "FLOW-008 E5 Observer",
+      "gap_count": 7
+    },
+    {
+      "id": "FIX-FW-002",
+      "title": "ESP32 LED 指令表与广播名对齐",
+      "gap_kind": "FIRMWARE",
+      "severity": "P1",
+      "order": 8,
+      "unlocks": "PROTO LED",
+      "gap_count": 0
+    },
+    {
+      "id": "FIX-HID-001",
+      "title": "smart-hid/profile.js ESM 可载（去 TS 语法）",
+      "gap_kind": "SMART_HID",
+      "severity": "P1",
+      "order": 10,
+      "unlocks": "TEST-U-015",
+      "gap_count": 12
+    },
+    {
+      "id": "FIX-PAGE-010",
+      "title": "版本页改为 Metadata 投影非硬编码",
+      "gap_kind": "PAGE",
+      "severity": "P1",
+      "order": 9,
+      "unlocks": "PAGE-010",
+      "gap_count": 4
+    },
+    {
+      "id": "FIX-E5-001",
+      "title": "Android/微信/ESP32 E5 矩阵执行",
+      "gap_kind": "TOOLCHAIN",
+      "severity": "null",
+      "order": 11,
+      "unlocks": "E5 evidence",
+      "gap_count": 0
+    },
+    {
+      "id": "FIX-E6-001",
+      "title": "Clean Machine / Release E6",
+      "gap_kind": "RELEASE",
+      "severity": "null",
+      "order": 12,
+      "unlocks": "E6 claims",
+      "gap_count": 28
+    }
+  ],
+  "dependencies": [
+    {
+      "from": "FIX-TEST-002",
+      "to": "FIX-TEST-001"
+    },
+    {
+      "from": "FIX-RELEASE-001",
+      "to": "FIX-LANDING-001"
+    },
+    {
+      "from": "FIX-RELEASE-001",
+      "to": "FIX-RUNTIME-009"
+    },
+    {
+      "from": "FIX-RELEASE-001",
+      "to": "FIX-PAGE-010"
+    },
+    {
+      "from": "FIX-RUNTIME-009",
+      "to": "FIX-PAGE-010"
+    },
+    {
+      "from": "FIX-TEST-001",
+      "to": "FIX-E5-001"
+    },
+    {
+      "from": "FIX-RELEASE-001",
+      "to": "FIX-E6-001"
+    },
+    {
+      "from": "FIX-LANDING-001",
+      "to": "FIX-E6-001"
+    }
+  ],
+  "recommended_order": [
+    "FIX-TEST-001",
+    "FIX-TEST-002",
+    "FIX-LANDING-001",
+    "FIX-RELEASE-001",
+    "FIX-RUNTIME-001",
+    "FIX-RUNTIME-002",
+    "FIX-RUNTIME-003",
+    "FIX-RUNTIME-004",
+    "FIX-RUNTIME-005",
+    "FIX-RUNTIME-006",
+    "FIX-RUNTIME-007",
+    "FIX-RUNTIME-009",
+    "FIX-RUNTIME-008",
+    "FIX-FW-001",
+    "FIX-PAGE-008",
+    "FIX-FW-002",
+    "FIX-OTA-001",
+    "FIX-OTA-002",
+    "FIX-PAGE-010",
+    "FIX-HID-001",
+    "FIX-E5-001",
+    "FIX-E6-001"
+  ]
+}

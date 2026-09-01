@@ -1,0 +1,176 @@
+{
+  "records": [
+    {
+      "target_id": "FEAT-053",
+      "target_type": "feature",
+      "gap_kind": "SMART_HID",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "AUTOMATED_FAIL",
+      "severity": "P1",
+      "evidence_level": "E5",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-U-015",
+        "TEST-H-001",
+        "TEST-W-010",
+        "TEST-C-007"
+      ],
+      "test_results": [
+        {
+          "status": "AUTOMATED_FAIL",
+          "message": "NOT_IMPLEMENTED: [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'"
+        }
+      ],
+      "expected": "Profile matcher 强/弱匹配 (Must)",
+      "actual": "NOT_IMPLEMENTED: [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+      "first_breakpoint": "SyntaxError: Unexpected identifier 'as'",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-HID-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "FEAT-055",
+      "target_type": "feature",
+      "gap_kind": "SMART_HID",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "AUTOMATED_FAIL",
+      "severity": "P1",
+      "evidence_level": "E5",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-U-015",
+        "TEST-P-002",
+        "TEST-H-002"
+      ],
+      "test_results": [
+        {
+          "status": "AUTOMATED_FAIL",
+          "message": "NOT_IMPLEMENTED: [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'"
+        }
+      ],
+      "expected": "配网表单与校验 (Must)",
+      "actual": "NOT_IMPLEMENTED: [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+      "first_breakpoint": "SyntaxError: Unexpected identifier 'as'",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-HID-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "FEAT-056",
+      "target_type": "feature",
+      "gap_kind": "SMART_HID",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "AUTOMATED_FAIL",
+      "severity": "P1",
+      "evidence_level": "E5",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-U-015",
+        "TEST-H-002"
+      ],
+      "test_results": [
+        {
+          "status": "AUTOMATED_FAIL",
+          "message": "NOT_IMPLEMENTED: [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'"
+        }
+      ],
+      "expected": "Pairing QR 扫描与解析 (Must)",
+      "actual": "NOT_IMPLEMENTED: [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+      "first_breakpoint": "SyntaxError: Unexpected identifier 'as'",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-HID-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "FEAT-058",
+      "target_type": "feature",
+      "gap_kind": "SMART_HID",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "AUTOMATED_FAIL",
+      "severity": "P1",
+      "evidence_level": "E5",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-U-015",
+        "TEST-H-003"
+      ],
+      "test_results": [
+        {
+          "status": "AUTOMATED_FAIL",
+          "message": "NOT_IMPLEMENTED: [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'"
+        }
+      ],
+      "expected": "状态、进度与八类错误恢复 (Must)",
+      "actual": "NOT_IMPLEMENTED: [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+      "first_breakpoint": "SyntaxError: Unexpected identifier 'as'",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-HID-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "FEAT-059",
+      "target_type": "feature",
+      "gap_kind": "SMART_HID",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "AUTOMATED_FAIL",
+      "severity": "P1",
+      "evidence_level": "E5",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-U-015",
+        "TEST-P-004",
+        "TEST-H-004"
+      ],
+      "test_results": [
+        {
+          "status": "AUTOMATED_FAIL",
+          "message": "NOT_IMPLEMENTED: [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'"
+        }
+      ],
+      "expected": "历史存储与 TTL (Must)",
+      "actual": "NOT_IMPLEMENTED: [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+      "first_breakpoint": "SyntaxError: Unexpected identifier 'as'",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-HID-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "TEST-U-015",
+      "target_type": "test",
+      "gap_kind": "SMART_HID",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "AUTOMATED_FAIL",
+      "severity": "P1",
+      "evidence_level": "E1",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/services/smart-hid/profile.js",
+          "symbol": "SMART_HID_PROFILE",
+          "line_hint": "TS syntax"
+        }
+      ],
+      "test_ids": [
+        "TEST-U-015"
+      ],
+      "test_results": [],
+      "expected": "profile.js 可被 Node 目标测试加载",
+      "actual": "含 TS 语法 Unexpected identifier as",
+      "first_breakpoint": "apps/uniapp/services/smart-hid/profile.js ESM/TS 语法不可直接 import",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-HID-001",
+      "release_blocking": true
+    }
+  ]
+}

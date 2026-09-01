@@ -1,6 +1,6 @@
-# Gap Analysis（TP-G2）
+# Gap Analysis（TP-G2-R1）
 
-机器可读源：`reports/target-vs-current/`
+机器可读源：`reports/target-vs-current/`（v2）
 
 - [TARGET_VS_CURRENT_SUMMARY.md](./TARGET_VS_CURRENT_SUMMARY.md)
 - [PAGE_GAP_REPORT.md](./PAGE_GAP_REPORT.md)
@@ -10,4 +10,6 @@
 - [LANDING_RELEASE_GAP_REPORT.md](./LANDING_RELEASE_GAP_REPORT.md)
 - [TEST_COVERAGE_GAP_REPORT.md](./TEST_COVERAGE_GAP_REPORT.md)
 
-数字必须与 JSON `content_hash=0b5d2b66fc093f6408f7424de0352d3212f8edb31644c2712c813f126db59a35` 一致。
+数字必须与 JSON `content_hash=be493664f40cc23efd4418ab4df5f8cdba44cb398786586fd9d5ed5373c07074` 一致。
+
+v1 存档：`reports/target-vs-current-v1/`（SUPERSEDED）。

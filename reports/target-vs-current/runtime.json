@@ -1,41 +1,16 @@
 {
   "records": [
     {
-      "target_id": "FEAT-009",
-      "target_type": "feature",
-      "gap_kind": "RUNTIME",
-      "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "AUTOMATED_FAIL",
-      "severity": "P1",
-      "evidence_level": "E6",
-      "implementation_refs": [],
-      "test_ids": [
-        "TEST-P-001",
-        "TEST-W-006",
-        "TEST-R-003"
-      ],
-      "test_results": [
-        {
-          "status": "AUTOMATED_FAIL",
-          "message": "NOT_IMPLEMENTED: [REQ-009/046/055 FEAT-009/070 18号§2 五词表] 第一断点: 目标模块缺失：apps/uniapp/services/public-status.js"
-        }
-      ],
-      "expected": "平台不支持降级 (Must)",
-      "actual": "NOT_IMPLEMENTED: [REQ-009/046/055 FEAT-009/070 18号§2 五词表] 第一断点: 目标模块缺失：apps/uniapp/services/public-status.js",
-      "first_breakpoint": "目标模块缺失：apps/uniapp/services/public-status.js",
-      "downstream_impact": [],
-      "dependencies": [],
-      "suggested_fix_id": "FIX-RUNTIME-009",
-      "release_blocking": true
-    },
-    {
       "target_id": "FEAT-011",
       "target_type": "feature",
+      "dimension": "feature",
       "gap_kind": "RUNTIME",
       "priority": "Must",
       "implementation_status": "NOT_IMPLEMENTED",
       "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": "P1",
       "evidence_level": "E5",
       "implementation_refs": [],
@@ -46,25 +21,38 @@
       ],
       "test_results": [
         {
-          "status": "AUTOMATED_FAIL",
-          "message": "NOT_IMPLEMENTED: [TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段"
+          "test_id": "TEST-U-005",
+          "status": "PASS",
+          "case_id": "current:session-state-target.test.mjs:TEST-U-005 目标层：ble-runtime/scan-session.js + device-collection.js",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-005",
+          "status": "FAIL",
+          "case_id": "current:session-state-target.test.mjs:TEST-U-005 目标层：connected-session-registry.js subscription_count（DEC-017）",
+          "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段"
         }
       ],
       "expected": "第二轮独立扫描 generation (Must)",
       "actual": "NOT_IMPLEMENTED: [TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
-      "first_breakpoint": "Registry 快照缺 subscription_count 字段",
+      "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-RUNTIME-006",
+      "root_cause_id": "RC-SESSION-REGISTRY",
+      "task_id": "RUNTIME-SESSION-001",
       "release_blocking": true
     },
     {
       "target_id": "FEAT-012",
       "target_type": "feature",
+      "dimension": "feature",
       "gap_kind": "RUNTIME",
       "priority": "Must",
       "implementation_status": "NOT_IMPLEMENTED",
       "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": "P1",
       "evidence_level": "E5",
       "implementation_refs": [],
@@ -76,25 +64,38 @@
       ],
       "test_results": [
         {
-          "status": "AUTOMATED_FAIL",
-          "message": "NOT_IMPLEMENTED: [TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段"
+          "test_id": "TEST-U-005",
+          "status": "PASS",
+          "case_id": "current:session-state-target.test.mjs:TEST-U-005 目标层：ble-runtime/scan-session.js + device-collection.js",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-005",
+          "status": "FAIL",
+          "case_id": "current:session-state-target.test.mjs:TEST-U-005 目标层：connected-session-registry.js subscription_count（DEC-017）",
+          "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段"
         }
       ],
       "expected": "deviceId 去重与 RSSI 更新 (Must)",
       "actual": "NOT_IMPLEMENTED: [TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
-      "first_breakpoint": "Registry 快照缺 subscription_count 字段",
+      "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-RUNTIME-006",
+      "root_cause_id": "RC-SESSION-REGISTRY",
+      "task_id": "RUNTIME-SESSION-001",
       "release_blocking": true
     },
     {
       "target_id": "FEAT-013",
       "target_type": "feature",
+      "dimension": "feature",
       "gap_kind": "RUNTIME",
       "priority": "Must",
       "implementation_status": "NOT_IMPLEMENTED",
       "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": "P1",
       "evidence_level": "E5",
       "implementation_refs": [
@@ -111,56 +112,69 @@
       ],
       "test_results": [
         {
-          "status": "AUTOMATED_FAIL",
-          "message": "NOT_IMPLEMENTED: [TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js"
+          "test_id": "TEST-U-006",
+          "status": "FAIL",
+          "case_id": "current:device-name-target.test.mjs:TEST-U-006 目标层：services/ble-runtime/display-name.js",
+          "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js"
         }
       ],
       "expected": "设备显示名解析链 (Must)",
-      "actual": "display-name 模块不存在",
-      "first_breakpoint": "apps/uniapp/services/ble-runtime/display-name.js 缺失",
+      "actual": "NOT_IMPLEMENTED: [TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
+      "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-RUNTIME-001",
+      "root_cause_id": "RC-DISPLAY-NAME",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
       "release_blocking": true
     },
     {
-      "target_id": "FEAT-020",
+      "target_id": "FEAT-014",
       "target_type": "feature",
+      "dimension": "feature",
       "gap_kind": "RUNTIME",
       "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
+      "implementation_status": "CONFIRMED_PARTIAL",
       "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": "P1",
       "evidence_level": "E5",
       "implementation_refs": [],
       "test_ids": [
-        "TEST-I-003",
-        "TEST-P-006",
-        "TEST-A-006",
-        "TEST-W-007",
-        "TEST-E-002"
+        "TEST-U-007",
+        "TEST-P-001",
+        "TEST-A-005",
+        "TEST-W-007"
       ],
       "test_results": [
         {
-          "status": "AUTOMATED_FAIL",
-          "message": "NOT_IMPLEMENTED: [REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js"
+          "test_id": "TEST-U-007",
+          "status": "FAIL",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007 目标层：services/ble-runtime/device-filter.js filterBleDevices",
+          "first_breakpoint": "命中项匹配关键词"
         }
       ],
-      "expected": "连接 attempt 与去重 (Must)",
-      "actual": "NOT_IMPLEMENTED: [REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-      "first_breakpoint": "目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
+      "expected": "列表上限与筛选 (Must)",
+      "actual": "命中项匹配关键词",
+      "first_breakpoint": "命中项匹配关键词",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-RUNTIME-005",
+      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-FILTER-001",
       "release_blocking": true
     },
     {
       "target_id": "FEAT-021",
       "target_type": "feature",
+      "dimension": "feature",
       "gap_kind": "RUNTIME",
       "priority": "Must",
       "implementation_status": "NOT_IMPLEMENTED",
       "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": "P1",
       "evidence_level": "E5",
       "implementation_refs": [],
@@ -171,54 +185,32 @@
       ],
       "test_results": [
         {
-          "status": "AUTOMATED_FAIL",
-          "message": "NOT_IMPLEMENTED: [REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js"
+          "test_id": "TEST-I-003",
+          "status": "FAIL",
+          "case_id": "current:service-discovery-target.test.mjs:目标层：服务发现失败关闭半开连接",
+          "first_breakpoint": "[REQ-020/021 ERR-CONN-03] 第一断点: connectDevice 未编排服务发现（失败不报错=半开泄漏面）"
         }
       ],
       "expected": "服务/特征发现 (Must)",
-      "actual": "NOT_IMPLEMENTED: [REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-      "first_breakpoint": "目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
+      "actual": "NOT_IMPLEMENTED: [REQ-020/021 ERR-CONN-03] 第一断点: connectDevice 未编排服务发现（失败不报错=半开泄漏面）",
+      "first_breakpoint": "[REQ-020/021 ERR-CONN-03] 第一断点: connectDevice 未编排服务发现（失败不报错=半开泄漏面）",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-RUNTIME-005",
-      "release_blocking": true
-    },
-    {
-      "target_id": "FEAT-022",
-      "target_type": "feature",
-      "gap_kind": "RUNTIME",
-      "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "AUTOMATED_FAIL",
-      "severity": "P1",
-      "evidence_level": "E5",
-      "implementation_refs": [],
-      "test_ids": [
-        "TEST-I-003",
-        "TEST-P-006",
-        "TEST-E-005"
-      ],
-      "test_results": [
-        {
-          "status": "AUTOMATED_FAIL",
-          "message": "NOT_IMPLEMENTED: [REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js"
-        }
-      ],
-      "expected": "空服务与发现失败重试 (Must)",
-      "actual": "NOT_IMPLEMENTED: [REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-      "first_breakpoint": "目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-      "downstream_impact": [],
-      "dependencies": [],
-      "suggested_fix_id": "FIX-RUNTIME-005",
+      "root_cause_id": "RC-CONN-DISCOVERY",
+      "task_id": "RUNTIME-CONNECTION-DISCOVERY-001",
       "release_blocking": true
     },
     {
       "target_id": "FEAT-023",
       "target_type": "feature",
+      "dimension": "feature",
       "gap_kind": "RUNTIME",
       "priority": "Must",
       "implementation_status": "NOT_IMPLEMENTED",
       "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": "P1",
       "evidence_level": "E5",
       "implementation_refs": [],
@@ -230,82 +222,68 @@
       ],
       "test_results": [
         {
-          "status": "AUTOMATED_FAIL",
-          "message": "NOT_IMPLEMENTED: [REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js"
+          "test_id": "TEST-I-003",
+          "status": "FAIL",
+          "case_id": "current:reconnect-state-target.test.mjs:目标层：services/ble-runtime/reconnect-policy.js",
+          "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js"
         }
       ],
       "expected": "主动断开 (Must)",
       "actual": "NOT_IMPLEMENTED: [REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-      "first_breakpoint": "目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
+      "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-RUNTIME-005",
+      "root_cause_id": "RC-RECONNECT",
+      "task_id": "RUNTIME-RECONNECT-001",
       "release_blocking": true
     },
     {
-      "target_id": "FEAT-024",
+      "target_id": "FEAT-026",
       "target_type": "feature",
+      "dimension": "feature",
       "gap_kind": "RUNTIME",
       "priority": "Must",
       "implementation_status": "NOT_IMPLEMENTED",
       "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": "P1",
       "evidence_level": "E5",
       "implementation_refs": [],
       "test_ids": [
-        "TEST-I-003",
-        "TEST-A-007",
-        "TEST-E-005"
+        "TEST-U-009",
+        "TEST-A-006",
+        "TEST-E-003"
       ],
       "test_results": [
         {
-          "status": "AUTOMATED_FAIL",
-          "message": "NOT_IMPLEMENTED: [REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js"
+          "test_id": "TEST-U-009",
+          "status": "FAIL",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-009/010 目标层：utils/ble-utils.js + 属性约束目标接口",
+          "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失"
         }
       ],
-      "expected": "被动断开有限重连 (Must)",
-      "actual": "NOT_IMPLEMENTED: [REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-      "first_breakpoint": "目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
+      "expected": "属性识别与操作约束 (Must)",
+      "actual": "NOT_IMPLEMENTED: [TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
+      "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-RUNTIME-005",
-      "release_blocking": true
-    },
-    {
-      "target_id": "FEAT-025",
-      "target_type": "feature",
-      "gap_kind": "RUNTIME",
-      "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "AUTOMATED_FAIL",
-      "severity": "P1",
-      "evidence_level": "E4",
-      "implementation_refs": [],
-      "test_ids": [
-        "TEST-I-003",
-        "TEST-P-006"
-      ],
-      "test_results": [
-        {
-          "status": "AUTOMATED_FAIL",
-          "message": "NOT_IMPLEMENTED: [REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js"
-        }
-      ],
-      "expected": "重连耗尽与手动恢复 (Must)",
-      "actual": "NOT_IMPLEMENTED: [REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-      "first_breakpoint": "目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-      "downstream_impact": [],
-      "dependencies": [],
-      "suggested_fix_id": "FIX-RUNTIME-005",
+      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-GATT-CODEC-001",
       "release_blocking": true
     },
     {
       "target_id": "FEAT-028",
       "target_type": "feature",
+      "dimension": "feature",
       "gap_kind": "RUNTIME",
       "priority": "Must",
       "implementation_status": "NOT_IMPLEMENTED",
       "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": "P1",
       "evidence_level": "E5",
       "implementation_refs": [],
@@ -313,29 +291,37 @@
         "TEST-U-010",
         "TEST-I-004",
         "TEST-A-008",
-        "TEST-E-003"
+        "TEST-E-003",
+        "TEST-U-009"
       ],
       "test_results": [
         {
-          "status": "AUTOMATED_FAIL",
-          "message": "NOT_IMPLEMENTED: [TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失"
+          "test_id": "TEST-U-009",
+          "status": "FAIL",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-009/010 目标层：utils/ble-utils.js + 属性约束目标接口",
+          "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失"
         }
       ],
       "expected": "TEXT/HEX Write (Must)",
       "actual": "NOT_IMPLEMENTED: [TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-      "first_breakpoint": "目标接口 validateHexInput/parseHexInput 缺失",
+      "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-RUNTIME-002",
+      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-GATT-CODEC-001",
       "release_blocking": true
     },
     {
       "target_id": "FEAT-030",
       "target_type": "feature",
+      "dimension": "feature",
       "gap_kind": "RUNTIME",
       "priority": "Must",
       "implementation_status": "NOT_IMPLEMENTED",
       "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": "P1",
       "evidence_level": "E5",
       "implementation_refs": [],
@@ -346,56 +332,32 @@
       ],
       "test_results": [
         {
-          "status": "AUTOMATED_FAIL",
-          "message": "NOT_IMPLEMENTED: [TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js"
+          "test_id": "TEST-U-011",
+          "status": "FAIL",
+          "case_id": "current:write-queue-target.test.mjs:TEST-U-011 目标层：services/ble-runtime/write-queue.js",
+          "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js"
         }
       ],
       "expected": "MTU 与分包 (Must)",
       "actual": "NOT_IMPLEMENTED: [TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
-      "first_breakpoint": "目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+      "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-RUNTIME-004",
-      "release_blocking": true
-    },
-    {
-      "target_id": "FEAT-036",
-      "target_type": "feature",
-      "gap_kind": "RUNTIME",
-      "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "AUTOMATED_FAIL",
-      "severity": "P1",
-      "evidence_level": "E5",
-      "implementation_refs": [],
-      "test_ids": [
-        "TEST-U-005",
-        "TEST-I-001",
-        "TEST-I-002",
-        "TEST-I-006",
-        "TEST-A-013"
-      ],
-      "test_results": [
-        {
-          "status": "AUTOMATED_FAIL",
-          "message": "NOT_IMPLEMENTED: [TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段"
-        }
-      ],
-      "expected": "stale 事件与 Listener 清理 (Must)",
-      "actual": "NOT_IMPLEMENTED: [TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
-      "first_breakpoint": "Registry 快照缺 subscription_count 字段",
-      "downstream_impact": [],
-      "dependencies": [],
-      "suggested_fix_id": "FIX-RUNTIME-006",
+      "root_cause_id": "RC-WRITE-QUEUE",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
       "release_blocking": true
     },
     {
       "target_id": "FEAT-040",
       "target_type": "feature",
+      "dimension": "feature",
       "gap_kind": "RUNTIME",
       "priority": "Must",
       "implementation_status": "NOT_IMPLEMENTED",
       "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": "P1",
       "evidence_level": "E6",
       "implementation_refs": [],
@@ -405,93 +367,168 @@
       ],
       "test_results": [
         {
-          "status": "AUTOMATED_FAIL",
-          "message": "NOT_IMPLEMENTED: [TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js"
+          "test_id": "TEST-U-013",
+          "status": "FAIL",
+          "case_id": "current:logging-redaction-target.test.mjs:TEST-U-013 目标层：services/ble-runtime/log-redaction.js",
+          "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js"
         }
       ],
       "expected": "敏感过滤与关联 ID (Must)",
       "actual": "NOT_IMPLEMENTED: [TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-      "first_breakpoint": "目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
+      "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-RUNTIME-003",
+      "root_cause_id": "RC-LOG-REDACTION",
+      "task_id": "RUNTIME-LOG-REDACTION-001",
       "release_blocking": true
     },
     {
       "target_id": "FEAT-046",
       "target_type": "feature",
+      "dimension": "feature",
       "gap_kind": "RUNTIME",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
+      "implementation_status": "CONFIRMED_PARTIAL",
       "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": "P0",
       "evidence_level": "E6",
       "implementation_refs": [
         {
           "path": "apps/uniapp/utils/ota_manager.js",
           "symbol": "OtaManager.startOta",
-          "line_hint": "CHAR_CTRL defined but never written"
+          "line_hint": "CHAR_CTRL never written"
         }
       ],
       "test_ids": [
         "TEST-P-006",
         "TEST-A-011",
         "TEST-E-007",
-        "TEST-R-003"
+        "TEST-R-003",
+        "TEST-I-008"
       ],
-      "test_results": [],
+      "test_results": [
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-008 OtaManager：STATUS 订阅后、DATA 前必须精确写 CTRL start",
+          "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start"
+        },
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-008 OtaManager：Package 校验失败时平台写调用为 0",
+          "first_breakpoint": "[TEST-I-008 FEAT-081 DEC-016] 第一断点: validateOtaPackage/validatePackage 缺失；第一断点: 传输前包校验接口不存在"
+        },
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-010 OtaManager：cancel 必须写 CTRL abort（完整 UUID）",
+          "first_breakpoint": "cancel 必须向 CTRL 完整 UUID 写入 abort"
+        },
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-010 OtaManager：成功后必须 reboot/reconnect 并读 firmware_version",
+          "first_breakpoint": "success 后必须读取 firmware_version"
+        }
+      ],
       "expected": "固件文件选择与校验 (Must)",
-      "actual": "仅写 CHAR_DATA；固件要求 CTRL 事务",
-      "first_breakpoint": "OtaManager 未写 CHAR_CTRL start/commit",
+      "actual": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
+      "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-OTA-001",
+      "root_cause_id": "RC-OTA-CTRL-START",
+      "task_id": "OTA-CLIENT-001",
       "release_blocking": true
     },
     {
       "target_id": "FEAT-047",
       "target_type": "feature",
+      "dimension": "feature",
       "gap_kind": "RUNTIME",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
+      "implementation_status": "CONFIRMED_PARTIAL",
       "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": "P0",
       "evidence_level": "E5",
       "implementation_refs": [
         {
           "path": "apps/uniapp/utils/ota_manager.js",
           "symbol": "OtaManager.startOta",
-          "line_hint": "CHAR_CTRL defined but never written"
+          "line_hint": "CHAR_CTRL never written"
         }
       ],
       "test_ids": [
         "TEST-I-008",
         "TEST-A-011",
-        "TEST-E-007"
+        "TEST-E-007",
+        "TEST-U-016"
       ],
-      "test_results": [],
+      "test_results": [
+        {
+          "test_id": "TEST-U-016",
+          "status": "FAIL",
+          "case_id": "current:ota-state-target.test.mjs:TEST-U-016 目标层：utils/ota_manager.js 包校验目标接口",
+          "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）"
+        },
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-008 OtaManager：STATUS 订阅后、DATA 前必须精确写 CTRL start",
+          "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start"
+        },
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-008 OtaManager：Package 校验失败时平台写调用为 0",
+          "first_breakpoint": "[TEST-I-008 FEAT-081 DEC-016] 第一断点: validateOtaPackage/validatePackage 缺失；第一断点: 传输前包校验接口不存在"
+        },
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-010 OtaManager：cancel 必须写 CTRL abort（完整 UUID）",
+          "first_breakpoint": "cancel 必须向 CTRL 完整 UUID 写入 abort"
+        },
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-010 OtaManager：成功后必须 reboot/reconnect 并读 firmware_version",
+          "first_breakpoint": "success 后必须读取 firmware_version"
+        }
+      ],
       "expected": "STATUS 订阅与 CTRL start/ready 握手 (Must)",
-      "actual": "仅写 CHAR_DATA；固件要求 CTRL 事务",
-      "first_breakpoint": "OtaManager 未写 CHAR_CTRL start/commit",
+      "actual": "NOT_IMPLEMENTED: [TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
+      "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-OTA-001",
+      "root_cause_id": "RC-OTA-CTRL-START",
+      "task_id": "OTA-CLIENT-001",
       "release_blocking": true
     },
     {
       "target_id": "FEAT-048",
       "target_type": "feature",
+      "dimension": "feature",
       "gap_kind": "RUNTIME",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
+      "implementation_status": "CONFIRMED_PARTIAL",
       "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": "P0",
       "evidence_level": "E5",
       "implementation_refs": [
         {
           "path": "apps/uniapp/utils/ota_manager.js",
           "symbol": "OtaManager.startOta",
-          "line_hint": "CHAR_CTRL defined but never written"
+          "line_hint": "CHAR_CTRL never written"
         }
       ],
       "test_ids": [
@@ -499,58 +536,118 @@
         "TEST-A-011",
         "TEST-E-007"
       ],
-      "test_results": [],
+      "test_results": [
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-008 OtaManager：STATUS 订阅后、DATA 前必须精确写 CTRL start",
+          "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start"
+        },
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-008 OtaManager：Package 校验失败时平台写调用为 0",
+          "first_breakpoint": "[TEST-I-008 FEAT-081 DEC-016] 第一断点: validateOtaPackage/validatePackage 缺失；第一断点: 传输前包校验接口不存在"
+        },
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-010 OtaManager：cancel 必须写 CTRL abort（完整 UUID）",
+          "first_breakpoint": "cancel 必须向 CTRL 完整 UUID 写入 abort"
+        },
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-010 OtaManager：成功后必须 reboot/reconnect 并读 firmware_version",
+          "first_breakpoint": "success 后必须读取 firmware_version"
+        }
+      ],
       "expected": "DATA 分包传输 (Must)",
-      "actual": "仅写 CHAR_DATA；固件要求 CTRL 事务",
-      "first_breakpoint": "OtaManager 未写 CHAR_CTRL start/commit",
+      "actual": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
+      "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-OTA-001",
+      "root_cause_id": "RC-OTA-CTRL-START",
+      "task_id": "OTA-CLIENT-001",
       "release_blocking": true
     },
     {
       "target_id": "FEAT-049",
       "target_type": "feature",
+      "dimension": "feature",
       "gap_kind": "RUNTIME",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
+      "implementation_status": "CONFIRMED_PARTIAL",
       "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": "P0",
       "evidence_level": "E5",
       "implementation_refs": [
         {
           "path": "apps/uniapp/utils/ota_manager.js",
           "symbol": "OtaManager.startOta",
-          "line_hint": "CHAR_CTRL defined but never written"
+          "line_hint": "CHAR_CTRL never written"
         }
       ],
       "test_ids": [
         "TEST-I-008",
         "TEST-E-007"
       ],
-      "test_results": [],
+      "test_results": [
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-008 OtaManager：STATUS 订阅后、DATA 前必须精确写 CTRL start",
+          "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start"
+        },
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-008 OtaManager：Package 校验失败时平台写调用为 0",
+          "first_breakpoint": "[TEST-I-008 FEAT-081 DEC-016] 第一断点: validateOtaPackage/validatePackage 缺失；第一断点: 传输前包校验接口不存在"
+        },
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-010 OtaManager：cancel 必须写 CTRL abort（完整 UUID）",
+          "first_breakpoint": "cancel 必须向 CTRL 完整 UUID 写入 abort"
+        },
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-010 OtaManager：成功后必须 reboot/reconnect 并读 firmware_version",
+          "first_breakpoint": "success 后必须读取 firmware_version"
+        }
+      ],
       "expected": "CTRL commit 与 success (Must)",
-      "actual": "仅写 CHAR_DATA；固件要求 CTRL 事务",
-      "first_breakpoint": "OtaManager 未写 CHAR_CTRL start/commit",
+      "actual": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
+      "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-OTA-001",
+      "root_cause_id": "RC-OTA-CTRL-START",
+      "task_id": "OTA-CLIENT-001",
       "release_blocking": true
     },
     {
       "target_id": "FEAT-050",
       "target_type": "feature",
+      "dimension": "feature",
       "gap_kind": "RUNTIME",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
+      "implementation_status": "CONFIRMED_PARTIAL",
       "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": "P0",
       "evidence_level": "E5",
       "implementation_refs": [
         {
           "path": "apps/uniapp/utils/ota_manager.js",
           "symbol": "OtaManager.startOta",
-          "line_hint": "CHAR_CTRL defined but never written"
+          "line_hint": "CHAR_CTRL never written"
         }
       ],
       "test_ids": [
@@ -558,29 +655,59 @@
         "TEST-A-011",
         "TEST-E-007"
       ],
-      "test_results": [],
+      "test_results": [
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-008 OtaManager：STATUS 订阅后、DATA 前必须精确写 CTRL start",
+          "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start"
+        },
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-008 OtaManager：Package 校验失败时平台写调用为 0",
+          "first_breakpoint": "[TEST-I-008 FEAT-081 DEC-016] 第一断点: validateOtaPackage/validatePackage 缺失；第一断点: 传输前包校验接口不存在"
+        },
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-010 OtaManager：cancel 必须写 CTRL abort（完整 UUID）",
+          "first_breakpoint": "cancel 必须向 CTRL 完整 UUID 写入 abort"
+        },
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-010 OtaManager：成功后必须 reboot/reconnect 并读 firmware_version",
+          "first_breakpoint": "success 后必须读取 firmware_version"
+        }
+      ],
       "expected": "abort 与取消 (Must)",
-      "actual": "仅写 CHAR_DATA；固件要求 CTRL 事务",
-      "first_breakpoint": "OtaManager 未写 CHAR_CTRL start/commit",
+      "actual": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
+      "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-OTA-001",
+      "root_cause_id": "RC-OTA-CTRL-START",
+      "task_id": "OTA-CLIENT-001",
       "release_blocking": true
     },
     {
       "target_id": "FEAT-051",
       "target_type": "feature",
+      "dimension": "feature",
       "gap_kind": "RUNTIME",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
-      "verification_status": "AUTOMATED_FAIL",
+      "implementation_status": "CONFIRMED_PARTIAL",
+      "verification_status": "HARDWARE_PENDING",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": "P0",
       "evidence_level": "E5",
       "implementation_refs": [
         {
           "path": "apps/uniapp/utils/ota_manager.js",
           "symbol": "OtaManager.startOta",
-          "line_hint": "CHAR_CTRL defined but never written"
+          "line_hint": "CHAR_CTRL never written"
         }
       ],
       "test_ids": [
@@ -589,27 +716,32 @@
       ],
       "test_results": [],
       "expected": "reboot/reconnect/version readback (Must)",
-      "actual": "仅写 CHAR_DATA；固件要求 CTRL 事务",
-      "first_breakpoint": "OtaManager 未写 CHAR_CTRL start/commit",
+      "actual": "CHAR_CTRL defined but start/commit/abort not written before DATA",
+      "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-OTA-001",
+      "root_cause_id": "RC-OTA-CTRL-START",
+      "task_id": "OTA-CLIENT-001",
       "release_blocking": true
     },
     {
       "target_id": "FEAT-052",
       "target_type": "feature",
+      "dimension": "feature",
       "gap_kind": "RUNTIME",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
-      "verification_status": "AUTOMATED_FAIL",
+      "implementation_status": "CONFIRMED_PARTIAL",
+      "verification_status": "HARDWARE_PENDING",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": "P0",
       "evidence_level": "E5",
       "implementation_refs": [
         {
           "path": "apps/uniapp/utils/ota_manager.js",
           "symbol": "OtaManager.startOta",
-          "line_hint": "CHAR_CTRL defined but never written"
+          "line_hint": "CHAR_CTRL never written"
         }
       ],
       "test_ids": [
@@ -618,20 +750,61 @@
       ],
       "test_results": [],
       "expected": "OTA 失败恢复与重试 (Must)",
-      "actual": "仅写 CHAR_DATA；固件要求 CTRL 事务",
-      "first_breakpoint": "OtaManager 未写 CHAR_CTRL start/commit",
+      "actual": "CHAR_CTRL defined but start/commit/abort not written before DATA",
+      "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-OTA-001",
+      "root_cause_id": "RC-OTA-CTRL-START",
+      "task_id": "OTA-CLIENT-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "FEAT-062",
+      "target_type": "feature",
+      "dimension": "feature",
+      "gap_kind": "RUNTIME",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
+      "severity": "P1",
+      "evidence_level": "E5",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-005",
+        "TEST-H-005",
+        "TEST-I-009"
+      ],
+      "test_results": [
+        {
+          "test_id": "TEST-I-009",
+          "status": "FAIL",
+          "case_id": "current:smart-hid-session-ownership-target.test.mjs:目标层：配网会话与活动会话口径隔离",
+          "first_breakpoint": "[REQ-053/PAGE-007 排除规则] 第一断点: Registry 无配网会话分类/排除接口——PAGE-007 口径无法排除配网会话"
+        }
+      ],
+      "expected": "自动诊断与手动重试 (Must)",
+      "actual": "NOT_IMPLEMENTED: [REQ-053/PAGE-007 排除规则] 第一断点: Registry 无配网会话分类/排除接口——PAGE-007 口径无法排除配网会话",
+      "first_breakpoint": "[REQ-053/PAGE-007 排除规则] 第一断点: Registry 无配网会话分类/排除接口——PAGE-007 口径无法排除配网会话",
+      "downstream_impact": [],
+      "dependencies": [],
+      "root_cause_id": "RC-SESSION-REGISTRY",
+      "task_id": "RUNTIME-SESSION-001",
       "release_blocking": true
     },
     {
       "target_id": "FEAT-081",
       "target_type": "feature",
+      "dimension": "feature",
       "gap_kind": "RUNTIME",
       "priority": "Must",
       "implementation_status": "NOT_IMPLEMENTED",
       "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": "P1",
       "evidence_level": "E5",
       "implementation_refs": [],
@@ -639,29 +812,376 @@
         "TEST-U-016",
         "TEST-I-010",
         "TEST-E-007",
-        "TEST-A-011"
+        "TEST-A-011",
+        "TEST-I-008"
       ],
       "test_results": [
         {
-          "status": "AUTOMATED_FAIL",
-          "message": "NOT_IMPLEMENTED: [TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）"
+          "test_id": "TEST-U-016",
+          "status": "FAIL",
+          "case_id": "current:ota-state-target.test.mjs:TEST-U-016 目标层：utils/ota_manager.js 包校验目标接口",
+          "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）"
+        },
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-008 OtaManager：STATUS 订阅后、DATA 前必须精确写 CTRL start",
+          "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start"
+        },
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-008 OtaManager：Package 校验失败时平台写调用为 0",
+          "first_breakpoint": "[TEST-I-008 FEAT-081 DEC-016] 第一断点: validateOtaPackage/validatePackage 缺失；第一断点: 传输前包校验接口不存在"
+        },
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-010 OtaManager：cancel 必须写 CTRL abort（完整 UUID）",
+          "first_breakpoint": "cancel 必须向 CTRL 完整 UUID 写入 abort"
+        },
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-010 OtaManager：成功后必须 reboot/reconnect 并读 firmware_version",
+          "first_breakpoint": "success 后必须读取 firmware_version"
         }
       ],
       "expected": "OTA 固件包加载与传输前校验（DEC-016） (Must)",
       "actual": "NOT_IMPLEMENTED: [TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
-      "first_breakpoint": "validateOtaPackage 接口缺失",
+      "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-OTA-002",
+      "root_cause_id": "RC-OTA-PACKAGE",
+      "task_id": "OTA-PACKAGE-001",
       "release_blocking": true
+    },
+    {
+      "target_id": "PAGE-001",
+      "target_type": "page",
+      "dimension": "page",
+      "gap_kind": "RUNTIME",
+      "priority": "Must",
+      "implementation_status": "UNASSESSED",
+      "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": "UNASSESSED",
+      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e5_verification": "HARDWARE_PENDING",
+      "severity": "P1",
+      "evidence_level": "E5",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/pages/index/index.vue",
+          "symbol": "PAGE-001",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-P-001",
+        "TEST-A-001",
+        "TEST-A-005",
+        "TEST-W-001",
+        "TEST-W-007",
+        "TEST-E-001",
+        "TEST-U-008",
+        "TEST-U-001",
+        "TEST-U-005",
+        "TEST-I-003",
+        "TEST-I-001",
+        "TEST-I-002",
+        "TEST-I-009",
+        "TEST-U-007",
+        "TEST-U-006",
+        "TEST-U-015"
+      ],
+      "test_results": [
+        {
+          "test_id": "TEST-U-008",
+          "status": "PASS",
+          "case_id": "current:advertisement-target.test.mjs:TEST-U-008 目标层：services/ble-runtime/advertisement.js normalizeAdvertisement",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-001",
+          "status": "PASS",
+          "case_id": "current:platform-permission-target.test.mjs:TEST-U-001/003/004 目标层：ble-runtime/platform.js + services/scan-permission.js",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-005",
+          "status": "PASS",
+          "case_id": "current:session-state-target.test.mjs:TEST-U-005 目标层：ble-runtime/scan-session.js + device-collection.js",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-I-003",
+          "status": "PASS",
+          "case_id": "current:connection-runtime-target.test.mjs:目标层：ble-runtime connectDevice 并发去重 + 主动断开",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-I-003",
+          "status": "PASS",
+          "case_id": "current:connection-runtime-target.test.mjs:目标层：连接失败不残留半开会话",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-I-001",
+          "status": "PASS",
+          "case_id": "current:lifecycle-cleanup-target.test.mjs:目标层：扫描停止后运行时无残留监听/会话",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-I-002",
+          "status": "PASS",
+          "case_id": "current:scan-runtime-target.test.mjs:TEST-I-002 目标层：ble-runtime/index.js 扫描生命周期",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-I-009",
+          "status": "PASS",
+          "case_id": "current:smart-hid-provision-target.test.mjs:TEST-I-009 目标层：runProvisionTransaction 顺序（waiter 先注册）",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-I-009",
+          "status": "PASS",
+          "case_id": "current:smart-hid-provision-target.test.mjs:TEST-I-009 目标层：writeProfileCandidate 分帧写入到达平台",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "FAIL",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007 目标层：services/ble-runtime/device-filter.js filterBleDevices",
+          "first_breakpoint": "命中项匹配关键词"
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "FAIL",
+          "case_id": "current:device-name-target.test.mjs:TEST-U-006 目标层：services/ble-runtime/display-name.js",
+          "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js"
+        },
+        {
+          "test_id": "TEST-U-005",
+          "status": "FAIL",
+          "case_id": "current:session-state-target.test.mjs:TEST-U-005 目标层：connected-session-registry.js subscription_count（DEC-017）",
+          "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段"
+        },
+        {
+          "test_id": "TEST-U-015",
+          "status": "FAIL",
+          "case_id": "current:smart-hid-state-target.test.mjs:TEST-U-015 目标层：smart-hid/profile.js + workflow.js",
+          "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'"
+        }
+      ],
+      "expected": "10 states / 14 operations",
+      "actual": "命中项匹配关键词",
+      "first_breakpoint": "命中项匹配关键词",
+      "downstream_impact": [
+        "state_cases=10",
+        "operation_cases=14"
+      ],
+      "dependencies": [],
+      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-FILTER-001",
+      "release_blocking": false
+    },
+    {
+      "target_id": "PAGE-002",
+      "target_type": "page",
+      "dimension": "page",
+      "gap_kind": "RUNTIME",
+      "priority": "Must",
+      "implementation_status": "UNASSESSED",
+      "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": "UNASSESSED",
+      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e5_verification": "HARDWARE_PENDING",
+      "severity": "P1",
+      "evidence_level": "E5",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/pages/hid/add.vue",
+          "symbol": "PAGE-002",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-P-002",
+        "TEST-U-015",
+        "TEST-I-009",
+        "TEST-H-001",
+        "TEST-H-002",
+        "TEST-H-003",
+        "TEST-W-010",
+        "TEST-U-013"
+      ],
+      "test_results": [
+        {
+          "test_id": "TEST-U-013",
+          "status": "FAIL",
+          "case_id": "current:logging-redaction-target.test.mjs:TEST-U-013 目标层：services/ble-runtime/log-redaction.js",
+          "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js"
+        },
+        {
+          "test_id": "TEST-I-009",
+          "status": "FAIL",
+          "case_id": "current:smart-hid-session-ownership-target.test.mjs:目标层：配网会话与活动会话口径隔离",
+          "first_breakpoint": "[REQ-053/PAGE-007 排除规则] 第一断点: Registry 无配网会话分类/排除接口——PAGE-007 口径无法排除配网会话"
+        }
+      ],
+      "expected": "12 states / 11 operations",
+      "actual": "NOT_IMPLEMENTED: [TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
+      "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
+      "downstream_impact": [
+        "state_cases=12",
+        "operation_cases=11"
+      ],
+      "dependencies": [],
+      "root_cause_id": "RC-LOG-REDACTION",
+      "task_id": "RUNTIME-LOG-REDACTION-001",
+      "release_blocking": false
+    },
+    {
+      "target_id": "PAGE-006",
+      "target_type": "page",
+      "dimension": "page",
+      "gap_kind": "RUNTIME",
+      "priority": "Must",
+      "implementation_status": "UNASSESSED",
+      "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": "UNASSESSED",
+      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e5_verification": "HARDWARE_PENDING",
+      "severity": "P1",
+      "evidence_level": "E5",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/pages/device/detail.vue",
+          "symbol": "PAGE-006",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-P-006",
+        "TEST-U-009",
+        "TEST-U-010",
+        "TEST-U-011",
+        "TEST-U-012",
+        "TEST-I-003",
+        "TEST-I-004",
+        "TEST-I-005",
+        "TEST-I-008",
+        "TEST-A-006",
+        "TEST-A-008",
+        "TEST-A-011",
+        "TEST-W-007",
+        "TEST-W-008",
+        "TEST-E-002",
+        "TEST-E-003",
+        "TEST-E-004",
+        "TEST-E-005",
+        "TEST-E-007",
+        "TEST-I-006",
+        "TEST-U-016"
+      ],
+      "test_results": [
+        {
+          "test_id": "TEST-I-006",
+          "status": "PASS",
+          "case_id": "current:multi-device-target.test.mjs:目标层：双设备隔离与 Registry 快照",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-I-005",
+          "status": "PASS",
+          "case_id": "current:notify-routing-target.test.mjs:目标层：ble-runtime 订阅路由与 tuple 隔离",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-I-004",
+          "status": "PASS",
+          "case_id": "current:read-write-runtime-target.test.mjs:目标层：ble-runtime 读写与错误归一化",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "FAIL",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-009/010 目标层：utils/ble-utils.js + 属性约束目标接口",
+          "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失"
+        },
+        {
+          "test_id": "TEST-U-016",
+          "status": "FAIL",
+          "case_id": "current:ota-state-target.test.mjs:TEST-U-016 目标层：utils/ota_manager.js 包校验目标接口",
+          "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）"
+        },
+        {
+          "test_id": "TEST-I-003",
+          "status": "FAIL",
+          "case_id": "current:reconnect-state-target.test.mjs:目标层：services/ble-runtime/reconnect-policy.js",
+          "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js"
+        },
+        {
+          "test_id": "TEST-U-011",
+          "status": "FAIL",
+          "case_id": "current:write-queue-target.test.mjs:TEST-U-011 目标层：services/ble-runtime/write-queue.js",
+          "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js"
+        },
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-008 OtaManager：STATUS 订阅后、DATA 前必须精确写 CTRL start",
+          "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start"
+        },
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-008 OtaManager：Package 校验失败时平台写调用为 0",
+          "first_breakpoint": "[TEST-I-008 FEAT-081 DEC-016] 第一断点: validateOtaPackage/validatePackage 缺失；第一断点: 传输前包校验接口不存在"
+        },
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-010 OtaManager：cancel 必须写 CTRL abort（完整 UUID）",
+          "first_breakpoint": "cancel 必须向 CTRL 完整 UUID 写入 abort"
+        },
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-010 OtaManager：成功后必须 reboot/reconnect 并读 firmware_version",
+          "first_breakpoint": "success 后必须读取 firmware_version"
+        },
+        {
+          "test_id": "TEST-I-003",
+          "status": "FAIL",
+          "case_id": "current:service-discovery-target.test.mjs:目标层：服务发现失败关闭半开连接",
+          "first_breakpoint": "[REQ-020/021 ERR-CONN-03] 第一断点: connectDevice 未编排服务发现（失败不报错=半开泄漏面）"
+        }
+      ],
+      "expected": "10 states / 14 operations",
+      "actual": "NOT_IMPLEMENTED: [TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
+      "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
+      "downstream_impact": [
+        "state_cases=10",
+        "operation_cases=14"
+      ],
+      "dependencies": [],
+      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-GATT-CODEC-001",
+      "release_blocking": false
     },
     {
       "target_id": "OP-P006-12",
       "target_type": "operation",
+      "dimension": "operation",
       "gap_kind": "RUNTIME",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
+      "implementation_status": "CONFIRMED_PARTIAL",
       "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": "CONFIRMED_PARTIAL",
+      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e5_verification": "NOT_EXECUTED",
       "severity": "P0",
       "evidence_level": "E4",
       "implementation_refs": [],
@@ -672,55 +1192,59 @@
         "TEST-E-007"
       ],
       "test_results": [],
-      "expected": "选择 OTA 固件包; runtime=FEAT-081 六项校验（格式/target/hardware/version/size/SHA256）",
+      "expected": "选择 OTA 固件包",
       "actual": "UI 可启动 OTA 但协议不完整",
-      "first_breakpoint": "OtaManager 未写 CHAR_CTRL；与固件事务协议断裂",
+      "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-006"
       ],
-      "suggested_fix_id": "FIX-OTA-001",
+      "root_cause_id": "RC-OTA-CTRL-START",
+      "task_id": "OTA-CLIENT-001",
       "release_blocking": true
     },
     {
       "target_id": "OP-P006-13",
       "target_type": "operation",
+      "dimension": "operation",
       "gap_kind": "RUNTIME",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
+      "implementation_status": "CONFIRMED_PARTIAL",
       "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": "CONFIRMED_PARTIAL",
+      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e5_verification": "HARDWARE_PENDING",
       "severity": "P0",
       "evidence_level": "E5",
-      "implementation_refs": [
-        {
-          "path": "apps/uniapp/utils/ota_manager.js",
-          "symbol": "OtaManager",
-          "line_hint": ""
-        }
-      ],
+      "implementation_refs": [],
       "test_ids": [
         "TEST-I-008",
         "TEST-A-011",
         "TEST-E-007"
       ],
       "test_results": [],
-      "expected": "开始 OTA; runtime=OTA 事务（第 0 步后 10 步正典，`12`；start 携带 target/sha256）",
+      "expected": "开始 OTA",
       "actual": "UI 可启动 OTA 但协议不完整",
-      "first_breakpoint": "OtaManager 未写 CHAR_CTRL；与固件事务协议断裂",
+      "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-006"
       ],
-      "suggested_fix_id": "FIX-OTA-001",
+      "root_cause_id": "RC-OTA-CTRL-START",
+      "task_id": "OTA-CLIENT-001",
       "release_blocking": true
     },
     {
       "target_id": "OP-P006-14",
       "target_type": "operation",
+      "dimension": "operation",
       "gap_kind": "RUNTIME",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
+      "implementation_status": "CONFIRMED_PARTIAL",
       "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": "CONFIRMED_PARTIAL",
+      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e5_verification": "NOT_EXECUTED",
       "severity": "P0",
       "evidence_level": "E4",
       "implementation_refs": [],
@@ -728,15 +1252,623 @@
         "TEST-E-007"
       ],
       "test_results": [],
-      "expected": "取消 OTA; runtime=CTRL abort→设备回 idle",
+      "expected": "取消 OTA",
       "actual": "UI 可启动 OTA 但协议不完整",
-      "first_breakpoint": "OtaManager 未写 CHAR_CTRL；与固件事务协议断裂",
+      "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-006"
       ],
-      "suggested_fix_id": "FIX-OTA-001",
+      "root_cause_id": "RC-OTA-CTRL-START",
+      "task_id": "OTA-CLIENT-001",
       "release_blocking": true
+    },
+    {
+      "target_id": "PAGE-007",
+      "target_type": "page",
+      "dimension": "page",
+      "gap_kind": "RUNTIME",
+      "priority": "Must",
+      "implementation_status": "UNASSESSED",
+      "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": "UNASSESSED",
+      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e5_verification": "HARDWARE_PENDING",
+      "severity": "P1",
+      "evidence_level": "E5",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/pages/connected/index.vue",
+          "symbol": "PAGE-007",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-P-007",
+        "TEST-I-006",
+        "TEST-A-007",
+        "TEST-A-009",
+        "TEST-W-008",
+        "TEST-W-009",
+        "TEST-E-002",
+        "TEST-I-009"
+      ],
+      "test_results": [
+        {
+          "test_id": "TEST-I-009",
+          "status": "FAIL",
+          "case_id": "current:smart-hid-session-ownership-target.test.mjs:目标层：配网会话与活动会话口径隔离",
+          "first_breakpoint": "[REQ-053/PAGE-007 排除规则] 第一断点: Registry 无配网会话分类/排除接口——PAGE-007 口径无法排除配网会话"
+        }
+      ],
+      "expected": "3 states / 5 operations",
+      "actual": "NOT_IMPLEMENTED: [REQ-053/PAGE-007 排除规则] 第一断点: Registry 无配网会话分类/排除接口——PAGE-007 口径无法排除配网会话",
+      "first_breakpoint": "[REQ-053/PAGE-007 排除规则] 第一断点: Registry 无配网会话分类/排除接口——PAGE-007 口径无法排除配网会话",
+      "downstream_impact": [
+        "state_cases=3",
+        "operation_cases=5"
+      ],
+      "dependencies": [],
+      "root_cause_id": "RC-SESSION-REGISTRY",
+      "task_id": "RUNTIME-SESSION-001",
+      "release_blocking": false
+    },
+    {
+      "target_id": "WEB-001",
+      "target_type": "web",
+      "dimension": "web",
+      "gap_kind": "RUNTIME",
+      "priority": "Must",
+      "implementation_status": "CONFIRMED_PARTIAL",
+      "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": "CONFIRMED_PARTIAL",
+      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e5_verification": "HARDWARE_PENDING",
+      "severity": "P1",
+      "evidence_level": "E6",
+      "implementation_refs": [
+        {
+          "path": "docs/index.md",
+          "symbol": "WEB-001",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-R-001",
+        "TEST-R-002",
+        "TEST-R-003",
+        "TEST-R-005",
+        "TEST-R-006",
+        "TEST-R-007",
+        "TEST-R-008",
+        "TEST-R-009",
+        "TEST-R-010",
+        "TEST-R-011",
+        "TEST-U-013",
+        "TEST-U-002"
+      ],
+      "test_results": [
+        {
+          "test_id": "TEST-R-005",
+          "status": "PASS",
+          "case_id": "current:links-and-qr.test.mjs:TEST-R-005 落地页本站相对链接全部可达",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-005",
+          "status": "PASS",
+          "case_id": "current:links-and-qr.test.mjs:TEST-R-005 目标文档内链相对且可达（docs/target-product 抽样）",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-005",
+          "status": "PASS",
+          "case_id": "current:links-and-qr.test.mjs:TEST-R-009 二维码规则：落地页如含码图必须同时给文本等价",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-003",
+          "status": "PASS",
+          "case_id": "current:public-claims.test.mjs:TEST-R-003 生产落地页存在",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-003",
+          "status": "PASS",
+          "case_id": "current:public-claims.test.mjs:TEST-R-003 禁用无证据强声明词（VERIFIED 语义不得无证据出现）",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-013",
+          "status": "FAIL",
+          "case_id": "current:logging-redaction-target.test.mjs:TEST-U-013 目标层：services/ble-runtime/log-redaction.js",
+          "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js"
+        },
+        {
+          "test_id": "TEST-U-002",
+          "status": "FAIL",
+          "case_id": "current:version-release-metadata-target.test.mjs:TEST-U-002 目标层：services/version-metadata.js",
+          "first_breakpoint": "[TEST-U-002 REQ-004/056 FEAT-004/066 PAGE-009/010 WEB-001 S-47] 第一断点: 目标模块缺失：apps/uniapp/services/version-metadata.js"
+        },
+        {
+          "test_id": "TEST-R-003",
+          "status": "FAIL",
+          "case_id": "current:public-claims.test.mjs:TEST-R-003 无假下载：APK/固件直链必须伴随 SHA256；无产物时必须诚实 NOT_RELEASED 且无 releases/latest 冒充",
+          "first_breakpoint": "无产物直链时页面必须明确 NOT_RELEASED/尚未发布"
+        },
+        {
+          "test_id": "TEST-R-003",
+          "status": "FAIL",
+          "case_id": "current:public-claims.test.mjs:TEST-R-003 禁止错误主线与 6+ 入口误导",
+          "first_breakpoint": "不得宣称 6+ 入口"
+        }
+      ],
+      "expected": "4 states / 11 operations",
+      "actual": "NOT_IMPLEMENTED: [TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
+      "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
+      "downstream_impact": [
+        "state_cases=4",
+        "operation_cases=11"
+      ],
+      "dependencies": [],
+      "root_cause_id": "RC-LOG-REDACTION",
+      "task_id": "RUNTIME-LOG-REDACTION-001",
+      "release_blocking": false
+    },
+    {
+      "target_id": "FLOW-002",
+      "target_type": "flow",
+      "dimension": "flow",
+      "gap_kind": "RUNTIME",
+      "priority": "Must",
+      "implementation_status": "CONFIRMED_PARTIAL",
+      "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
+      "severity": "P1",
+      "evidence_level": "E5",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-U-005",
+        "TEST-I-002",
+        "TEST-A-005",
+        "TEST-W-007",
+        "TEST-E-001",
+        "TEST-U-007",
+        "TEST-U-006"
+      ],
+      "test_results": [
+        {
+          "test_id": "TEST-U-005",
+          "status": "PASS",
+          "case_id": "current:session-state-target.test.mjs:TEST-U-005 目标层：ble-runtime/scan-session.js + device-collection.js",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-I-002",
+          "status": "PASS",
+          "case_id": "current:scan-runtime-target.test.mjs:TEST-I-002 目标层：ble-runtime/index.js 扫描生命周期",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "FAIL",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007 目标层：services/ble-runtime/device-filter.js filterBleDevices",
+          "first_breakpoint": "命中项匹配关键词"
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "FAIL",
+          "case_id": "current:device-name-target.test.mjs:TEST-U-006 目标层：services/ble-runtime/display-name.js",
+          "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js"
+        },
+        {
+          "test_id": "TEST-U-005",
+          "status": "FAIL",
+          "case_id": "current:session-state-target.test.mjs:TEST-U-005 目标层：connected-session-registry.js subscription_count（DEC-017）",
+          "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段"
+        }
+      ],
+      "expected": "两轮扫描",
+      "actual": "命中项匹配关键词",
+      "first_breakpoint": "命中项匹配关键词",
+      "downstream_impact": [],
+      "dependencies": [],
+      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-FILTER-001",
+      "release_blocking": false
+    },
+    {
+      "target_id": "FLOW-004",
+      "target_type": "flow",
+      "dimension": "flow",
+      "gap_kind": "RUNTIME",
+      "priority": "Must",
+      "implementation_status": "CONFIRMED_PARTIAL",
+      "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
+      "severity": "P1",
+      "evidence_level": "E5",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-I-003",
+        "TEST-A-006",
+        "TEST-A-007",
+        "TEST-W-007",
+        "TEST-E-002",
+        "TEST-E-005"
+      ],
+      "test_results": [
+        {
+          "test_id": "TEST-I-003",
+          "status": "PASS",
+          "case_id": "current:connection-runtime-target.test.mjs:目标层：ble-runtime connectDevice 并发去重 + 主动断开",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-I-003",
+          "status": "PASS",
+          "case_id": "current:connection-runtime-target.test.mjs:目标层：连接失败不残留半开会话",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-I-003",
+          "status": "FAIL",
+          "case_id": "current:reconnect-state-target.test.mjs:目标层：services/ble-runtime/reconnect-policy.js",
+          "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js"
+        },
+        {
+          "test_id": "TEST-I-003",
+          "status": "FAIL",
+          "case_id": "current:service-discovery-target.test.mjs:目标层：服务发现失败关闭半开连接",
+          "first_breakpoint": "[REQ-020/021 ERR-CONN-03] 第一断点: connectDevice 未编排服务发现（失败不报错=半开泄漏面）"
+        }
+      ],
+      "expected": "连接与服务发现",
+      "actual": "NOT_IMPLEMENTED: [REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
+      "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
+      "downstream_impact": [],
+      "dependencies": [],
+      "root_cause_id": "RC-RECONNECT",
+      "task_id": "RUNTIME-RECONNECT-001",
+      "release_blocking": false
+    },
+    {
+      "target_id": "FLOW-005",
+      "target_type": "flow",
+      "dimension": "flow",
+      "gap_kind": "RUNTIME",
+      "priority": "Must",
+      "implementation_status": "CONFIRMED_PARTIAL",
+      "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
+      "severity": "P1",
+      "evidence_level": "E5",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-U-009",
+        "TEST-U-010",
+        "TEST-U-011",
+        "TEST-U-012",
+        "TEST-I-004",
+        "TEST-I-005",
+        "TEST-A-008",
+        "TEST-E-003",
+        "TEST-E-004",
+        "TEST-E-005"
+      ],
+      "test_results": [
+        {
+          "test_id": "TEST-I-005",
+          "status": "PASS",
+          "case_id": "current:notify-routing-target.test.mjs:目标层：ble-runtime 订阅路由与 tuple 隔离",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-I-004",
+          "status": "PASS",
+          "case_id": "current:read-write-runtime-target.test.mjs:目标层：ble-runtime 读写与错误归一化",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "FAIL",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-009/010 目标层：utils/ble-utils.js + 属性约束目标接口",
+          "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失"
+        },
+        {
+          "test_id": "TEST-U-011",
+          "status": "FAIL",
+          "case_id": "current:write-queue-target.test.mjs:TEST-U-011 目标层：services/ble-runtime/write-queue.js",
+          "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js"
+        }
+      ],
+      "expected": "Read/Write/Notify",
+      "actual": "NOT_IMPLEMENTED: [TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
+      "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
+      "downstream_impact": [],
+      "dependencies": [],
+      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-GATT-CODEC-001",
+      "release_blocking": false
+    },
+    {
+      "target_id": "FLOW-009",
+      "target_type": "flow",
+      "dimension": "flow",
+      "gap_kind": "RUNTIME",
+      "priority": "Must",
+      "implementation_status": "CONFIRMED_PARTIAL",
+      "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
+      "severity": "P1",
+      "evidence_level": "E5",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-U-016",
+        "TEST-I-008",
+        "TEST-I-010",
+        "TEST-A-011",
+        "TEST-E-007"
+      ],
+      "test_results": [
+        {
+          "test_id": "TEST-U-016",
+          "status": "FAIL",
+          "case_id": "current:ota-state-target.test.mjs:TEST-U-016 目标层：utils/ota_manager.js 包校验目标接口",
+          "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）"
+        },
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-008 OtaManager：STATUS 订阅后、DATA 前必须精确写 CTRL start",
+          "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start"
+        },
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-008 OtaManager：Package 校验失败时平台写调用为 0",
+          "first_breakpoint": "[TEST-I-008 FEAT-081 DEC-016] 第一断点: validateOtaPackage/validatePackage 缺失；第一断点: 传输前包校验接口不存在"
+        },
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-010 OtaManager：cancel 必须写 CTRL abort（完整 UUID）",
+          "first_breakpoint": "cancel 必须向 CTRL 完整 UUID 写入 abort"
+        },
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-010 OtaManager：成功后必须 reboot/reconnect 并读 firmware_version",
+          "first_breakpoint": "success 后必须读取 firmware_version"
+        }
+      ],
+      "expected": "OTA 完整事务",
+      "actual": "NOT_IMPLEMENTED: [TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
+      "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
+      "downstream_impact": [],
+      "dependencies": [],
+      "root_cause_id": "RC-OTA-PACKAGE",
+      "task_id": "OTA-PACKAGE-001",
+      "release_blocking": false
+    },
+    {
+      "target_id": "PROTO-008",
+      "target_type": "protocol",
+      "dimension": "protocol",
+      "gap_kind": "RUNTIME",
+      "priority": "Must",
+      "implementation_status": "UNASSESSED",
+      "verification_status": "NOT_EXECUTED",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
+      "severity": null,
+      "evidence_level": "E5",
+      "implementation_refs": [],
+      "test_ids": [],
+      "test_results": [],
+      "expected": "手机广播 payload 编码",
+      "actual": "",
+      "first_breakpoint": "",
+      "downstream_impact": [],
+      "dependencies": [],
+      "root_cause_id": null,
+      "task_id": null,
+      "release_blocking": true
+    },
+    {
+      "target_id": "PROTO-011",
+      "target_type": "protocol",
+      "dimension": "protocol",
+      "gap_kind": "RUNTIME",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
+      "severity": "P1",
+      "evidence_level": "E5",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-E-006"
+      ],
+      "test_results": [
+        {
+          "test_id": "TEST-E-006",
+          "status": "PASS",
+          "case_id": "current:serial-schema.test.mjs:观察流行解析（目标 schema 的 E1 参照）",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-E-006",
+          "status": "FAIL",
+          "case_id": "current:serial-schema.test.mjs:串口契约：115200 波特、≥8 事件类型、≥9 Observer 字段",
+          "first_breakpoint": "Observer 字段 ≥9（实际 8）"
+        },
+        {
+          "test_id": "TEST-E-006",
+          "status": "FAIL",
+          "case_id": "current:serial-schema.test.mjs:固件侧串口事件 emit 静态探测（可 FAIL=差距）",
+          "first_breakpoint": "固件 emit 覆盖 ≥3 类契约事件（实际 1：ota）"
+        }
+      ],
+      "expected": "OTA Firmware Package",
+      "actual": "Observer 字段 ≥9（实际 8）",
+      "first_breakpoint": "Observer 字段 ≥9（实际 8）",
+      "downstream_impact": [],
+      "dependencies": [],
+      "root_cause_id": "RC-ESP32-OBSERVER",
+      "task_id": "ESP32-OBSERVER-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "ERR-CONN-03",
+      "target_type": "error",
+      "dimension": "error",
+      "gap_kind": "RUNTIME",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
+      "severity": "P1",
+      "evidence_level": null,
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-I-003"
+      ],
+      "test_results": [
+        {
+          "test_id": "TEST-I-003",
+          "status": "FAIL",
+          "case_id": "current:service-discovery-target.test.mjs:目标层：服务发现失败关闭半开连接",
+          "first_breakpoint": "[REQ-020/021 ERR-CONN-03] 第一断点: connectDevice 未编排服务发现（失败不报错=半开泄漏面）"
+        }
+      ],
+      "expected": "ERR-CONN-03",
+      "actual": "NOT_IMPLEMENTED: [REQ-020/021 ERR-CONN-03] 第一断点: connectDevice 未编排服务发现（失败不报错=半开泄漏面）",
+      "first_breakpoint": "[REQ-020/021 ERR-CONN-03] 第一断点: connectDevice 未编排服务发现（失败不报错=半开泄漏面）",
+      "downstream_impact": [],
+      "dependencies": [],
+      "root_cause_id": "RC-CONN-DISCOVERY",
+      "task_id": "RUNTIME-CONNECTION-DISCOVERY-001",
+      "release_blocking": false
+    },
+    {
+      "target_id": "DEC-016",
+      "target_type": "decision",
+      "dimension": "decision",
+      "gap_kind": "RUNTIME",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
+      "severity": "P1",
+      "evidence_level": null,
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-U-016",
+        "TEST-I-008"
+      ],
+      "test_results": [
+        {
+          "test_id": "TEST-U-016",
+          "status": "FAIL",
+          "case_id": "current:ota-state-target.test.mjs:TEST-U-016 目标层：utils/ota_manager.js 包校验目标接口",
+          "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）"
+        },
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-008 OtaManager：STATUS 订阅后、DATA 前必须精确写 CTRL start",
+          "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start"
+        },
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-008 OtaManager：Package 校验失败时平台写调用为 0",
+          "first_breakpoint": "[TEST-I-008 FEAT-081 DEC-016] 第一断点: validateOtaPackage/validatePackage 缺失；第一断点: 传输前包校验接口不存在"
+        },
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-010 OtaManager：cancel 必须写 CTRL abort（完整 UUID）",
+          "first_breakpoint": "cancel 必须向 CTRL 完整 UUID 写入 abort"
+        },
+        {
+          "test_id": "TEST-I-008",
+          "status": "FAIL",
+          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-010 OtaManager：成功后必须 reboot/reconnect 并读 firmware_version",
+          "first_breakpoint": "success 后必须读取 firmware_version"
+        }
+      ],
+      "expected": "DEC-016",
+      "actual": "NOT_IMPLEMENTED: [TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
+      "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
+      "downstream_impact": [],
+      "dependencies": [],
+      "root_cause_id": "RC-OTA-PACKAGE",
+      "task_id": "OTA-PACKAGE-001",
+      "release_blocking": false
+    },
+    {
+      "target_id": "DEC-017",
+      "target_type": "decision",
+      "dimension": "decision",
+      "gap_kind": "RUNTIME",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
+      "severity": "P1",
+      "evidence_level": null,
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-U-005",
+        "TEST-I-005"
+      ],
+      "test_results": [
+        {
+          "test_id": "TEST-U-005",
+          "status": "PASS",
+          "case_id": "current:session-state-target.test.mjs:TEST-U-005 目标层：ble-runtime/scan-session.js + device-collection.js",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-I-005",
+          "status": "PASS",
+          "case_id": "current:notify-routing-target.test.mjs:目标层：ble-runtime 订阅路由与 tuple 隔离",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-005",
+          "status": "FAIL",
+          "case_id": "current:session-state-target.test.mjs:TEST-U-005 目标层：connected-session-registry.js subscription_count（DEC-017）",
+          "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段"
+        }
+      ],
+      "expected": "DEC-017",
+      "actual": "NOT_IMPLEMENTED: [TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
+      "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
+      "downstream_impact": [],
+      "dependencies": [],
+      "root_cause_id": "RC-SESSION-REGISTRY",
+      "task_id": "RUNTIME-SESSION-001",
+      "release_blocking": false
     }
   ]
 }

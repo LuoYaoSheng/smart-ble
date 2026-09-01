@@ -1,19 +1,20 @@
-# Smart HID 差距报告
+# Smart HID 差距报告（TP-G2-R1）
 
 ```yaml
 status: REVIEW
+gate: TP-G2-R1
 generated_from: reports/target-vs-current/target-vs-current.json
+content_hash: be493664f40cc23efd4418ab4df5f8cdba44cb398786586fd9d5ed5373c07074
 ```
 
-记录数（筛选后）：6
+记录数（筛选后）：7
 
-| Target | Kind | Impl | Verify | Sev | First Breakpoint | FIX |
+| Target | Kind | Impl | Verify | Sev | First Breakpoint | Task |
 |---|---|---|---|---|---|---|
-| FEAT-053 | SMART_HID | NOT_IMPLEMENTED | AUTOMATED_FAIL | P1 | SyntaxError: Unexpected identifier 'as' | FIX-HID-001 |
-| FEAT-055 | SMART_HID | NOT_IMPLEMENTED | AUTOMATED_FAIL | P1 | SyntaxError: Unexpected identifier 'as' | FIX-HID-001 |
-| FEAT-056 | SMART_HID | NOT_IMPLEMENTED | AUTOMATED_FAIL | P1 | SyntaxError: Unexpected identifier 'as' | FIX-HID-001 |
-| FEAT-058 | SMART_HID | NOT_IMPLEMENTED | AUTOMATED_FAIL | P1 | SyntaxError: Unexpected identifier 'as' | FIX-HID-001 |
-| FEAT-059 | SMART_HID | NOT_IMPLEMENTED | AUTOMATED_FAIL | P1 | SyntaxError: Unexpected identifier 'as' | FIX-HID-001 |
-| TEST-U-015 | SMART_HID | PARTIAL | AUTOMATED_FAIL | P1 | apps/uniapp/services/smart-hid/profile.js ESM/TS 语法不可直接 import | FIX-HID-001 |
-
-
+| FEAT-053 | TESTABILITY | IMPLEMENTED_UNTESTED | AUTOMATED_FAIL | P1 | [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpe | TEST-BRIDGE-TS-001 |
+| FEAT-058 | TESTABILITY | IMPLEMENTED_UNTESTED | AUTOMATED_FAIL | P1 | [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpe | TEST-BRIDGE-TS-001 |
+| REQ-047 | PRODUCT | IMPLEMENTED_UNTESTED | AUTOMATED_FAIL | P1 | [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpe | TEST-BRIDGE-TS-001 |
+| REQ-049 | PRODUCT | IMPLEMENTED_UNTESTED | AUTOMATED_FAIL | P1 | [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpe | TEST-BRIDGE-TS-001 |
+| REQ-054 | PRODUCT | IMPLEMENTED_UNTESTED | AUTOMATED_FAIL | P1 | [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpe | TEST-BRIDGE-TS-001 |
+| FLOW-010 | TESTABILITY | CONFIRMED_PARTIAL | AUTOMATED_FAIL | P1 | [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpe | TEST-BRIDGE-TS-001 |
+| PROTO-005 | SMART_HID | CONFIRMED_PARTIAL | AUTOMATED_FAIL | P1 | 固件含广播名 BLEToolkit-Observer | ESP32-OBSERVER-001 |

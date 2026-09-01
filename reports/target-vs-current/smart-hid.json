@@ -1,15 +1,27 @@
 {
+  "note": "FEAT-053..059 Node TS import bridge → TEST-BRIDGE-TS-001 (TESTABILITY), not product NOT_IMPLEMENTED",
+  "profile_imports_ts": true,
   "records": [
     {
       "target_id": "FEAT-053",
       "target_type": "feature",
-      "gap_kind": "SMART_HID",
+      "dimension": "feature",
+      "gap_kind": "TESTABILITY",
       "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
+      "implementation_status": "IMPLEMENTED_UNTESTED",
       "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": "P1",
       "evidence_level": "E5",
-      "implementation_refs": [],
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/services/smart-hid/profile.js",
+          "symbol": "import ... hid-provisioning-protocol.ts",
+          "line_hint": "1-12"
+        }
+      ],
       "test_ids": [
         "TEST-U-015",
         "TEST-H-001",
@@ -18,26 +30,61 @@
       ],
       "test_results": [
         {
-          "status": "AUTOMATED_FAIL",
-          "message": "NOT_IMPLEMENTED: [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'"
+          "test_id": "TEST-U-015",
+          "status": "FAIL",
+          "case_id": "current:smart-hid-state-target.test.mjs:TEST-U-015 目标层：smart-hid/profile.js + workflow.js",
+          "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'"
         }
       ],
       "expected": "Profile matcher 强/弱匹配 (Must)",
       "actual": "NOT_IMPLEMENTED: [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-      "first_breakpoint": "SyntaxError: Unexpected identifier 'as'",
+      "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-HID-001",
+      "root_cause_id": "RC-TEST-BRIDGE-TS",
+      "task_id": "TEST-BRIDGE-TS-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "FEAT-054",
+      "target_type": "feature",
+      "dimension": "feature",
+      "gap_kind": "PRODUCT",
+      "priority": "Must",
+      "implementation_status": "UNASSESSED",
+      "verification_status": "HARDWARE_PENDING",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
+      "severity": null,
+      "evidence_level": "E5",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-H-001",
+        "TEST-H-002"
+      ],
+      "test_results": [],
+      "expected": "连接与 Device Info 二次身份确认 (Must)",
+      "actual": "",
+      "first_breakpoint": "",
+      "downstream_impact": [],
+      "dependencies": [],
+      "root_cause_id": null,
+      "task_id": null,
       "release_blocking": true
     },
     {
       "target_id": "FEAT-055",
       "target_type": "feature",
-      "gap_kind": "SMART_HID",
+      "dimension": "feature",
+      "gap_kind": "PRODUCT",
       "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "AUTOMATED_FAIL",
-      "severity": "P1",
+      "implementation_status": "UNASSESSED",
+      "verification_status": "HARDWARE_PENDING",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
+      "severity": null,
       "evidence_level": "E5",
       "implementation_refs": [],
       "test_ids": [
@@ -45,84 +92,139 @@
         "TEST-P-002",
         "TEST-H-002"
       ],
-      "test_results": [
-        {
-          "status": "AUTOMATED_FAIL",
-          "message": "NOT_IMPLEMENTED: [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'"
-        }
-      ],
+      "test_results": [],
       "expected": "配网表单与校验 (Must)",
-      "actual": "NOT_IMPLEMENTED: [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-      "first_breakpoint": "SyntaxError: Unexpected identifier 'as'",
+      "actual": "",
+      "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-HID-001",
+      "root_cause_id": null,
+      "task_id": null,
       "release_blocking": true
     },
     {
       "target_id": "FEAT-056",
       "target_type": "feature",
-      "gap_kind": "SMART_HID",
+      "dimension": "feature",
+      "gap_kind": "PRODUCT",
       "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "AUTOMATED_FAIL",
-      "severity": "P1",
+      "implementation_status": "UNASSESSED",
+      "verification_status": "HARDWARE_PENDING",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
+      "severity": null,
       "evidence_level": "E5",
       "implementation_refs": [],
       "test_ids": [
         "TEST-U-015",
         "TEST-H-002"
       ],
-      "test_results": [
-        {
-          "status": "AUTOMATED_FAIL",
-          "message": "NOT_IMPLEMENTED: [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'"
-        }
-      ],
+      "test_results": [],
       "expected": "Pairing QR 扫描与解析 (Must)",
-      "actual": "NOT_IMPLEMENTED: [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-      "first_breakpoint": "SyntaxError: Unexpected identifier 'as'",
+      "actual": "",
+      "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-HID-001",
+      "root_cause_id": null,
+      "task_id": null,
+      "release_blocking": true
+    },
+    {
+      "target_id": "FEAT-057",
+      "target_type": "feature",
+      "dimension": "feature",
+      "gap_kind": "PRODUCT",
+      "priority": "Must",
+      "implementation_status": "IMPLEMENTED_UNTESTED",
+      "verification_status": "AUTOMATED_PASS",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
+      "severity": null,
+      "evidence_level": "E5",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-I-009",
+        "TEST-H-002",
+        "TEST-H-003"
+      ],
+      "test_results": [
+        {
+          "test_id": "TEST-I-009",
+          "status": "PASS",
+          "case_id": "current:smart-hid-provision-target.test.mjs:TEST-I-009 目标层：runProvisionTransaction 顺序（waiter 先注册）",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-I-009",
+          "status": "PASS",
+          "case_id": "current:smart-hid-provision-target.test.mjs:TEST-I-009 目标层：writeProfileCandidate 分帧写入到达平台",
+          "first_breakpoint": null
+        }
+      ],
+      "expected": "candidate 分帧下发与 STATUS waiter (Must)",
+      "actual": "structured current PASS on related cases",
+      "first_breakpoint": "",
+      "downstream_impact": [],
+      "dependencies": [],
+      "root_cause_id": null,
+      "task_id": null,
       "release_blocking": true
     },
     {
       "target_id": "FEAT-058",
       "target_type": "feature",
-      "gap_kind": "SMART_HID",
+      "dimension": "feature",
+      "gap_kind": "TESTABILITY",
       "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
+      "implementation_status": "IMPLEMENTED_UNTESTED",
       "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": "P1",
       "evidence_level": "E5",
-      "implementation_refs": [],
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/services/smart-hid/profile.js",
+          "symbol": "import ... hid-provisioning-protocol.ts",
+          "line_hint": "1-12"
+        }
+      ],
       "test_ids": [
         "TEST-U-015",
         "TEST-H-003"
       ],
       "test_results": [
         {
-          "status": "AUTOMATED_FAIL",
-          "message": "NOT_IMPLEMENTED: [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'"
+          "test_id": "TEST-U-015",
+          "status": "FAIL",
+          "case_id": "current:smart-hid-state-target.test.mjs:TEST-U-015 目标层：smart-hid/profile.js + workflow.js",
+          "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'"
         }
       ],
       "expected": "状态、进度与八类错误恢复 (Must)",
       "actual": "NOT_IMPLEMENTED: [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-      "first_breakpoint": "SyntaxError: Unexpected identifier 'as'",
+      "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-HID-001",
+      "root_cause_id": "RC-TEST-BRIDGE-TS",
+      "task_id": "TEST-BRIDGE-TS-001",
       "release_blocking": true
     },
     {
       "target_id": "FEAT-059",
       "target_type": "feature",
-      "gap_kind": "SMART_HID",
+      "dimension": "feature",
+      "gap_kind": "PRODUCT",
       "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "AUTOMATED_FAIL",
-      "severity": "P1",
+      "implementation_status": "IMPLEMENTED_UNTESTED",
+      "verification_status": "AUTOMATED_PASS",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
+      "severity": null,
       "evidence_level": "E5",
       "implementation_refs": [],
       "test_ids": [
@@ -132,44 +234,295 @@
       ],
       "test_results": [
         {
-          "status": "AUTOMATED_FAIL",
-          "message": "NOT_IMPLEMENTED: [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'"
+          "test_id": null,
+          "status": "PASS",
+          "case_id": "current:history-retention-target.test.mjs:目标层：smart-hid/known-devices.js",
+          "first_breakpoint": null
         }
       ],
       "expected": "历史存储与 TTL (Must)",
-      "actual": "NOT_IMPLEMENTED: [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-      "first_breakpoint": "SyntaxError: Unexpected identifier 'as'",
+      "actual": "structured current PASS on related cases",
+      "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-HID-001",
+      "root_cause_id": null,
+      "task_id": null,
       "release_blocking": true
     },
     {
-      "target_id": "TEST-U-015",
-      "target_type": "test",
-      "gap_kind": "SMART_HID",
+      "target_id": "REQ-047",
+      "target_type": "requirement",
+      "dimension": "requirement",
+      "gap_kind": "PRODUCT",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
+      "implementation_status": "IMPLEMENTED_UNTESTED",
       "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": "P1",
-      "evidence_level": "E1",
-      "implementation_refs": [
+      "evidence_level": null,
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-U-015",
+        "TEST-I-009",
+        "TEST-H-001"
+      ],
+      "test_results": [
         {
-          "path": "apps/uniapp/services/smart-hid/profile.js",
-          "symbol": "SMART_HID_PROFILE",
-          "line_hint": "TS syntax"
+          "test_id": "TEST-I-009",
+          "status": "PASS",
+          "case_id": "current:smart-hid-provision-target.test.mjs:TEST-I-009 目标层：runProvisionTransaction 顺序（waiter 先注册）",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-I-009",
+          "status": "PASS",
+          "case_id": "current:smart-hid-provision-target.test.mjs:TEST-I-009 目标层：writeProfileCandidate 分帧写入到达平台",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-015",
+          "status": "FAIL",
+          "case_id": "current:smart-hid-state-target.test.mjs:TEST-U-015 目标层：smart-hid/profile.js + workflow.js",
+          "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'"
         }
       ],
+      "expected": "REQ REQ-047",
+      "actual": "NOT_IMPLEMENTED: [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+      "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+      "downstream_impact": [],
+      "dependencies": [
+        "FEAT-053",
+        "FEAT-054"
+      ],
+      "root_cause_id": "RC-TEST-BRIDGE-TS",
+      "task_id": "TEST-BRIDGE-TS-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "REQ-049",
+      "target_type": "requirement",
+      "dimension": "requirement",
+      "gap_kind": "PRODUCT",
+      "priority": "Must",
+      "implementation_status": "IMPLEMENTED_UNTESTED",
+      "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
+      "severity": "P1",
+      "evidence_level": null,
+      "implementation_refs": [],
       "test_ids": [
-        "TEST-U-015"
+        "TEST-U-015",
+        "TEST-H-003"
+      ],
+      "test_results": [
+        {
+          "test_id": "TEST-U-015",
+          "status": "FAIL",
+          "case_id": "current:smart-hid-state-target.test.mjs:TEST-U-015 目标层：smart-hid/profile.js + workflow.js",
+          "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'"
+        }
+      ],
+      "expected": "REQ REQ-049",
+      "actual": "NOT_IMPLEMENTED: [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+      "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+      "downstream_impact": [],
+      "dependencies": [
+        "FEAT-058"
+      ],
+      "root_cause_id": "RC-TEST-BRIDGE-TS",
+      "task_id": "TEST-BRIDGE-TS-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "REQ-054",
+      "target_type": "requirement",
+      "dimension": "requirement",
+      "gap_kind": "PRODUCT",
+      "priority": "Must",
+      "implementation_status": "IMPLEMENTED_UNTESTED",
+      "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
+      "severity": "P1",
+      "evidence_level": null,
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-C-007"
       ],
       "test_results": [],
-      "expected": "profile.js 可被 Node 目标测试加载",
-      "actual": "含 TS 语法 Unexpected identifier as",
-      "first_breakpoint": "apps/uniapp/services/smart-hid/profile.js ESM/TS 语法不可直接 import",
+      "expected": "REQ REQ-054",
+      "actual": "NOT_IMPLEMENTED: [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+      "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+      "downstream_impact": [],
+      "dependencies": [
+        "FEAT-053"
+      ],
+      "root_cause_id": "RC-TEST-BRIDGE-TS",
+      "task_id": "TEST-BRIDGE-TS-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "FLOW-010",
+      "target_type": "flow",
+      "dimension": "flow",
+      "gap_kind": "TESTABILITY",
+      "priority": "Must",
+      "implementation_status": "CONFIRMED_PARTIAL",
+      "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
+      "severity": "P1",
+      "evidence_level": "E5",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-U-015",
+        "TEST-I-009",
+        "TEST-H-001",
+        "TEST-H-002",
+        "TEST-H-003",
+        "TEST-W-010"
+      ],
+      "test_results": [
+        {
+          "test_id": "TEST-I-009",
+          "status": "PASS",
+          "case_id": "current:smart-hid-provision-target.test.mjs:TEST-I-009 目标层：runProvisionTransaction 顺序（waiter 先注册）",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-I-009",
+          "status": "PASS",
+          "case_id": "current:smart-hid-provision-target.test.mjs:TEST-I-009 目标层：writeProfileCandidate 分帧写入到达平台",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-015",
+          "status": "FAIL",
+          "case_id": "current:smart-hid-state-target.test.mjs:TEST-U-015 目标层：smart-hid/profile.js + workflow.js",
+          "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'"
+        },
+        {
+          "test_id": "TEST-I-009",
+          "status": "FAIL",
+          "case_id": "current:smart-hid-session-ownership-target.test.mjs:目标层：配网会话与活动会话口径隔离",
+          "first_breakpoint": "[REQ-053/PAGE-007 排除规则] 第一断点: Registry 无配网会话分类/排除接口——PAGE-007 口径无法排除配网会话"
+        }
+      ],
+      "expected": "Smart HID 首次配网",
+      "actual": "NOT_IMPLEMENTED: [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+      "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-HID-001",
+      "root_cause_id": "RC-TEST-BRIDGE-TS",
+      "task_id": "TEST-BRIDGE-TS-001",
+      "release_blocking": false
+    },
+    {
+      "target_id": "PROTO-005",
+      "target_type": "protocol",
+      "dimension": "protocol",
+      "gap_kind": "SMART_HID",
+      "priority": "Must",
+      "implementation_status": "CONFIRMED_PARTIAL",
+      "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
+      "severity": "P1",
+      "evidence_level": "E5",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-E-001"
+      ],
+      "test_results": [
+        {
+          "test_id": "TEST-E-001",
+          "status": "PASS",
+          "case_id": "current:fixture-contract.test.mjs:TEST-E-001 固件源码存在（夹具工程在位）",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-E-001",
+          "status": "PASS",
+          "case_id": "current:fixture-contract.test.mjs:TEST-E-001 服务/特征 UUID 与契约一致",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-E-001",
+          "status": "FAIL",
+          "case_id": "current:fixture-contract.test.mjs:TEST-E-001 夹具广播名称与契约一致（双夹具）",
+          "first_breakpoint": "固件含广播名 BLEToolkit-Observer"
+        },
+        {
+          "test_id": "TEST-E-001",
+          "status": "FAIL",
+          "case_id": "current:fixture-contract.test.mjs:TEST-E-001 LED 指令表与契约一致",
+          "first_breakpoint": "固件含 LED 指令 FF00"
+        }
+      ],
+      "expected": "Smart HID Provisioning V1",
+      "actual": "固件含广播名 BLEToolkit-Observer",
+      "first_breakpoint": "固件含广播名 BLEToolkit-Observer",
+      "downstream_impact": [],
+      "dependencies": [],
+      "root_cause_id": "RC-ESP32-OBSERVER",
+      "task_id": "ESP32-OBSERVER-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "PROTO-006",
+      "target_type": "protocol",
+      "dimension": "protocol",
+      "gap_kind": "SMART_HID",
+      "priority": "Must",
+      "implementation_status": "UNASSESSED",
+      "verification_status": "NOT_EXECUTED",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
+      "severity": null,
+      "evidence_level": "E5",
+      "implementation_refs": [],
+      "test_ids": [],
+      "test_results": [],
+      "expected": "Smart HID Pairing QR URI",
+      "actual": "",
+      "first_breakpoint": "",
+      "downstream_impact": [],
+      "dependencies": [],
+      "root_cause_id": null,
+      "task_id": null,
+      "release_blocking": true
+    },
+    {
+      "target_id": "PROTO-007",
+      "target_type": "protocol",
+      "dimension": "protocol",
+      "gap_kind": "SMART_HID",
+      "priority": "Must",
+      "implementation_status": "UNASSESSED",
+      "verification_status": "NOT_EXECUTED",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
+      "severity": null,
+      "evidence_level": "E5",
+      "implementation_refs": [],
+      "test_ids": [],
+      "test_results": [],
+      "expected": "Smart HID 分帧 framing",
+      "actual": "",
+      "first_breakpoint": "",
+      "downstream_impact": [],
+      "dependencies": [],
+      "root_cause_id": null,
+      "task_id": null,
       "release_blocking": true
     }
   ]

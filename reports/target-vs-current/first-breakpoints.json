@@ -1,365 +1,446 @@
 {
   "top20": [
     {
+      "target_id": "CLAIM-027",
+      "severity": "P0",
+      "gap_kind": "LANDING",
+      "first_breakpoint": "docs/index.md download-hub → releases/latest",
+      "root_cause_id": "RC-LANDING-FAKE-DOWNLOAD",
+      "task_id": "PUBLIC-HONESTY-001",
+      "verification_status": "AUTOMATED_FAIL"
+    },
+    {
       "target_id": "FEAT-046",
       "severity": "P0",
       "gap_kind": "RUNTIME",
-      "first_breakpoint": "OtaManager 未写 CHAR_CTRL start/commit",
-      "suggested_fix_id": "FIX-OTA-001",
+      "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
+      "root_cause_id": "RC-OTA-CTRL-START",
+      "task_id": "OTA-CLIENT-001",
       "verification_status": "AUTOMATED_FAIL"
     },
     {
-      "target_id": "FEAT-075",
-      "severity": "P0",
-      "gap_kind": "LANDING",
-      "first_breakpoint": "docs/index.md 三卡均链 releases/latest 假主下载",
-      "suggested_fix_id": "FIX-LANDING-001",
-      "verification_status": "AUTOMATED_FAIL"
-    },
-    {
-      "target_id": "OP-P006-12",
+      "target_id": "FEAT-047",
       "severity": "P0",
       "gap_kind": "RUNTIME",
-      "first_breakpoint": "OtaManager 未写 CHAR_CTRL；与固件事务协议断裂",
-      "suggested_fix_id": "FIX-OTA-001",
+      "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
+      "root_cause_id": "RC-OTA-CTRL-START",
+      "task_id": "OTA-CLIENT-001",
       "verification_status": "AUTOMATED_FAIL"
     },
     {
-      "target_id": "OP-P008-01",
-      "severity": "P0",
-      "gap_kind": "FIRMWARE",
-      "first_breakpoint": "hardware/esp32 无 Observer 目标源码（证据闭环第一断点）；页面 Owner 见 FIX-PAGE-008",
-      "suggested_fix_id": "FIX-FW-001",
-      "verification_status": "HARDWARE_PENDING"
-    },
-    {
-      "target_id": "WEB-001",
+      "target_id": "FEAT-070",
       "severity": "P0",
       "gap_kind": "LANDING",
-      "first_breakpoint": "假主下载 releases/latest；另有 Playwright BLOCKED_BY_TOOLCHAIN",
-      "suggested_fix_id": "FIX-LANDING-001",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN"
-    },
-    {
-      "target_id": "STATE-W001-03",
-      "severity": "P0",
-      "gap_kind": "LANDING",
-      "first_breakpoint": "NOT_RELEASED 无产物时应无下载链接；当前仍暴露 releases/latest",
-      "suggested_fix_id": "FIX-LANDING-001",
+      "first_breakpoint": "无产物直链时页面必须明确 NOT_RELEASED/尚未发布",
+      "root_cause_id": "RC-LANDING-FAKE-DOWNLOAD",
+      "task_id": "PUBLIC-HONESTY-001",
       "verification_status": "AUTOMATED_FAIL"
     },
     {
       "target_id": "OP-W001-03",
       "severity": "P0",
       "gap_kind": "LANDING",
-      "first_breakpoint": "下载 CTA 指向 releases/latest 而非 NOT_RELEASED/真实产物",
-      "suggested_fix_id": "FIX-LANDING-001",
+      "first_breakpoint": "下载 CTA 指向 releases/latest",
+      "root_cause_id": "RC-LANDING-FAKE-DOWNLOAD",
+      "task_id": "PUBLIC-HONESTY-001",
       "verification_status": "AUTOMATED_FAIL"
     },
     {
-      "target_id": "FLOW-008",
+      "target_id": "PROTO-010",
       "severity": "P0",
-      "gap_kind": "PRODUCT",
-      "first_breakpoint": "缺 fixture_observer",
-      "suggested_fix_id": "FIX-FW-001",
-      "verification_status": "HARDWARE_PENDING"
-    },
-    {
-      "target_id": "FLOW-009",
-      "severity": "P0",
-      "gap_kind": "PRODUCT",
-      "first_breakpoint": "OtaManager 跳过 CTRL start，第一断点在事务入口",
-      "suggested_fix_id": "FIX-OTA-001",
+      "gap_kind": "RELEASE",
+      "first_breakpoint": ".github/workflows/release-build.yml builds Flutter/Tauri; not UniApp Android + Peripheral/Observer firmware",
+      "root_cause_id": "RC-RELEASE-PIPELINE",
+      "task_id": "RELEASE-PIPELINE-001",
       "verification_status": "AUTOMATED_FAIL"
     },
     {
-      "target_id": "CLAIM-016",
+      "target_id": "STATE-W001-03",
       "severity": "P0",
       "gap_kind": "LANDING",
-      "first_breakpoint": "docs/index.md download-hub → releases/latest",
-      "suggested_fix_id": "FIX-LANDING-001",
+      "first_breakpoint": "NOT_RELEASED 无产物时应无下载链接；当前仍暴露 releases/latest",
+      "root_cause_id": "RC-LANDING-FAKE-DOWNLOAD",
+      "task_id": "PUBLIC-HONESTY-001",
       "verification_status": "AUTOMATED_FAIL"
     },
     {
       "target_id": "FEAT-004",
       "severity": "P1",
       "gap_kind": "RELEASE",
-      "first_breakpoint": "仓库根 VERSION 单源文件缺失",
-      "suggested_fix_id": "FIX-RELEASE-001",
+      "first_breakpoint": "[TEST-U-002 REQ-004/056 FEAT-004/066 PAGE-009/010 WEB-001 S-47] 第一断点: 目标模块缺失：apps/uniapp/services/version-metadata.js",
+      "root_cause_id": "RC-VERSION-SSOT",
+      "task_id": "VERSION-METADATA-001",
       "verification_status": "AUTOMATED_FAIL"
     },
     {
       "target_id": "FEAT-009",
       "severity": "P1",
-      "gap_kind": "RUNTIME",
-      "first_breakpoint": "目标模块缺失：apps/uniapp/services/public-status.js",
-      "suggested_fix_id": "FIX-RUNTIME-009",
+      "gap_kind": "RELEASE",
+      "first_breakpoint": "[REQ-009/046/055 FEAT-009/070 18号§2 五词表] 第一断点: 目标模块缺失：apps/uniapp/services/public-status.js",
+      "root_cause_id": "RC-VERSION-SSOT",
+      "task_id": "VERSION-METADATA-001",
       "verification_status": "AUTOMATED_FAIL"
     },
     {
       "target_id": "FEAT-011",
       "severity": "P1",
       "gap_kind": "RUNTIME",
-      "first_breakpoint": "Registry 快照缺 subscription_count 字段",
-      "suggested_fix_id": "FIX-RUNTIME-006",
+      "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
+      "root_cause_id": "RC-SESSION-REGISTRY",
+      "task_id": "RUNTIME-SESSION-001",
       "verification_status": "AUTOMATED_FAIL"
     },
     {
       "target_id": "FEAT-013",
       "severity": "P1",
       "gap_kind": "RUNTIME",
-      "first_breakpoint": "apps/uniapp/services/ble-runtime/display-name.js 缺失",
-      "suggested_fix_id": "FIX-RUNTIME-001",
+      "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
+      "root_cause_id": "RC-DISPLAY-NAME",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
       "verification_status": "AUTOMATED_FAIL"
     },
     {
-      "target_id": "FEAT-020",
+      "target_id": "FEAT-014",
       "severity": "P1",
       "gap_kind": "RUNTIME",
-      "first_breakpoint": "目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-      "suggested_fix_id": "FIX-RUNTIME-005",
+      "first_breakpoint": "命中项匹配关键词",
+      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-FILTER-001",
       "verification_status": "AUTOMATED_FAIL"
     },
     {
-      "target_id": "FEAT-028",
+      "target_id": "FEAT-021",
       "severity": "P1",
       "gap_kind": "RUNTIME",
-      "first_breakpoint": "目标接口 validateHexInput/parseHexInput 缺失",
-      "suggested_fix_id": "FIX-RUNTIME-002",
+      "first_breakpoint": "[REQ-020/021 ERR-CONN-03] 第一断点: connectDevice 未编排服务发现（失败不报错=半开泄漏面）",
+      "root_cause_id": "RC-CONN-DISCOVERY",
+      "task_id": "RUNTIME-CONNECTION-DISCOVERY-001",
+      "verification_status": "AUTOMATED_FAIL"
+    },
+    {
+      "target_id": "FEAT-023",
+      "severity": "P1",
+      "gap_kind": "RUNTIME",
+      "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
+      "root_cause_id": "RC-RECONNECT",
+      "task_id": "RUNTIME-RECONNECT-001",
+      "verification_status": "AUTOMATED_FAIL"
+    },
+    {
+      "target_id": "FEAT-026",
+      "severity": "P1",
+      "gap_kind": "RUNTIME",
+      "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
+      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-GATT-CODEC-001",
       "verification_status": "AUTOMATED_FAIL"
     },
     {
       "target_id": "FEAT-030",
       "severity": "P1",
       "gap_kind": "RUNTIME",
-      "first_breakpoint": "目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
-      "suggested_fix_id": "FIX-RUNTIME-004",
+      "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+      "root_cause_id": "RC-WRITE-QUEUE",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
       "verification_status": "AUTOMATED_FAIL"
     },
     {
       "target_id": "FEAT-040",
       "severity": "P1",
       "gap_kind": "RUNTIME",
-      "first_breakpoint": "目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-      "suggested_fix_id": "FIX-RUNTIME-003",
+      "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
+      "root_cause_id": "RC-LOG-REDACTION",
+      "task_id": "RUNTIME-LOG-REDACTION-001",
       "verification_status": "AUTOMATED_FAIL"
+    },
+    {
+      "target_id": "FEAT-041",
+      "severity": "P1",
+      "gap_kind": "PAGE",
+      "first_breakpoint": "PAGE-008 内联广告逻辑；useBroadcastSession 未使用",
+      "root_cause_id": "RC-PAGE-BROADCAST",
+      "task_id": "PAGE-BROADCAST-001",
+      "verification_status": "AUTOMATED_PASS"
     },
     {
       "target_id": "FEAT-053",
       "severity": "P1",
-      "gap_kind": "SMART_HID",
-      "first_breakpoint": "SyntaxError: Unexpected identifier 'as'",
-      "suggested_fix_id": "FIX-HID-001",
+      "gap_kind": "TESTABILITY",
+      "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+      "root_cause_id": "RC-TEST-BRIDGE-TS",
+      "task_id": "TEST-BRIDGE-TS-001",
       "verification_status": "AUTOMATED_FAIL"
     },
     {
-      "target_id": "FEAT-081",
+      "target_id": "FEAT-062",
       "severity": "P1",
       "gap_kind": "RUNTIME",
-      "first_breakpoint": "validateOtaPackage 接口缺失",
-      "suggested_fix_id": "FIX-OTA-002",
+      "first_breakpoint": "[REQ-053/PAGE-007 排除规则] 第一断点: Registry 无配网会话分类/排除接口——PAGE-007 口径无法排除配网会话",
+      "root_cause_id": "RC-SESSION-REGISTRY",
+      "task_id": "RUNTIME-SESSION-001",
       "verification_status": "AUTOMATED_FAIL"
     }
   ],
   "all": [
     {
+      "target_id": "CLAIM-027",
+      "severity": "P0",
+      "gap_kind": "LANDING",
+      "first_breakpoint": "docs/index.md download-hub → releases/latest",
+      "root_cause_id": "RC-LANDING-FAKE-DOWNLOAD",
+      "task_id": "PUBLIC-HONESTY-001",
+      "verification_status": "AUTOMATED_FAIL"
+    },
+    {
       "target_id": "FEAT-046",
       "severity": "P0",
       "gap_kind": "RUNTIME",
-      "first_breakpoint": "OtaManager 未写 CHAR_CTRL start/commit",
-      "suggested_fix_id": "FIX-OTA-001",
+      "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
+      "root_cause_id": "RC-OTA-CTRL-START",
+      "task_id": "OTA-CLIENT-001",
       "verification_status": "AUTOMATED_FAIL"
     },
     {
-      "target_id": "FEAT-075",
-      "severity": "P0",
-      "gap_kind": "LANDING",
-      "first_breakpoint": "docs/index.md 三卡均链 releases/latest 假主下载",
-      "suggested_fix_id": "FIX-LANDING-001",
-      "verification_status": "AUTOMATED_FAIL"
-    },
-    {
-      "target_id": "OP-P006-12",
+      "target_id": "FEAT-047",
       "severity": "P0",
       "gap_kind": "RUNTIME",
-      "first_breakpoint": "OtaManager 未写 CHAR_CTRL；与固件事务协议断裂",
-      "suggested_fix_id": "FIX-OTA-001",
+      "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
+      "root_cause_id": "RC-OTA-CTRL-START",
+      "task_id": "OTA-CLIENT-001",
       "verification_status": "AUTOMATED_FAIL"
     },
     {
-      "target_id": "OP-P008-01",
-      "severity": "P0",
-      "gap_kind": "FIRMWARE",
-      "first_breakpoint": "hardware/esp32 无 Observer 目标源码（证据闭环第一断点）；页面 Owner 见 FIX-PAGE-008",
-      "suggested_fix_id": "FIX-FW-001",
-      "verification_status": "HARDWARE_PENDING"
-    },
-    {
-      "target_id": "WEB-001",
+      "target_id": "FEAT-070",
       "severity": "P0",
       "gap_kind": "LANDING",
-      "first_breakpoint": "假主下载 releases/latest；另有 Playwright BLOCKED_BY_TOOLCHAIN",
-      "suggested_fix_id": "FIX-LANDING-001",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN"
-    },
-    {
-      "target_id": "STATE-W001-03",
-      "severity": "P0",
-      "gap_kind": "LANDING",
-      "first_breakpoint": "NOT_RELEASED 无产物时应无下载链接；当前仍暴露 releases/latest",
-      "suggested_fix_id": "FIX-LANDING-001",
+      "first_breakpoint": "无产物直链时页面必须明确 NOT_RELEASED/尚未发布",
+      "root_cause_id": "RC-LANDING-FAKE-DOWNLOAD",
+      "task_id": "PUBLIC-HONESTY-001",
       "verification_status": "AUTOMATED_FAIL"
     },
     {
       "target_id": "OP-W001-03",
       "severity": "P0",
       "gap_kind": "LANDING",
-      "first_breakpoint": "下载 CTA 指向 releases/latest 而非 NOT_RELEASED/真实产物",
-      "suggested_fix_id": "FIX-LANDING-001",
+      "first_breakpoint": "下载 CTA 指向 releases/latest",
+      "root_cause_id": "RC-LANDING-FAKE-DOWNLOAD",
+      "task_id": "PUBLIC-HONESTY-001",
       "verification_status": "AUTOMATED_FAIL"
     },
     {
-      "target_id": "FLOW-008",
+      "target_id": "PROTO-010",
       "severity": "P0",
-      "gap_kind": "PRODUCT",
-      "first_breakpoint": "缺 fixture_observer",
-      "suggested_fix_id": "FIX-FW-001",
-      "verification_status": "HARDWARE_PENDING"
-    },
-    {
-      "target_id": "FLOW-009",
-      "severity": "P0",
-      "gap_kind": "PRODUCT",
-      "first_breakpoint": "OtaManager 跳过 CTRL start，第一断点在事务入口",
-      "suggested_fix_id": "FIX-OTA-001",
+      "gap_kind": "RELEASE",
+      "first_breakpoint": ".github/workflows/release-build.yml builds Flutter/Tauri; not UniApp Android + Peripheral/Observer firmware",
+      "root_cause_id": "RC-RELEASE-PIPELINE",
+      "task_id": "RELEASE-PIPELINE-001",
       "verification_status": "AUTOMATED_FAIL"
     },
     {
-      "target_id": "CLAIM-016",
+      "target_id": "STATE-W001-03",
       "severity": "P0",
       "gap_kind": "LANDING",
-      "first_breakpoint": "docs/index.md download-hub → releases/latest",
-      "suggested_fix_id": "FIX-LANDING-001",
+      "first_breakpoint": "NOT_RELEASED 无产物时应无下载链接；当前仍暴露 releases/latest",
+      "root_cause_id": "RC-LANDING-FAKE-DOWNLOAD",
+      "task_id": "PUBLIC-HONESTY-001",
       "verification_status": "AUTOMATED_FAIL"
     },
     {
       "target_id": "FEAT-004",
       "severity": "P1",
       "gap_kind": "RELEASE",
-      "first_breakpoint": "仓库根 VERSION 单源文件缺失",
-      "suggested_fix_id": "FIX-RELEASE-001",
+      "first_breakpoint": "[TEST-U-002 REQ-004/056 FEAT-004/066 PAGE-009/010 WEB-001 S-47] 第一断点: 目标模块缺失：apps/uniapp/services/version-metadata.js",
+      "root_cause_id": "RC-VERSION-SSOT",
+      "task_id": "VERSION-METADATA-001",
       "verification_status": "AUTOMATED_FAIL"
     },
     {
       "target_id": "FEAT-009",
       "severity": "P1",
-      "gap_kind": "RUNTIME",
-      "first_breakpoint": "目标模块缺失：apps/uniapp/services/public-status.js",
-      "suggested_fix_id": "FIX-RUNTIME-009",
+      "gap_kind": "RELEASE",
+      "first_breakpoint": "[REQ-009/046/055 FEAT-009/070 18号§2 五词表] 第一断点: 目标模块缺失：apps/uniapp/services/public-status.js",
+      "root_cause_id": "RC-VERSION-SSOT",
+      "task_id": "VERSION-METADATA-001",
       "verification_status": "AUTOMATED_FAIL"
     },
     {
       "target_id": "FEAT-011",
       "severity": "P1",
       "gap_kind": "RUNTIME",
-      "first_breakpoint": "Registry 快照缺 subscription_count 字段",
-      "suggested_fix_id": "FIX-RUNTIME-006",
+      "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
+      "root_cause_id": "RC-SESSION-REGISTRY",
+      "task_id": "RUNTIME-SESSION-001",
       "verification_status": "AUTOMATED_FAIL"
     },
     {
       "target_id": "FEAT-013",
       "severity": "P1",
       "gap_kind": "RUNTIME",
-      "first_breakpoint": "apps/uniapp/services/ble-runtime/display-name.js 缺失",
-      "suggested_fix_id": "FIX-RUNTIME-001",
+      "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
+      "root_cause_id": "RC-DISPLAY-NAME",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
       "verification_status": "AUTOMATED_FAIL"
     },
     {
-      "target_id": "FEAT-020",
+      "target_id": "FEAT-014",
       "severity": "P1",
       "gap_kind": "RUNTIME",
-      "first_breakpoint": "目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-      "suggested_fix_id": "FIX-RUNTIME-005",
+      "first_breakpoint": "命中项匹配关键词",
+      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-FILTER-001",
       "verification_status": "AUTOMATED_FAIL"
     },
     {
-      "target_id": "FEAT-028",
+      "target_id": "FEAT-021",
       "severity": "P1",
       "gap_kind": "RUNTIME",
-      "first_breakpoint": "目标接口 validateHexInput/parseHexInput 缺失",
-      "suggested_fix_id": "FIX-RUNTIME-002",
+      "first_breakpoint": "[REQ-020/021 ERR-CONN-03] 第一断点: connectDevice 未编排服务发现（失败不报错=半开泄漏面）",
+      "root_cause_id": "RC-CONN-DISCOVERY",
+      "task_id": "RUNTIME-CONNECTION-DISCOVERY-001",
+      "verification_status": "AUTOMATED_FAIL"
+    },
+    {
+      "target_id": "FEAT-023",
+      "severity": "P1",
+      "gap_kind": "RUNTIME",
+      "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
+      "root_cause_id": "RC-RECONNECT",
+      "task_id": "RUNTIME-RECONNECT-001",
+      "verification_status": "AUTOMATED_FAIL"
+    },
+    {
+      "target_id": "FEAT-026",
+      "severity": "P1",
+      "gap_kind": "RUNTIME",
+      "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
+      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-GATT-CODEC-001",
       "verification_status": "AUTOMATED_FAIL"
     },
     {
       "target_id": "FEAT-030",
       "severity": "P1",
       "gap_kind": "RUNTIME",
-      "first_breakpoint": "目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
-      "suggested_fix_id": "FIX-RUNTIME-004",
+      "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+      "root_cause_id": "RC-WRITE-QUEUE",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
       "verification_status": "AUTOMATED_FAIL"
     },
     {
       "target_id": "FEAT-040",
       "severity": "P1",
       "gap_kind": "RUNTIME",
-      "first_breakpoint": "目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-      "suggested_fix_id": "FIX-RUNTIME-003",
+      "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
+      "root_cause_id": "RC-LOG-REDACTION",
+      "task_id": "RUNTIME-LOG-REDACTION-001",
       "verification_status": "AUTOMATED_FAIL"
+    },
+    {
+      "target_id": "FEAT-041",
+      "severity": "P1",
+      "gap_kind": "PAGE",
+      "first_breakpoint": "PAGE-008 内联广告逻辑；useBroadcastSession 未使用",
+      "root_cause_id": "RC-PAGE-BROADCAST",
+      "task_id": "PAGE-BROADCAST-001",
+      "verification_status": "AUTOMATED_PASS"
     },
     {
       "target_id": "FEAT-053",
       "severity": "P1",
-      "gap_kind": "SMART_HID",
-      "first_breakpoint": "SyntaxError: Unexpected identifier 'as'",
-      "suggested_fix_id": "FIX-HID-001",
+      "gap_kind": "TESTABILITY",
+      "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+      "root_cause_id": "RC-TEST-BRIDGE-TS",
+      "task_id": "TEST-BRIDGE-TS-001",
+      "verification_status": "AUTOMATED_FAIL"
+    },
+    {
+      "target_id": "FEAT-062",
+      "severity": "P1",
+      "gap_kind": "RUNTIME",
+      "first_breakpoint": "[REQ-053/PAGE-007 排除规则] 第一断点: Registry 无配网会话分类/排除接口——PAGE-007 口径无法排除配网会话",
+      "root_cause_id": "RC-SESSION-REGISTRY",
+      "task_id": "RUNTIME-SESSION-001",
+      "verification_status": "AUTOMATED_FAIL"
+    },
+    {
+      "target_id": "FEAT-066",
+      "severity": "P1",
+      "gap_kind": "RELEASE",
+      "first_breakpoint": "仓库根 VERSION 文件存在",
+      "root_cause_id": "RC-VERSION-SSOT",
+      "task_id": "VERSION-METADATA-001",
       "verification_status": "AUTOMATED_FAIL"
     },
     {
       "target_id": "FEAT-081",
       "severity": "P1",
       "gap_kind": "RUNTIME",
-      "first_breakpoint": "validateOtaPackage 接口缺失",
-      "suggested_fix_id": "FIX-OTA-002",
+      "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
+      "root_cause_id": "RC-OTA-PACKAGE",
+      "task_id": "OTA-PACKAGE-001",
       "verification_status": "AUTOMATED_FAIL"
+    },
+    {
+      "target_id": "FLOW-008",
+      "severity": "P1",
+      "gap_kind": "FIRMWARE",
+      "first_breakpoint": "缺 fixture_observer",
+      "root_cause_id": "RC-ESP32-OBSERVER",
+      "task_id": "ESP32-OBSERVER-001",
+      "verification_status": "AUTOMATED_PASS"
+    },
+    {
+      "target_id": "OP-P008-01",
+      "severity": "P1",
+      "gap_kind": "FIRMWARE",
+      "first_breakpoint": "hardware/esp32 无 Observer 目标源码",
+      "root_cause_id": "RC-ESP32-OBSERVER",
+      "task_id": "ESP32-OBSERVER-001",
+      "verification_status": "BLOCKED_BY_FIXTURE"
     },
     {
       "target_id": "PAGE-008",
       "severity": "P1",
       "gap_kind": "PAGE",
-      "first_breakpoint": "@playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷）",
-      "suggested_fix_id": "FIX-TEST-002",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN"
+      "first_breakpoint": "广播页内联；Owner/composable 未接入",
+      "root_cause_id": "RC-PAGE-BROADCAST",
+      "task_id": "PAGE-BROADCAST-001",
+      "verification_status": "AUTOMATED_PASS"
     },
     {
-      "target_id": "OP-P010-01",
+      "target_id": "PAGE-010",
       "severity": "P1",
       "gap_kind": "PAGE",
       "first_breakpoint": "pages/about/version.vue 硬编码 versionHistory",
-      "suggested_fix_id": "FIX-PAGE-010",
+      "root_cause_id": "RC-PAGE-VERSION",
+      "task_id": "PAGE-VERSION-001",
       "verification_status": "BLOCKED_BY_TOOLCHAIN"
     },
     {
-      "target_id": "FLOW-004",
+      "target_id": "PROTO-001",
       "severity": "P1",
-      "gap_kind": "PRODUCT",
-      "first_breakpoint": "connectDevice 未编排服务发现（失败不报错=半开泄漏面）",
-      "suggested_fix_id": "FIX-RUNTIME-007",
+      "gap_kind": "FIRMWARE",
+      "first_breakpoint": "固件含广播名 BLEToolkit-Observer",
+      "root_cause_id": "RC-ESP32-OBSERVER",
+      "task_id": "ESP32-OBSERVER-001",
       "verification_status": "AUTOMATED_FAIL"
     },
     {
-      "target_id": "4fafc201-1fb5-459e-8fcc-c5c9c331914b",
+      "target_id": "PROTO-009",
       "severity": "P1",
       "gap_kind": "FIRMWARE",
-      "first_breakpoint": "固件缺 FF00 LED 表或 Observer",
-      "suggested_fix_id": "FIX-FW-001",
-      "verification_status": "HARDWARE_PENDING"
+      "first_breakpoint": "fixture_observer 不存在",
+      "root_cause_id": "RC-ESP32-OBSERVER",
+      "task_id": "ESP32-OBSERVER-001",
+      "verification_status": "BLOCKED_BY_FIXTURE"
     },
     {
-      "target_id": "TEST-U-015",
+      "target_id": "PROTO-011",
       "severity": "P1",
-      "gap_kind": "SMART_HID",
-      "first_breakpoint": "apps/uniapp/services/smart-hid/profile.js ESM/TS 语法不可直接 import",
-      "suggested_fix_id": "FIX-HID-001",
+      "gap_kind": "RUNTIME",
+      "first_breakpoint": "Observer 字段 ≥9（实际 8）",
+      "root_cause_id": "RC-ESP32-OBSERVER",
+      "task_id": "ESP32-OBSERVER-001",
       "verification_status": "AUTOMATED_FAIL"
     }
   ]

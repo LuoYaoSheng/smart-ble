@@ -1,0 +1,1361 @@
+{
+  "schema_version": "2.0",
+  "gate": "TP-G2-R1",
+  "nodes": [
+    {
+      "task_id": "TEST-CURRENT-INTEGRITY-001",
+      "task_type": "TESTABILITY",
+      "title": "Current 度量完整性（TP-G1-R3 已完成）",
+      "root_cause_id": null,
+      "severity": null,
+      "status": "DONE",
+      "dependencies": [],
+      "unlocks": [],
+      "gap_count": 0,
+      "target_ids": [],
+      "test_ids": [],
+      "first_breakpoint": "",
+      "implementation_files": [],
+      "forbidden_files": [
+        "apps/uniapp/** (until TP-G3)",
+        "docs/target-product/**",
+        "contracts/target/** product semantics"
+      ],
+      "automated_acceptance": "related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL",
+      "build_acceptance": "verify-uniapp + docs build",
+      "e5_acceptance": "n/a until VERIFY_*",
+      "e6_acceptance": "n/a",
+      "risk": "may touch multi-page / protocol surfaces in TP-G3",
+      "commit_message": "testability(test-current-integrity-001): Current 度量完整性（TP-G1-R3 已完成）"
+    },
+    {
+      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_type": "ENVIRONMENT",
+      "title": "安装并锁定 Playwright / H5 harness",
+      "root_cause_id": "RC-PLAYWRIGHT",
+      "severity": "P2",
+      "status": "PLANNED",
+      "dependencies": [],
+      "unlocks": [
+        "TEST-PAGE-DRIVER-001"
+      ],
+      "gap_count": 159,
+      "target_ids": [
+        "PAGE-001#BLK-TOOL-PLAYWRIGHT",
+        "STATE-P001-01",
+        "STATE-P001-02",
+        "STATE-P001-03",
+        "STATE-P001-04",
+        "STATE-P001-05",
+        "STATE-P001-06",
+        "STATE-P001-07",
+        "STATE-P001-08",
+        "STATE-P001-09",
+        "STATE-P001-10",
+        "OP-P001-01",
+        "OP-P001-02",
+        "OP-P001-03",
+        "OP-P001-04",
+        "OP-P001-05",
+        "OP-P001-06",
+        "OP-P001-07",
+        "OP-P001-08",
+        "OP-P001-09",
+        "OP-P001-10",
+        "OP-P001-11",
+        "OP-P001-13",
+        "OP-P001-14",
+        "OP-P001-15",
+        "PAGE-002#BLK-TOOL-PLAYWRIGHT",
+        "STATE-P002-01",
+        "STATE-P002-02",
+        "STATE-P002-03",
+        "STATE-P002-04",
+        "STATE-P002-05",
+        "STATE-P002-06",
+        "STATE-P002-07",
+        "STATE-P002-08",
+        "STATE-P002-09",
+        "STATE-P002-10",
+        "STATE-P002-11",
+        "STATE-P002-12",
+        "OP-P002-01",
+        "OP-P002-02"
+      ],
+      "test_ids": [
+        "TEST-P-001",
+        "TEST-W-006",
+        "TEST-A-004",
+        "TEST-W-005",
+        "TEST-A-001",
+        "TEST-W-001",
+        "TEST-A-005",
+        "TEST-W-007",
+        "TEST-E-001",
+        "TEST-E-005",
+        "TEST-P-007",
+        "TEST-U-005",
+        "TEST-I-002",
+        "TEST-A-003",
+        "TEST-W-003",
+        "TEST-P-006",
+        "TEST-A-006",
+        "TEST-P-002",
+        "TEST-H-001",
+        "TEST-W-010",
+        "TEST-U-007",
+        "TEST-P-003",
+        "TEST-P-004",
+        "TEST-U-015",
+        "TEST-I-009",
+        "TEST-H-002",
+        "TEST-H-003",
+        "TEST-H-004",
+        "TEST-H-006",
+        "TEST-P-005",
+        "TEST-H-005",
+        "TEST-I-003",
+        "TEST-E-003",
+        "TEST-A-007",
+        "TEST-A-008",
+        "TEST-E-007",
+        "TEST-E-002",
+        "TEST-U-010",
+        "TEST-I-005",
+        "TEST-E-004"
+      ],
+      "first_breakpoint": "@playwright/test 未安装",
+      "implementation_files": [],
+      "forbidden_files": [
+        "apps/uniapp/** (until TP-G3)",
+        "docs/target-product/**",
+        "contracts/target/** product semantics"
+      ],
+      "automated_acceptance": "related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL",
+      "build_acceptance": "verify-uniapp + docs build",
+      "e5_acceptance": "n/a until VERIFY_*",
+      "e6_acceptance": "n/a",
+      "risk": "may touch multi-page / protocol surfaces in TP-G3",
+      "commit_message": "environment(env-playwright-001): 安装并锁定 Playwright / H5 harness"
+    },
+    {
+      "task_id": "TEST-PAGE-DRIVER-001",
+      "task_type": "TESTABILITY",
+      "title": "实现 Target Page Driver",
+      "root_cause_id": "RC-PAGE-DRIVER",
+      "severity": "P2",
+      "status": "PLANNED",
+      "dependencies": [
+        "ENV-PLAYWRIGHT-001"
+      ],
+      "unlocks": [
+        "VERIFY-ANDROID-001",
+        "VERIFY-WECHAT-001"
+      ],
+      "gap_count": 11,
+      "target_ids": [
+        "PAGE-001#BLK-TEST-PAGE-DRIVER",
+        "PAGE-002#BLK-TEST-PAGE-DRIVER",
+        "PAGE-003#BLK-TEST-PAGE-DRIVER",
+        "PAGE-004#BLK-TEST-PAGE-DRIVER",
+        "PAGE-005#BLK-TEST-PAGE-DRIVER",
+        "PAGE-006#BLK-TEST-PAGE-DRIVER",
+        "PAGE-007#BLK-TEST-PAGE-DRIVER",
+        "PAGE-008#BLK-TEST-PAGE-DRIVER",
+        "PAGE-009#BLK-TEST-PAGE-DRIVER",
+        "PAGE-010#BLK-TEST-PAGE-DRIVER",
+        "WEB-001#BLK-TEST-PAGE-DRIVER"
+      ],
+      "test_ids": [],
+      "first_breakpoint": "TARGET_PAGE_DRIVER 未实现",
+      "implementation_files": [],
+      "forbidden_files": [
+        "apps/uniapp/** (until TP-G3)",
+        "docs/target-product/**",
+        "contracts/target/** product semantics"
+      ],
+      "automated_acceptance": "related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL",
+      "build_acceptance": "verify-uniapp + docs build",
+      "e5_acceptance": "n/a until VERIFY_*",
+      "e6_acceptance": "n/a",
+      "risk": "may touch multi-page / protocol surfaces in TP-G3",
+      "commit_message": "testability(test-page-driver-001): 实现 Target Page Driver"
+    },
+    {
+      "task_id": "PUBLIC-HONESTY-001",
+      "task_type": "SOURCE_FIX",
+      "title": "落地页立即诚实降级（假下载/6+/错误主线→PREVIEW/NOT_RELEASED）",
+      "root_cause_id": "RC-LANDING-FAKE-DOWNLOAD",
+      "severity": "P0",
+      "status": "PLANNED",
+      "dependencies": [],
+      "unlocks": [
+        "VERIFY-E6-001"
+      ],
+      "gap_count": 15,
+      "target_ids": [
+        "FEAT-070",
+        "FEAT-075",
+        "REQ-058",
+        "REQ-059",
+        "REQ-060",
+        "STATE-W001-03",
+        "OP-W001-03",
+        "OP-W001-04",
+        "OP-W001-05",
+        "CLAIM-016",
+        "CLAIM-017",
+        "CLAIM-018",
+        "CLAIM-019",
+        "CLAIM-027",
+        "CLAIM-028"
+      ],
+      "test_ids": [
+        "TEST-R-003",
+        "TEST-R-007",
+        "TEST-R-001",
+        "TEST-R-002",
+        "TEST-R-008",
+        "TEST-R-009",
+        "TEST-R-006",
+        "TEST-E-008",
+        "TEST-R-005"
+      ],
+      "first_breakpoint": "无产物直链时页面必须明确 NOT_RELEASED/尚未发布",
+      "implementation_files": [],
+      "forbidden_files": [
+        "apps/uniapp/** (until TP-G3)",
+        "docs/target-product/**",
+        "contracts/target/** product semantics"
+      ],
+      "automated_acceptance": "related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL",
+      "build_acceptance": "verify-uniapp + docs build",
+      "e5_acceptance": "n/a until VERIFY_*",
+      "e6_acceptance": "n/a",
+      "risk": "may touch multi-page / protocol surfaces in TP-G3",
+      "commit_message": "source_fix(public-honesty-001): 落地页立即诚实降级（假下载/6+/错误主线→PREVIEW/NOT_RELEASED）"
+    },
+    {
+      "task_id": "VERSION-METADATA-001",
+      "task_type": "SOURCE_FIX",
+      "title": "根 VERSION + Release Metadata + Public Status",
+      "root_cause_id": "RC-VERSION-SSOT",
+      "severity": "P1",
+      "status": "PLANNED",
+      "dependencies": [],
+      "unlocks": [
+        "RELEASE-PIPELINE-001",
+        "PAGE-VERSION-001",
+        "VERIFY-E6-001"
+      ],
+      "gap_count": 9,
+      "target_ids": [
+        "FEAT-004",
+        "FEAT-009",
+        "FEAT-066",
+        "REQ-004",
+        "REQ-009",
+        "REQ-056",
+        "PAGE-009",
+        "CLAIM-001",
+        "EVID-008"
+      ],
+      "test_ids": [
+        "TEST-C-006",
+        "TEST-U-002",
+        "TEST-R-002",
+        "TEST-E-008",
+        "TEST-R-001",
+        "TEST-P-001",
+        "TEST-W-006",
+        "TEST-R-003",
+        "TEST-P-010",
+        "TEST-P-009",
+        "TEST-A-012",
+        "TEST-W-010",
+        "TEST-R-005",
+        "TEST-R-006"
+      ],
+      "first_breakpoint": "[TEST-U-002 REQ-004/056 FEAT-004/066 PAGE-009/010 WEB-001 S-47] 第一断点: 目标模块缺失：apps/uniapp/services/version-metadata.js",
+      "implementation_files": [],
+      "forbidden_files": [
+        "apps/uniapp/** (until TP-G3)",
+        "docs/target-product/**",
+        "contracts/target/** product semantics"
+      ],
+      "automated_acceptance": "related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL",
+      "build_acceptance": "verify-uniapp + docs build",
+      "e5_acceptance": "n/a until VERIFY_*",
+      "e6_acceptance": "n/a",
+      "risk": "may touch multi-page / protocol surfaces in TP-G3",
+      "commit_message": "source_fix(version-metadata-001): 根 VERSION + Release Metadata + Public Status"
+    },
+    {
+      "task_id": "RELEASE-PIPELINE-001",
+      "task_type": "RELEASE",
+      "title": "UniApp + Peripheral/Observer 双固件 Release Pipeline",
+      "root_cause_id": "RC-RELEASE-PIPELINE",
+      "severity": "P0",
+      "status": "PLANNED",
+      "dependencies": [
+        "VERSION-METADATA-001"
+      ],
+      "unlocks": [
+        "VERIFY-E6-001"
+      ],
+      "gap_count": 1,
+      "target_ids": [
+        "PROTO-010"
+      ],
+      "test_ids": [
+        "TEST-E-006"
+      ],
+      "first_breakpoint": ".github/workflows/release-build.yml builds Flutter/Tauri; not UniApp Android + Peripheral/Observer firmware",
+      "implementation_files": [],
+      "forbidden_files": [
+        "apps/uniapp/** (until TP-G3)",
+        "docs/target-product/**",
+        "contracts/target/** product semantics"
+      ],
+      "automated_acceptance": "related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL",
+      "build_acceptance": "verify-uniapp + docs build",
+      "e5_acceptance": "n/a until VERIFY_*",
+      "e6_acceptance": "n/a",
+      "risk": "may touch multi-page / protocol surfaces in TP-G3",
+      "commit_message": "release(release-pipeline-001): UniApp + Peripheral/Observer 双固件 Release Pipeline"
+    },
+    {
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "task_type": "SOURCE_FIX",
+      "title": "实现 display-name 解析链",
+      "root_cause_id": "RC-DISPLAY-NAME",
+      "severity": "P1",
+      "status": "PLANNED",
+      "dependencies": [],
+      "unlocks": [],
+      "gap_count": 2,
+      "target_ids": [
+        "FEAT-013",
+        "REQ-013"
+      ],
+      "test_ids": [
+        "TEST-U-006",
+        "TEST-A-005",
+        "TEST-W-007"
+      ],
+      "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
+      "implementation_files": [],
+      "forbidden_files": [
+        "apps/uniapp/** (until TP-G3)",
+        "docs/target-product/**",
+        "contracts/target/** product semantics"
+      ],
+      "automated_acceptance": "related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL",
+      "build_acceptance": "verify-uniapp + docs build",
+      "e5_acceptance": "n/a until VERIFY_*",
+      "e6_acceptance": "n/a",
+      "risk": "may touch multi-page / protocol surfaces in TP-G3",
+      "commit_message": "source_fix(runtime-display-name-001): 实现 display-name 解析链"
+    },
+    {
+      "task_id": "RUNTIME-FILTER-001",
+      "task_type": "SOURCE_FIX",
+      "title": "device-filter 关键词命中项匹配对齐目标",
+      "root_cause_id": "RC-DEVICE-FILTER",
+      "severity": "P1",
+      "status": "PLANNED",
+      "dependencies": [],
+      "unlocks": [],
+      "gap_count": 4,
+      "target_ids": [
+        "FEAT-014",
+        "REQ-014",
+        "PAGE-001",
+        "FLOW-002"
+      ],
+      "test_ids": [
+        "TEST-U-007",
+        "TEST-P-001",
+        "TEST-A-005",
+        "TEST-W-007",
+        "TEST-A-001",
+        "TEST-W-001",
+        "TEST-E-001",
+        "TEST-U-008",
+        "TEST-U-001",
+        "TEST-U-005",
+        "TEST-I-003",
+        "TEST-I-001",
+        "TEST-I-002",
+        "TEST-I-009",
+        "TEST-U-006",
+        "TEST-U-015"
+      ],
+      "first_breakpoint": "命中项匹配关键词",
+      "implementation_files": [],
+      "forbidden_files": [
+        "apps/uniapp/** (until TP-G3)",
+        "docs/target-product/**",
+        "contracts/target/** product semantics"
+      ],
+      "automated_acceptance": "related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL",
+      "build_acceptance": "verify-uniapp + docs build",
+      "e5_acceptance": "n/a until VERIFY_*",
+      "e6_acceptance": "n/a",
+      "risk": "may touch multi-page / protocol surfaces in TP-G3",
+      "commit_message": "source_fix(runtime-filter-001): device-filter 关键词命中项匹配对齐目标"
+    },
+    {
+      "task_id": "RUNTIME-GATT-CODEC-001",
+      "task_type": "SOURCE_FIX",
+      "title": "validateHexInput/parseHexInput",
+      "root_cause_id": "RC-GATT-HEX",
+      "severity": "P1",
+      "status": "PLANNED",
+      "dependencies": [],
+      "unlocks": [],
+      "gap_count": 6,
+      "target_ids": [
+        "FEAT-026",
+        "FEAT-028",
+        "REQ-024",
+        "REQ-026",
+        "PAGE-006",
+        "FLOW-005"
+      ],
+      "test_ids": [
+        "TEST-U-009",
+        "TEST-A-006",
+        "TEST-E-003",
+        "TEST-U-010",
+        "TEST-I-004",
+        "TEST-A-008",
+        "TEST-P-006",
+        "TEST-U-011",
+        "TEST-U-012",
+        "TEST-I-003",
+        "TEST-I-005",
+        "TEST-I-008",
+        "TEST-A-011",
+        "TEST-W-007",
+        "TEST-W-008",
+        "TEST-E-002",
+        "TEST-E-004",
+        "TEST-E-005",
+        "TEST-E-007",
+        "TEST-I-006",
+        "TEST-U-016"
+      ],
+      "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
+      "implementation_files": [],
+      "forbidden_files": [
+        "apps/uniapp/** (until TP-G3)",
+        "docs/target-product/**",
+        "contracts/target/** product semantics"
+      ],
+      "automated_acceptance": "related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL",
+      "build_acceptance": "verify-uniapp + docs build",
+      "e5_acceptance": "n/a until VERIFY_*",
+      "e6_acceptance": "n/a",
+      "risk": "may touch multi-page / protocol surfaces in TP-G3",
+      "commit_message": "source_fix(runtime-gatt-codec-001): validateHexInput/parseHexInput"
+    },
+    {
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
+      "task_type": "SOURCE_FIX",
+      "title": "write-queue MTU 分包队列",
+      "root_cause_id": "RC-WRITE-QUEUE",
+      "severity": "P1",
+      "status": "PLANNED",
+      "dependencies": [],
+      "unlocks": [],
+      "gap_count": 2,
+      "target_ids": [
+        "FEAT-030",
+        "REQ-028"
+      ],
+      "test_ids": [
+        "TEST-U-011",
+        "TEST-I-004",
+        "TEST-E-003"
+      ],
+      "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+      "implementation_files": [],
+      "forbidden_files": [
+        "apps/uniapp/** (until TP-G3)",
+        "docs/target-product/**",
+        "contracts/target/** product semantics"
+      ],
+      "automated_acceptance": "related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL",
+      "build_acceptance": "verify-uniapp + docs build",
+      "e5_acceptance": "n/a until VERIFY_*",
+      "e6_acceptance": "n/a",
+      "risk": "may touch multi-page / protocol surfaces in TP-G3",
+      "commit_message": "source_fix(runtime-write-queue-001): write-queue MTU 分包队列"
+    },
+    {
+      "task_id": "RUNTIME-LOG-REDACTION-001",
+      "task_type": "SOURCE_FIX",
+      "title": "log-redaction 脱敏",
+      "root_cause_id": "RC-LOG-REDACTION",
+      "severity": "P1",
+      "status": "PLANNED",
+      "dependencies": [],
+      "unlocks": [],
+      "gap_count": 6,
+      "target_ids": [
+        "FEAT-040",
+        "REQ-036",
+        "REQ-037",
+        "REQ-050",
+        "PAGE-002",
+        "WEB-001"
+      ],
+      "test_ids": [
+        "TEST-U-013",
+        "TEST-R-004",
+        "TEST-U-012",
+        "TEST-A-008",
+        "TEST-U-015",
+        "TEST-I-009",
+        "TEST-H-002",
+        "TEST-P-002",
+        "TEST-H-001",
+        "TEST-H-003",
+        "TEST-W-010",
+        "TEST-R-001",
+        "TEST-R-002",
+        "TEST-R-003",
+        "TEST-R-005",
+        "TEST-R-006",
+        "TEST-R-007",
+        "TEST-R-008",
+        "TEST-R-009",
+        "TEST-R-010",
+        "TEST-R-011",
+        "TEST-U-002"
+      ],
+      "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
+      "implementation_files": [],
+      "forbidden_files": [
+        "apps/uniapp/** (until TP-G3)",
+        "docs/target-product/**",
+        "contracts/target/** product semantics"
+      ],
+      "automated_acceptance": "related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL",
+      "build_acceptance": "verify-uniapp + docs build",
+      "e5_acceptance": "n/a until VERIFY_*",
+      "e6_acceptance": "n/a",
+      "risk": "may touch multi-page / protocol surfaces in TP-G3",
+      "commit_message": "source_fix(runtime-log-redaction-001): log-redaction 脱敏"
+    },
+    {
+      "task_id": "RUNTIME-RECONNECT-001",
+      "task_type": "SOURCE_FIX",
+      "title": "reconnect-policy 有限重连",
+      "root_cause_id": "RC-RECONNECT",
+      "severity": "P1",
+      "status": "PLANNED",
+      "dependencies": [],
+      "unlocks": [],
+      "gap_count": 3,
+      "target_ids": [
+        "FEAT-023",
+        "REQ-022",
+        "FLOW-004"
+      ],
+      "test_ids": [
+        "TEST-I-003",
+        "TEST-A-007",
+        "TEST-W-008",
+        "TEST-E-002",
+        "TEST-A-006",
+        "TEST-W-007",
+        "TEST-E-005"
+      ],
+      "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
+      "implementation_files": [],
+      "forbidden_files": [
+        "apps/uniapp/** (until TP-G3)",
+        "docs/target-product/**",
+        "contracts/target/** product semantics"
+      ],
+      "automated_acceptance": "related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL",
+      "build_acceptance": "verify-uniapp + docs build",
+      "e5_acceptance": "n/a until VERIFY_*",
+      "e6_acceptance": "n/a",
+      "risk": "may touch multi-page / protocol surfaces in TP-G3",
+      "commit_message": "source_fix(runtime-reconnect-001): reconnect-policy 有限重连"
+    },
+    {
+      "task_id": "RUNTIME-SESSION-001",
+      "task_type": "SOURCE_FIX",
+      "title": "Registry subscription_count + 配网会话分类",
+      "root_cause_id": "RC-SESSION-REGISTRY",
+      "severity": "P1",
+      "status": "PLANNED",
+      "dependencies": [],
+      "unlocks": [],
+      "gap_count": 8,
+      "target_ids": [
+        "FEAT-011",
+        "FEAT-012",
+        "FEAT-062",
+        "REQ-011",
+        "REQ-012",
+        "REQ-053",
+        "PAGE-007",
+        "DEC-017"
+      ],
+      "test_ids": [
+        "TEST-U-005",
+        "TEST-I-002",
+        "TEST-A-005",
+        "TEST-W-007",
+        "TEST-P-005",
+        "TEST-H-005",
+        "TEST-I-009",
+        "TEST-H-006",
+        "TEST-P-007",
+        "TEST-I-006",
+        "TEST-A-007",
+        "TEST-A-009",
+        "TEST-W-008",
+        "TEST-W-009",
+        "TEST-E-002",
+        "TEST-I-005"
+      ],
+      "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
+      "implementation_files": [],
+      "forbidden_files": [
+        "apps/uniapp/** (until TP-G3)",
+        "docs/target-product/**",
+        "contracts/target/** product semantics"
+      ],
+      "automated_acceptance": "related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL",
+      "build_acceptance": "verify-uniapp + docs build",
+      "e5_acceptance": "n/a until VERIFY_*",
+      "e6_acceptance": "n/a",
+      "risk": "may touch multi-page / protocol surfaces in TP-G3",
+      "commit_message": "source_fix(runtime-session-001): Registry subscription_count + 配网会话分类"
+    },
+    {
+      "task_id": "RUNTIME-CONNECTION-DISCOVERY-001",
+      "task_type": "SOURCE_FIX",
+      "title": "connectDevice 编排服务发现",
+      "root_cause_id": "RC-CONN-DISCOVERY",
+      "severity": "P1",
+      "status": "PLANNED",
+      "dependencies": [],
+      "unlocks": [],
+      "gap_count": 3,
+      "target_ids": [
+        "FEAT-021",
+        "REQ-019",
+        "ERR-CONN-03"
+      ],
+      "test_ids": [
+        "TEST-I-003",
+        "TEST-A-006",
+        "TEST-E-002",
+        "TEST-P-006",
+        "TEST-W-007"
+      ],
+      "first_breakpoint": "[REQ-020/021 ERR-CONN-03] 第一断点: connectDevice 未编排服务发现（失败不报错=半开泄漏面）",
+      "implementation_files": [],
+      "forbidden_files": [
+        "apps/uniapp/** (until TP-G3)",
+        "docs/target-product/**",
+        "contracts/target/** product semantics"
+      ],
+      "automated_acceptance": "related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL",
+      "build_acceptance": "verify-uniapp + docs build",
+      "e5_acceptance": "n/a until VERIFY_*",
+      "e6_acceptance": "n/a",
+      "risk": "may touch multi-page / protocol surfaces in TP-G3",
+      "commit_message": "source_fix(runtime-connection-discovery-001): connectDevice 编排服务发现"
+    },
+    {
+      "task_id": "OTA-PACKAGE-001",
+      "task_type": "SOURCE_FIX",
+      "title": "客户端 Firmware Package 六项校验",
+      "root_cause_id": "RC-OTA-PACKAGE",
+      "severity": "P1",
+      "status": "PLANNED",
+      "dependencies": [],
+      "unlocks": [
+        "OTA-CLIENT-001"
+      ],
+      "gap_count": 4,
+      "target_ids": [
+        "FEAT-081",
+        "REQ-066",
+        "FLOW-009",
+        "DEC-016"
+      ],
+      "test_ids": [
+        "TEST-U-016",
+        "TEST-I-010",
+        "TEST-E-007",
+        "TEST-A-011",
+        "TEST-I-008"
+      ],
+      "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
+      "implementation_files": [],
+      "forbidden_files": [
+        "apps/uniapp/** (until TP-G3)",
+        "docs/target-product/**",
+        "contracts/target/** product semantics"
+      ],
+      "automated_acceptance": "related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL",
+      "build_acceptance": "verify-uniapp + docs build",
+      "e5_acceptance": "n/a until VERIFY_*",
+      "e6_acceptance": "n/a",
+      "risk": "may touch multi-page / protocol surfaces in TP-G3",
+      "commit_message": "source_fix(ota-package-001): 客户端 Firmware Package 六项校验"
+    },
+    {
+      "task_id": "OTA-CLIENT-001",
+      "task_type": "SOURCE_FIX",
+      "title": "客户端完整 OTA 事务（CTRL start→ready→DATA→commit）",
+      "root_cause_id": "RC-OTA-CTRL-START",
+      "severity": "P0",
+      "status": "PLANNED",
+      "dependencies": [
+        "OTA-PACKAGE-001"
+      ],
+      "unlocks": [
+        "VERIFY-ANDROID-001"
+      ],
+      "gap_count": 14,
+      "target_ids": [
+        "FEAT-046",
+        "FEAT-047",
+        "FEAT-048",
+        "FEAT-049",
+        "FEAT-050",
+        "FEAT-051",
+        "FEAT-052",
+        "REQ-043",
+        "REQ-044",
+        "REQ-045",
+        "REQ-046",
+        "OP-P006-12",
+        "OP-P006-13",
+        "OP-P006-14"
+      ],
+      "test_ids": [
+        "TEST-P-006",
+        "TEST-A-011",
+        "TEST-E-007",
+        "TEST-R-003",
+        "TEST-I-008",
+        "TEST-U-016",
+        "TEST-I-010"
+      ],
+      "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
+      "implementation_files": [],
+      "forbidden_files": [
+        "apps/uniapp/** (until TP-G3)",
+        "docs/target-product/**",
+        "contracts/target/** product semantics"
+      ],
+      "automated_acceptance": "related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL",
+      "build_acceptance": "verify-uniapp + docs build",
+      "e5_acceptance": "n/a until VERIFY_*",
+      "e6_acceptance": "n/a",
+      "risk": "may touch multi-page / protocol surfaces in TP-G3",
+      "commit_message": "source_fix(ota-client-001): 客户端完整 OTA 事务（CTRL start→ready→DATA→commit）"
+    },
+    {
+      "task_id": "OTA-FIRMWARE-001",
+      "task_type": "SOURCE_FIX",
+      "title": "固件 OTA op/target/hardware/SHA/max_chunk/commit 校验",
+      "root_cause_id": "RC-ESP32-OTA-ACTION",
+      "severity": "P1",
+      "status": "PLANNED",
+      "dependencies": [
+        "ESP32-BUILD-001"
+      ],
+      "unlocks": [],
+      "gap_count": 0,
+      "target_ids": [],
+      "test_ids": [],
+      "first_breakpoint": "",
+      "implementation_files": [],
+      "forbidden_files": [
+        "apps/uniapp/** (until TP-G3)",
+        "docs/target-product/**",
+        "contracts/target/** product semantics"
+      ],
+      "automated_acceptance": "related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL",
+      "build_acceptance": "verify-uniapp + docs build",
+      "e5_acceptance": "n/a until VERIFY_*",
+      "e6_acceptance": "n/a",
+      "risk": "may touch multi-page / protocol surfaces in TP-G3",
+      "commit_message": "source_fix(ota-firmware-001): 固件 OTA op/target/hardware/SHA/max_chunk/commit 校验"
+    },
+    {
+      "task_id": "ESP32-BUILD-001",
+      "task_type": "SOURCE_FIX",
+      "title": "两环境、无固定 COM、模块化入口",
+      "root_cause_id": "RC-ESP32-BUILD",
+      "severity": "P1",
+      "status": "PLANNED",
+      "dependencies": [],
+      "unlocks": [
+        "OTA-FIRMWARE-001",
+        "ESP32-PERIPHERAL-001",
+        "ESP32-OBSERVER-001"
+      ],
+      "gap_count": 0,
+      "target_ids": [],
+      "test_ids": [],
+      "first_breakpoint": "",
+      "implementation_files": [],
+      "forbidden_files": [
+        "apps/uniapp/** (until TP-G3)",
+        "docs/target-product/**",
+        "contracts/target/** product semantics"
+      ],
+      "automated_acceptance": "related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL",
+      "build_acceptance": "verify-uniapp + docs build",
+      "e5_acceptance": "n/a until VERIFY_*",
+      "e6_acceptance": "n/a",
+      "risk": "may touch multi-page / protocol surfaces in TP-G3",
+      "commit_message": "source_fix(esp32-build-001): 两环境、无固定 COM、模块化入口"
+    },
+    {
+      "task_id": "ESP32-PERIPHERAL-001",
+      "task_type": "SOURCE_FIX",
+      "title": "服务/特征/名称/LED/Device Info 对齐契约",
+      "root_cause_id": "RC-ESP32-LED-NAME",
+      "severity": "P1",
+      "status": "PLANNED",
+      "dependencies": [
+        "ESP32-BUILD-001"
+      ],
+      "unlocks": [
+        "ESP32-FAULT-001"
+      ],
+      "gap_count": 0,
+      "target_ids": [],
+      "test_ids": [],
+      "first_breakpoint": "",
+      "implementation_files": [],
+      "forbidden_files": [
+        "apps/uniapp/** (until TP-G3)",
+        "docs/target-product/**",
+        "contracts/target/** product semantics"
+      ],
+      "automated_acceptance": "related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL",
+      "build_acceptance": "verify-uniapp + docs build",
+      "e5_acceptance": "n/a until VERIFY_*",
+      "e6_acceptance": "n/a",
+      "risk": "may touch multi-page / protocol surfaces in TP-G3",
+      "commit_message": "source_fix(esp32-peripheral-001): 服务/特征/名称/LED/Device Info 对齐契约"
+    },
+    {
+      "task_id": "ESP32-OBSERVER-001",
+      "task_type": "SOURCE_FIX",
+      "title": "实现 fixture_observer",
+      "root_cause_id": "RC-ESP32-OBSERVER",
+      "severity": "P1",
+      "status": "PLANNED",
+      "dependencies": [
+        "ESP32-BUILD-001"
+      ],
+      "unlocks": [
+        "VERIFY-ESP32-001"
+      ],
+      "gap_count": 12,
+      "target_ids": [
+        "OP-P008-01",
+        "OP-P008-02",
+        "OP-P008-03",
+        "FLOW-008",
+        "PROTO-001",
+        "PROTO-002",
+        "PROTO-003",
+        "PROTO-004",
+        "PROTO-005",
+        "PROTO-009",
+        "PROTO-011",
+        "EVID-005"
+      ],
+      "test_ids": [
+        "TEST-P-008",
+        "TEST-A-010",
+        "TEST-U-014",
+        "TEST-I-007",
+        "TEST-E-006",
+        "TEST-W-009",
+        "TEST-E-001"
+      ],
+      "first_breakpoint": "hardware/esp32 无 Observer 目标源码",
+      "implementation_files": [],
+      "forbidden_files": [
+        "apps/uniapp/** (until TP-G3)",
+        "docs/target-product/**",
+        "contracts/target/** product semantics"
+      ],
+      "automated_acceptance": "related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL",
+      "build_acceptance": "verify-uniapp + docs build",
+      "e5_acceptance": "n/a until VERIFY_*",
+      "e6_acceptance": "n/a",
+      "risk": "may touch multi-page / protocol surfaces in TP-G3",
+      "commit_message": "source_fix(esp32-observer-001): 实现 fixture_observer"
+    },
+    {
+      "task_id": "ESP32-FAULT-001",
+      "task_type": "SOURCE_FIX",
+      "title": "Fault Injection + Serial JSON",
+      "root_cause_id": "RC-ESP32-SERIAL",
+      "severity": "P1",
+      "status": "PLANNED",
+      "dependencies": [
+        "ESP32-PERIPHERAL-001"
+      ],
+      "unlocks": [
+        "VERIFY-ESP32-001"
+      ],
+      "gap_count": 0,
+      "target_ids": [],
+      "test_ids": [],
+      "first_breakpoint": "",
+      "implementation_files": [],
+      "forbidden_files": [
+        "apps/uniapp/** (until TP-G3)",
+        "docs/target-product/**",
+        "contracts/target/** product semantics"
+      ],
+      "automated_acceptance": "related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL",
+      "build_acceptance": "verify-uniapp + docs build",
+      "e5_acceptance": "n/a until VERIFY_*",
+      "e6_acceptance": "n/a",
+      "risk": "may touch multi-page / protocol surfaces in TP-G3",
+      "commit_message": "source_fix(esp32-fault-001): Fault Injection + Serial JSON"
+    },
+    {
+      "task_id": "PAGE-BROADCAST-001",
+      "task_type": "SOURCE_FIX",
+      "title": "PAGE-008 改用 composable/adapter/service",
+      "root_cause_id": "RC-PAGE-BROADCAST",
+      "severity": "P1",
+      "status": "PLANNED",
+      "dependencies": [],
+      "unlocks": [],
+      "gap_count": 6,
+      "target_ids": [
+        "FEAT-041",
+        "FEAT-042",
+        "FEAT-043",
+        "FEAT-044",
+        "FEAT-045",
+        "PAGE-008"
+      ],
+      "test_ids": [
+        "TEST-P-008",
+        "TEST-A-010",
+        "TEST-W-009",
+        "TEST-E-006",
+        "TEST-I-007",
+        "TEST-U-014"
+      ],
+      "first_breakpoint": "PAGE-008 内联广告逻辑；useBroadcastSession 未使用",
+      "implementation_files": [],
+      "forbidden_files": [
+        "apps/uniapp/** (until TP-G3)",
+        "docs/target-product/**",
+        "contracts/target/** product semantics"
+      ],
+      "automated_acceptance": "related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL",
+      "build_acceptance": "verify-uniapp + docs build",
+      "e5_acceptance": "n/a until VERIFY_*",
+      "e6_acceptance": "n/a",
+      "risk": "may touch multi-page / protocol surfaces in TP-G3",
+      "commit_message": "source_fix(page-broadcast-001): PAGE-008 改用 composable/adapter/service"
+    },
+    {
+      "task_id": "PAGE-VERSION-001",
+      "task_type": "SOURCE_FIX",
+      "title": "PAGE-010 改为 Metadata 投影",
+      "root_cause_id": "RC-PAGE-VERSION",
+      "severity": "P1",
+      "status": "PLANNED",
+      "dependencies": [
+        "VERSION-METADATA-001"
+      ],
+      "unlocks": [],
+      "gap_count": 5,
+      "target_ids": [
+        "PAGE-010",
+        "OP-P010-01",
+        "OP-P010-02",
+        "OP-P010-03",
+        "OP-P010-04"
+      ],
+      "test_ids": [
+        "TEST-P-010",
+        "TEST-C-006",
+        "TEST-A-012",
+        "TEST-R-002",
+        "TEST-W-010"
+      ],
+      "first_breakpoint": "pages/about/version.vue 硬编码 versionHistory",
+      "implementation_files": [],
+      "forbidden_files": [
+        "apps/uniapp/** (until TP-G3)",
+        "docs/target-product/**",
+        "contracts/target/** product semantics"
+      ],
+      "automated_acceptance": "related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL",
+      "build_acceptance": "verify-uniapp + docs build",
+      "e5_acceptance": "n/a until VERIFY_*",
+      "e6_acceptance": "n/a",
+      "risk": "may touch multi-page / protocol surfaces in TP-G3",
+      "commit_message": "source_fix(page-version-001): PAGE-010 改为 Metadata 投影"
+    },
+    {
+      "task_id": "TEST-BRIDGE-TS-001",
+      "task_type": "TESTABILITY",
+      "title": "Node 测试桥支持 TS protocol import（Smart HID）",
+      "root_cause_id": "RC-TEST-BRIDGE-TS",
+      "severity": "P1",
+      "status": "PLANNED",
+      "dependencies": [],
+      "unlocks": [
+        "VERIFY-SMART-HID-001"
+      ],
+      "gap_count": 6,
+      "target_ids": [
+        "FEAT-053",
+        "FEAT-058",
+        "REQ-047",
+        "REQ-049",
+        "REQ-054",
+        "FLOW-010"
+      ],
+      "test_ids": [
+        "TEST-U-015",
+        "TEST-H-001",
+        "TEST-W-010",
+        "TEST-C-007",
+        "TEST-H-003",
+        "TEST-I-009",
+        "TEST-H-002"
+      ],
+      "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+      "implementation_files": [],
+      "forbidden_files": [
+        "apps/uniapp/** (until TP-G3)",
+        "docs/target-product/**",
+        "contracts/target/** product semantics"
+      ],
+      "automated_acceptance": "related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL",
+      "build_acceptance": "verify-uniapp + docs build",
+      "e5_acceptance": "n/a until VERIFY_*",
+      "e6_acceptance": "n/a",
+      "risk": "may touch multi-page / protocol surfaces in TP-G3",
+      "commit_message": "testability(test-bridge-ts-001): Node 测试桥支持 TS protocol import（Smart HID）"
+    },
+    {
+      "task_id": "VERIFY-ANDROID-001",
+      "task_type": "VERIFY_E5",
+      "title": "Android 真机矩阵",
+      "root_cause_id": null,
+      "severity": null,
+      "status": "PLANNED",
+      "dependencies": [
+        "TEST-PAGE-DRIVER-001",
+        "OTA-CLIENT-001"
+      ],
+      "unlocks": [],
+      "gap_count": 0,
+      "target_ids": [],
+      "test_ids": [],
+      "first_breakpoint": "",
+      "implementation_files": [],
+      "forbidden_files": [
+        "apps/uniapp/** (until TP-G3)",
+        "docs/target-product/**",
+        "contracts/target/** product semantics"
+      ],
+      "automated_acceptance": "related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL",
+      "build_acceptance": "verify-uniapp + docs build",
+      "e5_acceptance": "hardware matrix executed",
+      "e6_acceptance": "n/a",
+      "risk": "may touch multi-page / protocol surfaces in TP-G3",
+      "commit_message": "verify_e5(verify-android-001): Android 真机矩阵"
+    },
+    {
+      "task_id": "VERIFY-WECHAT-001",
+      "task_type": "VERIFY_E5",
+      "title": "微信真机矩阵",
+      "root_cause_id": null,
+      "severity": null,
+      "status": "PLANNED",
+      "dependencies": [
+        "TEST-PAGE-DRIVER-001"
+      ],
+      "unlocks": [],
+      "gap_count": 0,
+      "target_ids": [],
+      "test_ids": [],
+      "first_breakpoint": "",
+      "implementation_files": [],
+      "forbidden_files": [
+        "apps/uniapp/** (until TP-G3)",
+        "docs/target-product/**",
+        "contracts/target/** product semantics"
+      ],
+      "automated_acceptance": "related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL",
+      "build_acceptance": "verify-uniapp + docs build",
+      "e5_acceptance": "hardware matrix executed",
+      "e6_acceptance": "n/a",
+      "risk": "may touch multi-page / protocol surfaces in TP-G3",
+      "commit_message": "verify_e5(verify-wechat-001): 微信真机矩阵"
+    },
+    {
+      "task_id": "VERIFY-ESP32-001",
+      "task_type": "VERIFY_E5",
+      "title": "ESP32 E5 夹具矩阵",
+      "root_cause_id": null,
+      "severity": null,
+      "status": "PLANNED",
+      "dependencies": [
+        "ESP32-OBSERVER-001",
+        "ESP32-FAULT-001"
+      ],
+      "unlocks": [],
+      "gap_count": 0,
+      "target_ids": [],
+      "test_ids": [],
+      "first_breakpoint": "",
+      "implementation_files": [],
+      "forbidden_files": [
+        "apps/uniapp/** (until TP-G3)",
+        "docs/target-product/**",
+        "contracts/target/** product semantics"
+      ],
+      "automated_acceptance": "related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL",
+      "build_acceptance": "verify-uniapp + docs build",
+      "e5_acceptance": "hardware matrix executed",
+      "e6_acceptance": "n/a",
+      "risk": "may touch multi-page / protocol surfaces in TP-G3",
+      "commit_message": "verify_e5(verify-esp32-001): ESP32 E5 夹具矩阵"
+    },
+    {
+      "task_id": "VERIFY-SMART-HID-001",
+      "task_type": "VERIFY_E5",
+      "title": "Smart HID E5 端到端",
+      "root_cause_id": null,
+      "severity": null,
+      "status": "PLANNED",
+      "dependencies": [
+        "TEST-BRIDGE-TS-001"
+      ],
+      "unlocks": [],
+      "gap_count": 0,
+      "target_ids": [],
+      "test_ids": [],
+      "first_breakpoint": "",
+      "implementation_files": [],
+      "forbidden_files": [
+        "apps/uniapp/** (until TP-G3)",
+        "docs/target-product/**",
+        "contracts/target/** product semantics"
+      ],
+      "automated_acceptance": "related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL",
+      "build_acceptance": "verify-uniapp + docs build",
+      "e5_acceptance": "hardware matrix executed",
+      "e6_acceptance": "n/a",
+      "risk": "may touch multi-page / protocol surfaces in TP-G3",
+      "commit_message": "verify_e5(verify-smart-hid-001): Smart HID E5 端到端"
+    },
+    {
+      "task_id": "VERIFY-E6-001",
+      "task_type": "VERIFY_E6",
+      "title": "Clean Machine / Release E6",
+      "root_cause_id": null,
+      "severity": null,
+      "status": "PLANNED",
+      "dependencies": [
+        "PUBLIC-HONESTY-001",
+        "RELEASE-PIPELINE-001",
+        "VERSION-METADATA-001"
+      ],
+      "unlocks": [],
+      "gap_count": 24,
+      "target_ids": [
+        "CLAIM-002",
+        "CLAIM-003",
+        "CLAIM-004",
+        "CLAIM-005",
+        "CLAIM-006",
+        "CLAIM-007",
+        "CLAIM-008",
+        "CLAIM-009",
+        "CLAIM-010",
+        "CLAIM-011",
+        "CLAIM-012",
+        "CLAIM-013",
+        "CLAIM-014",
+        "CLAIM-015",
+        "CLAIM-020",
+        "CLAIM-021",
+        "CLAIM-022",
+        "CLAIM-023",
+        "CLAIM-024",
+        "CLAIM-025",
+        "CLAIM-026",
+        "CLAIM-029",
+        "CLAIM-030",
+        "CLAIM-031"
+      ],
+      "test_ids": [
+        "TEST-R-002",
+        "TEST-R-007",
+        "TEST-A-005",
+        "TEST-W-007",
+        "TEST-E-001",
+        "TEST-A-006",
+        "TEST-A-008",
+        "TEST-E-003",
+        "TEST-W-008",
+        "TEST-A-009",
+        "TEST-W-009",
+        "TEST-E-007",
+        "TEST-A-011",
+        "TEST-E-006",
+        "TEST-A-010",
+        "TEST-C-006",
+        "TEST-R-003",
+        "TEST-H-001",
+        "TEST-H-002",
+        "TEST-H-003",
+        "TEST-H-004",
+        "TEST-H-005",
+        "TEST-H-006",
+        "TEST-R-005",
+        "TEST-R-006",
+        "TEST-R-010",
+        "TEST-R-011"
+      ],
+      "first_breakpoint": "E6 NOT_EXECUTED",
+      "implementation_files": [],
+      "forbidden_files": [
+        "apps/uniapp/** (until TP-G3)",
+        "docs/target-product/**",
+        "contracts/target/** product semantics"
+      ],
+      "automated_acceptance": "related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL",
+      "build_acceptance": "verify-uniapp + docs build",
+      "e5_acceptance": "n/a until VERIFY_*",
+      "e6_acceptance": "clean machine release gate",
+      "risk": "may touch multi-page / protocol surfaces in TP-G3",
+      "commit_message": "verify_e6(verify-e6-001): Clean Machine / Release E6"
+    }
+  ],
+  "dependencies": [
+    {
+      "from": "ENV-PLAYWRIGHT-001",
+      "to": "TEST-PAGE-DRIVER-001"
+    },
+    {
+      "from": "VERSION-METADATA-001",
+      "to": "RELEASE-PIPELINE-001"
+    },
+    {
+      "from": "OTA-PACKAGE-001",
+      "to": "OTA-CLIENT-001"
+    },
+    {
+      "from": "ESP32-BUILD-001",
+      "to": "OTA-FIRMWARE-001"
+    },
+    {
+      "from": "ESP32-BUILD-001",
+      "to": "ESP32-PERIPHERAL-001"
+    },
+    {
+      "from": "ESP32-BUILD-001",
+      "to": "ESP32-OBSERVER-001"
+    },
+    {
+      "from": "ESP32-PERIPHERAL-001",
+      "to": "ESP32-FAULT-001"
+    },
+    {
+      "from": "VERSION-METADATA-001",
+      "to": "PAGE-VERSION-001"
+    },
+    {
+      "from": "TEST-PAGE-DRIVER-001",
+      "to": "VERIFY-ANDROID-001"
+    },
+    {
+      "from": "OTA-CLIENT-001",
+      "to": "VERIFY-ANDROID-001"
+    },
+    {
+      "from": "TEST-PAGE-DRIVER-001",
+      "to": "VERIFY-WECHAT-001"
+    },
+    {
+      "from": "ESP32-OBSERVER-001",
+      "to": "VERIFY-ESP32-001"
+    },
+    {
+      "from": "ESP32-FAULT-001",
+      "to": "VERIFY-ESP32-001"
+    },
+    {
+      "from": "TEST-BRIDGE-TS-001",
+      "to": "VERIFY-SMART-HID-001"
+    },
+    {
+      "from": "PUBLIC-HONESTY-001",
+      "to": "VERIFY-E6-001"
+    },
+    {
+      "from": "RELEASE-PIPELINE-001",
+      "to": "VERIFY-E6-001"
+    },
+    {
+      "from": "VERSION-METADATA-001",
+      "to": "VERIFY-E6-001"
+    }
+  ],
+  "recommended_order": [
+    "TEST-CURRENT-INTEGRITY-001",
+    "ENV-PLAYWRIGHT-001",
+    "TEST-PAGE-DRIVER-001",
+    "PUBLIC-HONESTY-001",
+    "VERSION-METADATA-001",
+    "RELEASE-PIPELINE-001",
+    "RUNTIME-DISPLAY-NAME-001",
+    "RUNTIME-FILTER-001",
+    "RUNTIME-GATT-CODEC-001",
+    "RUNTIME-WRITE-QUEUE-001",
+    "RUNTIME-LOG-REDACTION-001",
+    "RUNTIME-RECONNECT-001",
+    "RUNTIME-SESSION-001",
+    "RUNTIME-CONNECTION-DISCOVERY-001",
+    "OTA-PACKAGE-001",
+    "OTA-CLIENT-001",
+    "ESP32-BUILD-001",
+    "OTA-FIRMWARE-001",
+    "ESP32-PERIPHERAL-001",
+    "ESP32-OBSERVER-001",
+    "ESP32-FAULT-001",
+    "PAGE-BROADCAST-001",
+    "PAGE-VERSION-001",
+    "TEST-BRIDGE-TS-001",
+    "VERIFY-ANDROID-001",
+    "VERIFY-WECHAT-001",
+    "VERIFY-ESP32-001",
+    "VERIFY-SMART-HID-001",
+    "VERIFY-E6-001"
+  ]
+}
