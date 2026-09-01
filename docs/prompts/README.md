@@ -24,18 +24,19 @@ TP-G0 完整目标产品文档
 
 ---
 
-## 2. 当前阶段：TP-G3（PAGE-VERSION-001 = DONE）
+## 2. 当前阶段：TP-G3（ENV-PLAYWRIGHT-001 = DONE）
 
-TP-G1-R3 与 TP-G2-R1 已批准。PUBLIC-HONESTY-001 / VERSION-METADATA-001 / PAGE-VERSION-001 = DONE。
+PUBLIC-HONESTY / VERSION-METADATA / PAGE-VERSION / ENV-PLAYWRIGHT = DONE。
 
 当前阶段：
 
-**TP-G3 · PAGE-VERSION-001 已完成；等待用户选择下一 Task**
+**TP-G3 · ENV-PLAYWRIGHT-001 已完成；等待用户批准下一 Task**
 
 下一候选（均未自动执行）：
 
+- `TEST-PAGE-DRIVER-001`
 - `RELEASE-PIPELINE-001`
-- OTA / Runtime / ESP32 相关 Task
+- OTA / Runtime / ESP32
 
 本轮禁止自动进入上述任一 Task。
 

@@ -211,8 +211,8 @@ approved_by: user
 \`\`\`
 
 > 执行规则：依赖图不变；Wave/拓扑序；一次只批准一个 Task；完成后停下。
-> **PUBLIC-HONESTY-001 = DONE**。**VERSION-METADATA-001 = DONE**。**PAGE-VERSION-001** 状态见拓扑序。
-> 下一 Task 由用户选择；**不得**自动执行 RELEASE-PIPELINE-001 / OTA / E5。
+> **PUBLIC-HONESTY / VERSION-METADATA / PAGE-VERSION / ENV-PLAYWRIGHT = DONE**。
+> 下一 Task 由用户选择；**不得**自动执行 TEST-PAGE-DRIVER-001 / RELEASE-PIPELINE / OTA。
 
 ## 推荐拓扑序
 
@@ -657,8 +657,10 @@ content_hash: ${hash}
 
 ## E2E / Page
 
-- \`@playwright/test\`：${(report.blockers || []).find((b) => b.blocker_id === 'BLK-TOOL-PLAYWRIGHT')?.status || 'OPEN'}
+- Playwright environment：**${(report.blockers || []).find((b) => b.blocker_id === 'BLK-TOOL-PLAYWRIGHT')?.status === 'CLEARED' ? 'READY' : 'NOT_READY'}**
+- \`@playwright/test\` blocker：${(report.blockers || []).find((b) => b.blocker_id === 'BLK-TOOL-PLAYWRIGHT')?.status || 'OPEN'}
 - TARGET_PAGE_DRIVER：${(report.blockers || []).find((b) => b.blocker_id === 'BLK-TEST-PAGE-DRIVER')?.status || 'OPEN'}
+- 说明：环境 READY ≠ 页面 E4 PASS；缺 Driver 时 Current pages = BLOCKED_BY_TARGET_DRIVER
 
 ## Release CI
 

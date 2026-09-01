@@ -34,14 +34,57 @@
       "title": "安装并锁定 Playwright / H5 harness",
       "root_cause_id": "RC-PLAYWRIGHT",
       "severity": "P2",
-      "status": "PLANNED",
+      "status": "DONE",
       "dependencies": [],
       "unlocks": [
         "TEST-PAGE-DRIVER-001"
       ],
-      "gap_count": 168,
+      "gap_count": 11,
       "target_ids": [
         "PAGE-001#BLK-TOOL-PLAYWRIGHT",
+        "PAGE-002#BLK-TOOL-PLAYWRIGHT",
+        "PAGE-003#BLK-TOOL-PLAYWRIGHT",
+        "PAGE-004#BLK-TOOL-PLAYWRIGHT",
+        "PAGE-005#BLK-TOOL-PLAYWRIGHT",
+        "PAGE-006#BLK-TOOL-PLAYWRIGHT",
+        "PAGE-007#BLK-TOOL-PLAYWRIGHT",
+        "PAGE-008#BLK-TOOL-PLAYWRIGHT",
+        "PAGE-009#BLK-TOOL-PLAYWRIGHT",
+        "PAGE-010#BLK-TOOL-PLAYWRIGHT",
+        "WEB-001#BLK-TOOL-PLAYWRIGHT"
+      ],
+      "test_ids": [],
+      "first_breakpoint": "",
+      "implementation_files": [],
+      "forbidden_files": [
+        "apps/uniapp/** (until TP-G3)",
+        "docs/target-product/**",
+        "contracts/target/** product semantics"
+      ],
+      "automated_acceptance": "related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL",
+      "build_acceptance": "verify-uniapp + docs build",
+      "e5_acceptance": "n/a until VERIFY_*",
+      "e6_acceptance": "n/a",
+      "risk": "may touch multi-page / protocol surfaces in TP-G3",
+      "commit_message": "environment(env-playwright-001): 安装并锁定 Playwright / H5 harness"
+    },
+    {
+      "task_id": "TEST-PAGE-DRIVER-001",
+      "task_type": "TESTABILITY",
+      "title": "实现 Target Page Driver",
+      "root_cause_id": "RC-PAGE-DRIVER",
+      "severity": "P2",
+      "status": "PLANNED",
+      "dependencies": [
+        "ENV-PLAYWRIGHT-001"
+      ],
+      "unlocks": [
+        "VERIFY-ANDROID-001",
+        "VERIFY-WECHAT-001"
+      ],
+      "gap_count": 168,
+      "target_ids": [
+        "PAGE-001#BLK-TEST-PAGE-DRIVER",
         "STATE-P001-01",
         "STATE-P001-02",
         "STATE-P001-03",
@@ -66,7 +109,7 @@
         "OP-P001-13",
         "OP-P001-14",
         "OP-P001-15",
-        "PAGE-002#BLK-TOOL-PLAYWRIGHT",
+        "PAGE-002#BLK-TEST-PAGE-DRIVER",
         "STATE-P002-01",
         "STATE-P002-02",
         "STATE-P002-03",
@@ -124,49 +167,6 @@
         "TEST-I-005",
         "TEST-E-004"
       ],
-      "first_breakpoint": "@playwright/test 未安装",
-      "implementation_files": [],
-      "forbidden_files": [
-        "apps/uniapp/** (until TP-G3)",
-        "docs/target-product/**",
-        "contracts/target/** product semantics"
-      ],
-      "automated_acceptance": "related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL",
-      "build_acceptance": "verify-uniapp + docs build",
-      "e5_acceptance": "n/a until VERIFY_*",
-      "e6_acceptance": "n/a",
-      "risk": "may touch multi-page / protocol surfaces in TP-G3",
-      "commit_message": "environment(env-playwright-001): 安装并锁定 Playwright / H5 harness"
-    },
-    {
-      "task_id": "TEST-PAGE-DRIVER-001",
-      "task_type": "TESTABILITY",
-      "title": "实现 Target Page Driver",
-      "root_cause_id": "RC-PAGE-DRIVER",
-      "severity": "P2",
-      "status": "PLANNED",
-      "dependencies": [
-        "ENV-PLAYWRIGHT-001"
-      ],
-      "unlocks": [
-        "VERIFY-ANDROID-001",
-        "VERIFY-WECHAT-001"
-      ],
-      "gap_count": 11,
-      "target_ids": [
-        "PAGE-001#BLK-TEST-PAGE-DRIVER",
-        "PAGE-002#BLK-TEST-PAGE-DRIVER",
-        "PAGE-003#BLK-TEST-PAGE-DRIVER",
-        "PAGE-004#BLK-TEST-PAGE-DRIVER",
-        "PAGE-005#BLK-TEST-PAGE-DRIVER",
-        "PAGE-006#BLK-TEST-PAGE-DRIVER",
-        "PAGE-007#BLK-TEST-PAGE-DRIVER",
-        "PAGE-008#BLK-TEST-PAGE-DRIVER",
-        "PAGE-009#BLK-TEST-PAGE-DRIVER",
-        "PAGE-010#BLK-TEST-PAGE-DRIVER",
-        "WEB-001#BLK-TEST-PAGE-DRIVER"
-      ],
-      "test_ids": [],
       "first_breakpoint": "TARGET_PAGE_DRIVER 未实现",
       "implementation_files": [],
       "forbidden_files": [

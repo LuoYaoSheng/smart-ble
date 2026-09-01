@@ -9,7 +9,7 @@
       "implementation_status": "UNASSESSED",
       "verification_status": "AUTOMATED_FAIL",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "HARDWARE_PENDING",
       "severity": "P1",
       "evidence_level": "E5",
@@ -139,7 +139,7 @@
       "implementation_status": "UNASSESSED",
       "verification_status": "AUTOMATED_FAIL",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "HARDWARE_PENDING",
       "severity": "P1",
       "evidence_level": "E5",
@@ -193,9 +193,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "HARDWARE_PENDING",
       "severity": null,
       "evidence_level": "E4",
@@ -214,14 +214,14 @@
       "test_results": [],
       "expected": "2 states / 4 operations",
       "actual": "E4 blocked; blocked_cases≈229 (not product defects)",
-      "first_breakpoint": "BLK-TOOL-PLAYWRIGHT: @playwright/test 未安装",
+      "first_breakpoint": "BLK-TEST-PAGE-DRIVER: TARGET_PAGE_DRIVER 未实现",
       "downstream_impact": [
         "state_cases=2",
         "operation_cases=4"
       ],
       "dependencies": [],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -233,7 +233,7 @@
       "implementation_status": "IMPLEMENTED_UNTESTED",
       "verification_status": "AUTOMATED_PASS",
       "static_implementation": "CONFIRMED_IMPLEMENTED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "HARDWARE_PENDING",
       "severity": null,
       "evidence_level": "E4",
@@ -260,14 +260,14 @@
       ],
       "expected": "3 states / 5 operations",
       "actual": "E4 blocked; blocked_cases≈229 (not product defects)",
-      "first_breakpoint": "BLK-TOOL-PLAYWRIGHT: @playwright/test 未安装",
+      "first_breakpoint": "BLK-TEST-PAGE-DRIVER: TARGET_PAGE_DRIVER 未实现",
       "downstream_impact": [
         "state_cases=3",
         "operation_cases=5"
       ],
       "dependencies": [],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -277,9 +277,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "HARDWARE_PENDING",
       "severity": null,
       "evidence_level": "E5",
@@ -300,14 +300,14 @@
       "test_results": [],
       "expected": "6 states / 6 operations",
       "actual": "E4 blocked; blocked_cases≈229 (not product defects)",
-      "first_breakpoint": "BLK-TOOL-PLAYWRIGHT: @playwright/test 未安装",
+      "first_breakpoint": "BLK-TEST-PAGE-DRIVER: TARGET_PAGE_DRIVER 未实现",
       "downstream_impact": [
         "state_cases=6",
         "operation_cases=6"
       ],
       "dependencies": [],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -319,7 +319,7 @@
       "implementation_status": "UNASSESSED",
       "verification_status": "AUTOMATED_FAIL",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "HARDWARE_PENDING",
       "severity": "P1",
       "evidence_level": "E5",
@@ -448,7 +448,7 @@
       "implementation_status": "UNASSESSED",
       "verification_status": "AUTOMATED_FAIL",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "HARDWARE_PENDING",
       "severity": "P1",
       "evidence_level": "E5",
@@ -498,7 +498,7 @@
       "implementation_status": "CONFIRMED_PARTIAL",
       "verification_status": "AUTOMATED_PASS",
       "static_implementation": "CONFIRMED_PARTIAL",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "HARDWARE_PENDING",
       "severity": "P1",
       "evidence_level": "E5",
@@ -558,7 +558,7 @@
       "implementation_status": "IMPLEMENTED_UNTESTED",
       "verification_status": "AUTOMATED_PASS",
       "static_implementation": "CONFIRMED_IMPLEMENTED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "HARDWARE_PENDING",
       "severity": null,
       "evidence_level": "E6",
@@ -588,14 +588,14 @@
       ],
       "expected": "3 states / 11 operations",
       "actual": "E4 blocked; blocked_cases≈229 (not product defects)",
-      "first_breakpoint": "BLK-TOOL-PLAYWRIGHT: @playwright/test 未安装",
+      "first_breakpoint": "BLK-TEST-PAGE-DRIVER: TARGET_PAGE_DRIVER 未实现",
       "downstream_impact": [
         "state_cases=3",
         "operation_cases=11"
       ],
       "dependencies": [],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -607,7 +607,7 @@
       "implementation_status": "IMPLEMENTED_UNTESTED",
       "verification_status": "AUTOMATED_PASS",
       "static_implementation": "CONFIRMED_IMPLEMENTED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "HARDWARE_PENDING",
       "severity": null,
       "evidence_level": "E4",
@@ -634,14 +634,14 @@
       ],
       "expected": "2 states / 4 operations",
       "actual": "E4 blocked; blocked_cases≈229 (not product defects)",
-      "first_breakpoint": "BLK-TOOL-PLAYWRIGHT: @playwright/test 未安装",
+      "first_breakpoint": "BLK-TEST-PAGE-DRIVER: TARGET_PAGE_DRIVER 未实现",
       "downstream_impact": [
         "state_cases=2",
         "operation_cases=4"
       ],
       "dependencies": [],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -653,7 +653,7 @@
       "implementation_status": "UNASSESSED",
       "verification_status": "AUTOMATED_FAIL",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "HARDWARE_PENDING",
       "severity": "P1",
       "evidence_level": "E6",
@@ -755,9 +755,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -769,13 +769,13 @@
       "test_results": [],
       "expected": "能力探测=BLE 不可用（H5/插件缺失）",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -785,9 +785,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -799,13 +799,13 @@
       "test_results": [],
       "expected": "适配器=off",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -815,9 +815,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -829,13 +829,13 @@
       "test_results": [],
       "expected": "权限=denied/permanent",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -845,9 +845,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -858,13 +858,13 @@
       "test_results": [],
       "expected": "就绪且未扫描",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -874,9 +874,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -889,13 +889,13 @@
       "test_results": [],
       "expected": "discovery active",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -905,9 +905,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -919,13 +919,13 @@
       "test_results": [],
       "expected": "轮次完成且 N=0",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -935,9 +935,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -948,13 +948,13 @@
       "test_results": [],
       "expected": "N>0 且 M=0",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -964,9 +964,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -978,13 +978,13 @@
       "test_results": [],
       "expected": "M>0",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -994,9 +994,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1008,13 +1008,13 @@
       "test_results": [],
       "expected": "startDiscovery 失败",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -1024,9 +1024,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1037,13 +1037,13 @@
       "test_results": [],
       "expected": "Registry 有活动会话",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -1053,9 +1053,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1066,13 +1066,13 @@
       "test_results": [],
       "expected": "进入/重连",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-002"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -1082,9 +1082,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1095,13 +1095,13 @@
       "test_results": [],
       "expected": "INFO 校验不符",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-002"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -1111,9 +1111,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1124,13 +1124,13 @@
       "test_results": [],
       "expected": "connect 超时/失败",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-002"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -1140,9 +1140,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1153,13 +1153,13 @@
       "test_results": [],
       "expected": "身份通过",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-002"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -1169,9 +1169,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1182,13 +1182,13 @@
       "test_results": [],
       "expected": "下发前断开",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-002"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -1198,9 +1198,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1211,13 +1211,13 @@
       "test_results": [],
       "expected": "必填缺失",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-002"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -1227,9 +1227,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1240,13 +1240,13 @@
       "test_results": [],
       "expected": "解析失败或用户取消",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-002"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -1256,9 +1256,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1269,13 +1269,13 @@
       "test_results": [],
       "expected": "OP-07 触发",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-002"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -1285,9 +1285,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1298,13 +1298,13 @@
       "test_results": [],
       "expected": "state=ready",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-002"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -1314,9 +1314,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1327,13 +1327,13 @@
       "test_results": [],
       "expected": "error 非 null",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-002"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -1343,9 +1343,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1356,13 +1356,13 @@
       "test_results": [],
       "expected": "waiter 60s 无终态",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-002"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -1372,9 +1372,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1385,13 +1385,13 @@
       "test_results": [],
       "expected": "OP-08",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-002"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -1401,9 +1401,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1414,13 +1414,13 @@
       "test_results": [],
       "expected": "记录存在",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-003"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -1430,9 +1430,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1443,13 +1443,13 @@
       "test_results": [],
       "expected": "查询无结果",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-003"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -1459,9 +1459,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1472,13 +1472,13 @@
       "test_results": [],
       "expected": "无历史",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-004"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -1488,9 +1488,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1502,13 +1502,13 @@
       "test_results": [],
       "expected": "≥1 条",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-004"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -1518,9 +1518,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1531,13 +1531,13 @@
       "test_results": [],
       "expected": "OP-02 触发",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-004"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -1547,9 +1547,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1560,13 +1560,13 @@
       "test_results": [],
       "expected": "进入且无可用连接",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-005"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -1576,9 +1576,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1589,13 +1589,13 @@
       "test_results": [],
       "expected": "OP-03 弹确认",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-005"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -1605,9 +1605,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1618,13 +1618,13 @@
       "test_results": [],
       "expected": "diagnose 运行",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-005"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -1634,9 +1634,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1647,13 +1647,13 @@
       "test_results": [],
       "expected": "诊断成功",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-005"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -1663,9 +1663,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1676,13 +1676,13 @@
       "test_results": [],
       "expected": "诊断中连接断开",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-005"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -1692,9 +1692,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1705,13 +1705,13 @@
       "test_results": [],
       "expected": "diagnose 抛错",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-005"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -1721,9 +1721,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1734,13 +1734,13 @@
       "test_results": [],
       "expected": "进入未连接",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-006"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -1750,9 +1750,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1763,13 +1763,13 @@
       "test_results": [],
       "expected": "attempt 进行",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-006"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -1779,9 +1779,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1792,13 +1792,13 @@
       "test_results": [],
       "expected": "连接成功发现中",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-006"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -1808,9 +1808,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1821,13 +1821,13 @@
       "test_results": [],
       "expected": "发现结果空",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-006"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -1837,9 +1837,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1850,13 +1850,13 @@
       "test_results": [],
       "expected": "attempt 失败/超时",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-006"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -1866,9 +1866,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1880,13 +1880,13 @@
       "test_results": [],
       "expected": "ready",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-006"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -1896,9 +1896,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1909,13 +1909,13 @@
       "test_results": [],
       "expected": "被动断开重试",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-006"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -1925,9 +1925,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1938,13 +1938,13 @@
       "test_results": [],
       "expected": "3 次失败",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-006"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -1954,9 +1954,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1967,13 +1967,13 @@
       "test_results": [],
       "expected": "读/写/订阅失败",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-006"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -1983,9 +1983,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -1996,13 +1996,13 @@
       "test_results": [],
       "expected": "OTA 弹窗打开",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-006"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -2012,9 +2012,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -2025,13 +2025,13 @@
       "test_results": [],
       "expected": "Registry 空",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-007"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -2041,9 +2041,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -2055,13 +2055,13 @@
       "test_results": [],
       "expected": "≥1 会话",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-007"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -2071,9 +2071,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -2084,13 +2084,13 @@
       "test_results": [],
       "expected": "批量断开部分失败",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-007"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -2100,9 +2100,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -2113,13 +2113,13 @@
       "test_results": [],
       "expected": "进入未检查",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-008"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -2129,9 +2129,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -2142,13 +2142,13 @@
       "test_results": [],
       "expected": "探测运行",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-008"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -2158,9 +2158,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -2172,13 +2172,13 @@
       "test_results": [],
       "expected": "探测失败/H5/插件缺失",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-008"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -2188,9 +2188,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -2201,13 +2201,13 @@
       "test_results": [],
       "expected": "支持但必填缺失/无效",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-008"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -2217,9 +2217,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -2230,13 +2230,13 @@
       "test_results": [],
       "expected": "支持且有效",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-008"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -2246,9 +2246,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -2260,13 +2260,13 @@
       "test_results": [],
       "expected": "启动实际成功",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-008"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -2276,9 +2276,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -2289,13 +2289,13 @@
       "test_results": [],
       "expected": "停止执行",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-008"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -2305,9 +2305,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -2318,13 +2318,13 @@
       "test_results": [],
       "expected": "广播权限缺失",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-008"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -2334,9 +2334,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -2347,13 +2347,13 @@
       "test_results": [],
       "expected": "适配器 off",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-008"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -2363,9 +2363,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -2377,13 +2377,13 @@
       "test_results": [],
       "expected": "有活动连接时尝试开始",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-008"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -2393,9 +2393,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -2406,13 +2406,13 @@
       "test_results": [],
       "expected": "预算 32/UUID 非法",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-008"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -2422,9 +2422,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -2435,13 +2435,13 @@
       "test_results": [],
       "expected": "平台返回失败",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-008"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -2451,9 +2451,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -2464,13 +2464,13 @@
       "test_results": [],
       "expected": "进入",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-009"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -2480,9 +2480,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -2493,13 +2493,13 @@
       "test_results": [],
       "expected": "版本就绪",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-009"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -2509,9 +2509,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -2522,13 +2522,13 @@
       "test_results": [],
       "expected": "读取异常",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-009"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -2538,9 +2538,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -2551,13 +2551,13 @@
       "test_results": [],
       "expected": "有版本数据",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-010"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -2567,9 +2567,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -2580,13 +2580,13 @@
       "test_results": [],
       "expected": "投影为空",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-010"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -2596,9 +2596,9 @@
       "gap_kind": "LANDING",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -2609,13 +2609,13 @@
       "test_results": [],
       "expected": "Release Metadata 完整且 E6 门通过",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -2625,9 +2625,9 @@
       "gap_kind": "LANDING",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -2638,13 +2638,13 @@
       "test_results": [],
       "expected": "产物未齐/E5 未全",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -2654,9 +2654,9 @@
       "gap_kind": "LANDING",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -2667,13 +2667,13 @@
       "test_results": [],
       "expected": "无任何公开产物",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -2683,9 +2683,9 @@
       "gap_kind": "LANDING",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -2696,13 +2696,13 @@
       "test_results": [],
       "expected": "截图/原型缺失",
       "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     }
   ],
@@ -2714,9 +2714,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "HARDWARE_PENDING",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "HARDWARE_PENDING",
       "severity": null,
       "evidence_level": "E5",
@@ -2730,13 +2730,13 @@
       "test_results": [],
       "expected": "开始扫描按钮",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -2746,9 +2746,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -2760,13 +2760,13 @@
       "test_results": [],
       "expected": "停止扫描按钮",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -2776,9 +2776,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -2790,13 +2790,13 @@
       "test_results": [],
       "expected": "超时自动停止",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -2806,9 +2806,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "HARDWARE_PENDING",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "HARDWARE_PENDING",
       "severity": null,
       "evidence_level": "E5",
@@ -2821,13 +2821,13 @@
       "test_results": [],
       "expected": "hide/unload 停止",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -2837,9 +2837,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -2851,13 +2851,13 @@
       "test_results": [],
       "expected": "第二轮扫描",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -2867,9 +2867,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "HARDWARE_PENDING",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "HARDWARE_PENDING",
       "severity": null,
       "evidence_level": "E5",
@@ -2882,13 +2882,13 @@
       "test_results": [],
       "expected": "设备卡点击",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -2898,9 +2898,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "HARDWARE_PENDING",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "HARDWARE_PENDING",
       "severity": null,
       "evidence_level": "E5",
@@ -2913,13 +2913,13 @@
       "test_results": [],
       "expected": "连接按钮（卡上）",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -2929,9 +2929,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "HARDWARE_PENDING",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "HARDWARE_PENDING",
       "severity": null,
       "evidence_level": "E5",
@@ -2944,13 +2944,13 @@
       "test_results": [],
       "expected": "Profile 动作（Smart HID 配网）",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -2960,9 +2960,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -2974,13 +2974,13 @@
       "test_results": [],
       "expected": "筛选控件",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -2990,9 +2990,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -3004,13 +3004,13 @@
       "test_results": [],
       "expected": "复制广播字段",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -3020,9 +3020,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -3033,13 +3033,13 @@
       "test_results": [],
       "expected": "历史紧凑-查看",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -3049,9 +3049,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -3062,13 +3062,13 @@
       "test_results": [],
       "expected": "历史紧凑-全部历史",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -3078,9 +3078,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "HARDWARE_PENDING",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "HARDWARE_PENDING",
       "severity": null,
       "evidence_level": "E5",
@@ -3091,13 +3091,13 @@
       "test_results": [],
       "expected": "失败重试横幅按钮",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -3107,9 +3107,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -3120,13 +3120,13 @@
       "test_results": [],
       "expected": "分享（微信菜单）",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -3136,9 +3136,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "HARDWARE_PENDING",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "HARDWARE_PENDING",
       "severity": null,
       "evidence_level": "E5",
@@ -3150,13 +3150,13 @@
       "test_results": [],
       "expected": "自动连接（进入触发）",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-002"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -3166,9 +3166,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -3179,13 +3179,13 @@
       "test_results": [],
       "expected": "重新连接按钮",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-002"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -3195,9 +3195,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -3208,13 +3208,13 @@
       "test_results": [],
       "expected": "返回设备列表",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-002"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -3224,9 +3224,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -3238,13 +3238,13 @@
       "test_results": [],
       "expected": "表单输入",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-002"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -3254,9 +3254,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -3267,13 +3267,13 @@
       "test_results": [],
       "expected": "密码显示开关",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-002"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -3283,9 +3283,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -3297,13 +3297,13 @@
       "test_results": [],
       "expected": "扫码",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-002"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -3313,9 +3313,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "HARDWARE_PENDING",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "HARDWARE_PENDING",
       "severity": null,
       "evidence_level": "E5",
@@ -3327,13 +3327,13 @@
       "test_results": [],
       "expected": "下发配置",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-002"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -3343,9 +3343,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "HARDWARE_PENDING",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "HARDWARE_PENDING",
       "severity": null,
       "evidence_level": "E5",
@@ -3357,13 +3357,13 @@
       "test_results": [],
       "expected": "取消等待",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-002"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -3373,9 +3373,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -3386,13 +3386,13 @@
       "test_results": [],
       "expected": "错误恢复按钮",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-002"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -3402,9 +3402,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "HARDWARE_PENDING",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "HARDWARE_PENDING",
       "severity": null,
       "evidence_level": "E5",
@@ -3415,13 +3415,13 @@
       "test_results": [],
       "expected": "查看设备",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-002"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -3431,9 +3431,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -3444,13 +3444,13 @@
       "test_results": [],
       "expected": "返回键（拦截）",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-002"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -3460,9 +3460,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -3473,13 +3473,13 @@
       "test_results": [],
       "expected": "重新配置",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-003"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -3489,9 +3489,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -3502,13 +3502,13 @@
       "test_results": [],
       "expected": "运行诊断",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-003"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -3518,9 +3518,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -3531,13 +3531,13 @@
       "test_results": [],
       "expected": "高级 BLE 调试",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-003"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -3547,9 +3547,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -3560,13 +3560,13 @@
       "test_results": [],
       "expected": "返回",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-003"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -3576,9 +3576,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -3589,13 +3589,13 @@
       "test_results": [],
       "expected": "卡片点击",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-004"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -3605,9 +3605,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -3619,13 +3619,13 @@
       "test_results": [],
       "expected": "移除按钮",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-004"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -3635,9 +3635,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -3648,13 +3648,13 @@
       "test_results": [],
       "expected": "确认框取消",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-004"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -3664,9 +3664,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -3677,13 +3677,13 @@
       "test_results": [],
       "expected": "空态去扫描",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-004"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -3693,9 +3693,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -3706,13 +3706,13 @@
       "test_results": [],
       "expected": "返回",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-004"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -3722,9 +3722,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -3736,13 +3736,13 @@
       "test_results": [],
       "expected": "进入自动诊断",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-005"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -3752,9 +3752,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -3765,13 +3765,13 @@
       "test_results": [],
       "expected": "重新检测",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-005"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -3781,9 +3781,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -3794,13 +3794,13 @@
       "test_results": [],
       "expected": "连接设备（确认）",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-005"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -3810,9 +3810,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -3823,13 +3823,13 @@
       "test_results": [],
       "expected": "显示/隐藏错误码",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-005"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -3839,9 +3839,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -3852,13 +3852,13 @@
       "test_results": [],
       "expected": "返回设备详情",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-005"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -3868,9 +3868,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -3881,13 +3881,13 @@
       "test_results": [],
       "expected": "重新配网",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-005"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -3897,9 +3897,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -3911,13 +3911,13 @@
       "test_results": [],
       "expected": "连接",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-006"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -3927,9 +3927,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -3941,13 +3941,13 @@
       "test_results": [],
       "expected": "主动断开",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-006"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -3957,9 +3957,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -3971,13 +3971,13 @@
       "test_results": [],
       "expected": "服务发现重试",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-006"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -3987,9 +3987,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -4001,13 +4001,13 @@
       "test_results": [],
       "expected": "Read",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-006"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -4017,9 +4017,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -4031,13 +4031,13 @@
       "test_results": [],
       "expected": "TEXT 写",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-006"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -4047,9 +4047,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -4061,13 +4061,13 @@
       "test_results": [],
       "expected": "HEX 写",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-006"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -4077,9 +4077,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -4092,13 +4092,13 @@
       "test_results": [],
       "expected": "开启订阅（Characteristic Subscription，DEC-017）",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-006"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -4108,9 +4108,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "HARDWARE_PENDING",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "HARDWARE_PENDING",
       "severity": null,
       "evidence_level": "E5",
@@ -4121,13 +4121,13 @@
       "test_results": [],
       "expected": "关闭订阅",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-006"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -4137,9 +4137,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -4150,13 +4150,13 @@
       "test_results": [],
       "expected": "清空日志",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-006"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -4166,9 +4166,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -4180,13 +4180,13 @@
       "test_results": [],
       "expected": "导出日志",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-006"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -4198,7 +4198,7 @@
       "implementation_status": "CONFIRMED_PARTIAL",
       "verification_status": "AUTOMATED_FAIL",
       "static_implementation": "CONFIRMED_PARTIAL",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": "P0",
       "evidence_level": "E4",
@@ -4230,7 +4230,7 @@
       "implementation_status": "CONFIRMED_PARTIAL",
       "verification_status": "AUTOMATED_FAIL",
       "static_implementation": "CONFIRMED_PARTIAL",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "HARDWARE_PENDING",
       "severity": "P0",
       "evidence_level": "E5",
@@ -4261,7 +4261,7 @@
       "implementation_status": "CONFIRMED_PARTIAL",
       "verification_status": "AUTOMATED_FAIL",
       "static_implementation": "CONFIRMED_PARTIAL",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": "P0",
       "evidence_level": "E4",
@@ -4288,9 +4288,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -4301,13 +4301,13 @@
       "test_results": [],
       "expected": "返回",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-006"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -4317,9 +4317,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -4331,13 +4331,13 @@
       "test_results": [],
       "expected": "卡片点击",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-007"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -4347,9 +4347,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "HARDWARE_PENDING",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "HARDWARE_PENDING",
       "severity": null,
       "evidence_level": "E5",
@@ -4361,13 +4361,13 @@
       "test_results": [],
       "expected": "单独断开",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-007"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -4377,9 +4377,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "HARDWARE_PENDING",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "HARDWARE_PENDING",
       "severity": null,
       "evidence_level": "E5",
@@ -4391,13 +4391,13 @@
       "test_results": [],
       "expected": "全部断开",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-007"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -4407,9 +4407,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -4420,13 +4420,13 @@
       "test_results": [],
       "expected": "空态去扫描",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-007"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -4436,9 +4436,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -4449,13 +4449,13 @@
       "test_results": [],
       "expected": "查看重连进度",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-007"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -4467,7 +4467,7 @@
       "implementation_status": "CONFIRMED_MISSING",
       "verification_status": "BLOCKED_BY_FIXTURE",
       "static_implementation": "CONFIRMED_MISSING",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": "P1",
       "evidence_level": "E4",
@@ -4497,7 +4497,7 @@
       "implementation_status": "CONFIRMED_MISSING",
       "verification_status": "BLOCKED_BY_FIXTURE",
       "static_implementation": "CONFIRMED_MISSING",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": "P1",
       "evidence_level": "E4",
@@ -4527,7 +4527,7 @@
       "implementation_status": "CONFIRMED_MISSING",
       "verification_status": "BLOCKED_BY_FIXTURE",
       "static_implementation": "CONFIRMED_MISSING",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "HARDWARE_PENDING",
       "severity": "P1",
       "evidence_level": "E5",
@@ -4556,9 +4556,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "HARDWARE_PENDING",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "HARDWARE_PENDING",
       "severity": null,
       "evidence_level": "E5",
@@ -4570,13 +4570,13 @@
       "test_results": [],
       "expected": "停止广播",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-008"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -4586,9 +4586,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -4599,13 +4599,13 @@
       "test_results": [],
       "expected": "清空操作日志",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-008"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -4615,9 +4615,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -4629,13 +4629,13 @@
       "test_results": [],
       "expected": "hide/unload 释放",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-008"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -4645,9 +4645,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -4658,13 +4658,13 @@
       "test_results": [],
       "expected": "复制 Observer 校验信息",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-008"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -4674,9 +4674,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -4688,13 +4688,13 @@
       "test_results": [],
       "expected": "打开官网",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-009"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -4704,9 +4704,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -4717,13 +4717,13 @@
       "test_results": [],
       "expected": "版本记录",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-009"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -4733,9 +4733,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -4746,13 +4746,13 @@
       "test_results": [],
       "expected": "开发文档",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-009"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -4762,9 +4762,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -4775,13 +4775,13 @@
       "test_results": [],
       "expected": "GitHub 仓库",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-009"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -4791,9 +4791,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -4805,13 +4805,13 @@
       "test_results": [],
       "expected": "ESP32 教程",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-009"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -4821,9 +4821,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -4834,13 +4834,13 @@
       "test_results": [],
       "expected": "问题反馈",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-009"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -4850,9 +4850,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -4863,13 +4863,13 @@
       "test_results": [],
       "expected": "隐私声明",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-009"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -4879,9 +4879,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -4892,13 +4892,13 @@
       "test_results": [],
       "expected": "安全披露",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-009"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -4908,9 +4908,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -4921,13 +4921,13 @@
       "test_results": [],
       "expected": "开源许可",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-009"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -4937,9 +4937,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -4951,13 +4951,13 @@
       "test_results": [],
       "expected": "分享应用",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-009"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -4967,9 +4967,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -4980,13 +4980,13 @@
       "test_results": [],
       "expected": "跳转其他小程序",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-009"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -4996,9 +4996,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -5009,13 +5009,13 @@
       "test_results": [],
       "expected": "查看条目（滚动）",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-010"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -5025,9 +5025,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -5038,13 +5038,13 @@
       "test_results": [],
       "expected": "复制版本信息",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-010"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -5054,9 +5054,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -5067,13 +5067,13 @@
       "test_results": [],
       "expected": "分享本页",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-010"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -5083,9 +5083,9 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -5096,13 +5096,13 @@
       "test_results": [],
       "expected": "返回",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-010"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -5112,9 +5112,9 @@
       "gap_kind": "LANDING",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -5125,13 +5125,13 @@
       "test_results": [],
       "expected": "主 CTA（体验）",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -5141,9 +5141,9 @@
       "gap_kind": "LANDING",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -5154,13 +5154,13 @@
       "test_results": [],
       "expected": "次 CTA（GitHub）",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -5170,9 +5170,9 @@
       "gap_kind": "LANDING",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -5183,13 +5183,13 @@
       "test_results": [],
       "expected": "下载 Android APK",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -5199,9 +5199,9 @@
       "gap_kind": "LANDING",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -5212,13 +5212,13 @@
       "test_results": [],
       "expected": "微信小程序码",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -5230,7 +5230,7 @@
       "implementation_status": "CONFIRMED_PARTIAL",
       "verification_status": "AUTOMATED_FAIL",
       "static_implementation": "CONFIRMED_PARTIAL",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": "P0",
       "evidence_level": "E4",
@@ -5257,9 +5257,9 @@
       "gap_kind": "LANDING",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -5270,13 +5270,13 @@
       "test_results": [],
       "expected": "查看证据",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -5286,9 +5286,9 @@
       "gap_kind": "LANDING",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -5299,13 +5299,13 @@
       "test_results": [],
       "expected": "查看已知限制",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -5315,9 +5315,9 @@
       "gap_kind": "LANDING",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -5328,13 +5328,13 @@
       "test_results": [],
       "expected": "导航锚点",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -5344,9 +5344,9 @@
       "gap_kind": "LANDING",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -5357,13 +5357,13 @@
       "test_results": [],
       "expected": "快速开始三选一",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -5373,9 +5373,9 @@
       "gap_kind": "LANDING",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -5386,13 +5386,13 @@
       "test_results": [],
       "expected": "Smart HID 区链接",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
     {
@@ -5402,9 +5402,9 @@
       "gap_kind": "LANDING",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "verification_status": "HARDWARE_PENDING",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
       "e5_verification": "HARDWARE_PENDING",
       "severity": null,
       "evidence_level": "E5",
@@ -5415,13 +5415,13 @@
       "test_results": [],
       "expected": "30 分钟 Clean Machine 入口",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
       "root_cause_id": null,
-      "task_id": "ENV-PLAYWRIGHT-001",
+      "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     }
   ],
@@ -5432,8 +5432,8 @@
       "dimension": "blocker",
       "gap_kind": "TESTABILITY",
       "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "implementation_status": "CONFIRMED_IMPLEMENTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
@@ -5443,11 +5443,11 @@
       "test_ids": [],
       "test_results": [],
       "expected": "Playwright toolchain available",
-      "actual": "BLK-TOOL-PLAYWRIGHT",
-      "first_breakpoint": "@playwright/test 未安装",
+      "actual": "playwright resolvable",
+      "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
-      "root_cause_id": "RC-PLAYWRIGHT",
+      "root_cause_id": null,
       "task_id": "ENV-PLAYWRIGHT-001",
       "release_blocking": false
     },
@@ -5482,8 +5482,8 @@
       "dimension": "blocker",
       "gap_kind": "TESTABILITY",
       "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "implementation_status": "CONFIRMED_IMPLEMENTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
@@ -5493,11 +5493,11 @@
       "test_ids": [],
       "test_results": [],
       "expected": "Playwright toolchain available",
-      "actual": "BLK-TOOL-PLAYWRIGHT",
-      "first_breakpoint": "@playwright/test 未安装",
+      "actual": "playwright resolvable",
+      "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
-      "root_cause_id": "RC-PLAYWRIGHT",
+      "root_cause_id": null,
       "task_id": "ENV-PLAYWRIGHT-001",
       "release_blocking": false
     },
@@ -5532,8 +5532,8 @@
       "dimension": "blocker",
       "gap_kind": "TESTABILITY",
       "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "implementation_status": "CONFIRMED_IMPLEMENTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
@@ -5543,11 +5543,11 @@
       "test_ids": [],
       "test_results": [],
       "expected": "Playwright toolchain available",
-      "actual": "BLK-TOOL-PLAYWRIGHT",
-      "first_breakpoint": "@playwright/test 未安装",
+      "actual": "playwright resolvable",
+      "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
-      "root_cause_id": "RC-PLAYWRIGHT",
+      "root_cause_id": null,
       "task_id": "ENV-PLAYWRIGHT-001",
       "release_blocking": false
     },
@@ -5582,8 +5582,8 @@
       "dimension": "blocker",
       "gap_kind": "TESTABILITY",
       "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "implementation_status": "CONFIRMED_IMPLEMENTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
@@ -5593,11 +5593,11 @@
       "test_ids": [],
       "test_results": [],
       "expected": "Playwright toolchain available",
-      "actual": "BLK-TOOL-PLAYWRIGHT",
-      "first_breakpoint": "@playwright/test 未安装",
+      "actual": "playwright resolvable",
+      "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
-      "root_cause_id": "RC-PLAYWRIGHT",
+      "root_cause_id": null,
       "task_id": "ENV-PLAYWRIGHT-001",
       "release_blocking": false
     },
@@ -5632,8 +5632,8 @@
       "dimension": "blocker",
       "gap_kind": "TESTABILITY",
       "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "implementation_status": "CONFIRMED_IMPLEMENTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
@@ -5643,11 +5643,11 @@
       "test_ids": [],
       "test_results": [],
       "expected": "Playwright toolchain available",
-      "actual": "BLK-TOOL-PLAYWRIGHT",
-      "first_breakpoint": "@playwright/test 未安装",
+      "actual": "playwright resolvable",
+      "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
-      "root_cause_id": "RC-PLAYWRIGHT",
+      "root_cause_id": null,
       "task_id": "ENV-PLAYWRIGHT-001",
       "release_blocking": false
     },
@@ -5682,8 +5682,8 @@
       "dimension": "blocker",
       "gap_kind": "TESTABILITY",
       "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "implementation_status": "CONFIRMED_IMPLEMENTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
@@ -5693,11 +5693,11 @@
       "test_ids": [],
       "test_results": [],
       "expected": "Playwright toolchain available",
-      "actual": "BLK-TOOL-PLAYWRIGHT",
-      "first_breakpoint": "@playwright/test 未安装",
+      "actual": "playwright resolvable",
+      "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
-      "root_cause_id": "RC-PLAYWRIGHT",
+      "root_cause_id": null,
       "task_id": "ENV-PLAYWRIGHT-001",
       "release_blocking": false
     },
@@ -5732,8 +5732,8 @@
       "dimension": "blocker",
       "gap_kind": "TESTABILITY",
       "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "implementation_status": "CONFIRMED_IMPLEMENTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
@@ -5743,11 +5743,11 @@
       "test_ids": [],
       "test_results": [],
       "expected": "Playwright toolchain available",
-      "actual": "BLK-TOOL-PLAYWRIGHT",
-      "first_breakpoint": "@playwright/test 未安装",
+      "actual": "playwright resolvable",
+      "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
-      "root_cause_id": "RC-PLAYWRIGHT",
+      "root_cause_id": null,
       "task_id": "ENV-PLAYWRIGHT-001",
       "release_blocking": false
     },
@@ -5782,8 +5782,8 @@
       "dimension": "blocker",
       "gap_kind": "TESTABILITY",
       "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "implementation_status": "CONFIRMED_IMPLEMENTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
@@ -5793,11 +5793,11 @@
       "test_ids": [],
       "test_results": [],
       "expected": "Playwright toolchain available",
-      "actual": "BLK-TOOL-PLAYWRIGHT",
-      "first_breakpoint": "@playwright/test 未安装",
+      "actual": "playwright resolvable",
+      "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
-      "root_cause_id": "RC-PLAYWRIGHT",
+      "root_cause_id": null,
       "task_id": "ENV-PLAYWRIGHT-001",
       "release_blocking": false
     },
@@ -5832,8 +5832,8 @@
       "dimension": "blocker",
       "gap_kind": "TESTABILITY",
       "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "implementation_status": "CONFIRMED_IMPLEMENTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
@@ -5843,11 +5843,11 @@
       "test_ids": [],
       "test_results": [],
       "expected": "Playwright toolchain available",
-      "actual": "BLK-TOOL-PLAYWRIGHT",
-      "first_breakpoint": "@playwright/test 未安装",
+      "actual": "playwright resolvable",
+      "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
-      "root_cause_id": "RC-PLAYWRIGHT",
+      "root_cause_id": null,
       "task_id": "ENV-PLAYWRIGHT-001",
       "release_blocking": false
     },
@@ -5882,8 +5882,8 @@
       "dimension": "blocker",
       "gap_kind": "TESTABILITY",
       "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "implementation_status": "CONFIRMED_IMPLEMENTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
@@ -5893,11 +5893,11 @@
       "test_ids": [],
       "test_results": [],
       "expected": "Playwright toolchain available",
-      "actual": "BLK-TOOL-PLAYWRIGHT",
-      "first_breakpoint": "@playwright/test 未安装",
+      "actual": "playwright resolvable",
+      "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
-      "root_cause_id": "RC-PLAYWRIGHT",
+      "root_cause_id": null,
       "task_id": "ENV-PLAYWRIGHT-001",
       "release_blocking": false
     },
@@ -5932,8 +5932,8 @@
       "dimension": "blocker",
       "gap_kind": "TESTABILITY",
       "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "implementation_status": "CONFIRMED_IMPLEMENTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
@@ -5943,11 +5943,11 @@
       "test_ids": [],
       "test_results": [],
       "expected": "Playwright toolchain available",
-      "actual": "BLK-TOOL-PLAYWRIGHT",
-      "first_breakpoint": "@playwright/test 未安装",
+      "actual": "playwright resolvable",
+      "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
-      "root_cause_id": "RC-PLAYWRIGHT",
+      "root_cause_id": null,
       "task_id": "ENV-PLAYWRIGHT-001",
       "release_blocking": false
     },
@@ -5992,6 +5992,6 @@
     },
     "blocked_specs": 11,
     "blocked_cases": 229,
-    "reason": "BLOCKED_BY_TOOLCHAIN"
+    "reason": "BLOCKED_BY_TARGET_DRIVER"
   }
 }

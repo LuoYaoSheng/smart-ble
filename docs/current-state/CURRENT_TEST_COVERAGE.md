@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 3e2a59830b1441a4655b27f482eb195c420d25d76b4910b89b21d8a925a09166
+content_hash: 533f6380d58101d7514b159f5f99ab44cb537c34731a2d354416d91c7b7fe64c
 ```
 
 ## System / Harness
@@ -32,13 +32,13 @@ content_hash: 3e2a59830b1441a4655b27f482eb195c420d25d76b4910b89b21d8a925a09166
 - integration: pass=12 fail=6 cases=18 blocked=—
 - firmware: pass=5 fail=4 cases=9 blocked=—
 - release: pass=10 fail=0 cases=10 blocked=—
-- pages-playwright: pass=0 fail=0 cases=— blocked={"BLOCKED_BY_TOOLCHAIN":11}
+- pages-playwright: pass=0 fail=0 cases=— blocked={"BLOCKED_BY_TARGET_DRIVER":11}
 
 ## 页面自动化
 
 - blocked_specs: 11
 - blocked_cases: 229
-- reason: BLOCKED_BY_TOOLCHAIN
+- reason: BLOCKED_BY_TARGET_DRIVER
 - blockers: BLK-TOOL-PLAYWRIGHT, BLK-TEST-PAGE-DRIVER（独立登记，gap_count 均 > 0）
 
 ## 映射规则

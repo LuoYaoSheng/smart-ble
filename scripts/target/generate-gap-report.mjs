@@ -263,7 +263,7 @@ const ROOT_CAUSES = [
 
 const TASKS = [
   { task_id: 'TEST-CURRENT-INTEGRITY-001', task_type: 'TESTABILITY', title: 'Current 度量完整性（TP-G1-R3 已完成）', root_cause_id: null, severity: null, deps: [], order_hint: 0, status: 'DONE' },
-  { task_id: 'ENV-PLAYWRIGHT-001', task_type: 'ENVIRONMENT', title: '安装并锁定 Playwright / H5 harness', root_cause_id: 'RC-PLAYWRIGHT', severity: 'P2', deps: [], order_hint: 1 },
+  { task_id: 'ENV-PLAYWRIGHT-001', task_type: 'ENVIRONMENT', title: '安装并锁定 Playwright / H5 harness', root_cause_id: 'RC-PLAYWRIGHT', severity: 'P2', deps: [], order_hint: 1, status: FACTS.playwright ? 'DONE' : 'PLANNED' },
   { task_id: 'TEST-PAGE-DRIVER-001', task_type: 'TESTABILITY', title: '实现 Target Page Driver', root_cause_id: 'RC-PAGE-DRIVER', severity: 'P2', deps: ['ENV-PLAYWRIGHT-001'], order_hint: 2 },
   { task_id: 'PUBLIC-HONESTY-001', task_type: 'SOURCE_FIX', title: '落地页立即诚实降级（假下载/6+/错误主线→PREVIEW/NOT_RELEASED）', root_cause_id: 'RC-LANDING-FAKE-DOWNLOAD', severity: 'P0', deps: [], order_hint: 3, status: landingFakeDownload ? 'PLANNED' : 'DONE' },
   { task_id: 'VERSION-METADATA-001', task_type: 'SOURCE_FIX', title: '根 VERSION + Release Metadata + Public Status', root_cause_id: 'RC-VERSION-SSOT', severity: 'P1', deps: [], order_hint: 4, status: versionSsotReady ? 'DONE' : 'PLANNED' },

@@ -1,8 +1,8 @@
 {
   "gate": "TP-G2-R1",
   "schema_version": "2.0",
-  "generated_at": "2026-09-01T08:49:33.006Z",
-  "commit": "fd27c50b0d3cbe86f5a3883185161e689e40c403",
+  "generated_at": "2026-09-01T09:02:52.443Z",
+  "commit": "5a22899f42ef9c73713be9fb4797afd49dddaad6",
   "structured_current_path": ".tmp/tp-g2/logs/current-structured.json",
   "system": {
     "SYSTEM_PASS": 412,
@@ -56,7 +56,7 @@
         "fail": 0,
         "skipped": 0,
         "blocked": {
-          "BLOCKED_BY_TOOLCHAIN": 11
+          "BLOCKED_BY_TARGET_DRIVER": 11
         },
         "pages": {
           "specs": 11,
@@ -73,11 +73,10 @@
           },
           "blocked_specs": 11,
           "blocked_cases": 229,
-          "reason": "BLOCKED_BY_TOOLCHAIN"
+          "reason": "BLOCKED_BY_TARGET_DRIVER"
         },
         "notExecuted": true,
         "blockers": [
-          "BLK-TOOL-PLAYWRIGHT",
           "BLK-TEST-PAGE-DRIVER"
         ]
       }
@@ -97,11 +96,11 @@
       },
       "blocked_specs": 11,
       "blocked_cases": 229,
-      "reason": "BLOCKED_BY_TOOLCHAIN"
+      "reason": "BLOCKED_BY_TARGET_DRIVER"
     },
     "blocked": {
-      "BLOCKED_BY_TOOLCHAIN": 11,
-      "BLOCKED_BY_TARGET_DRIVER": 0,
+      "BLOCKED_BY_TARGET_DRIVER": 11,
+      "BLOCKED_BY_TOOLCHAIN": 0,
       "BLOCKED_BY_FIXTURE": 0,
       "BLOCKED_BY_CREDENTIAL": 0,
       "NOT_EXECUTED": 0
@@ -251,17 +250,17 @@
   "by_implementation_status": {
     "IMPLEMENTED_UNTESTED": 60,
     "UNASSESSED": 492,
-    "NOT_IMPLEMENTED": 50,
+    "NOT_IMPLEMENTED": 39,
     "CONFIRMED_PARTIAL": 41,
+    "CONFIRMED_IMPLEMENTED": 11,
     "CONFIRMED_MISSING": 4
   },
   "by_verification_status": {
-    "AUTOMATED_PASS": 64,
-    "HARDWARE_PENDING": 44,
+    "AUTOMATED_PASS": 75,
+    "HARDWARE_PENDING": 59,
     "AUTOMATED_FAIL": 66,
     "NOT_EXECUTED": 293,
-    "BLOCKED_BY_TOOLCHAIN": 165,
-    "BLOCKED_BY_TARGET_DRIVER": 11,
+    "BLOCKED_BY_TARGET_DRIVER": 150,
     "BLOCKED_BY_FIXTURE": 4
   },
   "by_severity": {
@@ -272,7 +271,7 @@
   "unique_root_causes_by_severity": {
     "P0": 2,
     "P1": 12,
-    "P2": 2,
+    "P2": 1,
     "P3": 0
   },
   "affected_target_records_by_severity": {

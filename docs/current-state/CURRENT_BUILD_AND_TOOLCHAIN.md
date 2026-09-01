@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 3e2a59830b1441a4655b27f482eb195c420d25d76b4910b89b21d8a925a09166
+content_hash: 533f6380d58101d7514b159f5f99ab44cb537c34731a2d354416d91c7b7fe64c
 ```
 
 ## App
@@ -26,8 +26,10 @@ content_hash: 3e2a59830b1441a4655b27f482eb195c420d25d76b4910b89b21d8a925a09166
 
 ## E2E / Page
 
-- `@playwright/test`：OPEN
+- Playwright environment：**READY**
+- `@playwright/test` blocker：CLEARED
 - TARGET_PAGE_DRIVER：OPEN
+- 说明：环境 READY ≠ 页面 E4 PASS；缺 Driver 时 Current pages = BLOCKED_BY_TARGET_DRIVER
 
 ## Release CI
 

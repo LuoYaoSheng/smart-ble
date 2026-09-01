@@ -8,8 +8,8 @@ owner: Smart BLE QA / Engineering
 last_reviewed: 2026-09-01
 approved_by: null
 generated_from: reports/target-vs-current/target-vs-current.json
-content_hash: 3e2a59830b1441a4655b27f482eb195c420d25d76b4910b89b21d8a925a09166
-commit: fd27c50b0d3cbe86f5a3883185161e689e40c403
+content_hash: 533f6380d58101d7514b159f5f99ab44cb537c34731a2d354416d91c7b7fe64c
+commit: 5a22899f42ef9c73713be9fb4797afd49dddaad6
 supersedes: TP-G2 v1 (reports/target-vs-current-v1/)
 ```
 
@@ -26,7 +26,7 @@ supersedes: TP-G2 v1 (reports/target-vs-current-v1/)
 | CURRENT_PASS / FAIL | 35 / 19 |
 | structured cases | 54 |
 | 页面 blocked_specs / blocked_cases | 11 / 229 |
-| 页面阻断原因 | BLOCKED_BY_TOOLCHAIN |
+| 页面阻断原因 | BLOCKED_BY_TARGET_DRIVER |
 | 独立 blockers | BLK-TOOL-PLAYWRIGHT + BLK-TEST-PAGE-DRIVER |
 
 **说明：** `blocked_cases=229` 是受阻 Case 数，**不是**产品缺陷数。Playwright 与 Page Driver 分别登记。
@@ -61,7 +61,7 @@ PROTO 仅使用 `PROTO-001`..`PROTO-011`（不是 Service UUID）。
 
 - P0: **2**
 - P1: **12**
-- P2: **2**
+- P2: **1**
 - P3: **0**
 
 ### affected_target_records_by_severity
@@ -91,18 +91,18 @@ PROTO 仅使用 `PROTO-001`..`PROTO-011`（不是 Service UUID）。
 
 - IMPLEMENTED_UNTESTED: 60
 - UNASSESSED: 492
-- NOT_IMPLEMENTED: 50
+- NOT_IMPLEMENTED: 39
 - CONFIRMED_PARTIAL: 41
+- CONFIRMED_IMPLEMENTED: 11
 - CONFIRMED_MISSING: 4
 
 ### verification_status
 
-- AUTOMATED_PASS: 64
-- HARDWARE_PENDING: 44
+- AUTOMATED_PASS: 75
+- HARDWARE_PENDING: 59
 - AUTOMATED_FAIL: 66
 - NOT_EXECUTED: 293
-- BLOCKED_BY_TOOLCHAIN: 165
-- BLOCKED_BY_TARGET_DRIVER: 11
+- BLOCKED_BY_TARGET_DRIVER: 150
 - BLOCKED_BY_FIXTURE: 4
 
 ## 5. Top 20 First Breakpoints
@@ -131,8 +131,8 @@ PROTO 仅使用 `PROTO-001`..`PROTO-011`（不是 Service UUID）。
 ## 6. Task waves（拓扑序前 12）
 
 1. **TEST-CURRENT-INTEGRITY-001** — Current 度量完整性（TP-G1-R3 已完成）（type=TESTABILITY, sev=—, gaps≈0）
-2. **ENV-PLAYWRIGHT-001** — 安装并锁定 Playwright / H5 harness（type=ENVIRONMENT, sev=P2, gaps≈168）
-3. **TEST-PAGE-DRIVER-001** — 实现 Target Page Driver（type=TESTABILITY, sev=P2, gaps≈11）
+2. **ENV-PLAYWRIGHT-001** — 安装并锁定 Playwright / H5 harness（type=ENVIRONMENT, sev=P2, gaps≈11）
+3. **TEST-PAGE-DRIVER-001** — 实现 Target Page Driver（type=TESTABILITY, sev=P2, gaps≈168）
 4. **PUBLIC-HONESTY-001** — 落地页立即诚实降级（假下载/6+/错误主线→PREVIEW/NOT_RELEASED）（type=SOURCE_FIX, sev=P0, gaps≈0）
 5. **VERSION-METADATA-001** — 根 VERSION + Release Metadata + Public Status（type=SOURCE_FIX, sev=P1, gaps≈0）
 6. **RELEASE-PIPELINE-001** — UniApp + Peripheral/Observer 双固件 Release Pipeline（type=RELEASE, sev=P0, gaps≈1）
@@ -158,7 +158,7 @@ PROTO 仅使用 `PROTO-001`..`PROTO-011`（不是 Service UUID）。
 
 ## 8. 外部 Blocker
 
-- **BLK-TOOL-PLAYWRIGHT** [OPEN] @playwright/test 未安装 → 页面 E4 BLOCKED_BY_TOOLCHAIN → ENV-PLAYWRIGHT-001
+- **BLK-TOOL-PLAYWRIGHT** [CLEARED] @playwright/test 未安装 → 页面 E4 BLOCKED_BY_TOOLCHAIN → ENV-PLAYWRIGHT-001
 - **BLK-TEST-PAGE-DRIVER** [OPEN] TARGET_PAGE_DRIVER 未实现 → TEST-PAGE-DRIVER-001
 - **BLK-TOOL-PLATFORMIO** [OPEN] PlatformIO 可能未安装 → ESP32 build NOT_EXECUTED（本轮禁止 upload） → ESP32-BUILD-001
 - **BLK-HW-ANDROID** [OPEN] adb devices 可能为空 → HARDWARE_PENDING → VERIFY-ANDROID-001
