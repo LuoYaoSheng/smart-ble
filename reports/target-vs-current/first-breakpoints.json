@@ -163,15 +163,6 @@
       "verification_status": "AUTOMATED_PASS"
     },
     {
-      "target_id": "PAGE-010",
-      "severity": "P1",
-      "gap_kind": "PAGE",
-      "first_breakpoint": "pages/about/version.vue 硬编码 versionHistory",
-      "root_cause_id": "RC-PAGE-VERSION",
-      "task_id": "PAGE-VERSION-001",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN"
-    },
-    {
       "target_id": "PROTO-001",
       "severity": "P1",
       "gap_kind": "FIRMWARE",
@@ -179,6 +170,15 @@
       "root_cause_id": "RC-ESP32-OBSERVER",
       "task_id": "ESP32-OBSERVER-001",
       "verification_status": "AUTOMATED_FAIL"
+    },
+    {
+      "target_id": "PROTO-009",
+      "severity": "P1",
+      "gap_kind": "FIRMWARE",
+      "first_breakpoint": "fixture_observer 不存在",
+      "root_cause_id": "RC-ESP32-OBSERVER",
+      "task_id": "ESP32-OBSERVER-001",
+      "verification_status": "BLOCKED_BY_FIXTURE"
     }
   ],
   "all": [
@@ -343,15 +343,6 @@
       "root_cause_id": "RC-PAGE-BROADCAST",
       "task_id": "PAGE-BROADCAST-001",
       "verification_status": "AUTOMATED_PASS"
-    },
-    {
-      "target_id": "PAGE-010",
-      "severity": "P1",
-      "gap_kind": "PAGE",
-      "first_breakpoint": "pages/about/version.vue 硬编码 versionHistory",
-      "root_cause_id": "RC-PAGE-VERSION",
-      "task_id": "PAGE-VERSION-001",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN"
     },
     {
       "target_id": "PROTO-001",

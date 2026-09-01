@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 2014879685cc4cc3ee003b29daa5d719c5c0c7e5a0d7bd244d8a4a0f188195be
+content_hash: 3e2a59830b1441a4655b27f482eb195c420d25d76b4910b89b21d8a925a09166
 ```
 
 > PUBLIC-HONESTY-001 / VERSION-METADATA-001 状态以 task-dependency-graph.json 为准。未批准 Task 不得执行。
@@ -58,14 +58,14 @@ content_hash: 2014879685cc4cc3ee003b29daa5d719c5c0c7e5a0d7bd244d8a4a0f188195be
 
 ### PAGE-VERSION-001
 
-- 状态：**PLANNED**
+- 状态：**DONE**
 - 标题：PAGE-010 改为 Metadata 投影
 - task_type：SOURCE_FIX
 - severity：P1
 - root_cause_id：RC-PAGE-VERSION
-- Target IDs（样本）：PAGE-010, OP-P010-01, OP-P010-02, OP-P010-03, OP-P010-04
-- Test IDs：TEST-P-010, TEST-C-006, TEST-A-012, TEST-R-002, TEST-W-010
-- First Breakpoint：pages/about/version.vue 硬编码 versionHistory
+- Target IDs（样本）：见 JSON
+- Test IDs：—
+- First Breakpoint：—
 - 依赖：VERSION-METADATA-001
 - 解锁：
 - 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics

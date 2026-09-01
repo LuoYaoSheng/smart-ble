@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 2014879685cc4cc3ee003b29daa5d719c5c0c7e5a0d7bd244d8a4a0f188195be
+content_hash: 3e2a59830b1441a4655b27f482eb195c420d25d76b4910b89b21d8a925a09166
 ```
 
 ## 落地页
@@ -32,7 +32,7 @@ content_hash: 2014879685cc4cc3ee003b29daa5d719c5c0c7e5a0d7bd244d8a4a0f188195be
 - `apps/uniapp/services/version-metadata.js`：存在
 - `apps/uniapp/services/public-status.js`：存在
 - `release/release-manifest.json` / `docs/public/release/latest.json`：PREVIEW Metadata 已生成
-- PAGE-010：硬编码 versionHistory（**RC-PAGE-VERSION OPEN** → PAGE-VERSION-001）
+- PAGE-010：已通过 getVersionPageModel 消费 Metadata（RC-PAGE-VERSION CLOSED）
 
 ## SEO / OG / Nav
 

@@ -604,12 +604,12 @@
       "dimension": "page",
       "gap_kind": "PAGE",
       "priority": "Must",
-      "implementation_status": "CONFIRMED_PARTIAL",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
-      "static_implementation": "CONFIRMED_PARTIAL",
+      "implementation_status": "IMPLEMENTED_UNTESTED",
+      "verification_status": "AUTOMATED_PASS",
+      "static_implementation": "CONFIRMED_IMPLEMENTED",
       "e4_verification": "BLOCKED_BY_TOOLCHAIN",
       "e5_verification": "HARDWARE_PENDING",
-      "severity": "P1",
+      "severity": null,
       "evidence_level": "E4",
       "implementation_refs": [
         {
@@ -624,17 +624,24 @@
         "TEST-A-012",
         "TEST-R-002"
       ],
-      "test_results": [],
+      "test_results": [
+        {
+          "test_id": "TEST-P-010",
+          "status": "PASS",
+          "case_id": "current:version-page-model-target.test.mjs:目标层：getVersionPageModel 消费 Metadata 投影 PAGE-010",
+          "first_breakpoint": null
+        }
+      ],
       "expected": "2 states / 4 operations",
       "actual": "E4 blocked; blocked_cases≈229 (not product defects)",
-      "first_breakpoint": "pages/about/version.vue 硬编码 versionHistory",
+      "first_breakpoint": "BLK-TOOL-PLAYWRIGHT: @playwright/test 未安装",
       "downstream_impact": [
         "state_cases=2",
         "operation_cases=4"
       ],
       "dependencies": [],
-      "root_cause_id": "RC-PAGE-VERSION",
-      "task_id": "PAGE-VERSION-001",
+      "root_cause_id": null,
+      "task_id": "ENV-PLAYWRIGHT-001",
       "release_blocking": false
     },
     {
@@ -4988,12 +4995,12 @@
       "dimension": "operation",
       "gap_kind": "PAGE",
       "priority": "Must",
-      "implementation_status": "CONFIRMED_PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "BLOCKED_BY_TOOLCHAIN",
-      "static_implementation": "CONFIRMED_PARTIAL",
+      "static_implementation": "UNASSESSED",
       "e4_verification": "BLOCKED_BY_TOOLCHAIN",
       "e5_verification": "NOT_EXECUTED",
-      "severity": "P1",
+      "severity": null,
       "evidence_level": "E4",
       "implementation_refs": [],
       "test_ids": [
@@ -5002,13 +5009,13 @@
       "test_results": [],
       "expected": "查看条目（滚动）",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "pages/about/version.vue 硬编码 versionHistory",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-010"
       ],
-      "root_cause_id": "RC-PAGE-VERSION",
-      "task_id": "PAGE-VERSION-001",
+      "root_cause_id": null,
+      "task_id": "ENV-PLAYWRIGHT-001",
       "release_blocking": false
     },
     {
@@ -5017,12 +5024,12 @@
       "dimension": "operation",
       "gap_kind": "PAGE",
       "priority": "Must",
-      "implementation_status": "CONFIRMED_PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "BLOCKED_BY_TOOLCHAIN",
-      "static_implementation": "CONFIRMED_PARTIAL",
+      "static_implementation": "UNASSESSED",
       "e4_verification": "BLOCKED_BY_TOOLCHAIN",
       "e5_verification": "NOT_EXECUTED",
-      "severity": "P1",
+      "severity": null,
       "evidence_level": "E4",
       "implementation_refs": [],
       "test_ids": [
@@ -5031,13 +5038,13 @@
       "test_results": [],
       "expected": "复制版本信息",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "pages/about/version.vue 硬编码 versionHistory",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-010"
       ],
-      "root_cause_id": "RC-PAGE-VERSION",
-      "task_id": "PAGE-VERSION-001",
+      "root_cause_id": null,
+      "task_id": "ENV-PLAYWRIGHT-001",
       "release_blocking": false
     },
     {
@@ -5046,12 +5053,12 @@
       "dimension": "operation",
       "gap_kind": "PAGE",
       "priority": "Must",
-      "implementation_status": "CONFIRMED_PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "BLOCKED_BY_TOOLCHAIN",
-      "static_implementation": "CONFIRMED_PARTIAL",
+      "static_implementation": "UNASSESSED",
       "e4_verification": "BLOCKED_BY_TOOLCHAIN",
       "e5_verification": "NOT_EXECUTED",
-      "severity": "P1",
+      "severity": null,
       "evidence_level": "E4",
       "implementation_refs": [],
       "test_ids": [
@@ -5060,13 +5067,13 @@
       "test_results": [],
       "expected": "分享本页",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "pages/about/version.vue 硬编码 versionHistory",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-010"
       ],
-      "root_cause_id": "RC-PAGE-VERSION",
-      "task_id": "PAGE-VERSION-001",
+      "root_cause_id": null,
+      "task_id": "ENV-PLAYWRIGHT-001",
       "release_blocking": false
     },
     {
@@ -5075,12 +5082,12 @@
       "dimension": "operation",
       "gap_kind": "PAGE",
       "priority": "Must",
-      "implementation_status": "CONFIRMED_PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "BLOCKED_BY_TOOLCHAIN",
-      "static_implementation": "CONFIRMED_PARTIAL",
+      "static_implementation": "UNASSESSED",
       "e4_verification": "BLOCKED_BY_TOOLCHAIN",
       "e5_verification": "NOT_EXECUTED",
-      "severity": "P1",
+      "severity": null,
       "evidence_level": "E4",
       "implementation_refs": [],
       "test_ids": [
@@ -5089,13 +5096,13 @@
       "test_results": [],
       "expected": "返回",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "pages/about/version.vue 硬编码 versionHistory",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-010"
       ],
-      "root_cause_id": "RC-PAGE-VERSION",
-      "task_id": "PAGE-VERSION-001",
+      "root_cause_id": null,
+      "task_id": "ENV-PLAYWRIGHT-001",
       "release_blocking": false
     },
     {

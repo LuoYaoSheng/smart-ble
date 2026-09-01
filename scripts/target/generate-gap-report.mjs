@@ -146,7 +146,10 @@ const versionSsotReady = FACTS.hasRootVersion
   && FACTS.hasPublicStatus
   && exists('release/release-manifest.json')
   && exists('docs/public/release/latest.json');
-const versionHardcoded = /versionHistory|v1\.0\.5/.test(FACTS.versionPage);
+const versionHardcoded = /\bversionHistory\b/.test(FACTS.versionPage)
+  || /['"`]v?1\.0\.\d+['"`]/.test(FACTS.versionPage)
+  || !/getVersionPageModel/.test(FACTS.versionPage);
+const pageVersionReady = !versionHardcoded && /getVersionPageModel/.test(FACTS.versionPage);
 const useBroadcastSession = /useBroadcastSession|use-broadcast-session/.test(FACTS.broadcastPage);
 const smartHidImportsTs = /hid-provisioning-protocol\.ts/.test(FACTS.smartHidProfile);
 const deviceNameMacro = (FACTS.esp32.match(/#define\s+DEVICE_NAME\s+"([^"]+)"/) || [])[1] || null;
@@ -281,7 +284,7 @@ const TASKS = [
   { task_id: 'ESP32-OBSERVER-001', task_type: 'SOURCE_FIX', title: '实现 fixture_observer', root_cause_id: 'RC-ESP32-OBSERVER', severity: 'P1', deps: ['ESP32-BUILD-001'], order_hint: 32 },
   { task_id: 'ESP32-FAULT-001', task_type: 'SOURCE_FIX', title: 'Fault Injection + Serial JSON', root_cause_id: 'RC-ESP32-SERIAL', severity: 'P1', deps: ['ESP32-PERIPHERAL-001'], order_hint: 33 },
   { task_id: 'PAGE-BROADCAST-001', task_type: 'SOURCE_FIX', title: 'PAGE-008 改用 composable/adapter/service', root_cause_id: 'RC-PAGE-BROADCAST', severity: 'P1', deps: [], order_hint: 40 },
-  { task_id: 'PAGE-VERSION-001', task_type: 'SOURCE_FIX', title: 'PAGE-010 改为 Metadata 投影', root_cause_id: 'RC-PAGE-VERSION', severity: 'P1', deps: ['VERSION-METADATA-001'], order_hint: 41 },
+  { task_id: 'PAGE-VERSION-001', task_type: 'SOURCE_FIX', title: 'PAGE-010 改为 Metadata 投影', root_cause_id: 'RC-PAGE-VERSION', severity: 'P1', deps: ['VERSION-METADATA-001'], order_hint: 41, status: pageVersionReady ? 'DONE' : 'PLANNED' },
   { task_id: 'TEST-BRIDGE-TS-001', task_type: 'TESTABILITY', title: 'Node 测试桥支持 TS protocol import（Smart HID）', root_cause_id: 'RC-TEST-BRIDGE-TS', severity: 'P1', deps: [], order_hint: 50 },
   { task_id: 'VERIFY-ANDROID-001', task_type: 'VERIFY_E5', title: 'Android 真机矩阵', root_cause_id: null, severity: null, deps: ['TEST-PAGE-DRIVER-001', 'OTA-CLIENT-001'], order_hint: 90 },
   { task_id: 'VERIFY-WECHAT-001', task_type: 'VERIFY_E5', title: '微信真机矩阵', root_cause_id: null, severity: null, deps: ['TEST-PAGE-DRIVER-001'], order_hint: 91 },
@@ -1612,10 +1615,11 @@ function emitAll(outDir) {
   writeJson(`${outDir}/landing-release.json`, {
     landing_fake_download: landingFakeDownload,
     version_ssot_ready: versionSsotReady,
+    page_version_ready: pageVersionReady,
     release_builds_flutter: releaseBuildsFlutter,
     release_builds_tauri: releaseBuildsTauri,
     release_builds_uniapp: releaseBuildsUniapp,
-    tasks: ['PUBLIC-HONESTY-001', 'VERSION-METADATA-001', 'RELEASE-PIPELINE-001'],
+    tasks: ['PUBLIC-HONESTY-001', 'VERSION-METADATA-001', 'RELEASE-PIPELINE-001', 'PAGE-VERSION-001'],
     records: records.filter((r) => r.gap_kind === 'LANDING' || r.gap_kind === 'RELEASE'),
   });
   writeJson(`${outDir}/tests.json`, {

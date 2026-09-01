@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 2014879685cc4cc3ee003b29daa5d719c5c0c7e5a0d7bd244d8a4a0f188195be
+content_hash: 3e2a59830b1441a4655b27f482eb195c420d25d76b4910b89b21d8a925a09166
 ```
 
 ## 模块树（path 事实）
@@ -39,7 +39,7 @@ content_hash: 2014879685cc4cc3ee003b29daa5d719c5c0c7e5a0d7bd244d8a4a0f188195be
 - `apps/uniapp/services/version-metadata.js`：**存在**（Release Metadata 投影）
 - 根 `VERSION`：**存在**（产品版本 SSOT）
 - RC-VERSION-SSOT：**CLOSED**
-- PAGE-010 硬编码历史：仍属 **RC-PAGE-VERSION OPEN**（PAGE-VERSION-001）
+- PAGE-010 Metadata 投影：**DONE**（RC-PAGE-VERSION CLOSED）
 
 ## Runtime 差距记录数
 

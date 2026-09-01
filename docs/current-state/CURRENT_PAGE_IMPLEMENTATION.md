@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 2014879685cc4cc3ee003b29daa5d719c5c0c7e5a0d7bd244d8a4a0f188195be
+content_hash: 3e2a59830b1441a4655b27f482eb195c420d25d76b4910b89b21d8a925a09166
 ```
 
 ## 路由事实
@@ -33,7 +33,7 @@ content_hash: 2014879685cc4cc3ee003b29daa5d719c5c0c7e5a0d7bd244d8a4a0f188195be
 - **PAGE-007** impl=UNASSESSED verify=AUTOMATED_FAIL static=UNASSESSED e4=BLOCKED_BY_TOOLCHAIN task=RUNTIME-SESSION-001 bp=[REQ-053/PAGE-007 排除规则] 第一断点: Registry 无配网会话分类/排除接口——PAGE-00
 - **PAGE-008** impl=CONFIRMED_PARTIAL verify=AUTOMATED_PASS static=CONFIRMED_PARTIAL e4=BLOCKED_BY_TOOLCHAIN task=PAGE-BROADCAST-001 bp=广播页内联；Owner/composable 未接入
 - **PAGE-009** impl=IMPLEMENTED_UNTESTED verify=AUTOMATED_PASS static=CONFIRMED_IMPLEMENTED e4=BLOCKED_BY_TOOLCHAIN task=ENV-PLAYWRIGHT-001 bp=BLK-TOOL-PLAYWRIGHT: @playwright/test 未安装
-- **PAGE-010** impl=CONFIRMED_PARTIAL verify=BLOCKED_BY_TOOLCHAIN static=CONFIRMED_PARTIAL e4=BLOCKED_BY_TOOLCHAIN task=PAGE-VERSION-001 bp=pages/about/version.vue 硬编码 versionHistory
+- **PAGE-010** impl=IMPLEMENTED_UNTESTED verify=AUTOMATED_PASS static=CONFIRMED_IMPLEMENTED e4=BLOCKED_BY_TOOLCHAIN task=ENV-PLAYWRIGHT-001 bp=BLK-TOOL-PLAYWRIGHT: @playwright/test 未安装
 - **WEB-001** impl=UNASSESSED verify=AUTOMATED_FAIL static=UNASSESSED e4=BLOCKED_BY_TOOLCHAIN task=RUNTIME-LOG-REDACTION-001 bp=[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：a
 
 ## PAGE-008 静态事实
@@ -47,9 +47,10 @@ content_hash: 2014879685cc4cc3ee003b29daa5d719c5c0c7e5a0d7bd244d8a4a0f188195be
 ## PAGE-010 静态事实
 
 - path: `apps/uniapp/pages/about/version.vue`
-- symbol: versionHistory / 硬编码版本文案
+- symbol: getVersionPageModel（Metadata 投影）
 - Target: PAGE-010, FEAT-004/066
-- static_implementation: CONFIRMED_PARTIAL（若硬编码命中）
+- static_implementation: CONFIRMED_IMPLEMENTED（构建期 Metadata 投影；E4 仍受 Playwright 阻断）
+- RC-PAGE-VERSION: CLOSED
 
 ## STATE / OP
 

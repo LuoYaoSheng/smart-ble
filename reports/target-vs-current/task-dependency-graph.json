@@ -39,7 +39,7 @@
       "unlocks": [
         "TEST-PAGE-DRIVER-001"
       ],
-      "gap_count": 163,
+      "gap_count": 168,
       "target_ids": [
         "PAGE-001#BLK-TOOL-PLAYWRIGHT",
         "STATE-P001-01",
@@ -933,27 +933,15 @@
       "title": "PAGE-010 改为 Metadata 投影",
       "root_cause_id": "RC-PAGE-VERSION",
       "severity": "P1",
-      "status": "PLANNED",
+      "status": "DONE",
       "dependencies": [
         "VERSION-METADATA-001"
       ],
       "unlocks": [],
-      "gap_count": 5,
-      "target_ids": [
-        "PAGE-010",
-        "OP-P010-01",
-        "OP-P010-02",
-        "OP-P010-03",
-        "OP-P010-04"
-      ],
-      "test_ids": [
-        "TEST-P-010",
-        "TEST-C-006",
-        "TEST-A-012",
-        "TEST-R-002",
-        "TEST-W-010"
-      ],
-      "first_breakpoint": "pages/about/version.vue 硬编码 versionHistory",
+      "gap_count": 0,
+      "target_ids": [],
+      "test_ids": [],
+      "first_breakpoint": "",
       "implementation_files": [],
       "forbidden_files": [
         "apps/uniapp/** (until TP-G3)",

@@ -8,8 +8,8 @@ owner: Smart BLE QA / Engineering
 last_reviewed: 2026-09-01
 approved_by: null
 generated_from: reports/target-vs-current/target-vs-current.json
-content_hash: 2014879685cc4cc3ee003b29daa5d719c5c0c7e5a0d7bd244d8a4a0f188195be
-commit: b67abab6414f4c5a4bba4311eab656d155334071
+content_hash: 3e2a59830b1441a4655b27f482eb195c420d25d76b4910b89b21d8a925a09166
+commit: fd27c50b0d3cbe86f5a3883185161e689e40c403
 supersedes: TP-G2 v1 (reports/target-vs-current-v1/)
 ```
 
@@ -23,8 +23,8 @@ supersedes: TP-G2 v1 (reports/target-vs-current-v1/)
 | HARNESS_PASS / FAIL | 89 / 0 |
 | TARGET_CONTRACT_FAIL | 0 |
 | TEST_INFRA_FAIL | 0 |
-| CURRENT_PASS / FAIL | 34 / 19 |
-| structured cases | 53 |
+| CURRENT_PASS / FAIL | 35 / 19 |
+| structured cases | 54 |
 | 页面 blocked_specs / blocked_cases | 11 / 229 |
 | 页面阻断原因 | BLOCKED_BY_TOOLCHAIN |
 | 独立 blockers | BLK-TOOL-PLAYWRIGHT + BLK-TEST-PAGE-DRIVER |
@@ -40,10 +40,10 @@ supersedes: TP-G2 v1 (reports/target-vs-current-v1/)
 | PAGE | 10 | 8 | 2 |
 | WEB | 1 | 1 | 0 |
 | STATE | 67 | 0 | 67 |
-| OP | 92 | 11 | 81 |
+| OP | 92 | 7 | 85 |
 | FLOW | 14 | 10 | 4 |
 | ERR | 68 | 2 | 66 |
-| DATA | 13 | 1 | 12 |
+| DATA | 13 | 2 | 11 |
 | PROTO | 11 | 8 | 3 |
 | SEC | 19 | 0 | 19 |
 | NFR | 24 | 0 | 24 |
@@ -60,17 +60,17 @@ PROTO 仅使用 `PROTO-001`..`PROTO-011`（不是 Service UUID）。
 ### unique_root_causes_by_severity
 
 - P0: **2**
-- P1: **13**
+- P1: **12**
 - P2: **2**
 - P3: **0**
 
 ### affected_target_records_by_severity
 
 - P0: 16
-- P1: 72
+- P1: 67
 - P2: 0
 - P3: 0
-- null: 559
+- null: 564
 
 > 不得把 affected records 说成「N 个 P0 缺陷」。Observer 缺失默认 **P1**（无公开危害证据时非 P0）。
 
@@ -89,19 +89,19 @@ PROTO 仅使用 `PROTO-001`..`PROTO-011`（不是 Service UUID）。
 
 ### implementation_status
 
-- IMPLEMENTED_UNTESTED: 58
-- UNASSESSED: 489
+- IMPLEMENTED_UNTESTED: 60
+- UNASSESSED: 492
 - NOT_IMPLEMENTED: 50
-- CONFIRMED_PARTIAL: 46
+- CONFIRMED_PARTIAL: 41
 - CONFIRMED_MISSING: 4
 
 ### verification_status
 
-- AUTOMATED_PASS: 62
+- AUTOMATED_PASS: 64
 - HARDWARE_PENDING: 44
 - AUTOMATED_FAIL: 66
-- NOT_EXECUTED: 294
-- BLOCKED_BY_TOOLCHAIN: 166
+- NOT_EXECUTED: 293
+- BLOCKED_BY_TOOLCHAIN: 165
 - BLOCKED_BY_TARGET_DRIVER: 11
 - BLOCKED_BY_FIXTURE: 4
 
@@ -125,13 +125,13 @@ PROTO 仅使用 `PROTO-001`..`PROTO-011`（不是 Service UUID）。
 16. **[P1]** `FLOW-008` → 缺 fixture_observer （ESP32-OBSERVER-001 / RC-ESP32-OBSERVER）
 17. **[P1]** `OP-P008-01` → hardware/esp32 无 Observer 目标源码 （ESP32-OBSERVER-001 / RC-ESP32-OBSERVER）
 18. **[P1]** `PAGE-008` → 广播页内联；Owner/composable 未接入 （PAGE-BROADCAST-001 / RC-PAGE-BROADCAST）
-19. **[P1]** `PAGE-010` → pages/about/version.vue 硬编码 versionHistory （PAGE-VERSION-001 / RC-PAGE-VERSION）
-20. **[P1]** `PROTO-001` → 固件含广播名 BLEToolkit-Observer （ESP32-OBSERVER-001 / RC-ESP32-OBSERVER）
+19. **[P1]** `PROTO-001` → 固件含广播名 BLEToolkit-Observer （ESP32-OBSERVER-001 / RC-ESP32-OBSERVER）
+20. **[P1]** `PROTO-009` → fixture_observer 不存在 （ESP32-OBSERVER-001 / RC-ESP32-OBSERVER）
 
 ## 6. Task waves（拓扑序前 12）
 
 1. **TEST-CURRENT-INTEGRITY-001** — Current 度量完整性（TP-G1-R3 已完成）（type=TESTABILITY, sev=—, gaps≈0）
-2. **ENV-PLAYWRIGHT-001** — 安装并锁定 Playwright / H5 harness（type=ENVIRONMENT, sev=P2, gaps≈163）
+2. **ENV-PLAYWRIGHT-001** — 安装并锁定 Playwright / H5 harness（type=ENVIRONMENT, sev=P2, gaps≈168）
 3. **TEST-PAGE-DRIVER-001** — 实现 Target Page Driver（type=TESTABILITY, sev=P2, gaps≈11）
 4. **PUBLIC-HONESTY-001** — 落地页立即诚实降级（假下载/6+/错误主线→PREVIEW/NOT_RELEASED）（type=SOURCE_FIX, sev=P0, gaps≈0）
 5. **VERSION-METADATA-001** — 根 VERSION + Release Metadata + Public Status（type=SOURCE_FIX, sev=P1, gaps≈0）
@@ -148,6 +148,7 @@ PROTO 仅使用 `PROTO-001`..`PROTO-011`（不是 Service UUID）。
 ## 7. 必须立即降级的公开 Claim
 
 **PUBLIC-HONESTY-001 = DONE**；**VERSION-METADATA-001 = DONE**（RC-VERSION-SSOT CLOSED）。
+**PAGE-VERSION-001** 状态见任务图（RC-PAGE-VERSION）。
 **RELEASE-PIPELINE-001** 仍为 PLANNED（RC-RELEASE-PIPELINE OPEN）。在 E6 完成前：
 
 - 下载区保持 **NOT_RELEASED / PREVIEW**，禁止 `releases/latest` 假主下载；
@@ -165,4 +166,4 @@ PROTO 仅使用 `PROTO-001`..`PROTO-011`（不是 Service UUID）。
 
 ## 9. 下一步
 
-VERSION-METADATA-001 已完成。下一 Task 由用户选择（例如 RELEASE-PIPELINE-001 或 PAGE-VERSION-001），**不得自动执行**。
+下一 Task 由用户选择（例如 RELEASE-PIPELINE-001），**不得自动执行** OTA / Release Pipeline / E5。

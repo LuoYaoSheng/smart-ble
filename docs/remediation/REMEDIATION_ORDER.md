@@ -4,18 +4,18 @@
 status: APPROVED
 document_version: 2.0
 gate: TP-G2-R1
-content_hash: 2014879685cc4cc3ee003b29daa5d719c5c0c7e5a0d7bd244d8a4a0f188195be
+content_hash: 3e2a59830b1441a4655b27f482eb195c420d25d76b4910b89b21d8a925a09166
 approved_by: user
 ```
 
 > 执行规则：依赖图不变；Wave/拓扑序；一次只批准一个 Task；完成后停下。
-> **PUBLIC-HONESTY-001 = DONE**。**VERSION-METADATA-001 = DONE**（RC-VERSION-SSOT CLOSED）。
-> 下一 Task 由用户选择；**不得**自动执行 RELEASE-PIPELINE-001 / PAGE-VERSION-001。
+> **PUBLIC-HONESTY-001 = DONE**。**VERSION-METADATA-001 = DONE**。**PAGE-VERSION-001** 状态见拓扑序。
+> 下一 Task 由用户选择；**不得**自动执行 RELEASE-PIPELINE-001 / OTA / E5。
 
 ## 推荐拓扑序
 
 1. **TEST-CURRENT-INTEGRITY-001** — Current 度量完整性（TP-G1-R3 已完成）（type=TESTABILITY, sev=—, gaps≈0, status=DONE）
-2. **ENV-PLAYWRIGHT-001** — 安装并锁定 Playwright / H5 harness（type=ENVIRONMENT, sev=P2, gaps≈163, status=PLANNED）
+2. **ENV-PLAYWRIGHT-001** — 安装并锁定 Playwright / H5 harness（type=ENVIRONMENT, sev=P2, gaps≈168, status=PLANNED）
 3. **TEST-PAGE-DRIVER-001** — 实现 Target Page Driver（type=TESTABILITY, sev=P2, gaps≈11, status=PLANNED）
 4. **PUBLIC-HONESTY-001** — 落地页立即诚实降级（假下载/6+/错误主线→PREVIEW/NOT_RELEASED）（type=SOURCE_FIX, sev=P0, gaps≈0, status=DONE）
 5. **VERSION-METADATA-001** — 根 VERSION + Release Metadata + Public Status（type=SOURCE_FIX, sev=P1, gaps≈0, status=DONE）
@@ -36,7 +36,7 @@ approved_by: user
 20. **ESP32-OBSERVER-001** — 实现 fixture_observer（type=SOURCE_FIX, sev=P1, gaps≈12, status=PLANNED）
 21. **ESP32-FAULT-001** — Fault Injection + Serial JSON（type=SOURCE_FIX, sev=P1, gaps≈0, status=PLANNED）
 22. **PAGE-BROADCAST-001** — PAGE-008 改用 composable/adapter/service（type=SOURCE_FIX, sev=P1, gaps≈6, status=PLANNED）
-23. **PAGE-VERSION-001** — PAGE-010 改为 Metadata 投影（type=SOURCE_FIX, sev=P1, gaps≈5, status=PLANNED）
+23. **PAGE-VERSION-001** — PAGE-010 改为 Metadata 投影（type=SOURCE_FIX, sev=P1, gaps≈0, status=DONE）
 24. **TEST-BRIDGE-TS-001** — Node 测试桥支持 TS protocol import（Smart HID）（type=TESTABILITY, sev=P1, gaps≈6, status=PLANNED）
 25. **VERIFY-ANDROID-001** — Android 真机矩阵（type=VERIFY_E5, sev=—, gaps≈0, status=PLANNED）
 26. **VERIFY-WECHAT-001** — 微信真机矩阵（type=VERIFY_E5, sev=—, gaps≈0, status=PLANNED）

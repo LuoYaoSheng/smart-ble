@@ -1,13 +1,15 @@
 {
   "landing_fake_download": false,
   "version_ssot_ready": true,
+  "page_version_ready": true,
   "release_builds_flutter": true,
   "release_builds_tauri": true,
   "release_builds_uniapp": false,
   "tasks": [
     "PUBLIC-HONESTY-001",
     "VERSION-METADATA-001",
-    "RELEASE-PIPELINE-001"
+    "RELEASE-PIPELINE-001",
+    "PAGE-VERSION-001"
   ],
   "records": [
     {

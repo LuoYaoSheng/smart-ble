@@ -8,8 +8,8 @@ owner: Smart BLE Engineering
 last_reviewed: 2026-09-01
 approved_by: null
 generated_from: reports/target-vs-current/target-vs-current.json
-content_hash: 2014879685cc4cc3ee003b29daa5d719c5c0c7e5a0d7bd244d8a4a0f188195be
-commit: b67abab6414f4c5a4bba4311eab656d155334071
+content_hash: 3e2a59830b1441a4655b27f482eb195c420d25d76b4910b89b21d8a925a09166
+commit: fd27c50b0d3cbe86f5a3883185161e689e40c403
 ```
 
 本目录只记录**当前实现事实**（path / symbol / line_hint）。建议与修复见 `docs/gap-analysis/` 与 `docs/remediation/`。不得在此写「建议改为」。

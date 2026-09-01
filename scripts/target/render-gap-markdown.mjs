@@ -135,6 +135,7 @@ ${(tasks.recommended_order || []).slice(0, 12).map((id, i) => {
 ## 7. 必须立即降级的公开 Claim
 
 **PUBLIC-HONESTY-001 = DONE**；**VERSION-METADATA-001 = DONE**（RC-VERSION-SSOT CLOSED）。
+**PAGE-VERSION-001** 状态见任务图（RC-PAGE-VERSION）。
 **RELEASE-PIPELINE-001** 仍为 PLANNED（RC-RELEASE-PIPELINE OPEN）。在 E6 完成前：
 
 - 下载区保持 **NOT_RELEASED / PREVIEW**，禁止 \`releases/latest\` 假主下载；
@@ -148,7 +149,7 @@ ${(report.blockers || []).map((b) => `- **${b.blocker_id}** [${b.status}] ${b.de
 
 ## 9. 下一步
 
-VERSION-METADATA-001 已完成。下一 Task 由用户选择（例如 RELEASE-PIPELINE-001 或 PAGE-VERSION-001），**不得自动执行**。
+下一 Task 由用户选择（例如 RELEASE-PIPELINE-001），**不得自动执行** OTA / Release Pipeline / E5。
 `);
 
 function sectionReport(title, filterFn) {
@@ -210,8 +211,8 @@ approved_by: user
 \`\`\`
 
 > 执行规则：依赖图不变；Wave/拓扑序；一次只批准一个 Task；完成后停下。
-> **PUBLIC-HONESTY-001 = DONE**。**VERSION-METADATA-001 = DONE**（RC-VERSION-SSOT CLOSED）。
-> 下一 Task 由用户选择；**不得**自动执行 RELEASE-PIPELINE-001 / PAGE-VERSION-001。
+> **PUBLIC-HONESTY-001 = DONE**。**VERSION-METADATA-001 = DONE**。**PAGE-VERSION-001** 状态见拓扑序。
+> 下一 Task 由用户选择；**不得**自动执行 RELEASE-PIPELINE-001 / OTA / E5。
 
 ## 推荐拓扑序
 
@@ -372,9 +373,10 @@ ${pageList}
 ## PAGE-010 静态事实
 
 - path: \`apps/uniapp/pages/about/version.vue\`
-- symbol: versionHistory / 硬编码版本文案
+- symbol: ${landing.page_version_ready ? 'getVersionPageModel（Metadata 投影）' : 'versionHistory / 硬编码版本文案'}
 - Target: PAGE-010, FEAT-004/066
-- static_implementation: CONFIRMED_PARTIAL（若硬编码命中）
+- static_implementation: ${landing.page_version_ready ? 'CONFIRMED_IMPLEMENTED（构建期 Metadata 投影；E4 仍受 Playwright 阻断）' : 'CONFIRMED_PARTIAL（若硬编码命中）'}
+- RC-PAGE-VERSION: ${landing.page_version_ready ? 'CLOSED' : 'OPEN'}
 
 ## STATE / OP
 
@@ -433,7 +435,7 @@ content_hash: ${hash}
 - \`apps/uniapp/services/version-metadata.js\`：${landing.version_ssot_ready ? '**存在**（Release Metadata 投影）' : '**缺失**（TEST-U-002 / TEST-R-001）'}
 - 根 \`VERSION\`：${landing.version_ssot_ready ? '**存在**（产品版本 SSOT）' : '**缺失**'}
 - RC-VERSION-SSOT：${landing.version_ssot_ready ? '**CLOSED**' : '**OPEN**'}
-- PAGE-010 硬编码历史：仍属 **RC-PAGE-VERSION OPEN**（PAGE-VERSION-001）
+- PAGE-010 Metadata 投影：${landing.page_version_ready ? '**DONE**（RC-PAGE-VERSION CLOSED）' : '仍属 **RC-PAGE-VERSION OPEN**（PAGE-VERSION-001）'}
 
 ## Runtime 差距记录数
 
@@ -572,7 +574,9 @@ content_hash: ${hash}
 - \`apps/uniapp/services/version-metadata.js\`：${landing.version_ssot_ready ? '存在' : '缺失'}
 - \`apps/uniapp/services/public-status.js\`：${landing.version_ssot_ready ? '存在' : '缺失'}
 - \`release/release-manifest.json\` / \`docs/public/release/latest.json\`：${landing.version_ssot_ready ? 'PREVIEW Metadata 已生成' : '尚未建立'}
-- PAGE-010：硬编码 versionHistory（**RC-PAGE-VERSION OPEN** → PAGE-VERSION-001）
+- PAGE-010：${landing.page_version_ready
+    ? '已通过 getVersionPageModel 消费 Metadata（RC-PAGE-VERSION CLOSED）'
+    : '硬编码 versionHistory（**RC-PAGE-VERSION OPEN** → PAGE-VERSION-001）'}
 
 ## SEO / OG / Nav
 
