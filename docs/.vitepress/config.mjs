@@ -2,36 +2,37 @@ import { defineConfig } from 'vitepress'
 
 export default defineConfig({
   title: "Smart BLE",
-  description: "跨平台低功耗蓝牙调试工具与大一统测试库，覆盖 Flutter / Tauri / UniApp / iOS / Android 全端生态",
+  description: "Smart BLE PREVIEW：UniApp、微信小程序与 ESP32 协同的 BLE 调试和验证工具。正式产物尚未发布（NOT_RELEASED）。",
   lang: 'zh-CN',
   base: '/',
   cleanUrls: true,
 
-  // ═══ SEO 与社交元数据全装甲 ═══
+  // ═══ SEO 与社交元数据（与 PREVIEW 诚实状态一致） ═══
   head: [
     // Favicon
     ['link', { rel: 'icon', type: 'image/png', href: '/brand/icon.png' }],
+    ['link', { rel: 'canonical', href: 'https://lightble.i2kai.com/' }],
 
     // Canonical & Author
     ['meta', { name: 'author', content: 'luoyaosheng' }],
-    ['meta', { name: 'keywords', content: '跨平台蓝牙,BLE,低功耗蓝牙,Flutter BLE,Tauri BLE,UniApp BLE,iOS BLE,Bluetooth调试工具,Smart BLE,开源蓝牙库,BLE SDK' }],
+    ['meta', { name: 'keywords', content: 'Smart BLE,BLE,低功耗蓝牙,UniApp BLE,微信小程序 BLE,ESP32,LightBLE,PREVIEW,NOT_RELEASED' }],
 
-    // OpenGraph (微信/知乎/Slack 等分享卡片)
+    // OpenGraph
     ['meta', { property: 'og:type',        content: 'website' }],
     ['meta', { property: 'og:site_name',   content: 'Smart BLE' }],
-    ['meta', { property: 'og:title',       content: 'Smart BLE — 跨平台低功耗蓝牙大一统开发库' }],
-    ['meta', { property: 'og:description', content: '单一内核，覆盖 Flutter / Tauri / UniApp / iOS / Android 与硬件下位机生态。支持广播群控、高容错连接与 SSOT 主题引擎。' }],
+    ['meta', { property: 'og:title',       content: 'Smart BLE — PREVIEW · UniApp / 微信小程序 / ESP32 BLE 调试工具' }],
+    ['meta', { property: 'og:description', content: '预览阶段产品。正式 APK、小程序码与固件尚未发布（NOT_RELEASED）。请从源码与目标规范了解主线。' }],
     ['meta', { property: 'og:image',       content: 'https://lightble.i2kai.com/brand/share.png' }],
     ['meta', { property: 'og:url',         content: 'https://lightble.i2kai.com/' }],
     ['meta', { property: 'og:locale',      content: 'zh_CN' }],
 
-    // Twitter Card (X/Twitter 分享预览)
+    // Twitter Card
     ['meta', { name: 'twitter:card',        content: 'summary_large_image' }],
-    ['meta', { name: 'twitter:title',       content: 'Smart BLE — 跨平台低功耗蓝牙大一统开发库' }],
-    ['meta', { name: 'twitter:description', content: '单一内核覆盖 Flutter / Tauri / UniApp / iOS / Android，开箱即用的开源 BLE SDK。' }],
+    ['meta', { name: 'twitter:title',       content: 'Smart BLE — PREVIEW' }],
+    ['meta', { name: 'twitter:description', content: 'UniApp、微信小程序与 ESP32 协同的 BLE 调试工具。正式产物尚未发布。' }],
     ['meta', { name: 'twitter:image',       content: 'https://lightble.i2kai.com/brand/share.png' }],
 
-    // 主题色 (PWA / 移动端浏览器工具栏)
+    // 主题色
     ['meta', { name: 'theme-color', content: '#1B6DFF' }],
   ],
 

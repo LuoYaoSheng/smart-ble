@@ -1319,9 +1319,9 @@
       "dimension": "web",
       "gap_kind": "RUNTIME",
       "priority": "Must",
-      "implementation_status": "CONFIRMED_PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "AUTOMATED_FAIL",
-      "static_implementation": "CONFIRMED_PARTIAL",
+      "static_implementation": "UNASSESSED",
       "e4_verification": "BLOCKED_BY_TOOLCHAIN",
       "e5_verification": "HARDWARE_PENDING",
       "severity": "P1",
@@ -1375,7 +1375,19 @@
         {
           "test_id": "TEST-R-003",
           "status": "PASS",
+          "case_id": "current:public-claims.test.mjs:TEST-R-003 无假下载：APK/固件直链必须伴随 SHA256；无产物时必须诚实 NOT_RELEASED 且无 releases/latest 冒充",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-003",
+          "status": "PASS",
           "case_id": "current:public-claims.test.mjs:TEST-R-003 禁用无证据强声明词（VERIFIED 语义不得无证据出现）",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-003",
+          "status": "PASS",
+          "case_id": "current:public-claims.test.mjs:TEST-R-003 禁止错误主线与 6+ 入口误导",
           "first_breakpoint": null
         },
         {
@@ -1389,18 +1401,6 @@
           "status": "FAIL",
           "case_id": "current:version-release-metadata-target.test.mjs:TEST-U-002 目标层：services/version-metadata.js",
           "first_breakpoint": "[TEST-U-002 REQ-004/056 FEAT-004/066 PAGE-009/010 WEB-001 S-47] 第一断点: 目标模块缺失：apps/uniapp/services/version-metadata.js"
-        },
-        {
-          "test_id": "TEST-R-003",
-          "status": "FAIL",
-          "case_id": "current:public-claims.test.mjs:TEST-R-003 无假下载：APK/固件直链必须伴随 SHA256；无产物时必须诚实 NOT_RELEASED 且无 releases/latest 冒充",
-          "first_breakpoint": "无产物直链时页面必须明确 NOT_RELEASED/尚未发布"
-        },
-        {
-          "test_id": "TEST-R-003",
-          "status": "FAIL",
-          "case_id": "current:public-claims.test.mjs:TEST-R-003 禁止错误主线与 6+ 入口误导",
-          "first_breakpoint": "不得宣称 6+ 入口"
         }
       ],
       "expected": "4 states / 11 operations",
@@ -1414,6 +1414,35 @@
       "root_cause_id": "RC-LOG-REDACTION",
       "task_id": "RUNTIME-LOG-REDACTION-001",
       "release_blocking": false
+    },
+    {
+      "target_id": "OP-W001-05",
+      "target_type": "operation",
+      "dimension": "operation",
+      "gap_kind": "RUNTIME",
+      "priority": "Must",
+      "implementation_status": "CONFIRMED_PARTIAL",
+      "verification_status": "AUTOMATED_FAIL",
+      "static_implementation": "CONFIRMED_PARTIAL",
+      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
+      "e5_verification": "NOT_EXECUTED",
+      "severity": "P0",
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-008"
+      ],
+      "test_results": [],
+      "expected": "固件下载",
+      "actual": "UI 可启动 OTA 但协议不完整",
+      "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
+      "downstream_impact": [],
+      "dependencies": [
+        "WEB-001"
+      ],
+      "root_cause_id": "RC-OTA-CTRL-START",
+      "task_id": "OTA-CLIENT-001",
+      "release_blocking": true
     },
     {
       "target_id": "FLOW-002",

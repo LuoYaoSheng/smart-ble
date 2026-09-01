@@ -1,8 +1,8 @@
 {
   "gate": "TP-G2-R1",
   "schema_version": "2.0",
-  "generated_at": "2026-09-01T07:34:05.438Z",
-  "commit": "b869ab247b9fb420da0bc07c9c9c017d26970d55",
+  "generated_at": "2026-09-01T07:56:22.617Z",
+  "commit": "8a8182a22af6a51fbd0e385491fc7ff226c09f6e",
   "structured_current_path": ".tmp/tp-g2/logs/current-structured.json",
   "system": {
     "SYSTEM_PASS": 412,
@@ -13,8 +13,8 @@
     "TEST_INFRA_FAIL": 0
   },
   "current": {
-    "CURRENT_PASS": 27,
-    "CURRENT_FAIL": 26,
+    "CURRENT_PASS": 30,
+    "CURRENT_FAIL": 23,
     "TEST_INFRA_FAIL": 0,
     "cases": 53,
     "layers": [
@@ -44,8 +44,8 @@
       },
       {
         "name": "release",
-        "pass": 6,
-        "fail": 4,
+        "pass": 9,
+        "fail": 1,
         "skipped": 0,
         "case_count": 10,
         "infra_fail": 0
@@ -143,16 +143,16 @@
     "STATE": {
       "total": 67,
       "listed": 67,
-      "assessed": 1,
-      "unassessed": 66,
+      "assessed": 0,
+      "unassessed": 67,
       "not_applicable": 0,
       "reason": null
     },
     "OP": {
       "total": 92,
       "listed": 92,
-      "assessed": 13,
-      "unassessed": 79,
+      "assessed": 11,
+      "unassessed": 81,
       "not_applicable": 0,
       "reason": null
     },
@@ -207,8 +207,8 @@
     "CLAIM": {
       "total": 31,
       "listed": 31,
-      "assessed": 9,
-      "unassessed": 22,
+      "assessed": 7,
+      "unassessed": 24,
       "not_applicable": 0,
       "reason": null
     },
@@ -239,51 +239,51 @@
   },
   "records_total": 647,
   "by_gap_kind": {
-    "PRODUCT": 268,
+    "PRODUCT": 270,
     "RELEASE": 6,
-    "RUNTIME": 36,
+    "RUNTIME": 37,
     "PAGE": 148,
     "TESTABILITY": 128,
-    "LANDING": 48,
     "FIRMWARE": 10,
+    "LANDING": 45,
     "SMART_HID": 3
   },
   "by_implementation_status": {
-    "IMPLEMENTED_UNTESTED": 40,
-    "UNASSESSED": 484,
+    "IMPLEMENTED_UNTESTED": 49,
+    "UNASSESSED": 490,
     "NOT_IMPLEMENTED": 56,
-    "CONFIRMED_PARTIAL": 62,
-    "CONFIRMED_MISSING": 5
+    "CONFIRMED_PARTIAL": 48,
+    "CONFIRMED_MISSING": 4
   },
   "by_verification_status": {
-    "AUTOMATED_PASS": 44,
+    "AUTOMATED_PASS": 53,
     "HARDWARE_PENDING": 44,
-    "AUTOMATED_FAIL": 89,
-    "NOT_EXECUTED": 292,
-    "BLOCKED_BY_TOOLCHAIN": 163,
+    "AUTOMATED_FAIL": 75,
+    "NOT_EXECUTED": 294,
+    "BLOCKED_BY_TOOLCHAIN": 166,
     "BLOCKED_BY_TARGET_DRIVER": 11,
     "BLOCKED_BY_FIXTURE": 4
   },
   "by_severity": {
-    "null": 536,
+    "null": 550,
     "P1": 81,
-    "P0": 30
+    "P0": 16
   },
   "unique_root_causes_by_severity": {
-    "P0": 3,
+    "P0": 2,
     "P1": 14,
     "P2": 2,
     "P3": 0
   },
   "affected_target_records_by_severity": {
-    "P0": 30,
+    "P0": 16,
     "P1": 81,
     "P2": 0,
     "P3": 0,
-    "null": 536
+    "null": 550
   },
   "product_vs_testability": {
-    "product_gaps_with_severity": 108,
+    "product_gaps_with_severity": 94,
     "testability_records": 128,
     "blocked_page_cases": 229,
     "note": "blocked_page_cases 不得计为产品缺陷数；Playwright 与 Page Driver 为独立 blocker"

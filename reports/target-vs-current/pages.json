@@ -643,9 +643,9 @@
       "dimension": "web",
       "gap_kind": "RUNTIME",
       "priority": "Must",
-      "implementation_status": "CONFIRMED_PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "AUTOMATED_FAIL",
-      "static_implementation": "CONFIRMED_PARTIAL",
+      "static_implementation": "UNASSESSED",
       "e4_verification": "BLOCKED_BY_TOOLCHAIN",
       "e5_verification": "HARDWARE_PENDING",
       "severity": "P1",
@@ -699,7 +699,19 @@
         {
           "test_id": "TEST-R-003",
           "status": "PASS",
+          "case_id": "current:public-claims.test.mjs:TEST-R-003 无假下载：APK/固件直链必须伴随 SHA256；无产物时必须诚实 NOT_RELEASED 且无 releases/latest 冒充",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-003",
+          "status": "PASS",
           "case_id": "current:public-claims.test.mjs:TEST-R-003 禁用无证据强声明词（VERIFIED 语义不得无证据出现）",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-003",
+          "status": "PASS",
+          "case_id": "current:public-claims.test.mjs:TEST-R-003 禁止错误主线与 6+ 入口误导",
           "first_breakpoint": null
         },
         {
@@ -713,18 +725,6 @@
           "status": "FAIL",
           "case_id": "current:version-release-metadata-target.test.mjs:TEST-U-002 目标层：services/version-metadata.js",
           "first_breakpoint": "[TEST-U-002 REQ-004/056 FEAT-004/066 PAGE-009/010 WEB-001 S-47] 第一断点: 目标模块缺失：apps/uniapp/services/version-metadata.js"
-        },
-        {
-          "test_id": "TEST-R-003",
-          "status": "FAIL",
-          "case_id": "current:public-claims.test.mjs:TEST-R-003 无假下载：APK/固件直链必须伴随 SHA256；无产物时必须诚实 NOT_RELEASED 且无 releases/latest 冒充",
-          "first_breakpoint": "无产物直链时页面必须明确 NOT_RELEASED/尚未发布"
-        },
-        {
-          "test_id": "TEST-R-003",
-          "status": "FAIL",
-          "case_id": "current:public-claims.test.mjs:TEST-R-003 禁止错误主线与 6+ 入口误导",
-          "first_breakpoint": "不得宣称 6+ 入口"
         }
       ],
       "expected": "4 states / 11 operations",
@@ -2646,12 +2646,12 @@
       "dimension": "state",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "CONFIRMED_MISSING",
-      "verification_status": "AUTOMATED_FAIL",
-      "static_implementation": "CONFIRMED_MISSING",
+      "implementation_status": "UNASSESSED",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "static_implementation": "UNASSESSED",
       "e4_verification": "BLOCKED_BY_TOOLCHAIN",
       "e5_verification": "NOT_EXECUTED",
-      "severity": "P0",
+      "severity": null,
       "evidence_level": "E4",
       "implementation_refs": [],
       "test_ids": [
@@ -2659,15 +2659,15 @@
       ],
       "test_results": [],
       "expected": "无任何公开产物",
-      "actual": "下载区未按 NOT_RELEASED 降级",
-      "first_breakpoint": "NOT_RELEASED 无产物时应无下载链接；当前仍暴露 releases/latest",
+      "actual": "no static confirmation; automation blocked",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）；静态态未单独确认 → UNASSESSED",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
-      "root_cause_id": "RC-LANDING-FAKE-DOWNLOAD",
-      "task_id": "PUBLIC-HONESTY-001",
-      "release_blocking": true
+      "root_cause_id": null,
+      "task_id": "ENV-PLAYWRIGHT-001",
+      "release_blocking": false
     },
     {
       "target_id": "STATE-W001-04",
@@ -5162,12 +5162,12 @@
       "dimension": "operation",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "CONFIRMED_PARTIAL",
-      "verification_status": "AUTOMATED_FAIL",
-      "static_implementation": "CONFIRMED_PARTIAL",
+      "implementation_status": "UNASSESSED",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "static_implementation": "UNASSESSED",
       "e4_verification": "BLOCKED_BY_TOOLCHAIN",
       "e5_verification": "NOT_EXECUTED",
-      "severity": "P0",
+      "severity": null,
       "evidence_level": "E4",
       "implementation_refs": [],
       "test_ids": [
@@ -5176,14 +5176,14 @@
       "test_results": [],
       "expected": "下载 Android APK",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "下载 CTA 指向 releases/latest",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
-      "root_cause_id": "RC-LANDING-FAKE-DOWNLOAD",
-      "task_id": "PUBLIC-HONESTY-001",
-      "release_blocking": true
+      "root_cause_id": null,
+      "task_id": "ENV-PLAYWRIGHT-001",
+      "release_blocking": false
     },
     {
       "target_id": "OP-W001-04",
@@ -5191,12 +5191,12 @@
       "dimension": "operation",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "CONFIRMED_PARTIAL",
-      "verification_status": "AUTOMATED_FAIL",
-      "static_implementation": "CONFIRMED_PARTIAL",
+      "implementation_status": "UNASSESSED",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "static_implementation": "UNASSESSED",
       "e4_verification": "BLOCKED_BY_TOOLCHAIN",
       "e5_verification": "NOT_EXECUTED",
-      "severity": "P0",
+      "severity": null,
       "evidence_level": "E4",
       "implementation_refs": [],
       "test_ids": [
@@ -5205,20 +5205,20 @@
       "test_results": [],
       "expected": "微信小程序码",
       "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "下载 CTA 指向 releases/latest",
+      "first_breakpoint": "E4 未执行（BLOCKED_BY_TOOLCHAIN）",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
-      "root_cause_id": "RC-LANDING-FAKE-DOWNLOAD",
-      "task_id": "PUBLIC-HONESTY-001",
-      "release_blocking": true
+      "root_cause_id": null,
+      "task_id": "ENV-PLAYWRIGHT-001",
+      "release_blocking": false
     },
     {
       "target_id": "OP-W001-05",
       "target_type": "operation",
       "dimension": "operation",
-      "gap_kind": "LANDING",
+      "gap_kind": "RUNTIME",
       "priority": "Must",
       "implementation_status": "CONFIRMED_PARTIAL",
       "verification_status": "AUTOMATED_FAIL",
@@ -5234,13 +5234,13 @@
       "test_results": [],
       "expected": "固件下载",
       "actual": "UI 可启动 OTA 但协议不完整",
-      "first_breakpoint": "下载 CTA 指向 releases/latest",
+      "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
-      "root_cause_id": "RC-LANDING-FAKE-DOWNLOAD",
-      "task_id": "PUBLIC-HONESTY-001",
+      "root_cause_id": "RC-OTA-CTRL-START",
+      "task_id": "OTA-CLIENT-001",
       "release_blocking": true
     },
     {

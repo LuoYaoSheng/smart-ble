@@ -3,27 +3,25 @@
 ```yaml
 status: APPROVED
 gate: TP-G3
-content_hash: be493664f40cc23efd4418ab4df5f8cdba44cb398786586fd9d5ed5373c07074
+content_hash: 54902a01ef816b379460f622959b6e65c8de4a2af90740f8dafa21c14c694a5d
 approved_by: user
-last_reviewed: 2026-09-01
 ```
 
-> TP-G3 已开启。**仅** `PUBLIC-HONESTY-001` 为 `APPROVED_FOR_EXECUTION`；其余仍为 PLANNED。
+> PUBLIC-HONESTY-001 = **DONE**。VERSION-METADATA-001 / RELEASE-PIPELINE-001 仍为 PLANNED。
 
 ### PUBLIC-HONESTY-001
 
-- 状态：**APPROVED_FOR_EXECUTION**
+- 状态：**DONE**
 - 标题：落地页立即诚实降级（假下载/6+/错误主线→PREVIEW/NOT_RELEASED）
 - task_type：SOURCE_FIX
 - severity：P0
-- root_cause_id：RC-LANDING-FAKE-DOWNLOAD
-- Target IDs（样本）：FEAT-070, FEAT-075, REQ-058, REQ-059, REQ-060, STATE-W001-03, OP-W001-03, OP-W001-04, OP-W001-05, CLAIM-016, CLAIM-017, CLAIM-018
-- Test IDs：TEST-R-003, TEST-R-007, TEST-R-001, TEST-R-002, TEST-R-008, TEST-R-009, TEST-R-006, TEST-E-008, TEST-R-005
-- First Breakpoint：无产物直链时页面必须明确 NOT_RELEASED/尚未发布
+- root_cause_id：RC-LANDING-FAKE-DOWNLOAD（已关闭）
+- Target IDs（样本）：FEAT-070, FEAT-075, WEB-001, CLAIM-016.., STATE-W001-03, OP-W001-03..
+- Test IDs：TEST-R-003, TEST-R-001（honesty 相关）PASS；TEST-R-002 仍属 VERSION-METADATA-001
+- First Breakpoint（修复前）：docs/index.md releases/latest 假主下载 / 无 NOT_RELEASED
 - 依赖：无
-- 解锁：VERIFY-E6-001
-- 禁止修改（本轮）：VERSION；Release Workflow；apps/uniapp/**；docs/target-product/**；contracts/target/** product semantics
-- 自动化验收：related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL
+- 解锁：VERIFY-E6-001（仍待其他依赖）
+- 证据：`docs/index.md` PREVIEW + NOT_RELEASED 不可点击产物卡；SEO 已对齐
 - 建议提交信息：`docs(site): publish an honest Smart BLE preview`
 
 ### VERSION-METADATA-001

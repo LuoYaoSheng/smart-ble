@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: be493664f40cc23efd4418ab4df5f8cdba44cb398786586fd9d5ed5373c07074
+content_hash: 54902a01ef816b379460f622959b6e65c8de4a2af90740f8dafa21c14c694a5d
 ```
 
 ## 路由事实
@@ -34,7 +34,7 @@ content_hash: be493664f40cc23efd4418ab4df5f8cdba44cb398786586fd9d5ed5373c07074
 - **PAGE-008** impl=CONFIRMED_PARTIAL verify=AUTOMATED_PASS static=CONFIRMED_PARTIAL e4=BLOCKED_BY_TOOLCHAIN task=PAGE-BROADCAST-001 bp=广播页内联；Owner/composable 未接入
 - **PAGE-009** impl=UNASSESSED verify=AUTOMATED_FAIL static=UNASSESSED e4=BLOCKED_BY_TOOLCHAIN task=VERSION-METADATA-001 bp=[TEST-U-002 REQ-004/056 FEAT-004/066 PAGE-009/010 WEB-001 S-
 - **PAGE-010** impl=CONFIRMED_PARTIAL verify=BLOCKED_BY_TOOLCHAIN static=CONFIRMED_PARTIAL e4=BLOCKED_BY_TOOLCHAIN task=PAGE-VERSION-001 bp=pages/about/version.vue 硬编码 versionHistory
-- **WEB-001** impl=CONFIRMED_PARTIAL verify=AUTOMATED_FAIL static=CONFIRMED_PARTIAL e4=BLOCKED_BY_TOOLCHAIN task=RUNTIME-LOG-REDACTION-001 bp=[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：a
+- **WEB-001** impl=UNASSESSED verify=AUTOMATED_FAIL static=UNASSESSED e4=BLOCKED_BY_TOOLCHAIN task=RUNTIME-LOG-REDACTION-001 bp=[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：a
 
 ## PAGE-008 静态事实
 
@@ -61,5 +61,5 @@ content_hash: be493664f40cc23efd4418ab4df5f8cdba44cb398786586fd9d5ed5373c07074
 ## WEB-001
 
 - path: `docs/index.md`
-- 观察：含 `releases/latest` 下载枢纽链接（landing_fake_download=true）
+- 观察：含 `releases/latest` 下载枢纽链接（landing_fake_download=false）
 - Target: WEB-001, CLAIM-*, FEAT-070/075

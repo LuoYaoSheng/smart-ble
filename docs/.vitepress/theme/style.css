@@ -358,3 +358,97 @@
     font-size: 34px;
   }
 }
+
+/* PUBLIC-HONESTY-001: PREVIEW / NOT_RELEASED / BLOCKED / REFERENCE */
+.smartble-status-band {
+  display: grid;
+  gap: 12px;
+  margin: 8px 0 28px;
+  padding: 18px 20px;
+  border-radius: 18px;
+  border: 1px solid rgba(27, 109, 255, 0.18);
+  background: linear-gradient(180deg, rgba(238, 247, 255, 0.92), rgba(255, 255, 255, 0.88));
+}
+
+.smartble-status-pill {
+  display: inline-flex;
+  width: fit-content;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.smartble-status-pill--preview,
+.smartble-badge--preview {
+  background: rgba(27, 109, 255, 0.12);
+  color: #1b6dff;
+}
+
+.smartble-badge--not-released {
+  background: rgba(120, 120, 120, 0.14);
+  color: #555;
+}
+
+.smartble-badge--blocked {
+  background: rgba(198, 40, 40, 0.12);
+  color: #b71c1c;
+}
+
+.smartble-badge--reference,
+.smartble-badge--unsupported {
+  background: rgba(121, 85, 72, 0.12);
+  color: #5d4037;
+}
+
+.smartble-inline-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.smartble-download-card--disabled {
+  cursor: default;
+  pointer-events: none;
+  opacity: 0.92;
+  background: rgba(248, 249, 251, 0.96);
+  border-style: dashed;
+}
+
+.smartble-download-card--disabled:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: inherit;
+}
+
+.smartble-download-cta--muted {
+  color: #777;
+  font-weight: 600;
+}
+
+.smartble-limits {
+  margin-top: 36px;
+}
+
+.smartble-limits-list {
+  margin: 0 0 24px;
+  padding-left: 1.2em;
+  line-height: 1.7;
+}
+
+.smartble-learning-card--static {
+  cursor: default;
+  pointer-events: none;
+  border-style: dashed;
+  opacity: 0.95;
+}
+
+.smartble-learning-card--static:hover {
+  transform: none;
+  box-shadow: none;
+}

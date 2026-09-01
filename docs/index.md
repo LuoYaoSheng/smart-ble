@@ -3,65 +3,49 @@ layout: home
 
 hero:
   name: "Smart BLE"
-  text: "跨平台 BLE 控制台与统一协议内核"
-  tagline: "一套调试工作流，同时覆盖 UniApp · Flutter · Tauri · Android · iOS · 硬件联动，把扫描、连接、广播和协议验证收进同一套产品语言。"
+  text: "PREVIEW · UniApp、微信小程序与 ESP32 协同的 BLE 调试和验证工具"
+  tagline: "状态：PREVIEW。版本元数据尚未发布。当前无正式 APK、小程序码或固件下载（NOT_RELEASED）。"
   image:
     src: /brand/icon.png
     alt: Smart BLE Brand Icon
   actions:
     - theme: brand
-      text: UniApp 产品规范
-      link: /product-contract/
+      text: 查看产品目标与测试规范
+      link: /target-product/
     - theme: alt
       text: 快速开始
       link: /tutorials/01_introduction_and_setup
     - theme: alt
-      text: 下载全部平台
-      link: "#download-hub"
-    - theme: alt
-      text: 架构白皮书
-      link: /MASTER_ARCHITECTURE
+      text: 查看源码
+      link: https://github.com/luoyaosheng/smart-ble
 ---
 
 <div class="smartble-home">
-  <section class="smartble-signal-band">
-    <div class="smartble-signal-card">
-      <div class="smartble-signal-value">6+</div>
-      <div class="smartble-signal-label">运行入口</div>
-      <p>UniApp、Flutter、Tauri、Electron、Android、iOS 与硬件示例同时维护。</p>
-    </div>
-    <div class="smartble-signal-card">
-      <div class="smartble-signal-value">1</div>
-      <div class="smartble-signal-label">协议核心</div>
-      <p>统一的 BLE 调试语义、状态流和资产生成器，减少多端割裂。</p>
-    </div>
-    <div class="smartble-signal-card">
-      <div class="smartble-signal-value">4</div>
-      <div class="smartble-signal-label">核心任务</div>
-      <p>扫描、连接、广播、服务调试，是所有端必须讲清楚的主流程。</p>
-    </div>
-    <div class="smartble-signal-card">
-      <div class="smartble-signal-value">SSOT</div>
-      <div class="smartble-signal-label">品牌分发</div>
-      <p>图标、主题和占位图通过共享生成器向多平台统一分发。</p>
-    </div>
+  <section class="smartble-status-band" aria-label="公开状态">
+    <div class="smartble-status-pill smartble-status-pill--preview">PREVIEW</div>
+    <p>
+      Smart BLE 当前处于预览阶段：主线是 <strong>UniApp Android</strong>、<strong>BLE Toolkit+ 微信小程序</strong>、
+      <strong>LightBLE ESP32</strong> 与 <strong>Smart HID 第一方 Profile</strong>。
+      正式产物尚未发布（<strong>NOT_RELEASED</strong>），请勿把本站当作可下载安装包的入口。
+    </p>
   </section>
 
   <section class="smartble-product-hero">
     <div class="smartble-product-copy">
       <div class="smartble-kicker">Product Story</div>
-      <h2>不是某一端的 BLE 小工具，而是一整套跨平台调试控制台</h2>
+      <h2>面向真实主线的 BLE 调试与验证工具</h2>
       <p>
-        Smart BLE 的核心价值不是“支持很多平台”，而是把不同平台都拉进同一套工作流：先发现设备，再建立连接，随后读写特征值、监听通知、切换广播模式，最后把协议和硬件联动验证闭环。
+        Smart BLE 把扫描、连接、读写、订阅、手机 Peripheral 广播，以及 ESP32 / Smart HID 验证收进同一套产品语言。
+        当前公开站点只描述已批准目标与诚实状态，不宣称全平台已交付。
       </p>
       <div class="smartble-copy-grid">
         <article>
-          <h3>对用户</h3>
-          <p>拿到就能用，不必每个平台重新学习一遍蓝牙调试路径。</p>
+          <h3>当前主线</h3>
+          <p>UniApp Android · 微信小程序 · LightBLE ESP32 · Smart HID Profile</p>
         </article>
         <article>
-          <h3>对开发者</h3>
-          <p>同一份设计与交互规范，可以同步落到小程序、桌面和原生端。</p>
+          <h3>公开承诺</h3>
+          <p>没有产物就不挂下载；没有 E5/E6 证据就不写 VERIFIED / RELEASED。</p>
         </article>
       </div>
     </div>
@@ -70,151 +54,225 @@ hero:
     </div>
   </section>
 
-  <section class="smartble-flow-lane">
-    <div class="smartble-section-head">
-      <div class="smartble-kicker">Workflow</div>
-      <h2>所有平台都应该讲同一条调试故事线</h2>
-      <p>视觉可以因平台变化，任务顺序和状态含义不能漂移。</p>
-    </div>
-    <div class="smartble-flow-grid">
-      <article class="smartble-flow-card">
-        <span class="smartble-flow-index">01</span>
-        <h3>Scan</h3>
-        <p>确认蓝牙状态，开始扫描，结合过滤器缩小候选设备范围。</p>
-      </article>
-      <article class="smartble-flow-card">
-        <span class="smartble-flow-index">02</span>
-        <h3>Connect</h3>
-        <p>进入设备会话，发现服务树，保持连接状态和日志入口始终可见。</p>
-      </article>
-      <article class="smartble-flow-card">
-        <span class="smartble-flow-index">03</span>
-        <h3>Inspect</h3>
-        <p>读写特征值、开启通知、导出日志、执行 OTA 等高频调试动作。</p>
-      </article>
-      <article class="smartble-flow-card">
-        <span class="smartble-flow-index">04</span>
-        <h3>Broadcast</h3>
-        <p>配置名称、UUID 和 Manufacturer Data，在广播模式下验证设备侧行为。</p>
-      </article>
-    </div>
-  </section>
-
   <section class="smartble-platform-matrix">
     <div class="smartble-section-head">
-      <div class="smartble-kicker">Platform Matrix</div>
-      <h2>一个品牌系统，多个运行入口</h2>
-      <p>每条路线都有自己的角色，但不应该长成不同的产品。</p>
+      <div class="smartble-kicker">Current Mainline</div>
+      <h2>正式工作面与参考实现</h2>
+      <p>下列状态基于仓库事实与 TP-G2 测量，不是发布门禁结论。</p>
     </div>
     <div class="smartble-platform-grid">
       <article class="smartble-platform-card">
         <div class="smartble-platform-top">
-          <span class="smartble-platform-icon">📱</span>
-          <span class="smartble-platform-badge">Public Entry</span>
+          <span class="smartble-platform-badge smartble-badge--preview">PREVIEW</span>
         </div>
-        <h3>UniApp / 微信小程序</h3>
-        <p>传播成本最低的入口，也是 Smart BLE 品牌层最先统一的运行面。</p>
+        <h3>UniApp Android</h3>
+        <p>当前客户端主线。正式 APK 与 SHA <strong>尚未发布</strong>（NOT_RELEASED）。</p>
       </article>
       <article class="smartble-platform-card">
         <div class="smartble-platform-top">
-          <span class="smartble-platform-icon">🐦</span>
-          <span class="smartble-platform-badge">Mobile Mainline</span>
+          <span class="smartble-platform-badge smartble-badge--not-released">NOT_RELEASED</span>
         </div>
-        <h3>Flutter</h3>
-        <p>Android / iOS 的跨平台主线，适合把统一体验真正产品化。</p>
+        <h3>BLE Toolkit+ 微信小程序</h3>
+        <p>正式小程序码尚未发布。本站不提供体验码或可扫码入口冒充正式版。</p>
       </article>
       <article class="smartble-platform-card">
         <div class="smartble-platform-top">
-          <span class="smartble-platform-icon">🦀</span>
-          <span class="smartble-platform-badge">Workbench</span>
+          <span class="smartble-platform-badge smartble-badge--unsupported">UNSUPPORTED</span>
         </div>
-        <h3>Tauri / Electron</h3>
-        <p>面向长时间调试和桌面效率场景的工作台版本。</p>
+        <h3>H5</h3>
+        <p>仅文档与页面降级展示。真实 BLE 在 H5 上为 UNSUPPORTED。</p>
       </article>
       <article class="smartble-platform-card">
         <div class="smartble-platform-top">
-          <span class="smartble-platform-icon">🤖</span>
-          <span class="smartble-platform-badge">Native</span>
+          <span class="smartble-platform-badge smartble-badge--not-released">NOT_RELEASED</span>
         </div>
-        <h3>Android</h3>
-        <p>Kotlin + Compose 的原生实现，承接权限、后台扫描和原生能力验证。</p>
+        <h3>iOS</h3>
+        <p>目标能力存在规划，正式入口尚未发布。</p>
       </article>
       <article class="smartble-platform-card">
         <div class="smartble-platform-top">
-          <span class="smartble-platform-icon">🍎</span>
-          <span class="smartble-platform-badge">Native</span>
+          <span class="smartble-platform-badge smartble-badge--reference">REFERENCE</span>
         </div>
-        <h3>iOS / macOS</h3>
-        <p>SwiftUI / CoreBluetooth 路线，负责 Apple 平台的原生可信体验。</p>
+        <h3>Flutter / Tauri / 原生端</h3>
+        <p>历史与参考实现，不是当前正式工作台，也不作为已交付入口。</p>
       </article>
       <article class="smartble-platform-card">
         <div class="smartble-platform-top">
-          <span class="smartble-platform-icon">🔩</span>
-          <span class="smartble-platform-badge">Hardware</span>
+          <span class="smartble-platform-badge smartble-badge--preview">PREVIEW</span>
         </div>
-        <h3>ESP32 / 协议侧</h3>
-        <p>不是孤立示例，而是与上层调试工具配套联动的硬件闭环。</p>
+        <h3>LightBLE ESP32 Peripheral</h3>
+        <p>开发中 / PREVIEW。可复现固件、manifest 与 SHA 尚未发布。</p>
+      </article>
+      <article class="smartble-platform-card">
+        <div class="smartble-platform-top">
+          <span class="smartble-platform-badge smartble-badge--not-released">NOT_RELEASED</span>
+        </div>
+        <h3>ESP32 Observer</h3>
+        <p>第一方 Observer 固件尚未实现与发布。</p>
+      </article>
+      <article class="smartble-platform-card">
+        <div class="smartble-platform-top">
+          <span class="smartble-platform-badge smartble-badge--blocked">BLOCKED</span>
+        </div>
+        <h3>OTA</h3>
+        <p>客户端与固件完整事务尚未对齐并完成 E5，公开状态为 BLOCKED。</p>
+      </article>
+      <article class="smartble-platform-card">
+        <div class="smartble-platform-top">
+          <span class="smartble-platform-badge smartble-badge--preview">PREVIEW</span>
+        </div>
+        <h3>Smart HID</h3>
+        <p>第一方 Profile：BLE 仅用于配网与诊断；实时控制不属于 Smart BLE BLE 链路。端到端 E5 尚未完成。</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="smartble-flow-lane">
+    <div class="smartble-section-head">
+      <div class="smartble-kicker">Workflow</div>
+      <h2>当前产品主线流程</h2>
+      <p>状态按实现与证据诚实标注，不是全部完成。</p>
+    </div>
+    <div class="smartble-flow-grid">
+      <article class="smartble-flow-card">
+        <span class="smartble-flow-index">01</span>
+        <h3>扫描与广播解析</h3>
+        <p><span class="smartble-inline-badge smartble-badge--preview">PREVIEW</span> 有实现路径；E5 尚未执行。</p>
+      </article>
+      <article class="smartble-flow-card">
+        <span class="smartble-flow-index">02</span>
+        <h3>连接与服务发现</h3>
+        <p><span class="smartble-inline-badge smartble-badge--preview">PREVIEW</span> 有实现；自动化仍有缺口。</p>
+      </article>
+      <article class="smartble-flow-card">
+        <span class="smartble-flow-index">03</span>
+        <h3>Read / Write / Subscription</h3>
+        <p><span class="smartble-inline-badge smartble-badge--preview">PREVIEW</span> 核心读写可用路径存在；完整目标接口未齐。</p>
+      </article>
+      <article class="smartble-flow-card">
+        <span class="smartble-flow-index">04</span>
+        <h3>多设备与日志</h3>
+        <p><span class="smartble-inline-badge smartble-badge--preview">PREVIEW</span> 脱敏与会话计数等目标能力仍有缺口。</p>
+      </article>
+      <article class="smartble-flow-card">
+        <span class="smartble-flow-index">05</span>
+        <h3>手机 Peripheral 广播</h3>
+        <p><span class="smartble-inline-badge smartble-badge--preview">PREVIEW</span> 页面与 Owner 编排仍需对齐；Observer 证据未就绪。</p>
+      </article>
+      <article class="smartble-flow-card">
+        <span class="smartble-flow-index">06</span>
+        <h3>OTA</h3>
+        <p><span class="smartble-inline-badge smartble-badge--blocked">BLOCKED</span> 客户端 CTRL 事务与固件未对齐，E5 未完成。</p>
+      </article>
+      <article class="smartble-flow-card">
+        <span class="smartble-flow-index">07</span>
+        <h3>ESP32 / Smart HID 验证</h3>
+        <p><span class="smartble-inline-badge smartble-badge--preview">PREVIEW</span> Peripheral 开发中；Observer <strong>NOT_RELEASED</strong>；Smart HID 待 E5。</p>
       </article>
     </div>
   </section>
 
   <section id="download-hub" class="smartble-download-hub">
     <div class="smartble-section-head">
-      <div class="smartble-kicker">Download Hub</div>
-      <h2>先体验，再深入代码和架构</h2>
-      <p>如果你只是想快速验证设备、广播或协议链路，直接从这里选入口。</p>
+      <div class="smartble-kicker">Artifacts</div>
+      <h2>产物状态（当前均为 NOT_RELEASED）</h2>
+      <p>没有真实 APK / 固件 / SHA 时，不提供可点击下载。下列卡片不可点击。</p>
     </div>
     <div class="smartble-download-grid">
-      <a class="smartble-download-card" href="https://github.com/luoyaosheng/smart-ble/releases/latest" target="_blank">
-        <span class="smartble-download-icon">🤖</span>
+      <div class="smartble-download-card smartble-download-card--disabled" role="group" aria-disabled="true">
+        <span class="smartble-platform-badge smartble-badge--not-released">NOT_RELEASED</span>
         <h3>Android APK</h3>
-        <p>适合现场扫描、连接和服务调试的原生入口。</p>
-        <span class="smartble-download-cta">下载 Android 构建</span>
+        <p>正式 UniApp Android 构建与 SHA 尚未发布。</p>
+        <span class="smartble-download-cta smartble-download-cta--muted">暂无下载</span>
+      </div>
+      <div class="smartble-download-card smartble-download-card--disabled" role="group" aria-disabled="true">
+        <span class="smartble-platform-badge smartble-badge--not-released">NOT_RELEASED</span>
+        <h3>微信小程序</h3>
+        <p>正式小程序码尚未发布。</p>
+        <span class="smartble-download-cta smartble-download-cta--muted">暂无下载</span>
+      </div>
+      <div class="smartble-download-card smartble-download-card--disabled" role="group" aria-disabled="true">
+        <span class="smartble-platform-badge smartble-badge--not-released">NOT_RELEASED</span>
+        <h3>ESP32 Peripheral</h3>
+        <p>可复现固件、manifest 与 SHA 尚未发布。</p>
+        <span class="smartble-download-cta smartble-download-cta--muted">暂无下载</span>
+      </div>
+      <div class="smartble-download-card smartble-download-card--disabled" role="group" aria-disabled="true">
+        <span class="smartble-platform-badge smartble-badge--not-released">NOT_RELEASED</span>
+        <h3>ESP32 Observer</h3>
+        <p>Observer 固件尚未实现和发布。</p>
+        <span class="smartble-download-cta smartble-download-cta--muted">暂无下载</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="smartble-limits">
+    <div class="smartble-section-head">
+      <div class="smartble-kicker">Current Limits</div>
+      <h2>当前限制和证据状态</h2>
+      <p>以下是公开限制，不是最终验证报告。</p>
+    </div>
+    <ul class="smartble-limits-list">
+      <li>Android 正式 APK 尚未发布。</li>
+      <li>微信正式小程序码尚未发布。</li>
+      <li>Playwright / Page Driver E4 尚未完成。</li>
+      <li>Android、微信、ESP32 E5 尚未执行。</li>
+      <li>OTA 当前 BLOCKED。</li>
+      <li>ESP32 Observer 尚未完成。</li>
+      <li>Smart HID 尚未完成端到端 E5。</li>
+      <li>Release Pipeline 当前仍是历史 Flutter/Tauri 路线，不能代表当前主线。</li>
+    </ul>
+    <div class="smartble-learning-cards">
+      <a href="/target-product/" class="smartble-learning-card">
+        <h3>Target Product</h3>
+        <p>已批准目标产品规范（应实现什么）。</p>
       </a>
-      <a class="smartble-download-card" href="https://github.com/luoyaosheng/smart-ble/releases/latest" target="_blank">
-        <span class="smartble-download-icon">🦀</span>
-        <h3>Windows / 桌面版</h3>
-        <p>更适合长时间工作台式调试，保留更多并行信息密度。</p>
-        <span class="smartble-download-cta">查看最新 Releases</span>
+      <a href="/target-tests/" class="smartble-learning-card">
+        <h3>Target Tests</h3>
+        <p>已批准目标测试体系（如何证明）。</p>
       </a>
-      <a class="smartble-download-card" href="https://github.com/luoyaosheng/smart-ble/releases/latest" target="_blank">
-        <span class="smartble-download-icon">🍎</span>
-        <h3>macOS 构建</h3>
-        <p>提供 Tauri 与原生 Swift 两条 Apple 平台路线。</p>
-        <span class="smartble-download-cta">下载 macOS 构建</span>
+      <a href="/gap-analysis/TARGET_VS_CURRENT_SUMMARY" class="smartble-learning-card">
+        <h3>TP-G2-R1 Gap Summary</h3>
+        <p>规划门禁差距摘要，不是 E5/E6 最终报告。</p>
       </a>
-      <a class="smartble-download-card smartble-download-card--source" href="https://github.com/luoyaosheng/smart-ble" target="_blank">
-        <span class="smartble-download-icon">📦</span>
-        <h3>源码与文档</h3>
-        <p>如果你要二开、学习架构或对照多平台实现，从仓库和白皮书开始。</p>
-        <span class="smartble-download-cta">进入 GitHub 仓库</span>
+      <a href="/remediation/REMEDIATION_ORDER" class="smartble-learning-card">
+        <h3>Remediation Order</h3>
+        <p>批准中的修复拓扑序；逐 Task 执行。</p>
       </a>
     </div>
   </section>
 
   <section class="smartble-learning-grid">
     <div class="smartble-section-head">
-      <div class="smartble-kicker">Learning Paths</div>
-      <h2>把“能用”与“能学会”一起交付</h2>
-      <p>Smart BLE 不只是工具，也是一套围绕 BLE 软硬件协同的教学材料。</p>
+      <div class="smartble-kicker">Real Links</div>
+      <h2>真实可用入口</h2>
+      <p>源码、规范与贡献入口。不存在的安全披露文件不造假链接。</p>
     </div>
     <div class="smartble-learning-cards">
+      <a href="https://github.com/luoyaosheng/smart-ble" class="smartble-learning-card" target="_blank" rel="noopener">
+        <h3>GitHub 源码</h3>
+        <p>仓库、Issue 与历史实现。</p>
+      </a>
+      <a href="https://github.com/luoyaosheng/smart-ble/issues" class="smartble-learning-card" target="_blank" rel="noopener">
+        <h3>Issue</h3>
+        <p>缺陷与需求跟踪。</p>
+      </a>
       <a href="/tutorials/01_introduction_and_setup" class="smartble-learning-card">
-        <h3>快速上手</h3>
-        <p>第一次进入仓库，先从起步教程快速跑通扫描和连接。</p>
+        <h3>快速开始</h3>
+        <p>从文档跑通扫描与连接概念路径。</p>
       </a>
-      <a href="/tutorials/02_advanced_usage_and_broadcast" class="smartble-learning-card">
-        <h3>广播与进阶</h3>
-        <p>想理解外设模式、广播群控和更深入的 BLE 调试玩法，从这里进入。</p>
+      <a href="/CONTRIBUTING_GUIDE" class="smartble-learning-card">
+        <h3>贡献指南</h3>
+        <p>如何参与文档与实现改进。</p>
       </a>
-      <a href="/MASTER_ARCHITECTURE" class="smartble-learning-card">
-        <h3>架构白皮书</h3>
-        <p>统一看协议内核、组件拆分、状态流和多端对齐策略。</p>
+      <a href="https://github.com/luoyaosheng/smart-ble/blob/main/LICENSE" class="smartble-learning-card" target="_blank" rel="noopener">
+        <h3>MIT License</h3>
+        <p>开源许可。</p>
       </a>
-      <a href="/tutorials/hardware/01_Hardware_Philosophy" class="smartble-learning-card">
-        <h3>硬件联动</h3>
-        <p>从 ESP32 和下位机侧理解 Smart BLE 为什么不是纯前端项目。</p>
-      </a>
+      <div class="smartble-learning-card smartble-learning-card--static" role="note">
+        <h3>Security</h3>
+        <p>安全披露入口待补充（仓库尚无 SECURITY.md，不提供假链接）。</p>
+      </div>
     </div>
   </section>
 </div>

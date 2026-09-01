@@ -39,7 +39,7 @@
       "unlocks": [
         "TEST-PAGE-DRIVER-001"
       ],
-      "gap_count": 159,
+      "gap_count": 162,
       "target_ids": [
         "PAGE-001#BLK-TOOL-PLAYWRIGHT",
         "STATE-P001-01",
@@ -187,41 +187,15 @@
       "title": "落地页立即诚实降级（假下载/6+/错误主线→PREVIEW/NOT_RELEASED）",
       "root_cause_id": "RC-LANDING-FAKE-DOWNLOAD",
       "severity": "P0",
-      "status": "PLANNED",
+      "status": "DONE",
       "dependencies": [],
       "unlocks": [
         "VERIFY-E6-001"
       ],
-      "gap_count": 15,
-      "target_ids": [
-        "FEAT-070",
-        "FEAT-075",
-        "REQ-058",
-        "REQ-059",
-        "REQ-060",
-        "STATE-W001-03",
-        "OP-W001-03",
-        "OP-W001-04",
-        "OP-W001-05",
-        "CLAIM-016",
-        "CLAIM-017",
-        "CLAIM-018",
-        "CLAIM-019",
-        "CLAIM-027",
-        "CLAIM-028"
-      ],
-      "test_ids": [
-        "TEST-R-003",
-        "TEST-R-007",
-        "TEST-R-001",
-        "TEST-R-002",
-        "TEST-R-008",
-        "TEST-R-009",
-        "TEST-R-006",
-        "TEST-E-008",
-        "TEST-R-005"
-      ],
-      "first_breakpoint": "无产物直链时页面必须明确 NOT_RELEASED/尚未发布",
+      "gap_count": 0,
+      "target_ids": [],
+      "test_ids": [],
+      "first_breakpoint": "",
       "implementation_files": [],
       "forbidden_files": [
         "apps/uniapp/** (until TP-G3)",
@@ -727,7 +701,7 @@
       "unlocks": [
         "VERIFY-ANDROID-001"
       ],
-      "gap_count": 14,
+      "gap_count": 15,
       "target_ids": [
         "FEAT-046",
         "FEAT-047",
@@ -742,7 +716,8 @@
         "REQ-046",
         "OP-P006-12",
         "OP-P006-13",
-        "OP-P006-14"
+        "OP-P006-14",
+        "OP-W001-05"
       ],
       "test_ids": [
         "TEST-P-006",
@@ -751,7 +726,8 @@
         "TEST-R-003",
         "TEST-I-008",
         "TEST-U-016",
-        "TEST-I-010"
+        "TEST-I-010",
+        "TEST-R-008"
       ],
       "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
       "implementation_files": [],
@@ -1186,7 +1162,7 @@
         "VERSION-METADATA-001"
       ],
       "unlocks": [],
-      "gap_count": 24,
+      "gap_count": 30,
       "target_ids": [
         "CLAIM-002",
         "CLAIM-003",
@@ -1202,6 +1178,10 @@
         "CLAIM-013",
         "CLAIM-014",
         "CLAIM-015",
+        "CLAIM-016",
+        "CLAIM-017",
+        "CLAIM-018",
+        "CLAIM-019",
         "CLAIM-020",
         "CLAIM-021",
         "CLAIM-022",
@@ -1209,6 +1189,8 @@
         "CLAIM-024",
         "CLAIM-025",
         "CLAIM-026",
+        "CLAIM-027",
+        "CLAIM-028",
         "CLAIM-029",
         "CLAIM-030",
         "CLAIM-031"
@@ -1238,7 +1220,11 @@
         "TEST-H-005",
         "TEST-H-006",
         "TEST-R-005",
+        "TEST-E-008",
+        "TEST-R-008",
+        "TEST-R-001",
         "TEST-R-006",
+        "TEST-R-009",
         "TEST-R-010",
         "TEST-R-011"
       ],

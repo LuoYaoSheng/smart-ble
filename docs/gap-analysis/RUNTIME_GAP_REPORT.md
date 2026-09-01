@@ -4,10 +4,10 @@
 status: REVIEW
 gate: TP-G2-R1
 generated_from: reports/target-vs-current/target-vs-current.json
-content_hash: be493664f40cc23efd4418ab4df5f8cdba44cb398786586fd9d5ed5373c07074
+content_hash: 54902a01ef816b379460f622959b6e65c8de4a2af90740f8dafa21c14c694a5d
 ```
 
-记录数（筛选后）：35
+记录数（筛选后）：36
 
 | Target | Kind | Impl | Verify | Sev | First Breakpoint | Task |
 |---|---|---|---|---|---|---|
@@ -37,7 +37,8 @@ content_hash: be493664f40cc23efd4418ab4df5f8cdba44cb398786586fd9d5ed5373c07074
 | OP-P006-13 | RUNTIME | CONFIRMED_PARTIAL | AUTOMATED_FAIL | P0 | OtaManager 在第一个 DATA 写之前未发送 CTRL start | OTA-CLIENT-001 |
 | OP-P006-14 | RUNTIME | CONFIRMED_PARTIAL | AUTOMATED_FAIL | P0 | OtaManager 在第一个 DATA 写之前未发送 CTRL start | OTA-CLIENT-001 |
 | PAGE-007 | RUNTIME | UNASSESSED | AUTOMATED_FAIL | P1 | [REQ-053/PAGE-007 排除规则] 第一断点: Registry 无配网会话分类/排除接口——PAGE-007 口径无法排除配网会话 | RUNTIME-SESSION-001 |
-| WEB-001 | RUNTIME | CONFIRMED_PARTIAL | AUTOMATED_FAIL | P1 | [TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ | RUNTIME-LOG-REDACTION-001 |
+| WEB-001 | RUNTIME | UNASSESSED | AUTOMATED_FAIL | P1 | [TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ | RUNTIME-LOG-REDACTION-001 |
+| OP-W001-05 | RUNTIME | CONFIRMED_PARTIAL | AUTOMATED_FAIL | P0 | OtaManager 在第一个 DATA 写之前未发送 CTRL start | OTA-CLIENT-001 |
 | FLOW-002 | RUNTIME | CONFIRMED_PARTIAL | AUTOMATED_FAIL | P1 | 命中项匹配关键词 | RUNTIME-FILTER-001 |
 | FLOW-004 | RUNTIME | CONFIRMED_PARTIAL | AUTOMATED_FAIL | P1 | [REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/servic | RUNTIME-RECONNECT-001 |
 | FLOW-005 | RUNTIME | CONFIRMED_PARTIAL | AUTOMATED_FAIL | P1 | [TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失 | RUNTIME-GATT-CODEC-001 |

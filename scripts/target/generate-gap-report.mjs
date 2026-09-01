@@ -257,7 +257,7 @@ const TASKS = [
   { task_id: 'TEST-CURRENT-INTEGRITY-001', task_type: 'TESTABILITY', title: 'Current 度量完整性（TP-G1-R3 已完成）', root_cause_id: null, severity: null, deps: [], order_hint: 0, status: 'DONE' },
   { task_id: 'ENV-PLAYWRIGHT-001', task_type: 'ENVIRONMENT', title: '安装并锁定 Playwright / H5 harness', root_cause_id: 'RC-PLAYWRIGHT', severity: 'P2', deps: [], order_hint: 1 },
   { task_id: 'TEST-PAGE-DRIVER-001', task_type: 'TESTABILITY', title: '实现 Target Page Driver', root_cause_id: 'RC-PAGE-DRIVER', severity: 'P2', deps: ['ENV-PLAYWRIGHT-001'], order_hint: 2 },
-  { task_id: 'PUBLIC-HONESTY-001', task_type: 'SOURCE_FIX', title: '落地页立即诚实降级（假下载/6+/错误主线→PREVIEW/NOT_RELEASED）', root_cause_id: 'RC-LANDING-FAKE-DOWNLOAD', severity: 'P0', deps: [], order_hint: 3 },
+  { task_id: 'PUBLIC-HONESTY-001', task_type: 'SOURCE_FIX', title: '落地页立即诚实降级（假下载/6+/错误主线→PREVIEW/NOT_RELEASED）', root_cause_id: 'RC-LANDING-FAKE-DOWNLOAD', severity: 'P0', deps: [], order_hint: 3, status: landingFakeDownload ? 'PLANNED' : 'DONE' },
   { task_id: 'VERSION-METADATA-001', task_type: 'SOURCE_FIX', title: '根 VERSION + Release Metadata + Public Status', root_cause_id: 'RC-VERSION-SSOT', severity: 'P1', deps: [], order_hint: 4 },
   { task_id: 'RELEASE-PIPELINE-001', task_type: 'RELEASE', title: 'UniApp + Peripheral/Observer 双固件 Release Pipeline', root_cause_id: 'RC-RELEASE-PIPELINE', severity: 'P0', deps: ['VERSION-METADATA-001'], order_hint: 5 },
   { task_id: 'RUNTIME-DISPLAY-NAME-001', task_type: 'SOURCE_FIX', title: '实现 display-name 解析链', root_cause_id: 'RC-DISPLAY-NAME', severity: 'P1', deps: [], order_hint: 10 },
@@ -408,7 +408,9 @@ function mapFailToTask(bp, ids) {
     return { rc: 'RC-TEST-BRIDGE-TS', task: 'TEST-BRIDGE-TS-001', sev: 'P1', kind: 'TESTABILITY' };
   }
   if (/VERSION|version-metadata|public-status/.test(h)) return { rc: 'RC-VERSION-SSOT', task: 'VERSION-METADATA-001', sev: 'P1', kind: 'RELEASE' };
-  if (/NOT_RELEASED|releases\/latest|6\+|假下载|CLAIM/.test(h)) return { rc: 'RC-LANDING-FAKE-DOWNLOAD', task: 'PUBLIC-HONESTY-001', sev: 'P0', kind: 'LANDING' };
+  if (/releases\/latest|6\+|假下载|下载全部平台|Mobile Mainline/.test(h) || (landingFakeDownload && /NOT_RELEASED/.test(h))) {
+    return { rc: 'RC-LANDING-FAKE-DOWNLOAD', task: 'PUBLIC-HONESTY-001', sev: 'P0', kind: 'LANDING' };
+  }
   if (/BLEToolkit-Observer|Observer/.test(h)) return { rc: 'RC-ESP32-OBSERVER', task: 'ESP32-OBSERVER-001', sev: 'P1', kind: 'FIRMWARE' };
   if (/FF00|LED/.test(h)) return { rc: 'RC-ESP32-LED-NAME', task: 'ESP32-PERIPHERAL-001', sev: 'P1', kind: 'FIRMWARE' };
   if (/Observer 字段|emit 覆盖|serial/i.test(h)) return { rc: 'RC-ESP32-SERIAL', task: 'ESP32-FAULT-001', sev: 'P1', kind: 'FIRMWARE' };

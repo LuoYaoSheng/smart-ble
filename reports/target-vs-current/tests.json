@@ -78,8 +78,8 @@
     "TEST_INFRA_FAIL": 0
   },
   "current": {
-    "CURRENT_PASS": 27,
-    "CURRENT_FAIL": 26,
+    "CURRENT_PASS": 30,
+    "CURRENT_FAIL": 23,
     "TEST_INFRA_FAIL": 0,
     "cases": [
       {
@@ -99,7 +99,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/advertisement-target.test.mjs",
-        "duration_ms": 2.060666,
+        "duration_ms": 1.621875,
         "blocker": null
       },
       {
@@ -120,7 +120,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/broadcast-payload-target.test.mjs",
-        "duration_ms": 4.370542,
+        "duration_ms": 3.461833,
         "blocker": null
       },
       {
@@ -140,7 +140,7 @@
         "actual": "命中项匹配关键词",
         "first_breakpoint": "命中项匹配关键词",
         "source_file": "tests/target/unit/device-filter-target.test.mjs",
-        "duration_ms": 2.259042,
+        "duration_ms": 1.332667,
         "blocker": null
       },
       {
@@ -160,7 +160,7 @@
         "actual": "NOT_IMPLEMENTED: [TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
         "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
         "source_file": "tests/target/unit/device-name-target.test.mjs",
-        "duration_ms": 0.848958,
+        "duration_ms": 0.507583,
         "blocker": null
       },
       {
@@ -182,7 +182,7 @@
         "actual": "NOT_IMPLEMENTED: [TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
         "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
         "source_file": "tests/target/unit/gatt-codec-target.test.mjs",
-        "duration_ms": 1.856584,
+        "duration_ms": 1.178167,
         "blocker": null
       },
       {
@@ -204,7 +204,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/history-retention-target.test.mjs",
-        "duration_ms": 3.465917,
+        "duration_ms": 1.524125,
         "blocker": null
       },
       {
@@ -224,7 +224,7 @@
         "actual": "NOT_IMPLEMENTED: [TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
         "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
         "source_file": "tests/target/unit/logging-redaction-target.test.mjs",
-        "duration_ms": 0.61625,
+        "duration_ms": 0.550042,
         "blocker": null
       },
       {
@@ -247,7 +247,7 @@
         "actual": "NOT_IMPLEMENTED: [TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
         "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
         "source_file": "tests/target/unit/ota-state-target.test.mjs",
-        "duration_ms": 5.06475,
+        "duration_ms": 4.417792,
         "blocker": null
       },
       {
@@ -269,7 +269,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/platform-permission-target.test.mjs",
-        "duration_ms": 5.308958,
+        "duration_ms": 3.550125,
         "blocker": null
       },
       {
@@ -287,7 +287,7 @@
         "actual": "NOT_IMPLEMENTED: [REQ-009/046/055 FEAT-009/070 18号§2 五词表] 第一断点: 目标模块缺失：apps/uniapp/services/public-status.js",
         "first_breakpoint": "[REQ-009/046/055 FEAT-009/070 18号§2 五词表] 第一断点: 目标模块缺失：apps/uniapp/services/public-status.js",
         "source_file": "tests/target/unit/public-status-target.test.mjs",
-        "duration_ms": 1.992833,
+        "duration_ms": 0.569916,
         "blocker": null
       },
       {
@@ -308,7 +308,7 @@
         "actual": "NOT_IMPLEMENTED: [REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
         "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
         "source_file": "tests/target/unit/reconnect-state-target.test.mjs",
-        "duration_ms": 0.677333,
+        "duration_ms": 0.622417,
         "blocker": null
       },
       {
@@ -331,7 +331,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/session-state-target.test.mjs",
-        "duration_ms": 3.998583,
+        "duration_ms": 1.937667,
         "blocker": null
       },
       {
@@ -354,7 +354,7 @@
         "actual": "NOT_IMPLEMENTED: [TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
         "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
         "source_file": "tests/target/unit/session-state-target.test.mjs",
-        "duration_ms": 1.389833,
+        "duration_ms": 1.071792,
         "blocker": null
       },
       {
@@ -376,7 +376,7 @@
         "actual": "NOT_IMPLEMENTED: [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
         "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
         "source_file": "tests/target/unit/smart-hid-state-target.test.mjs",
-        "duration_ms": 8.951917,
+        "duration_ms": 5.699209,
         "blocker": null
       },
       {
@@ -396,7 +396,7 @@
         "actual": "NOT_IMPLEMENTED: [TEST-U-002 REQ-004/056 FEAT-004/066 PAGE-009/010 WEB-001 S-47] 第一断点: 目标模块缺失：apps/uniapp/services/version-metadata.js",
         "first_breakpoint": "[TEST-U-002 REQ-004/056 FEAT-004/066 PAGE-009/010 WEB-001 S-47] 第一断点: 目标模块缺失：apps/uniapp/services/version-metadata.js",
         "source_file": "tests/target/unit/version-release-metadata-target.test.mjs",
-        "duration_ms": 1.771333,
+        "duration_ms": 0.60025,
         "blocker": null
       },
       {
@@ -416,7 +416,7 @@
         "actual": "NOT_IMPLEMENTED: [TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
         "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
         "source_file": "tests/target/unit/write-queue-target.test.mjs",
-        "duration_ms": 0.574334,
+        "duration_ms": 0.51175,
         "blocker": null
       },
       {
@@ -436,7 +436,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/integration/connection-runtime-target.test.mjs",
-        "duration_ms": 14.531209,
+        "duration_ms": 14.117083,
         "blocker": null
       },
       {
@@ -456,7 +456,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/integration/connection-runtime-target.test.mjs",
-        "duration_ms": 0.480959,
+        "duration_ms": 0.485541,
         "blocker": null
       },
       {
@@ -475,7 +475,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/integration/lifecycle-cleanup-target.test.mjs",
-        "duration_ms": 6.69125,
+        "duration_ms": 2.907291,
         "blocker": null
       },
       {
@@ -495,7 +495,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/integration/multi-device-target.test.mjs",
-        "duration_ms": 4.899,
+        "duration_ms": 3.120667,
         "blocker": null
       },
       {
@@ -516,7 +516,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/integration/notify-routing-target.test.mjs",
-        "duration_ms": 11.125459,
+        "duration_ms": 5.075625,
         "blocker": null
       },
       {
@@ -546,7 +546,7 @@
         "actual": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
         "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
         "source_file": "tests/target/integration/ota-transaction-target.test.mjs",
-        "duration_ms": 67.638083,
+        "duration_ms": 56.719625,
         "blocker": null
       },
       {
@@ -576,7 +576,7 @@
         "actual": "NOT_IMPLEMENTED: [TEST-I-008 FEAT-081 DEC-016] 第一断点: validateOtaPackage/validatePackage 缺失；第一断点: 传输前包校验接口不存在",
         "first_breakpoint": "[TEST-I-008 FEAT-081 DEC-016] 第一断点: validateOtaPackage/validatePackage 缺失；第一断点: 传输前包校验接口不存在",
         "source_file": "tests/target/integration/ota-transaction-target.test.mjs",
-        "duration_ms": 2.980167,
+        "duration_ms": 0.853458,
         "blocker": null
       },
       {
@@ -606,7 +606,7 @@
         "actual": "cancel 必须向 CTRL 完整 UUID 写入 abort",
         "first_breakpoint": "cancel 必须向 CTRL 完整 UUID 写入 abort",
         "source_file": "tests/target/integration/ota-transaction-target.test.mjs",
-        "duration_ms": 12.330375,
+        "duration_ms": 11.183792,
         "blocker": null
       },
       {
@@ -636,7 +636,7 @@
         "actual": "success 后必须读取 firmware_version",
         "first_breakpoint": "success 后必须读取 firmware_version",
         "source_file": "tests/target/integration/ota-transaction-target.test.mjs",
-        "duration_ms": 13.123583,
+        "duration_ms": 12.81625,
         "blocker": null
       },
       {
@@ -658,7 +658,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/integration/peripheral-owner-target.test.mjs",
-        "duration_ms": 2.713167,
+        "duration_ms": 1.59725,
         "blocker": null
       },
       {
@@ -680,7 +680,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/integration/peripheral-owner-target.test.mjs",
-        "duration_ms": 1.077166,
+        "duration_ms": 0.729958,
         "blocker": null
       },
       {
@@ -700,7 +700,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/integration/permission-flow-target.test.mjs",
-        "duration_ms": 6.753958,
+        "duration_ms": 4.55325,
         "blocker": null
       },
       {
@@ -720,7 +720,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/integration/read-write-runtime-target.test.mjs",
-        "duration_ms": 7.357416,
+        "duration_ms": 4.377541,
         "blocker": null
       },
       {
@@ -742,7 +742,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/integration/scan-runtime-target.test.mjs",
-        "duration_ms": 4.806,
+        "duration_ms": 3.157958,
         "blocker": null
       },
       {
@@ -763,7 +763,7 @@
         "actual": "NOT_IMPLEMENTED: [REQ-020/021 ERR-CONN-03] 第一断点: connectDevice 未编排服务发现（失败不报错=半开泄漏面）",
         "first_breakpoint": "[REQ-020/021 ERR-CONN-03] 第一断点: connectDevice 未编排服务发现（失败不报错=半开泄漏面）",
         "source_file": "tests/target/integration/service-discovery-target.test.mjs",
-        "duration_ms": 4.603708,
+        "duration_ms": 5.892958,
         "blocker": null
       },
       {
@@ -783,7 +783,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs",
-        "duration_ms": 10.284625,
+        "duration_ms": 7.639917,
         "blocker": null
       },
       {
@@ -803,7 +803,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs",
-        "duration_ms": 251.087709,
+        "duration_ms": 248.94625,
         "blocker": null
       },
       {
@@ -824,7 +824,7 @@
         "actual": "NOT_IMPLEMENTED: [REQ-053/PAGE-007 排除规则] 第一断点: Registry 无配网会话分类/排除接口——PAGE-007 口径无法排除配网会话",
         "first_breakpoint": "[REQ-053/PAGE-007 排除规则] 第一断点: Registry 无配网会话分类/排除接口——PAGE-007 口径无法排除配网会话",
         "source_file": "tests/target/integration/smart-hid-session-ownership-target.test.mjs",
-        "duration_ms": 9.888,
+        "duration_ms": 3.62975,
         "blocker": null
       },
       {
@@ -846,7 +846,7 @@
         "actual": "仓库根 VERSION 文件存在",
         "first_breakpoint": "仓库根 VERSION 文件存在",
         "source_file": "tests/target/firmware/artifact-metadata.test.mjs",
-        "duration_ms": 0.482959,
+        "duration_ms": 0.562834,
         "blocker": null
       },
       {
@@ -868,7 +868,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/firmware/artifact-metadata.test.mjs",
-        "duration_ms": 0.510125,
+        "duration_ms": 0.601584,
         "blocker": null
       },
       {
@@ -889,7 +889,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/firmware/fixture-contract.test.mjs",
-        "duration_ms": 0.677167,
+        "duration_ms": 0.832208,
         "blocker": null
       },
       {
@@ -910,7 +910,7 @@
         "actual": "固件含广播名 BLEToolkit-Observer",
         "first_breakpoint": "固件含广播名 BLEToolkit-Observer",
         "source_file": "tests/target/firmware/fixture-contract.test.mjs",
-        "duration_ms": 0.249833,
+        "duration_ms": 0.2785,
         "blocker": null
       },
       {
@@ -931,7 +931,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/firmware/fixture-contract.test.mjs",
-        "duration_ms": 0.839959,
+        "duration_ms": 1.198292,
         "blocker": null
       },
       {
@@ -952,7 +952,7 @@
         "actual": "固件含 LED 指令 FF00",
         "first_breakpoint": "固件含 LED 指令 FF00",
         "source_file": "tests/target/firmware/fixture-contract.test.mjs",
-        "duration_ms": 0.149958,
+        "duration_ms": 0.185125,
         "blocker": null
       },
       {
@@ -971,7 +971,7 @@
         "actual": "Observer 字段 ≥9（实际 8）",
         "first_breakpoint": "Observer 字段 ≥9（实际 8）",
         "source_file": "tests/target/firmware/serial-schema.test.mjs",
-        "duration_ms": 0.503041,
+        "duration_ms": 0.516083,
         "blocker": null
       },
       {
@@ -990,7 +990,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/firmware/serial-schema.test.mjs",
-        "duration_ms": 0.101292,
+        "duration_ms": 0.100459,
         "blocker": null
       },
       {
@@ -1009,7 +1009,7 @@
         "actual": "固件 emit 覆盖 ≥3 类契约事件（实际 1：ota）",
         "first_breakpoint": "固件 emit 覆盖 ≥3 类契约事件（实际 1：ota）",
         "source_file": "tests/target/firmware/serial-schema.test.mjs",
-        "duration_ms": 0.632167,
+        "duration_ms": 0.664292,
         "blocker": null
       },
       {
@@ -1028,7 +1028,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/release/links-and-qr.test.mjs",
-        "duration_ms": 1.480708,
+        "duration_ms": 1.449792,
         "blocker": null
       },
       {
@@ -1047,7 +1047,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/release/links-and-qr.test.mjs",
-        "duration_ms": 1.033709,
+        "duration_ms": 1.037416,
         "blocker": null
       },
       {
@@ -1066,7 +1066,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/release/links-and-qr.test.mjs",
-        "duration_ms": 0.640208,
+        "duration_ms": 0.197875,
         "blocker": null
       },
       {
@@ -1089,7 +1089,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/release/public-claims.test.mjs",
-        "duration_ms": 1.09175,
+        "duration_ms": 0.40925,
         "blocker": null
       },
       {
@@ -1107,12 +1107,12 @@
           "FEAT-075"
         ],
         "layer": "release",
-        "status": "FAIL",
+        "status": "PASS",
         "expected": "approved target behavior",
-        "actual": "无产物直链时页面必须明确 NOT_RELEASED/尚未发布",
-        "first_breakpoint": "无产物直链时页面必须明确 NOT_RELEASED/尚未发布",
+        "actual": "matched",
+        "first_breakpoint": null,
         "source_file": "tests/target/release/public-claims.test.mjs",
-        "duration_ms": 3.791166,
+        "duration_ms": 0.439416,
         "blocker": null
       },
       {
@@ -1135,7 +1135,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/release/public-claims.test.mjs",
-        "duration_ms": 1.159209,
+        "duration_ms": 0.524375,
         "blocker": null
       },
       {
@@ -1153,12 +1153,12 @@
           "FEAT-075"
         ],
         "layer": "release",
-        "status": "FAIL",
+        "status": "PASS",
         "expected": "approved target behavior",
-        "actual": "不得宣称 6+ 入口",
-        "first_breakpoint": "不得宣称 6+ 入口",
+        "actual": "matched",
+        "first_breakpoint": null,
         "source_file": "tests/target/release/public-claims.test.mjs",
-        "duration_ms": 0.806583,
+        "duration_ms": 0.168334,
         "blocker": null
       },
       {
@@ -1179,7 +1179,7 @@
         "actual": "NOT_IMPLEMENTED: [REQ-004/056 FEAT-004/066 18号] 第一断点: 仓库根 VERSION 单源文件缺失",
         "first_breakpoint": "[REQ-004/056 FEAT-004/066 18号] 第一断点: 仓库根 VERSION 单源文件缺失",
         "source_file": "tests/target/release/release-artifacts.test.mjs",
-        "duration_ms": 1.095834,
+        "duration_ms": 0.923875,
         "blocker": null
       },
       {
@@ -1195,12 +1195,12 @@
           "CLAIM-001"
         ],
         "layer": "release",
-        "status": "FAIL",
+        "status": "PASS",
         "expected": "approved target behavior",
-        "actual": "无产物登记处时落地页必须声明 NOT_RELEASED/尚未发布",
-        "first_breakpoint": "无产物登记处时落地页必须声明 NOT_RELEASED/尚未发布",
+        "actual": "matched",
+        "first_breakpoint": null,
         "source_file": "tests/target/release/release-artifacts.test.mjs",
-        "duration_ms": 0.357542,
+        "duration_ms": 0.542667,
         "blocker": null
       },
       {
@@ -1221,7 +1221,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/release/release-artifacts.test.mjs",
-        "duration_ms": 0.915916,
+        "duration_ms": 1.023083,
         "blocker": null
       }
     ],
@@ -1252,8 +1252,8 @@
       },
       {
         "name": "release",
-        "pass": 6,
-        "fail": 4,
+        "pass": 9,
+        "fail": 1,
         "skipped": 0,
         "case_count": 10,
         "infra_fail": 0
