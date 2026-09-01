@@ -1,5 +1,9 @@
 # UniApp Reference Product Implementation Plan
 
+> 状态：SUPERSEDED FOR IMMEDIATE EXECUTION
+> 当前请先执行 [`2026-08-31-uniapp-esp32-complete-debugging-plan.md`](./2026-08-31-uniapp-esp32-complete-debugging-plan.md)。
+> 本文保留为早期实施草案；它默认产品契约已经正确，并过早进入契约门禁与实现，未充分覆盖“逐页判断内容是否合理 → 运行链路 → ESP32 可观察结果”的前置过程。
+
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
 **Goal:** Build one complete UniApp reference product, an ESP32 reproducible test fixture, a platform-aware HTML interaction prototype, and a truthful public landing page before synchronizing other clients.
