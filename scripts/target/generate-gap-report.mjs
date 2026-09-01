@@ -141,6 +141,11 @@ const hasValidateOta = /validateOtaPackage|validatePackage/.test(FACTS.otaManage
 const hasObserver = /BLEToolkit-Observer/.test(FACTS.esp32);
 const hasLedTable = /\bFF00\b|\b0xFF00\b/.test(FACTS.esp32);
 const landingFakeDownload = /releases\/latest/.test(FACTS.landing);
+const versionSsotReady = FACTS.hasRootVersion
+  && FACTS.hasVersionMetadata
+  && FACTS.hasPublicStatus
+  && exists('release/release-manifest.json')
+  && exists('docs/public/release/latest.json');
 const versionHardcoded = /versionHistory|v1\.0\.5/.test(FACTS.versionPage);
 const useBroadcastSession = /useBroadcastSession|use-broadcast-session/.test(FACTS.broadcastPage);
 const smartHidImportsTs = /hid-provisioning-protocol\.ts/.test(FACTS.smartHidProfile);
@@ -258,7 +263,7 @@ const TASKS = [
   { task_id: 'ENV-PLAYWRIGHT-001', task_type: 'ENVIRONMENT', title: '安装并锁定 Playwright / H5 harness', root_cause_id: 'RC-PLAYWRIGHT', severity: 'P2', deps: [], order_hint: 1 },
   { task_id: 'TEST-PAGE-DRIVER-001', task_type: 'TESTABILITY', title: '实现 Target Page Driver', root_cause_id: 'RC-PAGE-DRIVER', severity: 'P2', deps: ['ENV-PLAYWRIGHT-001'], order_hint: 2 },
   { task_id: 'PUBLIC-HONESTY-001', task_type: 'SOURCE_FIX', title: '落地页立即诚实降级（假下载/6+/错误主线→PREVIEW/NOT_RELEASED）', root_cause_id: 'RC-LANDING-FAKE-DOWNLOAD', severity: 'P0', deps: [], order_hint: 3, status: landingFakeDownload ? 'PLANNED' : 'DONE' },
-  { task_id: 'VERSION-METADATA-001', task_type: 'SOURCE_FIX', title: '根 VERSION + Release Metadata + Public Status', root_cause_id: 'RC-VERSION-SSOT', severity: 'P1', deps: [], order_hint: 4 },
+  { task_id: 'VERSION-METADATA-001', task_type: 'SOURCE_FIX', title: '根 VERSION + Release Metadata + Public Status', root_cause_id: 'RC-VERSION-SSOT', severity: 'P1', deps: [], order_hint: 4, status: versionSsotReady ? 'DONE' : 'PLANNED' },
   { task_id: 'RELEASE-PIPELINE-001', task_type: 'RELEASE', title: 'UniApp + Peripheral/Observer 双固件 Release Pipeline', root_cause_id: 'RC-RELEASE-PIPELINE', severity: 'P0', deps: ['VERSION-METADATA-001'], order_hint: 5 },
   { task_id: 'RUNTIME-DISPLAY-NAME-001', task_type: 'SOURCE_FIX', title: '实现 display-name 解析链', root_cause_id: 'RC-DISPLAY-NAME', severity: 'P1', deps: [], order_hint: 10 },
   { task_id: 'RUNTIME-FILTER-001', task_type: 'SOURCE_FIX', title: 'device-filter 关键词命中项匹配对齐目标', root_cause_id: 'RC-DEVICE-FILTER', severity: 'P1', deps: [], order_hint: 11 },
@@ -500,10 +505,19 @@ for (const f of product.features) {
       }
     }
   }
-  if (['FEAT-004', 'FEAT-066'].includes(f.id) && !FACTS.hasRootVersion) {
+  if (['FEAT-004', 'FEAT-066'].includes(f.id) && !versionSsotReady) {
     impl = 'NOT_IMPLEMENTED'; ver = 'AUTOMATED_FAIL'; sev = 'P1';
     rc = 'RC-VERSION-SSOT'; task = 'VERSION-METADATA-001'; kind = 'RELEASE';
-    bp = bp || '仓库根 VERSION 单源文件缺失';
+    bp = bp || (!FACTS.hasRootVersion
+      ? '仓库根 VERSION 单源文件缺失'
+      : (!FACTS.hasVersionMetadata
+        ? '目标模块缺失：apps/uniapp/services/version-metadata.js'
+        : 'Release Metadata / public-status 尚未建立'));
+  }
+  if (f.id === 'FEAT-009' && !FACTS.hasPublicStatus) {
+    impl = 'NOT_IMPLEMENTED'; ver = 'AUTOMATED_FAIL'; sev = 'P1';
+    rc = 'RC-VERSION-SSOT'; task = 'VERSION-METADATA-001'; kind = 'RELEASE';
+    bp = bp || '目标模块缺失：apps/uniapp/services/public-status.js';
   }
   if (['FEAT-070', 'FEAT-071', 'FEAT-072', 'FEAT-073', 'FEAT-074', 'FEAT-075'].includes(f.id) && landingFakeDownload) {
     if (/下载|QR|SHA|产物|入口|落地|公开/.test(f.name) || ['FEAT-070', 'FEAT-075'].includes(f.id)) {
@@ -1597,6 +1611,7 @@ function emitAll(outDir) {
   });
   writeJson(`${outDir}/landing-release.json`, {
     landing_fake_download: landingFakeDownload,
+    version_ssot_ready: versionSsotReady,
     release_builds_flutter: releaseBuildsFlutter,
     release_builds_tauri: releaseBuildsTauri,
     release_builds_uniapp: releaseBuildsUniapp,

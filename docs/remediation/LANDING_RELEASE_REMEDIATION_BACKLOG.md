@@ -1,13 +1,12 @@
 # Landing / Release 修复 Backlog
 
 ```yaml
-status: APPROVED
-gate: TP-G3
-content_hash: 54902a01ef816b379460f622959b6e65c8de4a2af90740f8dafa21c14c694a5d
-approved_by: user
+status: REVIEW
+gate: TP-G2-R1
+content_hash: 2014879685cc4cc3ee003b29daa5d719c5c0c7e5a0d7bd244d8a4a0f188195be
 ```
 
-> PUBLIC-HONESTY-001 = **DONE**。VERSION-METADATA-001 = **APPROVED_FOR_EXECUTION**。RELEASE-PIPELINE-001 / PAGE-VERSION-001 仍为 PLANNED。
+> PUBLIC-HONESTY-001 / VERSION-METADATA-001 状态以 task-dependency-graph.json 为准。未批准 Task 不得执行。
 
 ### PUBLIC-HONESTY-001
 
@@ -15,35 +14,35 @@ approved_by: user
 - 标题：落地页立即诚实降级（假下载/6+/错误主线→PREVIEW/NOT_RELEASED）
 - task_type：SOURCE_FIX
 - severity：P0
-- root_cause_id：RC-LANDING-FAKE-DOWNLOAD（已关闭）
-- Target IDs（样本）：FEAT-070, FEAT-075, WEB-001, CLAIM-016.., STATE-W001-03, OP-W001-03..
-- Test IDs：TEST-R-003, TEST-R-001（honesty 相关）PASS；TEST-R-002 仍属 VERSION-METADATA-001
-- First Breakpoint（修复前）：docs/index.md releases/latest 假主下载 / 无 NOT_RELEASED
+- root_cause_id：RC-LANDING-FAKE-DOWNLOAD
+- Target IDs（样本）：见 JSON
+- Test IDs：—
+- First Breakpoint：—
 - 依赖：无
-- 解锁：VERIFY-E6-001（仍待其他依赖）
-- 证据：`docs/index.md` PREVIEW + NOT_RELEASED 不可点击产物卡；SEO 已对齐
-- 建议提交信息：`docs(site): publish an honest Smart BLE preview`
+- 解锁：VERIFY-E6-001
+- 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
+- 自动化验收：related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL
+- 建议提交信息：`source_fix(public-honesty-001): 落地页立即诚实降级（假下载/6+/错误主线→PREVIEW/NOT_RELEASED）`
 
 ### VERSION-METADATA-001
 
-- 状态：**APPROVED_FOR_EXECUTION**
-- 用户批准日期：2026-09-01
+- 状态：**DONE**
 - 标题：根 VERSION + Release Metadata + Public Status
 - task_type：SOURCE_FIX
 - severity：P1
 - root_cause_id：RC-VERSION-SSOT
-- Target IDs（样本）：FEAT-004, FEAT-009, FEAT-066, REQ-004, REQ-009, REQ-056, PAGE-009, CLAIM-001, EVID-008
-- Test IDs：TEST-C-006, TEST-U-002, TEST-R-002, TEST-E-008, TEST-R-001, TEST-P-001, TEST-W-006, TEST-R-003, TEST-P-010, TEST-P-009, TEST-A-012, TEST-W-010
-- First Breakpoint：仓库根 VERSION 单源文件缺失 / version-metadata.js / public-status.js 缺失
+- Target IDs（样本）：见 JSON
+- Test IDs：—
+- First Breakpoint：—
 - 依赖：无
 - 解锁：RELEASE-PIPELINE-001, PAGE-VERSION-001, VERIFY-E6-001
-- 本轮禁止执行：RELEASE-PIPELINE-001；PAGE-VERSION-001（不改 version.vue）
-- 禁止修改：Release Workflow；docs/target-product/**；contracts/target/** 产品语义；PAGE-010
-- 自动化验收：VERSION 专项 Current Case → PASS；System/Harness 0 FAIL
-- 建议提交信息：`feat(release): add Smart BLE version and preview metadata`
+- 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
+- 自动化验收：related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL
+- 建议提交信息：`source_fix(version-metadata-001): 根 VERSION + Release Metadata + Public Status`
 
 ### RELEASE-PIPELINE-001
 
+- 状态：**PLANNED**
 - 标题：UniApp + Peripheral/Observer 双固件 Release Pipeline
 - task_type：RELEASE
 - severity：P0
@@ -59,12 +58,13 @@ approved_by: user
 
 ### VERIFY-E6-001
 
+- 状态：**PLANNED**
 - 标题：Clean Machine / Release E6
 - task_type：VERIFY_E6
 - severity：—
 - root_cause_id：—
-- Target IDs（样本）：CLAIM-002, CLAIM-003, CLAIM-004, CLAIM-005, CLAIM-006, CLAIM-007, CLAIM-008, CLAIM-009, CLAIM-010, CLAIM-011, CLAIM-012, CLAIM-013
-- Test IDs：TEST-R-002, TEST-R-007, TEST-A-005, TEST-W-007, TEST-E-001, TEST-A-006, TEST-A-008, TEST-E-003, TEST-W-008, TEST-A-009, TEST-W-009, TEST-E-007
+- Target IDs（样本）：CLAIM-001, CLAIM-002, CLAIM-003, CLAIM-004, CLAIM-005, CLAIM-006, CLAIM-007, CLAIM-008, CLAIM-009, CLAIM-010, CLAIM-011, CLAIM-012
+- Test IDs：TEST-R-006, TEST-E-008, TEST-R-001, TEST-R-002, TEST-R-007, TEST-A-005, TEST-W-007, TEST-E-001, TEST-A-006, TEST-A-008, TEST-E-003, TEST-W-008
 - First Breakpoint：E6 NOT_EXECUTED
 - 依赖：PUBLIC-HONESTY-001, RELEASE-PIPELINE-001, VERSION-METADATA-001
 - 解锁：

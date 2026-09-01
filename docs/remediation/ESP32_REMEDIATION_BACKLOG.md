@@ -3,13 +3,14 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 54902a01ef816b379460f622959b6e65c8de4a2af90740f8dafa21c14c694a5d
+content_hash: 2014879685cc4cc3ee003b29daa5d719c5c0c7e5a0d7bd244d8a4a0f188195be
 ```
 
-> 本轮只规划，不执行。task_type ∈ SOURCE_FIX | TESTABILITY | ENVIRONMENT | DOCUMENTATION | VERIFY_E5 | VERIFY_E6 | RELEASE
+> PUBLIC-HONESTY-001 / VERSION-METADATA-001 状态以 task-dependency-graph.json 为准。未批准 Task 不得执行。
 
 ### OTA-FIRMWARE-001
 
+- 状态：**PLANNED**
 - 标题：固件 OTA op/target/hardware/SHA/max_chunk/commit 校验
 - task_type：SOURCE_FIX
 - severity：P1
@@ -25,6 +26,7 @@ content_hash: 54902a01ef816b379460f622959b6e65c8de4a2af90740f8dafa21c14c694a5d
 
 ### ESP32-BUILD-001
 
+- 状态：**PLANNED**
 - 标题：两环境、无固定 COM、模块化入口
 - task_type：SOURCE_FIX
 - severity：P1
@@ -40,6 +42,7 @@ content_hash: 54902a01ef816b379460f622959b6e65c8de4a2af90740f8dafa21c14c694a5d
 
 ### ESP32-PERIPHERAL-001
 
+- 状态：**PLANNED**
 - 标题：服务/特征/名称/LED/Device Info 对齐契约
 - task_type：SOURCE_FIX
 - severity：P1
@@ -55,6 +58,7 @@ content_hash: 54902a01ef816b379460f622959b6e65c8de4a2af90740f8dafa21c14c694a5d
 
 ### ESP32-OBSERVER-001
 
+- 状态：**PLANNED**
 - 标题：实现 fixture_observer
 - task_type：SOURCE_FIX
 - severity：P1
@@ -70,6 +74,7 @@ content_hash: 54902a01ef816b379460f622959b6e65c8de4a2af90740f8dafa21c14c694a5d
 
 ### ESP32-FAULT-001
 
+- 状态：**PLANNED**
 - 标题：Fault Injection + Serial JSON
 - task_type：SOURCE_FIX
 - severity：P1

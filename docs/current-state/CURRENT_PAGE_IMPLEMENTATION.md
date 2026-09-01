@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 54902a01ef816b379460f622959b6e65c8de4a2af90740f8dafa21c14c694a5d
+content_hash: 2014879685cc4cc3ee003b29daa5d719c5c0c7e5a0d7bd244d8a4a0f188195be
 ```
 
 ## 路由事实
@@ -32,7 +32,7 @@ content_hash: 54902a01ef816b379460f622959b6e65c8de4a2af90740f8dafa21c14c694a5d
 - **PAGE-006** impl=UNASSESSED verify=AUTOMATED_FAIL static=UNASSESSED e4=BLOCKED_BY_TOOLCHAIN task=RUNTIME-GATT-CODEC-001 bp=[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/pa
 - **PAGE-007** impl=UNASSESSED verify=AUTOMATED_FAIL static=UNASSESSED e4=BLOCKED_BY_TOOLCHAIN task=RUNTIME-SESSION-001 bp=[REQ-053/PAGE-007 排除规则] 第一断点: Registry 无配网会话分类/排除接口——PAGE-00
 - **PAGE-008** impl=CONFIRMED_PARTIAL verify=AUTOMATED_PASS static=CONFIRMED_PARTIAL e4=BLOCKED_BY_TOOLCHAIN task=PAGE-BROADCAST-001 bp=广播页内联；Owner/composable 未接入
-- **PAGE-009** impl=UNASSESSED verify=AUTOMATED_FAIL static=UNASSESSED e4=BLOCKED_BY_TOOLCHAIN task=VERSION-METADATA-001 bp=[TEST-U-002 REQ-004/056 FEAT-004/066 PAGE-009/010 WEB-001 S-
+- **PAGE-009** impl=IMPLEMENTED_UNTESTED verify=AUTOMATED_PASS static=CONFIRMED_IMPLEMENTED e4=BLOCKED_BY_TOOLCHAIN task=ENV-PLAYWRIGHT-001 bp=BLK-TOOL-PLAYWRIGHT: @playwright/test 未安装
 - **PAGE-010** impl=CONFIRMED_PARTIAL verify=BLOCKED_BY_TOOLCHAIN static=CONFIRMED_PARTIAL e4=BLOCKED_BY_TOOLCHAIN task=PAGE-VERSION-001 bp=pages/about/version.vue 硬编码 versionHistory
 - **WEB-001** impl=UNASSESSED verify=AUTOMATED_FAIL static=UNASSESSED e4=BLOCKED_BY_TOOLCHAIN task=RUNTIME-LOG-REDACTION-001 bp=[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：a
 
@@ -61,5 +61,5 @@ content_hash: 54902a01ef816b379460f622959b6e65c8de4a2af90740f8dafa21c14c694a5d
 ## WEB-001
 
 - path: `docs/index.md`
-- 观察：含 `releases/latest` 下载枢纽链接（landing_fake_download=false）
+- 观察：无 releases/latest 假主下载；公开状态为 PREVIEW / NOT_RELEASED（landing_fake_download=false）
 - Target: WEB-001, CLAIM-*, FEAT-070/075

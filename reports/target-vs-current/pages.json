@@ -553,14 +553,14 @@
       "target_id": "PAGE-009",
       "target_type": "page",
       "dimension": "page",
-      "gap_kind": "RELEASE",
+      "gap_kind": "PAGE",
       "priority": "Must",
-      "implementation_status": "UNASSESSED",
-      "verification_status": "AUTOMATED_FAIL",
-      "static_implementation": "UNASSESSED",
+      "implementation_status": "IMPLEMENTED_UNTESTED",
+      "verification_status": "AUTOMATED_PASS",
+      "static_implementation": "CONFIRMED_IMPLEMENTED",
       "e4_verification": "BLOCKED_BY_TOOLCHAIN",
       "e5_verification": "HARDWARE_PENDING",
-      "severity": "P1",
+      "severity": null,
       "evidence_level": "E6",
       "implementation_refs": [
         {
@@ -581,21 +581,21 @@
       "test_results": [
         {
           "test_id": "TEST-U-002",
-          "status": "FAIL",
+          "status": "PASS",
           "case_id": "current:version-release-metadata-target.test.mjs:TEST-U-002 目标层：services/version-metadata.js",
-          "first_breakpoint": "[TEST-U-002 REQ-004/056 FEAT-004/066 PAGE-009/010 WEB-001 S-47] 第一断点: 目标模块缺失：apps/uniapp/services/version-metadata.js"
+          "first_breakpoint": null
         }
       ],
       "expected": "3 states / 11 operations",
-      "actual": "NOT_IMPLEMENTED: [TEST-U-002 REQ-004/056 FEAT-004/066 PAGE-009/010 WEB-001 S-47] 第一断点: 目标模块缺失：apps/uniapp/services/version-metadata.js",
-      "first_breakpoint": "[TEST-U-002 REQ-004/056 FEAT-004/066 PAGE-009/010 WEB-001 S-47] 第一断点: 目标模块缺失：apps/uniapp/services/version-metadata.js",
+      "actual": "E4 blocked; blocked_cases≈229 (not product defects)",
+      "first_breakpoint": "BLK-TOOL-PLAYWRIGHT: @playwright/test 未安装",
       "downstream_impact": [
         "state_cases=3",
         "operation_cases=11"
       ],
       "dependencies": [],
-      "root_cause_id": "RC-VERSION-SSOT",
-      "task_id": "VERSION-METADATA-001",
+      "root_cause_id": null,
+      "task_id": "ENV-PLAYWRIGHT-001",
       "release_blocking": false
     },
     {
@@ -668,10 +668,16 @@
         "TEST-R-009",
         "TEST-R-010",
         "TEST-R-011",
-        "TEST-U-013",
-        "TEST-U-002"
+        "TEST-U-002",
+        "TEST-U-013"
       ],
       "test_results": [
+        {
+          "test_id": "TEST-U-002",
+          "status": "PASS",
+          "case_id": "current:version-release-metadata-target.test.mjs:TEST-U-002 目标层：services/version-metadata.js",
+          "first_breakpoint": null
+        },
         {
           "test_id": "TEST-R-005",
           "status": "PASS",
@@ -719,12 +725,6 @@
           "status": "FAIL",
           "case_id": "current:logging-redaction-target.test.mjs:TEST-U-013 目标层：services/ble-runtime/log-redaction.js",
           "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js"
-        },
-        {
-          "test_id": "TEST-U-002",
-          "status": "FAIL",
-          "case_id": "current:version-release-metadata-target.test.mjs:TEST-U-002 目标层：services/version-metadata.js",
-          "first_breakpoint": "[TEST-U-002 REQ-004/056 FEAT-004/066 PAGE-009/010 WEB-001 S-47] 第一断点: 目标模块缺失：apps/uniapp/services/version-metadata.js"
         }
       ],
       "expected": "4 states / 11 operations",

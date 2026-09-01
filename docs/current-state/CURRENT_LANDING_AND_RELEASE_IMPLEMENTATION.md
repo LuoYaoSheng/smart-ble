@@ -1,42 +1,39 @@
-# 当前落地页与 Release 实现盘点（TP-G3 · PUBLIC-HONESTY-001）
+# 当前落地页与 Release 实现盘点（TP-G2-R1）
 
 ```yaml
 status: REVIEW
-gate: TP-G3
-task: PUBLIC-HONESTY-001
-content_hash: 54902a01ef816b379460f622959b6e65c8de4a2af90740f8dafa21c14c694a5d
+gate: TP-G2-R1
+content_hash: 2014879685cc4cc3ee003b29daa5d719c5c0c7e5a0d7bd244d8a4a0f188195be
 ```
 
-## 落地页（生产）
+## 落地页
 
-| 项 | 当前事实 |
-|---|---|
-| path | `docs/index.md` |
-| SEO | `docs/.vitepress/config.mjs` |
-| 公开状态 | **PREVIEW** |
-| `releases/latest` 假具体下载 | **0**（已移除） |
-| `6+` / Mobile Mainline / 下载全部平台 | **0** |
-| 产物卡 | Android / 微信 / Peripheral / Observer 均为 **NOT_RELEASED** 不可点击 |
-| OTA | **BLOCKED** |
-| Observer | **NOT_RELEASED** |
-| Smart HID | **PREVIEW**（配网与诊断；非实时控制） |
-| 版本元数据文案 | 「版本元数据尚未发布」（未创建 VERSION 文件） |
-| 真实链接 | GitHub、Issue、Target Product/Tests、Gap Summary、Remediation、快速开始、贡献、License |
-| Security | 无 SECURITY.md → 文案说明待补充，无假链接 |
+- path: `docs/index.md`
+- landing_fake_download: **false**
+- 观察：公开下载区已诚实降级为 PREVIEW / NOT_RELEASED（无 releases/latest 假下载）
+- version_ssot_ready: **true**
+- 公开 Claim 总量：31（CLAIM-001..031）
+- 任务拆分（不可混成循环依赖）：
+  1. **PUBLIC-HONESTY-001** — 立即诚实降级（DONE）
+  2. **VERSION-METADATA-001** — VERSION / Metadata / Public Status（DONE）
+  3. **RELEASE-PIPELINE-001** — UniApp + 双固件流水线（仍 PLANNED）
 
-## Release Workflow（未改）
+## Release Workflow
 
 - path: `.github/workflows/release-build.yml`
-- 仍构建 Flutter / Tauri；非 UniApp + 双固件主线
-- 本轮 **NOT MODIFIED**
+- builds Flutter: true
+- builds Tauri: true
+- builds UniApp: false
+- 目标主产物：UniApp Android + 微信记录 + Peripheral/Observer 固件（当前未满足）
 
-## VERSION / Metadata（未改）
+## VERSION / Metadata
 
-- 根 `VERSION`：仍缺失 → **VERSION-METADATA-001**
-- `version-metadata.js` / `public-status.js`：仍缺失
+- 根 `VERSION`：存在（产品版本投影）
+- `apps/uniapp/services/version-metadata.js`：存在
+- `apps/uniapp/services/public-status.js`：存在
+- `release/release-manifest.json` / `docs/public/release/latest.json`：PREVIEW Metadata 已生成
+- PAGE-010：硬编码 versionHistory（**RC-PAGE-VERSION OPEN** → PAGE-VERSION-001）
 
-## 测试证据
+## SEO / OG / Nav
 
-- TEST-R-003 public claims：PASS
-- TEST-R-001 无产物 + NOT_RELEASED：PASS
-- TEST-R-002 VERSION：仍 FAIL（属下一 Task）
+- VitePress 配置与 docs 站点：**UNASSESSED** 细项（本轮以 Claim/Release 测试与静态下载区证据为主）

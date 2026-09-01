@@ -3,13 +3,14 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 54902a01ef816b379460f622959b6e65c8de4a2af90740f8dafa21c14c694a5d
+content_hash: 2014879685cc4cc3ee003b29daa5d719c5c0c7e5a0d7bd244d8a4a0f188195be
 ```
 
-> 本轮只规划，不执行。task_type ∈ SOURCE_FIX | TESTABILITY | ENVIRONMENT | DOCUMENTATION | VERIFY_E5 | VERIFY_E6 | RELEASE
+> PUBLIC-HONESTY-001 / VERSION-METADATA-001 状态以 task-dependency-graph.json 为准。未批准 Task 不得执行。
 
 ### ENV-PLAYWRIGHT-001
 
+- 状态：**PLANNED**
 - 标题：安装并锁定 Playwright / H5 harness
 - task_type：ENVIRONMENT
 - severity：P2
@@ -25,6 +26,7 @@ content_hash: 54902a01ef816b379460f622959b6e65c8de4a2af90740f8dafa21c14c694a5d
 
 ### TEST-PAGE-DRIVER-001
 
+- 状态：**PLANNED**
 - 标题：实现 Target Page Driver
 - task_type：TESTABILITY
 - severity：P2
@@ -40,6 +42,7 @@ content_hash: 54902a01ef816b379460f622959b6e65c8de4a2af90740f8dafa21c14c694a5d
 
 ### PAGE-BROADCAST-001
 
+- 状态：**PLANNED**
 - 标题：PAGE-008 改用 composable/adapter/service
 - task_type：SOURCE_FIX
 - severity：P1
@@ -55,6 +58,7 @@ content_hash: 54902a01ef816b379460f622959b6e65c8de4a2af90740f8dafa21c14c694a5d
 
 ### PAGE-VERSION-001
 
+- 状态：**PLANNED**
 - 标题：PAGE-010 改为 Metadata 投影
 - task_type：SOURCE_FIX
 - severity：P1

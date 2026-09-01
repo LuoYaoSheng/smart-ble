@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 54902a01ef816b379460f622959b6e65c8de4a2af90740f8dafa21c14c694a5d
+content_hash: 2014879685cc4cc3ee003b29daa5d719c5c0c7e5a0d7bd244d8a4a0f188195be
 ```
 
 ## System / Harness
@@ -21,17 +21,17 @@ content_hash: 54902a01ef816b379460f622959b6e65c8de4a2af90740f8dafa21c14c694a5d
 
 | 指标 | 值 |
 |---|---|
-| CURRENT_PASS | 30 |
-| CURRENT_FAIL | 23 |
+| CURRENT_PASS | 34 |
+| CURRENT_FAIL | 19 |
 | cases | 53 |
 | source | .tmp/tp-g2/logs/current-structured.json |
 
 ### Layers
 
-- unit: pass=5 fail=11 cases=16 blocked=—
+- unit: pass=7 fail=9 cases=16 blocked=—
 - integration: pass=12 fail=6 cases=18 blocked=—
-- firmware: pass=4 fail=5 cases=9 blocked=—
-- release: pass=9 fail=1 cases=10 blocked=—
+- firmware: pass=5 fail=4 cases=9 blocked=—
+- release: pass=10 fail=0 cases=10 blocked=—
 - pages-playwright: pass=0 fail=0 cases=— blocked={"BLOCKED_BY_TOOLCHAIN":11}
 
 ## 页面自动化

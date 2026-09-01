@@ -134,7 +134,8 @@ ${(tasks.recommended_order || []).slice(0, 12).map((id, i) => {
 
 ## 7. 必须立即降级的公开 Claim
 
-在 **PUBLIC-HONESTY-001** / **VERSION-METADATA-001** / **RELEASE-PIPELINE-001** / E6 完成前：
+**PUBLIC-HONESTY-001 = DONE**；**VERSION-METADATA-001 = DONE**（RC-VERSION-SSOT CLOSED）。
+**RELEASE-PIPELINE-001** 仍为 PLANNED（RC-RELEASE-PIPELINE OPEN）。在 E6 完成前：
 
 - 下载区保持 **NOT_RELEASED / PREVIEW**，禁止 \`releases/latest\` 假主下载；
 - 不得宣称 Android/Windows/macOS 多端正式包可用；
@@ -147,7 +148,7 @@ ${(report.blockers || []).map((b) => `- **${b.blocker_id}** [${b.status}] ${b.de
 
 ## 9. 下一步
 
-用户审阅本摘要与 \`docs/remediation/REMEDIATION_ORDER.md\`。未经批准不得进入 TP-G3。
+VERSION-METADATA-001 已完成。下一 Task 由用户选择（例如 RELEASE-PIPELINE-001 或 PAGE-VERSION-001），**不得自动执行**。
 `);
 
 function sectionReport(title, filterFn) {
@@ -198,17 +199,19 @@ v1 存档：\`reports/target-vs-current-v1/\`（SUPERSEDED）。
 
 // Mark old summary note if v1 copy exists elsewhere — already in frontmatter
 
-write(`${M}/REMEDIATION_ORDER.md`, `# 修复顺序（TP-G2-R1 · 未执行）
+write(`${M}/REMEDIATION_ORDER.md`, `# 修复顺序（TP-G2-R1）
 
 \`\`\`yaml
-status: REVIEW
+status: APPROVED
 document_version: 2.0
 gate: TP-G2-R1
 content_hash: ${hash}
-approved_by: null
+approved_by: user
 \`\`\`
 
-> 本文件只规划。**不得**在未经用户批准前执行任何 SOURCE_FIX / 进入 TP-G3。
+> 执行规则：依赖图不变；Wave/拓扑序；一次只批准一个 Task；完成后停下。
+> **PUBLIC-HONESTY-001 = DONE**。**VERSION-METADATA-001 = DONE**（RC-VERSION-SSOT CLOSED）。
+> 下一 Task 由用户选择；**不得**自动执行 RELEASE-PIPELINE-001 / PAGE-VERSION-001。
 
 ## 推荐拓扑序
 
@@ -235,6 +238,7 @@ function backlogFor(title, pred) {
   const body = nodes.map((n) => {
     return `### ${n.task_id}
 
+- 状态：**${n.status || 'PLANNED'}**
 - 标题：${n.title}
 - task_type：${n.task_type}
 - severity：${n.severity ?? '—'}
@@ -257,7 +261,7 @@ gate: TP-G2-R1
 content_hash: ${hash}
 \`\`\`
 
-> 本轮只规划，不执行。task_type ∈ SOURCE_FIX | TESTABILITY | ENVIRONMENT | DOCUMENTATION | VERIFY_E5 | VERIFY_E6 | RELEASE
+> PUBLIC-HONESTY-001 / VERSION-METADATA-001 状态以 task-dependency-graph.json 为准。未批准 Task 不得执行。
 
 ${body || '_（无匹配任务）_'}
 `;
@@ -382,7 +386,9 @@ ${pageList}
 ## WEB-001
 
 - path: \`docs/index.md\`
-- 观察：含 \`releases/latest\` 下载枢纽链接（landing_fake_download=${landing.landing_fake_download}）
+- 观察：${landing.landing_fake_download
+    ? '含 `releases/latest` 下载枢纽链接（landing_fake_download=true）'
+    : '无 releases/latest 假主下载；公开状态为 PREVIEW / NOT_RELEASED（landing_fake_download=false）'}
 - Target: WEB-001, CLAIM-*, FEAT-070/075
 `);
 
@@ -423,9 +429,11 @@ content_hash: ${hash}
 
 ## 其他服务
 
-- \`apps/uniapp/services/public-status.js\`：**缺失**（TEST-U-002）
-- \`apps/uniapp/services/version-metadata.js\`：**缺失**（TEST-U-002 / TEST-R-001）
-- 根 \`VERSION\`：**缺失**
+- \`apps/uniapp/services/public-status.js\`：${landing.version_ssot_ready ? '**存在**（五词公开状态派生）' : '**缺失**（TEST-U-002）'}
+- \`apps/uniapp/services/version-metadata.js\`：${landing.version_ssot_ready ? '**存在**（Release Metadata 投影）' : '**缺失**（TEST-U-002 / TEST-R-001）'}
+- 根 \`VERSION\`：${landing.version_ssot_ready ? '**存在**（产品版本 SSOT）' : '**缺失**'}
+- RC-VERSION-SSOT：${landing.version_ssot_ready ? '**CLOSED**' : '**OPEN**'}
+- PAGE-010 硬编码历史：仍属 **RC-PAGE-VERSION OPEN**（PAGE-VERSION-001）
 
 ## Runtime 差距记录数
 
@@ -540,12 +548,15 @@ content_hash: ${hash}
 
 - path: \`docs/index.md\`
 - landing_fake_download: **${landing.landing_fake_download}**
-- 观察：下载枢纽出现 \`releases/latest\`
+- 观察：${landing.landing_fake_download
+    ? '下载枢纽仍出现 `releases/latest` 假主下载'
+    : '公开下载区已诚实降级为 PREVIEW / NOT_RELEASED（无 releases/latest 假下载）'}
+- version_ssot_ready: **${landing.version_ssot_ready === true}**
 - 公开 Claim 总量：31（CLAIM-001..031）
 - 任务拆分（不可混成循环依赖）：
-  1. **PUBLIC-HONESTY-001** — 立即诚实降级
-  2. **VERSION-METADATA-001** — VERSION / Metadata / Public Status
-  3. **RELEASE-PIPELINE-001** — UniApp + 双固件流水线
+  1. **PUBLIC-HONESTY-001** — 立即诚实降级${landing.landing_fake_download ? '' : '（DONE）'}
+  2. **VERSION-METADATA-001** — VERSION / Metadata / Public Status${landing.version_ssot_ready ? '（DONE）' : ''}
+  3. **RELEASE-PIPELINE-001** — UniApp + 双固件流水线（仍 PLANNED）
 
 ## Release Workflow
 
@@ -557,10 +568,11 @@ content_hash: ${hash}
 
 ## VERSION / Metadata
 
-- 根 \`VERSION\`：缺失
-- \`apps/uniapp/services/version-metadata.js\`：缺失
-- \`apps/uniapp/services/public-status.js\`：缺失
-- PAGE-010：硬编码 versionHistory（见页面盘点）
+- 根 \`VERSION\`：${landing.version_ssot_ready ? '存在（产品版本投影）' : '缺失'}
+- \`apps/uniapp/services/version-metadata.js\`：${landing.version_ssot_ready ? '存在' : '缺失'}
+- \`apps/uniapp/services/public-status.js\`：${landing.version_ssot_ready ? '存在' : '缺失'}
+- \`release/release-manifest.json\` / \`docs/public/release/latest.json\`：${landing.version_ssot_ready ? 'PREVIEW Metadata 已生成' : '尚未建立'}
+- PAGE-010：硬编码 versionHistory（**RC-PAGE-VERSION OPEN** → PAGE-VERSION-001）
 
 ## SEO / OG / Nav
 

@@ -6,7 +6,7 @@
 				<text class="app-name">{{ product.name }}</text>
 				<text class="version">Version {{ appVersion }}</text>
 				<text class="summary">{{ product.summary }}</text>
-				<view class="tech-stack"><text>UniApp · Vue 3</text><text>开源跨平台</text></view>
+				<view class="tech-stack"><text>UniApp · Vue 3</text><text>{{ overallStatus }}</text></view>
 			</view>
 		</view>
 
@@ -30,8 +30,13 @@
 			<view class="feature-grid">
 				<view v-for="(feature, index) in features" :key="feature" class="feature-chip"><text class="feature-index">{{ index + 1 }}</text><text>{{ feature }}</text></view>
 			</view>
-			<view class="subsection-title">支持平台</view>
-			<view class="platform-grid"><text v-for="platform in platforms" :key="platform" class="platform-chip">{{ platform }}</text></view>
+			<view class="subsection-title">平台与公开状态</view>
+			<view class="platform-grid">
+				<view v-for="platform in platforms" :key="platform.key" class="platform-chip">
+					<text class="platform-name">{{ platform.name }}</text>
+					<text class="platform-status">{{ platformStatusLabel(platform) }}</text>
+				</view>
+			</view>
 		</view>
 
 		<view class="section ble-card">
@@ -58,14 +63,32 @@ import {
 	PRODUCT_PLATFORMS,
 	RELATED_MINI_PROGRAMS
 } from '../../config/product.js';
+import {
+	buildVersionString,
+	getProductVersion,
+	getReleaseMetadata
+} from '../../services/version-metadata.js';
+
+const release = getReleaseMetadata();
+const metadataVersionLabel = buildVersionString({
+	version: getProductVersion(),
+	commit: release.commit,
+	channel: release.channel
+});
 
 const product = PRODUCT_INFO;
 const features = PRODUCT_FEATURES;
 const platforms = PRODUCT_PLATFORMS;
 const otherApps = RELATED_MINI_PROGRAMS;
-const appVersion = ref(PRODUCT_INFO.versionFallback);
+const overallStatus = release.overall_status || 'PREVIEW';
+const appVersion = ref(metadataVersionLabel);
 const systemInfo = ref({ platform: 'unknown', system: 'unknown', model: 'unknown' });
 const currentYear = new Date().getFullYear();
+
+const platformStatusLabel = (platform) => {
+	if (platform.role === 'REFERENCE') return 'REFERENCE';
+	return platform.capability_status || platform.release_status || 'NOT_RELEASED';
+};
 
 const getSystemInfo = () => {
 	try {
@@ -78,15 +101,25 @@ const getSystemInfo = () => {
 	} catch {}
 };
 
+const applyRuntimeVersion = (value) => {
+	const next = typeof value === 'string' ? value.trim() : '';
+	if (next) appVersion.value = next;
+	else appVersion.value = metadataVersionLabel;
+};
+
 const getAppVersion = () => {
 // #ifdef APP-PLUS
-	plus.runtime.getProperty(plus.runtime.appid, (widgetInfo) => { appVersion.value = widgetInfo.version; });
+	plus.runtime.getProperty(plus.runtime.appid, (widgetInfo) => {
+		applyRuntimeVersion(widgetInfo?.version);
+	});
 // #endif
 // #ifdef MP-WEIXIN
 	try {
 		const accountInfo = uni.getAccountInfoSync();
-		appVersion.value = accountInfo.miniProgram.version || PRODUCT_INFO.versionFallback;
-	} catch {}
+		applyRuntimeVersion(accountInfo?.miniProgram?.version);
+	} catch {
+		appVersion.value = metadataVersionLabel;
+	}
 // #endif
 };
 
@@ -122,7 +155,7 @@ const shareApp = () => {
 	uni.share({
 		provider: 'system',
 		type: 0,
-		title: `${product.name} - 多平台 BLE 工具`,
+		title: `${product.name} - BLE 调试与验证工具`,
 		summary: product.summary,
 		href: product.website,
 		imageUrl: '/static/share.png',
@@ -166,8 +199,8 @@ const openApp = (app) => {
 onLoad(() => { getSystemInfo(); getAppVersion(); });
 
 // #ifdef MP-WEIXIN
-onShareAppMessage(() => ({ title: 'BLE Toolkit+ - 开源跨平台 BLE 工具', path: '/pages/about/index' }));
-onShareTimeline(() => ({ title: 'BLE Toolkit+ - 开源跨平台 BLE 工具', query: '', imageUrl: '/static/logo.png' }));
+onShareAppMessage(() => ({ title: 'BLE Toolkit+ - BLE 调试与验证工具', path: '/pages/about/index' }));
+onShareTimeline(() => ({ title: 'BLE Toolkit+ - BLE 调试与验证工具', query: '', imageUrl: '/static/logo.png' }));
 // #endif
 </script>
 
@@ -196,8 +229,10 @@ onShareTimeline(() => ({ title: 'BLE Toolkit+ - 开源跨平台 BLE 工具', que
 .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10rpx; }
 .feature-chip { display: flex; align-items: center; gap: 10rpx; min-width: 0; padding: 14rpx 16rpx; border-radius: 18rpx; color: var(--ble-text); background: rgba(255, 255, 255, 0.82); font-size: 22rpx; font-weight: 700; }
 .feature-index { display: flex; align-items: center; justify-content: center; width: 34rpx; height: 34rpx; flex-shrink: 0; border-radius: 10rpx; color: var(--ble-brand); background: rgba(27, 109, 255, 0.09); font-size: 18rpx; }
-.platform-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10rpx; }
-.platform-chip { padding: 14rpx 8rpx; border-radius: 18rpx; color: var(--ble-brand); background: rgba(27, 109, 255, 0.08); font-size: 21rpx; font-weight: 700; text-align: center; }
+.platform-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10rpx; }
+.platform-chip { display: flex; flex-direction: column; gap: 6rpx; padding: 14rpx 10rpx; border-radius: 18rpx; color: var(--ble-brand); background: rgba(27, 109, 255, 0.08); text-align: center; }
+.platform-name { font-size: 20rpx; font-weight: 700; line-height: 1.3; }
+.platform-status { font-size: 18rpx; font-weight: 800; opacity: 0.85; }
 .menu-item { color: var(--ble-text); font-size: 25rpx; font-weight: 650; }
 .menu-item-hover { transform: translateY(2rpx); opacity: 0.92; }
 .menu-arrow { color: var(--ble-brand); font-size: 34rpx; }

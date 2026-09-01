@@ -24,16 +24,21 @@ TP-G0 完整目标产品文档
 
 ---
 
-## 2. 当前立即执行：TP-G3 · VERSION-METADATA-001
+## 2. 当前阶段：TP-G3（VERSION-METADATA-001 = DONE）
 
-TP-G1-R3 与 TP-G2-R1 已批准。PUBLIC-HONESTY-001 = DONE。
+TP-G1-R3 与 TP-G2-R1 已批准。PUBLIC-HONESTY-001 = DONE。VERSION-METADATA-001 = DONE。
 
 当前阶段：
 
-**TP-G3 · 当前 Task：`VERSION-METADATA-001`**
+**TP-G3 · VERSION-METADATA-001 已完成；等待用户选择下一 Task**
 
-范围：根 VERSION SSOT + PREVIEW Release Metadata + public-status / version-metadata 投影。
-完成后必须停下，**不得**自动执行 `RELEASE-PIPELINE-001`、`PAGE-VERSION-001` 或其他 Task。
+下一候选（均未自动执行）：
+
+- `RELEASE-PIPELINE-001`
+- `PAGE-VERSION-001`
+- 或其他已规划 Task
+
+本轮禁止自动进入上述任一 Task。
 
 正式报告：
 

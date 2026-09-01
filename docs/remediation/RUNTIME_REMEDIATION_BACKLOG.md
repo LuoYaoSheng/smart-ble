@@ -3,13 +3,14 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 54902a01ef816b379460f622959b6e65c8de4a2af90740f8dafa21c14c694a5d
+content_hash: 2014879685cc4cc3ee003b29daa5d719c5c0c7e5a0d7bd244d8a4a0f188195be
 ```
 
-> 本轮只规划，不执行。task_type ∈ SOURCE_FIX | TESTABILITY | ENVIRONMENT | DOCUMENTATION | VERIFY_E5 | VERIFY_E6 | RELEASE
+> PUBLIC-HONESTY-001 / VERSION-METADATA-001 状态以 task-dependency-graph.json 为准。未批准 Task 不得执行。
 
 ### RUNTIME-DISPLAY-NAME-001
 
+- 状态：**PLANNED**
 - 标题：实现 display-name 解析链
 - task_type：SOURCE_FIX
 - severity：P1
@@ -25,6 +26,7 @@ content_hash: 54902a01ef816b379460f622959b6e65c8de4a2af90740f8dafa21c14c694a5d
 
 ### RUNTIME-FILTER-001
 
+- 状态：**PLANNED**
 - 标题：device-filter 关键词命中项匹配对齐目标
 - task_type：SOURCE_FIX
 - severity：P1
@@ -40,6 +42,7 @@ content_hash: 54902a01ef816b379460f622959b6e65c8de4a2af90740f8dafa21c14c694a5d
 
 ### RUNTIME-GATT-CODEC-001
 
+- 状态：**PLANNED**
 - 标题：validateHexInput/parseHexInput
 - task_type：SOURCE_FIX
 - severity：P1
@@ -55,6 +58,7 @@ content_hash: 54902a01ef816b379460f622959b6e65c8de4a2af90740f8dafa21c14c694a5d
 
 ### RUNTIME-WRITE-QUEUE-001
 
+- 状态：**PLANNED**
 - 标题：write-queue MTU 分包队列
 - task_type：SOURCE_FIX
 - severity：P1
@@ -70,6 +74,7 @@ content_hash: 54902a01ef816b379460f622959b6e65c8de4a2af90740f8dafa21c14c694a5d
 
 ### RUNTIME-LOG-REDACTION-001
 
+- 状态：**PLANNED**
 - 标题：log-redaction 脱敏
 - task_type：SOURCE_FIX
 - severity：P1
@@ -85,6 +90,7 @@ content_hash: 54902a01ef816b379460f622959b6e65c8de4a2af90740f8dafa21c14c694a5d
 
 ### RUNTIME-RECONNECT-001
 
+- 状态：**PLANNED**
 - 标题：reconnect-policy 有限重连
 - task_type：SOURCE_FIX
 - severity：P1
@@ -100,6 +106,7 @@ content_hash: 54902a01ef816b379460f622959b6e65c8de4a2af90740f8dafa21c14c694a5d
 
 ### RUNTIME-SESSION-001
 
+- 状态：**PLANNED**
 - 标题：Registry subscription_count + 配网会话分类
 - task_type：SOURCE_FIX
 - severity：P1
@@ -115,6 +122,7 @@ content_hash: 54902a01ef816b379460f622959b6e65c8de4a2af90740f8dafa21c14c694a5d
 
 ### RUNTIME-CONNECTION-DISCOVERY-001
 
+- 状态：**PLANNED**
 - 标题：connectDevice 编排服务发现
 - task_type：SOURCE_FIX
 - severity：P1
@@ -130,6 +138,7 @@ content_hash: 54902a01ef816b379460f622959b6e65c8de4a2af90740f8dafa21c14c694a5d
 
 ### OTA-PACKAGE-001
 
+- 状态：**PLANNED**
 - 标题：客户端 Firmware Package 六项校验
 - task_type：SOURCE_FIX
 - severity：P1
@@ -145,6 +154,7 @@ content_hash: 54902a01ef816b379460f622959b6e65c8de4a2af90740f8dafa21c14c694a5d
 
 ### OTA-CLIENT-001
 
+- 状态：**PLANNED**
 - 标题：客户端完整 OTA 事务（CTRL start→ready→DATA→commit）
 - task_type：SOURCE_FIX
 - severity：P0

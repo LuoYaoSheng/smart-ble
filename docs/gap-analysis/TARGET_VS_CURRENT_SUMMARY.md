@@ -1,26 +1,19 @@
 # Target vs Current 摘要（TP-G2-R1）
 
 ```yaml
-status: APPROVED
+status: REVIEW
 document_version: 2.0
 gate: TP-G2-R1
 owner: Smart BLE QA / Engineering
 last_reviewed: 2026-09-01
-approved_by: user
+approved_by: null
 generated_from: reports/target-vs-current/target-vs-current.json
-content_hash: 54902a01ef816b379460f622959b6e65c8de4a2af90740f8dafa21c14c694a5d
-commit: 8a8182a22af6a51fbd0e385491fc7ff226c09f6e
+content_hash: 2014879685cc4cc3ee003b29daa5d719c5c0c7e5a0d7bd244d8a4a0f188195be
+commit: b67abab6414f4c5a4bba4311eab656d155334071
 supersedes: TP-G2 v1 (reports/target-vs-current-v1/)
 ```
 
 > 旧 TP-G2 v1 摘要已 **SUPERSEDED_BY_TP_G2_R1**。正式路径：`reports/target-vs-current/`。
->
-> **用户已批准 TP-G2-R1 作为规划门禁（APPROVED AS PLANNING GATE）。**
-> PASS 表示测量与规划可信；**不等于** E4/E5/E6 完成。
-> `blocked_cases` 是受阻 Case 数，**不得**计为产品缺陷。
-> 目标产品与目标测试继续冻结。允许按批准 Task 进入 TP-G3。
->
-> **PUBLIC-HONESTY-001 = DONE**（RC-LANDING-FAKE-DOWNLOAD 已关闭）。下一候选：VERSION-METADATA-001（仍为 PLANNED，不得自动执行）。
 
 ## 1. 测试基础设施与 Current 真实结果
 
@@ -30,7 +23,7 @@ supersedes: TP-G2 v1 (reports/target-vs-current-v1/)
 | HARNESS_PASS / FAIL | 89 / 0 |
 | TARGET_CONTRACT_FAIL | 0 |
 | TEST_INFRA_FAIL | 0 |
-| CURRENT_PASS / FAIL | 30 / 23 |
+| CURRENT_PASS / FAIL | 34 / 19 |
 | structured cases | 53 |
 | 页面 blocked_specs / blocked_cases | 11 / 229 |
 | 页面阻断原因 | BLOCKED_BY_TOOLCHAIN |
@@ -67,17 +60,17 @@ PROTO 仅使用 `PROTO-001`..`PROTO-011`（不是 Service UUID）。
 ### unique_root_causes_by_severity
 
 - P0: **2**
-- P1: **14**
+- P1: **13**
 - P2: **2**
 - P3: **0**
 
 ### affected_target_records_by_severity
 
 - P0: 16
-- P1: 81
+- P1: 72
 - P2: 0
 - P3: 0
-- null: 550
+- null: 559
 
 > 不得把 affected records 说成「N 个 P0 缺陷」。Observer 缺失默认 **P1**（无公开危害证据时非 P0）。
 
@@ -85,28 +78,28 @@ PROTO 仅使用 `PROTO-001`..`PROTO-011`（不是 Service UUID）。
 
 ### gap_kind
 
-- PRODUCT: 270
-- RELEASE: 6
+- PRODUCT: 274
 - RUNTIME: 37
-- PAGE: 148
+- PAGE: 149
 - TESTABILITY: 128
 - FIRMWARE: 10
 - LANDING: 45
 - SMART_HID: 3
+- RELEASE: 1
 
 ### implementation_status
 
-- IMPLEMENTED_UNTESTED: 49
-- UNASSESSED: 490
-- NOT_IMPLEMENTED: 56
-- CONFIRMED_PARTIAL: 48
+- IMPLEMENTED_UNTESTED: 58
+- UNASSESSED: 489
+- NOT_IMPLEMENTED: 50
+- CONFIRMED_PARTIAL: 46
 - CONFIRMED_MISSING: 4
 
 ### verification_status
 
-- AUTOMATED_PASS: 53
+- AUTOMATED_PASS: 62
 - HARDWARE_PENDING: 44
-- AUTOMATED_FAIL: 75
+- AUTOMATED_FAIL: 66
 - NOT_EXECUTED: 294
 - BLOCKED_BY_TOOLCHAIN: 166
 - BLOCKED_BY_TARGET_DRIVER: 11
@@ -117,31 +110,31 @@ PROTO 仅使用 `PROTO-001`..`PROTO-011`（不是 Service UUID）。
 1. **[P0]** `FEAT-046` → OtaManager 在第一个 DATA 写之前未发送 CTRL start （OTA-CLIENT-001 / RC-OTA-CTRL-START）
 2. **[P0]** `FEAT-047` → [TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验） （OTA-CLIENT-001 / RC-OTA-CTRL-START）
 3. **[P0]** `PROTO-010` → .github/workflows/release-build.yml builds Flutter/Tauri; not UniApp Android + Peripheral/Observer firmware （RELEASE-PIPELINE-001 / RC-RELEASE-PIPELINE）
-4. **[P1]** `FEAT-004` → [TEST-U-002 REQ-004/056 FEAT-004/066 PAGE-009/010 WEB-001 S-47] 第一断点: 目标模块缺失：apps/uniapp/services/version-metadata.js （VERSION-METADATA-001 / RC-VERSION-SSOT）
-5. **[P1]** `FEAT-009` → [REQ-009/046/055 FEAT-009/070 18号§2 五词表] 第一断点: 目标模块缺失：apps/uniapp/services/public-status.js （VERSION-METADATA-001 / RC-VERSION-SSOT）
-6. **[P1]** `FEAT-011` → [TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段 （RUNTIME-SESSION-001 / RC-SESSION-REGISTRY）
-7. **[P1]** `FEAT-013` → [TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js （RUNTIME-DISPLAY-NAME-001 / RC-DISPLAY-NAME）
-8. **[P1]** `FEAT-014` → 命中项匹配关键词 （RUNTIME-FILTER-001 / RC-DEVICE-FILTER）
-9. **[P1]** `FEAT-021` → [REQ-020/021 ERR-CONN-03] 第一断点: connectDevice 未编排服务发现（失败不报错=半开泄漏面） （RUNTIME-CONNECTION-DISCOVERY-001 / RC-CONN-DISCOVERY）
-10. **[P1]** `FEAT-023` → [REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js （RUNTIME-RECONNECT-001 / RC-RECONNECT）
-11. **[P1]** `FEAT-026` → [TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失 （RUNTIME-GATT-CODEC-001 / RC-GATT-HEX）
-12. **[P1]** `FEAT-030` → [TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js （RUNTIME-WRITE-QUEUE-001 / RC-WRITE-QUEUE）
-13. **[P1]** `FEAT-040` → [TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js （RUNTIME-LOG-REDACTION-001 / RC-LOG-REDACTION）
-14. **[P1]** `FEAT-041` → PAGE-008 内联广告逻辑；useBroadcastSession 未使用 （PAGE-BROADCAST-001 / RC-PAGE-BROADCAST）
-15. **[P1]** `FEAT-053` → [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as' （TEST-BRIDGE-TS-001 / RC-TEST-BRIDGE-TS）
-16. **[P1]** `FEAT-062` → [REQ-053/PAGE-007 排除规则] 第一断点: Registry 无配网会话分类/排除接口——PAGE-007 口径无法排除配网会话 （RUNTIME-SESSION-001 / RC-SESSION-REGISTRY）
-17. **[P1]** `FEAT-066` → 仓库根 VERSION 文件存在 （VERSION-METADATA-001 / RC-VERSION-SSOT）
-18. **[P1]** `FEAT-081` → [TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验） （OTA-PACKAGE-001 / RC-OTA-PACKAGE）
-19. **[P1]** `FLOW-008` → 缺 fixture_observer （ESP32-OBSERVER-001 / RC-ESP32-OBSERVER）
-20. **[P1]** `OP-P008-01` → hardware/esp32 无 Observer 目标源码 （ESP32-OBSERVER-001 / RC-ESP32-OBSERVER）
+4. **[P1]** `FEAT-011` → [TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段 （RUNTIME-SESSION-001 / RC-SESSION-REGISTRY）
+5. **[P1]** `FEAT-013` → [TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js （RUNTIME-DISPLAY-NAME-001 / RC-DISPLAY-NAME）
+6. **[P1]** `FEAT-014` → 命中项匹配关键词 （RUNTIME-FILTER-001 / RC-DEVICE-FILTER）
+7. **[P1]** `FEAT-021` → [REQ-020/021 ERR-CONN-03] 第一断点: connectDevice 未编排服务发现（失败不报错=半开泄漏面） （RUNTIME-CONNECTION-DISCOVERY-001 / RC-CONN-DISCOVERY）
+8. **[P1]** `FEAT-023` → [REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js （RUNTIME-RECONNECT-001 / RC-RECONNECT）
+9. **[P1]** `FEAT-026` → [TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失 （RUNTIME-GATT-CODEC-001 / RC-GATT-HEX）
+10. **[P1]** `FEAT-030` → [TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js （RUNTIME-WRITE-QUEUE-001 / RC-WRITE-QUEUE）
+11. **[P1]** `FEAT-040` → [TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js （RUNTIME-LOG-REDACTION-001 / RC-LOG-REDACTION）
+12. **[P1]** `FEAT-041` → PAGE-008 内联广告逻辑；useBroadcastSession 未使用 （PAGE-BROADCAST-001 / RC-PAGE-BROADCAST）
+13. **[P1]** `FEAT-053` → [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as' （TEST-BRIDGE-TS-001 / RC-TEST-BRIDGE-TS）
+14. **[P1]** `FEAT-062` → [REQ-053/PAGE-007 排除规则] 第一断点: Registry 无配网会话分类/排除接口——PAGE-007 口径无法排除配网会话 （RUNTIME-SESSION-001 / RC-SESSION-REGISTRY）
+15. **[P1]** `FEAT-081` → [TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验） （OTA-PACKAGE-001 / RC-OTA-PACKAGE）
+16. **[P1]** `FLOW-008` → 缺 fixture_observer （ESP32-OBSERVER-001 / RC-ESP32-OBSERVER）
+17. **[P1]** `OP-P008-01` → hardware/esp32 无 Observer 目标源码 （ESP32-OBSERVER-001 / RC-ESP32-OBSERVER）
+18. **[P1]** `PAGE-008` → 广播页内联；Owner/composable 未接入 （PAGE-BROADCAST-001 / RC-PAGE-BROADCAST）
+19. **[P1]** `PAGE-010` → pages/about/version.vue 硬编码 versionHistory （PAGE-VERSION-001 / RC-PAGE-VERSION）
+20. **[P1]** `PROTO-001` → 固件含广播名 BLEToolkit-Observer （ESP32-OBSERVER-001 / RC-ESP32-OBSERVER）
 
 ## 6. Task waves（拓扑序前 12）
 
 1. **TEST-CURRENT-INTEGRITY-001** — Current 度量完整性（TP-G1-R3 已完成）（type=TESTABILITY, sev=—, gaps≈0）
-2. **ENV-PLAYWRIGHT-001** — 安装并锁定 Playwright / H5 harness（type=ENVIRONMENT, sev=P2, gaps≈162）
+2. **ENV-PLAYWRIGHT-001** — 安装并锁定 Playwright / H5 harness（type=ENVIRONMENT, sev=P2, gaps≈163）
 3. **TEST-PAGE-DRIVER-001** — 实现 Target Page Driver（type=TESTABILITY, sev=P2, gaps≈11）
 4. **PUBLIC-HONESTY-001** — 落地页立即诚实降级（假下载/6+/错误主线→PREVIEW/NOT_RELEASED）（type=SOURCE_FIX, sev=P0, gaps≈0）
-5. **VERSION-METADATA-001** — 根 VERSION + Release Metadata + Public Status（type=SOURCE_FIX, sev=P1, gaps≈9）
+5. **VERSION-METADATA-001** — 根 VERSION + Release Metadata + Public Status（type=SOURCE_FIX, sev=P1, gaps≈0）
 6. **RELEASE-PIPELINE-001** — UniApp + Peripheral/Observer 双固件 Release Pipeline（type=RELEASE, sev=P0, gaps≈1）
 7. **RUNTIME-DISPLAY-NAME-001** — 实现 display-name 解析链（type=SOURCE_FIX, sev=P1, gaps≈2）
 8. **RUNTIME-FILTER-001** — device-filter 关键词命中项匹配对齐目标（type=SOURCE_FIX, sev=P1, gaps≈4）
@@ -154,7 +147,8 @@ PROTO 仅使用 `PROTO-001`..`PROTO-011`（不是 Service UUID）。
 
 ## 7. 必须立即降级的公开 Claim
 
-在 **PUBLIC-HONESTY-001** / **VERSION-METADATA-001** / **RELEASE-PIPELINE-001** / E6 完成前：
+**PUBLIC-HONESTY-001 = DONE**；**VERSION-METADATA-001 = DONE**（RC-VERSION-SSOT CLOSED）。
+**RELEASE-PIPELINE-001** 仍为 PLANNED（RC-RELEASE-PIPELINE OPEN）。在 E6 完成前：
 
 - 下载区保持 **NOT_RELEASED / PREVIEW**，禁止 `releases/latest` 假主下载；
 - 不得宣称 Android/Windows/macOS 多端正式包可用；
@@ -171,4 +165,4 @@ PROTO 仅使用 `PROTO-001`..`PROTO-011`（不是 Service UUID）。
 
 ## 9. 下一步
 
-用户审阅本摘要与 `docs/remediation/REMEDIATION_ORDER.md`。未经批准不得进入 TP-G3。
+VERSION-METADATA-001 已完成。下一 Task 由用户选择（例如 RELEASE-PIPELINE-001 或 PAGE-VERSION-001），**不得自动执行**。

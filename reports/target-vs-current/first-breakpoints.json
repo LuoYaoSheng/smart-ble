@@ -28,24 +28,6 @@
       "verification_status": "AUTOMATED_FAIL"
     },
     {
-      "target_id": "FEAT-004",
-      "severity": "P1",
-      "gap_kind": "RELEASE",
-      "first_breakpoint": "[TEST-U-002 REQ-004/056 FEAT-004/066 PAGE-009/010 WEB-001 S-47] 第一断点: 目标模块缺失：apps/uniapp/services/version-metadata.js",
-      "root_cause_id": "RC-VERSION-SSOT",
-      "task_id": "VERSION-METADATA-001",
-      "verification_status": "AUTOMATED_FAIL"
-    },
-    {
-      "target_id": "FEAT-009",
-      "severity": "P1",
-      "gap_kind": "RELEASE",
-      "first_breakpoint": "[REQ-009/046/055 FEAT-009/070 18号§2 五词表] 第一断点: 目标模块缺失：apps/uniapp/services/public-status.js",
-      "root_cause_id": "RC-VERSION-SSOT",
-      "task_id": "VERSION-METADATA-001",
-      "verification_status": "AUTOMATED_FAIL"
-    },
-    {
       "target_id": "FEAT-011",
       "severity": "P1",
       "gap_kind": "RUNTIME",
@@ -145,15 +127,6 @@
       "verification_status": "AUTOMATED_FAIL"
     },
     {
-      "target_id": "FEAT-066",
-      "severity": "P1",
-      "gap_kind": "RELEASE",
-      "first_breakpoint": "仓库根 VERSION 文件存在",
-      "root_cause_id": "RC-VERSION-SSOT",
-      "task_id": "VERSION-METADATA-001",
-      "verification_status": "AUTOMATED_FAIL"
-    },
-    {
       "target_id": "FEAT-081",
       "severity": "P1",
       "gap_kind": "RUNTIME",
@@ -179,6 +152,33 @@
       "root_cause_id": "RC-ESP32-OBSERVER",
       "task_id": "ESP32-OBSERVER-001",
       "verification_status": "BLOCKED_BY_FIXTURE"
+    },
+    {
+      "target_id": "PAGE-008",
+      "severity": "P1",
+      "gap_kind": "PAGE",
+      "first_breakpoint": "广播页内联；Owner/composable 未接入",
+      "root_cause_id": "RC-PAGE-BROADCAST",
+      "task_id": "PAGE-BROADCAST-001",
+      "verification_status": "AUTOMATED_PASS"
+    },
+    {
+      "target_id": "PAGE-010",
+      "severity": "P1",
+      "gap_kind": "PAGE",
+      "first_breakpoint": "pages/about/version.vue 硬编码 versionHistory",
+      "root_cause_id": "RC-PAGE-VERSION",
+      "task_id": "PAGE-VERSION-001",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN"
+    },
+    {
+      "target_id": "PROTO-001",
+      "severity": "P1",
+      "gap_kind": "FIRMWARE",
+      "first_breakpoint": "固件含广播名 BLEToolkit-Observer",
+      "root_cause_id": "RC-ESP32-OBSERVER",
+      "task_id": "ESP32-OBSERVER-001",
+      "verification_status": "AUTOMATED_FAIL"
     }
   ],
   "all": [
@@ -210,24 +210,6 @@
       "verification_status": "AUTOMATED_FAIL"
     },
     {
-      "target_id": "FEAT-004",
-      "severity": "P1",
-      "gap_kind": "RELEASE",
-      "first_breakpoint": "[TEST-U-002 REQ-004/056 FEAT-004/066 PAGE-009/010 WEB-001 S-47] 第一断点: 目标模块缺失：apps/uniapp/services/version-metadata.js",
-      "root_cause_id": "RC-VERSION-SSOT",
-      "task_id": "VERSION-METADATA-001",
-      "verification_status": "AUTOMATED_FAIL"
-    },
-    {
-      "target_id": "FEAT-009",
-      "severity": "P1",
-      "gap_kind": "RELEASE",
-      "first_breakpoint": "[REQ-009/046/055 FEAT-009/070 18号§2 五词表] 第一断点: 目标模块缺失：apps/uniapp/services/public-status.js",
-      "root_cause_id": "RC-VERSION-SSOT",
-      "task_id": "VERSION-METADATA-001",
-      "verification_status": "AUTOMATED_FAIL"
-    },
-    {
       "target_id": "FEAT-011",
       "severity": "P1",
       "gap_kind": "RUNTIME",
@@ -324,15 +306,6 @@
       "first_breakpoint": "[REQ-053/PAGE-007 排除规则] 第一断点: Registry 无配网会话分类/排除接口——PAGE-007 口径无法排除配网会话",
       "root_cause_id": "RC-SESSION-REGISTRY",
       "task_id": "RUNTIME-SESSION-001",
-      "verification_status": "AUTOMATED_FAIL"
-    },
-    {
-      "target_id": "FEAT-066",
-      "severity": "P1",
-      "gap_kind": "RELEASE",
-      "first_breakpoint": "仓库根 VERSION 文件存在",
-      "root_cause_id": "RC-VERSION-SSOT",
-      "task_id": "VERSION-METADATA-001",
       "verification_status": "AUTOMATED_FAIL"
     },
     {

@@ -3,8 +3,8 @@ layout: home
 
 hero:
   name: "Smart BLE"
-  text: "PREVIEW · UniApp、微信小程序与 ESP32 协同的 BLE 调试和验证工具"
-  tagline: "状态：PREVIEW。版本元数据尚未发布。当前无正式 APK、小程序码或固件下载（NOT_RELEASED）。"
+  text: "1.0.5 · PREVIEW · UniApp、微信小程序与 ESP32 协同的 BLE 调试和验证工具"
+  tagline: "状态：PREVIEW。当前产品版本 1.0.5。正式 APK、小程序码与固件尚未发布（NOT_RELEASED）。"
   image:
     src: /brand/icon.png
     alt: Smart BLE Brand Icon
@@ -20,13 +20,41 @@ hero:
       link: https://github.com/luoyaosheng/smart-ble
 ---
 
+<script setup>
+import release from './public/release/latest.json'
+
+const version = release.app_version
+const overall = release.overall_status
+const surfaces = release.public_surfaces
+const limitations = release.known_limitations || []
+
+function badgeClass(status) {
+  const key = String(status || 'NOT_RELEASED').toLowerCase().replace(/_/g, '-')
+  return `smartble-platform-badge smartble-badge--${key}`
+}
+
+function surfaceStatus(surface) {
+  if (!surface) return 'NOT_RELEASED'
+  if (surface.role === 'REFERENCE') return 'REFERENCE'
+  return surface.capability_status || surface.release_status || 'NOT_RELEASED'
+}
+</script>
+
 <div class="smartble-home">
   <section class="smartble-status-band" aria-label="公开状态">
-    <div class="smartble-status-pill smartble-status-pill--preview">PREVIEW</div>
+    <div class="smartble-version-hero">
+      <strong>Smart BLE</strong>
+      <span>{{ version }}</span>
+      <div class="smartble-status-pill smartble-status-pill--preview">{{ overall }}</div>
+    </div>
     <p>
       Smart BLE 当前处于预览阶段：主线是 <strong>UniApp Android</strong>、<strong>BLE Toolkit+ 微信小程序</strong>、
       <strong>LightBLE ESP32</strong> 与 <strong>Smart HID 第一方 Profile</strong>。
       正式产物尚未发布（<strong>NOT_RELEASED</strong>），请勿把本站当作可下载安装包的入口。
+    </p>
+    <p>
+      <a href="/release/latest.json">查看 PREVIEW Release Metadata</a>
+      （机器可读 JSON，不是下载产物）
     </p>
   </section>
 
@@ -58,71 +86,71 @@ hero:
     <div class="smartble-section-head">
       <div class="smartble-kicker">Current Mainline</div>
       <h2>正式工作面与参考实现</h2>
-      <p>下列状态基于仓库事实与 TP-G2 测量，不是发布门禁结论。</p>
+      <p>下列状态来自 PREVIEW Release Metadata（{{ version }}），不是发布门禁结论。</p>
     </div>
     <div class="smartble-platform-grid">
       <article class="smartble-platform-card">
         <div class="smartble-platform-top">
-          <span class="smartble-platform-badge smartble-badge--preview">PREVIEW</span>
+          <span :class="badgeClass(surfaceStatus(surfaces.android))">{{ surfaceStatus(surfaces.android) }}</span>
         </div>
-        <h3>UniApp Android</h3>
-        <p>当前客户端主线。正式 APK 与 SHA <strong>尚未发布</strong>（NOT_RELEASED）。</p>
+        <h3>{{ surfaces.android.name }}</h3>
+        <p>当前客户端主线。正式 APK 与 SHA <strong>{{ surfaces.android.release_status }}</strong>。</p>
       </article>
       <article class="smartble-platform-card">
         <div class="smartble-platform-top">
-          <span class="smartble-platform-badge smartble-badge--not-released">NOT_RELEASED</span>
+          <span :class="badgeClass(surfaces.wechat.release_status)">{{ surfaces.wechat.release_status }}</span>
         </div>
-        <h3>BLE Toolkit+ 微信小程序</h3>
+        <h3>{{ surfaces.wechat.name }}</h3>
         <p>正式小程序码尚未发布。本站不提供体验码或可扫码入口冒充正式版。</p>
       </article>
       <article class="smartble-platform-card">
         <div class="smartble-platform-top">
-          <span class="smartble-platform-badge smartble-badge--unsupported">UNSUPPORTED</span>
+          <span :class="badgeClass(surfaceStatus(surfaces.h5))">{{ surfaceStatus(surfaces.h5) }}</span>
         </div>
-        <h3>H5</h3>
+        <h3>{{ surfaces.h5.name }}</h3>
         <p>仅文档与页面降级展示。真实 BLE 在 H5 上为 UNSUPPORTED。</p>
       </article>
       <article class="smartble-platform-card">
         <div class="smartble-platform-top">
-          <span class="smartble-platform-badge smartble-badge--not-released">NOT_RELEASED</span>
+          <span :class="badgeClass(surfaceStatus(surfaces.ios))">{{ surfaceStatus(surfaces.ios) }}</span>
         </div>
-        <h3>iOS</h3>
+        <h3>{{ surfaces.ios.name }}</h3>
         <p>目标能力存在规划，正式入口尚未发布。</p>
       </article>
       <article class="smartble-platform-card">
         <div class="smartble-platform-top">
           <span class="smartble-platform-badge smartble-badge--reference">REFERENCE</span>
         </div>
-        <h3>Flutter / Tauri / 原生端</h3>
-        <p>历史与参考实现，不是当前正式工作台，也不作为已交付入口。</p>
+        <h3>{{ surfaces.flutter_tauri_native.name }}</h3>
+        <p>历史与参考实现（角色 REFERENCE），不是当前正式工作台；对外发布状态 {{ surfaces.flutter_tauri_native.release_status }}。</p>
       </article>
       <article class="smartble-platform-card">
         <div class="smartble-platform-top">
-          <span class="smartble-platform-badge smartble-badge--preview">PREVIEW</span>
+          <span :class="badgeClass(surfaceStatus(surfaces.peripheral))">{{ surfaceStatus(surfaces.peripheral) }}</span>
         </div>
-        <h3>LightBLE ESP32 Peripheral</h3>
+        <h3>{{ surfaces.peripheral.name }}</h3>
         <p>开发中 / PREVIEW。可复现固件、manifest 与 SHA 尚未发布。</p>
       </article>
       <article class="smartble-platform-card">
         <div class="smartble-platform-top">
-          <span class="smartble-platform-badge smartble-badge--not-released">NOT_RELEASED</span>
+          <span :class="badgeClass(surfaceStatus(surfaces.observer))">{{ surfaceStatus(surfaces.observer) }}</span>
         </div>
-        <h3>ESP32 Observer</h3>
+        <h3>{{ surfaces.observer.name }}</h3>
         <p>第一方 Observer 固件尚未实现与发布。</p>
       </article>
       <article class="smartble-platform-card">
         <div class="smartble-platform-top">
-          <span class="smartble-platform-badge smartble-badge--blocked">BLOCKED</span>
+          <span :class="badgeClass(surfaceStatus(surfaces.ota))">{{ surfaceStatus(surfaces.ota) }}</span>
         </div>
-        <h3>OTA</h3>
-        <p>客户端与固件完整事务尚未对齐并完成 E5，公开状态为 BLOCKED。</p>
+        <h3>{{ surfaces.ota.name }}</h3>
+        <p>{{ surfaces.ota.reason }}</p>
       </article>
       <article class="smartble-platform-card">
         <div class="smartble-platform-top">
-          <span class="smartble-platform-badge smartble-badge--preview">PREVIEW</span>
+          <span :class="badgeClass(surfaceStatus(surfaces.smart_hid))">{{ surfaceStatus(surfaces.smart_hid) }}</span>
         </div>
-        <h3>Smart HID</h3>
-        <p>第一方 Profile：BLE 仅用于配网与诊断；实时控制不属于 Smart BLE BLE 链路。端到端 E5 尚未完成。</p>
+        <h3>{{ surfaces.smart_hid.name }}</h3>
+        <p>{{ surfaces.smart_hid.reason }}</p>
       </article>
     </div>
   </section>
@@ -176,7 +204,7 @@ hero:
     <div class="smartble-section-head">
       <div class="smartble-kicker">Artifacts</div>
       <h2>产物状态（当前均为 NOT_RELEASED）</h2>
-      <p>没有真实 APK / 固件 / SHA 时，不提供可点击下载。下列卡片不可点击。</p>
+      <p>没有真实 APK / 固件 / SHA 时，不提供可点击下载。下列卡片不可点击。artifacts = []。</p>
     </div>
     <div class="smartble-download-grid">
       <div class="smartble-download-card smartble-download-card--disabled" role="group" aria-disabled="true">
@@ -210,18 +238,24 @@ hero:
     <div class="smartble-section-head">
       <div class="smartble-kicker">Current Limits</div>
       <h2>当前限制和证据状态</h2>
-      <p>以下是公开限制，不是最终验证报告。</p>
+      <p>以下限制来自 PREVIEW Release Metadata，不是最终验证报告。</p>
     </div>
     <ul class="smartble-limits-list">
-      <li>Android 正式 APK 尚未发布。</li>
-      <li>微信正式小程序码尚未发布。</li>
-      <li>Playwright / Page Driver E4 尚未完成。</li>
-      <li>Android、微信、ESP32 E5 尚未执行。</li>
-      <li>OTA 当前 BLOCKED。</li>
-      <li>ESP32 Observer 尚未完成。</li>
-      <li>Smart HID 尚未完成端到端 E5。</li>
-      <li>Release Pipeline 当前仍是历史 Flutter/Tauri 路线，不能代表当前主线。</li>
+      <li v-for="(item, idx) in limitations" :key="idx">{{ item }}。</li>
     </ul>
+    <!-- METADATA-LIMITS-FALLBACK: 无 JS 时仍可读 -->
+    <noscript>
+      <ul>
+        <li>Android 正式 APK 尚未发布。</li>
+        <li>微信正式小程序码尚未发布。</li>
+        <li>Playwright / Page Driver E4 尚未完成。</li>
+        <li>Android、微信、ESP32 E5 尚未执行。</li>
+        <li>OTA 当前 BLOCKED。</li>
+        <li>ESP32 Observer 尚未完成。</li>
+        <li>Smart HID 尚未完成端到端 E5。</li>
+        <li>Release Pipeline 仍为历史 Flutter/Tauri 路线。</li>
+      </ul>
+    </noscript>
     <div class="smartble-learning-cards">
       <a href="/target-product/" class="smartble-learning-card">
         <h3>Target Product</h3>

@@ -380,6 +380,27 @@
   letter-spacing: 0.04em;
 }
 
+.smartble-version-hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin-bottom: 12px;
+  font-size: 18px;
+}
+
+.smartble-version-hero strong {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--vp-c-text-1);
+}
+
+.smartble-version-hero > span {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--vp-c-text-2);
+}
+
 .smartble-status-pill--preview,
 .smartble-badge--preview {
   background: rgba(27, 109, 255, 0.12);

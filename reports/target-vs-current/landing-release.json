@@ -1,5 +1,6 @@
 {
   "landing_fake_download": false,
+  "version_ssot_ready": true,
   "release_builds_flutter": true,
   "release_builds_tauri": true,
   "release_builds_uniapp": false,
@@ -9,224 +10,6 @@
     "RELEASE-PIPELINE-001"
   ],
   "records": [
-    {
-      "target_id": "FEAT-004",
-      "target_type": "feature",
-      "dimension": "feature",
-      "gap_kind": "RELEASE",
-      "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "AUTOMATED_FAIL",
-      "static_implementation": null,
-      "e4_verification": null,
-      "e5_verification": null,
-      "severity": "P1",
-      "evidence_level": "E6",
-      "implementation_refs": [],
-      "test_ids": [
-        "TEST-C-006",
-        "TEST-U-002",
-        "TEST-R-002",
-        "TEST-E-008",
-        "TEST-R-001"
-      ],
-      "test_results": [
-        {
-          "test_id": "TEST-E-008",
-          "status": "PASS",
-          "case_id": "current:artifact-metadata.test.mjs:固件产物元数据：有产物必须带 manifest（版本+SHA），无产物必须 NOT_RELEASED",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-R-001",
-          "status": "PASS",
-          "case_id": "current:release-artifacts.test.mjs:TEST-R-001 产物登记处：任何已登记产物必须 URL+SHA256 成对",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-R-001",
-          "status": "PASS",
-          "case_id": "current:release-artifacts.test.mjs:TEST-R-001 下载规则与 landing-target 契约一致",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-002",
-          "status": "FAIL",
-          "case_id": "current:version-release-metadata-target.test.mjs:TEST-U-002 目标层：services/version-metadata.js",
-          "first_breakpoint": "[TEST-U-002 REQ-004/056 FEAT-004/066 PAGE-009/010 WEB-001 S-47] 第一断点: 目标模块缺失：apps/uniapp/services/version-metadata.js"
-        },
-        {
-          "test_id": "TEST-E-008",
-          "status": "FAIL",
-          "case_id": "current:artifact-metadata.test.mjs:VERSION 单源文件存在（18 号：版本五处同源的源头）",
-          "first_breakpoint": "仓库根 VERSION 文件存在"
-        },
-        {
-          "test_id": "TEST-R-001",
-          "status": "FAIL",
-          "case_id": "current:release-artifacts.test.mjs:TEST-R-002 版本单源：VERSION 或等价单源存在且与 README/manifest 同版",
-          "first_breakpoint": "[REQ-004/056 FEAT-004/066 18号] 第一断点: 仓库根 VERSION 单源文件缺失"
-        }
-      ],
-      "expected": "版本与构建渠道 (Must)",
-      "actual": "NOT_IMPLEMENTED: [TEST-U-002 REQ-004/056 FEAT-004/066 PAGE-009/010 WEB-001 S-47] 第一断点: 目标模块缺失：apps/uniapp/services/version-metadata.js",
-      "first_breakpoint": "[TEST-U-002 REQ-004/056 FEAT-004/066 PAGE-009/010 WEB-001 S-47] 第一断点: 目标模块缺失：apps/uniapp/services/version-metadata.js",
-      "downstream_impact": [],
-      "dependencies": [],
-      "root_cause_id": "RC-VERSION-SSOT",
-      "task_id": "VERSION-METADATA-001",
-      "release_blocking": true
-    },
-    {
-      "target_id": "FEAT-009",
-      "target_type": "feature",
-      "dimension": "feature",
-      "gap_kind": "RELEASE",
-      "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "AUTOMATED_FAIL",
-      "static_implementation": null,
-      "e4_verification": null,
-      "e5_verification": null,
-      "severity": "P1",
-      "evidence_level": "E6",
-      "implementation_refs": [],
-      "test_ids": [
-        "TEST-P-001",
-        "TEST-W-006",
-        "TEST-R-003",
-        "TEST-U-002"
-      ],
-      "test_results": [
-        {
-          "test_id": "TEST-U-002",
-          "status": "FAIL",
-          "case_id": "current:public-status-target.test.mjs:目标层：services/public-status.js",
-          "first_breakpoint": "[REQ-009/046/055 FEAT-009/070 18号§2 五词表] 第一断点: 目标模块缺失：apps/uniapp/services/public-status.js"
-        }
-      ],
-      "expected": "平台不支持降级 (Must)",
-      "actual": "NOT_IMPLEMENTED: [REQ-009/046/055 FEAT-009/070 18号§2 五词表] 第一断点: 目标模块缺失：apps/uniapp/services/public-status.js",
-      "first_breakpoint": "[REQ-009/046/055 FEAT-009/070 18号§2 五词表] 第一断点: 目标模块缺失：apps/uniapp/services/public-status.js",
-      "downstream_impact": [],
-      "dependencies": [],
-      "root_cause_id": "RC-VERSION-SSOT",
-      "task_id": "VERSION-METADATA-001",
-      "release_blocking": true
-    },
-    {
-      "target_id": "FEAT-066",
-      "target_type": "feature",
-      "dimension": "feature",
-      "gap_kind": "RELEASE",
-      "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "AUTOMATED_FAIL",
-      "static_implementation": null,
-      "e4_verification": null,
-      "e5_verification": null,
-      "severity": "P1",
-      "evidence_level": "E6",
-      "implementation_refs": [],
-      "test_ids": [
-        "TEST-C-006",
-        "TEST-P-010",
-        "TEST-R-002",
-        "TEST-E-008",
-        "TEST-R-001"
-      ],
-      "test_results": [
-        {
-          "test_id": "TEST-E-008",
-          "status": "PASS",
-          "case_id": "current:artifact-metadata.test.mjs:固件产物元数据：有产物必须带 manifest（版本+SHA），无产物必须 NOT_RELEASED",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-R-001",
-          "status": "PASS",
-          "case_id": "current:release-artifacts.test.mjs:TEST-R-001 产物登记处：任何已登记产物必须 URL+SHA256 成对",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-R-001",
-          "status": "PASS",
-          "case_id": "current:release-artifacts.test.mjs:TEST-R-001 下载规则与 landing-target 契约一致",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-E-008",
-          "status": "FAIL",
-          "case_id": "current:artifact-metadata.test.mjs:VERSION 单源文件存在（18 号：版本五处同源的源头）",
-          "first_breakpoint": "仓库根 VERSION 文件存在"
-        },
-        {
-          "test_id": "TEST-R-001",
-          "status": "FAIL",
-          "case_id": "current:release-artifacts.test.mjs:TEST-R-002 版本单源：VERSION 或等价单源存在且与 README/manifest 同版",
-          "first_breakpoint": "[REQ-004/056 FEAT-004/066 18号] 第一断点: 仓库根 VERSION 单源文件缺失"
-        }
-      ],
-      "expected": "版本历史页 (Must)",
-      "actual": "仓库根 VERSION 文件存在",
-      "first_breakpoint": "仓库根 VERSION 文件存在",
-      "downstream_impact": [
-        "RELEASE-PIPELINE-001: workflow builds Flutter/Tauri not UniApp+firmware"
-      ],
-      "dependencies": [],
-      "root_cause_id": "RC-VERSION-SSOT",
-      "task_id": "VERSION-METADATA-001",
-      "release_blocking": true
-    },
-    {
-      "target_id": "PAGE-009",
-      "target_type": "page",
-      "dimension": "page",
-      "gap_kind": "RELEASE",
-      "priority": "Must",
-      "implementation_status": "UNASSESSED",
-      "verification_status": "AUTOMATED_FAIL",
-      "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TOOLCHAIN",
-      "e5_verification": "HARDWARE_PENDING",
-      "severity": "P1",
-      "evidence_level": "E6",
-      "implementation_refs": [
-        {
-          "path": "apps/uniapp/pages/about/index.vue",
-          "symbol": "PAGE-009",
-          "line_hint": ""
-        }
-      ],
-      "test_ids": [
-        "TEST-P-009",
-        "TEST-C-006",
-        "TEST-A-012",
-        "TEST-W-010",
-        "TEST-R-003",
-        "TEST-R-005",
-        "TEST-U-002"
-      ],
-      "test_results": [
-        {
-          "test_id": "TEST-U-002",
-          "status": "FAIL",
-          "case_id": "current:version-release-metadata-target.test.mjs:TEST-U-002 目标层：services/version-metadata.js",
-          "first_breakpoint": "[TEST-U-002 REQ-004/056 FEAT-004/066 PAGE-009/010 WEB-001 S-47] 第一断点: 目标模块缺失：apps/uniapp/services/version-metadata.js"
-        }
-      ],
-      "expected": "3 states / 11 operations",
-      "actual": "NOT_IMPLEMENTED: [TEST-U-002 REQ-004/056 FEAT-004/066 PAGE-009/010 WEB-001 S-47] 第一断点: 目标模块缺失：apps/uniapp/services/version-metadata.js",
-      "first_breakpoint": "[TEST-U-002 REQ-004/056 FEAT-004/066 PAGE-009/010 WEB-001 S-47] 第一断点: 目标模块缺失：apps/uniapp/services/version-metadata.js",
-      "downstream_impact": [
-        "state_cases=3",
-        "operation_cases=11"
-      ],
-      "dependencies": [],
-      "root_cause_id": "RC-VERSION-SSOT",
-      "task_id": "VERSION-METADATA-001",
-      "release_blocking": false
-    },
     {
       "target_id": "STATE-W001-01",
       "target_type": "state",
@@ -693,12 +476,12 @@
       "dimension": "claim",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "CONFIRMED_PARTIAL",
-      "verification_status": "AUTOMATED_FAIL",
+      "implementation_status": "IMPLEMENTED_UNTESTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
-      "severity": "P1",
+      "severity": null,
       "evidence_level": "E6",
       "implementation_refs": [],
       "test_ids": [
@@ -710,7 +493,19 @@
         {
           "test_id": "TEST-E-008",
           "status": "PASS",
+          "case_id": "current:artifact-metadata.test.mjs:VERSION 单源文件存在（18 号：版本五处同源的源头）",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-E-008",
+          "status": "PASS",
           "case_id": "current:artifact-metadata.test.mjs:固件产物元数据：有产物必须带 manifest（版本+SHA），无产物必须 NOT_RELEASED",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-001",
+          "status": "PASS",
+          "case_id": "current:release-artifacts.test.mjs:TEST-R-002 版本单源：VERSION 或等价单源存在且与 README/manifest 同版",
           "first_breakpoint": null
         },
         {
@@ -724,29 +519,17 @@
           "status": "PASS",
           "case_id": "current:release-artifacts.test.mjs:TEST-R-001 下载规则与 landing-target 契约一致",
           "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-E-008",
-          "status": "FAIL",
-          "case_id": "current:artifact-metadata.test.mjs:VERSION 单源文件存在（18 号：版本五处同源的源头）",
-          "first_breakpoint": "仓库根 VERSION 文件存在"
-        },
-        {
-          "test_id": "TEST-R-001",
-          "status": "FAIL",
-          "case_id": "current:release-artifacts.test.mjs:TEST-R-002 版本单源：VERSION 或等价单源存在且与 README/manifest 同版",
-          "first_breakpoint": "[REQ-004/056 FEAT-004/066 18号] 第一断点: 仓库根 VERSION 单源文件缺失"
         }
       ],
       "expected": "产品定位一句话（Hero）",
-      "actual": "仓库根 VERSION 文件存在",
-      "first_breakpoint": "仓库根 VERSION 文件存在",
+      "actual": "待 E6 发布门验证",
+      "first_breakpoint": "E6 NOT_EXECUTED",
       "downstream_impact": [
         "RELEASE-PIPELINE-001: workflow builds Flutter/Tauri not UniApp+firmware"
       ],
       "dependencies": [],
-      "root_cause_id": "RC-VERSION-SSOT",
-      "task_id": "VERSION-METADATA-001",
+      "root_cause_id": null,
+      "task_id": "VERIFY-E6-001",
       "release_blocking": true
     },
     {
@@ -1719,48 +1502,6 @@
       "root_cause_id": null,
       "task_id": "VERIFY-E6-001",
       "release_blocking": true
-    },
-    {
-      "target_id": "EVID-008",
-      "target_type": "evidence",
-      "dimension": "evidence",
-      "gap_kind": "RELEASE",
-      "priority": "Must",
-      "implementation_status": "CONFIRMED_PARTIAL",
-      "verification_status": "AUTOMATED_FAIL",
-      "static_implementation": null,
-      "e4_verification": null,
-      "e5_verification": null,
-      "severity": "P1",
-      "evidence_level": null,
-      "implementation_refs": [],
-      "test_ids": [
-        "TEST-E-008"
-      ],
-      "test_results": [
-        {
-          "test_id": "TEST-E-008",
-          "status": "PASS",
-          "case_id": "current:artifact-metadata.test.mjs:固件产物元数据：有产物必须带 manifest（版本+SHA），无产物必须 NOT_RELEASED",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-E-008",
-          "status": "FAIL",
-          "case_id": "current:artifact-metadata.test.mjs:VERSION 单源文件存在（18 号：版本五处同源的源头）",
-          "first_breakpoint": "仓库根 VERSION 文件存在"
-        }
-      ],
-      "expected": "EVID-008",
-      "actual": "仓库根 VERSION 文件存在",
-      "first_breakpoint": "仓库根 VERSION 文件存在",
-      "downstream_impact": [
-        "RELEASE-PIPELINE-001: workflow builds Flutter/Tauri not UniApp+firmware"
-      ],
-      "dependencies": [],
-      "root_cause_id": "RC-VERSION-SSOT",
-      "task_id": "VERSION-METADATA-001",
-      "release_blocking": false
     }
   ]
 }

@@ -39,7 +39,7 @@
       "unlocks": [
         "TEST-PAGE-DRIVER-001"
       ],
-      "gap_count": 162,
+      "gap_count": 163,
       "target_ids": [
         "PAGE-001#BLK-TOOL-PLAYWRIGHT",
         "STATE-P001-01",
@@ -215,42 +215,17 @@
       "title": "根 VERSION + Release Metadata + Public Status",
       "root_cause_id": "RC-VERSION-SSOT",
       "severity": "P1",
-      "status": "PLANNED",
+      "status": "DONE",
       "dependencies": [],
       "unlocks": [
         "RELEASE-PIPELINE-001",
         "PAGE-VERSION-001",
         "VERIFY-E6-001"
       ],
-      "gap_count": 9,
-      "target_ids": [
-        "FEAT-004",
-        "FEAT-009",
-        "FEAT-066",
-        "REQ-004",
-        "REQ-009",
-        "REQ-056",
-        "PAGE-009",
-        "CLAIM-001",
-        "EVID-008"
-      ],
-      "test_ids": [
-        "TEST-C-006",
-        "TEST-U-002",
-        "TEST-R-002",
-        "TEST-E-008",
-        "TEST-R-001",
-        "TEST-P-001",
-        "TEST-W-006",
-        "TEST-R-003",
-        "TEST-P-010",
-        "TEST-P-009",
-        "TEST-A-012",
-        "TEST-W-010",
-        "TEST-R-005",
-        "TEST-R-006"
-      ],
-      "first_breakpoint": "[TEST-U-002 REQ-004/056 FEAT-004/066 PAGE-009/010 WEB-001 S-47] 第一断点: 目标模块缺失：apps/uniapp/services/version-metadata.js",
+      "gap_count": 0,
+      "target_ids": [],
+      "test_ids": [],
+      "first_breakpoint": "",
       "implementation_files": [],
       "forbidden_files": [
         "apps/uniapp/** (until TP-G3)",
@@ -1162,8 +1137,9 @@
         "VERSION-METADATA-001"
       ],
       "unlocks": [],
-      "gap_count": 30,
+      "gap_count": 31,
       "target_ids": [
+        "CLAIM-001",
         "CLAIM-002",
         "CLAIM-003",
         "CLAIM-004",
@@ -1196,6 +1172,9 @@
         "CLAIM-031"
       ],
       "test_ids": [
+        "TEST-R-006",
+        "TEST-E-008",
+        "TEST-R-001",
         "TEST-R-002",
         "TEST-R-007",
         "TEST-A-005",
@@ -1220,10 +1199,7 @@
         "TEST-H-005",
         "TEST-H-006",
         "TEST-R-005",
-        "TEST-E-008",
         "TEST-R-008",
-        "TEST-R-001",
-        "TEST-R-006",
         "TEST-R-009",
         "TEST-R-010",
         "TEST-R-011"
