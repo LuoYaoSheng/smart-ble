@@ -24,19 +24,21 @@ TP-G0 完整目标产品文档
 
 ---
 
-## 2. 当前阶段：TP-G3（TEST-PAGE-DRIVER-001 = DONE）
+## 2. 当前阶段：TP-G3（等待下一修复 Task）
 
 PUBLIC-HONESTY / VERSION-METADATA / PAGE-VERSION / ENV-PLAYWRIGHT / TEST-PAGE-DRIVER = DONE。
+**TP-G2-R2** 页面 E4 产品差距已重算（见 `docs/gap-analysis/PAGE_E4_GAP_REPORT.md`）。
 
 当前阶段：
 
-**TP-G3 · TEST-PAGE-DRIVER-001 已完成；等待用户批准下一 Task**
+**等待用户批准下一修复 Task（不得自动执行 Runtime/OTA/ESP32）**
 
-下一候选（均未自动执行）：
+下一候选：
 
+- `OTA-CLIENT-001` / `OTA-PACKAGE-001`（PAGE-006 P0）
+- `RUNTIME-*`（FILTER / GATT / SESSION / LOG-REDACTION …）
+- `PAGE-BROADCAST-001`
 - `RELEASE-PIPELINE-001`
-- Runtime / PAGE 业务修复
-- OTA / ESP32 / E5 / E6
 
 本轮禁止自动进入上述任一 Task。
 

@@ -286,5 +286,112 @@
     "testability_records": 128,
     "blocked_page_cases": 0,
     "note": "blocked_page_cases 不得计为产品缺陷数；Playwright 与 Page Driver 为独立 blocker"
+  },
+  "page_e4_r2": {
+    "gate": "TP-G2-R2",
+    "totals": {
+      "PASS": 102,
+      "FAIL": 97,
+      "BLOCKED": 2,
+      "NOT_IMPLEMENTED": 29,
+      "harness_PASS": 230,
+      "harness_FAIL": 0
+    },
+    "pages": {
+      "PAGE-001": {
+        "PASS": 0,
+        "FAIL": 30,
+        "BLOCKED": 0,
+        "NOT_IMPLEMENTED": 0,
+        "product": "FAIL",
+        "task_id": "RUNTIME-FILTER-001"
+      },
+      "PAGE-002": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_IMPLEMENTED": 29,
+        "product": "FAIL",
+        "task_id": "RUNTIME-LOG-REDACTION-001"
+      },
+      "PAGE-003": {
+        "PASS": 12,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_IMPLEMENTED": 0,
+        "product": "PASS",
+        "task_id": null
+      },
+      "PAGE-004": {
+        "PASS": 14,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_IMPLEMENTED": 0,
+        "product": "PASS",
+        "task_id": null
+      },
+      "PAGE-005": {
+        "PASS": 18,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_IMPLEMENTED": 0,
+        "product": "PASS",
+        "task_id": null
+      },
+      "PAGE-006": {
+        "PASS": 0,
+        "FAIL": 30,
+        "BLOCKED": 0,
+        "NOT_IMPLEMENTED": 0,
+        "product": "FAIL",
+        "task_id": "RUNTIME-GATT-CODEC-001"
+      },
+      "PAGE-007": {
+        "PASS": 0,
+        "FAIL": 14,
+        "BLOCKED": 0,
+        "NOT_IMPLEMENTED": 0,
+        "product": "FAIL",
+        "task_id": "RUNTIME-SESSION-001"
+      },
+      "PAGE-008": {
+        "PASS": 0,
+        "FAIL": 23,
+        "BLOCKED": 2,
+        "NOT_IMPLEMENTED": 0,
+        "product": "FAIL",
+        "task_id": "PAGE-BROADCAST-001"
+      },
+      "PAGE-009": {
+        "PASS": 20,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_IMPLEMENTED": 0,
+        "product": "PASS",
+        "task_id": null
+      },
+      "PAGE-010": {
+        "PASS": 13,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_IMPLEMENTED": 0,
+        "product": "PASS",
+        "task_id": null
+      },
+      "WEB-001": {
+        "PASS": 25,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_IMPLEMENTED": 0,
+        "product": "PASS",
+        "task_id": null
+      }
+    },
+    "states_total": 67,
+    "operations_total": 92,
+    "harness": {
+      "PASS": 230,
+      "FAIL": 0
+    }
   }
 }

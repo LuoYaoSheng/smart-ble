@@ -212,6 +212,7 @@ approved_by: user
 
 > 执行规则：依赖图不变；Wave/拓扑序；一次只批准一个 Task；完成后停下。
 > **PUBLIC-HONESTY / VERSION-METADATA / PAGE-VERSION / ENV-PLAYWRIGHT / TEST-PAGE-DRIVER = DONE**。
+> **TP-G2-R2**：页面 E4 产品差距已重算（`PAGE_E4_GAP_REPORT.md`）；页面失败优先挂 RUNTIME/OTA/ESP32 Task。
 > 下一 Task 由用户选择；**不得**自动执行 RELEASE-PIPELINE / RUNTIME / OTA / ESP32 / E5/E6。
 
 ## 推荐拓扑序
@@ -623,6 +624,7 @@ ${(coverage.current?.layers || []).map((l) => `- ${l.name}: pass=${l.pass} fail=
 - reason: ${coverage.current?.pages?.reason}
 - blockers: BLK-TOOL-PLAYWRIGHT=${(report.blockers || []).find((b) => b.blocker_id === 'BLK-TOOL-PLAYWRIGHT')?.status || 'OPEN'}; BLK-TEST-PAGE-DRIVER=${(report.blockers || []).find((b) => b.blocker_id === 'BLK-TEST-PAGE-DRIVER')?.status || 'OPEN'}
 - page E4: pass=${coverage.current?.pages?.pass ?? '—'} fail=${coverage.current?.pages?.fail ?? '—'} (Driver Runtime)
+- TP-G2-R2 product tallies: see \`docs/gap-analysis/PAGE_E4_GAP_REPORT.md\` / \`reports/target-vs-current/page-e4-v2.json\`
 
 ## 映射规则
 

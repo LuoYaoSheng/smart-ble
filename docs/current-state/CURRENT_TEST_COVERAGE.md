@@ -1,9 +1,8 @@
-# 当前测试覆盖（TP-G2-R1）
+# 当前测试覆盖（TP-G2-R2）
 
 ```yaml
 status: REVIEW
-gate: TP-G2-R1
-content_hash: 5c58aa6d543f8943886694a38cf03bf4accee2799a5b5636257017e4b676e591
+gate: TP-G2-R2
 ```
 
 ## System / Harness
@@ -12,7 +11,7 @@ content_hash: 5c58aa6d543f8943886694a38cf03bf4accee2799a5b5636257017e4b676e591
 |---|---|
 | SYSTEM_PASS | 412 |
 | SYSTEM_FAIL | 0 |
-| HARNESS_PASS | 89 |
+| HARNESS_PASS | 105 |
 | HARNESS_FAIL | 0 |
 | TARGET_CONTRACT_FAIL | 0 |
 | TEST_INFRA_FAIL | 0 |
@@ -34,16 +33,19 @@ content_hash: 5c58aa6d543f8943886694a38cf03bf4accee2799a5b5636257017e4b676e591
 - release: pass=10 fail=0 cases=10 blocked=—
 - pages-playwright: pass=230 fail=0 cases=— blocked={}
 
-## 页面自动化
+## 页面自动化（TP-G2-R2）
 
 - blocked_specs: 0
 - blocked_cases: 0
 - reason: null
 - blockers: BLK-TOOL-PLAYWRIGHT=CLEARED; BLK-TEST-PAGE-DRIVER=CLEARED
-- page E4: pass=230 fail=0 (Driver Runtime)
+- page E4 harness: pass=230 fail=0 (Fake Runtime)
+- **产品差距（case 级）**：PASS=102 FAIL=97 BLOCKED=2 NOT_IMPLEMENTED=29
+- 报告：`docs/gap-analysis/PAGE_E4_GAP_REPORT.md` · `reports/target-vs-current/page-e4-v2.json`
 
 ## 映射规则
 
-- PASS → 相关 target_ids 的 verification_status=AUTOMATED_PASS
-- FAIL → AUTOMATED_FAIL + case.first_breakpoint
-- 无证据 → UNASSESSED / NOT_EXECUTED（不是 PARTIAL）
+- Harness PASS ≠ 产品 PASS（Fake Runtime）
+- 产品 FAIL/NOT_IMPLEMENTED 来自静态探测 + Current FAIL first_breakpoint
+- BLOCKED = fixture/hardware（如 Observer）
+- 无证据不得标 PARTIAL
