@@ -24,17 +24,32 @@ TP-G0 完整目标产品文档
 
 ---
 
-## 2. 当前立即执行：TP-G2
+## 2. 当前阶段：等待用户审阅 TP-G2-R1
 
-TP-G1（含 R1/R2）已由用户批准（FINAL PASS）。当前使用：
+TP-G1-R3（Current 度量完整性）与 TP-G2-R1（结构化差距报告）已完成，**等待用户批准**。
+
+当前阶段：
+
+**审阅 TP-G2-R1 差距与修复拓扑序。未经批准不得进入 TP-G3。**
+
+正式报告：
+
+```text
+docs/gap-analysis/TARGET_VS_CURRENT_SUMMARY.md
+docs/remediation/REMEDIATION_ORDER.md
+reports/target-vs-current/   # v2
+reports/target-vs-current-v1/ # SUPERSEDED
+```
+
+历史执行提示词：
 
 ```text
 2026-09-01-tp-g2-current-gap-analysis-codex-prompt.md
 ```
 
-当前阶段：
+原段落保留供参考：
 
-**TP-G2 当前实现盘点与差距报告。**
+**TP-G2 当前实现盘点与差距报告（已由 R1 校正）。**
 
 输出：
 
