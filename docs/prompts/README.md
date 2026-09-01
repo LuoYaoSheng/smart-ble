@@ -24,13 +24,16 @@ TP-G0 完整目标产品文档
 
 ---
 
-## 2. 当前阶段：等待用户审阅 TP-G2-R1
+## 2. 当前立即执行：TP-G3 · PUBLIC-HONESTY-001
 
-TP-G1-R3（Current 度量完整性）与 TP-G2-R1（结构化差距报告）已完成，**等待用户批准**。
+TP-G1-R3 与 TP-G2-R1 已由用户批准（规划门禁 PASS）。目标产品与目标测试继续冻结。
 
 当前阶段：
 
-**审阅 TP-G2-R1 差距与修复拓扑序。未经批准不得进入 TP-G3。**
+**TP-G3 · 当前 Task：`PUBLIC-HONESTY-001`**
+
+范围：生产落地页诚实降级为 PREVIEW / NOT_RELEASED。
+完成后必须停下，**不得**自动执行 `VERSION-METADATA-001` 或其他 Task。
 
 正式报告：
 
@@ -49,7 +52,7 @@ reports/target-vs-current-v1/ # SUPERSEDED
 
 原段落保留供参考：
 
-**TP-G2 当前实现盘点与差距报告（已由 R1 校正）。**
+**TP-G2 当前实现盘点与差距报告（已由 R1 校正；现进入 TP-G3 首个 Task）。**
 
 输出：
 

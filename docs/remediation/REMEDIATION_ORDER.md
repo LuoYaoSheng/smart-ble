@@ -1,21 +1,30 @@
 # 修复顺序（TP-G2-R1 · 未执行）
 
 ```yaml
-status: REVIEW
+status: APPROVED
 document_version: 2.0
 gate: TP-G2-R1
 content_hash: be493664f40cc23efd4418ab4df5f8cdba44cb398786586fd9d5ed5373c07074
-approved_by: null
+approved_by: user
+last_reviewed: 2026-09-01
 ```
 
-> 本文件只规划。**不得**在未经用户批准前执行任何 SOURCE_FIX / 进入 TP-G3。
+> **用户已批准本 Remediation 顺序作为规划。**
+>
+> 执行规则：
+> - 依赖图保持不变；
+> - 实际开发采用 Wave / 拓扑顺序；
+> - **当前只批准执行 `PUBLIC-HONESTY-001`**；
+> - 其他 Task 仍为 `PLANNED`；
+> - 一个 Task 完成后必须停下，等待下一次批准；
+> - 不得自动进入下一个 Task / TP-G4。
 
 ## 推荐拓扑序
 
 1. **TEST-CURRENT-INTEGRITY-001** — Current 度量完整性（TP-G1-R3 已完成）（type=TESTABILITY, sev=—, gaps≈0, status=DONE）
 2. **ENV-PLAYWRIGHT-001** — 安装并锁定 Playwright / H5 harness（type=ENVIRONMENT, sev=P2, gaps≈159, status=PLANNED）
 3. **TEST-PAGE-DRIVER-001** — 实现 Target Page Driver（type=TESTABILITY, sev=P2, gaps≈11, status=PLANNED）
-4. **PUBLIC-HONESTY-001** — 落地页立即诚实降级（假下载/6+/错误主线→PREVIEW/NOT_RELEASED）（type=SOURCE_FIX, sev=P0, gaps≈15, status=PLANNED）
+4. **PUBLIC-HONESTY-001** — 落地页立即诚实降级（假下载/6+/错误主线→PREVIEW/NOT_RELEASED）（type=SOURCE_FIX, sev=P0, gaps≈15, status=**APPROVED_FOR_EXECUTION**）
 5. **VERSION-METADATA-001** — 根 VERSION + Release Metadata + Public Status（type=SOURCE_FIX, sev=P1, gaps≈9, status=PLANNED）
 6. **RELEASE-PIPELINE-001** — UniApp + Peripheral/Observer 双固件 Release Pipeline（type=RELEASE, sev=P0, gaps≈1, status=PLANNED）
 7. **RUNTIME-DISPLAY-NAME-001** — 实现 display-name 解析链（type=SOURCE_FIX, sev=P1, gaps≈2, status=PLANNED）

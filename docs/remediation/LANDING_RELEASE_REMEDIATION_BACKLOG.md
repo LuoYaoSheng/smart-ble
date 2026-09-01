@@ -1,15 +1,18 @@
 # Landing / Release 修复 Backlog
 
 ```yaml
-status: REVIEW
-gate: TP-G2-R1
+status: APPROVED
+gate: TP-G3
 content_hash: be493664f40cc23efd4418ab4df5f8cdba44cb398786586fd9d5ed5373c07074
+approved_by: user
+last_reviewed: 2026-09-01
 ```
 
-> 本轮只规划，不执行。task_type ∈ SOURCE_FIX | TESTABILITY | ENVIRONMENT | DOCUMENTATION | VERIFY_E5 | VERIFY_E6 | RELEASE
+> TP-G3 已开启。**仅** `PUBLIC-HONESTY-001` 为 `APPROVED_FOR_EXECUTION`；其余仍为 PLANNED。
 
 ### PUBLIC-HONESTY-001
 
+- 状态：**APPROVED_FOR_EXECUTION**
 - 标题：落地页立即诚实降级（假下载/6+/错误主线→PREVIEW/NOT_RELEASED）
 - task_type：SOURCE_FIX
 - severity：P0
@@ -19,9 +22,9 @@ content_hash: be493664f40cc23efd4418ab4df5f8cdba44cb398786586fd9d5ed5373c07074
 - First Breakpoint：无产物直链时页面必须明确 NOT_RELEASED/尚未发布
 - 依赖：无
 - 解锁：VERIFY-E6-001
-- 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
+- 禁止修改（本轮）：VERSION；Release Workflow；apps/uniapp/**；docs/target-product/**；contracts/target/** product semantics
 - 自动化验收：related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL
-- 建议提交信息：`source_fix(public-honesty-001): 落地页立即诚实降级（假下载/6+/错误主线→PREVIEW/NOT_RELEASED）`
+- 建议提交信息：`docs(site): publish an honest Smart BLE preview`
 
 ### VERSION-METADATA-001
 

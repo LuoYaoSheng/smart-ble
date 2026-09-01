@@ -1,12 +1,12 @@
 # Target vs Current 摘要（TP-G2-R1）
 
 ```yaml
-status: REVIEW
+status: APPROVED
 document_version: 2.0
 gate: TP-G2-R1
 owner: Smart BLE QA / Engineering
 last_reviewed: 2026-09-01
-approved_by: null
+approved_by: user
 generated_from: reports/target-vs-current/target-vs-current.json
 content_hash: be493664f40cc23efd4418ab4df5f8cdba44cb398786586fd9d5ed5373c07074
 commit: b869ab247b9fb420da0bc07c9c9c017d26970d55
@@ -14,6 +14,11 @@ supersedes: TP-G2 v1 (reports/target-vs-current-v1/)
 ```
 
 > 旧 TP-G2 v1 摘要已 **SUPERSEDED_BY_TP_G2_R1**。正式路径：`reports/target-vs-current/`。
+>
+> **用户已批准 TP-G2-R1 作为规划门禁（APPROVED AS PLANNING GATE）。**
+> PASS 表示测量与规划可信；**不等于** E4/E5/E6 完成。
+> `blocked_cases` 是受阻 Case 数，**不得**计为产品缺陷。
+> 目标产品与目标测试继续冻结。允许按批准 Task 进入 TP-G3。
 
 ## 1. 测试基础设施与 Current 真实结果
 
