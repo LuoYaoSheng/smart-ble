@@ -1,28 +1,34 @@
-# 当前构建与工具链
+# 当前构建与工具链（TP-G2-R1）
 
 ```yaml
 status: REVIEW
-last_reviewed: 2026-09-01
+gate: TP-G2-R1
+content_hash: be493664f40cc23efd4418ab4df5f8cdba44cb398786586fd9d5ed5373c07074
 ```
 
-来源：`.tmp/tp-g2/environment/inventory.txt`
+## App
 
-| 工具 | 状态 |
-|---|---|
-| OS | Darwin arm64 · Apple M4 |
-| Git | 2.50.1 |
-| Node | v24.12.0 |
-| npm | 11.6.2 |
-| Python | 3.14.5 |
-| Java | Temurin 25 |
-| HBuilderX.app | 默认路径未见；存在 `~/bin/cli` |
-| PlatformIO (`pio`) | **缺失** |
-| ADB | 1.0.41；`adb devices -l` **无设备** |
-| 微信开发者工具 | `/Applications` 可见 |
-| Playwright | **未安装** |
-| ESP32 串口 | 未见 `/dev/tty.usb*`；仅 Bluetooth-Incoming / debug-console |
+- UniApp 工程：`apps/uniapp/`
+- 校验脚本：`scripts/verify-uniapp.sh`（本轮已作为回归输入）
+- HBuilderX 默认路径：**UNASSESSED** / 可能 BLOCKED_BY_TOOLCHAIN
 
-## 本轮允许/禁止
+## Docs
 
-- 已执行：非破坏识别、docs build、verify-uniapp、目标 System/Current
-- 禁止且未做：pio upload、erase、adb install、真机 BLE、E5 PASS
+- VitePress：`docs/` + `npm run docs:build`
+- 生产落地页源：`docs/index.md`（本轮禁止修改业务语义之外的生产页内容；盘点只读）
+
+## ESP32
+
+- PlatformIO：`hardware/esp32/LightBLE/platformio.ini`
+- envs: esp32dev
+- upload_port: COM3
+- 本轮禁止：`pio run -t upload`
+
+## E2E / Page
+
+- `@playwright/test`：OPEN
+- TARGET_PAGE_DRIVER：OPEN
+
+## Release CI
+
+- `.github/workflows/release-build.yml`：Flutter=true Tauri=true UniApp=false

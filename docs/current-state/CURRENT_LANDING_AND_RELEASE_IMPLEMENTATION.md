@@ -1,32 +1,37 @@
-# 当前落地页与 Release 实现
+# 当前落地页与 Release 实现盘点（TP-G2-R1）
 
 ```yaml
 status: REVIEW
-last_reviewed: 2026-09-01
+gate: TP-G2-R1
+content_hash: be493664f40cc23efd4418ab4df5f8cdba44cb398786586fd9d5ed5373c07074
 ```
 
 ## 落地页
 
-- 文件：`docs/index.md`
-- Download Hub 三卡（Android / Windows / macOS）均指向 `https://github.com/luoyaosheng/smart-ble/releases/latest`
-- 无按产物角色区分的真实 APK/固件 URL、无 SHA 展示、无 NOT_RELEASED 无链接降级
-- `docs:build`（VitePress）：本轮 **PASS**
+- path: `docs/index.md`
+- landing_fake_download: **true**
+- 观察：下载枢纽出现 `releases/latest`
+- 公开 Claim 总量：31（CLAIM-001..031）
+- 任务拆分（不可混成循环依赖）：
+  1. **PUBLIC-HONESTY-001** — 立即诚实降级
+  2. **VERSION-METADATA-001** — VERSION / Metadata / Public Status
+  3. **RELEASE-PIPELINE-001** — UniApp + 双固件流水线
 
-## 版本
+## Release Workflow
 
-| 源 | 值 |
-|---|---|
-| 根 `VERSION` | **缺失** |
-| `apps/uniapp/manifest.json` | versionName 1.0.5 |
-| `apps/uniapp/config/product.js` | versionFallback 1.0.5 |
-| `pages/about/version.vue` | 硬编码历史，首项 v1.0.5 |
-| docs `package.json` | 1.0.0 |
+- path: `.github/workflows/release-build.yml`
+- builds Flutter: true
+- builds Tauri: true
+- builds UniApp: false
+- 目标主产物：UniApp Android + 微信记录 + Peripheral/Observer 固件（当前未满足）
 
-## Release 工作流
+## VERSION / Metadata
 
-- 既有审计：`.github/workflows` 不保证产出 UniApp APK/固件主产物（见 verification 矩阵）
-- 本轮未修改 workflow；未发布
+- 根 `VERSION`：缺失
+- `apps/uniapp/services/version-metadata.js`：缺失
+- `apps/uniapp/services/public-status.js`：缺失
+- PAGE-010：硬编码 versionHistory（见页面盘点）
 
-## 本轮构建
+## SEO / OG / Nav
 
-- `cd docs && npm run docs:build` → EXIT 0
+- VitePress 配置与 docs 站点：**UNASSESSED** 细项（本轮以 Claim/Release 测试与静态下载区证据为主）

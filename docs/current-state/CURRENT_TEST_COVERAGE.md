@@ -1,8 +1,9 @@
-# 当前测试覆盖（本轮实测）
+# 当前测试覆盖（TP-G2-R1）
 
 ```yaml
 status: REVIEW
-last_reviewed: 2026-09-01
+gate: TP-G2-R1
+content_hash: be493664f40cc23efd4418ab4df5f8cdba44cb398786586fd9d5ed5373c07074
 ```
 
 ## System / Harness
@@ -11,42 +12,37 @@ last_reviewed: 2026-09-01
 |---|---|
 | SYSTEM_PASS | 412 |
 | SYSTEM_FAIL | 0 |
-| HARNESS_PASS | 70 |
+| HARNESS_PASS | 89 |
 | HARNESS_FAIL | 0 |
 | TARGET_CONTRACT_FAIL | 0 |
-| 7 Checker | 全部 PASS |
+| TEST_INFRA_FAIL | 0 |
 
-## Current
+## Current（结构化 cases）
 
-| 层 | PASS | FAIL |
-|---|---|---|
-| unit | 5 | 11 |
-| integration | 25 | 2 |
-| firmware | 3 | 4 |
-| release | 8 | 1 |
-| pages-playwright | 0 | 0（blocked） |
-| **合计** | **41** | **18** |
-
-## 页面阻断
-
-| 项 | 值 |
+| 指标 | 值 |
 |---|---|
-| reason | BLOCKED_BY_TOOLCHAIN |
-| blocked_specs | 11 |
-| blocked_cases | 229 |
-| state_cases | 67 |
-| operation_cases | 92 |
-| assertion_cases | 849 |
+| CURRENT_PASS | 27 |
+| CURRENT_FAIL | 26 |
+| cases | 53 |
+| source | .tmp/tp-g2/logs/current-structured.json |
 
-## 其他
+### Layers
 
-| 命令 | 结果 |
-|---|---|
-| `verify-uniapp.sh` | PASS（EXIT 0） |
-| `docs:build` | PASS（EXIT 0） |
-| PlatformIO | 未安装 → ESP32 build NOT_EXECUTED |
-| Playwright | 未安装 |
-| adb devices | 空列表 |
-| 硬件 E5 | HARDWARE_PENDING / NOT_EXECUTED |
+- unit: pass=5 fail=11 cases=16 blocked=—
+- integration: pass=12 fail=6 cases=18 blocked=—
+- firmware: pass=4 fail=5 cases=9 blocked=—
+- release: pass=6 fail=4 cases=10 blocked=—
+- pages-playwright: pass=0 fail=0 cases=— blocked={"BLOCKED_BY_TOOLCHAIN":11}
 
-日志：`.tmp/tp-g2/logs/`（不入库）
+## 页面自动化
+
+- blocked_specs: 11
+- blocked_cases: 229
+- reason: BLOCKED_BY_TOOLCHAIN
+- blockers: BLK-TOOL-PLAYWRIGHT, BLK-TEST-PAGE-DRIVER（独立登记，gap_count 均 > 0）
+
+## 映射规则
+
+- PASS → 相关 target_ids 的 verification_status=AUTOMATED_PASS
+- FAIL → AUTOMATED_FAIL + case.first_breakpoint
+- 无证据 → UNASSESSED / NOT_EXECUTED（不是 PARTIAL）

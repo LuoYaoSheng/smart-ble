@@ -1,18 +1,30 @@
-# 当前 Smart HID 实现
+# 当前 Smart HID 实现盘点（TP-G2-R1）
 
 ```yaml
 status: REVIEW
-last_reviewed: 2026-09-01
+gate: TP-G2-R1
+content_hash: be493664f40cc23efd4418ab4df5f8cdba44cb398786586fd9d5ed5373c07074
 ```
 
-| 路径 | 符号 | 备注 |
-|---|---|---|
-| `apps/uniapp/services/smart-hid/index.js` | `smartHidService` | 会话/配网/诊断 |
-| `apps/uniapp/services/smart-hid/profile.js` | profile 常量 | Current FAIL：TS/`as` 语法导致 Node 目标导入失败（TEST-U-015） |
-| `apps/uniapp/services/smart-hid/workflow.js` | waiters | 存在 |
-| `apps/uniapp/services/smart-hid/known-devices.js` | 历史 | 存在 |
-| `apps/uniapp/composables/use-smart-hid-provisioning.js` | 配网向导 | PAGE-002 使用 |
-| `apps/uniapp/store/hid.js` | HID store | 存在 |
-| `docs/smart-hid/**` | 文档 | 存在 |
+## 源码事实
 
-真机 Smart HID / ControlHub：本轮 **NOT_EXECUTED**。
+- path: `apps/uniapp/services/smart-hid/profile.js`
+- symbol: import from `core/protocols/hid-provisioning-protocol.ts`
+- line_hint: 文件头部 ESM import（`.ts` 后缀）
+- 同目录还存在: index.js, known-devices.js, provision-form.js, scan-code-feedback.js, workflow.js
+
+## 测试失败性质
+
+- TEST-U-015 CURRENT FAIL：`SyntaxError: Unexpected identifier 'as'`
+- 根因分类：**TESTABILITY**（Node 测试桥无法转译 TS），不是已确认的产品功能缺失
+- task: **TEST-BRIDGE-TS-001**
+- FEAT-053..059：**不得**因此全部标 NOT_IMPLEMENTED
+
+## UniApp 构建链
+
+- HBuilderX/uni-app 是否能解析该 `.ts` import：**UNASSESSED**（本轮未跑正式打包）
+- Runtime 真机配网 E5：**HARDWARE_PENDING** / NOT_EXECUTED
+
+## 报告记录
+
+smart-hid.json note: FEAT-053..059 Node TS import bridge → TEST-BRIDGE-TS-001 (TESTABILITY), not product NOT_IMPLEMENTED
