@@ -1,27 +1,27 @@
 {
   "schema_version": "2.0",
   "gate": "TP-G2-R1",
-  "content_hash": "5c58aa6d543f8943886694a38cf03bf4accee2799a5b5636257017e4b676e591",
-  "generated_at": "2026-09-01T10:17:30.875Z",
-  "commit": "ae13e90ea5ad38a4e416b5783a4956a81f827547",
+  "content_hash": "838a6c6fa67b924dcdb3499ba81abbdde3bb6279393696fba8035d82d8828ca3",
+  "generated_at": "2026-09-01T11:29:21.038Z",
+  "commit": "5c36adf6a8242d2b3902e13e99601fa59672992d",
   "unique_root_causes_by_severity": {
     "P0": 2,
-    "P1": 12,
+    "P1": 11,
     "P2": 0,
     "P3": 0
   },
   "affected_target_records_by_severity": {
     "P0": 16,
-    "P1": 67,
+    "P1": 65,
     "P2": 0,
     "P3": 0,
-    "null": 564
+    "null": 566
   },
   "coverage": {
     "gate": "TP-G2-R1",
     "schema_version": "2.0",
-    "generated_at": "2026-09-01T10:17:30.875Z",
-    "commit": "ae13e90ea5ad38a4e416b5783a4956a81f827547",
+    "generated_at": "2026-09-01T11:29:21.038Z",
+    "commit": "5c36adf6a8242d2b3902e13e99601fa59672992d",
     "structured_current_path": ".tmp/tp-g2/logs/current-structured.json",
     "system": {
       "SYSTEM_PASS": 412,
@@ -32,17 +32,17 @@
       "TEST_INFRA_FAIL": 0
     },
     "current": {
-      "CURRENT_PASS": 265,
-      "CURRENT_FAIL": 19,
+      "CURRENT_PASS": 281,
+      "CURRENT_FAIL": 18,
       "TEST_INFRA_FAIL": 0,
-      "cases": 54,
+      "cases": 69,
       "layers": [
         {
           "name": "unit",
-          "pass": 8,
-          "fail": 9,
+          "pass": 24,
+          "fail": 8,
           "skipped": 0,
-          "case_count": 17,
+          "case_count": 32,
           "infra_fail": 0
         },
         {
@@ -257,8 +257,8 @@
     },
     "records_total": 647,
     "by_gap_kind": {
-      "PRODUCT": 274,
-      "RUNTIME": 37,
+      "PRODUCT": 275,
+      "RUNTIME": 36,
       "PAGE": 149,
       "TESTABILITY": 128,
       "FIRMWARE": 10,
@@ -267,41 +267,41 @@
       "RELEASE": 1
     },
     "by_implementation_status": {
-      "IMPLEMENTED_UNTESTED": 60,
+      "IMPLEMENTED_UNTESTED": 62,
       "UNASSESSED": 492,
       "NOT_IMPLEMENTED": 28,
-      "CONFIRMED_PARTIAL": 41,
+      "CONFIRMED_PARTIAL": 39,
       "CONFIRMED_IMPLEMENTED": 22,
       "CONFIRMED_MISSING": 4
     },
     "by_verification_status": {
-      "AUTOMATED_PASS": 86,
+      "AUTOMATED_PASS": 88,
       "HARDWARE_PENDING": 59,
-      "AUTOMATED_FAIL": 66,
+      "AUTOMATED_FAIL": 64,
       "NOT_EXECUTED": 293,
       "EXECUTED": 139,
       "BLOCKED_BY_FIXTURE": 4
     },
     "by_severity": {
-      "null": 564,
-      "P1": 67,
+      "null": 566,
+      "P1": 65,
       "P0": 16
     },
     "unique_root_causes_by_severity": {
       "P0": 2,
-      "P1": 12,
+      "P1": 11,
       "P2": 0,
       "P3": 0
     },
     "affected_target_records_by_severity": {
       "P0": 16,
-      "P1": 67,
+      "P1": 65,
       "P2": 0,
       "P3": 0,
-      "null": 564
+      "null": 566
     },
     "product_vs_testability": {
-      "product_gaps_with_severity": 80,
+      "product_gaps_with_severity": 78,
       "testability_records": 128,
       "blocked_page_cases": 0,
       "note": "blocked_page_cases 不得计为产品缺陷数；Playwright 与 Page Driver 为独立 blocker"
@@ -1000,14 +1000,14 @@
       "target_id": "FEAT-014",
       "target_type": "feature",
       "dimension": "feature",
-      "gap_kind": "RUNTIME",
+      "gap_kind": "PRODUCT",
       "priority": "Must",
-      "implementation_status": "CONFIRMED_PARTIAL",
-      "verification_status": "AUTOMATED_FAIL",
+      "implementation_status": "IMPLEMENTED_UNTESTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
-      "severity": "P1",
+      "severity": null,
       "evidence_level": "E5",
       "implementation_refs": [],
       "test_ids": [
@@ -1019,18 +1019,108 @@
       "test_results": [
         {
           "test_id": "TEST-U-007",
-          "status": "FAIL",
+          "status": "PASS",
           "case_id": "current:device-filter-target.test.mjs:TEST-U-007 目标层：services/ble-runtime/device-filter.js filterBleDevices",
-          "first_breakpoint": "命中项匹配关键词"
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-01 name match",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-02 localName match",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-03 id match",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-04 service UUID match",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-05 manufacturer match",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-06 case insensitive",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-07 trim keyword",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-08 empty keyword returns all (after other filters)",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-09 undefined fields safe",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-10 multiple devices subset",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-11 no mutation",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-12 unicode keyword",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-13 duplicate deviceId not duplicated",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-14 service UUID case insensitive",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-15 manufacturer hex bytes",
+          "first_breakpoint": null
         }
       ],
       "expected": "列表上限与筛选 (Must)",
-      "actual": "命中项匹配关键词",
-      "first_breakpoint": "命中项匹配关键词",
+      "actual": "structured current PASS on related cases",
+      "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
-      "root_cause_id": "RC-DEVICE-FILTER",
-      "task_id": "RUNTIME-FILTER-001",
+      "root_cause_id": null,
+      "task_id": null,
       "release_blocking": true
     },
     {
@@ -3990,12 +4080,12 @@
       "dimension": "requirement",
       "gap_kind": "PRODUCT",
       "priority": "Must",
-      "implementation_status": "CONFIRMED_PARTIAL",
-      "verification_status": "AUTOMATED_FAIL",
+      "implementation_status": "IMPLEMENTED_UNTESTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
-      "severity": "P1",
+      "severity": null,
       "evidence_level": null,
       "implementation_refs": [],
       "test_ids": [
@@ -4006,20 +4096,110 @@
       "test_results": [
         {
           "test_id": "TEST-U-007",
-          "status": "FAIL",
+          "status": "PASS",
           "case_id": "current:device-filter-target.test.mjs:TEST-U-007 目标层：services/ble-runtime/device-filter.js filterBleDevices",
-          "first_breakpoint": "命中项匹配关键词"
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-01 name match",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-02 localName match",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-03 id match",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-04 service UUID match",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-05 manufacturer match",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-06 case insensitive",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-07 trim keyword",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-08 empty keyword returns all (after other filters)",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-09 undefined fields safe",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-10 multiple devices subset",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-11 no mutation",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-12 unicode keyword",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-13 duplicate deviceId not duplicated",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-14 service UUID case insensitive",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-15 manufacturer hex bytes",
+          "first_breakpoint": null
         }
       ],
       "expected": "REQ REQ-014",
-      "actual": "命中项匹配关键词",
-      "first_breakpoint": "命中项匹配关键词",
+      "actual": "structured current PASS",
+      "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [
         "FEAT-014"
       ],
-      "root_cause_id": "RC-DEVICE-FILTER",
-      "task_id": "RUNTIME-FILTER-001",
+      "root_cause_id": null,
+      "task_id": null,
       "release_blocking": true
     },
     {
@@ -6005,13 +6185,13 @@
         "TEST-W-007",
         "TEST-E-001",
         "TEST-U-008",
+        "TEST-U-007",
         "TEST-U-001",
         "TEST-U-005",
         "TEST-I-003",
         "TEST-I-001",
         "TEST-I-002",
         "TEST-I-009",
-        "TEST-U-007",
         "TEST-U-006",
         "TEST-U-015"
       ],
@@ -6020,6 +6200,102 @@
           "test_id": "TEST-U-008",
           "status": "PASS",
           "case_id": "current:advertisement-target.test.mjs:TEST-U-008 目标层：services/ble-runtime/advertisement.js normalizeAdvertisement",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007 目标层：services/ble-runtime/device-filter.js filterBleDevices",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-01 name match",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-02 localName match",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-03 id match",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-04 service UUID match",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-05 manufacturer match",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-06 case insensitive",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-07 trim keyword",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-08 empty keyword returns all (after other filters)",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-09 undefined fields safe",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-10 multiple devices subset",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-11 no mutation",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-12 unicode keyword",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-13 duplicate deviceId not duplicated",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-14 service UUID case insensitive",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-15 manufacturer hex bytes",
           "first_breakpoint": null
         },
         {
@@ -6071,12 +6347,6 @@
           "first_breakpoint": null
         },
         {
-          "test_id": "TEST-U-007",
-          "status": "FAIL",
-          "case_id": "current:device-filter-target.test.mjs:TEST-U-007 目标层：services/ble-runtime/device-filter.js filterBleDevices",
-          "first_breakpoint": "命中项匹配关键词"
-        },
-        {
           "test_id": "TEST-U-006",
           "status": "FAIL",
           "case_id": "current:device-name-target.test.mjs:TEST-U-006 目标层：services/ble-runtime/display-name.js",
@@ -6096,15 +6366,15 @@
         }
       ],
       "expected": "10 states / 14 operations",
-      "actual": "命中项匹配关键词",
-      "first_breakpoint": "命中项匹配关键词",
+      "actual": "NOT_IMPLEMENTED: [TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
+      "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
       "downstream_impact": [
         "state_cases=10",
         "operation_cases=14"
       ],
       "dependencies": [],
-      "root_cause_id": "RC-DEVICE-FILTER",
-      "task_id": "RUNTIME-FILTER-001",
+      "root_cause_id": "RC-DISPLAY-NAME",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
       "release_blocking": false
     },
     {
@@ -12016,6 +12286,102 @@
       ],
       "test_results": [
         {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007 目标层：services/ble-runtime/device-filter.js filterBleDevices",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-01 name match",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-02 localName match",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-03 id match",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-04 service UUID match",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-05 manufacturer match",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-06 case insensitive",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-07 trim keyword",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-08 empty keyword returns all (after other filters)",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-09 undefined fields safe",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-10 multiple devices subset",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-11 no mutation",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-12 unicode keyword",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-13 duplicate deviceId not duplicated",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-14 service UUID case insensitive",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-007",
+          "status": "PASS",
+          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-15 manufacturer hex bytes",
+          "first_breakpoint": null
+        },
+        {
           "test_id": "TEST-U-005",
           "status": "PASS",
           "case_id": "current:session-state-target.test.mjs:TEST-U-005 目标层：ble-runtime/scan-session.js + device-collection.js",
@@ -12026,12 +12392,6 @@
           "status": "PASS",
           "case_id": "current:scan-runtime-target.test.mjs:TEST-I-002 目标层：ble-runtime/index.js 扫描生命周期",
           "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-007",
-          "status": "FAIL",
-          "case_id": "current:device-filter-target.test.mjs:TEST-U-007 目标层：services/ble-runtime/device-filter.js filterBleDevices",
-          "first_breakpoint": "命中项匹配关键词"
         },
         {
           "test_id": "TEST-U-006",
@@ -12047,12 +12407,12 @@
         }
       ],
       "expected": "两轮扫描",
-      "actual": "命中项匹配关键词",
-      "first_breakpoint": "命中项匹配关键词",
+      "actual": "NOT_IMPLEMENTED: [TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
+      "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
       "downstream_impact": [],
       "dependencies": [],
-      "root_cause_id": "RC-DEVICE-FILTER",
-      "task_id": "RUNTIME-FILTER-001",
+      "root_cause_id": "RC-DISPLAY-NAME",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
       "release_blocking": false
     },
     {

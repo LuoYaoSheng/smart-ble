@@ -1,6 +1,6 @@
 {
   "gate": "TP-G2-R2",
-  "generated_at": "2026-09-01T11:06:24.673Z",
+  "generated_at": "2026-09-01T11:29:15.909Z",
   "environment": {
     "status": "READY_FOR_PAGE_E4",
     "playwright": {
@@ -27,14 +27,14 @@
     "connectDiscovers": true,
     "scanAutoStop5": true,
     "hasObserver": false,
-    "filterHasKeywordMatch": false,
+    "filterHasKeywordMatch": true,
     "registrySubCount": false
   },
   "totals": {
     "PASS": 102,
-    "FAIL": 97,
+    "FAIL": 67,
     "BLOCKED": 2,
-    "NOT_IMPLEMENTED": 29,
+    "NOT_IMPLEMENTED": 59,
     "harness_PASS": 230,
     "harness_FAIL": 0
   },
@@ -42,30 +42,25 @@
     "PAGE-001": {
       "page_id": "PAGE-001",
       "PASS": 0,
-      "FAIL": 30,
+      "FAIL": 0,
       "BLOCKED": 0,
-      "NOT_IMPLEMENTED": 0,
+      "NOT_IMPLEMENTED": 30,
       "harness_PASS": 30,
       "harness_FAIL": 0,
       "states": 10,
       "operations": 14,
       "product": "FAIL",
-      "task_id": "RUNTIME-FILTER-001",
-      "root_cause_id": "RC-DEVICE-FILTER",
-      "notes": "Fake Runtime E4 PASS；产品扫描过滤/显示名/时长未对齐目标",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": "RC-DISPLAY-NAME",
+      "notes": "RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
       "first_breakpoint": {
-        "target": "FEAT-014",
-        "test": "TEST-U-007",
-        "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-        "symbol": "filterBleDevices",
-        "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+        "target": "FEAT-013",
+        "test": "TEST-U-006",
+        "file": "apps/uniapp/services/ble-runtime/display-name.js",
+        "symbol": "(missing)",
+        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
       },
       "also": [
-        {
-          "task_id": "RUNTIME-DISPLAY-NAME-001",
-          "file": "apps/uniapp/services/ble-runtime/display-name.js",
-          "breakpoint": "module missing"
-        },
         {
           "task_id": null,
           "file": "apps/uniapp/composables/use-ble-scan.js",
@@ -77,392 +72,392 @@
         {
           "state_id": "STATE-P001-01",
           "operation_id": null,
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-014",
-            "test": "TEST-U-007",
-            "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-            "symbol": "filterBleDevices",
-            "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+            "target": "FEAT-013",
+            "test": "TEST-U-006",
+            "file": "apps/uniapp/services/ble-runtime/display-name.js",
+            "symbol": "(missing)",
+            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
           },
-          "task_id": "RUNTIME-FILTER-001"
+          "task_id": "RUNTIME-DISPLAY-NAME-001"
         },
         {
           "state_id": "STATE-P001-02",
           "operation_id": null,
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-014",
-            "test": "TEST-U-007",
-            "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-            "symbol": "filterBleDevices",
-            "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+            "target": "FEAT-013",
+            "test": "TEST-U-006",
+            "file": "apps/uniapp/services/ble-runtime/display-name.js",
+            "symbol": "(missing)",
+            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
           },
-          "task_id": "RUNTIME-FILTER-001"
+          "task_id": "RUNTIME-DISPLAY-NAME-001"
         },
         {
           "state_id": "STATE-P001-03",
           "operation_id": null,
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-014",
-            "test": "TEST-U-007",
-            "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-            "symbol": "filterBleDevices",
-            "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+            "target": "FEAT-013",
+            "test": "TEST-U-006",
+            "file": "apps/uniapp/services/ble-runtime/display-name.js",
+            "symbol": "(missing)",
+            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
           },
-          "task_id": "RUNTIME-FILTER-001"
+          "task_id": "RUNTIME-DISPLAY-NAME-001"
         },
         {
           "state_id": "STATE-P001-04",
           "operation_id": null,
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-014",
-            "test": "TEST-U-007",
-            "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-            "symbol": "filterBleDevices",
-            "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+            "target": "FEAT-013",
+            "test": "TEST-U-006",
+            "file": "apps/uniapp/services/ble-runtime/display-name.js",
+            "symbol": "(missing)",
+            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
           },
-          "task_id": "RUNTIME-FILTER-001"
+          "task_id": "RUNTIME-DISPLAY-NAME-001"
         },
         {
           "state_id": "STATE-P001-05",
           "operation_id": null,
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-014",
-            "test": "TEST-U-007",
-            "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-            "symbol": "filterBleDevices",
-            "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+            "target": "FEAT-013",
+            "test": "TEST-U-006",
+            "file": "apps/uniapp/services/ble-runtime/display-name.js",
+            "symbol": "(missing)",
+            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
           },
-          "task_id": "RUNTIME-FILTER-001"
+          "task_id": "RUNTIME-DISPLAY-NAME-001"
         },
         {
           "state_id": "STATE-P001-06",
           "operation_id": null,
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-014",
-            "test": "TEST-U-007",
-            "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-            "symbol": "filterBleDevices",
-            "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+            "target": "FEAT-013",
+            "test": "TEST-U-006",
+            "file": "apps/uniapp/services/ble-runtime/display-name.js",
+            "symbol": "(missing)",
+            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
           },
-          "task_id": "RUNTIME-FILTER-001"
+          "task_id": "RUNTIME-DISPLAY-NAME-001"
         },
         {
           "state_id": "STATE-P001-07",
           "operation_id": null,
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-014",
-            "test": "TEST-U-007",
-            "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-            "symbol": "filterBleDevices",
-            "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+            "target": "FEAT-013",
+            "test": "TEST-U-006",
+            "file": "apps/uniapp/services/ble-runtime/display-name.js",
+            "symbol": "(missing)",
+            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
           },
-          "task_id": "RUNTIME-FILTER-001"
+          "task_id": "RUNTIME-DISPLAY-NAME-001"
         },
         {
           "state_id": "STATE-P001-08",
           "operation_id": null,
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-014",
-            "test": "TEST-U-007",
-            "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-            "symbol": "filterBleDevices",
-            "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+            "target": "FEAT-013",
+            "test": "TEST-U-006",
+            "file": "apps/uniapp/services/ble-runtime/display-name.js",
+            "symbol": "(missing)",
+            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
           },
-          "task_id": "RUNTIME-FILTER-001"
+          "task_id": "RUNTIME-DISPLAY-NAME-001"
         },
         {
           "state_id": "STATE-P001-09",
           "operation_id": null,
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-014",
-            "test": "TEST-U-007",
-            "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-            "symbol": "filterBleDevices",
-            "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+            "target": "FEAT-013",
+            "test": "TEST-U-006",
+            "file": "apps/uniapp/services/ble-runtime/display-name.js",
+            "symbol": "(missing)",
+            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
           },
-          "task_id": "RUNTIME-FILTER-001"
+          "task_id": "RUNTIME-DISPLAY-NAME-001"
         },
         {
           "state_id": "STATE-P001-10",
           "operation_id": null,
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-014",
-            "test": "TEST-U-007",
-            "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-            "symbol": "filterBleDevices",
-            "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+            "target": "FEAT-013",
+            "test": "TEST-U-006",
+            "file": "apps/uniapp/services/ble-runtime/display-name.js",
+            "symbol": "(missing)",
+            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
           },
-          "task_id": "RUNTIME-FILTER-001"
+          "task_id": "RUNTIME-DISPLAY-NAME-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P001-01",
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-014",
-            "test": "TEST-U-007",
-            "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-            "symbol": "filterBleDevices",
-            "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+            "target": "FEAT-013",
+            "test": "TEST-U-006",
+            "file": "apps/uniapp/services/ble-runtime/display-name.js",
+            "symbol": "(missing)",
+            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
           },
-          "task_id": "RUNTIME-FILTER-001"
+          "task_id": "RUNTIME-DISPLAY-NAME-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P001-02",
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-014",
-            "test": "TEST-U-007",
-            "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-            "symbol": "filterBleDevices",
-            "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+            "target": "FEAT-013",
+            "test": "TEST-U-006",
+            "file": "apps/uniapp/services/ble-runtime/display-name.js",
+            "symbol": "(missing)",
+            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
           },
-          "task_id": "RUNTIME-FILTER-001"
+          "task_id": "RUNTIME-DISPLAY-NAME-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P001-03",
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-014",
-            "test": "TEST-U-007",
-            "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-            "symbol": "filterBleDevices",
-            "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+            "target": "FEAT-013",
+            "test": "TEST-U-006",
+            "file": "apps/uniapp/services/ble-runtime/display-name.js",
+            "symbol": "(missing)",
+            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
           },
-          "task_id": "RUNTIME-FILTER-001"
+          "task_id": "RUNTIME-DISPLAY-NAME-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P001-04",
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-014",
-            "test": "TEST-U-007",
-            "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-            "symbol": "filterBleDevices",
-            "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+            "target": "FEAT-013",
+            "test": "TEST-U-006",
+            "file": "apps/uniapp/services/ble-runtime/display-name.js",
+            "symbol": "(missing)",
+            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
           },
-          "task_id": "RUNTIME-FILTER-001"
+          "task_id": "RUNTIME-DISPLAY-NAME-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P001-05",
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-014",
-            "test": "TEST-U-007",
-            "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-            "symbol": "filterBleDevices",
-            "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+            "target": "FEAT-013",
+            "test": "TEST-U-006",
+            "file": "apps/uniapp/services/ble-runtime/display-name.js",
+            "symbol": "(missing)",
+            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
           },
-          "task_id": "RUNTIME-FILTER-001"
+          "task_id": "RUNTIME-DISPLAY-NAME-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P001-06",
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-014",
-            "test": "TEST-U-007",
-            "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-            "symbol": "filterBleDevices",
-            "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+            "target": "FEAT-013",
+            "test": "TEST-U-006",
+            "file": "apps/uniapp/services/ble-runtime/display-name.js",
+            "symbol": "(missing)",
+            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
           },
-          "task_id": "RUNTIME-FILTER-001"
+          "task_id": "RUNTIME-DISPLAY-NAME-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P001-07",
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-014",
-            "test": "TEST-U-007",
-            "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-            "symbol": "filterBleDevices",
-            "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+            "target": "FEAT-013",
+            "test": "TEST-U-006",
+            "file": "apps/uniapp/services/ble-runtime/display-name.js",
+            "symbol": "(missing)",
+            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
           },
-          "task_id": "RUNTIME-FILTER-001"
+          "task_id": "RUNTIME-DISPLAY-NAME-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P001-08",
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-014",
-            "test": "TEST-U-007",
-            "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-            "symbol": "filterBleDevices",
-            "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+            "target": "FEAT-013",
+            "test": "TEST-U-006",
+            "file": "apps/uniapp/services/ble-runtime/display-name.js",
+            "symbol": "(missing)",
+            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
           },
-          "task_id": "RUNTIME-FILTER-001"
+          "task_id": "RUNTIME-DISPLAY-NAME-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P001-09",
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-014",
-            "test": "TEST-U-007",
-            "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-            "symbol": "filterBleDevices",
-            "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+            "target": "FEAT-013",
+            "test": "TEST-U-006",
+            "file": "apps/uniapp/services/ble-runtime/display-name.js",
+            "symbol": "(missing)",
+            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
           },
-          "task_id": "RUNTIME-FILTER-001"
+          "task_id": "RUNTIME-DISPLAY-NAME-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P001-10",
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-014",
-            "test": "TEST-U-007",
-            "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-            "symbol": "filterBleDevices",
-            "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+            "target": "FEAT-013",
+            "test": "TEST-U-006",
+            "file": "apps/uniapp/services/ble-runtime/display-name.js",
+            "symbol": "(missing)",
+            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
           },
-          "task_id": "RUNTIME-FILTER-001"
+          "task_id": "RUNTIME-DISPLAY-NAME-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P001-11",
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-014",
-            "test": "TEST-U-007",
-            "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-            "symbol": "filterBleDevices",
-            "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+            "target": "FEAT-013",
+            "test": "TEST-U-006",
+            "file": "apps/uniapp/services/ble-runtime/display-name.js",
+            "symbol": "(missing)",
+            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
           },
-          "task_id": "RUNTIME-FILTER-001"
+          "task_id": "RUNTIME-DISPLAY-NAME-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P001-13",
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-014",
-            "test": "TEST-U-007",
-            "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-            "symbol": "filterBleDevices",
-            "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+            "target": "FEAT-013",
+            "test": "TEST-U-006",
+            "file": "apps/uniapp/services/ble-runtime/display-name.js",
+            "symbol": "(missing)",
+            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
           },
-          "task_id": "RUNTIME-FILTER-001"
+          "task_id": "RUNTIME-DISPLAY-NAME-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P001-14",
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-014",
-            "test": "TEST-U-007",
-            "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-            "symbol": "filterBleDevices",
-            "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+            "target": "FEAT-013",
+            "test": "TEST-U-006",
+            "file": "apps/uniapp/services/ble-runtime/display-name.js",
+            "symbol": "(missing)",
+            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
           },
-          "task_id": "RUNTIME-FILTER-001"
+          "task_id": "RUNTIME-DISPLAY-NAME-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P001-15",
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-014",
-            "test": "TEST-U-007",
-            "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-            "symbol": "filterBleDevices",
-            "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+            "target": "FEAT-013",
+            "test": "TEST-U-006",
+            "file": "apps/uniapp/services/ble-runtime/display-name.js",
+            "symbol": "(missing)",
+            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
           },
-          "task_id": "RUNTIME-FILTER-001"
+          "task_id": "RUNTIME-DISPLAY-NAME-001"
         },
         {
           "state_id": null,
           "operation_id": null,
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-014",
-            "test": "TEST-U-007",
-            "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-            "symbol": "filterBleDevices",
-            "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+            "target": "FEAT-013",
+            "test": "TEST-U-006",
+            "file": "apps/uniapp/services/ble-runtime/display-name.js",
+            "symbol": "(missing)",
+            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
           },
-          "task_id": "RUNTIME-FILTER-001"
+          "task_id": "RUNTIME-DISPLAY-NAME-001"
         },
         {
           "state_id": null,
           "operation_id": null,
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-014",
-            "test": "TEST-U-007",
-            "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-            "symbol": "filterBleDevices",
-            "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+            "target": "FEAT-013",
+            "test": "TEST-U-006",
+            "file": "apps/uniapp/services/ble-runtime/display-name.js",
+            "symbol": "(missing)",
+            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
           },
-          "task_id": "RUNTIME-FILTER-001"
+          "task_id": "RUNTIME-DISPLAY-NAME-001"
         },
         {
           "state_id": null,
           "operation_id": null,
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-014",
-            "test": "TEST-U-007",
-            "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-            "symbol": "filterBleDevices",
-            "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+            "target": "FEAT-013",
+            "test": "TEST-U-006",
+            "file": "apps/uniapp/services/ble-runtime/display-name.js",
+            "symbol": "(missing)",
+            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
           },
-          "task_id": "RUNTIME-FILTER-001"
+          "task_id": "RUNTIME-DISPLAY-NAME-001"
         },
         {
           "state_id": null,
           "operation_id": null,
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-014",
-            "test": "TEST-U-007",
-            "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-            "symbol": "filterBleDevices",
-            "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+            "target": "FEAT-013",
+            "test": "TEST-U-006",
+            "file": "apps/uniapp/services/ble-runtime/display-name.js",
+            "symbol": "(missing)",
+            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
           },
-          "task_id": "RUNTIME-FILTER-001"
+          "task_id": "RUNTIME-DISPLAY-NAME-001"
         },
         {
           "state_id": null,
           "operation_id": null,
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-014",
-            "test": "TEST-U-007",
-            "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-            "symbol": "filterBleDevices",
-            "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+            "target": "FEAT-013",
+            "test": "TEST-U-006",
+            "file": "apps/uniapp/services/ble-runtime/display-name.js",
+            "symbol": "(missing)",
+            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
           },
-          "task_id": "RUNTIME-FILTER-001"
+          "task_id": "RUNTIME-DISPLAY-NAME-001"
         },
         {
           "state_id": null,
           "operation_id": null,
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-014",
-            "test": "TEST-U-007",
-            "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-            "symbol": "filterBleDevices",
-            "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+            "target": "FEAT-013",
+            "test": "TEST-U-006",
+            "file": "apps/uniapp/services/ble-runtime/display-name.js",
+            "symbol": "(missing)",
+            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
           },
-          "task_id": "RUNTIME-FILTER-001"
+          "task_id": "RUNTIME-DISPLAY-NAME-001"
         }
       ]
     },
@@ -1993,19 +1988,19 @@
       "state_id": "STATE-P001-01",
       "operation_id": null,
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › State suite › STATE-P001-01 平台不支持",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "UNSUPPORTED 说明",
         "替代入口"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Fake Runtime E4 PASS；产品扫描过滤/显示名/时长未对齐目标",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
       "first_breakpoint": {
-        "target": "FEAT-014",
-        "test": "TEST-U-007",
-        "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-        "symbol": "filterBleDevices",
-        "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+        "target": "FEAT-013",
+        "test": "TEST-U-006",
+        "file": "apps/uniapp/services/ble-runtime/display-name.js",
+        "symbol": "(missing)",
+        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
@@ -2013,17 +2008,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-007",
-            "first_breakpoint": "命中项匹配关键词",
-            "target_ids": [
-              "REQ-014",
-              "FEAT-014",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-filter-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-006",
             "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
@@ -2048,6 +2032,19 @@
               "FEAT-012"
             ],
             "source_file": "tests/target/unit/session-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
           }
         ]
       },
@@ -2063,10 +2060,10 @@
         "TEST-W-006"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/device-filter.js"
+        "apps/uniapp/services/ble-runtime/display-name.js"
       ],
-      "task_id": "RUNTIME-FILTER-001",
-      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": "RC-DISPLAY-NAME",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -2074,19 +2071,19 @@
       "state_id": "STATE-P001-02",
       "operation_id": null,
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › State suite › STATE-P001-02 蓝牙关闭",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "蓝牙芯片=关",
         "去开启按钮"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Fake Runtime E4 PASS；产品扫描过滤/显示名/时长未对齐目标",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
       "first_breakpoint": {
-        "target": "FEAT-014",
-        "test": "TEST-U-007",
-        "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-        "symbol": "filterBleDevices",
-        "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+        "target": "FEAT-013",
+        "test": "TEST-U-006",
+        "file": "apps/uniapp/services/ble-runtime/display-name.js",
+        "symbol": "(missing)",
+        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
@@ -2094,17 +2091,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-007",
-            "first_breakpoint": "命中项匹配关键词",
-            "target_ids": [
-              "REQ-014",
-              "FEAT-014",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-filter-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-006",
             "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
@@ -2129,6 +2115,19 @@
               "FEAT-012"
             ],
             "source_file": "tests/target/unit/session-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
           }
         ]
       },
@@ -2144,10 +2143,10 @@
         "TEST-W-005"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/device-filter.js"
+        "apps/uniapp/services/ble-runtime/display-name.js"
       ],
-      "task_id": "RUNTIME-FILTER-001",
-      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": "RC-DISPLAY-NAME",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -2155,19 +2154,19 @@
       "state_id": "STATE-P001-03",
       "operation_id": null,
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › State suite › STATE-P001-03 权限拒绝",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "权限横幅",
         "重试/去设置"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Fake Runtime E4 PASS；产品扫描过滤/显示名/时长未对齐目标",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
       "first_breakpoint": {
-        "target": "FEAT-014",
-        "test": "TEST-U-007",
-        "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-        "symbol": "filterBleDevices",
-        "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+        "target": "FEAT-013",
+        "test": "TEST-U-006",
+        "file": "apps/uniapp/services/ble-runtime/display-name.js",
+        "symbol": "(missing)",
+        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
@@ -2175,17 +2174,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-007",
-            "first_breakpoint": "命中项匹配关键词",
-            "target_ids": [
-              "REQ-014",
-              "FEAT-014",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-filter-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-006",
             "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
@@ -2210,6 +2198,19 @@
               "FEAT-012"
             ],
             "source_file": "tests/target/unit/session-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
           }
         ]
       },
@@ -2225,10 +2226,10 @@
         "TEST-W-001"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/device-filter.js"
+        "apps/uniapp/services/ble-runtime/display-name.js"
       ],
-      "task_id": "RUNTIME-FILTER-001",
-      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": "RC-DISPLAY-NAME",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -2236,18 +2237,18 @@
       "state_id": "STATE-P001-04",
       "operation_id": null,
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › State suite › STATE-P001-04 待开始",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "空提示\"点击开始扫描\""
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Fake Runtime E4 PASS；产品扫描过滤/显示名/时长未对齐目标",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
       "first_breakpoint": {
-        "target": "FEAT-014",
-        "test": "TEST-U-007",
-        "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-        "symbol": "filterBleDevices",
-        "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+        "target": "FEAT-013",
+        "test": "TEST-U-006",
+        "file": "apps/uniapp/services/ble-runtime/display-name.js",
+        "symbol": "(missing)",
+        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
@@ -2255,17 +2256,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-007",
-            "first_breakpoint": "命中项匹配关键词",
-            "target_ids": [
-              "REQ-014",
-              "FEAT-014",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-filter-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-006",
             "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
@@ -2290,6 +2280,19 @@
               "FEAT-012"
             ],
             "source_file": "tests/target/unit/session-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
           }
         ]
       },
@@ -2303,10 +2306,10 @@
         "TEST-P-001"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/device-filter.js"
+        "apps/uniapp/services/ble-runtime/display-name.js"
       ],
-      "task_id": "RUNTIME-FILTER-001",
-      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": "RC-DISPLAY-NAME",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -2314,20 +2317,20 @@
       "state_id": "STATE-P001-05",
       "operation_id": null,
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › State suite › STATE-P001-05 扫描中",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "状态芯片",
         "停止按钮",
         "实时列表"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Fake Runtime E4 PASS；产品扫描过滤/显示名/时长未对齐目标",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
       "first_breakpoint": {
-        "target": "FEAT-014",
-        "test": "TEST-U-007",
-        "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-        "symbol": "filterBleDevices",
-        "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+        "target": "FEAT-013",
+        "test": "TEST-U-006",
+        "file": "apps/uniapp/services/ble-runtime/display-name.js",
+        "symbol": "(missing)",
+        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
@@ -2335,17 +2338,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-007",
-            "first_breakpoint": "命中项匹配关键词",
-            "target_ids": [
-              "REQ-014",
-              "FEAT-014",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-filter-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-006",
             "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
@@ -2370,6 +2362,19 @@
               "FEAT-012"
             ],
             "source_file": "tests/target/unit/session-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
           }
         ]
       },
@@ -2387,10 +2392,10 @@
         "TEST-E-001"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/device-filter.js"
+        "apps/uniapp/services/ble-runtime/display-name.js"
       ],
-      "task_id": "RUNTIME-FILTER-001",
-      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": "RC-DISPLAY-NAME",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -2398,19 +2403,19 @@
       "state_id": "STATE-P001-06",
       "operation_id": null,
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › State suite › STATE-P001-06 无结果",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "空态\"未发现设备\"",
         "建议（换位置/确认设备广播）"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Fake Runtime E4 PASS；产品扫描过滤/显示名/时长未对齐目标",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
       "first_breakpoint": {
-        "target": "FEAT-014",
-        "test": "TEST-U-007",
-        "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-        "symbol": "filterBleDevices",
-        "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+        "target": "FEAT-013",
+        "test": "TEST-U-006",
+        "file": "apps/uniapp/services/ble-runtime/display-name.js",
+        "symbol": "(missing)",
+        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
@@ -2418,17 +2423,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-007",
-            "first_breakpoint": "命中项匹配关键词",
-            "target_ids": [
-              "REQ-014",
-              "FEAT-014",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-filter-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-006",
             "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
@@ -2453,6 +2447,19 @@
               "FEAT-012"
             ],
             "source_file": "tests/target/unit/session-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
           }
         ]
       },
@@ -2468,10 +2475,10 @@
         "TEST-A-005"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/device-filter.js"
+        "apps/uniapp/services/ble-runtime/display-name.js"
       ],
-      "task_id": "RUNTIME-FILTER-001",
-      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": "RC-DISPLAY-NAME",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -2479,19 +2486,19 @@
       "state_id": "STATE-P001-07",
       "operation_id": null,
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › State suite › STATE-P001-07 筛选无结果",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "\"筛选后无匹配\"",
         "调整筛选建议"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Fake Runtime E4 PASS；产品扫描过滤/显示名/时长未对齐目标",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
       "first_breakpoint": {
-        "target": "FEAT-014",
-        "test": "TEST-U-007",
-        "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-        "symbol": "filterBleDevices",
-        "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+        "target": "FEAT-013",
+        "test": "TEST-U-006",
+        "file": "apps/uniapp/services/ble-runtime/display-name.js",
+        "symbol": "(missing)",
+        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
@@ -2499,17 +2506,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-007",
-            "first_breakpoint": "命中项匹配关键词",
-            "target_ids": [
-              "REQ-014",
-              "FEAT-014",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-filter-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-006",
             "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
@@ -2534,6 +2530,19 @@
               "FEAT-012"
             ],
             "source_file": "tests/target/unit/session-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
           }
         ]
       },
@@ -2547,10 +2556,10 @@
         "TEST-P-001"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/device-filter.js"
+        "apps/uniapp/services/ble-runtime/display-name.js"
       ],
-      "task_id": "RUNTIME-FILTER-001",
-      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": "RC-DISPLAY-NAME",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -2558,18 +2567,18 @@
       "state_id": "STATE-P001-08",
       "operation_id": null,
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › State suite › STATE-P001-08 结果列表",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "设备卡列表"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Fake Runtime E4 PASS；产品扫描过滤/显示名/时长未对齐目标",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
       "first_breakpoint": {
-        "target": "FEAT-014",
-        "test": "TEST-U-007",
-        "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-        "symbol": "filterBleDevices",
-        "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+        "target": "FEAT-013",
+        "test": "TEST-U-006",
+        "file": "apps/uniapp/services/ble-runtime/display-name.js",
+        "symbol": "(missing)",
+        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
@@ -2577,17 +2586,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-007",
-            "first_breakpoint": "命中项匹配关键词",
-            "target_ids": [
-              "REQ-014",
-              "FEAT-014",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-filter-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-006",
             "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
@@ -2612,6 +2610,19 @@
               "FEAT-012"
             ],
             "source_file": "tests/target/unit/session-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
           }
         ]
       },
@@ -2627,10 +2638,10 @@
         "TEST-E-001"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/device-filter.js"
+        "apps/uniapp/services/ble-runtime/display-name.js"
       ],
-      "task_id": "RUNTIME-FILTER-001",
-      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": "RC-DISPLAY-NAME",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -2638,19 +2649,19 @@
       "state_id": "STATE-P001-09",
       "operation_id": null,
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › State suite › STATE-P001-09 扫描失败",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "错误横幅",
         "重试"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Fake Runtime E4 PASS；产品扫描过滤/显示名/时长未对齐目标",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
       "first_breakpoint": {
-        "target": "FEAT-014",
-        "test": "TEST-U-007",
-        "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-        "symbol": "filterBleDevices",
-        "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+        "target": "FEAT-013",
+        "test": "TEST-U-006",
+        "file": "apps/uniapp/services/ble-runtime/display-name.js",
+        "symbol": "(missing)",
+        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
@@ -2658,17 +2669,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-007",
-            "first_breakpoint": "命中项匹配关键词",
-            "target_ids": [
-              "REQ-014",
-              "FEAT-014",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-filter-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-006",
             "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
@@ -2693,6 +2693,19 @@
               "FEAT-012"
             ],
             "source_file": "tests/target/unit/session-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
           }
         ]
       },
@@ -2708,10 +2721,10 @@
         "TEST-E-005"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/device-filter.js"
+        "apps/uniapp/services/ble-runtime/display-name.js"
       ],
-      "task_id": "RUNTIME-FILTER-001",
-      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": "RC-DISPLAY-NAME",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -2719,18 +2732,18 @@
       "state_id": "STATE-P001-10",
       "operation_id": null,
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › State suite › STATE-P001-10 已有连接提示",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "顶部轻提示\"N 台设备保持连接\"（不阻塞扫描）"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Fake Runtime E4 PASS；产品扫描过滤/显示名/时长未对齐目标",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
       "first_breakpoint": {
-        "target": "FEAT-014",
-        "test": "TEST-U-007",
-        "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-        "symbol": "filterBleDevices",
-        "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+        "target": "FEAT-013",
+        "test": "TEST-U-006",
+        "file": "apps/uniapp/services/ble-runtime/display-name.js",
+        "symbol": "(missing)",
+        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
@@ -2738,17 +2751,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-007",
-            "first_breakpoint": "命中项匹配关键词",
-            "target_ids": [
-              "REQ-014",
-              "FEAT-014",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-filter-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-006",
             "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
@@ -2773,6 +2775,19 @@
               "FEAT-012"
             ],
             "source_file": "tests/target/unit/session-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
           }
         ]
       },
@@ -2786,10 +2801,10 @@
         "TEST-P-007"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/device-filter.js"
+        "apps/uniapp/services/ble-runtime/display-name.js"
       ],
-      "task_id": "RUNTIME-FILTER-001",
-      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": "RC-DISPLAY-NAME",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -2797,18 +2812,18 @@
       "state_id": null,
       "operation_id": "OP-P001-01",
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Operation suite › OP-P001-01 开始扫描按钮",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "列表增量出现，状态=扫描中"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Fake Runtime E4 PASS；产品扫描过滤/显示名/时长未对齐目标",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
       "first_breakpoint": {
-        "target": "FEAT-014",
-        "test": "TEST-U-007",
-        "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-        "symbol": "filterBleDevices",
-        "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+        "target": "FEAT-013",
+        "test": "TEST-U-006",
+        "file": "apps/uniapp/services/ble-runtime/display-name.js",
+        "symbol": "(missing)",
+        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
@@ -2816,17 +2831,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-007",
-            "first_breakpoint": "命中项匹配关键词",
-            "target_ids": [
-              "REQ-014",
-              "FEAT-014",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-filter-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-006",
             "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
@@ -2851,6 +2855,19 @@
               "FEAT-012"
             ],
             "source_file": "tests/target/unit/session-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
           }
         ]
       },
@@ -2870,10 +2887,10 @@
         "TEST-E-001"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/device-filter.js"
+        "apps/uniapp/services/ble-runtime/display-name.js"
       ],
-      "task_id": "RUNTIME-FILTER-001",
-      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": "RC-DISPLAY-NAME",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -2881,18 +2898,18 @@
       "state_id": null,
       "operation_id": "OP-P001-02",
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Operation suite › OP-P001-02 停止扫描按钮",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "状态=已完成，列表保留"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Fake Runtime E4 PASS；产品扫描过滤/显示名/时长未对齐目标",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
       "first_breakpoint": {
-        "target": "FEAT-014",
-        "test": "TEST-U-007",
-        "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-        "symbol": "filterBleDevices",
-        "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+        "target": "FEAT-013",
+        "test": "TEST-U-006",
+        "file": "apps/uniapp/services/ble-runtime/display-name.js",
+        "symbol": "(missing)",
+        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
@@ -2900,17 +2917,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-007",
-            "first_breakpoint": "命中项匹配关键词",
-            "target_ids": [
-              "REQ-014",
-              "FEAT-014",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-filter-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-006",
             "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
@@ -2935,6 +2941,19 @@
               "FEAT-012"
             ],
             "source_file": "tests/target/unit/session-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
           }
         ]
       },
@@ -2950,10 +2969,10 @@
         "TEST-A-005"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/device-filter.js"
+        "apps/uniapp/services/ble-runtime/display-name.js"
       ],
-      "task_id": "RUNTIME-FILTER-001",
-      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": "RC-DISPLAY-NAME",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -2961,18 +2980,18 @@
       "state_id": null,
       "operation_id": "OP-P001-03",
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Operation suite › OP-P001-03 超时自动停止",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "状态=已完成（视为正常完成）"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Fake Runtime E4 PASS；产品扫描过滤/显示名/时长未对齐目标",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
       "first_breakpoint": {
-        "target": "FEAT-014",
-        "test": "TEST-U-007",
-        "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-        "symbol": "filterBleDevices",
-        "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+        "target": "FEAT-013",
+        "test": "TEST-U-006",
+        "file": "apps/uniapp/services/ble-runtime/display-name.js",
+        "symbol": "(missing)",
+        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
@@ -2980,17 +2999,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-007",
-            "first_breakpoint": "命中项匹配关键词",
-            "target_ids": [
-              "REQ-014",
-              "FEAT-014",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-filter-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-006",
             "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
@@ -3015,6 +3023,19 @@
               "FEAT-012"
             ],
             "source_file": "tests/target/unit/session-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
           }
         ]
       },
@@ -3030,10 +3051,10 @@
         "TEST-U-005"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/device-filter.js"
+        "apps/uniapp/services/ble-runtime/display-name.js"
       ],
-      "task_id": "RUNTIME-FILTER-001",
-      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": "RC-DISPLAY-NAME",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -3041,18 +3062,18 @@
       "state_id": null,
       "operation_id": "OP-P001-04",
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Operation suite › OP-P001-04 hide/unload 停止",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "无声（后台不扫描）"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Fake Runtime E4 PASS；产品扫描过滤/显示名/时长未对齐目标",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
       "first_breakpoint": {
-        "target": "FEAT-014",
-        "test": "TEST-U-007",
-        "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-        "symbol": "filterBleDevices",
-        "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+        "target": "FEAT-013",
+        "test": "TEST-U-006",
+        "file": "apps/uniapp/services/ble-runtime/display-name.js",
+        "symbol": "(missing)",
+        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
@@ -3060,17 +3081,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-007",
-            "first_breakpoint": "命中项匹配关键词",
-            "target_ids": [
-              "REQ-014",
-              "FEAT-014",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-filter-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-006",
             "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
@@ -3095,6 +3105,19 @@
               "FEAT-012"
             ],
             "source_file": "tests/target/unit/session-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
           }
         ]
       },
@@ -3112,10 +3135,10 @@
         "TEST-W-003"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/device-filter.js"
+        "apps/uniapp/services/ble-runtime/display-name.js"
       ],
-      "task_id": "RUNTIME-FILTER-001",
-      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": "RC-DISPLAY-NAME",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -3123,18 +3146,18 @@
       "state_id": null,
       "operation_id": "OP-P001-05",
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Operation suite › OP-P001-05 第二轮扫描",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "列表重建"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Fake Runtime E4 PASS；产品扫描过滤/显示名/时长未对齐目标",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
       "first_breakpoint": {
-        "target": "FEAT-014",
-        "test": "TEST-U-007",
-        "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-        "symbol": "filterBleDevices",
-        "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+        "target": "FEAT-013",
+        "test": "TEST-U-006",
+        "file": "apps/uniapp/services/ble-runtime/display-name.js",
+        "symbol": "(missing)",
+        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
@@ -3142,17 +3165,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-007",
-            "first_breakpoint": "命中项匹配关键词",
-            "target_ids": [
-              "REQ-014",
-              "FEAT-014",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-filter-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-006",
             "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
@@ -3177,6 +3189,19 @@
               "FEAT-012"
             ],
             "source_file": "tests/target/unit/session-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
           }
         ]
       },
@@ -3192,10 +3217,10 @@
         "TEST-I-002"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/device-filter.js"
+        "apps/uniapp/services/ble-runtime/display-name.js"
       ],
-      "task_id": "RUNTIME-FILTER-001",
-      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": "RC-DISPLAY-NAME",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -3203,18 +3228,18 @@
       "state_id": null,
       "operation_id": "OP-P001-06",
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Operation suite › OP-P001-06 设备卡点击",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "弹窗展示结构化字段+原始字节"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Fake Runtime E4 PASS；产品扫描过滤/显示名/时长未对齐目标",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
       "first_breakpoint": {
-        "target": "FEAT-014",
-        "test": "TEST-U-007",
-        "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-        "symbol": "filterBleDevices",
-        "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+        "target": "FEAT-013",
+        "test": "TEST-U-006",
+        "file": "apps/uniapp/services/ble-runtime/display-name.js",
+        "symbol": "(missing)",
+        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
@@ -3222,17 +3247,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-007",
-            "first_breakpoint": "命中项匹配关键词",
-            "target_ids": [
-              "REQ-014",
-              "FEAT-014",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-filter-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-006",
             "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
@@ -3257,6 +3271,19 @@
               "FEAT-012"
             ],
             "source_file": "tests/target/unit/session-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
           }
         ]
       },
@@ -3274,10 +3301,10 @@
         "TEST-E-001"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/device-filter.js"
+        "apps/uniapp/services/ble-runtime/display-name.js"
       ],
-      "task_id": "RUNTIME-FILTER-001",
-      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": "RC-DISPLAY-NAME",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -3285,18 +3312,18 @@
       "state_id": null,
       "operation_id": "OP-P001-07",
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Operation suite › OP-P001-07 连接按钮（卡上）",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "PAGE-006 连接中"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Fake Runtime E4 PASS；产品扫描过滤/显示名/时长未对齐目标",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
       "first_breakpoint": {
-        "target": "FEAT-014",
-        "test": "TEST-U-007",
-        "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-        "symbol": "filterBleDevices",
-        "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+        "target": "FEAT-013",
+        "test": "TEST-U-006",
+        "file": "apps/uniapp/services/ble-runtime/display-name.js",
+        "symbol": "(missing)",
+        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
@@ -3304,17 +3331,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-007",
-            "first_breakpoint": "命中项匹配关键词",
-            "target_ids": [
-              "REQ-014",
-              "FEAT-014",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-filter-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-006",
             "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
@@ -3339,6 +3355,19 @@
               "FEAT-012"
             ],
             "source_file": "tests/target/unit/session-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
           }
         ]
       },
@@ -3356,10 +3385,10 @@
         "TEST-W-007"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/device-filter.js"
+        "apps/uniapp/services/ble-runtime/display-name.js"
       ],
-      "task_id": "RUNTIME-FILTER-001",
-      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": "RC-DISPLAY-NAME",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -3367,18 +3396,18 @@
       "state_id": null,
       "operation_id": "OP-P001-08",
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Operation suite › OP-P001-08 Profile 动作（Smart HID 配网）",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "PAGE-002 自动连接"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Fake Runtime E4 PASS；产品扫描过滤/显示名/时长未对齐目标",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
       "first_breakpoint": {
-        "target": "FEAT-014",
-        "test": "TEST-U-007",
-        "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-        "symbol": "filterBleDevices",
-        "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+        "target": "FEAT-013",
+        "test": "TEST-U-006",
+        "file": "apps/uniapp/services/ble-runtime/display-name.js",
+        "symbol": "(missing)",
+        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
@@ -3386,17 +3415,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-007",
-            "first_breakpoint": "命中项匹配关键词",
-            "target_ids": [
-              "REQ-014",
-              "FEAT-014",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-filter-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-006",
             "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
@@ -3421,6 +3439,19 @@
               "FEAT-012"
             ],
             "source_file": "tests/target/unit/session-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
           }
         ]
       },
@@ -3438,10 +3469,10 @@
         "TEST-W-010"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/device-filter.js"
+        "apps/uniapp/services/ble-runtime/display-name.js"
       ],
-      "task_id": "RUNTIME-FILTER-001",
-      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": "RC-DISPLAY-NAME",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -3449,18 +3480,18 @@
       "state_id": null,
       "operation_id": "OP-P001-09",
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Operation suite › OP-P001-09 筛选控件",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "列表即时更新"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Fake Runtime E4 PASS；产品扫描过滤/显示名/时长未对齐目标",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
       "first_breakpoint": {
-        "target": "FEAT-014",
-        "test": "TEST-U-007",
-        "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-        "symbol": "filterBleDevices",
-        "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+        "target": "FEAT-013",
+        "test": "TEST-U-006",
+        "file": "apps/uniapp/services/ble-runtime/display-name.js",
+        "symbol": "(missing)",
+        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
@@ -3468,17 +3499,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-007",
-            "first_breakpoint": "命中项匹配关键词",
-            "target_ids": [
-              "REQ-014",
-              "FEAT-014",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-filter-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-006",
             "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
@@ -3503,6 +3523,19 @@
               "FEAT-012"
             ],
             "source_file": "tests/target/unit/session-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
           }
         ]
       },
@@ -3518,10 +3551,10 @@
         "TEST-P-001"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/device-filter.js"
+        "apps/uniapp/services/ble-runtime/display-name.js"
       ],
-      "task_id": "RUNTIME-FILTER-001",
-      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": "RC-DISPLAY-NAME",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -3529,18 +3562,18 @@
       "state_id": null,
       "operation_id": "OP-P001-10",
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Operation suite › OP-P001-10 复制广播字段",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "toast 已复制"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Fake Runtime E4 PASS；产品扫描过滤/显示名/时长未对齐目标",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
       "first_breakpoint": {
-        "target": "FEAT-014",
-        "test": "TEST-U-007",
-        "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-        "symbol": "filterBleDevices",
-        "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+        "target": "FEAT-013",
+        "test": "TEST-U-006",
+        "file": "apps/uniapp/services/ble-runtime/display-name.js",
+        "symbol": "(missing)",
+        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
@@ -3548,17 +3581,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-007",
-            "first_breakpoint": "命中项匹配关键词",
-            "target_ids": [
-              "REQ-014",
-              "FEAT-014",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-filter-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-006",
             "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
@@ -3583,6 +3605,19 @@
               "FEAT-012"
             ],
             "source_file": "tests/target/unit/session-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
           }
         ]
       },
@@ -3598,10 +3633,10 @@
         "TEST-W-007"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/device-filter.js"
+        "apps/uniapp/services/ble-runtime/display-name.js"
       ],
-      "task_id": "RUNTIME-FILTER-001",
-      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": "RC-DISPLAY-NAME",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -3609,18 +3644,18 @@
       "state_id": null,
       "operation_id": "OP-P001-11",
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Operation suite › OP-P001-11 历史紧凑-查看",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "详情页打开"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Fake Runtime E4 PASS；产品扫描过滤/显示名/时长未对齐目标",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
       "first_breakpoint": {
-        "target": "FEAT-014",
-        "test": "TEST-U-007",
-        "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-        "symbol": "filterBleDevices",
-        "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+        "target": "FEAT-013",
+        "test": "TEST-U-006",
+        "file": "apps/uniapp/services/ble-runtime/display-name.js",
+        "symbol": "(missing)",
+        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
@@ -3628,17 +3663,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-007",
-            "first_breakpoint": "命中项匹配关键词",
-            "target_ids": [
-              "REQ-014",
-              "FEAT-014",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-filter-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-006",
             "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
@@ -3663,6 +3687,19 @@
               "FEAT-012"
             ],
             "source_file": "tests/target/unit/session-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
           }
         ]
       },
@@ -3676,10 +3713,10 @@
         "TEST-P-003"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/device-filter.js"
+        "apps/uniapp/services/ble-runtime/display-name.js"
       ],
-      "task_id": "RUNTIME-FILTER-001",
-      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": "RC-DISPLAY-NAME",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -3687,18 +3724,18 @@
       "state_id": null,
       "operation_id": "OP-P001-13",
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Operation suite › OP-P001-13 历史紧凑-全部历史",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "历史页打开"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Fake Runtime E4 PASS；产品扫描过滤/显示名/时长未对齐目标",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
       "first_breakpoint": {
-        "target": "FEAT-014",
-        "test": "TEST-U-007",
-        "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-        "symbol": "filterBleDevices",
-        "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+        "target": "FEAT-013",
+        "test": "TEST-U-006",
+        "file": "apps/uniapp/services/ble-runtime/display-name.js",
+        "symbol": "(missing)",
+        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
@@ -3706,17 +3743,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-007",
-            "first_breakpoint": "命中项匹配关键词",
-            "target_ids": [
-              "REQ-014",
-              "FEAT-014",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-filter-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-006",
             "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
@@ -3741,6 +3767,19 @@
               "FEAT-012"
             ],
             "source_file": "tests/target/unit/session-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
           }
         ]
       },
@@ -3754,10 +3793,10 @@
         "TEST-P-004"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/device-filter.js"
+        "apps/uniapp/services/ble-runtime/display-name.js"
       ],
-      "task_id": "RUNTIME-FILTER-001",
-      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": "RC-DISPLAY-NAME",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -3765,18 +3804,18 @@
       "state_id": null,
       "operation_id": "OP-P001-14",
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Operation suite › OP-P001-14 失败重试横幅按钮",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "恢复扫描"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Fake Runtime E4 PASS；产品扫描过滤/显示名/时长未对齐目标",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
       "first_breakpoint": {
-        "target": "FEAT-014",
-        "test": "TEST-U-007",
-        "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-        "symbol": "filterBleDevices",
-        "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+        "target": "FEAT-013",
+        "test": "TEST-U-006",
+        "file": "apps/uniapp/services/ble-runtime/display-name.js",
+        "symbol": "(missing)",
+        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
@@ -3784,17 +3823,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-007",
-            "first_breakpoint": "命中项匹配关键词",
-            "target_ids": [
-              "REQ-014",
-              "FEAT-014",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-filter-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-006",
             "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
@@ -3819,6 +3847,19 @@
               "FEAT-012"
             ],
             "source_file": "tests/target/unit/session-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
           }
         ]
       },
@@ -3832,10 +3873,10 @@
         "TEST-P-001"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/device-filter.js"
+        "apps/uniapp/services/ble-runtime/display-name.js"
       ],
-      "task_id": "RUNTIME-FILTER-001",
-      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": "RC-DISPLAY-NAME",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -3843,18 +3884,18 @@
       "state_id": null,
       "operation_id": "OP-P001-15",
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Operation suite › OP-P001-15 分享（微信菜单）",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "分享面板"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Fake Runtime E4 PASS；产品扫描过滤/显示名/时长未对齐目标",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
       "first_breakpoint": {
-        "target": "FEAT-014",
-        "test": "TEST-U-007",
-        "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-        "symbol": "filterBleDevices",
-        "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+        "target": "FEAT-013",
+        "test": "TEST-U-006",
+        "file": "apps/uniapp/services/ble-runtime/display-name.js",
+        "symbol": "(missing)",
+        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
@@ -3862,17 +3903,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-007",
-            "first_breakpoint": "命中项匹配关键词",
-            "target_ids": [
-              "REQ-014",
-              "FEAT-014",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-filter-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-006",
             "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
@@ -3897,6 +3927,19 @@
               "FEAT-012"
             ],
             "source_file": "tests/target/unit/session-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
           }
         ]
       },
@@ -3910,10 +3953,10 @@
         "TEST-W-010"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/device-filter.js"
+        "apps/uniapp/services/ble-runtime/display-name.js"
       ],
-      "task_id": "RUNTIME-FILTER-001",
-      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": "RC-DISPLAY-NAME",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -3921,18 +3964,18 @@
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Contract / first screen：manifest + behavior 对齐",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Fake Runtime E4 PASS；产品扫描过滤/显示名/时长未对齐目标",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
       "first_breakpoint": {
-        "target": "FEAT-014",
-        "test": "TEST-U-007",
-        "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-        "symbol": "filterBleDevices",
-        "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+        "target": "FEAT-013",
+        "test": "TEST-U-006",
+        "file": "apps/uniapp/services/ble-runtime/display-name.js",
+        "symbol": "(missing)",
+        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
@@ -3940,17 +3983,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-007",
-            "first_breakpoint": "命中项匹配关键词",
-            "target_ids": [
-              "REQ-014",
-              "FEAT-014",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-filter-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-006",
             "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
@@ -3975,6 +4007,19 @@
               "FEAT-012"
             ],
             "source_file": "tests/target/unit/session-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
           }
         ]
       },
@@ -3986,10 +4031,10 @@
         "TEST-P-PAGE-001"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/device-filter.js"
+        "apps/uniapp/services/ble-runtime/display-name.js"
       ],
-      "task_id": "RUNTIME-FILTER-001",
-      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": "RC-DISPLAY-NAME",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -3997,18 +4042,18 @@
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Error and recovery",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Fake Runtime E4 PASS；产品扫描过滤/显示名/时长未对齐目标",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
       "first_breakpoint": {
-        "target": "FEAT-014",
-        "test": "TEST-U-007",
-        "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-        "symbol": "filterBleDevices",
-        "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+        "target": "FEAT-013",
+        "test": "TEST-U-006",
+        "file": "apps/uniapp/services/ble-runtime/display-name.js",
+        "symbol": "(missing)",
+        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
@@ -4016,17 +4061,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-007",
-            "first_breakpoint": "命中项匹配关键词",
-            "target_ids": [
-              "REQ-014",
-              "FEAT-014",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-filter-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-006",
             "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
@@ -4051,6 +4085,19 @@
               "FEAT-012"
             ],
             "source_file": "tests/target/unit/session-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
           }
         ]
       },
@@ -4062,10 +4109,10 @@
         "TEST-P-PAGE-001"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/device-filter.js"
+        "apps/uniapp/services/ble-runtime/display-name.js"
       ],
-      "task_id": "RUNTIME-FILTER-001",
-      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": "RC-DISPLAY-NAME",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -4073,18 +4120,18 @@
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Navigation and back",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Fake Runtime E4 PASS；产品扫描过滤/显示名/时长未对齐目标",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
       "first_breakpoint": {
-        "target": "FEAT-014",
-        "test": "TEST-U-007",
-        "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-        "symbol": "filterBleDevices",
-        "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+        "target": "FEAT-013",
+        "test": "TEST-U-006",
+        "file": "apps/uniapp/services/ble-runtime/display-name.js",
+        "symbol": "(missing)",
+        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
@@ -4092,17 +4139,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-007",
-            "first_breakpoint": "命中项匹配关键词",
-            "target_ids": [
-              "REQ-014",
-              "FEAT-014",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-filter-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-006",
             "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
@@ -4127,6 +4163,19 @@
               "FEAT-012"
             ],
             "source_file": "tests/target/unit/session-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
           }
         ]
       },
@@ -4138,10 +4187,10 @@
         "TEST-P-PAGE-001"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/device-filter.js"
+        "apps/uniapp/services/ble-runtime/display-name.js"
       ],
-      "task_id": "RUNTIME-FILTER-001",
-      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": "RC-DISPLAY-NAME",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -4149,18 +4198,18 @@
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Platform degradation",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Fake Runtime E4 PASS；产品扫描过滤/显示名/时长未对齐目标",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
       "first_breakpoint": {
-        "target": "FEAT-014",
-        "test": "TEST-U-007",
-        "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-        "symbol": "filterBleDevices",
-        "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+        "target": "FEAT-013",
+        "test": "TEST-U-006",
+        "file": "apps/uniapp/services/ble-runtime/display-name.js",
+        "symbol": "(missing)",
+        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
@@ -4168,17 +4217,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-007",
-            "first_breakpoint": "命中项匹配关键词",
-            "target_ids": [
-              "REQ-014",
-              "FEAT-014",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-filter-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-006",
             "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
@@ -4203,6 +4241,19 @@
               "FEAT-012"
             ],
             "source_file": "tests/target/unit/session-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
           }
         ]
       },
@@ -4214,10 +4265,10 @@
         "TEST-P-PAGE-001"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/device-filter.js"
+        "apps/uniapp/services/ble-runtime/display-name.js"
       ],
-      "task_id": "RUNTIME-FILTER-001",
-      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": "RC-DISPLAY-NAME",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -4225,18 +4276,18 @@
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Cleanup",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Fake Runtime E4 PASS；产品扫描过滤/显示名/时长未对齐目标",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
       "first_breakpoint": {
-        "target": "FEAT-014",
-        "test": "TEST-U-007",
-        "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-        "symbol": "filterBleDevices",
-        "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+        "target": "FEAT-013",
+        "test": "TEST-U-006",
+        "file": "apps/uniapp/services/ble-runtime/display-name.js",
+        "symbol": "(missing)",
+        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
@@ -4244,17 +4295,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-007",
-            "first_breakpoint": "命中项匹配关键词",
-            "target_ids": [
-              "REQ-014",
-              "FEAT-014",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-filter-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-006",
             "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
@@ -4279,6 +4319,19 @@
               "FEAT-012"
             ],
             "source_file": "tests/target/unit/session-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
           }
         ]
       },
@@ -4290,10 +4343,10 @@
         "TEST-P-PAGE-001"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/device-filter.js"
+        "apps/uniapp/services/ble-runtime/display-name.js"
       ],
-      "task_id": "RUNTIME-FILTER-001",
-      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": "RC-DISPLAY-NAME",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -4301,18 +4354,18 @@
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Console and accessibility",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Fake Runtime E4 PASS；产品扫描过滤/显示名/时长未对齐目标",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
       "first_breakpoint": {
-        "target": "FEAT-014",
-        "test": "TEST-U-007",
-        "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-        "symbol": "filterBleDevices",
-        "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)"
+        "target": "FEAT-013",
+        "test": "TEST-U-006",
+        "file": "apps/uniapp/services/ble-runtime/display-name.js",
+        "symbol": "(missing)",
+        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
@@ -4321,17 +4374,6 @@
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
           {
-            "test_id": "TEST-U-007",
-            "first_breakpoint": "命中项匹配关键词",
-            "target_ids": [
-              "REQ-014",
-              "FEAT-014",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-filter-target.test.mjs"
-          },
-          {
             "test_id": "TEST-U-006",
             "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
             "target_ids": [
@@ -4355,6 +4397,19 @@
               "FEAT-012"
             ],
             "source_file": "tests/target/unit/session-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
           }
         ]
       },
@@ -4366,10 +4421,10 @@
         "TEST-P-PAGE-001"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/device-filter.js"
+        "apps/uniapp/services/ble-runtime/display-name.js"
       ],
-      "task_id": "RUNTIME-FILTER-001",
-      "root_cause_id": "RC-DEVICE-FILTER",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": "RC-DISPLAY-NAME",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -14121,12 +14176,12 @@
   "top_first_breakpoints": [
     {
       "page_id": "PAGE-001",
-      "target": "FEAT-014",
-      "test": "TEST-U-007",
-      "file": "apps/uniapp/services/ble-runtime/device-filter.js",
-      "symbol": "filterBleDevices",
-      "breakpoint": "prefix startsWith only; missing keyword/token hit matching (REQ-014)",
-      "task_id": "RUNTIME-FILTER-001"
+      "target": "FEAT-013",
+      "test": "TEST-U-006",
+      "file": "apps/uniapp/services/ble-runtime/display-name.js",
+      "symbol": "(missing)",
+      "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)",
+      "task_id": "RUNTIME-DISPLAY-NAME-001"
     },
     {
       "page_id": "PAGE-002",

@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 5c58aa6d543f8943886694a38cf03bf4accee2799a5b5636257017e4b676e591
+content_hash: 838a6c6fa67b924dcdb3499ba81abbdde3bb6279393696fba8035d82d8828ca3
 ```
 
 ## 模块树（path 事实）
@@ -14,7 +14,7 @@ content_hash: 5c58aa6d543f8943886694a38cf03bf4accee2799a5b5636257017e4b676e591
 |---|---|---|---|
 | index.js | 是 | FEAT-011/012, DEC-017 | Registry 快照；subscription_count 见 CURRENT FAIL TEST-U-005 |
 | advertisement.js | 是 | FEAT-017, TEST-U-008 | CURRENT 有 PASS |
-| device-filter.js | 是 | FEAT-014, TEST-U-007 | CURRENT FAIL：命中项匹配关键词 |
+| device-filter.js | 是 | FEAT-014, TEST-U-007 | RUNTIME-FILTER-001 DONE：keyword 跨字段命中 |
 | device-collection.js | 是 | UNASSESSED 细项 | |
 | scan-session.js | 是 | FLOW-002 | |
 | platform.js | 是 | | |
@@ -43,4 +43,4 @@ content_hash: 5c58aa6d543f8943886694a38cf03bf4accee2799a5b5636257017e4b676e591
 
 ## Runtime 差距记录数
 
-报告 runtime.json records = 37
+报告 runtime.json records = 36
