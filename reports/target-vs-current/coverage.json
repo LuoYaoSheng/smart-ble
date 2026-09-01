@@ -1,0 +1,81 @@
+{
+  "generated_at": "2026-09-01T06:42:02.564Z",
+  "head": "ref: refs/heads/main",
+  "system": {
+    "SYSTEM_PASS": 412,
+    "SYSTEM_FAIL": 0,
+    "HARNESS_PASS": 70,
+    "HARNESS_FAIL": 0,
+    "TARGET_CONTRACT_FAIL": 0
+  },
+  "current": {
+    "CURRENT_PASS": 41,
+    "CURRENT_FAIL": 18,
+    "blocked": {
+      "BLOCKED_BY_TOOLCHAIN": 11,
+      "BLOCKED_BY_TARGET_DRIVER": 0,
+      "BLOCKED_BY_FIXTURE": 0,
+      "BLOCKED_BY_CREDENTIAL": 0,
+      "NOT_EXECUTED": 0
+    },
+    "pages": {
+      "specs": 11,
+      "state_cases": 67,
+      "operation_cases": 92,
+      "assertion_cases": 849,
+      "totals": {
+        "pages": 11,
+        "states": 67,
+        "operations": 92,
+        "error_variants": 50,
+        "failure_variants": 92,
+        "cleanup_assertions": 39
+      },
+      "blocked_specs": 11,
+      "blocked_cases": 229,
+      "reason": "BLOCKED_BY_TOOLCHAIN"
+    }
+  },
+  "targets": {
+    "REQ": 66,
+    "FEAT": 81,
+    "PAGE": 11,
+    "STATE": 67,
+    "OP": 92,
+    "FLOW": 14,
+    "PROTO": 3,
+    "CLAIM": 31
+  },
+  "records_total": 377,
+  "by_gap_kind": {
+    "PRODUCT": 126,
+    "RELEASE": 2,
+    "RUNTIME": 25,
+    "PAGE": 161,
+    "SMART_HID": 6,
+    "LANDING": 40,
+    "TESTABILITY": 11,
+    "FIRMWARE": 6
+  },
+  "by_implementation_status": {
+    "PARTIAL": 316,
+    "NOT_IMPLEMENTED": 61
+  },
+  "by_verification_status": {
+    "HARDWARE_PENDING": 72,
+    "AUTOMATED_FAIL": 73,
+    "NOT_EXECUTED": 61,
+    "BLOCKED_BY_TOOLCHAIN": 171
+  },
+  "by_severity": {
+    "null": 290,
+    "P1": 57,
+    "P0": 30
+  },
+  "product_vs_testability": {
+    "product_gaps": 87,
+    "testability_gaps": 11,
+    "blocked_page_cases": 229,
+    "note": "blocked_page_cases 不得计为产品缺陷数"
+  }
+}

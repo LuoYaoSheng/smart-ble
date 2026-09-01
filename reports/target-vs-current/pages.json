@@ -1,0 +1,4657 @@
+{
+  "pages": [
+    {
+      "target_id": "PAGE-001",
+      "target_type": "page",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E5",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/pages/index/index.vue",
+          "symbol": "PAGE-001",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-P-001",
+        "TEST-A-001",
+        "TEST-A-005",
+        "TEST-W-001",
+        "TEST-W-007",
+        "TEST-E-001"
+      ],
+      "test_results": [],
+      "expected": "完整 10 states / 14 operations",
+      "actual": "自动化: BLOCKED_BY_TOOLCHAIN; blocked_cases≈21",
+      "first_breakpoint": "@playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷）",
+      "downstream_impact": [
+        "state_cases=10",
+        "operation_cases=14"
+      ],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": true
+    },
+    {
+      "target_id": "PAGE-002",
+      "target_type": "page",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E5",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/pages/hid/add.vue",
+          "symbol": "PAGE-002",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-P-002",
+        "TEST-U-015",
+        "TEST-I-009",
+        "TEST-H-001",
+        "TEST-H-002",
+        "TEST-H-003",
+        "TEST-W-010"
+      ],
+      "test_results": [],
+      "expected": "完整 12 states / 11 operations",
+      "actual": "自动化: BLOCKED_BY_TOOLCHAIN; blocked_cases≈21",
+      "first_breakpoint": "@playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷）",
+      "downstream_impact": [
+        "state_cases=12",
+        "operation_cases=11"
+      ],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": true
+    },
+    {
+      "target_id": "PAGE-003",
+      "target_type": "page",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/pages/hid/detail.vue",
+          "symbol": "PAGE-003",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-P-003",
+        "TEST-H-004",
+        "TEST-W-010"
+      ],
+      "test_results": [],
+      "expected": "完整 2 states / 4 operations",
+      "actual": "自动化: BLOCKED_BY_TOOLCHAIN; blocked_cases≈21",
+      "first_breakpoint": "@playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷）",
+      "downstream_impact": [
+        "state_cases=2",
+        "operation_cases=4"
+      ],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": true
+    },
+    {
+      "target_id": "PAGE-004",
+      "target_type": "page",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/pages/hid/history.vue",
+          "symbol": "PAGE-004",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-P-004",
+        "TEST-U-015",
+        "TEST-H-004",
+        "TEST-W-010"
+      ],
+      "test_results": [],
+      "expected": "完整 3 states / 5 operations",
+      "actual": "自动化: BLOCKED_BY_TOOLCHAIN; blocked_cases≈21",
+      "first_breakpoint": "@playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷）",
+      "downstream_impact": [
+        "state_cases=3",
+        "operation_cases=5"
+      ],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": true
+    },
+    {
+      "target_id": "PAGE-005",
+      "target_type": "page",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E5",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/pages/hid/diagnostics.vue",
+          "symbol": "PAGE-005",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-P-005",
+        "TEST-I-009",
+        "TEST-H-005",
+        "TEST-H-006",
+        "TEST-W-010"
+      ],
+      "test_results": [],
+      "expected": "完整 6 states / 6 operations",
+      "actual": "自动化: BLOCKED_BY_TOOLCHAIN; blocked_cases≈21",
+      "first_breakpoint": "@playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷）",
+      "downstream_impact": [
+        "state_cases=6",
+        "operation_cases=6"
+      ],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": true
+    },
+    {
+      "target_id": "PAGE-006",
+      "target_type": "page",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E5",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/pages/device/detail.vue",
+          "symbol": "PAGE-006",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-P-006",
+        "TEST-U-009",
+        "TEST-U-010",
+        "TEST-U-011",
+        "TEST-U-012",
+        "TEST-I-003",
+        "TEST-I-004",
+        "TEST-I-005",
+        "TEST-I-008",
+        "TEST-A-006",
+        "TEST-A-008",
+        "TEST-A-011",
+        "TEST-W-007",
+        "TEST-W-008",
+        "TEST-E-002",
+        "TEST-E-003",
+        "TEST-E-004",
+        "TEST-E-005",
+        "TEST-E-007"
+      ],
+      "test_results": [],
+      "expected": "完整 10 states / 14 operations",
+      "actual": "自动化: BLOCKED_BY_TOOLCHAIN; blocked_cases≈21",
+      "first_breakpoint": "@playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷）",
+      "downstream_impact": [
+        "state_cases=10",
+        "operation_cases=14"
+      ],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": true
+    },
+    {
+      "target_id": "PAGE-007",
+      "target_type": "page",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E5",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/pages/connected/index.vue",
+          "symbol": "PAGE-007",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-P-007",
+        "TEST-I-006",
+        "TEST-A-007",
+        "TEST-A-009",
+        "TEST-W-008",
+        "TEST-W-009",
+        "TEST-E-002"
+      ],
+      "test_results": [],
+      "expected": "完整 3 states / 5 operations",
+      "actual": "自动化: BLOCKED_BY_TOOLCHAIN; blocked_cases≈21",
+      "first_breakpoint": "@playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷）",
+      "downstream_impact": [
+        "state_cases=3",
+        "operation_cases=5"
+      ],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": true
+    },
+    {
+      "target_id": "PAGE-008",
+      "target_type": "page",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": "P1",
+      "evidence_level": "E5",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/pages/broadcast/index.vue",
+          "symbol": "PAGE-008",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-P-008",
+        "TEST-U-014",
+        "TEST-I-007",
+        "TEST-A-010",
+        "TEST-W-009",
+        "TEST-E-006"
+      ],
+      "test_results": [],
+      "expected": "完整 12 states / 7 operations",
+      "actual": "自动化: BLOCKED_BY_TOOLCHAIN; blocked_cases≈21",
+      "first_breakpoint": "@playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷）",
+      "downstream_impact": [
+        "state_cases=12",
+        "operation_cases=7"
+      ],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": true
+    },
+    {
+      "target_id": "PAGE-009",
+      "target_type": "page",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E6",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/pages/about/index.vue",
+          "symbol": "PAGE-009",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-P-009",
+        "TEST-C-006",
+        "TEST-A-012",
+        "TEST-W-010",
+        "TEST-R-003",
+        "TEST-R-005"
+      ],
+      "test_results": [],
+      "expected": "完整 3 states / 11 operations",
+      "actual": "自动化: BLOCKED_BY_TOOLCHAIN; blocked_cases≈21",
+      "first_breakpoint": "@playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷）",
+      "downstream_impact": [
+        "state_cases=3",
+        "operation_cases=11"
+      ],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": true
+    },
+    {
+      "target_id": "PAGE-010",
+      "target_type": "page",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": "P1",
+      "evidence_level": "E4",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/pages/about/version.vue",
+          "symbol": "PAGE-010",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-P-010",
+        "TEST-C-006",
+        "TEST-A-012",
+        "TEST-R-002"
+      ],
+      "test_results": [],
+      "expected": "完整 2 states / 4 operations",
+      "actual": "自动化: BLOCKED_BY_TOOLCHAIN; blocked_cases≈21",
+      "first_breakpoint": "@playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷）",
+      "downstream_impact": [
+        "state_cases=2",
+        "operation_cases=4"
+      ],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": true
+    },
+    {
+      "target_id": "WEB-001",
+      "target_type": "page",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": "P0",
+      "evidence_level": "E6",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp//.vue",
+          "symbol": "WEB-001",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-R-001",
+        "TEST-R-002",
+        "TEST-R-003",
+        "TEST-R-005",
+        "TEST-R-006",
+        "TEST-R-007",
+        "TEST-R-008",
+        "TEST-R-009",
+        "TEST-R-010",
+        "TEST-R-011"
+      ],
+      "test_results": [],
+      "expected": "完整 4 states / 11 operations",
+      "actual": "自动化: BLOCKED_BY_TOOLCHAIN; blocked_cases≈21",
+      "first_breakpoint": "假主下载 releases/latest；另有 Playwright BLOCKED_BY_TOOLCHAIN",
+      "downstream_impact": [
+        "state_cases=4",
+        "operation_cases=11"
+      ],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-LANDING-001",
+      "release_blocking": true
+    }
+  ],
+  "states": [
+    {
+      "target_id": "STATE-P001-01",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-001",
+        "TEST-W-006"
+      ],
+      "test_results": [],
+      "expected": "能力探测=BLE 不可用（H5/插件缺失）",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P001-02",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-A-004",
+        "TEST-W-005"
+      ],
+      "test_results": [],
+      "expected": "适配器=off",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P001-03",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-A-001",
+        "TEST-W-001"
+      ],
+      "test_results": [],
+      "expected": "权限=denied/permanent",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P001-04",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-001"
+      ],
+      "test_results": [],
+      "expected": "就绪且未扫描",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P001-05",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-A-005",
+        "TEST-W-007",
+        "TEST-E-001"
+      ],
+      "test_results": [],
+      "expected": "discovery active",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P001-06",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-001",
+        "TEST-A-005"
+      ],
+      "test_results": [],
+      "expected": "轮次完成且 N=0",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P001-07",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-001"
+      ],
+      "test_results": [],
+      "expected": "N>0 且 M=0",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P001-08",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-A-005",
+        "TEST-E-001"
+      ],
+      "test_results": [],
+      "expected": "M>0",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P001-09",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-001",
+        "TEST-E-005"
+      ],
+      "test_results": [],
+      "expected": "startDiscovery 失败",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P001-10",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-007"
+      ],
+      "test_results": [],
+      "expected": "Registry 有活动会话",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P002-01",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-H-001"
+      ],
+      "test_results": [],
+      "expected": "进入/重连",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-002"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P002-02",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-H-001"
+      ],
+      "test_results": [],
+      "expected": "INFO 校验不符",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-002"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P002-03",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-H-001"
+      ],
+      "test_results": [],
+      "expected": "connect 超时/失败",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-002"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P002-04",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-002"
+      ],
+      "test_results": [],
+      "expected": "身份通过",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-002"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P002-05",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-002"
+      ],
+      "test_results": [],
+      "expected": "下发前断开",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-002"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P002-06",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-U-015"
+      ],
+      "test_results": [],
+      "expected": "必填缺失",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-002"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P002-07",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-U-015"
+      ],
+      "test_results": [],
+      "expected": "解析失败或用户取消",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-002"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P002-08",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-I-009"
+      ],
+      "test_results": [],
+      "expected": "OP-07 触发",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-002"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P002-09",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-H-002"
+      ],
+      "test_results": [],
+      "expected": "state=ready",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-002"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P002-10",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-H-003"
+      ],
+      "test_results": [],
+      "expected": "error 非 null",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-002"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P002-11",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-H-003"
+      ],
+      "test_results": [],
+      "expected": "waiter 60s 无终态",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-002"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P002-12",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-002"
+      ],
+      "test_results": [],
+      "expected": "OP-08",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-002"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P003-01",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-003"
+      ],
+      "test_results": [],
+      "expected": "记录存在",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-003"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P003-02",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-003"
+      ],
+      "test_results": [],
+      "expected": "查询无结果",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-003"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P004-01",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-004"
+      ],
+      "test_results": [],
+      "expected": "无历史",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-004"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P004-02",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-004",
+        "TEST-H-004"
+      ],
+      "test_results": [],
+      "expected": "≥1 条",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-004"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P004-03",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-004"
+      ],
+      "test_results": [],
+      "expected": "OP-02 触发",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-004"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P005-01",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-005"
+      ],
+      "test_results": [],
+      "expected": "进入且无可用连接",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-005"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P005-02",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-H-005"
+      ],
+      "test_results": [],
+      "expected": "OP-03 弹确认",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-005"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P005-03",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-H-005"
+      ],
+      "test_results": [],
+      "expected": "diagnose 运行",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-005"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P005-04",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-H-005"
+      ],
+      "test_results": [],
+      "expected": "诊断成功",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-005"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P005-05",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-H-005"
+      ],
+      "test_results": [],
+      "expected": "诊断中连接断开",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-005"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P005-06",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-005"
+      ],
+      "test_results": [],
+      "expected": "diagnose 抛错",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-005"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P006-01",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-006"
+      ],
+      "test_results": [],
+      "expected": "进入未连接",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-006"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P006-02",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-A-006"
+      ],
+      "test_results": [],
+      "expected": "attempt 进行",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-006"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P006-03",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-A-006"
+      ],
+      "test_results": [],
+      "expected": "连接成功发现中",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-006"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P006-04",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-I-003"
+      ],
+      "test_results": [],
+      "expected": "发现结果空",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-006"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P006-05",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-A-006"
+      ],
+      "test_results": [],
+      "expected": "attempt 失败/超时",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-006"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P006-06",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-A-006",
+        "TEST-E-003"
+      ],
+      "test_results": [],
+      "expected": "ready",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-006"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P006-07",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-A-007"
+      ],
+      "test_results": [],
+      "expected": "被动断开重试",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-006"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P006-08",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-I-003"
+      ],
+      "test_results": [],
+      "expected": "3 次失败",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-006"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P006-09",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-A-008"
+      ],
+      "test_results": [],
+      "expected": "读/写/订阅失败",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-006"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P006-10",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-E-007"
+      ],
+      "test_results": [],
+      "expected": "OTA 弹窗打开",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-006"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P007-01",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-007"
+      ],
+      "test_results": [],
+      "expected": "Registry 空",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-007"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P007-02",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-A-009",
+        "TEST-W-009"
+      ],
+      "test_results": [],
+      "expected": "≥1 会话",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-007"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P007-03",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-W-009"
+      ],
+      "test_results": [],
+      "expected": "批量断开部分失败",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-007"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P008-01",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-008"
+      ],
+      "test_results": [],
+      "expected": "进入未检查",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-008"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P008-02",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-008"
+      ],
+      "test_results": [],
+      "expected": "探测运行",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-008"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P008-03",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-008",
+        "TEST-W-006"
+      ],
+      "test_results": [],
+      "expected": "探测失败/H5/插件缺失",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-008"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P008-04",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-U-014"
+      ],
+      "test_results": [],
+      "expected": "支持但必填缺失/无效",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-008"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P008-05",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-008"
+      ],
+      "test_results": [],
+      "expected": "支持且有效",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-008"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P008-06",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-A-010",
+        "TEST-E-006"
+      ],
+      "test_results": [],
+      "expected": "启动实际成功",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-008"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P008-07",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-008"
+      ],
+      "test_results": [],
+      "expected": "停止执行",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-008"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P008-08",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-A-010"
+      ],
+      "test_results": [],
+      "expected": "广播权限缺失",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-008"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P008-09",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-W-005"
+      ],
+      "test_results": [],
+      "expected": "适配器 off",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-008"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P008-10",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-I-007",
+        "TEST-A-010"
+      ],
+      "test_results": [],
+      "expected": "有活动连接时尝试开始",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-008"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P008-11",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-U-014"
+      ],
+      "test_results": [],
+      "expected": "预算 32/UUID 非法",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-008"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P008-12",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-A-010"
+      ],
+      "test_results": [],
+      "expected": "平台返回失败",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-008"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P009-01",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-009"
+      ],
+      "test_results": [],
+      "expected": "进入",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-009"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P009-02",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-009"
+      ],
+      "test_results": [],
+      "expected": "版本就绪",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-009"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P009-03",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-009"
+      ],
+      "test_results": [],
+      "expected": "读取异常",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-009"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P010-01",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-010"
+      ],
+      "test_results": [],
+      "expected": "有版本数据",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-010"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-P010-02",
+      "target_type": "state",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-010"
+      ],
+      "test_results": [],
+      "expected": "投影为空",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-010"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-W001-01",
+      "target_type": "state",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-001"
+      ],
+      "test_results": [],
+      "expected": "Release Metadata 完整且 E6 门通过",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "WEB-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-W001-02",
+      "target_type": "state",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-003"
+      ],
+      "test_results": [],
+      "expected": "产物未齐/E5 未全",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "WEB-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "STATE-W001-03",
+      "target_type": "state",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "AUTOMATED_FAIL",
+      "severity": "P0",
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-003"
+      ],
+      "test_results": [],
+      "expected": "无任何公开产物",
+      "actual": "下载区未按 NOT_RELEASED 降级",
+      "first_breakpoint": "NOT_RELEASED 无产物时应无下载链接；当前仍暴露 releases/latest",
+      "downstream_impact": [],
+      "dependencies": [
+        "WEB-001"
+      ],
+      "suggested_fix_id": "FIX-LANDING-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "STATE-W001-04",
+      "target_type": "state",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-006"
+      ],
+      "test_results": [],
+      "expected": "截图/原型缺失",
+      "actual": "产品实现可能存在对应 UI；自动化未验证",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "downstream_impact": [],
+      "dependencies": [
+        "WEB-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    }
+  ],
+  "operations": [
+    {
+      "target_id": "OP-P001-01",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E5",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/utils/ota_manager.js",
+          "symbol": "OtaManager",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-P-001",
+        "TEST-A-005",
+        "TEST-W-007",
+        "TEST-E-001"
+      ],
+      "test_results": [],
+      "expected": "开始扫描按钮; runtime=Composable→Store→ScanSession→Runtime.startDiscovery",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P001-02",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-001",
+        "TEST-A-005"
+      ],
+      "test_results": [],
+      "expected": "停止扫描按钮; runtime=Store.stopScan(user)",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P001-03",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-001",
+        "TEST-U-005"
+      ],
+      "test_results": [],
+      "expected": "超时自动停止; runtime=计时器→stopScan(timeout)",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P001-04",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E5",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/utils/ota_manager.js",
+          "symbol": "OtaManager",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-I-002",
+        "TEST-A-003",
+        "TEST-W-003"
+      ],
+      "test_results": [],
+      "expected": "hide/unload 停止; runtime=生命周期→stopScan(page_hide/unload)",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P001-05",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-U-005",
+        "TEST-I-002"
+      ],
+      "test_results": [],
+      "expected": "第二轮扫描; runtime=新 generation start",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P001-06",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E5",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/utils/ota_manager.js",
+          "symbol": "OtaManager",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-P-001",
+        "TEST-A-005",
+        "TEST-E-001"
+      ],
+      "test_results": [],
+      "expected": "设备卡点击; runtime=打开广播弹窗（不连接）",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P001-07",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E5",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/utils/ota_manager.js",
+          "symbol": "OtaManager",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-P-006",
+        "TEST-A-006",
+        "TEST-W-007"
+      ],
+      "test_results": [],
+      "expected": "连接按钮（卡上）; runtime=prepareConnect(停扫)→跳 PAGE-006 并发起连接",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P001-08",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E5",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/utils/ota_manager.js",
+          "symbol": "OtaManager",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-P-002",
+        "TEST-H-001",
+        "TEST-W-010"
+      ],
+      "test_results": [],
+      "expected": "Profile 动作（Smart HID 配网）; runtime=设定 Profile 当前设备→跳 PAGE-002",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P001-09",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-U-007",
+        "TEST-P-001"
+      ],
+      "test_results": [],
+      "expected": "筛选控件; runtime=纯函数过滤→M 更新",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P001-10",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-001",
+        "TEST-W-007"
+      ],
+      "test_results": [],
+      "expected": "复制广播字段; runtime=剪贴板",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P001-11",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-003"
+      ],
+      "test_results": [],
+      "expected": "历史紧凑-查看; runtime=→PAGE-003",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P001-13",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-004"
+      ],
+      "test_results": [],
+      "expected": "历史紧凑-全部历史; runtime=→PAGE-004",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P001-14",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E5",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/utils/ota_manager.js",
+          "symbol": "OtaManager",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-P-001"
+      ],
+      "test_results": [],
+      "expected": "失败重试横幅按钮; runtime=重新 start（新 generation）",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P001-15",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-W-010"
+      ],
+      "test_results": [],
+      "expected": "分享（微信菜单）; runtime=shareApp",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P002-01",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E5",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/utils/ota_manager.js",
+          "symbol": "OtaManager",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-H-001",
+        "TEST-H-002"
+      ],
+      "test_results": [],
+      "expected": "自动连接（进入触发）; runtime=SmartHidService.connect→发现→读 INFO",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-002"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P002-02",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-H-001"
+      ],
+      "test_results": [],
+      "expected": "重新连接按钮; runtime=同上",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-002"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P002-03",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-002"
+      ],
+      "test_results": [],
+      "expected": "返回设备列表; runtime=navigateBack",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-002"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P002-04",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-U-015",
+        "TEST-P-002"
+      ],
+      "test_results": [],
+      "expected": "表单输入; runtime=本地校验（纯函数）",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-002"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P002-05",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-002"
+      ],
+      "test_results": [],
+      "expected": "密码显示开关; runtime=本地",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-002"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P002-06",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-U-015",
+        "TEST-H-002"
+      ],
+      "test_results": [],
+      "expected": "扫码; runtime=parsePairingQrPayload",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-002"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P002-07",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E5",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/utils/ota_manager.js",
+          "symbol": "OtaManager",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-I-009",
+        "TEST-H-002"
+      ],
+      "test_results": [],
+      "expected": "下发配置; runtime=buildCandidate→先注册 STATUS waiter→分帧写 INPUT",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-002"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P002-08",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E5",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/utils/ota_manager.js",
+          "symbol": "OtaManager",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-P-002",
+        "TEST-H-003"
+      ],
+      "test_results": [],
+      "expected": "取消等待; runtime=取消 waiter+（可选）CTRL 无——本协议无 abort 特征，取消即断开连接",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-002"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P002-09",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-H-003"
+      ],
+      "test_results": [],
+      "expected": "错误恢复按钮; runtime=按 `13` 恢复映射（form/pairing/diagnostics/retry）",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-002"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P002-10",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E5",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/utils/ota_manager.js",
+          "symbol": "OtaManager",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-H-004"
+      ],
+      "test_results": [],
+      "expected": "查看设备; runtime=写历史→跳详情",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-002"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P002-11",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-002"
+      ],
+      "test_results": [],
+      "expected": "返回键（拦截）; runtime=确认后取消+离开",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-002"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P003-01",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-H-006"
+      ],
+      "test_results": [],
+      "expected": "重新配置; runtime=设定 Profile 当前设备→PAGE-002",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-003"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P003-02",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-005"
+      ],
+      "test_results": [],
+      "expected": "运行诊断; runtime=→PAGE-005",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-003"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P003-03",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-006"
+      ],
+      "test_results": [],
+      "expected": "高级 BLE 调试; runtime=构建设备上下文→PAGE-006",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-003"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P003-04",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-003"
+      ],
+      "test_results": [],
+      "expected": "返回; runtime=navigateBack",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-003"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P004-01",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-004"
+      ],
+      "test_results": [],
+      "expected": "卡片点击; runtime=→PAGE-003",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-004"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P004-02",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-004",
+        "TEST-H-004"
+      ],
+      "test_results": [],
+      "expected": "移除按钮; runtime=删除 DATA-006 记录",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-004"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P004-03",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-004"
+      ],
+      "test_results": [],
+      "expected": "确认框取消; runtime=关闭确认",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-004"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P004-04",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-004"
+      ],
+      "test_results": [],
+      "expected": "空态去扫描; runtime=switchTab",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-004"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P004-05",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-004"
+      ],
+      "test_results": [],
+      "expected": "返回; runtime=navigateBack",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-004"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P005-01",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-005",
+        "TEST-H-005"
+      ],
+      "test_results": [],
+      "expected": "进入自动诊断; runtime=diagnose() 一次",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-005"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P005-02",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-H-005"
+      ],
+      "test_results": [],
+      "expected": "重新检测; runtime=diagnose()",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-005"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P005-03",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-H-005"
+      ],
+      "test_results": [],
+      "expected": "连接设备（确认）; runtime=connect（owned）→diagnose()",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-005"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P005-04",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-005"
+      ],
+      "test_results": [],
+      "expected": "显示/隐藏错误码; runtime=本地切换",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-005"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P005-05",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-005"
+      ],
+      "test_results": [],
+      "expected": "返回设备详情; runtime=navigateBack（栈感知，无栈则 redirectTo 详情）",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-005"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P005-06",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-H-006"
+      ],
+      "test_results": [],
+      "expected": "重新配网; runtime=设定上下文→PAGE-002",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-005"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P006-01",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-I-003",
+        "TEST-A-006"
+      ],
+      "test_results": [],
+      "expected": "连接; runtime=use-device-session.connect（attempt 去重）",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-006"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P006-02",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-A-007",
+        "TEST-E-002"
+      ],
+      "test_results": [],
+      "expected": "主动断开; runtime=disconnect(主动标记，不重连)",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-006"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P006-03",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-I-003",
+        "TEST-E-005"
+      ],
+      "test_results": [],
+      "expected": "服务发现重试; runtime=重新 discoverServices",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-006"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P006-04",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-A-008",
+        "TEST-E-003"
+      ],
+      "test_results": [],
+      "expected": "Read; runtime=readValue(3s 超时)",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-006"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P006-05",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-A-008",
+        "TEST-E-003"
+      ],
+      "test_results": [],
+      "expected": "TEXT 写; runtime=encodeWritePayload(text) UTF-8",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-006"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P006-06",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-U-010",
+        "TEST-A-008"
+      ],
+      "test_results": [],
+      "expected": "HEX 写; runtime=严格偶数+字符校验→字节",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-006"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P006-07",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-I-005",
+        "TEST-A-008",
+        "TEST-E-004"
+      ],
+      "test_results": [],
+      "expected": "开启订阅（Characteristic Subscription，DEC-017）; runtime=Runtime 按平台能力启用 Characteristic Value Change",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-006"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P006-08",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E5",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/utils/ota_manager.js",
+          "symbol": "OtaManager",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-I-005"
+      ],
+      "test_results": [],
+      "expected": "关闭订阅; runtime=setNotifyEnabled(false)（远程+本地双断）",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-006"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P006-10",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-006"
+      ],
+      "test_results": [],
+      "expected": "清空日志; runtime=logger.clear(deviceId)",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-006"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P006-11",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-W-008",
+        "TEST-U-012"
+      ],
+      "test_results": [],
+      "expected": "导出日志; runtime=脱敏→格式化→导出/复制",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-006"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P006-12",
+      "target_type": "operation",
+      "gap_kind": "RUNTIME",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "AUTOMATED_FAIL",
+      "severity": "P0",
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-U-016",
+        "TEST-I-010",
+        "TEST-A-011",
+        "TEST-E-007"
+      ],
+      "test_results": [],
+      "expected": "选择 OTA 固件包; runtime=FEAT-081 六项校验（格式/target/hardware/version/size/SHA256）",
+      "actual": "UI 可启动 OTA 但协议不完整",
+      "first_breakpoint": "OtaManager 未写 CHAR_CTRL；与固件事务协议断裂",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-006"
+      ],
+      "suggested_fix_id": "FIX-OTA-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "OP-P006-13",
+      "target_type": "operation",
+      "gap_kind": "RUNTIME",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "AUTOMATED_FAIL",
+      "severity": "P0",
+      "evidence_level": "E5",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/utils/ota_manager.js",
+          "symbol": "OtaManager",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-I-008",
+        "TEST-A-011",
+        "TEST-E-007"
+      ],
+      "test_results": [],
+      "expected": "开始 OTA; runtime=OTA 事务（第 0 步后 10 步正典，`12`；start 携带 target/sha256）",
+      "actual": "UI 可启动 OTA 但协议不完整",
+      "first_breakpoint": "OtaManager 未写 CHAR_CTRL；与固件事务协议断裂",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-006"
+      ],
+      "suggested_fix_id": "FIX-OTA-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "OP-P006-14",
+      "target_type": "operation",
+      "gap_kind": "RUNTIME",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "AUTOMATED_FAIL",
+      "severity": "P0",
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-E-007"
+      ],
+      "test_results": [],
+      "expected": "取消 OTA; runtime=CTRL abort→设备回 idle",
+      "actual": "UI 可启动 OTA 但协议不完整",
+      "first_breakpoint": "OtaManager 未写 CHAR_CTRL；与固件事务协议断裂",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-006"
+      ],
+      "suggested_fix_id": "FIX-OTA-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "OP-P006-15",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-006"
+      ],
+      "test_results": [],
+      "expected": "返回; runtime=navigateBack",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-006"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P007-01",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-I-006",
+        "TEST-A-009"
+      ],
+      "test_results": [],
+      "expected": "卡片点击; runtime=按 Profile 路由携稳定身份",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-007"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P007-02",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E5",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/utils/ota_manager.js",
+          "symbol": "OtaManager",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-A-007",
+        "TEST-W-008"
+      ],
+      "test_results": [],
+      "expected": "单独断开; runtime=统一断开入口（含 Smart HID service 通知）→Registry 移除",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-007"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P007-03",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E5",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/utils/ota_manager.js",
+          "symbol": "OtaManager",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-W-009",
+        "TEST-A-009"
+      ],
+      "test_results": [],
+      "expected": "全部断开; runtime=对全部会话统一断开（同一入口，含 HID；allSettled）",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-007"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P007-04",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-007"
+      ],
+      "test_results": [],
+      "expected": "空态去扫描; runtime=switchTab",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-007"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P007-05",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-007"
+      ],
+      "test_results": [],
+      "expected": "查看重连进度; runtime=展示型（无点击链路）",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-007"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P008-01",
+      "target_type": "operation",
+      "gap_kind": "FIRMWARE",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "HARDWARE_PENDING",
+      "severity": "P0",
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-008",
+        "TEST-A-010"
+      ],
+      "test_results": [],
+      "expected": "检查支持; runtime=能力探测（含插件存在性）",
+      "actual": "仅 Peripheral Server；无 fixture_observer",
+      "first_breakpoint": "hardware/esp32 无 Observer 目标源码（证据闭环第一断点）；页面 Owner 见 FIX-PAGE-008",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-008"
+      ],
+      "suggested_fix_id": "FIX-FW-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "OP-P008-02",
+      "target_type": "operation",
+      "gap_kind": "FIRMWARE",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "HARDWARE_PENDING",
+      "severity": "P0",
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-U-014",
+        "TEST-P-008"
+      ],
+      "test_results": [],
+      "expected": "编辑字段; runtime=校验+预算重算",
+      "actual": "仅 Peripheral Server；无 fixture_observer",
+      "first_breakpoint": "hardware/esp32 无 Observer 目标源码（证据闭环第一断点）；页面 Owner 见 FIX-PAGE-008",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-008"
+      ],
+      "suggested_fix_id": "FIX-FW-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "OP-P008-03",
+      "target_type": "operation",
+      "gap_kind": "FIRMWARE",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "HARDWARE_PENDING",
+      "severity": "P0",
+      "evidence_level": "E5",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/utils/ota_manager.js",
+          "symbol": "OtaManager",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-I-007",
+        "TEST-A-010",
+        "TEST-E-006"
+      ],
+      "test_results": [],
+      "expected": "开始广播; runtime=Owner 获取→平台广播启动",
+      "actual": "仅 Peripheral Server；无 fixture_observer",
+      "first_breakpoint": "hardware/esp32 无 Observer 目标源码（证据闭环第一断点）；页面 Owner 见 FIX-PAGE-008",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-008"
+      ],
+      "suggested_fix_id": "FIX-FW-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "OP-P008-04",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E5",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/utils/ota_manager.js",
+          "symbol": "OtaManager",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-A-010",
+        "TEST-E-006"
+      ],
+      "test_results": [],
+      "expected": "停止广播; runtime=平台停止+Server 关闭",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-008"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P008-05",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-008"
+      ],
+      "test_results": [],
+      "expected": "清空操作日志; runtime=本地清空",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-008"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P008-06",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-I-007",
+        "TEST-A-003"
+      ],
+      "test_results": [],
+      "expected": "hide/unload 释放; runtime=自动停止+释放",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-008"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P008-07",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-008"
+      ],
+      "test_results": [],
+      "expected": "复制 Observer 校验信息; runtime=复制当前 payload 摘要（供比对）",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-008"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P009-01",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-009",
+        "TEST-R-005"
+      ],
+      "test_results": [],
+      "expected": "打开官网; runtime=App openURL / H5 window.open / 微信复制链接",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-009"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P009-02",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-010"
+      ],
+      "test_results": [],
+      "expected": "版本记录; runtime=navigate",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-009"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P009-03",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-005"
+      ],
+      "test_results": [],
+      "expected": "开发文档; runtime=同 OP-01",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-009"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P009-04",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-005"
+      ],
+      "test_results": [],
+      "expected": "GitHub 仓库; runtime=同 OP-01",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-009"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P009-05",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-005",
+        "TEST-E-008"
+      ],
+      "test_results": [],
+      "expected": "ESP32 教程; runtime=同 OP-01",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-009"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P009-06",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-005"
+      ],
+      "test_results": [],
+      "expected": "问题反馈; runtime=Issue 入口（DEC-011 仓库角色）",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-009"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P009-07",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-005"
+      ],
+      "test_results": [],
+      "expected": "隐私声明; runtime=文档站隐私页",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-009"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P009-08",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-005"
+      ],
+      "test_results": [],
+      "expected": "安全披露; runtime=SECURITY.md 入口",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-009"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P009-09",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-005"
+      ],
+      "test_results": [],
+      "expected": "开源许可; runtime=LICENSE 展示",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-009"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P009-10",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-009",
+        "TEST-W-010"
+      ],
+      "test_results": [],
+      "expected": "分享应用; runtime=微信 share / App uni.share / H5 Web Share→复制",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-009"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P009-11",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-W-010"
+      ],
+      "test_results": [],
+      "expected": "跳转其他小程序; runtime=navigateToMiniProgram",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-009"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P010-01",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": "P1",
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-010"
+      ],
+      "test_results": [],
+      "expected": "查看条目（滚动）; runtime=静态渲染",
+      "actual": "非 Release Metadata 投影",
+      "first_breakpoint": "pages/about/version.vue 硬编码 versionHistory",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-010"
+      ],
+      "suggested_fix_id": "FIX-PAGE-010",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P010-02",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": "P1",
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-010"
+      ],
+      "test_results": [],
+      "expected": "复制版本信息; runtime=复制\"版本+shortsha\"",
+      "actual": "非 Release Metadata 投影",
+      "first_breakpoint": "pages/about/version.vue 硬编码 versionHistory",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-010"
+      ],
+      "suggested_fix_id": "FIX-PAGE-010",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P010-03",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": "P1",
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-W-010"
+      ],
+      "test_results": [],
+      "expected": "分享本页; runtime=shareApp（本 path）",
+      "actual": "非 Release Metadata 投影",
+      "first_breakpoint": "pages/about/version.vue 硬编码 versionHistory",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-010"
+      ],
+      "suggested_fix_id": "FIX-PAGE-010",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-P010-04",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": "P1",
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-010"
+      ],
+      "test_results": [],
+      "expected": "返回; runtime=navigateBack",
+      "actual": "非 Release Metadata 投影",
+      "first_breakpoint": "pages/about/version.vue 硬编码 versionHistory",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-010"
+      ],
+      "suggested_fix_id": "FIX-PAGE-010",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-W001-01",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-006"
+      ],
+      "test_results": [],
+      "expected": "主 CTA（体验）; runtime=锚点/打开原型",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "WEB-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-W001-02",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-005"
+      ],
+      "test_results": [],
+      "expected": "次 CTA（GitHub）; runtime=外链",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "WEB-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-W001-03",
+      "target_type": "operation",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "AUTOMATED_FAIL",
+      "severity": "P0",
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-001"
+      ],
+      "test_results": [],
+      "expected": "下载 Android APK; runtime=产物 URL",
+      "actual": "假主下载链路",
+      "first_breakpoint": "下载 CTA 指向 releases/latest 而非 NOT_RELEASED/真实产物",
+      "downstream_impact": [],
+      "dependencies": [
+        "WEB-001"
+      ],
+      "suggested_fix_id": "FIX-LANDING-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "OP-W001-04",
+      "target_type": "operation",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "AUTOMATED_FAIL",
+      "severity": "P0",
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-009"
+      ],
+      "test_results": [],
+      "expected": "微信小程序码; runtime=码图",
+      "actual": "假主下载链路",
+      "first_breakpoint": "下载 CTA 指向 releases/latest 而非 NOT_RELEASED/真实产物",
+      "downstream_impact": [],
+      "dependencies": [
+        "WEB-001"
+      ],
+      "suggested_fix_id": "FIX-LANDING-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "OP-W001-05",
+      "target_type": "operation",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "AUTOMATED_FAIL",
+      "severity": "P0",
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-008"
+      ],
+      "test_results": [],
+      "expected": "固件下载; runtime=产物 URL",
+      "actual": "假主下载链路",
+      "first_breakpoint": "下载 CTA 指向 releases/latest 而非 NOT_RELEASED/真实产物",
+      "downstream_impact": [],
+      "dependencies": [
+        "WEB-001"
+      ],
+      "suggested_fix_id": "FIX-LANDING-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "OP-W001-06",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-007"
+      ],
+      "test_results": [],
+      "expected": "查看证据; runtime=EVID 链接",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "WEB-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-W001-07",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-006"
+      ],
+      "test_results": [],
+      "expected": "查看已知限制; runtime=#evidence 锚点",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "WEB-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-W001-08",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-006"
+      ],
+      "test_results": [],
+      "expected": "导航锚点; runtime=平滑滚动",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "WEB-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-W001-09",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-005"
+      ],
+      "test_results": [],
+      "expected": "快速开始三选一; runtime=到达对应教程（Quick Start，前置条件声明在区块开头）",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "WEB-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-W001-10",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-005"
+      ],
+      "test_results": [],
+      "expected": "Smart HID 区链接; runtime=详情/教程",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "WEB-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-W001-11",
+      "target_type": "operation",
+      "gap_kind": "PAGE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E5",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/utils/ota_manager.js",
+          "symbol": "OtaManager",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-R-011"
+      ],
+      "test_results": [],
+      "expected": "30 分钟 Clean Machine 入口; runtime=到达 Clean Machine 教程（`19` 2.2：clone→依赖→build→flash→install→scan→connect→write→notify）",
+      "actual": "页面可能存在控件；E4 未跑；产品差距见共享 FIX",
+      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）",
+      "downstream_impact": [],
+      "dependencies": [
+        "WEB-001"
+      ],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    }
+  ],
+  "automation": [
+    {
+      "target_id": "PAGE-001#AUTOMATION",
+      "target_type": "test",
+      "gap_kind": "TESTABILITY",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-001"
+      ],
+      "test_results": [],
+      "expected": "Page Driver + Playwright 执行全部 State/Operation",
+      "actual": "BLOCKED_BY_TOOLCHAIN",
+      "first_breakpoint": "@playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷）",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "PAGE-002#AUTOMATION",
+      "target_type": "test",
+      "gap_kind": "TESTABILITY",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-002"
+      ],
+      "test_results": [],
+      "expected": "Page Driver + Playwright 执行全部 State/Operation",
+      "actual": "BLOCKED_BY_TOOLCHAIN",
+      "first_breakpoint": "@playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷）",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "PAGE-003#AUTOMATION",
+      "target_type": "test",
+      "gap_kind": "TESTABILITY",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-003"
+      ],
+      "test_results": [],
+      "expected": "Page Driver + Playwright 执行全部 State/Operation",
+      "actual": "BLOCKED_BY_TOOLCHAIN",
+      "first_breakpoint": "@playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷）",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "PAGE-004#AUTOMATION",
+      "target_type": "test",
+      "gap_kind": "TESTABILITY",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-004"
+      ],
+      "test_results": [],
+      "expected": "Page Driver + Playwright 执行全部 State/Operation",
+      "actual": "BLOCKED_BY_TOOLCHAIN",
+      "first_breakpoint": "@playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷）",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "PAGE-005#AUTOMATION",
+      "target_type": "test",
+      "gap_kind": "TESTABILITY",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-005"
+      ],
+      "test_results": [],
+      "expected": "Page Driver + Playwright 执行全部 State/Operation",
+      "actual": "BLOCKED_BY_TOOLCHAIN",
+      "first_breakpoint": "@playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷）",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "PAGE-006#AUTOMATION",
+      "target_type": "test",
+      "gap_kind": "TESTABILITY",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-006"
+      ],
+      "test_results": [],
+      "expected": "Page Driver + Playwright 执行全部 State/Operation",
+      "actual": "BLOCKED_BY_TOOLCHAIN",
+      "first_breakpoint": "@playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷）",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "PAGE-007#AUTOMATION",
+      "target_type": "test",
+      "gap_kind": "TESTABILITY",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-007"
+      ],
+      "test_results": [],
+      "expected": "Page Driver + Playwright 执行全部 State/Operation",
+      "actual": "BLOCKED_BY_TOOLCHAIN",
+      "first_breakpoint": "@playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷）",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "PAGE-008#AUTOMATION",
+      "target_type": "test",
+      "gap_kind": "TESTABILITY",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-008"
+      ],
+      "test_results": [],
+      "expected": "Page Driver + Playwright 执行全部 State/Operation",
+      "actual": "BLOCKED_BY_TOOLCHAIN",
+      "first_breakpoint": "@playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷）",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "PAGE-009#AUTOMATION",
+      "target_type": "test",
+      "gap_kind": "TESTABILITY",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-009"
+      ],
+      "test_results": [],
+      "expected": "Page Driver + Playwright 执行全部 State/Operation",
+      "actual": "BLOCKED_BY_TOOLCHAIN",
+      "first_breakpoint": "@playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷）",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "PAGE-010#AUTOMATION",
+      "target_type": "test",
+      "gap_kind": "TESTABILITY",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-010"
+      ],
+      "test_results": [],
+      "expected": "Page Driver + Playwright 执行全部 State/Operation",
+      "actual": "BLOCKED_BY_TOOLCHAIN",
+      "first_breakpoint": "@playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷）",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "WEB-001#AUTOMATION",
+      "target_type": "test",
+      "gap_kind": "TESTABILITY",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-012"
+      ],
+      "test_results": [],
+      "expected": "Page Driver + Playwright 执行全部 State/Operation",
+      "actual": "BLOCKED_BY_TOOLCHAIN",
+      "first_breakpoint": "假主下载 releases/latest；另有 Playwright BLOCKED_BY_TOOLCHAIN",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    }
+  ],
+  "blocked": {
+    "specs": 11,
+    "state_cases": 67,
+    "operation_cases": 92,
+    "assertion_cases": 849,
+    "totals": {
+      "pages": 11,
+      "states": 67,
+      "operations": 92,
+      "error_variants": 50,
+      "failure_variants": 92,
+      "cleanup_assertions": 39
+    },
+    "blocked_specs": 11,
+    "blocked_cases": 229,
+    "reason": "BLOCKED_BY_TOOLCHAIN"
+  }
+}

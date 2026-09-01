@@ -1,0 +1,566 @@
+{
+  "system": {
+    "system": {
+      "pass": 412,
+      "fail": 0,
+      "checkers": [
+        {
+          "id": "TEST-C-contract",
+          "pass": 111,
+          "fail": 0
+        },
+        {
+          "id": "TEST-C-pages",
+          "pass": 63,
+          "fail": 0
+        },
+        {
+          "id": "TEST-C-flows",
+          "pass": 116,
+          "fail": 0
+        },
+        {
+          "id": "TEST-C-platforms",
+          "pass": 17,
+          "fail": 0
+        },
+        {
+          "id": "TEST-C-protocols",
+          "pass": 56,
+          "fail": 0
+        },
+        {
+          "id": "TEST-C-traceability",
+          "pass": 21,
+          "fail": 0
+        },
+        {
+          "id": "TEST-C-landing",
+          "pass": 15,
+          "fail": 0
+        }
+      ],
+      "contract": {
+        "pass": 7,
+        "fail": 0
+      },
+      "pages_contract": {
+        "pass": 6,
+        "fail": 0
+      }
+    },
+    "harness": {
+      "pass": 70,
+      "fail": 0
+    },
+    "current": {
+      "pass": 0,
+      "fail": 0,
+      "layers": []
+    },
+    "pages": null,
+    "blocked": {
+      "BLOCKED_BY_TOOLCHAIN": 0,
+      "BLOCKED_BY_TARGET_DRIVER": 0,
+      "BLOCKED_BY_FIXTURE": 0,
+      "BLOCKED_BY_CREDENTIAL": 0,
+      "NOT_EXECUTED": 0
+    },
+    "first_breakpoints": [],
+    "SYSTEM_PASS": 412,
+    "SYSTEM_FAIL": 0,
+    "HARNESS_PASS": 70,
+    "HARNESS_FAIL": 0,
+    "CURRENT_PASS": 0,
+    "CURRENT_FAIL": 0,
+    "TARGET_CONTRACT_FAIL": 0
+  },
+  "current": {
+    "system": {
+      "pass": 0,
+      "fail": 0,
+      "checkers": [],
+      "contract": null,
+      "pages_contract": null
+    },
+    "harness": {
+      "pass": 0,
+      "fail": 0
+    },
+    "current": {
+      "pass": 41,
+      "fail": 18,
+      "layers": [
+        {
+          "name": "unit",
+          "pass": 5,
+          "fail": 11,
+          "skipped": 0
+        },
+        {
+          "name": "integration",
+          "pass": 25,
+          "fail": 2,
+          "skipped": 0
+        },
+        {
+          "name": "firmware",
+          "pass": 3,
+          "fail": 4,
+          "skipped": 0
+        },
+        {
+          "name": "release",
+          "pass": 8,
+          "fail": 1,
+          "skipped": 0
+        },
+        {
+          "name": "pages-playwright",
+          "pass": 0,
+          "fail": 0,
+          "skipped": 0,
+          "blocked": {
+            "BLOCKED_BY_TOOLCHAIN": 11
+          },
+          "pages": {
+            "specs": 11,
+            "state_cases": 67,
+            "operation_cases": 92,
+            "assertion_cases": 849,
+            "totals": {
+              "pages": 11,
+              "states": 67,
+              "operations": 92,
+              "error_variants": 50,
+              "failure_variants": 92,
+              "cleanup_assertions": 39
+            },
+            "blocked_specs": 11,
+            "blocked_cases": 229,
+            "reason": "BLOCKED_BY_TOOLCHAIN"
+          },
+          "notExecuted": true
+        }
+      ]
+    },
+    "pages": {
+      "specs": 11,
+      "state_cases": 67,
+      "operation_cases": 92,
+      "assertion_cases": 849,
+      "totals": {
+        "pages": 11,
+        "states": 67,
+        "operations": 92,
+        "error_variants": 50,
+        "failure_variants": 92,
+        "cleanup_assertions": 39
+      },
+      "blocked_specs": 11,
+      "blocked_cases": 229,
+      "reason": "BLOCKED_BY_TOOLCHAIN"
+    },
+    "blocked": {
+      "BLOCKED_BY_TOOLCHAIN": 11,
+      "BLOCKED_BY_TARGET_DRIVER": 0,
+      "BLOCKED_BY_FIXTURE": 0,
+      "BLOCKED_BY_CREDENTIAL": 0,
+      "NOT_EXECUTED": 0
+    },
+    "first_breakpoints": [],
+    "SYSTEM_PASS": 0,
+    "SYSTEM_FAIL": 0,
+    "HARNESS_PASS": 0,
+    "HARNESS_FAIL": 0,
+    "CURRENT_PASS": 41,
+    "CURRENT_FAIL": 18,
+    "TARGET_CONTRACT_FAIL": 0
+  },
+  "not_implemented": [
+    {
+      "message": "仓库根 VERSION 文件存在",
+      "ids": [],
+      "first_breakpoint": "仓库根 VERSION 文件存在"
+    },
+    {
+      "message": "固件含广播名 BLEToolkit-Observer",
+      "ids": [],
+      "first_breakpoint": "固件含广播名 BLEToolkit-Observer"
+    },
+    {
+      "message": "固件含 LED 指令 FF00",
+      "ids": [],
+      "first_breakpoint": "固件含 LED 指令 FF00"
+    },
+    {
+      "message": "NOT_IMPLEMENTED: [REQ-020/021 ERR-CONN-03] 第一断点: connectDevice 未编排服务发现（失败不报错=半开泄漏面）",
+      "ids": [
+        "REQ-020",
+        "ERR-CONN-03"
+      ],
+      "first_breakpoint": "connectDevice 未编排服务发现（失败不报错=半开泄漏面）"
+    },
+    {
+      "message": "NOT_IMPLEMENTED: [REQ-053/PAGE-007 排除规则] 第一断点: Registry 无配网会话分类/排除接口——PAGE-007 口径无法排除配网会话",
+      "ids": [
+        "REQ-053",
+        "PAGE-007",
+        "PAGE-007"
+      ],
+      "first_breakpoint": "Registry 无配网会话分类/排除接口——PAGE-007 口径无法排除配网会话"
+    },
+    {
+      "message": "NOT_IMPLEMENTED: [REQ-004/056 FEAT-004/066 18号] 第一断点: 仓库根 VERSION 单源文件缺失",
+      "ids": [
+        "REQ-004",
+        "FEAT-004"
+      ],
+      "first_breakpoint": "仓库根 VERSION 单源文件缺失"
+    },
+    {
+      "message": "命中项匹配关键词",
+      "ids": [],
+      "first_breakpoint": "命中项匹配关键词"
+    },
+    {
+      "message": "NOT_IMPLEMENTED: [TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
+      "ids": [
+        "TEST-U-006",
+        "REQ-013",
+        "FEAT-013",
+        "PAGE-001",
+        "FLOW-002"
+      ],
+      "first_breakpoint": "目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js"
+    },
+    {
+      "message": "NOT_IMPLEMENTED: [TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
+      "ids": [
+        "TEST-U-010",
+        "REQ-026",
+        "FEAT-028"
+      ],
+      "first_breakpoint": "目标接口 validateHexInput/parseHexInput 缺失"
+    },
+    {
+      "message": "NOT_IMPLEMENTED: [TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
+      "ids": [
+        "TEST-U-013",
+        "REQ-036",
+        "FEAT-040"
+      ],
+      "first_breakpoint": "目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js"
+    },
+    {
+      "message": "NOT_IMPLEMENTED: [TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
+      "ids": [
+        "TEST-U-016",
+        "REQ-066",
+        "FEAT-081"
+      ],
+      "first_breakpoint": "目标接口 validateOtaPackage 缺失（六项传输前校验）"
+    },
+    {
+      "message": "NOT_IMPLEMENTED: [REQ-009/046/055 FEAT-009/070 18号§2 五词表] 第一断点: 目标模块缺失：apps/uniapp/services/public-status.js",
+      "ids": [
+        "REQ-009",
+        "FEAT-009"
+      ],
+      "first_breakpoint": "目标模块缺失：apps/uniapp/services/public-status.js"
+    },
+    {
+      "message": "NOT_IMPLEMENTED: [REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
+      "ids": [
+        "REQ-022",
+        "FEAT-023",
+        "TEST-I-003"
+      ],
+      "first_breakpoint": "目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js"
+    },
+    {
+      "message": "NOT_IMPLEMENTED: [TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
+      "ids": [
+        "TEST-U-005",
+        "REQ-030"
+      ],
+      "first_breakpoint": "Registry 快照缺 subscription_count 字段"
+    },
+    {
+      "message": "NOT_IMPLEMENTED: [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+      "ids": [
+        "TEST-U-015",
+        "REQ-047",
+        "FEAT-053",
+        "FLOW-010"
+      ],
+      "first_breakpoint": "SyntaxError: Unexpected identifier 'as'"
+    },
+    {
+      "message": "NOT_IMPLEMENTED: [TEST-U-002 REQ-004/056 FEAT-004/066 PAGE-009/010 WEB-001 S-47] 第一断点: 目标模块缺失：apps/uniapp/services/version-metadata.js",
+      "ids": [
+        "TEST-U-002",
+        "REQ-004",
+        "FEAT-004",
+        "PAGE-009",
+        "WEB-001"
+      ],
+      "first_breakpoint": "目标模块缺失：apps/uniapp/services/version-metadata.js"
+    },
+    {
+      "message": "NOT_IMPLEMENTED: [TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+      "ids": [
+        "TEST-U-011",
+        "REQ-028",
+        "FEAT-030",
+        "PAGE-006",
+        "FLOW-005"
+      ],
+      "first_breakpoint": "目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js"
+    }
+  ],
+  "testability": [
+    {
+      "target_id": "PAGE-001#AUTOMATION",
+      "target_type": "test",
+      "gap_kind": "TESTABILITY",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-001"
+      ],
+      "test_results": [],
+      "expected": "Page Driver + Playwright 执行全部 State/Operation",
+      "actual": "BLOCKED_BY_TOOLCHAIN",
+      "first_breakpoint": "@playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷）",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "PAGE-002#AUTOMATION",
+      "target_type": "test",
+      "gap_kind": "TESTABILITY",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-002"
+      ],
+      "test_results": [],
+      "expected": "Page Driver + Playwright 执行全部 State/Operation",
+      "actual": "BLOCKED_BY_TOOLCHAIN",
+      "first_breakpoint": "@playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷）",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "PAGE-003#AUTOMATION",
+      "target_type": "test",
+      "gap_kind": "TESTABILITY",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-003"
+      ],
+      "test_results": [],
+      "expected": "Page Driver + Playwright 执行全部 State/Operation",
+      "actual": "BLOCKED_BY_TOOLCHAIN",
+      "first_breakpoint": "@playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷）",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "PAGE-004#AUTOMATION",
+      "target_type": "test",
+      "gap_kind": "TESTABILITY",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-004"
+      ],
+      "test_results": [],
+      "expected": "Page Driver + Playwright 执行全部 State/Operation",
+      "actual": "BLOCKED_BY_TOOLCHAIN",
+      "first_breakpoint": "@playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷）",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "PAGE-005#AUTOMATION",
+      "target_type": "test",
+      "gap_kind": "TESTABILITY",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-005"
+      ],
+      "test_results": [],
+      "expected": "Page Driver + Playwright 执行全部 State/Operation",
+      "actual": "BLOCKED_BY_TOOLCHAIN",
+      "first_breakpoint": "@playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷）",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "PAGE-006#AUTOMATION",
+      "target_type": "test",
+      "gap_kind": "TESTABILITY",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-006"
+      ],
+      "test_results": [],
+      "expected": "Page Driver + Playwright 执行全部 State/Operation",
+      "actual": "BLOCKED_BY_TOOLCHAIN",
+      "first_breakpoint": "@playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷）",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "PAGE-007#AUTOMATION",
+      "target_type": "test",
+      "gap_kind": "TESTABILITY",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-007"
+      ],
+      "test_results": [],
+      "expected": "Page Driver + Playwright 执行全部 State/Operation",
+      "actual": "BLOCKED_BY_TOOLCHAIN",
+      "first_breakpoint": "@playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷）",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "PAGE-008#AUTOMATION",
+      "target_type": "test",
+      "gap_kind": "TESTABILITY",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-008"
+      ],
+      "test_results": [],
+      "expected": "Page Driver + Playwright 执行全部 State/Operation",
+      "actual": "BLOCKED_BY_TOOLCHAIN",
+      "first_breakpoint": "@playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷）",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "PAGE-009#AUTOMATION",
+      "target_type": "test",
+      "gap_kind": "TESTABILITY",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-009"
+      ],
+      "test_results": [],
+      "expected": "Page Driver + Playwright 执行全部 State/Operation",
+      "actual": "BLOCKED_BY_TOOLCHAIN",
+      "first_breakpoint": "@playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷）",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "PAGE-010#AUTOMATION",
+      "target_type": "test",
+      "gap_kind": "TESTABILITY",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-010"
+      ],
+      "test_results": [],
+      "expected": "Page Driver + Playwright 执行全部 State/Operation",
+      "actual": "BLOCKED_BY_TOOLCHAIN",
+      "first_breakpoint": "@playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷）",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    },
+    {
+      "target_id": "WEB-001#AUTOMATION",
+      "target_type": "test",
+      "gap_kind": "TESTABILITY",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-012"
+      ],
+      "test_results": [],
+      "expected": "Page Driver + Playwright 执行全部 State/Operation",
+      "actual": "BLOCKED_BY_TOOLCHAIN",
+      "first_breakpoint": "假主下载 releases/latest；另有 Playwright BLOCKED_BY_TOOLCHAIN",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-TEST-002",
+      "release_blocking": false
+    }
+  ]
+}

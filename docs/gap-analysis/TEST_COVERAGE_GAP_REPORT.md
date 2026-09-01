@@ -1,0 +1,24 @@
+# 测试可执行性差距报告
+
+```yaml
+status: REVIEW
+generated_from: reports/target-vs-current/target-vs-current.json
+```
+
+记录数（筛选后）：11
+
+| Target | Kind | Impl | Verify | Sev | First Breakpoint | FIX |
+|---|---|---|---|---|---|---|
+| PAGE-001#AUTOMATION | TESTABILITY | NOT_IMPLEMENTED | BLOCKED_BY_TOOLCHAIN | — | @playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷） | FIX-TEST-002 |
+| PAGE-002#AUTOMATION | TESTABILITY | NOT_IMPLEMENTED | BLOCKED_BY_TOOLCHAIN | — | @playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷） | FIX-TEST-002 |
+| PAGE-003#AUTOMATION | TESTABILITY | NOT_IMPLEMENTED | BLOCKED_BY_TOOLCHAIN | — | @playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷） | FIX-TEST-002 |
+| PAGE-004#AUTOMATION | TESTABILITY | NOT_IMPLEMENTED | BLOCKED_BY_TOOLCHAIN | — | @playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷） | FIX-TEST-002 |
+| PAGE-005#AUTOMATION | TESTABILITY | NOT_IMPLEMENTED | BLOCKED_BY_TOOLCHAIN | — | @playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷） | FIX-TEST-002 |
+| PAGE-006#AUTOMATION | TESTABILITY | NOT_IMPLEMENTED | BLOCKED_BY_TOOLCHAIN | — | @playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷） | FIX-TEST-002 |
+| PAGE-007#AUTOMATION | TESTABILITY | NOT_IMPLEMENTED | BLOCKED_BY_TOOLCHAIN | — | @playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷） | FIX-TEST-002 |
+| PAGE-008#AUTOMATION | TESTABILITY | NOT_IMPLEMENTED | BLOCKED_BY_TOOLCHAIN | — | @playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷） | FIX-TEST-002 |
+| PAGE-009#AUTOMATION | TESTABILITY | NOT_IMPLEMENTED | BLOCKED_BY_TOOLCHAIN | — | @playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷） | FIX-TEST-002 |
+| PAGE-010#AUTOMATION | TESTABILITY | NOT_IMPLEMENTED | BLOCKED_BY_TOOLCHAIN | — | @playwright/test 未安装 → 页面 Case BLOCKED_BY_TOOLCHAIN（非产品缺陷） | FIX-TEST-002 |
+| WEB-001#AUTOMATION | TESTABILITY | NOT_IMPLEMENTED | BLOCKED_BY_TOOLCHAIN | — | 假主下载 releases/latest；另有 Playwright BLOCKED_BY_TOOLCHAIN | FIX-TEST-002 |
+
+

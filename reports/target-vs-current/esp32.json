@@ -1,0 +1,146 @@
+{
+  "records": [
+    {
+      "target_id": "OP-P008-01",
+      "target_type": "operation",
+      "gap_kind": "FIRMWARE",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "HARDWARE_PENDING",
+      "severity": "P0",
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-P-008",
+        "TEST-A-010"
+      ],
+      "test_results": [],
+      "expected": "检查支持; runtime=能力探测（含插件存在性）",
+      "actual": "仅 Peripheral Server；无 fixture_observer",
+      "first_breakpoint": "hardware/esp32 无 Observer 目标源码（证据闭环第一断点）；页面 Owner 见 FIX-PAGE-008",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-008"
+      ],
+      "suggested_fix_id": "FIX-FW-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "OP-P008-02",
+      "target_type": "operation",
+      "gap_kind": "FIRMWARE",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "HARDWARE_PENDING",
+      "severity": "P0",
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-U-014",
+        "TEST-P-008"
+      ],
+      "test_results": [],
+      "expected": "编辑字段; runtime=校验+预算重算",
+      "actual": "仅 Peripheral Server；无 fixture_observer",
+      "first_breakpoint": "hardware/esp32 无 Observer 目标源码（证据闭环第一断点）；页面 Owner 见 FIX-PAGE-008",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-008"
+      ],
+      "suggested_fix_id": "FIX-FW-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "OP-P008-03",
+      "target_type": "operation",
+      "gap_kind": "FIRMWARE",
+      "priority": "Must",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "HARDWARE_PENDING",
+      "severity": "P0",
+      "evidence_level": "E5",
+      "implementation_refs": [
+        {
+          "path": "apps/uniapp/utils/ota_manager.js",
+          "symbol": "OtaManager",
+          "line_hint": ""
+        }
+      ],
+      "test_ids": [
+        "TEST-I-007",
+        "TEST-A-010",
+        "TEST-E-006"
+      ],
+      "test_results": [],
+      "expected": "开始广播; runtime=Owner 获取→平台广播启动",
+      "actual": "仅 Peripheral Server；无 fixture_observer",
+      "first_breakpoint": "hardware/esp32 无 Observer 目标源码（证据闭环第一断点）；页面 Owner 见 FIX-PAGE-008",
+      "downstream_impact": [],
+      "dependencies": [
+        "PAGE-008"
+      ],
+      "suggested_fix_id": "FIX-FW-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "4fafc201-1fb5-459e-8fcc-c5c9c331914b",
+      "target_type": "protocol",
+      "gap_kind": "FIRMWARE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "HARDWARE_PENDING",
+      "severity": "P1",
+      "evidence_level": "E5",
+      "implementation_refs": [],
+      "test_ids": [],
+      "test_results": [],
+      "expected": "ESP32 服务面与契约一致",
+      "actual": "LED 指令表/Observer 不完整",
+      "first_breakpoint": "固件缺 FF00 LED 表或 Observer",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-FW-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "4fafc201-1fb5-459e-8fcc-c5c9c331914c",
+      "target_type": "protocol",
+      "gap_kind": "FIRMWARE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "HARDWARE_PENDING",
+      "severity": "P1",
+      "evidence_level": "E5",
+      "implementation_refs": [],
+      "test_ids": [],
+      "test_results": [],
+      "expected": "ESP32 服务面与契约一致",
+      "actual": "LED 指令表/Observer 不完整",
+      "first_breakpoint": "固件缺 FF00 LED 表或 Observer",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-FW-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "4fafc201-1fb5-459e-8fcc-c5c9c331914d",
+      "target_type": "protocol",
+      "gap_kind": "FIRMWARE",
+      "priority": "Must",
+      "implementation_status": "PARTIAL",
+      "verification_status": "HARDWARE_PENDING",
+      "severity": "P1",
+      "evidence_level": "E5",
+      "implementation_refs": [],
+      "test_ids": [],
+      "test_results": [],
+      "expected": "ESP32 服务面与契约一致",
+      "actual": "LED 指令表/Observer 不完整",
+      "first_breakpoint": "固件缺 FF00 LED 表或 Observer",
+      "downstream_impact": [],
+      "dependencies": [],
+      "suggested_fix_id": "FIX-FW-001",
+      "release_blocking": true
+    }
+  ]
+}

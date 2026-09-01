@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://smart-ble.local/reports/target-vs-current/report.schema.json",
+  "title": "Smart BLE target vs current gap report",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "gate",
+    "records",
+    "coverage"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string"
+    },
+    "gate": {
+      "const": "TP-G2"
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "target_id",
+          "target_type",
+          "gap_kind",
+          "implementation_status",
+          "verification_status"
+        ]
+      }
+    }
+  }
+}
