@@ -131,7 +131,7 @@ supersedes: []
 | 维度 | 统计 |
 |---|---|
 | REQ | 66（全部 Must 除注明 Should 项） |
-| FEAT | 81（Must 75 / Should 4 / Could 2） |
+| FEAT | 81（Must 81 / Should 0 / Could 0） |
 | PAGE/WEB | 10+1 |
 | FLOW | 14 |
 | REQ→FEAT 覆盖 | 66/66=100% |

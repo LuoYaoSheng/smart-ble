@@ -357,7 +357,7 @@ supersedes: []
 #### FEAT-035｜多设备并行
 - 归属：REQ-032｜PAGE-006/007｜FLOW-007｜Must
 - 价值：同时调试多台设备。
-- 前置：FEAT-033。输入：逐台连接。输出：会话表多设备；上限 DEC-008（推荐 Must 2 台，Should 3 台）。
+- 前置：FEAT-033。输入：逐台连接。输出：会话表多设备；**Must 2 台并行**（release_blocking）；**Should 3 台扩展**（DEC-008 NFR 扩展，NFR-012 E5 验证后可选升级，非 release_blocking）。
 - 正常：单台断开不影响其他。错误恢复：无特殊。
 - 平台差异：微信实际并行上限待 E5 确认（记入 NFR-012 验证）。数据来源：Registry。
 - 依赖：无。安全隐私：无。
@@ -806,7 +806,7 @@ supersedes: []
 
 - FEAT 总数 81：SYS 4、PERM 5、SCAN 7、AD 3、CONN 6、GATT 7、SESSION 4、LOG 4、PERI 5、OTA 8、HID-PROV 6、HID-HIST 6、PRODUCT 4、WEB 8、DOC 4。
 - 全部 Must 功能均有 Feature ID；每个 Feature 至少一个计划测试 ID；硬件相关均含 TEST-E/A/W/H；公开声明相关均含 TEST-R。
-- 优先级分布：Must 75、Should 4（FEAT-035 的 3 台扩展、FEAT-052 回滚增强按 Should 记录于 DEC-001）、Could 2（FEAT-061 搜索排序——记为 Could 并在本文显式标注 Not Now 之外）、Not Now 0（非目标直接不入目录，见 `01` 第 4 节）。
+- 优先级分布：Must 81、Should 0、Could 0、Not Now 0（由 `03` 每项 Feature「归属」行逐项解析；DEC-008 的 3 台扩展记为 NFR/Should 扩展目标，不改变 FEAT-035 本身 Must 登记；统计由 `scripts/target/sync-feature-priorities.mjs` 生成）。
 
 本文验收（目标验收条件，SPEC_DEFINED——本文定义的是"应满足什么"，不是"已实现什么"）：
 

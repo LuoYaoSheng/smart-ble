@@ -46,7 +46,7 @@ supersedes: []
 | WEB | 8 | Hero、闭环能力卡、平台表、截图原型、ESP32 双卡、快速开始（5 分钟+30 分钟双计时）、下载/QR/SHA/证据、SEO/无障碍 |
 | DOC | 4 | 5 分钟 Quick Start/30 分钟 Clean Machine、ESP32 从零、Profile 扩展、贡献/Release |
 
-优先级：Must 75、Should 4、Could 2（详见 `03` 第 17 节）。
+优先级：Must 81、Should 0、Could 0（详见 `03` 第 17 节；TARGET-AMEND-001 投影校正）。
 
 ## 3. 11 个界面摘要
 

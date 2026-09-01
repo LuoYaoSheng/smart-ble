@@ -85,6 +85,13 @@ supersedes: []
 - 影响：FEAT-035、NFR-012、TEST-A-009/W-009。
 - 默认方案：B。**需用户确认**。
 
+### TARGET-AMEND-001 审批后 FEAT priority 投影校正（TP-G1-R1）
+- 背景：TP-G1 审核发现 `03_TARGET_FEATURE_CATALOG.md` 每项「归属」行与 `product-target.json` 存在 FEAT-035 漂移；汇总数字（Must 75/Should 4/Could 2）与 81 项登记行不一致。
+- 决策：以 `03` 每项 Feature「归属」行为人类定义入口；逐项解析 81 FEAT → 全部为 Must；FEAT-035 本身 Must（2 台并行 release_blocking）；DEC-008 的 3 台扩展保留为 NFR/Should 扩展目标，不降级 FEAT-035。
+- 影响：`product-target.json`、`test-traceability.json` coverage、`22` 统计、`03` 第 17 节汇总。
+- 范围：**不改变用户批准的功能范围**，仅校正 priority 投影与机器可读契约一致性。
+- 日期：2026-09-01。**审批后修订**（user APPROVED 目标不变）。
+
 ### DEC-009 Notify 跨页保留
 - 选项：A 用户订阅随会话保留（离页再回自动恢复推送）；B 离页即退订（回页重开）。
 - 推荐：**A**：会话是应用级，订阅属会话；避免"还连着但不推送"的错觉。

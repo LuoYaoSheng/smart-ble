@@ -2507,7 +2507,7 @@
   "coverage": {
     "requirements_total": 66,
     "requirements_with_automation": 65,
-    "must_features_total": 80,
-    "must_features_with_automation": 73
+    "must_features_total": 81,
+    "must_features_with_automation": 81
   }
 }

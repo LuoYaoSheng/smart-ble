@@ -1940,7 +1940,7 @@
       "id": "FEAT-035",
       "group": "SESSION",
       "name": "多设备并行",
-      "priority": "Should",
+      "priority": "Must",
       "requirements": [
         "REQ-032"
       ],
@@ -1955,7 +1955,7 @@
         "TEST-W-009"
       ],
       "minimum_evidence_level": "E5",
-      "release_blocking": false
+      "release_blocking": true
     },
     {
       "id": "FEAT-036",
