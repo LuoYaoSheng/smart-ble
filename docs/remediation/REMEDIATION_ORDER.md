@@ -12,7 +12,9 @@ last_reviewed: 2026-09-01
 > **用户已批准本 Remediation 顺序作为规划。**
 >
 > 执行规则：依赖图不变；Wave/拓扑序；一次只批准一个 Task；完成后停下。
-> **PUBLIC-HONESTY-001 = DONE**。其他 Task 仍为 PLANNED（含 VERSION-METADATA-001）。
+> **PUBLIC-HONESTY-001 = DONE**。
+> **当前唯一可执行 Task = VERSION-METADATA-001（APPROVED_FOR_EXECUTION）**。
+> 其他 Task 仍为 PLANNED（含 RELEASE-PIPELINE-001、PAGE-VERSION-001）。
 
 ## 推荐拓扑序
 
@@ -20,7 +22,7 @@ last_reviewed: 2026-09-01
 2. **ENV-PLAYWRIGHT-001** — 安装并锁定 Playwright / H5 harness（type=ENVIRONMENT, sev=P2, gaps≈162, status=PLANNED）
 3. **TEST-PAGE-DRIVER-001** — 实现 Target Page Driver（type=TESTABILITY, sev=P2, gaps≈11, status=PLANNED）
 4. **PUBLIC-HONESTY-001** — 落地页立即诚实降级（假下载/6+/错误主线→PREVIEW/NOT_RELEASED）（type=SOURCE_FIX, sev=P0, gaps≈0, status=DONE）
-5. **VERSION-METADATA-001** — 根 VERSION + Release Metadata + Public Status（type=SOURCE_FIX, sev=P1, gaps≈9, status=PLANNED）
+5. **VERSION-METADATA-001** — 根 VERSION + Release Metadata + Public Status（type=SOURCE_FIX, sev=P1, gaps≈9, status=**APPROVED_FOR_EXECUTION**）
 6. **RELEASE-PIPELINE-001** — UniApp + Peripheral/Observer 双固件 Release Pipeline（type=RELEASE, sev=P0, gaps≈1, status=PLANNED）
 7. **RUNTIME-DISPLAY-NAME-001** — 实现 display-name 解析链（type=SOURCE_FIX, sev=P1, gaps≈2, status=PLANNED）
 8. **RUNTIME-FILTER-001** — device-filter 关键词命中项匹配对齐目标（type=SOURCE_FIX, sev=P1, gaps≈4, status=PLANNED）

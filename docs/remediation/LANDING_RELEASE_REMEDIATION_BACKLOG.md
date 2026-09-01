@@ -7,7 +7,7 @@ content_hash: 54902a01ef816b379460f622959b6e65c8de4a2af90740f8dafa21c14c694a5d
 approved_by: user
 ```
 
-> PUBLIC-HONESTY-001 = **DONE**。VERSION-METADATA-001 / RELEASE-PIPELINE-001 仍为 PLANNED。
+> PUBLIC-HONESTY-001 = **DONE**。VERSION-METADATA-001 = **APPROVED_FOR_EXECUTION**。RELEASE-PIPELINE-001 / PAGE-VERSION-001 仍为 PLANNED。
 
 ### PUBLIC-HONESTY-001
 
@@ -26,18 +26,21 @@ approved_by: user
 
 ### VERSION-METADATA-001
 
+- 状态：**APPROVED_FOR_EXECUTION**
+- 用户批准日期：2026-09-01
 - 标题：根 VERSION + Release Metadata + Public Status
 - task_type：SOURCE_FIX
 - severity：P1
 - root_cause_id：RC-VERSION-SSOT
 - Target IDs（样本）：FEAT-004, FEAT-009, FEAT-066, REQ-004, REQ-009, REQ-056, PAGE-009, CLAIM-001, EVID-008
 - Test IDs：TEST-C-006, TEST-U-002, TEST-R-002, TEST-E-008, TEST-R-001, TEST-P-001, TEST-W-006, TEST-R-003, TEST-P-010, TEST-P-009, TEST-A-012, TEST-W-010
-- First Breakpoint：[TEST-U-002 REQ-004/056 FEAT-004/066 PAGE-009/010 WEB-001 S-47] 第一断点: 目标模块缺失：apps/uniapp/services/version-metadata.js
+- First Breakpoint：仓库根 VERSION 单源文件缺失 / version-metadata.js / public-status.js 缺失
 - 依赖：无
 - 解锁：RELEASE-PIPELINE-001, PAGE-VERSION-001, VERIFY-E6-001
-- 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
-- 自动化验收：related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL
-- 建议提交信息：`source_fix(version-metadata-001): 根 VERSION + Release Metadata + Public Status`
+- 本轮禁止执行：RELEASE-PIPELINE-001；PAGE-VERSION-001（不改 version.vue）
+- 禁止修改：Release Workflow；docs/target-product/**；contracts/target/** 产品语义；PAGE-010
+- 自动化验收：VERSION 专项 Current Case → PASS；System/Harness 0 FAIL
+- 建议提交信息：`feat(release): add Smart BLE version and preview metadata`
 
 ### RELEASE-PIPELINE-001
 
