@@ -8,6 +8,14 @@
 import { getBlePlatform, resetBlePlatformForTesting, setBlePlatformForTesting as setPlatform } from './platform.js';
 import { normalizeBleError } from './errors.js';
 import { attachDeviceDisplayName } from './display-name.js';
+import {
+  validateHexInput,
+  parseHexInput,
+  encodeTextInput,
+  decodeBytes,
+  formatReadValue,
+  normalizeGattPayload,
+} from './gatt-codec.js';
 
 const state = {
   platform: null,
@@ -368,17 +376,73 @@ export function readValue(session, serviceId, characteristicId, timeoutMs = 3000
   });
 }
 
+/**
+ * Read + format（Codec 层）。默认返回原始 bytes；options.format 时返回展示字符串。
+ */
+export async function readCharacteristic(session, serviceId, characteristicId, options = {}) {
+  const timeoutMs = options.timeoutMs ?? options.timeout ?? 3000;
+  const raw = await readValue(session, serviceId, characteristicId, timeoutMs);
+  if (options.format) {
+    return {
+      bytes: raw,
+      display: formatReadValue(raw, options.format),
+      text: decodeBytes(raw),
+      hex: formatReadValue(raw, 'hex'),
+    };
+  }
+  return raw;
+}
+
 export async function writeValue(session, serviceId, characteristicId, value, options = {}) {
   if (session.dead) throw new Error('BLE 连接已断开');
   const platform = ensureCallbacks();
   const target = charFor(session, serviceId, characteristicId);
+
+  let payload = value;
+  if (options.mode === 'hex' || options.mode === 'text' || (typeof value === 'string' && options.mode)) {
+    const normalized = normalizeGattPayload(value, options.mode);
+    if (!normalized.ok) {
+      const error = new Error(normalized.error || 'INVALID_HEX');
+      error.code = normalized.code || normalized.error || 'INVALID_HEX';
+      error.ok = false;
+      throw error;
+    }
+    payload = normalized.bytes;
+  } else if (typeof value === 'string' && options.encode !== false) {
+    // 未显式 mode 的字符串：按 hex 严格校验（非法不得调用平台）
+    const normalized = normalizeGattPayload(value, 'hex');
+    if (!normalized.ok) {
+      const error = new Error(normalized.error || 'INVALID_HEX');
+      error.code = normalized.code || normalized.error || 'INVALID_HEX';
+      error.ok = false;
+      throw error;
+    }
+    payload = normalized.bytes;
+  }
+
+  const { mode: _mode, encode: _encode, format: _format, timeoutMs: _timeoutMs, timeout: _timeout, ...platformOptions } = options;
   await call(platform, 'writeBLECharacteristicValue', {
+    ...platformOptions,
     deviceId: session.deviceId,
     serviceId: target.serviceId,
     characteristicId: target.characteristicId,
-    value,
-    ...options
+    value: payload,
   });
+}
+
+/** Write via Codec（mode=hex|text）；非法 HEX 不调用平台 API */
+export async function writeCharacteristic(session, serviceId, characteristicId, input, options = {}) {
+  const mode = options.mode || 'hex';
+  const normalized = normalizeGattPayload(input, mode);
+  if (!normalized.ok) {
+    return { ok: false, error: normalized.error, code: normalized.code, length: 0, wrote: false };
+  }
+  await writeValue(session, serviceId, characteristicId, normalized.bytes, {
+    ...options,
+    mode: undefined,
+    encode: false,
+  });
+  return { ok: true, bytes: normalized.bytes, length: normalized.length, wrote: true };
 }
 
 export async function setMtu(session, mtu) {
@@ -423,3 +487,12 @@ export function resetBlePlatformAndRuntimeForTesting() {
 }
 
 export { serviceKey };
+
+export {
+  validateHexInput,
+  parseHexInput,
+  encodeTextInput,
+  decodeBytes,
+  formatReadValue,
+  normalizeGattPayload,
+};

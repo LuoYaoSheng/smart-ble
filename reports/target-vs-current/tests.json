@@ -78,8 +78,8 @@
     "TEST_INFRA_FAIL": 0
   },
   "current": {
-    "CURRENT_PASS": 298,
-    "CURRENT_FAIL": 19,
+    "CURRENT_PASS": 319,
+    "CURRENT_FAIL": 18,
     "TEST_INFRA_FAIL": 0,
     "cases": [
       {
@@ -99,7 +99,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/advertisement-target.test.mjs",
-        "duration_ms": 2.854583,
+        "duration_ms": 2.267625,
         "blocker": null
       },
       {
@@ -120,7 +120,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/broadcast-payload-target.test.mjs",
-        "duration_ms": 3.62125,
+        "duration_ms": 6.960333,
         "blocker": null
       },
       {
@@ -140,7 +140,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-display-name-target.test.mjs",
-        "duration_ms": 1.814791,
+        "duration_ms": 8.205625,
         "blocker": null
       },
       {
@@ -160,7 +160,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-display-name-target.test.mjs",
-        "duration_ms": 0.166583,
+        "duration_ms": 0.642708,
         "blocker": null
       },
       {
@@ -180,7 +180,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-display-name-target.test.mjs",
-        "duration_ms": 0.095708,
+        "duration_ms": 0.462292,
         "blocker": null
       },
       {
@@ -200,7 +200,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-display-name-target.test.mjs",
-        "duration_ms": 0.112125,
+        "duration_ms": 0.397583,
         "blocker": null
       },
       {
@@ -220,7 +220,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-display-name-target.test.mjs",
-        "duration_ms": 0.201959,
+        "duration_ms": 0.779875,
         "blocker": null
       },
       {
@@ -240,7 +240,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-display-name-target.test.mjs",
-        "duration_ms": 0.16525,
+        "duration_ms": 0.598,
         "blocker": null
       },
       {
@@ -260,7 +260,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-display-name-target.test.mjs",
-        "duration_ms": 0.116792,
+        "duration_ms": 0.593583,
         "blocker": null
       },
       {
@@ -280,7 +280,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-display-name-target.test.mjs",
-        "duration_ms": 0.159667,
+        "duration_ms": 0.642875,
         "blocker": null
       },
       {
@@ -300,7 +300,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-display-name-target.test.mjs",
-        "duration_ms": 0.178583,
+        "duration_ms": 0.705917,
         "blocker": null
       },
       {
@@ -320,7 +320,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-display-name-target.test.mjs",
-        "duration_ms": 0.120042,
+        "duration_ms": 0.441917,
         "blocker": null
       },
       {
@@ -340,7 +340,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-display-name-target.test.mjs",
-        "duration_ms": 0.089791,
+        "duration_ms": 0.175167,
         "blocker": null
       },
       {
@@ -360,7 +360,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-display-name-target.test.mjs",
-        "duration_ms": 0.097916,
+        "duration_ms": 0.318791,
         "blocker": null
       },
       {
@@ -380,7 +380,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-display-name-target.test.mjs",
-        "duration_ms": 0.10125,
+        "duration_ms": 0.156791,
         "blocker": null
       },
       {
@@ -400,7 +400,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-display-name-target.test.mjs",
-        "duration_ms": 0.071625,
+        "duration_ms": 0.198792,
         "blocker": null
       },
       {
@@ -420,7 +420,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-display-name-target.test.mjs",
-        "duration_ms": 0.081417,
+        "duration_ms": 0.118083,
         "blocker": null
       },
       {
@@ -440,7 +440,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-display-name-target.test.mjs",
-        "duration_ms": 0.328375,
+        "duration_ms": 0.814667,
         "blocker": null
       },
       {
@@ -460,7 +460,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-display-name-target.test.mjs",
-        "duration_ms": 0.076625,
+        "duration_ms": 0.415,
         "blocker": null
       },
       {
@@ -480,7 +480,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-display-name-target.test.mjs",
-        "duration_ms": 0.061333,
+        "duration_ms": 0.119333,
         "blocker": null
       },
       {
@@ -500,7 +500,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-filter-target.test.mjs",
-        "duration_ms": 2.272,
+        "duration_ms": 3.667958,
         "blocker": null
       },
       {
@@ -520,7 +520,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-filter-target.test.mjs",
-        "duration_ms": 0.511667,
+        "duration_ms": 2.10575,
         "blocker": null
       },
       {
@@ -540,7 +540,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-filter-target.test.mjs",
-        "duration_ms": 0.1245,
+        "duration_ms": 0.439,
         "blocker": null
       },
       {
@@ -560,7 +560,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-filter-target.test.mjs",
-        "duration_ms": 0.105625,
+        "duration_ms": 0.189834,
         "blocker": null
       },
       {
@@ -580,7 +580,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-filter-target.test.mjs",
-        "duration_ms": 0.113375,
+        "duration_ms": 0.156042,
         "blocker": null
       },
       {
@@ -600,7 +600,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-filter-target.test.mjs",
-        "duration_ms": 0.088458,
+        "duration_ms": 0.198,
         "blocker": null
       },
       {
@@ -620,7 +620,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-filter-target.test.mjs",
-        "duration_ms": 0.109625,
+        "duration_ms": 0.190208,
         "blocker": null
       },
       {
@@ -640,7 +640,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-filter-target.test.mjs",
-        "duration_ms": 0.090833,
+        "duration_ms": 0.3295,
         "blocker": null
       },
       {
@@ -660,7 +660,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-filter-target.test.mjs",
-        "duration_ms": 0.111209,
+        "duration_ms": 0.231542,
         "blocker": null
       },
       {
@@ -680,7 +680,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-filter-target.test.mjs",
-        "duration_ms": 0.116042,
+        "duration_ms": 0.175167,
         "blocker": null
       },
       {
@@ -700,7 +700,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-filter-target.test.mjs",
-        "duration_ms": 0.332416,
+        "duration_ms": 0.4865,
         "blocker": null
       },
       {
@@ -720,7 +720,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-filter-target.test.mjs",
-        "duration_ms": 0.101875,
+        "duration_ms": 0.124,
         "blocker": null
       },
       {
@@ -740,7 +740,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-filter-target.test.mjs",
-        "duration_ms": 0.066792,
+        "duration_ms": 0.090333,
         "blocker": null
       },
       {
@@ -760,7 +760,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-filter-target.test.mjs",
-        "duration_ms": 0.060667,
+        "duration_ms": 0.098833,
         "blocker": null
       },
       {
@@ -780,7 +780,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-filter-target.test.mjs",
-        "duration_ms": 0.062542,
+        "duration_ms": 0.125416,
         "blocker": null
       },
       {
@@ -800,7 +800,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-filter-target.test.mjs",
-        "duration_ms": 0.08175,
+        "duration_ms": 0.129584,
         "blocker": null
       },
       {
@@ -820,7 +820,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/device-name-target.test.mjs",
-        "duration_ms": 2.78925,
+        "duration_ms": 3.770166,
         "blocker": null
       },
       {
@@ -837,12 +837,452 @@
           "FEAT-028"
         ],
         "layer": "unit",
-        "status": "FAIL",
+        "status": "PASS",
         "expected": "approved target behavior",
-        "actual": "NOT_IMPLEMENTED: [TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-        "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
+        "actual": "matched",
+        "first_breakpoint": null,
         "source_file": "tests/target/unit/gatt-codec-target.test.mjs",
-        "duration_ms": 1.129375,
+        "duration_ms": 3.637083,
+        "blocker": null
+      },
+      {
+        "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-01 HEX spaced AA BB CC",
+        "test_id": "TEST-U-009",
+        "title": "TEST-U-010-01 HEX spaced AA BB CC",
+        "scope": "current",
+        "target_ids": [
+          "REQ-024",
+          "FEAT-026",
+          "PAGE-006",
+          "FLOW-005",
+          "REQ-026",
+          "FEAT-028"
+        ],
+        "layer": "unit",
+        "status": "PASS",
+        "expected": "approved target behavior",
+        "actual": "matched",
+        "first_breakpoint": null,
+        "source_file": "tests/target/unit/gatt-codec-target.test.mjs",
+        "duration_ms": 0.475125,
+        "blocker": null
+      },
+      {
+        "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-02 HEX colon AA:BB:CC",
+        "test_id": "TEST-U-009",
+        "title": "TEST-U-010-02 HEX colon AA:BB:CC",
+        "scope": "current",
+        "target_ids": [
+          "REQ-024",
+          "FEAT-026",
+          "PAGE-006",
+          "FLOW-005",
+          "REQ-026",
+          "FEAT-028"
+        ],
+        "layer": "unit",
+        "status": "PASS",
+        "expected": "approved target behavior",
+        "actual": "matched",
+        "first_breakpoint": null,
+        "source_file": "tests/target/unit/gatt-codec-target.test.mjs",
+        "duration_ms": 0.120292,
+        "blocker": null
+      },
+      {
+        "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-03 HEX lower aabbcc",
+        "test_id": "TEST-U-009",
+        "title": "TEST-U-010-03 HEX lower aabbcc",
+        "scope": "current",
+        "target_ids": [
+          "REQ-024",
+          "FEAT-026",
+          "PAGE-006",
+          "FLOW-005",
+          "REQ-026",
+          "FEAT-028"
+        ],
+        "layer": "unit",
+        "status": "PASS",
+        "expected": "approved target behavior",
+        "actual": "matched",
+        "first_breakpoint": null,
+        "source_file": "tests/target/unit/gatt-codec-target.test.mjs",
+        "duration_ms": 0.101083,
+        "blocker": null
+      },
+      {
+        "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-04 HEX spaces only separators",
+        "test_id": "TEST-U-009",
+        "title": "TEST-U-010-04 HEX spaces only separators",
+        "scope": "current",
+        "target_ids": [
+          "REQ-024",
+          "FEAT-026",
+          "PAGE-006",
+          "FLOW-005",
+          "REQ-026",
+          "FEAT-028"
+        ],
+        "layer": "unit",
+        "status": "PASS",
+        "expected": "approved target behavior",
+        "actual": "matched",
+        "first_breakpoint": null,
+        "source_file": "tests/target/unit/gatt-codec-target.test.mjs",
+        "duration_ms": 0.190125,
+        "blocker": null
+      },
+      {
+        "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-05 HEX newlines",
+        "test_id": "TEST-U-009",
+        "title": "TEST-U-010-05 HEX newlines",
+        "scope": "current",
+        "target_ids": [
+          "REQ-024",
+          "FEAT-026",
+          "PAGE-006",
+          "FLOW-005",
+          "REQ-026",
+          "FEAT-028"
+        ],
+        "layer": "unit",
+        "status": "PASS",
+        "expected": "approved target behavior",
+        "actual": "matched",
+        "first_breakpoint": null,
+        "source_file": "tests/target/unit/gatt-codec-target.test.mjs",
+        "duration_ms": 0.158417,
+        "blocker": null
+      },
+      {
+        "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-06 invalid character",
+        "test_id": "TEST-U-009",
+        "title": "TEST-U-010-06 invalid character",
+        "scope": "current",
+        "target_ids": [
+          "REQ-024",
+          "FEAT-026",
+          "PAGE-006",
+          "FLOW-005",
+          "REQ-026",
+          "FEAT-028"
+        ],
+        "layer": "unit",
+        "status": "PASS",
+        "expected": "approved target behavior",
+        "actual": "matched",
+        "first_breakpoint": null,
+        "source_file": "tests/target/unit/gatt-codec-target.test.mjs",
+        "duration_ms": 0.128542,
+        "blocker": null
+      },
+      {
+        "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-07 odd length",
+        "test_id": "TEST-U-009",
+        "title": "TEST-U-010-07 odd length",
+        "scope": "current",
+        "target_ids": [
+          "REQ-024",
+          "FEAT-026",
+          "PAGE-006",
+          "FLOW-005",
+          "REQ-026",
+          "FEAT-028"
+        ],
+        "layer": "unit",
+        "status": "PASS",
+        "expected": "approved target behavior",
+        "actual": "matched",
+        "first_breakpoint": null,
+        "source_file": "tests/target/unit/gatt-codec-target.test.mjs",
+        "duration_ms": 0.16525,
+        "blocker": null
+      },
+      {
+        "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-08 empty",
+        "test_id": "TEST-U-009",
+        "title": "TEST-U-010-08 empty",
+        "scope": "current",
+        "target_ids": [
+          "REQ-024",
+          "FEAT-026",
+          "PAGE-006",
+          "FLOW-005",
+          "REQ-026",
+          "FEAT-028"
+        ],
+        "layer": "unit",
+        "status": "PASS",
+        "expected": "approved target behavior",
+        "actual": "matched",
+        "first_breakpoint": null,
+        "source_file": "tests/target/unit/gatt-codec-target.test.mjs",
+        "duration_ms": 0.097334,
+        "blocker": null
+      },
+      {
+        "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-09 large payload",
+        "test_id": "TEST-U-009",
+        "title": "TEST-U-010-09 large payload",
+        "scope": "current",
+        "target_ids": [
+          "REQ-024",
+          "FEAT-026",
+          "PAGE-006",
+          "FLOW-005",
+          "REQ-026",
+          "FEAT-028"
+        ],
+        "layer": "unit",
+        "status": "PASS",
+        "expected": "approved target behavior",
+        "actual": "matched",
+        "first_breakpoint": null,
+        "source_file": "tests/target/unit/gatt-codec-target.test.mjs",
+        "duration_ms": 0.192375,
+        "blocker": null
+      },
+      {
+        "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-10 no mutation of input",
+        "test_id": "TEST-U-009",
+        "title": "TEST-U-010-10 no mutation of input",
+        "scope": "current",
+        "target_ids": [
+          "REQ-024",
+          "FEAT-026",
+          "PAGE-006",
+          "FLOW-005",
+          "REQ-026",
+          "FEAT-028"
+        ],
+        "layer": "unit",
+        "status": "PASS",
+        "expected": "approved target behavior",
+        "actual": "matched",
+        "first_breakpoint": null,
+        "source_file": "tests/target/unit/gatt-codec-target.test.mjs",
+        "duration_ms": 0.085417,
+        "blocker": null
+      },
+      {
+        "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-11 TEXT utf8 plain",
+        "test_id": "TEST-U-009",
+        "title": "TEST-U-010-11 TEXT utf8 plain",
+        "scope": "current",
+        "target_ids": [
+          "REQ-024",
+          "FEAT-026",
+          "PAGE-006",
+          "FLOW-005",
+          "REQ-026",
+          "FEAT-028"
+        ],
+        "layer": "unit",
+        "status": "PASS",
+        "expected": "approved target behavior",
+        "actual": "matched",
+        "first_breakpoint": null,
+        "source_file": "tests/target/unit/gatt-codec-target.test.mjs",
+        "duration_ms": 0.175333,
+        "blocker": null
+      },
+      {
+        "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-12 TEXT chinese",
+        "test_id": "TEST-U-009",
+        "title": "TEST-U-010-12 TEXT chinese",
+        "scope": "current",
+        "target_ids": [
+          "REQ-024",
+          "FEAT-026",
+          "PAGE-006",
+          "FLOW-005",
+          "REQ-026",
+          "FEAT-028"
+        ],
+        "layer": "unit",
+        "status": "PASS",
+        "expected": "approved target behavior",
+        "actual": "matched",
+        "first_breakpoint": null,
+        "source_file": "tests/target/unit/gatt-codec-target.test.mjs",
+        "duration_ms": 0.135042,
+        "blocker": null
+      },
+      {
+        "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-13 TEXT emoji",
+        "test_id": "TEST-U-009",
+        "title": "TEST-U-010-13 TEXT emoji",
+        "scope": "current",
+        "target_ids": [
+          "REQ-024",
+          "FEAT-026",
+          "PAGE-006",
+          "FLOW-005",
+          "REQ-026",
+          "FEAT-028"
+        ],
+        "layer": "unit",
+        "status": "PASS",
+        "expected": "approved target behavior",
+        "actual": "matched",
+        "first_breakpoint": null,
+        "source_file": "tests/target/unit/gatt-codec-target.test.mjs",
+        "duration_ms": 0.103167,
+        "blocker": null
+      },
+      {
+        "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-14 TEXT empty allowed",
+        "test_id": "TEST-U-009",
+        "title": "TEST-U-010-14 TEXT empty allowed",
+        "scope": "current",
+        "target_ids": [
+          "REQ-024",
+          "FEAT-026",
+          "PAGE-006",
+          "FLOW-005",
+          "REQ-026",
+          "FEAT-028"
+        ],
+        "layer": "unit",
+        "status": "PASS",
+        "expected": "approved target behavior",
+        "actual": "matched",
+        "first_breakpoint": null,
+        "source_file": "tests/target/unit/gatt-codec-target.test.mjs",
+        "duration_ms": 0.091125,
+        "blocker": null
+      },
+      {
+        "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-15 Read hex format",
+        "test_id": "TEST-U-009",
+        "title": "TEST-U-010-15 Read hex format",
+        "scope": "current",
+        "target_ids": [
+          "REQ-024",
+          "FEAT-026",
+          "PAGE-006",
+          "FLOW-005",
+          "REQ-026",
+          "FEAT-028"
+        ],
+        "layer": "unit",
+        "status": "PASS",
+        "expected": "approved target behavior",
+        "actual": "matched",
+        "first_breakpoint": null,
+        "source_file": "tests/target/unit/gatt-codec-target.test.mjs",
+        "duration_ms": 0.116208,
+        "blocker": null
+      },
+      {
+        "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-16 Read text format",
+        "test_id": "TEST-U-009",
+        "title": "TEST-U-010-16 Read text format",
+        "scope": "current",
+        "target_ids": [
+          "REQ-024",
+          "FEAT-026",
+          "PAGE-006",
+          "FLOW-005",
+          "REQ-026",
+          "FEAT-028"
+        ],
+        "layer": "unit",
+        "status": "PASS",
+        "expected": "approved target behavior",
+        "actual": "matched",
+        "first_breakpoint": null,
+        "source_file": "tests/target/unit/gatt-codec-target.test.mjs",
+        "duration_ms": 0.084125,
+        "blocker": null
+      },
+      {
+        "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-17 Read auto format",
+        "test_id": "TEST-U-009",
+        "title": "TEST-U-010-17 Read auto format",
+        "scope": "current",
+        "target_ids": [
+          "REQ-024",
+          "FEAT-026",
+          "PAGE-006",
+          "FLOW-005",
+          "REQ-026",
+          "FEAT-028"
+        ],
+        "layer": "unit",
+        "status": "PASS",
+        "expected": "approved target behavior",
+        "actual": "matched",
+        "first_breakpoint": null,
+        "source_file": "tests/target/unit/gatt-codec-target.test.mjs",
+        "duration_ms": 0.113,
+        "blocker": null
+      },
+      {
+        "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-18 invalid hex no BLE call",
+        "test_id": "TEST-U-009",
+        "title": "TEST-U-010-18 invalid hex no BLE call",
+        "scope": "current",
+        "target_ids": [
+          "REQ-024",
+          "FEAT-026",
+          "PAGE-006",
+          "FLOW-005",
+          "REQ-026",
+          "FEAT-028"
+        ],
+        "layer": "unit",
+        "status": "PASS",
+        "expected": "approved target behavior",
+        "actual": "matched",
+        "first_breakpoint": null,
+        "source_file": "tests/target/unit/gatt-codec-target.test.mjs",
+        "duration_ms": 6.11075,
+        "blocker": null
+      },
+      {
+        "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-19 valid hex BLE call",
+        "test_id": "TEST-U-009",
+        "title": "TEST-U-010-19 valid hex BLE call",
+        "scope": "current",
+        "target_ids": [
+          "REQ-024",
+          "FEAT-026",
+          "PAGE-006",
+          "FLOW-005",
+          "REQ-026",
+          "FEAT-028"
+        ],
+        "layer": "unit",
+        "status": "PASS",
+        "expected": "approved target behavior",
+        "actual": "matched",
+        "first_breakpoint": null,
+        "source_file": "tests/target/unit/gatt-codec-target.test.mjs",
+        "duration_ms": 0.518667,
+        "blocker": null
+      },
+      {
+        "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-20 text BLE call",
+        "test_id": "TEST-U-009",
+        "title": "TEST-U-010-20 text BLE call",
+        "scope": "current",
+        "target_ids": [
+          "REQ-024",
+          "FEAT-026",
+          "PAGE-006",
+          "FLOW-005",
+          "REQ-026",
+          "FEAT-028"
+        ],
+        "layer": "unit",
+        "status": "PASS",
+        "expected": "approved target behavior",
+        "actual": "matched",
+        "first_breakpoint": null,
+        "source_file": "tests/target/unit/gatt-codec-target.test.mjs",
+        "duration_ms": 0.155208,
         "blocker": null
       },
       {
@@ -864,7 +1304,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/history-retention-target.test.mjs",
-        "duration_ms": 1.64125,
+        "duration_ms": 1.627833,
         "blocker": null
       },
       {
@@ -884,7 +1324,7 @@
         "actual": "NOT_IMPLEMENTED: [TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
         "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
         "source_file": "tests/target/unit/logging-redaction-target.test.mjs",
-        "duration_ms": 0.55675,
+        "duration_ms": 0.502958,
         "blocker": null
       },
       {
@@ -907,7 +1347,7 @@
         "actual": "NOT_IMPLEMENTED: [TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
         "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
         "source_file": "tests/target/unit/ota-state-target.test.mjs",
-        "duration_ms": 30.216292,
+        "duration_ms": 8.417833,
         "blocker": null
       },
       {
@@ -929,7 +1369,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/platform-permission-target.test.mjs",
-        "duration_ms": 5.968459,
+        "duration_ms": 7.772375,
         "blocker": null
       },
       {
@@ -947,7 +1387,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/public-status-target.test.mjs",
-        "duration_ms": 1.585,
+        "duration_ms": 1.426875,
         "blocker": null
       },
       {
@@ -968,7 +1408,7 @@
         "actual": "NOT_IMPLEMENTED: [REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
         "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
         "source_file": "tests/target/unit/reconnect-state-target.test.mjs",
-        "duration_ms": 0.513,
+        "duration_ms": 0.510459,
         "blocker": null
       },
       {
@@ -991,7 +1431,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/session-state-target.test.mjs",
-        "duration_ms": 2.506042,
+        "duration_ms": 2.325667,
         "blocker": null
       },
       {
@@ -1014,7 +1454,7 @@
         "actual": "NOT_IMPLEMENTED: [TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
         "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
         "source_file": "tests/target/unit/session-state-target.test.mjs",
-        "duration_ms": 1.418458,
+        "duration_ms": 0.830459,
         "blocker": null
       },
       {
@@ -1036,7 +1476,7 @@
         "actual": "NOT_IMPLEMENTED: [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
         "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
         "source_file": "tests/target/unit/smart-hid-state-target.test.mjs",
-        "duration_ms": 6.238542,
+        "duration_ms": 6.652458,
         "blocker": null
       },
       {
@@ -1056,7 +1496,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/version-page-model-target.test.mjs",
-        "duration_ms": 2.563167,
+        "duration_ms": 2.307916,
         "blocker": null
       },
       {
@@ -1076,7 +1516,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/version-release-metadata-target.test.mjs",
-        "duration_ms": 2.017417,
+        "duration_ms": 2.543917,
         "blocker": null
       },
       {
@@ -1096,7 +1536,7 @@
         "actual": "NOT_IMPLEMENTED: [TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
         "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
         "source_file": "tests/target/unit/write-queue-target.test.mjs",
-        "duration_ms": 0.564333,
+        "duration_ms": 0.701417,
         "blocker": null
       },
       {
@@ -1116,7 +1556,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/integration/connection-runtime-target.test.mjs",
-        "duration_ms": 15.240375,
+        "duration_ms": 21.686416,
         "blocker": null
       },
       {
@@ -1136,7 +1576,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/integration/connection-runtime-target.test.mjs",
-        "duration_ms": 0.454042,
+        "duration_ms": 2.138834,
         "blocker": null
       },
       {
@@ -1155,7 +1595,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/integration/lifecycle-cleanup-target.test.mjs",
-        "duration_ms": 4.284875,
+        "duration_ms": 6.811792,
         "blocker": null
       },
       {
@@ -1175,7 +1615,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/integration/multi-device-target.test.mjs",
-        "duration_ms": 4.273,
+        "duration_ms": 5.9345,
         "blocker": null
       },
       {
@@ -1196,7 +1636,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/integration/notify-routing-target.test.mjs",
-        "duration_ms": 8.39925,
+        "duration_ms": 8.166917,
         "blocker": null
       },
       {
@@ -1226,7 +1666,7 @@
         "actual": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
         "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
         "source_file": "tests/target/integration/ota-transaction-target.test.mjs",
-        "duration_ms": 58.706166,
+        "duration_ms": 60.44875,
         "blocker": null
       },
       {
@@ -1256,7 +1696,7 @@
         "actual": "NOT_IMPLEMENTED: [TEST-I-008 FEAT-081 DEC-016] 第一断点: validateOtaPackage/validatePackage 缺失；第一断点: 传输前包校验接口不存在",
         "first_breakpoint": "[TEST-I-008 FEAT-081 DEC-016] 第一断点: validateOtaPackage/validatePackage 缺失；第一断点: 传输前包校验接口不存在",
         "source_file": "tests/target/integration/ota-transaction-target.test.mjs",
-        "duration_ms": 0.722958,
+        "duration_ms": 0.702542,
         "blocker": null
       },
       {
@@ -1286,7 +1726,7 @@
         "actual": "cancel 必须向 CTRL 完整 UUID 写入 abort",
         "first_breakpoint": "cancel 必须向 CTRL 完整 UUID 写入 abort",
         "source_file": "tests/target/integration/ota-transaction-target.test.mjs",
-        "duration_ms": 11.274375,
+        "duration_ms": 11.293667,
         "blocker": null
       },
       {
@@ -1316,7 +1756,7 @@
         "actual": "success 后必须读取 firmware_version",
         "first_breakpoint": "success 后必须读取 firmware_version",
         "source_file": "tests/target/integration/ota-transaction-target.test.mjs",
-        "duration_ms": 11.242459,
+        "duration_ms": 12.731584,
         "blocker": null
       },
       {
@@ -1338,7 +1778,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/integration/peripheral-owner-target.test.mjs",
-        "duration_ms": 2.05075,
+        "duration_ms": 1.499042,
         "blocker": null
       },
       {
@@ -1360,7 +1800,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/integration/peripheral-owner-target.test.mjs",
-        "duration_ms": 0.93075,
+        "duration_ms": 1.267666,
         "blocker": null
       },
       {
@@ -1380,7 +1820,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/integration/permission-flow-target.test.mjs",
-        "duration_ms": 6.030792,
+        "duration_ms": 8.04825,
         "blocker": null
       },
       {
@@ -1400,7 +1840,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/integration/read-write-runtime-target.test.mjs",
-        "duration_ms": 5.160666,
+        "duration_ms": 7.079333,
         "blocker": null
       },
       {
@@ -1422,7 +1862,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/integration/scan-runtime-target.test.mjs",
-        "duration_ms": 5.849167,
+        "duration_ms": 5.794875,
         "blocker": null
       },
       {
@@ -1443,7 +1883,7 @@
         "actual": "NOT_IMPLEMENTED: [REQ-020/021 ERR-CONN-03] 第一断点: connectDevice 未编排服务发现（失败不报错=半开泄漏面）",
         "first_breakpoint": "[REQ-020/021 ERR-CONN-03] 第一断点: connectDevice 未编排服务发现（失败不报错=半开泄漏面）",
         "source_file": "tests/target/integration/service-discovery-target.test.mjs",
-        "duration_ms": 5.757584,
+        "duration_ms": 7.016208,
         "blocker": null
       },
       {
@@ -1463,7 +1903,7 @@
         "actual": "NOT_IMPLEMENTED: [TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,LyoqCiAqIOebruagh+Wlkee6puWFpeWPo++8mmRpc3BsYXktbmFtZS5qc++8iEZFQVQtMDEzIC8gVEVTVC1VLTAwNu+8ieOAggogKiDlrp7njrDkvY3kuo4gZGV2aWNlLWRpc3BsYXktbmFtZS5qc+OAggogKi8KCmV4cG9ydCB7CiAgbm9ybWFsaXplRGlzc",
         "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
         "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs",
-        "duration_ms": 8.145375,
+        "duration_ms": 9.416125,
         "blocker": null
       },
       {
@@ -1483,7 +1923,7 @@
         "actual": "NOT_IMPLEMENTED: [TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,LyoqCiAqIOebruagh+Wlkee6puWFpeWPo++8mmRpc3BsYXktbmFtZS5qc++8iEZFQVQtMDEzIC8gVEVTVC1VLTAwNu+8ieOAggogKiDlrp7njrDkvY3kuo4gZGV2aWNlLWRpc3BsYXktbmFtZS5qc+OAggogKi8KCmV4cG9ydCB7CiAgbm9ybWFsaXplRGlzc",
         "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
         "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs",
-        "duration_ms": 3.25025,
+        "duration_ms": 4.06275,
         "blocker": null
       },
       {
@@ -1504,7 +1944,7 @@
         "actual": "NOT_IMPLEMENTED: [REQ-053/PAGE-007 排除规则] 第一断点: Registry 无配网会话分类/排除接口——PAGE-007 口径无法排除配网会话",
         "first_breakpoint": "[REQ-053/PAGE-007 排除规则] 第一断点: Registry 无配网会话分类/排除接口——PAGE-007 口径无法排除配网会话",
         "source_file": "tests/target/integration/smart-hid-session-ownership-target.test.mjs",
-        "duration_ms": 5.538125,
+        "duration_ms": 7.079459,
         "blocker": null
       },
       {
@@ -1526,7 +1966,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/firmware/artifact-metadata.test.mjs",
-        "duration_ms": 2.05275,
+        "duration_ms": 1.8585,
         "blocker": null
       },
       {
@@ -1548,7 +1988,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/firmware/artifact-metadata.test.mjs",
-        "duration_ms": 0.610167,
+        "duration_ms": 0.380208,
         "blocker": null
       },
       {
@@ -1569,7 +2009,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/firmware/fixture-contract.test.mjs",
-        "duration_ms": 0.610834,
+        "duration_ms": 0.629166,
         "blocker": null
       },
       {
@@ -1590,7 +2030,7 @@
         "actual": "固件含广播名 BLEToolkit-Observer",
         "first_breakpoint": "固件含广播名 BLEToolkit-Observer",
         "source_file": "tests/target/firmware/fixture-contract.test.mjs",
-        "duration_ms": 0.241292,
+        "duration_ms": 0.253208,
         "blocker": null
       },
       {
@@ -1611,7 +2051,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/firmware/fixture-contract.test.mjs",
-        "duration_ms": 0.719834,
+        "duration_ms": 0.708041,
         "blocker": null
       },
       {
@@ -1632,7 +2072,7 @@
         "actual": "固件含 LED 指令 FF00",
         "first_breakpoint": "固件含 LED 指令 FF00",
         "source_file": "tests/target/firmware/fixture-contract.test.mjs",
-        "duration_ms": 0.117958,
+        "duration_ms": 0.120209,
         "blocker": null
       },
       {
@@ -1651,7 +2091,7 @@
         "actual": "Observer 字段 ≥9（实际 8）",
         "first_breakpoint": "Observer 字段 ≥9（实际 8）",
         "source_file": "tests/target/firmware/serial-schema.test.mjs",
-        "duration_ms": 0.470208,
+        "duration_ms": 0.470417,
         "blocker": null
       },
       {
@@ -1670,7 +2110,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/firmware/serial-schema.test.mjs",
-        "duration_ms": 0.090875,
+        "duration_ms": 0.097375,
         "blocker": null
       },
       {
@@ -1689,7 +2129,7 @@
         "actual": "固件 emit 覆盖 ≥3 类契约事件（实际 1：ota）",
         "first_breakpoint": "固件 emit 覆盖 ≥3 类契约事件（实际 1：ota）",
         "source_file": "tests/target/firmware/serial-schema.test.mjs",
-        "duration_ms": 0.584,
+        "duration_ms": 1.07025,
         "blocker": null
       },
       {
@@ -1708,7 +2148,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/release/links-and-qr.test.mjs",
-        "duration_ms": 0.977167,
+        "duration_ms": 1.023625,
         "blocker": null
       },
       {
@@ -1727,7 +2167,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/release/links-and-qr.test.mjs",
-        "duration_ms": 1.464916,
+        "duration_ms": 0.801916,
         "blocker": null
       },
       {
@@ -1746,7 +2186,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/release/links-and-qr.test.mjs",
-        "duration_ms": 0.155625,
+        "duration_ms": 0.240292,
         "blocker": null
       },
       {
@@ -1769,7 +2209,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/release/public-claims.test.mjs",
-        "duration_ms": 0.311833,
+        "duration_ms": 0.306917,
         "blocker": null
       },
       {
@@ -1792,7 +2232,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/release/public-claims.test.mjs",
-        "duration_ms": 0.300292,
+        "duration_ms": 0.28975,
         "blocker": null
       },
       {
@@ -1815,7 +2255,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/release/public-claims.test.mjs",
-        "duration_ms": 0.471833,
+        "duration_ms": 0.432292,
         "blocker": null
       },
       {
@@ -1838,7 +2278,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/release/public-claims.test.mjs",
-        "duration_ms": 0.184375,
+        "duration_ms": 0.153542,
         "blocker": null
       },
       {
@@ -1859,7 +2299,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/release/release-artifacts.test.mjs",
-        "duration_ms": 0.284666,
+        "duration_ms": 0.288083,
         "blocker": null
       },
       {
@@ -1880,7 +2320,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/release/release-artifacts.test.mjs",
-        "duration_ms": 0.273584,
+        "duration_ms": 0.268375,
         "blocker": null
       },
       {
@@ -1901,17 +2341,17 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/release/release-artifacts.test.mjs",
-        "duration_ms": 0.807667,
+        "duration_ms": 0.62125,
         "blocker": null
       }
     ],
     "layers": [
       {
         "name": "unit",
-        "pass": 43,
-        "fail": 7,
+        "pass": 64,
+        "fail": 6,
         "skipped": 0,
-        "case_count": 50,
+        "case_count": 70,
         "infra_fail": 0
       },
       {

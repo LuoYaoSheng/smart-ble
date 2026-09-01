@@ -53,4 +53,17 @@ export const getServiceName = (uuid) => {
 export const getCharacteristicName = (uuid) => {
     const shortUUID = getShortUUID(uuid);
     return BLE_CHARACTERISTICS[shortUUID] || '';
-}; 
+};
+
+// GATT Codec 目标接口（REQ-026 / TEST-U-010）：实现位于 ble-runtime/gatt-codec.js
+export {
+    validateHexInput,
+    parseHexInput,
+    encodeTextInput,
+    decodeBytes,
+    formatReadValue,
+    normalizeGattPayload,
+    validateCharacteristicProperties,
+    canOperate,
+    isValidHex,
+} from '../services/ble-runtime/gatt-codec.js';

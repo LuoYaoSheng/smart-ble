@@ -3,7 +3,6 @@
   "note": "TP-G2-R1 uses tasks not FIX-*; see task-dependency-graph.json",
   "recommended_order": [
     "RELEASE-PIPELINE-001",
-    "RUNTIME-GATT-CODEC-001",
     "RUNTIME-WRITE-QUEUE-001",
     "RUNTIME-LOG-REDACTION-001",
     "RUNTIME-RECONNECT-001",

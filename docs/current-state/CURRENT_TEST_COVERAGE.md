@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 6d61cc538b5131d8ae7fe4b9490737b696efa2a178a30eca611cd6d8ab550772
+content_hash: 84b1f1fce2774299ac06c8f40e5c8de39f35091776b8892e8f95e78b3f2b1fa5
 ```
 
 ## System / Harness
@@ -21,14 +21,14 @@ content_hash: 6d61cc538b5131d8ae7fe4b9490737b696efa2a178a30eca611cd6d8ab550772
 
 | 指标 | 值 |
 |---|---|
-| CURRENT_PASS | 298 |
-| CURRENT_FAIL | 19 |
-| cases | 87 |
+| CURRENT_PASS | 319 |
+| CURRENT_FAIL | 18 |
+| cases | 107 |
 | source | .tmp/tp-g2/logs/current-structured.json |
 
 ### Layers
 
-- unit: pass=43 fail=7 cases=50 blocked=—
+- unit: pass=64 fail=6 cases=70 blocked=—
 - integration: pass=10 fail=8 cases=18 blocked=—
 - firmware: pass=5 fail=4 cases=9 blocked=—
 - release: pass=10 fail=0 cases=10 blocked=—

@@ -40,6 +40,20 @@ test('目标层：ble-runtime 读写与错误归一化', async (t) => {
       );
     }
 
+    // Codec：HEX 写入路径
+    assert.equal(typeof rt.validateHexInput, 'function', 'Runtime 导出 validateHexInput');
+    assert.equal(typeof rt.formatReadValue, 'function', 'Runtime 导出 formatReadValue');
+    const hexWrite = await rt.writeCharacteristic(session, SVC, CHR, 'DE AD', { mode: 'hex' });
+    assert.equal(hexWrite.ok, true);
+    assert.equal(hexWrite.length, 2);
+    const badHex = await rt.writeCharacteristic(session, SVC, CHR, 'GG', { mode: 'hex' });
+    assert.equal(badHex.ok, false);
+    assert.equal(badHex.wrote, false);
+
+    // 读展示：bytes → formatter
+    const formatted = rt.formatReadValue(new Uint8Array([0x48, 0x69]), 'text');
+    assert.equal(formatted, 'Hi');
+
     // 写失败：必须抛错（不假成功）
     platform.failNext('writeBLECharacteristicValue', { errMsg: 'write:fail GATT error' });
     await assert.rejects(

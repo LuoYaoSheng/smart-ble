@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 6d61cc538b5131d8ae7fe4b9490737b696efa2a178a30eca611cd6d8ab550772
+content_hash: 84b1f1fce2774299ac06c8f40e5c8de39f35091776b8892e8f95e78b3f2b1fa5
 ```
 
 > PUBLIC-HONESTY-001 / VERSION-METADATA-001 状态以 task-dependency-graph.json 为准。未批准 Task 不得执行。
@@ -15,15 +15,14 @@ content_hash: 6d61cc538b5131d8ae7fe4b9490737b696efa2a178a30eca611cd6d8ab550772
 - task_type：SOURCE_FIX
 - severity：P1
 - root_cause_id：RC-DISPLAY-NAME
-- Target IDs（样本）：FEAT-013, REQ-013, PAGE-001, FLOW-002
-- Test IDs：TEST-U-006 + device-display-name-target DN-01..18
-- First Breakpoint：（已关闭）原：display-name.js 缺失 → resolveDeviceDisplayName / resolveDisplayName
+- Target IDs（样本）：FEAT-057, REQ-048, REQ-051
+- Test IDs：TEST-I-009, TEST-H-002, TEST-H-003, TEST-U-015, TEST-W-010
+- First Breakpoint：[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier "./device-display-name.js" from "data:text/javascript;base64,
 - 依赖：无
-- 解锁：—
-- 关闭证据：apps/uniapp/services/ble-runtime/device-display-name.js + display-name.js；discovery/store 归一化附加 displayName
-- 自动化验收：TEST-U-006 PASS；System/Harness 0 FAIL
-- 建议提交信息：`feat(runtime): add BLE display name resolver`
-
+- 解锁：
+- 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
+- 自动化验收：related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL
+- 建议提交信息：`source_fix(runtime-display-name-001): 实现 display-name 解析链`
 
 ### RUNTIME-FILTER-001
 
@@ -43,19 +42,21 @@ content_hash: 6d61cc538b5131d8ae7fe4b9490737b696efa2a178a30eca611cd6d8ab550772
 
 ### RUNTIME-GATT-CODEC-001
 
-- 状态：**PLANNED**
-- 标题：validateHexInput/parseHexInput
+- 状态：**DONE**
+- 标题：validateHexInput/parseHexInput + GATT Codec 层
 - task_type：SOURCE_FIX
 - severity：P1
 - root_cause_id：RC-GATT-HEX
 - Target IDs（样本）：FEAT-026, FEAT-028, REQ-024, REQ-026, PAGE-006, FLOW-005
-- Test IDs：TEST-U-009, TEST-A-006, TEST-E-003, TEST-U-010, TEST-I-004, TEST-A-008, TEST-P-006, TEST-U-011, TEST-U-012, TEST-I-003, TEST-I-005, TEST-I-008
-- First Breakpoint：[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失
+- Test IDs：TEST-U-009/010 + U-010-01..20
+- First Breakpoint：（已关闭）原 validateHexInput/parseHexInput 缺失 → gatt-codec.js
 - 依赖：无
-- 解锁：
-- 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
-- 自动化验收：related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL
-- 建议提交信息：`source_fix(runtime-gatt-codec-001): validateHexInput/parseHexInput`
+- 解锁：—
+- 关闭证据：apps/uniapp/services/ble-runtime/gatt-codec.js；Runtime writeCharacteristic/readCharacteristic/formatReadValue；ble-utils 再导出
+- 自动化验收：TEST-U-009/010 PASS；System/Harness 0 FAIL
+- 建议提交信息：`feat(runtime): add BLE GATT codec layer`
+- 未关闭：RUNTIME-WRITE-QUEUE / RUNTIME-SESSION（Codec ≠ Queue/Session）
+
 
 ### RUNTIME-WRITE-QUEUE-001
 
@@ -64,8 +65,8 @@ content_hash: 6d61cc538b5131d8ae7fe4b9490737b696efa2a178a30eca611cd6d8ab550772
 - task_type：SOURCE_FIX
 - severity：P1
 - root_cause_id：RC-WRITE-QUEUE
-- Target IDs（样本）：FEAT-030, REQ-028
-- Test IDs：TEST-U-011, TEST-I-004, TEST-E-003
+- Target IDs（样本）：FEAT-030, REQ-028, FLOW-005
+- Test IDs：TEST-U-011, TEST-I-004, TEST-E-003, TEST-U-009, TEST-U-010, TEST-U-012, TEST-I-005, TEST-A-008, TEST-E-004, TEST-E-005
 - First Breakpoint：[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js
 - 依赖：无
 - 解锁：
@@ -144,8 +145,8 @@ content_hash: 6d61cc538b5131d8ae7fe4b9490737b696efa2a178a30eca611cd6d8ab550772
 - task_type：SOURCE_FIX
 - severity：P1
 - root_cause_id：RC-OTA-PACKAGE
-- Target IDs（样本）：FEAT-081, REQ-066, FLOW-009, DEC-016
-- Test IDs：TEST-U-016, TEST-I-010, TEST-E-007, TEST-A-011, TEST-I-008
+- Target IDs（样本）：FEAT-081, REQ-066, PAGE-006, FLOW-009, DEC-016
+- Test IDs：TEST-U-016, TEST-I-010, TEST-E-007, TEST-A-011, TEST-I-008, TEST-P-006, TEST-U-009, TEST-U-010, TEST-U-011, TEST-U-012, TEST-I-003, TEST-I-004
 - First Breakpoint：[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）
 - 依赖：无
 - 解锁：OTA-CLIENT-001

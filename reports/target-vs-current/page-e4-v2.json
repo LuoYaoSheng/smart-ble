@@ -1,6 +1,6 @@
 {
   "gate": "TP-G2-R2",
-  "generated_at": "2026-09-01T11:41:31.597Z",
+  "generated_at": "2026-09-01T11:55:01.102Z",
   "environment": {
     "status": "READY_FOR_PAGE_E4",
     "playwright": {
@@ -20,7 +20,7 @@
     "hasWriteQueue": false,
     "hasReconnect": false,
     "hasDisplayName": true,
-    "hasValidateHex": false,
+    "hasValidateHex": true,
     "broadcastUsesComposable": false,
     "versionUsesModel": true,
     "landingFake": false,
@@ -32,9 +32,9 @@
   },
   "totals": {
     "PASS": 132,
-    "FAIL": 67,
+    "FAIL": 37,
     "BLOCKED": 2,
-    "NOT_IMPLEMENTED": 29,
+    "NOT_IMPLEMENTED": 59,
     "harness_PASS": 230,
     "harness_FAIL": 0
   },
@@ -528,30 +528,25 @@
     "PAGE-006": {
       "page_id": "PAGE-006",
       "PASS": 0,
-      "FAIL": 30,
+      "FAIL": 0,
       "BLOCKED": 0,
-      "NOT_IMPLEMENTED": 0,
+      "NOT_IMPLEMENTED": 30,
       "harness_PASS": 30,
       "harness_FAIL": 0,
       "states": 10,
       "operations": 14,
       "product": "FAIL",
-      "task_id": "RUNTIME-GATT-CODEC-001",
-      "root_cause_id": "RC-GATT-HEX",
-      "notes": "device/detail 存在；GATT/OTA/重连断点导致产品 FAIL",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
+      "root_cause_id": "RC-WRITE-QUEUE",
+      "notes": "RUNTIME-GATT-CODEC-001 DONE（HEX/TEXT/Read/Write Codec）；PAGE-006 剩余 write-queue / reconnect / OTA / session",
       "first_breakpoint": {
-        "target": "FEAT-028",
-        "test": "TEST-U-010",
-        "file": "apps/uniapp/pages/device/detail.vue",
-        "symbol": "validateHexInput/parseHexInput",
-        "breakpoint": "HEX write codec helpers missing"
+        "target": "FEAT-030",
+        "test": "TEST-U-011",
+        "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+        "symbol": "(missing)",
+        "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
       },
       "also": [
-        {
-          "task_id": "RUNTIME-WRITE-QUEUE-001",
-          "file": "apps/uniapp/services/ble-runtime/write-queue.js",
-          "breakpoint": "module missing"
-        },
         {
           "task_id": "RUNTIME-RECONNECT-001",
           "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
@@ -567,398 +562,402 @@
           "file": "apps/uniapp/services/ble-runtime/index.js",
           "symbol": "connectDevice",
           "breakpoint": "TEST-I-003 asserts discover orchestration gap (semi-open risk)"
+        },
+        {
+          "task_id": "RUNTIME-SESSION-001",
+          "breakpoint": "Notify/session lifecycle remaining after codec"
         }
       ],
       "fail_cases": [
         {
           "state_id": "STATE-P006-01",
           "operation_id": null,
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-028",
-            "test": "TEST-U-010",
-            "file": "apps/uniapp/pages/device/detail.vue",
-            "symbol": "validateHexInput/parseHexInput",
-            "breakpoint": "HEX write codec helpers missing"
+            "target": "FEAT-030",
+            "test": "TEST-U-011",
+            "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+            "symbol": "(missing)",
+            "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
           },
-          "task_id": "RUNTIME-GATT-CODEC-001"
+          "task_id": "RUNTIME-WRITE-QUEUE-001"
         },
         {
           "state_id": "STATE-P006-02",
           "operation_id": null,
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-028",
-            "test": "TEST-U-010",
-            "file": "apps/uniapp/pages/device/detail.vue",
-            "symbol": "validateHexInput/parseHexInput",
-            "breakpoint": "HEX write codec helpers missing"
+            "target": "FEAT-030",
+            "test": "TEST-U-011",
+            "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+            "symbol": "(missing)",
+            "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
           },
-          "task_id": "RUNTIME-GATT-CODEC-001"
+          "task_id": "RUNTIME-WRITE-QUEUE-001"
         },
         {
           "state_id": "STATE-P006-03",
           "operation_id": null,
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-028",
-            "test": "TEST-U-010",
-            "file": "apps/uniapp/pages/device/detail.vue",
-            "symbol": "validateHexInput/parseHexInput",
-            "breakpoint": "HEX write codec helpers missing"
+            "target": "FEAT-030",
+            "test": "TEST-U-011",
+            "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+            "symbol": "(missing)",
+            "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
           },
-          "task_id": "RUNTIME-GATT-CODEC-001"
+          "task_id": "RUNTIME-WRITE-QUEUE-001"
         },
         {
           "state_id": "STATE-P006-04",
           "operation_id": null,
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-028",
-            "test": "TEST-U-010",
-            "file": "apps/uniapp/pages/device/detail.vue",
-            "symbol": "validateHexInput/parseHexInput",
-            "breakpoint": "HEX write codec helpers missing"
+            "target": "FEAT-030",
+            "test": "TEST-U-011",
+            "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+            "symbol": "(missing)",
+            "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
           },
-          "task_id": "RUNTIME-GATT-CODEC-001"
+          "task_id": "RUNTIME-WRITE-QUEUE-001"
         },
         {
           "state_id": "STATE-P006-05",
           "operation_id": null,
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-028",
-            "test": "TEST-U-010",
-            "file": "apps/uniapp/pages/device/detail.vue",
-            "symbol": "validateHexInput/parseHexInput",
-            "breakpoint": "HEX write codec helpers missing"
+            "target": "FEAT-030",
+            "test": "TEST-U-011",
+            "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+            "symbol": "(missing)",
+            "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
           },
-          "task_id": "RUNTIME-GATT-CODEC-001"
+          "task_id": "RUNTIME-WRITE-QUEUE-001"
         },
         {
           "state_id": "STATE-P006-06",
           "operation_id": null,
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-028",
-            "test": "TEST-U-010",
-            "file": "apps/uniapp/pages/device/detail.vue",
-            "symbol": "validateHexInput/parseHexInput",
-            "breakpoint": "HEX write codec helpers missing"
+            "target": "FEAT-030",
+            "test": "TEST-U-011",
+            "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+            "symbol": "(missing)",
+            "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
           },
-          "task_id": "RUNTIME-GATT-CODEC-001"
+          "task_id": "RUNTIME-WRITE-QUEUE-001"
         },
         {
           "state_id": "STATE-P006-07",
           "operation_id": null,
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-028",
-            "test": "TEST-U-010",
-            "file": "apps/uniapp/pages/device/detail.vue",
-            "symbol": "validateHexInput/parseHexInput",
-            "breakpoint": "HEX write codec helpers missing"
+            "target": "FEAT-030",
+            "test": "TEST-U-011",
+            "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+            "symbol": "(missing)",
+            "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
           },
-          "task_id": "RUNTIME-GATT-CODEC-001"
+          "task_id": "RUNTIME-WRITE-QUEUE-001"
         },
         {
           "state_id": "STATE-P006-08",
           "operation_id": null,
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-028",
-            "test": "TEST-U-010",
-            "file": "apps/uniapp/pages/device/detail.vue",
-            "symbol": "validateHexInput/parseHexInput",
-            "breakpoint": "HEX write codec helpers missing"
+            "target": "FEAT-030",
+            "test": "TEST-U-011",
+            "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+            "symbol": "(missing)",
+            "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
           },
-          "task_id": "RUNTIME-GATT-CODEC-001"
+          "task_id": "RUNTIME-WRITE-QUEUE-001"
         },
         {
           "state_id": "STATE-P006-09",
           "operation_id": null,
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-028",
-            "test": "TEST-U-010",
-            "file": "apps/uniapp/pages/device/detail.vue",
-            "symbol": "validateHexInput/parseHexInput",
-            "breakpoint": "HEX write codec helpers missing"
+            "target": "FEAT-030",
+            "test": "TEST-U-011",
+            "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+            "symbol": "(missing)",
+            "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
           },
-          "task_id": "RUNTIME-GATT-CODEC-001"
+          "task_id": "RUNTIME-WRITE-QUEUE-001"
         },
         {
           "state_id": "STATE-P006-10",
           "operation_id": null,
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-028",
-            "test": "TEST-U-010",
-            "file": "apps/uniapp/pages/device/detail.vue",
-            "symbol": "validateHexInput/parseHexInput",
-            "breakpoint": "HEX write codec helpers missing"
+            "target": "FEAT-030",
+            "test": "TEST-U-011",
+            "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+            "symbol": "(missing)",
+            "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
           },
-          "task_id": "RUNTIME-GATT-CODEC-001"
+          "task_id": "RUNTIME-WRITE-QUEUE-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P006-01",
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-028",
-            "test": "TEST-U-010",
-            "file": "apps/uniapp/pages/device/detail.vue",
-            "symbol": "validateHexInput/parseHexInput",
-            "breakpoint": "HEX write codec helpers missing"
+            "target": "FEAT-030",
+            "test": "TEST-U-011",
+            "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+            "symbol": "(missing)",
+            "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
           },
-          "task_id": "RUNTIME-GATT-CODEC-001"
+          "task_id": "RUNTIME-WRITE-QUEUE-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P006-02",
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-028",
-            "test": "TEST-U-010",
-            "file": "apps/uniapp/pages/device/detail.vue",
-            "symbol": "validateHexInput/parseHexInput",
-            "breakpoint": "HEX write codec helpers missing"
+            "target": "FEAT-030",
+            "test": "TEST-U-011",
+            "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+            "symbol": "(missing)",
+            "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
           },
-          "task_id": "RUNTIME-GATT-CODEC-001"
+          "task_id": "RUNTIME-WRITE-QUEUE-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P006-03",
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-028",
-            "test": "TEST-U-010",
-            "file": "apps/uniapp/pages/device/detail.vue",
-            "symbol": "validateHexInput/parseHexInput",
-            "breakpoint": "HEX write codec helpers missing"
+            "target": "FEAT-030",
+            "test": "TEST-U-011",
+            "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+            "symbol": "(missing)",
+            "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
           },
-          "task_id": "RUNTIME-GATT-CODEC-001"
+          "task_id": "RUNTIME-WRITE-QUEUE-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P006-04",
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-028",
-            "test": "TEST-U-010",
-            "file": "apps/uniapp/pages/device/detail.vue",
-            "symbol": "validateHexInput/parseHexInput",
-            "breakpoint": "HEX write codec helpers missing"
+            "target": "FEAT-030",
+            "test": "TEST-U-011",
+            "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+            "symbol": "(missing)",
+            "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
           },
-          "task_id": "RUNTIME-GATT-CODEC-001"
+          "task_id": "RUNTIME-WRITE-QUEUE-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P006-05",
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-028",
-            "test": "TEST-U-010",
-            "file": "apps/uniapp/pages/device/detail.vue",
-            "symbol": "validateHexInput/parseHexInput",
-            "breakpoint": "HEX write codec helpers missing"
+            "target": "FEAT-030",
+            "test": "TEST-U-011",
+            "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+            "symbol": "(missing)",
+            "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
           },
-          "task_id": "RUNTIME-GATT-CODEC-001"
+          "task_id": "RUNTIME-WRITE-QUEUE-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P006-06",
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-028",
-            "test": "TEST-U-010",
-            "file": "apps/uniapp/pages/device/detail.vue",
-            "symbol": "validateHexInput/parseHexInput",
-            "breakpoint": "HEX write codec helpers missing"
+            "target": "FEAT-030",
+            "test": "TEST-U-011",
+            "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+            "symbol": "(missing)",
+            "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
           },
-          "task_id": "RUNTIME-GATT-CODEC-001"
+          "task_id": "RUNTIME-WRITE-QUEUE-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P006-07",
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-028",
-            "test": "TEST-U-010",
-            "file": "apps/uniapp/pages/device/detail.vue",
-            "symbol": "validateHexInput/parseHexInput",
-            "breakpoint": "HEX write codec helpers missing"
+            "target": "FEAT-030",
+            "test": "TEST-U-011",
+            "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+            "symbol": "(missing)",
+            "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
           },
-          "task_id": "RUNTIME-GATT-CODEC-001"
+          "task_id": "RUNTIME-WRITE-QUEUE-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P006-08",
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-028",
-            "test": "TEST-U-010",
-            "file": "apps/uniapp/pages/device/detail.vue",
-            "symbol": "validateHexInput/parseHexInput",
-            "breakpoint": "HEX write codec helpers missing"
+            "target": "FEAT-030",
+            "test": "TEST-U-011",
+            "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+            "symbol": "(missing)",
+            "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
           },
-          "task_id": "RUNTIME-GATT-CODEC-001"
+          "task_id": "RUNTIME-WRITE-QUEUE-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P006-10",
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-028",
-            "test": "TEST-U-010",
-            "file": "apps/uniapp/pages/device/detail.vue",
-            "symbol": "validateHexInput/parseHexInput",
-            "breakpoint": "HEX write codec helpers missing"
+            "target": "FEAT-030",
+            "test": "TEST-U-011",
+            "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+            "symbol": "(missing)",
+            "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
           },
-          "task_id": "RUNTIME-GATT-CODEC-001"
+          "task_id": "RUNTIME-WRITE-QUEUE-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P006-11",
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-028",
-            "test": "TEST-U-010",
-            "file": "apps/uniapp/pages/device/detail.vue",
-            "symbol": "validateHexInput/parseHexInput",
-            "breakpoint": "HEX write codec helpers missing"
+            "target": "FEAT-030",
+            "test": "TEST-U-011",
+            "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+            "symbol": "(missing)",
+            "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
           },
-          "task_id": "RUNTIME-GATT-CODEC-001"
+          "task_id": "RUNTIME-WRITE-QUEUE-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P006-12",
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-028",
-            "test": "TEST-U-010",
-            "file": "apps/uniapp/pages/device/detail.vue",
-            "symbol": "validateHexInput/parseHexInput",
-            "breakpoint": "HEX write codec helpers missing"
+            "target": "FEAT-030",
+            "test": "TEST-U-011",
+            "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+            "symbol": "(missing)",
+            "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
           },
-          "task_id": "RUNTIME-GATT-CODEC-001"
+          "task_id": "RUNTIME-WRITE-QUEUE-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P006-13",
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-028",
-            "test": "TEST-U-010",
-            "file": "apps/uniapp/pages/device/detail.vue",
-            "symbol": "validateHexInput/parseHexInput",
-            "breakpoint": "HEX write codec helpers missing"
+            "target": "FEAT-030",
+            "test": "TEST-U-011",
+            "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+            "symbol": "(missing)",
+            "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
           },
-          "task_id": "RUNTIME-GATT-CODEC-001"
+          "task_id": "RUNTIME-WRITE-QUEUE-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P006-14",
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-028",
-            "test": "TEST-U-010",
-            "file": "apps/uniapp/pages/device/detail.vue",
-            "symbol": "validateHexInput/parseHexInput",
-            "breakpoint": "HEX write codec helpers missing"
+            "target": "FEAT-030",
+            "test": "TEST-U-011",
+            "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+            "symbol": "(missing)",
+            "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
           },
-          "task_id": "RUNTIME-GATT-CODEC-001"
+          "task_id": "RUNTIME-WRITE-QUEUE-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P006-15",
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-028",
-            "test": "TEST-U-010",
-            "file": "apps/uniapp/pages/device/detail.vue",
-            "symbol": "validateHexInput/parseHexInput",
-            "breakpoint": "HEX write codec helpers missing"
+            "target": "FEAT-030",
+            "test": "TEST-U-011",
+            "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+            "symbol": "(missing)",
+            "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
           },
-          "task_id": "RUNTIME-GATT-CODEC-001"
+          "task_id": "RUNTIME-WRITE-QUEUE-001"
         },
         {
           "state_id": null,
           "operation_id": null,
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-028",
-            "test": "TEST-U-010",
-            "file": "apps/uniapp/pages/device/detail.vue",
-            "symbol": "validateHexInput/parseHexInput",
-            "breakpoint": "HEX write codec helpers missing"
+            "target": "FEAT-030",
+            "test": "TEST-U-011",
+            "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+            "symbol": "(missing)",
+            "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
           },
-          "task_id": "RUNTIME-GATT-CODEC-001"
+          "task_id": "RUNTIME-WRITE-QUEUE-001"
         },
         {
           "state_id": null,
           "operation_id": null,
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-028",
-            "test": "TEST-U-010",
-            "file": "apps/uniapp/pages/device/detail.vue",
-            "symbol": "validateHexInput/parseHexInput",
-            "breakpoint": "HEX write codec helpers missing"
+            "target": "FEAT-030",
+            "test": "TEST-U-011",
+            "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+            "symbol": "(missing)",
+            "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
           },
-          "task_id": "RUNTIME-GATT-CODEC-001"
+          "task_id": "RUNTIME-WRITE-QUEUE-001"
         },
         {
           "state_id": null,
           "operation_id": null,
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-028",
-            "test": "TEST-U-010",
-            "file": "apps/uniapp/pages/device/detail.vue",
-            "symbol": "validateHexInput/parseHexInput",
-            "breakpoint": "HEX write codec helpers missing"
+            "target": "FEAT-030",
+            "test": "TEST-U-011",
+            "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+            "symbol": "(missing)",
+            "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
           },
-          "task_id": "RUNTIME-GATT-CODEC-001"
+          "task_id": "RUNTIME-WRITE-QUEUE-001"
         },
         {
           "state_id": null,
           "operation_id": null,
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-028",
-            "test": "TEST-U-010",
-            "file": "apps/uniapp/pages/device/detail.vue",
-            "symbol": "validateHexInput/parseHexInput",
-            "breakpoint": "HEX write codec helpers missing"
+            "target": "FEAT-030",
+            "test": "TEST-U-011",
+            "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+            "symbol": "(missing)",
+            "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
           },
-          "task_id": "RUNTIME-GATT-CODEC-001"
+          "task_id": "RUNTIME-WRITE-QUEUE-001"
         },
         {
           "state_id": null,
           "operation_id": null,
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-028",
-            "test": "TEST-U-010",
-            "file": "apps/uniapp/pages/device/detail.vue",
-            "symbol": "validateHexInput/parseHexInput",
-            "breakpoint": "HEX write codec helpers missing"
+            "target": "FEAT-030",
+            "test": "TEST-U-011",
+            "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+            "symbol": "(missing)",
+            "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
           },
-          "task_id": "RUNTIME-GATT-CODEC-001"
+          "task_id": "RUNTIME-WRITE-QUEUE-001"
         },
         {
           "state_id": null,
           "operation_id": null,
-          "status": "FAIL",
+          "status": "NOT_IMPLEMENTED",
           "first_breakpoint": {
-            "target": "FEAT-028",
-            "test": "TEST-U-010",
-            "file": "apps/uniapp/pages/device/detail.vue",
-            "symbol": "validateHexInput/parseHexInput",
-            "breakpoint": "HEX write codec helpers missing"
+            "target": "FEAT-030",
+            "test": "TEST-U-011",
+            "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+            "symbol": "(missing)",
+            "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
           },
-          "task_id": "RUNTIME-GATT-CODEC-001"
+          "task_id": "RUNTIME-WRITE-QUEUE-001"
         }
       ]
     },
@@ -7114,19 +7113,19 @@
       "state_id": "STATE-P006-01",
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › State suite › STATE-P006-01 初始化",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "身份",
         "连接按钮"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: device/detail 存在；GATT/OTA/重连断点导致产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC-001 DONE（HEX/TEXT/Read/Write Codec）；PAGE-006 剩余 write-queue / reconnect / OTA / session",
       "first_breakpoint": {
-        "target": "FEAT-028",
-        "test": "TEST-U-010",
-        "file": "apps/uniapp/pages/device/detail.vue",
-        "symbol": "validateHexInput/parseHexInput",
-        "breakpoint": "HEX write codec helpers missing"
+        "target": "FEAT-030",
+        "test": "TEST-U-011",
+        "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+        "symbol": "(missing)",
+        "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -7134,19 +7133,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-009",
-            "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-            "target_ids": [
-              "REQ-024",
-              "FEAT-026",
-              "PAGE-006",
-              "FLOW-005",
-              "REQ-026",
-              "FEAT-028"
-            ],
-            "source_file": "tests/target/unit/gatt-codec-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-016",
             "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
@@ -7172,6 +7158,17 @@
               "REQ-023"
             ],
             "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-011",
+            "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+            "target_ids": [
+              "REQ-028",
+              "FEAT-030",
+              "PAGE-006",
+              "FLOW-005"
+            ],
+            "source_file": "tests/target/unit/write-queue-target.test.mjs"
           }
         ]
       },
@@ -7185,10 +7182,10 @@
         "TEST-P-006"
       ],
       "implementation_refs": [
-        "apps/uniapp/pages/device/detail.vue"
+        "apps/uniapp/services/ble-runtime/write-queue.js"
       ],
-      "task_id": "RUNTIME-GATT-CODEC-001",
-      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
+      "root_cause_id": "RC-WRITE-QUEUE",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -7196,18 +7193,18 @@
       "state_id": "STATE-P006-02",
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › State suite › STATE-P006-02 连接中",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "状态\"连接中\""
       ],
-      "actual": "Fake Runtime E4 PASS only; product: device/detail 存在；GATT/OTA/重连断点导致产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC-001 DONE（HEX/TEXT/Read/Write Codec）；PAGE-006 剩余 write-queue / reconnect / OTA / session",
       "first_breakpoint": {
-        "target": "FEAT-028",
-        "test": "TEST-U-010",
-        "file": "apps/uniapp/pages/device/detail.vue",
-        "symbol": "validateHexInput/parseHexInput",
-        "breakpoint": "HEX write codec helpers missing"
+        "target": "FEAT-030",
+        "test": "TEST-U-011",
+        "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+        "symbol": "(missing)",
+        "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -7215,19 +7212,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-009",
-            "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-            "target_ids": [
-              "REQ-024",
-              "FEAT-026",
-              "PAGE-006",
-              "FLOW-005",
-              "REQ-026",
-              "FEAT-028"
-            ],
-            "source_file": "tests/target/unit/gatt-codec-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-016",
             "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
@@ -7253,6 +7237,17 @@
               "REQ-023"
             ],
             "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-011",
+            "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+            "target_ids": [
+              "REQ-028",
+              "FEAT-030",
+              "PAGE-006",
+              "FLOW-005"
+            ],
+            "source_file": "tests/target/unit/write-queue-target.test.mjs"
           }
         ]
       },
@@ -7266,10 +7261,10 @@
         "TEST-A-006"
       ],
       "implementation_refs": [
-        "apps/uniapp/pages/device/detail.vue"
+        "apps/uniapp/services/ble-runtime/write-queue.js"
       ],
-      "task_id": "RUNTIME-GATT-CODEC-001",
-      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
+      "root_cause_id": "RC-WRITE-QUEUE",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -7277,18 +7272,18 @@
       "state_id": "STATE-P006-03",
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › State suite › STATE-P006-03 服务加载中",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "树骨架/spinner"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: device/detail 存在；GATT/OTA/重连断点导致产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC-001 DONE（HEX/TEXT/Read/Write Codec）；PAGE-006 剩余 write-queue / reconnect / OTA / session",
       "first_breakpoint": {
-        "target": "FEAT-028",
-        "test": "TEST-U-010",
-        "file": "apps/uniapp/pages/device/detail.vue",
-        "symbol": "validateHexInput/parseHexInput",
-        "breakpoint": "HEX write codec helpers missing"
+        "target": "FEAT-030",
+        "test": "TEST-U-011",
+        "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+        "symbol": "(missing)",
+        "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -7296,19 +7291,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-009",
-            "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-            "target_ids": [
-              "REQ-024",
-              "FEAT-026",
-              "PAGE-006",
-              "FLOW-005",
-              "REQ-026",
-              "FEAT-028"
-            ],
-            "source_file": "tests/target/unit/gatt-codec-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-016",
             "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
@@ -7334,6 +7316,17 @@
               "REQ-023"
             ],
             "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-011",
+            "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+            "target_ids": [
+              "REQ-028",
+              "FEAT-030",
+              "PAGE-006",
+              "FLOW-005"
+            ],
+            "source_file": "tests/target/unit/write-queue-target.test.mjs"
           }
         ]
       },
@@ -7347,10 +7340,10 @@
         "TEST-A-006"
       ],
       "implementation_refs": [
-        "apps/uniapp/pages/device/detail.vue"
+        "apps/uniapp/services/ble-runtime/write-queue.js"
       ],
-      "task_id": "RUNTIME-GATT-CODEC-001",
-      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
+      "root_cause_id": "RC-WRITE-QUEUE",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -7358,19 +7351,19 @@
       "state_id": "STATE-P006-04",
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › State suite › STATE-P006-04 空服务",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "\"设备未暴露服务\"",
         "重试"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: device/detail 存在；GATT/OTA/重连断点导致产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC-001 DONE（HEX/TEXT/Read/Write Codec）；PAGE-006 剩余 write-queue / reconnect / OTA / session",
       "first_breakpoint": {
-        "target": "FEAT-028",
-        "test": "TEST-U-010",
-        "file": "apps/uniapp/pages/device/detail.vue",
-        "symbol": "validateHexInput/parseHexInput",
-        "breakpoint": "HEX write codec helpers missing"
+        "target": "FEAT-030",
+        "test": "TEST-U-011",
+        "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+        "symbol": "(missing)",
+        "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -7378,19 +7371,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-009",
-            "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-            "target_ids": [
-              "REQ-024",
-              "FEAT-026",
-              "PAGE-006",
-              "FLOW-005",
-              "REQ-026",
-              "FEAT-028"
-            ],
-            "source_file": "tests/target/unit/gatt-codec-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-016",
             "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
@@ -7416,6 +7396,17 @@
               "REQ-023"
             ],
             "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-011",
+            "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+            "target_ids": [
+              "REQ-028",
+              "FEAT-030",
+              "PAGE-006",
+              "FLOW-005"
+            ],
+            "source_file": "tests/target/unit/write-queue-target.test.mjs"
           }
         ]
       },
@@ -7429,10 +7420,10 @@
         "TEST-I-003"
       ],
       "implementation_refs": [
-        "apps/uniapp/pages/device/detail.vue"
+        "apps/uniapp/services/ble-runtime/write-queue.js"
       ],
-      "task_id": "RUNTIME-GATT-CODEC-001",
-      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
+      "root_cause_id": "RC-WRITE-QUEUE",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -7440,19 +7431,19 @@
       "state_id": "STATE-P006-05",
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › State suite › STATE-P006-05 连接失败",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "错误",
         "重试"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: device/detail 存在；GATT/OTA/重连断点导致产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC-001 DONE（HEX/TEXT/Read/Write Codec）；PAGE-006 剩余 write-queue / reconnect / OTA / session",
       "first_breakpoint": {
-        "target": "FEAT-028",
-        "test": "TEST-U-010",
-        "file": "apps/uniapp/pages/device/detail.vue",
-        "symbol": "validateHexInput/parseHexInput",
-        "breakpoint": "HEX write codec helpers missing"
+        "target": "FEAT-030",
+        "test": "TEST-U-011",
+        "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+        "symbol": "(missing)",
+        "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -7460,19 +7451,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-009",
-            "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-            "target_ids": [
-              "REQ-024",
-              "FEAT-026",
-              "PAGE-006",
-              "FLOW-005",
-              "REQ-026",
-              "FEAT-028"
-            ],
-            "source_file": "tests/target/unit/gatt-codec-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-016",
             "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
@@ -7498,6 +7476,17 @@
               "REQ-023"
             ],
             "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-011",
+            "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+            "target_ids": [
+              "REQ-028",
+              "FEAT-030",
+              "PAGE-006",
+              "FLOW-005"
+            ],
+            "source_file": "tests/target/unit/write-queue-target.test.mjs"
           }
         ]
       },
@@ -7511,10 +7500,10 @@
         "TEST-A-006"
       ],
       "implementation_refs": [
-        "apps/uniapp/pages/device/detail.vue"
+        "apps/uniapp/services/ble-runtime/write-queue.js"
       ],
-      "task_id": "RUNTIME-GATT-CODEC-001",
-      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
+      "root_cause_id": "RC-WRITE-QUEUE",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -7522,19 +7511,19 @@
       "state_id": "STATE-P006-06",
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › State suite › STATE-P006-06 已连接",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "完整树",
         "操作"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: device/detail 存在；GATT/OTA/重连断点导致产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC-001 DONE（HEX/TEXT/Read/Write Codec）；PAGE-006 剩余 write-queue / reconnect / OTA / session",
       "first_breakpoint": {
-        "target": "FEAT-028",
-        "test": "TEST-U-010",
-        "file": "apps/uniapp/pages/device/detail.vue",
-        "symbol": "validateHexInput/parseHexInput",
-        "breakpoint": "HEX write codec helpers missing"
+        "target": "FEAT-030",
+        "test": "TEST-U-011",
+        "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+        "symbol": "(missing)",
+        "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -7542,19 +7531,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-009",
-            "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-            "target_ids": [
-              "REQ-024",
-              "FEAT-026",
-              "PAGE-006",
-              "FLOW-005",
-              "REQ-026",
-              "FEAT-028"
-            ],
-            "source_file": "tests/target/unit/gatt-codec-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-016",
             "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
@@ -7580,6 +7556,17 @@
               "REQ-023"
             ],
             "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-011",
+            "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+            "target_ids": [
+              "REQ-028",
+              "FEAT-030",
+              "PAGE-006",
+              "FLOW-005"
+            ],
+            "source_file": "tests/target/unit/write-queue-target.test.mjs"
           }
         ]
       },
@@ -7595,10 +7582,10 @@
         "TEST-E-003"
       ],
       "implementation_refs": [
-        "apps/uniapp/pages/device/detail.vue"
+        "apps/uniapp/services/ble-runtime/write-queue.js"
       ],
-      "task_id": "RUNTIME-GATT-CODEC-001",
-      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
+      "root_cause_id": "RC-WRITE-QUEUE",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -7606,18 +7593,18 @@
       "state_id": "STATE-P006-07",
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › State suite › STATE-P006-07 重连中",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "\"重连中 n/3\""
       ],
-      "actual": "Fake Runtime E4 PASS only; product: device/detail 存在；GATT/OTA/重连断点导致产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC-001 DONE（HEX/TEXT/Read/Write Codec）；PAGE-006 剩余 write-queue / reconnect / OTA / session",
       "first_breakpoint": {
-        "target": "FEAT-028",
-        "test": "TEST-U-010",
-        "file": "apps/uniapp/pages/device/detail.vue",
-        "symbol": "validateHexInput/parseHexInput",
-        "breakpoint": "HEX write codec helpers missing"
+        "target": "FEAT-030",
+        "test": "TEST-U-011",
+        "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+        "symbol": "(missing)",
+        "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -7625,19 +7612,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-009",
-            "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-            "target_ids": [
-              "REQ-024",
-              "FEAT-026",
-              "PAGE-006",
-              "FLOW-005",
-              "REQ-026",
-              "FEAT-028"
-            ],
-            "source_file": "tests/target/unit/gatt-codec-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-016",
             "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
@@ -7663,6 +7637,17 @@
               "REQ-023"
             ],
             "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-011",
+            "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+            "target_ids": [
+              "REQ-028",
+              "FEAT-030",
+              "PAGE-006",
+              "FLOW-005"
+            ],
+            "source_file": "tests/target/unit/write-queue-target.test.mjs"
           }
         ]
       },
@@ -7676,10 +7661,10 @@
         "TEST-A-007"
       ],
       "implementation_refs": [
-        "apps/uniapp/pages/device/detail.vue"
+        "apps/uniapp/services/ble-runtime/write-queue.js"
       ],
-      "task_id": "RUNTIME-GATT-CODEC-001",
-      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
+      "root_cause_id": "RC-WRITE-QUEUE",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -7687,19 +7672,19 @@
       "state_id": "STATE-P006-08",
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › State suite › STATE-P006-08 重连耗尽",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "终态",
         "手动重试"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: device/detail 存在；GATT/OTA/重连断点导致产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC-001 DONE（HEX/TEXT/Read/Write Codec）；PAGE-006 剩余 write-queue / reconnect / OTA / session",
       "first_breakpoint": {
-        "target": "FEAT-028",
-        "test": "TEST-U-010",
-        "file": "apps/uniapp/pages/device/detail.vue",
-        "symbol": "validateHexInput/parseHexInput",
-        "breakpoint": "HEX write codec helpers missing"
+        "target": "FEAT-030",
+        "test": "TEST-U-011",
+        "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+        "symbol": "(missing)",
+        "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -7707,19 +7692,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-009",
-            "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-            "target_ids": [
-              "REQ-024",
-              "FEAT-026",
-              "PAGE-006",
-              "FLOW-005",
-              "REQ-026",
-              "FEAT-028"
-            ],
-            "source_file": "tests/target/unit/gatt-codec-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-016",
             "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
@@ -7745,6 +7717,17 @@
               "REQ-023"
             ],
             "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-011",
+            "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+            "target_ids": [
+              "REQ-028",
+              "FEAT-030",
+              "PAGE-006",
+              "FLOW-005"
+            ],
+            "source_file": "tests/target/unit/write-queue-target.test.mjs"
           }
         ]
       },
@@ -7758,10 +7741,10 @@
         "TEST-I-003"
       ],
       "implementation_refs": [
-        "apps/uniapp/pages/device/detail.vue"
+        "apps/uniapp/services/ble-runtime/write-queue.js"
       ],
-      "task_id": "RUNTIME-GATT-CODEC-001",
-      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
+      "root_cause_id": "RC-WRITE-QUEUE",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -7769,19 +7752,19 @@
       "state_id": "STATE-P006-09",
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › State suite › STATE-P006-09 操作失败",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "面板内错误",
         "该操作重试"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: device/detail 存在；GATT/OTA/重连断点导致产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC-001 DONE（HEX/TEXT/Read/Write Codec）；PAGE-006 剩余 write-queue / reconnect / OTA / session",
       "first_breakpoint": {
-        "target": "FEAT-028",
-        "test": "TEST-U-010",
-        "file": "apps/uniapp/pages/device/detail.vue",
-        "symbol": "validateHexInput/parseHexInput",
-        "breakpoint": "HEX write codec helpers missing"
+        "target": "FEAT-030",
+        "test": "TEST-U-011",
+        "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+        "symbol": "(missing)",
+        "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -7789,19 +7772,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-009",
-            "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-            "target_ids": [
-              "REQ-024",
-              "FEAT-026",
-              "PAGE-006",
-              "FLOW-005",
-              "REQ-026",
-              "FEAT-028"
-            ],
-            "source_file": "tests/target/unit/gatt-codec-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-016",
             "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
@@ -7827,6 +7797,17 @@
               "REQ-023"
             ],
             "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-011",
+            "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+            "target_ids": [
+              "REQ-028",
+              "FEAT-030",
+              "PAGE-006",
+              "FLOW-005"
+            ],
+            "source_file": "tests/target/unit/write-queue-target.test.mjs"
           }
         ]
       },
@@ -7840,10 +7821,10 @@
         "TEST-A-008"
       ],
       "implementation_refs": [
-        "apps/uniapp/pages/device/detail.vue"
+        "apps/uniapp/services/ble-runtime/write-queue.js"
       ],
-      "task_id": "RUNTIME-GATT-CODEC-001",
-      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
+      "root_cause_id": "RC-WRITE-QUEUE",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -7851,18 +7832,18 @@
       "state_id": "STATE-P006-10",
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › State suite › STATE-P006-10 OTA 组态",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "见 STATE-OTA-01..10（`07`）"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: device/detail 存在；GATT/OTA/重连断点导致产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC-001 DONE（HEX/TEXT/Read/Write Codec）；PAGE-006 剩余 write-queue / reconnect / OTA / session",
       "first_breakpoint": {
-        "target": "FEAT-028",
-        "test": "TEST-U-010",
-        "file": "apps/uniapp/pages/device/detail.vue",
-        "symbol": "validateHexInput/parseHexInput",
-        "breakpoint": "HEX write codec helpers missing"
+        "target": "FEAT-030",
+        "test": "TEST-U-011",
+        "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+        "symbol": "(missing)",
+        "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -7870,19 +7851,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-009",
-            "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-            "target_ids": [
-              "REQ-024",
-              "FEAT-026",
-              "PAGE-006",
-              "FLOW-005",
-              "REQ-026",
-              "FEAT-028"
-            ],
-            "source_file": "tests/target/unit/gatt-codec-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-016",
             "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
@@ -7908,6 +7876,17 @@
               "REQ-023"
             ],
             "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-011",
+            "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+            "target_ids": [
+              "REQ-028",
+              "FEAT-030",
+              "PAGE-006",
+              "FLOW-005"
+            ],
+            "source_file": "tests/target/unit/write-queue-target.test.mjs"
           }
         ]
       },
@@ -7921,10 +7900,10 @@
         "TEST-E-007"
       ],
       "implementation_refs": [
-        "apps/uniapp/pages/device/detail.vue"
+        "apps/uniapp/services/ble-runtime/write-queue.js"
       ],
-      "task_id": "RUNTIME-GATT-CODEC-001",
-      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
+      "root_cause_id": "RC-WRITE-QUEUE",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -7932,18 +7911,18 @@
       "state_id": null,
       "operation_id": "OP-P006-01",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-01 连接",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "服务面板 ready"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: device/detail 存在；GATT/OTA/重连断点导致产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC-001 DONE（HEX/TEXT/Read/Write Codec）；PAGE-006 剩余 write-queue / reconnect / OTA / session",
       "first_breakpoint": {
-        "target": "FEAT-028",
-        "test": "TEST-U-010",
-        "file": "apps/uniapp/pages/device/detail.vue",
-        "symbol": "validateHexInput/parseHexInput",
-        "breakpoint": "HEX write codec helpers missing"
+        "target": "FEAT-030",
+        "test": "TEST-U-011",
+        "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+        "symbol": "(missing)",
+        "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -7951,19 +7930,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-009",
-            "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-            "target_ids": [
-              "REQ-024",
-              "FEAT-026",
-              "PAGE-006",
-              "FLOW-005",
-              "REQ-026",
-              "FEAT-028"
-            ],
-            "source_file": "tests/target/unit/gatt-codec-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-016",
             "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
@@ -7989,6 +7955,17 @@
               "REQ-023"
             ],
             "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-011",
+            "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+            "target_ids": [
+              "REQ-028",
+              "FEAT-030",
+              "PAGE-006",
+              "FLOW-005"
+            ],
+            "source_file": "tests/target/unit/write-queue-target.test.mjs"
           }
         ]
       },
@@ -8004,10 +7981,10 @@
         "TEST-A-006"
       ],
       "implementation_refs": [
-        "apps/uniapp/pages/device/detail.vue"
+        "apps/uniapp/services/ble-runtime/write-queue.js"
       ],
-      "task_id": "RUNTIME-GATT-CODEC-001",
-      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
+      "root_cause_id": "RC-WRITE-QUEUE",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -8015,18 +7992,18 @@
       "state_id": null,
       "operation_id": "OP-P006-02",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-02 主动断开",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "状态=已断开，Registry 更新"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: device/detail 存在；GATT/OTA/重连断点导致产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC-001 DONE（HEX/TEXT/Read/Write Codec）；PAGE-006 剩余 write-queue / reconnect / OTA / session",
       "first_breakpoint": {
-        "target": "FEAT-028",
-        "test": "TEST-U-010",
-        "file": "apps/uniapp/pages/device/detail.vue",
-        "symbol": "validateHexInput/parseHexInput",
-        "breakpoint": "HEX write codec helpers missing"
+        "target": "FEAT-030",
+        "test": "TEST-U-011",
+        "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+        "symbol": "(missing)",
+        "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -8034,19 +8011,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-009",
-            "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-            "target_ids": [
-              "REQ-024",
-              "FEAT-026",
-              "PAGE-006",
-              "FLOW-005",
-              "REQ-026",
-              "FEAT-028"
-            ],
-            "source_file": "tests/target/unit/gatt-codec-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-016",
             "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
@@ -8072,6 +8036,17 @@
               "REQ-023"
             ],
             "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-011",
+            "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+            "target_ids": [
+              "REQ-028",
+              "FEAT-030",
+              "PAGE-006",
+              "FLOW-005"
+            ],
+            "source_file": "tests/target/unit/write-queue-target.test.mjs"
           }
         ]
       },
@@ -8087,10 +8062,10 @@
         "TEST-E-002"
       ],
       "implementation_refs": [
-        "apps/uniapp/pages/device/detail.vue"
+        "apps/uniapp/services/ble-runtime/write-queue.js"
       ],
-      "task_id": "RUNTIME-GATT-CODEC-001",
-      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
+      "root_cause_id": "RC-WRITE-QUEUE",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -8098,18 +8073,18 @@
       "state_id": null,
       "operation_id": "OP-P006-03",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-03 服务发现重试",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "ready"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: device/detail 存在；GATT/OTA/重连断点导致产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC-001 DONE（HEX/TEXT/Read/Write Codec）；PAGE-006 剩余 write-queue / reconnect / OTA / session",
       "first_breakpoint": {
-        "target": "FEAT-028",
-        "test": "TEST-U-010",
-        "file": "apps/uniapp/pages/device/detail.vue",
-        "symbol": "validateHexInput/parseHexInput",
-        "breakpoint": "HEX write codec helpers missing"
+        "target": "FEAT-030",
+        "test": "TEST-U-011",
+        "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+        "symbol": "(missing)",
+        "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -8117,19 +8092,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-009",
-            "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-            "target_ids": [
-              "REQ-024",
-              "FEAT-026",
-              "PAGE-006",
-              "FLOW-005",
-              "REQ-026",
-              "FEAT-028"
-            ],
-            "source_file": "tests/target/unit/gatt-codec-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-016",
             "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
@@ -8155,6 +8117,17 @@
               "REQ-023"
             ],
             "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-011",
+            "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+            "target_ids": [
+              "REQ-028",
+              "FEAT-030",
+              "PAGE-006",
+              "FLOW-005"
+            ],
+            "source_file": "tests/target/unit/write-queue-target.test.mjs"
           }
         ]
       },
@@ -8170,10 +8143,10 @@
         "TEST-E-005"
       ],
       "implementation_refs": [
-        "apps/uniapp/pages/device/detail.vue"
+        "apps/uniapp/services/ble-runtime/write-queue.js"
       ],
-      "task_id": "RUNTIME-GATT-CODEC-001",
-      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
+      "root_cause_id": "RC-WRITE-QUEUE",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -8181,18 +8154,18 @@
       "state_id": null,
       "operation_id": "OP-P006-04",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-04 Read",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "值展示+日志"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: device/detail 存在；GATT/OTA/重连断点导致产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC-001 DONE（HEX/TEXT/Read/Write Codec）；PAGE-006 剩余 write-queue / reconnect / OTA / session",
       "first_breakpoint": {
-        "target": "FEAT-028",
-        "test": "TEST-U-010",
-        "file": "apps/uniapp/pages/device/detail.vue",
-        "symbol": "validateHexInput/parseHexInput",
-        "breakpoint": "HEX write codec helpers missing"
+        "target": "FEAT-030",
+        "test": "TEST-U-011",
+        "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+        "symbol": "(missing)",
+        "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -8200,19 +8173,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-009",
-            "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-            "target_ids": [
-              "REQ-024",
-              "FEAT-026",
-              "PAGE-006",
-              "FLOW-005",
-              "REQ-026",
-              "FEAT-028"
-            ],
-            "source_file": "tests/target/unit/gatt-codec-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-016",
             "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
@@ -8238,6 +8198,17 @@
               "REQ-023"
             ],
             "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-011",
+            "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+            "target_ids": [
+              "REQ-028",
+              "FEAT-030",
+              "PAGE-006",
+              "FLOW-005"
+            ],
+            "source_file": "tests/target/unit/write-queue-target.test.mjs"
           }
         ]
       },
@@ -8253,10 +8224,10 @@
         "TEST-E-003"
       ],
       "implementation_refs": [
-        "apps/uniapp/pages/device/detail.vue"
+        "apps/uniapp/services/ble-runtime/write-queue.js"
       ],
-      "task_id": "RUNTIME-GATT-CODEC-001",
-      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
+      "root_cause_id": "RC-WRITE-QUEUE",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -8264,18 +8235,18 @@
       "state_id": null,
       "operation_id": "OP-P006-05",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-05 TEXT 写",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "设备响应+日志"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: device/detail 存在；GATT/OTA/重连断点导致产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC-001 DONE（HEX/TEXT/Read/Write Codec）；PAGE-006 剩余 write-queue / reconnect / OTA / session",
       "first_breakpoint": {
-        "target": "FEAT-028",
-        "test": "TEST-U-010",
-        "file": "apps/uniapp/pages/device/detail.vue",
-        "symbol": "validateHexInput/parseHexInput",
-        "breakpoint": "HEX write codec helpers missing"
+        "target": "FEAT-030",
+        "test": "TEST-U-011",
+        "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+        "symbol": "(missing)",
+        "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -8283,19 +8254,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-009",
-            "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-            "target_ids": [
-              "REQ-024",
-              "FEAT-026",
-              "PAGE-006",
-              "FLOW-005",
-              "REQ-026",
-              "FEAT-028"
-            ],
-            "source_file": "tests/target/unit/gatt-codec-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-016",
             "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
@@ -8321,6 +8279,17 @@
               "REQ-023"
             ],
             "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-011",
+            "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+            "target_ids": [
+              "REQ-028",
+              "FEAT-030",
+              "PAGE-006",
+              "FLOW-005"
+            ],
+            "source_file": "tests/target/unit/write-queue-target.test.mjs"
           }
         ]
       },
@@ -8336,10 +8305,10 @@
         "TEST-E-003"
       ],
       "implementation_refs": [
-        "apps/uniapp/pages/device/detail.vue"
+        "apps/uniapp/services/ble-runtime/write-queue.js"
       ],
-      "task_id": "RUNTIME-GATT-CODEC-001",
-      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
+      "root_cause_id": "RC-WRITE-QUEUE",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -8347,18 +8316,18 @@
       "state_id": null,
       "operation_id": "OP-P006-06",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-06 HEX 写",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "同上"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: device/detail 存在；GATT/OTA/重连断点导致产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC-001 DONE（HEX/TEXT/Read/Write Codec）；PAGE-006 剩余 write-queue / reconnect / OTA / session",
       "first_breakpoint": {
-        "target": "FEAT-028",
-        "test": "TEST-U-010",
-        "file": "apps/uniapp/pages/device/detail.vue",
-        "symbol": "validateHexInput/parseHexInput",
-        "breakpoint": "HEX write codec helpers missing"
+        "target": "FEAT-030",
+        "test": "TEST-U-011",
+        "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+        "symbol": "(missing)",
+        "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -8366,19 +8335,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-009",
-            "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-            "target_ids": [
-              "REQ-024",
-              "FEAT-026",
-              "PAGE-006",
-              "FLOW-005",
-              "REQ-026",
-              "FEAT-028"
-            ],
-            "source_file": "tests/target/unit/gatt-codec-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-016",
             "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
@@ -8404,6 +8360,17 @@
               "REQ-023"
             ],
             "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-011",
+            "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+            "target_ids": [
+              "REQ-028",
+              "FEAT-030",
+              "PAGE-006",
+              "FLOW-005"
+            ],
+            "source_file": "tests/target/unit/write-queue-target.test.mjs"
           }
         ]
       },
@@ -8419,10 +8386,10 @@
         "TEST-A-008"
       ],
       "implementation_refs": [
-        "apps/uniapp/pages/device/detail.vue"
+        "apps/uniapp/services/ble-runtime/write-queue.js"
       ],
-      "task_id": "RUNTIME-GATT-CODEC-001",
-      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
+      "root_cause_id": "RC-WRITE-QUEUE",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -8430,18 +8397,18 @@
       "state_id": null,
       "operation_id": "OP-P006-07",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-07 开启订阅（Characteristic Subscription，DEC-017）",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "推送流+日志；Registry subscription_count +1"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: device/detail 存在；GATT/OTA/重连断点导致产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC-001 DONE（HEX/TEXT/Read/Write Codec）；PAGE-006 剩余 write-queue / reconnect / OTA / session",
       "first_breakpoint": {
-        "target": "FEAT-028",
-        "test": "TEST-U-010",
-        "file": "apps/uniapp/pages/device/detail.vue",
-        "symbol": "validateHexInput/parseHexInput",
-        "breakpoint": "HEX write codec helpers missing"
+        "target": "FEAT-030",
+        "test": "TEST-U-011",
+        "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+        "symbol": "(missing)",
+        "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -8449,19 +8416,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-009",
-            "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-            "target_ids": [
-              "REQ-024",
-              "FEAT-026",
-              "PAGE-006",
-              "FLOW-005",
-              "REQ-026",
-              "FEAT-028"
-            ],
-            "source_file": "tests/target/unit/gatt-codec-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-016",
             "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
@@ -8487,6 +8441,17 @@
               "REQ-023"
             ],
             "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-011",
+            "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+            "target_ids": [
+              "REQ-028",
+              "FEAT-030",
+              "PAGE-006",
+              "FLOW-005"
+            ],
+            "source_file": "tests/target/unit/write-queue-target.test.mjs"
           }
         ]
       },
@@ -8504,10 +8469,10 @@
         "TEST-E-004"
       ],
       "implementation_refs": [
-        "apps/uniapp/pages/device/detail.vue"
+        "apps/uniapp/services/ble-runtime/write-queue.js"
       ],
-      "task_id": "RUNTIME-GATT-CODEC-001",
-      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
+      "root_cause_id": "RC-WRITE-QUEUE",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -8515,18 +8480,18 @@
       "state_id": null,
       "operation_id": "OP-P006-08",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-08 关闭订阅",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "推送停止；subscription_count −1"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: device/detail 存在；GATT/OTA/重连断点导致产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC-001 DONE（HEX/TEXT/Read/Write Codec）；PAGE-006 剩余 write-queue / reconnect / OTA / session",
       "first_breakpoint": {
-        "target": "FEAT-028",
-        "test": "TEST-U-010",
-        "file": "apps/uniapp/pages/device/detail.vue",
-        "symbol": "validateHexInput/parseHexInput",
-        "breakpoint": "HEX write codec helpers missing"
+        "target": "FEAT-030",
+        "test": "TEST-U-011",
+        "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+        "symbol": "(missing)",
+        "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -8534,19 +8499,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-009",
-            "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-            "target_ids": [
-              "REQ-024",
-              "FEAT-026",
-              "PAGE-006",
-              "FLOW-005",
-              "REQ-026",
-              "FEAT-028"
-            ],
-            "source_file": "tests/target/unit/gatt-codec-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-016",
             "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
@@ -8572,6 +8524,17 @@
               "REQ-023"
             ],
             "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-011",
+            "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+            "target_ids": [
+              "REQ-028",
+              "FEAT-030",
+              "PAGE-006",
+              "FLOW-005"
+            ],
+            "source_file": "tests/target/unit/write-queue-target.test.mjs"
           }
         ]
       },
@@ -8585,10 +8548,10 @@
         "TEST-I-005"
       ],
       "implementation_refs": [
-        "apps/uniapp/pages/device/detail.vue"
+        "apps/uniapp/services/ble-runtime/write-queue.js"
       ],
-      "task_id": "RUNTIME-GATT-CODEC-001",
-      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
+      "root_cause_id": "RC-WRITE-QUEUE",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -8596,18 +8559,18 @@
       "state_id": null,
       "operation_id": "OP-P006-10",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-10 清空日志",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "toast+面板清空"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: device/detail 存在；GATT/OTA/重连断点导致产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC-001 DONE（HEX/TEXT/Read/Write Codec）；PAGE-006 剩余 write-queue / reconnect / OTA / session",
       "first_breakpoint": {
-        "target": "FEAT-028",
-        "test": "TEST-U-010",
-        "file": "apps/uniapp/pages/device/detail.vue",
-        "symbol": "validateHexInput/parseHexInput",
-        "breakpoint": "HEX write codec helpers missing"
+        "target": "FEAT-030",
+        "test": "TEST-U-011",
+        "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+        "symbol": "(missing)",
+        "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -8615,19 +8578,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-009",
-            "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-            "target_ids": [
-              "REQ-024",
-              "FEAT-026",
-              "PAGE-006",
-              "FLOW-005",
-              "REQ-026",
-              "FEAT-028"
-            ],
-            "source_file": "tests/target/unit/gatt-codec-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-016",
             "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
@@ -8653,6 +8603,17 @@
               "REQ-023"
             ],
             "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-011",
+            "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+            "target_ids": [
+              "REQ-028",
+              "FEAT-030",
+              "PAGE-006",
+              "FLOW-005"
+            ],
+            "source_file": "tests/target/unit/write-queue-target.test.mjs"
           }
         ]
       },
@@ -8666,10 +8627,10 @@
         "TEST-P-006"
       ],
       "implementation_refs": [
-        "apps/uniapp/pages/device/detail.vue"
+        "apps/uniapp/services/ble-runtime/write-queue.js"
       ],
-      "task_id": "RUNTIME-GATT-CODEC-001",
-      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
+      "root_cause_id": "RC-WRITE-QUEUE",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -8677,18 +8638,18 @@
       "state_id": null,
       "operation_id": "OP-P006-11",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-11 导出日志",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "导出成功"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: device/detail 存在；GATT/OTA/重连断点导致产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC-001 DONE（HEX/TEXT/Read/Write Codec）；PAGE-006 剩余 write-queue / reconnect / OTA / session",
       "first_breakpoint": {
-        "target": "FEAT-028",
-        "test": "TEST-U-010",
-        "file": "apps/uniapp/pages/device/detail.vue",
-        "symbol": "validateHexInput/parseHexInput",
-        "breakpoint": "HEX write codec helpers missing"
+        "target": "FEAT-030",
+        "test": "TEST-U-011",
+        "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+        "symbol": "(missing)",
+        "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -8696,19 +8657,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-009",
-            "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-            "target_ids": [
-              "REQ-024",
-              "FEAT-026",
-              "PAGE-006",
-              "FLOW-005",
-              "REQ-026",
-              "FEAT-028"
-            ],
-            "source_file": "tests/target/unit/gatt-codec-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-016",
             "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
@@ -8734,6 +8682,17 @@
               "REQ-023"
             ],
             "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-011",
+            "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+            "target_ids": [
+              "REQ-028",
+              "FEAT-030",
+              "PAGE-006",
+              "FLOW-005"
+            ],
+            "source_file": "tests/target/unit/write-queue-target.test.mjs"
           }
         ]
       },
@@ -8749,10 +8708,10 @@
         "TEST-U-012"
       ],
       "implementation_refs": [
-        "apps/uniapp/pages/device/detail.vue"
+        "apps/uniapp/services/ble-runtime/write-queue.js"
       ],
-      "task_id": "RUNTIME-GATT-CODEC-001",
-      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
+      "root_cause_id": "RC-WRITE-QUEUE",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -8760,18 +8719,18 @@
       "state_id": null,
       "operation_id": "OP-P006-12",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-12 选择 OTA 固件包",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "显示 target/硬件/目标版本/SHA 摘要"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: device/detail 存在；GATT/OTA/重连断点导致产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC-001 DONE（HEX/TEXT/Read/Write Codec）；PAGE-006 剩余 write-queue / reconnect / OTA / session",
       "first_breakpoint": {
-        "target": "FEAT-028",
-        "test": "TEST-U-010",
-        "file": "apps/uniapp/pages/device/detail.vue",
-        "symbol": "validateHexInput/parseHexInput",
-        "breakpoint": "HEX write codec helpers missing"
+        "target": "FEAT-030",
+        "test": "TEST-U-011",
+        "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+        "symbol": "(missing)",
+        "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -8779,19 +8738,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-009",
-            "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-            "target_ids": [
-              "REQ-024",
-              "FEAT-026",
-              "PAGE-006",
-              "FLOW-005",
-              "REQ-026",
-              "FEAT-028"
-            ],
-            "source_file": "tests/target/unit/gatt-codec-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-016",
             "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
@@ -8817,6 +8763,17 @@
               "REQ-023"
             ],
             "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-011",
+            "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+            "target_ids": [
+              "REQ-028",
+              "FEAT-030",
+              "PAGE-006",
+              "FLOW-005"
+            ],
+            "source_file": "tests/target/unit/write-queue-target.test.mjs"
           }
         ]
       },
@@ -8836,10 +8793,10 @@
         "TEST-E-007"
       ],
       "implementation_refs": [
-        "apps/uniapp/pages/device/detail.vue"
+        "apps/uniapp/services/ble-runtime/write-queue.js"
       ],
-      "task_id": "RUNTIME-GATT-CODEC-001",
-      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
+      "root_cause_id": "RC-WRITE-QUEUE",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -8847,18 +8804,18 @@
       "state_id": null,
       "operation_id": "OP-P006-13",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-13 开始 OTA",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "进度→success→版本一致=成功"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: device/detail 存在；GATT/OTA/重连断点导致产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC-001 DONE（HEX/TEXT/Read/Write Codec）；PAGE-006 剩余 write-queue / reconnect / OTA / session",
       "first_breakpoint": {
-        "target": "FEAT-028",
-        "test": "TEST-U-010",
-        "file": "apps/uniapp/pages/device/detail.vue",
-        "symbol": "validateHexInput/parseHexInput",
-        "breakpoint": "HEX write codec helpers missing"
+        "target": "FEAT-030",
+        "test": "TEST-U-011",
+        "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+        "symbol": "(missing)",
+        "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -8866,19 +8823,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-009",
-            "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-            "target_ids": [
-              "REQ-024",
-              "FEAT-026",
-              "PAGE-006",
-              "FLOW-005",
-              "REQ-026",
-              "FEAT-028"
-            ],
-            "source_file": "tests/target/unit/gatt-codec-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-016",
             "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
@@ -8904,6 +8848,17 @@
               "REQ-023"
             ],
             "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-011",
+            "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+            "target_ids": [
+              "REQ-028",
+              "FEAT-030",
+              "PAGE-006",
+              "FLOW-005"
+            ],
+            "source_file": "tests/target/unit/write-queue-target.test.mjs"
           }
         ]
       },
@@ -8921,10 +8876,10 @@
         "TEST-E-007"
       ],
       "implementation_refs": [
-        "apps/uniapp/pages/device/detail.vue"
+        "apps/uniapp/services/ble-runtime/write-queue.js"
       ],
-      "task_id": "RUNTIME-GATT-CODEC-001",
-      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
+      "root_cause_id": "RC-WRITE-QUEUE",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -8932,18 +8887,18 @@
       "state_id": null,
       "operation_id": "OP-P006-14",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-14 取消 OTA",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "取消完成回就绪"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: device/detail 存在；GATT/OTA/重连断点导致产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC-001 DONE（HEX/TEXT/Read/Write Codec）；PAGE-006 剩余 write-queue / reconnect / OTA / session",
       "first_breakpoint": {
-        "target": "FEAT-028",
-        "test": "TEST-U-010",
-        "file": "apps/uniapp/pages/device/detail.vue",
-        "symbol": "validateHexInput/parseHexInput",
-        "breakpoint": "HEX write codec helpers missing"
+        "target": "FEAT-030",
+        "test": "TEST-U-011",
+        "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+        "symbol": "(missing)",
+        "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -8951,19 +8906,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-009",
-            "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-            "target_ids": [
-              "REQ-024",
-              "FEAT-026",
-              "PAGE-006",
-              "FLOW-005",
-              "REQ-026",
-              "FEAT-028"
-            ],
-            "source_file": "tests/target/unit/gatt-codec-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-016",
             "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
@@ -8989,6 +8931,17 @@
               "REQ-023"
             ],
             "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-011",
+            "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+            "target_ids": [
+              "REQ-028",
+              "FEAT-030",
+              "PAGE-006",
+              "FLOW-005"
+            ],
+            "source_file": "tests/target/unit/write-queue-target.test.mjs"
           }
         ]
       },
@@ -9002,10 +8955,10 @@
         "TEST-E-007"
       ],
       "implementation_refs": [
-        "apps/uniapp/pages/device/detail.vue"
+        "apps/uniapp/services/ble-runtime/write-queue.js"
       ],
-      "task_id": "RUNTIME-GATT-CODEC-001",
-      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
+      "root_cause_id": "RC-WRITE-QUEUE",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -9013,18 +8966,18 @@
       "state_id": null,
       "operation_id": "OP-P006-15",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-15 返回",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "—"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: device/detail 存在；GATT/OTA/重连断点导致产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC-001 DONE（HEX/TEXT/Read/Write Codec）；PAGE-006 剩余 write-queue / reconnect / OTA / session",
       "first_breakpoint": {
-        "target": "FEAT-028",
-        "test": "TEST-U-010",
-        "file": "apps/uniapp/pages/device/detail.vue",
-        "symbol": "validateHexInput/parseHexInput",
-        "breakpoint": "HEX write codec helpers missing"
+        "target": "FEAT-030",
+        "test": "TEST-U-011",
+        "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+        "symbol": "(missing)",
+        "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -9032,19 +8985,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-009",
-            "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-            "target_ids": [
-              "REQ-024",
-              "FEAT-026",
-              "PAGE-006",
-              "FLOW-005",
-              "REQ-026",
-              "FEAT-028"
-            ],
-            "source_file": "tests/target/unit/gatt-codec-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-016",
             "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
@@ -9070,6 +9010,17 @@
               "REQ-023"
             ],
             "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-011",
+            "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+            "target_ids": [
+              "REQ-028",
+              "FEAT-030",
+              "PAGE-006",
+              "FLOW-005"
+            ],
+            "source_file": "tests/target/unit/write-queue-target.test.mjs"
           }
         ]
       },
@@ -9083,10 +9034,10 @@
         "TEST-P-006"
       ],
       "implementation_refs": [
-        "apps/uniapp/pages/device/detail.vue"
+        "apps/uniapp/services/ble-runtime/write-queue.js"
       ],
-      "task_id": "RUNTIME-GATT-CODEC-001",
-      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
+      "root_cause_id": "RC-WRITE-QUEUE",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -9094,18 +9045,18 @@
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Contract / first screen：manifest + behavior 对齐",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: device/detail 存在；GATT/OTA/重连断点导致产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC-001 DONE（HEX/TEXT/Read/Write Codec）；PAGE-006 剩余 write-queue / reconnect / OTA / session",
       "first_breakpoint": {
-        "target": "FEAT-028",
-        "test": "TEST-U-010",
-        "file": "apps/uniapp/pages/device/detail.vue",
-        "symbol": "validateHexInput/parseHexInput",
-        "breakpoint": "HEX write codec helpers missing"
+        "target": "FEAT-030",
+        "test": "TEST-U-011",
+        "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+        "symbol": "(missing)",
+        "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -9113,19 +9064,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-009",
-            "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-            "target_ids": [
-              "REQ-024",
-              "FEAT-026",
-              "PAGE-006",
-              "FLOW-005",
-              "REQ-026",
-              "FEAT-028"
-            ],
-            "source_file": "tests/target/unit/gatt-codec-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-016",
             "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
@@ -9151,6 +9089,17 @@
               "REQ-023"
             ],
             "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-011",
+            "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+            "target_ids": [
+              "REQ-028",
+              "FEAT-030",
+              "PAGE-006",
+              "FLOW-005"
+            ],
+            "source_file": "tests/target/unit/write-queue-target.test.mjs"
           }
         ]
       },
@@ -9162,10 +9111,10 @@
         "TEST-P-PAGE-006"
       ],
       "implementation_refs": [
-        "apps/uniapp/pages/device/detail.vue"
+        "apps/uniapp/services/ble-runtime/write-queue.js"
       ],
-      "task_id": "RUNTIME-GATT-CODEC-001",
-      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
+      "root_cause_id": "RC-WRITE-QUEUE",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -9173,18 +9122,18 @@
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Error and recovery",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: device/detail 存在；GATT/OTA/重连断点导致产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC-001 DONE（HEX/TEXT/Read/Write Codec）；PAGE-006 剩余 write-queue / reconnect / OTA / session",
       "first_breakpoint": {
-        "target": "FEAT-028",
-        "test": "TEST-U-010",
-        "file": "apps/uniapp/pages/device/detail.vue",
-        "symbol": "validateHexInput/parseHexInput",
-        "breakpoint": "HEX write codec helpers missing"
+        "target": "FEAT-030",
+        "test": "TEST-U-011",
+        "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+        "symbol": "(missing)",
+        "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -9192,19 +9141,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-009",
-            "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-            "target_ids": [
-              "REQ-024",
-              "FEAT-026",
-              "PAGE-006",
-              "FLOW-005",
-              "REQ-026",
-              "FEAT-028"
-            ],
-            "source_file": "tests/target/unit/gatt-codec-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-016",
             "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
@@ -9230,6 +9166,17 @@
               "REQ-023"
             ],
             "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-011",
+            "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+            "target_ids": [
+              "REQ-028",
+              "FEAT-030",
+              "PAGE-006",
+              "FLOW-005"
+            ],
+            "source_file": "tests/target/unit/write-queue-target.test.mjs"
           }
         ]
       },
@@ -9241,10 +9188,10 @@
         "TEST-P-PAGE-006"
       ],
       "implementation_refs": [
-        "apps/uniapp/pages/device/detail.vue"
+        "apps/uniapp/services/ble-runtime/write-queue.js"
       ],
-      "task_id": "RUNTIME-GATT-CODEC-001",
-      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
+      "root_cause_id": "RC-WRITE-QUEUE",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -9252,18 +9199,18 @@
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Navigation and back",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: device/detail 存在；GATT/OTA/重连断点导致产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC-001 DONE（HEX/TEXT/Read/Write Codec）；PAGE-006 剩余 write-queue / reconnect / OTA / session",
       "first_breakpoint": {
-        "target": "FEAT-028",
-        "test": "TEST-U-010",
-        "file": "apps/uniapp/pages/device/detail.vue",
-        "symbol": "validateHexInput/parseHexInput",
-        "breakpoint": "HEX write codec helpers missing"
+        "target": "FEAT-030",
+        "test": "TEST-U-011",
+        "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+        "symbol": "(missing)",
+        "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -9271,19 +9218,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-009",
-            "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-            "target_ids": [
-              "REQ-024",
-              "FEAT-026",
-              "PAGE-006",
-              "FLOW-005",
-              "REQ-026",
-              "FEAT-028"
-            ],
-            "source_file": "tests/target/unit/gatt-codec-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-016",
             "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
@@ -9309,6 +9243,17 @@
               "REQ-023"
             ],
             "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-011",
+            "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+            "target_ids": [
+              "REQ-028",
+              "FEAT-030",
+              "PAGE-006",
+              "FLOW-005"
+            ],
+            "source_file": "tests/target/unit/write-queue-target.test.mjs"
           }
         ]
       },
@@ -9320,10 +9265,10 @@
         "TEST-P-PAGE-006"
       ],
       "implementation_refs": [
-        "apps/uniapp/pages/device/detail.vue"
+        "apps/uniapp/services/ble-runtime/write-queue.js"
       ],
-      "task_id": "RUNTIME-GATT-CODEC-001",
-      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
+      "root_cause_id": "RC-WRITE-QUEUE",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -9331,18 +9276,18 @@
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Platform degradation",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: device/detail 存在；GATT/OTA/重连断点导致产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC-001 DONE（HEX/TEXT/Read/Write Codec）；PAGE-006 剩余 write-queue / reconnect / OTA / session",
       "first_breakpoint": {
-        "target": "FEAT-028",
-        "test": "TEST-U-010",
-        "file": "apps/uniapp/pages/device/detail.vue",
-        "symbol": "validateHexInput/parseHexInput",
-        "breakpoint": "HEX write codec helpers missing"
+        "target": "FEAT-030",
+        "test": "TEST-U-011",
+        "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+        "symbol": "(missing)",
+        "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -9350,19 +9295,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-009",
-            "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-            "target_ids": [
-              "REQ-024",
-              "FEAT-026",
-              "PAGE-006",
-              "FLOW-005",
-              "REQ-026",
-              "FEAT-028"
-            ],
-            "source_file": "tests/target/unit/gatt-codec-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-016",
             "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
@@ -9388,6 +9320,17 @@
               "REQ-023"
             ],
             "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-011",
+            "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+            "target_ids": [
+              "REQ-028",
+              "FEAT-030",
+              "PAGE-006",
+              "FLOW-005"
+            ],
+            "source_file": "tests/target/unit/write-queue-target.test.mjs"
           }
         ]
       },
@@ -9399,10 +9342,10 @@
         "TEST-P-PAGE-006"
       ],
       "implementation_refs": [
-        "apps/uniapp/pages/device/detail.vue"
+        "apps/uniapp/services/ble-runtime/write-queue.js"
       ],
-      "task_id": "RUNTIME-GATT-CODEC-001",
-      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
+      "root_cause_id": "RC-WRITE-QUEUE",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -9410,18 +9353,18 @@
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Cleanup",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: device/detail 存在；GATT/OTA/重连断点导致产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC-001 DONE（HEX/TEXT/Read/Write Codec）；PAGE-006 剩余 write-queue / reconnect / OTA / session",
       "first_breakpoint": {
-        "target": "FEAT-028",
-        "test": "TEST-U-010",
-        "file": "apps/uniapp/pages/device/detail.vue",
-        "symbol": "validateHexInput/parseHexInput",
-        "breakpoint": "HEX write codec helpers missing"
+        "target": "FEAT-030",
+        "test": "TEST-U-011",
+        "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+        "symbol": "(missing)",
+        "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -9429,19 +9372,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-009",
-            "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-            "target_ids": [
-              "REQ-024",
-              "FEAT-026",
-              "PAGE-006",
-              "FLOW-005",
-              "REQ-026",
-              "FEAT-028"
-            ],
-            "source_file": "tests/target/unit/gatt-codec-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-016",
             "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
@@ -9467,6 +9397,17 @@
               "REQ-023"
             ],
             "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-011",
+            "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+            "target_ids": [
+              "REQ-028",
+              "FEAT-030",
+              "PAGE-006",
+              "FLOW-005"
+            ],
+            "source_file": "tests/target/unit/write-queue-target.test.mjs"
           }
         ]
       },
@@ -9478,10 +9419,10 @@
         "TEST-P-PAGE-006"
       ],
       "implementation_refs": [
-        "apps/uniapp/pages/device/detail.vue"
+        "apps/uniapp/services/ble-runtime/write-queue.js"
       ],
-      "task_id": "RUNTIME-GATT-CODEC-001",
-      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
+      "root_cause_id": "RC-WRITE-QUEUE",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -9489,18 +9430,18 @@
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Console and accessibility",
-      "status": "FAIL",
+      "status": "NOT_IMPLEMENTED",
       "e4_harness_status": "PASS",
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: device/detail 存在；GATT/OTA/重连断点导致产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC-001 DONE（HEX/TEXT/Read/Write Codec）；PAGE-006 剩余 write-queue / reconnect / OTA / session",
       "first_breakpoint": {
-        "target": "FEAT-028",
-        "test": "TEST-U-010",
-        "file": "apps/uniapp/pages/device/detail.vue",
-        "symbol": "validateHexInput/parseHexInput",
-        "breakpoint": "HEX write codec helpers missing"
+        "target": "FEAT-030",
+        "test": "TEST-U-011",
+        "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+        "symbol": "(missing)",
+        "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -9508,19 +9449,6 @@
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-009",
-            "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-            "target_ids": [
-              "REQ-024",
-              "FEAT-026",
-              "PAGE-006",
-              "FLOW-005",
-              "REQ-026",
-              "FEAT-028"
-            ],
-            "source_file": "tests/target/unit/gatt-codec-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-016",
             "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
@@ -9546,6 +9474,17 @@
               "REQ-023"
             ],
             "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-U-011",
+            "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+            "target_ids": [
+              "REQ-028",
+              "FEAT-030",
+              "PAGE-006",
+              "FLOW-005"
+            ],
+            "source_file": "tests/target/unit/write-queue-target.test.mjs"
           }
         ]
       },
@@ -9557,10 +9496,10 @@
         "TEST-P-PAGE-006"
       ],
       "implementation_refs": [
-        "apps/uniapp/pages/device/detail.vue"
+        "apps/uniapp/services/ble-runtime/write-queue.js"
       ],
-      "task_id": "RUNTIME-GATT-CODEC-001",
-      "root_cause_id": "RC-GATT-HEX",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
+      "root_cause_id": "RC-WRITE-QUEUE",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -13548,12 +13487,12 @@
     },
     {
       "page_id": "PAGE-006",
-      "target": "FEAT-028",
-      "test": "TEST-U-010",
-      "file": "apps/uniapp/pages/device/detail.vue",
-      "symbol": "validateHexInput/parseHexInput",
-      "breakpoint": "HEX write codec helpers missing",
-      "task_id": "RUNTIME-GATT-CODEC-001"
+      "target": "FEAT-030",
+      "test": "TEST-U-011",
+      "file": "apps/uniapp/services/ble-runtime/write-queue.js",
+      "symbol": "(missing)",
+      "breakpoint": "write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)",
+      "task_id": "RUNTIME-WRITE-QUEUE-001"
     },
     {
       "page_id": "PAGE-007",

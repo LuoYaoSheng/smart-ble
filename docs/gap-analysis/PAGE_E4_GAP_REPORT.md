@@ -6,12 +6,12 @@ gate: TP-G2-R2
 environment: READY_FOR_PAGE_E4
 fake_runtime: true
 live_app_url: false
-generated_at: 2026-09-01T11:41:31.597Z
+generated_at: 2026-09-01T11:55:01.102Z
 ```
 
 > **原则**：Playwright Fake Runtime harness PASS ≠ 产品实现满足目标。
 > 本报告在 E4 可执行前提下，用静态实现 + Current FAIL 证据给出产品 PASS/FAIL/BLOCKED/NOT_IMPLEMENTED。
-> 本轮 **Runtime filter + display-name 已落地**；未修改 PAGE Vue / ESP32 / OTA / Session / Log-redaction / GATT。
+> 本轮 **Runtime filter + display-name + GATT codec 已落地**；未修改 PAGE Vue / ESP32 / OTA / Session / Log-redaction / Write-queue。
 
 ## Summary
 
@@ -22,7 +22,7 @@ generated_at: 2026-09-01T11:41:31.597Z
 | PAGE-003 | PASS | 12 | 0 | 0 | 0 | — |
 | PAGE-004 | PASS | 14 | 0 | 0 | 0 | — |
 | PAGE-005 | PASS | 18 | 0 | 0 | 0 | — |
-| PAGE-006 | FAIL | 0 | 30 | 0 | 0 | RUNTIME-GATT-CODEC-001 |
+| PAGE-006 | FAIL | 0 | 0 | 0 | 30 | RUNTIME-WRITE-QUEUE-001 |
 | PAGE-007 | FAIL | 0 | 14 | 0 | 0 | RUNTIME-SESSION-001 |
 | PAGE-008 | FAIL | 0 | 23 | 2 | 0 | PAGE-BROADCAST-001 |
 | PAGE-009 | PASS | 20 | 0 | 0 | 0 | — |
@@ -34,16 +34,16 @@ generated_at: 2026-09-01T11:41:31.597Z
 | Status | Count |
 |---|---|
 | PASS | 132 |
-| FAIL | 67 |
+| FAIL | 37 |
 | BLOCKED | 2 |
-| NOT_IMPLEMENTED | 29 |
+| NOT_IMPLEMENTED | 59 |
 | Harness PASS | 230 |
 | Harness FAIL | 0 |
 
 ## Top First Breakpoints
 
 1. **PAGE-002** → `apps/uniapp/services/ble-runtime/log-redaction.js` `(missing)` — log-redaction module missing; HID provision path shares REQ-036/050 *(RUNTIME-LOG-REDACTION-001 / TEST-U-013 / FEAT-040)*
-2. **PAGE-006** → `apps/uniapp/pages/device/detail.vue` `validateHexInput/parseHexInput` — HEX write codec helpers missing *(RUNTIME-GATT-CODEC-001 / TEST-U-010 / FEAT-028)*
+2. **PAGE-006** → `apps/uniapp/services/ble-runtime/write-queue.js` `(missing)` — write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED) *(RUNTIME-WRITE-QUEUE-001 / TEST-U-011 / FEAT-030)*
 3. **PAGE-007** → `apps/uniapp/services/ble-runtime/index.js` `Registry` — no provisioning-session classify/exclude API for PAGE-007 list *(RUNTIME-SESSION-001 / TEST-I-009 / REQ-053)*
 4. **PAGE-008** → `apps/uniapp/pages/broadcast/index.vue` `(inline advertising)` — page does not use useBroadcastSession composable/owner *(PAGE-BROADCAST-001 / TEST-P-008 / FEAT-041)*
 
@@ -55,7 +55,7 @@ generated_at: 2026-09-01T11:41:31.597Z
   "hasWriteQueue": false,
   "hasReconnect": false,
   "hasDisplayName": true,
-  "hasValidateHex": false,
+  "hasValidateHex": true,
   "broadcastUsesComposable": false,
   "versionUsesModel": true,
   "landingFake": false,
@@ -172,29 +172,29 @@ generated_at: 2026-09-01T11:41:31.597Z
 - **Product**: FAIL
 - **Target**: `docs/target-product/pages|web` + behavior states=10 ops=14
 - **Actual (E4 harness)**: Fake Runtime PASS=30 FAIL=0
-- **Actual (product)**: device/detail 存在；GATT/OTA/重连断点导致产品 FAIL
-- **Case tallies**: PASS=0 FAIL=30 BLOCKED=0 NOT_IMPLEMENTED=0
-- **Root Cause**: RC-GATT-HEX
-- **Fix IDs**: RUNTIME-GATT-CODEC-001（页面失败若源自 Runtime，引用 RUNTIME_* 而非新建 PAGE_FIX）
+- **Actual (product)**: RUNTIME-GATT-CODEC-001 DONE（HEX/TEXT/Read/Write Codec）；PAGE-006 剩余 write-queue / reconnect / OTA / session
+- **Case tallies**: PASS=0 FAIL=0 BLOCKED=0 NOT_IMPLEMENTED=30
+- **Root Cause**: RC-WRITE-QUEUE
+- **Fix IDs**: RUNTIME-WRITE-QUEUE-001（页面失败若源自 Runtime，引用 RUNTIME_* 而非新建 PAGE_FIX）
 
-- **First Breakpoint**: `apps/uniapp/pages/device/detail.vue` / `validateHexInput/parseHexInput` — HEX write codec helpers missing
-- Target: FEAT-028 · Test: TEST-U-010
+- **First Breakpoint**: `apps/uniapp/services/ble-runtime/write-queue.js` / `(missing)` — write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)
+- Target: FEAT-030 · Test: TEST-U-011
 
 **Fail / Blocked samples**
-  - FAIL STATE-P006-01 → RUNTIME-GATT-CODEC-001
-  - FAIL STATE-P006-02 → RUNTIME-GATT-CODEC-001
-  - FAIL STATE-P006-03 → RUNTIME-GATT-CODEC-001
-  - FAIL STATE-P006-04 → RUNTIME-GATT-CODEC-001
-  - FAIL STATE-P006-05 → RUNTIME-GATT-CODEC-001
-  - FAIL STATE-P006-06 → RUNTIME-GATT-CODEC-001
-  - FAIL STATE-P006-07 → RUNTIME-GATT-CODEC-001
-  - FAIL STATE-P006-08 → RUNTIME-GATT-CODEC-001
+  - NOT_IMPLEMENTED STATE-P006-01 → RUNTIME-WRITE-QUEUE-001
+  - NOT_IMPLEMENTED STATE-P006-02 → RUNTIME-WRITE-QUEUE-001
+  - NOT_IMPLEMENTED STATE-P006-03 → RUNTIME-WRITE-QUEUE-001
+  - NOT_IMPLEMENTED STATE-P006-04 → RUNTIME-WRITE-QUEUE-001
+  - NOT_IMPLEMENTED STATE-P006-05 → RUNTIME-WRITE-QUEUE-001
+  - NOT_IMPLEMENTED STATE-P006-06 → RUNTIME-WRITE-QUEUE-001
+  - NOT_IMPLEMENTED STATE-P006-07 → RUNTIME-WRITE-QUEUE-001
+  - NOT_IMPLEMENTED STATE-P006-08 → RUNTIME-WRITE-QUEUE-001
 
 **Related**
-  - RUNTIME-WRITE-QUEUE-001: module missing (apps/uniapp/services/ble-runtime/write-queue.js)
   - RUNTIME-RECONNECT-001: module missing (apps/uniapp/services/ble-runtime/reconnect-policy.js)
   - OTA-CLIENT-001: CTRL start before DATA / validateOtaPackage (TEST-I-008) (apps/uniapp/utils/ota_manager.js)
   - RUNTIME-CONNECTION-DISCOVERY-001: TEST-I-003 asserts discover orchestration gap (semi-open risk) (apps/uniapp/services/ble-runtime/index.js)
+  - RUNTIME-SESSION-001: Notify/session lifecycle remaining after codec
 
 ### PAGE-007
 
@@ -307,7 +307,7 @@ generated_at: 2026-09-01T11:41:31.597Z
 
 | Bucket | Pages |
 |---|---|
-| Runtime | PAGE-002 (log-redaction/bridge), PAGE-006 (GATT/write-queue/reconnect/OTA/discovery), PAGE-007 (session)；PAGE-001 filter+display-name DONE |
+| Runtime | PAGE-002 (log-redaction/bridge), PAGE-006 (write-queue/reconnect/OTA；GATT codec DONE), PAGE-007 (session)；PAGE-001 filter+display-name DONE |
 | Page | PAGE-008 (broadcast composable owner) |
 | Testability | TEST-BRIDGE-TS-001（Smart HID TS） |
 | Metadata | PAGE-010 CLOSED |

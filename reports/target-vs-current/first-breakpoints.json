@@ -55,15 +55,6 @@
       "verification_status": "AUTOMATED_FAIL"
     },
     {
-      "target_id": "FEAT-026",
-      "severity": "P1",
-      "gap_kind": "RUNTIME",
-      "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-      "root_cause_id": "RC-GATT-HEX",
-      "task_id": "RUNTIME-GATT-CODEC-001",
-      "verification_status": "AUTOMATED_FAIL"
-    },
-    {
       "target_id": "FEAT-030",
       "severity": "P1",
       "gap_kind": "RUNTIME",
@@ -234,15 +225,6 @@
       "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
       "root_cause_id": "RC-RECONNECT",
       "task_id": "RUNTIME-RECONNECT-001",
-      "verification_status": "AUTOMATED_FAIL"
-    },
-    {
-      "target_id": "FEAT-026",
-      "severity": "P1",
-      "gap_kind": "RUNTIME",
-      "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-      "root_cause_id": "RC-GATT-HEX",
-      "task_id": "RUNTIME-GATT-CODEC-001",
       "verification_status": "AUTOMATED_FAIL"
     },
     {

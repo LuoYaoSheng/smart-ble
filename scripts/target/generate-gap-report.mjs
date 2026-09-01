@@ -273,7 +273,7 @@ const TASKS = [
   { task_id: 'RELEASE-PIPELINE-001', task_type: 'RELEASE', title: 'UniApp + Peripheral/Observer 双固件 Release Pipeline', root_cause_id: 'RC-RELEASE-PIPELINE', severity: 'P0', deps: ['VERSION-METADATA-001'], order_hint: 5 },
   { task_id: 'RUNTIME-DISPLAY-NAME-001', task_type: 'SOURCE_FIX', title: '实现 display-name 解析链', root_cause_id: 'RC-DISPLAY-NAME', severity: 'P1', deps: [], order_hint: 10, status: FACTS.hasDisplayName ? 'DONE' : 'PLANNED' },
   { task_id: 'RUNTIME-FILTER-001', task_type: 'SOURCE_FIX', title: 'device-filter 关键词命中项匹配对齐目标', root_cause_id: 'RC-DEVICE-FILTER', severity: 'P1', deps: [], order_hint: 11, status: filterHasKeywordMatch ? 'DONE' : 'PLANNED' },
-  { task_id: 'RUNTIME-GATT-CODEC-001', task_type: 'SOURCE_FIX', title: 'validateHexInput/parseHexInput', root_cause_id: 'RC-GATT-HEX', severity: 'P1', deps: [], order_hint: 12 },
+  { task_id: 'RUNTIME-GATT-CODEC-001', task_type: 'SOURCE_FIX', title: 'validateHexInput/parseHexInput', root_cause_id: 'RC-GATT-HEX', severity: 'P1', deps: [], order_hint: 12, status: exists('apps/uniapp/services/ble-runtime/gatt-codec.js') ? 'DONE' : 'PLANNED' },
   { task_id: 'RUNTIME-WRITE-QUEUE-001', task_type: 'SOURCE_FIX', title: 'write-queue MTU 分包队列', root_cause_id: 'RC-WRITE-QUEUE', severity: 'P1', deps: [], order_hint: 13 },
   { task_id: 'RUNTIME-LOG-REDACTION-001', task_type: 'SOURCE_FIX', title: 'log-redaction 脱敏', root_cause_id: 'RC-LOG-REDACTION', severity: 'P1', deps: [], order_hint: 14 },
   { task_id: 'RUNTIME-RECONNECT-001', task_type: 'SOURCE_FIX', title: 'reconnect-policy 有限重连', root_cause_id: 'RC-RECONNECT', severity: 'P1', deps: [], order_hint: 15 },

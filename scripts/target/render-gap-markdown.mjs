@@ -213,7 +213,7 @@ approved_by: user
 > 执行规则：依赖图不变；Wave/拓扑序；一次只批准一个 Task；完成后停下。
 > **PUBLIC-HONESTY / VERSION-METADATA / PAGE-VERSION / ENV-PLAYWRIGHT / TEST-PAGE-DRIVER = DONE**。
 > **TP-G2-R2**：页面 E4 产品差距已重算（PAGE_E4_GAP_REPORT.md）；页面失败优先挂 RUNTIME/OTA/ESP32 Task。
-> **RUNTIME-FILTER-001 = DONE**。下一 Task 由用户选择；**不得**自动执行 LOG-REDACTION / GATT / SESSION / RELEASE / ESP32 / OTA。
+> **RUNTIME-FILTER-001 / RUNTIME-DISPLAY-NAME-001 / RUNTIME-GATT-CODEC-001 = DONE**。下一 Task 由用户选择；**不得**自动执行 LOG-REDACTION / SESSION / WRITE-QUEUE / RELEASE / ESP32 / OTA。
 
 ## 推荐拓扑序
 

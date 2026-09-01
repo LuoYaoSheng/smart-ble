@@ -1,8 +1,8 @@
 {
   "gate": "TP-G2-R1",
   "schema_version": "2.0",
-  "generated_at": "2026-09-01T11:41:31.665Z",
-  "commit": "32678843e16092a11a37fe5a01643a1339ae75d1",
+  "generated_at": "2026-09-01T11:55:01.179Z",
+  "commit": "eec4937be6fd7f6c63140a40c6e3773fd594212e",
   "structured_current_path": ".tmp/tp-g2/logs/current-structured.json",
   "system": {
     "SYSTEM_PASS": 412,
@@ -13,17 +13,17 @@
     "TEST_INFRA_FAIL": 0
   },
   "current": {
-    "CURRENT_PASS": 298,
-    "CURRENT_FAIL": 19,
+    "CURRENT_PASS": 319,
+    "CURRENT_FAIL": 18,
     "TEST_INFRA_FAIL": 0,
-    "cases": 87,
+    "cases": 107,
     "layers": [
       {
         "name": "unit",
-        "pass": 43,
-        "fail": 7,
+        "pass": 64,
+        "fail": 6,
         "skipped": 0,
-        "case_count": 50,
+        "case_count": 70,
         "infra_fail": 0
       },
       {
@@ -238,8 +238,8 @@
   },
   "records_total": 647,
   "by_gap_kind": {
-    "PRODUCT": 275,
-    "RUNTIME": 36,
+    "PRODUCT": 277,
+    "RUNTIME": 34,
     "PAGE": 149,
     "TESTABILITY": 128,
     "FIRMWARE": 10,
@@ -248,41 +248,41 @@
     "RELEASE": 1
   },
   "by_implementation_status": {
-    "IMPLEMENTED_UNTESTED": 61,
+    "IMPLEMENTED_UNTESTED": 65,
     "UNASSESSED": 492,
-    "NOT_IMPLEMENTED": 29,
+    "NOT_IMPLEMENTED": 25,
     "CONFIRMED_PARTIAL": 39,
     "CONFIRMED_IMPLEMENTED": 22,
     "CONFIRMED_MISSING": 4
   },
   "by_verification_status": {
-    "AUTOMATED_PASS": 88,
+    "AUTOMATED_PASS": 92,
     "HARDWARE_PENDING": 58,
-    "AUTOMATED_FAIL": 65,
+    "AUTOMATED_FAIL": 61,
     "NOT_EXECUTED": 293,
     "EXECUTED": 139,
     "BLOCKED_BY_FIXTURE": 4
   },
   "by_severity": {
-    "null": 565,
-    "P1": 66,
+    "null": 569,
+    "P1": 62,
     "P0": 16
   },
   "unique_root_causes_by_severity": {
     "P0": 2,
-    "P1": 11,
+    "P1": 10,
     "P2": 0,
     "P3": 0
   },
   "affected_target_records_by_severity": {
     "P0": 16,
-    "P1": 66,
+    "P1": 62,
     "P2": 0,
     "P3": 0,
-    "null": 565
+    "null": 569
   },
   "product_vs_testability": {
-    "product_gaps_with_severity": 79,
+    "product_gaps_with_severity": 75,
     "testability_records": 128,
     "blocked_page_cases": 0,
     "note": "blocked_page_cases 不得计为产品缺陷数；Playwright 与 Page Driver 为独立 blocker"

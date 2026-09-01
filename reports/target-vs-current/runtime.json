@@ -159,80 +159,6 @@
       "release_blocking": true
     },
     {
-      "target_id": "FEAT-026",
-      "target_type": "feature",
-      "dimension": "feature",
-      "gap_kind": "RUNTIME",
-      "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "AUTOMATED_FAIL",
-      "static_implementation": null,
-      "e4_verification": null,
-      "e5_verification": null,
-      "severity": "P1",
-      "evidence_level": "E5",
-      "implementation_refs": [],
-      "test_ids": [
-        "TEST-U-009",
-        "TEST-A-006",
-        "TEST-E-003"
-      ],
-      "test_results": [
-        {
-          "test_id": "TEST-U-009",
-          "status": "FAIL",
-          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-009/010 目标层：utils/ble-utils.js + 属性约束目标接口",
-          "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失"
-        }
-      ],
-      "expected": "属性识别与操作约束 (Must)",
-      "actual": "NOT_IMPLEMENTED: [TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-      "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-      "downstream_impact": [],
-      "dependencies": [],
-      "root_cause_id": "RC-GATT-HEX",
-      "task_id": "RUNTIME-GATT-CODEC-001",
-      "release_blocking": true
-    },
-    {
-      "target_id": "FEAT-028",
-      "target_type": "feature",
-      "dimension": "feature",
-      "gap_kind": "RUNTIME",
-      "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "AUTOMATED_FAIL",
-      "static_implementation": null,
-      "e4_verification": null,
-      "e5_verification": null,
-      "severity": "P1",
-      "evidence_level": "E5",
-      "implementation_refs": [],
-      "test_ids": [
-        "TEST-U-010",
-        "TEST-I-004",
-        "TEST-A-008",
-        "TEST-E-003",
-        "TEST-U-009"
-      ],
-      "test_results": [
-        {
-          "test_id": "TEST-U-009",
-          "status": "FAIL",
-          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-009/010 目标层：utils/ble-utils.js + 属性约束目标接口",
-          "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失"
-        }
-      ],
-      "expected": "TEXT/HEX Write (Must)",
-      "actual": "NOT_IMPLEMENTED: [TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-      "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-      "downstream_impact": [],
-      "dependencies": [],
-      "root_cause_id": "RC-GATT-HEX",
-      "task_id": "RUNTIME-GATT-CODEC-001",
-      "release_blocking": true
-    },
-    {
       "target_id": "FEAT-030",
       "target_type": "feature",
       "dimension": "feature",
@@ -1248,6 +1174,132 @@
       ],
       "test_results": [
         {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-009/010 目标层：utils/ble-utils.js + 属性约束目标接口",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-01 HEX spaced AA BB CC",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-02 HEX colon AA:BB:CC",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-03 HEX lower aabbcc",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-04 HEX spaces only separators",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-05 HEX newlines",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-06 invalid character",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-07 odd length",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-08 empty",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-09 large payload",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-10 no mutation of input",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-11 TEXT utf8 plain",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-12 TEXT chinese",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-13 TEXT emoji",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-14 TEXT empty allowed",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-15 Read hex format",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-16 Read text format",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-17 Read auto format",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-18 invalid hex no BLE call",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-19 valid hex BLE call",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-20 text BLE call",
+          "first_breakpoint": null
+        },
+        {
           "test_id": "TEST-I-006",
           "status": "PASS",
           "case_id": "current:multi-device-target.test.mjs:目标层：双设备隔离与 Registry 快照",
@@ -1264,12 +1316,6 @@
           "status": "PASS",
           "case_id": "current:read-write-runtime-target.test.mjs:目标层：ble-runtime 读写与错误归一化",
           "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-009",
-          "status": "FAIL",
-          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-009/010 目标层：utils/ble-utils.js + 属性约束目标接口",
-          "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失"
         },
         {
           "test_id": "TEST-U-016",
@@ -1321,15 +1367,15 @@
         }
       ],
       "expected": "10 states / 14 operations",
-      "actual": "NOT_IMPLEMENTED: [TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-      "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
+      "actual": "NOT_IMPLEMENTED: [TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
+      "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
       "downstream_impact": [
         "state_cases=10",
         "operation_cases=14"
       ],
       "dependencies": [],
-      "root_cause_id": "RC-GATT-HEX",
-      "task_id": "RUNTIME-GATT-CODEC-001",
+      "root_cause_id": "RC-OTA-PACKAGE",
+      "task_id": "OTA-PACKAGE-001",
       "release_blocking": false
     },
     {
@@ -1952,6 +1998,132 @@
       ],
       "test_results": [
         {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-009/010 目标层：utils/ble-utils.js + 属性约束目标接口",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-01 HEX spaced AA BB CC",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-02 HEX colon AA:BB:CC",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-03 HEX lower aabbcc",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-04 HEX spaces only separators",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-05 HEX newlines",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-06 invalid character",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-07 odd length",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-08 empty",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-09 large payload",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-10 no mutation of input",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-11 TEXT utf8 plain",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-12 TEXT chinese",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-13 TEXT emoji",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-14 TEXT empty allowed",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-15 Read hex format",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-16 Read text format",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-17 Read auto format",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-18 invalid hex no BLE call",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-19 valid hex BLE call",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-009",
+          "status": "PASS",
+          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-20 text BLE call",
+          "first_breakpoint": null
+        },
+        {
           "test_id": "TEST-I-005",
           "status": "PASS",
           "case_id": "current:notify-routing-target.test.mjs:目标层：ble-runtime 订阅路由与 tuple 隔离",
@@ -1964,12 +2136,6 @@
           "first_breakpoint": null
         },
         {
-          "test_id": "TEST-U-009",
-          "status": "FAIL",
-          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-009/010 目标层：utils/ble-utils.js + 属性约束目标接口",
-          "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失"
-        },
-        {
           "test_id": "TEST-U-011",
           "status": "FAIL",
           "case_id": "current:write-queue-target.test.mjs:TEST-U-011 目标层：services/ble-runtime/write-queue.js",
@@ -1977,12 +2143,12 @@
         }
       ],
       "expected": "Read/Write/Notify",
-      "actual": "NOT_IMPLEMENTED: [TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
-      "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
+      "actual": "NOT_IMPLEMENTED: [TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
+      "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
       "downstream_impact": [],
       "dependencies": [],
-      "root_cause_id": "RC-GATT-HEX",
-      "task_id": "RUNTIME-GATT-CODEC-001",
+      "root_cause_id": "RC-WRITE-QUEUE",
+      "task_id": "RUNTIME-WRITE-QUEUE-001",
       "release_blocking": false
     },
     {
