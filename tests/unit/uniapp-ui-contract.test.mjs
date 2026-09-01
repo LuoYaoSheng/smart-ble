@@ -131,8 +131,10 @@ assert.match(productSource, /cute-meow-circle\.png/);
 assert.match(productSource, /baby-diary\.png/);
 
 const versionSource = fs.readFileSync(path.join(uniappRoot, 'pages/about/version.vue'), 'utf8');
-assert.equal((versionSource.match(/version:\s*'v\d+\.\d+\.\d+'/g) || []).length, 8, 'Version History must include the current release and all seven established releases');
-assert.match(versionSource, /version:\s*'v1\.0\.5'/);
+assert.match(versionSource, /getVersionPageModel/, 'Version page must project Release Metadata via getVersionPageModel');
+assert.equal(/\bversionHistory\b/.test(versionSource), false, 'Version History must not keep a hardcoded versionHistory array');
+assert.equal(/['"`]v?1\.0\.\d+['"`]/.test(versionSource), false, 'Version page must not hardcode product version literals');
+assert.match(versionSource, /暂无正式发布版本/);
 assert.equal(versionSource.includes('智能蓝牙助手'), false, 'Version History share title must use the current product identity');
 assert.match(versionSource, /BLE Toolkit\+/);
 

@@ -1,8 +1,12 @@
 // PAGE-010 版本记录 页面目标测试（TEST-P-010）
 // TP-G1-R2：逐 State / 逐 Operation 完整定义；Expected=page-behavior；Actual=Page Driver。
 // Driver 未实现 → BLOCKED_BY_TARGET_DRIVER；不得 PASS。
+// PAGE-VERSION-001：Metadata 投影静态约束（无 Playwright 时由 harness/unit 同等覆盖）。
 
 import { test, expect } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
   getManifestEntry,
   getBehaviorPage,
@@ -13,6 +17,17 @@ import {
 const PAGE_ID = 'PAGE-010';
 const entry = getManifestEntry(PAGE_ID);
 const behavior = getBehaviorPage(PAGE_ID);
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../../..');
+
+test.describe(`${PAGE_ID} 版本记录 · Metadata 投影静态约束（PAGE-VERSION-001）`, () => {
+  test('version.vue 消费 getVersionPageModel，无硬编码历史', () => {
+    const src = readFileSync(`${ROOT}/apps/uniapp/pages/about/version.vue`, 'utf8');
+    expect(src).toContain('getVersionPageModel');
+    expect(src).not.toMatch(/\bversionHistory\b/);
+    expect(src).not.toMatch(/['"`]v?1\.0\.\d+['"`]/
+    expect(src).toContain('暂无正式发布版本');
+  });
+});
 
 test.describe(`${PAGE_ID} 版本记录`, () => {
   test('Contract / first screen：manifest + behavior 对齐', async () => {

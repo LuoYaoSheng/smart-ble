@@ -60,16 +60,18 @@ import AppCard from '../../components/about/app-card.vue';
 import {
 	PRODUCT_FEATURES,
 	PRODUCT_INFO,
-	PRODUCT_PLATFORMS,
 	RELATED_MINI_PROGRAMS
 } from '../../config/product.js';
 import {
 	buildVersionString,
+	getPlatformPublicStatuses,
 	getProductVersion,
-	getReleaseMetadata
+	getReleaseMetadata,
+	getVersionPageModel
 } from '../../services/version-metadata.js';
 
 const release = getReleaseMetadata();
+const versionPage = getVersionPageModel(release);
 const metadataVersionLabel = buildVersionString({
 	version: getProductVersion(),
 	commit: release.commit,
@@ -78,9 +80,9 @@ const metadataVersionLabel = buildVersionString({
 
 const product = PRODUCT_INFO;
 const features = PRODUCT_FEATURES;
-const platforms = PRODUCT_PLATFORMS;
+const platforms = getPlatformPublicStatuses();
 const otherApps = RELATED_MINI_PROGRAMS;
-const overallStatus = release.overall_status || 'PREVIEW';
+const overallStatus = versionPage.current.status || release.overall_status || 'PREVIEW';
 const appVersion = ref(metadataVersionLabel);
 const systemInfo = ref({ platform: 'unknown', system: 'unknown', model: 'unknown' });
 const currentYear = new Date().getFullYear();

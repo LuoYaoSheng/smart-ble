@@ -104,13 +104,13 @@ if (/versionFallback/.test(aboutVue)) {
   fail('About 页仍依赖 versionFallback');
 }
 
-// PAGE-010 硬编码属 PAGE-VERSION-001，本检查明确不把它计为 VERSION-METADATA 完成条件
+// PAGE-010 硬编码属 PAGE-VERSION-001
 const versionPage = read('apps/uniapp/pages/about/version.vue');
-if (!/versionHistory/.test(versionPage)) {
-  // 若已改掉也不在本 Task 验收；仅记录信息
-  console.log('note: PAGE-010 versionHistory 状态由 PAGE-VERSION-001 负责，本轮不验收页面改写');
-} else {
-  console.log('note: PAGE-010 仍硬编码 versionHistory → PAGE-VERSION-001（本轮预期）');
+if (/\bversionHistory\b/.test(versionPage) || /['"`]v?1\.0\.\d+['"`]/.test(versionPage)) {
+  fail('PAGE-010 仍含硬编码 versionHistory 或字面量版本号（应由 PAGE-VERSION-001 消费 Metadata）');
+}
+if (!/getVersionPageModel/.test(versionPage)) {
+  fail('PAGE-010 未通过 getVersionPageModel 消费 Metadata');
 }
 
 // 排除域：不得误改

@@ -1,22 +1,8 @@
-import {
-  getCapabilityPublicStatuses,
-  getPlatformPublicStatuses,
-  getProductVersion,
-  getReleaseMetadata,
-} from '../services/version-metadata.js';
-
-const release = getReleaseMetadata();
-
 export const PRODUCT_INFO = {
   name: 'BLE Toolkit+',
   summary: '面向 UniApp、微信小程序与 ESP32 协同验证的 BLE 调试工具。',
   website: 'https://lightble.i2kai.com/',
   feedback: 'https://gitee.com/luoyaosheng/smart-ble/issues',
-  get version() {
-    return getProductVersion();
-  },
-  channel: release.channel,
-  overall_status: release.overall_status,
 };
 
 export const PRODUCT_FEATURES = [
@@ -27,11 +13,6 @@ export const PRODUCT_FEATURES = [
   '通知监听',
   '广播模式'
 ];
-
-/** 平台公开状态投影（来自 Release Metadata；不含硬编码 Windows/macOS/Linux） */
-export const PRODUCT_PLATFORMS = getPlatformPublicStatuses();
-
-export const PRODUCT_CAPABILITIES = getCapabilityPublicStatuses();
 
 export const RELATED_MINI_PROGRAMS = [
   {

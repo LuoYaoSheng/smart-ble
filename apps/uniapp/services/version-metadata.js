@@ -81,10 +81,113 @@ export function getCapabilityPublicStatuses() {
     });
 }
 
+function platformDisplayStatus(surface) {
+  if (!surface) return 'NOT_RELEASED';
+  if (surface.role === 'REFERENCE') return 'REFERENCE';
+  return surface.capability_status || surface.release_status || 'NOT_RELEASED';
+}
+
+/**
+ * PAGE-010 页面模型：纯函数，只消费 Release Metadata（可注入，便于测试）。
+ * @param {typeof RELEASE_METADATA | null | undefined} metadata
+ * @returns {{
+ *   current: {
+ *     version: string,
+ *     status: string,
+ *     channel: string,
+ *     channel_label: string,
+ *     platforms: Array<object>,
+ *     limitations: string[],
+ *     has_release_tag: boolean,
+ *     has_artifacts: boolean,
+ *     display_version: string,
+ *   },
+ *   history: { releases: Array<object>, previews: Array<object> },
+ * }}
+ */
+export function getVersionPageModel(metadata) {
+  const meta = metadata || RELEASE_METADATA || {};
+  const version = String(meta.app_version || '').trim();
+  const channel = String(meta.channel || 'preview').toLowerCase();
+  const status = String(meta.overall_status || 'PREVIEW');
+  const surfaces = meta.public_surfaces || {};
+  const platformOrder = ['android', 'wechat', 'h5', 'ios'];
+
+  const platforms = platformOrder
+    .filter((key) => surfaces[key])
+    .map((key) => {
+      const s = surfaces[key];
+      return {
+        key,
+        name: s.name,
+        role: s.role,
+        capability_status: s.capability_status,
+        release_status: s.release_status,
+        display_status: platformDisplayStatus(s),
+      };
+    });
+
+  const limitations = Array.isArray(meta.known_limitations)
+    ? meta.known_limitations.map((x) => String(x))
+    : [];
+
+  const artifacts = Array.isArray(meta.artifacts) ? meta.artifacts : [];
+  const hasArtifacts = artifacts.length > 0;
+  const hasReleaseTag = meta.release_tag != null && String(meta.release_tag).trim() !== '';
+
+  /** @type {Array<object>} */
+  const releases = [];
+  if (hasReleaseTag && hasArtifacts) {
+    releases.push({
+      version,
+      tag: meta.release_tag,
+      channel: 'release',
+      status: 'VERIFIED',
+      built_at: meta.built_at ?? null,
+      commit: meta.commit ?? null,
+      artifacts,
+    });
+  }
+
+  /** @type {Array<object>} */
+  const previews = [];
+  if (version && (channel === 'preview' || channel === 'dev')) {
+    previews.push({
+      version,
+      label: `${version} Preview`,
+      channel,
+      status,
+    });
+  }
+
+  return {
+    current: {
+      version,
+      status,
+      channel,
+      channel_label: channel === 'release' ? 'Release' : 'Preview',
+      platforms,
+      limitations,
+      has_release_tag: hasReleaseTag,
+      has_artifacts: hasArtifacts,
+      display_version: buildVersionString({
+        version,
+        commit: meta.commit,
+        channel,
+      }),
+    },
+    history: {
+      releases,
+      previews,
+    },
+  };
+}
+
 export default {
   getReleaseMetadata,
   getProductVersion,
   buildVersionString,
   getPlatformPublicStatuses,
   getCapabilityPublicStatuses,
+  getVersionPageModel,
 };
