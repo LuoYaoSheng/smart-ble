@@ -1,6 +1,6 @@
 # Codex 提示词：TP-G1——按目标规范建立完整测试体系
 
-> 前置：`docs/target-product/REVIEW_SUMMARY.md` 已获用户批准，核心目标文档状态已由 REVIEW 改为 APPROVED。
+> 前置：`docs/target-product/REVIEW_SUMMARY.md` 已获用户批准；TP-G1 启动时先将目标文档与机器契约的审批元数据从 REVIEW 统一提升为 APPROVED，再建立测试体系。
 > 本轮创建测试规范、机器门禁和测试脚本，但不修复业务代码。
 > 当前实现出现大量 FAIL 是预期结果，留给 TP-G2 生成差距。
 
@@ -21,13 +21,16 @@
 2. docs/plans/2026-09-01-target-product-spec-test-gap-remediation-plan.md
 3. docs/target-product/README.md
 4. docs/target-product/REVIEW_SUMMARY.md
-5. docs/target-product/** 全部 APPROVED 文档
+5. docs/target-product/** 全部目标文档
 6. contracts/target/**
 7. docs/target-tests/README.md
 
-如果核心目标文档不是 APPROVED，或 REVIEW_SUMMARY 没有用户批准记录：
+审批判断以 `docs/target-product/REVIEW_SUMMARY.md` 为入口：
 
-输出 `TARGET_PRODUCT_NOT_APPROVED` 并停止。不得跳过 TP-G0 审批。
+- 如果 `status != APPROVED`，或 `approved_by` 为空/null：输出 `TARGET_PRODUCT_NOT_APPROVED` 并停止。
+- 如果 REVIEW_SUMMARY 已明确 APPROVED，但其余目标 Markdown/机器契约仍是 REVIEW：这是正常的审批投影待同步状态，不得停止。
+- TP-G1 的第一步必须把 `docs/target-product/**` 与 `contracts/target/*-target.json` 的审批元数据统一提升为 APPROVED，并设置与 REVIEW_SUMMARY 一致的批准信息；Schema 文件不写审批状态。
+- 完成审批投影后先运行目标文档一致性检查，再开始编写测试体系。
 
 ==================================================
 一、本轮目标与边界

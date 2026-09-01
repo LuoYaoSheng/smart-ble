@@ -24,23 +24,23 @@ TP-G0 完整目标产品文档
 
 ---
 
-## 2. 当前立即执行：TP-G0
+## 2. 当前立即执行：TP-G1
 
-使用：
-
-```text
-2026-09-01-tp-g0-target-product-documentation-codex-prompt.md
-```
-
-输出：
+TP-G0-R1 已由用户批准。当前使用：
 
 ```text
-docs/target-product/**
-contracts/target/**
-docs/target-product/REVIEW_SUMMARY.md
+2026-09-01-tp-g1-target-test-system-codex-prompt.md
 ```
 
-TP-G0 只定义目标产品，不修改 App、Runtime、固件、测试脚本和生产落地页。
+TP-G1 启动时先把目标文档与机器契约的审批元数据统一投影为 APPROVED，然后创建：
+
+```text
+docs/target-tests/**
+scripts/target/**
+tests/target/**
+```
+
+TP-G1 只建立验证体系、运行当前实现的初始测试预览；不修改 App、Runtime、ESP32 固件和生产落地页，不烧写硬件，不进入 TP-G2。
 
 ---
 
