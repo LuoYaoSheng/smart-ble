@@ -1,17 +1,17 @@
-# Blocker 登记
+# Blocker 登记（TP-G2-R1）
 
 ```yaml
 status: REVIEW
-gate: TP-G2
+gate: TP-G2-R1
+content_hash: be493664f40cc23efd4418ab4df5f8cdba44cb398786586fd9d5ed5373c07074
 ```
 
-| ID | 类型 | 状态 | 说明 |
-|---|---|---|---|
-| BLK-TOOL-001 | TOOLCHAIN | OPEN | Playwright 未安装 → 页面 E4 BLOCKED_BY_TOOLCHAIN |
-| BLK-TOOL-002 | TOOLCHAIN | OPEN | PlatformIO 未安装 → ESP32 build NOT_EXECUTED |
-| BLK-TOOL-003 | TOOLCHAIN | OPEN | HBuilderX.app 默认路径未见 → UniApp 正式包可能阻断 |
-| BLK-HW-001 | FIXTURE | OPEN | `adb devices -l` 空列表 |
-| BLK-HW-002 | FIXTURE | OPEN | 无 ESP32 USB 串口（`/dev/tty.usb*` 未见） |
-| BLK-TEST-001 | TESTABILITY | OPEN | TARGET_PAGE_DRIVER 未实现（Actual API 抛 NOT_IMPLEMENTED） |
+| ID | 类型 | 状态 | 说明 | Task |
+|---|---|---|---|---|
+| BLK-TOOL-PLAYWRIGHT | TOOLCHAIN | OPEN | @playwright/test 未安装 → 页面 E4 BLOCKED_BY_TOOLCHAIN | ENV-PLAYWRIGHT-001 |
+| BLK-TEST-PAGE-DRIVER | TESTABILITY | OPEN | TARGET_PAGE_DRIVER 未实现 | TEST-PAGE-DRIVER-001 |
+| BLK-TOOL-PLATFORMIO | TOOLCHAIN | OPEN | PlatformIO 可能未安装 → ESP32 build NOT_EXECUTED（本轮禁止 upload） | ESP32-BUILD-001 |
+| BLK-HW-ANDROID | FIXTURE | OPEN | adb devices 可能为空 → HARDWARE_PENDING | VERIFY-ANDROID-001 |
+| BLK-HW-ESP32 | FIXTURE | OPEN | 无 ESP32 USB 串口 / Observer 夹具 → BLOCKED_BY_FIXTURE | VERIFY-ESP32-001 |
 
 本轮禁止：upload / adb install / 真机 BLE / 宣称 E5 PASS。

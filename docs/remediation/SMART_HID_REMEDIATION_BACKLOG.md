@@ -2,44 +2,38 @@
 
 ```yaml
 status: REVIEW
-gate: TP-G2
+gate: TP-G2-R1
+content_hash: be493664f40cc23efd4418ab4df5f8cdba44cb398786586fd9d5ed5373c07074
 ```
 
-> 本轮只规划，不执行。
+> 本轮只规划，不执行。task_type ∈ SOURCE_FIX | TESTABILITY | ENVIRONMENT | DOCUMENTATION | VERIFY_E5 | VERIFY_E6 | RELEASE
 
-### FIX-HID-001
+### TEST-BRIDGE-TS-001
 
-- 标题：smart-hid/profile.js ESM 可载（去 TS 语法）
-- gap_kind：SMART_HID
+- 标题：Node 测试桥支持 TS protocol import（Smart HID）
+- task_type：TESTABILITY
 - severity：P1
-- Target IDs（样本）：FEAT-053, FEAT-055, FEAT-056, FEAT-058, FEAT-059, REQ-047, REQ-048, REQ-049, REQ-052, REQ-054, REQ-065, TEST-U-015
-- Test IDs：TEST-U-015, TEST-H-001, TEST-W-010, TEST-C-007, TEST-P-002, TEST-H-002, TEST-H-003, TEST-P-004, TEST-H-004, TEST-I-009, TEST-P-003, TEST-U-012
-- First Breakpoint（样本）：SyntaxError: Unexpected identifier 'as'
-- 修改范围：仅 TP-G3 批准后按 FIX 描述修改对应模块
-- 禁止修改：APPROVED Target / 测试期望 / 本轮业务代码
+- root_cause_id：RC-TEST-BRIDGE-TS
+- Target IDs（样本）：FEAT-053, FEAT-058, REQ-047, REQ-049, REQ-054, FLOW-010
+- Test IDs：TEST-U-015, TEST-H-001, TEST-W-010, TEST-C-007, TEST-H-003, TEST-I-009, TEST-H-002
+- First Breakpoint：[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'
 - 依赖：无
-- 解锁：TEST-U-015
-- 风险：改动面可能影响多页面/协议；需对应 Current 回归
-- 自动化验收：相关 CURRENT_FAIL → PASS；System/Harness 保持 0 FAIL
-- E5/E6：硬件与发布证据另列 HARDWARE_PENDING / NOT_EXECUTED
-- 建议提交信息：`fix(smart_hid): smart-hid/profile.js ESM 可载（去 TS 语法）`
-- 排序理由：见 REMEDIATION_ORDER（依赖与 severity）
+- 解锁：VERIFY-SMART-HID-001
+- 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
+- 自动化验收：related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL
+- 建议提交信息：`testability(test-bridge-ts-001): Node 测试桥支持 TS protocol import（Smart HID）`
 
-### FIX-E5-001
+### VERIFY-SMART-HID-001
 
-- 标题：Android/微信/ESP32 E5 矩阵执行
-- gap_kind：TOOLCHAIN
-- severity：null
+- 标题：Smart HID E5 端到端
+- task_type：VERIFY_E5
+- severity：—
+- root_cause_id：—
 - Target IDs（样本）：见 JSON
 - Test IDs：—
-- First Breakpoint（样本）：—
-- 修改范围：仅 TP-G3 批准后按 FIX 描述修改对应模块
-- 禁止修改：APPROVED Target / 测试期望 / 本轮业务代码
-- 依赖：FIX-TEST-001
-- 解锁：E5 evidence
-- 风险：改动面可能影响多页面/协议；需对应 Current 回归
-- 自动化验收：相关 CURRENT_FAIL → PASS；System/Harness 保持 0 FAIL
-- E5/E6：硬件与发布证据另列 HARDWARE_PENDING / NOT_EXECUTED
-- 建议提交信息：`fix(toolchain): Android/微信/ESP32 E5 矩阵执行`
-- 排序理由：见 REMEDIATION_ORDER（依赖与 severity）
-
+- First Breakpoint：—
+- 依赖：TEST-BRIDGE-TS-001
+- 解锁：
+- 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
+- 自动化验收：related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL
+- 建议提交信息：`verify_e5(verify-smart-hid-001): Smart HID E5 端到端`

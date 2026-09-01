@@ -1,52 +1,71 @@
-# 修复顺序（TP-G2 · 未执行）
+# 修复顺序（TP-G2-R1 · 未执行）
 
 ```yaml
 status: REVIEW
-document_version: 1.0
+document_version: 2.0
+gate: TP-G2-R1
+content_hash: be493664f40cc23efd4418ab4df5f8cdba44cb398786586fd9d5ed5373c07074
 approved_by: null
 ```
 
-> 本文件只规划。**不得**在未经用户批准前执行任何 FIX / 进入 TP-G3。
+> 本文件只规划。**不得**在未经用户批准前执行任何 SOURCE_FIX / 进入 TP-G3。
 
-## 推荐顺序
+## 推荐拓扑序
 
-1. **FIX-TEST-001** — Target Page Driver 实现（sev=P1, gaps≈0, unlocks=E4 page automation）
-2. **FIX-TEST-002** — Playwright / H5 harness 工具链（sev=P2, gaps≈166, unlocks=page runtime execution）
-3. **FIX-LANDING-001** — 落地页假下载与多端大一统误导（sev=P0, gaps≈11, unlocks=honest download hub）
-4. **FIX-RELEASE-001** — Release Metadata / VERSION SSOT / UniApp 产物流水线（sev=P0, gaps≈4, unlocks=PAGE-009/010 WEB claims）
-5. **FIX-RUNTIME-001** — display-name 解析链模块（sev=P1, gaps≈2, unlocks=FEAT-013 PAGE-001）
-6. **FIX-RUNTIME-002** — HEX validateHexInput 整体拒绝（sev=P1, gaps≈2, unlocks=FEAT-028 PAGE-006）
-7. **FIX-RUNTIME-003** — log-redaction 脱敏（sev=P1, gaps≈4, unlocks=FEAT-040 SEC）
-8. **FIX-RUNTIME-004** — write-queue MTU 分包队列（sev=P1, gaps≈2, unlocks=FEAT-030 FLOW-005）
-9. **FIX-RUNTIME-005** — reconnect-policy 有限重连（sev=P1, gaps≈11, unlocks=FEAT-023/024）
-10. **FIX-RUNTIME-006** — Registry subscription_count + 配网会话分类（sev=P1, gaps≈6, unlocks=PAGE-007 DEC-017）
-11. **FIX-RUNTIME-007** — connectDevice 编排服务发现（sev=P1, gaps≈1, unlocks=FLOW-004 ERR-CONN-03）
-12. **FIX-RUNTIME-009** — public-status / version-metadata 服务（sev=P1, gaps≈2, unlocks=PAGE-009/010 WEB）
-13. **FIX-RUNTIME-008** — device-filter keyword 目标接口（sev=P2, gaps≈0, unlocks=FEAT-014 N/M）
-14. **FIX-FW-001** — ESP32 fixture_observer 固件（sev=P0, gaps≈7, unlocks=FLOW-008 E5 Observer）
-15. **FIX-PAGE-008** — 广播页改用 Owner/composable 非内联（sev=P1, gaps≈10, unlocks=PAGE-008 FEAT-041+）
-16. **FIX-FW-002** — ESP32 LED 指令表与广播名对齐（sev=P1, gaps≈0, unlocks=PROTO LED）
-17. **FIX-OTA-001** — OtaManager 写 CHAR_CTRL start/commit/abort（sev=P0, gaps≈15, unlocks=FLOW-009 OTA）
-18. **FIX-OTA-002** — validateOtaPackage 六项传输前校验（sev=P1, gaps≈2, unlocks=FEAT-081 DEC-016）
-19. **FIX-PAGE-010** — 版本页改为 Metadata 投影非硬编码（sev=P1, gaps≈4, unlocks=PAGE-010）
-20. **FIX-HID-001** — smart-hid/profile.js ESM 可载（去 TS 语法）（sev=P1, gaps≈12, unlocks=TEST-U-015）
-21. **FIX-E5-001** — Android/微信/ESP32 E5 矩阵执行（sev=null, gaps≈0, unlocks=E5 evidence）
-22. **FIX-E6-001** — Clean Machine / Release E6（sev=null, gaps≈28, unlocks=E6 claims）
+1. **TEST-CURRENT-INTEGRITY-001** — Current 度量完整性（TP-G1-R3 已完成）（type=TESTABILITY, sev=—, gaps≈0, status=DONE）
+2. **ENV-PLAYWRIGHT-001** — 安装并锁定 Playwright / H5 harness（type=ENVIRONMENT, sev=P2, gaps≈159, status=PLANNED）
+3. **TEST-PAGE-DRIVER-001** — 实现 Target Page Driver（type=TESTABILITY, sev=P2, gaps≈11, status=PLANNED）
+4. **PUBLIC-HONESTY-001** — 落地页立即诚实降级（假下载/6+/错误主线→PREVIEW/NOT_RELEASED）（type=SOURCE_FIX, sev=P0, gaps≈15, status=PLANNED）
+5. **VERSION-METADATA-001** — 根 VERSION + Release Metadata + Public Status（type=SOURCE_FIX, sev=P1, gaps≈9, status=PLANNED）
+6. **RELEASE-PIPELINE-001** — UniApp + Peripheral/Observer 双固件 Release Pipeline（type=RELEASE, sev=P0, gaps≈1, status=PLANNED）
+7. **RUNTIME-DISPLAY-NAME-001** — 实现 display-name 解析链（type=SOURCE_FIX, sev=P1, gaps≈2, status=PLANNED）
+8. **RUNTIME-FILTER-001** — device-filter 关键词命中项匹配对齐目标（type=SOURCE_FIX, sev=P1, gaps≈4, status=PLANNED）
+9. **RUNTIME-GATT-CODEC-001** — validateHexInput/parseHexInput（type=SOURCE_FIX, sev=P1, gaps≈6, status=PLANNED）
+10. **RUNTIME-WRITE-QUEUE-001** — write-queue MTU 分包队列（type=SOURCE_FIX, sev=P1, gaps≈2, status=PLANNED）
+11. **RUNTIME-LOG-REDACTION-001** — log-redaction 脱敏（type=SOURCE_FIX, sev=P1, gaps≈6, status=PLANNED）
+12. **RUNTIME-RECONNECT-001** — reconnect-policy 有限重连（type=SOURCE_FIX, sev=P1, gaps≈3, status=PLANNED）
+13. **RUNTIME-SESSION-001** — Registry subscription_count + 配网会话分类（type=SOURCE_FIX, sev=P1, gaps≈8, status=PLANNED）
+14. **RUNTIME-CONNECTION-DISCOVERY-001** — connectDevice 编排服务发现（type=SOURCE_FIX, sev=P1, gaps≈3, status=PLANNED）
+15. **OTA-PACKAGE-001** — 客户端 Firmware Package 六项校验（type=SOURCE_FIX, sev=P1, gaps≈4, status=PLANNED）
+16. **OTA-CLIENT-001** — 客户端完整 OTA 事务（CTRL start→ready→DATA→commit）（type=SOURCE_FIX, sev=P0, gaps≈14, status=PLANNED）
+17. **ESP32-BUILD-001** — 两环境、无固定 COM、模块化入口（type=SOURCE_FIX, sev=P1, gaps≈0, status=PLANNED）
+18. **OTA-FIRMWARE-001** — 固件 OTA op/target/hardware/SHA/max_chunk/commit 校验（type=SOURCE_FIX, sev=P1, gaps≈0, status=PLANNED）
+19. **ESP32-PERIPHERAL-001** — 服务/特征/名称/LED/Device Info 对齐契约（type=SOURCE_FIX, sev=P1, gaps≈0, status=PLANNED）
+20. **ESP32-OBSERVER-001** — 实现 fixture_observer（type=SOURCE_FIX, sev=P1, gaps≈12, status=PLANNED）
+21. **ESP32-FAULT-001** — Fault Injection + Serial JSON（type=SOURCE_FIX, sev=P1, gaps≈0, status=PLANNED）
+22. **PAGE-BROADCAST-001** — PAGE-008 改用 composable/adapter/service（type=SOURCE_FIX, sev=P1, gaps≈6, status=PLANNED）
+23. **PAGE-VERSION-001** — PAGE-010 改为 Metadata 投影（type=SOURCE_FIX, sev=P1, gaps≈5, status=PLANNED）
+24. **TEST-BRIDGE-TS-001** — Node 测试桥支持 TS protocol import（Smart HID）（type=TESTABILITY, sev=P1, gaps≈6, status=PLANNED）
+25. **VERIFY-ANDROID-001** — Android 真机矩阵（type=VERIFY_E5, sev=—, gaps≈0, status=PLANNED）
+26. **VERIFY-WECHAT-001** — 微信真机矩阵（type=VERIFY_E5, sev=—, gaps≈0, status=PLANNED）
+27. **VERIFY-ESP32-001** — ESP32 E5 夹具矩阵（type=VERIFY_E5, sev=—, gaps≈0, status=PLANNED）
+28. **VERIFY-SMART-HID-001** — Smart HID E5 端到端（type=VERIFY_E5, sev=—, gaps≈0, status=PLANNED）
+29. **VERIFY-E6-001** — Clean Machine / Release E6（type=VERIFY_E6, sev=—, gaps≈24, status=PLANNED）
 
 ## 依赖边
 
-- FIX-TEST-002 → FIX-TEST-001
-- FIX-RELEASE-001 → FIX-LANDING-001
-- FIX-RELEASE-001 → FIX-RUNTIME-009
-- FIX-RELEASE-001 → FIX-PAGE-010
-- FIX-RUNTIME-009 → FIX-PAGE-010
-- FIX-TEST-001 → FIX-E5-001
-- FIX-RELEASE-001 → FIX-E6-001
-- FIX-LANDING-001 → FIX-E6-001
+- ENV-PLAYWRIGHT-001 → TEST-PAGE-DRIVER-001
+- VERSION-METADATA-001 → RELEASE-PIPELINE-001
+- OTA-PACKAGE-001 → OTA-CLIENT-001
+- ESP32-BUILD-001 → OTA-FIRMWARE-001
+- ESP32-BUILD-001 → ESP32-PERIPHERAL-001
+- ESP32-BUILD-001 → ESP32-OBSERVER-001
+- ESP32-PERIPHERAL-001 → ESP32-FAULT-001
+- VERSION-METADATA-001 → PAGE-VERSION-001
+- TEST-PAGE-DRIVER-001 → VERIFY-ANDROID-001
+- OTA-CLIENT-001 → VERIFY-ANDROID-001
+- TEST-PAGE-DRIVER-001 → VERIFY-WECHAT-001
+- ESP32-OBSERVER-001 → VERIFY-ESP32-001
+- ESP32-FAULT-001 → VERIFY-ESP32-001
+- TEST-BRIDGE-TS-001 → VERIFY-SMART-HID-001
+- PUBLIC-HONESTY-001 → VERIFY-E6-001
+- RELEASE-PIPELINE-001 → VERIFY-E6-001
+- VERSION-METADATA-001 → VERIFY-E6-001
 
-## 首个建议批准 FIX 候选
+## 首批候选
 
-1. **FIX-TEST-002**（Playwright 工具链）— 解锁页面自动化执行统计，不改产品语义
-2. **FIX-LANDING-001** + **FIX-RELEASE-001** — P0 公开误导
-3. **FIX-OTA-001** — P0 协议断裂
-4. **FIX-FW-001** — P0 Observer 证据永久 BLOCKED 根因
+1. **ENV-PLAYWRIGHT-001** — 环境任务，解锁页面 E4 统计
+2. **TEST-PAGE-DRIVER-001** — 可测试性（依赖 Playwright）
+3. **PUBLIC-HONESTY-001** — P0 公开误导立即降级
+4. **VERSION-METADATA-001** — VERSION/Metadata（不循环依赖 Release）
+5. **OTA-CLIENT-001** — P0 协议断裂（依赖 OTA-PACKAGE-001）

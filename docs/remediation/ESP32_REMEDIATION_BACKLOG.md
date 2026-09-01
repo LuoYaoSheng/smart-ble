@@ -2,62 +2,83 @@
 
 ```yaml
 status: REVIEW
-gate: TP-G2
+gate: TP-G2-R1
+content_hash: be493664f40cc23efd4418ab4df5f8cdba44cb398786586fd9d5ed5373c07074
 ```
 
-> 本轮只规划，不执行。
+> 本轮只规划，不执行。task_type ∈ SOURCE_FIX | TESTABILITY | ENVIRONMENT | DOCUMENTATION | VERIFY_E5 | VERIFY_E6 | RELEASE
 
-### FIX-OTA-001
+### OTA-FIRMWARE-001
 
-- 标题：OtaManager 写 CHAR_CTRL start/commit/abort
-- gap_kind：RUNTIME
-- severity：P0
-- Target IDs（样本）：FEAT-046, FEAT-047, FEAT-048, FEAT-049, FEAT-050, FEAT-051, FEAT-052, REQ-043, REQ-044, REQ-045, REQ-046, OP-P006-12
-- Test IDs：TEST-P-006, TEST-A-011, TEST-E-007, TEST-R-003, TEST-I-008, TEST-U-016, TEST-I-010
-- First Breakpoint（样本）：OtaManager 未写 CHAR_CTRL start/commit
-- 修改范围：仅 TP-G3 批准后按 FIX 描述修改对应模块
-- 禁止修改：APPROVED Target / 测试期望 / 本轮业务代码
-- 依赖：无
-- 解锁：FLOW-009 OTA
-- 风险：改动面可能影响多页面/协议；需对应 Current 回归
-- 自动化验收：相关 CURRENT_FAIL → PASS；System/Harness 保持 0 FAIL
-- E5/E6：硬件与发布证据另列 HARDWARE_PENDING / NOT_EXECUTED
-- 建议提交信息：`fix(runtime): OtaManager 写 CHAR_CTRL start/commit/abort`
-- 排序理由：见 REMEDIATION_ORDER（依赖与 severity）
-
-### FIX-FW-001
-
-- 标题：ESP32 fixture_observer 固件
-- gap_kind：FIRMWARE
-- severity：P0
-- Target IDs（样本）：OP-P008-01, OP-P008-02, OP-P008-03, FLOW-008, 4fafc201-1fb5-459e-8fcc-c5c9c331914b, 4fafc201-1fb5-459e-8fcc-c5c9c331914c, 4fafc201-1fb5-459e-8fcc-c5c9c331914d
-- Test IDs：TEST-P-008, TEST-A-010, TEST-U-014, TEST-I-007, TEST-E-006, TEST-W-009
-- First Breakpoint（样本）：hardware/esp32 无 Observer 目标源码（证据闭环第一断点）；页面 Owner 见 FIX-PAGE-008
-- 修改范围：仅 TP-G3 批准后按 FIX 描述修改对应模块
-- 禁止修改：APPROVED Target / 测试期望 / 本轮业务代码
-- 依赖：无
-- 解锁：FLOW-008 E5 Observer
-- 风险：改动面可能影响多页面/协议；需对应 Current 回归
-- 自动化验收：相关 CURRENT_FAIL → PASS；System/Harness 保持 0 FAIL
-- E5/E6：硬件与发布证据另列 HARDWARE_PENDING / NOT_EXECUTED
-- 建议提交信息：`fix(firmware): ESP32 fixture_observer 固件`
-- 排序理由：见 REMEDIATION_ORDER（依赖与 severity）
-
-### FIX-FW-002
-
-- 标题：ESP32 LED 指令表与广播名对齐
-- gap_kind：FIRMWARE
+- 标题：固件 OTA op/target/hardware/SHA/max_chunk/commit 校验
+- task_type：SOURCE_FIX
 - severity：P1
+- root_cause_id：RC-ESP32-OTA-ACTION
 - Target IDs（样本）：见 JSON
 - Test IDs：—
-- First Breakpoint（样本）：—
-- 修改范围：仅 TP-G3 批准后按 FIX 描述修改对应模块
-- 禁止修改：APPROVED Target / 测试期望 / 本轮业务代码
-- 依赖：无
-- 解锁：PROTO LED
-- 风险：改动面可能影响多页面/协议；需对应 Current 回归
-- 自动化验收：相关 CURRENT_FAIL → PASS；System/Harness 保持 0 FAIL
-- E5/E6：硬件与发布证据另列 HARDWARE_PENDING / NOT_EXECUTED
-- 建议提交信息：`fix(firmware): ESP32 LED 指令表与广播名对齐`
-- 排序理由：见 REMEDIATION_ORDER（依赖与 severity）
+- First Breakpoint：—
+- 依赖：ESP32-BUILD-001
+- 解锁：
+- 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
+- 自动化验收：related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL
+- 建议提交信息：`source_fix(ota-firmware-001): 固件 OTA op/target/hardware/SHA/max_chunk/commit 校验`
 
+### ESP32-BUILD-001
+
+- 标题：两环境、无固定 COM、模块化入口
+- task_type：SOURCE_FIX
+- severity：P1
+- root_cause_id：RC-ESP32-BUILD
+- Target IDs（样本）：见 JSON
+- Test IDs：—
+- First Breakpoint：—
+- 依赖：无
+- 解锁：OTA-FIRMWARE-001, ESP32-PERIPHERAL-001, ESP32-OBSERVER-001
+- 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
+- 自动化验收：related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL
+- 建议提交信息：`source_fix(esp32-build-001): 两环境、无固定 COM、模块化入口`
+
+### ESP32-PERIPHERAL-001
+
+- 标题：服务/特征/名称/LED/Device Info 对齐契约
+- task_type：SOURCE_FIX
+- severity：P1
+- root_cause_id：RC-ESP32-LED-NAME
+- Target IDs（样本）：见 JSON
+- Test IDs：—
+- First Breakpoint：—
+- 依赖：ESP32-BUILD-001
+- 解锁：ESP32-FAULT-001
+- 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
+- 自动化验收：related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL
+- 建议提交信息：`source_fix(esp32-peripheral-001): 服务/特征/名称/LED/Device Info 对齐契约`
+
+### ESP32-OBSERVER-001
+
+- 标题：实现 fixture_observer
+- task_type：SOURCE_FIX
+- severity：P1
+- root_cause_id：RC-ESP32-OBSERVER
+- Target IDs（样本）：OP-P008-01, OP-P008-02, OP-P008-03, FLOW-008, PROTO-001, PROTO-002, PROTO-003, PROTO-004, PROTO-005, PROTO-009, PROTO-011, EVID-005
+- Test IDs：TEST-P-008, TEST-A-010, TEST-U-014, TEST-I-007, TEST-E-006, TEST-W-009, TEST-E-001
+- First Breakpoint：hardware/esp32 无 Observer 目标源码
+- 依赖：ESP32-BUILD-001
+- 解锁：VERIFY-ESP32-001
+- 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
+- 自动化验收：related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL
+- 建议提交信息：`source_fix(esp32-observer-001): 实现 fixture_observer`
+
+### ESP32-FAULT-001
+
+- 标题：Fault Injection + Serial JSON
+- task_type：SOURCE_FIX
+- severity：P1
+- root_cause_id：RC-ESP32-SERIAL
+- Target IDs（样本）：见 JSON
+- Test IDs：—
+- First Breakpoint：—
+- 依赖：ESP32-PERIPHERAL-001
+- 解锁：VERIFY-ESP32-001
+- 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
+- 自动化验收：related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL
+- 建议提交信息：`source_fix(esp32-fault-001): Fault Injection + Serial JSON`
