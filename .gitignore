@@ -66,3 +66,6 @@ apps/desktop/tauri/src-tauri/target/
 local.properties
 *.log
 apps/uniapp/unpackage/
+
+# TP-G2 local measurement artifacts
+.tmp/
