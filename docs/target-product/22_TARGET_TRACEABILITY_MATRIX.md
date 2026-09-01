@@ -110,6 +110,20 @@ supersedes: []
 
 注：TEST-A-013=性能/稳定性套件、TEST-A-014=发布安装烟测；TEST-H-007=Smart HID 错误矩阵补充（八类逐例已在 TEST-H-003，007 承接边界）、TEST-H-008=Smart HID 微信侧补充；TEST-C-014=决策默认方案一致性；TEST-U-016=OTA 固件包校验纯函数（FEAT-081/DEC-016）、TEST-I-010=错误包拒绝进入事务+V1 整事务重试、TEST-R-011=30 分钟 Clean Machine 端到端闭环（CLAIM-031）。TP-G1 将把上述计划 ID 展开为可执行规范，不得减少覆盖。
 
+## 3b. TP-G1 测试工件落地登记（2026-09-01，测试侧信息，不改目标内容）
+
+| 套件 | 工件 | 状态 |
+|---|---|---|
+| TEST-C ×14 | scripts/target/ 7 checker + tests/target/contract/ 39 用例 | 自动化已落地（含 9 类故意错误验证） |
+| TEST-U ×16 | tests/target/unit/ 15 文件 33 用例 | 自动化已落地（11 项目标差距 FAIL 入册） |
+| TEST-I ×10 | tests/target/integration/ 12 文件 27 用例 | 自动化已落地（2 项目标差距 FAIL 入册） |
+| TEST-P ×12 | pages.manifest.json + 11 Playwright 骨架 | manifest 断言落地；spec 待浏览器环境（BLOCKED） |
+| TEST-E ×8 | tests/target/firmware/ 静态前置 + hardware 模板 | 静态落地；真机待 TP-G4 |
+| TEST-A/W/H | hardware/ 5 执行模板 | 模板 |
+| TEST-R ×11 | tests/target/release/ 9 用例 + clean-install 模板 | 静态落地；E6 手工待发布 Gate |
+
+统一入口：`node scripts/verify-target.mjs`。映射单源：`contracts/target/test-traceability.json`（103 条）。
+
 ## 4. 覆盖率统计与孤立检查
 
 统计由 `scripts/target-docs/inspect-target-docs.mjs` 生成并校验（TP-G0-R1 起单源，禁止手写约数）。

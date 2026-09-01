@@ -1,0 +1,416 @@
+{
+  "schema_version": "1.0",
+  "generated_from": "contracts/target/pages-target.json",
+  "note": "TP-G1 页面目标数据 Fixture：E4 断言以本清单+pages-target 为准；Playwright spec 为可运行骨架。",
+  "pages": [
+    {
+      "id": "PAGE-001",
+      "route": "pages/index/index",
+      "type": "tab",
+      "states": [
+        "STATE-P001-01",
+        "STATE-P001-02",
+        "STATE-P001-03",
+        "STATE-P001-04",
+        "STATE-P001-05",
+        "STATE-P001-06",
+        "STATE-P001-07",
+        "STATE-P001-08",
+        "STATE-P001-09",
+        "STATE-P001-10"
+      ],
+      "operations": [
+        "OP-P001-01",
+        "OP-P001-02",
+        "OP-P001-03",
+        "OP-P001-04",
+        "OP-P001-05",
+        "OP-P001-06",
+        "OP-P001-07",
+        "OP-P001-08",
+        "OP-P001-09",
+        "OP-P001-10",
+        "OP-P001-11",
+        "OP-P001-13",
+        "OP-P001-14",
+        "OP-P001-15"
+      ],
+      "deprecated_operations": [
+        "OP-P001-12（历史紧凑-移除，TP-G0-R1 废弃：历史管理唯一归 PAGE-004）"
+      ],
+      "assertions": {
+        "first_screen": "PAGE-001 首屏渲染：扫描",
+        "empty_state": "扫描空态 S-01（未发现附近设备）与筛选空态 S-02（N/M 口径）分别呈现",
+        "error_states": "PAGE-001 错误态映射 07 号 ERR 表；恢复动作可达",
+        "loading": "PAGE-001 关键 Loading 态（扫描/连接/写/OTA）有进度反馈",
+        "platform_diff": "PAGE-001 平台差异按 08 号矩阵降级呈现",
+        "navigation": "PAGE-001 跳转 entry_from/exit_to 与 04 号路由契约一致",
+        "a11y": "PAGE-001 可达性：可焦点、有标签、对比度合规（17 号）",
+        "cta_reachability": "关键 CTA 2 击内可达：开始扫描（权限链路后 1 击内）",
+        "console_error": "PAGE-001 正常路径无 console error"
+      }
+    },
+    {
+      "id": "PAGE-002",
+      "route": "pages/hid/add",
+      "type": "secondary",
+      "states": [
+        "STATE-P002-01",
+        "STATE-P002-02",
+        "STATE-P002-03",
+        "STATE-P002-04",
+        "STATE-P002-05",
+        "STATE-P002-06",
+        "STATE-P002-07",
+        "STATE-P002-08",
+        "STATE-P002-09",
+        "STATE-P002-10",
+        "STATE-P002-11",
+        "STATE-P002-12"
+      ],
+      "operations": [
+        "OP-P002-01",
+        "OP-P002-02",
+        "OP-P002-03",
+        "OP-P002-04",
+        "OP-P002-05",
+        "OP-P002-06",
+        "OP-P002-07",
+        "OP-P002-08",
+        "OP-P002-09",
+        "OP-P002-10",
+        "OP-P002-11"
+      ],
+      "deprecated_operations": [],
+      "assertions": {
+        "first_screen": "PAGE-002 首屏渲染：Smart HID 配网",
+        "empty_state": "PAGE-002 空态呈现且不与错误态混淆",
+        "error_states": "PAGE-002 错误态映射 07 号 ERR 表；恢复动作可达",
+        "loading": "PAGE-002 关键 Loading 态（扫描/连接/写/OTA）有进度反馈",
+        "platform_diff": "PAGE-002 平台差异按 08 号矩阵降级呈现",
+        "navigation": "PAGE-002 跳转 entry_from/exit_to 与 04 号路由契约一致",
+        "a11y": "PAGE-002 可达性：可焦点、有标签、对比度合规（17 号）",
+        "cta_reachability": "关键 CTA 2 击内可达：开始配网（表单校验通过后 1 击）",
+        "console_error": "PAGE-002 正常路径无 console error"
+      }
+    },
+    {
+      "id": "PAGE-003",
+      "route": "pages/hid/detail",
+      "type": "secondary",
+      "states": [
+        "STATE-P003-01",
+        "STATE-P003-02"
+      ],
+      "operations": [
+        "OP-P003-01",
+        "OP-P003-02",
+        "OP-P003-03",
+        "OP-P003-04"
+      ],
+      "deprecated_operations": [],
+      "assertions": {
+        "first_screen": "PAGE-003 首屏渲染：Smart HID 详情",
+        "empty_state": "PAGE-003 空态呈现且不与错误态混淆",
+        "error_states": "PAGE-003 错误态映射 07 号 ERR 表；恢复动作可达",
+        "loading": "PAGE-003 关键 Loading 态（扫描/连接/写/OTA）有进度反馈",
+        "platform_diff": "PAGE-003 平台差异按 08 号矩阵降级呈现",
+        "navigation": "PAGE-003 跳转 entry_from/exit_to 与 04 号路由契约一致",
+        "a11y": "PAGE-003 可达性：可焦点、有标签、对比度合规（17 号）",
+        "cta_reachability": "关键 CTA 2 击内可达：重新配置/立即诊断（2 击内）",
+        "console_error": "PAGE-003 正常路径无 console error"
+      }
+    },
+    {
+      "id": "PAGE-004",
+      "route": "pages/hid/history",
+      "type": "secondary",
+      "states": [
+        "STATE-P004-01",
+        "STATE-P004-02",
+        "STATE-P004-03"
+      ],
+      "operations": [
+        "OP-P004-01",
+        "OP-P004-02",
+        "OP-P004-03",
+        "OP-P004-04",
+        "OP-P004-05"
+      ],
+      "deprecated_operations": [],
+      "assertions": {
+        "first_screen": "PAGE-004 首屏渲染：Smart HID 历史",
+        "empty_state": "PAGE-004 空态呈现且不与错误态混淆",
+        "error_states": "PAGE-004 错误态映射 07 号 ERR 表；恢复动作可达",
+        "loading": "PAGE-004 关键 Loading 态（扫描/连接/写/OTA）有进度反馈",
+        "platform_diff": "PAGE-004 平台差异按 08 号矩阵降级呈现",
+        "navigation": "PAGE-004 跳转 entry_from/exit_to 与 04 号路由契约一致",
+        "a11y": "PAGE-004 可达性：可焦点、有标签、对比度合规（17 号）",
+        "cta_reachability": "关键 CTA 2 击内可达：查看详情/移除（每行 2 击内）",
+        "console_error": "PAGE-004 正常路径无 console error"
+      }
+    },
+    {
+      "id": "PAGE-005",
+      "route": "pages/hid/diagnostics",
+      "type": "secondary",
+      "states": [
+        "STATE-P005-01",
+        "STATE-P005-02",
+        "STATE-P005-03",
+        "STATE-P005-04",
+        "STATE-P005-05",
+        "STATE-P005-06"
+      ],
+      "operations": [
+        "OP-P005-01",
+        "OP-P005-02",
+        "OP-P005-03",
+        "OP-P005-04",
+        "OP-P005-05",
+        "OP-P005-06"
+      ],
+      "deprecated_operations": [],
+      "assertions": {
+        "first_screen": "PAGE-005 首屏渲染：Smart HID 诊断",
+        "empty_state": "PAGE-005 空态呈现且不与错误态混淆",
+        "error_states": "PAGE-005 错误态映射 07 号 ERR 表；恢复动作可达",
+        "loading": "PAGE-005 关键 Loading 态（扫描/连接/写/OTA）有进度反馈",
+        "platform_diff": "PAGE-005 平台差异按 08 号矩阵降级呈现",
+        "navigation": "PAGE-005 跳转 entry_from/exit_to 与 04 号路由契约一致",
+        "a11y": "PAGE-005 可达性：可焦点、有标签、对比度合规（17 号）",
+        "cta_reachability": "关键 CTA 2 击内可达：重新检测（1 击）",
+        "console_error": "PAGE-005 正常路径无 console error"
+      }
+    },
+    {
+      "id": "PAGE-006",
+      "route": "pages/device/detail",
+      "type": "secondary",
+      "states": [
+        "STATE-P006-01",
+        "STATE-P006-02",
+        "STATE-P006-03",
+        "STATE-P006-04",
+        "STATE-P006-05",
+        "STATE-P006-06",
+        "STATE-P006-07",
+        "STATE-P006-08",
+        "STATE-P006-09",
+        "STATE-P006-10"
+      ],
+      "operations": [
+        "OP-P006-01",
+        "OP-P006-02",
+        "OP-P006-03",
+        "OP-P006-04",
+        "OP-P006-05",
+        "OP-P006-06",
+        "OP-P006-07",
+        "OP-P006-08",
+        "OP-P006-10",
+        "OP-P006-11",
+        "OP-P006-12",
+        "OP-P006-13",
+        "OP-P006-14",
+        "OP-P006-15"
+      ],
+      "deprecated_operations": [
+        "OP-P006-09（独立 Indicate 开关，TP-G0-R1 废弃：DEC-017 统一订阅语义，共用 OP-P006-07/08）"
+      ],
+      "assertions": {
+        "first_screen": "PAGE-006 首屏渲染：通用设备详情",
+        "empty_state": "PAGE-006 空态呈现且不与错误态混淆",
+        "error_states": "PAGE-006 错误态映射 07 号 ERR 表；恢复动作可达",
+        "loading": "PAGE-006 关键 Loading 态（扫描/连接/写/OTA）有进度反馈",
+        "platform_diff": "PAGE-006 平台差异按 08 号矩阵降级呈现",
+        "navigation": "PAGE-006 跳转 entry_from/exit_to 与 04 号路由契约一致",
+        "a11y": "PAGE-006 可达性：可焦点、有标签、对比度合规（17 号）",
+        "cta_reachability": "关键 CTA 2 击内可达：读取/写入/订阅（特征卡 2 击内）",
+        "console_error": "PAGE-006 正常路径无 console error"
+      }
+    },
+    {
+      "id": "PAGE-007",
+      "route": "pages/connected/index",
+      "type": "tab",
+      "states": [
+        "STATE-P007-01",
+        "STATE-P007-02",
+        "STATE-P007-03"
+      ],
+      "operations": [
+        "OP-P007-01",
+        "OP-P007-02",
+        "OP-P007-03",
+        "OP-P007-04",
+        "OP-P007-05"
+      ],
+      "deprecated_operations": [],
+      "assertions": {
+        "first_screen": "PAGE-007 首屏渲染：已连接",
+        "empty_state": "PAGE-007 空态呈现且不与错误态混淆",
+        "error_states": "PAGE-007 错误态映射 07 号 ERR 表；恢复动作可达",
+        "loading": "PAGE-007 关键 Loading 态（扫描/连接/写/OTA）有进度反馈",
+        "platform_diff": "PAGE-007 平台差异按 08 号矩阵降级呈现",
+        "navigation": "PAGE-007 跳转 entry_from/exit_to 与 04 号路由契约一致",
+        "a11y": "PAGE-007 可达性：可焦点、有标签、对比度合规（17 号）",
+        "cta_reachability": "关键 CTA 2 击内可达：断开（每卡 2 击内；全断 2 击内）",
+        "console_error": "PAGE-007 正常路径无 console error"
+      }
+    },
+    {
+      "id": "PAGE-008",
+      "route": "pages/broadcast/index",
+      "type": "tab",
+      "states": [
+        "STATE-P008-01",
+        "STATE-P008-02",
+        "STATE-P008-03",
+        "STATE-P008-04",
+        "STATE-P008-05",
+        "STATE-P008-06",
+        "STATE-P008-07",
+        "STATE-P008-08",
+        "STATE-P008-09",
+        "STATE-P008-10",
+        "STATE-P008-11",
+        "STATE-P008-12"
+      ],
+      "operations": [
+        "OP-P008-01",
+        "OP-P008-02",
+        "OP-P008-03",
+        "OP-P008-04",
+        "OP-P008-05",
+        "OP-P008-06",
+        "OP-P008-07"
+      ],
+      "deprecated_operations": [],
+      "assertions": {
+        "first_screen": "PAGE-008 首屏渲染：广播",
+        "empty_state": "PAGE-008 空态呈现且不与错误态混淆",
+        "error_states": "PAGE-008 错误态映射 07 号 ERR 表；恢复动作可达",
+        "loading": "PAGE-008 关键 Loading 态（扫描/连接/写/OTA）有进度反馈",
+        "platform_diff": "PAGE-008 平台差异按 08 号矩阵降级呈现",
+        "navigation": "PAGE-008 跳转 entry_from/exit_to 与 04 号路由契约一致",
+        "a11y": "PAGE-008 可达性：可焦点、有标签、对比度合规（17 号）",
+        "cta_reachability": "关键 CTA 2 击内可达：开始广播（预算 ≤31B 时 1 击）",
+        "console_error": "PAGE-008 正常路径无 console error"
+      }
+    },
+    {
+      "id": "PAGE-009",
+      "route": "pages/about/index",
+      "type": "tab",
+      "states": [
+        "STATE-P009-01",
+        "STATE-P009-02",
+        "STATE-P009-03"
+      ],
+      "operations": [
+        "OP-P009-01",
+        "OP-P009-02",
+        "OP-P009-03",
+        "OP-P009-04",
+        "OP-P009-05",
+        "OP-P009-06",
+        "OP-P009-07",
+        "OP-P009-08",
+        "OP-P009-09",
+        "OP-P009-10",
+        "OP-P009-11"
+      ],
+      "deprecated_operations": [],
+      "assertions": {
+        "first_screen": "PAGE-009 首屏渲染：关于",
+        "empty_state": "PAGE-009 空态呈现且不与错误态混淆",
+        "error_states": "PAGE-009 错误态映射 07 号 ERR 表；恢复动作可达",
+        "loading": "PAGE-009 关键 Loading 态（扫描/连接/写/OTA）有进度反馈",
+        "platform_diff": "PAGE-009 平台差异按 08 号矩阵降级呈现",
+        "navigation": "PAGE-009 跳转 entry_from/exit_to 与 04 号路由契约一致",
+        "a11y": "PAGE-009 可达性：可焦点、有标签、对比度合规（17 号）",
+        "cta_reachability": "关键 CTA 2 击内可达：分享/反馈（2 击内）",
+        "console_error": "PAGE-009 正常路径无 console error"
+      }
+    },
+    {
+      "id": "PAGE-010",
+      "route": "pages/about/version",
+      "type": "secondary",
+      "states": [
+        "STATE-P010-01",
+        "STATE-P010-02"
+      ],
+      "operations": [
+        "OP-P010-01",
+        "OP-P010-02",
+        "OP-P010-03",
+        "OP-P010-04"
+      ],
+      "deprecated_operations": [],
+      "assertions": {
+        "first_screen": "PAGE-010 首屏渲染：版本记录",
+        "empty_state": "PAGE-010 空态呈现且不与错误态混淆",
+        "error_states": "PAGE-010 错误态映射 07 号 ERR 表；恢复动作可达",
+        "loading": "PAGE-010 关键 Loading 态（扫描/连接/写/OTA）有进度反馈",
+        "platform_diff": "PAGE-010 平台差异按 08 号矩阵降级呈现",
+        "navigation": "PAGE-010 跳转 entry_from/exit_to 与 04 号路由契约一致",
+        "a11y": "PAGE-010 可达性：可焦点、有标签、对比度合规（17 号）",
+        "cta_reachability": "关键 CTA 2 击内可达：版本历史项查看（1 击）",
+        "console_error": "PAGE-010 正常路径无 console error"
+      }
+    },
+    {
+      "id": "WEB-001",
+      "route": "/",
+      "type": "web",
+      "states": [
+        "STATE-W001-01",
+        "STATE-W001-02",
+        "STATE-W001-03",
+        "STATE-W001-04"
+      ],
+      "operations": [
+        "OP-W001-01",
+        "OP-W001-02",
+        "OP-W001-03",
+        "OP-W001-04",
+        "OP-W001-05",
+        "OP-W001-06",
+        "OP-W001-07",
+        "OP-W001-08",
+        "OP-W001-09",
+        "OP-W001-10",
+        "OP-W001-11"
+      ],
+      "deprecated_operations": [],
+      "assertions": {
+        "first_screen": "WEB-001 首屏渲染：公开落地页",
+        "empty_state": "WEB-001 空态呈现且不与错误态混淆",
+        "error_states": "WEB-001 错误态映射 07 号 ERR 表；恢复动作可达",
+        "loading": "WEB-001 关键 Loading 态（扫描/连接/写/OTA）有进度反馈",
+        "platform_diff": "WEB-001 平台差异按 08 号矩阵降级呈现",
+        "navigation": "WEB-001 跳转 entry_from/exit_to 与 04 号路由契约一致",
+        "a11y": "WEB-001 可达性：可焦点、有标签、对比度合规（17 号）",
+        "cta_reachability": "关键 CTA 2 击内可达：下载/二维码/快速开始（Hero 2 击内）",
+        "console_error": "WEB-001 正常路径无 console error"
+      },
+      "web_extra": {
+        "viewport": [
+          "mobile",
+          "desktop"
+        ],
+        "theme": [
+          "light",
+          "dark"
+        ],
+        "seo": [
+          "canonical",
+          "og"
+        ],
+        "no_js": "核心内容无 JS 可读（降级规则）"
+      }
+    }
+  ]
+}
