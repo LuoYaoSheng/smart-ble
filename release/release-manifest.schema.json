@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://smart-ble.local/release/release-manifest.schema.json",
+  "title": "Smart BLE Release Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "channel",
+    "release_tag",
+    "app_version",
+    "app_build_code",
+    "commit",
+    "built_at",
+    "overall_status",
+    "artifacts",
+    "wechat_qr",
+    "public_surfaces",
+    "verified_capabilities",
+    "known_limitations",
+    "tested_devices",
+    "evidence_ids"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0" },
+    "channel": { "type": "string", "enum": ["preview", "dev", "release"] },
+    "release_tag": { "type": ["string", "null"] },
+    "app_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "app_build_code": { "type": "integer", "minimum": 1 },
+    "commit": { "type": ["string", "null"] },
+    "built_at": { "type": ["string", "null"] },
+    "overall_status": {
+      "type": "string",
+      "enum": ["VERIFIED", "PREVIEW", "BLOCKED", "UNSUPPORTED", "NOT_RELEASED"]
+    },
+    "artifacts": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/artifact" }
+    },
+    "wechat_qr": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "image"],
+      "properties": {
+        "status": { "type": "string", "enum": ["not_released", "published"] },
+        "image": { "type": ["string", "null"] }
+      }
+    },
+    "public_surfaces": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "android",
+        "wechat",
+        "h5",
+        "ios",
+        "flutter_tauri_native",
+        "peripheral",
+        "observer",
+        "ota",
+        "smart_hid"
+      ],
+      "properties": {
+        "android": { "$ref": "#/$defs/surface" },
+        "wechat": { "$ref": "#/$defs/surface" },
+        "h5": { "$ref": "#/$defs/surface" },
+        "ios": { "$ref": "#/$defs/surface" },
+        "flutter_tauri_native": { "$ref": "#/$defs/surface" },
+        "peripheral": { "$ref": "#/$defs/surface" },
+        "observer": { "$ref": "#/$defs/surface" },
+        "ota": { "$ref": "#/$defs/surface" },
+        "smart_hid": { "$ref": "#/$defs/surface" }
+      }
+    },
+    "verified_capabilities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["claim_id", "status", "evidence_ids"],
+        "properties": {
+          "claim_id": { "type": "string" },
+          "status": {
+            "type": "string",
+            "enum": ["VERIFIED", "PREVIEW", "BLOCKED", "UNSUPPORTED", "NOT_RELEASED"]
+          },
+          "evidence_ids": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    },
+    "known_limitations": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "tested_devices": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "evidence_ids": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "$defs": {
+    "publicStatus": {
+      "type": "string",
+      "enum": ["VERIFIED", "PREVIEW", "BLOCKED", "UNSUPPORTED", "NOT_RELEASED"]
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "version", "url", "sha256", "size"],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": ["apk", "firmware-peripheral", "firmware-observer"]
+        },
+        "version": { "type": "string" },
+        "url": { "type": "string", "minLength": 1 },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{64}$"
+        },
+        "size": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "surface": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "role", "capability_status", "release_status"],
+      "properties": {
+        "name": { "type": "string" },
+        "role": {
+          "type": "string",
+          "enum": ["mainline", "degradation", "future", "REFERENCE", "fixture", "capability"]
+        },
+        "capability_status": {
+          "oneOf": [
+            { "$ref": "#/$defs/publicStatus" },
+            { "type": "null" }
+          ]
+        },
+        "release_status": { "$ref": "#/$defs/publicStatus" },
+        "artifact": { "type": ["object", "null"] },
+        "qr": { "type": ["object", "null"] },
+        "reason": { "type": "string" }
+      }
+    }
+  }
+}

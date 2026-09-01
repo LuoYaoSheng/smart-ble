@@ -29,6 +29,11 @@ export function classifyFailure(message = '') {
       first_breakpoint: msg.replace(/^NOT_IMPLEMENTED:\s*/, '').slice(0, 160),
     };
   }
+  // assert.ok(existsSync(VERSION), '仓库根 VERSION 文件存在') 失败时 Node 复述正向断言文案；
+  // 规范第一断点应为「缺失」语义，避免报告出现反向失败消息。
+  if (/仓库根 VERSION 文件存在/.test(msg) && !/缺失/.test(msg)) {
+    return { kind: 'FAIL', first_breakpoint: '仓库根 VERSION 单源文件缺失' };
+  }
   return { kind: 'FAIL', first_breakpoint: msg.slice(0, 160) };
 }
 

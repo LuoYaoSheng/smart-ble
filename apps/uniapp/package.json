@@ -1,6 +1,6 @@
 {
   "name": "LightBLE",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "description": "BLE调试工具",
   "main": "main.js",
   "dependencies": {
