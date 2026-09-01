@@ -10,6 +10,7 @@ approved_by: user
 
 > 执行规则：依赖图不变；Wave/拓扑序；一次只批准一个 Task；完成后停下。
 > **PUBLIC-HONESTY / VERSION-METADATA / PAGE-VERSION / ENV-PLAYWRIGHT / TEST-PAGE-DRIVER = DONE**。
+> **TP-G2-R2**：页面 E4 产品差距已重算（`PAGE_E4_GAP_REPORT.md`）；页面失败优先挂 RUNTIME/OTA/ESP32 Task。
 > 下一 Task 由用户选择；**不得**自动执行 RELEASE-PIPELINE / RUNTIME / OTA / ESP32 / E5/E6。
 
 ## 推荐拓扑序
