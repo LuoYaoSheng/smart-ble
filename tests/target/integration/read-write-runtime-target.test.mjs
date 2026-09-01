@@ -12,17 +12,9 @@ const IDS = 'TEST-I-004 REQ-025~027 FEAT-027~030 FLOW-005 ERR-GATT';
 const SVC = '4fafc201-1fb5-459e-8fcc-c5c9c331914c';
 const CHR = 'beb5483e-36e1-4688-b7f5-ea07361b26b0';
 
-test('参照层：读失败静默返回 null（假成功）必须被抓', async () => {
-  const platform = createFakePlatform();
-  platform.__failNext.readBLECharacteristicValue = { errMsg: 'read:fail' };
-  const r = await new Promise((res) => platform.readBLECharacteristicValue({
-    deviceId: 'R1', serviceId: SVC, characteristicId: CHR,
-    fail: (e) => res({ err: e.errMsg }), success: () => res({ value: null }),
-  }));
-  assert.equal(r.err, 'read:fail', '参照环境注入读失败');
-  // 目标：必须 reject/抛错——静默 null 是假成功
-  assert.ok(r.err !== undefined, '读失败必须显式失败（不得静默 null）');
-});
+function normalizeUuid(u) {
+  return String(u || '').replace(/-/g, '').toLowerCase();
+}
 
 test('目标层：ble-runtime 读写与错误归一化', async (t) => {
   const m = await importTarget('apps/uniapp/services/ble-runtime/index.js');
@@ -38,7 +30,15 @@ test('目标层：ble-runtime 读写与错误归一化', async (t) => {
     await rt.writeValue(session, SVC, CHR, new Uint8Array([0xa1, 0xb2]));
     const writes = platform.__calls.filter((c) => c.m === 'write');
     assert.equal(writes.length, 1, '写值调用平台 write');
-    assert.ok(writes[0].args.cid.includes(CHR.slice(0, 8)) || true, '写入目标特征记录');
+    assert.equal(normalizeUuid(writes[0].args.cid), normalizeUuid(CHR), '写入目标特征记录');
+    assert.equal(writes[0].args.deviceId, 'RW1', '写入设备 ID');
+    if (writes[0].args.serviceId != null || writes[0].args.sid != null) {
+      assert.equal(
+        normalizeUuid(writes[0].args.serviceId ?? writes[0].args.sid),
+        normalizeUuid(SVC),
+        '写入服务 ID',
+      );
+    }
 
     // 写失败：必须抛错（不假成功）
     platform.failNext('writeBLECharacteristicValue', { errMsg: 'write:fail GATT error' });

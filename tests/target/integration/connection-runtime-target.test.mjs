@@ -9,14 +9,6 @@ import { createFakePlatform, callSequence } from '../lib/fake-runtime.mjs';
 
 const IDS = 'TEST-I-003 REQ-019/022/023 FEAT-020/023/024 10号§3.2';
 
-test('参照层：并发两连不合并（两次 createBLEConnection）必须被抓', async () => {
-  const platform = createFakePlatform();
-  const connect = (id) => new Promise((res) => platform.createBLEConnection({ deviceId: id, success: res, fail: res }));
-  await Promise.all([connect('C1'), connect('C1')]);
-  assert.equal(platform.__calls.filter((c) => c.m === 'connect').length, 2, '参照实现重复建连');
-  assert.ok(platform.__calls.filter((c) => c.m === 'connect').length > 1, '目标：同 deviceId 合并为单 attempt');
-});
-
 test('目标层：ble-runtime connectDevice 并发去重 + 主动断开', async (t) => {
   const m = await importTarget('apps/uniapp/services/ble-runtime/index.js');
   if (!m.ok) return assert.fail(notImplemented(IDS, m.message));

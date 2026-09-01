@@ -10,15 +10,6 @@ import { createFakePlatform } from '../lib/fake-runtime.mjs';
 
 const IDS = 'REQ-053 FEAT-062~064 PAGE-002/005/007 10号§3.3';
 
-test('参照层：READY 后仍持有连接（不释放）必须被抓', async () => {
-  const held = { connected: true };
-  const brokenReady = () => ({ status: 'ready' }); // 错误：READY 不释放
-  const r = brokenReady();
-  assert.equal(r.status, 'ready', '状态到达 ready');
-  assert.ok(held.connected, '参照实现仍持有连接');
-  assert.ok(held.connected === true, '目标：READY 后配网连接必须释放（10 号释放矩阵：释放（READY））');
-});
-
 test('目标层：配网会话与活动会话口径隔离', async (t) => {
   const rt = (await importTarget('apps/uniapp/services/ble-runtime/index.js')).module;
   if (!rt) return assert.fail(notImplemented(IDS, 'ble-runtime 缺失'));

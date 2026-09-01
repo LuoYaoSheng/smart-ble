@@ -9,15 +9,6 @@ import { importTarget, notImplemented } from '../lib/import-target.mjs';
 
 const IDS = 'TEST-I-007 REQ-040~042 FEAT-044/045 FLOW-008 S-41';
 
-// ---------- 参照层：活动连接在场仍允许开广播（违反 S-41） ----------
-function brokenBroadcastGuard(activeConnections, wantStart) {
-  return { allowed: wantStart }; // 错误：不检查活动连接
-}
-test('参照层：忽略活动连接保护必须被抓', () => {
-  const guardOk = (guard) => guard(new Set(['C1']), true).allowed === false; // 目标谓词：有活动连接时拒绝
-  assert.ok(!guardOk(brokenBroadcastGuard), '故意错误实现不满足目标守卫——谓词有效（S-41：有 N 台保持连接先断开才能广播）');
-});
-
 // ---------- 目标层：wx-peripheral 能力检查 + Owner 控制器 ----------
 test('目标层：services/wx-peripheral-mode.js 广播入口', async (t) => {
   const m = await importTarget('apps/uniapp/services/wx-peripheral-mode.js');

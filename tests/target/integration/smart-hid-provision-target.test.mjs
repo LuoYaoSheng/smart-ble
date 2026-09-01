@@ -13,17 +13,6 @@ const HID_SVC = '9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04';
 const CHR_INPUT = '9f1d1003-e73b-4c8f-9d2a-6f0b5e8a1c04';
 const CHR_STATUS = '9f1d1004-e73b-4c8f-9d2a-6f0b5e8a1c04';
 
-test('TEST-I-009 参照层：先写后等（错过 STATUS）必须被抓', async () => {
-  const order = [];
-  const brokenFlow = async () => {
-    order.push('write'); // 错误：先写 INPUT
-    order.push('wait');  // 再等 STATUS → 设备早已回包，永久超时
-  };
-  await brokenFlow();
-  assert.equal(order[0], 'write', '参照实现顺序错误');
-  assert.notEqual(order[0], 'wait', '目标：waiter 先注册，再写 INPUT（13 号红线）');
-});
-
 test('TEST-I-009 目标层：runProvisionTransaction 顺序（waiter 先注册）', async (t) => {
   const m = await importTarget('apps/uniapp/services/provisioning/orchestrator.js');
   if (!m.ok) return assert.fail(notImplemented(IDS, m.message));

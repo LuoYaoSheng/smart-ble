@@ -9,14 +9,6 @@ import { createFakePlatform } from '../lib/fake-runtime.mjs';
 
 const IDS = 'TEST-I-006 REQ-030~033 FEAT-033~036 10号§3.3';
 
-test('参照层：断开 A 误伤 B（共享状态）必须被抓', () => {
-  const shared = { listeners: [1, 2], reconnectTimer: 7 }; // 错误：两设备共享一份状态
-  const disconnectA = () => { shared.listeners = []; shared.reconnectTimer = null; };
-  disconnectA();
-  assert.equal(shared.listeners.length, 0, '参照实现清掉了共享监听');
-  assert.ok(shared.reconnectTimer === null, '目标：B 的重连计时器不得被 A 的断开波及');
-});
-
 test('目标层：双设备隔离与 Registry 快照', async (t) => {
   const m = await importTarget('apps/uniapp/services/ble-runtime/index.js');
   if (!m.ok) return assert.fail(notImplemented(IDS, m.message));

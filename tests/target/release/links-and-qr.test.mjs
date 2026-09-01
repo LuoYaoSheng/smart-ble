@@ -1,6 +1,6 @@
 // tests/target/release/links-and-qr.test.mjs
-// TEST-R-005（静态部分）：链接矩阵 —— 落地页与目标文档内外链健康（相对路径解析 + 死链检测）。
-// TEST-R-009（静态前置）：二维码资产规则（官方码 + 文本等价）。
+// TEST-R-005 TEST-R-009 CLAIM-020 CLAIM-021 WEB-001
+// 链接矩阵与二维码资产规则（官方码 + 文本等价）。
 
 import test from 'node:test';
 import assert from 'node:assert';
@@ -49,7 +49,8 @@ test('TEST-R-009 二维码规则：落地页如含码图必须同时给文本等
   const html = readFileSync(LANDING, 'utf8');
   const hasQrImage = /qr|二维码/i.test(html) && /(<img|\.png|\.svg)/i.test(html);
   if (!hasQrImage) {
-    assert.ok(true, '当前无码图（NOT_RELEASED 姿态合法）');
+    // 无码图：明确断言“未出现可点击的官方码下载 CTA”，而非 vacuous PASS
+    assert.equal(hasQrImage, false, '当前无码图（合法）；一旦出现码图必须伴随文本等价');
     return;
   }
   // 有码图时：同屏必须能找到等价文本链接（小程序码指向的页面地址或说明）

@@ -9,17 +9,6 @@ import { createFakePlatform, callSequence } from '../lib/fake-runtime.mjs';
 
 const IDS = 'TEST-I-002 REQ-010/011/033 FEAT-010~012/036 FLOW-002 DEC-013 STATE-GBL-06';
 
-// ---------- 参照层：无 generation 的假扫描会话（迟到事件混入） ----------
-test('TEST-I-002 参照层：迟到事件混入新一轮必须被识别', async () => {
-  const platform = createFakePlatform();
-  const seen = [];
-  platform.onBluetoothDeviceFound((res) => seen.push(...res.devices)); // 无 generation 保护
-  platform.emitFound({ deviceId: 'L1', name: '第一轮' });
-  platform.emitFound({ deviceId: 'L2', name: '迟到-第一轮' }); // 第二轮开始后到达
-  assert.equal(seen.length, 2, '参照实现两轮混叠');
-  assert.ok(seen.some((d) => d.name.startsWith('迟到')), '迟到设备混入——目标必须丢弃');
-});
-
 // ---------- 目标层：真实 ble-runtime（平台注入 FakePlatform） ----------
 test('TEST-I-002 目标层：ble-runtime/index.js 扫描生命周期', async (t) => {
   const m = await importTarget('apps/uniapp/services/ble-runtime/index.js');

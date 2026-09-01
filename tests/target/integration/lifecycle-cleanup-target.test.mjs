@@ -9,20 +9,6 @@ import { createFakePlatform } from '../lib/fake-runtime.mjs';
 
 const IDS = 'TEST-I-001 REQ-003/033 FEAT-003/036 10号§4';
 
-test('参照层：停止后计时器仍触发（泄漏）必须被抓', async () => {
-  let fired = 0;
-  const timer = setTimeout(() => fired++, 20); // 错误：stop 未 clear
-  await new Promise((r) => setTimeout(r, 5));
-  clearTimeout(timer); // 目标动作：stop 时应清理
-  await new Promise((r) => setTimeout(r, 25));
-  assert.equal(fired, 0, '清理后不再触发（目标语义）');
-  // 反向证明：不清理则必触发
-  let fired2 = 0;
-  setTimeout(() => fired2++, 15);
-  await new Promise((r) => setTimeout(r, 30));
-  assert.equal(fired2, 1, '未清理计时器必然触发——泄漏可被观测');
-});
-
 test('目标层：扫描停止后运行时无残留监听/会话', async (t) => {
   const m = await importTarget('apps/uniapp/services/ble-runtime/index.js');
   if (!m.ok) return assert.fail(notImplemented(IDS, m.message));

@@ -1,6 +1,6 @@
 // tests/target/firmware/fixture-contract.test.mjs
-// TEST-E-001（静态前置）/ TEST-C-012：固件源码与 ble-fixture-target.json 契约一致性。
-// 只读静态检查（不构建、不烧写）；实现缺口=诚实 FAIL（TP-G2 差距输入）。
+// TEST-E-001 TEST-C-012 PROTO-001 PROTO-002 PROTO-003 PROTO-004 PROTO-005
+// 固件源码与 ble-fixture-target.json 契约一致性。只读静态检查（不构建、不烧写）。
 
 import test from 'node:test';
 import assert from 'node:assert';

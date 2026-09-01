@@ -1,6 +1,6 @@
 // tests/target/unit/broadcast-payload-target.test.mjs
 // TEST-U-014 广播预算：31 字节可用 / 32 字节阻止 / 字段合法性 / 平台接管字段 / 不静默截断。
-// 故意错误类别⑥（32 字节 Payload）在本文件参照层验证。
+// 故意错误类别⑥（32 字节 Payload）的参照验证见 tests/target/harness/unit-mutations.test.mjs。
 // 目标：REQ-039/042；FEAT-042/043；PAGE-008；FLOW-008；DEC-004（预算只计实际入包字段）。
 
 import test from 'node:test';

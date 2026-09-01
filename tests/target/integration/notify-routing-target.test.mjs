@@ -13,15 +13,6 @@ const IDS = 'TEST-I-005 REQ-029 FEAT-031/032 DEC-017 10号§3.4';
 const SVC = '4fafc201-1fb5-459e-8fcc-c5c9c331914c';
 const CHR = 'beb5483e-36e1-4688-b7f5-ea07361b26b0';
 
-test('参照层：按 UUID 而非 tuple 分发（多设备串台）必须被抓', () => {
-  const listenersByUuid = new Map(); // 错误实现：只按 characteristicId
-  const A = []; const B = [];
-  listenersByUuid.set(CHR, (v) => { A.push(v); B.push(v); }); // 同 UUID 一个回调同时推两设备
-  listenersByUuid.get(CHR)({ deviceId: 'DEV1', value: 'x' });
-  assert.equal(A.length, 1); assert.equal(B.length, 1, '参照实现把 DEV1 的数据也推给了 DEV2 的订阅者');
-  assert.ok(B.length > 0, '目标：tuple 不匹配必须丢弃——串台被识别');
-});
-
 test('目标层：ble-runtime 订阅路由与 tuple 隔离', async (t) => {
   const m = await importTarget('apps/uniapp/services/ble-runtime/index.js');
   if (!m.ok) return assert.fail(notImplemented(IDS, m.message));

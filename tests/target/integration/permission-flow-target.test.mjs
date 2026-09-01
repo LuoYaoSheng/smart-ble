@@ -9,17 +9,6 @@ import { createFakePlatform } from '../lib/fake-runtime.mjs';
 
 const IDS = 'TEST-I-001 REQ-005~007 FEAT-005~007 FLOW-001 ERR-PERM-02/04';
 
-// ---------- 参照层：拒绝后直接报错终止、无恢复路径 ----------
-function brokenFlow(fake) {
-  if (fake.permission === 'denied') return { ended: 'error', recovery: null };
-  return { ended: 'scanning' };
-}
-test('参照层：权限拒绝无恢复入口必须被抓', () => {
-  const r = brokenFlow({ permission: 'denied' });
-  assert.equal(r.recovery, null, '参照实现无恢复');
-  assert.ok(r.recovery === null, '目标：S-03 提供重新授权恢复动作（非 null）');
-});
-
 // ---------- 目标层：scan-permission.js + fake uni（微信 scope.denial 语义） ----------
 test('目标层：services/scan-permission.js 权限流（注入 fake uni）', async (t) => {
   const calls = [];

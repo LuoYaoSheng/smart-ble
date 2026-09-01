@@ -1,6 +1,6 @@
 // tests/target/release/release-artifacts.test.mjs
-// TEST-R-001/002（静态部分）：Release 产物注册与版本五处同源（E6 前置）。
-// 无产物是当前合法状态（NOT_RELEASED），但版本声明必须同源、产物登记必须成对（URL+SHA）。
+// TEST-R-001 TEST-R-002 REQ-004 REQ-056 FEAT-004 FEAT-066 CLAIM-001
+// Release 产物登记与版本五处同源（E6 前置）。
 
 import test from 'node:test';
 import assert from 'node:assert';
@@ -22,7 +22,15 @@ test('TEST-R-001 产物登记处：任何已登记产物必须 URL+SHA256 成对
   // 登记处候选：releases/ 或 dist/ 下 manifest；无登记处=NOT_RELEASED（合法，但落地页不得有直链）
   const registryDirs = ['releases', 'dist'].filter((d) => existsSync(`${ROOT}/${d}`));
   if (registryDirs.length === 0) {
-    assert.ok(true, '无产物登记处 → NOT_RELEASED 姿态（直链门禁由 public-claims.test 把守）');
+    const landing = `${ROOT}/docs/index.md`;
+    assert.ok(existsSync(landing), '无产物登记处时落地页必须存在以便校验 NOT_RELEASED');
+    const html = readFileSync(landing, 'utf8');
+    assert.ok(/NOT_RELEASED|尚未发布|暂未发布|未发布/.test(html), '无产物登记处时落地页必须声明 NOT_RELEASED/尚未发布');
+    assert.equal(
+      [...html.matchAll(/href="([^"]*releases\/latest[^"]*)"/gi)].length,
+      0,
+      '无产物登记处时不得暴露 releases/latest 下载 CTA',
+    );
     return;
   }
   for (const d of registryDirs) {

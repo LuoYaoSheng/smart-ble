@@ -67,20 +67,27 @@ export function createFakePlatform(script = {}) {
       return o.success?.(S({ characteristics: target ? target.characteristics : table[0].characteristics }));
     },
     readBLECharacteristicValue(o = {}) {
-      log('read', { deviceId: o.deviceId, cid: o.characteristicId });
+      log('read', { deviceId: o.deviceId, sid: o.serviceId, serviceId: o.serviceId, cid: o.characteristicId, characteristicId: o.characteristicId });
       if (fake.__failNext.readBLECharacteristicValue) { const e = fake.__failNext.readBLECharacteristicValue; delete fake.__failNext.readBLECharacteristicValue; return o.fail?.(e); }
       const value = script.readValue ?? new Uint8Array([0x01]);
       setTimeout(() => listeners.value.some((cb) => cb({ deviceId: o.deviceId, serviceId: o.serviceId, characteristicId: o.characteristicId, value })), 0);
       return o.success?.(S({ value }));
     },
     writeBLECharacteristicValue(o = {}) {
-      log('write', { deviceId: o.deviceId, cid: o.characteristicId });
+      log('write', {
+        deviceId: o.deviceId,
+        sid: o.serviceId,
+        serviceId: o.serviceId,
+        cid: o.characteristicId,
+        characteristicId: o.characteristicId,
+        value: o.value,
+      });
       if (fake.__failNext.writeBLECharacteristicValue) { const e = fake.__failNext.writeBLECharacteristicValue; delete fake.__failNext.writeBLECharacteristicValue; return o.fail?.(e); }
       script.onWrite?.(o);
       return o.success?.(S({}));
     },
     notifyBLECharacteristicValueChange(o = {}) {
-      log('notify', { deviceId: o.deviceId, cid: o.characteristicId, state: o.state });
+      log('notify', { deviceId: o.deviceId, sid: o.serviceId, serviceId: o.serviceId, cid: o.characteristicId, characteristicId: o.characteristicId, state: o.state });
       const key = [o.deviceId, o.serviceId, o.characteristicId].join('|');
       if (o.state) notifiable.add(key); else notifiable.delete(key);
       if (fake.__failNext.notifyBLECharacteristicValueChange) { const e = fake.__failNext.notifyBLECharacteristicValueChange; delete fake.__failNext.notifyBLECharacteristicValueChange; return o.fail?.(e); }

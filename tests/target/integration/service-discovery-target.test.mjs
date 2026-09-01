@@ -9,16 +9,6 @@ import { createFakePlatform } from '../lib/fake-runtime.mjs';
 
 const IDS = 'REQ-020/021 FEAT-021/022 ERR-CONN-03 10号§3.2';
 
-test('参照层：发现失败仍保留连接（半开泄漏）必须被抓', async () => {
-  const platform = createFakePlatform();
-  platform.__connections.set('H1', { connected: true });
-  platform.__failNext.getBLEDeviceServices = { errMsg: 'getServices:fail' };
-  const r = await new Promise((res) => platform.getBLEDeviceServices({ deviceId: 'H1', fail: (e) => res({ failed: true, e }), success: () => res({ failed: false }) }));
-  assert.equal(r.failed, true, '参照实现发现失败');
-  assert.ok(platform.__connections.has('H1'), '参照实现泄漏半开连接');
-  assert.ok(platform.__connections.size > 0, '目标：发现失败必须关闭连接（连接表清空）');
-});
-
 test('目标层：服务发现失败关闭半开连接', async (t) => {
   const m = await importTarget('apps/uniapp/services/ble-runtime/index.js');
   if (!m.ok) return assert.fail(notImplemented(IDS, m.message));

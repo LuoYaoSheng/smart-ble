@@ -1,6 +1,7 @@
 // tests/target/firmware/artifact-metadata.test.mjs
-// TEST-E-008/TEST-R-008（静态前置）：固件构建产物元数据契约 —— 版本/commit/SHA 三元组与
-// 18 号 Release Metadata 同源；无产物时必须 NOT_RELEASED（不得挂链接）。
+// TEST-E-008 TEST-R-008 REQ-004 REQ-056 FEAT-004 FEAT-066 CLAIM-001 EVID-008
+// 固件构建产物元数据契约 —— 版本/commit/SHA 三元组与 18 号 Release Metadata 同源；
+// 无产物时必须 NOT_RELEASED（不得挂链接）。
 
 import test from 'node:test';
 import assert from 'node:assert';
