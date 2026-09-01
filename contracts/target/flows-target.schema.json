@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://smart-ble.local/contracts/target/flows-target.schema.json",
+  "title": "Smart BLE target user flows contract",
+  "type": "object",
+  "required": ["schema_version", "product_version", "status", "last_approved_at", "approved_by", "flows"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+$" },
+    "product_version": { "type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$" },
+    "status": { "enum": ["DRAFT", "REVIEW", "APPROVED", "SUPERSEDED"] },
+    "last_approved_at": { "type": ["string", "null"], "format": "date-time" },
+    "approved_by": { "type": ["string", "null"] },
+    "flows": {
+      "type": "array", "minItems": 14, "maxItems": 14, "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "actors", "preconditions", "happy_path", "error_paths", "cancel_and_cleanup", "pages", "mermaid_diagrams", "planned_tests", "evidence_id", "release_blocking"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^FLOW-[0-9]{3}$" },
+          "name": { "type": "string" },
+          "actors": { "type": "array", "items": { "type": "string" }, "minItems": 1, "uniqueItems": true },
+          "preconditions": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+          "happy_path": { "type": "array", "items": { "type": "string" }, "minItems": 2 },
+          "error_paths": { "type": "array", "items": { "type": "string" }, "minItems": 1, "uniqueItems": true },
+          "cancel_and_cleanup": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "pages": { "type": "array", "items": { "type": "string", "pattern": "^(PAGE-[0-9]{3}|WEB-001)$" }, "uniqueItems": true },
+          "mermaid_diagrams": { "type": "integer", "minimum": 2 },
+          "planned_tests": { "type": "array", "items": { "type": "string", "pattern": "^TEST-[CUPIEAWHR]-[0-9]{3}$" }, "minItems": 1, "uniqueItems": true },
+          "evidence_id": { "type": ["string", "null"], "pattern": "^EVID-[0-9]{3}$" },
+          "release_blocking": { "type": "boolean" }
+        }
+      }
+    }
+  }
+}

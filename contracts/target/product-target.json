@@ -1,0 +1,2834 @@
+{
+  "schema_version": "1.0",
+  "product_version": "1.0.0",
+  "status": "REVIEW",
+  "last_approved_at": null,
+  "approved_by": null,
+  "product": {
+    "name": "Smart BLE",
+    "positioning": "开源的跨平台 BLE 调试、学习与硬件联动工具（UniApp Android App + 微信小程序为主线）",
+    "in_scope": [
+      "UniApp Android App（正式 APK）",
+      "BLE Toolkit+ 微信小程序",
+      "H5 页面/文档与 BLE 降级",
+      "UniApp iOS 目标定义（NOT_RELEASED）",
+      "LightBLE fixture_peripheral",
+      "LightBLE fixture_observer",
+      "Smart HID 第一方 Profile",
+      "10 个 App 页面",
+      "公开落地页 WEB-001",
+      "HTML 交互原型",
+      "Android/微信/ESP32/Smart HID 证据体系",
+      "VERSION/Release Metadata/下载/SHA/二维码/已知限制",
+      "开源开发者文档与 Profile 扩展指南"
+    ],
+    "out_of_scope": [
+      "Flutter/原生 Android/原生 iOS/macOS/Tauri/Electron/Avalonia 客户端（REFERENCE）",
+      "云端服务/账号/会员/支付/订单/License 销售",
+      "第三个第一方 Profile"
+    ],
+    "public_status_vocabulary": [
+      "VERIFIED",
+      "PREVIEW",
+      "BLOCKED",
+      "UNSUPPORTED",
+      "NOT_RELEASED"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "REQ-001",
+      "group": "SYS",
+      "priority": "Must",
+      "features": [
+        "FEAT-001"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-001"
+      ],
+      "planned_tests": [
+        "TEST-U-001",
+        "TEST-P-001",
+        "TEST-A-001",
+        "TEST-W-001"
+      ]
+    },
+    {
+      "id": "REQ-002",
+      "group": "SYS",
+      "priority": "Must",
+      "features": [
+        "FEAT-002"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-002",
+        "PAGE-003",
+        "PAGE-004",
+        "PAGE-005",
+        "PAGE-006",
+        "PAGE-007",
+        "PAGE-008",
+        "PAGE-009",
+        "PAGE-010",
+        "FLOW-001",
+        "FLOW-006"
+      ],
+      "planned_tests": [
+        "TEST-C-005",
+        "TEST-P-001",
+        "TEST-P-002",
+        "TEST-P-003",
+        "TEST-P-004",
+        "TEST-P-005",
+        "TEST-P-006",
+        "TEST-P-007",
+        "TEST-P-008",
+        "TEST-P-009",
+        "TEST-P-010",
+        "TEST-A-002",
+        "TEST-W-002"
+      ]
+    },
+    {
+      "id": "REQ-003",
+      "group": "SYS",
+      "priority": "Must",
+      "features": [
+        "FEAT-003"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-002",
+        "PAGE-006",
+        "PAGE-008",
+        "FLOW-001",
+        "FLOW-006"
+      ],
+      "planned_tests": [
+        "TEST-I-001",
+        "TEST-A-003",
+        "TEST-W-003"
+      ]
+    },
+    {
+      "id": "REQ-004",
+      "group": "SYS",
+      "priority": "Must",
+      "features": [
+        "FEAT-004"
+      ],
+      "pages_or_flows": [
+        "PAGE-009",
+        "PAGE-010",
+        "WEB-001",
+        "FLOW-012"
+      ],
+      "planned_tests": [
+        "TEST-C-006",
+        "TEST-U-002",
+        "TEST-R-002"
+      ]
+    },
+    {
+      "id": "REQ-005",
+      "group": "PERM",
+      "priority": "Must",
+      "features": [
+        "FEAT-005"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-001"
+      ],
+      "planned_tests": [
+        "TEST-U-003",
+        "TEST-P-001",
+        "TEST-A-001",
+        "TEST-W-001"
+      ]
+    },
+    {
+      "id": "REQ-006",
+      "group": "PERM",
+      "priority": "Must",
+      "features": [
+        "FEAT-006"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-001"
+      ],
+      "planned_tests": [
+        "TEST-U-003",
+        "TEST-W-001",
+        "TEST-W-004"
+      ]
+    },
+    {
+      "id": "REQ-007",
+      "group": "PERM",
+      "priority": "Must",
+      "features": [
+        "FEAT-007"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-001"
+      ],
+      "planned_tests": [
+        "TEST-U-003",
+        "TEST-A-001",
+        "TEST-W-001"
+      ]
+    },
+    {
+      "id": "REQ-008",
+      "group": "PERM",
+      "priority": "Must",
+      "features": [
+        "FEAT-008"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-008",
+        "FLOW-001"
+      ],
+      "planned_tests": [
+        "TEST-U-004",
+        "TEST-P-001",
+        "TEST-A-004",
+        "TEST-W-005"
+      ]
+    },
+    {
+      "id": "REQ-009",
+      "group": "PERM",
+      "priority": "Must",
+      "features": [
+        "FEAT-009"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-008",
+        "FLOW-001"
+      ],
+      "planned_tests": [
+        "TEST-P-001",
+        "TEST-W-006",
+        "TEST-R-003"
+      ]
+    },
+    {
+      "id": "REQ-010",
+      "group": "SCAN",
+      "priority": "Must",
+      "features": [
+        "FEAT-010"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-002"
+      ],
+      "planned_tests": [
+        "TEST-I-002",
+        "TEST-P-001",
+        "TEST-A-005",
+        "TEST-W-007",
+        "TEST-E-001"
+      ]
+    },
+    {
+      "id": "REQ-011",
+      "group": "SCAN",
+      "priority": "Must",
+      "features": [
+        "FEAT-011"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-002"
+      ],
+      "planned_tests": [
+        "TEST-U-005",
+        "TEST-I-002",
+        "TEST-A-005"
+      ]
+    },
+    {
+      "id": "REQ-012",
+      "group": "SCAN",
+      "priority": "Must",
+      "features": [
+        "FEAT-012"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-002"
+      ],
+      "planned_tests": [
+        "TEST-U-005",
+        "TEST-A-005",
+        "TEST-W-007"
+      ]
+    },
+    {
+      "id": "REQ-013",
+      "group": "SCAN",
+      "priority": "Must",
+      "features": [
+        "FEAT-013"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-002"
+      ],
+      "planned_tests": [
+        "TEST-U-006",
+        "TEST-A-005",
+        "TEST-W-007"
+      ]
+    },
+    {
+      "id": "REQ-014",
+      "group": "SCAN",
+      "priority": "Must",
+      "features": [
+        "FEAT-014"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-002"
+      ],
+      "planned_tests": [
+        "TEST-U-007",
+        "TEST-P-001",
+        "TEST-A-005"
+      ]
+    },
+    {
+      "id": "REQ-015",
+      "group": "SCAN",
+      "priority": "Must",
+      "features": [
+        "FEAT-015"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-002"
+      ],
+      "planned_tests": [
+        "TEST-P-001",
+        "TEST-A-005",
+        "TEST-W-007"
+      ]
+    },
+    {
+      "id": "REQ-016",
+      "group": "AD",
+      "priority": "Must",
+      "features": [
+        "FEAT-017"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-003"
+      ],
+      "planned_tests": [
+        "TEST-U-008",
+        "TEST-P-001",
+        "TEST-A-005",
+        "TEST-E-001"
+      ]
+    },
+    {
+      "id": "REQ-017",
+      "group": "AD",
+      "priority": "Must",
+      "features": [
+        "FEAT-018"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-003"
+      ],
+      "planned_tests": [
+        "TEST-U-008",
+        "TEST-E-001"
+      ]
+    },
+    {
+      "id": "REQ-018",
+      "group": "AD",
+      "priority": "Must",
+      "features": [
+        "FEAT-019"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-003"
+      ],
+      "planned_tests": [
+        "TEST-P-001",
+        "TEST-W-007"
+      ]
+    },
+    {
+      "id": "REQ-019",
+      "group": "CONN",
+      "priority": "Must",
+      "features": [
+        "FEAT-020",
+        "FEAT-021"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-006",
+        "FLOW-004"
+      ],
+      "planned_tests": [
+        "TEST-I-003",
+        "TEST-P-006",
+        "TEST-A-006",
+        "TEST-W-007",
+        "TEST-E-002"
+      ]
+    },
+    {
+      "id": "REQ-020",
+      "group": "CONN",
+      "priority": "Must",
+      "features": [
+        "FEAT-022"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-004"
+      ],
+      "planned_tests": [
+        "TEST-I-003",
+        "TEST-E-005"
+      ]
+    },
+    {
+      "id": "REQ-021",
+      "group": "CONN",
+      "priority": "Must",
+      "features": [
+        "FEAT-022"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-004"
+      ],
+      "planned_tests": [
+        "TEST-I-003",
+        "TEST-E-005"
+      ]
+    },
+    {
+      "id": "REQ-022",
+      "group": "CONN",
+      "priority": "Must",
+      "features": [
+        "FEAT-023"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "PAGE-007",
+        "FLOW-006",
+        "FLOW-007"
+      ],
+      "planned_tests": [
+        "TEST-I-003",
+        "TEST-A-007",
+        "TEST-W-008",
+        "TEST-E-002"
+      ]
+    },
+    {
+      "id": "REQ-023",
+      "group": "CONN",
+      "priority": "Must",
+      "features": [
+        "FEAT-024",
+        "FEAT-025"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "PAGE-007",
+        "FLOW-004"
+      ],
+      "planned_tests": [
+        "TEST-I-003",
+        "TEST-A-007",
+        "TEST-E-005"
+      ]
+    },
+    {
+      "id": "REQ-024",
+      "group": "GATT",
+      "priority": "Must",
+      "features": [
+        "FEAT-026"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-005"
+      ],
+      "planned_tests": [
+        "TEST-U-009",
+        "TEST-A-006",
+        "TEST-E-003"
+      ]
+    },
+    {
+      "id": "REQ-025",
+      "group": "GATT",
+      "priority": "Must",
+      "features": [
+        "FEAT-027"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-005"
+      ],
+      "planned_tests": [
+        "TEST-I-004",
+        "TEST-A-008",
+        "TEST-E-003"
+      ]
+    },
+    {
+      "id": "REQ-026",
+      "group": "GATT",
+      "priority": "Must",
+      "features": [
+        "FEAT-028"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-005"
+      ],
+      "planned_tests": [
+        "TEST-U-010",
+        "TEST-I-004",
+        "TEST-A-008",
+        "TEST-E-003"
+      ]
+    },
+    {
+      "id": "REQ-027",
+      "group": "GATT",
+      "priority": "Must",
+      "features": [
+        "FEAT-029"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-005"
+      ],
+      "planned_tests": [
+        "TEST-I-004",
+        "TEST-E-005"
+      ]
+    },
+    {
+      "id": "REQ-028",
+      "group": "GATT",
+      "priority": "Must",
+      "features": [
+        "FEAT-030"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-005"
+      ],
+      "planned_tests": [
+        "TEST-U-011",
+        "TEST-E-003"
+      ]
+    },
+    {
+      "id": "REQ-029",
+      "group": "GATT",
+      "priority": "Must",
+      "features": [
+        "FEAT-031",
+        "FEAT-032"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "PAGE-007",
+        "FLOW-005",
+        "FLOW-007"
+      ],
+      "planned_tests": [
+        "TEST-I-005",
+        "TEST-A-008",
+        "TEST-A-009",
+        "TEST-E-004"
+      ]
+    },
+    {
+      "id": "REQ-030",
+      "group": "SESSION",
+      "priority": "Must",
+      "features": [
+        "FEAT-033"
+      ],
+      "pages_or_flows": [
+        "PAGE-002",
+        "PAGE-005",
+        "PAGE-006",
+        "PAGE-007",
+        "FLOW-006"
+      ],
+      "planned_tests": [
+        "TEST-I-006",
+        "TEST-P-006",
+        "TEST-P-007",
+        "TEST-A-009",
+        "TEST-W-008"
+      ]
+    },
+    {
+      "id": "REQ-031",
+      "group": "SESSION",
+      "priority": "Must",
+      "features": [
+        "FEAT-034"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "PAGE-007",
+        "FLOW-006"
+      ],
+      "planned_tests": [
+        "TEST-I-006",
+        "TEST-A-009",
+        "TEST-W-008"
+      ]
+    },
+    {
+      "id": "REQ-032",
+      "group": "SESSION",
+      "priority": "Must",
+      "features": [
+        "FEAT-035"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "PAGE-007",
+        "FLOW-007"
+      ],
+      "planned_tests": [
+        "TEST-I-006",
+        "TEST-A-009",
+        "TEST-W-009"
+      ]
+    },
+    {
+      "id": "REQ-033",
+      "group": "SESSION",
+      "priority": "Must",
+      "features": [
+        "FEAT-036"
+      ],
+      "pages_or_flows": [
+        "runtime"
+      ],
+      "planned_tests": [
+        "TEST-U-005",
+        "TEST-I-001",
+        "TEST-I-002",
+        "TEST-I-006",
+        "TEST-A-013"
+      ]
+    },
+    {
+      "id": "REQ-034",
+      "group": "LOG",
+      "priority": "Must",
+      "features": [
+        "FEAT-037"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-005"
+      ],
+      "planned_tests": [
+        "TEST-U-012",
+        "TEST-P-006",
+        "TEST-A-008"
+      ]
+    },
+    {
+      "id": "REQ-035",
+      "group": "LOG",
+      "priority": "Must",
+      "features": [
+        "FEAT-038",
+        "FEAT-039"
+      ],
+      "pages_or_flows": [
+        "PAGE-006"
+      ],
+      "planned_tests": [
+        "TEST-U-012",
+        "TEST-P-006",
+        "TEST-A-008",
+        "TEST-W-008"
+      ]
+    },
+    {
+      "id": "REQ-036",
+      "group": "LOG",
+      "priority": "Must",
+      "features": [
+        "FEAT-040"
+      ],
+      "pages_or_flows": [
+        "PAGE-002",
+        "PAGE-006"
+      ],
+      "planned_tests": [
+        "TEST-U-013",
+        "TEST-R-004"
+      ]
+    },
+    {
+      "id": "REQ-037",
+      "group": "LOG",
+      "priority": "Must",
+      "features": [
+        "FEAT-037",
+        "FEAT-040"
+      ],
+      "pages_or_flows": [
+        "PAGE-006"
+      ],
+      "planned_tests": [
+        "TEST-U-012",
+        "TEST-A-008"
+      ]
+    },
+    {
+      "id": "REQ-038",
+      "group": "PERI",
+      "priority": "Must",
+      "features": [
+        "FEAT-041"
+      ],
+      "pages_or_flows": [
+        "PAGE-008",
+        "FLOW-008"
+      ],
+      "planned_tests": [
+        "TEST-P-008",
+        "TEST-A-010",
+        "TEST-W-009"
+      ]
+    },
+    {
+      "id": "REQ-039",
+      "group": "PERI",
+      "priority": "Must",
+      "features": [
+        "FEAT-042",
+        "FEAT-043"
+      ],
+      "pages_or_flows": [
+        "PAGE-008",
+        "FLOW-008"
+      ],
+      "planned_tests": [
+        "TEST-U-014",
+        "TEST-P-008",
+        "TEST-A-010",
+        "TEST-E-006"
+      ]
+    },
+    {
+      "id": "REQ-040",
+      "group": "PERI",
+      "priority": "Must",
+      "features": [
+        "FEAT-044"
+      ],
+      "pages_or_flows": [
+        "PAGE-008",
+        "FLOW-008"
+      ],
+      "planned_tests": [
+        "TEST-I-007",
+        "TEST-A-010",
+        "TEST-W-009"
+      ]
+    },
+    {
+      "id": "REQ-041",
+      "group": "PERI",
+      "priority": "Must",
+      "features": [
+        "FEAT-045"
+      ],
+      "pages_or_flows": [
+        "PAGE-008",
+        "FLOW-008"
+      ],
+      "planned_tests": [
+        "TEST-I-007",
+        "TEST-A-010",
+        "TEST-E-006"
+      ]
+    },
+    {
+      "id": "REQ-042",
+      "group": "PERI",
+      "priority": "Must",
+      "features": [
+        "FEAT-042"
+      ],
+      "pages_or_flows": [
+        "PAGE-008",
+        "FLOW-008"
+      ],
+      "planned_tests": [
+        "TEST-I-007",
+        "TEST-E-006"
+      ]
+    },
+    {
+      "id": "REQ-043",
+      "group": "OTA",
+      "priority": "Must",
+      "features": [
+        "FEAT-046"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-009"
+      ],
+      "planned_tests": [
+        "TEST-P-006",
+        "TEST-A-011",
+        "TEST-E-007"
+      ]
+    },
+    {
+      "id": "REQ-044",
+      "group": "OTA",
+      "priority": "Must",
+      "features": [
+        "FEAT-047",
+        "FEAT-048",
+        "FEAT-049",
+        "FEAT-050",
+        "FEAT-051"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-009"
+      ],
+      "planned_tests": [
+        "TEST-I-008",
+        "TEST-A-011",
+        "TEST-E-007"
+      ]
+    },
+    {
+      "id": "REQ-045",
+      "group": "OTA",
+      "priority": "Must",
+      "features": [
+        "FEAT-050",
+        "FEAT-052"
+      ],
+      "pages_or_flows": [
+        "PAGE-006"
+      ],
+      "planned_tests": [
+        "TEST-I-008",
+        "TEST-E-007",
+        "TEST-A-011"
+      ]
+    },
+    {
+      "id": "REQ-046",
+      "group": "OTA",
+      "priority": "Must",
+      "features": [
+        "FEAT-046"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "WEB-001"
+      ],
+      "planned_tests": [
+        "TEST-R-003",
+        "TEST-R-003"
+      ]
+    },
+    {
+      "id": "REQ-047",
+      "group": "HID",
+      "priority": "Must",
+      "features": [
+        "FEAT-053",
+        "FEAT-054"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-002",
+        "FLOW-010"
+      ],
+      "planned_tests": [
+        "TEST-U-015",
+        "TEST-I-009",
+        "TEST-H-001"
+      ]
+    },
+    {
+      "id": "REQ-048",
+      "group": "HID",
+      "priority": "Must",
+      "features": [
+        "FEAT-055",
+        "FEAT-056",
+        "FEAT-057"
+      ],
+      "pages_or_flows": [
+        "PAGE-002",
+        "FLOW-010"
+      ],
+      "planned_tests": [
+        "TEST-U-015",
+        "TEST-I-009",
+        "TEST-H-002",
+        "TEST-W-010"
+      ]
+    },
+    {
+      "id": "REQ-049",
+      "group": "HID",
+      "priority": "Must",
+      "features": [
+        "FEAT-058"
+      ],
+      "pages_or_flows": [
+        "PAGE-002"
+      ],
+      "planned_tests": [
+        "TEST-U-015",
+        "TEST-H-003"
+      ]
+    },
+    {
+      "id": "REQ-050",
+      "group": "HID",
+      "priority": "Must",
+      "features": [
+        "FEAT-040",
+        "FEAT-055"
+      ],
+      "pages_or_flows": [
+        "PAGE-002"
+      ],
+      "planned_tests": [
+        "TEST-U-013",
+        "TEST-U-015",
+        "TEST-I-009",
+        "TEST-H-002"
+      ]
+    },
+    {
+      "id": "REQ-051",
+      "group": "HID",
+      "priority": "Must",
+      "features": [
+        "FEAT-057"
+      ],
+      "pages_or_flows": [
+        "PAGE-002"
+      ],
+      "planned_tests": [
+        "TEST-I-009",
+        "TEST-H-002"
+      ]
+    },
+    {
+      "id": "REQ-052",
+      "group": "HID",
+      "priority": "Must",
+      "features": [
+        "FEAT-016",
+        "FEAT-059",
+        "FEAT-060",
+        "FEAT-061"
+      ],
+      "pages_or_flows": [
+        "PAGE-003",
+        "PAGE-004",
+        "FLOW-011"
+      ],
+      "planned_tests": [
+        "TEST-U-015",
+        "TEST-P-003",
+        "TEST-P-004",
+        "TEST-H-004",
+        "TEST-W-010"
+      ]
+    },
+    {
+      "id": "REQ-053",
+      "group": "HID",
+      "priority": "Must",
+      "features": [
+        "FEAT-062",
+        "FEAT-063",
+        "FEAT-064"
+      ],
+      "pages_or_flows": [
+        "PAGE-005",
+        "FLOW-011"
+      ],
+      "planned_tests": [
+        "TEST-I-009",
+        "TEST-P-005",
+        "TEST-H-005",
+        "TEST-H-006"
+      ]
+    },
+    {
+      "id": "REQ-054",
+      "group": "HID",
+      "priority": "Must",
+      "features": [
+        "FEAT-053"
+      ],
+      "pages_or_flows": [
+        "runtime"
+      ],
+      "planned_tests": [
+        "TEST-C-007"
+      ]
+    },
+    {
+      "id": "REQ-055",
+      "group": "PRODUCT",
+      "priority": "Must",
+      "features": [
+        "FEAT-065"
+      ],
+      "pages_or_flows": [
+        "PAGE-009",
+        "FLOW-012"
+      ],
+      "planned_tests": [
+        "TEST-P-009",
+        "TEST-A-012",
+        "TEST-W-010",
+        "TEST-R-003"
+      ]
+    },
+    {
+      "id": "REQ-056",
+      "group": "PRODUCT",
+      "priority": "Must",
+      "features": [
+        "FEAT-066"
+      ],
+      "pages_or_flows": [
+        "PAGE-010"
+      ],
+      "planned_tests": [
+        "TEST-C-006",
+        "TEST-P-010",
+        "TEST-R-002"
+      ]
+    },
+    {
+      "id": "REQ-057",
+      "group": "PRODUCT",
+      "priority": "Must",
+      "features": [
+        "FEAT-067",
+        "FEAT-068"
+      ],
+      "pages_or_flows": [
+        "PAGE-009",
+        "PAGE-010"
+      ],
+      "planned_tests": [
+        "TEST-P-009",
+        "TEST-W-010",
+        "TEST-R-005"
+      ]
+    },
+    {
+      "id": "REQ-058",
+      "group": "WEB",
+      "priority": "Must",
+      "features": [
+        "FEAT-069",
+        "FEAT-070",
+        "FEAT-071"
+      ],
+      "pages_or_flows": [
+        "WEB-001",
+        "FLOW-013"
+      ],
+      "planned_tests": [
+        "TEST-R-003",
+        "TEST-R-006"
+      ]
+    },
+    {
+      "id": "REQ-059",
+      "group": "WEB",
+      "priority": "Must",
+      "features": [
+        "FEAT-075"
+      ],
+      "pages_or_flows": [
+        "WEB-001"
+      ],
+      "planned_tests": [
+        "TEST-R-001",
+        "TEST-R-002",
+        "TEST-R-008"
+      ]
+    },
+    {
+      "id": "REQ-060",
+      "group": "WEB",
+      "priority": "Must",
+      "features": [
+        "FEAT-075"
+      ],
+      "pages_or_flows": [
+        "WEB-001"
+      ],
+      "planned_tests": [
+        "TEST-R-003"
+      ]
+    },
+    {
+      "id": "REQ-061",
+      "group": "WEB",
+      "priority": "Must",
+      "features": [
+        "FEAT-072",
+        "FEAT-076"
+      ],
+      "pages_or_flows": [
+        "WEB-001"
+      ],
+      "planned_tests": [
+        "TEST-R-006",
+        "TEST-R-010"
+      ]
+    },
+    {
+      "id": "REQ-062",
+      "group": "DOC",
+      "priority": "Must",
+      "features": [
+        "FEAT-073",
+        "FEAT-074",
+        "FEAT-077"
+      ],
+      "pages_or_flows": [
+        "WEB-001",
+        "docs",
+        "FLOW-013"
+      ],
+      "planned_tests": [
+        "TEST-R-005",
+        "TEST-E-008"
+      ]
+    },
+    {
+      "id": "REQ-063",
+      "group": "DOC",
+      "priority": "Must",
+      "features": [
+        "FEAT-078"
+      ],
+      "pages_or_flows": [
+        "docs"
+      ],
+      "planned_tests": [
+        "TEST-C-007"
+      ]
+    },
+    {
+      "id": "REQ-064",
+      "group": "DOC",
+      "priority": "Must",
+      "features": [
+        "FEAT-079",
+        "FEAT-080"
+      ],
+      "pages_or_flows": [
+        "repo",
+        "docs"
+      ],
+      "planned_tests": [
+        "TEST-R-005"
+      ]
+    },
+    {
+      "id": "REQ-065",
+      "group": "DATA",
+      "priority": "Must",
+      "features": [
+        "FEAT-038",
+        "FEAT-059"
+      ],
+      "pages_or_flows": [
+        "PAGE-004",
+        "PAGE-006"
+      ],
+      "planned_tests": [
+        "TEST-U-012",
+        "TEST-U-015",
+        "TEST-H-004"
+      ]
+    }
+  ],
+  "features": [
+    {
+      "id": "FEAT-001",
+      "group": "SYS",
+      "name": "启动与平台识别",
+      "priority": "Must",
+      "requirements": [
+        "REQ-001"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-001"
+      ],
+      "planned_tests": [
+        "TEST-U-001",
+        "TEST-P-001",
+        "TEST-A-001",
+        "TEST-W-001"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-002",
+      "group": "SYS",
+      "name": "四 Tab 与二级页导航",
+      "priority": "Must",
+      "requirements": [
+        "REQ-002"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-007",
+        "PAGE-008",
+        "PAGE-009",
+        "PAGE-010",
+        "FLOW-001",
+        "FLOW-006"
+      ],
+      "planned_tests": [
+        "TEST-C-005",
+        "TEST-P-001",
+        "TEST-P-006",
+        "TEST-P-007",
+        "TEST-P-008",
+        "TEST-P-009",
+        "TEST-P-010",
+        "TEST-A-002",
+        "TEST-W-002"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-003",
+      "group": "SYS",
+      "name": "应用前后台生命周期",
+      "priority": "Must",
+      "requirements": [
+        "REQ-003"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-002",
+        "PAGE-006",
+        "PAGE-008",
+        "FLOW-001"
+      ],
+      "planned_tests": [
+        "TEST-I-001",
+        "TEST-A-003",
+        "TEST-W-003"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-004",
+      "group": "SYS",
+      "name": "版本与构建渠道",
+      "priority": "Must",
+      "requirements": [
+        "REQ-004"
+      ],
+      "pages_or_flows": [
+        "PAGE-009",
+        "PAGE-010",
+        "WEB-001",
+        "FLOW-012"
+      ],
+      "planned_tests": [
+        "TEST-C-006",
+        "TEST-U-002",
+        "TEST-R-002"
+      ],
+      "minimum_evidence_level": "E6",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-005",
+      "group": "PERM",
+      "name": "蓝牙权限请求与状态展示",
+      "priority": "Must",
+      "requirements": [
+        "REQ-005"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-001"
+      ],
+      "planned_tests": [
+        "TEST-U-003",
+        "TEST-P-001",
+        "TEST-A-001",
+        "TEST-W-001"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-006",
+      "group": "PERM",
+      "name": "微信定位权限策略",
+      "priority": "Must",
+      "requirements": [
+        "REQ-006"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-001"
+      ],
+      "planned_tests": [
+        "TEST-U-003",
+        "TEST-W-001",
+        "TEST-W-004"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-007",
+      "group": "PERM",
+      "name": "永久拒绝恢复",
+      "priority": "Must",
+      "requirements": [
+        "REQ-007"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-001"
+      ],
+      "planned_tests": [
+        "TEST-U-003",
+        "TEST-A-001",
+        "TEST-W-001"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-008",
+      "group": "PERM",
+      "name": "蓝牙关闭与系统设置引导",
+      "priority": "Must",
+      "requirements": [
+        "REQ-008"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-008",
+        "FLOW-001"
+      ],
+      "planned_tests": [
+        "TEST-U-004",
+        "TEST-P-001",
+        "TEST-A-004",
+        "TEST-W-005"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-009",
+      "group": "PERM",
+      "name": "平台不支持降级",
+      "priority": "Must",
+      "requirements": [
+        "REQ-009"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-008",
+        "WEB-001"
+      ],
+      "planned_tests": [
+        "TEST-P-001",
+        "TEST-W-006",
+        "TEST-R-003"
+      ],
+      "minimum_evidence_level": "E6",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-010",
+      "group": "SCAN",
+      "name": "扫描开始/停止/超时",
+      "priority": "Must",
+      "requirements": [
+        "REQ-010"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-002"
+      ],
+      "planned_tests": [
+        "TEST-I-002",
+        "TEST-P-001",
+        "TEST-A-005",
+        "TEST-W-007",
+        "TEST-E-001"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-011",
+      "group": "SCAN",
+      "name": "第二轮独立扫描 generation",
+      "priority": "Must",
+      "requirements": [
+        "REQ-011"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-002"
+      ],
+      "planned_tests": [
+        "TEST-U-005",
+        "TEST-I-002",
+        "TEST-A-005"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-012",
+      "group": "SCAN",
+      "name": "deviceId 去重与 RSSI 更新",
+      "priority": "Must",
+      "requirements": [
+        "REQ-012"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-002"
+      ],
+      "planned_tests": [
+        "TEST-U-005",
+        "TEST-I-002",
+        "TEST-A-005",
+        "TEST-W-007"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-013",
+      "group": "SCAN",
+      "name": "设备显示名解析链",
+      "priority": "Must",
+      "requirements": [
+        "REQ-013"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-002"
+      ],
+      "planned_tests": [
+        "TEST-U-006",
+        "TEST-A-005",
+        "TEST-W-007"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-014",
+      "group": "SCAN",
+      "name": "列表上限与筛选",
+      "priority": "Must",
+      "requirements": [
+        "REQ-014"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-002"
+      ],
+      "planned_tests": [
+        "TEST-U-007",
+        "TEST-P-001",
+        "TEST-A-005",
+        "TEST-W-007"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-015",
+      "group": "SCAN",
+      "name": "发现总数与筛选数展示",
+      "priority": "Must",
+      "requirements": [
+        "REQ-015"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-002"
+      ],
+      "planned_tests": [
+        "TEST-P-001",
+        "TEST-A-005",
+        "TEST-W-007"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-016",
+      "group": "SCAN",
+      "name": "Smart HID 历史紧凑入口",
+      "priority": "Must",
+      "requirements": [
+        "REQ-052"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-004",
+        "FLOW-011"
+      ],
+      "planned_tests": [
+        "TEST-P-001",
+        "TEST-P-004",
+        "TEST-W-008"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-017",
+      "group": "AD",
+      "name": "广播字段解析与快照",
+      "priority": "Must",
+      "requirements": [
+        "REQ-016"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-003"
+      ],
+      "planned_tests": [
+        "TEST-U-008",
+        "TEST-P-001",
+        "TEST-A-005",
+        "TEST-E-001"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-018",
+      "group": "AD",
+      "name": "缺失/空字段处理",
+      "priority": "Must",
+      "requirements": [
+        "REQ-017"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-003"
+      ],
+      "planned_tests": [
+        "TEST-U-008"
+      ],
+      "minimum_evidence_level": "E1",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-019",
+      "group": "AD",
+      "name": "广播复制",
+      "priority": "Must",
+      "requirements": [
+        "REQ-018"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-003"
+      ],
+      "planned_tests": [
+        "TEST-P-001",
+        "TEST-W-007"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-020",
+      "group": "CONN",
+      "name": "连接 attempt 与去重",
+      "priority": "Must",
+      "requirements": [
+        "REQ-019"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-006",
+        "FLOW-004"
+      ],
+      "planned_tests": [
+        "TEST-I-003",
+        "TEST-P-006",
+        "TEST-A-006",
+        "TEST-W-007",
+        "TEST-E-002"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-021",
+      "group": "CONN",
+      "name": "服务/特征发现",
+      "priority": "Must",
+      "requirements": [
+        "REQ-019"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-004"
+      ],
+      "planned_tests": [
+        "TEST-I-003",
+        "TEST-A-006",
+        "TEST-E-002"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-022",
+      "group": "CONN",
+      "name": "空服务与发现失败重试",
+      "priority": "Must",
+      "requirements": [
+        "REQ-020",
+        "REQ-021"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-004"
+      ],
+      "planned_tests": [
+        "TEST-I-003",
+        "TEST-P-006",
+        "TEST-E-005"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-023",
+      "group": "CONN",
+      "name": "主动断开",
+      "priority": "Must",
+      "requirements": [
+        "REQ-022"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "PAGE-007",
+        "FLOW-006",
+        "FLOW-007"
+      ],
+      "planned_tests": [
+        "TEST-I-003",
+        "TEST-A-007",
+        "TEST-W-008",
+        "TEST-E-002"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-024",
+      "group": "CONN",
+      "name": "被动断开有限重连",
+      "priority": "Must",
+      "requirements": [
+        "REQ-023"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "PAGE-007",
+        "FLOW-004"
+      ],
+      "planned_tests": [
+        "TEST-I-003",
+        "TEST-A-007",
+        "TEST-E-005"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-025",
+      "group": "CONN",
+      "name": "重连耗尽与手动恢复",
+      "priority": "Must",
+      "requirements": [
+        "REQ-023"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "PAGE-007"
+      ],
+      "planned_tests": [
+        "TEST-I-003",
+        "TEST-P-006"
+      ],
+      "minimum_evidence_level": "E4",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-026",
+      "group": "GATT",
+      "name": "属性识别与操作约束",
+      "priority": "Must",
+      "requirements": [
+        "REQ-024"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-005"
+      ],
+      "planned_tests": [
+        "TEST-U-009",
+        "TEST-A-006",
+        "TEST-E-003"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-027",
+      "group": "GATT",
+      "name": "Read",
+      "priority": "Must",
+      "requirements": [
+        "REQ-025"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-005"
+      ],
+      "planned_tests": [
+        "TEST-I-004",
+        "TEST-A-008",
+        "TEST-E-003"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-028",
+      "group": "GATT",
+      "name": "TEXT/HEX Write",
+      "priority": "Must",
+      "requirements": [
+        "REQ-026"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-005"
+      ],
+      "planned_tests": [
+        "TEST-U-010",
+        "TEST-I-004",
+        "TEST-A-008",
+        "TEST-E-003"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-029",
+      "group": "GATT",
+      "name": "Write Queue",
+      "priority": "Must",
+      "requirements": [
+        "REQ-027"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-005"
+      ],
+      "planned_tests": [
+        "TEST-I-004",
+        "TEST-E-005"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-030",
+      "group": "GATT",
+      "name": "MTU 与分包",
+      "priority": "Must",
+      "requirements": [
+        "REQ-028"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-005"
+      ],
+      "planned_tests": [
+        "TEST-U-011",
+        "TEST-I-004",
+        "TEST-E-003"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-031",
+      "group": "GATT",
+      "name": "Notify/Indicate 订阅",
+      "priority": "Must",
+      "requirements": [
+        "REQ-029"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-005"
+      ],
+      "planned_tests": [
+        "TEST-I-005",
+        "TEST-A-008",
+        "TEST-E-004"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-032",
+      "group": "GATT",
+      "name": "tuple 路由与多设备隔离",
+      "priority": "Must",
+      "requirements": [
+        "REQ-029"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "PAGE-007",
+        "FLOW-007"
+      ],
+      "planned_tests": [
+        "TEST-I-005",
+        "TEST-A-009",
+        "TEST-E-004"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-033",
+      "group": "SESSION",
+      "name": "应用级 Session Registry",
+      "priority": "Must",
+      "requirements": [
+        "REQ-030"
+      ],
+      "pages_or_flows": [
+        "PAGE-002",
+        "PAGE-005",
+        "PAGE-006",
+        "PAGE-007",
+        "FLOW-006"
+      ],
+      "planned_tests": [
+        "TEST-I-006",
+        "TEST-P-006",
+        "TEST-P-007",
+        "TEST-A-009",
+        "TEST-W-008"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-034",
+      "group": "SESSION",
+      "name": "跨页/跨 Tab 复用",
+      "priority": "Must",
+      "requirements": [
+        "REQ-031"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "PAGE-007",
+        "FLOW-006"
+      ],
+      "planned_tests": [
+        "TEST-I-006",
+        "TEST-A-009",
+        "TEST-W-008"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-035",
+      "group": "SESSION",
+      "name": "多设备并行",
+      "priority": "Should",
+      "requirements": [
+        "REQ-032"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "PAGE-007",
+        "FLOW-007"
+      ],
+      "planned_tests": [
+        "TEST-I-006",
+        "TEST-A-009",
+        "TEST-W-009"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": false
+    },
+    {
+      "id": "FEAT-036",
+      "group": "SESSION",
+      "name": "stale 事件与 Listener 清理",
+      "priority": "Must",
+      "requirements": [
+        "REQ-033"
+      ],
+      "pages_or_flows": [
+        "runtime"
+      ],
+      "planned_tests": [
+        "TEST-U-005",
+        "TEST-I-001",
+        "TEST-I-002",
+        "TEST-I-006",
+        "TEST-A-013"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-037",
+      "group": "LOG",
+      "name": "按设备通信日志",
+      "priority": "Must",
+      "requirements": [
+        "REQ-034",
+        "REQ-037"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-005"
+      ],
+      "planned_tests": [
+        "TEST-U-012",
+        "TEST-P-006",
+        "TEST-A-008"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-038",
+      "group": "LOG",
+      "name": "日志容量与清空",
+      "priority": "Must",
+      "requirements": [
+        "REQ-035",
+        "REQ-065"
+      ],
+      "pages_or_flows": [
+        "PAGE-006"
+      ],
+      "planned_tests": [
+        "TEST-U-012",
+        "TEST-P-006"
+      ],
+      "minimum_evidence_level": "E4",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-039",
+      "group": "LOG",
+      "name": "日志导出",
+      "priority": "Must",
+      "requirements": [
+        "REQ-035"
+      ],
+      "pages_or_flows": [
+        "PAGE-006"
+      ],
+      "planned_tests": [
+        "TEST-U-012",
+        "TEST-P-006",
+        "TEST-W-008"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-040",
+      "group": "LOG",
+      "name": "敏感过滤与关联 ID",
+      "priority": "Must",
+      "requirements": [
+        "REQ-036",
+        "REQ-037",
+        "REQ-050"
+      ],
+      "pages_or_flows": [
+        "PAGE-002",
+        "PAGE-006",
+        "WEB-001"
+      ],
+      "planned_tests": [
+        "TEST-U-013",
+        "TEST-R-004"
+      ],
+      "minimum_evidence_level": "E6",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-041",
+      "group": "PERI",
+      "name": "平台能力检查",
+      "priority": "Must",
+      "requirements": [
+        "REQ-038"
+      ],
+      "pages_or_flows": [
+        "PAGE-008",
+        "FLOW-008"
+      ],
+      "planned_tests": [
+        "TEST-P-008",
+        "TEST-A-010",
+        "TEST-W-009",
+        "TEST-E-006"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-042",
+      "group": "PERI",
+      "name": "Payload 字段编辑",
+      "priority": "Must",
+      "requirements": [
+        "REQ-039",
+        "REQ-042"
+      ],
+      "pages_or_flows": [
+        "PAGE-008",
+        "FLOW-008"
+      ],
+      "planned_tests": [
+        "TEST-U-014",
+        "TEST-P-008",
+        "TEST-A-010",
+        "TEST-W-009",
+        "TEST-E-006"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-043",
+      "group": "PERI",
+      "name": "31/32 字节预算",
+      "priority": "Must",
+      "requirements": [
+        "REQ-039"
+      ],
+      "pages_or_flows": [
+        "PAGE-008",
+        "FLOW-008"
+      ],
+      "planned_tests": [
+        "TEST-U-014",
+        "TEST-E-006"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-044",
+      "group": "PERI",
+      "name": "Central/Peripheral Owner 与活动连接保护",
+      "priority": "Must",
+      "requirements": [
+        "REQ-040"
+      ],
+      "pages_or_flows": [
+        "PAGE-008",
+        "FLOW-008"
+      ],
+      "planned_tests": [
+        "TEST-I-007",
+        "TEST-A-010",
+        "TEST-W-009"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-045",
+      "group": "PERI",
+      "name": "生命周期停止与释放",
+      "priority": "Must",
+      "requirements": [
+        "REQ-041"
+      ],
+      "pages_or_flows": [
+        "PAGE-008",
+        "FLOW-008"
+      ],
+      "planned_tests": [
+        "TEST-I-007",
+        "TEST-A-010",
+        "TEST-E-006"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-046",
+      "group": "OTA",
+      "name": "固件文件选择与校验",
+      "priority": "Must",
+      "requirements": [
+        "REQ-043",
+        "REQ-046"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "WEB-001",
+        "FLOW-009"
+      ],
+      "planned_tests": [
+        "TEST-P-006",
+        "TEST-A-011",
+        "TEST-E-007",
+        "TEST-R-003"
+      ],
+      "minimum_evidence_level": "E6",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-047",
+      "group": "OTA",
+      "name": "STATUS 订阅与 CTRL start/ready 握手",
+      "priority": "Must",
+      "requirements": [
+        "REQ-044"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-009"
+      ],
+      "planned_tests": [
+        "TEST-I-008",
+        "TEST-A-011",
+        "TEST-E-007"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-048",
+      "group": "OTA",
+      "name": "DATA 分包传输",
+      "priority": "Must",
+      "requirements": [
+        "REQ-044"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-009"
+      ],
+      "planned_tests": [
+        "TEST-I-008",
+        "TEST-A-011",
+        "TEST-E-007"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-049",
+      "group": "OTA",
+      "name": "CTRL commit 与 success",
+      "priority": "Must",
+      "requirements": [
+        "REQ-044"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-009"
+      ],
+      "planned_tests": [
+        "TEST-I-008",
+        "TEST-E-007"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-050",
+      "group": "OTA",
+      "name": "abort 与取消",
+      "priority": "Must",
+      "requirements": [
+        "REQ-044",
+        "REQ-045"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-009"
+      ],
+      "planned_tests": [
+        "TEST-I-008",
+        "TEST-A-011",
+        "TEST-E-007"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-051",
+      "group": "OTA",
+      "name": "reboot/reconnect/version readback",
+      "priority": "Must",
+      "requirements": [
+        "REQ-044"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-009"
+      ],
+      "planned_tests": [
+        "TEST-A-011",
+        "TEST-E-007"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-052",
+      "group": "OTA",
+      "name": "OTA 失败恢复与重试",
+      "priority": "Must",
+      "requirements": [
+        "REQ-045"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-009"
+      ],
+      "planned_tests": [
+        "TEST-E-007",
+        "TEST-A-011"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-053",
+      "group": "HID-PROV",
+      "name": "Profile matcher 强/弱匹配",
+      "priority": "Must",
+      "requirements": [
+        "REQ-047",
+        "REQ-054"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "runtime",
+        "FLOW-010"
+      ],
+      "planned_tests": [
+        "TEST-U-015",
+        "TEST-H-001",
+        "TEST-W-010",
+        "TEST-C-007"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-054",
+      "group": "HID-PROV",
+      "name": "连接与 Device Info 二次身份确认",
+      "priority": "Must",
+      "requirements": [
+        "REQ-047"
+      ],
+      "pages_or_flows": [
+        "PAGE-002",
+        "FLOW-010"
+      ],
+      "planned_tests": [
+        "TEST-H-001",
+        "TEST-H-002"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-055",
+      "group": "HID-PROV",
+      "name": "配网表单与校验",
+      "priority": "Must",
+      "requirements": [
+        "REQ-048",
+        "REQ-050"
+      ],
+      "pages_or_flows": [
+        "PAGE-002",
+        "FLOW-010"
+      ],
+      "planned_tests": [
+        "TEST-U-015",
+        "TEST-P-002",
+        "TEST-H-002"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-056",
+      "group": "HID-PROV",
+      "name": "Pairing QR 扫描与解析",
+      "priority": "Must",
+      "requirements": [
+        "REQ-048"
+      ],
+      "pages_or_flows": [
+        "PAGE-002",
+        "FLOW-010"
+      ],
+      "planned_tests": [
+        "TEST-U-015",
+        "TEST-H-002"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-057",
+      "group": "HID-PROV",
+      "name": "candidate 分帧下发与 STATUS waiter",
+      "priority": "Must",
+      "requirements": [
+        "REQ-048",
+        "REQ-051"
+      ],
+      "pages_or_flows": [
+        "PAGE-002",
+        "FLOW-010"
+      ],
+      "planned_tests": [
+        "TEST-I-009",
+        "TEST-H-002",
+        "TEST-H-003"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-058",
+      "group": "HID-PROV",
+      "name": "状态、进度与八类错误恢复",
+      "priority": "Must",
+      "requirements": [
+        "REQ-049"
+      ],
+      "pages_or_flows": [
+        "PAGE-002",
+        "FLOW-010"
+      ],
+      "planned_tests": [
+        "TEST-U-015",
+        "TEST-H-003"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-059",
+      "group": "HID-HIST",
+      "name": "历史存储与 TTL",
+      "priority": "Must",
+      "requirements": [
+        "REQ-052",
+        "REQ-065"
+      ],
+      "pages_or_flows": [
+        "PAGE-004",
+        "FLOW-011"
+      ],
+      "planned_tests": [
+        "TEST-U-015",
+        "TEST-P-004",
+        "TEST-H-004"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-060",
+      "group": "HID-HIST",
+      "name": "历史列表与详情快照",
+      "priority": "Must",
+      "requirements": [
+        "REQ-052"
+      ],
+      "pages_or_flows": [
+        "PAGE-003",
+        "PAGE-004",
+        "FLOW-011"
+      ],
+      "planned_tests": [
+        "TEST-P-003",
+        "TEST-P-004",
+        "TEST-W-010"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-061",
+      "group": "HID-HIST",
+      "name": "历史移除",
+      "priority": "Must",
+      "requirements": [
+        "REQ-052"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-004"
+      ],
+      "planned_tests": [
+        "TEST-P-004",
+        "TEST-H-004"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-062",
+      "group": "HID-HIST",
+      "name": "自动诊断与手动重试",
+      "priority": "Must",
+      "requirements": [
+        "REQ-053"
+      ],
+      "pages_or_flows": [
+        "PAGE-005",
+        "FLOW-011"
+      ],
+      "planned_tests": [
+        "TEST-P-005",
+        "TEST-H-005"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-063",
+      "group": "HID-HIST",
+      "name": "owned/borrowed Session",
+      "priority": "Must",
+      "requirements": [
+        "REQ-053"
+      ],
+      "pages_or_flows": [
+        "PAGE-002",
+        "PAGE-005"
+      ],
+      "planned_tests": [
+        "TEST-I-009",
+        "TEST-H-005"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-064",
+      "group": "HID-HIST",
+      "name": "重配移交",
+      "priority": "Must",
+      "requirements": [
+        "REQ-053"
+      ],
+      "pages_or_flows": [
+        "PAGE-002",
+        "PAGE-003",
+        "PAGE-005",
+        "FLOW-011"
+      ],
+      "planned_tests": [
+        "TEST-H-006"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-065",
+      "group": "PRODUCT",
+      "name": "关于页真实信息",
+      "priority": "Must",
+      "requirements": [
+        "REQ-055"
+      ],
+      "pages_or_flows": [
+        "PAGE-009",
+        "FLOW-012"
+      ],
+      "planned_tests": [
+        "TEST-P-009",
+        "TEST-A-012",
+        "TEST-W-010",
+        "TEST-R-003"
+      ],
+      "minimum_evidence_level": "E6",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-066",
+      "group": "PRODUCT",
+      "name": "版本历史页",
+      "priority": "Must",
+      "requirements": [
+        "REQ-056"
+      ],
+      "pages_or_flows": [
+        "PAGE-010",
+        "FLOW-012"
+      ],
+      "planned_tests": [
+        "TEST-C-006",
+        "TEST-P-010",
+        "TEST-R-002"
+      ],
+      "minimum_evidence_level": "E6",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-067",
+      "group": "PRODUCT",
+      "name": "分享",
+      "priority": "Must",
+      "requirements": [
+        "REQ-057"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-009",
+        "PAGE-010",
+        "FLOW-012"
+      ],
+      "planned_tests": [
+        "TEST-P-009",
+        "TEST-W-010"
+      ],
+      "minimum_evidence_level": "E5",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-068",
+      "group": "PRODUCT",
+      "name": "反馈/隐私/安全/License 入口",
+      "priority": "Must",
+      "requirements": [
+        "REQ-057"
+      ],
+      "pages_or_flows": [
+        "PAGE-009",
+        "WEB-001",
+        "FLOW-012"
+      ],
+      "planned_tests": [
+        "TEST-P-009",
+        "TEST-R-005"
+      ],
+      "minimum_evidence_level": "E6",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-069",
+      "group": "WEB",
+      "name": "Hero 与产品定位",
+      "priority": "Must",
+      "requirements": [
+        "REQ-058"
+      ],
+      "pages_or_flows": [
+        "WEB-001",
+        "FLOW-013"
+      ],
+      "planned_tests": [
+        "TEST-R-006"
+      ],
+      "minimum_evidence_level": "E6",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-070",
+      "group": "WEB",
+      "name": "核心闭环与能力卡",
+      "priority": "Must",
+      "requirements": [
+        "REQ-058"
+      ],
+      "pages_or_flows": [
+        "WEB-001"
+      ],
+      "planned_tests": [
+        "TEST-R-003",
+        "TEST-R-007"
+      ],
+      "minimum_evidence_level": "E6",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-071",
+      "group": "WEB",
+      "name": "平台状态表",
+      "priority": "Must",
+      "requirements": [
+        "REQ-058"
+      ],
+      "pages_or_flows": [
+        "WEB-001",
+        "PAGE-009"
+      ],
+      "planned_tests": [
+        "TEST-R-003",
+        "TEST-R-007"
+      ],
+      "minimum_evidence_level": "E6",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-072",
+      "group": "WEB",
+      "name": "真实截图与在线原型",
+      "priority": "Must",
+      "requirements": [
+        "REQ-061"
+      ],
+      "pages_or_flows": [
+        "WEB-001"
+      ],
+      "planned_tests": [
+        "TEST-R-006"
+      ],
+      "minimum_evidence_level": "E6",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-073",
+      "group": "WEB",
+      "name": "ESP32 Peripheral/Observer 区",
+      "priority": "Must",
+      "requirements": [
+        "REQ-062"
+      ],
+      "pages_or_flows": [
+        "WEB-001",
+        "FLOW-013"
+      ],
+      "planned_tests": [
+        "TEST-R-008",
+        "TEST-E-008"
+      ],
+      "minimum_evidence_level": "E6",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-074",
+      "group": "WEB",
+      "name": "三条快速开始",
+      "priority": "Must",
+      "requirements": [
+        "REQ-062"
+      ],
+      "pages_or_flows": [
+        "WEB-001",
+        "FLOW-013"
+      ],
+      "planned_tests": [
+        "TEST-R-005"
+      ],
+      "minimum_evidence_level": "E6",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-075",
+      "group": "WEB",
+      "name": "下载/QR/SHA/证据/限制",
+      "priority": "Must",
+      "requirements": [
+        "REQ-059",
+        "REQ-060"
+      ],
+      "pages_or_flows": [
+        "WEB-001",
+        "FLOW-013",
+        "FLOW-014"
+      ],
+      "planned_tests": [
+        "TEST-R-001",
+        "TEST-R-002",
+        "TEST-R-008",
+        "TEST-R-009"
+      ],
+      "minimum_evidence_level": "E6",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-076",
+      "group": "WEB",
+      "name": "SEO/无障碍/降级",
+      "priority": "Must",
+      "requirements": [
+        "REQ-061"
+      ],
+      "pages_or_flows": [
+        "WEB-001"
+      ],
+      "planned_tests": [
+        "TEST-R-006",
+        "TEST-R-010"
+      ],
+      "minimum_evidence_level": "E6",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-077",
+      "group": "DOC",
+      "name": "5 分钟上手与 ESP32 从零",
+      "priority": "Must",
+      "requirements": [
+        "REQ-062"
+      ],
+      "pages_or_flows": [
+        "docs",
+        "FLOW-013"
+      ],
+      "planned_tests": [
+        "TEST-R-005",
+        "TEST-E-008"
+      ],
+      "minimum_evidence_level": "E6",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-078",
+      "group": "DOC",
+      "name": "Profile 扩展指南",
+      "priority": "Must",
+      "requirements": [
+        "REQ-063"
+      ],
+      "pages_or_flows": [
+        "docs"
+      ],
+      "planned_tests": [
+        "TEST-C-007"
+      ],
+      "minimum_evidence_level": "E0",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-079",
+      "group": "DOC",
+      "name": "贡献/Issue/Security/License",
+      "priority": "Must",
+      "requirements": [
+        "REQ-064"
+      ],
+      "pages_or_flows": [
+        "repo",
+        "docs"
+      ],
+      "planned_tests": [
+        "TEST-R-005"
+      ],
+      "minimum_evidence_level": "E6",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-080",
+      "group": "DOC",
+      "name": "Release/Changelog",
+      "priority": "Must",
+      "requirements": [
+        "REQ-064"
+      ],
+      "pages_or_flows": [
+        "docs",
+        "PAGE-010"
+      ],
+      "planned_tests": [
+        "TEST-R-002"
+      ],
+      "minimum_evidence_level": "E6",
+      "release_blocking": true
+    }
+  ]
+}

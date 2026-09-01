@@ -1,0 +1,95 @@
+{
+  "schema_version": "1.0",
+  "product_version": "1.0.0",
+  "status": "REVIEW",
+  "last_approved_at": null,
+  "approved_by": null,
+  "canonical": {
+    "external_canonical": "Smart-HID-Workspace protocols/ble/PROVISIONING_V1.md + protocols/contracts/smart-hid-v1.json",
+    "mirror_file": "core/protocols/hid-provisioning-protocol.ts",
+    "lock_file": "core/protocols/smart-hid-contract.lock.json",
+    "mqtt_schema_reference": "core/protocols/hid-command-schema.ts（公开定义参考；Smart BLE App 不实现 MQTT 控制链路）"
+  },
+  "gatt": {
+    "service_uuid": "9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04",
+    "characteristics": [
+      { "name": "INFO", "uuid": "9f1d1002-e73b-4c8f-9d2a-6f0b5e8a1c04", "properties": ["read", "notify"], "encrypted_link_required": false },
+      { "name": "INPUT", "uuid": "9f1d1003-e73b-4c8f-9d2a-6f0b5e8a1c04", "properties": ["write"], "encrypted_link_required": true },
+      { "name": "STATUS", "uuid": "9f1d1004-e73b-4c8f-9d2a-6f0b5e8a1c04", "properties": ["read", "notify"], "encrypted_link_required": false }
+    ],
+    "name_prefix": "SHID-",
+    "name_pattern": "^SHID-[A-Z0-9]{6,8}$",
+    "device_id_pattern": "^HID-[A-Z0-9]{8}$"
+  },
+  "matching": {
+    "strong": "广播 Service UUID（小写归一）命中 9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04",
+    "weak": "设备名称大写化后以 SHID- 前缀开头",
+    "identity_confirmation": {
+      "conditions": ["product === 'smart-hid'", "protocol === '1.0'", "device_id 匹配 ^HID-[A-Z0-9]{8}$"],
+      "on_failure": "ERR-HID-09 身份确认失败：立即断开并返回列表"
+    }
+  },
+  "pairing_qr": {
+    "scheme": "shid://pair",
+    "fields": ["token(32 位小写 hex)", "host(hub-lan-ip)", "port(默认 17892，可省略)"],
+    "token_lifetime": "5 分钟一次性（服务端 404/409/410 语义）",
+    "token_storage": "仅内存；不持久化、不入日志/URL/截图",
+    "default_port": 17892,
+    "token_pattern": "^[0-9a-f]{32}$"
+  },
+  "framing": {
+    "format": "[seq:u8][total:u8][len:u8][payload:len]（长度前缀分帧，无转义字节）",
+    "max_chunk_bytes": 128,
+    "max_frames": 64,
+    "max_assembled_bytes": 1024,
+    "chunk_size_formula": "chunkSizeForMtu(mtu) = min(128, mtu - 3 - 3)；默认 MTU 23 时每块 17B 合法",
+    "write_order": "先注册 STATUS waiter，再分帧逐写 INPUT；seq=0 视为新传输；乱序/跳号/total 变化由设备丢弃报错"
+  },
+  "candidate_validation": {
+    "fields": [
+      { "name": "v", "rule": "固定 1" },
+      { "name": "wifi_ssid", "rule": "非空且 ≤32 字符" },
+      { "name": "wifi_password", "rule": "≤64 字符；仅内存" },
+      { "name": "hub_host", "rule": "非空；来自 QR 或用户输入" },
+      { "name": "hub_port", "rule": "1–65535 整数；默认 17892" },
+      { "name": "token", "rule": "^[0-9a-f]{32}$；仅内存" }
+    ]
+  },
+  "state_machine": {
+    "states": ["boot", "load_config", "unprovisioned", "provisioning", "connecting_wifi", "pairing", "mqtt_connecting", "ready", "recovery", "error"],
+    "steps": ["received", "connecting_wifi", "wifi_connected", "pairing", "pairing_success", "mqtt_connecting", "ready"],
+    "terminal_states": ["ready", "recovery", "error"],
+    "client_waiter_timeout_ms": 60000
+  },
+  "errors": [
+    { "code": "invalid_payload", "err_id": "ERR-HID-01", "recovery": "回表单修改" },
+    { "code": "wifi_failed", "err_id": "ERR-HID-02", "recovery": "回表单检查 SSID/密码" },
+    { "code": "controlhub_unreachable", "err_id": "ERR-HID-03", "recovery": "确认 Hub 运行后重新扫码" },
+    { "code": "pairing_invalid", "err_id": "ERR-HID-04", "recovery": "重新扫码" },
+    { "code": "pairing_expired", "err_id": "ERR-HID-05", "recovery": "重新扫码" },
+    { "code": "pairing_used", "err_id": "ERR-HID-06", "recovery": "重新扫码" },
+    { "code": "mqtt_invalid", "err_id": "ERR-HID-07", "recovery": "进入诊断" },
+    { "code": "storage_failed", "err_id": "ERR-HID-08", "recovery": "重试；反复失败联系支持" }
+  ],
+  "session_rules": {
+    "ready_release": "READY 终态后：写历史、释放配网 owned 连接（设备关闭广播）",
+    "owned_borrowed": "诊断页自建连接=owned（离页断开）；复用 Registry 会话=borrowed（离页保持）",
+    "history": {
+      "storage_key": "smart_ble.smart_hid.known_devices.v1",
+      "ttl_days": 90,
+      "max_devices": 50,
+      "forbidden_fields": ["token", "wifi_password", "mqtt 凭据"]
+    },
+    "ready_stops_advertising": true
+  },
+  "layering_rules": {
+    "generic_layer_no_import": true,
+    "removable_without_regression": true,
+    "mqtt_control_out_of_scope": true,
+    "does_not_block_ble_gate": true,
+    "public_status_decision": "DEC-006：推荐首版 PREVIEW，TEST-H 全过后升 VERIFIED；不阻塞通用 BLE Gate"
+  },
+  "planned_tests": ["TEST-H-001", "TEST-H-002", "TEST-H-003", "TEST-H-004", "TEST-H-005", "TEST-H-006", "TEST-H-007", "TEST-H-008", "TEST-U-015", "TEST-I-009", "TEST-C-007", "TEST-C-013"],
+  "minimum_evidence_level": "E5",
+  "release_blocking": true
+}

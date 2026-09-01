@@ -1,0 +1,2346 @@
+{
+  "schema_version": "1.0",
+  "product_version": "1.0.0",
+  "status": "REVIEW",
+  "last_approved_at": null,
+  "approved_by": null,
+  "planned_only": true,
+  "note": "TP-G0 计划测试登记：ID 为计划占位，TP-G1 将展开为可执行规范；Must 需求映射不得为空。",
+  "suites": [
+    {
+      "prefix": "TEST-C-",
+      "level": "E0",
+      "count": 14
+    },
+    {
+      "prefix": "TEST-U-",
+      "level": "E1",
+      "count": 15
+    },
+    {
+      "prefix": "TEST-I-",
+      "level": "E2",
+      "count": 9
+    },
+    {
+      "prefix": "TEST-P-",
+      "level": "E4",
+      "count": 12
+    },
+    {
+      "prefix": "TEST-E-",
+      "level": "E5",
+      "count": 8
+    },
+    {
+      "prefix": "TEST-A-",
+      "level": "E5",
+      "count": 14
+    },
+    {
+      "prefix": "TEST-W-",
+      "level": "E5",
+      "count": 10
+    },
+    {
+      "prefix": "TEST-H-",
+      "level": "E5",
+      "count": 8
+    },
+    {
+      "prefix": "TEST-R-",
+      "level": "E6",
+      "count": 10
+    }
+  ],
+  "tests": [
+    {
+      "id": "TEST-C-001",
+      "title": "ID 唯一性与登记处一致性",
+      "evidence_level": "E0",
+      "release_blocking": true,
+      "requirements": [],
+      "features": [],
+      "pages_or_flows": [],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-C-002",
+      "title": "文档元数据与字段完整性",
+      "evidence_level": "E0",
+      "release_blocking": true,
+      "requirements": [],
+      "features": [],
+      "pages_or_flows": [],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-C-003",
+      "title": "状态词与禁用词合法值",
+      "evidence_level": "E0",
+      "release_blocking": true,
+      "requirements": [],
+      "features": [],
+      "pages_or_flows": [],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-C-004",
+      "title": "平台矩阵与公开面一致性",
+      "evidence_level": "E0",
+      "release_blocking": true,
+      "requirements": [],
+      "features": [],
+      "pages_or_flows": [],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-C-005",
+      "title": "路由与参数契约",
+      "evidence_level": "E0",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-002"
+      ],
+      "features": [
+        "FEAT-002"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-002",
+        "PAGE-003",
+        "PAGE-004",
+        "PAGE-005",
+        "PAGE-006",
+        "PAGE-007",
+        "PAGE-008",
+        "PAGE-009",
+        "PAGE-010",
+        "FLOW-001",
+        "FLOW-006"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-C-006",
+      "title": "版本五处一致",
+      "evidence_level": "E0",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-004",
+        "REQ-056"
+      ],
+      "features": [
+        "FEAT-004",
+        "FEAT-066"
+      ],
+      "pages_or_flows": [
+        "PAGE-009",
+        "PAGE-010",
+        "WEB-001",
+        "FLOW-012"
+      ],
+      "claims": [
+        "CLAIM-012"
+      ],
+      "implemented": false
+    },
+    {
+      "id": "TEST-C-007",
+      "title": "Profile 分层红线",
+      "evidence_level": "E0",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-054",
+        "REQ-063"
+      ],
+      "features": [
+        "FEAT-053",
+        "FEAT-078"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-010"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-C-008",
+      "title": "FEAT→Test 映射非空",
+      "evidence_level": "E0",
+      "release_blocking": true,
+      "requirements": [],
+      "features": [],
+      "pages_or_flows": [],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-C-009",
+      "title": "流程↔测试映射",
+      "evidence_level": "E0",
+      "release_blocking": true,
+      "requirements": [],
+      "features": [],
+      "pages_or_flows": [],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-C-010",
+      "title": "数据/错误契约一致性",
+      "evidence_level": "E0",
+      "release_blocking": true,
+      "requirements": [],
+      "features": [],
+      "pages_or_flows": [],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-C-011",
+      "title": "架构静态约束（回调注册/import 边界）",
+      "evidence_level": "E0",
+      "release_blocking": true,
+      "requirements": [],
+      "features": [],
+      "pages_or_flows": [],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-C-012",
+      "title": "协议常量一致",
+      "evidence_level": "E0",
+      "release_blocking": true,
+      "requirements": [],
+      "features": [],
+      "pages_or_flows": [],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-C-013",
+      "title": "Smart HID 镜像与 lock 一致",
+      "evidence_level": "E0",
+      "release_blocking": true,
+      "requirements": [],
+      "features": [],
+      "pages_or_flows": [],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-C-014",
+      "title": "决策默认方案一致性",
+      "evidence_level": "E0",
+      "release_blocking": true,
+      "requirements": [],
+      "features": [],
+      "pages_or_flows": [],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-U-001",
+      "title": "平台识别纯函数",
+      "evidence_level": "E1",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-001"
+      ],
+      "features": [
+        "FEAT-001"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-001"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-U-002",
+      "title": "版本投影",
+      "evidence_level": "E1",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-004"
+      ],
+      "features": [
+        "FEAT-004"
+      ],
+      "pages_or_flows": [
+        "PAGE-009",
+        "PAGE-010",
+        "WEB-001",
+        "FLOW-012"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-U-003",
+      "title": "权限状态机",
+      "evidence_level": "E1",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-005",
+        "REQ-006",
+        "REQ-007"
+      ],
+      "features": [
+        "FEAT-005",
+        "FEAT-006",
+        "FEAT-007"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-001"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-U-004",
+      "title": "适配器状态映射",
+      "evidence_level": "E1",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-008"
+      ],
+      "features": [
+        "FEAT-008"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-008",
+        "FLOW-001"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-U-005",
+      "title": "扫描 generation/去重",
+      "evidence_level": "E1",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-011",
+        "REQ-012",
+        "REQ-033"
+      ],
+      "features": [
+        "FEAT-011",
+        "FEAT-012",
+        "FEAT-036"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-002"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-U-006",
+      "title": "显示名解析链",
+      "evidence_level": "E1",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-013"
+      ],
+      "features": [
+        "FEAT-013"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-002"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-U-007",
+      "title": "过滤器",
+      "evidence_level": "E1",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-014"
+      ],
+      "features": [
+        "FEAT-014"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-002"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-U-008",
+      "title": "广播解析三态",
+      "evidence_level": "E1",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-016",
+        "REQ-017"
+      ],
+      "features": [
+        "FEAT-017",
+        "FEAT-018"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-003"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-U-009",
+      "title": "属性约束",
+      "evidence_level": "E1",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-024"
+      ],
+      "features": [
+        "FEAT-026"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-005"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-U-010",
+      "title": "HEX 编码校验",
+      "evidence_level": "E1",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-026"
+      ],
+      "features": [
+        "FEAT-028"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-005"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-U-011",
+      "title": "MTU 分包",
+      "evidence_level": "E1",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-028"
+      ],
+      "features": [
+        "FEAT-030"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-005"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-U-012",
+      "title": "日志容量/导出",
+      "evidence_level": "E1",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-034",
+        "REQ-035",
+        "REQ-037",
+        "REQ-065"
+      ],
+      "features": [
+        "FEAT-037",
+        "FEAT-038",
+        "FEAT-039"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-005",
+        "PAGE-004"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-U-013",
+      "title": "脱敏规则",
+      "evidence_level": "E1",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-036",
+        "REQ-050"
+      ],
+      "features": [
+        "FEAT-040"
+      ],
+      "pages_or_flows": [
+        "PAGE-002",
+        "PAGE-006",
+        "WEB-001"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-U-014",
+      "title": "广播预算 31/32",
+      "evidence_level": "E1",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-039"
+      ],
+      "features": [
+        "FEAT-042",
+        "FEAT-043"
+      ],
+      "pages_or_flows": [
+        "PAGE-008",
+        "FLOW-008"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-U-015",
+      "title": "Smart HID 校验/解析/恢复映射",
+      "evidence_level": "E1",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-047",
+        "REQ-048",
+        "REQ-049",
+        "REQ-050",
+        "REQ-052",
+        "REQ-065"
+      ],
+      "features": [
+        "FEAT-053",
+        "FEAT-055",
+        "FEAT-056",
+        "FEAT-058",
+        "FEAT-059"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-002",
+        "FLOW-010",
+        "PAGE-003",
+        "PAGE-004",
+        "FLOW-011",
+        "PAGE-006"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-I-001",
+      "title": "生命周期与清理",
+      "evidence_level": "E2",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-003",
+        "REQ-033"
+      ],
+      "features": [
+        "FEAT-003",
+        "FEAT-036"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-002",
+        "PAGE-006",
+        "PAGE-008",
+        "FLOW-001",
+        "FLOW-006"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-I-002",
+      "title": "扫描会话与迟到事件",
+      "evidence_level": "E2",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-010",
+        "REQ-011",
+        "REQ-033"
+      ],
+      "features": [
+        "FEAT-010",
+        "FEAT-011",
+        "FEAT-012",
+        "FEAT-036"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-002"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-I-003",
+      "title": "连接/发现/断开/重连",
+      "evidence_level": "E2",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-019",
+        "REQ-020",
+        "REQ-021",
+        "REQ-022",
+        "REQ-023"
+      ],
+      "features": [
+        "FEAT-020",
+        "FEAT-021",
+        "FEAT-022",
+        "FEAT-023",
+        "FEAT-024",
+        "FEAT-025"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-006",
+        "FLOW-004",
+        "PAGE-007",
+        "FLOW-006",
+        "FLOW-007"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-I-004",
+      "title": "GATT 读写队列",
+      "evidence_level": "E2",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-025",
+        "REQ-026",
+        "REQ-027"
+      ],
+      "features": [
+        "FEAT-027",
+        "FEAT-028",
+        "FEAT-029",
+        "FEAT-030"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-005"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-I-005",
+      "title": "Notify 路由与隔离",
+      "evidence_level": "E2",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-029"
+      ],
+      "features": [
+        "FEAT-031",
+        "FEAT-032"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "PAGE-007",
+        "FLOW-005",
+        "FLOW-007"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-I-006",
+      "title": "Registry 与统一断开",
+      "evidence_level": "E2",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-030",
+        "REQ-031",
+        "REQ-032",
+        "REQ-033"
+      ],
+      "features": [
+        "FEAT-033",
+        "FEAT-034",
+        "FEAT-035",
+        "FEAT-036"
+      ],
+      "pages_or_flows": [
+        "PAGE-002",
+        "PAGE-005",
+        "PAGE-006",
+        "PAGE-007",
+        "FLOW-006",
+        "FLOW-007"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-I-007",
+      "title": "广播 Owner 与保护",
+      "evidence_level": "E2",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-040",
+        "REQ-041",
+        "REQ-042"
+      ],
+      "features": [
+        "FEAT-044",
+        "FEAT-045"
+      ],
+      "pages_or_flows": [
+        "PAGE-008",
+        "FLOW-008"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-I-008",
+      "title": "OTA 事务时序",
+      "evidence_level": "E2",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-044",
+        "REQ-045"
+      ],
+      "features": [
+        "FEAT-047",
+        "FEAT-048",
+        "FEAT-049",
+        "FEAT-050"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-009"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-I-009",
+      "title": "Smart HID workflow",
+      "evidence_level": "E2",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-047",
+        "REQ-048",
+        "REQ-050",
+        "REQ-051",
+        "REQ-053"
+      ],
+      "features": [
+        "FEAT-057",
+        "FEAT-063"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-002",
+        "FLOW-010",
+        "PAGE-005",
+        "FLOW-011"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-P-001",
+      "title": "PAGE-001 页面用例",
+      "evidence_level": "E4",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-001",
+        "REQ-002",
+        "REQ-005",
+        "REQ-008",
+        "REQ-009",
+        "REQ-010",
+        "REQ-014",
+        "REQ-015",
+        "REQ-016",
+        "REQ-018"
+      ],
+      "features": [
+        "FEAT-001",
+        "FEAT-002",
+        "FEAT-005",
+        "FEAT-008",
+        "FEAT-009",
+        "FEAT-010",
+        "FEAT-014",
+        "FEAT-015",
+        "FEAT-017",
+        "FEAT-019",
+        "FEAT-016"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-001",
+        "PAGE-002",
+        "PAGE-003",
+        "PAGE-004",
+        "PAGE-005",
+        "PAGE-006",
+        "PAGE-007",
+        "PAGE-008",
+        "PAGE-009",
+        "PAGE-010",
+        "FLOW-006",
+        "WEB-001",
+        "FLOW-002",
+        "FLOW-003",
+        "FLOW-011"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-P-002",
+      "title": "PAGE-002 页面用例",
+      "evidence_level": "E4",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-002"
+      ],
+      "features": [
+        "FEAT-055"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-002",
+        "PAGE-003",
+        "PAGE-004",
+        "PAGE-005",
+        "PAGE-006",
+        "PAGE-007",
+        "PAGE-008",
+        "PAGE-009",
+        "PAGE-010",
+        "FLOW-001",
+        "FLOW-006",
+        "FLOW-010"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-P-003",
+      "title": "PAGE-003 页面用例",
+      "evidence_level": "E4",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-002",
+        "REQ-052"
+      ],
+      "features": [
+        "FEAT-060"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-002",
+        "PAGE-003",
+        "PAGE-004",
+        "PAGE-005",
+        "PAGE-006",
+        "PAGE-007",
+        "PAGE-008",
+        "PAGE-009",
+        "PAGE-010",
+        "FLOW-001",
+        "FLOW-006",
+        "FLOW-011"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-P-004",
+      "title": "PAGE-004 页面用例",
+      "evidence_level": "E4",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-002",
+        "REQ-052"
+      ],
+      "features": [
+        "FEAT-016",
+        "FEAT-059",
+        "FEAT-060",
+        "FEAT-061"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-002",
+        "PAGE-003",
+        "PAGE-004",
+        "PAGE-005",
+        "PAGE-006",
+        "PAGE-007",
+        "PAGE-008",
+        "PAGE-009",
+        "PAGE-010",
+        "FLOW-001",
+        "FLOW-006",
+        "FLOW-011"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-P-005",
+      "title": "PAGE-005 页面用例",
+      "evidence_level": "E4",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-002",
+        "REQ-053"
+      ],
+      "features": [
+        "FEAT-062"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-002",
+        "PAGE-003",
+        "PAGE-004",
+        "PAGE-005",
+        "PAGE-006",
+        "PAGE-007",
+        "PAGE-008",
+        "PAGE-009",
+        "PAGE-010",
+        "FLOW-001",
+        "FLOW-006",
+        "FLOW-011"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-P-006",
+      "title": "PAGE-006 页面用例",
+      "evidence_level": "E4",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-002",
+        "REQ-019",
+        "REQ-030",
+        "REQ-034",
+        "REQ-035",
+        "REQ-043"
+      ],
+      "features": [
+        "FEAT-002",
+        "FEAT-020",
+        "FEAT-022",
+        "FEAT-025",
+        "FEAT-033",
+        "FEAT-037",
+        "FEAT-038",
+        "FEAT-039",
+        "FEAT-046"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-002",
+        "PAGE-003",
+        "PAGE-004",
+        "PAGE-005",
+        "PAGE-006",
+        "PAGE-007",
+        "PAGE-008",
+        "PAGE-009",
+        "PAGE-010",
+        "FLOW-001",
+        "FLOW-006",
+        "FLOW-004",
+        "FLOW-005",
+        "FLOW-009",
+        "WEB-001"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-P-007",
+      "title": "PAGE-007 页面用例",
+      "evidence_level": "E4",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-002",
+        "REQ-030"
+      ],
+      "features": [
+        "FEAT-002",
+        "FEAT-033"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-002",
+        "PAGE-003",
+        "PAGE-004",
+        "PAGE-005",
+        "PAGE-006",
+        "PAGE-007",
+        "PAGE-008",
+        "PAGE-009",
+        "PAGE-010",
+        "FLOW-001",
+        "FLOW-006"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-P-008",
+      "title": "PAGE-008 页面用例",
+      "evidence_level": "E4",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-002",
+        "REQ-038",
+        "REQ-039"
+      ],
+      "features": [
+        "FEAT-002",
+        "FEAT-041",
+        "FEAT-042"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-002",
+        "PAGE-003",
+        "PAGE-004",
+        "PAGE-005",
+        "PAGE-006",
+        "PAGE-007",
+        "PAGE-008",
+        "PAGE-009",
+        "PAGE-010",
+        "FLOW-001",
+        "FLOW-006",
+        "FLOW-008"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-P-009",
+      "title": "PAGE-009 页面用例",
+      "evidence_level": "E4",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-002",
+        "REQ-055",
+        "REQ-057"
+      ],
+      "features": [
+        "FEAT-002",
+        "FEAT-065",
+        "FEAT-067",
+        "FEAT-068"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-002",
+        "PAGE-003",
+        "PAGE-004",
+        "PAGE-005",
+        "PAGE-006",
+        "PAGE-007",
+        "PAGE-008",
+        "PAGE-009",
+        "PAGE-010",
+        "FLOW-001",
+        "FLOW-006",
+        "FLOW-012",
+        "WEB-001"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-P-010",
+      "title": "PAGE-010 页面用例",
+      "evidence_level": "E4",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-002",
+        "REQ-056"
+      ],
+      "features": [
+        "FEAT-002",
+        "FEAT-066"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-002",
+        "PAGE-003",
+        "PAGE-004",
+        "PAGE-005",
+        "PAGE-006",
+        "PAGE-007",
+        "PAGE-008",
+        "PAGE-009",
+        "PAGE-010",
+        "FLOW-001",
+        "FLOW-006",
+        "FLOW-012"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-P-011",
+      "title": "WEB-001 页面用例（联动 R）",
+      "evidence_level": "E4",
+      "release_blocking": true,
+      "requirements": [],
+      "features": [],
+      "pages_or_flows": [],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-P-012",
+      "title": "原型四态覆盖",
+      "evidence_level": "E4",
+      "release_blocking": true,
+      "requirements": [],
+      "features": [],
+      "pages_or_flows": [],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-E-001",
+      "title": "夹具广播字段一致",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-010",
+        "REQ-016",
+        "REQ-017"
+      ],
+      "features": [
+        "FEAT-010",
+        "FEAT-017"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-002",
+        "FLOW-003"
+      ],
+      "claims": [
+        "CLAIM-004"
+      ],
+      "implemented": false
+    },
+    {
+      "id": "TEST-E-002",
+      "title": "夹具连接/断开计数",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-019",
+        "REQ-022"
+      ],
+      "features": [
+        "FEAT-020",
+        "FEAT-021",
+        "FEAT-023"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-006",
+        "FLOW-004",
+        "PAGE-007",
+        "FLOW-006",
+        "FLOW-007"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-E-003",
+      "title": "LED/权限组合服务",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-024",
+        "REQ-025",
+        "REQ-026",
+        "REQ-028"
+      ],
+      "features": [
+        "FEAT-026",
+        "FEAT-027",
+        "FEAT-028",
+        "FEAT-030"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-005"
+      ],
+      "claims": [
+        "CLAIM-006",
+        "CLAIM-007"
+      ],
+      "implemented": false
+    },
+    {
+      "id": "TEST-E-004",
+      "title": "Notify 周期与订阅",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-029"
+      ],
+      "features": [
+        "FEAT-031",
+        "FEAT-032"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "PAGE-007",
+        "FLOW-005",
+        "FLOW-007"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-E-005",
+      "title": "故障注入（发现/写/断链）",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-020",
+        "REQ-021",
+        "REQ-023",
+        "REQ-027"
+      ],
+      "features": [
+        "FEAT-022",
+        "FEAT-024",
+        "FEAT-029"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-004",
+        "PAGE-007",
+        "FLOW-005"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-E-006",
+      "title": "Observer 观测手机广播",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-039",
+        "REQ-041",
+        "REQ-042"
+      ],
+      "features": [
+        "FEAT-041",
+        "FEAT-042",
+        "FEAT-043",
+        "FEAT-045"
+      ],
+      "pages_or_flows": [
+        "PAGE-008",
+        "FLOW-008"
+      ],
+      "claims": [
+        "CLAIM-011"
+      ],
+      "implemented": false
+    },
+    {
+      "id": "TEST-E-007",
+      "title": "OTA 全事务与故障",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-043",
+        "REQ-044",
+        "REQ-045"
+      ],
+      "features": [
+        "FEAT-046",
+        "FEAT-047",
+        "FEAT-048",
+        "FEAT-049",
+        "FEAT-050",
+        "FEAT-051",
+        "FEAT-052"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-009",
+        "WEB-001"
+      ],
+      "claims": [
+        "CLAIM-010"
+      ],
+      "implemented": false
+    },
+    {
+      "id": "TEST-E-008",
+      "title": "独立电脑构建复现",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-062"
+      ],
+      "features": [
+        "FEAT-073",
+        "FEAT-077"
+      ],
+      "pages_or_flows": [
+        "WEB-001",
+        "FLOW-013"
+      ],
+      "claims": [
+        "CLAIM-016"
+      ],
+      "implemented": false
+    },
+    {
+      "id": "TEST-A-001",
+      "title": "Android 权限链路",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-001",
+        "REQ-005",
+        "REQ-007"
+      ],
+      "features": [
+        "FEAT-001",
+        "FEAT-005",
+        "FEAT-007"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-001"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-A-002",
+      "title": "Android 导航",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-002"
+      ],
+      "features": [
+        "FEAT-002"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-002",
+        "PAGE-003",
+        "PAGE-004",
+        "PAGE-005",
+        "PAGE-006",
+        "PAGE-007",
+        "PAGE-008",
+        "PAGE-009",
+        "PAGE-010",
+        "FLOW-001",
+        "FLOW-006"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-A-003",
+      "title": "Android 生命周期",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-003"
+      ],
+      "features": [
+        "FEAT-003"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-002",
+        "PAGE-006",
+        "PAGE-008",
+        "FLOW-001",
+        "FLOW-006"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-A-004",
+      "title": "Android 蓝牙开关",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-008"
+      ],
+      "features": [
+        "FEAT-008"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-008",
+        "FLOW-001"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-A-005",
+      "title": "Android 扫描两轮/筛选/名称",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-010",
+        "REQ-011",
+        "REQ-012",
+        "REQ-013",
+        "REQ-014",
+        "REQ-015",
+        "REQ-016"
+      ],
+      "features": [
+        "FEAT-010",
+        "FEAT-011",
+        "FEAT-012",
+        "FEAT-013",
+        "FEAT-014",
+        "FEAT-015",
+        "FEAT-017"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-002",
+        "FLOW-003"
+      ],
+      "claims": [
+        "CLAIM-004",
+        "CLAIM-005"
+      ],
+      "implemented": false
+    },
+    {
+      "id": "TEST-A-006",
+      "title": "Android 连接/服务发现",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-019",
+        "REQ-024"
+      ],
+      "features": [
+        "FEAT-020",
+        "FEAT-021",
+        "FEAT-026"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-006",
+        "FLOW-004",
+        "FLOW-005"
+      ],
+      "claims": [
+        "CLAIM-006"
+      ],
+      "implemented": false
+    },
+    {
+      "id": "TEST-A-007",
+      "title": "Android 主动/被动断开",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-022",
+        "REQ-023"
+      ],
+      "features": [
+        "FEAT-023",
+        "FEAT-024"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "PAGE-007",
+        "FLOW-006",
+        "FLOW-007",
+        "FLOW-004"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-A-008",
+      "title": "Android GATT 读写订阅/日志",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-025",
+        "REQ-026",
+        "REQ-029",
+        "REQ-034",
+        "REQ-035",
+        "REQ-037"
+      ],
+      "features": [
+        "FEAT-027",
+        "FEAT-028",
+        "FEAT-031",
+        "FEAT-037"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-005",
+        "PAGE-007",
+        "FLOW-007"
+      ],
+      "claims": [
+        "CLAIM-006",
+        "CLAIM-008"
+      ],
+      "implemented": false
+    },
+    {
+      "id": "TEST-A-009",
+      "title": "Android 双设备隔离",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-029",
+        "REQ-030",
+        "REQ-031",
+        "REQ-032"
+      ],
+      "features": [
+        "FEAT-032",
+        "FEAT-033",
+        "FEAT-034",
+        "FEAT-035"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "PAGE-007",
+        "FLOW-005",
+        "FLOW-007",
+        "PAGE-002",
+        "PAGE-005",
+        "FLOW-006"
+      ],
+      "claims": [
+        "CLAIM-009"
+      ],
+      "implemented": false
+    },
+    {
+      "id": "TEST-A-010",
+      "title": "Android 广播+Observer",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-038",
+        "REQ-039",
+        "REQ-040",
+        "REQ-041"
+      ],
+      "features": [
+        "FEAT-041",
+        "FEAT-042",
+        "FEAT-044",
+        "FEAT-045"
+      ],
+      "pages_or_flows": [
+        "PAGE-008",
+        "FLOW-008"
+      ],
+      "claims": [
+        "CLAIM-011"
+      ],
+      "implemented": false
+    },
+    {
+      "id": "TEST-A-011",
+      "title": "Android OTA 完整事务",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-043",
+        "REQ-044",
+        "REQ-045"
+      ],
+      "features": [
+        "FEAT-046",
+        "FEAT-047",
+        "FEAT-048",
+        "FEAT-050",
+        "FEAT-051",
+        "FEAT-052"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-009",
+        "WEB-001"
+      ],
+      "claims": [
+        "CLAIM-010"
+      ],
+      "implemented": false
+    },
+    {
+      "id": "TEST-A-012",
+      "title": "Android 关于/版本一致",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-055"
+      ],
+      "features": [
+        "FEAT-065"
+      ],
+      "pages_or_flows": [
+        "PAGE-009",
+        "FLOW-012"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-A-013",
+      "title": "Android 性能与资源",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-033"
+      ],
+      "features": [
+        "FEAT-036"
+      ],
+      "pages_or_flows": [],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-A-014",
+      "title": "Android 安装烟测",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [],
+      "features": [],
+      "pages_or_flows": [],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-W-001",
+      "title": "微信权限（含定位）",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-001",
+        "REQ-005",
+        "REQ-006",
+        "REQ-007"
+      ],
+      "features": [
+        "FEAT-001",
+        "FEAT-005",
+        "FEAT-006",
+        "FEAT-007"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-001"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-W-002",
+      "title": "微信导航",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-002"
+      ],
+      "features": [
+        "FEAT-002"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-002",
+        "PAGE-003",
+        "PAGE-004",
+        "PAGE-005",
+        "PAGE-006",
+        "PAGE-007",
+        "PAGE-008",
+        "PAGE-009",
+        "PAGE-010",
+        "FLOW-001",
+        "FLOW-006"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-W-003",
+      "title": "微信生命周期",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-003"
+      ],
+      "features": [
+        "FEAT-003"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-002",
+        "PAGE-006",
+        "PAGE-008",
+        "FLOW-001",
+        "FLOW-006"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-W-004",
+      "title": "微信定位策略",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-006"
+      ],
+      "features": [
+        "FEAT-006"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-001"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-W-005",
+      "title": "微信蓝牙开关",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-008"
+      ],
+      "features": [
+        "FEAT-008"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-008",
+        "FLOW-001"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-W-006",
+      "title": "微信不支持降级",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-009"
+      ],
+      "features": [
+        "FEAT-009"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-008",
+        "FLOW-001",
+        "WEB-001"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-W-007",
+      "title": "微信扫描/GATT",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-010",
+        "REQ-012",
+        "REQ-013",
+        "REQ-015",
+        "REQ-018",
+        "REQ-019"
+      ],
+      "features": [
+        "FEAT-010",
+        "FEAT-012",
+        "FEAT-013",
+        "FEAT-014",
+        "FEAT-015",
+        "FEAT-019",
+        "FEAT-020"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-002",
+        "FLOW-003",
+        "PAGE-006",
+        "FLOW-004"
+      ],
+      "claims": [
+        "CLAIM-004",
+        "CLAIM-005",
+        "CLAIM-006"
+      ],
+      "implemented": false
+    },
+    {
+      "id": "TEST-W-008",
+      "title": "微信会话/日志导出",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-022",
+        "REQ-030",
+        "REQ-031",
+        "REQ-035"
+      ],
+      "features": [
+        "FEAT-023",
+        "FEAT-033",
+        "FEAT-034",
+        "FEAT-039",
+        "FEAT-016"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "PAGE-007",
+        "FLOW-006",
+        "FLOW-007",
+        "PAGE-002",
+        "PAGE-005",
+        "PAGE-001",
+        "PAGE-004",
+        "FLOW-011"
+      ],
+      "claims": [
+        "CLAIM-008"
+      ],
+      "implemented": false
+    },
+    {
+      "id": "TEST-W-009",
+      "title": "微信多设备/广播",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-032",
+        "REQ-038",
+        "REQ-040"
+      ],
+      "features": [
+        "FEAT-035",
+        "FEAT-041",
+        "FEAT-042",
+        "FEAT-044"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "PAGE-007",
+        "FLOW-007",
+        "PAGE-008",
+        "FLOW-008"
+      ],
+      "claims": [
+        "CLAIM-009"
+      ],
+      "implemented": false
+    },
+    {
+      "id": "TEST-W-010",
+      "title": "微信 Smart HID/分享",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-048",
+        "REQ-052",
+        "REQ-055",
+        "REQ-057"
+      ],
+      "features": [
+        "FEAT-053",
+        "FEAT-060",
+        "FEAT-065",
+        "FEAT-067"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "FLOW-010",
+        "PAGE-002",
+        "PAGE-003",
+        "PAGE-004",
+        "FLOW-011",
+        "PAGE-009",
+        "FLOW-012",
+        "PAGE-010"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-H-001",
+      "title": "Smart HID 匹配/身份",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-047"
+      ],
+      "features": [
+        "FEAT-053",
+        "FEAT-054"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-002",
+        "FLOW-010"
+      ],
+      "claims": [
+        "CLAIM-014"
+      ],
+      "implemented": false
+    },
+    {
+      "id": "TEST-H-002",
+      "title": "Smart HID 配网主路径",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-048",
+        "REQ-050",
+        "REQ-051"
+      ],
+      "features": [
+        "FEAT-054",
+        "FEAT-055",
+        "FEAT-056",
+        "FEAT-057"
+      ],
+      "pages_or_flows": [
+        "PAGE-002",
+        "FLOW-010"
+      ],
+      "claims": [
+        "CLAIM-014"
+      ],
+      "implemented": false
+    },
+    {
+      "id": "TEST-H-003",
+      "title": "Smart HID 八类错误",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-049"
+      ],
+      "features": [
+        "FEAT-057",
+        "FEAT-058"
+      ],
+      "pages_or_flows": [
+        "PAGE-002",
+        "FLOW-010"
+      ],
+      "claims": [
+        "CLAIM-014"
+      ],
+      "implemented": false
+    },
+    {
+      "id": "TEST-H-004",
+      "title": "Smart HID 历史/详情/移除",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-052",
+        "REQ-065"
+      ],
+      "features": [
+        "FEAT-059",
+        "FEAT-061"
+      ],
+      "pages_or_flows": [
+        "PAGE-003",
+        "PAGE-004",
+        "FLOW-011",
+        "PAGE-001",
+        "PAGE-006"
+      ],
+      "claims": [
+        "CLAIM-014"
+      ],
+      "implemented": false
+    },
+    {
+      "id": "TEST-H-005",
+      "title": "Smart HID 诊断/所有权",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-053"
+      ],
+      "features": [
+        "FEAT-062",
+        "FEAT-063"
+      ],
+      "pages_or_flows": [
+        "PAGE-005",
+        "FLOW-011",
+        "PAGE-002"
+      ],
+      "claims": [
+        "CLAIM-014"
+      ],
+      "implemented": false
+    },
+    {
+      "id": "TEST-H-006",
+      "title": "Smart HID 重配移交",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-053"
+      ],
+      "features": [
+        "FEAT-064"
+      ],
+      "pages_or_flows": [
+        "PAGE-005",
+        "FLOW-011",
+        "PAGE-002",
+        "PAGE-003"
+      ],
+      "claims": [
+        "CLAIM-014"
+      ],
+      "implemented": false
+    },
+    {
+      "id": "TEST-H-007",
+      "title": "Smart HID 边界矩阵",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [],
+      "features": [],
+      "pages_or_flows": [],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-H-008",
+      "title": "Smart HID 微信侧",
+      "evidence_level": "E5",
+      "release_blocking": true,
+      "requirements": [],
+      "features": [],
+      "pages_or_flows": [],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-R-001",
+      "title": "下载产物与 SHA",
+      "evidence_level": "E6",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-059"
+      ],
+      "features": [
+        "FEAT-075"
+      ],
+      "pages_or_flows": [
+        "WEB-001",
+        "FLOW-013",
+        "FLOW-014"
+      ],
+      "claims": [
+        "CLAIM-018",
+        "CLAIM-028"
+      ],
+      "implemented": false
+    },
+    {
+      "id": "TEST-R-002",
+      "title": "版本/Metadata 同源",
+      "evidence_level": "E6",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-004",
+        "REQ-056",
+        "REQ-059"
+      ],
+      "features": [
+        "FEAT-004",
+        "FEAT-066",
+        "FEAT-075",
+        "FEAT-080"
+      ],
+      "pages_or_flows": [
+        "PAGE-009",
+        "PAGE-010",
+        "WEB-001",
+        "FLOW-012",
+        "FLOW-013",
+        "FLOW-014"
+      ],
+      "claims": [
+        "CLAIM-002",
+        "CLAIM-012"
+      ],
+      "implemented": false
+    },
+    {
+      "id": "TEST-R-003",
+      "title": "声明与状态一致性",
+      "evidence_level": "E6",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-009",
+        "REQ-046",
+        "REQ-055",
+        "REQ-058",
+        "REQ-060"
+      ],
+      "features": [
+        "FEAT-009",
+        "FEAT-046",
+        "FEAT-065",
+        "FEAT-070",
+        "FEAT-071"
+      ],
+      "pages_or_flows": [
+        "PAGE-001",
+        "PAGE-008",
+        "FLOW-001",
+        "WEB-001",
+        "PAGE-006",
+        "FLOW-009",
+        "PAGE-009",
+        "FLOW-012",
+        "FLOW-013"
+      ],
+      "claims": [
+        "CLAIM-013",
+        "CLAIM-019",
+        "CLAIM-021"
+      ],
+      "implemented": false
+    },
+    {
+      "id": "TEST-R-004",
+      "title": "证据脱敏",
+      "evidence_level": "E6",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-036"
+      ],
+      "features": [
+        "FEAT-040"
+      ],
+      "pages_or_flows": [
+        "PAGE-002",
+        "PAGE-006",
+        "WEB-001"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-R-005",
+      "title": "链接矩阵",
+      "evidence_level": "E6",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-057",
+        "REQ-062",
+        "REQ-064"
+      ],
+      "features": [
+        "FEAT-068",
+        "FEAT-074",
+        "FEAT-077",
+        "FEAT-079"
+      ],
+      "pages_or_flows": [
+        "PAGE-009",
+        "PAGE-010",
+        "WEB-001",
+        "FLOW-012",
+        "FLOW-013"
+      ],
+      "claims": [
+        "CLAIM-015",
+        "CLAIM-017",
+        "CLAIM-022",
+        "CLAIM-025"
+      ],
+      "implemented": false
+    },
+    {
+      "id": "TEST-R-006",
+      "title": "SEO/性能/a11y 基线",
+      "evidence_level": "E6",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-058",
+        "REQ-061"
+      ],
+      "features": [
+        "FEAT-069",
+        "FEAT-072",
+        "FEAT-076"
+      ],
+      "pages_or_flows": [
+        "WEB-001",
+        "FLOW-013"
+      ],
+      "claims": [
+        "CLAIM-001",
+        "CLAIM-023",
+        "CLAIM-024",
+        "CLAIM-026",
+        "CLAIM-029"
+      ],
+      "implemented": false
+    },
+    {
+      "id": "TEST-R-007",
+      "title": "能力卡证据",
+      "evidence_level": "E6",
+      "release_blocking": true,
+      "requirements": [],
+      "features": [
+        "FEAT-070",
+        "FEAT-071"
+      ],
+      "pages_or_flows": [
+        "WEB-001",
+        "PAGE-009"
+      ],
+      "claims": [
+        "CLAIM-003",
+        "CLAIM-020"
+      ],
+      "implemented": false
+    },
+    {
+      "id": "TEST-R-008",
+      "title": "固件下载/复现",
+      "evidence_level": "E6",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-059"
+      ],
+      "features": [
+        "FEAT-075",
+        "FEAT-073"
+      ],
+      "pages_or_flows": [
+        "WEB-001",
+        "FLOW-013",
+        "FLOW-014"
+      ],
+      "claims": [
+        "CLAIM-016",
+        "CLAIM-018"
+      ],
+      "implemented": false
+    },
+    {
+      "id": "TEST-R-009",
+      "title": "小程序码可用",
+      "evidence_level": "E6",
+      "release_blocking": true,
+      "requirements": [],
+      "features": [
+        "FEAT-075"
+      ],
+      "pages_or_flows": [
+        "WEB-001",
+        "FLOW-013",
+        "FLOW-014"
+      ],
+      "claims": [
+        "CLAIM-027"
+      ],
+      "implemented": false
+    },
+    {
+      "id": "TEST-R-010",
+      "title": "Web 无障碍走查",
+      "evidence_level": "E6",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-061"
+      ],
+      "features": [
+        "FEAT-076"
+      ],
+      "pages_or_flows": [
+        "WEB-001"
+      ],
+      "claims": [
+        "CLAIM-030"
+      ],
+      "implemented": false
+    }
+  ],
+  "coverage": {
+    "requirements_total": 65,
+    "requirements_with_automation": 63,
+    "must_features_total": 79
+  }
+}

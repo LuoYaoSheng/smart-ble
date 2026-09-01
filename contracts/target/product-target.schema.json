@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://smart-ble.local/contracts/target/product-target.schema.json",
+  "title": "Smart BLE product target contract",
+  "type": "object",
+  "required": ["schema_version", "product_version", "status", "last_approved_at", "approved_by", "product", "requirements", "features"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+$" },
+    "product_version": { "type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$" },
+    "status": { "enum": ["DRAFT", "REVIEW", "APPROVED", "SUPERSEDED"] },
+    "last_approved_at": { "type": ["string", "null"], "format": "date-time" },
+    "approved_by": { "type": ["string", "null"] },
+    "product": {
+      "type": "object",
+      "required": ["name", "positioning", "in_scope", "out_of_scope", "public_status_vocabulary"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" },
+        "positioning": { "type": "string" },
+        "in_scope": { "type": "array", "items": { "type": "string" }, "minItems": 13, "uniqueItems": true },
+        "out_of_scope": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "public_status_vocabulary": { "type": "array", "items": { "enum": ["VERIFIED", "PREVIEW", "BLOCKED", "UNSUPPORTED", "NOT_RELEASED"] }, "minItems": 5, "uniqueItems": true }
+      }
+    },
+    "requirements": {
+      "type": "array",
+      "minItems": 65,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "required": ["id", "group", "priority", "features", "pages_or_flows", "planned_tests"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^REQ-[0-9]{3}$" },
+          "group": { "type": "string" },
+          "summary": { "type": "string" },
+          "priority": { "enum": ["Must", "Should", "Could", "Not Now"] },
+          "features": { "type": "array", "items": { "type": "string", "pattern": "^FEAT-[0-9]{3}$" }, "minItems": 1, "uniqueItems": true },
+          "pages_or_flows": { "type": "array", "items": { "type": "string", "pattern": "^(PAGE-[0-9]{3}|WEB-001|FLOW-[0-9]{3}|runtime|docs|repo)$" }, "minItems": 1, "uniqueItems": true },
+          "planned_tests": { "type": "array", "items": { "type": "string", "pattern": "^TEST-[CUPIEAWHR]-[0-9]{3}$" }, "minItems": 1, "uniqueItems": true }
+        }
+      }
+    },
+    "features": {
+      "type": "array",
+      "minItems": 80,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "required": ["id", "group", "name", "priority", "requirements", "pages_or_flows", "planned_tests", "minimum_evidence_level", "release_blocking"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^FEAT-[0-9]{3}$" },
+          "group": { "enum": ["SYS", "PERM", "SCAN", "AD", "CONN", "GATT", "SESSION", "LOG", "PERI", "OTA", "HID-PROV", "HID-HIST", "PRODUCT", "WEB", "DOC"] },
+          "name": { "type": "string" },
+          "priority": { "enum": ["Must", "Should", "Could", "Not Now"] },
+          "requirements": { "type": "array", "items": { "type": "string", "pattern": "^REQ-[0-9]{3}$" }, "minItems": 1, "uniqueItems": true },
+          "pages_or_flows": { "type": "array", "items": { "type": "string", "pattern": "^(PAGE-[0-9]{3}|WEB-001|FLOW-[0-9]{3}|runtime|docs|repo)$" }, "minItems": 1, "uniqueItems": true },
+          "planned_tests": { "type": "array", "items": { "type": "string", "pattern": "^TEST-[CUPIEAWHR]-[0-9]{3}$" }, "minItems": 1, "uniqueItems": true },
+          "minimum_evidence_level": { "enum": ["E0", "E1", "E2", "E3", "E4", "E5", "E6"] },
+          "release_blocking": { "type": "boolean" }
+        }
+      }
+    }
+  }
+}

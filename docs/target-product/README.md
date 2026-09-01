@@ -1,7 +1,7 @@
 # Smart BLE 目标产品规范入口
 
-> 状态：DRAFT / TP-G0 待完整填写与用户批准
-> 文档版本：1.0
+> 状态：REVIEW / TP-G0 已完成填写，等待用户审阅 [`REVIEW_SUMMARY.md`](REVIEW_SUMMARY.md) 并批准
+> 文档版本：1.1
 > Owner：Smart BLE Product / Engineering
 > 最后更新：2026-09-01
 > 当前方法论：[`目标产品规范、测试体系、差距分析与修复总计划`](../plans/2026-09-01-target-product-spec-test-gap-remediation-plan.md)

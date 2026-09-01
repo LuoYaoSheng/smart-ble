@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://smart-ble.local/contracts/target/smart-hid-target.schema.json",
+  "title": "Smart HID profile target contract",
+  "type": "object",
+  "required": ["schema_version", "product_version", "status", "last_approved_at", "approved_by", "canonical", "gatt", "matching", "pairing_qr", "framing", "candidate_validation", "state_machine", "errors", "session_rules", "layering_rules"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+$" },
+    "product_version": { "type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$" },
+    "status": { "enum": ["DRAFT", "REVIEW", "APPROVED", "SUPERSEDED"] },
+    "last_approved_at": { "type": ["string", "null"], "format": "date-time" },
+    "approved_by": { "type": ["string", "null"] },
+    "canonical": {
+      "type": "object", "required": ["external_canonical", "mirror_file", "lock_file"],
+      "additionalProperties": false,
+      "properties": {
+        "external_canonical": { "type": "string" },
+        "mirror_file": { "type": "string" },
+        "lock_file": { "type": "string" },
+        "mqtt_schema_reference": { "type": "string" }
+      }
+    },
+    "gatt": {
+      "type": "object", "required": ["service_uuid", "characteristics"],
+      "additionalProperties": false,
+      "properties": {
+        "service_uuid": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" },
+        "characteristics": {
+          "type": "array", "minItems": 3, "uniqueItems": true,
+          "items": {
+            "type": "object", "required": ["name", "uuid", "properties"],
+            "additionalProperties": false,
+            "properties": {
+              "name": { "enum": ["INFO", "INPUT", "STATUS"] },
+              "uuid": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" },
+              "properties": { "type": "array", "items": { "enum": ["read", "write", "notify"] }, "minItems": 1, "uniqueItems": true },
+              "encrypted_link_required": { "type": "boolean" }
+            }
+          }
+        },
+        "name_prefix": { "type": "string" },
+        "name_pattern": { "type": "string" },
+        "device_id_pattern": { "type": "string" }
+      }
+    },
+    "matching": {
+      "type": "object", "required": ["strong", "weak", "identity_confirmation"],
+      "additionalProperties": false,
+      "properties": {
+        "strong": { "type": "string" },
+        "weak": { "type": "string" },
+        "identity_confirmation": {
+          "type": "object", "required": ["conditions", "on_failure"],
+          "additionalProperties": false,
+          "properties": {
+            "conditions": { "type": "array", "items": { "type": "string" }, "minItems": 3 },
+            "on_failure": { "type": "string" }
+          }
+        }
+      }
+    },
+    "pairing_qr": {
+      "type": "object", "required": ["scheme", "fields", "token_lifetime", "token_storage"],
+      "additionalProperties": false,
+      "properties": {
+        "scheme": { "type": "string" },
+        "fields": { "type": "array", "items": { "type": "string" }, "minItems": 3 },
+        "token_lifetime": { "type": "string" },
+        "token_storage": { "type": "string" },
+        "default_port": { "type": "integer", "minimum": 1, "maximum": 65535 },
+        "token_pattern": { "type": "string" }
+      }
+    },
+    "framing": {
+      "type": "object", "required": ["format", "max_chunk_bytes", "max_frames", "max_assembled_bytes", "chunk_size_formula"],
+      "additionalProperties": false,
+      "properties": {
+        "format": { "type": "string" },
+        "max_chunk_bytes": { "type": "integer", "minimum": 17, "maximum": 128 },
+        "max_frames": { "type": "integer", "minimum": 1, "maximum": 64 },
+        "max_assembled_bytes": { "type": "integer" },
+        "chunk_size_formula": { "type": "string" },
+        "write_order": { "type": "string" }
+      }
+    },
+    "candidate_validation": {
+      "type": "object", "required": ["fields"], "additionalProperties": false,
+      "properties": {
+        "fields": {
+          "type": "array", "uniqueItems": true,
+          "items": {
+            "type": "object", "required": ["name", "rule"],
+            "additionalProperties": false,
+            "properties": { "name": { "type": "string" }, "rule": { "type": "string" } }
+          }
+        }
+      }
+    },
+    "state_machine": {
+      "type": "object", "required": ["states", "steps", "terminal_states", "client_waiter_timeout_ms"],
+      "additionalProperties": false,
+      "properties": {
+        "states": { "type": "array", "minItems": 10, "uniqueItems": true, "items": { "type": "string" } },
+        "steps": { "type": "array", "minItems": 7, "uniqueItems": true, "items": { "type": "string" } },
+        "terminal_states": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
+        "client_waiter_timeout_ms": { "type": "integer", "minimum": 1000 }
+      }
+    },
+    "errors": {
+      "type": "array", "minItems": 8, "uniqueItems": true,
+      "items": {
+        "type": "object", "required": ["code", "err_id", "recovery"],
+        "additionalProperties": false,
+        "properties": {
+          "code": { "type": "string", "pattern": "^[a-z_]+$" },
+          "err_id": { "type": "string", "pattern": "^ERR-HID-[0-9]{2}$" },
+          "recovery": { "type": "string" }
+        }
+      }
+    },
+    "session_rules": {
+      "type": "object", "required": ["ready_release", "owned_borrowed", "history"],
+      "additionalProperties": false,
+      "properties": {
+        "ready_release": { "type": "string" },
+        "owned_borrowed": { "type": "string" },
+        "history": {
+          "type": "object", "required": ["storage_key", "ttl_days", "max_devices", "forbidden_fields"],
+          "additionalProperties": false,
+          "properties": {
+            "storage_key": { "type": "string" },
+            "ttl_days": { "type": "integer", "minimum": 1 },
+            "max_devices": { "type": "integer", "minimum": 1 },
+            "forbidden_fields": { "type": "array", "items": { "type": "string" }, "minItems": 2, "uniqueItems": true }
+          }
+        },
+        "ready_stops_advertising": { "type": "boolean" }
+      }
+    },
+    "layering_rules": {
+      "type": "object", "required": ["generic_layer_no_import", "removable_without_regression", "mqtt_control_out_of_scope"],
+      "additionalProperties": false,
+      "properties": {
+        "generic_layer_no_import": { "type": "boolean" },
+        "removable_without_regression": { "type": "boolean" },
+        "mqtt_control_out_of_scope": { "type": "boolean" },
+        "does_not_block_ble_gate": { "type": "boolean" },
+        "public_status_decision": { "type": "string" }
+      }
+    },
+    "planned_tests": { "type": "array", "items": { "type": "string", "pattern": "^TEST-[CHU]-[0-9]{3}$" }, "minItems": 1, "uniqueItems": true },
+    "minimum_evidence_level": { "enum": ["E0", "E1", "E2", "E3", "E4", "E5", "E6"] },
+    "release_blocking": { "type": "boolean" }
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "schema_version": "1.0",
+  "product_version": "1.0.0",
+  "status": "REVIEW",
+  "last_approved_at": null,
+  "approved_by": null,
+  "pages": [
+    {
+      "id": "PAGE-001", "name": "扫描", "route": "pages/index/index", "type": "tab", "template_sections": 24,
+      "required_params": [], "optional_params": [], "forbidden_params": ["任何设备数据/敏感字段"],
+      "operations": ["OP-P001-01","OP-P001-02","OP-P001-03","OP-P001-04","OP-P001-05","OP-P001-06","OP-P001-07","OP-P001-08","OP-P001-09","OP-P001-10","OP-P001-11","OP-P001-12","OP-P001-13","OP-P001-14","OP-P001-15"],
+      "states": ["STATE-P001-01","STATE-P001-02","STATE-P001-03","STATE-P001-04","STATE-P001-05","STATE-P001-06","STATE-P001-07","STATE-P001-08","STATE-P001-09","STATE-P001-10"],
+      "entry_from": ["冷启动默认", "四 Tab 切换", "PAGE-004 空态", "PAGE-007 空态", "微信分享回流"],
+      "exit_to": ["PAGE-002", "PAGE-003", "PAGE-004", "PAGE-006"],
+      "planned_tests": ["TEST-P-001","TEST-A-001","TEST-A-005","TEST-W-001","TEST-W-007","TEST-E-001"],
+      "minimum_evidence_level": "E5", "release_blocking": true
+    },
+    {
+      "id": "PAGE-002", "name": "Smart HID 配网", "route": "pages/hid/add", "type": "secondary", "template_sections": 24,
+      "required_params": ["deviceId"], "optional_params": [], "forbidden_params": ["密码", "token", "QR 内容"],
+      "operations": ["OP-P002-01","OP-P002-02","OP-P002-03","OP-P002-04","OP-P002-05","OP-P002-06","OP-P002-07","OP-P002-08","OP-P002-09","OP-P002-10","OP-P002-11"],
+      "states": ["STATE-P002-01","STATE-P002-02","STATE-P002-03","STATE-P002-04","STATE-P002-05","STATE-P002-06","STATE-P002-07","STATE-P002-08","STATE-P002-09","STATE-P002-10","STATE-P002-11","STATE-P002-12"],
+      "entry_from": ["PAGE-001 Profile 动作", "PAGE-003 重新配置", "PAGE-005 重新配网"],
+      "exit_to": ["PAGE-003", "PAGE-005", "来源页"],
+      "planned_tests": ["TEST-P-002","TEST-U-015","TEST-I-009","TEST-H-001","TEST-H-002","TEST-H-003","TEST-W-010"],
+      "minimum_evidence_level": "E5", "release_blocking": true
+    },
+    {
+      "id": "PAGE-003", "name": "Smart HID 详情", "route": "pages/hid/detail", "type": "secondary", "template_sections": 24,
+      "required_params": ["deviceId(URL 编码)"], "optional_params": [], "forbidden_params": ["密码", "token"],
+      "operations": ["OP-P003-01","OP-P003-02","OP-P003-03","OP-P003-04"],
+      "states": ["STATE-P003-01","STATE-P003-02"],
+      "entry_from": ["PAGE-001", "PAGE-004", "PAGE-002 成功", "PAGE-005 返回"],
+      "exit_to": ["PAGE-002", "PAGE-005", "PAGE-006", "来源页"],
+      "planned_tests": ["TEST-P-003","TEST-H-004","TEST-W-010"],
+      "minimum_evidence_level": "E4", "release_blocking": true
+    },
+    {
+      "id": "PAGE-004", "name": "Smart HID 历史", "route": "pages/hid/history", "type": "secondary", "template_sections": 24,
+      "required_params": [], "optional_params": [], "forbidden_params": ["密码", "token"],
+      "operations": ["OP-P004-01","OP-P004-02","OP-P004-03","OP-P004-04","OP-P004-05"],
+      "states": ["STATE-P004-01","STATE-P004-02","STATE-P004-03"],
+      "entry_from": ["PAGE-001 全部历史（唯一入口）"],
+      "exit_to": ["PAGE-003", "PAGE-001"],
+      "planned_tests": ["TEST-P-004","TEST-U-015","TEST-H-004","TEST-W-010"],
+      "minimum_evidence_level": "E4", "release_blocking": true
+    },
+    {
+      "id": "PAGE-005", "name": "Smart HID 诊断", "route": "pages/hid/diagnostics", "type": "secondary", "template_sections": 24,
+      "required_params": ["deviceId"], "optional_params": [], "forbidden_params": ["密码", "token"],
+      "operations": ["OP-P005-01","OP-P005-02","OP-P005-03","OP-P005-04","OP-P005-05","OP-P005-06"],
+      "states": ["STATE-P005-01","STATE-P005-02","STATE-P005-03","STATE-P005-04","STATE-P005-05","STATE-P005-06"],
+      "entry_from": ["PAGE-003 运行诊断", "PAGE-002 错误恢复"],
+      "exit_to": ["PAGE-003", "PAGE-002"],
+      "planned_tests": ["TEST-P-005","TEST-I-009","TEST-H-005","TEST-H-006","TEST-W-010"],
+      "minimum_evidence_level": "E5", "release_blocking": true
+    },
+    {
+      "id": "PAGE-006", "name": "通用设备详情", "route": "pages/device/detail", "type": "secondary", "template_sections": 24,
+      "required_params": ["deviceId"], "optional_params": ["name", "rssi", "profileId"], "forbidden_params": ["密码", "token", "完整广播数据"],
+      "operations": ["OP-P006-01","OP-P006-02","OP-P006-03","OP-P006-04","OP-P006-05","OP-P006-06","OP-P006-07","OP-P006-08","OP-P006-09","OP-P006-10","OP-P006-11","OP-P006-12","OP-P006-13","OP-P006-14","OP-P006-15"],
+      "states": ["STATE-P006-01","STATE-P006-02","STATE-P006-03","STATE-P006-04","STATE-P006-05","STATE-P006-06","STATE-P006-07","STATE-P006-08","STATE-P006-09","STATE-P006-10"],
+      "entry_from": ["PAGE-001 连接", "PAGE-007 卡片", "PAGE-003 高级 BLE"],
+      "exit_to": ["来源页"],
+      "planned_tests": ["TEST-P-006","TEST-U-009","TEST-U-010","TEST-U-011","TEST-U-012","TEST-I-003","TEST-I-004","TEST-I-005","TEST-I-008","TEST-A-006","TEST-A-008","TEST-A-011","TEST-W-007","TEST-W-008","TEST-E-002","TEST-E-003","TEST-E-004","TEST-E-005","TEST-E-007"],
+      "minimum_evidence_level": "E5", "release_blocking": true
+    },
+    {
+      "id": "PAGE-007", "name": "已连接", "route": "pages/connected/index", "type": "tab", "template_sections": 24,
+      "required_params": [], "optional_params": [], "forbidden_params": [],
+      "operations": ["OP-P007-01","OP-P007-02","OP-P007-03","OP-P007-04","OP-P007-05"],
+      "states": ["STATE-P007-01","STATE-P007-02","STATE-P007-03"],
+      "entry_from": ["Tab 切换"],
+      "exit_to": ["PAGE-006", "PAGE-003", "PAGE-001"],
+      "planned_tests": ["TEST-P-007","TEST-I-006","TEST-A-007","TEST-A-009","TEST-W-008","TEST-W-009","TEST-E-002"],
+      "minimum_evidence_level": "E5", "release_blocking": true
+    },
+    {
+      "id": "PAGE-008", "name": "广播", "route": "pages/broadcast/index", "type": "tab", "template_sections": 24,
+      "required_params": [], "optional_params": [], "forbidden_params": [],
+      "operations": ["OP-P008-01","OP-P008-02","OP-P008-03","OP-P008-04","OP-P008-05","OP-P008-06","OP-P008-07"],
+      "states": ["STATE-P008-01","STATE-P008-02","STATE-P008-03","STATE-P008-04","STATE-P008-05","STATE-P008-06","STATE-P008-07","STATE-P008-08","STATE-P008-09","STATE-P008-10","STATE-P008-11","STATE-P008-12"],
+      "entry_from": ["Tab 切换"],
+      "exit_to": [],
+      "planned_tests": ["TEST-P-008","TEST-U-014","TEST-I-007","TEST-A-010","TEST-W-009","TEST-E-006"],
+      "minimum_evidence_level": "E5", "release_blocking": true
+    },
+    {
+      "id": "PAGE-009", "name": "关于", "route": "pages/about/index", "type": "tab", "template_sections": 24,
+      "required_params": [], "optional_params": [], "forbidden_params": [],
+      "operations": ["OP-P009-01","OP-P009-02","OP-P009-03","OP-P009-04","OP-P009-05","OP-P009-06","OP-P009-07","OP-P009-08","OP-P009-09","OP-P009-10","OP-P009-11"],
+      "states": ["STATE-P009-01","STATE-P009-02","STATE-P009-03"],
+      "entry_from": ["Tab 切换"],
+      "exit_to": ["PAGE-010", "外部链接"],
+      "planned_tests": ["TEST-P-009","TEST-C-006","TEST-A-012","TEST-W-010","TEST-R-003","TEST-R-005"],
+      "minimum_evidence_level": "E6", "release_blocking": true
+    },
+    {
+      "id": "PAGE-010", "name": "版本记录", "route": "pages/about/version", "type": "secondary", "template_sections": 24,
+      "required_params": [], "optional_params": [], "forbidden_params": [],
+      "operations": ["OP-P010-01","OP-P010-02","OP-P010-03","OP-P010-04"],
+      "states": ["STATE-P010-01","STATE-P010-02"],
+      "entry_from": ["PAGE-009 版本记录"],
+      "exit_to": ["PAGE-009"],
+      "planned_tests": ["TEST-P-010","TEST-C-006","TEST-A-012","TEST-R-002"],
+      "minimum_evidence_level": "E4", "release_blocking": true
+    },
+    {
+      "id": "WEB-001", "name": "公开落地页", "route": "/", "type": "web", "template_sections": 24,
+      "required_params": [], "optional_params": ["锚点：#download/#evidence/#quickstart/#esp32/#smart-hid/#platforms"], "forbidden_params": [],
+      "operations": ["OP-W001-01","OP-W001-02","OP-W001-03","OP-W001-04","OP-W001-05","OP-W001-06","OP-W001-07","OP-W001-08","OP-W001-09","OP-W001-10"],
+      "states": ["STATE-W001-01","STATE-W001-02","STATE-W001-03","STATE-W001-04"],
+      "entry_from": ["搜索引擎", "GitHub README", "App 关于页", "分享"],
+      "exit_to": ["外部下载/仓库/文档", "站内锚点"],
+      "planned_tests": ["TEST-R-001","TEST-R-002","TEST-R-003","TEST-R-005","TEST-R-006","TEST-R-007","TEST-R-008","TEST-R-009","TEST-R-010"],
+      "minimum_evidence_level": "E6", "release_blocking": true
+    }
+  ]
+}

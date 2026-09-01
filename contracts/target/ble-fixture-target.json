@@ -1,0 +1,87 @@
+{
+  "schema_version": "1.0",
+  "product_version": "1.0.0",
+  "status": "REVIEW",
+  "last_approved_at": null,
+  "approved_by": null,
+  "modes": [
+    { "id": "fixture_peripheral", "name": "Peripheral 夹具", "advertised_name": "BLEToolkit-Server", "purpose": "对外广播并提供 GATT/LED/权限演示/OTA 服务，供手机连接调试与 E5 验证", "provides_gatt": true },
+    { "id": "fixture_observer", "name": "Observer 夹具", "advertised_name": "BLEToolkit-Observer", "purpose": "扫描手机广播并输出串口 JSON 观测流，作为手机 Peripheral 的正式证据", "provides_gatt": false }
+  ],
+  "services": [
+    {
+      "id": "SVC-01", "uuid": "4fafc201-1fb5-459e-8fcc-c5c9c331914b",
+      "characteristics": [
+        { "uuid": "beb5483e-36e1-4688-b7f5-ea07361b26a8", "name": "Control", "properties": ["read", "write", "notify"] },
+        { "uuid": "beb5483e-36e1-4688-b7f5-ea07361b26a9", "name": "StatusNotify", "properties": ["write", "notify"] }
+      ]
+    },
+    {
+      "id": "SVC-02", "uuid": "4fafc201-1fb5-459e-8fcc-c5c9c331914c",
+      "characteristics": [
+        { "uuid": "beb5483e-36e1-4688-b7f5-ea07361b26b0", "name": "READ_ONLY", "properties": ["read"] },
+        { "uuid": "beb5483e-36e1-4688-b7f5-ea07361b26b1", "name": "WRITE_ONLY", "properties": ["write"] },
+        { "uuid": "beb5483e-36e1-4688-b7f5-ea07361b26b2", "name": "NOTIFY_ONLY", "properties": ["notify"] },
+        { "uuid": "beb5483e-36e1-4688-b7f5-ea07361b26b3", "name": "READ_WRITE", "properties": ["read", "write"] },
+        { "uuid": "beb5483e-36e1-4688-b7f5-ea07361b26b4", "name": "READ_NOTIFY", "properties": ["read", "notify"] },
+        { "uuid": "beb5483e-36e1-4688-b7f5-ea07361b26b5", "name": "WRITE_NOTIFY", "properties": ["write", "notify"] },
+        { "uuid": "beb5483e-36e1-4688-b7f5-ea07361b26b6", "name": "ALL", "properties": ["read", "write", "notify"] }
+      ]
+    },
+    {
+      "id": "SVC-03", "uuid": "4fafc201-1fb5-459e-8fcc-c5c9c331914d",
+      "characteristics": [
+        { "uuid": "beb5483e-36e1-4688-b7f5-ea07361b26c0", "name": "OTA Control", "properties": ["read", "write"] },
+        { "uuid": "beb5483e-36e1-4688-b7f5-ea07361b26c1", "name": "OTA Data", "properties": ["write_no_response"] },
+        { "uuid": "beb5483e-36e1-4688-b7f5-ea07361b26c2", "name": "OTA Status", "properties": ["read", "notify"] }
+      ]
+    }
+  ],
+  "led_commands": [
+    { "hex": "FF00", "text": "关灯", "effect": "state=off" },
+    { "hex": "FF01", "text": "开灯", "effect": "state=on" },
+    { "hex": "FF02", "effect": "200ms 快闪" },
+    { "hex": "FF03", "effect": "1000ms 慢闪" }
+  ],
+  "ota_transaction": {
+    "steps": [
+      "客户端订阅 STATUS",
+      "CTRL start(size/chunk_size/target_version)",
+      "设备校验并 STATUS ready(max_chunk)",
+      "DATA 分包写（≤max_chunk，按序）",
+      "全部到达后客户端 CTRL commit",
+      "设备校验镜像并 STATUS success",
+      "设备 reboot 到新固件",
+      "客户端重扫描/重连",
+      "读 firmware_version(system_info)",
+      "与 target_version 一致 → 判定成功"
+    ],
+    "success_definition": "仅当第 10 步版本一致（STATE-OTA-10）才允许显示升级成功；其余任何状态不得渲染成功",
+    "abort_semantics": "取消=CTRL abort，设备丢弃暂存镜像回到 idle，旧固件继续可运行；abort 失败客户端兜底断开重连",
+    "error_codes": ["OTA_ERR_SPACE", "OTA_ERR_CHECKSUM", "OTA_ERR_SIZE", "OTA_ERR_STATE", "OTA_ERR_FLASH"]
+  },
+  "fault_injection": [
+    { "id": "delayed_response", "behavior": "写响应延迟 2s", "verifies": "Write 队列与超时", "default": "off" },
+    { "id": "disconnect_on_write", "behavior": "第 N 次写入时主动断链", "verifies": "被动断开重连", "default": "off" },
+    { "id": "reject_write", "behavior": "拒绝全部写入", "verifies": "ERR-GATT-04", "default": "off" },
+    { "id": "notify_burst", "behavior": "Notify 连发 20 条", "verifies": "推送路由与 UI 节流", "default": "off" },
+    { "id": "ota_wrong_size", "behavior": "start size 与实际不符", "verifies": "ERR-OTA-06", "default": "off" },
+    { "id": "ota_fail_commit", "behavior": "commit 永不 success", "verifies": "ERR-OTA-04", "default": "off" },
+    { "id": "ota_no_success", "behavior": "data 完成但静默", "verifies": "超时路径", "default": "off" }
+  ],
+  "serial_json": {
+    "baud": 115200,
+    "event_types": ["adv", "conn", "disc", "led", "notify", "ota", "err", "obs"],
+    "observer_fields": ["ts", "name", "rssi", "uuids", "mfg", "svc_data", "raw", "last_seen"],
+    "observer_min_rate": "≥5 条/秒不丢帧（环形缓冲）"
+  },
+  "build": {
+    "toolchain": "PlatformIO",
+    "commands": ["pio run", "pio run -t upload", "pio device monitor --baud 115200"],
+    "no_fixed_serial_port": true,
+    "artifacts": ["firmware.bin（peripheral）", "firmware.bin（observer）", "bootloader/partitions（按板型）", "manifest.json（版本/shortsha/SHA256）"]
+  },
+  "planned_tests": ["TEST-E-001", "TEST-E-002", "TEST-E-003", "TEST-E-004", "TEST-E-005", "TEST-E-006", "TEST-E-007", "TEST-E-008", "TEST-C-012"],
+  "minimum_evidence_level": "E5",
+  "release_blocking": true
+}

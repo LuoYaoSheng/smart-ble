@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://smart-ble.local/contracts/target/ble-fixture-target.schema.json",
+  "title": "LightBLE ESP32 fixture target contract",
+  "type": "object",
+  "required": ["schema_version", "product_version", "status", "last_approved_at", "approved_by", "modes", "services", "ota_transaction", "fault_injection", "serial_json", "build"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+$" },
+    "product_version": { "type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$" },
+    "status": { "enum": ["DRAFT", "REVIEW", "APPROVED", "SUPERSEDED"] },
+    "last_approved_at": { "type": ["string", "null"], "format": "date-time" },
+    "approved_by": { "type": ["string", "null"] },
+    "modes": {
+      "type": "array", "minItems": 2, "uniqueItems": true,
+      "items": {
+        "type": "object", "required": ["id", "name", "advertised_name", "purpose"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "enum": ["fixture_peripheral", "fixture_observer"] },
+          "name": { "type": "string" },
+          "advertised_name": { "type": "string" },
+          "purpose": { "type": "string" },
+          "provides_gatt": { "type": "boolean" }
+        }
+      }
+    },
+    "services": {
+      "type": "array", "minItems": 3, "uniqueItems": true,
+      "items": {
+        "type": "object", "required": ["id", "uuid", "characteristics"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^SVC-[0-9]{2}$" },
+          "uuid": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" },
+          "characteristics": {
+            "type": "array", "minItems": 1, "uniqueItems": true,
+            "items": {
+              "type": "object", "required": ["uuid", "properties"],
+              "additionalProperties": false,
+              "properties": {
+                "uuid": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" },
+                "name": { "type": "string" },
+                "properties": { "type": "array", "items": { "enum": ["read", "write", "write_no_response", "notify"] }, "minItems": 1, "uniqueItems": true }
+              }
+            }
+          }
+        }
+      }
+    },
+    "led_commands": {
+      "type": "array", "uniqueItems": true,
+      "items": {
+        "type": "object", "required": ["hex", "effect"],
+        "properties": { "hex": { "type": "string", "pattern": "^FF0[0-3]$" }, "text": { "type": "string" }, "effect": { "type": "string" } },
+        "additionalProperties": false
+      }
+    },
+    "ota_transaction": {
+      "type": "object", "required": ["steps", "success_definition", "abort_semantics"],
+      "additionalProperties": false,
+      "properties": {
+        "steps": { "type": "array", "minItems": 10, "maxItems": 10, "items": { "type": "string" } },
+        "success_definition": { "type": "string" },
+        "abort_semantics": { "type": "string" },
+        "error_codes": { "type": "array", "items": { "type": "string", "pattern": "^OTA_ERR_[A-Z]+$" }, "uniqueItems": true }
+      }
+    },
+    "fault_injection": {
+      "type": "array", "uniqueItems": true,
+      "items": {
+        "type": "object", "required": ["id", "behavior"],
+        "additionalProperties": false,
+        "properties": { "id": { "type": "string" }, "behavior": { "type": "string" }, "verifies": { "type": "string" }, "default": { "enum": ["off", "on"] } }
+      }
+    },
+    "serial_json": {
+      "type": "object", "required": ["baud", "event_types", "observer_fields"],
+      "additionalProperties": false,
+      "properties": {
+        "baud": { "type": "integer", "minimum": 9600 },
+        "event_types": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "observer_fields": { "type": "array", "items": { "type": "string" }, "minItems": 7, "uniqueItems": true },
+        "observer_min_rate": { "type": "string" }
+      }
+    },
+    "build": {
+      "type": "object", "required": ["toolchain", "commands", "no_fixed_serial_port"],
+      "additionalProperties": false,
+      "properties": {
+        "toolchain": { "type": "string" },
+        "commands": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "no_fixed_serial_port": { "type": "boolean" },
+        "artifacts": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+      }
+    },
+    "planned_tests": { "type": "array", "items": { "type": "string", "pattern": "^TEST-[CE]-[0-9]{3}$" }, "minItems": 1, "uniqueItems": true },
+    "minimum_evidence_level": { "enum": ["E0", "E1", "E2", "E3", "E4", "E5", "E6"] },
+    "release_blocking": { "type": "boolean" }
+  }
+}

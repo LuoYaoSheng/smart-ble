@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://smart-ble.local/contracts/target/landing-target.schema.json",
+  "title": "WEB-001 landing page target contract",
+  "type": "object",
+  "required": ["schema_version", "product_version", "status", "last_approved_at", "approved_by", "sections", "claims", "download_rules", "qr_rules", "degradation", "seo_a11y"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+$" },
+    "product_version": { "type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$" },
+    "status": { "enum": ["DRAFT", "REVIEW", "APPROVED", "SUPERSEDED"] },
+    "last_approved_at": { "type": ["string", "null"], "format": "date-time" },
+    "approved_by": { "type": ["string", "null"] },
+    "sections": {
+      "type": "array", "minItems": 14, "uniqueItems": true,
+      "items": {
+        "type": "object", "required": ["order", "id", "name"],
+        "additionalProperties": false,
+        "properties": {
+          "order": { "type": "integer", "minimum": 1 },
+          "id": { "type": "string", "pattern": "^SEC-[0-9]{2}$" },
+          "name": { "type": "string" },
+          "anchor": { "type": "string" },
+          "data_source": { "enum": ["release_metadata", "static", "build_artifacts", "evidence_index"] }
+        }
+      }
+    },
+    "claims": {
+      "type": "array", "minItems": 30, "uniqueItems": true,
+      "items": {
+        "type": "object", "required": ["id", "statement", "evidence_prerequisite", "tests"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^CLAIM-[0-9]{3}$" },
+          "statement": { "type": "string" },
+          "evidence_prerequisite": { "type": "string" },
+          "tests": { "type": "array", "items": { "type": "string", "pattern": "^TEST-[RACWEH]-[0-9]{3}$" }, "minItems": 1, "uniqueItems": true },
+          "allowed_status": { "enum": ["VERIFIED", "PREVIEW", "BLOCKED", "UNSUPPORTED", "NOT_RELEASED"] }
+        }
+      }
+    },
+    "download_rules": {
+      "type": "object", "required": ["no_fake_download", "sha_required", "artifact_kinds"],
+      "additionalProperties": false,
+      "properties": {
+        "no_fake_download": { "type": "boolean" },
+        "sha_required": { "type": "boolean" },
+        "artifact_kinds": { "type": "array", "items": { "enum": ["apk", "firmware-peripheral", "firmware-observer"] }, "minItems": 3, "uniqueItems": true },
+        "missing_artifact_behavior": { "type": "string" },
+        "apk_source_constraint": { "type": "string" }
+      }
+    },
+    "qr_rules": {
+      "type": "object", "required": ["official_only", "pre_release_scan_test"],
+      "additionalProperties": false,
+      "properties": {
+        "official_only": { "type": "boolean" },
+        "pre_release_scan_test": { "type": "boolean" },
+        "text_equivalent_required": { "type": "boolean" }
+      }
+    },
+    "degradation": {
+      "type": "object", "required": ["states"],
+      "additionalProperties": false,
+      "properties": {
+        "states": { "type": "array", "minItems": 4, "uniqueItems": true, "items": { "type": "string" } },
+        "no_js_core_content": { "type": "boolean" }
+      }
+    },
+    "seo_a11y": {
+      "type": "object", "required": ["canonical_consistent", "contrast_min", "keyboard_navigable", "alt_required"],
+      "additionalProperties": false,
+      "properties": {
+        "canonical_consistent": { "type": "boolean" },
+        "contrast_min": { "type": "string" },
+        "keyboard_navigable": { "type": "boolean" },
+        "alt_required": { "type": "boolean" },
+        "lcp_target": { "type": "string" },
+        "dark_mode": { "type": "boolean" },
+        "forbidden_positioning": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "planned_tests": { "type": "array", "items": { "type": "string", "pattern": "^TEST-R-[0-9]{3}$" }, "minItems": 1, "uniqueItems": true },
+    "minimum_evidence_level": { "enum": ["E0", "E1", "E2", "E3", "E4", "E5", "E6"] },
+    "release_blocking": { "type": "boolean" }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0",
+  "product_version": "1.0.0",
+  "status": "REVIEW",
+  "last_approved_at": null,
+  "approved_by": null,
+  "platforms": [
+    { "id": "android-app", "name": "UniApp Android App", "role": "正式产品入口；BLE 能力 Full", "public_status_target": "VERIFIED", "note": "E5 通过后 VERIFIED；广播名系统接管见 DEC-004" },
+    { "id": "wechat-miniprogram", "name": "BLE Toolkit+ 微信小程序", "role": "正式产品入口；权限/文件/Peripheral 路径 Adapted", "public_status_target": "VERIFIED", "note": "定位权限策略 DEC-003；并行上限 E5 实测" },
+    { "id": "h5", "name": "H5（文档站）", "role": "文档/入口/模拟；BLE UNSUPPORTED", "public_status_target": "UNSUPPORTED", "note": "禁止发起任何真实 BLE API" },
+    { "id": "ios-app", "name": "UniApp iOS App", "role": "目标定义完整、产物未发布", "public_status_target": "NOT_RELEASED", "note": "DEC-005" }
+  ],
+  "capabilities": [
+    { "id": "CAP-01", "name": "四 Tab 与 10 页导航", "android_app": "Full", "wechat": "Full", "h5": "Full", "ios_app": "Full", "degradation_ui": "iOS 未发布不影响定义" },
+    { "id": "CAP-02", "name": "平台/权限状态展示", "android_app": "Full", "wechat": "Full", "h5": "Full", "ios_app": "Full", "degradation_ui": "H5 BLE 状态恒 UNSUPPORTED" },
+    { "id": "CAP-03", "name": "蓝牙权限请求", "android_app": "Full", "wechat": "Adapted", "h5": "Unsupported", "ios_app": "Full", "degradation_ui": "微信走自身授权体系" },
+    { "id": "CAP-04", "name": "永久拒绝恢复", "android_app": "Full", "wechat": "Adapted", "h5": "N/A", "ios_app": "Full", "degradation_ui": "微信跳小程序设置" },
+    { "id": "CAP-05", "name": "蓝牙开关引导", "android_app": "Full", "wechat": "Adapted", "h5": "Unsupported", "ios_app": "Full", "degradation_ui": "微信 10001 语义" },
+    { "id": "CAP-06", "name": "扫描（两轮/generation）", "android_app": "Full", "wechat": "Adapted", "h5": "Unsupported", "ios_app": "Full", "degradation_ui": "H5 PAGE-001 说明面" },
+    { "id": "CAP-07", "name": "广播字段解析", "android_app": "Full", "wechat": "Adapted", "h5": "Degraded", "ios_app": "Full", "degradation_ui": "微信缺失字段标'平台未提供'；H5 模拟展示" },
+    { "id": "CAP-08", "name": "显示名解析链", "android_app": "Full", "wechat": "Full", "h5": "N/A", "ios_app": "Full", "degradation_ui": "" },
+    { "id": "CAP-09", "name": "连接与服务发现", "android_app": "Full", "wechat": "Full", "h5": "Unsupported", "ios_app": "Full", "degradation_ui": "" },
+    { "id": "CAP-10", "name": "Read", "android_app": "Full", "wechat": "Full", "h5": "Unsupported", "ios_app": "Full", "degradation_ui": "" },
+    { "id": "CAP-11", "name": "TEXT/HEX Write+队列", "android_app": "Full", "wechat": "Full", "h5": "Unsupported", "ios_app": "Full", "degradation_ui": "" },
+    { "id": "CAP-12", "name": "MTU 与分包", "android_app": "Full", "wechat": "Adapted", "h5": "Unsupported", "ios_app": "Full", "degradation_ui": "协商失败保守 23" },
+    { "id": "CAP-13", "name": "Notify/Indicate", "android_app": "Full", "wechat": "Full", "h5": "Unsupported", "ios_app": "Full", "degradation_ui": "indicate 确认语义差异" },
+    { "id": "CAP-14", "name": "多设备会话", "android_app": "Full", "wechat": "Adapted", "h5": "Unsupported", "ios_app": "Full", "degradation_ui": "上限 DEC-008；微信实测记录" },
+    { "id": "CAP-15", "name": "通信日志/导出", "android_app": "Full", "wechat": "Adapted", "h5": "Degraded", "ios_app": "Full", "degradation_ui": "微信导出差异给复制兜底" },
+    { "id": "CAP-16", "name": "被动断开有限重连", "android_app": "Full", "wechat": "Adapted", "h5": "N/A", "ios_app": "Full", "degradation_ui": "微信后台不承诺" },
+    { "id": "CAP-17", "name": "手机 Peripheral 广播", "android_app": "Full", "wechat": "Adapted", "h5": "Unsupported", "ios_app": "Not Released", "degradation_ui": "App 插件缺失=Unsupported 面" },
+    { "id": "CAP-18", "name": "31 字节预算", "android_app": "Full", "wechat": "Full", "h5": "Degraded", "ios_app": "Full", "degradation_ui": "H5 展示计算不广播" },
+    { "id": "CAP-19", "name": "OTA 完整事务", "android_app": "Full", "wechat": "Adapted", "h5": "Unsupported", "ios_app": "Full", "degradation_ui": "入口受 DEC-001" },
+    { "id": "CAP-20", "name": "Smart HID 配网", "android_app": "Full", "wechat": "Full", "h5": "Unsupported", "ios_app": "Full", "degradation_ui": "H5 页面不可达" },
+    { "id": "CAP-21", "name": "Smart HID 历史/诊断", "android_app": "Full", "wechat": "Full", "h5": "Degraded", "ios_app": "Full", "degradation_ui": "H5 历史只读不可诊断" },
+    { "id": "CAP-22", "name": "扫码（QR）", "android_app": "Full", "wechat": "Full", "h5": "Degraded", "ios_app": "Full", "degradation_ui": "H5 模拟不进验收" },
+    { "id": "CAP-23", "name": "分享", "android_app": "Full", "wechat": "Full", "h5": "Full", "ios_app": "Full", "degradation_ui": "H5 Web Share→复制" },
+    { "id": "CAP-24", "name": "外链打开", "android_app": "Full", "wechat": "Degraded", "h5": "Full", "ios_app": "Full", "degradation_ui": "微信复制链接" },
+    { "id": "CAP-25", "name": "版本（VERSION 投影）", "android_app": "Full", "wechat": "Full", "h5": "Full", "ios_app": "Full", "degradation_ui": "微信受审核延迟" },
+    { "id": "CAP-26", "name": "落地页访问", "android_app": "Full", "wechat": "Full", "h5": "Full", "ios_app": "Full", "degradation_ui": "" },
+    { "id": "CAP-27", "name": "ESP32 教程/固件", "android_app": "Full", "wechat": "Full", "h5": "Full", "ios_app": "Full", "degradation_ui": "" },
+    { "id": "CAP-28", "name": "后台保持 BLE", "android_app": "Adapted", "wechat": "Unsupported", "h5": "N/A", "ios_app": "Adapted", "degradation_ui": "hide 即停扫描；明示不承诺" }
+  ]
+}
