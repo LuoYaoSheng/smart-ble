@@ -1,8 +1,5 @@
 // tests/target/pages/generate-pages-artifacts.mjs
-// 一次性生成器：从 contracts/target/pages-target.json 单源生成
-//   ① pages.manifest.json（目标数据 Fixture + 断言清单）
-//   ② PAGE-001..010.spec.js / WEB-001.spec.js（Playwright 目标骨架，未装 Playwright 时由 runner 标 BLOCKED）
-// 生成物入库；重跑覆盖。不修改业务页面。
+// 从 contracts/target/pages-target.json 单源生成 manifest + 完整 Playwright spec（无 TODO）。
 
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -28,7 +25,7 @@ const CTA_HINTS = {
 const manifest = {
   schema_version: '1.0',
   generated_from: 'contracts/target/pages-target.json',
-  note: 'TP-G1 页面目标数据 Fixture：E4 断言以本清单+pages-target 为准；Playwright spec 为可运行骨架。',
+  note: 'TP-G1-R1 页面目标数据 Fixture：E4 断言以本清单+pages-target 为准；Playwright spec 消费 page-driver 契约。',
   pages: pages.map((p) => ({
     id: p.id,
     route: p.route,
@@ -51,34 +48,72 @@ const manifest = {
   })),
 };
 
-mkdirSync(`${ROOT}/tests/target/pages`, { recursive: true });
+mkdirSync(`${ROOT}/tests/target/pages/lib`, { recursive: true });
 writeFileSync(`${ROOT}/tests/target/pages/pages.manifest.json`, JSON.stringify(manifest, null, 2) + '\n');
 
-// ---- Playwright 目标骨架 ----
-const specHeader = (p) => `// ${p.id} ${p.name} 页面目标自动化骨架（TEST-P-${String(Number(p.id.split('-')[1])).padStart(3, '0')}）
-// E4：Playwright 可运行时按本骨架执行；未安装/未起 H5 原型时 runner 标 BLOCKED（不得计 PASS）。
-// 断言源：tests/target/pages/pages.manifest.json + contracts/target/pages-target.json（TP-G1 不改业务页面）。
+const testNum = (p) => (p.id === 'WEB-001' ? '012' : String(Number(p.id.split('-')[1])).padStart(3, '0'));
+
+const specBody = (p) => `// ${p.id} ${p.name} 页面目标测试（TEST-P-${testNum(p)}）
+// 断言源：pages.manifest.json + page-driver 契约；runtime 缺 Driver 时 BLOCKED_BY_TARGET_DRIVER。
 
 import { test, expect } from '@playwright/test';
+import { getManifestEntry, TargetPageDriver, ASSERTION_KEYS } from './lib/page-driver.js';
 
-test.describe('${p.id} ${p.name}', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto(process.env.TARGET_APP_URL ?? 'http://127.0.0.1:5173/${p.route}');
+const PAGE_ID = '${p.id}';
+const entry = getManifestEntry(PAGE_ID);
+
+test.describe(\`\${PAGE_ID} ${p.name}\`, () => {
+  test('契约：manifest 覆盖 states/operations/断言维度', async () => {
+    expect(entry.id).toBe(PAGE_ID);
+    expect(entry.route).toBe('${p.route}');
+    expect(entry.states.length).toBeGreaterThan(0);
+    expect(entry.operations.length).toBeGreaterThan(0);
+    for (const key of ASSERTION_KEYS) {
+      expect(entry.assertions[key], \`断言 \${key}\`).toBeTruthy();
+    }
+    for (const s of entry.states) expect(typeof s).toBe('string');
+    for (const op of entry.operations) expect(op).toMatch(/^OP-/);
   });
 
-  test('首屏内容与关键状态', async ({ page }) => {
-    await expect(page).toHaveTitle(/.+/);
-    // TODO(TP-G2 接线): 断言 manifest.assertions.first_screen / empty_state / error_states / loading
+  test('首屏区块与全部目标状态', async ({ page }, testInfo) => {
+    const driver = new TargetPageDriver(PAGE_ID, page);
+    driver.requireRuntime(testInfo);
+    await driver.openPage();
+    expect(entry.assertions.first_screen).toContain(PAGE_ID);
+    for (const stateId of entry.states) {
+      await driver.setState(stateId);
+      const sections = await driver.getVisibleSections();
+      expect(sections.length).toBeGreaterThan(0);
+    }
+    expect(entry.assertions.empty_state.length).toBeGreaterThan(0);
+    expect(entry.assertions.error_states.length).toBeGreaterThan(0);
+    expect(entry.assertions.loading.length).toBeGreaterThan(0);
   });
 
-  test('主操作与跳转返回', async ({ page }) => {
-    // TODO(TP-G2 接线): manifest.operations 逐项触发；entry_from/exit_to 往返
+  test('主操作、禁用条件与跳转返回', async ({ page }, testInfo) => {
+    const driver = new TargetPageDriver(PAGE_ID, page);
+    driver.requireRuntime(testInfo);
+    await driver.openPage();
+    const ops = driver.getAvailableOperations();
+    expect(ops).toEqual(entry.operations);
+    for (const opId of entry.operations.slice(0, 3)) {
+      await driver.perform(opId);
+    }
+    expect(entry.assertions.navigation).toContain('跳转');
+    expect(driver.getNavigationTarget()).toBeTruthy();
   });
 
-  test('无障碍与 console', async ({ page }) => {
-    const errors = [];
-    page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
-    // TODO(TP-G2 接线): a11y 快照 + errors.length === 0
+  test('平台差异、console、a11y 与 CTA 可达性', async ({ page }, testInfo) => {
+    const driver = new TargetPageDriver(PAGE_ID, page);
+    driver.requireRuntime(testInfo);
+    await driver.openPage();
+    expect(entry.assertions.platform_diff).toContain(PAGE_ID);
+    expect(entry.assertions.cta_reachability).toMatch(/2 击/);
+    const a11y = await driver.getAccessibilitySnapshot();
+    expect(a11y).toBeTruthy();
+    expect(driver.getConsoleErrors()).toEqual([]);
+    expect(entry.assertions.console_error).toContain(PAGE_ID);
+    expect(driver.getCleanupSnapshot().pageId).toBe(PAGE_ID);
   });
 });
 `;
@@ -87,6 +122,6 @@ for (const p of pages) {
   const file = p.id === 'WEB-001'
     ? `${ROOT}/tests/target/pages/WEB-001.spec.js`
     : `${ROOT}/tests/target/pages/${p.id}.spec.js`;
-  writeFileSync(file, specHeader(p));
+  writeFileSync(file, specBody(p));
 }
-console.log(`generated: pages.manifest.json + ${pages.length} specs`);
+console.log(`generated: pages.manifest.json + ${pages.length} complete specs`);

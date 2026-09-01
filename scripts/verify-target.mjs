@@ -1,99 +1,313 @@
 #!/usr/bin/env node
-// scripts/verify-target.mjs —— Smart BLE 目标测试统一入口（TP-G1 交付）。
-// 按层运行：1 Contract/Static → 2 Unit → 3 Integration → 4 Page(manifest) → 5 Firmware(static) → 6 Release(static) → 7 Traceability coverage
-// 输出每层 PASS/FAIL、Test ID、Target ID、第一断点（NOT_IMPLEMENTED 前缀）、汇总。
-// 约束：缺硬件/浏览器不得计自动化 PASS（E4/E5 项标 BLOCKED）；本入口不并入 verify-uniapp.sh 阻断（TP-G1 审核前独立运行）。
+// scripts/verify-target.mjs —— Smart BLE 目标测试统一入口（TP-G1-R1）。
+// 模式：
+//   --mode=system   Approved Target Contract + Harness + 定义完整性（TP-G1 门禁）
+//   --mode=current  当前实现对目标测试（允许 FAIL/NOT_IMPLEMENTED）
+//   --mode=all      system + current
+//   --format=json   机器可读输出
 
 import { spawnSync } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { dirname, resolve } from 'node:path';
+import { createRequire } from 'node:module';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const require = createRequire(import.meta.url);
 
-const LAYERS = [
-  { name: '1 Contract/Static', dir: 'tests/target/contract' },
-  { name: '2 Unit', dir: 'tests/target/unit' },
-  { name: '3 Integration/FakeRuntime', dir: 'tests/target/integration' },
-  { name: '4 Page/Manifest', files: ['tests/target/pages/pages-contract.test.mjs'], blocked: 'Playwright specs (*.spec.js) 需浏览器环境 → BLOCKED（不计 PASS）' },
-  { name: '5 Firmware/Static', dir: 'tests/target/firmware' },
-  { name: '6 Release/Static', dir: 'tests/target/release' },
-  { name: '7 Traceability', cmd: ['node', 'scripts/target/check-target-traceability.mjs'] },
+function parseArgs() {
+  const mode = (process.argv.find((a) => a.startsWith('--mode='))?.split('=')[1] || 'all');
+  const format = process.argv.includes('--format=json') ? 'json' : 'text';
+  if (!['system', 'current', 'all'].includes(mode)) {
+    console.error('用法: node scripts/verify-target.mjs --mode=system|current|all [--format=json]');
+    process.exit(2);
+  }
+  return { mode, format };
+}
+
+const CHECKERS = [
+  { id: 'TEST-C-contract', script: 'scripts/target/check-target-contract.mjs' },
+  { id: 'TEST-C-pages', script: 'scripts/target/check-target-pages.mjs' },
+  { id: 'TEST-C-flows', script: 'scripts/target/check-target-flows.mjs' },
+  { id: 'TEST-C-platforms', script: 'scripts/target/check-target-platforms.mjs' },
+  { id: 'TEST-C-protocols', script: 'scripts/target/check-target-protocols.mjs' },
+  { id: 'TEST-C-traceability', script: 'scripts/target/check-target-traceability.mjs' },
+  { id: 'TEST-C-landing', script: 'scripts/target/check-target-landing-claims.mjs' },
 ];
 
-const runNodeTest = (targets) => {
-  const args = ['--test', ...targets];
+function runChecker(script) {
+  const r = spawnSync(process.execPath, [script], { cwd: ROOT, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+  const out = r.stdout + r.stderr;
+  const pass = (out.match(/^ok  /gm) || []).length;
+  const fail = (out.match(/^FAIL/gm) || []).length;
+  const failures = [...out.matchAll(/^FAIL : \[([^\]]+)\] (.+)$/gm)].map((m) => ({
+    testId: m[1],
+    message: m[2],
+    layer: 'system',
+    source: script,
+  }));
+  return { pass, fail, exitCode: r.status ?? 1, failures, raw: out };
+}
+
+function listTestFiles(dirRel) {
+  const full = `${ROOT}/${dirRel}`;
+  if (!existsSync(full)) return [];
+  return readdirSync(full)
+    .filter((f) => f.endsWith('.test.mjs') || f.endsWith('.test.js'))
+    .map((f) => `${full}/${f}`);
+}
+
+function runNodeTest(targets, layer = 'target') {
+  const files = Array.isArray(targets) ? targets : [targets];
+  const resolved = files.flatMap((t) => {
+    if (t.endsWith('.test.mjs') || t.endsWith('.test.js')) {
+      return [t.startsWith('/') ? t : resolve(ROOT, t)];
+    }
+    const rel = String(t).replace(`${ROOT}/`, '').replace(/^\.\//, '');
+    return listTestFiles(rel);
+  }).filter((f) => existsSync(f));
+  if (!resolved.length) return { pass: 0, fail: 0, skipped: 0, failures: [], blocked: [], raw: '', exitCode: 0 };
+  const args = ['--test', ...resolved];
   const r = spawnSync(process.execPath, args, { cwd: ROOT, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
   const out = r.stdout + r.stderr;
-  const pass = Number((out.match(/^# pass (\d+)/m) || [])[1] ?? 0);
-  const fail = Number((out.match(/^# fail (\d+)/m) || [])[1] ?? 0);
-  const cancelled = Number((out.match(/^# cancelled (\d+)/m) || [])[1] ?? 0);
+  const pass = Number((out.match(/^# pass (\d+)/m) || out.match(/^ℹ pass (\d+)/m) || [])[1] ?? 0);
+  const fail = Number((out.match(/^# fail (\d+)/m) || out.match(/^ℹ fail (\d+)/m) || [])[1] ?? 0);
+  const skipped = Number((out.match(/^# skipped (\d+)/m) || out.match(/^ℹ skipped (\d+)/m) || [])[1] ?? 0);
+  const failures = [];
+  const blocked = [];
+  const sourceLabel = resolved.map((f) => f.replace(`${ROOT}/`, '')).join(',');
+  for (const m of out.matchAll(/not ok \d+ - ([^\n]+)\n[\s\S]*?(?:error: '([^']+)'|skip: '([^']+)')/g)) {
+    const testId = m[1].trim();
+    const msg = m[2] || m[3] || '';
+    if (/BLOCKED_BY_TOOLCHAIN/.test(msg)) blocked.push({ testId, reason: 'BLOCKED_BY_TOOLCHAIN', message: msg, layer, source: sourceLabel });
+    else if (/BLOCKED_BY_TARGET_DRIVER/.test(msg)) blocked.push({ testId, reason: 'BLOCKED_BY_TARGET_DRIVER', message: msg, layer, source: sourceLabel });
+    else if (/NOT_IMPLEMENTED/.test(msg)) failures.push({ testId, actual: msg, layer: 'current', source: sourceLabel });
+    else if (m[2]) failures.push({ testId, actual: msg, layer, source: sourceLabel });
+  }
   const notImpl = [...out.matchAll(/error: '(NOT_IMPLEMENTED:[^']{0,200})/g)].map((m) => m[1]);
-  const failMsgs = [...out.matchAll(/error: '([^']{0,160})/g)].map((m) => m[1]).filter((x) => !x.startsWith('NOT_IMPLEMENTED'));
-  return { pass, fail, cancelled, notImpl, failMsgs, raw: out, exitCode: r.status };
+  for (const msg of notImpl) {
+    if (!failures.some((f) => f.actual === msg)) {
+      failures.push({ testId: 'unknown', actual: msg, layer: 'current', source: sourceLabel });
+    }
+  }
+  return { pass, fail, skipped, failures, blocked, raw: out, exitCode: r.status ?? (fail ? 1 : 0) };
+}
+
+function isPlaywrightAvailable() {
+  try {
+    require.resolve('@playwright/test');
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function hasTargetDriverEnv() {
+  return Boolean(process.env.TARGET_APP_URL || process.env.TARGET_PAGE_DRIVER === '1');
+}
+
+function listSpecs() {
+  const dir = `${ROOT}/tests/target/pages`;
+  return readdirSync(dir).filter((f) => f.endsWith('.spec.js')).map((f) => `${dir}/${f}`);
+}
+
+function runPageSpecs() {
+  const specs = listSpecs();
+  if (!isPlaywrightAvailable()) {
+    return {
+      pass: 0, fail: 0, skipped: 0, failures: [],
+      blocked: specs.map((s) => ({ testId: s.split('/').pop(), reason: 'BLOCKED_BY_TOOLCHAIN', count: 1, layer: 'current', source: s })),
+      blockedSummary: { BLOCKED_BY_TOOLCHAIN: specs.length },
+      notExecuted: true,
+    };
+  }
+  if (!hasTargetDriverEnv()) {
+    return {
+      pass: 0, fail: 0, skipped: 0, failures: [],
+      blocked: specs.map((s) => ({ testId: s.split('/').pop(), reason: 'BLOCKED_BY_TARGET_DRIVER', count: 1, layer: 'current', source: s })),
+      blockedSummary: { BLOCKED_BY_TARGET_DRIVER: specs.length },
+      notExecuted: true,
+    };
+  }
+  const r = spawnSync('npx', ['playwright', 'test', 'tests/target/pages'], { cwd: ROOT, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+  const out = r.stdout + r.stderr;
+  const pass = Number((out.match(/(\d+) passed/) || [])[1] ?? 0);
+  const fail = Number((out.match(/(\d+) failed/) || [])[1] ?? 0);
+  const skipped = Number((out.match(/(\d+) skipped/) || [])[1] ?? 0);
+  return {
+    pass, fail, skipped, failures: fail ? [{ testId: 'playwright', actual: out.slice(-500), layer: 'current', source: 'tests/target/pages' }] : [],
+    blocked: [], blockedSummary: {}, raw: out, exitCode: r.status ?? 0, notExecuted: false,
+  };
+}
+
+function aggregateBlocked(items) {
+  const summary = {
+    BLOCKED_BY_TOOLCHAIN: 0,
+    BLOCKED_BY_TARGET_DRIVER: 0,
+    BLOCKED_BY_FIXTURE: 0,
+    BLOCKED_BY_CREDENTIAL: 0,
+    NOT_EXECUTED: 0,
+  };
+  for (const b of items) {
+    summary[b.reason] = (summary[b.reason] || 0) + 1;
+  }
+  return summary;
+}
+
+function firstBreakpointsFrom(failures) {
+  const seen = new Set();
+  return failures.filter((f) => f.layer === 'current').filter((f) => {
+    const key = `${f.testId}:${(f.actual || f.message || '').slice(0, 60)}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  }).slice(0, 20).map((f) => ({
+    testId: f.testId,
+    targetIds: f.targetIds || [],
+    expected: f.expected || 'target contract',
+    actual: f.actual || f.message,
+    firstBreakpoint: (f.actual || f.message || '').replace(/^NOT_IMPLEMENTED:\s*/, '').slice(0, 120),
+    layer: f.layer,
+    source: f.source,
+  }));
+}
+
+const { mode, format } = parseArgs();
+const result = {
+  mode,
+  system: { pass: 0, fail: 0, checkers: [], contract: null, pages_contract: null },
+  harness: { pass: 0, fail: 0 },
+  current: { pass: 0, fail: 0, layers: [] },
+  blocked: {},
+  first_breakpoints: [],
+  TARGET_CONTRACT_FAIL: 0,
+  SYSTEM_PASS: 0,
+  SYSTEM_FAIL: 0,
+  HARNESS_PASS: 0,
+  HARNESS_FAIL: 0,
+  CURRENT_PASS: 0,
+  CURRENT_FAIL: 0,
 };
 
-const summary = [];
-let firstBreakpoints = [];
+const allFailures = [];
+const allBlocked = [];
 
-for (const layer of LAYERS) {
-  process.stdout.write(`\n===== ${layer.name} =====\n`);
-  if (layer.blocked) process.stdout.write(`[BLOCKED] ${layer.blocked}\n`);
-
-  if (layer.cmd) {
-    const r = spawnSync(layer.cmd[0], layer.cmd.slice(1), { cwd: ROOT, encoding: 'utf8' });
-    const out = r.stdout + r.stderr;
-    const pass = (out.match(/^ok  /gm) || []).length;
-    const fail = (out.match(/^FAIL/gm) || []).length;
-    const failMsgs = [...out.matchAll(/^FAIL : \[([^\]]+)\] (.+)$/gm)].map((m) => `[${m[1]}] ${m[2]}`);
-    summary.push({ layer: layer.name, pass, fail, blocked: 0, notImpl: [] });
-    firstBreakpoints = firstBreakpoints.concat(failMsgs.map((m) => `${layer.name} ${m}`));
-    process.stdout.write(out.split('\n').filter((l) => /^FAIL|^.*: (PASS|FAIL)（/.test(l)).join('\n') + '\n');
-    continue;
+if (mode === 'system' || mode === 'all') {
+  for (const c of CHECKERS) {
+    const r = runChecker(c.script);
+    result.system.checkers.push({ id: c.id, pass: r.pass, fail: r.fail });
+    result.system.pass += r.pass;
+    result.system.fail += r.fail;
+    allFailures.push(...r.failures);
+    if (format === 'text') {
+      process.stdout.write(`\n===== Checker ${c.id} =====\n`);
+      process.stdout.write(r.raw.split('\n').filter((l) => /^ok |^FAIL|^check-/.test(l)).join('\n') + '\n');
+    }
   }
+  result.TARGET_CONTRACT_FAIL = result.system.fail;
 
-  const targets = layer.files
-    ? layer.files.map((f) => `${ROOT}/${f}`)
-    : [`${ROOT}/${layer.dir}`];
-  if (layer.dir && !existsSync(`${ROOT}/${layer.dir}`)) {
-    process.stdout.write('[SKIP] 目录不存在\n');
-    summary.push({ layer: layer.name, pass: 0, fail: 0, blocked: 0, notImpl: [], skip: true });
-    continue;
-  }
-  const r = runNodeTest(targets);
-  process.stdout.write(`PASS ${r.pass} / FAIL ${r.fail}${r.cancelled ? ` / CANCELLED ${r.cancelled}` : ''}\n`);
-  for (const m of r.failMsgs.slice(0, 6)) process.stdout.write(`  ✗ ${m}\n`);
-  for (const m of r.notImpl.slice(0, 6)) process.stdout.write(`  ○ ${m}\n`);
-  if (r.notImpl.length > 6) process.stdout.write(`  …共 ${r.notImpl.length} 条 NOT_IMPLEMENTED\n`);
-  summary.push({ layer: layer.name, pass: r.pass, fail: r.fail, blocked: layer.blocked ? 11 : 0, notImpl: r.notImpl });
-  firstBreakpoints = firstBreakpoints.concat(
-    r.notImpl.map((m) => `${layer.name} ${m}`),
-    r.failMsgs.map((m) => `${layer.name} ${m}`),
-  );
+  const contractFiles = listTestFiles('tests/target/contract');
+  const contractR = runNodeTest(contractFiles, 'system');
+  result.system.contract = { pass: contractR.pass, fail: contractR.fail };
+  result.system.pass += contractR.pass;
+  result.system.fail += contractR.fail;
+  allFailures.push(...contractR.failures);
+
+  const pagesContract = `${ROOT}/tests/target/pages/pages-contract.test.mjs`;
+  const pagesR = runNodeTest([pagesContract], 'system');
+  result.system.pages_contract = { pass: pagesR.pass, fail: pagesR.fail };
+  result.system.pass += pagesR.pass;
+  result.system.fail += pagesR.fail;
+
+  const harnessFiles = listTestFiles('tests/target/harness');
+  const harnessR = runNodeTest(harnessFiles, 'harness');
+  result.harness.pass = harnessR.pass;
+  result.harness.fail = harnessR.fail;
+  allFailures.push(...harnessR.failures.filter((f) => f.layer !== 'current'));
+
+  result.SYSTEM_PASS = result.system.pass;
+  result.SYSTEM_FAIL = result.system.fail;
+  result.HARNESS_PASS = result.harness.pass;
+  result.HARNESS_FAIL = result.harness.fail;
 }
 
-// ---- 汇总 ----
-const totals = summary.reduce((a, s) => ({ pass: a.pass + s.pass, fail: a.fail + s.fail, blocked: a.blocked + s.blocked }), { pass: 0, fail: 0, blocked: 0 });
-console.log('\n================ TARGET VERIFY SUMMARY ================');
-for (const s of summary) {
-  console.log(`${s.layer.padEnd(26)} ${s.fail === 0 && !s.skip ? 'PASS' : 'FAIL'}   pass=${s.pass} fail=${s.fail}${s.blocked ? ` blocked=${s.blocked}` : ''}`);
-}
-console.log('------------------------------------------------------');
-console.log(`TOTAL pass=${totals.pass} fail=${totals.fail} blocked=${totals.blocked}`);
-console.log(`\n第一断点预览（前 20，非正式 gap 结论，TP-G2 生成）：`);
-const seen = new Set();
-const uniqueBp = firstBreakpoints.filter((b) => {
-  const key = b.slice(0, 80);
-  if (seen.has(key)) return false;
-  seen.add(key);
-  return true;
-}).slice(0, 20);
-uniqueBp.forEach((b, i) => console.log(`${String(i + 1).padStart(2)}. ${b}`));
-if (!uniqueBp.length) console.log('（无）');
+if (mode === 'current' || mode === 'all') {
+  const currentDirs = [
+    { name: 'unit', path: 'tests/target/unit' },
+    { name: 'integration', path: 'tests/target/integration' },
+    { name: 'firmware', path: 'tests/target/firmware' },
+    { name: 'release', path: 'tests/target/release' },
+  ];
+  for (const d of currentDirs) {
+    const r = runNodeTest(d.path, 'current');
+    result.current.layers.push({ name: d.name, pass: r.pass, fail: r.fail, skipped: r.skipped });
+    result.current.pass += r.pass;
+    result.current.fail += r.fail;
+    allFailures.push(...r.failures);
+    if (format === 'text') {
+      process.stdout.write(`\n===== Current ${d.name} =====\n`);
+      process.stdout.write(`PASS ${r.pass} / FAIL ${r.fail}${r.skipped ? ` / SKIPPED ${r.skipped}` : ''}\n`);
+    }
+  }
 
-console.log(`
-说明：
-- FAIL 中 NOT_IMPLEMENTED 前缀 = 目标接口/模块缺失（TP-G2 差距输入）
-- E4 Playwright / E5 真机 / E6 发布项为 BLOCKED 或模板，缺环境不计 PASS
-- 依据 docs/target-tests/12_TEST_DATA_FIXTURES_AND_MOCKS.md：不修改真实目标文档制造失败`);
-process.exit(totals.fail === 0 ? 0 : 1);
+  const pageR = runPageSpecs();
+  result.current.layers.push({
+    name: 'pages-playwright',
+    pass: pageR.pass,
+    fail: pageR.fail,
+    skipped: pageR.skipped,
+    blocked: pageR.blockedSummary,
+    notExecuted: pageR.notExecuted,
+  });
+  result.current.pass += pageR.pass;
+  result.current.fail += pageR.fail;
+  allBlocked.push(...pageR.blocked);
+  if (pageR.notExecuted && pageR.blockedSummary) {
+    for (const [k, v] of Object.entries(pageR.blockedSummary)) {
+      result.blocked[k] = (result.blocked[k] || 0) + v;
+    }
+  }
+
+  result.CURRENT_PASS = result.current.pass;
+  result.CURRENT_FAIL = result.current.fail;
+}
+
+result.blocked = { ...result.blocked, ...aggregateBlocked(allBlocked) };
+result.first_breakpoints = firstBreakpointsFrom(allFailures);
+
+if (format === 'json') {
+  console.log(JSON.stringify({
+    system: result.system,
+    harness: result.harness,
+    current: result.current,
+    blocked: result.blocked,
+    first_breakpoints: result.first_breakpoints,
+    SYSTEM_PASS: result.SYSTEM_PASS,
+    SYSTEM_FAIL: result.SYSTEM_FAIL,
+    HARNESS_PASS: result.HARNESS_PASS,
+    HARNESS_FAIL: result.HARNESS_FAIL,
+    CURRENT_PASS: result.CURRENT_PASS,
+    CURRENT_FAIL: result.CURRENT_FAIL,
+    TARGET_CONTRACT_FAIL: result.TARGET_CONTRACT_FAIL,
+  }, null, 2));
+} else {
+  console.log('\n================ TARGET VERIFY SUMMARY ================');
+  if (mode === 'system' || mode === 'all') {
+    console.log(`SYSTEM  pass=${result.SYSTEM_PASS} fail=${result.SYSTEM_FAIL} TARGET_CONTRACT_FAIL=${result.TARGET_CONTRACT_FAIL}`);
+    console.log(`HARNESS pass=${result.HARNESS_PASS} fail=${result.HARNESS_FAIL}`);
+  }
+  if (mode === 'current' || mode === 'all') {
+    console.log(`CURRENT pass=${result.CURRENT_PASS} fail=${result.CURRENT_FAIL}`);
+  }
+  console.log(`BLOCKED ${JSON.stringify(result.blocked)}`);
+  console.log('\n第一断点预览（Current only，前 10）：');
+  result.first_breakpoints.slice(0, 10).forEach((b, i) => console.log(`${i + 1}. [${b.testId}] ${b.firstBreakpoint}`));
+}
+
+const exitCode = (() => {
+  if (mode === 'system') return (result.SYSTEM_FAIL + result.HARNESS_FAIL + result.TARGET_CONTRACT_FAIL) === 0 ? 0 : 1;
+  if (mode === 'current') return result.CURRENT_FAIL === 0 ? 0 : 1;
+  const sysOk = (result.SYSTEM_FAIL + result.HARNESS_FAIL + result.TARGET_CONTRACT_FAIL) === 0;
+  return sysOk ? (result.CURRENT_FAIL === 0 ? 0 : 1) : 1;
+})();
+process.exit(exitCode);

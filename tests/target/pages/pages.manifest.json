@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "generated_from": "contracts/target/pages-target.json",
-  "note": "TP-G1 页面目标数据 Fixture：E4 断言以本清单+pages-target 为准；Playwright spec 为可运行骨架。",
+  "note": "TP-G1-R1 页面目标数据 Fixture：E4 断言以本清单+pages-target 为准；Playwright spec 消费 page-driver 契约。",
   "pages": [
     {
       "id": "PAGE-001",
