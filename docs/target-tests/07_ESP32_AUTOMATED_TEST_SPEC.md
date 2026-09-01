@@ -1,11 +1,11 @@
 # 07 ESP32 自动测试规范（TEST-E-001..008 / E5）
 
 ```yaml
-status: REVIEW
+status: APPROVED
 document_version: 1.0
 owner: Smart BLE QA / Engineering
 last_reviewed: 2026-09-01
-approved_by: null
+approved_by: user
 supersedes: []
 ```
 

@@ -1,61 +1,46 @@
-# TP-G1-R2 审核摘要（用户审核入口 · TP-G1 最终校正）
+# TP-G1 最终审核摘要（已批准 · 进入 TP-G2）
 
 ```yaml
-status: REVIEW
-document_version: 1.2
+status: APPROVED
+document_version: 1.3
 owner: Smart BLE QA / Engineering
 last_reviewed: 2026-09-01
-approved_by: null
-supersedes: [TP-G1 v1.0, TP-G1-R1 v1.1]
+approved_by: user
+supersedes: [TP-G1 v1.0, TP-G1-R1 v1.1, TP-G1-R2 v1.2]
 ```
 
-> TP-G1-R2 完成页面行为目标测试完整化：逐 State / 逐 Operation 机器可读契约、Expected/Actual 分离、Harness 强化。
-> **未经用户批准本摘要前，禁止进入 TP-G2。批准后不再扩大测试定义。**
+> **用户已批准 TP-G1-R1、TP-G1-R2、TP-G1 FINAL PASS，允许进入 TP-G2。**
+> 此后不再扩大目标行为与测试范围。TP-G2 只测量与规划，不修改业务实现。
 
 ---
 
-## 1. 交付总览
+## 批准记录
+
+- [x] TP-G1-R1：契约零容忍、Harness/Current 分离已批准
+- [x] TP-G1-R2：67 State / 92 Operation 页面行为定义已批准
+- [x] Current FAIL 可作为 TP-G2 差距输入
+- [x] 批准进入 TP-G2
+- [x] 此后不再扩大目标行为和测试范围
+
+## 交付冻结（不得再扩定义）
 
 | 类别 | 内容 |
 |---|---|
-| 页面行为契约 | `page-behavior.manifest.json`（11 页 / 67 State / 92 Operation / 50 error variants） |
-| 页面 spec | 11 份完整 Playwright 定义：State suite + Operation suite + Error/Nav/Platform/Cleanup/a11y（WEB 额外） |
-| Page Driver | Actual API 全抛 `TARGET_PAGE_DRIVER_MISSING`；禁止假零 / 静态 exit_to / 回填 Expected |
-| Harness | 页面完整性 15 用例（含故意错误：删 OP/State、缺 cleanup/failure、slice、空 perform） |
-| Runner | `pages: { specs, state_cases, operation_cases, assertion_cases, blocked_specs, blocked_cases, reason }` |
+| 页面行为契约 | `page-behavior.manifest.json`（11 页 / 67 State / 92 Operation） |
+| 页面 spec | 完整 Playwright 定义；Driver 未实现时 BLOCKED |
+| Harness / System | 尺子已批准；TP-G2 必须先确认 System/Harness 全绿 |
+| 统一入口 | `verify-target.mjs --mode=system|current|all` |
 
-## 2. 数量与覆盖
+## TP-G2 报告入口
 
-- FEAT：**Must 81 / Should 0 / Could 0**（R1 已冻结）
-- 页面行为：states=67｜operations=92｜failure_variants=92｜cleanup_assertions=39
-- TODO=0｜slice(0,3)=0｜空断言=0
-- 测试定义完整；Driver 未实现时 BLOCKED，**不得 PASS**
+- Current State：`docs/current-state/`
+- Gap Analysis：`docs/gap-analysis/`
+- Remediation：`docs/remediation/`
+- 机器报告：`reports/target-vs-current/`
 
-## 3. System / Harness / Current
+## 红线
 
-| 分类 | 要求 |
-|---|---|
-| System | SYSTEM_FAIL=0｜TARGET_CONTRACT_FAIL=0 |
-| Harness | HARNESS_FAIL=0（含页面完整性） |
-| Current | 允许 FAIL（TP-G2 输入） |
-| Pages | Playwright 缺失 → BLOCKED_BY_TOOLCHAIN；有 Playwright 无 Driver → BLOCKED_BY_TARGET_DRIVER |
-
-## 4. 页面测试边界（R2）
-
-- 定义来源：APPROVED 页面 Markdown，禁止从 Vue 反推。
-- Expected = behavior manifest；Actual = Page Driver 探测。
-- TP-G2 只分析实现差距，不补写目标期望。
-
-## 5. 用户批准清单
-
-- [ ] TP-G1-R1 契约零容忍与 Harness 分离接受
-- [ ] TP-G1-R2 页面行为完整定义（92 OP / 67 State）接受
-- [ ] Current FAIL 作为 TP-G2 差距输入接受
-- [ ] 批准进入 TP-G2（此后不再扩大测试定义）
-
-## 6. 红线
-
-- BUSINESS CODE: NOT MODIFIED
-- HARDWARE: NOT FLASHED
-- ANDROID: NOT INSTALLED / NOT TESTED
-- 未 push（状态见执行报告）
+- BUSINESS CODE: TP-G2 不得修改
+- TARGET/TEST EXPECTATIONS: 不得修改
+- HARDWARE: TP-G2 不得执行 E5
+- 未 push（见执行报告）

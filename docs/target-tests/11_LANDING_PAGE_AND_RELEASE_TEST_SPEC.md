@@ -1,11 +1,11 @@
 # 11 落地页与 Release 测试规范（TEST-R-001..011 / E6）
 
 ```yaml
-status: REVIEW
+status: APPROVED
 document_version: 1.0
 owner: Smart BLE QA / Engineering
 last_reviewed: 2026-09-01
-approved_by: null
+approved_by: user
 supersedes: []
 ```
 

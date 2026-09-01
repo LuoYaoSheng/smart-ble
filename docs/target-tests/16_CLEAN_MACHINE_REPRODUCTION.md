@@ -1,11 +1,11 @@
 # 16 Clean Machine 复现
 
 ```yaml
-status: REVIEW
+status: APPROVED
 document_version: 1.0
 owner: Smart BLE QA / Engineering
 last_reviewed: 2026-09-01
-approved_by: null
+approved_by: user
 supersedes: []
 ```
 

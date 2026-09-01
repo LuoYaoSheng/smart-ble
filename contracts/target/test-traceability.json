@@ -1,9 +1,9 @@
 {
   "schema_version": "1.0",
   "product_version": "1.0.0",
-  "status": "REVIEW",
-  "last_approved_at": null,
-  "approved_by": null,
+  "status": "APPROVED",
+  "last_approved_at": "2026-09-01T00:00:00.000Z",
+  "approved_by": "user",
   "planned_only": false,
   "note": "TP-G1 已展开为可执行测试体系（scripts/target + tests/target）；TEST-E/A/W/H 与部分 TEST-R 真机/发布项仍为矩阵与模板，待对应 Gate 执行。implemented=true 表示自动化工件已存在并在 verify-target 中运行。",
   "suites": [

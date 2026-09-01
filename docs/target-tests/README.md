@@ -1,11 +1,13 @@
 # Smart BLE 目标测试体系入口
 
-> 状态：REVIEW / TP-G1 已交付（测试规范 18 份 + scripts/target + tests/target + verify-target 入口），等待用户审阅
-> 文档版本：1.1
+> 状态：APPROVED / TP-G1 FINAL PASS（用户批准 R1+R2）；当前阶段进入 TP-G2 差距盘点
+> 文档版本：1.2
 > Owner：Smart BLE QA / Engineering
 > 最后更新：2026-09-01
+> approved_by: user
 > 前置：`docs/target-product/**` 已于 2026-09-01 经用户批准为 APPROVED（TP-G0-R1）。
-> 统一入口：`node scripts/verify-target.mjs`（初跑：PASS 123 / FAIL 18 / BLOCKED 11；FAIL 均带 NOT_IMPLEMENTED 第一断点，留 TP-G2）。
+> 统一入口：`node scripts/verify-target.mjs --mode=system|current|all`（System/Harness 必须全绿；Current FAIL 为 TP-G2 输入）。
+> TP-G2 报告：`docs/current-state/` · `docs/gap-analysis/` · `docs/remediation/` · `reports/target-vs-current/`
 
 ---
 

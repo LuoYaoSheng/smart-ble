@@ -1,11 +1,11 @@
 # 06 页面自动化与视觉测试规范（TEST-P-001..012 / E4）
 
 ```yaml
-status: REVIEW
+status: APPROVED
 document_version: 1.1
 owner: Smart BLE QA / Engineering
 last_reviewed: 2026-09-01
-approved_by: null
+approved_by: user
 supersedes: [1.0]
 ```
 

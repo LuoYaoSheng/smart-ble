@@ -1,11 +1,11 @@
 # 08 Android 硬件测试矩阵（TEST-A-001..014 / E5）
 
 ```yaml
-status: REVIEW
+status: APPROVED
 document_version: 1.0
 owner: Smart BLE QA / Engineering
 last_reviewed: 2026-09-01
-approved_by: null
+approved_by: user
 supersedes: []
 ```
 

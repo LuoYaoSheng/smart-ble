@@ -24,29 +24,34 @@ TP-G0 完整目标产品文档
 
 ---
 
-## 2. 当前立即执行：TP-G1
+## 2. 当前立即执行：TP-G2
 
-TP-G0-R1 已由用户批准。当前使用：
-
-```text
-2026-09-01-tp-g1-target-test-system-codex-prompt.md
-```
-
-TP-G1 启动时先把目标文档与机器契约的审批元数据统一投影为 APPROVED，然后创建：
+TP-G1（含 R1/R2）已由用户批准（FINAL PASS）。当前使用：
 
 ```text
-docs/target-tests/**
-scripts/target/**
-tests/target/**
+2026-09-01-tp-g2-current-gap-analysis-codex-prompt.md
 ```
 
-TP-G1 只建立验证体系、运行当前实现的初始测试预览；不修改 App、Runtime、ESP32 固件和生产落地页，不烧写硬件，不进入 TP-G2。
+当前阶段：
+
+**TP-G2 当前实现盘点与差距报告。**
+
+输出：
+
+```text
+docs/current-state/**
+docs/gap-analysis/**
+docs/remediation/**
+reports/target-vs-current/**
+```
+
+本 Gate 只盘点、运行可运行测试、生成差距与第一断点与修复 Backlog；不修改业务代码，不烧写，不进入 TP-G3。
 
 ---
 
-## 3. TP-G1：目标测试体系
+## 3. TP-G1：目标测试体系（已完成并批准）
 
-用户批准目标产品后使用：
+用户批准目标产品后使用过：
 
 ```text
 2026-09-01-tp-g1-target-test-system-codex-prompt.md
@@ -60,7 +65,7 @@ scripts/target/**
 tests/target/**
 ```
 
-允许当前实现大量 FAIL；本 Gate 不修业务代码。
+状态：APPROVED（user）。此后不再扩大测试定义。
 
 ---
 

@@ -1,11 +1,11 @@
 # 10 Smart HID 端到端测试矩阵（TEST-H-001..008 / E5）
 
 ```yaml
-status: REVIEW
+status: APPROVED
 document_version: 1.0
 owner: Smart BLE QA / Engineering
 last_reviewed: 2026-09-01
-approved_by: null
+approved_by: user
 supersedes: []
 ```
 
