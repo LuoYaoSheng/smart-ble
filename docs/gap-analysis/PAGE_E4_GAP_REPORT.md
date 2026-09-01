@@ -6,18 +6,18 @@ gate: TP-G2-R2
 environment: READY_FOR_PAGE_E4
 fake_runtime: true
 live_app_url: false
-generated_at: 2026-09-01T11:29:15.909Z
+generated_at: 2026-09-01T11:41:31.597Z
 ```
 
 > **原则**：Playwright Fake Runtime harness PASS ≠ 产品实现满足目标。
 > 本报告在 E4 可执行前提下，用静态实现 + Current FAIL 证据给出产品 PASS/FAIL/BLOCKED/NOT_IMPLEMENTED。
-> 本轮 **Runtime filter（RUNTIME-FILTER-001）已落地**；未修改 PAGE Vue / ESP32 / OTA / Session / Log-redaction。
+> 本轮 **Runtime filter + display-name 已落地**；未修改 PAGE Vue / ESP32 / OTA / Session / Log-redaction / GATT。
 
 ## Summary
 
 | Page | Product | PASS | FAIL | BLOCKED | NOT_IMPLEMENTED | Primary Fix |
 |---|---|---|---|---|---|---|
-| PAGE-001 | FAIL | 0 | 0 | 0 | 30 | RUNTIME-DISPLAY-NAME-001 |
+| PAGE-001 | PASS | 30 | 0 | 0 | 0 | — |
 | PAGE-002 | FAIL | 0 | 0 | 0 | 29 | RUNTIME-LOG-REDACTION-001 |
 | PAGE-003 | PASS | 12 | 0 | 0 | 0 | — |
 | PAGE-004 | PASS | 14 | 0 | 0 | 0 | — |
@@ -33,20 +33,19 @@ generated_at: 2026-09-01T11:29:15.909Z
 
 | Status | Count |
 |---|---|
-| PASS | 102 |
+| PASS | 132 |
 | FAIL | 67 |
 | BLOCKED | 2 |
-| NOT_IMPLEMENTED | 59 |
+| NOT_IMPLEMENTED | 29 |
 | Harness PASS | 230 |
 | Harness FAIL | 0 |
 
 ## Top First Breakpoints
 
-1. **PAGE-001** → `apps/uniapp/services/ble-runtime/display-name.js` `(missing)` — display-name module missing (RUNTIME-FILTER-001 CLOSED) *(RUNTIME-DISPLAY-NAME-001 / TEST-U-006 / FEAT-013)*
-2. **PAGE-002** → `apps/uniapp/services/ble-runtime/log-redaction.js` `(missing)` — log-redaction module missing; HID provision path shares REQ-036/050 *(RUNTIME-LOG-REDACTION-001 / TEST-U-013 / FEAT-040)*
-3. **PAGE-006** → `apps/uniapp/pages/device/detail.vue` `validateHexInput/parseHexInput` — HEX write codec helpers missing *(RUNTIME-GATT-CODEC-001 / TEST-U-010 / FEAT-028)*
-4. **PAGE-007** → `apps/uniapp/services/ble-runtime/index.js` `Registry` — no provisioning-session classify/exclude API for PAGE-007 list *(RUNTIME-SESSION-001 / TEST-I-009 / REQ-053)*
-5. **PAGE-008** → `apps/uniapp/pages/broadcast/index.vue` `(inline advertising)` — page does not use useBroadcastSession composable/owner *(PAGE-BROADCAST-001 / TEST-P-008 / FEAT-041)*
+1. **PAGE-002** → `apps/uniapp/services/ble-runtime/log-redaction.js` `(missing)` — log-redaction module missing; HID provision path shares REQ-036/050 *(RUNTIME-LOG-REDACTION-001 / TEST-U-013 / FEAT-040)*
+2. **PAGE-006** → `apps/uniapp/pages/device/detail.vue` `validateHexInput/parseHexInput` — HEX write codec helpers missing *(RUNTIME-GATT-CODEC-001 / TEST-U-010 / FEAT-028)*
+3. **PAGE-007** → `apps/uniapp/services/ble-runtime/index.js` `Registry` — no provisioning-session classify/exclude API for PAGE-007 list *(RUNTIME-SESSION-001 / TEST-I-009 / REQ-053)*
+4. **PAGE-008** → `apps/uniapp/pages/broadcast/index.vue` `(inline advertising)` — page does not use useBroadcastSession composable/owner *(PAGE-BROADCAST-001 / TEST-P-008 / FEAT-041)*
 
 ## Static Facts（本轮探测）
 
@@ -55,7 +54,7 @@ generated_at: 2026-09-01T11:29:15.909Z
   "hasLogRedaction": false,
   "hasWriteQueue": false,
   "hasReconnect": false,
-  "hasDisplayName": false,
+  "hasDisplayName": true,
   "hasValidateHex": false,
   "broadcastUsesComposable": false,
   "versionUsesModel": true,
@@ -72,29 +71,21 @@ generated_at: 2026-09-01T11:29:15.909Z
 
 ### PAGE-001
 
-- **Product**: FAIL
+- **Product**: PASS
 - **Target**: `docs/target-product/pages|web` + behavior states=10 ops=14
 - **Actual (E4 harness)**: Fake Runtime PASS=30 FAIL=0
-- **Actual (product)**: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响
-- **Case tallies**: PASS=0 FAIL=0 BLOCKED=0 NOT_IMPLEMENTED=30
-- **Root Cause**: RC-DISPLAY-NAME
-- **Fix IDs**: RUNTIME-DISPLAY-NAME-001（页面失败若源自 Runtime，引用 RUNTIME_* 而非新建 PAGE_FIX）
+- **Actual (product)**: RUNTIME-FILTER-001 / RUNTIME-DISPLAY-NAME-001 DONE；E4 harness PASS；DEC-013 时长差异记观察
+- **Case tallies**: PASS=30 FAIL=0 BLOCKED=0 NOT_IMPLEMENTED=0
+- **Root Cause**: —
+- **Fix IDs**: —（页面失败若源自 Runtime，引用 RUNTIME_* 而非新建 PAGE_FIX）
 
-- **First Breakpoint**: `apps/uniapp/services/ble-runtime/display-name.js` / `(missing)` — display-name module missing (RUNTIME-FILTER-001 CLOSED)
-- Target: FEAT-013 · Test: TEST-U-006
+- First Breakpoint: —
 
 **Fail / Blocked samples**
-  - NOT_IMPLEMENTED STATE-P001-01 → RUNTIME-DISPLAY-NAME-001
-  - NOT_IMPLEMENTED STATE-P001-02 → RUNTIME-DISPLAY-NAME-001
-  - NOT_IMPLEMENTED STATE-P001-03 → RUNTIME-DISPLAY-NAME-001
-  - NOT_IMPLEMENTED STATE-P001-04 → RUNTIME-DISPLAY-NAME-001
-  - NOT_IMPLEMENTED STATE-P001-05 → RUNTIME-DISPLAY-NAME-001
-  - NOT_IMPLEMENTED STATE-P001-06 → RUNTIME-DISPLAY-NAME-001
-  - NOT_IMPLEMENTED STATE-P001-07 → RUNTIME-DISPLAY-NAME-001
-  - NOT_IMPLEMENTED STATE-P001-08 → RUNTIME-DISPLAY-NAME-001
+  - （无）
 
 **Related**
-  - note: scan auto-stop is 5s; target DEC-013 default 10s (apps/uniapp/composables/use-ble-scan.js)
+  - note: scan auto-stop is 5s; target DEC-013 default 10s（观察项，非本轮 RUNTIME 断点） (apps/uniapp/composables/use-ble-scan.js)
 
 ### PAGE-002
 
@@ -316,7 +307,7 @@ generated_at: 2026-09-01T11:29:15.909Z
 
 | Bucket | Pages |
 |---|---|
-| Runtime | PAGE-001 (display-name；filter DONE), PAGE-002 (log-redaction/bridge), PAGE-006 (GATT/write-queue/reconnect/OTA/discovery), PAGE-007 (session) |
+| Runtime | PAGE-002 (log-redaction/bridge), PAGE-006 (GATT/write-queue/reconnect/OTA/discovery), PAGE-007 (session)；PAGE-001 filter+display-name DONE |
 | Page | PAGE-008 (broadcast composable owner) |
 | Testability | TEST-BRIDGE-TS-001（Smart HID TS） |
 | Metadata | PAGE-010 CLOSED |

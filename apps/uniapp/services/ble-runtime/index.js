@@ -7,6 +7,7 @@
 
 import { getBlePlatform, resetBlePlatformForTesting, setBlePlatformForTesting as setPlatform } from './platform.js';
 import { normalizeBleError } from './errors.js';
+import { attachDeviceDisplayName } from './display-name.js';
 
 const state = {
   platform: null,
@@ -81,9 +82,10 @@ function ensureCallbacks() {
   });
 
   platform.onBluetoothDeviceFound?.((res) => {
+    const devices = (res.devices || []).map((device) => attachDeviceDisplayName(device));
     for (const callback of [...state.discoveryListeners]) {
       try {
-        callback(res.devices || []);
+        callback(devices);
       } catch (error) {
         console.error('[ble-runtime] discovery callback failed', error);
       }

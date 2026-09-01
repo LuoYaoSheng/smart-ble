@@ -65,7 +65,11 @@ await run('routes discovery through the single BLE runtime listener', async () =
   const unsubscribe = onDiscovery((devices) => { discovered = devices; });
   await openAdapter();
   platform.emitDiscovery([{ deviceId: 'device-c' }]);
-  assert.deepEqual(discovered, [{ deviceId: 'device-c' }]);
+  assert.equal(discovered.length, 1);
+  assert.equal(discovered[0].deviceId, 'device-c');
+  assert.ok(discovered[0].displayName, 'discovery normalizes displayName');
+  assert.match(discovered[0].displayName, /未命名 BLE/);
+  assert.equal(discovered[0].displayNameSource, 'deviceId');
   unsubscribe();
 });
 

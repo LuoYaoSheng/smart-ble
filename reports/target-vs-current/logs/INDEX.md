@@ -2,7 +2,7 @@
 
 - structured: `.tmp/tp-g2/logs/current-structured.json` (fallback current-r3d.json)
 - system: `.tmp/tp-g2/logs/system-r3d.json` / system.json
-- content_hash: `838a6c6fa67b924dcdb3499ba81abbdde3bb6279393696fba8035d82d8828ca3`
-- commit: `5c36adf6a8242d2b3902e13e99601fa59672992d`
+- content_hash: `6d61cc538b5131d8ae7fe4b9490737b696efa2a178a30eca611cd6d8ab550772`
+- commit: `32678843e16092a11a37fe5a01643a1339ae75d1`
 
 日志默认不入库。

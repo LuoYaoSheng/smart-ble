@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 838a6c6fa67b924dcdb3499ba81abbdde3bb6279393696fba8035d82d8828ca3
+content_hash: 6d61cc538b5131d8ae7fe4b9490737b696efa2a178a30eca611cd6d8ab550772
 ```
 
 ## 路由事实
@@ -24,7 +24,7 @@ content_hash: 838a6c6fa67b924dcdb3499ba81abbdde3bb6279393696fba8035d82d8828ca3
 
 ## 每页状态（来自报告）
 
-- **PAGE-001** impl=UNASSESSED verify=AUTOMATED_FAIL static=UNASSESSED e4=EXECUTED task=RUNTIME-DISPLAY-NAME-001 bp=[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失
+- **PAGE-001** impl=UNASSESSED verify=AUTOMATED_FAIL static=UNASSESSED e4=EXECUTED task=RUNTIME-SESSION-001 bp=[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 sub
 - **PAGE-002** impl=UNASSESSED verify=AUTOMATED_FAIL static=UNASSESSED e4=EXECUTED task=RUNTIME-LOG-REDACTION-001 bp=[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：a
 - **PAGE-003** impl=UNASSESSED verify=EXECUTED static=UNASSESSED e4=EXECUTED task=— bp=Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task
 - **PAGE-004** impl=IMPLEMENTED_UNTESTED verify=AUTOMATED_PASS static=CONFIRMED_IMPLEMENTED e4=EXECUTED task=— bp=Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task

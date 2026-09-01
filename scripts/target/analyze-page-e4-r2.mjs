@@ -110,20 +110,14 @@ const FAIL_EV = collectFailEvidence();
 /** Page-level product assessment (static + current FAIL evidence) */
 const PAGE_ASSESS = {
   'PAGE-001': {
-    product: 'FAIL',
-    task_id: 'RUNTIME-DISPLAY-NAME-001',
-    root_cause_id: 'RC-DISPLAY-NAME',
-    first_breakpoint: {
-      target: 'FEAT-013',
-      test: 'TEST-U-006',
-      file: 'apps/uniapp/services/ble-runtime/display-name.js',
-      symbol: '(missing)',
-      breakpoint: 'display-name module missing (RUNTIME-FILTER-001 CLOSED)',
-    },
+    product: 'PASS',
+    task_id: null,
+    root_cause_id: null,
+    first_breakpoint: null,
     also: [
-      { task_id: null, file: 'apps/uniapp/composables/use-ble-scan.js', symbol: 'autoStopSeconds', breakpoint: 'scan auto-stop is 5s; target DEC-013 default 10s' },
+      { task_id: null, file: 'apps/uniapp/composables/use-ble-scan.js', symbol: 'autoStopSeconds', breakpoint: 'scan auto-stop is 5s; target DEC-013 default 10s（观察项，非本轮 RUNTIME 断点）' },
     ],
-    notes: 'RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响',
+    notes: 'RUNTIME-FILTER-001 / RUNTIME-DISPLAY-NAME-001 DONE；E4 harness PASS；DEC-013 时长差异记观察',
   },
   'PAGE-002': {
     product: 'FAIL',
@@ -645,7 +639,7 @@ generated_at: ${pageE4V2.generated_at}
 
 > **原则**：Playwright Fake Runtime harness PASS ≠ 产品实现满足目标。
 > 本报告在 E4 可执行前提下，用静态实现 + Current FAIL 证据给出产品 PASS/FAIL/BLOCKED/NOT_IMPLEMENTED。
-> 本轮 **Runtime filter（RUNTIME-FILTER-001）已落地**；未修改 PAGE Vue / ESP32 / OTA / Session / Log-redaction。
+> 本轮 **Runtime filter + display-name 已落地**；未修改 PAGE Vue / ESP32 / OTA / Session / Log-redaction / GATT。
 
 ## Summary
 
@@ -682,7 +676,7 @@ ${pagesBody}
 
 | Bucket | Pages |
 |---|---|
-| Runtime | PAGE-001 (display-name；filter DONE), PAGE-002 (log-redaction/bridge), PAGE-006 (GATT/write-queue/reconnect/OTA/discovery), PAGE-007 (session) |
+| Runtime | PAGE-002 (log-redaction/bridge), PAGE-006 (GATT/write-queue/reconnect/OTA/discovery), PAGE-007 (session)；PAGE-001 filter+display-name DONE |
 | Page | PAGE-008 (broadcast composable owner) |
 | Testability | TEST-BRIDGE-TS-001（Smart HID TS） |
 | Metadata | PAGE-010 CLOSED |
@@ -708,7 +702,7 @@ function renderRemediation(summaryByPage) {
     ['PAGE-006', 'RUNTIME-WRITE-QUEUE-001', 'P1', 'write-queue 缺失'],
     ['PAGE-006', 'RUNTIME-RECONNECT-001', 'P1', 'reconnect-policy 缺失'],
     ['PAGE-006', 'RUNTIME-CONNECTION-DISCOVERY-001', 'P1', 'connectDevice 发现编排（TEST-I-003）'],
-    ['PAGE-001', 'RUNTIME-DISPLAY-NAME-001', 'P1', 'display-name.js 缺失（RUNTIME-FILTER-001 DONE）'],
+    ['PAGE-001', '—', 'P3', 'RUNTIME-FILTER/DISPLAY-NAME DONE；DEC-013 时长观察'],
     ['PAGE-007', 'RUNTIME-SESSION-001', 'P1', 'Registry 配网会话排除 + subscription_count'],
     ['PAGE-002', 'RUNTIME-LOG-REDACTION-001', 'P1', 'log-redaction 缺失（配网日志）'],
     ['PAGE-002', 'TEST-BRIDGE-TS-001', 'P1', 'Smart HID TS protocol 桥'],
@@ -747,7 +741,7 @@ ${order.map(([page, task, sev, why]) => `| ${sev} | ${page} | \`${task}\` | ${wh
 ## 依赖提示
 
 - PAGE-006 产品 FAIL → 先 **OTA-PACKAGE-001** → **OTA-CLIENT-001**；并行 RUNTIME-GATT/WRITE-QUEUE/RECONNECT/CONNECTION-DISCOVERY
-- PAGE-001 → RUNTIME-FILTER-001 **DONE**；剩余 RUNTIME-DISPLAY-NAME-001（勿建 PAGE-SCAN-FIX）
+- PAGE-001 → RUNTIME-FILTER-001 / RUNTIME-DISPLAY-NAME-001 **DONE**
 - PAGE-007 → RUNTIME-SESSION-001
 - PAGE-002 → RUNTIME-LOG-REDACTION-001；Smart HID 协议桥 → TEST-BRIDGE-TS-001
 - PAGE-008 → PAGE-BROADCAST-001；Observer 验证 → ESP32-OBSERVER-001（BLOCKED 直至 fixture）

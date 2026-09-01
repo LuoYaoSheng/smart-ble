@@ -10,6 +10,6 @@
 - [LANDING_RELEASE_GAP_REPORT.md](./LANDING_RELEASE_GAP_REPORT.md)
 - [TEST_COVERAGE_GAP_REPORT.md](./TEST_COVERAGE_GAP_REPORT.md)
 
-数字必须与 JSON `content_hash=838a6c6fa67b924dcdb3499ba81abbdde3bb6279393696fba8035d82d8828ca3` 一致。
+数字必须与 JSON `content_hash=6d61cc538b5131d8ae7fe4b9490737b696efa2a178a30eca611cd6d8ab550772` 一致。
 
 v1 存档：`reports/target-vs-current-v1/`（SUPERSEDED）。

@@ -1,9 +1,9 @@
 {
   "schema_version": "2.0",
   "gate": "TP-G2-R1",
-  "content_hash": "838a6c6fa67b924dcdb3499ba81abbdde3bb6279393696fba8035d82d8828ca3",
-  "generated_at": "2026-09-01T11:29:21.038Z",
-  "commit": "5c36adf6a8242d2b3902e13e99601fa59672992d",
+  "content_hash": "6d61cc538b5131d8ae7fe4b9490737b696efa2a178a30eca611cd6d8ab550772",
+  "generated_at": "2026-09-01T11:41:31.665Z",
+  "commit": "32678843e16092a11a37fe5a01643a1339ae75d1",
   "unique_root_causes_by_severity": {
     "P0": 2,
     "P1": 11,
@@ -12,16 +12,16 @@
   },
   "affected_target_records_by_severity": {
     "P0": 16,
-    "P1": 65,
+    "P1": 66,
     "P2": 0,
     "P3": 0,
-    "null": 566
+    "null": 565
   },
   "coverage": {
     "gate": "TP-G2-R1",
     "schema_version": "2.0",
-    "generated_at": "2026-09-01T11:29:21.038Z",
-    "commit": "5c36adf6a8242d2b3902e13e99601fa59672992d",
+    "generated_at": "2026-09-01T11:41:31.665Z",
+    "commit": "32678843e16092a11a37fe5a01643a1339ae75d1",
     "structured_current_path": ".tmp/tp-g2/logs/current-structured.json",
     "system": {
       "SYSTEM_PASS": 412,
@@ -32,23 +32,23 @@
       "TEST_INFRA_FAIL": 0
     },
     "current": {
-      "CURRENT_PASS": 281,
-      "CURRENT_FAIL": 18,
+      "CURRENT_PASS": 298,
+      "CURRENT_FAIL": 19,
       "TEST_INFRA_FAIL": 0,
-      "cases": 69,
+      "cases": 87,
       "layers": [
         {
           "name": "unit",
-          "pass": 24,
-          "fail": 8,
+          "pass": 43,
+          "fail": 7,
           "skipped": 0,
-          "case_count": 32,
+          "case_count": 50,
           "infra_fail": 0
         },
         {
           "name": "integration",
-          "pass": 12,
-          "fail": 6,
+          "pass": 10,
+          "fail": 8,
           "skipped": 0,
           "case_count": 18,
           "infra_fail": 0
@@ -267,24 +267,24 @@
       "RELEASE": 1
     },
     "by_implementation_status": {
-      "IMPLEMENTED_UNTESTED": 62,
+      "IMPLEMENTED_UNTESTED": 61,
       "UNASSESSED": 492,
-      "NOT_IMPLEMENTED": 28,
+      "NOT_IMPLEMENTED": 29,
       "CONFIRMED_PARTIAL": 39,
       "CONFIRMED_IMPLEMENTED": 22,
       "CONFIRMED_MISSING": 4
     },
     "by_verification_status": {
       "AUTOMATED_PASS": 88,
-      "HARDWARE_PENDING": 59,
-      "AUTOMATED_FAIL": 64,
+      "HARDWARE_PENDING": 58,
+      "AUTOMATED_FAIL": 65,
       "NOT_EXECUTED": 293,
       "EXECUTED": 139,
       "BLOCKED_BY_FIXTURE": 4
     },
     "by_severity": {
-      "null": 566,
-      "P1": 65,
+      "null": 565,
+      "P1": 66,
       "P0": 16
     },
     "unique_root_causes_by_severity": {
@@ -295,13 +295,13 @@
     },
     "affected_target_records_by_severity": {
       "P0": 16,
-      "P1": 65,
+      "P1": 66,
       "P2": 0,
       "P3": 0,
-      "null": 566
+      "null": 565
     },
     "product_vs_testability": {
-      "product_gaps_with_severity": 78,
+      "product_gaps_with_severity": 79,
       "testability_records": 128,
       "blocked_page_cases": 0,
       "note": "blocked_page_cases 不得计为产品缺陷数；Playwright 与 Page Driver 为独立 blocker"
@@ -958,22 +958,16 @@
       "target_id": "FEAT-013",
       "target_type": "feature",
       "dimension": "feature",
-      "gap_kind": "RUNTIME",
+      "gap_kind": "PRODUCT",
       "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "AUTOMATED_FAIL",
+      "implementation_status": "IMPLEMENTED_UNTESTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
-      "severity": "P1",
+      "severity": null,
       "evidence_level": "E5",
-      "implementation_refs": [
-        {
-          "path": "apps/uniapp/services/ble-runtime/",
-          "symbol": "(missing display-name.js)",
-          "line_hint": "n/a"
-        }
-      ],
+      "implementation_refs": [],
       "test_ids": [
         "TEST-U-006",
         "TEST-A-005",
@@ -982,18 +976,126 @@
       "test_results": [
         {
           "test_id": "TEST-U-006",
-          "status": "FAIL",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-01 0x09 Complete Local Name",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-02 0x08 Short Local Name",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-03 device.name fallback",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-04 manufacturer fallback",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-05 device id fallback",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-06 UTF-8",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-07 empty localName skips",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-08 invalid bytes no throw",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-09 hex string advertisement",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-10 Uint8Array",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-11 Array of bytes",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-12 priority order (REQ-013)",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-13 source correct",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-14 confidence correct",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-15 no mutation",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-16 deterministic",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-17 normalizeDisplayName keeps case and separators",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-18 attachDeviceDisplayName fields",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
           "case_id": "current:device-name-target.test.mjs:TEST-U-006 目标层：services/ble-runtime/display-name.js",
-          "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js"
+          "first_breakpoint": null
         }
       ],
       "expected": "设备显示名解析链 (Must)",
-      "actual": "NOT_IMPLEMENTED: [TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-      "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
+      "actual": "structured current PASS on related cases",
+      "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": null,
+      "task_id": null,
       "release_blocking": true
     },
     {
@@ -2682,14 +2784,14 @@
       "target_id": "FEAT-057",
       "target_type": "feature",
       "dimension": "feature",
-      "gap_kind": "PRODUCT",
+      "gap_kind": "RUNTIME",
       "priority": "Must",
-      "implementation_status": "IMPLEMENTED_UNTESTED",
-      "verification_status": "AUTOMATED_PASS",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "AUTOMATED_FAIL",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
-      "severity": null,
+      "severity": "P1",
       "evidence_level": "E5",
       "implementation_refs": [],
       "test_ids": [
@@ -2700,24 +2802,24 @@
       "test_results": [
         {
           "test_id": "TEST-I-009",
-          "status": "PASS",
+          "status": "FAIL",
           "case_id": "current:smart-hid-provision-target.test.mjs:TEST-I-009 目标层：runProvisionTransaction 顺序（waiter 先注册）",
-          "first_breakpoint": null
+          "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,"
         },
         {
           "test_id": "TEST-I-009",
-          "status": "PASS",
+          "status": "FAIL",
           "case_id": "current:smart-hid-provision-target.test.mjs:TEST-I-009 目标层：writeProfileCandidate 分帧写入到达平台",
-          "first_breakpoint": null
+          "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba"
         }
       ],
       "expected": "candidate 分帧下发与 STATUS waiter (Must)",
-      "actual": "structured current PASS on related cases",
-      "first_breakpoint": "",
+      "actual": "NOT_IMPLEMENTED: [TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,LyoqCiAqIOebruagh+Wlkee6puWFpeWPo++8mmRpc3BsYXktbmFtZS5qc++8iEZFQVQtMDEzIC8gVEVTVC1VLTAwNu+8ieOAggogKiDlrp7njrDkvY3kuo4gZGV2aWNlLWRpc3BsYXktbmFtZS5qc+OAggogKi8KCmV4cG9ydCB7CiAgbm9ybWFsaXplRGlzc",
+      "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
       "downstream_impact": [],
       "dependencies": [],
-      "root_cause_id": null,
-      "task_id": null,
+      "root_cause_id": "RC-DISPLAY-NAME",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
       "release_blocking": true
     },
     {
@@ -4042,12 +4144,12 @@
       "dimension": "requirement",
       "gap_kind": "PRODUCT",
       "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "AUTOMATED_FAIL",
+      "implementation_status": "IMPLEMENTED_UNTESTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
-      "severity": "P1",
+      "severity": null,
       "evidence_level": null,
       "implementation_refs": [],
       "test_ids": [
@@ -4058,20 +4160,128 @@
       "test_results": [
         {
           "test_id": "TEST-U-006",
-          "status": "FAIL",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-01 0x09 Complete Local Name",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-02 0x08 Short Local Name",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-03 device.name fallback",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-04 manufacturer fallback",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-05 device id fallback",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-06 UTF-8",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-07 empty localName skips",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-08 invalid bytes no throw",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-09 hex string advertisement",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-10 Uint8Array",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-11 Array of bytes",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-12 priority order (REQ-013)",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-13 source correct",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-14 confidence correct",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-15 no mutation",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-16 deterministic",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-17 normalizeDisplayName keeps case and separators",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-18 attachDeviceDisplayName fields",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
           "case_id": "current:device-name-target.test.mjs:TEST-U-006 目标层：services/ble-runtime/display-name.js",
-          "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js"
+          "first_breakpoint": null
         }
       ],
       "expected": "REQ REQ-013",
-      "actual": "NOT_IMPLEMENTED: [TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-      "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
+      "actual": "structured current PASS",
+      "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [
         "FEAT-013"
       ],
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": null,
+      "task_id": null,
       "release_blocking": true
     },
     {
@@ -5429,22 +5639,22 @@
       ],
       "test_results": [
         {
-          "test_id": "TEST-I-009",
-          "status": "PASS",
-          "case_id": "current:smart-hid-provision-target.test.mjs:TEST-I-009 目标层：runProvisionTransaction 顺序（waiter 先注册）",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-I-009",
-          "status": "PASS",
-          "case_id": "current:smart-hid-provision-target.test.mjs:TEST-I-009 目标层：writeProfileCandidate 分帧写入到达平台",
-          "first_breakpoint": null
-        },
-        {
           "test_id": "TEST-U-015",
           "status": "FAIL",
           "case_id": "current:smart-hid-state-target.test.mjs:TEST-U-015 目标层：smart-hid/profile.js + workflow.js",
           "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'"
+        },
+        {
+          "test_id": "TEST-I-009",
+          "status": "FAIL",
+          "case_id": "current:smart-hid-provision-target.test.mjs:TEST-I-009 目标层：runProvisionTransaction 顺序（waiter 先注册）",
+          "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,"
+        },
+        {
+          "test_id": "TEST-I-009",
+          "status": "FAIL",
+          "case_id": "current:smart-hid-provision-target.test.mjs:TEST-I-009 目标层：writeProfileCandidate 分帧写入到达平台",
+          "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba"
         }
       ],
       "expected": "REQ REQ-047",
@@ -5465,12 +5675,12 @@
       "dimension": "requirement",
       "gap_kind": "PRODUCT",
       "priority": "Must",
-      "implementation_status": "IMPLEMENTED_UNTESTED",
-      "verification_status": "HARDWARE_PENDING",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "AUTOMATED_FAIL",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
-      "severity": null,
+      "severity": "P1",
       "evidence_level": null,
       "implementation_refs": [],
       "test_ids": [
@@ -5481,16 +5691,16 @@
       ],
       "test_results": [],
       "expected": "REQ REQ-048",
-      "actual": "",
-      "first_breakpoint": "",
+      "actual": "NOT_IMPLEMENTED: [TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,LyoqCiAqIOebruagh+Wlkee6puWFpeWPo++8mmRpc3BsYXktbmFtZS5qc++8iEZFQVQtMDEzIC8gVEVTVC1VLTAwNu+8ieOAggogKiDlrp7njrDkvY3kuo4gZGV2aWNlLWRpc3BsYXktbmFtZS5qc+OAggogKi8KCmV4cG9ydCB7CiAgbm9ybWFsaXplRGlzc",
+      "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
       "downstream_impact": [],
       "dependencies": [
         "FEAT-055",
         "FEAT-056",
         "FEAT-057"
       ],
-      "root_cause_id": null,
-      "task_id": null,
+      "root_cause_id": "RC-DISPLAY-NAME",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
       "release_blocking": true
     },
     {
@@ -5569,12 +5779,12 @@
       "dimension": "requirement",
       "gap_kind": "PRODUCT",
       "priority": "Must",
-      "implementation_status": "IMPLEMENTED_UNTESTED",
-      "verification_status": "AUTOMATED_PASS",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "verification_status": "AUTOMATED_FAIL",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
-      "severity": null,
+      "severity": "P1",
       "evidence_level": null,
       "implementation_refs": [],
       "test_ids": [
@@ -5583,14 +5793,14 @@
       ],
       "test_results": [],
       "expected": "REQ REQ-051",
-      "actual": "",
-      "first_breakpoint": "",
+      "actual": "NOT_IMPLEMENTED: [TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,LyoqCiAqIOebruagh+Wlkee6puWFpeWPo++8mmRpc3BsYXktbmFtZS5qc++8iEZFQVQtMDEzIC8gVEVTVC1VLTAwNu+8ieOAggogKiDlrp7njrDkvY3kuo4gZGV2aWNlLWRpc3BsYXktbmFtZS5qc+OAggogKi8KCmV4cG9ydCB7CiAgbm9ybWFsaXplRGlzc",
+      "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
       "downstream_impact": [],
       "dependencies": [
         "FEAT-057"
       ],
-      "root_cause_id": null,
-      "task_id": null,
+      "root_cause_id": "RC-DISPLAY-NAME",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
       "release_blocking": true
     },
     {
@@ -6185,21 +6395,129 @@
         "TEST-W-007",
         "TEST-E-001",
         "TEST-U-008",
+        "TEST-U-006",
         "TEST-U-007",
         "TEST-U-001",
         "TEST-U-005",
         "TEST-I-003",
         "TEST-I-001",
         "TEST-I-002",
-        "TEST-I-009",
-        "TEST-U-006",
-        "TEST-U-015"
+        "TEST-U-015",
+        "TEST-I-009"
       ],
       "test_results": [
         {
           "test_id": "TEST-U-008",
           "status": "PASS",
           "case_id": "current:advertisement-target.test.mjs:TEST-U-008 目标层：services/ble-runtime/advertisement.js normalizeAdvertisement",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-01 0x09 Complete Local Name",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-02 0x08 Short Local Name",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-03 device.name fallback",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-04 manufacturer fallback",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-05 device id fallback",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-06 UTF-8",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-07 empty localName skips",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-08 invalid bytes no throw",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-09 hex string advertisement",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-10 Uint8Array",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-11 Array of bytes",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-12 priority order (REQ-013)",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-13 source correct",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-14 confidence correct",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-15 no mutation",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-16 deterministic",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-17 normalizeDisplayName keeps case and separators",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-18 attachDeviceDisplayName fields",
           "first_breakpoint": null
         },
         {
@@ -6299,6 +6617,12 @@
           "first_breakpoint": null
         },
         {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-name-target.test.mjs:TEST-U-006 目标层：services/ble-runtime/display-name.js",
+          "first_breakpoint": null
+        },
+        {
           "test_id": "TEST-U-001",
           "status": "PASS",
           "case_id": "current:platform-permission-target.test.mjs:TEST-U-001/003/004 目标层：ble-runtime/platform.js + services/scan-permission.js",
@@ -6335,24 +6659,6 @@
           "first_breakpoint": null
         },
         {
-          "test_id": "TEST-I-009",
-          "status": "PASS",
-          "case_id": "current:smart-hid-provision-target.test.mjs:TEST-I-009 目标层：runProvisionTransaction 顺序（waiter 先注册）",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-I-009",
-          "status": "PASS",
-          "case_id": "current:smart-hid-provision-target.test.mjs:TEST-I-009 目标层：writeProfileCandidate 分帧写入到达平台",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-006",
-          "status": "FAIL",
-          "case_id": "current:device-name-target.test.mjs:TEST-U-006 目标层：services/ble-runtime/display-name.js",
-          "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js"
-        },
-        {
           "test_id": "TEST-U-005",
           "status": "FAIL",
           "case_id": "current:session-state-target.test.mjs:TEST-U-005 目标层：connected-session-registry.js subscription_count（DEC-017）",
@@ -6363,18 +6669,30 @@
           "status": "FAIL",
           "case_id": "current:smart-hid-state-target.test.mjs:TEST-U-015 目标层：smart-hid/profile.js + workflow.js",
           "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'"
+        },
+        {
+          "test_id": "TEST-I-009",
+          "status": "FAIL",
+          "case_id": "current:smart-hid-provision-target.test.mjs:TEST-I-009 目标层：runProvisionTransaction 顺序（waiter 先注册）",
+          "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,"
+        },
+        {
+          "test_id": "TEST-I-009",
+          "status": "FAIL",
+          "case_id": "current:smart-hid-provision-target.test.mjs:TEST-I-009 目标层：writeProfileCandidate 分帧写入到达平台",
+          "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba"
         }
       ],
       "expected": "10 states / 14 operations",
-      "actual": "NOT_IMPLEMENTED: [TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-      "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
+      "actual": "NOT_IMPLEMENTED: [TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
+      "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
       "downstream_impact": [
         "state_cases=10",
         "operation_cases=14"
       ],
       "dependencies": [],
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": "RC-SESSION-REGISTRY",
+      "task_id": "RUNTIME-SESSION-001",
       "release_blocking": false
     },
     {
@@ -12281,10 +12599,118 @@
         "TEST-A-005",
         "TEST-W-007",
         "TEST-E-001",
-        "TEST-U-007",
-        "TEST-U-006"
+        "TEST-U-006",
+        "TEST-U-007"
       ],
       "test_results": [
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-01 0x09 Complete Local Name",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-02 0x08 Short Local Name",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-03 device.name fallback",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-04 manufacturer fallback",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-05 device id fallback",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-06 UTF-8",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-07 empty localName skips",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-08 invalid bytes no throw",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-09 hex string advertisement",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-10 Uint8Array",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-11 Array of bytes",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-12 priority order (REQ-013)",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-13 source correct",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-14 confidence correct",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-15 no mutation",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-16 deterministic",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-17 normalizeDisplayName keeps case and separators",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-18 attachDeviceDisplayName fields",
+          "first_breakpoint": null
+        },
         {
           "test_id": "TEST-U-007",
           "status": "PASS",
@@ -12382,6 +12808,12 @@
           "first_breakpoint": null
         },
         {
+          "test_id": "TEST-U-006",
+          "status": "PASS",
+          "case_id": "current:device-name-target.test.mjs:TEST-U-006 目标层：services/ble-runtime/display-name.js",
+          "first_breakpoint": null
+        },
+        {
           "test_id": "TEST-U-005",
           "status": "PASS",
           "case_id": "current:session-state-target.test.mjs:TEST-U-005 目标层：ble-runtime/scan-session.js + device-collection.js",
@@ -12394,12 +12826,6 @@
           "first_breakpoint": null
         },
         {
-          "test_id": "TEST-U-006",
-          "status": "FAIL",
-          "case_id": "current:device-name-target.test.mjs:TEST-U-006 目标层：services/ble-runtime/display-name.js",
-          "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js"
-        },
-        {
           "test_id": "TEST-U-005",
           "status": "FAIL",
           "case_id": "current:session-state-target.test.mjs:TEST-U-005 目标层：connected-session-registry.js subscription_count（DEC-017）",
@@ -12407,12 +12833,12 @@
         }
       ],
       "expected": "两轮扫描",
-      "actual": "NOT_IMPLEMENTED: [TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-      "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
+      "actual": "NOT_IMPLEMENTED: [TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
+      "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
       "downstream_impact": [],
       "dependencies": [],
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "root_cause_id": "RC-SESSION-REGISTRY",
+      "task_id": "RUNTIME-SESSION-001",
       "release_blocking": false
     },
     {
@@ -12771,22 +13197,22 @@
       ],
       "test_results": [
         {
-          "test_id": "TEST-I-009",
-          "status": "PASS",
-          "case_id": "current:smart-hid-provision-target.test.mjs:TEST-I-009 目标层：runProvisionTransaction 顺序（waiter 先注册）",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-I-009",
-          "status": "PASS",
-          "case_id": "current:smart-hid-provision-target.test.mjs:TEST-I-009 目标层：writeProfileCandidate 分帧写入到达平台",
-          "first_breakpoint": null
-        },
-        {
           "test_id": "TEST-U-015",
           "status": "FAIL",
           "case_id": "current:smart-hid-state-target.test.mjs:TEST-U-015 目标层：smart-hid/profile.js + workflow.js",
           "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'"
+        },
+        {
+          "test_id": "TEST-I-009",
+          "status": "FAIL",
+          "case_id": "current:smart-hid-provision-target.test.mjs:TEST-I-009 目标层：runProvisionTransaction 顺序（waiter 先注册）",
+          "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,"
+        },
+        {
+          "test_id": "TEST-I-009",
+          "status": "FAIL",
+          "case_id": "current:smart-hid-provision-target.test.mjs:TEST-I-009 目标层：writeProfileCandidate 分帧写入到达平台",
+          "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba"
         },
         {
           "test_id": "TEST-I-009",

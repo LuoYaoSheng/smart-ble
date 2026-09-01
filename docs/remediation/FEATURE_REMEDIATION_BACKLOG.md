@@ -3,21 +3,21 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 838a6c6fa67b924dcdb3499ba81abbdde3bb6279393696fba8035d82d8828ca3
+content_hash: 6d61cc538b5131d8ae7fe4b9490737b696efa2a178a30eca611cd6d8ab550772
 ```
 
 > PUBLIC-HONESTY-001 / VERSION-METADATA-001 状态以 task-dependency-graph.json 为准。未批准 Task 不得执行。
 
 ### RUNTIME-DISPLAY-NAME-001
 
-- 状态：**PLANNED**
+- 状态：**DONE**
 - 标题：实现 display-name 解析链
 - task_type：SOURCE_FIX
 - severity：P1
 - root_cause_id：RC-DISPLAY-NAME
-- Target IDs（样本）：FEAT-013, REQ-013, PAGE-001, FLOW-002
-- Test IDs：TEST-U-006, TEST-A-005, TEST-W-007, TEST-P-001, TEST-A-001, TEST-W-001, TEST-E-001, TEST-U-008, TEST-U-007, TEST-U-001, TEST-U-005, TEST-I-003
-- First Breakpoint：[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js
+- Target IDs（样本）：FEAT-057, REQ-048, REQ-051
+- Test IDs：TEST-I-009, TEST-H-002, TEST-H-003, TEST-U-015, TEST-W-010
+- First Breakpoint：[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier "./device-display-name.js" from "data:text/javascript;base64,
 - 依赖：无
 - 解锁：
 - 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
@@ -111,8 +111,8 @@ content_hash: 838a6c6fa67b924dcdb3499ba81abbdde3bb6279393696fba8035d82d8828ca3
 - task_type：SOURCE_FIX
 - severity：P1
 - root_cause_id：RC-SESSION-REGISTRY
-- Target IDs（样本）：FEAT-011, FEAT-012, FEAT-062, REQ-011, REQ-012, REQ-053, PAGE-007, DEC-017
-- Test IDs：TEST-U-005, TEST-I-002, TEST-A-005, TEST-W-007, TEST-P-005, TEST-H-005, TEST-I-009, TEST-H-006, TEST-P-007, TEST-I-006, TEST-A-007, TEST-A-009
+- Target IDs（样本）：FEAT-011, FEAT-012, FEAT-062, REQ-011, REQ-012, REQ-053, PAGE-001, PAGE-007, FLOW-002, DEC-017
+- Test IDs：TEST-U-005, TEST-I-002, TEST-A-005, TEST-W-007, TEST-P-005, TEST-H-005, TEST-I-009, TEST-H-006, TEST-P-001, TEST-A-001, TEST-W-001, TEST-E-001
 - First Breakpoint：[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段
 - 依赖：无
 - 解锁：

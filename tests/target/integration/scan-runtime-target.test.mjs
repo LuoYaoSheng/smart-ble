@@ -27,6 +27,10 @@ test('TEST-I-002 目标层：ble-runtime/index.js 扫描生命周期', async (t)
     await rt.startDiscovery({});
     platform.emitFound({ deviceId: 'A1', name: 'Round1', RSSI: -50 });
     assert.equal(found.filter((d) => d.deviceId === 'A1').length, 1, '第一轮设备到达监听器');
+    const first = found.find((d) => d.deviceId === 'A1');
+    assert.ok(first?.displayName, '扫描结果含 displayName');
+    assert.equal(first.displayName, 'Round1');
+    assert.ok(first.displayNameSource, '扫描结果含 displayNameSource');
 
     // 停止后迟到事件不再进入（stop 语义）
     await rt.stopDiscovery();

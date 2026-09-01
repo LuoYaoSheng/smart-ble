@@ -3,26 +3,27 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 838a6c6fa67b924dcdb3499ba81abbdde3bb6279393696fba8035d82d8828ca3
+content_hash: 6d61cc538b5131d8ae7fe4b9490737b696efa2a178a30eca611cd6d8ab550772
 ```
 
 > PUBLIC-HONESTY-001 / VERSION-METADATA-001 状态以 task-dependency-graph.json 为准。未批准 Task 不得执行。
 
 ### RUNTIME-DISPLAY-NAME-001
 
-- 状态：**PLANNED**
+- 状态：**DONE**
 - 标题：实现 display-name 解析链
 - task_type：SOURCE_FIX
 - severity：P1
 - root_cause_id：RC-DISPLAY-NAME
 - Target IDs（样本）：FEAT-013, REQ-013, PAGE-001, FLOW-002
-- Test IDs：TEST-U-006, TEST-A-005, TEST-W-007, TEST-P-001, TEST-A-001, TEST-W-001, TEST-E-001, TEST-U-008, TEST-U-007, TEST-U-001, TEST-U-005, TEST-I-003
-- First Breakpoint：[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js
+- Test IDs：TEST-U-006 + device-display-name-target DN-01..18
+- First Breakpoint：（已关闭）原：display-name.js 缺失 → resolveDeviceDisplayName / resolveDisplayName
 - 依赖：无
-- 解锁：
-- 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
-- 自动化验收：related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL
-- 建议提交信息：`source_fix(runtime-display-name-001): 实现 display-name 解析链`
+- 解锁：—
+- 关闭证据：apps/uniapp/services/ble-runtime/device-display-name.js + display-name.js；discovery/store 归一化附加 displayName
+- 自动化验收：TEST-U-006 PASS；System/Harness 0 FAIL
+- 建议提交信息：`feat(runtime): add BLE display name resolver`
+
 
 ### RUNTIME-FILTER-001
 
@@ -31,14 +32,14 @@ content_hash: 838a6c6fa67b924dcdb3499ba81abbdde3bb6279393696fba8035d82d8828ca3
 - task_type：SOURCE_FIX
 - severity：P1
 - root_cause_id：RC-DEVICE-FILTER
-- Target IDs（样本）：FEAT-014, REQ-014, PAGE-001, FLOW-002
-- Test IDs：TEST-U-007 (+ 01..15)
-- First Breakpoint：（已关闭）原「命中项匹配关键词」→ `filterBleDevices` 支持 keyword 跨 name/localName/id/manufacturer/serviceUUID
+- Target IDs（样本）：见 JSON
+- Test IDs：—
+- First Breakpoint：—
 - 依赖：无
-- 解锁：—
-- 关闭证据：`apps/uniapp/services/ble-runtime/device-filter.js`；`node --test tests/target/unit/device-filter-target.test.mjs` PASS
-- 自动化验收：TEST-U-007 AUTOMATED_PASS；System/Harness 0 FAIL
-- 建议提交信息：`feat(runtime): implement BLE device filtering`
+- 解锁：
+- 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
+- 自动化验收：related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL
+- 建议提交信息：`source_fix(runtime-filter-001): device-filter 关键词命中项匹配对齐目标`
 
 ### RUNTIME-GATT-CODEC-001
 
@@ -111,8 +112,8 @@ content_hash: 838a6c6fa67b924dcdb3499ba81abbdde3bb6279393696fba8035d82d8828ca3
 - task_type：SOURCE_FIX
 - severity：P1
 - root_cause_id：RC-SESSION-REGISTRY
-- Target IDs（样本）：FEAT-011, FEAT-012, FEAT-062, REQ-011, REQ-012, REQ-053, PAGE-007, DEC-017
-- Test IDs：TEST-U-005, TEST-I-002, TEST-A-005, TEST-W-007, TEST-P-005, TEST-H-005, TEST-I-009, TEST-H-006, TEST-P-007, TEST-I-006, TEST-A-007, TEST-A-009
+- Target IDs（样本）：FEAT-011, FEAT-012, FEAT-062, REQ-011, REQ-012, REQ-053, PAGE-001, PAGE-007, FLOW-002, DEC-017
+- Test IDs：TEST-U-005, TEST-I-002, TEST-A-005, TEST-W-007, TEST-P-005, TEST-H-005, TEST-I-009, TEST-H-006, TEST-P-001, TEST-A-001, TEST-W-001, TEST-E-001
 - First Breakpoint：[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段
 - 依赖：无
 - 解锁：

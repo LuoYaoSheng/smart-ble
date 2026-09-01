@@ -1,6 +1,6 @@
 {
   "gate": "TP-G2-R2",
-  "generated_at": "2026-09-01T11:29:15.909Z",
+  "generated_at": "2026-09-01T11:41:31.597Z",
   "environment": {
     "status": "READY_FOR_PAGE_E4",
     "playwright": {
@@ -19,7 +19,7 @@
     "hasLogRedaction": false,
     "hasWriteQueue": false,
     "hasReconnect": false,
-    "hasDisplayName": false,
+    "hasDisplayName": true,
     "hasValidateHex": false,
     "broadcastUsesComposable": false,
     "versionUsesModel": true,
@@ -31,435 +31,38 @@
     "registrySubCount": false
   },
   "totals": {
-    "PASS": 102,
+    "PASS": 132,
     "FAIL": 67,
     "BLOCKED": 2,
-    "NOT_IMPLEMENTED": 59,
+    "NOT_IMPLEMENTED": 29,
     "harness_PASS": 230,
     "harness_FAIL": 0
   },
   "pages": {
     "PAGE-001": {
       "page_id": "PAGE-001",
-      "PASS": 0,
+      "PASS": 30,
       "FAIL": 0,
       "BLOCKED": 0,
-      "NOT_IMPLEMENTED": 30,
+      "NOT_IMPLEMENTED": 0,
       "harness_PASS": 30,
       "harness_FAIL": 0,
       "states": 10,
       "operations": 14,
-      "product": "FAIL",
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "notes": "RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
-      "first_breakpoint": {
-        "target": "FEAT-013",
-        "test": "TEST-U-006",
-        "file": "apps/uniapp/services/ble-runtime/display-name.js",
-        "symbol": "(missing)",
-        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-      },
+      "product": "PASS",
+      "task_id": null,
+      "root_cause_id": null,
+      "notes": "RUNTIME-FILTER-001 / RUNTIME-DISPLAY-NAME-001 DONE；E4 harness PASS；DEC-013 时长差异记观察",
+      "first_breakpoint": null,
       "also": [
         {
           "task_id": null,
           "file": "apps/uniapp/composables/use-ble-scan.js",
           "symbol": "autoStopSeconds",
-          "breakpoint": "scan auto-stop is 5s; target DEC-013 default 10s"
+          "breakpoint": "scan auto-stop is 5s; target DEC-013 default 10s（观察项，非本轮 RUNTIME 断点）"
         }
       ],
-      "fail_cases": [
-        {
-          "state_id": "STATE-P001-01",
-          "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-013",
-            "test": "TEST-U-006",
-            "file": "apps/uniapp/services/ble-runtime/display-name.js",
-            "symbol": "(missing)",
-            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-          },
-          "task_id": "RUNTIME-DISPLAY-NAME-001"
-        },
-        {
-          "state_id": "STATE-P001-02",
-          "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-013",
-            "test": "TEST-U-006",
-            "file": "apps/uniapp/services/ble-runtime/display-name.js",
-            "symbol": "(missing)",
-            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-          },
-          "task_id": "RUNTIME-DISPLAY-NAME-001"
-        },
-        {
-          "state_id": "STATE-P001-03",
-          "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-013",
-            "test": "TEST-U-006",
-            "file": "apps/uniapp/services/ble-runtime/display-name.js",
-            "symbol": "(missing)",
-            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-          },
-          "task_id": "RUNTIME-DISPLAY-NAME-001"
-        },
-        {
-          "state_id": "STATE-P001-04",
-          "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-013",
-            "test": "TEST-U-006",
-            "file": "apps/uniapp/services/ble-runtime/display-name.js",
-            "symbol": "(missing)",
-            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-          },
-          "task_id": "RUNTIME-DISPLAY-NAME-001"
-        },
-        {
-          "state_id": "STATE-P001-05",
-          "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-013",
-            "test": "TEST-U-006",
-            "file": "apps/uniapp/services/ble-runtime/display-name.js",
-            "symbol": "(missing)",
-            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-          },
-          "task_id": "RUNTIME-DISPLAY-NAME-001"
-        },
-        {
-          "state_id": "STATE-P001-06",
-          "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-013",
-            "test": "TEST-U-006",
-            "file": "apps/uniapp/services/ble-runtime/display-name.js",
-            "symbol": "(missing)",
-            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-          },
-          "task_id": "RUNTIME-DISPLAY-NAME-001"
-        },
-        {
-          "state_id": "STATE-P001-07",
-          "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-013",
-            "test": "TEST-U-006",
-            "file": "apps/uniapp/services/ble-runtime/display-name.js",
-            "symbol": "(missing)",
-            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-          },
-          "task_id": "RUNTIME-DISPLAY-NAME-001"
-        },
-        {
-          "state_id": "STATE-P001-08",
-          "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-013",
-            "test": "TEST-U-006",
-            "file": "apps/uniapp/services/ble-runtime/display-name.js",
-            "symbol": "(missing)",
-            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-          },
-          "task_id": "RUNTIME-DISPLAY-NAME-001"
-        },
-        {
-          "state_id": "STATE-P001-09",
-          "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-013",
-            "test": "TEST-U-006",
-            "file": "apps/uniapp/services/ble-runtime/display-name.js",
-            "symbol": "(missing)",
-            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-          },
-          "task_id": "RUNTIME-DISPLAY-NAME-001"
-        },
-        {
-          "state_id": "STATE-P001-10",
-          "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-013",
-            "test": "TEST-U-006",
-            "file": "apps/uniapp/services/ble-runtime/display-name.js",
-            "symbol": "(missing)",
-            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-          },
-          "task_id": "RUNTIME-DISPLAY-NAME-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P001-01",
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-013",
-            "test": "TEST-U-006",
-            "file": "apps/uniapp/services/ble-runtime/display-name.js",
-            "symbol": "(missing)",
-            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-          },
-          "task_id": "RUNTIME-DISPLAY-NAME-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P001-02",
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-013",
-            "test": "TEST-U-006",
-            "file": "apps/uniapp/services/ble-runtime/display-name.js",
-            "symbol": "(missing)",
-            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-          },
-          "task_id": "RUNTIME-DISPLAY-NAME-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P001-03",
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-013",
-            "test": "TEST-U-006",
-            "file": "apps/uniapp/services/ble-runtime/display-name.js",
-            "symbol": "(missing)",
-            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-          },
-          "task_id": "RUNTIME-DISPLAY-NAME-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P001-04",
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-013",
-            "test": "TEST-U-006",
-            "file": "apps/uniapp/services/ble-runtime/display-name.js",
-            "symbol": "(missing)",
-            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-          },
-          "task_id": "RUNTIME-DISPLAY-NAME-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P001-05",
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-013",
-            "test": "TEST-U-006",
-            "file": "apps/uniapp/services/ble-runtime/display-name.js",
-            "symbol": "(missing)",
-            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-          },
-          "task_id": "RUNTIME-DISPLAY-NAME-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P001-06",
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-013",
-            "test": "TEST-U-006",
-            "file": "apps/uniapp/services/ble-runtime/display-name.js",
-            "symbol": "(missing)",
-            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-          },
-          "task_id": "RUNTIME-DISPLAY-NAME-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P001-07",
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-013",
-            "test": "TEST-U-006",
-            "file": "apps/uniapp/services/ble-runtime/display-name.js",
-            "symbol": "(missing)",
-            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-          },
-          "task_id": "RUNTIME-DISPLAY-NAME-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P001-08",
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-013",
-            "test": "TEST-U-006",
-            "file": "apps/uniapp/services/ble-runtime/display-name.js",
-            "symbol": "(missing)",
-            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-          },
-          "task_id": "RUNTIME-DISPLAY-NAME-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P001-09",
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-013",
-            "test": "TEST-U-006",
-            "file": "apps/uniapp/services/ble-runtime/display-name.js",
-            "symbol": "(missing)",
-            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-          },
-          "task_id": "RUNTIME-DISPLAY-NAME-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P001-10",
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-013",
-            "test": "TEST-U-006",
-            "file": "apps/uniapp/services/ble-runtime/display-name.js",
-            "symbol": "(missing)",
-            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-          },
-          "task_id": "RUNTIME-DISPLAY-NAME-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P001-11",
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-013",
-            "test": "TEST-U-006",
-            "file": "apps/uniapp/services/ble-runtime/display-name.js",
-            "symbol": "(missing)",
-            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-          },
-          "task_id": "RUNTIME-DISPLAY-NAME-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P001-13",
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-013",
-            "test": "TEST-U-006",
-            "file": "apps/uniapp/services/ble-runtime/display-name.js",
-            "symbol": "(missing)",
-            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-          },
-          "task_id": "RUNTIME-DISPLAY-NAME-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P001-14",
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-013",
-            "test": "TEST-U-006",
-            "file": "apps/uniapp/services/ble-runtime/display-name.js",
-            "symbol": "(missing)",
-            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-          },
-          "task_id": "RUNTIME-DISPLAY-NAME-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P001-15",
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-013",
-            "test": "TEST-U-006",
-            "file": "apps/uniapp/services/ble-runtime/display-name.js",
-            "symbol": "(missing)",
-            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-          },
-          "task_id": "RUNTIME-DISPLAY-NAME-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-013",
-            "test": "TEST-U-006",
-            "file": "apps/uniapp/services/ble-runtime/display-name.js",
-            "symbol": "(missing)",
-            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-          },
-          "task_id": "RUNTIME-DISPLAY-NAME-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-013",
-            "test": "TEST-U-006",
-            "file": "apps/uniapp/services/ble-runtime/display-name.js",
-            "symbol": "(missing)",
-            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-          },
-          "task_id": "RUNTIME-DISPLAY-NAME-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-013",
-            "test": "TEST-U-006",
-            "file": "apps/uniapp/services/ble-runtime/display-name.js",
-            "symbol": "(missing)",
-            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-          },
-          "task_id": "RUNTIME-DISPLAY-NAME-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-013",
-            "test": "TEST-U-006",
-            "file": "apps/uniapp/services/ble-runtime/display-name.js",
-            "symbol": "(missing)",
-            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-          },
-          "task_id": "RUNTIME-DISPLAY-NAME-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-013",
-            "test": "TEST-U-006",
-            "file": "apps/uniapp/services/ble-runtime/display-name.js",
-            "symbol": "(missing)",
-            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-          },
-          "task_id": "RUNTIME-DISPLAY-NAME-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-013",
-            "test": "TEST-U-006",
-            "file": "apps/uniapp/services/ble-runtime/display-name.js",
-            "symbol": "(missing)",
-            "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-          },
-          "task_id": "RUNTIME-DISPLAY-NAME-001"
-        }
-      ]
+      "fail_cases": []
     },
     "PAGE-002": {
       "page_id": "PAGE-002",
@@ -1988,37 +1591,20 @@
       "state_id": "STATE-P001-01",
       "operation_id": null,
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › State suite › STATE-P001-01 平台不支持",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "UNSUPPORTED 说明",
         "替代入口"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
-      "first_breakpoint": {
-        "target": "FEAT-013",
-        "test": "TEST-U-006",
-        "file": "apps/uniapp/services/ble-runtime/display-name.js",
-        "symbol": "(missing)",
-        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
         "duration_ms": 161,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-006",
-            "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-            "target_ids": [
-              "REQ-013",
-              "FEAT-013",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-name-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-005",
             "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
@@ -2045,6 +1631,17 @@
               "FEAT-058"
             ],
             "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-I-009",
+            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-057",
+              "PAGE-001",
+              "FLOW-010"
+            ],
+            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
           }
         ]
       },
@@ -2059,49 +1656,30 @@
         "TEST-P-001",
         "TEST-W-006"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/display-name.js"
-      ],
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-001",
       "state_id": "STATE-P001-02",
       "operation_id": null,
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › State suite › STATE-P001-02 蓝牙关闭",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "蓝牙芯片=关",
         "去开启按钮"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
-      "first_breakpoint": {
-        "target": "FEAT-013",
-        "test": "TEST-U-006",
-        "file": "apps/uniapp/services/ble-runtime/display-name.js",
-        "symbol": "(missing)",
-        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
         "duration_ms": 37,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-006",
-            "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-            "target_ids": [
-              "REQ-013",
-              "FEAT-013",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-name-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-005",
             "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
@@ -2128,6 +1706,17 @@
               "FEAT-058"
             ],
             "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-I-009",
+            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-057",
+              "PAGE-001",
+              "FLOW-010"
+            ],
+            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
           }
         ]
       },
@@ -2142,49 +1731,30 @@
         "TEST-A-004",
         "TEST-W-005"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/display-name.js"
-      ],
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-001",
       "state_id": "STATE-P001-03",
       "operation_id": null,
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › State suite › STATE-P001-03 权限拒绝",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "权限横幅",
         "重试/去设置"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
-      "first_breakpoint": {
-        "target": "FEAT-013",
-        "test": "TEST-U-006",
-        "file": "apps/uniapp/services/ble-runtime/display-name.js",
-        "symbol": "(missing)",
-        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
         "duration_ms": 35,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-006",
-            "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-            "target_ids": [
-              "REQ-013",
-              "FEAT-013",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-name-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-005",
             "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
@@ -2211,6 +1781,17 @@
               "FEAT-058"
             ],
             "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-I-009",
+            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-057",
+              "PAGE-001",
+              "FLOW-010"
+            ],
+            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
           }
         ]
       },
@@ -2225,48 +1806,29 @@
         "TEST-A-001",
         "TEST-W-001"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/display-name.js"
-      ],
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-001",
       "state_id": "STATE-P001-04",
       "operation_id": null,
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › State suite › STATE-P001-04 待开始",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "空提示\"点击开始扫描\""
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
-      "first_breakpoint": {
-        "target": "FEAT-013",
-        "test": "TEST-U-006",
-        "file": "apps/uniapp/services/ble-runtime/display-name.js",
-        "symbol": "(missing)",
-        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
         "duration_ms": 44,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-006",
-            "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-            "target_ids": [
-              "REQ-013",
-              "FEAT-013",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-name-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-005",
             "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
@@ -2293,6 +1855,17 @@
               "FEAT-058"
             ],
             "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-I-009",
+            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-057",
+              "PAGE-001",
+              "FLOW-010"
+            ],
+            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
           }
         ]
       },
@@ -2305,50 +1878,31 @@
       "test_ids": [
         "TEST-P-001"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/display-name.js"
-      ],
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-001",
       "state_id": "STATE-P001-05",
       "operation_id": null,
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › State suite › STATE-P001-05 扫描中",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "状态芯片",
         "停止按钮",
         "实时列表"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
-      "first_breakpoint": {
-        "target": "FEAT-013",
-        "test": "TEST-U-006",
-        "file": "apps/uniapp/services/ble-runtime/display-name.js",
-        "symbol": "(missing)",
-        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
         "duration_ms": 40,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-006",
-            "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-            "target_ids": [
-              "REQ-013",
-              "FEAT-013",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-name-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-005",
             "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
@@ -2375,6 +1929,17 @@
               "FEAT-058"
             ],
             "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-I-009",
+            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-057",
+              "PAGE-001",
+              "FLOW-010"
+            ],
+            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
           }
         ]
       },
@@ -2391,49 +1956,30 @@
         "TEST-W-007",
         "TEST-E-001"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/display-name.js"
-      ],
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-001",
       "state_id": "STATE-P001-06",
       "operation_id": null,
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › State suite › STATE-P001-06 无结果",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "空态\"未发现设备\"",
         "建议（换位置/确认设备广播）"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
-      "first_breakpoint": {
-        "target": "FEAT-013",
-        "test": "TEST-U-006",
-        "file": "apps/uniapp/services/ble-runtime/display-name.js",
-        "symbol": "(missing)",
-        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
         "duration_ms": 35,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-006",
-            "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-            "target_ids": [
-              "REQ-013",
-              "FEAT-013",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-name-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-005",
             "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
@@ -2460,6 +2006,17 @@
               "FEAT-058"
             ],
             "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-I-009",
+            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-057",
+              "PAGE-001",
+              "FLOW-010"
+            ],
+            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
           }
         ]
       },
@@ -2474,49 +2031,30 @@
         "TEST-P-001",
         "TEST-A-005"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/display-name.js"
-      ],
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-001",
       "state_id": "STATE-P001-07",
       "operation_id": null,
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › State suite › STATE-P001-07 筛选无结果",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "\"筛选后无匹配\"",
         "调整筛选建议"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
-      "first_breakpoint": {
-        "target": "FEAT-013",
-        "test": "TEST-U-006",
-        "file": "apps/uniapp/services/ble-runtime/display-name.js",
-        "symbol": "(missing)",
-        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
         "duration_ms": 42,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-006",
-            "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-            "target_ids": [
-              "REQ-013",
-              "FEAT-013",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-name-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-005",
             "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
@@ -2543,6 +2081,17 @@
               "FEAT-058"
             ],
             "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-I-009",
+            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-057",
+              "PAGE-001",
+              "FLOW-010"
+            ],
+            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
           }
         ]
       },
@@ -2555,48 +2104,29 @@
       "test_ids": [
         "TEST-P-001"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/display-name.js"
-      ],
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-001",
       "state_id": "STATE-P001-08",
       "operation_id": null,
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › State suite › STATE-P001-08 结果列表",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "设备卡列表"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
-      "first_breakpoint": {
-        "target": "FEAT-013",
-        "test": "TEST-U-006",
-        "file": "apps/uniapp/services/ble-runtime/display-name.js",
-        "symbol": "(missing)",
-        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
         "duration_ms": 44,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-006",
-            "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-            "target_ids": [
-              "REQ-013",
-              "FEAT-013",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-name-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-005",
             "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
@@ -2623,6 +2153,17 @@
               "FEAT-058"
             ],
             "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-I-009",
+            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-057",
+              "PAGE-001",
+              "FLOW-010"
+            ],
+            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
           }
         ]
       },
@@ -2637,49 +2178,30 @@
         "TEST-A-005",
         "TEST-E-001"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/display-name.js"
-      ],
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-001",
       "state_id": "STATE-P001-09",
       "operation_id": null,
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › State suite › STATE-P001-09 扫描失败",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "错误横幅",
         "重试"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
-      "first_breakpoint": {
-        "target": "FEAT-013",
-        "test": "TEST-U-006",
-        "file": "apps/uniapp/services/ble-runtime/display-name.js",
-        "symbol": "(missing)",
-        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
         "duration_ms": 42,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-006",
-            "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-            "target_ids": [
-              "REQ-013",
-              "FEAT-013",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-name-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-005",
             "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
@@ -2706,6 +2228,17 @@
               "FEAT-058"
             ],
             "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-I-009",
+            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-057",
+              "PAGE-001",
+              "FLOW-010"
+            ],
+            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
           }
         ]
       },
@@ -2720,48 +2253,29 @@
         "TEST-P-001",
         "TEST-E-005"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/display-name.js"
-      ],
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-001",
       "state_id": "STATE-P001-10",
       "operation_id": null,
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › State suite › STATE-P001-10 已有连接提示",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "顶部轻提示\"N 台设备保持连接\"（不阻塞扫描）"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
-      "first_breakpoint": {
-        "target": "FEAT-013",
-        "test": "TEST-U-006",
-        "file": "apps/uniapp/services/ble-runtime/display-name.js",
-        "symbol": "(missing)",
-        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
         "duration_ms": 46,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-006",
-            "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-            "target_ids": [
-              "REQ-013",
-              "FEAT-013",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-name-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-005",
             "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
@@ -2788,6 +2302,17 @@
               "FEAT-058"
             ],
             "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-I-009",
+            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-057",
+              "PAGE-001",
+              "FLOW-010"
+            ],
+            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
           }
         ]
       },
@@ -2800,48 +2325,29 @@
       "test_ids": [
         "TEST-P-007"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/display-name.js"
-      ],
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-001",
       "state_id": null,
       "operation_id": "OP-P001-01",
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Operation suite › OP-P001-01 开始扫描按钮",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "列表增量出现，状态=扫描中"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
-      "first_breakpoint": {
-        "target": "FEAT-013",
-        "test": "TEST-U-006",
-        "file": "apps/uniapp/services/ble-runtime/display-name.js",
-        "symbol": "(missing)",
-        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
         "duration_ms": 49,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-006",
-            "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-            "target_ids": [
-              "REQ-013",
-              "FEAT-013",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-name-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-005",
             "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
@@ -2868,6 +2374,17 @@
               "FEAT-058"
             ],
             "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-I-009",
+            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-057",
+              "PAGE-001",
+              "FLOW-010"
+            ],
+            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
           }
         ]
       },
@@ -2886,48 +2403,29 @@
         "TEST-W-007",
         "TEST-E-001"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/display-name.js"
-      ],
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-001",
       "state_id": null,
       "operation_id": "OP-P001-02",
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Operation suite › OP-P001-02 停止扫描按钮",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "状态=已完成，列表保留"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
-      "first_breakpoint": {
-        "target": "FEAT-013",
-        "test": "TEST-U-006",
-        "file": "apps/uniapp/services/ble-runtime/display-name.js",
-        "symbol": "(missing)",
-        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
         "duration_ms": 32,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-006",
-            "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-            "target_ids": [
-              "REQ-013",
-              "FEAT-013",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-name-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-005",
             "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
@@ -2954,6 +2452,17 @@
               "FEAT-058"
             ],
             "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-I-009",
+            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-057",
+              "PAGE-001",
+              "FLOW-010"
+            ],
+            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
           }
         ]
       },
@@ -2968,48 +2477,29 @@
         "TEST-P-001",
         "TEST-A-005"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/display-name.js"
-      ],
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-001",
       "state_id": null,
       "operation_id": "OP-P001-03",
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Operation suite › OP-P001-03 超时自动停止",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "状态=已完成（视为正常完成）"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
-      "first_breakpoint": {
-        "target": "FEAT-013",
-        "test": "TEST-U-006",
-        "file": "apps/uniapp/services/ble-runtime/display-name.js",
-        "symbol": "(missing)",
-        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
         "duration_ms": 38,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-006",
-            "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-            "target_ids": [
-              "REQ-013",
-              "FEAT-013",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-name-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-005",
             "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
@@ -3036,6 +2526,17 @@
               "FEAT-058"
             ],
             "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-I-009",
+            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-057",
+              "PAGE-001",
+              "FLOW-010"
+            ],
+            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
           }
         ]
       },
@@ -3050,48 +2551,29 @@
         "TEST-P-001",
         "TEST-U-005"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/display-name.js"
-      ],
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-001",
       "state_id": null,
       "operation_id": "OP-P001-04",
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Operation suite › OP-P001-04 hide/unload 停止",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "无声（后台不扫描）"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
-      "first_breakpoint": {
-        "target": "FEAT-013",
-        "test": "TEST-U-006",
-        "file": "apps/uniapp/services/ble-runtime/display-name.js",
-        "symbol": "(missing)",
-        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
         "duration_ms": 33,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-006",
-            "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-            "target_ids": [
-              "REQ-013",
-              "FEAT-013",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-name-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-005",
             "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
@@ -3118,6 +2600,17 @@
               "FEAT-058"
             ],
             "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-I-009",
+            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-057",
+              "PAGE-001",
+              "FLOW-010"
+            ],
+            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
           }
         ]
       },
@@ -3134,48 +2627,29 @@
         "TEST-A-003",
         "TEST-W-003"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/display-name.js"
-      ],
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-001",
       "state_id": null,
       "operation_id": "OP-P001-05",
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Operation suite › OP-P001-05 第二轮扫描",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "列表重建"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
-      "first_breakpoint": {
-        "target": "FEAT-013",
-        "test": "TEST-U-006",
-        "file": "apps/uniapp/services/ble-runtime/display-name.js",
-        "symbol": "(missing)",
-        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
         "duration_ms": 34,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-006",
-            "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-            "target_ids": [
-              "REQ-013",
-              "FEAT-013",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-name-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-005",
             "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
@@ -3202,6 +2676,17 @@
               "FEAT-058"
             ],
             "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-I-009",
+            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-057",
+              "PAGE-001",
+              "FLOW-010"
+            ],
+            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
           }
         ]
       },
@@ -3216,48 +2701,29 @@
         "TEST-U-005",
         "TEST-I-002"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/display-name.js"
-      ],
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-001",
       "state_id": null,
       "operation_id": "OP-P001-06",
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Operation suite › OP-P001-06 设备卡点击",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "弹窗展示结构化字段+原始字节"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
-      "first_breakpoint": {
-        "target": "FEAT-013",
-        "test": "TEST-U-006",
-        "file": "apps/uniapp/services/ble-runtime/display-name.js",
-        "symbol": "(missing)",
-        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
         "duration_ms": 36,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-006",
-            "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-            "target_ids": [
-              "REQ-013",
-              "FEAT-013",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-name-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-005",
             "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
@@ -3284,6 +2750,17 @@
               "FEAT-058"
             ],
             "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-I-009",
+            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-057",
+              "PAGE-001",
+              "FLOW-010"
+            ],
+            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
           }
         ]
       },
@@ -3300,48 +2777,29 @@
         "TEST-A-005",
         "TEST-E-001"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/display-name.js"
-      ],
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-001",
       "state_id": null,
       "operation_id": "OP-P001-07",
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Operation suite › OP-P001-07 连接按钮（卡上）",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "PAGE-006 连接中"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
-      "first_breakpoint": {
-        "target": "FEAT-013",
-        "test": "TEST-U-006",
-        "file": "apps/uniapp/services/ble-runtime/display-name.js",
-        "symbol": "(missing)",
-        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
         "duration_ms": 31,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-006",
-            "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-            "target_ids": [
-              "REQ-013",
-              "FEAT-013",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-name-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-005",
             "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
@@ -3368,6 +2826,17 @@
               "FEAT-058"
             ],
             "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-I-009",
+            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-057",
+              "PAGE-001",
+              "FLOW-010"
+            ],
+            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
           }
         ]
       },
@@ -3384,48 +2853,29 @@
         "TEST-A-006",
         "TEST-W-007"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/display-name.js"
-      ],
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-001",
       "state_id": null,
       "operation_id": "OP-P001-08",
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Operation suite › OP-P001-08 Profile 动作（Smart HID 配网）",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "PAGE-002 自动连接"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
-      "first_breakpoint": {
-        "target": "FEAT-013",
-        "test": "TEST-U-006",
-        "file": "apps/uniapp/services/ble-runtime/display-name.js",
-        "symbol": "(missing)",
-        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
         "duration_ms": 31,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-006",
-            "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-            "target_ids": [
-              "REQ-013",
-              "FEAT-013",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-name-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-005",
             "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
@@ -3452,6 +2902,17 @@
               "FEAT-058"
             ],
             "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-I-009",
+            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-057",
+              "PAGE-001",
+              "FLOW-010"
+            ],
+            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
           }
         ]
       },
@@ -3468,48 +2929,29 @@
         "TEST-H-001",
         "TEST-W-010"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/display-name.js"
-      ],
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-001",
       "state_id": null,
       "operation_id": "OP-P001-09",
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Operation suite › OP-P001-09 筛选控件",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "列表即时更新"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
-      "first_breakpoint": {
-        "target": "FEAT-013",
-        "test": "TEST-U-006",
-        "file": "apps/uniapp/services/ble-runtime/display-name.js",
-        "symbol": "(missing)",
-        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
         "duration_ms": 35,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-006",
-            "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-            "target_ids": [
-              "REQ-013",
-              "FEAT-013",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-name-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-005",
             "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
@@ -3536,6 +2978,17 @@
               "FEAT-058"
             ],
             "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-I-009",
+            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-057",
+              "PAGE-001",
+              "FLOW-010"
+            ],
+            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
           }
         ]
       },
@@ -3550,48 +3003,29 @@
         "TEST-U-007",
         "TEST-P-001"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/display-name.js"
-      ],
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-001",
       "state_id": null,
       "operation_id": "OP-P001-10",
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Operation suite › OP-P001-10 复制广播字段",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "toast 已复制"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
-      "first_breakpoint": {
-        "target": "FEAT-013",
-        "test": "TEST-U-006",
-        "file": "apps/uniapp/services/ble-runtime/display-name.js",
-        "symbol": "(missing)",
-        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
         "duration_ms": 31,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-006",
-            "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-            "target_ids": [
-              "REQ-013",
-              "FEAT-013",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-name-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-005",
             "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
@@ -3618,6 +3052,17 @@
               "FEAT-058"
             ],
             "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-I-009",
+            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-057",
+              "PAGE-001",
+              "FLOW-010"
+            ],
+            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
           }
         ]
       },
@@ -3632,48 +3077,29 @@
         "TEST-P-001",
         "TEST-W-007"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/display-name.js"
-      ],
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-001",
       "state_id": null,
       "operation_id": "OP-P001-11",
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Operation suite › OP-P001-11 历史紧凑-查看",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "详情页打开"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
-      "first_breakpoint": {
-        "target": "FEAT-013",
-        "test": "TEST-U-006",
-        "file": "apps/uniapp/services/ble-runtime/display-name.js",
-        "symbol": "(missing)",
-        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
         "duration_ms": 32,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-006",
-            "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-            "target_ids": [
-              "REQ-013",
-              "FEAT-013",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-name-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-005",
             "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
@@ -3700,6 +3126,17 @@
               "FEAT-058"
             ],
             "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-I-009",
+            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-057",
+              "PAGE-001",
+              "FLOW-010"
+            ],
+            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
           }
         ]
       },
@@ -3712,48 +3149,29 @@
       "test_ids": [
         "TEST-P-003"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/display-name.js"
-      ],
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-001",
       "state_id": null,
       "operation_id": "OP-P001-13",
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Operation suite › OP-P001-13 历史紧凑-全部历史",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "历史页打开"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
-      "first_breakpoint": {
-        "target": "FEAT-013",
-        "test": "TEST-U-006",
-        "file": "apps/uniapp/services/ble-runtime/display-name.js",
-        "symbol": "(missing)",
-        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
         "duration_ms": 29,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-006",
-            "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-            "target_ids": [
-              "REQ-013",
-              "FEAT-013",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-name-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-005",
             "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
@@ -3780,6 +3198,17 @@
               "FEAT-058"
             ],
             "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-I-009",
+            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-057",
+              "PAGE-001",
+              "FLOW-010"
+            ],
+            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
           }
         ]
       },
@@ -3792,48 +3221,29 @@
       "test_ids": [
         "TEST-P-004"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/display-name.js"
-      ],
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-001",
       "state_id": null,
       "operation_id": "OP-P001-14",
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Operation suite › OP-P001-14 失败重试横幅按钮",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "恢复扫描"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
-      "first_breakpoint": {
-        "target": "FEAT-013",
-        "test": "TEST-U-006",
-        "file": "apps/uniapp/services/ble-runtime/display-name.js",
-        "symbol": "(missing)",
-        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
         "duration_ms": 35,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-006",
-            "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-            "target_ids": [
-              "REQ-013",
-              "FEAT-013",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-name-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-005",
             "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
@@ -3860,6 +3270,17 @@
               "FEAT-058"
             ],
             "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-I-009",
+            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-057",
+              "PAGE-001",
+              "FLOW-010"
+            ],
+            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
           }
         ]
       },
@@ -3872,48 +3293,29 @@
       "test_ids": [
         "TEST-P-001"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/display-name.js"
-      ],
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-001",
       "state_id": null,
       "operation_id": "OP-P001-15",
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Operation suite › OP-P001-15 分享（微信菜单）",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "分享面板"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
-      "first_breakpoint": {
-        "target": "FEAT-013",
-        "test": "TEST-U-006",
-        "file": "apps/uniapp/services/ble-runtime/display-name.js",
-        "symbol": "(missing)",
-        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
         "duration_ms": 29,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-006",
-            "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-            "target_ids": [
-              "REQ-013",
-              "FEAT-013",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-name-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-005",
             "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
@@ -3940,6 +3342,17 @@
               "FEAT-058"
             ],
             "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-I-009",
+            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-057",
+              "PAGE-001",
+              "FLOW-010"
+            ],
+            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
           }
         ]
       },
@@ -3952,48 +3365,29 @@
       "test_ids": [
         "TEST-W-010"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/display-name.js"
-      ],
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-001",
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Contract / first screen：manifest + behavior 对齐",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
-        "target behavior"
+        "behavior contract"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
-      "first_breakpoint": {
-        "target": "FEAT-013",
-        "test": "TEST-U-006",
-        "file": "apps/uniapp/services/ble-runtime/display-name.js",
-        "symbol": "(missing)",
-        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
         "duration_ms": 21,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-006",
-            "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-            "target_ids": [
-              "REQ-013",
-              "FEAT-013",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-name-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-005",
             "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
@@ -4020,6 +3414,17 @@
               "FEAT-058"
             ],
             "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-I-009",
+            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-057",
+              "PAGE-001",
+              "FLOW-010"
+            ],
+            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
           }
         ]
       },
@@ -4030,48 +3435,29 @@
       "test_ids": [
         "TEST-P-PAGE-001"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/display-name.js"
-      ],
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-001",
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Error and recovery",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
-        "target behavior"
+        "behavior contract"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
-      "first_breakpoint": {
-        "target": "FEAT-013",
-        "test": "TEST-U-006",
-        "file": "apps/uniapp/services/ble-runtime/display-name.js",
-        "symbol": "(missing)",
-        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
         "duration_ms": 33,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-006",
-            "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-            "target_ids": [
-              "REQ-013",
-              "FEAT-013",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-name-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-005",
             "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
@@ -4098,6 +3484,17 @@
               "FEAT-058"
             ],
             "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-I-009",
+            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-057",
+              "PAGE-001",
+              "FLOW-010"
+            ],
+            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
           }
         ]
       },
@@ -4108,48 +3505,29 @@
       "test_ids": [
         "TEST-P-PAGE-001"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/display-name.js"
-      ],
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-001",
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Navigation and back",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
-        "target behavior"
+        "behavior contract"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
-      "first_breakpoint": {
-        "target": "FEAT-013",
-        "test": "TEST-U-006",
-        "file": "apps/uniapp/services/ble-runtime/display-name.js",
-        "symbol": "(missing)",
-        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
         "duration_ms": 28,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-006",
-            "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-            "target_ids": [
-              "REQ-013",
-              "FEAT-013",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-name-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-005",
             "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
@@ -4176,6 +3554,17 @@
               "FEAT-058"
             ],
             "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-I-009",
+            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-057",
+              "PAGE-001",
+              "FLOW-010"
+            ],
+            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
           }
         ]
       },
@@ -4186,48 +3575,29 @@
       "test_ids": [
         "TEST-P-PAGE-001"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/display-name.js"
-      ],
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-001",
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Platform degradation",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
-        "target behavior"
+        "behavior contract"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
-      "first_breakpoint": {
-        "target": "FEAT-013",
-        "test": "TEST-U-006",
-        "file": "apps/uniapp/services/ble-runtime/display-name.js",
-        "symbol": "(missing)",
-        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
         "duration_ms": 29,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-006",
-            "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-            "target_ids": [
-              "REQ-013",
-              "FEAT-013",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-name-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-005",
             "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
@@ -4254,6 +3624,17 @@
               "FEAT-058"
             ],
             "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-I-009",
+            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-057",
+              "PAGE-001",
+              "FLOW-010"
+            ],
+            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
           }
         ]
       },
@@ -4264,48 +3645,29 @@
       "test_ids": [
         "TEST-P-PAGE-001"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/display-name.js"
-      ],
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-001",
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Cleanup",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
-        "target behavior"
+        "behavior contract"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
-      "first_breakpoint": {
-        "target": "FEAT-013",
-        "test": "TEST-U-006",
-        "file": "apps/uniapp/services/ble-runtime/display-name.js",
-        "symbol": "(missing)",
-        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
         "duration_ms": 29,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
-          {
-            "test_id": "TEST-U-006",
-            "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-            "target_ids": [
-              "REQ-013",
-              "FEAT-013",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-name-target.test.mjs"
-          },
           {
             "test_id": "TEST-U-005",
             "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
@@ -4332,6 +3694,17 @@
               "FEAT-058"
             ],
             "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-I-009",
+            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-057",
+              "PAGE-001",
+              "FLOW-010"
+            ],
+            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
           }
         ]
       },
@@ -4342,31 +3715,23 @@
       "test_ids": [
         "TEST-P-PAGE-001"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/display-name.js"
-      ],
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-001",
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-001.spec.js › PAGE-001 扫描 › Console and accessibility",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
-        "target behavior"
+        "behavior contract"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-FILTER-001 DONE（keyword 跨字段命中）；PAGE-001 仍受 display-name / 扫描时长等断点影响",
-      "first_breakpoint": {
-        "target": "FEAT-013",
-        "test": "TEST-U-006",
-        "file": "apps/uniapp/services/ble-runtime/display-name.js",
-        "symbol": "(missing)",
-        "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-001.spec.js",
         "duration_ms": 26,
@@ -4374,17 +3739,6 @@
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
         "fail_evidence": [
           {
-            "test_id": "TEST-U-006",
-            "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-            "target_ids": [
-              "REQ-013",
-              "FEAT-013",
-              "PAGE-001",
-              "FLOW-002"
-            ],
-            "source_file": "tests/target/unit/device-name-target.test.mjs"
-          },
-          {
             "test_id": "TEST-U-005",
             "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
             "target_ids": [
@@ -4410,6 +3764,17 @@
               "FEAT-058"
             ],
             "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          },
+          {
+            "test_id": "TEST-I-009",
+            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-057",
+              "PAGE-001",
+              "FLOW-010"
+            ],
+            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
           }
         ]
       },
@@ -4420,12 +3785,10 @@
       "test_ids": [
         "TEST-P-PAGE-001"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/display-name.js"
-      ],
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-002",
@@ -14174,15 +13537,6 @@
     }
   ],
   "top_first_breakpoints": [
-    {
-      "page_id": "PAGE-001",
-      "target": "FEAT-013",
-      "test": "TEST-U-006",
-      "file": "apps/uniapp/services/ble-runtime/display-name.js",
-      "symbol": "(missing)",
-      "breakpoint": "display-name module missing (RUNTIME-FILTER-001 CLOSED)",
-      "task_id": "RUNTIME-DISPLAY-NAME-001"
-    },
     {
       "page_id": "PAGE-002",
       "target": "FEAT-040",

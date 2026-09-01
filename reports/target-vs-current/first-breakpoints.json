@@ -37,15 +37,6 @@
       "verification_status": "AUTOMATED_FAIL"
     },
     {
-      "target_id": "FEAT-013",
-      "severity": "P1",
-      "gap_kind": "RUNTIME",
-      "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
-      "verification_status": "AUTOMATED_FAIL"
-    },
-    {
       "target_id": "FEAT-021",
       "severity": "P1",
       "gap_kind": "RUNTIME",
@@ -106,6 +97,15 @@
       "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
       "root_cause_id": "RC-TEST-BRIDGE-TS",
       "task_id": "TEST-BRIDGE-TS-001",
+      "verification_status": "AUTOMATED_FAIL"
+    },
+    {
+      "target_id": "FEAT-057",
+      "severity": "P1",
+      "gap_kind": "RUNTIME",
+      "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+      "root_cause_id": "RC-DISPLAY-NAME",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
       "verification_status": "AUTOMATED_FAIL"
     },
     {
@@ -219,15 +219,6 @@
       "verification_status": "AUTOMATED_FAIL"
     },
     {
-      "target_id": "FEAT-013",
-      "severity": "P1",
-      "gap_kind": "RUNTIME",
-      "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
-      "verification_status": "AUTOMATED_FAIL"
-    },
-    {
       "target_id": "FEAT-021",
       "severity": "P1",
       "gap_kind": "RUNTIME",
@@ -288,6 +279,15 @@
       "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
       "root_cause_id": "RC-TEST-BRIDGE-TS",
       "task_id": "TEST-BRIDGE-TS-001",
+      "verification_status": "AUTOMATED_FAIL"
+    },
+    {
+      "target_id": "FEAT-057",
+      "severity": "P1",
+      "gap_kind": "RUNTIME",
+      "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+      "root_cause_id": "RC-DISPLAY-NAME",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
       "verification_status": "AUTOMATED_FAIL"
     },
     {

@@ -271,7 +271,7 @@ const TASKS = [
   { task_id: 'PUBLIC-HONESTY-001', task_type: 'SOURCE_FIX', title: '落地页立即诚实降级（假下载/6+/错误主线→PREVIEW/NOT_RELEASED）', root_cause_id: 'RC-LANDING-FAKE-DOWNLOAD', severity: 'P0', deps: [], order_hint: 3, status: landingFakeDownload ? 'PLANNED' : 'DONE' },
   { task_id: 'VERSION-METADATA-001', task_type: 'SOURCE_FIX', title: '根 VERSION + Release Metadata + Public Status', root_cause_id: 'RC-VERSION-SSOT', severity: 'P1', deps: [], order_hint: 4, status: versionSsotReady ? 'DONE' : 'PLANNED' },
   { task_id: 'RELEASE-PIPELINE-001', task_type: 'RELEASE', title: 'UniApp + Peripheral/Observer 双固件 Release Pipeline', root_cause_id: 'RC-RELEASE-PIPELINE', severity: 'P0', deps: ['VERSION-METADATA-001'], order_hint: 5 },
-  { task_id: 'RUNTIME-DISPLAY-NAME-001', task_type: 'SOURCE_FIX', title: '实现 display-name 解析链', root_cause_id: 'RC-DISPLAY-NAME', severity: 'P1', deps: [], order_hint: 10 },
+  { task_id: 'RUNTIME-DISPLAY-NAME-001', task_type: 'SOURCE_FIX', title: '实现 display-name 解析链', root_cause_id: 'RC-DISPLAY-NAME', severity: 'P1', deps: [], order_hint: 10, status: FACTS.hasDisplayName ? 'DONE' : 'PLANNED' },
   { task_id: 'RUNTIME-FILTER-001', task_type: 'SOURCE_FIX', title: 'device-filter 关键词命中项匹配对齐目标', root_cause_id: 'RC-DEVICE-FILTER', severity: 'P1', deps: [], order_hint: 11, status: filterHasKeywordMatch ? 'DONE' : 'PLANNED' },
   { task_id: 'RUNTIME-GATT-CODEC-001', task_type: 'SOURCE_FIX', title: 'validateHexInput/parseHexInput', root_cause_id: 'RC-GATT-HEX', severity: 'P1', deps: [], order_hint: 12 },
   { task_id: 'RUNTIME-WRITE-QUEUE-001', task_type: 'SOURCE_FIX', title: 'write-queue MTU 分包队列', root_cause_id: 'RC-WRITE-QUEUE', severity: 'P1', deps: [], order_hint: 13 },

@@ -12,6 +12,7 @@ import {
 import { createScanSessionController } from '../services/ble-runtime/scan-session.js';
 import { normalizeAdvertisement } from '../services/ble-runtime/advertisement.js';
 import { mergeDeviceCollection } from '../services/ble-runtime/device-collection.js';
+import { attachDeviceDisplayName } from '../services/ble-runtime/display-name.js';
 import { createConnectedSessionRegistry } from '../services/connected-session-registry.js';
 
 export const useBleStore = defineStore('ble', () => {
@@ -151,12 +152,12 @@ export const useBleStore = defineStore('ble', () => {
     
     const normalizedDevices = currentBuffer.map((newDevice) => {
       const advertisement = normalizeAdvertisement(newDevice);
-      return {
+      return attachDeviceDisplayName({
         ...newDevice,
         advertisement,
         advertisDataHex: advertisement.advertisData.hex,
         advertisServiceUUIDs: advertisement.serviceUUIDs
-      };
+      });
     });
 
     const connectionStates = Object.fromEntries(
