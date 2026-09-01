@@ -29,17 +29,17 @@ supersedes: []
 |---|---|---|---|---|---|---|
 | 1 | 四 Tab 与 10 页导航 | Full | Full | Full（页面可看） | Full（未发布 NOT_RELEASED） | — |
 | 2 | 平台/权限状态展示 | Full | Full | Full（BLE 状态恒 UNSUPPORTED） | Full | H5 状态区显示不支持说明 |
-| 3 | 蓝牙权限请求 | Full（Android 12+ SCAN/CONNECT；低版本定位组） | Adapted（授权体系） | Unsupported | Full | 微信走自身弹窗与设置 |
+| 3 | 蓝牙权限请求 | Full（Android 12+ SCAN/CONNECT；低版本按系统能力） | Adapted（能力驱动最小权限 DEC-003：点击扫描才申请；仅环境要求时引导定位） | Unsupported | Full | 微信按 Capability Detection 决定申请集合，不写死定位 |
 | 4 | 永久拒绝恢复 | Full（系统设置） | Adapted（小程序设置） | N/A | Full | — |
 | 5 | 蓝牙开关引导 | Full | Adapted（10001 引导） | Unsupported | Full | H5 显示"请用 App/小程序" |
-| 6 | 扫描（两轮/generation） | Full | Adapted（定位权限策略 DEC-003） | Unsupported | Full | H5 PAGE-001 为说明面 |
+| 6 | 扫描（两轮/generation） | Full | Adapted（权限路径 DEC-003；默认时长 10 秒同 App） | Unsupported | Full | H5 PAGE-001 为说明面 |
 | 7 | 广播字段解析 | Full | Adapted（字段可能不全→"平台未提供"） | 模拟展示（文档用途） | Full | 缺失字段三态显示 |
 | 8 | 显示名解析链 | Full | Full | N/A | Full | — |
 | 9 | 连接与服务发现 | Full | Full | Unsupported | Full | — |
 | 10 | Read | Full | Full | Unsupported | Full | — |
 | 11 | TEXT/HEX Write+队列 | Full | Full | Unsupported | Full | — |
 | 12 | MTU 与分包 | Full | Adapted（协商支持差异→保守 23） | Unsupported | Full | — |
-| 13 | Notify/Indicate | Full | Full（indicate 确认语义差异） | Unsupported | Full | — |
+| 13 | Characteristic Subscription（Notify/Indicate 统一，DEC-017） | Full | Full（按平台能力启用 Value Change；不承诺 Indicate ACK 可观测） | Unsupported | Full | — |
 | 14 | 多设备会话 | Full（目标 2 台 Must，DEC-008） | Adapted（实际并行上限 E5 确认） | Unsupported | Full | — |
 | 15 | 通信日志/导出 | Full | Adapted（文件能力差异；复制兜底） | 只读展示 | Full | 微信无导出时给复制 |
 | 16 | 被动断开有限重连 | Full | Adapted（后台限制不承诺） | N/A | Full | — |
@@ -58,8 +58,8 @@ supersedes: []
 
 ## 3. 平台结论摘要
 
-- **Android App**：正式产品入口。除广播名系统接管（DEC-004）与后台策略外全部 Full；E5 通过后 VERIFIED。
-- **微信小程序**：正式产品入口。Adapted 项集中在权限、文件、Peripheral API 与并行上限；语义与 App 完全一致（同一目标测试）；E5 通过后 VERIFIED。
+- **Android App**：正式产品入口。除广播名称能力驱动规则（DEC-004：可控才可编辑）与后台策略外全部 Full；E5 通过后 VERIFIED。
+- **微信小程序**：正式产品入口。Adapted 项集中在权限（能力驱动最小申请，DEC-003）、文件、Peripheral API 与并行上限；语义与 App 完全一致（同一目标测试）；E5 通过后 VERIFIED。
 - **H5**：文档/入口/模拟。任何真实 BLE API 调用都被禁止（REQ-009）；状态区永远诚实 UNSUPPORTED。
 - **iOS App**：目标定义完整，产物未发布前 NOT_RELEASED（DEC-005），落地页与关于页不得提供下载。
 - **REFERENCE 客户端**：不出现在能力卡、平台状态表与公开声明中。
@@ -74,8 +74,8 @@ supersedes: []
 
 ## 5. 验收条件与关联测试规划
 
-- [x] 每项能力四平台结论明确（或 N/A 有因）；
-- [x] 每个非 Full 结论有 UI 降级定义；
-- [x] 与 `18` 公开状态、WEB-001 平台表同源一致。
+- 每项能力四平台结论明确（或 N/A 有因）；
+- 每个非 Full 结论有 UI 降级定义；
+- 与 `18` 公开状态、WEB-001 平台表同源一致。
 
 关联计划测试：`TEST-C-004`（矩阵与公开面一致性）、`TEST-P-001/008`（降级面）、`TEST-W-001..010`、`TEST-A-001..012`（双平台 E5 验证矩阵逐项落地）。

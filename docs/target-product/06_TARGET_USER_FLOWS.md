@@ -22,16 +22,16 @@ supersedes: []
 ## FLOW-001 首次启动与权限
 
 - 目标：新用户从安装/扫码到可扫描，权限与蓝牙障碍全部有出口。
-- 参与者：用户、系统权限、蓝牙适配器。
+- 参与者：用户、系统权限、蓝牙适配器、Capability Detection。
 - 前置：已安装 App/进入小程序。
-- 主路径：启动→平台识别→落扫描 Tab→点开始→授权→扫描运行。
+- 主路径：启动→平台识别→落扫描 Tab→点开始→按需申请最小权限→授权→扫描运行。**进入小程序不索取任何权限**；权限流程由"开始扫描"触发；申请集合由 Capability Detection 决定（DEC-003）。
 - 替代：H5 进入→UNSUPPORTED 面→引导微信/App。
-- 错误路径：拒绝授权（ERR-PERM-01 重试）；永久拒绝（ERR-PERM-03 去设置）；蓝牙关（ERR-BT-01 去开启）；打开失败（ERR-BT-02 重试）。
+- 错误路径：蓝牙权限拒绝（ERR-PERM-01 重试）；永久拒绝（ERR-PERM-03 去设置）；仅当能力检测判定当前环境要求定位授权时出现定位引导（ERR-PERM-02 去授权）；环境要求位置服务开启而未开（ERR-PERM-04 去系统开启）；蓝牙关（ERR-BT-01 去开启）；打开失败（ERR-BT-02 重试）。`location_required` 只能在平台确实要求时出现——环境不需要定位时本流程不得出现任何定位 UI。
 - 取消/返回：随时退出；无残留。
 - 状态数据：权限/蓝牙状态芯片；无业务数据。
 - Session/资源：无会话；扫描资源随页面。
-- 平台差异：微信定位策略（DEC-003）；App 三态权限。
-- 关联：REQ-005..009｜FEAT-001/005..009｜PAGE-001｜TEST-A-001、TEST-W-001、TEST-P-001。
+- 平台差异：微信权限能力驱动最小申请（DEC-003，禁止写死定位要求）；App 三态权限。
+- 关联：REQ-005..009｜FEAT-001/005..009｜PAGE-001｜TEST-A-001、TEST-W-001/004、TEST-P-001。
 - 完成证据：EVID-001/002（双平台首启录屏）。
 
 ```mermaid
@@ -42,11 +42,16 @@ flowchart TD
   D --> E[引导微信/App]
   C -- 是 --> F[扫描 Tab 待开始]
   F --> G[OP-P001-01 开始]
-  G --> H{权限?}
+  G --> H0[Capability Detection DEC-003]
+  H0 --> H{权限?}
   H -- granted --> I[扫描运行]
   H -- denied --> J[ERR-PERM-01 重试]
   H -- permanent --> K[ERR-PERM-03 去设置]
+  H -- 环境要求定位且未授权 --> J2[ERR-PERM-02 定位引导]
+  H -- 环境要求位置服务且未开 --> K2[ERR-PERM-04 去开启]
   K --> I
+  K2 --> I
+  J2 --> I
   J --> H
   I --> L{蓝牙开?}
   L -- 否 --> M[ERR-BT-01 去开启] --> I
@@ -73,7 +78,7 @@ sequenceDiagram
 - 目标：两轮扫描互不污染；迟到事件丢弃。
 - 参与者：用户、ScanSession。
 - 前置：FLOW-001 就绪。
-- 主路径：第一轮 5s 完成→查看结果→再次开始→新 generation→列表重建。
+- 主路径：第一轮 10 秒完成（DEC-013 默认时长；期间可手动停止）→查看结果→再次开始（可立即）→新 generation→列表重建。
 - 替代：手动提前停止。
 - 错误路径：ERR-SCAN-01 重试。
 - 取消/返回：停止/hide/unload 均停。
@@ -355,29 +360,31 @@ sequenceDiagram
 
 ## FLOW-009 OTA 完整事务
 
-- 目标：10 步完整事务，版本一致才算成功。
+- 目标：10 步完整事务，版本一致才算成功；传输前先完成固件包校验（第 0 步）。
 - 参与者：用户、OtaManager、设备。
-- 前置：设备含 OTA 服务；入口达标（DEC-001）；固件文件校验通过。
-- 主路径：STATUS 订阅→CTRL start(size/chunk/target_version)→ready→DATA 分包→commit→success→reboot→重连→读 firmware_version→一致→成功。
-- 替代：重试=重新完整事务。
-- 错误路径：无 ready（ERR-OTA-02 abort）；data 失败（ERR-OTA-03）；无 success（ERR-OTA-04，fault 注入验证）；版本不一致（ERR-OTA-05）；abort 失败（ERR-OTA-07 兜底断开）；重连失败（ERR-OTA-08）。
+- 前置：设备含 OTA 服务；入口达标（DEC-001）；固件包（manifest+firmware.bin，PROTO-011）六项校验通过（FEAT-081：格式/target/hardware/firmware_version/size/SHA256；任一失败→ERR-OTA-09..13，错误包不进入事务）。
+- 主路径：包校验通过→STATUS 订阅→CTRL start(size/chunk_size/target_version/target/sha256)→ready→DATA 分包（按序）→commit（设备复核 received/expected size 与 expected/actual SHA256）→success→reboot→重连→读 firmware_version→一致→成功。
+- 替代与失败重试语义（V1 冻结，DEC-016 关联）：V1 **不支持**单块重传、缺块补发、断点续传、任意乱序恢复。发生 size mismatch / hash mismatch / missing bytes / unexpected state / connection loss 任一情况：当前 OTA Transaction 判 FAIL→设备回到安全 idle（旧固件继续可运行）→客户端从 CTRL start **重新发起完整事务**（新事务重新走全部 10 步）。
+- 错误路径：包校验失败（ERR-OTA-09..13 换包，不进事务）；无 ready（ERR-OTA-02 abort）；data 失败（ERR-OTA-03 整事务重试）；无 success（ERR-OTA-04，fault 注入验证）；版本不一致（ERR-OTA-05）；abort 失败（ERR-OTA-07 兜底断开）；重连失败（ERR-OTA-08）。
 - 取消/返回：取消=CTRL abort→设备回 idle；OTA 中离开页面需确认。
 - 状态数据：STATE-OTA-01..10；进度百分比。
 - Session/资源：事务资源终态释放；文件句柄关闭。
 - 平台差异：微信文件选择。
-- 关联：REQ-043..046｜FEAT-046..052｜TEST-I-008、TEST-A-011、TEST-E-007。
+- 关联：REQ-043..046、REQ-066｜FEAT-046..052、FEAT-081｜TEST-U-016、TEST-I-008/010、TEST-A-011、TEST-E-007。
 - 完成证据：EVID-006（双端：App 进度+串口 success/版本回读）。
 
 ```mermaid
 flowchart TD
-  A[选文件+校验] --> B[订阅 STATUS]
-  B --> C[CTRL start]
+  A[选择固件包 manifest+bin] --> A1{FEAT-081 六项校验}
+  A1 -- 失败 --> A2[ERR-OTA-09..13 换包 不进入事务]
+  A1 -- 通过 --> B[订阅 STATUS]
+  B --> C[CTRL start 含 target/sha256]
   C --> D{ready 15s?}
   D -- 否 --> X[ERR-OTA-02 abort]
-  D -- 是 --> E[DATA 分包+进度]
+  D -- 是 --> E[DATA 分包按序+进度]
   E --> F{写完?}
-  F -- 失败重试耗尽 --> X
-  F -- 是 --> G[CTRL commit]
+  F -- 失败/丢块/乱序 整事务重试 --> X
+  F -- 是 --> G[CTRL commit 设备复核 size+SHA256]
   G --> H{success 30s?}
   H -- 否 --> Y[ERR-OTA-04 不得显示完成]
   H -- 是 --> I[设备 reboot]
@@ -386,7 +393,7 @@ flowchart TD
   K --> L{=target?}
   L -- 是 --> M[升级成功]
   L -- 否 --> N[ERR-OTA-05]
-  X & Y --> O[CTRL abort 设备回 idle 可用]
+  X & Y --> O[CTRL abort 设备回 idle 可用 整事务可重试]
 ```
 
 ```mermaid
@@ -394,15 +401,17 @@ sequenceDiagram
   participant U as 用户
   participant OM as OtaManager
   participant DV as 设备
-  U->>OM: 开始 OTA(file)
+  U->>OM: 开始 OTA(package)
+  OM->>OM: 校验 manifest(target/hw/ver/size/sha256)
   OM->>DV: 订阅 CHAR_STATUS
-  OM->>DV: CTRL start(size,chunk,target)
+  OM->>DV: CTRL start(size,chunk,target,sha256)
   DV-->>OM: STATUS ready(max_chunk)
-  loop 分包
+  loop 按序分包（无单块重传）
     OM->>DV: DATA chunk
   end
   OM->>DV: CTRL commit
-  DV-->>OM: STATUS success
+  DV->>DV: 复核 received/expected size + SHA256
+  DV-->>OM: STATUS success（全部一致才发）
   DV->>DV: reboot(新固件)
   OM->>DV: 重连+读 firmware_version
   DV-->>OM: = target_version
@@ -631,8 +640,8 @@ sequenceDiagram
 
 ## 2. 验收条件与关联测试规划
 
-- [x] 14 条流程各有主/替代/错误/取消/清理/双图/关联/证据；
-- [x] 与页面操作表互相引用一致；
-- [x] 每条流程映射计划测试 ID。
+- 14 条流程各有主/替代/错误/取消/清理/双图/关联/证据；
+- 与页面操作表互相引用一致；
+- 每条流程映射计划测试 ID。
 
 关联计划测试：全 TEST-P/A/W/H/E/R 系列以本文流程为脚本骨架；`TEST-C-009`（流程↔测试映射非空）。

@@ -15,12 +15,12 @@
     {
       "prefix": "TEST-U-",
       "level": "E1",
-      "count": 15
+      "count": 16
     },
     {
       "prefix": "TEST-I-",
       "level": "E2",
-      "count": 9
+      "count": 10
     },
     {
       "prefix": "TEST-P-",
@@ -50,7 +50,7 @@
     {
       "prefix": "TEST-R-",
       "level": "E6",
-      "count": 10
+      "count": 11
     }
   ],
   "tests": [
@@ -554,6 +554,24 @@
       "implemented": false
     },
     {
+      "id": "TEST-U-016",
+      "title": "OTA 固件包校验纯函数（DEC-016）",
+      "evidence_level": "E1",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-066"
+      ],
+      "features": [
+        "FEAT-081"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-009"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
       "id": "TEST-I-001",
       "title": "生命周期与清理",
       "evidence_level": "E2",
@@ -656,7 +674,7 @@
     },
     {
       "id": "TEST-I-005",
-      "title": "Notify 路由与隔离",
+      "title": "Characteristic Subscription 路由与隔离",
       "evidence_level": "E2",
       "release_blocking": true,
       "requirements": [
@@ -768,6 +786,24 @@
         "FLOW-010",
         "PAGE-005",
         "FLOW-011"
+      ],
+      "claims": [],
+      "implemented": false
+    },
+    {
+      "id": "TEST-I-010",
+      "title": "OTA 错误包拒绝进入事务与 V1 整事务重试",
+      "evidence_level": "E2",
+      "release_blocking": true,
+      "requirements": [
+        "REQ-066"
+      ],
+      "features": [
+        "FEAT-081"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-009"
       ],
       "claims": [],
       "implemented": false
@@ -1296,7 +1332,8 @@
       "requirements": [
         "REQ-043",
         "REQ-044",
-        "REQ-045"
+        "REQ-045",
+        "REQ-066"
       ],
       "features": [
         "FEAT-046",
@@ -1305,7 +1342,8 @@
         "FEAT-049",
         "FEAT-050",
         "FEAT-051",
-        "FEAT-052"
+        "FEAT-052",
+        "FEAT-081"
       ],
       "pages_or_flows": [
         "PAGE-006",
@@ -1607,7 +1645,8 @@
       "requirements": [
         "REQ-043",
         "REQ-044",
-        "REQ-045"
+        "REQ-045",
+        "REQ-066"
       ],
       "features": [
         "FEAT-046",
@@ -1615,7 +1654,8 @@
         "FEAT-048",
         "FEAT-050",
         "FEAT-051",
-        "FEAT-052"
+        "FEAT-052",
+        "FEAT-081"
       ],
       "pages_or_flows": [
         "PAGE-006",
@@ -2016,7 +2056,6 @@
         "PAGE-003",
         "PAGE-004",
         "FLOW-011",
-        "PAGE-001",
         "PAGE-006"
       ],
       "claims": [
@@ -2200,7 +2239,7 @@
     },
     {
       "id": "TEST-R-005",
-      "title": "链接矩阵",
+      "title": "链接矩阵（5 分钟 Quick Start 教程）",
       "evidence_level": "E6",
       "release_blocking": true,
       "requirements": [
@@ -2336,11 +2375,24 @@
         "CLAIM-030"
       ],
       "implemented": false
+    },
+    {
+      "id": "TEST-R-011",
+      "title": "30 分钟 Clean Machine 端到端闭环（CLAIM-031）",
+      "evidence_level": "E6",
+      "release_blocking": true,
+      "requirements": [],
+      "features": [],
+      "pages_or_flows": [],
+      "claims": [
+        "CLAIM-031"
+      ],
+      "implemented": false
     }
   ],
   "coverage": {
-    "requirements_total": 65,
-    "requirements_with_automation": 63,
-    "must_features_total": 79
+    "requirements_total": 66,
+    "requirements_with_automation": 64,
+    "must_features_total": 80
   }
 }

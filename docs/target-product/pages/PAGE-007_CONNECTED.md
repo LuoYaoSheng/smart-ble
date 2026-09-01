@@ -32,7 +32,7 @@ supersedes: []
 
 1. 导航"已连接设备"；
 2. 摘要区（>1 台时）："N 台设备保持连接" + "全部断开"；
-3. 列表：设备卡（名称/ID/meta 按 Profile/断开按钮/点击打开）；
+3. 列表：设备卡（名称/ID/meta 按 Profile/**活动订阅徽标"订阅中 N"**/断开按钮/点击打开）；
 4. 空态：说明（"从扫描页连接设备后在此管理"）+ 去扫描；若 Smart HID 配网连接进行中，附加提示"Smart HID 配网连接进行中…"（不把配网会话列为可断开条目）。
 
 ## 5. 首屏必须可见内容
@@ -45,11 +45,14 @@ supersedes: []
 |---|---|---|
 | 活动会话列表 | Session[] | Registry（仅 connected） |
 | 台数 N | int | 同上 |
+| 活动订阅数 subscription_count | int（每会话，= notifySubscriptions.size） | Session Registry（唯一来源，`09` DATA-003；0 时不显示徽标，>0 显示"订阅中 N"） |
 | 重连进度 | "n/3" | 会话重连计数 |
 | Profile meta | string | Profile 注册表 |
 | 配网进行中标志 | bool | SmartHidWorkflow 状态 |
 
 口径（唯一）：列表=Registry 中 connected 会话，**排除配网内部会话**（属 PAGE-002 内部所有权）；扫描页"N 已连接"计数与本页同源同口径。
+
+订阅可见性（TP-G0-R1，DEC-009/017 联动）：用户开启的订阅随会话保留（DEC-009），因此本页每张活动会话卡提供活动订阅数量——`subscription_count` 来自 Session Registry；为 0 时不显示额外徽标；>0 时显示"订阅中 N"（例如"订阅中 2"，或"Notify × 2"形态由 `17` 文案表定稿）。目标：用户离开 PAGE-006 后仍知道 App 是否持续监听设备。点击设备卡进入 PAGE-006 后，订阅开关按实际订阅状态恢复。
 
 ## 7. 完整操作表
 
@@ -128,11 +131,12 @@ CLAIM-009"多设备会话管理"：VERIFIED 前提=TEST-A-009+TEST-W-009+EVID-00
 
 ## 21. 验收条件
 
-- [x] 只显示活动会话（配网会话排除且口径唯一）；
-- [x] 单断/全断同入口同语义；
-- [x] 复用连接打开；
-- [x] 多设备隔离与部分失败呈现；
-- [x] 无健康指标词汇。
+- 只显示活动会话（配网会话排除且口径唯一）；
+- 单断/全断同入口同语义；
+- 复用连接打开；
+- 多设备隔离与部分失败呈现；
+- 活动订阅徽标"订阅中 N"与 Registry subscription_count 一致（0 不显示）；
+- 无健康指标词汇。
 
 ## 22. 非目标与禁止行为
 
@@ -161,4 +165,4 @@ flowchart TD
 
 ## 24. 关联 ID 与链接
 
-REQ-022/023/030~033｜FEAT-023/033/034/035｜FLOW-006/007｜ERR-CONN-04｜[`10 Runtime`](../10_RUNTIME_ARCHITECTURE_AND_RESOURCE_OWNERSHIP.md)｜[`PAGE-006`](PAGE-006_DEVICE_DETAIL.md)
+REQ-022/023/029/030~033｜FEAT-023/031/033/034/035｜FLOW-006/007｜ERR-CONN-04｜[`10 Runtime`](../10_RUNTIME_ARCHITECTURE_AND_RESOURCE_OWNERSHIP.md)｜[`PAGE-006`](PAGE-006_DEVICE_DETAIL.md)

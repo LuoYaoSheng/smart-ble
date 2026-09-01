@@ -7,10 +7,10 @@
   "flows": [
     {
       "id": "FLOW-001", "name": "首次启动与权限",
-      "actors": ["用户", "系统权限", "蓝牙适配器"],
+      "actors": ["用户", "系统权限", "蓝牙适配器", "Capability Detection"],
       "preconditions": ["已安装 App 或进入小程序"],
-      "happy_path": ["启动→平台识别", "落扫描 Tab", "开始扫描触发授权", "授权后扫描运行"],
-      "error_paths": ["ERR-PERM-01 拒绝重试", "ERR-PERM-03 永久拒绝去设置", "ERR-BT-01 蓝牙关去开启", "ERR-BT-02 适配器失败重试", "H5 UNSUPPORTED 引导"],
+      "happy_path": ["启动→平台识别", "落扫描 Tab（不索取权限）", "点击开始扫描触发能力检测与最小权限申请（DEC-003）", "授权后扫描运行"],
+      "error_paths": ["ERR-PERM-01 拒绝重试", "ERR-PERM-03 永久拒绝去设置", "ERR-PERM-02 环境要求定位未授权（仅能力检测命中）", "ERR-PERM-04 环境要求位置服务未开（仅能力检测命中）", "ERR-BT-01 蓝牙关去开启", "ERR-BT-02 适配器失败重试", "H5 UNSUPPORTED 引导"],
       "cancel_and_cleanup": ["退出无残留；扫描资源随页面释放"],
       "pages": ["PAGE-001"], "mermaid_diagrams": 2,
       "planned_tests": ["TEST-A-001", "TEST-W-001", "TEST-P-001"],
@@ -20,7 +20,7 @@
       "id": "FLOW-002", "name": "两轮扫描",
       "actors": ["用户", "ScanSession"],
       "preconditions": ["FLOW-001 就绪"],
-      "happy_path": ["第一轮 5s 完成保留结果", "再次开始生成新 generation", "迟到事件丢弃", "列表重建 N/M 实时"],
+      "happy_path": ["第一轮 10 秒完成保留结果（DEC-013，可手动停止）", "再次开始（可立即）生成新 generation", "迟到事件丢弃", "列表重建 N/M 实时"],
       "error_paths": ["ERR-SCAN-01 重试"],
       "cancel_and_cleanup": ["停止/hide/unload 均停止并清理计时器"],
       "pages": ["PAGE-001"], "mermaid_diagrams": 2,
@@ -96,12 +96,12 @@
     {
       "id": "FLOW-009", "name": "OTA 完整事务",
       "actors": ["用户", "OtaManager", "设备"],
-      "preconditions": ["设备含 OTA 服务", "入口达标 DEC-001", "固件文件校验通过"],
-      "happy_path": ["订阅 STATUS", "CTRL start", "ready", "DATA 分包", "CTRL commit", "success", "reboot", "重连", "版本回读一致成功"],
-      "error_paths": ["ERR-OTA-02 无 ready", "ERR-OTA-03 data 失败", "ERR-OTA-04 无 success", "ERR-OTA-05 版本不一致", "ERR-OTA-07 abort 失败", "ERR-OTA-08 重连失败"],
-      "cancel_and_cleanup": ["取消=CTRL abort 设备回 idle；事务资源终态释放"],
+      "preconditions": ["设备含 OTA 服务", "入口达标 DEC-001", "固件包（manifest+bin，PROTO-011/DEC-016）六项校验通过（FEAT-081）"],
+      "happy_path": ["第 0 步包校验通过", "订阅 STATUS", "CTRL start（含 target/sha256）", "ready", "DATA 分包按序（V1 无单块重传）", "CTRL commit（设备复核 size+SHA256）", "success", "reboot", "重连", "版本回读一致成功"],
+      "error_paths": ["ERR-OTA-09..13 包校验失败不进事务", "ERR-OTA-02 无 ready", "ERR-OTA-03 data 失败/丢块/乱序整事务重试", "ERR-OTA-04 无 success", "ERR-OTA-05 版本不一致", "ERR-OTA-07 abort 失败", "ERR-OTA-08 重连失败"],
+      "cancel_and_cleanup": ["取消=CTRL abort 设备回 idle；失败/丢块/断链=事务 FAIL 回 idle 后从 CTRL start 重新完整发起（V1 无断点续传）；事务资源终态释放"],
       "pages": ["PAGE-006"], "mermaid_diagrams": 2,
-      "planned_tests": ["TEST-I-008", "TEST-A-011", "TEST-E-007"],
+      "planned_tests": ["TEST-U-016", "TEST-I-008", "TEST-I-010", "TEST-A-011", "TEST-E-007"],
       "evidence_id": "EVID-006", "release_blocking": true
     },
     {

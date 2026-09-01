@@ -44,13 +44,14 @@
     { "hex": "FF03", "effect": "1000ms 慢闪" }
   ],
   "ota_transaction": {
+    "pre_step_package_validation": "第 0 步（客户端，FEAT-081）：manifest+bin 六项校验（格式/target/hardware/firmware_version/size/SHA256）；失败→ERR-OTA-09..13，错误包不进入事务",
     "steps": [
       "客户端订阅 STATUS",
-      "CTRL start(size/chunk_size/target_version)",
+      "CTRL start(size/chunk_size/target_version/target/sha256)",
       "设备校验并 STATUS ready(max_chunk)",
-      "DATA 分包写（≤max_chunk，按序）",
+      "DATA 分包写（≤max_chunk，严格按序）",
       "全部到达后客户端 CTRL commit",
-      "设备校验镜像并 STATUS success",
+      "设备复核 received/expected size + expected/actual SHA256 + OTA 状态 → STATUS success",
       "设备 reboot 到新固件",
       "客户端重扫描/重连",
       "读 firmware_version(system_info)",
@@ -58,7 +59,31 @@
     ],
     "success_definition": "仅当第 10 步版本一致（STATE-OTA-10）才允许显示升级成功；其余任何状态不得渲染成功",
     "abort_semantics": "取消=CTRL abort，设备丢弃暂存镜像回到 idle，旧固件继续可运行；abort 失败客户端兜底断开重连",
+    "v1_retry_semantics": "V1 不支持单块重传/缺块补发/断点续传/任意乱序恢复；size/hash mismatch、missing bytes、unexpected state、connection loss 任一发生=事务 FAIL→设备回安全 idle（旧固件可运行）→客户端从 CTRL start 重新发起完整事务",
     "error_codes": ["OTA_ERR_SPACE", "OTA_ERR_CHECKSUM", "OTA_ERR_SIZE", "OTA_ERR_STATE", "OTA_ERR_FLASH"]
+  },
+  "ota_package": {
+    "protocol_id": "PROTO-011",
+    "decision": "DEC-016",
+    "contents_min": ["manifest.json", "firmware.bin"],
+    "manifest_schema": {
+      "format_version": 1,
+      "target": "lightble-peripheral | lightble-observer",
+      "hardware": "<与 system_info.hardware 匹配>",
+      "firmware_version": "<semver>",
+      "size": "<=firmware.bin 实际大小>",
+      "sha256": "<64-char sha256>",
+      "min_bootloader": "string | null"
+    },
+    "client_pre_transaction_checks": ["manifest 格式", "target 匹配", "hardware 匹配", "firmware_version 合法", "size 一致", "SHA256 一致"],
+    "client_error_mapping": {
+      "OTA_PACKAGE_INVALID": "ERR-OTA-09",
+      "OTA_TARGET_MISMATCH": "ERR-OTA-10",
+      "OTA_HARDWARE_MISMATCH": "ERR-OTA-11",
+      "OTA_SIZE_MISMATCH": "ERR-OTA-12",
+      "OTA_HASH_MISMATCH": "ERR-OTA-13"
+    },
+    "device_commit_verification": ["received size = expected size", "actual SHA256 = expected SHA256", "OTA 状态合法（全部一致才 STATUS success）"]
   },
   "fault_injection": [
     { "id": "delayed_response", "behavior": "写响应延迟 2s", "verifies": "Write 队列与超时", "default": "off" },

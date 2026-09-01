@@ -39,7 +39,7 @@ supersedes: []
 6. 真实 App 截图组（带 alt；缺失时隐藏并注明）；
 7. 在线交互原型入口（10 页 HTML 原型；缺失时隐藏）；
 8. ESP32 区：fixture_peripheral 与 fixture_observer 双卡（接线、一键构建、固件下载+SHA、Observer 串口输出示例 JSON）；
-9. 快速开始三条：微信 5 分钟 / Android 5 分钟 / ESP32 5 分钟（步骤可复制）；
+9. 快速开始三条：微信 5 分钟 / Android 5 分钟 / ESP32 5 分钟（步骤可复制；区块开头显式标注 Quick Start 前置条件"已满足"，不含工具链从零安装，`19` 第 2.1 节）；同区并列"新电脑 30 分钟完整闭环"入口（Clean Machine，`19` 第 2.2 节，两种计时不得互相冒充）；
 10. 下载区（#download）：Android APK 卡（版本/commit/SHA256/设备清单/证据链接）、微信小程序码卡、固件卡；无产物时对应卡 NOT_RELEASED；
 11. 证据与已知限制区（#evidence）：最新 Release 的 commit、App/小程序/固件版本、通过平台、证据入口（EVID 链接）、已知限制清单；
 12. Smart HID 区（#smart-hid）：能力边界（配网/诊断，不含控制链路）与状态；
@@ -72,14 +72,15 @@ Hero 定位、主/次 CTA、版本+状态徽标、核心闭环图起点、导航
 | OP-W001-06 | 查看证据 | 证据区 | 证据存在 | 无 | EVID 链接 | 打开证据 | 404→ERR-WEB-01 | 外部/站内 | 无 | TEST-R-007 |
 | OP-W001-07 | 查看已知限制 | 恒显 | 无 | 无 | #evidence 锚点 | 定位 | — | 锚点 | 无 | TEST-R-006 |
 | OP-W001-08 | 导航锚点 | 恒显 | 无 | 无 | 平滑滚动 | 定位 | — | 锚点 | 无 | TEST-R-006 |
-| OP-W001-09 | 快速开始三选一 | 恒显 | 无 | 无 | 到达对应教程 | 打开 | 404→ERR-WEB-01 | 站内 | 无 | TEST-R-005 |
+| OP-W001-09 | 快速开始三选一 | 恒显 | 无 | 无 | 到达对应教程（Quick Start，前置条件声明在区块开头） | 打开 | 404→ERR-WEB-01 | 站内 | 无 | TEST-R-005 |
 | OP-W001-10 | Smart HID 区链接 | 区块展示 | 无 | 无 | 详情/教程 | 打开 | 同上 | 站内 | 无 | TEST-R-005/007 |
+| OP-W001-11 | 30 分钟 Clean Machine 入口 | 快速开始区 | 无 | 无 | 到达 Clean Machine 教程（`19` 2.2：clone→依赖→build→flash→install→scan→connect→write→notify） | 打开 | 404→ERR-WEB-01 | 站内 | 无 | TEST-R-011 |
 
 ## 8. 完整状态表
 
 | State ID | 状态名称 | 进入条件 | 页面内容 | 允许操作 | 退出条件 | 数据更新 | 测试 |
 |---|---|---|---|---|---|---|---|
-| STATE-W001-01 | VERIFIED 发布态 | Release Metadata 完整且 E6 门通过 | 下载/码/证据全开 | 全部 | 新 Release | 全字段联动 | TEST-R-001..010 |
+| STATE-W001-01 | VERIFIED 发布态 | Release Metadata 完整且 E6 门通过 | 下载/码/证据全开 | 全部 | 新 Release | 全字段联动 | TEST-R-001..011 |
 | STATE-W001-02 | PREVIEW 证据前态 | 产物未齐/E5 未全 | 下载区降级、能力卡 PREVIEW 徽标、Hero 显"预览" | OP-01/02/06..10 | 达 E6 | 徽标更新 | TEST-R-003/007 |
 | STATE-W001-03 | NOT_RELEASED 无产物 | 无任何公开产物 | 下载区为说明卡（无链接）；CTA 指向原型/源码 | OP-01/02/06..10 | 产物发布 | — | TEST-R-003 |
 | STATE-W001-04 | 资源缺失降级 | 截图/原型缺失 | 对应区隐藏+一行说明 | 其余 | 资源补齐 | — | TEST-R-006 |
@@ -127,24 +128,25 @@ LCP ≤2.5s；图片懒加载+压缩；页面总重 ≤2MB（NFR-018）。
 
 ## 18. 自动化测试映射
 
-TEST-R-001..010（声明/下载/QR/链接/SHA/Metadata/SEO/a11y/降级）。
+TEST-R-001..011（声明/下载/QR/链接/SHA/Metadata/SEO/a11y/降级/Clean Machine 闭环）。
 
 ## 19. 真机 / 发布测试映射
 
-E6 清单（TEST-R-001..010）+ 发布后烟测（FLOW-014、TP-G6）。无 E5 组件（页面本身），但其声明引用 E5 证据。
+E6 清单（TEST-R-001..011）+ 发布后烟测（FLOW-014、TP-G6）。无 E5 组件（页面本身），但其声明引用 E5 证据。
 
 ## 20. 公开声明与证据要求
 
-CLAIM-001..030 全表见 `18` 第 6 节；每个 CLAIM 绑定 TEST-R 用例与证据 EVID；无证据声明一律不得出现。发布阻断规则见 `01` 第 8 节。
+CLAIM-001..031 全表见 `18` 第 6 节；每个 CLAIM 绑定 TEST-R 用例与证据 EVID；无证据声明一律不得出现。5 分钟 Quick Start（CLAIM-017）与 30 分钟 Clean Machine（CLAIM-031）使用不同测试 ID，不得互相冒充。发布阻断规则见 `01` 第 8 节。
 
 ## 21. 验收条件
 
-- [x] 14 区块齐备且顺序固定；
-- [x] 所有状态字段来自 Release Metadata（无手写数字）；
-- [x] 无产物即 NOT_RELEASED（无假链接）；
-- [x] 三条快速开始 ≤2 次点击可达；
-- [x] SEO/OG/canonical 与产品定位一致；
-- [x] 移动/桌面/暗色/键盘/alt 全达标。
+- 14 区块齐备且顺序固定；
+- 所有状态字段来自 Release Metadata（无手写数字）；
+- 无产物即 NOT_RELEASED（无假链接）；
+- 三条快速开始 ≤2 次点击可达且显式标注 Quick Start 前置条件；
+- 30 分钟 Clean Machine 入口与 Quick Start 明确区分（不同测试 ID）；
+- SEO/OG/canonical 与产品定位一致；
+- 移动/桌面/暗色/键盘/alt 全达标。
 
 ## 22. 非目标与禁止行为
 

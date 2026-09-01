@@ -1197,6 +1197,24 @@
         "TEST-U-015",
         "TEST-H-004"
       ]
+    },
+    {
+      "id": "REQ-066",
+      "group": "OTA",
+      "priority": "Must",
+      "features": [
+        "FEAT-081"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-009"
+      ],
+      "planned_tests": [
+        "TEST-U-016",
+        "TEST-I-010",
+        "TEST-E-007",
+        "TEST-A-011"
+      ]
     }
   ],
   "features": [
@@ -2458,7 +2476,6 @@
         "REQ-052"
       ],
       "pages_or_flows": [
-        "PAGE-001",
         "PAGE-004"
       ],
       "planned_tests": [
@@ -2828,6 +2845,27 @@
         "TEST-R-002"
       ],
       "minimum_evidence_level": "E6",
+      "release_blocking": true
+    },
+    {
+      "id": "FEAT-081",
+      "group": "OTA",
+      "name": "OTA 固件包加载与传输前校验（DEC-016）",
+      "priority": "Must",
+      "requirements": [
+        "REQ-066"
+      ],
+      "pages_or_flows": [
+        "PAGE-006",
+        "FLOW-009"
+      ],
+      "planned_tests": [
+        "TEST-U-016",
+        "TEST-I-010",
+        "TEST-E-007",
+        "TEST-A-011"
+      ],
+      "minimum_evidence_level": "E5",
       "release_blocking": true
     }
   ]

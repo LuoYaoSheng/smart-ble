@@ -54,8 +54,8 @@ TP-G0 交付时全部目标文档为 `REVIEW`，`approved_by: null`。只有用�
 
 | 类别 | 格式 | 分配登记处 |
 |---|---|---|
-| 产品需求 | `REQ-001` ~ `REQ-065` | `01`、`03`、`22` |
-| 功能 | `FEAT-001` ~ `FEAT-080` | `03_TARGET_FEATURE_CATALOG.md`（唯一登记处） |
+| 产品需求 | `REQ-001` ~ `REQ-066` | `01`、`03`、`22` |
+| 功能 | `FEAT-001` ~ `FEAT-081` | `03_TARGET_FEATURE_CATALOG.md`（唯一登记处） |
 | App 页面 | `PAGE-001` ~ `PAGE-010` | `05_TARGET_PAGE_CATALOG.md` |
 | Web 页面 | `WEB-001` | `web/WEB-001_LANDING_PAGE.md` |
 | 页面操作 | `OP-P<页号3位>-<序号2位>` / `OP-W001-<序号2位>` | 对应页面文档第 7 节 |
@@ -63,12 +63,12 @@ TP-G0 交付时全部目标文档为 `REVIEW`，`approved_by: null`。只有用�
 | 全局引擎状态 | `STATE-GBL-xx` / `STATE-OTA-xx` / `STATE-HID-xx` | `07_INTERACTION_STATE_AND_ERROR_MODEL.md` |
 | 用户流程 | `FLOW-001` ~ `FLOW-014` | `06_TARGET_USER_FLOWS.md` |
 | 错误 | `ERR-<域>-<序号2位>`，域见 3.3 | `07_INTERACTION_STATE_AND_ERROR_MODEL.md`（唯一登记处） |
-| 数据实体 | `DATA-001` ~ `DATA-012` | `09_DATA_MODEL_STORAGE_RETENTION_AND_PRIVACY.md` |
-| 协议 | `PROTO-001` ~ `PROTO-010` | `11`/`12`/`13`/`18` 对应协议文档 |
-| 安全要求 | `SEC-001` ~ `SEC-018` | `15_SECURITY_AND_THREAT_MODEL.md` |
+| 数据实体 | `DATA-001` ~ `DATA-013` | `09_DATA_MODEL_STORAGE_RETENTION_AND_PRIVACY.md` |
+| 协议 | `PROTO-001` ~ `PROTO-011` | `11`/`12`/`13`/`18` 对应协议文档 |
+| 安全要求 | `SEC-001` ~ `SEC-019` | `15_SECURITY_AND_THREAT_MODEL.md` |
 | 非功能要求 | `NFR-001` ~ `NFR-024` | `16_NON_FUNCTIONAL_REQUIREMENTS.md` |
-| 公开声明 | `CLAIM-001` ~ `CLAIM-030` | `web/WEB-001` 与 `18` |
-| 决策 | `DEC-001` ~ `DEC-013` | `21_RISK_REGISTER_AND_DECISION_LOG.md` |
+| 公开声明 | `CLAIM-001` ~ `CLAIM-031` | `web/WEB-001` 与 `18` |
+| 决策 | `DEC-001` ~ `DEC-017` | `21_RISK_REGISTER_AND_DECISION_LOG.md` |
 | 风险 | `RISK-001` ~ `RISK-016` | `21_RISK_REGISTER_AND_DECISION_LOG.md` |
 | 证据包类别 | `EVID-001` ~ `EVID-008` | `14_OBSERVABILITY_LOGGING_AND_EVIDENCE.md` |
 | 计划测试 | `TEST-C/U/I/P/E/A/W/H/R-xxx` | `22_TARGET_TRACEABILITY_MATRIX.md` + `contracts/target/test-traceability.json` |
@@ -188,9 +188,9 @@ TP-G0 交付时全部目标文档为 `REVIEW`，`approved_by: null`。只有用�
 
 本文验收：
 
-- [x] 全部 ID 类别有格式、登记处和规则；
-- [x] 状态词、证据等级、优先级、公开状态有唯一解释且全文一致；
-- [x] 术语表覆盖全部跨文档术语；
-- [x] 变更与批准流程可执行。
+- 全部 ID 类别有格式、登记处和规则；
+- 状态词、证据等级、优先级、公开状态有唯一解释且全文一致；
+- 术语表覆盖全部跨文档术语；
+- 变更与批准流程可执行。
 
 关联计划测试：`TEST-C-001`（ID 唯一性与登记处一致性）、`TEST-C-002`（文档元数据完整性）、`TEST-C-003`（状态词合法值检查）。

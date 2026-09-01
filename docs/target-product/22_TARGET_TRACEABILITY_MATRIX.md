@@ -90,46 +90,51 @@ supersedes: []
 | REQ-063 | FEAT-078 | 文档 | TEST-C-007 | — | CLAIM-025 |
 | REQ-064 | FEAT-079/080 | 仓库/文档 | TEST-R-005 | — | CLAIM-015/022/025 |
 | REQ-065 | FEAT-059/038 | PAGE-004/006 | TEST-U-012/015 | TEST-H-004 | CLAIM-021 |
+| REQ-066 | FEAT-081 | PAGE-006/FLOW-009（第 0 步包校验） | TEST-U-016、TEST-I-010 | TEST-E-007、TEST-A-011 | CLAIM-010（OTA 前提含包校验） |
+
+注（TP-G0-R1）：REQ-062 的双计时目标中，5 分钟 Quick Start 由 CLAIM-017/TEST-R-005 验证，30 分钟 Clean Machine 由 CLAIM-031/TEST-R-011 验证，两者不得互相冒充（`19` 第 2 节）。
 
 ## 3. 计划测试套件登记
 
 | 套件 | ID 范围 | 层级 | 数量 |
 |---|---|---|---|
 | Contract/Static | TEST-C-001..014 | E0 | 14 |
-| Unit | TEST-U-001..015 | E1 | 15 |
-| Integration（Fake Runtime） | TEST-I-001..009 | E2 | 9 |
+| Unit | TEST-U-001..016 | E1 | 16 |
+| Integration（Fake Runtime） | TEST-I-001..010 | E2 | 10 |
 | Page/Prototype | TEST-P-001..012 | E4 | 12 |
 | ESP32 | TEST-E-001..008 | E2→E5 | 8 |
 | Android E5 | TEST-A-001..014 | E5 | 14 |
 | 微信 E5 | TEST-W-001..010 | E5 | 10 |
 | Smart HID E5 | TEST-H-001..008 | E5 | 8 |
-| Release/Web E6 | TEST-R-001..010 | E6 | 10 |
+| Release/Web E6 | TEST-R-001..011 | E6 | 11 |
 
-注：TEST-A-013=性能/稳定性套件、TEST-A-014=发布安装烟测；TEST-H-007=Smart HID 错误矩阵补充（八类逐例已在 TEST-H-003，007 承接边界）、TEST-H-008=Smart HID 微信侧补充；TEST-C-014=决策默认方案一致性。TP-G1 将把上述计划 ID 展开为可执行规范，不得减少覆盖。
+注：TEST-A-013=性能/稳定性套件、TEST-A-014=发布安装烟测；TEST-H-007=Smart HID 错误矩阵补充（八类逐例已在 TEST-H-003，007 承接边界）、TEST-H-008=Smart HID 微信侧补充；TEST-C-014=决策默认方案一致性；TEST-U-016=OTA 固件包校验纯函数（FEAT-081/DEC-016）、TEST-I-010=错误包拒绝进入事务+V1 整事务重试、TEST-R-011=30 分钟 Clean Machine 端到端闭环（CLAIM-031）。TP-G1 将把上述计划 ID 展开为可执行规范，不得减少覆盖。
 
 ## 4. 覆盖率统计与孤立检查
 
+统计由 `scripts/target-docs/inspect-target-docs.mjs` 生成并校验（TP-G0-R1 起单源，禁止手写约数）。
+
 | 维度 | 统计 |
 |---|---|
-| REQ | 65（全部 Must 除注明 Should 项） |
-| FEAT | 80（Must 74 / Should 4 / Could 2） |
+| REQ | 66（全部 Must 除注明 Should 项） |
+| FEAT | 81（Must 75 / Should 4 / Could 2） |
 | PAGE/WEB | 10+1 |
 | FLOW | 14 |
-| REQ→FEAT 覆盖 | 65/65=100% |
-| REQ→计划测试覆盖 | 65/65=100%（每 REQ ≥1 自动化） |
-| 硬件相关 REQ→E5 | REQ-010..045/047..053/062 相关全部有 TEST-E/A/W/H |
+| REQ→FEAT 覆盖 | 66/66=100% |
+| REQ→计划测试覆盖 | 66/66=100%（每 REQ ≥1 自动化） |
+| 硬件相关 REQ→E5 | REQ-010..045/047..053/062/066 相关全部有 TEST-E/A/W/H |
 | 公开 REQ→CLAIM+TEST-R | REQ-004/009/046/055..061/064 全部有 |
-| OP | 93（P001×15、P002×11、P003×4、P004×5、P005×6、P006×15、P007×5、P008×7、P009×11、P010×4、W001×10）见各页第 7 节 |
+| OP | 92 个在册（OP-P001-12、OP-P006-09 已废弃删除不复用；P001×14、P002×11、P003×4、P004×5、P005×6、P006×14、P007×5、P008×7、P009×11、P010×4、W001×11）见各页第 7 节 |
 | STATE | 110（页面级 67：P001×10、P002×12、P003×2、P004×3、P005×6、P006×10、P007×3、P008×12、P009×3、P010×2、W001×4；全局 43：GBL×20、OTA×10+STATE-OTA-ERR、HID×12） |
-| ERR | 62（PERM3+BT3+SCAN2+CONN5+GATT7+SESSION2+PERI7+OTA8+HID13+DATA5+SYS3+WEB4） |
-| DATA/PROTO/SEC/NFR/CLAIM/DEC/RISK/EVID | 12/10/18/24/30/15/16/8 |
+| ERR | 68（PERM4+BT3+SCAN2+CONN5+GATT7+SESSION2+PERI7+OTA13+HID13+DATA5+SYS3+WEB4） |
+| DATA/PROTO/SEC/NFR/CLAIM/DEC/RISK/EVID | 13/11/19/24/31/17/16/8 |
 
 孤立 ID 规则（TP-G1 门禁）：任何 FEAT 无 REQ、任何 OP 无页面、任何 ERR 无恢复动作、任何 CLAIM 无测试、任何 Must REQ 无自动化 → 契约门失败。
 
 ## 5. 验收条件
 
-- [x] 65 REQ 全部映射 FEAT/PAGE-FLOW/测试（Must 100%）；
-- [x] 硬件与公开声明映射完整；
-- [x] 统计与 `03`/`06`/`07`/页面文档一致（机器校验 `contracts/target/test-traceability.json`）。
+- 66 REQ 全部映射 FEAT/PAGE-FLOW/测试（Must 100%）；
+- 硬件与公开声明映射完整；
+- 统计与 `03`/`06`/`07`/页面文档一致（机器校验 `contracts/target/test-traceability.json` 与 `scripts/target-docs/inspect-target-docs.mjs`）。
 
 关联计划测试：`TEST-C-008/009`（追踪完整性）、`TEST-C-001`（ID 唯一）。

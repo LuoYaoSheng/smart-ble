@@ -27,6 +27,7 @@
           "optional_params": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
           "forbidden_params": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
           "operations": { "type": "array", "items": { "type": "string", "pattern": "^OP-(P[0-9]{3}|W001)-[0-9]{2}$" }, "minItems": 1, "uniqueItems": true },
+          "deprecated_operations": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
           "states": { "type": "array", "items": { "type": "string", "pattern": "^STATE-(P[0-9]{3}|W001)-[0-9]{2}$" }, "minItems": 1, "uniqueItems": true },
           "entry_from": { "type": "array", "items": { "type": "string" }, "minItems": 1, "uniqueItems": true },
           "exit_to": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },

@@ -70,7 +70,7 @@ supersedes: []
 
 联动：能力卡（WEB-001）、平台表、关于页、版本页全部从同一 Metadata 投影；漂移即 ERR-WEB-04 阻断发布。
 
-## 6. 公开声明登记（CLAIM-001~030）
+## 6. 公开声明登记（CLAIM-001~031）
 
 | ID | 声明（落点） | 证据前提 | 对应测试 |
 |---|---|---|---|
@@ -90,7 +90,7 @@ supersedes: []
 | CLAIM-014 | Smart HID 配网/诊断 | TEST-H 全过 | TEST-H-001..006（DEC-006） |
 | CLAIM-015 | 开源 MIT 与源码可得 | 仓库/License | TEST-R-005 |
 | CLAIM-016 | ESP32 双模式夹具 | 固件可下载可复现 | TEST-E-008、TEST-R-008 |
-| CLAIM-017 | 三条 5 分钟快速开始 | 教程实测 | TEST-R-005 |
+| CLAIM-017 | 三条 5 分钟快速开始（Quick Start：前置条件已满足，不含工具链从零安装，`19` 第 2 节） | 教程实测 | TEST-R-005 |
 | CLAIM-018 | 下载含 SHA 与设备清单 | Metadata | TEST-R-001/008 |
 | CLAIM-019 | 已知限制公开 | Metadata | TEST-R-003 |
 | CLAIM-020 | 证据可查（EVID 链接） | 证据存在 | TEST-R-007 |
@@ -104,6 +104,7 @@ supersedes: []
 | CLAIM-028 | Android APK 下载 | 产物+SHA | TEST-R-001 |
 | CLAIM-029 | SEO/OG/canonical 正确 | 抓取一致 | TEST-R-006 |
 | CLAIM-030 | 无障碍承诺（对比度/键盘/alt） | a11y 走查 | TEST-R-010 |
+| CLAIM-031 | 新电脑 30 分钟 Clean Machine 端到端闭环（clone→依赖→build→flash→install→scan→connect→write→notify，`19` 第 2 节） | 独立电脑全流程录屏 | TEST-R-011（与 CLAIM-017 的 5 分钟 Quick Start 使用不同测试 ID，不得互相冒充） |
 
 禁止：任何未登记声明、无证据状态词、渲染数字（"6+ 入口"类）。
 
@@ -121,9 +122,9 @@ supersedes: []
 
 ## 9. 验收条件与关联测试规划
 
-- [x] VERSION→五处一致链与开发版规则；
-- [x] Metadata Schema 完整且为公开面唯一来源；
-- [x] 30 条 CLAIM 全部有证据前提与测试；
-- [x] 降级与二维码规则明确。
+- VERSION→五处一致链与开发版规则；
+- Metadata Schema 完整且为公开面唯一来源；
+- 30 条 CLAIM 全部有证据前提与测试；
+- 降级与二维码规则明确。
 
 关联计划测试：`TEST-C-006`（一致性）、`TEST-R-001..010`（E6 全套）。

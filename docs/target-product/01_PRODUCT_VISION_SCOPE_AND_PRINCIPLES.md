@@ -144,7 +144,7 @@ supersedes: []
 | ID | 需求 | 优先级 |
 |---|---|---|
 | REQ-005 | 蓝牙权限请求前置，状态区展示权限状态；拒绝后可重试 | Must |
-| REQ-006 | 微信小程序按平台策略处理定位权限（Android 需定位权限用于扫描） | Must |
+| REQ-006 | 微信小程序权限按能力检测最小化申请：不预取定位；点击扫描时先申请 BLE 所需最小权限，仅当当前运行环境明确要求定位时才申请/引导定位（DEC-003） | Must |
 | REQ-007 | 永久拒绝提供跳系统设置的恢复路径 | Must |
 | REQ-008 | 蓝牙关闭时引导打开系统蓝牙设置 | Must |
 | REQ-009 | 平台不支持 BLE 时诚实提示 UNSUPPORTED，不模拟 | Must |
@@ -225,6 +225,7 @@ supersedes: []
 | REQ-044 | 完整 OTA 事务（见原则 8 的 10 步）；version match 才成功 | Must |
 | REQ-045 | 取消必须 CTRL abort；无 ready/commit/success/version match 都不得成功；失败后设备可恢复可用 | Must |
 | REQ-046 | OTA 未达到 E5 前，正式版入口 BLOCKED/隐藏 | Must |
+| REQ-066 | OTA 必须使用固件包（manifest+firmware.bin，PROTO-011）：开始传输前校验 manifest 格式/target/hardware/firmware_version/size/SHA256；错误包不得进入 BLE OTA 事务；CTRL start 携带 target 与 sha256，commit 阶段设备校验尺寸与 SHA256 全一致才 STATUS success（DEC-016） | Must |
 
 ### 9.11 Smart HID
 
@@ -250,7 +251,7 @@ supersedes: []
 | REQ-059 | 下载/二维码/版本/SHA/证据/已知限制真实且联动 | Must |
 | REQ-060 | 无产物时 NOT_RELEASED 降级，无假链接 | Must |
 | REQ-061 | SEO/OG/canonical 正确；移动/桌面/暗色/键盘/焦点/alt 达标 | Must |
-| REQ-062 | 开发者 5 分钟上手 + ESP32 从零教程（无固定串口） | Must |
+| REQ-062 | 开发者体验双计时目标：5 分钟 Quick Start（前置条件已满足，不含工具链从零安装）与 30 分钟 Clean Machine 端到端闭环（clone→依赖→build→flash→install→scan→connect→write→notify），两者用不同 TEST-R/E6 ID 验证且不得互相冒充 | Must |
 | REQ-063 | Profile 扩展指南（注册/匹配/路由/编解码/测试模板） | Must |
 | REQ-064 | Issue/Security/License/贡献流程公开 | Must |
 | REQ-065 | 本地数据 TTL、容量上限与用户可删除 | Must |
@@ -261,8 +262,8 @@ supersedes: []
 
 本文验收：
 
-- [x] 定位、范围、非目标、状态词、原则、阻断规则齐备且可执行；
-- [x] REQ-001~REQ-065 全部有优先级且可映射 FEAT；
-- [x] 与 `00`、`03`、`08`、`18` 无定义冲突。
+- 定位、范围、非目标、状态词、原则、阻断规则齐备且可执行；
+- REQ-001~REQ-066 全部有优先级且可映射 FEAT；
+- 与 `00`、`03`、`08`、`18` 无定义冲突。
 
 关联计划测试：`TEST-C-001`（REQ 登记完整性）、`TEST-C-004`（非目标平台不出现在公开能力卡——与 TEST-R 联动）、`TEST-R-001`（发布阻断规则落地为 Release Gate）。

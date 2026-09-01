@@ -19,18 +19,42 @@ supersedes: []
 
 ---
 
-## 2. 5 分钟上手（FEAT-077）
+## 2. 双计时目标：5 分钟 Quick Start 与 30 分钟 Clean Machine（FEAT-077，REQ-062）
 
-目标：任何新电脑（Windows/macOS/Linux）在**教程指导下 5 分钟内进入可构建状态，30 分钟内完成端到端闭环**（FLOW-013/014 验收口径）。
+两类计时**语义不同、验证不同、不得互相冒充**：
+
+### 2.1 5 分钟 Quick Start（CLAIM-017，TEST-R-005）
+
+定义：**前置条件已经满足**时，从"拿到仓库/产物"到"跑通最小闭环"≤5 分钟。
+
+前置条件（教程开头显式列出，不满足时如实引导走 2.2）：
+
+- Android：已有 APK 且手机已允许安装；
+- 微信：已安装微信且小程序入口可用；
+- ESP32：已安装 PlatformIO，或直接使用已发布预编译固件。
+
+**5 分钟不包含**：IDE/JDK/Node/PlatformIO 从零安装等工具链准备。
 
 路径：
 
-1. 克隆仓库（GitHub 主，DEC-011）；
-2. App/小程序：安装依赖→运行（微信开发者工具导入或 HBuilderX）；
-3. ESP32：安装 PlatformIO→`pio run`→选择自己的串口→`-t upload`→`pio device monitor`；
+1. 克隆仓库（GitHub 主，DEC-011）或获取产物；
+2. App/小程序：导入运行（微信开发者工具或 HBuilderX）；
+3. ESP32：`pio run`→选择自己的串口→`-t upload`→`pio device monitor`；
 4. 手机安装 App/进入小程序→扫描发现 `BLEToolkit-Server`→连接→写 `FF01` 灯亮→订阅 Notify。
 
-故障表（教程必含）：串口找不到（驱动/端口选择）、权限（Windows 签名/macOS 安全）、构建失败（网络/平台版本）、烧写失败（boot 模式）。
+### 2.2 30 分钟 Clean Machine（CLAIM-031，TEST-R-011/E6）
+
+定义：真正的新电脑从零开始 ≤30 分钟完成端到端闭环：
+
+```text
+clone → 安装依赖 → build → flash → install → scan → connect → write → notify
+```
+
+覆盖 Windows/macOS/Linux；验证方式为独立电脑全流程录屏（FLOW-014 口径）；任何需要从旧电脑复制 `node_modules/unpackage/build/bin/私有配置` 才能跑通的步骤都判 FAIL（Clean Machine 红线，`16` NFR-024）。
+
+### 2.3 故障表
+
+教程必含：串口找不到（驱动/端口选择）、权限（Windows 签名/macOS 安全）、构建失败（网络/平台版本）、烧写失败（boot 模式）。
 
 ## 3. ESP32 从零教程（FEAT-077）
 
@@ -69,8 +93,8 @@ supersedes: []
 
 ## 8. 验收条件与关联测试规划
 
-- [x] 5 分钟/30 分钟两级目标与故障表；
-- [x] Profile 扩展五步清单与红线；
-- [x] 治理入口齐备。
+- 5 分钟/30 分钟两级目标与故障表；
+- Profile 扩展五步清单与红线；
+- 治理入口齐备。
 
 关联计划测试：`TEST-R-005`（链接矩阵）、`TEST-E-008`（独立电脑复现）、`TEST-C-007`（Profile 注册契约）。

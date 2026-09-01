@@ -84,10 +84,10 @@ Control 语义：读=Device Info JSON（PROTO-004 `system_info`）；写=LED 命
 | Data（DATA） | `beb5483e-36e1-4688-b7f5-ea07361b26c1`（WriteNoResponse） |
 | Status（STATUS） | `beb5483e-36e1-4688-b7f5-ea07361b26c2`（Notify+Read） |
 
-CTRL 命令（JSON 写入）：
+CTRL 命令（JSON 写入；start 携带 `target` 与 `sha256`，DEC-016）：
 
 ```json
-{"op":"start","size":123456,"chunk_size":180,"target_version":"1.1.0"}
+{"op":"start","target":"lightble-peripheral","size":123456,"chunk_size":180,"target_version":"1.1.0","sha256":"<64-char sha256>"}
 {"op":"commit"}
 {"op":"abort"}
 ```
@@ -101,15 +101,45 @@ STATUS notify（JSON）：
 {"state":"error","code":"OTA_ERR_SPACE","detail":"..."}
 ```
 
-目标事务（唯一正典顺序，两端共同遵守）：
+### 7.1 PROTO-011 OTA Firmware Package（DEC-016）
+
+OTA 固件以**包**为单位分发与消费，包内至少：
 
 ```text
+manifest.json
+firmware.bin
+```
+
+manifest 目标 Schema（DATA-013；`hardware` 以设备真实硬件标识为准——能力匹配，不写死型号）：
+
+```json
+{
+  "format_version": 1,
+  "target": "lightble-peripheral",
+  "hardware": "esp32-wroom-32",
+  "firmware_version": "1.1.0",
+  "size": 123456,
+  "sha256": "<64-char sha256>",
+  "min_bootloader": null
+}
+```
+
+- `target` 枚举：`lightble-peripheral` / `lightble-observer`（同一块板可在两种角色间分阶段切换，但每个包只对一个角色）；
+- App 在**开始 OTA 前**必须校验：manifest 格式；target 与当前设备匹配；hardware 匹配（与 `system_info.hardware` 对比）；firmware_version 合法（semver）；size 与实际 binary 一致；SHA256 与实际 binary 一致（FEAT-081）；
+- 任一校验失败→ERR-OTA-09..13（OTA_PACKAGE_INVALID / OTA_TARGET_MISMATCH / OTA_HARDWARE_MISMATCH / OTA_SIZE_MISMATCH / OTA_HASH_MISMATCH），**错误包不得进入 BLE OTA Transaction**；
+- `sha256` 与 `target` 随 CTRL start 下发，设备在 **CTRL commit 阶段**必须验证：received size = expected size；expected SHA256 = actual SHA256（对收到的镜像流计算）；OTA 状态合法——**全部一致才允许 STATUS success**；
+- 注意区分：本包 manifest 是"OTA 传输包清单"；`12` 第 12 节构建产物 `manifest.json` 是"固件构建元数据"（版本/shortsha/SHA256），后者是前者生成来源之一。
+
+目标事务（唯一正典顺序，两端共同遵守；第 0 步为包校验，1–10 为正典十步）：
+
+```text
+0. 客户端校验固件包（PROTO-011 六项；失败即止，不进入事务）
 1. 客户端订阅 STATUS
-2. CTRL start(size/chunk_size/target_version)
+2. CTRL start(size/chunk_size/target_version/target/sha256)
 3. 设备校验（空间/参数）→ STATUS ready(max_chunk)
-4. DATA 分包写（≤max_chunk，序即序）
+4. DATA 分包写（≤max_chunk，严格按序）
 5. 全部到达 → 客户端 CTRL commit
-6. 设备校验镜像 → STATUS success
+6. 设备复核（received/expected size + expected/actual SHA256 + OTA 状态）→ STATUS success
 7. 设备 reboot 到新固件
 8. 客户端重扫描/重连
 9. 读 firmware_version（system_info）
@@ -118,11 +148,11 @@ STATUS notify（JSON）：
 
 约束：
 
-- 任一步失败：设备回 idle，旧固件继续可运行；
+- 任一步失败：设备回 idle（旧固件继续可运行），当前事务 FAIL；
 - 无 ready 不得写 DATA；无 success 不得显示完成；版本不一致不得成功；
 - 取消=CTRL abort（设备丢弃暂存镜像）；
-- 分包丢失/乱序由客户端整事务重试解决（V1 无断点续传，Not Now）；
-- 错误码枚举：`OTA_ERR_SPACE / OTA_ERR_CHECKSUM / OTA_ERR_SIZE / OTA_ERR_STATE / OTA_ERR_FLASH`。
+- **V1 重试语义（冻结）**：不支持单块重传、缺块补发、断点续传、任意乱序恢复。发生 size mismatch / hash mismatch / missing bytes / unexpected state / connection loss 任一情况：当前事务 FAIL→设备回安全 idle（旧固件可运行）→客户端从 CTRL start **重新发起完整事务**（重新走全部十步）；
+- 设备侧错误码枚举：`OTA_ERR_SPACE / OTA_ERR_CHECKSUM / OTA_ERR_SIZE / OTA_ERR_STATE / OTA_ERR_FLASH`（客户端包校验错误 ERR-OTA-09..13 见 `07` 3.8）。
 
 ## 8. Device Info 与版本
 
@@ -165,6 +195,8 @@ Observer 模式观测流（手机广播证据）：
 
 字段必备：时间戳、名称、RSSI、UUID 列表、Manufacturer/Service Data（hex）、原始字节、最后发现时间。Observer 速率：≥5 条/秒不丢帧（环形缓冲）。
 
+Observer 的 `name` 观测是 DEC-004 的最终事实源：手机端无论展示 System Device Name 还是可编辑的 Advertising Local Name，Observer 看到的名称/`raw` 字节即实际广播内容，App 展示必须与之一致（TEST-E-006）。
+
 ## 11. 状态机与时序（Peripheral）
 
 ```mermaid
@@ -174,15 +206,17 @@ stateDiagram-v2
   Advertising --> Connected : link up(count+1)
   Connected --> Advertising : disconnect(count-1)
   Connected --> Connected : GATT cmds/notify
-  Connected --> OtaReady : CTRL start ok
-  OtaReady --> OtaReceiving : DATA chunks
+  Connected --> OtaReady : CTRL start ok(含 target/sha256)
+  OtaReady --> OtaReceiving : DATA chunks(严格按序)
   OtaReceiving --> OtaPending : all chunks
-  OtaPending --> OtaSuccess : CTRL commit ok
-  OtaPending --> OtaReceiving : 缺块(客户端重试)
+  OtaPending --> OtaSuccess : CTRL commit ok(size+SHA256 复核通过)
   OtaReady --> Advertising : CTRL abort
-  OtaReceiving --> Advertising : abort/err
+  OtaReceiving --> Advertising : abort/err(事务 FAIL,回 idle 旧固件可运行)
+  OtaPending --> Advertising : commit 校验失败(整事务重试,无缺块补发)
   OtaSuccess --> Boot : reboot
 ```
+
+注：V1 **不存在**"OtaPending → OtaReceiving 缺块补发"转移——缺块/乱序/校验失败一律事务 FAIL 回 idle，由客户端重新 start 完整事务（`07` 3.8、FLOW-009）。
 
 ## 12. 构建、烧写与恢复
 
@@ -206,8 +240,8 @@ stateDiagram-v2
 
 ## 15. 验收条件与关联测试规划
 
-- [x] 双模式、三服务、命令、Notify、OTA、故障、串口、构建全定义；
-- [x] OTA 10 步与 `07`/FLOW-009 一致；
-- [x] 无固定串口、广播名正典、版本可回读。
+- 双模式、三服务、命令、Notify、OTA、故障、串口、构建全定义；
+- OTA 10 步与 `07`/FLOW-009 一致；
+- 无固定串口、广播名正典、版本可回读。
 
 关联计划测试：`TEST-E-001..008`、`TEST-C-012`（协议常量一致）、`TEST-R-008`（固件下载+SHA）。

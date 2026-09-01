@@ -74,14 +74,14 @@ supersedes: []
 - 依赖：无。安全隐私：仅申请必需权限（SEC-001）。
 - 性能：无。测试：TEST-U-003、TEST-P-001、TEST-A-001、TEST-W-001｜E4（真机 E5）｜发布条件：两平台权限链路 E5 通过。
 
-#### FEAT-006｜微信定位权限策略
-- 归属：REQ-006｜PAGE-001（微信）｜FLOW-001｜Must
-- 价值：Android 微信扫描依赖定位权限；策略透明避免"扫不到设备"死局。
-- 前置：微信环境。输入：wx.getSetting/authorize。输出：定位权限状态与引导。
-- 正常：授权→扫描可用。错误恢复：未授权→引导去设置（ERR-PERM-02）；策略细节以 TP-G4 真机结论回填为验证项（DEC-003）。
-- 平台差异：仅微信；iOS 微信与 Android 微信策略不同。数据来源：微信 API。
-- 依赖：无。安全隐私：定位权限仅用于 BLE 扫描声明（SEC-001）。
-- 性能：无。测试：TEST-W-001、TEST-W-004｜E5（微信）｜发布条件：DEC-003 真机验证通过。
+#### FEAT-006｜微信 BLE 权限能力驱动最小申请
+- 归属：REQ-006｜PAGE-001（微信）｜FLOW-001｜Must（原则见 DEC-003）
+- 价值：按当前运行环境实际要求申请最小权限；不预取定位，避免权限滥用与"扫不到设备"死局。
+- 前置：微信环境。输入：用户点击"开始扫描"；Capability Detection（微信版本/基础库/Android 组合）。输出：最小权限申请流程；仅当环境明确要求定位授权时才出现定位引导（ERR-PERM-02）；环境要求位置服务开启而未开时引导开启（ERR-PERM-04）；不需要定位的环境不出现任何定位 UI。
+- 正常：授权→扫描可用。错误恢复：环境要求定位被拒→引导（ERR-PERM-02）；各组合真实要求由 TP-G4 真机矩阵回填（DEC-003 第 6 条）。
+- 平台差异：仅微信；不同微信版本/基础库/Android 系统组合结论不同，禁止写死单一结论。数据来源：微信 API + 能力检测。
+- 依赖：无。安全隐私：仅申请必需权限；定位仅在环境要求时申请且仅用于 BLE 扫描声明（SEC-001）。
+- 性能：无。测试：TEST-W-001、TEST-W-004｜E5（微信）｜发布条件：DEC-003 真机矩阵关键组合验证通过。
 
 #### FEAT-007｜永久拒绝恢复
 - 归属：REQ-007｜PAGE-001｜FLOW-001 错误路径｜Must
@@ -115,7 +115,7 @@ supersedes: []
 #### FEAT-010｜扫描开始/停止/超时
 - 归属：REQ-010｜PAGE-001｜FLOW-002｜Must
 - 价值：可控扫描轮次，避免常驻扫描耗电。
-- 前置：权限与蓝牙就绪。输入：开始/停止点击；默认时长（DEC-013，推荐 5s，可配置常量）。
+- 前置：权限与蓝牙就绪。输入：开始/停止点击；默认时长（DEC-013：10 秒，可配置常量；可手动停止、完成后可立即重扫）。
 - 输出：设备列表增量更新（1s 合并刷新，NFR-004）；停止后保留结果。
 - 正常：一轮扫描完成自动停。错误恢复：启动失败→ERR-SCAN-01 横幅 + 重试；停止失败→兜底静默清理并记日志。
 - 平台差异：微信重复发现需 allowDuplicatesKey 处理 RSSI 更新。数据来源：平台发现回调（经 Runtime 归一）。
@@ -175,6 +175,7 @@ supersedes: []
 - 价值：老用户从扫描页直达配过的设备，但完整列表只在 PAGE-004。
 - 前置：历史非空。输入：点击紧凑条目/全部历史。输出：→PAGE-003 详情 / →PAGE-004。
 - 正常：紧凑区最多显示最近 1 台与总数。错误恢复：无（本地数据）。
+- 边界（冻结，TP-G0-R1）：本入口**只读**——仅"查看详情"与"全部历史"两个动作；不提供删除、批量管理、TTL 修改或重命名；历史管理唯一归 PAGE-004（FEAT-061）。
 - 平台差异：无。数据来源：DATA-006。
 - 依赖：Smart HID Profile 注册。安全隐私：仅非敏感字段。
 - 性能：本地同步读。测试：TEST-P-001、TEST-P-004、TEST-W-008｜E4｜发布条件：随 Smart HID 状态（DEC-006）。
@@ -313,12 +314,13 @@ supersedes: []
 - 依赖：无。安全隐私：无。
 - 性能：分包纯函数。测试：TEST-U-011、TEST-I-004、TEST-E-003｜E1→E5｜发布条件：大 payload（≥512B）写 E5 通过。
 
-#### FEAT-031｜Notify/Indicate 订阅
+#### FEAT-031｜Characteristic Subscription（Notify/Indicate 统一订阅，DEC-017）
 - 归属：REQ-029｜PAGE-006｜FLOW-005｜Must
-- 价值：设备主动推送可见可记录。
-- 前置：特征 notify/indicate 属性。输入：开关。输出：推送流 + 日志。
+- 价值：设备主动推送可见可记录；订阅语义统一，不承诺不可观测的 Indicate ACK。
+- 前置：特征含 notify 和/或 indicate 属性（UI 显示 Notify / Indicate / Notify + Indicate）。输入：开启订阅/关闭订阅（统一操作）。输出：推送流 + 日志；App 声明"收到 Characteristic Value Change"。
 - 正常：夹具周期状态每 5s 一条。错误恢复：订阅失败 ERR-GATT-07；关闭为远程+本地双关。
-- 平台差异：indicate 确认语义平台差异。数据来源：特征值变更回调（经 Runtime）。
+- 平台差异：Runtime 按平台能力启用 Characteristic Value Change；仅当平台 API 明确暴露 ATT indication confirmation 时才允许测试/展示底层 ACK，否则不得声明"已收到 Indication Confirm"。
+- 数据来源：特征值变更回调（经 Runtime）。
 - 依赖：无。安全隐私：无。
 - 性能：推送到 UI ≤500ms（NFR-011）。测试：TEST-I-005、TEST-A-008、TEST-E-004｜E2→E5｜发布条件：订阅/退订 E5 通过。
 
@@ -522,6 +524,17 @@ supersedes: []
 - 依赖：LightBLE。安全隐私：无。
 - 性能：无。测试：TEST-E-007（全部 fault）、TEST-A-011｜E5｜发布条件：每类故障各有 E5 用例。
 
+#### FEAT-081｜OTA 固件包加载与传输前校验
+- 归属：REQ-066｜PAGE-006 OTA 弹窗｜FLOW-009 第 0 步｜Must（DEC-016）
+- 价值：固件身份、目标硬件、可信目标版本与 SHA256 在进入 BLE 事务前就被验证；错误包进不了传输。
+- 前置：设备含 OTA 服务；用户选择固件包（manifest.json + firmware.bin）。输入：包内 manifest（format_version/target/hardware/firmware_version/size/sha256/min_bootloader）与 binary。
+- 输出：校验结论（target/hardware/版本/size/SHA256）；通过后才允许 CTRL start；CTRL start 携带 `target` 与 `sha256` 供设备 commit 阶段复核。
+- 正常：六项校验全过→进入 FLOW-009 第 1 步。
+- 错误恢复（互斥、按首个命中上报）：manifest 格式非法→ERR-OTA-09 换包；target 与设备不匹配→ERR-OTA-010 换对应夹具包；hardware 不匹配→ERR-OTA-011；size 与实际 binary 不一致→ERR-OTA-012；SHA256 不一致→ERR-OTA-013。任一命中时**不得发起 BLE OTA Transaction**。
+- 平台差异：微信文件能力差异（路径/读取，与 FEAT-046 相同）。数据来源：DATA-013。
+- 依赖：LightBLE OTA 服务、PROTO-011。安全隐私：固件包完整性校验（SEC-019）。
+- 性能：SHA256 校验 ≤2s（典型 ≤2MB 包）。测试：TEST-U-016、TEST-I-010、TEST-E-007、TEST-A-011｜E1→E5｜发布条件：五类错误包各有自动化用例且 E5 至少实测一类坏包拒绝。
+
 ## 12. HID-PROV Smart HID 配网
 
 #### FEAT-053｜Profile matcher 强/弱匹配
@@ -605,7 +618,7 @@ supersedes: []
 - 性能：同步读 ≤50ms。测试：TEST-P-003、TEST-P-004、TEST-W-010｜E4｜发布条件：随 Smart HID。
 
 #### FEAT-061｜历史移除
-- 归属：REQ-052｜PAGE-004/001 紧凑入口｜Must
+- 归属：REQ-052｜PAGE-004（历史管理唯一宿主；PAGE-001 紧凑入口不提供移除，见 FEAT-016）｜Must
 - 价值：用户能清掉不用的设备记录。
 - 前置：历史存在。输入：移除+确认。输出：仅本机记录删除（不改设备配置）+ toast。
 - 正常：列表即时更新。错误恢复：失败 toast（ERR-DATA-01）。
@@ -791,14 +804,14 @@ supersedes: []
 
 ## 17. 统计与验收
 
-- FEAT 总数 80：SYS 4、PERM 5、SCAN 7、AD 3、CONN 6、GATT 7、SESSION 4、LOG 4、PERI 5、OTA 7、HID-PROV 6、HID-HIST 6、PRODUCT 4、WEB 8、DOC 4。
+- FEAT 总数 81：SYS 4、PERM 5、SCAN 7、AD 3、CONN 6、GATT 7、SESSION 4、LOG 4、PERI 5、OTA 8、HID-PROV 6、HID-HIST 6、PRODUCT 4、WEB 8、DOC 4。
 - 全部 Must 功能均有 Feature ID；每个 Feature 至少一个计划测试 ID；硬件相关均含 TEST-E/A/W/H；公开声明相关均含 TEST-R。
-- 优先级分布：Must 74、Should 4（FEAT-035 的 3 台扩展、FEAT-052 回滚增强按 Should 记录于 DEC-001）、Could 2（FEAT-061 搜索排序——记为 Could 并在本文显式标注 Not Now 之外）、Not Now 0（非目标直接不入目录，见 `01` 第 4 节）。
+- 优先级分布：Must 75、Should 4（FEAT-035 的 3 台扩展、FEAT-052 回滚增强按 Should 记录于 DEC-001）、Could 2（FEAT-061 搜索排序——记为 Could 并在本文显式标注 Not Now 之外）、Not Now 0（非目标直接不入目录，见 `01` 第 4 节）。
 
-本文验收：
+本文验收（目标验收条件，SPEC_DEFINED——本文定义的是"应满足什么"，不是"已实现什么"）：
 
-- [x] 80 个 FEAT 全字段齐备（无名称化逃逸）；
-- [x] 每项含输入/输出/错误/恢复/平台/数据/硬件依赖/安全/性能/测试/证据等级/发布条件；
-- [x] REQ↔FEAT 映射完整（`22` 校验）。
+- 81 个 FEAT 全字段齐备（无名称化逃逸）；
+- 每项含输入/输出/错误/恢复/平台/数据/硬件依赖/安全/性能/测试/证据等级/发布条件；
+- REQ↔FEAT 映射完整（`22` 校验）。
 
 关联计划测试：`TEST-C-002`（功能目录字段完整性）、`TEST-C-008`（FEAT→Test 映射非空）。

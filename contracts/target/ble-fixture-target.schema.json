@@ -57,13 +57,28 @@
       }
     },
     "ota_transaction": {
-      "type": "object", "required": ["steps", "success_definition", "abort_semantics"],
+      "type": "object", "required": ["steps", "success_definition", "abort_semantics", "v1_retry_semantics"],
       "additionalProperties": false,
       "properties": {
+        "pre_step_package_validation": { "type": "string" },
         "steps": { "type": "array", "minItems": 10, "maxItems": 10, "items": { "type": "string" } },
         "success_definition": { "type": "string" },
         "abort_semantics": { "type": "string" },
+        "v1_retry_semantics": { "type": "string" },
         "error_codes": { "type": "array", "items": { "type": "string", "pattern": "^OTA_ERR_[A-Z]+$" }, "uniqueItems": true }
+      }
+    },
+    "ota_package": {
+      "type": "object", "required": ["protocol_id", "decision", "contents_min", "client_pre_transaction_checks", "device_commit_verification"],
+      "additionalProperties": false,
+      "properties": {
+        "protocol_id": { "type": "string", "pattern": "^PROTO-[0-9]{3}$" },
+        "decision": { "type": "string", "pattern": "^DEC-[0-9]{3}$" },
+        "contents_min": { "type": "array", "items": { "type": "string" }, "minItems": 2, "uniqueItems": true },
+        "manifest_schema": { "type": "object" },
+        "client_pre_transaction_checks": { "type": "array", "items": { "type": "string" }, "minItems": 6, "uniqueItems": true },
+        "client_error_mapping": { "type": "object" },
+        "device_commit_verification": { "type": "array", "items": { "type": "string" }, "minItems": 3, "uniqueItems": true }
       }
     },
     "fault_injection": {

@@ -76,28 +76,31 @@ stateDiagram-v2
 
 ```mermaid
 stateDiagram-v2
-  [*] --> STATE_OTA_01 : idle
+  [*] --> PKG : 选择固件包(manifest+bin)
+  PKG --> STATE_OTA_01 : 包校验通过(FEAT-081)
+  PKG --> PKG_ERR : ERR-OTA-09..13 换包(不进入事务)
+  PKG_ERR --> PKG : 更换固件包
   STATE_OTA_01 --> STATE_OTA_02 : 文件校验通过
   STATE_OTA_02 --> STATE_OTA_03 : STATUS 已订阅
-  STATE_OTA_03 --> STATE_OTA_04 : CTRL start 已写
+  STATE_OTA_03 --> STATE_OTA_04 : CTRL start 已写(含 target/sha256)
   STATE_OTA_04 --> STATE_OTA_05 : 收到 ready
-  STATE_OTA_05 --> STATE_OTA_06 : DATA 传输中
-  STATE_OTA_06 --> STATE_OTA_07 : 全部分包完成+CTRL commit
+  STATE_OTA_05 --> STATE_OTA_06 : DATA 传输中(按序，无单块重传)
+  STATE_OTA_06 --> STATE_OTA_07 : 全部分包完成+CTRL commit(设备复核 size+SHA256)
   STATE_OTA_07 --> STATE_OTA_08 : 收到 success
   STATE_OTA_08 --> STATE_OTA_09 : 设备 reboot+App 重连
   STATE_OTA_09 --> STATE_OTA_10 : 版本回读一致=成功
   STATE_OTA_04 --> STATE_OTA_ERR : 无 ready ERR-OTA-02
-  STATE_OTA_06 --> STATE_OTA_ERR : 写失败 ERR-OTA-03
-  STATE_OTA_07 --> STATE_OTA_ERR : 无 success ERR-OTA-04
+  STATE_OTA_06 --> STATE_OTA_ERR : 写失败/丢块/乱序 ERR-OTA-03(整事务重试)
+  STATE_OTA_07 --> STATE_OTA_ERR : 无 success/校验失败 ERR-OTA-04
   STATE_OTA_09 --> STATE_OTA_ERR : 重连失败 ERR-OTA-08
   STATE_OTA_10 --> STATE_OTA_ERR : 版本不一致 ERR-OTA-05
-  STATE_OTA_ERR --> STATE_OTA_01 : CTRL abort/兜底断开
+  STATE_OTA_ERR --> STATE_OTA_01 : CTRL abort/兜底断开(回 idle，旧固件可运行)
 ```
 
 | State ID | 名称 | 允许 UI |
 |---|---|---|
 | STATE-OTA-01 | idle | 就绪 |
-| STATE-OTA-02 | file-validated | 显示目标版本 |
+| STATE-OTA-02 | file-validated（包六项校验通过后） | 显示目标版本 |
 | STATE-OTA-03 | status-subscribed | 准备中 |
 | STATE-OTA-04 | start-written | 等待 ready（≤15s） |
 | STATE-OTA-05 | ready | 可开始传输 |
@@ -143,11 +146,14 @@ stateDiagram-v2
 
 ### 3.1 权限（ERR-PERM）
 
+权限状态区分（DEC-003 能力驱动）：`bluetooth_permission_denied`（ERR-PERM-01）、`permanent_denied`（ERR-PERM-03）、`location_required`（ERR-PERM-02，仅当 Capability Detection 判定当前环境要求定位授权）、`location_denied`（ERR-PERM-02 被拒）、`location_service_off`（ERR-PERM-04，仅当环境要求位置服务开启）、`bluetooth_off`（ERR-BT-01）、`unsupported`（ERR-BT-03）。**这些状态只能在平台确实要求时出现**；环境不需要定位时不得展示任何定位相关错误。
+
 | ID | 错误 | 用户文案要点 | 恢复动作 | 呈现 |
 |---|---|---|---|---|
 | ERR-PERM-01 | 蓝牙权限被拒绝 | 需要蓝牙权限才能扫描 | 重新请求 | Banner |
-| ERR-PERM-02 | 微信定位权限未授权 | Android 微信扫描需定位权限 | 去小程序设置 | Banner |
+| ERR-PERM-02 | 当前环境要求定位授权但未授权（仅能力检测命中时出现） | 当前微信/系统组合需要定位授权才能扫描 | 去小程序设置/系统设置授权 | Banner |
 | ERR-PERM-03 | 永久拒绝 | 权限被永久拒绝 | 去系统设置 | Banner+说明 |
+| ERR-PERM-04 | 当前环境要求位置服务开启但未开（仅能力检测命中时出现） | 需要开启系统位置服务才能扫描 | 去系统设置开启位置服务 | Banner |
 
 ### 3.2 蓝牙适配器（ERR-BT）
 
@@ -207,16 +213,23 @@ stateDiagram-v2
 
 ### 3.8 OTA（ERR-OTA）
 
+V1 重试语义（冻结）：不支持单块重传/缺块补发/断点续传/乱序恢复；任何传输失败=当前事务 FAIL→设备回安全 idle（旧固件可运行）→客户端从 CTRL start 重新发起完整事务。ERR-OTA-09..13 在**进入 BLE 事务前**（固件包校验，FEAT-081）即拦截，错误包不得发起传输。
+
 | ID | 错误 | 恢复 | 呈现 |
 |---|---|---|---|
-| ERR-OTA-01 | 固件文件无效 | 重新选择 | 弹窗 |
+| ERR-OTA-01 | 固件文件无效（读取/大小） | 重新选择 | 弹窗 |
 | ERR-OTA-02 | start 后无 ready | CTRL abort 后重试 | 弹窗 |
-| ERR-OTA-03 | DATA 写失败（重试耗尽） | abort 后整事务重来 | 弹窗 |
+| ERR-OTA-03 | DATA 写失败（重试耗尽/丢块/乱序） | abort 后整事务重来（V1 无单块重传） | 弹窗 |
 | ERR-OTA-04 | commit 后无 success | 不得显示完成；abort/取证 | 弹窗 |
 | ERR-OTA-05 | 版本回读不一致 | 引导重试/取证 | 弹窗 |
 | ERR-OTA-06 | 设备拒绝 start（空间不足） | 换固件/联系支持 | 弹窗 |
 | ERR-OTA-07 | abort 失败 | 兜底断开重连 | 弹窗+日志 |
 | ERR-OTA-08 | 重启后重连失败 | 手动重连+版本读取 | 弹窗 |
+| ERR-OTA-09 | 固件包无效（OTA_PACKAGE_INVALID：manifest 缺失/格式非法/字段不合法） | 更换正确固件包；不进入事务 | 弹窗 |
+| ERR-OTA-10 | 目标不匹配（OTA_TARGET_MISMATCH：manifest.target 与当前设备角色不符） | 更换对应夹具（peripheral/observer）固件包 | 弹窗 |
+| ERR-OTA-11 | 硬件不匹配（OTA_HARDWARE_MISMATCH：manifest.hardware 与设备上报硬件不符） | 更换匹配硬件的固件包 | 弹窗 |
+| ERR-OTA-12 | 尺寸不一致（OTA_SIZE_MISMATCH：manifest.size ≠ firmware.bin 实际大小） | 重新下载/更换固件包 | 弹窗 |
+| ERR-OTA-13 | 哈希不一致（OTA_HASH_MISMATCH：manifest.sha256 ≠ firmware.bin 实际 SHA256） | 重新下载/更换固件包 | 弹窗 |
 
 ### 3.9 Smart HID（ERR-HID）
 
@@ -283,9 +296,9 @@ stateDiagram-v2
 
 ## 6. 验收条件与关联测试规划
 
-- [x] 五组引擎状态机有唯一 ID 与转移；
-- [x] OTA 成功唯一定义为 STATE-OTA-10；
-- [x] 全部错误 ID 有恢复动作与呈现方式；
-- [x] 呈现方式规则可执行。
+- 五组引擎状态机有唯一 ID 与转移；
+- OTA 成功唯一定义为 STATE-OTA-10；
+- 全部错误 ID 有恢复动作与呈现方式；
+- 呈现方式规则可执行。
 
 关联计划测试：`TEST-U-001/005`（状态机单测）、`TEST-I-001..009`（状态转移）、`TEST-C-003`（状态词合法值）、`TEST-C-010`（错误登记完整性）。

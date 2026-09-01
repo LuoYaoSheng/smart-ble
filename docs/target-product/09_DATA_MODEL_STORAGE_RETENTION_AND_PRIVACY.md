@@ -13,7 +13,7 @@ supersedes: []
 
 ## 1. 本文负责什么 / 不负责什么
 
-本文负责：全部数据实体（DATA-001~012）的 Schema、存储位置、生命周期（TTL/容量/删除/迁移）与敏感字段分类。
+本文负责：全部数据实体（DATA-001~013）的 Schema、存储位置、生命周期（TTL/容量/删除/迁移）与敏感字段分类。
 
 本文不负责：日志脱敏规则细节（`14`/SEC）；协议编码（`11`~`13`）。
 
@@ -35,6 +35,7 @@ supersedes: []
 | DATA-010 | EvidencePackage | 发布仓库目录 | 长期（随 Release 归档） | 1（脱敏后） |
 | DATA-011 | BroadcastConfig（payload 配置） | 内存+本地草稿 | 页面会话+草稿 7 天 | 0 |
 | DATA-012 | FilterConfig（筛选配置） | 内存 | 应用会话 | 0 |
+| DATA-013 | OtaFirmwareManifest（OTA 固件包清单，DEC-016） | 内存（随 OTA 事务） | 单次 OTA 事务；不入历史 | 1（含 SHA/版本，不含敏感） |
 
 敏感级：0=公开；1=本机非敏感；2=含用户操作数据需脱敏；3=含设备标识仅本地。
 
@@ -63,8 +64,11 @@ supersedes: []
 
 ```text
 { deviceId, state: STATE-GBL-11..17, notifySubscriptions: Map<tuple,sub>,
+  subscriptionCount: int（= notifySubscriptions.size，PAGE-007 卡片"订阅中 N"的数据源；0 时 UI 不显示徽标）,
   retryCount: int<=3, loggerRef, createdAt, ownedBy: 'page'|'workflow'|'registry' }
 ```
+
+规则：`subscriptionCount` 是 `notifySubscriptions` 的派生计数（唯一来源 Session Registry，不得另行手工维护）；开启/关闭订阅（DEC-017 统一操作）实时增减；会话销毁或全部退订后归 0。
 
 ### DATA-005 DeviceLog
 
@@ -101,10 +105,25 @@ supersedes: []
 ### DATA-011 BroadcastConfig
 
 ```text
-{ deviceName?, localName?, serviceUuids: string[], manufacturerId?, manufacturerDataHex?,
-  android?: {mode, txPower, connectable, includeDeviceName, includeServiceUuids},
-  budgetBytes: int<=31 }
+{ systemDeviceName?: string（只读能力字段，DEC-004：由系统/蓝牙适配器决定）,
+  localNameControllable: bool（能力检测：平台/插件是否允许控制 Advertising Local Name）,
+  localName?, serviceUuids: string[], manufacturerId?, manufacturerDataHex?, serviceDataHex?,
+  connectable?, android?: {mode, txPower, includeServiceUuids},
+  budgetBytes: int<=31（仅计实际进入 Advertising Packet 的字段） }
 ```
+
+规则（DEC-004）：`systemDeviceName` 恒只读；`localName` 仅当 `localNameControllable=true` 时可编辑，否则 UI 只读展示系统名并说明"名称由系统/蓝牙适配器决定"；禁止提供不影响实际广播的假输入框。
+
+### DATA-013 OtaFirmwareManifest（PROTO-011）
+
+```text
+{ format_version: 1, target: 'lightble-peripheral'|'lightble-observer',
+  hardware: string（与设备 system_info.hardware 匹配）,
+  firmware_version: semver, size: int（=firmware.bin 实际大小）,
+  sha256: /^[0-9a-f]{64}$/（=firmware.bin 实际 SHA256）, min_bootloader: string|null }
+```
+
+校验规则见 FEAT-081：六项校验任一失败→ERR-OTA-09..13，错误包不进入 BLE OTA 事务。
 
 ## 4. 生命周期规则
 
@@ -140,8 +159,8 @@ supersedes: []
 
 ## 6. 验收条件与关联测试规划
 
-- [x] 12 个实体有 Schema、存储、生命周期、敏感级；
-- [x] TTL/容量/删除/迁移规则量化；
-- [x] 敏感字段红线与 `15` 一致。
+- 13 个实体有 Schema、存储、生命周期、敏感级；
+- TTL/容量/删除/迁移规则量化；
+- 敏感字段红线与 `15` 一致。
 
 关联计划测试：`TEST-U-012/015`（日志/历史/TTL 纯函数）、`TEST-I-001`（生命周期清理）、`TEST-C-010`（数据契约一致性）、`TEST-R-004`（证据脱敏检查）。

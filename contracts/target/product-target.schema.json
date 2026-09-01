@@ -25,7 +25,7 @@
     },
     "requirements": {
       "type": "array",
-      "minItems": 65,
+      "minItems": 66,
       "uniqueItems": true,
       "items": {
         "type": "object",
@@ -44,7 +44,7 @@
     },
     "features": {
       "type": "array",
-      "minItems": 80,
+      "minItems": 81,
       "uniqueItems": true,
       "items": {
         "type": "object",

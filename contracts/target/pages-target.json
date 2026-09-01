@@ -8,7 +8,8 @@
     {
       "id": "PAGE-001", "name": "扫描", "route": "pages/index/index", "type": "tab", "template_sections": 24,
       "required_params": [], "optional_params": [], "forbidden_params": ["任何设备数据/敏感字段"],
-      "operations": ["OP-P001-01","OP-P001-02","OP-P001-03","OP-P001-04","OP-P001-05","OP-P001-06","OP-P001-07","OP-P001-08","OP-P001-09","OP-P001-10","OP-P001-11","OP-P001-12","OP-P001-13","OP-P001-14","OP-P001-15"],
+      "operations": ["OP-P001-01","OP-P001-02","OP-P001-03","OP-P001-04","OP-P001-05","OP-P001-06","OP-P001-07","OP-P001-08","OP-P001-09","OP-P001-10","OP-P001-11","OP-P001-13","OP-P001-14","OP-P001-15"],
+      "deprecated_operations": ["OP-P001-12（历史紧凑-移除，TP-G0-R1 废弃：历史管理唯一归 PAGE-004）"],
       "states": ["STATE-P001-01","STATE-P001-02","STATE-P001-03","STATE-P001-04","STATE-P001-05","STATE-P001-06","STATE-P001-07","STATE-P001-08","STATE-P001-09","STATE-P001-10"],
       "entry_from": ["冷启动默认", "四 Tab 切换", "PAGE-004 空态", "PAGE-007 空态", "微信分享回流"],
       "exit_to": ["PAGE-002", "PAGE-003", "PAGE-004", "PAGE-006"],
@@ -58,7 +59,8 @@
     {
       "id": "PAGE-006", "name": "通用设备详情", "route": "pages/device/detail", "type": "secondary", "template_sections": 24,
       "required_params": ["deviceId"], "optional_params": ["name", "rssi", "profileId"], "forbidden_params": ["密码", "token", "完整广播数据"],
-      "operations": ["OP-P006-01","OP-P006-02","OP-P006-03","OP-P006-04","OP-P006-05","OP-P006-06","OP-P006-07","OP-P006-08","OP-P006-09","OP-P006-10","OP-P006-11","OP-P006-12","OP-P006-13","OP-P006-14","OP-P006-15"],
+      "operations": ["OP-P006-01","OP-P006-02","OP-P006-03","OP-P006-04","OP-P006-05","OP-P006-06","OP-P006-07","OP-P006-08","OP-P006-10","OP-P006-11","OP-P006-12","OP-P006-13","OP-P006-14","OP-P006-15"],
+      "deprecated_operations": ["OP-P006-09（独立 Indicate 开关，TP-G0-R1 废弃：DEC-017 统一订阅语义，共用 OP-P006-07/08）"],
       "states": ["STATE-P006-01","STATE-P006-02","STATE-P006-03","STATE-P006-04","STATE-P006-05","STATE-P006-06","STATE-P006-07","STATE-P006-08","STATE-P006-09","STATE-P006-10"],
       "entry_from": ["PAGE-001 连接", "PAGE-007 卡片", "PAGE-003 高级 BLE"],
       "exit_to": ["来源页"],
@@ -108,11 +110,11 @@
     {
       "id": "WEB-001", "name": "公开落地页", "route": "/", "type": "web", "template_sections": 24,
       "required_params": [], "optional_params": ["锚点：#download/#evidence/#quickstart/#esp32/#smart-hid/#platforms"], "forbidden_params": [],
-      "operations": ["OP-W001-01","OP-W001-02","OP-W001-03","OP-W001-04","OP-W001-05","OP-W001-06","OP-W001-07","OP-W001-08","OP-W001-09","OP-W001-10"],
+      "operations": ["OP-W001-01","OP-W001-02","OP-W001-03","OP-W001-04","OP-W001-05","OP-W001-06","OP-W001-07","OP-W001-08","OP-W001-09","OP-W001-10","OP-W001-11"],
       "states": ["STATE-W001-01","STATE-W001-02","STATE-W001-03","STATE-W001-04"],
       "entry_from": ["搜索引擎", "GitHub README", "App 关于页", "分享"],
       "exit_to": ["外部下载/仓库/文档", "站内锚点"],
-      "planned_tests": ["TEST-R-001","TEST-R-002","TEST-R-003","TEST-R-005","TEST-R-006","TEST-R-007","TEST-R-008","TEST-R-009","TEST-R-010"],
+      "planned_tests": ["TEST-R-001","TEST-R-002","TEST-R-003","TEST-R-005","TEST-R-006","TEST-R-007","TEST-R-008","TEST-R-009","TEST-R-010","TEST-R-011"],
       "minimum_evidence_level": "E6", "release_blocking": true
     }
   ]

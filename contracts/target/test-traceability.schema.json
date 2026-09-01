@@ -26,7 +26,7 @@
       }
     },
     "tests": {
-      "type": "array", "minItems": 100, "uniqueItems": true,
+      "type": "array", "minItems": 103, "uniqueItems": true,
       "items": {
         "type": "object",
         "required": ["id", "title", "evidence_level", "release_blocking", "requirements", "features", "pages_or_flows", "claims", "implemented"],
@@ -48,9 +48,9 @@
       "type": "object", "required": ["requirements_total", "requirements_with_automation", "must_features_total"],
       "additionalProperties": false,
       "properties": {
-        "requirements_total": { "type": "integer", "minimum": 65 },
-        "requirements_with_automation": { "type": "integer", "minimum": 65 },
-        "must_features_total": { "type": "integer", "minimum": 70 }
+        "requirements_total": { "type": "integer", "minimum": 66 },
+        "requirements_with_automation": { "type": "integer", "minimum": 66 },
+        "must_features_total": { "type": "integer", "minimum": 75 }
       }
     }
   }

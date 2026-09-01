@@ -2,12 +2,14 @@
 
 ```yaml
 status: REVIEW
-document_version: 1.0
+document_version: 1.1
 owner: Smart BLE Product Owner
 last_reviewed: 2026-09-01
 approved_by: null
 supersedes: []
 ```
+
+> TP-G0-R1 修订版（12 项目标规范修正已合入；统计由 `scripts/target-docs/inspect-target-docs.mjs` 单源生成）。
 
 > 本文件浓缩 `docs/target-product/**` 全部目标文档与 `contracts/target/**` 机器契约，供用户一次性审阅。
 > **未经用户批准本摘要前，禁止将目标文档改为 APPROVED，禁止进入 TP-G1（测试规范与脚本）。**
@@ -24,27 +26,27 @@ supersedes: []
 
 成功标准：新开发者 30 分钟完成"新电脑构建→烧写 ESP32→安装→扫描→连接→写入→Notify"闭环；所有 Must 达最低证据等级（BLE 能力 E5、公开产物 E6）；落地页零假下载/假二维码/无证据声明。
 
-## 2. Must 功能总表（80 FEAT 分 15 组）
+## 2. Must 功能总表（81 FEAT 分 15 组）
 
 | 组 | 数量 | 代表功能 |
 |---|---|---|
 | SYS | 4 | 平台识别、四 Tab 导航、生命周期、版本 SSOT |
-| PERM | 5 | 蓝牙权限、微信定位策略、永久拒绝恢复、蓝牙开关引导、不支持降级 |
-| SCAN | 7 | 扫描启停超时、generation、去重/RSSI、显示名解析链、上限筛选、N/M 双数、HID 历史紧凑入口 |
+| PERM | 5 | 蓝牙权限、微信能力驱动最小权限（DEC-003）、永久拒绝恢复、蓝牙开关引导、不支持降级 |
+| SCAN | 7 | 扫描启停超时（10 秒）、generation、去重/RSSI、显示名解析链、上限筛选、N/M 双数、HID 历史紧凑入口（只读） |
 | AD | 3 | 广播字段解析、缺失三态、复制 |
 | CONN | 6 | attempt 去重、服务发现、空服务重试、主动断开、有限重连、耗尽恢复 |
-| GATT | 7 | 属性约束、Read、TEXT/HEX 写、写队列、MTU 分包、Notify/Indicate、tuple 隔离 |
-| SESSION | 4 | 应用级 Registry、跨页复用、多设备（Should 扩展 3 台）、stale 清理 |
+| GATT | 7 | 属性约束、Read、TEXT/HEX 写、写队列、MTU 分包、Characteristic Subscription（DEC-017）、tuple 隔离 |
+| SESSION | 4 | 应用级 Registry（含 subscription_count）、跨页复用、多设备（Should 扩展 3 台）、stale 清理 |
 | LOG | 4 | 按设备日志、容量清空、导出、脱敏+关联 ID |
-| PERI | 5 | 能力检查、Payload 编辑、31/32 预算、Owner 与连接保护、生命周期释放 |
-| OTA | 7 | 文件校验、start/ready、DATA、commit/success、abort、版本回读、失败恢复 |
+| PERI | 5 | 能力检查、Payload 编辑（名称能力驱动 DEC-004）、31/32 预算、Owner 与连接保护、生命周期释放 |
+| OTA | 8 | 包校验（DEC-016）、文件校验、start/ready、DATA、commit/success、abort、版本回读、失败恢复（V1 整事务重试） |
 | HID-PROV | 6 | 强/弱匹配、二次身份、表单、QR、分帧+waiter、八类错误恢复 |
-| HID-HIST | 6 | 存储 TTL、列表快照、移除、自动诊断、owned/borrowed、重配移交 |
+| HID-HIST | 6 | 存储 TTL、列表快照、移除（PAGE-004 唯一宿主）、自动诊断、owned/borrowed、重配移交 |
 | PRODUCT | 4 | 关于页真实信息、版本历史、分享、隐私/安全/License |
-| WEB | 8 | Hero、闭环能力卡、平台表、截图原型、ESP32 双卡、快速开始、下载/QR/SHA/证据、SEO/无障碍 |
-| DOC | 4 | 5 分钟上手、ESP32 从零、Profile 扩展、贡献/Release |
+| WEB | 8 | Hero、闭环能力卡、平台表、截图原型、ESP32 双卡、快速开始（5 分钟+30 分钟双计时）、下载/QR/SHA/证据、SEO/无障碍 |
+| DOC | 4 | 5 分钟 Quick Start/30 分钟 Clean Machine、ESP32 从零、Profile 扩展、贡献/Release |
 
-优先级：Must 74、Should 4、Could 2（详见 `03` 第 17 节）。
+优先级：Must 75、Should 4、Could 2（详见 `03` 第 17 节）。
 
 ## 3. 11 个界面摘要
 
@@ -92,8 +94,9 @@ Android App 与微信为正式入口（微信 5 项 Adapted：权限/文件/Peri
 ## 7. ESP32 与 OTA
 
 - **fixture_peripheral**：广播名 `BLEToolkit-Server`；主服务（Control `…26a8`/Notify `…26a9`）、权限演示服务（7 特征 `26b0..26b6`）、OTA 服务（CTRL/Data/Status `26c0..26c2`）、LED 四命令（`FF00..FF03`）、Notify 每 5s、7 种故障注入、串口 JSON。
-- **fixture_observer**：扫描手机广播，串口输出 ts/name/rssi/uuids/mfg/svc_data/raw/last_seen，≥5 条/秒——手机广播的**正式证据源**（DEC-002 推荐首版必须交付）。
-- **OTA 正典顺序（10 步）**：订阅 STATUS→CTRL start→ready→DATA 分包→CTRL commit→success→reboot→重连→读 firmware_version→版本一致才成功。取消=CTRL abort；无 ready/commit/success/version match 一律不得显示成功（`12`/`07`）。
+- **fixture_observer**：扫描手机广播，串口输出 ts/name/rssi/uuids/mfg/svc_data/raw/last_seen，≥5 条/秒——手机广播的**正式证据源**（DEC-002 推荐首版必须交付）；其 `name/raw` 观测是广播名称能力驱动规则（DEC-004）的最终事实源。
+- **OTA 固件包（DEC-016/PROTO-011）**：包=manifest.json+firmware.bin；开始传输前客户端六项校验（格式/target/hardware/firmware_version/size/SHA256），错误包（ERR-OTA-09..13）不得进入 BLE 事务。
+- **OTA 正典顺序（第 0 步包校验 + 10 步）**：订阅 STATUS→CTRL start（含 target/sha256）→ready→DATA 分包按序→CTRL commit（设备复核 size+SHA256）→success→reboot→重连→读 firmware_version→版本一致才成功。取消=CTRL abort；V1 不支持单块重传/缺块补发/断点续传/乱序恢复——任何失败=事务 FAIL 回 idle（旧固件可运行）后从 CTRL start 重新完整发起（`12`/`07`）。
 
 ## 8. Smart HID
 
@@ -101,50 +104,57 @@ Android App 与微信为正式入口（微信 5 项 Adapted：权限/文件/Peri
 
 ## 9. Landing 与 Release
 
-版本 SSOT=根目录 VERSION（五处一致门禁）；Release Metadata（DATA-009）是落地页/版本页/关于页唯一数据源：产物 URL+SHA256、微信码状态、逐 CLAIM 状态、已知限制、测试设备。30 条公开声明（CLAIM-001..030）全部绑定证据前提与 TEST-R 用例；无产物=NOT_RELEASED 卡（无链接）；二维码仅正式码且发布前实机扫码验证；禁用"大一统/6+ 入口"类旧定位。
+版本 SSOT=根目录 VERSION（五处一致门禁）；Release Metadata（DATA-009）是落地页/版本页/关于页唯一数据源：产物 URL+SHA256、微信码状态、逐 CLAIM 状态、已知限制、测试设备。31 条公开声明（CLAIM-001..031）全部绑定证据前提与 TEST-R 用例；无产物=NOT_RELEASED 卡（无链接）；二维码仅正式码且发布前实机扫码验证；禁用"大一统/6+ 入口"类旧定位。5 分钟 Quick Start（CLAIM-017/TEST-R-005，前置条件已满足）与 30 分钟 Clean Machine（CLAIM-031/TEST-R-011，clone→…→notify 全流程）双计时分开声明、分开验证，不得互相冒充。
 
 ## 10. Security / NFR / A11y
 
-- 安全（SEC-001..018）：最小权限、设备标识不出本机、二次身份确认、URL 禁敏感字段、日志/证据双段脱敏、token/密码内存边界、OTA 无签名如实声明+版本回读、产物 SHA 链、外链白名单、隐私/披露渠道。残余风险如实登记（Just Works MITM 中危、OTA 无签名中危）。
+- 安全（SEC-001..019）：最小权限（能力驱动，不预取定位）、设备标识不出本机、二次身份确认、URL 禁敏感字段、日志/证据双段脱敏、token/密码内存边界、OTA 无签名如实声明+版本回读、OTA 固件包完整性与目标校验（DEC-016）、产物 SHA 链、外链白名单、隐私/披露渠道。残余风险如实登记（Just Works MITM 中危、OTA 无签名中危）。
 - NFR（24 条量化）：冷启动 ≤2s、页面切换 ≤500ms、扫描合并 1s、列表 100、连接/发现 10s、读 3s、写队列 16、OTA 各段 15/60/30/30s、waiter 60s、日志 200/设备、LCP ≤2.5s、20 轮无泄漏、双机型覆盖、固定 commit 复现。
 - 无障碍：触控 ≥44px、对比度 ≥4.5:1（亮暗）、读屏 label、键盘焦点、状态三通道（图标+文字+颜色）、错误文案=发生了什么+下一步；术语与文案规范统一（禁"稳定/完整支持/待定占位"）。
 
-## 11. 待用户确认的 DEC 清单（15 项）
+## 11. 待用户确认的 DEC 清单（17 项）
 
 | DEC | 议题 | 推荐方案 | 需确认 |
 |---|---|---|---|
 | DEC-001 | OTA 首版公开策略 | 入口显示+BLOCKED/PREVIEW 徽标，证据齐升 VERIFIED | ✅ |
 | DEC-002 | Observer 必须第一方固件 | 是（本仓交付 fixture_observer） | ✅ |
-| DEC-003 | 微信定位策略 | 按"需定位"实现，TP-G4 真机复核 | 复核 |
-| DEC-004 | Android 广播名系统接管 | 保留输入框+标注"由系统决定" | ✅ |
+| DEC-003 | 微信 BLE 权限 | 能力驱动最小权限：点击扫描才申请；仅环境要求时引导定位；TP-G4 真机矩阵回填 | 复核 |
+| DEC-004 | 广播名称 | 能力驱动 UI：可控（Advertising Local Name）才可编辑；否则只读展示 System Device Name | ✅ |
 | DEC-005 | iOS 发布时机 | 首版 NOT_RELEASED | ✅ |
 | DEC-006 | Smart HID 公开状态 | PREVIEW→VERIFIED 渐进 | ✅ |
 | DEC-007 | 无正式码/APK 时落地页 | NOT_RELEASED 卡+CTA 转原型/源码 | ✅ |
 | DEC-008 | 多设备上限 | 2 台 Must+3 台 Should | ✅ |
-| DEC-009 | Notify 跨页保留 | 随会话保留 | ✅ |
+| DEC-009 | Notify 跨页保留 | 随会话保留（PAGE-007 显示 subscription_count） | ✅ |
 | DEC-010 | 版本 SSOT | 根目录 VERSION 文件 | ✅ |
 | DEC-011 | GitHub/Gitee 角色 | GitHub 主+Gitee 国内镜像（只读） | ✅ |
-| DEC-012 | 扫描页历史入口 | 最近 1 台+"全部历史" | ✅ |
-| DEC-013 | 默认扫描时长 | 5s（常量可调） | 低风险 |
+| DEC-012 | 扫描页历史入口 | 最近 1 台摘要+查看详情+全部历史（只读；管理唯一归 PAGE-004） | ✅ |
+| DEC-013 | 默认扫描时长 | 10 秒（常量可调；可手动停止、可立即重扫） | 低风险 |
 | DEC-014 | 详情缺失字段 | 隐藏该行 | 低风险 |
 | DEC-015 | 其他小程序推广区 | 仅微信页底折叠 | ✅ |
+| DEC-016 | OTA 固件包格式 | manifest+firmware.bin，六项传输前校验+commit 复核（签名验证记为后续方向） | ✅ |
+| DEC-017 | Notify/Indicate 订阅语义 | 统一 Characteristic Subscription；不承诺 Indicate ACK 可观测 | ✅ |
 
 未确认时按"默认方案"实现（`21` 第 2 节每项均已写明默认）。
 
 ## 12. 文档与 ID 完整性统计
 
+统计由 `scripts/target-docs/inspect-target-docs.mjs` 生成并校验（单源；禁止手写约数）。
+
+<!-- TARGET_DOCS_STATS:BEGIN 由 scripts/target-docs/inspect-target-docs.mjs 生成，勿手改 -->
 | 维度 | 数量 |
 |---|---|
-| 目标文档 | 36（00–23 共 24 份 + pages/×10 + web/×1 + REVIEW_SUMMARY） |
-| 机器契约 | 16（8 schema + 8 data JSON） |
-| Mermaid 图 | 60+（14 流程×2 + 5 状态机 + 架构/跳转/闭环等） |
-| REQ / FEAT | 65 / 80 |
+| 目标文档（.md） | 37 |
+| 机器契约（schema / data JSON） | 8 / 8 |
+| Mermaid 图 | 46 |
+| REQ / FEAT | 66 / 81 |
 | PAGE / WEB / FLOW | 10 / 1 / 14 |
-| OP / STATE | 93 / 110（页面 67+全局 43） |
-| ERR | 62 |
-| DATA / PROTO / SEC / NFR | 12 / 10 / 18 / 24 |
-| CLAIM / DEC / RISK / EVID | 30 / 15 / 16 / 8 |
-| 计划测试 | 100（C14/U15/I9/P12/E8/A14/W10/H8/R10） |
+| OP（在册 92，另有废弃 1 不复用） | 92 |
+| STATE（页面/全局） | 110（67/43） |
+| ERR | 68 |
+| DATA / PROTO / SEC / NFR | 13 / 11 / 19 / 24 |
+| CLAIM / DEC / RISK / EVID | 31 / 17 / 16 / 8 |
+| 计划测试（C14/U16/I10/P12/E8/A14/W10/H8/R11） | 103 |
+<!-- TARGET_DOCS_STATS:END -->
 
 覆盖率：REQ→FEAT 100%、REQ→计划测试 100%、硬件相关 REQ→E5 全覆盖、公开 REQ→CLAIM+TEST-R 全覆盖；无孤立 Must（`22`）。
 
@@ -153,7 +163,7 @@ Android App 与微信为正式入口（微信 5 项 Adapted：权限/文件/Peri
 用户批准本摘要后：
 
 - [ ] 将 `docs/target-product/**` 状态 REVIEW→APPROVED（用户操作或明确授权）
-- [ ] 确认 15 项 DEC（或接受默认方案）
+- [ ] 确认 17 项 DEC（或接受默认方案）
 - [ ] 确认范围：13 项固定包含、非目标清单
 - [ ] 确认页面/流程/ESP32/Smart HID/落地页目标
 - [ ] 之后启动 TP-G1（测试规范与脚本），TP-G1 仍不修改业务代码

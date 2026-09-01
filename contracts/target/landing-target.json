@@ -13,7 +13,7 @@
     { "order": 6, "id": "SEC-06", "name": "真实 App 截图组", "data_source": "build_artifacts" },
     { "order": 7, "id": "SEC-07", "name": "在线交互原型入口", "data_source": "build_artifacts" },
     { "order": 8, "id": "SEC-08", "name": "ESP32 Peripheral/Observer 双卡", "anchor": "#esp32", "data_source": "release_metadata" },
-    { "order": 9, "id": "SEC-09", "name": "三条快速开始", "anchor": "#quickstart", "data_source": "static" },
+    { "order": 9, "id": "SEC-09", "name": "快速开始（三条 5 分钟 Quick Start + 30 分钟 Clean Machine 入口，前置条件显式标注）", "anchor": "#quickstart", "data_source": "static" },
     { "order": 10, "id": "SEC-10", "name": "下载区（APK/小程序码/固件）", "anchor": "#download", "data_source": "release_metadata" },
     { "order": 11, "id": "SEC-11", "name": "证据与已知限制", "anchor": "#evidence", "data_source": "evidence_index" },
     { "order": 12, "id": "SEC-12", "name": "Smart HID 区", "anchor": "#smart-hid", "data_source": "release_metadata" },
@@ -37,7 +37,7 @@
     { "id": "CLAIM-014", "statement": "Smart HID 配网/诊断", "evidence_prerequisite": "TEST-H 全过（DEC-006）", "tests": ["TEST-H-001", "TEST-H-002", "TEST-H-003", "TEST-H-004", "TEST-H-005", "TEST-H-006"], "allowed_status": "PREVIEW" },
     { "id": "CLAIM-015", "statement": "开源 MIT 与源码可得", "evidence_prerequisite": "仓库/License", "tests": ["TEST-R-005"] },
     { "id": "CLAIM-016", "statement": "ESP32 双模式夹具", "evidence_prerequisite": "固件可下载可复现", "tests": ["TEST-E-008", "TEST-R-008"] },
-    { "id": "CLAIM-017", "statement": "三条 5 分钟快速开始", "evidence_prerequisite": "教程实测", "tests": ["TEST-R-005"] },
+    { "id": "CLAIM-017", "statement": "三条 5 分钟快速开始（Quick Start：前置条件已满足，不含工具链从零安装，19 号文档 2.1 节）", "evidence_prerequisite": "教程实测", "tests": ["TEST-R-005"] },
     { "id": "CLAIM-018", "statement": "下载含 SHA 与设备清单", "evidence_prerequisite": "Metadata", "tests": ["TEST-R-001", "TEST-R-008"] },
     { "id": "CLAIM-019", "statement": "已知限制公开", "evidence_prerequisite": "Metadata", "tests": ["TEST-R-003"] },
     { "id": "CLAIM-020", "statement": "证据可查（EVID 链接）", "evidence_prerequisite": "证据存在", "tests": ["TEST-R-007"] },
@@ -50,7 +50,8 @@
     { "id": "CLAIM-027", "statement": "微信小程序入口", "evidence_prerequisite": "正式码可用", "tests": ["TEST-R-009"] },
     { "id": "CLAIM-028", "statement": "Android APK 下载", "evidence_prerequisite": "产物+SHA", "tests": ["TEST-R-001"] },
     { "id": "CLAIM-029", "statement": "SEO/OG/canonical 正确", "evidence_prerequisite": "抓取一致", "tests": ["TEST-R-006"] },
-    { "id": "CLAIM-030", "statement": "无障碍承诺（对比度/键盘/alt）", "evidence_prerequisite": "a11y 走查", "tests": ["TEST-R-010"] }
+    { "id": "CLAIM-030", "statement": "无障碍承诺（对比度/键盘/alt）", "evidence_prerequisite": "a11y 走查", "tests": ["TEST-R-010"] },
+    { "id": "CLAIM-031", "statement": "新电脑 30 分钟 Clean Machine 端到端闭环（clone→依赖→build→flash→install→scan→connect→write→notify，19 号文档 2.2 节；与 CLAIM-017 Quick Start 使用不同测试 ID，不得互相冒充）", "evidence_prerequisite": "独立电脑全流程录屏", "tests": ["TEST-R-011"] }
   ],
   "download_rules": {
     "no_fake_download": true,
@@ -73,7 +74,7 @@
     "dark_mode": true,
     "forbidden_positioning": ["多端大一统", "跨平台低功耗蓝牙大一统开发库", "6+ 运行入口等无证据数字"]
   },
-  "planned_tests": ["TEST-R-001", "TEST-R-002", "TEST-R-003", "TEST-R-004", "TEST-R-005", "TEST-R-006", "TEST-R-007", "TEST-R-008", "TEST-R-009", "TEST-R-010"],
+  "planned_tests": ["TEST-R-001", "TEST-R-002", "TEST-R-003", "TEST-R-004", "TEST-R-005", "TEST-R-006", "TEST-R-007", "TEST-R-008", "TEST-R-009", "TEST-R-010", "TEST-R-011"],
   "minimum_evidence_level": "E6",
   "release_blocking": true
 }

@@ -57,13 +57,15 @@ Page（页面，UI 与页面生命周期）
 - 连接成功创建 Session 入 Registry；页面卸载不销毁；
 - 替换会话时退订旧回调，旧会话事件失效（invalidate）；
 - 主动断开/重连耗尽/远端关闭都会改变 Registry 状态并广播给订阅页面（PAGE-007 联动）；
-- 配网工作流内部连接不进入"活动会话列表"口径（PAGE-007 排除规则）。
+- 配网工作流内部连接不进入"活动会话列表"口径（PAGE-007 排除规则）；
+- Registry 维护每会话 `subscription_count`（= 该会话活动订阅数，DEC-017 统一订阅语义下的派生计数）：PAGE-007 卡片显示"订阅中 N"（0 时不显示徽标）；进入 PAGE-006 后按实际订阅状态恢复开关显示。
 
-### 3.4 Notify 订阅与 tuple 路由
+### 3.4 Characteristic Subscription 与 tuple 路由（DEC-017）
 
 - 订阅键：`(deviceId, serviceId, characteristicId)`；
 - 特征值变更回调按 tuple 分发；多设备同 UUID 天然隔离；
-- 用户开启的订阅属于 Session（DEC-009 推荐保留），页面卸载仅摘除 UI 监听；
+- 用户统一操作为"开启订阅/关闭订阅"（Notify 与 Indicate 不区分用户动作）；Runtime 按平台能力启用 Characteristic Value Change；仅当平台 API 明确暴露 ATT indication confirmation 时才允许测试/展示底层 ACK；
+- 用户开启的订阅属于 Session（DEC-009 推荐保留），页面卸载仅摘除 UI 监听；订阅数实时反映到 Registry `subscription_count`；
 - 关闭订阅=远程 setNotify(false)+本地退订双动作。
 
 ### 3.5 OTA Transaction
@@ -145,8 +147,8 @@ graph TD
 
 ## 8. 验收条件与关联测试规划
 
-- [x] 分层与六大机制冻结；
-- [x] 释放矩阵覆盖全部资源×六种终局；
-- [x] 禁止事项可静态检查（页面直注册回调、通用层依赖 Profile）。
+- 分层与六大机制冻结；
+- 释放矩阵覆盖全部资源×六种终局；
+- 禁止事项可静态检查（页面直注册回调、通用层依赖 Profile）。
 
 关联计划测试：`TEST-I-001..009`（Fake Runtime 全机制）、`TEST-C-011`（架构静态约束：页面无直接 BLE 回调注册、通用层无 Smart HID import）。

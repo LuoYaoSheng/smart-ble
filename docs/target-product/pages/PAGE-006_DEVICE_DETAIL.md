@@ -13,7 +13,7 @@ supersedes: []
 
 ## 1. 页面目标与存在必要性
 
-任意 BLE 设备的调试工作台：设备身份与连接状态、服务/特征树、Read/Write（TEXT/HEX）、Notify/Indicate、按设备通信日志、OTA 完整事务。是 CONN/GATT/LOG/OTA 四组功能（FEAT-020~052）的唯一宿主。
+任意 BLE 设备的调试工作台：设备身份与连接状态、服务/特征树、Read/Write（TEXT/HEX）、Characteristic Subscription（Notify/Indicate 统一订阅，DEC-017）、按设备通信日志、OTA 完整事务（含固件包校验）。是 CONN/GATT/LOG/OTA 四组功能（FEAT-020~052、FEAT-081）的唯一宿主。
 
 存在必要性：没有它产品只是扫描器；它是"手机上的 BLE 万用表"核心。
 
@@ -64,15 +64,17 @@ supersedes: []
 | OP-P006-04 | Read | 特征可读 | 操作中 | 无 | readValue(3s 超时) | 值展示+日志 | ERR-GATT-01 | 无 | 一次性 listener 移除 | TEST-A-008、TEST-E-003 |
 | OP-P006-05 | TEXT 写 | 特征可写 | 队列满 | 文本 | encodeWritePayload(text) UTF-8 | 设备响应+日志 | ERR-GATT-04 | 无 | 队列出队 | TEST-A-008、TEST-E-003 |
 | OP-P006-06 | HEX 写 | 特征可写 | 队列满 | HEX 串 | 严格偶数+字符校验→字节 | 同上 | 非法输入 ERR-GATT-03（不发 API）；失败 ERR-GATT-04 | 无 | 同上 | TEST-U-010、TEST-A-008 |
-| OP-P006-07 | Notify 开 | 特征 notify | 订阅中 | 无 | createNotifyToggle(true) | 推送流+日志 | ERR-GATT-07 | 无 | 关闭时远程+本地双关 | TEST-I-005、TEST-A-008、TEST-E-004 |
-| OP-P006-08 | Notify 关 | 已订阅 | 无 | 无 | setNotifyEnabled(false) | 推送停止 | 同上 | 无 | 退订+UI 摘除 | TEST-I-005 |
-| OP-P006-09 | Indicate 开/关 | 特征 indicate | 无 | 无 | 同 Notify（confirm 语义） | 确认流+日志 | 同上 | 无 | 同上 | TEST-A-008 |
+| OP-P006-07 | 开启订阅（Characteristic Subscription，DEC-017） | 特征含 notify 和/或 indicate（属性标记显示 Notify / Indicate / Notify + Indicate） | 订阅中 | 无 | Runtime 按平台能力启用 Characteristic Value Change | 推送流+日志；Registry subscription_count +1 | ERR-GATT-07 | 无 | 关闭时远程+本地双关 | TEST-I-005、TEST-A-008、TEST-E-004 |
+| OP-P006-08 | 关闭订阅 | 已订阅 | 无 | 无 | setNotifyEnabled(false)（远程+本地双断） | 推送停止；subscription_count −1 | 同上 | 无 | 退订+UI 摘除 | TEST-I-005 |
+| OP-P006-09 | ~~Indicate 开/关~~（已废弃，TP-G0-R1） | — | — | — | DEC-017 统一订阅语义：Notify 与 Indicate 共用 OP-07/08，无独立操作 | — | — | — | — | — |
 | OP-P006-10 | 清空日志 | 页面可见 | 无 | 无 | logger.clear(deviceId) | toast+面板清空 | 无 | 无 | 无 | TEST-P-006 |
 | OP-P006-11 | 导出日志 | 页面可见 | 无 | 无 | 脱敏→格式化→导出/复制 | 导出成功 | 空日志提示；失败 ERR-DATA-02 | 无 | 文件句柄关闭 | TEST-W-008、TEST-U-012 |
-| OP-P006-12 | 选择 OTA 固件 | 有 OTA 服务且入口达标（REQ-046/DEC-001） | OTA 进行中 | 文件 | 大小/可读校验 | 显示目标版本 | ERR-OTA-01 | 无 | 无 | TEST-A-011、TEST-E-007 |
-| OP-P006-13 | 开始 OTA | 文件校验通过 | 无 | 无 | OTA 事务（10 步，`12`） | 进度→success→版本一致=成功 | ERR-OTA-02..08 | 无 | 事务资源释放 | TEST-I-008、TEST-A-011、TEST-E-007 |
+| OP-P006-12 | 选择 OTA 固件包 | 有 OTA 服务且入口达标（REQ-046/DEC-001） | OTA 进行中 | 固件包（manifest.json+firmware.bin，PROTO-011） | FEAT-081 六项校验（格式/target/hardware/version/size/SHA256） | 显示 target/硬件/目标版本/SHA 摘要 | ERR-OTA-01（读取失败）、ERR-OTA-09..13（包校验失败，不进入事务） | 无 | 无 | TEST-U-016、TEST-I-010、TEST-A-011、TEST-E-007 |
+| OP-P006-13 | 开始 OTA | 包校验通过 | 无 | 无 | OTA 事务（第 0 步后 10 步正典，`12`；start 携带 target/sha256） | 进度→success→版本一致=成功 | ERR-OTA-02..08 | 无 | 事务资源释放 | TEST-I-008、TEST-A-011、TEST-E-007 |
 | OP-P006-14 | 取消 OTA | OTA 进行中 | 无 | 无 | CTRL abort→设备回 idle | 取消完成回就绪 | ERR-OTA-07 兜底断开 | 无 | 同上 | TEST-E-007 |
 | OP-P006-15 | 返回 | — | OTA 进行中需确认 | 系统 | navigateBack | — | — | →来源页 | 页面级订阅摘除（会话保留，DEC-009） | TEST-P-006 |
+
+订阅语义（DEC-017）：用户操作统一为"开启订阅/关闭订阅"；App 声明"收到 Characteristic Value Change"，不承诺"已收到 Indication Confirm"（仅平台 API 明确暴露 ATT indication confirmation 时才可展示底层 ACK）。从 PAGE-007 返回本页时，订阅开关按 Session 实际订阅状态恢复（subscription_count 联动，`10` 3.3）。
 
 ## 8. 完整状态表
 
@@ -91,7 +93,7 @@ supersedes: []
 
 ## 9. 错误、空态和恢复动作
 
-ERR-CONN-01 连接失败（重试）、ERR-CONN-02 发现失败（重试/断开重连）、ERR-CONN-03 空服务（重试）、ERR-CONN-04 断开失败（记日志+本地清理）、ERR-CONN-05 重连耗尽（手动重试）、ERR-GATT-01 读失败（重试）、ERR-GATT-02 属性不允许（按钮禁用+说明）、ERR-GATT-03 编码非法（表单内修正）、ERR-GATT-04 写失败（重试）、ERR-GATT-05 MTU 失败（保守分包继续）、ERR-GATT-07 订阅失败（重试）、ERR-OTA-01..08（`07` 详表）、ERR-DATA-02 导出失败。空态：空服务（STATE-P006-04）；日志空面板说明。
+ERR-CONN-01 连接失败（重试）、ERR-CONN-02 发现失败（重试/断开重连）、ERR-CONN-03 空服务（重试）、ERR-CONN-04 断开失败（记日志+本地清理）、ERR-CONN-05 重连耗尽（手动重试）、ERR-GATT-01 读失败（重试）、ERR-GATT-02 属性不允许（按钮禁用+说明）、ERR-GATT-03 编码非法（表单内修正）、ERR-GATT-04 写失败（重试）、ERR-GATT-05 MTU 失败（保守分包继续）、ERR-GATT-07 订阅失败（重试）、ERR-OTA-01..13（`07` 详表；09..13 为包校验，事务前拦截）、ERR-DATA-02 导出失败。空态：空服务（STATE-P006-04）；日志空面板说明。
 
 ## 10. 页面跳转与返回规则
 
@@ -113,7 +115,7 @@ UI(树/日志/弹窗)
 | 资源 | 所有者 | 释放 |
 |---|---|---|
 | 会话 | Registry（应用级） | 断开/移除 |
-| Notify 订阅（用户开启） | 会话（DEC-009 推荐随会话保留） | 会话销毁或用户关闭 |
+| Characteristic Subscription（用户开启，DEC-017 统一订阅） | 会话（DEC-009 推荐随会话保留；计入 subscription_count） | 会话销毁或用户关闭 |
 | 读超时 listener | Runtime 单次操作 | 完成/超时 |
 | 写队列 | Runtime | 排空/清空 |
 | OTA 事务 | OtaManager | 终态 |
@@ -156,12 +158,12 @@ CLAIM-006"连接与 GATT 读写"（EVID-001/002/003）、CLAIM-008"通信日志"
 
 ## 21. 验收条件
 
-- [x] 服务树五态与 15 操作齐备；
-- [x] HEX 严格校验先于 API；
-- [x] Notify 关闭双断（远程+本地）；
-- [x] 用户订阅属会话不属页面；
-- [x] 主动断开即移出 Registry；
-- [x] OTA 仅在 10 步全过（含版本一致）才显示成功。
+- 服务树五态与 15 操作齐备；
+- HEX 严格校验先于 API；
+- Notify 关闭双断（远程+本地）；
+- 用户订阅属会话不属页面；
+- 主动断开即移出 Registry；
+- OTA 仅在 10 步全过（含版本一致）才显示成功。
 
 ## 22. 非目标与禁止行为
 

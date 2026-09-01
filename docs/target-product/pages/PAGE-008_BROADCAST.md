@@ -30,7 +30,7 @@ supersedes: []
 ## 4. 信息架构与区块顺序
 
 1. 平台与支持状态区（含 H5 UNSUPPORTED、插件缺失检测）；
-2. Payload 字段区：设备名称（标注系统接管规则，DEC-004）、本地名、Service UUID、厂商 ID、厂商数据、平台专属开关（App：模式/发射功率/可连接/包含设备名；微信：按 API 集）；
+2. Payload 字段区（能力驱动，DEC-004）：**System Device Name**（只读能力字段：系统广播名称 xxxx，名称由系统/蓝牙适配器决定）、**Advertising Local Name**（仅平台/插件允许控制时可编辑）、Service UUID、Manufacturer ID、Manufacturer Data、Service Data、Connectable 等平台允许字段、平台专属开关（App：模式/发射功率；微信：按 API 集）；
 3. 字节预算区："预计 xx/31 字节"实时计算（单一算法 SSOT）；
 4. 控制区：检查支持 / 开始 / 停止；
 5. 操作日志区（可清空）：启停、错误、Observer 校验提示；
@@ -45,10 +45,12 @@ supersedes: []
 | 字段 | 类型 | 来源 | 接管说明 |
 |---|---|---|---|
 | 支持状态 | STATE-P008-* | 能力探测 | — |
-| 设备名称 | string | 用户输入 | Android 可能被系统蓝牙名接管（DEC-004：标注+不强求） |
-| 本地名/UUID/厂商数据 | string/bytes | 用户输入 | 真实可控 |
+| System Device Name | string（只读） | 系统/蓝牙适配器 | 恒只读展示："系统广播名称：xxxx／名称由系统/蓝牙适配器决定"（DEC-004） |
+| Advertising Local Name | string | 用户输入 | 仅能力检测判定 `localNameControllable=true` 时可编辑；否则整行隐藏或只读，**禁止假输入框** |
+| 本地名可控性 | bool | Capability Detection（DATA-011） | 决定上一行 UI 形态 |
+| Service UUID/厂商数据/Service Data | string/bytes | 用户输入 | 真实可控（平台允许范围内） |
 | 平台开关 | enum/bool | 平台能力 | App 专属 |
-| 预算 | int | 单一预算算法 | 31 上限 |
+| 预算 | int | 单一预算算法 | 31 上限；**仅计实际进入 Advertising Packet 的字段** |
 | 默认 payload | 预设 | DATA-011 | 名称与产品一致（BLEToolkit） |
 | 操作日志 | DATA-005（页面级） | 事件 | — |
 
@@ -113,7 +115,7 @@ UI → composable use-broadcast（目标架构：页面不内联实现）
 
 ## 13. 平台差异与降级
 
-App：原生插件（缺失=STATE-P008-03）；微信：Peripheral API（字段集不同语义一致）；H5：UNSUPPORTED。Android 广播名系统接管按 DEC-004 处理（标注"由系统决定"）。
+App：原生插件（缺失=STATE-P008-03）；微信：Peripheral API（字段集不同语义一致）；H5：UNSUPPORTED。广播名称按 DEC-004 能力驱动：可控（Advertising Local Name）才给可编辑框；不可控只读展示 System Device Name 并说明"名称由系统/蓝牙适配器决定"；字节预算仅计实际进入广播包的字段。Observer 观测到的 name/raw 是最终事实源（`12` 第 10 节，TEST-E-006）。
 
 ## 14. ESP32 / Smart HID / Release 依赖
 
@@ -145,12 +147,12 @@ CLAIM-011：VERIFIED 前提=TEST-E-006+TEST-A-010 通过+EVID-004；Observer 缺
 
 ## 21. 验收条件
 
-- [x] 12 状态含平台真实约束；
-- [x] 31/32 边界阻止；
-- [x] Owner 与活动连接保护；
-- [x] 生命周期释放；
-- [x] 默认 payload 与产品名一致；
-- [x] Observer 为正式证据入口。
+- 12 状态含平台真实约束；
+- 31/32 边界阻止；
+- Owner 与活动连接保护；
+- 生命周期释放；
+- 默认 payload 与产品名一致；
+- Observer 为正式证据入口。
 
 ## 22. 非目标与禁止行为
 
