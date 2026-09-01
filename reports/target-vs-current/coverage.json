@@ -1,8 +1,8 @@
 {
   "gate": "TP-G2-R1",
   "schema_version": "2.0",
-  "generated_at": "2026-09-01T09:02:52.443Z",
-  "commit": "5a22899f42ef9c73713be9fb4797afd49dddaad6",
+  "generated_at": "2026-09-01T10:17:30.875Z",
+  "commit": "ae13e90ea5ad38a4e416b5783a4956a81f827547",
   "structured_current_path": ".tmp/tp-g2/logs/current-structured.json",
   "system": {
     "SYSTEM_PASS": 412,
@@ -13,7 +13,7 @@
     "TEST_INFRA_FAIL": 0
   },
   "current": {
-    "CURRENT_PASS": 35,
+    "CURRENT_PASS": 265,
     "CURRENT_FAIL": 19,
     "TEST_INFRA_FAIL": 0,
     "cases": 54,
@@ -52,12 +52,10 @@
       },
       {
         "name": "pages-playwright",
-        "pass": 0,
+        "pass": 230,
         "fail": 0,
         "skipped": 0,
-        "blocked": {
-          "BLOCKED_BY_TARGET_DRIVER": 11
-        },
+        "blocked": {},
         "pages": {
           "specs": 11,
           "state_cases": 67,
@@ -71,14 +69,12 @@
             "failure_variants": 92,
             "cleanup_assertions": 39
           },
-          "blocked_specs": 11,
-          "blocked_cases": 229,
-          "reason": "BLOCKED_BY_TARGET_DRIVER"
+          "blocked_specs": 0,
+          "blocked_cases": 0,
+          "reason": null
         },
-        "notExecuted": true,
-        "blockers": [
-          "BLK-TEST-PAGE-DRIVER"
-        ]
+        "notExecuted": false,
+        "blockers": []
       }
     ],
     "pages": {
@@ -94,13 +90,17 @@
         "failure_variants": 92,
         "cleanup_assertions": 39
       },
-      "blocked_specs": 11,
-      "blocked_cases": 229,
-      "reason": "BLOCKED_BY_TARGET_DRIVER"
+      "blocked_specs": 0,
+      "blocked_cases": 0,
+      "reason": null,
+      "pass": 230,
+      "fail": 0,
+      "skipped": 0,
+      "notExecuted": false
     },
     "blocked": {
-      "BLOCKED_BY_TARGET_DRIVER": 11,
       "BLOCKED_BY_TOOLCHAIN": 0,
+      "BLOCKED_BY_TARGET_DRIVER": 0,
       "BLOCKED_BY_FIXTURE": 0,
       "BLOCKED_BY_CREDENTIAL": 0,
       "NOT_EXECUTED": 0
@@ -250,17 +250,17 @@
   "by_implementation_status": {
     "IMPLEMENTED_UNTESTED": 60,
     "UNASSESSED": 492,
-    "NOT_IMPLEMENTED": 39,
+    "NOT_IMPLEMENTED": 28,
     "CONFIRMED_PARTIAL": 41,
-    "CONFIRMED_IMPLEMENTED": 11,
+    "CONFIRMED_IMPLEMENTED": 22,
     "CONFIRMED_MISSING": 4
   },
   "by_verification_status": {
-    "AUTOMATED_PASS": 75,
+    "AUTOMATED_PASS": 86,
     "HARDWARE_PENDING": 59,
     "AUTOMATED_FAIL": 66,
     "NOT_EXECUTED": 293,
-    "BLOCKED_BY_TARGET_DRIVER": 150,
+    "EXECUTED": 139,
     "BLOCKED_BY_FIXTURE": 4
   },
   "by_severity": {
@@ -271,7 +271,7 @@
   "unique_root_causes_by_severity": {
     "P0": 2,
     "P1": 12,
-    "P2": 1,
+    "P2": 0,
     "P3": 0
   },
   "affected_target_records_by_severity": {
@@ -284,7 +284,7 @@
   "product_vs_testability": {
     "product_gaps_with_severity": 80,
     "testability_records": 128,
-    "blocked_page_cases": 229,
+    "blocked_page_cases": 0,
     "note": "blocked_page_cases 不得计为产品缺陷数；Playwright 与 Page Driver 为独立 blocker"
   }
 }

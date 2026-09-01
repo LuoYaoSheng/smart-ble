@@ -78,7 +78,7 @@
     "TEST_INFRA_FAIL": 0
   },
   "current": {
-    "CURRENT_PASS": 35,
+    "CURRENT_PASS": 265,
     "CURRENT_FAIL": 19,
     "TEST_INFRA_FAIL": 0,
     "cases": [
@@ -99,7 +99,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/advertisement-target.test.mjs",
-        "duration_ms": 1.638,
+        "duration_ms": 1.838583,
         "blocker": null
       },
       {
@@ -120,7 +120,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/broadcast-payload-target.test.mjs",
-        "duration_ms": 4.427208,
+        "duration_ms": 4.353416,
         "blocker": null
       },
       {
@@ -140,7 +140,7 @@
         "actual": "命中项匹配关键词",
         "first_breakpoint": "命中项匹配关键词",
         "source_file": "tests/target/unit/device-filter-target.test.mjs",
-        "duration_ms": 2.016416,
+        "duration_ms": 2.143875,
         "blocker": null
       },
       {
@@ -160,7 +160,7 @@
         "actual": "NOT_IMPLEMENTED: [TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
         "first_breakpoint": "[TEST-U-006 REQ-013 FEAT-013 PAGE-001 FLOW-002] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/display-name.js",
         "source_file": "tests/target/unit/device-name-target.test.mjs",
-        "duration_ms": 0.596125,
+        "duration_ms": 0.568625,
         "blocker": null
       },
       {
@@ -182,7 +182,7 @@
         "actual": "NOT_IMPLEMENTED: [TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
         "first_breakpoint": "[TEST-U-010 REQ-026 FEAT-028] 第一断点: 目标接口 validateHexInput/parseHexInput 缺失",
         "source_file": "tests/target/unit/gatt-codec-target.test.mjs",
-        "duration_ms": 1.383625,
+        "duration_ms": 3.44525,
         "blocker": null
       },
       {
@@ -204,7 +204,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/history-retention-target.test.mjs",
-        "duration_ms": 1.539583,
+        "duration_ms": 1.894417,
         "blocker": null
       },
       {
@@ -224,7 +224,7 @@
         "actual": "NOT_IMPLEMENTED: [TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
         "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
         "source_file": "tests/target/unit/logging-redaction-target.test.mjs",
-        "duration_ms": 0.511667,
+        "duration_ms": 0.569209,
         "blocker": null
       },
       {
@@ -247,7 +247,7 @@
         "actual": "NOT_IMPLEMENTED: [TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
         "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
         "source_file": "tests/target/unit/ota-state-target.test.mjs",
-        "duration_ms": 5.670375,
+        "duration_ms": 4.759417,
         "blocker": null
       },
       {
@@ -269,7 +269,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/platform-permission-target.test.mjs",
-        "duration_ms": 4.058667,
+        "duration_ms": 4.347958,
         "blocker": null
       },
       {
@@ -287,7 +287,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/public-status-target.test.mjs",
-        "duration_ms": 1.496833,
+        "duration_ms": 2.683542,
         "blocker": null
       },
       {
@@ -308,7 +308,7 @@
         "actual": "NOT_IMPLEMENTED: [REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
         "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
         "source_file": "tests/target/unit/reconnect-state-target.test.mjs",
-        "duration_ms": 0.584083,
+        "duration_ms": 0.520917,
         "blocker": null
       },
       {
@@ -331,7 +331,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/session-state-target.test.mjs",
-        "duration_ms": 2.266292,
+        "duration_ms": 2.829041,
         "blocker": null
       },
       {
@@ -354,7 +354,7 @@
         "actual": "NOT_IMPLEMENTED: [TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
         "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
         "source_file": "tests/target/unit/session-state-target.test.mjs",
-        "duration_ms": 0.6275,
+        "duration_ms": 0.893583,
         "blocker": null
       },
       {
@@ -376,7 +376,7 @@
         "actual": "NOT_IMPLEMENTED: [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
         "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
         "source_file": "tests/target/unit/smart-hid-state-target.test.mjs",
-        "duration_ms": 7.265291,
+        "duration_ms": 7.529208,
         "blocker": null
       },
       {
@@ -396,7 +396,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/version-page-model-target.test.mjs",
-        "duration_ms": 2.7995,
+        "duration_ms": 3.121083,
         "blocker": null
       },
       {
@@ -416,7 +416,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/unit/version-release-metadata-target.test.mjs",
-        "duration_ms": 2.553625,
+        "duration_ms": 2.797208,
         "blocker": null
       },
       {
@@ -436,7 +436,7 @@
         "actual": "NOT_IMPLEMENTED: [TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
         "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js",
         "source_file": "tests/target/unit/write-queue-target.test.mjs",
-        "duration_ms": 0.551167,
+        "duration_ms": 0.511084,
         "blocker": null
       },
       {
@@ -456,7 +456,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/integration/connection-runtime-target.test.mjs",
-        "duration_ms": 13.923917,
+        "duration_ms": 15.425667,
         "blocker": null
       },
       {
@@ -476,7 +476,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/integration/connection-runtime-target.test.mjs",
-        "duration_ms": 0.508541,
+        "duration_ms": 0.502042,
         "blocker": null
       },
       {
@@ -495,7 +495,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/integration/lifecycle-cleanup-target.test.mjs",
-        "duration_ms": 4.293292,
+        "duration_ms": 2.760125,
         "blocker": null
       },
       {
@@ -515,7 +515,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/integration/multi-device-target.test.mjs",
-        "duration_ms": 3.081375,
+        "duration_ms": 2.897791,
         "blocker": null
       },
       {
@@ -536,7 +536,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/integration/notify-routing-target.test.mjs",
-        "duration_ms": 7.875208,
+        "duration_ms": 7.786625,
         "blocker": null
       },
       {
@@ -566,7 +566,7 @@
         "actual": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
         "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
         "source_file": "tests/target/integration/ota-transaction-target.test.mjs",
-        "duration_ms": 57.634709,
+        "duration_ms": 57.81725,
         "blocker": null
       },
       {
@@ -596,7 +596,7 @@
         "actual": "NOT_IMPLEMENTED: [TEST-I-008 FEAT-081 DEC-016] 第一断点: validateOtaPackage/validatePackage 缺失；第一断点: 传输前包校验接口不存在",
         "first_breakpoint": "[TEST-I-008 FEAT-081 DEC-016] 第一断点: validateOtaPackage/validatePackage 缺失；第一断点: 传输前包校验接口不存在",
         "source_file": "tests/target/integration/ota-transaction-target.test.mjs",
-        "duration_ms": 1.2,
+        "duration_ms": 0.864292,
         "blocker": null
       },
       {
@@ -626,7 +626,7 @@
         "actual": "cancel 必须向 CTRL 完整 UUID 写入 abort",
         "first_breakpoint": "cancel 必须向 CTRL 完整 UUID 写入 abort",
         "source_file": "tests/target/integration/ota-transaction-target.test.mjs",
-        "duration_ms": 10.796042,
+        "duration_ms": 12.262833,
         "blocker": null
       },
       {
@@ -656,7 +656,7 @@
         "actual": "success 后必须读取 firmware_version",
         "first_breakpoint": "success 后必须读取 firmware_version",
         "source_file": "tests/target/integration/ota-transaction-target.test.mjs",
-        "duration_ms": 12.430041,
+        "duration_ms": 12.51075,
         "blocker": null
       },
       {
@@ -678,7 +678,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/integration/peripheral-owner-target.test.mjs",
-        "duration_ms": 1.405791,
+        "duration_ms": 3.220208,
         "blocker": null
       },
       {
@@ -700,7 +700,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/integration/peripheral-owner-target.test.mjs",
-        "duration_ms": 0.762833,
+        "duration_ms": 1.455167,
         "blocker": null
       },
       {
@@ -720,7 +720,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/integration/permission-flow-target.test.mjs",
-        "duration_ms": 4.58675,
+        "duration_ms": 8.696791,
         "blocker": null
       },
       {
@@ -740,7 +740,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/integration/read-write-runtime-target.test.mjs",
-        "duration_ms": 7.183333,
+        "duration_ms": 5.924708,
         "blocker": null
       },
       {
@@ -762,7 +762,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/integration/scan-runtime-target.test.mjs",
-        "duration_ms": 3.079875,
+        "duration_ms": 4.339458,
         "blocker": null
       },
       {
@@ -783,7 +783,7 @@
         "actual": "NOT_IMPLEMENTED: [REQ-020/021 ERR-CONN-03] 第一断点: connectDevice 未编排服务发现（失败不报错=半开泄漏面）",
         "first_breakpoint": "[REQ-020/021 ERR-CONN-03] 第一断点: connectDevice 未编排服务发现（失败不报错=半开泄漏面）",
         "source_file": "tests/target/integration/service-discovery-target.test.mjs",
-        "duration_ms": 3.089292,
+        "duration_ms": 4.438625,
         "blocker": null
       },
       {
@@ -803,7 +803,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs",
-        "duration_ms": 8.216667,
+        "duration_ms": 7.210959,
         "blocker": null
       },
       {
@@ -823,7 +823,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs",
-        "duration_ms": 251.701167,
+        "duration_ms": 248.970208,
         "blocker": null
       },
       {
@@ -844,7 +844,7 @@
         "actual": "NOT_IMPLEMENTED: [REQ-053/PAGE-007 排除规则] 第一断点: Registry 无配网会话分类/排除接口——PAGE-007 口径无法排除配网会话",
         "first_breakpoint": "[REQ-053/PAGE-007 排除规则] 第一断点: Registry 无配网会话分类/排除接口——PAGE-007 口径无法排除配网会话",
         "source_file": "tests/target/integration/smart-hid-session-ownership-target.test.mjs",
-        "duration_ms": 6.989375,
+        "duration_ms": 4.658916,
         "blocker": null
       },
       {
@@ -866,7 +866,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/firmware/artifact-metadata.test.mjs",
-        "duration_ms": 3.382958,
+        "duration_ms": 1.212083,
         "blocker": null
       },
       {
@@ -888,7 +888,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/firmware/artifact-metadata.test.mjs",
-        "duration_ms": 0.545833,
+        "duration_ms": 0.619042,
         "blocker": null
       },
       {
@@ -909,7 +909,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/firmware/fixture-contract.test.mjs",
-        "duration_ms": 0.75625,
+        "duration_ms": 0.752791,
         "blocker": null
       },
       {
@@ -930,7 +930,7 @@
         "actual": "固件含广播名 BLEToolkit-Observer",
         "first_breakpoint": "固件含广播名 BLEToolkit-Observer",
         "source_file": "tests/target/firmware/fixture-contract.test.mjs",
-        "duration_ms": 0.246375,
+        "duration_ms": 0.2515,
         "blocker": null
       },
       {
@@ -951,7 +951,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/firmware/fixture-contract.test.mjs",
-        "duration_ms": 0.854291,
+        "duration_ms": 0.83925,
         "blocker": null
       },
       {
@@ -972,7 +972,7 @@
         "actual": "固件含 LED 指令 FF00",
         "first_breakpoint": "固件含 LED 指令 FF00",
         "source_file": "tests/target/firmware/fixture-contract.test.mjs",
-        "duration_ms": 0.146791,
+        "duration_ms": 0.142959,
         "blocker": null
       },
       {
@@ -991,7 +991,7 @@
         "actual": "Observer 字段 ≥9（实际 8）",
         "first_breakpoint": "Observer 字段 ≥9（实际 8）",
         "source_file": "tests/target/firmware/serial-schema.test.mjs",
-        "duration_ms": 0.461167,
+        "duration_ms": 0.556375,
         "blocker": null
       },
       {
@@ -1010,7 +1010,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/firmware/serial-schema.test.mjs",
-        "duration_ms": 0.089875,
+        "duration_ms": 0.104334,
         "blocker": null
       },
       {
@@ -1029,7 +1029,7 @@
         "actual": "固件 emit 覆盖 ≥3 类契约事件（实际 1：ota）",
         "first_breakpoint": "固件 emit 覆盖 ≥3 类契约事件（实际 1：ota）",
         "source_file": "tests/target/firmware/serial-schema.test.mjs",
-        "duration_ms": 0.566916,
+        "duration_ms": 0.650125,
         "blocker": null
       },
       {
@@ -1048,7 +1048,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/release/links-and-qr.test.mjs",
-        "duration_ms": 1.022958,
+        "duration_ms": 0.920667,
         "blocker": null
       },
       {
@@ -1067,7 +1067,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/release/links-and-qr.test.mjs",
-        "duration_ms": 0.767541,
+        "duration_ms": 1.551,
         "blocker": null
       },
       {
@@ -1086,7 +1086,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/release/links-and-qr.test.mjs",
-        "duration_ms": 0.145208,
+        "duration_ms": 0.1915,
         "blocker": null
       },
       {
@@ -1109,7 +1109,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/release/public-claims.test.mjs",
-        "duration_ms": 0.427,
+        "duration_ms": 0.330583,
         "blocker": null
       },
       {
@@ -1132,7 +1132,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/release/public-claims.test.mjs",
-        "duration_ms": 0.403166,
+        "duration_ms": 0.267042,
         "blocker": null
       },
       {
@@ -1155,7 +1155,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/release/public-claims.test.mjs",
-        "duration_ms": 0.589542,
+        "duration_ms": 0.426709,
         "blocker": null
       },
       {
@@ -1178,7 +1178,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/release/public-claims.test.mjs",
-        "duration_ms": 0.168834,
+        "duration_ms": 0.154917,
         "blocker": null
       },
       {
@@ -1199,7 +1199,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/release/release-artifacts.test.mjs",
-        "duration_ms": 1.686209,
+        "duration_ms": 0.342125,
         "blocker": null
       },
       {
@@ -1220,7 +1220,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/release/release-artifacts.test.mjs",
-        "duration_ms": 0.39525,
+        "duration_ms": 0.309166,
         "blocker": null
       },
       {
@@ -1241,7 +1241,7 @@
         "actual": "matched",
         "first_breakpoint": null,
         "source_file": "tests/target/release/release-artifacts.test.mjs",
-        "duration_ms": 0.700459,
+        "duration_ms": 0.722125,
         "blocker": null
       }
     ],
@@ -1280,12 +1280,10 @@
       },
       {
         "name": "pages-playwright",
-        "pass": 0,
+        "pass": 230,
         "fail": 0,
         "skipped": 0,
-        "blocked": {
-          "BLOCKED_BY_TARGET_DRIVER": 11
-        },
+        "blocked": {},
         "pages": {
           "specs": 11,
           "state_cases": 67,
@@ -1299,14 +1297,12 @@
             "failure_variants": 92,
             "cleanup_assertions": 39
           },
-          "blocked_specs": 11,
-          "blocked_cases": 229,
-          "reason": "BLOCKED_BY_TARGET_DRIVER"
+          "blocked_specs": 0,
+          "blocked_cases": 0,
+          "reason": null
         },
-        "notExecuted": true,
-        "blockers": [
-          "BLK-TEST-PAGE-DRIVER"
-        ]
+        "notExecuted": false,
+        "blockers": []
       }
     ],
     "pages": {
@@ -1322,13 +1318,17 @@
         "failure_variants": 92,
         "cleanup_assertions": 39
       },
-      "blocked_specs": 11,
-      "blocked_cases": 229,
-      "reason": "BLOCKED_BY_TARGET_DRIVER"
+      "blocked_specs": 0,
+      "blocked_cases": 0,
+      "reason": null,
+      "pass": 230,
+      "fail": 0,
+      "skipped": 0,
+      "notExecuted": false
     },
     "blocked": {
-      "BLOCKED_BY_TARGET_DRIVER": 11,
       "BLOCKED_BY_TOOLCHAIN": 0,
+      "BLOCKED_BY_TARGET_DRIVER": 0,
       "BLOCKED_BY_FIXTURE": 0,
       "BLOCKED_BY_CREDENTIAL": 0,
       "NOT_EXECUTED": 0
@@ -1451,8 +1451,8 @@
       "dimension": "blocker",
       "gap_kind": "TESTABILITY",
       "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
+      "implementation_status": "CONFIRMED_IMPLEMENTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
@@ -1461,12 +1461,12 @@
       "implementation_refs": [],
       "test_ids": [],
       "test_results": [],
-      "expected": "TARGET_PAGE_DRIVER=1",
-      "actual": "BLK-TEST-PAGE-DRIVER",
-      "first_breakpoint": "TARGET_PAGE_DRIVER 未实现",
+      "expected": "Page Driver Runtime 已落地（或 TARGET_PAGE_DRIVER=1）",
+      "actual": "driver enabled (runtime present)",
+      "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
-      "root_cause_id": "RC-PAGE-DRIVER",
+      "root_cause_id": null,
       "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
@@ -1501,8 +1501,8 @@
       "dimension": "blocker",
       "gap_kind": "TESTABILITY",
       "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
+      "implementation_status": "CONFIRMED_IMPLEMENTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
@@ -1511,12 +1511,12 @@
       "implementation_refs": [],
       "test_ids": [],
       "test_results": [],
-      "expected": "TARGET_PAGE_DRIVER=1",
-      "actual": "BLK-TEST-PAGE-DRIVER",
-      "first_breakpoint": "TARGET_PAGE_DRIVER 未实现",
+      "expected": "Page Driver Runtime 已落地（或 TARGET_PAGE_DRIVER=1）",
+      "actual": "driver enabled (runtime present)",
+      "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
-      "root_cause_id": "RC-PAGE-DRIVER",
+      "root_cause_id": null,
       "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
@@ -1551,8 +1551,8 @@
       "dimension": "blocker",
       "gap_kind": "TESTABILITY",
       "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
+      "implementation_status": "CONFIRMED_IMPLEMENTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
@@ -1561,12 +1561,12 @@
       "implementation_refs": [],
       "test_ids": [],
       "test_results": [],
-      "expected": "TARGET_PAGE_DRIVER=1",
-      "actual": "BLK-TEST-PAGE-DRIVER",
-      "first_breakpoint": "TARGET_PAGE_DRIVER 未实现",
+      "expected": "Page Driver Runtime 已落地（或 TARGET_PAGE_DRIVER=1）",
+      "actual": "driver enabled (runtime present)",
+      "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
-      "root_cause_id": "RC-PAGE-DRIVER",
+      "root_cause_id": null,
       "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
@@ -1601,8 +1601,8 @@
       "dimension": "blocker",
       "gap_kind": "TESTABILITY",
       "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
+      "implementation_status": "CONFIRMED_IMPLEMENTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
@@ -1611,12 +1611,12 @@
       "implementation_refs": [],
       "test_ids": [],
       "test_results": [],
-      "expected": "TARGET_PAGE_DRIVER=1",
-      "actual": "BLK-TEST-PAGE-DRIVER",
-      "first_breakpoint": "TARGET_PAGE_DRIVER 未实现",
+      "expected": "Page Driver Runtime 已落地（或 TARGET_PAGE_DRIVER=1）",
+      "actual": "driver enabled (runtime present)",
+      "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
-      "root_cause_id": "RC-PAGE-DRIVER",
+      "root_cause_id": null,
       "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
@@ -1651,8 +1651,8 @@
       "dimension": "blocker",
       "gap_kind": "TESTABILITY",
       "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
+      "implementation_status": "CONFIRMED_IMPLEMENTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
@@ -1661,12 +1661,12 @@
       "implementation_refs": [],
       "test_ids": [],
       "test_results": [],
-      "expected": "TARGET_PAGE_DRIVER=1",
-      "actual": "BLK-TEST-PAGE-DRIVER",
-      "first_breakpoint": "TARGET_PAGE_DRIVER 未实现",
+      "expected": "Page Driver Runtime 已落地（或 TARGET_PAGE_DRIVER=1）",
+      "actual": "driver enabled (runtime present)",
+      "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
-      "root_cause_id": "RC-PAGE-DRIVER",
+      "root_cause_id": null,
       "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
@@ -1701,8 +1701,8 @@
       "dimension": "blocker",
       "gap_kind": "TESTABILITY",
       "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
+      "implementation_status": "CONFIRMED_IMPLEMENTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
@@ -1711,12 +1711,12 @@
       "implementation_refs": [],
       "test_ids": [],
       "test_results": [],
-      "expected": "TARGET_PAGE_DRIVER=1",
-      "actual": "BLK-TEST-PAGE-DRIVER",
-      "first_breakpoint": "TARGET_PAGE_DRIVER 未实现",
+      "expected": "Page Driver Runtime 已落地（或 TARGET_PAGE_DRIVER=1）",
+      "actual": "driver enabled (runtime present)",
+      "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
-      "root_cause_id": "RC-PAGE-DRIVER",
+      "root_cause_id": null,
       "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
@@ -1751,8 +1751,8 @@
       "dimension": "blocker",
       "gap_kind": "TESTABILITY",
       "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
+      "implementation_status": "CONFIRMED_IMPLEMENTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
@@ -1761,12 +1761,12 @@
       "implementation_refs": [],
       "test_ids": [],
       "test_results": [],
-      "expected": "TARGET_PAGE_DRIVER=1",
-      "actual": "BLK-TEST-PAGE-DRIVER",
-      "first_breakpoint": "TARGET_PAGE_DRIVER 未实现",
+      "expected": "Page Driver Runtime 已落地（或 TARGET_PAGE_DRIVER=1）",
+      "actual": "driver enabled (runtime present)",
+      "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
-      "root_cause_id": "RC-PAGE-DRIVER",
+      "root_cause_id": null,
       "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
@@ -1801,8 +1801,8 @@
       "dimension": "blocker",
       "gap_kind": "TESTABILITY",
       "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
+      "implementation_status": "CONFIRMED_IMPLEMENTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
@@ -1811,12 +1811,12 @@
       "implementation_refs": [],
       "test_ids": [],
       "test_results": [],
-      "expected": "TARGET_PAGE_DRIVER=1",
-      "actual": "BLK-TEST-PAGE-DRIVER",
-      "first_breakpoint": "TARGET_PAGE_DRIVER 未实现",
+      "expected": "Page Driver Runtime 已落地（或 TARGET_PAGE_DRIVER=1）",
+      "actual": "driver enabled (runtime present)",
+      "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
-      "root_cause_id": "RC-PAGE-DRIVER",
+      "root_cause_id": null,
       "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
@@ -1851,8 +1851,8 @@
       "dimension": "blocker",
       "gap_kind": "TESTABILITY",
       "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
+      "implementation_status": "CONFIRMED_IMPLEMENTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
@@ -1861,12 +1861,12 @@
       "implementation_refs": [],
       "test_ids": [],
       "test_results": [],
-      "expected": "TARGET_PAGE_DRIVER=1",
-      "actual": "BLK-TEST-PAGE-DRIVER",
-      "first_breakpoint": "TARGET_PAGE_DRIVER 未实现",
+      "expected": "Page Driver Runtime 已落地（或 TARGET_PAGE_DRIVER=1）",
+      "actual": "driver enabled (runtime present)",
+      "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
-      "root_cause_id": "RC-PAGE-DRIVER",
+      "root_cause_id": null,
       "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
@@ -1901,8 +1901,8 @@
       "dimension": "blocker",
       "gap_kind": "TESTABILITY",
       "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
+      "implementation_status": "CONFIRMED_IMPLEMENTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
@@ -1911,12 +1911,12 @@
       "implementation_refs": [],
       "test_ids": [],
       "test_results": [],
-      "expected": "TARGET_PAGE_DRIVER=1",
-      "actual": "BLK-TEST-PAGE-DRIVER",
-      "first_breakpoint": "TARGET_PAGE_DRIVER 未实现",
+      "expected": "Page Driver Runtime 已落地（或 TARGET_PAGE_DRIVER=1）",
+      "actual": "driver enabled (runtime present)",
+      "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
-      "root_cause_id": "RC-PAGE-DRIVER",
+      "root_cause_id": null,
       "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },
@@ -1951,8 +1951,8 @@
       "dimension": "blocker",
       "gap_kind": "TESTABILITY",
       "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
+      "implementation_status": "CONFIRMED_IMPLEMENTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
@@ -1961,12 +1961,12 @@
       "implementation_refs": [],
       "test_ids": [],
       "test_results": [],
-      "expected": "TARGET_PAGE_DRIVER=1",
-      "actual": "BLK-TEST-PAGE-DRIVER",
-      "first_breakpoint": "TARGET_PAGE_DRIVER 未实现",
+      "expected": "Page Driver Runtime 已落地（或 TARGET_PAGE_DRIVER=1）",
+      "actual": "driver enabled (runtime present)",
+      "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
-      "root_cause_id": "RC-PAGE-DRIVER",
+      "root_cause_id": null,
       "task_id": "TEST-PAGE-DRIVER-001",
       "release_blocking": false
     },

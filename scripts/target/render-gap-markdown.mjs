@@ -77,7 +77,7 @@ supersedes: TP-G2 v1 (reports/target-vs-current-v1/)
 | structured cases | ${coverage.current?.cases} |
 | 页面 blocked_specs / blocked_cases | ${coverage.current?.pages?.blocked_specs} / ${coverage.current?.pages?.blocked_cases} |
 | 页面阻断原因 | ${coverage.current?.pages?.reason} |
-| 独立 blockers | BLK-TOOL-PLAYWRIGHT + BLK-TEST-PAGE-DRIVER |
+| 独立 blockers | BLK-TOOL-PLAYWRIGHT [${(report.blockers || []).find((b) => b.blocker_id === 'BLK-TOOL-PLAYWRIGHT')?.status || 'OPEN'}] + BLK-TEST-PAGE-DRIVER [${(report.blockers || []).find((b) => b.blocker_id === 'BLK-TEST-PAGE-DRIVER')?.status || 'OPEN'}] |
 
 **说明：** \`blocked_cases=${coverage.current?.pages?.blocked_cases}\` 是受阻 Case 数，**不是**产品缺陷数。Playwright 与 Page Driver 分别登记。
 
@@ -211,8 +211,8 @@ approved_by: user
 \`\`\`
 
 > 执行规则：依赖图不变；Wave/拓扑序；一次只批准一个 Task；完成后停下。
-> **PUBLIC-HONESTY / VERSION-METADATA / PAGE-VERSION / ENV-PLAYWRIGHT = DONE**。
-> 下一 Task 由用户选择；**不得**自动执行 TEST-PAGE-DRIVER-001 / RELEASE-PIPELINE / OTA。
+> **PUBLIC-HONESTY / VERSION-METADATA / PAGE-VERSION / ENV-PLAYWRIGHT / TEST-PAGE-DRIVER = DONE**。
+> 下一 Task 由用户选择；**不得**自动执行 RELEASE-PIPELINE / RUNTIME / OTA / ESP32 / E5/E6。
 
 ## 推荐拓扑序
 
@@ -227,11 +227,10 @@ ${(tasks.dependencies || []).map((d) => `- ${d.from} → ${d.to}`).join('\n') ||
 
 ## 首批候选
 
-1. **ENV-PLAYWRIGHT-001** — 环境任务，解锁页面 E4 统计
-2. **TEST-PAGE-DRIVER-001** — 可测试性（依赖 Playwright）
-3. **PUBLIC-HONESTY-001** — P0 公开误导立即降级
-4. **VERSION-METADATA-001** — VERSION/Metadata（不循环依赖 Release）
-5. **OTA-CLIENT-001** — P0 协议断裂（依赖 OTA-PACKAGE-001）
+${(tasks.recommended_order || []).slice(0, 5).map((id, i) => {
+  const n = (tasks.nodes || []).find((x) => x.task_id === id);
+  return `${i + 1}. **${id}** — ${n?.title || id}（status=${n?.status || 'PLANNED'}）`;
+}).join('\n')}
 `);
 
 function backlogFor(title, pred) {
@@ -381,7 +380,9 @@ ${pageList}
 ## STATE / OP
 
 - 契约总量：STATE **67** / OP **92**（\`tests/target/pages/page-behavior.manifest.json\`）
-- E4：全部受 \`BLK-TOOL-PLAYWRIGHT\` + \`BLK-TEST-PAGE-DRIVER\` 阻断
+- E4：${(coverage.current?.pages?.blocked_cases || 0) > 0
+    ? '仍受工具链/Driver 阻断'
+    : 'Page Driver 已执行（Fake Runtime）；产品差距另见业务 Task'}
 - 多数 State/OP 的 static_implementation = **UNASSESSED**（未做控件级静态确认，禁止默认 PARTIAL）
 - \`blocked_cases=${coverage.current?.pages?.blocked_cases}\` ≠ 产品缺陷数
 
@@ -620,7 +621,8 @@ ${(coverage.current?.layers || []).map((l) => `- ${l.name}: pass=${l.pass} fail=
 - blocked_specs: ${coverage.current?.pages?.blocked_specs}
 - blocked_cases: ${coverage.current?.pages?.blocked_cases}
 - reason: ${coverage.current?.pages?.reason}
-- blockers: BLK-TOOL-PLAYWRIGHT, BLK-TEST-PAGE-DRIVER（独立登记，gap_count 均 > 0）
+- blockers: BLK-TOOL-PLAYWRIGHT=${(report.blockers || []).find((b) => b.blocker_id === 'BLK-TOOL-PLAYWRIGHT')?.status || 'OPEN'}; BLK-TEST-PAGE-DRIVER=${(report.blockers || []).find((b) => b.blocker_id === 'BLK-TEST-PAGE-DRIVER')?.status || 'OPEN'}
+- page E4: pass=${coverage.current?.pages?.pass ?? '—'} fail=${coverage.current?.pages?.fail ?? '—'} (Driver Runtime)
 
 ## 映射规则
 

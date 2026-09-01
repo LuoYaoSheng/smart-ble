@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 533f6380d58101d7514b159f5f99ab44cb537c34731a2d354416d91c7b7fe64c
+content_hash: 5c58aa6d543f8943886694a38cf03bf4accee2799a5b5636257017e4b676e591
 ```
 
 ## System / Harness
@@ -21,7 +21,7 @@ content_hash: 533f6380d58101d7514b159f5f99ab44cb537c34731a2d354416d91c7b7fe64c
 
 | 指标 | 值 |
 |---|---|
-| CURRENT_PASS | 35 |
+| CURRENT_PASS | 265 |
 | CURRENT_FAIL | 19 |
 | cases | 54 |
 | source | .tmp/tp-g2/logs/current-structured.json |
@@ -32,14 +32,15 @@ content_hash: 533f6380d58101d7514b159f5f99ab44cb537c34731a2d354416d91c7b7fe64c
 - integration: pass=12 fail=6 cases=18 blocked=—
 - firmware: pass=5 fail=4 cases=9 blocked=—
 - release: pass=10 fail=0 cases=10 blocked=—
-- pages-playwright: pass=0 fail=0 cases=— blocked={"BLOCKED_BY_TARGET_DRIVER":11}
+- pages-playwright: pass=230 fail=0 cases=— blocked={}
 
 ## 页面自动化
 
-- blocked_specs: 11
-- blocked_cases: 229
-- reason: BLOCKED_BY_TARGET_DRIVER
-- blockers: BLK-TOOL-PLAYWRIGHT, BLK-TEST-PAGE-DRIVER（独立登记，gap_count 均 > 0）
+- blocked_specs: 0
+- blocked_cases: 0
+- reason: null
+- blockers: BLK-TOOL-PLAYWRIGHT=CLEARED; BLK-TEST-PAGE-DRIVER=CLEARED
+- page E4: pass=230 fail=0 (Driver Runtime)
 
 ## 映射规则
 

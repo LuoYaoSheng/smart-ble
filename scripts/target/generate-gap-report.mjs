@@ -133,7 +133,8 @@ const FACTS = {
   smartHidProfile: read('apps/uniapp/services/smart-hid/profile.js'),
   releaseWorkflow: read('.github/workflows/release-build.yml'),
   playwright: (() => { try { require.resolve('@playwright/test'); return true; } catch { return false; } })(),
-  pageDriverImplemented: process.env.TARGET_PAGE_DRIVER === '1',
+  pageDriverImplemented: process.env.TARGET_PAGE_DRIVER === '1'
+    || exists('tests/target/pages/driver/page-driver-runtime.js'),
 };
 
 const otaWritesCtrl = /writeValue[\s\S]{0,120}CHAR_CTRL|CHAR_CTRL[\s\S]{0,120}writeValue/.test(FACTS.otaManager);
@@ -264,7 +265,7 @@ const ROOT_CAUSES = [
 const TASKS = [
   { task_id: 'TEST-CURRENT-INTEGRITY-001', task_type: 'TESTABILITY', title: 'Current 度量完整性（TP-G1-R3 已完成）', root_cause_id: null, severity: null, deps: [], order_hint: 0, status: 'DONE' },
   { task_id: 'ENV-PLAYWRIGHT-001', task_type: 'ENVIRONMENT', title: '安装并锁定 Playwright / H5 harness', root_cause_id: 'RC-PLAYWRIGHT', severity: 'P2', deps: [], order_hint: 1, status: FACTS.playwright ? 'DONE' : 'PLANNED' },
-  { task_id: 'TEST-PAGE-DRIVER-001', task_type: 'TESTABILITY', title: '实现 Target Page Driver', root_cause_id: 'RC-PAGE-DRIVER', severity: 'P2', deps: ['ENV-PLAYWRIGHT-001'], order_hint: 2 },
+  { task_id: 'TEST-PAGE-DRIVER-001', task_type: 'TESTABILITY', title: '实现 Target Page Driver', root_cause_id: 'RC-PAGE-DRIVER', severity: 'P2', deps: ['ENV-PLAYWRIGHT-001'], order_hint: 2, status: FACTS.pageDriverImplemented ? 'DONE' : 'PLANNED' },
   { task_id: 'PUBLIC-HONESTY-001', task_type: 'SOURCE_FIX', title: '落地页立即诚实降级（假下载/6+/错误主线→PREVIEW/NOT_RELEASED）', root_cause_id: 'RC-LANDING-FAKE-DOWNLOAD', severity: 'P0', deps: [], order_hint: 3, status: landingFakeDownload ? 'PLANNED' : 'DONE' },
   { task_id: 'VERSION-METADATA-001', task_type: 'SOURCE_FIX', title: '根 VERSION + Release Metadata + Public Status', root_cause_id: 'RC-VERSION-SSOT', severity: 'P1', deps: [], order_hint: 4, status: versionSsotReady ? 'DONE' : 'PLANNED' },
   { task_id: 'RELEASE-PIPELINE-001', task_type: 'RELEASE', title: 'UniApp + Peripheral/Observer 双固件 Release Pipeline', root_cause_id: 'RC-RELEASE-PIPELINE', severity: 'P0', deps: ['VERSION-METADATA-001'], order_hint: 5 },
@@ -609,16 +610,24 @@ for (const p of behavior.pages) {
   const pageMeta = pagesTarget.pages.find((x) => x.id === p.page_id);
   const isWeb = p.page_id === 'WEB-001';
   let staticImpl = 'UNASSESSED';
-  let e4 = playwrightBlocked ? 'BLOCKED_BY_TOOLCHAIN' : (driverBlocked ? 'BLOCKED_BY_TARGET_DRIVER' : 'NOT_EXECUTED');
+  let e4 = playwrightBlocked
+    ? 'BLOCKED_BY_TOOLCHAIN'
+    : (driverBlocked ? 'BLOCKED_BY_TARGET_DRIVER' : 'EXECUTED');
   let e5 = 'HARDWARE_PENDING';
   let sev = null;
   let rc = null;
-  let task = playwrightBlocked ? 'ENV-PLAYWRIGHT-001' : 'TEST-PAGE-DRIVER-001';
+  let task = playwrightBlocked
+    ? 'ENV-PLAYWRIGHT-001'
+    : (driverBlocked ? 'TEST-PAGE-DRIVER-001' : null);
   let kind = isWeb ? 'LANDING' : 'PAGE';
   let bp = playwrightBlocked
     ? 'BLK-TOOL-PLAYWRIGHT: @playwright/test 未安装'
-    : 'BLK-TEST-PAGE-DRIVER: TARGET_PAGE_DRIVER 未实现';
-  let actual = `E4 blocked; blocked_cases≈${current.pages?.blocked_cases || 229} (not product defects)`;
+    : (driverBlocked
+      ? 'BLK-TEST-PAGE-DRIVER: TARGET_PAGE_DRIVER 未实现'
+      : 'Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task');
+  let actual = driverBlocked
+    ? `E4 blocked; blocked_cases≈${current.pages?.blocked_cases || 229} (not product defects)`
+    : `E4 executed via Page Driver; pass=${current.pages?.pass ?? '—'} fail=${current.pages?.fail ?? '—'}`;
   let impl = 'UNASSESSED';
   let ver = e4;
 
@@ -716,8 +725,8 @@ for (const p of behavior.pages) {
     verification_status: driverBlocked ? 'BLOCKED_BY_TARGET_DRIVER' : 'AUTOMATED_PASS',
     severity: null,
     evidence_level: 'E4',
-    expected: 'TARGET_PAGE_DRIVER=1',
-    actual: driverBlocked ? 'BLK-TEST-PAGE-DRIVER' : 'driver enabled',
+    expected: 'Page Driver Runtime 已落地（或 TARGET_PAGE_DRIVER=1）',
+    actual: driverBlocked ? 'BLK-TEST-PAGE-DRIVER' : 'driver enabled (runtime present)',
     first_breakpoint: driverBlocked ? 'TARGET_PAGE_DRIVER 未实现' : '',
     root_cause_id: driverBlocked ? 'RC-PAGE-DRIVER' : null,
     task_id: 'TEST-PAGE-DRIVER-001',
@@ -730,9 +739,15 @@ for (const p of behavior.pages) {
     let sVer = e4;
     let sSev = null;
     let sRc = null;
-    let sTask = playwrightBlocked ? 'ENV-PLAYWRIGHT-001' : 'TEST-PAGE-DRIVER-001';
-    let sBp = `E4 未执行（${e4}）；静态态未单独确认 → UNASSESSED`;
-    let sActual = 'no static confirmation; automation blocked';
+    let sTask = playwrightBlocked
+      ? 'ENV-PLAYWRIGHT-001'
+      : (driverBlocked ? 'TEST-PAGE-DRIVER-001' : null);
+    let sBp = driverBlocked
+      ? `E4 未执行（${e4}）；静态态未单独确认 → UNASSESSED`
+      : `E4 已由 Page Driver 执行（${e4}）；产品态差距另见业务 Task`;
+    let sActual = driverBlocked
+      ? 'no static confirmation; automation blocked'
+      : 'page driver executed; product gap may remain';
     let sKind = isWeb ? 'LANDING' : 'PAGE';
     const sevEv = evidenceFor(st.state_id);
 
@@ -784,9 +799,13 @@ for (const p of behavior.pages) {
     let oVer = e4;
     let oSev = null;
     let oRc = null;
-    let oTask = playwrightBlocked ? 'ENV-PLAYWRIGHT-001' : 'TEST-PAGE-DRIVER-001';
-    let oBp = `E4 未执行（${e4}）`;
-    let oActual = '控件存在性未静态确认 → UNASSESSED';
+    let oTask = playwrightBlocked
+      ? 'ENV-PLAYWRIGHT-001'
+      : (driverBlocked ? 'TEST-PAGE-DRIVER-001' : null);
+    let oBp = driverBlocked ? `E4 未执行（${e4}）` : `E4 已执行（${e4}）；产品操作差距另见业务 Task`;
+    let oActual = driverBlocked
+      ? '控件存在性未静态确认 → UNASSESSED'
+      : 'page driver executed; product gap may remain';
     let oKind = isWeb ? 'LANDING' : 'PAGE';
     const oEv = evidenceFor(op.operation_id);
 
@@ -1327,7 +1346,10 @@ firstBreakpoints.sort((a, b) => {
   return (rank[a.severity] ?? 9) - (rank[b.severity] ?? 9) || a.target_id.localeCompare(b.target_id);
 });
 
-const recommendedOrder = topoSort(TASKS);
+const recommendedOrder = topoSort(TASKS).filter((id) => {
+  const t = TASKS.find((x) => x.task_id === id);
+  return t && t.status !== 'DONE';
+});
 const taskNodes = TASKS.map((t) => ({
   task_id: t.task_id,
   task_type: t.task_type,

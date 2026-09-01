@@ -1,6 +1,6 @@
 # Target Page Driver（TEST-PAGE-DRIVER-001）
 
-Expected 来自 `page-behavior.manifest.json`。  
+Expected 来自 `page-behavior.manifest.json`。
 Actual 来自 `driver/` + Fake Runtime + adapters，**禁止**回填 Expected。
 
 ## 结构
@@ -19,7 +19,7 @@ npx playwright test
 node scripts/verify-target.mjs --mode=current --format=json
 ```
 
-Driver 以 `driver/page-driver-runtime.js` 存在为落地标记。  
+Driver 以 `driver/page-driver-runtime.js` 存在为落地标记。
 可选：`TARGET_PAGE_BASE_URL`（live App）；缺省时使用 Fake Runtime。
 
 ## 证据

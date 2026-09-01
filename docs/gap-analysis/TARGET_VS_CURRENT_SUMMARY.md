@@ -8,8 +8,8 @@ owner: Smart BLE QA / Engineering
 last_reviewed: 2026-09-01
 approved_by: null
 generated_from: reports/target-vs-current/target-vs-current.json
-content_hash: 533f6380d58101d7514b159f5f99ab44cb537c34731a2d354416d91c7b7fe64c
-commit: 5a22899f42ef9c73713be9fb4797afd49dddaad6
+content_hash: 5c58aa6d543f8943886694a38cf03bf4accee2799a5b5636257017e4b676e591
+commit: ae13e90ea5ad38a4e416b5783a4956a81f827547
 supersedes: TP-G2 v1 (reports/target-vs-current-v1/)
 ```
 
@@ -23,13 +23,13 @@ supersedes: TP-G2 v1 (reports/target-vs-current-v1/)
 | HARNESS_PASS / FAIL | 89 / 0 |
 | TARGET_CONTRACT_FAIL | 0 |
 | TEST_INFRA_FAIL | 0 |
-| CURRENT_PASS / FAIL | 35 / 19 |
+| CURRENT_PASS / FAIL | 265 / 19 |
 | structured cases | 54 |
-| 页面 blocked_specs / blocked_cases | 11 / 229 |
-| 页面阻断原因 | BLOCKED_BY_TARGET_DRIVER |
-| 独立 blockers | BLK-TOOL-PLAYWRIGHT + BLK-TEST-PAGE-DRIVER |
+| 页面 blocked_specs / blocked_cases | 0 / 0 |
+| 页面阻断原因 | null |
+| 独立 blockers | BLK-TOOL-PLAYWRIGHT [CLEARED] + BLK-TEST-PAGE-DRIVER [CLEARED] |
 
-**说明：** `blocked_cases=229` 是受阻 Case 数，**不是**产品缺陷数。Playwright 与 Page Driver 分别登记。
+**说明：** `blocked_cases=0` 是受阻 Case 数，**不是**产品缺陷数。Playwright 与 Page Driver 分别登记。
 
 ## 2. Target Coverage（canonical totals）
 
@@ -61,7 +61,7 @@ PROTO 仅使用 `PROTO-001`..`PROTO-011`（不是 Service UUID）。
 
 - P0: **2**
 - P1: **12**
-- P2: **1**
+- P2: **0**
 - P3: **0**
 
 ### affected_target_records_by_severity
@@ -91,18 +91,18 @@ PROTO 仅使用 `PROTO-001`..`PROTO-011`（不是 Service UUID）。
 
 - IMPLEMENTED_UNTESTED: 60
 - UNASSESSED: 492
-- NOT_IMPLEMENTED: 39
+- NOT_IMPLEMENTED: 28
 - CONFIRMED_PARTIAL: 41
-- CONFIRMED_IMPLEMENTED: 11
+- CONFIRMED_IMPLEMENTED: 22
 - CONFIRMED_MISSING: 4
 
 ### verification_status
 
-- AUTOMATED_PASS: 75
+- AUTOMATED_PASS: 86
 - HARDWARE_PENDING: 59
 - AUTOMATED_FAIL: 66
 - NOT_EXECUTED: 293
-- BLOCKED_BY_TARGET_DRIVER: 150
+- EXECUTED: 139
 - BLOCKED_BY_FIXTURE: 4
 
 ## 5. Top 20 First Breakpoints
@@ -130,18 +130,18 @@ PROTO 仅使用 `PROTO-001`..`PROTO-011`（不是 Service UUID）。
 
 ## 6. Task waves（拓扑序前 12）
 
-1. **TEST-CURRENT-INTEGRITY-001** — Current 度量完整性（TP-G1-R3 已完成）（type=TESTABILITY, sev=—, gaps≈0）
-2. **ENV-PLAYWRIGHT-001** — 安装并锁定 Playwright / H5 harness（type=ENVIRONMENT, sev=P2, gaps≈11）
-3. **TEST-PAGE-DRIVER-001** — 实现 Target Page Driver（type=TESTABILITY, sev=P2, gaps≈168）
-4. **PUBLIC-HONESTY-001** — 落地页立即诚实降级（假下载/6+/错误主线→PREVIEW/NOT_RELEASED）（type=SOURCE_FIX, sev=P0, gaps≈0）
-5. **VERSION-METADATA-001** — 根 VERSION + Release Metadata + Public Status（type=SOURCE_FIX, sev=P1, gaps≈0）
-6. **RELEASE-PIPELINE-001** — UniApp + Peripheral/Observer 双固件 Release Pipeline（type=RELEASE, sev=P0, gaps≈1）
-7. **RUNTIME-DISPLAY-NAME-001** — 实现 display-name 解析链（type=SOURCE_FIX, sev=P1, gaps≈2）
-8. **RUNTIME-FILTER-001** — device-filter 关键词命中项匹配对齐目标（type=SOURCE_FIX, sev=P1, gaps≈4）
-9. **RUNTIME-GATT-CODEC-001** — validateHexInput/parseHexInput（type=SOURCE_FIX, sev=P1, gaps≈6）
-10. **RUNTIME-WRITE-QUEUE-001** — write-queue MTU 分包队列（type=SOURCE_FIX, sev=P1, gaps≈2）
-11. **RUNTIME-LOG-REDACTION-001** — log-redaction 脱敏（type=SOURCE_FIX, sev=P1, gaps≈6）
-12. **RUNTIME-RECONNECT-001** — reconnect-policy 有限重连（type=SOURCE_FIX, sev=P1, gaps≈3）
+1. **RELEASE-PIPELINE-001** — UniApp + Peripheral/Observer 双固件 Release Pipeline（type=RELEASE, sev=P0, gaps≈1）
+2. **RUNTIME-DISPLAY-NAME-001** — 实现 display-name 解析链（type=SOURCE_FIX, sev=P1, gaps≈2）
+3. **RUNTIME-FILTER-001** — device-filter 关键词命中项匹配对齐目标（type=SOURCE_FIX, sev=P1, gaps≈4）
+4. **RUNTIME-GATT-CODEC-001** — validateHexInput/parseHexInput（type=SOURCE_FIX, sev=P1, gaps≈6）
+5. **RUNTIME-WRITE-QUEUE-001** — write-queue MTU 分包队列（type=SOURCE_FIX, sev=P1, gaps≈2）
+6. **RUNTIME-LOG-REDACTION-001** — log-redaction 脱敏（type=SOURCE_FIX, sev=P1, gaps≈6）
+7. **RUNTIME-RECONNECT-001** — reconnect-policy 有限重连（type=SOURCE_FIX, sev=P1, gaps≈3）
+8. **RUNTIME-SESSION-001** — Registry subscription_count + 配网会话分类（type=SOURCE_FIX, sev=P1, gaps≈8）
+9. **RUNTIME-CONNECTION-DISCOVERY-001** — connectDevice 编排服务发现（type=SOURCE_FIX, sev=P1, gaps≈3）
+10. **OTA-PACKAGE-001** — 客户端 Firmware Package 六项校验（type=SOURCE_FIX, sev=P1, gaps≈4）
+11. **OTA-CLIENT-001** — 客户端完整 OTA 事务（CTRL start→ready→DATA→commit）（type=SOURCE_FIX, sev=P0, gaps≈15）
+12. **ESP32-BUILD-001** — 两环境、无固定 COM、模块化入口（type=SOURCE_FIX, sev=P1, gaps≈0）
 
 完整图：`reports/target-vs-current/task-dependency-graph.json`。
 
@@ -159,7 +159,7 @@ PROTO 仅使用 `PROTO-001`..`PROTO-011`（不是 Service UUID）。
 ## 8. 外部 Blocker
 
 - **BLK-TOOL-PLAYWRIGHT** [CLEARED] @playwright/test 未安装 → 页面 E4 BLOCKED_BY_TOOLCHAIN → ENV-PLAYWRIGHT-001
-- **BLK-TEST-PAGE-DRIVER** [OPEN] TARGET_PAGE_DRIVER 未实现 → TEST-PAGE-DRIVER-001
+- **BLK-TEST-PAGE-DRIVER** [CLEARED] TARGET_PAGE_DRIVER 未实现 → TEST-PAGE-DRIVER-001
 - **BLK-TOOL-PLATFORMIO** [OPEN] PlatformIO 可能未安装 → ESP32 build NOT_EXECUTED（本轮禁止 upload） → ESP32-BUILD-001
 - **BLK-HW-ANDROID** [OPEN] adb devices 可能为空 → HARDWARE_PENDING → VERIFY-ANDROID-001
 - **BLK-HW-ESP32** [OPEN] 无 ESP32 USB 串口 / Observer 夹具 → BLOCKED_BY_FIXTURE → VERIFY-ESP32-001

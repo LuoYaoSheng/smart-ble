@@ -19,9 +19,9 @@
       "gap_kind": "LANDING",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
+      "verification_status": "EXECUTED",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
+      "e4_verification": "EXECUTED",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -31,14 +31,14 @@
       ],
       "test_results": [],
       "expected": "Release Metadata 完整且 E6 门通过",
-      "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
+      "actual": "page driver executed; product gap may remain",
+      "first_breakpoint": "E4 已由 Page Driver 执行（EXECUTED）；产品态差距另见业务 Task",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
       "root_cause_id": null,
-      "task_id": "TEST-PAGE-DRIVER-001",
+      "task_id": null,
       "release_blocking": false
     },
     {
@@ -48,9 +48,9 @@
       "gap_kind": "LANDING",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
+      "verification_status": "EXECUTED",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
+      "e4_verification": "EXECUTED",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -60,14 +60,14 @@
       ],
       "test_results": [],
       "expected": "产物未齐/E5 未全",
-      "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
+      "actual": "page driver executed; product gap may remain",
+      "first_breakpoint": "E4 已由 Page Driver 执行（EXECUTED）；产品态差距另见业务 Task",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
       "root_cause_id": null,
-      "task_id": "TEST-PAGE-DRIVER-001",
+      "task_id": null,
       "release_blocking": false
     },
     {
@@ -77,9 +77,9 @@
       "gap_kind": "LANDING",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
+      "verification_status": "EXECUTED",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
+      "e4_verification": "EXECUTED",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -89,14 +89,14 @@
       ],
       "test_results": [],
       "expected": "无任何公开产物",
-      "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
+      "actual": "page driver executed; product gap may remain",
+      "first_breakpoint": "E4 已由 Page Driver 执行（EXECUTED）；产品态差距另见业务 Task",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
       "root_cause_id": null,
-      "task_id": "TEST-PAGE-DRIVER-001",
+      "task_id": null,
       "release_blocking": false
     },
     {
@@ -106,9 +106,9 @@
       "gap_kind": "LANDING",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
+      "verification_status": "EXECUTED",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
+      "e4_verification": "EXECUTED",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -118,14 +118,14 @@
       ],
       "test_results": [],
       "expected": "截图/原型缺失",
-      "actual": "no static confirmation; automation blocked",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）；静态态未单独确认 → UNASSESSED",
+      "actual": "page driver executed; product gap may remain",
+      "first_breakpoint": "E4 已由 Page Driver 执行（EXECUTED）；产品态差距另见业务 Task",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
       "root_cause_id": null,
-      "task_id": "TEST-PAGE-DRIVER-001",
+      "task_id": null,
       "release_blocking": false
     },
     {
@@ -135,9 +135,9 @@
       "gap_kind": "LANDING",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
+      "verification_status": "EXECUTED",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
+      "e4_verification": "EXECUTED",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -147,14 +147,14 @@
       ],
       "test_results": [],
       "expected": "主 CTA（体验）",
-      "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
+      "actual": "page driver executed; product gap may remain",
+      "first_breakpoint": "E4 已执行（EXECUTED）；产品操作差距另见业务 Task",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
       "root_cause_id": null,
-      "task_id": "TEST-PAGE-DRIVER-001",
+      "task_id": null,
       "release_blocking": false
     },
     {
@@ -164,9 +164,9 @@
       "gap_kind": "LANDING",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
+      "verification_status": "EXECUTED",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
+      "e4_verification": "EXECUTED",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -176,14 +176,14 @@
       ],
       "test_results": [],
       "expected": "次 CTA（GitHub）",
-      "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
+      "actual": "page driver executed; product gap may remain",
+      "first_breakpoint": "E4 已执行（EXECUTED）；产品操作差距另见业务 Task",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
       "root_cause_id": null,
-      "task_id": "TEST-PAGE-DRIVER-001",
+      "task_id": null,
       "release_blocking": false
     },
     {
@@ -193,9 +193,9 @@
       "gap_kind": "LANDING",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
+      "verification_status": "EXECUTED",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
+      "e4_verification": "EXECUTED",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -205,14 +205,14 @@
       ],
       "test_results": [],
       "expected": "下载 Android APK",
-      "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
+      "actual": "page driver executed; product gap may remain",
+      "first_breakpoint": "E4 已执行（EXECUTED）；产品操作差距另见业务 Task",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
       "root_cause_id": null,
-      "task_id": "TEST-PAGE-DRIVER-001",
+      "task_id": null,
       "release_blocking": false
     },
     {
@@ -222,9 +222,9 @@
       "gap_kind": "LANDING",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
+      "verification_status": "EXECUTED",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
+      "e4_verification": "EXECUTED",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -234,14 +234,14 @@
       ],
       "test_results": [],
       "expected": "微信小程序码",
-      "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
+      "actual": "page driver executed; product gap may remain",
+      "first_breakpoint": "E4 已执行（EXECUTED）；产品操作差距另见业务 Task",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
       "root_cause_id": null,
-      "task_id": "TEST-PAGE-DRIVER-001",
+      "task_id": null,
       "release_blocking": false
     },
     {
@@ -251,9 +251,9 @@
       "gap_kind": "LANDING",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
+      "verification_status": "EXECUTED",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
+      "e4_verification": "EXECUTED",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -263,14 +263,14 @@
       ],
       "test_results": [],
       "expected": "查看证据",
-      "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
+      "actual": "page driver executed; product gap may remain",
+      "first_breakpoint": "E4 已执行（EXECUTED）；产品操作差距另见业务 Task",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
       "root_cause_id": null,
-      "task_id": "TEST-PAGE-DRIVER-001",
+      "task_id": null,
       "release_blocking": false
     },
     {
@@ -280,9 +280,9 @@
       "gap_kind": "LANDING",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
+      "verification_status": "EXECUTED",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
+      "e4_verification": "EXECUTED",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -292,14 +292,14 @@
       ],
       "test_results": [],
       "expected": "查看已知限制",
-      "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
+      "actual": "page driver executed; product gap may remain",
+      "first_breakpoint": "E4 已执行（EXECUTED）；产品操作差距另见业务 Task",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
       "root_cause_id": null,
-      "task_id": "TEST-PAGE-DRIVER-001",
+      "task_id": null,
       "release_blocking": false
     },
     {
@@ -309,9 +309,9 @@
       "gap_kind": "LANDING",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
+      "verification_status": "EXECUTED",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
+      "e4_verification": "EXECUTED",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -321,14 +321,14 @@
       ],
       "test_results": [],
       "expected": "导航锚点",
-      "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
+      "actual": "page driver executed; product gap may remain",
+      "first_breakpoint": "E4 已执行（EXECUTED）；产品操作差距另见业务 Task",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
       "root_cause_id": null,
-      "task_id": "TEST-PAGE-DRIVER-001",
+      "task_id": null,
       "release_blocking": false
     },
     {
@@ -338,9 +338,9 @@
       "gap_kind": "LANDING",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
+      "verification_status": "EXECUTED",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
+      "e4_verification": "EXECUTED",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -350,14 +350,14 @@
       ],
       "test_results": [],
       "expected": "快速开始三选一",
-      "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
+      "actual": "page driver executed; product gap may remain",
+      "first_breakpoint": "E4 已执行（EXECUTED）；产品操作差距另见业务 Task",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
       "root_cause_id": null,
-      "task_id": "TEST-PAGE-DRIVER-001",
+      "task_id": null,
       "release_blocking": false
     },
     {
@@ -367,9 +367,9 @@
       "gap_kind": "LANDING",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "BLOCKED_BY_TARGET_DRIVER",
+      "verification_status": "EXECUTED",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
+      "e4_verification": "EXECUTED",
       "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
@@ -379,14 +379,14 @@
       ],
       "test_results": [],
       "expected": "Smart HID 区链接",
-      "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
+      "actual": "page driver executed; product gap may remain",
+      "first_breakpoint": "E4 已执行（EXECUTED）；产品操作差距另见业务 Task",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
       "root_cause_id": null,
-      "task_id": "TEST-PAGE-DRIVER-001",
+      "task_id": null,
       "release_blocking": false
     },
     {
@@ -398,7 +398,7 @@
       "implementation_status": "UNASSESSED",
       "verification_status": "HARDWARE_PENDING",
       "static_implementation": "UNASSESSED",
-      "e4_verification": "BLOCKED_BY_TARGET_DRIVER",
+      "e4_verification": "EXECUTED",
       "e5_verification": "HARDWARE_PENDING",
       "severity": null,
       "evidence_level": "E5",
@@ -408,14 +408,14 @@
       ],
       "test_results": [],
       "expected": "30 分钟 Clean Machine 入口",
-      "actual": "控件存在性未静态确认 → UNASSESSED",
-      "first_breakpoint": "E4 未执行（BLOCKED_BY_TARGET_DRIVER）",
+      "actual": "page driver executed; product gap may remain",
+      "first_breakpoint": "E4 已执行（EXECUTED）；产品操作差距另见业务 Task",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
       "root_cause_id": null,
-      "task_id": "TEST-PAGE-DRIVER-001",
+      "task_id": null,
       "release_blocking": false
     },
     {
