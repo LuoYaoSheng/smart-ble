@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 84b1f1fce2774299ac06c8f40e5c8de39f35091776b8892e8f95e78b3f2b1fa5
+content_hash: 4139b2ab376a9a56083c81495831f051ac7804278a5f56936064e429e04b9571
 ```
 
 ## 模块树（path 事实）
@@ -21,7 +21,7 @@ content_hash: 84b1f1fce2774299ac06c8f40e5c8de39f35091776b8892e8f95e78b3f2b1fa5
 | errors.js | 是 | ERR-* | |
 | display-name.js | 是 | FEAT-013, TEST-U-006 | RUNTIME-DISPLAY-NAME-001 DONE |
 | log-redaction.js | **否** | FEAT-040, TEST-U-013 | NOT_IMPLEMENTED |
-| write-queue.js | **否** | FEAT-030, TEST-U-011 | NOT_IMPLEMENTED |
+| write-queue.js | 是 | FEAT-029/030, TEST-U-011 | RUNTIME-WRITE-QUEUE-001 DONE |
 | reconnect-policy.js | **否** | FEAT-023/024, TEST-I-003 | NOT_IMPLEMENTED |
 
 ## OTA
@@ -43,4 +43,4 @@ content_hash: 84b1f1fce2774299ac06c8f40e5c8de39f35091776b8892e8f95e78b3f2b1fa5
 
 ## Runtime 差距记录数
 
-报告 runtime.json records = 34
+报告 runtime.json records = 15

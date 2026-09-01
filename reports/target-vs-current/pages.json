@@ -4,14 +4,14 @@
       "target_id": "PAGE-001",
       "target_type": "page",
       "dimension": "page",
-      "gap_kind": "RUNTIME",
+      "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "AUTOMATED_FAIL",
+      "verification_status": "EXECUTED",
       "static_implementation": "UNASSESSED",
       "e4_verification": "EXECUTED",
       "e5_verification": "HARDWARE_PENDING",
-      "severity": "P1",
+      "severity": null,
       "evidence_level": "E5",
       "implementation_refs": [
         {
@@ -26,320 +26,33 @@
         "TEST-A-005",
         "TEST-W-001",
         "TEST-W-007",
-        "TEST-E-001",
-        "TEST-U-008",
-        "TEST-U-006",
-        "TEST-U-007",
-        "TEST-U-001",
-        "TEST-U-005",
-        "TEST-I-003",
-        "TEST-I-001",
-        "TEST-I-002",
-        "TEST-U-015",
-        "TEST-I-009"
+        "TEST-E-001"
       ],
-      "test_results": [
-        {
-          "test_id": "TEST-U-008",
-          "status": "PASS",
-          "case_id": "current:advertisement-target.test.mjs:TEST-U-008 目标层：services/ble-runtime/advertisement.js normalizeAdvertisement",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-006",
-          "status": "PASS",
-          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-01 0x09 Complete Local Name",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-006",
-          "status": "PASS",
-          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-02 0x08 Short Local Name",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-006",
-          "status": "PASS",
-          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-03 device.name fallback",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-006",
-          "status": "PASS",
-          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-04 manufacturer fallback",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-006",
-          "status": "PASS",
-          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-05 device id fallback",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-006",
-          "status": "PASS",
-          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-06 UTF-8",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-006",
-          "status": "PASS",
-          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-07 empty localName skips",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-006",
-          "status": "PASS",
-          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-08 invalid bytes no throw",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-006",
-          "status": "PASS",
-          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-09 hex string advertisement",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-006",
-          "status": "PASS",
-          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-10 Uint8Array",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-006",
-          "status": "PASS",
-          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-11 Array of bytes",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-006",
-          "status": "PASS",
-          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-12 priority order (REQ-013)",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-006",
-          "status": "PASS",
-          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-13 source correct",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-006",
-          "status": "PASS",
-          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-14 confidence correct",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-006",
-          "status": "PASS",
-          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-15 no mutation",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-006",
-          "status": "PASS",
-          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-16 deterministic",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-006",
-          "status": "PASS",
-          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-17 normalizeDisplayName keeps case and separators",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-006",
-          "status": "PASS",
-          "case_id": "current:device-display-name-target.test.mjs:TEST-U-006-DN-18 attachDeviceDisplayName fields",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-007",
-          "status": "PASS",
-          "case_id": "current:device-filter-target.test.mjs:TEST-U-007 目标层：services/ble-runtime/device-filter.js filterBleDevices",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-007",
-          "status": "PASS",
-          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-01 name match",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-007",
-          "status": "PASS",
-          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-02 localName match",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-007",
-          "status": "PASS",
-          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-03 id match",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-007",
-          "status": "PASS",
-          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-04 service UUID match",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-007",
-          "status": "PASS",
-          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-05 manufacturer match",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-007",
-          "status": "PASS",
-          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-06 case insensitive",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-007",
-          "status": "PASS",
-          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-07 trim keyword",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-007",
-          "status": "PASS",
-          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-08 empty keyword returns all (after other filters)",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-007",
-          "status": "PASS",
-          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-09 undefined fields safe",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-007",
-          "status": "PASS",
-          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-10 multiple devices subset",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-007",
-          "status": "PASS",
-          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-11 no mutation",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-007",
-          "status": "PASS",
-          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-12 unicode keyword",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-007",
-          "status": "PASS",
-          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-13 duplicate deviceId not duplicated",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-007",
-          "status": "PASS",
-          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-14 service UUID case insensitive",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-007",
-          "status": "PASS",
-          "case_id": "current:device-filter-target.test.mjs:TEST-U-007-15 manufacturer hex bytes",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-006",
-          "status": "PASS",
-          "case_id": "current:device-name-target.test.mjs:TEST-U-006 目标层：services/ble-runtime/display-name.js",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-001",
-          "status": "PASS",
-          "case_id": "current:platform-permission-target.test.mjs:TEST-U-001/003/004 目标层：ble-runtime/platform.js + services/scan-permission.js",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-005",
-          "status": "PASS",
-          "case_id": "current:session-state-target.test.mjs:TEST-U-005 目标层：ble-runtime/scan-session.js + device-collection.js",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-I-003",
-          "status": "PASS",
-          "case_id": "current:connection-runtime-target.test.mjs:目标层：ble-runtime connectDevice 并发去重 + 主动断开",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-I-003",
-          "status": "PASS",
-          "case_id": "current:connection-runtime-target.test.mjs:目标层：连接失败不残留半开会话",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-I-001",
-          "status": "PASS",
-          "case_id": "current:lifecycle-cleanup-target.test.mjs:目标层：扫描停止后运行时无残留监听/会话",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-I-002",
-          "status": "PASS",
-          "case_id": "current:scan-runtime-target.test.mjs:TEST-I-002 目标层：ble-runtime/index.js 扫描生命周期",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-005",
-          "status": "FAIL",
-          "case_id": "current:session-state-target.test.mjs:TEST-U-005 目标层：connected-session-registry.js subscription_count（DEC-017）",
-          "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段"
-        },
-        {
-          "test_id": "TEST-U-015",
-          "status": "FAIL",
-          "case_id": "current:smart-hid-state-target.test.mjs:TEST-U-015 目标层：smart-hid/profile.js + workflow.js",
-          "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'"
-        },
-        {
-          "test_id": "TEST-I-009",
-          "status": "FAIL",
-          "case_id": "current:smart-hid-provision-target.test.mjs:TEST-I-009 目标层：runProvisionTransaction 顺序（waiter 先注册）",
-          "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,"
-        },
-        {
-          "test_id": "TEST-I-009",
-          "status": "FAIL",
-          "case_id": "current:smart-hid-provision-target.test.mjs:TEST-I-009 目标层：writeProfileCandidate 分帧写入到达平台",
-          "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba"
-        }
-      ],
+      "test_results": [],
       "expected": "10 states / 14 operations",
-      "actual": "NOT_IMPLEMENTED: [TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
-      "first_breakpoint": "[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段",
+      "actual": "E4 executed via Page Driver; pass=— fail=—",
+      "first_breakpoint": "Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task",
       "downstream_impact": [
         "state_cases=10",
         "operation_cases=14"
       ],
       "dependencies": [],
-      "root_cause_id": "RC-SESSION-REGISTRY",
-      "task_id": "RUNTIME-SESSION-001",
+      "root_cause_id": null,
+      "task_id": null,
       "release_blocking": false
     },
     {
       "target_id": "PAGE-002",
       "target_type": "page",
       "dimension": "page",
-      "gap_kind": "RUNTIME",
+      "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "AUTOMATED_FAIL",
+      "verification_status": "EXECUTED",
       "static_implementation": "UNASSESSED",
       "e4_verification": "EXECUTED",
       "e5_verification": "HARDWARE_PENDING",
-      "severity": "P1",
+      "severity": null,
       "evidence_level": "E5",
       "implementation_refs": [
         {
@@ -355,33 +68,19 @@
         "TEST-H-001",
         "TEST-H-002",
         "TEST-H-003",
-        "TEST-W-010",
-        "TEST-U-013"
+        "TEST-W-010"
       ],
-      "test_results": [
-        {
-          "test_id": "TEST-U-013",
-          "status": "FAIL",
-          "case_id": "current:logging-redaction-target.test.mjs:TEST-U-013 目标层：services/ble-runtime/log-redaction.js",
-          "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js"
-        },
-        {
-          "test_id": "TEST-I-009",
-          "status": "FAIL",
-          "case_id": "current:smart-hid-session-ownership-target.test.mjs:目标层：配网会话与活动会话口径隔离",
-          "first_breakpoint": "[REQ-053/PAGE-007 排除规则] 第一断点: Registry 无配网会话分类/排除接口——PAGE-007 口径无法排除配网会话"
-        }
-      ],
+      "test_results": [],
       "expected": "12 states / 11 operations",
-      "actual": "NOT_IMPLEMENTED: [TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-      "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
+      "actual": "E4 executed via Page Driver; pass=— fail=—",
+      "first_breakpoint": "Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task",
       "downstream_impact": [
         "state_cases=12",
         "operation_cases=11"
       ],
       "dependencies": [],
-      "root_cause_id": "RC-LOG-REDACTION",
-      "task_id": "RUNTIME-LOG-REDACTION-001",
+      "root_cause_id": null,
+      "task_id": null,
       "release_blocking": false
     },
     {
@@ -411,7 +110,7 @@
       ],
       "test_results": [],
       "expected": "2 states / 4 operations",
-      "actual": "E4 executed via Page Driver; pass=230 fail=0",
+      "actual": "E4 executed via Page Driver; pass=— fail=—",
       "first_breakpoint": "Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task",
       "downstream_impact": [
         "state_cases=2",
@@ -428,9 +127,9 @@
       "dimension": "page",
       "gap_kind": "PAGE",
       "priority": "Must",
-      "implementation_status": "IMPLEMENTED_UNTESTED",
-      "verification_status": "AUTOMATED_PASS",
-      "static_implementation": "CONFIRMED_IMPLEMENTED",
+      "implementation_status": "UNASSESSED",
+      "verification_status": "EXECUTED",
+      "static_implementation": "UNASSESSED",
       "e4_verification": "EXECUTED",
       "e5_verification": "HARDWARE_PENDING",
       "severity": null,
@@ -448,16 +147,9 @@
         "TEST-H-004",
         "TEST-W-010"
       ],
-      "test_results": [
-        {
-          "test_id": null,
-          "status": "PASS",
-          "case_id": "current:history-retention-target.test.mjs:目标层：smart-hid/known-devices.js",
-          "first_breakpoint": null
-        }
-      ],
+      "test_results": [],
       "expected": "3 states / 5 operations",
-      "actual": "E4 executed via Page Driver; pass=230 fail=0",
+      "actual": "E4 executed via Page Driver; pass=— fail=—",
       "first_breakpoint": "Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task",
       "downstream_impact": [
         "state_cases=3",
@@ -497,7 +189,7 @@
       ],
       "test_results": [],
       "expected": "6 states / 6 operations",
-      "actual": "E4 executed via Page Driver; pass=230 fail=0",
+      "actual": "E4 executed via Page Driver; pass=— fail=—",
       "first_breakpoint": "Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task",
       "downstream_impact": [
         "state_cases=6",
@@ -512,14 +204,14 @@
       "target_id": "PAGE-006",
       "target_type": "page",
       "dimension": "page",
-      "gap_kind": "RUNTIME",
+      "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "AUTOMATED_FAIL",
+      "verification_status": "EXECUTED",
       "static_implementation": "UNASSESSED",
       "e4_verification": "EXECUTED",
       "e5_verification": "HARDWARE_PENDING",
-      "severity": "P1",
+      "severity": null,
       "evidence_level": "E5",
       "implementation_refs": [
         {
@@ -547,228 +239,33 @@
         "TEST-E-003",
         "TEST-E-004",
         "TEST-E-005",
-        "TEST-E-007",
-        "TEST-I-006",
-        "TEST-U-016"
+        "TEST-E-007"
       ],
-      "test_results": [
-        {
-          "test_id": "TEST-U-009",
-          "status": "PASS",
-          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-009/010 目标层：utils/ble-utils.js + 属性约束目标接口",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-009",
-          "status": "PASS",
-          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-01 HEX spaced AA BB CC",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-009",
-          "status": "PASS",
-          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-02 HEX colon AA:BB:CC",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-009",
-          "status": "PASS",
-          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-03 HEX lower aabbcc",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-009",
-          "status": "PASS",
-          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-04 HEX spaces only separators",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-009",
-          "status": "PASS",
-          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-05 HEX newlines",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-009",
-          "status": "PASS",
-          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-06 invalid character",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-009",
-          "status": "PASS",
-          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-07 odd length",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-009",
-          "status": "PASS",
-          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-08 empty",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-009",
-          "status": "PASS",
-          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-09 large payload",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-009",
-          "status": "PASS",
-          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-10 no mutation of input",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-009",
-          "status": "PASS",
-          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-11 TEXT utf8 plain",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-009",
-          "status": "PASS",
-          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-12 TEXT chinese",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-009",
-          "status": "PASS",
-          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-13 TEXT emoji",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-009",
-          "status": "PASS",
-          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-14 TEXT empty allowed",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-009",
-          "status": "PASS",
-          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-15 Read hex format",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-009",
-          "status": "PASS",
-          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-16 Read text format",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-009",
-          "status": "PASS",
-          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-17 Read auto format",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-009",
-          "status": "PASS",
-          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-18 invalid hex no BLE call",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-009",
-          "status": "PASS",
-          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-19 valid hex BLE call",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-009",
-          "status": "PASS",
-          "case_id": "current:gatt-codec-target.test.mjs:TEST-U-010-20 text BLE call",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-I-006",
-          "status": "PASS",
-          "case_id": "current:multi-device-target.test.mjs:目标层：双设备隔离与 Registry 快照",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-I-005",
-          "status": "PASS",
-          "case_id": "current:notify-routing-target.test.mjs:目标层：ble-runtime 订阅路由与 tuple 隔离",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-I-004",
-          "status": "PASS",
-          "case_id": "current:read-write-runtime-target.test.mjs:目标层：ble-runtime 读写与错误归一化",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-016",
-          "status": "FAIL",
-          "case_id": "current:ota-state-target.test.mjs:TEST-U-016 目标层：utils/ota_manager.js 包校验目标接口",
-          "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）"
-        },
-        {
-          "test_id": "TEST-I-003",
-          "status": "FAIL",
-          "case_id": "current:reconnect-state-target.test.mjs:目标层：services/ble-runtime/reconnect-policy.js",
-          "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js"
-        },
-        {
-          "test_id": "TEST-U-011",
-          "status": "FAIL",
-          "case_id": "current:write-queue-target.test.mjs:TEST-U-011 目标层：services/ble-runtime/write-queue.js",
-          "first_breakpoint": "[TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js"
-        },
-        {
-          "test_id": "TEST-I-008",
-          "status": "FAIL",
-          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-008 OtaManager：STATUS 订阅后、DATA 前必须精确写 CTRL start",
-          "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start"
-        },
-        {
-          "test_id": "TEST-I-008",
-          "status": "FAIL",
-          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-008 OtaManager：Package 校验失败时平台写调用为 0",
-          "first_breakpoint": "[TEST-I-008 FEAT-081 DEC-016] 第一断点: validateOtaPackage/validatePackage 缺失；第一断点: 传输前包校验接口不存在"
-        },
-        {
-          "test_id": "TEST-I-008",
-          "status": "FAIL",
-          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-010 OtaManager：cancel 必须写 CTRL abort（完整 UUID）",
-          "first_breakpoint": "cancel 必须向 CTRL 完整 UUID 写入 abort"
-        },
-        {
-          "test_id": "TEST-I-008",
-          "status": "FAIL",
-          "case_id": "current:ota-transaction-target.test.mjs:TEST-I-010 OtaManager：成功后必须 reboot/reconnect 并读 firmware_version",
-          "first_breakpoint": "success 后必须读取 firmware_version"
-        },
-        {
-          "test_id": "TEST-I-003",
-          "status": "FAIL",
-          "case_id": "current:service-discovery-target.test.mjs:目标层：服务发现失败关闭半开连接",
-          "first_breakpoint": "[REQ-020/021 ERR-CONN-03] 第一断点: connectDevice 未编排服务发现（失败不报错=半开泄漏面）"
-        }
-      ],
+      "test_results": [],
       "expected": "10 states / 14 operations",
-      "actual": "NOT_IMPLEMENTED: [TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
-      "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
+      "actual": "E4 executed via Page Driver; pass=— fail=—",
+      "first_breakpoint": "Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task",
       "downstream_impact": [
         "state_cases=10",
         "operation_cases=14"
       ],
       "dependencies": [],
-      "root_cause_id": "RC-OTA-PACKAGE",
-      "task_id": "OTA-PACKAGE-001",
+      "root_cause_id": null,
+      "task_id": null,
       "release_blocking": false
     },
     {
       "target_id": "PAGE-007",
       "target_type": "page",
       "dimension": "page",
-      "gap_kind": "RUNTIME",
+      "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "AUTOMATED_FAIL",
+      "verification_status": "EXECUTED",
       "static_implementation": "UNASSESSED",
       "e4_verification": "EXECUTED",
       "e5_verification": "HARDWARE_PENDING",
-      "severity": "P1",
+      "severity": null,
       "evidence_level": "E5",
       "implementation_refs": [
         {
@@ -784,27 +281,19 @@
         "TEST-A-009",
         "TEST-W-008",
         "TEST-W-009",
-        "TEST-E-002",
-        "TEST-I-009"
+        "TEST-E-002"
       ],
-      "test_results": [
-        {
-          "test_id": "TEST-I-009",
-          "status": "FAIL",
-          "case_id": "current:smart-hid-session-ownership-target.test.mjs:目标层：配网会话与活动会话口径隔离",
-          "first_breakpoint": "[REQ-053/PAGE-007 排除规则] 第一断点: Registry 无配网会话分类/排除接口——PAGE-007 口径无法排除配网会话"
-        }
-      ],
+      "test_results": [],
       "expected": "3 states / 5 operations",
-      "actual": "NOT_IMPLEMENTED: [REQ-053/PAGE-007 排除规则] 第一断点: Registry 无配网会话分类/排除接口——PAGE-007 口径无法排除配网会话",
-      "first_breakpoint": "[REQ-053/PAGE-007 排除规则] 第一断点: Registry 无配网会话分类/排除接口——PAGE-007 口径无法排除配网会话",
+      "actual": "E4 executed via Page Driver; pass=— fail=—",
+      "first_breakpoint": "Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task",
       "downstream_impact": [
         "state_cases=3",
         "operation_cases=5"
       ],
       "dependencies": [],
-      "root_cause_id": "RC-SESSION-REGISTRY",
-      "task_id": "RUNTIME-SESSION-001",
+      "root_cause_id": null,
+      "task_id": null,
       "release_blocking": false
     },
     {
@@ -814,7 +303,7 @@
       "gap_kind": "PAGE",
       "priority": "Must",
       "implementation_status": "CONFIRMED_PARTIAL",
-      "verification_status": "AUTOMATED_PASS",
+      "verification_status": "EXECUTED",
       "static_implementation": "CONFIRMED_PARTIAL",
       "e4_verification": "EXECUTED",
       "e5_verification": "HARDWARE_PENDING",
@@ -835,28 +324,9 @@
         "TEST-W-009",
         "TEST-E-006"
       ],
-      "test_results": [
-        {
-          "test_id": "TEST-U-014",
-          "status": "PASS",
-          "case_id": "current:broadcast-payload-target.test.mjs:TEST-U-014 目标层：utils/advertising-payload.js analyzeAdvertisingPayload",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-I-007",
-          "status": "PASS",
-          "case_id": "current:peripheral-owner-target.test.mjs:目标层：services/wx-peripheral-mode.js 广播入口",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-I-007",
-          "status": "PASS",
-          "case_id": "current:peripheral-owner-target.test.mjs:目标层：wx-peripheral-server 控制器生命周期（平台注入）",
-          "first_breakpoint": null
-        }
-      ],
+      "test_results": [],
       "expected": "12 states / 7 operations",
-      "actual": "E4 executed via Page Driver; pass=230 fail=0",
+      "actual": "E4 executed via Page Driver; pass=— fail=—",
       "first_breakpoint": "广播页内联；Owner/composable 未接入",
       "downstream_impact": [
         "state_cases=12",
@@ -873,9 +343,9 @@
       "dimension": "page",
       "gap_kind": "PAGE",
       "priority": "Must",
-      "implementation_status": "IMPLEMENTED_UNTESTED",
-      "verification_status": "AUTOMATED_PASS",
-      "static_implementation": "CONFIRMED_IMPLEMENTED",
+      "implementation_status": "UNASSESSED",
+      "verification_status": "EXECUTED",
+      "static_implementation": "UNASSESSED",
       "e4_verification": "EXECUTED",
       "e5_verification": "HARDWARE_PENDING",
       "severity": null,
@@ -893,19 +363,11 @@
         "TEST-A-012",
         "TEST-W-010",
         "TEST-R-003",
-        "TEST-R-005",
-        "TEST-U-002"
+        "TEST-R-005"
       ],
-      "test_results": [
-        {
-          "test_id": "TEST-U-002",
-          "status": "PASS",
-          "case_id": "current:version-release-metadata-target.test.mjs:TEST-U-002 目标层：services/version-metadata.js",
-          "first_breakpoint": null
-        }
-      ],
+      "test_results": [],
       "expected": "3 states / 11 operations",
-      "actual": "E4 executed via Page Driver; pass=230 fail=0",
+      "actual": "E4 executed via Page Driver; pass=— fail=—",
       "first_breakpoint": "Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task",
       "downstream_impact": [
         "state_cases=3",
@@ -922,9 +384,9 @@
       "dimension": "page",
       "gap_kind": "PAGE",
       "priority": "Must",
-      "implementation_status": "IMPLEMENTED_UNTESTED",
-      "verification_status": "AUTOMATED_PASS",
-      "static_implementation": "CONFIRMED_IMPLEMENTED",
+      "implementation_status": "UNASSESSED",
+      "verification_status": "EXECUTED",
+      "static_implementation": "UNASSESSED",
       "e4_verification": "EXECUTED",
       "e5_verification": "HARDWARE_PENDING",
       "severity": null,
@@ -942,16 +404,9 @@
         "TEST-A-012",
         "TEST-R-002"
       ],
-      "test_results": [
-        {
-          "test_id": "TEST-P-010",
-          "status": "PASS",
-          "case_id": "current:version-page-model-target.test.mjs:目标层：getVersionPageModel 消费 Metadata 投影 PAGE-010",
-          "first_breakpoint": null
-        }
-      ],
+      "test_results": [],
       "expected": "2 states / 4 operations",
-      "actual": "E4 executed via Page Driver; pass=230 fail=0",
+      "actual": "E4 executed via Page Driver; pass=— fail=—",
       "first_breakpoint": "Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task",
       "downstream_impact": [
         "state_cases=2",
@@ -966,14 +421,14 @@
       "target_id": "WEB-001",
       "target_type": "web",
       "dimension": "web",
-      "gap_kind": "RUNTIME",
+      "gap_kind": "LANDING",
       "priority": "Must",
       "implementation_status": "UNASSESSED",
-      "verification_status": "AUTOMATED_FAIL",
+      "verification_status": "EXECUTED",
       "static_implementation": "UNASSESSED",
       "e4_verification": "EXECUTED",
       "e5_verification": "HARDWARE_PENDING",
-      "severity": "P1",
+      "severity": null,
       "evidence_level": "E6",
       "implementation_refs": [
         {
@@ -992,76 +447,19 @@
         "TEST-R-008",
         "TEST-R-009",
         "TEST-R-010",
-        "TEST-R-011",
-        "TEST-U-002",
-        "TEST-U-013"
+        "TEST-R-011"
       ],
-      "test_results": [
-        {
-          "test_id": "TEST-U-002",
-          "status": "PASS",
-          "case_id": "current:version-release-metadata-target.test.mjs:TEST-U-002 目标层：services/version-metadata.js",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-R-005",
-          "status": "PASS",
-          "case_id": "current:links-and-qr.test.mjs:TEST-R-005 落地页本站相对链接全部可达",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-R-005",
-          "status": "PASS",
-          "case_id": "current:links-and-qr.test.mjs:TEST-R-005 目标文档内链相对且可达（docs/target-product 抽样）",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-R-005",
-          "status": "PASS",
-          "case_id": "current:links-and-qr.test.mjs:TEST-R-009 二维码规则：落地页如含码图必须同时给文本等价",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-R-003",
-          "status": "PASS",
-          "case_id": "current:public-claims.test.mjs:TEST-R-003 生产落地页存在",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-R-003",
-          "status": "PASS",
-          "case_id": "current:public-claims.test.mjs:TEST-R-003 无假下载：APK/固件直链必须伴随 SHA256；无产物时必须诚实 NOT_RELEASED 且无 releases/latest 冒充",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-R-003",
-          "status": "PASS",
-          "case_id": "current:public-claims.test.mjs:TEST-R-003 禁用无证据强声明词（VERIFIED 语义不得无证据出现）",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-R-003",
-          "status": "PASS",
-          "case_id": "current:public-claims.test.mjs:TEST-R-003 禁止错误主线与 6+ 入口误导",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-U-013",
-          "status": "FAIL",
-          "case_id": "current:logging-redaction-target.test.mjs:TEST-U-013 目标层：services/ble-runtime/log-redaction.js",
-          "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js"
-        }
-      ],
+      "test_results": [],
       "expected": "4 states / 11 operations",
-      "actual": "NOT_IMPLEMENTED: [TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-      "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
+      "actual": "E4 executed via Page Driver; pass=— fail=—",
+      "first_breakpoint": "Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task",
       "downstream_impact": [
         "state_cases=4",
         "operation_cases=11"
       ],
       "dependencies": [],
-      "root_cause_id": "RC-LOG-REDACTION",
-      "task_id": "RUNTIME-LOG-REDACTION-001",
+      "root_cause_id": null,
+      "task_id": null,
       "release_blocking": false
     }
   ],
@@ -6295,25 +5693,5 @@
       "release_blocking": false
     }
   ],
-  "blocked": {
-    "specs": 11,
-    "state_cases": 67,
-    "operation_cases": 92,
-    "assertion_cases": 849,
-    "totals": {
-      "pages": 11,
-      "states": 67,
-      "operations": 92,
-      "error_variants": 50,
-      "failure_variants": 92,
-      "cleanup_assertions": 39
-    },
-    "blocked_specs": 0,
-    "blocked_cases": 0,
-    "reason": null,
-    "pass": 230,
-    "fail": 0,
-    "skipped": 0,
-    "notExecuted": false
-  }
+  "blocked": null
 }

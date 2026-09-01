@@ -16,6 +16,7 @@ import {
   formatReadValue,
   normalizeGattPayload,
 } from './gatt-codec.js';
+import { createWriteQueue, chunkForMtu, chunkBytes } from './write-queue.js';
 
 const state = {
   platform: null,
@@ -26,7 +27,8 @@ const state = {
   disconnectListeners: new Map(),
   pendingLocalDisconnects: new Map(),
   discoveryListeners: new Set(),
-  adapterStateListeners: new Set()
+  adapterStateListeners: new Set(),
+  writeQueue: null,
 };
 
 const normalize = (value) => String(value || '').toLowerCase();
@@ -395,7 +397,6 @@ export async function readCharacteristic(session, serviceId, characteristicId, o
 
 export async function writeValue(session, serviceId, characteristicId, value, options = {}) {
   if (session.dead) throw new Error('BLE 连接已断开');
-  const platform = ensureCallbacks();
   const target = charFor(session, serviceId, characteristicId);
 
   let payload = value;
@@ -409,7 +410,6 @@ export async function writeValue(session, serviceId, characteristicId, value, op
     }
     payload = normalized.bytes;
   } else if (typeof value === 'string' && options.encode !== false) {
-    // 未显式 mode 的字符串：按 hex 严格校验（非法不得调用平台）
     const normalized = normalizeGattPayload(value, 'hex');
     if (!normalized.ok) {
       const error = new Error(normalized.error || 'INVALID_HEX');
@@ -420,29 +420,143 @@ export async function writeValue(session, serviceId, characteristicId, value, op
     payload = normalized.bytes;
   }
 
-  const { mode: _mode, encode: _encode, format: _format, timeoutMs: _timeoutMs, timeout: _timeout, ...platformOptions } = options;
-  await call(platform, 'writeBLECharacteristicValue', {
-    ...platformOptions,
+  const {
+    mode: _mode,
+    encode: _encode,
+    format: _format,
+    timeoutMs,
+    timeout,
+    skipQueue,
+    direct,
+    priority,
+    retryCount,
+    ...platformOptions
+  } = options;
+
+  // 直接写（队列 transport / 测试旁路）
+  if (skipQueue || direct) {
+    const platform = ensureCallbacks();
+    await call(platform, 'writeBLECharacteristicValue', {
+      ...platformOptions,
+      deviceId: session.deviceId,
+      serviceId: target.serviceId,
+      characteristicId: target.characteristicId,
+      value: payload,
+    });
+    return;
+  }
+
+  const queue = ensureWriteQueue();
+  const enqueued = queue.enqueueWrite({
     deviceId: session.deviceId,
     serviceId: target.serviceId,
     characteristicId: target.characteristicId,
-    value: payload,
+    payload,
+    rawPayload: payload,
+    mode: options.mode || null,
+    priority,
+    retryCount,
+    timeout: timeoutMs ?? timeout,
+    platformOptions,
   });
+  const result = await enqueued.promise;
+  if (!result?.ok) {
+    const error = new Error(result?.error || result?.state || 'WRITE_FAILED');
+    error.code = result?.state || 'WRITE_FAILED';
+    error.errMsg = result?.error || result?.state || 'WRITE_FAILED';
+    if (result?.errCode != null) error.errCode = result.errCode;
+    error.transaction = result;
+    throw error;
+  }
 }
 
-/** Write via Codec（mode=hex|text）；非法 HEX 不调用平台 API */
+/** Write via Codec → Write Queue → transport；非法 HEX 不入队、不调用平台 */
 export async function writeCharacteristic(session, serviceId, characteristicId, input, options = {}) {
   const mode = options.mode || 'hex';
   const normalized = normalizeGattPayload(input, mode);
   if (!normalized.ok) {
     return { ok: false, error: normalized.error, code: normalized.code, length: 0, wrote: false };
   }
-  await writeValue(session, serviceId, characteristicId, normalized.bytes, {
-    ...options,
-    mode: undefined,
-    encode: false,
+  const queue = ensureWriteQueue();
+  const target = charFor(session, serviceId, characteristicId);
+  const events = [];
+  const stop = queue.onWriteEvent((ev) => {
+    if (ev.deviceId === session.deviceId) events.push(ev);
   });
-  return { ok: true, bytes: normalized.bytes, length: normalized.length, wrote: true };
+  try {
+    const enqueued = queue.enqueueWrite({
+      deviceId: session.deviceId,
+      serviceId: target.serviceId,
+      characteristicId: target.characteristicId,
+      payload: normalized.bytes,
+      mode,
+      priority: options.priority,
+      retryCount: options.retryCount,
+      timeout: options.timeoutMs ?? options.timeout,
+    });
+    const result = await enqueued.promise;
+    if (!result?.ok) {
+      return {
+        ok: false,
+        error: result?.error || result?.state,
+        code: result?.state,
+        length: normalized.length,
+        wrote: false,
+        transactionId: enqueued.id,
+        events,
+      };
+    }
+    return {
+      ok: true,
+      bytes: normalized.bytes,
+      length: normalized.length,
+      wrote: true,
+      transactionId: enqueued.id,
+      events,
+    };
+  } finally {
+    stop?.();
+  }
+}
+
+function ensureWriteQueue() {
+  if (state.writeQueue) return state.writeQueue;
+  state.writeQueue = createWriteQueue({
+    defaultTimeout: 5000,
+    maxDepth: 16,
+    transport: async (tx) => {
+      const platform = ensureCallbacks();
+      try {
+        await call(platform, 'writeBLECharacteristicValue', {
+          ...(tx.platformOptions || {}),
+          deviceId: tx.deviceId,
+          serviceId: tx.serviceId,
+          characteristicId: tx.characteristicId,
+          value: tx.rawPayload !== undefined ? tx.rawPayload : tx.payload,
+        });
+      } catch (error) {
+        const normalized = normalizeBleError(error, 'BLE 写入失败');
+        throw normalized;
+      }
+    },
+  });
+  return state.writeQueue;
+}
+
+export function getWriteQueueState() {
+  return ensureWriteQueue().getQueueState();
+}
+
+export function onWriteQueueEvent(callback) {
+  return ensureWriteQueue().onWriteEvent(callback);
+}
+
+export function cancelWrite(id) {
+  return ensureWriteQueue().cancelWrite(id);
+}
+
+export function cancelDeviceWrites(deviceId) {
+  return ensureWriteQueue().cancelDeviceWrites(deviceId);
 }
 
 export async function setMtu(session, mtu) {
@@ -470,6 +584,8 @@ export function setBlePlatformForTesting(platform) {
 }
 
 export function resetBleRuntimeForTesting() {
+  state.writeQueue?.close?.();
+  state.writeQueue = null;
   state.platform = null;
   state.callbacksRegistered = false;
   state.sessions.clear();
@@ -496,3 +612,5 @@ export {
   formatReadValue,
   normalizeGattPayload,
 };
+
+export { createWriteQueue, chunkForMtu, chunkBytes };

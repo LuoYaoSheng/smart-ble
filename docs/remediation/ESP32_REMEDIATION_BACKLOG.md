@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 84b1f1fce2774299ac06c8f40e5c8de39f35091776b8892e8f95e78b3f2b1fa5
+content_hash: 4139b2ab376a9a56083c81495831f051ac7804278a5f56936064e429e04b9571
 ```
 
 > PUBLIC-HONESTY-001 / VERSION-METADATA-001 状态以 task-dependency-graph.json 为准。未批准 Task 不得执行。
@@ -15,9 +15,9 @@ content_hash: 84b1f1fce2774299ac06c8f40e5c8de39f35091776b8892e8f95e78b3f2b1fa5
 - task_type：SOURCE_FIX
 - severity：P1
 - root_cause_id：RC-ESP32-OTA-ACTION
-- Target IDs（样本）：见 JSON
+- Target IDs（样本）：PROTO-003
 - Test IDs：—
-- First Breakpoint：—
+- First Breakpoint：固件 OTA JSON 使用 action 字段，目标为 op
 - 依赖：ESP32-BUILD-001
 - 解锁：
 - 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
@@ -47,9 +47,9 @@ content_hash: 84b1f1fce2774299ac06c8f40e5c8de39f35091776b8892e8f95e78b3f2b1fa5
 - task_type：SOURCE_FIX
 - severity：P1
 - root_cause_id：RC-ESP32-LED-NAME
-- Target IDs（样本）：见 JSON
+- Target IDs（样本）：PROTO-001
 - Test IDs：—
-- First Breakpoint：—
+- First Breakpoint：固件缺 FF00 LED 指令表
 - 依赖：ESP32-BUILD-001
 - 解锁：ESP32-FAULT-001
 - 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
@@ -63,8 +63,8 @@ content_hash: 84b1f1fce2774299ac06c8f40e5c8de39f35091776b8892e8f95e78b3f2b1fa5
 - task_type：SOURCE_FIX
 - severity：P1
 - root_cause_id：RC-ESP32-OBSERVER
-- Target IDs（样本）：OP-P008-01, OP-P008-02, OP-P008-03, FLOW-008, PROTO-001, PROTO-002, PROTO-003, PROTO-004, PROTO-005, PROTO-009, PROTO-011, EVID-005
-- Test IDs：TEST-P-008, TEST-A-010, TEST-U-014, TEST-I-007, TEST-E-006, TEST-W-009, TEST-E-001
+- Target IDs（样本）：OP-P008-01, OP-P008-02, OP-P008-03, FLOW-008, PROTO-009
+- Test IDs：TEST-P-008, TEST-A-010, TEST-U-014, TEST-I-007, TEST-E-006, TEST-W-009
 - First Breakpoint：hardware/esp32 无 Observer 目标源码
 - 依赖：ESP32-BUILD-001
 - 解锁：VERIFY-ESP32-001

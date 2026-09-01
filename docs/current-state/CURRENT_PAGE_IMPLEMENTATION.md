@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 84b1f1fce2774299ac06c8f40e5c8de39f35091776b8892e8f95e78b3f2b1fa5
+content_hash: 4139b2ab376a9a56083c81495831f051ac7804278a5f56936064e429e04b9571
 ```
 
 ## 路由事实
@@ -24,17 +24,17 @@ content_hash: 84b1f1fce2774299ac06c8f40e5c8de39f35091776b8892e8f95e78b3f2b1fa5
 
 ## 每页状态（来自报告）
 
-- **PAGE-001** impl=UNASSESSED verify=AUTOMATED_FAIL static=UNASSESSED e4=EXECUTED task=RUNTIME-SESSION-001 bp=[TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 sub
-- **PAGE-002** impl=UNASSESSED verify=AUTOMATED_FAIL static=UNASSESSED e4=EXECUTED task=RUNTIME-LOG-REDACTION-001 bp=[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：a
+- **PAGE-001** impl=UNASSESSED verify=EXECUTED static=UNASSESSED e4=EXECUTED task=— bp=Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task
+- **PAGE-002** impl=UNASSESSED verify=EXECUTED static=UNASSESSED e4=EXECUTED task=— bp=Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task
 - **PAGE-003** impl=UNASSESSED verify=EXECUTED static=UNASSESSED e4=EXECUTED task=— bp=Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task
-- **PAGE-004** impl=IMPLEMENTED_UNTESTED verify=AUTOMATED_PASS static=CONFIRMED_IMPLEMENTED e4=EXECUTED task=— bp=Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task
+- **PAGE-004** impl=UNASSESSED verify=EXECUTED static=UNASSESSED e4=EXECUTED task=— bp=Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task
 - **PAGE-005** impl=UNASSESSED verify=EXECUTED static=UNASSESSED e4=EXECUTED task=— bp=Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task
-- **PAGE-006** impl=UNASSESSED verify=AUTOMATED_FAIL static=UNASSESSED e4=EXECUTED task=OTA-PACKAGE-001 bp=[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOta
-- **PAGE-007** impl=UNASSESSED verify=AUTOMATED_FAIL static=UNASSESSED e4=EXECUTED task=RUNTIME-SESSION-001 bp=[REQ-053/PAGE-007 排除规则] 第一断点: Registry 无配网会话分类/排除接口——PAGE-00
-- **PAGE-008** impl=CONFIRMED_PARTIAL verify=AUTOMATED_PASS static=CONFIRMED_PARTIAL e4=EXECUTED task=PAGE-BROADCAST-001 bp=广播页内联；Owner/composable 未接入
-- **PAGE-009** impl=IMPLEMENTED_UNTESTED verify=AUTOMATED_PASS static=CONFIRMED_IMPLEMENTED e4=EXECUTED task=— bp=Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task
-- **PAGE-010** impl=IMPLEMENTED_UNTESTED verify=AUTOMATED_PASS static=CONFIRMED_IMPLEMENTED e4=EXECUTED task=— bp=Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task
-- **WEB-001** impl=UNASSESSED verify=AUTOMATED_FAIL static=UNASSESSED e4=EXECUTED task=RUNTIME-LOG-REDACTION-001 bp=[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：a
+- **PAGE-006** impl=UNASSESSED verify=EXECUTED static=UNASSESSED e4=EXECUTED task=— bp=Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task
+- **PAGE-007** impl=UNASSESSED verify=EXECUTED static=UNASSESSED e4=EXECUTED task=— bp=Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task
+- **PAGE-008** impl=CONFIRMED_PARTIAL verify=EXECUTED static=CONFIRMED_PARTIAL e4=EXECUTED task=PAGE-BROADCAST-001 bp=广播页内联；Owner/composable 未接入
+- **PAGE-009** impl=UNASSESSED verify=EXECUTED static=UNASSESSED e4=EXECUTED task=— bp=Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task
+- **PAGE-010** impl=UNASSESSED verify=EXECUTED static=UNASSESSED e4=EXECUTED task=— bp=Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task
+- **WEB-001** impl=UNASSESSED verify=EXECUTED static=UNASSESSED e4=EXECUTED task=— bp=Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task
 
 ## PAGE-008 静态事实
 
@@ -57,7 +57,7 @@ content_hash: 84b1f1fce2774299ac06c8f40e5c8de39f35091776b8892e8f95e78b3f2b1fa5
 - 契约总量：STATE **67** / OP **92**（`tests/target/pages/page-behavior.manifest.json`）
 - E4：Page Driver 已执行（Fake Runtime）；产品差距另见业务 Task
 - 多数 State/OP 的 static_implementation = **UNASSESSED**（未做控件级静态确认，禁止默认 PARTIAL）
-- `blocked_cases=0` ≠ 产品缺陷数
+- `blocked_cases=undefined` ≠ 产品缺陷数
 
 ## WEB-001
 

@@ -161,22 +161,21 @@ const PAGE_ASSESS = {
   },
   'PAGE-006': {
     product: 'FAIL',
-    task_id: 'RUNTIME-WRITE-QUEUE-001',
-    root_cause_id: 'RC-WRITE-QUEUE',
+    task_id: 'RUNTIME-RECONNECT-001',
+    root_cause_id: 'RC-RECONNECT',
     first_breakpoint: {
-      target: 'FEAT-030',
-      test: 'TEST-U-011',
-      file: 'apps/uniapp/services/ble-runtime/write-queue.js',
+      target: 'FEAT-022',
+      test: 'TEST-I-003',
+      file: 'apps/uniapp/services/ble-runtime/reconnect-policy.js',
       symbol: '(missing)',
-      breakpoint: 'write-queue module missing (RUNTIME-GATT-CODEC-001 CLOSED)',
+      breakpoint: 'reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)',
     },
     also: [
-      { task_id: 'RUNTIME-RECONNECT-001', file: 'apps/uniapp/services/ble-runtime/reconnect-policy.js', breakpoint: 'module missing' },
       { task_id: 'OTA-CLIENT-001', file: 'apps/uniapp/utils/ota_manager.js', breakpoint: 'CTRL start before DATA / validateOtaPackage (TEST-I-008)' },
       { task_id: 'RUNTIME-CONNECTION-DISCOVERY-001', file: 'apps/uniapp/services/ble-runtime/index.js', symbol: 'connectDevice', breakpoint: 'TEST-I-003 asserts discover orchestration gap (semi-open risk)' },
-      { task_id: 'RUNTIME-SESSION-001', breakpoint: 'Notify/session lifecycle remaining after codec' },
+      { task_id: 'RUNTIME-SESSION-001', breakpoint: 'Notify/session lifecycle remaining after write-queue' },
     ],
-    notes: 'RUNTIME-GATT-CODEC-001 DONE（HEX/TEXT/Read/Write Codec）；PAGE-006 剩余 write-queue / reconnect / OTA / session',
+    notes: 'RUNTIME-GATT-CODEC + WRITE-QUEUE DONE；PAGE-006 剩余 reconnect / OTA / session',
   },
   'PAGE-007': {
     product: 'FAIL',
@@ -642,7 +641,7 @@ generated_at: ${pageE4V2.generated_at}
 
 > **原则**：Playwright Fake Runtime harness PASS ≠ 产品实现满足目标。
 > 本报告在 E4 可执行前提下，用静态实现 + Current FAIL 证据给出产品 PASS/FAIL/BLOCKED/NOT_IMPLEMENTED。
-> 本轮 **Runtime filter + display-name + GATT codec 已落地**；未修改 PAGE Vue / ESP32 / OTA / Session / Log-redaction / Write-queue。
+> 本轮 **Runtime filter + display-name + GATT codec + write-queue 已落地**；未修改 PAGE Vue / ESP32 / OTA / Session / Log-redaction。
 
 ## Summary
 
@@ -679,7 +678,7 @@ ${pagesBody}
 
 | Bucket | Pages |
 |---|---|
-| Runtime | PAGE-002 (log-redaction/bridge), PAGE-006 (write-queue/reconnect/OTA；GATT codec DONE), PAGE-007 (session)；PAGE-001 filter+display-name DONE |
+| Runtime | PAGE-002 (log-redaction/bridge), PAGE-006 (reconnect/OTA；codec+write-queue DONE), PAGE-007 (session)；PAGE-001 filter+display-name DONE |
 | Page | PAGE-008 (broadcast composable owner) |
 | Testability | TEST-BRIDGE-TS-001（Smart HID TS） |
 | Metadata | PAGE-010 CLOSED |
@@ -701,8 +700,7 @@ ${pagesBody}
 function renderRemediation(summaryByPage) {
   const order = [
     ['PAGE-006', 'OTA-CLIENT-001', 'P0', 'OTA CTRL/包校验断点阻断详情页升级路径；依赖 OTA-PACKAGE-001'],
-    ['PAGE-006', 'RUNTIME-WRITE-QUEUE-001', 'P1', 'write-queue 缺失（RUNTIME-GATT-CODEC-001 DONE）'],
-    ['PAGE-006', 'RUNTIME-RECONNECT-001', 'P1', 'reconnect-policy 缺失'],
+    ['PAGE-006', 'RUNTIME-RECONNECT-001', 'P1', 'reconnect-policy 缺失（WRITE-QUEUE DONE）'],
     ['PAGE-006', 'RUNTIME-CONNECTION-DISCOVERY-001', 'P1', 'connectDevice 发现编排（TEST-I-003）'],
     ['PAGE-001', '—', 'P3', 'RUNTIME-FILTER/DISPLAY-NAME DONE；DEC-013 时长观察'],
     ['PAGE-007', 'RUNTIME-SESSION-001', 'P1', 'Registry 配网会话排除 + subscription_count'],
@@ -742,7 +740,7 @@ ${order.map(([page, task, sev, why]) => `| ${sev} | ${page} | \`${task}\` | ${wh
 
 ## 依赖提示
 
-- PAGE-006 产品 FAIL → Codec **DONE**；剩余 WRITE-QUEUE / RECONNECT / OTA / CONNECTION-DISCOVERY；下一建议 RUNTIME-SESSION-001（跨页基础）
+- PAGE-006 产品 FAIL → Codec + Write Queue **DONE**；剩余 RECONNECT / OTA / CONNECTION-DISCOVERY；下一建议 RUNTIME-SESSION-001（跨页基础）
 - PAGE-001 → RUNTIME-FILTER-001 / RUNTIME-DISPLAY-NAME-001 **DONE**
 - PAGE-007 → RUNTIME-SESSION-001
 - PAGE-002 → RUNTIME-LOG-REDACTION-001；Smart HID 协议桥 → TEST-BRIDGE-TS-001

@@ -8,8 +8,8 @@ owner: Smart BLE QA / Engineering
 last_reviewed: 2026-09-01
 approved_by: null
 generated_from: reports/target-vs-current/target-vs-current.json
-content_hash: 84b1f1fce2774299ac06c8f40e5c8de39f35091776b8892e8f95e78b3f2b1fa5
-commit: eec4937be6fd7f6c63140a40c6e3773fd594212e
+content_hash: 4139b2ab376a9a56083c81495831f051ac7804278a5f56936064e429e04b9571
+commit: e09c85eb672c2b0d6b0115c5028b457dc1bb13c8
 supersedes: TP-G2 v1 (reports/target-vs-current-v1/)
 ```
 
@@ -23,33 +23,33 @@ supersedes: TP-G2 v1 (reports/target-vs-current-v1/)
 | HARNESS_PASS / FAIL | 89 / 0 |
 | TARGET_CONTRACT_FAIL | 0 |
 | TEST_INFRA_FAIL | 0 |
-| CURRENT_PASS / FAIL | 319 / 18 |
-| structured cases | 107 |
-| 页面 blocked_specs / blocked_cases | 0 / 0 |
-| 页面阻断原因 | null |
+| CURRENT_PASS / FAIL | 0 / 0 |
+| structured cases | 0 |
+| 页面 blocked_specs / blocked_cases | undefined / undefined |
+| 页面阻断原因 | undefined |
 | 独立 blockers | BLK-TOOL-PLAYWRIGHT [CLEARED] + BLK-TEST-PAGE-DRIVER [CLEARED] |
 
-**说明：** `blocked_cases=0` 是受阻 Case 数，**不是**产品缺陷数。Playwright 与 Page Driver 分别登记。
+**说明：** `blocked_cases=undefined` 是受阻 Case 数，**不是**产品缺陷数。Playwright 与 Page Driver 分别登记。
 
 ## 2. Target Coverage（canonical totals）
 
 | 维度 | total | assessed | unassessed |
 |---|---:|---:|---:|
-| REQ | 66 | 46 | 20 |
-| FEAT | 81 | 42 | 39 |
-| PAGE | 10 | 8 | 2 |
-| WEB | 1 | 1 | 0 |
+| REQ | 66 | 10 | 56 |
+| FEAT | 81 | 13 | 68 |
+| PAGE | 10 | 1 | 9 |
+| WEB | 1 | 0 | 1 |
 | STATE | 67 | 0 | 67 |
 | OP | 92 | 7 | 85 |
-| FLOW | 14 | 10 | 4 |
-| ERR | 68 | 2 | 66 |
-| DATA | 13 | 2 | 11 |
-| PROTO | 11 | 8 | 3 |
+| FLOW | 14 | 2 | 12 |
+| ERR | 68 | 0 | 68 |
+| DATA | 13 | 0 | 13 |
+| PROTO | 11 | 5 | 6 |
 | SEC | 19 | 0 | 19 |
 | NFR | 24 | 0 | 24 |
-| CLAIM | 31 | 7 | 24 |
-| DEC | 17 | 5 | 12 |
-| EVID | 8 | 2 | 6 |
+| CLAIM | 31 | 0 | 31 |
+| DEC | 17 | 0 | 17 |
+| EVID | 8 | 0 | 8 |
 | TEST | 103 | 0 | 103 |
 | 报告记录总数 | 647 | | |
 
@@ -60,17 +60,17 @@ PROTO 仅使用 `PROTO-001`..`PROTO-011`（不是 Service UUID）。
 ### unique_root_causes_by_severity
 
 - P0: **2**
-- P1: **10**
+- P1: **5**
 - P2: **0**
 - P3: **0**
 
 ### affected_target_records_by_severity
 
-- P0: 16
-- P1: 62
+- P0: 17
+- P1: 21
 - P2: 0
 - P3: 0
-- null: 569
+- null: 609
 
 > 不得把 affected records 说成「N 个 P0 缺陷」。Observer 缺失默认 **P1**（无公开危害证据时非 P0）。
 
@@ -78,69 +78,60 @@ PROTO 仅使用 `PROTO-001`..`PROTO-011`（不是 Service UUID）。
 
 ### gap_kind
 
-- PRODUCT: 277
-- RUNTIME: 34
-- PAGE: 149
-- TESTABILITY: 128
-- FIRMWARE: 10
-- LANDING: 45
+- PRODUCT: 295
+- PAGE: 153
+- RUNTIME: 15
+- TESTABILITY: 125
+- FIRMWARE: 9
+- LANDING: 46
 - SMART_HID: 3
 - RELEASE: 1
 
 ### implementation_status
 
-- IMPLEMENTED_UNTESTED: 65
-- UNASSESSED: 492
-- NOT_IMPLEMENTED: 25
-- CONFIRMED_PARTIAL: 39
+- UNASSESSED: 587
+- CONFIRMED_PARTIAL: 31
+- NOT_IMPLEMENTED: 3
 - CONFIRMED_IMPLEMENTED: 22
 - CONFIRMED_MISSING: 4
 
 ### verification_status
 
-- AUTOMATED_PASS: 92
-- HARDWARE_PENDING: 58
-- AUTOMATED_FAIL: 61
-- NOT_EXECUTED: 293
-- EXECUTED: 139
-- BLOCKED_BY_FIXTURE: 4
+- HARDWARE_PENDING: 123
+- NOT_EXECUTED: 339
+- AUTOMATED_FAIL: 9
+- EXECUTED: 148
+- AUTOMATED_PASS: 22
+- BLOCKED_BY_FIXTURE: 6
 
 ## 5. Top 20 First Breakpoints
 
 1. **[P0]** `FEAT-046` → OtaManager 在第一个 DATA 写之前未发送 CTRL start （OTA-CLIENT-001 / RC-OTA-CTRL-START）
-2. **[P0]** `FEAT-047` → [TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验） （OTA-CLIENT-001 / RC-OTA-CTRL-START）
-3. **[P0]** `PROTO-010` → .github/workflows/release-build.yml builds Flutter/Tauri; not UniApp Android + Peripheral/Observer firmware （RELEASE-PIPELINE-001 / RC-RELEASE-PIPELINE）
-4. **[P1]** `FEAT-011` → [TEST-U-005 REQ-030/DATA-003 DEC-017] 第一断点: Registry 快照缺 subscription_count 字段 （RUNTIME-SESSION-001 / RC-SESSION-REGISTRY）
-5. **[P1]** `FEAT-021` → [REQ-020/021 ERR-CONN-03] 第一断点: connectDevice 未编排服务发现（失败不报错=半开泄漏面） （RUNTIME-CONNECTION-DISCOVERY-001 / RC-CONN-DISCOVERY）
-6. **[P1]** `FEAT-023` → [REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js （RUNTIME-RECONNECT-001 / RC-RECONNECT）
-7. **[P1]** `FEAT-030` → [TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/write-queue.js （RUNTIME-WRITE-QUEUE-001 / RC-WRITE-QUEUE）
-8. **[P1]** `FEAT-040` → [TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js （RUNTIME-LOG-REDACTION-001 / RC-LOG-REDACTION）
-9. **[P1]** `FEAT-041` → PAGE-008 内联广告逻辑；useBroadcastSession 未使用 （PAGE-BROADCAST-001 / RC-PAGE-BROADCAST）
-10. **[P1]** `FEAT-053` → [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as' （TEST-BRIDGE-TS-001 / RC-TEST-BRIDGE-TS）
-11. **[P1]** `FEAT-057` → [TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier "./device-display-name.js" from "data:text/javascript;base64, （RUNTIME-DISPLAY-NAME-001 / RC-DISPLAY-NAME）
-12. **[P1]** `FEAT-062` → [REQ-053/PAGE-007 排除规则] 第一断点: Registry 无配网会话分类/排除接口——PAGE-007 口径无法排除配网会话 （RUNTIME-SESSION-001 / RC-SESSION-REGISTRY）
-13. **[P1]** `FEAT-081` → [TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验） （OTA-PACKAGE-001 / RC-OTA-PACKAGE）
-14. **[P1]** `FLOW-008` → 缺 fixture_observer （ESP32-OBSERVER-001 / RC-ESP32-OBSERVER）
-15. **[P1]** `OP-P008-01` → hardware/esp32 无 Observer 目标源码 （ESP32-OBSERVER-001 / RC-ESP32-OBSERVER）
-16. **[P1]** `PAGE-008` → 广播页内联；Owner/composable 未接入 （PAGE-BROADCAST-001 / RC-PAGE-BROADCAST）
-17. **[P1]** `PROTO-001` → 固件含广播名 BLEToolkit-Observer （ESP32-OBSERVER-001 / RC-ESP32-OBSERVER）
-18. **[P1]** `PROTO-009` → fixture_observer 不存在 （ESP32-OBSERVER-001 / RC-ESP32-OBSERVER）
-19. **[P1]** `PROTO-011` → Observer 字段 ≥9（实际 8） （ESP32-OBSERVER-001 / RC-ESP32-OBSERVER）
+2. **[P0]** `PROTO-010` → .github/workflows/release-build.yml builds Flutter/Tauri; not UniApp Android + Peripheral/Observer firmware （RELEASE-PIPELINE-001 / RC-RELEASE-PIPELINE）
+3. **[P1]** `FEAT-041` → PAGE-008 内联广告逻辑；useBroadcastSession 未使用 （PAGE-BROADCAST-001 / RC-PAGE-BROADCAST）
+4. **[P1]** `FEAT-081` → validateOtaPackage 接口缺失 （OTA-PACKAGE-001 / RC-OTA-PACKAGE）
+5. **[P1]** `FLOW-008` → 缺 fixture_observer （ESP32-OBSERVER-001 / RC-ESP32-OBSERVER）
+6. **[P1]** `OP-P008-01` → hardware/esp32 无 Observer 目标源码 （ESP32-OBSERVER-001 / RC-ESP32-OBSERVER）
+7. **[P1]** `PAGE-008` → 广播页内联；Owner/composable 未接入 （PAGE-BROADCAST-001 / RC-PAGE-BROADCAST）
+8. **[P1]** `PROTO-001` → 固件缺 FF00 LED 指令表 （ESP32-PERIPHERAL-001 / RC-ESP32-LED-NAME）
+9. **[P1]** `PROTO-003` → 固件 OTA JSON 使用 action 字段，目标为 op （OTA-FIRMWARE-001 / RC-ESP32-OTA-ACTION）
+10. **[P1]** `PROTO-009` → fixture_observer 不存在 （ESP32-OBSERVER-001 / RC-ESP32-OBSERVER）
+11. **[P1]** `PROTO-011` → 客户端 validateOtaPackage 缺失 （OTA-PACKAGE-001 / RC-OTA-PACKAGE）
 
 ## 6. Task waves（拓扑序前 12）
 
 1. **RELEASE-PIPELINE-001** — UniApp + Peripheral/Observer 双固件 Release Pipeline（type=RELEASE, sev=P0, gaps≈1）
-2. **RUNTIME-WRITE-QUEUE-001** — write-queue MTU 分包队列（type=SOURCE_FIX, sev=P1, gaps≈3）
-3. **RUNTIME-LOG-REDACTION-001** — log-redaction 脱敏（type=SOURCE_FIX, sev=P1, gaps≈6）
-4. **RUNTIME-RECONNECT-001** — reconnect-policy 有限重连（type=SOURCE_FIX, sev=P1, gaps≈3）
-5. **RUNTIME-SESSION-001** — Registry subscription_count + 配网会话分类（type=SOURCE_FIX, sev=P1, gaps≈10）
-6. **RUNTIME-CONNECTION-DISCOVERY-001** — connectDevice 编排服务发现（type=SOURCE_FIX, sev=P1, gaps≈3）
-7. **OTA-PACKAGE-001** — 客户端 Firmware Package 六项校验（type=SOURCE_FIX, sev=P1, gaps≈5）
-8. **OTA-CLIENT-001** — 客户端完整 OTA 事务（CTRL start→ready→DATA→commit）（type=SOURCE_FIX, sev=P0, gaps≈15）
-9. **ESP32-BUILD-001** — 两环境、无固定 COM、模块化入口（type=SOURCE_FIX, sev=P1, gaps≈0）
-10. **OTA-FIRMWARE-001** — 固件 OTA op/target/hardware/SHA/max_chunk/commit 校验（type=SOURCE_FIX, sev=P1, gaps≈0）
-11. **ESP32-PERIPHERAL-001** — 服务/特征/名称/LED/Device Info 对齐契约（type=SOURCE_FIX, sev=P1, gaps≈0）
-12. **ESP32-OBSERVER-001** — 实现 fixture_observer（type=SOURCE_FIX, sev=P1, gaps≈12）
+2. **RUNTIME-LOG-REDACTION-001** — log-redaction 脱敏（type=SOURCE_FIX, sev=P1, gaps≈0）
+3. **RUNTIME-RECONNECT-001** — reconnect-policy 有限重连（type=SOURCE_FIX, sev=P1, gaps≈0）
+4. **RUNTIME-SESSION-001** — Registry subscription_count + 配网会话分类（type=SOURCE_FIX, sev=P1, gaps≈0）
+5. **RUNTIME-CONNECTION-DISCOVERY-001** — connectDevice 编排服务发现（type=SOURCE_FIX, sev=P1, gaps≈0）
+6. **OTA-PACKAGE-001** — 客户端 Firmware Package 六项校验（type=SOURCE_FIX, sev=P1, gaps≈3）
+7. **OTA-CLIENT-001** — 客户端完整 OTA 事务（CTRL start→ready→DATA→commit）（type=SOURCE_FIX, sev=P0, gaps≈12）
+8. **ESP32-BUILD-001** — 两环境、无固定 COM、模块化入口（type=SOURCE_FIX, sev=P1, gaps≈0）
+9. **OTA-FIRMWARE-001** — 固件 OTA op/target/hardware/SHA/max_chunk/commit 校验（type=SOURCE_FIX, sev=P1, gaps≈1）
+10. **ESP32-PERIPHERAL-001** — 服务/特征/名称/LED/Device Info 对齐契约（type=SOURCE_FIX, sev=P1, gaps≈1）
+11. **ESP32-OBSERVER-001** — 实现 fixture_observer（type=SOURCE_FIX, sev=P1, gaps≈5）
+12. **ESP32-FAULT-001** — Fault Injection + Serial JSON（type=SOURCE_FIX, sev=P1, gaps≈0）
 
 完整图：`reports/target-vs-current/task-dependency-graph.json`。
 

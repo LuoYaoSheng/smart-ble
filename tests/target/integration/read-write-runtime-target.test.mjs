@@ -43,12 +43,31 @@ test('目标层：ble-runtime 读写与错误归一化', async (t) => {
     // Codec：HEX 写入路径
     assert.equal(typeof rt.validateHexInput, 'function', 'Runtime 导出 validateHexInput');
     assert.equal(typeof rt.formatReadValue, 'function', 'Runtime 导出 formatReadValue');
+    assert.equal(typeof rt.createWriteQueue, 'function', 'Runtime 导出 createWriteQueue');
+    const writesBeforeHex = platform.__calls.filter((c) => c.m === 'write').length;
     const hexWrite = await rt.writeCharacteristic(session, SVC, CHR, 'DE AD', { mode: 'hex' });
     assert.equal(hexWrite.ok, true);
     assert.equal(hexWrite.length, 2);
+    assert.ok(hexWrite.transactionId, '合法写入经 queue 产生 transactionId');
+    assert.ok(
+      (hexWrite.events || []).some((e) => e.type === 'queued')
+        && (hexWrite.events || []).some((e) => e.type === 'success'),
+      'queue event: queued → success',
+    );
+    assert.equal(
+      platform.__calls.filter((c) => c.m === 'write').length,
+      writesBeforeHex + 1,
+      '合法输入触发 transport write',
+    );
+    const writesBeforeBad = platform.__calls.filter((c) => c.m === 'write').length;
     const badHex = await rt.writeCharacteristic(session, SVC, CHR, 'GG', { mode: 'hex' });
     assert.equal(badHex.ok, false);
     assert.equal(badHex.wrote, false);
+    assert.equal(
+      platform.__calls.filter((c) => c.m === 'write').length,
+      writesBeforeBad,
+      '非法 HEX：0 BLE call',
+    );
 
     // 读展示：bytes → formatter
     const formatted = rt.formatReadValue(new Uint8Array([0x48, 0x69]), 'text');

@@ -1,8 +1,8 @@
 {
   "gate": "TP-G2-R1",
   "schema_version": "2.0",
-  "generated_at": "2026-09-01T11:55:01.179Z",
-  "commit": "eec4937be6fd7f6c63140a40c6e3773fd594212e",
+  "generated_at": "2026-09-01T12:27:46.008Z",
+  "commit": "e09c85eb672c2b0d6b0115c5028b457dc1bb13c8",
   "structured_current_path": ".tmp/tp-g2/logs/current-structured.json",
   "system": {
     "SYSTEM_PASS": 412,
@@ -13,91 +13,12 @@
     "TEST_INFRA_FAIL": 0
   },
   "current": {
-    "CURRENT_PASS": 319,
-    "CURRENT_FAIL": 18,
+    "CURRENT_PASS": 0,
+    "CURRENT_FAIL": 0,
     "TEST_INFRA_FAIL": 0,
-    "cases": 107,
-    "layers": [
-      {
-        "name": "unit",
-        "pass": 64,
-        "fail": 6,
-        "skipped": 0,
-        "case_count": 70,
-        "infra_fail": 0
-      },
-      {
-        "name": "integration",
-        "pass": 10,
-        "fail": 8,
-        "skipped": 0,
-        "case_count": 18,
-        "infra_fail": 0
-      },
-      {
-        "name": "firmware",
-        "pass": 5,
-        "fail": 4,
-        "skipped": 0,
-        "case_count": 9,
-        "infra_fail": 0
-      },
-      {
-        "name": "release",
-        "pass": 10,
-        "fail": 0,
-        "skipped": 0,
-        "case_count": 10,
-        "infra_fail": 0
-      },
-      {
-        "name": "pages-playwright",
-        "pass": 230,
-        "fail": 0,
-        "skipped": 0,
-        "blocked": {},
-        "pages": {
-          "specs": 11,
-          "state_cases": 67,
-          "operation_cases": 92,
-          "assertion_cases": 849,
-          "totals": {
-            "pages": 11,
-            "states": 67,
-            "operations": 92,
-            "error_variants": 50,
-            "failure_variants": 92,
-            "cleanup_assertions": 39
-          },
-          "blocked_specs": 0,
-          "blocked_cases": 0,
-          "reason": null
-        },
-        "notExecuted": false,
-        "blockers": []
-      }
-    ],
-    "pages": {
-      "specs": 11,
-      "state_cases": 67,
-      "operation_cases": 92,
-      "assertion_cases": 849,
-      "totals": {
-        "pages": 11,
-        "states": 67,
-        "operations": 92,
-        "error_variants": 50,
-        "failure_variants": 92,
-        "cleanup_assertions": 39
-      },
-      "blocked_specs": 0,
-      "blocked_cases": 0,
-      "reason": null,
-      "pass": 230,
-      "fail": 0,
-      "skipped": 0,
-      "notExecuted": false
-    },
+    "cases": 0,
+    "layers": [],
+    "pages": null,
     "blocked": {
       "BLOCKED_BY_TOOLCHAIN": 0,
       "BLOCKED_BY_TARGET_DRIVER": 0,
@@ -110,32 +31,32 @@
     "REQ": {
       "total": 66,
       "listed": 66,
-      "assessed": 46,
-      "unassessed": 20,
+      "assessed": 10,
+      "unassessed": 56,
       "not_applicable": 0,
       "reason": null
     },
     "FEAT": {
       "total": 81,
       "listed": 81,
-      "assessed": 42,
-      "unassessed": 39,
+      "assessed": 13,
+      "unassessed": 68,
       "not_applicable": 0,
       "reason": null
     },
     "PAGE": {
       "total": 10,
       "listed": 10,
-      "assessed": 8,
-      "unassessed": 2,
+      "assessed": 1,
+      "unassessed": 9,
       "not_applicable": 0,
       "reason": null
     },
     "WEB": {
       "total": 1,
       "listed": 1,
-      "assessed": 1,
-      "unassessed": 0,
+      "assessed": 0,
+      "unassessed": 1,
       "not_applicable": 0,
       "reason": null
     },
@@ -158,32 +79,32 @@
     "FLOW": {
       "total": 14,
       "listed": 14,
-      "assessed": 10,
-      "unassessed": 4,
+      "assessed": 2,
+      "unassessed": 12,
       "not_applicable": 0,
       "reason": null
     },
     "ERR": {
       "total": 68,
       "listed": 68,
-      "assessed": 2,
-      "unassessed": 66,
+      "assessed": 0,
+      "unassessed": 68,
       "not_applicable": 0,
       "reason": null
     },
     "DATA": {
       "total": 13,
       "listed": 13,
-      "assessed": 2,
-      "unassessed": 11,
+      "assessed": 0,
+      "unassessed": 13,
       "not_applicable": 0,
       "reason": null
     },
     "PROTO": {
       "total": 11,
       "listed": 11,
-      "assessed": 8,
-      "unassessed": 3,
+      "assessed": 5,
+      "unassessed": 6,
       "not_applicable": 0,
       "reason": null
     },
@@ -206,24 +127,24 @@
     "CLAIM": {
       "total": 31,
       "listed": 31,
-      "assessed": 7,
-      "unassessed": 24,
+      "assessed": 0,
+      "unassessed": 31,
       "not_applicable": 0,
       "reason": null
     },
     "DEC": {
       "total": 17,
       "listed": 17,
-      "assessed": 5,
-      "unassessed": 12,
+      "assessed": 0,
+      "unassessed": 17,
       "not_applicable": 0,
       "reason": null
     },
     "EVID": {
       "total": 8,
       "listed": 8,
-      "assessed": 2,
-      "unassessed": 6,
+      "assessed": 0,
+      "unassessed": 8,
       "not_applicable": 0,
       "reason": null
     },
@@ -238,52 +159,51 @@
   },
   "records_total": 647,
   "by_gap_kind": {
-    "PRODUCT": 277,
-    "RUNTIME": 34,
-    "PAGE": 149,
-    "TESTABILITY": 128,
-    "FIRMWARE": 10,
-    "LANDING": 45,
+    "PRODUCT": 295,
+    "PAGE": 153,
+    "RUNTIME": 15,
+    "TESTABILITY": 125,
+    "FIRMWARE": 9,
+    "LANDING": 46,
     "SMART_HID": 3,
     "RELEASE": 1
   },
   "by_implementation_status": {
-    "IMPLEMENTED_UNTESTED": 65,
-    "UNASSESSED": 492,
-    "NOT_IMPLEMENTED": 25,
-    "CONFIRMED_PARTIAL": 39,
+    "UNASSESSED": 587,
+    "CONFIRMED_PARTIAL": 31,
+    "NOT_IMPLEMENTED": 3,
     "CONFIRMED_IMPLEMENTED": 22,
     "CONFIRMED_MISSING": 4
   },
   "by_verification_status": {
-    "AUTOMATED_PASS": 92,
-    "HARDWARE_PENDING": 58,
-    "AUTOMATED_FAIL": 61,
-    "NOT_EXECUTED": 293,
-    "EXECUTED": 139,
-    "BLOCKED_BY_FIXTURE": 4
+    "HARDWARE_PENDING": 123,
+    "NOT_EXECUTED": 339,
+    "AUTOMATED_FAIL": 9,
+    "EXECUTED": 148,
+    "AUTOMATED_PASS": 22,
+    "BLOCKED_BY_FIXTURE": 6
   },
   "by_severity": {
-    "null": 569,
-    "P1": 62,
-    "P0": 16
+    "null": 609,
+    "P1": 21,
+    "P0": 17
   },
   "unique_root_causes_by_severity": {
     "P0": 2,
-    "P1": 10,
+    "P1": 5,
     "P2": 0,
     "P3": 0
   },
   "affected_target_records_by_severity": {
-    "P0": 16,
-    "P1": 62,
+    "P0": 17,
+    "P1": 21,
     "P2": 0,
     "P3": 0,
-    "null": 569
+    "null": 609
   },
   "product_vs_testability": {
-    "product_gaps_with_severity": 75,
-    "testability_records": 128,
+    "product_gaps_with_severity": 38,
+    "testability_records": 125,
     "blocked_page_cases": 0,
     "note": "blocked_page_cases 不得计为产品缺陷数；Playwright 与 Page Driver 为独立 blocker"
   }
