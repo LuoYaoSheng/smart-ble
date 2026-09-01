@@ -1,32 +1,47 @@
-# 目标页面测试 Driver 契约（TP-G1-R1）
+# 目标页面测试 Driver 契约（TP-G1-R2）
 
-Playwright 页面测试通过 `tests/target/pages/lib/page-driver.js` 统一访问目标 App/H5 页面。
+Playwright 页面测试通过 `tests/target/pages/lib/page-driver.js` 访问目标 App/H5。
+**期望值**来自 `page-behavior.manifest.json`；**实际值**必须由 Driver 探测。禁止用 Expected 冒充 Actual。
 
 ## 前置条件
 
 | 条件 | 结果 |
 |---|---|
 | `@playwright/test` 不可解析 | `BLOCKED_BY_TOOLCHAIN` |
-| Playwright 可用但无 `TARGET_APP_URL` 且无 `TARGET_PAGE_DRIVER=1` | `BLOCKED_BY_TARGET_DRIVER` |
-| 两者齐备 | 实际执行 runtime 断言 |
+| Playwright 可用但 `TARGET_PAGE_DRIVER≠1`（或无可用 App URL） | `BLOCKED_BY_TARGET_DRIVER` |
+| 两者齐备且 Driver 已实现 | 实际执行全部 State/Operation 用例 |
 
-## Driver API
+## Driver API（Actual only）
 
 | 方法 | 说明 |
 |---|---|
-| `openPage(pageId)` | 导航至 manifest 路由 |
-| `setState(stateId)` | 注入/触发目标 UI 状态 |
-| `getVisibleSections()` | 首屏可见区块 ID 列表 |
-| `getAvailableOperations()` | 当前可用 OP ID 列表 |
-| `perform(operationId)` | 执行目标操作 |
-| `getNavigationTarget()` | 最近一次跳转目标 |
-| `getRuntimeEvents()` | BLE/Runtime 事件快照 |
-| `getCleanupSnapshot()` | 离页清理断言数据 |
-| `getConsoleErrors()` | console.error 收集 |
-| `getAccessibilitySnapshot()` | 基础 a11y 快照 |
+| `openPage(pageId)` | 导航至目标路由 |
+| `resetPage(pageId)` | 重置到干净入口态 |
+| `setState(stateId)` | 将页面置于目标状态 |
+| `getStateSnapshot()` | 当前状态探测结果 |
+| `getVisibleSections()` | 当前可见区块（探测） |
+| `getControlState(operationId)` | `{ visible, enabled, reason }` |
+| `prepareOperation(operationId)` | 进入前置态 + 注入 Fixture |
+| `perform(operationId, inputFixture)` | 执行操作 |
+| `getOperationResult(operationId)` | `{ ui, runtime_events, device_events, navigation, cleanup, error }` |
+| `getNavigationSnapshot()` | 实际导航探测 |
+| `getRuntimeEvents()` | Runtime 事件 |
+| `getDeviceEvents()` | 设备侧事件（Fake/E5） |
+| `getCleanupSnapshot()` | 清理探测（不得固定假零） |
+| `getConsoleErrors()` | console.error |
+| `getAccessibilitySnapshot()` | a11y 探测 |
+| `probeAvailableOperations()` | **仅探测结果**；禁止直接返回 manifest.operations |
 
-## TP-G1 约束
+## 硬规则
 
-- 生产 Driver 未实现时，runtime 测试必须 `skip`/`fail` 为 `NOT_IMPLEMENTED: TARGET_PAGE_DRIVER_MISSING`，**不得 PASS**。
-- Manifest 契约断言（静态）可在 Node/Playwright 无 Driver 时 PASS。
-- 每份 spec 必须引用对应 PAGE/WEB ID，覆盖 manifest 全部 states、operations、assertions 类别。
+1. Driver 未实现 → 抛 `NOT_IMPLEMENTED: TARGET_PAGE_DRIVER_MISSING` 或 skip `BLOCKED_BY_TARGET_DRIVER`。
+2. 不得返回 `page-behavior` / `pages.manifest` 中的期望字段作为实际结果。
+3. `getNavigationSnapshot()` 不得返回静态 `exit_to[0]`。
+4. `getCleanupSnapshot()` 不得返回固定 `{ listeners:0, sessions:0 }` 冒充成功。
+5. Expected 与 Actual 必须在测试中分离比较。
+
+## TP-G1-R2 边界
+
+- 测试**定义**完整（全部 State/Operation 参数化）。
+- 当前生产 Driver 未接线时 runtime 用例 BLOCKED，**不得 PASS**。
+- TP-G2 只分析 Driver/页面实现差距，不补写目标期望。

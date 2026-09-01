@@ -1,0 +1,5923 @@
+{
+  "schema_version": "1.0",
+  "generated_from": "docs/target-product/pages|web + contracts/target/pages-target.json",
+  "note": "TP-G1-R2 页面行为测试契约：期望值单源；Actual 仅由 Page Driver 探测，禁止回填 Expected。",
+  "pages": [
+    {
+      "page_id": "PAGE-001",
+      "route": "pages/index/index",
+      "type": "tab",
+      "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
+      "first_screen": [
+        "蓝牙/权限/平台状态（或对应可操作提示）；",
+        "扫描控制按钮与状态；",
+        "设备列表或对应空态（无结果/筛选空/无权限/不支持四者其一）；",
+        "发现总数与筛选数（开始扫描后）。"
+      ],
+      "information_architecture": [
+        "导航区：产品标识 + 蓝牙状态芯片（三态：开/关/检测中）；",
+        "平台/权限状态区：平台能力结论 + 权限状态（异常时升级为可操作横幅）；",
+        "扫描控制区：状态芯片（待开始/扫描中/已完成/失败）、\"发现 N 台 · 筛选后 M 台\"、开始/停止按钮、失败重试横幅；",
+        "Smart HID 历史紧凑区（有历史时）：最近 1 台摘要 + \"查看详情\" + \"全部历史\"入口（形态 DEC-012；**只读入口**——不提供删除/批量管理/TTL/重命名，历史管理唯一归 PAGE-004）；",
+        "设备列表区：标题\"附近设备\" + 筛选控件（RSSI 阈值/名称前缀/隐藏无名）+ 列表/空态；",
+        "广播详情弹窗（点击设备卡触发，非页面区块）。"
+      ],
+      "states": [
+        {
+          "state_id": "STATE-P001-01",
+          "name": "平台不支持",
+          "entry_condition": "能力探测=BLE 不可用（H5/插件缺失）",
+          "visible_sections": [
+            "UNSUPPORTED 说明",
+            "替代入口"
+          ],
+          "allowed_operations": [],
+          "disabled_operations": [],
+          "exit_conditions": [
+            "平台变化（罕见）"
+          ],
+          "expected_data_changes": [],
+          "expected_recovery": "平台变化（罕见）",
+          "test_ids": [
+            "TEST-P-001",
+            "TEST-W-006"
+          ]
+        },
+        {
+          "state_id": "STATE-P001-02",
+          "name": "蓝牙关闭",
+          "entry_condition": "适配器=off",
+          "visible_sections": [
+            "蓝牙芯片=关",
+            "去开启按钮"
+          ],
+          "allowed_operations": [
+            "OP-P001-14"
+          ],
+          "disabled_operations": [],
+          "exit_conditions": [
+            "用户开启自动恢复"
+          ],
+          "expected_data_changes": [
+            "状态芯片"
+          ],
+          "expected_recovery": "重试",
+          "test_ids": [
+            "TEST-A-004",
+            "TEST-W-005"
+          ]
+        },
+        {
+          "state_id": "STATE-P001-03",
+          "name": "权限拒绝",
+          "entry_condition": "权限=denied/permanent",
+          "visible_sections": [
+            "权限横幅",
+            "重试/去设置"
+          ],
+          "allowed_operations": [],
+          "disabled_operations": [],
+          "exit_conditions": [
+            "授权成功恢复"
+          ],
+          "expected_data_changes": [
+            "状态芯片"
+          ],
+          "expected_recovery": "重试",
+          "test_ids": [
+            "TEST-A-001",
+            "TEST-W-001"
+          ]
+        },
+        {
+          "state_id": "STATE-P001-04",
+          "name": "待开始",
+          "entry_condition": "就绪且未扫描",
+          "visible_sections": [
+            "空提示\"点击开始扫描\""
+          ],
+          "allowed_operations": [
+            "OP-P001-01"
+          ],
+          "disabled_operations": [
+            "OP-P001-02",
+            "OP-P001-03",
+            "OP-P001-04",
+            "OP-P001-05",
+            "OP-P001-06",
+            "OP-P001-07",
+            "OP-P001-08",
+            "OP-P001-09",
+            "OP-P001-10",
+            "OP-P001-11",
+            "OP-P001-13",
+            "OP-P001-14",
+            "OP-P001-15"
+          ],
+          "exit_conditions": [
+            "开始扫描"
+          ],
+          "expected_data_changes": [
+            "清列表策略见 DEC-013 附则（新一轮重置）"
+          ],
+          "expected_recovery": "开始扫描",
+          "test_ids": [
+            "TEST-P-001"
+          ]
+        },
+        {
+          "state_id": "STATE-P001-05",
+          "name": "扫描中",
+          "entry_condition": "discovery active",
+          "visible_sections": [
+            "状态芯片",
+            "停止按钮",
+            "实时列表"
+          ],
+          "allowed_operations": [
+            "OP-P001-02"
+          ],
+          "disabled_operations": [
+            "OP-P001-01",
+            "OP-P001-03",
+            "OP-P001-04",
+            "OP-P001-05",
+            "OP-P001-06",
+            "OP-P001-07",
+            "OP-P001-08",
+            "OP-P001-09",
+            "OP-P001-10",
+            "OP-P001-11",
+            "OP-P001-13",
+            "OP-P001-14",
+            "OP-P001-15"
+          ],
+          "exit_conditions": [
+            "完成/停止/失败/超时"
+          ],
+          "expected_data_changes": [
+            "列表增量、N/M 实时"
+          ],
+          "expected_recovery": "完成/停止/失败/超时",
+          "test_ids": [
+            "TEST-A-005",
+            "TEST-W-007",
+            "TEST-E-001"
+          ]
+        },
+        {
+          "state_id": "STATE-P001-06",
+          "name": "无结果",
+          "entry_condition": "轮次完成且 N=0",
+          "visible_sections": [
+            "空态\"未发现设备\"",
+            "建议（换位置/确认设备广播）"
+          ],
+          "allowed_operations": [],
+          "disabled_operations": [],
+          "exit_conditions": [
+            "新轮次"
+          ],
+          "expected_data_changes": [],
+          "expected_recovery": "新轮次",
+          "test_ids": [
+            "TEST-P-001",
+            "TEST-A-005"
+          ]
+        },
+        {
+          "state_id": "STATE-P001-07",
+          "name": "筛选无结果",
+          "entry_condition": "N>0 且 M=0",
+          "visible_sections": [
+            "\"筛选后无匹配\"",
+            "调整筛选建议"
+          ],
+          "allowed_operations": [],
+          "disabled_operations": [],
+          "exit_conditions": [
+            "M>0 或清筛选"
+          ],
+          "expected_data_changes": [
+            "M 更新"
+          ],
+          "expected_recovery": "M>0 或清筛选",
+          "test_ids": [
+            "TEST-P-001"
+          ]
+        },
+        {
+          "state_id": "STATE-P001-08",
+          "name": "结果列表",
+          "entry_condition": "M>0",
+          "visible_sections": [
+            "设备卡列表"
+          ],
+          "allowed_operations": [],
+          "disabled_operations": [],
+          "exit_conditions": [
+            "新轮次/离开"
+          ],
+          "expected_data_changes": [
+            "去重与 RSSI 更新"
+          ],
+          "expected_recovery": "新轮次/离开",
+          "test_ids": [
+            "TEST-A-005",
+            "TEST-E-001"
+          ]
+        },
+        {
+          "state_id": "STATE-P001-09",
+          "name": "扫描失败",
+          "entry_condition": "startDiscovery 失败",
+          "visible_sections": [
+            "错误横幅",
+            "重试"
+          ],
+          "allowed_operations": [
+            "OP-P001-14"
+          ],
+          "disabled_operations": [
+            "OP-P001-01",
+            "OP-P001-02",
+            "OP-P001-03",
+            "OP-P001-04",
+            "OP-P001-05",
+            "OP-P001-06",
+            "OP-P001-07",
+            "OP-P001-08",
+            "OP-P001-09",
+            "OP-P001-10",
+            "OP-P001-11",
+            "OP-P001-13",
+            "OP-P001-15"
+          ],
+          "exit_conditions": [
+            "重试成功"
+          ],
+          "expected_data_changes": [],
+          "expected_recovery": "重试成功",
+          "test_ids": [
+            "TEST-P-001",
+            "TEST-E-005"
+          ]
+        },
+        {
+          "state_id": "STATE-P001-10",
+          "name": "已有连接提示",
+          "entry_condition": "Registry 有活动会话",
+          "visible_sections": [
+            "顶部轻提示\"N 台设备保持连接\"（不阻塞扫描）"
+          ],
+          "allowed_operations": [],
+          "disabled_operations": [],
+          "exit_conditions": [
+            "会话清空"
+          ],
+          "expected_data_changes": [
+            "计数联动"
+          ],
+          "expected_recovery": "会话清空",
+          "test_ids": [
+            "TEST-P-007"
+          ]
+        }
+      ],
+      "operations": [
+        {
+          "operation_id": "OP-P001-01",
+          "precondition_state": "STATE-P001-04",
+          "control": "开始扫描按钮",
+          "visible_when": "状态=待开始/已完成/失败",
+          "disabled_when": "权限拒绝、蓝牙关、平台不支持",
+          "input_fixture": null,
+          "expected_ui": [
+            "列表增量出现，状态=扫描中"
+          ],
+          "expected_runtime_events": [
+            "Composable→Store→ScanSession→Runtime.startDiscovery"
+          ],
+          "expected_device_events": [
+            "device_effect_from_call_chain:Composable→Store→ScanSession→Runtime.startDiscovery"
+          ],
+          "e5_mapping": [
+            "TEST-A-005",
+            "TEST-W-007",
+            "TEST-E-001"
+          ],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "进入扫描前确保旧会话已停"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "ERR-SCAN-01 横幅+重试",
+              "expected_ui": [
+                "ERR-SCAN-01 横幅+重试"
+              ],
+              "expected_recovery": "ERR-SCAN-01 横幅+重试"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-001",
+            "TEST-A-005",
+            "TEST-W-007",
+            "TEST-E-001"
+          ],
+          "hardware_dependent": true
+        },
+        {
+          "operation_id": "OP-P001-02",
+          "precondition_state": "STATE-P001-05",
+          "control": "停止扫描按钮",
+          "visible_when": "状态=扫描中",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "状态=已完成，列表保留"
+          ],
+          "expected_runtime_events": [
+            "Store.stopScan(user)"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [
+            "TEST-A-005"
+          ],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "停发现+清计时器"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "记日志兜底静默",
+              "expected_ui": [
+                "记日志兜底静默"
+              ],
+              "expected_recovery": "记日志兜底静默"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-001",
+            "TEST-A-005"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P001-03",
+          "precondition_state": "扫描中达到默认时长（DEC-013）",
+          "control": "超时自动停止",
+          "visible_when": "扫描中达到默认时长（DEC-013）",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "状态=已完成（视为正常完成）"
+          ],
+          "expected_runtime_events": [
+            "计时器→stopScan(timeout)"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "同上"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "同 OP-P001-02",
+              "expected_ui": [
+                "同 OP-P001-02"
+              ],
+              "expected_recovery": "同 OP-P001-02"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-001",
+            "TEST-U-005"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P001-04",
+          "precondition_state": "页面隐藏/卸载",
+          "control": "hide/unload 停止",
+          "visible_when": "页面隐藏/卸载",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "无声（后台不扫描）"
+          ],
+          "expected_runtime_events": [
+            "生命周期→stopScan(page_hide/unload)"
+          ],
+          "expected_device_events": [
+            "device_effect_from_call_chain:生命周期→stopScan(page_hide/unload)"
+          ],
+          "e5_mapping": [
+            "TEST-A-003",
+            "TEST-W-003"
+          ],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "同上+页面订阅"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "记日志",
+              "expected_ui": [
+                "记日志"
+              ],
+              "expected_recovery": "记日志"
+            }
+          ],
+          "test_ids": [
+            "TEST-I-002",
+            "TEST-A-003",
+            "TEST-W-003"
+          ],
+          "hardware_dependent": true
+        },
+        {
+          "operation_id": "OP-P001-05",
+          "precondition_state": "完成后再次点开始",
+          "control": "第二轮扫描",
+          "visible_when": "完成后再次点开始",
+          "disabled_when": "同 OP-P001-01",
+          "input_fixture": null,
+          "expected_ui": [
+            "列表重建"
+          ],
+          "expected_runtime_events": [
+            "新 generation start"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "旧 generation 事件作废"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "同 ERR-SCAN-01",
+              "expected_ui": [
+                "同 ERR-SCAN-01"
+              ],
+              "expected_recovery": "同 ERR-SCAN-01"
+            }
+          ],
+          "test_ids": [
+            "TEST-U-005",
+            "TEST-I-002"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P001-06",
+          "precondition_state": "列表有设备",
+          "control": "设备卡点击",
+          "visible_when": "列表有设备",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "弹窗展示结构化字段+原始字节"
+          ],
+          "expected_runtime_events": [
+            "打开广播弹窗（不连接）"
+          ],
+          "expected_device_events": [
+            "device_effect_from_call_chain:打开广播弹窗（不连接）"
+          ],
+          "e5_mapping": [
+            "TEST-A-005",
+            "TEST-E-001"
+          ],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "弹窗关闭无残留"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "解析失败段标注",
+              "expected_ui": [
+                "解析失败段标注"
+              ],
+              "expected_recovery": "解析失败段标注"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-001",
+            "TEST-A-005",
+            "TEST-E-001"
+          ],
+          "hardware_dependent": true
+        },
+        {
+          "operation_id": "OP-P001-07",
+          "precondition_state": "通用设备",
+          "control": "连接按钮（卡上）",
+          "visible_when": "通用设备",
+          "disabled_when": "扫描中（需先停）不禁用但流程先停扫",
+          "input_fixture": null,
+          "expected_ui": [
+            "PAGE-006 连接中"
+          ],
+          "expected_runtime_events": [
+            "prepareConnect(停扫)→跳 PAGE-006 并发起连接"
+          ],
+          "expected_device_events": [
+            "device_effect_from_call_chain:prepareConnect(停扫)→跳 PAGE-006 并发起连接"
+          ],
+          "e5_mapping": [
+            "TEST-A-006",
+            "TEST-W-007"
+          ],
+          "expected_navigation": "→PAGE-006",
+          "expected_cleanup": [
+            "停止本轮扫描"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "ERR-CONN-01 在目标页呈现",
+              "expected_ui": [
+                "ERR-CONN-01 在目标页呈现"
+              ],
+              "expected_recovery": "ERR-CONN-01 在目标页呈现"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-006",
+            "TEST-A-006",
+            "TEST-W-007"
+          ],
+          "hardware_dependent": true
+        },
+        {
+          "operation_id": "OP-P001-08",
+          "precondition_state": "matcher 命中（强/弱）",
+          "control": "Profile 动作（Smart HID 配网）",
+          "visible_when": "matcher 命中（强/弱）",
+          "disabled_when": "同上",
+          "input_fixture": null,
+          "expected_ui": [
+            "PAGE-002 自动连接"
+          ],
+          "expected_runtime_events": [
+            "设定 Profile 当前设备→跳 PAGE-002"
+          ],
+          "expected_device_events": [
+            "device_effect_from_call_chain:设定 Profile 当前设备→跳 PAGE-002"
+          ],
+          "e5_mapping": [
+            "TEST-H-001",
+            "TEST-W-010"
+          ],
+          "expected_navigation": "→PAGE-002",
+          "expected_cleanup": [
+            "停止本轮扫描"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "身份错误在目标页呈现",
+              "expected_ui": [
+                "身份错误在目标页呈现"
+              ],
+              "expected_recovery": "身份错误在目标页呈现"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-002",
+            "TEST-H-001",
+            "TEST-W-010"
+          ],
+          "hardware_dependent": true
+        },
+        {
+          "operation_id": "OP-P001-09",
+          "precondition_state": "列表区",
+          "control": "筛选控件",
+          "visible_when": "列表区",
+          "disabled_when": "",
+          "input_fixture": "RSSI 阈值/前缀/开关",
+          "expected_ui": [
+            "列表即时更新"
+          ],
+          "expected_runtime_events": [
+            "纯函数过滤→M 更新"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "筛选空态 STATE-P001-07",
+              "expected_ui": [
+                "筛选空态 STATE-P001-07"
+              ],
+              "expected_recovery": "筛选空态 STATE-P001-07"
+            }
+          ],
+          "test_ids": [
+            "TEST-U-007",
+            "TEST-P-001"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P001-10",
+          "precondition_state": "广播弹窗内",
+          "control": "复制广播字段",
+          "visible_when": "广播弹窗内",
+          "disabled_when": "弹窗开",
+          "input_fixture": null,
+          "expected_ui": [
+            "toast 已复制"
+          ],
+          "expected_runtime_events": [
+            "剪贴板"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [
+            "TEST-W-007"
+          ],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "ERR-SYS-03 toast",
+              "expected_ui": [
+                "ERR-SYS-03 toast"
+              ],
+              "expected_recovery": "ERR-SYS-03 toast"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-001",
+            "TEST-W-007"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P001-11",
+          "precondition_state": "本机存在 Smart HID 历史",
+          "control": "历史紧凑-查看",
+          "visible_when": "本机存在 Smart HID 历史",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "详情页打开"
+          ],
+          "expected_runtime_events": [
+            "→PAGE-003"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": "→PAGE-003",
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "ERR-DATA-03 modal 返回",
+              "expected_ui": [
+                "ERR-DATA-03 modal 返回"
+              ],
+              "expected_recovery": "ERR-DATA-03 modal 返回"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-003"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P001-13",
+          "precondition_state": "同上",
+          "control": "历史紧凑-全部历史",
+          "visible_when": "同上",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "历史页打开"
+          ],
+          "expected_runtime_events": [
+            "→PAGE-004"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": "→PAGE-004",
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "no_dedicated_failure_path",
+              "condition": "文档标明无专用失败反馈或静默兜底",
+              "expected_ui": [
+                "保持当前态或日志兜底"
+              ],
+              "expected_recovery": "无额外恢复控件"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-004"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P001-14",
+          "precondition_state": "STATE-P001-02",
+          "control": "失败重试横幅按钮",
+          "visible_when": "状态=扫描失败",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "恢复扫描"
+          ],
+          "expected_runtime_events": [
+            "重新 start（新 generation）"
+          ],
+          "expected_device_events": [
+            "device_effect_from_call_chain:重新 start（新 generation）"
+          ],
+          "e5_mapping": [],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "同 OP-P001-01"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "保持失败态",
+              "expected_ui": [
+                "保持失败态"
+              ],
+              "expected_recovery": "保持失败态"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-001"
+          ],
+          "hardware_dependent": true
+        },
+        {
+          "operation_id": "OP-P001-15",
+          "precondition_state": "微信环境",
+          "control": "分享（微信菜单）",
+          "visible_when": "微信环境",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "分享面板"
+          ],
+          "expected_runtime_events": [
+            "shareApp"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [
+            "TEST-W-010"
+          ],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "no_dedicated_failure_path",
+              "condition": "文档标明无专用失败反馈或静默兜底",
+              "expected_ui": [
+                "保持当前态或日志兜底"
+              ],
+              "expected_recovery": "无额外恢复控件"
+            }
+          ],
+          "test_ids": [
+            "TEST-W-010"
+          ],
+          "hardware_dependent": false
+        }
+      ],
+      "error_variants": [
+        {
+          "error_id": "ERR-PERM-01",
+          "name": "权限拒绝",
+          "expected_recovery": "重新请求",
+          "visible": "横幅：需要蓝牙权限"
+        },
+        {
+          "error_id": "ERR-PERM-03",
+          "name": "永久拒绝",
+          "expected_recovery": "去系统设置",
+          "visible": "横幅+说明"
+        },
+        {
+          "error_id": "ERR-PERM-02",
+          "name": "环境要求定位未授权（仅能力检测命中）",
+          "expected_recovery": "去授权（环境不需要定位时本条不得出现）",
+          "visible": "横幅：当前环境需定位授权"
+        },
+        {
+          "error_id": "ERR-PERM-04",
+          "name": "环境要求位置服务未开（仅能力检测命中）",
+          "expected_recovery": "去系统设置开启",
+          "visible": "横幅：需开启位置服务"
+        },
+        {
+          "error_id": "ERR-BT-01",
+          "name": "蓝牙关闭",
+          "expected_recovery": "去开启蓝牙",
+          "visible": "芯片+横幅"
+        },
+        {
+          "error_id": "ERR-BT-02",
+          "name": "适配器打开失败",
+          "expected_recovery": "重试（上限后指引重启蓝牙）",
+          "visible": "错误横幅"
+        },
+        {
+          "error_id": "ERR-BT-03",
+          "name": "平台不支持",
+          "expected_recovery": "前往支持的入口",
+          "visible": "UNSUPPORTED 面"
+        },
+        {
+          "error_id": "ERR-SCAN-01",
+          "name": "扫描启动失败",
+          "expected_recovery": "重试",
+          "visible": "横幅+重试"
+        },
+        {
+          "error_id": "STATE-P001-06",
+          "name": "无结果",
+          "expected_recovery": "再次扫描/换位置",
+          "visible": "空态"
+        },
+        {
+          "error_id": "STATE-P001-07",
+          "name": "筛选空",
+          "expected_recovery": "调整筛选",
+          "visible": "空态"
+        }
+      ],
+      "navigation": {
+        "raw": "出口：→PAGE-002（OP-08）、→PAGE-003（OP-11）、→PAGE-004（OP-13）、→PAGE-006（OP-07）。Tab 常驻可去其余 Tab。本页为 Tab，无返回。跳转带走：连接类跳转先停扫描；页面状态（筛选配置）在 Tab 切换间保留。",
+        "targets": [
+          "PAGE-002",
+          "PAGE-003",
+          "PAGE-004",
+          "PAGE-006"
+        ]
+      },
+      "platform_assertions": [
+        "Android App｜Full；权限三态+永久拒绝路径",
+        "微信｜Full/Adapted；权限能力驱动最小申请（FEAT-006、DEC-003：点击扫描才申请；仅环境要求时引导定位）；广播字段可能不全，缺失标\"平台未提供\"",
+        "H5｜UNSUPPORTED 面（STATE-P001-01）",
+        "iOS App｜同 Android 语义；未发布不影响本页定义"
+      ],
+      "a11y_assertions": [
+        "状态芯片不只靠颜色（附文字与图标）；错误横幅是唯一恢复动作入口（不并列多按钮）；触控目标 ≥44px；读屏可朗读\"N 台设备，筛选后 M 台\"；空态文案给出下一步（`17` 文案表 S-01~S-05）。"
+      ],
+      "cleanup_assertions": [
+        "| 资源 | 所有者 | 释放时机 |",
+        "|---|---|---|",
+        "| 扫描计时器 | 页面 composable | 超时/停止/hide/unload |",
+        "| discovery | Runtime 扫描会话 | stop 或 prepareConnect |",
+        "| 设备列表 store 订阅 | 页面 | unload |",
+        "| 广播弹窗状态 | 页面局部 | 关闭即弃 |",
+        "全局发现回调归 Runtime 常驻（应用级），页面不注册 `onBluetoothDeviceFound`。"
+      ],
+      "stats": {
+        "state_count": 10,
+        "operation_count": 14,
+        "error_variant_count": 10,
+        "failure_variant_count": 14
+      }
+    },
+    {
+      "page_id": "PAGE-002",
+      "route": "pages/hid/add",
+      "type": "secondary",
+      "source_doc": "docs/target-product/pages/PAGE-002_HID_PROVISION.md",
+      "first_screen": [
+        "当前阶段指示器 + 该阶段主内容（连接中状态或表单或进度）；隐私说明在表单阶段首屏可见。"
+      ],
+      "information_architecture": [
+        "阶段指示器（连接 → 填写配置 → 查看状态）；",
+        "连接阶段：目标设备名/ID、连接中动画、连接错误与重连/返回；",
+        "表单阶段：连接徽章、Device Info 摘要（product/protocol/device_id/firmware）、SSID、密码（掩码+显示开关）、Hub 地址（host:port，端口默认 17892）、扫码卡（必需/已获取状态）、隐私说明、下发按钮；",
+        "状态阶段：四步进度（Wi-Fi/Pairing/MQTT/Ready）、当前 state+step、等待取消、错误卡（码+文案+唯一恢复动作）、成功卡（查看设备/返回扫描）。"
+      ],
+      "states": [
+        {
+          "state_id": "STATE-P002-01",
+          "name": "连接中",
+          "entry_condition": "进入/重连",
+          "visible_sections": [
+            "动画",
+            "目标设备"
+          ],
+          "allowed_operations": [
+            "OP-P002-03"
+          ],
+          "disabled_operations": [
+            "OP-P002-01",
+            "OP-P002-02",
+            "OP-P002-04",
+            "OP-P002-05",
+            "OP-P002-06",
+            "OP-P002-07",
+            "OP-P002-08",
+            "OP-P002-09",
+            "OP-P002-10",
+            "OP-P002-11"
+          ],
+          "exit_conditions": [
+            "成功/失败"
+          ],
+          "expected_data_changes": [],
+          "expected_recovery": "成功/失败",
+          "test_ids": [
+            "TEST-H-001"
+          ]
+        },
+        {
+          "state_id": "STATE-P002-02",
+          "name": "身份确认失败",
+          "entry_condition": "INFO 校验不符",
+          "visible_sections": [
+            "错误说明（错设备）"
+          ],
+          "allowed_operations": [
+            "OP-P002-02",
+            "OP-P002-03"
+          ],
+          "disabled_operations": [
+            "OP-P002-01",
+            "OP-P002-04",
+            "OP-P002-05",
+            "OP-P002-06",
+            "OP-P002-07",
+            "OP-P002-08",
+            "OP-P002-09",
+            "OP-P002-10",
+            "OP-P002-11"
+          ],
+          "exit_conditions": [
+            "离开或重连"
+          ],
+          "expected_data_changes": [],
+          "expected_recovery": "离开或重连",
+          "test_ids": [
+            "TEST-H-001"
+          ]
+        },
+        {
+          "state_id": "STATE-P002-03",
+          "name": "连接失败",
+          "entry_condition": "connect 超时/失败",
+          "visible_sections": [
+            "错误",
+            "重连/返回"
+          ],
+          "allowed_operations": [
+            "OP-P002-02",
+            "OP-P002-03"
+          ],
+          "disabled_operations": [
+            "OP-P002-01",
+            "OP-P002-04",
+            "OP-P002-05",
+            "OP-P002-06",
+            "OP-P002-07",
+            "OP-P002-08",
+            "OP-P002-09",
+            "OP-P002-10",
+            "OP-P002-11"
+          ],
+          "exit_conditions": [
+            "成功/离开"
+          ],
+          "expected_data_changes": [],
+          "expected_recovery": "成功/离开",
+          "test_ids": [
+            "TEST-H-001"
+          ]
+        },
+        {
+          "state_id": "STATE-P002-04",
+          "name": "已连接待填写",
+          "entry_condition": "身份通过",
+          "visible_sections": [
+            "表单"
+          ],
+          "allowed_operations": [
+            "OP-P002-04",
+            "OP-P002-05",
+            "OP-P002-06",
+            "OP-P002-07"
+          ],
+          "disabled_operations": [
+            "OP-P002-01",
+            "OP-P002-02",
+            "OP-P002-03",
+            "OP-P002-08",
+            "OP-P002-09",
+            "OP-P002-10",
+            "OP-P002-11"
+          ],
+          "exit_conditions": [
+            "下发或连接丢失"
+          ],
+          "expected_data_changes": [],
+          "expected_recovery": "下发或连接丢失",
+          "test_ids": [
+            "TEST-P-002"
+          ]
+        },
+        {
+          "state_id": "STATE-P002-05",
+          "name": "连接丢失",
+          "entry_condition": "下发前断开",
+          "visible_sections": [
+            "提示",
+            "重连（表单保留）"
+          ],
+          "allowed_operations": [],
+          "disabled_operations": [],
+          "exit_conditions": [
+            "恢复或离开"
+          ],
+          "expected_data_changes": [
+            "表单值本地保留"
+          ],
+          "expected_recovery": "恢复或离开",
+          "test_ids": [
+            "TEST-P-002"
+          ]
+        },
+        {
+          "state_id": "STATE-P002-06",
+          "name": "表单不完整",
+          "entry_condition": "必填缺失",
+          "visible_sections": [
+            "下发禁用",
+            "缺失提示"
+          ],
+          "allowed_operations": [
+            "OP-P002-04",
+            "OP-P002-05",
+            "OP-P002-06"
+          ],
+          "disabled_operations": [
+            "OP-P002-01",
+            "OP-P002-02",
+            "OP-P002-03",
+            "OP-P002-07",
+            "OP-P002-08",
+            "OP-P002-09",
+            "OP-P002-10",
+            "OP-P002-11"
+          ],
+          "exit_conditions": [
+            "完整"
+          ],
+          "expected_data_changes": [],
+          "expected_recovery": "完整",
+          "test_ids": [
+            "TEST-U-015"
+          ]
+        },
+        {
+          "state_id": "STATE-P002-07",
+          "name": "QR 无效/取消",
+          "entry_condition": "解析失败或用户取消",
+          "visible_sections": [
+            "提示回表单"
+          ],
+          "allowed_operations": [],
+          "disabled_operations": [],
+          "exit_conditions": [
+            "获取成功"
+          ],
+          "expected_data_changes": [],
+          "expected_recovery": "获取成功",
+          "test_ids": [
+            "TEST-U-015"
+          ]
+        },
+        {
+          "state_id": "STATE-P002-08",
+          "name": "下发中",
+          "entry_condition": "OP-07 触发",
+          "visible_sections": [
+            "四步进度实时"
+          ],
+          "allowed_operations": [
+            "OP-P002-08"
+          ],
+          "disabled_operations": [
+            "OP-P002-01",
+            "OP-P002-02",
+            "OP-P002-03",
+            "OP-P002-04",
+            "OP-P002-05",
+            "OP-P002-06",
+            "OP-P002-07",
+            "OP-P002-09",
+            "OP-P002-10",
+            "OP-P002-11"
+          ],
+          "exit_conditions": [
+            "终态"
+          ],
+          "expected_data_changes": [
+            "waiter 挂起"
+          ],
+          "expected_recovery": "终态",
+          "test_ids": [
+            "TEST-I-009"
+          ]
+        },
+        {
+          "state_id": "STATE-P002-09",
+          "name": "Ready",
+          "entry_condition": "state=ready",
+          "visible_sections": [
+            "成功卡"
+          ],
+          "allowed_operations": [
+            "OP-P002-10"
+          ],
+          "disabled_operations": [
+            "OP-P002-01",
+            "OP-P002-02",
+            "OP-P002-03",
+            "OP-P002-04",
+            "OP-P002-05",
+            "OP-P002-06",
+            "OP-P002-07",
+            "OP-P002-08",
+            "OP-P002-09",
+            "OP-P002-11"
+          ],
+          "exit_conditions": [
+            "离开"
+          ],
+          "expected_data_changes": [
+            "写 DATA-006"
+          ],
+          "expected_recovery": "离开",
+          "test_ids": [
+            "TEST-H-002"
+          ]
+        },
+        {
+          "state_id": "STATE-P002-10",
+          "name": "协议错误",
+          "entry_condition": "error 非 null",
+          "visible_sections": [
+            "八类错误卡",
+            "唯一恢复"
+          ],
+          "allowed_operations": [
+            "OP-P002-09"
+          ],
+          "disabled_operations": [
+            "OP-P002-01",
+            "OP-P002-02",
+            "OP-P002-03",
+            "OP-P002-04",
+            "OP-P002-05",
+            "OP-P002-06",
+            "OP-P002-07",
+            "OP-P002-08",
+            "OP-P002-10",
+            "OP-P002-11"
+          ],
+          "exit_conditions": [
+            "恢复"
+          ],
+          "expected_data_changes": [
+            "记录 lastError"
+          ],
+          "expected_recovery": "恢复",
+          "test_ids": [
+            "TEST-H-003"
+          ]
+        },
+        {
+          "state_id": "STATE-P002-11",
+          "name": "等待超时",
+          "entry_condition": "waiter 60s 无终态",
+          "visible_sections": [
+            "超时说明",
+            "重试"
+          ],
+          "allowed_operations": [],
+          "disabled_operations": [],
+          "exit_conditions": [
+            "恢复"
+          ],
+          "expected_data_changes": [
+            "无（不假成功）"
+          ],
+          "expected_recovery": "重试",
+          "test_ids": [
+            "TEST-H-003"
+          ]
+        },
+        {
+          "state_id": "STATE-P002-12",
+          "name": "用户取消",
+          "entry_condition": "OP-08",
+          "visible_sections": [
+            "回表单"
+          ],
+          "allowed_operations": [],
+          "disabled_operations": [],
+          "exit_conditions": [
+            "重新下发"
+          ],
+          "expected_data_changes": [],
+          "expected_recovery": "重新下发",
+          "test_ids": [
+            "TEST-P-002"
+          ]
+        }
+      ],
+      "operations": [
+        {
+          "operation_id": "OP-P002-01",
+          "precondition_state": "进入页面且未连接",
+          "control": "自动连接（进入触发）",
+          "visible_when": "进入页面且未连接",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "身份通过进入表单"
+          ],
+          "expected_runtime_events": [
+            "SmartHidService.connect→发现→读 INFO"
+          ],
+          "expected_device_events": [
+            "device_effect_from_call_chain:SmartHidService.connect→发现→读 INFO"
+          ],
+          "e5_mapping": [
+            "TEST-H-001",
+            "TEST-H-002"
+          ],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "半初始化失败必须断开"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "ERR-CONN-01/ERR-HID-09",
+              "expected_ui": [
+                "ERR-CONN-01/ERR-HID-09"
+              ],
+              "expected_recovery": "ERR-CONN-01/ERR-HID-09"
+            }
+          ],
+          "test_ids": [
+            "TEST-H-001",
+            "TEST-H-002"
+          ],
+          "hardware_dependent": true
+        },
+        {
+          "operation_id": "OP-P002-02",
+          "precondition_state": "STATE-P002-02",
+          "control": "重新连接按钮",
+          "visible_when": "连接失败态",
+          "disabled_when": "连接中",
+          "input_fixture": null,
+          "expected_ui": [
+            "同上"
+          ],
+          "expected_runtime_events": [
+            "同上"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [
+            "TEST-H-001"
+          ],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "同上"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "同上",
+              "expected_ui": [
+                "同上"
+              ],
+              "expected_recovery": "同上"
+            }
+          ],
+          "test_ids": [
+            "TEST-H-001"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P002-03",
+          "precondition_state": "STATE-P002-01",
+          "control": "返回设备列表",
+          "visible_when": "连接失败态",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "—"
+          ],
+          "expected_runtime_events": [
+            "navigateBack"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": "→来源页",
+          "expected_cleanup": [
+            "释放连接"
+          ],
+          "failure_variants": [
+            {
+              "name": "no_dedicated_failure_path",
+              "condition": "文档标明无专用失败反馈或静默兜底",
+              "expected_ui": [
+                "保持当前态或日志兜底"
+              ],
+              "expected_recovery": "无额外恢复控件"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-002"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P002-04",
+          "precondition_state": "STATE-P002-04",
+          "control": "表单输入",
+          "visible_when": "表单阶段",
+          "disabled_when": "下发中（表单冻结）",
+          "input_fixture": "见字段表",
+          "expected_ui": [
+            "下发按钮随完整性启用"
+          ],
+          "expected_runtime_events": [
+            "本地校验（纯函数）"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "字段级错误 ERR-HID-10",
+              "expected_ui": [
+                "字段级错误 ERR-HID-10"
+              ],
+              "expected_recovery": "字段级错误 ERR-HID-10"
+            }
+          ],
+          "test_ids": [
+            "TEST-U-015",
+            "TEST-P-002"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P002-05",
+          "precondition_state": "STATE-P002-04",
+          "control": "密码显示开关",
+          "visible_when": "表单阶段",
+          "disabled_when": "",
+          "input_fixture": "切换",
+          "expected_ui": [
+            "明文/掩码"
+          ],
+          "expected_runtime_events": [
+            "本地"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "no_dedicated_failure_path",
+              "condition": "文档标明无专用失败反馈或静默兜底",
+              "expected_ui": [
+                "保持当前态或日志兜底"
+              ],
+              "expected_recovery": "无额外恢复控件"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-002"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P002-06",
+          "precondition_state": "STATE-P002-04",
+          "control": "扫码",
+          "visible_when": "表单阶段",
+          "disabled_when": "",
+          "input_fixture": "相机",
+          "expected_ui": [
+            "\"已获取\"状态+host 回填"
+          ],
+          "expected_runtime_events": [
+            "parsePairingQrPayload"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [
+            "TEST-H-002"
+          ],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "相机会话关闭"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "取消回表单；无效 ERR-HID-11",
+              "expected_ui": [
+                "取消回表单；无效 ERR-HID-11"
+              ],
+              "expected_recovery": "取消回表单；无效 ERR-HID-11"
+            }
+          ],
+          "test_ids": [
+            "TEST-U-015",
+            "TEST-H-002"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P002-07",
+          "precondition_state": "STATE-P002-04",
+          "control": "下发配置",
+          "visible_when": "表单完整+QR 有效",
+          "disabled_when": "缺任一必填",
+          "input_fixture": null,
+          "expected_ui": [
+            "进入状态阶段"
+          ],
+          "expected_runtime_events": [
+            "buildCandidate→先注册 STATUS waiter→分帧写 INPUT"
+          ],
+          "expected_device_events": [
+            "device_effect_from_call_chain:buildCandidate→先注册 STATUS waiter→分帧写 INPUT"
+          ],
+          "e5_mapping": [
+            "TEST-H-002"
+          ],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "waiter 取消能力"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "见八类错误",
+              "expected_ui": [
+                "见八类错误"
+              ],
+              "expected_recovery": "见八类错误"
+            }
+          ],
+          "test_ids": [
+            "TEST-I-009",
+            "TEST-H-002"
+          ],
+          "hardware_dependent": true
+        },
+        {
+          "operation_id": "OP-P002-08",
+          "precondition_state": "STATE-P002-08",
+          "control": "取消等待",
+          "visible_when": "状态阶段未终态",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "回表单（保留输入）"
+          ],
+          "expected_runtime_events": [
+            "取消 waiter+（可选）CTRL 无——本协议无 abort 特征，取消即断开连接"
+          ],
+          "expected_device_events": [
+            "device_effect_from_call_chain:取消 waiter+（可选）CTRL 无——本协议无 abort 特征，取消即断开连接"
+          ],
+          "e5_mapping": [
+            "TEST-H-003"
+          ],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "断开连接+退订"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "断开失败兜底重试",
+              "expected_ui": [
+                "断开失败兜底重试"
+              ],
+              "expected_recovery": "断开失败兜底重试"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-002",
+            "TEST-H-003"
+          ],
+          "hardware_dependent": true
+        },
+        {
+          "operation_id": "OP-P002-09",
+          "precondition_state": "STATE-P002-10",
+          "control": "错误恢复按钮",
+          "visible_when": "错误终态",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "进入对应阶段"
+          ],
+          "expected_runtime_events": [
+            "按 `13` 恢复映射（form/pairing/diagnostics/retry）"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [
+            "TEST-H-003"
+          ],
+          "expected_navigation": "可→PAGE-005",
+          "expected_cleanup": [
+            "按动作清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "no_dedicated_failure_path",
+              "condition": "文档标明无专用失败反馈或静默兜底",
+              "expected_ui": [
+                "保持当前态或日志兜底"
+              ],
+              "expected_recovery": "无额外恢复控件"
+            }
+          ],
+          "test_ids": [
+            "TEST-H-003"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P002-10",
+          "precondition_state": "STATE-P002-09",
+          "control": "查看设备",
+          "visible_when": "READY",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "—"
+          ],
+          "expected_runtime_events": [
+            "写历史→跳详情"
+          ],
+          "expected_device_events": [
+            "device_effect_from_call_chain:写历史→跳详情"
+          ],
+          "e5_mapping": [
+            "TEST-H-004"
+          ],
+          "expected_navigation": "→PAGE-003",
+          "expected_cleanup": [
+            "释放配网连接（REQ-051）"
+          ],
+          "failure_variants": [
+            {
+              "name": "no_dedicated_failure_path",
+              "condition": "文档标明无专用失败反馈或静默兜底",
+              "expected_ui": [
+                "保持当前态或日志兜底"
+              ],
+              "expected_recovery": "无额外恢复控件"
+            }
+          ],
+          "test_ids": [
+            "TEST-H-004"
+          ],
+          "hardware_dependent": true
+        },
+        {
+          "operation_id": "OP-P002-11",
+          "precondition_state": "配网进行中",
+          "control": "返回键（拦截）",
+          "visible_when": "配网进行中",
+          "disabled_when": "",
+          "input_fixture": "确认",
+          "expected_ui": [
+            "—"
+          ],
+          "expected_runtime_events": [
+            "确认后取消+离开"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": "→来源页",
+          "expected_cleanup": [
+            "同 OP-P002-08"
+          ],
+          "failure_variants": [
+            {
+              "name": "no_dedicated_failure_path",
+              "condition": "文档标明无专用失败反馈或静默兜底",
+              "expected_ui": [
+                "保持当前态或日志兜底"
+              ],
+              "expected_recovery": "无额外恢复控件"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-002"
+          ],
+          "hardware_dependent": false
+        }
+      ],
+      "error_variants": [
+        {
+          "error_id": "ERR-HID-01",
+          "name": "invalid_payload",
+          "expected_recovery": "回表单修改",
+          "visible": "回表单修改"
+        },
+        {
+          "error_id": "ERR-HID-02",
+          "name": "wifi_failed",
+          "expected_recovery": "回表单检查 SSID/密码",
+          "visible": "回表单检查 SSID/密码"
+        },
+        {
+          "error_id": "ERR-HID-03",
+          "name": "controlhub_unreachable",
+          "expected_recovery": "确认 Hub 运行后重新扫码",
+          "visible": "确认 Hub 运行后重新扫码"
+        },
+        {
+          "error_id": "ERR-HID-04",
+          "name": "pairing_invalid",
+          "expected_recovery": "重新扫码",
+          "visible": "重新扫码"
+        },
+        {
+          "error_id": "ERR-HID-05",
+          "name": "pairing_expired",
+          "expected_recovery": "重新扫码",
+          "visible": "重新扫码"
+        },
+        {
+          "error_id": "ERR-HID-06",
+          "name": "pairing_used",
+          "expected_recovery": "重新扫码",
+          "visible": "重新扫码"
+        },
+        {
+          "error_id": "ERR-HID-07",
+          "name": "mqtt_invalid",
+          "expected_recovery": "进入诊断（PAGE-005）",
+          "visible": "进入诊断（PAGE-005）"
+        },
+        {
+          "error_id": "ERR-HID-08",
+          "name": "storage_failed",
+          "expected_recovery": "重试；反复失败联系支持",
+          "visible": "重试；反复失败联系支持"
+        }
+      ],
+      "navigation": {
+        "raw": "出口：→PAGE-003（成功）、→PAGE-005（mqtt_invalid 恢复）、→来源页（取消/失败离开）。返回拦截见 OP-11。离开页面即释放配网所拥有的连接。",
+        "targets": [
+          "PAGE-003",
+          "PAGE-005"
+        ]
+      },
+      "platform_assertions": [
+        "App 与微信语义一致；扫码 API 差异；H5 不可达本页（扫描页 UNSUPPORTED 拦截）。iOS 未发布不影响定义。"
+      ],
+      "a11y_assertions": [
+        "四步进度每步有文字标签（不只颜色）；错误卡以文字陈述错误码含义；密码框带显示开关（读屏兼容）；触控 ≥44px；文案表 S-10~S-16。"
+      ],
+      "cleanup_assertions": [
+        "| 资源 | 所有者 | 释放 |",
+        "|---|---|---|",
+        "| 配网连接（owned） | SmartHidWorkflow | READY/错误终态离开/取消/页面 unload |",
+        "| STATUS waiter | Workflow | 终态/取消/failAll |",
+        "| 表单值 | 页面 | 离页丢弃（密码不落盘） |",
+        "| token | Workflow 内存 | 页面离开即丢 |"
+      ],
+      "stats": {
+        "state_count": 12,
+        "operation_count": 11,
+        "error_variant_count": 8,
+        "failure_variant_count": 11
+      }
+    },
+    {
+      "page_id": "PAGE-003",
+      "route": "pages/hid/detail",
+      "type": "secondary",
+      "source_doc": "docs/target-product/pages/PAGE-003_HID_DETAIL.md",
+      "first_screen": [
+        "设备名、Device ID、历史快照声明、三个动作（高级组可折叠但入口可见）。"
+      ],
+      "information_architecture": [
+        "标题区：设备名（或\"Smart HID 设备\"）；",
+        "身份区：Device ID、协议版本、固件版本（缺失字段整行隐藏，DEC-014）；",
+        "快照声明条：\"以下为上次成功配置的历史快照，不代表设备当前在线\"（醒目、非脚注）；",
+        "最近配置区：Wi-Fi SSID、ControlHub 地址、配置成功时间；",
+        "动作区：重新配置（主动作）/ 运行诊断 / 高级 BLE 调试（折叠在\"高级\"分组，展开说明可发现条件）。"
+      ],
+      "states": [
+        {
+          "state_id": "STATE-P003-01",
+          "name": "快照展示",
+          "entry_condition": "记录存在",
+          "visible_sections": [
+            "全部区块"
+          ],
+          "allowed_operations": [
+            "OP-P003-01",
+            "OP-P003-02",
+            "OP-P003-03",
+            "OP-P003-04"
+          ],
+          "disabled_operations": [],
+          "exit_conditions": [
+            "离开"
+          ],
+          "expected_data_changes": [
+            "无（纯读）"
+          ],
+          "expected_recovery": "离开",
+          "test_ids": [
+            "TEST-P-003"
+          ]
+        },
+        {
+          "state_id": "STATE-P003-02",
+          "name": "记录不存在",
+          "entry_condition": "查询无结果",
+          "visible_sections": [
+            "modal 说明"
+          ],
+          "allowed_operations": [],
+          "disabled_operations": [],
+          "exit_conditions": [
+            "navigateBack"
+          ],
+          "expected_data_changes": [],
+          "expected_recovery": "navigateBack",
+          "test_ids": [
+            "TEST-P-003"
+          ]
+        }
+      ],
+      "operations": [
+        {
+          "operation_id": "OP-P003-01",
+          "precondition_state": "STATE-P003-01",
+          "control": "重新配置",
+          "visible_when": "记录存在",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "—"
+          ],
+          "expected_runtime_events": [
+            "设定 Profile 当前设备→PAGE-002"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [
+            "TEST-H-006"
+          ],
+          "expected_navigation": "→PAGE-002",
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "no_dedicated_failure_path",
+              "condition": "文档标明无专用失败反馈或静默兜底",
+              "expected_ui": [
+                "保持当前态或日志兜底"
+              ],
+              "expected_recovery": "无额外恢复控件"
+            }
+          ],
+          "test_ids": [
+            "TEST-H-006"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P003-02",
+          "precondition_state": "STATE-P003-01",
+          "control": "运行诊断",
+          "visible_when": "记录存在",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "—"
+          ],
+          "expected_runtime_events": [
+            "→PAGE-005"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": "→PAGE-005",
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "no_dedicated_failure_path",
+              "condition": "文档标明无专用失败反馈或静默兜底",
+              "expected_ui": [
+                "保持当前态或日志兜底"
+              ],
+              "expected_recovery": "无额外恢复控件"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-005"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P003-03",
+          "precondition_state": "STATE-P003-01",
+          "control": "高级 BLE 调试",
+          "visible_when": "记录存在",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "—"
+          ],
+          "expected_runtime_events": [
+            "构建设备上下文→PAGE-006"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": "→PAGE-006",
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "no_dedicated_failure_path",
+              "condition": "文档标明无专用失败反馈或静默兜底",
+              "expected_ui": [
+                "保持当前态或日志兜底"
+              ],
+              "expected_recovery": "无额外恢复控件"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-006"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P003-04",
+          "precondition_state": "STATE-P003-01",
+          "control": "返回",
+          "visible_when": "—",
+          "disabled_when": "—",
+          "input_fixture": "系统/按钮",
+          "expected_ui": [
+            "—"
+          ],
+          "expected_runtime_events": [
+            "navigateBack"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": "→来源页",
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "no_dedicated_failure_path",
+              "condition": "文档标明无专用失败反馈或静默兜底",
+              "expected_ui": [
+                "保持当前态或日志兜底"
+              ],
+              "expected_recovery": "无额外恢复控件"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-003"
+          ],
+          "hardware_dependent": false
+        }
+      ],
+      "error_variants": [
+        {
+          "error_id": "ERR-DATA-03",
+          "name": "ERR-DATA-03",
+          "expected_recovery": "记录不存在恢复：返回上一页。字段缺失不是错误：隐藏行（DEC-014）。",
+          "visible": "记录不存在（恢复：返回上一页）。字段缺失不是错误：隐藏行（DEC-014）。"
+        }
+      ],
+      "navigation": {
+        "raw": "出口见操作表；返回遵循 `04` 第 6 节（回来源页）。",
+        "targets": []
+      },
+      "platform_assertions": [
+        "三平台一致（本地页）；无降级。"
+      ],
+      "a11y_assertions": [
+        "快照声明使用醒目样式（图标+文字，不只颜色）；协议字段弱化为文本避免被读作实时徽章；文案表 S-17~S-19。"
+      ],
+      "cleanup_assertions": [
+        "无连接、无计时器、无订阅；仅本地读取（N/A 项全部有原因）。"
+      ],
+      "stats": {
+        "state_count": 2,
+        "operation_count": 4,
+        "error_variant_count": 1,
+        "failure_variant_count": 4
+      }
+    },
+    {
+      "page_id": "PAGE-004",
+      "route": "pages/hid/history",
+      "type": "secondary",
+      "source_doc": "docs/target-product/pages/PAGE-004_HID_HISTORY.md",
+      "first_screen": [
+        "列表或空态其一 + 历史说明条（有数据时）。"
+      ],
+      "information_architecture": [
+        "标题\"已配置设备\" + 台数芯片；",
+        "历史说明条：\"本地历史记录，非实时在线。READY 设备已关闭蓝牙广播，需重连请使用诊断或重新配置。\"（含 90 天 TTL 说明）；",
+        "设备卡列表（名称/ID/Wi-Fi/Hub/配置时间/移除）；",
+        "空态（插图+说明+\"去扫描\"）。"
+      ],
+      "states": [
+        {
+          "state_id": "STATE-P004-01",
+          "name": "空态",
+          "entry_condition": "无历史",
+          "visible_sections": [
+            "插图",
+            "说明",
+            "去扫描"
+          ],
+          "allowed_operations": [
+            "OP-P004-04",
+            "OP-P004-05"
+          ],
+          "disabled_operations": [
+            "OP-P004-01",
+            "OP-P004-02",
+            "OP-P004-03"
+          ],
+          "exit_conditions": [
+            "有数据/离开"
+          ],
+          "expected_data_changes": [],
+          "expected_recovery": "有数据/离开",
+          "test_ids": [
+            "TEST-P-004"
+          ]
+        },
+        {
+          "state_id": "STATE-P004-02",
+          "name": "列表态",
+          "entry_condition": "≥1 条",
+          "visible_sections": [
+            "标题",
+            "说明",
+            "卡片列表"
+          ],
+          "allowed_operations": [
+            "OP-P004-01",
+            "OP-P004-02",
+            "OP-P004-05"
+          ],
+          "disabled_operations": [
+            "OP-P004-03",
+            "OP-P004-04"
+          ],
+          "exit_conditions": [
+            "移除至空/离开"
+          ],
+          "expected_data_changes": [
+            "移除即时更新"
+          ],
+          "expected_recovery": "移除至空/离开",
+          "test_ids": [
+            "TEST-P-004",
+            "TEST-H-004"
+          ]
+        },
+        {
+          "state_id": "STATE-P004-03",
+          "name": "移除确认",
+          "entry_condition": "OP-02 触发",
+          "visible_sections": [
+            "确认框"
+          ],
+          "allowed_operations": [
+            "OP-P004-03"
+          ],
+          "disabled_operations": [
+            "OP-P004-01",
+            "OP-P004-02",
+            "OP-P004-04",
+            "OP-P004-05"
+          ],
+          "exit_conditions": [
+            "关闭或删除"
+          ],
+          "expected_data_changes": [
+            "删除时更新"
+          ],
+          "expected_recovery": "关闭或删除",
+          "test_ids": [
+            "TEST-P-004"
+          ]
+        }
+      ],
+      "operations": [
+        {
+          "operation_id": "OP-P004-01",
+          "precondition_state": "STATE-P004-02",
+          "control": "卡片点击",
+          "visible_when": "列表态",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "—"
+          ],
+          "expected_runtime_events": [
+            "→PAGE-003"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": "→PAGE-003",
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "no_dedicated_failure_path",
+              "condition": "文档标明无专用失败反馈或静默兜底",
+              "expected_ui": [
+                "保持当前态或日志兜底"
+              ],
+              "expected_recovery": "无额外恢复控件"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-004"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P004-02",
+          "precondition_state": "STATE-P004-02",
+          "control": "移除按钮",
+          "visible_when": "列表态",
+          "disabled_when": "",
+          "input_fixture": "确认框",
+          "expected_ui": [
+            "toast+列表更新"
+          ],
+          "expected_runtime_events": [
+            "删除 DATA-006 记录"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [
+            "TEST-H-004"
+          ],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "ERR-DATA-01 toast",
+              "expected_ui": [
+                "ERR-DATA-01 toast"
+              ],
+              "expected_recovery": "ERR-DATA-01 toast"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-004",
+            "TEST-H-004"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P004-03",
+          "precondition_state": "STATE-P004-03",
+          "control": "确认框取消",
+          "visible_when": "移除确认中",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "无变化"
+          ],
+          "expected_runtime_events": [
+            "关闭确认"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "no_dedicated_failure_path",
+              "condition": "文档标明无专用失败反馈或静默兜底",
+              "expected_ui": [
+                "保持当前态或日志兜底"
+              ],
+              "expected_recovery": "无额外恢复控件"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-004"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P004-04",
+          "precondition_state": "STATE-P004-01",
+          "control": "空态去扫描",
+          "visible_when": "空态",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "—"
+          ],
+          "expected_runtime_events": [
+            "switchTab"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": "→PAGE-001",
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "no_dedicated_failure_path",
+              "condition": "文档标明无专用失败反馈或静默兜底",
+              "expected_ui": [
+                "保持当前态或日志兜底"
+              ],
+              "expected_recovery": "无额外恢复控件"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-004"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P004-05",
+          "precondition_state": "STATE-P004-01",
+          "control": "返回",
+          "visible_when": "—",
+          "disabled_when": "—",
+          "input_fixture": "系统",
+          "expected_ui": [
+            "—"
+          ],
+          "expected_runtime_events": [
+            "navigateBack"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": "→PAGE-001",
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "no_dedicated_failure_path",
+              "condition": "文档标明无专用失败反馈或静默兜底",
+              "expected_ui": [
+                "保持当前态或日志兜底"
+              ],
+              "expected_recovery": "无额外恢复控件"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-004"
+          ],
+          "hardware_dependent": false
+        }
+      ],
+      "error_variants": [
+        {
+          "error_id": "ERR-DATA-01",
+          "name": "ERR-DATA-01",
+          "expected_recovery": "存储/删除失败恢复：重试一次或重启应用",
+          "visible": "存储/删除失败（恢复：重试一次或重启应用）"
+        }
+      ],
+      "navigation": {
+        "raw": "出口：→PAGE-003、→PAGE-001（空态/返回）。无其他出口。",
+        "targets": [
+          "PAGE-003",
+          "PAGE-001"
+        ]
+      },
+      "platform_assertions": [
+        "三平台一致；无降级。"
+      ],
+      "a11y_assertions": [
+        "历史说明条醒目；\"在线\"词汇禁止出现；卡片信息读屏可整卡朗读；文案表 S-20~S-22。"
+      ],
+      "cleanup_assertions": [
+        "无连接/计时器/订阅；本地读取后即释放句柄。"
+      ],
+      "stats": {
+        "state_count": 3,
+        "operation_count": 5,
+        "error_variant_count": 1,
+        "failure_variant_count": 5
+      }
+    },
+    {
+      "page_id": "PAGE-005",
+      "route": "pages/hid/diagnostics",
+      "type": "secondary",
+      "source_doc": "docs/target-product/pages/PAGE-005_HID_DIAGNOSTICS.md",
+      "first_screen": [
+        "当前状态芯片、五项诊断（pending 也可见且视觉上明显\"未检测\"）、重新检测按钮。"
+      ],
+      "information_architecture": [
+        "当前状态芯片（尚未检测/已连接可检测/正在读取/实时完成/未连接/检测失败）；",
+        "读取时间戳（\"数据于 HH:MM:SS 读取\"）；",
+        "五行固定诊断项（顺序固定：BLE、Wi-Fi、ControlHub、控制连接、Ready），每项状态：pending/ok/fail/unknown；",
+        "操作区：重新检测、未连接时\"连接设备\"；",
+        "错误详情折叠区（错误码+消息）；",
+        "底部：返回设备详情、重新配网（带 READY 警告确认）。"
+      ],
+      "states": [
+        {
+          "state_id": "STATE-P005-01",
+          "name": "尚未检测",
+          "entry_condition": "进入且无可用连接",
+          "visible_sections": [
+            "芯片\"未连接",
+            "需重连设备\""
+          ],
+          "allowed_operations": [
+            "OP-P005-03",
+            "OP-P005-05",
+            "OP-P005-06"
+          ],
+          "disabled_operations": [
+            "OP-P005-01",
+            "OP-P005-02",
+            "OP-P005-04"
+          ],
+          "exit_conditions": [
+            "连接成功"
+          ],
+          "expected_data_changes": [
+            "五项 pending"
+          ],
+          "expected_recovery": "连接成功",
+          "test_ids": [
+            "TEST-P-005"
+          ]
+        },
+        {
+          "state_id": "STATE-P005-02",
+          "name": "连接确认",
+          "entry_condition": "OP-03 弹确认",
+          "visible_sections": [
+            "确认框"
+          ],
+          "allowed_operations": [],
+          "disabled_operations": [],
+          "exit_conditions": [
+            "成功→03"
+          ],
+          "expected_data_changes": [],
+          "expected_recovery": "成功→03",
+          "test_ids": [
+            "TEST-H-005"
+          ]
+        },
+        {
+          "state_id": "STATE-P005-03",
+          "name": "检测中",
+          "entry_condition": "diagnose 运行",
+          "visible_sections": [
+            "芯片\"正在读取\"",
+            "逐项 spinner"
+          ],
+          "allowed_operations": [
+            "OP-P005-05"
+          ],
+          "disabled_operations": [
+            "OP-P005-01",
+            "OP-P005-02",
+            "OP-P005-03",
+            "OP-P005-04",
+            "OP-P005-06"
+          ],
+          "exit_conditions": [
+            "完成/失败"
+          ],
+          "expected_data_changes": [
+            "逐项更新"
+          ],
+          "expected_recovery": "完成/失败",
+          "test_ids": [
+            "TEST-H-005"
+          ]
+        },
+        {
+          "state_id": "STATE-P005-04",
+          "name": "实时完成",
+          "entry_condition": "诊断成功",
+          "visible_sections": [
+            "五项结果",
+            "时间戳"
+          ],
+          "allowed_operations": [
+            "OP-P005-02",
+            "OP-P005-04",
+            "OP-P005-05",
+            "OP-P005-06"
+          ],
+          "disabled_operations": [
+            "OP-P005-01",
+            "OP-P005-03"
+          ],
+          "exit_conditions": [
+            "重新检测"
+          ],
+          "expected_data_changes": [
+            "全量更新"
+          ],
+          "expected_recovery": "重新检测",
+          "test_ids": [
+            "TEST-H-005"
+          ]
+        },
+        {
+          "state_id": "STATE-P005-05",
+          "name": "未连接离线",
+          "entry_condition": "诊断中连接断开",
+          "visible_sections": [
+            "芯片\"连接已断开\""
+          ],
+          "allowed_operations": [
+            "OP-P005-03",
+            "OP-P005-05",
+            "OP-P005-06"
+          ],
+          "disabled_operations": [
+            "OP-P005-01",
+            "OP-P005-02",
+            "OP-P005-04"
+          ],
+          "exit_conditions": [
+            "重连"
+          ],
+          "expected_data_changes": [
+            "保留上次结果并标注时间"
+          ],
+          "expected_recovery": "重连",
+          "test_ids": [
+            "TEST-H-005"
+          ]
+        },
+        {
+          "state_id": "STATE-P005-06",
+          "name": "检测失败",
+          "entry_condition": "diagnose 抛错",
+          "visible_sections": [
+            "芯片\"检测失败\"",
+            "错误折叠"
+          ],
+          "allowed_operations": [
+            "OP-P005-02",
+            "OP-P005-04",
+            "OP-P005-05"
+          ],
+          "disabled_operations": [
+            "OP-P005-01",
+            "OP-P005-03",
+            "OP-P005-06"
+          ],
+          "exit_conditions": [
+            "重试成功"
+          ],
+          "expected_data_changes": [
+            "lastError"
+          ],
+          "expected_recovery": "重试成功",
+          "test_ids": [
+            "TEST-P-005"
+          ]
+        }
+      ],
+      "operations": [
+        {
+          "operation_id": "OP-P005-01",
+          "precondition_state": "进入页面且已有可用连接（borrowed）",
+          "control": "进入自动诊断",
+          "visible_when": "进入页面且已有可用连接（borrowed）",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "五项刷新+时间戳"
+          ],
+          "expected_runtime_events": [
+            "diagnose() 一次"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [
+            "TEST-H-005"
+          ],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "无（borrowed 不动连接）"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "ERR-HID-13",
+              "expected_ui": [
+                "ERR-HID-13"
+              ],
+              "expected_recovery": "ERR-HID-13"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-005",
+            "TEST-H-005"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P005-02",
+          "precondition_state": "STATE-P005-04",
+          "control": "重新检测",
+          "visible_when": "页面可见",
+          "disabled_when": "检测中",
+          "input_fixture": null,
+          "expected_ui": [
+            "同上"
+          ],
+          "expected_runtime_events": [
+            "diagnose()"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [
+            "TEST-H-005"
+          ],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "同上"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "同上",
+              "expected_ui": [
+                "同上"
+              ],
+              "expected_recovery": "同上"
+            }
+          ],
+          "test_ids": [
+            "TEST-H-005"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P005-03",
+          "precondition_state": "STATE-P005-01",
+          "control": "连接设备（确认）",
+          "visible_when": "离线态",
+          "disabled_when": "检测中/连接中",
+          "input_fixture": "确认框",
+          "expected_ui": [
+            "进入检测"
+          ],
+          "expected_runtime_events": [
+            "connect（owned）→diagnose()"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [
+            "TEST-H-005"
+          ],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "owned 连接离页断开"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "ERR-CONN-01",
+              "expected_ui": [
+                "ERR-CONN-01"
+              ],
+              "expected_recovery": "ERR-CONN-01"
+            }
+          ],
+          "test_ids": [
+            "TEST-H-005"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P005-04",
+          "precondition_state": "STATE-P005-04",
+          "control": "显示/隐藏错误码",
+          "visible_when": "有 lastError",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "折叠区展开"
+          ],
+          "expected_runtime_events": [
+            "本地切换"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "no_dedicated_failure_path",
+              "condition": "文档标明无专用失败反馈或静默兜底",
+              "expected_ui": [
+                "保持当前态或日志兜底"
+              ],
+              "expected_recovery": "无额外恢复控件"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-005"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P005-05",
+          "precondition_state": "STATE-P005-01",
+          "control": "返回设备详情",
+          "visible_when": "页面可见",
+          "disabled_when": "检测中可选禁用",
+          "input_fixture": null,
+          "expected_ui": [
+            "—"
+          ],
+          "expected_runtime_events": [
+            "navigateBack（栈感知，无栈则 redirectTo 详情）"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": "→PAGE-003",
+          "expected_cleanup": [
+            "owned 清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "no_dedicated_failure_path",
+              "condition": "文档标明无专用失败反馈或静默兜底",
+              "expected_ui": [
+                "保持当前态或日志兜底"
+              ],
+              "expected_recovery": "无额外恢复控件"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-005"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P005-06",
+          "precondition_state": "STATE-P005-01",
+          "control": "重新配网",
+          "visible_when": "页面可见",
+          "disabled_when": "检测中",
+          "input_fixture": "READY 设备警告确认",
+          "expected_ui": [
+            "—"
+          ],
+          "expected_runtime_events": [
+            "设定上下文→PAGE-002"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [
+            "TEST-H-006"
+          ],
+          "expected_navigation": "→PAGE-002",
+          "expected_cleanup": [
+            "owned 清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "no_dedicated_failure_path",
+              "condition": "文档标明无专用失败反馈或静默兜底",
+              "expected_ui": [
+                "保持当前态或日志兜底"
+              ],
+              "expected_recovery": "无额外恢复控件"
+            }
+          ],
+          "test_ids": [
+            "TEST-H-006"
+          ],
+          "hardware_dependent": false
+        }
+      ],
+      "error_variants": [
+        {
+          "error_id": "ERR-HID-13",
+          "name": "ERR-HID-13",
+          "expected_recovery": "诊断失败恢复：重试",
+          "visible": "诊断失败（恢复：重试）"
+        },
+        {
+          "error_id": "ERR-CONN-01",
+          "name": "ERR-CONN-01",
+          "expected_recovery": "连接失败恢复：重试/回详情",
+          "visible": "连接失败（恢复：重试/回详情）"
+        }
+      ],
+      "navigation": {
+        "raw": "→PAGE-003（返回）、→PAGE-002（重配）。返回栈感知：来源是 PAGE-002 时返回改为 redirectTo PAGE-003（避免回到已完成配网页）。",
+        "targets": [
+          "PAGE-003",
+          "PAGE-002"
+        ]
+      },
+      "platform_assertions": [
+        "App/微信一致；H5 不可达。"
+      ],
+      "a11y_assertions": [
+        "五项结果每项文字标签（ok/fail/pending 有图标+文字+颜色三通道）；时间戳可读屏；文案表 S-23~S-26。"
+      ],
+      "cleanup_assertions": [
+        "| 资源 | 所有者 | 释放 |",
+        "|---|---|---|",
+        "| owned 连接 | 本页诊断服务 | 离页断开 |",
+        "| borrowed 连接 | 原 Owner（如 PAGE-006/Registry） | 本页离页不动 |",
+        "| 诊断订阅 | 诊断服务 | 完成或离页退订 |"
+      ],
+      "stats": {
+        "state_count": 6,
+        "operation_count": 6,
+        "error_variant_count": 2,
+        "failure_variant_count": 6
+      }
+    },
+    {
+      "page_id": "PAGE-006",
+      "route": "pages/device/detail",
+      "type": "secondary",
+      "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
+      "first_screen": [
+        "设备名与连接状态、deviceId、主操作（连接/断开）、服务面板当前状态。"
+      ],
+      "information_architecture": [
+        "标题区：设备名 + 连接状态点（当前状态文字）+ deviceId；",
+        "操作行：清空日志 / 导出日志 / 连接-断开；",
+        "服务面板（五态：idle/connecting/empty/error/ready）：服务→特征树，每特征属性标记与操作（读/写/订阅）；",
+        "通信日志面板：时间/方向/类型/HEX/TEXT/操作 ID；",
+        "写入弹窗（TEXT/HEX 模式切换）；",
+        "OTA 弹窗（文件选择→进度→结果）；",
+        "主动作按钮区（连接/断开；有 OTA 服务且达标时显示\"固件更新\"）。"
+      ],
+      "states": [
+        {
+          "state_id": "STATE-P006-01",
+          "name": "初始化",
+          "entry_condition": "进入未连接",
+          "visible_sections": [
+            "身份",
+            "连接按钮"
+          ],
+          "allowed_operations": [
+            "OP-P006-01"
+          ],
+          "disabled_operations": [
+            "OP-P006-02",
+            "OP-P006-03",
+            "OP-P006-04",
+            "OP-P006-05",
+            "OP-P006-06",
+            "OP-P006-07",
+            "OP-P006-08",
+            "OP-P006-10",
+            "OP-P006-11",
+            "OP-P006-12",
+            "OP-P006-13",
+            "OP-P006-14",
+            "OP-P006-15"
+          ],
+          "exit_conditions": [
+            "连接发起"
+          ],
+          "expected_data_changes": [],
+          "expected_recovery": "连接发起",
+          "test_ids": [
+            "TEST-P-006"
+          ]
+        },
+        {
+          "state_id": "STATE-P006-02",
+          "name": "连接中",
+          "entry_condition": "attempt 进行",
+          "visible_sections": [
+            "状态\"连接中\""
+          ],
+          "allowed_operations": [],
+          "disabled_operations": [],
+          "exit_conditions": [
+            "成功/失败/超时"
+          ],
+          "expected_data_changes": [],
+          "expected_recovery": "成功/失败/超时",
+          "test_ids": [
+            "TEST-A-006"
+          ]
+        },
+        {
+          "state_id": "STATE-P006-03",
+          "name": "服务加载中",
+          "entry_condition": "连接成功发现中",
+          "visible_sections": [
+            "树骨架/spinner"
+          ],
+          "allowed_operations": [],
+          "disabled_operations": [],
+          "exit_conditions": [
+            "ready/empty/error"
+          ],
+          "expected_data_changes": [],
+          "expected_recovery": "ready/empty/error",
+          "test_ids": [
+            "TEST-A-006"
+          ]
+        },
+        {
+          "state_id": "STATE-P006-04",
+          "name": "空服务",
+          "entry_condition": "发现结果空",
+          "visible_sections": [
+            "\"设备未暴露服务\"",
+            "重试"
+          ],
+          "allowed_operations": [
+            "OP-P006-03"
+          ],
+          "disabled_operations": [
+            "OP-P006-01",
+            "OP-P006-02",
+            "OP-P006-04",
+            "OP-P006-05",
+            "OP-P006-06",
+            "OP-P006-07",
+            "OP-P006-08",
+            "OP-P006-10",
+            "OP-P006-11",
+            "OP-P006-12",
+            "OP-P006-13",
+            "OP-P006-14",
+            "OP-P006-15"
+          ],
+          "exit_conditions": [
+            "重试"
+          ],
+          "expected_data_changes": [],
+          "expected_recovery": "重试",
+          "test_ids": [
+            "TEST-I-003"
+          ]
+        },
+        {
+          "state_id": "STATE-P006-05",
+          "name": "连接失败",
+          "entry_condition": "attempt 失败/超时",
+          "visible_sections": [
+            "错误",
+            "重试"
+          ],
+          "allowed_operations": [
+            "OP-P006-01"
+          ],
+          "disabled_operations": [
+            "OP-P006-02",
+            "OP-P006-03",
+            "OP-P006-04",
+            "OP-P006-05",
+            "OP-P006-06",
+            "OP-P006-07",
+            "OP-P006-08",
+            "OP-P006-10",
+            "OP-P006-11",
+            "OP-P006-12",
+            "OP-P006-13",
+            "OP-P006-14",
+            "OP-P006-15"
+          ],
+          "exit_conditions": [
+            "成功"
+          ],
+          "expected_data_changes": [
+            "lastError"
+          ],
+          "expected_recovery": "成功",
+          "test_ids": [
+            "TEST-A-006"
+          ]
+        },
+        {
+          "state_id": "STATE-P006-06",
+          "name": "已连接",
+          "entry_condition": "ready",
+          "visible_sections": [
+            "完整树",
+            "操作"
+          ],
+          "allowed_operations": [
+            "OP-P006-02",
+            "OP-P006-04"
+          ],
+          "disabled_operations": [
+            "OP-P006-01",
+            "OP-P006-03",
+            "OP-P006-05",
+            "OP-P006-06",
+            "OP-P006-07",
+            "OP-P006-08",
+            "OP-P006-10",
+            "OP-P006-11",
+            "OP-P006-12",
+            "OP-P006-13",
+            "OP-P006-14",
+            "OP-P006-15"
+          ],
+          "exit_conditions": [
+            "断开"
+          ],
+          "expected_data_changes": [
+            "日志持续"
+          ],
+          "expected_recovery": "断开",
+          "test_ids": [
+            "TEST-A-006",
+            "TEST-E-003"
+          ]
+        },
+        {
+          "state_id": "STATE-P006-07",
+          "name": "重连中",
+          "entry_condition": "被动断开重试",
+          "visible_sections": [
+            "\"重连中 n/3\""
+          ],
+          "allowed_operations": [],
+          "disabled_operations": [],
+          "exit_conditions": [
+            "恢复/耗尽"
+          ],
+          "expected_data_changes": [
+            "会话保留"
+          ],
+          "expected_recovery": "恢复/耗尽",
+          "test_ids": [
+            "TEST-A-007"
+          ]
+        },
+        {
+          "state_id": "STATE-P006-08",
+          "name": "重连耗尽",
+          "entry_condition": "3 次失败",
+          "visible_sections": [
+            "终态",
+            "手动重试"
+          ],
+          "allowed_operations": [
+            "OP-P006-01"
+          ],
+          "disabled_operations": [
+            "OP-P006-02",
+            "OP-P006-03",
+            "OP-P006-04",
+            "OP-P006-05",
+            "OP-P006-06",
+            "OP-P006-07",
+            "OP-P006-08",
+            "OP-P006-10",
+            "OP-P006-11",
+            "OP-P006-12",
+            "OP-P006-13",
+            "OP-P006-14",
+            "OP-P006-15"
+          ],
+          "exit_conditions": [
+            "手动成功"
+          ],
+          "expected_data_changes": [],
+          "expected_recovery": "手动成功",
+          "test_ids": [
+            "TEST-I-003"
+          ]
+        },
+        {
+          "state_id": "STATE-P006-09",
+          "name": "操作失败",
+          "entry_condition": "读/写/订阅失败",
+          "visible_sections": [
+            "面板内错误",
+            "该操作重试"
+          ],
+          "allowed_operations": [],
+          "disabled_operations": [],
+          "exit_conditions": [
+            "成功"
+          ],
+          "expected_data_changes": [
+            "日志记录错误"
+          ],
+          "expected_recovery": "重试",
+          "test_ids": [
+            "TEST-A-008"
+          ]
+        },
+        {
+          "state_id": "STATE-P006-10",
+          "name": "OTA 组态",
+          "entry_condition": "OTA 弹窗打开",
+          "visible_sections": [
+            "见 STATE-OTA-01..10（`07`）"
+          ],
+          "allowed_operations": [
+            "OP-P006-13",
+            "OP-P006-14"
+          ],
+          "disabled_operations": [
+            "OP-P006-01",
+            "OP-P006-02",
+            "OP-P006-03",
+            "OP-P006-04",
+            "OP-P006-05",
+            "OP-P006-06",
+            "OP-P006-07",
+            "OP-P006-08",
+            "OP-P006-10",
+            "OP-P006-11",
+            "OP-P006-12",
+            "OP-P006-15"
+          ],
+          "exit_conditions": [
+            "终态"
+          ],
+          "expected_data_changes": [
+            "事务状态"
+          ],
+          "expected_recovery": "终态",
+          "test_ids": [
+            "TEST-E-007"
+          ]
+        }
+      ],
+      "operations": [
+        {
+          "operation_id": "OP-P006-01",
+          "precondition_state": "STATE-P006-01",
+          "control": "连接",
+          "visible_when": "未连接",
+          "disabled_when": "连接中",
+          "input_fixture": null,
+          "expected_ui": [
+            "服务面板 ready"
+          ],
+          "expected_runtime_events": [
+            "use-device-session.connect（attempt 去重）"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [
+            "TEST-A-006"
+          ],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "失败关半开连接"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "ERR-CONN-01+重试",
+              "expected_ui": [
+                "ERR-CONN-01+重试"
+              ],
+              "expected_recovery": "ERR-CONN-01+重试"
+            }
+          ],
+          "test_ids": [
+            "TEST-I-003",
+            "TEST-A-006"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P006-02",
+          "precondition_state": "STATE-P006-06",
+          "control": "主动断开",
+          "visible_when": "已连接",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "状态=已断开，Registry 更新"
+          ],
+          "expected_runtime_events": [
+            "disconnect(主动标记，不重连)"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [
+            "TEST-A-007",
+            "TEST-E-002"
+          ],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "会话注销"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "ERR-CONN-04 记日志",
+              "expected_ui": [
+                "ERR-CONN-04 记日志"
+              ],
+              "expected_recovery": "ERR-CONN-04 记日志"
+            }
+          ],
+          "test_ids": [
+            "TEST-A-007",
+            "TEST-E-002"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P006-03",
+          "precondition_state": "STATE-P006-04",
+          "control": "服务发现重试",
+          "visible_when": "empty/error 态",
+          "disabled_when": "发现中",
+          "input_fixture": null,
+          "expected_ui": [
+            "ready"
+          ],
+          "expected_runtime_events": [
+            "重新 discoverServices"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [
+            "TEST-E-005"
+          ],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "失败关连接"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "ERR-CONN-02/03",
+              "expected_ui": [
+                "ERR-CONN-02/03"
+              ],
+              "expected_recovery": "ERR-CONN-02/03"
+            }
+          ],
+          "test_ids": [
+            "TEST-I-003",
+            "TEST-E-005"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P006-04",
+          "precondition_state": "STATE-P006-06",
+          "control": "Read",
+          "visible_when": "特征可读",
+          "disabled_when": "操作中",
+          "input_fixture": null,
+          "expected_ui": [
+            "值展示+日志"
+          ],
+          "expected_runtime_events": [
+            "readValue(3s 超时)"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [
+            "TEST-A-008",
+            "TEST-E-003"
+          ],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "一次性 listener 移除"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "ERR-GATT-01",
+              "expected_ui": [
+                "ERR-GATT-01"
+              ],
+              "expected_recovery": "ERR-GATT-01"
+            }
+          ],
+          "test_ids": [
+            "TEST-A-008",
+            "TEST-E-003"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P006-05",
+          "precondition_state": "特征可写",
+          "control": "TEXT 写",
+          "visible_when": "特征可写",
+          "disabled_when": "队列满",
+          "input_fixture": "文本",
+          "expected_ui": [
+            "设备响应+日志"
+          ],
+          "expected_runtime_events": [
+            "encodeWritePayload(text) UTF-8"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [
+            "TEST-A-008",
+            "TEST-E-003"
+          ],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "队列出队"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "ERR-GATT-04",
+              "expected_ui": [
+                "ERR-GATT-04"
+              ],
+              "expected_recovery": "ERR-GATT-04"
+            }
+          ],
+          "test_ids": [
+            "TEST-A-008",
+            "TEST-E-003"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P006-06",
+          "precondition_state": "特征可写",
+          "control": "HEX 写",
+          "visible_when": "特征可写",
+          "disabled_when": "队列满",
+          "input_fixture": "HEX 串",
+          "expected_ui": [
+            "同上"
+          ],
+          "expected_runtime_events": [
+            "严格偶数+字符校验→字节"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [
+            "TEST-A-008"
+          ],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "同上"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "非法输入 ERR-GATT-03（不发 API）；失败 ERR-GATT-04",
+              "expected_ui": [
+                "非法输入 ERR-GATT-03（不发 API）；失败 ERR-GATT-04"
+              ],
+              "expected_recovery": "非法输入 ERR-GATT-03（不发 API）；失败 ERR-GATT-04"
+            }
+          ],
+          "test_ids": [
+            "TEST-U-010",
+            "TEST-A-008"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P006-07",
+          "precondition_state": "特征含 notify 和/或 indicate（属性标记显示 Notify / Indicate / Notify + Indicate）",
+          "control": "开启订阅（Characteristic Subscription，DEC-017）",
+          "visible_when": "特征含 notify 和/或 indicate（属性标记显示 Notify / Indicate / Notify + Indicate）",
+          "disabled_when": "订阅中",
+          "input_fixture": null,
+          "expected_ui": [
+            "推送流+日志；Registry subscription_count +1"
+          ],
+          "expected_runtime_events": [
+            "Runtime 按平台能力启用 Characteristic Value Change"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [
+            "TEST-A-008",
+            "TEST-E-004"
+          ],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "关闭时远程+本地双关"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "ERR-GATT-07",
+              "expected_ui": [
+                "ERR-GATT-07"
+              ],
+              "expected_recovery": "ERR-GATT-07"
+            }
+          ],
+          "test_ids": [
+            "TEST-I-005",
+            "TEST-A-008",
+            "TEST-E-004"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P006-08",
+          "precondition_state": "已订阅",
+          "control": "关闭订阅",
+          "visible_when": "已订阅",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "推送停止；subscription_count −1"
+          ],
+          "expected_runtime_events": [
+            "setNotifyEnabled(false)（远程+本地双断）"
+          ],
+          "expected_device_events": [
+            "device_effect_from_call_chain:setNotifyEnabled(false)（远程+本地双断）"
+          ],
+          "e5_mapping": [],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "退订+UI 摘除"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "同上",
+              "expected_ui": [
+                "同上"
+              ],
+              "expected_recovery": "同上"
+            }
+          ],
+          "test_ids": [
+            "TEST-I-005"
+          ],
+          "hardware_dependent": true
+        },
+        {
+          "operation_id": "OP-P006-10",
+          "precondition_state": "页面可见",
+          "control": "清空日志",
+          "visible_when": "页面可见",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "toast+面板清空"
+          ],
+          "expected_runtime_events": [
+            "logger.clear(deviceId)"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "no_dedicated_failure_path",
+              "condition": "文档标明无专用失败反馈或静默兜底",
+              "expected_ui": [
+                "保持当前态或日志兜底"
+              ],
+              "expected_recovery": "无额外恢复控件"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-006"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P006-11",
+          "precondition_state": "页面可见",
+          "control": "导出日志",
+          "visible_when": "页面可见",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "导出成功"
+          ],
+          "expected_runtime_events": [
+            "脱敏→格式化→导出/复制"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [
+            "TEST-W-008"
+          ],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "文件句柄关闭"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "空日志提示；失败 ERR-DATA-02",
+              "expected_ui": [
+                "空日志提示；失败 ERR-DATA-02"
+              ],
+              "expected_recovery": "空日志提示；失败 ERR-DATA-02"
+            }
+          ],
+          "test_ids": [
+            "TEST-W-008",
+            "TEST-U-012"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P006-12",
+          "precondition_state": "有 OTA 服务且入口达标（REQ-046/DEC-001）",
+          "control": "选择 OTA 固件包",
+          "visible_when": "有 OTA 服务且入口达标（REQ-046/DEC-001）",
+          "disabled_when": "OTA 进行中",
+          "input_fixture": "固件包（manifest.json+firmware.bin，PROTO-011）",
+          "expected_ui": [
+            "显示 target/硬件/目标版本/SHA 摘要"
+          ],
+          "expected_runtime_events": [
+            "FEAT-081 六项校验（格式/target/hardware/version/size/SHA256）"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [
+            "TEST-A-011",
+            "TEST-E-007"
+          ],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "ERR-OTA-01（读取失败）、ERR-OTA-09..13（包校验失败，不进入事务）",
+              "expected_ui": [
+                "ERR-OTA-01（读取失败）、ERR-OTA-09..13（包校验失败，不进入事务）"
+              ],
+              "expected_recovery": "ERR-OTA-01（读取失败）、ERR-OTA-09..13（包校验失败，不进入事务）"
+            }
+          ],
+          "test_ids": [
+            "TEST-U-016",
+            "TEST-I-010",
+            "TEST-A-011",
+            "TEST-E-007"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P006-13",
+          "precondition_state": "STATE-P006-10",
+          "control": "开始 OTA",
+          "visible_when": "包校验通过",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "进度→success→版本一致=成功"
+          ],
+          "expected_runtime_events": [
+            "OTA 事务（第 0 步后 10 步正典，`12`；start 携带 target/sha256）"
+          ],
+          "expected_device_events": [
+            "device_effect_from_call_chain:OTA 事务（第 0 步后 10 步正典，`12`；start 携带 target/sha256）"
+          ],
+          "e5_mapping": [
+            "TEST-A-011",
+            "TEST-E-007"
+          ],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "事务资源释放"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "ERR-OTA-02..08",
+              "expected_ui": [
+                "ERR-OTA-02..08"
+              ],
+              "expected_recovery": "ERR-OTA-02..08"
+            }
+          ],
+          "test_ids": [
+            "TEST-I-008",
+            "TEST-A-011",
+            "TEST-E-007"
+          ],
+          "hardware_dependent": true
+        },
+        {
+          "operation_id": "OP-P006-14",
+          "precondition_state": "STATE-P006-10",
+          "control": "取消 OTA",
+          "visible_when": "OTA 进行中",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "取消完成回就绪"
+          ],
+          "expected_runtime_events": [
+            "CTRL abort→设备回 idle"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [
+            "TEST-E-007"
+          ],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "同上"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "ERR-OTA-07 兜底断开",
+              "expected_ui": [
+                "ERR-OTA-07 兜底断开"
+              ],
+              "expected_recovery": "ERR-OTA-07 兜底断开"
+            }
+          ],
+          "test_ids": [
+            "TEST-E-007"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P006-15",
+          "precondition_state": "—",
+          "control": "返回",
+          "visible_when": "—",
+          "disabled_when": "OTA 进行中需确认",
+          "input_fixture": "系统",
+          "expected_ui": [
+            "—"
+          ],
+          "expected_runtime_events": [
+            "navigateBack"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": "→来源页",
+          "expected_cleanup": [
+            "页面级订阅摘除（会话保留，DEC-009）"
+          ],
+          "failure_variants": [
+            {
+              "name": "no_dedicated_failure_path",
+              "condition": "文档标明无专用失败反馈或静默兜底",
+              "expected_ui": [
+                "保持当前态或日志兜底"
+              ],
+              "expected_recovery": "无额外恢复控件"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-006"
+          ],
+          "hardware_dependent": false
+        }
+      ],
+      "error_variants": [
+        {
+          "error_id": "ERR-CONN-01",
+          "name": "ERR-CONN-01",
+          "expected_recovery": "连接失败重试",
+          "visible": "连接失败（重试）"
+        },
+        {
+          "error_id": "ERR-CONN-02",
+          "name": "ERR-CONN-02",
+          "expected_recovery": "发现失败重试/断开重连",
+          "visible": "发现失败（重试/断开重连）"
+        },
+        {
+          "error_id": "ERR-CONN-03",
+          "name": "ERR-CONN-03",
+          "expected_recovery": "空服务重试",
+          "visible": "空服务（重试）"
+        },
+        {
+          "error_id": "ERR-CONN-04",
+          "name": "ERR-CONN-04",
+          "expected_recovery": "断开失败记日志+本地清理",
+          "visible": "断开失败（记日志+本地清理）"
+        },
+        {
+          "error_id": "ERR-CONN-05",
+          "name": "ERR-CONN-05",
+          "expected_recovery": "重连耗尽手动重试",
+          "visible": "重连耗尽（手动重试）"
+        },
+        {
+          "error_id": "ERR-GATT-01",
+          "name": "ERR-GATT-01",
+          "expected_recovery": "读失败重试",
+          "visible": "读失败（重试）"
+        },
+        {
+          "error_id": "ERR-GATT-02",
+          "name": "ERR-GATT-02",
+          "expected_recovery": "属性不允许按钮禁用+说明",
+          "visible": "属性不允许（按钮禁用+说明）"
+        },
+        {
+          "error_id": "ERR-GATT-03",
+          "name": "ERR-GATT-03",
+          "expected_recovery": "编码非法表单内修正",
+          "visible": "编码非法（表单内修正）"
+        },
+        {
+          "error_id": "ERR-GATT-04",
+          "name": "ERR-GATT-04",
+          "expected_recovery": "写失败重试",
+          "visible": "写失败（重试）"
+        },
+        {
+          "error_id": "ERR-GATT-05",
+          "name": "ERR-GATT-05",
+          "expected_recovery": "MTU 失败保守分包继续",
+          "visible": "MTU 失败（保守分包继续）"
+        },
+        {
+          "error_id": "ERR-GATT-07",
+          "name": "ERR-GATT-07",
+          "expected_recovery": "订阅失败重试",
+          "visible": "订阅失败（重试）"
+        },
+        {
+          "error_id": "ERR-OTA-01..13",
+          "name": "ERR-OTA-01..13",
+          "expected_recovery": "（`07` 详表",
+          "visible": "（`07` 详表"
+        },
+        {
+          "error_id": "ERR-DATA-02",
+          "name": "ERR-DATA-02",
+          "expected_recovery": "导出失败。空态：空服务STATE-P006-04",
+          "visible": "导出失败。空态：空服务（STATE-P006-04）"
+        }
+      ],
+      "navigation": {
+        "raw": "来源页返回；离开页面会话保留（应用级），页面级订阅按 DEC-009（推荐保留用户订阅，见决策）。OTA 进行中返回需确认。",
+        "targets": []
+      },
+      "platform_assertions": [
+        "App/微信同语义；微信文件选择与导出方式差异；H5 不可达。"
+      ],
+      "a11y_assertions": [
+        "属性标记用图标+缩写文字；状态点附文字；日志行可复制；弹窗焦点管理（`17`）；文案表 S-27~S-33。"
+      ],
+      "cleanup_assertions": [
+        "| 资源 | 所有者 | 释放 |",
+        "|---|---|---|",
+        "| 会话 | Registry（应用级） | 断开/移除 |",
+        "| Characteristic Subscription（用户开启，DEC-017 统一订阅） | 会话（DEC-009 推荐随会话保留；计入 subscription_count） | 会话销毁或用户关闭 |",
+        "| 读超时 listener | Runtime 单次操作 | 完成/超时 |",
+        "| 写队列 | Runtime | 排空/清空 |",
+        "| OTA 事务 | OtaManager | 终态 |",
+        "| 文件句柄 | OTA | 读毕/取消 |",
+        "| 页面 UI 订阅 | 页面 | unload 摘除 |"
+      ],
+      "stats": {
+        "state_count": 10,
+        "operation_count": 14,
+        "error_variant_count": 13,
+        "failure_variant_count": 14
+      }
+    },
+    {
+      "page_id": "PAGE-007",
+      "route": "pages/connected/index",
+      "type": "tab",
+      "source_doc": "docs/target-product/pages/PAGE-007_CONNECTED.md",
+      "first_screen": [
+        "活动会话列表或空态；多台时的批量断开。"
+      ],
+      "information_architecture": [
+        "导航\"已连接设备\"；",
+        "摘要区（>1 台时）：\"N 台设备保持连接\" + \"全部断开\"；",
+        "列表：设备卡（名称/ID/meta 按 Profile/**活动订阅徽标\"订阅中 N\"**/断开按钮/点击打开）；",
+        "空态：说明（\"从扫描页连接设备后在此管理\"）+ 去扫描；若 Smart HID 配网连接进行中，附加提示\"Smart HID 配网连接进行中…\"（不把配网会话列为可断开条目）。"
+      ],
+      "states": [
+        {
+          "state_id": "STATE-P007-01",
+          "name": "空态",
+          "entry_condition": "Registry 空",
+          "visible_sections": [
+            "引导",
+            "去扫描（",
+            "配网提示可选）"
+          ],
+          "allowed_operations": [
+            "OP-P007-04"
+          ],
+          "disabled_operations": [
+            "OP-P007-01",
+            "OP-P007-02",
+            "OP-P007-03",
+            "OP-P007-05"
+          ],
+          "exit_conditions": [
+            "有会话"
+          ],
+          "expected_data_changes": [],
+          "expected_recovery": "有会话",
+          "test_ids": [
+            "TEST-P-007"
+          ]
+        },
+        {
+          "state_id": "STATE-P007-02",
+          "name": "列表态",
+          "entry_condition": "≥1 会话",
+          "visible_sections": [
+            "摘要",
+            "卡片"
+          ],
+          "allowed_operations": [
+            "OP-P007-01",
+            "OP-P007-02",
+            "OP-P007-03"
+          ],
+          "disabled_operations": [
+            "OP-P007-04",
+            "OP-P007-05"
+          ],
+          "exit_conditions": [
+            "断开至空/打开"
+          ],
+          "expected_data_changes": [
+            "联动 Registry"
+          ],
+          "expected_recovery": "断开至空/打开",
+          "test_ids": [
+            "TEST-A-009",
+            "TEST-W-009"
+          ]
+        },
+        {
+          "state_id": "STATE-P007-03",
+          "name": "部分失败",
+          "entry_condition": "批量断开部分失败",
+          "visible_sections": [
+            "modal 失败清单"
+          ],
+          "allowed_operations": [],
+          "disabled_operations": [],
+          "exit_conditions": [
+            "确认"
+          ],
+          "expected_data_changes": [
+            "保留失败条目"
+          ],
+          "expected_recovery": "确认",
+          "test_ids": [
+            "TEST-W-009"
+          ]
+        }
+      ],
+      "operations": [
+        {
+          "operation_id": "OP-P007-01",
+          "precondition_state": "STATE-P007-02",
+          "control": "卡片点击",
+          "visible_when": "列表态",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "打开 PAGE-006/003 且复用会话"
+          ],
+          "expected_runtime_events": [
+            "按 Profile 路由携稳定身份"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [
+            "TEST-A-009"
+          ],
+          "expected_navigation": "→PAGE-006/003",
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "会话恰失效→走连接流程",
+              "expected_ui": [
+                "会话恰失效→走连接流程"
+              ],
+              "expected_recovery": "会话恰失效→走连接流程"
+            }
+          ],
+          "test_ids": [
+            "TEST-I-006",
+            "TEST-A-009"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P007-02",
+          "precondition_state": "STATE-P007-02",
+          "control": "单独断开",
+          "visible_when": "列表态",
+          "disabled_when": "断开中",
+          "input_fixture": null,
+          "expected_ui": [
+            "toast+条目消失"
+          ],
+          "expected_runtime_events": [
+            "统一断开入口（含 Smart HID service 通知）→Registry 移除"
+          ],
+          "expected_device_events": [
+            "device_effect_from_call_chain:统一断开入口（含 Smart HID service 通知）→Registry 移除"
+          ],
+          "e5_mapping": [
+            "TEST-A-007",
+            "TEST-W-008"
+          ],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "会话注销+订阅清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "ERR-CONN-04 toast",
+              "expected_ui": [
+                "ERR-CONN-04 toast"
+              ],
+              "expected_recovery": "ERR-CONN-04 toast"
+            }
+          ],
+          "test_ids": [
+            "TEST-A-007",
+            "TEST-W-008"
+          ],
+          "hardware_dependent": true
+        },
+        {
+          "operation_id": "OP-P007-03",
+          "precondition_state": "STATE-P007-02",
+          "control": "全部断开",
+          "visible_when": "N>1",
+          "disabled_when": "执行中",
+          "input_fixture": null,
+          "expected_ui": [
+            "toast 汇总"
+          ],
+          "expected_runtime_events": [
+            "对全部会话统一断开（同一入口，含 HID；allSettled）"
+          ],
+          "expected_device_events": [
+            "device_effect_from_call_chain:对全部会话统一断开（同一入口，含 HID；allSettled）"
+          ],
+          "e5_mapping": [
+            "TEST-W-009",
+            "TEST-A-009"
+          ],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "同上逐台"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "部分失败 modal 列出失败设备",
+              "expected_ui": [
+                "部分失败 modal 列出失败设备"
+              ],
+              "expected_recovery": "部分失败 modal 列出失败设备"
+            }
+          ],
+          "test_ids": [
+            "TEST-W-009",
+            "TEST-A-009"
+          ],
+          "hardware_dependent": true
+        },
+        {
+          "operation_id": "OP-P007-04",
+          "precondition_state": "STATE-P007-01",
+          "control": "空态去扫描",
+          "visible_when": "空态",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "—"
+          ],
+          "expected_runtime_events": [
+            "switchTab"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": "→PAGE-001",
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "no_dedicated_failure_path",
+              "condition": "文档标明无专用失败反馈或静默兜底",
+              "expected_ui": [
+                "保持当前态或日志兜底"
+              ],
+              "expected_recovery": "无额外恢复控件"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-007"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P007-05",
+          "precondition_state": "重连中条目",
+          "control": "查看重连进度",
+          "visible_when": "重连中条目",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "条目显示\"重连中 n/3\""
+          ],
+          "expected_runtime_events": [
+            "展示型（无点击链路）"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "no_dedicated_failure_path",
+              "condition": "文档标明无专用失败反馈或静默兜底",
+              "expected_ui": [
+                "保持当前态或日志兜底"
+              ],
+              "expected_recovery": "无额外恢复控件"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-007"
+          ],
+          "hardware_dependent": false
+        }
+      ],
+      "error_variants": [
+        {
+          "error_id": "ERR-CONN-04",
+          "name": "ERR-CONN-04",
+          "expected_recovery": "断开失败（单台 toast/批量 modal",
+          "visible": "断开失败（单台 toast/批量 modal"
+        }
+      ],
+      "navigation": {
+        "raw": "→PAGE-006（通用卡）、→PAGE-003（smart-hid 卡）、→PAGE-001（空态）。Tab 无返回。",
+        "targets": [
+          "PAGE-006",
+          "PAGE-003",
+          "PAGE-001"
+        ]
+      },
+      "platform_assertions": [
+        "App/微信一致；H5 永远空态+引导（UNSUPPORTED 语义）。"
+      ],
+      "a11y_assertions": [
+        "文案只能写\"当前已连接\"，禁止\"连接稳定\"等无健康指标词；批量断开有确认；文案表 S-34~S-36。"
+      ],
+      "cleanup_assertions": [
+        "本页零持有：全部资源归 Registry/Owner；页面仅投影与触发（`10` 矩阵本页行全部\"无\"）。"
+      ],
+      "stats": {
+        "state_count": 3,
+        "operation_count": 5,
+        "error_variant_count": 1,
+        "failure_variant_count": 5
+      }
+    },
+    {
+      "page_id": "PAGE-008",
+      "route": "pages/broadcast/index",
+      "type": "tab",
+      "source_doc": "docs/target-product/pages/PAGE-008_BROADCAST.md",
+      "first_screen": [
+        "支持状态、payload 核心字段、字节预算、开始/停止控制。"
+      ],
+      "information_architecture": [
+        "平台与支持状态区（含 H5 UNSUPPORTED、插件缺失检测）；",
+        "Payload 字段区（能力驱动，DEC-004）：**System Device Name**（只读能力字段：系统广播名称 xxxx，名称由系统/蓝牙适配器决定）、**Advertising Local Name**（仅平台/插件允许控制时可编辑）、Service UUID、Manufacturer ID、Manufacturer Data、Service Data、Connectable 等平台允许字段、平台专属开关（App：模式/发射功率；微信：按 API 集）；",
+        "字节预算区：\"预计 xx/31 字节\"实时计算（单一算法 SSOT）；",
+        "控制区：检查支持 / 开始 / 停止；",
+        "操作日志区（可清空）：启停、错误、Observer 校验提示；",
+        "Observer 证据提示条：\"用 ESP32 Observer 固件验证广播内容\"。"
+      ],
+      "states": [
+        {
+          "state_id": "STATE-P008-01",
+          "name": "未知",
+          "entry_condition": "进入未检查",
+          "visible_sections": [
+            "\"支持情况未知\"",
+            "检查按钮"
+          ],
+          "allowed_operations": [
+            "OP-P008-01"
+          ],
+          "disabled_operations": [
+            "OP-P008-02",
+            "OP-P008-03",
+            "OP-P008-04",
+            "OP-P008-05",
+            "OP-P008-06",
+            "OP-P008-07"
+          ],
+          "exit_conditions": [
+            "检查完成"
+          ],
+          "expected_data_changes": [],
+          "expected_recovery": "检查完成",
+          "test_ids": [
+            "TEST-P-008"
+          ]
+        },
+        {
+          "state_id": "STATE-P008-02",
+          "name": "检查中",
+          "entry_condition": "探测运行",
+          "visible_sections": [
+            "spinner"
+          ],
+          "allowed_operations": [],
+          "disabled_operations": [],
+          "exit_conditions": [
+            "→03/04"
+          ],
+          "expected_data_changes": [],
+          "expected_recovery": "→03/04",
+          "test_ids": [
+            "TEST-P-008"
+          ]
+        },
+        {
+          "state_id": "STATE-P008-03",
+          "name": "不支持",
+          "entry_condition": "探测失败/H5/插件缺失",
+          "visible_sections": [
+            "UNSUPPORTED 说明"
+          ],
+          "allowed_operations": [],
+          "disabled_operations": [],
+          "exit_conditions": [
+            "平台变化"
+          ],
+          "expected_data_changes": [],
+          "expected_recovery": "平台变化",
+          "test_ids": [
+            "TEST-P-008",
+            "TEST-W-006"
+          ]
+        },
+        {
+          "state_id": "STATE-P008-04",
+          "name": "未就绪",
+          "entry_condition": "支持但必填缺失/无效",
+          "visible_sections": [
+            "字段级提示"
+          ],
+          "allowed_operations": [
+            "OP-P008-02"
+          ],
+          "disabled_operations": [
+            "OP-P008-01",
+            "OP-P008-03",
+            "OP-P008-04",
+            "OP-P008-05",
+            "OP-P008-06",
+            "OP-P008-07"
+          ],
+          "exit_conditions": [
+            "就绪"
+          ],
+          "expected_data_changes": [
+            "预算更新"
+          ],
+          "expected_recovery": "就绪",
+          "test_ids": [
+            "TEST-U-014"
+          ]
+        },
+        {
+          "state_id": "STATE-P008-05",
+          "name": "已就绪",
+          "entry_condition": "支持且有效",
+          "visible_sections": [
+            "开始可点"
+          ],
+          "allowed_operations": [
+            "OP-P008-02",
+            "OP-P008-03"
+          ],
+          "disabled_operations": [
+            "OP-P008-01",
+            "OP-P008-04",
+            "OP-P008-05",
+            "OP-P008-06",
+            "OP-P008-07"
+          ],
+          "exit_conditions": [
+            "开始/离开"
+          ],
+          "expected_data_changes": [],
+          "expected_recovery": "开始/离开",
+          "test_ids": [
+            "TEST-P-008"
+          ]
+        },
+        {
+          "state_id": "STATE-P008-06",
+          "name": "广播中",
+          "entry_condition": "启动实际成功",
+          "visible_sections": [
+            "状态",
+            "停止按钮",
+            "Observer 提示"
+          ],
+          "allowed_operations": [
+            "OP-P008-04",
+            "OP-P008-05",
+            "OP-P008-07"
+          ],
+          "disabled_operations": [
+            "OP-P008-01",
+            "OP-P008-02",
+            "OP-P008-03",
+            "OP-P008-06"
+          ],
+          "exit_conditions": [
+            "停止/失败"
+          ],
+          "expected_data_changes": [
+            "日志"
+          ],
+          "expected_recovery": "停止/失败",
+          "test_ids": [
+            "TEST-A-010",
+            "TEST-E-006"
+          ]
+        },
+        {
+          "state_id": "STATE-P008-07",
+          "name": "停止中",
+          "entry_condition": "停止执行",
+          "visible_sections": [
+            "过渡"
+          ],
+          "allowed_operations": [],
+          "disabled_operations": [],
+          "exit_conditions": [
+            "就绪"
+          ],
+          "expected_data_changes": [
+            "日志"
+          ],
+          "expected_recovery": "就绪",
+          "test_ids": [
+            "TEST-P-008"
+          ]
+        },
+        {
+          "state_id": "STATE-P008-08",
+          "name": "权限错误",
+          "entry_condition": "广播权限缺失",
+          "visible_sections": [
+            "错误",
+            "去设置"
+          ],
+          "allowed_operations": [],
+          "disabled_operations": [],
+          "exit_conditions": [
+            "就绪"
+          ],
+          "expected_data_changes": [],
+          "expected_recovery": "就绪",
+          "test_ids": [
+            "TEST-A-010"
+          ]
+        },
+        {
+          "state_id": "STATE-P008-09",
+          "name": "蓝牙关闭",
+          "entry_condition": "适配器 off",
+          "visible_sections": [
+            "错误",
+            "去开启"
+          ],
+          "allowed_operations": [],
+          "disabled_operations": [],
+          "exit_conditions": [
+            "就绪"
+          ],
+          "expected_data_changes": [],
+          "expected_recovery": "就绪",
+          "test_ids": [
+            "TEST-W-005"
+          ]
+        },
+        {
+          "state_id": "STATE-P008-10",
+          "name": "连接冲突",
+          "entry_condition": "有活动连接时尝试开始",
+          "visible_sections": [
+            "说明\"先断开 N 台设备\""
+          ],
+          "allowed_operations": [],
+          "disabled_operations": [],
+          "exit_conditions": [
+            "冲突解除"
+          ],
+          "expected_data_changes": [],
+          "expected_recovery": "冲突解除",
+          "test_ids": [
+            "TEST-I-007",
+            "TEST-A-010"
+          ]
+        },
+        {
+          "state_id": "STATE-P008-11",
+          "name": "参数错误",
+          "entry_condition": "预算 32/UUID 非法",
+          "visible_sections": [
+            "阻止",
+            "首行原因"
+          ],
+          "allowed_operations": [],
+          "disabled_operations": [],
+          "exit_conditions": [
+            "就绪"
+          ],
+          "expected_data_changes": [
+            "预算红显"
+          ],
+          "expected_recovery": "就绪",
+          "test_ids": [
+            "TEST-U-014"
+          ]
+        },
+        {
+          "state_id": "STATE-P008-12",
+          "name": "启停失败",
+          "entry_condition": "平台返回失败",
+          "visible_sections": [
+            "错误",
+            "重试"
+          ],
+          "allowed_operations": [],
+          "disabled_operations": [],
+          "exit_conditions": [
+            "成功"
+          ],
+          "expected_data_changes": [
+            "日志"
+          ],
+          "expected_recovery": "重试",
+          "test_ids": [
+            "TEST-A-010"
+          ]
+        }
+      ],
+      "operations": [
+        {
+          "operation_id": "OP-P008-01",
+          "precondition_state": "STATE-P008-01",
+          "control": "检查支持",
+          "visible_when": "页面可见",
+          "disabled_when": "检查中",
+          "input_fixture": null,
+          "expected_ui": [
+            "状态芯片更新"
+          ],
+          "expected_runtime_events": [
+            "能力探测（含插件存在性）"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [
+            "TEST-A-010"
+          ],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "ERR-BT-03 不支持面",
+              "expected_ui": [
+                "ERR-BT-03 不支持面"
+              ],
+              "expected_recovery": "ERR-BT-03 不支持面"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-008",
+            "TEST-A-010"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P008-02",
+          "precondition_state": "STATE-P008-04",
+          "control": "编辑字段",
+          "visible_when": "未广播中",
+          "disabled_when": "广播中（输入禁用并说明）",
+          "input_fixture": "字段值",
+          "expected_ui": [
+            "预算即时更新"
+          ],
+          "expected_runtime_events": [
+            "校验+预算重算"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "UUID 错误首行提示 ERR-PERI-02",
+              "expected_ui": [
+                "UUID 错误首行提示 ERR-PERI-02"
+              ],
+              "expected_recovery": "UUID 错误首行提示 ERR-PERI-02"
+            }
+          ],
+          "test_ids": [
+            "TEST-U-014",
+            "TEST-P-008"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P008-03",
+          "precondition_state": "STATE-P008-05",
+          "control": "开始广播",
+          "visible_when": "就绪且预算≤31 且无活动连接",
+          "disabled_when": "见左",
+          "input_fixture": null,
+          "expected_ui": [
+            "状态=广播中（实际成功后）"
+          ],
+          "expected_runtime_events": [
+            "Owner 获取→平台广播启动"
+          ],
+          "expected_device_events": [
+            "device_effect_from_call_chain:Owner 获取→平台广播启动"
+          ],
+          "e5_mapping": [
+            "TEST-A-010",
+            "TEST-E-006"
+          ],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "失败释放 Owner"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "ERR-PERI-05 冲突/ERR-PERI-06 启动失败",
+              "expected_ui": [
+                "ERR-PERI-05 冲突/ERR-PERI-06 启动失败"
+              ],
+              "expected_recovery": "ERR-PERI-05 冲突/ERR-PERI-06 启动失败"
+            }
+          ],
+          "test_ids": [
+            "TEST-I-007",
+            "TEST-A-010",
+            "TEST-E-006"
+          ],
+          "hardware_dependent": true
+        },
+        {
+          "operation_id": "OP-P008-04",
+          "precondition_state": "STATE-P008-06",
+          "control": "停止广播",
+          "visible_when": "广播中",
+          "disabled_when": "停止中",
+          "input_fixture": null,
+          "expected_ui": [
+            "状态=已就绪；Observer 观测消失（E5）"
+          ],
+          "expected_runtime_events": [
+            "平台停止+Server 关闭"
+          ],
+          "expected_device_events": [
+            "device_effect_from_call_chain:平台停止+Server 关闭"
+          ],
+          "e5_mapping": [
+            "TEST-A-010",
+            "TEST-E-006"
+          ],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "Owner 释放"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "ERR-PERI-07 兜底重试",
+              "expected_ui": [
+                "ERR-PERI-07 兜底重试"
+              ],
+              "expected_recovery": "ERR-PERI-07 兜底重试"
+            }
+          ],
+          "test_ids": [
+            "TEST-A-010",
+            "TEST-E-006"
+          ],
+          "hardware_dependent": true
+        },
+        {
+          "operation_id": "OP-P008-05",
+          "precondition_state": "STATE-P008-06",
+          "control": "清空操作日志",
+          "visible_when": "日志区",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "toast"
+          ],
+          "expected_runtime_events": [
+            "本地清空"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "no_dedicated_failure_path",
+              "condition": "文档标明无专用失败反馈或静默兜底",
+              "expected_ui": [
+                "保持当前态或日志兜底"
+              ],
+              "expected_recovery": "无额外恢复控件"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-008"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P008-06",
+          "precondition_state": "广播中离开页面",
+          "control": "hide/unload 释放",
+          "visible_when": "广播中离开页面",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "无声"
+          ],
+          "expected_runtime_events": [
+            "自动停止+释放"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [
+            "TEST-A-003"
+          ],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "同 OP-04"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "记日志",
+              "expected_ui": [
+                "记日志"
+              ],
+              "expected_recovery": "记日志"
+            }
+          ],
+          "test_ids": [
+            "TEST-I-007",
+            "TEST-A-003"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P008-07",
+          "precondition_state": "STATE-P008-06",
+          "control": "复制 Observer 校验信息",
+          "visible_when": "广播中",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "toast"
+          ],
+          "expected_runtime_events": [
+            "复制当前 payload 摘要（供比对）"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "ERR-SYS-03",
+              "expected_ui": [
+                "ERR-SYS-03"
+              ],
+              "expected_recovery": "ERR-SYS-03"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-008"
+          ],
+          "hardware_dependent": false
+        }
+      ],
+      "error_variants": [
+        {
+          "error_id": "ERR-PERI-01",
+          "name": "ERR-PERI-01",
+          "expected_recovery": "检查失败重试",
+          "visible": "检查失败（重试）"
+        },
+        {
+          "error_id": "ERR-PERI-02",
+          "name": "ERR-PERI-02",
+          "expected_recovery": "UUID 格式修改",
+          "visible": "UUID 格式（修改）"
+        },
+        {
+          "error_id": "ERR-PERI-03",
+          "name": "ERR-PERI-03",
+          "expected_recovery": "超 31 字节删减字段",
+          "visible": "超 31 字节（删减字段）"
+        },
+        {
+          "error_id": "ERR-PERI-04",
+          "name": "ERR-PERI-04",
+          "expected_recovery": "必填缺失补全",
+          "visible": "必填缺失（补全）"
+        },
+        {
+          "error_id": "ERR-PERI-05",
+          "name": "ERR-PERI-05",
+          "expected_recovery": "连接冲突先断开",
+          "visible": "连接冲突（先断开）"
+        },
+        {
+          "error_id": "ERR-PERI-06",
+          "name": "ERR-PERI-06",
+          "expected_recovery": "启动失败重试",
+          "visible": "启动失败（重试）"
+        },
+        {
+          "error_id": "ERR-PERI-07",
+          "name": "ERR-PERI-07",
+          "expected_recovery": "停止失败兜底重试+日志",
+          "visible": "停止失败（兜底重试+日志）"
+        },
+        {
+          "error_id": "ERR-BT-01",
+          "name": "ERR-BT-01",
+          "expected_recovery": "/03。空态：本页无列表空态N/A：工具页。",
+          "visible": "/03。空态：本页无列表空态（N/A：工具页）。"
+        }
+      ],
+      "navigation": {
+        "raw": "无下级页；Tab 切换离开时按 OP-06 处理。",
+        "targets": []
+      },
+      "platform_assertions": [
+        "App：原生插件（缺失=STATE-P008-03）；微信：Peripheral API（字段集不同语义一致）；H5：UNSUPPORTED。广播名称按 DEC-004 能力驱动：可控（Advertising Local Name）才给可编辑框；不可控只读展示 System Device Name 并说明\"名称由系统/蓝牙适配器决定\"；字节预算仅计实际进入广播包的字段。Observer 观测到的 name/raw 是最终事实源（`12` 第 10 节，TEST-E-006）。"
+      ],
+      "a11y_assertions": [
+        "预算超限红色+文字+图标；状态芯片文字化；系统接管字段有说明图标（读屏可读）；文案表 S-37~S-41。"
+      ],
+      "cleanup_assertions": [
+        "| 资源 | 所有者 | 释放 |",
+        "|---|---|---|",
+        "| Peripheral Server/广播 | BroadcastOwner（单例） | 停止/hide/unload |",
+        "| 微信 Adapter 所有权 | Owner | 同上 |",
+        "| 页面日志 | 页面 | 清空/离页 |",
+        "| Central 侧（保护对象） | Runtime | 不为本页静默关闭 |"
+      ],
+      "stats": {
+        "state_count": 12,
+        "operation_count": 7,
+        "error_variant_count": 8,
+        "failure_variant_count": 7
+      }
+    },
+    {
+      "page_id": "PAGE-009",
+      "route": "pages/about/index",
+      "type": "tab",
+      "source_doc": "docs/target-product/pages/PAGE-009_ABOUT.md",
+      "first_screen": [
+        "产品名、真实版本、平台状态区入口、核心链接组。推广区不进首屏。"
+      ],
+      "information_architecture": [
+        "产品标识：Logo + 产品名 + 版本号（VERSION 投影）+ 一句话定位（UniApp 主线）；",
+        "技术标签：UniApp·Vue3、开源跨平台；",
+        "应用信息：系统平台、版本、型号；",
+        "功能特性：与首版 Must 对齐的六条（不暗示未验证能力）；",
+        "支持平台：Android App / 微信小程序 / H5（降级）/ iOS（NOT_RELEASED）——五词状态；",
+        "相关链接：官方网站、版本记录、开发文档、GitHub 仓库、ESP32 教程、问题反馈、隐私声明、安全披露、开源许可（MIT）；",
+        "分享应用；",
+        "页脚：版权与 License；",
+        "更多小程序（仅微信，页底折叠区）。"
+      ],
+      "states": [
+        {
+          "state_id": "STATE-P009-01",
+          "name": "版本加载中",
+          "entry_condition": "进入",
+          "visible_sections": [
+            "版本占位\"读取中\""
+          ],
+          "allowed_operations": [],
+          "disabled_operations": [],
+          "exit_conditions": [
+            "读取完成"
+          ],
+          "expected_data_changes": [
+            "版本填充"
+          ],
+          "expected_recovery": "读取完成",
+          "test_ids": [
+            "TEST-P-009"
+          ]
+        },
+        {
+          "state_id": "STATE-P009-02",
+          "name": "正常展示",
+          "entry_condition": "版本就绪",
+          "visible_sections": [
+            "全部区块"
+          ],
+          "allowed_operations": [
+            "OP-P009-01"
+          ],
+          "disabled_operations": [
+            "OP-P009-02",
+            "OP-P009-03",
+            "OP-P009-04",
+            "OP-P009-05",
+            "OP-P009-06",
+            "OP-P009-07",
+            "OP-P009-08",
+            "OP-P009-09",
+            "OP-P009-10",
+            "OP-P009-11"
+          ],
+          "exit_conditions": [
+            "离开"
+          ],
+          "expected_data_changes": [],
+          "expected_recovery": "离开",
+          "test_ids": [
+            "TEST-P-009"
+          ]
+        },
+        {
+          "state_id": "STATE-P009-03",
+          "name": "版本读取失败",
+          "entry_condition": "读取异常",
+          "visible_sections": [
+            "版本显示 `dev.unknown`"
+          ],
+          "allowed_operations": [],
+          "disabled_operations": [],
+          "exit_conditions": [
+            "修复后重启"
+          ],
+          "expected_data_changes": [
+            "ERR-DATA-05 记日志"
+          ],
+          "expected_recovery": "修复后重启",
+          "test_ids": [
+            "TEST-P-009"
+          ]
+        }
+      ],
+      "operations": [
+        {
+          "operation_id": "OP-P009-01",
+          "precondition_state": "STATE-P009-02",
+          "control": "打开官网",
+          "visible_when": "页面可见",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "打开/复制 toast"
+          ],
+          "expected_runtime_events": [
+            "App openURL / H5 window.open / 微信复制链接"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": "外部",
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "失败 modal",
+              "expected_ui": [
+                "失败 modal"
+              ],
+              "expected_recovery": "失败 modal"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-009",
+            "TEST-R-005"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P009-02",
+          "precondition_state": "页面可见",
+          "control": "版本记录",
+          "visible_when": "页面可见",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "—"
+          ],
+          "expected_runtime_events": [
+            "navigate"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": "→PAGE-010",
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "no_dedicated_failure_path",
+              "condition": "文档标明无专用失败反馈或静默兜底",
+              "expected_ui": [
+                "保持当前态或日志兜底"
+              ],
+              "expected_recovery": "无额外恢复控件"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-010"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P009-03",
+          "precondition_state": "页面可见",
+          "control": "开发文档",
+          "visible_when": "页面可见",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "同上"
+          ],
+          "expected_runtime_events": [
+            "同 OP-01"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": "外部",
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "同上",
+              "expected_ui": [
+                "同上"
+              ],
+              "expected_recovery": "同上"
+            }
+          ],
+          "test_ids": [
+            "TEST-R-005"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P009-04",
+          "precondition_state": "页面可见",
+          "control": "GitHub 仓库",
+          "visible_when": "页面可见",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "同上"
+          ],
+          "expected_runtime_events": [
+            "同 OP-01"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": "外部",
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "同上",
+              "expected_ui": [
+                "同上"
+              ],
+              "expected_recovery": "同上"
+            }
+          ],
+          "test_ids": [
+            "TEST-R-005"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P009-05",
+          "precondition_state": "页面可见",
+          "control": "ESP32 教程",
+          "visible_when": "页面可见",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "同上"
+          ],
+          "expected_runtime_events": [
+            "同 OP-01"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [
+            "TEST-E-008"
+          ],
+          "expected_navigation": "外部",
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "同上",
+              "expected_ui": [
+                "同上"
+              ],
+              "expected_recovery": "同上"
+            }
+          ],
+          "test_ids": [
+            "TEST-R-005",
+            "TEST-E-008"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P009-06",
+          "precondition_state": "页面可见",
+          "control": "问题反馈",
+          "visible_when": "页面可见",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "打开/复制"
+          ],
+          "expected_runtime_events": [
+            "Issue 入口（DEC-011 仓库角色）"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": "外部",
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "同上",
+              "expected_ui": [
+                "同上"
+              ],
+              "expected_recovery": "同上"
+            }
+          ],
+          "test_ids": [
+            "TEST-R-005"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P009-07",
+          "precondition_state": "页面可见",
+          "control": "隐私声明",
+          "visible_when": "页面可见",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "打开"
+          ],
+          "expected_runtime_events": [
+            "文档站隐私页"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": "外部",
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "同上",
+              "expected_ui": [
+                "同上"
+              ],
+              "expected_recovery": "同上"
+            }
+          ],
+          "test_ids": [
+            "TEST-R-005"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P009-08",
+          "precondition_state": "页面可见",
+          "control": "安全披露",
+          "visible_when": "页面可见",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "打开"
+          ],
+          "expected_runtime_events": [
+            "SECURITY.md 入口"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": "外部",
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "同上",
+              "expected_ui": [
+                "同上"
+              ],
+              "expected_recovery": "同上"
+            }
+          ],
+          "test_ids": [
+            "TEST-R-005"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P009-09",
+          "precondition_state": "页面可见",
+          "control": "开源许可",
+          "visible_when": "页面可见",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "打开"
+          ],
+          "expected_runtime_events": [
+            "LICENSE 展示"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": "弹窗/外部",
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "同上",
+              "expected_ui": [
+                "同上"
+              ],
+              "expected_recovery": "同上"
+            }
+          ],
+          "test_ids": [
+            "TEST-R-005"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P009-10",
+          "precondition_state": "页面可见",
+          "control": "分享应用",
+          "visible_when": "页面可见",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "分享面板"
+          ],
+          "expected_runtime_events": [
+            "微信 share / App uni.share / H5 Web Share→复制"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [
+            "TEST-W-010"
+          ],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "失败 toast",
+              "expected_ui": [
+                "失败 toast"
+              ],
+              "expected_recovery": "失败 toast"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-009",
+            "TEST-W-010"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P009-11",
+          "precondition_state": "仅微信、折叠区展开后",
+          "control": "跳转其他小程序",
+          "visible_when": "仅微信、折叠区展开后",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "跳转"
+          ],
+          "expected_runtime_events": [
+            "navigateToMiniProgram"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [
+            "TEST-W-010"
+          ],
+          "expected_navigation": "外部小程序",
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "无 appId toast/失败 modal",
+              "expected_ui": [
+                "无 appId toast/失败 modal"
+              ],
+              "expected_recovery": "无 appId toast/失败 modal"
+            }
+          ],
+          "test_ids": [
+            "TEST-W-010"
+          ],
+          "hardware_dependent": false
+        }
+      ],
+      "error_variants": [
+        {
+          "error_id": "ERR-DATA-05",
+          "name": "ERR-DATA-05",
+          "expected_recovery": "版本读取失败（显示 `dev.unknown`",
+          "visible": "版本读取失败（显示 `dev.unknown`"
+        }
+      ],
+      "navigation": {
+        "raw": "→PAGE-010；外链不占导航栈。",
+        "targets": [
+          "PAGE-010"
+        ]
+      },
+      "platform_assertions": [
+        "外链打开方式三平台不同（OP-01 链）；推广折叠区仅微信；H5 页面可用（无 BLE 依赖）。"
+      ],
+      "a11y_assertions": [
+        "平台状态用五词+图标；产品名与 `01` 定位一致（品牌规范：显示名统一 Smart BLE / BLE Toolkit+，禁用历史混用名）；文案表 S-42~S-46。"
+      ],
+      "cleanup_assertions": [
+        "无连接/计时器/订阅（N/A：静态页；仅异步版本读取一次性完成）。"
+      ],
+      "stats": {
+        "state_count": 3,
+        "operation_count": 11,
+        "error_variant_count": 1,
+        "failure_variant_count": 11
+      }
+    },
+    {
+      "page_id": "PAGE-010",
+      "route": "pages/about/version",
+      "type": "secondary",
+      "source_doc": "docs/target-product/pages/PAGE-010_VERSION.md",
+      "first_screen": [
+        "当前版本标记与最近一条版本记录。"
+      ],
+      "information_architecture": [
+        "当前版本标记区：运行版本 + `dev.<shortsha>`（开发版时）+\"当前\"徽标；",
+        "版本条目列表（倒序）：每项版本号、发布日期、类型分组条目（新增/修复/优化/限制）；",
+        "页脚说明：数据与 Release Notes 同源。"
+      ],
+      "states": [
+        {
+          "state_id": "STATE-P010-01",
+          "name": "正常列表",
+          "entry_condition": "有版本数据",
+          "visible_sections": [
+            "当前标记",
+            "条目"
+          ],
+          "allowed_operations": [
+            "OP-P010-01",
+            "OP-P010-02",
+            "OP-P010-03",
+            "OP-P010-04"
+          ],
+          "disabled_operations": [],
+          "exit_conditions": [
+            "离开"
+          ],
+          "expected_data_changes": [],
+          "expected_recovery": "离开",
+          "test_ids": [
+            "TEST-P-010"
+          ]
+        },
+        {
+          "state_id": "STATE-P010-02",
+          "name": "数据缺失",
+          "entry_condition": "投影为空",
+          "visible_sections": [
+            "占位说明\"版本数据缺失（dev.unknown）\"",
+            "当前运行版本"
+          ],
+          "allowed_operations": [
+            "OP-P010-02",
+            "OP-P010-04"
+          ],
+          "disabled_operations": [
+            "OP-P010-01",
+            "OP-P010-03"
+          ],
+          "exit_conditions": [
+            "修复构建"
+          ],
+          "expected_data_changes": [],
+          "expected_recovery": "修复构建",
+          "test_ids": [
+            "TEST-P-010"
+          ]
+        }
+      ],
+      "operations": [
+        {
+          "operation_id": "OP-P010-01",
+          "precondition_state": "STATE-P010-01",
+          "control": "查看条目（滚动）",
+          "visible_when": "页面可见",
+          "disabled_when": "",
+          "input_fixture": "滚动",
+          "expected_ui": [
+            "—"
+          ],
+          "expected_runtime_events": [
+            "静态渲染"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "no_dedicated_failure_path",
+              "condition": "文档标明无专用失败反馈或静默兜底",
+              "expected_ui": [
+                "保持当前态或日志兜底"
+              ],
+              "expected_recovery": "无额外恢复控件"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-010"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P010-02",
+          "precondition_state": "STATE-P010-01",
+          "control": "复制版本信息",
+          "visible_when": "当前版本区",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "toast"
+          ],
+          "expected_runtime_events": [
+            "复制\"版本+shortsha\""
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "ERR-SYS-03",
+              "expected_ui": [
+                "ERR-SYS-03"
+              ],
+              "expected_recovery": "ERR-SYS-03"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-010"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P010-03",
+          "precondition_state": "STATE-P010-01",
+          "control": "分享本页",
+          "visible_when": "微信",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "分享面板"
+          ],
+          "expected_runtime_events": [
+            "shareApp（本 path）"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [
+            "TEST-W-010"
+          ],
+          "expected_navigation": null,
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "失败 toast",
+              "expected_ui": [
+                "失败 toast"
+              ],
+              "expected_recovery": "失败 toast"
+            }
+          ],
+          "test_ids": [
+            "TEST-W-010"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-P010-04",
+          "precondition_state": "STATE-P010-01",
+          "control": "返回",
+          "visible_when": "—",
+          "disabled_when": "—",
+          "input_fixture": "系统",
+          "expected_ui": [
+            "—"
+          ],
+          "expected_runtime_events": [
+            "navigateBack"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": "→PAGE-009",
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "no_dedicated_failure_path",
+              "condition": "文档标明无专用失败反馈或静默兜底",
+              "expected_ui": [
+                "保持当前态或日志兜底"
+              ],
+              "expected_recovery": "无额外恢复控件"
+            }
+          ],
+          "test_ids": [
+            "TEST-P-010"
+          ],
+          "hardware_dependent": false
+        }
+      ],
+      "error_variants": [
+        {
+          "error_id": "ERR-DATA-05",
+          "name": "ERR-DATA-05",
+          "expected_recovery": "数据缺失（恢复：显示运行版本兜底",
+          "visible": "数据缺失（恢复：显示运行版本兜底"
+        }
+      ],
+      "navigation": {
+        "raw": "→PAGE-009（返回）。onShow 回到顶部。",
+        "targets": [
+          "PAGE-009"
+        ]
+      },
+      "platform_assertions": [
+        "三平台一致；仅微信有分享本页。"
+      ],
+      "a11y_assertions": [
+        "类型分组（新增/修复/优化/限制）用图标+文字；\"当前\"徽标读屏可读；文案表 S-47~S-48。"
+      ],
+      "cleanup_assertions": [
+        "无任何运行时资源（N/A：静态渲染页）。"
+      ],
+      "stats": {
+        "state_count": 2,
+        "operation_count": 4,
+        "error_variant_count": 1,
+        "failure_variant_count": 4
+      }
+    },
+    {
+      "page_id": "WEB-001",
+      "route": "/",
+      "type": "web",
+      "source_doc": "docs/target-product/web/WEB-001_LANDING_PAGE.md",
+      "first_screen": [
+        "Hero 定位、主/次 CTA、版本+状态徽标、核心闭环图起点、导航。禁止在首屏出现无证据数字（如\"6+ 入口\"）。"
+      ],
+      "information_architecture": [
+        "顶部导航：Smart BLE / 快速开始 / 平台状态 / ESP32 / 文档 / GitHub；",
+        "Hero：一句话定位 + 主 CTA（体验：微信小程序码或在线原型）+ 次 CTA（GitHub 源码）+ 当前版本与状态徽标（来自 Release Metadata）；",
+        "核心 BLE 闭环图：发现设备 → 检查广播 → 连接 → GATT 读写/Notify → 日志 → 广播/OTA → ESP32 验证；",
+        "能力卡矩阵：每卡（扫描、广播解析、连接、GATT、多设备、日志、手机广播+Observer、OTA、Smart HID、Profile 扩展）带状态徽标与详情链接；",
+        "平台状态表（`08` 投影）；",
+        "真实 App 截图组（带 alt；缺失时隐藏并注明）；",
+        "在线交互原型入口（10 页 HTML 原型；缺失时隐藏）；",
+        "ESP32 区：fixture_peripheral 与 fixture_observer 双卡（接线、一键构建、固件下载+SHA、Observer 串口输出示例 JSON）；",
+        "快速开始三条：微信 5 分钟 / Android 5 分钟 / ESP32 5 分钟（步骤可复制；区块开头显式标注 Quick Start 前置条件\"已满足\"，不含工具链从零安装，`19` 第 2.1 节）；同区并列\"新电脑 30 分钟完整闭环\"入口（Clean Machine，`19` 第 2.2 节，两种计时不得互相冒充）；",
+        "下载区（#download）：Android APK 卡（版本/commit/SHA256/设备清单/证据链接）、微信小程序码卡、固件卡；无产物时对应卡 NOT_RELEASED；",
+        "证据与已知限制区（#evidence）：最新 Release 的 commit、App/小程序/固件版本、通过平台、证据入口（EVID 链接）、已知限制清单；",
+        "Smart HID 区（#smart-hid）：能力边界（配网/诊断，不含控制链路）与状态；",
+        "开源与贡献区：GitHub/Issue/Security/License(MIT)/贡献指南；",
+        "页脚：版权、License、隐私、站点地图。"
+      ],
+      "states": [
+        {
+          "state_id": "STATE-W001-01",
+          "name": "VERIFIED 发布态",
+          "entry_condition": "Release Metadata 完整且 E6 门通过",
+          "visible_sections": [
+            "下载/码/证据全开"
+          ],
+          "allowed_operations": [],
+          "disabled_operations": [],
+          "exit_conditions": [
+            "新 Release"
+          ],
+          "expected_data_changes": [
+            "全字段联动"
+          ],
+          "expected_recovery": "新 Release",
+          "test_ids": [
+            "TEST-R-001"
+          ]
+        },
+        {
+          "state_id": "STATE-W001-02",
+          "name": "PREVIEW 证据前态",
+          "entry_condition": "产物未齐/E5 未全",
+          "visible_sections": [
+            "下载区降级",
+            "能力卡 PREVIEW 徽标",
+            "Hero 显\"预览\""
+          ],
+          "allowed_operations": [
+            "OP-W001-01",
+            "OP-W001-02",
+            "OP-W001-06"
+          ],
+          "disabled_operations": [
+            "OP-W001-03",
+            "OP-W001-04",
+            "OP-W001-05",
+            "OP-W001-07",
+            "OP-W001-08",
+            "OP-W001-09",
+            "OP-W001-10",
+            "OP-W001-11"
+          ],
+          "exit_conditions": [
+            "达 E6"
+          ],
+          "expected_data_changes": [
+            "徽标更新"
+          ],
+          "expected_recovery": "达 E6",
+          "test_ids": [
+            "TEST-R-003"
+          ]
+        },
+        {
+          "state_id": "STATE-W001-03",
+          "name": "NOT_RELEASED 无产物",
+          "entry_condition": "无任何公开产物",
+          "visible_sections": [
+            "下载区为说明卡（无链接）；CTA 指向原型/源码"
+          ],
+          "allowed_operations": [
+            "OP-W001-01",
+            "OP-W001-02",
+            "OP-W001-06"
+          ],
+          "disabled_operations": [
+            "OP-W001-03",
+            "OP-W001-04",
+            "OP-W001-05",
+            "OP-W001-07",
+            "OP-W001-08",
+            "OP-W001-09",
+            "OP-W001-10",
+            "OP-W001-11"
+          ],
+          "exit_conditions": [
+            "产物发布"
+          ],
+          "expected_data_changes": [
+            "—"
+          ],
+          "expected_recovery": "产物发布",
+          "test_ids": [
+            "TEST-R-003"
+          ]
+        },
+        {
+          "state_id": "STATE-W001-04",
+          "name": "资源缺失降级",
+          "entry_condition": "截图/原型缺失",
+          "visible_sections": [
+            "对应区隐藏",
+            "一行说明"
+          ],
+          "allowed_operations": [],
+          "disabled_operations": [],
+          "exit_conditions": [
+            "资源补齐"
+          ],
+          "expected_data_changes": [
+            "—"
+          ],
+          "expected_recovery": "资源补齐",
+          "test_ids": [
+            "TEST-R-006"
+          ]
+        }
+      ],
+      "operations": [
+        {
+          "operation_id": "OP-W001-01",
+          "precondition_state": "STATE-W001-02",
+          "control": "主 CTA（体验）",
+          "visible_when": "小程序码可用或原型存在",
+          "disabled_when": "均缺失时改为 GitHub CTA",
+          "input_fixture": null,
+          "expected_ui": [
+            "到达目标"
+          ],
+          "expected_runtime_events": [
+            "锚点/打开原型"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": "#quickstart/原型",
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "no_dedicated_failure_path",
+              "condition": "文档标明无专用失败反馈或静默兜底",
+              "expected_ui": [
+                "保持当前态或日志兜底"
+              ],
+              "expected_recovery": "无额外恢复控件"
+            }
+          ],
+          "test_ids": [
+            "TEST-R-006"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-W001-02",
+          "precondition_state": "STATE-W001-02",
+          "control": "次 CTA（GitHub）",
+          "visible_when": "恒显",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "打开仓库"
+          ],
+          "expected_runtime_events": [
+            "外链"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": "外部",
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "404→ERR-WEB-01 检查",
+              "expected_ui": [
+                "404→ERR-WEB-01 检查"
+              ],
+              "expected_recovery": "404→ERR-WEB-01 检查"
+            }
+          ],
+          "test_ids": [
+            "TEST-R-005"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-W001-03",
+          "precondition_state": "APK 产物+SHA 存在",
+          "control": "下载 Android APK",
+          "visible_when": "APK 产物+SHA 存在",
+          "disabled_when": "无产物→NOT_RELEASED 卡（无链接）",
+          "input_fixture": null,
+          "expected_ui": [
+            "下载开始"
+          ],
+          "expected_runtime_events": [
+            "产物 URL"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": "外部",
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "404/SHA 不符→ERR-WEB-01/02",
+              "expected_ui": [
+                "404/SHA 不符→ERR-WEB-01/02"
+              ],
+              "expected_recovery": "404/SHA 不符→ERR-WEB-01/02"
+            }
+          ],
+          "test_ids": [
+            "TEST-R-001"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-W001-04",
+          "precondition_state": "正式码已发布且扫码验证通过",
+          "control": "微信小程序码",
+          "visible_when": "正式码已发布且扫码验证通过",
+          "disabled_when": "未发布→NOT_RELEASED",
+          "input_fixture": "扫码",
+          "expected_ui": [
+            "进入小程序"
+          ],
+          "expected_runtime_events": [
+            "码图"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": "外部",
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "失效→ERR-WEB-03",
+              "expected_ui": [
+                "失效→ERR-WEB-03"
+              ],
+              "expected_recovery": "失效→ERR-WEB-03"
+            }
+          ],
+          "test_ids": [
+            "TEST-R-009"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-W001-05",
+          "precondition_state": "固件产物+SHA",
+          "control": "固件下载",
+          "visible_when": "固件产物+SHA",
+          "disabled_when": "无→NOT_RELEASED",
+          "input_fixture": null,
+          "expected_ui": [
+            "下载"
+          ],
+          "expected_runtime_events": [
+            "产物 URL"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": "外部",
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "同 OP-03",
+              "expected_ui": [
+                "同 OP-03"
+              ],
+              "expected_recovery": "同 OP-03"
+            }
+          ],
+          "test_ids": [
+            "TEST-R-008"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-W001-06",
+          "precondition_state": "STATE-W001-02",
+          "control": "查看证据",
+          "visible_when": "证据区",
+          "disabled_when": "证据存在",
+          "input_fixture": null,
+          "expected_ui": [
+            "打开证据"
+          ],
+          "expected_runtime_events": [
+            "EVID 链接"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": "外部/站内",
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "404→ERR-WEB-01",
+              "expected_ui": [
+                "404→ERR-WEB-01"
+              ],
+              "expected_recovery": "404→ERR-WEB-01"
+            }
+          ],
+          "test_ids": [
+            "TEST-R-007"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-W001-07",
+          "precondition_state": "恒显",
+          "control": "查看已知限制",
+          "visible_when": "恒显",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "定位"
+          ],
+          "expected_runtime_events": [
+            "#evidence 锚点"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": "锚点",
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "no_dedicated_failure_path",
+              "condition": "文档标明无专用失败反馈或静默兜底",
+              "expected_ui": [
+                "保持当前态或日志兜底"
+              ],
+              "expected_recovery": "无额外恢复控件"
+            }
+          ],
+          "test_ids": [
+            "TEST-R-006"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-W001-08",
+          "precondition_state": "恒显",
+          "control": "导航锚点",
+          "visible_when": "恒显",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "定位"
+          ],
+          "expected_runtime_events": [
+            "平滑滚动"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": "锚点",
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "no_dedicated_failure_path",
+              "condition": "文档标明无专用失败反馈或静默兜底",
+              "expected_ui": [
+                "保持当前态或日志兜底"
+              ],
+              "expected_recovery": "无额外恢复控件"
+            }
+          ],
+          "test_ids": [
+            "TEST-R-006"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-W001-09",
+          "precondition_state": "恒显",
+          "control": "快速开始三选一",
+          "visible_when": "恒显",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "打开"
+          ],
+          "expected_runtime_events": [
+            "到达对应教程（Quick Start，前置条件声明在区块开头）"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": "站内",
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "404→ERR-WEB-01",
+              "expected_ui": [
+                "404→ERR-WEB-01"
+              ],
+              "expected_recovery": "404→ERR-WEB-01"
+            }
+          ],
+          "test_ids": [
+            "TEST-R-005"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-W001-10",
+          "precondition_state": "区块展示",
+          "control": "Smart HID 区链接",
+          "visible_when": "区块展示",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "打开"
+          ],
+          "expected_runtime_events": [
+            "详情/教程"
+          ],
+          "expected_device_events": [],
+          "e5_mapping": [],
+          "expected_navigation": "站内",
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "同上",
+              "expected_ui": [
+                "同上"
+              ],
+              "expected_recovery": "同上"
+            }
+          ],
+          "test_ids": [
+            "TEST-R-005"
+          ],
+          "hardware_dependent": false
+        },
+        {
+          "operation_id": "OP-W001-11",
+          "precondition_state": "快速开始区",
+          "control": "30 分钟 Clean Machine 入口",
+          "visible_when": "快速开始区",
+          "disabled_when": "",
+          "input_fixture": null,
+          "expected_ui": [
+            "打开"
+          ],
+          "expected_runtime_events": [
+            "到达 Clean Machine 教程（`19` 2.2：clone→依赖→build→flash→install→scan→connect→write→notify）"
+          ],
+          "expected_device_events": [
+            "device_effect_from_call_chain:到达 Clean Machine 教程（`19` 2.2：clone→依赖→build→flash→install→scan→connect→write→not"
+          ],
+          "e5_mapping": [],
+          "expected_navigation": "站内",
+          "expected_cleanup": [
+            "无本页额外清理"
+          ],
+          "failure_variants": [
+            {
+              "name": "primary_failure",
+              "condition": "404→ERR-WEB-01",
+              "expected_ui": [
+                "404→ERR-WEB-01"
+              ],
+              "expected_recovery": "404→ERR-WEB-01"
+            }
+          ],
+          "test_ids": [
+            "TEST-R-011"
+          ],
+          "hardware_dependent": true
+        }
+      ],
+      "error_variants": [
+        {
+          "error_id": "ERR-WEB-01",
+          "name": "ERR-WEB-01",
+          "expected_recovery": "链接/下载 404（自动检查+修复",
+          "visible": "链接/下载 404（自动检查+修复"
+        },
+        {
+          "error_id": "ERR-WEB-02",
+          "name": "ERR-WEB-02",
+          "expected_recovery": "SHA 不符阻断发布",
+          "visible": "SHA 不符（阻断发布）"
+        },
+        {
+          "error_id": "ERR-WEB-03",
+          "name": "ERR-WEB-03",
+          "expected_recovery": "二维码失效重新生成",
+          "visible": "二维码失效（重新生成）"
+        },
+        {
+          "error_id": "ERR-WEB-04",
+          "name": "ERR-WEB-04",
+          "expected_recovery": "Metadata 漂移与 `18` 比对失败阻断。空态=STATE-W001-03/04（诚实降级，不留死区）。",
+          "visible": "Metadata 漂移（与 `18` 比对失败阻断）。空态=STATE-W001-03/04（诚实降级，不留死区）。"
+        }
+      ],
+      "navigation": {
+        "raw": "站内锚点+文档站路由；外链新标签。无返回栈问题。",
+        "targets": []
+      },
+      "platform_assertions": [
+        "mobile/desktop 响应式；dark/light 跟随系统+切换；键盘可完成全部锚点导航；无 JS 时 Hero/闭环/平台表/快速开始文本可读（下载需 JS 的部分给出直接 URL 文本）。"
+      ],
+      "a11y_assertions": [
+        "对比度 ≥4.5:1（暗色同样）；全部图片 alt；键盘焦点顺序=视觉顺序；二维码有文字等效（小程序名可搜索）；文案与 `17` 一致；SEO：title/og/canonical 与 `01` 定位一致，禁用\"大一统\"旧词。"
+      ],
+      "cleanup_assertions": [
+        "静态页无运行时资源（N/A：SSG 页面）；数据所有权归 Release Metadata 生成流程。"
+      ],
+      "web_extra": {
+        "viewports": [
+          "mobile",
+          "desktop"
+        ],
+        "themes": [
+          "light",
+          "dark"
+        ],
+        "hero_cta": true,
+        "not_released": true,
+        "download_url_sha": true,
+        "qr": true,
+        "seo": [
+          "canonical",
+          "og"
+        ],
+        "no_js": true
+      },
+      "stats": {
+        "state_count": 4,
+        "operation_count": 11,
+        "error_variant_count": 4,
+        "failure_variant_count": 11
+      }
+    }
+  ],
+  "totals": {
+    "pages": 11,
+    "states": 67,
+    "operations": 92,
+    "error_variants": 50,
+    "failure_variants": 92,
+    "cleanup_assertions": 39
+  }
+}

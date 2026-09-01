@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://smart-ble.local/tests/target/pages/page-behavior.schema.json",
+  "title": "Smart BLE page behavior test contract",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "pages",
+    "totals"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string"
+    },
+    "generated_from": {
+      "type": "string"
+    },
+    "note": {
+      "type": "string"
+    },
+    "totals": {
+      "type": "object"
+    },
+    "pages": {
+      "type": "array",
+      "minItems": 11,
+      "items": {
+        "type": "object",
+        "required": [
+          "page_id",
+          "route",
+          "first_screen",
+          "states",
+          "operations",
+          "platform_assertions",
+          "a11y_assertions",
+          "cleanup_assertions"
+        ],
+        "properties": {
+          "page_id": {
+            "type": "string"
+          },
+          "route": {
+            "type": "string"
+          },
+          "states": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "state_id",
+                "entry_condition",
+                "visible_sections",
+                "allowed_operations",
+                "disabled_operations",
+                "exit_conditions",
+                "expected_recovery",
+                "test_ids"
+              ]
+            }
+          },
+          "operations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "operation_id",
+                "precondition_state",
+                "control",
+                "visible_when",
+                "expected_ui",
+                "expected_runtime_events",
+                "expected_cleanup",
+                "failure_variants",
+                "test_ids"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

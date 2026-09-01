@@ -48,13 +48,29 @@ test('TEST-P 全体：manifest 状态/操作与 pages-target 同源（states/ope
   }
 });
 
-test('TEST-P 全体：Playwright spec 骨架存在（E4 可运行时接线）', () => {
+test('TEST-P 全体：完整 Playwright spec 存在且无 TODO/slice', () => {
   const { existsSync } = awaitImport();
   for (const p of target.pages) {
     const spec = `${ROOT}/tests/target/pages/${p.id}.spec.js`;
     assert.ok(existsSync(spec), `${p.id}.spec.js 存在`);
+    const src = readFileSync(spec, 'utf8');
+    assert.ok(!/TODO\s*\(/.test(src), `${p.id} 无 TODO`);
+    assert.ok(!/slice\s*\(\s*0\s*,\s*3\s*\)/.test(src), `${p.id} 无 slice(0,3)`);
+    assert.ok(src.includes('for (const operation of behavior.operations)'));
+    assert.ok(src.includes('for (const state of behavior.states)'));
   }
   function awaitImport() {
     return { existsSync: (f) => { try { readFileSync(f); return true; } catch { return false; } } };
+  }
+});
+
+test('TEST-P 全体：page-behavior.manifest 与 pages-target 操作/状态集合一致', () => {
+  const behavior = JSON.parse(readFileSync(`${ROOT}/tests/target/pages/page-behavior.manifest.json`, 'utf8'));
+  assert.equal(behavior.pages.length, target.pages.length);
+  for (const p of target.pages) {
+    const b = behavior.pages.find((x) => x.page_id === p.id);
+    assert.ok(b, `${p.id} in behavior`);
+    assert.equal(b.operations.length, p.operations.length);
+    assert.equal(b.states.length, p.states.length);
   }
 });

@@ -103,7 +103,7 @@ function isPlaywrightAvailable() {
 }
 
 function hasTargetDriverEnv() {
-  return Boolean(process.env.TARGET_APP_URL || process.env.TARGET_PAGE_DRIVER === '1');
+  return process.env.TARGET_PAGE_DRIVER === '1';
 }
 
 function listSpecs() {
@@ -111,13 +111,57 @@ function listSpecs() {
   return readdirSync(dir).filter((f) => f.endsWith('.spec.js')).map((f) => `${dir}/${f}`);
 }
 
+function loadPageCaseCounts() {
+  try {
+    const behavior = JSON.parse(readFileSync(`${ROOT}/tests/target/pages/page-behavior.manifest.json`, 'utf8'));
+    let stateCases = 0;
+    let operationCases = 0;
+    let assertionCases = 0;
+    for (const p of behavior.pages) {
+      stateCases += p.states.length;
+      operationCases += p.operations.length;
+      assertionCases += p.operations.length * 6 + p.states.length * 3 + 8;
+      if (p.web_extra) assertionCases += 8;
+    }
+    return {
+      specs: behavior.pages.length,
+      state_cases: stateCases,
+      operation_cases: operationCases,
+      assertion_cases: assertionCases,
+      totals: behavior.totals,
+    };
+  } catch {
+    return { specs: 11, state_cases: 0, operation_cases: 0, assertion_cases: 0 };
+  }
+}
+
 function runPageSpecs() {
   const specs = listSpecs();
+  const counts = loadPageCaseCounts();
+  // Approximate parameterized cases: contract + states + ops + 5 page-level + web extras
+  const casesPerSpec = (pageId) => {
+    try {
+      const behavior = JSON.parse(readFileSync(`${ROOT}/tests/target/pages/page-behavior.manifest.json`, 'utf8'));
+      const p = behavior.pages.find((x) => pageId.startsWith(x.page_id));
+      if (!p) return 8;
+      return 1 + p.states.length + p.operations.length + 5 + (p.web_extra ? 4 : 0);
+    } catch {
+      return 8;
+    }
+  };
+  const blockedCases = specs.reduce((n, s) => n + casesPerSpec(s.split('/').pop()), 0);
+
   if (!isPlaywrightAvailable()) {
     return {
       pass: 0, fail: 0, skipped: 0, failures: [],
       blocked: specs.map((s) => ({ testId: s.split('/').pop(), reason: 'BLOCKED_BY_TOOLCHAIN', count: 1, layer: 'current', source: s })),
       blockedSummary: { BLOCKED_BY_TOOLCHAIN: specs.length },
+      pages: {
+        ...counts,
+        blocked_specs: specs.length,
+        blocked_cases: blockedCases,
+        reason: 'BLOCKED_BY_TOOLCHAIN',
+      },
       notExecuted: true,
     };
   }
@@ -126,6 +170,12 @@ function runPageSpecs() {
       pass: 0, fail: 0, skipped: 0, failures: [],
       blocked: specs.map((s) => ({ testId: s.split('/').pop(), reason: 'BLOCKED_BY_TARGET_DRIVER', count: 1, layer: 'current', source: s })),
       blockedSummary: { BLOCKED_BY_TARGET_DRIVER: specs.length },
+      pages: {
+        ...counts,
+        blocked_specs: specs.length,
+        blocked_cases: blockedCases,
+        reason: 'BLOCKED_BY_TARGET_DRIVER',
+      },
       notExecuted: true,
     };
   }
@@ -135,8 +185,11 @@ function runPageSpecs() {
   const fail = Number((out.match(/(\d+) failed/) || [])[1] ?? 0);
   const skipped = Number((out.match(/(\d+) skipped/) || [])[1] ?? 0);
   return {
-    pass, fail, skipped, failures: fail ? [{ testId: 'playwright', actual: out.slice(-500), layer: 'current', source: 'tests/target/pages' }] : [],
-    blocked: [], blockedSummary: {}, raw: out, exitCode: r.status ?? 0, notExecuted: false,
+    pass, fail, skipped,
+    failures: fail ? [{ testId: 'playwright', actual: out.slice(-500), layer: 'current', source: 'tests/target/pages' }] : [],
+    blocked: [], blockedSummary: {},
+    pages: { ...counts, blocked_specs: 0, blocked_cases: 0, reason: null },
+    raw: out, exitCode: r.status ?? 0, notExecuted: false,
   };
 }
 
@@ -178,6 +231,7 @@ const result = {
   system: { pass: 0, fail: 0, checkers: [], contract: null, pages_contract: null },
   harness: { pass: 0, fail: 0 },
   current: { pass: 0, fail: 0, layers: [] },
+  pages: null,
   blocked: {},
   first_breakpoints: [],
   TARGET_CONTRACT_FAIL: 0,
@@ -251,12 +305,14 @@ if (mode === 'current' || mode === 'all') {
   }
 
   const pageR = runPageSpecs();
+  result.pages = pageR.pages || loadPageCaseCounts();
   result.current.layers.push({
     name: 'pages-playwright',
     pass: pageR.pass,
     fail: pageR.fail,
     skipped: pageR.skipped,
     blocked: pageR.blockedSummary,
+    pages: pageR.pages,
     notExecuted: pageR.notExecuted,
   });
   result.current.pass += pageR.pass;
@@ -280,6 +336,7 @@ if (format === 'json') {
     system: result.system,
     harness: result.harness,
     current: result.current,
+    pages: result.pages,
     blocked: result.blocked,
     first_breakpoints: result.first_breakpoints,
     SYSTEM_PASS: result.SYSTEM_PASS,
@@ -299,6 +356,7 @@ if (format === 'json') {
   if (mode === 'current' || mode === 'all') {
     console.log(`CURRENT pass=${result.CURRENT_PASS} fail=${result.CURRENT_FAIL}`);
   }
+  if (result.pages) console.log(`PAGES  ${JSON.stringify(result.pages)}`);
   console.log(`BLOCKED ${JSON.stringify(result.blocked)}`);
   console.log('\n第一断点预览（Current only，前 10）：');
   result.first_breakpoints.slice(0, 10).forEach((b, i) => console.log(`${i + 1}. [${b.testId}] ${b.firstBreakpoint}`));
