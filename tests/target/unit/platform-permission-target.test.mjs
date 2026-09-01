@@ -9,30 +9,6 @@ import { importTarget, notImplemented } from '../lib/import-target.mjs';
 
 const IDS = 'TEST-U-001/003/004 REQ-005~008 FEAT-001/005~008 DEC-003';
 
-// ---------- 参照层：故意错误实现（预取定位、状态机缺永久拒绝分支） ----------
-function brokenPermissionPlan(ctx) {
-  // 错误①：App 启动即申请定位（违反 DEC-003：点击扫描才申请）
-  return { pre_fetch_location_at_launch: true, request_on_scan_click: false, platform: ctx.platform };
-}
-function brokenAdapterUiState(adapter) {
-  // 错误②：蓝牙关闭被映射为"不支持"（混淆 STATE-GBL-02 与 STATE-GBL-03）
-  return adapter.available ? 'normal' : 'unsupported';
-}
-
-test('TEST-U-003 参照层：预取定位的权限方案必须被识别为违规', () => {
-  const plan = brokenPermissionPlan({ platform: 'wechat-miniprogram' });
-  assert.equal(plan.pre_fetch_location_at_launch, true, '参照实现确实预取');
-  // 目标规则断言：该方案必须不合格（能力驱动：request_on_scan_click 必须为 true）
-  assert.ok(!plan.request_on_scan_click || !plan.pre_fetch_location_at_launch,
-    'DEC-003：点击扫描才允许申请定位，预取即违规（测试能抓住该错误）');
-});
-
-test('TEST-U-004 参照层：蓝牙关闭≠平台不支持（两种错误态不得混淆）', () => {
-  const off = brokenAdapterUiState({ available: false });
-  assert.equal(off, 'unsupported', '参照实现确实混淆');
-  assert.notEqual(off, 'bluetooth-off', '目标要求独立 bluetooth-off 态（S-04），混淆即被抓');
-});
-
 // ---------- 目标层：apps/uniapp 真实模块 ----------
 test('TEST-U-001/003/004 目标层：ble-runtime/platform.js + services/scan-permission.js', async (t) => {
   const platform = await importTarget('apps/uniapp/services/ble-runtime/platform.js');

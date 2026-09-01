@@ -8,17 +8,6 @@ import { importTarget, notImplemented } from '../lib/import-target.mjs';
 
 const IDS = 'TEST-U-002 REQ-004/056 FEAT-004/066 PAGE-009/010 WEB-001 S-47';
 
-// ---------- 参照层：缺失版本时编造 0.0.0 ----------
-function brokenProjection(meta) {
-  return `${meta.version || '0.0.0'}(${meta.commit || 'none'})`; // 错误：缺失编造
-}
-test('TEST-U-002 参照层：版本缺失编造 0.0.0 必须被抓（S-47）', () => {
-  const out = brokenProjection({});
-  assert.match(out, /0\.0\.0/, '参照实现确实编造');
-  // 目标：缺失必须显式 dev.unknown 并引导反馈，不得伪装成正式版本
-  assert.ok(!/dev\.unknown/.test(out), '目标应输出 dev.unknown——测试可识别差异');
-});
-
 // ---------- 目标层 ----------
 test('TEST-U-002 目标层：services/version-metadata.js', async (t) => {
   const m = await importTarget('apps/uniapp/services/version-metadata.js');

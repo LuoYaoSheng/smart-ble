@@ -11,20 +11,6 @@ const IDS = 'TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号';
 const SECRET_PASSWORD = 'wifipass-123';
 const SECRET_TOKEN = 'tok_9f8e7d6c';
 
-// ---------- 参照层：脱敏只遮密码不遮 token ----------
-function brokenRedact(entry) {
-  return entry.replaceAll(SECRET_PASSWORD, '***'); // 错误：token 泄露
-}
-test('TEST-U-013 参照层：token 未脱敏必须被抓', () => {
-  const line = `connect wifi pw=${SECRET_PASSWORD} token=${SECRET_TOKEN}`;
-  const out = brokenRedact(line);
-  assert.ok(!out.includes(SECRET_PASSWORD), '密码已遮');
-  assert.ok(out.includes(SECRET_TOKEN), '参照实现确实泄露 token');
-  assert.ok(!out.includes(SECRET_TOKEN) === false, '断言语境成立');
-  // 目标：两类秘密都必须遮蔽
-  assert.ok(out.includes(SECRET_TOKEN), '该断言失败即代表目标达成（token 被遮）——反向证明测试有效');
-});
-
 // ---------- 目标层 ----------
 test('TEST-U-013 目标层：services/ble-runtime/log-redaction.js', async (t) => {
   const m = await importTarget('apps/uniapp/services/ble-runtime/log-redaction.js');

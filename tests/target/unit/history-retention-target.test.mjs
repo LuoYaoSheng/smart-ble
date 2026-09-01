@@ -10,17 +10,6 @@ const IDS = 'REQ-065/052 FEAT-059/061 PAGE-004 DATA-006 S-21';
 
 const DAY = 24 * 60 * 60 * 1000;
 
-// ---------- 参照层：TTL 永不过期 + 超上限仍保留 ----------
-function brokenNormalize(devices) {
-  return devices.slice(); // 错误：原样返回，不清理不封顶
-}
-test('参照层：过期历史不清理必须被抓（90 天 TTL）', () => {
-  const stale = { deviceId: 'H1', configuredAt: Date.now() - 91 * DAY };
-  const kept = brokenNormalize([stale]);
-  assert.equal(kept.length, 1, '参照实现确实保留过期项');
-  assert.ok(kept.length > 0, '目标：>90 天记录必须被清理（S-21 声明的 90 天口径）');
-});
-
 // ---------- 目标层 ----------
 test('目标层：smart-hid/known-devices.js', async (t) => {
   const m = await importTarget('apps/uniapp/services/smart-hid/known-devices.js');

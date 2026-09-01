@@ -9,33 +9,6 @@ import { importTarget, notImplemented } from '../lib/import-target.mjs';
 
 const IDS = 'TEST-U-014 REQ-039/042 FEAT-042/043 PAGE-008 FLOW-008 DEC-004 S-38';
 
-// ---------- 参照层（故意错误类别⑥）：静默截断到 31 字节的实现 ----------
-function brokenBudget(fields) {
-  const bytes = fields.reduce((a, f) => a + f.bytes, 0);
-  if (bytes > 31) {
-    let used = 0;
-    const kept = [];
-    for (const f of fields) { // 错误：能塞多少塞多少，尾部丢弃
-      if (used + f.bytes <= 31) { kept.push(f); used += f.bytes; }
-    }
-    return { ok: true, kept, total: used }; // 错误：超预算仍返回可开始
-  }
-  return { ok: true, kept: fields, total: bytes };
-}
-test('TEST-U-014 参照层⑥：32 字节静默截断必须被抓（S-38）', () => {
-  const fields = [
-    { name: '完整本地名', bytes: 12 },
-    { name: 'Service UUID', bytes: 6 },
-    { name: '厂商数据', bytes: 14 },
-  ]; // 12+6+14 = 32
-  const result = brokenBudget(fields);
-  assert.equal(result.ok, true, '参照实现确实放行');
-  assert.ok(result.total <= 31 && result.kept.length < fields.length, '参照实现静默丢字段');
-  // 目标：32 字节必须整体阻止并说明（“当前 32 字节，超过 31 字节上限。删减字段后再开始。”）
-  assert.ok(result.total !== 32 || !result.ok, '目标口径：超预算不得返回 ok=true');
-  assert.equal(12 + 6 + 14, 32, '用例确为 32 字节');
-});
-
 // ---------- 目标层 ----------
 test('TEST-U-014 目标层：utils/advertising-payload.js analyzeAdvertisingPayload', async (t) => {
   const m = await importTarget('apps/uniapp/utils/advertising-payload.js');

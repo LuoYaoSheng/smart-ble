@@ -8,20 +8,6 @@ import { importTarget, notImplemented } from '../lib/import-target.mjs';
 
 const IDS = 'TEST-U-005 REQ-011/012/033 FEAT-011/012/036 DEC-017 10号§3.1/3.3';
 
-// ---------- 参照层：无 generation 的迟到事件混入 + 订阅计数不随退订递减 ----------
-function brokenScanMerge(round, lateEvent) {
-  return { items: round.concat(lateEvent) }; // 错误：迟到事件直接并入新一轮
-}
-function brokenRegistryCount(subs) {
-  return subs.length + 1; // 错误：计数漂移（初始+1 未随生命周期对齐）
-}
-test('TEST-U-005 参照层：迟到事件混入与订阅计数漂移必须被抓', () => {
-  const merged = brokenScanMerge([{ id: 'A', gen: 2 }], { id: 'B', gen: 1 });
-  assert.ok(merged.items.some((x) => x.gen === 1), '参照实现确实混入旧轮事件');
-  assert.ok(!merged.items.every((x) => x.gen === 2), '目标：generation 不匹配必须丢弃（STATE-GBL-06）');
-  assert.equal(brokenRegistryCount([]), 1, '空订阅计数应为 0——漂移被识别');
-});
-
 // ---------- 目标层 ----------
 test('TEST-U-005 目标层：ble-runtime/scan-session.js + device-collection.js', async (t) => {
   const ss = await importTarget('apps/uniapp/services/ble-runtime/scan-session.js');

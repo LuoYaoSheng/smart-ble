@@ -18,19 +18,6 @@ function expectedTriState(raw) {
   return { state: 'missing-illegal', value: null };
 }
 
-// ---------- 参照层：把合法缺失当错误的二元实现 ----------
-function brokenTriState(raw) {
-  return raw.fieldPresent ? { state: 'present', value: raw.value } : { state: 'error' };
-}
-
-test('TEST-U-008 参照层：合法缺失被当成错误必须被抓', () => {
-  const legal = { fieldPresent: false, packetIntact: true };
-  assert.equal(brokenTriState(legal).state, 'error', '参照实现确实误报');
-  assert.equal(expectedTriState(legal).state, 'absent-legal', '目标：合法缺失不是错误');
-  const illegal = { fieldPresent: false, packetIntact: false };
-  assert.equal(expectedTriState(illegal).state, 'missing-illegal', '目标：结构损坏才是异常');
-});
-
 // ---------- 目标层 ----------
 test('TEST-U-008 目标层：services/ble-runtime/advertisement.js normalizeAdvertisement', async (t) => {
   const m = await importTarget('apps/uniapp/services/ble-runtime/advertisement.js');

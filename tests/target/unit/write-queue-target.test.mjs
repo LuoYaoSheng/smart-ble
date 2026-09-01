@@ -8,23 +8,6 @@ import { importTarget, notImplemented } from '../lib/import-target.mjs';
 
 const IDS = 'TEST-U-011 REQ-028 FEAT-030 PAGE-006 FLOW-005';
 
-// ---------- 参照层：忽略 ATT 头（mtu-3）的分包 + 丢最后小块 ----------
-function brokenChunks(data, mtu) {
-  const size = mtu; // 错误：未扣除 3 字节 ATT 头
-  const out = [];
-  for (let i = 0; i + size < data.length; i += size) out.push(data.subarray(i, i + size)); // 错误：丢尾巴
-  return out;
-}
-test('TEST-U-011 参照层：不扣 ATT 头与丢尾块必须被抓', () => {
-  const data = new Uint8Array(40).fill(0xab);
-  const chunks = brokenChunks(data, 23);
-  assert.equal(chunks.length, 1, '参照实现丢尾（23 字节一块只切了完整块）');
-  const total = chunks.reduce((a, c) => a + c.length, 0);
-  assert.notEqual(total, 40, '字节总数必须等于原始长度——丢尾被识别');
-  // 目标口径：MTU23 → 每块 ≤20，40B → 2 块（20+20）
-  assert.ok(23 - 3 === 20, 'mtu-3 = 20');
-});
-
 // ---------- 目标层 ----------
 test('TEST-U-011 目标层：services/ble-runtime/write-queue.js', async (t) => {
   const m = await importTarget('apps/uniapp/services/ble-runtime/write-queue.js');

@@ -11,16 +11,6 @@ const IDS = 'REQ-009/046/055 FEAT-009/070 18号§2 五词表';
 
 const VOCAB = ['VERIFIED', 'PREVIEW', 'BLOCKED', 'UNSUPPORTED', 'NOT_RELEASED'];
 
-// ---------- 参照层：无产物也返回 PREVIEW ----------
-function brokenStatus(state) {
-  return state.has_artifact ? 'VERIFIED' : 'PREVIEW'; // 错误：无产物=PREVIEW（可展示假下载位）
-}
-test('参照层：无产物返回 PREVIEW 必须被抓', () => {
-  const st = brokenStatus({ has_artifact: false });
-  assert.equal(st, 'PREVIEW', '参照实现确实误标');
-  assert.ok(st !== 'NOT_RELEASED', '目标：无产物必须 NOT_RELEASED（18 号规则）');
-});
-
 // ---------- 目标层 ----------
 test('目标层：services/public-status.js', async (t) => {
   const m = await importTarget('apps/uniapp/services/public-status.js');

@@ -8,16 +8,6 @@ import { importTarget, notImplemented } from '../lib/import-target.mjs';
 
 const IDS = 'TEST-U-007 REQ-014 FEAT-014 PAGE-001 FLOW-002 S-02';
 
-// ---------- 参照层：空筛选条件时丢弃全部设备的错误实现 ----------
-function brokenFilter(devices, q) {
-  return devices.filter((d) => String(d.name).includes(q)); // q 为空串时碰巧全过，但 q=undefined 时全灭
-}
-test('TEST-U-007 参照层：空筛选不得清空列表（N/M 口径必须保留全集）', () => {
-  const devices = [{ name: 'A' }, { name: 'B' }];
-  assert.equal(brokenFilter(devices).length, 0, '参照实现确实全灭');
-  assert.equal(brokenFilter(devices, '').length, 2, '空串场景侥幸通过——目标要求显式处理 undefined/空为“无筛选”');
-});
-
 // ---------- 目标层 ----------
 test('TEST-U-007 目标层：services/ble-runtime/device-filter.js filterBleDevices', async (t) => {
   const m = await importTarget('apps/uniapp/services/ble-runtime/device-filter.js');

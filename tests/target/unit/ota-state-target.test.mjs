@@ -18,21 +18,6 @@ const GOOD_MANIFEST = {
   sha256: 'a'.repeat(64),
 };
 
-// ---------- 参照层：只校验 size、跳过 SHA/hardware 的错误实现 ----------
-function brokenValidate(manifest, bin) {
-  if (manifest.size === bin.length) return { ok: true }; // 错误：仅查 size
-  return { ok: false, reason: 'size' };
-}
-test('TEST-U-016 参照层：SHA/hardware 不校验的错误实现必须被抓', () => {
-  const badSha = { ...GOOD_MANIFEST, sha256: 'b'.repeat(64) };
-  const bin = new Uint8Array(1024);
-  assert.equal(brokenValidate(badSha, bin).ok, true, '参照实现漏放 SHA 错包');
-  const badHw = { ...GOOD_MANIFEST, hardware: 'esp32-wroom-32' };
-  assert.equal(brokenValidate(badHw, bin).ok, true, '参照实现漏放 hardware 错包');
-  // 目标：六项全查，任一不符 = 包级 FAIL（错误包不得进入 BLE 事务）
-  assert.ok(brokenValidate(badSha, bin).ok === true && true, '断言语境：目标必须在此返回 ok=false');
-});
-
 // ---------- 目标层 ----------
 test('TEST-U-016 目标层：utils/ota_manager.js 包校验目标接口', async (t) => {
   const m = await importTarget('apps/uniapp/utils/ota_manager.js');

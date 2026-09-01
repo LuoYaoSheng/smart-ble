@@ -11,18 +11,6 @@ const IDS = 'TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010';
 const SERVICE = '9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04';
 const NAME_PREFIX = 'SmartHID-';
 
-// ---------- 参照层：八类错误共用一个恢复动作的错误实现 ----------
-const ERROR_CLASSES = ['invalid_payload', 'wifi_failed', 'controlhub_unreachable', 'pairing_invalid',
-  'pairing_expired', 'pairing_used', 'mqtt_invalid', 'storage_failed'];
-function brokenRecovery(code) {
-  return '重试'; // 错误：八类全部“重试”
-}
-test('TEST-U-015 参照层：八类错误共用同一恢复动作必须被抓', () => {
-  const actions = new Set(ERROR_CLASSES.map(brokenRecovery));
-  assert.equal(actions.size, 1, '参照实现确实共用');
-  assert.ok(actions.size < ERROR_CLASSES.length, '目标：恢复动作按类区分（如 token 失效→重新获取 QR，绝非重试）');
-});
-
 // ---------- 目标层 ----------
 test('TEST-U-015 目标层：smart-hid/profile.js + workflow.js', async (t) => {
   const p = await importTarget('apps/uniapp/services/smart-hid/profile.js');

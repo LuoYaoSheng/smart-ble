@@ -22,21 +22,6 @@ function expectedChain(input) {
   return `未命名 BLE · ${String(d.deviceId).slice(-4)}`;
 }
 
-// ---------- 参照层：故意错误（顺序颠倒 + 兜底缺失） ----------
-function brokenChain(d) {
-  if (d.localName) return d.localName; // 错误：localName 抢在 name 之前
-  if (d.name) return d.name;
-  return 'Unnamed'; // 错误：丢失 ID 后四位兜底
-}
-
-test('TEST-U-006 参照层：localName 抢优先级与丢失兜底必须被抓', () => {
-  const device = { deviceId: 'AA:BB:CC:DD:EE:FF', name: '官方名', localName: '临时广播名' };
-  assert.notEqual(brokenChain(device), expectedChain(device), '顺序颠倒必须改变结果（可被断言识别）');
-  const anon = { deviceId: 'AA:BB:CC:DD:EE:FF' };
-  assert.notEqual(brokenChain(anon), expectedChain(anon), '兜底缺失必须被识别（目标=未命名 BLE · ID 后四位）');
-  assert.match(expectedChain(anon), /未命名 BLE ·/, '目标兜底含未命名语义与 ID 尾部');
-});
-
 // ---------- 目标层 ----------
 test('TEST-U-006 目标层：services/ble-runtime/display-name.js', async (t) => {
   const m = await importTarget('apps/uniapp/services/ble-runtime/display-name.js');

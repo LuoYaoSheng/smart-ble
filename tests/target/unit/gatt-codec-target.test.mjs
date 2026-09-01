@@ -9,24 +9,6 @@ import { importTarget, notImplemented } from '../lib/import-target.mjs';
 
 const IDS = 'TEST-U-009/010 REQ-024/026 FEAT-026/028 PAGE-006 FLOW-005';
 
-// ---------- 参照层 ----------
-function brokenValidateOp(props, op) {
-  return true; // 错误：任何属性都放行任何操作
-}
-function brokenHex(input) {
-  return input.replace(/[^0-9a-fA-F]/g, ''); // 错误：静默剔除非法字符
-}
-test('TEST-U-009 参照层：只读特征放行写操作必须被抓', () => {
-  assert.equal(brokenValidateOp(['read'], 'write'), true, '参照实现确实放行');
-  assert.ok(brokenValidateOp(['read'], 'write') !== false, '断言语境：目标必须返回 false');
-  // 目标语义：['read'] 不含 write → write 操作非法
-  assert.ok(!['read'].includes('write'), '属性不匹配=非法（测试可稳定识别）');
-});
-test('TEST-U-010 参照层：静默修正非法 HEX 必须被抓', () => {
-  assert.equal(brokenHex('AA ZZ'), 'AA', '参照实现确实静默修正（ZZ 被剔除）');
-  assert.notEqual(brokenHex('AA ZZ'), null, '目标要求：非法输入必须整体拒绝（返回错误），不得局部修正');
-});
-
 // ---------- 目标层 ----------
 test('TEST-U-009/010 目标层：utils/ble-utils.js + 属性约束目标接口', async (t) => {
   const m = await importTarget('apps/uniapp/utils/ble-utils.js');
