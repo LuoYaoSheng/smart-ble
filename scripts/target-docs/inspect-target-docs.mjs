@@ -162,7 +162,8 @@ if (args.includes('--json')) {
   process.exit(0);
 }
 
-const summary = readFileSync(REVIEW_SUMMARY, 'utf8');
+// Windows 检出（autocrlf）会把工作副本转成 CRLF；统计区匹配/写回必须与行尾无关
+const summary = readFileSync(REVIEW_SUMMARY, 'utf8').replace(/\r\n/g, '\n');
 const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const blockRe = new RegExp(`${esc(BEGIN)}\\n([\\s\\S]*?)\\n${esc(END)}`);
 const m = summary.match(blockRe);

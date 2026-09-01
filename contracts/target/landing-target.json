@@ -1,9 +1,9 @@
 {
   "schema_version": "1.0",
   "product_version": "1.0.0",
-  "status": "REVIEW",
-  "last_approved_at": null,
-  "approved_by": null,
+  "status": "APPROVED",
+  "last_approved_at": "2026-09-01",
+  "approved_by": "user",
   "sections": [
     { "order": 1, "id": "SEC-01", "name": "顶部导航", "data_source": "static" },
     { "order": 2, "id": "SEC-02", "name": "Hero（定位+CTA+版本徽标）", "data_source": "release_metadata" },

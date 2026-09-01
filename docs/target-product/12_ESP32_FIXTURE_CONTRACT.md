@@ -1,11 +1,11 @@
 # 12 LightBLE ESP32 夹具契约（fixture_peripheral / fixture_observer）
 
 ```yaml
-status: REVIEW
+status: APPROVED
 document_version: 1.0
 owner: Smart BLE Hardware / Engineering
 last_reviewed: 2026-09-01
-approved_by: null
+approved_by: user
 supersedes: []
 ```
 
