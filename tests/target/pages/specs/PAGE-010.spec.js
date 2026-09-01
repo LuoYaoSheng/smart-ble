@@ -1,25 +1,38 @@
-// PAGE-005 Smart HID 诊断 页面目标测试（TEST-P-005）
+// PAGE-010 版本记录 页面目标测试（TEST-P-010）
 // TP-G1-R2：逐 State / 逐 Operation 完整定义；Expected=page-behavior；Actual=Page Driver。
 // Driver 未实现 → BLOCKED_BY_TARGET_DRIVER；不得 PASS。
+// PAGE-VERSION-001：Metadata 投影静态约束（无 Playwright 时由 harness/unit 同等覆盖）。
 
 import { test, expect } from '@playwright/test';
+import { readFileSync } from 'node:fs';
 import {
   getManifestEntry,
   getBehaviorPage,
   TargetPageDriver,
   ASSERTION_KEYS,
-} from './lib/page-driver.js';
+} from '../lib/page-driver.js';
 
-const PAGE_ID = 'PAGE-005';
+const PAGE_ID = 'PAGE-010';
 const entry = getManifestEntry(PAGE_ID);
 const behavior = getBehaviorPage(PAGE_ID);
+const ROOT = process.cwd();
 
-test.describe(`${PAGE_ID} Smart HID 诊断`, () => {
+test.describe(`${PAGE_ID} 版本记录 · Metadata 投影静态约束（PAGE-VERSION-001）`, () => {
+  test('version.vue 消费 getVersionPageModel，无硬编码历史', () => {
+    const src = readFileSync(`${ROOT}/apps/uniapp/pages/about/version.vue`, 'utf8');
+    expect(src).toContain('getVersionPageModel');
+    expect(src).not.toMatch(/\bversionHistory\b/);
+    expect(['\'', '"', '`'].some((q) => new RegExp(q + 'v?1\\.0\\.\\d+' + q).test(src))).toBe(false);
+    expect(src).toContain('暂无正式发布版本');
+  });
+});
+
+test.describe(`${PAGE_ID} 版本记录`, () => {
   test('Contract / first screen：manifest + behavior 对齐', async () => {
     expect(entry.id).toBe(PAGE_ID);
     expect(behavior.page_id).toBe(PAGE_ID);
-    expect(entry.route).toBe('pages/hid/diagnostics');
-    expect(behavior.route).toBe('pages/hid/diagnostics');
+    expect(entry.route).toBe('pages/about/version');
+    expect(behavior.route).toBe('pages/about/version');
     expect(behavior.first_screen.length).toBeGreaterThan(0);
     expect(behavior.states.length).toBe(entry.states.length);
     expect(behavior.operations.length).toBe(entry.operations.length);

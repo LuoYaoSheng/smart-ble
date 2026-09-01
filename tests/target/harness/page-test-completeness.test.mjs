@@ -10,6 +10,7 @@ import { spawnSync } from 'node:child_process';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../../..');
 const PAGES_DIR = `${ROOT}/tests/target/pages`;
+const SPECS_DIR = `${PAGES_DIR}/specs`;
 const DRIVER = `${PAGES_DIR}/lib/page-driver.js`;
 const BEHAVIOR = `${PAGES_DIR}/page-behavior.manifest.json`;
 const GEN = `${PAGES_DIR}/generate-pages-artifacts.mjs`;
@@ -18,14 +19,14 @@ const GEN_BEH = `${PAGES_DIR}/generate-page-behavior.mjs`;
 const pagesTarget = JSON.parse(readFileSync(`${ROOT}/contracts/target/pages-target.json`, 'utf8'));
 const behavior = JSON.parse(readFileSync(BEHAVIOR, 'utf8'));
 const pagesManifest = JSON.parse(readFileSync(`${PAGES_DIR}/pages.manifest.json`, 'utf8'));
-const specs = readdirSync(PAGES_DIR).filter((f) => f.endsWith('.spec.js'));
+const specs = readdirSync(SPECS_DIR).filter((f) => f.endsWith('.spec.js'));
 const driverSrc = readFileSync(DRIVER, 'utf8');
 
 test('HARNESS-P-001 11 份 spec 全部存在且无 TODO / 无 slice(0,3)', () => {
   assert.equal(specs.length, 11);
   assert.equal(behavior.pages.length, 11);
   for (const p of pagesTarget.pages) {
-    const src = readFileSync(`${PAGES_DIR}/${p.id}.spec.js`, 'utf8');
+    const src = readFileSync(`${SPECS_DIR}/${p.id}.spec.js`, 'utf8');
     assert.ok(src.includes(p.id));
     assert.ok(!/TODO\s*\(/.test(src), `${p.id} 不得含 TODO`);
     assert.ok(!/TODO\(TP-G2/.test(src));
@@ -127,14 +128,14 @@ test('HARNESS-P-008 生成器重跑后 behavior/manifest/spec 无 diff', () => {
   const before = {
     behavior: readFileSync(BEHAVIOR, 'utf8'),
     pages: readFileSync(`${PAGES_DIR}/pages.manifest.json`, 'utf8'),
-    specs: Object.fromEntries(specs.map((f) => [f, readFileSync(`${PAGES_DIR}/${f}`, 'utf8')])),
+    specs: Object.fromEntries(specs.map((f) => [f, readFileSync(`${SPECS_DIR}/${f}`, 'utf8')])),
   };
   const r = spawnSync(process.execPath, [GEN], { cwd: ROOT, encoding: 'utf8' });
   assert.equal(r.status, 0, r.stderr || r.stdout);
   assert.equal(readFileSync(BEHAVIOR, 'utf8'), before.behavior);
   assert.equal(readFileSync(`${PAGES_DIR}/pages.manifest.json`, 'utf8'), before.pages);
   for (const f of specs) {
-    assert.equal(readFileSync(`${PAGES_DIR}/${f}`, 'utf8'), before.specs[f], `${f} dirty after regen`);
+    assert.equal(readFileSync(`${SPECS_DIR}/${f}`, 'utf8'), before.specs[f], `${f} dirty after regen`);
   }
 });
 
@@ -186,7 +187,7 @@ test('HARNESS-P-014 故意错误：spec 使用 slice(0,3) 必须被抓', () => {
   const badSpec = 'for (const opId of entry.operations.slice(0, 3)) { await driver.perform(opId); }';
   assert.ok(/slice\s*\(\s*0\s*,\s*3\s*\)/.test(badSpec));
   for (const p of pagesTarget.pages) {
-    const src = readFileSync(`${PAGES_DIR}/${p.id}.spec.js`, 'utf8');
+    const src = readFileSync(`${SPECS_DIR}/${p.id}.spec.js`, 'utf8');
     assert.ok(!/slice\s*\(\s*0\s*,\s*3\s*\)/.test(src));
   }
 });
@@ -195,7 +196,7 @@ test('HARNESS-P-015 故意错误：空 perform 断言必须被抓', () => {
   const empty = "test('op', async () => { await driver.perform('OP-P001-01'); });";
   assert.ok(!/getOperationResult/.test(empty));
   for (const p of pagesTarget.pages) {
-    const src = readFileSync(`${PAGES_DIR}/${p.id}.spec.js`, 'utf8');
+    const src = readFileSync(`${SPECS_DIR}/${p.id}.spec.js`, 'utf8');
     assert.ok(src.includes('getOperationResult'), `${p.id} 必须断言 operation result`);
     assert.ok(src.includes('expected_ui'));
     assert.ok(src.includes('expected_cleanup'));

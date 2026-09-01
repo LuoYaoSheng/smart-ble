@@ -1,4 +1,4 @@
-// WEB-001 公开落地页 页面目标测试（TEST-P-012）
+// PAGE-003 Smart HID 详情 页面目标测试（TEST-P-003）
 // TP-G1-R2：逐 State / 逐 Operation 完整定义；Expected=page-behavior；Actual=Page Driver。
 // Driver 未实现 → BLOCKED_BY_TARGET_DRIVER；不得 PASS。
 
@@ -8,18 +8,18 @@ import {
   getBehaviorPage,
   TargetPageDriver,
   ASSERTION_KEYS,
-} from './lib/page-driver.js';
+} from '../lib/page-driver.js';
 
-const PAGE_ID = 'WEB-001';
+const PAGE_ID = 'PAGE-003';
 const entry = getManifestEntry(PAGE_ID);
 const behavior = getBehaviorPage(PAGE_ID);
 
-test.describe(`${PAGE_ID} 公开落地页`, () => {
+test.describe(`${PAGE_ID} Smart HID 详情`, () => {
   test('Contract / first screen：manifest + behavior 对齐', async () => {
     expect(entry.id).toBe(PAGE_ID);
     expect(behavior.page_id).toBe(PAGE_ID);
-    expect(entry.route).toBe('/');
-    expect(behavior.route).toBe('/');
+    expect(entry.route).toBe('pages/hid/detail');
+    expect(behavior.route).toBe('pages/hid/detail');
     expect(behavior.first_screen.length).toBeGreaterThan(0);
     expect(behavior.states.length).toBe(entry.states.length);
     expect(behavior.operations.length).toBe(entry.operations.length);
@@ -156,32 +156,5 @@ test.describe(`${PAGE_ID} 公开落地页`, () => {
     const a11y = await driver.getAccessibilitySnapshot();
     expect(a11y).toBeTruthy();
     expect(behavior.a11y_assertions.length).toBeGreaterThan(0);
-  });
-
-  test.describe('WEB extras', () => {
-    for (const viewport of behavior.web_extra.viewports) {
-      test(`viewport ${viewport}`, async ({ page }, testInfo) => {
-        const driver = new TargetPageDriver(PAGE_ID, page);
-        driver.requireRuntime(testInfo);
-        await driver.resetPage();
-        const snap = await driver.getStateSnapshot();
-        expect(snap).toBeTruthy();
-        expect(behavior.web_extra.viewports).toContain(viewport);
-      });
-    }
-    for (const theme of behavior.web_extra.themes) {
-      test(`theme ${theme}`, async ({ page }, testInfo) => {
-        const driver = new TargetPageDriver(PAGE_ID, page);
-        driver.requireRuntime(testInfo);
-        await driver.resetPage();
-        expect(behavior.web_extra.themes).toContain(theme);
-        expect(behavior.web_extra.hero_cta).toBe(true);
-        expect(behavior.web_extra.not_released).toBe(true);
-        expect(behavior.web_extra.download_url_sha).toBe(true);
-        expect(behavior.web_extra.qr).toBe(true);
-        expect(behavior.web_extra.seo).toEqual(expect.arrayContaining(['canonical', 'og']));
-        expect(behavior.web_extra.no_js).toBe(true);
-      });
-    }
   });
 });

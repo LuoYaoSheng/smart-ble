@@ -1,4 +1,4 @@
-// PAGE-003 Smart HID 详情 页面目标测试（TEST-P-003）
+// PAGE-004 Smart HID 历史 页面目标测试（TEST-P-004）
 // TP-G1-R2：逐 State / 逐 Operation 完整定义；Expected=page-behavior；Actual=Page Driver。
 // Driver 未实现 → BLOCKED_BY_TARGET_DRIVER；不得 PASS。
 
@@ -8,18 +8,18 @@ import {
   getBehaviorPage,
   TargetPageDriver,
   ASSERTION_KEYS,
-} from './lib/page-driver.js';
+} from '../lib/page-driver.js';
 
-const PAGE_ID = 'PAGE-003';
+const PAGE_ID = 'PAGE-004';
 const entry = getManifestEntry(PAGE_ID);
 const behavior = getBehaviorPage(PAGE_ID);
 
-test.describe(`${PAGE_ID} Smart HID 详情`, () => {
+test.describe(`${PAGE_ID} Smart HID 历史`, () => {
   test('Contract / first screen：manifest + behavior 对齐', async () => {
     expect(entry.id).toBe(PAGE_ID);
     expect(behavior.page_id).toBe(PAGE_ID);
-    expect(entry.route).toBe('pages/hid/detail');
-    expect(behavior.route).toBe('pages/hid/detail');
+    expect(entry.route).toBe('pages/hid/history');
+    expect(behavior.route).toBe('pages/hid/history');
     expect(behavior.first_screen.length).toBeGreaterThan(0);
     expect(behavior.states.length).toBe(entry.states.length);
     expect(behavior.operations.length).toBe(entry.operations.length);

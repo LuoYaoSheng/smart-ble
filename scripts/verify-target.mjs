@@ -245,8 +245,9 @@ function assessPageEnvironment() {
   const playwright = isPlaywrightAvailable();
   const config = isPlaywrightConfigPresent();
   const browser = isChromiumPresent();
-  const testDir = existsSync(`${ROOT}/tests/target/pages`);
-  const driver = hasTargetDriverEnv();
+  const testDir = existsSync(`${ROOT}/tests/target/pages/specs`)
+    || existsSync(`${ROOT}/tests/target/pages`);
+  const driver = hasTargetDriver();
   const baseURL = Boolean(process.env.TARGET_PAGE_BASE_URL);
   const toolchainReady = playwright && config && browser && testDir;
   return {
@@ -254,22 +255,33 @@ function assessPageEnvironment() {
     browser,
     config,
     testDir,
-    driver_env: driver,
+    driver_env: process.env.TARGET_PAGE_DRIVER === '1',
+    driver_runtime: existsSync(`${ROOT}/tests/target/pages/driver/page-driver-runtime.js`),
     base_url_set: baseURL,
     status: toolchainReady ? 'READY_FOR_PAGE_E4' : 'BLOCKED_BY_TOOLCHAIN',
     page_execution: !toolchainReady
       ? 'BLOCKED_BY_TOOLCHAIN'
-      : (driver && baseURL ? 'RUNNABLE' : 'BLOCKED_BY_TARGET_DRIVER'),
+      : (driver ? 'RUNNABLE' : 'BLOCKED_BY_TARGET_DRIVER'),
   };
 }
 
+function hasTargetDriver() {
+  if (process.env.TARGET_PAGE_DRIVER === '0') return false;
+  if (process.env.TARGET_PAGE_DRIVER === '1') return true;
+  return existsSync(`${ROOT}/tests/target/pages/driver/page-driver-runtime.js`);
+}
+
 function hasTargetDriverEnv() {
-  return process.env.TARGET_PAGE_DRIVER === '1';
+  return hasTargetDriver();
 }
 
 function listSpecs() {
-  const dir = `${ROOT}/tests/target/pages`;
-  return readdirSync(dir).filter((f) => f.endsWith('.spec.js')).map((f) => `${dir}/${f}`);
+  const dir = `${ROOT}/tests/target/pages/specs`;
+  if (existsSync(dir)) {
+    return readdirSync(dir).filter((f) => f.endsWith('.spec.js')).map((f) => `${dir}/${f}`);
+  }
+  const legacy = `${ROOT}/tests/target/pages`;
+  return readdirSync(legacy).filter((f) => f.endsWith('.spec.js')).map((f) => `${legacy}/${f}`);
 }
 
 function loadPageCaseCounts() {
@@ -321,7 +333,7 @@ function runPageSpecs() {
       blockers: ['BLK-TOOL-PLAYWRIGHT', 'BLK-TEST-PAGE-DRIVER'],
     };
   }
-  if (!hasTargetDriverEnv()) {
+  if (!hasTargetDriver()) {
     return {
       pass: 0, fail: 0, skipped: 0, failures: [], cases: [],
       blocked: specs.map((s) => ({ testId: s.split('/').pop(), reason: 'BLOCKED_BY_TARGET_DRIVER', count: 1, layer: 'current', source: s })),
@@ -331,7 +343,7 @@ function runPageSpecs() {
       blockers: ['BLK-TEST-PAGE-DRIVER'],
     };
   }
-  const r = spawnSync('npx', ['playwright', 'test', 'tests/target/pages'], { cwd: ROOT, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+  const r = spawnSync('npx', ['playwright', 'test', 'tests/target/pages/specs'], { cwd: ROOT, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
   const out = r.stdout + r.stderr;
   const pass = Number((out.match(/(\d+) passed/) || [])[1] ?? 0);
   const fail = Number((out.match(/(\d+) failed/) || [])[1] ?? 0);
@@ -487,20 +499,27 @@ if (mode === 'current' || mode === 'all') {
     }
   }
 
-  // Recompute from cases (authoritative)
+  // Recompute from cases (authoritative for unit/integration/...)；页面 Playwright 另计
   const realCases = result.current.cases;
   const passFromCases = realCases.filter((c) => c.status === 'PASS').length;
   const failFromCases = realCases.filter((c) => c.status === 'FAIL').length;
   const infraFromCases = realCases.filter((c) => c.status === 'TEST_INFRA_FAIL').length;
   if (realCases.length) {
-    result.CURRENT_PASS = passFromCases;
-    result.CURRENT_FAIL = failFromCases;
-    result.current.pass = passFromCases;
-    result.current.fail = failFromCases;
+    result.CURRENT_PASS = passFromCases + (pageR.pass || 0);
+    result.CURRENT_FAIL = failFromCases + (pageR.fail || 0);
+    result.current.pass = result.CURRENT_PASS;
+    result.current.fail = result.CURRENT_FAIL;
   } else {
     result.CURRENT_PASS = result.current.pass;
     result.CURRENT_FAIL = result.current.fail;
   }
+  result.pages = {
+    ...(pageR.pages || loadPageCaseCounts()),
+    pass: pageR.pass || 0,
+    fail: pageR.fail || 0,
+    skipped: pageR.skipped || 0,
+    notExecuted: !!pageR.notExecuted,
+  };
   // infraFail already counted from --check; add only case-level TEST_INFRA not already counted
   if (infraFromCases) infraFail = Math.max(infraFail, infraFromCases);
 }

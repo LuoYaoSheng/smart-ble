@@ -51,7 +51,7 @@ test('TEST-P 全体：manifest 状态/操作与 pages-target 同源（states/ope
 test('TEST-P 全体：完整 Playwright spec 存在且无 TODO/slice', () => {
   const { existsSync } = awaitImport();
   for (const p of target.pages) {
-    const spec = `${ROOT}/tests/target/pages/${p.id}.spec.js`;
+    const spec = `${ROOT}/tests/target/pages/specs/${p.id}.spec.js`;
     assert.ok(existsSync(spec), `${p.id}.spec.js 存在`);
     const src = readFileSync(spec, 'utf8');
     assert.ok(!/TODO\s*\(/.test(src), `${p.id} 无 TODO`);

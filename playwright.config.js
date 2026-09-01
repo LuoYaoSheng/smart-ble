@@ -1,13 +1,12 @@
-// playwright.config.js — Smart BLE Page E4 environment (ENV-PLAYWRIGHT-001)
-// Chromium only. Does not imply Page Driver readiness.
-// TARGET_PAGE_BASE_URL must be set for live runs; missing → BLOCKED_BY_TARGET_DRIVER (runner).
+// playwright.config.js — Smart BLE Page E4 (ENV-PLAYWRIGHT + TEST-PAGE-DRIVER)
+// Chromium only. Fake Runtime Driver 不依赖 TARGET_PAGE_BASE_URL。
 
 import { defineConfig, devices } from '@playwright/test';
 
 const baseURL = process.env.TARGET_PAGE_BASE_URL || undefined;
 
 export default defineConfig({
-  testDir: 'tests/target/pages',
+  testDir: 'tests/target/pages/specs',
   testMatch: /.*\.spec\.js$/,
   fullyParallel: false,
   forbidOnly: !!process.env.CI,

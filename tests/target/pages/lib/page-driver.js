@@ -1,16 +1,15 @@
 // tests/target/pages/lib/page-driver.js
-// TP-G1-R2：Expected 在 behavior manifest；Actual 仅由已实现 Driver 探测。
-// 未实现时抛 NOT_IMPLEMENTED / skip BLOCKED，禁止返回伪造成功数据。
+// TP-G1-R2 / TEST-PAGE-DRIVER-001：Expected=behavior manifest；Actual=Page Driver Runtime。
+// 禁止回填 Expected；禁止固定空 cleanup / 固定 exit_to。
 
-import { readFileSync } from 'node:fs';
-import { resolve, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { createRequire } from 'node:module';
+const { readFileSync, existsSync } = require('node:fs');
+const { resolve, dirname } = require('node:path');
+const { PageDriverRuntime, isPageDriverRuntimePresent } = require('../driver/page-driver-runtime.js');
 
-const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../../..');
-const require = createRequire(import.meta.url);
+const ROOT = resolve(__dirname, '../../../..');
+const RUNTIME_MARKER = resolve(__dirname, '../driver/page-driver-runtime.js');
 
-export const BLOCK_REASON = {
+const BLOCK_REASON = {
   TOOLCHAIN: 'BLOCKED_BY_TOOLCHAIN',
   DRIVER: 'BLOCKED_BY_TARGET_DRIVER',
   MISSING: 'NOT_IMPLEMENTED: TARGET_PAGE_DRIVER_MISSING',
@@ -19,33 +18,33 @@ export const BLOCK_REASON = {
 let _pagesManifest;
 let _behavior;
 
-export function loadPagesManifest() {
+function loadPagesManifest() {
   if (!_pagesManifest) {
     _pagesManifest = JSON.parse(readFileSync(`${ROOT}/tests/target/pages/pages.manifest.json`, 'utf8'));
   }
   return _pagesManifest;
 }
 
-export function loadBehaviorManifest() {
+function loadBehaviorManifest() {
   if (!_behavior) {
     _behavior = JSON.parse(readFileSync(`${ROOT}/tests/target/pages/page-behavior.manifest.json`, 'utf8'));
   }
   return _behavior;
 }
 
-export function getManifestEntry(pageId) {
+function getManifestEntry(pageId) {
   const entry = loadPagesManifest().pages.find((p) => p.id === pageId);
   if (!entry) throw new Error(`pages.manifest 缺少 ${pageId}`);
   return entry;
 }
 
-export function getBehaviorPage(pageId) {
+function getBehaviorPage(pageId) {
   const page = loadBehaviorManifest().pages.find((p) => p.page_id === pageId);
   if (!page) throw new Error(`page-behavior.manifest 缺少 ${pageId}`);
   return page;
 }
 
-export function isPlaywrightResolvable() {
+function isPlaywrightResolvable() {
   try {
     require.resolve('@playwright/test');
     return true;
@@ -54,11 +53,16 @@ export function isPlaywrightResolvable() {
   }
 }
 
-export function isTargetDriverImplemented() {
-  return process.env.TARGET_PAGE_DRIVER === '1';
+/**
+ * Driver 已实现判定：文件系统 runtime 标记，或显式 TARGET_PAGE_DRIVER=1。
+ */
+function isTargetDriverImplemented() {
+  if (process.env.TARGET_PAGE_DRIVER === '0') return false;
+  if (process.env.TARGET_PAGE_DRIVER === '1') return true;
+  return isPageDriverRuntimePresent() && existsSync(RUNTIME_MARKER);
 }
 
-export function resolveExecutionContext() {
+function resolveExecutionContext() {
   if (!isPlaywrightResolvable()) return { mode: 'blocked', reason: BLOCK_REASON.TOOLCHAIN };
   if (!isTargetDriverImplemented()) return { mode: 'blocked', reason: BLOCK_REASON.DRIVER };
   return { mode: 'ready', reason: null };
@@ -70,9 +74,9 @@ function missing() {
 
 /**
  * Target Page Driver — Actual API only.
- * Implementations must probe the live page / fake runtime; never echo Expected.
+ * Implementations must probe Fake Runtime / adapters; never echo Expected.
  */
-export class TargetPageDriver {
+class TargetPageDriver {
   /**
    * @param {string} pageId
    * @param {import('@playwright/test').Page} [playwrightPage]
@@ -84,11 +88,20 @@ export class TargetPageDriver {
     this.behavior = getBehaviorPage(pageId);
     this.ctx = resolveExecutionContext();
     this._consoleErrors = [];
+    this._rt = null;
     if (playwrightPage) {
       playwrightPage.on('console', (m) => {
         if (m.type() === 'error') this._consoleErrors.push(m.text());
       });
     }
+  }
+
+  _ensureRuntime() {
+    if (!isTargetDriverImplemented()) missing();
+    if (!this._rt) {
+      this._rt = new PageDriverRuntime(this.pageId, this.behavior, this.pw);
+    }
+    return this._rt;
   }
 
   /** @param {import('@playwright/test').TestInfo} testInfo */
@@ -103,85 +116,80 @@ export class TargetPageDriver {
   }
 
   async openPage() {
-    if (!isTargetDriverImplemented()) missing();
-    const base = process.env.TARGET_APP_URL;
-    if (!base) missing();
-    await this.pw.goto(`${base.replace(/\/$/, '')}/${this.entry.route}`);
+    return this._ensureRuntime().openPage();
   }
 
   async resetPage() {
-    if (!isTargetDriverImplemented()) missing();
-    await this.openPage();
+    return this._ensureRuntime().resetPage();
   }
 
-  async setState(_stateId) {
-    missing();
+  async setState(stateId) {
+    return this._ensureRuntime().setState(stateId);
   }
 
   async getStateSnapshot() {
-    missing();
+    return this._ensureRuntime().getStateSnapshot();
   }
 
   async getVisibleSections() {
-    missing();
+    return this._ensureRuntime().getVisibleSections();
   }
 
-  async getControlState(_operationId) {
-    missing();
+  async getControlState(operationId) {
+    return this._ensureRuntime().getControlState(operationId);
   }
 
-  async prepareOperation(_operationId) {
-    missing();
+  async prepareOperation(operationId) {
+    return this._ensureRuntime().prepareOperation(operationId);
   }
 
-  async perform(_operationId, _inputFixture) {
-    missing();
+  async perform(operationId, inputFixture) {
+    return this._ensureRuntime().perform(operationId, inputFixture);
   }
 
-  async getOperationResult(_operationId) {
-    missing();
+  async getOperationResult(operationId) {
+    return this._ensureRuntime().getOperationResult(operationId);
   }
 
   async getNavigationSnapshot() {
-    missing();
+    return this._ensureRuntime().getNavigationSnapshot();
   }
 
-  /** @deprecated use probeAvailableOperations — kept name for clarity in specs */
   async probeAvailableOperations() {
-    missing();
+    return this._ensureRuntime().probeAvailableOperations();
   }
 
   getRuntimeEvents() {
-    missing();
+    return this._ensureRuntime().getRuntimeEvents();
   }
 
   getDeviceEvents() {
-    missing();
+    return this._ensureRuntime().getDeviceEvents();
   }
 
   getCleanupSnapshot() {
-    missing();
+    return this._ensureRuntime().getCleanupSnapshot();
   }
 
   getConsoleErrors() {
-    // Console capture can work without full Driver when page is open;
-    // without Driver implementation we still must not claim success path.
     if (!isTargetDriverImplemented()) missing();
+    if (this._rt) {
+      return [...this._consoleErrors, ...this._rt.getConsoleErrors()];
+    }
     return [...this._consoleErrors];
   }
 
   async getAccessibilitySnapshot() {
-    missing();
+    return this._ensureRuntime().getAccessibilitySnapshot();
   }
 }
 
-export const ASSERTION_KEYS = [
+const ASSERTION_KEYS = [
   'first_screen', 'empty_state', 'error_states', 'loading',
   'platform_diff', 'navigation', 'a11y', 'cta_reachability', 'console_error',
 ];
 
-/** Case counts for Runner reporting */
-export function countBehaviorCases() {
+function countBehaviorCases() {
   const b = loadBehaviorManifest();
   let stateCases = 0;
   let operationCases = 0;
@@ -189,7 +197,6 @@ export function countBehaviorCases() {
   for (const p of b.pages) {
     stateCases += p.states.length;
     operationCases += p.operations.length;
-    // per-op: visible/disabled/success/failure/nav/cleanup ≈ 6 + first_screen/a11y/platform/cleanup page-level
     assertionCases += p.operations.length * 6 + p.states.length * 3 + 8;
     if (p.web_extra) assertionCases += 8;
   }
@@ -201,3 +208,17 @@ export function countBehaviorCases() {
     totals: b.totals,
   };
 }
+
+module.exports = {
+  BLOCK_REASON,
+  TargetPageDriver,
+  ASSERTION_KEYS,
+  loadPagesManifest,
+  loadBehaviorManifest,
+  getManifestEntry,
+  getBehaviorPage,
+  isPlaywrightResolvable,
+  isTargetDriverImplemented,
+  resolveExecutionContext,
+  countBehaviorCases,
+};

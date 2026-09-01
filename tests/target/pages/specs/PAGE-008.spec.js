@@ -8,7 +8,7 @@ import {
   getBehaviorPage,
   TargetPageDriver,
   ASSERTION_KEYS,
-} from './lib/page-driver.js';
+} from '../lib/page-driver.js';
 
 const PAGE_ID = 'PAGE-008';
 const entry = getManifestEntry(PAGE_ID);

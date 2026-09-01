@@ -65,9 +65,10 @@ function main() {
   };
   const paths = {
     config: 'playwright.config.js',
-    testDir: 'tests/target/pages',
+    testDir: 'tests/target/pages/specs',
     manifest: 'tests/target/pages/page-behavior.manifest.json',
     pageDriver: 'tests/target/pages/lib/page-driver.js',
+    pageDriverRuntime: 'tests/target/pages/driver/page-driver-runtime.js',
     nvmrc: '.nvmrc',
   };
 
@@ -129,20 +130,22 @@ function main() {
   }
 
   const driverEnv = process.env.TARGET_PAGE_DRIVER === '1';
+  const driverRuntime = existsSync(resolve(ROOT, paths.pageDriverRuntime));
+  const driverReady = driverEnv || driverRuntime;
   const baseUrl = process.env.TARGET_PAGE_BASE_URL || '';
   const driverNotes = [];
-  if (!driverEnv) {
+  if (!driverReady) {
     driverNotes.push({
       id: 'BLK-TEST-PAGE-DRIVER',
       kind: 'BLOCKED_BY_TARGET_DRIVER',
-      detail: 'TARGET_PAGE_DRIVER≠1 — 环境就绪不等于页面 E4 PASS',
+      detail: 'Page Driver Runtime 未落地且 TARGET_PAGE_DRIVER≠1',
     });
   }
   if (!baseUrl) {
     driverNotes.push({
       id: 'BLK-TEST-PAGE-BASE-URL',
-      kind: 'BLOCKED_BY_TARGET_DRIVER',
-      detail: 'TARGET_PAGE_BASE_URL 未设置 — 禁止默认访问生产站',
+      kind: 'INFO_BASE_URL_OPTIONAL',
+      detail: 'TARGET_PAGE_BASE_URL 未设置 — Fake Runtime 可跑；live App 导航可选',
     });
   }
 
@@ -152,12 +155,15 @@ function main() {
     status,
     pass: toolchainReady,
     blockers,
-    driver_blockers: driverNotes,
+    driver_blockers: driverNotes.filter((d) => d.kind === 'BLOCKED_BY_TARGET_DRIVER'),
+    driver_ready: driverReady,
+    driver_runtime: driverRuntime,
     versions,
     paths,
     notes: [
-      'Playwright 环境就绪 ≠ Page Driver 实现完成',
-      'E4 page PASS 仍需 TEST-PAGE-DRIVER-001 + App runtime bridge',
+      'Playwright 环境就绪 ≠ 页面产品实现完成',
+      'E4 page 执行依赖 TEST-PAGE-DRIVER Runtime；PASS/FAIL 为真实结果，不等于业务关闭',
+      ...(baseUrl ? [] : ['TARGET_PAGE_BASE_URL 未设置（Fake Runtime 仍可执行）']),
     ],
   };
 

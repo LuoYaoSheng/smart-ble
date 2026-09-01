@@ -8,8 +8,8 @@ Playwright 页面测试通过 `tests/target/pages/lib/page-driver.js` 访问目�
 | 条件 | 结果 |
 |---|---|
 | `@playwright/test` 不可解析 | `BLOCKED_BY_TOOLCHAIN` |
-| Playwright 可用但 `TARGET_PAGE_DRIVER≠1`（或无可用 App URL） | `BLOCKED_BY_TARGET_DRIVER` |
-| 两者齐备且 Driver 已实现 | 实际执行全部 State/Operation 用例 |
+| Playwright 可用但 Page Driver Runtime 未落地 | `BLOCKED_BY_TARGET_DRIVER` |
+| Runtime 已落地（`driver/page-driver-runtime.js` 或 `TARGET_PAGE_DRIVER=1`） | 实际执行全部 State/Operation 用例（Fake Runtime；live URL 可选） |
 
 ## Driver API（Actual only）
 

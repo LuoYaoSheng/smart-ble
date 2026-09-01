@@ -99,20 +99,30 @@ function specBody(pageMeta, beh) {
   return `// ${beh.page_id} ${name} 页面目标测试（TEST-P-${testNum(pageMeta)}）
 // TP-G1-R2：逐 State / 逐 Operation 完整定义；Expected=page-behavior；Actual=Page Driver。
 // Driver 未实现 → BLOCKED_BY_TARGET_DRIVER；不得 PASS。
-
+${beh.page_id === 'PAGE-010' ? '// PAGE-VERSION-001：Metadata 投影静态约束（无 Playwright 时由 harness/unit 同等覆盖）。\n' : ''}
 import { test, expect } from '@playwright/test';
-import {
+${beh.page_id === 'PAGE-010' ? "import { readFileSync } from 'node:fs';\n" : ''}import {
   getManifestEntry,
   getBehaviorPage,
   TargetPageDriver,
   ASSERTION_KEYS,
-} from './lib/page-driver.js';
+} from '../lib/page-driver.js';
 
 const PAGE_ID = '${beh.page_id}';
 const entry = getManifestEntry(PAGE_ID);
 const behavior = getBehaviorPage(PAGE_ID);
+${beh.page_id === 'PAGE-010' ? 'const ROOT = process.cwd();\n' : ''}
+${beh.page_id === 'PAGE-010' ? `test.describe(\`\${PAGE_ID} 版本记录 · Metadata 投影静态约束（PAGE-VERSION-001）\`, () => {
+  test('version.vue 消费 getVersionPageModel，无硬编码历史', () => {
+    const src = readFileSync(\`\${ROOT}/apps/uniapp/pages/about/version.vue\`, 'utf8');
+    expect(src).toContain('getVersionPageModel');
+    expect(src).not.toMatch(/\\bversionHistory\\b/);
+    expect(['\\'', '"', '\`'].some((q) => new RegExp(q + 'v?1\\\\.0\\\\.\\\\d+' + q).test(src))).toBe(false);
+    expect(src).toContain('暂无正式发布版本');
+  });
+});
 
-test.describe(\`\${PAGE_ID} ${name}\`, () => {
+` : ''}test.describe(\`\${PAGE_ID} ${name}\`, () => {
   test('Contract / first screen：manifest + behavior 对齐', async () => {
     expect(entry.id).toBe(PAGE_ID);
     expect(behavior.page_id).toBe(PAGE_ID);
@@ -259,13 +269,14 @@ ${webBlock}});
 `;
 }
 
+mkdirSync(`${PAGES_DIR}/specs`, { recursive: true });
 for (const p of pagesTarget) {
   const beh = behavior.pages.find((x) => x.page_id === p.id);
   if (!beh) {
     console.error(`missing behavior for ${p.id}`);
     process.exit(1);
   }
-  const file = `${PAGES_DIR}/${p.id}.spec.js`;
+  const file = `${PAGES_DIR}/specs/${p.id}.spec.js`;
   writeFileSync(file, specBody(p, beh));
 }
 
