@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: bad99ca68136a8d46d7260c01d7187e31228ade74e516a7ebbf2eec57d57a20d
+content_hash: a7d7389cb8c171b8554a9bf8da71bb0ddf96d741f156efa36266aa395d96f6a6
 ```
 
 ## App
@@ -20,8 +20,8 @@ content_hash: bad99ca68136a8d46d7260c01d7187e31228ade74e516a7ebbf2eec57d57a20d
 ## ESP32
 
 - PlatformIO：`hardware/esp32/LightBLE/platformio.ini`
-- envs: esp32dev
-- upload_port: COM3
+- envs: esp32dev, fixture_peripheral, fixture_observer
+- upload_port: null
 - 本轮禁止：`pio run -t upload`
 
 ## E2E / Page

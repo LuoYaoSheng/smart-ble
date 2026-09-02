@@ -4,6 +4,7 @@
 #include <NimBLEUtils.h>
 #include <ArduinoJson.h>
 #include "ota_server.h"
+#include "firmware_build_info.h"
 
 // BLE 服务和特征 UUID
 #define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
@@ -74,6 +75,18 @@ int blinkPattern = 0;  // 0: 关闭, 1: 常亮, 2: 快闪, 3: 慢闪
 
 void emitSerialJson(const char* json) {
     Serial.println(json);
+}
+
+void emitBootInfo() {
+    StaticJsonDocument<256> doc;
+    doc["type"] = "boot";
+    doc["firmware_name"] = FW_FIRMWARE_NAME;
+    doc["firmware_version"] = FW_VERSION;
+    doc["git_sha"] = FW_GIT_SHA;
+    doc["fixture_role"] = "peripheral";
+    String out;
+    serializeJson(doc, out);
+    emitSerialJson(out.c_str());
 }
 
 void emitSerialEvent(const char* type, const char* status = nullptr) {
@@ -382,6 +395,7 @@ class AllCallbacks: public NimBLECharacteristicCallbacks {
 
 void setup() {
     Serial.begin(115200);
+    emitBootInfo();
     Serial.println("Starting BLE Server...");
 
     // 初始化LED

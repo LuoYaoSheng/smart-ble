@@ -545,7 +545,7 @@
       "title": "两环境、无固定 COM、模块化入口",
       "root_cause_id": "RC-ESP32-BUILD",
       "severity": "P1",
-      "status": "PLANNED",
+      "status": "DONE",
       "dependencies": [],
       "unlocks": [
         "OTA-FIRMWARE-001",
@@ -1077,7 +1077,6 @@
   ],
   "recommended_order": [
     "RELEASE-PIPELINE-001",
-    "ESP32-BUILD-001",
     "OTA-E5-VERIFICATION",
     "ESP32-PERIPHERAL-001",
     "ESP32-OBSERVER-001",

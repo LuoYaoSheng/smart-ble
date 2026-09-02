@@ -3,19 +3,19 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: bad99ca68136a8d46d7260c01d7187e31228ade74e516a7ebbf2eec57d57a20d
+content_hash: a7d7389cb8c171b8554a9bf8da71bb0ddf96d741f156efa36266aa395d96f6a6
 ```
 
 对照：`contracts/target/ble-fixture-target.json` ↔ `hardware/esp32/LightBLE/src/main.cpp`
 
 ## Build
 
-- platformio.ini envs: `esp32dev`
+- platformio.ini envs: `esp32dev, fixture_peripheral, fixture_observer`
 - 目标 modes: fixture_peripheral / fixture_observer
-- upload_port: `COM3`
-- status: CONFIRMED_PARTIAL
-- first_breakpoint: 仅 env:esp32dev 且 upload_port=COM3
-- task: ESP32-BUILD-001
+- upload_port: `null`
+- status: CONFIRMED_IMPLEMENTED
+- first_breakpoint: null
+- task: null
 
 ## 名称
 

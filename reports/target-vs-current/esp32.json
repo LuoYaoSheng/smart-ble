@@ -2,18 +2,21 @@
   "inventory": {
     "build": {
       "envs": [
-        "esp32dev"
+        "esp32dev",
+        "fixture_peripheral",
+        "fixture_observer"
       ],
       "expected_envs": [
         "fixture_peripheral",
         "fixture_observer"
       ],
-      "upload_port": "COM3",
+      "upload_port": null,
       "no_fixed_serial_port_target": true,
-      "status": "CONFIRMED_PARTIAL",
-      "first_breakpoint": "仅 env:esp32dev 且 upload_port=COM3",
-      "task_id": "ESP32-BUILD-001",
-      "root_cause_id": "RC-ESP32-BUILD"
+      "build_metadata_script": true,
+      "status": "CONFIRMED_IMPLEMENTED",
+      "first_breakpoint": null,
+      "task_id": null,
+      "root_cause_id": null
     },
     "names": {
       "DEVICE_NAME_macro": "BLEToolkit-Server",

@@ -165,8 +165,24 @@ const useBroadcastSession = /useBroadcastSession|use-broadcast-session/.test(FAC
 const smartHidImportsTs = /hid-provisioning-protocol\.ts/.test(FACTS.smartHidProfile);
 const deviceNameMacro = (FACTS.esp32.match(/#define\s+DEVICE_NAME\s+"([^"]+)"/) || [])[1] || null;
 const nimbleInitName = (FACTS.esp32.match(/NimBLEDevice::init\("([^"]+)"\)/) || [])[1] || null;
-const pioEnvs = [...FACTS.pio.matchAll(/\[env:([^\]]+)\]/g)].map((m) => m[1]);
-const uploadPort = (FACTS.pio.match(/upload_port\s*=\s*(\S+)/) || [])[1] || null;
+const pioEnvs = [...FACTS.pio.matchAll(/\[env:([^\]]+)\]/g)].map((m) => m[1]).filter((e) => e !== 'fixture_common');
+const uploadPort = (() => {
+  for (const line of FACTS.pio.split('\n')) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith(';') || trimmed.startsWith('#')) continue;
+    const match = trimmed.match(/^upload_port\s*=\s*(\S+)/);
+    if (!match) continue;
+    const value = match[1];
+    if (value.includes('sysenv')) return null;
+    return value;
+  }
+  return null;
+})();
+const esp32BuildReady = pioEnvs.includes('fixture_peripheral')
+  && pioEnvs.includes('fixture_observer')
+  && !uploadPort
+  && exists('hardware/esp32/scripts/build-info.py')
+  && /extra_scripts[\s\S]*build-info\.py/.test(FACTS.pio);
 const otaUsesAction = /doc\["action"\]|strcmp\(action/.test(FACTS.esp32) && !/doc\["op"\]|"op"\s*:/.test(FACTS.esp32);
 const otaFirmwareReady = (/doc\["op"\]|"op"\s*:/.test(FACTS.esp32)
   && /sha256|OTA_HASH_MISMATCH|OTA_RECEIVING|OtaServer/.test(FACTS.esp32)
@@ -326,7 +342,7 @@ const TASKS = [
   { task_id: 'OTA-CLIENT-001', task_type: 'SOURCE_FIX', title: '客户端完整 OTA 事务（CTRL start→ready→DATA→commit）', root_cause_id: 'RC-OTA-CTRL-START', severity: 'P0', deps: ['OTA-PACKAGE-001'], order_hint: 21, status: otaClientReady ? 'DONE' : 'PLANNED' },
   { task_id: 'OTA-FIRMWARE-001', task_type: 'SOURCE_FIX', title: '固件 OTA op/target/hardware/SHA/max_chunk/commit 校验', root_cause_id: 'RC-ESP32-OTA-ACTION', severity: 'P1', deps: ['ESP32-BUILD-001'], order_hint: 22, status: otaFirmwareReady ? 'DONE' : 'PLANNED' },
   { task_id: 'OTA-E5-VERIFICATION', task_type: 'VERIFY_E5', title: 'ESP32+Android OTA 闭环 E5', root_cause_id: 'RC-OTA-E5-HW', severity: 'P0', deps: ['OTA-FIRMWARE-001', 'OTA-CLIENT-001'], order_hint: 23, status: otaE5Status },
-  { task_id: 'ESP32-BUILD-001', task_type: 'SOURCE_FIX', title: '两环境、无固定 COM、模块化入口', root_cause_id: 'RC-ESP32-BUILD', severity: 'P1', deps: [], order_hint: 30 },
+  { task_id: 'ESP32-BUILD-001', task_type: 'SOURCE_FIX', title: '两环境、无固定 COM、模块化入口', root_cause_id: 'RC-ESP32-BUILD', severity: 'P1', deps: [], order_hint: 30, status: esp32BuildReady ? 'DONE' : 'PLANNED' },
   { task_id: 'ESP32-PERIPHERAL-001', task_type: 'SOURCE_FIX', title: '服务/特征/名称/LED/Device Info 对齐契约', root_cause_id: 'RC-ESP32-LED-NAME', severity: 'P1', deps: ['ESP32-BUILD-001'], order_hint: 31 },
   { task_id: 'ESP32-OBSERVER-001', task_type: 'SOURCE_FIX', title: '实现 fixture_observer', root_cause_id: 'RC-ESP32-OBSERVER', severity: 'P1', deps: ['ESP32-BUILD-001'], order_hint: 32 },
   { task_id: 'ESP32-FAULT-001', task_type: 'SOURCE_FIX', title: 'Fault Injection + Serial JSON', root_cause_id: 'RC-ESP32-SERIAL', severity: 'P1', deps: ['ESP32-PERIPHERAL-001'], order_hint: 33 },
@@ -1236,11 +1252,12 @@ const esp32Inventory = {
     envs: pioEnvs,
     expected_envs: ['fixture_peripheral', 'fixture_observer'],
     upload_port: uploadPort,
-    no_fixed_serial_port_target: true,
-    status: pioEnvs.length === 1 && uploadPort === 'COM3' ? 'CONFIRMED_PARTIAL' : 'UNASSESSED',
-    first_breakpoint: '仅 env:esp32dev 且 upload_port=COM3',
-    task_id: 'ESP32-BUILD-001',
-    root_cause_id: 'RC-ESP32-BUILD',
+    no_fixed_serial_port_target: !uploadPort,
+    build_metadata_script: exists('hardware/esp32/scripts/build-info.py'),
+    status: esp32BuildReady ? 'CONFIRMED_IMPLEMENTED' : (pioEnvs.length === 1 && uploadPort === 'COM3' ? 'CONFIRMED_PARTIAL' : 'UNASSESSED'),
+    first_breakpoint: esp32BuildReady ? null : 'fixture_peripheral/fixture_observer envs, build metadata, or fixed upload_port',
+    task_id: esp32BuildReady ? null : 'ESP32-BUILD-001',
+    root_cause_id: esp32BuildReady ? null : 'RC-ESP32-BUILD',
   },
   names: {
     DEVICE_NAME_macro: deviceNameMacro,
