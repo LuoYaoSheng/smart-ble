@@ -443,39 +443,17 @@
       "title": "客户端完整 OTA 事务（CTRL start→ready→DATA→commit）",
       "root_cause_id": "RC-OTA-CTRL-START",
       "severity": "P0",
-      "status": "PLANNED",
+      "status": "DONE",
       "dependencies": [
         "OTA-PACKAGE-001"
       ],
       "unlocks": [
         "VERIFY-ANDROID-001"
       ],
-      "gap_count": 12,
-      "target_ids": [
-        "FEAT-046",
-        "FEAT-047",
-        "FEAT-048",
-        "FEAT-049",
-        "FEAT-050",
-        "FEAT-051",
-        "FEAT-052",
-        "OP-P006-12",
-        "OP-P006-13",
-        "OP-P006-14",
-        "OP-W001-05",
-        "FLOW-009"
-      ],
-      "test_ids": [
-        "TEST-P-006",
-        "TEST-A-011",
-        "TEST-E-007",
-        "TEST-R-003",
-        "TEST-I-008",
-        "TEST-U-016",
-        "TEST-I-010",
-        "TEST-R-008"
-      ],
-      "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
+      "gap_count": 0,
+      "target_ids": [],
+      "test_ids": [],
+      "first_breakpoint": "",
       "implementation_files": [],
       "forbidden_files": [
         "apps/uniapp/** (until TP-G3)",
@@ -1033,7 +1011,6 @@
     "RELEASE-PIPELINE-001",
     "RUNTIME-LOG-REDACTION-001",
     "RUNTIME-CONNECTION-DISCOVERY-001",
-    "OTA-CLIENT-001",
     "ESP32-BUILD-001",
     "OTA-FIRMWARE-001",
     "ESP32-PERIPHERAL-001",

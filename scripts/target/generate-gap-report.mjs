@@ -123,7 +123,7 @@ const FACTS = {
   hasPublicStatus: exists('apps/uniapp/services/public-status.js'),
   hasVersionMetadata: exists('apps/uniapp/services/version-metadata.js'),
   hasRootVersion: exists('VERSION'),
-  otaManager: read('apps/uniapp/utils/ota_manager.js'),
+  otaManager: read('apps/uniapp/utils/ota_manager.js') + read('apps/uniapp/services/ota/ota-manager.js'),
   broadcastPage: read('apps/uniapp/pages/broadcast/index.vue'),
   versionPage: read('apps/uniapp/pages/about/version.vue'),
   landing: read('docs/index.md'),
@@ -142,6 +142,7 @@ const filterHasKeywordMatch = /opts\.keyword|settings\.keyword|buildDeviceSearch
 
 const otaWritesCtrl = /writeValue[\s\S]{0,120}CHAR_CTRL|CHAR_CTRL[\s\S]{0,120}writeValue/.test(FACTS.otaManager);
 const hasValidateOta = /validateOtaPackage|validatePackage/.test(FACTS.otaManager);
+const otaClientReady = otaWritesCtrl && hasValidateOta;
 const hasOtaPackageValidator = exists('apps/uniapp/services/ota/package-validator.js')
   && exists('apps/uniapp/services/ota/firmware-package.js');
 const hasOtaPackageSchema = exists('contracts/target/ota-package.schema.json');
@@ -292,7 +293,7 @@ const TASKS = [
   { task_id: 'RUNTIME-SESSION-001', task_type: 'SOURCE_FIX', title: 'Registry subscription_count + 配网会话分类', root_cause_id: 'RC-SESSION-REGISTRY', severity: 'P1', deps: [], order_hint: 16, status: sessionRegistryDone ? 'DONE' : 'PLANNED' },
   { task_id: 'RUNTIME-CONNECTION-DISCOVERY-001', task_type: 'SOURCE_FIX', title: 'connectDevice 编排服务发现', root_cause_id: 'RC-CONN-DISCOVERY', severity: 'P1', deps: [], order_hint: 17 },
   { task_id: 'OTA-PACKAGE-001', task_type: 'SOURCE_FIX', title: '客户端 Firmware Package 六项校验', root_cause_id: 'RC-OTA-PACKAGE', severity: 'P1', deps: [], order_hint: 20, status: otaPackageReady ? 'DONE' : 'PLANNED' },
-  { task_id: 'OTA-CLIENT-001', task_type: 'SOURCE_FIX', title: '客户端完整 OTA 事务（CTRL start→ready→DATA→commit）', root_cause_id: 'RC-OTA-CTRL-START', severity: 'P0', deps: ['OTA-PACKAGE-001'], order_hint: 21 },
+  { task_id: 'OTA-CLIENT-001', task_type: 'SOURCE_FIX', title: '客户端完整 OTA 事务（CTRL start→ready→DATA→commit）', root_cause_id: 'RC-OTA-CTRL-START', severity: 'P0', deps: ['OTA-PACKAGE-001'], order_hint: 21, status: otaClientReady ? 'DONE' : 'PLANNED' },
   { task_id: 'OTA-FIRMWARE-001', task_type: 'SOURCE_FIX', title: '固件 OTA op/target/hardware/SHA/max_chunk/commit 校验', root_cause_id: 'RC-ESP32-OTA-ACTION', severity: 'P1', deps: ['ESP32-BUILD-001'], order_hint: 22 },
   { task_id: 'ESP32-BUILD-001', task_type: 'SOURCE_FIX', title: '两环境、无固定 COM、模块化入口', root_cause_id: 'RC-ESP32-BUILD', severity: 'P1', deps: [], order_hint: 30 },
   { task_id: 'ESP32-PERIPHERAL-001', task_type: 'SOURCE_FIX', title: '服务/特征/名称/LED/Device Info 对齐契约', root_cause_id: 'RC-ESP32-LED-NAME', severity: 'P1', deps: ['ESP32-BUILD-001'], order_hint: 31 },

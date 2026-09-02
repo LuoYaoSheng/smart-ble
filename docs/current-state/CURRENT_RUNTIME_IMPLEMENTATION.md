@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 0a33163ed724ee27d113d5f163faff955f767f775efdd4d35114f9a2a07038d4
+content_hash: 22f5ccdce805a64b62655ec4e44dfdef605c5497505bcd95599fdf4bad5e06d1
 ```
 
 ## 模块树（path 事实）
@@ -43,4 +43,4 @@ content_hash: 0a33163ed724ee27d113d5f163faff955f767f775efdd4d35114f9a2a07038d4
 
 ## Runtime 差距记录数
 
-报告 runtime.json records = 14
+报告 runtime.json records = 2

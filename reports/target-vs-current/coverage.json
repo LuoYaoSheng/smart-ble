@@ -1,8 +1,8 @@
 {
   "gate": "TP-G2-R1",
   "schema_version": "2.0",
-  "generated_at": "2026-09-02T01:07:14.738Z",
-  "commit": "9d00c1ffef7f4c13839da329180e8f27f4a796db",
+  "generated_at": "2026-09-02T01:32:12.120Z",
+  "commit": "545e2b08be06c7ee0960beb3a0a133d2e144af09",
   "structured_current_path": ".tmp/tp-g2/logs/current-structured.json",
   "system": {
     "SYSTEM_PASS": 412,
@@ -31,16 +31,16 @@
     "REQ": {
       "total": 66,
       "listed": 66,
-      "assessed": 9,
-      "unassessed": 57,
+      "assessed": 5,
+      "unassessed": 61,
       "not_applicable": 0,
       "reason": null
     },
     "FEAT": {
       "total": 81,
       "listed": 81,
-      "assessed": 12,
-      "unassessed": 69,
+      "assessed": 5,
+      "unassessed": 76,
       "not_applicable": 0,
       "reason": null
     },
@@ -71,16 +71,16 @@
     "OP": {
       "total": 92,
       "listed": 92,
-      "assessed": 7,
-      "unassessed": 85,
+      "assessed": 3,
+      "unassessed": 89,
       "not_applicable": 0,
       "reason": null
     },
     "FLOW": {
       "total": 14,
       "listed": 14,
-      "assessed": 2,
-      "unassessed": 12,
+      "assessed": 1,
+      "unassessed": 13,
       "not_applicable": 0,
       "reason": null
     },
@@ -159,49 +159,49 @@
   },
   "records_total": 647,
   "by_gap_kind": {
-    "PRODUCT": 296,
-    "PAGE": 153,
-    "RUNTIME": 14,
+    "PRODUCT": 304,
+    "PAGE": 156,
     "TESTABILITY": 125,
     "FIRMWARE": 9,
-    "LANDING": 46,
+    "LANDING": 47,
     "SMART_HID": 3,
+    "RUNTIME": 2,
     "RELEASE": 1
   },
   "by_implementation_status": {
-    "UNASSESSED": 590,
-    "CONFIRMED_PARTIAL": 31,
+    "UNASSESSED": 606,
+    "CONFIRMED_PARTIAL": 15,
     "CONFIRMED_IMPLEMENTED": 22,
     "CONFIRMED_MISSING": 4
   },
   "by_verification_status": {
-    "HARDWARE_PENDING": 125,
-    "NOT_EXECUTED": 340,
-    "EXECUTED": 148,
+    "HARDWARE_PENDING": 126,
+    "NOT_EXECUTED": 341,
+    "EXECUTED": 151,
     "AUTOMATED_PASS": 22,
-    "AUTOMATED_FAIL": 6,
-    "BLOCKED_BY_FIXTURE": 6
+    "BLOCKED_BY_FIXTURE": 6,
+    "AUTOMATED_FAIL": 1
   },
   "by_severity": {
-    "null": 612,
+    "null": 628,
     "P1": 18,
-    "P0": 17
+    "P0": 1
   },
   "unique_root_causes_by_severity": {
-    "P0": 2,
+    "P0": 1,
     "P1": 4,
     "P2": 0,
     "P3": 0
   },
   "affected_target_records_by_severity": {
-    "P0": 17,
+    "P0": 1,
     "P1": 18,
     "P2": 0,
     "P3": 0,
-    "null": 612
+    "null": 628
   },
   "product_vs_testability": {
-    "product_gaps_with_severity": 35,
+    "product_gaps_with_severity": 19,
     "testability_records": 125,
     "blocked_page_cases": 0,
     "note": "blocked_page_cases 不得计为产品缺陷数；Playwright 与 Page Driver 为独立 blocker"
@@ -209,8 +209,8 @@
   "page_e4_r2": {
     "gate": "TP-G2-R2",
     "totals": {
-      "PASS": 146,
-      "FAIL": 53,
+      "PASS": 176,
+      "FAIL": 23,
       "BLOCKED": 2,
       "NOT_IMPLEMENTED": 29,
       "harness_PASS": 230,
@@ -258,12 +258,12 @@
         "task_id": null
       },
       "PAGE-006": {
-        "PASS": 0,
-        "FAIL": 30,
+        "PASS": 30,
+        "FAIL": 0,
         "BLOCKED": 0,
         "NOT_IMPLEMENTED": 0,
-        "product": "FAIL",
-        "task_id": "OTA-CLIENT-001"
+        "product": "PASS",
+        "task_id": null
       },
       "PAGE-007": {
         "PASS": 14,

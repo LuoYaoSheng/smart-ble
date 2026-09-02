@@ -41,7 +41,7 @@ const FACTS = {
   aboutPage: read('apps/uniapp/pages/about/index.vue'),
   deviceDetail: read('apps/uniapp/pages/device/detail.vue'),
   landing: read('docs/index.md'),
-  ota: read('apps/uniapp/utils/ota_manager.js'),
+  ota: read('apps/uniapp/utils/ota_manager.js') + read('apps/uniapp/services/ota/ota-manager.js'),
   esp32: read('hardware/esp32/LightBLE/src/main.cpp'),
   hidAdd: read('apps/uniapp/pages/hid/add.vue'),
   hidDetail: read('apps/uniapp/pages/hid/detail.vue'),
@@ -73,6 +73,9 @@ const FACTS = {
   scanAutoStop5: /autoStopSeconds\s*=\s*5/.test(read('apps/uniapp/composables/use-ble-scan.js')),
   hasObserver: /BLEToolkit-Observer|fixture_observer/.test(read('hardware/esp32/LightBLE/src/main.cpp')),
   filterHasKeywordMatch: /keyword|tokens|includes\(/.test(read('apps/uniapp/services/ble-runtime/device-filter.js')),
+  otaWritesCtrl: /writeValue[\s\S]{0,120}CHAR_CTRL|CHAR_CTRL[\s\S]{0,120}writeValue/.test(
+    read('apps/uniapp/utils/ota_manager.js') + read('apps/uniapp/services/ota/ota-manager.js'),
+  ),
   registrySubCount: /subscription_count|subscriptionCount/.test(
     read('apps/uniapp/services/ble-runtime/index.js') + read('apps/uniapp/pages/connected/index.vue'),
   ),
@@ -159,23 +162,36 @@ const PAGE_ASSESS = {
     first_breakpoint: null,
     notes: 'hid/diagnostics 存在；无独立 FAIL 证据',
   },
-  'PAGE-006': {
-    product: 'FAIL',
-    task_id: 'OTA-CLIENT-001',
-    root_cause_id: 'RC-OTA-CLIENT',
-    first_breakpoint: {
-      target: 'FEAT-081',
-      test: 'TEST-I-008',
-      file: 'apps/uniapp/utils/ota_manager.js',
-      symbol: 'validateOtaPackage',
-      breakpoint: 'CTRL start before DATA / validateOtaPackage (TEST-I-008)',
+  'PAGE-006': FACTS.otaWritesCtrl
+    ? {
+      product: 'PASS',
+      task_id: null,
+      root_cause_id: null,
+      first_breakpoint: null,
+      also: [
+        { task_id: 'OTA-CLIENT-001', breakpoint: 'DONE' },
+        { task_id: 'OTA-PACKAGE-001', breakpoint: 'DONE' },
+        { task_id: 'RUNTIME-CONNECTION-DISCOVERY-001', file: 'apps/uniapp/services/ble-runtime/index.js', symbol: 'connectDevice', breakpoint: 'TEST-I-003 asserts discover orchestration gap (semi-open risk)' },
+      ],
+      notes: 'RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE + OTA-CLIENT DONE；剩余 CONNECTION-DISCOVERY',
+    }
+    : {
+      product: 'FAIL',
+      task_id: 'OTA-CLIENT-001',
+      root_cause_id: 'RC-OTA-CLIENT',
+      first_breakpoint: {
+        target: 'FEAT-081',
+        test: 'TEST-I-008',
+        file: 'apps/uniapp/utils/ota_manager.js',
+        symbol: 'validateOtaPackage',
+        breakpoint: 'CTRL start before DATA / validateOtaPackage (TEST-I-008)',
+      },
+      also: [
+        { task_id: 'OTA-PACKAGE-001', breakpoint: 'DONE' },
+        { task_id: 'RUNTIME-CONNECTION-DISCOVERY-001', file: 'apps/uniapp/services/ble-runtime/index.js', symbol: 'connectDevice', breakpoint: 'TEST-I-003 asserts discover orchestration gap (semi-open risk)' },
+      ],
+      notes: 'RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client',
     },
-    also: [
-      { task_id: 'OTA-PACKAGE-001', breakpoint: 'DONE' },
-      { task_id: 'RUNTIME-CONNECTION-DISCOVERY-001', file: 'apps/uniapp/services/ble-runtime/index.js', symbol: 'connectDevice', breakpoint: 'TEST-I-003 asserts discover orchestration gap (semi-open risk)' },
-    ],
-    notes: 'RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client',
-  },
   'PAGE-007': {
     product: 'PASS',
     task_id: null,

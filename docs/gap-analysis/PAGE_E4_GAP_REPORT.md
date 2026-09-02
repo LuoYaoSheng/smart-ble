@@ -6,7 +6,7 @@ gate: TP-G2-R2
 environment: READY_FOR_PAGE_E4
 fake_runtime: true
 live_app_url: false
-generated_at: 2026-09-02T01:07:15.065Z
+generated_at: 2026-09-02T01:32:12.641Z
 ```
 
 > **原则**：Playwright Fake Runtime harness PASS ≠ 产品实现满足目标。
@@ -22,7 +22,7 @@ generated_at: 2026-09-02T01:07:15.065Z
 | PAGE-003 | PASS | 12 | 0 | 0 | 0 | — |
 | PAGE-004 | PASS | 14 | 0 | 0 | 0 | — |
 | PAGE-005 | PASS | 18 | 0 | 0 | 0 | — |
-| PAGE-006 | FAIL | 0 | 30 | 0 | 0 | OTA-CLIENT-001 |
+| PAGE-006 | PASS | 30 | 0 | 0 | 0 | — |
 | PAGE-007 | PASS | 14 | 0 | 0 | 0 | — |
 | PAGE-008 | FAIL | 0 | 23 | 2 | 0 | PAGE-BROADCAST-001 |
 | PAGE-009 | PASS | 20 | 0 | 0 | 0 | — |
@@ -33,8 +33,8 @@ generated_at: 2026-09-02T01:07:15.065Z
 
 | Status | Count |
 |---|---|
-| PASS | 146 |
-| FAIL | 53 |
+| PASS | 176 |
+| FAIL | 23 |
 | BLOCKED | 2 |
 | NOT_IMPLEMENTED | 29 |
 | Harness PASS | 230 |
@@ -43,8 +43,7 @@ generated_at: 2026-09-02T01:07:15.065Z
 ## Top First Breakpoints
 
 1. **PAGE-002** → `apps/uniapp/services/ble-runtime/log-redaction.js` `(missing)` — log-redaction module missing; HID provision path shares REQ-036/050 *(RUNTIME-LOG-REDACTION-001 / TEST-U-013 / FEAT-040)*
-2. **PAGE-006** → `apps/uniapp/utils/ota_manager.js` `validateOtaPackage` — CTRL start before DATA / validateOtaPackage (TEST-I-008) *(OTA-CLIENT-001 / TEST-I-008 / FEAT-081)*
-3. **PAGE-008** → `apps/uniapp/pages/broadcast/index.vue` `(inline advertising)` — page does not use useBroadcastSession composable/owner *(PAGE-BROADCAST-001 / TEST-P-008 / FEAT-041)*
+2. **PAGE-008** → `apps/uniapp/pages/broadcast/index.vue` `(inline advertising)` — page does not use useBroadcastSession composable/owner *(PAGE-BROADCAST-001 / TEST-P-008 / FEAT-041)*
 
 ## Static Facts（本轮探测）
 
@@ -168,28 +167,21 @@ generated_at: 2026-09-02T01:07:15.065Z
 
 ### PAGE-006
 
-- **Product**: FAIL
+- **Product**: PASS
 - **Target**: `docs/target-product/pages|web` + behavior states=10 ops=14
 - **Actual (E4 harness)**: Fake Runtime PASS=30 FAIL=0
-- **Actual (product)**: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client
-- **Case tallies**: PASS=0 FAIL=30 BLOCKED=0 NOT_IMPLEMENTED=0
-- **Root Cause**: RC-OTA-CLIENT
-- **Fix IDs**: OTA-CLIENT-001（页面失败若源自 Runtime，引用 RUNTIME_* 而非新建 PAGE_FIX）
+- **Actual (product)**: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE + OTA-CLIENT DONE；剩余 CONNECTION-DISCOVERY
+- **Case tallies**: PASS=30 FAIL=0 BLOCKED=0 NOT_IMPLEMENTED=0
+- **Root Cause**: —
+- **Fix IDs**: —（页面失败若源自 Runtime，引用 RUNTIME_* 而非新建 PAGE_FIX）
 
-- **First Breakpoint**: `apps/uniapp/utils/ota_manager.js` / `validateOtaPackage` — CTRL start before DATA / validateOtaPackage (TEST-I-008)
-- Target: FEAT-081 · Test: TEST-I-008
+- First Breakpoint: —
 
 **Fail / Blocked samples**
-  - FAIL STATE-P006-01 → OTA-CLIENT-001
-  - FAIL STATE-P006-02 → OTA-CLIENT-001
-  - FAIL STATE-P006-03 → OTA-CLIENT-001
-  - FAIL STATE-P006-04 → OTA-CLIENT-001
-  - FAIL STATE-P006-05 → OTA-CLIENT-001
-  - FAIL STATE-P006-06 → OTA-CLIENT-001
-  - FAIL STATE-P006-07 → OTA-CLIENT-001
-  - FAIL STATE-P006-08 → OTA-CLIENT-001
+  - （无）
 
 **Related**
+  - OTA-CLIENT-001: DONE
   - OTA-PACKAGE-001: DONE
   - RUNTIME-CONNECTION-DISCOVERY-001: TEST-I-003 asserts discover orchestration gap (semi-open risk) (apps/uniapp/services/ble-runtime/index.js)
 

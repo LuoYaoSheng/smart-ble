@@ -290,6 +290,35 @@
       "release_blocking": false
     },
     {
+      "target_id": "OP-W001-05",
+      "target_type": "operation",
+      "dimension": "operation",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "UNASSESSED",
+      "verification_status": "EXECUTED",
+      "static_implementation": "UNASSESSED",
+      "e4_verification": "EXECUTED",
+      "e5_verification": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-008"
+      ],
+      "test_results": [],
+      "expected": "固件下载",
+      "actual": "page driver executed; product gap may remain",
+      "first_breakpoint": "E4 已执行（EXECUTED）；产品操作差距另见业务 Task",
+      "downstream_impact": [],
+      "dependencies": [
+        "WEB-001"
+      ],
+      "root_cause_id": null,
+      "task_id": null,
+      "release_blocking": false
+    },
+    {
       "target_id": "OP-W001-06",
       "target_type": "operation",
       "dimension": "operation",

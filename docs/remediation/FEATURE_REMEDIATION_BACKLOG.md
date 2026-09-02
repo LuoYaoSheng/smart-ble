@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 0a33163ed724ee27d113d5f163faff955f767f775efdd4d35114f9a2a07038d4
+content_hash: 22f5ccdce805a64b62655ec4e44dfdef605c5497505bcd95599fdf4bad5e06d1
 ```
 
 > PUBLIC-HONESTY-001 / VERSION-METADATA-001 状态以 task-dependency-graph.json 为准。未批准 Task 不得执行。
@@ -154,14 +154,14 @@ content_hash: 0a33163ed724ee27d113d5f163faff955f767f775efdd4d35114f9a2a07038d4
 
 ### OTA-CLIENT-001
 
-- 状态：**PLANNED**
+- 状态：**DONE**
 - 标题：客户端完整 OTA 事务（CTRL start→ready→DATA→commit）
 - task_type：SOURCE_FIX
 - severity：P0
 - root_cause_id：RC-OTA-CTRL-START
-- Target IDs（样本）：FEAT-046, FEAT-047, FEAT-048, FEAT-049, FEAT-050, FEAT-051, FEAT-052, OP-P006-12, OP-P006-13, OP-P006-14, OP-W001-05, FLOW-009
-- Test IDs：TEST-P-006, TEST-A-011, TEST-E-007, TEST-R-003, TEST-I-008, TEST-U-016, TEST-I-010, TEST-R-008
-- First Breakpoint：OtaManager 在第一个 DATA 写之前未发送 CTRL start
+- Target IDs（样本）：见 JSON
+- Test IDs：—
+- First Breakpoint：—
 - 依赖：OTA-PACKAGE-001
 - 解锁：VERIFY-ANDROID-001
 - 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics

@@ -1,15 +1,6 @@
 {
   "top20": [
     {
-      "target_id": "FEAT-046",
-      "severity": "P0",
-      "gap_kind": "RUNTIME",
-      "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
-      "root_cause_id": "RC-OTA-CTRL-START",
-      "task_id": "OTA-CLIENT-001",
-      "verification_status": "NOT_EXECUTED"
-    },
-    {
       "target_id": "PROTO-010",
       "severity": "P0",
       "gap_kind": "RELEASE",
@@ -83,15 +74,6 @@
     }
   ],
   "all": [
-    {
-      "target_id": "FEAT-046",
-      "severity": "P0",
-      "gap_kind": "RUNTIME",
-      "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
-      "root_cause_id": "RC-OTA-CTRL-START",
-      "task_id": "OTA-CLIENT-001",
-      "verification_status": "NOT_EXECUTED"
-    },
     {
       "target_id": "PROTO-010",
       "severity": "P0",

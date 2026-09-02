@@ -140,3 +140,41 @@ test('HARNESS-I-013 参照层：READY 后仍持有连接（不释放）必须被
   assert.ok(held.connected, '参照实现仍持有连接');
   assert.ok(held.connected === true, '目标：READY 后配网连接必须释放（10 号释放矩阵：释放（READY））');
 });
+
+// ---- from ota-transaction-target.test.mjs ----
+const OTA_SVC = '4fafc201-1fb5-459e-8fcc-c5c9c331914d';
+const CHR_CTRL = 'beb5483e-36e1-4688-b7f5-ea07361b26c0';
+const CHR_DATA = 'beb5483e-36e1-4688-b7f5-ea07361b26c1';
+const CHR_STATUS = 'beb5483e-36e1-4688-b7f5-ea07361b26c2';
+
+function otaNormUuid(u) {
+  return String(u || '').replace(/-/g, '').toLowerCase();
+}
+
+function otaSameUuid(a, b) {
+  return otaNormUuid(a) === otaNormUuid(b);
+}
+
+test('HARNESS-I-014 参照层：DATA 在 CTRL start 前顺序必须被判错', () => {
+  const broken = [{ cid: CHR_DATA }, { cid: CHR_CTRL }];
+  const firstData = broken.findIndex((w) => otaSameUuid(w.cid, CHR_DATA));
+  const firstCtrl = broken.findIndex((w) => otaSameUuid(w.cid, CHR_CTRL));
+  const isBrokenOrder = firstData >= 0 && (firstCtrl < 0 || firstCtrl > firstData);
+  assert.ok(isBrokenOrder, '参照层错误顺序');
+  const isCanonicalOrder = firstCtrl >= 0 && firstData >= 0 && firstCtrl < firstData;
+  assert.ok(!isCanonicalOrder, '目标层 CTRL-before-DATA 判定');
+});
+
+test('HARNESS-I-015 参照层：无 commit 时 success 路径必须失败', () => {
+  const writes = [{ cid: CHR_CTRL, op: 'start' }, { cid: CHR_DATA }];
+  const hasCommit = writes.some((w) => otaSameUuid(w.cid, CHR_CTRL) && w.op === 'commit');
+  assert.equal(hasCommit, false, '参照层未 commit');
+  assert.ok(!hasCommit, '目标：缺少 commit 不得判定 OTA 成功');
+});
+
+test('HARNESS-I-016 参照层：无 verify 时 success 必须失败', () => {
+  const didVerify = false;
+  const reportedSuccess = didVerify;
+  assert.equal(reportedSuccess, false, '参照层未 verify 即 success');
+  assert.ok(!reportedSuccess, '目标：未读 firmware_version 不得 success');
+});

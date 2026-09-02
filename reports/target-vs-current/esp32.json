@@ -175,7 +175,7 @@
     "ota": {
       "firmware_field": "action",
       "target_field": "op",
-      "client_writes_ctrl": false,
+      "client_writes_ctrl": true,
       "client_validate_package": true
     },
     "fault_injection": [

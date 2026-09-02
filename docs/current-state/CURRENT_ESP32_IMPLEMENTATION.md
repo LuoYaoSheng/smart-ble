@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 0a33163ed724ee27d113d5f163faff955f767f775efdd4d35114f9a2a07038d4
+content_hash: 22f5ccdce805a64b62655ec4e44dfdef605c5497505bcd95599fdf4bad5e06d1
 ```
 
 对照：`contracts/target/ble-fixture-target.json` ↔ `hardware/esp32/LightBLE/src/main.cpp`
@@ -59,7 +59,7 @@ content_hash: 0a33163ed724ee27d113d5f163faff955f767f775efdd4d35114f9a2a07038d4
 
 - 当前字段风格: action
 - 目标字段: op
-- 客户端写 CTRL: false
+- 客户端写 CTRL: true
 - 客户端包校验: true
 
 ## Fault Injection

@@ -1,6 +1,6 @@
 {
   "gate": "TP-G2-R2",
-  "generated_at": "2026-09-02T01:07:15.065Z",
+  "generated_at": "2026-09-02T01:32:12.641Z",
   "environment": {
     "status": "READY_FOR_PAGE_E4",
     "playwright": {
@@ -31,8 +31,8 @@
     "registrySubCount": true
   },
   "totals": {
-    "PASS": 146,
-    "FAIL": 53,
+    "PASS": 176,
+    "FAIL": 23,
     "BLOCKED": 2,
     "NOT_IMPLEMENTED": 29,
     "harness_PASS": 230,
@@ -527,26 +527,24 @@
     },
     "PAGE-006": {
       "page_id": "PAGE-006",
-      "PASS": 0,
-      "FAIL": 30,
+      "PASS": 30,
+      "FAIL": 0,
       "BLOCKED": 0,
       "NOT_IMPLEMENTED": 0,
       "harness_PASS": 30,
       "harness_FAIL": 0,
       "states": 10,
       "operations": 14,
-      "product": "FAIL",
-      "task_id": "OTA-CLIENT-001",
-      "root_cause_id": "RC-OTA-CLIENT",
-      "notes": "RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
-      "first_breakpoint": {
-        "target": "FEAT-081",
-        "test": "TEST-I-008",
-        "file": "apps/uniapp/utils/ota_manager.js",
-        "symbol": "validateOtaPackage",
-        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-      },
+      "product": "PASS",
+      "task_id": null,
+      "root_cause_id": null,
+      "notes": "RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE + OTA-CLIENT DONE；剩余 CONNECTION-DISCOVERY",
+      "first_breakpoint": null,
       "also": [
+        {
+          "task_id": "OTA-CLIENT-001",
+          "breakpoint": "DONE"
+        },
         {
           "task_id": "OTA-PACKAGE-001",
           "breakpoint": "DONE"
@@ -558,398 +556,7 @@
           "breakpoint": "TEST-I-003 asserts discover orchestration gap (semi-open risk)"
         }
       ],
-      "fail_cases": [
-        {
-          "state_id": "STATE-P006-01",
-          "operation_id": null,
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-081",
-            "test": "TEST-I-008",
-            "file": "apps/uniapp/utils/ota_manager.js",
-            "symbol": "validateOtaPackage",
-            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-          },
-          "task_id": "OTA-CLIENT-001"
-        },
-        {
-          "state_id": "STATE-P006-02",
-          "operation_id": null,
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-081",
-            "test": "TEST-I-008",
-            "file": "apps/uniapp/utils/ota_manager.js",
-            "symbol": "validateOtaPackage",
-            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-          },
-          "task_id": "OTA-CLIENT-001"
-        },
-        {
-          "state_id": "STATE-P006-03",
-          "operation_id": null,
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-081",
-            "test": "TEST-I-008",
-            "file": "apps/uniapp/utils/ota_manager.js",
-            "symbol": "validateOtaPackage",
-            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-          },
-          "task_id": "OTA-CLIENT-001"
-        },
-        {
-          "state_id": "STATE-P006-04",
-          "operation_id": null,
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-081",
-            "test": "TEST-I-008",
-            "file": "apps/uniapp/utils/ota_manager.js",
-            "symbol": "validateOtaPackage",
-            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-          },
-          "task_id": "OTA-CLIENT-001"
-        },
-        {
-          "state_id": "STATE-P006-05",
-          "operation_id": null,
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-081",
-            "test": "TEST-I-008",
-            "file": "apps/uniapp/utils/ota_manager.js",
-            "symbol": "validateOtaPackage",
-            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-          },
-          "task_id": "OTA-CLIENT-001"
-        },
-        {
-          "state_id": "STATE-P006-06",
-          "operation_id": null,
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-081",
-            "test": "TEST-I-008",
-            "file": "apps/uniapp/utils/ota_manager.js",
-            "symbol": "validateOtaPackage",
-            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-          },
-          "task_id": "OTA-CLIENT-001"
-        },
-        {
-          "state_id": "STATE-P006-07",
-          "operation_id": null,
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-081",
-            "test": "TEST-I-008",
-            "file": "apps/uniapp/utils/ota_manager.js",
-            "symbol": "validateOtaPackage",
-            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-          },
-          "task_id": "OTA-CLIENT-001"
-        },
-        {
-          "state_id": "STATE-P006-08",
-          "operation_id": null,
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-081",
-            "test": "TEST-I-008",
-            "file": "apps/uniapp/utils/ota_manager.js",
-            "symbol": "validateOtaPackage",
-            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-          },
-          "task_id": "OTA-CLIENT-001"
-        },
-        {
-          "state_id": "STATE-P006-09",
-          "operation_id": null,
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-081",
-            "test": "TEST-I-008",
-            "file": "apps/uniapp/utils/ota_manager.js",
-            "symbol": "validateOtaPackage",
-            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-          },
-          "task_id": "OTA-CLIENT-001"
-        },
-        {
-          "state_id": "STATE-P006-10",
-          "operation_id": null,
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-081",
-            "test": "TEST-I-008",
-            "file": "apps/uniapp/utils/ota_manager.js",
-            "symbol": "validateOtaPackage",
-            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-          },
-          "task_id": "OTA-CLIENT-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P006-01",
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-081",
-            "test": "TEST-I-008",
-            "file": "apps/uniapp/utils/ota_manager.js",
-            "symbol": "validateOtaPackage",
-            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-          },
-          "task_id": "OTA-CLIENT-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P006-02",
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-081",
-            "test": "TEST-I-008",
-            "file": "apps/uniapp/utils/ota_manager.js",
-            "symbol": "validateOtaPackage",
-            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-          },
-          "task_id": "OTA-CLIENT-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P006-03",
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-081",
-            "test": "TEST-I-008",
-            "file": "apps/uniapp/utils/ota_manager.js",
-            "symbol": "validateOtaPackage",
-            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-          },
-          "task_id": "OTA-CLIENT-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P006-04",
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-081",
-            "test": "TEST-I-008",
-            "file": "apps/uniapp/utils/ota_manager.js",
-            "symbol": "validateOtaPackage",
-            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-          },
-          "task_id": "OTA-CLIENT-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P006-05",
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-081",
-            "test": "TEST-I-008",
-            "file": "apps/uniapp/utils/ota_manager.js",
-            "symbol": "validateOtaPackage",
-            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-          },
-          "task_id": "OTA-CLIENT-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P006-06",
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-081",
-            "test": "TEST-I-008",
-            "file": "apps/uniapp/utils/ota_manager.js",
-            "symbol": "validateOtaPackage",
-            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-          },
-          "task_id": "OTA-CLIENT-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P006-07",
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-081",
-            "test": "TEST-I-008",
-            "file": "apps/uniapp/utils/ota_manager.js",
-            "symbol": "validateOtaPackage",
-            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-          },
-          "task_id": "OTA-CLIENT-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P006-08",
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-081",
-            "test": "TEST-I-008",
-            "file": "apps/uniapp/utils/ota_manager.js",
-            "symbol": "validateOtaPackage",
-            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-          },
-          "task_id": "OTA-CLIENT-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P006-10",
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-081",
-            "test": "TEST-I-008",
-            "file": "apps/uniapp/utils/ota_manager.js",
-            "symbol": "validateOtaPackage",
-            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-          },
-          "task_id": "OTA-CLIENT-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P006-11",
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-081",
-            "test": "TEST-I-008",
-            "file": "apps/uniapp/utils/ota_manager.js",
-            "symbol": "validateOtaPackage",
-            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-          },
-          "task_id": "OTA-CLIENT-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P006-12",
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-081",
-            "test": "TEST-I-008",
-            "file": "apps/uniapp/utils/ota_manager.js",
-            "symbol": "validateOtaPackage",
-            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-          },
-          "task_id": "OTA-CLIENT-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P006-13",
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-081",
-            "test": "TEST-I-008",
-            "file": "apps/uniapp/utils/ota_manager.js",
-            "symbol": "validateOtaPackage",
-            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-          },
-          "task_id": "OTA-CLIENT-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P006-14",
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-081",
-            "test": "TEST-I-008",
-            "file": "apps/uniapp/utils/ota_manager.js",
-            "symbol": "validateOtaPackage",
-            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-          },
-          "task_id": "OTA-CLIENT-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P006-15",
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-081",
-            "test": "TEST-I-008",
-            "file": "apps/uniapp/utils/ota_manager.js",
-            "symbol": "validateOtaPackage",
-            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-          },
-          "task_id": "OTA-CLIENT-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": null,
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-081",
-            "test": "TEST-I-008",
-            "file": "apps/uniapp/utils/ota_manager.js",
-            "symbol": "validateOtaPackage",
-            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-          },
-          "task_id": "OTA-CLIENT-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": null,
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-081",
-            "test": "TEST-I-008",
-            "file": "apps/uniapp/utils/ota_manager.js",
-            "symbol": "validateOtaPackage",
-            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-          },
-          "task_id": "OTA-CLIENT-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": null,
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-081",
-            "test": "TEST-I-008",
-            "file": "apps/uniapp/utils/ota_manager.js",
-            "symbol": "validateOtaPackage",
-            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-          },
-          "task_id": "OTA-CLIENT-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": null,
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-081",
-            "test": "TEST-I-008",
-            "file": "apps/uniapp/utils/ota_manager.js",
-            "symbol": "validateOtaPackage",
-            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-          },
-          "task_id": "OTA-CLIENT-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": null,
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-081",
-            "test": "TEST-I-008",
-            "file": "apps/uniapp/utils/ota_manager.js",
-            "symbol": "validateOtaPackage",
-            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-          },
-          "task_id": "OTA-CLIENT-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": null,
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-081",
-            "test": "TEST-I-008",
-            "file": "apps/uniapp/utils/ota_manager.js",
-            "symbol": "validateOtaPackage",
-            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-          },
-          "task_id": "OTA-CLIENT-001"
-        }
-      ]
+      "fail_cases": []
     },
     "PAGE-007": {
       "page_id": "PAGE-007",
@@ -5048,20 +4655,14 @@
       "state_id": "STATE-P006-01",
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › State suite › STATE-P006-01 初始化",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "身份",
         "连接按钮"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
-      "first_breakpoint": {
-        "target": "FEAT-081",
-        "test": "TEST-I-008",
-        "file": "apps/uniapp/utils/ota_manager.js",
-        "symbol": "validateOtaPackage",
-        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
         "duration_ms": 38,
@@ -5078,31 +4679,23 @@
       "test_ids": [
         "TEST-P-006"
       ],
-      "implementation_refs": [
-        "apps/uniapp/utils/ota_manager.js"
-      ],
-      "task_id": "OTA-CLIENT-001",
-      "root_cause_id": "RC-OTA-CLIENT",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-006",
       "state_id": "STATE-P006-02",
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › State suite › STATE-P006-02 连接中",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "状态\"连接中\""
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
-      "first_breakpoint": {
-        "target": "FEAT-081",
-        "test": "TEST-I-008",
-        "file": "apps/uniapp/utils/ota_manager.js",
-        "symbol": "validateOtaPackage",
-        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
         "duration_ms": 35,
@@ -5119,31 +4712,23 @@
       "test_ids": [
         "TEST-A-006"
       ],
-      "implementation_refs": [
-        "apps/uniapp/utils/ota_manager.js"
-      ],
-      "task_id": "OTA-CLIENT-001",
-      "root_cause_id": "RC-OTA-CLIENT",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-006",
       "state_id": "STATE-P006-03",
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › State suite › STATE-P006-03 服务加载中",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "树骨架/spinner"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
-      "first_breakpoint": {
-        "target": "FEAT-081",
-        "test": "TEST-I-008",
-        "file": "apps/uniapp/utils/ota_manager.js",
-        "symbol": "validateOtaPackage",
-        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
         "duration_ms": 33,
@@ -5160,32 +4745,24 @@
       "test_ids": [
         "TEST-A-006"
       ],
-      "implementation_refs": [
-        "apps/uniapp/utils/ota_manager.js"
-      ],
-      "task_id": "OTA-CLIENT-001",
-      "root_cause_id": "RC-OTA-CLIENT",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-006",
       "state_id": "STATE-P006-04",
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › State suite › STATE-P006-04 空服务",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "\"设备未暴露服务\"",
         "重试"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
-      "first_breakpoint": {
-        "target": "FEAT-081",
-        "test": "TEST-I-008",
-        "file": "apps/uniapp/utils/ota_manager.js",
-        "symbol": "validateOtaPackage",
-        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
         "duration_ms": 34,
@@ -5202,32 +4779,24 @@
       "test_ids": [
         "TEST-I-003"
       ],
-      "implementation_refs": [
-        "apps/uniapp/utils/ota_manager.js"
-      ],
-      "task_id": "OTA-CLIENT-001",
-      "root_cause_id": "RC-OTA-CLIENT",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-006",
       "state_id": "STATE-P006-05",
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › State suite › STATE-P006-05 连接失败",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "错误",
         "重试"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
-      "first_breakpoint": {
-        "target": "FEAT-081",
-        "test": "TEST-I-008",
-        "file": "apps/uniapp/utils/ota_manager.js",
-        "symbol": "validateOtaPackage",
-        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
         "duration_ms": 33,
@@ -5244,32 +4813,24 @@
       "test_ids": [
         "TEST-A-006"
       ],
-      "implementation_refs": [
-        "apps/uniapp/utils/ota_manager.js"
-      ],
-      "task_id": "OTA-CLIENT-001",
-      "root_cause_id": "RC-OTA-CLIENT",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-006",
       "state_id": "STATE-P006-06",
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › State suite › STATE-P006-06 已连接",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "完整树",
         "操作"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
-      "first_breakpoint": {
-        "target": "FEAT-081",
-        "test": "TEST-I-008",
-        "file": "apps/uniapp/utils/ota_manager.js",
-        "symbol": "validateOtaPackage",
-        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
         "duration_ms": 43,
@@ -5288,31 +4849,23 @@
         "TEST-A-006",
         "TEST-E-003"
       ],
-      "implementation_refs": [
-        "apps/uniapp/utils/ota_manager.js"
-      ],
-      "task_id": "OTA-CLIENT-001",
-      "root_cause_id": "RC-OTA-CLIENT",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-006",
       "state_id": "STATE-P006-07",
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › State suite › STATE-P006-07 重连中",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "\"重连中 n/3\""
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
-      "first_breakpoint": {
-        "target": "FEAT-081",
-        "test": "TEST-I-008",
-        "file": "apps/uniapp/utils/ota_manager.js",
-        "symbol": "validateOtaPackage",
-        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
         "duration_ms": 35,
@@ -5329,32 +4882,24 @@
       "test_ids": [
         "TEST-A-007"
       ],
-      "implementation_refs": [
-        "apps/uniapp/utils/ota_manager.js"
-      ],
-      "task_id": "OTA-CLIENT-001",
-      "root_cause_id": "RC-OTA-CLIENT",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-006",
       "state_id": "STATE-P006-08",
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › State suite › STATE-P006-08 重连耗尽",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "终态",
         "手动重试"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
-      "first_breakpoint": {
-        "target": "FEAT-081",
-        "test": "TEST-I-008",
-        "file": "apps/uniapp/utils/ota_manager.js",
-        "symbol": "validateOtaPackage",
-        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
         "duration_ms": 34,
@@ -5371,32 +4916,24 @@
       "test_ids": [
         "TEST-I-003"
       ],
-      "implementation_refs": [
-        "apps/uniapp/utils/ota_manager.js"
-      ],
-      "task_id": "OTA-CLIENT-001",
-      "root_cause_id": "RC-OTA-CLIENT",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-006",
       "state_id": "STATE-P006-09",
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › State suite › STATE-P006-09 操作失败",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "面板内错误",
         "该操作重试"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
-      "first_breakpoint": {
-        "target": "FEAT-081",
-        "test": "TEST-I-008",
-        "file": "apps/uniapp/utils/ota_manager.js",
-        "symbol": "validateOtaPackage",
-        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
         "duration_ms": 35,
@@ -5413,31 +4950,23 @@
       "test_ids": [
         "TEST-A-008"
       ],
-      "implementation_refs": [
-        "apps/uniapp/utils/ota_manager.js"
-      ],
-      "task_id": "OTA-CLIENT-001",
-      "root_cause_id": "RC-OTA-CLIENT",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-006",
       "state_id": "STATE-P006-10",
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › State suite › STATE-P006-10 OTA 组态",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "见 STATE-OTA-01..10（`07`）"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
-      "first_breakpoint": {
-        "target": "FEAT-081",
-        "test": "TEST-I-008",
-        "file": "apps/uniapp/utils/ota_manager.js",
-        "symbol": "validateOtaPackage",
-        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
         "duration_ms": 69,
@@ -5454,31 +4983,23 @@
       "test_ids": [
         "TEST-E-007"
       ],
-      "implementation_refs": [
-        "apps/uniapp/utils/ota_manager.js"
-      ],
-      "task_id": "OTA-CLIENT-001",
-      "root_cause_id": "RC-OTA-CLIENT",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-006",
       "state_id": null,
       "operation_id": "OP-P006-01",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-01 连接",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "服务面板 ready"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
-      "first_breakpoint": {
-        "target": "FEAT-081",
-        "test": "TEST-I-008",
-        "file": "apps/uniapp/utils/ota_manager.js",
-        "symbol": "validateOtaPackage",
-        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
         "duration_ms": 47,
@@ -5497,31 +5018,23 @@
         "TEST-I-003",
         "TEST-A-006"
       ],
-      "implementation_refs": [
-        "apps/uniapp/utils/ota_manager.js"
-      ],
-      "task_id": "OTA-CLIENT-001",
-      "root_cause_id": "RC-OTA-CLIENT",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-006",
       "state_id": null,
       "operation_id": "OP-P006-02",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-02 主动断开",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "状态=已断开，Registry 更新"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
-      "first_breakpoint": {
-        "target": "FEAT-081",
-        "test": "TEST-I-008",
-        "file": "apps/uniapp/utils/ota_manager.js",
-        "symbol": "validateOtaPackage",
-        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
         "duration_ms": 43,
@@ -5540,31 +5053,23 @@
         "TEST-A-007",
         "TEST-E-002"
       ],
-      "implementation_refs": [
-        "apps/uniapp/utils/ota_manager.js"
-      ],
-      "task_id": "OTA-CLIENT-001",
-      "root_cause_id": "RC-OTA-CLIENT",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-006",
       "state_id": null,
       "operation_id": "OP-P006-03",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-03 服务发现重试",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "ready"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
-      "first_breakpoint": {
-        "target": "FEAT-081",
-        "test": "TEST-I-008",
-        "file": "apps/uniapp/utils/ota_manager.js",
-        "symbol": "validateOtaPackage",
-        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
         "duration_ms": 38,
@@ -5583,31 +5088,23 @@
         "TEST-I-003",
         "TEST-E-005"
       ],
-      "implementation_refs": [
-        "apps/uniapp/utils/ota_manager.js"
-      ],
-      "task_id": "OTA-CLIENT-001",
-      "root_cause_id": "RC-OTA-CLIENT",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-006",
       "state_id": null,
       "operation_id": "OP-P006-04",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-04 Read",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "值展示+日志"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
-      "first_breakpoint": {
-        "target": "FEAT-081",
-        "test": "TEST-I-008",
-        "file": "apps/uniapp/utils/ota_manager.js",
-        "symbol": "validateOtaPackage",
-        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
         "duration_ms": 35,
@@ -5626,31 +5123,23 @@
         "TEST-A-008",
         "TEST-E-003"
       ],
-      "implementation_refs": [
-        "apps/uniapp/utils/ota_manager.js"
-      ],
-      "task_id": "OTA-CLIENT-001",
-      "root_cause_id": "RC-OTA-CLIENT",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-006",
       "state_id": null,
       "operation_id": "OP-P006-05",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-05 TEXT 写",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "设备响应+日志"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
-      "first_breakpoint": {
-        "target": "FEAT-081",
-        "test": "TEST-I-008",
-        "file": "apps/uniapp/utils/ota_manager.js",
-        "symbol": "validateOtaPackage",
-        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
         "duration_ms": 32,
@@ -5669,31 +5158,23 @@
         "TEST-A-008",
         "TEST-E-003"
       ],
-      "implementation_refs": [
-        "apps/uniapp/utils/ota_manager.js"
-      ],
-      "task_id": "OTA-CLIENT-001",
-      "root_cause_id": "RC-OTA-CLIENT",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-006",
       "state_id": null,
       "operation_id": "OP-P006-06",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-06 HEX 写",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "同上"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
-      "first_breakpoint": {
-        "target": "FEAT-081",
-        "test": "TEST-I-008",
-        "file": "apps/uniapp/utils/ota_manager.js",
-        "symbol": "validateOtaPackage",
-        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
         "duration_ms": 33,
@@ -5712,31 +5193,23 @@
         "TEST-U-010",
         "TEST-A-008"
       ],
-      "implementation_refs": [
-        "apps/uniapp/utils/ota_manager.js"
-      ],
-      "task_id": "OTA-CLIENT-001",
-      "root_cause_id": "RC-OTA-CLIENT",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-006",
       "state_id": null,
       "operation_id": "OP-P006-07",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-07 开启订阅（Characteristic Subscription，DEC-017）",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "推送流+日志；Registry subscription_count +1"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
-      "first_breakpoint": {
-        "target": "FEAT-081",
-        "test": "TEST-I-008",
-        "file": "apps/uniapp/utils/ota_manager.js",
-        "symbol": "validateOtaPackage",
-        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
         "duration_ms": 36,
@@ -5757,31 +5230,23 @@
         "TEST-A-008",
         "TEST-E-004"
       ],
-      "implementation_refs": [
-        "apps/uniapp/utils/ota_manager.js"
-      ],
-      "task_id": "OTA-CLIENT-001",
-      "root_cause_id": "RC-OTA-CLIENT",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-006",
       "state_id": null,
       "operation_id": "OP-P006-08",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-08 关闭订阅",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "推送停止；subscription_count −1"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
-      "first_breakpoint": {
-        "target": "FEAT-081",
-        "test": "TEST-I-008",
-        "file": "apps/uniapp/utils/ota_manager.js",
-        "symbol": "validateOtaPackage",
-        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
         "duration_ms": 33,
@@ -5798,31 +5263,23 @@
       "test_ids": [
         "TEST-I-005"
       ],
-      "implementation_refs": [
-        "apps/uniapp/utils/ota_manager.js"
-      ],
-      "task_id": "OTA-CLIENT-001",
-      "root_cause_id": "RC-OTA-CLIENT",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-006",
       "state_id": null,
       "operation_id": "OP-P006-10",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-10 清空日志",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "toast+面板清空"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
-      "first_breakpoint": {
-        "target": "FEAT-081",
-        "test": "TEST-I-008",
-        "file": "apps/uniapp/utils/ota_manager.js",
-        "symbol": "validateOtaPackage",
-        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
         "duration_ms": 36,
@@ -5839,31 +5296,23 @@
       "test_ids": [
         "TEST-P-006"
       ],
-      "implementation_refs": [
-        "apps/uniapp/utils/ota_manager.js"
-      ],
-      "task_id": "OTA-CLIENT-001",
-      "root_cause_id": "RC-OTA-CLIENT",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-006",
       "state_id": null,
       "operation_id": "OP-P006-11",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-11 导出日志",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "导出成功"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
-      "first_breakpoint": {
-        "target": "FEAT-081",
-        "test": "TEST-I-008",
-        "file": "apps/uniapp/utils/ota_manager.js",
-        "symbol": "validateOtaPackage",
-        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
         "duration_ms": 34,
@@ -5882,31 +5331,23 @@
         "TEST-W-008",
         "TEST-U-012"
       ],
-      "implementation_refs": [
-        "apps/uniapp/utils/ota_manager.js"
-      ],
-      "task_id": "OTA-CLIENT-001",
-      "root_cause_id": "RC-OTA-CLIENT",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-006",
       "state_id": null,
       "operation_id": "OP-P006-12",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-12 选择 OTA 固件包",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "显示 target/硬件/目标版本/SHA 摘要"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
-      "first_breakpoint": {
-        "target": "FEAT-081",
-        "test": "TEST-I-008",
-        "file": "apps/uniapp/utils/ota_manager.js",
-        "symbol": "validateOtaPackage",
-        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
         "duration_ms": 37,
@@ -5929,31 +5370,23 @@
         "TEST-A-011",
         "TEST-E-007"
       ],
-      "implementation_refs": [
-        "apps/uniapp/utils/ota_manager.js"
-      ],
-      "task_id": "OTA-CLIENT-001",
-      "root_cause_id": "RC-OTA-CLIENT",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-006",
       "state_id": null,
       "operation_id": "OP-P006-13",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-13 开始 OTA",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "进度→success→版本一致=成功"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
-      "first_breakpoint": {
-        "target": "FEAT-081",
-        "test": "TEST-I-008",
-        "file": "apps/uniapp/utils/ota_manager.js",
-        "symbol": "validateOtaPackage",
-        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
         "duration_ms": 33,
@@ -5974,31 +5407,23 @@
         "TEST-A-011",
         "TEST-E-007"
       ],
-      "implementation_refs": [
-        "apps/uniapp/utils/ota_manager.js"
-      ],
-      "task_id": "OTA-CLIENT-001",
-      "root_cause_id": "RC-OTA-CLIENT",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-006",
       "state_id": null,
       "operation_id": "OP-P006-14",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-14 取消 OTA",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "取消完成回就绪"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
-      "first_breakpoint": {
-        "target": "FEAT-081",
-        "test": "TEST-I-008",
-        "file": "apps/uniapp/utils/ota_manager.js",
-        "symbol": "validateOtaPackage",
-        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
         "duration_ms": 78,
@@ -6015,31 +5440,23 @@
       "test_ids": [
         "TEST-E-007"
       ],
-      "implementation_refs": [
-        "apps/uniapp/utils/ota_manager.js"
-      ],
-      "task_id": "OTA-CLIENT-001",
-      "root_cause_id": "RC-OTA-CLIENT",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-006",
       "state_id": null,
       "operation_id": "OP-P006-15",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-15 返回",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "—"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
-      "first_breakpoint": {
-        "target": "FEAT-081",
-        "test": "TEST-I-008",
-        "file": "apps/uniapp/utils/ota_manager.js",
-        "symbol": "validateOtaPackage",
-        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
         "duration_ms": 78,
@@ -6056,31 +5473,23 @@
       "test_ids": [
         "TEST-P-006"
       ],
-      "implementation_refs": [
-        "apps/uniapp/utils/ota_manager.js"
-      ],
-      "task_id": "OTA-CLIENT-001",
-      "root_cause_id": "RC-OTA-CLIENT",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-006",
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Contract / first screen：manifest + behavior 对齐",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
-        "target behavior"
+        "behavior contract"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
-      "first_breakpoint": {
-        "target": "FEAT-081",
-        "test": "TEST-I-008",
-        "file": "apps/uniapp/utils/ota_manager.js",
-        "symbol": "validateOtaPackage",
-        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
         "duration_ms": 4,
@@ -6095,31 +5504,23 @@
       "test_ids": [
         "TEST-P-PAGE-006"
       ],
-      "implementation_refs": [
-        "apps/uniapp/utils/ota_manager.js"
-      ],
-      "task_id": "OTA-CLIENT-001",
-      "root_cause_id": "RC-OTA-CLIENT",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-006",
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Error and recovery",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
-        "target behavior"
+        "behavior contract"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
-      "first_breakpoint": {
-        "target": "FEAT-081",
-        "test": "TEST-I-008",
-        "file": "apps/uniapp/utils/ota_manager.js",
-        "symbol": "validateOtaPackage",
-        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
         "duration_ms": 57,
@@ -6134,31 +5535,23 @@
       "test_ids": [
         "TEST-P-PAGE-006"
       ],
-      "implementation_refs": [
-        "apps/uniapp/utils/ota_manager.js"
-      ],
-      "task_id": "OTA-CLIENT-001",
-      "root_cause_id": "RC-OTA-CLIENT",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-006",
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Navigation and back",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
-        "target behavior"
+        "behavior contract"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
-      "first_breakpoint": {
-        "target": "FEAT-081",
-        "test": "TEST-I-008",
-        "file": "apps/uniapp/utils/ota_manager.js",
-        "symbol": "validateOtaPackage",
-        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
         "duration_ms": 41,
@@ -6173,31 +5566,23 @@
       "test_ids": [
         "TEST-P-PAGE-006"
       ],
-      "implementation_refs": [
-        "apps/uniapp/utils/ota_manager.js"
-      ],
-      "task_id": "OTA-CLIENT-001",
-      "root_cause_id": "RC-OTA-CLIENT",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-006",
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Platform degradation",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
-        "target behavior"
+        "behavior contract"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
-      "first_breakpoint": {
-        "target": "FEAT-081",
-        "test": "TEST-I-008",
-        "file": "apps/uniapp/utils/ota_manager.js",
-        "symbol": "validateOtaPackage",
-        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
         "duration_ms": 43,
@@ -6212,31 +5597,23 @@
       "test_ids": [
         "TEST-P-PAGE-006"
       ],
-      "implementation_refs": [
-        "apps/uniapp/utils/ota_manager.js"
-      ],
-      "task_id": "OTA-CLIENT-001",
-      "root_cause_id": "RC-OTA-CLIENT",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-006",
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Cleanup",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
-        "target behavior"
+        "behavior contract"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
-      "first_breakpoint": {
-        "target": "FEAT-081",
-        "test": "TEST-I-008",
-        "file": "apps/uniapp/utils/ota_manager.js",
-        "symbol": "validateOtaPackage",
-        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
         "duration_ms": 32,
@@ -6251,31 +5628,23 @@
       "test_ids": [
         "TEST-P-PAGE-006"
       ],
-      "implementation_refs": [
-        "apps/uniapp/utils/ota_manager.js"
-      ],
-      "task_id": "OTA-CLIENT-001",
-      "root_cause_id": "RC-OTA-CLIENT",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-006",
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Console and accessibility",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
-        "target behavior"
+        "behavior contract"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
-      "first_breakpoint": {
-        "target": "FEAT-081",
-        "test": "TEST-I-008",
-        "file": "apps/uniapp/utils/ota_manager.js",
-        "symbol": "validateOtaPackage",
-        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
         "duration_ms": 36,
@@ -6290,12 +5659,10 @@
       "test_ids": [
         "TEST-P-PAGE-006"
       ],
-      "implementation_refs": [
-        "apps/uniapp/utils/ota_manager.js"
-      ],
-      "task_id": "OTA-CLIENT-001",
-      "root_cause_id": "RC-OTA-CLIENT",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-007",
@@ -9685,15 +9052,6 @@
       "symbol": "(missing)",
       "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050",
       "task_id": "RUNTIME-LOG-REDACTION-001"
-    },
-    {
-      "page_id": "PAGE-006",
-      "target": "FEAT-081",
-      "test": "TEST-I-008",
-      "file": "apps/uniapp/utils/ota_manager.js",
-      "symbol": "validateOtaPackage",
-      "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)",
-      "task_id": "OTA-CLIENT-001"
     },
     {
       "page_id": "PAGE-008",
