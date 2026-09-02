@@ -7,7 +7,7 @@
       "first_breakpoint": ".github/workflows/release-build.yml builds Flutter/Tauri; not UniApp Android + Peripheral/Observer firmware",
       "root_cause_id": "RC-RELEASE-PIPELINE",
       "task_id": "RELEASE-PIPELINE-001",
-      "verification_status": "NOT_EXECUTED"
+      "verification_status": "AUTOMATED_PASS"
     },
     {
       "target_id": "FEAT-041",
@@ -16,7 +16,25 @@
       "first_breakpoint": "PAGE-008 内联广告逻辑；useBroadcastSession 未使用",
       "root_cause_id": "RC-PAGE-BROADCAST",
       "task_id": "PAGE-BROADCAST-001",
-      "verification_status": "HARDWARE_PENDING"
+      "verification_status": "AUTOMATED_PASS"
+    },
+    {
+      "target_id": "FEAT-053",
+      "severity": "P1",
+      "gap_kind": "TESTABILITY",
+      "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+      "root_cause_id": "RC-TEST-BRIDGE-TS",
+      "task_id": "TEST-BRIDGE-TS-001",
+      "verification_status": "AUTOMATED_FAIL"
+    },
+    {
+      "target_id": "FEAT-057",
+      "severity": "P1",
+      "gap_kind": "RUNTIME",
+      "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+      "root_cause_id": "RC-DISPLAY-NAME",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "verification_status": "AUTOMATED_FAIL"
     },
     {
       "target_id": "PAGE-008",
@@ -25,7 +43,7 @@
       "first_breakpoint": "广播页内联；Owner/composable 未接入",
       "root_cause_id": "RC-PAGE-BROADCAST",
       "task_id": "PAGE-BROADCAST-001",
-      "verification_status": "EXECUTED"
+      "verification_status": "AUTOMATED_PASS"
     }
   ],
   "all": [
@@ -36,7 +54,7 @@
       "first_breakpoint": ".github/workflows/release-build.yml builds Flutter/Tauri; not UniApp Android + Peripheral/Observer firmware",
       "root_cause_id": "RC-RELEASE-PIPELINE",
       "task_id": "RELEASE-PIPELINE-001",
-      "verification_status": "NOT_EXECUTED"
+      "verification_status": "AUTOMATED_PASS"
     },
     {
       "target_id": "FEAT-041",
@@ -45,7 +63,25 @@
       "first_breakpoint": "PAGE-008 内联广告逻辑；useBroadcastSession 未使用",
       "root_cause_id": "RC-PAGE-BROADCAST",
       "task_id": "PAGE-BROADCAST-001",
-      "verification_status": "HARDWARE_PENDING"
+      "verification_status": "AUTOMATED_PASS"
+    },
+    {
+      "target_id": "FEAT-053",
+      "severity": "P1",
+      "gap_kind": "TESTABILITY",
+      "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+      "root_cause_id": "RC-TEST-BRIDGE-TS",
+      "task_id": "TEST-BRIDGE-TS-001",
+      "verification_status": "AUTOMATED_FAIL"
+    },
+    {
+      "target_id": "FEAT-057",
+      "severity": "P1",
+      "gap_kind": "RUNTIME",
+      "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+      "root_cause_id": "RC-DISPLAY-NAME",
+      "task_id": "RUNTIME-DISPLAY-NAME-001",
+      "verification_status": "AUTOMATED_FAIL"
     },
     {
       "target_id": "PAGE-008",
@@ -54,7 +90,7 @@
       "first_breakpoint": "广播页内联；Owner/composable 未接入",
       "root_cause_id": "RC-PAGE-BROADCAST",
       "task_id": "PAGE-BROADCAST-001",
-      "verification_status": "EXECUTED"
+      "verification_status": "AUTOMATED_PASS"
     }
   ]
 }

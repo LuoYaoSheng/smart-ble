@@ -196,6 +196,12 @@ const hasProvisioningClassify = /registerProvisioning|markProvisioning/.test(
 );
 const sessionRegistryDone = hasSessionRegistry && hasSubscriptionCount && hasProvisioningClassify;
 const reconnectReady = FACTS.hasReconnectPolicy && FACTS.hasReconnectManager;
+const discoveryReady = exists('apps/uniapp/services/ble-runtime/connection-discovery.js')
+  && /runConnectionDiscovery|createConnectionDiscovery/.test(FACTS.bleRuntimeIndex)
+  && /CONNECTION_STATE\.DISCOVERING/.test(FACTS.bleRuntimeIndex)
+  && /discovery/.test(read('apps/uniapp/services/ble-runtime/session-registry.js'))
+  && /capabilities/.test(read('apps/uniapp/services/ble-runtime/session-registry.js'))
+  && /buildCapabilityMap/.test(read('apps/uniapp/services/ble-runtime/connection-discovery.js'));
 const logRedactionReady = FACTS.hasLogRedaction
   && /sanitizeLogValue|createLogger/.test(read('apps/uniapp/services/logger/log-redaction.js'))
   && /createLogger/.test(FACTS.bleRuntimeIndex)
@@ -315,7 +321,7 @@ const TASKS = [
   { task_id: 'RUNTIME-LOG-REDACTION-001', task_type: 'SOURCE_FIX', title: 'log-redaction 脱敏', root_cause_id: 'RC-LOG-REDACTION', severity: 'P1', deps: [], order_hint: 14, status: logRedactionReady ? 'DONE' : 'PLANNED' },
   { task_id: 'RUNTIME-RECONNECT-001', task_type: 'SOURCE_FIX', title: 'reconnect-policy 有限重连', root_cause_id: 'RC-RECONNECT', severity: 'P1', deps: [], order_hint: 15, status: reconnectReady ? 'DONE' : 'PLANNED' },
   { task_id: 'RUNTIME-SESSION-001', task_type: 'SOURCE_FIX', title: 'Registry subscription_count + 配网会话分类', root_cause_id: 'RC-SESSION-REGISTRY', severity: 'P1', deps: [], order_hint: 16, status: sessionRegistryDone ? 'DONE' : 'PLANNED' },
-  { task_id: 'RUNTIME-CONNECTION-DISCOVERY-001', task_type: 'SOURCE_FIX', title: 'connectDevice 编排服务发现', root_cause_id: 'RC-CONN-DISCOVERY', severity: 'P1', deps: [], order_hint: 17 },
+  { task_id: 'RUNTIME-CONNECTION-DISCOVERY-001', task_type: 'SOURCE_FIX', title: 'connectDevice 编排服务发现', root_cause_id: 'RC-CONN-DISCOVERY', severity: 'P1', deps: [], order_hint: 17, status: discoveryReady ? 'DONE' : 'PLANNED' },
   { task_id: 'OTA-PACKAGE-001', task_type: 'SOURCE_FIX', title: '客户端 Firmware Package 六项校验', root_cause_id: 'RC-OTA-PACKAGE', severity: 'P1', deps: [], order_hint: 20, status: otaPackageReady ? 'DONE' : 'PLANNED' },
   { task_id: 'OTA-CLIENT-001', task_type: 'SOURCE_FIX', title: '客户端完整 OTA 事务（CTRL start→ready→DATA→commit）', root_cause_id: 'RC-OTA-CTRL-START', severity: 'P0', deps: ['OTA-PACKAGE-001'], order_hint: 21, status: otaClientReady ? 'DONE' : 'PLANNED' },
   { task_id: 'OTA-FIRMWARE-001', task_type: 'SOURCE_FIX', title: '固件 OTA op/target/hardware/SHA/max_chunk/commit 校验', root_cause_id: 'RC-ESP32-OTA-ACTION', severity: 'P1', deps: ['ESP32-BUILD-001'], order_hint: 22, status: otaFirmwareReady ? 'DONE' : 'PLANNED' },

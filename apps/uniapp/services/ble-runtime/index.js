@@ -31,11 +31,27 @@ import {
 } from './reconnect-manager.js';
 import { DISCONNECT_REASON } from './reconnect-policy.js';
 import { createLogger } from '../logger/log-redaction.js';
+import {
+  createConnectionDiscovery,
+  createDiscoveryError,
+  DISCOVERY_ERROR,
+  buildCapabilityMap,
+  resetConnectionDiscoveryForTesting,
+} from './connection-discovery.js';
 
 const log = createLogger('ble-runtime');
 
 const registry = getSessionRegistry();
 let reconnectManager = null;
+let connectionDiscovery = null;
+
+function ensureConnectionDiscovery() {
+  if (connectionDiscovery) return connectionDiscovery;
+  connectionDiscovery = createConnectionDiscovery({
+    callPlatform: (method, args) => call(ensureCallbacks(), method, args),
+  });
+  return connectionDiscovery;
+}
 
 function ensureReconnectManager() {
   if (reconnectManager) return reconnectManager;
@@ -252,17 +268,11 @@ function charFor(session, serviceId, characteristicId) {
   return { serviceId: service.uuid, characteristicId: characteristic.uuid };
 }
 
-async function discoverServices(platform, deviceId) {
-  const response = await call(platform, 'getBLEDeviceServices', { deviceId });
-  const services = [];
-  for (const service of response.services || []) {
-    const chars = await call(platform, 'getBLEDeviceCharacteristics', { deviceId, serviceId: service.uuid });
-    services.push({
-      ...service,
-      characteristics: (chars.characteristics || []).map((characteristic) => ({ ...characteristic, notifying: false }))
-    });
-  }
-  return services;
+async function runConnectionDiscovery(deviceId, options) {
+  return ensureConnectionDiscovery().runDiscovery(deviceId, {
+    expectedServiceUuid: options.expectedServiceUuid,
+    timeoutMs: options.discoveryTimeoutMs,
+  });
 }
 
 function indexServices(services) {
@@ -306,25 +316,41 @@ async function createDeviceSession(deviceId, options) {
     throw normalizeBleError(error, 'BLE 连接失败');
   }
   registry.updateSession(deviceId, { connectionState: CONNECTION_STATE.CONNECTED });
-  let services = [];
-  const expectedServiceUuid = normalize(options.expectedServiceUuid);
+  let discoveryResult;
   try {
     registry.updateSession(deviceId, { connectionState: CONNECTION_STATE.DISCOVERING });
-    const discoveryAttempts = expectedServiceUuid ? 3 : 1;
-    for (let attempt = 0; attempt < discoveryAttempts; attempt++) {
-      if (attempt > 0) await sleep(400);
-      services = options.discover === false ? [] : await discoverServices(platform, deviceId);
-      if (!expectedServiceUuid || services.some((service) => normalize(service.uuid) === expectedServiceUuid)) break;
-    }
-    if (expectedServiceUuid && !services.some((service) => normalize(service.uuid) === expectedServiceUuid)) {
-      throw new Error(`expected service not found: ${options.expectedServiceUuid}`);
-    }
+    discoveryResult = await runConnectionDiscovery(deviceId, options);
   } catch (error) {
     registry.updateSession(deviceId, { connectionState: CONNECTION_STATE.FAILED });
     registry.removeSession(deviceId);
     markLocalDisconnect(deviceId);
     await call(platform, 'closeBLEConnection', { deviceId }).catch(() => {});
-    throw error;
+    if (error?.code && Object.values(DISCOVERY_ERROR).includes(error.code)) {
+      throw error;
+    }
+    throw normalizeBleError(error, 'BLE 服务发现失败');
+  }
+
+  const services = discoveryResult.services.map((service) => ({
+    uuid: service.uuid,
+    characteristics: (service.characteristics || []).map((characteristic) => ({
+      uuid: characteristic.uuid,
+      properties: characteristic.properties,
+      notifying: false,
+    })),
+  }));
+  const capabilities = discoveryResult.capabilities ?? buildCapabilityMap(discoveryResult);
+
+  if (!services.length || !discoveryResult.characteristics?.length) {
+    registry.updateSession(deviceId, { connectionState: CONNECTION_STATE.FAILED });
+    registry.removeSession(deviceId);
+    markLocalDisconnect(deviceId);
+    await call(platform, 'closeBLEConnection', { deviceId }).catch(() => {});
+    throw createDiscoveryError(
+      DISCOVERY_ERROR.DISCOVERY_FAILED,
+      'discovery produced no characteristics',
+      { deviceId },
+    );
   }
   const session = {
     deviceId,
@@ -350,6 +376,8 @@ async function createDeviceSession(deviceId, options) {
   registry.updateSession(deviceId, {
     connectionState: CONNECTION_STATE.READY,
     services,
+    discovery: discoveryResult,
+    capabilities,
     runtime: session,
     owner,
     metadata: {
@@ -378,6 +406,16 @@ async function enforceSessionRequirements(session, options) {
     await setMtu(session, options.mtu).catch(() => {});
   }
   return session;
+}
+
+export function getDeviceCapabilities(deviceId) {
+  const session = registry.getSession(deviceId);
+  return session?.capabilities ?? ensureConnectionDiscovery().getCapabilityMap(deviceId);
+}
+
+export function getDeviceDiscovery(deviceId) {
+  const session = registry.getSession(deviceId);
+  return session?.discovery ?? ensureConnectionDiscovery().getDiscoveryResult(deviceId);
 }
 
 export async function connectDevice(deviceId, options = {}) {
@@ -726,6 +764,9 @@ export function getSessionRegistrySnapshot(deviceId) {
     ? {
       deviceId: entry.deviceId,
       connectionState: entry.connectionState,
+      services: entry.services,
+      discovery: entry.discovery,
+      capabilities: entry.capabilities,
       subscription_count: entry.subscription_count,
       owner: entry.owner,
       reconnectState: entry.reconnectState,
@@ -781,6 +822,8 @@ export function resetBleRuntimeForTesting() {
   state.writeQueue = null;
   resetReconnectManagerForTesting();
   reconnectManager = null;
+  resetConnectionDiscoveryForTesting(connectionDiscovery);
+  connectionDiscovery = null;
   state.platform = null;
   state.callbacksRegistered = false;
   resetSessionRegistryForTesting();
@@ -825,3 +868,11 @@ export {
 };
 
 export { DISCONNECT_REASON, shouldReconnect, MAX_RECONNECT_ATTEMPTS, BACKOFF_MS } from './reconnect-policy.js';
+
+export {
+  createConnectionDiscovery,
+  createDiscoveryError,
+  DISCOVERY_ERROR,
+  buildCapabilityMap,
+  KNOWN_SERVICE_UUIDS,
+} from './connection-discovery.js';

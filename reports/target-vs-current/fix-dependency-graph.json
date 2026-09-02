@@ -3,7 +3,6 @@
   "note": "TP-G2-R1 uses tasks not FIX-*; see task-dependency-graph.json",
   "recommended_order": [
     "RELEASE-PIPELINE-001",
-    "RUNTIME-CONNECTION-DISCOVERY-001",
     "ESP32-BUILD-001",
     "OTA-E5-VERIFICATION",
     "ESP32-PERIPHERAL-001",

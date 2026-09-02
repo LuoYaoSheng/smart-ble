@@ -69,8 +69,10 @@ const FACTS = {
   landingFake: /releases\/latest/.test(read('docs/index.md')),
   landingPreview: /PREVIEW/.test(read('docs/index.md')),
   landingNotReleased: /NOT_RELEASED/.test(read('docs/index.md')),
-  connectDiscovers: /discoverServices/.test(read('apps/uniapp/services/ble-runtime/index.js'))
-    && /discover === false \? \[\] : await discoverServices/.test(read('apps/uniapp/services/ble-runtime/index.js')),
+  connectDiscovers: exists('apps/uniapp/services/ble-runtime/connection-discovery.js')
+    && /runConnectionDiscovery|createConnectionDiscovery/.test(read('apps/uniapp/services/ble-runtime/index.js'))
+    && /CONNECTION_STATE\.DISCOVERING/.test(read('apps/uniapp/services/ble-runtime/index.js'))
+    && /capabilities/.test(read('apps/uniapp/services/ble-runtime/session-registry.js')),
   scanAutoStop5: /autoStopSeconds\s*=\s*5/.test(read('apps/uniapp/composables/use-ble-scan.js')),
   hasObserver: /BLEToolkit-Observer|fixture_observer/.test(read('hardware/esp32/LightBLE/src/main.cpp')),
   filterHasKeywordMatch: /keyword|tokens|includes\(/.test(read('apps/uniapp/services/ble-runtime/device-filter.js')),
@@ -183,9 +185,13 @@ const PAGE_ASSESS = {
       also: [
         { task_id: 'OTA-CLIENT-001', breakpoint: 'DONE' },
         { task_id: 'OTA-PACKAGE-001', breakpoint: 'DONE' },
-        { task_id: 'RUNTIME-CONNECTION-DISCOVERY-001', file: 'apps/uniapp/services/ble-runtime/index.js', symbol: 'connectDevice', breakpoint: 'TEST-I-003 asserts discover orchestration gap (semi-open risk)' },
+        ...(FACTS.connectDiscovers
+          ? [{ task_id: 'RUNTIME-CONNECTION-DISCOVERY-001', breakpoint: 'DONE' }]
+          : [{ task_id: 'RUNTIME-CONNECTION-DISCOVERY-001', file: 'apps/uniapp/services/ble-runtime/index.js', symbol: 'connectDevice', breakpoint: 'TEST-I-003 asserts discover orchestration gap (semi-open risk)' }]),
       ],
-      notes: 'RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE + OTA-CLIENT DONE；剩余 CONNECTION-DISCOVERY',
+      notes: FACTS.connectDiscovers
+        ? 'RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA + CONNECTION-DISCOVERY DONE'
+        : 'RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE + OTA-CLIENT DONE；剩余 CONNECTION-DISCOVERY',
     }
     : {
       product: 'FAIL',

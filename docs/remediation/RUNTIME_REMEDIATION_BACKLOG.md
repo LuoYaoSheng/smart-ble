@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 1ee70742b0be263055695150b1d66f750c6fcd1e2ca9287e1a52b89d705112ae
+content_hash: bad99ca68136a8d46d7260c01d7187e31228ade74e516a7ebbf2eec57d57a20d
 ```
 
 > PUBLIC-HONESTY-001 / VERSION-METADATA-001 状态以 task-dependency-graph.json 为准。未批准 Task 不得执行。
@@ -15,9 +15,9 @@ content_hash: 1ee70742b0be263055695150b1d66f750c6fcd1e2ca9287e1a52b89d705112ae
 - task_type：SOURCE_FIX
 - severity：P1
 - root_cause_id：RC-DISPLAY-NAME
-- Target IDs（样本）：见 JSON
-- Test IDs：—
-- First Breakpoint：—
+- Target IDs（样本）：FEAT-057, REQ-048, REQ-051
+- Test IDs：TEST-I-009, TEST-H-002, TEST-H-003, TEST-U-015, TEST-W-010
+- First Breakpoint：[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier "./device-display-name.js" from "data:text/javascript;base64,
 - 依赖：无
 - 解锁：
 - 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
@@ -122,7 +122,7 @@ content_hash: 1ee70742b0be263055695150b1d66f750c6fcd1e2ca9287e1a52b89d705112ae
 
 ### RUNTIME-CONNECTION-DISCOVERY-001
 
-- 状态：**PLANNED**
+- 状态：**DONE**
 - 标题：connectDevice 编排服务发现
 - task_type：SOURCE_FIX
 - severity：P1

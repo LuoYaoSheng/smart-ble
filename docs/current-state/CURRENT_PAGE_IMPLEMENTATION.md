@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 1ee70742b0be263055695150b1d66f750c6fcd1e2ca9287e1a52b89d705112ae
+content_hash: bad99ca68136a8d46d7260c01d7187e31228ade74e516a7ebbf2eec57d57a20d
 ```
 
 ## 路由事实
@@ -24,17 +24,17 @@ content_hash: 1ee70742b0be263055695150b1d66f750c6fcd1e2ca9287e1a52b89d705112ae
 
 ## 每页状态（来自报告）
 
-- **PAGE-001** impl=UNASSESSED verify=EXECUTED static=UNASSESSED e4=EXECUTED task=— bp=Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task
-- **PAGE-002** impl=UNASSESSED verify=EXECUTED static=UNASSESSED e4=EXECUTED task=— bp=Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task
+- **PAGE-001** impl=UNASSESSED verify=AUTOMATED_FAIL static=UNASSESSED e4=EXECUTED task=TEST-BRIDGE-TS-001 bp=[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点:
+- **PAGE-002** impl=IMPLEMENTED_UNTESTED verify=AUTOMATED_PASS static=CONFIRMED_IMPLEMENTED e4=EXECUTED task=— bp=Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task
 - **PAGE-003** impl=UNASSESSED verify=EXECUTED static=UNASSESSED e4=EXECUTED task=— bp=Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task
-- **PAGE-004** impl=UNASSESSED verify=EXECUTED static=UNASSESSED e4=EXECUTED task=— bp=Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task
+- **PAGE-004** impl=IMPLEMENTED_UNTESTED verify=AUTOMATED_PASS static=CONFIRMED_IMPLEMENTED e4=EXECUTED task=— bp=Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task
 - **PAGE-005** impl=UNASSESSED verify=EXECUTED static=UNASSESSED e4=EXECUTED task=— bp=Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task
-- **PAGE-006** impl=UNASSESSED verify=EXECUTED static=UNASSESSED e4=EXECUTED task=— bp=Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task
-- **PAGE-007** impl=UNASSESSED verify=EXECUTED static=UNASSESSED e4=EXECUTED task=— bp=Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task
-- **PAGE-008** impl=CONFIRMED_PARTIAL verify=EXECUTED static=CONFIRMED_PARTIAL e4=EXECUTED task=PAGE-BROADCAST-001 bp=广播页内联；Owner/composable 未接入
-- **PAGE-009** impl=UNASSESSED verify=EXECUTED static=UNASSESSED e4=EXECUTED task=— bp=Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task
-- **PAGE-010** impl=UNASSESSED verify=EXECUTED static=UNASSESSED e4=EXECUTED task=— bp=Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task
-- **WEB-001** impl=UNASSESSED verify=EXECUTED static=UNASSESSED e4=EXECUTED task=— bp=Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task
+- **PAGE-006** impl=IMPLEMENTED_UNTESTED verify=AUTOMATED_PASS static=CONFIRMED_IMPLEMENTED e4=EXECUTED task=— bp=Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task
+- **PAGE-007** impl=IMPLEMENTED_UNTESTED verify=AUTOMATED_PASS static=CONFIRMED_IMPLEMENTED e4=EXECUTED task=— bp=Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task
+- **PAGE-008** impl=CONFIRMED_PARTIAL verify=AUTOMATED_PASS static=CONFIRMED_PARTIAL e4=EXECUTED task=PAGE-BROADCAST-001 bp=广播页内联；Owner/composable 未接入
+- **PAGE-009** impl=IMPLEMENTED_UNTESTED verify=AUTOMATED_PASS static=CONFIRMED_IMPLEMENTED e4=EXECUTED task=— bp=Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task
+- **PAGE-010** impl=IMPLEMENTED_UNTESTED verify=AUTOMATED_PASS static=CONFIRMED_IMPLEMENTED e4=EXECUTED task=— bp=Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task
+- **WEB-001** impl=IMPLEMENTED_UNTESTED verify=AUTOMATED_PASS static=CONFIRMED_IMPLEMENTED e4=EXECUTED task=— bp=Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task
 
 ## PAGE-008 静态事实
 
@@ -57,7 +57,7 @@ content_hash: 1ee70742b0be263055695150b1d66f750c6fcd1e2ca9287e1a52b89d705112ae
 - 契约总量：STATE **67** / OP **92**（`tests/target/pages/page-behavior.manifest.json`）
 - E4：Page Driver 已执行（Fake Runtime）；产品差距另见业务 Task
 - 多数 State/OP 的 static_implementation = **UNASSESSED**（未做控件级静态确认，禁止默认 PARTIAL）
-- `blocked_cases=undefined` ≠ 产品缺陷数
+- `blocked_cases=0` ≠ 产品缺陷数
 
 ## WEB-001
 

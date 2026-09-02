@@ -61,6 +61,8 @@ function createEmptySession(deviceId, partial = {}) {
     connectionState: partial.connectionState ?? CONNECTION_STATE.IDLE,
     services: partial.services ?? [],
     characteristics: partial.characteristics ?? flattenCharacteristics(partial.services ?? []),
+    discovery: partial.discovery ?? null,
+    capabilities: partial.capabilities ?? null,
     subscriptions: [],
     owner: partial.owner ?? null,
     createdAt: partial.createdAt ?? ts,
@@ -83,6 +85,8 @@ function snapshotSession(session) {
     connectionState: session.connectionState,
     services: session.services,
     characteristics: session.characteristics,
+    discovery: session.discovery,
+    capabilities: session.capabilities,
     subscriptions: session.subscriptions.map((entry) => ({ ...entry })),
     owner: session.owner,
     createdAt: session.createdAt,
@@ -137,6 +141,8 @@ export function createSessionRegistry() {
       session.services = patch.services;
       session.characteristics = flattenCharacteristics(patch.services);
     }
+    if (patch.discovery !== undefined) session.discovery = patch.discovery;
+    if (patch.capabilities !== undefined) session.capabilities = patch.capabilities;
     if (patch.characteristics !== undefined) session.characteristics = patch.characteristics;
     if (patch.reconnectState !== undefined) session.reconnectState = patch.reconnectState;
     if (patch.disconnectReason !== undefined) session.disconnectReason = patch.disconnectReason;

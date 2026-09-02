@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 1ee70742b0be263055695150b1d66f750c6fcd1e2ca9287e1a52b89d705112ae
+content_hash: bad99ca68136a8d46d7260c01d7187e31228ade74e516a7ebbf2eec57d57a20d
 ```
 
 ## 落地页

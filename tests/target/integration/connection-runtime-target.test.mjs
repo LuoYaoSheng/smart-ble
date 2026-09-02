@@ -48,6 +48,47 @@ test('目标层：连接失败不残留半开会话', async (t) => {
   }
 });
 
+test('目标层：connect → discover → session READY + capabilities', async (t) => {
+  const m = await importTarget('apps/uniapp/services/ble-runtime/index.js');
+  if (!m.ok) return assert.fail(notImplemented(IDS, m.message));
+  const rt = m.module;
+  const platform = createFakePlatform();
+  rt.setBlePlatformForTesting(platform);
+  try {
+    await rt.openAdapter();
+    await rt.connectDevice('READY1');
+    const snap = rt.getSessionRegistrySnapshot('READY1');
+    assert.equal(snap?.connectionState, 'READY', '发现完成后会话应为 READY');
+    assert.ok(snap?.discovery?.services?.length, 'session 应含 discovery.services');
+    assert.ok(snap?.capabilities, 'session 应含 capabilities');
+    assert.equal(snap.capabilities.read, true);
+    assert.equal(snap.capabilities.write, true);
+    assert.equal(snap.capabilities.notify, true);
+    assert.ok(platform.__calls.some((c) => c.m === 'getServices'), '连接后应执行服务发现');
+    assert.ok(platform.__calls.some((c) => c.m === 'getCharacteristics'), '连接后应执行特征发现');
+  } finally {
+    rt.resetBlePlatformAndRuntimeForTesting?.();
+  }
+});
+
+test('目标层：发现失败时 READY 不成立', async (t) => {
+  const m = await importTarget('apps/uniapp/services/ble-runtime/index.js');
+  if (!m.ok) return assert.fail(notImplemented(IDS, m.message));
+  const rt = m.module;
+  const platform = createFakePlatform({ emptyServices: true });
+  rt.setBlePlatformForTesting(platform);
+  try {
+    await rt.openAdapter();
+    await assert.rejects(
+      () => rt.connectDevice('DISCFAIL'),
+      (error) => error?.code === 'SERVICE_NOT_FOUND' || /SERVICE_NOT_FOUND|no services|discovery/i.test(String(error?.message)),
+    );
+    assert.equal(rt.getSession('DISCFAIL'), undefined, '发现失败不得残留 READY 会话');
+  } finally {
+    rt.resetBlePlatformAndRuntimeForTesting?.();
+  }
+});
+
 test('目标层：被动断线进入重连调度', async (t) => {
   const m = await importTarget('apps/uniapp/services/ble-runtime/index.js');
   if (!m.ok) return assert.fail(notImplemented(IDS, m.message));
