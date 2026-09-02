@@ -4,7 +4,7 @@
 status: APPROVED
 document_version: 2.0
 gate: TP-G2-R1
-content_hash: 5426d043164502a145e41a290572f2e4aca2fb0a1ed9277ecb914ecbb36d75d3
+content_hash: 12439a5271322a6021324d093f2142649a01b59ed681d1809a0792e2e3f55a61
 approved_by: user
 ```
 
@@ -18,7 +18,7 @@ approved_by: user
 1. **RELEASE-PIPELINE-001** — UniApp + Peripheral/Observer 双固件 Release Pipeline（type=RELEASE, sev=P0, gaps≈1, status=PLANNED）
 2. **OTA-E5-VERIFICATION** — ESP32+Android OTA 闭环 E5（type=VERIFY_E5, sev=P0, gaps≈0, status=BLOCKED）
 3. **ESP32-FAULT-001** — Fault Injection + Serial JSON（type=SOURCE_FIX, sev=P1, gaps≈0, status=PLANNED）
-4. **TEST-BRIDGE-TS-001** — Node 测试桥支持 TS protocol import（Smart HID）（type=TESTABILITY, sev=P1, gaps≈0, status=PLANNED）
+4. **TEST-BRIDGE-TS-001** — Node 测试桥支持 TS protocol import（Smart HID）（type=TESTABILITY, sev=P1, gaps≈7, status=PLANNED）
 5. **VERIFY-ANDROID-001** — Android 真机矩阵（type=VERIFY_E5, sev=—, gaps≈0, status=PLANNED）
 6. **VERIFY-WECHAT-001** — 微信真机矩阵（type=VERIFY_E5, sev=—, gaps≈0, status=PLANNED）
 7. **VERIFY-ESP32-001** — ESP32 E5 夹具矩阵（type=VERIFY_E5, sev=—, gaps≈0, status=PLANNED）
@@ -42,6 +42,7 @@ approved_by: user
 - TEST-PAGE-DRIVER-001 → VERIFY-WECHAT-001
 - ESP32-OBSERVER-001 → VERIFY-ESP32-001
 - ESP32-FAULT-001 → VERIFY-ESP32-001
+- SMART-HID-WORKFLOW-001 → VERIFY-SMART-HID-001
 - TEST-BRIDGE-TS-001 → VERIFY-SMART-HID-001
 - PUBLIC-HONESTY-001 → VERIFY-E6-001
 - RELEASE-PIPELINE-001 → VERIFY-E6-001

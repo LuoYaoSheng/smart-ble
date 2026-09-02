@@ -14,6 +14,9 @@ import { classifySmartHidStatus, smartHidRecoveryAction } from './workflow.js';
 
 export const SMART_HID_PROFILE_ID = 'smart-hid';
 
+/** Device Profile store — pure engine (avoids TS import cycle). */
+export { createDeviceProfileStore } from './workflow-engine.js';
+
 const asText = (value) => typeof value === 'string' ? value : utf8Decode(value);
 
 export const smartHidProfile = {

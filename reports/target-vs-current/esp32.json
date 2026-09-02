@@ -291,8 +291,8 @@
       "dimension": "protocol",
       "gap_kind": "FIRMWARE",
       "priority": "Must",
-      "implementation_status": "UNASSESSED",
-      "verification_status": "NOT_EXECUTED",
+      "implementation_status": "IMPLEMENTED_UNTESTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
@@ -310,10 +310,37 @@
           "line_hint": "protocol_member UUIDs"
         }
       ],
-      "test_ids": [],
-      "test_results": [],
+      "test_ids": [
+        "TEST-E-001"
+      ],
+      "test_results": [
+        {
+          "test_id": "TEST-E-001",
+          "status": "PASS",
+          "case_id": "current:fixture-contract.test.mjs:TEST-E-001 固件源码存在（夹具工程在位）",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-E-001",
+          "status": "PASS",
+          "case_id": "current:fixture-contract.test.mjs:TEST-E-001 夹具广播名称与契约一致（双夹具）",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-E-001",
+          "status": "PASS",
+          "case_id": "current:fixture-contract.test.mjs:TEST-E-001 服务/特征 UUID 与契约一致",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-E-001",
+          "status": "PASS",
+          "case_id": "current:fixture-contract.test.mjs:TEST-E-001 LED 指令表与契约一致",
+          "first_breakpoint": null
+        }
+      ],
       "expected": "LightBLE 主服务",
-      "actual": "",
+      "actual": "structured current PASS",
       "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
@@ -327,8 +354,8 @@
       "dimension": "protocol",
       "gap_kind": "FIRMWARE",
       "priority": "Must",
-      "implementation_status": "UNASSESSED",
-      "verification_status": "NOT_EXECUTED",
+      "implementation_status": "IMPLEMENTED_UNTESTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
@@ -346,10 +373,37 @@
           "line_hint": "protocol_member UUIDs"
         }
       ],
-      "test_ids": [],
-      "test_results": [],
+      "test_ids": [
+        "TEST-E-001"
+      ],
+      "test_results": [
+        {
+          "test_id": "TEST-E-001",
+          "status": "PASS",
+          "case_id": "current:fixture-contract.test.mjs:TEST-E-001 固件源码存在（夹具工程在位）",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-E-001",
+          "status": "PASS",
+          "case_id": "current:fixture-contract.test.mjs:TEST-E-001 夹具广播名称与契约一致（双夹具）",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-E-001",
+          "status": "PASS",
+          "case_id": "current:fixture-contract.test.mjs:TEST-E-001 服务/特征 UUID 与契约一致",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-E-001",
+          "status": "PASS",
+          "case_id": "current:fixture-contract.test.mjs:TEST-E-001 LED 指令表与契约一致",
+          "first_breakpoint": null
+        }
+      ],
       "expected": "LightBLE 权限演示服务",
-      "actual": "",
+      "actual": "structured current PASS",
       "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
@@ -363,8 +417,8 @@
       "dimension": "protocol",
       "gap_kind": "FIRMWARE",
       "priority": "Must",
-      "implementation_status": "UNASSESSED",
-      "verification_status": "NOT_EXECUTED",
+      "implementation_status": "IMPLEMENTED_UNTESTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
@@ -382,10 +436,37 @@
           "line_hint": "protocol_member UUIDs"
         }
       ],
-      "test_ids": [],
-      "test_results": [],
+      "test_ids": [
+        "TEST-E-001"
+      ],
+      "test_results": [
+        {
+          "test_id": "TEST-E-001",
+          "status": "PASS",
+          "case_id": "current:fixture-contract.test.mjs:TEST-E-001 固件源码存在（夹具工程在位）",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-E-001",
+          "status": "PASS",
+          "case_id": "current:fixture-contract.test.mjs:TEST-E-001 夹具广播名称与契约一致（双夹具）",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-E-001",
+          "status": "PASS",
+          "case_id": "current:fixture-contract.test.mjs:TEST-E-001 服务/特征 UUID 与契约一致",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-E-001",
+          "status": "PASS",
+          "case_id": "current:fixture-contract.test.mjs:TEST-E-001 LED 指令表与契约一致",
+          "first_breakpoint": null
+        }
+      ],
       "expected": "LightBLE OTA 服务事务",
-      "actual": "",
+      "actual": "structured current PASS",
       "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
@@ -399,8 +480,8 @@
       "dimension": "protocol",
       "gap_kind": "FIRMWARE",
       "priority": "Must",
-      "implementation_status": "UNASSESSED",
-      "verification_status": "NOT_EXECUTED",
+      "implementation_status": "IMPLEMENTED_UNTESTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
@@ -418,10 +499,37 @@
           "line_hint": "protocol_member UUIDs"
         }
       ],
-      "test_ids": [],
-      "test_results": [],
+      "test_ids": [
+        "TEST-E-001"
+      ],
+      "test_results": [
+        {
+          "test_id": "TEST-E-001",
+          "status": "PASS",
+          "case_id": "current:fixture-contract.test.mjs:TEST-E-001 固件源码存在（夹具工程在位）",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-E-001",
+          "status": "PASS",
+          "case_id": "current:fixture-contract.test.mjs:TEST-E-001 夹具广播名称与契约一致（双夹具）",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-E-001",
+          "status": "PASS",
+          "case_id": "current:fixture-contract.test.mjs:TEST-E-001 服务/特征 UUID 与契约一致",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-E-001",
+          "status": "PASS",
+          "case_id": "current:fixture-contract.test.mjs:TEST-E-001 LED 指令表与契约一致",
+          "first_breakpoint": null
+        }
+      ],
       "expected": "设备响应 JSON 载荷",
-      "actual": "",
+      "actual": "structured current PASS",
       "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
@@ -435,18 +543,45 @@
       "dimension": "protocol",
       "gap_kind": "SMART_HID",
       "priority": "Must",
-      "implementation_status": "UNASSESSED",
-      "verification_status": "NOT_EXECUTED",
+      "implementation_status": "IMPLEMENTED_UNTESTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
       "severity": null,
       "evidence_level": "E5",
       "implementation_refs": [],
-      "test_ids": [],
-      "test_results": [],
+      "test_ids": [
+        "TEST-E-001"
+      ],
+      "test_results": [
+        {
+          "test_id": "TEST-E-001",
+          "status": "PASS",
+          "case_id": "current:fixture-contract.test.mjs:TEST-E-001 固件源码存在（夹具工程在位）",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-E-001",
+          "status": "PASS",
+          "case_id": "current:fixture-contract.test.mjs:TEST-E-001 夹具广播名称与契约一致（双夹具）",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-E-001",
+          "status": "PASS",
+          "case_id": "current:fixture-contract.test.mjs:TEST-E-001 服务/特征 UUID 与契约一致",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-E-001",
+          "status": "PASS",
+          "case_id": "current:fixture-contract.test.mjs:TEST-E-001 LED 指令表与契约一致",
+          "first_breakpoint": null
+        }
+      ],
       "expected": "Smart HID Provisioning V1",
-      "actual": "",
+      "actual": "structured current PASS",
       "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
@@ -561,7 +696,7 @@
       "gap_kind": "RELEASE",
       "priority": "Must",
       "implementation_status": "CONFIRMED_PARTIAL",
-      "verification_status": "NOT_EXECUTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
@@ -574,8 +709,29 @@
           "line_hint": "Flutter APK / Tauri MSI"
         }
       ],
-      "test_ids": [],
-      "test_results": [],
+      "test_ids": [
+        "TEST-E-006"
+      ],
+      "test_results": [
+        {
+          "test_id": "TEST-E-006",
+          "status": "PASS",
+          "case_id": "current:serial-schema.test.mjs:串口契约：115200 波特、≥8 事件类型、≥9 Observer 字段",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-E-006",
+          "status": "PASS",
+          "case_id": "current:serial-schema.test.mjs:观察流行解析（目标 schema 的 E1 参照）",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-E-006",
+          "status": "PASS",
+          "case_id": "current:serial-schema.test.mjs:固件侧串口事件 emit 静态探测（可 FAIL=差距）",
+          "first_breakpoint": null
+        }
+      ],
       "expected": "Release Metadata Schema",
       "actual": "flutter=true tauri=true uniapp=false",
       "first_breakpoint": ".github/workflows/release-build.yml builds Flutter/Tauri; not UniApp Android + Peripheral/Observer firmware",
@@ -593,18 +749,39 @@
       "dimension": "protocol",
       "gap_kind": "RUNTIME",
       "priority": "Must",
-      "implementation_status": "UNASSESSED",
-      "verification_status": "NOT_EXECUTED",
+      "implementation_status": "IMPLEMENTED_UNTESTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
       "severity": null,
       "evidence_level": "E5",
       "implementation_refs": [],
-      "test_ids": [],
-      "test_results": [],
+      "test_ids": [
+        "TEST-E-006"
+      ],
+      "test_results": [
+        {
+          "test_id": "TEST-E-006",
+          "status": "PASS",
+          "case_id": "current:serial-schema.test.mjs:串口契约：115200 波特、≥8 事件类型、≥9 Observer 字段",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-E-006",
+          "status": "PASS",
+          "case_id": "current:serial-schema.test.mjs:观察流行解析（目标 schema 的 E1 参照）",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-E-006",
+          "status": "PASS",
+          "case_id": "current:serial-schema.test.mjs:固件侧串口事件 emit 静态探测（可 FAIL=差距）",
+          "first_breakpoint": null
+        }
+      ],
       "expected": "OTA Firmware Package",
-      "actual": "",
+      "actual": "structured current PASS",
       "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],

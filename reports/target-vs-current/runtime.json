@@ -31,18 +31,39 @@
       "dimension": "protocol",
       "gap_kind": "RUNTIME",
       "priority": "Must",
-      "implementation_status": "UNASSESSED",
-      "verification_status": "NOT_EXECUTED",
+      "implementation_status": "IMPLEMENTED_UNTESTED",
+      "verification_status": "AUTOMATED_PASS",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
       "severity": null,
       "evidence_level": "E5",
       "implementation_refs": [],
-      "test_ids": [],
-      "test_results": [],
+      "test_ids": [
+        "TEST-E-006"
+      ],
+      "test_results": [
+        {
+          "test_id": "TEST-E-006",
+          "status": "PASS",
+          "case_id": "current:serial-schema.test.mjs:串口契约：115200 波特、≥8 事件类型、≥9 Observer 字段",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-E-006",
+          "status": "PASS",
+          "case_id": "current:serial-schema.test.mjs:观察流行解析（目标 schema 的 E1 参照）",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-E-006",
+          "status": "PASS",
+          "case_id": "current:serial-schema.test.mjs:固件侧串口事件 emit 静态探测（可 FAIL=差距）",
+          "first_breakpoint": null
+        }
+      ],
       "expected": "OTA Firmware Package",
-      "actual": "",
+      "actual": "structured current PASS",
       "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],

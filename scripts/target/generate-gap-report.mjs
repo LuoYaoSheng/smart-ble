@@ -191,6 +191,13 @@ const broadcastWorkflowReady = useBroadcastSession
   && exists('apps/uniapp/services/broadcast/broadcast-adapter.js')
   && exists('apps/uniapp/services/broadcast/observer-evidence-adapter.js')
   && /createBroadcastSession/.test(read('apps/uniapp/services/broadcast/broadcast-session.js'));
+const smartHidWorkflowReady = exists('apps/uniapp/services/smart-hid/workflow-engine.js')
+  && exists('apps/uniapp/services/smart-hid/provisioning.js')
+  && exists('apps/uniapp/services/smart-hid/diagnostic.js')
+  && exists('apps/uniapp/services/smart-hid/errors.js')
+  && /createSmartHidWorkflow/.test(read('apps/uniapp/services/smart-hid/workflow-engine.js'))
+  && /createSmartHidWorkflow/.test(read('apps/uniapp/services/smart-hid/workflow.js'))
+  && /createSmartHidWorkflow/.test(read('apps/uniapp/composables/use-smart-hid-provisioning.js'));
 const smartHidImportsTs = /hid-provisioning-protocol\.ts/.test(FACTS.smartHidProfile);
 const deviceNameMacro = (FACTS.esp32.match(/#define\s+DEVICE_NAME\s+"([^"]+)"/) || [])[1] || null;
 const nimbleInitName = (FACTS.esp32.match(/NimBLEDevice::init\("([^"]+)"\)/) || [])[1] || null;
@@ -359,6 +366,7 @@ const ROOT_CAUSES = [
   { id: 'RC-CONN-DISCOVERY', severity: 'P1', title: 'connectDevice 未编排服务发现', domain: 'runtime' },
   { id: 'RC-OTA-PACKAGE', severity: 'P1', title: 'validateOtaPackage 六项传输前校验缺失', domain: 'runtime' },
   { id: 'RC-PAGE-BROADCAST', severity: 'P1', title: 'PAGE-008 内联广播逻辑，未用 composable/Owner', domain: 'pages' },
+  { id: 'RC-SMART-HID-WORKFLOW', severity: 'P1', title: 'Smart HID 缺完整 Provisioning Workflow / token / owner', domain: 'smart-hid' },
   { id: 'RC-ESP32-BUILD', severity: 'P1', title: '仅 env:esp32dev + 固定 COM3，无 fixture_observer', domain: 'esp32' },
   { id: 'RC-ESP32-LED-NAME', severity: 'P1', title: 'LED FF00 表缺失；DEVICE_NAME 宏与 NimBLE init 名不一致', domain: 'esp32' },
   { id: 'RC-ESP32-OBSERVER', severity: 'P1', title: 'Observer 夹具源码/广播名缺失', domain: 'esp32' },
@@ -395,11 +403,12 @@ const TASKS = [
   { task_id: 'ESP32-FAULT-001', task_type: 'SOURCE_FIX', title: 'Fault Injection + Serial JSON', root_cause_id: 'RC-ESP32-SERIAL', severity: 'P1', deps: ['ESP32-PERIPHERAL-001'], order_hint: 33 },
   { task_id: 'PAGE-BROADCAST-001', task_type: 'SOURCE_FIX', title: 'PAGE-008 改用 composable/adapter/service', root_cause_id: 'RC-PAGE-BROADCAST', severity: 'P1', deps: [], order_hint: 40, status: broadcastWorkflowReady ? 'DONE' : 'PLANNED' },
   { task_id: 'PAGE-VERSION-001', task_type: 'SOURCE_FIX', title: 'PAGE-010 改为 Metadata 投影', root_cause_id: 'RC-PAGE-VERSION', severity: 'P1', deps: ['VERSION-METADATA-001'], order_hint: 41, status: pageVersionReady ? 'DONE' : 'PLANNED' },
+  { task_id: 'SMART-HID-WORKFLOW-001', task_type: 'SOURCE_FIX', title: 'Smart HID Provisioning Workflow / Profile / Diagnostic', root_cause_id: 'RC-SMART-HID-WORKFLOW', severity: 'P1', deps: [], order_hint: 42, status: smartHidWorkflowReady ? 'DONE' : 'PLANNED' },
   { task_id: 'TEST-BRIDGE-TS-001', task_type: 'TESTABILITY', title: 'Node 测试桥支持 TS protocol import（Smart HID）', root_cause_id: 'RC-TEST-BRIDGE-TS', severity: 'P1', deps: [], order_hint: 50 },
   { task_id: 'VERIFY-ANDROID-001', task_type: 'VERIFY_E5', title: 'Android 真机矩阵', root_cause_id: null, severity: null, deps: ['TEST-PAGE-DRIVER-001', 'OTA-CLIENT-001'], order_hint: 90 },
   { task_id: 'VERIFY-WECHAT-001', task_type: 'VERIFY_E5', title: '微信真机矩阵', root_cause_id: null, severity: null, deps: ['TEST-PAGE-DRIVER-001'], order_hint: 91 },
   { task_id: 'VERIFY-ESP32-001', task_type: 'VERIFY_E5', title: 'ESP32 E5 夹具矩阵', root_cause_id: null, severity: null, deps: ['ESP32-OBSERVER-001', 'ESP32-FAULT-001'], order_hint: 92 },
-  { task_id: 'VERIFY-SMART-HID-001', task_type: 'VERIFY_E5', title: 'Smart HID E5 端到端', root_cause_id: null, severity: null, deps: ['TEST-BRIDGE-TS-001'], order_hint: 93 },
+  { task_id: 'VERIFY-SMART-HID-001', task_type: 'VERIFY_E5', title: 'Smart HID E5 端到端', root_cause_id: null, severity: null, deps: ['SMART-HID-WORKFLOW-001', 'TEST-BRIDGE-TS-001'], order_hint: 93 },
   { task_id: 'VERIFY-E6-001', task_type: 'VERIFY_E6', title: 'Clean Machine / Release E6', root_cause_id: null, severity: null, deps: ['PUBLIC-HONESTY-001', 'RELEASE-PIPELINE-001', 'VERSION-METADATA-001'], order_hint: 94 },
 ];
 
@@ -1772,7 +1781,10 @@ function emitAll(outDir) {
   writeJson(`${outDir}/smart-hid.json`, {
     note: 'FEAT-053..059 Node TS import bridge → TEST-BRIDGE-TS-001 (TESTABILITY), not product NOT_IMPLEMENTED',
     profile_imports_ts: smartHidImportsTs,
-    records: records.filter((r) => r.gap_kind === 'SMART_HID' || r.task_id === 'TEST-BRIDGE-TS-001' || /^FEAT-05[3-9]$/.test(r.target_id)),
+    workflow: smartHidWorkflowReady ? 'DONE' : 'OPEN',
+    e5: 'OPEN',
+    task_smart_hid_workflow: smartHidWorkflowReady ? 'DONE' : 'PLANNED',
+    records: records.filter((r) => r.gap_kind === 'SMART_HID' || r.task_id === 'TEST-BRIDGE-TS-001' || r.task_id === 'SMART-HID-WORKFLOW-001' || /^FEAT-05[3-9]$/.test(r.target_id)),
   });
   writeJson(`${outDir}/landing-release.json`, {
     landing_fake_download: landingFakeDownload,

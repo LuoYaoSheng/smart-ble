@@ -1,9 +1,21 @@
-/** Smart HID Provision Status 的业务解释；不进入通用 BLE Runtime。 */
+/** Smart HID Provision Status 的业务解释；Workflow 引擎见 workflow-engine.js。 */
 
 import { PROVISIONING_ERROR_HINTS } from '../../../../core/protocols/hid-provisioning-protocol.ts';
 import { runProvisionTransaction } from '../provisioning/orchestrator.js';
 
 export { runProvisionTransaction as runSmartHidProvisionTransaction };
+
+export {
+  PROVISION_STATE,
+  PROVISION_EVENT,
+  TOKEN_TTL_MS,
+  createMemoryTokenStore,
+  createDeviceProfileStore,
+  createSmartHidWorkflow,
+  runDiagnostic,
+  HID_ERROR_CODE,
+  createHidError,
+} from './workflow-engine.js';
 
 export function classifySmartHidStatus(status) {
   if (!status?.state) return { phase: 'unknown', terminal: false };

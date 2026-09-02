@@ -7,8 +7,12 @@ import {
   formatControlHubAddress
 } from '../services/smart-hid/provision-form.js';
 import {
+  createSmartHidWorkflow,
+  PROVISION_STATE,
+} from '../services/smart-hid/workflow-engine.js';
+import {
   describeSmartHidStatus,
-  smartHidRecoveryAction
+  smartHidRecoveryAction,
 } from '../services/smart-hid/workflow.js';
 import { describeScanCodeFailure } from '../services/smart-hid/scan-code-feedback.js';
 
@@ -30,6 +34,7 @@ export function useSmartHidProvisioning() {
   const bleStore = useBleStore();
   let disposed = false;
   let keepSessionOnDispose = false;
+  let activeWorkflow = null;
   const phase = ref('connect');
   const connecting = ref(false);
   const connectionError = ref('');
@@ -42,6 +47,8 @@ export function useSmartHidProvisioning() {
   const provisionDone = ref(false);
   const errorMessage = ref('');
   const recoveryAction = ref('');
+  /** PAGE-002 provision state is owned by Smart HID Workflow. */
+  const workflowState = ref(PROVISION_STATE.IDLE);
 
   const currentDevice = computed(() => hidStore.currentDevice);
   const hubInfo = computed(() => hidStore.hubInfo);
@@ -96,8 +103,6 @@ export function useSmartHidProvisioning() {
     }
   };
 
-  // configure 阶段断开此前无任何界面反馈（审计 P002-I02）：把会话断开即时推给向导 UI，
-  // 同时同步首页扫描列表的连接角标（不写入 connectedDevicesMap，避免通用详情页误关配网会话）。
   const stopDisconnectWatch = smartHidService.onSessionDisconnect(() => {
     bleStore.updateDeviceConnectionStatus(currentDevice.value?.deviceId, false);
     if (disposed || phase.value !== 'configure') return;
@@ -109,6 +114,7 @@ export function useSmartHidProvisioning() {
     disposed = false;
     hidStore.startProvisionSession();
     connectionLost.value = false;
+    workflowState.value = PROVISION_STATE.IDLE;
     let requestedId = '';
     try { requestedId = options.deviceId ? decodeURIComponent(options.deviceId) : ''; } catch { requestedId = ''; }
     const requestedDevice = hidStore.smartDevices.find((device) => device.deviceId === requestedId)
@@ -183,18 +189,48 @@ export function useSmartHidProvisioning() {
     resetResult();
     phase.value = 'status';
     provisioning.value = true;
+
+    const run = createSmartHidWorkflow({
+      discover: async () => {
+        const id = currentDevice.value?.deviceId;
+        if (!id) throw new Error('未选择设备');
+        return { deviceId: id, name: currentDevice.value?.name || 'Smart HID' };
+      },
+      pair: async () => ({ deviceId: currentDevice.value?.deviceId, paired: true }),
+      verify: async () => {
+        const { ok, status } = await smartHidService.provisionAndWait(candidate, 60000);
+        if (!ok) {
+          const err = new Error(describeSmartHidStatus(status));
+          err.status = status;
+          throw err;
+        }
+        return {
+          deviceId: currentDevice.value?.deviceId,
+          verified: true,
+          status,
+          capabilities: ['provisioning'],
+        };
+      },
+    });
+    activeWorkflow = run;
+    run.onProvisionEvent(() => {
+      workflowState.value = run.getProvisionState();
+    });
+
     try {
-      const { ok, status } = await smartHidService.provisionAndWait(candidate, 60000);
+      await run.startProvision({
+        deviceId: currentDevice.value?.deviceId,
+        name: currentDevice.value?.name,
+        token: hubInfo.value.token,
+        saveProfile: true,
+      });
       provisioning.value = false;
-      if (ok) {
-        provisionDone.value = true;
-        rememberConfiguredDevice();
-      } else {
-        errorMessage.value = describeSmartHidStatus(status);
-        recoveryAction.value = smartHidRecoveryAction(status);
-      }
+      provisionDone.value = true;
+      rememberConfiguredDevice();
+      workflowState.value = run.getProvisionState();
     } catch (error) {
       provisioning.value = false;
+      workflowState.value = run.getProvisionState();
       const message = error?.message || '配网失败';
       if (/取消|页面已关闭/.test(message)) {
         phase.value = 'configure';
@@ -202,7 +238,12 @@ export function useSmartHidProvisioning() {
         if (!disposed) uni.showToast({ title: '已取消等待', icon: 'none' });
         return;
       }
-      const code = hidStore.lastError?.code || error?.kind || '';
+      if (error?.status) {
+        errorMessage.value = describeSmartHidStatus(error.status);
+        recoveryAction.value = smartHidRecoveryAction(error.status);
+        return;
+      }
+      const code = hidStore.lastError?.code || error?.kind || error?.code || '';
       errorMessage.value = message;
       recoveryAction.value = smartHidRecoveryAction(code);
     }
@@ -210,10 +251,12 @@ export function useSmartHidProvisioning() {
 
   const cancelWaiting = () => {
     if (!provisioning.value) return;
+    activeWorkflow?.cancelProvision?.();
     smartHidService.cancelProvisionWait('用户已取消等待');
     provisioning.value = false;
     phase.value = 'configure';
     resetResult();
+    workflowState.value = activeWorkflow?.getProvisionState?.() || PROVISION_STATE.CANCELLED;
     uni.showToast({ title: '已取消等待', icon: 'none' });
   };
 
@@ -261,7 +304,6 @@ export function useSmartHidProvisioning() {
       resetResult();
       return;
     }
-    // retry（重新下发）：BLE 会话可能已被设备断开，先重连，避免无限失败循环
     if (!smartHidService.isConnected()) {
       resetResult();
       await connectDevice();
@@ -286,6 +328,7 @@ export function useSmartHidProvisioning() {
     stopDisconnectWatch();
     bleStore.updateDeviceConnectionStatus(currentDevice.value?.deviceId, false);
     if (provisioning.value) {
+      activeWorkflow?.cancelProvision?.();
       smartHidService.cancelProvisionWait('页面已关闭');
     }
     wifiPassword.value = '';
@@ -315,6 +358,8 @@ export function useSmartHidProvisioning() {
     progressRows,
     canSubmit,
     recoveryLabel,
+    workflowState,
+    provisionState: workflowState,
     initialize,
     connectDevice,
     scanControlHubQr,

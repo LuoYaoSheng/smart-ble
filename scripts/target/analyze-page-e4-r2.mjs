@@ -81,6 +81,12 @@ const FACTS = {
     && /FIXTURE_ROLE_OBSERVER/.test(read('hardware/esp32/LightBLE/include/fixture_config.h')),
   hasPeripheral: exists('hardware/esp32/LightBLE/src/ble_peripheral.cpp')
     && /NimBLEDevice::init\("BLEToolkit-Server"\)/.test(read('hardware/esp32/LightBLE/src/ble_peripheral.cpp')),
+  hasSmartHidWorkflow: exists('apps/uniapp/services/smart-hid/workflow-engine.js')
+    && /createSmartHidWorkflow/.test(read('apps/uniapp/services/smart-hid/workflow-engine.js'))
+    && /createSmartHidWorkflow/.test(read('apps/uniapp/composables/use-smart-hid-provisioning.js'))
+    && exists('apps/uniapp/services/smart-hid/provisioning.js')
+    && exists('apps/uniapp/services/smart-hid/diagnostic.js')
+    && exists('apps/uniapp/services/smart-hid/errors.js'),
   filterHasKeywordMatch: /keyword|tokens|includes\(/.test(read('apps/uniapp/services/ble-runtime/device-filter.js')),
   otaWritesCtrl: /writeValue[\s\S]{0,120}CHAR_CTRL|CHAR_CTRL[\s\S]{0,120}writeValue/.test(
     read('apps/uniapp/utils/ota_manager.js') + read('apps/uniapp/services/ota/ota-manager.js'),
@@ -143,7 +149,9 @@ const PAGE_ASSESS = {
       also: [
         { task_id: 'TEST-BRIDGE-TS-001', breakpoint: 'Smart HID protocol TS import SyntaxError (TEST-U-015)' },
       ],
-      notes: 'RUNTIME-LOG-REDACTION-001 DONE；logger/log-redaction + createLogger 接入 ble-runtime/ota/smart-hid；日志安全 PASS',
+      notes: FACTS.hasSmartHidWorkflow
+        ? 'SMART-HID-WORKFLOW-001 DONE；createSmartHidWorkflow + use-smart-hid-provisioning；log-redaction DONE；E5 保持 OPEN'
+        : 'RUNTIME-LOG-REDACTION-001 DONE；logger/log-redaction + createLogger 接入 ble-runtime/ota/smart-hid；日志安全 PASS',
     }
     : {
       product: 'FAIL',
@@ -159,28 +167,36 @@ const PAGE_ASSESS = {
       also: [
         { task_id: 'TEST-BRIDGE-TS-001', breakpoint: 'Smart HID protocol TS import SyntaxError (TEST-U-015)' },
       ],
-      notes: 'hid/add + use-smart-hid-provisioning 存在；Workflow 被 Runtime/桥接断点阻断',
+      notes: FACTS.hasSmartHidWorkflow
+        ? 'SMART-HID-WORKFLOW-001 DONE；createSmartHidWorkflow + use-smart-hid-provisioning；E5 保持 OPEN'
+        : 'hid/add + use-smart-hid-provisioning 存在；Workflow 未完成',
     },
   'PAGE-003': {
     product: 'PASS',
     task_id: null,
     root_cause_id: null,
     first_breakpoint: null,
-    notes: 'hid/detail 页面存在；无独立 CURRENT_FAIL 挂载；E4 Fake PASS；控件级静态未全量确认但无确定 FAIL 证据',
+    notes: FACTS.hasSmartHidWorkflow
+      ? 'hid/detail；Session borrow 由 Workflow/Registry 支持；E5 OPEN'
+      : 'hid/detail 页面存在；无独立 CURRENT_FAIL 挂载；E4 Fake PASS；控件级静态未全量确认但无确定 FAIL 证据',
   },
   'PAGE-004': {
     product: 'PASS',
     task_id: null,
     root_cause_id: null,
     first_breakpoint: null,
-    notes: 'hid/history 为历史唯一管理面；静态 CONFIRMED_IMPLEMENTED',
+    notes: FACTS.hasSmartHidWorkflow
+      ? 'hid/history；Device Profile 无敏感 token；E5 OPEN'
+      : 'hid/history 为历史唯一管理面；静态 CONFIRMED_IMPLEMENTED',
   },
   'PAGE-005': {
     product: 'PASS',
     task_id: null,
     root_cause_id: null,
     first_breakpoint: null,
-    notes: 'hid/diagnostics 存在；无独立 FAIL 证据',
+    notes: FACTS.hasSmartHidWorkflow
+      ? 'hid/diagnostics；runDiagnostic 已落地；E5 OPEN'
+      : 'hid/diagnostics 存在；无独立 FAIL 证据',
   },
   'PAGE-006': FACTS.otaWritesCtrl
     ? {

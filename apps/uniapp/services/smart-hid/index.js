@@ -24,6 +24,9 @@ import {
 import { getProfile, matchScannedDevices } from '../provisioning/profiles.js';
 import { SMART_HID_PROFILE_ID } from './profile.js';
 import { createSmartHidStatusWaiters } from './workflow.js';
+import { createSmartHidWorkflow } from './workflow-engine.js';
+import { runDiagnostic } from './diagnostic.js';
+import { HID_ERROR_CODE, createHidError } from './errors.js';
 
 const logger = createLogger('smart-hid');
 let session = null;
@@ -332,7 +335,18 @@ export const smartHidService = {
   diagnose,
   onSessionDisconnect,
   disconnect,
-  parsePairingQrPayload: (text) => profile().parseQr?.(text) || null
+  parsePairingQrPayload: (text) => profile().parseQr?.(text) || null,
+  createSmartHidWorkflow,
+  runDiagnostic,
+  HID_ERROR_CODE,
+  createHidError,
+};
+
+export {
+  createSmartHidWorkflow,
+  runDiagnostic,
+  HID_ERROR_CODE,
+  createHidError,
 };
 
 export default smartHidService;

@@ -186,7 +186,9 @@
       "target_ids": [
         "PROTO-010"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "TEST-E-006"
+      ],
       "first_breakpoint": ".github/workflows/release-build.yml builds Flutter/Tauri; not UniApp Android + Peripheral/Observer firmware",
       "implementation_files": [],
       "forbidden_files": [
@@ -702,6 +704,34 @@
       "commit_message": "source_fix(page-version-001): PAGE-010 改为 Metadata 投影"
     },
     {
+      "task_id": "SMART-HID-WORKFLOW-001",
+      "task_type": "SOURCE_FIX",
+      "title": "Smart HID Provisioning Workflow / Profile / Diagnostic",
+      "root_cause_id": "RC-SMART-HID-WORKFLOW",
+      "severity": "P1",
+      "status": "DONE",
+      "dependencies": [],
+      "unlocks": [
+        "VERIFY-SMART-HID-001"
+      ],
+      "gap_count": 0,
+      "target_ids": [],
+      "test_ids": [],
+      "first_breakpoint": "",
+      "implementation_files": [],
+      "forbidden_files": [
+        "apps/uniapp/** (until TP-G3)",
+        "docs/target-product/**",
+        "contracts/target/** product semantics"
+      ],
+      "automated_acceptance": "related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL",
+      "build_acceptance": "verify-uniapp + docs build",
+      "e5_acceptance": "n/a until VERIFY_*",
+      "e6_acceptance": "n/a",
+      "risk": "may touch multi-page / protocol surfaces in TP-G3",
+      "commit_message": "source_fix(smart-hid-workflow-001): Smart HID Provisioning Workflow / Profile / Diagnostic"
+    },
+    {
       "task_id": "TEST-BRIDGE-TS-001",
       "task_type": "TESTABILITY",
       "title": "Node 测试桥支持 TS protocol import（Smart HID）",
@@ -712,10 +742,40 @@
       "unlocks": [
         "VERIFY-SMART-HID-001"
       ],
-      "gap_count": 0,
-      "target_ids": [],
-      "test_ids": [],
-      "first_breakpoint": "",
+      "gap_count": 7,
+      "target_ids": [
+        "FEAT-053",
+        "FEAT-058",
+        "REQ-047",
+        "REQ-049",
+        "REQ-054",
+        "PAGE-001",
+        "FLOW-010"
+      ],
+      "test_ids": [
+        "TEST-U-015",
+        "TEST-H-001",
+        "TEST-W-010",
+        "TEST-C-007",
+        "TEST-H-003",
+        "TEST-I-009",
+        "TEST-P-001",
+        "TEST-A-001",
+        "TEST-A-005",
+        "TEST-W-001",
+        "TEST-W-007",
+        "TEST-E-001",
+        "TEST-U-008",
+        "TEST-U-006",
+        "TEST-U-007",
+        "TEST-U-001",
+        "TEST-U-005",
+        "TEST-I-003",
+        "TEST-I-001",
+        "TEST-I-002",
+        "TEST-H-002"
+      ],
+      "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
       "implementation_files": [],
       "forbidden_files": [
         "apps/uniapp/** (until TP-G3)",
@@ -823,6 +883,7 @@
       "severity": null,
       "status": "PLANNED",
       "dependencies": [
+        "SMART-HID-WORKFLOW-001",
         "TEST-BRIDGE-TS-001"
       ],
       "unlocks": [],
@@ -892,6 +953,8 @@
       ],
       "test_ids": [
         "TEST-R-006",
+        "TEST-E-008",
+        "TEST-R-001",
         "TEST-R-002",
         "TEST-R-007",
         "TEST-A-005",
@@ -916,9 +979,7 @@
         "TEST-H-005",
         "TEST-H-006",
         "TEST-R-005",
-        "TEST-E-008",
         "TEST-R-008",
-        "TEST-R-001",
         "TEST-R-009",
         "TEST-R-010",
         "TEST-R-011"
@@ -998,6 +1059,10 @@
     {
       "from": "ESP32-FAULT-001",
       "to": "VERIFY-ESP32-001"
+    },
+    {
+      "from": "SMART-HID-WORKFLOW-001",
+      "to": "VERIFY-SMART-HID-001"
     },
     {
       "from": "TEST-BRIDGE-TS-001",

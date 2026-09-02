@@ -4,11 +4,11 @@
 status: REVIEW
 gate: TP-G2-R1
 generated_from: reports/target-vs-current/target-vs-current.json
-content_hash: 5426d043164502a145e41a290572f2e4aca2fb0a1ed9277ecb914ecbb36d75d3
+content_hash: 12439a5271322a6021324d093f2142649a01b59ed681d1809a0792e2e3f55a61
 ```
 
 记录数（筛选后）：1
 
 | Target | Kind | Impl | Verify | Sev | First Breakpoint | Task |
 |---|---|---|---|---|---|---|
-| PROTO-010 | RELEASE | CONFIRMED_PARTIAL | NOT_EXECUTED | P0 | .github/workflows/release-build.yml builds Flutter/Tauri; not UniApp Android + P | RELEASE-PIPELINE-001 |
+| PROTO-010 | RELEASE | CONFIRMED_PARTIAL | AUTOMATED_PASS | P0 | .github/workflows/release-build.yml builds Flutter/Tauri; not UniApp Android + P | RELEASE-PIPELINE-001 |

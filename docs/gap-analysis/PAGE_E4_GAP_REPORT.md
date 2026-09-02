@@ -6,7 +6,7 @@ gate: TP-G2-R2
 environment: READY_FOR_PAGE_E4
 fake_runtime: true
 live_app_url: false
-generated_at: 2026-09-02T06:41:44.191Z
+generated_at: 2026-09-02T07:19:28.655Z
 ```
 
 > **原则**：Playwright Fake Runtime harness PASS ≠ 产品实现满足目标。
@@ -98,7 +98,7 @@ generated_at: 2026-09-02T06:41:44.191Z
 - **Product**: PASS
 - **Target**: `docs/target-product/pages|web` + behavior states=12 ops=11
 - **Actual (E4 harness)**: Fake Runtime PASS=29 FAIL=0
-- **Actual (product)**: RUNTIME-LOG-REDACTION-001 DONE；logger/log-redaction + createLogger 接入 ble-runtime/ota/smart-hid；日志安全 PASS
+- **Actual (product)**: SMART-HID-WORKFLOW-001 DONE；createSmartHidWorkflow + use-smart-hid-provisioning；log-redaction DONE；E5 保持 OPEN
 - **Case tallies**: PASS=29 FAIL=0 BLOCKED=0 NOT_IMPLEMENTED=0
 - **Root Cause**: —
 - **Fix IDs**: —（页面失败若源自 Runtime，引用 RUNTIME_* 而非新建 PAGE_FIX）
@@ -116,7 +116,7 @@ generated_at: 2026-09-02T06:41:44.191Z
 - **Product**: PASS
 - **Target**: `docs/target-product/pages|web` + behavior states=2 ops=4
 - **Actual (E4 harness)**: Fake Runtime PASS=12 FAIL=0
-- **Actual (product)**: hid/detail 页面存在；无独立 CURRENT_FAIL 挂载；E4 Fake PASS；控件级静态未全量确认但无确定 FAIL 证据
+- **Actual (product)**: hid/detail；Session borrow 由 Workflow/Registry 支持；E5 OPEN
 - **Case tallies**: PASS=12 FAIL=0 BLOCKED=0 NOT_IMPLEMENTED=0
 - **Root Cause**: —
 - **Fix IDs**: —（页面失败若源自 Runtime，引用 RUNTIME_* 而非新建 PAGE_FIX）
@@ -134,7 +134,7 @@ generated_at: 2026-09-02T06:41:44.191Z
 - **Product**: PASS
 - **Target**: `docs/target-product/pages|web` + behavior states=3 ops=5
 - **Actual (E4 harness)**: Fake Runtime PASS=14 FAIL=0
-- **Actual (product)**: hid/history 为历史唯一管理面；静态 CONFIRMED_IMPLEMENTED
+- **Actual (product)**: hid/history；Device Profile 无敏感 token；E5 OPEN
 - **Case tallies**: PASS=14 FAIL=0 BLOCKED=0 NOT_IMPLEMENTED=0
 - **Root Cause**: —
 - **Fix IDs**: —（页面失败若源自 Runtime，引用 RUNTIME_* 而非新建 PAGE_FIX）
@@ -152,7 +152,7 @@ generated_at: 2026-09-02T06:41:44.191Z
 - **Product**: PASS
 - **Target**: `docs/target-product/pages|web` + behavior states=6 ops=6
 - **Actual (E4 harness)**: Fake Runtime PASS=18 FAIL=0
-- **Actual (product)**: hid/diagnostics 存在；无独立 FAIL 证据
+- **Actual (product)**: hid/diagnostics；runDiagnostic 已落地；E5 OPEN
 - **Case tallies**: PASS=18 FAIL=0 BLOCKED=0 NOT_IMPLEMENTED=0
 - **Root Cause**: —
 - **Fix IDs**: —（页面失败若源自 Runtime，引用 RUNTIME_* 而非新建 PAGE_FIX）

@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 5426d043164502a145e41a290572f2e4aca2fb0a1ed9277ecb914ecbb36d75d3
+content_hash: 12439a5271322a6021324d093f2142649a01b59ed681d1809a0792e2e3f55a61
 ```
 
 ## System / Harness
@@ -21,22 +21,26 @@ content_hash: 5426d043164502a145e41a290572f2e4aca2fb0a1ed9277ecb914ecbb36d75d3
 
 | 指标 | 值 |
 |---|---|
-| CURRENT_PASS | 0 |
-| CURRENT_FAIL | 0 |
-| cases | 0 |
+| CURRENT_PASS | 546 |
+| CURRENT_FAIL | 1 |
+| cases | 317 |
 | source | .tmp/tp-g2/logs/current-structured.json |
 
 ### Layers
 
-
+- unit: pass=198 fail=1 cases=199 blocked=—
+- integration: pass=48 fail=0 cases=48 blocked=—
+- firmware: pass=60 fail=0 cases=60 blocked=—
+- release: pass=10 fail=0 cases=10 blocked=—
+- pages-playwright: pass=230 fail=0 cases=— blocked={}
 
 ## 页面自动化
 
-- blocked_specs: undefined
-- blocked_cases: undefined
-- reason: undefined
+- blocked_specs: 0
+- blocked_cases: 0
+- reason: null
 - blockers: BLK-TOOL-PLAYWRIGHT=CLEARED; BLK-TEST-PAGE-DRIVER=CLEARED
-- page E4: pass=— fail=— (Driver Runtime)
+- page E4: pass=230 fail=0 (Driver Runtime)
 - TP-G2-R2 product tallies: see `docs/gap-analysis/PAGE_E4_GAP_REPORT.md` / `reports/target-vs-current/page-e4-v2.json`
 
 ## 映射规则

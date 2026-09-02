@@ -1,6 +1,6 @@
 {
   "gate": "TP-G2-R2",
-  "generated_at": "2026-09-02T06:41:44.191Z",
+  "generated_at": "2026-09-02T07:19:28.655Z",
   "environment": {
     "status": "READY_FOR_PAGE_E4",
     "playwright": {
@@ -77,7 +77,7 @@
       "product": "PASS",
       "task_id": null,
       "root_cause_id": null,
-      "notes": "RUNTIME-LOG-REDACTION-001 DONE；logger/log-redaction + createLogger 接入 ble-runtime/ota/smart-hid；日志安全 PASS",
+      "notes": "SMART-HID-WORKFLOW-001 DONE；createSmartHidWorkflow + use-smart-hid-provisioning；log-redaction DONE；E5 保持 OPEN",
       "first_breakpoint": null,
       "also": [
         {
@@ -100,7 +100,7 @@
       "product": "PASS",
       "task_id": null,
       "root_cause_id": null,
-      "notes": "hid/detail 页面存在；无独立 CURRENT_FAIL 挂载；E4 Fake PASS；控件级静态未全量确认但无确定 FAIL 证据",
+      "notes": "hid/detail；Session borrow 由 Workflow/Registry 支持；E5 OPEN",
       "first_breakpoint": null,
       "also": [],
       "fail_cases": []
@@ -118,7 +118,7 @@
       "product": "PASS",
       "task_id": null,
       "root_cause_id": null,
-      "notes": "hid/history 为历史唯一管理面；静态 CONFIRMED_IMPLEMENTED",
+      "notes": "hid/history；Device Profile 无敏感 token；E5 OPEN",
       "first_breakpoint": null,
       "also": [],
       "fail_cases": []
@@ -136,7 +136,7 @@
       "product": "PASS",
       "task_id": null,
       "root_cause_id": null,
-      "notes": "hid/diagnostics 存在；无独立 FAIL 证据",
+      "notes": "hid/diagnostics；runDiagnostic 已落地；E5 OPEN",
       "first_breakpoint": null,
       "also": [],
       "fail_cases": []
@@ -300,7 +300,21 @@
         "duration_ms": 161,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": []
+        "fail_evidence": [
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          }
+        ]
       },
       "duration": 161,
       "target_ids": [
@@ -336,7 +350,21 @@
         "duration_ms": 37,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": []
+        "fail_evidence": [
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          }
+        ]
       },
       "duration": 37,
       "target_ids": [
@@ -372,7 +400,21 @@
         "duration_ms": 35,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": []
+        "fail_evidence": [
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          }
+        ]
       },
       "duration": 35,
       "target_ids": [
@@ -407,7 +449,21 @@
         "duration_ms": 44,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": []
+        "fail_evidence": [
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          }
+        ]
       },
       "duration": 44,
       "target_ids": [
@@ -442,7 +498,21 @@
         "duration_ms": 40,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": []
+        "fail_evidence": [
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          }
+        ]
       },
       "duration": 40,
       "target_ids": [
@@ -480,7 +550,21 @@
         "duration_ms": 35,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": []
+        "fail_evidence": [
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          }
+        ]
       },
       "duration": 35,
       "target_ids": [
@@ -516,7 +600,21 @@
         "duration_ms": 42,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": []
+        "fail_evidence": [
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          }
+        ]
       },
       "duration": 42,
       "target_ids": [
@@ -549,7 +647,21 @@
         "duration_ms": 44,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": []
+        "fail_evidence": [
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          }
+        ]
       },
       "duration": 44,
       "target_ids": [
@@ -585,7 +697,21 @@
         "duration_ms": 42,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": []
+        "fail_evidence": [
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          }
+        ]
       },
       "duration": 42,
       "target_ids": [
@@ -620,7 +746,21 @@
         "duration_ms": 46,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": []
+        "fail_evidence": [
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          }
+        ]
       },
       "duration": 46,
       "target_ids": [
@@ -653,7 +793,21 @@
         "duration_ms": 49,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": []
+        "fail_evidence": [
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          }
+        ]
       },
       "duration": 49,
       "target_ids": [
@@ -692,7 +846,21 @@
         "duration_ms": 32,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": []
+        "fail_evidence": [
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          }
+        ]
       },
       "duration": 32,
       "target_ids": [
@@ -727,7 +895,21 @@
         "duration_ms": 38,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": []
+        "fail_evidence": [
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          }
+        ]
       },
       "duration": 38,
       "target_ids": [
@@ -762,7 +944,21 @@
         "duration_ms": 33,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": []
+        "fail_evidence": [
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          }
+        ]
       },
       "duration": 33,
       "target_ids": [
@@ -799,7 +995,21 @@
         "duration_ms": 34,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": []
+        "fail_evidence": [
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          }
+        ]
       },
       "duration": 34,
       "target_ids": [
@@ -834,7 +1044,21 @@
         "duration_ms": 36,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": []
+        "fail_evidence": [
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          }
+        ]
       },
       "duration": 36,
       "target_ids": [
@@ -871,7 +1095,21 @@
         "duration_ms": 31,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": []
+        "fail_evidence": [
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          }
+        ]
       },
       "duration": 31,
       "target_ids": [
@@ -908,7 +1146,21 @@
         "duration_ms": 31,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": []
+        "fail_evidence": [
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          }
+        ]
       },
       "duration": 31,
       "target_ids": [
@@ -945,7 +1197,21 @@
         "duration_ms": 35,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": []
+        "fail_evidence": [
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          }
+        ]
       },
       "duration": 35,
       "target_ids": [
@@ -980,7 +1246,21 @@
         "duration_ms": 31,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": []
+        "fail_evidence": [
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          }
+        ]
       },
       "duration": 31,
       "target_ids": [
@@ -1015,7 +1295,21 @@
         "duration_ms": 32,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": []
+        "fail_evidence": [
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          }
+        ]
       },
       "duration": 32,
       "target_ids": [
@@ -1048,7 +1342,21 @@
         "duration_ms": 29,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": []
+        "fail_evidence": [
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          }
+        ]
       },
       "duration": 29,
       "target_ids": [
@@ -1081,7 +1389,21 @@
         "duration_ms": 35,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": []
+        "fail_evidence": [
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          }
+        ]
       },
       "duration": 35,
       "target_ids": [
@@ -1114,7 +1436,21 @@
         "duration_ms": 29,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": []
+        "fail_evidence": [
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          }
+        ]
       },
       "duration": 29,
       "target_ids": [
@@ -1147,7 +1483,21 @@
         "duration_ms": 21,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": []
+        "fail_evidence": [
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          }
+        ]
       },
       "duration": 21,
       "target_ids": [
@@ -1178,7 +1528,21 @@
         "duration_ms": 33,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": []
+        "fail_evidence": [
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          }
+        ]
       },
       "duration": 33,
       "target_ids": [
@@ -1209,7 +1573,21 @@
         "duration_ms": 28,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": []
+        "fail_evidence": [
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          }
+        ]
       },
       "duration": 28,
       "target_ids": [
@@ -1240,7 +1618,21 @@
         "duration_ms": 29,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": []
+        "fail_evidence": [
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          }
+        ]
       },
       "duration": 29,
       "target_ids": [
@@ -1271,7 +1663,21 @@
         "duration_ms": 29,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": []
+        "fail_evidence": [
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          }
+        ]
       },
       "duration": 29,
       "target_ids": [
@@ -1302,7 +1708,21 @@
         "duration_ms": 26,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": []
+        "fail_evidence": [
+          {
+            "test_id": "TEST-U-015",
+            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+            "target_ids": [
+              "REQ-047",
+              "FEAT-053",
+              "PAGE-001",
+              "FLOW-010",
+              "REQ-049",
+              "FEAT-058"
+            ],
+            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
+          }
+        ]
       },
       "duration": 26,
       "target_ids": [

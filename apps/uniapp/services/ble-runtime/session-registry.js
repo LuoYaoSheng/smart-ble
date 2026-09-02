@@ -39,6 +39,12 @@ function syncSubscriptionCount(session) {
   session.subscription_count = session.subscriptions.filter((entry) => entry.enabled).length;
 }
 
+function ownerKey(owner) {
+  if (!owner) return '';
+  if (typeof owner === 'string') return owner;
+  return `${owner.type || ''}:${owner.id || ''}`;
+}
+
 function flattenCharacteristics(services = []) {
   const characteristics = [];
   for (const service of services) {
@@ -194,7 +200,7 @@ export function createSessionRegistry() {
   function borrowReference(deviceId, borrower) {
     const session = sessions.get(deviceId);
     if (!session) return false;
-    session.borrowRefs.add(borrower);
+    session.borrowRefs.add(ownerKey(borrower));
     session.updatedAt = now();
     return true;
   }
@@ -202,7 +208,7 @@ export function createSessionRegistry() {
   function releaseReference(deviceId, borrower) {
     const session = sessions.get(deviceId);
     if (!session) return false;
-    session.borrowRefs.delete(borrower);
+    session.borrowRefs.delete(ownerKey(borrower));
     session.updatedAt = now();
     return true;
   }
@@ -218,7 +224,7 @@ export function createSessionRegistry() {
     ) {
       return { allowed: true, mode: 'owner' };
     }
-    if (session.borrowRefs.has(callerOwner)) {
+    if (session.borrowRefs.has(ownerKey(callerOwner))) {
       return { allowed: false, action: 'release_only', mode: 'borrow' };
     }
     return { allowed: false, reason: 'not_owner' };

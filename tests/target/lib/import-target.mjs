@@ -11,7 +11,7 @@ import { createHash } from 'node:crypto';
 
 export const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
 
-const MAX_DEPTH = 3;
+const MAX_DEPTH = 8;
 /** @type {Map<string, string>} absPath+bust → data URL */
 const urlCache = new Map();
 let instanceCounter = 0;

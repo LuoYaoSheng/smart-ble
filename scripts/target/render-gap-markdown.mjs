@@ -190,7 +190,18 @@ write(`${G}/ESP32_GAP_REPORT.md`, sectionReport('ESP32 差距报告（TP-G2-R1�
 
 ${esp32.inventory.ota.e5_verification?.evidence_id ? `> E5 证据：**${esp32.inventory.ota.e5_verification.evidence_id}** · \`${esp32.inventory.ota.e5_verification.summary_path || '—'}\`` : ''}
 ` : ''));
-write(`${G}/SMART_HID_GAP_REPORT.md`, sectionReport('Smart HID 差距报告（TP-G2-R1）', (r) => r.gap_kind === 'SMART_HID' || r.task_id === 'TEST-BRIDGE-TS-001' || /^FEAT-05[3-9]$/.test(r.target_id)));
+write(`${G}/SMART_HID_GAP_REPORT.md`, sectionReport('Smart HID 差距报告（TP-G2-R1）', (r) => r.gap_kind === 'SMART_HID' || r.task_id === 'TEST-BRIDGE-TS-001' || r.task_id === 'SMART-HID-WORKFLOW-001' || /^FEAT-05[3-9]$/.test(r.target_id))
+  + `
+
+## Smart HID Workflow
+
+| 环节 | 状态 |
+|---|---|
+| Workflow | ${smartHid?.workflow || 'OPEN'} |
+| E5 | ${smartHid?.e5 || 'OPEN'} |
+
+> Task **SMART-HID-WORKFLOW-001**：${smartHid?.task_smart_hid_workflow || 'PLANNED'}；E5 保持 OPEN（VERIFY-SMART-HID-001）。
+`);
 write(`${G}/LANDING_RELEASE_GAP_REPORT.md`, sectionReport('落地页与 Release 差距报告（TP-G2-R1）', (r) => r.gap_kind === 'LANDING' || r.gap_kind === 'RELEASE'));
 write(`${G}/TEST_COVERAGE_GAP_REPORT.md`, sectionReport('测试可执行性差距报告（TP-G2-R1）', (r) => r.gap_kind === 'TESTABILITY' || r.gap_kind === 'TOOLCHAIN'));
 

@@ -47,7 +47,7 @@ source: reports/target-vs-current/page-e4-v2.json
 - 产品结论：**PASS**
 - E4 case：PASS=29 FAIL=0 BLOCKED=0 NOT_IMPLEMENTED=0
 - 主 Fix：`—`（root=—）
-- 说明：RUNTIME-LOG-REDACTION-001 DONE；logger/log-redaction + createLogger 接入 ble-runtime/ota/smart-hid；日志安全 PASS
+- 说明：SMART-HID-WORKFLOW-001 DONE；createSmartHidWorkflow + use-smart-hid-provisioning；log-redaction DONE；E5 保持 OPEN
 - 依赖策略：页面表象失败优先引用 **RUNTIME_*** / **OTA_*** / **ESP32_***；仅架构归属页面时用 PAGE-*（如 PAGE-BROADCAST-001）
 
 ### PAGE-003
@@ -55,7 +55,7 @@ source: reports/target-vs-current/page-e4-v2.json
 - 产品结论：**PASS**
 - E4 case：PASS=12 FAIL=0 BLOCKED=0 NOT_IMPLEMENTED=0
 - 主 Fix：`—`（root=—）
-- 说明：hid/detail 页面存在；无独立 CURRENT_FAIL 挂载；E4 Fake PASS；控件级静态未全量确认但无确定 FAIL 证据
+- 说明：hid/detail；Session borrow 由 Workflow/Registry 支持；E5 OPEN
 - 依赖策略：页面表象失败优先引用 **RUNTIME_*** / **OTA_*** / **ESP32_***；仅架构归属页面时用 PAGE-*（如 PAGE-BROADCAST-001）
 
 ### PAGE-004
@@ -63,7 +63,7 @@ source: reports/target-vs-current/page-e4-v2.json
 - 产品结论：**PASS**
 - E4 case：PASS=14 FAIL=0 BLOCKED=0 NOT_IMPLEMENTED=0
 - 主 Fix：`—`（root=—）
-- 说明：hid/history 为历史唯一管理面；静态 CONFIRMED_IMPLEMENTED
+- 说明：hid/history；Device Profile 无敏感 token；E5 OPEN
 - 依赖策略：页面表象失败优先引用 **RUNTIME_*** / **OTA_*** / **ESP32_***；仅架构归属页面时用 PAGE-*（如 PAGE-BROADCAST-001）
 
 ### PAGE-005
@@ -71,7 +71,7 @@ source: reports/target-vs-current/page-e4-v2.json
 - 产品结论：**PASS**
 - E4 case：PASS=18 FAIL=0 BLOCKED=0 NOT_IMPLEMENTED=0
 - 主 Fix：`—`（root=—）
-- 说明：hid/diagnostics 存在；无独立 FAIL 证据
+- 说明：hid/diagnostics；runDiagnostic 已落地；E5 OPEN
 - 依赖策略：页面表象失败优先引用 **RUNTIME_*** / **OTA_*** / **ESP32_***；仅架构归属页面时用 PAGE-*（如 PAGE-BROADCAST-001）
 
 ### PAGE-006
