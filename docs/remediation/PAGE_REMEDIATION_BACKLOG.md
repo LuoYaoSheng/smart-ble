@@ -79,7 +79,7 @@ source: reports/target-vs-current/page-e4-v2.json
 - 产品结论：**FAIL**
 - E4 case：PASS=0 FAIL=30 BLOCKED=0 NOT_IMPLEMENTED=0
 - 主 Fix：`OTA-CLIENT-001`（root=RC-OTA-CLIENT）
-- 说明：RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA
+- 说明：RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client
 - 依赖策略：页面表象失败优先引用 **RUNTIME_*** / **OTA_*** / **ESP32_***；仅架构归属页面时用 PAGE-*（如 PAGE-BROADCAST-001）
 
 ### PAGE-007

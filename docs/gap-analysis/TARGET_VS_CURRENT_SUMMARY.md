@@ -8,8 +8,8 @@ owner: Smart BLE QA / Engineering
 last_reviewed: 2026-09-01
 approved_by: null
 generated_from: reports/target-vs-current/target-vs-current.json
-content_hash: ed40eeeef16489052a93d5807bf3094dfbfa290df34400ff2bdf3e69919994ff
-commit: d542ddc8083fba82b385bd42e490902c35a6b2db
+content_hash: 0a33163ed724ee27d113d5f163faff955f767f775efdd4d35114f9a2a07038d4
+commit: 9d00c1ffef7f4c13839da329180e8f27f4a796db
 supersedes: TP-G2 v1 (reports/target-vs-current-v1/)
 ```
 
@@ -23,33 +23,33 @@ supersedes: TP-G2 v1 (reports/target-vs-current-v1/)
 | HARNESS_PASS / FAIL | 89 / 0 |
 | TARGET_CONTRACT_FAIL | 0 |
 | TEST_INFRA_FAIL | 0 |
-| CURRENT_PASS / FAIL | 352 / 15 |
-| structured cases | 137 |
-| 页面 blocked_specs / blocked_cases | 0 / 0 |
-| 页面阻断原因 | null |
+| CURRENT_PASS / FAIL | 0 / 0 |
+| structured cases | 0 |
+| 页面 blocked_specs / blocked_cases | undefined / undefined |
+| 页面阻断原因 | undefined |
 | 独立 blockers | BLK-TOOL-PLAYWRIGHT [CLEARED] + BLK-TEST-PAGE-DRIVER [CLEARED] |
 
-**说明：** `blocked_cases=0` 是受阻 Case 数，**不是**产品缺陷数。Playwright 与 Page Driver 分别登记。
+**说明：** `blocked_cases=undefined` 是受阻 Case 数，**不是**产品缺陷数。Playwright 与 Page Driver 分别登记。
 
 ## 2. Target Coverage（canonical totals）
 
 | 维度 | total | assessed | unassessed |
 |---|---:|---:|---:|
-| REQ | 66 | 47 | 19 |
-| FEAT | 81 | 43 | 38 |
-| PAGE | 10 | 8 | 2 |
-| WEB | 1 | 1 | 0 |
+| REQ | 66 | 9 | 57 |
+| FEAT | 81 | 12 | 69 |
+| PAGE | 10 | 1 | 9 |
+| WEB | 1 | 0 | 1 |
 | STATE | 67 | 0 | 67 |
 | OP | 92 | 7 | 85 |
-| FLOW | 14 | 10 | 4 |
-| ERR | 68 | 2 | 66 |
-| DATA | 13 | 2 | 11 |
-| PROTO | 11 | 8 | 3 |
+| FLOW | 14 | 2 | 12 |
+| ERR | 68 | 0 | 68 |
+| DATA | 13 | 0 | 13 |
+| PROTO | 11 | 4 | 7 |
 | SEC | 19 | 0 | 19 |
 | NFR | 24 | 0 | 24 |
-| CLAIM | 31 | 7 | 24 |
-| DEC | 17 | 5 | 12 |
-| EVID | 8 | 2 | 6 |
+| CLAIM | 31 | 0 | 31 |
+| DEC | 17 | 0 | 17 |
+| EVID | 8 | 0 | 8 |
 | TEST | 103 | 0 | 103 |
 | 报告记录总数 | 647 | | |
 
@@ -60,17 +60,17 @@ PROTO 仅使用 `PROTO-001`..`PROTO-011`（不是 Service UUID）。
 ### unique_root_causes_by_severity
 
 - P0: **2**
-- P1: **8**
+- P1: **4**
 - P2: **0**
 - P3: **0**
 
 ### affected_target_records_by_severity
 
-- P0: 16
-- P1: 50
+- P0: 17
+- P1: 18
 - P2: 0
 - P3: 0
-- null: 581
+- null: 612
 
 > 不得把 affected records 说成「N 个 P0 缺陷」。Observer 缺失默认 **P1**（无公开危害证据时非 P0）。
 
@@ -78,66 +78,59 @@ PROTO 仅使用 `PROTO-001`..`PROTO-011`（不是 Service UUID）。
 
 ### gap_kind
 
-- PRODUCT: 284
-- RUNTIME: 25
-- PAGE: 150
-- TESTABILITY: 129
-- FIRMWARE: 10
-- LANDING: 45
+- PRODUCT: 296
+- PAGE: 153
+- RUNTIME: 14
+- TESTABILITY: 125
+- FIRMWARE: 9
+- LANDING: 46
 - SMART_HID: 3
 - RELEASE: 1
 
 ### implementation_status
 
-- IMPLEMENTED_UNTESTED: 79
-- UNASSESSED: 489
-- NOT_IMPLEMENTED: 16
-- CONFIRMED_PARTIAL: 37
+- UNASSESSED: 590
+- CONFIRMED_PARTIAL: 31
 - CONFIRMED_IMPLEMENTED: 22
 - CONFIRMED_MISSING: 4
 
 ### verification_status
 
-- AUTOMATED_PASS: 106
-- HARDWARE_PENDING: 56
-- NOT_EXECUTED: 293
-- AUTOMATED_FAIL: 49
-- EXECUTED: 139
-- BLOCKED_BY_FIXTURE: 4
+- HARDWARE_PENDING: 125
+- NOT_EXECUTED: 340
+- EXECUTED: 148
+- AUTOMATED_PASS: 22
+- AUTOMATED_FAIL: 6
+- BLOCKED_BY_FIXTURE: 6
 
 ## 5. Top 20 First Breakpoints
 
 1. **[P0]** `FEAT-046` → OtaManager 在第一个 DATA 写之前未发送 CTRL start （OTA-CLIENT-001 / RC-OTA-CTRL-START）
-2. **[P0]** `FEAT-047` → [TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验） （OTA-CLIENT-001 / RC-OTA-CTRL-START）
-3. **[P0]** `PROTO-010` → .github/workflows/release-build.yml builds Flutter/Tauri; not UniApp Android + Peripheral/Observer firmware （RELEASE-PIPELINE-001 / RC-RELEASE-PIPELINE）
-4. **[P1]** `FEAT-021` → [REQ-020/021 ERR-CONN-03] 第一断点: connectDevice 未编排服务发现（失败不报错=半开泄漏面） （RUNTIME-CONNECTION-DISCOVERY-001 / RC-CONN-DISCOVERY）
-5. **[P1]** `FEAT-023` → [REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js （RUNTIME-RECONNECT-001 / RC-RECONNECT）
-6. **[P1]** `FEAT-040` → [TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js （RUNTIME-LOG-REDACTION-001 / RC-LOG-REDACTION）
-7. **[P1]** `FEAT-041` → PAGE-008 内联广告逻辑；useBroadcastSession 未使用 （PAGE-BROADCAST-001 / RC-PAGE-BROADCAST）
-8. **[P1]** `FEAT-053` → [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as' （TEST-BRIDGE-TS-001 / RC-TEST-BRIDGE-TS）
-9. **[P1]** `FEAT-057` → [TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier "./device-display-name.js" from "data:text/javascript;base64, （RUNTIME-DISPLAY-NAME-001 / RC-DISPLAY-NAME）
-10. **[P1]** `FEAT-081` → [TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验） （OTA-PACKAGE-001 / RC-OTA-PACKAGE）
-11. **[P1]** `FLOW-008` → 缺 fixture_observer （ESP32-OBSERVER-001 / RC-ESP32-OBSERVER）
-12. **[P1]** `OP-P008-01` → hardware/esp32 无 Observer 目标源码 （ESP32-OBSERVER-001 / RC-ESP32-OBSERVER）
-13. **[P1]** `PAGE-008` → 广播页内联；Owner/composable 未接入 （PAGE-BROADCAST-001 / RC-PAGE-BROADCAST）
-14. **[P1]** `PROTO-001` → 固件含广播名 BLEToolkit-Observer （ESP32-OBSERVER-001 / RC-ESP32-OBSERVER）
-15. **[P1]** `PROTO-009` → fixture_observer 不存在 （ESP32-OBSERVER-001 / RC-ESP32-OBSERVER）
-16. **[P1]** `PROTO-011` → Observer 字段 ≥9（实际 8） （ESP32-OBSERVER-001 / RC-ESP32-OBSERVER）
+2. **[P0]** `PROTO-010` → .github/workflows/release-build.yml builds Flutter/Tauri; not UniApp Android + Peripheral/Observer firmware （RELEASE-PIPELINE-001 / RC-RELEASE-PIPELINE）
+3. **[P1]** `FEAT-041` → PAGE-008 内联广告逻辑；useBroadcastSession 未使用 （PAGE-BROADCAST-001 / RC-PAGE-BROADCAST）
+4. **[P1]** `FLOW-008` → 缺 fixture_observer （ESP32-OBSERVER-001 / RC-ESP32-OBSERVER）
+5. **[P1]** `OP-P008-01` → hardware/esp32 无 Observer 目标源码 （ESP32-OBSERVER-001 / RC-ESP32-OBSERVER）
+6. **[P1]** `PAGE-008` → 广播页内联；Owner/composable 未接入 （PAGE-BROADCAST-001 / RC-PAGE-BROADCAST）
+7. **[P1]** `PROTO-001` → 固件缺 FF00 LED 指令表 （ESP32-PERIPHERAL-001 / RC-ESP32-LED-NAME）
+8. **[P1]** `PROTO-003` → 固件 OTA JSON 使用 action 字段，目标为 op （OTA-FIRMWARE-001 / RC-ESP32-OTA-ACTION）
+9. **[P1]** `PROTO-009` → fixture_observer 不存在 （ESP32-OBSERVER-001 / RC-ESP32-OBSERVER）
 
 ## 6. Task waves（拓扑序前 12）
 
+**OTA Package Contract：DONE（OTA-PACKAGE-001）** — `contracts/target/ota-package.schema.json` + `apps/uniapp/services/ota/*`；OTA Client / Firmware 仍为 OPEN。
+
 1. **RELEASE-PIPELINE-001** — UniApp + Peripheral/Observer 双固件 Release Pipeline（type=RELEASE, sev=P0, gaps≈1）
-2. **RUNTIME-LOG-REDACTION-001** — log-redaction 脱敏（type=SOURCE_FIX, sev=P1, gaps≈6）
-3. **RUNTIME-CONNECTION-DISCOVERY-001** — connectDevice 编排服务发现（type=SOURCE_FIX, sev=P1, gaps≈3）
-4. **OTA-PACKAGE-001** — 客户端 Firmware Package 六项校验（type=SOURCE_FIX, sev=P1, gaps≈5）
-5. **OTA-CLIENT-001** — 客户端完整 OTA 事务（CTRL start→ready→DATA→commit）（type=SOURCE_FIX, sev=P0, gaps≈15）
-6. **ESP32-BUILD-001** — 两环境、无固定 COM、模块化入口（type=SOURCE_FIX, sev=P1, gaps≈0）
-7. **OTA-FIRMWARE-001** — 固件 OTA op/target/hardware/SHA/max_chunk/commit 校验（type=SOURCE_FIX, sev=P1, gaps≈0）
-8. **ESP32-PERIPHERAL-001** — 服务/特征/名称/LED/Device Info 对齐契约（type=SOURCE_FIX, sev=P1, gaps≈0）
-9. **ESP32-OBSERVER-001** — 实现 fixture_observer（type=SOURCE_FIX, sev=P1, gaps≈12）
-10. **ESP32-FAULT-001** — Fault Injection + Serial JSON（type=SOURCE_FIX, sev=P1, gaps≈0）
-11. **PAGE-BROADCAST-001** — PAGE-008 改用 composable/adapter/service（type=SOURCE_FIX, sev=P1, gaps≈6）
-12. **TEST-BRIDGE-TS-001** — Node 测试桥支持 TS protocol import（Smart HID）（type=TESTABILITY, sev=P1, gaps≈7）
+2. **RUNTIME-LOG-REDACTION-001** — log-redaction 脱敏（type=SOURCE_FIX, sev=P1, gaps≈0）
+3. **RUNTIME-CONNECTION-DISCOVERY-001** — connectDevice 编排服务发现（type=SOURCE_FIX, sev=P1, gaps≈0）
+4. **OTA-CLIENT-001** — 客户端完整 OTA 事务（CTRL start→ready→DATA→commit）（type=SOURCE_FIX, sev=P0, gaps≈12）
+5. **ESP32-BUILD-001** — 两环境、无固定 COM、模块化入口（type=SOURCE_FIX, sev=P1, gaps≈0）
+6. **OTA-FIRMWARE-001** — 固件 OTA op/target/hardware/SHA/max_chunk/commit 校验（type=SOURCE_FIX, sev=P1, gaps≈1）
+7. **ESP32-PERIPHERAL-001** — 服务/特征/名称/LED/Device Info 对齐契约（type=SOURCE_FIX, sev=P1, gaps≈1）
+8. **ESP32-OBSERVER-001** — 实现 fixture_observer（type=SOURCE_FIX, sev=P1, gaps≈5）
+9. **ESP32-FAULT-001** — Fault Injection + Serial JSON（type=SOURCE_FIX, sev=P1, gaps≈0）
+10. **PAGE-BROADCAST-001** — PAGE-008 改用 composable/adapter/service（type=SOURCE_FIX, sev=P1, gaps≈6）
+11. **TEST-BRIDGE-TS-001** — Node 测试桥支持 TS protocol import（Smart HID）（type=TESTABILITY, sev=P1, gaps≈0）
+12. **VERIFY-ANDROID-001** — Android 真机矩阵（type=VERIFY_E5, sev=—, gaps≈0）
 
 完整图：`reports/target-vs-current/task-dependency-graph.json`。
 

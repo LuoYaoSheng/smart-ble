@@ -171,10 +171,10 @@ const PAGE_ASSESS = {
       breakpoint: 'CTRL start before DATA / validateOtaPackage (TEST-I-008)',
     },
     also: [
-      { task_id: 'RUNTIME-RECONNECT-001', breakpoint: 'DONE' },
+      { task_id: 'OTA-PACKAGE-001', breakpoint: 'DONE' },
       { task_id: 'RUNTIME-CONNECTION-DISCOVERY-001', file: 'apps/uniapp/services/ble-runtime/index.js', symbol: 'connectDevice', breakpoint: 'TEST-I-003 asserts discover orchestration gap (semi-open risk)' },
     ],
-    notes: 'RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA',
+    notes: 'RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client',
   },
   'PAGE-007': {
     product: 'PASS',

@@ -142,6 +142,11 @@ const filterHasKeywordMatch = /opts\.keyword|settings\.keyword|buildDeviceSearch
 
 const otaWritesCtrl = /writeValue[\s\S]{0,120}CHAR_CTRL|CHAR_CTRL[\s\S]{0,120}writeValue/.test(FACTS.otaManager);
 const hasValidateOta = /validateOtaPackage|validatePackage/.test(FACTS.otaManager);
+const hasOtaPackageValidator = exists('apps/uniapp/services/ota/package-validator.js')
+  && exists('apps/uniapp/services/ota/firmware-package.js');
+const hasOtaPackageSchema = exists('contracts/target/ota-package.schema.json');
+const otaPackageReady = hasOtaPackageValidator && hasOtaPackageSchema
+  && /validateFirmwarePackage|validateFirmwareManifest/.test(read('apps/uniapp/services/ota/package-validator.js'));
 const hasObserver = /BLEToolkit-Observer/.test(FACTS.esp32);
 const hasLedTable = /\bFF00\b|\b0xFF00\b/.test(FACTS.esp32);
 const landingFakeDownload = /releases\/latest/.test(FACTS.landing);
@@ -286,7 +291,7 @@ const TASKS = [
   { task_id: 'RUNTIME-RECONNECT-001', task_type: 'SOURCE_FIX', title: 'reconnect-policy 有限重连', root_cause_id: 'RC-RECONNECT', severity: 'P1', deps: [], order_hint: 15, status: reconnectReady ? 'DONE' : 'PLANNED' },
   { task_id: 'RUNTIME-SESSION-001', task_type: 'SOURCE_FIX', title: 'Registry subscription_count + 配网会话分类', root_cause_id: 'RC-SESSION-REGISTRY', severity: 'P1', deps: [], order_hint: 16, status: sessionRegistryDone ? 'DONE' : 'PLANNED' },
   { task_id: 'RUNTIME-CONNECTION-DISCOVERY-001', task_type: 'SOURCE_FIX', title: 'connectDevice 编排服务发现', root_cause_id: 'RC-CONN-DISCOVERY', severity: 'P1', deps: [], order_hint: 17 },
-  { task_id: 'OTA-PACKAGE-001', task_type: 'SOURCE_FIX', title: '客户端 Firmware Package 六项校验', root_cause_id: 'RC-OTA-PACKAGE', severity: 'P1', deps: [], order_hint: 20 },
+  { task_id: 'OTA-PACKAGE-001', task_type: 'SOURCE_FIX', title: '客户端 Firmware Package 六项校验', root_cause_id: 'RC-OTA-PACKAGE', severity: 'P1', deps: [], order_hint: 20, status: otaPackageReady ? 'DONE' : 'PLANNED' },
   { task_id: 'OTA-CLIENT-001', task_type: 'SOURCE_FIX', title: '客户端完整 OTA 事务（CTRL start→ready→DATA→commit）', root_cause_id: 'RC-OTA-CTRL-START', severity: 'P0', deps: ['OTA-PACKAGE-001'], order_hint: 21 },
   { task_id: 'OTA-FIRMWARE-001', task_type: 'SOURCE_FIX', title: '固件 OTA op/target/hardware/SHA/max_chunk/commit 校验', root_cause_id: 'RC-ESP32-OTA-ACTION', severity: 'P1', deps: ['ESP32-BUILD-001'], order_hint: 22 },
   { task_id: 'ESP32-BUILD-001', task_type: 'SOURCE_FIX', title: '两环境、无固定 COM、模块化入口', root_cause_id: 'RC-ESP32-BUILD', severity: 'P1', deps: [], order_hint: 30 },
@@ -492,7 +497,7 @@ for (const f of product.features) {
     actual = actual || 'CHAR_CTRL defined but start/commit/abort not written before DATA';
     refs = [{ path: 'apps/uniapp/utils/ota_manager.js', symbol: 'OtaManager.startOta', line_hint: 'CHAR_CTRL never written' }];
   }
-  if (f.id === 'FEAT-081' && !hasValidateOta) {
+  if (f.id === 'FEAT-081' && !otaPackageReady) {
     impl = 'NOT_IMPLEMENTED';
     ver = ev.fail.length ? 'AUTOMATED_FAIL' : 'AUTOMATED_FAIL';
     sev = 'P1';
@@ -1019,7 +1024,7 @@ for (const id of PROTO_IDS) {
       actual = 'Observer 缺失';
     }
   }
-  if (id === 'PROTO-011' && !hasValidateOta) {
+  if (id === 'PROTO-011' && !otaPackageReady) {
     impl = 'NOT_IMPLEMENTED';
     ver = 'AUTOMATED_FAIL';
     sev = 'P1';
@@ -1230,7 +1235,7 @@ const esp32Inventory = {
     firmware_field: otaUsesAction ? 'action' : 'op_or_other',
     target_field: 'op',
     client_writes_ctrl: otaWritesCtrl,
-    client_validate_package: hasValidateOta,
+    client_validate_package: otaPackageReady,
   },
   fault_injection: (bleFixture.fault_injection || []).map((f) => ({
     id: f.id,

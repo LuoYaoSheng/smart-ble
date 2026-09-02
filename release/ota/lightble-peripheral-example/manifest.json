@@ -1,0 +1,8 @@
+{
+  "format_version": 1,
+  "target": "lightble-peripheral",
+  "hardware": "esp32-wroom-32",
+  "firmware_version": "1.0.0",
+  "size": 6,
+  "sha256": "7192385c3c0605de55bb9476ce1d90748190ecb32a8eed7f5207b30cf6a1fe89"
+}

@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: ed40eeeef16489052a93d5807bf3094dfbfa290df34400ff2bdf3e69919994ff
+content_hash: 0a33163ed724ee27d113d5f163faff955f767f775efdd4d35114f9a2a07038d4
 ```
 
 > PUBLIC-HONESTY-001 / VERSION-METADATA-001 状态以 task-dependency-graph.json 为准。未批准 Task 不得执行。
@@ -15,9 +15,9 @@ content_hash: ed40eeeef16489052a93d5807bf3094dfbfa290df34400ff2bdf3e69919994ff
 - task_type：SOURCE_FIX
 - severity：P1
 - root_cause_id：RC-DISPLAY-NAME
-- Target IDs（样本）：FEAT-057, REQ-048, REQ-051
-- Test IDs：TEST-I-009, TEST-H-002, TEST-H-003, TEST-U-015, TEST-W-010
-- First Breakpoint：[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier "./device-display-name.js" from "data:text/javascript;base64,
+- Target IDs（样本）：见 JSON
+- Test IDs：—
+- First Breakpoint：—
 - 依赖：无
 - 解锁：
 - 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
@@ -79,9 +79,9 @@ content_hash: ed40eeeef16489052a93d5807bf3094dfbfa290df34400ff2bdf3e69919994ff
 - task_type：SOURCE_FIX
 - severity：P1
 - root_cause_id：RC-LOG-REDACTION
-- Target IDs（样本）：FEAT-040, REQ-036, REQ-037, REQ-050, PAGE-002, WEB-001
-- Test IDs：TEST-U-013, TEST-R-004, TEST-U-012, TEST-A-008, TEST-U-015, TEST-I-009, TEST-H-002, TEST-P-002, TEST-H-001, TEST-H-003, TEST-W-010, TEST-R-001
-- First Breakpoint：[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js
+- Target IDs（样本）：见 JSON
+- Test IDs：—
+- First Breakpoint：—
 - 依赖：无
 - 解锁：
 - 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
@@ -95,9 +95,9 @@ content_hash: ed40eeeef16489052a93d5807bf3094dfbfa290df34400ff2bdf3e69919994ff
 - task_type：SOURCE_FIX
 - severity：P1
 - root_cause_id：RC-RECONNECT
-- Target IDs（样本）：FEAT-023, REQ-022, FLOW-004
-- Test IDs：TEST-I-003, TEST-A-007, TEST-W-008, TEST-E-002, TEST-A-006, TEST-W-007, TEST-E-005
-- First Breakpoint：[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js
+- Target IDs（样本）：见 JSON
+- Test IDs：—
+- First Breakpoint：—
 - 依赖：无
 - 解锁：
 - 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
@@ -127,9 +127,9 @@ content_hash: ed40eeeef16489052a93d5807bf3094dfbfa290df34400ff2bdf3e69919994ff
 - task_type：SOURCE_FIX
 - severity：P1
 - root_cause_id：RC-CONN-DISCOVERY
-- Target IDs（样本）：FEAT-021, REQ-019, ERR-CONN-03
-- Test IDs：TEST-I-003, TEST-A-006, TEST-E-002, TEST-P-006, TEST-W-007
-- First Breakpoint：[REQ-020/021 ERR-CONN-03] 第一断点: connectDevice 未编排服务发现（失败不报错=半开泄漏面）
+- Target IDs（样本）：见 JSON
+- Test IDs：—
+- First Breakpoint：—
 - 依赖：无
 - 解锁：
 - 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
@@ -138,14 +138,14 @@ content_hash: ed40eeeef16489052a93d5807bf3094dfbfa290df34400ff2bdf3e69919994ff
 
 ### OTA-PACKAGE-001
 
-- 状态：**PLANNED**
+- 状态：**DONE**
 - 标题：客户端 Firmware Package 六项校验
 - task_type：SOURCE_FIX
 - severity：P1
 - root_cause_id：RC-OTA-PACKAGE
-- Target IDs（样本）：FEAT-081, REQ-066, PAGE-006, FLOW-009, DEC-016
-- Test IDs：TEST-U-016, TEST-I-010, TEST-E-007, TEST-A-011, TEST-I-008, TEST-P-006, TEST-U-009, TEST-U-010, TEST-U-011, TEST-U-012, TEST-I-003, TEST-I-004
-- First Breakpoint：[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）
+- Target IDs（样本）：见 JSON
+- Test IDs：—
+- First Breakpoint：—
 - 依赖：无
 - 解锁：OTA-CLIENT-001
 - 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
@@ -159,7 +159,7 @@ content_hash: ed40eeeef16489052a93d5807bf3094dfbfa290df34400ff2bdf3e69919994ff
 - task_type：SOURCE_FIX
 - severity：P0
 - root_cause_id：RC-OTA-CTRL-START
-- Target IDs（样本）：FEAT-046, FEAT-047, FEAT-048, FEAT-049, FEAT-050, FEAT-051, FEAT-052, REQ-043, REQ-044, REQ-045, REQ-046, OP-P006-12
+- Target IDs（样本）：FEAT-046, FEAT-047, FEAT-048, FEAT-049, FEAT-050, FEAT-051, FEAT-052, OP-P006-12, OP-P006-13, OP-P006-14, OP-W001-05, FLOW-009
 - Test IDs：TEST-P-006, TEST-A-011, TEST-E-007, TEST-R-003, TEST-I-008, TEST-U-016, TEST-I-010, TEST-R-008
 - First Breakpoint：OtaManager 在第一个 DATA 写之前未发送 CTRL start
 - 依赖：OTA-PACKAGE-001

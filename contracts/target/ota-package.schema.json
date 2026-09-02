@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://smart-ble.local/contracts/target/ota-package.schema.json",
+  "title": "Smart BLE OTA Firmware Package Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format_version",
+    "target",
+    "hardware",
+    "firmware_version",
+    "size",
+    "sha256"
+  ],
+  "properties": {
+    "format_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "target": {
+      "type": "string",
+      "enum": [
+        "lightble-peripheral",
+        "lightble-observer"
+      ]
+    },
+    "hardware": {
+      "type": "string",
+      "minLength": 1
+    },
+    "firmware_version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$"
+    },
+    "size": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

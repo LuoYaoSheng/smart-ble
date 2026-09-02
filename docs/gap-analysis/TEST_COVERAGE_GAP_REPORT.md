@@ -4,14 +4,10 @@
 status: REVIEW
 gate: TP-G2-R1
 generated_from: reports/target-vs-current/target-vs-current.json
-content_hash: ed40eeeef16489052a93d5807bf3094dfbfa290df34400ff2bdf3e69919994ff
+content_hash: 0a33163ed724ee27d113d5f163faff955f767f775efdd4d35114f9a2a07038d4
 ```
 
-记录数（筛选后）：4
+记录数（筛选后）：0
 
 | Target | Kind | Impl | Verify | Sev | First Breakpoint | Task |
 |---|---|---|---|---|---|---|
-| FEAT-053 | TESTABILITY | IMPLEMENTED_UNTESTED | AUTOMATED_FAIL | P1 | [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpe | TEST-BRIDGE-TS-001 |
-| FEAT-058 | TESTABILITY | IMPLEMENTED_UNTESTED | AUTOMATED_FAIL | P1 | [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpe | TEST-BRIDGE-TS-001 |
-| PAGE-001 | TESTABILITY | UNASSESSED | AUTOMATED_FAIL | P1 | [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpe | TEST-BRIDGE-TS-001 |
-| FLOW-010 | TESTABILITY | CONFIRMED_PARTIAL | AUTOMATED_FAIL | P1 | [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpe | TEST-BRIDGE-TS-001 |

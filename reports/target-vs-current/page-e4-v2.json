@@ -1,6 +1,6 @@
 {
   "gate": "TP-G2-R2",
-  "generated_at": "2026-09-02T01:00:10.537Z",
+  "generated_at": "2026-09-02T01:07:15.065Z",
   "environment": {
     "status": "READY_FOR_PAGE_E4",
     "playwright": {
@@ -538,7 +538,7 @@
       "product": "FAIL",
       "task_id": "OTA-CLIENT-001",
       "root_cause_id": "RC-OTA-CLIENT",
-      "notes": "RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
+      "notes": "RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
       "first_breakpoint": {
         "target": "FEAT-081",
         "test": "TEST-I-008",
@@ -548,7 +548,7 @@
       },
       "also": [
         {
-          "task_id": "RUNTIME-RECONNECT-001",
+          "task_id": "OTA-PACKAGE-001",
           "breakpoint": "DONE"
         },
         {
@@ -1404,43 +1404,7 @@
         "duration_ms": 161,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 161,
       "target_ids": [
@@ -1476,43 +1440,7 @@
         "duration_ms": 37,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 37,
       "target_ids": [
@@ -1548,43 +1476,7 @@
         "duration_ms": 35,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 35,
       "target_ids": [
@@ -1619,43 +1511,7 @@
         "duration_ms": 44,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 44,
       "target_ids": [
@@ -1690,43 +1546,7 @@
         "duration_ms": 40,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 40,
       "target_ids": [
@@ -1764,43 +1584,7 @@
         "duration_ms": 35,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 35,
       "target_ids": [
@@ -1836,43 +1620,7 @@
         "duration_ms": 42,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 42,
       "target_ids": [
@@ -1905,43 +1653,7 @@
         "duration_ms": 44,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 44,
       "target_ids": [
@@ -1977,43 +1689,7 @@
         "duration_ms": 42,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 42,
       "target_ids": [
@@ -2048,43 +1724,7 @@
         "duration_ms": 46,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 46,
       "target_ids": [
@@ -2117,43 +1757,7 @@
         "duration_ms": 49,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 49,
       "target_ids": [
@@ -2192,43 +1796,7 @@
         "duration_ms": 32,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 32,
       "target_ids": [
@@ -2263,43 +1831,7 @@
         "duration_ms": 38,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 38,
       "target_ids": [
@@ -2334,43 +1866,7 @@
         "duration_ms": 33,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 33,
       "target_ids": [
@@ -2407,43 +1903,7 @@
         "duration_ms": 34,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 34,
       "target_ids": [
@@ -2478,43 +1938,7 @@
         "duration_ms": 36,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 36,
       "target_ids": [
@@ -2551,43 +1975,7 @@
         "duration_ms": 31,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 31,
       "target_ids": [
@@ -2624,43 +2012,7 @@
         "duration_ms": 31,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 31,
       "target_ids": [
@@ -2697,43 +2049,7 @@
         "duration_ms": 35,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 35,
       "target_ids": [
@@ -2768,43 +2084,7 @@
         "duration_ms": 31,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 31,
       "target_ids": [
@@ -2839,43 +2119,7 @@
         "duration_ms": 32,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 32,
       "target_ids": [
@@ -2908,43 +2152,7 @@
         "duration_ms": 29,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 29,
       "target_ids": [
@@ -2977,43 +2185,7 @@
         "duration_ms": 35,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 35,
       "target_ids": [
@@ -3046,43 +2218,7 @@
         "duration_ms": 29,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 29,
       "target_ids": [
@@ -3115,43 +2251,7 @@
         "duration_ms": 21,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 21,
       "target_ids": [
@@ -3182,43 +2282,7 @@
         "duration_ms": 33,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 33,
       "target_ids": [
@@ -3249,43 +2313,7 @@
         "duration_ms": 28,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 28,
       "target_ids": [
@@ -3316,43 +2344,7 @@
         "duration_ms": 29,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 29,
       "target_ids": [
@@ -3383,43 +2375,7 @@
         "duration_ms": 29,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 29,
       "target_ids": [
@@ -3450,43 +2406,7 @@
         "duration_ms": 26,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 26,
       "target_ids": [
@@ -3524,19 +2444,7 @@
         "duration_ms": 29,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-002_HID_PROVISION.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 29,
       "target_ids": [
@@ -3577,19 +2485,7 @@
         "duration_ms": 28,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-002_HID_PROVISION.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 28,
       "target_ids": [
@@ -3631,19 +2527,7 @@
         "duration_ms": 29,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-002_HID_PROVISION.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 29,
       "target_ids": [
@@ -3684,19 +2568,7 @@
         "duration_ms": 29,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-002_HID_PROVISION.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 29,
       "target_ids": [
@@ -3738,19 +2610,7 @@
         "duration_ms": 28,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-002_HID_PROVISION.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 28,
       "target_ids": [
@@ -3792,19 +2652,7 @@
         "duration_ms": 28,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-002_HID_PROVISION.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 28,
       "target_ids": [
@@ -3845,19 +2693,7 @@
         "duration_ms": 27,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-002_HID_PROVISION.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 27,
       "target_ids": [
@@ -3898,19 +2734,7 @@
         "duration_ms": 31,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-002_HID_PROVISION.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 31,
       "target_ids": [
@@ -3951,19 +2775,7 @@
         "duration_ms": 35,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-002_HID_PROVISION.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 35,
       "target_ids": [
@@ -4005,19 +2817,7 @@
         "duration_ms": 28,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-002_HID_PROVISION.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 28,
       "target_ids": [
@@ -4059,19 +2859,7 @@
         "duration_ms": 30,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-002_HID_PROVISION.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 30,
       "target_ids": [
@@ -4112,19 +2900,7 @@
         "duration_ms": 30,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-002_HID_PROVISION.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 30,
       "target_ids": [
@@ -4165,19 +2941,7 @@
         "duration_ms": 33,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-002_HID_PROVISION.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 33,
       "target_ids": [
@@ -4220,19 +2984,7 @@
         "duration_ms": 29,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-002_HID_PROVISION.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 29,
       "target_ids": [
@@ -4273,19 +3025,7 @@
         "duration_ms": 28,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-002_HID_PROVISION.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 28,
       "target_ids": [
@@ -4326,19 +3066,7 @@
         "duration_ms": 29,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-002_HID_PROVISION.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 29,
       "target_ids": [
@@ -4381,19 +3109,7 @@
         "duration_ms": 28,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-002_HID_PROVISION.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 28,
       "target_ids": [
@@ -4434,19 +3150,7 @@
         "duration_ms": 30,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-002_HID_PROVISION.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 30,
       "target_ids": [
@@ -4489,19 +3193,7 @@
         "duration_ms": 30,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-002_HID_PROVISION.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 30,
       "target_ids": [
@@ -4544,19 +3236,7 @@
         "duration_ms": 28,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-002_HID_PROVISION.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 28,
       "target_ids": [
@@ -4599,19 +3279,7 @@
         "duration_ms": 28,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-002_HID_PROVISION.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 28,
       "target_ids": [
@@ -4652,19 +3320,7 @@
         "duration_ms": 28,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-002_HID_PROVISION.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 28,
       "target_ids": [
@@ -4705,19 +3361,7 @@
         "duration_ms": 29,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-002_HID_PROVISION.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 29,
       "target_ids": [
@@ -4758,19 +3402,7 @@
         "duration_ms": 4,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-002_HID_PROVISION.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 4,
       "target_ids": [
@@ -4809,19 +3441,7 @@
         "duration_ms": 29,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-002_HID_PROVISION.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 29,
       "target_ids": [
@@ -4860,19 +3480,7 @@
         "duration_ms": 26,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-002_HID_PROVISION.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 26,
       "target_ids": [
@@ -4911,19 +3519,7 @@
         "duration_ms": 26,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-002_HID_PROVISION.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 26,
       "target_ids": [
@@ -4962,19 +3558,7 @@
         "duration_ms": 26,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-002_HID_PROVISION.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 26,
       "target_ids": [
@@ -5013,19 +3597,7 @@
         "duration_ms": 26,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-002_HID_PROVISION.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 26,
       "target_ids": [
@@ -6482,7 +5054,7 @@
         "身份",
         "连接按钮"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
       "first_breakpoint": {
         "target": "FEAT-081",
         "test": "TEST-I-008",
@@ -6495,55 +5067,7 @@
         "duration_ms": 38,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-016",
-            "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
-            "target_ids": [
-              "DEC-016",
-              "STATE-OTA-01",
-              "REQ-066",
-              "FEAT-081",
-              "PAGE-006",
-              "FLOW-009",
-              "FEAT-047"
-            ],
-            "source_file": "tests/target/unit/ota-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-003",
-            "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "target_ids": [
-              "REQ-022",
-              "FEAT-023",
-              "PAGE-006",
-              "FLOW-004",
-              "REQ-023"
-            ],
-            "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-008",
-            "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
-            "target_ids": [
-              "DEC-016",
-              "REQ-043",
-              "FEAT-046",
-              "PAGE-006",
-              "FLOW-009",
-              "STATE-OTA-01",
-              "REQ-044",
-              "REQ-045",
-              "REQ-066",
-              "FEAT-047",
-              "FEAT-048",
-              "FEAT-049",
-              "FEAT-050",
-              "FEAT-081"
-            ],
-            "source_file": "tests/target/integration/ota-transaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 38,
       "target_ids": [
@@ -6571,7 +5095,7 @@
       "expected": [
         "状态\"连接中\""
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
       "first_breakpoint": {
         "target": "FEAT-081",
         "test": "TEST-I-008",
@@ -6584,55 +5108,7 @@
         "duration_ms": 35,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-016",
-            "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
-            "target_ids": [
-              "DEC-016",
-              "STATE-OTA-01",
-              "REQ-066",
-              "FEAT-081",
-              "PAGE-006",
-              "FLOW-009",
-              "FEAT-047"
-            ],
-            "source_file": "tests/target/unit/ota-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-003",
-            "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "target_ids": [
-              "REQ-022",
-              "FEAT-023",
-              "PAGE-006",
-              "FLOW-004",
-              "REQ-023"
-            ],
-            "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-008",
-            "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
-            "target_ids": [
-              "DEC-016",
-              "REQ-043",
-              "FEAT-046",
-              "PAGE-006",
-              "FLOW-009",
-              "STATE-OTA-01",
-              "REQ-044",
-              "REQ-045",
-              "REQ-066",
-              "FEAT-047",
-              "FEAT-048",
-              "FEAT-049",
-              "FEAT-050",
-              "FEAT-081"
-            ],
-            "source_file": "tests/target/integration/ota-transaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 35,
       "target_ids": [
@@ -6660,7 +5136,7 @@
       "expected": [
         "树骨架/spinner"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
       "first_breakpoint": {
         "target": "FEAT-081",
         "test": "TEST-I-008",
@@ -6673,55 +5149,7 @@
         "duration_ms": 33,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-016",
-            "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
-            "target_ids": [
-              "DEC-016",
-              "STATE-OTA-01",
-              "REQ-066",
-              "FEAT-081",
-              "PAGE-006",
-              "FLOW-009",
-              "FEAT-047"
-            ],
-            "source_file": "tests/target/unit/ota-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-003",
-            "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "target_ids": [
-              "REQ-022",
-              "FEAT-023",
-              "PAGE-006",
-              "FLOW-004",
-              "REQ-023"
-            ],
-            "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-008",
-            "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
-            "target_ids": [
-              "DEC-016",
-              "REQ-043",
-              "FEAT-046",
-              "PAGE-006",
-              "FLOW-009",
-              "STATE-OTA-01",
-              "REQ-044",
-              "REQ-045",
-              "REQ-066",
-              "FEAT-047",
-              "FEAT-048",
-              "FEAT-049",
-              "FEAT-050",
-              "FEAT-081"
-            ],
-            "source_file": "tests/target/integration/ota-transaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 33,
       "target_ids": [
@@ -6750,7 +5178,7 @@
         "\"设备未暴露服务\"",
         "重试"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
       "first_breakpoint": {
         "target": "FEAT-081",
         "test": "TEST-I-008",
@@ -6763,55 +5191,7 @@
         "duration_ms": 34,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-016",
-            "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
-            "target_ids": [
-              "DEC-016",
-              "STATE-OTA-01",
-              "REQ-066",
-              "FEAT-081",
-              "PAGE-006",
-              "FLOW-009",
-              "FEAT-047"
-            ],
-            "source_file": "tests/target/unit/ota-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-003",
-            "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "target_ids": [
-              "REQ-022",
-              "FEAT-023",
-              "PAGE-006",
-              "FLOW-004",
-              "REQ-023"
-            ],
-            "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-008",
-            "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
-            "target_ids": [
-              "DEC-016",
-              "REQ-043",
-              "FEAT-046",
-              "PAGE-006",
-              "FLOW-009",
-              "STATE-OTA-01",
-              "REQ-044",
-              "REQ-045",
-              "REQ-066",
-              "FEAT-047",
-              "FEAT-048",
-              "FEAT-049",
-              "FEAT-050",
-              "FEAT-081"
-            ],
-            "source_file": "tests/target/integration/ota-transaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 34,
       "target_ids": [
@@ -6840,7 +5220,7 @@
         "错误",
         "重试"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
       "first_breakpoint": {
         "target": "FEAT-081",
         "test": "TEST-I-008",
@@ -6853,55 +5233,7 @@
         "duration_ms": 33,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-016",
-            "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
-            "target_ids": [
-              "DEC-016",
-              "STATE-OTA-01",
-              "REQ-066",
-              "FEAT-081",
-              "PAGE-006",
-              "FLOW-009",
-              "FEAT-047"
-            ],
-            "source_file": "tests/target/unit/ota-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-003",
-            "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "target_ids": [
-              "REQ-022",
-              "FEAT-023",
-              "PAGE-006",
-              "FLOW-004",
-              "REQ-023"
-            ],
-            "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-008",
-            "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
-            "target_ids": [
-              "DEC-016",
-              "REQ-043",
-              "FEAT-046",
-              "PAGE-006",
-              "FLOW-009",
-              "STATE-OTA-01",
-              "REQ-044",
-              "REQ-045",
-              "REQ-066",
-              "FEAT-047",
-              "FEAT-048",
-              "FEAT-049",
-              "FEAT-050",
-              "FEAT-081"
-            ],
-            "source_file": "tests/target/integration/ota-transaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 33,
       "target_ids": [
@@ -6930,7 +5262,7 @@
         "完整树",
         "操作"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
       "first_breakpoint": {
         "target": "FEAT-081",
         "test": "TEST-I-008",
@@ -6943,55 +5275,7 @@
         "duration_ms": 43,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-016",
-            "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
-            "target_ids": [
-              "DEC-016",
-              "STATE-OTA-01",
-              "REQ-066",
-              "FEAT-081",
-              "PAGE-006",
-              "FLOW-009",
-              "FEAT-047"
-            ],
-            "source_file": "tests/target/unit/ota-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-003",
-            "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "target_ids": [
-              "REQ-022",
-              "FEAT-023",
-              "PAGE-006",
-              "FLOW-004",
-              "REQ-023"
-            ],
-            "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-008",
-            "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
-            "target_ids": [
-              "DEC-016",
-              "REQ-043",
-              "FEAT-046",
-              "PAGE-006",
-              "FLOW-009",
-              "STATE-OTA-01",
-              "REQ-044",
-              "REQ-045",
-              "REQ-066",
-              "FEAT-047",
-              "FEAT-048",
-              "FEAT-049",
-              "FEAT-050",
-              "FEAT-081"
-            ],
-            "source_file": "tests/target/integration/ota-transaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 43,
       "target_ids": [
@@ -7021,7 +5305,7 @@
       "expected": [
         "\"重连中 n/3\""
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
       "first_breakpoint": {
         "target": "FEAT-081",
         "test": "TEST-I-008",
@@ -7034,55 +5318,7 @@
         "duration_ms": 35,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-016",
-            "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
-            "target_ids": [
-              "DEC-016",
-              "STATE-OTA-01",
-              "REQ-066",
-              "FEAT-081",
-              "PAGE-006",
-              "FLOW-009",
-              "FEAT-047"
-            ],
-            "source_file": "tests/target/unit/ota-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-003",
-            "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "target_ids": [
-              "REQ-022",
-              "FEAT-023",
-              "PAGE-006",
-              "FLOW-004",
-              "REQ-023"
-            ],
-            "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-008",
-            "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
-            "target_ids": [
-              "DEC-016",
-              "REQ-043",
-              "FEAT-046",
-              "PAGE-006",
-              "FLOW-009",
-              "STATE-OTA-01",
-              "REQ-044",
-              "REQ-045",
-              "REQ-066",
-              "FEAT-047",
-              "FEAT-048",
-              "FEAT-049",
-              "FEAT-050",
-              "FEAT-081"
-            ],
-            "source_file": "tests/target/integration/ota-transaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 35,
       "target_ids": [
@@ -7111,7 +5347,7 @@
         "终态",
         "手动重试"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
       "first_breakpoint": {
         "target": "FEAT-081",
         "test": "TEST-I-008",
@@ -7124,55 +5360,7 @@
         "duration_ms": 34,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-016",
-            "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
-            "target_ids": [
-              "DEC-016",
-              "STATE-OTA-01",
-              "REQ-066",
-              "FEAT-081",
-              "PAGE-006",
-              "FLOW-009",
-              "FEAT-047"
-            ],
-            "source_file": "tests/target/unit/ota-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-003",
-            "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "target_ids": [
-              "REQ-022",
-              "FEAT-023",
-              "PAGE-006",
-              "FLOW-004",
-              "REQ-023"
-            ],
-            "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-008",
-            "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
-            "target_ids": [
-              "DEC-016",
-              "REQ-043",
-              "FEAT-046",
-              "PAGE-006",
-              "FLOW-009",
-              "STATE-OTA-01",
-              "REQ-044",
-              "REQ-045",
-              "REQ-066",
-              "FEAT-047",
-              "FEAT-048",
-              "FEAT-049",
-              "FEAT-050",
-              "FEAT-081"
-            ],
-            "source_file": "tests/target/integration/ota-transaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 34,
       "target_ids": [
@@ -7201,7 +5389,7 @@
         "面板内错误",
         "该操作重试"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
       "first_breakpoint": {
         "target": "FEAT-081",
         "test": "TEST-I-008",
@@ -7214,55 +5402,7 @@
         "duration_ms": 35,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-016",
-            "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
-            "target_ids": [
-              "DEC-016",
-              "STATE-OTA-01",
-              "REQ-066",
-              "FEAT-081",
-              "PAGE-006",
-              "FLOW-009",
-              "FEAT-047"
-            ],
-            "source_file": "tests/target/unit/ota-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-003",
-            "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "target_ids": [
-              "REQ-022",
-              "FEAT-023",
-              "PAGE-006",
-              "FLOW-004",
-              "REQ-023"
-            ],
-            "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-008",
-            "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
-            "target_ids": [
-              "DEC-016",
-              "REQ-043",
-              "FEAT-046",
-              "PAGE-006",
-              "FLOW-009",
-              "STATE-OTA-01",
-              "REQ-044",
-              "REQ-045",
-              "REQ-066",
-              "FEAT-047",
-              "FEAT-048",
-              "FEAT-049",
-              "FEAT-050",
-              "FEAT-081"
-            ],
-            "source_file": "tests/target/integration/ota-transaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 35,
       "target_ids": [
@@ -7290,7 +5430,7 @@
       "expected": [
         "见 STATE-OTA-01..10（`07`）"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
       "first_breakpoint": {
         "target": "FEAT-081",
         "test": "TEST-I-008",
@@ -7303,55 +5443,7 @@
         "duration_ms": 69,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-016",
-            "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
-            "target_ids": [
-              "DEC-016",
-              "STATE-OTA-01",
-              "REQ-066",
-              "FEAT-081",
-              "PAGE-006",
-              "FLOW-009",
-              "FEAT-047"
-            ],
-            "source_file": "tests/target/unit/ota-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-003",
-            "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "target_ids": [
-              "REQ-022",
-              "FEAT-023",
-              "PAGE-006",
-              "FLOW-004",
-              "REQ-023"
-            ],
-            "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-008",
-            "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
-            "target_ids": [
-              "DEC-016",
-              "REQ-043",
-              "FEAT-046",
-              "PAGE-006",
-              "FLOW-009",
-              "STATE-OTA-01",
-              "REQ-044",
-              "REQ-045",
-              "REQ-066",
-              "FEAT-047",
-              "FEAT-048",
-              "FEAT-049",
-              "FEAT-050",
-              "FEAT-081"
-            ],
-            "source_file": "tests/target/integration/ota-transaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 69,
       "target_ids": [
@@ -7379,7 +5471,7 @@
       "expected": [
         "服务面板 ready"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
       "first_breakpoint": {
         "target": "FEAT-081",
         "test": "TEST-I-008",
@@ -7392,55 +5484,7 @@
         "duration_ms": 47,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-016",
-            "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
-            "target_ids": [
-              "DEC-016",
-              "STATE-OTA-01",
-              "REQ-066",
-              "FEAT-081",
-              "PAGE-006",
-              "FLOW-009",
-              "FEAT-047"
-            ],
-            "source_file": "tests/target/unit/ota-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-003",
-            "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "target_ids": [
-              "REQ-022",
-              "FEAT-023",
-              "PAGE-006",
-              "FLOW-004",
-              "REQ-023"
-            ],
-            "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-008",
-            "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
-            "target_ids": [
-              "DEC-016",
-              "REQ-043",
-              "FEAT-046",
-              "PAGE-006",
-              "FLOW-009",
-              "STATE-OTA-01",
-              "REQ-044",
-              "REQ-045",
-              "REQ-066",
-              "FEAT-047",
-              "FEAT-048",
-              "FEAT-049",
-              "FEAT-050",
-              "FEAT-081"
-            ],
-            "source_file": "tests/target/integration/ota-transaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 47,
       "target_ids": [
@@ -7470,7 +5514,7 @@
       "expected": [
         "状态=已断开，Registry 更新"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
       "first_breakpoint": {
         "target": "FEAT-081",
         "test": "TEST-I-008",
@@ -7483,55 +5527,7 @@
         "duration_ms": 43,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-016",
-            "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
-            "target_ids": [
-              "DEC-016",
-              "STATE-OTA-01",
-              "REQ-066",
-              "FEAT-081",
-              "PAGE-006",
-              "FLOW-009",
-              "FEAT-047"
-            ],
-            "source_file": "tests/target/unit/ota-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-003",
-            "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "target_ids": [
-              "REQ-022",
-              "FEAT-023",
-              "PAGE-006",
-              "FLOW-004",
-              "REQ-023"
-            ],
-            "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-008",
-            "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
-            "target_ids": [
-              "DEC-016",
-              "REQ-043",
-              "FEAT-046",
-              "PAGE-006",
-              "FLOW-009",
-              "STATE-OTA-01",
-              "REQ-044",
-              "REQ-045",
-              "REQ-066",
-              "FEAT-047",
-              "FEAT-048",
-              "FEAT-049",
-              "FEAT-050",
-              "FEAT-081"
-            ],
-            "source_file": "tests/target/integration/ota-transaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 43,
       "target_ids": [
@@ -7561,7 +5557,7 @@
       "expected": [
         "ready"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
       "first_breakpoint": {
         "target": "FEAT-081",
         "test": "TEST-I-008",
@@ -7574,55 +5570,7 @@
         "duration_ms": 38,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-016",
-            "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
-            "target_ids": [
-              "DEC-016",
-              "STATE-OTA-01",
-              "REQ-066",
-              "FEAT-081",
-              "PAGE-006",
-              "FLOW-009",
-              "FEAT-047"
-            ],
-            "source_file": "tests/target/unit/ota-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-003",
-            "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "target_ids": [
-              "REQ-022",
-              "FEAT-023",
-              "PAGE-006",
-              "FLOW-004",
-              "REQ-023"
-            ],
-            "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-008",
-            "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
-            "target_ids": [
-              "DEC-016",
-              "REQ-043",
-              "FEAT-046",
-              "PAGE-006",
-              "FLOW-009",
-              "STATE-OTA-01",
-              "REQ-044",
-              "REQ-045",
-              "REQ-066",
-              "FEAT-047",
-              "FEAT-048",
-              "FEAT-049",
-              "FEAT-050",
-              "FEAT-081"
-            ],
-            "source_file": "tests/target/integration/ota-transaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 38,
       "target_ids": [
@@ -7652,7 +5600,7 @@
       "expected": [
         "值展示+日志"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
       "first_breakpoint": {
         "target": "FEAT-081",
         "test": "TEST-I-008",
@@ -7665,55 +5613,7 @@
         "duration_ms": 35,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-016",
-            "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
-            "target_ids": [
-              "DEC-016",
-              "STATE-OTA-01",
-              "REQ-066",
-              "FEAT-081",
-              "PAGE-006",
-              "FLOW-009",
-              "FEAT-047"
-            ],
-            "source_file": "tests/target/unit/ota-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-003",
-            "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "target_ids": [
-              "REQ-022",
-              "FEAT-023",
-              "PAGE-006",
-              "FLOW-004",
-              "REQ-023"
-            ],
-            "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-008",
-            "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
-            "target_ids": [
-              "DEC-016",
-              "REQ-043",
-              "FEAT-046",
-              "PAGE-006",
-              "FLOW-009",
-              "STATE-OTA-01",
-              "REQ-044",
-              "REQ-045",
-              "REQ-066",
-              "FEAT-047",
-              "FEAT-048",
-              "FEAT-049",
-              "FEAT-050",
-              "FEAT-081"
-            ],
-            "source_file": "tests/target/integration/ota-transaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 35,
       "target_ids": [
@@ -7743,7 +5643,7 @@
       "expected": [
         "设备响应+日志"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
       "first_breakpoint": {
         "target": "FEAT-081",
         "test": "TEST-I-008",
@@ -7756,55 +5656,7 @@
         "duration_ms": 32,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-016",
-            "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
-            "target_ids": [
-              "DEC-016",
-              "STATE-OTA-01",
-              "REQ-066",
-              "FEAT-081",
-              "PAGE-006",
-              "FLOW-009",
-              "FEAT-047"
-            ],
-            "source_file": "tests/target/unit/ota-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-003",
-            "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "target_ids": [
-              "REQ-022",
-              "FEAT-023",
-              "PAGE-006",
-              "FLOW-004",
-              "REQ-023"
-            ],
-            "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-008",
-            "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
-            "target_ids": [
-              "DEC-016",
-              "REQ-043",
-              "FEAT-046",
-              "PAGE-006",
-              "FLOW-009",
-              "STATE-OTA-01",
-              "REQ-044",
-              "REQ-045",
-              "REQ-066",
-              "FEAT-047",
-              "FEAT-048",
-              "FEAT-049",
-              "FEAT-050",
-              "FEAT-081"
-            ],
-            "source_file": "tests/target/integration/ota-transaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 32,
       "target_ids": [
@@ -7834,7 +5686,7 @@
       "expected": [
         "同上"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
       "first_breakpoint": {
         "target": "FEAT-081",
         "test": "TEST-I-008",
@@ -7847,55 +5699,7 @@
         "duration_ms": 33,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-016",
-            "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
-            "target_ids": [
-              "DEC-016",
-              "STATE-OTA-01",
-              "REQ-066",
-              "FEAT-081",
-              "PAGE-006",
-              "FLOW-009",
-              "FEAT-047"
-            ],
-            "source_file": "tests/target/unit/ota-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-003",
-            "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "target_ids": [
-              "REQ-022",
-              "FEAT-023",
-              "PAGE-006",
-              "FLOW-004",
-              "REQ-023"
-            ],
-            "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-008",
-            "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
-            "target_ids": [
-              "DEC-016",
-              "REQ-043",
-              "FEAT-046",
-              "PAGE-006",
-              "FLOW-009",
-              "STATE-OTA-01",
-              "REQ-044",
-              "REQ-045",
-              "REQ-066",
-              "FEAT-047",
-              "FEAT-048",
-              "FEAT-049",
-              "FEAT-050",
-              "FEAT-081"
-            ],
-            "source_file": "tests/target/integration/ota-transaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 33,
       "target_ids": [
@@ -7925,7 +5729,7 @@
       "expected": [
         "推送流+日志；Registry subscription_count +1"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
       "first_breakpoint": {
         "target": "FEAT-081",
         "test": "TEST-I-008",
@@ -7938,55 +5742,7 @@
         "duration_ms": 36,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-016",
-            "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
-            "target_ids": [
-              "DEC-016",
-              "STATE-OTA-01",
-              "REQ-066",
-              "FEAT-081",
-              "PAGE-006",
-              "FLOW-009",
-              "FEAT-047"
-            ],
-            "source_file": "tests/target/unit/ota-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-003",
-            "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "target_ids": [
-              "REQ-022",
-              "FEAT-023",
-              "PAGE-006",
-              "FLOW-004",
-              "REQ-023"
-            ],
-            "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-008",
-            "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
-            "target_ids": [
-              "DEC-016",
-              "REQ-043",
-              "FEAT-046",
-              "PAGE-006",
-              "FLOW-009",
-              "STATE-OTA-01",
-              "REQ-044",
-              "REQ-045",
-              "REQ-066",
-              "FEAT-047",
-              "FEAT-048",
-              "FEAT-049",
-              "FEAT-050",
-              "FEAT-081"
-            ],
-            "source_file": "tests/target/integration/ota-transaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 36,
       "target_ids": [
@@ -8018,7 +5774,7 @@
       "expected": [
         "推送停止；subscription_count −1"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
       "first_breakpoint": {
         "target": "FEAT-081",
         "test": "TEST-I-008",
@@ -8031,55 +5787,7 @@
         "duration_ms": 33,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-016",
-            "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
-            "target_ids": [
-              "DEC-016",
-              "STATE-OTA-01",
-              "REQ-066",
-              "FEAT-081",
-              "PAGE-006",
-              "FLOW-009",
-              "FEAT-047"
-            ],
-            "source_file": "tests/target/unit/ota-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-003",
-            "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "target_ids": [
-              "REQ-022",
-              "FEAT-023",
-              "PAGE-006",
-              "FLOW-004",
-              "REQ-023"
-            ],
-            "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-008",
-            "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
-            "target_ids": [
-              "DEC-016",
-              "REQ-043",
-              "FEAT-046",
-              "PAGE-006",
-              "FLOW-009",
-              "STATE-OTA-01",
-              "REQ-044",
-              "REQ-045",
-              "REQ-066",
-              "FEAT-047",
-              "FEAT-048",
-              "FEAT-049",
-              "FEAT-050",
-              "FEAT-081"
-            ],
-            "source_file": "tests/target/integration/ota-transaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 33,
       "target_ids": [
@@ -8107,7 +5815,7 @@
       "expected": [
         "toast+面板清空"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
       "first_breakpoint": {
         "target": "FEAT-081",
         "test": "TEST-I-008",
@@ -8120,55 +5828,7 @@
         "duration_ms": 36,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-016",
-            "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
-            "target_ids": [
-              "DEC-016",
-              "STATE-OTA-01",
-              "REQ-066",
-              "FEAT-081",
-              "PAGE-006",
-              "FLOW-009",
-              "FEAT-047"
-            ],
-            "source_file": "tests/target/unit/ota-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-003",
-            "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "target_ids": [
-              "REQ-022",
-              "FEAT-023",
-              "PAGE-006",
-              "FLOW-004",
-              "REQ-023"
-            ],
-            "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-008",
-            "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
-            "target_ids": [
-              "DEC-016",
-              "REQ-043",
-              "FEAT-046",
-              "PAGE-006",
-              "FLOW-009",
-              "STATE-OTA-01",
-              "REQ-044",
-              "REQ-045",
-              "REQ-066",
-              "FEAT-047",
-              "FEAT-048",
-              "FEAT-049",
-              "FEAT-050",
-              "FEAT-081"
-            ],
-            "source_file": "tests/target/integration/ota-transaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 36,
       "target_ids": [
@@ -8196,7 +5856,7 @@
       "expected": [
         "导出成功"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
       "first_breakpoint": {
         "target": "FEAT-081",
         "test": "TEST-I-008",
@@ -8209,55 +5869,7 @@
         "duration_ms": 34,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-016",
-            "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
-            "target_ids": [
-              "DEC-016",
-              "STATE-OTA-01",
-              "REQ-066",
-              "FEAT-081",
-              "PAGE-006",
-              "FLOW-009",
-              "FEAT-047"
-            ],
-            "source_file": "tests/target/unit/ota-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-003",
-            "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "target_ids": [
-              "REQ-022",
-              "FEAT-023",
-              "PAGE-006",
-              "FLOW-004",
-              "REQ-023"
-            ],
-            "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-008",
-            "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
-            "target_ids": [
-              "DEC-016",
-              "REQ-043",
-              "FEAT-046",
-              "PAGE-006",
-              "FLOW-009",
-              "STATE-OTA-01",
-              "REQ-044",
-              "REQ-045",
-              "REQ-066",
-              "FEAT-047",
-              "FEAT-048",
-              "FEAT-049",
-              "FEAT-050",
-              "FEAT-081"
-            ],
-            "source_file": "tests/target/integration/ota-transaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 34,
       "target_ids": [
@@ -8287,7 +5899,7 @@
       "expected": [
         "显示 target/硬件/目标版本/SHA 摘要"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
       "first_breakpoint": {
         "target": "FEAT-081",
         "test": "TEST-I-008",
@@ -8300,55 +5912,7 @@
         "duration_ms": 37,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-016",
-            "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
-            "target_ids": [
-              "DEC-016",
-              "STATE-OTA-01",
-              "REQ-066",
-              "FEAT-081",
-              "PAGE-006",
-              "FLOW-009",
-              "FEAT-047"
-            ],
-            "source_file": "tests/target/unit/ota-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-003",
-            "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "target_ids": [
-              "REQ-022",
-              "FEAT-023",
-              "PAGE-006",
-              "FLOW-004",
-              "REQ-023"
-            ],
-            "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-008",
-            "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
-            "target_ids": [
-              "DEC-016",
-              "REQ-043",
-              "FEAT-046",
-              "PAGE-006",
-              "FLOW-009",
-              "STATE-OTA-01",
-              "REQ-044",
-              "REQ-045",
-              "REQ-066",
-              "FEAT-047",
-              "FEAT-048",
-              "FEAT-049",
-              "FEAT-050",
-              "FEAT-081"
-            ],
-            "source_file": "tests/target/integration/ota-transaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 37,
       "target_ids": [
@@ -8382,7 +5946,7 @@
       "expected": [
         "进度→success→版本一致=成功"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
       "first_breakpoint": {
         "target": "FEAT-081",
         "test": "TEST-I-008",
@@ -8395,55 +5959,7 @@
         "duration_ms": 33,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-016",
-            "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
-            "target_ids": [
-              "DEC-016",
-              "STATE-OTA-01",
-              "REQ-066",
-              "FEAT-081",
-              "PAGE-006",
-              "FLOW-009",
-              "FEAT-047"
-            ],
-            "source_file": "tests/target/unit/ota-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-003",
-            "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "target_ids": [
-              "REQ-022",
-              "FEAT-023",
-              "PAGE-006",
-              "FLOW-004",
-              "REQ-023"
-            ],
-            "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-008",
-            "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
-            "target_ids": [
-              "DEC-016",
-              "REQ-043",
-              "FEAT-046",
-              "PAGE-006",
-              "FLOW-009",
-              "STATE-OTA-01",
-              "REQ-044",
-              "REQ-045",
-              "REQ-066",
-              "FEAT-047",
-              "FEAT-048",
-              "FEAT-049",
-              "FEAT-050",
-              "FEAT-081"
-            ],
-            "source_file": "tests/target/integration/ota-transaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 33,
       "target_ids": [
@@ -8475,7 +5991,7 @@
       "expected": [
         "取消完成回就绪"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
       "first_breakpoint": {
         "target": "FEAT-081",
         "test": "TEST-I-008",
@@ -8488,55 +6004,7 @@
         "duration_ms": 78,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-016",
-            "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
-            "target_ids": [
-              "DEC-016",
-              "STATE-OTA-01",
-              "REQ-066",
-              "FEAT-081",
-              "PAGE-006",
-              "FLOW-009",
-              "FEAT-047"
-            ],
-            "source_file": "tests/target/unit/ota-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-003",
-            "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "target_ids": [
-              "REQ-022",
-              "FEAT-023",
-              "PAGE-006",
-              "FLOW-004",
-              "REQ-023"
-            ],
-            "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-008",
-            "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
-            "target_ids": [
-              "DEC-016",
-              "REQ-043",
-              "FEAT-046",
-              "PAGE-006",
-              "FLOW-009",
-              "STATE-OTA-01",
-              "REQ-044",
-              "REQ-045",
-              "REQ-066",
-              "FEAT-047",
-              "FEAT-048",
-              "FEAT-049",
-              "FEAT-050",
-              "FEAT-081"
-            ],
-            "source_file": "tests/target/integration/ota-transaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 78,
       "target_ids": [
@@ -8564,7 +6032,7 @@
       "expected": [
         "—"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
       "first_breakpoint": {
         "target": "FEAT-081",
         "test": "TEST-I-008",
@@ -8577,55 +6045,7 @@
         "duration_ms": 78,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-016",
-            "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
-            "target_ids": [
-              "DEC-016",
-              "STATE-OTA-01",
-              "REQ-066",
-              "FEAT-081",
-              "PAGE-006",
-              "FLOW-009",
-              "FEAT-047"
-            ],
-            "source_file": "tests/target/unit/ota-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-003",
-            "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "target_ids": [
-              "REQ-022",
-              "FEAT-023",
-              "PAGE-006",
-              "FLOW-004",
-              "REQ-023"
-            ],
-            "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-008",
-            "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
-            "target_ids": [
-              "DEC-016",
-              "REQ-043",
-              "FEAT-046",
-              "PAGE-006",
-              "FLOW-009",
-              "STATE-OTA-01",
-              "REQ-044",
-              "REQ-045",
-              "REQ-066",
-              "FEAT-047",
-              "FEAT-048",
-              "FEAT-049",
-              "FEAT-050",
-              "FEAT-081"
-            ],
-            "source_file": "tests/target/integration/ota-transaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 78,
       "target_ids": [
@@ -8653,7 +6073,7 @@
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
       "first_breakpoint": {
         "target": "FEAT-081",
         "test": "TEST-I-008",
@@ -8666,55 +6086,7 @@
         "duration_ms": 4,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-016",
-            "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
-            "target_ids": [
-              "DEC-016",
-              "STATE-OTA-01",
-              "REQ-066",
-              "FEAT-081",
-              "PAGE-006",
-              "FLOW-009",
-              "FEAT-047"
-            ],
-            "source_file": "tests/target/unit/ota-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-003",
-            "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "target_ids": [
-              "REQ-022",
-              "FEAT-023",
-              "PAGE-006",
-              "FLOW-004",
-              "REQ-023"
-            ],
-            "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-008",
-            "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
-            "target_ids": [
-              "DEC-016",
-              "REQ-043",
-              "FEAT-046",
-              "PAGE-006",
-              "FLOW-009",
-              "STATE-OTA-01",
-              "REQ-044",
-              "REQ-045",
-              "REQ-066",
-              "FEAT-047",
-              "FEAT-048",
-              "FEAT-049",
-              "FEAT-050",
-              "FEAT-081"
-            ],
-            "source_file": "tests/target/integration/ota-transaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 4,
       "target_ids": [
@@ -8740,7 +6112,7 @@
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
       "first_breakpoint": {
         "target": "FEAT-081",
         "test": "TEST-I-008",
@@ -8753,55 +6125,7 @@
         "duration_ms": 57,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-016",
-            "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
-            "target_ids": [
-              "DEC-016",
-              "STATE-OTA-01",
-              "REQ-066",
-              "FEAT-081",
-              "PAGE-006",
-              "FLOW-009",
-              "FEAT-047"
-            ],
-            "source_file": "tests/target/unit/ota-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-003",
-            "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "target_ids": [
-              "REQ-022",
-              "FEAT-023",
-              "PAGE-006",
-              "FLOW-004",
-              "REQ-023"
-            ],
-            "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-008",
-            "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
-            "target_ids": [
-              "DEC-016",
-              "REQ-043",
-              "FEAT-046",
-              "PAGE-006",
-              "FLOW-009",
-              "STATE-OTA-01",
-              "REQ-044",
-              "REQ-045",
-              "REQ-066",
-              "FEAT-047",
-              "FEAT-048",
-              "FEAT-049",
-              "FEAT-050",
-              "FEAT-081"
-            ],
-            "source_file": "tests/target/integration/ota-transaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 57,
       "target_ids": [
@@ -8827,7 +6151,7 @@
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
       "first_breakpoint": {
         "target": "FEAT-081",
         "test": "TEST-I-008",
@@ -8840,55 +6164,7 @@
         "duration_ms": 41,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-016",
-            "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
-            "target_ids": [
-              "DEC-016",
-              "STATE-OTA-01",
-              "REQ-066",
-              "FEAT-081",
-              "PAGE-006",
-              "FLOW-009",
-              "FEAT-047"
-            ],
-            "source_file": "tests/target/unit/ota-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-003",
-            "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "target_ids": [
-              "REQ-022",
-              "FEAT-023",
-              "PAGE-006",
-              "FLOW-004",
-              "REQ-023"
-            ],
-            "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-008",
-            "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
-            "target_ids": [
-              "DEC-016",
-              "REQ-043",
-              "FEAT-046",
-              "PAGE-006",
-              "FLOW-009",
-              "STATE-OTA-01",
-              "REQ-044",
-              "REQ-045",
-              "REQ-066",
-              "FEAT-047",
-              "FEAT-048",
-              "FEAT-049",
-              "FEAT-050",
-              "FEAT-081"
-            ],
-            "source_file": "tests/target/integration/ota-transaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 41,
       "target_ids": [
@@ -8914,7 +6190,7 @@
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
       "first_breakpoint": {
         "target": "FEAT-081",
         "test": "TEST-I-008",
@@ -8927,55 +6203,7 @@
         "duration_ms": 43,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-016",
-            "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
-            "target_ids": [
-              "DEC-016",
-              "STATE-OTA-01",
-              "REQ-066",
-              "FEAT-081",
-              "PAGE-006",
-              "FLOW-009",
-              "FEAT-047"
-            ],
-            "source_file": "tests/target/unit/ota-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-003",
-            "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "target_ids": [
-              "REQ-022",
-              "FEAT-023",
-              "PAGE-006",
-              "FLOW-004",
-              "REQ-023"
-            ],
-            "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-008",
-            "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
-            "target_ids": [
-              "DEC-016",
-              "REQ-043",
-              "FEAT-046",
-              "PAGE-006",
-              "FLOW-009",
-              "STATE-OTA-01",
-              "REQ-044",
-              "REQ-045",
-              "REQ-066",
-              "FEAT-047",
-              "FEAT-048",
-              "FEAT-049",
-              "FEAT-050",
-              "FEAT-081"
-            ],
-            "source_file": "tests/target/integration/ota-transaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 43,
       "target_ids": [
@@ -9001,7 +6229,7 @@
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
       "first_breakpoint": {
         "target": "FEAT-081",
         "test": "TEST-I-008",
@@ -9014,55 +6242,7 @@
         "duration_ms": 32,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-016",
-            "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
-            "target_ids": [
-              "DEC-016",
-              "STATE-OTA-01",
-              "REQ-066",
-              "FEAT-081",
-              "PAGE-006",
-              "FLOW-009",
-              "FEAT-047"
-            ],
-            "source_file": "tests/target/unit/ota-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-003",
-            "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "target_ids": [
-              "REQ-022",
-              "FEAT-023",
-              "PAGE-006",
-              "FLOW-004",
-              "REQ-023"
-            ],
-            "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-008",
-            "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
-            "target_ids": [
-              "DEC-016",
-              "REQ-043",
-              "FEAT-046",
-              "PAGE-006",
-              "FLOW-009",
-              "STATE-OTA-01",
-              "REQ-044",
-              "REQ-045",
-              "REQ-066",
-              "FEAT-047",
-              "FEAT-048",
-              "FEAT-049",
-              "FEAT-050",
-              "FEAT-081"
-            ],
-            "source_file": "tests/target/integration/ota-transaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 32,
       "target_ids": [
@@ -9088,7 +6268,7 @@
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client",
       "first_breakpoint": {
         "target": "FEAT-081",
         "test": "TEST-I-008",
@@ -9101,55 +6281,7 @@
         "duration_ms": 36,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-016",
-            "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
-            "target_ids": [
-              "DEC-016",
-              "STATE-OTA-01",
-              "REQ-066",
-              "FEAT-081",
-              "PAGE-006",
-              "FLOW-009",
-              "FEAT-047"
-            ],
-            "source_file": "tests/target/unit/ota-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-003",
-            "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "target_ids": [
-              "REQ-022",
-              "FEAT-023",
-              "PAGE-006",
-              "FLOW-004",
-              "REQ-023"
-            ],
-            "source_file": "tests/target/unit/reconnect-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-008",
-            "first_breakpoint": "OtaManager 在第一个 DATA 写之前未发送 CTRL start",
-            "target_ids": [
-              "DEC-016",
-              "REQ-043",
-              "FEAT-046",
-              "PAGE-006",
-              "FLOW-009",
-              "STATE-OTA-01",
-              "REQ-044",
-              "REQ-045",
-              "REQ-066",
-              "FEAT-047",
-              "FEAT-048",
-              "FEAT-049",
-              "FEAT-050",
-              "FEAT-081"
-            ],
-            "source_file": "tests/target/integration/ota-transaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 36,
       "target_ids": [
@@ -11752,19 +8884,7 @@
         "duration_ms": 37,
         "harness_error": null,
         "source_doc": "docs/target-product/web/WEB-001_LANDING_PAGE.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 37,
       "target_ids": [
@@ -11799,19 +8919,7 @@
         "duration_ms": 37,
         "harness_error": null,
         "source_doc": "docs/target-product/web/WEB-001_LANDING_PAGE.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 37,
       "target_ids": [
@@ -11844,19 +8952,7 @@
         "duration_ms": 41,
         "harness_error": null,
         "source_doc": "docs/target-product/web/WEB-001_LANDING_PAGE.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 41,
       "target_ids": [
@@ -11890,19 +8986,7 @@
         "duration_ms": 48,
         "harness_error": null,
         "source_doc": "docs/target-product/web/WEB-001_LANDING_PAGE.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 48,
       "target_ids": [
@@ -11935,19 +9019,7 @@
         "duration_ms": 46,
         "harness_error": null,
         "source_doc": "docs/target-product/web/WEB-001_LANDING_PAGE.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 46,
       "target_ids": [
@@ -11980,19 +9052,7 @@
         "duration_ms": 38,
         "harness_error": null,
         "source_doc": "docs/target-product/web/WEB-001_LANDING_PAGE.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 38,
       "target_ids": [
@@ -12025,19 +9085,7 @@
         "duration_ms": 38,
         "harness_error": null,
         "source_doc": "docs/target-product/web/WEB-001_LANDING_PAGE.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 38,
       "target_ids": [
@@ -12070,19 +9118,7 @@
         "duration_ms": 40,
         "harness_error": null,
         "source_doc": "docs/target-product/web/WEB-001_LANDING_PAGE.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 40,
       "target_ids": [
@@ -12115,19 +9151,7 @@
         "duration_ms": 41,
         "harness_error": null,
         "source_doc": "docs/target-product/web/WEB-001_LANDING_PAGE.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 41,
       "target_ids": [
@@ -12160,19 +9184,7 @@
         "duration_ms": 47,
         "harness_error": null,
         "source_doc": "docs/target-product/web/WEB-001_LANDING_PAGE.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 47,
       "target_ids": [
@@ -12205,19 +9217,7 @@
         "duration_ms": 43,
         "harness_error": null,
         "source_doc": "docs/target-product/web/WEB-001_LANDING_PAGE.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 43,
       "target_ids": [
@@ -12250,19 +9250,7 @@
         "duration_ms": 45,
         "harness_error": null,
         "source_doc": "docs/target-product/web/WEB-001_LANDING_PAGE.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 45,
       "target_ids": [
@@ -12295,19 +9283,7 @@
         "duration_ms": 53,
         "harness_error": null,
         "source_doc": "docs/target-product/web/WEB-001_LANDING_PAGE.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 53,
       "target_ids": [
@@ -12340,19 +9316,7 @@
         "duration_ms": 54,
         "harness_error": null,
         "source_doc": "docs/target-product/web/WEB-001_LANDING_PAGE.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 54,
       "target_ids": [
@@ -12385,19 +9349,7 @@
         "duration_ms": 58,
         "harness_error": null,
         "source_doc": "docs/target-product/web/WEB-001_LANDING_PAGE.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 58,
       "target_ids": [
@@ -12430,19 +9382,7 @@
         "duration_ms": 37,
         "harness_error": null,
         "source_doc": "docs/target-product/web/WEB-001_LANDING_PAGE.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 37,
       "target_ids": [
@@ -12473,19 +9413,7 @@
         "duration_ms": 30,
         "harness_error": null,
         "source_doc": "docs/target-product/web/WEB-001_LANDING_PAGE.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 30,
       "target_ids": [
@@ -12516,19 +9444,7 @@
         "duration_ms": 33,
         "harness_error": null,
         "source_doc": "docs/target-product/web/WEB-001_LANDING_PAGE.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 33,
       "target_ids": [
@@ -12559,19 +9475,7 @@
         "duration_ms": 35,
         "harness_error": null,
         "source_doc": "docs/target-product/web/WEB-001_LANDING_PAGE.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 35,
       "target_ids": [
@@ -12602,19 +9506,7 @@
         "duration_ms": 4,
         "harness_error": null,
         "source_doc": "docs/target-product/web/WEB-001_LANDING_PAGE.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 4,
       "target_ids": [
@@ -12645,19 +9537,7 @@
         "duration_ms": 51,
         "harness_error": null,
         "source_doc": "docs/target-product/web/WEB-001_LANDING_PAGE.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 51,
       "target_ids": [
@@ -12688,19 +9568,7 @@
         "duration_ms": 45,
         "harness_error": null,
         "source_doc": "docs/target-product/web/WEB-001_LANDING_PAGE.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 45,
       "target_ids": [
@@ -12731,19 +9599,7 @@
         "duration_ms": 45,
         "harness_error": null,
         "source_doc": "docs/target-product/web/WEB-001_LANDING_PAGE.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 45,
       "target_ids": [
@@ -12774,19 +9630,7 @@
         "duration_ms": 53,
         "harness_error": null,
         "source_doc": "docs/target-product/web/WEB-001_LANDING_PAGE.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 53,
       "target_ids": [
@@ -12817,19 +9661,7 @@
         "duration_ms": 44,
         "harness_error": null,
         "source_doc": "docs/target-product/web/WEB-001_LANDING_PAGE.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-013",
-            "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
-            "target_ids": [
-              "REQ-036",
-              "FEAT-040",
-              "PAGE-002",
-              "WEB-001"
-            ],
-            "source_file": "tests/target/unit/logging-redaction-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 44,
       "target_ids": [

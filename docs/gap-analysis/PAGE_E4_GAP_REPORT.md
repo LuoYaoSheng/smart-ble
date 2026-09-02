@@ -6,7 +6,7 @@ gate: TP-G2-R2
 environment: READY_FOR_PAGE_E4
 fake_runtime: true
 live_app_url: false
-generated_at: 2026-09-02T01:00:10.537Z
+generated_at: 2026-09-02T01:07:15.065Z
 ```
 
 > **原则**：Playwright Fake Runtime harness PASS ≠ 产品实现满足目标。
@@ -171,7 +171,7 @@ generated_at: 2026-09-02T01:00:10.537Z
 - **Product**: FAIL
 - **Target**: `docs/target-product/pages|web` + behavior states=10 ops=14
 - **Actual (E4 harness)**: Fake Runtime PASS=30 FAIL=0
-- **Actual (product)**: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA
+- **Actual (product)**: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA-PACKAGE DONE；PAGE-006 剩余 OTA Client
 - **Case tallies**: PASS=0 FAIL=30 BLOCKED=0 NOT_IMPLEMENTED=0
 - **Root Cause**: RC-OTA-CLIENT
 - **Fix IDs**: OTA-CLIENT-001（页面失败若源自 Runtime，引用 RUNTIME_* 而非新建 PAGE_FIX）
@@ -190,7 +190,7 @@ generated_at: 2026-09-02T01:00:10.537Z
   - FAIL STATE-P006-08 → OTA-CLIENT-001
 
 **Related**
-  - RUNTIME-RECONNECT-001: DONE
+  - OTA-PACKAGE-001: DONE
   - RUNTIME-CONNECTION-DISCOVERY-001: TEST-I-003 asserts discover orchestration gap (semi-open risk) (apps/uniapp/services/ble-runtime/index.js)
 
 ### PAGE-007
