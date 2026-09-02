@@ -11,4 +11,3 @@ command=/Applications/HBuilderX.app/Contents/MacOS/cli launch app-android --proj
 15:31:16.169 项目 uniapp 编译成功。
 15:31:16.172 ready in 4355ms.
 15:31:16.185 已停止运行...
-

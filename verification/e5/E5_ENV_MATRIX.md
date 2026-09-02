@@ -17,7 +17,7 @@
 | BLE link | BLOCKED | BLOCKED | BLOCKED |
 | Evidence | READY | READY | READY |
 
-> Evidence 基础设施（目录 / checker / matrix / devices 模板）已统一 → **READY**。  
+> Evidence 基础设施（目录 / checker / matrix / devices 模板）已统一 → **READY**。
 > 真机执行条件未齐 → 各域 E5 仍 **BLOCKED**。
 
 ## Detail status
