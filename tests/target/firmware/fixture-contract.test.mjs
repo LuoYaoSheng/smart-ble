@@ -15,6 +15,8 @@ const FW_PATHS = [
   'hardware/esp32/LightBLE/src/ble_peripheral.cpp',
   'hardware/esp32/LightBLE/src/device_info.cpp',
   'hardware/esp32/LightBLE/src/test_control.cpp',
+  'hardware/esp32/LightBLE/src/observer_main.cpp',
+  'hardware/esp32/LightBLE/src/observer_scanner.cpp',
   'hardware/esp32/LightBLE/src/ota_server.cpp',
   'hardware/esp32/LightBLE/include/ota_server.h',
   'hardware/esp32/LightBLE/include/fixture_config.h',

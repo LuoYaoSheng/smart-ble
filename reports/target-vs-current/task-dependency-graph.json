@@ -593,7 +593,7 @@
       "title": "实现 fixture_observer",
       "root_cause_id": "RC-ESP32-OBSERVER",
       "severity": "P1",
-      "status": "PLANNED",
+      "status": "DONE",
       "dependencies": [
         "ESP32-BUILD-001"
       ],
@@ -1036,7 +1036,6 @@
   "recommended_order": [
     "RELEASE-PIPELINE-001",
     "OTA-E5-VERIFICATION",
-    "ESP32-OBSERVER-001",
     "ESP32-FAULT-001",
     "PAGE-BROADCAST-001",
     "TEST-BRIDGE-TS-001",

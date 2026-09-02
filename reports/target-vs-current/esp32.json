@@ -272,9 +272,11 @@
     },
     "observer": {
       "present": true,
+      "ready": true,
       "severity": "P1",
-      "task_id": "ESP32-OBSERVER-001",
-      "root_cause_id": "RC-ESP32-OBSERVER"
+      "task_id": null,
+      "root_cause_id": null,
+      "status": "CONFIRMED_IMPLEMENTED"
     },
     "artifact": {
       "manifest_present": false,

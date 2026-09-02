@@ -136,11 +136,18 @@ const FACTS = {
     'hardware/esp32/LightBLE/src/serial_events.cpp',
     'hardware/esp32/LightBLE/src/permissions_demo.cpp',
     'hardware/esp32/LightBLE/src/ota_server.cpp',
+    'hardware/esp32/LightBLE/src/observer_main.cpp',
+    'hardware/esp32/LightBLE/src/observer_scanner.cpp',
+    'hardware/esp32/LightBLE/src/observer_parser.cpp',
+    'hardware/esp32/LightBLE/src/observer_events.cpp',
     'hardware/esp32/LightBLE/include/ota_server.h',
     'hardware/esp32/LightBLE/include/fixture_config.h',
     'hardware/esp32/LightBLE/include/device_info.h',
     'hardware/esp32/LightBLE/include/test_control.h',
     'hardware/esp32/LightBLE/include/ble_peripheral.h',
+    'hardware/esp32/LightBLE/include/observer_scanner.h',
+    'hardware/esp32/LightBLE/include/observer_parser.h',
+    'hardware/esp32/LightBLE/include/observer_events.h',
   ].map(read).join('\n'),
   pio: read('hardware/esp32/LightBLE/platformio.ini'),
   bleRuntimeIndex: read('apps/uniapp/services/ble-runtime/index.js'),
@@ -162,7 +169,10 @@ const hasOtaPackageValidator = exists('apps/uniapp/services/ota/package-validato
 const hasOtaPackageSchema = exists('contracts/target/ota-package.schema.json');
 const otaPackageReady = hasOtaPackageValidator && hasOtaPackageSchema
   && /validateFirmwarePackage|validateFirmwareManifest/.test(read('apps/uniapp/services/ota/package-validator.js'));
-const hasObserver = /BLEToolkit-Observer/.test(FACTS.esp32);
+const hasObserver = /BLEToolkit-Observer/.test(FACTS.esp32)
+  && exists('hardware/esp32/LightBLE/src/observer_scanner.cpp')
+  && /NimBLEScan|getScan\(/.test(FACTS.esp32)
+  && /FIXTURE_ROLE_OBSERVER/.test(FACTS.esp32);
 const hasLedTable = /\bFF00\b|\b0xFF00\b/.test(FACTS.esp32);
 const landingFakeDownload = /releases\/latest/.test(FACTS.landing);
 const versionSsotReady = FACTS.hasRootVersion
@@ -206,6 +216,14 @@ const esp32PeripheralReady = deviceNameMacro === 'BLEToolkit-Server'
   && /delayed_response/.test(FACTS.esp32)
   && /disconnect_on_write/.test(FACTS.esp32)
   && /emitBleEvent|"type":"ble"|type.*=.*"ble"/.test(FACTS.esp32);
+const esp32ObserverReady = hasObserver
+  && exists('hardware/esp32/LightBLE/src/observer_parser.cpp')
+  && exists('hardware/esp32/LightBLE/src/observer_events.cpp')
+  && exists('hardware/esp32/LightBLE/src/observer_main.cpp')
+  && /parseAdvertisementPayload/.test(FACTS.esp32)
+  && /"type".*"advertisement"|type.*=.*"advertisement"/.test(FACTS.esp32)
+  && /fixture_match/.test(FACTS.esp32)
+  && /observerEmitScanEvent/.test(FACTS.esp32);
 const otaUsesAction = /doc\["action"\]|strcmp\(action/.test(FACTS.esp32) && !/doc\["op"\]|"op"\s*:/.test(FACTS.esp32);
 const otaFirmwareReady = (/doc\["op"\]|"op"\s*:/.test(FACTS.esp32)
   && /sha256|OTA_HASH_MISMATCH|OTA_RECEIVING|OtaServer/.test(FACTS.esp32)
@@ -367,7 +385,7 @@ const TASKS = [
   { task_id: 'OTA-E5-VERIFICATION', task_type: 'VERIFY_E5', title: 'ESP32+Android OTA 闭环 E5', root_cause_id: 'RC-OTA-E5-HW', severity: 'P0', deps: ['OTA-FIRMWARE-001', 'OTA-CLIENT-001'], order_hint: 23, status: otaE5Status },
   { task_id: 'ESP32-BUILD-001', task_type: 'SOURCE_FIX', title: '两环境、无固定 COM、模块化入口', root_cause_id: 'RC-ESP32-BUILD', severity: 'P1', deps: [], order_hint: 30, status: esp32BuildReady ? 'DONE' : 'PLANNED' },
   { task_id: 'ESP32-PERIPHERAL-001', task_type: 'SOURCE_FIX', title: '服务/特征/名称/LED/Device Info 对齐契约', root_cause_id: 'RC-ESP32-LED-NAME', severity: 'P1', deps: ['ESP32-BUILD-001'], order_hint: 31, status: esp32PeripheralReady ? 'DONE' : 'PLANNED' },
-  { task_id: 'ESP32-OBSERVER-001', task_type: 'SOURCE_FIX', title: '实现 fixture_observer', root_cause_id: 'RC-ESP32-OBSERVER', severity: 'P1', deps: ['ESP32-BUILD-001'], order_hint: 32 },
+  { task_id: 'ESP32-OBSERVER-001', task_type: 'SOURCE_FIX', title: '实现 fixture_observer', root_cause_id: 'RC-ESP32-OBSERVER', severity: 'P1', deps: ['ESP32-BUILD-001'], order_hint: 32, status: esp32ObserverReady ? 'DONE' : 'PLANNED' },
   { task_id: 'ESP32-FAULT-001', task_type: 'SOURCE_FIX', title: 'Fault Injection + Serial JSON', root_cause_id: 'RC-ESP32-SERIAL', severity: 'P1', deps: ['ESP32-PERIPHERAL-001'], order_hint: 33 },
   { task_id: 'PAGE-BROADCAST-001', task_type: 'SOURCE_FIX', title: 'PAGE-008 改用 composable/adapter/service', root_cause_id: 'RC-PAGE-BROADCAST', severity: 'P1', deps: [], order_hint: 40 },
   { task_id: 'PAGE-VERSION-001', task_type: 'SOURCE_FIX', title: 'PAGE-010 改为 Metadata 投影', root_cause_id: 'RC-PAGE-VERSION', severity: 'P1', deps: ['VERSION-METADATA-001'], order_hint: 41, status: pageVersionReady ? 'DONE' : 'PLANNED' },
@@ -1338,9 +1356,11 @@ const esp32Inventory = {
   serial_json: bleFixture.serial_json,
   observer: {
     present: hasObserver,
+    ready: esp32ObserverReady,
     severity: 'P1',
-    task_id: 'ESP32-OBSERVER-001',
-    root_cause_id: 'RC-ESP32-OBSERVER',
+    task_id: esp32ObserverReady ? null : 'ESP32-OBSERVER-001',
+    root_cause_id: esp32ObserverReady ? null : 'RC-ESP32-OBSERVER',
+    status: esp32ObserverReady ? 'CONFIRMED_IMPLEMENTED' : 'CONFIRMED_MISSING',
   },
   artifact: {
     manifest_present: exists('hardware/esp32/LightBLE/manifest.json'),

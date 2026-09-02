@@ -74,11 +74,9 @@ const FACTS = {
     && /CONNECTION_STATE\.DISCOVERING/.test(read('apps/uniapp/services/ble-runtime/index.js'))
     && /capabilities/.test(read('apps/uniapp/services/ble-runtime/session-registry.js')),
   scanAutoStop5: /autoStopSeconds\s*=\s*5/.test(read('apps/uniapp/composables/use-ble-scan.js')),
-  hasObserver: /BLEToolkit-Observer/.test(
-    read('hardware/esp32/LightBLE/src/main.cpp')
-    + read('hardware/esp32/LightBLE/include/fixture_config.h')
-    + read('hardware/esp32/LightBLE/src/fixture_observer_stub.cpp'),
-  ),
+  hasObserver: exists('hardware/esp32/LightBLE/src/observer_scanner.cpp')
+    && /NimBLEScan|getScan\(/.test(read('hardware/esp32/LightBLE/src/observer_scanner.cpp'))
+    && /FIXTURE_ROLE_OBSERVER/.test(read('hardware/esp32/LightBLE/include/fixture_config.h')),
   hasPeripheral: exists('hardware/esp32/LightBLE/src/ble_peripheral.cpp')
     && /NimBLEDevice::init\("BLEToolkit-Server"\)/.test(read('hardware/esp32/LightBLE/src/ble_peripheral.cpp')),
   filterHasKeywordMatch: /keyword|tokens|includes\(/.test(read('apps/uniapp/services/ble-runtime/device-filter.js')),
@@ -239,9 +237,9 @@ const PAGE_ASSESS = {
     },
     also: [
       { task_id: 'ESP32-PERIPHERAL-001', breakpoint: FACTS.hasPeripheral ? 'IMPLEMENTED' : 'OPEN' },
-      { task_id: 'ESP32-OBSERVER-001', status_hint: 'BLOCKED', breakpoint: 'Observer fixture BLOCKED；PAGE-008 observer-dependent ops → BLOCKED_BY_FIXTURE' },
+      { task_id: 'ESP32-OBSERVER-001', breakpoint: FACTS.hasObserver ? 'IMPLEMENTED' : 'BLOCKED' },
     ],
-    notes: 'Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）',
+    notes: `Peripheral: ${FACTS.hasPeripheral ? 'IMPLEMENTED' : 'OPEN'}；Observer: ${FACTS.hasObserver ? 'IMPLEMENTED' : 'BLOCKED'}；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN`,
   },
   'PAGE-009': {
     product: 'PASS',
@@ -726,7 +724,7 @@ ${pagesBody}
 | Testability | TEST-BRIDGE-TS-001（Smart HID TS） |
 | Metadata | PAGE-010 CLOSED |
 | Landing | WEB-001 honesty PASS（无假下载） |
-| Fixture/Hardware | PAGE-008 Observer → ESP32-OBSERVER-001 (BLOCKED) |
+| Fixture/Hardware | PAGE-008 Observer → ESP32-OBSERVER-001 (IMPLEMENTED；E5 still OPEN) |
 
 ## Machine report
 

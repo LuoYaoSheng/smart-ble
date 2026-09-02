@@ -4,7 +4,6 @@
   "recommended_order": [
     "RELEASE-PIPELINE-001",
     "OTA-E5-VERIFICATION",
-    "ESP32-OBSERVER-001",
     "ESP32-FAULT-001",
     "PAGE-BROADCAST-001",
     "TEST-BRIDGE-TS-001",

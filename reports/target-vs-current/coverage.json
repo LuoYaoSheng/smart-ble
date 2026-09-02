@@ -1,8 +1,8 @@
 {
   "gate": "TP-G2-R1",
   "schema_version": "2.0",
-  "generated_at": "2026-09-02T06:15:50.615Z",
-  "commit": "d9906bb9b04485d90fb14a7c064f31d0f00e6419",
+  "generated_at": "2026-09-02T06:28:07.142Z",
+  "commit": "8fbb8285e63fd97d5643906bec4d4807e93b5007",
   "structured_current_path": ".tmp/tp-g2/logs/current-structured.json",
   "system": {
     "SYSTEM_PASS": 412,

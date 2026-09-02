@@ -1,6 +1,6 @@
 {
   "gate": "TP-G2-R2",
-  "generated_at": "2026-09-02T06:15:51.430Z",
+  "generated_at": "2026-09-02T06:28:51.593Z",
   "environment": {
     "status": "READY_FOR_PAGE_E4",
     "playwright": {
@@ -208,7 +208,7 @@
       "product": "FAIL",
       "task_id": "PAGE-BROADCAST-001",
       "root_cause_id": "RC-PAGE-BROADCAST",
-      "notes": "Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
+      "notes": "Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -223,8 +223,7 @@
         },
         {
           "task_id": "ESP32-OBSERVER-001",
-          "status_hint": "BLOCKED",
-          "breakpoint": "Observer fixture BLOCKED；PAGE-008 observer-dependent ops → BLOCKED_BY_FIXTURE"
+          "breakpoint": "IMPLEMENTED"
         }
       ],
       "fail_cases": [
@@ -5522,7 +5521,7 @@
         "\"支持情况未知\"",
         "检查按钮"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -5563,7 +5562,7 @@
       "expected": [
         "spinner"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -5604,7 +5603,7 @@
       "expected": [
         "UNSUPPORTED 说明"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -5647,7 +5646,7 @@
       "expected": [
         "字段级提示"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -5688,7 +5687,7 @@
       "expected": [
         "开始可点"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -5731,7 +5730,7 @@
         "停止按钮",
         "Observer 提示"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -5774,7 +5773,7 @@
       "expected": [
         "过渡"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -5816,7 +5815,7 @@
         "错误",
         "去设置"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -5858,7 +5857,7 @@
         "错误",
         "去开启"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -5899,7 +5898,7 @@
       "expected": [
         "说明\"先断开 N 台设备\""
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -5943,7 +5942,7 @@
         "阻止",
         "首行原因"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -5985,7 +5984,7 @@
         "错误",
         "重试"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -6026,7 +6025,7 @@
       "expected": [
         "状态芯片更新"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -6069,7 +6068,7 @@
       "expected": [
         "预算即时更新"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -6112,7 +6111,7 @@
       "expected": [
         "状态=广播中（实际成功后）"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -6157,7 +6156,7 @@
       "expected": [
         "状态=已就绪；Observer 观测消失（E5）"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -6200,7 +6199,7 @@
       "expected": [
         "toast"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -6241,7 +6240,7 @@
       "expected": [
         "无声"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -6284,7 +6283,7 @@
       "expected": [
         "toast"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -6325,7 +6324,7 @@
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -6364,7 +6363,7 @@
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -6403,7 +6402,7 @@
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -6442,7 +6441,7 @@
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -6481,7 +6480,7 @@
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -6520,7 +6519,7 @@
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
