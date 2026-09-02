@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 22f5ccdce805a64b62655ec4e44dfdef605c5497505bcd95599fdf4bad5e06d1
+content_hash: f02fb36703e21a3dfc1fbe352c470b2a26f3fbf2d6e6a28d5e3f45c20f16faf1
 ```
 
 对照：`contracts/target/ble-fixture-target.json` ↔ `hardware/esp32/LightBLE/src/main.cpp`
@@ -20,8 +20,8 @@ content_hash: 22f5ccdce805a64b62655ec4e44dfdef605c5497505bcd95599fdf4bad5e06d1
 ## 名称
 
 - DEVICE_NAME macro: `BLEToolkit-Server`
-- NimBLEDevice::init: `ESP32-BLE-Server`
-- Observer 名存在: false
+- NimBLEDevice::init: `null`
+- Observer 名存在: true
 - 宏与 init 不一致: true
 
 ## Services / Characteristics
@@ -50,14 +50,14 @@ content_hash: 22f5ccdce805a64b62655ec4e44dfdef605c5497505bcd95599fdf4bad5e06d1
 
 ## LED
 
-- FF00 present=false effect=state=off
-- FF01 present=false effect=state=on
-- FF02 present=false effect=200ms 快闪
-- FF03 present=false effect=1000ms 慢闪
+- FF00 present=true effect=state=off
+- FF01 present=true effect=state=on
+- FF02 present=true effect=200ms 快闪
+- FF03 present=true effect=1000ms 慢闪
 
 ## OTA 固件字段
 
-- 当前字段风格: action
+- 当前字段风格: op_or_other
 - 目标字段: op
 - 客户端写 CTRL: true
 - 客户端包校验: true
@@ -74,7 +74,7 @@ content_hash: 22f5ccdce805a64b62655ec4e44dfdef605c5497505bcd95599fdf4bad5e06d1
 
 ## Observer
 
-- present: false
+- present: true
 - severity 分类: **P1**（无公开危害证据时不标 P0）
 - task: ESP32-OBSERVER-001
 

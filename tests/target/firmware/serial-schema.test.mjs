@@ -29,9 +29,12 @@ test('观察流行解析（目标 schema 的 E1 参照）', () => {
 });
 
 test('固件侧串口事件 emit 静态探测（可 FAIL=差距）', () => {
-  const FW = `${ROOT}/hardware/esp32/LightBLE/src/main.cpp`;
-  if (!existsSync(FW)) return assert.fail('固件源缺失');
-  const fw = readFileSync(FW, 'utf8');
+  const paths = [
+    `${ROOT}/hardware/esp32/LightBLE/src/main.cpp`,
+    `${ROOT}/hardware/esp32/LightBLE/src/ota_server.cpp`,
+  ];
+  const fw = paths.filter((p) => existsSync(p)).map((p) => readFileSync(p, 'utf8')).join('\n');
+  if (!fw) return assert.fail('固件源缺失');
   const jsonEmit = /Serial\.printf\s*\(\s*"\{|"\{\\?"|JSON/.test(fw);
   assert.ok(jsonEmit, '固件存在 JSON 化串口输出迹象（Serial.printf/{…} 或 JSON 组装）');
   const evHit = serial.event_types.filter((e) => fw.includes(`"${e}"`) || fw.includes(`'${e}'`) || fw.includes(`"${e}\\`));

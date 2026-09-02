@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 22f5ccdce805a64b62655ec4e44dfdef605c5497505bcd95599fdf4bad5e06d1
+content_hash: f02fb36703e21a3dfc1fbe352c470b2a26f3fbf2d6e6a28d5e3f45c20f16faf1
 ```
 
 > PUBLIC-HONESTY-001 / VERSION-METADATA-001 状态以 task-dependency-graph.json 为准。未批准 Task 不得执行。
@@ -48,7 +48,7 @@ content_hash: 22f5ccdce805a64b62655ec4e44dfdef605c5497505bcd95599fdf4bad5e06d1
 - severity：P0
 - root_cause_id：RC-RELEASE-PIPELINE
 - Target IDs（样本）：PROTO-010
-- Test IDs：—
+- Test IDs：TEST-E-006
 - First Breakpoint：.github/workflows/release-build.yml builds Flutter/Tauri; not UniApp Android + Peripheral/Observer firmware
 - 依赖：VERSION-METADATA-001
 - 解锁：VERIFY-E6-001
@@ -64,7 +64,7 @@ content_hash: 22f5ccdce805a64b62655ec4e44dfdef605c5497505bcd95599fdf4bad5e06d1
 - severity：—
 - root_cause_id：—
 - Target IDs（样本）：CLAIM-001, CLAIM-002, CLAIM-003, CLAIM-004, CLAIM-005, CLAIM-006, CLAIM-007, CLAIM-008, CLAIM-009, CLAIM-010, CLAIM-011, CLAIM-012
-- Test IDs：TEST-R-006, TEST-R-002, TEST-R-007, TEST-A-005, TEST-W-007, TEST-E-001, TEST-A-006, TEST-A-008, TEST-E-003, TEST-W-008, TEST-A-009, TEST-W-009
+- Test IDs：TEST-R-006, TEST-E-008, TEST-R-001, TEST-R-002, TEST-R-007, TEST-A-005, TEST-W-007, TEST-E-001, TEST-A-006, TEST-A-008, TEST-E-003, TEST-W-008
 - First Breakpoint：E6 NOT_EXECUTED
 - 依赖：PUBLIC-HONESTY-001, RELEASE-PIPELINE-001, VERSION-METADATA-001
 - 解锁：

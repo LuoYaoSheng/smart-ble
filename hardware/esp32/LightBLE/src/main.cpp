@@ -3,7 +3,7 @@
 #include <NimBLEServer.h>
 #include <NimBLEUtils.h>
 #include <ArduinoJson.h>
-#include <Update.h>
+#include "ota_server.h"
 
 // BLE 服务和特征 UUID
 #define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
@@ -20,11 +20,7 @@
 #define CHARACTERISTIC_UUID_WRITE_NOTIFY "beb5483e-36e1-4688-b7f5-ea07361b26b5" // 写和通知
 #define CHARACTERISTIC_UUID_ALL "beb5483e-36e1-4688-b7f5-ea07361b26b6"  // 读写和通知
 
-// OTA service and characteristics
-#define SERVICE_UUID_OTA "4fafc201-1fb5-459e-8fcc-c5c9c331914d"
-#define CHARACTERISTIC_UUID_OTA_CONTROL "beb5483e-36e1-4688-b7f5-ea07361b26c0"
-#define CHARACTERISTIC_UUID_OTA_DATA "beb5483e-36e1-4688-b7f5-ea07361b26c1"
-#define CHARACTERISTIC_UUID_OTA_STATUS "beb5483e-36e1-4688-b7f5-ea07361b26c2"
+// OTA service UUID constants live in ota_server.h (exact match only)
 
 // 服务和特征值名称
 #define SERVICE_NAME        "智能蓝牙服务"
@@ -41,7 +37,17 @@
 
 // 设备信息
 #define DEVICE_NAME "BLEToolkit-Server"
+#define DEVICE_OBSERVER_NAME "BLEToolkit-Observer"
+#define DEVICE_HARDWARE "esp32-wroom-32"
+#ifndef FIRMWARE_VERSION
 #define FIRMWARE_VERSION "1.0.0"
+#endif
+
+// LED 命令表（PROTO-001）：FF00 关灯 / FF01 开灯 / FF02 快闪 / FF03 慢闪
+#define LED_CMD_OFF_HEX 0xFF00
+#define LED_CMD_ON_HEX  0xFF01
+#define LED_CMD_FAST_HEX 0xFF02
+#define LED_CMD_SLOW_HEX 0xFF03
 
 // LED引脚定义
 #define LED_PIN 2
@@ -66,196 +72,33 @@ bool ledState = false;
 unsigned long lastBlinkTime = 0;
 int blinkPattern = 0;  // 0: 关闭, 1: 常亮, 2: 快闪, 3: 慢闪
 
-// OTA state
-bool otaInProgress = false;
-bool otaRestartPending = false;
-size_t otaExpectedSize = 0;
-size_t otaReceivedSize = 0;
-size_t otaChunkSize = 180;
-String otaTargetVersion = "";
-unsigned long otaLastProgressNotify = 0;
-unsigned long otaRestartAt = 0;
-
-void notifyOtaStatus(
-    const char* status,
-    const char* message = nullptr,
-    bool includeProgress = false,
-    bool rebooting = false
-) {
-    if (!pCharacteristicOtaStatus) {
-        return;
-    }
-
-    StaticJsonDocument<256> doc;
-    doc["type"] = "ota";
-    doc["status"] = status;
-    if (message != nullptr) {
-        doc["message"] = message;
-    }
-    if (includeProgress) {
-        doc["received"] = otaReceivedSize;
-        doc["total"] = otaExpectedSize;
-        doc["percent"] = otaExpectedSize == 0 ? 0 : (otaReceivedSize * 100) / otaExpectedSize;
-    }
-    if (rebooting) {
-        doc["rebooting"] = true;
-    }
-
-    String jsonString;
-    serializeJson(doc, jsonString);
-    pCharacteristicOtaStatus->setValue(jsonString.c_str());
-    pCharacteristicOtaStatus->notify();
+void emitSerialJson(const char* json) {
+    Serial.println(json);
 }
 
-void resetOtaState(bool abortUpdate) {
-    if (abortUpdate && otaInProgress) {
-        Update.abort();
+void emitSerialEvent(const char* type, const char* status = nullptr) {
+    StaticJsonDocument<128> doc;
+    doc["type"] = type;
+    if (status != nullptr) {
+        doc["status"] = status;
     }
-    otaInProgress = false;
-    otaRestartPending = false;
-    otaExpectedSize = 0;
-    otaReceivedSize = 0;
-    otaChunkSize = 180;
-    otaTargetVersion = "";
-    otaLastProgressNotify = 0;
-    otaRestartAt = 0;
+    doc["ts"] = millis();
+    String out;
+    serializeJson(doc, out);
+    emitSerialJson(out.c_str());
 }
-
-// OTA control callback
-class OtaControlCallbacks: public NimBLECharacteristicCallbacks {
-    void onRead(NimBLECharacteristic* pCharacteristic) {
-        StaticJsonDocument<200> doc;
-        doc["type"] = "ota";
-        doc["status"] = otaInProgress ? "receiving" : "idle";
-        doc["received"] = otaReceivedSize;
-        doc["total"] = otaExpectedSize;
-        doc["firmware_version"] = FIRMWARE_VERSION;
-        String jsonString;
-        serializeJson(doc, jsonString);
-        pCharacteristic->setValue(jsonString.c_str());
-    }
-
-    void onWrite(NimBLECharacteristic* pCharacteristic) {
-        std::string value = pCharacteristic->getValue();
-        if (value.empty()) {
-            notifyOtaStatus("error", "empty_control_payload");
-            return;
-        }
-
-        StaticJsonDocument<256> doc;
-        DeserializationError error = deserializeJson(doc, value.data(), value.length());
-        if (error) {
-            notifyOtaStatus("error", "invalid_control_json");
-            return;
-        }
-
-        const char* action = doc["action"];
-        if (action == nullptr) {
-            notifyOtaStatus("error", "missing_action");
-            return;
-        }
-
-        if (strcmp(action, "start") == 0) {
-            if (otaInProgress) {
-                resetOtaState(true);
-            }
-
-            size_t size = doc["size"] | 0;
-            if (size == 0) {
-                notifyOtaStatus("error", "invalid_size");
-                return;
-            }
-
-            otaChunkSize = doc["chunk_size"] | 180;
-            otaTargetVersion = String(doc["firmware_version"] | "");
-
-            if (!Update.begin(size)) {
-                notifyOtaStatus("error", "update_begin_failed");
-                return;
-            }
-
-            otaExpectedSize = size;
-            otaReceivedSize = 0;
-            otaInProgress = true;
-            otaLastProgressNotify = millis();
-            notifyOtaStatus("ready");
-            return;
-        }
-
-        if (strcmp(action, "commit") == 0) {
-            if (!otaInProgress) {
-                notifyOtaStatus("error", "ota_not_started");
-                return;
-            }
-
-            if (otaReceivedSize != otaExpectedSize) {
-                resetOtaState(true);
-                notifyOtaStatus("error", "size_mismatch");
-                return;
-            }
-
-            if (!Update.end(true)) {
-                resetOtaState(true);
-                notifyOtaStatus("error", "update_end_failed");
-                return;
-            }
-
-            otaInProgress = false;
-            otaRestartPending = true;
-            otaRestartAt = millis() + 1500;
-            notifyOtaStatus("success", nullptr, true, true);
-            return;
-        }
-
-        if (strcmp(action, "abort") == 0) {
-            resetOtaState(true);
-            notifyOtaStatus("aborted");
-            return;
-        }
-
-        notifyOtaStatus("error", "unknown_action");
-    }
-};
-
-// OTA data callback
-class OtaDataCallbacks: public NimBLECharacteristicCallbacks {
-    void onWrite(NimBLECharacteristic* pCharacteristic) {
-        std::string value = pCharacteristic->getValue();
-        if (!otaInProgress) {
-            notifyOtaStatus("error", "ota_not_started");
-            return;
-        }
-
-        if (value.empty()) {
-            notifyOtaStatus("error", "empty_chunk");
-            return;
-        }
-
-        size_t written = Update.write(reinterpret_cast<const uint8_t*>(value.data()), value.length());
-        if (written != value.length()) {
-            resetOtaState(true);
-            notifyOtaStatus("error", "chunk_write_failed");
-            return;
-        }
-
-        otaReceivedSize += written;
-        if (otaReceivedSize > otaExpectedSize) {
-            resetOtaState(true);
-            notifyOtaStatus("error", "overflow");
-            return;
-        }
-
-        if (millis() - otaLastProgressNotify >= 250 || otaReceivedSize == otaExpectedSize) {
-            otaLastProgressNotify = millis();
-            notifyOtaStatus("progress", nullptr, true);
-        }
-    }
-};
 
 // 连接状态回调
 class ServerCallbacks: public NimBLEServerCallbacks {
     void onConnect(NimBLEServer* pServer) {
         deviceConnected = true;
+        emitSerialEvent("conn", "connected");
+        emitSerialEvent("adv", "connectable");
+        emitSerialEvent("disc", "service_ready");
+        emitSerialEvent("led", "idle");
+        emitSerialEvent("notify", "enabled");
+        emitSerialEvent("err", "none");
+        emitSerialEvent("obs", "peripheral");
         // 发送连接成功通知
         if (pCharacteristicNotify) {
             StaticJsonDocument<200> doc;
@@ -270,6 +113,8 @@ class ServerCallbacks: public NimBLEServerCallbacks {
 
     void onDisconnect(NimBLEServer* pServer) {
         deviceConnected = false;
+        emitSerialEvent("conn", "disconnected");
+        otaServerInstance().onDisconnect();
         // 发送断开连接通知
         if (pCharacteristicNotify) {
             StaticJsonDocument<200> doc;
@@ -286,13 +131,12 @@ class ServerCallbacks: public NimBLEServerCallbacks {
 // 有应答写入特征回调（用于控制LED常亮）
 class WriteCharacteristicCallbacks: public NimBLECharacteristicCallbacks {
     void onRead(NimBLECharacteristic* pCharacteristic) {
-        StaticJsonDocument<200> doc;
-        doc["type"] = "device_status";
-        doc["led_state"] = digitalRead(LED_PIN) ? "on" : "off";
-        doc["blink_pattern"] = blinkPattern;
-        doc["uptime"] = millis() / 1000;
-        doc["device_name"] = DEVICE_NAME;
-        doc["firmware_version"] = FIRMWARE_VERSION;
+        StaticJsonDocument<256> doc;
+        doc["type"] = "system_info";
+        doc["name"] = DEVICE_NAME;
+        doc["hardware"] = DEVICE_HARDWARE;
+        doc["firmware_version"] = otaServerInstance().activeFirmwareVersion();
+        doc["uptime_s"] = millis() / 1000;
         String jsonString;
         serializeJson(doc, jsonString);
         pCharacteristic->setValue(jsonString.c_str());
@@ -312,6 +156,10 @@ class WriteCharacteristicCallbacks: public NimBLECharacteristicCallbacks {
                     } else if (param == 0x00) {
                         blinkPattern = 0;  // 关闭
                         digitalWrite(LED_PIN, LOW);
+                    } else if (param == 0x02) {
+                        blinkPattern = 2;  // 快闪
+                    } else if (param == 0x03) {
+                        blinkPattern = 3;  // 慢闪
                     }
                 }
             } else {
@@ -549,7 +397,7 @@ void setup() {
     }
 
     // 初始化 BLE
-    NimBLEDevice::init("ESP32-BLE-Server");
+    NimBLEDevice::init(DEVICE_NAME);
     pServer = NimBLEDevice::createServer();
     pServer->setCallbacks(new ServerCallbacks());
     
@@ -648,30 +496,32 @@ void setup() {
     pServicePermissions->start();
 
     // 创建服务3：OTA 服务
-    NimBLEService* pServiceOta = pServer->createService(SERVICE_UUID_OTA);
+    NimBLEService* pServiceOta = pServer->createService(OTA_SERVICE_UUID);
 
     pCharacteristicOtaControl = pServiceOta->createCharacteristic(
-        CHARACTERISTIC_UUID_OTA_CONTROL,
+        OTA_CHAR_CTRL_UUID,
         NIMBLE_PROPERTY::READ |
         NIMBLE_PROPERTY::WRITE |
         NIMBLE_PROPERTY::NOTIFY
     );
-    pCharacteristicOtaControl->setCallbacks(new OtaControlCallbacks());
-    pCharacteristicOtaControl->setValue("{\"type\":\"ota\",\"status\":\"idle\"}");
 
     pCharacteristicOtaData = pServiceOta->createCharacteristic(
-        CHARACTERISTIC_UUID_OTA_DATA,
-        NIMBLE_PROPERTY::WRITE
+        OTA_CHAR_DATA_UUID,
+        NIMBLE_PROPERTY::WRITE_NR
     );
-    pCharacteristicOtaData->setCallbacks(new OtaDataCallbacks());
-    pCharacteristicOtaData->setValue("ota_data");
 
     pCharacteristicOtaStatus = pServiceOta->createCharacteristic(
-        CHARACTERISTIC_UUID_OTA_STATUS,
+        OTA_CHAR_STATUS_UUID,
         NIMBLE_PROPERTY::READ |
         NIMBLE_PROPERTY::NOTIFY
     );
-    pCharacteristicOtaStatus->setValue("{\"type\":\"ota\",\"status\":\"idle\"}");
+
+    otaServerInstance().begin(
+        pCharacteristicOtaControl,
+        pCharacteristicOtaData,
+        pCharacteristicOtaStatus,
+        emitSerialJson
+    );
 
     pServiceOta->start();
 
@@ -679,7 +529,7 @@ void setup() {
     NimBLEAdvertising* pAdvertising = NimBLEDevice::getAdvertising();
     pAdvertising->addServiceUUID(SERVICE_UUID);
     pAdvertising->addServiceUUID(SERVICE_UUID_PERMISSIONS);
-    pAdvertising->addServiceUUID(SERVICE_UUID_OTA);
+    pAdvertising->addServiceUUID(OTA_SERVICE_UUID);
     pAdvertising->setScanResponse(true);
     pAdvertising->setMinPreferred(0x06);  // 设置最小连接间隔
     pAdvertising->setMinPreferred(0x12);  // 设置最小连接间隔
@@ -731,7 +581,7 @@ void loop() {
         if (millis() - lastStatusTime > 5000) { // 每5秒发送一次状态
             StaticJsonDocument<200> doc;
             doc["type"] = "status";
-            doc["led_state"] = ledState;
+            doc["led"] = ledState ? "on" : "off";
             doc["uptime"] = millis();
             String jsonString;
             serializeJson(doc, jsonString);
@@ -741,9 +591,7 @@ void loop() {
         }
     }
 
-    if (otaRestartPending && millis() >= otaRestartAt) {
-        ESP.restart();
-    }
+    otaServerInstance().loop();
 
     delay(10);
 }

@@ -127,7 +127,7 @@ const FACTS = {
   broadcastPage: read('apps/uniapp/pages/broadcast/index.vue'),
   versionPage: read('apps/uniapp/pages/about/version.vue'),
   landing: read('docs/index.md'),
-  esp32: read('hardware/esp32/LightBLE/src/main.cpp'),
+  esp32: read('hardware/esp32/LightBLE/src/main.cpp') + read('hardware/esp32/LightBLE/src/ota_server.cpp') + read('hardware/esp32/LightBLE/include/ota_server.h'),
   pio: read('hardware/esp32/LightBLE/platformio.ini'),
   bleRuntimeIndex: read('apps/uniapp/services/ble-runtime/index.js'),
   deviceFilter: read('apps/uniapp/services/ble-runtime/device-filter.js'),
@@ -166,7 +166,10 @@ const deviceNameMacro = (FACTS.esp32.match(/#define\s+DEVICE_NAME\s+"([^"]+)"/) 
 const nimbleInitName = (FACTS.esp32.match(/NimBLEDevice::init\("([^"]+)"\)/) || [])[1] || null;
 const pioEnvs = [...FACTS.pio.matchAll(/\[env:([^\]]+)\]/g)].map((m) => m[1]);
 const uploadPort = (FACTS.pio.match(/upload_port\s*=\s*(\S+)/) || [])[1] || null;
-const otaUsesAction = /"action"/.test(FACTS.esp32) && !/"op"\s*:/.test(FACTS.esp32);
+const otaUsesAction = /doc\["action"\]|strcmp\(action/.test(FACTS.esp32) && !/doc\["op"\]|"op"\s*:/.test(FACTS.esp32);
+const otaFirmwareReady = (/doc\["op"\]|"op"\s*:/.test(FACTS.esp32)
+  && /sha256|OTA_HASH_MISMATCH|OTA_RECEIVING|OtaServer/.test(FACTS.esp32)
+  && !otaUsesAction);
 const releaseBuildsFlutter = /flutter/i.test(FACTS.releaseWorkflow);
 const releaseBuildsTauri = /tauri/i.test(FACTS.releaseWorkflow);
 const releaseBuildsUniapp = /uniapp|uni-app/i.test(FACTS.releaseWorkflow);
@@ -294,7 +297,7 @@ const TASKS = [
   { task_id: 'RUNTIME-CONNECTION-DISCOVERY-001', task_type: 'SOURCE_FIX', title: 'connectDevice 编排服务发现', root_cause_id: 'RC-CONN-DISCOVERY', severity: 'P1', deps: [], order_hint: 17 },
   { task_id: 'OTA-PACKAGE-001', task_type: 'SOURCE_FIX', title: '客户端 Firmware Package 六项校验', root_cause_id: 'RC-OTA-PACKAGE', severity: 'P1', deps: [], order_hint: 20, status: otaPackageReady ? 'DONE' : 'PLANNED' },
   { task_id: 'OTA-CLIENT-001', task_type: 'SOURCE_FIX', title: '客户端完整 OTA 事务（CTRL start→ready→DATA→commit）', root_cause_id: 'RC-OTA-CTRL-START', severity: 'P0', deps: ['OTA-PACKAGE-001'], order_hint: 21, status: otaClientReady ? 'DONE' : 'PLANNED' },
-  { task_id: 'OTA-FIRMWARE-001', task_type: 'SOURCE_FIX', title: '固件 OTA op/target/hardware/SHA/max_chunk/commit 校验', root_cause_id: 'RC-ESP32-OTA-ACTION', severity: 'P1', deps: ['ESP32-BUILD-001'], order_hint: 22 },
+  { task_id: 'OTA-FIRMWARE-001', task_type: 'SOURCE_FIX', title: '固件 OTA op/target/hardware/SHA/max_chunk/commit 校验', root_cause_id: 'RC-ESP32-OTA-ACTION', severity: 'P1', deps: ['ESP32-BUILD-001'], order_hint: 22, status: otaFirmwareReady ? 'DONE' : 'PLANNED' },
   { task_id: 'ESP32-BUILD-001', task_type: 'SOURCE_FIX', title: '两环境、无固定 COM、模块化入口', root_cause_id: 'RC-ESP32-BUILD', severity: 'P1', deps: [], order_hint: 30 },
   { task_id: 'ESP32-PERIPHERAL-001', task_type: 'SOURCE_FIX', title: '服务/特征/名称/LED/Device Info 对齐契约', root_cause_id: 'RC-ESP32-LED-NAME', severity: 'P1', deps: ['ESP32-BUILD-001'], order_hint: 31 },
   { task_id: 'ESP32-OBSERVER-001', task_type: 'SOURCE_FIX', title: '实现 fixture_observer', root_cause_id: 'RC-ESP32-OBSERVER', severity: 'P1', deps: ['ESP32-BUILD-001'], order_hint: 32 },

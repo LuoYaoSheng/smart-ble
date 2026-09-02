@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 22f5ccdce805a64b62655ec4e44dfdef605c5497505bcd95599fdf4bad5e06d1
+content_hash: f02fb36703e21a3dfc1fbe352c470b2a26f3fbf2d6e6a28d5e3f45c20f16faf1
 ```
 
 > PUBLIC-HONESTY-001 / VERSION-METADATA-001 状态以 task-dependency-graph.json 为准。未批准 Task 不得执行。
@@ -47,8 +47,8 @@ content_hash: 22f5ccdce805a64b62655ec4e44dfdef605c5497505bcd95599fdf4bad5e06d1
 - task_type：SOURCE_FIX
 - severity：P1
 - root_cause_id：RC-PAGE-BROADCAST
-- Target IDs（样本）：FEAT-041, FEAT-042, FEAT-043, FEAT-044, FEAT-045, PAGE-008
-- Test IDs：TEST-P-008, TEST-A-010, TEST-W-009, TEST-E-006, TEST-U-014, TEST-I-007
+- Target IDs（样本）：FEAT-041, FEAT-042, FEAT-043, FEAT-044, FEAT-045, PAGE-008, OP-P008-01, OP-P008-02, OP-P008-03
+- Test IDs：TEST-P-008, TEST-A-010, TEST-W-009, TEST-E-006, TEST-I-007, TEST-U-014
 - First Breakpoint：PAGE-008 内联广告逻辑；useBroadcastSession 未使用
 - 依赖：无
 - 解锁：

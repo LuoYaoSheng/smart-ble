@@ -97,7 +97,7 @@
   "serial_json": {
     "baud": 115200,
     "event_types": ["adv", "conn", "disc", "led", "notify", "ota", "err", "obs"],
-    "observer_fields": ["ts", "name", "rssi", "uuids", "mfg", "svc_data", "raw", "last_seen"],
+    "observer_fields": ["t", "ts", "name", "rssi", "uuids", "mfg", "svc_data", "raw", "last_seen"],
     "observer_min_rate": "≥5 条/秒不丢帧（环形缓冲）"
   },
   "build": {

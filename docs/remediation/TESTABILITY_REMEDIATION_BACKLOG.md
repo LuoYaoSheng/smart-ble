@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 22f5ccdce805a64b62655ec4e44dfdef605c5497505bcd95599fdf4bad5e06d1
+content_hash: f02fb36703e21a3dfc1fbe352c470b2a26f3fbf2d6e6a28d5e3f45c20f16faf1
 ```
 
 > PUBLIC-HONESTY-001 / VERSION-METADATA-001 状态以 task-dependency-graph.json 为准。未批准 Task 不得执行。
@@ -63,9 +63,9 @@ content_hash: 22f5ccdce805a64b62655ec4e44dfdef605c5497505bcd95599fdf4bad5e06d1
 - task_type：TESTABILITY
 - severity：P1
 - root_cause_id：RC-TEST-BRIDGE-TS
-- Target IDs（样本）：见 JSON
-- Test IDs：—
-- First Breakpoint：—
+- Target IDs（样本）：FEAT-053, FEAT-058, REQ-047, REQ-049, REQ-054, PAGE-001, FLOW-010
+- Test IDs：TEST-U-015, TEST-H-001, TEST-W-010, TEST-C-007, TEST-H-003, TEST-I-009, TEST-P-001, TEST-A-001, TEST-A-005, TEST-W-001, TEST-W-007, TEST-E-001
+- First Breakpoint：[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'
 - 依赖：无
 - 解锁：VERIFY-SMART-HID-001
 - 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics

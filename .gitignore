@@ -70,6 +70,9 @@ apps/uniapp/unpackage/
 # TP-G2 local measurement artifacts
 .tmp/
 
+# PlatformIO build artifacts
+**/.pio/
+
 # Playwright / Page E4 local outputs (ENV-PLAYWRIGHT-001)
 test-results/
 playwright-report/
