@@ -63,7 +63,9 @@ const FACTS = {
   hasGattCodec: exists('apps/uniapp/services/ble-runtime/gatt-codec.js'),
   broadcastUsesComposable: /useBroadcastSession|use-broadcast-session/.test(
     read('apps/uniapp/pages/broadcast/index.vue'),
-  ),
+  ) && exists('apps/uniapp/services/broadcast/broadcast-session.js')
+    && exists('apps/uniapp/services/broadcast/payload-builder.js')
+    && exists('apps/uniapp/services/broadcast/broadcast-adapter.js'),
   versionUsesModel: /getVersionPageModel/.test(read('apps/uniapp/pages/about/version.vue'))
     && !/\bversionHistory\b/.test(read('apps/uniapp/pages/about/version.vue')),
   landingFake: /releases\/latest/.test(read('docs/index.md')),
@@ -224,7 +226,20 @@ const PAGE_ASSESS = {
     ],
     notes: 'RUNTIME-SESSION-001 + RUNTIME-RECONNECT-001 DONE；E4 harness PASS',
   },
-  'PAGE-008': {
+  'PAGE-008': FACTS.broadcastUsesComposable
+    ? {
+      product: 'PASS',
+      task_id: null,
+      root_cause_id: null,
+      first_breakpoint: null,
+      also: [
+        { task_id: 'PAGE-BROADCAST-001', breakpoint: 'DONE' },
+        { task_id: 'ESP32-PERIPHERAL-001', breakpoint: FACTS.hasPeripheral ? 'IMPLEMENTED' : 'OPEN' },
+        { task_id: 'ESP32-OBSERVER-001', breakpoint: FACTS.hasObserver ? 'IMPLEMENTED' : 'BLOCKED' },
+      ],
+      notes: `Broadcast Workflow DONE；Peripheral: ${FACTS.hasPeripheral ? 'IMPLEMENTED' : 'OPEN'}；Observer: ${FACTS.hasObserver ? 'IMPLEMENTED' : 'BLOCKED'}；E5 保持 OPEN`,
+    }
+    : {
     product: 'FAIL',
     task_id: 'PAGE-BROADCAST-001',
     root_cause_id: 'RC-PAGE-BROADCAST',

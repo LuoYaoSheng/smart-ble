@@ -1,8 +1,8 @@
 {
   "gate": "TP-G2-R1",
   "schema_version": "2.0",
-  "generated_at": "2026-09-02T06:28:07.142Z",
-  "commit": "8fbb8285e63fd97d5643906bec4d4807e93b5007",
+  "generated_at": "2026-09-02T06:41:43.695Z",
+  "commit": "c95ef5531cd5446a71b2cc23152501d7a677c554",
   "structured_current_path": ".tmp/tp-g2/logs/current-structured.json",
   "system": {
     "SYSTEM_PASS": 412,
@@ -31,24 +31,24 @@
     "REQ": {
       "total": 66,
       "listed": 66,
-      "assessed": 5,
-      "unassessed": 61,
+      "assessed": 0,
+      "unassessed": 66,
       "not_applicable": 0,
       "reason": null
     },
     "FEAT": {
       "total": 81,
       "listed": 81,
-      "assessed": 5,
-      "unassessed": 76,
+      "assessed": 0,
+      "unassessed": 81,
       "not_applicable": 0,
       "reason": null
     },
     "PAGE": {
       "total": 10,
       "listed": 10,
-      "assessed": 1,
-      "unassessed": 9,
+      "assessed": 0,
+      "unassessed": 10,
       "not_applicable": 0,
       "reason": null
     },
@@ -71,8 +71,8 @@
     "OP": {
       "total": 92,
       "listed": 92,
-      "assessed": 3,
-      "unassessed": 89,
+      "assessed": 0,
+      "unassessed": 92,
       "not_applicable": 0,
       "reason": null
     },
@@ -159,8 +159,8 @@
   },
   "records_total": 647,
   "by_gap_kind": {
-    "PRODUCT": 305,
-    "PAGE": 159,
+    "PRODUCT": 310,
+    "PAGE": 154,
     "TESTABILITY": 125,
     "LANDING": 47,
     "FIRMWARE": 5,
@@ -169,9 +169,9 @@
     "RELEASE": 1
   },
   "by_implementation_status": {
-    "UNASSESSED": 610,
-    "CONFIRMED_PARTIAL": 15,
-    "CONFIRMED_IMPLEMENTED": 22
+    "UNASSESSED": 624,
+    "CONFIRMED_IMPLEMENTED": 22,
+    "CONFIRMED_PARTIAL": 1
   },
   "by_verification_status": {
     "HARDWARE_PENDING": 127,
@@ -180,25 +180,24 @@
     "AUTOMATED_PASS": 22
   },
   "by_severity": {
-    "null": 632,
-    "P1": 14,
+    "null": 646,
     "P0": 1
   },
   "unique_root_causes_by_severity": {
     "P0": 1,
-    "P1": 1,
+    "P1": 0,
     "P2": 0,
     "P3": 0
   },
   "affected_target_records_by_severity": {
     "P0": 1,
-    "P1": 14,
+    "P1": 0,
     "P2": 0,
     "P3": 0,
-    "null": 632
+    "null": 646
   },
   "product_vs_testability": {
-    "product_gaps_with_severity": 15,
+    "product_gaps_with_severity": 1,
     "testability_records": 125,
     "blocked_page_cases": 0,
     "note": "blocked_page_cases 不得计为产品缺陷数；Playwright 与 Page Driver 为独立 blocker"
@@ -206,8 +205,8 @@
   "page_e4_r2": {
     "gate": "TP-G2-R2",
     "totals": {
-      "PASS": 205,
-      "FAIL": 25,
+      "PASS": 230,
+      "FAIL": 0,
       "BLOCKED": 0,
       "NOT_IMPLEMENTED": 0,
       "harness_PASS": 230,
@@ -271,12 +270,12 @@
         "task_id": null
       },
       "PAGE-008": {
-        "PASS": 0,
-        "FAIL": 25,
+        "PASS": 25,
+        "FAIL": 0,
         "BLOCKED": 0,
         "NOT_IMPLEMENTED": 0,
-        "product": "FAIL",
-        "task_id": "PAGE-BROADCAST-001"
+        "product": "PASS",
+        "task_id": null
       },
       "PAGE-009": {
         "PASS": 20,

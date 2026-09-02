@@ -92,10 +92,10 @@ source: reports/target-vs-current/page-e4-v2.json
 
 ### PAGE-008
 
-- 产品结论：**FAIL**
-- E4 case：PASS=0 FAIL=25 BLOCKED=0 NOT_IMPLEMENTED=0
-- 主 Fix：`PAGE-BROADCAST-001`（root=RC-PAGE-BROADCAST）
-- 说明：Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN
+- 产品结论：**PASS**
+- E4 case：PASS=25 FAIL=0 BLOCKED=0 NOT_IMPLEMENTED=0
+- 主 Fix：`—`（root=—）
+- 说明：Broadcast Workflow DONE；Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；E5 保持 OPEN
 - 依赖策略：页面表象失败优先引用 **RUNTIME_*** / **OTA_*** / **ESP32_***；仅架构归属页面时用 PAGE-*（如 PAGE-BROADCAST-001）
 
 ### PAGE-009

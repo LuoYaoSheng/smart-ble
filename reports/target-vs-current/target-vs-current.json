@@ -1,27 +1,27 @@
 {
   "schema_version": "2.0",
   "gate": "TP-G2-R1",
-  "content_hash": "64e3683c7f5a7db88aacbfb9800d78b682f0ca2c94947a2985fb760d31a412ff",
-  "generated_at": "2026-09-02T06:28:07.142Z",
-  "commit": "8fbb8285e63fd97d5643906bec4d4807e93b5007",
+  "content_hash": "5426d043164502a145e41a290572f2e4aca2fb0a1ed9277ecb914ecbb36d75d3",
+  "generated_at": "2026-09-02T06:41:43.695Z",
+  "commit": "c95ef5531cd5446a71b2cc23152501d7a677c554",
   "unique_root_causes_by_severity": {
     "P0": 1,
-    "P1": 1,
+    "P1": 0,
     "P2": 0,
     "P3": 0
   },
   "affected_target_records_by_severity": {
     "P0": 1,
-    "P1": 14,
+    "P1": 0,
     "P2": 0,
     "P3": 0,
-    "null": 632
+    "null": 646
   },
   "coverage": {
     "gate": "TP-G2-R1",
     "schema_version": "2.0",
-    "generated_at": "2026-09-02T06:28:07.142Z",
-    "commit": "8fbb8285e63fd97d5643906bec4d4807e93b5007",
+    "generated_at": "2026-09-02T06:41:43.695Z",
+    "commit": "c95ef5531cd5446a71b2cc23152501d7a677c554",
     "structured_current_path": ".tmp/tp-g2/logs/current-structured.json",
     "system": {
       "SYSTEM_PASS": 412,
@@ -50,24 +50,24 @@
       "REQ": {
         "total": 66,
         "listed": 66,
-        "assessed": 5,
-        "unassessed": 61,
+        "assessed": 0,
+        "unassessed": 66,
         "not_applicable": 0,
         "reason": null
       },
       "FEAT": {
         "total": 81,
         "listed": 81,
-        "assessed": 5,
-        "unassessed": 76,
+        "assessed": 0,
+        "unassessed": 81,
         "not_applicable": 0,
         "reason": null
       },
       "PAGE": {
         "total": 10,
         "listed": 10,
-        "assessed": 1,
-        "unassessed": 9,
+        "assessed": 0,
+        "unassessed": 10,
         "not_applicable": 0,
         "reason": null
       },
@@ -90,8 +90,8 @@
       "OP": {
         "total": 92,
         "listed": 92,
-        "assessed": 3,
-        "unassessed": 89,
+        "assessed": 0,
+        "unassessed": 92,
         "not_applicable": 0,
         "reason": null
       },
@@ -178,8 +178,8 @@
     },
     "records_total": 647,
     "by_gap_kind": {
-      "PRODUCT": 305,
-      "PAGE": 159,
+      "PRODUCT": 310,
+      "PAGE": 154,
       "TESTABILITY": 125,
       "LANDING": 47,
       "FIRMWARE": 5,
@@ -188,9 +188,9 @@
       "RELEASE": 1
     },
     "by_implementation_status": {
-      "UNASSESSED": 610,
-      "CONFIRMED_PARTIAL": 15,
-      "CONFIRMED_IMPLEMENTED": 22
+      "UNASSESSED": 624,
+      "CONFIRMED_IMPLEMENTED": 22,
+      "CONFIRMED_PARTIAL": 1
     },
     "by_verification_status": {
       "HARDWARE_PENDING": 127,
@@ -199,25 +199,24 @@
       "AUTOMATED_PASS": 22
     },
     "by_severity": {
-      "null": 632,
-      "P1": 14,
+      "null": 646,
       "P0": 1
     },
     "unique_root_causes_by_severity": {
       "P0": 1,
-      "P1": 1,
+      "P1": 0,
       "P2": 0,
       "P3": 0
     },
     "affected_target_records_by_severity": {
       "P0": 1,
-      "P1": 14,
+      "P1": 0,
       "P2": 0,
       "P3": 0,
-      "null": 632
+      "null": 646
     },
     "product_vs_testability": {
-      "product_gaps_with_severity": 15,
+      "product_gaps_with_severity": 1,
       "testability_records": 125,
       "blocked_page_cases": 0,
       "note": "blocked_page_cases 不得计为产品缺陷数；Playwright 与 Page Driver 为独立 blocker"
@@ -1587,22 +1586,16 @@
       "target_id": "FEAT-041",
       "target_type": "feature",
       "dimension": "feature",
-      "gap_kind": "PAGE",
+      "gap_kind": "PRODUCT",
       "priority": "Must",
-      "implementation_status": "CONFIRMED_PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "HARDWARE_PENDING",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
-      "severity": "P1",
+      "severity": null,
       "evidence_level": "E5",
-      "implementation_refs": [
-        {
-          "path": "apps/uniapp/pages/broadcast/index.vue",
-          "symbol": "inline advertising",
-          "line_hint": "no useBroadcastSession import"
-        }
-      ],
+      "implementation_refs": [],
       "test_ids": [
         "TEST-P-008",
         "TEST-A-010",
@@ -1612,33 +1605,27 @@
       "test_results": [],
       "expected": "平台能力检查 (Must)",
       "actual": "",
-      "first_breakpoint": "PAGE-008 内联广告逻辑；useBroadcastSession 未使用",
+      "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "task_id": "PAGE-BROADCAST-001",
+      "root_cause_id": null,
+      "task_id": null,
       "release_blocking": true
     },
     {
       "target_id": "FEAT-042",
       "target_type": "feature",
       "dimension": "feature",
-      "gap_kind": "PAGE",
+      "gap_kind": "PRODUCT",
       "priority": "Must",
-      "implementation_status": "CONFIRMED_PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "HARDWARE_PENDING",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
-      "severity": "P1",
+      "severity": null,
       "evidence_level": "E5",
-      "implementation_refs": [
-        {
-          "path": "apps/uniapp/pages/broadcast/index.vue",
-          "symbol": "inline advertising",
-          "line_hint": "no useBroadcastSession import"
-        }
-      ],
+      "implementation_refs": [],
       "test_ids": [
         "TEST-U-014",
         "TEST-P-008",
@@ -1649,33 +1636,27 @@
       "test_results": [],
       "expected": "Payload 字段编辑 (Must)",
       "actual": "",
-      "first_breakpoint": "PAGE-008 内联广告逻辑；useBroadcastSession 未使用",
+      "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "task_id": "PAGE-BROADCAST-001",
+      "root_cause_id": null,
+      "task_id": null,
       "release_blocking": true
     },
     {
       "target_id": "FEAT-043",
       "target_type": "feature",
       "dimension": "feature",
-      "gap_kind": "PAGE",
+      "gap_kind": "PRODUCT",
       "priority": "Must",
-      "implementation_status": "CONFIRMED_PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "HARDWARE_PENDING",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
-      "severity": "P1",
+      "severity": null,
       "evidence_level": "E5",
-      "implementation_refs": [
-        {
-          "path": "apps/uniapp/pages/broadcast/index.vue",
-          "symbol": "inline advertising",
-          "line_hint": "no useBroadcastSession import"
-        }
-      ],
+      "implementation_refs": [],
       "test_ids": [
         "TEST-U-014",
         "TEST-E-006"
@@ -1683,33 +1664,27 @@
       "test_results": [],
       "expected": "31/32 字节预算 (Must)",
       "actual": "",
-      "first_breakpoint": "PAGE-008 内联广告逻辑；useBroadcastSession 未使用",
+      "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "task_id": "PAGE-BROADCAST-001",
+      "root_cause_id": null,
+      "task_id": null,
       "release_blocking": true
     },
     {
       "target_id": "FEAT-044",
       "target_type": "feature",
       "dimension": "feature",
-      "gap_kind": "PAGE",
+      "gap_kind": "PRODUCT",
       "priority": "Must",
-      "implementation_status": "CONFIRMED_PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "HARDWARE_PENDING",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
-      "severity": "P1",
+      "severity": null,
       "evidence_level": "E5",
-      "implementation_refs": [
-        {
-          "path": "apps/uniapp/pages/broadcast/index.vue",
-          "symbol": "inline advertising",
-          "line_hint": "no useBroadcastSession import"
-        }
-      ],
+      "implementation_refs": [],
       "test_ids": [
         "TEST-I-007",
         "TEST-A-010",
@@ -1718,33 +1693,27 @@
       "test_results": [],
       "expected": "Central/Peripheral Owner 与活动连接保护 (Must)",
       "actual": "",
-      "first_breakpoint": "PAGE-008 内联广告逻辑；useBroadcastSession 未使用",
+      "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "task_id": "PAGE-BROADCAST-001",
+      "root_cause_id": null,
+      "task_id": null,
       "release_blocking": true
     },
     {
       "target_id": "FEAT-045",
       "target_type": "feature",
       "dimension": "feature",
-      "gap_kind": "PAGE",
+      "gap_kind": "PRODUCT",
       "priority": "Must",
-      "implementation_status": "CONFIRMED_PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "HARDWARE_PENDING",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
-      "severity": "P1",
+      "severity": null,
       "evidence_level": "E5",
-      "implementation_refs": [
-        {
-          "path": "apps/uniapp/pages/broadcast/index.vue",
-          "symbol": "inline advertising",
-          "line_hint": "no useBroadcastSession import"
-        }
-      ],
+      "implementation_refs": [],
       "test_ids": [
         "TEST-I-007",
         "TEST-A-010",
@@ -1753,11 +1722,11 @@
       "test_results": [],
       "expected": "生命周期停止与释放 (Must)",
       "actual": "",
-      "first_breakpoint": "PAGE-008 内联广告逻辑；useBroadcastSession 未使用",
+      "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "task_id": "PAGE-BROADCAST-001",
+      "root_cause_id": null,
+      "task_id": null,
       "release_blocking": true
     },
     {
@@ -3957,12 +3926,12 @@
       "dimension": "requirement",
       "gap_kind": "PRODUCT",
       "priority": "Must",
-      "implementation_status": "CONFIRMED_PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "HARDWARE_PENDING",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
-      "severity": "P1",
+      "severity": null,
       "evidence_level": null,
       "implementation_refs": [],
       "test_ids": [
@@ -3988,12 +3957,12 @@
       "dimension": "requirement",
       "gap_kind": "PRODUCT",
       "priority": "Must",
-      "implementation_status": "CONFIRMED_PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "HARDWARE_PENDING",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
-      "severity": "P1",
+      "severity": null,
       "evidence_level": null,
       "implementation_refs": [],
       "test_ids": [
@@ -4021,12 +3990,12 @@
       "dimension": "requirement",
       "gap_kind": "PRODUCT",
       "priority": "Must",
-      "implementation_status": "CONFIRMED_PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "HARDWARE_PENDING",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
-      "severity": "P1",
+      "severity": null,
       "evidence_level": null,
       "implementation_refs": [],
       "test_ids": [
@@ -4052,12 +4021,12 @@
       "dimension": "requirement",
       "gap_kind": "PRODUCT",
       "priority": "Must",
-      "implementation_status": "CONFIRMED_PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "HARDWARE_PENDING",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
-      "severity": "P1",
+      "severity": null,
       "evidence_level": null,
       "implementation_refs": [],
       "test_ids": [
@@ -4083,12 +4052,12 @@
       "dimension": "requirement",
       "gap_kind": "PRODUCT",
       "priority": "Must",
-      "implementation_status": "CONFIRMED_PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "HARDWARE_PENDING",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
-      "severity": "P1",
+      "severity": null,
       "evidence_level": null,
       "implementation_refs": [],
       "test_ids": [
@@ -8614,12 +8583,12 @@
       "dimension": "page",
       "gap_kind": "PAGE",
       "priority": "Must",
-      "implementation_status": "CONFIRMED_PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "EXECUTED",
-      "static_implementation": "CONFIRMED_PARTIAL",
+      "static_implementation": "UNASSESSED",
       "e4_verification": "EXECUTED",
       "e5_verification": "HARDWARE_PENDING",
-      "severity": "P1",
+      "severity": null,
       "evidence_level": "E5",
       "implementation_refs": [
         {
@@ -8639,14 +8608,14 @@
       "test_results": [],
       "expected": "12 states / 7 operations",
       "actual": "E4 executed via Page Driver; pass=— fail=—",
-      "first_breakpoint": "广播页内联；Owner/composable 未接入",
+      "first_breakpoint": "Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task",
       "downstream_impact": [
         "state_cases=12",
         "operation_cases=7"
       ],
       "dependencies": [],
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "task_id": "PAGE-BROADCAST-001",
+      "root_cause_id": null,
+      "task_id": null,
       "release_blocking": false
     },
     {
@@ -9056,12 +9025,12 @@
       "dimension": "operation",
       "gap_kind": "PAGE",
       "priority": "Must",
-      "implementation_status": "CONFIRMED_PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "EXECUTED",
-      "static_implementation": "CONFIRMED_PARTIAL",
+      "static_implementation": "UNASSESSED",
       "e4_verification": "EXECUTED",
       "e5_verification": "NOT_EXECUTED",
-      "severity": "P1",
+      "severity": null,
       "evidence_level": "E4",
       "implementation_refs": [],
       "test_ids": [
@@ -9071,13 +9040,13 @@
       "test_results": [],
       "expected": "检查支持",
       "actual": "page driver executed; product gap may remain",
-      "first_breakpoint": "广播页内联；Owner/composable 未接入",
+      "first_breakpoint": "E4 已执行（EXECUTED）；产品操作差距另见业务 Task",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-008"
       ],
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "task_id": "PAGE-BROADCAST-001",
+      "root_cause_id": null,
+      "task_id": null,
       "release_blocking": false
     },
     {
@@ -9086,12 +9055,12 @@
       "dimension": "operation",
       "gap_kind": "PAGE",
       "priority": "Must",
-      "implementation_status": "CONFIRMED_PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "EXECUTED",
-      "static_implementation": "CONFIRMED_PARTIAL",
+      "static_implementation": "UNASSESSED",
       "e4_verification": "EXECUTED",
       "e5_verification": "NOT_EXECUTED",
-      "severity": "P1",
+      "severity": null,
       "evidence_level": "E4",
       "implementation_refs": [],
       "test_ids": [
@@ -9101,13 +9070,13 @@
       "test_results": [],
       "expected": "编辑字段",
       "actual": "page driver executed; product gap may remain",
-      "first_breakpoint": "广播页内联；Owner/composable 未接入",
+      "first_breakpoint": "E4 已执行（EXECUTED）；产品操作差距另见业务 Task",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-008"
       ],
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "task_id": "PAGE-BROADCAST-001",
+      "root_cause_id": null,
+      "task_id": null,
       "release_blocking": false
     },
     {
@@ -9116,12 +9085,12 @@
       "dimension": "operation",
       "gap_kind": "PAGE",
       "priority": "Must",
-      "implementation_status": "CONFIRMED_PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "HARDWARE_PENDING",
-      "static_implementation": "CONFIRMED_PARTIAL",
+      "static_implementation": "UNASSESSED",
       "e4_verification": "EXECUTED",
       "e5_verification": "HARDWARE_PENDING",
-      "severity": "P1",
+      "severity": null,
       "evidence_level": "E5",
       "implementation_refs": [],
       "test_ids": [
@@ -9132,13 +9101,13 @@
       "test_results": [],
       "expected": "开始广播",
       "actual": "page driver executed; product gap may remain",
-      "first_breakpoint": "广播页内联；Owner/composable 未接入",
+      "first_breakpoint": "E4 已执行（EXECUTED）；产品操作差距另见业务 Task",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-008"
       ],
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "task_id": "PAGE-BROADCAST-001",
+      "root_cause_id": null,
+      "task_id": null,
       "release_blocking": false
     },
     {

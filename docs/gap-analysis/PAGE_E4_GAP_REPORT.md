@@ -6,7 +6,7 @@ gate: TP-G2-R2
 environment: READY_FOR_PAGE_E4
 fake_runtime: true
 live_app_url: false
-generated_at: 2026-09-02T06:28:51.593Z
+generated_at: 2026-09-02T06:41:44.191Z
 ```
 
 > **原则**：Playwright Fake Runtime harness PASS ≠ 产品实现满足目标。
@@ -33,7 +33,7 @@ generated_at: 2026-09-02T06:28:51.593Z
 | PAGE-005 | PASS | 18 | 0 | 0 | 0 | — |
 | PAGE-006 | PASS | 30 | 0 | 0 | 0 | — |
 | PAGE-007 | PASS | 14 | 0 | 0 | 0 | — |
-| PAGE-008 | FAIL | 0 | 25 | 0 | 0 | PAGE-BROADCAST-001 |
+| PAGE-008 | PASS | 25 | 0 | 0 | 0 | — |
 | PAGE-009 | PASS | 20 | 0 | 0 | 0 | — |
 | PAGE-010 | PASS | 13 | 0 | 0 | 0 | — |
 | WEB-001 | PASS | 25 | 0 | 0 | 0 | — |
@@ -42,8 +42,8 @@ generated_at: 2026-09-02T06:28:51.593Z
 
 | Status | Count |
 |---|---|
-| PASS | 205 |
-| FAIL | 25 |
+| PASS | 230 |
+| FAIL | 0 |
 | BLOCKED | 0 |
 | NOT_IMPLEMENTED | 0 |
 | Harness PASS | 230 |
@@ -51,7 +51,7 @@ generated_at: 2026-09-02T06:28:51.593Z
 
 ## Top First Breakpoints
 
-1. **PAGE-008** → `apps/uniapp/pages/broadcast/index.vue` `(inline advertising)` — page does not use useBroadcastSession composable/owner *(PAGE-BROADCAST-001 / TEST-P-008 / FEAT-041)*
+
 
 ## Static Facts（本轮探测）
 
@@ -62,7 +62,7 @@ generated_at: 2026-09-02T06:28:51.593Z
   "hasReconnect": true,
   "hasDisplayName": true,
   "hasValidateHex": true,
-  "broadcastUsesComposable": false,
+  "broadcastUsesComposable": true,
   "versionUsesModel": true,
   "landingFake": false,
   "connectDiscovers": true,
@@ -205,28 +205,21 @@ generated_at: 2026-09-02T06:28:51.593Z
 
 ### PAGE-008
 
-- **Product**: FAIL
+- **Product**: PASS
 - **Target**: `docs/target-product/pages|web` + behavior states=12 ops=7
 - **Actual (E4 harness)**: Fake Runtime PASS=25 FAIL=0
-- **Actual (product)**: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN
-- **Case tallies**: PASS=0 FAIL=25 BLOCKED=0 NOT_IMPLEMENTED=0
-- **Root Cause**: RC-PAGE-BROADCAST
-- **Fix IDs**: PAGE-BROADCAST-001（页面失败若源自 Runtime，引用 RUNTIME_* 而非新建 PAGE_FIX）
+- **Actual (product)**: Broadcast Workflow DONE；Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；E5 保持 OPEN
+- **Case tallies**: PASS=25 FAIL=0 BLOCKED=0 NOT_IMPLEMENTED=0
+- **Root Cause**: —
+- **Fix IDs**: —（页面失败若源自 Runtime，引用 RUNTIME_* 而非新建 PAGE_FIX）
 
-- **First Breakpoint**: `apps/uniapp/pages/broadcast/index.vue` / `(inline advertising)` — page does not use useBroadcastSession composable/owner
-- Target: FEAT-041 · Test: TEST-P-008
+- First Breakpoint: —
 
 **Fail / Blocked samples**
-  - FAIL STATE-P008-01 → PAGE-BROADCAST-001
-  - FAIL STATE-P008-02 → PAGE-BROADCAST-001
-  - FAIL STATE-P008-03 → PAGE-BROADCAST-001
-  - FAIL STATE-P008-04 → PAGE-BROADCAST-001
-  - FAIL STATE-P008-05 → PAGE-BROADCAST-001
-  - FAIL STATE-P008-06 → PAGE-BROADCAST-001
-  - FAIL STATE-P008-07 → PAGE-BROADCAST-001
-  - FAIL STATE-P008-08 → PAGE-BROADCAST-001
+  - （无）
 
 **Related**
+  - PAGE-BROADCAST-001: DONE
   - ESP32-PERIPHERAL-001: IMPLEMENTED
   - ESP32-OBSERVER-001: IMPLEMENTED
 
@@ -294,7 +287,7 @@ generated_at: 2026-09-02T06:28:51.593Z
 | Testability | TEST-BRIDGE-TS-001（Smart HID TS） |
 | Metadata | PAGE-010 CLOSED |
 | Landing | WEB-001 honesty PASS（无假下载） |
-| Fixture/Hardware | PAGE-008 Observer → ESP32-OBSERVER-001 (BLOCKED) |
+| Fixture/Hardware | PAGE-008 Observer → ESP32-OBSERVER-001 (IMPLEMENTED；E5 still OPEN) |
 
 ## Machine report
 

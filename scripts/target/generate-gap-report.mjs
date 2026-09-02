@@ -185,6 +185,12 @@ const versionHardcoded = /\bversionHistory\b/.test(FACTS.versionPage)
   || !/getVersionPageModel/.test(FACTS.versionPage);
 const pageVersionReady = !versionHardcoded && /getVersionPageModel/.test(FACTS.versionPage);
 const useBroadcastSession = /useBroadcastSession|use-broadcast-session/.test(FACTS.broadcastPage);
+const broadcastWorkflowReady = useBroadcastSession
+  && exists('apps/uniapp/services/broadcast/broadcast-session.js')
+  && exists('apps/uniapp/services/broadcast/payload-builder.js')
+  && exists('apps/uniapp/services/broadcast/broadcast-adapter.js')
+  && exists('apps/uniapp/services/broadcast/observer-evidence-adapter.js')
+  && /createBroadcastSession/.test(read('apps/uniapp/services/broadcast/broadcast-session.js'));
 const smartHidImportsTs = /hid-provisioning-protocol\.ts/.test(FACTS.smartHidProfile);
 const deviceNameMacro = (FACTS.esp32.match(/#define\s+DEVICE_NAME\s+"([^"]+)"/) || [])[1] || null;
 const nimbleInitName = (FACTS.esp32.match(/NimBLEDevice::init\("([^"]+)"\)/) || [])[1] || null;
@@ -387,7 +393,7 @@ const TASKS = [
   { task_id: 'ESP32-PERIPHERAL-001', task_type: 'SOURCE_FIX', title: '服务/特征/名称/LED/Device Info 对齐契约', root_cause_id: 'RC-ESP32-LED-NAME', severity: 'P1', deps: ['ESP32-BUILD-001'], order_hint: 31, status: esp32PeripheralReady ? 'DONE' : 'PLANNED' },
   { task_id: 'ESP32-OBSERVER-001', task_type: 'SOURCE_FIX', title: '实现 fixture_observer', root_cause_id: 'RC-ESP32-OBSERVER', severity: 'P1', deps: ['ESP32-BUILD-001'], order_hint: 32, status: esp32ObserverReady ? 'DONE' : 'PLANNED' },
   { task_id: 'ESP32-FAULT-001', task_type: 'SOURCE_FIX', title: 'Fault Injection + Serial JSON', root_cause_id: 'RC-ESP32-SERIAL', severity: 'P1', deps: ['ESP32-PERIPHERAL-001'], order_hint: 33 },
-  { task_id: 'PAGE-BROADCAST-001', task_type: 'SOURCE_FIX', title: 'PAGE-008 改用 composable/adapter/service', root_cause_id: 'RC-PAGE-BROADCAST', severity: 'P1', deps: [], order_hint: 40 },
+  { task_id: 'PAGE-BROADCAST-001', task_type: 'SOURCE_FIX', title: 'PAGE-008 改用 composable/adapter/service', root_cause_id: 'RC-PAGE-BROADCAST', severity: 'P1', deps: [], order_hint: 40, status: broadcastWorkflowReady ? 'DONE' : 'PLANNED' },
   { task_id: 'PAGE-VERSION-001', task_type: 'SOURCE_FIX', title: 'PAGE-010 改为 Metadata 投影', root_cause_id: 'RC-PAGE-VERSION', severity: 'P1', deps: ['VERSION-METADATA-001'], order_hint: 41, status: pageVersionReady ? 'DONE' : 'PLANNED' },
   { task_id: 'TEST-BRIDGE-TS-001', task_type: 'TESTABILITY', title: 'Node 测试桥支持 TS protocol import（Smart HID）', root_cause_id: 'RC-TEST-BRIDGE-TS', severity: 'P1', deps: [], order_hint: 50 },
   { task_id: 'VERIFY-ANDROID-001', task_type: 'VERIFY_E5', title: 'Android 真机矩阵', root_cause_id: null, severity: null, deps: ['TEST-PAGE-DRIVER-001', 'OTA-CLIENT-001'], order_hint: 90 },

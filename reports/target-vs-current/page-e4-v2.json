@@ -1,6 +1,6 @@
 {
   "gate": "TP-G2-R2",
-  "generated_at": "2026-09-02T06:28:51.593Z",
+  "generated_at": "2026-09-02T06:41:44.191Z",
   "environment": {
     "status": "READY_FOR_PAGE_E4",
     "playwright": {
@@ -21,7 +21,7 @@
     "hasReconnect": true,
     "hasDisplayName": true,
     "hasValidateHex": true,
-    "broadcastUsesComposable": false,
+    "broadcastUsesComposable": true,
     "versionUsesModel": true,
     "landingFake": false,
     "connectDiscovers": true,
@@ -31,8 +31,8 @@
     "registrySubCount": true
   },
   "totals": {
-    "PASS": 205,
-    "FAIL": 25,
+    "PASS": 230,
+    "FAIL": 0,
     "BLOCKED": 0,
     "NOT_IMPLEMENTED": 0,
     "harness_PASS": 230,
@@ -197,26 +197,24 @@
     },
     "PAGE-008": {
       "page_id": "PAGE-008",
-      "PASS": 0,
-      "FAIL": 25,
+      "PASS": 25,
+      "FAIL": 0,
       "BLOCKED": 0,
       "NOT_IMPLEMENTED": 0,
       "harness_PASS": 25,
       "harness_FAIL": 0,
       "states": 12,
       "operations": 7,
-      "product": "FAIL",
-      "task_id": "PAGE-BROADCAST-001",
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "notes": "Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
-      "first_breakpoint": {
-        "target": "FEAT-041",
-        "test": "TEST-P-008",
-        "file": "apps/uniapp/pages/broadcast/index.vue",
-        "symbol": "(inline advertising)",
-        "breakpoint": "page does not use useBroadcastSession composable/owner"
-      },
+      "product": "PASS",
+      "task_id": null,
+      "root_cause_id": null,
+      "notes": "Broadcast Workflow DONE；Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；E5 保持 OPEN",
+      "first_breakpoint": null,
       "also": [
+        {
+          "task_id": "PAGE-BROADCAST-001",
+          "breakpoint": "DONE"
+        },
         {
           "task_id": "ESP32-PERIPHERAL-001",
           "breakpoint": "IMPLEMENTED"
@@ -226,333 +224,7 @@
           "breakpoint": "IMPLEMENTED"
         }
       ],
-      "fail_cases": [
-        {
-          "state_id": "STATE-P008-01",
-          "operation_id": null,
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-041",
-            "test": "TEST-P-008",
-            "file": "apps/uniapp/pages/broadcast/index.vue",
-            "symbol": "(inline advertising)",
-            "breakpoint": "page does not use useBroadcastSession composable/owner"
-          },
-          "task_id": "PAGE-BROADCAST-001"
-        },
-        {
-          "state_id": "STATE-P008-02",
-          "operation_id": null,
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-041",
-            "test": "TEST-P-008",
-            "file": "apps/uniapp/pages/broadcast/index.vue",
-            "symbol": "(inline advertising)",
-            "breakpoint": "page does not use useBroadcastSession composable/owner"
-          },
-          "task_id": "PAGE-BROADCAST-001"
-        },
-        {
-          "state_id": "STATE-P008-03",
-          "operation_id": null,
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-041",
-            "test": "TEST-P-008",
-            "file": "apps/uniapp/pages/broadcast/index.vue",
-            "symbol": "(inline advertising)",
-            "breakpoint": "page does not use useBroadcastSession composable/owner"
-          },
-          "task_id": "PAGE-BROADCAST-001"
-        },
-        {
-          "state_id": "STATE-P008-04",
-          "operation_id": null,
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-041",
-            "test": "TEST-P-008",
-            "file": "apps/uniapp/pages/broadcast/index.vue",
-            "symbol": "(inline advertising)",
-            "breakpoint": "page does not use useBroadcastSession composable/owner"
-          },
-          "task_id": "PAGE-BROADCAST-001"
-        },
-        {
-          "state_id": "STATE-P008-05",
-          "operation_id": null,
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-041",
-            "test": "TEST-P-008",
-            "file": "apps/uniapp/pages/broadcast/index.vue",
-            "symbol": "(inline advertising)",
-            "breakpoint": "page does not use useBroadcastSession composable/owner"
-          },
-          "task_id": "PAGE-BROADCAST-001"
-        },
-        {
-          "state_id": "STATE-P008-06",
-          "operation_id": null,
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-041",
-            "test": "TEST-P-008",
-            "file": "apps/uniapp/pages/broadcast/index.vue",
-            "symbol": "(inline advertising)",
-            "breakpoint": "page does not use useBroadcastSession composable/owner"
-          },
-          "task_id": "PAGE-BROADCAST-001"
-        },
-        {
-          "state_id": "STATE-P008-07",
-          "operation_id": null,
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-041",
-            "test": "TEST-P-008",
-            "file": "apps/uniapp/pages/broadcast/index.vue",
-            "symbol": "(inline advertising)",
-            "breakpoint": "page does not use useBroadcastSession composable/owner"
-          },
-          "task_id": "PAGE-BROADCAST-001"
-        },
-        {
-          "state_id": "STATE-P008-08",
-          "operation_id": null,
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-041",
-            "test": "TEST-P-008",
-            "file": "apps/uniapp/pages/broadcast/index.vue",
-            "symbol": "(inline advertising)",
-            "breakpoint": "page does not use useBroadcastSession composable/owner"
-          },
-          "task_id": "PAGE-BROADCAST-001"
-        },
-        {
-          "state_id": "STATE-P008-09",
-          "operation_id": null,
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-041",
-            "test": "TEST-P-008",
-            "file": "apps/uniapp/pages/broadcast/index.vue",
-            "symbol": "(inline advertising)",
-            "breakpoint": "page does not use useBroadcastSession composable/owner"
-          },
-          "task_id": "PAGE-BROADCAST-001"
-        },
-        {
-          "state_id": "STATE-P008-10",
-          "operation_id": null,
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-041",
-            "test": "TEST-P-008",
-            "file": "apps/uniapp/pages/broadcast/index.vue",
-            "symbol": "(inline advertising)",
-            "breakpoint": "page does not use useBroadcastSession composable/owner"
-          },
-          "task_id": "PAGE-BROADCAST-001"
-        },
-        {
-          "state_id": "STATE-P008-11",
-          "operation_id": null,
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-041",
-            "test": "TEST-P-008",
-            "file": "apps/uniapp/pages/broadcast/index.vue",
-            "symbol": "(inline advertising)",
-            "breakpoint": "page does not use useBroadcastSession composable/owner"
-          },
-          "task_id": "PAGE-BROADCAST-001"
-        },
-        {
-          "state_id": "STATE-P008-12",
-          "operation_id": null,
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-041",
-            "test": "TEST-P-008",
-            "file": "apps/uniapp/pages/broadcast/index.vue",
-            "symbol": "(inline advertising)",
-            "breakpoint": "page does not use useBroadcastSession composable/owner"
-          },
-          "task_id": "PAGE-BROADCAST-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P008-01",
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-041",
-            "test": "TEST-P-008",
-            "file": "apps/uniapp/pages/broadcast/index.vue",
-            "symbol": "(inline advertising)",
-            "breakpoint": "page does not use useBroadcastSession composable/owner"
-          },
-          "task_id": "PAGE-BROADCAST-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P008-02",
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-041",
-            "test": "TEST-P-008",
-            "file": "apps/uniapp/pages/broadcast/index.vue",
-            "symbol": "(inline advertising)",
-            "breakpoint": "page does not use useBroadcastSession composable/owner"
-          },
-          "task_id": "PAGE-BROADCAST-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P008-03",
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-041",
-            "test": "TEST-P-008",
-            "file": "apps/uniapp/pages/broadcast/index.vue",
-            "symbol": "(inline advertising)",
-            "breakpoint": "page does not use useBroadcastSession composable/owner"
-          },
-          "task_id": "PAGE-BROADCAST-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P008-04",
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-041",
-            "test": "TEST-P-008",
-            "file": "apps/uniapp/pages/broadcast/index.vue",
-            "symbol": "(inline advertising)",
-            "breakpoint": "page does not use useBroadcastSession composable/owner"
-          },
-          "task_id": "PAGE-BROADCAST-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P008-05",
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-041",
-            "test": "TEST-P-008",
-            "file": "apps/uniapp/pages/broadcast/index.vue",
-            "symbol": "(inline advertising)",
-            "breakpoint": "page does not use useBroadcastSession composable/owner"
-          },
-          "task_id": "PAGE-BROADCAST-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P008-06",
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-041",
-            "test": "TEST-P-008",
-            "file": "apps/uniapp/pages/broadcast/index.vue",
-            "symbol": "(inline advertising)",
-            "breakpoint": "page does not use useBroadcastSession composable/owner"
-          },
-          "task_id": "PAGE-BROADCAST-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P008-07",
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-041",
-            "test": "TEST-P-008",
-            "file": "apps/uniapp/pages/broadcast/index.vue",
-            "symbol": "(inline advertising)",
-            "breakpoint": "page does not use useBroadcastSession composable/owner"
-          },
-          "task_id": "PAGE-BROADCAST-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": null,
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-041",
-            "test": "TEST-P-008",
-            "file": "apps/uniapp/pages/broadcast/index.vue",
-            "symbol": "(inline advertising)",
-            "breakpoint": "page does not use useBroadcastSession composable/owner"
-          },
-          "task_id": "PAGE-BROADCAST-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": null,
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-041",
-            "test": "TEST-P-008",
-            "file": "apps/uniapp/pages/broadcast/index.vue",
-            "symbol": "(inline advertising)",
-            "breakpoint": "page does not use useBroadcastSession composable/owner"
-          },
-          "task_id": "PAGE-BROADCAST-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": null,
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-041",
-            "test": "TEST-P-008",
-            "file": "apps/uniapp/pages/broadcast/index.vue",
-            "symbol": "(inline advertising)",
-            "breakpoint": "page does not use useBroadcastSession composable/owner"
-          },
-          "task_id": "PAGE-BROADCAST-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": null,
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-041",
-            "test": "TEST-P-008",
-            "file": "apps/uniapp/pages/broadcast/index.vue",
-            "symbol": "(inline advertising)",
-            "breakpoint": "page does not use useBroadcastSession composable/owner"
-          },
-          "task_id": "PAGE-BROADCAST-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": null,
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-041",
-            "test": "TEST-P-008",
-            "file": "apps/uniapp/pages/broadcast/index.vue",
-            "symbol": "(inline advertising)",
-            "breakpoint": "page does not use useBroadcastSession composable/owner"
-          },
-          "task_id": "PAGE-BROADCAST-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": null,
-          "status": "FAIL",
-          "first_breakpoint": {
-            "target": "FEAT-041",
-            "test": "TEST-P-008",
-            "file": "apps/uniapp/pages/broadcast/index.vue",
-            "symbol": "(inline advertising)",
-            "breakpoint": "page does not use useBroadcastSession composable/owner"
-          },
-          "task_id": "PAGE-BROADCAST-001"
-        }
-      ]
+      "fail_cases": []
     },
     "PAGE-009": {
       "page_id": "PAGE-009",
@@ -5515,20 +5187,14 @@
       "state_id": "STATE-P008-01",
       "operation_id": null,
       "case_title": "PAGE-008.spec.js › PAGE-008 广播 › State suite › STATE-P008-01 未知",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "\"支持情况未知\"",
         "检查按钮"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
-      "first_breakpoint": {
-        "target": "FEAT-041",
-        "test": "TEST-P-008",
-        "file": "apps/uniapp/pages/broadcast/index.vue",
-        "symbol": "(inline advertising)",
-        "breakpoint": "page does not use useBroadcastSession composable/owner"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-008.spec.js",
         "duration_ms": 30,
@@ -5545,31 +5211,23 @@
       "test_ids": [
         "TEST-P-008"
       ],
-      "implementation_refs": [
-        "apps/uniapp/pages/broadcast/index.vue"
-      ],
-      "task_id": "PAGE-BROADCAST-001",
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-008",
       "state_id": "STATE-P008-02",
       "operation_id": null,
       "case_title": "PAGE-008.spec.js › PAGE-008 广播 › State suite › STATE-P008-02 检查中",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "spinner"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
-      "first_breakpoint": {
-        "target": "FEAT-041",
-        "test": "TEST-P-008",
-        "file": "apps/uniapp/pages/broadcast/index.vue",
-        "symbol": "(inline advertising)",
-        "breakpoint": "page does not use useBroadcastSession composable/owner"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-008.spec.js",
         "duration_ms": 29,
@@ -5586,31 +5244,23 @@
       "test_ids": [
         "TEST-P-008"
       ],
-      "implementation_refs": [
-        "apps/uniapp/pages/broadcast/index.vue"
-      ],
-      "task_id": "PAGE-BROADCAST-001",
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-008",
       "state_id": "STATE-P008-03",
       "operation_id": null,
       "case_title": "PAGE-008.spec.js › PAGE-008 广播 › State suite › STATE-P008-03 不支持",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "UNSUPPORTED 说明"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
-      "first_breakpoint": {
-        "target": "FEAT-041",
-        "test": "TEST-P-008",
-        "file": "apps/uniapp/pages/broadcast/index.vue",
-        "symbol": "(inline advertising)",
-        "breakpoint": "page does not use useBroadcastSession composable/owner"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-008.spec.js",
         "duration_ms": 29,
@@ -5629,31 +5279,23 @@
         "TEST-P-008",
         "TEST-W-006"
       ],
-      "implementation_refs": [
-        "apps/uniapp/pages/broadcast/index.vue"
-      ],
-      "task_id": "PAGE-BROADCAST-001",
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-008",
       "state_id": "STATE-P008-04",
       "operation_id": null,
       "case_title": "PAGE-008.spec.js › PAGE-008 广播 › State suite › STATE-P008-04 未就绪",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "字段级提示"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
-      "first_breakpoint": {
-        "target": "FEAT-041",
-        "test": "TEST-P-008",
-        "file": "apps/uniapp/pages/broadcast/index.vue",
-        "symbol": "(inline advertising)",
-        "breakpoint": "page does not use useBroadcastSession composable/owner"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-008.spec.js",
         "duration_ms": 33,
@@ -5670,31 +5312,23 @@
       "test_ids": [
         "TEST-U-014"
       ],
-      "implementation_refs": [
-        "apps/uniapp/pages/broadcast/index.vue"
-      ],
-      "task_id": "PAGE-BROADCAST-001",
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-008",
       "state_id": "STATE-P008-05",
       "operation_id": null,
       "case_title": "PAGE-008.spec.js › PAGE-008 广播 › State suite › STATE-P008-05 已就绪",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "开始可点"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
-      "first_breakpoint": {
-        "target": "FEAT-041",
-        "test": "TEST-P-008",
-        "file": "apps/uniapp/pages/broadcast/index.vue",
-        "symbol": "(inline advertising)",
-        "breakpoint": "page does not use useBroadcastSession composable/owner"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-008.spec.js",
         "duration_ms": 29,
@@ -5711,33 +5345,25 @@
       "test_ids": [
         "TEST-P-008"
       ],
-      "implementation_refs": [
-        "apps/uniapp/pages/broadcast/index.vue"
-      ],
-      "task_id": "PAGE-BROADCAST-001",
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-008",
       "state_id": "STATE-P008-06",
       "operation_id": null,
       "case_title": "PAGE-008.spec.js › PAGE-008 广播 › State suite › STATE-P008-06 广播中",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "状态",
         "停止按钮",
         "Observer 提示"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
-      "first_breakpoint": {
-        "target": "FEAT-041",
-        "test": "TEST-P-008",
-        "file": "apps/uniapp/pages/broadcast/index.vue",
-        "symbol": "(inline advertising)",
-        "breakpoint": "page does not use useBroadcastSession composable/owner"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-008.spec.js",
         "duration_ms": 29,
@@ -5756,31 +5382,23 @@
         "TEST-A-010",
         "TEST-E-006"
       ],
-      "implementation_refs": [
-        "apps/uniapp/pages/broadcast/index.vue"
-      ],
-      "task_id": "PAGE-BROADCAST-001",
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-008",
       "state_id": "STATE-P008-07",
       "operation_id": null,
       "case_title": "PAGE-008.spec.js › PAGE-008 广播 › State suite › STATE-P008-07 停止中",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "过渡"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
-      "first_breakpoint": {
-        "target": "FEAT-041",
-        "test": "TEST-P-008",
-        "file": "apps/uniapp/pages/broadcast/index.vue",
-        "symbol": "(inline advertising)",
-        "breakpoint": "page does not use useBroadcastSession composable/owner"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-008.spec.js",
         "duration_ms": 37,
@@ -5797,32 +5415,24 @@
       "test_ids": [
         "TEST-P-008"
       ],
-      "implementation_refs": [
-        "apps/uniapp/pages/broadcast/index.vue"
-      ],
-      "task_id": "PAGE-BROADCAST-001",
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-008",
       "state_id": "STATE-P008-08",
       "operation_id": null,
       "case_title": "PAGE-008.spec.js › PAGE-008 广播 › State suite › STATE-P008-08 权限错误",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "错误",
         "去设置"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
-      "first_breakpoint": {
-        "target": "FEAT-041",
-        "test": "TEST-P-008",
-        "file": "apps/uniapp/pages/broadcast/index.vue",
-        "symbol": "(inline advertising)",
-        "breakpoint": "page does not use useBroadcastSession composable/owner"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-008.spec.js",
         "duration_ms": 28,
@@ -5839,32 +5449,24 @@
       "test_ids": [
         "TEST-A-010"
       ],
-      "implementation_refs": [
-        "apps/uniapp/pages/broadcast/index.vue"
-      ],
-      "task_id": "PAGE-BROADCAST-001",
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-008",
       "state_id": "STATE-P008-09",
       "operation_id": null,
       "case_title": "PAGE-008.spec.js › PAGE-008 广播 › State suite › STATE-P008-09 蓝牙关闭",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "错误",
         "去开启"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
-      "first_breakpoint": {
-        "target": "FEAT-041",
-        "test": "TEST-P-008",
-        "file": "apps/uniapp/pages/broadcast/index.vue",
-        "symbol": "(inline advertising)",
-        "breakpoint": "page does not use useBroadcastSession composable/owner"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-008.spec.js",
         "duration_ms": 28,
@@ -5881,31 +5483,23 @@
       "test_ids": [
         "TEST-W-005"
       ],
-      "implementation_refs": [
-        "apps/uniapp/pages/broadcast/index.vue"
-      ],
-      "task_id": "PAGE-BROADCAST-001",
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-008",
       "state_id": "STATE-P008-10",
       "operation_id": null,
       "case_title": "PAGE-008.spec.js › PAGE-008 广播 › State suite › STATE-P008-10 连接冲突",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "说明\"先断开 N 台设备\""
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
-      "first_breakpoint": {
-        "target": "FEAT-041",
-        "test": "TEST-P-008",
-        "file": "apps/uniapp/pages/broadcast/index.vue",
-        "symbol": "(inline advertising)",
-        "breakpoint": "page does not use useBroadcastSession composable/owner"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-008.spec.js",
         "duration_ms": 30,
@@ -5924,32 +5518,24 @@
         "TEST-I-007",
         "TEST-A-010"
       ],
-      "implementation_refs": [
-        "apps/uniapp/pages/broadcast/index.vue"
-      ],
-      "task_id": "PAGE-BROADCAST-001",
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-008",
       "state_id": "STATE-P008-11",
       "operation_id": null,
       "case_title": "PAGE-008.spec.js › PAGE-008 广播 › State suite › STATE-P008-11 参数错误",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "阻止",
         "首行原因"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
-      "first_breakpoint": {
-        "target": "FEAT-041",
-        "test": "TEST-P-008",
-        "file": "apps/uniapp/pages/broadcast/index.vue",
-        "symbol": "(inline advertising)",
-        "breakpoint": "page does not use useBroadcastSession composable/owner"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-008.spec.js",
         "duration_ms": 29,
@@ -5966,32 +5552,24 @@
       "test_ids": [
         "TEST-U-014"
       ],
-      "implementation_refs": [
-        "apps/uniapp/pages/broadcast/index.vue"
-      ],
-      "task_id": "PAGE-BROADCAST-001",
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-008",
       "state_id": "STATE-P008-12",
       "operation_id": null,
       "case_title": "PAGE-008.spec.js › PAGE-008 广播 › State suite › STATE-P008-12 启停失败",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "错误",
         "重试"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
-      "first_breakpoint": {
-        "target": "FEAT-041",
-        "test": "TEST-P-008",
-        "file": "apps/uniapp/pages/broadcast/index.vue",
-        "symbol": "(inline advertising)",
-        "breakpoint": "page does not use useBroadcastSession composable/owner"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-008.spec.js",
         "duration_ms": 31,
@@ -6008,31 +5586,23 @@
       "test_ids": [
         "TEST-A-010"
       ],
-      "implementation_refs": [
-        "apps/uniapp/pages/broadcast/index.vue"
-      ],
-      "task_id": "PAGE-BROADCAST-001",
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-008",
       "state_id": null,
       "operation_id": "OP-P008-01",
       "case_title": "PAGE-008.spec.js › PAGE-008 广播 › Operation suite › OP-P008-01 检查支持",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "状态芯片更新"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
-      "first_breakpoint": {
-        "target": "FEAT-041",
-        "test": "TEST-P-008",
-        "file": "apps/uniapp/pages/broadcast/index.vue",
-        "symbol": "(inline advertising)",
-        "breakpoint": "page does not use useBroadcastSession composable/owner"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-008.spec.js",
         "duration_ms": 39,
@@ -6051,31 +5621,23 @@
         "TEST-P-008",
         "TEST-A-010"
       ],
-      "implementation_refs": [
-        "apps/uniapp/pages/broadcast/index.vue"
-      ],
-      "task_id": "PAGE-BROADCAST-001",
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-008",
       "state_id": null,
       "operation_id": "OP-P008-02",
       "case_title": "PAGE-008.spec.js › PAGE-008 广播 › Operation suite › OP-P008-02 编辑字段",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "预算即时更新"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
-      "first_breakpoint": {
-        "target": "FEAT-041",
-        "test": "TEST-P-008",
-        "file": "apps/uniapp/pages/broadcast/index.vue",
-        "symbol": "(inline advertising)",
-        "breakpoint": "page does not use useBroadcastSession composable/owner"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-008.spec.js",
         "duration_ms": 31,
@@ -6094,31 +5656,23 @@
         "TEST-U-014",
         "TEST-P-008"
       ],
-      "implementation_refs": [
-        "apps/uniapp/pages/broadcast/index.vue"
-      ],
-      "task_id": "PAGE-BROADCAST-001",
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-008",
       "state_id": null,
       "operation_id": "OP-P008-03",
       "case_title": "PAGE-008.spec.js › PAGE-008 广播 › Operation suite › OP-P008-03 开始广播",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "状态=广播中（实际成功后）"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
-      "first_breakpoint": {
-        "target": "FEAT-041",
-        "test": "TEST-P-008",
-        "file": "apps/uniapp/pages/broadcast/index.vue",
-        "symbol": "(inline advertising)",
-        "breakpoint": "page does not use useBroadcastSession composable/owner"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-008.spec.js",
         "duration_ms": 30,
@@ -6139,31 +5693,23 @@
         "TEST-A-010",
         "TEST-E-006"
       ],
-      "implementation_refs": [
-        "apps/uniapp/pages/broadcast/index.vue"
-      ],
-      "task_id": "PAGE-BROADCAST-001",
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-008",
       "state_id": null,
       "operation_id": "OP-P008-04",
       "case_title": "PAGE-008.spec.js › PAGE-008 广播 › Operation suite › OP-P008-04 停止广播",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "状态=已就绪；Observer 观测消失（E5）"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
-      "first_breakpoint": {
-        "target": "FEAT-041",
-        "test": "TEST-P-008",
-        "file": "apps/uniapp/pages/broadcast/index.vue",
-        "symbol": "(inline advertising)",
-        "breakpoint": "page does not use useBroadcastSession composable/owner"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-008.spec.js",
         "duration_ms": 30,
@@ -6182,31 +5728,23 @@
         "TEST-A-010",
         "TEST-E-006"
       ],
-      "implementation_refs": [
-        "apps/uniapp/pages/broadcast/index.vue"
-      ],
-      "task_id": "PAGE-BROADCAST-001",
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-008",
       "state_id": null,
       "operation_id": "OP-P008-05",
       "case_title": "PAGE-008.spec.js › PAGE-008 广播 › Operation suite › OP-P008-05 清空操作日志",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "toast"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
-      "first_breakpoint": {
-        "target": "FEAT-041",
-        "test": "TEST-P-008",
-        "file": "apps/uniapp/pages/broadcast/index.vue",
-        "symbol": "(inline advertising)",
-        "breakpoint": "page does not use useBroadcastSession composable/owner"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-008.spec.js",
         "duration_ms": 29,
@@ -6223,31 +5761,23 @@
       "test_ids": [
         "TEST-P-008"
       ],
-      "implementation_refs": [
-        "apps/uniapp/pages/broadcast/index.vue"
-      ],
-      "task_id": "PAGE-BROADCAST-001",
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-008",
       "state_id": null,
       "operation_id": "OP-P008-06",
       "case_title": "PAGE-008.spec.js › PAGE-008 广播 › Operation suite › OP-P008-06 hide/unload 释放",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "无声"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
-      "first_breakpoint": {
-        "target": "FEAT-041",
-        "test": "TEST-P-008",
-        "file": "apps/uniapp/pages/broadcast/index.vue",
-        "symbol": "(inline advertising)",
-        "breakpoint": "page does not use useBroadcastSession composable/owner"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-008.spec.js",
         "duration_ms": 29,
@@ -6266,31 +5796,23 @@
         "TEST-I-007",
         "TEST-A-003"
       ],
-      "implementation_refs": [
-        "apps/uniapp/pages/broadcast/index.vue"
-      ],
-      "task_id": "PAGE-BROADCAST-001",
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-008",
       "state_id": null,
       "operation_id": "OP-P008-07",
       "case_title": "PAGE-008.spec.js › PAGE-008 广播 › Operation suite › OP-P008-07 复制 Observer 校验信息",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "toast"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
-      "first_breakpoint": {
-        "target": "FEAT-041",
-        "test": "TEST-P-008",
-        "file": "apps/uniapp/pages/broadcast/index.vue",
-        "symbol": "(inline advertising)",
-        "breakpoint": "page does not use useBroadcastSession composable/owner"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-008.spec.js",
         "duration_ms": 28,
@@ -6307,31 +5829,23 @@
       "test_ids": [
         "TEST-P-008"
       ],
-      "implementation_refs": [
-        "apps/uniapp/pages/broadcast/index.vue"
-      ],
-      "task_id": "PAGE-BROADCAST-001",
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-008",
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-008.spec.js › PAGE-008 广播 › Contract / first screen：manifest + behavior 对齐",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
-        "target behavior"
+        "behavior contract"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
-      "first_breakpoint": {
-        "target": "FEAT-041",
-        "test": "TEST-P-008",
-        "file": "apps/uniapp/pages/broadcast/index.vue",
-        "symbol": "(inline advertising)",
-        "breakpoint": "page does not use useBroadcastSession composable/owner"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-008.spec.js",
         "duration_ms": 4,
@@ -6346,31 +5860,23 @@
       "test_ids": [
         "TEST-P-PAGE-008"
       ],
-      "implementation_refs": [
-        "apps/uniapp/pages/broadcast/index.vue"
-      ],
-      "task_id": "PAGE-BROADCAST-001",
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-008",
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-008.spec.js › PAGE-008 广播 › Error and recovery",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
-        "target behavior"
+        "behavior contract"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
-      "first_breakpoint": {
-        "target": "FEAT-041",
-        "test": "TEST-P-008",
-        "file": "apps/uniapp/pages/broadcast/index.vue",
-        "symbol": "(inline advertising)",
-        "breakpoint": "page does not use useBroadcastSession composable/owner"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-008.spec.js",
         "duration_ms": 29,
@@ -6385,31 +5891,23 @@
       "test_ids": [
         "TEST-P-PAGE-008"
       ],
-      "implementation_refs": [
-        "apps/uniapp/pages/broadcast/index.vue"
-      ],
-      "task_id": "PAGE-BROADCAST-001",
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-008",
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-008.spec.js › PAGE-008 广播 › Navigation and back",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
-        "target behavior"
+        "behavior contract"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
-      "first_breakpoint": {
-        "target": "FEAT-041",
-        "test": "TEST-P-008",
-        "file": "apps/uniapp/pages/broadcast/index.vue",
-        "symbol": "(inline advertising)",
-        "breakpoint": "page does not use useBroadcastSession composable/owner"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-008.spec.js",
         "duration_ms": 26,
@@ -6424,31 +5922,23 @@
       "test_ids": [
         "TEST-P-PAGE-008"
       ],
-      "implementation_refs": [
-        "apps/uniapp/pages/broadcast/index.vue"
-      ],
-      "task_id": "PAGE-BROADCAST-001",
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-008",
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-008.spec.js › PAGE-008 广播 › Platform degradation",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
-        "target behavior"
+        "behavior contract"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
-      "first_breakpoint": {
-        "target": "FEAT-041",
-        "test": "TEST-P-008",
-        "file": "apps/uniapp/pages/broadcast/index.vue",
-        "symbol": "(inline advertising)",
-        "breakpoint": "page does not use useBroadcastSession composable/owner"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-008.spec.js",
         "duration_ms": 28,
@@ -6463,31 +5953,23 @@
       "test_ids": [
         "TEST-P-PAGE-008"
       ],
-      "implementation_refs": [
-        "apps/uniapp/pages/broadcast/index.vue"
-      ],
-      "task_id": "PAGE-BROADCAST-001",
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-008",
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-008.spec.js › PAGE-008 广播 › Cleanup",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
-        "target behavior"
+        "behavior contract"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
-      "first_breakpoint": {
-        "target": "FEAT-041",
-        "test": "TEST-P-008",
-        "file": "apps/uniapp/pages/broadcast/index.vue",
-        "symbol": "(inline advertising)",
-        "breakpoint": "page does not use useBroadcastSession composable/owner"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-008.spec.js",
         "duration_ms": 26,
@@ -6502,31 +5984,23 @@
       "test_ids": [
         "TEST-P-PAGE-008"
       ],
-      "implementation_refs": [
-        "apps/uniapp/pages/broadcast/index.vue"
-      ],
-      "task_id": "PAGE-BROADCAST-001",
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-008",
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-008.spec.js › PAGE-008 广播 › Console and accessibility",
-      "status": "FAIL",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
-        "target behavior"
+        "behavior contract"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: IMPLEMENTED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）；E5 保持 OPEN",
-      "first_breakpoint": {
-        "target": "FEAT-041",
-        "test": "TEST-P-008",
-        "file": "apps/uniapp/pages/broadcast/index.vue",
-        "symbol": "(inline advertising)",
-        "breakpoint": "page does not use useBroadcastSession composable/owner"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-008.spec.js",
         "duration_ms": 26,
@@ -6541,12 +6015,10 @@
       "test_ids": [
         "TEST-P-PAGE-008"
       ],
-      "implementation_refs": [
-        "apps/uniapp/pages/broadcast/index.vue"
-      ],
-      "task_id": "PAGE-BROADCAST-001",
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-009",
@@ -8428,15 +7900,5 @@
       "reason": "PRODUCT_AND_HARNESS_OK"
     }
   ],
-  "top_first_breakpoints": [
-    {
-      "page_id": "PAGE-008",
-      "target": "FEAT-041",
-      "test": "TEST-P-008",
-      "file": "apps/uniapp/pages/broadcast/index.vue",
-      "symbol": "(inline advertising)",
-      "breakpoint": "page does not use useBroadcastSession composable/owner",
-      "task_id": "PAGE-BROADCAST-001"
-    }
-  ]
+  "top_first_breakpoints": []
 }

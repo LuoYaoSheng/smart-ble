@@ -121,15 +121,47 @@ import {
 	manufacturerDataBuffer
 } from '../../utils/advertising-payload.js';
 import { validateAppBroadcastStart } from '../../services/broadcast/validation.js';
+import {
+	createBroadcastAdapter,
+	buildBroadcastPayload,
+} from '../../services/broadcast/index.js';
+import { useBroadcastSession } from '../../composables/use-broadcast-session.js';
 import LogPanel from '../../components/log-panel/log-panel.vue';
 const bleStore = useBleStore();
 
-const advertising = ref(false);
-const logs = ref([]);
-let unsubLogger = null;
 const blePeripheral = ref(null);
 const platform = ref('');
-const isSupported = ref(false);
+
+// Platform hooks injected into Broadcast Adapter (page must not call discovery APIs directly)
+let platformStartAdvertising = async () => ({ ok: true });
+let platformStopAdvertising = async () => ({ ok: true });
+
+const broadcastAdapter = createBroadcastAdapter({
+	platform: 'uniapp-page-008',
+	startAdvertising: (payload, options) => platformStartAdvertising(payload, options),
+	stopAdvertising: (options) => platformStopAdvertising(options),
+});
+
+const {
+	advertising,
+	isSupported,
+	logs,
+	broadcastStateText: sessionStateText,
+	pageState,
+	addLog: sessionAddLog,
+	clearLogs: sessionClearLogs,
+	reportBroadcastError: sessionReportError,
+	markSupported,
+	startBroadcast,
+	stopBroadcast,
+	cleanup,
+	stopOnLeave,
+	getBroadcastState,
+	getBroadcastPayload,
+} = useBroadcastSession({
+	adapter: broadcastAdapter,
+	owner: { type: 'PAGE', id: 'PAGE-008' },
+});
 
 // #ifdef MP-WEIXIN
 const wxPeripheralAdapter = createWxPeripheralAdapterController({
@@ -161,10 +193,12 @@ const platformLabel = computed(() => ({ android: 'Android', ios: 'iOS', weixin: 
 const broadcastStateText = computed(() => {
 	if (advertising.value) return '广播中';
 	if (platform.value === 'web') return '不支持';
+	if (pageState.value === 'Error') return '失败';
+	if (pageState.value === 'Stopped') return '已停止';
 	return isSupported.value ? '已就绪' : '未就绪';
 });
 
-const payloadAnalysis = computed(() => analyzeAdvertisingPayload({
+const payloadAnalysis = computed(() => buildBroadcastPayload({
 	deviceName: deviceName.value,
 	serviceUuid: serviceUUID.value,
 	manufacturerId: manufacturerId.value,
@@ -174,6 +208,7 @@ const payloadAnalysis = computed(() => analyzeAdvertisingPayload({
 	includeServiceUuid: platform.value === 'android' ? androidSettings.value.addServiceUuid : true
 }));
 const addLog = (type, message) => {
+	sessionAddLog(type, message);
 	switch(type) {
 		case '错误': logger.error(message, 'broadcast'); break;
 		case '成功': logger.success(message, 'broadcast'); break;
@@ -191,19 +226,20 @@ const reportBroadcastError = (message) => {
 
 const clearLogs = () => {
 	logger.clear('broadcast');
-	logs.value = [];
+	sessionClearLogs();
 };
 
 const checkSupport = () => {
 	// #ifdef APP-PLUS
 	if (!blePeripheral.value) {
 		addLog('错误', '插件未初始化');
-		isSupported.value = false;
+		markSupported(false);
 		return;
 	}
 	blePeripheral.value.isSupported((result) => {
-		isSupported.value = result.code === 0 && result.supported;
-		addLog(isSupported.value ? '系统' : '错误', isSupported.value ? '设备支持低功耗蓝牙广播' : '设备不支持低功耗蓝牙广播');
+		const supported = result.code === 0 && result.supported;
+		markSupported(supported);
+		addLog(supported ? '系统' : '错误', supported ? '设备支持低功耗蓝牙广播' : '设备不支持低功耗蓝牙广播');
 	});
 	// #endif
 
@@ -213,7 +249,7 @@ const checkSupport = () => {
 
 	// #ifndef APP-PLUS
 	// #ifndef MP-WEIXIN
-	isSupported.value = false;
+	markSupported(false);
 	addLog('系统', '当前平台不支持 BLE 广播，请使用微信小程序或 App。');
 	// #endif
 	// #endif
@@ -225,13 +261,13 @@ const checkWxBleSupport = async () => {
 		await wxPeripheralAdapter.open();
 		await wxPeripheralServer.ensureCreated();
 		addLog('系统', '蓝牙从机模式已就绪');
-		isSupported.value = true;
+		markSupported(true);
 	} catch (error) {
 		if (error?.code === 'released_during_open') return;
 		const detail = error?.errMsg || error?.message || JSON.stringify(error);
 		if (isWeixinDevTools()) addLog('系统', '开发者工具不支持 BLE 外围服务，请使用真机调试广播功能');
 		else addLog('错误', '蓝牙从机模式初始化失败: ' + detail);
-		isSupported.value = false;
+		markSupported(false);
 	}
 };
 
@@ -247,8 +283,8 @@ const releaseWxPeripheralMode = async () => {
 	await wxPeripheralServer.close().catch((error) => {
 		addLog('错误', '关闭 BLE 外围服务器失败: ' + (error?.errMsg || error?.message || error));
 	});
-	advertising.value = false;
-	isSupported.value = false;
+	await cleanup().catch(() => {});
+	markSupported(false);
 	await wxPeripheralAdapter.release();
 	wxPeripheralServer.invalidate();
 };
@@ -373,61 +409,30 @@ const getPowerLevel = () => {
 	const levels = ['low', 'medium', 'high', 'high'];
 	return levels[powerIndex.value] || 'high';
 };
-const startWxAdvertising = async () => {
-	const payload = payloadAnalysis.value;
-	if (!payload.valid) throw new Error(payload.errors[0]);
+const runWxStart = async (payload) => {
 	const advertiseRequest = {
-		deviceName: payload.normalized.deviceName,
-		serviceUuids: payload.normalized.serviceUuid ? [payload.normalized.serviceUuid] : []
+		deviceName: payload.deviceName,
+		serviceUuids: payload.serviceUuid ? [payload.serviceUuid] : []
 	};
-	if (payload.normalized.manufacturerId != null) {
+	if (payload.manufacturerId != null) {
 		advertiseRequest.manufacturerData = [{
-			manufacturerId: payload.normalized.manufacturerId,
-			manufacturerSpecificData: manufacturerDataBuffer(payload.normalized.manufacturerData)
+			manufacturerId: payload.manufacturerId,
+			manufacturerSpecificData: manufacturerDataBuffer(payload.manufacturerData)
 		}];
 	}
 	await wxPeripheralServer.start(advertiseRequest, getPowerLevel());
-	advertising.value = true;
-	addLog('成功', '微信小程序广播启动成功');
+	return { ok: true };
 };
-const stopWxAdvertising = async () => {
+const runWxStop = async () => {
 	await wxPeripheralServer.stop();
-	advertising.value = false;
-	addLog('系统', '小程序广播已停止');
+	return { ok: true };
 };
 // #endif
 
 // #ifdef APP-PLUS
-const startIosBroadcast = () => {
-	const options = {
-		localName: deviceName.value,
-		services: [serviceUUID.value],
-		manufacturerData: {
-			id: parseInt(manufacturerId.value, 16),
-			data: manufacturerData.value
-		}
-	};
-	blePeripheral.value.startAdvertising(options, (result) => {
-		if (result.code === 0) {
-			advertising.value = true;
-			addLog('成功', 'iOS广播启动成功');
-		} else {
-			reportBroadcastError(result?.message || result?.errMsg || 'iOS广播启动失败');
-		}
-	});
-};
-// #endif
-
-const startAdvertising = () => {
-	// #ifdef APP-PLUS
-	const validationError = validateAppBroadcastStart({
-		pluginReady: Boolean(blePeripheral.value),
-		deviceName: deviceName.value,
-		serviceUuid: serviceUUID.value,
-		payload: payloadAnalysis.value
-	});
-	if (validationError) {
-		reportBroadcastError(validationError);
+const runAppStart = (payload) => new Promise((resolve, reject) => {
+	if (!blePeripheral.value) {
+		reject(new Error('广播插件未初始化'));
 		return;
 	}
 	if (platform.value === 'android') {
@@ -439,49 +444,109 @@ const startAdvertising = () => {
 			},
 			advertiseData: {
 				includeDeviceName: androidSettings.value.includeDeviceName,
-				manufacturerId: parseInt(manufacturerId.value, 16) || 0,
-				manufacturerData: manufacturerData.value
+				manufacturerId: payload.manufacturerId || 0,
+				manufacturerData: payload.manufacturerData || ''
 			}
 		};
-		if (androidSettings.value.addServiceUuid && serviceUUID.value) {
-			options.advertiseData.serviceUuid = serviceUUID.value;
+		if (androidSettings.value.addServiceUuid && payload.serviceUuid) {
+			options.advertiseData.serviceUuid = payload.serviceUuid;
 		}
 		blePeripheral.value.startAdvertising(options, (result) => {
-			if (result.code === 0) {
-				advertising.value = true;
-				addLog('成功', 'Android广播启动成功');
-			} else {
-				reportBroadcastError(result?.message || result?.errMsg || 'Android广播启动失败');
-			}
+			if (result.code === 0) resolve({ ok: true });
+			else reject(new Error(result?.message || result?.errMsg || 'Android广播启动失败'));
 		});
-	} else if (platform.value === 'ios') {
-		startIosBroadcast();
+		return;
 	}
+	const options = {
+		localName: payload.deviceName,
+		services: payload.serviceUuid ? [payload.serviceUuid] : [],
+		manufacturerData: {
+			id: payload.manufacturerId || 0,
+			data: payload.manufacturerData || ''
+		}
+	};
+	blePeripheral.value.startAdvertising(options, (result) => {
+		if (result.code === 0) resolve({ ok: true });
+		else reject(new Error(result?.message || result?.errMsg || 'iOS广播启动失败'));
+	});
+});
+const runAppStop = () => new Promise((resolve, reject) => {
+	if (!blePeripheral.value) {
+		reject(new Error('广播插件未初始化，无法停止广播。'));
+		return;
+	}
+	blePeripheral.value.stopAdvertising((result) => {
+		if (result.code === 0) resolve({ ok: true });
+		else reject(new Error(result?.message || result?.errMsg || '停止广播失败'));
+	});
+});
+// #endif
+
+// Bind platform hooks used by Broadcast Adapter / Session
+platformStartAdvertising = async (payload) => {
+	// #ifdef APP-PLUS
+	return runAppStart(payload);
 	// #endif
-	
-		// #ifdef MP-WEIXIN
-		startWxAdvertising().catch((error) => addLog('错误', '微信小程序广播启动失败: ' + (error?.errMsg || error?.message || error)));
+	// #ifdef MP-WEIXIN
+	return runWxStart(payload);
+	// #endif
+	// #ifndef APP-PLUS
+	// #ifndef MP-WEIXIN
+	throw new Error('当前平台不支持 BLE 广播');
+	// #endif
 	// #endif
 };
 
-const stopAdvertising = () => {
+platformStopAdvertising = async () => {
 	// #ifdef APP-PLUS
-	if (blePeripheral.value) {
-		blePeripheral.value.stopAdvertising((result) => {
-			if (result.code === 0) {
-				advertising.value = false;
-				addLog('系统', '广播已停止');
-			} else {
-				reportBroadcastError(result?.message || result?.errMsg || '停止广播失败');
-			}
-		});
-	} else {
-		reportBroadcastError('广播插件未初始化，无法停止广播。');
-	}
+	return runAppStop();
 	// #endif
 	// #ifdef MP-WEIXIN
-	stopWxAdvertising().catch((error) => addLog('错误', '停止广播失败: ' + (error?.errMsg || error?.message || error)));
+	return runWxStop();
 	// #endif
+	// #ifndef APP-PLUS
+	// #ifndef MP-WEIXIN
+	return { ok: true };
+	// #endif
+	// #endif
+};
+
+const startAdvertising = async () => {
+	// #ifdef APP-PLUS
+	const validationError = validateAppBroadcastStart({
+		pluginReady: Boolean(blePeripheral.value),
+		deviceName: deviceName.value,
+		serviceUuid: serviceUUID.value,
+		payload: payloadAnalysis.value
+	});
+	if (validationError) {
+		reportBroadcastError(validationError);
+		return;
+	}
+	// #endif
+	try {
+		await startBroadcast({
+			deviceName: deviceName.value,
+			serviceUuid: serviceUUID.value,
+			manufacturerId: manufacturerId.value,
+			manufacturerData: manufacturerData.value
+		}, {
+			payloadOptions: {
+				includeDeviceName: platform.value === 'android' ? androidSettings.value.includeDeviceName : true,
+				includeServiceUuid: platform.value === 'android' ? androidSettings.value.addServiceUuid : true
+			}
+		});
+	} catch (error) {
+		// errors already logged by useBroadcastSession
+	}
+};
+
+const stopAdvertising = async () => {
+	try {
+		await stopBroadcast();
+	} catch (error) {
+		// errors already logged by useBroadcastSession
+	}
 };
 
 const checkBluetoothAndPermissionsBeforeAdvertise = () => {
@@ -522,7 +587,7 @@ const checkBluetoothAndPermissionsBeforeAdvertise = () => {
 	// #ifdef MP-WEIXIN
 	wxPeripheralAdapter.open()
 			.then(() => wxPeripheralServer.ensureCreated())
-			.then(() => startWxAdvertising())
+			.then(() => startAdvertising())
 		.catch((error) => {
 			const content = error?.code === 'active_connections'
 				? error.message
@@ -596,15 +661,15 @@ onShow(() => {
 });
 
 onMounted(() => {
-	logs.value = [...logger.getHistory('broadcast')];
-	unsubLogger = logger.subscribe(entry => {
-		logs.value.unshift(entry);
-	}, 'broadcast');
+	const history = logger.getHistory('broadcast') || [];
+	for (const entry of [...history].reverse()) {
+		sessionAddLog(entry.type || '系统', entry.message || entry);
+	}
+	stopOnLeave(() => cleanup());
 });
 
 onUnmounted(() => {
-	if (unsubLogger) unsubLogger();
-	stopAdvertising();
+	cleanup().catch(() => {});
 });
 
 onHide(() => {
@@ -620,6 +685,7 @@ onUnload(() => {
 	// #ifdef MP-WEIXIN
 	releaseWxPeripheralMode();
 	// #endif
+	cleanup().catch(() => {});
 });
 
 // #ifdef MP-WEIXIN

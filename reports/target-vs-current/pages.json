@@ -302,12 +302,12 @@
       "dimension": "page",
       "gap_kind": "PAGE",
       "priority": "Must",
-      "implementation_status": "CONFIRMED_PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "EXECUTED",
-      "static_implementation": "CONFIRMED_PARTIAL",
+      "static_implementation": "UNASSESSED",
       "e4_verification": "EXECUTED",
       "e5_verification": "HARDWARE_PENDING",
-      "severity": "P1",
+      "severity": null,
       "evidence_level": "E5",
       "implementation_refs": [
         {
@@ -327,14 +327,14 @@
       "test_results": [],
       "expected": "12 states / 7 operations",
       "actual": "E4 executed via Page Driver; pass=— fail=—",
-      "first_breakpoint": "广播页内联；Owner/composable 未接入",
+      "first_breakpoint": "Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task",
       "downstream_impact": [
         "state_cases=12",
         "operation_cases=7"
       ],
       "dependencies": [],
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "task_id": "PAGE-BROADCAST-001",
+      "root_cause_id": null,
+      "task_id": null,
       "release_blocking": false
     },
     {
@@ -4180,12 +4180,12 @@
       "dimension": "operation",
       "gap_kind": "PAGE",
       "priority": "Must",
-      "implementation_status": "CONFIRMED_PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "EXECUTED",
-      "static_implementation": "CONFIRMED_PARTIAL",
+      "static_implementation": "UNASSESSED",
       "e4_verification": "EXECUTED",
       "e5_verification": "NOT_EXECUTED",
-      "severity": "P1",
+      "severity": null,
       "evidence_level": "E4",
       "implementation_refs": [],
       "test_ids": [
@@ -4195,13 +4195,13 @@
       "test_results": [],
       "expected": "检查支持",
       "actual": "page driver executed; product gap may remain",
-      "first_breakpoint": "广播页内联；Owner/composable 未接入",
+      "first_breakpoint": "E4 已执行（EXECUTED）；产品操作差距另见业务 Task",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-008"
       ],
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "task_id": "PAGE-BROADCAST-001",
+      "root_cause_id": null,
+      "task_id": null,
       "release_blocking": false
     },
     {
@@ -4210,12 +4210,12 @@
       "dimension": "operation",
       "gap_kind": "PAGE",
       "priority": "Must",
-      "implementation_status": "CONFIRMED_PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "EXECUTED",
-      "static_implementation": "CONFIRMED_PARTIAL",
+      "static_implementation": "UNASSESSED",
       "e4_verification": "EXECUTED",
       "e5_verification": "NOT_EXECUTED",
-      "severity": "P1",
+      "severity": null,
       "evidence_level": "E4",
       "implementation_refs": [],
       "test_ids": [
@@ -4225,13 +4225,13 @@
       "test_results": [],
       "expected": "编辑字段",
       "actual": "page driver executed; product gap may remain",
-      "first_breakpoint": "广播页内联；Owner/composable 未接入",
+      "first_breakpoint": "E4 已执行（EXECUTED）；产品操作差距另见业务 Task",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-008"
       ],
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "task_id": "PAGE-BROADCAST-001",
+      "root_cause_id": null,
+      "task_id": null,
       "release_blocking": false
     },
     {
@@ -4240,12 +4240,12 @@
       "dimension": "operation",
       "gap_kind": "PAGE",
       "priority": "Must",
-      "implementation_status": "CONFIRMED_PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "HARDWARE_PENDING",
-      "static_implementation": "CONFIRMED_PARTIAL",
+      "static_implementation": "UNASSESSED",
       "e4_verification": "EXECUTED",
       "e5_verification": "HARDWARE_PENDING",
-      "severity": "P1",
+      "severity": null,
       "evidence_level": "E5",
       "implementation_refs": [],
       "test_ids": [
@@ -4256,13 +4256,13 @@
       "test_results": [],
       "expected": "开始广播",
       "actual": "page driver executed; product gap may remain",
-      "first_breakpoint": "广播页内联；Owner/composable 未接入",
+      "first_breakpoint": "E4 已执行（EXECUTED）；产品操作差距另见业务 Task",
       "downstream_impact": [],
       "dependencies": [
         "PAGE-008"
       ],
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "task_id": "PAGE-BROADCAST-001",
+      "root_cause_id": null,
+      "task_id": null,
       "release_blocking": false
     },
     {

@@ -8,8 +8,8 @@ owner: Smart BLE QA / Engineering
 last_reviewed: 2026-09-01
 approved_by: null
 generated_from: reports/target-vs-current/target-vs-current.json
-content_hash: 64e3683c7f5a7db88aacbfb9800d78b682f0ca2c94947a2985fb760d31a412ff
-commit: 8fbb8285e63fd97d5643906bec4d4807e93b5007
+content_hash: 5426d043164502a145e41a290572f2e4aca2fb0a1ed9277ecb914ecbb36d75d3
+commit: c95ef5531cd5446a71b2cc23152501d7a677c554
 supersedes: TP-G2 v1 (reports/target-vs-current-v1/)
 ```
 
@@ -35,12 +35,12 @@ supersedes: TP-G2 v1 (reports/target-vs-current-v1/)
 
 | 维度 | total | assessed | unassessed |
 |---|---:|---:|---:|
-| REQ | 66 | 5 | 61 |
-| FEAT | 81 | 5 | 76 |
-| PAGE | 10 | 1 | 9 |
+| REQ | 66 | 0 | 66 |
+| FEAT | 81 | 0 | 81 |
+| PAGE | 10 | 0 | 10 |
 | WEB | 1 | 0 | 1 |
 | STATE | 67 | 0 | 67 |
-| OP | 92 | 3 | 89 |
+| OP | 92 | 0 | 92 |
 | FLOW | 14 | 0 | 14 |
 | ERR | 68 | 0 | 68 |
 | DATA | 13 | 0 | 13 |
@@ -60,17 +60,17 @@ PROTO 仅使用 `PROTO-001`..`PROTO-011`（不是 Service UUID）。
 ### unique_root_causes_by_severity
 
 - P0: **1**
-- P1: **1**
+- P1: **0**
 - P2: **0**
 - P3: **0**
 
 ### affected_target_records_by_severity
 
 - P0: 1
-- P1: 14
+- P1: 0
 - P2: 0
 - P3: 0
-- null: 632
+- null: 646
 
 > 不得把 affected records 说成「N 个 P0 缺陷」。Observer 缺失默认 **P1**（无公开危害证据时非 P0）。
 
@@ -78,8 +78,8 @@ PROTO 仅使用 `PROTO-001`..`PROTO-011`（不是 Service UUID）。
 
 ### gap_kind
 
-- PRODUCT: 305
-- PAGE: 159
+- PRODUCT: 310
+- PAGE: 154
 - TESTABILITY: 125
 - LANDING: 47
 - FIRMWARE: 5
@@ -89,9 +89,9 @@ PROTO 仅使用 `PROTO-001`..`PROTO-011`（不是 Service UUID）。
 
 ### implementation_status
 
-- UNASSESSED: 610
-- CONFIRMED_PARTIAL: 15
+- UNASSESSED: 624
 - CONFIRMED_IMPLEMENTED: 22
+- CONFIRMED_PARTIAL: 1
 
 ### verification_status
 
@@ -103,21 +103,18 @@ PROTO 仅使用 `PROTO-001`..`PROTO-011`（不是 Service UUID）。
 ## 5. Top 20 First Breakpoints
 
 1. **[P0]** `PROTO-010` → .github/workflows/release-build.yml builds Flutter/Tauri; not UniApp Android + Peripheral/Observer firmware （RELEASE-PIPELINE-001 / RC-RELEASE-PIPELINE）
-2. **[P1]** `FEAT-041` → PAGE-008 内联广告逻辑；useBroadcastSession 未使用 （PAGE-BROADCAST-001 / RC-PAGE-BROADCAST）
-3. **[P1]** `PAGE-008` → 广播页内联；Owner/composable 未接入 （PAGE-BROADCAST-001 / RC-PAGE-BROADCAST）
 
 ## 6. Task waves（拓扑序前 12）
 
 1. **RELEASE-PIPELINE-001** — UniApp + Peripheral/Observer 双固件 Release Pipeline（type=RELEASE, sev=P0, gaps≈1）
 2. **OTA-E5-VERIFICATION** — ESP32+Android OTA 闭环 E5（type=VERIFY_E5, sev=P0, gaps≈0）
 3. **ESP32-FAULT-001** — Fault Injection + Serial JSON（type=SOURCE_FIX, sev=P1, gaps≈0）
-4. **PAGE-BROADCAST-001** — PAGE-008 改用 composable/adapter/service（type=SOURCE_FIX, sev=P1, gaps≈9）
-5. **TEST-BRIDGE-TS-001** — Node 测试桥支持 TS protocol import（Smart HID）（type=TESTABILITY, sev=P1, gaps≈0）
-6. **VERIFY-ANDROID-001** — Android 真机矩阵（type=VERIFY_E5, sev=—, gaps≈0）
-7. **VERIFY-WECHAT-001** — 微信真机矩阵（type=VERIFY_E5, sev=—, gaps≈0）
-8. **VERIFY-ESP32-001** — ESP32 E5 夹具矩阵（type=VERIFY_E5, sev=—, gaps≈0）
-9. **VERIFY-SMART-HID-001** — Smart HID E5 端到端（type=VERIFY_E5, sev=—, gaps≈0）
-10. **VERIFY-E6-001** — Clean Machine / Release E6（type=VERIFY_E6, sev=—, gaps≈31）
+4. **TEST-BRIDGE-TS-001** — Node 测试桥支持 TS protocol import（Smart HID）（type=TESTABILITY, sev=P1, gaps≈0）
+5. **VERIFY-ANDROID-001** — Android 真机矩阵（type=VERIFY_E5, sev=—, gaps≈0）
+6. **VERIFY-WECHAT-001** — 微信真机矩阵（type=VERIFY_E5, sev=—, gaps≈0）
+7. **VERIFY-ESP32-001** — ESP32 E5 夹具矩阵（type=VERIFY_E5, sev=—, gaps≈0）
+8. **VERIFY-SMART-HID-001** — Smart HID E5 端到端（type=VERIFY_E5, sev=—, gaps≈0）
+9. **VERIFY-E6-001** — Clean Machine / Release E6（type=VERIFY_E6, sev=—, gaps≈31）
 
 完整图：`reports/target-vs-current/task-dependency-graph.json`。
 

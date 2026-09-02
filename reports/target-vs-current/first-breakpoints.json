@@ -8,24 +8,6 @@
       "root_cause_id": "RC-RELEASE-PIPELINE",
       "task_id": "RELEASE-PIPELINE-001",
       "verification_status": "NOT_EXECUTED"
-    },
-    {
-      "target_id": "FEAT-041",
-      "severity": "P1",
-      "gap_kind": "PAGE",
-      "first_breakpoint": "PAGE-008 内联广告逻辑；useBroadcastSession 未使用",
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "task_id": "PAGE-BROADCAST-001",
-      "verification_status": "HARDWARE_PENDING"
-    },
-    {
-      "target_id": "PAGE-008",
-      "severity": "P1",
-      "gap_kind": "PAGE",
-      "first_breakpoint": "广播页内联；Owner/composable 未接入",
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "task_id": "PAGE-BROADCAST-001",
-      "verification_status": "EXECUTED"
     }
   ],
   "all": [
@@ -37,24 +19,6 @@
       "root_cause_id": "RC-RELEASE-PIPELINE",
       "task_id": "RELEASE-PIPELINE-001",
       "verification_status": "NOT_EXECUTED"
-    },
-    {
-      "target_id": "FEAT-041",
-      "severity": "P1",
-      "gap_kind": "PAGE",
-      "first_breakpoint": "PAGE-008 内联广告逻辑；useBroadcastSession 未使用",
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "task_id": "PAGE-BROADCAST-001",
-      "verification_status": "HARDWARE_PENDING"
-    },
-    {
-      "target_id": "PAGE-008",
-      "severity": "P1",
-      "gap_kind": "PAGE",
-      "first_breakpoint": "广播页内联；Owner/composable 未接入",
-      "root_cause_id": "RC-PAGE-BROADCAST",
-      "task_id": "PAGE-BROADCAST-001",
-      "verification_status": "EXECUTED"
     }
   ]
 }
