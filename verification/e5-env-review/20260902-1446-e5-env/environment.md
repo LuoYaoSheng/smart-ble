@@ -62,7 +62,7 @@
 | command | `/Applications/HBuilderX.app/Contents/MacOS/cli launch app-android --project apps/uniapp --deviceId emulator-5554 --compile true` |
 | result | **FAIL** |
 | FIRST_BREAKPOINT | `Invalid value "iife" for option "output.format" - UMD and IIFE output formats are not supported for code-splitting builds.` |
-| log | `apk-build-attempt.log` |
+| log | `apk-build-attempt.txt` |
 | 业务代码修改 | **禁止 / 未做** |
 
 ## 结论
