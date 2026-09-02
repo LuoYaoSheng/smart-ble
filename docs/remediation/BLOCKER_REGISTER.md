@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: f02fb36703e21a3dfc1fbe352c470b2a26f3fbf2d6e6a28d5e3f45c20f16faf1
+content_hash: 68af291567ff7ddcbf3999ed3c83dc801ce473e5a10d7076c9448be73fe86657
 ```
 
 | ID | 类型 | 状态 | 说明 | Task |
@@ -13,5 +13,6 @@ content_hash: f02fb36703e21a3dfc1fbe352c470b2a26f3fbf2d6e6a28d5e3f45c20f16faf1
 | BLK-TOOL-PLATFORMIO | TOOLCHAIN | OPEN | PlatformIO 可能未安装 → ESP32 build NOT_EXECUTED（本轮禁止 upload） | ESP32-BUILD-001 |
 | BLK-HW-ANDROID | FIXTURE | OPEN | adb devices 可能为空 → HARDWARE_PENDING | VERIFY-ANDROID-001 |
 | BLK-HW-ESP32 | FIXTURE | OPEN | 无 ESP32 USB 串口 / Observer 夹具 → BLOCKED_BY_FIXTURE | VERIFY-ESP32-001 |
+| OTA-E5-BLOCKER | FIXTURE+TOOLCHAIN | OPEN | E5-OTA-001 BLOCKED：无 ESP32 USB；仅 Android 模拟器；UniApp APK 编译失败 | OTA-E5-VERIFICATION |
 
 本轮禁止：upload / adb install / 真机 BLE / 宣称 E5 PASS。

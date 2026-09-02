@@ -1,0 +1,13 @@
+$ ~/.platformio/penv/bin/pio run -d hardware/esp32/LightBLE -t upload
+
+Configuring upload protocol...
+CURRENT: upload_protocol = esptool
+Looking for upload port...
+Auto-detected: /dev/cu.Bluetooth-Incoming-Port
+Uploading .pio/build/esp32dev/firmware.bin
+esptool.py v4.9.0
+Serial port /dev/cu.Bluetooth-Incoming-Port
+Connecting......................................
+
+A fatal error occurred: Failed to connect to ESP32: No serial data received.
+*** [upload] Error 2

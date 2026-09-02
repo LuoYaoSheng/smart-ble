@@ -1,0 +1,13 @@
+# OTA E5 RUN 20260902-0952-ota-e5 — SHA256（脱敏索引，不含二进制）
+
+firmware.bin (pio build esp32dev @ 4933d39):
+  1989b210a91a741e19e38a5dce8a0bd48813688ec5797396e1e9079a1dde7c3d
+
+package-a manifest sha256 (matches firmware.bin):
+  1989b210a91a741e19e38a5dce8a0bd48813688ec5797396e1e9079a1dde7c3d
+
+package-b manifest sha256 (intentional mismatch):
+  0000000000000000000000000000000000000000000000000000000000000000
+
+uniapp android apk:
+  NOT_BUILT

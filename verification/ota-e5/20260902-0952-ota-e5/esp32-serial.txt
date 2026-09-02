@@ -1,0 +1,8 @@
+# ESP32 Serial Monitor — NOT COLLECTED
+
+Reason: No ESP32 USB serial port detected after failed upload.
+Expected boot lines (not observed):
+  - firmware_version from Device Info / system_info
+  - {"type":"ota","status":"idle",...}
+
+See flash-log.txt for upload failure details.

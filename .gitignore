@@ -73,6 +73,12 @@ apps/uniapp/unpackage/
 # PlatformIO build artifacts
 **/.pio/
 
+# OTA E5 local verification binaries (manifests/logs in git)
+verification/ota-e5/**/packages/
+verification/ota-e5/**/*.bin
+verification/ota-e5/**/*.apk
+verification/ota-e5/**/video/
+
 # Playwright / Page E4 local outputs (ENV-PLAYWRIGHT-001)
 test-results/
 playwright-report/

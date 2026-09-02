@@ -176,7 +176,20 @@ ${rows.length > 100 ? `\n> 仅展示前 100 条；完整数据见 JSON。\n` : '
 
 write(`${G}/PAGE_GAP_REPORT.md`, sectionReport('页面差距报告（TP-G2-R1）', (r) => r.gap_kind === 'PAGE' || r.target_type === 'page' || r.target_type === 'web' || r.target_type === 'state' || r.target_type === 'operation' || r.dimension === 'blocker'));
 write(`${G}/RUNTIME_GAP_REPORT.md`, sectionReport('Runtime 差距报告（TP-G2-R1）', (r) => r.gap_kind === 'RUNTIME'));
-write(`${G}/ESP32_GAP_REPORT.md`, sectionReport('ESP32 差距报告（TP-G2-R1）', (r) => r.gap_kind === 'FIRMWARE' || (r.target_type === 'protocol' && String(r.target_id).startsWith('PROTO-'))));
+write(`${G}/ESP32_GAP_REPORT.md`, sectionReport('ESP32 差距报告（TP-G2-R1）', (r) => r.gap_kind === 'FIRMWARE' || (r.target_type === 'protocol' && String(r.target_id).startsWith('PROTO-')))
+  + (esp32?.inventory?.ota?.chain ? `
+
+## OTA Chain
+
+| 环节 | 状态 |
+|---|---|
+| OTA Package | ${esp32.inventory.ota.chain.package} |
+| OTA Client | ${esp32.inventory.ota.chain.client} |
+| OTA Firmware | ${esp32.inventory.ota.chain.firmware} |
+| OTA E5 | ${esp32.inventory.ota.chain.e5} |
+
+${esp32.inventory.ota.e5_verification?.evidence_id ? `> E5 证据：**${esp32.inventory.ota.e5_verification.evidence_id}** · \`${esp32.inventory.ota.e5_verification.summary_path || '—'}\`` : ''}
+` : ''));
 write(`${G}/SMART_HID_GAP_REPORT.md`, sectionReport('Smart HID 差距报告（TP-G2-R1）', (r) => r.gap_kind === 'SMART_HID' || r.task_id === 'TEST-BRIDGE-TS-001' || /^FEAT-05[3-9]$/.test(r.target_id)));
 write(`${G}/LANDING_RELEASE_GAP_REPORT.md`, sectionReport('落地页与 Release 差距报告（TP-G2-R1）', (r) => r.gap_kind === 'LANDING' || r.gap_kind === 'RELEASE'));
 write(`${G}/TEST_COVERAGE_GAP_REPORT.md`, sectionReport('测试可执行性差距报告（TP-G2-R1）', (r) => r.gap_kind === 'TESTABILITY' || r.gap_kind === 'TOOLCHAIN'));

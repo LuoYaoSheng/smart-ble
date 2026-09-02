@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: f02fb36703e21a3dfc1fbe352c470b2a26f3fbf2d6e6a28d5e3f45c20f16faf1
+content_hash: 68af291567ff7ddcbf3999ed3c83dc801ce473e5a10d7076c9448be73fe86657
 ```
 
 > PUBLIC-HONESTY-001 / VERSION-METADATA-001 状态以 task-dependency-graph.json 为准。未批准 Task 不得执行。
@@ -19,7 +19,7 @@ content_hash: f02fb36703e21a3dfc1fbe352c470b2a26f3fbf2d6e6a28d5e3f45c20f16faf1
 - Test IDs：—
 - First Breakpoint：—
 - 依赖：ESP32-BUILD-001
-- 解锁：
+- 解锁：OTA-E5-VERIFICATION
 - 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
 - 自动化验收：related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL
 - 建议提交信息：`source_fix(ota-firmware-001): 固件 OTA op/target/hardware/SHA/max_chunk/commit 校验`

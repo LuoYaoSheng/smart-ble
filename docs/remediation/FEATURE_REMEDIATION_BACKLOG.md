@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: f02fb36703e21a3dfc1fbe352c470b2a26f3fbf2d6e6a28d5e3f45c20f16faf1
+content_hash: 68af291567ff7ddcbf3999ed3c83dc801ce473e5a10d7076c9448be73fe86657
 ```
 
 > PUBLIC-HONESTY-001 / VERSION-METADATA-001 状态以 task-dependency-graph.json 为准。未批准 Task 不得执行。
@@ -15,9 +15,9 @@ content_hash: f02fb36703e21a3dfc1fbe352c470b2a26f3fbf2d6e6a28d5e3f45c20f16faf1
 - task_type：SOURCE_FIX
 - severity：P1
 - root_cause_id：RC-DISPLAY-NAME
-- Target IDs（样本）：FEAT-057, REQ-048, REQ-051
-- Test IDs：TEST-I-009, TEST-H-002, TEST-H-003, TEST-U-015, TEST-W-010
-- First Breakpoint：[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier "./device-display-name.js" from "data:text/javascript;base64,
+- Target IDs（样本）：见 JSON
+- Test IDs：—
+- First Breakpoint：—
 - 依赖：无
 - 解锁：
 - 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
@@ -79,9 +79,9 @@ content_hash: f02fb36703e21a3dfc1fbe352c470b2a26f3fbf2d6e6a28d5e3f45c20f16faf1
 - task_type：SOURCE_FIX
 - severity：P1
 - root_cause_id：RC-LOG-REDACTION
-- Target IDs（样本）：FEAT-040, REQ-036, REQ-037, REQ-050, PAGE-002, WEB-001
-- Test IDs：TEST-U-013, TEST-R-004, TEST-U-012, TEST-A-008, TEST-U-015, TEST-I-009, TEST-H-002, TEST-P-002, TEST-H-001, TEST-H-003, TEST-W-010, TEST-R-001
-- First Breakpoint：[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js
+- Target IDs（样本）：见 JSON
+- Test IDs：—
+- First Breakpoint：—
 - 依赖：无
 - 解锁：
 - 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
@@ -127,9 +127,9 @@ content_hash: f02fb36703e21a3dfc1fbe352c470b2a26f3fbf2d6e6a28d5e3f45c20f16faf1
 - task_type：SOURCE_FIX
 - severity：P1
 - root_cause_id：RC-CONN-DISCOVERY
-- Target IDs（样本）：FEAT-021, REQ-019, PAGE-006, FLOW-004, ERR-CONN-03
-- Test IDs：TEST-I-003, TEST-A-006, TEST-E-002, TEST-P-006, TEST-W-007, TEST-U-009, TEST-U-010, TEST-U-011, TEST-U-012, TEST-I-004, TEST-I-005, TEST-I-008
-- First Breakpoint：[REQ-020/021 ERR-CONN-03] 第一断点: connectDevice 未编排服务发现（失败不报错=半开泄漏面）
+- Target IDs（样本）：见 JSON
+- Test IDs：—
+- First Breakpoint：—
 - 依赖：无
 - 解锁：
 - 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
@@ -163,7 +163,7 @@ content_hash: f02fb36703e21a3dfc1fbe352c470b2a26f3fbf2d6e6a28d5e3f45c20f16faf1
 - Test IDs：—
 - First Breakpoint：—
 - 依赖：OTA-PACKAGE-001
-- 解锁：VERIFY-ANDROID-001
+- 解锁：OTA-E5-VERIFICATION, VERIFY-ANDROID-001
 - 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
 - 自动化验收：related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL
 - 建议提交信息：`source_fix(ota-client-001): 客户端完整 OTA 事务（CTRL start→ready→DATA→commit）`
@@ -179,7 +179,23 @@ content_hash: f02fb36703e21a3dfc1fbe352c470b2a26f3fbf2d6e6a28d5e3f45c20f16faf1
 - Test IDs：—
 - First Breakpoint：—
 - 依赖：ESP32-BUILD-001
-- 解锁：
+- 解锁：OTA-E5-VERIFICATION
 - 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
 - 自动化验收：related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL
 - 建议提交信息：`source_fix(ota-firmware-001): 固件 OTA op/target/hardware/SHA/max_chunk/commit 校验`
+
+### OTA-E5-VERIFICATION
+
+- 状态：**BLOCKED**
+- 标题：ESP32+Android OTA 闭环 E5
+- task_type：VERIFY_E5
+- severity：P0
+- root_cause_id：RC-OTA-E5-HW
+- Target IDs（样本）：见 JSON
+- Test IDs：—
+- First Breakpoint：—
+- 依赖：OTA-FIRMWARE-001, OTA-CLIENT-001
+- 解锁：
+- 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
+- 自动化验收：related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL
+- 建议提交信息：`verify_e5(ota-e5-verification): ESP32+Android OTA 闭环 E5`

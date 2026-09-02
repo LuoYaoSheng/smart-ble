@@ -170,6 +170,21 @@ const otaUsesAction = /doc\["action"\]|strcmp\(action/.test(FACTS.esp32) && !/do
 const otaFirmwareReady = (/doc\["op"\]|"op"\s*:/.test(FACTS.esp32)
   && /sha256|OTA_HASH_MISMATCH|OTA_RECEIVING|OtaServer/.test(FACTS.esp32)
   && !otaUsesAction);
+const otaE5SummaryRel = (() => {
+  const base = `${ROOT}/verification/ota-e5`;
+  if (!existsSync(base)) return '';
+  const runs = readdirSync(base, { withFileTypes: true })
+    .filter((d) => d.isDirectory() && existsSync(`${base}/${d.name}/summary.md`))
+    .map((d) => d.name)
+    .sort()
+    .reverse();
+  return runs.length ? `verification/ota-e5/${runs[0]}/summary.md` : '';
+})();
+const otaE5Summary = otaE5SummaryRel ? read(otaE5SummaryRel) : '';
+const otaE5Pass = /\*\*STATUS\*\*[\s|]+\*\*PASS\*\*/.test(otaE5Summary);
+const otaE5Blocked = /\*\*STATUS\*\*[\s|]+\*\*BLOCKED\*\*/.test(otaE5Summary);
+const otaE5Fail = /\*\*STATUS\*\*[\s|]+\*\*FAIL\*\*/.test(otaE5Summary);
+const otaE5Status = otaE5Pass ? 'DONE' : otaE5Blocked ? 'BLOCKED' : otaE5Fail ? 'FAIL' : 'PLANNED';
 const releaseBuildsFlutter = /flutter/i.test(FACTS.releaseWorkflow);
 const releaseBuildsTauri = /tauri/i.test(FACTS.releaseWorkflow);
 const releaseBuildsUniapp = /uniapp|uni-app/i.test(FACTS.releaseWorkflow);
@@ -298,6 +313,7 @@ const TASKS = [
   { task_id: 'OTA-PACKAGE-001', task_type: 'SOURCE_FIX', title: '客户端 Firmware Package 六项校验', root_cause_id: 'RC-OTA-PACKAGE', severity: 'P1', deps: [], order_hint: 20, status: otaPackageReady ? 'DONE' : 'PLANNED' },
   { task_id: 'OTA-CLIENT-001', task_type: 'SOURCE_FIX', title: '客户端完整 OTA 事务（CTRL start→ready→DATA→commit）', root_cause_id: 'RC-OTA-CTRL-START', severity: 'P0', deps: ['OTA-PACKAGE-001'], order_hint: 21, status: otaClientReady ? 'DONE' : 'PLANNED' },
   { task_id: 'OTA-FIRMWARE-001', task_type: 'SOURCE_FIX', title: '固件 OTA op/target/hardware/SHA/max_chunk/commit 校验', root_cause_id: 'RC-ESP32-OTA-ACTION', severity: 'P1', deps: ['ESP32-BUILD-001'], order_hint: 22, status: otaFirmwareReady ? 'DONE' : 'PLANNED' },
+  { task_id: 'OTA-E5-VERIFICATION', task_type: 'VERIFY_E5', title: 'ESP32+Android OTA 闭环 E5', root_cause_id: 'RC-OTA-E5-HW', severity: 'P0', deps: ['OTA-FIRMWARE-001', 'OTA-CLIENT-001'], order_hint: 23, status: otaE5Status },
   { task_id: 'ESP32-BUILD-001', task_type: 'SOURCE_FIX', title: '两环境、无固定 COM、模块化入口', root_cause_id: 'RC-ESP32-BUILD', severity: 'P1', deps: [], order_hint: 30 },
   { task_id: 'ESP32-PERIPHERAL-001', task_type: 'SOURCE_FIX', title: '服务/特征/名称/LED/Device Info 对齐契约', root_cause_id: 'RC-ESP32-LED-NAME', severity: 'P1', deps: ['ESP32-BUILD-001'], order_hint: 31 },
   { task_id: 'ESP32-OBSERVER-001', task_type: 'SOURCE_FIX', title: '实现 fixture_observer', root_cause_id: 'RC-ESP32-OBSERVER', severity: 'P1', deps: ['ESP32-BUILD-001'], order_hint: 32 },
@@ -1240,6 +1256,19 @@ const esp32Inventory = {
     target_field: 'op',
     client_writes_ctrl: otaWritesCtrl,
     client_validate_package: otaPackageReady,
+    firmware_ready: otaFirmwareReady,
+    e5_verification: {
+      evidence_id: 'E5-OTA-001',
+      summary_path: otaE5SummaryRel || null,
+      status: otaE5Status,
+      run_id: otaE5SummaryRel ? otaE5SummaryRel.split('/')[2] : null,
+    },
+    chain: {
+      package: otaPackageReady ? 'DONE' : 'PLANNED',
+      client: otaClientReady ? 'DONE' : 'PLANNED',
+      firmware: otaFirmwareReady ? 'DONE' : 'PLANNED',
+      e5: otaE5Pass ? 'PASS' : otaE5Blocked ? 'BLOCKED' : otaE5Fail ? 'FAIL' : 'OPEN',
+    },
   },
   fault_injection: (bleFixture.fault_injection || []).map((f) => ({
     id: f.id,
@@ -1340,6 +1369,13 @@ const blockers = [
     description: '无 ESP32 USB 串口 / Observer 夹具 → BLOCKED_BY_FIXTURE',
     task_id: 'VERIFY-ESP32-001',
   },
+  ...(otaE5Blocked ? [{
+    blocker_id: 'OTA-E5-BLOCKER',
+    type: 'FIXTURE+TOOLCHAIN',
+    status: 'OPEN',
+    description: 'E5-OTA-001 BLOCKED：无 ESP32 USB；仅 Android 模拟器；UniApp APK 编译失败',
+    task_id: 'OTA-E5-VERIFICATION',
+  }] : []),
 ];
 
 const firstBreakpoints = [];

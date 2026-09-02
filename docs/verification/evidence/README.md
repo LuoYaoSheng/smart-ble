@@ -30,7 +30,7 @@ Examples:
 
 - E4 stable-library Developer Tools: completed for the scope in `20260822_E4_mp-weixin.md`
 - E4 UniAutomator: one suite/three tests passed; see `20260822-1703_E4_mp-weixin_automator-result.json`
-- E5 Android: missing
+- E5 Android: missing → **E5-OTA-001 BLOCKED**（见 `E5-OTA-001.md`）
 - E5 iOS: missing; locally known iPhone was Offline during the 2026-08-22 check
 - E5 Smart HID firmware: missing
 - E5 peripheral observer: missing
