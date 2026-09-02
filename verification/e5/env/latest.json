@@ -1,0 +1,78 @@
+{
+  "task_id": "E5-ENV-UNIFIED-001",
+  "generated_at": "2026-09-02T07:31:11.050Z",
+  "git_head": "f2c2febe9e8bbaee5e3effcb1c3e6ba0ea7aebc6",
+  "git_short": "f2c2feb",
+  "host": {
+    "os": "Darwin 25.5.0 (arm64)",
+    "platform": "darwin",
+    "cpu": "Apple M4",
+    "node": "v24.12.0",
+    "npm": "11.6.2"
+  },
+  "android": {
+    "androidSdk": {
+      "present": true,
+      "path": "/Users/luoyaosheng/Library/Android/sdk"
+    },
+    "adb": {
+      "present": true,
+      "path": "/Users/luoyaosheng/Library/Android/sdk/platform-tools/adb",
+      "version": "Android Debug Bridge version 1.0.41"
+    },
+    "java": {
+      "present": true,
+      "version": "openjdk version \"25.0.1\" 2025-10-21 LTS"
+    }
+  },
+  "device": {
+    "physical": [],
+    "emulator": [
+      {
+        "serial": "emulator-5554",
+        "model": "sdk_gphone64_arm64",
+        "product": "sdk_gphone64_arm64",
+        "raw": "emulator-5554          device product:sdk_gphone64_arm64 model:sdk_gphone64_arm64 device:emu64a transport_id:16"
+      }
+    ],
+    "emulator_not_e5": true
+  },
+  "esp32": {
+    "platformio": {
+      "present": true,
+      "path": "/Users/luoyaosheng/.platformio/penv/bin/pio",
+      "version": "PlatformIO Core, version 6.1.18"
+    },
+    "deviceList": "********************************************************************************\nObsolete PIO Core v6.1.18 is used (previous was 6.1.19)\nPlease remove multiple PIO Cores from a system:\nhttps://docs.platformio.org/en/latest/core/installation/troubleshooting.html\n********************************************************************************\n/dev/cu.debug-console\n---------------------\nHardware ID: n/a\nDescription: n/a\n\n/dev/cu.Bluetooth-Incoming-Port\n-------------------------------\nHardware ID: n/a\nDescription: n/a",
+    "serial": {
+      "ports": [],
+      "serial_available": false,
+      "serial_missing": true
+    }
+  },
+  "build": {
+    "hbuilderx": {
+      "present": true,
+      "path": "/Applications/HBuilderX.app",
+      "version": "5.24.2026081301",
+      "cli": true
+    },
+    "viteConfigPresent": true,
+    "androidBuildTool": "HBuilderX cli launch app-android"
+  },
+  "readiness": {
+    "host": "READY",
+    "android_toolchain": "READY",
+    "android_apk": "UNKNOWN",
+    "android_physical": "BLOCKED",
+    "emulator_not_e5": true,
+    "esp32_toolchain": "READY",
+    "esp32_serial": "BLOCKED",
+    "ble_link": "BLOCKED",
+    "overall": "BLOCKED"
+  },
+  "notes": [
+    "Emulators are recorded but emulator_not_e5=true — they do NOT satisfy E5.",
+    "This checker does not flash ESP32, install APK, or run OTA/Broadcast/Smart-HID E5."
+  ]
+}

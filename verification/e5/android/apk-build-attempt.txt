@@ -1,0 +1,14 @@
+timestamp=2026-09-02T07:31:11Z
+git=f2c2febe9e8bbaee5e3effcb1c3e6ba0ea7aebc6
+command=/Applications/HBuilderX.app/Contents/MacOS/cli launch app-android --project /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/uniapp --deviceId emulator-5554 --compile true
+---
+15:31:11.272 HBuilderX Version: 5.24
+15:31:11.634 项目 uniapp 开始编译
+15:31:12.330 请注意运行模式下，因日志输出、sourcemap 以及未压缩源码等原因，性能和包体积，均不及发行模式。
+15:31:12.332 编译器版本：5.24（vue3）
+15:31:12.333 正在编译中...
+15:31:14.447 ​当前应用配置的 fallbackLocale 或 locale 为：en，但 locale 目录缺少该语言文件​
+15:31:16.169 项目 uniapp 编译成功。
+15:31:16.172 ready in 4355ms.
+15:31:16.185 已停止运行...
+
