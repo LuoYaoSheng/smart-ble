@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 68af291567ff7ddcbf3999ed3c83dc801ce473e5a10d7076c9448be73fe86657
+content_hash: 1ee70742b0be263055695150b1d66f750c6fcd1e2ca9287e1a52b89d705112ae
 ```
 
 > PUBLIC-HONESTY-001 / VERSION-METADATA-001 状态以 task-dependency-graph.json 为准。未批准 Task 不得执行。

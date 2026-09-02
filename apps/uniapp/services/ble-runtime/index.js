@@ -30,6 +30,9 @@ import {
   resetReconnectManagerForTesting,
 } from './reconnect-manager.js';
 import { DISCONNECT_REASON } from './reconnect-policy.js';
+import { createLogger } from '../logger/log-redaction.js';
+
+const log = createLogger('ble-runtime');
 
 const registry = getSessionRegistry();
 let reconnectManager = null;
@@ -121,7 +124,7 @@ function ensureCallbacks() {
       try {
         callback(res.value, res);
       } catch (error) {
-        console.error('[ble-runtime] characteristic callback failed', error);
+        log.error('characteristic callback failed', error);
       }
     }
   });
@@ -142,7 +145,7 @@ function ensureCallbacks() {
       try {
         callback(devices);
       } catch (error) {
-        console.error('[ble-runtime] discovery callback failed', error);
+        log.error('discovery callback failed', error);
       }
     }
   });
@@ -152,7 +155,7 @@ function ensureCallbacks() {
       try {
         callback(res);
       } catch (error) {
-        console.error('[ble-runtime] adapter state callback failed', error);
+        log.error('adapter state callback failed', error);
       }
     }
   });
@@ -169,7 +172,7 @@ function cleanupRuntimeSession(session, reason) {
     try {
       callback(reason);
     } catch (error) {
-      console.error('[ble-runtime] disconnect callback failed', error);
+      log.error('disconnect callback failed', error);
     }
   }
   session.disconnectCallbacks.clear();

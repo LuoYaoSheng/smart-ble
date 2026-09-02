@@ -9,7 +9,7 @@
 import { watch } from 'vue';
 import { useBleStore } from '../../store/ble';
 import { useHidStore } from '../../store/hid';
-import { logger } from '../../../../core/ble-core/utils/logger';
+import { createLogger } from '../logger/log-redaction.js';
 import { utf8Decode } from '../../../../core/ble-core/provisioning/framing.js';
 import {
   readChar,
@@ -25,6 +25,7 @@ import { getProfile, matchScannedDevices } from '../provisioning/profiles.js';
 import { SMART_HID_PROFILE_ID } from './profile.js';
 import { createSmartHidStatusWaiters } from './workflow.js';
 
+const logger = createLogger('smart-hid');
 let session = null;
 let onStatusCb = null;
 let onInfoCb = null;
@@ -67,7 +68,7 @@ function notifyPassiveDisconnect(reason) {
     try {
       callback(reason);
     } catch (error) {
-      console.error('[SmartHID] session disconnect listener failed', error);
+      logger.error('session disconnect listener failed', error);
     }
   }
 }

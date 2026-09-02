@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 68af291567ff7ddcbf3999ed3c83dc801ce473e5a10d7076c9448be73fe86657
+content_hash: 1ee70742b0be263055695150b1d66f750c6fcd1e2ca9287e1a52b89d705112ae
 ```
 
 ## 模块树（path 事实）
@@ -20,7 +20,7 @@ content_hash: 68af291567ff7ddcbf3999ed3c83dc801ce473e5a10d7076c9448be73fe86657
 | platform.js | 是 | | |
 | errors.js | 是 | ERR-* | |
 | display-name.js | 是 | FEAT-013, TEST-U-006 | RUNTIME-DISPLAY-NAME-001 DONE |
-| log-redaction.js | **否** | FEAT-040, TEST-U-013 | NOT_IMPLEMENTED |
+| log-redaction.js | 是 | FEAT-040, TEST-U-013 | RUNTIME-LOG-REDACTION-001 DONE |
 | write-queue.js | 是 | FEAT-029/030, TEST-U-011 | RUNTIME-WRITE-QUEUE-001 DONE |
 | reconnect-policy.js | **否** | FEAT-023/024, TEST-I-003 | NOT_IMPLEMENTED |
 

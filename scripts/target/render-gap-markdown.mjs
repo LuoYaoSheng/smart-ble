@@ -431,7 +431,7 @@ content_hash: ${hash}
 | platform.js | 是 | | |
 | errors.js | 是 | ERR-* | |
 | display-name.js | 是 | FEAT-013, TEST-U-006 | RUNTIME-DISPLAY-NAME-001 DONE |
-| log-redaction.js | **否** | FEAT-040, TEST-U-013 | NOT_IMPLEMENTED |
+| log-redaction.js | ${existsSync(`${ROOT}/apps/uniapp/services/ble-runtime/log-redaction.js`) ? '是' : '**否**'} | FEAT-040, TEST-U-013 | RUNTIME-LOG-REDACTION-001 ${existsSync(`${ROOT}/apps/uniapp/services/logger/log-redaction.js`) ? 'DONE' : 'NOT_IMPLEMENTED'} |
 | write-queue.js | 是 | FEAT-029/030, TEST-U-011 | RUNTIME-WRITE-QUEUE-001 DONE |
 | reconnect-policy.js | **否** | FEAT-023/024, TEST-I-003 | NOT_IMPLEMENTED |
 

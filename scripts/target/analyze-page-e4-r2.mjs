@@ -50,7 +50,8 @@ const FACTS = {
   connected: read('apps/uniapp/pages/connected/index.vue'),
   indexPage: read('apps/uniapp/pages/index/index.vue'),
   advertDialog: read('apps/uniapp/components/scan/advertisement-dialog.vue'),
-  hasLogRedaction: exists('apps/uniapp/services/ble-runtime/log-redaction.js'),
+  hasLogRedaction: exists('apps/uniapp/services/logger/log-redaction.js')
+    && exists('apps/uniapp/services/ble-runtime/log-redaction.js'),
   hasWriteQueue: exists('apps/uniapp/services/ble-runtime/write-queue.js'),
   hasReconnect: exists('apps/uniapp/services/ble-runtime/reconnect-policy.js'),
   hasDisplayName: exists('apps/uniapp/services/ble-runtime/display-name.js'),
@@ -125,22 +126,33 @@ const PAGE_ASSESS = {
     ],
     notes: 'RUNTIME-FILTER-001 / RUNTIME-DISPLAY-NAME-001 DONE；E4 harness PASS；DEC-013 时长差异记观察',
   },
-  'PAGE-002': {
-    product: 'FAIL',
-    task_id: 'RUNTIME-LOG-REDACTION-001',
-    root_cause_id: 'RC-LOG-REDACTION',
-    first_breakpoint: {
-      target: 'FEAT-040',
-      test: 'TEST-U-013',
-      file: 'apps/uniapp/services/ble-runtime/log-redaction.js',
-      symbol: '(missing)',
-      breakpoint: 'log-redaction module missing; HID provision path shares REQ-036/050',
+  'PAGE-002': FACTS.hasLogRedaction
+    ? {
+      product: 'PASS',
+      task_id: null,
+      root_cause_id: null,
+      first_breakpoint: null,
+      also: [
+        { task_id: 'TEST-BRIDGE-TS-001', breakpoint: 'Smart HID protocol TS import SyntaxError (TEST-U-015)' },
+      ],
+      notes: 'RUNTIME-LOG-REDACTION-001 DONE；logger/log-redaction + createLogger 接入 ble-runtime/ota/smart-hid；日志安全 PASS',
+    }
+    : {
+      product: 'FAIL',
+      task_id: 'RUNTIME-LOG-REDACTION-001',
+      root_cause_id: 'RC-LOG-REDACTION',
+      first_breakpoint: {
+        target: 'FEAT-040',
+        test: 'TEST-U-013',
+        file: 'apps/uniapp/services/ble-runtime/log-redaction.js',
+        symbol: '(missing)',
+        breakpoint: 'log-redaction module missing; HID provision path shares REQ-036/050',
+      },
+      also: [
+        { task_id: 'TEST-BRIDGE-TS-001', breakpoint: 'Smart HID protocol TS import SyntaxError (TEST-U-015)' },
+      ],
+      notes: 'hid/add + use-smart-hid-provisioning 存在；Workflow 被 Runtime/桥接断点阻断',
     },
-    also: [
-      { task_id: 'TEST-BRIDGE-TS-001', breakpoint: 'Smart HID protocol TS import SyntaxError (TEST-U-015)' },
-    ],
-    notes: 'hid/add + use-smart-hid-provisioning 存在；Workflow 被 Runtime/桥接断点阻断',
-  },
   'PAGE-003': {
     product: 'PASS',
     task_id: null,
@@ -650,7 +662,16 @@ generated_at: ${pageE4V2.generated_at}
 
 > **原则**：Playwright Fake Runtime harness PASS ≠ 产品实现满足目标。
 > 本报告在 E4 可执行前提下，用静态实现 + Current FAIL 证据给出产品 PASS/FAIL/BLOCKED/NOT_IMPLEMENTED。
-> 本轮 **Runtime filter + display-name + GATT codec + write-queue 已落地**；未修改 PAGE Vue / ESP32 / OTA / Session / Log-redaction。
+> 本轮 **Runtime filter + display-name + GATT codec + write-queue + log-redaction 已落地**；未修改 PAGE Vue / ESP32 / OTA Session 编排。
+
+## 日志安全
+
+| 项 | 状态 |
+|---|---|
+| log-redaction 模块 | ${FACTS.hasLogRedaction ? '**PASS**' : 'FAIL'} |
+| createLogger 接入 | ble-runtime / ota-manager / smart-hid |
+| 敏感字段 | token / password / secret / credential / authorization / cookie |
+| 保护字段 | deviceId / UUID / sha256 / firmware_version |
 
 ## Summary
 
@@ -687,7 +708,7 @@ ${pagesBody}
 
 | Bucket | Pages |
 |---|---|
-| Runtime | PAGE-002 (log-redaction/bridge), PAGE-006 (OTA；codec+write-queue+session+reconnect DONE), PAGE-007 SESSION+RECONNECT DONE；PAGE-001 filter+display-name DONE |
+| Runtime | PAGE-002 log-redaction **DONE**；PAGE-006 (OTA；codec+write-queue+session+reconnect DONE), PAGE-007 SESSION+RECONNECT DONE；PAGE-001 filter+display-name DONE |
 | Page | PAGE-008 (broadcast composable owner) |
 | Testability | TEST-BRIDGE-TS-001（Smart HID TS） |
 | Metadata | PAGE-010 CLOSED |
@@ -713,7 +734,7 @@ function renderRemediation(summaryByPage) {
     ['PAGE-006', 'RUNTIME-CONNECTION-DISCOVERY-001', 'P1', 'connectDevice 发现编排（TEST-I-003）'],
     ['PAGE-001', '—', 'P3', 'RUNTIME-FILTER/DISPLAY-NAME DONE；DEC-013 时长观察'],
     ['PAGE-007', '—', 'P3', 'RUNTIME-SESSION-001 + RUNTIME-RECONNECT-001 DONE'],
-    ['PAGE-002', 'RUNTIME-LOG-REDACTION-001', 'P1', 'log-redaction 缺失（配网日志）'],
+    ['PAGE-002', 'RUNTIME-LOG-REDACTION-001', 'P1', FACTS.hasLogRedaction ? 'DONE' : 'log-redaction 缺失（配网日志）'],
     ['PAGE-002', 'TEST-BRIDGE-TS-001', 'P1', 'Smart HID TS protocol 桥'],
     ['PAGE-008', 'PAGE-BROADCAST-001', 'P1', '广播页改用 useBroadcastSession'],
     ['PAGE-008', 'ESP32-OBSERVER-001', 'P1', 'Observer fixture；页面测记 BLOCKED_BY_FIXTURE'],

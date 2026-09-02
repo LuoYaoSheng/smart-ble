@@ -6,25 +6,34 @@ gate: TP-G2-R2
 environment: READY_FOR_PAGE_E4
 fake_runtime: true
 live_app_url: false
-generated_at: 2026-09-02T01:32:12.641Z
+generated_at: 2026-09-02T03:25:19.791Z
 ```
 
 > **原则**：Playwright Fake Runtime harness PASS ≠ 产品实现满足目标。
 > 本报告在 E4 可执行前提下，用静态实现 + Current FAIL 证据给出产品 PASS/FAIL/BLOCKED/NOT_IMPLEMENTED。
-> 本轮 **Runtime filter + display-name + GATT codec + write-queue 已落地**；未修改 PAGE Vue / ESP32 / OTA / Session / Log-redaction。
+> 本轮 **Runtime filter + display-name + GATT codec + write-queue + log-redaction 已落地**；未修改 PAGE Vue / ESP32 / OTA Session 编排。
+
+## 日志安全
+
+| 项 | 状态 |
+|---|---|
+| log-redaction 模块 | **PASS** |
+| createLogger 接入 | ble-runtime / ota-manager / smart-hid |
+| 敏感字段 | token / password / secret / credential / authorization / cookie |
+| 保护字段 | deviceId / UUID / sha256 / firmware_version |
 
 ## Summary
 
 | Page | Product | PASS | FAIL | BLOCKED | NOT_IMPLEMENTED | Primary Fix |
 |---|---|---|---|---|---|---|
 | PAGE-001 | PASS | 30 | 0 | 0 | 0 | — |
-| PAGE-002 | FAIL | 0 | 0 | 0 | 29 | RUNTIME-LOG-REDACTION-001 |
+| PAGE-002 | PASS | 29 | 0 | 0 | 0 | — |
 | PAGE-003 | PASS | 12 | 0 | 0 | 0 | — |
 | PAGE-004 | PASS | 14 | 0 | 0 | 0 | — |
 | PAGE-005 | PASS | 18 | 0 | 0 | 0 | — |
 | PAGE-006 | PASS | 30 | 0 | 0 | 0 | — |
 | PAGE-007 | PASS | 14 | 0 | 0 | 0 | — |
-| PAGE-008 | FAIL | 0 | 23 | 2 | 0 | PAGE-BROADCAST-001 |
+| PAGE-008 | FAIL | 0 | 25 | 0 | 0 | PAGE-BROADCAST-001 |
 | PAGE-009 | PASS | 20 | 0 | 0 | 0 | — |
 | PAGE-010 | PASS | 13 | 0 | 0 | 0 | — |
 | WEB-001 | PASS | 25 | 0 | 0 | 0 | — |
@@ -33,23 +42,22 @@ generated_at: 2026-09-02T01:32:12.641Z
 
 | Status | Count |
 |---|---|
-| PASS | 176 |
-| FAIL | 23 |
-| BLOCKED | 2 |
-| NOT_IMPLEMENTED | 29 |
+| PASS | 205 |
+| FAIL | 25 |
+| BLOCKED | 0 |
+| NOT_IMPLEMENTED | 0 |
 | Harness PASS | 230 |
 | Harness FAIL | 0 |
 
 ## Top First Breakpoints
 
-1. **PAGE-002** → `apps/uniapp/services/ble-runtime/log-redaction.js` `(missing)` — log-redaction module missing; HID provision path shares REQ-036/050 *(RUNTIME-LOG-REDACTION-001 / TEST-U-013 / FEAT-040)*
-2. **PAGE-008** → `apps/uniapp/pages/broadcast/index.vue` `(inline advertising)` — page does not use useBroadcastSession composable/owner *(PAGE-BROADCAST-001 / TEST-P-008 / FEAT-041)*
+1. **PAGE-008** → `apps/uniapp/pages/broadcast/index.vue` `(inline advertising)` — page does not use useBroadcastSession composable/owner *(PAGE-BROADCAST-001 / TEST-P-008 / FEAT-041)*
 
 ## Static Facts（本轮探测）
 
 ```json
 {
-  "hasLogRedaction": false,
+  "hasLogRedaction": true,
   "hasWriteQueue": true,
   "hasReconnect": true,
   "hasDisplayName": true,
@@ -59,7 +67,7 @@ generated_at: 2026-09-02T01:32:12.641Z
   "landingFake": false,
   "connectDiscovers": true,
   "scanAutoStop5": true,
-  "hasObserver": false,
+  "hasObserver": true,
   "filterHasKeywordMatch": true,
   "registrySubCount": true
 }
@@ -87,26 +95,18 @@ generated_at: 2026-09-02T01:32:12.641Z
 
 ### PAGE-002
 
-- **Product**: FAIL
+- **Product**: PASS
 - **Target**: `docs/target-product/pages|web` + behavior states=12 ops=11
 - **Actual (E4 harness)**: Fake Runtime PASS=29 FAIL=0
-- **Actual (product)**: hid/add + use-smart-hid-provisioning 存在；Workflow 被 Runtime/桥接断点阻断
-- **Case tallies**: PASS=0 FAIL=0 BLOCKED=0 NOT_IMPLEMENTED=29
-- **Root Cause**: RC-LOG-REDACTION
-- **Fix IDs**: RUNTIME-LOG-REDACTION-001（页面失败若源自 Runtime，引用 RUNTIME_* 而非新建 PAGE_FIX）
+- **Actual (product)**: RUNTIME-LOG-REDACTION-001 DONE；logger/log-redaction + createLogger 接入 ble-runtime/ota/smart-hid；日志安全 PASS
+- **Case tallies**: PASS=29 FAIL=0 BLOCKED=0 NOT_IMPLEMENTED=0
+- **Root Cause**: —
+- **Fix IDs**: —（页面失败若源自 Runtime，引用 RUNTIME_* 而非新建 PAGE_FIX）
 
-- **First Breakpoint**: `apps/uniapp/services/ble-runtime/log-redaction.js` / `(missing)` — log-redaction module missing; HID provision path shares REQ-036/050
-- Target: FEAT-040 · Test: TEST-U-013
+- First Breakpoint: —
 
 **Fail / Blocked samples**
-  - NOT_IMPLEMENTED STATE-P002-01 → RUNTIME-LOG-REDACTION-001
-  - NOT_IMPLEMENTED STATE-P002-02 → RUNTIME-LOG-REDACTION-001
-  - NOT_IMPLEMENTED STATE-P002-03 → RUNTIME-LOG-REDACTION-001
-  - NOT_IMPLEMENTED STATE-P002-04 → RUNTIME-LOG-REDACTION-001
-  - NOT_IMPLEMENTED STATE-P002-05 → RUNTIME-LOG-REDACTION-001
-  - NOT_IMPLEMENTED STATE-P002-06 → RUNTIME-LOG-REDACTION-001
-  - NOT_IMPLEMENTED STATE-P002-07 → RUNTIME-LOG-REDACTION-001
-  - NOT_IMPLEMENTED STATE-P002-08 → RUNTIME-LOG-REDACTION-001
+  - （无）
 
 **Related**
   - TEST-BRIDGE-TS-001: Smart HID protocol TS import SyntaxError (TEST-U-015)
@@ -209,7 +209,7 @@ generated_at: 2026-09-02T01:32:12.641Z
 - **Target**: `docs/target-product/pages|web` + behavior states=12 ops=7
 - **Actual (E4 harness)**: Fake Runtime PASS=25 FAIL=0
 - **Actual (product)**: 广播页 CONFIRMED_PARTIAL；Observer 缺失记 BLOCKED 而非页面产品 FAIL
-- **Case tallies**: PASS=0 FAIL=23 BLOCKED=2 NOT_IMPLEMENTED=0
+- **Case tallies**: PASS=0 FAIL=25 BLOCKED=0 NOT_IMPLEMENTED=0
 - **Root Cause**: RC-PAGE-BROADCAST
 - **Fix IDs**: PAGE-BROADCAST-001（页面失败若源自 Runtime，引用 RUNTIME_* 而非新建 PAGE_FIX）
 
@@ -288,7 +288,7 @@ generated_at: 2026-09-02T01:32:12.641Z
 
 | Bucket | Pages |
 |---|---|
-| Runtime | PAGE-002 (log-redaction/bridge), PAGE-006 (OTA；codec+write-queue+session+reconnect DONE), PAGE-007 SESSION+RECONNECT DONE；PAGE-001 filter+display-name DONE |
+| Runtime | PAGE-002 log-redaction **DONE**；PAGE-006 (OTA；codec+write-queue+session+reconnect DONE), PAGE-007 SESSION+RECONNECT DONE；PAGE-001 filter+display-name DONE |
 | Page | PAGE-008 (broadcast composable owner) |
 | Testability | TEST-BRIDGE-TS-001（Smart HID TS） |
 | Metadata | PAGE-010 CLOSED |

@@ -1,9 +1,9 @@
 {
   "schema_version": "2.0",
   "gate": "TP-G2-R1",
-  "content_hash": "68af291567ff7ddcbf3999ed3c83dc801ce473e5a10d7076c9448be73fe86657",
-  "generated_at": "2026-09-02T01:56:46.928Z",
-  "commit": "4933d39f0500bf382d4c7af435f50c389928b3b6",
+  "content_hash": "1ee70742b0be263055695150b1d66f750c6fcd1e2ca9287e1a52b89d705112ae",
+  "generated_at": "2026-09-02T03:24:45.031Z",
+  "commit": "eca9a090221f527f824b3537820d536e8b515df3",
   "unique_root_causes_by_severity": {
     "P0": 1,
     "P1": 1,
@@ -20,8 +20,8 @@
   "coverage": {
     "gate": "TP-G2-R1",
     "schema_version": "2.0",
-    "generated_at": "2026-09-02T01:56:46.928Z",
-    "commit": "4933d39f0500bf382d4c7af435f50c389928b3b6",
+    "generated_at": "2026-09-02T03:24:45.031Z",
+    "commit": "eca9a090221f527f824b3537820d536e8b515df3",
     "structured_current_path": ".tmp/tp-g2/logs/current-structured.json",
     "system": {
       "SYSTEM_PASS": 412,

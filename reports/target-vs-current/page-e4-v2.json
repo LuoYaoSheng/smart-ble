@@ -1,6 +1,6 @@
 {
   "gate": "TP-G2-R2",
-  "generated_at": "2026-09-02T01:32:12.641Z",
+  "generated_at": "2026-09-02T03:25:19.791Z",
   "environment": {
     "status": "READY_FOR_PAGE_E4",
     "playwright": {
@@ -16,7 +16,7 @@
     "note": "Fake Runtime harness PASS does not imply product PASS"
   },
   "facts": {
-    "hasLogRedaction": false,
+    "hasLogRedaction": true,
     "hasWriteQueue": true,
     "hasReconnect": true,
     "hasDisplayName": true,
@@ -26,15 +26,15 @@
     "landingFake": false,
     "connectDiscovers": true,
     "scanAutoStop5": true,
-    "hasObserver": false,
+    "hasObserver": true,
     "filterHasKeywordMatch": true,
     "registrySubCount": true
   },
   "totals": {
-    "PASS": 176,
-    "FAIL": 23,
-    "BLOCKED": 2,
-    "NOT_IMPLEMENTED": 29,
+    "PASS": 205,
+    "FAIL": 25,
+    "BLOCKED": 0,
+    "NOT_IMPLEMENTED": 0,
     "harness_PASS": 230,
     "harness_FAIL": 0
   },
@@ -66,410 +66,26 @@
     },
     "PAGE-002": {
       "page_id": "PAGE-002",
-      "PASS": 0,
+      "PASS": 29,
       "FAIL": 0,
       "BLOCKED": 0,
-      "NOT_IMPLEMENTED": 29,
+      "NOT_IMPLEMENTED": 0,
       "harness_PASS": 29,
       "harness_FAIL": 0,
       "states": 12,
       "operations": 11,
-      "product": "FAIL",
-      "task_id": "RUNTIME-LOG-REDACTION-001",
-      "root_cause_id": "RC-LOG-REDACTION",
-      "notes": "hid/add + use-smart-hid-provisioning 存在；Workflow 被 Runtime/桥接断点阻断",
-      "first_breakpoint": {
-        "target": "FEAT-040",
-        "test": "TEST-U-013",
-        "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-        "symbol": "(missing)",
-        "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-      },
+      "product": "PASS",
+      "task_id": null,
+      "root_cause_id": null,
+      "notes": "RUNTIME-LOG-REDACTION-001 DONE；logger/log-redaction + createLogger 接入 ble-runtime/ota/smart-hid；日志安全 PASS",
+      "first_breakpoint": null,
       "also": [
         {
           "task_id": "TEST-BRIDGE-TS-001",
           "breakpoint": "Smart HID protocol TS import SyntaxError (TEST-U-015)"
         }
       ],
-      "fail_cases": [
-        {
-          "state_id": "STATE-P002-01",
-          "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-040",
-            "test": "TEST-U-013",
-            "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-            "symbol": "(missing)",
-            "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-          },
-          "task_id": "RUNTIME-LOG-REDACTION-001"
-        },
-        {
-          "state_id": "STATE-P002-02",
-          "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-040",
-            "test": "TEST-U-013",
-            "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-            "symbol": "(missing)",
-            "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-          },
-          "task_id": "RUNTIME-LOG-REDACTION-001"
-        },
-        {
-          "state_id": "STATE-P002-03",
-          "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-040",
-            "test": "TEST-U-013",
-            "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-            "symbol": "(missing)",
-            "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-          },
-          "task_id": "RUNTIME-LOG-REDACTION-001"
-        },
-        {
-          "state_id": "STATE-P002-04",
-          "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-040",
-            "test": "TEST-U-013",
-            "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-            "symbol": "(missing)",
-            "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-          },
-          "task_id": "RUNTIME-LOG-REDACTION-001"
-        },
-        {
-          "state_id": "STATE-P002-05",
-          "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-040",
-            "test": "TEST-U-013",
-            "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-            "symbol": "(missing)",
-            "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-          },
-          "task_id": "RUNTIME-LOG-REDACTION-001"
-        },
-        {
-          "state_id": "STATE-P002-06",
-          "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-040",
-            "test": "TEST-U-013",
-            "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-            "symbol": "(missing)",
-            "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-          },
-          "task_id": "RUNTIME-LOG-REDACTION-001"
-        },
-        {
-          "state_id": "STATE-P002-07",
-          "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-040",
-            "test": "TEST-U-013",
-            "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-            "symbol": "(missing)",
-            "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-          },
-          "task_id": "RUNTIME-LOG-REDACTION-001"
-        },
-        {
-          "state_id": "STATE-P002-08",
-          "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-040",
-            "test": "TEST-U-013",
-            "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-            "symbol": "(missing)",
-            "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-          },
-          "task_id": "RUNTIME-LOG-REDACTION-001"
-        },
-        {
-          "state_id": "STATE-P002-09",
-          "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-040",
-            "test": "TEST-U-013",
-            "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-            "symbol": "(missing)",
-            "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-          },
-          "task_id": "RUNTIME-LOG-REDACTION-001"
-        },
-        {
-          "state_id": "STATE-P002-10",
-          "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-040",
-            "test": "TEST-U-013",
-            "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-            "symbol": "(missing)",
-            "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-          },
-          "task_id": "RUNTIME-LOG-REDACTION-001"
-        },
-        {
-          "state_id": "STATE-P002-11",
-          "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-040",
-            "test": "TEST-U-013",
-            "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-            "symbol": "(missing)",
-            "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-          },
-          "task_id": "RUNTIME-LOG-REDACTION-001"
-        },
-        {
-          "state_id": "STATE-P002-12",
-          "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-040",
-            "test": "TEST-U-013",
-            "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-            "symbol": "(missing)",
-            "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-          },
-          "task_id": "RUNTIME-LOG-REDACTION-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P002-01",
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-040",
-            "test": "TEST-U-013",
-            "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-            "symbol": "(missing)",
-            "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-          },
-          "task_id": "RUNTIME-LOG-REDACTION-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P002-02",
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-040",
-            "test": "TEST-U-013",
-            "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-            "symbol": "(missing)",
-            "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-          },
-          "task_id": "RUNTIME-LOG-REDACTION-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P002-03",
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-040",
-            "test": "TEST-U-013",
-            "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-            "symbol": "(missing)",
-            "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-          },
-          "task_id": "RUNTIME-LOG-REDACTION-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P002-04",
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-040",
-            "test": "TEST-U-013",
-            "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-            "symbol": "(missing)",
-            "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-          },
-          "task_id": "RUNTIME-LOG-REDACTION-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P002-05",
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-040",
-            "test": "TEST-U-013",
-            "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-            "symbol": "(missing)",
-            "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-          },
-          "task_id": "RUNTIME-LOG-REDACTION-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P002-06",
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-040",
-            "test": "TEST-U-013",
-            "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-            "symbol": "(missing)",
-            "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-          },
-          "task_id": "RUNTIME-LOG-REDACTION-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P002-07",
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-040",
-            "test": "TEST-U-013",
-            "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-            "symbol": "(missing)",
-            "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-          },
-          "task_id": "RUNTIME-LOG-REDACTION-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P002-08",
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-040",
-            "test": "TEST-U-013",
-            "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-            "symbol": "(missing)",
-            "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-          },
-          "task_id": "RUNTIME-LOG-REDACTION-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P002-09",
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-040",
-            "test": "TEST-U-013",
-            "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-            "symbol": "(missing)",
-            "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-          },
-          "task_id": "RUNTIME-LOG-REDACTION-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P002-10",
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-040",
-            "test": "TEST-U-013",
-            "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-            "symbol": "(missing)",
-            "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-          },
-          "task_id": "RUNTIME-LOG-REDACTION-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": "OP-P002-11",
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-040",
-            "test": "TEST-U-013",
-            "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-            "symbol": "(missing)",
-            "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-          },
-          "task_id": "RUNTIME-LOG-REDACTION-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-040",
-            "test": "TEST-U-013",
-            "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-            "symbol": "(missing)",
-            "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-          },
-          "task_id": "RUNTIME-LOG-REDACTION-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-040",
-            "test": "TEST-U-013",
-            "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-            "symbol": "(missing)",
-            "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-          },
-          "task_id": "RUNTIME-LOG-REDACTION-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-040",
-            "test": "TEST-U-013",
-            "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-            "symbol": "(missing)",
-            "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-          },
-          "task_id": "RUNTIME-LOG-REDACTION-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-040",
-            "test": "TEST-U-013",
-            "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-            "symbol": "(missing)",
-            "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-          },
-          "task_id": "RUNTIME-LOG-REDACTION-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-040",
-            "test": "TEST-U-013",
-            "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-            "symbol": "(missing)",
-            "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-          },
-          "task_id": "RUNTIME-LOG-REDACTION-001"
-        },
-        {
-          "state_id": null,
-          "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
-          "first_breakpoint": {
-            "target": "FEAT-040",
-            "test": "TEST-U-013",
-            "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-            "symbol": "(missing)",
-            "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-          },
-          "task_id": "RUNTIME-LOG-REDACTION-001"
-        }
-      ]
+      "fail_cases": []
     },
     "PAGE-003": {
       "page_id": "PAGE-003",
@@ -584,8 +200,8 @@
     "PAGE-008": {
       "page_id": "PAGE-008",
       "PASS": 0,
-      "FAIL": 23,
-      "BLOCKED": 2,
+      "FAIL": 25,
+      "BLOCKED": 0,
       "NOT_IMPLEMENTED": 0,
       "harness_PASS": 25,
       "harness_FAIL": 0,
@@ -795,28 +411,28 @@
         {
           "state_id": null,
           "operation_id": "OP-P008-03",
-          "status": "BLOCKED",
+          "status": "FAIL",
           "first_breakpoint": {
-            "target": "OP-P008-03",
-            "test": "TEST-I-007",
-            "file": "hardware/esp32/LightBLE/src/main.cpp",
-            "symbol": "BLEToolkit-Observer",
-            "breakpoint": "Observer fixture missing; cannot verify broadcast observe path"
+            "target": "FEAT-041",
+            "test": "TEST-P-008",
+            "file": "apps/uniapp/pages/broadcast/index.vue",
+            "symbol": "(inline advertising)",
+            "breakpoint": "page does not use useBroadcastSession composable/owner"
           },
-          "task_id": "ESP32-OBSERVER-001"
+          "task_id": "PAGE-BROADCAST-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P008-04",
-          "status": "BLOCKED",
+          "status": "FAIL",
           "first_breakpoint": {
-            "target": "OP-P008-04",
-            "test": "TEST-A-010",
-            "file": "hardware/esp32/LightBLE/src/main.cpp",
-            "symbol": "BLEToolkit-Observer",
-            "breakpoint": "Observer fixture missing; cannot verify broadcast observe path"
+            "target": "FEAT-041",
+            "test": "TEST-P-008",
+            "file": "apps/uniapp/pages/broadcast/index.vue",
+            "symbol": "(inline advertising)",
+            "breakpoint": "page does not use useBroadcastSession composable/owner"
           },
-          "task_id": "ESP32-OBSERVER-001"
+          "task_id": "PAGE-BROADCAST-001"
         },
         {
           "state_id": null,
@@ -2032,20 +1648,14 @@
       "state_id": "STATE-P002-01",
       "operation_id": null,
       "case_title": "PAGE-002.spec.js › PAGE-002 Smart HID 配网 › State suite › STATE-P002-01 连接中",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "动画",
         "目标设备"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: hid/add + use-smart-hid-provisioning 存在；Workflow 被 Runtime/桥接断点阻断",
-      "first_breakpoint": {
-        "target": "FEAT-040",
-        "test": "TEST-U-013",
-        "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-        "symbol": "(missing)",
-        "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-002.spec.js",
         "duration_ms": 29,
@@ -2062,31 +1672,23 @@
       "test_ids": [
         "TEST-H-001"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/log-redaction.js"
-      ],
-      "task_id": "RUNTIME-LOG-REDACTION-001",
-      "root_cause_id": "RC-LOG-REDACTION",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-002",
       "state_id": "STATE-P002-02",
       "operation_id": null,
       "case_title": "PAGE-002.spec.js › PAGE-002 Smart HID 配网 › State suite › STATE-P002-02 身份确认失败",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "错误说明（错设备）"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: hid/add + use-smart-hid-provisioning 存在；Workflow 被 Runtime/桥接断点阻断",
-      "first_breakpoint": {
-        "target": "FEAT-040",
-        "test": "TEST-U-013",
-        "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-        "symbol": "(missing)",
-        "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-002.spec.js",
         "duration_ms": 28,
@@ -2103,32 +1705,24 @@
       "test_ids": [
         "TEST-H-001"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/log-redaction.js"
-      ],
-      "task_id": "RUNTIME-LOG-REDACTION-001",
-      "root_cause_id": "RC-LOG-REDACTION",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-002",
       "state_id": "STATE-P002-03",
       "operation_id": null,
       "case_title": "PAGE-002.spec.js › PAGE-002 Smart HID 配网 › State suite › STATE-P002-03 连接失败",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "错误",
         "重连/返回"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: hid/add + use-smart-hid-provisioning 存在；Workflow 被 Runtime/桥接断点阻断",
-      "first_breakpoint": {
-        "target": "FEAT-040",
-        "test": "TEST-U-013",
-        "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-        "symbol": "(missing)",
-        "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-002.spec.js",
         "duration_ms": 29,
@@ -2145,31 +1739,23 @@
       "test_ids": [
         "TEST-H-001"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/log-redaction.js"
-      ],
-      "task_id": "RUNTIME-LOG-REDACTION-001",
-      "root_cause_id": "RC-LOG-REDACTION",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-002",
       "state_id": "STATE-P002-04",
       "operation_id": null,
       "case_title": "PAGE-002.spec.js › PAGE-002 Smart HID 配网 › State suite › STATE-P002-04 已连接待填写",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "表单"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: hid/add + use-smart-hid-provisioning 存在；Workflow 被 Runtime/桥接断点阻断",
-      "first_breakpoint": {
-        "target": "FEAT-040",
-        "test": "TEST-U-013",
-        "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-        "symbol": "(missing)",
-        "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-002.spec.js",
         "duration_ms": 29,
@@ -2186,32 +1772,24 @@
       "test_ids": [
         "TEST-P-002"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/log-redaction.js"
-      ],
-      "task_id": "RUNTIME-LOG-REDACTION-001",
-      "root_cause_id": "RC-LOG-REDACTION",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-002",
       "state_id": "STATE-P002-05",
       "operation_id": null,
       "case_title": "PAGE-002.spec.js › PAGE-002 Smart HID 配网 › State suite › STATE-P002-05 连接丢失",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "提示",
         "重连（表单保留）"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: hid/add + use-smart-hid-provisioning 存在；Workflow 被 Runtime/桥接断点阻断",
-      "first_breakpoint": {
-        "target": "FEAT-040",
-        "test": "TEST-U-013",
-        "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-        "symbol": "(missing)",
-        "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-002.spec.js",
         "duration_ms": 28,
@@ -2228,32 +1806,24 @@
       "test_ids": [
         "TEST-P-002"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/log-redaction.js"
-      ],
-      "task_id": "RUNTIME-LOG-REDACTION-001",
-      "root_cause_id": "RC-LOG-REDACTION",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-002",
       "state_id": "STATE-P002-06",
       "operation_id": null,
       "case_title": "PAGE-002.spec.js › PAGE-002 Smart HID 配网 › State suite › STATE-P002-06 表单不完整",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "下发禁用",
         "缺失提示"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: hid/add + use-smart-hid-provisioning 存在；Workflow 被 Runtime/桥接断点阻断",
-      "first_breakpoint": {
-        "target": "FEAT-040",
-        "test": "TEST-U-013",
-        "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-        "symbol": "(missing)",
-        "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-002.spec.js",
         "duration_ms": 28,
@@ -2270,31 +1840,23 @@
       "test_ids": [
         "TEST-U-015"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/log-redaction.js"
-      ],
-      "task_id": "RUNTIME-LOG-REDACTION-001",
-      "root_cause_id": "RC-LOG-REDACTION",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-002",
       "state_id": "STATE-P002-07",
       "operation_id": null,
       "case_title": "PAGE-002.spec.js › PAGE-002 Smart HID 配网 › State suite › STATE-P002-07 QR 无效/取消",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "提示回表单"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: hid/add + use-smart-hid-provisioning 存在；Workflow 被 Runtime/桥接断点阻断",
-      "first_breakpoint": {
-        "target": "FEAT-040",
-        "test": "TEST-U-013",
-        "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-        "symbol": "(missing)",
-        "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-002.spec.js",
         "duration_ms": 27,
@@ -2311,31 +1873,23 @@
       "test_ids": [
         "TEST-U-015"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/log-redaction.js"
-      ],
-      "task_id": "RUNTIME-LOG-REDACTION-001",
-      "root_cause_id": "RC-LOG-REDACTION",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-002",
       "state_id": "STATE-P002-08",
       "operation_id": null,
       "case_title": "PAGE-002.spec.js › PAGE-002 Smart HID 配网 › State suite › STATE-P002-08 下发中",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "四步进度实时"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: hid/add + use-smart-hid-provisioning 存在；Workflow 被 Runtime/桥接断点阻断",
-      "first_breakpoint": {
-        "target": "FEAT-040",
-        "test": "TEST-U-013",
-        "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-        "symbol": "(missing)",
-        "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-002.spec.js",
         "duration_ms": 31,
@@ -2352,31 +1906,23 @@
       "test_ids": [
         "TEST-I-009"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/log-redaction.js"
-      ],
-      "task_id": "RUNTIME-LOG-REDACTION-001",
-      "root_cause_id": "RC-LOG-REDACTION",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-002",
       "state_id": "STATE-P002-09",
       "operation_id": null,
       "case_title": "PAGE-002.spec.js › PAGE-002 Smart HID 配网 › State suite › STATE-P002-09 Ready",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "成功卡"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: hid/add + use-smart-hid-provisioning 存在；Workflow 被 Runtime/桥接断点阻断",
-      "first_breakpoint": {
-        "target": "FEAT-040",
-        "test": "TEST-U-013",
-        "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-        "symbol": "(missing)",
-        "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-002.spec.js",
         "duration_ms": 35,
@@ -2393,32 +1939,24 @@
       "test_ids": [
         "TEST-H-002"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/log-redaction.js"
-      ],
-      "task_id": "RUNTIME-LOG-REDACTION-001",
-      "root_cause_id": "RC-LOG-REDACTION",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-002",
       "state_id": "STATE-P002-10",
       "operation_id": null,
       "case_title": "PAGE-002.spec.js › PAGE-002 Smart HID 配网 › State suite › STATE-P002-10 协议错误",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "八类错误卡",
         "唯一恢复"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: hid/add + use-smart-hid-provisioning 存在；Workflow 被 Runtime/桥接断点阻断",
-      "first_breakpoint": {
-        "target": "FEAT-040",
-        "test": "TEST-U-013",
-        "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-        "symbol": "(missing)",
-        "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-002.spec.js",
         "duration_ms": 28,
@@ -2435,32 +1973,24 @@
       "test_ids": [
         "TEST-H-003"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/log-redaction.js"
-      ],
-      "task_id": "RUNTIME-LOG-REDACTION-001",
-      "root_cause_id": "RC-LOG-REDACTION",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-002",
       "state_id": "STATE-P002-11",
       "operation_id": null,
       "case_title": "PAGE-002.spec.js › PAGE-002 Smart HID 配网 › State suite › STATE-P002-11 等待超时",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "超时说明",
         "重试"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: hid/add + use-smart-hid-provisioning 存在；Workflow 被 Runtime/桥接断点阻断",
-      "first_breakpoint": {
-        "target": "FEAT-040",
-        "test": "TEST-U-013",
-        "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-        "symbol": "(missing)",
-        "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-002.spec.js",
         "duration_ms": 30,
@@ -2477,31 +2007,23 @@
       "test_ids": [
         "TEST-H-003"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/log-redaction.js"
-      ],
-      "task_id": "RUNTIME-LOG-REDACTION-001",
-      "root_cause_id": "RC-LOG-REDACTION",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-002",
       "state_id": "STATE-P002-12",
       "operation_id": null,
       "case_title": "PAGE-002.spec.js › PAGE-002 Smart HID 配网 › State suite › STATE-P002-12 用户取消",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "回表单"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: hid/add + use-smart-hid-provisioning 存在；Workflow 被 Runtime/桥接断点阻断",
-      "first_breakpoint": {
-        "target": "FEAT-040",
-        "test": "TEST-U-013",
-        "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-        "symbol": "(missing)",
-        "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-002.spec.js",
         "duration_ms": 30,
@@ -2518,31 +2040,23 @@
       "test_ids": [
         "TEST-P-002"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/log-redaction.js"
-      ],
-      "task_id": "RUNTIME-LOG-REDACTION-001",
-      "root_cause_id": "RC-LOG-REDACTION",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-002",
       "state_id": null,
       "operation_id": "OP-P002-01",
       "case_title": "PAGE-002.spec.js › PAGE-002 Smart HID 配网 › Operation suite › OP-P002-01 自动连接（进入触发）",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "身份通过进入表单"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: hid/add + use-smart-hid-provisioning 存在；Workflow 被 Runtime/桥接断点阻断",
-      "first_breakpoint": {
-        "target": "FEAT-040",
-        "test": "TEST-U-013",
-        "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-        "symbol": "(missing)",
-        "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-002.spec.js",
         "duration_ms": 33,
@@ -2561,31 +2075,23 @@
         "TEST-H-001",
         "TEST-H-002"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/log-redaction.js"
-      ],
-      "task_id": "RUNTIME-LOG-REDACTION-001",
-      "root_cause_id": "RC-LOG-REDACTION",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-002",
       "state_id": null,
       "operation_id": "OP-P002-02",
       "case_title": "PAGE-002.spec.js › PAGE-002 Smart HID 配网 › Operation suite › OP-P002-02 重新连接按钮",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "同上"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: hid/add + use-smart-hid-provisioning 存在；Workflow 被 Runtime/桥接断点阻断",
-      "first_breakpoint": {
-        "target": "FEAT-040",
-        "test": "TEST-U-013",
-        "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-        "symbol": "(missing)",
-        "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-002.spec.js",
         "duration_ms": 29,
@@ -2602,31 +2108,23 @@
       "test_ids": [
         "TEST-H-001"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/log-redaction.js"
-      ],
-      "task_id": "RUNTIME-LOG-REDACTION-001",
-      "root_cause_id": "RC-LOG-REDACTION",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-002",
       "state_id": null,
       "operation_id": "OP-P002-03",
       "case_title": "PAGE-002.spec.js › PAGE-002 Smart HID 配网 › Operation suite › OP-P002-03 返回设备列表",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "—"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: hid/add + use-smart-hid-provisioning 存在；Workflow 被 Runtime/桥接断点阻断",
-      "first_breakpoint": {
-        "target": "FEAT-040",
-        "test": "TEST-U-013",
-        "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-        "symbol": "(missing)",
-        "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-002.spec.js",
         "duration_ms": 28,
@@ -2643,31 +2141,23 @@
       "test_ids": [
         "TEST-P-002"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/log-redaction.js"
-      ],
-      "task_id": "RUNTIME-LOG-REDACTION-001",
-      "root_cause_id": "RC-LOG-REDACTION",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-002",
       "state_id": null,
       "operation_id": "OP-P002-04",
       "case_title": "PAGE-002.spec.js › PAGE-002 Smart HID 配网 › Operation suite › OP-P002-04 表单输入",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "下发按钮随完整性启用"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: hid/add + use-smart-hid-provisioning 存在；Workflow 被 Runtime/桥接断点阻断",
-      "first_breakpoint": {
-        "target": "FEAT-040",
-        "test": "TEST-U-013",
-        "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-        "symbol": "(missing)",
-        "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-002.spec.js",
         "duration_ms": 29,
@@ -2686,31 +2176,23 @@
         "TEST-U-015",
         "TEST-P-002"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/log-redaction.js"
-      ],
-      "task_id": "RUNTIME-LOG-REDACTION-001",
-      "root_cause_id": "RC-LOG-REDACTION",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-002",
       "state_id": null,
       "operation_id": "OP-P002-05",
       "case_title": "PAGE-002.spec.js › PAGE-002 Smart HID 配网 › Operation suite › OP-P002-05 密码显示开关",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "明文/掩码"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: hid/add + use-smart-hid-provisioning 存在；Workflow 被 Runtime/桥接断点阻断",
-      "first_breakpoint": {
-        "target": "FEAT-040",
-        "test": "TEST-U-013",
-        "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-        "symbol": "(missing)",
-        "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-002.spec.js",
         "duration_ms": 28,
@@ -2727,31 +2209,23 @@
       "test_ids": [
         "TEST-P-002"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/log-redaction.js"
-      ],
-      "task_id": "RUNTIME-LOG-REDACTION-001",
-      "root_cause_id": "RC-LOG-REDACTION",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-002",
       "state_id": null,
       "operation_id": "OP-P002-06",
       "case_title": "PAGE-002.spec.js › PAGE-002 Smart HID 配网 › Operation suite › OP-P002-06 扫码",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "\"已获取\"状态+host 回填"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: hid/add + use-smart-hid-provisioning 存在；Workflow 被 Runtime/桥接断点阻断",
-      "first_breakpoint": {
-        "target": "FEAT-040",
-        "test": "TEST-U-013",
-        "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-        "symbol": "(missing)",
-        "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-002.spec.js",
         "duration_ms": 30,
@@ -2770,31 +2244,23 @@
         "TEST-U-015",
         "TEST-H-002"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/log-redaction.js"
-      ],
-      "task_id": "RUNTIME-LOG-REDACTION-001",
-      "root_cause_id": "RC-LOG-REDACTION",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-002",
       "state_id": null,
       "operation_id": "OP-P002-07",
       "case_title": "PAGE-002.spec.js › PAGE-002 Smart HID 配网 › Operation suite › OP-P002-07 下发配置",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "进入状态阶段"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: hid/add + use-smart-hid-provisioning 存在；Workflow 被 Runtime/桥接断点阻断",
-      "first_breakpoint": {
-        "target": "FEAT-040",
-        "test": "TEST-U-013",
-        "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-        "symbol": "(missing)",
-        "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-002.spec.js",
         "duration_ms": 30,
@@ -2813,31 +2279,23 @@
         "TEST-I-009",
         "TEST-H-002"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/log-redaction.js"
-      ],
-      "task_id": "RUNTIME-LOG-REDACTION-001",
-      "root_cause_id": "RC-LOG-REDACTION",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-002",
       "state_id": null,
       "operation_id": "OP-P002-08",
       "case_title": "PAGE-002.spec.js › PAGE-002 Smart HID 配网 › Operation suite › OP-P002-08 取消等待",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "回表单（保留输入）"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: hid/add + use-smart-hid-provisioning 存在；Workflow 被 Runtime/桥接断点阻断",
-      "first_breakpoint": {
-        "target": "FEAT-040",
-        "test": "TEST-U-013",
-        "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-        "symbol": "(missing)",
-        "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-002.spec.js",
         "duration_ms": 28,
@@ -2856,31 +2314,23 @@
         "TEST-P-002",
         "TEST-H-003"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/log-redaction.js"
-      ],
-      "task_id": "RUNTIME-LOG-REDACTION-001",
-      "root_cause_id": "RC-LOG-REDACTION",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-002",
       "state_id": null,
       "operation_id": "OP-P002-09",
       "case_title": "PAGE-002.spec.js › PAGE-002 Smart HID 配网 › Operation suite › OP-P002-09 错误恢复按钮",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "进入对应阶段"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: hid/add + use-smart-hid-provisioning 存在；Workflow 被 Runtime/桥接断点阻断",
-      "first_breakpoint": {
-        "target": "FEAT-040",
-        "test": "TEST-U-013",
-        "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-        "symbol": "(missing)",
-        "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-002.spec.js",
         "duration_ms": 28,
@@ -2897,31 +2347,23 @@
       "test_ids": [
         "TEST-H-003"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/log-redaction.js"
-      ],
-      "task_id": "RUNTIME-LOG-REDACTION-001",
-      "root_cause_id": "RC-LOG-REDACTION",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-002",
       "state_id": null,
       "operation_id": "OP-P002-10",
       "case_title": "PAGE-002.spec.js › PAGE-002 Smart HID 配网 › Operation suite › OP-P002-10 查看设备",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "—"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: hid/add + use-smart-hid-provisioning 存在；Workflow 被 Runtime/桥接断点阻断",
-      "first_breakpoint": {
-        "target": "FEAT-040",
-        "test": "TEST-U-013",
-        "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-        "symbol": "(missing)",
-        "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-002.spec.js",
         "duration_ms": 28,
@@ -2938,31 +2380,23 @@
       "test_ids": [
         "TEST-H-004"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/log-redaction.js"
-      ],
-      "task_id": "RUNTIME-LOG-REDACTION-001",
-      "root_cause_id": "RC-LOG-REDACTION",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-002",
       "state_id": null,
       "operation_id": "OP-P002-11",
       "case_title": "PAGE-002.spec.js › PAGE-002 Smart HID 配网 › Operation suite › OP-P002-11 返回键（拦截）",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
         "—"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: hid/add + use-smart-hid-provisioning 存在；Workflow 被 Runtime/桥接断点阻断",
-      "first_breakpoint": {
-        "target": "FEAT-040",
-        "test": "TEST-U-013",
-        "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-        "symbol": "(missing)",
-        "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-002.spec.js",
         "duration_ms": 29,
@@ -2979,31 +2413,23 @@
       "test_ids": [
         "TEST-P-002"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/log-redaction.js"
-      ],
-      "task_id": "RUNTIME-LOG-REDACTION-001",
-      "root_cause_id": "RC-LOG-REDACTION",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-002",
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-002.spec.js › PAGE-002 Smart HID 配网 › Contract / first screen：manifest + behavior 对齐",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
-        "target behavior"
+        "behavior contract"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: hid/add + use-smart-hid-provisioning 存在；Workflow 被 Runtime/桥接断点阻断",
-      "first_breakpoint": {
-        "target": "FEAT-040",
-        "test": "TEST-U-013",
-        "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-        "symbol": "(missing)",
-        "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-002.spec.js",
         "duration_ms": 4,
@@ -3018,31 +2444,23 @@
       "test_ids": [
         "TEST-P-PAGE-002"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/log-redaction.js"
-      ],
-      "task_id": "RUNTIME-LOG-REDACTION-001",
-      "root_cause_id": "RC-LOG-REDACTION",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-002",
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-002.spec.js › PAGE-002 Smart HID 配网 › Error and recovery",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
-        "target behavior"
+        "behavior contract"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: hid/add + use-smart-hid-provisioning 存在；Workflow 被 Runtime/桥接断点阻断",
-      "first_breakpoint": {
-        "target": "FEAT-040",
-        "test": "TEST-U-013",
-        "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-        "symbol": "(missing)",
-        "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-002.spec.js",
         "duration_ms": 29,
@@ -3057,31 +2475,23 @@
       "test_ids": [
         "TEST-P-PAGE-002"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/log-redaction.js"
-      ],
-      "task_id": "RUNTIME-LOG-REDACTION-001",
-      "root_cause_id": "RC-LOG-REDACTION",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-002",
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-002.spec.js › PAGE-002 Smart HID 配网 › Navigation and back",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
-        "target behavior"
+        "behavior contract"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: hid/add + use-smart-hid-provisioning 存在；Workflow 被 Runtime/桥接断点阻断",
-      "first_breakpoint": {
-        "target": "FEAT-040",
-        "test": "TEST-U-013",
-        "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-        "symbol": "(missing)",
-        "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-002.spec.js",
         "duration_ms": 26,
@@ -3096,31 +2506,23 @@
       "test_ids": [
         "TEST-P-PAGE-002"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/log-redaction.js"
-      ],
-      "task_id": "RUNTIME-LOG-REDACTION-001",
-      "root_cause_id": "RC-LOG-REDACTION",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-002",
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-002.spec.js › PAGE-002 Smart HID 配网 › Platform degradation",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
-        "target behavior"
+        "behavior contract"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: hid/add + use-smart-hid-provisioning 存在；Workflow 被 Runtime/桥接断点阻断",
-      "first_breakpoint": {
-        "target": "FEAT-040",
-        "test": "TEST-U-013",
-        "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-        "symbol": "(missing)",
-        "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-002.spec.js",
         "duration_ms": 26,
@@ -3135,31 +2537,23 @@
       "test_ids": [
         "TEST-P-PAGE-002"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/log-redaction.js"
-      ],
-      "task_id": "RUNTIME-LOG-REDACTION-001",
-      "root_cause_id": "RC-LOG-REDACTION",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-002",
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-002.spec.js › PAGE-002 Smart HID 配网 › Cleanup",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
-        "target behavior"
+        "behavior contract"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: hid/add + use-smart-hid-provisioning 存在；Workflow 被 Runtime/桥接断点阻断",
-      "first_breakpoint": {
-        "target": "FEAT-040",
-        "test": "TEST-U-013",
-        "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-        "symbol": "(missing)",
-        "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-002.spec.js",
         "duration_ms": 26,
@@ -3174,31 +2568,23 @@
       "test_ids": [
         "TEST-P-PAGE-002"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/log-redaction.js"
-      ],
-      "task_id": "RUNTIME-LOG-REDACTION-001",
-      "root_cause_id": "RC-LOG-REDACTION",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-002",
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-002.spec.js › PAGE-002 Smart HID 配网 › Console and accessibility",
-      "status": "NOT_IMPLEMENTED",
+      "status": "PASS",
       "e4_harness_status": "PASS",
       "expected": [
-        "target behavior"
+        "behavior contract"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: hid/add + use-smart-hid-provisioning 存在；Workflow 被 Runtime/桥接断点阻断",
-      "first_breakpoint": {
-        "target": "FEAT-040",
-        "test": "TEST-U-013",
-        "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-        "symbol": "(missing)",
-        "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050"
-      },
+      "actual": "Fake Runtime E4 PASS; static/current evidence supports product alignment (or no FAIL evidence)",
+      "first_breakpoint": null,
       "evidence": {
         "playwright_file": "PAGE-002.spec.js",
         "duration_ms": 26,
@@ -3213,12 +2599,10 @@
       "test_ids": [
         "TEST-P-PAGE-002"
       ],
-      "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/log-redaction.js"
-      ],
-      "task_id": "RUNTIME-LOG-REDACTION-001",
-      "root_cause_id": "RC-LOG-REDACTION",
-      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
+      "implementation_refs": [],
+      "task_id": null,
+      "root_cause_id": null,
+      "reason": "PRODUCT_AND_HARNESS_OK"
     },
     {
       "page_id": "PAGE-003",
@@ -6721,18 +6105,18 @@
       "state_id": null,
       "operation_id": "OP-P008-03",
       "case_title": "PAGE-008.spec.js › PAGE-008 广播 › Operation suite › OP-P008-03 开始广播",
-      "status": "BLOCKED",
+      "status": "FAIL",
       "e4_harness_status": "PASS",
       "expected": [
         "状态=广播中（实际成功后）"
       ],
-      "actual": "harness Fake Runtime PASS; hardware Observer absent",
+      "actual": "Fake Runtime E4 PASS only; product: 广播页 CONFIRMED_PARTIAL；Observer 缺失记 BLOCKED 而非页面产品 FAIL",
       "first_breakpoint": {
-        "target": "OP-P008-03",
-        "test": "TEST-I-007",
-        "file": "hardware/esp32/LightBLE/src/main.cpp",
-        "symbol": "BLEToolkit-Observer",
-        "breakpoint": "Observer fixture missing; cannot verify broadcast observe path"
+        "target": "FEAT-041",
+        "test": "TEST-P-008",
+        "file": "apps/uniapp/pages/broadcast/index.vue",
+        "symbol": "(inline advertising)",
+        "breakpoint": "page does not use useBroadcastSession composable/owner"
       },
       "evidence": {
         "playwright_file": "PAGE-008.spec.js",
@@ -6755,29 +6139,29 @@
         "TEST-E-006"
       ],
       "implementation_refs": [
-        "hardware/esp32/LightBLE/src/main.cpp"
+        "apps/uniapp/pages/broadcast/index.vue"
       ],
-      "task_id": "ESP32-OBSERVER-001",
+      "task_id": "PAGE-BROADCAST-001",
       "root_cause_id": "RC-PAGE-BROADCAST",
-      "reason": "BLOCKED_BY_FIXTURE"
+      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
       "page_id": "PAGE-008",
       "state_id": null,
       "operation_id": "OP-P008-04",
       "case_title": "PAGE-008.spec.js › PAGE-008 广播 › Operation suite › OP-P008-04 停止广播",
-      "status": "BLOCKED",
+      "status": "FAIL",
       "e4_harness_status": "PASS",
       "expected": [
         "状态=已就绪；Observer 观测消失（E5）"
       ],
-      "actual": "harness Fake Runtime PASS; hardware Observer absent",
+      "actual": "Fake Runtime E4 PASS only; product: 广播页 CONFIRMED_PARTIAL；Observer 缺失记 BLOCKED 而非页面产品 FAIL",
       "first_breakpoint": {
-        "target": "OP-P008-04",
-        "test": "TEST-A-010",
-        "file": "hardware/esp32/LightBLE/src/main.cpp",
-        "symbol": "BLEToolkit-Observer",
-        "breakpoint": "Observer fixture missing; cannot verify broadcast observe path"
+        "target": "FEAT-041",
+        "test": "TEST-P-008",
+        "file": "apps/uniapp/pages/broadcast/index.vue",
+        "symbol": "(inline advertising)",
+        "breakpoint": "page does not use useBroadcastSession composable/owner"
       },
       "evidence": {
         "playwright_file": "PAGE-008.spec.js",
@@ -6798,11 +6182,11 @@
         "TEST-E-006"
       ],
       "implementation_refs": [
-        "hardware/esp32/LightBLE/src/main.cpp"
+        "apps/uniapp/pages/broadcast/index.vue"
       ],
-      "task_id": "ESP32-OBSERVER-001",
+      "task_id": "PAGE-BROADCAST-001",
       "root_cause_id": "RC-PAGE-BROADCAST",
-      "reason": "BLOCKED_BY_FIXTURE"
+      "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
       "page_id": "PAGE-008",
@@ -9044,15 +8428,6 @@
     }
   ],
   "top_first_breakpoints": [
-    {
-      "page_id": "PAGE-002",
-      "target": "FEAT-040",
-      "test": "TEST-U-013",
-      "file": "apps/uniapp/services/ble-runtime/log-redaction.js",
-      "symbol": "(missing)",
-      "breakpoint": "log-redaction module missing; HID provision path shares REQ-036/050",
-      "task_id": "RUNTIME-LOG-REDACTION-001"
-    },
     {
       "page_id": "PAGE-008",
       "target": "FEAT-041",

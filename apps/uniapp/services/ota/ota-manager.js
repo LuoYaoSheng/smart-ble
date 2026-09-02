@@ -7,6 +7,9 @@
 
 import { validateFirmwarePackage, ERROR_CODES, sha256Hex, toUint8Array } from './package-validator.js';
 import { parseFirmwarePackage } from './firmware-package.js';
+import { createLogger } from '../logger/log-redaction.js';
+
+const log = createLogger('ota-manager');
 
 export const OTA_UUIDS = Object.freeze({
   SERVICE_OTA: '4fafc201-1fb5-459e-8fcc-c5c9c331914d',
@@ -198,7 +201,7 @@ export class OtaManager {
       try {
         listener(envelope);
       } catch (error) {
-        console.error('[ota-manager] event listener failed', error);
+        log.error('event listener failed', error);
       }
     }
   }

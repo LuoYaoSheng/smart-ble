@@ -116,7 +116,8 @@ if (!current || !Array.isArray(current.cases)) {
 // ---------------------------------------------------------------------------
 const FACTS = {
   hasDisplayName: exists('apps/uniapp/services/ble-runtime/display-name.js'),
-  hasLogRedaction: exists('apps/uniapp/services/ble-runtime/log-redaction.js'),
+  hasLogRedaction: exists('apps/uniapp/services/logger/log-redaction.js')
+    && exists('apps/uniapp/services/ble-runtime/log-redaction.js'),
   hasWriteQueue: exists('apps/uniapp/services/ble-runtime/write-queue.js'),
   hasReconnectPolicy: exists('apps/uniapp/services/ble-runtime/reconnect-policy.js'),
   hasReconnectManager: exists('apps/uniapp/services/ble-runtime/reconnect-manager.js'),
@@ -195,6 +196,11 @@ const hasProvisioningClassify = /registerProvisioning|markProvisioning/.test(
 );
 const sessionRegistryDone = hasSessionRegistry && hasSubscriptionCount && hasProvisioningClassify;
 const reconnectReady = FACTS.hasReconnectPolicy && FACTS.hasReconnectManager;
+const logRedactionReady = FACTS.hasLogRedaction
+  && /sanitizeLogValue|createLogger/.test(read('apps/uniapp/services/logger/log-redaction.js'))
+  && /createLogger/.test(FACTS.bleRuntimeIndex)
+  && /createLogger/.test(FACTS.otaManager)
+  && /createLogger/.test(read('apps/uniapp/services/smart-hid/index.js'));
 
 // ---------------------------------------------------------------------------
 // Target inventory extraction
@@ -306,7 +312,7 @@ const TASKS = [
   { task_id: 'RUNTIME-FILTER-001', task_type: 'SOURCE_FIX', title: 'device-filter 关键词命中项匹配对齐目标', root_cause_id: 'RC-DEVICE-FILTER', severity: 'P1', deps: [], order_hint: 11, status: filterHasKeywordMatch ? 'DONE' : 'PLANNED' },
   { task_id: 'RUNTIME-GATT-CODEC-001', task_type: 'SOURCE_FIX', title: 'validateHexInput/parseHexInput', root_cause_id: 'RC-GATT-HEX', severity: 'P1', deps: [], order_hint: 12, status: exists('apps/uniapp/services/ble-runtime/gatt-codec.js') ? 'DONE' : 'PLANNED' },
   { task_id: 'RUNTIME-WRITE-QUEUE-001', task_type: 'SOURCE_FIX', title: 'write-queue MTU 分包队列', root_cause_id: 'RC-WRITE-QUEUE', severity: 'P1', deps: [], order_hint: 13, status: FACTS.hasWriteQueue ? 'DONE' : 'PLANNED' },
-  { task_id: 'RUNTIME-LOG-REDACTION-001', task_type: 'SOURCE_FIX', title: 'log-redaction 脱敏', root_cause_id: 'RC-LOG-REDACTION', severity: 'P1', deps: [], order_hint: 14 },
+  { task_id: 'RUNTIME-LOG-REDACTION-001', task_type: 'SOURCE_FIX', title: 'log-redaction 脱敏', root_cause_id: 'RC-LOG-REDACTION', severity: 'P1', deps: [], order_hint: 14, status: logRedactionReady ? 'DONE' : 'PLANNED' },
   { task_id: 'RUNTIME-RECONNECT-001', task_type: 'SOURCE_FIX', title: 'reconnect-policy 有限重连', root_cause_id: 'RC-RECONNECT', severity: 'P1', deps: [], order_hint: 15, status: reconnectReady ? 'DONE' : 'PLANNED' },
   { task_id: 'RUNTIME-SESSION-001', task_type: 'SOURCE_FIX', title: 'Registry subscription_count + 配网会话分类', root_cause_id: 'RC-SESSION-REGISTRY', severity: 'P1', deps: [], order_hint: 16, status: sessionRegistryDone ? 'DONE' : 'PLANNED' },
   { task_id: 'RUNTIME-CONNECTION-DISCOVERY-001', task_type: 'SOURCE_FIX', title: 'connectDevice 编排服务发现', root_cause_id: 'RC-CONN-DISCOVERY', severity: 'P1', deps: [], order_hint: 17 },
