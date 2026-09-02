@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 4139b2ab376a9a56083c81495831f051ac7804278a5f56936064e429e04b9571
+content_hash: 7310be05278176c4929d9ce443fece2b0d949979a52b4d5cdeb8670e36dfb1c6
 ```
 
 ## App

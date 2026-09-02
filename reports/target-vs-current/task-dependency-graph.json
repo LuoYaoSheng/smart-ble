@@ -186,7 +186,9 @@
       "target_ids": [
         "PROTO-010"
       ],
-      "test_ids": [],
+      "test_ids": [
+        "TEST-E-006"
+      ],
       "first_breakpoint": ".github/workflows/release-build.yml builds Flutter/Tauri; not UniApp Android + Peripheral/Observer firmware",
       "implementation_files": [],
       "forbidden_files": [
@@ -210,10 +212,20 @@
       "status": "DONE",
       "dependencies": [],
       "unlocks": [],
-      "gap_count": 0,
-      "target_ids": [],
-      "test_ids": [],
-      "first_breakpoint": "",
+      "gap_count": 3,
+      "target_ids": [
+        "FEAT-057",
+        "REQ-048",
+        "REQ-051"
+      ],
+      "test_ids": [
+        "TEST-I-009",
+        "TEST-H-002",
+        "TEST-H-003",
+        "TEST-U-015",
+        "TEST-W-010"
+      ],
+      "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
       "implementation_files": [],
       "forbidden_files": [
         "apps/uniapp/** (until TP-G3)",
@@ -314,10 +326,40 @@
       "status": "PLANNED",
       "dependencies": [],
       "unlocks": [],
-      "gap_count": 0,
-      "target_ids": [],
-      "test_ids": [],
-      "first_breakpoint": "",
+      "gap_count": 6,
+      "target_ids": [
+        "FEAT-040",
+        "REQ-036",
+        "REQ-037",
+        "REQ-050",
+        "PAGE-002",
+        "WEB-001"
+      ],
+      "test_ids": [
+        "TEST-U-013",
+        "TEST-R-004",
+        "TEST-U-012",
+        "TEST-A-008",
+        "TEST-U-015",
+        "TEST-I-009",
+        "TEST-H-002",
+        "TEST-P-002",
+        "TEST-H-001",
+        "TEST-H-003",
+        "TEST-W-010",
+        "TEST-R-001",
+        "TEST-R-002",
+        "TEST-R-003",
+        "TEST-R-005",
+        "TEST-R-006",
+        "TEST-R-007",
+        "TEST-R-008",
+        "TEST-R-009",
+        "TEST-R-010",
+        "TEST-R-011",
+        "TEST-U-002"
+      ],
+      "first_breakpoint": "[TEST-U-013 REQ-036/050 FEAT-040 SEC-0xx 15号] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/log-redaction.js",
       "implementation_files": [],
       "forbidden_files": [
         "apps/uniapp/** (until TP-G3)",
@@ -340,10 +382,22 @@
       "status": "PLANNED",
       "dependencies": [],
       "unlocks": [],
-      "gap_count": 0,
-      "target_ids": [],
-      "test_ids": [],
-      "first_breakpoint": "",
+      "gap_count": 3,
+      "target_ids": [
+        "FEAT-023",
+        "REQ-022",
+        "FLOW-004"
+      ],
+      "test_ids": [
+        "TEST-I-003",
+        "TEST-A-007",
+        "TEST-W-008",
+        "TEST-E-002",
+        "TEST-A-006",
+        "TEST-W-007",
+        "TEST-E-005"
+      ],
+      "first_breakpoint": "[REQ-022/023 FEAT-023/024 TEST-I-003(纯策略) 10号§5] 第一断点: 目标模块缺失：apps/uniapp/services/ble-runtime/reconnect-policy.js",
       "implementation_files": [],
       "forbidden_files": [
         "apps/uniapp/** (until TP-G3)",
@@ -363,7 +417,7 @@
       "title": "Registry subscription_count + 配网会话分类",
       "root_cause_id": "RC-SESSION-REGISTRY",
       "severity": "P1",
-      "status": "PLANNED",
+      "status": "DONE",
       "dependencies": [],
       "unlocks": [],
       "gap_count": 0,
@@ -392,10 +446,20 @@
       "status": "PLANNED",
       "dependencies": [],
       "unlocks": [],
-      "gap_count": 0,
-      "target_ids": [],
-      "test_ids": [],
-      "first_breakpoint": "",
+      "gap_count": 3,
+      "target_ids": [
+        "FEAT-021",
+        "REQ-019",
+        "ERR-CONN-03"
+      ],
+      "test_ids": [
+        "TEST-I-003",
+        "TEST-A-006",
+        "TEST-E-002",
+        "TEST-P-006",
+        "TEST-W-007"
+      ],
+      "first_breakpoint": "[REQ-020/021 ERR-CONN-03] 第一断点: connectDevice 未编排服务发现（失败不报错=半开泄漏面）",
       "implementation_files": [],
       "forbidden_files": [
         "apps/uniapp/** (until TP-G3)",
@@ -420,19 +484,39 @@
       "unlocks": [
         "OTA-CLIENT-001"
       ],
-      "gap_count": 3,
+      "gap_count": 5,
       "target_ids": [
         "FEAT-081",
         "REQ-066",
-        "PROTO-011"
+        "PAGE-006",
+        "FLOW-009",
+        "DEC-016"
       ],
       "test_ids": [
         "TEST-U-016",
         "TEST-I-010",
         "TEST-E-007",
-        "TEST-A-011"
+        "TEST-A-011",
+        "TEST-I-008",
+        "TEST-P-006",
+        "TEST-U-009",
+        "TEST-U-010",
+        "TEST-U-011",
+        "TEST-U-012",
+        "TEST-I-003",
+        "TEST-I-004",
+        "TEST-I-005",
+        "TEST-A-006",
+        "TEST-A-008",
+        "TEST-W-007",
+        "TEST-W-008",
+        "TEST-E-002",
+        "TEST-E-003",
+        "TEST-E-004",
+        "TEST-E-005",
+        "TEST-I-006"
       ],
-      "first_breakpoint": "validateOtaPackage 接口缺失",
+      "first_breakpoint": "[TEST-U-016 REQ-066 FEAT-081 DEC-016] 第一断点: 目标接口 validateOtaPackage 缺失（六项传输前校验）",
       "implementation_files": [],
       "forbidden_files": [
         "apps/uniapp/** (until TP-G3)",
@@ -459,7 +543,7 @@
       "unlocks": [
         "VERIFY-ANDROID-001"
       ],
-      "gap_count": 12,
+      "gap_count": 15,
       "target_ids": [
         "FEAT-046",
         "FEAT-047",
@@ -468,11 +552,14 @@
         "FEAT-050",
         "FEAT-051",
         "FEAT-052",
+        "REQ-043",
+        "REQ-044",
+        "REQ-045",
+        "REQ-046",
         "OP-P006-12",
         "OP-P006-13",
         "OP-P006-14",
-        "OP-W001-05",
-        "FLOW-009"
+        "OP-W001-05"
       ],
       "test_ids": [
         "TEST-P-006",
@@ -509,12 +596,10 @@
         "ESP32-BUILD-001"
       ],
       "unlocks": [],
-      "gap_count": 1,
-      "target_ids": [
-        "PROTO-003"
-      ],
+      "gap_count": 0,
+      "target_ids": [],
       "test_ids": [],
-      "first_breakpoint": "固件 OTA JSON 使用 action 字段，目标为 op",
+      "first_breakpoint": "",
       "implementation_files": [],
       "forbidden_files": [
         "apps/uniapp/** (until TP-G3)",
@@ -571,12 +656,10 @@
       "unlocks": [
         "ESP32-FAULT-001"
       ],
-      "gap_count": 1,
-      "target_ids": [
-        "PROTO-001"
-      ],
+      "gap_count": 0,
+      "target_ids": [],
       "test_ids": [],
-      "first_breakpoint": "固件缺 FF00 LED 指令表",
+      "first_breakpoint": "",
       "implementation_files": [],
       "forbidden_files": [
         "apps/uniapp/** (until TP-G3)",
@@ -603,13 +686,20 @@
       "unlocks": [
         "VERIFY-ESP32-001"
       ],
-      "gap_count": 5,
+      "gap_count": 12,
       "target_ids": [
         "OP-P008-01",
         "OP-P008-02",
         "OP-P008-03",
         "FLOW-008",
-        "PROTO-009"
+        "PROTO-001",
+        "PROTO-002",
+        "PROTO-003",
+        "PROTO-004",
+        "PROTO-005",
+        "PROTO-009",
+        "PROTO-011",
+        "EVID-005"
       ],
       "test_ids": [
         "TEST-P-008",
@@ -617,7 +707,8 @@
         "TEST-U-014",
         "TEST-I-007",
         "TEST-E-006",
-        "TEST-W-009"
+        "TEST-W-009",
+        "TEST-E-001"
       ],
       "first_breakpoint": "hardware/esp32 无 Observer 目标源码",
       "implementation_files": [],
@@ -686,8 +777,8 @@
         "TEST-A-010",
         "TEST-W-009",
         "TEST-E-006",
-        "TEST-U-014",
-        "TEST-I-007"
+        "TEST-I-007",
+        "TEST-U-014"
       ],
       "first_breakpoint": "PAGE-008 内联广告逻辑；useBroadcastSession 未使用",
       "implementation_files": [],
@@ -742,10 +833,40 @@
       "unlocks": [
         "VERIFY-SMART-HID-001"
       ],
-      "gap_count": 0,
-      "target_ids": [],
-      "test_ids": [],
-      "first_breakpoint": "",
+      "gap_count": 7,
+      "target_ids": [
+        "FEAT-053",
+        "FEAT-058",
+        "REQ-047",
+        "REQ-049",
+        "REQ-054",
+        "PAGE-001",
+        "FLOW-010"
+      ],
+      "test_ids": [
+        "TEST-U-015",
+        "TEST-H-001",
+        "TEST-W-010",
+        "TEST-C-007",
+        "TEST-H-003",
+        "TEST-I-009",
+        "TEST-P-001",
+        "TEST-A-001",
+        "TEST-A-005",
+        "TEST-W-001",
+        "TEST-W-007",
+        "TEST-E-001",
+        "TEST-U-008",
+        "TEST-U-006",
+        "TEST-U-007",
+        "TEST-U-001",
+        "TEST-U-005",
+        "TEST-I-003",
+        "TEST-I-001",
+        "TEST-I-002",
+        "TEST-H-002"
+      ],
+      "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
       "implementation_files": [],
       "forbidden_files": [
         "apps/uniapp/** (until TP-G3)",
@@ -922,6 +1043,8 @@
       ],
       "test_ids": [
         "TEST-R-006",
+        "TEST-E-008",
+        "TEST-R-001",
         "TEST-R-002",
         "TEST-R-007",
         "TEST-A-005",
@@ -946,9 +1069,7 @@
         "TEST-H-005",
         "TEST-H-006",
         "TEST-R-005",
-        "TEST-E-008",
         "TEST-R-008",
-        "TEST-R-001",
         "TEST-R-009",
         "TEST-R-010",
         "TEST-R-011"
@@ -1042,7 +1163,6 @@
     "RELEASE-PIPELINE-001",
     "RUNTIME-LOG-REDACTION-001",
     "RUNTIME-RECONNECT-001",
-    "RUNTIME-SESSION-001",
     "RUNTIME-CONNECTION-DISCOVERY-001",
     "OTA-PACKAGE-001",
     "OTA-CLIENT-001",

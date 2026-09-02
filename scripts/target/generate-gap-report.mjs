@@ -164,6 +164,11 @@ const releaseBuildsFlutter = /flutter/i.test(FACTS.releaseWorkflow);
 const releaseBuildsTauri = /tauri/i.test(FACTS.releaseWorkflow);
 const releaseBuildsUniapp = /uniapp|uni-app/i.test(FACTS.releaseWorkflow);
 const hasSubscriptionCount = /subscription_count/.test(FACTS.bleRuntimeIndex);
+const hasSessionRegistry = exists('apps/uniapp/services/ble-runtime/session-registry.js');
+const hasProvisioningClassify = /registerProvisioning|markProvisioning/.test(
+  read('apps/uniapp/services/connected-session-registry.js') + read('apps/uniapp/services/ble-runtime/session-registry.js'),
+);
+const sessionRegistryDone = hasSessionRegistry && hasSubscriptionCount && hasProvisioningClassify;
 
 // ---------------------------------------------------------------------------
 // Target inventory extraction
@@ -277,7 +282,7 @@ const TASKS = [
   { task_id: 'RUNTIME-WRITE-QUEUE-001', task_type: 'SOURCE_FIX', title: 'write-queue MTU 分包队列', root_cause_id: 'RC-WRITE-QUEUE', severity: 'P1', deps: [], order_hint: 13, status: FACTS.hasWriteQueue ? 'DONE' : 'PLANNED' },
   { task_id: 'RUNTIME-LOG-REDACTION-001', task_type: 'SOURCE_FIX', title: 'log-redaction 脱敏', root_cause_id: 'RC-LOG-REDACTION', severity: 'P1', deps: [], order_hint: 14 },
   { task_id: 'RUNTIME-RECONNECT-001', task_type: 'SOURCE_FIX', title: 'reconnect-policy 有限重连', root_cause_id: 'RC-RECONNECT', severity: 'P1', deps: [], order_hint: 15 },
-  { task_id: 'RUNTIME-SESSION-001', task_type: 'SOURCE_FIX', title: 'Registry subscription_count + 配网会话分类', root_cause_id: 'RC-SESSION-REGISTRY', severity: 'P1', deps: [], order_hint: 16 },
+  { task_id: 'RUNTIME-SESSION-001', task_type: 'SOURCE_FIX', title: 'Registry subscription_count + 配网会话分类', root_cause_id: 'RC-SESSION-REGISTRY', severity: 'P1', deps: [], order_hint: 16, status: sessionRegistryDone ? 'DONE' : 'PLANNED' },
   { task_id: 'RUNTIME-CONNECTION-DISCOVERY-001', task_type: 'SOURCE_FIX', title: 'connectDevice 编排服务发现', root_cause_id: 'RC-CONN-DISCOVERY', severity: 'P1', deps: [], order_hint: 17 },
   { task_id: 'OTA-PACKAGE-001', task_type: 'SOURCE_FIX', title: '客户端 Firmware Package 六项校验', root_cause_id: 'RC-OTA-PACKAGE', severity: 'P1', deps: [], order_hint: 20 },
   { task_id: 'OTA-CLIENT-001', task_type: 'SOURCE_FIX', title: '客户端完整 OTA 事务（CTRL start→ready→DATA→commit）', root_cause_id: 'RC-OTA-CTRL-START', severity: 'P0', deps: ['OTA-PACKAGE-001'], order_hint: 21 },

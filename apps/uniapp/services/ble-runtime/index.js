@@ -17,11 +17,20 @@ import {
   normalizeGattPayload,
 } from './gatt-codec.js';
 import { createWriteQueue, chunkForMtu, chunkBytes } from './write-queue.js';
+import {
+  createSessionRegistry,
+  getSessionRegistry,
+  resetSessionRegistryForTesting,
+  CONNECTION_STATE,
+  RECONNECT_STATE,
+  OWNER_TYPE,
+} from './session-registry.js';
+
+const registry = getSessionRegistry();
 
 const state = {
   platform: null,
   callbacksRegistered: false,
-  sessions: new Map(),
   connectionAttempts: new Map(),
   valueListeners: new Map(),
   disconnectListeners: new Map(),
@@ -36,6 +45,25 @@ const isAlreadyOpenedError = (error) => /already opened|already open/i.test(erro
 const valueKey = (deviceId, serviceId, characteristicId) => [deviceId, serviceId, characteristicId].map(normalize).join('|');
 const serviceKey = (deviceId, serviceId) => [deviceId, serviceId].map(normalize).join('|');
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+function getRegistrySession(deviceId) {
+  return registry.getSession(deviceId);
+}
+
+function getRuntimeSession(deviceId) {
+  const entry = getRegistrySession(deviceId);
+  const runtime = entry?.runtime;
+  if (!runtime || runtime.dead) return null;
+  return runtime;
+}
+
+function trackSubscription(deviceId, serviceId, characteristicId, enabled = true) {
+  if (enabled) {
+    registry.addSubscription(deviceId, { serviceId, characteristicId, enabled: true });
+    return;
+  }
+  registry.removeSubscription(deviceId, { serviceId, characteristicId });
+}
 
 function markLocalDisconnect(deviceId) {
   const marker = { expiresAt: Date.now() + 2000 };
@@ -63,7 +91,7 @@ function call(platform, method, options = {}) {
 function ensureCallbacks() {
   const platform = getBlePlatform();
   if (state.callbacksRegistered && state.platform === platform) return platform;
-  if (state.callbacksRegistered && state.platform !== platform && state.sessions.size) {
+  if (state.callbacksRegistered && state.platform !== platform && registry.listSessions().length) {
     throw new Error('BLE platform cannot change while sessions are active');
   }
 
@@ -86,7 +114,7 @@ function ensureCallbacks() {
       state.pendingLocalDisconnects.delete(res.deviceId);
       return;
     }
-    const session = state.sessions.get(res.deviceId);
+    const session = getRuntimeSession(res.deviceId);
     if (!session) return;
     invalidateSession(session, 'BLE 连接已断开');
   });
@@ -120,7 +148,9 @@ function ensureCallbacks() {
 function invalidateSession(session, reason) {
   if (session.dead) return;
   session.dead = true;
-  state.sessions.delete(session.deviceId);
+  registry.updateSession(session.deviceId, { connectionState: CONNECTION_STATE.DISCONNECTED, runtime: null });
+  registry.clearSubscriptions(session.deviceId);
+  registry.removeSession(session.deviceId);
   for (const callback of [...session.disconnectCallbacks]) {
     try {
       callback(reason);
@@ -188,14 +218,25 @@ function indexServices(services) {
 
 async function createDeviceSession(deviceId, options) {
   const platform = ensureCallbacks();
+  registry.createSession({
+    deviceId,
+    deviceInfo: options.deviceInfo ?? null,
+    owner: options.owner ?? null,
+    metadata: options.metadata ?? {},
+    connectionState: CONNECTION_STATE.CONNECTING,
+  });
   try {
     await call(platform, 'createBLEConnection', { deviceId, timeout: options.timeout || 10000 });
   } catch (error) {
+    registry.updateSession(deviceId, { connectionState: CONNECTION_STATE.FAILED });
+    registry.removeSession(deviceId);
     throw normalizeBleError(error, 'BLE 连接失败');
   }
+  registry.updateSession(deviceId, { connectionState: CONNECTION_STATE.CONNECTED });
   let services = [];
   const expectedServiceUuid = normalize(options.expectedServiceUuid);
   try {
+    registry.updateSession(deviceId, { connectionState: CONNECTION_STATE.DISCOVERING });
     const discoveryAttempts = expectedServiceUuid ? 3 : 1;
     for (let attempt = 0; attempt < discoveryAttempts; attempt++) {
       if (attempt > 0) await sleep(400);
@@ -206,6 +247,8 @@ async function createDeviceSession(deviceId, options) {
       throw new Error(`expected service not found: ${options.expectedServiceUuid}`);
     }
   } catch (error) {
+    registry.updateSession(deviceId, { connectionState: CONNECTION_STATE.FAILED });
+    registry.removeSession(deviceId);
     markLocalDisconnect(deviceId);
     await call(platform, 'closeBLEConnection', { deviceId }).catch(() => {});
     throw error;
@@ -225,12 +268,19 @@ async function createDeviceSession(deviceId, options) {
     },
     async close() {
       if (this.dead) return;
+      registry.updateSession(this.deviceId, { connectionState: CONNECTION_STATE.DISCONNECTING });
       markLocalDisconnect(this.deviceId);
       invalidateSession(this, 'BLE 连接已主动关闭');
       await call(platform, 'closeBLEConnection', { deviceId: this.deviceId }).catch(() => {});
     }
   };
-  state.sessions.set(deviceId, session);
+  registry.updateSession(deviceId, {
+    connectionState: CONNECTION_STATE.READY,
+    services,
+    runtime: session,
+    owner: options.owner ?? registry.getOwner(deviceId),
+    metadata: options.metadata ?? {},
+  });
 
   if (options.mtu) {
     try {
@@ -255,8 +305,8 @@ async function enforceSessionRequirements(session, options) {
 }
 
 export async function connectDevice(deviceId, options = {}) {
-  const existing = state.sessions.get(deviceId);
-  if (existing && !existing.dead) {
+  const existing = getRuntimeSession(deviceId);
+  if (existing) {
     return enforceSessionRequirements(existing, options);
   }
 
@@ -308,9 +358,23 @@ export async function stopDiscovery() {
   return call(ensureCallbacks(), 'stopBluetoothDevicesDiscovery');
 }
 
-export async function closeDevice(deviceId) {
-  const session = state.sessions.get(deviceId);
-  if (session) return session.close();
+export async function closeDevice(deviceId, options = {}) {
+  const session = getRuntimeSession(deviceId);
+  if (session) {
+    if (options.owner) {
+      const decision = registry.canDisconnect(deviceId, options.owner);
+      if (!decision.allowed) {
+        if (decision.action === 'release_only') {
+          registry.releaseReference(deviceId, options.owner);
+          return { released: true };
+        }
+        const error = new Error('disconnect denied: caller is not session owner');
+        error.code = 'SESSION_OWNER_MISMATCH';
+        throw error;
+      }
+    }
+    return session.close();
+  }
   markLocalDisconnect(deviceId);
   return call(ensureCallbacks(), 'closeBLEConnection', { deviceId });
 }
@@ -327,7 +391,12 @@ export async function subscribe(session, serviceId, characteristicId, callback) 
   });
   const characteristic = session.servicesById.get(normalize(target.serviceId)).characteristicsById.get(normalize(target.characteristicId));
   characteristic.notifying = true;
-  return callback ? addValueListener(session, target.serviceId, target.characteristicId, callback) : () => {};
+  trackSubscription(session.deviceId, target.serviceId, target.characteristicId, true);
+  const unsubscribe = callback ? addValueListener(session, target.serviceId, target.characteristicId, callback) : () => {};
+  return () => {
+    unsubscribe();
+    trackSubscription(session.deviceId, target.serviceId, target.characteristicId, false);
+  };
 }
 
 export function listen(session, serviceId, characteristicId, callback) {
@@ -348,6 +417,7 @@ export async function setNotifyEnabled(session, serviceId, characteristicId, ena
   });
   const characteristic = session.servicesById.get(normalize(target.serviceId)).characteristicsById.get(normalize(target.characteristicId));
   characteristic.notifying = Boolean(enabled);
+  trackSubscription(session.deviceId, target.serviceId, target.characteristicId, Boolean(enabled));
 }
 
 export function readValue(session, serviceId, characteristicId, timeoutMs = 3000) {
@@ -567,12 +637,46 @@ export async function setMtu(session, mtu) {
 }
 
 export function getSession(deviceId) {
-  return state.sessions.get(deviceId) || null;
+  return getRuntimeSession(deviceId);
+}
+
+export function listSessions(options = {}) {
+  return registry.listSessions(options);
+}
+
+export function getSessionRegistrySnapshot(deviceId) {
+  const entry = registry.getSession(deviceId);
+  return entry
+    ? {
+      deviceId: entry.deviceId,
+      connectionState: entry.connectionState,
+      subscription_count: entry.subscription_count,
+      owner: entry.owner,
+      reconnectState: entry.reconnectState,
+      metadata: { ...entry.metadata },
+    }
+    : null;
+}
+
+export function borrowSession(deviceId, borrower) {
+  return registry.borrowReference(deviceId, borrower);
+}
+
+export function releaseSessionReference(deviceId, borrower) {
+  return registry.releaseReference(deviceId, borrower);
+}
+
+export function setSessionOwner(deviceId, owner) {
+  return registry.setOwner(deviceId, owner);
+}
+
+export function getSessionOwner(deviceId) {
+  return registry.getOwner(deviceId);
 }
 
 export function getBleRuntimeSnapshotForTesting() {
   return {
-    sessions: state.sessions.size,
+    sessions: registry.listSessions().length,
     connectionAttempts: state.connectionAttempts.size,
     valueListenerKeys: state.valueListeners.size,
     discoveryListeners: state.discoveryListeners.size
@@ -588,7 +692,7 @@ export function resetBleRuntimeForTesting() {
   state.writeQueue = null;
   state.platform = null;
   state.callbacksRegistered = false;
-  state.sessions.clear();
+  resetSessionRegistryForTesting();
   state.connectionAttempts.clear();
   state.valueListeners.clear();
   state.disconnectListeners.clear();
@@ -614,3 +718,12 @@ export {
 };
 
 export { createWriteQueue, chunkForMtu, chunkBytes };
+
+export {
+  createSessionRegistry,
+  getSessionRegistry,
+  resetSessionRegistryForTesting,
+  CONNECTION_STATE,
+  RECONNECT_STATE,
+  OWNER_TYPE,
+};
