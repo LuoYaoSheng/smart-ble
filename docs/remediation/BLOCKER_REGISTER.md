@@ -1,18 +1,23 @@
-# Blocker 登记（TP-G2-R1）
+# Blocker 登记（TP-G2-R1 / E5 环境复核）
 
 ```yaml
 status: REVIEW
-gate: TP-G2-R1
-content_hash: 5426d043164502a145e41a290572f2e4aca2fb0a1ed9277ecb914ecbb36d75d3
+gate: TP-G4-E5-ENV
+content_hash: e5-env-revalidation-174f9e6
 ```
 
 | ID | 类型 | 状态 | 说明 | Task |
 |---|---|---|---|---|
 | BLK-TOOL-PLAYWRIGHT | TOOLCHAIN | CLEARED | @playwright/test 未安装 → 页面 E4 BLOCKED_BY_TOOLCHAIN | ENV-PLAYWRIGHT-001 |
 | BLK-TEST-PAGE-DRIVER | TESTABILITY | CLEARED | TARGET_PAGE_DRIVER 未实现 | TEST-PAGE-DRIVER-001 |
-| BLK-TOOL-PLATFORMIO | TOOLCHAIN | OPEN | PlatformIO 可能未安装 → ESP32 build NOT_EXECUTED（本轮禁止 upload） | ESP32-BUILD-001 |
-| BLK-HW-ANDROID | FIXTURE | OPEN | adb devices 可能为空 → HARDWARE_PENDING | VERIFY-ANDROID-001 |
-| BLK-HW-ESP32 | FIXTURE | OPEN | 无 ESP32 USB 串口 / Observer 夹具 → BLOCKED_BY_FIXTURE | VERIFY-ESP32-001 |
-| OTA-E5-BLOCKER | FIXTURE+TOOLCHAIN | OPEN | E5-OTA-001 BLOCKED：无 ESP32 USB；仅 Android 模拟器；UniApp APK 编译失败 | OTA-E5-VERIFICATION |
+| BLK-TOOL-PLATFORMIO | TOOLCHAIN | CLEARED | PlatformIO 6.1.18 可用；fixture `pio run` SUCCESS（本轮禁止 upload） | ESP32-BUILD-001 / E5-ENV-REVALIDATION |
+| BLK-HW-ANDROID | FIXTURE | OPEN | adb 仅 emulator；无物理 Android → HARDWARE_PENDING | VERIFY-ANDROID-001 / B-004 |
+| BLK-HW-ESP32 | FIXTURE | OPEN | 无 ESP32 USB 串口 → BLOCKED_BY_HARDWARE | VERIFY-ESP32-001 / B-005 |
+| OTA-E5-BLOCKER | FIXTURE+TOOLCHAIN | OPEN | **OTA-E5-BLOCKED**（E5-ENV-REVALIDATION `20260902-1446-e5-env`）：B-004/B-005/B-006 未清除 | OTA-E5-VERIFICATION |
+| B-004 | FIXTURE | OPEN | Android physical device unavailable（仅模拟器，不算 E5） | E5-ENV-REVALIDATION |
+| B-005 | FIXTURE | OPEN | ESP32 serial unavailable（`pio device list` 无 USB 测试板） | E5-ENV-REVALIDATION |
+| B-006 | TOOLCHAIN | OPEN | Android APK build unavailable（HBuilderX Vite IIFE/code-splitting） | E5-ENV-REVALIDATION |
 
-本轮禁止：upload / adb install / 真机 BLE / 宣称 E5 PASS。
+本轮禁止：upload / adb install / 真机 BLE / 宣称 E5 PASS / 自动执行 OTA-E5-VERIFICATION。
+
+证据：`verification/e5-env-review/20260902-1446-e5-env/` · 历史 E5：`docs/verification/evidence/E5-OTA-001.md`

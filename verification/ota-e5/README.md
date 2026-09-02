@@ -3,6 +3,7 @@
 | Evidence ID | RUN_ID | Status | Summary |
 |---|---|---|---|
 | **E5-OTA-001** | [20260902-0952-ota-e5](./20260902-0952-ota-e5/summary.md) | **BLOCKED** | 无 ESP32 USB + 无 UniApp APK + 无真实 BLE |
+| env review | [../e5-env-review/20260902-1446-e5-env](../e5-env-review/20260902-1446-e5-env/ota-e5-readiness.md) | **OTA-E5-BLOCKED** | E5-ENV-REVALIDATION @ `174f9e6`：B-004/B-005/B-006 |
 
 ## 规则
 
