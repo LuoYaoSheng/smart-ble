@@ -4,6 +4,6 @@
 - 分类 Backlog 与 [BLOCKER_REGISTER.md](./BLOCKER_REGISTER.md)
 - 机器图：`reports/target-vs-current/task-dependency-graph.json`
 
-`content_hash=7310be05278176c4929d9ce443fece2b0d949979a52b4d5cdeb8670e36dfb1c6`
+`content_hash=ed40eeeef16489052a93d5807bf3094dfbfa290df34400ff2bdf3e69919994ff`
 
 未经用户批准不得执行 SOURCE_FIX / 进入 TP-G3。

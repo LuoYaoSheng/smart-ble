@@ -161,20 +161,20 @@ const PAGE_ASSESS = {
   },
   'PAGE-006': {
     product: 'FAIL',
-    task_id: 'RUNTIME-RECONNECT-001',
-    root_cause_id: 'RC-RECONNECT',
+    task_id: 'OTA-CLIENT-001',
+    root_cause_id: 'RC-OTA-CLIENT',
     first_breakpoint: {
-      target: 'FEAT-022',
-      test: 'TEST-I-003',
-      file: 'apps/uniapp/services/ble-runtime/reconnect-policy.js',
-      symbol: '(missing)',
-      breakpoint: 'reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)',
+      target: 'FEAT-081',
+      test: 'TEST-I-008',
+      file: 'apps/uniapp/utils/ota_manager.js',
+      symbol: 'validateOtaPackage',
+      breakpoint: 'CTRL start before DATA / validateOtaPackage (TEST-I-008)',
     },
     also: [
-      { task_id: 'OTA-CLIENT-001', file: 'apps/uniapp/utils/ota_manager.js', breakpoint: 'CTRL start before DATA / validateOtaPackage (TEST-I-008)' },
+      { task_id: 'RUNTIME-RECONNECT-001', breakpoint: 'DONE' },
       { task_id: 'RUNTIME-CONNECTION-DISCOVERY-001', file: 'apps/uniapp/services/ble-runtime/index.js', symbol: 'connectDevice', breakpoint: 'TEST-I-003 asserts discover orchestration gap (semi-open risk)' },
     ],
-    notes: 'RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION DONE；PAGE-006 剩余 reconnect / OTA',
+    notes: 'RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA',
   },
   'PAGE-007': {
     product: 'PASS',
@@ -182,9 +182,9 @@ const PAGE_ASSESS = {
     root_cause_id: null,
     first_breakpoint: null,
     also: [
-      { task_id: 'RUNTIME-RECONNECT-001', breakpoint: '重连进度展示依赖 reconnect-policy（观察项，非 Session 断点）' },
+      { task_id: 'RUNTIME-RECONNECT-001', breakpoint: 'DONE' },
     ],
-    notes: 'RUNTIME-SESSION-001 DONE；Session Registry + subscription_count + 配网排除；E4 harness PASS',
+    notes: 'RUNTIME-SESSION-001 + RUNTIME-RECONNECT-001 DONE；E4 harness PASS',
   },
   'PAGE-008': {
     product: 'FAIL',
@@ -671,7 +671,7 @@ ${pagesBody}
 
 | Bucket | Pages |
 |---|---|
-| Runtime | PAGE-002 (log-redaction/bridge), PAGE-006 (reconnect/OTA；codec+write-queue+session DONE), PAGE-007 SESSION DONE；PAGE-001 filter+display-name DONE |
+| Runtime | PAGE-002 (log-redaction/bridge), PAGE-006 (OTA；codec+write-queue+session+reconnect DONE), PAGE-007 SESSION+RECONNECT DONE；PAGE-001 filter+display-name DONE |
 | Page | PAGE-008 (broadcast composable owner) |
 | Testability | TEST-BRIDGE-TS-001（Smart HID TS） |
 | Metadata | PAGE-010 CLOSED |
@@ -693,10 +693,10 @@ ${pagesBody}
 function renderRemediation(summaryByPage) {
   const order = [
     ['PAGE-006', 'OTA-CLIENT-001', 'P0', 'OTA CTRL/包校验断点阻断详情页升级路径；依赖 OTA-PACKAGE-001'],
-    ['PAGE-006', 'RUNTIME-RECONNECT-001', 'P1', 'reconnect-policy 缺失（WRITE-QUEUE DONE）'],
+    ['PAGE-006', 'RUNTIME-RECONNECT-001', 'P1', 'DONE'],
     ['PAGE-006', 'RUNTIME-CONNECTION-DISCOVERY-001', 'P1', 'connectDevice 发现编排（TEST-I-003）'],
     ['PAGE-001', '—', 'P3', 'RUNTIME-FILTER/DISPLAY-NAME DONE；DEC-013 时长观察'],
-    ['PAGE-007', '—', 'P3', 'RUNTIME-SESSION-001 DONE；重连进度观察 RUNTIME-RECONNECT-001'],
+    ['PAGE-007', '—', 'P3', 'RUNTIME-SESSION-001 + RUNTIME-RECONNECT-001 DONE'],
     ['PAGE-002', 'RUNTIME-LOG-REDACTION-001', 'P1', 'log-redaction 缺失（配网日志）'],
     ['PAGE-002', 'TEST-BRIDGE-TS-001', 'P1', 'Smart HID TS protocol 桥'],
     ['PAGE-008', 'PAGE-BROADCAST-001', 'P1', '广播页改用 useBroadcastSession'],
@@ -733,9 +733,9 @@ ${order.map(([page, task, sev, why]) => `| ${sev} | ${page} | \`${task}\` | ${wh
 
 ## 依赖提示
 
-- PAGE-006 产品 FAIL → Codec + Write Queue + Session **DONE**；剩余 RECONNECT / OTA / CONNECTION-DISCOVERY
+- PAGE-006 产品 FAIL → Codec + Write Queue + Session + Reconnect **DONE**；剩余 OTA / CONNECTION-DISCOVERY
 - PAGE-001 → RUNTIME-FILTER-001 / RUNTIME-DISPLAY-NAME-001 **DONE**
-- PAGE-007 → RUNTIME-SESSION-001 **DONE**
+- PAGE-007 → RUNTIME-SESSION-001 + RUNTIME-RECONNECT-001 **DONE**
 - PAGE-002 → RUNTIME-LOG-REDACTION-001；Smart HID 协议桥 → TEST-BRIDGE-TS-001
 - PAGE-008 → PAGE-BROADCAST-001；Observer 验证 → ESP32-OBSERVER-001（BLOCKED 直至 fixture）
 - PAGE-003/004/005/009/010/WEB-001：本轮产品 PASS 或无新 PAGE_FIX；保持观察

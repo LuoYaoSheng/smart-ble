@@ -1,8 +1,8 @@
 {
   "gate": "TP-G2-R1",
   "schema_version": "2.0",
-  "generated_at": "2026-09-02T00:44:23.262Z",
-  "commit": "d80365dbcfeb021c507cd5f76330adbfaefe10a1",
+  "generated_at": "2026-09-02T01:00:09.932Z",
+  "commit": "d542ddc8083fba82b385bd42e490902c35a6b2db",
   "structured_current_path": ".tmp/tp-g2/logs/current-structured.json",
   "system": {
     "SYSTEM_PASS": 412,
@@ -291,9 +291,9 @@
     "gate": "TP-G2-R2",
     "totals": {
       "PASS": 146,
-      "FAIL": 23,
+      "FAIL": 53,
       "BLOCKED": 2,
-      "NOT_IMPLEMENTED": 59,
+      "NOT_IMPLEMENTED": 29,
       "harness_PASS": 230,
       "harness_FAIL": 0
     },
@@ -340,11 +340,11 @@
       },
       "PAGE-006": {
         "PASS": 0,
-        "FAIL": 0,
+        "FAIL": 30,
         "BLOCKED": 0,
-        "NOT_IMPLEMENTED": 30,
+        "NOT_IMPLEMENTED": 0,
         "product": "FAIL",
-        "task_id": "RUNTIME-RECONNECT-001"
+        "task_id": "OTA-CLIENT-001"
       },
       "PAGE-007": {
         "PASS": 14,

@@ -66,6 +66,7 @@ function createEmptySession(deviceId, partial = {}) {
     createdAt: partial.createdAt ?? ts,
     updatedAt: partial.updatedAt ?? ts,
     reconnectState: partial.reconnectState ?? RECONNECT_STATE.NONE,
+    disconnectReason: partial.disconnectReason ?? null,
     metadata: partial.metadata ? { ...partial.metadata } : {},
     runtime: partial.runtime ?? null,
     borrowRefs: new Set(),
@@ -87,6 +88,7 @@ function snapshotSession(session) {
     createdAt: session.createdAt,
     updatedAt: session.updatedAt,
     reconnectState: session.reconnectState,
+    disconnectReason: session.disconnectReason,
     metadata: { ...session.metadata },
     subscription_count: session.subscription_count,
     provisioning: session.provisioning,
@@ -137,6 +139,7 @@ export function createSessionRegistry() {
     }
     if (patch.characteristics !== undefined) session.characteristics = patch.characteristics;
     if (patch.reconnectState !== undefined) session.reconnectState = patch.reconnectState;
+    if (patch.disconnectReason !== undefined) session.disconnectReason = patch.disconnectReason;
     if (patch.owner !== undefined) session.owner = patch.owner;
     if (patch.runtime !== undefined) session.runtime = patch.runtime;
     if (patch.provisioning !== undefined) session.provisioning = Boolean(patch.provisioning);

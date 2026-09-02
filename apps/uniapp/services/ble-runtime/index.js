@@ -25,8 +25,27 @@ import {
   RECONNECT_STATE,
   OWNER_TYPE,
 } from './session-registry.js';
+import {
+  createReconnectManager,
+  resetReconnectManagerForTesting,
+} from './reconnect-manager.js';
+import { DISCONNECT_REASON } from './reconnect-policy.js';
 
 const registry = getSessionRegistry();
+let reconnectManager = null;
+
+function ensureReconnectManager() {
+  if (reconnectManager) return reconnectManager;
+  reconnectManager = createReconnectManager({
+    getSession: (deviceId) => registry.getSession(deviceId),
+    updateSession: (deviceId, patch) => registry.updateSession(deviceId, patch),
+    connect: (deviceId, options) => connectDevice(deviceId, options),
+    onQueueDisconnect: (deviceId) => {
+      ensureWriteQueue().abortDeviceWrites(deviceId, 'DISCONNECTED');
+    },
+  });
+  return reconnectManager;
+}
 
 const state = {
   platform: null,
@@ -114,9 +133,7 @@ function ensureCallbacks() {
       state.pendingLocalDisconnects.delete(res.deviceId);
       return;
     }
-    const session = getRuntimeSession(res.deviceId);
-    if (!session) return;
-    invalidateSession(session, 'BLE 连接已断开');
+    handlePassiveDisconnect(res.deviceId, DISCONNECT_REASON.REMOTE_LOST);
   });
 
   platform.onBluetoothDeviceFound?.((res) => {
@@ -145,12 +162,9 @@ function ensureCallbacks() {
   return platform;
 }
 
-function invalidateSession(session, reason) {
-  if (session.dead) return;
+function cleanupRuntimeSession(session, reason) {
+  if (!session || session.dead) return;
   session.dead = true;
-  registry.updateSession(session.deviceId, { connectionState: CONNECTION_STATE.DISCONNECTED, runtime: null });
-  registry.clearSubscriptions(session.deviceId);
-  registry.removeSession(session.deviceId);
   for (const callback of [...session.disconnectCallbacks]) {
     try {
       callback(reason);
@@ -161,6 +175,49 @@ function invalidateSession(session, reason) {
   session.disconnectCallbacks.clear();
   for (const cleanup of [...session.cleanups]) cleanup();
   session.cleanups.clear();
+}
+
+function handleUserDisconnect(session, reason = 'BLE 连接已主动关闭') {
+  if (!session) return;
+  const { deviceId } = session;
+  cleanupRuntimeSession(session, reason);
+  ensureWriteQueue().abortDeviceWrites(deviceId, 'DISCONNECTED');
+  ensureReconnectManager().cancelReconnect(deviceId);
+  registry.updateSession(deviceId, {
+    connectionState: CONNECTION_STATE.DISCONNECTED,
+    runtime: null,
+    disconnectReason: DISCONNECT_REASON.USER_REQUEST,
+    reconnectState: RECONNECT_STATE.NONE,
+  });
+  registry.clearSubscriptions(deviceId);
+  registry.removeSession(deviceId);
+}
+
+function handlePassiveDisconnect(deviceId, disconnectReason = DISCONNECT_REASON.REMOTE_LOST) {
+  const session = getRuntimeSession(deviceId);
+  if (!session && !registry.getSession(deviceId)) return;
+
+  if (session) cleanupRuntimeSession(session, 'BLE 连接已断开');
+
+  const entry = registry.getSession(deviceId);
+  if (!entry) return;
+
+  ensureWriteQueue().abortDeviceWrites(deviceId, 'DISCONNECTED');
+  registry.clearSubscriptions(deviceId);
+  registry.updateSession(deviceId, {
+    connectionState: CONNECTION_STATE.DISCONNECTED,
+    runtime: null,
+    disconnectReason,
+  });
+
+  ensureReconnectManager().scheduleReconnect(deviceId, {
+    reason: disconnectReason,
+    connectOptions: entry.metadata?.connectOptions ?? {},
+  });
+}
+
+function invalidateSession(session, reason) {
+  handleUserDisconnect(session, reason);
 }
 
 function addValueListener(session, serviceId, characteristicId, callback) {
@@ -218,11 +275,24 @@ function indexServices(services) {
 
 async function createDeviceSession(deviceId, options) {
   const platform = ensureCallbacks();
+  const connectOptions = {
+    timeout: options.timeout,
+    expectedServiceUuid: options.expectedServiceUuid,
+    mtu: options.mtu,
+    discover: options.discover,
+    owner: options.owner,
+    deviceInfo: options.deviceInfo,
+    metadata: options.metadata,
+  };
+  const owner = options.owner ?? { type: OWNER_TYPE.SYSTEM, id: 'ble-runtime' };
   registry.createSession({
     deviceId,
     deviceInfo: options.deviceInfo ?? null,
-    owner: options.owner ?? null,
-    metadata: options.metadata ?? {},
+    owner,
+    metadata: {
+      ...(options.metadata ?? {}),
+      connectOptions,
+    },
     connectionState: CONNECTION_STATE.CONNECTING,
   });
   try {
@@ -270,7 +340,7 @@ async function createDeviceSession(deviceId, options) {
       if (this.dead) return;
       registry.updateSession(this.deviceId, { connectionState: CONNECTION_STATE.DISCONNECTING });
       markLocalDisconnect(this.deviceId);
-      invalidateSession(this, 'BLE 连接已主动关闭');
+      handleUserDisconnect(this, 'BLE 连接已主动关闭');
       await call(platform, 'closeBLEConnection', { deviceId: this.deviceId }).catch(() => {});
     }
   };
@@ -278,8 +348,11 @@ async function createDeviceSession(deviceId, options) {
     connectionState: CONNECTION_STATE.READY,
     services,
     runtime: session,
-    owner: options.owner ?? registry.getOwner(deviceId),
-    metadata: options.metadata ?? {},
+    owner,
+    metadata: {
+      ...(options.metadata ?? {}),
+      connectOptions,
+    },
   });
 
   if (options.mtu) {
@@ -653,6 +726,7 @@ export function getSessionRegistrySnapshot(deviceId) {
       subscription_count: entry.subscription_count,
       owner: entry.owner,
       reconnectState: entry.reconnectState,
+      disconnectReason: entry.disconnectReason,
       metadata: { ...entry.metadata },
     }
     : null;
@@ -674,6 +748,18 @@ export function getSessionOwner(deviceId) {
   return registry.getOwner(deviceId);
 }
 
+export function getReconnectState(deviceId) {
+  return ensureReconnectManager().getReconnectState(deviceId);
+}
+
+export function cancelReconnect(deviceId) {
+  return ensureReconnectManager().cancelReconnect(deviceId);
+}
+
+export function scheduleReconnect(deviceId, options = {}) {
+  return ensureReconnectManager().scheduleReconnect(deviceId, options);
+}
+
 export function getBleRuntimeSnapshotForTesting() {
   return {
     sessions: registry.listSessions().length,
@@ -690,6 +776,8 @@ export function setBlePlatformForTesting(platform) {
 export function resetBleRuntimeForTesting() {
   state.writeQueue?.close?.();
   state.writeQueue = null;
+  resetReconnectManagerForTesting();
+  reconnectManager = null;
   state.platform = null;
   state.callbacksRegistered = false;
   resetSessionRegistryForTesting();
@@ -727,3 +815,10 @@ export {
   RECONNECT_STATE,
   OWNER_TYPE,
 };
+
+export {
+  createReconnectManager,
+  resetReconnectManagerForTesting,
+};
+
+export { DISCONNECT_REASON, shouldReconnect, MAX_RECONNECT_ATTEMPTS, BACKOFF_MS } from './reconnect-policy.js';

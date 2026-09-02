@@ -3,7 +3,7 @@
 ```yaml
 status: REVIEW
 gate: TP-G2-R1
-content_hash: 7310be05278176c4929d9ce443fece2b0d949979a52b4d5cdeb8670e36dfb1c6
+content_hash: ed40eeeef16489052a93d5807bf3094dfbfa290df34400ff2bdf3e69919994ff
 ```
 
 > PUBLIC-HONESTY-001 / VERSION-METADATA-001 状态以 task-dependency-graph.json 为准。未批准 Task 不得执行。
@@ -90,7 +90,7 @@ content_hash: 7310be05278176c4929d9ce443fece2b0d949979a52b4d5cdeb8670e36dfb1c6
 
 ### RUNTIME-RECONNECT-001
 
-- 状态：**PLANNED**
+- 状态：**DONE**
 - 标题：reconnect-policy 有限重连
 - task_type：SOURCE_FIX
 - severity：P1
@@ -112,13 +112,13 @@ content_hash: 7310be05278176c4929d9ce443fece2b0d949979a52b4d5cdeb8670e36dfb1c6
 - severity：P1
 - root_cause_id：RC-SESSION-REGISTRY
 - Target IDs（样本）：见 JSON
-- Test IDs：TEST-U-005, TEST-I-005, TEST-I-009
-- First Breakpoint：—（已关闭）
+- Test IDs：—
+- First Breakpoint：—
 - 依赖：无
-- 解锁：PAGE-006/007 Session 口径；Notify subscription_count；配网会话排除
-- 禁止修改（本轮）：—
-- 自动化验收：TEST-U-005 / TEST-I-009 PASS；System/Harness 0 FAIL
-- 建议提交信息：`feat(runtime): add BLE session registry`
+- 解锁：
+- 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
+- 自动化验收：related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL
+- 建议提交信息：`source_fix(runtime-session-001): Registry subscription_count + 配网会话分类`
 
 ### RUNTIME-CONNECTION-DISCOVERY-001
 

@@ -379,7 +379,7 @@
       "title": "reconnect-policy 有限重连",
       "root_cause_id": "RC-RECONNECT",
       "severity": "P1",
-      "status": "PLANNED",
+      "status": "DONE",
       "dependencies": [],
       "unlocks": [],
       "gap_count": 3,
@@ -1162,7 +1162,6 @@
   "recommended_order": [
     "RELEASE-PIPELINE-001",
     "RUNTIME-LOG-REDACTION-001",
-    "RUNTIME-RECONNECT-001",
     "RUNTIME-CONNECTION-DISCOVERY-001",
     "OTA-PACKAGE-001",
     "OTA-CLIENT-001",

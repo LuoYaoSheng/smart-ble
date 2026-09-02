@@ -47,3 +47,24 @@ test('目标层：连接失败不残留半开会话', async (t) => {
     rt.resetBlePlatformAndRuntimeForTesting?.();
   }
 });
+
+test('目标层：被动断线进入重连调度', async (t) => {
+  const m = await importTarget('apps/uniapp/services/ble-runtime/index.js');
+  if (!m.ok) return assert.fail(notImplemented(IDS, m.message));
+  const rt = m.module;
+  const platform = createFakePlatform();
+  rt.setBlePlatformForTesting(platform);
+  try {
+    await rt.openAdapter();
+    await rt.connectDevice('RECON');
+    platform.__listeners.conn.forEach((cb) => cb({ deviceId: 'RECON', connected: false }));
+    await new Promise((r) => setTimeout(r, 5));
+    const snap = rt.getSessionRegistrySnapshot('RECON');
+    assert.equal(snap?.disconnectReason, 'REMOTE_LOST');
+    assert.equal(snap?.reconnectState, 'SCHEDULED');
+    assert.equal(rt.getSession('RECON'), null);
+    assert.ok(rt.getReconnectState('RECON'));
+  } finally {
+    rt.resetBlePlatformAndRuntimeForTesting?.();
+  }
+});

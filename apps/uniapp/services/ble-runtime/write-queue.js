@@ -358,6 +358,39 @@ export function createWriteQueue(options = {}) {
     return pending.length + (lane.active ? 1 : 0);
   }
 
+  /**
+   * 断线清理：PENDING → CANCELLED，WRITING → FAILED（不重发）。
+   */
+  function abortDeviceWrites(deviceId, message = 'DISCONNECTED') {
+    const lane = getLane(deviceId);
+    const error = new Error(message);
+    error.code = 'DISCONNECTED';
+    let count = 0;
+
+    const pending = [...lane.queue];
+    lane.queue = [];
+    for (const tx of pending) {
+      settle(tx, STATES.CANCELLED, error);
+      emit('cancelled', tx);
+      count += 1;
+    }
+
+    if (lane.active && !lane.active._settled) {
+      const active = lane.active;
+      active.cancelRequested = true;
+      if (active._timer) {
+        clearTimeout(active._timer);
+        active._timer = null;
+      }
+      settle(active, STATES.FAILED, error);
+      emit('failed', active, error);
+      if (lane.active === active) lane.active = null;
+      count += 1;
+    }
+
+    return count;
+  }
+
   function clearQueue() {
     let count = 0;
     for (const deviceId of [...lanes.keys()]) {
@@ -399,6 +432,7 @@ export function createWriteQueue(options = {}) {
     enqueueWrite,
     cancelWrite,
     cancelDeviceWrites,
+    abortDeviceWrites,
     clearQueue,
     getQueueState,
     onWriteEvent,

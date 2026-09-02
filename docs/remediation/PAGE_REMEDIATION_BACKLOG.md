@@ -14,10 +14,10 @@ source: reports/target-vs-current/page-e4-v2.json
 | Priority | Page | Task | Rationale |
 |---|---|---|---|
 | P0 | PAGE-006 | `OTA-CLIENT-001` | OTA CTRL/包校验断点阻断详情页升级路径；依赖 OTA-PACKAGE-001 |
-| P1 | PAGE-006 | `RUNTIME-RECONNECT-001` | reconnect-policy 缺失（WRITE-QUEUE DONE） |
+| P1 | PAGE-006 | `RUNTIME-RECONNECT-001` | DONE |
 | P1 | PAGE-006 | `RUNTIME-CONNECTION-DISCOVERY-001` | connectDevice 发现编排（TEST-I-003） |
 | P3 | PAGE-001 | `—` | RUNTIME-FILTER/DISPLAY-NAME DONE；DEC-013 时长观察 |
-| P3 | PAGE-007 | `—` | RUNTIME-SESSION-001 DONE；重连进度观察 RUNTIME-RECONNECT-001 |
+| P3 | PAGE-007 | `—` | RUNTIME-SESSION-001 + RUNTIME-RECONNECT-001 DONE |
 | P1 | PAGE-002 | `RUNTIME-LOG-REDACTION-001` | log-redaction 缺失（配网日志） |
 | P1 | PAGE-002 | `TEST-BRIDGE-TS-001` | Smart HID TS protocol 桥 |
 | P1 | PAGE-008 | `PAGE-BROADCAST-001` | 广播页改用 useBroadcastSession |
@@ -25,9 +25,9 @@ source: reports/target-vs-current/page-e4-v2.json
 
 ## 依赖提示
 
-- PAGE-006 产品 FAIL → Codec + Write Queue + Session **DONE**；剩余 RECONNECT / OTA / CONNECTION-DISCOVERY
+- PAGE-006 产品 FAIL → Codec + Write Queue + Session + Reconnect **DONE**；剩余 OTA / CONNECTION-DISCOVERY
 - PAGE-001 → RUNTIME-FILTER-001 / RUNTIME-DISPLAY-NAME-001 **DONE**
-- PAGE-007 → RUNTIME-SESSION-001 **DONE**
+- PAGE-007 → RUNTIME-SESSION-001 + RUNTIME-RECONNECT-001 **DONE**
 - PAGE-002 → RUNTIME-LOG-REDACTION-001；Smart HID 协议桥 → TEST-BRIDGE-TS-001
 - PAGE-008 → PAGE-BROADCAST-001；Observer 验证 → ESP32-OBSERVER-001（BLOCKED 直至 fixture）
 - PAGE-003/004/005/009/010/WEB-001：本轮产品 PASS 或无新 PAGE_FIX；保持观察
@@ -77,9 +77,9 @@ source: reports/target-vs-current/page-e4-v2.json
 ### PAGE-006
 
 - 产品结论：**FAIL**
-- E4 case：PASS=0 FAIL=0 BLOCKED=0 NOT_IMPLEMENTED=30
-- 主 Fix：`RUNTIME-RECONNECT-001`（root=RC-RECONNECT）
-- 说明：RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION DONE；PAGE-006 剩余 reconnect / OTA
+- E4 case：PASS=0 FAIL=30 BLOCKED=0 NOT_IMPLEMENTED=0
+- 主 Fix：`OTA-CLIENT-001`（root=RC-OTA-CLIENT）
+- 说明：RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA
 - 依赖策略：页面表象失败优先引用 **RUNTIME_*** / **OTA_*** / **ESP32_***；仅架构归属页面时用 PAGE-*（如 PAGE-BROADCAST-001）
 
 ### PAGE-007
@@ -87,7 +87,7 @@ source: reports/target-vs-current/page-e4-v2.json
 - 产品结论：**PASS**
 - E4 case：PASS=14 FAIL=0 BLOCKED=0 NOT_IMPLEMENTED=0
 - 主 Fix：`—`（root=—）
-- 说明：RUNTIME-SESSION-001 DONE；Session Registry + subscription_count + 配网排除；E4 harness PASS
+- 说明：RUNTIME-SESSION-001 + RUNTIME-RECONNECT-001 DONE；E4 harness PASS
 - 依赖策略：页面表象失败优先引用 **RUNTIME_*** / **OTA_*** / **ESP32_***；仅架构归属页面时用 PAGE-*（如 PAGE-BROADCAST-001）
 
 ### PAGE-008

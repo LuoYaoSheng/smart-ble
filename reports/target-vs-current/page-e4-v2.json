@@ -1,6 +1,6 @@
 {
   "gate": "TP-G2-R2",
-  "generated_at": "2026-09-02T00:44:23.560Z",
+  "generated_at": "2026-09-02T01:00:10.537Z",
   "environment": {
     "status": "READY_FOR_PAGE_E4",
     "playwright": {
@@ -18,7 +18,7 @@
   "facts": {
     "hasLogRedaction": false,
     "hasWriteQueue": true,
-    "hasReconnect": false,
+    "hasReconnect": true,
     "hasDisplayName": true,
     "hasValidateHex": true,
     "broadcastUsesComposable": false,
@@ -32,9 +32,9 @@
   },
   "totals": {
     "PASS": 146,
-    "FAIL": 23,
+    "FAIL": 53,
     "BLOCKED": 2,
-    "NOT_IMPLEMENTED": 59,
+    "NOT_IMPLEMENTED": 29,
     "harness_PASS": 230,
     "harness_FAIL": 0
   },
@@ -528,29 +528,28 @@
     "PAGE-006": {
       "page_id": "PAGE-006",
       "PASS": 0,
-      "FAIL": 0,
+      "FAIL": 30,
       "BLOCKED": 0,
-      "NOT_IMPLEMENTED": 30,
+      "NOT_IMPLEMENTED": 0,
       "harness_PASS": 30,
       "harness_FAIL": 0,
       "states": 10,
       "operations": 14,
       "product": "FAIL",
-      "task_id": "RUNTIME-RECONNECT-001",
-      "root_cause_id": "RC-RECONNECT",
-      "notes": "RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION DONE；PAGE-006 剩余 reconnect / OTA",
+      "task_id": "OTA-CLIENT-001",
+      "root_cause_id": "RC-OTA-CLIENT",
+      "notes": "RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
       "first_breakpoint": {
-        "target": "FEAT-022",
-        "test": "TEST-I-003",
-        "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-        "symbol": "(missing)",
-        "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+        "target": "FEAT-081",
+        "test": "TEST-I-008",
+        "file": "apps/uniapp/utils/ota_manager.js",
+        "symbol": "validateOtaPackage",
+        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
       },
       "also": [
         {
-          "task_id": "OTA-CLIENT-001",
-          "file": "apps/uniapp/utils/ota_manager.js",
-          "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
+          "task_id": "RUNTIME-RECONNECT-001",
+          "breakpoint": "DONE"
         },
         {
           "task_id": "RUNTIME-CONNECTION-DISCOVERY-001",
@@ -563,392 +562,392 @@
         {
           "state_id": "STATE-P006-01",
           "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
+          "status": "FAIL",
           "first_breakpoint": {
-            "target": "FEAT-022",
-            "test": "TEST-I-003",
-            "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "symbol": "(missing)",
-            "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+            "target": "FEAT-081",
+            "test": "TEST-I-008",
+            "file": "apps/uniapp/utils/ota_manager.js",
+            "symbol": "validateOtaPackage",
+            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
           },
-          "task_id": "RUNTIME-RECONNECT-001"
+          "task_id": "OTA-CLIENT-001"
         },
         {
           "state_id": "STATE-P006-02",
           "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
+          "status": "FAIL",
           "first_breakpoint": {
-            "target": "FEAT-022",
-            "test": "TEST-I-003",
-            "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "symbol": "(missing)",
-            "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+            "target": "FEAT-081",
+            "test": "TEST-I-008",
+            "file": "apps/uniapp/utils/ota_manager.js",
+            "symbol": "validateOtaPackage",
+            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
           },
-          "task_id": "RUNTIME-RECONNECT-001"
+          "task_id": "OTA-CLIENT-001"
         },
         {
           "state_id": "STATE-P006-03",
           "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
+          "status": "FAIL",
           "first_breakpoint": {
-            "target": "FEAT-022",
-            "test": "TEST-I-003",
-            "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "symbol": "(missing)",
-            "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+            "target": "FEAT-081",
+            "test": "TEST-I-008",
+            "file": "apps/uniapp/utils/ota_manager.js",
+            "symbol": "validateOtaPackage",
+            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
           },
-          "task_id": "RUNTIME-RECONNECT-001"
+          "task_id": "OTA-CLIENT-001"
         },
         {
           "state_id": "STATE-P006-04",
           "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
+          "status": "FAIL",
           "first_breakpoint": {
-            "target": "FEAT-022",
-            "test": "TEST-I-003",
-            "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "symbol": "(missing)",
-            "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+            "target": "FEAT-081",
+            "test": "TEST-I-008",
+            "file": "apps/uniapp/utils/ota_manager.js",
+            "symbol": "validateOtaPackage",
+            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
           },
-          "task_id": "RUNTIME-RECONNECT-001"
+          "task_id": "OTA-CLIENT-001"
         },
         {
           "state_id": "STATE-P006-05",
           "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
+          "status": "FAIL",
           "first_breakpoint": {
-            "target": "FEAT-022",
-            "test": "TEST-I-003",
-            "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "symbol": "(missing)",
-            "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+            "target": "FEAT-081",
+            "test": "TEST-I-008",
+            "file": "apps/uniapp/utils/ota_manager.js",
+            "symbol": "validateOtaPackage",
+            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
           },
-          "task_id": "RUNTIME-RECONNECT-001"
+          "task_id": "OTA-CLIENT-001"
         },
         {
           "state_id": "STATE-P006-06",
           "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
+          "status": "FAIL",
           "first_breakpoint": {
-            "target": "FEAT-022",
-            "test": "TEST-I-003",
-            "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "symbol": "(missing)",
-            "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+            "target": "FEAT-081",
+            "test": "TEST-I-008",
+            "file": "apps/uniapp/utils/ota_manager.js",
+            "symbol": "validateOtaPackage",
+            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
           },
-          "task_id": "RUNTIME-RECONNECT-001"
+          "task_id": "OTA-CLIENT-001"
         },
         {
           "state_id": "STATE-P006-07",
           "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
+          "status": "FAIL",
           "first_breakpoint": {
-            "target": "FEAT-022",
-            "test": "TEST-I-003",
-            "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "symbol": "(missing)",
-            "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+            "target": "FEAT-081",
+            "test": "TEST-I-008",
+            "file": "apps/uniapp/utils/ota_manager.js",
+            "symbol": "validateOtaPackage",
+            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
           },
-          "task_id": "RUNTIME-RECONNECT-001"
+          "task_id": "OTA-CLIENT-001"
         },
         {
           "state_id": "STATE-P006-08",
           "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
+          "status": "FAIL",
           "first_breakpoint": {
-            "target": "FEAT-022",
-            "test": "TEST-I-003",
-            "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "symbol": "(missing)",
-            "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+            "target": "FEAT-081",
+            "test": "TEST-I-008",
+            "file": "apps/uniapp/utils/ota_manager.js",
+            "symbol": "validateOtaPackage",
+            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
           },
-          "task_id": "RUNTIME-RECONNECT-001"
+          "task_id": "OTA-CLIENT-001"
         },
         {
           "state_id": "STATE-P006-09",
           "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
+          "status": "FAIL",
           "first_breakpoint": {
-            "target": "FEAT-022",
-            "test": "TEST-I-003",
-            "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "symbol": "(missing)",
-            "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+            "target": "FEAT-081",
+            "test": "TEST-I-008",
+            "file": "apps/uniapp/utils/ota_manager.js",
+            "symbol": "validateOtaPackage",
+            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
           },
-          "task_id": "RUNTIME-RECONNECT-001"
+          "task_id": "OTA-CLIENT-001"
         },
         {
           "state_id": "STATE-P006-10",
           "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
+          "status": "FAIL",
           "first_breakpoint": {
-            "target": "FEAT-022",
-            "test": "TEST-I-003",
-            "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "symbol": "(missing)",
-            "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+            "target": "FEAT-081",
+            "test": "TEST-I-008",
+            "file": "apps/uniapp/utils/ota_manager.js",
+            "symbol": "validateOtaPackage",
+            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
           },
-          "task_id": "RUNTIME-RECONNECT-001"
+          "task_id": "OTA-CLIENT-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P006-01",
-          "status": "NOT_IMPLEMENTED",
+          "status": "FAIL",
           "first_breakpoint": {
-            "target": "FEAT-022",
-            "test": "TEST-I-003",
-            "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "symbol": "(missing)",
-            "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+            "target": "FEAT-081",
+            "test": "TEST-I-008",
+            "file": "apps/uniapp/utils/ota_manager.js",
+            "symbol": "validateOtaPackage",
+            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
           },
-          "task_id": "RUNTIME-RECONNECT-001"
+          "task_id": "OTA-CLIENT-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P006-02",
-          "status": "NOT_IMPLEMENTED",
+          "status": "FAIL",
           "first_breakpoint": {
-            "target": "FEAT-022",
-            "test": "TEST-I-003",
-            "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "symbol": "(missing)",
-            "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+            "target": "FEAT-081",
+            "test": "TEST-I-008",
+            "file": "apps/uniapp/utils/ota_manager.js",
+            "symbol": "validateOtaPackage",
+            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
           },
-          "task_id": "RUNTIME-RECONNECT-001"
+          "task_id": "OTA-CLIENT-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P006-03",
-          "status": "NOT_IMPLEMENTED",
+          "status": "FAIL",
           "first_breakpoint": {
-            "target": "FEAT-022",
-            "test": "TEST-I-003",
-            "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "symbol": "(missing)",
-            "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+            "target": "FEAT-081",
+            "test": "TEST-I-008",
+            "file": "apps/uniapp/utils/ota_manager.js",
+            "symbol": "validateOtaPackage",
+            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
           },
-          "task_id": "RUNTIME-RECONNECT-001"
+          "task_id": "OTA-CLIENT-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P006-04",
-          "status": "NOT_IMPLEMENTED",
+          "status": "FAIL",
           "first_breakpoint": {
-            "target": "FEAT-022",
-            "test": "TEST-I-003",
-            "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "symbol": "(missing)",
-            "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+            "target": "FEAT-081",
+            "test": "TEST-I-008",
+            "file": "apps/uniapp/utils/ota_manager.js",
+            "symbol": "validateOtaPackage",
+            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
           },
-          "task_id": "RUNTIME-RECONNECT-001"
+          "task_id": "OTA-CLIENT-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P006-05",
-          "status": "NOT_IMPLEMENTED",
+          "status": "FAIL",
           "first_breakpoint": {
-            "target": "FEAT-022",
-            "test": "TEST-I-003",
-            "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "symbol": "(missing)",
-            "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+            "target": "FEAT-081",
+            "test": "TEST-I-008",
+            "file": "apps/uniapp/utils/ota_manager.js",
+            "symbol": "validateOtaPackage",
+            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
           },
-          "task_id": "RUNTIME-RECONNECT-001"
+          "task_id": "OTA-CLIENT-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P006-06",
-          "status": "NOT_IMPLEMENTED",
+          "status": "FAIL",
           "first_breakpoint": {
-            "target": "FEAT-022",
-            "test": "TEST-I-003",
-            "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "symbol": "(missing)",
-            "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+            "target": "FEAT-081",
+            "test": "TEST-I-008",
+            "file": "apps/uniapp/utils/ota_manager.js",
+            "symbol": "validateOtaPackage",
+            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
           },
-          "task_id": "RUNTIME-RECONNECT-001"
+          "task_id": "OTA-CLIENT-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P006-07",
-          "status": "NOT_IMPLEMENTED",
+          "status": "FAIL",
           "first_breakpoint": {
-            "target": "FEAT-022",
-            "test": "TEST-I-003",
-            "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "symbol": "(missing)",
-            "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+            "target": "FEAT-081",
+            "test": "TEST-I-008",
+            "file": "apps/uniapp/utils/ota_manager.js",
+            "symbol": "validateOtaPackage",
+            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
           },
-          "task_id": "RUNTIME-RECONNECT-001"
+          "task_id": "OTA-CLIENT-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P006-08",
-          "status": "NOT_IMPLEMENTED",
+          "status": "FAIL",
           "first_breakpoint": {
-            "target": "FEAT-022",
-            "test": "TEST-I-003",
-            "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "symbol": "(missing)",
-            "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+            "target": "FEAT-081",
+            "test": "TEST-I-008",
+            "file": "apps/uniapp/utils/ota_manager.js",
+            "symbol": "validateOtaPackage",
+            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
           },
-          "task_id": "RUNTIME-RECONNECT-001"
+          "task_id": "OTA-CLIENT-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P006-10",
-          "status": "NOT_IMPLEMENTED",
+          "status": "FAIL",
           "first_breakpoint": {
-            "target": "FEAT-022",
-            "test": "TEST-I-003",
-            "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "symbol": "(missing)",
-            "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+            "target": "FEAT-081",
+            "test": "TEST-I-008",
+            "file": "apps/uniapp/utils/ota_manager.js",
+            "symbol": "validateOtaPackage",
+            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
           },
-          "task_id": "RUNTIME-RECONNECT-001"
+          "task_id": "OTA-CLIENT-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P006-11",
-          "status": "NOT_IMPLEMENTED",
+          "status": "FAIL",
           "first_breakpoint": {
-            "target": "FEAT-022",
-            "test": "TEST-I-003",
-            "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "symbol": "(missing)",
-            "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+            "target": "FEAT-081",
+            "test": "TEST-I-008",
+            "file": "apps/uniapp/utils/ota_manager.js",
+            "symbol": "validateOtaPackage",
+            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
           },
-          "task_id": "RUNTIME-RECONNECT-001"
+          "task_id": "OTA-CLIENT-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P006-12",
-          "status": "NOT_IMPLEMENTED",
+          "status": "FAIL",
           "first_breakpoint": {
-            "target": "FEAT-022",
-            "test": "TEST-I-003",
-            "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "symbol": "(missing)",
-            "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+            "target": "FEAT-081",
+            "test": "TEST-I-008",
+            "file": "apps/uniapp/utils/ota_manager.js",
+            "symbol": "validateOtaPackage",
+            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
           },
-          "task_id": "RUNTIME-RECONNECT-001"
+          "task_id": "OTA-CLIENT-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P006-13",
-          "status": "NOT_IMPLEMENTED",
+          "status": "FAIL",
           "first_breakpoint": {
-            "target": "FEAT-022",
-            "test": "TEST-I-003",
-            "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "symbol": "(missing)",
-            "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+            "target": "FEAT-081",
+            "test": "TEST-I-008",
+            "file": "apps/uniapp/utils/ota_manager.js",
+            "symbol": "validateOtaPackage",
+            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
           },
-          "task_id": "RUNTIME-RECONNECT-001"
+          "task_id": "OTA-CLIENT-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P006-14",
-          "status": "NOT_IMPLEMENTED",
+          "status": "FAIL",
           "first_breakpoint": {
-            "target": "FEAT-022",
-            "test": "TEST-I-003",
-            "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "symbol": "(missing)",
-            "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+            "target": "FEAT-081",
+            "test": "TEST-I-008",
+            "file": "apps/uniapp/utils/ota_manager.js",
+            "symbol": "validateOtaPackage",
+            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
           },
-          "task_id": "RUNTIME-RECONNECT-001"
+          "task_id": "OTA-CLIENT-001"
         },
         {
           "state_id": null,
           "operation_id": "OP-P006-15",
-          "status": "NOT_IMPLEMENTED",
+          "status": "FAIL",
           "first_breakpoint": {
-            "target": "FEAT-022",
-            "test": "TEST-I-003",
-            "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "symbol": "(missing)",
-            "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+            "target": "FEAT-081",
+            "test": "TEST-I-008",
+            "file": "apps/uniapp/utils/ota_manager.js",
+            "symbol": "validateOtaPackage",
+            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
           },
-          "task_id": "RUNTIME-RECONNECT-001"
+          "task_id": "OTA-CLIENT-001"
         },
         {
           "state_id": null,
           "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
+          "status": "FAIL",
           "first_breakpoint": {
-            "target": "FEAT-022",
-            "test": "TEST-I-003",
-            "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "symbol": "(missing)",
-            "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+            "target": "FEAT-081",
+            "test": "TEST-I-008",
+            "file": "apps/uniapp/utils/ota_manager.js",
+            "symbol": "validateOtaPackage",
+            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
           },
-          "task_id": "RUNTIME-RECONNECT-001"
+          "task_id": "OTA-CLIENT-001"
         },
         {
           "state_id": null,
           "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
+          "status": "FAIL",
           "first_breakpoint": {
-            "target": "FEAT-022",
-            "test": "TEST-I-003",
-            "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "symbol": "(missing)",
-            "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+            "target": "FEAT-081",
+            "test": "TEST-I-008",
+            "file": "apps/uniapp/utils/ota_manager.js",
+            "symbol": "validateOtaPackage",
+            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
           },
-          "task_id": "RUNTIME-RECONNECT-001"
+          "task_id": "OTA-CLIENT-001"
         },
         {
           "state_id": null,
           "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
+          "status": "FAIL",
           "first_breakpoint": {
-            "target": "FEAT-022",
-            "test": "TEST-I-003",
-            "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "symbol": "(missing)",
-            "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+            "target": "FEAT-081",
+            "test": "TEST-I-008",
+            "file": "apps/uniapp/utils/ota_manager.js",
+            "symbol": "validateOtaPackage",
+            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
           },
-          "task_id": "RUNTIME-RECONNECT-001"
+          "task_id": "OTA-CLIENT-001"
         },
         {
           "state_id": null,
           "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
+          "status": "FAIL",
           "first_breakpoint": {
-            "target": "FEAT-022",
-            "test": "TEST-I-003",
-            "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "symbol": "(missing)",
-            "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+            "target": "FEAT-081",
+            "test": "TEST-I-008",
+            "file": "apps/uniapp/utils/ota_manager.js",
+            "symbol": "validateOtaPackage",
+            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
           },
-          "task_id": "RUNTIME-RECONNECT-001"
+          "task_id": "OTA-CLIENT-001"
         },
         {
           "state_id": null,
           "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
+          "status": "FAIL",
           "first_breakpoint": {
-            "target": "FEAT-022",
-            "test": "TEST-I-003",
-            "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "symbol": "(missing)",
-            "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+            "target": "FEAT-081",
+            "test": "TEST-I-008",
+            "file": "apps/uniapp/utils/ota_manager.js",
+            "symbol": "validateOtaPackage",
+            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
           },
-          "task_id": "RUNTIME-RECONNECT-001"
+          "task_id": "OTA-CLIENT-001"
         },
         {
           "state_id": null,
           "operation_id": null,
-          "status": "NOT_IMPLEMENTED",
+          "status": "FAIL",
           "first_breakpoint": {
-            "target": "FEAT-022",
-            "test": "TEST-I-003",
-            "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-            "symbol": "(missing)",
-            "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+            "target": "FEAT-081",
+            "test": "TEST-I-008",
+            "file": "apps/uniapp/utils/ota_manager.js",
+            "symbol": "validateOtaPackage",
+            "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
           },
-          "task_id": "RUNTIME-RECONNECT-001"
+          "task_id": "OTA-CLIENT-001"
         }
       ]
     },
@@ -965,12 +964,12 @@
       "product": "PASS",
       "task_id": null,
       "root_cause_id": null,
-      "notes": "RUNTIME-SESSION-001 DONE；Session Registry + subscription_count + 配网排除；E4 harness PASS",
+      "notes": "RUNTIME-SESSION-001 + RUNTIME-RECONNECT-001 DONE；E4 harness PASS",
       "first_breakpoint": null,
       "also": [
         {
           "task_id": "RUNTIME-RECONNECT-001",
-          "breakpoint": "重连进度展示依赖 reconnect-policy（观察项，非 Session 断点）"
+          "breakpoint": "DONE"
         }
       ],
       "fail_cases": []
@@ -6477,19 +6476,19 @@
       "state_id": "STATE-P006-01",
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › State suite › STATE-P006-01 初始化",
-      "status": "NOT_IMPLEMENTED",
+      "status": "FAIL",
       "e4_harness_status": "PASS",
       "expected": [
         "身份",
         "连接按钮"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION DONE；PAGE-006 剩余 reconnect / OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
       "first_breakpoint": {
-        "target": "FEAT-022",
-        "test": "TEST-I-003",
-        "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-        "symbol": "(missing)",
-        "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+        "target": "FEAT-081",
+        "test": "TEST-I-008",
+        "file": "apps/uniapp/utils/ota_manager.js",
+        "symbol": "validateOtaPackage",
+        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -6556,10 +6555,10 @@
         "TEST-P-006"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/reconnect-policy.js"
+        "apps/uniapp/utils/ota_manager.js"
       ],
-      "task_id": "RUNTIME-RECONNECT-001",
-      "root_cause_id": "RC-RECONNECT",
+      "task_id": "OTA-CLIENT-001",
+      "root_cause_id": "RC-OTA-CLIENT",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -6567,18 +6566,18 @@
       "state_id": "STATE-P006-02",
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › State suite › STATE-P006-02 连接中",
-      "status": "NOT_IMPLEMENTED",
+      "status": "FAIL",
       "e4_harness_status": "PASS",
       "expected": [
         "状态\"连接中\""
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION DONE；PAGE-006 剩余 reconnect / OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
       "first_breakpoint": {
-        "target": "FEAT-022",
-        "test": "TEST-I-003",
-        "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-        "symbol": "(missing)",
-        "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+        "target": "FEAT-081",
+        "test": "TEST-I-008",
+        "file": "apps/uniapp/utils/ota_manager.js",
+        "symbol": "validateOtaPackage",
+        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -6645,10 +6644,10 @@
         "TEST-A-006"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/reconnect-policy.js"
+        "apps/uniapp/utils/ota_manager.js"
       ],
-      "task_id": "RUNTIME-RECONNECT-001",
-      "root_cause_id": "RC-RECONNECT",
+      "task_id": "OTA-CLIENT-001",
+      "root_cause_id": "RC-OTA-CLIENT",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -6656,18 +6655,18 @@
       "state_id": "STATE-P006-03",
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › State suite › STATE-P006-03 服务加载中",
-      "status": "NOT_IMPLEMENTED",
+      "status": "FAIL",
       "e4_harness_status": "PASS",
       "expected": [
         "树骨架/spinner"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION DONE；PAGE-006 剩余 reconnect / OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
       "first_breakpoint": {
-        "target": "FEAT-022",
-        "test": "TEST-I-003",
-        "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-        "symbol": "(missing)",
-        "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+        "target": "FEAT-081",
+        "test": "TEST-I-008",
+        "file": "apps/uniapp/utils/ota_manager.js",
+        "symbol": "validateOtaPackage",
+        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -6734,10 +6733,10 @@
         "TEST-A-006"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/reconnect-policy.js"
+        "apps/uniapp/utils/ota_manager.js"
       ],
-      "task_id": "RUNTIME-RECONNECT-001",
-      "root_cause_id": "RC-RECONNECT",
+      "task_id": "OTA-CLIENT-001",
+      "root_cause_id": "RC-OTA-CLIENT",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -6745,19 +6744,19 @@
       "state_id": "STATE-P006-04",
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › State suite › STATE-P006-04 空服务",
-      "status": "NOT_IMPLEMENTED",
+      "status": "FAIL",
       "e4_harness_status": "PASS",
       "expected": [
         "\"设备未暴露服务\"",
         "重试"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION DONE；PAGE-006 剩余 reconnect / OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
       "first_breakpoint": {
-        "target": "FEAT-022",
-        "test": "TEST-I-003",
-        "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-        "symbol": "(missing)",
-        "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+        "target": "FEAT-081",
+        "test": "TEST-I-008",
+        "file": "apps/uniapp/utils/ota_manager.js",
+        "symbol": "validateOtaPackage",
+        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -6824,10 +6823,10 @@
         "TEST-I-003"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/reconnect-policy.js"
+        "apps/uniapp/utils/ota_manager.js"
       ],
-      "task_id": "RUNTIME-RECONNECT-001",
-      "root_cause_id": "RC-RECONNECT",
+      "task_id": "OTA-CLIENT-001",
+      "root_cause_id": "RC-OTA-CLIENT",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -6835,19 +6834,19 @@
       "state_id": "STATE-P006-05",
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › State suite › STATE-P006-05 连接失败",
-      "status": "NOT_IMPLEMENTED",
+      "status": "FAIL",
       "e4_harness_status": "PASS",
       "expected": [
         "错误",
         "重试"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION DONE；PAGE-006 剩余 reconnect / OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
       "first_breakpoint": {
-        "target": "FEAT-022",
-        "test": "TEST-I-003",
-        "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-        "symbol": "(missing)",
-        "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+        "target": "FEAT-081",
+        "test": "TEST-I-008",
+        "file": "apps/uniapp/utils/ota_manager.js",
+        "symbol": "validateOtaPackage",
+        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -6914,10 +6913,10 @@
         "TEST-A-006"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/reconnect-policy.js"
+        "apps/uniapp/utils/ota_manager.js"
       ],
-      "task_id": "RUNTIME-RECONNECT-001",
-      "root_cause_id": "RC-RECONNECT",
+      "task_id": "OTA-CLIENT-001",
+      "root_cause_id": "RC-OTA-CLIENT",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -6925,19 +6924,19 @@
       "state_id": "STATE-P006-06",
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › State suite › STATE-P006-06 已连接",
-      "status": "NOT_IMPLEMENTED",
+      "status": "FAIL",
       "e4_harness_status": "PASS",
       "expected": [
         "完整树",
         "操作"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION DONE；PAGE-006 剩余 reconnect / OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
       "first_breakpoint": {
-        "target": "FEAT-022",
-        "test": "TEST-I-003",
-        "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-        "symbol": "(missing)",
-        "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+        "target": "FEAT-081",
+        "test": "TEST-I-008",
+        "file": "apps/uniapp/utils/ota_manager.js",
+        "symbol": "validateOtaPackage",
+        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -7006,10 +7005,10 @@
         "TEST-E-003"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/reconnect-policy.js"
+        "apps/uniapp/utils/ota_manager.js"
       ],
-      "task_id": "RUNTIME-RECONNECT-001",
-      "root_cause_id": "RC-RECONNECT",
+      "task_id": "OTA-CLIENT-001",
+      "root_cause_id": "RC-OTA-CLIENT",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -7017,18 +7016,18 @@
       "state_id": "STATE-P006-07",
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › State suite › STATE-P006-07 重连中",
-      "status": "NOT_IMPLEMENTED",
+      "status": "FAIL",
       "e4_harness_status": "PASS",
       "expected": [
         "\"重连中 n/3\""
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION DONE；PAGE-006 剩余 reconnect / OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
       "first_breakpoint": {
-        "target": "FEAT-022",
-        "test": "TEST-I-003",
-        "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-        "symbol": "(missing)",
-        "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+        "target": "FEAT-081",
+        "test": "TEST-I-008",
+        "file": "apps/uniapp/utils/ota_manager.js",
+        "symbol": "validateOtaPackage",
+        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -7095,10 +7094,10 @@
         "TEST-A-007"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/reconnect-policy.js"
+        "apps/uniapp/utils/ota_manager.js"
       ],
-      "task_id": "RUNTIME-RECONNECT-001",
-      "root_cause_id": "RC-RECONNECT",
+      "task_id": "OTA-CLIENT-001",
+      "root_cause_id": "RC-OTA-CLIENT",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -7106,19 +7105,19 @@
       "state_id": "STATE-P006-08",
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › State suite › STATE-P006-08 重连耗尽",
-      "status": "NOT_IMPLEMENTED",
+      "status": "FAIL",
       "e4_harness_status": "PASS",
       "expected": [
         "终态",
         "手动重试"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION DONE；PAGE-006 剩余 reconnect / OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
       "first_breakpoint": {
-        "target": "FEAT-022",
-        "test": "TEST-I-003",
-        "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-        "symbol": "(missing)",
-        "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+        "target": "FEAT-081",
+        "test": "TEST-I-008",
+        "file": "apps/uniapp/utils/ota_manager.js",
+        "symbol": "validateOtaPackage",
+        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -7185,10 +7184,10 @@
         "TEST-I-003"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/reconnect-policy.js"
+        "apps/uniapp/utils/ota_manager.js"
       ],
-      "task_id": "RUNTIME-RECONNECT-001",
-      "root_cause_id": "RC-RECONNECT",
+      "task_id": "OTA-CLIENT-001",
+      "root_cause_id": "RC-OTA-CLIENT",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -7196,19 +7195,19 @@
       "state_id": "STATE-P006-09",
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › State suite › STATE-P006-09 操作失败",
-      "status": "NOT_IMPLEMENTED",
+      "status": "FAIL",
       "e4_harness_status": "PASS",
       "expected": [
         "面板内错误",
         "该操作重试"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION DONE；PAGE-006 剩余 reconnect / OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
       "first_breakpoint": {
-        "target": "FEAT-022",
-        "test": "TEST-I-003",
-        "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-        "symbol": "(missing)",
-        "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+        "target": "FEAT-081",
+        "test": "TEST-I-008",
+        "file": "apps/uniapp/utils/ota_manager.js",
+        "symbol": "validateOtaPackage",
+        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -7275,10 +7274,10 @@
         "TEST-A-008"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/reconnect-policy.js"
+        "apps/uniapp/utils/ota_manager.js"
       ],
-      "task_id": "RUNTIME-RECONNECT-001",
-      "root_cause_id": "RC-RECONNECT",
+      "task_id": "OTA-CLIENT-001",
+      "root_cause_id": "RC-OTA-CLIENT",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -7286,18 +7285,18 @@
       "state_id": "STATE-P006-10",
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › State suite › STATE-P006-10 OTA 组态",
-      "status": "NOT_IMPLEMENTED",
+      "status": "FAIL",
       "e4_harness_status": "PASS",
       "expected": [
         "见 STATE-OTA-01..10（`07`）"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION DONE；PAGE-006 剩余 reconnect / OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
       "first_breakpoint": {
-        "target": "FEAT-022",
-        "test": "TEST-I-003",
-        "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-        "symbol": "(missing)",
-        "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+        "target": "FEAT-081",
+        "test": "TEST-I-008",
+        "file": "apps/uniapp/utils/ota_manager.js",
+        "symbol": "validateOtaPackage",
+        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -7364,10 +7363,10 @@
         "TEST-E-007"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/reconnect-policy.js"
+        "apps/uniapp/utils/ota_manager.js"
       ],
-      "task_id": "RUNTIME-RECONNECT-001",
-      "root_cause_id": "RC-RECONNECT",
+      "task_id": "OTA-CLIENT-001",
+      "root_cause_id": "RC-OTA-CLIENT",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -7375,18 +7374,18 @@
       "state_id": null,
       "operation_id": "OP-P006-01",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-01 连接",
-      "status": "NOT_IMPLEMENTED",
+      "status": "FAIL",
       "e4_harness_status": "PASS",
       "expected": [
         "服务面板 ready"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION DONE；PAGE-006 剩余 reconnect / OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
       "first_breakpoint": {
-        "target": "FEAT-022",
-        "test": "TEST-I-003",
-        "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-        "symbol": "(missing)",
-        "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+        "target": "FEAT-081",
+        "test": "TEST-I-008",
+        "file": "apps/uniapp/utils/ota_manager.js",
+        "symbol": "validateOtaPackage",
+        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -7455,10 +7454,10 @@
         "TEST-A-006"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/reconnect-policy.js"
+        "apps/uniapp/utils/ota_manager.js"
       ],
-      "task_id": "RUNTIME-RECONNECT-001",
-      "root_cause_id": "RC-RECONNECT",
+      "task_id": "OTA-CLIENT-001",
+      "root_cause_id": "RC-OTA-CLIENT",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -7466,18 +7465,18 @@
       "state_id": null,
       "operation_id": "OP-P006-02",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-02 主动断开",
-      "status": "NOT_IMPLEMENTED",
+      "status": "FAIL",
       "e4_harness_status": "PASS",
       "expected": [
         "状态=已断开，Registry 更新"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION DONE；PAGE-006 剩余 reconnect / OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
       "first_breakpoint": {
-        "target": "FEAT-022",
-        "test": "TEST-I-003",
-        "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-        "symbol": "(missing)",
-        "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+        "target": "FEAT-081",
+        "test": "TEST-I-008",
+        "file": "apps/uniapp/utils/ota_manager.js",
+        "symbol": "validateOtaPackage",
+        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -7546,10 +7545,10 @@
         "TEST-E-002"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/reconnect-policy.js"
+        "apps/uniapp/utils/ota_manager.js"
       ],
-      "task_id": "RUNTIME-RECONNECT-001",
-      "root_cause_id": "RC-RECONNECT",
+      "task_id": "OTA-CLIENT-001",
+      "root_cause_id": "RC-OTA-CLIENT",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -7557,18 +7556,18 @@
       "state_id": null,
       "operation_id": "OP-P006-03",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-03 服务发现重试",
-      "status": "NOT_IMPLEMENTED",
+      "status": "FAIL",
       "e4_harness_status": "PASS",
       "expected": [
         "ready"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION DONE；PAGE-006 剩余 reconnect / OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
       "first_breakpoint": {
-        "target": "FEAT-022",
-        "test": "TEST-I-003",
-        "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-        "symbol": "(missing)",
-        "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+        "target": "FEAT-081",
+        "test": "TEST-I-008",
+        "file": "apps/uniapp/utils/ota_manager.js",
+        "symbol": "validateOtaPackage",
+        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -7637,10 +7636,10 @@
         "TEST-E-005"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/reconnect-policy.js"
+        "apps/uniapp/utils/ota_manager.js"
       ],
-      "task_id": "RUNTIME-RECONNECT-001",
-      "root_cause_id": "RC-RECONNECT",
+      "task_id": "OTA-CLIENT-001",
+      "root_cause_id": "RC-OTA-CLIENT",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -7648,18 +7647,18 @@
       "state_id": null,
       "operation_id": "OP-P006-04",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-04 Read",
-      "status": "NOT_IMPLEMENTED",
+      "status": "FAIL",
       "e4_harness_status": "PASS",
       "expected": [
         "值展示+日志"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION DONE；PAGE-006 剩余 reconnect / OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
       "first_breakpoint": {
-        "target": "FEAT-022",
-        "test": "TEST-I-003",
-        "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-        "symbol": "(missing)",
-        "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+        "target": "FEAT-081",
+        "test": "TEST-I-008",
+        "file": "apps/uniapp/utils/ota_manager.js",
+        "symbol": "validateOtaPackage",
+        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -7728,10 +7727,10 @@
         "TEST-E-003"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/reconnect-policy.js"
+        "apps/uniapp/utils/ota_manager.js"
       ],
-      "task_id": "RUNTIME-RECONNECT-001",
-      "root_cause_id": "RC-RECONNECT",
+      "task_id": "OTA-CLIENT-001",
+      "root_cause_id": "RC-OTA-CLIENT",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -7739,18 +7738,18 @@
       "state_id": null,
       "operation_id": "OP-P006-05",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-05 TEXT 写",
-      "status": "NOT_IMPLEMENTED",
+      "status": "FAIL",
       "e4_harness_status": "PASS",
       "expected": [
         "设备响应+日志"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION DONE；PAGE-006 剩余 reconnect / OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
       "first_breakpoint": {
-        "target": "FEAT-022",
-        "test": "TEST-I-003",
-        "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-        "symbol": "(missing)",
-        "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+        "target": "FEAT-081",
+        "test": "TEST-I-008",
+        "file": "apps/uniapp/utils/ota_manager.js",
+        "symbol": "validateOtaPackage",
+        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -7819,10 +7818,10 @@
         "TEST-E-003"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/reconnect-policy.js"
+        "apps/uniapp/utils/ota_manager.js"
       ],
-      "task_id": "RUNTIME-RECONNECT-001",
-      "root_cause_id": "RC-RECONNECT",
+      "task_id": "OTA-CLIENT-001",
+      "root_cause_id": "RC-OTA-CLIENT",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -7830,18 +7829,18 @@
       "state_id": null,
       "operation_id": "OP-P006-06",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-06 HEX 写",
-      "status": "NOT_IMPLEMENTED",
+      "status": "FAIL",
       "e4_harness_status": "PASS",
       "expected": [
         "同上"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION DONE；PAGE-006 剩余 reconnect / OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
       "first_breakpoint": {
-        "target": "FEAT-022",
-        "test": "TEST-I-003",
-        "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-        "symbol": "(missing)",
-        "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+        "target": "FEAT-081",
+        "test": "TEST-I-008",
+        "file": "apps/uniapp/utils/ota_manager.js",
+        "symbol": "validateOtaPackage",
+        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -7910,10 +7909,10 @@
         "TEST-A-008"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/reconnect-policy.js"
+        "apps/uniapp/utils/ota_manager.js"
       ],
-      "task_id": "RUNTIME-RECONNECT-001",
-      "root_cause_id": "RC-RECONNECT",
+      "task_id": "OTA-CLIENT-001",
+      "root_cause_id": "RC-OTA-CLIENT",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -7921,18 +7920,18 @@
       "state_id": null,
       "operation_id": "OP-P006-07",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-07 开启订阅（Characteristic Subscription，DEC-017）",
-      "status": "NOT_IMPLEMENTED",
+      "status": "FAIL",
       "e4_harness_status": "PASS",
       "expected": [
         "推送流+日志；Registry subscription_count +1"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION DONE；PAGE-006 剩余 reconnect / OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
       "first_breakpoint": {
-        "target": "FEAT-022",
-        "test": "TEST-I-003",
-        "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-        "symbol": "(missing)",
-        "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+        "target": "FEAT-081",
+        "test": "TEST-I-008",
+        "file": "apps/uniapp/utils/ota_manager.js",
+        "symbol": "validateOtaPackage",
+        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -8003,10 +8002,10 @@
         "TEST-E-004"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/reconnect-policy.js"
+        "apps/uniapp/utils/ota_manager.js"
       ],
-      "task_id": "RUNTIME-RECONNECT-001",
-      "root_cause_id": "RC-RECONNECT",
+      "task_id": "OTA-CLIENT-001",
+      "root_cause_id": "RC-OTA-CLIENT",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -8014,18 +8013,18 @@
       "state_id": null,
       "operation_id": "OP-P006-08",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-08 关闭订阅",
-      "status": "NOT_IMPLEMENTED",
+      "status": "FAIL",
       "e4_harness_status": "PASS",
       "expected": [
         "推送停止；subscription_count −1"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION DONE；PAGE-006 剩余 reconnect / OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
       "first_breakpoint": {
-        "target": "FEAT-022",
-        "test": "TEST-I-003",
-        "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-        "symbol": "(missing)",
-        "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+        "target": "FEAT-081",
+        "test": "TEST-I-008",
+        "file": "apps/uniapp/utils/ota_manager.js",
+        "symbol": "validateOtaPackage",
+        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -8092,10 +8091,10 @@
         "TEST-I-005"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/reconnect-policy.js"
+        "apps/uniapp/utils/ota_manager.js"
       ],
-      "task_id": "RUNTIME-RECONNECT-001",
-      "root_cause_id": "RC-RECONNECT",
+      "task_id": "OTA-CLIENT-001",
+      "root_cause_id": "RC-OTA-CLIENT",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -8103,18 +8102,18 @@
       "state_id": null,
       "operation_id": "OP-P006-10",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-10 清空日志",
-      "status": "NOT_IMPLEMENTED",
+      "status": "FAIL",
       "e4_harness_status": "PASS",
       "expected": [
         "toast+面板清空"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION DONE；PAGE-006 剩余 reconnect / OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
       "first_breakpoint": {
-        "target": "FEAT-022",
-        "test": "TEST-I-003",
-        "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-        "symbol": "(missing)",
-        "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+        "target": "FEAT-081",
+        "test": "TEST-I-008",
+        "file": "apps/uniapp/utils/ota_manager.js",
+        "symbol": "validateOtaPackage",
+        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -8181,10 +8180,10 @@
         "TEST-P-006"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/reconnect-policy.js"
+        "apps/uniapp/utils/ota_manager.js"
       ],
-      "task_id": "RUNTIME-RECONNECT-001",
-      "root_cause_id": "RC-RECONNECT",
+      "task_id": "OTA-CLIENT-001",
+      "root_cause_id": "RC-OTA-CLIENT",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -8192,18 +8191,18 @@
       "state_id": null,
       "operation_id": "OP-P006-11",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-11 导出日志",
-      "status": "NOT_IMPLEMENTED",
+      "status": "FAIL",
       "e4_harness_status": "PASS",
       "expected": [
         "导出成功"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION DONE；PAGE-006 剩余 reconnect / OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
       "first_breakpoint": {
-        "target": "FEAT-022",
-        "test": "TEST-I-003",
-        "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-        "symbol": "(missing)",
-        "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+        "target": "FEAT-081",
+        "test": "TEST-I-008",
+        "file": "apps/uniapp/utils/ota_manager.js",
+        "symbol": "validateOtaPackage",
+        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -8272,10 +8271,10 @@
         "TEST-U-012"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/reconnect-policy.js"
+        "apps/uniapp/utils/ota_manager.js"
       ],
-      "task_id": "RUNTIME-RECONNECT-001",
-      "root_cause_id": "RC-RECONNECT",
+      "task_id": "OTA-CLIENT-001",
+      "root_cause_id": "RC-OTA-CLIENT",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -8283,18 +8282,18 @@
       "state_id": null,
       "operation_id": "OP-P006-12",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-12 选择 OTA 固件包",
-      "status": "NOT_IMPLEMENTED",
+      "status": "FAIL",
       "e4_harness_status": "PASS",
       "expected": [
         "显示 target/硬件/目标版本/SHA 摘要"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION DONE；PAGE-006 剩余 reconnect / OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
       "first_breakpoint": {
-        "target": "FEAT-022",
-        "test": "TEST-I-003",
-        "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-        "symbol": "(missing)",
-        "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+        "target": "FEAT-081",
+        "test": "TEST-I-008",
+        "file": "apps/uniapp/utils/ota_manager.js",
+        "symbol": "validateOtaPackage",
+        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -8367,10 +8366,10 @@
         "TEST-E-007"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/reconnect-policy.js"
+        "apps/uniapp/utils/ota_manager.js"
       ],
-      "task_id": "RUNTIME-RECONNECT-001",
-      "root_cause_id": "RC-RECONNECT",
+      "task_id": "OTA-CLIENT-001",
+      "root_cause_id": "RC-OTA-CLIENT",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -8378,18 +8377,18 @@
       "state_id": null,
       "operation_id": "OP-P006-13",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-13 开始 OTA",
-      "status": "NOT_IMPLEMENTED",
+      "status": "FAIL",
       "e4_harness_status": "PASS",
       "expected": [
         "进度→success→版本一致=成功"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION DONE；PAGE-006 剩余 reconnect / OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
       "first_breakpoint": {
-        "target": "FEAT-022",
-        "test": "TEST-I-003",
-        "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-        "symbol": "(missing)",
-        "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+        "target": "FEAT-081",
+        "test": "TEST-I-008",
+        "file": "apps/uniapp/utils/ota_manager.js",
+        "symbol": "validateOtaPackage",
+        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -8460,10 +8459,10 @@
         "TEST-E-007"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/reconnect-policy.js"
+        "apps/uniapp/utils/ota_manager.js"
       ],
-      "task_id": "RUNTIME-RECONNECT-001",
-      "root_cause_id": "RC-RECONNECT",
+      "task_id": "OTA-CLIENT-001",
+      "root_cause_id": "RC-OTA-CLIENT",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -8471,18 +8470,18 @@
       "state_id": null,
       "operation_id": "OP-P006-14",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-14 取消 OTA",
-      "status": "NOT_IMPLEMENTED",
+      "status": "FAIL",
       "e4_harness_status": "PASS",
       "expected": [
         "取消完成回就绪"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION DONE；PAGE-006 剩余 reconnect / OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
       "first_breakpoint": {
-        "target": "FEAT-022",
-        "test": "TEST-I-003",
-        "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-        "symbol": "(missing)",
-        "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+        "target": "FEAT-081",
+        "test": "TEST-I-008",
+        "file": "apps/uniapp/utils/ota_manager.js",
+        "symbol": "validateOtaPackage",
+        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -8549,10 +8548,10 @@
         "TEST-E-007"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/reconnect-policy.js"
+        "apps/uniapp/utils/ota_manager.js"
       ],
-      "task_id": "RUNTIME-RECONNECT-001",
-      "root_cause_id": "RC-RECONNECT",
+      "task_id": "OTA-CLIENT-001",
+      "root_cause_id": "RC-OTA-CLIENT",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -8560,18 +8559,18 @@
       "state_id": null,
       "operation_id": "OP-P006-15",
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Operation suite › OP-P006-15 返回",
-      "status": "NOT_IMPLEMENTED",
+      "status": "FAIL",
       "e4_harness_status": "PASS",
       "expected": [
         "—"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION DONE；PAGE-006 剩余 reconnect / OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
       "first_breakpoint": {
-        "target": "FEAT-022",
-        "test": "TEST-I-003",
-        "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-        "symbol": "(missing)",
-        "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+        "target": "FEAT-081",
+        "test": "TEST-I-008",
+        "file": "apps/uniapp/utils/ota_manager.js",
+        "symbol": "validateOtaPackage",
+        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -8638,10 +8637,10 @@
         "TEST-P-006"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/reconnect-policy.js"
+        "apps/uniapp/utils/ota_manager.js"
       ],
-      "task_id": "RUNTIME-RECONNECT-001",
-      "root_cause_id": "RC-RECONNECT",
+      "task_id": "OTA-CLIENT-001",
+      "root_cause_id": "RC-OTA-CLIENT",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -8649,18 +8648,18 @@
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Contract / first screen：manifest + behavior 对齐",
-      "status": "NOT_IMPLEMENTED",
+      "status": "FAIL",
       "e4_harness_status": "PASS",
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION DONE；PAGE-006 剩余 reconnect / OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
       "first_breakpoint": {
-        "target": "FEAT-022",
-        "test": "TEST-I-003",
-        "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-        "symbol": "(missing)",
-        "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+        "target": "FEAT-081",
+        "test": "TEST-I-008",
+        "file": "apps/uniapp/utils/ota_manager.js",
+        "symbol": "validateOtaPackage",
+        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -8725,10 +8724,10 @@
         "TEST-P-PAGE-006"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/reconnect-policy.js"
+        "apps/uniapp/utils/ota_manager.js"
       ],
-      "task_id": "RUNTIME-RECONNECT-001",
-      "root_cause_id": "RC-RECONNECT",
+      "task_id": "OTA-CLIENT-001",
+      "root_cause_id": "RC-OTA-CLIENT",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -8736,18 +8735,18 @@
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Error and recovery",
-      "status": "NOT_IMPLEMENTED",
+      "status": "FAIL",
       "e4_harness_status": "PASS",
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION DONE；PAGE-006 剩余 reconnect / OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
       "first_breakpoint": {
-        "target": "FEAT-022",
-        "test": "TEST-I-003",
-        "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-        "symbol": "(missing)",
-        "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+        "target": "FEAT-081",
+        "test": "TEST-I-008",
+        "file": "apps/uniapp/utils/ota_manager.js",
+        "symbol": "validateOtaPackage",
+        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -8812,10 +8811,10 @@
         "TEST-P-PAGE-006"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/reconnect-policy.js"
+        "apps/uniapp/utils/ota_manager.js"
       ],
-      "task_id": "RUNTIME-RECONNECT-001",
-      "root_cause_id": "RC-RECONNECT",
+      "task_id": "OTA-CLIENT-001",
+      "root_cause_id": "RC-OTA-CLIENT",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -8823,18 +8822,18 @@
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Navigation and back",
-      "status": "NOT_IMPLEMENTED",
+      "status": "FAIL",
       "e4_harness_status": "PASS",
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION DONE；PAGE-006 剩余 reconnect / OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
       "first_breakpoint": {
-        "target": "FEAT-022",
-        "test": "TEST-I-003",
-        "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-        "symbol": "(missing)",
-        "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+        "target": "FEAT-081",
+        "test": "TEST-I-008",
+        "file": "apps/uniapp/utils/ota_manager.js",
+        "symbol": "validateOtaPackage",
+        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -8899,10 +8898,10 @@
         "TEST-P-PAGE-006"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/reconnect-policy.js"
+        "apps/uniapp/utils/ota_manager.js"
       ],
-      "task_id": "RUNTIME-RECONNECT-001",
-      "root_cause_id": "RC-RECONNECT",
+      "task_id": "OTA-CLIENT-001",
+      "root_cause_id": "RC-OTA-CLIENT",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -8910,18 +8909,18 @@
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Platform degradation",
-      "status": "NOT_IMPLEMENTED",
+      "status": "FAIL",
       "e4_harness_status": "PASS",
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION DONE；PAGE-006 剩余 reconnect / OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
       "first_breakpoint": {
-        "target": "FEAT-022",
-        "test": "TEST-I-003",
-        "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-        "symbol": "(missing)",
-        "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+        "target": "FEAT-081",
+        "test": "TEST-I-008",
+        "file": "apps/uniapp/utils/ota_manager.js",
+        "symbol": "validateOtaPackage",
+        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -8986,10 +8985,10 @@
         "TEST-P-PAGE-006"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/reconnect-policy.js"
+        "apps/uniapp/utils/ota_manager.js"
       ],
-      "task_id": "RUNTIME-RECONNECT-001",
-      "root_cause_id": "RC-RECONNECT",
+      "task_id": "OTA-CLIENT-001",
+      "root_cause_id": "RC-OTA-CLIENT",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -8997,18 +8996,18 @@
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Cleanup",
-      "status": "NOT_IMPLEMENTED",
+      "status": "FAIL",
       "e4_harness_status": "PASS",
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION DONE；PAGE-006 剩余 reconnect / OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
       "first_breakpoint": {
-        "target": "FEAT-022",
-        "test": "TEST-I-003",
-        "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-        "symbol": "(missing)",
-        "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+        "target": "FEAT-081",
+        "test": "TEST-I-008",
+        "file": "apps/uniapp/utils/ota_manager.js",
+        "symbol": "validateOtaPackage",
+        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -9073,10 +9072,10 @@
         "TEST-P-PAGE-006"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/reconnect-policy.js"
+        "apps/uniapp/utils/ota_manager.js"
       ],
-      "task_id": "RUNTIME-RECONNECT-001",
-      "root_cause_id": "RC-RECONNECT",
+      "task_id": "OTA-CLIENT-001",
+      "root_cause_id": "RC-OTA-CLIENT",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -9084,18 +9083,18 @@
       "state_id": null,
       "operation_id": null,
       "case_title": "PAGE-006.spec.js › PAGE-006 通用设备详情 › Console and accessibility",
-      "status": "NOT_IMPLEMENTED",
+      "status": "FAIL",
       "e4_harness_status": "PASS",
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION DONE；PAGE-006 剩余 reconnect / OTA",
+      "actual": "Fake Runtime E4 PASS only; product: RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT DONE；PAGE-006 剩余 OTA",
       "first_breakpoint": {
-        "target": "FEAT-022",
-        "test": "TEST-I-003",
-        "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-        "symbol": "(missing)",
-        "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)"
+        "target": "FEAT-081",
+        "test": "TEST-I-008",
+        "file": "apps/uniapp/utils/ota_manager.js",
+        "symbol": "validateOtaPackage",
+        "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)"
       },
       "evidence": {
         "playwright_file": "PAGE-006.spec.js",
@@ -9160,10 +9159,10 @@
         "TEST-P-PAGE-006"
       ],
       "implementation_refs": [
-        "apps/uniapp/services/ble-runtime/reconnect-policy.js"
+        "apps/uniapp/utils/ota_manager.js"
       ],
-      "task_id": "RUNTIME-RECONNECT-001",
-      "root_cause_id": "RC-RECONNECT",
+      "task_id": "OTA-CLIENT-001",
+      "root_cause_id": "RC-OTA-CLIENT",
       "reason": "PRODUCT_GAP_WITH_HARNESS_PASS"
     },
     {
@@ -12857,12 +12856,12 @@
     },
     {
       "page_id": "PAGE-006",
-      "target": "FEAT-022",
-      "test": "TEST-I-003",
-      "file": "apps/uniapp/services/ble-runtime/reconnect-policy.js",
-      "symbol": "(missing)",
-      "breakpoint": "reconnect-policy module missing (RUNTIME-WRITE-QUEUE-001 CLOSED)",
-      "task_id": "RUNTIME-RECONNECT-001"
+      "target": "FEAT-081",
+      "test": "TEST-I-008",
+      "file": "apps/uniapp/utils/ota_manager.js",
+      "symbol": "validateOtaPackage",
+      "breakpoint": "CTRL start before DATA / validateOtaPackage (TEST-I-008)",
+      "task_id": "OTA-CLIENT-001"
     },
     {
       "page_id": "PAGE-008",
