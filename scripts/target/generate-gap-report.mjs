@@ -128,7 +128,20 @@ const FACTS = {
   broadcastPage: read('apps/uniapp/pages/broadcast/index.vue'),
   versionPage: read('apps/uniapp/pages/about/version.vue'),
   landing: read('docs/index.md'),
-  esp32: read('hardware/esp32/LightBLE/src/main.cpp') + read('hardware/esp32/LightBLE/src/ota_server.cpp') + read('hardware/esp32/LightBLE/include/ota_server.h'),
+  esp32: [
+    'hardware/esp32/LightBLE/src/main.cpp',
+    'hardware/esp32/LightBLE/src/ble_peripheral.cpp',
+    'hardware/esp32/LightBLE/src/device_info.cpp',
+    'hardware/esp32/LightBLE/src/test_control.cpp',
+    'hardware/esp32/LightBLE/src/serial_events.cpp',
+    'hardware/esp32/LightBLE/src/permissions_demo.cpp',
+    'hardware/esp32/LightBLE/src/ota_server.cpp',
+    'hardware/esp32/LightBLE/include/ota_server.h',
+    'hardware/esp32/LightBLE/include/fixture_config.h',
+    'hardware/esp32/LightBLE/include/device_info.h',
+    'hardware/esp32/LightBLE/include/test_control.h',
+    'hardware/esp32/LightBLE/include/ble_peripheral.h',
+  ].map(read).join('\n'),
   pio: read('hardware/esp32/LightBLE/platformio.ini'),
   bleRuntimeIndex: read('apps/uniapp/services/ble-runtime/index.js'),
   deviceFilter: read('apps/uniapp/services/ble-runtime/device-filter.js'),
@@ -183,6 +196,16 @@ const esp32BuildReady = pioEnvs.includes('fixture_peripheral')
   && !uploadPort
   && exists('hardware/esp32/scripts/build-info.py')
   && /extra_scripts[\s\S]*build-info\.py/.test(FACTS.pio);
+const esp32PeripheralReady = deviceNameMacro === 'BLEToolkit-Server'
+  && (nimbleInitName === 'BLEToolkit-Server' || nimbleInitName === deviceNameMacro)
+  && hasLedTable
+  && exists('hardware/esp32/LightBLE/src/ble_peripheral.cpp')
+  && exists('hardware/esp32/LightBLE/src/device_info.cpp')
+  && exists('hardware/esp32/LightBLE/src/test_control.cpp')
+  && /fixture_role/.test(FACTS.esp32)
+  && /delayed_response/.test(FACTS.esp32)
+  && /disconnect_on_write/.test(FACTS.esp32)
+  && /emitBleEvent|"type":"ble"|type.*=.*"ble"/.test(FACTS.esp32);
 const otaUsesAction = /doc\["action"\]|strcmp\(action/.test(FACTS.esp32) && !/doc\["op"\]|"op"\s*:/.test(FACTS.esp32);
 const otaFirmwareReady = (/doc\["op"\]|"op"\s*:/.test(FACTS.esp32)
   && /sha256|OTA_HASH_MISMATCH|OTA_RECEIVING|OtaServer/.test(FACTS.esp32)
@@ -343,7 +366,7 @@ const TASKS = [
   { task_id: 'OTA-FIRMWARE-001', task_type: 'SOURCE_FIX', title: '固件 OTA op/target/hardware/SHA/max_chunk/commit 校验', root_cause_id: 'RC-ESP32-OTA-ACTION', severity: 'P1', deps: ['ESP32-BUILD-001'], order_hint: 22, status: otaFirmwareReady ? 'DONE' : 'PLANNED' },
   { task_id: 'OTA-E5-VERIFICATION', task_type: 'VERIFY_E5', title: 'ESP32+Android OTA 闭环 E5', root_cause_id: 'RC-OTA-E5-HW', severity: 'P0', deps: ['OTA-FIRMWARE-001', 'OTA-CLIENT-001'], order_hint: 23, status: otaE5Status },
   { task_id: 'ESP32-BUILD-001', task_type: 'SOURCE_FIX', title: '两环境、无固定 COM、模块化入口', root_cause_id: 'RC-ESP32-BUILD', severity: 'P1', deps: [], order_hint: 30, status: esp32BuildReady ? 'DONE' : 'PLANNED' },
-  { task_id: 'ESP32-PERIPHERAL-001', task_type: 'SOURCE_FIX', title: '服务/特征/名称/LED/Device Info 对齐契约', root_cause_id: 'RC-ESP32-LED-NAME', severity: 'P1', deps: ['ESP32-BUILD-001'], order_hint: 31 },
+  { task_id: 'ESP32-PERIPHERAL-001', task_type: 'SOURCE_FIX', title: '服务/特征/名称/LED/Device Info 对齐契约', root_cause_id: 'RC-ESP32-LED-NAME', severity: 'P1', deps: ['ESP32-BUILD-001'], order_hint: 31, status: esp32PeripheralReady ? 'DONE' : 'PLANNED' },
   { task_id: 'ESP32-OBSERVER-001', task_type: 'SOURCE_FIX', title: '实现 fixture_observer', root_cause_id: 'RC-ESP32-OBSERVER', severity: 'P1', deps: ['ESP32-BUILD-001'], order_hint: 32 },
   { task_id: 'ESP32-FAULT-001', task_type: 'SOURCE_FIX', title: 'Fault Injection + Serial JSON', root_cause_id: 'RC-ESP32-SERIAL', severity: 'P1', deps: ['ESP32-PERIPHERAL-001'], order_hint: 33 },
   { task_id: 'PAGE-BROADCAST-001', task_type: 'SOURCE_FIX', title: 'PAGE-008 改用 composable/adapter/service', root_cause_id: 'RC-PAGE-BROADCAST', severity: 'P1', deps: [], order_hint: 40 },
@@ -1264,7 +1287,15 @@ const esp32Inventory = {
     nimble_init: nimbleInitName,
     observer_name_present: hasObserver,
     mismatch: deviceNameMacro !== nimbleInitName,
-    task_id: 'ESP32-PERIPHERAL-001',
+    task_id: esp32PeripheralReady ? null : 'ESP32-PERIPHERAL-001',
+    status: esp32PeripheralReady ? 'CONFIRMED_IMPLEMENTED' : 'CONFIRMED_PARTIAL',
+  },
+  peripheral: {
+    modules: ['ble_peripheral.cpp', 'device_info.cpp', 'test_control.cpp', 'serial_events.cpp', 'permissions_demo.cpp'],
+    fixture_role: /fixture_role/.test(FACTS.esp32),
+    fault_entry: /delayed_response/.test(FACTS.esp32) && /disconnect_on_write/.test(FACTS.esp32),
+    status: esp32PeripheralReady ? 'CONFIRMED_IMPLEMENTED' : 'CONFIRMED_PARTIAL',
+    task_id: esp32PeripheralReady ? null : 'ESP32-PERIPHERAL-001',
   },
   services: (bleFixture.services || []).map((s) => ({
     contract_id: s.id,

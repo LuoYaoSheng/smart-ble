@@ -8,8 +8,8 @@ owner: Smart BLE QA / Engineering
 last_reviewed: 2026-09-01
 approved_by: null
 generated_from: reports/target-vs-current/target-vs-current.json
-content_hash: a7d7389cb8c171b8554a9bf8da71bb0ddf96d741f156efa36266aa395d96f6a6
-commit: e4059d860c9e821886a713c023b4423bc6ca460f
+content_hash: 49a3dd2a3c1c575098f78a062d72e829c4f9a36bdf4ef19d6ea0879bb77f4bcc
+commit: d9906bb9b04485d90fb14a7c064f31d0f00e6419
 supersedes: TP-G2 v1 (reports/target-vs-current-v1/)
 ```
 
@@ -23,33 +23,33 @@ supersedes: TP-G2 v1 (reports/target-vs-current-v1/)
 | HARNESS_PASS / FAIL | 89 / 0 |
 | TARGET_CONTRACT_FAIL | 0 |
 | TEST_INFRA_FAIL | 0 |
-| CURRENT_PASS / FAIL | 482 / 3 |
-| structured cases | 255 |
-| 页面 blocked_specs / blocked_cases | 0 / 0 |
-| 页面阻断原因 | null |
+| CURRENT_PASS / FAIL | 0 / 0 |
+| structured cases | 0 |
+| 页面 blocked_specs / blocked_cases | undefined / undefined |
+| 页面阻断原因 | undefined |
 | 独立 blockers | BLK-TOOL-PLAYWRIGHT [CLEARED] + BLK-TEST-PAGE-DRIVER [CLEARED] |
 
-**说明：** `blocked_cases=0` 是受阻 Case 数，**不是**产品缺陷数。Playwright 与 Page Driver 分别登记。
+**说明：** `blocked_cases=undefined` 是受阻 Case 数，**不是**产品缺陷数。Playwright 与 Page Driver 分别登记。
 
 ## 2. Target Coverage（canonical totals）
 
 | 维度 | total | assessed | unassessed |
 |---|---:|---:|---:|
-| REQ | 66 | 47 | 19 |
-| FEAT | 81 | 41 | 40 |
-| PAGE | 10 | 8 | 2 |
-| WEB | 1 | 1 | 0 |
+| REQ | 66 | 5 | 61 |
+| FEAT | 81 | 5 | 76 |
+| PAGE | 10 | 1 | 9 |
+| WEB | 1 | 0 | 1 |
 | STATE | 67 | 0 | 67 |
 | OP | 92 | 3 | 89 |
-| FLOW | 14 | 10 | 4 |
-| ERR | 68 | 2 | 66 |
-| DATA | 13 | 2 | 11 |
-| PROTO | 11 | 7 | 4 |
+| FLOW | 14 | 0 | 14 |
+| ERR | 68 | 0 | 68 |
+| DATA | 13 | 0 | 13 |
+| PROTO | 11 | 1 | 10 |
 | SEC | 19 | 0 | 19 |
 | NFR | 24 | 0 | 24 |
-| CLAIM | 31 | 7 | 24 |
-| DEC | 17 | 5 | 12 |
-| EVID | 8 | 2 | 6 |
+| CLAIM | 31 | 0 | 31 |
+| DEC | 17 | 0 | 17 |
+| EVID | 8 | 0 | 8 |
 | TEST | 103 | 0 | 103 |
 | 报告记录总数 | 647 | | |
 
@@ -60,17 +60,17 @@ PROTO 仅使用 `PROTO-001`..`PROTO-011`（不是 Service UUID）。
 ### unique_root_causes_by_severity
 
 - P0: **1**
-- P1: **3**
+- P1: **1**
 - P2: **0**
 - P3: **0**
 
 ### affected_target_records_by_severity
 
 - P0: 1
-- P1: 24
+- P1: 14
 - P2: 0
 - P3: 0
-- null: 622
+- null: 632
 
 > 不得把 affected records 说成「N 个 P0 缺陷」。Observer 缺失默认 **P1**（无公开危害证据时非 P0）。
 
@@ -78,53 +78,47 @@ PROTO 仅使用 `PROTO-001`..`PROTO-011`（不是 Service UUID）。
 
 ### gap_kind
 
-- PRODUCT: 301
-- PAGE: 158
-- TESTABILITY: 129
-- RUNTIME: 3
+- PRODUCT: 305
+- PAGE: 159
+- TESTABILITY: 125
 - LANDING: 47
 - FIRMWARE: 5
 - SMART_HID: 3
+- RUNTIME: 2
 - RELEASE: 1
 
 ### implementation_status
 
-- IMPLEMENTED_UNTESTED: 115
-- UNASSESSED: 491
-- CONFIRMED_PARTIAL: 16
-- NOT_IMPLEMENTED: 3
+- UNASSESSED: 610
+- CONFIRMED_PARTIAL: 15
 - CONFIRMED_IMPLEMENTED: 22
 
 ### verification_status
 
-- AUTOMATED_PASS: 139
-- HARDWARE_PENDING: 60
-- NOT_EXECUTED: 294
-- AUTOMATED_FAIL: 10
-- EXECUTED: 144
+- HARDWARE_PENDING: 127
+- NOT_EXECUTED: 345
+- EXECUTED: 153
+- AUTOMATED_PASS: 22
 
 ## 5. Top 20 First Breakpoints
 
 1. **[P0]** `PROTO-010` → .github/workflows/release-build.yml builds Flutter/Tauri; not UniApp Android + Peripheral/Observer firmware （RELEASE-PIPELINE-001 / RC-RELEASE-PIPELINE）
 2. **[P1]** `FEAT-041` → PAGE-008 内联广告逻辑；useBroadcastSession 未使用 （PAGE-BROADCAST-001 / RC-PAGE-BROADCAST）
-3. **[P1]** `FEAT-053` → [TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as' （TEST-BRIDGE-TS-001 / RC-TEST-BRIDGE-TS）
-4. **[P1]** `FEAT-057` → [TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier "./device-display-name.js" from "data:text/javascript;base64, （RUNTIME-DISPLAY-NAME-001 / RC-DISPLAY-NAME）
-5. **[P1]** `PAGE-008` → 广播页内联；Owner/composable 未接入 （PAGE-BROADCAST-001 / RC-PAGE-BROADCAST）
+3. **[P1]** `PAGE-008` → 广播页内联；Owner/composable 未接入 （PAGE-BROADCAST-001 / RC-PAGE-BROADCAST）
 
 ## 6. Task waves（拓扑序前 12）
 
 1. **RELEASE-PIPELINE-001** — UniApp + Peripheral/Observer 双固件 Release Pipeline（type=RELEASE, sev=P0, gaps≈1）
 2. **OTA-E5-VERIFICATION** — ESP32+Android OTA 闭环 E5（type=VERIFY_E5, sev=P0, gaps≈0）
-3. **ESP32-PERIPHERAL-001** — 服务/特征/名称/LED/Device Info 对齐契约（type=SOURCE_FIX, sev=P1, gaps≈0）
-4. **ESP32-OBSERVER-001** — 实现 fixture_observer（type=SOURCE_FIX, sev=P1, gaps≈0）
-5. **ESP32-FAULT-001** — Fault Injection + Serial JSON（type=SOURCE_FIX, sev=P1, gaps≈0）
-6. **PAGE-BROADCAST-001** — PAGE-008 改用 composable/adapter/service（type=SOURCE_FIX, sev=P1, gaps≈9）
-7. **TEST-BRIDGE-TS-001** — Node 测试桥支持 TS protocol import（Smart HID）（type=TESTABILITY, sev=P1, gaps≈7）
-8. **VERIFY-ANDROID-001** — Android 真机矩阵（type=VERIFY_E5, sev=—, gaps≈0）
-9. **VERIFY-WECHAT-001** — 微信真机矩阵（type=VERIFY_E5, sev=—, gaps≈0）
-10. **VERIFY-ESP32-001** — ESP32 E5 夹具矩阵（type=VERIFY_E5, sev=—, gaps≈0）
-11. **VERIFY-SMART-HID-001** — Smart HID E5 端到端（type=VERIFY_E5, sev=—, gaps≈0）
-12. **VERIFY-E6-001** — Clean Machine / Release E6（type=VERIFY_E6, sev=—, gaps≈31）
+3. **ESP32-OBSERVER-001** — 实现 fixture_observer（type=SOURCE_FIX, sev=P1, gaps≈0）
+4. **ESP32-FAULT-001** — Fault Injection + Serial JSON（type=SOURCE_FIX, sev=P1, gaps≈0）
+5. **PAGE-BROADCAST-001** — PAGE-008 改用 composable/adapter/service（type=SOURCE_FIX, sev=P1, gaps≈9）
+6. **TEST-BRIDGE-TS-001** — Node 测试桥支持 TS protocol import（Smart HID）（type=TESTABILITY, sev=P1, gaps≈0）
+7. **VERIFY-ANDROID-001** — Android 真机矩阵（type=VERIFY_E5, sev=—, gaps≈0）
+8. **VERIFY-WECHAT-001** — 微信真机矩阵（type=VERIFY_E5, sev=—, gaps≈0）
+9. **VERIFY-ESP32-001** — ESP32 E5 夹具矩阵（type=VERIFY_E5, sev=—, gaps≈0）
+10. **VERIFY-SMART-HID-001** — Smart HID E5 端到端（type=VERIFY_E5, sev=—, gaps≈0）
+11. **VERIFY-E6-001** — Clean Machine / Release E6（type=VERIFY_E6, sev=—, gaps≈31）
 
 完整图：`reports/target-vs-current/task-dependency-graph.json`。
 

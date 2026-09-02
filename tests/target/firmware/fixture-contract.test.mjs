@@ -10,16 +10,24 @@ import { dirname, resolve } from 'node:path';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../../..');
 const fixture = JSON.parse(readFileSync(`${ROOT}/contracts/target/ble-fixture-target.json`, 'utf8'));
-const FW = `${ROOT}/hardware/esp32/LightBLE/src/main.cpp`;
-const FW_OTA = `${ROOT}/hardware/esp32/LightBLE/src/ota_server.cpp`;
-const FW_HDR = `${ROOT}/hardware/esp32/LightBLE/include/ota_server.h`;
-const fwMain = existsSync(FW) ? readFileSync(FW, 'utf8') : null;
-const fwOta = existsSync(FW_OTA) ? readFileSync(FW_OTA, 'utf8') : null;
-const fwHdr = existsSync(FW_HDR) ? readFileSync(FW_HDR, 'utf8') : null;
-const fw = [fwMain, fwOta, fwHdr].filter(Boolean).join('\n');
+const FW_PATHS = [
+  'hardware/esp32/LightBLE/src/main.cpp',
+  'hardware/esp32/LightBLE/src/ble_peripheral.cpp',
+  'hardware/esp32/LightBLE/src/device_info.cpp',
+  'hardware/esp32/LightBLE/src/test_control.cpp',
+  'hardware/esp32/LightBLE/src/ota_server.cpp',
+  'hardware/esp32/LightBLE/include/ota_server.h',
+  'hardware/esp32/LightBLE/include/fixture_config.h',
+];
+const fw = FW_PATHS
+  .map((rel) => {
+    const path = `${ROOT}/${rel}`;
+    return existsSync(path) ? readFileSync(path, 'utf8') : '';
+  })
+  .join('\n');
 
 test('TEST-E-001 固件源码存在（夹具工程在位）', () => {
-  assert.ok(fw !== null, 'hardware/esp32/LightBLE/src/main.cpp 存在');
+  assert.ok(fw.length > 0, 'hardware/esp32/LightBLE peripheral sources 存在');
 });
 
 test('TEST-E-001 夹具广播名称与契约一致（双夹具）', () => {

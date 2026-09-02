@@ -1,48 +1,6 @@
 {
   "records": [
     {
-      "target_id": "FEAT-057",
-      "target_type": "feature",
-      "dimension": "feature",
-      "gap_kind": "RUNTIME",
-      "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "AUTOMATED_FAIL",
-      "static_implementation": null,
-      "e4_verification": null,
-      "e5_verification": null,
-      "severity": "P1",
-      "evidence_level": "E5",
-      "implementation_refs": [],
-      "test_ids": [
-        "TEST-I-009",
-        "TEST-H-002",
-        "TEST-H-003"
-      ],
-      "test_results": [
-        {
-          "test_id": "TEST-I-009",
-          "status": "FAIL",
-          "case_id": "current:smart-hid-provision-target.test.mjs:TEST-I-009 目标层：runProvisionTransaction 顺序（waiter 先注册）",
-          "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,"
-        },
-        {
-          "test_id": "TEST-I-009",
-          "status": "FAIL",
-          "case_id": "current:smart-hid-provision-target.test.mjs:TEST-I-009 目标层：writeProfileCandidate 分帧写入到达平台",
-          "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba"
-        }
-      ],
-      "expected": "candidate 分帧下发与 STATUS waiter (Must)",
-      "actual": "NOT_IMPLEMENTED: [TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,LyoqCiAqIOebruagh+Wlkee6puWFpeWPo++8mmRpc3BsYXktbmFtZS5qc++8iEZFQVQtMDEzIC8gVEVTVC1VLTAwNu+8ieOAggogKiDlrp7njrDkvY3kuo4gZGV2aWNlLWRpc3BsYXktbmFtZS5qc+OAggogKi8KCmV4cG9ydCB7CiAgbm9ybWFsaXplRGlzc",
-      "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-      "downstream_impact": [],
-      "dependencies": [],
-      "root_cause_id": "RC-DISPLAY-NAME",
-      "task_id": "RUNTIME-DISPLAY-NAME-001",
-      "release_blocking": true
-    },
-    {
       "target_id": "PROTO-008",
       "target_type": "protocol",
       "dimension": "protocol",
@@ -73,39 +31,18 @@
       "dimension": "protocol",
       "gap_kind": "RUNTIME",
       "priority": "Must",
-      "implementation_status": "IMPLEMENTED_UNTESTED",
-      "verification_status": "AUTOMATED_PASS",
+      "implementation_status": "UNASSESSED",
+      "verification_status": "NOT_EXECUTED",
       "static_implementation": null,
       "e4_verification": null,
       "e5_verification": null,
       "severity": null,
       "evidence_level": "E5",
       "implementation_refs": [],
-      "test_ids": [
-        "TEST-E-006"
-      ],
-      "test_results": [
-        {
-          "test_id": "TEST-E-006",
-          "status": "PASS",
-          "case_id": "current:serial-schema.test.mjs:串口契约：115200 波特、≥8 事件类型、≥9 Observer 字段",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-E-006",
-          "status": "PASS",
-          "case_id": "current:serial-schema.test.mjs:观察流行解析（目标 schema 的 E1 参照）",
-          "first_breakpoint": null
-        },
-        {
-          "test_id": "TEST-E-006",
-          "status": "PASS",
-          "case_id": "current:serial-schema.test.mjs:固件侧串口事件 emit 静态探测（可 FAIL=差距）",
-          "first_breakpoint": null
-        }
-      ],
+      "test_ids": [],
+      "test_results": [],
       "expected": "OTA Firmware Package",
-      "actual": "structured current PASS",
+      "actual": "",
       "first_breakpoint": "",
       "downstream_impact": [],
       "dependencies": [],

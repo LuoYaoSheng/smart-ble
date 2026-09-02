@@ -1,6 +1,6 @@
 {
   "gate": "TP-G2-R2",
-  "generated_at": "2026-09-02T03:36:39.365Z",
+  "generated_at": "2026-09-02T06:15:51.430Z",
   "environment": {
     "status": "READY_FOR_PAGE_E4",
     "playwright": {
@@ -208,7 +208,7 @@
       "product": "FAIL",
       "task_id": "PAGE-BROADCAST-001",
       "root_cause_id": "RC-PAGE-BROADCAST",
-      "notes": "广播页 CONFIRMED_PARTIAL；Observer 缺失记 BLOCKED 而非页面产品 FAIL",
+      "notes": "Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -218,9 +218,13 @@
       },
       "also": [
         {
+          "task_id": "ESP32-PERIPHERAL-001",
+          "breakpoint": "IMPLEMENTED"
+        },
+        {
           "task_id": "ESP32-OBSERVER-001",
           "status_hint": "BLOCKED",
-          "breakpoint": "no BLEToolkit-Observer fixture → BLOCKED_BY_FIXTURE for observer-dependent ops"
+          "breakpoint": "Observer fixture BLOCKED；PAGE-008 observer-dependent ops → BLOCKED_BY_FIXTURE"
         }
       ],
       "fail_cases": [
@@ -625,43 +629,7 @@
         "duration_ms": 161,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 161,
       "target_ids": [
@@ -697,43 +665,7 @@
         "duration_ms": 37,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 37,
       "target_ids": [
@@ -769,43 +701,7 @@
         "duration_ms": 35,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 35,
       "target_ids": [
@@ -840,43 +736,7 @@
         "duration_ms": 44,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 44,
       "target_ids": [
@@ -911,43 +771,7 @@
         "duration_ms": 40,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 40,
       "target_ids": [
@@ -985,43 +809,7 @@
         "duration_ms": 35,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 35,
       "target_ids": [
@@ -1057,43 +845,7 @@
         "duration_ms": 42,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 42,
       "target_ids": [
@@ -1126,43 +878,7 @@
         "duration_ms": 44,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 44,
       "target_ids": [
@@ -1198,43 +914,7 @@
         "duration_ms": 42,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 42,
       "target_ids": [
@@ -1269,43 +949,7 @@
         "duration_ms": 46,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 46,
       "target_ids": [
@@ -1338,43 +982,7 @@
         "duration_ms": 49,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 49,
       "target_ids": [
@@ -1413,43 +1021,7 @@
         "duration_ms": 32,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 32,
       "target_ids": [
@@ -1484,43 +1056,7 @@
         "duration_ms": 38,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 38,
       "target_ids": [
@@ -1555,43 +1091,7 @@
         "duration_ms": 33,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 33,
       "target_ids": [
@@ -1628,43 +1128,7 @@
         "duration_ms": 34,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 34,
       "target_ids": [
@@ -1699,43 +1163,7 @@
         "duration_ms": 36,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 36,
       "target_ids": [
@@ -1772,43 +1200,7 @@
         "duration_ms": 31,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 31,
       "target_ids": [
@@ -1845,43 +1237,7 @@
         "duration_ms": 31,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 31,
       "target_ids": [
@@ -1918,43 +1274,7 @@
         "duration_ms": 35,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 35,
       "target_ids": [
@@ -1989,43 +1309,7 @@
         "duration_ms": 31,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 31,
       "target_ids": [
@@ -2060,43 +1344,7 @@
         "duration_ms": 32,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 32,
       "target_ids": [
@@ -2129,43 +1377,7 @@
         "duration_ms": 29,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 29,
       "target_ids": [
@@ -2198,43 +1410,7 @@
         "duration_ms": 35,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 35,
       "target_ids": [
@@ -2267,43 +1443,7 @@
         "duration_ms": 29,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 29,
       "target_ids": [
@@ -2336,43 +1476,7 @@
         "duration_ms": 21,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 21,
       "target_ids": [
@@ -2403,43 +1507,7 @@
         "duration_ms": 33,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 33,
       "target_ids": [
@@ -2470,43 +1538,7 @@
         "duration_ms": 28,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 28,
       "target_ids": [
@@ -2537,43 +1569,7 @@
         "duration_ms": 29,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 29,
       "target_ids": [
@@ -2604,43 +1600,7 @@
         "duration_ms": 29,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 29,
       "target_ids": [
@@ -2671,43 +1631,7 @@
         "duration_ms": 26,
         "harness_error": null,
         "source_doc": "docs/target-product/pages/PAGE-001_SCAN.md",
-        "fail_evidence": [
-          {
-            "test_id": "TEST-U-015",
-            "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-053",
-              "PAGE-001",
-              "FLOW-010",
-              "REQ-049",
-              "FEAT-058"
-            ],
-            "source_file": "tests/target/unit/smart-hid-state-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          },
-          {
-            "test_id": "TEST-I-009",
-            "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: 模块缺失：TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;ba",
-            "target_ids": [
-              "REQ-047",
-              "FEAT-057",
-              "PAGE-001",
-              "FLOW-010"
-            ],
-            "source_file": "tests/target/integration/smart-hid-provision-target.test.mjs"
-          }
-        ]
+        "fail_evidence": []
       },
       "duration": 26,
       "target_ids": [
@@ -6598,7 +5522,7 @@
         "\"支持情况未知\"",
         "检查按钮"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: 广播页 CONFIRMED_PARTIAL；Observer 缺失记 BLOCKED 而非页面产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -6639,7 +5563,7 @@
       "expected": [
         "spinner"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: 广播页 CONFIRMED_PARTIAL；Observer 缺失记 BLOCKED 而非页面产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -6680,7 +5604,7 @@
       "expected": [
         "UNSUPPORTED 说明"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: 广播页 CONFIRMED_PARTIAL；Observer 缺失记 BLOCKED 而非页面产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -6723,7 +5647,7 @@
       "expected": [
         "字段级提示"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: 广播页 CONFIRMED_PARTIAL；Observer 缺失记 BLOCKED 而非页面产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -6764,7 +5688,7 @@
       "expected": [
         "开始可点"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: 广播页 CONFIRMED_PARTIAL；Observer 缺失记 BLOCKED 而非页面产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -6807,7 +5731,7 @@
         "停止按钮",
         "Observer 提示"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: 广播页 CONFIRMED_PARTIAL；Observer 缺失记 BLOCKED 而非页面产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -6850,7 +5774,7 @@
       "expected": [
         "过渡"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: 广播页 CONFIRMED_PARTIAL；Observer 缺失记 BLOCKED 而非页面产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -6892,7 +5816,7 @@
         "错误",
         "去设置"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: 广播页 CONFIRMED_PARTIAL；Observer 缺失记 BLOCKED 而非页面产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -6934,7 +5858,7 @@
         "错误",
         "去开启"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: 广播页 CONFIRMED_PARTIAL；Observer 缺失记 BLOCKED 而非页面产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -6975,7 +5899,7 @@
       "expected": [
         "说明\"先断开 N 台设备\""
       ],
-      "actual": "Fake Runtime E4 PASS only; product: 广播页 CONFIRMED_PARTIAL；Observer 缺失记 BLOCKED 而非页面产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -7019,7 +5943,7 @@
         "阻止",
         "首行原因"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: 广播页 CONFIRMED_PARTIAL；Observer 缺失记 BLOCKED 而非页面产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -7061,7 +5985,7 @@
         "错误",
         "重试"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: 广播页 CONFIRMED_PARTIAL；Observer 缺失记 BLOCKED 而非页面产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -7102,7 +6026,7 @@
       "expected": [
         "状态芯片更新"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: 广播页 CONFIRMED_PARTIAL；Observer 缺失记 BLOCKED 而非页面产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -7145,7 +6069,7 @@
       "expected": [
         "预算即时更新"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: 广播页 CONFIRMED_PARTIAL；Observer 缺失记 BLOCKED 而非页面产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -7188,7 +6112,7 @@
       "expected": [
         "状态=广播中（实际成功后）"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: 广播页 CONFIRMED_PARTIAL；Observer 缺失记 BLOCKED 而非页面产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -7233,7 +6157,7 @@
       "expected": [
         "状态=已就绪；Observer 观测消失（E5）"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: 广播页 CONFIRMED_PARTIAL；Observer 缺失记 BLOCKED 而非页面产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -7276,7 +6200,7 @@
       "expected": [
         "toast"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: 广播页 CONFIRMED_PARTIAL；Observer 缺失记 BLOCKED 而非页面产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -7317,7 +6241,7 @@
       "expected": [
         "无声"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: 广播页 CONFIRMED_PARTIAL；Observer 缺失记 BLOCKED 而非页面产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -7360,7 +6284,7 @@
       "expected": [
         "toast"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: 广播页 CONFIRMED_PARTIAL；Observer 缺失记 BLOCKED 而非页面产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -7401,7 +6325,7 @@
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: 广播页 CONFIRMED_PARTIAL；Observer 缺失记 BLOCKED 而非页面产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -7440,7 +6364,7 @@
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: 广播页 CONFIRMED_PARTIAL；Observer 缺失记 BLOCKED 而非页面产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -7479,7 +6403,7 @@
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: 广播页 CONFIRMED_PARTIAL；Observer 缺失记 BLOCKED 而非页面产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -7518,7 +6442,7 @@
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: 广播页 CONFIRMED_PARTIAL；Observer 缺失记 BLOCKED 而非页面产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -7557,7 +6481,7 @@
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: 广播页 CONFIRMED_PARTIAL；Observer 缺失记 BLOCKED 而非页面产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",
@@ -7596,7 +6520,7 @@
       "expected": [
         "target behavior"
       ],
-      "actual": "Fake Runtime E4 PASS only; product: 广播页 CONFIRMED_PARTIAL；Observer 缺失记 BLOCKED 而非页面产品 FAIL",
+      "actual": "Fake Runtime E4 PASS only; product: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）",
       "first_breakpoint": {
         "target": "FEAT-041",
         "test": "TEST-P-008",

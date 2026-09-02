@@ -31,6 +31,8 @@ test('观察流行解析（目标 schema 的 E1 参照）', () => {
 test('固件侧串口事件 emit 静态探测（可 FAIL=差距）', () => {
   const paths = [
     `${ROOT}/hardware/esp32/LightBLE/src/main.cpp`,
+    `${ROOT}/hardware/esp32/LightBLE/src/ble_peripheral.cpp`,
+    `${ROOT}/hardware/esp32/LightBLE/src/serial_events.cpp`,
     `${ROOT}/hardware/esp32/LightBLE/src/ota_server.cpp`,
   ];
   const fw = paths.filter((p) => existsSync(p)).map((p) => readFileSync(p, 'utf8')).join('\n');

@@ -186,9 +186,7 @@
       "target_ids": [
         "PROTO-010"
       ],
-      "test_ids": [
-        "TEST-E-006"
-      ],
+      "test_ids": [],
       "first_breakpoint": ".github/workflows/release-build.yml builds Flutter/Tauri; not UniApp Android + Peripheral/Observer firmware",
       "implementation_files": [],
       "forbidden_files": [
@@ -212,20 +210,10 @@
       "status": "DONE",
       "dependencies": [],
       "unlocks": [],
-      "gap_count": 3,
-      "target_ids": [
-        "FEAT-057",
-        "REQ-048",
-        "REQ-051"
-      ],
-      "test_ids": [
-        "TEST-I-009",
-        "TEST-H-002",
-        "TEST-H-003",
-        "TEST-U-015",
-        "TEST-W-010"
-      ],
-      "first_breakpoint": "[TEST-I-009 REQ-047~051 FEAT-057/063 FLOW-010] 第一断点: TypeError: Failed to resolve module specifier \"./device-display-name.js\" from \"data:text/javascript;base64,",
+      "gap_count": 0,
+      "target_ids": [],
+      "test_ids": [],
+      "first_breakpoint": "",
       "implementation_files": [],
       "forbidden_files": [
         "apps/uniapp/** (until TP-G3)",
@@ -575,7 +563,7 @@
       "title": "服务/特征/名称/LED/Device Info 对齐契约",
       "root_cause_id": "RC-ESP32-LED-NAME",
       "severity": "P1",
-      "status": "PLANNED",
+      "status": "DONE",
       "dependencies": [
         "ESP32-BUILD-001"
       ],
@@ -685,8 +673,8 @@
         "TEST-A-010",
         "TEST-W-009",
         "TEST-E-006",
-        "TEST-I-007",
-        "TEST-U-014"
+        "TEST-U-014",
+        "TEST-I-007"
       ],
       "first_breakpoint": "PAGE-008 内联广告逻辑；useBroadcastSession 未使用",
       "implementation_files": [],
@@ -741,40 +729,10 @@
       "unlocks": [
         "VERIFY-SMART-HID-001"
       ],
-      "gap_count": 7,
-      "target_ids": [
-        "FEAT-053",
-        "FEAT-058",
-        "REQ-047",
-        "REQ-049",
-        "REQ-054",
-        "PAGE-001",
-        "FLOW-010"
-      ],
-      "test_ids": [
-        "TEST-U-015",
-        "TEST-H-001",
-        "TEST-W-010",
-        "TEST-C-007",
-        "TEST-H-003",
-        "TEST-I-009",
-        "TEST-P-001",
-        "TEST-A-001",
-        "TEST-A-005",
-        "TEST-W-001",
-        "TEST-W-007",
-        "TEST-E-001",
-        "TEST-U-008",
-        "TEST-U-006",
-        "TEST-U-007",
-        "TEST-U-001",
-        "TEST-U-005",
-        "TEST-I-003",
-        "TEST-I-001",
-        "TEST-I-002",
-        "TEST-H-002"
-      ],
-      "first_breakpoint": "[TEST-U-015 REQ-047~050 FEAT-053/055/056/058 FLOW-010] 第一断点: SyntaxError: Unexpected identifier 'as'",
+      "gap_count": 0,
+      "target_ids": [],
+      "test_ids": [],
+      "first_breakpoint": "",
       "implementation_files": [],
       "forbidden_files": [
         "apps/uniapp/** (until TP-G3)",
@@ -951,8 +909,6 @@
       ],
       "test_ids": [
         "TEST-R-006",
-        "TEST-E-008",
-        "TEST-R-001",
         "TEST-R-002",
         "TEST-R-007",
         "TEST-A-005",
@@ -977,7 +933,9 @@
         "TEST-H-005",
         "TEST-H-006",
         "TEST-R-005",
+        "TEST-E-008",
         "TEST-R-008",
+        "TEST-R-001",
         "TEST-R-009",
         "TEST-R-010",
         "TEST-R-011"
@@ -1078,7 +1036,6 @@
   "recommended_order": [
     "RELEASE-PIPELINE-001",
     "OTA-E5-VERIFICATION",
-    "ESP32-PERIPHERAL-001",
     "ESP32-OBSERVER-001",
     "ESP32-FAULT-001",
     "PAGE-BROADCAST-001",

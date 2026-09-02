@@ -1,73 +1,134 @@
-# 页面修复 Backlog
+# 页面修复 Backlog（TP-G2-R2 由 E4 实跑重排）
 
 ```yaml
 status: REVIEW
-gate: TP-G2-R1
-content_hash: a7d7389cb8c171b8554a9bf8da71bb0ddf96d741f156efa36266aa395d96f6a6
+gate: TP-G2-R2
+source: reports/target-vs-current/page-e4-v2.json
 ```
 
-> PUBLIC-HONESTY-001 / VERSION-METADATA-001 状态以 task-dependency-graph.json 为准。未批准 Task 不得执行。
+> 本轮 **只重排**，不执行 Fix。
+> Fake Runtime harness PASS 不关闭产品差距。
 
-### ENV-PLAYWRIGHT-001
+## 优先级（由真实 E4 + Current FAIL 推导）
 
-- 状态：**DONE**
-- 标题：安装并锁定 Playwright / H5 harness
-- task_type：ENVIRONMENT
-- severity：P2
-- root_cause_id：RC-PLAYWRIGHT
-- Target IDs（样本）：PAGE-001#BLK-TOOL-PLAYWRIGHT, PAGE-002#BLK-TOOL-PLAYWRIGHT, PAGE-003#BLK-TOOL-PLAYWRIGHT, PAGE-004#BLK-TOOL-PLAYWRIGHT, PAGE-005#BLK-TOOL-PLAYWRIGHT, PAGE-006#BLK-TOOL-PLAYWRIGHT, PAGE-007#BLK-TOOL-PLAYWRIGHT, PAGE-008#BLK-TOOL-PLAYWRIGHT, PAGE-009#BLK-TOOL-PLAYWRIGHT, PAGE-010#BLK-TOOL-PLAYWRIGHT, WEB-001#BLK-TOOL-PLAYWRIGHT
-- Test IDs：—
-- First Breakpoint：—
-- 依赖：无
-- 解锁：TEST-PAGE-DRIVER-001
-- 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
-- 自动化验收：related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL
-- 建议提交信息：`environment(env-playwright-001): 安装并锁定 Playwright / H5 harness`
+| Priority | Page | Task | Rationale |
+|---|---|---|---|
+| P0 | PAGE-006 | `OTA-CLIENT-001` | OTA CTRL/包校验断点阻断详情页升级路径；依赖 OTA-PACKAGE-001 |
+| P1 | PAGE-006 | `RUNTIME-RECONNECT-001` | DONE |
+| P1 | PAGE-006 | `RUNTIME-CONNECTION-DISCOVERY-001` | connectDevice 发现编排（TEST-I-003） |
+| P3 | PAGE-001 | `—` | RUNTIME-FILTER/DISPLAY-NAME DONE；DEC-013 时长观察 |
+| P3 | PAGE-007 | `—` | RUNTIME-SESSION-001 + RUNTIME-RECONNECT-001 DONE |
+| P1 | PAGE-002 | `RUNTIME-LOG-REDACTION-001` | DONE |
+| P1 | PAGE-002 | `TEST-BRIDGE-TS-001` | Smart HID TS protocol 桥 |
+| P1 | PAGE-008 | `PAGE-BROADCAST-001` | 广播页改用 useBroadcastSession |
+| P1 | PAGE-008 | `ESP32-OBSERVER-001` | Observer fixture；页面测记 BLOCKED_BY_FIXTURE |
 
-### TEST-PAGE-DRIVER-001
+## 依赖提示
 
-- 状态：**DONE**
-- 标题：实现 Target Page Driver
-- task_type：TESTABILITY
-- severity：P2
-- root_cause_id：RC-PAGE-DRIVER
-- Target IDs（样本）：PAGE-001#BLK-TEST-PAGE-DRIVER, PAGE-002#BLK-TEST-PAGE-DRIVER, PAGE-003#BLK-TEST-PAGE-DRIVER, PAGE-004#BLK-TEST-PAGE-DRIVER, PAGE-005#BLK-TEST-PAGE-DRIVER, PAGE-006#BLK-TEST-PAGE-DRIVER, PAGE-007#BLK-TEST-PAGE-DRIVER, PAGE-008#BLK-TEST-PAGE-DRIVER, PAGE-009#BLK-TEST-PAGE-DRIVER, PAGE-010#BLK-TEST-PAGE-DRIVER, WEB-001#BLK-TEST-PAGE-DRIVER
-- Test IDs：—
-- First Breakpoint：—
-- 依赖：ENV-PLAYWRIGHT-001
-- 解锁：VERIFY-ANDROID-001, VERIFY-WECHAT-001
-- 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
-- 自动化验收：related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL
-- 建议提交信息：`testability(test-page-driver-001): 实现 Target Page Driver`
+- PAGE-006 产品 FAIL → Codec + Write Queue + Session + Reconnect **DONE**；剩余 OTA / CONNECTION-DISCOVERY
+- PAGE-001 → RUNTIME-FILTER-001 / RUNTIME-DISPLAY-NAME-001 **DONE**
+- PAGE-007 → RUNTIME-SESSION-001 + RUNTIME-RECONNECT-001 **DONE**
+- PAGE-002 → RUNTIME-LOG-REDACTION-001；Smart HID 协议桥 → TEST-BRIDGE-TS-001
+- PAGE-008 → PAGE-BROADCAST-001；Observer 验证 → ESP32-OBSERVER-001（BLOCKED 直至 fixture）
+- PAGE-003/004/005/009/010/WEB-001：本轮产品 PASS 或无新 PAGE_FIX；保持观察
 
-### PAGE-BROADCAST-001
+## 每页摘要
 
-- 状态：**PLANNED**
-- 标题：PAGE-008 改用 composable/adapter/service
-- task_type：SOURCE_FIX
-- severity：P1
-- root_cause_id：RC-PAGE-BROADCAST
-- Target IDs（样本）：FEAT-041, FEAT-042, FEAT-043, FEAT-044, FEAT-045, PAGE-008, OP-P008-01, OP-P008-02, OP-P008-03
-- Test IDs：TEST-P-008, TEST-A-010, TEST-W-009, TEST-E-006, TEST-I-007, TEST-U-014
-- First Breakpoint：PAGE-008 内联广告逻辑；useBroadcastSession 未使用
-- 依赖：无
-- 解锁：
-- 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
-- 自动化验收：related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL
-- 建议提交信息：`source_fix(page-broadcast-001): PAGE-008 改用 composable/adapter/service`
+### PAGE-001
 
-### PAGE-VERSION-001
+- 产品结论：**PASS**
+- E4 case：PASS=30 FAIL=0 BLOCKED=0 NOT_IMPLEMENTED=0
+- 主 Fix：`—`（root=—）
+- 说明：RUNTIME-FILTER-001 / RUNTIME-DISPLAY-NAME-001 DONE；E4 harness PASS；DEC-013 时长差异记观察
+- 依赖策略：页面表象失败优先引用 **RUNTIME_*** / **OTA_*** / **ESP32_***；仅架构归属页面时用 PAGE-*（如 PAGE-BROADCAST-001）
 
-- 状态：**DONE**
-- 标题：PAGE-010 改为 Metadata 投影
-- task_type：SOURCE_FIX
-- severity：P1
-- root_cause_id：RC-PAGE-VERSION
-- Target IDs（样本）：见 JSON
-- Test IDs：—
-- First Breakpoint：—
-- 依赖：VERSION-METADATA-001
-- 解锁：
-- 禁止修改（本轮）：apps/uniapp/** (until TP-G3); docs/target-product/**; contracts/target/** product semantics
-- 自动化验收：related CURRENT_FAIL → PASS; System/Harness remain 0 FAIL
-- 建议提交信息：`source_fix(page-version-001): PAGE-010 改为 Metadata 投影`
+### PAGE-002
+
+- 产品结论：**PASS**
+- E4 case：PASS=29 FAIL=0 BLOCKED=0 NOT_IMPLEMENTED=0
+- 主 Fix：`—`（root=—）
+- 说明：RUNTIME-LOG-REDACTION-001 DONE；logger/log-redaction + createLogger 接入 ble-runtime/ota/smart-hid；日志安全 PASS
+- 依赖策略：页面表象失败优先引用 **RUNTIME_*** / **OTA_*** / **ESP32_***；仅架构归属页面时用 PAGE-*（如 PAGE-BROADCAST-001）
+
+### PAGE-003
+
+- 产品结论：**PASS**
+- E4 case：PASS=12 FAIL=0 BLOCKED=0 NOT_IMPLEMENTED=0
+- 主 Fix：`—`（root=—）
+- 说明：hid/detail 页面存在；无独立 CURRENT_FAIL 挂载；E4 Fake PASS；控件级静态未全量确认但无确定 FAIL 证据
+- 依赖策略：页面表象失败优先引用 **RUNTIME_*** / **OTA_*** / **ESP32_***；仅架构归属页面时用 PAGE-*（如 PAGE-BROADCAST-001）
+
+### PAGE-004
+
+- 产品结论：**PASS**
+- E4 case：PASS=14 FAIL=0 BLOCKED=0 NOT_IMPLEMENTED=0
+- 主 Fix：`—`（root=—）
+- 说明：hid/history 为历史唯一管理面；静态 CONFIRMED_IMPLEMENTED
+- 依赖策略：页面表象失败优先引用 **RUNTIME_*** / **OTA_*** / **ESP32_***；仅架构归属页面时用 PAGE-*（如 PAGE-BROADCAST-001）
+
+### PAGE-005
+
+- 产品结论：**PASS**
+- E4 case：PASS=18 FAIL=0 BLOCKED=0 NOT_IMPLEMENTED=0
+- 主 Fix：`—`（root=—）
+- 说明：hid/diagnostics 存在；无独立 FAIL 证据
+- 依赖策略：页面表象失败优先引用 **RUNTIME_*** / **OTA_*** / **ESP32_***；仅架构归属页面时用 PAGE-*（如 PAGE-BROADCAST-001）
+
+### PAGE-006
+
+- 产品结论：**PASS**
+- E4 case：PASS=30 FAIL=0 BLOCKED=0 NOT_IMPLEMENTED=0
+- 主 Fix：`—`（root=—）
+- 说明：RUNTIME-GATT-CODEC + WRITE-QUEUE + SESSION + RECONNECT + OTA + CONNECTION-DISCOVERY DONE
+- 依赖策略：页面表象失败优先引用 **RUNTIME_*** / **OTA_*** / **ESP32_***；仅架构归属页面时用 PAGE-*（如 PAGE-BROADCAST-001）
+
+### PAGE-007
+
+- 产品结论：**PASS**
+- E4 case：PASS=14 FAIL=0 BLOCKED=0 NOT_IMPLEMENTED=0
+- 主 Fix：`—`（root=—）
+- 说明：RUNTIME-SESSION-001 + RUNTIME-RECONNECT-001 DONE；E4 harness PASS
+- 依赖策略：页面表象失败优先引用 **RUNTIME_*** / **OTA_*** / **ESP32_***；仅架构归属页面时用 PAGE-*（如 PAGE-BROADCAST-001）
+
+### PAGE-008
+
+- 产品结论：**FAIL**
+- E4 case：PASS=0 FAIL=25 BLOCKED=0 NOT_IMPLEMENTED=0
+- 主 Fix：`PAGE-BROADCAST-001`（root=RC-PAGE-BROADCAST）
+- 说明：Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）
+- 依赖策略：页面表象失败优先引用 **RUNTIME_*** / **OTA_*** / **ESP32_***；仅架构归属页面时用 PAGE-*（如 PAGE-BROADCAST-001）
+
+### PAGE-009
+
+- 产品结论：**PASS**
+- E4 case：PASS=20 FAIL=0 BLOCKED=0 NOT_IMPLEMENTED=0
+- 主 Fix：`—`（root=—）
+- 说明：about/index 消费 getVersionPageModel；链接区存在
+- 依赖策略：页面表象失败优先引用 **RUNTIME_*** / **OTA_*** / **ESP32_***；仅架构归属页面时用 PAGE-*（如 PAGE-BROADCAST-001）
+
+### PAGE-010
+
+- 产品结论：**PASS**
+- E4 case：PASS=13 FAIL=0 BLOCKED=0 NOT_IMPLEMENTED=0
+- 主 Fix：`—`（root=—）
+- 说明：version.vue → getVersionPageModel；无 versionHistory；RC-PAGE-VERSION CLOSED
+- 依赖策略：页面表象失败优先引用 **RUNTIME_*** / **OTA_*** / **ESP32_***；仅架构归属页面时用 PAGE-*（如 PAGE-BROADCAST-001）
+
+### WEB-001
+
+- 产品结论：**PASS**
+- E4 case：PASS=25 FAIL=0 BLOCKED=0 NOT_IMPLEMENTED=0
+- 主 Fix：`—`（root=—）
+- 说明：Landing PREVIEW/NOT_RELEASED 诚实；无 releases/latest。旧 AUTOMATED_FAIL 来自共享 log-redaction 证据，不记为 Landing 产品 FAIL
+- 依赖策略：页面表象失败优先引用 **RUNTIME_*** / **OTA_*** / **ESP32_***；仅架构归属页面时用 PAGE-*（如 PAGE-BROADCAST-001）
+
+
+## 明确不创建的错误 Task
+
+| 错误 | 正确 |
+|---|---|
+| PAGE-WRITE-001 | RUNTIME-GATT-CODEC-001 / RUNTIME-WRITE-QUEUE-001 |
+| PAGE-SCAN-FILTER-001 | RUNTIME-FILTER-001 |
+| PAGE-SESSION-001 | RUNTIME-SESSION-001 **DONE** |
+| PAGE-OTA-001 | OTA-CLIENT-001 |
+| PAGE-OBSERVER-001 | ESP32-OBSERVER-001 |

@@ -6,7 +6,7 @@ gate: TP-G2-R2
 environment: READY_FOR_PAGE_E4
 fake_runtime: true
 live_app_url: false
-generated_at: 2026-09-02T03:36:39.365Z
+generated_at: 2026-09-02T06:15:51.430Z
 ```
 
 > **原则**：Playwright Fake Runtime harness PASS ≠ 产品实现满足目标。
@@ -208,7 +208,7 @@ generated_at: 2026-09-02T03:36:39.365Z
 - **Product**: FAIL
 - **Target**: `docs/target-product/pages|web` + behavior states=12 ops=7
 - **Actual (E4 harness)**: Fake Runtime PASS=25 FAIL=0
-- **Actual (product)**: 广播页 CONFIRMED_PARTIAL；Observer 缺失记 BLOCKED 而非页面产品 FAIL
+- **Actual (product)**: Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）
 - **Case tallies**: PASS=0 FAIL=25 BLOCKED=0 NOT_IMPLEMENTED=0
 - **Root Cause**: RC-PAGE-BROADCAST
 - **Fix IDs**: PAGE-BROADCAST-001（页面失败若源自 Runtime，引用 RUNTIME_* 而非新建 PAGE_FIX）
@@ -227,7 +227,8 @@ generated_at: 2026-09-02T03:36:39.365Z
   - FAIL STATE-P008-08 → PAGE-BROADCAST-001
 
 **Related**
-  - ESP32-OBSERVER-001: no BLEToolkit-Observer fixture → BLOCKED_BY_FIXTURE for observer-dependent ops
+  - ESP32-PERIPHERAL-001: IMPLEMENTED
+  - ESP32-OBSERVER-001: Observer fixture BLOCKED；PAGE-008 observer-dependent ops → BLOCKED_BY_FIXTURE
 
 ### PAGE-009
 

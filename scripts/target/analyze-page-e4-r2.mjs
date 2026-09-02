@@ -74,7 +74,13 @@ const FACTS = {
     && /CONNECTION_STATE\.DISCOVERING/.test(read('apps/uniapp/services/ble-runtime/index.js'))
     && /capabilities/.test(read('apps/uniapp/services/ble-runtime/session-registry.js')),
   scanAutoStop5: /autoStopSeconds\s*=\s*5/.test(read('apps/uniapp/composables/use-ble-scan.js')),
-  hasObserver: /BLEToolkit-Observer|fixture_observer/.test(read('hardware/esp32/LightBLE/src/main.cpp')),
+  hasObserver: /BLEToolkit-Observer/.test(
+    read('hardware/esp32/LightBLE/src/main.cpp')
+    + read('hardware/esp32/LightBLE/include/fixture_config.h')
+    + read('hardware/esp32/LightBLE/src/fixture_observer_stub.cpp'),
+  ),
+  hasPeripheral: exists('hardware/esp32/LightBLE/src/ble_peripheral.cpp')
+    && /NimBLEDevice::init\("BLEToolkit-Server"\)/.test(read('hardware/esp32/LightBLE/src/ble_peripheral.cpp')),
   filterHasKeywordMatch: /keyword|tokens|includes\(/.test(read('apps/uniapp/services/ble-runtime/device-filter.js')),
   otaWritesCtrl: /writeValue[\s\S]{0,120}CHAR_CTRL|CHAR_CTRL[\s\S]{0,120}writeValue/.test(
     read('apps/uniapp/utils/ota_manager.js') + read('apps/uniapp/services/ota/ota-manager.js'),
@@ -232,9 +238,10 @@ const PAGE_ASSESS = {
       breakpoint: 'page does not use useBroadcastSession composable/owner',
     },
     also: [
-      { task_id: 'ESP32-OBSERVER-001', status_hint: 'BLOCKED', breakpoint: 'no BLEToolkit-Observer fixture → BLOCKED_BY_FIXTURE for observer-dependent ops' },
+      { task_id: 'ESP32-PERIPHERAL-001', breakpoint: FACTS.hasPeripheral ? 'IMPLEMENTED' : 'OPEN' },
+      { task_id: 'ESP32-OBSERVER-001', status_hint: 'BLOCKED', breakpoint: 'Observer fixture BLOCKED；PAGE-008 observer-dependent ops → BLOCKED_BY_FIXTURE' },
     ],
-    notes: '广播页 CONFIRMED_PARTIAL；Observer 缺失记 BLOCKED 而非页面产品 FAIL',
+    notes: 'Peripheral: IMPLEMENTED；Observer: BLOCKED；广播页仍缺 useBroadcastSession（PAGE-BROADCAST-001）',
   },
   'PAGE-009': {
     product: 'PASS',

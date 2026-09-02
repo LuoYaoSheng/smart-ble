@@ -1,0 +1,33 @@
+#pragma once
+
+// LightBLE fixture_peripheral contract constants (ble-fixture-target.json)
+
+#define DEVICE_NAME "BLEToolkit-Server"
+#define DEVICE_OBSERVER_NAME "BLEToolkit-Observer"
+#define DEVICE_HARDWARE "esp32-wroom-32"
+#define FIXTURE_ROLE_PERIPHERAL "peripheral"
+
+#define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
+#define CHARACTERISTIC_UUID_CONTROL "beb5483e-36e1-4688-b7f5-ea07361b26a8"
+#define CHARACTERISTIC_UUID_STATUS_NOTIFY "beb5483e-36e1-4688-b7f5-ea07361b26a9"
+
+#define SERVICE_UUID_PERMISSIONS "4fafc201-1fb5-459e-8fcc-c5c9c331914c"
+#define CHARACTERISTIC_UUID_READ_ONLY "beb5483e-36e1-4688-b7f5-ea07361b26b0"
+#define CHARACTERISTIC_UUID_WRITE_ONLY "beb5483e-36e1-4688-b7f5-ea07361b26b1"
+#define CHARACTERISTIC_UUID_NOTIFY_ONLY "beb5483e-36e1-4688-b7f5-ea07361b26b2"
+#define CHARACTERISTIC_UUID_READ_WRITE "beb5483e-36e1-4688-b7f5-ea07361b26b3"
+#define CHARACTERISTIC_UUID_READ_NOTIFY "beb5483e-36e1-4688-b7f5-ea07361b26b4"
+#define CHARACTERISTIC_UUID_WRITE_NOTIFY "beb5483e-36e1-4688-b7f5-ea07361b26b5"
+#define CHARACTERISTIC_UUID_ALL "beb5483e-36e1-4688-b7f5-ea07361b26b6"
+
+// LED 命令表（PROTO-001）：FF00 关灯 / FF01 开灯 / FF02 快闪 / FF03 慢闪
+#define LED_CMD_OFF_HEX 0xFF00
+#define LED_CMD_ON_HEX 0xFF01
+#define LED_CMD_FAST_HEX 0xFF02
+#define LED_CMD_SLOW_HEX 0xFF03
+
+#define LED_PIN 2
+
+// Manufacturer ID for scan response (0x00E0 + "LightBLE")
+#define MFG_COMPANY_ID 0x00E0
+#define MFG_PAYLOAD "LightBLE"
