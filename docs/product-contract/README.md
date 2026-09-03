@@ -1,6 +1,6 @@
 # Smart BLE UniApp 产品契约
 
-状态：**当前正典（Canonical）**
+状态：**历史参考**（2026-09-02 起产品正典移交 [`docs/specs/`](../specs/README.md)——全平台公共产品基准规范；本目录保留为前代 UniApp 主线契约）
 
 首个完整版本目标：**UniApp Android App + 微信小程序**
 

@@ -2,6 +2,8 @@
 
 BLE Toolkit+ 是 Smart BLE 产品家族的微信生态和轻量跨端入口。它提供通用 BLE 扫描、连接、GATT 读写、通知、广播能力，并通过 Profile 注册表扩展 Smart HID 等设备专属任务。
 
+> **产品规范（公共）**：本应用是 [docs/specs/](../../docs/specs/README.md) 产品基准规范的**基准平台**实现。功能、页面、流程、交互、设计系统以规范为准；平台差异只在 [10_platform 差异设计](../../docs/specs/10_platform/PLATFORM_EXTENSION.md) 圈定范围内实现。
+
 ## 产品导航
 
 TabBar 固定为：

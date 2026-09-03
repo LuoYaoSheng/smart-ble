@@ -242,6 +242,7 @@ pio device monitor
 
 > ⚠️ 旧有的碎片化设计稿件已被悉数清理合并。所有跨端逻辑、状态流和 UI 组件粒度，均统一参考下方唯一的 Master 架构指南：
 
+- [⭐⭐ 产品基准规范 · 全平台公共（specs）](./docs/specs/README.md) —— 功能/页面/流程/交互/设计系统/平台差异的单一事实源，`apps/*` 全部按此开发（先有产品再有平台）
 - [⭐ 核心架构与全平台统一规范 (MASTER ARCHITECTURE)](./docs/MASTER_ARCHITECTURE.md)
 - [🏗️ 大统一核心底层逻辑栈指南 (CORE LOGIC GUIDE)](./docs/CORE_LOGIC_GUIDE.md)
 - [🧩 跨平台前端原子化组件拆分解读 (UI COMPONENTS GUIDE)](./docs/UI_COMPONENTS_GUIDE.md)

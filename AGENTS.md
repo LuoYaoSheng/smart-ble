@@ -1,7 +1,7 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-`apps/` contains platform clients: `android/` (Kotlin + Compose), `flutter/` (Dart + Riverpod), `uniapp/` (Vue/uni-app), `desktop/electron/`, `desktop/tauri/`, `desktop/macos/`, and `ios/`. Shared BLE abstractions live in `core/ble-core/` and protocol definitions in `core/protocols/`. Hardware examples are under `hardware/esp32/LightBLE/`. Product specs, flow docs, and manual test notes live in `docs/`.
+`apps/` contains platform clients: `android/` (Kotlin + Compose), `flutter/` (Dart + Riverpod), `uniapp/` (Vue/uni-app), `desktop/electron/`, `desktop/tauri/`, `desktop/macos/`, and `ios/`. Shared BLE abstractions live in `core/ble-core/` and protocol definitions in `core/protocols/`. Hardware examples are under `hardware/esp32/LightBLE/`. Product specs, flow docs, and manual test notes live in `docs/`; the cross-platform product baseline canon (all `apps/*` must follow) is [`docs/specs/README.md`](docs/specs/README.md).
 
 `apps/uniapp/` 已扩展 Smart HID 配网模块：`pages/hid/` 保留 add / detail / diagnostics 三类二级路由，Smart HID 不占用独立 Tab；首页通用扫描通过 Profile 注册表识别设备并显示“Smart HID 配网”动作。配网页面自动连接所选设备，再以单页表单收集 Wi-Fi 与 ControlHub 信息，最后显示下发状态。Smart HID 配网正典在 Smart-HID-Workspace `protocols/ble/PROVISIONING_V1.md`，`core/protocols/hid-provisioning-protocol.ts` 是小程序侧受锁定镜像；MQTT 公开定义在 `core/protocols/hid-command-schema.ts`。GATT 原语统一收敛在 `apps/uniapp/services/provisioning/`（transport + profile 注册表，Smart HID 是首个注册档案，后续设备家族按 profile 扩展）。
 

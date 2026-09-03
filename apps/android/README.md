@@ -2,6 +2,8 @@
 
 Smart BLE 调试工具的原生 Android 实现。
 
+> **产品规范（公共）**：本应用按 [docs/specs/](../../docs/specs/README.md) 产品基准规范开发——功能、页面、流程、交互、设计系统以规范为准；平台差异只在 [10_platform 差异设计](../../docs/specs/10_platform/PLATFORM_EXTENSION.md) 圈定范围内实现。
+
 ---
 
 ## 在产品家族中的角色

@@ -10,6 +10,9 @@ hero:
     alt: Smart BLE Brand Icon
   actions:
     - theme: brand
+      text: 产品基准规范（全平台）
+      link: /specs/
+    - theme: alt
       text: 查看产品目标与测试规范
       link: /target-product/
     - theme: alt

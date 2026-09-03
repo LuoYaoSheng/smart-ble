@@ -2,7 +2,7 @@
 
 > 给第一次体验 `BLE Toolkit+` 和第一次进入 `Smart BLE` 仓库的人。
 
-> 当前产品开发正典：[`product-contract/README.md`](./product-contract/README.md)。功能、页面、平台差异、ESP32 与测试声明以该目录为准。
+> 当前产品开发正典：[`specs/README.md`](./specs/README.md)（产品基准规范，全平台公共）——功能、页面、流程、交互、设计系统与平台差异边界均以该目录为准；`apps/*` 所有平台按其「平台开发总纲」开发。前代 UniApp 主线契约 [`product-contract/`](./product-contract/README.md) 转为历史参考。
 
 ---
 
