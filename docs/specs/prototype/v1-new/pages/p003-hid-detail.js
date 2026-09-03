@@ -30,6 +30,6 @@ PAGES['p003'] = {
           ${C.btn({label:'高级 BLE 调试',tone:'soft',icon:'set',act:'p003-gatt'})}
         </div>
       </div>`
-    : C.empty('box','设备记录不存在','该设备快照已随会话结束释放，请重新配网后查看。')}</div>`;
+    : C.empty({ill:'box',title:'设备记录不存在',desc:'该设备快照已随会话结束释放，请重新配网后查看。'})}</div>`;
   },
 };

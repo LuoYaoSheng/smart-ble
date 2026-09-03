@@ -2,7 +2,7 @@
 
 > Design System 三件套之一 · 2026-09-02 冻结 v1.0
 > 来源：prototype/v0-old 十色 Token 正式化（HTML_QA_REPORT §14 移交项）+ 商业级扩展。
-> 效力：**所有平台（apps/*）与所有原型唯一视觉数值来源**。CSS 实现见 [prototype/v1-new/assets/tokens.css](../../prototype/v1-new/assets/tokens.css)；平台实现时按 §8 映射，数值不得另立。
+> 效力：**所有平台（apps/*）与所有原型唯一视觉数值来源**。CSS 实现见 [prototype/v1-new/assets/tokens.css](../prototype/v1-new/assets/tokens.css)；平台实现时按 §8 映射，数值不得另立。
 
 ---
 

@@ -158,6 +158,74 @@ function p002LeaveConfirm(){
 }
 function p002Cleanup(){ const s=S.pages.p002; s.pwd=''; s.token=null; }
 
+/* ---------- 扫码面板（PAGE002 · F020） ---------- */
+/* M-2 扫码状态机（QR_ERROR_STATE_FIX）：补齐 F020 失败三分类——PAGE_SPEC §2 按钮表「失败按
+   取消/权限/失败分类提示」· PRD F020/R16 · v0-old「模拟扫码弹窗四分支」迁移回 v1-new（审计
+   P1-1：qrErr 死字段、p002-qr 恒成功）。状态：idle →（点扫码卡）scanning（模拟扫码面板）→
+   success（成功语义逐字保留：token 生成/hub 回填/toast/badge）或 error（qrErr.reason =
+   cancel/permission/invalid）。真机为系统扫码界面（uni.scanCode），原型以模拟面板演示四种
+   结果；关闭面板（X/遮罩）= 用户取消（真机退出相机同义，PAGE_SPEC「扫码取消·不算错误」）。 */
+function qrScanSheet(){
+  document.getElementById('layer').innerHTML=`<div class="mask sheetm" data-act="p002-qrclose">
+    <div class="sheet"><div class="grip"></div><div class="sh-h"><span class="t">扫描 ControlHub 配对码</span>
+    <button class="back-btn" data-act="p002-qrclose" style="background:var(--c-fill)">${C.ic('x','sm')}</button></div>
+    <div class="sh-b">
+      <div class="note info" style="margin:0 0 10px">真机为系统扫码界面（uni.scanCode）· 本面板为原型演示，展示四种扫码结果（F020 分类：成功 / 取消 / 权限 / 无效）。</div>
+      <div style="border:1.5px dashed var(--c-line);border-radius:12px;padding:26px 14px;text-align:center;margin-bottom:12px">
+        ${C.ic('qr','lg')}
+        <div style="margin-top:8px;font-size:var(--fs-body);font-weight:var(--fw-bold)">正在扫描…</div>
+        <div class="mono" style="font-size:var(--fs-mini);color:var(--c-mut);margin-top:4px">shid://pair · ControlHub 屏显二维码</div>
+      </div>
+      ${C.btn({label:'识别成功（演示）',tone:'primary',icon:'qr',block:true,act:'p002-qr-ok'})}
+      <div style="display:flex;gap:9px;margin-top:9px">
+        ${C.btn({label:'用户取消',tone:'soft',size:'sm',act:'p002-qr-cancel'})}
+        ${C.btn({label:'权限拒绝',tone:'soft',size:'sm',act:'p002-qr-perm'})}
+        ${C.btn({label:'二维码无效',tone:'soft',size:'sm',act:'p002-qr-invalid'})}
+      </div>
+    </div></div></div>`;
+}
+function qrFail(reason){
+  const s=S.pages.p002; closeLayer();
+  s.qrState='error'; s.qrErr={reason};
+  toast(({cancel:'已取消扫码（不算错误）',permission:'扫码权限被拒绝',invalid:'未识别到有效配对码'})[reason]);
+  renderAll();
+}
+
+/* ---------- 诊断行为（PAGE005） ---------- */
+/* M-1 统一诊断入口（P005_DIAGNOSE_FIX）：补齐 p005-run 两处调用的 p005Diagnose 定义。
+   状态机 = STATE_MACHINE §8 / STATE_MODEL #8 既有页面六值（idle/connected/checking/live/
+   offline/error）+ 行级五值（pending/active/ok/warn/fail），不新增状态：
+   idle/live 点击 → checking（行级 pending→active 逐项推进）→ live（五行 ok 结论）；
+   异常分支（S.shared.diagFail 预置，注入机制同 provFailCode / otaFailPreset）→
+   error（检测失败）+ 错误详情 + modal「请让设备进入配网/恢复模式后重试」（PAGE_SPEC P005
+   错误态口径）。五项与明细文案逐字取自场景库「检测完成 · 全正常」，F024 五项不变。 */
+let DIAG_RUN = 0;                                                /* 诊断运行令牌（防跨运行 tick 窜扰） */
+function p005Diagnose(device){
+  const s=S.pages.p005;
+  if(s.state==='checking'||s.connecting) return;                 /* 检测中防重入 */
+  const my=++DIAG_RUN;                                           /* 运行令牌：旧运行残留 tick 一律失效（防跨运行窜扰） */
+  if(device&&device.deviceId) s.deviceId=device.deviceId;
+  s.state='checking'; s.error=null; s.showErr=false; s.connecting=false;
+  s.rows=[['ble','BLE 链路'],['wifi','Wi-Fi 连接'],['hub','ControlHub'],['conn','控制连接'],['usb','设备 Ready 状态']]
+    .map(([key,label])=>({key,label,state:'pending'}));
+  renderAll();
+  const step=(i,st,detail)=>{ if(!s.rows)return; s.rows[i].state=st; if(detail)s.rows[i].detail=detail; renderAll(); };
+  later(350,()=>{ if(my!==DIAG_RUN)return;
+    if(S.shared.diagFail){
+      DIAG_RUN=0;                                                /* 本运行已终态（error），残留 tick 全部失效 */
+      s.state='error'; s.rows=null; s.showErr=false;
+      s.error={code:'diagnostic_connect_failed',message:'连接超时：请让设备进入配网/恢复模式后重试（READY 设备会关闭蓝牙广播）。'};
+      modal({title:'连接失败',content:'请让设备进入配网/恢复模式后重试',confirmText:'知道了',hideCancel:true});
+      renderAll(); return; }
+    step(0,'active'); });
+  later(700,()=>{ if(my!==DIAG_RUN)return; step(0,'ok','GATT 连接保持 · RSSI -52 dBm'); step(1,'active'); });
+  later(1050,()=>{ if(my!==DIAG_RUN)return; step(1,'ok','Home-5G · IP 192.168.1.42'); step(2,'active'); });
+  later(1400,()=>{ if(my!==DIAG_RUN)return; step(2,'ok','192.168.1.8:17892 · 已配对'); step(3,'active'); });
+  later(1750,()=>{ if(my!==DIAG_RUN)return; step(3,'ok','MQTT 已建立 · QoS1'); step(4,'active'); });
+  later(2100,()=>{ if(my!==DIAG_RUN)return; step(4,'ok','HID 已就绪，等待 ControlHub 指令');
+    s.state='live'; toast('检测完成 · 五项链路正常',true); renderAll(); });
+}
+
 /* ---------- GATT 行为 ---------- */
 function p006Connect(){
   const s=S.pages.p006; s.connecting=true; s.panel='connecting'; s.connected=false; renderAll();
@@ -166,6 +234,18 @@ function p006Connect(){
     addLog('p006','sys','MTU 协商 185 · 会话已就绪'); renderAll(); });
 }
 function findChar(uuid){ for(const sv of MOCK.gattTree) for(const ch of sv.chars) if(ch.uuid===uuid) return ch; return null; }
+/* M-3 统一入口（P006_SESSION_STATE_FIX）：P001/P003/P007 三路径进入 P006 一律读唯一
+   会话注册表 MOCK.connected——命中=连接复用（已连接 · ready），未命中=走既有连接流
+   （连接中 → 已连接）。显示映射沿用 p006 既有三元：已连接/连接中/未连接（不新增状态）。 */
+function p006Enter(d){
+  const s=S.pages.p006;
+  if(MOCK.connected.some(x=>x.deviceId===d.deviceId)){
+    s.connected=true; s.connecting=false; s.panel='ready'; s.logs=[];
+    addLog('p006','sys','连接复用 · 已有会话（READY）· 服务发现完成（4 服务 / 7 特征）');
+    addLog('p006','sys','MTU 协商 185 · 会话已就绪');
+    renderAll();
+  } else p006Connect();
+}
 function hexToText(hex){ try{ return hex.trim().split(/\s+/).map(h=>String.fromCharCode(parseInt(h,16))).join(''); }catch(e){ return ''; } }
 
 /* ---------- OTA 相位 ---------- */
@@ -214,19 +294,32 @@ const ACTIONS = {
     const s=S.pages.p001; if(s.scanning){ s.scanning=false; }
     d.connected=true; toast(`连接 ${d.name||'设备'} · 暂存路由上下文`);
     go('p006',{props:{device:{deviceId:d.deviceId,name:d.name||'未命名 BLE 设备',RSSI:d.RSSI}}});
-    p006Connect(); },
+    p006Enter(d); },
   'p001-config': el=>{ const d=MOCK.scanDevices.find(x=>x.deviceId===el.dataset.id); if(!d)return;
     S.shared.currentDevice=d; S.shared.provFailCode=null;
     go('p002',{props:{device:{deviceId:d.deviceId,name:d.name,RSSI:d.RSSI}}});
     p002Connect(); },
+  /* 广播数据弹窗（F004 · R04 口径）：设备 ID/名称/RSSI/profileMatch + Service UUIDs +
+     AD 结构逐段（COMPONENT C2）+ 整包 hex + Manufacturer Data + Service Data；
+     单字段缺失逐项标注「本轮平台 API 未提供此字段」；adStructures 为 mock 预置分段展示数据，非运行时解析 */
   'p001-advdlg': el=>{ const d=MOCK.scanDevices.find(x=>x.deviceId===el.dataset.id); if(!d)return;
-    const a=d.advertisement;
+    const a=d.advertisement, su=a&&a.serviceUuids, sd=a&&a.serviceData, segs=a&&a.adStructures;
+    const miss='<div class="miss">本轮平台 API 未提供此字段</div>';
+    const field=(label,right,inner)=>`<div class="ad-sec"><div class="hd"><span>${label}</span><span>${right||''}</span></div>${inner}</div>`;
     sheet(`广播数据 · ${d.name||d.deviceId.slice(-6)}`,`
+      <div class="kv"><span class="k">设备 ID</span><span class="v mono">${d.deviceId}</span></div>
+      <div class="kv"><span class="k">名称</span><span class="v">${d.name||'（未命名）'}</span></div>
       <div class="kv"><span class="k">RSSI</span><span class="v mono">${d.RSSI} dBm</span></div>
       <div class="kv"><span class="k">profileMatch</span><span class="v mono">${d.profileMatch?`${d.profileMatch.level} · ${d.profileMatch.profileId}`:'—'}</span></div>
+      ${field('Service UUIDs', su&&su.length?`${su.length} 项`:'—', su&&su.length?su.map(u=>`<div class="hex">${u}</div>`).join(''):miss)}
       ${a.present?`
-      <div class="ad-sec" style="margin-top:8px"><div class="hd"><span>advertisement.hex · ${a.byteLength} B</span><span>${a.length} B</span></div><div class="hex">${a.hex}</div></div>
-      ${a.manufacturerId?`<div class="kv"><span class="k">厂商 ID</span><span class="v mono">0x${a.manufacturerId}</span></div>`:''}`
+      ${field(`AD 结构 · 逐段（${segs&&segs.length?segs.length+' 段':'—'}）`, `advertisement.hex ${a.byteLength} B`,
+        (segs&&segs.length?segs.map(g=>`<div class="hd" style="margin-top:5px"><span>${g.type} · ${g.name}</span><span>${g.len} B</span></div><div class="hex">${g.hex}</div>`).join(''):miss)
+        +`<div class="hd" style="margin-top:7px"><span>整包 hex</span><span>${a.length} B</span></div><div class="hex">${a.hex}</div>`)}
+      ${a.manufacturerId?`<div class="kv"><span class="k">厂商 ID（Manufacturer Data）</span><span class="v mono">0x${a.manufacturerId}</span></div>`
+        :field('Manufacturer Data','—',miss)}
+      ${field('Service Data', sd&&sd.present?`${sd.uuid} · ${sd.byteLength} B`:'—',
+        sd&&sd.present?`<div class="hex">${sd.hex}</div>`:miss)}`
       :`<div class="note info" style="margin-top:8px">本轮平台 API 未提供此字段（advertisement 不存在）</div>`}
       ${a.present&&a.byteLength===0?'<div class="note warn">字段存在但长度为 0</div>':''}
       <div style="display:flex;gap:9px;margin-top:14px">
@@ -239,14 +332,21 @@ const ACTIONS = {
   'p002-reconnect': ()=>p002Connect(),
   'p002-rejoin': ()=>{ const s=S.pages.p002; s.lost=false; toast('已重新连接 · 表单已保留',true); renderAll(); },
   'p002-eye': ()=>{ const s=S.pages.p002; s.showPwd=!s.showPwd; renderAll(); },
-  'p002-qr': ()=>{ const s=S.pages.p002; s.qrErr=null; s.token='tok-3f9a7c1e'+Math.random().toString(16).slice(2,10);
+  'p002-qr': ()=>{ const s=S.pages.p002; s.qrErr=null; s.qrState='scanning'; renderAll(); qrScanSheet(); },
+  'p002-qr-ok': ()=>{ const s=S.pages.p002; closeLayer();
+    s.qrState='success'; s.qrErr=null; s.token='tok-3f9a7c1e'+Math.random().toString(16).slice(2,10);
     if(!s.hub) s.hub='192.168.1.8:17892'; toast('配对码已解析 · 地址与令牌已回填',true); renderAll(); },
+  'p002-qr-cancel': ()=>qrFail('cancel'),
+  'p002-qr-perm': ()=>qrFail('permission'),
+  'p002-qr-invalid': ()=>qrFail('invalid'),
+  'p002-qrclose': ()=>qrFail('cancel'),                        /* 关闭扫码面板 = 用户取消（真机退出相机同义） */
+  'p002-qrsetting': ()=>toast('已跳转系统设置（演示）'),
   'p002-submit': ()=>{ S.shared.provFailCode=null; p002Submit(); },
   'p002-cancelwait': ()=>{ const s=S.pages.p002; const e=MOCK.provErrors.timeout;
     s.provisioning=false; s.err={code:'timeout',msg:e.msg,row:'conn',recovery:'retry'}; renderAll(); },
   'p002-backform': ()=>{ const s=S.pages.p002; S.shared.provFailCode=null;
     s.phase='configure'; s.err=null; s.provisioning=false; s.progress={wifi:'pending',hub:'pending',conn:'pending',usb:'pending'}; renderAll(); },
-  'p002-repairing': ()=>{ const s=S.pages.p002; s.token=null; s.phase='configure'; s.err=null; renderAll(); },
+  'p002-repairing': ()=>{ const s=S.pages.p002; s.token=null; s.qrState='idle'; s.qrErr=null; s.phase='configure'; s.err=null; renderAll(); },
   'p002-godiag': ()=>smartGo('p005'),
   'p002-view': ()=>{ const s=S.pages.p002;
     redirect('p003',{props:{device:{deviceId:s.device.deviceId,name:s.device.name,protocol:'V1',firmware:'1.1.1',lastWifi:s.ssid,lastHub:s.hub}}}); },
@@ -257,7 +357,8 @@ const ACTIONS = {
     go('p002',{props:{device:{deviceId:s.device.deviceId,name:s.device.name,RSSI:-52}}}); p002Connect(); },
   'p003-diag': ()=>go('p005',{props:{deviceId:S.pages.p003.device.deviceId}}),
   'p003-gatt': ()=>{ const s=S.pages.p003;
-    go('p006',{props:{device:{deviceId:s.device.deviceId,name:s.device.name,RSSI:-52}}}); },
+    const dv={deviceId:s.device.deviceId,name:s.device.name,RSSI:-52};
+    go('p006',{props:{device:dv}}); p006Enter(dv); },
 
   /* PAGE005 */
   'p005-run': ()=>{ const s=S.pages.p005;
@@ -277,6 +378,7 @@ const ACTIONS = {
   'p006-disconnect': ()=>{ const s=S.pages.p006; s.connected=false; s.panel='idle'; s.notifying={};
     addLog('p006','sys','已主动断开（不触发自动重连）');
     const d=MOCK.scanDevices.find(x=>x.deviceId===s.device.deviceId); if(d)d.connected=false;
+    const i=MOCK.connected.findIndex(x=>x.deviceId===s.device.deviceId); if(i>=0)MOCK.connected.splice(i,1);  /* 会话注册表同步清理（M-3） */
     toast('已断开'); renderAll(); },
   'p006-retry': ()=>{ const s=S.pages.p006;
     addLog('p006','sys','手动重连 · manualRetryConnection'); p006Connect(); },
@@ -313,7 +415,8 @@ const ACTIONS = {
     if(d.profileId==='smart-hid'){
       const snap=S.shared.currentDevice;
       go('p003', snap?{props:{device:snap}}:{});
-    } else { go('p006',{props:{device:{deviceId:d.deviceId,name:d.name,RSSI:d.RSSI}}}); } },
+    } else { const dv={deviceId:d.deviceId,name:d.name,RSSI:d.RSSI};
+      go('p006',{props:{device:dv}}); p006Enter(dv); } },
   'p007-disconnect': el=>{ const i=MOCK.connected.findIndex(x=>x.deviceId===el.dataset.id);
     if(i>=0)MOCK.connected.splice(i,1); toast('已断开'); renderAll(); },
   'p007-disconnectall': ()=>{

@@ -107,6 +107,7 @@ APP.ACTIONS['p008-start'] = function(){
 /* ---------- P002：扫描配对码（主路径 · 摄像头读 ControlHub 屏显二维码） ---------- */
 let vfTimer = null;
 function dtkOk(){ const s=S.pages.p002;
+  s.qrState='success'; s.qrErr=null;
   s.token='tok-3f9a7c1e'; if(!s.hub) s.hub='192.168.1.8:17892';
   clearTimeout(vfTimer); closeLayer(); toast('配对码已识别 · 地址与令牌已回填',true); renderAll(); }
 APP.ACTIONS['p002-qr'] = function(){
@@ -123,6 +124,11 @@ APP.ACTIONS['p002-qr'] = function(){
     <div style="display:flex;gap:9px;margin-top:12px;align-items:center;flex-wrap:wrap">
       ${C.btn({label:'立即识别成功（演示）',tone:'primary',icon:'qr',act:'dtk-vfok'})}
       <button class="dtk-fb" data-act="dtk-paste">无法扫码？粘贴 / 手输配对码 →</button>
+    </div>
+    <div style="display:flex;gap:9px;margin-top:9px">
+      ${C.btn({label:'用户取消',tone:'soft',size:'sm',act:'p002-qr-cancel'})}
+      ${C.btn({label:'权限拒绝',tone:'soft',size:'sm',act:'p002-qr-perm'})}
+      ${C.btn({label:'二维码无效',tone:'soft',size:'sm',act:'p002-qr-invalid'})}
     </div>`);
   clearTimeout(vfTimer);
   vfTimer = setTimeout(()=>{ if(document.querySelector('[data-vf]')) dtkOk(); }, 1600);
@@ -148,7 +154,7 @@ APP.ACTIONS['dtk-sample'] = ()=>{ const i=document.querySelector('[data-dpaste]'
 APP.ACTIONS['dtk-parse'] = ()=>{ const raw=S.shared.dtk.raw||'';
   const m=/t=([A-Za-z0-9\-]{4,})/.exec(raw), h=/hub=([^&\s]+)/.exec(raw);
   if(!m){ toast('未识别配对码（需包含 t=… 令牌）'); return; }
-  const s=S.pages.p002; s.token=m[1]; if(!s.hub&&h) s.hub=h[1];
+  const s=S.pages.p002; s.qrState='success'; s.qrErr=null; s.token=m[1]; if(!s.hub&&h) s.hub=h[1];
   closeLayer(); toast('配对码已解析 · 地址与令牌已回填',true); renderAll(); };
 
 /* ---------- 日志导出：复制为主 + 文件候选拦截（P006 / P008） ---------- */

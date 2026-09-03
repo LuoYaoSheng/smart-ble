@@ -1,7 +1,7 @@
 # COMPONENT —— 公共组件规格（全平台共享）
 
 > Design System 三件套之二 · 2026-09-02 冻结 v1.0
-> 效力：页面禁止重复造相似组件（QA Q3 整改项：devCard 单一来源）。实现参考 [prototype/v1-new/components/components.js](../../prototype/v1-new/components/components.js)（`window.C` 注册表）与 [assets/components.css](../../prototype/v1-new/assets/components.css)。
+> 效力：页面禁止重复造相似组件（QA Q3 整改项：devCard 单一来源）。实现参考 [prototype/v1-new/components/components.js](../prototype/v1-new/components/components.js)（`window.C` 注册表）与 [assets/components.css](../prototype/v1-new/assets/components.css)。
 > 命名沿用 uni-app 组件粒度，便于直接映射 Vue/UniApp；Flutter 侧对应 Widget 化。
 
 ---

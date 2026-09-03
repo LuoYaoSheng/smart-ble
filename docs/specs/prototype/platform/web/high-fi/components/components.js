@@ -44,7 +44,7 @@ window.C = {
   empty({ill='box', title, desc='', act=null}){
     return `<div class="empty"><div class="ill">${C.ILL[ill]||C.ILL.box}</div>
       <div class="t">${title}</div>${desc?`<div class="d">${desc}</div>`:''}
-      ${act?C.btn({label:act.label,tone:'soft',icon:act.icon||'',act:act.act}) : C.btn({label:'',tone:'soft'})}</div>`;
+      ${act?C.btn({label:act.label,tone:'soft',icon:act.icon||'',act:act.act}) : ''}</div>`;
   },
 
   /* ---- B7 op-state ---- */

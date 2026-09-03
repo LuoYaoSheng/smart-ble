@@ -14,9 +14,9 @@ PAGES['p007'] = {
     } else if(s.mode==='one'){
       body = C.devCard(MOCK.connected[1],'conn');
     } else {
-      body = C.empty('link','还没有连接中的设备',
-        s.mode==='empty-prov' ? 'Smart HID 配网连接进行中，这里列出通用调试连接' : '先在「扫描」页找到设备并连接，会话将保存在这里',
-        {label:'去扫描',icon:'scan',act:'gohome'});
+      body = C.empty({ill:'link',title:'还没有连接中的设备',
+        desc: s.mode==='empty-prov' ? 'Smart HID 配网连接进行中，这里列出通用调试连接' : '先在「扫描」页找到设备并连接，会话将保存在这里',
+        act:{label:'去扫描',icon:'scan',act:'gohome'}});
     }
     return `<div class="navbar"><div class="kicker">${this.kicker}</div>
       <div class="row"><div class="title">已连接</div>

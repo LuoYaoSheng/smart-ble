@@ -2,7 +2,7 @@
 
 > 依据：《旧产品原型跨平台扩展 SOP v1.0》§10/§11 + 《多平台 HTML 原型生成规范 v1.0》+ 《平台设计说明规范 v1.0》（2026-09-03 并入）
 > **四平台齐备（2026-09-03）**：每平台 = `low-fi/`（线框：页面×状态×流程）+ `high-fi/`（正式实例）+ 四份说明文档（PLATFORM_SPEC / PAGE_SPEC / FLOW / COMPONENT_RULE）+ README（三查自评 + 验证记录）。
-> **原型齐备 ≠ 开发排期**：D1 开发首批 = 微信 + App·Android；Desktop 待 D2 spike；Web 暂缓（D3=b）——决策详见 [10_platform §6](../../../10_platform/PLATFORM_EXTENSION.md)。
+> **原型齐备 ≠ 开发排期**：D1 开发首批 = 微信 + App·Android；Desktop 待 D2 spike；Web 暂缓（D3=b）——决策详见 [10_platform §6](../../10_platform/PLATFORM_EXTENSION.md)。
 
 ## 门禁记录
 
@@ -51,7 +51,7 @@ cd docs/specs/prototype/platform && python3 -m http.server 8952
 # desktop http://127.0.0.1:8952/desktop/high-fi/index.html
 ```
 
-> ⚠ 走查须知：`http.server` 不发缓存头，浏览器会缓存旧内核 JS。资源 URL 已带版本戳——**四平台壳现行为 `?v=1.2.0`（生态矩阵轮），v1-new 为 `?v=1.1.0`（内核未变更）**。看到「改了却没变」时按一次刷新（Cmd+R）即取新版；覆写层资产再变更时同步升版本戳。
+> ⚠ 走查须知：`http.server` 不发缓存头，浏览器会缓存旧内核 JS。资源 URL 已带版本戳——**wechat/app/desktop 三壳现为 `?v=1.4.6`（2026-09-03 M-2 轮：F020 扫码失败三分类补齐，app.js + p002-provision.js 内核重同步，desktop.js 覆写层同挂三分类按钮），web 壳为 `?v=1.4.1`（未变更），v1-new 为 `?v=1.1.7`**。看到「改了却没变」时按一次刷新（Cmd+R）即取新版；覆写层资产再变更时同步升版本戳。
 
 ## 5. 建议走查重点（平台扩展检查门禁）
 

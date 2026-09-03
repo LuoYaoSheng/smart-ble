@@ -73,7 +73,7 @@
 
 零后端约束（PRD §1.2）在所有平台一致保持：任何平台增强不引入 HTTP/云端。
 
-> **生态矩阵对照（2026-09-03）**：《Smart BLE 平台功能差异矩阵 v1.0》已入库 `11_ecosystem/`（12 平台 / BLE-001～008 分级 / 后台 / OTA / 多设备）。与上表（六域 × 五平台）为**两级口径**：上表 = 本项目实现线实证（v1 范围），矩阵 = 生态家族全集。冲突项以 [ALIGNMENT_NOTES §2](../11_ecosystem/ALIGNMENT_NOTES.md) 为准——**C1 微信广播发送（矩阵 ❌ vs 实证 △ F014 wx.createBLEPeripheralServer）、C3 微信多设备（矩阵 ❌ vs F013 已实现）待用户裁决**，实证行为不翻转；一致项（Android 广播 ✅ / Desktop 三系原生层 / Linux BlueZ 限制）直接吸收。原型呈现：三实例评审栏「生态能力矩阵」卡 + Web W4 第二来源卡（v1.2.0）。
+> **生态矩阵对照（2026-09-03）**：《Smart BLE 平台功能差异矩阵 v1.0》已入库 `11_ecosystem/`（12 平台 / BLE-001～008 分级 / 后台 / OTA / 多设备）。与上表（六域 × 五平台）为**两级口径**：上表 = 本项目实现线实证（v1 范围），矩阵 = 生态家族全集。冲突项以 [ALIGNMENT_NOTES §2](../11_ecosystem/ALIGNMENT_NOTES.md) 为准——**C1 微信广播发送（矩阵 ❌ vs 实证 △ F014 wx.createBLEPeripheralServer）与 C3 微信多设备（矩阵 ❌ vs F013 已实现）已于 2026-09-03（08-G0）裁决：supported_limited / supported_foreground，实证行为不翻转、真机证据待补**（裁决正文 [08_development/PLATFORM_CAPABILITY_DECISION](../08_development/PLATFORM_CAPABILITY_DECISION.md)）；一致项（Android 广播 ✅ / Desktop 三系原生层 / Linux BlueZ 限制）直接吸收。原型呈现：三实例评审栏「生态能力矩阵」卡 + Web W4 第二来源卡（v1.2.0；卡内「待裁决」字样为裁决前快照，原型冻结不回改）。
 
 ## 4. 平台差异设计（SOP §9：核心功能一致，表现方式不同）
 
@@ -98,7 +98,7 @@
 | P3 | Desktop | U1 场景价值最高，但需技术 spike（BLE 原生集成+选型） | 先做能力验证再定 |
 | P4 | Web | 两条核心旅程（S1 扫描/S4 广播）断裂，只能做子集 | 建议「GATT 调试器」子集版或暂缓 |
 
-## 6. 决策清单（D1/D3 已拍板，2026-09-02；2026-09-03 原型层四平台齐备）
+## 6. 决策清单（D1/D3 已拍板，2026-09-02；2026-09-03 原型层四平台齐备；C1/C3 已裁决，08-G0）
 
 | # | 决策 | 结论 |
 |---|---|---|
@@ -106,12 +106,14 @@
 | **D2** | Desktop 技术选型（若纳入） | 保持待 spike（Electron vs Tauri + BLE 原生层，不预判）；**spike 仍为进入开发的前置**——差异原型已于 2026-09-03 按用户反馈补齐（只表现桌面形态，不预判选型，见 prototype/platform/desktop/） |
 | **D3** | Web 定位（若纳入） | **已决策（随 D1）：开发暂缓（选项 b）**——S1 扫描 / S4 广播两条核心旅程在浏览器断裂。**原型层已按「GATT 调试器」子集形态先行补齐差异原型（2026-09-03）**，供未来决策参考；开发仍暂缓 |
 | 遗留 | P-04（F017 页面入口）/ P-05（F030 i18n） | **已决策（随 D1）：均不做**——F017 保持无独立页面入口（仅 P007 Profile 分流），F030 不引入 i18n |
+| **C1** | 微信 BLE 外围广播能力定档（08-G0） | **已裁决（2026-09-03）：supported_limited**——保留 F014；微信开发者工具 unsupported；微信真机运行时探测后启用；后台广播不承诺；不允许静默降级；Android/iOS 微信宿主分别进入真机验证矩阵，**真机证据待补**（[08_development/PLATFORM_CAPABILITY_DECISION](../08_development/PLATFORM_CAPABILITY_DECISION.md) §1） |
+| **C3** | 微信多设备会话能力定档（08-G0） | **已裁决（2026-09-03）：supported_foreground**——保留 F013；支持前台运行时多 Session；不承诺后台保持；不承诺固定最大连接数；每个 Session 独立错误反馈；Session Registry 为唯一事实源（同上 §2） |
 
 > **2026-09-03 更新（用户反馈驱动）**：按《产品模型规范 v2.0》《多平台 HTML 原型生成规范 v1.0》《平台设计说明规范 v1.0》重构平台原型层——`prototype/platform/{app,wechat,web,desktop}/` 四平台齐备，每平台 = low-fi + high-fi + 四份说明文档（PLATFORM_SPEC/PAGE_SPEC/FLOW/COMPONENT_RULE）。**原型完整性与开发排期解耦**：D1 首批开发范围（微信+App·Android）不变。
 >
 > **2026-09-03 用户走查修正（四项，已全部落回基准与各平台实例）**：① **特殊设备是标准设备的扩展**——首页 SHID 卡片在「配置 Smart HID」之外恢复标准「连接」入口（基准 components.js v1.0.1，三平台内核字节重同步，Web W2 设备卡同口径）；② **SHID 配网配对码通过扫描二维码获取**——Desktop 主路径改摄像头扫码，粘贴/手输降为兜底（§2.4 已同步修订）；③ **微信小程序区分宿主系统**（安卓/iOS 真机/开发者工具，旧代码已有）——新增 wxhost.js 宿主维度覆写层（§2.1 已补充口径）；④ **Desktop 区分操作系统**（macOS/Windows/Linux）——新增 OS 维度与窗口 chrome 三形态（§2.4 已补充口径）。
 >
-> **2026-09-03 生态规范三份入库（用户指令「这三份要同步到项目里」）**：API 统一接口 / 平台功能差异矩阵 / 功能点清单原文入 `11_ecosystem/`；本项目 = 生态中的 uni-app 实现线，产品范围与 D1–D3 不变，冲突项以 11_ecosystem/ALIGNMENT_NOTES C1–C7 为准（待裁决不翻转）；原型层按矩阵注入能力呈现卡（v1.2.0），**应用代码零修改**（apps/ 不动，先有产品再有平台/生态）。
+> **2026-09-03 生态规范三份入库（用户指令「这三份要同步到项目里」）**：API 统一接口 / 平台功能差异矩阵 / 功能点清单原文入 `11_ecosystem/`；本项目 = 生态中的 uni-app 实现线，产品范围与 D1–D3 不变，冲突项以 11_ecosystem/ALIGNMENT_NOTES C1–C7 为准（C1/C3 已于 08-G0 裁决，其余待裁决不翻转）；原型层按矩阵注入能力呈现卡（v1.2.0），**应用代码零修改**（apps/ 不动，先有产品再有平台/生态）。
 
 ## 7. 平台扩展检查表（SOP §11，供各平台原型验收）
 

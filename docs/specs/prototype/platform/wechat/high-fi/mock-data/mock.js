@@ -2,6 +2,14 @@
    MOCK —— 模拟数据（结构对齐 REVERSE_ANALYSIS §7 · QA Q2 整改）
    字段口径：RSSI 大写 / advertisement 嵌套 / profileMatch
    UUID 全部真实（1800/180F/4FAFC201/FFE0）
+   2026-09-03 A-02 整改（F004/R04 广播弹窗字段补齐）：
+   · advertisement 增 serviceUuids / serviceData / adStructures 示例——
+     字段名对齐 REVERSE §7.1 旧代码真实结构（advertisServiceUUIDs /
+     serviceData 为平台 API 独立字段，不依赖 hex 内嵌）；adStructures
+     为「预置分段展示数据」（COMPONENT C2 AD 结构逐段），非运行时解析。
+   · hex 重排为 AD 结构自洽帧（长度字节=段长-1），adStructures 各段
+     与整包 hex 字节严格对齐；serviceUuids 未内嵌 31B 包的设备（D1）
+     演示「平台解析字段独立于原始 hex」的真实形态。
    ============================================================ */
 window.MOCK = {
 
@@ -10,23 +18,48 @@ window.MOCK = {
     { deviceId:'SHID-9F3E2A1C', name:'SHID-9F3E2A1C', RSSI:-52, connected:false,
       profileMatch:{ level:'STRONG', profileId:'smart-hid' },
       advertisement:{ state:'received', present:true, byteLength:31, length:31,
-        hex:'02 01 06 11 09 53 48 49 44 2D 39 46 33 45 32 41 31 43 07 FF 4C 00 10 05 09 0A 18 00 00 00 00',
-        manufacturerId:'4C00' } },
+        hex:'02 01 06 0E 09 53 48 49 44 2D 39 46 33 45 32 41 31 43 09 FF 4C 00 10 05 09 0A 18 00 02 0A 04',
+        manufacturerId:'4C00',
+        serviceUuids:['9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04'],
+        serviceData:null,
+        adStructures:[
+          { type:'0x01', name:'FLAGS', len:3, hex:'02 01 06' },
+          { type:'0x09', name:'完整本地名称', len:15, hex:'0E 09 53 48 49 44 2D 39 46 33 45 32 41 31 43' },
+          { type:'0xFF', name:'厂商数据', len:10, hex:'09 FF 4C 00 10 05 09 0A 18 00' },
+          { type:'0x0A', name:'发射功率', len:3, hex:'02 0A 04' },
+        ] } },
     { deviceId:'D8:A6:3A:41:F2:09', name:'Mi Smart Band 8', RSSI:-66, connected:false,
       profileMatch:null,
-      advertisement:{ state:'received', present:true, byteLength:19, length:19,
-        hex:'02 01 06 0D 09 4D 69 20 53 6D 61 72 74 20 42 61 6E 64 20 38',
-        manufacturerId:null } },
+      advertisement:{ state:'received', present:true, byteLength:20, length:20,
+        hex:'02 01 06 10 09 4D 69 20 53 6D 61 72 74 20 42 61 6E 64 20 38',
+        manufacturerId:null, serviceUuids:null, serviceData:null,
+        adStructures:[
+          { type:'0x01', name:'FLAGS', len:3, hex:'02 01 06' },
+          { type:'0x09', name:'完整本地名称', len:17, hex:'10 09 4D 69 20 53 6D 61 72 74 20 42 61 6E 64 20 38' },
+        ] } },
     { deviceId:'EF:6B:12:0C:AA:77', name:'', RSSI:-78, connected:false,
       profileMatch:null,
-      advertisement:{ state:'received', present:true, byteLength:12, length:12,
-        hex:'02 01 06 04 0A 04 09 09 64 00 27',
-        manufacturerId:'0064' } },
+      advertisement:{ state:'received', present:true, byteLength:11, length:11,
+        hex:'02 01 06 02 0A 04 04 FF 64 00 27',
+        manufacturerId:'0064', serviceUuids:null, serviceData:null,
+        adStructures:[
+          { type:'0x01', name:'FLAGS', len:3, hex:'02 01 06' },
+          { type:'0x0A', name:'发射功率', len:3, hex:'02 0A 04' },
+          { type:'0xFF', name:'厂商数据', len:5, hex:'04 FF 64 00 27' },
+        ] } },
     { deviceId:'LightBLE-DevKit', name:'LightBLE-DevKit', RSSI:-59, connected:false,
       profileMatch:{ level:'WEAK', profileId:'smart-hid' },
-      advertisement:{ state:'received', present:true, byteLength:24, length:24,
-        hex:'02 01 06 12 09 4C 69 67 68 74 42 4C 45 2D 44 65 76 4B 69 74 05 02 0A 18',
-        manufacturerId:null } },
+      advertisement:{ state:'received', present:true, byteLength:30, length:30,
+        hex:'02 01 06 10 09 4C 69 67 68 74 42 4C 45 2D 44 65 76 4B 69 74 03 02 E0 FF 05 16 E0 FF 00 01',
+        manufacturerId:null,
+        serviceUuids:['0000ffe0-0000-1000-8000-00805f9b34fb'],
+        serviceData:{ uuid:'FFE0', state:'received', present:true, byteLength:2, length:2, hex:'00 01' },
+        adStructures:[
+          { type:'0x01', name:'FLAGS', len:3, hex:'02 01 06' },
+          { type:'0x09', name:'完整本地名称', len:17, hex:'10 09 4C 69 67 68 74 42 4C 45 2D 44 65 76 4B 69 74' },
+          { type:'0x02', name:'16 位 Service UUID 列表', len:4, hex:'03 02 E0 FF' },
+          { type:'0x16', name:'Service Data', len:6, hex:'05 16 E0 FF 00 01' },
+        ] } },
     { deviceId:'C4:11:9E:02:3B:5F', name:'', RSSI:-85, connected:false,
       profileMatch:null,
       advertisement:{ state:'received', present:false, byteLength:0, length:0, hex:'', manufacturerId:null } },

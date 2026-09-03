@@ -2,6 +2,7 @@
 
 > SOP v2.0 Phase 5 产出 · 2026-09-02
 > 事实源：REVERSE_ANALYSIS §1.2（技术架构）/ §2（结构）。描述旧项目现状架构，作为重构基线。
+> **口径声明（2026-09-03，08-G0；08-G0.1 修订）**：本文全部内容为**旧工程（apps/uniapp，开发前冻结不改）架构实证**，作为重构基线与复用评估证据引用；改版目标架构以 [08_development/RUNTIME_ARCHITECTURE](../08_development/RUNTIME_ARCHITECTURE.md) v1.3（Ports & Adapters，原工程内重构目标）为准——本文 §2 的依赖链 `…→ services → core → 平台 API` 与 `store → services` 方向为旧工程形态，**不得自动升级为改版目标架构事实**（[IMPLEMENTATION_TARGET](../08_development/IMPLEMENTATION_TARGET.md) v1.2 §1/§5）。
 
 ## 1. 系统架构图
 

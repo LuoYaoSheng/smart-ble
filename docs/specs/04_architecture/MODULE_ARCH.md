@@ -2,6 +2,7 @@
 
 > SOP v2.0 Phase 5 产出 · 2026-09-02
 > 事实源：REVERSE_ANALYSIS §2（结构分析）。模块树 + 职责表 + 依赖方向。
+> **口径声明（2026-09-03，08-G0；08-G0.1 修订）**：本文模块树与依赖方向为**旧工程（apps/uniapp，开发前冻结不改）实证**——模块职责表可作为来源证据与复用评估证据被引用（逐模块处置见 [08_development/LEGACY_REUSE_MATRIX](../08_development/LEGACY_REUSE_MATRIX.md)），但文件数/文件名不构成改版强约束；改版目标分层与依赖禁令以 [08_development/RUNTIME_ARCHITECTURE](../08_development/RUNTIME_ARCHITECTURE.md) v1.3 为准（[IMPLEMENTATION_TARGET](../08_development/IMPLEMENTATION_TARGET.md) v1.2 §2）。
 
 ## 1. 模块树（apps/uniapp）
 

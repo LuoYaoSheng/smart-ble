@@ -16,10 +16,11 @@ PAGES['p001'] = {
       : s.scanned ? `扫描完成 · 发现 ${s.shown.length} 台` : '待开始扫描';
     const listHtml = s.scanError ? '' :
       s.shown.length ? s.shown.map(d=>C.devCard(d,'scan')).join('')
-      : C.empty(s.filtered===false&&s.scanned ? 'link' : 'radar',
-          s.scanned&&s.filtered===false ? '当前没有匹配设备' : '还没有扫描结果',
-          s.scanned&&s.filtered===false ? '调整筛选条件试试' : '点上方按钮开始扫描附近 BLE 设备',
-          s.scanned?null:{label:'开始扫描',icon:'scan',act:'p001-scan'});
+      : C.empty({
+          ill: s.filtered===false&&s.scanned ? 'link' : 'radar',
+          title: s.scanned&&s.filtered===false ? '当前没有匹配设备' : '还没有扫描结果',
+          desc: s.scanned&&s.filtered===false ? '调整筛选条件试试' : '点上方按钮开始扫描附近 BLE 设备',
+          act: s.scanned?null:{label:'开始扫描',icon:'scan',act:'p001-scan'} });
     return `
     <div class="navbar"><div class="kicker">${this.kicker}</div>
       <div class="row"><div class="title">扫描</div>

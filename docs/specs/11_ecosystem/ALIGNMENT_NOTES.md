@@ -18,13 +18,15 @@
 
 | # | 矩阵口径 | 本项目实证/canon | 处置 |
 |---|---|---|---|
-| **C1** | BLE-008 广播发送：微信小程序 ❌ | **F014「微信 peripheral 广播」已实现**（PRD 现状）；旧代码 `services/wx-peripheral-server.js` 封装 `wx.createBLEPeripheralServer`（真机可用，开发者工具不可用）；10_platform §3 S4 微信=△ 能力有限 | **待用户裁决**。原型保持 △（实证行为）：微信实例可演示真机广播；评审栏矩阵卡该行标 `❌(矩阵)≠△(实证)→冲突待裁决` |
+| **C1** | BLE-008 广播发送：微信小程序 ❌ | **F014「微信 peripheral 广播」已实现**（PRD 现状）；旧代码 `services/wx-peripheral-server.js` 封装 `wx.createBLEPeripheralServer`（真机可用，开发者工具不可用）；10_platform §3 S4 微信=△ 能力有限 | **已裁决（2026-09-03，08-G0）：capability = supported_limited**——保留 F014；devtools unsupported；微信真机运行时探测后启用；后台广播不承诺；不允许静默降级；**真机证据待补**（裁决正文见 [08_development/PLATFORM_CAPABILITY_DECISION](../08_development/PLATFORM_CAPABILITY_DECISION.md) §1）。原型保持 △（实证行为）：微信实例可演示真机广播；评审栏矩阵卡该行标注 `❌(矩阵)≠△(实证)` 为裁决前快照，矩阵侧待其 v1.1 修订对齐 |
 | **C2** | BLE-008 广播发送：iOS ❌ / macOS ❌ | iOS CoreBluetooth `CBPeripheralManager`、macOS 同源外围能力为公开技术事实【待验证】 | 登记不阻塞：iOS NOT_RELEASED；Desktop 待 D2 spike 实测后回写矩阵 |
-| **C3** | 多设备连接：微信 ❌ | **F013「多设备会话管理（批量断开）」已实现**（基准全域）；10_platform §3 S6 微信=✅ | **待用户裁决**。原型保持 ✅（实证行为）+ 矩阵卡标注 |
+| **C3** | 多设备连接：微信 ❌ | **F013「多设备会话管理（批量断开）」已实现**（基准全域）；10_platform §3 S6 微信=✅ | **已裁决（2026-09-03，08-G0）：capability = supported_foreground**——保留 F013；支持前台运行时多 Session；不承诺后台保持与固定最大连接数；每 Session 独立错误反馈；Session Registry 为唯一事实源；**真机证据待补**（裁决正文见 [08_development/PLATFORM_CAPABILITY_DECISION](../08_development/PLATFORM_CAPABILITY_DECISION.md) §2）。原型保持 ✅（实证行为）；评审栏矩阵卡标注为裁决前快照 |
 | **C4** | 自动重连：微信 ⚠️ | F012 断线自动重连（3 次 backoff）已实现——产品口径为**前台会话内重连**；矩阵 ⚠️ 疑指后台/系统级重连 | 口径差登记，不翻转；08 阶段定义「会话内重连 vs 后台保连」两层语义 |
 | **C5** | 矩阵无 Web 行 | 10_platform §2.3/§3 已有 Web 硬约束分析（无自由扫描/无广播/HTTPS） | Web 能力以 10_platform §3 + W1 实测门禁为准；建议矩阵 v1.1 补 Web 行 |
 | **C6** | Flutter/Native/HarmonyOS 行 | 本项目范围外 | 生态备查；不改变 D1–D3 |
 | **C7** | 长连接：微信 ❌ | 产品「后台即挂起」现状一致（onUnload 停扫即为此设计）；App 受限保连为候选不做 | **一致项**（无冲突，仅确认） |
+
+> **裁决状态注（2026-09-03，08-G0）**：C1/C3 已裁决——裁决正文与同步落点见 [08_development/PLATFORM_CAPABILITY_DECISION](../08_development/PLATFORM_CAPABILITY_DECISION.md)（真机证据待补）；本表其余项（C2/C4/C5/C6/C7）状态不变。
 
 一致项（无冲突，直接吸收）：BLE-001/002/003 移动+桌面全 ✅；Android 广播发送 ✅（F015 LysBlePeripheral）；Desktop 三系原生层分级（CoreBluetooth/WinRT/BlueZ）与 10_platform §2.4 一致；Linux 广播受 BlueZ/内核权限影响【待验证】两处口径一致。
 

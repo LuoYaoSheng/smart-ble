@@ -8,10 +8,10 @@ PAGES['p010'] = {
     const empty = s.emptyAll;
     const st = c => `<span class="stword st-${c}">${c}</span>`;
     const relCard = empty || !r.releases.length
-      ? C.empty('doc','暂无正式发布版本','产品当前处于 PREVIEW 阶段，首个正式版发布后将在此列出。')
+      ? C.empty({ill:'doc',title:'暂无正式发布版本',desc:'产品当前处于 PREVIEW 阶段，首个正式版发布后将在此列出。'})
       : r.releases.map(x=>`<div class="rel-row"><span>v${x.version} <span class="dt">${x.date}</span></span><span class="v">${x.sha}</span></div>`).join('');
     const prevCard = empty
-      ? C.empty('doc','暂无预览记录','')
+      ? C.empty({ill:'doc',title:'暂无预览记录',desc:''})
       : r.previews.map(x=>`<div class="rel-row"><span>v${x.version} <span class="dt">${x.date} · ${x.note}</span></span><span class="v">${x.sha}</span></div>`).join('');
     return `<div class="subnav"><button class="back-btn" data-act="back">${C.ic('chev-r','sm')}</button><span class="t">版本记录</span></div>
     <div class="page">

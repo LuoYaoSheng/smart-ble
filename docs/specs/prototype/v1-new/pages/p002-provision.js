@@ -5,7 +5,7 @@ PAGES['p002'] = {
   defaults: () => ({
     device:null, guard:false,
     phase:'connect', phaseIdx:0, connecting:true, connError:null, lost:false,
-    ssid:'', pwd:'', hub:'', showPwd:false, token:null, qrErr:null,
+    ssid:'', pwd:'', hub:'', showPwd:false, token:null, qrErr:null, qrState:'idle',
     provisioning:false, done:false, err:null, progress:{wifi:'pending',hub:'pending',conn:'pending',usb:'pending'},
   }),
   inputs:{
@@ -50,6 +50,18 @@ PAGES['p002'] = {
         <div style="flex:1"><div class="t">${s.token?'重新扫描配对码':'扫描 ControlHub 配对码'}</div>
           <div class="d">${s.token?'token 已获取（内存会话，不落盘）':'扫码解析 shid://pair 自动回填地址与令牌'} ${s.token?`<span class="chip success" style="margin-left:6px">已获取</span>`:`<span class="chip warning" style="margin-left:6px">必需</span>`}</div></div>
       </div>
+      ${s.qrErr ? `
+      <div style="margin-top:10px">${C.op({mode:s.qrErr.reason==='cancel'?'warn':'err',
+        title:({cancel:'扫码取消',permission:'权限拒绝',invalid:'二维码无效'})[s.qrErr.reason],
+        desc:({cancel:'未完成扫码（用户取消，不算错误）。已填写的配置信息不受影响，可重新扫描。',
+               permission:'扫码权限被拒绝。请在系统设置中允许相机权限后重试。',
+               invalid:'未识别到有效配对码（非 shid://pair 或缺少参数）。请对准 ControlHub 屏显二维码重试。'})[s.qrErr.reason]})}</div>
+      <div style="display:flex;gap:9px;margin-top:10px">
+        ${s.qrErr.reason==='permission'
+          ? C.btn({label:'去设置',tone:'soft',icon:'set',act:'p002-qrsetting'})
+            + C.btn({label:'重新扫码',tone:'primary',icon:'qr',act:'p002-qr'})
+          : C.btn({label:'重新扫码',tone:'primary',icon:'qr',block:true,act:'p002-qr'})}
+      </div>` : ''}
       ${C.note('info','Wi-Fi 密码和配对凭据只用于本次下发，<b>不写入日志或本地存储</b>。')}
       <div style="margin-top:16px">${C.btn({label:'下发配置',tone:'primary',block:true,icon:'send',disabled:!can,act:'p002-submit'})}</div>`;
     }

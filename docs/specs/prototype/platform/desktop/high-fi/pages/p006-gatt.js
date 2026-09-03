@@ -10,7 +10,7 @@ PAGES['p006'] = {
   }),
   render(s){
     if(s.invalid) return `<div class="subnav"><button class="back-btn" data-act="back">${C.ic('chev-r','sm')}</button><span class="t">GATT 调试</span></div>
-      <div class="page">${C.empty('box','路由参数无效','缺少有效的设备标识，请从扫描页或已连接页进入。')}</div>`;
+      <div class="page">${C.empty({ill:'box',title:'路由参数无效',desc:'缺少有效的设备标识，请从扫描页或已连接页进入。'})}</div>`;
     const d = s.device||{name:'未命名设备',deviceId:'—',RSSI:-70};
     const hasOta = MOCK.gattTree.some(sv=>sv.ota);
     const stCls = s.connected?'on':s.connecting?'mid':'';
