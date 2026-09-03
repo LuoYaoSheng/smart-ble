@@ -89,17 +89,17 @@ cd docs/specs/prototype/platform && python3 -m http.server 8952
 | 内核 | diff 12/12（app.js/components/pages/mock-data × 三实例 = v1-new 字节一致） | — |
 | 文档 | app/PLATFORM_SPEC 补 §2b 生态矩阵口径（对齐 wechat §2b / desktop §2a / web W4 行——App 行全量一致直接吸收 + iOS NOT_RELEASED） | — |
 
-### 推广承接轮（2026-09-03 · 用户指示「非微信平台的更多小程序需落地页或二维码承接」）
+### 推广承接轮（2026-09-03 · 用户指示「非微信平台的更多小程序需落地页或二维码承接」+ 指正「微信内应直接跳转，不能跳才弹窗」）
 
-产品规则（F028 渠道分流，写入 03_flow/PAGE_SPEC · 02_product/PRD · 07 C11 · 10_platform §4）：微信 `navigateToMiniProgram` 直跳不变；非微信渠道（APP/Desktop/Web）无法直跳微信小程序 → 推广详情 sheet = **打开落地页**（APP 系统浏览器=实证 `plus.runtime.openURL` / Web 新窗=实证 `window.open` / Desktop 系统浏览器）+ **小程序码**（示意图形，实机=静态预生成资源，零后端；微信扫码可达，Desktop 可下载）。基线 v1-new 演示渠道=微信（MOCK.env.platform='微信小程序'）故内核零改动，纯覆写层实现；wechat 实例直跳行为回归不变。
+产品规则（F028 渠道分流，写入 03_flow/PAGE_SPEC · 02_product/PRD · 07 C11 · 10_platform §4）：**微信点击直接发起 `navigateToMiniProgram`（无确认弹窗，实证 openApp；无 appId→toast、失败→modal）**；非微信渠道（APP/Desktop/Web）无法直跳微信小程序 → 推广详情 sheet = **打开落地页**（APP 系统浏览器=实证 `plus.runtime.openURL` / Web 新窗=实证 `window.open` / Desktop 系统浏览器）+ **小程序码**（示意图形，实机=静态预生成资源，零后端；微信扫码可达，Desktop 可下载）。非微信承接纯覆写层实现；微信直跳流为内核 `p009-promo` 修正（去确认弹窗），三实例字节同步。
 
 | 实例 | 断言 | console |
 |---|---|---|
-| app/high-fi（v1.3.0） | 13/13：`p009-promo` sheet（小程序码 128px 三定位角 + 打开落地页→asysBrowser lightble.example.com + 保存演示）· note 行内排版与按钮单行在 sheet 内复核 | 0 error |
-| desktop/high-fi（v1.3.0） | 15/15：同 sheet 形态（浏览器打开落地页 toast + 下载小程序码 toast）· 双推广卡入口 | 0 error |
-| web/high-fi（v1.3.0） | 14/14：W6 新增「更多小程序（F028 · 非微信渠道承接）」卡 + `web-promo` sheet（新窗落地页 toast + 保存演示） | 0 error |
-| wechat/high-fi（v1.2.0 不变） | 回归 4/4：直跳 modal（跳转小程序/即将打开/前往→navigateToMiniProgram 演示拦截）不变 | 0 error |
-| 内核 | diff -r 复验零差异（仅动 android.js/desktop.js/web.js 覆写层 + 三壳戳 1.2.0→1.3.0；wechat/v1-new 未触碰） | — |
+| app/high-fi（v1.4.0） | 13/13：`p009-promo` 覆写 sheet（小程序码 128px 三定位角 + 打开落地页→asysBrowser lightble.example.com + 保存演示）· note 行内排版与按钮单行在 sheet 内复核 | 0 error |
+| desktop/high-fi（v1.4.0） | 15/15：同 sheet 形态（浏览器打开落地页 toast + 下载小程序码 toast）· 双推广卡入口 | 0 error |
+| web/high-fi（v1.4.0） | 14/14：W6 新增「更多小程序（F028 · 非微信渠道承接）」卡 + `web-promo` sheet（新窗落地页 toast + 保存演示） | 0 error |
+| wechat/high-fi（v1.4.0） | **微信直跳修正（用户指正）**：`p009-promo` 内核改点击直接发起 navigateToMiniProgram（原「即将打开…前往/取消」确认弹窗不符合实证 openApp——直跳无弹窗，仅无 appId/失败才弹）+ 新增 P009「推广卡跳转失败」场景（modal 分支）；场景库 44→47（原计数已 stale 2） | 0 error |
+| 内核 | 直跳修正（app.js）三实例字节同步，`diff -r` 零差异；五壳全量升戳（平台四壳 v=1.4.0、v1-new v=1.1.1——内核变更必须升戳） | — |
 | 视觉复核 | AI 视觉复核：note 连贯横排、二维码 128px 三定位角可辨、按钮单行完整；初版「逐字断行+按钮溢出」缺陷已修（.note 为 flex 容器必须走 C.note 单容器；svg 需内联宽高） | — |
 
 ## 7. 下一步

@@ -340,8 +340,8 @@ const ACTIONS = {
 
   /* PAGE009 */
   'p009-promo': el=>{ const p=MOCK.promo[+el.dataset.i];
-    modal({title:'跳转小程序',content:`即将打开「${p.name}」\nappId：wx${'a'.repeat(16)}（演示）`,confirmText:'前往',cancelText:'取消',
-      onConfirm:()=>toast('navigateToMiniProgram · 演示环境已拦截')}); },
+    /* 微信渠道点击直接发起 navigateToMiniProgram（无确认弹窗，实证 openApp）；无 appId/失败分支见 PAGE_SPEC 与场景按钮 */
+    toast(`已直接发起跳转「${p.name}」（演示）`,true); },
   'p009-openweb': el=>toast(el.dataset.k==='web'?'网址已复制':'反馈链接已复制',true),
   'p009-versions': ()=>go('p010'),
   'p009-shareapp': ()=>toast('请点击右上角 · 分享给朋友或朋友圈'),
@@ -481,8 +481,11 @@ scen('p008','广播中（全部输入禁用）',()=>{ const s=S.pages.p008; s.pl
 scen('p008','预填超限（>31B 拦截）',()=>{ const s=S.pages.p008; s.form.mfgData='LIGHTBLE-BROADCAST-DEMO-2026'; });
 scen('p008','启动失败（FAILED）',()=>{ const s=S.pages.p008; s.state='failed'; bLog('err','广播启动失败：errCode 10001 系统当前蓝牙不可用'); });
 
-/* P009 ×1 / P010 ×1 */
+/* P009 ×2 / P010 ×1 */
 scen('p009','版本回退（release-metadata）',()=>{ const s=S.pages.p009; s.verFallback=true; });
+scen('p009','推广卡跳转失败（仅失败才弹窗）',()=>{ modal({title:'暂时无法打开「ESP32 快速配网」',
+  content:'请确认微信版本和小程序跳转权限，稍后重试。（实证 openApp fail 分支；正常路径为点击直接跳转，无确认弹窗）',
+  confirmText:'知道了', hideCancel:true}); });
 scen('p010','三个列表全空态',()=>{ const s=S.pages.p010; s.emptyAll=true; });
 
 /* ---------- 启动 ---------- */
