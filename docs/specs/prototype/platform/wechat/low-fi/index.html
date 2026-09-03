@@ -1,0 +1,56 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BLE Toolkit+ low-fi · 微信（基准形态）</title><link rel="icon" href="data:,">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,"PingFang SC",sans-serif;background:#F2F3F5;color:#333;display:flex;gap:20px;padding:24px;justify-content:center;min-height:100vh;}
+.side{width:250px;flex-shrink:0;align-self:flex-start;}
+.side h1{font-size:15px;margin-bottom:4px;}
+.side .sub{font-size:11px;color:#888;line-height:1.6;margin-bottom:12px;}
+.pg{display:flex;justify-content:space-between;width:100%;background:#fff;border:1px solid #DDD;border-radius:8px;padding:8px 10px;margin-bottom:5px;cursor:pointer;font-size:12px;font-family:inherit;}
+.pg.on{border-color:#555;background:#333;color:#fff;}
+.pg .id{font-family:monospace;font-size:10px;opacity:.7;}
+.stage{width:410px;flex-shrink:0;align-self:flex-start;}
+.frame{border:2px solid #999;border-radius:18px;background:#fff;height:700px;padding:14px;display:flex;flex-direction:column;gap:10px;overflow:auto;}
+.wfb{border:1.5px dashed #AAA;border-radius:8px;background:#F7F8FA;color:#777;font-size:11px;padding:10px 12px;}
+.wfb.nav{height:44px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.wfb.hero{height:84px;flex-shrink:0;}
+.wfb.row{height:54px;flex-shrink:0;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.wfb.tall{flex:1;}
+.wfb .cap{font-weight:600;color:#555;}
+.states h2{font-size:11px;color:#666;letter-spacing:1px;margin:14px 0 6px;}
+.st{display:inline-block;border:1px solid #BBB;border-radius:999px;padding:4px 10px;font-size:11px;margin:0 5px 6px 0;cursor:pointer;background:#fff;color:#555;}
+.st.on{background:#333;color:#fff;border-color:#333;}
+.cur{font-size:11px;color:#888;margin-top:8px;line-height:1.7;}
+.flow{display:flex;gap:8px;margin-top:12px;}
+.fbtn{flex:1;border:1px solid #999;background:#fff;border-radius:8px;padding:8px;font-size:12px;cursor:pointer;font-family:inherit;}
+.fbtn:hover{background:#EEEFF2;}
+.pf{display:inline-block;background:#E4E6EB;border-radius:4px;padding:2px 7px;font-size:10px;color:#555;}
+.note{font-size:10px;color:#999;margin-top:10px;line-height:1.6;}
+</style></head><body>
+<div class="side"><h1>BLE Toolkit+ low-fi · 微信（基准形态）</h1><div class="sub">微信平台 · 页面/状态/流程 = 基准 v1-new<br>2026-09-03 · 规范：多平台 HTML 原型生成规范 v1.0 §2</div><div id="pgs"></div>
+<div class="note">Low-Fi 线框：验证<b>页面 · 流程 · 功能 · 状态</b>覆盖（无视觉/品牌/交互细节）。<br>视觉与交互见 <a href="../high-fi/index.html">../high-fi/</a>。<br>依据《多平台 HTML 原型生成规范 v1.0》§2。</div></div>
+<div class="stage"><div class="frame" id="frame"></div>
+<div class="states"><h2>状态（当前页 · 六态口径）</h2><div id="sts"></div>
+<div class="cur" id="cur"></div>
+<div class="flow"><button class="fbtn" onclick="nav(-1)">&#8592; 上一页</button><button class="fbtn" onclick="nav(1)">下一页 &#8594;</button></div>
+<div class="note" id="pfnote"></div></div></div>
+<script>
+const DATA={"pages": [{"id": "p001", "t": "扫描首页", "r": [["扫描控制 + RSSI 筛选", "row"], ["设备列表（含空态 A/B）", "tall"], ["广播数据弹层（sheet）", "row"]], "s": ["默认（蓝牙就绪 · 已扫描）", "未扫描（空态 A）", "筛选无匹配（空态 B）", "扫描失败（横幅+重试）", "权限：蓝牙未开", "权限：平台不支持"], "flow": "Tab 入口；设备卡 → 连接(P006)；SHID 卡 = 连接 + 配网(P002) 双入口（特殊=标准扩展）", "pf": null, "pfnote": "微信 = 基准形态（内核字节复制 v1.0.1）+ wxhost.js 宿主维度覆写层：安卓/iOS 真机行为一致，开发者工具外围广播不可用（旧代码 isWeixinDevTools）"}, {"id": "p002", "t": "SHID 配网向导", "r": [["三步 stepper", "row"], ["Wi-Fi / Hub 表单", "hero"], ["配对码获取（大按钮）", "row"], ["四行下发进度 / 错误恢复", "tall"]], "s": ["连接中", "连接失败（身份验证）", "表单（含断线可续填）", "下发中（四行进度）", "配网成功（READY）", "错误 wifi_failed → 回表单", "错误 pairing_expired → 重扫码", "错误 controlhub_unreachable → 诊断"], "flow": "connect → configure → status；成功 redirectTo P003，失败按错误码给恢复动作", "pf": null, "pfnote": ""}, {"id": "p003", "t": "SHID 设备详情", "r": [["设备会话快照（kv）", "hero"], ["操作：重配网 / 诊断 / GATT", "row"]], "s": ["正常（会话快照）", "记录不存在（弹窗返回）", "字段缺失（显示 —）"], "flow": "配网成功落地页；无设备上下文 → 守卫弹窗返回", "pf": null, "pfnote": ""}, {"id": "p005", "t": "SHID 诊断", "r": [["五项检测行（BLE/Wi-Fi/Hub/控制/USB）", "tall"], ["错误码 + 恢复动作", "row"]], "s": ["尚未检测（五行 pending）", "检测完成 · 全正常", "检测完成 · Wi-Fi 异常", "设备未连接（offline → 连接确认）", "连接失败（error + 错误码）"], "flow": "P002 错误 → 诊断；P003 → 诊断", "pf": null, "pfnote": ""}, {"id": "p006", "t": "GATT 调试", "r": [["设备头（连接/断开/重连）", "row"], ["服务/特征树（折叠）", "tall"], ["读写监听操作", "row"], ["通信日志（脱敏）", "tall"]], "s": ["未连接（idle）", "连接成功（服务树 ready）", "连接失败（error + 重试）", "服务列表为空", "被动断线 → 自动重连", "示例日志（含脱敏）", "OTA 预设：校验失败", "OTA 预设：成功"], "flow": "P001 连接进入；OTA 弹层 12 态事务（BLOCKED P-03）", "pf": null, "pfnote": ""}, {"id": "p007", "t": "已连接设备", "r": [["连接设备卡列表", "tall"], ["单台/批量断开", "row"]], "s": ["3 台连接（含 SHID）", "1 台连接（无汇总卡）", "空态 · 常规", "空态 · 配网会话在线", "批量断开部分失败（失败清单）"], "flow": "Tab 入口；SHID 卡 → P003，普通卡 → P006", "pf": null, "pfnote": ""}, {"id": "p008", "t": "BLE 广播", "r": [["广播表单（名称/UUID/厂商）", "hero"], ["31B 预算核算条", "row"], ["启停控制 + 日志", "tall"]], "s": ["就绪（平台分支）", "广播中（输入禁用）", "预填超限（>31B 拦截）", "启动失败（FAILED）", "Web · 不支持（U-03 解释）"], "flow": "Tab 入口；平台分支（微信/Android/Web/开发者工具）", "pf": ["宿主系统切换（iOS/安卓真机/开发者工具）", "devtools 宿主：真机调试横幅 + 启动拦截"], "pfnote": ""}, {"id": "p009", "t": "关于", "r": [["品牌卡 + 版本投影", "hero"], ["外链 / 反馈 / 分享 / 推广卡", "row"]], "s": ["正常（版本投影）", "版本回退（release-metadata）"], "flow": "Tab 入口；版本记录入口 → P010", "pf": ["右上角菜单分享（客户端胶囊）"], "pfnote": ""}, {"id": "p010", "t": "版本记录", "r": [["三列表：功能/平台/修复", "tall"]], "s": ["正常", "三个列表全空态"], "flow": "P009 → P010（navigateTo）", "pf": null, "pfnote": ""}]};
+let pi=0, si=0;
+function render(){
+  const p=DATA.pages[pi];
+  document.getElementById('pgs').innerHTML=DATA.pages.map((x,i)=>'<button class="pg '+(i===pi?'on':'')+'" onclick="go('+i+')"><span>'+x.t+'</span><span class="id">'+x.id.toUpperCase()+'</span></button>').join('');
+  document.getElementById('frame').innerHTML=
+    '<div class="wfb nav"><span class="cap">'+p.t+' · 导航</span><span>'+p.id.toUpperCase()+'</span></div>'+
+    p.r.map(function(r){return '<div class="wfb '+r[1]+'"><span class="cap">'+r[0]+'</span></div>';}).join('')+
+    (p.pf?'<div class="wfb row"><span class="cap">平台差异注入点</span>'+p.pf.map(function(x){return '<span class="pf">'+x+'</span>';}).join('')+'</div>':'');
+  document.getElementById('sts').innerHTML=p.s.map(function(x,i){return '<span class="st '+(i===si?'on':'')+'" onclick="sst('+i+')">'+x+'</span>';}).join('');
+  document.getElementById('cur').textContent='页面 '+(pi+1)+'/'+DATA.pages.length+' · 状态「'+p.s[si]+'」 · 流程：'+(p.flow||'—');
+  document.getElementById('pfnote').textContent=p.pfnote||'';
+}
+function go(i){pi=i;si=0;render();}
+function sst(i){si=i;render();}
+function nav(d){pi=(pi+d+DATA.pages.length)%DATA.pages.length;si=0;render();}
+render();
+</script></body></html>

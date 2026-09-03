@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BLE Toolkit+ 交互原型 · 基于旧项目逆向（9 页；2026-09-02 决策移除 PAGE004）</title>
+<style>
+  :root{
+    --brand:#1B6DFF; --mint:#17C7A8; --red:#F2555F; --amber:#FF9F43;
+    --text:#18222E; --sub:#42536A; --muted:#60758D; --line:#E3EAF3; --line-soft:#EDF2F9;
+    --bg:#F8FBFF; --card:#FFFFFF;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif; background:#E9EEF5; color:var(--text); display:flex; justify-content:center; padding:24px 12px; gap:22px; min-height:100vh;}
+  .mono{font-family:"SF Mono",Menlo,Consolas,monospace;}
+
+  /* ===== 评审桌面 ===== */
+  .review{width:290px; flex-shrink:0; align-self:flex-start; position:sticky; top:24px; max-height:calc(100vh - 48px); overflow:auto; background:#101521; color:#D6E2F5; border-radius:16px; padding:18px 16px; font-size:13px;}
+  .review h1{font-size:15px; margin-bottom:2px; color:#fff;}
+  .review .sub{color:#7C8DA6; font-size:11px; margin-bottom:14px; line-height:1.6;}
+  .review h2{font-size:11px; color:#8FA3C0; letter-spacing:1px; margin:14px 0 8px;}
+  .pg-btn{display:flex; justify-content:space-between; width:100%; background:#1A2233; color:#D6E2F5; border:1px solid #263149; border-radius:9px; padding:7px 10px; margin-bottom:5px; cursor:pointer; font-size:12px;}
+  .pg-btn:hover{background:#222C42;}
+  .pg-btn.on{background:var(--brand); border-color:var(--brand); color:#fff;}
+  .pg-btn .pid{color:#7C8DA6; font-size:10px;}
+  .pg-btn.on .pid{color:#CFE0FF;}
+  .sc-btn{display:block; width:100%; text-align:left; background:#1A2233; color:#B9CBE6; border:1px solid #263149; border-radius:8px; padding:6px 9px; margin-bottom:4px; cursor:pointer; font-size:12px;}
+  .sc-btn:hover{background:#222C42; color:#fff;}
+  .review .note{margin-top:14px; padding-top:12px; border-top:1px solid #263149; color:#7C8DA6; font-size:11px; line-height:1.7;}
+
+  /* ===== 手机 ===== */
+  .phone{width:395px; flex-shrink:0; background:#12151C; border-radius:46px; padding:10px; box-shadow:0 24px 60px rgba(10,20,40,.35);}
+  .screen{width:375px; height:760px; background:var(--bg); border-radius:37px; overflow:hidden; position:relative; display:flex; flex-direction:column;}
+  .pagehost{flex:1; overflow-y:auto; overflow-x:hidden; position:relative; scrollbar-width:none;}
+  .pagehost::-webkit-scrollbar{display:none;}
+
+  /* 顶部导航 */
+  .navbar{padding:54px 18px 12px; background:linear-gradient(180deg,#FFFFFF, #F8FBFF); border-bottom:1px solid var(--line-soft); position:relative;}
+  .navbar .kicker{font-size:10px; letter-spacing:2px; color:var(--brand); font-weight:800;}
+  .navbar .row{display:flex; align-items:center; justify-content:space-between; margin-top:2px;}
+  .navbar .title{font-size:22px; font-weight:800;}
+  .bt-dot{width:9px; height:9px; border-radius:50%; background:#9aa8b6; display:inline-block; margin-right:5px;}
+  .bt-dot.on{background:var(--mint); box-shadow:0 0 8px rgba(23,199,168,.55);}
+  .bt-chip{font-size:11px; color:var(--muted); font-weight:700;}
+  .subnav{display:flex; align-items:center; gap:10px; padding:52px 14px 10px; background:#fff; border-bottom:1px solid var(--line-soft); position:sticky; top:0; z-index:5;}
+  .back-btn{width:30px; height:30px; border:none; background:#F1F5FB; border-radius:9px; font-size:16px; color:var(--text); cursor:pointer; flex-shrink:0;}
+  .subnav .t{font-size:16px; font-weight:700; flex:1;}
+
+  .page-tag{position:absolute; top:12px; right:14px; background:#EAF1FF; color:var(--brand); font-size:9px; font-weight:800; padding:3px 7px; border-radius:999px; letter-spacing:.5px; z-index:9;}
+
+  /* 通用卡片 */
+  .content{padding:14px; display:flex; flex-direction:column; gap:12px;}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:14px; box-shadow:0 4px 14px rgba(24,50,90,.05);}
+  .sec-h{display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;}
+  .sec-t{font-size:15px; font-weight:800;}
+  .sec-c{font-size:11px; color:var(--muted); line-height:1.5;}
+  .link{color:var(--brand); font-size:12px; font-weight:700; cursor:pointer;}
+  .chip{display:inline-block; padding:2px 8px; border-radius:999px; font-size:10px; font-weight:700;}
+  .chip.brand{background:#EAF1FF; color:var(--brand);}
+  .chip.mint{background:#E2F8F3; color:#0E8F79;}
+  .chip.muted{background:#F0F3F8; color:var(--muted);}
+  .chip.warn{background:#FFF2E5; color:#A6630A;}
+  .chip.red{background:#FDEBEC; color:var(--red);}
+  .chip.green{background:#E2F8F3; color:#0E9C82;}
+
+  /* 按钮 */
+  .btn{border:none; border-radius:12px; font-size:13px; font-weight:700; padding:9px 14px; cursor:pointer; color:#fff; background:var(--brand);}
+  .btn.primary{background:var(--brand);}
+  .btn.secondary{background:#EAF1FF; color:var(--brand);}
+  .btn.ghost{background:#F0F3F8; color:var(--sub);}
+  .btn.danger{background:var(--red);}
+  .btn.lg{width:100%; padding:13px; font-size:15px; border-radius:14px;}
+  .btn.sm{padding:6px 11px; font-size:12px; border-radius:9px;}
+  .btn.block{width:100%;}
+  .btn:disabled{opacity:.45; cursor:not-allowed;}
+
+  /* 空态 */
+  .empty{display:flex; flex-direction:column; align-items:center; text-align:center; padding:34px 18px; gap:8px;}
+  .empty .ico{font-size:34px; opacity:.5;}
+  .empty .et{font-size:15px; font-weight:800;}
+  .empty .ed{font-size:12px; color:var(--muted); line-height:1.6;}
+
+  /* 错误横幅 */
+  .err-banner{background:#FDEBEC; border:1px solid #F8CDD1; border-radius:12px; padding:10px 12px; margin-top:10px;}
+  .err-banner .et{font-size:12px; font-weight:800; color:var(--red);}
+  .err-banner .ec{font-size:11px; color:#B25B61; margin-top:3px; line-height:1.5;}
+
+  /* 设备卡 */
+  .dev{display:flex; gap:11px; padding:12px; border:1px solid var(--line-soft); border-radius:14px; background:#fff; margin-bottom:9px; align-items:center;}
+  .dev .ava{width:44px; height:44px; border-radius:13px; background:linear-gradient(135deg,#1B6DFF,#5EA0FF); color:#fff; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; flex-shrink:0;}
+  .dev .ava.hid{background:linear-gradient(135deg,#17C7A8,#0E8F79);}
+  .dev .ava.on{background:linear-gradient(135deg,#2AA8FF,#1B6DFF);}
+  .dev .copy{flex:1; min-width:0;}
+  .dev .nm{font-size:14px; font-weight:750; display:flex; align-items:center; gap:6px; flex-wrap:wrap;}
+  .dev .id{font-size:10px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .dev .meta{font-size:10px; color:var(--muted); margin-top:2px;}
+  .dev .ops{display:flex; gap:6px; flex-shrink:0; align-items:center;}
+  .rssi{display:flex; align-items:flex-end; gap:2px; height:14px;}
+  .rssi i{width:3px; background:#D3DEEC; border-radius:1px;}
+  .rssi i:nth-child(1){height:4px}.rssi i:nth-child(2){height:7px}.rssi i:nth-child(3){height:10px}.rssi i:nth-child(4){height:13px}
+  .rssi.l1 i:nth-child(-n+1),.rssi.l2 i:nth-child(-n+2),.rssi.l3 i:nth-child(-n+3),.rssi.l4 i{background:var(--brand);}
+  .rssi.l1 i{background:#F1A93E;}
+  .dbm{font-size:9px; color:var(--muted); margin-left:4px;}
+
+  /* 筛选 */
+  .filter{background:#F4F8FD; border:1px solid var(--line-soft); border-radius:13px; padding:12px; margin-bottom:10px;}
+  .f-row{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px; font-size:12px;}
+  .f-presets{display:flex; gap:5px; flex-wrap:wrap;}
+  .f-pre{border:1px solid var(--line); background:#fff; color:var(--sub); border-radius:999px; padding:3px 9px; font-size:10px; cursor:pointer;}
+  .f-pre.on{background:var(--brand); color:#fff; border-color:var(--brand);}
+  .f-input{width:100%; height:34px; border:1px solid var(--line); border-radius:9px; padding:0 10px; font-size:12px; color:var(--text); background:#fff;}
+  .sw{position:relative; width:40px; height:22px; background:#D6DFEB; border-radius:999px; cursor:pointer; transition:.2s; flex-shrink:0;}
+  .sw.on{background:var(--brand);}
+  .sw i{position:absolute; top:2px; left:2px; width:18px; height:18px; background:#fff; border-radius:50%; transition:.2s;}
+  .sw.on i{left:20px;}
+  input[type=range]{flex:1; accent-color:var(--brand);}
+
+  /* 步骤条 / 进度 */
+  .steps{display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-bottom:2px;}
+  .step{background:#fff; border:1px solid var(--line); border-radius:11px; padding:9px 6px; text-align:center; font-size:11px; color:var(--muted); font-weight:700;}
+  .step.cur{background:linear-gradient(135deg,#1B6DFF,#5EA0FF); color:#fff; border-color:transparent;}
+  .step.done{color:#0E9C82; border-color:#BFEDE3; background:#F0FBF9;}
+  .prow{display:flex; align-items:center; gap:10px; padding:9px 2px; border-bottom:1px solid var(--line-soft); font-size:13px;}
+  .prow:last-child{border-bottom:none;}
+  .prow .dot{width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; flex-shrink:0;}
+  .dot.pending{background:#F0F3F8; color:#9AA8B6;}
+  .dot.active{background:#EAF1FF; color:var(--brand);}
+  .dot.done{background:#E2F8F3; color:#0E9C82;}
+  .dot.fail{background:#FDEBEC; color:var(--red);}
+  .prow .st{margin-left:auto; font-size:11px; color:var(--muted);}
+
+  /* 状态组件 */
+  .op-state{border-radius:13px; padding:13px; display:flex; gap:10px; align-items:flex-start; font-size:12px; line-height:1.55;}
+  .op-state.loading{background:#F4F8FD; border:1px solid var(--line-soft);}
+  .op-state.error{background:#FDEBEC; border:1px solid #F8CDD1; color:#B25B61;}
+  .op-state.success{background:#E9FAF6; border:1px solid #C4EFE5; color:#0E8F79;}
+  .spin{width:16px; height:16px; border:2px solid #C9D9F2; border-top-color:var(--brand); border-radius:50%; animation:rot .8s linear infinite; flex-shrink:0; margin-top:2px;}
+  @keyframes rot{to{transform:rotate(360deg)}}
+
+  /* 表单 */
+  .fgroup{display:flex; flex-direction:column; gap:5px; margin-bottom:11px;}
+  .flabel{font-size:12px; font-weight:750;}
+  .fhint{font-size:10px; color:var(--muted);}
+  .fin{width:100%; height:42px; border:1px solid var(--line); border-radius:11px; padding:0 12px; font-size:14px; background:#F7FAFE;}
+  .fin:disabled{opacity:.6;}
+  .action-card{display:flex; align-items:center; gap:11px; width:100%; border:1px solid var(--line); background:#fff; border-radius:14px; padding:12px; cursor:pointer; margin-bottom:11px; text-align:left;}
+  .action-card .ic{width:40px; height:40px; border-radius:12px; background:#EAF1FF; display:flex; align-items:center; justify-content:center; font-size:18px; color:var(--brand); flex-shrink:0;}
+  .action-card .tt{font-size:13px; font-weight:750;}
+  .action-card .dd{font-size:10px; color:var(--muted); margin-top:2px;}
+  .action-card .bdg{margin-left:auto; flex-shrink:0;}
+
+  /* 服务树 */
+  .svc{border:1px solid var(--line-soft); border-radius:13px; margin-bottom:9px; overflow:hidden; background:#fff;}
+  .svc-h{display:flex; align-items:center; gap:8px; padding:10px 12px; cursor:pointer; background:#fff;}
+  .svc-h .arrow{transition:.2s; color:var(--muted); font-size:10px;}
+  .svc.open .arrow{transform:rotate(90deg);}
+  .svc-body{display:none; border-top:1px solid var(--line-soft);}
+  .svc.open .svc-body{display:block;}
+  .char{display:flex; align-items:center; gap:8px; padding:9px 12px; border-bottom:1px solid #F3F7FC; font-size:12px;}
+  .char:last-child{border-bottom:none;}
+  .char .cn{flex:1; min-width:0;}
+  .char .cid{font-size:9px; color:var(--muted);}
+  .char .ops{display:flex; gap:5px;}
+
+  /* 日志 */
+  .logwrap{background:#0F1622; border-radius:16px; padding:12px; color:#C7D6EC; font-size:10px;}
+  .logwrap .lh{display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; color:#8FA3C0; font-size:11px; font-weight:700;}
+  .logline{display:flex; gap:7px; padding:3px 0; line-height:1.5; font-family:"SF Mono",Menlo,monospace; word-break:break-all;}
+  .logline .t{color:#5D6F8C; flex-shrink:0;}
+  .lt{flex-shrink:0; padding:0 6px; border-radius:5px; font-size:9px; font-weight:800; height:15px; line-height:15px;}
+  .lt.sys{background:#26314A; color:#9FB4D6;} .lt.err{background:#4A2430; color:#FF8B94;}
+  .lt.read{background:#24384A; color:#7FD1F5;} .lt.write{background:#3A3324; color:#F5C97B;}
+  .lt.recv{background:#1F4038; color:#6FD9BC;} .lt.ok{background:#28402F; color:#8FE3A8;}
+
+  /* tabBar */
+  #tabbar{display:flex; background:#F8FBFF; border-top:1px solid var(--line-soft); padding:7px 0 16px;}
+  .tab{flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; font-size:10px; color:#7B8FA5; cursor:pointer; font-weight:600;}
+  .tab .ti{font-size:19px;}
+  .tab.on{color:var(--brand);}
+
+  /* toast / modal */
+  #toast{position:absolute; left:50%; bottom:110px; transform:translateX(-50%) translateY(12px); background:rgba(20,28,42,.92); color:#fff; font-size:12px; padding:9px 16px; border-radius:11px; opacity:0; pointer-events:none; transition:.22s; z-index:60; max-width:82%; text-align:center; line-height:1.5;}
+  #toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+  .mask{position:absolute; inset:0; background:rgba(12,18,30,.45); z-index:50; display:flex; align-items:flex-end;}
+  .sheet{background:#fff; width:100%; border-radius:20px 20px 0 0; padding:18px; max-height:82%; overflow:auto;}
+  .sheet .sh-t{font-size:16px; font-weight:800; margin-bottom:6px;}
+  .sheet .sh-c{font-size:13px; color:var(--sub); line-height:1.65;}
+  .sheet .acts{display:flex; gap:9px; margin-top:15px;}
+  .sheet .acts .btn{flex:1;}
+  .dialog{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:82%; background:#fff; border-radius:17px; padding:19px; z-index:55;}
+  .progress-bg{height:7px; background:#EDF2F9; border-radius:99px; overflow:hidden; margin:10px 0 4px;}
+  .progress-fg{height:100%; background:linear-gradient(90deg,#1B6DFF,#5EA0FF); border-radius:99px; transition:width .18s;}
+  .kv{display:flex; justify-content:space-between; gap:12px; padding:8px 0; border-bottom:1px solid #F3F7FC; font-size:13px;}
+  .kv:last-child{border-bottom:none;}
+  .kv .k{color:var(--muted); flex-shrink:0;}
+  .kv .v{font-weight:650; text-align:right; word-break:break-all;}
+  .menu-item{display:flex; align-items:center; justify-content:space-between; padding:12px 13px; background:rgba(255,255,255,.85); border-radius:12px; margin-bottom:8px; font-size:14px; font-weight:600; cursor:pointer;}
+  .menu-item .ar{color:var(--brand); font-size:17px;}
+  .appcard{display:flex; gap:11px; align-items:center; border:1px solid var(--line-soft); border-radius:13px; padding:11px; margin-bottom:8px; cursor:pointer; background:#fff;}
+  .appcard .ic{width:42px; height:42px; border-radius:11px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:18px; color:#fff;}
+  .appcard .an{font-size:13px; font-weight:750;}
+  .appcard .ad{font-size:10px; color:var(--muted); margin-top:2px;}
+  .feat-grid{display:grid; grid-template-columns:1fr 1fr; gap:7px;}
+  .feat{display:flex; gap:7px; align-items:center; background:rgba(255,255,255,.85); border-radius:11px; padding:9px 10px; font-size:11px; font-weight:700;}
+  .feat .n{color:var(--brand); background:#EAF1FF; border-radius:6px; width:17px; height:17px; display:flex; align-items:center; justify-content:center; font-size:9px; flex-shrink:0;}
+  .plat-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:7px;}
+  .plat{background:rgba(27,109,255,.07); border-radius:11px; padding:8px; text-align:center; color:var(--brand);}
+  .plat .pn{font-size:11px; font-weight:750;}
+  .plat .ps{font-size:9px; font-weight:800; opacity:.8; margin-top:2px;}
+  .diag-row{display:flex; flex-direction:column; gap:5px; padding:9px 0; border-bottom:1px solid #F3F7FC;}
+  .diag-head{display:flex; align-items:center; gap:9px; font-size:13px;}
+  .diag-dot{width:21px; height:21px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; flex-shrink:0;}
+  .diag-dot.ok{background:rgba(23,199,168,.16); color:#0E9C82;} .diag-dot.warn{background:rgba(255,159,67,.16); color:#D37A12;}
+  .diag-dot.fail{background:rgba(242,85,95,.14); color:var(--red);} .diag-dot.active{background:rgba(27,109,255,.12); color:var(--brand);}
+  .diag-dot.pending{background:#F0F3F8; color:#9AA8B6;}
+  .diag-label{flex:1; font-weight:650;}
+  .diag-state{font-size:11px; color:var(--muted);}
+  .diag-detail{font-size:11px; color:var(--sub); padding-left:30px; line-height:1.5;}
+  .picker-row{display:flex; align-items:center; justify-content:space-between; font-size:13px; margin-bottom:9px;}
+  select.picker{border:1px solid var(--line); background:#F7FAFE; border-radius:9px; padding:6px 9px; font-size:12px; color:var(--text);}
+  .bytes-hint{background:#EAF1FF; border-radius:11px; padding:9px 11px; font-size:11px; color:var(--brand); display:flex; gap:8px; align-items:center;}
+  .bytes-hint.over{background:#FDEBEC; color:var(--red);}
+  .uuid-hint{background:#FFF2E5; border-radius:11px; padding:9px 11px; font-size:11px; color:#A6630A;}
+  @media (max-width: 760px){ .review{display:none;} }
+</style>
+</head>
+<body>
+
+<aside class="review">
+  <h1>BLE Toolkit+ 评审原型</h1>
+  <div class="sub">旧项目逆向重建 · 单文件 · 全模拟数据 · 无后端<br>对应 PRD：docs/02_product/PRD.md</div>
+  <h2>页面直达</h2>
+  <div id="pgnav"></div>
+  <h2>当前页场景</h2>
+  <div id="scnav"></div>
+  <div class="note">
+    红线遵守：未删除任何复杂功能、未隐藏按钮、未简化流程、未新增商业功能。<br><br>
+    现状标注：F017 观察证据匹配、F030 国际化在真实产品中即为「服务层就绪/未接线」状态，原型如实标注。
+  </div>
+</aside>
+
+  <div class="phone">
+  <div class="screen">
+    <div id="pagetag" style="position:absolute; top:10px; right:14px; z-index:40;"></div>
+    <div id="pagehost" class="pagehost"></div>
+    <div id="tabbar"></div>
+    <div id="toast"></div>
+    <div id="overlay"></div>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   BLE Toolkit+ 交互原型（PAGE001/002/003/005/006/007/008/009/010；PAGE004 已按 2026-09-02 用户决策移除）
+   事实源：docs/01_reverse/REVERSE_ANALYSIS.md → docs/02_product/PRD.md → docs/03_flow/PAGE_SPEC.md
+   ========================================================= */
+
+/* ---------- 模拟数据 ---------- */
+const MOCK = {
+  scanDevices: [
+    {deviceId:'SHID-A1B2C3', name:'SHID-A1B2C3', rssi:-52, profileId:'smart-hid', matchLevel:'STRONG', advComplete:true},
+    {deviceId:'F2:6A:9C:11:03:7E', name:'Mi Smart Band 8', rssi:-61, advComplete:true},
+    {deviceId:'C8:3E:99:0A:22:5F', name:'LightBLE-Observer', rssi:-66, advComplete:false},
+    {deviceId:'5A:1F:BB:90:7C:D2', name:'', rssi:-77, advComplete:true},
+    {deviceId:'AA:2C:44:8E:10:09', name:'JBL Flip 6', rssi:-84, advComplete:true},
+  ],
+  knownDevicesRemoved: null, /* 2026-09-02 用户决策：移除「已配置 Smart HID」面板与历史页，knownDevices 概念不再呈现 */
+  services: [
+    {uuid:'00001800-0000-1000-8000-00805f9b34fb', name:'通用访问 (0x1800)', open:true, chars:[
+      {uuid:'00002a00-0000-1000-8000-00805f9b34fb', name:'Device Name (0x2A00)', props:{read:true, write:true}, value:'SHID-A1B2C3', hex:'53 48 49 44 2D 41 31 42 32 43 33'},
+      {uuid:'00002a01-0000-1000-8000-00805f9b34fb', name:'Appearance (0x2A01)', props:{read:true}, value:'Unknown (0x0000)', hex:'00 00'},
+    ]},
+    {uuid:'0000180f-0000-1000-8000-00805f9b34fb', name:'电池服务 (0x180F)', open:false, chars:[
+      {uuid:'00002a19-0000-1000-8000-00805f9b34fb', name:'Battery Level (0x2A19)', props:{read:true, notify:true}, value:'85%', hex:'55'},
+    ]},
+    {uuid:'4fafc201-1fb5-459e-914d-914d0cdff40d', name:'OTA 服务 (4FAFC201)', open:false, ota:true, chars:[
+      {uuid:'beb5483e-36e1-4688-b7f5-ea07361b26c0', name:'CTRL (写入控制)', props:{write:true}, value:'—', hex:''},
+      {uuid:'beb5483e-36e1-4688-b7f5-ea07361b26c1', name:'DATA (固件数据)', props:{write:true}, value:'—', hex:''},
+      {uuid:'beb5483e-36e1-4688-b7f5-ea07361b26c2', name:'STATUS (升级状态)', props:{notify:true}, value:'—', hex:''},
+    ]},
+    {uuid:'0000ffe0-0000-1000-8000-00805f9b34fb', name:'自定义服务 FFE0', open:false, chars:[
+      {uuid:'0000ffe1-0000-1000-8000-00805f9b34fb', name:'FFE1 (透传)', props:{write:true, notify:true}, value:'—', hex:''},
+    ]},
+  ],
+  connected: [
+    {deviceId:'F2:6A:9C:11:03:7E', name:'Mi Smart Band 8', rssi:-61},
+    {deviceId:'SHID-A1B2C3', name:'SHID-A1B2C3', rssi:-52, profileId:'smart-hid'},
+    {deviceId:'7D:44:E1:02:9A:30', name:'LightBLE-Peripheral', rssi:-70},
+  ],
+  apps: [
+    {name:'萌喵圈', desc:'铲屎官的猫咪社区', icon:'🐱', color:'#FF9F43', appId:'wxe0ed0e6727a0a5cd'},
+    {name:'宝宝点滴', desc:'记录宝宝成长每一步', icon:'🍼', color:'#17C7A8', appId:'wx1bb2d5c6821a7883'},
+  ],
+  features: ['设备扫描','智能过滤','快速连接','数据读写','通知监听','广播模式'],
+  platforms: [
+    {name:'Android', status:'PREVIEW'},{name:'微信小程序', status:'PREVIEW'},
+    {name:'H5', status:'UNSUPPORTED'},{name:'iOS', status:'FUTURE'},
+  ],
+  limitations: [
+    '暂无正式发布 APK 与小程序码','E4/E5 验证未执行','OTA 能力 BLOCKED（客户端与固件事务未对齐）',
+    'Release Pipeline 仍为历史 Flutter/Tauri 路线','Smart HID 端到端 E5 未完成','i18n 未接线（UI 全中文）',
+    '微信开发者工具不支持广播外围模式（需真机）','观察侧证据匹配暂无页面入口',
+  ],
+};
+
+/* ---------- 全局状态 ---------- */
+const S = {
+  stack: ['p001'],
+  p001: { bt:'on', scanned:false, scanning:false, scanError:null, shown:[], filterOpen:false,
+          filter:{rssi:-100, prefix:'', hideNoName:false}, adv:null },
+  p002: { device:null, phase:'connect', connecting:false, connError:null, lost:false,
+          ssid:'', pwd:'', hub:'', token:null, provisioning:false, done:false, err:null, recovery:null,
+          progress:{wifi:'pending', hub:'pending', conn:'pending', usb:'pending'} },
+  p003: { device:null, missing:false },
+  p005: { device:null, state:'idle', rows:null, advanced:false, error:null, connecting:false },
+  p006: { device:null, panel:'idle', connecting:false, connError:null, logs:[], notify:{}, write:null, ota:null },
+  p007: { mode:'multi' },
+  p008: { platform:'weixin', supported:null, advertising:false, state:'idle', logs:[],
+          name:'SmartBLE', uuid:'FFE0', mfgId:'0001', mfgData:'BLE',
+          mode:2, power:3, connectable:true, incName:false, incUuid:false },
+  p009: {},
+  p010: {},
+};
+let navSeq = 0;
+const seq = () => navSeq;
+function later(ms, fn){ const s = seq(); setTimeout(() => { if (s === seq()) fn(); }, ms); }
+const esc = (v) => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ---------- 导航 ---------- */
+const TABS = ['p001','p007','p008','p009'];
+const PAGES = {
+  p001:{tag:'PAGE001 · PRD §6', title:'BLE Toolkit+', tab:true},
+  p002:{tag:'PAGE002 · PRD §6', title:'配置 Smart HID'},
+  p003:{tag:'PAGE003 · PRD §6', title:'Smart HID 设备'},
+  p005:{tag:'PAGE005 · PRD §6', title:'诊断'},
+  p006:{tag:'PAGE006 · PRD §6 · OTA=子流程', title:'设备详情'},
+  p007:{tag:'PAGE007 · PRD §6', title:'已连接设备', tab:true},
+  p008:{tag:'PAGE008 · PRD §6', title:'BLE广播', tab:true},
+  p009:{tag:'PAGE009 · PRD §6', title:'关于', tab:true},
+  p010:{tag:'PAGE010 · PRD §6', title:'版本记录'},
+};
+const cur = () => S.stack[S.stack.length-1];
+function go(id){ navSeq++; S.stack.push(id); renderAll(); }
+function back(){ if(S.stack.length>1){ navSeq++; S.stack.pop(); renderAll(); } }
+function redirect(id){ navSeq++; S.stack[S.stack.length-1] = id; renderAll(); }
+function switchTab(id){ navSeq++; S.stack = [id]; renderAll(); }
+
+/* ---------- 反馈 ---------- */
+let toastTimer = null;
+function toast(msg){ const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(()=>t.classList.remove('show'), 2000); }
+function copy(text, tip){ /* 浏览器环境模拟剪贴板 */ try{ navigator.clipboard?.writeText(text); }catch(e){} toast(tip || '已复制'); }
+function modal({title, content, confirmText='确定', cancelText='取消', onConfirm, onCancel, hideCancel=false, custom=''}){
+  const ov = document.getElementById('overlay');
+  ov.innerHTML = `<div class="mask" data-mask="1">
+    <div class="dialog" data-stop="1">
+      <div class="sh-t">${esc(title)}</div>
+      <div class="sh-c">${content}</div>
+      ${custom}
+      <div class="acts">
+        ${hideCancel ? '' : `<button class="btn ghost" data-act="modal-cancel">取消</button>`}
+        <button class="btn primary" data-act="modal-ok">${esc(confirmText)}</button>
+      </div>
+    </div></div>`;
+  ov.querySelector('[data-act=modal-ok]').onclick = () => { closeOverlay(); onConfirm && onConfirm(); };
+  const c = ov.querySelector('[data-act=modal-cancel]');
+  if(c) c.onclick = () => { closeOverlay(); onCancel && onCancel(); };
+  ov.querySelector('[data-mask]').addEventListener('click', e => { if(e.target.dataset.mask){ closeOverlay(); onCancel && onCancel(); } });
+}
+function sheet(html){ const ov = document.getElementById('overlay'); ov.innerHTML = `<div class="mask" data-mask="1"><div class="sheet" data-stop="1">${html}</div></div>`; }
+function closeOverlay(){ document.getElementById('overlay').innerHTML = ''; }
+function pageTag(){ return `<div class="page-tag">${PAGES[cur()].tag}</div>`; }
+function subnav(title){ return `<div class="subnav"><button class="back-btn" data-act="back">‹</button><div class="t">${esc(title)}</div></div>`; }
+
+/* ---------- P001 扫描首页 ---------- */
+function rssiLevel(r){ return r >= -60 ? 4 : r >= -70 ? 3 : r >= -80 ? 2 : 1; }
+function devCard(d){
+  const profile = d.profileId === 'smart-hid';
+  const nm = d.name || ('未命名 BLE · ' + d.deviceId.slice(-4).toUpperCase());
+  const connected = (S.p007.mode !== 'empty-common' && S.p007.mode !== 'empty-prov') &&
+                    MOCK.connected.some(c => c.deviceId === d.deviceId);
+  let ops;
+  if(profile){
+    ops = `<button class="btn secondary sm" data-act="connect-generic" data-id="${esc(d.deviceId)}">连接</button>
+           <button class="btn primary sm" data-act="open-profile" data-id="${esc(d.deviceId)}">配置 Smart HID</button>`;
+  } else {
+    ops = connected
+      ? `<button class="btn ghost sm" disabled>已连接</button>`
+      : `<button class="btn primary sm" data-act="connect-generic" data-id="${esc(d.deviceId)}">连接</button>`;
+  }
+  const meta = profile ? 'Profile 匹配：STRONG（服务 UUID）· 可配网' : (d.advComplete ? '广播数据完整 · 可查看' : '广播字段部分缺失');
+  return `<div class="dev" data-act="open-adv" data-id="${esc(d.deviceId)}">
+    <div class="ava ${profile?'hid':''}">${profile?'HID':'BLE'}</div>
+    <div class="copy">
+      <div class="nm">${esc(nm)} ${profile?'<span class="chip green">Smart HID</span>':''} ${d.name?'':'<span class="chip muted">无名</span>'}</div>
+      <div class="id mono">${esc(d.deviceId)}</div>
+      <div class="meta">${meta}</div>
+    </div>
+    <div class="ops" data-stop="1">
+      <div style="display:flex;flex-direction:column;align-items:center">
+        <div class="rssi l${rssiLevel(d.rssi)}"><i></i><i></i><i></i><i></i></div>
+        <span class="dbm mono">${d.rssi} dBm</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px">${ops}</div>
+    </div>
+  </div>`;
+}
+function filteredDevices(){
+  const st = S.p001; const f = st.filter;
+  return st.shown.filter(d =>
+    d.rssi >= f.rssi &&
+    (!f.prefix || (d.name||'').toUpperCase().includes(f.prefix.toUpperCase())) &&
+    (!f.hideNoName || d.name));
+}
+function renderP001(){
+  const st = S.p001;
+  const btText = st.bt==='on' ? '蓝牙就绪' : st.bt==='unsupported' ? '当前平台不支持 BLE' : '蓝牙未开启';
+  const scanLabel = st.scanning ? '扫描中…' : (st.scanError ? '重试扫描' : (st.scanned ? '再次扫描' : '开始扫描'));
+  const scanStateText = st.scanning ? '扫描中' : st.scanError ? '需重试' : st.scanned ? '已完成' : '待开始';
+  const list = filteredDevices();
+  const connectedCount = (S.p007.mode!=='empty-common' && S.p007.mode!=='empty-prov' ? MOCK.connected.length : 0) + (S.p002.provisioning?1:0);
+  return `
+  <div class="navbar">
+    <div class="kicker">SMARTBLE MINI</div>
+    <div class="row"><div class="title">BLE Toolkit+</div>
+      <div class="bt-chip"><span class="bt-dot ${st.bt==='on'?'on':''}"></span>${btText}</div></div>
+  </div>
+  <div class="content">
+    <div class="card">
+      <div class="sec-h"><div><span class="chip brand">${scanStateText}</span>
+        <span style="font-size:12px;color:var(--muted);margin-left:7px">${st.shown.length} 台设备 · ${connectedCount} 台已连接</span></div>
+        <button class="btn ${st.scanning?'danger':'primary'}" data-act="toggle-scan">${scanLabel}</button></div>
+      ${st.scanError ? `<div class="err-banner"><div class="et">扫描失败 · code: ${esc(st.scanError.code)}</div>
+        <div class="ec">${esc(st.scanError.message)}</div>
+        <div style="margin-top:8px"><button class="btn secondary sm" data-act="toggle-scan">重试</button></div></div>` : ''}
+    </div>
+    <div class="card" style="flex:1">
+      <div class="sec-h"><div class="sec-t" style="font-size:14px">附近设备</div>
+        <span class="link" data-act="toggle-filter">${st.filterOpen?'收起筛选':'筛选'}</span></div>
+      ${st.filterOpen ? filterPanelHTML() : ''}
+      <div id="devlist">
+        ${list.length ? list.map(d=>devCard(d)).join('') :
+          `<div class="empty"><div class="ico">🔎</div><div class="et">${st.shown.length>0?'当前没有匹配设备':'还没有扫描结果'}</div>
+           <div class="ed">${st.shown.length>0?'调整筛选试试。':'点上方按钮开始扫描。'}</div></div>`}
+      </div>
+    </div>
+  </div>
+  ${st.adv ? advDialogHTML(st.adv) : ''}`;
+}
+function filterPanelHTML(){
+  const f = S.p001.filter;
+  const presets = [-100,-85,-70,-55];
+  return `<div class="filter" data-stop="1">
+    <div class="f-row"><span id="rssilabel">信号强度 ≥ ${f.rssi} dBm</span><span class="fhint">RSSI</span></div>
+    <div class="f-row"><input type="range" min="-100" max="-40" value="${f.rssi}" oninput="APP.setRssi(this.value)">
+      <div class="f-presets">${presets.map(p=>`<span class="f-pre ${f.rssi===p?'on':''}" data-act="set-rssi" data-v="${p}">${p}</span>`).join('')}</div></div>
+    <div class="f-row"><span>名称前缀</span></div>
+    <input class="f-input" placeholder="例如 SHID / Light / Test" value="${esc(f.prefix)}" oninput="APP.setPrefix(this.value)">
+    <div class="f-row" style="margin-top:9px"><span>隐藏无名设备</span><div class="sw ${f.hideNoName?'on':''}" data-act="toggle-noname"><i></i></div></div>
+    <div style="margin-top:10px"><button class="btn ghost sm" data-act="reset-filter">重置过滤</button></div>
+  </div>`;
+}
+function advDialogHTML(d){
+  const field = (label, v, note) => `<div class="kv"><span class="k">${label}</span><span class="v mono" style="font-size:11px">${v || `<span style="color:var(--muted);font-weight:400">本轮平台 API 未提供此字段${note||''}</span>`}</span></div>`;
+  return `<div class="mask" data-mask="1"><div class="sheet" data-stop="1">
+    <div class="sh-t">广播数据 · ${esc(d.name || '未命名设备')}</div>
+    <div class="sh-c" style="margin-bottom:8px">原始广播报告（模拟数据，对应 F004）</div>
+    ${field('设备 ID', esc(d.deviceId))}
+    ${field('名称', esc(d.name))}
+    ${field('RSSI', d.rssi + ' dBm')}
+    ${field('Service UUIDs', d.profileId==='smart-hid' ? '9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04' : (d.advComplete ? 'FFE0, 180F' : ''))}
+    ${field('原始广播数据', d.advComplete ? '02 01 06 · 05 02 F0 FF 00 18 · 0B 09 …' : '')}
+    ${field('Manufacturer Data', d.name==='LightBLE-Observer' ? '' : (d.advComplete ? '4C 00 12 18 00 00 …（字段存在）' : ''))}
+    ${field('Service Data', '', '（长度为 0 时标注：字段存在但长度为 0）')}
+    <div class="acts"><button class="btn secondary" data-act="copy-adv">复制数据</button><button class="btn ghost" data-act="close-adv">关闭</button></div>
+  </div></div>`;
+}
+
+/* ---------- P002 配网向导 ---------- */
+const PROG_LABELS = {wifi:'Wi-Fi', hub:'ControlHub', conn:'MQTT 控制链路', usb:'设备 Ready'};
+const PROG_TEXT = {pending:'待处理', active:'进行中', done:'完成', fail:'失败'};
+function progDots(state){ return state==='done'?'✓':state==='active'?'…':state==='fail'?'!':'·'; }
+function renderP002(){
+  const st = S.p002; if(!st.device) return `<div class="content"><div class="empty"><div class="et">缺少设备上下文</div><div class="ed">请从扫描页 SHID 卡进入。</div></div></div>`;
+  const stepIdx = st.phase==='connect'?0:st.phase==='configure'?1:2;
+  const d = st.device;
+  let body = '';
+  if(st.phase === 'connect'){
+    body = `<div class="card">
+      <div style="font-size:10px;color:var(--brand);font-weight:800;letter-spacing:1px">SMART HID</div>
+      <div style="font-size:18px;font-weight:800;margin:2px 0 4px">连接设备</div>
+      <div class="sec-c">正在建立 BLE 连接并读取 Device Info，确认设备身份后会直接进入配置。</div>
+      <div class="dev" style="margin-top:11px"><div class="ava hid">HID</div><div class="copy">
+        <div class="nm">${esc(d.name)}</div><div class="id mono">${esc(d.deviceId)}</div></div></div>
+      ${st.connecting ? `<div class="op-state loading"><div class="spin"></div><div>连接并确认设备中…<br><span style="color:var(--muted);font-size:11px">验证 product=smart-hid · 协议版本 1.0 · HID-XXXXXXXX</span></div></div>` : ''}
+      ${st.connError ? `<div class="op-state error"><div>⚠</div><div>${esc(st.connError)}</div></div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:11px">
+        <button class="btn primary lg" data-act="p002-reconnect">重新连接</button>
+        <button class="btn secondary lg" data-act="p002-godevices">返回设备列表</button></div>` : ''}
+    </div>`;
+  } else if(st.phase === 'configure'){
+    body = `<div class="card">
+      <div class="sec-h"><div><div style="font-size:10px;color:${st.lost?'var(--red)':'#0E8F79'};font-weight:800;letter-spacing:1px">${st.lost?'设备连接已断开':'设备已连接'}</div>
+        <div style="font-size:18px;font-weight:800">填写配网信息</div></div>
+        <span class="chip ${st.lost?'red':'mint'}">${st.lost?'已断开':'已连接'}</span></div>
+      <div class="sec-c mono" style="margin-bottom:11px">firmware 1.1.1 · protocol V1 · HID-XXXXXXXX</div>
+      ${st.lost ? `<div class="op-state error" style="margin-bottom:11px"><div>⚠</div><div>设备 BLE 连接已断开。重新连接后可继续下发，已填写的配网信息不会丢失。</div></div>
+        <button class="btn primary lg" data-act="p002-reconnect-lost" style="margin-bottom:11px">重新连接设备</button>` : ''}
+      <div class="fgroup"><span class="flabel">Wi-Fi 名称</span><input class="fin" maxlength="32" placeholder="请输入 SSID" value="${esc(st.ssid)}" oninput="APP.p002set('ssid',this.value)"></div>
+      <div class="fgroup"><span class="flabel">Wi-Fi 密码</span><input class="fin" type="password" maxlength="64" placeholder="无密码可留空" value="${esc(st.pwd)}" oninput="APP.p002set('pwd',this.value)"></div>
+      <div class="fgroup"><div style="display:flex;justify-content:space-between"><span class="flabel">ControlHub 地址</span><span class="fhint">默认端口 17892</span></div>
+        <input class="fin mono" placeholder="192.168.1.8:17892" value="${esc(st.hub)}" oninput="APP.p002set('hub',this.value)"></div>
+      <button class="action-card" data-act="p002-scanqr">
+        <div class="ic">⌁</div>
+        <div style="flex:1"><div class="tt">${st.token?'重新扫描 ControlHub 配对码':'扫描 ControlHub 配对码'}</div>
+          <div class="dd">${st.token?'一次性配对凭据已获取，服务器地址仍可修改':'自动带入服务器地址和一次性配对凭据'}</div></div>
+        <span class="bdg chip ${st.token?'green':'warn'}">${st.token?'已获取':'必需'}</span>
+      </button>
+      <div class="sec-c" style="margin-bottom:11px">🔒 Wi-Fi 密码和配对凭据只用于本次下发，不写入日志或本地存储。（F026 演示：日志中出现 token 时呈现为 ***）</div>
+      <button class="btn primary lg" data-act="p002-submit" ${canSubmitP002()?'':'disabled'}>下发配置</button>
+    </div>`;
+  } else {
+    body = `<div class="card">
+      <div style="font-size:10px;color:var(--brand);font-weight:800;letter-spacing:1px">PROVISION STATUS</div>
+      <div style="font-size:18px;font-weight:800;margin:2px 0 4px">${st.done?'配置完成':st.provisioning?'正在配置':'配置结果'}</div>
+      <div class="sec-c">设备会依次连接 Wi-Fi、与 ControlHub 配对并建立 MQTT 控制链路。</div>
+      <div style="margin-top:6px">${Object.keys(st.progress).map(k =>
+        `<div class="prow"><div class="dot ${st.progress[k]}">${progDots(st.progress[k])}</div><span>${PROG_LABELS[k]}</span><span class="st">${PROG_TEXT[st.progress[k]]}</span></div>`).join('')}</div>
+      ${st.done ? `<div class="op-state success" style="margin-top:11px"><div>✓</div><div><b>设备已就绪</b><br>HID 控制请通过 ControlHub 下发。</div></div>` : ''}
+      ${st.provisioning && !st.done ? `<div style="margin-top:11px"><button class="btn ghost lg" data-act="p002-cancelwait">取消等待</button></div>` : ''}
+      ${st.err ? `<div class="op-state error" style="margin-top:11px"><div>⚠</div><div><b>${esc(st.err.title)}</b><br>${esc(st.err.msg)}</div></div>
+        <div style="margin-top:11px"><button class="btn secondary lg" data-act="p002-recovery">${esc(st.err.label)}</button></div>` : ''}
+      ${st.done ? `<div style="margin-top:11px"><button class="btn primary lg" data-act="p002-viewdetail">查看设备</button></div>` : ''}
+    </div>`;
+  }
+  return `${subnav('配置 Smart HID')}
+  <div class="content">
+    <div class="steps">
+      <div class="step ${stepIdx===0?'cur':stepIdx>0?'done':''}">${stepIdx>0?'✓ ':''}连接</div>
+      <div class="step ${stepIdx===1?'cur':stepIdx>1?'done':''}">${stepIdx>1?'✓ ':''}填写配置</div>
+      <div class="step ${stepIdx===2?'cur':''}">查看状态</div>
+    </div>
+    ${body}
+  </div>`;
+}
+function canSubmitP002(){ const st=S.p002; return st.ssid.trim() && st.hub.trim() && st.token && !st.provisioning; }
+function p002StartProvision(errPlan){
+  const st = S.p002;
+  st.phase='status'; st.provisioning=true; st.done=false; st.err=null;
+  st.progress = {wifi:'active', hub:'pending', conn:'pending', usb:'pending'};
+  renderAll();
+  const chain = [
+    [900,  ()=>{ st.progress.wifi='done'; st.progress.hub='active'; renderAll(); }],
+    [1800, ()=>{ st.progress.hub='done'; st.progress.conn='active'; renderAll(); }],
+    [2700, ()=>{ st.progress.conn='done'; st.progress.usb='active'; renderAll(); }],
+    [3600, ()=>{ st.progress.usb='done'; st.provisioning=false; st.done=true;
+                 toast('设备已就绪（READY）'); renderAll(); }],
+  ];
+  if(errPlan === 'wifi_failed'){
+    chain.length = 1; later(950, ()=>{ st.progress.wifi='fail'; st.provisioning=false;
+      st.err={title:'Wi-Fi 连接失败（wifi_failed）', msg:'设备未能连接到指定 Wi-Fi。请确认 SSID 与密码后重试。', label:'返回表单修改（form）'}; renderAll(); });
+  } else if(errPlan === 'pairing_expired'){
+    chain.length = 2; later(1850, ()=>{ st.progress.hub='fail'; st.provisioning=false;
+      st.err={title:'配对码已过期（pairing_expired）', msg:'ControlHub 返回配对凭据过期，请在 ControlHub 重新生成配对码后重扫。', label:'重新扫描配对码（pairing）'}; renderAll(); });
+  } else if(errPlan === 'controlhub_unreachable'){
+    chain.length = 2; later(1850, ()=>{ st.progress.hub='fail'; st.provisioning=false;
+      st.err={title:'ControlHub 不可达（controlhub_unreachable）', msg:'设备无法连接 ControlHub 地址。可运行诊断定位网络链路。', label:'运行诊断（diagnostics）'}; renderAll(); });
+  }
+  chain.forEach(([ms,fn])=>later(ms,fn));
+}
+
+/* ---------- P003 SHID 详情 ---------- */
+function renderP003(){
+  const st = S.p003;
+  const d = st.device;
+  return `${subnav('Smart HID 设备')}<div class="content">
+    ${d ? `
+    <div class="card">
+      <div class="sec-h"><div class="sec-t">${esc(d.name||'Smart HID 设备')}</div><span class="chip mint">${esc(d.protocol||'协议未记录')}</span></div>
+      <div class="kv"><span class="k">Device ID</span><span class="v mono" style="font-size:12px">${esc(d.deviceId)}</span></div>
+      <div class="kv"><span class="k">固件版本</span><span class="v">${esc(d.firmware||'—')}</span></div>
+    </div>
+    <div class="card"><div class="sec-h"><div class="sec-t" style="font-size:14px">最近配置</div></div>
+      <div class="kv"><span class="k">Wi-Fi</span><span class="v">${esc(d.lastWifi||'—')}</span></div>
+      <div class="kv"><span class="k">ControlHub</span><span class="v">${esc(d.lastHub||'—')}</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:9px">
+      <button class="btn primary lg" data-act="p003-reconfigure">重新配置</button>
+      <div style="display:flex;gap:9px">
+        <button class="btn secondary lg" data-act="p003-diag">运行诊断</button>
+        <button class="btn ghost lg" data-act="p003-advanced">高级 BLE 调试</button>
+      </div>
+    </div>` : `
+    <div class="empty"><div class="ico">🗂</div><div class="et">设备记录不存在</div>
+      <div class="ed">该历史设备记录已不存在，请返回设备列表。</div>
+      <button class="btn primary" style="margin-top:9px" data-act="back">返回</button></div>`}
+  </div>`;
+}
+
+/* ---------- P005 诊断 ---------- */
+const DIAG_KEYS = [['ble','BLE'],['wifi','Wi-Fi'],['hub','ControlHub'],['conn','控制连接'],['usb','设备 Ready 状态']];
+function renderP005(){
+  const st = S.p005;
+  const rows = st.rows || DIAG_KEYS.map(([k,l])=>({key:k,label:l,state:'pending',detail:''}));
+  const stateText = {idle:'尚未检测', connected:'设备已连接，可开始检测', checking:'正在读取实时状态', live:'实时检测完成', offline:'设备未连接', error:'检测失败'}[st.state];
+  return `${subnav('诊断')}<div class="content">
+    <div class="card">
+      <div class="sec-h"><span class="sec-c">当前状态</span><span style="color:var(--brand);font-size:12px;font-weight:700">${stateText}</span></div>
+      ${rows.map(r=>`<div class="diag-row">
+        <div class="diag-head"><span class="diag-dot ${r.state}">${r.state==='ok'?'✓':r.state==='warn'?'!':r.state==='active'?'…':r.state==='fail'?'✕':'·'}</span>
+          <span class="diag-label">${r.label}</span><span class="diag-state">${{ok:'正常',warn:'异常',active:'检测中',pending:'待检测',fail:'失败'}[r.state]}</span></div>
+        ${r.detail?`<div class="diag-detail">${esc(r.detail)}</div>`:''}</div>`).join('')}
+      <div style="display:flex;flex-direction:column;gap:9px;margin-top:12px">
+        <button class="btn primary lg" data-act="p005-refresh" ${st.connecting?'disabled':''}>${st.connecting?'连接中…':'重新检测'}</button>
+        <button class="btn secondary lg" data-act="p005-advanced">${st.advanced?'隐藏错误码':'显示错误码（详细信息）'}</button>
+        <button class="btn secondary lg" data-act="p005-godetail">返回设备详情</button>
+        <button class="btn secondary lg" data-act="p005-reconfig">重新配网</button>
+      </div>
+      ${st.advanced && st.error ? `<div style="margin-top:11px;background:#FDEBEC;border:1px solid #F8CDD1;border-radius:13px;padding:12px">
+        <div style="font-size:12px;font-weight:800;color:var(--red)">最近错误</div>
+        <div class="mono" style="font-size:11px;color:var(--red);margin-top:4px">code: ${esc(st.error.code)}</div>
+        <div style="font-size:11px;color:var(--sub);margin-top:3px">${esc(st.error.message)}</div></div>` : ''}
+      ${st.advanced && !st.error ? `<div class="sec-c" style="margin-top:9px">暂无最近错误记录。</div>` : ''}
+    </div>
+  </div>`;
+}
+function p005Run(results){
+  const st = S.p005;
+  st.state='checking';
+  st.rows = DIAG_KEYS.map(([k,l])=>({key:k,label:l,state:'active',detail:''}));
+  renderAll();
+  DIAG_KEYS.forEach(([k],i)=>later(300+i*260, ()=>{
+    const r = results[k] || {state:'ok', detail:''};
+    st.rows = st.rows.map(row=>row.key===k?{...row,...r}:row);
+    if(i===DIAG_KEYS.length-1){ st.state='live'; }
+    renderAll();
+  }));
+}
+
+/* ---------- P006 通用详情 ---------- */
+function renderP006(){
+  const st = S.p006; const d = st.device || {name:'Mi Smart Band 8', deviceId:'F2:6A:9C:11:03:7E'};
+  const connected = st.panel==='ready';
+  const hasOta = MOCK.services.some(s=>s.ota);
+  return `${subnav(d.name || '设备详情')}<div class="content">
+    <div class="card">
+      <div class="sec-h"><div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:17px;font-weight:750">${esc(d.name||'未知设备')}</span>
+          <span class="bt-dot ${connected?'on':''}"></span></div>
+        ${hasOta?`<button class="btn danger sm" data-act="p006-ota">固件更新</button>`:''}</div>
+      <div class="sec-c mono">设备ID: ${esc(d.deviceId)}</div>
+      <div style="display:flex;gap:8px;margin-top:11px">
+        <button class="btn ghost sm" style="flex:1" data-act="p006-clearlogs">清空日志</button>
+        <button class="btn secondary sm" style="flex:1" data-act="p006-exportlogs">导出日志</button>
+        <button class="btn ${connected?'danger':'primary'} sm" style="flex:1.2" data-act="p006-toggleconn" ${st.connecting?'disabled':''}>
+          ${st.connecting?'连接中…':connected?'断开连接':'连接设备'}</button>
+      </div>
+    </div>
+    <div class="card">${servicePanelHTML()}</div>
+    ${logPanelHTML(st.logs, 'dock')}
+    ${st.write ? writeDialogHTML() : ''}
+    ${st.ota ? otaDialogHTML() : ''}
+  </div>`;
+}
+function servicePanelHTML(){
+  const st = S.p006;
+  if(st.panel==='connecting') return `<div class="op-state loading"><div class="spin"></div><div>连接中… 正在进行 GATT 服务发现</div></div>`;
+  if(st.panel==='error') return `<div class="op-state error"><div>⚠</div><div><b>连接失败</b><br>${esc(st.connError||'连接超时（10s），已自动重试 3 次仍未成功。')}</div></div>
+    <button class="btn secondary sm" style="margin-top:9px" data-act="p006-retry">重试</button>`;
+  if(st.panel==='empty') return `<div class="empty"><div class="ico">📭</div><div class="et">未发现服务</div><div class="ed">设备已连接，但未返回任何 GATT 服务。</div></div>`;
+  if(st.panel==='idle') return `<div class="empty"><div class="ico">🔌</div><div class="et">未连接</div><div class="ed">点击上方「连接设备」开始 GATT 调试。</div></div>`;
+  return `<div class="sec-h"><div class="sec-t" style="font-size:14px">GATT 服务 (${MOCK.services.length})</div>
+      <span class="link" data-act="p006-expandall">全部展开/收起</span></div>
+    ${MOCK.services.map(svc=>`<div class="svc ${svc.open?'open':''}" data-svc="${esc(svc.uuid)}">
+      <div class="svc-h" data-act="p006-togglesvc" data-svc="${esc(svc.uuid)}">
+        <span class="arrow">▶</span><div style="flex:1"><div style="font-size:13px;font-weight:700">${esc(svc.name)}</div>
+        <div class="cid mono" style="font-size:9px;color:var(--muted)">${esc(svc.uuid)}</div></div>
+        ${svc.ota?'<span class="chip warn">OTA</span>':''}</div>
+      <div class="svc-body">${svc.chars.map(ch=>{
+        const notifying = S.p006.notify[ch.uuid];
+        return `<div class="char">
+        <div class="cn">${esc(ch.name)}<div class="cid mono">${esc(ch.uuid.slice(4,8).toUpperCase())} · ${Object.keys(ch.props).filter(k=>ch.props[k]).join(' / ')}</div></div>
+        <div class="ops">
+          ${ch.props.read?`<button class="btn secondary sm" data-act="p006-read" data-ch="${esc(ch.uuid)}">读取</button>`:''}
+          ${ch.props.write?`<button class="btn primary sm" data-act="p006-write" data-ch="${esc(ch.uuid)}">写入</button>`:''}
+          ${ch.props.notify?`<button class="btn ${notifying?'danger':'ghost'} sm" data-act="p006-notify" data-ch="${esc(ch.uuid)}">${notifying?'停止监听':'开始监听'}</button>`:''}
+        </div></div>`;}).join('')}</div></div>`).join('')}`;
+}
+function logPanelHTML(logs){
+  const CLS = {'系统':'sys','错误':'err','读取':'read','写入':'write','接收':'recv','成功':'ok'};
+  return `<div class="logwrap"><div class="lh"><span>通信日志</span>
+    <span style="display:flex;gap:6px"><span class="lt sys">系统</span><span class="lt err">错误</span><span class="lt read">读取</span><span class="lt write">写入</span><span class="lt recv">接收</span><span class="lt ok">成功</span></span></div>
+    ${logs.length===0?`<div style="color:#5D6F8C;padding:14px 0;text-align:center">暂无日志 · 读取/写入/监听操作会记录在这里</div>`:
+    logs.map(l=>`<div class="logline"><span class="t">${l.time}</span><span class="lt ${CLS[l.type]||'sys'}">${l.type}</span><span style="white-space:pre-wrap">${esc(l.msg)}</span></div>`).join('')}
+    <div style="margin-top:8px;color:#5D6F8C;font-size:9px">脱敏演示：token=*** · wifi_password=***（F026）</div></div>`;
+}
+function nowStr(){ const d=new Date(); const p=n=>String(n).padStart(2,'0'); return `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`; }
+function addLog(type, msg){ S.p006.logs.push({time:nowStr(), type, msg}); }
+function writeDialogHTML(){
+  const w = S.p006.write;
+  return `<div class="mask" data-mask="1"><div class="sheet" data-stop="1">
+    <div class="sh-t">写入数据</div>
+    <div class="f-row" style="margin:10px 0"><span class="fhint">特征 ${esc(w.charName||'')}</span></div>
+    <div style="display:flex;gap:8px;margin-bottom:10px">
+      <label style="flex:1;border:1px solid var(--line);border-radius:10px;padding:9px;display:flex;gap:6px;align-items:center;font-size:13px;cursor:pointer">
+        <input type="radio" name="wtype" ${w.type==='text'?'checked':''} onchange="APP.p006wtype('text')"> 文本</label>
+      <label style="flex:1;border:1px solid var(--line);border-radius:10px;padding:9px;display:flex;gap:6px;align-items:center;font-size:13px;cursor:pointer">
+        <input type="radio" name="wtype" ${w.type==='hex'?'checked':''} onchange="APP.p006wtype('hex')"> HEX</label></div>
+    <input class="fin" placeholder="${w.type==='hex'?'01 A2 FF …':'Hello BLE'}" value="${esc(w.value)}" oninput="APP.p006wval(this.value)">
+    <div class="acts"><button class="btn ghost" data-act="p006-closewrite">取消</button>
+      <button class="btn primary" data-act="p006-confirmwrite" ${w.sending?'disabled':''}>${w.sending?'发送中…':'发送'}</button></div>
+  </div></div>`;
+}
+function otaDialogHTML(){
+  const o = S.p006.ota;
+  const phases = {pick:'选择固件包', validating:'校验中', transferring:'传输中', committing:'提交中', verifying:'验证中', success:'升级成功', failed:'失败', cancelled:'已取消'};
+  return `<div class="mask" data-mask="1"><div class="sheet" data-stop="1">
+    <div class="sh-t">固件更新（OTA · F025）</div>
+    <div class="sh-c">目标 ${esc(o.target)} · 状态：${phases[o.phase]}</div>
+    ${o.phase==='pick' ? `
+      <button class="action-card" style="margin-top:13px" data-act="p006-pickfile">
+        <div class="ic">📦</div><div style="flex:1"><div class="tt">选择固件文件（.bin）</div>
+        <div class="dd">可选同名 manifest.json 进行六重校验（target/hardware/SemVer/size/sha256）</div></div></button>
+      <div class="sec-c">⚠ 当前产品状态：OTA 端到端 BLOCKED（release-metadata），本流程为客户端已实现行为的演示。</div>` : ''}
+    ${['validating','transferring','committing','verifying'].includes(o.phase) ? `
+      <div style="margin-top:12px"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted)">
+        <span>${esc(o.note||'')}</span><span class="mono">${o.percent||0}%</span></div>
+      <div class="progress-bg"><div class="progress-fg" style="width:${o.percent||0}%"></div></div></div>` : ''}
+    ${o.phase==='success' ? `<div class="op-state success" style="margin-top:12px"><div>✓</div><div><b>升级成功</b><br>固件版本回读一致：1.2.0。2 秒后自动关闭。</div></div>` : ''}
+    ${o.phase==='failed' ? `<div class="op-state error" style="margin-top:12px"><div>⚠</div><div><b>${esc(o.errTitle)}</b><br>${esc(o.errMsg)}</div></div>` : ''}
+    ${o.phase==='cancelled' ? `<div class="op-state error" style="margin-top:12px"><div>⛔</div><div>已取消，已向设备发送 abort。</div></div>` : ''}
+    <div class="acts">${o.phase==='success'?'' : `<button class="btn ghost" data-act="p006-closeota">${['failed','cancelled'].includes(o.phase)?'关闭':'取消升级'}</button>`}</div>
+  </div></div>`;
+}
+
+/* ---------- P007 已连接 ---------- */
+function renderP007(){
+  const mode = S.p007.mode;
+  const list = (mode==='empty-common'||mode==='empty-prov') ? [] : (mode==='one' ? MOCK.connected.slice(0,1) : MOCK.connected);
+  return `<div class="navbar"><div class="kicker">SMARTBLE MINI</div><div class="row"><div class="title">已连接设备</div></div></div>
+  <div class="content">
+    ${list.length>1 ? `<div class="card" style="display:flex;align-items:center;justify-content:space-between">
+      <span class="sec-c">${list.length} 台设备保持连接</span>
+      <button class="btn ghost sm" data-act="p007-disconnectall">全部断开</button></div>` : ''}
+    <div class="card" style="flex:1">
+      <div class="sec-h"><div class="sec-t" style="font-size:14px">设备列表</div></div>
+      ${list.length===0 ? `<div class="empty"><div class="ico">📶</div><div class="et">还没有连接中的设备</div>
+        <div class="ed">${mode==='empty-prov'?'Smart HID 配网连接进行中，这里列出通用调试连接。':'先在"扫描"页找到设备并连接，这里会保留会话入口。'}</div>
+        <button class="btn primary" style="margin-top:10px" data-act="go-scan">去扫描</button></div>` :
+        list.map(d=>`<div class="dev" data-act="p007-open" data-id="${esc(d.deviceId)}">
+          <div class="ava on">ON</div>
+          <div class="copy"><div class="nm">${esc(d.name)} ${d.profileId?'<span class="chip green">Smart HID</span>':''}</div>
+            <div class="id mono">${esc(d.deviceId)}</div>
+            <div class="meta">已连接 · 可进行 GATT 调试${d.profileId?' · Profile 会话':''}</div></div>
+          <div class="ops" data-stop="1"><button class="btn danger sm" data-act="p007-disconnect" data-id="${esc(d.deviceId)}">断开</button></div>
+        </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+/* ---------- P008 广播 ---------- */
+function bCalcBytes(){
+  const st = S.p008; let n = 0;
+  const incName = st.platform==='android' ? st.incName : true;
+  const incUuid = st.platform==='android' ? st.incUuid : true;
+  if(incName && st.name) n += 2 + st.name.length;
+  if(incUuid && st.uuid) n += 2 + (st.uuid.length<=8 ? 2 : 16);
+  if(st.mfgId || st.mfgData) n += 2 + 2 + (st.mfgData ? st.mfgData.length : 0);
+  return n;
+}
+function bValidUuid(u){ if(!u) return true; return /^([0-9a-fA-F]{4}|[0-9a-fA-F]{8}|[0-9a-fA-F]{32}|[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$/.test(u); }
+function renderP008(){
+  const st = S.p008;
+  const platLabel = {android:'Android', ios:'iOS', weixin:'微信', web:'Web'}[st.platform];
+  const bytes = bCalcBytes();
+  const stateBadge = st.advertising ? {cls:'',txt:'广播中'} :
+    st.platform==='web' ? {cls:'red',txt:'不支持'} :
+    st.state==='failed' ? {cls:'red',txt:'失败'} :
+    st.state==='stopped' ? {cls:'warn',txt:'已停止'} :
+    st.supported===true ? {cls:'green',txt:'已就绪'} :
+    st.supported===false ? {cls:'warn',txt:'未就绪'} : {cls:'warn',txt:'未检测'};
+  const dis = st.advertising ? 'disabled' : '';
+  return `<div class="subnav"><div class="t">BLE 广播</div></div><div class="content">
+    <div class="card">
+      <div class="sec-h"><div class="sec-t" style="font-size:15px">广播设置</div>
+        <div style="display:flex;gap:6px;align-items:center"><span class="chip brand">${platLabel}</span>
+          <span class="chip ${stateBadge.cls}"><span class="bt-dot ${st.advertising?'on':''}" style="width:7px;height:7px;margin-right:4px"></span>${stateBadge.txt}</span></div></div>
+      <div class="fgroup"><div style="display:flex;justify-content:space-between"><span class="flabel">设备名称</span>
+        ${st.platform==='android'?'<span class="fhint">Android 使用系统蓝牙名称</span>':''}</div>
+        <input class="fin" ${dis} value="${esc(st.name)}" placeholder="自定义名称或系统蓝牙名称" oninput="APP.p008set('name',this.value)"></div>
+      <div class="fgroup"><span class="flabel">服务UUID</span>
+        <input class="fin mono" ${dis} value="${esc(st.uuid)}" placeholder="输入服务UUID (128位)" oninput="APP.p008set('uuid',this.value)"></div>
+      ${!bValidUuid(st.uuid) && st.uuid ? `<div class="uuid-hint">Service UUID 格式无效（支持 4/8/36 位 hex）</div>` : ''}
+      ${st.platform==='android' ? `
+        <div class="picker-row"><span class="flabel">广播模式</span>
+          <select class="picker" ${dis} onchange="APP.p008set('mode',this.value)">
+            <option value="0"${st.mode==0?' selected':''}>低功耗</option><option value="1"${st.mode==1?' selected':''}>平衡</option><option value="2"${st.mode==2?' selected':''}>低延迟</option></select></div>
+        <div class="picker-row"><span class="flabel">发射功率</span>
+          <select class="picker" ${dis} onchange="APP.p008set('power',this.value)">
+            <option value="0"${st.power==0?' selected':''}>超低功率</option><option value="1"${st.power==1?' selected':''}>低功率</option><option value="2"${st.power==2?' selected':''}>中功率</option><option value="3"${st.power==3?' selected':''}>高功率</option></select></div>
+        <div class="f-row"><span class="flabel">可连接</span><div class="sw ${st.connectable?'on':''}" data-act="p008-sw" data-k="connectable"><i></i></div></div>
+        <div class="f-row"><span class="flabel">包含设备名称</span><div class="sw ${st.incName?'on':''}" data-act="p008-sw" data-k="incName"><i></i></div></div>
+        <div class="f-row"><span class="flabel">添加服务UUID</span><div class="sw ${st.incUuid?'on':''}" data-act="p008-sw" data-k="incUuid"><i></i></div></div>` : ''}
+      <div class="fgroup"><span class="flabel">厂商ID (HEX)</span>
+        <input class="fin mono" ${dis} value="${esc(st.mfgId)}" placeholder="如：0001" oninput="APP.p008set('mfgId',this.value)"></div>
+      <div class="fgroup"><span class="flabel">厂商数据</span>
+        <input class="fin" ${dis} value="${esc(st.mfgData)}" placeholder="广播携带的数据" oninput="APP.p008set('mfgData',this.value)"></div>
+      ${(st.uuid||st.mfgData) ? `<div class="bytes-hint ${bytes>31?'over':''}" id="byteshint">
+        <span>预计广播包大小：${bytes} / 31 字节</span>${bytes>31?'<b style="margin-left:auto">超出限制</b>':''}</div>` : ''}
+      <div style="display:flex;gap:9px;margin-top:12px">
+        <button class="btn ${st.advertising?'danger':'primary'} lg" style="flex:1.4" data-act="p008-toggle">${st.advertising?'停止广播':'开始广播'}</button>
+        <button class="btn secondary lg" style="flex:.8" data-act="p008-check">检查支持</button>
+      </div>
+    </div>
+    ${logPanelHTML(S.p008.logs,'card')}
+  </div>`;
+}
+function bLog(type,msg){ S.p008.logs.push({time:nowStr(),type,msg}); }
+
+/* ---------- P009 关于 ---------- */
+function renderP009(){
+  const sys = {platform:navigator.platform.slice(0,14)||'unknown', system:'模拟环境', model:'Browser'};
+  return `<div class="navbar"><div class="kicker">SMARTBLE MINI</div><div class="row"><div class="title">关于</div></div></div>
+  <div class="content">
+    <div class="card" style="display:flex;gap:13px;align-items:center">
+      <div style="width:56px;height:56px;border-radius:15px;background:linear-gradient(135deg,rgba(27,109,255,.15),rgba(123,224,255,.2));display:flex;align-items:center;justify-content:center;font-size:26px">🔵</div>
+      <div style="flex:1;min-width:0"><div style="font-size:18px;font-weight:800">BLE Toolkit+</div>
+        <div class="sec-c">Version 1.0.5 · v1.0.5-preview</div>
+        <div class="sec-c" style="margin-top:4px">面向 UniApp、微信小程序与 ESP32 协同验证的 BLE 调试工具</div>
+        <div style="display:flex;gap:5px;margin-top:7px"><span class="chip brand">UniApp · Vue 3</span><span class="chip brand">PREVIEW</span></div></div>
+    </div>
+    <div class="card">
+      <div class="sec-h"><div><div class="sec-t" style="font-size:14px">更多小程序</div><div class="sec-c">同一开发者的实用小程序，点击卡片直接打开。</div></div></div>
+      ${MOCK.apps.map((a,i)=>`<div class="appcard" data-act="p009-openapp" data-i="${i}">
+        <div class="ic" style="background:${a.color}22;color:${a.color};font-size:20px">${a.icon}</div>
+        <div style="flex:1"><div class="an">${esc(a.name)}</div><div class="ad">${esc(a.desc)}</div></div>
+        <span style="color:var(--brand)">›</span></div>`).join('')}
+    </div>
+    <div class="card">
+      <div class="sec-t" style="font-size:14px;margin-bottom:6px">应用信息</div>
+      <div class="sec-c" style="margin:8px 0 6px;font-weight:800">当前环境</div>
+      <div class="kv"><span class="k">系统平台</span><span class="v">${esc(sys.platform)}</span></div>
+      <div class="kv"><span class="k">系统版本</span><span class="v">${esc(sys.system)}</span></div>
+      <div class="kv"><span class="k">设备型号</span><span class="v">${esc(sys.model)}</span></div>
+      <div class="sec-c" style="margin:12px 0 6px;font-weight:800">功能特性</div>
+      <div class="feat-grid">${MOCK.features.map((f,i)=>`<div class="feat"><span class="n">${i+1}</span>${f}</div>`).join('')}</div>
+      <div class="sec-c" style="margin:12px 0 6px;font-weight:800">平台与公开状态</div>
+      <div class="plat-grid">${MOCK.platforms.map(p=>`<div class="plat"><div class="pn">${p.name}</div><div class="ps">${p.status}</div></div>`).join('')}</div>
+    </div>
+    <div class="card">
+      <div class="sec-t" style="font-size:14px;margin-bottom:8px">相关链接</div>
+      <div class="menu-item" data-act="p009-website">官方网站 <span class="ar">›</span></div>
+      <div class="menu-item" data-act="p009-version">版本记录 <span class="ar">›</span></div>
+      <div class="menu-item" data-act="p009-feedback">问题反馈 <span class="ar">›</span></div>
+      <div class="menu-item" data-act="p009-share">分享应用 <span class="ar">›</span></div>
+    </div>
+    <div class="sec-c" style="text-align:center;padding:4px 0 14px">© 2026 BLE Toolkit+. All rights reserved.</div>
+  </div>`;
+}
+
+/* ---------- P010 版本记录 ---------- */
+function renderP010(){
+  return `${subnav('版本记录')}<div class="content">
+    <div class="card">
+      <div class="sec-c" style="font-weight:800;margin-bottom:8px">当前版本</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <span style="font-size:22px;font-weight:800">1.0.5</span><span class="chip brand">PREVIEW</span></div>
+      <div class="kv"><span class="k">渠道</span><span class="v">preview（预览）</span></div>
+      <div class="kv"><span class="k">Release tag</span><span class="v">已登记</span></div>
+      <div class="sec-c" style="font-weight:800;margin:12px 0 4px">平台状态</div>
+      ${MOCK.platforms.map(p=>`<div class="kv"><span class="k">${p.name}</span><span class="v">${p.status}</span></div>`).join('')}
+      <div style="margin-top:11px"><button class="btn secondary lg" data-act="p010-copyver">复制版本信息</button></div>
+    </div>
+    <div class="card">
+      <div class="sec-c" style="font-weight:800;margin-bottom:8px">当前限制</div>
+      ${MOCK.limitations.map(l=>`<div style="font-size:12px;color:var(--sub);padding:5px 0;line-height:1.6">· ${l}</div>`).join('')}
+    </div>
+    <div class="card">
+      <div class="sec-c" style="font-weight:800;margin-bottom:8px">正式发布历史</div>
+      <div class="sec-c">暂无正式发布版本</div>
+      <div class="sec-c" style="margin-top:6px">当前无 Artifact，不提供下载入口。</div>
+    </div>
+    <div class="card">
+      <div class="sec-c" style="font-weight:800;margin-bottom:8px">预览记录</div>
+      <div class="kv"><span class="k">v1.0.5</span><span class="v">PREVIEW · preview</span></div>
+      <div class="kv"><span class="k">v1.0.4</span><span class="v">PREVIEW · preview</span></div>
+    </div>
+    <div class="sec-c" style="text-align:center;padding:2px 0 12px">本页数据来自 Release Metadata 投影，不是手写版本事实源。</div>
+  </div>`;
+}
+
+/* ---------- 渲染分发 ---------- */
+const RENDER = {p001:renderP001, p002:renderP002, p003:renderP003, p005:renderP005,
+                p006:renderP006, p007:renderP007, p008:renderP008, p009:renderP009, p010:renderP010};
+function renderAll(){
+  const id = cur();
+  document.getElementById('pagetag').innerHTML = `<div class="page-tag">${PAGES[id].tag}</div>`;
+  document.getElementById('pagehost').innerHTML = RENDER[id]();
+  const tb = document.getElementById('tabbar');
+  tb.style.display = TABS.includes(id) ? 'flex' : 'none';
+  if(TABS.includes(id)){
+    const icons = {p001:'🔎', p007:'🔗', p008:'📡', p009:'ℹ️'};
+    const names = {p001:'扫描', p007:'已连接', p008:'广播', p009:'关于'};
+    tb.innerHTML = Object.keys(names).map(k=>`<div class="tab ${k===id?'on':''}" data-act="tab" data-id="${k}">
+      <span class="ti">${icons[k]}</span><span>${names[k]}</span></div>`).join('');
+  } else { tb.innerHTML = ''; }
+  renderReview();
+}
+function renderReview(){
+  const nav = document.getElementById('pgnav');
+  nav.innerHTML = Object.keys(PAGES).map(id=>`<button class="pg-btn ${id===cur()?'on':''}" data-act="jump" data-id="${id}">
+    <span>${PAGES[id].title}${PAGES[id].tab?' <span style="opacity:.6;font-size:10px">Tab</span>':''}</span><span class="pid">${id.replace('p','PAGE').slice(0,3)===id.replace('p','PAGE').slice(0,3)?id.toUpperCase().replace('P0','PAGE0').replace('P10','PAGE10'):''}</span></button>`).join('');
+  const sc = document.getElementById('scnav');
+  const list = SCEN[cur()] || [];
+  sc.innerHTML = list.length ? list.map((s,i)=>`<button class="sc-btn" data-act="scen" data-i="${i}">${s.label}</button>`).join('')
+    : '<div style="color:#7C8DA6;font-size:11px;line-height:1.7">本页无预设场景切换。</div>';
+}
+
+/* ---------- 场景库（评审面板） ---------- */
+const SCEN = {
+  p001: [
+    {label:'默认（蓝牙就绪）', apply(){ Object.assign(S.p001,{bt:'on',scanned:true,scanning:false,scanError:null,shown:MOCK.scanDevices}); }},
+    {label:'蓝牙未开启（10001 引导）', apply(){ S.p001.bt='off'; modal({title:'提示',content:'请先打开系统蓝牙',confirmText:'去开启',hideCancel:true}); renderAll(); }},
+    {label:'平台不支持 BLE', apply(){ Object.assign(S.p001,{bt:'unsupported',scanned:false,shown:[]}); renderAll(); }},
+    {label:'扫描失败（横幅+重试）', apply(){ Object.assign(S.p001,{scanning:false,scanned:false,shown:[],scanError:{code:'scan_failed',message:'扫描启动失败：蓝牙适配器初始化超时（已自动重试 3 次）。请在系统设置确认蓝牙已开启后重试。'}}); renderAll(); }},
+    {label:'清空结果（回到未扫描）', apply(){ Object.assign(S.p001,{scanned:false,scanning:false,scanError:null,shown:[]}); renderAll(); }},
+  ],
+  p002: [
+    {label:'重新走完整流程（连接成功）', apply(){ S.p002.device=MOCK.scanDevices[0]; S.p002.phase='connect'; S.p002.connecting=true; S.p002.connError=null; S.p002.lost=false; S.p002.ssid=''; S.p002.pwd=''; S.p002.hub=''; S.p002.token=null; S.p002.provisioning=false; S.p002.done=false; S.p002.err=null; S.p002.progress={wifi:'pending',hub:'pending',conn:'pending',usb:'pending'}; renderAll(); later(1200,()=>{S.p002.connecting=false; S.p002.phase='configure'; renderAll();}); }},
+    {label:'连接失败（connect 阶段）', apply(){ S.p002.device=MOCK.scanDevices[0]; S.p002.phase='connect'; S.p002.connecting=false; S.p002.connError='设备身份验证失败：Device Info 返回 product≠smart-hid，已断开连接。'; S.p002.lost=false; renderAll(); }},
+    {label:'表单阶段断线（可续填）', apply(){ S.p002.device=MOCK.scanDevices[0]; S.p002.phase='configure'; S.p002.connecting=false; S.p002.connError=null; S.p002.lost=true; S.p002.ssid='Home-5G'; S.p002.hub='192.168.1.8:17892'; S.p002.token='simulated-token-32hex'; renderAll(); }},
+    {label:'等待超时（60s 演示）', apply(){ S.p002.device=MOCK.scanDevices[0]; S.p002.phase='status'; S.p002.provisioning=true; S.p002.done=false; S.p002.err=null; S.p002.progress={wifi:'done',hub:'done',conn:'active',usb:'pending'}; renderAll(); }},
+    {label:'配网成功（READY）', apply(){ S.p002.device=MOCK.scanDevices[0]; S.p002.phase='status'; S.p002.provisioning=false; S.p002.done=true; S.p002.err=null; S.p002.progress={wifi:'done',hub:'done',conn:'done',usb:'done'}; renderAll(); }},
+    {label:'错误：wifi_failed → form', apply(){ S.p002.device=MOCK.scanDevices[0]; S.p002.phase='configure'; S.p002.lost=false; S.p002.ssid='Home-5G'; S.p002.hub='192.168.1.8:17892'; S.p002.token='simulated-token-32hex'; renderAll(); p002StartProvision('wifi_failed'); }},
+    {label:'错误：pairing_expired → pairing', apply(){ S.p002.device=MOCK.scanDevices[0]; S.p002.phase='configure'; S.p002.lost=false; S.p002.ssid='Home-5G'; S.p002.hub='192.168.1.8:17892'; S.p002.token='simulated-token-32hex'; renderAll(); p002StartProvision('pairing_expired'); }},
+    {label:'错误：controlhub_unreachable → 诊断', apply(){ S.p002.device=MOCK.scanDevices[0]; S.p002.phase='configure'; S.p002.lost=false; S.p002.ssid='Home-5G'; S.p002.hub='192.168.1.8:17892'; S.p002.token='simulated-token-32hex'; renderAll(); p002StartProvision('controlhub_unreachable'); }},
+  ],
+  p003: [
+    {label:'正常（配网后查看）', apply(){ S.p003.device = {deviceId:'HID-9F3E2A1C', name:'SHID-9F3E2A1C', protocol:'V1', firmware:'1.1.1', lastWifi:'Home-5G', lastHub:'192.168.1.8:17892'}; S.p003.missing=false; renderAll(); }},
+    {label:'记录不存在（弹窗返回）', apply(){ S.p003.device = null; renderAll(); }},
+    {label:'字段缺失（显示 —）', apply(){ S.p003.device = {deviceId:'HID-9F3E2A1C', name:'SHID-9F3E2A1C', firmware:'', lastWifi:'', lastHub:'', protocol:''}; renderAll(); }},
+  ],
+  p005: [
+    {label:'尚未检测（idle）', apply(){ S.p005.state='idle'; S.p005.rows=null; S.p005.error=null; renderAll(); }},
+    {label:'检测完成 · 全正常', apply(){ S.p005.state='live'; S.p005.rows=[{key:'ble',label:'BLE',state:'ok'},{key:'wifi',label:'Wi-Fi',state:'ok'},{key:'hub',label:'ControlHub',state:'ok',detail:'192.168.1.8:17892 · 已配对'},{key:'conn',label:'控制连接',state:'ok',detail:'MQTT 已建立 · QoS1'},{key:'usb',label:'设备 Ready 状态',state:'ok',detail:'HID 已就绪，等待 ControlHub 指令'}]; S.p005.error=null; renderAll(); }},
+    {label:'检测完成 · Wi-Fi 异常', apply(){ S.p005.state='live'; S.p005.rows=[{key:'ble',label:'BLE',state:'ok'},{key:'wifi',label:'Wi-Fi',state:'warn',detail:'SSID 可见但未连接（wifi_failed）'},{key:'hub',label:'ControlHub',state:'pending'},{key:'conn',label:'控制连接',state:'pending'},{key:'usb',label:'设备 Ready 状态',state:'pending'}]; S.p005.error={code:'wifi_failed',message:'设备侧报告 Wi-Fi 连接失败，请核对 SSID 与密码。'}; renderAll(); }},
+    {label:'连接失败（error）', apply(){ S.p005.state='error'; S.p005.rows=null; S.p005.error={code:'diagnostic_connect_failed',message:'连接超时：请让设备进入配网/恢复模式后重试（READY 设备会关闭蓝牙广播）。'}; renderAll(); }},
+  ],
+  p006: [
+    {label:'未连接（idle）', apply(){ S.p006.panel='idle'; S.p006.connecting=false; renderAll(); }},
+    {label:'连接成功（服务树）', apply(){ S.p006.panel='ready'; renderAll(); }},
+    {label:'服务发现失败（重试）', apply(){ S.p006.panel='error'; S.p006.connError='连接超时（10s），已自动重试 3 次（2s/4s/6s 退避）仍未成功。'; renderAll(); }},
+    {label:'服务列表为空', apply(){ S.p006.panel='empty'; renderAll(); }},
+    {label:'被动断线 → 自动重连', apply(){ S.p006.panel='ready'; renderAll(); addLog('错误','连接已断开（远端丢失），写队列已中止：2 个未发事务取消'); addLog('系统','自动重连中（1/3）· 1s backoff'); renderAll(); later(1500,()=>{ addLog('成功','已重新连接 · 会话恢复（READY）'); renderAll(); }); }},
+    {label:'填充示例日志（含脱敏）', apply(){ S.p006.logs=[{time:'10:21:03',type:'系统',msg:'连接成功 · 服务发现完成（4 服务/7 特征）'},{time:'10:21:20',type:'接收',msg:'HEX: 53 48 49 44 2D 41 31\\nTEXT: SHID-A1'},{time:'10:21:45',type:'写入',msg:'HEX: 01 A2 FF'},{time:'10:22:10',type:'系统',msg:'配网会话 token=***（已脱敏）'}]; renderAll(); }},
+    {label:'OTA：校验失败（sha256 不符）', apply(){ S.p006.panel='ready'; S.p006.scenOtaFail=true; renderAll(); toast('已预设：下次选包将在校验阶段失败'); }},
+    {label:'OTA：成功流程', apply(){ S.p006.panel='ready'; S.p006.scenOtaFail=false; renderAll(); }},
+  ],
+  p007: [
+    {label:'3 台连接（含 SHID）', apply(){ S.p007.mode='multi'; renderAll(); }},
+    {label:'1 台连接（无汇总卡）', apply(){ S.p007.mode='one'; renderAll(); }},
+    {label:'空态 · 常规', apply(){ S.p007.mode='empty-common'; renderAll(); }},
+    {label:'空态 · 配网会话在线', apply(){ S.p007.mode='empty-prov'; renderAll(); }},
+  ],
+  p008: [
+    {label:'平台：微信（真机就绪）', apply(){ S.p008.platform='weixin'; S.p008.supported=true; S.p008.scenDevtools=false; S.p008.scenActiveConn=false; S.p008.btOff=false; S.p008.permMissing=false; bLog('系统','蓝牙从机模式已就绪'); renderAll(); }},
+    {label:'平台：Android（插件）', apply(){ S.p008.platform='android'; S.p008.supported=true; S.p008.btOff=false; S.p008.permMissing=false; bLog('系统','原生插件 LysBlePeripheral 已加载'); renderAll(); }},
+    {label:'平台：Web（不支持）', apply(){ S.p008.platform='web'; S.p008.supported=false; bLog('系统','当前平台不支持 BLE 广播，请使用微信小程序或 App。'); renderAll(); }},
+    {label:'微信 · 开发者工具提示', apply(){ S.p008.platform='weixin'; S.p008.supported=false; S.p008.scenDevtools=true; S.p008.scenActiveConn=false; bLog('系统','开发者工具不支持 BLE 外围服务，请使用真机调试广播功能'); renderAll(); }},
+    {label:'微信 · 活动连接冲突', apply(){ S.p008.platform='weixin'; S.p008.supported=false; S.p008.scenActiveConn=true; S.p008.scenDevtools=false; bLog('错误','无法切换外围模式：请先断开已连接设备（active_connections）'); renderAll(); }},
+    {label:'Android · 蓝牙未开', apply(){ S.p008.platform='android'; S.p008.btOff=true; S.p008.permMissing=false; renderAll(); modal({title:'提示',content:'请先开启系统蓝牙',confirmText:'去开启',cancelText:'取消'}); }},
+    {label:'Android · 权限缺失', apply(){ S.p008.platform='android'; S.p008.permMissing=true; S.p008.btOff=false; renderAll(); modal({title:'权限请求',content:'需要蓝牙广播、连接、扫描和位置权限，请在系统设置中手动开启',confirmText:'去设置',cancelText:'取消'}); }},
+    {label:'预填超限数据（>31B）', apply(){ S.p008.mfgData='LIGHTBLE-BROADCAST-DEMO-2026'; renderAll(); }},
+    {label:'广播中（运行态）', apply(){ S.p008.advertising=true; S.p008.supported=true; S.p008.state='idle'; bLog('成功','广播已启动 · powerLevel=high'); renderAll(); }},
+    {label:'启动失败（FAILED）', apply(){ S.p008.advertising=false; S.p008.state='failed'; bLog('错误','广播启动失败：errCode 10001 系统当前蓝牙不可用'); renderAll(); }},
+  ],
+  p009: [
+    {label:'版本运行时获取失败（回退）', apply(){ toast('版本回退：release-metadata v1.0.5-preview'); }},
+  ],
+  p010: [],
+};
+
+/* ---------- 动作注册表 ---------- */
+function findDev(id){ return MOCK.scanDevices.find(d=>d.deviceId===id) || MOCK.connected.find(d=>d.deviceId===id); }
+const ACTIONS = {
+  tab: el => switchTab(el.dataset.id),
+  jump: el => { const id=el.dataset.id; if(TABS.includes(id)) switchTab(id); else go(id); },
+  scen: el => { (SCEN[cur()]||[])[+el.dataset.i].apply(); },
+  back: () => {
+    if(cur()==='p002' && S.p002.provisioning && !S.p002.done){
+      modal({title:'离开确认', content:'配网正在进行中，离开将取消本次等待（设备侧可能继续执行）。确定离开吗？',
+        confirmText:'离开', onConfirm:()=>back()});
+      return;
+    }
+    back();
+  },
+  'go-scan': () => switchTab('p001'),
+  /* P001 */
+  'toggle-scan': () => {
+    const st = S.p001;
+    if(st.scanning){ st.scanning=false; renderAll(); return; }
+    if(st.bt==='off'){ modal({title:'提示',content:'请先打开系统蓝牙',confirmText:'去开启',hideCancel:true}); return; }
+    if(st.bt==='unsupported'){ st.scanError={code:'ble_unsupported',message:'当前平台不支持 BLE，无法扫描。'}; renderAll(); return; }
+    st.scanning=true; st.scanned=false; st.scanError=null; st.shown=[]; renderAll();
+    later(800, ()=>{ st.shown = MOCK.scanDevices.slice(0,2); renderAll(); });
+    later(1600, ()=>{ st.shown = MOCK.scanDevices.slice(0,4); renderAll(); });
+    later(2400, ()=>{ st.shown = MOCK.scanDevices; st.scanning=false; st.scanned=true; renderAll(); toast(`扫描完成 · 发现 ${MOCK.scanDevices.length} 台设备`); });
+  },
+  'toggle-filter': () => { S.p001.filterOpen=!S.p001.filterOpen; renderAll(); },
+  'set-rssi': el => { S.p001.filter.rssi=+el.dataset.v; renderAll(); },
+  'reset-filter': () => { S.p001.filter={rssi:-100,prefix:'',hideNoName:false}; renderAll(); },
+  'toggle-noname': () => { S.p001.filter.hideNoName=!S.p001.filter.hideNoName; renderAll(); },
+  'connect-generic': el => { const d=findDev(el.dataset.id); S.p006.device=d; S.p006.panel='connecting'; S.p006.logs=[]; go('p006');
+    later(1400, ()=>{ S.p006.panel='ready'; addLog('系统','连接成功 · 服务发现完成（4 服务 / 7 特征）'); renderAll(); }); },
+  'open-profile': el => { const d=findDev(el.dataset.id); S.p002.device=d; S.p002.phase='connect'; S.p002.connecting=true; S.p002.connError=null; go('p002');
+    later(1200, ()=>{ S.p002.connecting=false; S.p002.phase='configure'; renderAll(); }); },
+  'open-adv': el => { const d = findDev(el.dataset.id); if(!d) return; S.p001.adv = d; renderAll(); },
+  'copy-adv': () => copy('BLE 广播数据报告（模拟）', '已复制'),
+  'close-adv': () => { S.p001.adv=null; renderAll(); },
+  /* P002 */
+  'p002-reconnect': () => { S.p002.connecting=true; S.p002.connError=null; renderAll(); later(1200,()=>{S.p002.connecting=false; S.p002.phase='configure'; renderAll();}); },
+  'p002-godevices': () => switchTab('p001'),
+  'p002-reconnect-lost': () => { S.p002.lost=true; renderAll(); later(1300,()=>{S.p002.lost=false; toast('已重新连接，可继续下发'); renderAll();}); },
+  'p002-scanqr': () => {
+    modal({title:'模拟扫码 · ControlHub 配对码', content:'真实产品此处调起相机扫描 <span class="mono">shid://pair?token=…&host=…&port=17892</span>。请选择演示结果：',
+      custom:`<div style="display:flex;flex-direction:column;gap:7px;margin-top:12px">
+        <button class="btn secondary sm" data-qr="ok">✅ 扫码成功（回填地址+获取 token）</button>
+        <button class="btn ghost sm" data-qr="cancel">↩️ 用户取消</button>
+        <button class="btn ghost sm" data-qr="perm">🔒 相机权限被拒绝</button>
+        <button class="btn ghost sm" data-qr="bad">⚠️ 无效二维码</button></div>`, confirmText:'关闭', cancelText:'关闭'});
+    document.querySelectorAll('[data-qr]').forEach(b => b.onclick = () => {
+      const r = b.dataset.qr; closeOverlay();
+      if(r==='ok'){ S.p002.hub='192.168.1.8:17892'; S.p002.token='simulated-token-32hex'; toast('配对码已识别 · 地址已回填'); }
+      if(r==='cancel'){ toast('已取消扫码'); }
+      if(r==='perm'){ toast('相机权限被拒绝，可在系统设置中开启后重试'); }
+      if(r==='bad'){ toast('二维码内容不是有效的 shid://pair 配对码'); }
+      renderAll();
+    });
+  },
+  'p002-submit': () => { if(!canSubmitP002()) return; p002StartProvision(); },
+  'p002-cancelwait': () => { S.p002.provisioning=false; S.p002.err={title:'已取消等待', msg:'等待被取消（演示等待超时同款路径）。可重新下发配置。', label:'重新下发（retry）'}; renderAll(); },
+  'p002-viewdetail': () => { S.p003.device={...S.p002.device, protocol:'V1', firmware:'1.1.1', lastWifi:S.p002.ssid, lastHub:S.p002.hub}; redirect('p003'); },
+  'p002-recovery': () => {
+    const st=S.p002;
+    if(st.err.label.includes('form')){ st.phase='configure'; st.err=null; st.done=false; renderAll(); }
+    else if(st.err.label.includes('pairing')){ st.phase='configure'; st.err=null; st.token=null; renderAll(); toast('请重新扫描配对码'); }
+    else if(st.err.label.includes('诊断')){ S.p005.device=st.device; S.p005.state='connected'; go('p005'); }
+    else { p002StartProvision(); }
+  },
+  /* P003 */
+  'p003-reconfigure': () => { S.p002.device=S.p003.device; S.p002.phase='connect'; S.p002.connecting=true; go('p002'); later(1200,()=>{S.p002.connecting=false; S.p002.phase='configure'; renderAll();}); },
+  'p003-diag': () => { S.p005.device=S.p003.device; S.p005.state='connected'; go('p005'); },
+  'p003-advanced': () => { S.p006.device=S.p003.device; S.p006.panel='connecting'; go('p006'); later(1400,()=>{S.p006.panel='ready'; addLog('系统','连接成功 · 服务发现完成'); renderAll();}); },
+  /* P005 */
+  'p005-refresh': () => {
+    const st=S.p005;
+    if(st.state!=='connected' && st.state!=='live'){
+      st.state='offline';
+      modal({title:'BLE 未连接', content:'诊断需要重新连接当前设备。请让设备保持可发现状态后继续。', confirmText:'连接并检测',
+        onConfirm:()=>{ st.connecting=true; st.state='checking'; renderAll(); later(1200,()=>{ st.connecting=false; p005Run({}); toast('已连接 · 读取实时状态'); }); },
+        onCancel:()=>{ st.state='idle'; renderAll(); }});
+      renderAll(); return;
+    }
+    p005Run({});
+  },
+  'p005-advanced': () => { S.p005.advanced=!S.p005.advanced; renderAll(); },
+  'p005-godetail': () => { if(S.stack.includes('p003')) back(); else { S.p003.device=S.p005.device; go('p003'); } },
+  'p005-reconfig': () => {
+    modal({title:'重新配网', content:'已完成配置（READY）的设备会关闭蓝牙广播。请先让设备进入配网/恢复模式（参考设备说明书），确认后再继续。', confirmText:'已进入配网模式',
+      onConfirm:()=>{ if(S.stack.includes('p002')) back(); else { S.p002.device=S.p005.device; S.p002.phase='connect'; S.p002.connecting=true; go('p002'); later(1200,()=>{S.p002.connecting=false; S.p002.phase='configure'; renderAll();}); } }});
+  },
+  /* P006 */
+  'p006-toggleconn': () => {
+    const st=S.p006;
+    if(st.panel==='ready'){ st.panel='idle'; addLog('系统','已断开连接（主动断开 · 不触发自动重连）'); renderAll(); return; }
+    st.panel='connecting'; st.connecting=true; st.connError=null; renderAll();
+    later(1400,()=>{ st.connecting=false; st.panel='ready'; addLog('成功','连接成功 · 服务发现完成（4 服务 / 7 特征）'); renderAll(); });
+  },
+  'p006-retry': () => { S.p006.panel='connecting'; renderAll(); later(1400,()=>{S.p006.panel='ready'; addLog('成功','手动重试成功 · 会话 READY'); renderAll();}); },
+  'p006-clearlogs': () => { S.p006.logs=[]; renderAll(); },
+  'p006-exportlogs': () => { if(S.p006.logs.length===0){ toast('暂无日志'); return; }
+    copy(S.p006.logs.map(l=>`[${l.time}] ${l.type} ${l.msg}`).join('\n'), '日志已复制'); },
+  'p006-togglesvc': el => { const svc=MOCK.services.find(s=>s.uuid===el.dataset.svc); svc.open=!svc.open; renderAll(); },
+  'p006-expandall': () => { const anyClosed=MOCK.services.some(s=>!s.open); MOCK.services.forEach(s=>s.open=anyClosed); renderAll(); },
+  'p006-read': el => { const ch=MOCK.services.flatMap(s=>s.chars).find(c=>c.uuid===el.dataset.ch);
+    addLog('系统','读请求已发送'); renderAll();
+    later(450, ()=>{ addLog('接收', `HEX: ${ch.hex||'(空)'}\nTEXT: ${ch.value||''}`); renderAll(); }); },
+  'p006-write': el => { const ch=MOCK.services.flatMap(s=>s.chars).find(c=>c.uuid===el.dataset.ch);
+    S.p006.write={charId:ch.uuid, charName:ch.name, type:'text', value:'', sending:false}; renderAll(); },
+  'p006-notify': el => { const ch=MOCK.services.flatMap(s=>s.chars).find(c=>c.uuid===el.dataset.ch);
+    const on = !S.p006.notify[ch.uuid]; S.p006.notify[ch.uuid]=on;
+    addLog('系统', on?'开启监听成功':'关闭监听成功'); renderAll();
+    if(on) later(1400, ()=>{ if(S.p006.notify[ch.uuid]){ addLog('接收','HEX: 55\nTEXT: 85%（notify 推送）'); renderAll(); } }); },
+  'p006-closewrite': () => { S.p006.write=null; renderAll(); },
+  'p006-confirmwrite': () => {
+    const w=S.p006.write; const v=(w.value||'').trim();
+    if(!v){ toast('请输入数据'); return; }
+    if(w.type==='hex'){
+      const clean=v.replace(/\s+/g,'');
+      if(!/^[0-9a-fA-F]+$/.test(clean) || clean.length%2!==0){ toast('HEX 格式无效：仅允许 0-9 A-F 与空格，且为偶数长度'); return; }
+    }
+    w.sending=true; renderAll();
+    later(500, ()=>{ addLog('写入', `${w.type.toUpperCase()}: ${v}`); S.p006.write=null; toast('写入成功'); renderAll(); });
+  },
+  'p006-ota': () => { S.p006.ota={phase:'pick', target:'lightble-peripheral', percent:0}; renderAll(); },
+  'p006-pickfile': () => {
+    const o=S.p006.ota; o.phase='validating'; o.note='manifest.json 校验 · sha256 比对'; o.percent=10; renderAll();
+    const s0 = seq();
+    later(900, ()=>{
+      if(S.p006.scenOtaFail){ o.phase='failed'; o.errTitle='OTA_HASH_MISMATCH'; o.errMsg='固件包 sha256 与 manifest 声明不一致，已终止（错误包不得进入 OTA 事务）。'; S.p006.scenOtaFail=false; renderAll(); return; }
+      o.phase='transferring'; o.note='分包传输 · chunk 180B · 20ms 间隔'; o.percent=0; renderAll();
+      const iv=setInterval(()=>{
+        if(s0!==seq()){ clearInterval(iv); return; }
+        o.percent=Math.min(100,(o.percent||0)+Math.ceil(Math.random()*9+4));
+        const el=document.querySelector('.progress-fg');
+        if(el){ el.style.width=o.percent+'%'; }
+        const lab=document.querySelector('.sheet .mono');
+        if(o.percent>=100){ clearInterval(iv); o.phase='committing'; o.note='提交（commit）· 等待设备 success（30s）'; o.percent=100; renderAll();
+          later(1000, ()=>{ o.phase='verifying'; o.note='重连回读固件版本比对'; renderAll();
+            later(1100, ()=>{ o.phase='success'; renderAll(); later(2000, ()=>{ S.p006.ota=null; renderAll(); }); }); });
+        }
+      }, 260);
+    });
+  },
+  'p006-closeota': () => {
+    const o=S.p006.ota;
+    if(['transferring','committing','validating','verifying'].includes(o.phase)){ o.phase='cancelled'; addLog('系统','OTA 已取消 · 已发送 abort'); renderAll(); later(1500,()=>{S.p006.ota=null; renderAll();}); return; }
+    S.p006.ota=null; renderAll();
+  },
+  /* P007 */
+  'p007-open': el => { const d=MOCK.connected.find(c=>c.deviceId===el.dataset.id);
+    if(d.profileId){ S.p003.device={...d, protocol:'V1', firmware:'1.1.1', lastWifi:'Home-5G', lastHub:'192.168.1.8:17892'}; go('p003'); }
+    else { S.p006.device=d; S.p006.panel='ready'; S.p006.logs=[{time:nowStr(),type:'系统',msg:'复用已有会话进入'}]; go('p006'); } },
+  'p007-disconnect': el => { MOCK.connected = MOCK.connected.filter(c=>c.deviceId!==el.dataset.id); toast('已断开'); renderAll(); },
+  'p007-disconnectall': () => {
+    const failed = MOCK.connected[0];
+    MOCK.connected = MOCK.connected.filter(c=>c===failed);
+    modal({title:'部分设备未能断开', content:`失败设备：${failed.name}（errCode 10009 · 连接已断开）<br>其余设备已断开成功。`, confirmText:'知道了', hideCancel:true});
+    renderAll();
+  },
+  /* P008 */
+  'p008-toggle': () => {
+    const st=S.p008;
+    if(st.platform==='web'){ toast('当前平台不支持 BLE 广播，请使用微信小程序或 App。'); return; }
+    if(st.advertising){ st.advertising=false; st.state='stopped'; bLog('操作','广播已停止'); renderAll(); return; }
+    if(!bValidUuid(st.uuid)){ toast('Service UUID 格式无效'); return; }
+    if(bCalcBytes()>31){ toast('广播包超出 31 字节限制（'+bCalcBytes()+'B），请精简内容'); return; }
+    if(st.platform==='android'){
+      if(st.btOff){ modal({title:'提示',content:'请先开启系统蓝牙',confirmText:'去开启'}); return; }
+      if(st.permMissing){ modal({title:'权限请求',content:'需要蓝牙广播、连接、扫描和位置权限，请在系统设置中手动开启',confirmText:'去设置'}); return; }
+      bLog('操作','startAdvertising · mode='+['低功耗','平衡','低延迟'][st.mode]+' · power='+['超低','低','中','高'][st.power]+' · connectable='+st.connectable);
+    } else if(st.platform==='weixin'){
+      if(st.supported===false){ toast('蓝牙从机模式未就绪，请先点击「检查支持」'); return; }
+      bLog('操作','server.startAdvertising · powerLevel='+['low','medium','high','high'][st.power]);
+    }
+    st.advertising=true; st.state='idle'; bLog('成功','广播已启动 · '+bCalcBytes()+' 字节');
+    renderAll();
+  },
+  'p008-check': () => {
+    const st=S.p008;
+    if(st.platform==='weixin'){
+      if(st.scenDevtools){ bLog('系统','开发者工具不支持 BLE 外围服务，请使用真机调试广播功能'); st.supported=false; renderAll(); return; }
+      if(st.scenActiveConn){ bLog('错误','蓝牙从机模式初始化失败: 请先断开已连接设备（active_connections）'); st.supported=false; renderAll(); return; }
+      bLog('系统','蓝牙从机模式已就绪'); st.supported=true;
+    } else if(st.platform==='android'){
+      bLog('系统','设备支持低功耗蓝牙广播（原生插件）'); st.supported=true;
+    } else { st.supported=false; bLog('系统','当前平台不支持 BLE 广播，请使用微信小程序或 App。'); }
+    renderAll();
+  },
+  'p008-sw': el => { S.p008[el.dataset.k]=!S.p008[el.dataset.k]; renderAll(); },
+  /* P009 */
+  'p009-website': () => copy('https://lightble.i2kai.com', '网址已复制'),
+  'p009-feedback': () => copy('https://gitee.com/luoyaosheng/smart-ble/issues', '反馈链接已复制'),
+  'p009-version': () => go('p010'),
+  'p009-share': () => toast('请点击右上角分享（微信端行为模拟）'),
+  'p009-openapp': el => { const a=MOCK.apps[+el.dataset.i];
+    if(!a.appId){ toast('该小程序暂未配置跳转'); return; }
+    modal({title:`打开「${a.name}」`, content:`模拟 navigateToMiniProgram<br>appId: <span class="mono">${a.appId}</span>`, confirmText:'知道了', hideCancel:true}); },
+  /* P010 */
+  'p010-copyver': () => copy('1.0.5 (build 101) · preview', '版本已复制'),
+};
+
+/* 输入桥（重渲染后仍生效的受控输入） */
+window.APP = {
+  setRssi(v){ S.p001.filter.rssi=+v; const lab=document.getElementById('rssilabel'); if(lab) lab.textContent=`信号强度 ≥ ${v} dBm`; renderAllSoft(); },
+  setPrefix(v){ S.p001.filter.prefix=v; renderAllSoft(); },
+  p002set(k,v){ S.p002[k]=v; renderAllSoft(); },
+  p006wtype(t){ S.p006.write.type=t; renderAll(); },
+  p006wval(v){ S.p006.write.value=v; },
+  p008set(k,v){ S.p008[k]=k==='mode'||k==='power'?+v:v; renderAllSoft(); },
+};
+/* 软重渲染：保留输入焦点——仅重绘受影响区域（此处简化为列表/字节提示局部刷新） */
+function renderAllSoft(){
+  const id = cur();
+  if(id==='p001'){
+    const el=document.getElementById('devlist');
+    if(el){ const list=filteredDevices();
+      el.innerHTML = list.length ? list.map(d=>devCard(d)).join('') :
+        `<div class="empty"><div class="ico">🔎</div><div class="et">${S.p001.shown.length>0?'当前没有匹配设备':'还没有扫描结果'}</div>
+         <div class="ed">${S.p001.shown.length>0?'调整筛选试试。':'点上方按钮开始扫描。'}</div></div>`; }
+    return;
+  }
+  if(id==='p002'){ /* 输入中不整页重绘，只更新提交按钮态 */
+    const btn=document.querySelector('[data-act=p002-submit]');
+    if(btn) btn.disabled=!canSubmitP002();
+    const badge=document.querySelector('.action-card .bdg');
+    return;
+  }
+  if(id==='p008'){
+    const bytes=bCalcBytes(); const hint=document.getElementById('byteshint');
+    if(hint){ hint.className='bytes-hint '+(bytes>31?'over':''); hint.firstChild.textContent=`预计广播包大小：${bytes} / 31 字节`; }
+    return;
+  }
+}
+
+/* 事件委托：closest 取最近 data-act，天然实现卡片与内部按钮互斥 */
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act]');
+  if(!el) return;
+  const act = ACTIONS[el.dataset.act];
+  if(act) act(el, e);
+});
+
+/* 启动 */
+SCEN.p001[0].apply();
+renderAll();
+/* 评审/测试可观测钩子（只读用途） */
+window.S = S; window.MOCK = MOCK;
+</script>
+</body>
+</html>
