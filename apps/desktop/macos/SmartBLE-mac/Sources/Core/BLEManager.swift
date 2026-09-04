@@ -25,6 +25,30 @@ enum ConnectionState {
     case reconnecting
 }
 
+// MARK: - 写队列项（F009 · DATA_MODEL §3.3 WriteQueueItem）
+struct WriteQueueItem {
+    enum State { case pending, sending, done, failed, cancelled }
+    let itemId: String
+    let characteristicUuid: String
+    let data: Data
+    let display: String            // 展示用载荷文本（HEX 串或原文本）
+    let withoutResponse: Bool
+    let priority: Bool             // 优先级插队（PRD §4.2：配网/OTA 帧可插队）
+    let enqueuedAt: Date
+    var state: State = .pending
+
+    init(itemId: String, characteristicUuid: String, data: Data, display: String,
+         withoutResponse: Bool, priority: Bool = false) {
+        self.itemId = itemId
+        self.characteristicUuid = characteristicUuid
+        self.data = data
+        self.display = display
+        self.withoutResponse = withoutResponse
+        self.priority = priority
+        self.enqueuedAt = Date()
+    }
+}
+
 // MARK: - 设备会话（F006/F013 · 每设备一份）
 @MainActor
 final class DeviceSession {
@@ -47,12 +71,19 @@ final class DeviceSession {
     var reconnectTask: DispatchWorkItem?
     /// OTA 接管期间禁自动重连（SM §2）
     var suppressAutoReconnect = false
+    // ---- 写队列（F009 · 同设备串行 / 超时 5s / 深 16）----
+    var writeQueue: [WriteQueueItem] = []
+    var writeInFlight: WriteQueueItem?
+    var writeTimeoutTask: DispatchWorkItem?
+    var writeSeq = 0
 
     init(device: BLEDevice) {
         self.id = device.id
         self.device = device
         self.peripheral = device.peripheral
     }
+
+    var writeDepth: Int { writeQueue.count + (writeInFlight != nil ? 1 : 0) }
 }
 
 // MARK: - 蓝牙适配器状态（P001 导航栏三态口径）
@@ -539,25 +570,126 @@ class BLEManager: NSObject, ObservableObject {
         session.peripheral.readValue(for: peripheralChar)
     }
 
-    func writeCharacteristic(characteristicUUID: String, text: String, isHex: Bool) {
-        guard let session = activeSession,
-              let char = findCharacteristic(characteristicUUID, in: session.services),
+    // MARK: - 写队列（F009 · 同设备串行 / 跨设备并行 / 超时 5s / 深 16 / 优先级插队）
+    static let writeQueueMaxDepth = 16
+    static let writeTimeoutSec: TimeInterval = 5.0
+
+    /// 当前设备的写队列深度（P006 展示/日志用）
+    func writeQueueDepth(deviceId: String) -> Int {
+        sessions[deviceId]?.writeDepth ?? 0
+    }
+
+    /// 写入统一入口：入队串行发送（正典 F009：写队列串行化 = 本功能）
+    @discardableResult
+    func enqueueWrite(deviceId: String? = nil, characteristicUUID: String,
+                      data: Data, display: String, priority: Bool = false) -> Bool {
+        let session = deviceId.flatMap { sessions[$0] } ?? activeSession
+        guard let session else {
+            log("写入失败：无会话", .err)
+            return false
+        }
+        guard let char = findCharacteristic(characteristicUUID, in: session.services),
               let peripheralChar = char.peripheralCharacteristic else {
             log("特征未找到：\(characteristicUUID)", .err)
-            return
+            return false
         }
+        guard session.state == .connected else {
+            log("写入失败：设备未连接 · \(session.device.name)", .err)
+            return false
+        }
+        guard session.writeDepth < Self.writeQueueMaxDepth else {
+            log("写队列已满（\(Self.writeQueueMaxDepth)）· 丢弃本次写入 · \(session.device.name)", .err)
+            return false
+        }
+        let writeType: CBCharacteristicWriteType =
+            char.properties.contains(.writeWithoutResponse) ? .withoutResponse : .withResponse
+        session.writeSeq += 1
+        let item = WriteQueueItem(
+            itemId: "w-\(session.writeSeq)",
+            characteristicUuid: peripheralChar.uuid.uuidString,
+            data: data,
+            display: display,
+            withoutResponse: writeType == .withoutResponse,
+            priority: priority
+        )
+        if priority {
+            session.writeQueue.insert(item, at: 0)
+        } else {
+            session.writeQueue.append(item)
+        }
+        log("[\(session.device.name)] 入队 \(item.itemId) · \(char.name)：\(display)（队列 \(session.writeDepth)/\(Self.writeQueueMaxDepth)）", .write)
+        pumpWrites(session)
+        return true
+    }
+
+    /// P006 写入弹窗入口（TEXT/HEX 编码后入队）
+    func writeCharacteristic(characteristicUUID: String, text: String, isHex: Bool) {
         let data: Data
+        var display = text
         if isHex {
             let bytes = text.split(whereSeparator: { $0 == " " }).compactMap { UInt8($0, radix: 16) }
             data = Data(bytes)
+            display = data.map { String(format: "%02X", $0) }.joined(separator: " ")
         } else {
             data = Data(text.utf8)
         }
-        let hexString = data.map { String(format: "%02X", $0) }.joined(separator: " ")
-        log("[\(session.device.name)] 写入 \(char.name)：\(isHex ? "HEX" : "TEXT"): \(isHex ? hexString : text)", .write)
-        let writeType: CBCharacteristicWriteType =
-            char.properties.contains(.writeWithoutResponse) ? .withoutResponse : .withResponse
-        session.peripheral.writeValue(data, for: peripheralChar, type: writeType)
+        _ = enqueueWrite(characteristicUUID: characteristicUUID, data: data,
+                         display: "\(isHex ? "HEX" : "TEXT"): \(display)")
+    }
+
+    private func pumpWrites(_ session: DeviceSession) {
+        guard session.writeInFlight == nil, !session.writeQueue.isEmpty else { return }
+        guard session.state == .connected else { return }
+        var item = session.writeQueue.removeFirst()
+        guard let char = findCharacteristic(item.characteristicUuid, in: session.services),
+              let peripheralChar = char.peripheralCharacteristic else {
+            item.state = .failed
+            log("[\(session.device.name)] \(item.itemId) 发送失败：特征已失效", .err)
+            pumpWrites(session)
+            return
+        }
+        if item.withoutResponse, !session.peripheral.canSendWriteWithoutResponse {
+            // 流控未就绪：等 peripheralIsReady 回调后再泵（该项放回队首）
+            session.writeQueue.insert(item, at: 0)
+            return
+        }
+        item.state = .sending
+        session.writeInFlight = item
+        log("[\(session.device.name)] 发送 \(item.itemId) · \(char.name)（5s 超时）", .write)
+
+        // 单写 5s 超时：超时丢弃并继续下一项（正典 F009）
+        let timeout = DispatchWorkItem { [weak self, weak session] in
+            Task { @MainActor [weak self, weak session] in
+                guard let self, let session, session.writeInFlight?.itemId == item.itemId else { return }
+                session.writeInFlight = nil
+                self.log("[\(session.device.name)] 写入超时（5s）· \(item.itemId) 丢弃", .err)
+                self.pumpWrites(session)
+            }
+        }
+        session.writeTimeoutTask = timeout
+        DispatchQueue.main.asyncAfter(deadline: .now() + Self.writeTimeoutSec, execute: timeout)
+
+        session.peripheral.writeValue(item.data, for: peripheralChar,
+                                       type: item.withoutResponse ? .withoutResponse : .withResponse)
+        if item.withoutResponse {
+            // without-response 无完成回调：立即结算并续泵
+            session.writeTimeoutTask?.cancel()
+            session.writeTimeoutTask = nil
+            session.writeInFlight = nil
+            log("[\(session.device.name)] \(item.itemId) 已发送（withoutResponse）", .ok)
+            pumpWrites(session)
+        }
+    }
+
+    /// 写队列 abort（F012：重连期间 PENDING→CANCELLED；主动断开/会话结束同样清空）
+    private func abortWrites(_ session: DeviceSession, reason: String) {
+        let n = session.writeDepth
+        guard n > 0 else { return }
+        session.writeTimeoutTask?.cancel()
+        session.writeTimeoutTask = nil
+        session.writeQueue.removeAll()
+        session.writeInFlight = nil
+        log("写队列 abort · \(n) 项 CANCELLED（\(reason)）· \(session.device.name)", .err)
     }
 
     func setNotification(characteristicUUID: String, enabled: Bool) {
@@ -825,13 +957,15 @@ extension BLEManager: @preconcurrency CBCentralManagerDelegate {
 
         if session.userInitiatedDisconnect || session.suppressAutoReconnect {
             // 主动断开 / OTA 接管 → 永不自动重连（SM §2），会话结束
+            abortWrites(session, reason: "会话结束")
             sessions.removeValue(forKey: session.id)
             if wasActive {
                 activeDeviceId = sessions.values.first(where: { $0.state == .connected })?.id
             }
             syncActiveMirror()
         } else {
-            // 被动断线 → F012 自动重连（服务缓存失效清空；监听集合转存待恢复）
+            // 被动断线 → F012：写队列 abort（PENDING→CANCELLED）后调度自动重连
+            abortWrites(session, reason: "被动断线 · 重连期")
             session.services = []
             session.resubscribeSet = session.notifyingCharacteristics
             session.notifyingCharacteristics = []
@@ -947,11 +1081,25 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
     func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic,
                     error: Error?) {
         guard let session = session(for: peripheral) else { return }
-        if let error = error {
+        // 写队列结算（F009：withResponse 完成回调驱动串行续泵）
+        if let inflight = session.writeInFlight, inflight.characteristicUuid == characteristic.uuid.uuidString {
+            session.writeTimeoutTask?.cancel()
+            session.writeTimeoutTask = nil
+            session.writeInFlight = nil
+            if let error = error {
+                log("写入失败 · \(inflight.itemId) · \(session.device.name)：\(error.localizedDescription)", .err)
+            } else {
+                log("写入成功 · \(inflight.itemId) · \(session.device.name)", .ok)
+            }
+            pumpWrites(session)
+        } else if let error = error {
             log("写入失败 · \(session.device.name)：\(error.localizedDescription)", .err)
-        } else {
-            log("写入成功 · \(session.device.name)", .ok)
         }
+    }
+
+    func peripheralIsReady(toSendWriteWithoutResponse peripheral: CBPeripheral) {
+        guard let session = session(for: peripheral) else { return }
+        pumpWrites(session)
     }
 
     func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic,
