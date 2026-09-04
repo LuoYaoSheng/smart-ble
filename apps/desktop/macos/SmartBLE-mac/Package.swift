@@ -15,15 +15,6 @@ let package = Package(
             name: "SmartBLE-mac",
             dependencies: [],
             path: "Sources",
-            sources: [
-                "main.swift",
-                "Core/BLEManager.swift",
-                "UI/MainWindowController.swift",
-                "UI/ScanViewController.swift",
-                "UI/DeviceDetailViewController.swift",
-                "UI/LogViewController.swift"
-            ],
-            resources: nil,
             swiftSettings: [
                 .unsafeFlags(["-parse-as-library"])
             ]

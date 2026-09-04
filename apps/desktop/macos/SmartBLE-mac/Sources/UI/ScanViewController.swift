@@ -49,7 +49,8 @@ class ScanViewController: NSViewController {
         controlsView.addSubview(scanButton)
 
         // Filter toggle button
-        filterButton = NSButton(title: "", image: NSImage(systemSymbolName: "line.3.horizontal.decrease.circle", accessibilityDescription: nil), target: self, action: #selector(toggleFilterPanel))
+        let filterImage = NSImage(systemSymbolName: "line.3.horizontal.decrease.circle", accessibilityDescription: nil) ?? NSImage()
+        filterButton = NSButton(title: "", image: filterImage, target: self, action: #selector(toggleFilterPanel))
         filterButton.bezelStyle = .regularSquare
         filterButton.isBordered = false
         filterButton.translatesAutoresizingMaskIntoConstraints = false
@@ -335,7 +336,7 @@ extension ScanViewController: DeviceCardDelegate {
     func deviceCardDidClickConnect(_ card: DeviceCard, device: BLEDevice) {
         // Find existing MainWindowController logic or implement a connect flow here
         delegate?.scanViewController(self, didSelectDevice: device)
-        bleManager?.connect(to: device)
+        bleManager?.connect(device: device)
     }
 }
 
