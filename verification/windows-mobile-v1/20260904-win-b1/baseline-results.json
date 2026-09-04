@@ -1,0 +1,57 @@
+{
+  "run_id": "20260904-win-b1",
+  "generated_at": "2026-09-04T09:55:00+08:00",
+  "git_head": "dbb38a8c2404b37cce4602db1f42b44eedae7e8d",
+  "branch": "refactor/uniapp-v1",
+  "uniapp": {
+    "verify_uniapp_sh": { "status": "PASS", "unit_files": 28, "static_gates": 11, "assertions": 127 },
+    "smart_hid_contract": { "status": "PASS", "note": "after CRLF normalization fix" },
+    "prototype_playwright": { "status": "PASS", "tests": 230, "duration_s": 28.8, "browser": "chromium_headless_shell-1148 (131.0.6778.33)" },
+    "uniautomator_pages": { "status": "BLOCKED", "reason": "HBuilderX 5.24.2026081301 CLI has no 'uniapp.test' command", "defect": "DEF-002" },
+    "mp_weixin_compile": { "status": "BLOCKED_IIFE", "reason": "rollup manualChunks vs inlineDynamicImports (compiler 5.24 vue3)", "defect": "DEF-003" },
+    "android_compile_probe": { "status": "PASS", "result": "COMPILE_OK", "artifact": "apps/uniapp/unpackage/dist/dev/app-plus/app-service.js", "sha256": "f053b85a89df7c714867ca385ad1bbe08be89c7b5256b4420ca16a635364d6af" },
+    "wechat_phone_preview": "NOT_RUN",
+    "uniapp_android_device_run": "NOT_RUN",
+    "check_env": { "status": "READY", "physical_devices": 1, "serial_available": true }
+  },
+  "flutter": {
+    "pub_get": "PASS",
+    "format_check": { "status": "FAIL", "changed_of": "20/32", "defect": "DEF-004" },
+    "analyze": "PASS",
+    "test": { "status": "PASS", "tests": 11 },
+    "build_apk_debug": {
+      "status": "PASS",
+      "gradle_seconds": 340.9,
+      "path": "apps/flutter/build/app/outputs/flutter-apk/app-debug.apk",
+      "bytes": 185569910,
+      "sha256": "0339b5a147645c67066092d6396994233dadaa358d8bdfb846010cdb41851f4d"
+    },
+    "flutter_run_device": "NOT_RUN",
+    "gap_audit": "docs/specs/06_review/FLUTTER_PRODUCT_GAP_AUDIT.md",
+    "reuse_matrix": "docs/specs/08_development/FLUTTER_REUSE_MATRIX.md"
+  },
+  "esp32": {
+    "build_peripheral": { "status": "SUCCESS", "duration": "00:02:17.882", "firmware_sha256": "6c64edbf6cca8ff30e7de595b93e591a6e1fedc94a79fd1886d3a8cb31b89b2b" },
+    "build_observer": { "status": "SUCCESS", "duration": "00:01:49.161", "firmware_sha256": "82487ec8c3f970216c7b53088d7dc09f11929932f95bdc27bb5cb1372648e378" },
+    "device_list": { "COM12": "CH343 bridge (ESP32 board)", "COM4": "phone ADB composite" },
+    "upload_peripheral_com12": { "status": "FAIL", "error": "This chip is ESP32-S3 not ESP32. Wrong --chip argument?", "defect": "DEF-001", "first_breakpoint": "hardware/esp32/LightBLE/platformio.ini board=esp32dev vs physical ESP32-S3" },
+    "monitor_boot_log": "NOT_RUN (upload failed)"
+  },
+  "toolchain_fixes": [
+    "apps/uniapp/env.js WECHAT_DEVTOOLS_CLI",
+    "scripts/e5/check-env.mjs windows support",
+    "scripts/verify-uniapp.sh TS-capable node resolution",
+    "scripts/verify-uniapp-pages.sh + build-android-test.sh CLI discovery; ps1 wrappers",
+    "CRLF normalization: check-smart-hid-contract.mjs / bump-smart-hid-lock.mjs / generate-release-metadata.mjs + .gitattributes eol=lf pinning",
+    "scripts/check-uniapp-sfc.mjs cross-platform compiler-sfc discovery"
+  ],
+  "defects": [
+    { "id": "DEF-001", "severity": "P1", "summary": "Board is ESP32-S3 but firmware targets esp32dev; upload fails", "status": "OPEN" },
+    { "id": "DEF-002", "severity": "P2", "summary": "HBuilderX 5.24 CLI removed uniapp.test; UniAutomator page tests blocked", "status": "OPEN" },
+    { "id": "DEF-003", "severity": "P2", "summary": "mp-weixin compile rollup manualChunks/inlineDynamicImports incompatible", "status": "OPEN" },
+    { "id": "DEF-004", "severity": "P3", "summary": "20/32 flutter files deviate from dart format", "status": "OPEN" },
+    { "id": "DEF-005", "severity": "P3", "summary": "flutter doctor: cmdline-tools missing, licenses unaccepted", "status": "OPEN" }
+  ],
+  "phase_a_artifacts": "MISSING on all hosts (flagged in report; Phase A belongs to the other machine per task book)",
+  "secrets_in_report": "none"
+}

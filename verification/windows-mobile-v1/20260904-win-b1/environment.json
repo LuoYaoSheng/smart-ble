@@ -1,0 +1,92 @@
+{
+  "task_id": "WIN-MOBILE-V1-PHASEB-ENV-001",
+  "run_id": "20260904-win-b1",
+  "generated_at": "2026-09-04T08:55:00+08:00",
+  "git_head": "dbb38a8c2404b37cce4602db1f42b44eedae7e8d",
+  "git_short": "dbb38a8",
+  "branch": "refactor/uniapp-v1",
+  "dev_branch_rule": "no refactor/mobile-v1 on remotes; reuse refactor/uniapp-v1 (also carries Flutter Android)",
+  "remotes": {
+    "github": "git@github.com:LuoYaoSheng/smart-ble.git",
+    "origin_fetch": "https://gitee.com/luoyaosheng/smart-ble.git",
+    "origin_push": ["https://gitee.com/luoyaosheng/smart-ble.git", "git@github.com:LuoYaoSheng/smart-ble.git"]
+  },
+  "host": {
+    "os": "Microsoft Windows 10 专业版",
+    "version": "10.0.19045 (22H2)",
+    "arch": "x64",
+    "cpu": "13th Gen Intel(R) Core(TM) i7-13700H (14C/20T)"
+  },
+  "tools": {
+    "git": "2.50.1.windows.1",
+    "node": "v20.19.3",
+    "npm": "10.8.2",
+    "python": "3.13.2",
+    "java": "24.0.1",
+    "adb": "1.0.41",
+    "flutter": "3.38.3 (stable, Dart 3.10.1, DevTools 2.51.1) at D:\\dev\\flutter",
+    "platformio": "6.1.18 at C:\\Users\\11066\\.platformio\\penv\\Scripts\\pio.exe (not on Git Bash PATH)",
+    "hbuilderx": "5.24.2026081301 at D:\\HBuilderX\\cli.exe (cli requires IDE running via 'cli open')",
+    "wechat_devtools_cli": "present at C:\\Program Files (x86)\\Tencent\\微信web开发者工具\\cli.bat (exact version PENDING_MANUAL)"
+  },
+  "flutter_doctor": {
+    "issues": [
+      "Android toolchain: cmdline-tools component is missing",
+      "Android toolchain: license status unknown"
+    ],
+    "ok": ["Flutter", "Windows Version", "Chrome", "Visual Studio 2022 17.13.1", "Connected device (4)", "Network resources"]
+  },
+  "devices": {
+    "android_physical": [
+      {
+        "serial": "R5CR1284Y7H",
+        "model": "SM_G9910",
+        "product": "o1qzcx",
+        "device": "o1q",
+        "android": "15 (API 35)",
+        "abi": "android-arm64",
+        "note": "Samsung Galaxy S21; also enumerates COM4 as ADB composite serial"
+      }
+    ],
+    "esp32_serial": [
+      {
+        "port": "COM12",
+        "usb_vid_pid": "1A86:55D3",
+        "description": "USB-Enhanced-SERIAL CH343 (COM12)",
+        "serial_number": "5B15084803",
+        "chip": "WCH CH343 (USB-serial bridge; exact ESP32 module PENDING_MANUAL)"
+      }
+    ],
+    "other_flutter_devices": ["windows", "chrome", "edge"]
+  },
+  "flutter_platform_dirs": {
+    "android": { "present": true, "verdict": "F-AND target this round" },
+    "macos": { "present": true, "verdict": "BLOCKED_HOST" },
+    "windows": { "present": false, "verdict": "NOT_CONFIGURED" },
+    "ios": { "present": false, "verdict": "NOT_CONFIGURED + BLOCKED_HOST" },
+    "linux": { "present": false, "verdict": "NOT_CONFIGURED" },
+    "web": { "present": false, "verdict": "NOT_CONFIGURED" }
+  },
+  "local_properties": {
+    "git_tracked": false,
+    "gitignored": true,
+    "local_content": "Windows paths (sdk.dir=C:\\Users\\11066\\AppData\\Local\\Android\\sdk, flutter.sdk=D:\\dev\\flutter)",
+    "action": "none required"
+  },
+  "phase_a_artifacts": {
+    "FLUTTER_IMPLEMENTATION_PROFILE_md": "MISSING",
+    "MOBILE_IMPLEMENTATION_SCOPE_md": "MISSING",
+    "verdict": "Phase A (write Flutter line into specs) not yet executed on any host; Phase B proceeds per task book and flags the gap"
+  },
+  "pending_manual": [
+    "WeChat app version + base library version on phone",
+    "Exact ESP32 module/board model",
+    "Whether only one ESP32 exists",
+    "Second connectable BLE peripheral for multi-device E5",
+    "Real Smart HID firmware availability",
+    "ControlHub availability",
+    "WeChat devtools exact version + service port state",
+    "Phone WeChat developer/tester permission"
+  ],
+  "secrets_in_report": "none"
+}
