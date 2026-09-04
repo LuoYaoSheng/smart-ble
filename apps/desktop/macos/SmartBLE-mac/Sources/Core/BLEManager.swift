@@ -71,6 +71,8 @@ final class DeviceSession {
     var reconnectTask: DispatchWorkItem?
     /// OTA 接管期间禁自动重连（SM §2）
     var suppressAutoReconnect = false
+    /// Smart HID 配网会话标记（正典：不进 P007 列表，但计入 P001 已连接计数）
+    var isProvisioningSession = false
     // ---- 写队列（F009 · 同设备串行 / 超时 5s / 深 16）----
     var writeQueue: [WriteQueueItem] = []
     var writeInFlight: WriteQueueItem?
@@ -223,16 +225,31 @@ class BLEManager: NSObject, ObservableObject {
         !discoveredDevices.isEmpty && filteredScanResults.isEmpty
     }
 
-    /// 已连接设备列表（P007 · 仅 connected 态；SHID 配网会话不进此列表，正典口径）
+    /// 已连接设备列表（P007 · 仅 connected 态且非配网会话；SHID 配网会话不进此列表，正典口径）
     var connectedDevices: [BLEDevice] {
         sessions.values
-            .filter { $0.state == .connected }
+            .filter { $0.state == .connected && !$0.isProvisioningSession }
             .sorted { $0.device.rssi > $1.device.rssi }
             .map { s in
                 var d = s.device
                 d.isConnected = true
                 return d
             }
+    }
+
+    /// 通用连接数 + SHID 配网会话在线（P001 已连接计数正典口径）
+    var connectedCountForBadge: Int {
+        sessions.values.filter { $0.state == .connected }.count
+    }
+
+    /// SHID 配网会话在线（P007 空态文案/徽标口径：配网连接进行中）
+    var provisioningSessionOnline: Bool {
+        sessions.values.contains { $0.isProvisioningSession && $0.state == .connected }
+    }
+
+    /// 配网会话标记（P002 进出向导时切换）
+    func markProvisioningSession(deviceId: String, on: Bool) {
+        sessions[deviceId]?.isProvisioningSession = on
     }
 
     /// 活动会话对象
@@ -276,6 +293,8 @@ class BLEManager: NSObject, ObservableObject {
     var onDisconnectAllSettled: ((DisconnectAllReport) -> Void)?
     /// OTA STATUS 特征值转发（F025 · OtaManager 订阅）：(deviceId, data)
     var otaStatusHandler: ((String, Data) -> Void)?
+    /// Smart HID INFO/STATUS 特征值转发（F019-F022 · HidProvisionManager 订阅）：(deviceId, charUuidUpper, data)
+    var hidValueHandler: ((String, String, Data) -> Void)?
     /// 写队列结算回调（F025 分块节拍用）：(deviceId, itemId, success)
     var onWriteSettled: ((String, String, Bool) -> Void)?
     private var pendingDisconnectAll: [String: String] = [:]   // id → name
@@ -286,6 +305,8 @@ class BLEManager: NSObject, ObservableObject {
     private var peripheralManager: CBPeripheralManager?
     /// OTA 事务（F025 · 独占会话，全局单事务）
     lazy var ota: OtaManager = OtaManager(ble: self)
+    /// Smart HID 配网流程（F019-F022 · 全局单会话）
+    lazy var hid: HidProvisionManager = HidProvisionManager(ble: self)
 
     // 扫描 5s 会话自动停（正典 PAGE001：启动 5s 扫描会话）
     private var autoStopTimer: Timer?
@@ -1097,10 +1118,13 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
         let hexString = data.map { String(format: "%02X", $0) }.joined(separator: " ")
         let text = String(data: data, encoding: .utf8) ?? ""
         log("[\(session.device.name)] HEX: \(hexString)\nTEXT: \(text.isEmpty ? "（解码失败，省略）" : text)", .recv)
-        // OTA 状态/版本回读特征转发（F025 · OtaManager 订阅）
+        // OTA 状态/版本回读 + Smart HID INFO/STATUS 特征转发（F025/F019-F022）
         let upper = characteristic.uuid.uuidString.uppercased()
         if upper == OtaManager.statusCharUuid || upper == OtaManager.firmwareVersionCharUuid {
             otaStatusHandler?(session.id, data)
+        }
+        if upper == HidProtocol.infoCharUuid || upper == HidProtocol.statusCharUuid {
+            hidValueHandler?(session.id, upper, data)
         }
         if let index = session.services.firstIndex(where: { $0.uuid == characteristic.service?.uuid.uuidString }) {
             if let cIndex = session.services[index].characteristics.firstIndex(where: { $0.uuid == characteristic.uuid.uuidString }) {

@@ -245,6 +245,8 @@ final class P001ScanPage: NSViewController, PageProtocol {
             host.ble.stopScan(userInitiated: false)
         }
         host.shared.currentDevice = d
+        // 进入向导即自动连接+验证（DEVICE_PROFILE_SPEC §3.2：等扫描收尾→setCurrentDevice→P002）
+        (host.page(.p002) as? P002ProvisionPage)?.begin(device: d)
         host.router.go(.p002)
     }
 

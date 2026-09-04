@@ -29,7 +29,7 @@ final class P007ConnectedPage: NSViewController, PageProtocol {
     func rebuild() {
         guard let host else { return }
         var views: [NSView] = []
-        let provOnline = (host.page(.p002) as? P002ProvisionPage)?.isProvisioning ?? false
+        let provOnline = host.ble.provisioningSessionOnline
         views.append(navbar(kicker: "SESSIONS", title: "已连接",
                             trailing: [chip(provOnline ? "配网会话在线" : "通用调试会话",
                                             tone: provOnline ? "warning" : "neutral")]))

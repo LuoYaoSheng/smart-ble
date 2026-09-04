@@ -127,7 +127,12 @@ final class P005DiagnosticsPage: NSViewController, PageProtocol {
     private func run() {
         guard let host else { return }
         let ble = host.ble
-        if ble.connectionState != .connected || host.shared.currentDevice == nil {
+        guard let d = host.shared.currentDevice else {
+            state = .offline
+            rebuild()
+            return
+        }
+        if ble.sessionState(d.id) != .connected {
             state = .offline
             host.showModal(title: "BLE 未连接", content: "设备当前未连接，是否连接并检测？",
                            confirmText: "连接并检测", cancelText: "取消", hideCancel: false,
@@ -143,26 +148,73 @@ final class P005DiagnosticsPage: NSViewController, PageProtocol {
             rebuild()
             return
         }
-        // 真实检测：仅 BLE 链路项可实证；SHID 协议四项需夹具 → 诚实停在 error
+        // 检测中：BLE 链路项真实实证；协议四项经 STATUS 特征映射（协议层 r6-M5 接线）
         state = .checking
         rowStates = ["active", "pending", "pending", "pending", "pending"]
+        rowDetails = [:]
         rebuild()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
             guard let self else { return }
             self.rowStates[0] = "ok"
             self.rowDetails[0] = "GATT 连接保持（CoreBluetooth 实证）"
             self.rebuild()
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.6) { [weak self] in
-            guard let self else { return }
-            self.state = .error
-            self.error = (code: "diagnostic_protocol_missing",
-                          message: "SHID 协议诊断未实现（需真实 SHID 设备与状态特征 · BLOCKED_FIXTURE）。BLE 链路项已实证。")
-            self.host?.showModal(title: "连接失败",
-                                 content: "请让设备进入配网/恢复模式后重试",
-                                 confirmText: "知道了", cancelText: nil, hideCancel: true,
-                                 onConfirm: nil, onCancel: nil)
-            self.rebuild()
+
+        let services = ble.sessionServices(d.id)
+        let statusChar = services.flatMap(\.characteristics).first {
+            $0.uuid.uppercased() == HidProtocol.statusCharUuid
         }
+        if statusChar != nil, let session = ble.sessions[d.id] {
+            // 真实诊断路径：读 + 订阅 STATUS → state/step/error 映射四行（DEVICE_PROFILE_SPEC §3.4）
+            ble.hid.onStatusRaw = { [weak self] _, status in
+                guard let self, let status else { return }
+                self.applyStatus(status)
+            }
+            if statusChar?.properties.contains(.notify) == true {
+                ble.setNotification(characteristicUUID: HidProtocol.statusCharUuid, enabled: true, on: session)
+            }
+            ble.readCharacteristic(deviceId: d.id, characteristicUUID: HidProtocol.statusCharUuid)
+            // 3.5s 无回值 → 诚实超时（BLOCKED_FIXTURE：无真实 SHID 设备应答）
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) { [weak self] in
+                guard let self, self.state == .checking else { return }
+                self.state = .error
+                self.error = (code: "diagnostic_no_response",
+                              message: "STATUS 特征 3.5s 无回值（需真实 SHID 设备应答 · BLOCKED_FIXTURE）。BLE 链路项已实证。")
+                self.rebuild()
+            }
+        } else {
+            // 无配网服务/状态特征（普通设备）→ 诚实 BLOCKED_FIXTURE
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) { [weak self] in
+                guard let self else { return }
+                self.state = .error
+                self.error = (code: "smart_hid_service_missing",
+                              message: "未在设备上发现 smart-hid 配网服务/状态特征（需真实 SHID 设备 · BLOCKED_FIXTURE）。BLE 链路项已实证。")
+                self.rebuild()
+            }
+        }
+    }
+
+    /// Provision Status → 五项诊断行映射（F024：错误串定位异常行）
+    private func applyStatus(_ status: HidProtocol.ProvisionStatus) {
+        state = .live
+        error = nil
+        let rows = HidProtocol.mapRows(state: status.state, step: status.step, error: status.error)
+        let detail = "state=\(status.state.isEmpty ? "—" : status.state) · step=\(status.step.isEmpty ? "—" : status.step)"
+        // 行 1-4 = wifi/hub/conn/usb（行 0 BLE 已实证）
+        for (i, key) in ["wifi", "hub", "conn", "usb"].enumerated() {
+            let v = rows[key] ?? "pending"
+            switch v {
+            case "done": rowStates[i + 1] = "ok"
+            case "fail": rowStates[i + 1] = "fail"
+            case "active": rowStates[i + 1] = "active"
+            default: rowStates[i + 1] = status.state.isEmpty ? "pending" : "warn"
+            }
+            rowDetails[i + 1] = detail
+        }
+        if let err = status.error {
+            state = .error
+            error = (code: err, message: HidProtocol.errorHints[err] ?? "设备侧错误：\(err)")
+        }
+        rebuild()
     }
 }

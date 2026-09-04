@@ -31,6 +31,8 @@ protocol PageHost: AnyObject {
     func closeLayer()
     /// 取（或创建）指定页控制器 —— 跨页装配用（如 P003 → P002.begin）
     func page(_ id: PageId) -> (NSViewController & PageProtocol)?
+    /// 当前是否有 modal/sheet 弹层（页面收口用，如扫码会话停止）
+    var layerVisible: Bool { get }
 }
 
 extension PageHost {
@@ -304,8 +306,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, PageHost
         tabBar.isHidden = !isTab
         for btn in tabButtons {
             btn.setActive(btn.page == router.cur)
-            // 徽标 = 通用连接会话数 + SHID 配网会话在线（正典 P001 计数口径）
-            let badge = btn.page == .p007 ? (ble.connectedDevices.count + (provisioningOnline ? 1 : 0)) : 0
+            // 徽标 = 通用连接会话数 + SHID 配网会话在线（正典 P001 计数口径；配网会话带标记计入）
+            let badge = btn.page == .p007 ? ble.connectedCountForBadge : 0
             btn.setBadge(badge)
         }
         // TabBar 隐藏时页面容器占满
@@ -314,7 +316,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, PageHost
 
     /// P002 配网会话在线（正典 P007：SHID 配网会话计入徽标但不含于通用列表）
     var provisioningOnline: Bool {
-        (pageControllers[.p002] as? P002ProvisionPage)?.isProvisioning ?? false
+        ble.provisioningSessionOnline
     }
 
     // MARK: - PageHost 反馈
