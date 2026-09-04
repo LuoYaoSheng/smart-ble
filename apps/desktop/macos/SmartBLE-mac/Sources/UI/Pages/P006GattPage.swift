@@ -104,7 +104,7 @@ final class P006GattPage: NSViewController, PageProtocol {
         left.append(devhead)
 
         if ble.connectionState == .connected {
-            left.append(noteBanner("warn", "OTA 端到端链路 BLOCKED（固件侧暂未开放）：右上「固件更新」为演示流程，正式使用前需固件配合。"))
+            left.append(noteBanner("warn", "OTA 端到端链路 BLOCKED（固件侧暂未开放，P-03）：「固件更新」为真实调用链（选包校验→start→分块→commit→版本回读），无固件配合时将停在等待/失败态，不伪造成功。"))
         }
 
         // 服务面板（五态 idle/connecting/ready/empty/error）
@@ -304,18 +304,89 @@ final class P006GattPage: NSViewController, PageProtocol {
         host.showSheet(title: "写入 · \(ch.name)", body: column)
     }
 
-    // MARK: - OTA（P-03 端到端 BLOCKED 预警）
+    // MARK: - OTA（F025 · 真实调用链；端到端 P-03 BLOCKED 预警）
 
     private func openOtaDialog() {
-        guard let host else { return }
+        guard let host, let deviceId = device?.id else { return }
+        let ota = host.ble.ota
+
         var body: [NSView] = []
-        body.append(noteBanner("warn", "端到端链路 BLOCKED：固件侧暂未开放升级通道，本流程为演示（P-03）。"))
-        body.append(opState("warn", title: "固件更新 · 演示", desc: "选包/校验/传输/提交/回读流程需固件配合，探针不伪造传输进度。"))
-        body.append(DSButton("关闭", tone: .soft, small: true, actionId: "p006-ota-close") { [weak self] in
+        body.append(noteBanner("warn", "端到端升级链路当前 BLOCKED（固件侧暂未开放），流程可演示，正式使用前需固件配合。"))
+
+        // 相位行（确认设备→校验→传输 N%→提交→回读→成功/失败，PATTERN 相位文案）
+        let phaseLabel = makeLabel("相位：\(ota.phase.word)", size: 13, weight: .semibold)
+        let fileLabel = makeLabel(ota.fileName.map { "固件包：\($0)（\(ota.fileSize) 字节）" } ?? "未选择固件包（.bin）",
+                                  size: 11, color: DS.mut)
+        let progress = NSProgressIndicator()
+        progress.minValue = 0
+        progress.maxValue = 100
+        progress.doubleValue = 0
+        progress.style = .bar
+        progress.translatesAutoresizingMaskIntoConstraints = false
+        progress.heightAnchor.constraint(equalToConstant: 8).isActive = true
+
+        // 错误码行（失败态）
+        let errLabel = makeLabel("", size: 11, color: DS.danger, mono: true)
+        errLabel.isHidden = true
+
+        let pickBtn = DSButton("选择固件（.bin）", tone: .soft, symbol: "folder", actionId: "p006-ota-pick") { [weak self] in
+            guard let self, let host = self.host else { return }
+            let panel = NSOpenPanel()
+            panel.allowedContentTypes = [.data]
+            panel.allowsOtherFileTypes = true
+            panel.canChooseDirectories = false
+            panel.message = "选择 OTA 固件包（.bin）"
+            if panel.runModal() == .OK, let url = panel.url {
+                host.ble.ota.selectFile(url: url)
+            }
+        }
+        let startBtn = DSButton("开始升级", tone: .danger, symbol: "arrow.up.circle", actionId: "p006-ota-start") { [weak self] in
+            self?.host?.ble.ota.start(deviceId: deviceId)
+        }
+        startBtn.isEnabled = (ota.phase == .ready)
+        let cancelBtn = DSButton("取消", tone: .soft, actionId: "p006-ota-cancel") { [weak self] in
+            self?.host?.ble.ota.cancel()
+        }
+        let closeBtn = DSButton("关闭", tone: .soft, small: true, actionId: "p006-ota-close") { [weak self] in
+            self?.host?.ble.ota.cancel()   // 进行中关闭 = 取消（op=abort）
             self?.host?.closeLayer()
-        })
-        host.showSheet(title: "固件更新", body: vstack(body, spacing: 10))
+        }
+
+        let btnRow = hstack([pickBtn, startBtn, cancelBtn, NSView(), closeBtn], spacing: 9)
+        btnRow.translatesAutoresizingMaskIntoConstraints = false
+        let column = vstack([phaseLabel, fileLabel, progress, errLabel, btnRow], spacing: 10)
+        column.translatesAutoresizingMaskIntoConstraints = false
+        host.showSheet(title: "固件更新", body: column)
+
+        // 相位订阅：弹窗内定向更新（不走全页 rebuild）
+        var c: Any?
+        c = ota.objectWillChange.sink { [weak ota, weak phaseLabel, weak fileLabel, weak progress, weak errLabel, weak startBtn, weak cancelBtn] _ in
+            Task { @MainActor in
+                guard let ota else { return }
+                phaseLabel?.stringValue = "相位：\(ota.phase.word)"
+                fileLabel?.stringValue = ota.fileName.map { "固件包：\($0)（\(ota.fileSize) 字节）" } ?? "未选择固件包（.bin）"
+                let pct: Double
+                if case .transferring(let p) = ota.phase { pct = Double(p) }
+                else if case .success = ota.phase { pct = 100 }
+                else { pct = ota.fileSize > 0 ? Double(ota.sentBytes) / Double(ota.fileSize) * 100 : 0 }
+                progress?.doubleValue = pct
+                if case .failed(let code, let msg) = ota.phase {
+                    errLabel?.isHidden = false
+                    errLabel?.stringValue = "\(code)：\(msg)"
+                } else {
+                    errLabel?.isHidden = true
+                }
+                startBtn?.isEnabled = (ota.phase == .ready)
+                cancelBtn?.isEnabled = !ota.phase.isTerminal && ota.phase != .idle && ota.phase != .ready
+            }
+        }
+        otaDialogCancellable = c
+        ota.onFinished = { [weak self] in
+            self?.host?.closeLayer()
+        }
     }
+
+    private var otaDialogCancellable: Any?
 
     // MARK: - 日志导出（桌面覆写口径：复制为主 + 文件候选拦截）
 

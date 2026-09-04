@@ -274,12 +274,18 @@ class BLEManager: NSObject, ObservableObject {
     }
     /// 全部断开结算回调（P007 设置后调用 disconnectAll）
     var onDisconnectAllSettled: ((DisconnectAllReport) -> Void)?
+    /// OTA STATUS 特征值转发（F025 · OtaManager 订阅）：(deviceId, data)
+    var otaStatusHandler: ((String, Data) -> Void)?
+    /// 写队列结算回调（F025 分块节拍用）：(deviceId, itemId, success)
+    var onWriteSettled: ((String, String, Bool) -> Void)?
     private var pendingDisconnectAll: [String: String] = [:]   // id → name
     private var disconnectAllTimer: Timer?
 
     // MARK: - Private Properties
     private var centralManager: CBCentralManager?
     private var peripheralManager: CBPeripheralManager?
+    /// OTA 事务（F025 · 独占会话，全局单事务）
+    lazy var ota: OtaManager = OtaManager(ble: self)
 
     // 扫描 5s 会话自动停（正典 PAGE001：启动 5s 扫描会话）
     private var autoStopTimer: Timer?
@@ -570,6 +576,18 @@ class BLEManager: NSObject, ObservableObject {
         session.peripheral.readValue(for: peripheralChar)
     }
 
+    /// 按设备读取（OTA 版本验证等非活动会话场景）
+    func readCharacteristic(deviceId: String, characteristicUUID: String) {
+        guard let session = sessions[deviceId],
+              let char = findCharacteristic(characteristicUUID, in: session.services),
+              let peripheralChar = char.peripheralCharacteristic else {
+            log("特征未找到：\(characteristicUUID)", .err)
+            return
+        }
+        log("[\(session.device.name)] 读取 \(char.name)…", .read)
+        session.peripheral.readValue(for: peripheralChar)
+    }
+
     // MARK: - 写队列（F009 · 同设备串行 / 跨设备并行 / 超时 5s / 深 16 / 优先级插队）
     static let writeQueueMaxDepth = 16
     static let writeTimeoutSec: TimeInterval = 5.0
@@ -580,9 +598,12 @@ class BLEManager: NSObject, ObservableObject {
     }
 
     /// 写入统一入口：入队串行发送（正典 F009：写队列串行化 = 本功能）
+    /// - Parameter forceWithoutResponse: OTA DATA 分块等协议固定 writeNoResponse 时置 true
+    ///   （特征属性不含 writeWithoutResponse 时自动回落 withResponse 并记一条日志）
     @discardableResult
     func enqueueWrite(deviceId: String? = nil, characteristicUUID: String,
-                      data: Data, display: String, priority: Bool = false) -> Bool {
+                      data: Data, display: String, priority: Bool = false,
+                      forceWithoutResponse: Bool = false) -> Bool {
         let session = deviceId.flatMap { sessions[$0] } ?? activeSession
         guard let session else {
             log("写入失败：无会话", .err)
@@ -601,8 +622,12 @@ class BLEManager: NSObject, ObservableObject {
             log("写队列已满（\(Self.writeQueueMaxDepth)）· 丢弃本次写入 · \(session.device.name)", .err)
             return false
         }
-        let writeType: CBCharacteristicWriteType =
-            char.properties.contains(.writeWithoutResponse) ? .withoutResponse : .withResponse
+        var useWithoutResponse = char.properties.contains(.writeWithoutResponse)
+        if forceWithoutResponse && !useWithoutResponse {
+            useWithoutResponse = false
+            log("[\(session.device.name)] 协议要求 writeNoResponse 但特征仅支持 withResponse · 回落（\(char.name)）", .sys)
+        }
+        let writeType: CBCharacteristicWriteType = useWithoutResponse ? .withoutResponse : .withResponse
         session.writeSeq += 1
         let item = WriteQueueItem(
             itemId: "w-\(session.writeSeq)",
@@ -663,6 +688,7 @@ class BLEManager: NSObject, ObservableObject {
                 guard let self, let session, session.writeInFlight?.itemId == item.itemId else { return }
                 session.writeInFlight = nil
                 self.log("[\(session.device.name)] 写入超时（5s）· \(item.itemId) 丢弃", .err)
+                self.onWriteSettled?(session.id, item.itemId, false)
                 self.pumpWrites(session)
             }
         }
@@ -677,6 +703,7 @@ class BLEManager: NSObject, ObservableObject {
             session.writeTimeoutTask = nil
             session.writeInFlight = nil
             log("[\(session.device.name)] \(item.itemId) 已发送（withoutResponse）", .ok)
+            onWriteSettled?(session.id, item.itemId, true)
             pumpWrites(session)
         }
     }
@@ -1070,6 +1097,11 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
         let hexString = data.map { String(format: "%02X", $0) }.joined(separator: " ")
         let text = String(data: data, encoding: .utf8) ?? ""
         log("[\(session.device.name)] HEX: \(hexString)\nTEXT: \(text.isEmpty ? "（解码失败，省略）" : text)", .recv)
+        // OTA 状态/版本回读特征转发（F025 · OtaManager 订阅）
+        let upper = characteristic.uuid.uuidString.uppercased()
+        if upper == OtaManager.statusCharUuid || upper == OtaManager.firmwareVersionCharUuid {
+            otaStatusHandler?(session.id, data)
+        }
         if let index = session.services.firstIndex(where: { $0.uuid == characteristic.service?.uuid.uuidString }) {
             if let cIndex = session.services[index].characteristics.firstIndex(where: { $0.uuid == characteristic.uuid.uuidString }) {
                 session.services[index].characteristics[cIndex].value = hexString
@@ -1091,6 +1123,7 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
             } else {
                 log("写入成功 · \(inflight.itemId) · \(session.device.name)", .ok)
             }
+            onWriteSettled?(session.id, inflight.itemId, error == nil)
             pumpWrites(session)
         } else if let error = error {
             log("写入失败 · \(session.device.name)：\(error.localizedDescription)", .err)
@@ -1158,6 +1191,9 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
         case "2A19": return "电量"
         case "2A37": return "心率测量"
         case "2A38": return "传感器位置"
+        case "BEB5483E-36E1-4688-B7F5-EA07361B26C0": return "OTA 控制"
+        case "BEB5483E-36E1-4688-B7F5-EA07361B26C1": return "OTA 数据"
+        case "BEB5483E-36E1-4688-B7F5-EA07361B26C2": return "版本回读"
         default:
             let uuidStr = uuid.uuidString
             if uuidStr.hasPrefix("0000") && uuidStr.count == 36 {
