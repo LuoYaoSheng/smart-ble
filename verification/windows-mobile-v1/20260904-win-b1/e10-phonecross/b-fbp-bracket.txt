@@ -1,0 +1,2 @@
+logcat: 09-04 15:46:24.224 17145 17145 D [FBP-Android]: [FBP] onMethodCall: startScan
+logcat: 09-04 15:46:29.249 17145 17145 D [FBP-Android]: [FBP] onMethodCall: stopScan

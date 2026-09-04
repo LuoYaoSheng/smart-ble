@@ -134,3 +134,20 @@
 | 断开恢复广播 | PASS（第 4 数据点 521ms） | 510/514/515/521ms 跨四客户端一致 |
 
 证据：`e8-devicematrix/`、`e9-electron/`；登记：`baseline-results.json`（followups #5）。
+
+## K. 双手机广播↔扫描交叉矩阵（15:30–16:10，核心功能轮）
+
+| # | 广播端 | 扫描端 | 发现链 | 停播衰减 |
+|---|---|---|---|---|
+| T1 | A: F-AND | B: F-AND | **PASS**（耀生 的 S21 / 63:1A… / -64dBm，9→10 台） | PASS（停后复扫回落 9 台，空中 0 帧） |
+| T2 | B: F-AND | A: F-AND | **PASS**（REDMI K80 / 5D:94… / -54dBm） | **FAIL（DEF-014）** |
+| T3 | B: U-AND | A: F-AND | **PASS**（REDMI K80 / 75:B0…，地址与锚点一致） | —（归 DEF-014 母题） |
+| T4 | A: F-AND | B: U-AND | **PASS**（耀生 的 S21 / 50:1D… / -56dBm） | PASS（A 停播即空中消失） |
+
+- 4 组「手机广播→另一手机扫描」发现链全部 PASS，每组合均三重证据（广播端 UI + Windows 锚点 + 扫描端卡片且地址一致）
+- **DEF-009 定性更新**：小米上 U-AND 广播原生调用成功（startAdvertisingSet status=0）且空中可收 → 静默失效为**设备相关**（三星必现），非 U-AND 代码必现缺陷
+- 新登记 **DEF-013 P1**（F-AND 首次扫描超时后所有后续扫描静默空转，`_isScanning` 守卫不复位；源码级定位 ble_manager.dart:218/253）
+- 新登记 **DEF-014 P2**（小米停播后广播栈层残留 ≥5 分钟，杀进程无效，重启蓝牙才清；三星同版正常）
+- 附带观察：U-AND 重启后显示残留「正在广播」假状态（空中 0 帧）；小米首击丢失率 ~50%（全程用点击→校验→重试循环）；`-g` 安装不授予 BLUETOOTH_ADVERTISE
+
+证据：`e10-phonecross/`（README 含完整证据链与原生日志摘录）。

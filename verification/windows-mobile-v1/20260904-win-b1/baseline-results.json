@@ -1,307 +1,325 @@
 {
-  "run_id": "20260904-win-b1",
-  "generated_at": "2026-09-04T09:55:00+08:00",
-  "git_head": "dbb38a8c2404b37cce4602db1f42b44eedae7e8d",
-  "branch": "refactor/uniapp-v1",
-  "uniapp": {
-    "verify_uniapp_sh": {
-      "status": "PASS",
-      "unit_files": 28,
-      "static_gates": 11,
-      "assertions": 127
-    },
-    "smart_hid_contract": {
-      "status": "PASS",
-      "note": "after CRLF normalization fix"
-    },
-    "prototype_playwright": {
-      "status": "PASS",
-      "tests": 230,
-      "duration_s": 28.8,
-      "browser": "chromium_headless_shell-1148 (131.0.6778.33)"
-    },
-    "uniautomator_pages": {
-      "status": "BLOCKED",
-      "reason": "HBuilderX 5.24.2026081301 CLI has no 'uniapp.test' command",
-      "defect": "DEF-002"
-    },
-    "mp_weixin_compile": {
-      "status": "BLOCKED_IIFE",
-      "reason": "rollup manualChunks vs inlineDynamicImports (compiler 5.24 vue3)",
-      "defect": "DEF-003"
-    },
-    "android_compile_probe": {
-      "status": "PASS",
-      "result": "COMPILE_OK",
-      "artifact": "apps/uniapp/unpackage/dist/dev/app-plus/app-service.js",
-      "sha256": "f053b85a89df7c714867ca385ad1bbe08be89c7b5256b4420ca16a635364d6af"
-    },
-    "wechat_phone_preview": "NOT_RUN",
-    "uniapp_android_device_run": "NOT_RUN",
-    "check_env": {
-      "status": "READY",
-      "physical_devices": 1,
-      "serial_available": true
-    }
+ "run_id": "20260904-win-b1",
+ "generated_at": "2026-09-04T09:55:00+08:00",
+ "git_head": "dbb38a8c2404b37cce4602db1f42b44eedae7e8d",
+ "branch": "refactor/uniapp-v1",
+ "uniapp": {
+  "verify_uniapp_sh": {
+   "status": "PASS",
+   "unit_files": 28,
+   "static_gates": 11,
+   "assertions": 127
   },
-  "flutter": {
-    "pub_get": "PASS",
-    "format_check": {
-      "status": "FAIL",
-      "changed_of": "20/32",
-      "defect": "DEF-004"
-    },
-    "analyze": "PASS",
-    "test": {
-      "status": "PASS",
-      "tests": 11
-    },
-    "build_apk_debug": {
-      "status": "PASS",
-      "gradle_seconds": 340.9,
-      "path": "apps/flutter/build/app/outputs/flutter-apk/app-debug.apk",
-      "bytes": 185569910,
-      "sha256": "0339b5a147645c67066092d6396994233dadaa358d8bdfb846010cdb41851f4d"
-    },
-    "flutter_run_device": "NOT_RUN",
-    "gap_audit": "docs/specs/06_review/FLUTTER_PRODUCT_GAP_AUDIT.md",
-    "reuse_matrix": "docs/specs/08_development/FLUTTER_REUSE_MATRIX.md"
+  "smart_hid_contract": {
+   "status": "PASS",
+   "note": "after CRLF normalization fix"
   },
-  "esp32": {
-    "build_peripheral": {
-      "status": "SUCCESS",
-      "duration": "00:02:17.882",
-      "firmware_sha256": "6c64edbf6cca8ff30e7de595b93e591a6e1fedc94a79fd1886d3a8cb31b89b2b"
-    },
-    "build_observer": {
-      "status": "SUCCESS",
-      "duration": "00:01:49.161",
-      "firmware_sha256": "82487ec8c3f970216c7b53088d7dc09f11929932f95bdc27bb5cb1372648e378"
-    },
-    "device_list": {
-      "COM12": "CH343 bridge (ESP32 board)",
-      "COM4": "phone ADB composite"
-    },
-    "upload_peripheral_com12": {
-      "status": "FAIL",
-      "error": "This chip is ESP32-S3 not ESP32. Wrong --chip argument?",
-      "defect": "DEF-001",
-      "first_breakpoint": "hardware/esp32/LightBLE/platformio.ini board=esp32dev vs physical ESP32-S3"
-    },
-    "monitor_boot_log": "NOT_RUN (upload failed)"
+  "prototype_playwright": {
+   "status": "PASS",
+   "tests": 230,
+   "duration_s": 28.8,
+   "browser": "chromium_headless_shell-1148 (131.0.6778.33)"
   },
-  "toolchain_fixes": [
-    "apps/uniapp/env.js WECHAT_DEVTOOLS_CLI",
-    "scripts/e5/check-env.mjs windows support",
-    "scripts/verify-uniapp.sh TS-capable node resolution",
-    "scripts/verify-uniapp-pages.sh + build-android-test.sh CLI discovery; ps1 wrappers",
-    "CRLF normalization: check-smart-hid-contract.mjs / bump-smart-hid-lock.mjs / generate-release-metadata.mjs + .gitattributes eol=lf pinning",
-    "scripts/check-uniapp-sfc.mjs cross-platform compiler-sfc discovery"
-  ],
-  "defects": [
-    {
-      "id": "DEF-001",
-      "severity": "P1",
-      "summary": "Board is ESP32-S3 but firmware targets esp32dev; upload fails",
-      "status": "RESOLVED",
-      "resolution": "2026-09-04 E5 round: physical board verified ESP32-S3 rev v0.2 / 16MB quad flash via esptool flash_id on COM12. Added fixture_common_s3 + fixture_peripheral_s3 + fixture_observer_s3 to platformio.ini (board=esp32-s3-devkitc-1, flash 16MB, dropped -mfix-esp32-psram-cache-issue & BOARD_HAS_PSRAM; original esp32dev envs untouched). Flashed peripheral_s3 to COM12 (explicit discovered port), boot JSON + 3 services/12 characteristics + advertising verified on serial. DEVICE_HARDWARE still reports contract constant esp32-wroom-32 (physical deviation recorded). New runtime defect DEF-006 filed separately."
-    },
-    {
-      "id": "DEF-002",
-      "severity": "P2",
-      "summary": "HBuilderX 5.24 CLI removed uniapp.test; UniAutomator page tests blocked",
-      "status": "OPEN"
-    },
-    {
-      "id": "DEF-003",
-      "severity": "P2",
-      "summary": "mp-weixin compile rollup manualChunks/inlineDynamicImports incompatible",
-      "status": "RESOLVED",
-      "resolution": "2026-09-04 followup: pure-CLI build (@dcloudio vite toolchain 3.0.0-alpha-5020520260829001) + vite.config inline patch scoped to APP platforms; evidence: uniapp-cli-build.txt"
-    },
-    {
-      "id": "DEF-004",
-      "severity": "P3",
-      "summary": "20/32 flutter files deviate from dart format",
-      "status": "OPEN"
-    },
-    {
-      "id": "DEF-005",
-      "severity": "P3",
-      "summary": "flutter doctor: cmdline-tools missing, licenses unaccepted",
-      "status": "OPEN"
-    },
-    {
-      "id": "DEF-006",
-      "severity": "P1",
-      "status": "RESOLVED",
-      "summary": "S3 peripheral stops advertising after client disconnect; only hard reset recovers (2/2 repro); runtime serial events silent after boot",
-      "first_breakpoint": "Real-device E5 connect/disconnect cycle (NimBLE onDisconnect path or loop re-advertise)",
-      "impact": "E5 repeated-connection scenarios for all three client lines; serial event contract on S3",
-      "next_diagnostic": "heartbeat-in-loop build to discriminate loop hang vs advertise-restart failure; review NimBLE-Arduino 1.4.x + arduino-core pairing on S3",
-      "evidence": "verification/windows-mobile-v1/20260904-win-b1/e5-realdevice/def006/ (diag1-full-session.txt + f-series screenshots + ui dumps)",
-      "resolution": "2026-09-04 E5 retest (diag heartbeat build on COM12): firmware exonerated. With clean phone BT stack, full cycles verified: scan->connect->read x2->write->notify-subscribe->disconnect->re-advertise->reconnect. Disconnect->adv-restart intervals 510/514/515 ms across F-AND x2 and Windows x1 clients; advertising heartbeat adv:1 stable 2.5h+ (heap 284072-284184, no leak/reset). Earlier 'stops advertising after disconnect, only hard reset recovers' repro (2/2) was contaminated by phone-side BT stack stale state (zombie GATT from backgrounded app) plus Android scan throttling (empty rescans); after BT off/on cycle device reappears immediately. Reclassified: client-environment issue, no firmware defect. Serial-event 'silence' symptom likewise monitor-tooling artifact, not firmware: heartbeat + full event JSON stream captured in e5-realdevice/def006/diag1-full-session.txt."
-    },
-    {
-      "id": "DEF-007",
-      "severity": "P3",
-      "status": "OPEN",
-      "summary": "U-AND home bluetooth status line always shows 蓝牙已关闭 (uni.getSystemSetting().bluetoothEnabled unavailable on App platform)",
-      "first_breakpoint": "apps/uniapp/composables/use-ble-scan.js line ~38",
-      "impact": "Display only; scan/discovery verified working on real device",
-      "evidence": "u-and-scan-after-reset.png (device found while status shows off)"
-    },
-    {
-      "id": "DEF-009",
-      "severity": "P1",
-      "status": "OPEN",
-      "summary": "U-AND BLE reliability: Samsung SM-G9910 connect 0/2 silent failures (no connectGatt) + broadcast silently dead; Xiaomi 24117RK2CC same APK connect succeeds on 2nd attempt (1st fails silently). Timing race in uni-app App-side BLE (suspect connect while scan active / silent error swallowing); device-dependent trigger rate.",
-      "first_breakpoint": "apps/uniapp BLE connect implementation (uni-app runtime on Android); tap device card -> detail page auto-connect path",
-      "impact": "U-AND full peripheral round (connect/read/write/notify) and broadcast both blocked; root suspicion: uni-app App-side BLE plugin capability/permissions on this device/runtime",
-      "evidence": "e5-realdevice/u1-u7 (Samsung), e8-devicematrix/b-*.xml (Xiaomi: fail then success), e7-broadcast (broadcast), serial+logcat cross-checks"
-    },
-    {
-      "id": "DEF-010",
-      "severity": "P3",
-      "status": "OPEN",
-      "summary": "F-AND: subscribed characteristic shows Notifying state and 通知已启用 log, but received notification payload (37B delivered per serial << notify) is not displayed in characteristic row or operation log",
-      "first_breakpoint": "apps/flutter notify handling -> UI value/log rendering",
-      "impact": "Display only; firmware->phone notification delivery itself verified at stack level",
-      "evidence": "e5-realdevice/def006/ui-f14.xml/f14 dumps vs serial subscribe+notify lines (ts=8460201 window)"
-    },
-    {
-      "id": "DEF-011",
-      "severity": "P2",
-      "status": "OPEN",
-      "summary": "U-AND device detail: expanding a service shows zero characteristic rows (header toggles 展开/收起 but content area renders nothing, pixel-verified 0 non-background px)",
-      "first_breakpoint": "apps/uniapp device detail service expansion rendering",
-      "impact": "read/write/notify unreachable in U-AND UI even when connected",
-      "evidence": "e8-devicematrix/b-1800open.png + b-reexpand pixel scans (gap y1595-1735 = 0 px) + README"
-    },
-    {
-      "id": "DEF-012",
-      "severity": "P1",
-      "status": "OPEN",
-      "summary": "Electron desktop client: after connecting, characteristic discovery enters infinite error-retry loop (135k+ 'Characteristic discovery error' lines, servicesDiscovered respam every ~2ms with empty characteristics) -> main process busy, UI hangs, needs taskkill",
-      "first_breakpoint": "apps/desktop/electron/src/main/index.js characteristic discovery orchestration (~line 509 'already has characteristics' branch)",
-      "impact": "Windows self-developed client unusable beyond connect; noble backend itself proven fine headlessly (233ms connect, 5 svc/15 chars, read/write/subscribe all PASS with serial cross-check)",
-      "evidence": "e9-electron/ (noble-probe/noble-gatt PASS logs, electron-main-debug-excerpt.txt loop evidence, README)"
-    }
-  ],
-  "phase_a_artifacts": "MISSING on all hosts (flagged in report; Phase A belongs to the other machine per task book)",
-  "followups": [
-    {
-      "timestamp": "2026-09-04T10:05:00+08:00",
-      "git_head_at_fix": "6e9796f1548dfefad653aff961378be98a510041",
-      "scope": "uniapp toolchain: drop HBuilderX compile dependency (pure CLI)",
-      "mp_weixin_cli_build": {
-        "status": "PASS",
-        "command": "npm run build:mp-weixin",
-        "output": "unpackage/dist/build/mp-weixin (1344 KB)",
-        "app_js_sha256": "dac18c79d7dd58a07a09ee6e541646c8ac841a79b0f024aa06ddc8dc1db22468"
-      },
-      "app_cli_build": {
-        "status": "PASS",
-        "command": "npm run build:app",
-        "app_service_js_sha256": "37af1f1d071224ffee09d12876eb73685c5a46ba98f73714de575539a49b3ade"
-      },
-      "asset_gate": "PASS (16 source+compiled references)",
-      "verify_uniapp_sh_rerun": "PASS (28 unit files plus 11 static gates)",
-      "resolved_defects": [
-        "DEF-003"
-      ],
-      "evidence": "uniapp-cli-build.txt"
-    },
-    {
-      "timestamp": "2026-09-04T11:15:00+08:00",
-      "git_head_at_fix": "79dbc14",
-      "scope": "real-device round: PC x phone x ESP32 hardware",
-      "esp32_s3": {
-        "probe": "PASS (ESP32-S3 rev v0.2, 16MB quad, MAC 10:b4:1d:cd:23:8c, COM12)",
-        "build_peripheral_s3": "PASS (127s)",
-        "build_observer_s3": "PASS (105s)",
-        "flash": "PASS (583216B @0x10000, COM12 explicit)",
-        "serial_boot_adv": "PASS (boot json git_sha 79dbc14, adv started)",
-        "advertise_after_disconnect": "FAIL (DEF-006, 2/2)"
-      },
-      "f_and": {
-        "build_debug_apk": "PASS (sha256 078e2a36..c70a3)",
-        "install_grant_launch": "PASS",
-        "scan_finds_fixture": "PASS (BLEToolkit-Server -49dBm)",
-        "connect_read_device_info": "PASS (1.0.0/peripheral/MAC match)",
-        "rescan_after_disconnect": "FAIL x2 (0 devices; DEF-006)",
-        "recovery_by_reset": "PASS (-41dBm)"
-      },
-      "u_wx": {
-        "devtools_islogin": "PASS",
-        "cli_open": "PASS_WITH_LIMITATION (CLI GENERIC_ERROR stderr but window+simulator rendered)",
-        "preview_qr": "PASS (1.0MB pkg, QR saved)",
-        "phone_scan_preview": "NOT_RUN (needs human scan)"
-      },
-      "u_and": {
-        "cli_launch_app_android": "PASS (pure CLI, base install+sync+launch, App Launch/Show logs)",
-        "home_render": "PASS",
-        "scan_finds_fixture": "PASS (-49dBm after fixture reset)",
-        "bt_status_line": "FAIL (DEF-007 display only)"
-      },
-      "new_defects": [
-        "DEF-006",
-        "DEF-007"
-      ],
-      "resolved_defects": [
-        "DEF-001"
-      ],
-      "evidence": "verification/windows-mobile-v1/20260904-win-b1/e5-realdevice/README.md"
-    },
-    {
-      "timestamp": "2026-09-04T14:05:00+08:00",
-      "git_head_at_fix": "dbb38a8c2404b37cce4602db1f42b44eedae7e8d",
-      "scope": "real-device full round 2: F-AND complete cycle / U-AND connect defect / Windows host GATT round / DEF-006 resolution",
-      "esp32_s3": {
-        "diag_heartbeat_build": "PASS (DIAG_HEARTBEAT build on COM12; hb every 3s: conn/old/adv/heap)",
-        "f_and_full_cycle": "PASS: scan(-28dBm)->connect->read BEB5483E=30 5B CA 3F->read 2A00=BLEToolkit-Server->write hello-ble-toolkit(17B verified in serial setValue)->notify subscribe(attr 34, 37B delivered)->disconnect->adv restart 510ms->reconnect full chain",
-        "u_and": "FAIL at connect (DEF-009: no connectGatt, silent return to list); scan PASS(-41dBm)",
-        "windows_gatt_round": "PASS: csc WinRT scanner+connector; scan found BLEToolkit-Server -38dBm; connect, 5 services/15 chars discovered, read 2A00/2A01, write win-gatt-write Success (serial setValue length=14 hex match), dispose->disconnected->adv restart 515ms",
-        "advertise_after_disconnect": "PASS x3 (510/514/515 ms) -> DEF-006 RESOLVED as client-environment issue"
-      },
-      "new_defects": [
-        "DEF-009",
-        "DEF-010"
-      ],
-      "resolved_defects": [
-        "DEF-006"
-      ],
-      "evidence": "e5-realdevice/def006/ + e6-windows/"
-    },
-    {
-      "timestamp": "2026-09-04T14:20:00+08:00",
-      "git_head_at_fix": "5f2ec43",
-      "scope": "windows-observes-android-broadcast round (e7)",
-      "f_and_broadcast": "PASS: Windows BleAdvDump captured phone adv 4237044C3D48 name=[耀生 的 S21] conn=1 uuids=0000fff0 rssi=-58/-59 during 正在广播; absent in 15s baseline before and 20s scan after stop (371 events)",
-      "u_and_broadcast": "FAIL (DEF-009 scope extended): UI 正在广播 but zero advertising API calls in logcat and no phone advertisement on air (Windows verified)",
-      "windows_tooling": "BleAdvDump.cs (csc+WinRT): full adv payload parser (name/uuids/mfr-data/connectable/rssi); exe not committed (build artifact)",
-      "evidence": "verification/windows-mobile-v1/20260904-win-b1/e7-broadcast/"
-    },
-    {
-      "timestamp": "2026-09-04T15:15:00+08:00",
-      "git_head_at_fix": "bacfaeb",
-      "scope": "second-phone device matrix (e8) + self-developed Windows Electron client (e9)",
-      "device_matrix": {
-        "phone_b": "Xiaomi 24117RK2CC (50143338), U-AND APK pulled from phone A and installed",
-        "u_and_on_b": "scan PASS (-41dBm); connect attempt1 silent fail, attempt2 PASS (serial full chain, 5 services); disconnect -> 521ms re-advertise; DEF-009 refined to device-dependent race",
-        "u_and_char_rows": "FAIL -> DEF-011 (expansion renders 0 px of characteristic rows); read/write/notify NOT_RUN"
-      },
-      "electron_windows_client": {
-        "backend_headless": "PASS: noble probe scan finds ESP32; GATT round connect 233ms, 5 svc/15 chars, read 2A00=BLEToolkit-Server, write noble-gatt-write (16B serial hex match), subscribe attr42 confirmed, disconnect",
-        "app_real_ui": "launch+scan+connect PASS via CDP (7 devices, cards in shadow DOM, connect click -> serial chain ts=13063804); after connect FAIL -> DEF-012 discovery infinite loop, app hung",
-        "tauri": "NOT_RUN (no Rust toolchain on host)"
-      },
-      "new_defects": [
-        "DEF-011",
-        "DEF-012"
-      ],
-      "evidence": "e8-devicematrix/ + e9-electron/"
-    }
-  ],
-  "secrets_in_report": "none"
+  "uniautomator_pages": {
+   "status": "BLOCKED",
+   "reason": "HBuilderX 5.24.2026081301 CLI has no 'uniapp.test' command",
+   "defect": "DEF-002"
+  },
+  "mp_weixin_compile": {
+   "status": "BLOCKED_IIFE",
+   "reason": "rollup manualChunks vs inlineDynamicImports (compiler 5.24 vue3)",
+   "defect": "DEF-003"
+  },
+  "android_compile_probe": {
+   "status": "PASS",
+   "result": "COMPILE_OK",
+   "artifact": "apps/uniapp/unpackage/dist/dev/app-plus/app-service.js",
+   "sha256": "f053b85a89df7c714867ca385ad1bbe08be89c7b5256b4420ca16a635364d6af"
+  },
+  "wechat_phone_preview": "NOT_RUN",
+  "uniapp_android_device_run": "NOT_RUN",
+  "check_env": {
+   "status": "READY",
+   "physical_devices": 1,
+   "serial_available": true
+  }
+ },
+ "flutter": {
+  "pub_get": "PASS",
+  "format_check": {
+   "status": "FAIL",
+   "changed_of": "20/32",
+   "defect": "DEF-004"
+  },
+  "analyze": "PASS",
+  "test": {
+   "status": "PASS",
+   "tests": 11
+  },
+  "build_apk_debug": {
+   "status": "PASS",
+   "gradle_seconds": 340.9,
+   "path": "apps/flutter/build/app/outputs/flutter-apk/app-debug.apk",
+   "bytes": 185569910,
+   "sha256": "0339b5a147645c67066092d6396994233dadaa358d8bdfb846010cdb41851f4d"
+  },
+  "flutter_run_device": "NOT_RUN",
+  "gap_audit": "docs/specs/06_review/FLUTTER_PRODUCT_GAP_AUDIT.md",
+  "reuse_matrix": "docs/specs/08_development/FLUTTER_REUSE_MATRIX.md"
+ },
+ "esp32": {
+  "build_peripheral": {
+   "status": "SUCCESS",
+   "duration": "00:02:17.882",
+   "firmware_sha256": "6c64edbf6cca8ff30e7de595b93e591a6e1fedc94a79fd1886d3a8cb31b89b2b"
+  },
+  "build_observer": {
+   "status": "SUCCESS",
+   "duration": "00:01:49.161",
+   "firmware_sha256": "82487ec8c3f970216c7b53088d7dc09f11929932f95bdc27bb5cb1372648e378"
+  },
+  "device_list": {
+   "COM12": "CH343 bridge (ESP32 board)",
+   "COM4": "phone ADB composite"
+  },
+  "upload_peripheral_com12": {
+   "status": "FAIL",
+   "error": "This chip is ESP32-S3 not ESP32. Wrong --chip argument?",
+   "defect": "DEF-001",
+   "first_breakpoint": "hardware/esp32/LightBLE/platformio.ini board=esp32dev vs physical ESP32-S3"
+  },
+  "monitor_boot_log": "NOT_RUN (upload failed)"
+ },
+ "toolchain_fixes": [
+  "apps/uniapp/env.js WECHAT_DEVTOOLS_CLI",
+  "scripts/e5/check-env.mjs windows support",
+  "scripts/verify-uniapp.sh TS-capable node resolution",
+  "scripts/verify-uniapp-pages.sh + build-android-test.sh CLI discovery; ps1 wrappers",
+  "CRLF normalization: check-smart-hid-contract.mjs / bump-smart-hid-lock.mjs / generate-release-metadata.mjs + .gitattributes eol=lf pinning",
+  "scripts/check-uniapp-sfc.mjs cross-platform compiler-sfc discovery"
+ ],
+ "defects": [
+  {
+   "id": "DEF-001",
+   "severity": "P1",
+   "summary": "Board is ESP32-S3 but firmware targets esp32dev; upload fails",
+   "status": "RESOLVED",
+   "resolution": "2026-09-04 E5 round: physical board verified ESP32-S3 rev v0.2 / 16MB quad flash via esptool flash_id on COM12. Added fixture_common_s3 + fixture_peripheral_s3 + fixture_observer_s3 to platformio.ini (board=esp32-s3-devkitc-1, flash 16MB, dropped -mfix-esp32-psram-cache-issue & BOARD_HAS_PSRAM; original esp32dev envs untouched). Flashed peripheral_s3 to COM12 (explicit discovered port), boot JSON + 3 services/12 characteristics + advertising verified on serial. DEVICE_HARDWARE still reports contract constant esp32-wroom-32 (physical deviation recorded). New runtime defect DEF-006 filed separately."
+  },
+  {
+   "id": "DEF-002",
+   "severity": "P2",
+   "summary": "HBuilderX 5.24 CLI removed uniapp.test; UniAutomator page tests blocked",
+   "status": "OPEN"
+  },
+  {
+   "id": "DEF-003",
+   "severity": "P2",
+   "summary": "mp-weixin compile rollup manualChunks/inlineDynamicImports incompatible",
+   "status": "RESOLVED",
+   "resolution": "2026-09-04 followup: pure-CLI build (@dcloudio vite toolchain 3.0.0-alpha-5020520260829001) + vite.config inline patch scoped to APP platforms; evidence: uniapp-cli-build.txt"
+  },
+  {
+   "id": "DEF-004",
+   "severity": "P3",
+   "summary": "20/32 flutter files deviate from dart format",
+   "status": "OPEN"
+  },
+  {
+   "id": "DEF-005",
+   "severity": "P3",
+   "summary": "flutter doctor: cmdline-tools missing, licenses unaccepted",
+   "status": "OPEN"
+  },
+  {
+   "id": "DEF-006",
+   "severity": "P1",
+   "status": "RESOLVED",
+   "summary": "S3 peripheral stops advertising after client disconnect; only hard reset recovers (2/2 repro); runtime serial events silent after boot",
+   "first_breakpoint": "Real-device E5 connect/disconnect cycle (NimBLE onDisconnect path or loop re-advertise)",
+   "impact": "E5 repeated-connection scenarios for all three client lines; serial event contract on S3",
+   "next_diagnostic": "heartbeat-in-loop build to discriminate loop hang vs advertise-restart failure; review NimBLE-Arduino 1.4.x + arduino-core pairing on S3",
+   "evidence": "verification/windows-mobile-v1/20260904-win-b1/e5-realdevice/def006/ (diag1-full-session.txt + f-series screenshots + ui dumps)",
+   "resolution": "2026-09-04 E5 retest (diag heartbeat build on COM12): firmware exonerated. With clean phone BT stack, full cycles verified: scan->connect->read x2->write->notify-subscribe->disconnect->re-advertise->reconnect. Disconnect->adv-restart intervals 510/514/515 ms across F-AND x2 and Windows x1 clients; advertising heartbeat adv:1 stable 2.5h+ (heap 284072-284184, no leak/reset). Earlier 'stops advertising after disconnect, only hard reset recovers' repro (2/2) was contaminated by phone-side BT stack stale state (zombie GATT from backgrounded app) plus Android scan throttling (empty rescans); after BT off/on cycle device reappears immediately. Reclassified: client-environment issue, no firmware defect. Serial-event 'silence' symptom likewise monitor-tooling artifact, not firmware: heartbeat + full event JSON stream captured in e5-realdevice/def006/diag1-full-session.txt."
+  },
+  {
+   "id": "DEF-007",
+   "severity": "P3",
+   "status": "OPEN",
+   "summary": "U-AND home bluetooth status line always shows 蓝牙已关闭 (uni.getSystemSetting().bluetoothEnabled unavailable on App platform)",
+   "first_breakpoint": "apps/uniapp/composables/use-ble-scan.js line ~38",
+   "impact": "Display only; scan/discovery verified working on real device",
+   "evidence": "u-and-scan-after-reset.png (device found while status shows off)"
+  },
+  {
+   "id": "DEF-009",
+   "severity": "P1",
+   "status": "OPEN",
+   "summary": "U-AND BLE reliability: Samsung SM-G9910 connect 0/2 silent failures (no connectGatt) + broadcast silently dead (zero native advertiser calls); Xiaomi 24117RK2CC same APK connect succeeds on 2nd attempt AND broadcast works natively (startAdvertisingSet status=0, on-air via Windows anchor, discovered by phone-A F-AND scan, e10 T3). CONFIRMED device-dependent: not a U-AND-code-always-broken issue; Samsung runtime path still fails silently.",
+   "first_breakpoint": "apps/uniapp BLE connect implementation (uni-app runtime on Android); tap device card -> detail page auto-connect path",
+   "impact": "U-AND full peripheral round (connect/read/write/notify) and broadcast both blocked; root suspicion: uni-app App-side BLE plugin capability/permissions on this device/runtime",
+   "evidence": "e5-realdevice/u1-u7 (Samsung), e8-devicematrix/b-*.xml (Xiaomi: fail then success), e7-broadcast (broadcast), serial+logcat cross-checks, e10-phonecross T3 (Xiaomi U-AND broadcast native PASS: startAdvertisingSet reg_id=-6 status=0 + 75B055B8985B on-air + a-u-scroll1.xml)"
+  },
+  {
+   "id": "DEF-010",
+   "severity": "P3",
+   "status": "OPEN",
+   "summary": "F-AND: subscribed characteristic shows Notifying state and 通知已启用 log, but received notification payload (37B delivered per serial << notify) is not displayed in characteristic row or operation log",
+   "first_breakpoint": "apps/flutter notify handling -> UI value/log rendering",
+   "impact": "Display only; firmware->phone notification delivery itself verified at stack level",
+   "evidence": "e5-realdevice/def006/ui-f14.xml/f14 dumps vs serial subscribe+notify lines (ts=8460201 window)"
+  },
+  {
+   "id": "DEF-011",
+   "severity": "P2",
+   "status": "OPEN",
+   "summary": "U-AND device detail: expanding a service shows zero characteristic rows (header toggles 展开/收起 but content area renders nothing, pixel-verified 0 non-background px)",
+   "first_breakpoint": "apps/uniapp device detail service expansion rendering",
+   "impact": "read/write/notify unreachable in U-AND UI even when connected",
+   "evidence": "e8-devicematrix/b-1800open.png + b-reexpand pixel scans (gap y1595-1735 = 0 px) + README"
+  },
+  {
+   "id": "DEF-012",
+   "severity": "P1",
+   "status": "OPEN",
+   "summary": "Electron desktop client: after connecting, characteristic discovery enters infinite error-retry loop (135k+ 'Characteristic discovery error' lines, servicesDiscovered respam every ~2ms with empty characteristics) -> main process busy, UI hangs, needs taskkill",
+   "first_breakpoint": "apps/desktop/electron/src/main/index.js characteristic discovery orchestration (~line 509 'already has characteristics' branch)",
+   "impact": "Windows self-developed client unusable beyond connect; noble backend itself proven fine headlessly (233ms connect, 5 svc/15 chars, read/write/subscribe all PASS with serial cross-check)",
+   "evidence": "e9-electron/ (noble-probe/noble-gatt PASS logs, electron-main-debug-excerpt.txt loop evidence, README)"
+  },
+  {
+   "id": "DEF-013",
+   "severity": "P1",
+   "status": "OPEN",
+   "summary": "F-AND (all platforms, app code): after the first scan completes via the default 5s timeout, every subsequent startScan() silently no-ops. BleManager._isScanning is set true on start and only reset in manual stopScan()/catch; FlutterBluePlus timeout auto-stop never resets it (no isScanning listener). Page-level scanningProvider still flips, so UI shows a 'scan' that does nothing; list/RSSI stay byte-identical. Recovery only by app restart or tapping stop inside the 5s window.",
+   "first_breakpoint": "apps/flutter/lib/core/ble/ble_manager.dart:218 (if (_isScanning) return;), :220 (_isScanning = true), :253 (manual reset only); page button state decoupled at apps/flutter/lib/ui/pages/device_list_page.dart scanningProvider",
+   "impact": "Core scan feature breaks after first use per app launch; any test or user flow requiring a second scan silently returns stale results",
+   "evidence": "e10-phonecross/b-scan-live*.xml byte-identical across scans with unchanged RSSI; FBP logcat has no startScan during those button flips; fresh relaunch scan immediately repopulates (b-scan-live4.xml 10 devices incl phone-A)"
+  },
+  {
+   "id": "DEF-014",
+   "severity": "P2",
+   "status": "OPEN",
+   "summary": "Xiaomi 24117RK2CC (HyperOS) only: F-AND stop-broadcast leaves the advertisement on-air. App UI shows stopped, native stack logs stopAdvertisingSet -> onAdvertisingSetStopped (status ok), yet Windows anchor keeps receiving the same name/FFF0/connectable frames >=5 minutes later, with RPA address still rotating (4EFD->4DE4). am force-stop of the app does not clear it; only svc bluetooth disable/enable does. Samsung SM-G9910 same APK stops instantly (0 frames within 10s).",
+   "first_breakpoint": "Xiaomi Bluetooth stack advertising-set teardown (system level); app-side stop call verified delivered via logcat; not reproducible in app code alone",
+   "impact": "Phone keeps advertising phone name after user stops broadcast (privacy/battery); any subsequent phone-to-phone test on this device inherits stale advertisement unless BT is toggled",
+   "evidence": "e10-phonecross README T2 section: stop logcat excerpt + 3 Windows anchors (12-20 frames) after native stop + force-stop ineffective + BT toggle clears"
+  }
+ ],
+ "phase_a_artifacts": "MISSING on all hosts (flagged in report; Phase A belongs to the other machine per task book)",
+ "followups": [
+  {
+   "timestamp": "2026-09-04T10:05:00+08:00",
+   "git_head_at_fix": "6e9796f1548dfefad653aff961378be98a510041",
+   "scope": "uniapp toolchain: drop HBuilderX compile dependency (pure CLI)",
+   "mp_weixin_cli_build": {
+    "status": "PASS",
+    "command": "npm run build:mp-weixin",
+    "output": "unpackage/dist/build/mp-weixin (1344 KB)",
+    "app_js_sha256": "dac18c79d7dd58a07a09ee6e541646c8ac841a79b0f024aa06ddc8dc1db22468"
+   },
+   "app_cli_build": {
+    "status": "PASS",
+    "command": "npm run build:app",
+    "app_service_js_sha256": "37af1f1d071224ffee09d12876eb73685c5a46ba98f73714de575539a49b3ade"
+   },
+   "asset_gate": "PASS (16 source+compiled references)",
+   "verify_uniapp_sh_rerun": "PASS (28 unit files plus 11 static gates)",
+   "resolved_defects": [
+    "DEF-003"
+   ],
+   "evidence": "uniapp-cli-build.txt"
+  },
+  {
+   "timestamp": "2026-09-04T11:15:00+08:00",
+   "git_head_at_fix": "79dbc14",
+   "scope": "real-device round: PC x phone x ESP32 hardware",
+   "esp32_s3": {
+    "probe": "PASS (ESP32-S3 rev v0.2, 16MB quad, MAC 10:b4:1d:cd:23:8c, COM12)",
+    "build_peripheral_s3": "PASS (127s)",
+    "build_observer_s3": "PASS (105s)",
+    "flash": "PASS (583216B @0x10000, COM12 explicit)",
+    "serial_boot_adv": "PASS (boot json git_sha 79dbc14, adv started)",
+    "advertise_after_disconnect": "FAIL (DEF-006, 2/2)"
+   },
+   "f_and": {
+    "build_debug_apk": "PASS (sha256 078e2a36..c70a3)",
+    "install_grant_launch": "PASS",
+    "scan_finds_fixture": "PASS (BLEToolkit-Server -49dBm)",
+    "connect_read_device_info": "PASS (1.0.0/peripheral/MAC match)",
+    "rescan_after_disconnect": "FAIL x2 (0 devices; DEF-006)",
+    "recovery_by_reset": "PASS (-41dBm)"
+   },
+   "u_wx": {
+    "devtools_islogin": "PASS",
+    "cli_open": "PASS_WITH_LIMITATION (CLI GENERIC_ERROR stderr but window+simulator rendered)",
+    "preview_qr": "PASS (1.0MB pkg, QR saved)",
+    "phone_scan_preview": "NOT_RUN (needs human scan)"
+   },
+   "u_and": {
+    "cli_launch_app_android": "PASS (pure CLI, base install+sync+launch, App Launch/Show logs)",
+    "home_render": "PASS",
+    "scan_finds_fixture": "PASS (-49dBm after fixture reset)",
+    "bt_status_line": "FAIL (DEF-007 display only)"
+   },
+   "new_defects": [
+    "DEF-006",
+    "DEF-007"
+   ],
+   "resolved_defects": [
+    "DEF-001"
+   ],
+   "evidence": "verification/windows-mobile-v1/20260904-win-b1/e5-realdevice/README.md"
+  },
+  {
+   "timestamp": "2026-09-04T14:05:00+08:00",
+   "git_head_at_fix": "dbb38a8c2404b37cce4602db1f42b44eedae7e8d",
+   "scope": "real-device full round 2: F-AND complete cycle / U-AND connect defect / Windows host GATT round / DEF-006 resolution",
+   "esp32_s3": {
+    "diag_heartbeat_build": "PASS (DIAG_HEARTBEAT build on COM12; hb every 3s: conn/old/adv/heap)",
+    "f_and_full_cycle": "PASS: scan(-28dBm)->connect->read BEB5483E=30 5B CA 3F->read 2A00=BLEToolkit-Server->write hello-ble-toolkit(17B verified in serial setValue)->notify subscribe(attr 34, 37B delivered)->disconnect->adv restart 510ms->reconnect full chain",
+    "u_and": "FAIL at connect (DEF-009: no connectGatt, silent return to list); scan PASS(-41dBm)",
+    "windows_gatt_round": "PASS: csc WinRT scanner+connector; scan found BLEToolkit-Server -38dBm; connect, 5 services/15 chars discovered, read 2A00/2A01, write win-gatt-write Success (serial setValue length=14 hex match), dispose->disconnected->adv restart 515ms",
+    "advertise_after_disconnect": "PASS x3 (510/514/515 ms) -> DEF-006 RESOLVED as client-environment issue"
+   },
+   "new_defects": [
+    "DEF-009",
+    "DEF-010"
+   ],
+   "resolved_defects": [
+    "DEF-006"
+   ],
+   "evidence": "e5-realdevice/def006/ + e6-windows/"
+  },
+  {
+   "timestamp": "2026-09-04T14:20:00+08:00",
+   "git_head_at_fix": "5f2ec43",
+   "scope": "windows-observes-android-broadcast round (e7)",
+   "f_and_broadcast": "PASS: Windows BleAdvDump captured phone adv 4237044C3D48 name=[耀生 的 S21] conn=1 uuids=0000fff0 rssi=-58/-59 during 正在广播; absent in 15s baseline before and 20s scan after stop (371 events)",
+   "u_and_broadcast": "FAIL (DEF-009 scope extended): UI 正在广播 but zero advertising API calls in logcat and no phone advertisement on air (Windows verified)",
+   "windows_tooling": "BleAdvDump.cs (csc+WinRT): full adv payload parser (name/uuids/mfr-data/connectable/rssi); exe not committed (build artifact)",
+   "evidence": "verification/windows-mobile-v1/20260904-win-b1/e7-broadcast/"
+  },
+  {
+   "timestamp": "2026-09-04T15:15:00+08:00",
+   "git_head_at_fix": "bacfaeb",
+   "scope": "second-phone device matrix (e8) + self-developed Windows Electron client (e9)",
+   "device_matrix": {
+    "phone_b": "Xiaomi 24117RK2CC (50143338), U-AND APK pulled from phone A and installed",
+    "u_and_on_b": "scan PASS (-41dBm); connect attempt1 silent fail, attempt2 PASS (serial full chain, 5 services); disconnect -> 521ms re-advertise; DEF-009 refined to device-dependent race",
+    "u_and_char_rows": "FAIL -> DEF-011 (expansion renders 0 px of characteristic rows); read/write/notify NOT_RUN"
+   },
+   "electron_windows_client": {
+    "backend_headless": "PASS: noble probe scan finds ESP32; GATT round connect 233ms, 5 svc/15 chars, read 2A00=BLEToolkit-Server, write noble-gatt-write (16B serial hex match), subscribe attr42 confirmed, disconnect",
+    "app_real_ui": "launch+scan+connect PASS via CDP (7 devices, cards in shadow DOM, connect click -> serial chain ts=13063804); after connect FAIL -> DEF-012 discovery infinite loop, app hung",
+    "tauri": "NOT_RUN (no Rust toolchain on host)"
+   },
+   "new_defects": [
+    "DEF-011",
+    "DEF-012"
+   ],
+   "evidence": "e8-devicematrix/ + e9-electron/"
+  }
+ ],
+ "secrets_in_report": "none"
 }
