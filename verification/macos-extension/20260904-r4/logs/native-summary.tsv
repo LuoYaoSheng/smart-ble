@@ -1,0 +1,27 @@
+NVB-01	PASS	swift build
+NVB-02	PASS	app run, central+peripheral poweredOn
+NVC-01	PASS	env poweredOn x2
+NVC-02	PASS	scan real devices
+NVC-03	PASS	advertise API
+NVC-04	BLOCKED_FIXTURE	gatt client chain needs a connectable fixture
+NVC-05	BLOCKED_OBSERVER	advertise visibility needs a second endpoint (phone/esp32)
+UIS-00	PASS	page smoke exit=0
+UIS-01	PASS	page smoke (prototype-aligned shell)
+UIS-02	PASS	page smoke (prototype-aligned shell)
+UIS-03	PASS	page smoke (prototype-aligned shell)
+UIS-04	PASS	page smoke (prototype-aligned shell)
+UIS-05	PASS	page smoke (prototype-aligned shell)
+UIS-06	PASS	page smoke (prototype-aligned shell)
+UIS-07	PASS	page smoke (prototype-aligned shell)
+UIS-08	PASS	page smoke (prototype-aligned shell)
+UIS-09	PASS	page smoke (prototype-aligned shell)
+UIS-10	PASS	page smoke (prototype-aligned shell)
+UIS-11	PASS	page smoke (prototype-aligned shell)
+UIS-12	PASS	page smoke (prototype-aligned shell)
+UIS-13	PASS	page smoke (prototype-aligned shell)
+UIS-14	PASS	9/9 page snapshots rendered
+NVP-01	PASS	app bundle assembled + ad-hoc signed
+NVP-02	PASS	spctl rejected as expected (ad-hoc 未公证；正式分发需 Developer ID + notarization → 无 Apple 账号 NOT_RUN)
+NVP-03	PASS	bundled binary boots, central+peripheral poweredOn (TCC 归因父终端)
+NVS-01	PASS	soak 12 rounds auto-stop
+NVS-02	PASS	log cap + memory assertions passed

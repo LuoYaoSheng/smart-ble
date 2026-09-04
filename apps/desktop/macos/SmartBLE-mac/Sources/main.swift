@@ -35,6 +35,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         // 页面级自动化冒烟（仅 --smoke-pages 启动时生效）
         PageSmoke.runIfRequested()
+
+        // 扫描压力稳定性（仅 --soak-scans=N 启动时生效）
+        SoakRunner.runIfRequested()
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {

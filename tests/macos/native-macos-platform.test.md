@@ -56,3 +56,22 @@ r3 起 UI 按 `docs/specs/prototype/platform/desktop/`（四 Tab + 9 页 + 桌�
 | UIS-14 | 页面快照 | --snap-pages 9/9 页 cacheDisplay PNG（验证脚本 step 5） |
 
 WriteDialog 写入弹窗经 P006 写入按钮真实打开（TEXT/HEX 校验）；服务树特征读写同 NVC-04 BLOCKED_FIXTURE。
+
+## r4 用例：交付形态 + 真实交互 + 稳定性（2026-09-04）
+
+入口分三路：
+- `scripts/macos/verify-native-macos.sh` step 6（NVP-01..03 / NVS-01..02，脚本化）
+- `scripts/macos/make-app-bundle.sh [--omit-bt-usage]`（bundle 产物与 NoBT 负向对照）
+- 宿主 AX 工具真实点击走查（NVR-01..11，见 `verification/macos-extension/20260904-r4/walkthrough.md`）
+
+| ID | 步骤 | 判定 |
+| --- | --- | --- |
+| NVP-01 | SPM 产物 → .app bundle | 复用仓库 Info.plist（含 NSBluetoothAlwaysUsageDescription）+ ad-hoc 签名 strict 校验通过 |
+| NVP-02 | Gatekeeper 评估 | spctl rejected（ad-hoc 未公证，预期拒绝）；Developer ID + notarization 需 Apple 账号 → NOT_RUN |
+| NVP-03 | bundle 二进制直跑 | 双管理器上电（蓝牙已开启/外围模式已就绪）；TCC 归因父终端，不弹 bundle 授权框（平台事实） |
+| NVP-04 | 缺声明负向对照 | NoBT 变体直跑不崩溃、蓝牙照常上电（macOS ≠ iOS 强制崩溃；Finder/Dock 启动的弹框路径未演练，诚实登记） |
+| NVR-01..11 | 真实点击走查 | AX 事件驱动全链：开始扫描→5s 自动停止→5 台真实设备卡；筛选预设/滑杆步进/隐藏无名开关/重置；Tab 四页切换；P008 检查支持+广播启停（表单禁用/恢复）；P009 promo sheet；退出确认双路径（继续使用留存 / 退出进程终止） |
+| NVS-01 | 扫描压力 | `--soak-scans=12`：12 轮真实 5s 会话全部自动停止（每轮发现 3-8 台真实设备） |
+| NVS-02 | 稳定性断言 | 日志条数 ≤500（实测 83）；驻留内存增量 <64MB（实测 -3.1MB，无泄漏迹象） |
+
+约束重申：NVP 全程仅 ad-hoc 签名，不涉及证书私钥 / Apple 账号 / 公证；NVR 中设备卡点击（弹 F004 广播详情）与 P009 操作系统行菜单因自绘视图无 AX press 动作、且宿主无屏幕录制权限无法坐标点击 → NOT_RUN（r3 冒烟 UIS-05/UIS-10 已程序化覆盖）。

@@ -78,6 +78,39 @@ else
   record UIS-14 FAIL "expected 9 snapshots, got $SNAP_COUNT (see pages-snap.log)"
 fi
 
+step "6. r4 交付形态与稳定性（bundle + soak）"
+bash "$REPO_ROOT/scripts/macos/make-app-bundle.sh" --omit-bt-usage > "$LOGDIR/bundle.log" 2>&1 \
+  && record NVP-01 PASS "app bundle assembled + ad-hoc signed" \
+  || { record NVP-01 FAIL "bundle script"; cat "$LOGDIR/bundle.log"; }
+if grep -q "spctl: rejected" "$LOGDIR/bundle.log"; then
+  record NVP-02 PASS "spctl rejected as expected (ad-hoc 未公证；正式分发需 Developer ID + notarization → 无 Apple 账号 NOT_RUN)"
+else
+  record NVP-02 FAIL "spctl outcome unexpected (see bundle.log)"
+fi
+BUNDLE_BIN="$REPO_ROOT/apps/desktop/macos/dist/SmartBLE-macOS.app/Contents/MacOS/SmartBLE-mac"
+("$BUNDLE_BIN" > "$LOGDIR/bundle-run.log" 2>&1 & BP=$!
+ sleep 8; kill -TERM "$BP" 2>/dev/null; wait "$BP" 2>/dev/null || true)
+if grep -q "蓝牙已开启" "$LOGDIR/bundle-run.log" && grep -q "外围模式已就绪" "$LOGDIR/bundle-run.log"; then
+  record NVP-03 PASS "bundled binary boots, central+peripheral poweredOn (TCC 归因父终端)"
+else
+  record NVP-03 FAIL "bundled binary run (see bundle-run.log)"
+fi
+# 扫描压力：12 轮真实 5s 会话 + 日志上限 + 内存增量断言（约 100s）
+SOAK_EXIT=0
+"$APP/.build/debug/SmartBLE-mac" --soak-scans=12 > "$LOGDIR/soak.log" 2>&1 || SOAK_EXIT=$?
+if [ "$SOAK_EXIT" -eq 0 ] && grep -q 'result=PASS detail="全部 12 轮完成' "$LOGDIR/soak.log"; then
+  record NVS-01 PASS "soak 12 rounds auto-stop"
+else
+  record NVS-01 FAIL "soak rounds (exit=$SOAK_EXIT, see soak.log)"
+fi
+if grep -q '日志条数不超上限' "$LOGDIR/soak.log" && grep -q '驻留内存增量' "$LOGDIR/soak.log"; then
+  record NVS-02 PASS "log cap + memory assertions passed"
+else
+  record NVS-02 FAIL "soak assertions missing (see soak.log)"
+fi
+# 真实点击走查（NVR-*）经宿主 AX 工具驱动，无法脚本化复现；结果见 r4 证据目录
+echo "NVR walkthrough: 已由宿主 AX 工具单独执行（非脚本步骤），见 verification/macos-extension/20260904-r4/walkthrough.md"
+
 step "汇总"
 cat "$LOGDIR/native-summary.tsv"
 echo "logs: $LOGDIR"
