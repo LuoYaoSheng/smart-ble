@@ -1,0 +1,40 @@
+{
+  "run_id": "20260904-r3",
+  "date": "2026-09-04",
+  "scope": "prototype-alignment",
+  "trigger": "user walkthrough feedback: pages must follow the platform prototype (docs/specs/prototype/platform/desktop)",
+  "changes": [
+    "Native SmartBLE-mac UI fully rewritten to prototype-aligned shell: 4-tab TabBar + 9-page set (P001-P010, no P004) + router semantics (switchTab/go/back/redirect/smartGo)",
+    "Design tokens mapped 1:1 from prototype tokens.css (colors/fonts/4-based spacing/radii)",
+    "Desktop differentiators landed: P006 two-column, P002 pairing paste-fallback (camera NOT_RUN), P008 OS badge + native-layer note, P009 OS row + eco matrix card, exit confirmation with session-aware copy, log export copy+candidate-intercept, promo landing page",
+    "BLEManager extended: advertisement capture (F004), name fallback chain (F005), six-color logs, 10s connect timeout + 3x backoff retry, btState publishing, peripheral support check",
+    "PageSmoke rewritten: UIS-01..13 (+ UIS-14 snapshots in verify script); --snap-pages renders 9 pages to PNG via cacheDisplay (no screen-recording permission needed)",
+    "Old invented UI (split-view + toolbar, 3 panes, English copy) deleted along with r2 UIS-01..07 cases"
+  ],
+  "results": {
+    "NVB-01": "PASS", "NVB-02": "PASS",
+    "NVC-01": "PASS", "NVC-02": "PASS", "NVC-03": "PASS",
+    "NVC-04": "BLOCKED_FIXTURE", "NVC-05": "BLOCKED_OBSERVER",
+    "UIS-00": "PASS", "UIS-01": "PASS", "UIS-02": "PASS", "UIS-03": "PASS",
+    "UIS-04": "PASS", "UIS-05": "PASS", "UIS-06": "PASS", "UIS-07": "PASS",
+    "UIS-08": "PASS", "UIS-09": "PASS", "UIS-10": "PASS", "UIS-11": "PASS",
+    "UIS-12": "PASS", "UIS-13": "PASS", "UIS-14": "PASS"
+  },
+  "environment": {
+    "bluetooth": "poweredOn (real scan found 3-4 devices this run)",
+    "real_actions": ["5s scan session auto-stop", "device card adv-dialog", "connect attempt into P006 (10s timeout path)", "CBPeripheralManager support check = ready", "31B budget calc: default 21B -> injected 46B over-limit blocked -> restored"]
+  },
+  "honest_divergences": [
+    "P009 OS switch is informational only (real host macOS); prototype 3-OS switching is a review-stage demo device",
+    "P002 camera QR scan NOT_RUN (explicitly labeled in sheet); paste/manual fallback is the working path",
+    "P007 single connection (multi-session is shared-layer capability, S9)",
+    "P003 snapshot state / P005 protocol rows / P006 positive GATT chain require SHID fixture (BLOCKED_FIXTURE)"
+  ],
+  "visual_verification": {
+    "method": "--snap-pages cacheDisplay PNG + AI visual review",
+    "pages_checked": ["p001", "p006", "p008", "p009"],
+    "verdict": "structure/copy/colors match prototype blocks; no overlap/truncation anomalies"
+  },
+  "for_windows_gate": ["S8 Flutter macOS desktop-adaptation plan", "S9 multi-device sessions", "S10 OS-dimension real-host policy"],
+  "conclusion": "VIABLE_WITH_LIMITATIONS (UI layer now prototype-aligned; BLE positive chains still gated on fixtures/observer as r1/r2)"
+}

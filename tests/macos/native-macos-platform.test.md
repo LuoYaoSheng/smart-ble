@@ -32,23 +32,27 @@ scripts/macos/verify-native-macos.sh <run-id>
 
 同 flutter 侧 P1（同机广播回送过滤）——两条路线共用同一 CoreBluetooth 底座，边界一致。
 
-## 页面级冒烟用例（r2 新增，UIS-*）
+## 页面级冒烟用例（r3 重写：原型对齐壳，UIS-*）
 
-入口：`scripts/macos/verify-native-macos.sh` step 4（`SmartBLE-mac --smoke-pages`）。
-不依赖屏幕权限：程序化触发真实 action/委托，从控件状态读回判定。
+入口：`scripts/macos/verify-native-macos.sh` step 4（`SmartBLE-mac --smoke-pages`）+ step 5（`--snap-pages` 快照证据）。
+不依赖屏幕权限：程序化触发真实 action/路由/委托，从控件状态读回判定。
+r3 起 UI 按 `docs/specs/prototype/platform/desktop/`（四 Tab + 9 页 + 桌面差异点）对齐重建，旧三分栏用例（r2 UIS-01..07）随旧 UI 一并退役。
 
 | ID | 步骤 | 判定 |
 | --- | --- | --- |
-| UIS-01 | 三页装配 | 窗口可见且 FilterPanel/NSTableView/ServicePanel/LogPanel 均挂载 |
-| UIS-02 | 真实点击 Start Scan | 按钮变 Stop Scan、状态 Scanning...、manager.isScanning=true |
-| UIS-03 | 5s 自动停止 | 按钮复位 Start Scan、状态 Ready |
-| UIS-04a | 过滤面板切换 | filterPanel.isHidden == false |
-| UIS-04b | RSSI 预设 -70 | manager.filterRSSI == -70 |
-| UIS-04c | 隐藏无名 checkbox | manager.hideNoNameDevices == true |
-| UIS-04d | Reset | 过滤器全部还原 |
-| UIS-05 | 表格选中第 0 行 | 日志出现 `Connecting to` 且状态进入 connecting（环境无设备时 SKIP） |
-| UIS-06a | 日志页绑定 | 计数标签与 manager.logs 条数一致且 LogPanel 有内容 |
-| UIS-06b | 真实点击 Clear | logs 空、标签 0 entries、面板清空 |
-| UIS-07 | 工具栏 | 三项标识齐全且 logs 动作可派发 |
+| UIS-01 | 壳装配 | 窗口标题 BLE Toolkit+；四 Tab（扫描/已连接/广播/关于）齐全；默认页 P001（kicker BLE TOOLKIT+/开始扫描/筛选） |
+| UIS-02 | 四 Tab 走查 | 各 Tab 页特征内容渲染（P007 空态文案 / P008 平台 chip / P009 品牌 / P001 分节） |
+| UIS-03 | 真实扫描会话 | 开始扫描→停止扫描+「扫描中 · 5s 会话」；5s 自动停+「扫描完成 · 发现 N 台」（蓝牙关闭时 SKIP） |
+| UIS-04 | 筛选面板 | 展开/预设 -70→阈值标签联动/滑杆/隐藏无名开关/重置→-100/收起 |
+| UIS-05 | 广播数据弹窗（F004） | 设备卡→sheet（设备 ID/RSSI/AD 段/「本轮平台 API 未提供此字段」标注）→复制数据/关闭（无设备时 SKIP） |
+| UIS-06 | 连接→P006 | 连接点击→GATT 调试页：两栏布局说明+右栏通信日志常驻+返回 P001（无设备时 SKIP；连接成败均验布局） |
+| UIS-07 | P002 守卫+配对码解析 | 无设备上下文→「缺少设备上下文」守卫；parsePairCode：t= 必需/hub= 可选回填/无令牌拒绝 |
+| UIS-08 | P008 徽标+预算 | 平台 chip「Desktop · macOS」+ CoreBluetooth 提示；字节预算真实核算：默认 21B→超限 46B 拦截（按钮禁用+红字）→恢复 21B 重启用 |
+| UIS-09 | P008 检查支持 | 真实 CBPeripheralManager 判定：日志含 CoreBluetooth、徽章六值之一呈现 |
+| UIS-10 | P009 关于页 | 品牌/四菜单/操作系统行（macOS · CoreBluetooth）/生态矩阵卡（广播发送 ❌【待验证】）→版本记录进 P010 |
+| UIS-11 | P010 版本记录 | 限制清单（BLOCKED_FIXTURE/BLOCKED_OBSERVER）/正式发布空态/预览记录/页脚投影声明 |
+| UIS-12 | P005+P003 守卫 | P005 五项诊断行+按钮；P003 无快照→「设备记录不存在」 |
+| UIS-13 | 退出确认 | requestQuit→退出确认 modal（会话感知文案）→继续使用→窗口留存 |
+| UIS-14 | 页面快照 | --snap-pages 9/9 页 cacheDisplay PNG（验证脚本 step 5） |
 
-WriteDialog sheet 交互留待 UI 权限放开；服务树/特征读写同 NVC-04 BLOCKED_FIXTURE。
+WriteDialog 写入弹窗经 P006 写入按钮真实打开（TEXT/HEX 校验）；服务树特征读写同 NVC-04 BLOCKED_FIXTURE。

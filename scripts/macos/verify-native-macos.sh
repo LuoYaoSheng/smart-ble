@@ -28,8 +28,8 @@ swift build > "$LOGDIR/build.txt" 2>&1 \
 step "2. App 冒烟运行（8 秒，验证生命周期与双管理器上电）"
 (./.build/debug/SmartBLE-mac > "$LOGDIR/app-run.log" 2>&1 & APP_PID=$!
  sleep 8; kill -TERM "$APP_PID" 2>/dev/null; wait "$APP_PID" 2>/dev/null || true)
-if grep -q "Bluetooth is powered on" "$LOGDIR/app-run.log" && \
-   grep -q "Peripheral is powered on" "$LOGDIR/app-run.log"; then
+if grep -q "蓝牙已开启" "$LOGDIR/app-run.log" && \
+   grep -q "外围模式已就绪" "$LOGDIR/app-run.log"; then
   record NVB-02 PASS "app run, central+peripheral poweredOn"
 else
   record NVB-02 FAIL "app run missing poweredOn logs (check TCC bluetooth permission)"
@@ -49,22 +49,34 @@ PBIN="./.build/debug/native-probe"
 record NVC-04 BLOCKED_FIXTURE  "gatt client chain needs a connectable fixture"
 record NVC-05 BLOCKED_OBSERVER "advertise visibility needs a second endpoint (phone/esp32)"
 
-step "4. 页面级冒烟（--smoke-pages：三页面真实代码路径）"
+step "4. 页面级冒烟（r3 原型对齐壳：四 Tab + 9 页 + 桌面差异点）"
 cd "$APP"
 ./.build/debug/SmartBLE-mac --smoke-pages > "$LOGDIR/pages-smoke.log" 2>&1 \
   && record UIS-00 PASS "page smoke exit=0" \
   || record UIS-00 FAIL "page smoke exit!=0 (see pages-smoke.log)"
-for id in UIS-01 UIS-02 UIS-03 UIS-04a UIS-04b UIS-04c UIS-04d UIS-05 UIS-06a UIS-06b UIS-07; do
+for id in UIS-01 UIS-02 UIS-03 UIS-04 UIS-05 UIS-06 UIS-07 UIS-08 UIS-09 UIS-10 UIS-11 UIS-12 UIS-13; do
   if grep -q "\[UISMOKE\] $id result=PASS" "$LOGDIR/pages-smoke.log"; then
-    record "$id" PASS "page smoke"
+    record "$id" PASS "page smoke (prototype-aligned shell)"
   elif grep -q "\[UISMOKE\] $id result=SKIP" "$LOGDIR/pages-smoke.log"; then
-    record "$id" SKIP "environment-dependent (no devices nearby)"
+    record "$id" SKIP "environment-dependent (no devices nearby / bt off)"
   elif grep -q "\[UISMOKE\] $id result=FAIL" "$LOGDIR/pages-smoke.log"; then
     record "$id" FAIL "page smoke"
   else
     record "$id" NOT_RUN "step not found in log"
   fi
 done
+
+step "5. 页面快照证据（--snap-pages：9 页 cacheDisplay PNG，无需屏幕录制权限）"
+SNAPDIR="$REPO_ROOT/verification/macos-extension/$RUN_ID/snaps"
+mkdir -p "$SNAPDIR"
+( cd "$SNAPDIR" && "$APP/.build/debug/SmartBLE-mac" --snap-pages > "$LOGDIR/pages-snap.log" 2>&1 \
+  & SNAP_PID=$!; sleep 16; kill -TERM "$SNAP_PID" 2>/dev/null || true; wait "$SNAP_PID" 2>/dev/null || true )
+SNAP_COUNT=$(ls "$SNAPDIR"/snaps-r3/*.png 2>/dev/null | wc -l | tr -d ' ')
+if [ "$SNAP_COUNT" -eq 9 ]; then
+  record UIS-14 PASS "9/9 page snapshots rendered"
+else
+  record UIS-14 FAIL "expected 9 snapshots, got $SNAP_COUNT (see pages-snap.log)"
+fi
 
 step "汇总"
 cat "$LOGDIR/native-summary.tsv"

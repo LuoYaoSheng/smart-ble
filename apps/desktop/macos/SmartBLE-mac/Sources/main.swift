@@ -43,8 +43,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
         // Clean up BLE
-        mainWindowController?.bleManager?.disconnect()
-        mainWindowController?.bleManager?.stopScan()
+        mainWindowController?.ble.disconnect()
+        mainWindowController?.ble.stopScan()
         return .terminateNow
     }
 }

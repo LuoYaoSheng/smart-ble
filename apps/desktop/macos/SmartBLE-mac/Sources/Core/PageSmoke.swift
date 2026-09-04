@@ -1,219 +1,387 @@
 //
-// SmartBLE Desktop for macOS - Page Smoke Runner
-//
-// `--smoke-pages` 驱动三个页面（扫描页 / 设备详情页 / 日志页）的真实代码路径：
-// 按钮 action、Combine 绑定、FilterPanel 委托、设备表格选择联动、工具栏动作。
-// 不截屏，通过读取 UI 控件状态输出结构化 [UISMOKE] 日志；
-// 进程退出码 = 失败步骤数（0 = 全部通过，SKIP 不计失败）。
+// PageSmoke.swift — 页面级自动化冒烟（r3 · 原型对齐壳）
+// 覆盖：装配/四 Tab 走查/真实扫描/筛选/广播数据弹窗/连接→P006 两栏/P002 守卫与配对码解析/
+// P008 预算与平台徽标/P009 内容与二级页 P010/P005/P003 守卫/退出确认。
+// 输出 [UISMOKE] <id> result=PASS/FAIL/SKIP detail="..."；exit(failures>0 ? 1 : 0)。
+// 环境相关步骤（扫描/设备交互）无设备时显式 SKIP，不伪造。
 //
 
-import Cocoa
+import AppKit
 
 @MainActor
-final class PageSmoke {
-    private let controller: MainWindowController
-    private var failures = 0
-    private var skips = 0
+enum PageSmoke {
 
-    private init(controller: MainWindowController) {
-        self.controller = controller
-    }
-
-    /// 入口：main.swift 在窗口显示后调用；非 --smoke-pages 启动时无副作用
     nonisolated static func runIfRequested() {
-        guard CommandLine.arguments.contains("--smoke-pages") else { return }
-        print("[UISMOKE] mode=smoke-pages app=SmartBLE-mac")
+        let args = CommandLine.arguments
+        guard args.contains("--smoke-pages") || args.contains("--snap-pages") else { return }
         Task { @MainActor in
-            var windowController: MainWindowController?
             for _ in 0..<10 {
-                windowController = NSApp.windows
-                    .compactMap { $0.windowController as? MainWindowController }
-                    .first
-                if windowController != nil { break }
-                try? await Task.sleep(nanoseconds: 100_000_000)
+                if let wc = NSApp.windows.compactMap({ $0.windowController as? MainWindowController }).first {
+                    if args.contains("--snap-pages") {
+                        await PageSmoke.snapPages(controller: wc)
+                    } else {
+                        print("[UISMOKE] mode=smoke-pages app=SmartBLE-mac r3=prototype-aligned")
+                        await PageSmoke.run(controller: wc)
+                    }
+                    return
+                }
+                try? await Task.sleep(nanoseconds: 300_000_000)
             }
-            guard let windowController = windowController else {
-                print("[UISMOKE] FATAL result=FAIL detail=\"MainWindowController not found\"")
-                fflush(stdout)
-                exit(2)
-            }
-            await PageSmoke(controller: windowController).runSequence()
+            print("[UISMOKE] FATAL result=FAIL detail=\"MainWindowController not found\"")
+            fflush(stdout)
+            exit(1)
         }
     }
 
-    // MARK: - Structured output
-
-    private func check(_ id: String, _ ok: Bool, _ detail: String) {
-        if ok {
-            print("[UISMOKE] \(id) result=PASS detail=\"\(detail)\"")
-        } else {
-            failures += 1
-            print("[UISMOKE] \(id) result=FAIL detail=\"\(detail)\"")
+    /// --snap-pages：9 页渲染为 PNG（cacheDisplay · 不依赖屏幕录制权限）作为对齐证据
+    private static func snapPages(controller: MainWindowController) async {
+        let outDir = URL(fileURLWithPath: "snaps-r3")
+        try? FileManager.default.createDirectory(at: outDir, withIntermediateDirectories: true)
+        let order: [PageId] = [.p001, .p007, .p008, .p009, .p010, .p002, .p003, .p005, .p006]
+        try? await Task.sleep(nanoseconds: 1_200_000_000)
+        for id in order {
+            if id.isTab {
+                controller.router.switchTab(id)
+            } else {
+                controller.router.go(id)
+            }
+            try? await Task.sleep(nanoseconds: 500_000_000)
+            guard let view = controller.window?.contentView else { continue }
+            view.layoutSubtreeIfNeeded()
+            // cacheDisplay 不渲染 NSScrollView 文档内容（已知 AppKit 行为）→ 直接渲染页面文档列
+            let target: NSView = (allSubviews(of: view).compactMap { $0 as? PageScroll }.first?.column) ?? view
+            target.layoutSubtreeIfNeeded()
+            let rect = target.bounds
+            guard let rep = target.bitmapImageRepForCachingDisplay(in: rect) else { continue }
+            // 位图先铺页面底色（cacheDisplay 不画视图层背景，裸位图为黑）
+            NSGraphicsContext.saveGraphicsState()
+            if let ctx = NSGraphicsContext(bitmapImageRep: rep) {
+                NSGraphicsContext.current = ctx
+                DS.bg.setFill()
+                rect.fill()
+            }
+            NSGraphicsContext.restoreGraphicsState()
+            target.cacheDisplay(in: rect, to: rep)
+            guard let png = rep.representation(using: .png, properties: [:]) else { continue }
+            let url = outDir.appendingPathComponent("\(id.rawValue).png")
+            try? png.write(to: url)
+            print("[UISNAP] \(id.rawValue) -> \(url.path) size=\(Int(rect.width))x\(Int(rect.height))")
+            fflush(stdout)
         }
+        print("[UISNAP] done")
+        fflush(stdout)
+        exit(0)
     }
 
-    private func skip(_ id: String, _ reason: String) {
+    private static var failures = 0
+    private static var skips = 0
+
+    private static func check(_ id: String, _ ok: Bool, _ detail: String) {
+        print("[UISMOKE] \(id) result=\(ok ? "PASS" : "FAIL") detail=\"\(detail)\"")
+        fflush(stdout)
+        if !ok { failures += 1 }
+    }
+
+    private static func skip(_ id: String, _ reason: String) {
+        print("[UISMOKE] \(id) result=SKIP detail=\"\(reason)\"")
+        fflush(stdout)
         skips += 1
-        print("[UISMOKE] \(id) result=SKIP reason=\"\(reason)\"")
     }
 
-    private func settle(_ ms: UInt64 = 350) async {
+    private static func settle(_ ms: UInt64) async {
         try? await Task.sleep(nanoseconds: ms * 1_000_000)
     }
 
-    // MARK: - View traversal helpers
+    // MARK: - 子视图遍历助手
 
-    private var contentView: NSView? { controller.window?.contentView }
-
-    private func allSubviews(of view: NSView) -> [NSView] {
-        var result: [NSView] = []
+    private static func allSubviews(of view: NSView) -> [NSView] {
+        var out: [NSView] = []
         for sub in view.subviews {
-            result.append(sub)
-            result.append(contentsOf: allSubviews(of: sub))
+            out.append(sub)
+            out.append(contentsOf: allSubviews(of: sub))
         }
-        return result
+        return out
     }
 
-    private func first<T: NSView>(ofType type: T.Type) -> T? {
-        guard let content = contentView else { return nil }
-        return allSubviews(of: content).compactMap { $0 as? T }.first
+    private static func first<T: NSView>(ofType: T.Type, in views: [NSView]) -> T? {
+        views.compactMap { $0 as? T }.first
     }
 
-    private func button(titled title: String) -> NSButton? {
-        guard let content = contentView else { return nil }
-        return allSubviews(of: content)
-            .compactMap { $0 as? NSButton }
-            .first { $0.title == title }
+    private static func button(titled title: String, in views: [NSView]) -> NSButton? {
+        views.compactMap { $0 as? NSButton }.first { $0.title == title || $0.attributedTitle.string == title }
     }
 
-    private func label(where predicate: (NSTextField) -> Bool) -> NSTextField? {
-        guard let content = contentView else { return nil }
-        return allSubviews(of: content)
-            .compactMap { $0 as? NSTextField }
-            .first { $0 != nil && predicate($0) }
+    private static func button(actionId: String, in views: [NSView]) -> NSButton? {
+        views.compactMap { $0 as? NSButton }.first { $0.toolTip == actionId }
     }
 
-    private var manager: BLEManager? { controller.bleManager }
+    private static func anyLabel(contains text: String, in views: [NSView]) -> Bool {
+        views.compactMap { $0 as? NSTextField }.contains { !$0.isBezeled && $0.stringValue.contains(text) }
+    }
 
-    // MARK: - Step sequence
+    // MARK: - 主流程
 
-    private func runSequence() async {
-        // UIS-01 三页装配：窗口 + 扫描页(FilterPanel/NSTableView) + 详情页(ServicePanel) + 日志页(LogPanel)
-        let filterPanel = first(ofType: FilterPanel.self)
-        let tableView = first(ofType: NSTableView.self)
-        let servicePanel = first(ofType: ServicePanel.self)
-        let logPanel = first(ofType: LogPanel.self)
-        let windowVisible = controller.window?.isVisible ?? false
-        check(
-            "UIS-01",
-            windowVisible && filterPanel != nil && tableView != nil && servicePanel != nil && logPanel != nil,
-            "windowVisible=\(windowVisible) filterPanel=\(filterPanel != nil) tableView=\(tableView != nil) servicePanel=\(servicePanel != nil) logPanel=\(logPanel != nil)")
-
-        // 等待 CBCentralManager 进入 poweredOn（应用启动即创建，r1 实测 <1s）
-        try? await Task.sleep(nanoseconds: 700_000_000)
-
-        // UIS-02 扫描页-真实按钮 action：点击 Start Scan → manager.startScan → isScanning 绑定回按钮
-        let scanButton = button(titled: "Start Scan")
-        scanButton?.performClick(nil)
-        await settle()
-        let stopButton = button(titled: "Stop Scan")
-        let scanningLabel = label { $0.stringValue == "Scanning..." }
-        check(
-            "UIS-02",
-            stopButton != nil && scanningLabel != nil && (manager?.isScanning ?? false),
-            "buttonTitle=\(stopButton?.title ?? "nil") status=\(scanningLabel?.stringValue ?? "nil") managerIsScanning=\(manager?.isScanning ?? false)")
-
-        // 等待 5s 自动停止（与 UniApp 对齐的行为）+ 余量
-        try? await Task.sleep(nanoseconds: 6_000_000_000)
-
-        // UIS-03 扫描页-自动停止：按钮回到 Start Scan，状态 Ready
-        let resumedButton = button(titled: "Start Scan")
-        let readyLabel = label { $0.stringValue == "Ready" }
-        let scanned = manager?.discoveredDevices ?? []
-        check(
-            "UIS-03",
-            resumedButton != nil && readyLabel != nil && !(manager?.isScanning ?? true),
-            "buttonTitle=\(resumedButton?.title ?? "nil") status=\(readyLabel?.stringValue ?? "nil") scannedDevices=\(scanned.count)")
-
-        // UIS-04a FilterPanel 展开切换（真实点击无标题的图标按钮）
-        let filterToggle = contentView.flatMap { content in
-            allSubviews(of: content)
-                .compactMap { $0 as? NSButton }
-                .first { !$0.isBordered && $0.image != nil && $0.target != nil }
+    private static func run(controller: MainWindowController) async {
+        // 等待首轮渲染与蓝牙状态回调
+        for _ in 0..<8 {
+            if controller.ble.btState != .unknown { break }
+            try? await Task.sleep(nanoseconds: 250_000_000)
         }
-        filterToggle?.performClick(nil)
-        await settle(250)
-        let panelShown = first(ofType: FilterPanel.self).map { !$0.isHidden } ?? false
-        check("UIS-04a", panelShown, "filterPanelVisible=\(panelShown)")
+        guard let window = controller.window, let contentView = window.contentView else {
+            print("[UISMOKE] FATAL result=FAIL detail=\"window/contentView missing\"")
+            exit(1)
+        }
+        let views = { allSubviews(of: contentView) }
 
-        // UIS-04b RSSI 预设 "-70"：FilterPanel 委托 → manager.filterRSSI → 计数联动
-        button(titled: "-70")?.performClick(nil)
-        await settle(250)
-        let rssiAfterPreset = manager?.filterRSSI ?? 999
-        check("UIS-04b", rssiAfterPreset == -70, "managerFilterRSSI=\(rssiAfterPreset)")
+        // UIS-01 装配：窗口标题 + 四 Tab + 默认页 P001（kicker/扫描按钮/筛选链）
+        do {
+            let v = views()
+            let tabs = ["扫描", "已连接", "广播", "关于"].map { button(titled: $0, in: v) != nil }
+            let hasP001 = anyLabel(contains: "BLE TOOLKIT+", in: v)
+                && button(titled: "开始扫描", in: v) != nil
+                && button(titled: "筛选", in: v) != nil
+            check("UIS-01", window.title == "BLE Toolkit+" && tabs.allSatisfy { $0 } && hasP001,
+                  "title=\(window.title) tabs=\(tabs.map { $0 ? 1 : 0 }) p001=\(hasP001)")
+        }
 
-        // UIS-04c 隐藏无名设备 checkbox：委托 → manager.hideNoNameDevices
-        button(titled: "Hide devices without name")?.performClick(nil)
-        await settle(250)
-        let hideAfterToggle = manager?.hideNoNameDevices ?? false
-        check("UIS-04c", hideAfterToggle, "managerHideNoName=\(hideAfterToggle)")
+        // UIS-02 四 Tab 走查（每页导航栏 + 页面特征内容）
+        do {
+            var results: [String] = []
+            for (tab, expect) in [("已连接", "还没有连接中的设备"), ("广播", "平台：Desktop · macOS"), ("关于", "BLE Toolkit+"), ("扫描", "附近设备")] {
+                guard let btn = button(titled: tab, in: views()) else {
+                    results.append("\(tab)=nobtn")
+                    continue
+                }
+                btn.performClick(nil)
+                await settle(400)
+                let ok = anyLabel(contains: expect, in: views())
+                results.append("\(tab)=\(ok ? 1 : 0)")
+            }
+            check("UIS-02", results.allSatisfy { $0.hasSuffix("=1") }, results.joined(separator: " "))
+        }
 
-        // UIS-04d Reset：委托 → manager.resetFilters() 全部还原
-        button(titled: "Reset")?.performClick(nil)
-        await settle(250)
-        let rssiAfterReset = manager?.filterRSSI ?? 999
-        let hideAfterReset = manager?.hideNoNameDevices ?? true
-        check("UIS-04d", rssiAfterReset == -100 && !hideAfterReset, "filterRSSI=\(rssiAfterReset) hideNoName=\(hideAfterReset)")
+        let btReady = controller.ble.btState == .on
 
-        // UIS-05 表格选择 → MainWindowController 委托 → manager.connect（真实联动）
-        if let tableView, tableView.numberOfRows > 0, let manager, !manager.discoveredDevices.isEmpty {
-            tableView.selectRowIndexes(IndexSet(integer: 0), byExtendingSelection: false)
-            try? await Task.sleep(nanoseconds: 1_200_000_000)
-            let connectLogged = manager.logs.contains { $0.message.hasPrefix("Connecting to") }
-            let stateTouched = connectLogged || manager.connectionState != .disconnected
-            check("UIS-05", stateTouched, "connectLog=\(connectLogged) connectionState=\(manager.connectionState)")
-            // 连接尝试会改变管理器状态，回到干净基线
-            manager.disconnect()
-            await settle(250)
+        // UIS-03 真实扫描会话（5s 自动停 + 扫描完成文案）
+        if btReady {
+            if let btn = button(titled: "开始扫描", in: views()) {
+                btn.performClick(nil)
+                await settle(600)
+                let scanning = button(titled: "停止扫描", in: views()) != nil
+                    && anyLabel(contains: "扫描中 · 5s 会话", in: views())
+                await settle(5400)
+                let stopped = button(titled: "开始扫描", in: views()) != nil
+                    && anyLabel(contains: "扫描完成 · 发现", in: views())
+                check("UIS-03", scanning && stopped,
+                      "scanning=\(scanning) stopped=\(stopped) found=\(controller.ble.discoveredDevices.count)")
+            } else {
+                check("UIS-03", false, "scan button missing")
+            }
         } else {
-            skip("UIS-05", "scan found no devices in this environment")
+            skip("UIS-03", "bluetooth adapter not powered on (btState=\(controller.ble.btState))")
         }
 
-        // UIS-06a 日志页绑定：扫描/连接事件已进入 LogPanel，计数与 manager.logs 一致
-        // （先等 UIS-05 的连接尝试失败事件落地，避免其异步回填干扰 Clear 校验）
-        try? await Task.sleep(nanoseconds: 2_500_000_000)
-        if let manager, !manager.logs.isEmpty {
-            let entriesText = label { $0.stringValue.hasSuffix(" entries") || $0.stringValue == "0 entries" }?.stringValue ?? "nil"
-            let shownCount = Int(entriesText.split(separator: " ").first ?? "-1") ?? -1
-            let textViewFilled = !(first(ofType: NSTextView.self)?.string.isEmpty ?? true)
-            check(
-                "UIS-06a",
-                shownCount == manager.logs.count && textViewFilled,
-                "label=\(entriesText) managerLogs=\(manager.logs.count) logPanelHasText=\(textViewFilled)")
+        // UIS-04 筛选面板：展开 → 预设/阈值/隐藏无名 → 重置 → 收起
+        do {
+            guard let filterBtn = button(titled: "筛选", in: views()) else {
+                check("UIS-04", false, "filter toggle missing")
+                return
+            }
+            filterBtn.performClick(nil)
+            await settle(300)
+            var v = views()
+            let preset = button(titled: "一般 [-70]", in: v)
+            let hasSlider = first(ofType: NSSlider.self, in: v) != nil
+            let hideSwitch = first(ofType: NSSwitch.self, in: v) != nil
+            preset?.performClick(nil)
+            await settle(300)
+            v = views()
+            let thresholdUpdated = anyLabel(contains: "阈值 -70", in: v)
+            button(titled: "重置过滤", in: v)?.performClick(nil)
+            await settle(300)
+            v = views()
+            let resetOk = anyLabel(contains: "阈值 -100", in: v)
+            button(titled: "收起筛选", in: v)?.performClick(nil)
+            await settle(300)
+            let collapsed = button(titled: "重置过滤", in: views()) == nil
+            check("UIS-04", preset != nil && hasSlider && hideSwitch && thresholdUpdated && resetOk && collapsed,
+                  "preset=\(preset != nil) slider=\(hasSlider) switch=\(hideSwitch) th70=\(thresholdUpdated) reset=\(resetOk) collapsed=\(collapsed)")
+        }
 
-            // UIS-06b 日志页 Clear 按钮：真实点击 → logs 清空 → 计数归零
-            button(titled: "Clear")?.performClick(nil)
-            await settle(200)
-            let zeroLabel = label { $0.stringValue == "0 entries" }
-            let textViewCleared = first(ofType: NSTextView.self)?.string.isEmpty ?? false
-            check(
-                "UIS-06b",
-                manager.logs.isEmpty && zeroLabel != nil && textViewCleared,
-                "managerLogsEmpty=\(manager.logs.isEmpty) label=\(zeroLabel?.stringValue ?? "nil") panelCleared=\(textViewCleared)")
+        let hasDevices = !controller.ble.discoveredDevices.isEmpty
+
+        // UIS-05 广播数据弹窗（F004：设备报告 + 缺失字段标注 + 复制/关闭）
+        if hasDevices {
+            if let p001 = controller.page(.p001) as? P001ScanPage {
+                let device = controller.ble.discoveredDevices[0]
+                p001.openAdvDialogForSmoke(device)
+                await settle(400)
+                let v = views()
+                let sheetVisible = anyLabel(contains: "广播数据 ·", in: v)
+                let fields = anyLabel(contains: "设备 ID", in: v) && anyLabel(contains: "RSSI", in: v)
+                let missMarked = anyLabel(contains: "本轮平台 API 未提供此字段", in: v)
+                let copyBtn = button(titled: "复制数据", in: v)
+                button(titled: "关闭", in: v)?.performClick(nil)
+                await settle(300)
+                let closed = !anyLabel(contains: "复制数据", in: views())
+                check("UIS-05", sheetVisible && fields && missMarked && copyBtn != nil && closed,
+                      "sheet=\(sheetVisible) fields=\(fields) missMarked=\(missMarked) closed=\(closed)")
+            } else {
+                check("UIS-05", false, "p001 page missing")
+            }
         } else {
-            skip("UIS-06a", "no log entries produced")
-            skip("UIS-06b", "no log entries produced")
+            skip("UIS-05", "no scan results in this environment")
         }
 
-        // UIS-07 工具栏：三项齐全 + Logs 动作可派发（日志分栏折叠切换）
-        let identifiers = (controller.window?.toolbar?.items ?? []).map { $0.itemIdentifier.rawValue }
-        let hasAll = ["scanToggle", "disconnect", "logs"].allSatisfy { identifiers.contains($0) }
-        var logsActionDispatched = false
-        if let logsItem = controller.window?.toolbar?.items.first(where: { $0.itemIdentifier.rawValue == "logs" }),
-           let action = logsItem.action, let target = logsItem.target {
-            logsActionDispatched = NSApp.sendAction(action, to: target, from: logsItem)
+        // UIS-06 连接 → P006（两栏 + 右栏日志常驻 + 返回；连接成败均验布局）
+        if hasDevices {
+            if let connectBtn = button(actionId: "p001-connect", in: views()) {
+                connectBtn.performClick(nil)
+                await settle(700)
+                let v = views()
+                let inP006 = anyLabel(contains: "GATT 调试", in: v)
+                    && (button(actionId: "p006-connect", in: v) != nil
+                        || button(actionId: "p006-disconnect", in: v) != nil
+                        || button(actionId: "p006-connecting", in: v) != nil)
+                let twoColNote = anyLabel(contains: "桌面布局（SOP §12 圈内调整）", in: v)
+                let logPanel = anyLabel(contains: "通信日志", in: v)
+                button(actionId: "back", in: v)?.performClick(nil)
+                await settle(400)
+                let backOk = button(titled: "开始扫描", in: views()) != nil
+                check("UIS-06", inP006 && twoColNote && logPanel && backOk,
+                      "p006=\(inP006) dnote=\(twoColNote) log=\(logPanel) back=\(backOk) conn=\(controller.ble.connectionState)")
+            } else {
+                skip("UIS-06", "no connect button on cards")
+            }
+        } else {
+            skip("UIS-06", "no scan results in this environment")
         }
-        check("UIS-07", hasAll && logsActionDispatched, "identifiers=\(identifiers.joined(separator: ",")) logsAction=\(logsActionDispatched)")
+
+        // UIS-07 P002 守卫态 + 配对码解析（desktop.js dtk-parse 同口径）
+        do {
+            controller.router.go(.p002)
+            await settle(400)
+            let guardOk = anyLabel(contains: "缺少设备上下文", in: views())
+                && button(titled: "去扫描", in: views()) != nil
+            let parsed = P002ProvisionPage.parsePairCode("shid://pair?hub=192.168.1.8:17892&t=tok-3f9a7c1e")
+            let parseOk = parsed?.token == "tok-3f9a7c1e" && parsed?.hub == "192.168.1.8:17892"
+            let noToken = P002ProvisionPage.parsePairCode("shid://pair?hub=x") == nil
+            let hubOptional = P002ProvisionPage.parsePairCode("shid://pair?t=abcd1234")?.hub == nil
+            check("UIS-07", guardOk && parseOk && noToken && hubOptional,
+                  "guard=\(guardOk) parse=\(parseOk) noToken=\(noToken) hubOptional=\(hubOptional)")
+            controller.router.back()
+            await settle(300)
+        }
+
+        // UIS-08 P008 平台徽标 + 原生层提示 + 字节预算（真实核算 + 超限拦截 + 恢复）
+        do {
+            button(titled: "广播", in: views())?.performClick(nil)
+            await settle(400)
+            let v = views()
+            let platform = anyLabel(contains: "平台：Desktop · macOS", in: v)
+            let note = anyLabel(contains: "CoreBluetooth", in: v)
+            let budgetBar = anyLabel(contains: "ADV 负载预算", in: v) && anyLabel(contains: "/ 31 字节", in: v)
+            let hasCheck = button(titled: "检查支持", in: v) != nil
+            guard let p008 = controller.page(.p008) as? P008BroadcastPage else {
+                check("UIS-08", false, "p008 page missing")
+                return
+            }
+            let defaultBudget = p008.computeBudget()
+            p008.setMfgDataForSmoke("LIGHTBLE-BROADCAST-DEMO-2026")
+            await settle(400)
+            let over = p008.computeBudget()
+            let startDisabledOver = button(titled: "开始广播", in: views())?.isEnabled == false
+            let overShown = anyLabel(contains: "超限，启动将被拦截", in: views())
+            p008.setMfgDataForSmoke("BLE")
+            await settle(400)
+            let restored = p008.computeBudget()
+            let startEnabled = button(titled: "开始广播", in: views())?.isEnabled == true
+            check("UIS-08", platform && note && budgetBar && hasCheck
+                  && over.over && startDisabledOver && overShown && !restored.over && startEnabled,
+                  "platform=\(platform) note=\(note) budgetBar=\(budgetBar) default=\(defaultBudget.total)B over=\(over.total)B blocked=\(startDisabledOver) shown=\(overShown) restored=\(restored.total)B reEnabled=\(startEnabled)")
+        }
+
+        // UIS-09 P008 检查支持（真实 CBPeripheralManager 判定 + 日志）
+        do {
+            if let checkBtn = button(titled: "检查支持", in: views()) {
+                checkBtn.performClick(nil)
+                await settle(700)
+                let logged = controller.ble.logs.contains { $0.message.contains("CoreBluetooth") }
+                let badge = ["未就绪", "已就绪", "已停止"].contains { anyLabel(contains: $0, in: views()) }
+                check("UIS-09", logged && badge,
+                      "logged=\(logged) badge=\(badge) peripheralReady=\(controller.ble.peripheralReady)")
+            } else {
+                check("UIS-09", false, "check button missing")
+            }
+        }
+
+        // UIS-10 P009 内容（品牌/菜单/OS 行/生态矩阵）→ 版本记录进 P010
+        do {
+            button(titled: "关于", in: views())?.performClick(nil)
+            await settle(400)
+            let v = views()
+            let brand = anyLabel(contains: "BLE Toolkit+", in: v)
+            let menuIds = ["p009-openweb", "p009-feedback", "p009-versions", "p009-shareapp"]
+            let menus = menuIds.map { button(actionId: $0, in: v) != nil }
+            let menuTitles = ["官方网站", "问题反馈", "版本记录", "分享应用"]
+                .allSatisfy { anyLabel(contains: $0, in: v) }
+            let osRow = button(actionId: "dtk-ossheet", in: v) != nil
+                && anyLabel(contains: "macOS · CoreBluetooth", in: v)
+            let matrix = anyLabel(contains: "生态能力矩阵", in: v) && anyLabel(contains: "广播发送", in: v)
+                && anyLabel(contains: "待验证", in: v)
+            button(actionId: "p009-versions", in: v)?.performClick(nil)
+            await settle(400)
+            let inP010 = anyLabel(contains: "当前版本", in: views())
+            check("UIS-10", brand && menus.allSatisfy { $0 } && menuTitles && osRow && matrix && inP010,
+                  "brand=\(brand) menus=\(menus.map { $0 ? 1 : 0 }) titles=\(menuTitles) osRow=\(osRow) matrix=\(matrix) p010=\(inP010)")
+        }
+
+        // UIS-11 P010 内容（限制清单/发布空态/预览记录/页脚声明）
+        do {
+            let v = views()
+            let limits = anyLabel(contains: "BLOCKED_FIXTURE", in: v) && anyLabel(contains: "BLOCKED_OBSERVER", in: v)
+            let emptyRel = anyLabel(contains: "暂无正式发布版本", in: v)
+            let foot = anyLabel(contains: "本页数据来自 Release Metadata 投影", in: v)
+            let previews = anyLabel(contains: "v0.1.0-spike r3", in: v)
+            button(actionId: "back", in: v)?.performClick(nil)
+            await settle(300)
+            check("UIS-11", limits && emptyRel && foot && previews,
+                  "limits=\(limits) emptyRelease=\(emptyRel) foot=\(foot) previews=\(previews)")
+        }
+
+        // UIS-12 P005 诊断 + P003 详情守卫态
+        do {
+            controller.router.go(.p005)
+            await settle(400)
+            var v = views()
+            let p005 = anyLabel(contains: "SHID 诊断", in: v)
+                && anyLabel(contains: "BLE 链路", in: v) && anyLabel(contains: "设备 Ready 状态", in: v)
+                && button(titled: "重新检测", in: v) != nil && button(titled: "重新配网", in: v) != nil
+            controller.router.back()
+            await settle(300)
+            controller.router.go(.p003)
+            await settle(400)
+            v = views()
+            let p003 = anyLabel(contains: "设备记录不存在", in: v)
+            controller.router.back()
+            await settle(300)
+            check("UIS-12", p005 && p003, "p005=\(p005) p003Guard=\(p003)")
+        }
+
+        // UIS-13 退出确认（关闭 = 确认 modal；继续使用 → 留存不退出）
+        do {
+            controller.requestQuit()
+            await settle(400)
+            let v = views()
+            let modalTitle = anyLabel(contains: "退出确认", in: v)
+            let stay = button(titled: "继续使用", in: v)
+            stay?.performClick(nil)
+            await settle(400)
+            let dismissed = !anyLabel(contains: "退出确认", in: views())
+            let windowAlive = window.isVisible
+            check("UIS-13", modalTitle && dismissed && windowAlive,
+                  "modal=\(modalTitle) dismissed=\(dismissed) alive=\(windowAlive)")
+        }
 
         print("[UISMOKE] SUMMARY failures=\(failures) skips=\(skips)")
         fflush(stdout)
