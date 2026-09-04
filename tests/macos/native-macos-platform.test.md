@@ -75,3 +75,25 @@ WriteDialog 写入弹窗经 P006 写入按钮真实打开（TEXT/HEX 校验）�
 | NVS-02 | 稳定性断言 | 日志条数 ≤500（实测 83）；驻留内存增量 <64MB（实测 -3.1MB，无泄漏迹象） |
 
 约束重申：NVP 全程仅 ad-hoc 签名，不涉及证书私钥 / Apple 账号 / 公证；NVR 中设备卡点击（弹 F004 广播详情）与 P009 操作系统行菜单因自绘视图无 AX press 动作、且宿主无屏幕录制权限无法坐标点击 → NOT_RUN（r3 冒烟 UIS-05/UIS-10 已程序化覆盖）。
+
+## r5 用例：上架就绪（store readiness）（2026-09-04）
+
+入口分两路：
+- `scripts/macos/verify-native-macos.sh` step 7（NVD-01..09，脚本化）
+- `scripts/macos/make-app-icon.sh`（图标再生成）+ `make-app-bundle.sh`（双形态：`SmartBLE-macOS.app` 运行形态 / `SmartBLE-macOS-MAS.app` MAS 沙盒形态）
+
+| ID | 步骤 | 判定 |
+| --- | --- | --- |
+| NVD-01 | Release 通用二进制 | `swift build -c release --arch arm64 --arch x86_64`，lipo 双架构在位 |
+| NVD-02 | Info.plist MAS 字段 | 版本/构建号/CFBundleIconFile/分类 utilities/出口合规 false/zh-CN/版权，PlistBuddy 断言 |
+| NVD-03 | 应用图标 | 品牌 icon（只读复用）→ squircle 化（1024/824/r185/透明边距/内缘高光）→ AppIcon.icns 入 bundle Resources；alpha 程序化验证（四角=0、边缘中点=255、body 近角=0） |
+| NVD-04 | MAS 形态签名 | ad-hoc + `Entitlements.plist`（仅 app-sandbox）+ hardened runtime；codesign verify strict 通过，entitlements/runtime 嵌入确认 |
+| NVD-05 | 沙盒真实生效 | `--sandbox-probe`：容器 home 重定向 + 容器外写阻塞（exit 0）；未签名 dev 二进制对照 sandbox=OFF（exit 3） |
+| NVD-06 | MAS 形态启动 | LaunchServices `open` 启动成功（进程在位） |
+| NVD-07 | 平台事实登记 | ad-hoc + 沙盒下 CoreBluetooth = `.unsupported`（rawValue 2，central+peripheral 双侧；直接执行/open 双启动方式复现；空 entitlements 对照正常；`device.bluetooth` 键 → AMFI 启动期杀死）。**该 PASS 表示"观察到并登记了平台事实"，不是 BLE 能力 PASS**；MAS 真实签名链下 BLE 需账号侧回归（NOT_RUN） |
+| NVD-08 | 沙盒下 UI 冒烟 | `--smoke-pages`：UI 层 ≥9 PASS（结构/路由/表单/预算/关于/版本/退出确认全绿）；UIS-03/05/06 SKIP、UIS-09 FAIL 均为 NVD-07 同根因 |
+| NVD-09 | Gatekeeper + 可移植性 | spctl 预期拒绝（未公证）；otool 确认仅链接 `/usr/lib/swift/*` 系统 ABI 运行库，无工具链 rpath |
+
+补充断言（r4 链路在新工件上回归）：运行形态（Release 通用二进制）8s 启动双管理器上电（NVP-03 链）；`--soak-scans=12` 于运行形态 12/12 PASS（真实 4-6 台/轮、日志 87/500、内存 -3.3MB）。
+
+约束重申：全程仅 ad-hoc 签名；真实证书签名 / 公证 / MAS 上传 / App Store Connect 全链账号门控 → NOT_RUN（操作序列见 `verification/macos-extension/20260904-r5/store-readiness.md`）；本机存在 Apple Distribution 签名身份的事实仅作盘点登记，未使用、未记录任何私钥/账号。

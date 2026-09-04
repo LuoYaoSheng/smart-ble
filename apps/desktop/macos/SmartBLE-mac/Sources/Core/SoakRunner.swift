@@ -51,6 +51,20 @@ enum SoakRunner {
             if ble.btState == .on { btReady = true; break }
             try? await Task.sleep(nanoseconds: 500_000_000)
         }
+
+        // --bt-report=<path>：把进程内 btState 落盘（沙盒内应写容器路径），供 LaunchServices
+        // 启动的实例取回真实状态（open 启动时 stdout 不可见）
+        if let arg = CommandLine.arguments.first(where: { $0.hasPrefix("--bt-report=") }) {
+            let path = String(arg.dropFirst("--bt-report=".count))
+            do {
+                try "btState=\(ble.btState)\n".write(toFile: path, atomically: true, encoding: .utf8)
+                print("[SOAK] bt-report 已写入 \(path)")
+            } catch {
+                print("[SOAK] bt-report 写入失败: \(error)")
+            }
+            fflush(stdout)
+        }
+
         guard btReady else {
             print("[SOAK] result=SKIP detail=\"bluetooth not powered on (环境依赖，不计失败)\"")
             fflush(stdout)

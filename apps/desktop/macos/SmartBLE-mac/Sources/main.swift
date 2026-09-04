@@ -26,6 +26,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         print("[APP] applicationDidFinishLaunching")
 
+        // 沙盒生效性探针（仅 --sandbox-probe 启动时生效，跑完即退出）
+        SandboxProbe.runIfRequested()
+
         // Create main window
         mainWindowController = MainWindowController()
         mainWindowController?.showWindow(nil)

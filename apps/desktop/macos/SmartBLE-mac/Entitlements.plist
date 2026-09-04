@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- r5 上架就绪：Mac App Store 强制 App Sandbox。
+         本应用只用 CoreBluetooth + AppKit + 剪贴板（日志导出走 copy），
+         无文件落盘、无网络、无摄像头 → 无需任何附加 entitlement。 -->
+    <key>com.apple.security.app-sandbox</key>
+    <true/>
+</dict>
+</plist>

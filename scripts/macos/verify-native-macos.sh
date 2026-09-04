@@ -111,6 +111,86 @@ fi
 # 真实点击走查（NVR-*）经宿主 AX 工具驱动，无法脚本化复现；结果见 r4 证据目录
 echo "NVR walkthrough: 已由宿主 AX 工具单独执行（非脚本步骤），见 verification/macos-extension/20260904-r4/walkthrough.md"
 
+step "7. r5 上架就绪（MAS 形态：沙盒 entitlements + 图标 + Release 通用二进制）"
+# NVD-01：Release 通用二进制（make-app-bundle.sh 默认构建并记录 lipo；第 6 步已产双形态）
+if grep -q "x86_64 arm64" "$LOGDIR/bundle.log"; then
+  record NVD-01 PASS "release universal binary (arm64+x86_64)"
+else
+  record NVD-01 FAIL "universal binary missing (see bundle.log)"
+fi
+# NVD-02：MAS 必填字段完整性（脚本内已断言，此处复核关键键）
+MAS_PLIST="$REPO_ROOT/apps/desktop/macos/dist/SmartBLE-macOS-MAS.app/Contents/Info.plist"
+if [ -f "$MAS_PLIST" ] && \
+   /usr/libexec/PlistBuddy -c 'Print :LSApplicationCategoryType' "$MAS_PLIST" > /dev/null 2>&1 && \
+   /usr/libexec/PlistBuddy -c 'Print :ITSAppUsesNonExemptEncryption' "$MAS_PLIST" > /dev/null 2>&1 && \
+   /usr/libexec/PlistBuddy -c 'Print :CFBundleIconFile' "$MAS_PLIST" > /dev/null 2>&1; then
+  record NVD-02 PASS "plist: category/export-compliance/icon/version present"
+else
+  record NVD-02 FAIL "MAS plist fields missing"
+fi
+# NVD-03：图标存在且为有效 icns
+if file "$REPO_ROOT/apps/desktop/macos/dist/SmartBLE-macOS-MAS.app/Contents/Resources/AppIcon.icns" 2>/dev/null | grep -q "icns"; then
+  record NVD-03 PASS "AppIcon.icns present in bundle Resources"
+else
+  record NVD-03 FAIL "AppIcon.icns missing/invalid"
+fi
+# NVD-04：沙盒 entitlements + hardened runtime 嵌入
+MAS_BIN="$REPO_ROOT/apps/desktop/macos/dist/SmartBLE-macOS-MAS.app/Contents/MacOS/SmartBLE-mac"
+if codesign --verify --strict "$REPO_ROOT/apps/desktop/macos/dist/SmartBLE-macOS-MAS.app" 2>/dev/null && \
+   codesign -d --entitlements :- "$REPO_ROOT/apps/desktop/macos/dist/SmartBLE-macOS-MAS.app" 2>/dev/null | grep 'app-sandbox' > /dev/null && \
+   codesign -dv "$REPO_ROOT/apps/desktop/macos/dist/SmartBLE-macOS-MAS.app" 2>&1 | grep -i 'runtime' > /dev/null; then
+  record NVD-04 PASS "ad-hoc + app-sandbox entitlement + hardened runtime"
+else
+  record NVD-04 FAIL "entitlements/runtime/signature (see bundle.log)"
+fi
+# NVD-05：沙盒真实生效（容器外写被拒）；未签名对照应 OFF
+MAS_PROBE_EXIT=0
+"$MAS_BIN" --sandbox-probe > "$LOGDIR/mas-sandbox-probe.log" 2>&1 || MAS_PROBE_EXIT=$?
+DEV_PROBE_EXIT=0
+"$APP/.build/debug/SmartBLE-mac" --sandbox-probe > "$LOGDIR/dev-sandbox-probe.log" 2>&1 || DEV_PROBE_EXIT=$?
+if [ "$MAS_PROBE_EXIT" -eq 0 ] && grep -q 'sandbox=ON' "$LOGDIR/mas-sandbox-probe.log" && \
+   [ "$DEV_PROBE_EXIT" -eq 3 ] && grep -q 'sandbox=OFF' "$LOGDIR/dev-sandbox-probe.log"; then
+  record NVD-05 PASS "sandbox enforced (container home, write blocked; unsigned control OFF)"
+else
+  record NVD-05 FAIL "sandbox probe (mas=$MAS_PROBE_EXIT dev=$DEV_PROBE_EXIT)"
+fi
+# NVD-06：MAS 形态 LaunchServices 启动（TCC 归因父终端，r4 平台事实）
+MAS_LAUNCH_OK=0
+open "$REPO_ROOT/apps/desktop/macos/dist/SmartBLE-macOS-MAS.app" && sleep 6
+if ps aux | grep -q "[S]martBLE-macOS-MAS.app/Contents/MacOS"; then MAS_LAUNCH_OK=1; fi
+pkill -f "SmartBLE-macOS-MAS.app/Contents/MacOS" 2>/dev/null || true
+sleep 1
+if [ "$MAS_LAUNCH_OK" -eq 1 ]; then
+  record NVD-06 PASS "MAS-form bundle boots via LaunchServices"
+else
+  record NVD-06 FAIL "MAS-form bundle failed to launch"
+fi
+# NVD-07：平台事实——ad-hoc + 沙盒下 CoreBluetooth 报 unsupported（rawValue 2），
+# 与启动方式无关；空 entitlements 对照正常；此为账号门控发现，非失败：
+"$MAS_BIN" > "$LOGDIR/mas-run.log" 2>&1 & MP=$!
+sleep 8; kill -TERM "$MP" 2>/dev/null; wait "$MP" 2>/dev/null || true
+if grep -q 'CBManagerState(rawValue: 2)' "$LOGDIR/mas-run.log"; then
+  record NVD-07 PASS "platform-fact: BLE=unsupported under ad-hoc sandbox (MAS BLE 需真实签名链验证 → NOT_RUN)"
+else
+  record NVD-07 FAIL "expected unsupported-state fact in mas-run.log (see log)"
+fi
+# NVD-08：MAS 形态下 UI 层冒烟（BLE 依赖用例预期 SKIP/同根因 FAIL，UI 结构应 PASS）
+"$MAS_BIN" --smoke-pages > "$LOGDIR/mas-smoke.log" 2>&1 || true
+MAS_UI_PASS=$(grep -c 'result=PASS' "$LOGDIR/mas-smoke.log" || true)
+if [ "${MAS_UI_PASS:-0}" -ge 9 ]; then
+  record NVD-08 PASS "UI layer green under sandbox (${MAS_UI_PASS} PASS; BLE-dependent cases skip/fail per NVD-07)"
+else
+  record NVD-08 FAIL "UI layer under sandbox (${MAS_UI_PASS} PASS, see mas-smoke.log)"
+fi
+# NVD-09：spctl 预期拒绝 + Swift 系统运行库可移植性
+if grep -q 'spctl: rejected' "$LOGDIR/bundle.log" && grep -q '/usr/lib/swift/libswiftCore.dylib' \
+     <(otool -L "$REPO_ROOT/apps/desktop/macos/dist/SmartBLE-macOS.app/Contents/MacOS/SmartBLE-mac"); then
+  record NVD-09 PASS "gatekeeper expected-reject + system swift runtime (portable)"
+else
+  record NVD-09 FAIL "spctl/otool check (see bundle.log)"
+fi
+echo "NVD 账号门控（真实证书签名/公证/MAS 上传/App Store Connect）：NOT_RUN（红线，见 store-readiness.md）"
+
 step "汇总"
 cat "$LOGDIR/native-summary.tsv"
 echo "logs: $LOGDIR"

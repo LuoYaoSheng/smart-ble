@@ -1,0 +1,2 @@
+hasAlpha=true size=1024x1024
+corners a=0,0,0,0 edge-mid=255 center=255 body-edge=0
