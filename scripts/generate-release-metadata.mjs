@@ -156,7 +156,9 @@ function main() {
         drifted.push(`${rel} (missing)`);
         continue;
       }
-      const actual = readFileSync(abs, 'utf8');
+      // Compare committed content identity (LF): Windows autocrlf checkouts
+      // carry CRLF bytes that would otherwise register as false drift.
+      const actual = readFileSync(abs, 'utf8').replace(/\r\n/g, '\n');
       if (actual !== expected) drifted.push(rel);
     }
     if (drifted.length) {

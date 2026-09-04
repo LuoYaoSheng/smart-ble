@@ -10,7 +10,9 @@ const canonicalRoot = process.env.SMART_HID_WORKSPACE
   ? resolve(process.env.SMART_HID_WORKSPACE)
   : resolve(root, '../Smart-HID-Workspace')
 const contractPath = resolve(canonicalRoot, 'protocols/contracts/smart-hid-v1.json')
-const contractBytes = await readFile(contractPath)
+// Hash the committed content identity (LF), not the working-tree checkout:
+// Windows autocrlf checkouts carry CRLF bytes that differ from the locked digest.
+const contractBytes = Buffer.from((await readFile(contractPath, 'utf8')).replace(/\r\n/g, '\n'), 'utf8')
 const digest = createHash('sha256').update(contractBytes).digest('hex')
 if (digest !== lock.contract_sha256) {
   throw new Error(`Smart HID contract SHA-256 mismatch: got ${digest}, lock expects ${lock.contract_sha256}`)

@@ -23,7 +23,10 @@ module.exports = {
         "launch": true,
         "teardown": "disconnect",
         "remote": false,
-        "executablePath": "/Applications/wechatwebdevtools.app/Contents/MacOS/cli"
+        // WeChat devtools CLI comes from WECHAT_DEVTOOLS_CLI only; no hardcoded host path.
+        // macOS example: /Applications/wechatwebdevtools.app/Contents/MacOS/cli
+        // Windows example: C:\Program Files (x86)\Tencent\微信web开发者工具\cli.bat
+        "executablePath": process.env.WECHAT_DEVTOOLS_CLI || ""
     },
     "app-plus": {
         "android": {

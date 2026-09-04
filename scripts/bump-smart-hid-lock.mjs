@@ -23,9 +23,12 @@ const canonicalRoot = process.env.SMART_HID_WORKSPACE
   : resolve(root, '../Smart-HID-Workspace');
 const contractPath = resolve(canonicalRoot, 'protocols/contracts/smart-hid-v1.json');
 
-const contractBytes = await readFile(contractPath);
+// Hash the committed content identity (LF), not the working-tree checkout:
+// Windows autocrlf checkouts carry CRLF bytes that differ from the locked digest.
+const contractText = (await readFile(contractPath, 'utf8')).replace(/\r\n/g, '\n');
+const contractBytes = Buffer.from(contractText, 'utf8');
 const digest = createHash('sha256').update(contractBytes).digest('hex');
-const contract = JSON.parse(contractBytes.toString('utf8'));
+const contract = JSON.parse(contractText);
 
 let canonicalCommit = '';
 try {

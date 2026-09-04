@@ -71,7 +71,8 @@ function classifySerialPorts(pioListText, cuList) {
   const text = `${pioListText || ''}\n${(cuList || []).join('\n')}`;
   const candidates = [];
   for (const line of text.split('\n')) {
-    const m = line.match(/\/dev\/(cu|tty)\.[^\s]+/);
+    // macOS/Linux: /dev/cu.* or /dev/tty.*; Windows: COM<n> header lines from `pio device list`.
+    const m = line.match(/(\/dev\/(cu|tty)\.[^\s]+)|(\bCOM\d+\b)/);
     if (!m) continue;
     const port = m[0];
     if (/Bluetooth-Incoming-Port|debug-console|wlan|Bluetooth/i.test(port)) continue;
@@ -82,6 +83,9 @@ function classifySerialPorts(pioListText, cuList) {
     ports: unique,
     serial_available: unique.length > 0,
     serial_missing: unique.length === 0,
+    note: process.platform === 'win32'
+      ? 'Windows: ADB-composite phone ports (e.g. Samsung COMx) are also listed; identify the ESP32 bridge by USB VID:PID in `pio device list` before flashing.'
+      : null,
   };
 }
 
@@ -102,12 +106,16 @@ function detectHost() {
 function detectAndroid() {
   const sdkHome = process.env.ANDROID_HOME
     || process.env.ANDROID_SDK_ROOT
+    || (process.platform === 'win32' && existsSync(join(os.homedir(), 'AppData/Local/Android/sdk'))
+      ? join(os.homedir(), 'AppData/Local/Android/sdk')
+      : null)
     || (existsSync(join(os.homedir(), 'Library/Android/sdk'))
       ? join(os.homedir(), 'Library/Android/sdk')
       : null);
+  const adbExe = process.platform === 'win32' ? 'adb.exe' : 'adb';
   const adbPath = which('adb')
-    || (sdkHome && existsSync(join(sdkHome, 'platform-tools/adb'))
-      ? join(sdkHome, 'platform-tools/adb')
+    || (sdkHome && existsSync(join(sdkHome, 'platform-tools', adbExe))
+      ? join(sdkHome, 'platform-tools', adbExe)
       : null);
   const adbVersion = adbPath
     ? run(adbPath, ['version']).stdout.split('\n')[0]
@@ -125,14 +133,19 @@ function detectAndroid() {
   };
 }
 
+function defaultPioPath() {
+  const exe = process.platform === 'win32' ? 'pio.exe' : 'pio';
+  const binDir = process.platform === 'win32' ? 'penv/Scripts' : 'penv/bin';
+  return join(os.homedir(), '.platformio', binDir, exe);
+}
+
 function detectEsp32() {
-  const pioPath = which('pio')
-    || (existsSync(join(os.homedir(), '.platformio/penv/bin/pio'))
-      ? join(os.homedir(), '.platformio/penv/bin/pio')
-      : null);
+  const pioPath = which('pio') || (existsSync(defaultPioPath()) ? defaultPioPath() : null);
   const version = pioPath ? run(pioPath, ['--version']).stdout : null;
   const deviceList = pioPath ? run(pioPath, ['device', 'list']).stdout : '';
-  const cu = run('ls', ['/dev/cu.*'], { shell: true });
+  const cu = process.platform === 'win32'
+    ? { ok: false, stdout: '' } // /dev/cu.* is macOS-only; Windows ports come from `pio device list`.
+    : run('ls', ['/dev/cu.*'], { shell: true });
   const cuPorts = cu.ok ? cu.stdout.split(/\s+/).filter(Boolean) : [];
   const serial = classifySerialPorts(deviceList, cuPorts);
   return {
@@ -142,19 +155,42 @@ function detectEsp32() {
   };
 }
 
+function defaultHbuilderxCli() {
+  const fromEnv = process.env.HBUILDERX_CLI;
+  if (fromEnv && existsSync(fromEnv)) return fromEnv;
+  const candidates = process.platform === 'win32'
+    ? ['D:/HBuilderX/cli.exe', 'C:/Program Files/HBuilderX/cli.exe', 'C:/HBuilderX/cli.exe']
+    : ['/Applications/HBuilderX.app/Contents/MacOS/cli'];
+  return candidates.find((p) => existsSync(p)) || null;
+}
+
+function defaultWechatDevtoolsCli() {
+  const fromEnv = process.env.WECHAT_DEVTOOLS_CLI;
+  if (fromEnv && existsSync(fromEnv)) return fromEnv;
+  const candidates = process.platform === 'win32'
+    ? ['C:/Program Files (x86)/Tencent/微信web开发者工具/cli.bat', 'D:/Program Files (x86)/Tencent/微信web开发者工具/cli.bat']
+    : ['/Applications/wechatwebdevtools.app/Contents/MacOS/cli'];
+  return candidates.find((p) => existsSync(p)) || null;
+}
+
 function detectBuild() {
-  const hbx = existsSync('/Applications/HBuilderX.app');
-  const hbxCli = '/Applications/HBuilderX.app/Contents/MacOS/cli';
-  const hbxVersion = hbx && existsSync(hbxCli)
+  const hbxCli = defaultHbuilderxCli();
+  const hbxVersion = hbxCli
     ? run(hbxCli, ['--version']).stdout.replace(/\u001b\[[0-9;]*m/g, '').trim()
     : null;
+  // Windows HBuilderX CLI refuses --version until the IDE is running; record the reason instead of a silent null.
+  const hbxCliBlockedNote = process.platform === 'win32' && hbxCli && !hbxVersion
+    ? "HBuilderX CLI present but IDE not running; run 'cli open' first (version probe needs a live IDE)"
+    : null;
+  const wechatCli = defaultWechatDevtoolsCli();
   const viteConfig = existsSync(join(ROOT, 'apps/uniapp/vite.config.js'))
     || existsSync(join(ROOT, 'apps/uniapp/vite.config.mjs'))
     || existsSync(join(ROOT, 'apps/uniapp/vite.config.ts'));
   return {
-    hbuilderx: { present: hbx, path: hbx ? '/Applications/HBuilderX.app' : null, version: hbxVersion, cli: existsSync(hbxCli) },
+    hbuilderx: { present: Boolean(hbxCli), path: hbxCli, version: hbxVersion, cli: Boolean(hbxCli), cli_blocked_note: hbxCliBlockedNote },
+    wechat_devtools: { present: Boolean(wechatCli), path: wechatCli },
     viteConfigPresent: viteConfig,
-    androidBuildTool: hbx && existsSync(hbxCli) ? 'HBuilderX cli launch app-android' : null,
+    androidBuildTool: hbxCli ? 'HBuilderX cli launch app-android' : null,
   };
 }
 
@@ -247,7 +283,8 @@ const md = `# E5 Environment Snapshot
 
 | Item | Value |
 |---|---|
-| HBuilderX | ${build.hbuilderx.present ? (build.hbuilderx.version || 'present') : 'MISSING'} |
+| HBuilderX | ${build.hbuilderx.present ? (build.hbuilderx.version || build.hbuilderx.cli_blocked_note || 'present') : 'MISSING'} |
+| WeChat devtools CLI | ${build.wechat_devtools.present ? build.wechat_devtools.path : 'MISSING'} |
 | vite.config | ${build.viteConfigPresent ? 'present' : 'absent'} |
 | android_toolchain | ${ready.android_toolchain} |
 
