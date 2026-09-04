@@ -32,6 +32,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         // Make app active
         NSApp.activate(ignoringOtherApps: true)
+
+        // 页面级自动化冒烟（仅 --smoke-pages 启动时生效）
+        PageSmoke.runIfRequested()
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {

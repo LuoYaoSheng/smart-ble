@@ -97,9 +97,11 @@ class MainWindowController: NSWindowController, NSWindowDelegate {
         let manager = BLEManager()
         self.bleManager = manager
 
-        // Publish to detail view
-        detailViewController.bleManager = manager
-        logViewController.bleManager = manager
+        // 用 setBLEManager 接线（仅赋属性不会建立 $discoveredDevices/$logs 等绑定，
+        // 会导致扫描按钮、过滤器与日志页全部失联）
+        scanViewController.setBLEManager(manager)
+        detailViewController.setBLEManager(manager)
+        logViewController.setBLEManager(manager)
 
         // Observe connection changes
         manager.$connectionState
