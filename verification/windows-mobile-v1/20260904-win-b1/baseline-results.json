@@ -155,10 +155,10 @@
       "id": "DEF-009",
       "severity": "P1",
       "status": "OPEN",
-      "summary": "U-AND (com.smartble) connect flow fails silently: device detail shows 连接中 then returns to scan list; connectGatt never called (logcat zero GATT-connect activity), firmware receives no connection event; no error surfaced to user",
+      "summary": "U-AND (com.smartble) BLE silently fails on App platform: connect flow shows 连接中 then returns to scan list with no connectGatt call; broadcast tab toggles UI to 正在广播 but no advertising API call and nothing on air (Windows observer dual-verified). Read/write/notify NOT_RUN.",
       "first_breakpoint": "apps/uniapp BLE connect implementation (uni-app runtime on Android); tap device card -> detail page auto-connect path",
-      "impact": "U-AND full peripheral round blocked at connect; read/write/notify NOT_RUN on U-AND",
-      "evidence": "e5-realdevice/u1-u7 screenshots (u3 detail 连接中, u4/u6 back at list), logcat MESSAGE_SCAN_STOP with zero connectGatt lines, serial baseline 3678 lines no conn events during 2 attempts"
+      "impact": "U-AND full peripheral round (connect/read/write/notify) and broadcast both blocked; root suspicion: uni-app App-side BLE plugin capability/permissions on this device/runtime",
+      "evidence": "e5-realdevice/u1-u7 + logcat (no connectGatt), serial baseline no conn events; e7-broadcast/u-bcast-live.txt (no phone adv) + logcat (no advertising API) + README"
     },
     {
       "id": "DEF-010",
@@ -254,6 +254,15 @@
         "DEF-006"
       ],
       "evidence": "e5-realdevice/def006/ + e6-windows/"
+    },
+    {
+      "timestamp": "2026-09-04T14:20:00+08:00",
+      "git_head_at_fix": "5f2ec43",
+      "scope": "windows-observes-android-broadcast round (e7)",
+      "f_and_broadcast": "PASS: Windows BleAdvDump captured phone adv 4237044C3D48 name=[耀生 的 S21] conn=1 uuids=0000fff0 rssi=-58/-59 during 正在广播; absent in 15s baseline before and 20s scan after stop (371 events)",
+      "u_and_broadcast": "FAIL (DEF-009 scope extended): UI 正在广播 but zero advertising API calls in logcat and no phone advertisement on air (Windows verified)",
+      "windows_tooling": "BleAdvDump.cs (csc+WinRT): full adv payload parser (name/uuids/mfr-data/connectable/rssi); exe not committed (build artifact)",
+      "evidence": "verification/windows-mobile-v1/20260904-win-b1/e7-broadcast/"
     }
   ],
   "secrets_in_report": "none"

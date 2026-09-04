@@ -110,3 +110,13 @@
 | 新登记 | DEF-009 / DEF-010 | U-AND 连接静默失效(P1)；F-AND 通知载荷未在 UI 呈现(P3) |
 
 证据：`e5-realdevice/def006/`、`e6-windows/`；登记：`baseline-results.json`（followups #3）。
+
+## I. Windows 监听安卓广播轮（14:10–14:17）
+
+| 项 | 状态 | 说明 |
+|---|---|---|
+| F-AND 广播→Windows 监听 | **PASS** | BleAdvDump（csc+WinRT 全载荷解析）：广播期 `4237044C3D48 name=[耀生 的 S21] conn=1 uuids=0000fff0 rssi=-58/-59`；未广播基线与停止后复扫（371 事件）均无该设备 |
+| U-AND 广播→Windows 监听 | **FAIL（DEF-009 扩展）** | UI「正在广播」但 logcat 零广播 API 调用、空中无手机广播；与连接静默失效同型 |
+| Windows 工具链 | BleAdvDump.cs 入库（exe 不提交） | 名称/服务UUID/厂商数据/可连接标志/RSSI 区间全解析 |
+
+证据：`e7-broadcast/`；登记：`baseline-results.json`（followups #4）。
