@@ -54,11 +54,13 @@
 
 | 编号 | 级别 | 摘要 | 第一断点 | 影响 | 状态 |
 |---|---|---|---|---|---|
-| DEF-001 | P1 | ESP32 板卡实测为 ESP32-S3，固件目标 board=esp32dev 不匹配，烧录失败 | hardware 固件板型配置（platformio.ini）与实物硬件 | 全部真机 E5（三实现线 Peripheral/Observer 轮） | OPEN（需决策：确认板卡/增设 s3 环境或换板） |
+| DEF-001 | P1 | ESP32 板卡实测为 ESP32-S3，固件目标 board=esp32dev 不匹配，烧录失败 | hardware 固件板型配置（platformio.ini）与实物硬件 | 全部真机 E5（三实现线 Peripheral/Observer 轮） | RESOLVED（2026-09-04 E5 轮：esptool 实测 S3 rev v0.2/16MB，新增 fixture_common_s3/peripheral_s3/observer_s3 并烧录验证，原 esp32dev 环境未动；见 I 节与 e5-realdevice/） |
 | DEF-002 | P2 | HBuilderX 5.24 CLI 移除 uniapp.test，UniAutomator 页面测试入口失效 | 测试工具链（HBuilderX CLI 版本） | U-WX/U-AND 页面自动化（E1–E4） | OPEN（方案：装对应版本/插件或迁 uni-automator npm） |
 | DEF-003 | P2 | mp-weixin 编译 rollup manualChunks/inlineDynamicImports 不兼容 | 编译工具链（HBuilderX 5.24 vue3 编译器；根因是 vite.config 顶层无条件 inlineDynamicImports 波及 mp 平台） | U-WX 小程序产物生成 | RESOLVED（2026-09-04 增补：纯 CLI 构建 + inline 补丁收敛为仅 APP 平台，见 H 节与 uniapp-cli-build.txt） |
 | DEF-004 | P3 | Flutter 20 文件 dart format 偏差 | apps/flutter 代码规范 | F-AND Gate M1 前置 | OPEN（M1 一次性 `dart format` 收口） |
 | DEF-005 | P3 | flutter doctor：cmdline-tools 缺失、license 未确认 | 本机 Android SDK | 目前未阻塞 debug 构建；release/某些 gradle 任务可能受阻 | OPEN（记录在案） |
+| DEF-006 | P1 | S3 外设固件客户端断连后停止广播（2/2 复现），仅硬复位可恢复；运行期串口事件静默 | 真机 E5 连接/断连循环（NimBLE onDisconnect 或 loop 重启广播路径） | E5 三客户端重复连接场景 + S3 串口事件契约 | OPEN（下一步：loop 心跳构建定位挂死 vs 广播失败；核对 NimBLE-Arduino 1.4.x+core 组合） |
+| DEF-007 | P3 | U-AND 首页蓝牙状态行恒显「蓝牙已关闭」 | apps/uniapp/composables/use-ble-scan.js `uni.getSystemSetting().bluetoothEnabled`（App 端不返回） | 仅显示层；真机扫描/发现已验证可用 | OPEN |
 
 ## F. 未执行项汇总
 
@@ -83,3 +85,14 @@
 - `check-uniapp-assets.mjs` 扩展 dev/build 双目录取最新 mtime；`--require-compiled` 对 CLI 产物 PASS（16 引用）。
 - 回归：`verify-uniapp.sh` PASS（28 unit files + 11 static gates）。证据：`uniapp-cli-build.txt`。
 - 未验证：HBuilderX 路径 mp-weixin 编译（理论同解，未跑）；微信开发者工具导入真机预览 NOT_RUN；APP 产物 HBuilderX 真机运行 NOT_RUN。
+
+## I. 增补（2026-09-04：E5 真机轮 PC×手机×硬件）
+
+应用户要求以真机联测为当前重点，完成三端第一轮闭环（基线 git 79dbc14，详见 `e5-realdevice/README.md`）：
+
+- **硬件（DEF-001 RESOLVED）**：COM12 esptool 实测 ESP32-S3 rev v0.2 / 16MB quad；platformio.ini 新增 `fixture_common_s3`/`fixture_peripheral_s3`/`fixture_observer_s3`（board=esp32-s3-devkitc-1、去 `-mfix-esp32-psram-cache-issue`/`BOARD_HAS_PSRAM`，原 esp32dev 环境未动）。peripheral_s3 烧录 COM12 PASS，串口 boot JSON + 3 服务 12 特征 + `{"type":"adv","status":"started"}` PASS；observer_s3 编译 PASS（未烧录，单板占用）。
+- **F-AND 手机**：debug APK 构建/安装/授权 PASS；`svc bluetooth enable` 被三星拒绝，经 REQUEST_ENABLE 对话框 + uiautomator 定位点击开启；扫描发现 BLEToolkit-Server（-49dBm）、连接 + device_info 读取（1.0.0/peripheral/MAC 与 esptool 一致）全 PASS。
+- **U-WX PC**：微信开发者工具已登录；`cli open` stderr 报 getAppInfo GENERIC_ERROR 但窗口与模拟器实际渲染首页（PASS_WITH_LIMITATION）；`cli preview` 预览包 1.0MB + 二维码生成 PASS（appid wxf6c58b1dcac4c82d 有预览权限）。手机扫码 NOT_RUN（需人工）。
+- **U-AND 手机**：HBuilderX CLI `launch app-android --deviceId`（纯 CLI）基座安装+同步+启动 PASS，App Launch/Show 日志在案；首页渲染 PASS；ESP32 复位后扫描发现 -49dBm PASS。
+- **新缺陷**：DEF-006（P1）S3 断连后停止广播 2/2 复现 + 运行期串口事件静默；DEF-007（P3）U-AND 蓝牙状态行误显（仅显示层）。
+- 现场注意：Windows 上 `timeout` 杀 pio monitor 会留僵尸进程占 COM12（本轮踩坑两次，需 `taskkill /IM pio.exe /F`）。
