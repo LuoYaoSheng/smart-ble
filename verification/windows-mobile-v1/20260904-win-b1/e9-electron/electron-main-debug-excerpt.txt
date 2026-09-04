@@ -1,0 +1,81 @@
+=== Electron App Main Debug Log — DEF-012 loop evidence (trimmed) ===
+Full log: 53,745,487 bytes / app stdout2: 94,077,232 bytes (not committed; sizes recorded here)
+grep counts: 'Characteristic discovery error' x135184, 'already has' x140131
+
+--- first 40 lines (app start, normal) ---
+  2026-09-04T06:45:14.309Z === Electron Main Process Started ===
+  2026-09-04T06:45:14.631Z Creating main window...
+  2026-09-04T06:45:15.097Z Window ready to show
+  2026-09-04T06:45:15.211Z IPC: ble:init called
+  2026-09-04T06:45:15.214Z Loading noble module...
+  2026-09-04T06:45:15.288Z Noble loaded, state: unknown
+  2026-09-04T06:45:15.290Z Setting up BLE events
+  2026-09-04T06:45:15.334Z BLE State changed: poweredOn
+  2026-09-04T06:45:15.336Z [Main -> Renderer] ble:stateChanged: {"state":"poweredOn"}
+  2026-09-04T06:45:15.497Z Sending initial state: poweredOn to renderer
+  2026-09-04T06:45:15.499Z [Main -> Renderer] ble:stateChanged: {"state":"poweredOn"}
+  2026-09-04T06:45:15.502Z IPC: ble:init result: true
+  2026-09-04T06:47:10.652Z === Electron Main Process Started ===
+  2026-09-04T06:47:10.974Z Creating main window...
+  2026-09-04T06:47:11.392Z Window ready to show
+  2026-09-04T06:47:11.487Z IPC: ble:init called
+  2026-09-04T06:47:11.490Z Loading noble module...
+  2026-09-04T06:47:11.558Z Noble loaded, state: unknown
+  2026-09-04T06:47:11.561Z Setting up BLE events
+  2026-09-04T06:47:11.661Z BLE State changed: poweredOn
+  2026-09-04T06:47:11.664Z [Main -> Renderer] ble:stateChanged: {"state":"poweredOn"}
+  2026-09-04T06:47:11.766Z Sending initial state: poweredOn to renderer
+  2026-09-04T06:47:11.768Z [Main -> Renderer] ble:stateChanged: {"state":"poweredOn"}
+  2026-09-04T06:47:11.770Z IPC: ble:init result: true
+  2026-09-04T06:48:28.502Z [Main -> Renderer] ble:deviceDiscovered: {"id":"7d75e800eedd","name":"未知设备","rssi":-79,"address":"7d:75:e8:00:ee:dd","connectionState":"disconnected","advertisement":{"txPowerLevel":0,"serviceUuids":[],"serviceData":[],"manufacturerData":"060001092002b729274d7158a631e2338be672994aabfad4ad3e8e4225","solicitedServiceUuids":[],"connectable":true,"scannable":true}}
+  2026-09-04T06:48:28.602Z [Main -> Renderer] ble:deviceDiscovered: {"id":"1782337bf244","name":"未知设备","rssi":-79,"address":"17:82:33:7b:f2:44","connectionState":"disconnected","advertisement":{"txPowerLevel":0,"serviceUuids":[],"serviceData":[],"manufacturerData":"06000109202251ba14fa385226023bc81e40ff7910b6e21e0b3a5e4fed","solicitedServiceUuids":[],"connectable":true,"scannable":true}}
+  2026-09-04T06:48:28.726Z [Main -> Renderer] ble:deviceDiscovered: {"id":"063123e6ff86","name":"未知设备","rssi":-87,"address":"06:31:23:e6:ff:86","connectionState":"disconnected","advertisement":{"txPowerLevel":0,"serviceUuids":[],"serviceData":[],"manufacturerData":"06000109200260c2188d0039bfd863ff0f794c7ddcbe67c66cefc48945","solicitedServiceUuids":[],"connectable":true,"scannable":true}}
+  2026-09-04T06:48:28.862Z [Main -> Renderer] ble:deviceDiscovered: {"id":"19e6be3a08c8","name":"未知设备","rssi":-58,"address":"19:e6:be:3a:08:c8","connectionState":"disconnected","advertisement":{"txPowerLevel":0,"serviceUuids":[],"serviceData":[],"manufacturerData":"060001092002b8cf149a70f6b700074f2e17d602954c820e105cc895eb","solicitedServiceUuids":[],"connectable":true,"scannable":true}}
+  2026-09-04T06:48:28.976Z [Main -> Renderer] ble:deviceDiscovered: {"id":"0d564a799d81","name":"未知设备","rssi":-65,"address":"0d:56:4a:79:9d:81","connectionState":"disconnected","advertisement":{"txPowerLevel":2147353520,"serviceUuids":[],"serviceData":[],"manufacturerData":"06000109200205396fd2c67d119f336359a1b7a34c8b20d4a866d29855","solicitedServiceUuids":[],"connectable":true,"scannable":true}}
+  2026-09-04T06:48:29.076Z [Main -> Renderer] ble:deviceDiscovered: {"id":"19e6be3a08c8","name":"未知设备","rssi":-62,"address":"19:e6:be:3a:08:c8","connectionState":"disconnected","advertisement":{"txPowerLevel":0,"serviceUuids":[],"serviceData":[],"manufacturerData":"060001092002b8cf149a70f6b700074f2e17d602954c820e105cc895eb","solicitedServiceUuids":[],"connectable":true,"scannable":true}}
+  2026-09-04T06:48:29.078Z [Main -> Renderer] ble:deviceDiscovered: {"id":"0d564a799d81","name":"未知设备","rssi":-66,"address":"0d:56:4a:79:9d:81","connectionState":"disconnected","advertisement":{"txPowerLevel":2147353520,"serviceUuids":[],"serviceData":[],"manufacturerData":"06000109200205396fd2c67d119f336359a1b7a34c8b20d4a866d29855","solicitedServiceUuids":[],"connectable":true,"scannable":true}}
+  2026-09-04T06:48:29.088Z [Main -> Renderer] ble:deviceDiscovered: {"id":"5b9cf0cc4729","name":"未知设备","rssi":-61,"address":"5b:9c:f0:cc:47:29","connectionState":"disconnected","advertisement":{"txPowerLevel":0,"serviceUuids":["fdaa"],"serviceData":[],"manufacturerData":"8f032c1134366e4b103041a201152629ff1757010302","solicitedServiceUuids":[],"connectable":true,"scannable":true}}
+  2026-09-04T06:48:29.092Z [Main -> Renderer] ble:deviceDiscovered: {"id":"5b9cf0cc4729","name":"未知设备","rssi":-64,"address":"5b:9c:f0:cc:47:29","connectionState":"disconnected","advertisement":{"txPowerLevel":0,"serviceUuids":[],"serviceData":[],"manufacturerData":"","solicitedServiceUuids":[],"connectable":true,"scannable":true}}
+  2026-09-04T06:48:29.095Z [Main -> Renderer] ble:deviceDiscovered: {"id":"10b41dcd238d","name":"BL","rssi":-40,"address":"10:b4:1d:cd:23:8d","connectionState":"disconnected","advertisement":{"txPowerLevel":0,"serviceUuids":["4fafc2011fb5459e8fccc5c9c331914b"],"serviceData":[],"manufacturerData":"","solicitedServiceUuids":[],"connectable":true,"scannable":true}}
+  2026-09-04T06:48:29.096Z [Main -> Renderer] ble:deviceDiscovered: {"id":"10b41dcd238d","name":"BLEToolkit-Server","rssi":-40,"address":"10:b4:1d:cd:23:8d","connectionState":"disconnected","advertisement":{"txPowerLevel":0,"serviceUuids":[],"serviceData":[],"manufacturerData":"e0004c69676874424c45","solicitedServiceUuids":[],"connectable":true,"scannable":true}}
+  2026-09-04T06:48:29.445Z [Main -> Renderer] ble:deviceDiscovered: {"id":"1782337bf244","name":"未知设备","rssi":-69,"address":"17:82:33:7b:f2:44","connectionState":"disconnected","advertisement":{"txPowerLevel":0,"serviceUuids":[],"serviceData":[],"manufacturerData":"06000109202251ba14fa385226023bc81e40ff7910b6e21e0b3a5e4fed","solicitedServiceUuids":[],"connectable":true,"scannable":true}}
+  2026-09-04T06:48:29.917Z [Main -> Renderer] ble:deviceDiscovered: {"id":"0d564a799d81","name":"未知设备","rssi":-65,"address":"0d:56:4a:79:9d:81","connectionState":"disconnected","advertisement":{"txPowerLevel":2147353520,"serviceUuids":[],"serviceData":[],"manufacturerData":"06000109200205396fd2c67d119f336359a1b7a34c8b20d4a866d29855","solicitedServiceUuids":[],"connectable":true,"scannable":true}}
+  2026-09-04T06:48:30.032Z [Main -> Renderer] ble:deviceDiscovered: {"id":"19e6be3a08c8","name":"未知设备","rssi":-54,"address":"19:e6:be:3a:08:c8","connectionState":"disconnected","advertisement":{"txPowerLevel":0,"serviceUuids":[],"serviceData":[],"manufacturerData":"060001092002b8cf149a70f6b700074f2e17d602954c820e105cc895eb","solicitedServiceUuids":[],"connectable":true,"scannable":true}}
+  2026-09-04T06:48:30.271Z [Main -> Renderer] ble:deviceDiscovered: {"id":"10b41dcd238d","name":"BL","rssi":-38,"address":"10:b4:1d:cd:23:8d","connectionState":"disconnected","advertisement":{"txPowerLevel":0,"serviceUuids":["4fafc2011fb5459e8fccc5c9c331914b"],"serviceData":[],"manufacturerData":"","solicitedServiceUuids":[],"connectable":true,"scannable":true}}
+  2026-09-04T06:48:30.276Z [Main -> Renderer] ble:deviceDiscovered: {"id":"10b41dcd238d","name":"BLEToolkit-Server","rssi":-38,"address":"10:b4:1d:cd:23:8d","connectionState":"disconnected","advertisement":{"txPowerLevel":0,"serviceUuids":[],"serviceData":[],"manufacturerData":"e0004c69676874424c45","solicitedServiceUuids":[],"connectable":true,"scannable":true}}
+
+--- representative loop section (from saved tail) ---
+  2026-09-04T07:11:04.189Z Starting service discovery for: 10b41dcd238d
+  2026-09-04T07:11:04.193Z Starting service discovery for: 10b41dcd238d
+  2026-09-04T07:11:04.194Z Starting service discovery for: 10b41dcd238d
+  2026-09-04T07:11:04.195Z Starting service discovery for: 10b41dcd238d
+  2026-09-04T07:11:04.196Z Starting service discovery for: 10b41dcd238d
+  2026-09-04T07:11:04.197Z Starting service discovery for: 10b41dcd238d
+  2026-09-04T07:11:04.198Z Starting service discovery for: 10b41dcd238d
+  2026-09-04T07:11:04.199Z Starting service discovery for: 10b41dcd238d
+  2026-09-04T07:11:04.200Z Starting service discovery for: 10b41dcd238d
+  2026-09-04T07:11:04.200Z Starting service discovery for: 10b41dcd238d
+  2026-09-04T07:11:04.201Z Starting service discovery for: 10b41dcd238d
+  2026-09-04T07:11:04.202Z Starting service discovery for: 10b41dcd238d
+  2026-09-04T07:11:04.203Z Starting service discovery for: 10b41dcd238d
+  2026-09-04T07:11:04.204Z Starting service discovery for: 10b41dcd238d
+  2026-09-04T07:11:04.205Z Starting service discovery for: 10b41dcd238d
+  2026-09-04T07:11:04.207Z Starting service discovery for: 10b41dcd238d
+  2026-09-04T07:11:04.208Z Starting service discovery for: 10b41dcd238d
+  2026-09-04T07:11:04.209Z Starting service discovery for: 10b41dcd238d
+  2026-09-04T07:11:04.210Z Starting service discovery for: 10b41dcd238d
+  2026-09-04T07:11:04.210Z Starting service discovery for: 10b41dcd238d
+  2026-09-04T07:11:04.211Z Starting service discovery for: 10b41dcd238d
+  2026-09-04T07:11:04.212Z Starting service discovery for: 10b41dcd238d
+  2026-09-04T07:11:04.213Z Starting service discovery for: 10b41dcd238d
+  2026-09-04T07:11:04.214Z Starting service discovery for: 10b41dcd238d
+  2026-09-04T07:11:04.215Z Starting service discovery for: 10b41dcd238d
+  2026-09-04T07:11:04.216Z Starting service discovery for: 10b41dcd238d
+  2026-09-04T07:11:04.217Z Starting service discovery for: 10b41dcd238d
+  2026-09-04T07:11:04.218Z Starting service discovery for: 10b41dcd238d
+  2026-09-04T07:11:04.219Z Starting service discovery for: 10b41dcd238d
+  2026-09-04T07:11:04.220Z Starting service discovery for: 10b41dcd238d
+
+--- servicesDiscovered spam (all characteristics empty, 2ms interval) ---
+  2026-09-04T07:01:52.589Z [Main -> Renderer] ble:servicesDiscovered: {"deviceId":"10b41dcd238d","services":[{"uuid":"1800","name":"通用访问","characteristics":[]},{"uuid":"1801","name":"通用属性","characteristics":[]},{"uuid":"4fafc2011fb5459e8fccc5c9c331914b","name":"OTA 升级服务","characteristics":[]},{"uuid":"4fafc2011fb5459e8fccc5c9c331914c","name":"OTA 升级服务","characteristics":[]},{"uuid":"4fafc2011fb5459e8fccc5c9c331914d","name":"OTA 升级服务","characteristics":[]}]}
+  2026-09-04T07:01:53.118Z [Main -> Renderer] ble:servicesDiscovered: {"deviceId":"10b41dcd238d","services":[{"uuid":"1800","name":"通用访问","characteristics":[{"uuid":"2a00","name":"设备名称","properties":["read"]},{"uuid":"2a01","name":"外观","properties":["read"]}]},{"uuid":"1801","name":"通用属性","characteristics":[]},{"uuid":"4fafc2011fb5459e8fccc5c9c331914b","name":"OTA 升级服务","characteristics":[]},{"uuid":"4fafc2011fb5459e8fccc5c9c331914c","name":"OTA 升级服务","characteristics":[]},{"uuid":"4fafc2011fb5459e8fccc5c9c331914d","name":"OTA 升级服务","characteristics":[]}]}

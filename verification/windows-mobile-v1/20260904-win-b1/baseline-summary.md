@@ -120,3 +120,17 @@
 | Windows 工具链 | BleAdvDump.cs 入库（exe 不提交） | 名称/服务UUID/厂商数据/可连接标志/RSSI 区间全解析 |
 
 证据：`e7-broadcast/`；登记：`baseline-results.json`（followups #4）。
+
+## J. 双手机矩阵 + 自研 Windows 客户端轮（14:20–15:12）
+
+| 项 | 状态 | 说明 |
+|---|---|---|
+| U-AND @ 小米(新手机B) 扫描 | PASS | -41dBm；连接首试静默失败、二试成功（5 服务，串口全链） |
+| U-AND 特征值渲染 | **FAIL（DEF-011 P2）** | 服务展开后特征行 0 像素渲染；读/写/notify UI 不可达 NOT_RUN |
+| DEF-009 修订 | 设备相关竞态 | 三星 0/2、小米 1/2；怀疑扫描未停即连接的时序问题 |
+| Electron noble 后端轮 | **PASS** | 233ms 连接、5 服务 15 特征、读/写/订阅全过（串口 hex 对账） |
+| Electron 应用本体 UI | 启动/扫描/连接 PASS；**连接后 FAIL（DEF-012 P1）** | 特征发现死循环（13.5 万错误行/20 分钟），主进程挂死 |
+| Tauri | NOT_RUN | 本机无 Rust 工具链 |
+| 断开恢复广播 | PASS（第 4 数据点 521ms） | 510/514/515/521ms 跨四客户端一致 |
+
+证据：`e8-devicematrix/`、`e9-electron/`；登记：`baseline-results.json`（followups #5）。

@@ -155,10 +155,10 @@
       "id": "DEF-009",
       "severity": "P1",
       "status": "OPEN",
-      "summary": "U-AND (com.smartble) BLE silently fails on App platform: connect flow shows 连接中 then returns to scan list with no connectGatt call; broadcast tab toggles UI to 正在广播 but no advertising API call and nothing on air (Windows observer dual-verified). Read/write/notify NOT_RUN.",
+      "summary": "U-AND BLE reliability: Samsung SM-G9910 connect 0/2 silent failures (no connectGatt) + broadcast silently dead; Xiaomi 24117RK2CC same APK connect succeeds on 2nd attempt (1st fails silently). Timing race in uni-app App-side BLE (suspect connect while scan active / silent error swallowing); device-dependent trigger rate.",
       "first_breakpoint": "apps/uniapp BLE connect implementation (uni-app runtime on Android); tap device card -> detail page auto-connect path",
       "impact": "U-AND full peripheral round (connect/read/write/notify) and broadcast both blocked; root suspicion: uni-app App-side BLE plugin capability/permissions on this device/runtime",
-      "evidence": "e5-realdevice/u1-u7 + logcat (no connectGatt), serial baseline no conn events; e7-broadcast/u-bcast-live.txt (no phone adv) + logcat (no advertising API) + README"
+      "evidence": "e5-realdevice/u1-u7 (Samsung), e8-devicematrix/b-*.xml (Xiaomi: fail then success), e7-broadcast (broadcast), serial+logcat cross-checks"
     },
     {
       "id": "DEF-010",
@@ -168,6 +168,24 @@
       "first_breakpoint": "apps/flutter notify handling -> UI value/log rendering",
       "impact": "Display only; firmware->phone notification delivery itself verified at stack level",
       "evidence": "e5-realdevice/def006/ui-f14.xml/f14 dumps vs serial subscribe+notify lines (ts=8460201 window)"
+    },
+    {
+      "id": "DEF-011",
+      "severity": "P2",
+      "status": "OPEN",
+      "summary": "U-AND device detail: expanding a service shows zero characteristic rows (header toggles 展开/收起 but content area renders nothing, pixel-verified 0 non-background px)",
+      "first_breakpoint": "apps/uniapp device detail service expansion rendering",
+      "impact": "read/write/notify unreachable in U-AND UI even when connected",
+      "evidence": "e8-devicematrix/b-1800open.png + b-reexpand pixel scans (gap y1595-1735 = 0 px) + README"
+    },
+    {
+      "id": "DEF-012",
+      "severity": "P1",
+      "status": "OPEN",
+      "summary": "Electron desktop client: after connecting, characteristic discovery enters infinite error-retry loop (135k+ 'Characteristic discovery error' lines, servicesDiscovered respam every ~2ms with empty characteristics) -> main process busy, UI hangs, needs taskkill",
+      "first_breakpoint": "apps/desktop/electron/src/main/index.js characteristic discovery orchestration (~line 509 'already has characteristics' branch)",
+      "impact": "Windows self-developed client unusable beyond connect; noble backend itself proven fine headlessly (233ms connect, 5 svc/15 chars, read/write/subscribe all PASS with serial cross-check)",
+      "evidence": "e9-electron/ (noble-probe/noble-gatt PASS logs, electron-main-debug-excerpt.txt loop evidence, README)"
     }
   ],
   "phase_a_artifacts": "MISSING on all hosts (flagged in report; Phase A belongs to the other machine per task book)",
@@ -263,6 +281,26 @@
       "u_and_broadcast": "FAIL (DEF-009 scope extended): UI 正在广播 but zero advertising API calls in logcat and no phone advertisement on air (Windows verified)",
       "windows_tooling": "BleAdvDump.cs (csc+WinRT): full adv payload parser (name/uuids/mfr-data/connectable/rssi); exe not committed (build artifact)",
       "evidence": "verification/windows-mobile-v1/20260904-win-b1/e7-broadcast/"
+    },
+    {
+      "timestamp": "2026-09-04T15:15:00+08:00",
+      "git_head_at_fix": "bacfaeb",
+      "scope": "second-phone device matrix (e8) + self-developed Windows Electron client (e9)",
+      "device_matrix": {
+        "phone_b": "Xiaomi 24117RK2CC (50143338), U-AND APK pulled from phone A and installed",
+        "u_and_on_b": "scan PASS (-41dBm); connect attempt1 silent fail, attempt2 PASS (serial full chain, 5 services); disconnect -> 521ms re-advertise; DEF-009 refined to device-dependent race",
+        "u_and_char_rows": "FAIL -> DEF-011 (expansion renders 0 px of characteristic rows); read/write/notify NOT_RUN"
+      },
+      "electron_windows_client": {
+        "backend_headless": "PASS: noble probe scan finds ESP32; GATT round connect 233ms, 5 svc/15 chars, read 2A00=BLEToolkit-Server, write noble-gatt-write (16B serial hex match), subscribe attr42 confirmed, disconnect",
+        "app_real_ui": "launch+scan+connect PASS via CDP (7 devices, cards in shadow DOM, connect click -> serial chain ts=13063804); after connect FAIL -> DEF-012 discovery infinite loop, app hung",
+        "tauri": "NOT_RUN (no Rust toolchain on host)"
+      },
+      "new_defects": [
+        "DEF-011",
+        "DEF-012"
+      ],
+      "evidence": "e8-devicematrix/ + e9-electron/"
     }
   ],
   "secrets_in_report": "none"

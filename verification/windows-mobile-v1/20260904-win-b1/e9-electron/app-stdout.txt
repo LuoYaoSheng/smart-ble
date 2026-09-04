@@ -1,0 +1,16 @@
+
+=== Electron Main Process Started ===
+Creating main window...
+Window ready to show
+IPC: ble:init called
+Loading noble module...
+Noble loaded, state: unknown
+Setting up BLE events
+BLE State changed: poweredOn
+[Main -> Renderer] ble:stateChanged: { state: 'poweredOn' }
+[19532:0904/144515.453:ERROR:gpu_process_host.cc(991)] GPU process exited unexpectedly: exit_code=-1073740791
+Sending initial state: poweredOn to renderer
+[Main -> Renderer] ble:stateChanged: { state: 'poweredOn' }
+IPC: ble:init result: true
+[19532:0904/144515.921:ERROR:gpu_process_host.cc(991)] GPU process exited unexpectedly: exit_code=-1073740791
+[19532:0904/144516.387:ERROR:gpu_process_host.cc(991)] GPU process exited unexpectedly: exit_code=-1073740791
