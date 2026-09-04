@@ -48,10 +48,23 @@
   "defects": [
     { "id": "DEF-001", "severity": "P1", "summary": "Board is ESP32-S3 but firmware targets esp32dev; upload fails", "status": "OPEN" },
     { "id": "DEF-002", "severity": "P2", "summary": "HBuilderX 5.24 CLI removed uniapp.test; UniAutomator page tests blocked", "status": "OPEN" },
-    { "id": "DEF-003", "severity": "P2", "summary": "mp-weixin compile rollup manualChunks/inlineDynamicImports incompatible", "status": "OPEN" },
+    { "id": "DEF-003", "severity": "P2", "summary": "mp-weixin compile rollup manualChunks/inlineDynamicImports incompatible", "status": "RESOLVED", "resolution": "2026-09-04 followup: pure-CLI build (@dcloudio vite toolchain 3.0.0-alpha-5020520260829001) + vite.config inline patch scoped to APP platforms; evidence: uniapp-cli-build.txt" },
     { "id": "DEF-004", "severity": "P3", "summary": "20/32 flutter files deviate from dart format", "status": "OPEN" },
     { "id": "DEF-005", "severity": "P3", "summary": "flutter doctor: cmdline-tools missing, licenses unaccepted", "status": "OPEN" }
   ],
   "phase_a_artifacts": "MISSING on all hosts (flagged in report; Phase A belongs to the other machine per task book)",
+  "followups": [
+    {
+      "timestamp": "2026-09-04T10:05:00+08:00",
+      "git_head_at_fix": "6e9796f1548dfefad653aff961378be98a510041",
+      "scope": "uniapp toolchain: drop HBuilderX compile dependency (pure CLI)",
+      "mp_weixin_cli_build": { "status": "PASS", "command": "npm run build:mp-weixin", "output": "unpackage/dist/build/mp-weixin (1344 KB)", "app_js_sha256": "dac18c79d7dd58a07a09ee6e541646c8ac841a79b0f024aa06ddc8dc1db22468" },
+      "app_cli_build": { "status": "PASS", "command": "npm run build:app", "app_service_js_sha256": "37af1f1d071224ffee09d12876eb73685c5a46ba98f73714de575539a49b3ade" },
+      "asset_gate": "PASS (16 source+compiled references)",
+      "verify_uniapp_sh_rerun": "PASS (28 unit files plus 11 static gates)",
+      "resolved_defects": ["DEF-003"],
+      "evidence": "uniapp-cli-build.txt"
+    }
+  ],
   "secrets_in_report": "none"
 }

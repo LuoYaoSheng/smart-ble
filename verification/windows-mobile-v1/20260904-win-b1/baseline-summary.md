@@ -56,7 +56,7 @@
 |---|---|---|---|---|---|
 | DEF-001 | P1 | ESP32 板卡实测为 ESP32-S3，固件目标 board=esp32dev 不匹配，烧录失败 | hardware 固件板型配置（platformio.ini）与实物硬件 | 全部真机 E5（三实现线 Peripheral/Observer 轮） | OPEN（需决策：确认板卡/增设 s3 环境或换板） |
 | DEF-002 | P2 | HBuilderX 5.24 CLI 移除 uniapp.test，UniAutomator 页面测试入口失效 | 测试工具链（HBuilderX CLI 版本） | U-WX/U-AND 页面自动化（E1–E4） | OPEN（方案：装对应版本/插件或迁 uni-automator npm） |
-| DEF-003 | P2 | mp-weixin 编译 rollup manualChunks/inlineDynamicImports 不兼容 | 编译工具链（HBuilderX 5.24 vue3 编译器） | U-WX 小程序产物生成 | OPEN（与 macOS 已知 IIFE 问题同型） |
+| DEF-003 | P2 | mp-weixin 编译 rollup manualChunks/inlineDynamicImports 不兼容 | 编译工具链（HBuilderX 5.24 vue3 编译器；根因是 vite.config 顶层无条件 inlineDynamicImports 波及 mp 平台） | U-WX 小程序产物生成 | RESOLVED（2026-09-04 增补：纯 CLI 构建 + inline 补丁收敛为仅 APP 平台，见 H 节与 uniapp-cli-build.txt） |
 | DEF-004 | P3 | Flutter 20 文件 dart format 偏差 | apps/flutter 代码规范 | F-AND Gate M1 前置 | OPEN（M1 一次性 `dart format` 收口） |
 | DEF-005 | P3 | flutter doctor：cmdline-tools 缺失、license 未确认 | 本机 Android SDK | 目前未阻塞 debug 构建；release/某些 gradle 任务可能受阻 | OPEN（记录在案） |
 
@@ -72,3 +72,14 @@
 ## G. 安全
 
 无 Wi-Fi 密码/token/证书/签名/账号凭据入档；大体积 APK 留 ignored 路径，仅记录 SHA256。
+
+## H. 增补（2026-09-04：UniApp 去 HBuilderX 编译依赖）
+
+应用户要求评估并落地「不经 HBuilderX、直接 CLI 构建」：
+
+- `apps/uniapp` 挂上 npm `vue3` 线工具链（@dcloudio 四包锁定 `3.0.0-alpha-5020520260829001` + vite `5.2.8` + vue `3.4.21`）；新增 `scripts/uniapp/run-uni.mjs` 把 HBuilderX 根目录布局映射到 CLI（UNI_INPUT_DIR/UNI_OUTPUT_DIR），产物仍落 `unpackage/dist/{dev|build}/<platform>`，既有工具路径不变。
+- `npm run build:mp-weixin` **PASS**（DEF-003 解除，产物 1344 KB）；`npm run build:app` **PASS**（`app-service.js` 产出）。HBuilderX 此后仅承担真机运行/基座/APK 打包。
+- 根因修复：vite.config 顶层无条件 `inlineDynamicImports` 收敛为仅 APP 平台注入；工具链解析改为工程 node_modules 优先、HBuilderX 目录兜底（跨 macOS/Windows）。
+- `check-uniapp-assets.mjs` 扩展 dev/build 双目录取最新 mtime；`--require-compiled` 对 CLI 产物 PASS（16 引用）。
+- 回归：`verify-uniapp.sh` PASS（28 unit files + 11 static gates）。证据：`uniapp-cli-build.txt`。
+- 未验证：HBuilderX 路径 mp-weixin 编译（理论同解，未跑）；微信开发者工具导入真机预览 NOT_RUN；APP 产物 HBuilderX 真机运行 NOT_RUN。

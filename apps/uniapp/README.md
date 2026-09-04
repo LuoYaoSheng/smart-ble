@@ -65,7 +65,7 @@ static/                   小程序资源
 bash ../../scripts/verify-uniapp.sh
 ```
 
-该命令统一运行单元测试、Smart HID 协议锁、静态资源检查、Vue SFC 解析与 Git 空白检查。HBuilderX 编译、微信开发者工具自动化，以及最终 BLE、扫码、小程序跳转和真机页面效果仍是独立验证阶段，不能由本地检查替代。
+该命令统一运行单元测试、Smart HID 协议锁、静态资源检查、Vue SFC 解析与 Git 空白检查。微信开发者工具自动化，以及最终 BLE、扫码、小程序跳转和真机页面效果仍是独立验证阶段，不能由本地检查替代。
 
 当前 10 个注册页面及主要跳转回归：
 
@@ -73,13 +73,25 @@ bash ../../scripts/verify-uniapp.sh
 bash ../../scripts/verify-uniapp-pages.sh
 ```
 
-完成 HBuilderX 微信编译后，可强制核对编译产物资源：
+## 编译（纯 CLI，不经 HBuilderX）
+
+编译工具链来自 `apps/uniapp/package.json` devDependencies（@dcloudio vite 线，锁定版本），首次使用先 `npm install`：
+
+```bash
+npm run build:mp-weixin   # 微信小程序产物 -> unpackage/dist/build/mp-weixin（导入微信开发者工具运行）
+npm run dev:mp-weixin     # 微信小程序 watch 模式 -> unpackage/dist/dev/mp-weixin
+npm run build:app         # APP 资源编译 -> unpackage/dist/build/app（真机运行/基座/APK 打包仍由 HBuilderX 承担）
+```
+
+入口是 `scripts/uniapp/run-uni.mjs`：它把 HBuilderX 根目录工程布局映射到 CLI（UNI_INPUT_DIR/UNI_OUTPUT_DIR），产物保持 `unpackage/dist/{dev|build}/<platform>` 布局。`vite.config.js` 的 APP inline 补丁只作用于 APP 平台；工程 node_modules 缺失时回退 HBuilderX 内置编译器。
+
+编译完成后可强制核对编译产物资源（dev/build 任一最新产物均可）：
 
 ```bash
 node ../../scripts/check-uniapp-assets.mjs --require-compiled
 ```
 
-安装官方 HBuilderX 自动化测试插件及其测试环境后，运行微信页面自动化：
+安装官方 HBuilderX 自动化测试插件及其测试环境后，运行微信页面自动化（注意 HBuilderX 5.24 CLI 已移除 uniapp.test，见 DEF-002）：
 
 ```bash
 /Applications/HBuilderX.app/Contents/MacOS/cli uniapp.test mp-weixin \

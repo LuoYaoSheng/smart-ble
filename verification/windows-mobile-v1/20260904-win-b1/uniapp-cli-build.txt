@@ -1,0 +1,65 @@
+# UniApp 纯 CLI 构建（去 HBuilderX 编译依赖）— 增补验证
+
+- timestamp: 2026-09-04T10:05:00+08:00（本地）
+- git: 6e9796f1548dfefad653aff961378be98a510041（工作区含本次工具链改造，提交见下）
+- host: Windows 10 19045 x64 / Git Bash / node v20.19.3（构建用）+ nvm v23.8.0（单测用，verify-uniapp.sh 自动解析）
+- 工具链：@dcloudio/uni-app、uni-mp-weixin、uni-app-plus、vite-plugin-uni 全部锁定
+  `3.0.0-alpha-5020520260829001`（npm `vue3` dist-tag），vite `5.2.8`（peer 精确），vue `3.4.21`
+  （与编译器 @vue/compiler-sfc 3.4.21 配对）；编译器自报版本 5.25（vue3）
+
+## 结论
+
+- `npm run build:mp-weixin`（apps/uniapp）：**PASS** — DEF-003 解除。
+  产物 `unpackage/dist/build/mp-weixin/`（1344 KB），含 app.js/app.json/app.wxss/pages/static/
+  project.config.json/sitemap.json，可导入微信开发者工具。
+- `npm run build:app`（apps/uniapp）：**PASS** — APP 目标同样纯 CLI 编译通过，
+  `unpackage/dist/build/app/app-service.js` 产出（E5 Android 编译探针同款工件）。
+  HBuilderX 后续仅承担「真机运行/自定义基座/APK 打包」，不再承担编译。
+- 资产门 `node scripts/check-uniapp-assets.mjs --require-compiled`：**PASS**
+  （16 source+compiled 引用；已扩展为 dev/build 双目录取最新 mtime，防止 HBuilderX 残留半成品遮蔽新构建）。
+- 回归 `bash scripts/verify-uniapp.sh`：**PASS**（28 unit files plus 11 static gates，exit 0）。
+
+## 关键命令与输出摘录
+
+```
+$ cd apps/uniapp && npm install --no-audit --no-fund
+added 507 packages (peer warning: pinia@3.0.4 wants vue ^3.5.11；与 HBuilderX 内置 3.4.21 运行时同组合，不构成回归)
+
+$ npm run build:mp-weixin
+Compiler version: 5.25（vue3）
+[plugin:vite:resolve] Module "node:crypto" has been externalized for browser compatibility,
+  imported by ".../services/ota/package-validator.js"   # 警告与 HBuilderX 构建同型：仅 WebCrypto 兜底路径受影响，非本次新增
+DONE  Build complete.
+Run method: open Weixin Mini Program Devtools, import unpackage\dist\build\mp-weixin run.
+
+$ npm run build:app
+Compiler version: 5.25（vue3）
+DONE  Build complete.
+Run method: open HBuilderX, import unpackage\dist\build\app run.
+```
+
+## 工件 SHA-256
+
+```
+dac18c79d7dd58a07a09ee6e541646c8ac841a79b0f024aa06ddc8dc1db22468  unpackage/dist/build/mp-weixin/app.js
+fa52c535f7dcf53ecfe9378bf800451d5859f6a9c5ced9d528aac50b0e33883b  unpackage/dist/build/mp-weixin/common/vendor.js
+37af1f1d071224ffee09d12876eb73685c5a46ba98f73714de575539a49b3ade  unpackage/dist/build/app/app-service.js
+```
+
+## 根因与修复（DEF-003）
+
+- 根因：`apps/uniapp/vite.config.js`（B-006 时期）在顶层对所有平台无条件设置
+  `build.rollupOptions.output.inlineDynamicImports=true`；mp-weixin 模板要求 manualChunks，
+  两者互斥 → rollup 拒绝（HBuilderX Windows 5.24 首轮表现为 BLOCKED_IIFE）。
+- 修复：inline 补丁收敛为仅 APP 平台（UNI_PLATFORM=app/app-plus/app-*）经
+  configResolved 注入并删除 manualChunks；工具链解析改为「工程 node_modules 优先、
+  HBuilderX 目录兜底（macOS/Windows/HBUILDERX_UNI_VITE_ROOT）」。
+- 新增 `scripts/uniapp/run-uni.mjs`：映射 HBuilderX 工程布局（源码在根目录）到
+  CLI 环境变量 UNI_INPUT_DIR/UNI_OUTPUT_DIR，产物保持 unpackage/dist/{dev|build}/<platform> 布局，
+  既有工具（check-uniapp-assets、build-android-test）路径不变。
+
+## 未验证项（如实登记）
+
+- HBuilderX 路径下的 mp-weixin 编译（vite.config 修复后理论上同解，但本轮未跑 HBuilderX 编译验证）。
+- 微信开发者工具「导入 unpackage/dist/build/mp-weixin 后真机预览」：NOT_RUN（需 GUI 交互/真机）。
+- APP 产物的 HBuilderX 真机运行/基座打包：NOT_RUN（HBuilderX 仍承担该环节）。

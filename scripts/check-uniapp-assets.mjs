@@ -6,16 +6,29 @@ import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const uniapp = join(root, 'apps/uniapp');
-const compiledUniapp = join(uniapp, 'unpackage/dist/dev/mp-weixin');
-const requireCompiled = process.argv.includes('--require-compiled') || process.env.UNIAPP_REQUIRE_COMPILED_ASSETS === '1';
-let compiledAvailable = true;
-try {
-  await access(compiledUniapp);
-} catch {
-  compiledAvailable = false;
+// Compiled output may come from HBuilderX dev compile or the pure-CLI build
+// (npm run build:mp-weixin); both land under unpackage/dist.
+const compiledCandidates = [
+  join(uniapp, 'unpackage/dist/dev/mp-weixin'),
+  join(uniapp, 'unpackage/dist/build/mp-weixin'),
+];
+let compiledUniapp = null;
+let compiledMtime = 0;
+for (const candidate of compiledCandidates) {
+  try {
+    // Pick the freshest compile; stale HBuilderX dev remnants must not shadow
+    // a newer pure-CLI build (or vice versa).
+    const mtime = (await stat(candidate)).mtimeMs;
+    if (mtime > compiledMtime) {
+      compiledUniapp = candidate;
+      compiledMtime = mtime;
+    }
+  } catch {}
 }
+const compiledAvailable = compiledUniapp !== null;
+const requireCompiled = process.argv.includes('--require-compiled') || process.env.UNIAPP_REQUIRE_COMPILED_ASSETS === '1';
 if (requireCompiled && !compiledAvailable) {
-  throw new Error('Compiled WeChat output is missing; run HBuilderX compile before the required compiled-asset gate');
+  throw new Error('Compiled WeChat output is missing; run `npm run build:mp-weixin` (or HBuilderX compile) before the required compiled-asset gate');
 }
 const vueFiles = [];
 async function walk(dir) {

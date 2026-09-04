@@ -18,6 +18,7 @@ Use the root `Makefile` when possible; platform-specific commands remain availab
 
 - `make verify` runs the main repository checks for Flutter, Android, iOS Swift, and Tauri.
 
+- `cd apps/uniapp && npm install && npm run build:mp-weixin` compiles the WeChat mini-program via the pure CLI toolchain (`@dcloudio` vite line, no HBuilderX); `npm run build:app` compiles APP resources. Output stays under `apps/uniapp/unpackage/dist/`. HBuilderX is only needed for device launch / custom base / APK packaging.
 - `cd apps/android && ./gradlew assembleDebug test` builds the Android app and runs JVM tests.
 - `cd apps/flutter && flutter pub get && flutter analyze && flutter test` installs deps, runs static analysis, and executes Flutter tests.
 - `cd apps/desktop/electron && npm install && npm start` runs the Electron desktop app.
