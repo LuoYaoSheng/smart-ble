@@ -1,14 +1,12 @@
 <template>
 	<view class="container">
-		<view class="header ble-card-hero">
-			<view class="logo-box"><image class="logo-img" src="/static/logo.png" mode="aspectFit" /></view>
-			<view class="brand-copy">
-				<text class="app-name">{{ product.name }}</text>
-				<text class="version">Version {{ appVersion }}</text>
-				<text class="summary">{{ product.summary }}</text>
-				<view class="tech-stack"><text>UniApp · Vue 3</text><text>{{ overallStatus }}</text></view>
-			</view>
+	<view class="header">
+		<view class="logo-box"><image class="logo-img" src="/static/logo.png" mode="aspectFit" /></view>
+		<view class="brand-copy">
+			<text class="app-name">{{ product.name }}</text>
+			<text class="version">{{ appVersion }} · 零后端 · 零本地持久化</text>
 		</view>
+	</view>
 
 		<view class="section promotion-section ble-card">
 			<view class="section-title">更多小程序</view>
@@ -66,12 +64,10 @@ import {
 	buildVersionString,
 	getPlatformPublicStatuses,
 	getProductVersion,
-	getReleaseMetadata,
-	getVersionPageModel
+	getReleaseMetadata
 } from '../../services/version-metadata.js';
 
 const release = getReleaseMetadata();
-const versionPage = getVersionPageModel(release);
 const metadataVersionLabel = buildVersionString({
 	version: getProductVersion(),
 	commit: release.commit,
@@ -82,7 +78,6 @@ const product = PRODUCT_INFO;
 const features = PRODUCT_FEATURES;
 const platforms = getPlatformPublicStatuses();
 const otherApps = RELATED_MINI_PROGRAMS;
-const overallStatus = versionPage.current.status || release.overall_status || 'PREVIEW';
 const appVersion = ref(metadataVersionLabel);
 const systemInfo = ref({ platform: 'unknown', system: 'unknown', model: 'unknown' });
 const currentYear = new Date().getFullYear();
@@ -209,15 +204,12 @@ onShareTimeline(() => ({ title: 'BLE Toolkit+ - BLE 调试与验证工具', quer
 <style scoped>
 .container { min-height: 100vh; padding: 28rpx; background: transparent; }
 .header, .section { margin-bottom: 22rpx; border: 1rpx solid var(--ble-line-soft); border-radius: var(--ble-radius-lg); background: var(--ble-gradient-surface); box-shadow: var(--ble-shadow-soft); }
-.header { display: flex; align-items: center; gap: 24rpx; padding: 30rpx; }
-.logo-box { display: flex; align-items: center; justify-content: center; width: 112rpx; height: 112rpx; flex-shrink: 0; border: 1rpx solid rgba(21, 93, 255, 0.12); border-radius: 30rpx; background: linear-gradient(135deg, rgba(21, 93, 255, 0.14), rgba(123, 224, 255, 0.18)); }
-.logo-img { width: 78rpx; height: 78rpx; }
+.header { display: flex; align-items: center; gap: 20rpx; padding: 24rpx; }
+.logo-box { display: flex; align-items: center; justify-content: center; width: 76rpx; height: 76rpx; flex-shrink: 0; border: 1rpx solid rgba(21, 93, 255, 0.12); border-radius: 20rpx; background: linear-gradient(135deg, rgba(21, 93, 255, 0.14), rgba(123, 224, 255, 0.18)); }
+.logo-img { width: 52rpx; height: 52rpx; }
 .brand-copy { min-width: 0; flex: 1; }
-.app-name { display: block; color: var(--ble-text); font-size: 36rpx; font-weight: 800; }
-.version { display: block; margin-top: 4rpx; color: var(--ble-text-muted); font-size: 22rpx; }
-.summary { display: block; margin-top: 12rpx; color: var(--ble-text-subtle); font-size: 22rpx; line-height: 1.55; }
-.tech-stack { display: flex; flex-wrap: wrap; gap: 8rpx; margin-top: 12rpx; color: var(--ble-brand); font-size: 19rpx; font-weight: 700; }
-.tech-stack text { padding: 5rpx 10rpx; border-radius: 999rpx; background: rgba(27, 109, 255, 0.08); }
+.app-name { display: block; color: var(--ble-text); font-size: 30rpx; font-weight: 800; }
+.version { display: block; margin-top: 4rpx; color: var(--ble-text-muted); font-size: 20rpx; }
 .section { padding: 28rpx; }
 .section-title { color: var(--ble-text); font-size: 30rpx; font-weight: 800; }
 .section-caption { display: block; margin: 8rpx 0 20rpx; color: var(--ble-text-muted); font-size: 22rpx; line-height: 1.5; }

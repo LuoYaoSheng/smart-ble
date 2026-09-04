@@ -9,12 +9,10 @@ PAGES['p009'] = {
     return `<div class="navbar"><div class="kicker">${this.kicker}</div>
       <div class="row"><div class="title">关于</div><div class="bt-chip">${C.chip(ver,'neutral mono')}</div></div></div>
     <div class="page">
-      <div class="brandcard">
-        <div style="display:flex;align-items:center;gap:12px;position:relative;z-index:1">
-          <div style="width:46px;height:46px;border-radius:13px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;color:#fff">${C.ic('bt','lg')}</div>
-          <div><div class="lg">BLE Toolkit+</div>
-          <div class="vs">${C.ic('check','xs')} v${ver} · ${MOCK.release.channel}</div></div></div>
-        <div class="ds">面向 UniApp、微信小程序与 ESP32 协同验证的 BLE 调试工具 · 零后端 · 零本地持久化</div>
+      <div class="card" style="margin-top:12px;display:flex;align-items:center;gap:11px">
+        <div style="width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#0E4FC4,#1B6DFF);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0">${C.ic('bt','sm')}</div>
+        <div style="flex:1;min-width:0"><div style="font-size:var(--fs-h2);font-weight:var(--fw-bold)">BLE Toolkit+</div>
+          <div style="font-size:var(--fs-micro);color:var(--c-mut);margin-top:2px">v${ver} · ${MOCK.release.channel} · 零后端 · 零本地持久化</div></div>
       </div>
       <div class="sec-t" style="margin-top:16px"><div class="t">${C.ic('share')} 更多小程序</div></div>
       <div class="card" style="padding-top:6px;padding-bottom:6px">

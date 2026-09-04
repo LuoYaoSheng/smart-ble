@@ -1,140 +1,131 @@
+import 'dart:io';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../config/product.dart';
 import '../../themes/app_theme.dart';
 
-class AboutPage extends StatelessWidget {
+/// 关于页 —— 对齐基准原型 p009：紧凑品牌行 + 可操作信息，去除大图与展示型区块
+class AboutPage extends StatefulWidget {
   const AboutPage({super.key});
 
-  static const _siteUrl = 'https://lightble.i2kai.com/';
-  static const _repositoryUrl = 'https://github.com/luoyaosheng/smart-ble';
-  static const _docsUrl = 'https://lightble.i2kai.com/MASTER_ARCHITECTURE';
-  static const _issuesUrl = 'https://github.com/luoyaosheng/smart-ble/issues';
+  @override
+  State<AboutPage> createState() => _AboutPageState();
+}
+
+class _AboutPageState extends State<AboutPage> {
+  String _version = '';
+  String _deviceModel = '';
+  bool _loadingInfo = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadInfo();
+  }
+
+  Future<void> _loadInfo() async {
+    try {
+      final info = await PackageInfo.fromPlatform();
+      final deviceInfo = DeviceInfoPlugin();
+      String model = '';
+      if (Platform.isAndroid) {
+        final android = await deviceInfo.androidInfo;
+        model = android.model;
+      } else if (Platform.isIOS) {
+        final ios = await deviceInfo.iosInfo;
+        model = ios.utsname.machine;
+      } else if (Platform.isMacOS) {
+        final mac = await deviceInfo.macOsInfo;
+        model = mac.model;
+      } else {
+        model = Platform.localHostname;
+      }
+      if (mounted) {
+        setState(() {
+          _version = 'v${info.version}+${info.buildNumber}';
+          _deviceModel = model;
+          _loadingInfo = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() => _loadingInfo = false);
+      }
+    }
+  }
+
+  Future<void> _openLink(BuildContext context, String url) async {
+    final uri = Uri.parse(url);
+    final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (!opened && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('无法打开链接')),
+      );
+    }
+  }
+
+  void _shareApp() {
+    Share.share(
+      'BLE Toolkit+ —— 跨平台 BLE 调试工具 ${ProductConfig.website}',
+      subject: ProductConfig.name,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('关于')),
+      appBar: AppBar(
+        title: const Text('关于'),
+        actions: [
+          if (_version.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: Center(
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: AppTheme.primaryColor.withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Text(
+                    _version,
+                    style: const TextStyle(
+                      fontSize: 11,
+                      fontFamily: 'monospace',
+                      fontWeight: FontWeight.w600,
+                      color: AppTheme.primaryColor,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const _HeroCard(),
-            const SizedBox(height: 20),
-            const _SectionCard(
-              title: '产品定位',
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Smart BLE 是跨平台 BLE 控制台与统一协议内核，不是单一端上的小工具。',
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                      color: AppTheme.textPrimary,
-                      height: 1.65,
-                    ),
-                  ),
-                  SizedBox(height: 12),
-                  Text(
-                    '它把扫描、连接、服务调试、通知监听、广播模式和硬件联动收进同一套产品语言里，方便用户直接调试，也方便开发者学习多平台实现差异。',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: AppTheme.textSecondary,
-                      height: 1.7,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-            const _SectionCard(
-              title: '核心能力',
-              child: Column(
-                children: [
-                  _FeatureRow(
-                    icon: Icons.bluetooth_searching,
-                    title: '设备扫描',
-                    description: '快速发现附近 BLE 设备并实时展示 RSSI 状态',
-                  ),
-                  _FeatureRow(
-                    icon: Icons.connect_without_contact,
-                    title: '连接与服务发现',
-                    description: '建立会话后继续查看服务树和特征值层级',
-                  ),
-                  _FeatureRow(
-                    icon: Icons.edit_note,
-                    title: '读写与监听',
-                    description: '支持 HEX / UTF-8 写入、读取和通知订阅',
-                  ),
-                  _FeatureRow(
-                    icon: Icons.broadcast_on_personal,
-                    title: '广播模式',
-                    description: '验证设备名称、UUID 与广播载荷的配置效果',
-                  ),
-                  _FeatureRow(
-                    icon: Icons.memory,
-                    title: '硬件联动',
-                    description: '与 ESP32 / 固件示例配套使用，形成协议验证闭环',
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-            const _SectionCard(
-              title: '平台矩阵',
-              child: Wrap(
-                spacing: 10,
-                runSpacing: 10,
-                children: [
-                  _PlatformChip(icon: Icons.phone_android, label: 'Android'),
-                  _PlatformChip(icon: Icons.phone_iphone, label: 'iOS'),
-                  _PlatformChip(icon: Icons.laptop_mac, label: 'macOS'),
-                  _PlatformChip(icon: Icons.desktop_windows, label: 'Windows'),
-                  _PlatformChip(icon: Icons.developer_board, label: 'UniApp'),
-                  _PlatformChip(icon: Icons.memory, label: 'Hardware'),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-            _SectionCard(
-              title: '相关链接',
-              child: Column(
-                children: [
-                  _LinkTile(
-                    icon: Icons.language,
-                    title: '项目主页',
-                    subtitle: '查看平台矩阵、下载入口与架构说明',
-                    onTap: () => _openLink(context, _siteUrl),
-                  ),
-                  _LinkTile(
-                    icon: Icons.architecture,
-                    title: '架构白皮书',
-                    subtitle: '统一协议内核、交互流与组件规范',
-                    onTap: () => _openLink(context, _docsUrl),
-                  ),
-                  _LinkTile(
-                    icon: Icons.code,
-                    title: '源码仓库',
-                    subtitle: '查看全部实现与共享资产生成器',
-                    onTap: () => _openLink(context, _repositoryUrl),
-                  ),
-                  _LinkTile(
-                    icon: Icons.bug_report,
-                    title: '问题反馈',
-                    subtitle: '提交 issue 或查看已知问题',
-                    onTap: () => _openLink(context, _issuesUrl),
-                  ),
-                ],
-              ),
-            ),
+            _buildBrandRow(),
+            const SizedBox(height: 16),
+            _buildSectionTitle('更多小程序'),
+            _buildPromoCard(),
+            const SizedBox(height: 16),
+            _buildSectionTitle('应用信息'),
+            _buildAppInfoCard(),
+            const SizedBox(height: 16),
+            _buildMenuCard(),
             const SizedBox(height: 24),
             Center(
               child: Text(
-                '© 2026 Smart BLE\nReleased under MIT License',
+                '日志全局脱敏：敏感凭据显示为 token=***\n© 2026 ${ProductConfig.name} · Smart BLE 产品家族',
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 11,
                   color: AppTheme.textSecondary.withValues(alpha: 0.72),
                   height: 1.6,
                 ),
@@ -147,217 +138,45 @@ class AboutPage extends StatelessWidget {
     );
   }
 
-  Future<void> _openLink(BuildContext context, String url) async {
-    final uri = Uri.parse(url);
-    final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
-    if (!opened && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('无法打开链接')),
-      );
-    }
-  }
-}
-
-class _HeroCard extends StatelessWidget {
-  const _HeroCard();
-
-  @override
-  Widget build(BuildContext context) {
+  /// 紧凑品牌行（p009 v1.0.8：38px 图标 + 名称 + 单行元数据，替代整幅大横幅）
+  Widget _buildBrandRow() {
     return Container(
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(28),
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFFF7FBFF), Color(0xFFEFF6FF)],
-        ),
-        border: Border.all(color: AppTheme.primaryColor.withValues(alpha: 0.08)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 18,
-            offset: const Offset(0, 10),
-          ),
-        ],
+        color: AppTheme.cardColor,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppTheme.borderColor),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
           ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+            borderRadius: BorderRadius.circular(10),
             child: Image.asset(
-              'assets/brand/about-hero.png',
-              width: double.infinity,
-              height: 220,
+              'assets/brand/icon.png',
+              width: 38,
+              height: 38,
               fit: BoxFit.cover,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 18, 20, 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      width: 68,
-                      height: 68,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppTheme.primaryColor.withValues(alpha: 0.18),
-                            blurRadius: 14,
-                            offset: const Offset(0, 8),
-                          ),
-                        ],
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: Image.asset(
-                          'assets/brand/icon.png',
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    const Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Smart BLE',
-                            style: TextStyle(
-                              fontSize: 28,
-                              fontWeight: FontWeight.w700,
-                              color: AppTheme.textPrimary,
-                            ),
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            'Flutter 主线运行面',
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600,
-                              color: AppTheme.primaryColor,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                const Wrap(
-                  spacing: 10,
-                  runSpacing: 10,
-                  children: [
-                    _MetaChip(text: 'Version 2.0.0'),
-                    _MetaChip(text: 'Framework: Flutter'),
-                    _MetaChip(text: 'Language: Dart'),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  '跨平台 BLE 控制台与统一协议内核，用同一套工作流覆盖扫描、连接、调试、广播和硬件联动。',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: AppTheme.textSecondary,
-                    height: 1.7,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SectionCard extends StatelessWidget {
-  const _SectionCard({required this.title, required this.child});
-
-  final String title;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-        color: AppTheme.cardColor,
-        border: Border.all(color: AppTheme.borderColor.withValues(alpha: 0.8)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-              color: AppTheme.textPrimary,
-            ),
-          ),
-          const SizedBox(height: 16),
-          child,
-        ],
-      ),
-    );
-  }
-}
-
-class _FeatureRow extends StatelessWidget {
-  const _FeatureRow({
-    required this.icon,
-    required this.title,
-    required this.description,
-  });
-
-  final IconData icon;
-  final String title;
-  final String description;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 14),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 42,
-            height: 42,
-            decoration: BoxDecoration(
-              color: AppTheme.primaryColor.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(icon, size: 20, color: AppTheme.primaryColor),
-          ),
-          const SizedBox(width: 14),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: AppTheme.textPrimary,
-                  ),
+                const Text(
+                  ProductConfig.name,
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: AppTheme.textPrimary),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 3),
                 Text(
-                  description,
+                  '${_loadingInfo ? '…' : _version} · ${ProductConfig.tagline}',
                   style: const TextStyle(
-                    fontSize: 12,
-                    color: AppTheme.textSecondary,
-                    height: 1.6,
-                  ),
+                      fontSize: 11,
+                      fontFamily: 'monospace',
+                      color: AppTheme.textSecondary),
                 ),
               ],
             ),
@@ -366,34 +185,111 @@ class _FeatureRow extends StatelessWidget {
       ),
     );
   }
-}
 
-class _PlatformChip extends StatelessWidget {
-  const _PlatformChip({required this.icon, required this.label});
-
-  final IconData icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        color: AppTheme.primaryColor.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(18),
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Text(
+        title,
+        style: const TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w700,
+            color: AppTheme.textPrimary),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
+    );
+  }
+
+  /// F028 推广跳转：卡片点击即打开对应站点
+  Widget _buildPromoCard() {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppTheme.cardColor,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppTheme.borderColor),
+      ),
+      child: Column(
+        children: ProductConfig.promos
+            .map((p) => _PromoTile(
+                  app: p,
+                  onTap: () => _openLink(context, p.url),
+                ))
+            .toList(),
+      ),
+    );
+  }
+
+  Widget _buildAppInfoCard() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      decoration: BoxDecoration(
+        color: AppTheme.cardColor,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppTheme.borderColor),
+      ),
+      child: Column(
         children: [
-          Icon(icon, size: 16, color: AppTheme.primaryColor),
-          const SizedBox(width: 6),
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: AppTheme.primaryColor,
+          _kvRow('当前环境',
+              '${Platform.operatingSystem} · ${Platform.operatingSystemVersion}'),
+          _kvRow('设备型号', _loadingInfo ? '…' : _deviceModel),
+          _kvRow('版本', _loadingInfo ? '…' : _version, last: true),
+        ],
+      ),
+    );
+  }
+
+  Widget _kvRow(String key, String value, {bool last = false}) {
+    return Container(
+      padding: EdgeInsets.only(top: 10, bottom: last ? 10 : 9),
+      decoration: last
+          ? null
+          : const BoxDecoration(
+              border: Border(bottom: BorderSide(color: AppTheme.borderColor)),
             ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 76,
+            child: Text(key,
+                style: const TextStyle(
+                    fontSize: 13, color: AppTheme.textSecondary)),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: const TextStyle(
+                  fontSize: 13, color: AppTheme.textPrimary, height: 1.4),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMenuCard() {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppTheme.cardColor,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppTheme.borderColor),
+      ),
+      child: Column(
+        children: [
+          _MenuRow(
+            icon: Icons.language,
+            title: '官方网站',
+            onTap: () => _openLink(context, ProductConfig.website),
+          ),
+          _MenuRow(
+            icon: Icons.send_outlined,
+            title: '问题反馈',
+            onTap: () => _openLink(context, ProductConfig.feedback),
+          ),
+          _MenuRow(
+            icon: Icons.share_outlined,
+            title: '分享应用',
+            onTap: _shareApp,
+            last: true,
           ),
         ],
       ),
@@ -401,93 +297,118 @@ class _PlatformChip extends StatelessWidget {
   }
 }
 
-class _MetaChip extends StatelessWidget {
-  const _MetaChip({required this.text});
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: AppTheme.primaryColor.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-          color: AppTheme.primaryColor,
-        ),
-      ),
-    );
-  }
-}
-
-class _LinkTile extends StatelessWidget {
-  const _LinkTile({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.onTap,
-  });
-
-  final IconData icon;
-  final String title;
-  final String subtitle;
+class _PromoTile extends StatelessWidget {
+  final PromoApp app;
   final VoidCallback onTap;
+
+  const _PromoTile({required this.app, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(18),
+      borderRadius: BorderRadius.circular(14),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
         child: Row(
           children: [
             Container(
-              width: 42,
-              height: 42,
+              width: 38,
+              height: 38,
               decoration: BoxDecoration(
-                color: AppTheme.primaryColor.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12),
+                gradient: const LinearGradient(
+                    colors: [Color(0xFF7B6DFF), Color(0xFF4A9EFF)]),
+                borderRadius: BorderRadius.circular(11),
               ),
-              child: Icon(icon, size: 20, color: AppTheme.primaryColor),
+              alignment: Alignment.center,
+              child: Text(
+                app.name.substring(0, 1),
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 15),
+              ),
             ),
-            const SizedBox(width: 14),
+            const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text(app.name,
+                      style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: AppTheme.textPrimary)),
+                  const SizedBox(height: 2),
                   Text(
-                    title,
+                    app.description,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: AppTheme.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    subtitle,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: AppTheme.textSecondary,
-                      height: 1.6,
-                    ),
+                        fontSize: 12,
+                        height: 1.4,
+                        color: AppTheme.textSecondary),
                   ),
                 ],
               ),
             ),
-            const SizedBox(width: 10),
-            const Icon(
-              Icons.open_in_new,
-              size: 16,
-              color: AppTheme.textSecondary,
+            const SizedBox(width: 8),
+            OutlinedButton(
+              onPressed: onTap,
+              style: OutlinedButton.styleFrom(
+                minimumSize: const Size(0, 34),
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                foregroundColor: AppTheme.primaryColor,
+                side: const BorderSide(color: AppTheme.borderColor),
+                textStyle:
+                    const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+              ),
+              child: const Text('前往'),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MenuRow extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final VoidCallback onTap;
+  final bool last;
+
+  const _MenuRow({
+    required this.icon,
+    required this.title,
+    required this.onTap,
+    this.last = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: last
+            ? null
+            : const BoxDecoration(
+                border: Border(bottom: BorderSide(color: AppTheme.borderColor)),
+              ),
+        child: Row(
+          children: [
+            Icon(icon, size: 19, color: AppTheme.textSecondary),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(title,
+                  style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: AppTheme.textPrimary)),
+            ),
+            const Icon(Icons.chevron_right,
+                size: 18, color: AppTheme.textSecondary),
           ],
         ),
       ),

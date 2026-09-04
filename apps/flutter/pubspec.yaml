@@ -30,6 +30,9 @@ dependencies:
   shared_preferences: ^2.2.2
   intl: ^0.20.2
   url_launcher: ^6.3.2
+  package_info_plus: ^8.0.0
+  device_info_plus: ^11.0.0
+  share_plus: ^10.0.0
 
   # 平台特定
   flutter_platform_widgets: ^6.0.2

@@ -110,14 +110,6 @@ body{font-family:var(--font);background:#E9EEF5;color:var(--c-text);display:flex
 .budget .b-r.tot{border-top:1px dashed var(--c-line);margin-top:4px;padding-top:6px;color:var(--c-text);font-weight:var(--fw-bold);}
 
 /* ---- PAGE009/010 ---- */
-.brandcard{background:linear-gradient(135deg,#0E4FC4,#1B6DFF 60%,#3F86FF);border-radius:var(--r-lg);padding:20px;
-  color:#fff;margin-top:12px;box-shadow:var(--shadow-primary);position:relative;overflow:hidden;}
-.brandcard::after{content:'';position:absolute;right:-30px;top:-30px;width:130px;height:130px;border-radius:50%;
-  background:rgba(255,255,255,.08);}
-.brandcard .lg{font-size:var(--fs-display);font-weight:var(--fw-xbold);letter-spacing:.5px;}
-.brandcard .vs{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.16);border-radius:var(--r-round);
-  padding:3px 11px;font-size:var(--fs-mini);font-weight:var(--fw-med);margin-top:8px;}
-.brandcard .ds{font-size:var(--fs-cap);opacity:.85;margin-top:9px;line-height:1.55;max-width:260px;}
 .menu-row{display:flex;align-items:center;gap:11px;padding:13px 2px;border-bottom:1px solid var(--c-line-soft);cursor:pointer;}
 .menu-row:last-child{border-bottom:none;}
 .menu-row .ic{color:var(--c-mut);}
