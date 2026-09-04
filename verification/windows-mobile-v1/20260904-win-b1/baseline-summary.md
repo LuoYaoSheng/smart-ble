@@ -96,3 +96,17 @@
 - **U-AND 手机**：HBuilderX CLI `launch app-android --deviceId`（纯 CLI）基座安装+同步+启动 PASS，App Launch/Show 日志在案；首页渲染 PASS；ESP32 复位后扫描发现 -49dBm PASS。
 - **新缺陷**：DEF-006（P1）S3 断连后停止广播 2/2 复现 + 运行期串口事件静默；DEF-007（P3）U-AND 蓝牙状态行误显（仅显示层）。
 - 现场注意：Windows 上 `timeout` 杀 pio monitor 会留僵尸进程占 COM12（本轮踩坑两次，需 `taskkill /IM pio.exe /F`）。
+
+---
+
+## H. 真机补测轮（13:36–14:05，git dbb38a8）— DEF-006 定案 + Windows GATT 轮
+
+| 项 | 状态 | 说明 |
+|---|---|---|
+| F-AND 完整 Peripheral 轮 | **PASS** | 扫描(-28dBm)→连接→读×2(BEB5483E=`30 5B CA 3F`、2A00=`BLEToolkit-Server`)→写(`hello-ble-toolkit` 17B 串口逐字节一致)→订阅通知(attr34 订阅成功、37B 投递)→断开→510ms 恢复广播→复连全链；每步 UI dump+串口双证据 |
+| U-AND 连接 | **FAIL（DEF-009 P1）** | 「连接中…」静默回列表；logcat 无 connectGatt 行、固件零连接事件；读/写/notify NOT_RUN |
+| Windows 主机 GATT 轮 | **PASS** | csc+WinRT 原生工具（PS 脚本块收不到 WinRT 事件为宿主限制）；扫描 -38dBm → 连接 → 5 服务/15 特征 → 读 2A00/2A01 → 写 `win-gatt-write`(串口 hex 一致) → Dispose→515ms 恢复广播 |
+| DEF-006 | **RESOLVED（改判）** | 三客户端 510/514/515ms 恢复广播 + 心跳 adv:1 稳定 2.6h+；上午复现系手机蓝牙栈僵死+扫描节流伪象 |
+| 新登记 | DEF-009 / DEF-010 | U-AND 连接静默失效(P1)；F-AND 通知载荷未在 UI 呈现(P3) |
+
+证据：`e5-realdevice/def006/`、`e6-windows/`；登记：`baseline-results.json`（followups #3）。

@@ -134,12 +134,13 @@
     {
       "id": "DEF-006",
       "severity": "P1",
-      "status": "OPEN",
+      "status": "RESOLVED",
       "summary": "S3 peripheral stops advertising after client disconnect; only hard reset recovers (2/2 repro); runtime serial events silent after boot",
       "first_breakpoint": "Real-device E5 connect/disconnect cycle (NimBLE onDisconnect path or loop re-advertise)",
       "impact": "E5 repeated-connection scenarios for all three client lines; serial event contract on S3",
       "next_diagnostic": "heartbeat-in-loop build to discriminate loop hang vs advertise-restart failure; review NimBLE-Arduino 1.4.x + arduino-core pairing on S3",
-      "evidence": "verification/windows-mobile-v1/20260904-win-b1/e5-realdevice/"
+      "evidence": "verification/windows-mobile-v1/20260904-win-b1/e5-realdevice/def006/ (diag1-full-session.txt + f-series screenshots + ui dumps)",
+      "resolution": "2026-09-04 E5 retest (diag heartbeat build on COM12): firmware exonerated. With clean phone BT stack, full cycles verified: scan->connect->read x2->write->notify-subscribe->disconnect->re-advertise->reconnect. Disconnect->adv-restart intervals 510/514/515 ms across F-AND x2 and Windows x1 clients; advertising heartbeat adv:1 stable 2.5h+ (heap 284072-284184, no leak/reset). Earlier 'stops advertising after disconnect, only hard reset recovers' repro (2/2) was contaminated by phone-side BT stack stale state (zombie GATT from backgrounded app) plus Android scan throttling (empty rescans); after BT off/on cycle device reappears immediately. Reclassified: client-environment issue, no firmware defect. Serial-event 'silence' symptom likewise monitor-tooling artifact, not firmware: heartbeat + full event JSON stream captured in e5-realdevice/def006/diag1-full-session.txt."
     },
     {
       "id": "DEF-007",
@@ -149,6 +150,24 @@
       "first_breakpoint": "apps/uniapp/composables/use-ble-scan.js line ~38",
       "impact": "Display only; scan/discovery verified working on real device",
       "evidence": "u-and-scan-after-reset.png (device found while status shows off)"
+    },
+    {
+      "id": "DEF-009",
+      "severity": "P1",
+      "status": "OPEN",
+      "summary": "U-AND (com.smartble) connect flow fails silently: device detail shows 连接中 then returns to scan list; connectGatt never called (logcat zero GATT-connect activity), firmware receives no connection event; no error surfaced to user",
+      "first_breakpoint": "apps/uniapp BLE connect implementation (uni-app runtime on Android); tap device card -> detail page auto-connect path",
+      "impact": "U-AND full peripheral round blocked at connect; read/write/notify NOT_RUN on U-AND",
+      "evidence": "e5-realdevice/u1-u7 screenshots (u3 detail 连接中, u4/u6 back at list), logcat MESSAGE_SCAN_STOP with zero connectGatt lines, serial baseline 3678 lines no conn events during 2 attempts"
+    },
+    {
+      "id": "DEF-010",
+      "severity": "P3",
+      "status": "OPEN",
+      "summary": "F-AND: subscribed characteristic shows Notifying state and 通知已启用 log, but received notification payload (37B delivered per serial << notify) is not displayed in characteristic row or operation log",
+      "first_breakpoint": "apps/flutter notify handling -> UI value/log rendering",
+      "impact": "Display only; firmware->phone notification delivery itself verified at stack level",
+      "evidence": "e5-realdevice/def006/ui-f14.xml/f14 dumps vs serial subscribe+notify lines (ts=8460201 window)"
     }
   ],
   "phase_a_artifacts": "MISSING on all hosts (flagged in report; Phase A belongs to the other machine per task book)",
@@ -215,6 +234,26 @@
         "DEF-001"
       ],
       "evidence": "verification/windows-mobile-v1/20260904-win-b1/e5-realdevice/README.md"
+    },
+    {
+      "timestamp": "2026-09-04T14:05:00+08:00",
+      "git_head_at_fix": "dbb38a8c2404b37cce4602db1f42b44eedae7e8d",
+      "scope": "real-device full round 2: F-AND complete cycle / U-AND connect defect / Windows host GATT round / DEF-006 resolution",
+      "esp32_s3": {
+        "diag_heartbeat_build": "PASS (DIAG_HEARTBEAT build on COM12; hb every 3s: conn/old/adv/heap)",
+        "f_and_full_cycle": "PASS: scan(-28dBm)->connect->read BEB5483E=30 5B CA 3F->read 2A00=BLEToolkit-Server->write hello-ble-toolkit(17B verified in serial setValue)->notify subscribe(attr 34, 37B delivered)->disconnect->adv restart 510ms->reconnect full chain",
+        "u_and": "FAIL at connect (DEF-009: no connectGatt, silent return to list); scan PASS(-41dBm)",
+        "windows_gatt_round": "PASS: csc WinRT scanner+connector; scan found BLEToolkit-Server -38dBm; connect, 5 services/15 chars discovered, read 2A00/2A01, write win-gatt-write Success (serial setValue length=14 hex match), dispose->disconnected->adv restart 515ms",
+        "advertise_after_disconnect": "PASS x3 (510/514/515 ms) -> DEF-006 RESOLVED as client-environment issue"
+      },
+      "new_defects": [
+        "DEF-009",
+        "DEF-010"
+      ],
+      "resolved_defects": [
+        "DEF-006"
+      ],
+      "evidence": "e5-realdevice/def006/ + e6-windows/"
     }
   ],
   "secrets_in_report": "none"

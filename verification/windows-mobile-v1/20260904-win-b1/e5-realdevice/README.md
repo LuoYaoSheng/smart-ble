@@ -73,3 +73,47 @@
 ## 安全
 
 无 Wi-Fi 密码/token/证书/签名/账号凭据入档；APK 只存 SHA256；截图仅含测试设备画面。
+
+---
+
+## 补测轮（2026-09-04 13:36–14:05，git dbb38a8）— DEF-006 复测定案 + 三客户端完整轮
+
+背景：上午 DEF-006 判定所依据的「断连后广播消失、仅硬复位可恢复」复现被后续诊断证明受手机侧蓝牙栈僵死（后台应用残留 GATT）与安卓扫描节流（30 秒 >5 次启停 → 静默无结果）污染。补测轮以 DIAG_HEARTBEAT 心跳构建（3 秒一条 conn/old/adv/heap）+ 每步 UI dump/截图 + logcat 三方对账重做。
+
+### 诊断构建
+- `def006/diag1-full-session.txt`：COM12 心跳全时序（约 2.6 小时，ts 0→9.54M ms），`adv:1` 恒定、heap 284072–284184 无泄漏无复位；boot JSON + 全部事件 JSON 完整（上午"运行期串口静默"为监视工具伪象，非固件问题）。
+- 上午疑似「假连接」r2 证据链作废（截图文件丢失且当时蓝牙栈污染）；下午重测未再出现 UI 已连接而固件未连的状态。
+
+### F-AND 完整轮（全部双证据：UI dump/截图 + 串口事件）
+| 步骤 | 结果 | 证据 |
+|---|---|---|
+| 扫描 | PASS：15 台，BLEToolkit-Server 10:B4:1D:CD:23:8D -28dBm 列表第一 | ui-f3 / f3-scan-started.png |
+| 连接① | PASS：connected ts=8128805 → service_ready，UI 已连接+发现 5 服务（1800/1801/4FAFC201×3 组，15 特征） | ui-f5 / f4 |
+| 读① BEB5483E(Read) | PASS：`30 5B CA 3F`（串口 Read event + UI 值一致） | ui-f6b / f6-read-done.png |
+| 读② 2A00 设备名 | PASS：`BLEToolkit-Server`（17 字节） | ui-f7b |
+| 写 BEB5483E(Write) | PASS：`hello-ble-toolkit` 17 字节（串口 `setValue length=17 data=68656c6c...` 与 UI「写入成功」一致） | ui-f11 串口段 |
+| 订阅+通知 | PASS：`subscribe attr_handle=34 subscribed:true`，37 字节通知投递（`<< notify`，无 "No clients subscribed"）；UI 行状态 Notifying、日志「通知已启用」 | ui-f14 / 串口 ts=8460201 窗口 |
+| 通知数据 UI 呈现 | 观察：收到的 37 字节载荷未显示在特征行/日志 → DEF-010(P3) | ui-f14/f15 |
+| 断开 | PASS：unsubscribe(8/34)→disconnected ts=8536635，UI「已断开连接 13:46:23」 | ui-f17 / f9 |
+| 广播恢复 | PASS：adv started ts=8537145（断开后 **510ms**），设备即时回到扫描列表 -28dBm | ui-f16 |
+| 复连② | PASS：connected ts=8569123 全事件链 + UI 已连接、发现 5 服务 13:46:58 | ui-f17 / f10 |
+
+### U-AND 轮（com.smartble）
+| 步骤 | 结果 | 证据 |
+|---|---|---|
+| 启动+扫描 | PASS：BLEToolkit-Server -41dBm（MAC 一致） | u1/u2 |
+| 连接 | **FAIL ×2**：详情页「连接中…」后静默返回列表；logcat 仅扫描活动（MESSAGE_SCAN_STOP），**无任何 connectGatt/GATT 连接行**；固件串口零连接事件 → **DEF-009(P1)** | u3/u4/u6 + logcat + 串口基线 3678 行无事件 |
+| 连接 Tab | 空列表，无备选连接入口 | u7 |
+| 读/写/notify | NOT_RUN（被连接失败阻塞） | — |
+
+### Windows 主机轮（Intel Wireless Bluetooth，csc+WinRT 原生工具，详见 ../e6-windows/）
+| 步骤 | 结果 | 证据 |
+|---|---|---|
+| 扫描 | PASS：225 事件/7 台，BLEToolkit-Server -38dBm | e6-windows/win-scan3-cs.txt |
+| 连接+服务发现 | PASS：5 服务 15 特征及属性全列出 | e6-windows/win-gatt-session.txt |
+| 读 2A00/2A01 | PASS：`BLEToolkit-Server` / `00-00`，串口同步 | 同上 + 串口 |
+| 写 beb5483e-…-26b1 | PASS：`win-gatt-write` 14 字节，串口 `setValue length=14 data=77696e...` 逐字节一致 | 同上 + 串口 |
+| 断开(Dispose)→广播恢复 | PASS：disconnected ts=9529417 → adv started ts=9529932（**515ms**） | 串口行 3781–3793 |
+
+### DEF-006 定案
+三个客户端（F-AND×2、Windows×1）三种断开路径，固件均在 **510/514/515ms** 内恢复广播且广播心跳稳定 2.6 小时+ → **固件无罪，改判 RESOLVED（客户端环境问题）**。上午 2/2 复现系手机蓝牙栈僵死 + 扫描节流伪象；恢复方法：蓝牙开关循环。

@@ -1,0 +1,5 @@
+System.Runtime.InteropServices.WindowsRuntime.EventRegistrationToken
+STATUS-AFTER-START: Started
+STATUS-AFTER-STOP: Stopped
+EVENTS: 0
+NAMED-DEVICES: 0
