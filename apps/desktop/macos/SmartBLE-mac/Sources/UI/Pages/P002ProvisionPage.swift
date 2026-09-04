@@ -92,7 +92,8 @@ final class P002ProvisionPage: NSViewController, PageProtocol {
         if case .failed(let code, let msg, let recovery) = hid.stage {
             let row = hid.rows.first(where: { $0.value == "fail" })?.key ?? "wifi"
             err = ProvisionError(code: code, msg: msg, row: row, recovery: recovery)
-            phase = .status
+            // 相位不在此处迁移：连接/身份阶段错误留在 connect 相位（connectBody 展示）；
+            // 下发阶段错误由 submit() 已置 .status（statusBody 展示）
         }
         if hid.stage == .verified, phase == .connect {
             phase = .configure
@@ -210,19 +211,36 @@ final class P002ProvisionPage: NSViewController, PageProtocol {
         guard let host else { return [] }
         let st = host.ble.sessionState(device.id)
         let hid = host.ble.hid
-        if st == .connecting || st == .reconnecting || connecting, hid.stage != .verified {
-            return [opState("loading", title: "连接并确认设备中…", desc: "正在建立 GATT 连接并验证 Device Info · \(device.name)")]
-        }
-        if st == nil || st == .disconnected || st == .disconnecting {
-            // 身份验证失败（含 smart_hid_service_missing BLOCKED_FIXTURE / identity_failed）
-            let lastCode = err?.code ?? connError ?? "identity_failed"
-            let lastMsg = err?.msg ?? "设备连接失败（10s 超时 · 已自动重试 3 次）或身份验证未通过。请让设备保持配网模式后重试。"
+        // manager 判定失败（smart_hid_service_missing / identity_failed / 连接超时）→ 连接相位诚实错误
+        if let e = err {
             let retry = DSButton("重试", tone: .ghostDanger, small: true, symbol: "arrow.clockwise", actionId: "p002-reconnect") { [weak self] in
                 if let d = self?.host?.shared.currentDevice {
                     self?.begin(device: d)
                 }
             }
-            let banner = errorBanner(code: lastCode, message: lastMsg, retry: retry)
+            let banner = errorBanner(code: e.code, message: e.msg, retry: retry)
+            let again = DSButton("重新连接", tone: .primary, symbol: "arrow.clockwise", actionId: "p002-reconnect2") { [weak self] in
+                if let d = self?.host?.shared.currentDevice {
+                    self?.begin(device: d)
+                }
+            }
+            let home = DSButton("返回设备列表", tone: .soft, actionId: "p002-gohome") { [weak self] in
+                self?.host?.router.switchTab(.p001)
+            }
+            return [banner, hstack([again, home], spacing: 9)]
+        }
+        if st == .connecting || st == .reconnecting || connecting, hid.stage != .verified {
+            return [opState("loading", title: "连接并确认设备中…", desc: "正在建立 GATT 连接并验证 Device Info · \(device.name)")]
+        }
+        if st == nil || st == .disconnected || st == .disconnecting {
+            let retry = DSButton("重试", tone: .ghostDanger, small: true, symbol: "arrow.clockwise", actionId: "p002-reconnect") { [weak self] in
+                if let d = self?.host?.shared.currentDevice {
+                    self?.begin(device: d)
+                }
+            }
+            let banner = errorBanner(code: "identity_failed",
+                                     message: "设备连接失败（10s 超时 · 已自动重试 3 次）。请让设备保持配网模式后重试。",
+                                     retry: retry)
             let again = DSButton("重新连接", tone: .primary, symbol: "arrow.clockwise", actionId: "p002-reconnect2") { [weak self] in
                 if let d = self?.host?.shared.currentDevice {
                     self?.begin(device: d)

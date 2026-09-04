@@ -138,7 +138,7 @@ final class OtaManager: ObservableObject {
         }
     }
 
-    static func isSemVer(_ v: String) -> Bool {
+    nonisolated static func isSemVer(_ v: String) -> Bool {
         v.range(of: #"^\d+\.\d+\.\d+(-[0-9A-Za-z.]+)?$"#, options: .regularExpression) != nil
     }
 

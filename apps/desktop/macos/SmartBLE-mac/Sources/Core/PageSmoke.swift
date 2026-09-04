@@ -7,6 +7,7 @@
 //
 
 import AppKit
+import CryptoKit
 
 @MainActor
 enum PageSmoke {
@@ -381,6 +382,100 @@ enum PageSmoke {
             let windowAlive = window.isVisible
             check("UIS-13", modalTitle && dismissed && windowAlive,
                   "modal=\(modalTitle) dismissed=\(dismissed) alive=\(windowAlive)")
+        }
+
+        // UIS-14 P002 配网协议流（r6-M5 真实链路 · 诚实错误路径：环境设备非 SHID →
+        // smart_hid_service_missing / identity_failed / 连接失败，均不伪造成功）
+        if hasDevices {
+            if let p002 = controller.page(.p002) as? P002ProvisionPage {
+                let device = controller.ble.discoveredDevices[0]
+                p002.begin(device: device)
+                controller.router.go(.p002)
+                var honestFail = false
+                var detail = "no-error-within-window"
+                for _ in 0..<30 {
+                    await settle(500)
+                    let v = views()
+                    if anyLabel(contains: "smart_hid_service_missing", in: v)
+                        || anyLabel(contains: "identity_failed", in: v)
+                        || anyLabel(contains: "设备连接失败", in: v) {
+                        honestFail = true
+                        detail = "connect 相位诚实错误已呈现（hid=\(controller.ble.hid.stage)）"
+                        break
+                    }
+                }
+                // 重新连接按钮在错误态可达
+                let retryable = button(titled: "重新连接", in: views()) != nil
+                check("UIS-14", honestFail && retryable, "honestFail=\(honestFail) retryable=\(retryable) detail=\(detail)")
+                // 清理：离开向导并断开该会话（不残留配网标记）
+                controller.router.switchTab(.p001)
+                controller.ble.disconnect(deviceId: device.id)
+                await settle(400)
+            } else {
+                check("UIS-14", false, "p002 page missing")
+            }
+        } else {
+            skip("UIS-14", "no scan results in this environment")
+        }
+
+        // UIS-15 OTA 相位机（r6-M4 真实文件驱动 + 诚实守卫：无 manifest→ready；无会话 start→
+        // OTA_SESSION_LOST；manifest sha 不符→OTA_HASH_MISMATCH；正确 manifest→ready）
+        do {
+            let ota = controller.ble.ota
+            let bin = URL(fileURLWithPath: "/tmp/smartble-ota-smoke.bin")
+            let manifest = URL(fileURLWithPath: "/tmp/smartble-ota-smoke.manifest.json")
+            try? Data([0xAA, 0xBB, 0xCC, 0xDD]).write(to: bin)
+            try? FileManager.default.removeItem(at: manifest)
+
+            ota.selectFile(url: bin)
+            let readyNoManifest = ota.phase == OtaManager.Phase.ready
+
+            ota.start(deviceId: "smoke-no-session")
+            let noSession: Bool = {
+                if case .failed(let c, _) = ota.phase { return c == "OTA_SESSION_LOST" }
+                return false
+            }()
+
+            let wrongSha = #"{"version":"1.2.3","size":4,"sha256":"deadbeef"}"#
+            try? wrongSha.data(using: .utf8)!.write(to: manifest)
+            ota.selectFile(url: bin)
+            let hashMismatch: Bool = {
+                if case .failed(let c, _) = ota.phase { return c == "OTA_HASH_MISMATCH" }
+                return false
+            }()
+
+            let realSha = SHA256.hash(data: Data([0xAA, 0xBB, 0xCC, 0xDD]))
+                .map { String(format: "%02x", $0) }.joined()
+            let goodManifest = #"{"version":"1.2.3","size":4,"sha256":"\#(realSha)"}"#
+            try? goodManifest.data(using: .utf8)!.write(to: manifest)
+            ota.selectFile(url: bin)
+            let readyWithManifest = ota.phase == OtaManager.Phase.ready
+
+            try? FileManager.default.removeItem(at: bin)
+            try? FileManager.default.removeItem(at: manifest)
+            check("UIS-15", readyNoManifest && noSession && hashMismatch && readyWithManifest,
+                  "readyNoManifest=\(readyNoManifest) noSession=\(noSession) hashMismatch=\(hashMismatch) readyWithManifest=\(readyWithManifest)")
+        }
+
+        // UIS-16 P007 会话列表一致性（r6-M1 多设备渲染需 ≥2 台可连外设 · BLOCKED_FIXTURE；
+        // 此处验证任意台数下列表/汇总卡/徽标口径一致）
+        do {
+            controller.router.switchTab(.p007)
+            await settle(400)
+            let v = views()
+            let n = controller.ble.connectedDevices.count
+            var consistent = false
+            if n == 0 {
+                consistent = anyLabel(contains: "还没有连接中的设备", in: v)
+            } else if n == 1 {
+                consistent = anyLabel(contains: "已连接 · 可进行 GATT 调试", in: v)
+                    && button(titled: "全部断开", in: v) == nil
+            } else {
+                consistent = anyLabel(contains: "台在线 · 全部为内存会话", in: v)
+                    && button(titled: "全部断开", in: v) != nil
+            }
+            let badgeNote = n >= 2 ? "multi" : "single/empty（≥2 台并行需外设 · BLOCKED_FIXTURE）"
+            check("UIS-16", consistent, "n=\(n) consistent=\(consistent) \(badgeNote)")
         }
 
         print("[UISMOKE] SUMMARY failures=\(failures) skips=\(skips)")

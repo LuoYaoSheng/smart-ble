@@ -97,7 +97,7 @@ enum HidProtocol {
             guard let eq = kv.firstIndex(of: "="), eq != kv.startIndex else { return nil }
             let key = String(kv[..<eq]).lowercased()
             if params[key] != nil { return nil }   // 重复参数 → 拒绝（正典）
-            params[key] = String(kv[kv.index(after: eq)])
+            params[key] = String(kv[kv.index(after: eq)...])
         }
         let token = (params["token"] ?? "").lowercased()
         let host = (params["host"] ?? "").trimmingCharacters(in: .whitespaces)
@@ -148,8 +148,8 @@ enum HidProtocol {
         guard pwdVal.count <= 64 else { throw CandidateError.pwdTooLong }
         guard let hub = parseHubAddress(hubAddress) else { throw CandidateError.hostEmpty }
         guard token.range(of: #"^[0-9a-f]{32}$"#, options: .regularExpression) != nil
-            || token.range(of: #"^[0-9A-Fa-f\-]{8,}$"#, options: .regularExpression) != nil else {
-            // 桌面兜底路径允许从粘贴文本解析出的短令牌（t= 4+ 位），宽口径放行并交设备侧裁决
+            || token.range(of: #"^[A-Za-z0-9\-]{4,}$"#, options: .regularExpression) != nil else {
+            // 桌面兜底路径允许 dtk-parse（t=）口径的短令牌，宽口径放行并交设备侧裁决
             throw CandidateError.tokenInvalid
         }
         let obj: [String: Any] = [
@@ -374,14 +374,16 @@ final class HidProvisionManager: ObservableObject {
                         $0.uuid.uppercased().hasPrefix("9F1D1001")
                     }
                     if !hasService {
-                        // 普通设备（无配网服务）：诚实 BLOCKED_FIXTURE 错误，不伪造验证
+                        // 普通设备（无配网服务）：诚实 BLOCKED_FIXTURE 错误，不伪造验证；断开配网会话
                         self.fail(code: "smart_hid_service_missing",
                                   message: "未在设备上发现 smart-hid 配网服务（需真实 SHID 设备 · BLOCKED_FIXTURE）",
                                   recovery: "form")
+                        ble.disconnect(deviceId: did)
                     } else {
                         self.fail(code: "identity_failed",
                                   message: "设备未返回合法 Device Info（8s）或身份验证未通过",
                                   recovery: "form")
+                        ble.disconnect(deviceId: did)
                     }
                     self.onUpdate?()
                 }

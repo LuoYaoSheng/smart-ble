@@ -12,6 +12,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     static func main() {
         // Unbuffered stdout so BLE logs reach piped verification harnesses immediately
         setbuf(stdout, nil)
+        // 纯逻辑单测（仅 --unit-core：运行后即退出，不进 App 循环）
+        CoreUnit.runIfRequested()
         print("[APP] static main entered")
         let app = NSApplication.shared
         let delegate = AppDelegate()
