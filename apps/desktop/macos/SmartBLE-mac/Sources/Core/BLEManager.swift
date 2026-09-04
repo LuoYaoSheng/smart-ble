@@ -2,8 +2,11 @@
 // SmartBLE Desktop for macOS - BLE Manager
 // r3：对齐产品正典口径 —— 日志六色（sys/err/read/write/recv/ok）、名称多级 fallback（F005）、
 // 广播数据捕获（F004）、Profile 匹配（探针启发式）、连接 10s 超时 + 3 次退避重试（PAGE006）。
-// 已知限制（诚实口径，见 verification r3）：
-//  · 多设备并行会话未支持（单连接）；P007 列表只呈现当前唯一会话。
+// r6（M1）：多设备并行会话（F006/F013）—— [deviceId: DeviceSession] 会话表，
+// 每设备独立状态机/超时/服务缓存/监听集合；P006 展示「活动会话」（activeDeviceId），
+// 活动会话由连接动作与 P007 点卡分流设定；connectedDevice/connectionState/services
+// 保留为活动会话的镜像 Published（页面层零侵入）。
+// 已知限制（诚实口径，见 verification）：
 //  · Profile 匹配为探针启发式（smart-hid 服务 UUID 强匹配 / 名称前缀弱匹配），
 //    正式 Profile 注册表属共享层（Windows 主线）。
 //
@@ -18,6 +21,28 @@ enum ConnectionState {
     case connecting
     case connected
     case disconnecting
+}
+
+// MARK: - 设备会话（F006/F013 · 每设备一份）
+@MainActor
+final class DeviceSession {
+    let id: String
+    let device: BLEDevice
+    let peripheral: CBPeripheral
+    var state: ConnectionState = .connecting
+    var services: [BLEService] = []
+    var notifyingCharacteristics: Set<String> = []
+    /// 连接 10s 超时计时（每会话独立）
+    var connectTimer: Timer?
+    var retryCount = 0
+    /// 主动断开标记（重连判定用：主动断开不自动重连）
+    var userInitiatedDisconnect = false
+
+    init(device: BLEDevice) {
+        self.id = device.id
+        self.device = device
+        self.peripheral = device.peripheral
+    }
 }
 
 // MARK: - 蓝牙适配器状态（P001 导航栏三态口径）
@@ -113,9 +138,6 @@ class BLEManager: NSObject, ObservableObject {
     @Published var isScanning = false
     @Published var isAdvertising = false
     @Published var discoveredDevices: [BLEDevice] = []
-    @Published var connectedDevice: BLEDevice?
-    @Published var connectionState: ConnectionState = .disconnected
-    @Published var services: [BLEService] = []
     @Published var logs: [LogEntry] = []
     @Published var btState: BTState = .unknown
     @Published var peripheralReady = false
@@ -123,6 +145,17 @@ class BLEManager: NSObject, ObservableObject {
     @Published var lastAdvStopped = false
     /// 最近一次扫描完成文案（P001 工具条标签 + toast）
     @Published var lastScanSummary: String = "待开始扫描"
+
+    // ---- 多设备会话（F006/F013 · r6-M1）----
+    /// 会话表：deviceId → 会话（connecting/connected/disconnecting）
+    @Published private(set) var sessions: [String: DeviceSession] = [:]
+    /// 活动会话（P006 展示对象）：由 connect 动作 / P007 点卡分流设定
+    @Published var activeDeviceId: String?
+
+    // ---- 活动会话镜像（页面层兼容面：P006/P002 等直接读取）----
+    @Published var connectedDevice: BLEDevice?
+    @Published var connectionState: ConnectionState = .disconnected
+    @Published var services: [BLEService] = []
 
     // MARK: - Filter Properties
     @Published var filterRSSI: Int = -100
@@ -147,6 +180,23 @@ class BLEManager: NSObject, ObservableObject {
     /// 筛选空态 B 判定：有结果但被筛选清空（两种空文案，PAGE001 状态列表）
     var filteredToEmpty: Bool {
         !discoveredDevices.isEmpty && filteredScanResults.isEmpty
+    }
+
+    /// 已连接设备列表（P007 · 仅 connected 态；SHID 配网会话不进此列表，正典口径）
+    var connectedDevices: [BLEDevice] {
+        sessions.values
+            .filter { $0.state == .connected }
+            .sorted { $0.device.rssi > $1.device.rssi }
+            .map { s in
+                var d = s.device
+                d.isConnected = true
+                return d
+            }
+    }
+
+    /// 活动会话对象
+    var activeSession: DeviceSession? {
+        activeDeviceId.flatMap { sessions[$0] }
     }
 
     // MARK: - Log Entry（六色：sys/err/read/write/recv/ok）
@@ -176,19 +226,24 @@ class BLEManager: NSObject, ObservableObject {
         }
     }
 
+    // MARK: - 全部断开（allSettled 口径 · P007）
+    struct DisconnectAllReport {
+        let succeeded: [String]   // 设备名
+        let failed: [String]      // 设备名（3s 内未确认断开）
+    }
+    /// 全部断开结算回调（P007 设置后调用 disconnectAll）
+    var onDisconnectAllSettled: ((DisconnectAllReport) -> Void)?
+    private var pendingDisconnectAll: [String: String] = [:]   // id → name
+    private var disconnectAllTimer: Timer?
+
     // MARK: - Private Properties
     private var centralManager: CBCentralManager?
     private var peripheralManager: CBPeripheralManager?
-    private var connectedPeripheral: CBPeripheral?
 
     // 扫描 5s 会话自动停（正典 PAGE001：启动 5s 扫描会话）
     private var autoStopTimer: Timer?
-    // 连接 10s 超时 + 3 次退避重试（正典 PAGE006：10s 超时 · 重试 3 次退避 n×2s）
-    private var connectTimeoutTimer: Timer?
-    private var retryCount = 0
+    // 连接 10s 超时 + 3 次退避重试（正典 PAGE006：10s 超时 · 重试 3 次退避 n×2s）—— 已移入 DeviceSession.connectTimer
     private let maxRetries = 3
-
-    private var notifyingCharacteristics: Set<String> = []
 
     // MARK: - Initialization
     override init() {
@@ -217,7 +272,6 @@ class BLEManager: NSObject, ObservableObject {
         }
 
         discoveredDevices.removeAll()
-        retryCount = 0
         isScanning = true
         log("开始扫描 · 5s 会话")
 
@@ -247,7 +301,28 @@ class BLEManager: NSObject, ObservableObject {
         }
     }
 
-    // MARK: - Connection Methods
+    // MARK: - Session Queries（页面层多设备查询面）
+
+    func sessionState(_ deviceId: String) -> ConnectionState? {
+        sessions[deviceId]?.state
+    }
+
+    func sessionServices(_ deviceId: String) -> [BLEService] {
+        sessions[deviceId]?.services ?? []
+    }
+
+    func isDeviceConnected(_ deviceId: String) -> Bool {
+        sessions[deviceId]?.state == .connected
+    }
+
+    /// 活动会话切换（P007 点卡分流 / 复用连接时进入 P006）
+    func setActive(deviceId: String) {
+        guard sessions[deviceId] != nil else { return }
+        activeDeviceId = deviceId
+        syncActiveMirror()
+    }
+
+    // MARK: - Connection Methods（多设备 · F006 复用 / F013 并行）
     func connect(device: BLEDevice) {
         guard let centralManager = centralManager,
               centralManager.state == .poweredOn else {
@@ -256,84 +331,148 @@ class BLEManager: NSObject, ObservableObject {
         }
 
         stopScan(userInitiated: false)
-        connectionState = .connecting
-        connectedDevice = device
+
+        // F006 会话复用：已连接/连接中 → 不重建
+        if let existing = sessions[device.id] {
+            switch existing.state {
+            case .connected:
+                activeDeviceId = device.id
+                log("会话复用 · \(device.name) 已连接", .ok)
+                syncActiveMirror()
+                return
+            case .connecting:
+                activeDeviceId = device.id
+                log("连接进行中 · \(device.name)")
+                syncActiveMirror()
+                return
+            case .disconnected, .disconnecting:
+                break   // 残留会话 → 走重建
+            }
+        }
+
+        let session = sessions[device.id] ?? DeviceSession(device: device)
+        session.state = .connecting
+        session.retryCount = 0
+        session.userInitiatedDisconnect = false
+        sessions[device.id] = session
+        activeDeviceId = device.id
         log("连接 \(device.name) · 暂存路由上下文")
-        centralManager.connect(device.peripheral, options: nil)
-        armConnectTimeout(for: device)
+        centralManager.connect(session.peripheral, options: nil)
+        armConnectTimeout(for: session)
+        syncActiveMirror()
     }
 
-    private func armConnectTimeout(for device: BLEDevice) {
-        connectTimeoutTimer?.invalidate()
-        connectTimeoutTimer = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: false) { [weak self] _ in
-            Task { @MainActor [weak self] in
-                guard let self, self.connectionState == .connecting else { return }
-                if self.retryCount < self.maxRetries {
-                    self.retryCount += 1
-                    let backoff = Double(self.retryCount) * 2.0
-                    self.log("连接超时（10s）· 自动重连中（\(self.retryCount)/\(self.maxRetries)）· \(Int(backoff))s backoff", .err)
-                    self.connectedDevice = device
-                    self.centralManager?.connect(device.peripheral, options: nil)
+    private func armConnectTimeout(for session: DeviceSession) {
+        session.connectTimer?.invalidate()
+        session.connectTimer = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: false) { [weak self, weak session] _ in
+            Task { @MainActor [weak self, weak session] in
+                guard let self, let session, session.state == .connecting else { return }
+                if session.retryCount < self.maxRetries {
+                    session.retryCount += 1
+                    let backoff = Double(session.retryCount) * 2.0
+                    self.log("连接超时（10s）· 自动重连中（\(session.retryCount)/\(self.maxRetries)）· \(Int(backoff))s backoff · \(session.device.name)", .err)
+                    self.centralManager?.connect(session.peripheral, options: nil)
                     // 退避后仍未回调则再触发超时判定：直接重挂超时计时
-                    DispatchQueue.main.asyncAfter(deadline: .now() + backoff) { [weak self] in
-                        Task { @MainActor [weak self] in
-                            guard let self, self.connectionState == .connecting else { return }
-                            self.armConnectTimeout(for: device)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + backoff) { [weak self, weak session] in
+                        Task { @MainActor [weak self, weak session] in
+                            guard let self, let session, session.state == .connecting else { return }
+                            self.armConnectTimeout(for: session)
                         }
                     }
                 } else {
-                    self.log("连接超时（10s），已自动重试 \(self.maxRetries) 次仍未成功。", .err)
-                    self.connectionState = .disconnected
-                    self.connectedDevice = nil
+                    self.log("连接超时（10s），已自动重试 \(self.maxRetries) 次仍未成功 · \(session.device.name)", .err)
+                    session.connectTimer?.invalidate()
+                    session.connectTimer = nil
+                    self.sessions.removeValue(forKey: session.id)
+                    if self.activeDeviceId == session.id { self.activeDeviceId = nil }
+                    self.syncActiveMirror()
                 }
             }
         }
     }
 
+    /// 断开指定设备（P006 断开按钮 / P007 卡片断开）
+    func disconnect(deviceId: String) {
+        guard let session = sessions[deviceId] else { return }
+        session.userInitiatedDisconnect = true
+        session.connectTimer?.invalidate()
+        session.connectTimer = nil
+        switch session.state {
+        case .connected, .connecting:
+            session.state = .disconnecting
+            log("断开连接中… · \(session.device.name)")
+            centralManager?.cancelPeripheralConnection(session.peripheral)
+            if deviceId == activeDeviceId { syncActiveMirror() }
+        case .disconnected, .disconnecting:
+            sessions.removeValue(forKey: deviceId)
+            if deviceId == activeDeviceId { activeDeviceId = nil }
+            syncActiveMirror()
+        }
+    }
+
+    /// 断开活动会话（兼容口径：P006 顶部断开 / 退出清理）
     func disconnect() {
-        connectTimeoutTimer?.invalidate()
-        connectTimeoutTimer = nil
-        retryCount = 0
-        guard let peripheral = connectedPeripheral else {
+        if let id = activeDeviceId {
+            disconnect(deviceId: id)
+        } else {
             connectionState = .disconnected
             connectedDevice = nil
             services.removeAll()
-            return
         }
-
-        connectionState = .disconnecting
-        log("断开连接中…")
-        centralManager?.cancelPeripheralConnection(peripheral)
     }
 
-    // MARK: - Service Discovery
+    /// 全部断开（P007 · allSettled 口径：逐台 cancel，3s 内未确认断开计为失败）
+    func disconnectAll() {
+        let targets = sessions.values.filter { $0.state == .connected || $0.state == .connecting }
+        guard !targets.isEmpty else {
+            onDisconnectAllSettled?(DisconnectAllReport(succeeded: [], failed: []))
+            return
+        }
+        pendingDisconnectAll = Dictionary(uniqueKeysWithValues: targets.map { ($0.id, $0.device.name) })
+        disconnectAllTimer?.invalidate()
+        disconnectAllTimer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: false) { [weak self] _ in
+            Task { @MainActor [weak self] in self?.settleDisconnectAll() }
+        }
+        for t in targets { disconnect(deviceId: t.id) }
+    }
+
+    private func settleDisconnectAll() {
+        let failedNames = Array(pendingDisconnectAll.values)
+        let failed = failedNames
+        let succeeded = sessions.keys.filter { pendingDisconnectAll[$0] == nil }.compactMap { sessions[$0]?.device.name }
+        pendingDisconnectAll.removeAll()
+        onDisconnectAllSettled?(DisconnectAllReport(succeeded: succeeded, failed: failed))
+    }
+
+    // MARK: - Service Discovery（按会话）
     func discoverServices() {
-        guard let peripheral = connectedPeripheral else {
+        guard let session = activeSession else {
             log("无已连接设备", .err)
             return
         }
-        log("服务发现中…")
-        peripheral.discoverServices(nil)
+        log("服务发现中… · \(session.device.name)")
+        session.peripheral.discoverServices(nil)
     }
 
-    private func discoverCharacteristics(for service: CBService) {
-        guard let peripheral = connectedPeripheral else { return }
-        peripheral.discoverCharacteristics(nil, for: service)
+    private func discoverCharacteristics(for service: CBService, of session: DeviceSession) {
+        session.peripheral.discoverCharacteristics(nil, for: service)
     }
 
-    // MARK: - Characteristic Operations
+    // MARK: - Characteristic Operations（作用于活动会话）
     func readCharacteristic(characteristicUUID: String) {
-        guard let char = findCharacteristic(characteristicUUID),
+        guard let session = activeSession,
+              let char = findCharacteristic(characteristicUUID, in: session.services),
               let peripheralChar = char.peripheralCharacteristic else {
             log("特征未找到：\(characteristicUUID)", .err)
             return
         }
-        log("读取 \(char.name)…（3s 超时）", .read)
-        connectedPeripheral?.readValue(for: peripheralChar)
+        log("[\(session.device.name)] 读取 \(char.name)…（3s 超时）", .read)
+        session.peripheral.readValue(for: peripheralChar)
     }
 
     func writeCharacteristic(characteristicUUID: String, text: String, isHex: Bool) {
-        guard let char = findCharacteristic(characteristicUUID),
+        guard let session = activeSession,
+              let char = findCharacteristic(characteristicUUID, in: session.services),
               let peripheralChar = char.peripheralCharacteristic else {
             log("特征未找到：\(characteristicUUID)", .err)
             return
@@ -346,39 +485,53 @@ class BLEManager: NSObject, ObservableObject {
             data = Data(text.utf8)
         }
         let hexString = data.map { String(format: "%02X", $0) }.joined(separator: " ")
-        log("写入 \(char.name)：\(isHex ? "HEX" : "TEXT"): \(isHex ? hexString : text)", .write)
+        log("[\(session.device.name)] 写入 \(char.name)：\(isHex ? "HEX" : "TEXT"): \(isHex ? hexString : text)", .write)
         let writeType: CBCharacteristicWriteType =
             char.properties.contains(.writeWithoutResponse) ? .withoutResponse : .withResponse
-        connectedPeripheral?.writeValue(data, for: peripheralChar, type: writeType)
+        session.peripheral.writeValue(data, for: peripheralChar, type: writeType)
     }
 
     func setNotification(characteristicUUID: String, enabled: Bool) {
-        guard let char = findCharacteristic(characteristicUUID),
+        guard let session = activeSession,
+              let char = findCharacteristic(characteristicUUID, in: session.services),
               let peripheralChar = char.peripheralCharacteristic else {
             log("特征未找到：\(characteristicUUID)", .err)
             return
         }
-        log("\(enabled ? "开始监听" : "停止监听") \(char.name) · 防抖去重 300ms")
-        connectedPeripheral?.setNotifyValue(enabled, for: peripheralChar)
+        log("[\(session.device.name)] \(enabled ? "开始监听" : "停止监听") \(char.name) · 防抖去重 300ms")
+        session.peripheral.setNotifyValue(enabled, for: peripheralChar)
 
         if enabled {
-            notifyingCharacteristics.insert(characteristicUUID)
+            session.notifyingCharacteristics.insert(characteristicUUID)
         } else {
-            notifyingCharacteristics.remove(characteristicUUID)
+            session.notifyingCharacteristics.remove(characteristicUUID)
         }
     }
 
     func isNotifying(characteristicUUID: String) -> Bool {
-        notifyingCharacteristics.contains(characteristicUUID)
+        activeSession?.notifyingCharacteristics.contains(characteristicUUID) ?? false
     }
 
-    private func findCharacteristic(_ uuid: String) -> BLECharacteristic? {
+    private func findCharacteristic(_ uuid: String, in services: [BLEService]) -> BLECharacteristic? {
         for s in services {
             if let c = s.characteristics.first(where: { $0.uuid == uuid }) {
                 return c
             }
         }
         return nil
+    }
+
+    // MARK: - 活动会话镜像同步（页面兼容面）
+    private func syncActiveMirror() {
+        if let session = activeSession {
+            connectedDevice = session.device
+            connectionState = session.state
+            services = session.services
+        } else {
+            connectedDevice = nil
+            connectionState = .disconnected
+            services = []
+        }
     }
 
     // MARK: - Peripheral/Advertising Methods（P008 · 真实 CBPeripheralManager）
@@ -431,6 +584,10 @@ class BLEManager: NSObject, ObservableObject {
         case .unauthorized: return .unauthorized
         default: return .unknown
         }
+    }
+
+    private func session(for peripheral: CBPeripheral) -> DeviceSession? {
+        sessions[peripheral.identifier.uuidString]
     }
 }
 
@@ -493,7 +650,7 @@ extension BLEManager: @preconcurrency CBCentralManagerDelegate {
             peripheral: peripheral,
             adv: adv,
             profileMatch: resolveProfileMatch(adv: adv, displayName: displayName),
-            isConnected: connectedPeripheral == peripheral
+            isConnected: sessions[id]?.state == .connected
         )
 
         if let index = discoveredDevices.firstIndex(where: { $0.id == id }) {
@@ -545,59 +702,80 @@ extension BLEManager: @preconcurrency CBCentralManagerDelegate {
     }
 
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-        connectTimeoutTimer?.invalidate()
-        connectTimeoutTimer = nil
-        retryCount = 0
-        log("连接成功 · \(peripheral.name ?? "设备")", .ok)
-        connectedPeripheral = peripheral
-        connectionState = .connected
-        if var d = connectedDevice, d.id == peripheral.identifier.uuidString {
-            d.isConnected = true
-            connectedDevice = d
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-            Task { @MainActor [weak self] in self?.discoverServices() }
+        guard let session = session(for: peripheral) else { return }
+        session.connectTimer?.invalidate()
+        session.connectTimer = nil
+        session.retryCount = 0
+        session.state = .connected
+        log("连接成功 · \(session.device.name)", .ok)
+        // F006 口径：MTU 247 为 Android 适配器侧语义；macOS 由系统协商，如实记录最大写入长度
+        let mtu = peripheral.maximumWriteValueLength(for: .withoutResponse)
+        log("ATT 协商 · 最大写入 \(mtu) 字节（withResponse \(peripheral.maximumWriteValueLength(for: .withResponse))）")
+        if session.id == activeDeviceId { syncActiveMirror() }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self, weak session] in
+            Task { @MainActor [weak self, weak session] in
+                guard let self, let session, session.state == .connected else { return }
+                if session.id == self.activeDeviceId {
+                    self.discoverServices()
+                } else {
+                    self.log("服务发现中… · \(session.device.name)")
+                    session.peripheral.discoverServices(nil)
+                }
+            }
         }
     }
 
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral,
                        error: Error?) {
-        connectedPeripheral = nil
-        connectionState = .disconnected
-        if connectedDevice?.id == peripheral.identifier.uuidString {
-            connectedDevice = nil
-        }
-        services.removeAll()
-        notifyingCharacteristics.removeAll()
+        guard let session = session(for: peripheral) else { return }
+        session.connectTimer?.invalidate()
+        session.connectTimer = nil
+        let wasActive = session.id == activeDeviceId
+        let name = session.device.name
+        sessions.removeValue(forKey: session.id)
+        if wasActive { activeDeviceId = sessions.values.first(where: { $0.state == .connected })?.id }
 
         if let error = error {
-            log("连接已断开（\(error.localizedDescription)）", .err)
+            log("连接已断开 · \(name)（\(error.localizedDescription)）", .err)
         } else {
-            log("已断开连接")
+            log("已断开连接 · \(name)")
         }
+
+        // 全部断开结算（allSettled）
+        if pendingDisconnectAll[session.id] != nil {
+            pendingDisconnectAll.removeValue(forKey: session.id)
+            if pendingDisconnectAll.isEmpty { settleDisconnectAll() }
+        }
+
+        syncActiveMirror()
     }
 
     func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral,
                        error: Error?) {
-        log("连接失败：\(error?.localizedDescription ?? "未知错误")", .err)
-        if retryCount >= maxRetries {
-            connectionState = .disconnected
-            connectedDevice = nil
+        guard let session = session(for: peripheral) else { return }
+        log("连接失败 · \(session.device.name)：\(error?.localizedDescription ?? "未知错误")", .err)
+        if session.retryCount >= maxRetries {
+            session.connectTimer?.invalidate()
+            session.connectTimer = nil
+            sessions.removeValue(forKey: session.id)
+            if activeDeviceId == session.id { activeDeviceId = nil }
+            syncActiveMirror()
         }
     }
 }
 
-// MARK: - CBPeripheralDelegate
+// MARK: - CBPeripheralDelegate（按会话路由回调）
 extension BLEManager: @preconcurrency CBPeripheralDelegate {
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
+        guard let session = session(for: peripheral) else { return }
         if let error = error {
-            log("服务发现失败：\(error.localizedDescription)", .err)
+            log("服务发现失败 · \(session.device.name)：\(error.localizedDescription)", .err)
             return
         }
         guard let peripheralServices = peripheral.services else { return }
 
-        log("服务发现完成（\(peripheralServices.count) 服务）", .ok)
-        services = peripheralServices.map { service in
+        log("服务发现完成 · \(session.device.name)（\(peripheralServices.count) 服务）", .ok)
+        session.services = peripheralServices.map { service in
             BLEService(
                 id: service.uuid.uuidString,
                 uuid: service.uuid.uuidString,
@@ -605,23 +783,25 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
                 peripheralService: service
             )
         }
+        if session.id == activeDeviceId { services = session.services }
         if let firstService = peripheralServices.first {
-            discoverCharacteristics(for: firstService)
+            discoverCharacteristics(for: firstService, of: session)
         }
     }
 
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService,
                     error: Error?) {
+        guard let session = session(for: peripheral) else { return }
         if let error = error {
             log("特征发现失败：\(error.localizedDescription)", .err)
             return
         }
         guard let characteristics = service.characteristics else { return }
 
-        log("服务 \(getServiceName(service.uuid))：\(characteristics.count) 特征", .ok)
+        log("服务 \(getServiceName(service.uuid))：\(characteristics.count) 特征 · \(session.device.name)", .ok)
 
-        if let index = services.firstIndex(where: { $0.uuid == service.uuid.uuidString }) {
-            services[index].characteristics = characteristics.map { char in
+        if let index = session.services.firstIndex(where: { $0.uuid == service.uuid.uuidString }) {
+            session.services[index].characteristics = characteristics.map { char in
                 BLECharacteristic(
                     id: char.uuid.uuidString,
                     uuid: char.uuid.uuidString,
@@ -630,46 +810,51 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
                     peripheralCharacteristic: char
                 )
             }
+            if session.id == activeDeviceId { services = session.services }
         }
-        if let serviceIndex = services.firstIndex(where: { $0.peripheralService == service }),
-           serviceIndex + 1 < services.count,
-           let nextService = services[serviceIndex + 1].peripheralService {
-            discoverCharacteristics(for: nextService)
+        if let serviceIndex = session.services.firstIndex(where: { $0.peripheralService == service }),
+           serviceIndex + 1 < session.services.count,
+           let nextService = session.services[serviceIndex + 1].peripheralService {
+            discoverCharacteristics(for: nextService, of: session)
         }
     }
 
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic,
                     error: Error?) {
+        guard let session = session(for: peripheral) else { return }
         if let error = error {
-            log("读取失败：\(error.localizedDescription)", .err)
+            log("读取失败 · \(session.device.name)：\(error.localizedDescription)", .err)
             return
         }
         guard let data = characteristic.value else { return }
         let hexString = data.map { String(format: "%02X", $0) }.joined(separator: " ")
         let text = String(data: data, encoding: .utf8) ?? ""
-        log("HEX: \(hexString)\nTEXT: \(text.isEmpty ? "（解码失败，省略）" : text)", .recv)
-        if let index = services.firstIndex(where: { $0.uuid == characteristic.service?.uuid.uuidString }) {
-            if let cIndex = services[index].characteristics.firstIndex(where: { $0.uuid == characteristic.uuid.uuidString }) {
-                services[index].characteristics[cIndex].value = hexString
+        log("[\(session.device.name)] HEX: \(hexString)\nTEXT: \(text.isEmpty ? "（解码失败，省略）" : text)", .recv)
+        if let index = session.services.firstIndex(where: { $0.uuid == characteristic.service?.uuid.uuidString }) {
+            if let cIndex = session.services[index].characteristics.firstIndex(where: { $0.uuid == characteristic.uuid.uuidString }) {
+                session.services[index].characteristics[cIndex].value = hexString
+                if session.id == activeDeviceId { services = session.services }
             }
         }
     }
 
     func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic,
                     error: Error?) {
+        guard let session = session(for: peripheral) else { return }
         if let error = error {
-            log("写入失败：\(error.localizedDescription)", .err)
+            log("写入失败 · \(session.device.name)：\(error.localizedDescription)", .err)
         } else {
-            log("写入成功", .ok)
+            log("写入成功 · \(session.device.name)", .ok)
         }
     }
 
     func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic,
                     error: Error?) {
+        guard let session = session(for: peripheral) else { return }
         if let error = error {
-            log("监听状态更新失败：\(error.localizedDescription)", .err)
+            log("监听状态更新失败 · \(session.device.name)：\(error.localizedDescription)", .err)
         } else {
-            log("监听\(characteristic.isNotifying ? "已开启" : "已停止") · \(getCharacteristicName(characteristic.uuid))", .ok)
+            log("监听\(characteristic.isNotifying ? "已开启" : "已停止") · \(getCharacteristicName(characteristic.uuid)) · \(session.device.name)", .ok)
         }
     }
 

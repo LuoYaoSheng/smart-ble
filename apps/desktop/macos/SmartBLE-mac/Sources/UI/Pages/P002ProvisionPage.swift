@@ -103,27 +103,25 @@ final class P002ProvisionPage: NSViewController, PageProtocol {
             return
         }
 
-        // BLE 联动：连接成功 → configure；configure 断线 → lost（表单保留）
+        // BLE 联动（r6-M1：按设备会话查询，不再依赖活动会话镜像）：连接成功 → configure；configure 断线 → lost（表单保留）
+        let st = ble.sessionState(device.id)
         if phase == .connect {
-            if ble.connectionState == .connected, ble.connectedDevice?.id == device.id {
+            if st == .connected {
                 phase = .configure
                 connecting = false
-            } else if ble.connectionState == .disconnected, !connecting {
+            } else if st == nil, !connecting {
                 if configuredOnce || connError != nil {
                     // 已尝试过：保持错误显示
                 } else {
                     connecting = true
                 }
             }
-            if connecting && ble.connectionState == .connecting {
+            if connecting && st == .connecting {
                 connError = nil
-            }
-            if ble.connectionState == .disconnected, configuredOnce == false, connecting == false, connError == nil {
-                // 初次进入：发起连接
             }
         }
         if phase == .configure {
-            lost = !(ble.connectionState == .connected && ble.connectedDevice?.id == device.id)
+            lost = st != .connected
             if !lost { configuredOnce = true }
         }
 
@@ -156,11 +154,11 @@ final class P002ProvisionPage: NSViewController, PageProtocol {
 
     private func connectBody(_ device: BLEDevice) -> [NSView] {
         guard let host else { return [] }
-        let ble = host.ble
-        if ble.connectionState == .connecting || connecting {
+        let st = host.ble.sessionState(device.id)
+        if st == .connecting || connecting {
             return [opState("loading", title: "连接并确认设备中…", desc: "正在建立 GATT 连接 · \(device.name)")]
         }
-        if ble.connectionState == .disconnected {
+        if st == nil || st == .disconnected {
             let retry = DSButton("重试", tone: .ghostDanger, small: true, symbol: "arrow.clockwise", actionId: "p002-reconnect") { [weak self] in
                 self?.begin(device: device)
             }

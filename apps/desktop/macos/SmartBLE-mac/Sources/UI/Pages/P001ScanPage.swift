@@ -184,7 +184,7 @@ final class P001ScanPage: NSViewController, PageProtocol {
     private func deviceCard(_ d: BLEDevice) -> NSView {
         guard let host else { return NSView() }
         let isShid = d.profileMatch != nil
-        let connected = host.ble.connectionState == .connected && host.ble.connectedDevice?.id == d.id
+        let connected = host.ble.isDeviceConnected(d.id)
 
         let avatar = avatarView(String(d.name.prefix(1)), shid: isShid, connected: connected)
         var nameViews: [NSView] = [makeLabel(d.name, size: 15, weight: .bold)]

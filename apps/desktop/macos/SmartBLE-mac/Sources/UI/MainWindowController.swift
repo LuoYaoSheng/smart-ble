@@ -304,7 +304,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, PageHost
         tabBar.isHidden = !isTab
         for btn in tabButtons {
             btn.setActive(btn.page == router.cur)
-            let badge = btn.page == .p007 ? ((ble.connectionState == .connected ? 1 : 0) + (provisioningOnline ? 1 : 0)) : 0
+            // 徽标 = 通用连接会话数 + SHID 配网会话在线（正典 P001 计数口径）
+            let badge = btn.page == .p007 ? (ble.connectedDevices.count + (provisioningOnline ? 1 : 0)) : 0
             btn.setBadge(badge)
         }
         // TabBar 隐藏时页面容器占满
@@ -482,7 +483,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, PageHost
     // MARK: - 退出确认（§4 生命周期：常驻运行；关闭 → 退出确认）
 
     func requestQuit() {
-        let busy = ble.connectionState == .connected || ble.isAdvertising
+        let busy = !ble.connectedDevices.isEmpty || ble.isAdvertising
         showModal(
             title: "退出确认",
             content: busy
@@ -496,7 +497,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, PageHost
                 if self.ble.isAdvertising {
                     self.ble.stopAdvertising()
                 }
-                self.ble.disconnect()
+                self.ble.disconnectAll()
                 self.ble.stopScan()
                 self.quitConfirmed = true
                 self.window?.close()
@@ -514,7 +515,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, PageHost
     }
 
     func windowWillClose(_ notification: Notification) {
-        ble.disconnect()
+        ble.disconnectAll()
         ble.stopScan()
     }
 }
