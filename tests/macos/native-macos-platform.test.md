@@ -31,3 +31,24 @@ scripts/macos/verify-native-macos.sh <run-id>
 ## 已知平台事实
 
 同 flutter 侧 P1（同机广播回送过滤）——两条路线共用同一 CoreBluetooth 底座，边界一致。
+
+## 页面级冒烟用例（r2 新增，UIS-*）
+
+入口：`scripts/macos/verify-native-macos.sh` step 4（`SmartBLE-mac --smoke-pages`）。
+不依赖屏幕权限：程序化触发真实 action/委托，从控件状态读回判定。
+
+| ID | 步骤 | 判定 |
+| --- | --- | --- |
+| UIS-01 | 三页装配 | 窗口可见且 FilterPanel/NSTableView/ServicePanel/LogPanel 均挂载 |
+| UIS-02 | 真实点击 Start Scan | 按钮变 Stop Scan、状态 Scanning...、manager.isScanning=true |
+| UIS-03 | 5s 自动停止 | 按钮复位 Start Scan、状态 Ready |
+| UIS-04a | 过滤面板切换 | filterPanel.isHidden == false |
+| UIS-04b | RSSI 预设 -70 | manager.filterRSSI == -70 |
+| UIS-04c | 隐藏无名 checkbox | manager.hideNoNameDevices == true |
+| UIS-04d | Reset | 过滤器全部还原 |
+| UIS-05 | 表格选中第 0 行 | 日志出现 `Connecting to` 且状态进入 connecting（环境无设备时 SKIP） |
+| UIS-06a | 日志页绑定 | 计数标签与 manager.logs 条数一致且 LogPanel 有内容 |
+| UIS-06b | 真实点击 Clear | logs 空、标签 0 entries、面板清空 |
+| UIS-07 | 工具栏 | 三项标识齐全且 logs 动作可派发 |
+
+WriteDialog sheet 交互留待 UI 权限放开；服务树/特征读写同 NVC-04 BLOCKED_FIXTURE。

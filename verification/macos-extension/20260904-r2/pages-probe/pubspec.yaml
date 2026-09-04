@@ -1,0 +1,23 @@
+name: pages_probe
+description: >-
+  macOS spike r2 — smart_ble 页面级 widget 冒烟探针。
+  以 path 依赖只读引用共享层（apps/flutter），不修改共享工程任何文件。
+publish_to: 'none'
+version: 1.0.0
+uses-material-design: true
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  smart_ble:
+    path: ../../../../apps/flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_riverpod: ^2.4.9
+  flutter_blue_plus: ^1.32.0
+  flutter_blue_plus_platform_interface: ^7.0.0

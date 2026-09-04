@@ -74,6 +74,21 @@ else
   record FLP-04 BLOCKED_OBSERVER "external visibility needs a second scanning endpoint (phone/esp32)"
 fi
 
+step "3. 页面级 widget 探针（r2 pages-probe：只读引用共享层，5 页面覆盖）"
+PAGES_PROBE_DIR=$(find "$PROBE" -maxdepth 2 -type d -name pages-probe 2>/dev/null | sort | tail -1 || true)
+if [ -z "$PAGES_PROBE_DIR" ]; then
+  record FLW-00 NOT_RUN "no pages-probe found under verification/macos-extension/<run>"
+else
+  cd "$PAGES_PROBE_DIR"
+  flutter pub get > "$LOGDIR/pages-probe-pub-get.txt" 2>&1 \
+    || { record FLW-00 FAIL "pages-probe pub get"; exit 1; }
+  # USE_MOCK_BLE：共享层预留的 E2E 注入开关；FBP 假平台/通道 mock 在探针内完成。
+  # 已知共享层缺陷 D16（CommandQueue dispose 回调）在 FLW-08 内定向压制，见 r2 integration-notes
+  flutter test --dart-define=USE_MOCK_BLE=true > "$LOGDIR/pages-probe-test.txt" 2>&1 \
+    && record FLW-00 PASS "pages widget suite" \
+    || record FLW-00 FAIL "pages widget suite (see pages-probe-test.txt)"
+fi
+
 step "汇总"
 cat "$LOGDIR/summary.tsv"
 echo "logs: $LOGDIR"

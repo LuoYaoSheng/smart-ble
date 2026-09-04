@@ -1,0 +1,51 @@
+{
+  "run_id": "20260904-r2",
+  "date": "2026-09-04",
+  "scope": "page-level coverage supplement (r1 covered platform layer only)",
+  "base_commit": "e8e9772 (r1 final, pushed)",
+  "branch": "spike/macos-extension-v1",
+  "ui_access": {
+    "screen_recording": "denied for ZCode Computer Use.app (probe again at r2 start: still denied)",
+    "accessibility": "denied",
+    "consequence": "no real-click / screenshot walkthrough; replaced by widget tests + programmatic page smoke"
+  },
+  "results": [
+    { "id": "FLW-00", "status": "PASS", "note": "pages widget suite 8/8 (flutter test --dart-define=USE_MOCK_BLE=true)" },
+    { "id": "FLW-01", "status": "PASS", "note": "DeviceListPage no-BLE degraded state: banner + disabled scan button" },
+    { "id": "FLW-02", "status": "PASS", "note": "DeviceListPage mock scan full chain: button toggle, Dummy-BLE-01 card, badge, info dialog, 5s auto-stop" },
+    { "id": "FLW-03", "status": "PASS", "note": "DeviceListPage filter panel expand + controls" },
+    { "id": "FLW-04", "status": "PASS", "note": "MainScreen 4-tab walkthrough (scan/connect/broadcast/about)" },
+    { "id": "FLW-05", "status": "PASS", "note": "BroadcastPage UUID validation + successful start via mocked channel" },
+    { "id": "FLW-06", "status": "PASS", "note": "ConnectedDevicesPage empty state" },
+    { "id": "FLW-07", "status": "PASS", "note": "AboutPage content render" },
+    { "id": "FLW-08", "status": "PASS", "note": "DeviceDetailPage unconnected-entry degraded render (D16 assertion suppressed, see integration-notes S5)" },
+    { "id": "UIS-00", "status": "PASS", "note": "native page smoke exit=0, 11/11 steps" },
+    { "id": "UIS-01", "status": "PASS", "note": "3-page assembly: window + FilterPanel/NSTableView/ServicePanel/LogPanel" },
+    { "id": "UIS-02", "status": "PASS", "note": "scan page: real Start Scan click -> isScanning binding -> Stop Scan/Scanning..." },
+    { "id": "UIS-03", "status": "PASS", "note": "scan page: 5s auto-stop (4 devices found this run)" },
+    { "id": "UIS-04a", "status": "PASS", "note": "FilterPanel toggle visible" },
+    { "id": "UIS-04b", "status": "PASS", "note": "RSSI preset -70 -> manager filter linkage" },
+    { "id": "UIS-04c", "status": "PASS", "note": "hide-unnamed checkbox -> manager toggle" },
+    { "id": "UIS-04d", "status": "PASS", "note": "Reset restores all filters" },
+    { "id": "UIS-05", "status": "PASS", "note": "table selection -> MainWindowController delegate -> connect -> connecting (env-dependent, SKIP when no devices)" },
+    { "id": "UIS-06a", "status": "PASS", "note": "log page binding: 11 entries synced between label and manager.txts" },
+    { "id": "UIS-06b", "status": "PASS", "note": "log page Clear click -> zeroed count + emptied panel" },
+    { "id": "UIS-07", "status": "PASS", "note": "toolbar scanToggle/disconnect/logs + logs action dispatch" }
+  ],
+  "blocked": [
+    { "id": "UI-WALK", "status": "BLOCKED_UI_ACCESS", "note": "real-click/screenshot walkthrough needs Screen Recording + AX for ZCode" },
+    { "id": "GATT-POSITIVE", "status": "BLOCKED_FIXTURE", "note": "carried from r1 FLC-07/NVC-04: needs connectable ESP32 GATT fixture" },
+    { "id": "E5-VISIBILITY", "status": "BLOCKED_OBSERVER", "note": "carried from r1 FLP-04/NVC-05: needs second scanning endpoint" }
+  ],
+  "findings": [
+    { "id": "D16", "area": "shared", "severity": "medium", "status": "open - for Windows line", "note": "CommandQueue.clear fires onQueueStateChanged synchronously during DeviceDetailPage.dispose -> setState during unmount -> defunct assertion on every detail-page exit; suggested fixes in integration-notes S5" },
+    { "id": "D17", "area": "native", "severity": "high", "status": "fixed in r2", "note": "MainWindowController.setupBLE assigned bleManager property but never called setBLEManager -> all three pages' bindings dead (scan button no-op, filters no-op, log page stuck at 0 entries); fixed by calling setBLEManager on all three view controllers" },
+    { "id": "S6", "area": "shared", "severity": "low", "status": "memo", "note": "broadcast streams have no replay; late subscribers (tests/hot-rebuild) stay loading" },
+    { "id": "S7", "area": "shared", "severity": "low", "status": "memo", "note": "DeviceDetailPage treats empty discoverServices result as connected" }
+  ],
+  "big_artifacts": {
+    "pages_probe": "verification/macos-extension/20260904-r2/pages-probe (source, committed; build outputs gitignored)",
+    "native_smoke_mode": "apps/desktop/macos/SmartBLE-mac --smoke-pages (PageSmoke.swift)",
+    "logs": "verification/macos-extension/20260904-r2/logs/"
+  }
+}

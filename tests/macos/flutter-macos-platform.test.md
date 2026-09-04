@@ -43,3 +43,22 @@ scripts/macos/verify-flutter-macos.sh <run-id>
 1. macOS 同机控制器不回送自身 LE 广播 → 本机 Central 永远看不到本机 Peripheral
 2. FBP 1.36.8 启动竞态（PoweredOn 前 startScan 抛异常）→ 探针已守卫
 3. flutter_ble_peripheral isAdvertising getter darwin 恒 false → 以状态流为准
+
+## 页面级 widget 用例（r2 新增，FLW-*）
+
+入口：`scripts/macos/verify-flutter-macos.sh` step 3
+（`verification/macos-extension/<run>/pages-probe`，只读引用共享层）。
+运行：`flutter test --dart-define=USE_MOCK_BLE=true`。
+
+| ID | 页面 | 判定 |
+| --- | --- | --- |
+| FLW-01 | DeviceListPage | 无 BLE 平台：蓝牙不可用横幅 + 扫描按钮禁用 |
+| FLW-02 | DeviceListPage | Mock 扫描全链路：按钮态/设备卡片/徽标/信息对话框/5s 自动停 |
+| FLW-03 | DeviceListPage | 过滤面板展开与四类控件 |
+| FLW-04 | MainScreen | 四 tab 走查各自关键内容 |
+| FLW-05 | BroadcastPage | UUID 空值/格式校验 + mock 通道启动成功 |
+| FLW-06 | ConnectedDevicesPage | 空态渲染 |
+| FLW-07 | AboutPage | 内容渲染 |
+| FLW-08 | DeviceDetailPage | 未连接进入降级渲染（已知共享层缺陷 D16 定向压制，见 r2 integration-notes S5） |
+
+边界：连接正向流/GATT UI 需真实夹具（同 FLC-07）；真机点击走查需 Screen Recording/AX。

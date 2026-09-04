@@ -49,6 +49,23 @@ PBIN="./.build/debug/native-probe"
 record NVC-04 BLOCKED_FIXTURE  "gatt client chain needs a connectable fixture"
 record NVC-05 BLOCKED_OBSERVER "advertise visibility needs a second endpoint (phone/esp32)"
 
+step "4. 页面级冒烟（--smoke-pages：三页面真实代码路径）"
+cd "$APP"
+./.build/debug/SmartBLE-mac --smoke-pages > "$LOGDIR/pages-smoke.log" 2>&1 \
+  && record UIS-00 PASS "page smoke exit=0" \
+  || record UIS-00 FAIL "page smoke exit!=0 (see pages-smoke.log)"
+for id in UIS-01 UIS-02 UIS-03 UIS-04a UIS-04b UIS-04c UIS-04d UIS-05 UIS-06a UIS-06b UIS-07; do
+  if grep -q "\[UISMOKE\] $id result=PASS" "$LOGDIR/pages-smoke.log"; then
+    record "$id" PASS "page smoke"
+  elif grep -q "\[UISMOKE\] $id result=SKIP" "$LOGDIR/pages-smoke.log"; then
+    record "$id" SKIP "environment-dependent (no devices nearby)"
+  elif grep -q "\[UISMOKE\] $id result=FAIL" "$LOGDIR/pages-smoke.log"; then
+    record "$id" FAIL "page smoke"
+  else
+    record "$id" NOT_RUN "step not found in log"
+  fi
+done
+
 step "汇总"
 cat "$LOGDIR/native-summary.tsv"
 echo "logs: $LOGDIR"

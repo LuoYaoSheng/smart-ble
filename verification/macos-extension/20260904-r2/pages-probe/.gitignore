@@ -1,0 +1,8 @@
+.dart_tool/
+.build/
+build/
+ephemeral/
+.pub-cache/
+.pub/
+pubspec.lock
+flutter_export_environment.sh

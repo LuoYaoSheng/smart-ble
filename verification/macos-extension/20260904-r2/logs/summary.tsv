@@ -1,0 +1,12 @@
+FLB-01	PASS_WITH_LIMITATION	lock drift not committed
+FLB-01	NOTE	shared lock drifted locally - MUST NOT be committed from mac
+FLB-03	PASS	analyze
+FLB-04	PASS	flutter test
+FLB-05	PASS	release build
+FLC-01	PASS	env
+FLC-03	PASS	scan5 auto-stop
+FLC-05	PASS	scan dedup/rssi
+FLP-02	PASS	advertise API
+FLC-07	BLOCKED_FIXTURE	GATT ops need a connectable fixture (esp32 gatt server or similar)
+FLP-04	BLOCKED_OBSERVER	external visibility needs a second scanning endpoint (phone/esp32)
+FLW-00	PASS	pages widget suite
