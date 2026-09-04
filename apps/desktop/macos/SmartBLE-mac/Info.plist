@@ -34,6 +34,8 @@
     <string>SmartBLE needs Bluetooth access to scan for, connect to, and interact with nearby BLE devices.</string>
     <key>NSBluetoothPeripheralUsageDescription</key>
     <string>SmartBLE needs Bluetooth access to scan for, connect to, and interact with nearby BLE devices.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>SmartBLE uses the camera to scan ControlHub pairing QR codes (shid://pair). No images are stored.</string>
     <key>NSPrincipalClass</key>
     <string>NSApplication</string>
     <key>NSHighResolutionCapable</key>

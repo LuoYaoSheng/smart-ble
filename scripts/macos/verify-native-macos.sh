@@ -45,16 +45,20 @@ PBIN="./.build/debug/native-probe"
 "$PBIN" --mode advertise --duration 10 > "$LOGDIR/probe-adv.log" 2>&1 && record NVC-03 PASS "advertise API" || record NVC-03 FAIL "advertise"
 
 # GATT 正向链与广播外部可见性均需真实夹具/第二观察端；同机广播被 macOS 控制器过滤（P1），
-# 无硬件时显式 BLOCKED，不得写 PASS：
-record NVC-04 BLOCKED_FIXTURE  "gatt client chain needs a connectable fixture"
+# 无硬件时显式 BLOCKED，不得写 PASS（NVC-04 在步骤 4 后按冒烟证据动态改判）：
 record NVC-05 BLOCKED_OBSERVER "advertise visibility needs a second endpoint (phone/esp32)"
 
-step "4. 页面级冒烟（r3 原型对齐壳：四 Tab + 9 页 + 桌面差异点）"
+step "3.5 核心纯逻辑单测（r6：framed-v1 边界 / QR 严格解析 / candidate 校验 / 身份验证 / 四行映射 / 错误四分流 / 常量）"
 cd "$APP"
+./.build/debug/SmartBLE-mac --unit-core > "$LOGDIR/unit-core.log" 2>&1 \
+  && record CU-00 PASS "unit-core exit=0 ($(grep -c 'result=PASS' "$LOGDIR/unit-core.log") checks PASS)" \
+  || record CU-00 FAIL "unit-core exit!=0 (see unit-core.log)"
+
+step "4. 页面级冒烟（r3 原型对齐壳 + r6 能力扩展：四 Tab + 9 页 + 桌面差异点 + 协议流/OTA/多设备一致性）"
 ./.build/debug/SmartBLE-mac --smoke-pages > "$LOGDIR/pages-smoke.log" 2>&1 \
   && record UIS-00 PASS "page smoke exit=0" \
   || record UIS-00 FAIL "page smoke exit!=0 (see pages-smoke.log)"
-for id in UIS-01 UIS-02 UIS-03 UIS-04 UIS-05 UIS-06 UIS-07 UIS-08 UIS-09 UIS-10 UIS-11 UIS-12 UIS-13; do
+for id in UIS-01 UIS-02 UIS-03 UIS-04 UIS-05 UIS-06 UIS-07 UIS-08 UIS-09 UIS-10 UIS-11 UIS-12 UIS-13 UIS-15 UIS-16 UIS-17; do
   if grep -q "\[UISMOKE\] $id result=PASS" "$LOGDIR/pages-smoke.log"; then
     record "$id" PASS "page smoke (prototype-aligned shell)"
   elif grep -q "\[UISMOKE\] $id result=SKIP" "$LOGDIR/pages-smoke.log"; then
@@ -65,6 +69,14 @@ for id in UIS-01 UIS-02 UIS-03 UIS-04 UIS-05 UIS-06 UIS-07 UIS-08 UIS-09 UIS-10 
     record "$id" NOT_RUN "step not found in log"
   fi
 done
+
+# NVC-04 动态改判（r6）：本轮冒烟日志含真实 连接成功+服务发现 证据 → PASS（环境外设）；
+# 否则维持 BLOCKED_FIXTURE（不得无证据写 PASS）
+if grep -q "连接成功" "$LOGDIR/pages-smoke.log" && grep -q "服务发现完成" "$LOGDIR/pages-smoke.log"; then
+  record NVC-04 PASS "gatt chain exercised on environment peripheral (connect + ATT negotiate + service/char discovery, see pages-smoke.log)"
+else
+  record NVC-04 BLOCKED_FIXTURE "gatt client chain needs a connectable fixture"
+fi
 
 step "5. 页面快照证据（--snap-pages：9 页 cacheDisplay PNG，无需屏幕录制权限）"
 SNAPDIR="$REPO_ROOT/verification/macos-extension/$RUN_ID/snaps"
@@ -155,11 +167,20 @@ else
   record NVD-05 FAIL "sandbox probe (mas=$MAS_PROBE_EXIT dev=$DEV_PROBE_EXIT)"
 fi
 # NVD-06：MAS 形态 LaunchServices 启动（TCC 归因父终端，r4 平台事实）
+# open -n 强制新实例（运行形态与 MAS 同 bundle id，已驻留实例会抢激活）。
+# 判活先落盘再 grep 文件：pipefail 下 `ps aux | grep -q` 受 SIGPIPE 竞态影响（ps 输出长时误判失败）。
 MAS_LAUNCH_OK=0
-open "$REPO_ROOT/apps/desktop/macos/dist/SmartBLE-macOS-MAS.app" && sleep 6
-if ps aux | grep -q "[S]martBLE-macOS-MAS.app/Contents/MacOS"; then MAS_LAUNCH_OK=1; fi
-pkill -f "SmartBLE-macOS-MAS.app/Contents/MacOS" 2>/dev/null || true
-sleep 1
+for attempt in 1 2; do
+  open -n "$REPO_ROOT/apps/desktop/macos/dist/SmartBLE-macOS-MAS.app" > "$LOGDIR/nvd06-open.log" 2>&1
+  sleep 6
+  ps aux > "$LOGDIR/nvd06-ps.txt" 2>/dev/null || true
+  if grep -q "[S]martBLE-macOS-MAS.app/Contents/MacOS" "$LOGDIR/nvd06-ps.txt"; then
+    MAS_LAUNCH_OK=1
+  fi
+  pkill -f "SmartBLE-macOS-MAS.app/Contents/MacOS" 2>/dev/null || true
+  sleep 1
+  [ "$MAS_LAUNCH_OK" -eq 1 ] && break
+done
 if [ "$MAS_LAUNCH_OK" -eq 1 ]; then
   record NVD-06 PASS "MAS-form bundle boots via LaunchServices"
 else

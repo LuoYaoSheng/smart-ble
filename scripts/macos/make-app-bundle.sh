@@ -61,14 +61,14 @@ for app in "$BUNDLE" "$MAS"; do
   cp "$ICON_SRC" "$app/Contents/Resources/AppIcon.icns"
 done
 
-# NVD plist：MAS 必填/关键字段完整性
+# NVD plist：MAS 必填/关键字段完整性（r6 增相机用途：配对码扫码）
 for key in CFBundleShortVersionString CFBundleVersion CFBundleIconFile \
            LSApplicationCategoryType ITSAppUsesNonExemptEncryption \
-           NSBluetoothAlwaysUsageDescription; do
+           NSBluetoothAlwaysUsageDescription NSCameraUsageDescription; do
   /usr/libexec/PlistBuddy -c "Print :$key" "$MAS/Contents/Info.plist" > /dev/null \
     || { echo "NVD plist FAIL: 缺 $key"; exit 1; }
 done
-echo "NVD plist: 版本/分类/图标/出口合规/蓝牙用途 全部在位"
+echo "NVD plist: 版本/分类/图标/出口合规/蓝牙+相机用途 全部在位"
 
 if [ "$OMIT_BT" = "1" ]; then
   mkdir -p "$NOBT/Contents/MacOS" "$NOBT/Contents/Resources"

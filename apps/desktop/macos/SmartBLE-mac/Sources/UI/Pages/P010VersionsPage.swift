@@ -11,18 +11,20 @@ final class P010VersionsPage: NSViewController, PageProtocol {
     weak var host: PageHost?
     private var scroll: PageScroll!
 
-    /// 当前限制（探针实测口径 · verification r3）
+    /// 当前限制（r6 开发轮实测口径）
     private let limitations: [(String, String)] = [
-        ("warn", "GATT 正向链 BLOCKED_FIXTURE：无可连接夹具（ESP32 GATT server），读写监听仅经真实连接验证到发现失败分支"),
+        ("warn", "GATT 正向链：环境外设已实证（连接/ATT 协商/服务与特征枚举）；对目标固件（ESP32）的读写监听与 OTA 传输仍 BLOCKED_FIXTURE"),
         ("warn", "E5 外部可见性 BLOCKED_OBSERVER：无第二观察端，广播仅本地 API 成功口径"),
-        ("warn", "多设备并行会话未支持：BLEManager 单连接（共享层能力，Windows 主线）"),
-        ("warn", "OTA 端到端链路 BLOCKED（P-03）：固件侧暂未开放升级通道"),
-        ("warn", "P002 摄像头扫码 NOT_RUN：探针未实现二维码识别，配对码走桌面粘贴兜底路径"),
+        ("warn", "OTA 端到端链路 BLOCKED（P-03）：固件侧暂未开放升级通道；客户端调用链已完整（选包校验/start/分块/commit/版本回读）"),
+        ("warn", "Smart HID 配网端到端 BLOCKED_FIXTURE：无真实 SHID 设备，身份验证/下发/诊断停在诚实错误态；协议层（framed-v1/加密写/STATUS 轮询）已接线"),
+        ("warn", "多设备并行会话已支持（F013），≥2 台外设的并行实测 BLOCKED_FIXTURE（本机环境至多 1 台可连）"),
+        ("warn", "摄像头取景器已实现（AVFoundation）；实机配对码识别 NOT_RUN（未在 shid://pair 实景验证，授权链待真机）"),
     ]
 
-    /// 预览记录（spike 轮次投影）
+    /// 预览记录（spike/开发轮次投影）
     private let previews: [(String, String, String, String)] = [
-        ("v0.1.0-spike r3", "2026-09-04", "页面按平台原型对齐（四 Tab + 9 页 + 桌面差异点）", "r3"),
+        ("v0.1.0-spike r6", "2026-09-04", "能力层补齐：多设备会话/断线重连/写队列/OTA 真实链/HID 配网协议+摄像头扫码 · 62 单测+17 冒烟", "90682bd+"),
+        ("v0.1.0-spike r3", "2026-09-04", "页面按平台原型对齐（四 Tab + 9 页 + 桌面差异点）", "f8b0e70"),
         ("v0.1.0-spike r2", "2026-09-04", "页面级覆盖（原生 11/11 + Flutter 探针 8/8）· D16/D17", "c6fc88d"),
         ("v0.1.0-spike r1", "2026-09-03", "macOS 平台层验证（构建/权限/插件能力）· D1-D15", "f9a4516"),
     ]
