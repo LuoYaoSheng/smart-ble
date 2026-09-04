@@ -1,5 +1,9 @@
 #include "ble_peripheral.h"
 
+#ifdef DIAG_HEARTBEAT
+#include <Arduino.h>
+#endif
+
 #include <ArduinoJson.h>
 #include <NimBLEDevice.h>
 #include <NimBLEServer.h>
@@ -119,9 +123,14 @@ static void startAdvertisingWithMetadata() {
     pAdvertising->setMinPreferred(0x06);
     pAdvertising->setMinPreferred(0x12);
 
-    NimBLEDevice::startAdvertising();
-    emitBleEvent("advertising");
-    emitSerialEvent("adv", "started");
+    // DEF-006 observability: report whether the stack actually accepted the
+    // advertising request instead of assuming success.
+    if (NimBLEDevice::startAdvertising()) {
+        emitBleEvent("advertising");
+        emitSerialEvent("adv", "started");
+    } else {
+        emitSerialEvent("adv", "start_failed");
+    }
 }
 
 void blePeripheralBegin() {
@@ -190,6 +199,27 @@ void blePeripheralBegin() {
 }
 
 void blePeripheralLoop() {
+#ifdef DIAG_HEARTBEAT
+    // DEF-006 diagnostic: 3s heartbeat discriminating loop-hang vs
+    // advertising-restart failure. conn/old mirror the re-advertise flags,
+    // adv is the stack's live advertising state, heap rules out exhaustion.
+    {
+        static unsigned long lastHb = 0;
+        unsigned long now = millis();
+        if (now - lastHb >= 3000) {
+            lastHb = now;
+            char hb[160];
+            snprintf(hb, sizeof(hb),
+                     "{\"type\":\"hb\",\"ts\":%lu,\"conn\":%d,\"old\":%d,\"adv\":%d,\"heap\":%u}",
+                     (unsigned long)now, deviceConnected ? 1 : 0,
+                     oldDeviceConnected ? 1 : 0,
+                     NimBLEDevice::getAdvertising()->isAdvertising() ? 1 : 0,
+                     (unsigned)ESP.getFreeHeap());
+            emitSerialJson(hb);
+        }
+    }
+#endif
+
     if (!deviceConnected && oldDeviceConnected) {
         delay(500);
         startAdvertisingWithMetadata();
