@@ -58,8 +58,11 @@ final class P006GattPage: NSViewController, PageProtocol {
 
         // 设备面板（devhead）
         let d = device
-        let stCls = ble.connectionState == .connected ? "on" : ble.connectionState == .connecting ? "mid" : ""
-        let stWord = ble.connectionState == .connected ? "已连接" : ble.connectionState == .connecting ? "连接中" : "未连接"
+        let stCls = ble.connectionState == .connected ? "on"
+            : (ble.connectionState == .connecting || ble.connectionState == .reconnecting) ? "mid" : ""
+        let stWord = ble.connectionState == .connected ? "已连接"
+            : ble.connectionState == .connecting ? "连接中"
+            : ble.connectionState == .reconnecting ? "重连中" : "未连接"
         let dot = NSView()
         dot.wantsLayer = true
         dot.layer?.backgroundColor = (stCls == "on" ? DS.success : stCls == "mid" ? DS.warning : DS.ph).cgColor
@@ -74,6 +77,10 @@ final class P006GattPage: NSViewController, PageProtocol {
         switch ble.connectionState {
         case .connecting:
             connBtn = DSButton("连接中…", tone: .primary, actionId: "p006-connecting")
+            connBtn.isEnabled = false
+        case .reconnecting:
+            let n = d.flatMap { ble.reconnectInfo(deviceId: $0.id) } ?? 0
+            connBtn = DSButton("重连中…（\(n)/3）", tone: .primary, actionId: "p006-reconnecting")
             connBtn.isEnabled = false
         case .connected:
             connBtn = DSButton("断开连接", tone: .danger, symbol: "xmark", actionId: "p006-disconnect") { [weak self] in
@@ -105,6 +112,10 @@ final class P006GattPage: NSViewController, PageProtocol {
         switch ble.connectionState {
         case .connecting:
             panel = opState("loading", title: "连接中…", desc: "正在连接 \(name)（10s 超时 · 失败自动重试 3 次）")
+        case .reconnecting:
+            let n = d.flatMap { ble.reconnectInfo(deviceId: $0.id) } ?? 0
+            panel = opState("loading", title: "重连中…（\(n)/3）",
+                            desc: "被动断线后自动重连 · \(name)（1s/3s/5s 退避）")
         case .connected:
             if ble.services.isEmpty {
                 panel = opState("loading", title: "服务发现中…", desc: "正在枚举 GATT 服务与特征")

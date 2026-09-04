@@ -21,6 +21,8 @@ enum ConnectionState {
     case connecting
     case connected
     case disconnecting
+    /// 被动断线后的自动重连期（F012 · SM §2：1s/3s/5s 退避 ×3）
+    case reconnecting
 }
 
 // MARK: - 设备会话（F006/F013 · 每设备一份）
@@ -32,11 +34,19 @@ final class DeviceSession {
     var state: ConnectionState = .connecting
     var services: [BLEService] = []
     var notifyingCharacteristics: Set<String> = []
+    /// 重连成功后需恢复监听的特征（被动断线时从 notifyingCharacteristics 转存）
+    var resubscribeSet: Set<String> = []
     /// 连接 10s 超时计时（每会话独立）
     var connectTimer: Timer?
     var retryCount = 0
     /// 主动断开标记（重连判定用：主动断开不自动重连）
     var userInitiatedDisconnect = false
+    /// F012 自动重连：已尝试次数（1...3）
+    var reconnectAttempt = 0
+    /// 重连退避任务（1s/3s/5s）
+    var reconnectTask: DispatchWorkItem?
+    /// OTA 接管期间禁自动重连（SM §2）
+    var suppressAutoReconnect = false
 
     init(device: BLEDevice) {
         self.id = device.id
@@ -340,7 +350,7 @@ class BLEManager: NSObject, ObservableObject {
                 log("会话复用 · \(device.name) 已连接", .ok)
                 syncActiveMirror()
                 return
-            case .connecting:
+            case .connecting, .reconnecting:
                 activeDeviceId = device.id
                 log("连接进行中 · \(device.name)")
                 syncActiveMirror()
@@ -354,6 +364,9 @@ class BLEManager: NSObject, ObservableObject {
         session.state = .connecting
         session.retryCount = 0
         session.userInitiatedDisconnect = false
+        session.reconnectTask?.cancel()
+        session.reconnectTask = nil
+        session.reconnectAttempt = 0
         sessions[device.id] = session
         activeDeviceId = device.id
         log("连接 \(device.name) · 暂存路由上下文")
@@ -366,7 +379,14 @@ class BLEManager: NSObject, ObservableObject {
         session.connectTimer?.invalidate()
         session.connectTimer = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: false) { [weak self, weak session] _ in
             Task { @MainActor [weak self, weak session] in
-                guard let self, let session, session.state == .connecting else { return }
+                guard let self, let session,
+                      session.state == .connecting || session.state == .reconnecting else { return }
+                if session.state == .reconnecting {
+                    // F012：重连尝试 10s 未回 → 计入重连次数（1s/3s/5s ×3）
+                    self.log("重连超时（10s）· \(session.device.name)（\(session.reconnectAttempt)/3）", .err)
+                    self.scheduleReconnect(session)
+                    return
+                }
                 if session.retryCount < self.maxRetries {
                     session.retryCount += 1
                     let backoff = Double(session.retryCount) * 2.0
@@ -391,14 +411,61 @@ class BLEManager: NSObject, ObservableObject {
         }
     }
 
-    /// 断开指定设备（P006 断开按钮 / P007 卡片断开）
+    // MARK: - 断线自动重连（F012 · SM §2：被动断线 1s/3s/5s ×3；主动断开/OTA 接管永不重连）
+    private let reconnectBackoffs: [Double] = [1.0, 3.0, 5.0]
+
+    /// 会话当前重连进度（reconnecting 态时返回已尝试次数）
+    func reconnectInfo(deviceId: String) -> Int? {
+        guard let s = sessions[deviceId], s.state == .reconnecting else { return nil }
+        return s.reconnectAttempt
+    }
+
+    private func scheduleReconnect(_ session: DeviceSession) {
+        session.reconnectTask?.cancel()
+        session.connectTimer?.invalidate()
+        session.connectTimer = nil
+        let attempt = session.reconnectAttempt + 1
+        guard attempt <= reconnectBackoffs.count else {
+            log("自动重连 3 次未成功 · \(session.device.name) → 会话结束（FAILED）", .err)
+            session.reconnectAttempt = 0
+            sessions.removeValue(forKey: session.id)
+            if activeDeviceId == session.id {
+                activeDeviceId = sessions.values.first(where: { $0.state == .connected })?.id
+            }
+            syncActiveMirror()
+            return
+        }
+        session.reconnectAttempt = attempt
+        session.state = .reconnecting
+        let backoff = reconnectBackoffs[attempt - 1]
+        log("被动断线 · \(Int(backoff))s 后自动重连 · \(session.device.name)（\(attempt)/3）", .err)
+        let work = DispatchWorkItem { [weak self, weak session] in
+            Task { @MainActor [weak self, weak session] in
+                guard let self, let session,
+                      session.state == .reconnecting,
+                      !session.userInitiatedDisconnect,
+                      self.sessions[session.id] != nil else { return }
+                log("正在自动重连 · \(session.device.name)（\(session.reconnectAttempt)/3）")
+                self.centralManager?.connect(session.peripheral, options: nil)
+                self.armConnectTimeout(for: session)
+                if session.id == self.activeDeviceId { self.syncActiveMirror() }
+            }
+        }
+        session.reconnectTask = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + backoff, execute: work)
+        if session.id == activeDeviceId { syncActiveMirror() }
+    }
+
+    /// 断开指定设备（P006 断开按钮 / P007 卡片断开；含取消进行中的重连）
     func disconnect(deviceId: String) {
         guard let session = sessions[deviceId] else { return }
         session.userInitiatedDisconnect = true
         session.connectTimer?.invalidate()
         session.connectTimer = nil
+        session.reconnectTask?.cancel()
+        session.reconnectTask = nil
         switch session.state {
-        case .connected, .connecting:
+        case .connected, .connecting, .reconnecting:
             session.state = .disconnecting
             log("断开连接中… · \(session.device.name)")
             centralManager?.cancelPeripheralConnection(session.peripheral)
@@ -423,7 +490,9 @@ class BLEManager: NSObject, ObservableObject {
 
     /// 全部断开（P007 · allSettled 口径：逐台 cancel，3s 内未确认断开计为失败）
     func disconnectAll() {
-        let targets = sessions.values.filter { $0.state == .connected || $0.state == .connecting }
+        let targets = sessions.values.filter {
+            $0.state == .connected || $0.state == .connecting || $0.state == .reconnecting
+        }
         guard !targets.isEmpty else {
             onDisconnectAllSettled?(DisconnectAllReport(succeeded: [], failed: []))
             return
@@ -492,8 +561,15 @@ class BLEManager: NSObject, ObservableObject {
     }
 
     func setNotification(characteristicUUID: String, enabled: Bool) {
-        guard let session = activeSession,
-              let char = findCharacteristic(characteristicUUID, in: session.services),
+        guard let session = activeSession else {
+            log("特征未找到：\(characteristicUUID)", .err)
+            return
+        }
+        setNotification(characteristicUUID: characteristicUUID, enabled: enabled, on: session)
+    }
+
+    func setNotification(characteristicUUID: String, enabled: Bool, on session: DeviceSession) {
+        guard let char = findCharacteristic(characteristicUUID, in: session.services),
               let peripheralChar = char.peripheralCharacteristic else {
             log("特征未找到：\(characteristicUUID)", .err)
             return
@@ -706,8 +782,10 @@ extension BLEManager: @preconcurrency CBCentralManagerDelegate {
         session.connectTimer?.invalidate()
         session.connectTimer = nil
         session.retryCount = 0
+        let wasReconnect = session.state == .reconnecting
+        session.reconnectAttempt = 0
         session.state = .connected
-        log("连接成功 · \(session.device.name)", .ok)
+        log(wasReconnect ? "自动重连成功 · \(session.device.name)" : "连接成功 · \(session.device.name)", .ok)
         // F006 口径：MTU 247 为 Android 适配器侧语义；macOS 由系统协商，如实记录最大写入长度
         let mtu = peripheral.maximumWriteValueLength(for: .withoutResponse)
         log("ATT 协商 · 最大写入 \(mtu) 字节（withResponse \(peripheral.maximumWriteValueLength(for: .withResponse))）")
@@ -732,8 +810,6 @@ extension BLEManager: @preconcurrency CBCentralManagerDelegate {
         session.connectTimer = nil
         let wasActive = session.id == activeDeviceId
         let name = session.device.name
-        sessions.removeValue(forKey: session.id)
-        if wasActive { activeDeviceId = sessions.values.first(where: { $0.state == .connected })?.id }
 
         if let error = error {
             log("连接已断开 · \(name)（\(error.localizedDescription)）", .err)
@@ -747,14 +823,35 @@ extension BLEManager: @preconcurrency CBCentralManagerDelegate {
             if pendingDisconnectAll.isEmpty { settleDisconnectAll() }
         }
 
-        syncActiveMirror()
+        if session.userInitiatedDisconnect || session.suppressAutoReconnect {
+            // 主动断开 / OTA 接管 → 永不自动重连（SM §2），会话结束
+            sessions.removeValue(forKey: session.id)
+            if wasActive {
+                activeDeviceId = sessions.values.first(where: { $0.state == .connected })?.id
+            }
+            syncActiveMirror()
+        } else {
+            // 被动断线 → F012 自动重连（服务缓存失效清空；监听集合转存待恢复）
+            session.services = []
+            session.resubscribeSet = session.notifyingCharacteristics
+            session.notifyingCharacteristics = []
+            if wasActive { services = [] }
+            scheduleReconnect(session)
+        }
     }
 
     func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral,
                        error: Error?) {
         guard let session = session(for: peripheral) else { return }
         log("连接失败 · \(session.device.name)：\(error?.localizedDescription ?? "未知错误")", .err)
-        if session.retryCount >= maxRetries {
+        // 全部断开结算（取消待连也会走此回调）
+        if pendingDisconnectAll[session.id] != nil {
+            pendingDisconnectAll.removeValue(forKey: session.id)
+            if pendingDisconnectAll.isEmpty { settleDisconnectAll() }
+        }
+        if session.state == .reconnecting {
+            scheduleReconnect(session)
+        } else if session.retryCount >= maxRetries {
             session.connectTimer?.invalidate()
             session.connectTimer = nil
             sessions.removeValue(forKey: session.id)
@@ -816,6 +913,15 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
            serviceIndex + 1 < session.services.count,
            let nextService = session.services[serviceIndex + 1].peripheralService {
             discoverCharacteristics(for: nextService, of: session)
+        } else if !session.resubscribeSet.isEmpty, session.state == .connected {
+            // F012：重连成功且特征重发现完成 → 恢复断线前的监听订阅
+            let pending = session.resubscribeSet
+            session.resubscribeSet = []
+            log("重连后恢复监听 · \(session.device.name)（\(pending.count) 特征）")
+            for uuid in pending {
+                setNotification(characteristicUUID: uuid, enabled: true, on: session)
+            }
+            if session.id == activeDeviceId { syncActiveMirror() }
         }
     }
 
