@@ -1,7 +1,7 @@
 /* ============================================================
    android.js —— App·Android 平台覆写层（2026-09-03 重构版）
    运行于基准内核 app.js 之后，不修改任何基线文件：
-   · APP.ACTIONS 运行时覆写（权限链 / 系统配对 / 分享导出）
+   · APP.ACTIONS 运行时覆写（权限链 / 分享导出）
    · renderAll 后处理注入（广播 Android 增强表单 + 开关感知预算）
    基线文件全部与 v1-new 字节一致（见 ../README.md 资源清单）。
    三引用：① 基准 prototype/v1-new ② 10_platform §2.2/§3 ③ §4 差异设计 App 列。
@@ -16,7 +16,6 @@ const APP = window.APP, S = APP.S;
 const A = S.shared.andr = {
   permLoc:'none', reqN:0,          /* FINE_LOCATION：none/granted/never */
   permAd:false, permConn:false,    /* BLUETOOTH_ADVERTISE / CONNECT */
-  paired:false, pairRetried:false, /* 系统配对（首次加密写触发） */
   mode:'BALANCED', power:'HIGH', connectable:true, incName:true, incUuid:true,
 };
 const MODE_W = {LOW:'低功耗',BALANCED:'平衡',LOW_LATENCY:'低延迟'};
@@ -60,14 +59,6 @@ function asysPerm(kind, onPick){
       btns:[{label:'不允许',v:'deny'},{label:'允许',v:'grant'}]},
   }[kind];
   asysDialog({...M});
-  ASYS_PICK=v=>onPick(v);
-}
-/* 系统蓝牙配对弹窗（加密写首次触发） */
-function asysPair(onPick){
-  asysDialog({ico:'bt', title:'系统蓝牙配对请求',
-    desc:'SHID-9F3E2A1C 想要与您的手机配对。请确认设备屏幕显示的配对码：',
-    pin:'385204', sub:'配对码（演示）· 仅首次加密写需要',
-    btns:[{label:'取消',v:'cancel'},{label:'配对',v:'pair'}]});
   ASYS_PICK=v=>onPick(v);
 }
 /* 系统分享面板：kind ∈ app / log（log 带候选文件行，未决策拦截） */
@@ -160,7 +151,6 @@ Object.assign(APP.ACTIONS, {
 const orig = {
   'p001-scan': APP.ACTIONS['p001-scan'],
   'p008-start': APP.ACTIONS['p008-start'],
-  'p002-submit': APP.ACTIONS['p002-submit'],
   'p006-logexport': APP.ACTIONS['p006-logexport'],
   'p008-logexport': APP.ACTIONS['p008-logexport'],
 };
@@ -237,23 +227,6 @@ function permSummary(){
       else{ closeLayer(); toast('已返回应用（未变更）'); } })});
 }
 
-/* --- P002 下发配置：首次加密写触发系统配对（取消自动 2s 重试一次 · 现状） --- */
-APP.ACTIONS['p002-submit'] = function(){
-  if(A.paired){ orig['p002-submit'](); return; }
-  asysPair(v=>{
-    if(v==='pair'){ A.paired=true; A.pairRetried=false; toast('系统配对完成 · 继续分帧加密写（演示）',true); orig['p002-submit'](); return; }
-    closeLayer();
-    if(!A.pairRetried){
-      A.pairRetried=true; toast('配对被取消 · 2s 后自动重试一次（现状）');
-      later(2000, ()=>{ if(S.cur!=='p002')return; APP.ACTIONS['p002-submit'](); });
-      return; }
-    A.pairRetried=false;
-    modal({title:'系统配对未完成', content:'配对两次被取消，加密写未完成。\n请确认设备处于配网模式后重新下发。（二次取消后的策略旧实现文档未记载，标【未知】）',
-      confirmText:'重新下发', cancelText:'取消',
-      onConfirm:()=>APP.ACTIONS['p002-submit']()});
-  });
-};
-
 /* --- 日志导出：系统分享面板（P006 / P008） --- */
 APP.ACTIONS['p006-logexport'] = ()=>{ const s=S.pages.p006; s.logs.length?asysShare('log'):toast('暂无日志'); };
 APP.ACTIONS['p008-logexport'] = ()=>{ const s=S.pages.p008; s.logs.length?asysShare('log'):toast('暂无日志'); };
@@ -326,7 +299,7 @@ renderAll = function(){
   const h1=document.querySelector('#review h1'); if(h1) h1.textContent='基准原型 V1 · App/Android 实例';
   const sub=document.querySelector('#review .sub');
   if(sub && !sub.dataset.andr){ sub.dataset.andr='1';
-    sub.innerHTML='平台覆写层 android.js 已激活：权限链 / 系统配对 / 广播增强 / 系统分享<br>'+sub.innerHTML; }
+    sub.innerHTML='平台覆写层 android.js 已激活：权限链 / V1 零配对 / 广播增强 / 系统分享<br>'+sub.innerHTML; }
 
   /* 评审栏尾注入生态能力矩阵卡（11_ecosystem，每次基线重渲染后重挂） */
   const rev=document.getElementById('review');

@@ -75,7 +75,7 @@
 
 | 层 | 数量 | 明细 |
 |---|---|---|
-| platform-native | 3 项已登记 + 逐码待固化 | 微信 10001（蓝牙未开）/ 10000–10013（归一化，逐码【待真机证据】）/ Android bluetooth_permission_denied / 系统配对取消 / Web insecure_context；platformCode=not-user-facing |
+| platform-native | 3 项已登记 + 逐码待固化 | 微信 10001（蓝牙未开）/ 10000–10013（归一化，逐码【待真机证据】）/ Android bluetooth_permission_denied / Web insecure_context；V1 简化移除系统配对取消分支；platformCode=not-user-facing |
 | sdk-transport | **8** | BLE_001～BLE_008（API_UNIFIED_SPEC §14 逐字） |
 | product-domain | **15** | 配网设备侧 8（invalid_payload/wifi_failed/controlhub_unreachable/pairing_invalid/pairing_expired/pairing_used/mqtt_invalid/storage_failed）+ 通用 5（timeout/scan_failed/identity_failed/connection_lost/diagnostic_connect_failed）+ OTA 2（OTA_HASH_MISMATCH/OTA_VERSION_MISMATCH）；OTA 六包/五运行逐码名称未入正典——登记待 legacy 实证固化，不臆造 |
 | validation-capability | **2** | PAYLOAD_TOO_LARGE / OWNER_BUSY |

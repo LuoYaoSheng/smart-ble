@@ -218,8 +218,7 @@ export async function provisionCandidate(input, options = {}) {
   hidStore.setLastError(null);
   try {
     const result = await writeProfileCandidate(session, profile(), input, {
-      beforeWrite: options.beforeWrite,
-      onEncryptRetry: () => logger.warn('[SmartHID] 加密写失败，等待系统配对后重试')
+      beforeWrite: options.beforeWrite
     });
     logger.info(`[SmartHID] provision candidate ${result.bytes}B → ${result.frames} 帧 (mtu=${session.mtu}, framing=${result.framing})`);
     return result;

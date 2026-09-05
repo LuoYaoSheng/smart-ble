@@ -29,7 +29,7 @@
 |---|---|
 | 权限模型：运行时权限 + 清单引导 | `p001-scan` 覆写：FINE_LOCATION 弹窗 → 拒绝横幅 → 二次拒绝=永久拒绝 → 仅剩系统设置引导（回流自动续扫） |
 | 广播前置：SDK≥31 逐项权限 + 系统蓝牙 Intent | `p008-start` 覆写：ADVERTISE→CONNECT 逐项；拒绝→缺失汇总 modal + 去设置；btOff→Intent 系统蓝牙设置 |
-| BLE 写语义：加密写触发系统配对 | `p002-submit` 覆写：首次弹 PIN 配对；取消自动 2s 重试一次（现状）；再取消→失败 modal + 重新下发（二次策略【未知】登记） |
+| BLE 写语义：V1 简化明文直连 | 不覆写 `p002-submit`：沿用基准分帧写入；不得弹系统配对；旧加密固件错误立即提示重烧 |
 | 广播增强：模式/功率/三开关 | renderAll 后处理：激活基线静态 picker + 注入三开关；预算按开关重算；超限拦截 |
 | 分享/外链/日志导出 | `p009-openweb`→系统浏览器、`p009-shareapp`/`*-logexport`→系统分享面板（失败降级复制；文件为候选拦截） |
 | 推广卡（F028 · 2026-09-03） | `p009-promo` 覆写：非微信渠道承接 sheet = 小程序码（示意图形）+ 打开落地页（`asysBrowser` 系统浏览器，实证 `plus.runtime.openURL`）+ 长按识别/保存（演示）——App 无 `navigateToMiniProgram` |

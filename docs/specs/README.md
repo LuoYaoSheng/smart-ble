@@ -50,7 +50,7 @@
 | 11_ecosystem/ | 生态级规范（Smart BLE 多语言家族，2026-09-03 用户三份入库） | API_UNIFIED_SPEC_v1.0（BLE.* 统一接口）/ PLATFORM_CAPABILITY_MATRIX_v1.0（12 平台能力分级）/ FEATURE_CHECKLIST_v1.0（BLE-001～013 全集）——**原文逐字入库**；README 定位 + ALIGNMENT_NOTES 对齐分析（平台映射 / 冲突清单 C1–C7 / 功能与 API 映射） | ✅ 2026-09-03 |
 | （Phase 7 HTML V0） | prototype/v0-old/app-prototype.html | 旧产品镜像原型（已验收，冻结不改） | ✅ |
 | （基准原型 V1） | prototype/v1-new/ | 高保真基准原型（按 Base Prototype 规范 v1.0；吸收 06_review B 类 + QA Q1/Q2/Q3；Playwright 26/26 + 视觉复核通过） | ✅ 2026-09-02 |
-| （平台扩展原型） | prototype/platform/{app,wechat,web,desktop}/ | **四平台齐备（2026-09-03 按三规范重构；同日走查修正三项）**，每平台 = `low-fi/`（线框：页面×状态×流程）+ `high-fi/`（正式实例）+ 四份说明文档（PLATFORM_SPEC / PAGE_SPEC / FLOW / COMPONENT_RULE）+ README（含三查与验证记录）。实现形态：`wechat/` = 基准内核（v1.0.1）+ wxhost.js 覆写层（宿主系统维度）+ 客户端胶囊示意；`app/` = 基准内核 + android.js 覆写层（权限链/系统配对/广播增强/系统分享，基线零改动）；`desktop/` = 基准内核 + desktop.js 覆写层（配对码扫码为主+粘贴兜底/P006 三栏/退出确认）+ 窗口 chrome；`web/` = 独立「GATT 调试器」子集内核（6 屏，缺失域显式 ✗+指引；W2 设备卡同基准 C1 口径）。**原型齐备 ≠ 开发排期**：D1 开发首批（微信+Android）不变，D2/D3 见 10_platform §6 | ✅ 2026-09-03（修正轮） |
+| （平台扩展原型） | prototype/platform/{app,wechat,web,desktop}/ | **四平台齐备（2026-09-03 按三规范重构；2026-09-05 同步 V1 明文直连）**，每平台 = `low-fi/`（线框：页面×状态×流程）+ `high-fi/`（正式实例）+ 四份说明文档（PLATFORM_SPEC / PAGE_SPEC / FLOW / COMPONENT_RULE）+ README（含三查与验证记录）。实现形态：`wechat/` = 基准内核（v1.0.1）+ wxhost.js 覆写层（宿主系统维度）+ 客户端胶囊示意；`app/` = 基准内核 + android.js 覆写层（权限链/广播增强/系统分享，P002 不覆写且零系统配对）；`desktop/` = 基准内核 + desktop.js 覆写层（配对码扫码为主+粘贴兜底/P006 三栏/退出确认）+ 窗口 chrome；`web/` = 独立「GATT 调试器」子集内核（6 屏，缺失域显式 ✗+指引；W2 设备卡同基准 C1 口径）。**原型齐备 ≠ 开发排期**：D1 开发首批（微信+Android）不变，D2/D3 见 10_platform §6 | ✅ 2026-09-05（V1 简化同步） |
 
 ## 公共 vs 平台职责
 

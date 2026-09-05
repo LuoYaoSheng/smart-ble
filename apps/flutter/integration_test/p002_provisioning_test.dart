@@ -3,8 +3,7 @@
 // 分工（见 verification/…/e13-provision/sequence.md 图 D）：
 //  - 本文件跑在真机上，用 ValueKey 语义驱动 App 内 UI（uiautomator 对
 //    Samsung+Flutter 无语义树，像素驱动已放弃）；
-//  - BLE 连接触发的系统配对/权限弹窗在 App 外，由 PC 侧
-//    e13-pairing-daemon.py 检测并点按；
+//  - V1 简化固件连接后不触发 SMP/系统配对弹窗；系统权限仍由测试前置处理；
 //  - 场景与凭据经 --dart-define 注入，日志与证据不落 token/密码。
 //
 // 运行（PC 侧；注意 QR 的 '&' 会被 Git Bash→flutter.bat 拆断，
@@ -95,8 +94,7 @@ Future<void> _startScanAndWaitDevice(WidgetTester tester) async {
 }
 
 /// 从扫描卡片进入向导并到达「填写配置」。
-/// 真固件连上即发起 SMP：系统配对弹窗由 PC 守护点按；若弹窗超时导致
-/// 栈侧断连（~30s），利用 identity_failed/断开横幅重试。
+/// V1 简化固件明文直连；若发生普通 BLE 断连，仍利用断开横幅重试。
 Future<void> _enterWizardAndReachConfigure(WidgetTester tester) async {
   await tester.ensureVisible(_k('shidConfigureBtn'));
   await tester.pump(const Duration(milliseconds: 300));
@@ -146,10 +144,8 @@ Future<void> _fillForm(WidgetTester tester) async {
   _log('表单已就绪（token 已回填，值不落日志；扫码面板已退场）');
 }
 
-/// 真机实测：配对弹窗被点掉后 ~3-5s，Android 栈以
-/// l2c_link_timeout(All channels closed) 主动拆 ACL（GATT_CONN_TERMINATE_LOCAL_HOST）。
-/// 断开横幅经 FBP 回调→setState 异步出现，须轮询等待而非一次性判断。
-/// 产品语义：表单不丢，点「重新连接」续跑（重连时 bond 已在，无二次配对弹窗）。
+/// 普通 BLE 断开横幅经 FBP 回调→setState 异步出现，须轮询等待而非一次性判断。
+/// 产品语义：表单不丢，点「重新连接」续跑；V1 简化全程不依赖 bond。
 Future<void> _recoverIfLost(WidgetTester tester) async {
   final probe = DateTime.now().add(const Duration(seconds: 3));
   var sawBanner = false;

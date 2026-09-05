@@ -168,7 +168,7 @@ tabBar
 | F018 | Profile 设备识别 | 注册表匹配（UUID=STRONG 优先于名称前缀=WEAK）、专属徽章与动作按钮 | P0 | 已实现 |
 | F019 | Smart HID 配网向导 | 三阶段（连接验证/表单/状态）、步骤条、断线续填、离开确认 | P0 | 已实现 |
 | F020 | ControlHub 配对码扫码 | shid://pair 解析、地址自动回填、token 仅内存 5 分钟、取消/权限/失败分类提示 | P0 | 已实现 |
-| F021 | 分帧加密写入+状态跟踪 | framed-v1 分帧（MTU-3-3 封顶 128B）、加密写失败 2s 重试一次、STATUS 轮询 60s | P0 | 已实现 |
+| F021 | 分帧明文写入+状态跟踪 | framed-v1 分帧（MTU-3-3 封顶 128B）、无 SMP、写失败立即上抛、STATUS 轮询 60s | P0 | 已实现 |
 | F022 | 配网错误恢复 | 8 种错误码→中文提示+恢复动作（form/pairing/diagnostics/retry） | P0 | 已实现 |
 | ~~F023~~ | ~~已配网设备历史~~ | ~~本机非敏感记录、90 天 TTL、上限 20、增删查、配网完成自动落档~~ | — | **已移除（2026-09-02 用户决策，见变更记录）** |
 | F024 | Smart HID 诊断 | 五项链路实时检查（BLE/Wi-Fi/Hub/MQTT/USB Ready）、错误码详情、页面栈感知导航 | P1 | 已实现 |
@@ -199,9 +199,9 @@ tabBar
 - **页面目标**：三步完成 Smart HID 配网并让用户看懂每一步。
 - **入口**：首页 SHID 卡「配置」；PAGE003「重新配置」；PAGE005「重新配网」（带 READY 停广播确认）。
 - **展示内容**：三步骤条（连接→填写配置→查看状态）；connect 阶段（设备卡/loading/错误+重连）；configure 阶段（连接徽章、设备摘要、SSID≤32、密码≤64 可空、Hub 地址 mono+默认端口 17892 提示、扫码大动作卡 badge 必需→已获取、隐私声明「只用于本次下发不写日志不落盘」、下发按钮 canSubmit 联动）；status 阶段（四行进度 Wi-Fi/ControlHub/MQTT/控制链路、成功态「设备已就绪·HID 控制请通过 ControlHub 下发」、错误态+恢复按钮、取消等待）。
-- **操作与响应**：进入自动连接+身份验证（product/协议版本/deviceId 正则，失败即断开报错）；扫码（uni.scanCode→shid://pair→回填地址；分类失败提示）；下发（表单校验→candidate JSON→分帧加密写→60s 轮询 STATUS→state/step 驱动进度→ready 后 redirectTo PAGE003，设备快照保留在内存会话，不落盘）；错误→中文提示+恢复动作（form/pairing/diagnostics/retry）；配网中物理返回→确认弹窗；断线→徽章已断开+表单保留+重连续传。
+- **操作与响应**：进入自动连接+身份验证（product/协议版本/deviceId 正则，失败即断开报错）；扫码（uni.scanCode→shid://pair→回填地址；分类失败提示）；下发（表单校验→candidate JSON→分帧明文写→60s 轮询 STATUS→state/step 驱动进度→ready 后 redirectTo PAGE003，设备快照保留在内存会话，不落盘）；错误→中文提示+恢复动作（form/pairing/diagnostics/retry）；配网中物理返回→确认弹窗；断线→徽章已断开+表单保留+重连续传。
 - **状态**：phase 三态；connecting/connectionError/connectionLost/pairingReady/provisioning/provisionDone/errorMessage/recoveryAction。
-- **异常**：身份验证失败；扫码取消/权限/失败；地址格式错；加密写失败（Android 系统配对弹窗→2s 自动重试）；8 种设备侧错误码；60s 超时；用户取消；离开页面 dispose 清敏感数据。
+- **异常**：身份验证失败；扫码取消/权限/失败；地址格式错；旧加密固件写入失败（立即提示重烧）；8 种设备侧错误码；60s 超时；用户取消；离开页面 dispose 清敏感数据。
 
 ## PAGE003 Smart HID 设备详情
 
@@ -306,8 +306,8 @@ flowchart TD
     D -- 取消/权限/失败 --> D1[分类提示·重扫]
     D -- 成功 --> E{信息齐全?}
     E -- 否 --> C
-    E -- 是 --> F[下发·分帧加密写]
-    F -- Android 首次 --> F1[系统配对弹窗·2s 自动重试]
+    E -- 是 --> F[下发·分帧明文写]
+    F -- 旧加密固件 --> F1[立即失败·提示重烧 V1 简化固件]
     F --> G[状态机跟踪·四行进度·60s]
     G -- ready --> H[查看设备·redirectTo PAGE003（内存快照）]
     G -- 错误码 --> I[中文提示+恢复动作]
@@ -395,7 +395,7 @@ flowchart TD
 - **R14（F018）** Given 一台广播含 9f1d1001-…-1c04 服务 UUID 的设备 When 扫描结果出现 Then 设备卡显示 Smart HID 徽章与「配置 Smart HID」动作按钮（STRONG 匹配）；仅名称前缀 SHID- 匹配时同样给出 Profile 标识（WEAK）。
 - **R15（F019）** Given 从 SHID 卡进入配网向导 When 页面加载 Then 自动连接并验证设备身份（product/协议版本/deviceId 格式），通过后进入表单阶段；不通过则断开并给出错误与「重新连接」。
 - **R16（F020）** Given 表单已填且未扫码 When 点击「扫描 ControlHub 配对码」并完成扫码 Then hubAddress 自动回填为 QR 中 host:port，动作卡 badge 变「已获取」；扫非 shid://pair 或缺参内容时给出失败分类提示，可重扫。
-- **R17（F021）** Given SSID/Hub/配对码齐全 When 点击「下发配置」Then candidate 以分帧方式写入 INPUT 特征（Android 首次触发系统配对时自动重试一次），随后 60 秒内 STATUS 推送驱动四行进度；state=ready 时四行全绿并允许「查看设备」（2026-09-02 决策后无本机历史写入，设备快照仅存内存会话）。
+- **R17（F021）** Given SSID/Hub/配对码齐全 When 点击「下发配置」Then candidate 以明文分帧方式写入 INPUT 特征（各平台均不发起系统配对），随后 60 秒内 STATUS 推送驱动四行进度；state=ready 时四行全绿并允许「查看设备」（2026-09-02 决策后无本机历史写入，设备快照仅存内存会话）。
 - **R18（F022）** Given 下发后设备报 wifi_failed When 状态到达 Then Wi-Fi 行标红、显示对应中文提示，恢复按钮引导回表单（SSID/密码已保留）；pairing_* 类错误引导重新扫码；controlhub_unreachable 可跳诊断。
 - **R19（F023·已作废）** 2026-09-02 用户决策移除已配网设备历史（面板+历史页+本地存储），本条不再适用。
 - **R20（F024）** Given 已配网设备 When 进入诊断页并点击「重新检测」Then 未连接时弹「连接并检测」确认，连接后读取实时状态并给出五项结论（BLE/Wi-Fi/ControlHub/控制连接/Ready）；「显示错误码」展示最近错误的 code 与 message。

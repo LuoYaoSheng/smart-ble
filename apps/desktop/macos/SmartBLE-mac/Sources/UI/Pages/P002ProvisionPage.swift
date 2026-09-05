@@ -1,7 +1,7 @@
 //
 // P002ProvisionPage.swift — PAGE002 Smart HID 配网向导（F018-F022 · r6-M5 协议层接线）
 // 三阶段（连接→填写→状态）：连接阶段真实身份验证（verifyDeviceInfo：product/协议版本/deviceId 正则）；
-// 下发走 HidProvisionManager（candidate JSON → framed-v1 分帧 30ms → INPUT 加密写 → 60s STATUS 轮询）；
+// 下发走 HidProvisionManager（candidate JSON → framed-v1 分帧 30ms → INPUT 明文写 → 60s STATUS 轮询）；
 // 配对码 = 摄像头扫码为主（AVFoundation 真实识别 shid://pair）+ 粘贴/手输兜底（desktop.js dtk-parse 口径）。
 // 诚实口径：无真实 SHID 夹具 → 端到端 BLOCKED_FIXTURE（smart_hid_service_missing / identity_failed），
 // 协议层真实执行，不伪造进度或成功。

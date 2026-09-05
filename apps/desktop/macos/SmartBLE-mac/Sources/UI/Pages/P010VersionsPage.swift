@@ -16,7 +16,7 @@ final class P010VersionsPage: NSViewController, PageProtocol {
         ("warn", "GATT 正向链：环境外设已实证（连接/ATT 协商/服务与特征枚举）；对目标固件（ESP32）的读写监听与 OTA 传输仍 BLOCKED_FIXTURE"),
         ("warn", "E5 外部可见性 BLOCKED_OBSERVER：无第二观察端，广播仅本地 API 成功口径"),
         ("warn", "OTA 端到端链路 BLOCKED（P-03）：固件侧暂未开放升级通道；客户端调用链已完整（选包校验/start/分块/commit/版本回读）"),
-        ("warn", "Smart HID 配网端到端 BLOCKED_FIXTURE：无真实 SHID 设备，身份验证/下发/诊断停在诚实错误态；协议层（framed-v1/加密写/STATUS 轮询）已接线"),
+        ("warn", "Smart HID 配网端到端 BLOCKED_FIXTURE：无真实 SHID 设备，身份验证/下发/诊断停在诚实错误态；协议层（framed-v1/明文写/STATUS 轮询）已接线"),
         ("warn", "多设备并行会话已支持（F013），≥2 台外设的并行实测 BLOCKED_FIXTURE（本机环境至多 1 台可连）"),
         ("warn", "摄像头取景器已实现（AVFoundation）；实机配对码识别 NOT_RUN（未在 shid://pair 实景验证，授权链待真机）"),
     ]

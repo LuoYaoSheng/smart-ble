@@ -98,8 +98,8 @@ Status JSON：`{"state":…,"step":…,"error":string|null}`。UI 规则：四�
 
 ## 9. 安全边界（SEC-007/009）
 
-- INPUT 要求加密链路（bonding Just Works + LE Secure Connections）；
-- **Just Works ≠ MITM 抗性**——V1 已知取舍，如实声明（`15` 残余风险 R-HID-01）；
+- INPUT 使用明文 write，V1 简化不发起 SMP/bonding；
+- **明文链路不提供机密性或设备认证**——V1 已知取舍，如实声明（`15` 残余风险 R-HID-01）；
 - token/密码仅内存；不落盘、不入 URL/日志/截图/导出；
 - MQTT 凭据由 ControlHub→设备直发，**不经过小程序**；
 - 设备身份根（Secure Boot/Flash Encryption）属外部 Production Security 范畴。

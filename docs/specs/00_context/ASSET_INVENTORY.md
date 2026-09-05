@@ -47,7 +47,7 @@
 | 模块 | 文件数 | 职责要点 |
 |---|---|---|
 | services/ble-runtime | 16 | uni BLE 全局回调唯一所有者 + 会话注册表（8 态）+ 写队列（串行/5s/深16）+ 重连（3 次 1s/3s/5s） |
-| services/provisioning | 5 | 设备无关配网框架：Profile 注册表、GATT transport（MTU 247/帧间隔 30ms/加密写失败 2s 重试）、orchestrator、builtins |
+| services/provisioning | 5 | 设备无关配网框架：Profile 注册表、GATT transport（MTU 247/明文写/帧间隔 30ms/失败立即上抛）、orchestrator、builtins |
 | services/smart-hid | 11 | Smart HID 专属：门面/Profile/工作流引擎（纯 JS 状态机）/表单/known-devices（随 F023 移除） |
 | services/broadcast | 6 | 广播会话（单 owner 6 态）/适配器/31B 负载预算/观察证据 |
 | services/ota | 3 | OTA 事务状态机（12 态）/包模型/校验器 |

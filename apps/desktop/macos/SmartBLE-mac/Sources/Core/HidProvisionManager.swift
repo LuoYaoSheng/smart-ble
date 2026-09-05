@@ -1,7 +1,7 @@
 //
 // HidProvisionManager.swift — Smart HID 配网协议层（F019-F022 · DEVICE_PROFILE_SPEC §3.3）
 // 协议正典 = core/protocols/hid-provisioning-protocol.ts（受锁镜像，只读参照）：
-//  · GATT：服务 9f1d1001-…（INFO 1002 read+notify / INPUT 1003 write 加密 Just Works / STATUS 1004 read+notify）
+//  · GATT：服务 9f1d1001-…（INFO 1002 read+notify / INPUT 1003 明文 write / STATUS 1004 read+notify）
 //  · candidate：{v:1,wifi_ssid,wifi_password,hub_host,hub_port,token}；token=32 位小写 hex
 //  · framed-v1：[seq:u8][total:u8][len:u8][payload]；payload≤128B(=MTU-3-3)；组装≤1024B；≤64 帧；30ms 间隔
 //  · 身份验证：product=='smart-hid' + protocol + device_id 正则 ^HID-[A-Z0-9]{8}$
@@ -69,7 +69,7 @@ enum HidFraming {
 enum HidProtocol {
     static let serviceUuid = "9F1D1001-E73B-4C8F-9D2A-6F0B5E8A1C04"
     static let infoCharUuid = "9F1D1002-E73B-4C8F-9D2A-6F0B5E8A1C04"   // Device Info（read+notify）
-    static let inputCharUuid = "9F1D1003-E73B-4C8F-9D2A-6F0B5E8A1C04"  // Provision Input（write · 加密链路）
+    static let inputCharUuid = "9F1D1003-E73B-4C8F-9D2A-6F0B5E8A1C04"  // Provision Input（明文 write · 无 SMP）
     static let statusCharUuid = "9F1D1004-E73B-4C8F-9D2A-6F0B5E8A1C04" // Provision Status（read+notify）
 
     static let candidateVersion = 1
@@ -463,7 +463,7 @@ final class HidProvisionManager: ObservableObject {
             onUpdate?()
             return
         }
-        ble.log("配网下发 · candidate \(bytes.count)B → \(frames.count) 帧（chunk=\(HidFraming.chunkSize(forMtu: mtuCap))B · 30ms 间隔 · INPUT 加密链路 Just Works）", .write)
+        ble.log("配网下发 · candidate \(bytes.count)B → \(frames.count) 帧（chunk=\(HidFraming.chunkSize(forMtu: mtuCap))B · 30ms 间隔 · INPUT 明文 write）", .write)
         stage = .sending
         rows = ["wifi": "active", "hub": "pending", "conn": "pending", "usb": "pending"]
         onUpdate?()

@@ -58,7 +58,7 @@
 | 表单约束 | SSID ≤32；密码 ≤64 可空；Hub 地址 host[:port]，默认端口 17892 |
 | 配对码 | `shid://pair` 二维码扫码获取（产品统一口径，2026-09-03 用户修正）；token 仅内存、TTL 5 分钟 |
 | 下发编码 | candidate JSON → **framed-v1 分帧**：帧头 3B、单块封顶 128B（=MTU-3-3）、组装上限 1024B、帧数上限 64、写帧间隔 30ms |
-| 写入 | 加密顺序写 INPUT 特征；加密写失败 2s 自动重试一次（Android 首次写触发系统 Just Works 配对弹窗） |
+| 写入 | 明文顺序写 INPUT 特征；不发起 SMP/系统配对；旧加密固件错误 fail-fast 并提示重烧 |
 | 状态跟踪 | provisionAndWait：60s 轮询 STATUS；state/step 双映射驱动四行进度（Wi-Fi→ControlHub→MQTT 控制链路→USB Ready） |
 | 成功 | state=ready 四行全绿→会话内存快照→redirectTo P003 |
 | 错误恢复 | 8 种设备侧错误码 → form/pairing/diagnostics/retry 四种恢复动作（全表见 BUSINESS_FLOW §4 异常表） |

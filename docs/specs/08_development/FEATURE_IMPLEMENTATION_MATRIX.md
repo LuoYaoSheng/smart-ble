@@ -60,7 +60,7 @@
 | F018 | Profile 设备识别 | Profile 配网域 | P0 | 已实现 | P001/P007 | R14 |
 | F019 | Smart HID 配网向导 | Profile 配网域 | P0 | 已实现 | P002 | R15 |
 | F020 | ControlHub 配对码扫码 | Profile 配网域 | P0 | 已实现 | P002 | R16 |
-| F021 | 分帧加密写入+状态跟踪 | Profile 配网域 | P0 | 已实现 | P002 | R17 |
+| F021 | 分帧明文写入+状态跟踪 | Profile 配网域 | P0 | 已实现 | P002 | R17 |
 | F022 | 配网错误恢复 | Profile 配网域 | P0 | 已实现 | P002 | R18 |
 | ~~F023~~ | ~~已配网设备历史~~ | （Profile 配网域） | — | **已移除（2026-09-02）** | — | R19 作废 |
 | F024 | Smart HID 诊断 | Profile 配网域 | P1 | 已实现 | P005 | R20 |
@@ -206,7 +206,7 @@
 - **Pinia Store**：Session 写队列——同设备串行 / 跨设备并行 / 超时 5s / 深 16 / 优先级插队（PRD §4.2 · MODULE_ARCH §3）
 - **Service 接口**：ble-runtime —— 写队列
 - **BLE API**：BLE.write(serviceUUID,charUUID,data)（API §9）· wx.writeBLECharacteristicValue（写队列串行化=本功能，API_ACTION_MATRIX §4）
-- **Platform Adapter**：无差异（配网加密写的平台语义差异归 F021）
+- **Platform Adapter**：无差异（配网明文写与旧固件 fail-fast 语义归 F021）
 - **测试用例**：R09 · COVERAGE_CHECKLIST F009 行 · SEQ §3 写分支 · 基准 P006 写弹窗场景
 
 ### F010 Notify 监听（P0）
@@ -360,7 +360,7 @@
 - **Platform Adapter**：**差异·扫码行**（10_platform §4）——微信/App=uni.scanCode（解析 shid://pair）；Desktop=摄像头扫码为主+粘贴/手输兜底（D2 后）；Web=S2 不可达
 - **测试用例**：R16 · COVERAGE_CHECKLIST F020 行 · SEQ §5 扫码分支 · 基准 P002 扫码四分支场景
 
-### F021 分帧加密写入+状态跟踪（P0）
+### F021 分帧明文写入+状态跟踪（P0）
 
 - **业务域**：Profile 配网域
 - **用户入口**：P002 configure 阶段「下发配置」按钮（canSubmit=SSID+Hub+token 齐且非配网中，PAGE_SPEC §2 按钮表 P02-05）；status 阶段「取消等待」（P02-06）
@@ -369,9 +369,9 @@
 - **页面状态**：设备侧 STATUS state/step 驱动四行进度（pairing→hub active、ready→全 done，SM §4）；60s 轮询超时→取消等待
 - **Pinia Store**：hid.js —— 进度
 - **Service 接口**：smart-hid·provisionAndWait（60s）+ core·framing（framed-v1 分帧：帧头 3B [seq][total][len] / 单块≤128B / 组装 1024B / ≤64 帧 / 帧间隔 30ms）（MODULE_ARCH §3 · SEQ §5）
-- **BLE API**：BLE.write（加密顺序写 INPUT 特征 1003，Just Works 加密，API §9）
-- **Platform Adapter**：**差异·BLE 写语义**——Android 首次加密写触发系统配对弹窗，取消 2s 自动重试一次；再取消→失败恢复（二次策略【未知】登记，PLATFORM_ADAPTER_SPEC §4.1 · DEVELOPMENT_SCOPE §7）
-- **测试用例**：R17 · COVERAGE_CHECKLIST F021 行 · SEQ §5 下发分支 · 基准 P002 下发→四行进度至 READY；app 实例系统配对场景
+- **BLE API**：BLE.write（明文顺序写 INPUT 特征 1003，不发起 SMP，API §9）
+- **Platform Adapter**：各平台统一直连写入；旧加密固件错误 fail-fast 并提示重烧 V1 简化固件（PLATFORM_ADAPTER_SPEC §4.1 · DEVELOPMENT_SCOPE §7）
+- **测试用例**：R17 · COVERAGE_CHECKLIST F021 行 · SEQ §5 下发分支 · 基准 P002 下发→四行进度至 READY；断言零系统配对弹窗与单次写失败
 
 ### F022 配网错误恢复（P0）
 

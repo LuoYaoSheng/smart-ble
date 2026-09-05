@@ -26,7 +26,7 @@ platform/
 | 平台 | high-fi 形态 | 平台差异载体 |
 |---|---|---|
 | wechat | 基准内核**字节复制**（components.js = v1.0.1）+ **wxhost.js 覆写层**（宿主系统维度） | 宿主切换（安卓/iOS 真机/开发者工具，旧代码 isWeixinDevTools/osName 佐证）+ wx.css 客户端胶囊示意（系统层）+ **生态能力矩阵卡（C1/C3 冲突标注）** |
-| app | 基准内核 + **android.js 覆写层**（基线零改动） | ACTION 运行时覆写 + renderAll 后处理（权限链/系统配对/广播增强/系统分享）+ android.css 系统还原层 + **生态能力矩阵卡（UNI-APP-AND 行 + iOS 待开发）** |
+| app | 基准内核 + **android.js 覆写层**（基线零改动） | ACTION 运行时覆写 + renderAll 后处理（权限链/广播增强/系统分享）+ android.css 系统还原层 + **生态能力矩阵卡（UNI-APP-AND 行 + iOS 待开发）**；P002 沿用 V1 明文直连 |
 | desktop | 基准内核 + **desktop.js 覆写层** + 桌面窗框 | 配对码**扫码为主**+粘贴兜底（2026-09-03 修正）/ **操作系统维度 mac·win·linux（窗口 chrome 三形态 + P008 原生层徽标 + Linux BlueZ 待验证提示）** / P006 三栏重排 / 导出候选拦截 / 退出确认 + **生态能力矩阵卡（随 OS 随动）** |
 | web | **独立子集内核**（web.js 6 屏，页面集结构性不同） | 环境门禁 / requestDevice 选择器 / W2 设备卡同基准 C1 口径（SHID 双入口）/ 缺失域显式 ✗+指引 + web.css 浏览器还原层 + **W4 生态矩阵第二来源卡（C1/C2/C5 标注）** |
 
@@ -37,7 +37,7 @@ platform/
 | 平台 | ① 功能保留 | ② 限制合规 | ③ 增强利用 |
 |---|---|---|---|
 | wechat | ✅ 与基准逐字节一致（29 功能全域） | ✅ 微信授权链 + 后台挂起守则 | 无新增（保持基准） |
-| app | ✅ 页面全集自带；六域矩阵 Android 全 ✅ | ✅ 权限全用户触发；拒绝/配对取消均有显式引导恢复 | 已用：广播增强/系统分享/浏览器；候选不做：后台保连/日志文件 |
+| app | ✅ 页面全集自带；六域矩阵 Android 全 ✅ | ✅ 权限全用户触发；拒绝有显式引导恢复；V1 配网零系统配对 | 已用：广播增强/系统分享/浏览器；候选不做：后台保连/日志文件 |
 | web | ✅ 纳入域全量；缺失域显式 ✗+指引 | ✅ 环境门禁失败显式且全域联动；页签可见性守则 | 已用：大屏日志/URL 直达；候选不做：URL 预填 |
 | desktop | ✅ 页面全集自带（能力 △～✅ 待 spike） | ✅ 常驻+退出确认；配对码 fallback 为文档化路径 | 已用：三栏布局；候选不做：文件流/固件库/多窗口 |
 
@@ -55,7 +55,7 @@ cd docs/specs/prototype/platform && python3 -m http.server 8952
 
 ## 5. 建议走查重点（平台扩展检查门禁）
 
-1. **app**：P001 权限拒绝两次 → 永久拒绝 → 去设置回流自动续扫；P008 权限链逐项 + 蓝牙关闭 Intent + 三开关预算联动；P002 配对取消 → 2s 自动重试 → 二次取消失败恢复；**P001 SHID 卡双入口（配置 + 连接，v1.0.1）**；**评审栏「生态能力矩阵」卡（UNI-APP-AND 行 + iOS 待开发）**。
+1. **app**：P001 权限拒绝两次 → 永久拒绝 → 去设置回流自动续扫；P008 权限链逐项 + 蓝牙关闭 Intent + 三开关预算联动；P002 V1 明文直连并验证零系统配对；**P001 SHID 卡双入口（配置 + 连接，v1.0.1）**；**评审栏「生态能力矩阵」卡（UNI-APP-AND 行 + iOS 待开发）**。
 2. **web**：环境切换 HTTP/Firefox → 门禁横幅 + 域徽章联动 + 地址栏变红；选择器单选 SHID → **W2 设备卡双入口（标准 GATT + 扩展配网指引）**、选标准设备 → 仅 GATT；页签失焦连接保持；**W4 双对比卡（实证口径 + 生态矩阵第二口径，C1/C2/C5 标注）**。
 3. **desktop**：**P002 扫码为主**（取景器 → 1.6s 自动识别回填 got 态；「无法扫码」→ 粘贴兜底解析）；**P009 操作系统切换**（mac 交通灯 / win 右侧三钮 / linux 仅✕，窗口 chrome 三形态 + P008 徽标 `Desktop · {OS}` + Linux BlueZ 待验证提示 + 矩阵卡随 OS 随动）；P006 三栏 + 右栏日志常驻；窗口关闭退出确认（活动会话文案）。
 4. **wechat**：**P009 宿主系统切换**（iOS/安卓真机/开发者工具——devtools 下 P008 真机调试横幅 + 检查不支持 + 启动拦截）；P001 SHID 卡双入口；**评审栏矩阵卡 C1/C3 冲突行（❌ vs △ / ❌ vs ✅ 待裁决）**；其余与 v1-new 走查一致（基准回归）+ 胶囊示意位置。
@@ -82,7 +82,7 @@ cd docs/specs/prototype/platform && python3 -m http.server 8952
 | 实例 | 断言 | console |
 |---|---|---|
 | wechat/high-fi | 6/6：矩阵卡 10 行常驻（P001/P008/P009）· C1/C3 冲突行 · P001 SHID 三入口（卡体=查看广播 + 配置 + 连接，基准 devCard 口径核实）· 宿主 devtools→P008 拦截 / ios 恢复 · v=1.2.0 | 0 error |
-| app/high-fi | 7/7：矩阵卡 11 行（UNI-APP-AND 全 ✅ + iOS NOT_RELEASED）· 首扫 FINE_LOCATION 权限链→授权→扫描→SHID 双入口 · P008 ADVERTISE→CONNECT 双权限链→启动 · 三开关预算联动（关名称 11/31B）· P002 系统配对（PIN 385204）· P009 系统分享面板 | 0 error |
+| app/high-fi | 2026-09-05 V1 简化回归 PASS：P002 进入填写页并触发 `pairing_expired` 状态流，全程无系统配对层；矩阵卡/权限/广播/分享仍挂载 | 0 error |
 | desktop/high-fi | 8/8：三 OS 矩阵随动（mac ❌C2【待验证】/ win ⚠️WinRT / linux 监听✅BlueZ）+ 窗口 chrome 同步 · P002 取景器 1.6s 自动识别回填 + 手动确定 + 粘贴兜底解析（shid://pair）· linux P008 BlueZ 警示日志 · P006 .dcol1/.dcol2 两栏重排 | 0 error |
 | web/high-fi | 5/5：W1 环境门禁 · W2 系统选择器→选 SHID→基准 C1 卡双入口（GATT 工作台 + Smart HID 配网）+ 强匹配 chip · W4 双对比卡（实证口径 + 生态第二口径，C1/C2/C5） | 0 error |
 | low-fi ×4 | 四平台加载渲染通过；desktop p009「宿主 OS 三档」chip + p008「平台徽标 Desktop · {OS}」chip 复核 | 0 error |

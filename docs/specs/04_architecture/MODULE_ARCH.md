@@ -59,7 +59,7 @@ pages ──► composables ──► store ──► services ──► core �
 | 模块 | 文件数 | 职责要点 | 关键机制 |
 |---|---|---|---|
 | ble-runtime | 16 | uni BLE 全局回调唯一所有者 | 8 态会话；并发连接去重；主动断开 2s marker；写队列串行/5s/深16；重连 3×(1s/3s/5s) |
-| provisioning | 5 | 设备无关配网框架 | Profile 契约注册；MTU 247；写帧间隔 30ms；加密写失败 2s 重试一次 |
+| provisioning | 5 | 设备无关配网框架 | Profile 契约注册；MTU 247；明文写帧间隔 30ms；写失败立即上抛 |
 | smart-hid | 11 | Smart HID 专属层 | 门面 connect/provisionAndWait 60s/diagnose；纯 JS 工作流引擎；token 内存 5 分钟 |
 | broadcast | 6 | 广播会话 | 单 owner 6 态；广播中禁改 payload；31B 预算不截断 |
 | ota | 3 | OTA 事务 | 12 态；chunk 180B/20ms；commit 后版本回读验证 |

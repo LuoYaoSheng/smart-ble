@@ -56,7 +56,7 @@ write-dialog（TEXT/HEX 单选）
 → buildProvisionFormCandidate 校验（host[:port]，默认端口 17892，端口范围）
 → candidate JSON {v,wifi_ssid,wifi_password,hub_host,hub_port,token}
 → framed-v1 分帧：[seq:u8][total:u8][len:u8][payload]（帧头 3B，单块封顶 128B，组装上限 1024B，帧数上限 64）
-→ 顺序加密写 INPUT 特征（MTU 247，写帧间隔 30ms；失败 2s 重试一次）
+→ 顺序明文写 INPUT 特征（MTU 247，写帧间隔 30ms；失败立即上抛，旧加密固件提示重烧）
 → 设备 STATUS 特征（read+notify）推送 state/step/error
 → workflow-engine 状态机 + applyProvisionStatus 映射
 → 四行进度 {wifi,hub,conn,usb} × {pending,active,done,fail,warn} → UI

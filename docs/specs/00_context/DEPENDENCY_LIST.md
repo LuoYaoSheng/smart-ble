@@ -36,7 +36,7 @@ Android AAR（fastjson 1.1.46 + appcompat 1.6.1，minSdk 21）+ iOS framework（
 
 | 依赖 | 契约 | 状态 |
 |---|---|---|
-| **Smart HID 设备**（ESP32-S3，Smart-HID-Workspace 固件） | 配网 GATT 服务 `9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04`（INFO 1002 read+notify / INPUT 1003 write 加密 Just Works / STATUS 1004 read+notify）；名称前缀 `SHID-`；QR scheme `shid://pair?token=&host=&port=`；协议正典 = Smart-HID-Workspace `protocols/ble/PROVISIONING_V1.md`，本仓 core/protocols 为受锁镜像 | tested_smart_hid_version 1.1.1；契约锁 miniapp_version 1.0.4 滞后于 1.0.5 |
+| **Smart HID 设备**（ESP32-S3，Smart-HID-Workspace 固件） | 配网 GATT 服务 `9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04`（INFO 1002 read+notify / INPUT 1003 明文 write、无 SMP / STATUS 1004 read+notify）；名称前缀 `SHID-`；QR scheme `shid://pair?token=&host=&port=`；协议正典 = Smart-HID-Workspace `protocols/ble/PROVISIONING_V1.md`，本仓 core/protocols 为受锁镜像 | tested_smart_hid_version 1.1.1；契约锁 miniapp_version 1.0.4 滞后于 1.0.5 |
 | **LightBLE ESP32 外设/观察者固件** | OTA 服务 `4fafc201-…-914d`（CTRL 26c0 / DATA 26c1 / STATUS 26c2，JSON 协议）；OTA target lightble-peripheral / lightble-observer | OTA 端到端 BLOCKED |
 | **ESP32 演示设备** | 服务 `4fafc201-…-914b`（esp32-demo Profile，framing raw） | 演示档案 |
 | ControlHub | HID 实时控制（keyboard/mouse/system，MQTT）**不经小程序**——hid-command-schema.ts 仅为文档/联调对照契约 | — |

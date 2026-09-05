@@ -337,7 +337,7 @@ P006 进页（Device Detail；←P001 普通卡「连接」/ ←P007 点卡 / �
 |---|---|---|
 | 写命令流（写队列：同设备串行/跨设备并行/单写 5s/深度 16——命令经 Port.write 下行，排队在 ③；结果经 WriteQueued/ValidationRejected/OperationCancelled 落 Store） | P006 | DATA_FLOW §2 |
 | Notify 通知流（订阅防抖、断线自动清理——值经 CharacteristicValueChanged 上行） | P006 | DATA_FLOW §3 |
-| 配网数据流（表单+扫码 token → framed-v1 分帧加密写 → STATUS 推送 → 四行进度；超时经 ProvisioningTimedOut） | P002 | DATA_FLOW §4 |
+| 配网数据流（表单+扫码 token → framed-v1 分帧明文写 → STATUS 推送 → 四行进度；超时经 ProvisioningTimedOut） | P002 | DATA_FLOW §4 |
 | OTA 数据流（选包校验 → 接管会话 → 分块传输 → commit → 版本回读；校验失败经 OtaValidationFailed；BLOCKED） | P006 子流程 | DATA_FLOW §5 |
 | 广播数据流（31B 预算核算 → 平台外围（经 BlePlatformPort 广播能力）→ 状态徽章经 PeripheralStateChanged） | P008 | DATA_FLOW §6 |
 | 日志与脱敏流（横切全页面：脱敏 → core logger 容量管理 → log-panel → 剪贴板导出） | 横切 | DATA_FLOW §7 |

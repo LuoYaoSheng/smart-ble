@@ -333,7 +333,7 @@ render(){
     <div class="page">
       <div class="refbar">${C.chip('① 基准：P002 向导起点=扫描发现','primary')}${C.chip('② 限制：S2 依赖扫描','neutral')}${C.chip('③ 差异：✗ + 指引','neutral')}</div>
       <div class="card" style="margin-top:12px">
-        ${C.empty({ill:'link',title:'配网链路在 Web 不可达',desc:'S2/S3 旅程以「扫描发现 Smart HID 设备」为起点（10_platform §3：依赖扫描发现 → ✗）。浏览器选择器虽可选单台，但配网全链路（扫码配对码 → 分帧加密写 → 状态跟踪 → 诊断）以微信小程序 / App 为准。'})}
+        ${C.empty({ill:'link',title:'配网链路在 Web 不可达',desc:'S2/S3 旅程以「扫描发现 Smart HID 设备」为起点（10_platform §3：依赖扫描发现 → ✗）。浏览器选择器虽可选单台，但配网全链路（扫码配对码 → 分帧明文写 → 状态跟踪 → 诊断）以微信小程序 / App 为准。'})}
         <div style="display:flex;gap:9px;margin-top:4px">
           ${C.btn({label:'配网请使用小程序 / App',tone:'primary',icon:'ext',act:'prov-guide'})}
         </div>

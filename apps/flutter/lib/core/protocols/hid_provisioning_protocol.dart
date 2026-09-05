@@ -23,7 +23,7 @@ class SmartHidCharacteristicUuids {
   /// Device Info：read + notify
   static const String info = '9f1d1002-e73b-4c8f-9d2a-6f0b5e8a1c04';
 
-  /// Provision Input：write（要求加密链路，bonding Just Works）
+  /// Provision Input：write（明文；V1 简化不发起 SMP/系统配对）
   static const String input = '9f1d1003-e73b-4c8f-9d2a-6f0b5e8a1c04';
 
   /// Provision Status：read + notify

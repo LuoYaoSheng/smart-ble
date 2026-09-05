@@ -3,7 +3,7 @@
 // 协议事实源：core/protocols/hid-provisioning-protocol.ts（镜像自
 // Smart-HID-Workspace protocols/ble/PROVISIONING_V1.md）。本固件实现：
 //   · 广播：SHID-5EEDC0DE + 128bit 服务 UUID 9f1d1001（STRONG 匹配）
-//   · GATT：INFO(1002, read+notify) / INPUT(1003, write, 加密链路 Just Works)
+//   · GATT：INFO(1002, read+notify) / INPUT(1003, 明文 write，无 SMP)
 //           / STATUS(1004, read+notify)
 //   · INPUT 按 [seq][total][len] 分帧协议组装 candidate JSON
 //   · 校验 + 场景走链（received→…→ready，每步 notify STATUS）
@@ -300,10 +300,6 @@ void setup() {
             " fw=" + kFirmware + " (SIM: 不真实连 Wi-Fi/MQTT)");
 
     NimBLEDevice::init(kDeviceName);
-    // INPUT 要求加密链路（canon §2）：Just Works bonding
-    NimBLEDevice::setSecurityAuth(true, false, false);
-    NimBLEDevice::setSecurityIOCap(3);  // NoInputNoOutput → Just Works
-
     sServer = NimBLEDevice::createServer();
     sServer->setCallbacks(&sServerCb);
 
@@ -312,7 +308,7 @@ void setup() {
         kInfoUuid, NIMBLE_PROPERTY::READ | NIMBLE_PROPERTY::NOTIFY);
     sInputChar = service->createCharacteristic(
         kInputUuid,
-        NIMBLE_PROPERTY::WRITE | NIMBLE_PROPERTY::WRITE_ENC);
+        NIMBLE_PROPERTY::WRITE);
     sStatusChar = service->createCharacteristic(
         kStatusUuid, NIMBLE_PROPERTY::READ | NIMBLE_PROPERTY::NOTIFY);
     sInputChar->setCallbacks(&sInputCb);

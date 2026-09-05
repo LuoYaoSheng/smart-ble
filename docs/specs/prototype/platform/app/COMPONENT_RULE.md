@@ -8,7 +8,7 @@
 
 ## 2. 系统层豁免（android.css）
 
-`high-fi/assets/android.css` 为 **Android 系统还原层**：运行时权限弹窗 / 系统配对（PIN）/ 系统分享面板 / 系统设置页 / 系统蓝牙设置 / 系统浏览器。色值为平台还原值（Material 蓝 #0B57D0 等），仅用于「系统渲染」的 UI，不属于设计系统「圈外色值」违规（文件头注声明，README 资源清单登记）。**实际开发中这些弹窗由系统渲染，应用不可定制样式**——对应 `plus.android.requestPermissions` / 系统配对 Intent / `uni.share` / `plus.runtime.openWeb`。
+`high-fi/assets/android.css` 为 **Android 系统还原层**：运行时权限弹窗 / 系统分享面板 / 系统设置页 / 系统蓝牙设置 / 系统浏览器。色值为平台还原值（Material 蓝 #0B57D0 等），仅用于「系统渲染」的 UI，不属于设计系统「圈外色值」违规（文件头注声明，README 资源清单登记）。V1 简化配网不调用系统配对 UI；实际权限/分享弹窗由系统渲染，应用不可定制样式——对应 `plus.android.requestPermissions` / `uni.share` / `plus.runtime.openWeb`。
 
 ## 3. 覆写层自有组件
 

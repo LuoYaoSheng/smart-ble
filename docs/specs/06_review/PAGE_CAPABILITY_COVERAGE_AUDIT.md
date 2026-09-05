@@ -65,7 +65,7 @@
 | F018 | Profile 设备识别 · P0 | UUID STRONG/前缀 WEAK/徽章与专属动作 | P001（徽章）/P007（分流） | 扫描期自动匹配；SHID 卡双入口（components.js:96-99） | ✅ | STRONG/WEAK 双徽章（mock.js:19,51） | 无匹配走通用路径（PR-6） | ✅ | — |
 | F019 | 配网向导 · P0 | 三阶段/步骤条/断线续填/离开确认 | P002 | SHID 卡「配置」/P003「重新配置」/P005「重新配网」 | ✅ | phase 三态+四行进度五态+工作流四态（SM §3/§4） | 身份验证失败/断线续填/离开确认（BR-10，app.js:151-158） | ✅ | — |
 | F020 | ControlHub 配对码扫码 · P0 | shid://pair 解析/回填/token 内存 5min/取消权限失败分类 | P002 | configure 阶段大动作卡（p002-provision.js:48-52） | ✅（仅成功路径） | badge 必需→已获取 | **取消/权限/失败三分类提示无分支、无场景**（qrErr 字段定义后从未赋值，p002-provision.js:8 vs app.js:255-256 恒成功） | 部分 | **P1-1** |
-| F021 | 分帧加密写入+状态跟踪 · P0 | framed-v1/加密写重试/STATUS 60s | P002 | 「下发配置」（canSubmit 联动） | ✅ | 四行推进至 READY（app.js:134-150） | 8 错误码中 3 类+timeout 有场景（app.js:436-438,258-259） | ✅ | — |
+| F021 | 分帧明文写入+状态跟踪 · P0 | framed-v1/零 SMP/失败 fail-fast/STATUS 60s | P002 | 「下发配置」（canSubmit 联动） | ✅ | 四行推进至 READY（app.js:134-150） | 8 错误码中 3 类+timeout 有场景（app.js:436-438,258-259） | ✅ | — |
 | F022 | 配网错误恢复 · P0 | 8 错误码→中文提示+恢复动作 | P002 | status 失败态恢复按钮（p002-provision.js:60-61） | ✅ | 四分流按钮文案随错误变（form/pairing/diagnostics/retry） | — | ✅ | — |
 | ~~F023~~ | ~~已配网设备历史~~ | **已移除（2026-09-02）** | — | — | 不得复刻 | — | — | ✅（评审面板 PAGE004 ✕ 标注，app.js:97-98） | 红线行（N-4） |
 | F024 | Smart HID 诊断 · P1 | 五项链路/错误码详情/栈感知导航 | P005 | P003「运行诊断」/P002 恢复 diagnostics | 入口 ✅；**主动作断** | 六态字面支持（p005-diagnostics.js:9）；**checking→live 经用户动作不可达**（见 P0-1） | offline 连接确认/error 场景 ✓（app.js:458-459） | 部分 | **P0-1** |
@@ -110,7 +110,7 @@
 | 实例 | 页面集 | 依据 | 审计结论 |
 |---|---|---|---|
 | wechat | 基准 9 页（内核字节复制 + wxhost.js 宿主维度） | wechat/PAGE_SPEC.md §1 | 页面集完整；宿主/devtools 拦截 ✓；**共担 P0-1** |
-| app | 基准 9 页（内核 + android.js 六覆写点） | app/PAGE_SPEC.md §1/§2 | 页面集完整；权限链/系统配对/广播增强/分享/推广承接 ✓；**共担 P0-1** |
+| app | 基准 9 页（内核 + android.js 平台覆写） | app/PAGE_SPEC.md §1/§2 | 页面集完整；权限链/广播增强/分享/推广承接 ✓；P002 沿用基准零系统配对；**共担 P0-1** |
 | desktop | 基准 9 页（内核 + desktop.js） | desktop/PAGE_SPEC.md §1/§2 | 页面集完整；扫码+粘贴兜底/三栏/OS 维度 ✓；**共担 P0-1** |
 | web | 6 屏子集（W1–W6，独立内核） | web/PAGE_SPEC.md §1 | **有意子集**（D3 暂缓）：缺 P003/P005/P007/P010 对应屏，缺失域显式 ✗+指引（W4/W5）；W2 SHID 双入口 ✓；无 p005 故不涉及 P0-1 |
 
@@ -159,7 +159,7 @@
 | # | 项 | 结论 | 依据 |
 |---|---|---|---|
 | 1 | wechat 宿主系统维度（wxhost） | ✅ 无遗漏：宿主切换/devtools 三处拦截（横幅+检查不支持+启动拦截）/C1·C3 待裁决标注 | wechat/PAGE_SPEC.md §2/§3；wechat/PLATFORM_SPEC.md §2/§2b |
-| 2 | app（Android）六覆写点 | ✅ 无遗漏：权限链/广播前置/系统配对 2s 重试/广播增强（picker+三开关+预算联动）/系统分享/推广承接；补充态已按 STATE_MODEL §3 登记（app/PAGE_SPEC.md §3） | app/PLATFORM_SPEC.md §3 |
+| 2 | app（Android）平台覆写 | ✅ 无遗漏：权限链/广播前置/广播增强（picker+三开关+预算联动）/系统分享/推广承接；P002 不覆写并遵循 V1 明文直连 | app/PLATFORM_SPEC.md §3 |
 | 3 | desktop 差异 | ✅ 无遗漏：配对码扫码为主+粘贴兜底/P006 三栏/OS 三形态+BlueZ 待验证提示/退出确认 | desktop/PAGE_SPEC.md §2/§3 |
 | 4 | web 子集缺失 | **有意缺失，非遗漏**：缺 P003/P005/P007/P010 对应屏，系 D3 暂缓 + 「GATT 调试器」子集定位；缺失域显式 ✗+指引（W4/W5），W2 SHID 双入口与基准同口径 | web/PAGE_SPEC.md §1；10_platform/PLATFORM_EXTENSION.md §6 D3 行 |
 | 5 | iOS 不演示 | 符合现状：iOS NOT_RELEASED（P008 platform 分支与默认值 SmartBLE-I 已预留，mock.js:136） | 10_platform §2.2/§3；PRD.md §1.2 |
