@@ -4,6 +4,71 @@
 > 由 Windows 上可现场操作的 Android 手机和 ESP32-S3 完成剩余真机闭环。
 > 未真实运行的项目继续标 `NOT_RUN`，不得由编译通过推断真机通过。
 
+## 0. Windows 执行结果（2026-09-05 15:20–15:40，本节为当日续做实录）
+
+快进基线：smart-ble `cda1931 → 3638f66`（ff-only），smart-hid-workspace
+`80a5e58 → 0f8548d`（ff-only）；用户脏文件按约定留置未动。
+
+### W1 固件编译与烧录 —— PASS
+
+- ESP-IDF **v5.4.0**（`D:\Espressif\frameworks\esp-idf-v5.4`，`IDF_TOOLS_PATH=D:\Espressif`）
+  `fullclean + build`：PASS，`smart-hid-firmware.bin` **0x10acd0**（与 V1 交接记录一致），app 分区余 31%。
+  build 后 `dependencies.lock` 的 idf 版本被改写 → **已还原未提交**。
+- **无需 BOOT+RST**：DevKit 另一侧 CH343 UART 口（本轮枚举 `COM12`，USB `1A86:55D3`）
+  的自动下载电路直接生效；执行 `erase-flash`（清除 E13 遗留状态）+ `flash` 全部成功
+  （`evidence/w1-firmware-flash.log`）。COM4 为三星 modem 串口，未触碰。
+- 首启串口核验（`evidence/w1-firstboot-serial.log`）：bootloader → app v1.1.0
+  （compile Sep 5 2026 15:21:41）→ `[prov] state=unprovisioned`（全擦后无脏状态）→
+  `provisioning advertising as SHID-00000001`；空口复核 `BleAdvDump`：
+  `10B41DCD238E name=[SHID-00000001] conn=1 uuids=9f1d1001 rssi=-38`。
+
+### W2 连接即配网、零系统配对弹窗 —— PASS（硬断言全绿）
+
+以 U-01 leave 场景为载体（Samsung SM-G9910 `R5CR1284Y7H`，全程真实链路）：
+
+| 硬断言 | 结果 | 证据 |
+|---|---|---|
+| 无系统配对/PIN 弹窗、无配对流程 | ✓ | `evidence/w2-pairing-watch.log`（时窗 15:27:31–15:28:15 全量 logcat 过滤）：Samsung 安全栈全程 `pairing_state:IDLE`、断链时 `state:IDLE sec_req:0`；无任何 BluetoothPairingDialog/配对启动事件。SMP 固定通道在 ACL 建立时被栈打开（`smp_connect_callback connected:true`）但**从未交换配对协议**，属链路层通道事件，非用户可感知配对 |
+| App 不调 `createBond` | ✓ | logcat 全时窗 0 条 createBond；代码侧 `prepareInputWrite()` 已删除（3638f66） |
+| bond 前后零变化 | ✓ | `w2-bond-state-before/after.txt` diff 为空（始终仅 DESKTOP 音频一条，无 SHID）；栈内两次 `IsDeviceBonded ... 23:8e is_bonded:false` |
+| INPUT 首次写不等 2s 重试 | ✓ | App 日志 `submit frames=2 bytes=149` 一次写入即被设备消化（无 encrypt 错误、无重试分支）；设备串口 `candidate: ssid=e13-leave ...` → `step=received`（`w2-u01-device-serial.log`） |
+| 发现→配置→填写页 | ✓ | 一次连接 4s 到达（`configure 阶段已到达（第 1 次连接）`） |
+
+附带结论：E13 T2 的“候选被 ACK 但设备不消化”黑盒已定案——旧固件/旧状态问题；
+本轮全擦+V1 固件后候选即时消化（`received → connecting_wifi → wifi_failed(假SSID)`），
+且 15:27:53 的断链为测试收尾 App 退出后的正常拆除，非 E13 的 3s 中途掉链病
+（`l2c_link_timeout is_bonding:false` 发生在 `tearDownAll` 之后）。
+
+### E13 场景矩阵（V1 固件复验，本轮已完成部分）
+
+| 序 | 场景 | 判定 | 证据 |
+|---|---|---|---|
+| U-01 | leave 两态（填写/等待） | **PASS**（V1 复验，零配对守护） | `../e13-provision/evidence/u01-leave-v1-app.log`：两态弹窗 ✓ + 全部断言通过 |
+| T5a | cancel_wait → timeout | **PASS** | `t5a-cancel-v1-app.log`：`outcome=timeout` + 重新下发 ✓；设备侧 `w3-t5a-device-serial.log` 确认候选消化→wifi_failed→恢复广播 |
+| T5b | lost_configure 断连横幅 | **PASS**（手机侧 `svc bluetooth disable` 注入） | `t5b-lost-v1-app.log`：LOST_ARMED 15:35:37 → 注入 15:35:39 → **2.5s** 呈现断开横幅+重新连接 ✓。设备侧串口本轮缺失（COM12 被上一场景捕获占用，起捕获失败——时序失误，非设备问题；空口已确认设备恢复广播） |
+| T2/T3/T4 | wifi_fail / pairing_invalid / mqtt_invalid | **BLOCKED（待用户）** | T2 需真实 SSID+错误密码；T3 需真实凭据；T4 另需管理员权限防火墙拦 17891 入站 |
+| T1/T6/T7/小米 | 成功链路及后续 | **BLOCKED（待用户）** | 需 HJWY Wi-Fi 真实凭据（只进命令环境变量与 App 内存，不入库不入证据） |
+
+### W4 回归
+
+- `flutter analyze` **0 issues**；`flutter test` **59/59 PASS**（与 Mac 端一致）。
+- `./scripts/verify-uniapp.sh`：功能门全过（unit、release metadata、version consistency）；
+  唯一失败门为 **[Git whitespace]**，踩的是用户脏文件 diff
+  （`e5-realdevice/def006/diag1-full-session.txt` 与 `tests/target/**` CRLF 幻影，
+  即交接文档明示留置项），非分支回归，按约定不修不改。
+
+### 本轮环境事实增量
+
+- `IDF_TOOLS_PATH` 实际为 `D:\Espressif`（`C:\Espressif` 是残缺目录，会报
+  “Python virtual environment not found”）。
+- CH343（COM12）DTR/RTS 可直接硬复位芯片（pyserial setRTS 脉冲）抓首启日志，
+  运行态串口日志同样走 COM12（console=UART0）。
+- 串口捕获与场景必须严格串行：COM12 单进程独占，并发起捕获会
+  `PermissionError(13)`（T5b 教训）。
+- T5b 注入后蓝牙非必然自动恢复（本轮 `svc bluetooth enable` 报 -1 但 ~12s 后
+  `bluetooth_on=1`）；收尾必须核验并复原。
+
+
 ## 1. 唯一续做分支与远端基线
 
 | 仓库 | Windows 应使用的分支 | 最新功能基线 | 远端状态 |

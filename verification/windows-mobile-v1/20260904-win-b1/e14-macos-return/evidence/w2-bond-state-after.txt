@@ -1,0 +1,4 @@
+  Bonded devices:
+                44:38:E8:7F:9F:C1 [ DUAL ][ 0x0A010C ] DESKTOP-U693L2R (AudioSource,AudioSink,0000110e-0000-1000-8000-00805f9b34fb,PANU,Handsfree,Handsfree_AG,c7f94713-891e-496a-a0e7-983a0946126e)
+
+

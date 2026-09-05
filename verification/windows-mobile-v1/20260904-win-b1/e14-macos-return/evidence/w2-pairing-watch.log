@@ -1,0 +1,71 @@
+09-05 15:27:31.439 V/WindowManagerShell( 3934):  Checking filter Pair{{types=[] flags=0x0] notFlags=0x100 checks=[{atype=home independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=TOP topActivity=ComponentInfo{com.sec.android.app.launcher/com.sec.android.app.launcher.Launcher} launchCookie=null},{atype=recents independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@24c2b8b, appThread = android.app.IApplicationThread$Stub$Proxy@8351468, debugName = QuickstepLaunchHomeFromRecentsflags =NONE }}
+09-05 15:27:31.439 V/WindowManagerShell( 3934):  Checking filter Pair{{types=[] flags=0x0] notFlags=0x100 checks=[{atype=home independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=TOP topActivity=ComponentInfo{com.sec.android.app.launcher/com.sec.android.app.launcher.Launcher} launchCookie=null},{atype=standard independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@b419081, appThread = android.app.IApplicationThread$Stub$Proxy@9b80526, debugName = QuickstepLaunchHomeflags =NONE }}
+09-05 15:27:31.463 I/Audio_a2dpsink_hw( 1143): adev_set_parameters: kevpairs=[screen_state=on]
+09-05 15:27:33.229 I/Audio_a2dpsink_hw( 1143): adev_set_parameters: kevpairs=[screen_state=on]
+09-05 15:27:33.990 I/Audio_a2dpsink_hw( 1143): adev_set_parameters: kevpairs=[screen_state=on]
+09-05 15:27:34.411 I/bt_btif_dm( 4102): system/btif/src/btif_dm.cc:879 btif_update_remote_properties: CoD from storage was zero
+09-05 15:27:34.411 I/bt_btif_dm( 4102): system/btif/src/btif_dm.cc:884 btif_update_remote_properties: xx:xx:xx:xx:23:8e CoD: 0x000000 -> 0x001f00
+09-05 15:27:35.625 D/bt_btif_dm( 4102): system/btif/src/btif_dm.cc:5228 btif_get_address_type: bd_addr:xx:xx:xx:xx:23:8e[public]
+09-05 15:27:35.625 D/bt_btif_dm( 4102): system/btif/src/btif_dm.cc:5213 btif_get_device_type: bd_addr:xx:xx:xx:xx:23:8e device_type:BLE
+09-05 15:27:35.625 D/ble_sec ( 4102): system/stack/btm/btm_ble_sec.cc:82 BTM_SecAddBleDevice: dev_type=0x2
+09-05 15:27:35.625 D/ble_sec ( 4102): system/stack/btm/btm_ble_sec.cc:98 BTM_SecAddBleDevice: Device added, handle=0xffff, p_dev_rec=0xb400006d3cb23db0, bd_addr=xx:xx:xx:xx:23:8e
+09-05 15:27:35.625 D/ble_sec ( 4102): system/stack/btm/btm_ble_sec.cc:117 BTM_SecAddBleDevice: InqDb device_type =0x2 addr_type=0x0
+09-05 15:27:35.626 D/bt_btif_dm( 4102): system/btif/src/btif_dm.cc:4953 btif_dm_log_collector_cback: 
+09-05 15:27:35.626 D/bt_btif_dm( 4102): system/btif/src/btif_dm.cc:4953 btif_dm_log_collector_cback: 
+09-05 15:27:35.633 D/bt_btif_dm( 4102): system/btif/src/btif_dm.cc:4953 btif_dm_log_collector_cback: 
+09-05 15:27:35.633 D/bt_btif_dm( 4102): system/btif/src/btif_dm.cc:4953 btif_dm_log_collector_cback: 
+09-05 15:27:35.650 D/bt_btif_dm( 4102): system/btif/src/btif_dm.cc:4953 btif_dm_log_collector_cback: 
+09-05 15:27:35.651 D/bt_btif_dm( 4102): system/btif/src/btif_dm.cc:4953 btif_dm_log_collector_cback: 
+09-05 15:27:35.651 D/bt_btif_dm( 4102): system/btif/src/btif_dm.cc:4953 btif_dm_log_collector_cback: 
+09-05 15:27:35.837 W/smp     ( 4102): system/stack/smp/smp_l2c.cc:111 smp_connect_callback: bd_addr:xx:xx:xx:xx:23:8e transport:BT_TRANSPORT_LE, connected:true
+09-05 15:27:35.837 I/bt_btif_dm( 4102): system/btif/src/btif_dm.cc:830 btif_update_remote_version_property: Remote version info valid:true [xx:xx:xx:xx:23:8e]:0x9,0x2e5,0x16
+09-05 15:27:35.840 D/SEC_CB  ( 4102): system/stack/btm/btm_sec_cb.cc:206 IsDeviceBonded: Device record bonded check peer:xx:xx:xx:xx:23:8e is_bonded:false
+09-05 15:27:35.840 D/bt_btif_dm( 4102): system/btif/src/btif_dm.cc:4953 btif_dm_log_collector_cback: 
+09-05 15:27:35.840 D/bt_btif_dm( 4102): system/btif/src/btif_dm.cc:4953 btif_dm_log_collector_cback: 
+09-05 15:27:35.882 D/BluetoothAdapter(20377): getBondedDevices() - package : com.google.android.gms, state : 12
+09-05 15:27:35.882 I/AdapterProperties( 4102): getBondedDevices: length=1
+09-05 15:27:35.882 D/BluetoothAdapter(20377): getBondedDevices() - package : com.google.android.gms, state : 12
+09-05 15:27:35.883 I/AdapterProperties( 4102): getBondedDevices: length=1
+09-05 15:27:35.883 D/BluetoothAdapter(20377): getBondedDevices() - package : com.google.android.gms, state : 12
+09-05 15:27:35.883 I/AdapterProperties( 4102): getBondedDevices: length=1
+09-05 15:27:35.932 I/bt_btm_sec( 4102): system/stack/btm/btm_sec.cc:2276 btm_sec_rmt_name_request_complete: btm_sec_rmt_name_request_complete for xx:xx:xx:xx:23:8e
+09-05 15:27:35.932 W/bt_btm_sec( 4102): system/stack/btm/btm_sec.cc:2282 btm_sec_rmt_name_request_complete: Remote read request complete with no underlying link connection
+09-05 15:27:35.932 W/bt_btm_sec( 4102): system/stack/btm/btm_sec.cc:2332 btm_sec_rmt_name_request_complete: Remote read request failed for known device pairing_state:IDLE status:HCI_ERR_HOST_TIMEOUT name: classic_link:tSECURITY_STATE::IDLE(0x0)
+09-05 15:27:35.932 I/bt_btif_dm( 4102): system/btif/src/btif_dm.cc:2692 btif_on_name_read_from_btm: xx:xx:xx:xx:23:8e 
+09-05 15:27:35.932 W/bt_btif_dm( 4102): system/btif/src/btif_dm.cc:2648 btif_on_name_read: Received RNR event without valid name addr:xx:xx:xx:xx:23:8e
+09-05 15:27:35.932 W/bt_btm_sec( 4102): system/stack/btm/btm_sec.cc:2489 btm_sec_rmt_name_request_complete: Security manager received RNR event when not in expected state
+09-05 15:27:36.368 D/bt_btif_dm( 4102): system/btif/src/btif_dm.cc:4953 btif_dm_log_collector_cback: 
+09-05 15:27:36.369 D/SEC_CB  ( 4102): system/stack/btm/btm_sec_cb.cc:206 IsDeviceBonded: Device record bonded check peer:xx:xx:xx:xx:23:8e is_bonded:false
+09-05 15:27:36.374 D/bt_btif_dm( 4102): system/btif/src/btif_dm.cc:4953 btif_dm_log_collector_cback: 
+09-05 15:27:36.390 D/bt_btif_dm( 4102): system/btif/src/btif_dm.cc:4953 btif_dm_log_collector_cback: 
+09-05 15:27:36.391 D/bt_btif_dm( 4102): system/btif/src/btif_dm.cc:4953 btif_dm_log_collector_cback: 
+09-05 15:27:38.700 I/AudioManager( 1544): setParameters keyValuePairs = cameraFacing=back
+09-05 15:27:38.701 I/Audio_a2dpsink_hw( 1143): adev_set_parameters: kevpairs=[cameraFacing=back]
+09-05 15:27:39.142 I/Audio_a2dpsink_hw( 1143): adev_set_parameters: kevpairs=[screen_state=on]
+09-05 15:27:39.703 I/Audio_a2dpsink_hw( 1143): adev_set_parameters: kevpairs=[screen_state=on]
+09-05 15:27:52.390 V/WindowManagerShell( 3934):  Checking filter Pair{{types=[] flags=0x0] notFlags=0x100 checks=[{atype=home independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=TOP topActivity=ComponentInfo{com.sec.android.app.launcher/com.sec.android.app.launcher.Launcher} launchCookie=null},{atype=recents independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@24c2b8b, appThread = android.app.IApplicationThread$Stub$Proxy@8351468, debugName = QuickstepLaunchHomeFromRecentsflags =NONE }}
+09-05 15:27:52.390 V/WindowManagerShell( 3934):  Checking filter Pair{{types=[] flags=0x0] notFlags=0x100 checks=[{atype=home independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=TOP topActivity=ComponentInfo{com.sec.android.app.launcher/com.sec.android.app.launcher.Launcher} launchCookie=null},{atype=standard independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@b419081, appThread = android.app.IApplicationThread$Stub$Proxy@9b80526, debugName = QuickstepLaunchHomeflags =NONE }}
+09-05 15:27:52.425 D/bt_btif_dm( 4102): system/btif/src/btif_dm.cc:4953 btif_dm_log_collector_cback: 
+09-05 15:27:53.427 D/l2c_link( 4102): system/stack/l2cap/l2c_link.cc:469 l2c_link_timeout: L2CAP - l2c_link_timeout() link state:LST_CONNECTED is_bonding:false
+09-05 15:27:53.428 D/bt_btm_sec( 4102): system/stack/btm/btm_sec.cc:1229 btm_sec_send_hci_disconnect: Send hci disconnect handle:0x0040 reason:HCI_ERR_PEER_USER
+09-05 15:27:53.437 D/bt_btif_dm( 4102): system/btif/src/btif_dm.cc:4953 btif_dm_log_collector_cback: 
+09-05 15:27:53.437 D/bt_btif_dm( 4102): system/btif/src/btif_dm.cc:4953 btif_dm_log_collector_cback: 
+09-05 15:27:53.438 D/SEC_CB  ( 4102): system/stack/btm/btm_sec_cb.cc:206 IsDeviceBonded: Device record bonded check peer:xx:xx:xx:xx:23:8e is_bonded:false
+09-05 15:27:53.439 W/smp     ( 4102): system/stack/smp/smp_l2c.cc:111 smp_connect_callback: bd_addr:xx:xx:xx:xx:23:8e transport:BT_TRANSPORT_LE, connected:false
+09-05 15:27:53.439 D/bt_btm_sec( 4102): system/stack/btm/btm_sec.cc:4083 btm_sec_disconnected: Disconnection complete device:xx:xx:xx:xx:23:8e name: state:IDLE reason:HCI_ERR_CONN_CAUSE_LOCAL_HOST sec_req:0
+09-05 15:27:53.439 W/bt_btif_dm( 4102): system/btif/src/btif_dm.cc:3205 btif_dm_acl_evt: Sent BT_ACL_STATE_DISCONNECTED upward as ACL link down event device:xx:xx:xx:xx:23:8e reason:HCI_ERR_CONN_CAUSE_LOCAL_HOST
+09-05 15:27:53.443 I/bt_btif_dm( 4102): system/btif/src/btif_dm.cc:1301 btif_dm_get_connection_state: Acl is not connected to peer:xx:xx:xx:xx:23:8e
+09-05 15:27:53.443 I/bt_btif_dm( 4102): system/btif/src/btif_dm.cc:1301 btif_dm_get_connection_state: Acl is not connected to peer:xx:xx:xx:xx:23:8e
+09-05 15:27:53.472 D/BluetoothAdapter(20377): getBondedDevices() - package : com.google.android.gms, state : 12
+09-05 15:27:53.472 I/AdapterProperties( 4102): getBondedDevices: length=1
+09-05 15:27:53.472 D/BluetoothAdapter(20377): getBondedDevices() - package : com.google.android.gms, state : 12
+09-05 15:27:53.472 I/AdapterProperties( 4102): getBondedDevices: length=1
+09-05 15:28:00.057 I/Audio_a2dpsink_hw( 1143): adev_set_parameters: kevpairs=[screen_state=on]
+09-05 15:28:15.541 I/bt_btif_dm( 4102): system/btif/src/btif_dm.cc:1301 btif_dm_get_connection_state: Acl is not connected to peer:xx:xx:xx:xx:9f:c1
+09-05 15:28:15.541 I/bt_btif_dm( 4102): system/btif/src/btif_dm.cc:1301 btif_dm_get_connection_state: Acl is not connected to peer:xx:xx:xx:xx:9f:c1
+09-05 15:28:15.545 I/AdapterProperties( 4102): getBondedDevices: length=1
+09-05 15:28:15.650 D/bt_btif_storage( 4102): system/btif/src/btif_storage.cc:1732 btif_storage_get_ble_bonding_key: Decrypt, key_type = LE_KEY_PENC, enc_len = 28
+09-05 15:28:15.650 D/bt_btif_storage( 4102): system/btif/src/btif_storage.cc:1732 btif_storage_get_ble_bonding_key: Decrypt, key_type = LE_KEY_PID, enc_len = 23
+09-05 15:28:15.650 D/bt_btif_storage( 4102): system/btif/src/btif_storage.cc:1732 btif_storage_get_ble_bonding_key: Decrypt, key_type = LE_KEY_PCSRK, enc_len = 24
+09-05 15:28:15.650 D/bt_btif_storage( 4102): system/btif/src/btif_storage.cc:1732 btif_storage_get_ble_bonding_key: Decrypt, key_type = LE_KEY_LENC, enc_len = 20
+09-05 15:28:15.650 D/bt_btif_storage( 4102): system/btif/src/btif_storage.cc:1732 btif_storage_get_ble_bonding_key: Decrypt, key_type = LE_KEY_LCSRK, enc_len = 24

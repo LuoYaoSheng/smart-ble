@@ -1,0 +1,266 @@
+I (439569) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (439571) wifi_manager: disconnected → release_all + retry
+I (439571) hid_engine: release_all done
+I (441334) status_manager: status published online=1 usb_hid_ready=0
+I (444389) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (444391) wifi_manager: disconnected → release_all + retry
+I (444391) hid_engine: release_all done
+I (449209) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (449210) wifi_manager: disconnected → release_all + retry
+I (449211) hid_engine: release_all done
+I (451334) status_manager: status published online=1 usb_hid_ready=0
+I (454029) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (454030) wifi_manager: disconnected → release_all + retry
+I (454031) hid_engine: release_all done
+I (458849) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (458850) wifi_manager: disconnected → release_all + retry
+I (458850) hid_engine: release_all done
+I (461334) status_manager: status published online=1 usb_hid_ready=0
+I (463668) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (463670) wifi_manager: disconnected → release_all + retry
+I (463670) hid_engine: release_all done
+I (468488) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (468490) wifi_manager: disconnected → release_all + retry
+I (468490) hid_engine: release_all done
+I (471334) status_manager: status published online=1 usb_hid_ready=0
+I (473308) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (473309) wifi_manager: disconnected → release_all + retry
+I (473310) hid_engine: release_all done
+I (478128) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (478129) wifi_manager: disconnected → release_all + retry
+I (478130) hid_engine: release_all done
+I (481334) status_manager: status published online=1 usb_hid_ready=0
+I (482948) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (482949) wifi_manager: disconnected → release_all + retry
+I (482950) hid_engine: release_all done
+I (487767) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (487769) wifi_manager: disconnected → release_all + retry
+I (487769) hid_engine: release_all done
+I (491334) status_manager: status published online=1 usb_hid_ready=0
+I (492587) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (492589) wifi_manager: disconnected → release_all + retry
+I (492589) hid_engine: release_all done
+I (497407) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (497408) wifi_manager: disconnected → release_all + retry
+I (497409) hid_engine: release_all done
+I (498648) ble_provision: BLE connected handle=1
+I (499434) ble_provision: MTU update: 256
+I (499895) ble_provision: subscribe: attr=3 notify=1
+I (499993) ble_provision: subscribe: attr=8 notify=1
+I (501334) status_manager: status published online=1 usb_hid_ready=0
+I (502227) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (502229) wifi_manager: disconnected → release_all + retry
+I (502229) hid_engine: release_all done
+I (507047) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (507049) wifi_manager: disconnected → release_all + retry
+I (507049) hid_engine: release_all done
+I (511334) status_manager: status published online=1 usb_hid_ready=0
+I (511693) ble_provision: candidate: ssid=e13-t5a hub=192.168.21.77:17892 token=**redacted**
+I (511694) main: [prov] state=provisioning step=received err=none
+I (511697) NimBLE: GATT procedure initiated: notify; 
+I (511701) NimBLE: att_handle=8
+
+I (511705) NimBLE: GATT procedure initiated: notify; 
+I (511709) NimBLE: att_handle=3
+
+I (511720) runtime_config: staged pending: schema=1 gen=0 ssid=e13-t5a hub=192.168.21.77:17892 mqtt=-:0 user=- complete=0
+I (511723) main: [prov] state=connecting_wifi step=connecting_wifi err=none
+I (511730) NimBLE: GATT procedure initiated: notify; 
+I (511734) NimBLE: att_handle=8
+
+I (511738) NimBLE: GATT procedure initiated: notify; 
+I (511742) NimBLE: att_handle=3
+
+W (511747) wifi:Password length matches WPA2 standards, authmode threshold changes from OPEN to WPA2
+W (511779) wifi_manager: connecting to ssid=e13-t5a ...
+I (512571) ble_provision: subscribe: attr=3 notify=0
+I (512717) ble_provision: subscribe: attr=8 notify=0
+I (513790) ble_provision: BLE disconnected (reason=531)
+I (513791) NimBLE: GAP procedure initiated: advertise; 
+I (513792) NimBLE: disc_mode=2
+I (513792) NimBLE:  adv_channel_map=0 own_addr_type=0 adv_filter_policy=0 adv_itvl_min=0 adv_itvl_max=0
+I (513801) NimBLE: 
+
+I (513804) ble_provision: provisioning advertising as SHID-00000001
+I (516595) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (516596) wifi_manager: disconnected → release_all + retry
+I (516597) hid_engine: release_all done
+I (521334) status_manager: status published online=1 usb_hid_ready=0
+I (521414) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (521416) wifi_manager: disconnected → release_all + retry
+I (521416) hid_engine: release_all done
+I (526234) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (526235) wifi_manager: disconnected → release_all + retry
+I (526236) hid_engine: release_all done
+W (526781) wifi_manager: wifi connect timeout (15000 ms)
+I (526793) main: [prov] state=provisioning step=wifi_failed err=wifi_failed
+I (531054) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (531055) wifi_manager: disconnected → release_all + retry
+I (531056) hid_engine: release_all done
+I (531334) status_manager: status published online=1 usb_hid_ready=0
+I (535874) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (535875) wifi_manager: disconnected → release_all + retry
+I (535875) hid_engine: release_all done
+I (540693) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (540695) wifi_manager: disconnected → release_all + retry
+I (540695) hid_engine: release_all done
+I (541334) status_manager: status published online=1 usb_hid_ready=0
+I (545513) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (545515) wifi_manager: disconnected → release_all + retry
+I (545515) hid_engine: release_all done
+I (550333) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (550335) wifi_manager: disconnected → release_all + retry
+I (550335) hid_engine: release_all done
+I (551334) status_manager: status published online=1 usb_hid_ready=0
+I (555153) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (555154) wifi_manager: disconnected → release_all + retry
+I (555155) hid_engine: release_all done
+I (559973) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (559974) wifi_manager: disconnected → release_all + retry
+I (559975) hid_engine: release_all done
+I (561334) status_manager: status published online=1 usb_hid_ready=0
+I (564793) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (564794) wifi_manager: disconnected → release_all + retry
+I (564795) hid_engine: release_all done
+I (569613) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (569614) wifi_manager: disconnected → release_all + retry
+I (569615) hid_engine: release_all done
+I (571334) status_manager: status published online=1 usb_hid_ready=0
+I (574433) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (574434) wifi_manager: disconnected → release_all + retry
+I (574434) hid_engine: release_all done
+I (579253) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (579254) wifi_manager: disconnected → release_all + retry
+I (579255) hid_engine: release_all done
+I (581334) status_manager: status published online=1 usb_hid_ready=0
+I (584072) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (584074) wifi_manager: disconnected → release_all + retry
+I (584074) hid_engine: release_all done
+I (588892) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (588894) wifi_manager: disconnected → release_all + retry
+I (588894) hid_engine: release_all done
+I (591334) status_manager: status published online=1 usb_hid_ready=0
+I (593712) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (593713) wifi_manager: disconnected → release_all + retry
+I (593714) hid_engine: release_all done
+I (598532) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (598533) wifi_manager: disconnected → release_all + retry
+I (598534) hid_engine: release_all done
+I (601334) status_manager: status published online=1 usb_hid_ready=0
+I (603352) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (603353) wifi_manager: disconnected → release_all + retry
+I (603353) hid_engine: release_all done
+I (608171) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (608173) wifi_manager: disconnected → release_all + retry
+I (608173) hid_engine: release_all done
+I (611334) status_manager: status published online=1 usb_hid_ready=0
+I (612991) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (612993) wifi_manager: disconnected → release_all + retry
+I (612993) hid_engine: release_all done
+I (617811) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (617812) wifi_manager: disconnected → release_all + retry
+I (617813) hid_engine: release_all done
+I (621334) status_manager: status published online=1 usb_hid_ready=0
+I (622631) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (622632) wifi_manager: disconnected → release_all + retry
+I (622633) hid_engine: release_all done
+I (627451) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (627452) wifi_manager: disconnected → release_all + retry
+I (627453) hid_engine: release_all done
+I (631334) status_manager: status published online=1 usb_hid_ready=0
+I (632271) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (632272) wifi_manager: disconnected → release_all + retry
+I (632272) hid_engine: release_all done
+I (637091) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (637092) wifi_manager: disconnected → release_all + retry
+I (637092) hid_engine: release_all done
+I (641334) status_manager: status published online=1 usb_hid_ready=0
+I (641911) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (641912) wifi_manager: disconnected → release_all + retry
+I (641912) hid_engine: release_all done
+I (646576) ble_provision: BLE connected handle=1
+I (646730) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (646732) wifi_manager: disconnected → release_all + retry
+I (646732) hid_engine: release_all done
+I (647439) ble_provision: MTU update: 256
+I (647852) ble_provision: subscribe: attr=3 notify=1
+I (647998) ble_provision: subscribe: attr=8 notify=1
+I (651334) status_manager: status published online=1 usb_hid_ready=0
+I (651550) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (651552) wifi_manager: disconnected → release_all + retry
+I (651552) hid_engine: release_all done
+I (654336) ble_provision: subscribe: attr=3 notify=0
+I (654336) ble_provision: subscribe: attr=8 notify=0
+I (654336) ble_provision: BLE disconnected (reason=531)
+I (654340) NimBLE: GAP procedure initiated: advertise; 
+I (654344) NimBLE: disc_mode=2
+I (654347) NimBLE:  adv_channel_map=0 own_addr_type=0 adv_filter_policy=0 adv_itvl_min=0 adv_itvl_max=0
+I (654356) NimBLE: 
+
+I (654359) ble_provision: provisioning advertising as SHID-00000001
+I (656370) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (656372) wifi_manager: disconnected → release_all + retry
+I (656372) hid_engine: release_all done
+I (661190) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (661192) wifi_manager: disconnected → release_all + retry
+I (661192) hid_engine: release_all done
+I (661334) status_manager: status published online=1 usb_hid_ready=0
+I (666010) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (666012) wifi_manager: disconnected → release_all + retry
+I (666012) hid_engine: release_all done
+I (670830) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (670832) wifi_manager: disconnected → release_all + retry
+I (670832) hid_engine: release_all done
+I (671334) status_manager: status published online=1 usb_hid_ready=0
+I (675650) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (675651) wifi_manager: disconnected → release_all + retry
+I (675652) hid_engine: release_all done
