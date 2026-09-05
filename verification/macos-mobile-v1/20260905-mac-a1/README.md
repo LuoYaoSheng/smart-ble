@@ -3,7 +3,7 @@
 ## 基线
 
 - `smart-ble`：Windows `cda1931` 快进后，将 `spike/macos-extension-v1` 合入 `refactor/uniapp-v1`；统一分支合并提交 `55ec20f` 已推 Gitee/GitHub。
-- `Smart-HID-Workspace`：macOS 已快进到 `80a5e58`。
+- `Smart-HID-Workspace`：macOS 已快进到 `80a5e58`，并以 `0f8548d` 修正所有活动文档/注释的 V1 明文事实；Gitee 已同步。
 - 设备：macOS 26.5.2；iPhone 11 Pro（iOS 26.5.2，paired/available）；Mi 4c（Android 7.0/API 24，ADB device）。
 
 ## 已通过
