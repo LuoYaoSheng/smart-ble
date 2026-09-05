@@ -18,7 +18,11 @@
 小米手机 UI 盲填广播页多次被 IME/前后台切换打断（back 键退出应用、键盘占屏吞滑动手势），弃用；改用 **ESP32-S3 专用测试硬件**：
 
 - `fixture_config.h` 临时改 `DEVICE_NAME "SHID-3FA1C2E9"` + `SERVICE_UUID "9f1d1001-…"`（带 TEMP-E12-VERIFY 标记），`pio run -e fixture_peripheral_s3 -t upload --upload-port COM13`（端口为本次实际枚举发现的 ESP32-S3 原生 USB-JTAG：VID 303A:1001；COM12/CH343 已消失）。
-- 串口证据 `esp32-serial-boot.txt`：NimBLE createService `9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04` + Advertising start。
+- ~~串口证据 `esp32-serial-boot.txt`：NimBLE createService … + Advertising start~~
+  **勘误（2026-09-05，E13 期间复核）**：该文件实际只含 platformio monitor 横幅
+  （326B，无任何固件日志行）——当时 monitor 只截到启动横幅，"看到 NimBLE/广播日志"
+  的表述超出文件内容，不成立。服务 UUID 与设备名的真实证据以**空口锚点**
+  `esp32-shid-stimulus-anchor.txt`（下行）为准；E12 判定不受影响。
 - 空口锚点（Windows BleAdvDump，`esp32-shid-stimulus-anchor.txt`）：
   `10B41DCD238D n=36 rssi=-35/-39 name=[SHID-3FA1C2E9] conn=1 uuids=9f1d1001 mfr=00E0:4C69676874424C45`
 - **验证后还原**：固件还原正典并重烧（git diff 干净），空口复测 `esp32-canon-restore-anchor.txt`：`name=[BLEToolkit-Server] uuids=4fafc201`。

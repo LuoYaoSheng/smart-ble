@@ -61,7 +61,21 @@ lib/
 - [x] 通知订阅
 - [x] BLE 广播页
 - [x] 关于页外链跳转
+- [x] Smart HID 配网向导（P002 三阶段 + 扫码/粘贴配对码 + 错误恢复）
 - [x] `flutter analyze` 与 `flutter test` 基础校验通过
+
+---
+
+## Android 权限清单（含 P002 配网新增）
+
+`android/app/src/main/AndroidManifest.xml`：
+
+- BLE 运行时权限：`BLUETOOTH_SCAN` / `BLUETOOTH_CONNECT` / `BLUETOOTH_ADVERTISE`
+  （Android 11 及以下回退：`BLUETOOTH` + `BLUETOOTH_ADMIN`，`maxSdkVersion=30`）
+- 定位（BLE 扫描在部分系统的隐含要求）：`ACCESS_FINE_LOCATION` / `ACCESS_COARSE_LOCATION`
+- **相机（P002 扫 ControlHub 配对码新增）**：`CAMERA`——仅在打开配网页扫码面板时
+  经 `permission_handler` 动态申请；拒绝后可走面板内「手动粘贴配对码」兜底路径，
+  不影响其余功能。
 
 ---
 

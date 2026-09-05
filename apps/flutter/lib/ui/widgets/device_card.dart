@@ -118,6 +118,7 @@ class DeviceCard extends StatelessWidget {
                     if (_isShid)
                       Expanded(
                         child: _ActionChip(
+                          key: const ValueKey('shidConfigureBtn'),
                           label: match!.profile.actionLabel,
                           primary: true,
                           disabled: isConnected,
@@ -213,6 +214,7 @@ class _ActionChip extends StatelessWidget {
   final VoidCallback? onTap;
 
   const _ActionChip({
+    super.key,
     required this.label,
     required this.primary,
     this.disabled = false,

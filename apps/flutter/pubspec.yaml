@@ -33,6 +33,8 @@ dependencies:
   package_info_plus: ^8.0.0
   device_info_plus: ^11.0.0
   share_plus: ^10.0.0
+  # Smart HID 配网：ControlHub 配对码扫描（P002 · F020）
+  mobile_scanner: ^5.2.3
 
   # 平台特定
   flutter_platform_widgets: ^6.0.2
@@ -40,6 +42,9 @@ dependencies:
 
 dev_dependencies:
   flutter_test:
+    sdk: flutter
+  # E13: P002 真机集成驱动（ValueKey 语义驱动，场景经 --dart-define 注入）
+  integration_test:
     sdk: flutter
   flutter_lints: ^3.0.1
   flutter_launcher_icons: ^0.14.4

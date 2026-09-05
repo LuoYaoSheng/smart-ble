@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../core/ble/ble_manager.dart';
-import '../../core/ble/profile_registry.dart';
 import '../../core/models/ble_scan_result.dart';
 import '../../themes/app_theme.dart';
 import '../widgets/advertisement_sheet.dart';
@@ -12,6 +11,7 @@ import '../widgets/device_card.dart';
 import '../widgets/filter_panel.dart';
 
 import 'device_detail_page.dart';
+import 'provisioning_page.dart';
 
 /// BLE 状态提供者
 final bleStateProvider = StreamProvider<BleState>((ref) {
@@ -272,7 +272,7 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
                             _bleManager.isDeviceConnected(device.deviceId),
                         onConnect: () => _connectToDevice(device),
                         onShowInfo: () => _showAdvertisement(device),
-                        onConfigure: () => _showProfileNotAvailable(device),
+                        onConfigure: () => _openProvisioning(device),
                       );
                     },
                   ),
@@ -428,44 +428,12 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
     );
   }
 
-  /// Smart HID「配置」入口——配网流程（P002）在 Flutter 线尚未开放，
-  /// 如实说明命中档案与开放状态，不伪造能力
-  void _showProfileNotAvailable(BleScanResult device) {
-    final match = matchProfile(device);
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Smart HID 配网',
-                style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
-            const SizedBox(height: 10),
-            Text(
-              '该设备命中 ${match?.profile.displayName} 档案'
-              '（${match?.level.name.toUpperCase()} · ${match?.profile.id}）。\n\n'
-              '配网流程（Wi-Fi 与 ControlHub 下发）在 Flutter 线尚未开放，'
-              '当前开放线为 uni-app（微信小程序 / Android）。'
-              '可先用「连接」进入 GATT 调试。',
-              style: const TextStyle(
-                  fontSize: 13, color: Color(0xFF42536A), height: 1.6),
-            ),
-            const SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.primaryColor,
-                  foregroundColor: Colors.white,
-                ),
-                child: const Text('知道了'),
-              ),
-            ),
-          ],
-        ),
+  /// Smart HID「配置」入口 → P002 配网向导（三阶段：连接确认/填写配置/下发状态）
+  void _openProvisioning(BleScanResult device) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProvisioningPage(device: device),
       ),
     );
   }
