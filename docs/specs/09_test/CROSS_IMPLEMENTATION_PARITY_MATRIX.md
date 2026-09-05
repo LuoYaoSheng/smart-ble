@@ -1,8 +1,9 @@
-# 三实现线一致性矩阵（CROSS_IMPLEMENTATION_PARITY_MATRIX）
+# 多实现线一致性矩阵（CROSS_IMPLEMENTATION_PARITY_MATRIX）
 
-- 状态：初版（Phase B 首轮，2026-09-04）；每个 Gate 完成后回填
-- 实现线：U-WX（微信小程序）/ U-AND（UniApp Android）/ F-AND（Flutter Android）
+- 状态：执行中（2026-09-06 用户确认所有原生/跨平台实现均按原型稿开发）；每个 Gate 完成后回填
+- 实现线：U-WX（微信小程序）/ U-AND（UniApp Android）/ F-AND/F-MAC（Flutter）/ N-MAC（AppKit）/ N-IOS（SwiftUI）/ K-AND（Kotlin Compose）
 - 判定规则：同功能同验收 ID 同预期；差异必须能追溯到 `10_platform` / `08_development` 的规范来源，否则视为缺陷
+- Windows 硬件基线：Flutter Android + ESP32 V1 零配对与 T2–T7/第二手机已完成；扫描 F001–F005 真机 PASS。详见 `WINDOWS_MOBILE_V1_MASTER_MATRIX.md` 与 `verification/windows-mobile-v1/20260905-1726-1b793ca/`。
 
 ## 1. 不得因实现线不同而不同的行为（硬一致项）
 
@@ -95,3 +96,10 @@
 当前最大对齐缺口不是样式，而是原生 iOS/Kotlin Android 缺 P002/P003/P005/P010 与 Smart HID Profile 路由。后续实现必须复用同一 UUID、framed-v1、8 错误码、60 秒状态跟踪和 V1 明文直连语义，不得用静态页面冒充能力完成。
 
 构建基线（2026-09-05）：N-IOS 已完成真机 arm64 签名构建/安装及模拟器 build/install/launch；K-AND 已在 JBR 21 下完成 `assembleDebug + testDebugUnitTest`。这些只证明现有页面可执行，不改变上表功能缺失判定。
+
+### 2026-09-06 用户决策：所有实现线必须按原型补齐
+
+- N-IOS、K-AND 的 P002/P003/P005/P010 从“差距记录”升级为**必须完成的开发范围**，不是可选平台裁剪。
+- Flutter 的 P003/P005/P010 `△` 必须收敛为独立可达且行为完整的页面，除非正典先通过正式决策改变页面结构。
+- N-MAC 与 uni-app 当前覆盖完整，后续共享内核调整必须保持页面与功能不回退。
+- 实施计划：`docs/plans/2026-09-06-native-platform-prototype-parity.md`。

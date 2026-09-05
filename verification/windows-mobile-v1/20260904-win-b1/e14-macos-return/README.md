@@ -120,7 +120,7 @@ READY 后空口 `BleAdvDump` 仍见 `SHID-00000001 conn=1`（缺陷 3）；
 | 仓库 | Windows 应使用的分支 | 最新功能基线 | 远端状态 |
 |---|---|---|---|
 | `smart-ble` | `refactor/uniapp-v1` | `332d69d`（另含本交接提交，直接拉远端 tip） | Gitee `origin` 与 GitHub `github` 均已同步 |
-| `Smart-HID-Workspace` | `main` | `0f8548d` | Gitee `origin` 已同步；GitHub 因当前 Mac OAuth 缺 `workflow` scope 停在旧基线，Windows 本轮从 Gitee 拉取 |
+| `Smart-HID-Workspace` | `main` | `78bc4ef` | Gitee `origin` 已同步；含重配 Wi-Fi in-flight 竞态修复；GitHub 因当前 Mac OAuth 缺 `workflow` scope 停在旧基线 |
 
 `spike/macos-extension-v1` 已通过合并提交 `55ec20f` 完整进入
 `refactor/uniapp-v1`。Windows **不要再次合并 spike 分支**；后续 App、Mac、Android、
@@ -151,7 +151,7 @@ git pull --ff-only origin main
 git log --oneline -3
 ```
 
-预期看到 `0f8548d`、`80a5e58`、`cb44128`。
+预期看到 `78bc4ef`、`0f8548d`、`80a5e58`。
 
 若 `--ff-only` 因 Windows 用户本地修改失败，只处理 Git 明确列出的冲突文件；不要提交
 `firmware_build_info.h`、`.hbuilderx/launch.json`、Electron lock、`tests/target/**`
@@ -242,7 +242,10 @@ Windows Git Bash 若无法直接执行 ESP-IDF，沿用 E13 已验证的 `cmd //
 ## 5. 仍需诚实保留的平台差距
 
 原生 SwiftUI iOS 与 Kotlin Compose Android 当前缺 P002/P003/P005/P010；Flutter 对 P003/P005/P010
-为合并页/部分覆盖。跨语言页面矩阵在
-`docs/specs/09_test/CROSS_IMPLEMENTATION_PARITY_MATRIX.md`。Windows 本轮先完成 Flutter Android +
-真实 ESP32 配网闭环，不得把原生 Android 能编译写成 Smart HID 配网已对齐；之后再按同一协议与页面
-基准补原生实现。
+为合并页/部分覆盖。用户已在 2026-09-06 明确：**所有实现线都要按原型稿开发**，这些缺口是必须完成的
+开发范围，不是允许长期保留的平台裁剪。跨语言页面矩阵与完整顺序见
+`docs/specs/09_test/CROSS_IMPLEMENTATION_PARITY_MATRIX.md` 和
+`docs/plans/2026-09-06-native-platform-prototype-parity.md`。
+
+Windows 本轮先完成 Flutter Android + 真实 ESP32 配网闭环，随后可以继续 K-AND；N-IOS 在 Mac/Xcode
+开发并最终用物理 iPhone 验收。不得把原生 Android/iOS 能编译写成 Smart HID 配网或页面对齐已完成。
