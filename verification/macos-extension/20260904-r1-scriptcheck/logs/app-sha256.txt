@@ -1,0 +1,1 @@
+a551c8a195b5824fa3dc1bc590924191acd616c70aafa49371db7124158c77aa  /Users/luoyaosheng/Desktop/project/Open/smart-ble-macos/apps/flutter/build/macos/Build/Products/Release/smart_ble.app/Contents/MacOS/smart_ble

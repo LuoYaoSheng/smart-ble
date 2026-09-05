@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- r5 上架就绪：Mac App Store 强制 App Sandbox。
+         r6（M5）：新增相机 entitlement —— 配对码扫码（F020 桌面主路径，
+         AVFoundation 取景器识别 shid://pair；无图像落盘）。
+         其余仍为零文件/零网络。 -->
+    <key>com.apple.security.app-sandbox</key>
+    <true/>
+    <key>com.apple.security.device.camera</key>
+    <true/>
+</dict>
+</plist>

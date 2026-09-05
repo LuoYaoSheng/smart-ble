@@ -1,0 +1,50 @@
+{
+  "run_id": "20260904-r1",
+  "recorded_at": "2026-09-04T09:30:00+08:00",
+  "machine": {
+    "model": "Mac mini (Mac16,10)",
+    "chip": "Apple M4",
+    "arch": "arm64",
+    "memory_gb": 32,
+    "os": {
+      "product": "macOS",
+      "version": "26.5.2",
+      "build": "25F84",
+      "kernel": "xnu-12377.121.10~1/RELEASE_ARM64_T8132"
+    }
+  },
+  "toolchain": {
+    "xcode": "26.1.1 (17B100)",
+    "swift": "6.2.1 (swiftlang-6.2.1.4.8)",
+    "flutter": "3.38.5 stable (framework f6ff1529fd, gitee mirror upstream)",
+    "dart": "3.10.4 (stable)",
+    "cocoapods": "1.16.2",
+    "android_sdk": "36.1.0"
+  },
+  "bluetooth": {
+    "controller": "BCM_4388C2",
+    "state": "on",
+    "permission_state": "granted for com.smartble.flutter and CLI-launched CoreBluetooth processes (observed CBManagerStatePoweredOn without prompt)",
+    "active_classic_devices": [
+      "Magic Keyboard with Numeric Keypad",
+      "Magic Trackpad 2"
+    ],
+    "observed_le_advertisers": ["iphone (paired, not operable)", "3x midea appliances", "unnamed devices"]
+  },
+  "fixtures": {
+    "connectable_gatt_fixture": "none (user keyboard/trackpad off-limits; midea rejects unbonded connects - measured timeout)",
+    "esp32": "absent",
+    "second_scanning_endpoint": "not operable",
+    "same_machine_cross_process_visibility": "filtered by macOS controller (verified by two controlled experiments)"
+  },
+  "git": {
+    "repo": "smart-ble",
+    "worktree": "smart-ble-macos",
+    "branch": "spike/macos-extension-v1",
+    "base_commit": "dbb38a8c2404b37cce4602db1f42b44eedae7e8d",
+    "base_ref": "github/refactor/uniapp-v1",
+    "branch_pushed": true,
+    "baseline_clean": true
+  },
+  "excluded_sensitive_data": ["certificates/keys", "apple accounts", "wifi passwords", "tokens"]
+}

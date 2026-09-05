@@ -1,0 +1,26 @@
+[APP] static main entered
+[APP] applicationDidFinishLaunching
+[UISMOKE] mode=smoke-pages app=SmartBLE-mac
+[UISMOKE] UIS-01 result=PASS detail="windowVisible=true filterPanel=true tableView=true servicePanel=true logPanel=true"
+[BLE] Peripheral is powered on
+[BLE] Bluetooth is powered on
+[BLE] Starting scan...
+[UISMOKE] UIS-02 result=PASS detail="buttonTitle=Stop Scan status=Scanning... managerIsScanning=true"
+[BLE] Discovered: Unknown Device
+[BLE] Discovered: midea
+[BLE] Discovered: iphone
+[BLE] Discovered: midea
+[BLE] Scan stopped
+[BLE] Auto-stop scan (5 seconds)
+[UISMOKE] UIS-03 result=PASS detail="buttonTitle=Start Scan status=Ready scannedDevices=4"
+[UISMOKE] UIS-04a result=PASS detail="filterPanelVisible=true"
+[UISMOKE] UIS-04b result=PASS detail="managerFilterRSSI=-70"
+[UISMOKE] UIS-04c result=PASS detail="managerHideNoName=true"
+[UISMOKE] UIS-04d result=PASS detail="filterRSSI=-100 hideNoName=false"
+[BLE] Scan stopped
+[BLE] Connecting to Unknown Device...
+[UISMOKE] UIS-05 result=PASS detail="connectLog=true connectionState=connecting"
+[UISMOKE] UIS-06a result=PASS detail="label=11 entries managerLogs=11 logPanelHasText=true"
+[UISMOKE] UIS-06b result=PASS detail="managerLogsEmpty=true label=0 entries panelCleared=true"
+[UISMOKE] UIS-07 result=PASS detail="identifiers=scanToggle,NSToolbarFlexibleSpaceItem,disconnect,logs logsAction=true"
+[UISMOKE] SUMMARY failures=0 skips=0

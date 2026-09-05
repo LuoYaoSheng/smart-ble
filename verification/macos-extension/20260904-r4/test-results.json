@@ -1,0 +1,46 @@
+{
+  "run_id": "20260904-r4",
+  "date": "2026-09-04",
+  "scope": "delivery-form + real-interaction + stability",
+  "trigger": "autonomous continuation after r3 prototype alignment: prove shippable-shaped bundle, real user-level clicks, and scan soak stability",
+  "changes": [
+    "scripts/macos/make-app-bundle.sh: assemble SPM binary into SmartBLE-macOS.app (reuses repo Info.plist with NSBluetoothAlwaysUsageDescription) + ad-hoc codesign + spctl assessment; --omit-bt-usage produces NoBT negative-control bundle",
+    "SoakRunner (--soak-scans=N): N real 5s scan sessions with auto-stop, log-cap and resident-memory assertions",
+    "verify-native-macos.sh step 6: NVP-01..03 + NVS-01..02 wired in",
+    "apps/desktop/macos/.gitignore: dist/ excluded from VCS",
+    "tests/macos/native-macos-platform.test.md: r4 case table appended"
+  ],
+  "results": {
+    "NVB-01": "PASS", "NVB-02": "PASS",
+    "NVC-01": "PASS", "NVC-02": "PASS", "NVC-03": "PASS",
+    "NVC-04": "BLOCKED_FIXTURE", "NVC-05": "BLOCKED_OBSERVER",
+    "UIS-00": "PASS", "UIS-01": "PASS", "UIS-02": "PASS", "UIS-03": "PASS",
+    "UIS-04": "PASS", "UIS-05": "PASS", "UIS-06": "PASS", "UIS-07": "PASS",
+    "UIS-08": "PASS", "UIS-09": "PASS", "UIS-10": "PASS", "UIS-11": "PASS",
+    "UIS-12": "PASS", "UIS-13": "PASS", "UIS-14": "PASS",
+    "NVP-01": "PASS", "NVP-02": "PASS", "NVP-03": "PASS",
+    "NVR-01": "PASS", "NVR-02": "PASS(platform fact)", "NVR-03": "PASS",
+    "NVR-04a": "PASS", "NVR-04b": "PASS", "NVR-04c": "PASS", "NVR-04d": "PASS", "NVR-04e": "PASS",
+    "NVR-05": "PASS", "NVR-06": "PASS", "NVR-07a": "PASS", "NVR-07b": "PASS",
+    "NVR-08": "PASS", "NVR-09": "PASS", "NVR-10": "PASS",
+    "NVR-11a": "PASS", "NVR-11b": "PASS", "NVR-11c": "PASS",
+    "NVS-01": "PASS", "NVS-02": "PASS"
+  },
+  "environment": {
+    "bluetooth": "poweredOn; soak rounds found 3-8 real neighbor devices per 5s session",
+    "soak": "12/12 rounds auto-stopped; logs 83/500; resident memory delta -3.1MB",
+    "bundle": "SmartBLE-macOS.app ad-hoc signed (identifier com.smartble.desktop); launched via LaunchServices open"
+  },
+  "platform_facts": [
+    "TCC responsible-process attribution: opening the bundle from an already-granted terminal inherits the terminal Bluetooth grant without any bundle-scoped prompt; the NSBluetoothAlwaysUsageDescription prompt path only triggers from Finder/Dock cold starts (not exercised this round)",
+    "macOS 13+ does not hard-crash a missing NSBluetoothAlwaysUsageDescription bundle when run from a granted terminal (NoBT variant booted, poweredOn) - differs from iOS; Finder-launch behavior of NoBT variant not exercised",
+    "spctl rejects ad-hoc (non-notarized) bundles as expected; Developer ID + notarization requires an Apple account -> NOT_RUN by protocol (no credentials involved)"
+  ],
+  "not_run": [
+    "device-card click -> F004 adv sheet and P009 menu rows: custom views expose no AX press action and host screen-recording denied blocks coordinate clicks (covered programmatically in r3 UIS-05/UIS-10)",
+    "visual screenshots of the walkthrough (Screen Recording denied); visual evidence remains r3 --snap-pages 9-page PNGs",
+    "Finder/Dock cold-start Bluetooth prompt path (see platform_facts)"
+  ],
+  "for_windows_gate": ["S11 distribution chain facts (ad-hoc/notarization/TCC attribution) - informational, no shared-file change"],
+  "conclusion": "VIABLE_WITH_LIMITATIONS (delivery form proven to ad-hoc bundle level; real-click interaction chain green; fixtures/observer chains unchanged from r1-r3)"
+}

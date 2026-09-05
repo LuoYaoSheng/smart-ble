@@ -1,0 +1,4 @@
+[APP] static main entered
+[APP] applicationDidFinishLaunching
+[BLE] 外围模式已就绪
+[BLE] 蓝牙已开启

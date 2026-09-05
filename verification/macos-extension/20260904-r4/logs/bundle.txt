@@ -1,0 +1,16 @@
+
+===== 1. swift build (debug) =====
+
+===== 2. 组装 bundle（清单源：/Users/luoyaosheng/Desktop/project/Open/smart-ble-macos/apps/desktop/macos/SmartBLE-mac/Info.plist） =====
+NVP plist: NSBluetoothAlwaysUsageDescription 存在
+NVP plist: NoBT 变体已生成（故意缺失蓝牙用途声明，供负向观察）
+
+===== 3. ad-hoc 签名（无证书私钥参与） =====
+/Users/luoyaosheng/Desktop/project/Open/smart-ble-macos/apps/desktop/macos/dist/SmartBLE-macOS-NoBT.app: replacing existing signature
+NVP sign: SmartBLE-macOS-NoBT.app ad-hoc 签名校验通过
+/Users/luoyaosheng/Desktop/project/Open/smart-ble-macos/apps/desktop/macos/dist/SmartBLE-macOS.app: replacing existing signature
+NVP sign: SmartBLE-macOS.app ad-hoc 签名校验通过
+
+===== 4. Gatekeeper 评估（ad-hoc 未公证） =====
+NVP spctl: rejected（预期：未公证；正式分发需 Developer ID + notarization，无 Apple 账号 → NOT_RUN）
+BUNDLE_OK /Users/luoyaosheng/Desktop/project/Open/smart-ble-macos/apps/desktop/macos/dist/SmartBLE-macOS.app

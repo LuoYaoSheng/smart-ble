@@ -1,0 +1,48 @@
+{
+  "run_id": "20260904-r1",
+  "date": "2026-09-04",
+  "base_commit": "dbb38a8c2404b37cce4602db1f42b44eedae7e8d",
+  "branch": "spike/macos-extension-v1",
+  "plugin_versions": { "flutter_blue_plus": "1.36.8", "flutter_ble_peripheral": "2.1.1" },
+  "results": [
+    { "id": "FLB-01", "name": "flutter pub get", "status": "PASS_WITH_LIMITATION", "note": "pubspec.lock drifted, not committed" },
+    { "id": "FLB-02", "name": "dart format check (lib test)", "status": "FAIL", "note": "20 files pre-existing shared-layer drift" },
+    { "id": "FLB-03", "name": "flutter analyze", "status": "PASS", "note": "no issues" },
+    { "id": "FLB-04", "name": "flutter test", "status": "PASS", "note": "11/11" },
+    { "id": "FLB-05", "name": "flutter build macos (release)", "status": "PASS", "note": "46.2MB, sha256 b49461584ac5dc593c2a285868bca5952c25954485536d4d66824d5f05e91ff7" },
+    { "id": "FLB-06", "name": "flutter build macos --debug", "status": "PASS" },
+    { "id": "FLB-07", "name": "flutter run -d macos", "status": "PASS", "note": "FBP init, adapter PoweredOn, no blocking prompt" },
+    { "id": "FLC-01", "name": "env: adapter/permission", "status": "PASS", "note": "unknown->on, both plugins supported" },
+    { "id": "FLC-02", "name": "central scan start", "status": "PASS" },
+    { "id": "FLC-03", "name": "central 5s auto-stop", "status": "PASS", "note": "exactly 5.0s measured" },
+    { "id": "FLC-04", "name": "central manual stop", "status": "PASS" },
+    { "id": "FLC-05", "name": "central dedup + rssi", "status": "PASS", "note": "6 devices / 87 updates in 12s" },
+    { "id": "FLC-06", "name": "central connect (real fixture)", "status": "PASS_WITH_LIMITATION", "note": "attempt on midea timed out (unbonded rejected); error path correct" },
+    { "id": "FLC-07", "name": "central GATT read/write/notify", "status": "BLOCKED_FIXTURE" },
+    { "id": "FLP-01", "name": "peripheral isSupported", "status": "PASS" },
+    { "id": "FLP-02", "name": "peripheral start/stop advertising + state stream", "status": "PASS", "note": "API level; sandboxed debug" },
+    { "id": "FLP-03", "name": "peripheral isAdvertising getter", "status": "DEFECT", "note": "always false on darwin, D3" },
+    { "id": "FLP-04", "name": "peripheral external visibility (E5)", "status": "BLOCKED_OBSERVER", "note": "same-machine advertisements filtered; no second observer available" },
+    { "id": "FLL-01", "name": "app exit cleanup (SIGTERM)", "status": "PASS_WITH_LIMITATION" },
+    { "id": "FLL-02", "name": "bt off/on, sleep/wake", "status": "NOT_RUN", "note": "would disrupt active user input devices" },
+    { "id": "FLD-01", "name": "FBP startScan startup race", "status": "DEFECT", "note": "D1, PlatformException before PoweredOn" },
+    { "id": "FLD-02", "name": "FBP darwin isSupported duplicate response", "status": "DEFECT", "note": "D2, log noise only" },
+    { "id": "NVB-01", "name": "swift build (SmartBLE-mac)", "status": "PASS", "note": "after 5 platform fixes (D5-D9); was 19+ errors" },
+    { "id": "NVB-02", "name": "swift run (SmartBLE-mac)", "status": "PASS", "note": "both managers PoweredOn" },
+    { "id": "NVB-03", "name": "swift test", "status": "NOT_RUN", "note": "no test target in package" },
+    { "id": "NVC-01", "name": "native probe env", "status": "PASS", "note": "CENTRAL_STATE=5 PERIPHERAL_STATE=5" },
+    { "id": "NVC-02", "name": "native probe scan 12s", "status": "PASS", "note": "5 devices / 23 updates" },
+    { "id": "NVC-03", "name": "native probe advertise (GATT server)", "status": "PASS", "note": "API level, service_added + advertising_started" },
+    { "id": "NVC-04", "name": "native probe connect (same-machine)", "status": "BLOCKED", "note": "target not discovered: same-machine filtering (P1)" },
+    { "id": "NVC-05", "name": "cross-visibility flutter adv + native scan", "status": "BLOCKED_OBSERVER", "note": "7 devices seen, expected uuid not seen" },
+    { "id": "NVL-01", "name": "native app terminate hooks", "status": "PASS_WITH_LIMITATION", "note": "explicit disconnect/stopScan in applicationShouldTerminate" }
+  ],
+  "comparison_verdicts": {
+    "flutter_macos": "VIABLE_WITH_LIMITATIONS",
+    "native_appkit": "VIABLE_WITH_LIMITATIONS"
+  },
+  "big_artifacts": {
+    "policy": "not committed; paths + hashes recorded in baseline docs",
+    "product_release_binary": "apps/flutter/build/macos/Build/Products/Release/smart_ble.app"
+  }
+}

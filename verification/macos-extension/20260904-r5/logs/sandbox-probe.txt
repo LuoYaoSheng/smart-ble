@@ -1,0 +1,11 @@
+== MAS 形态（ad-hoc + app-sandbox）:
+[SANDBOX-PROBE] home=/Users/luoyaosheng/Library/Containers/com.smartble.desktop/Data
+[SANDBOX-PROBE] write-outside-container=blocked
+[SANDBOX-PROBE] sandbox=ON (entitlement 已被内核执行)
+binary_exit=0
+
+== 未签名 dev 二进制（对照，应 OFF/exit=3）:
+[SANDBOX-PROBE] home=/Users/luoyaosheng
+[SANDBOX-PROBE] write-outside-container=ALLOWED
+[SANDBOX-PROBE] sandbox=OFF (entitlement 未生效)
+binary_exit=3

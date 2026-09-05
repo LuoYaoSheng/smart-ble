@@ -1,0 +1,14 @@
+Running pod install...                                             671ms
+Building macOS application...
+ld: warning: search path '/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.DglYd0/Metal.xctoolchain/usr/lib/swift/macosx' not found
+ld: warning: search path '/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.DglYd0/Metal.xctoolchain/usr/lib/swift/macosx' not found
+ld: warning: search path '/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.DglYd0/Metal.xctoolchain/usr/lib/swift/macosx' not found
+ld: warning: search path '/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.DglYd0/Metal.xctoolchain/usr/lib/swift/macosx' not found
+ld: warning: search path '/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.DglYd0/Metal.xctoolchain/usr/lib/swift/macosx' not found
+ld: warning: search path '/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.DglYd0/Metal.xctoolchain/usr/lib/swift/macosx' not found
+ld: warning: search path '/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.DglYd0/Metal.xctoolchain/usr/lib/swift/macosx' not found
+ld: warning: search path '/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.DglYd0/Metal.xctoolchain/usr/lib/swift/macosx' not found
+ld: warning: search path '/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.DglYd0/Metal.xctoolchain/usr/lib/swift/macosx' not found
+ld: warning: search path '/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.DglYd0/Metal.xctoolchain/usr/lib/swift/macosx' not found
+warning: Run script build phase 'Run Script' will be run during every build because it does not specify any outputs. To address this issue, either add output dependencies to the script phase, or configure it to run in every build by unchecking "Based on dependency analysis" in the script phase. (in target 'Flutter Assemble' from project 'Runner')
+✓ Built build/macos/Build/Products/Release/smart_ble.app (46.2MB)

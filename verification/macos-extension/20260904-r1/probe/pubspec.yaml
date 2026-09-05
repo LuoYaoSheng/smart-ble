@@ -1,0 +1,22 @@
+name: smart_ble_macos_probe
+description: >-
+  Minimal throwaway Flutter macOS probe for the Smart BLE macOS platform spike.
+  It exercises flutter_blue_plus (Central) and flutter_ble_peripheral
+  (Peripheral) exactly at the versions resolved by the product app
+  (apps/flutter pubspec.lock on the spike base commit) and prints structured
+  logs. NOT a product and NOT part of the shared Flutter product layer.
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # Pinned to the exact versions resolved for apps/flutter at base dbb38a8
+  flutter_blue_plus: 1.36.8
+  flutter_ble_peripheral: 2.1.1
+
+flutter:
+  uses-material-design: true

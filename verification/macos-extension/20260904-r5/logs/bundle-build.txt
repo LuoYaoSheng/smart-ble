@@ -1,0 +1,26 @@
+
+===== 1. swift build (release，优先通用二进制) =====
+NVD build: 通用二进制（arm64 + x86_64）
+Architectures in the fat file: /Users/luoyaosheng/Desktop/project/Open/smart-ble-macos/apps/desktop/macos/SmartBLE-mac/.build/apple/Products/Release/SmartBLE-mac are: x86_64 arm64 
+
+===== 2. 组装 bundle（清单：/Users/luoyaosheng/Desktop/project/Open/smart-ble-macos/apps/desktop/macos/SmartBLE-mac/Info.plist；图标：/Users/luoyaosheng/Desktop/project/Open/smart-ble-macos/apps/desktop/macos/SmartBLE-mac/Resources/AppIcon.icns） =====
+NVD plist: 版本/分类/图标/出口合规/蓝牙用途 全部在位
+NVP plist: NoBT 变体已生成（故意缺失蓝牙用途声明，供负向观察）
+
+===== 3. ad-hoc 签名（无证书私钥参与；MAS 形态带 App Sandbox + hardened runtime） =====
+/Users/luoyaosheng/Desktop/project/Open/smart-ble-macos/apps/desktop/macos/dist/SmartBLE-macOS.app: replacing existing signature
+NVP sign: SmartBLE-macOS.app（运行形态）ad-hoc 签名校验通过
+/Users/luoyaosheng/Desktop/project/Open/smart-ble-macos/apps/desktop/macos/dist/SmartBLE-macOS-MAS.app: replacing existing signature
+NVD sign: SmartBLE-macOS-MAS.app（MAS 形态）ad-hoc 签名校验通过
+NVD entitlements: app-sandbox 已嵌入
+NVD runtime: hardened runtime 标志在位
+/Users/luoyaosheng/Desktop/project/Open/smart-ble-macos/apps/desktop/macos/dist/SmartBLE-macOS-NoBT.app: replacing existing signature
+NVP sign: NoBT 变体 ad-hoc 签名校验通过
+
+===== 4. Gatekeeper 评估（ad-hoc 未公证，预期拒绝） =====
+NVD spctl: rejected（预期：未公证；正式分发链见 store-readiness.md，账号环节 NOT_RUN）
+
+===== 5. 可移植性事实（Swift 运行库来源） =====
+NVD portability: Swift 链接系统 ABI 稳定运行库（/usr/lib/swift/*），无工具链 rpath 依赖
+BUNDLE_OK /Users/luoyaosheng/Desktop/project/Open/smart-ble-macos/apps/desktop/macos/dist/SmartBLE-macOS.app
+MAS_OK /Users/luoyaosheng/Desktop/project/Open/smart-ble-macos/apps/desktop/macos/dist/SmartBLE-macOS-MAS.app

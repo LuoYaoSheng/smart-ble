@@ -1,0 +1,10 @@
+# Flutter build/tooling artifacts — never commit
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependency
+build/
+macos/Flutter/ephemeral/
+macos/Podfile.lock
+pubspec.lock
+*.iml
+.idea/

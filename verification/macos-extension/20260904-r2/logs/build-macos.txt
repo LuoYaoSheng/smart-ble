@@ -1,0 +1,3 @@
+Running pod install...                                             553ms
+Building macOS application...
+✓ Built build/macos/Build/Products/Release/smart_ble.app (45.9MB)

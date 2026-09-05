@@ -1,0 +1,21 @@
+[APP] static main entered
+[APP] applicationDidFinishLaunching
+[BLE] 蓝牙状态：CBManagerState(rawValue: 2)
+[BLE] 外围模式状态异常：CBManagerState(rawValue: 2)
+[UISMOKE] mode=smoke-pages app=SmartBLE-mac r3=prototype-aligned
+[UISMOKE] UIS-01 result=PASS detail="title=BLE Toolkit+ tabs=[1, 1, 1, 1] p001=true"
+[UISMOKE] UIS-02 result=PASS detail="已连接=1 广播=1 关于=1 扫描=1"
+[UISMOKE] UIS-03 result=SKIP detail="bluetooth adapter not powered on (btState=unsupported)"
+[UISMOKE] UIS-04 result=PASS detail="preset=true slider=true switch=true th70=true reset=true collapsed=true"
+[UISMOKE] UIS-05 result=SKIP detail="no scan results in this environment"
+[UISMOKE] UIS-06 result=SKIP detail="no scan results in this environment"
+[UISMOKE] UIS-07 result=PASS detail="guard=true parse=true noToken=true hubOptional=true"
+[UISMOKE] UIS-08 result=PASS detail="platform=true note=true budgetBar=true default=21B over=46B blocked=true shown=true restored=21B reEnabled=true"
+[BLE] 外围模式未就绪：CBManagerState(rawValue: 2)
+[UISMOKE] UIS-09 result=FAIL detail="logged=false badge=true peripheralReady=false"
+[UISMOKE] UIS-10 result=PASS detail="brand=true menus=[1, 1, 1, 1] titles=true osRow=true matrix=true p010=true"
+[UISMOKE] UIS-11 result=PASS detail="limits=true emptyRelease=true foot=true previews=true"
+[UISMOKE] UIS-12 result=PASS detail="p005=true p003Guard=true"
+[UISMOKE] UIS-13 result=PASS detail="modal=true dismissed=true alive=true"
+[UISMOKE] SUMMARY failures=1 skips=3
+smoke_exit=1
