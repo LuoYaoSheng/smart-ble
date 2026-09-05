@@ -1508,7 +1508,10 @@ class _DiagnosticsSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(20),
-      child: Column(
+      // 两段 pretty-print JSON 的高度随特征内容增长（E14-T4 真机：mqtt_invalid
+      // 状态下溢出 54px 触发渲染异常），弹层内容改为可滚动。
+      child: SingleChildScrollView(
+        child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1558,6 +1561,7 @@ class _DiagnosticsSheet extends StatelessWidget {
             ),
           ),
         ],
+      ),
       ),
     );
   }

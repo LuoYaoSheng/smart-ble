@@ -1,0 +1,41 @@
+Flutter assets will be downloaded from https://storage.flutter-io.cn. Make sure you trust this source!
+00:00 +0: loading E:/project/xf/smart-ble/apps/flutter/integration_test/p002_provisioning_test.dart
+Running Gradle task 'assembleDebug'...                          
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by net.rubygrapefruit.platform.internal.NativeLibraryLoader in an unnamed module (file:/C:/Users/11066/.gradle/wrapper/dists/gradle-8.14-all/c2qonpi39x1mddn7hk5gh9iqj/gradle-8.14/lib/native-platform-0.22-milestone-28.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+Flutter assets will be downloaded from https://storage.flutter-io.cn. Make sure you trust this source!
+Running Gradle task 'assembleDebug'...                             35.4s
+√ Built build\app\outputs\flutter-apk\app-debug.apk
+Installing build\app\outputs\flutter-apk\app-debug.apk...           6.0s
+00:00 +0: P002 scenario: success
+P002[E2E 17:15:27.405]: scenario=success 启动
+P002[E2E 17:15:40.979]: scan round 1 未命中 SHID 卡片，重扫
+P002: connected+verified device_id=HID-00000001 fw=1.1.0 mtu=247
+P002[E2E 17:15:46.441]: configure 阶段已到达（第 1 次连接）
+P002: status state=recovery step=mqtt_invalid error=mqtt_invalid
+P002: qr parse ok host=192.168.21.77:17892 len=80
+P002[E2E 17:15:49.223]: 表单已就绪（token 已回填，值不落日志；扫码面板已退场）
+P002: status state=recovery step=mqtt_invalid error=mqtt_invalid
+P002: status state=recovery step=mqtt_invalid error=mqtt_invalid
+P002: status state=recovery step=mqtt_invalid error=mqtt_invalid
+P002: status state=recovery step=mqtt_invalid error=mqtt_invalid
+P002: submit frames=2 bytes=140 mtu=247
+P002[E2E 17:15:58.033]: 已点下发配置
+P002: status state=provisioning step=received error=null
+P002: status state=connecting_wifi step=connecting_wifi error=null
+P002: status state=connecting_wifi step=wifi_connected error=null
+P002: status state=pairing step=pairing error=null
+P002: status state=pairing step=pairing_success error=null
+P002: status state=mqtt_connecting step=mqtt_connecting error=null
+P002: status state=ready step=ready error=null
+P002: terminal=ready failure=null
+P002: status state=ready step=ready error=null
+P002[E2E 17:16:02.281]: outcome=success
+P002: status state=ready step=ready error=null
+P002[E2E 17:16:03.132]: T1 完成：READY + provisioned:true
+P002[E2E 17:16:03.133]: scenario=success 全部断言通过
+00:36 +1: (tearDownAll)
+00:36 +1: All tests passed!

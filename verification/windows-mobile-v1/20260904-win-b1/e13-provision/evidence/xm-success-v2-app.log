@@ -1,0 +1,60 @@
+Flutter assets will be downloaded from https://storage.flutter-io.cn. Make sure you trust this source!
+00:00 +0: loading E:/project/xf/smart-ble/apps/flutter/integration_test/p002_provisioning_test.dart
+Running Gradle task 'assembleDebug'...                          
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by net.rubygrapefruit.platform.internal.NativeLibraryLoader in an unnamed module (file:/C:/Users/11066/.gradle/wrapper/dists/gradle-8.14-all/c2qonpi39x1mddn7hk5gh9iqj/gradle-8.14/lib/native-platform-0.22-milestone-28.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+Flutter assets will be downloaded from https://storage.flutter-io.cn. Make sure you trust this source!
+Running Gradle task 'assembleDebug'...                             36.4s
+√ Built build\app\outputs\flutter-apk\app-debug.apk
+Installing build\app\outputs\flutter-apk\app-debug.apk...           6.2s
+00:00 +0: P002 scenario: success
+P002[E2E 16:57:45.080]: scenario=success 启动
+P002: connected+verified device_id=HID-00000001 fw=1.1.0 mtu=247
+P002[E2E 16:57:51.535]: configure 阶段已到达（第 1 次连接）
+P002: status state=recovery step=persistent_disconnect error=wifi_failed
+P002: qr parse ok host=192.168.21.77:17892 len=80
+P002[E2E 16:57:54.260]: 表单已就绪（token 已回填，值不落日志；扫码面板已退场）
+P002: status state=recovery step=persistent_disconnect error=wifi_failed
+P002: status state=recovery step=persistent_disconnect error=wifi_failed
+P002: status state=recovery step=persistent_disconnect error=wifi_failed
+P002: status state=recovery step=persistent_disconnect error=wifi_failed
+P002: submit frames=2 bytes=140 mtu=247
+P002[E2E 16:58:03.174]: 已点下发配置
+P002: terminal=timeout failure=null
+P002: status state=recovery step=persistent_disconnect error=wifi_failed
+P002[E2E 16:59:03.577]: outcome=timeout
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: 'success'
+  Actual: 'timeout'
+   Which: is different.
+          Expected: success
+            Actual: timeout
+                    ^
+           Differ at offset 0
+T1 主链路未达 READY（实际终态 timeout）
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///E:/project/xf/smart-ble/apps/flutter/integration_test/p002_provisioning_test.dart:239:11)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1059:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///E:/project/xf/smart-ble/apps/flutter/integration_test/p002_provisioning_test.dart line 239
+The test description was:
+  P002 scenario: success
+════════════════════════════════════════════════════════════════════════════════════════════════════
+01:19 +0 -1: P002 scenario: success [E]
+  Test failed. See exception logs above.
+  The test description was: P002 scenario: success
+  
+01:19 +0 -1: (tearDownAll)
+01:20 +0 -1: Some tests failed.

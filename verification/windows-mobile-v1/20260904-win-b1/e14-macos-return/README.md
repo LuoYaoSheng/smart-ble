@@ -39,15 +39,61 @@
 且 15:27:53 的断链为测试收尾 App 退出后的正常拆除，非 E13 的 3s 中途掉链病
 （`l2c_link_timeout is_bonding:false` 发生在 `tearDownAll` 之后）。
 
-### E13 场景矩阵（V1 固件复验，本轮已完成部分）
+### E13 场景矩阵（V1 固件复验，2026-09-05 15:20–17:16 全部真机闭环）
 
-| 序 | 场景 | 判定 | 证据 |
+> 凭据由用户本轮提供，仅进命令环境变量与 App 内存；证据已自动/手工掩码
+> （token=MASKED32HEX、密码=MASKED_PASSWORD、SSID=MASKED_SSID）。
+
+| 序 | 场景 | 判定 | 证据与关键事实 |
 |---|---|---|---|
-| U-01 | leave 两态（填写/等待） | **PASS**（V1 复验，零配对守护） | `../e13-provision/evidence/u01-leave-v1-app.log`：两态弹窗 ✓ + 全部断言通过 |
-| T5a | cancel_wait → timeout | **PASS** | `t5a-cancel-v1-app.log`：`outcome=timeout` + 重新下发 ✓；设备侧 `w3-t5a-device-serial.log` 确认候选消化→wifi_failed→恢复广播 |
-| T5b | lost_configure 断连横幅 | **PASS**（手机侧 `svc bluetooth disable` 注入） | `t5b-lost-v1-app.log`：LOST_ARMED 15:35:37 → 注入 15:35:39 → **2.5s** 呈现断开横幅+重新连接 ✓。设备侧串口本轮缺失（COM12 被上一场景捕获占用，起捕获失败——时序失误，非设备问题；空口已确认设备恢复广播） |
-| T2/T3/T4 | wifi_fail / pairing_invalid / mqtt_invalid | **BLOCKED（待用户）** | T2 需真实 SSID+错误密码；T3 需真实凭据；T4 另需管理员权限防火墙拦 17891 入站 |
-| T1/T6/T7/小米 | 成功链路及后续 | **BLOCKED（待用户）** | 需 HJWY Wi-Fi 真实凭据（只进命令环境变量与 App 内存，不入库不入证据） |
+| U-01 | leave 两态 | **PASS** | `../e13-provision/evidence/u01-leave-v1-app.log` |
+| T2 | wifi_fail（真 SSID+错密码） | **PASS**（两次：0f8548d 与修复版固件） | `t2-wifi-v1-app.log`/`t2-wifi-fix-app.log`：15s→`wifi_failed`+「返回表单修改」；设备串口 `w3-t2-device-serial.log` auth fail 0xf0x 全程 |
+| T3 | pairing_invalid（真凭据+伪 token） | **PASS**（固件修复后） | 首跑暴露固件竞态 abort（见下）；修复+防火墙放行后 `t3-pairing-fw2-app.log`：7s→`pairing_invalid`+「重新扫描配对码」 |
+| T4 | mqtt_invalid（真 token+防火墙拦 17891 入站） | **PASS** | `t4-mqtt-fix-app.log`：`mqtt_invalid`+「运行诊断」面板重读 INFO/STATUS；首跑暴露诊断面板溢出缺陷（已修，见下）；拦截规则已删 |
+| T5a | cancel_wait | **PASS** | `t5a-cancel-v1-app.log` |
+| T5b | lost_configure | **PASS** | `t5b-lost-v1-app.log`（LOST_ARMED→`svc bluetooth disable` 注入，2.5s 横幅）。设备侧串口本轮缺失（COM12 被上一场景捕获占用，起捕获失败——时序失误；空口已确认设备恢复广播） |
+| T1 | success | **PASS**（v2） | `t1-success-v2-app.log`：3.6s→READY+provisioned:true；设备串口 `w3-t1v2-device-serial.log` 全链 `pairing_success→MQTT connected→ready`；v1 见「假阴性」下文 |
+| T6 | 设备表核验 | **PASS** | `web-devices-t6.json`（API：online:true fw 1.1.0）；空口见下文广播偏差 |
+| T7 | 重配（删除→RECOVERY→再配） | **PASS（重启变体）** | 原地重配两次复现失败（固件缺陷，见下）；设备重启后 18.6s 落 `recovery/mqtt_invalid` 并恢复配网广播，再配 4.2s→READY（`t7-recover-v3-app.log`） |
+| 二手机 | happy path | **PASS（v2，HUAWEI）** | **品牌勘误：FEC0220629005177 实为 HUAWEI TAS-AN00（E13 误记为小米；原小米是 50143338）**。`hw-success-v2-app.log`：4.2s→READY；首跑扫码面板未开（相机授权后自愈，`hw-success-v1`=设备侧 ready 态拒收新候选所致 timeout，二次 api 删除+重启后通过） |
+
+### 本轮发现并修复的缺陷（两仓）
+
+1. **固件 `wifi_manager` 重配竞态 abort（workspace `78bc4ef` 已修复）**
+   T3 首跑：上次失败配网的自动重连（`on_wifi_event` 里的 `esp_wifi_connect()`）未落地时新候选到达，
+   `wifi_manager_connect_sta` 的 `ESP_ERROR_CHECK(esp_wifi_connect())` 返回 0x3007 →
+   **abort() 整机重启** → BLE 断链，App 仅见 `connection_lost`（`w3-t3-device-serial.log` 有完整
+   backtrace）。修复：有界等待旧尝试落地，超限优雅返回 -1（落 `wifi_failed`）。T2/T3/T7/华为复跑全过。
+2. **Flutter 诊断面板 RenderFlex 溢出（本仓 `provisioning_page.dart` 已修复）**
+   T4 首跑：mqtt_invalid 状态下诊断面板两段 JSON 超高 → 溢出 54px 渲染异常 → 测试判 FAIL
+   （功能断言已全过）。修复：`_DiagnosticsSheet` 包 `SingleChildScrollView`；复跑 exit=0。
+
+### 本轮记录未修的缺陷/偏差（待 backlog）
+
+1. **固件：READY/错误态设备拒收新配网候选（原地重配不可用）**——设备处于 `ready` 或
+   persistent_disconnect 循环时，BLE 新候选被解析（`candidate:` 日志可见）但状态机不处理，
+   App 60s 超时（T7 原地两次、华为首跑复现）。出路=设备断电重启→18.6s 落
+   `recovery/mqtt_invalid`→可再配。**用户路径实质要求「重配前重启设备」**。
+2. **固件：hub 删除后失配检测迟滞 ~60–90s**——`persistent disconnect → RECOVERY` 判定窗内
+   候选静默丢弃；且僵尸 MQTT（旧凭据）每 ~3–10s 撞 `not authorized` 不停（无退避上限）。
+3. **固件：READY 后未停广播**——正典 §"配网完成后建议关闭 BLE 广播"为建议级；实测 READY
+   后仍广播（空口 `SHID-00000001 conn=1`）。保持广播对 App 重连更合理，正典与实现需二选一对齐。
+4. **hub：re-pair 后首连 MQTT 曾被踢（1 次，未复现）**——华为首跑：pairing 成功→MQTT
+   connected+subscribed→**14ms 后 broker 'not authorized' 踢线**→设备落 mqtt_invalid
+   （`w3-hw-device-serial.log`）；同流程重跑即成功。另：设备被踢/断链后 hub 设备表 `online:true` 粘滞。
+5. **hub/T1v1 假阴性**——T1 首跑：配网 Wi-Fi 重连扰动期设备→hub 17892 TCP 超时
+   （ESP_ERR_HTTP_CONNECT），但 hub 侧实际已受理配对并轮换凭据（设备旧凭据随即 'not authorized'）；
+   设备/App 报 `controlhub_unreachable` 与 hub 真实状态不一致。同窗口 PC 侧对 LAN IP 的 curl
+   也出现过一次性超时后自愈（网络层间歇抖动，未定位）。
+6. **环境：Windows 防火墙默认拦 17891/17892 入站**——E13 从未暴露（当时设备侧不消化候选，
+   从未真正发起 TCP）。本轮经 UAC 加 `e14-allow-pairing/-mqtt` 两条入站放行后全通；
+   **任何新环境重跑 ControlHub 真机配网都必须先放行这两个端口**（或给 hub 进程加永久规则）。
+
+### T6 空口核验备注
+
+READY 后空口 `BleAdvDump` 仍见 `SHID-00000001 conn=1`（缺陷 3）；
+设备表 API online:true（`web-devices-t6.json`）。T7/华为终态同理。
+
 
 ### W4 回归
 

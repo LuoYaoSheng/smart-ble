@@ -1,0 +1,379 @@
+I (61351) status_manager: status published online=1 usb_hid_ready=0
+W (69414) mqtt_client: Connection refused, not authorized
+E (69414) mqtt_manager: MQTT_EVENT_ERROR
+E (69414) mqtt_client: MQTT connect failed
+W (69416) mqtt_manager: disconnected from broker → release_all
+I (69421) hid_engine: release_all done
+I (71351) status_manager: status published online=1 usb_hid_ready=0
+W (72603) mqtt_client: Connection refused, not authorized
+E (72603) mqtt_manager: MQTT_EVENT_ERROR
+E (72604) mqtt_client: MQTT connect failed
+W (72606) mqtt_manager: disconnected from broker → release_all
+I (72611) hid_engine: release_all done
+W (76096) mqtt_client: Connection refused, not authorized
+E (76097) mqtt_manager: MQTT_EVENT_ERROR
+E (76097) mqtt_client: MQTT connect failed
+W (76099) mqtt_manager: disconnected from broker → release_all
+I (76104) hid_engine: release_all done
+I (81351) status_manager: status published online=1 usb_hid_ready=0
+W (81401) mqtt_client: Connection refused, not authorized
+E (81402) mqtt_manager: MQTT_EVENT_ERROR
+E (81402) mqtt_client: MQTT connect failed
+W (81404) mqtt_manager: disconnected from broker → release_all
+I (81409) hid_engine: release_all done
+I (91351) status_manager: status published online=1 usb_hid_ready=0
+W (93675) mqtt_client: Connection refused, not authorized
+E (93675) mqtt_manager: MQTT_EVENT_ERROR
+E (93675) mqtt_client: MQTT connect failed
+W (93678) mqtt_manager: disconnected from broker → release_all
+I (93682) hid_engine: release_all done
+W (96871) mqtt_client: Connection refused, not authorized
+E (96872) mqtt_manager: MQTT_EVENT_ERROR
+E (96872) mqtt_client: MQTT connect failed
+W (96874) mqtt_manager: disconnected from broker → release_all
+I (96879) hid_engine: release_all done
+W (100239) mqtt_client: Connection refused, not authorized
+E (100239) mqtt_manager: MQTT_EVENT_ERROR
+E (100239) mqtt_client: MQTT connect failed
+W (100242) mqtt_manager: disconnected from broker → release_all
+I (100247) hid_engine: release_all done
+I (101351) status_manager: status published online=1 usb_hid_ready=0
+W (103535) mqtt_client: Connection refused, not authorized
+E (103536) mqtt_manager: MQTT_EVENT_ERROR
+E (103536) mqtt_client: MQTT connect failed
+W (103539) mqtt_manager: disconnected from broker → release_all
+I (103543) hid_engine: release_all done
+W (106606) mqtt_client: Connection refused, not authorized
+E (106606) mqtt_manager: MQTT_EVENT_ERROR
+E (106607) mqtt_client: MQTT connect failed
+W (106609) mqtt_manager: disconnected from broker → release_all
+I (106614) hid_engine: release_all done
+W (110084) mqtt_client: Connection refused, not authorized
+E (110084) mqtt_manager: MQTT_EVENT_ERROR
+E (110084) mqtt_client: MQTT connect failed
+W (110087) mqtt_manager: disconnected from broker → release_all
+I (110092) hid_engine: release_all done
+I (111351) status_manager: status published online=1 usb_hid_ready=0
+W (113271) mqtt_client: Connection refused, not authorized
+E (113271) mqtt_manager: MQTT_EVENT_ERROR
+E (113272) mqtt_client: MQTT connect failed
+W (113274) mqtt_manager: disconnected from broker → release_all
+I (113279) hid_engine: release_all done
+W (116948) mqtt_client: Connection refused, not authorized
+E (116949) mqtt_manager: MQTT_EVENT_ERROR
+E (116949) mqtt_client: MQTT connect failed
+W (116952) mqtt_manager: disconnected from broker → release_all
+I (116956) hid_engine: release_all done
+W (120206) mqtt_client: Connection refused, not authorized
+E (120206) mqtt_manager: MQTT_EVENT_ERROR
+E (120207) mqtt_client: MQTT connect failed
+W (120209) mqtt_manager: disconnected from broker → release_all
+I (120214) hid_engine: release_all done
+I (121351) status_manager: status published online=1 usb_hid_ready=0
+W (123291) mqtt_client: Connection refused, not authorized
+E (123292) mqtt_manager: MQTT_EVENT_ERROR
+E (123292) mqtt_client: MQTT connect failed
+W (123294) mqtt_manager: disconnected from broker → release_all
+I (123299) hid_engine: release_all done
+I (123908) ble_provision: BLE connected handle=1
+I (124710) ble_provision: MTU update: 256
+I (125175) ble_provision: subscribe: attr=3 notify=1
+I (125370) ble_provision: subscribe: attr=8 notify=1
+W (126459) mqtt_client: Connection refused, not authorized
+E (126460) mqtt_manager: MQTT_EVENT_ERROR
+E (126460) mqtt_client: MQTT connect failed
+W (126462) mqtt_manager: disconnected from broker → release_all
+I (126467) hid_engine: release_all done
+W (129706) mqtt_client: Connection refused, not authorized
+E (129706) mqtt_manager: MQTT_EVENT_ERROR
+E (129706) mqtt_client: MQTT connect failed
+W (129709) mqtt_manager: disconnected from broker → release_all
+I (129714) hid_engine: release_all done
+I (131351) status_manager: status published online=1 usb_hid_ready=0
+W (133010) mqtt_client: Connection refused, not authorized
+E (133010) mqtt_manager: MQTT_EVENT_ERROR
+E (133010) mqtt_client: MQTT connect failed
+W (133013) mqtt_manager: disconnected from broker → release_all
+I (133018) hid_engine: release_all done
+W (136110) mqtt_client: Connection refused, not authorized
+E (136110) mqtt_manager: MQTT_EVENT_ERROR
+E (136111) mqtt_client: MQTT connect failed
+W (136113) mqtt_manager: disconnected from broker → release_all
+I (136118) hid_engine: release_all done
+I (137363) ble_provision: candidate: ssid=MASKED_SSID hub=192.168.21.77:17892 token=**redacted**
+I (137425) main: [prov] state=provisioning step=received err=none
+I (137425) NimBLE: GATT procedure initiated: notify; 
+I (137426) NimBLE: att_handle=8
+
+I (137428) NimBLE: GATT procedure initiated: notify; 
+I (137432) NimBLE: att_handle=3
+
+I (137447) runtime_config: staged pending: schema=1 gen=3 ssid=MASKED_SSID hub=192.168.21.77:17892 mqtt=-:0 user=- complete=0
+I (137448) main: [prov] state=connecting_wifi step=connecting_wifi err=none
+I (137454) NimBLE: GATT procedure initiated: notify; 
+I (137458) NimBLE: att_handle=8
+
+I (137462) NimBLE: GATT procedure initiated: notify; 
+I (137466) NimBLE: att_handle=3
+
+I (137470) wifi:state: run -> init (0x0)
+I (137476) wifi:pm stop, total sleep time: 35438323 us / 135940092 us
+
+I (137479) wifi:<ba-del>idx:1, tid:0
+I (137482) wifi:<ba-del>idx:0, tid:6
+I (137486) wifi:new:<1,0>, old:<1,0>, ap:<255,255>, sta:<1,0>, prof:1, snd_ch_cfg:0x0
+W (137494) wifi:Password length matches WPA2 standards, authmode threshold changes from OPEN to WPA2
+I (137501) led_manager: led state -> WIFI_CONNECTING
+W (137504) wifi_manager: disconnected → release_all + retry
+W (137503) wifi_manager: connecting to ssid=MASKED_SSID ...
+I (137512) hid_engine: release_all done
+E (137521) wifi:sta is connecting, return error
+I (137549) wifi:new:<1,0>, old:<1,0>, ap:<255,255>, sta:<1,0>, prof:1, snd_ch_cfg:0x0
+I (137550) wifi:state: init -> auth (0xb0)
+I (137562) wifi:state: auth -> assoc (0x0)
+I (137577) wifi:state: assoc -> run (0x10)
+I (137629) wifi:<ba-add>idx:0 (ifx:0, 4c:ef:56:0d:45:fd), tid:6, ssn:1, winSize:64
+I (137641) wifi:connected with MASKED_SSID, aid = 3, channel 1, BW20, bssid = 4c:ef:56:0d:45:fd
+I (137641) wifi:security: WPA2-PSK, phy: bgn, rssi: -54
+I (137645) wifi:pm start, type: 0
+
+I (137646) wifi:set rx beacon pti, rx_bcn_pti: 14, bcn_timeout: 25000, mt_pti: 14, mt_time: 10000
+I (137696) wifi:AP's beacon interval = 102400 us, DTIM period = 1
+I (137826) wifi:<ba-add>idx:1 (ifx:0, 4c:ef:56:0d:45:fd), tid:0, ssn:0, winSize:64
+E (139122) esp-tls: [sock=54] connect() error: Host is unreachable
+E (139123) transport_base: Failed to open a new connection: 32772
+E (139123) mqtt_client: Error transport connect
+E (139127) mqtt_manager: MQTT_EVENT_ERROR
+W (139131) mqtt_manager: disconnected from broker → release_all
+I (139137) hid_engine: release_all done
+I (139731) esp_netif_handlers: sta ip: 192.168.21.8, mask: 255.255.252.0, gw: 192.168.20.1
+I (139731) wifi_manager: got ip: 192.168.21.8
+I (139732) main: [prov] state=connecting_wifi step=wifi_connected err=none
+I (139739) NimBLE: GATT procedure initiated: notify; 
+I (139744) NimBLE: att_handle=8
+
+I (139747) NimBLE: GATT procedure initiated: notify; 
+I (139752) NimBLE: att_handle=3
+
+I (139755) main: [prov] state=pairing step=pairing err=none
+I (139758) led_manager: led state -> MQTT_CONNECTING
+I (139760) NimBLE: GATT procedure initiated: notify; 
+I (139769) NimBLE: att_handle=8
+
+I (139773) NimBLE: GATT procedure initiated: notify; 
+I (139777) NimBLE: att_handle=3
+
+I (140281) hub_pairing: pairing success: mqtt_host=192.168.21.77 port=17891 user=dev_HID-00000001
+I (140281) main: [prov] state=pairing step=pairing_success err=none
+I (140285) NimBLE: GATT procedure initiated: notify; 
+I (140289) NimBLE: att_handle=8
+
+I (140293) NimBLE: GATT procedure initiated: notify; 
+I (140297) NimBLE: att_handle=3
+
+I (140311) runtime_config: pending creds persisted (mqtt_host=192.168.21.77 port=17891 user=dev_HID-00000001) complete=1
+I (140328) runtime_config: promoted pending → active (generation=4)
+I (140329) main: [prov] state=mqtt_connecting step=mqtt_connecting err=none
+I (140331) NimBLE: GATT procedure initiated: notify; 
+I (140335) NimBLE: att_handle=8
+
+I (140339) NimBLE: GATT procedure initiated: notify; 
+I (140343) NimBLE: att_handle=3
+
+I (140346) mqtt_manager: runtime mqtt config set: host=192.168.21.77 port=17891 user=dev_HID-00000001
+I (141107) mqtt_manager: connected to broker
+I (141109) mqtt_manager: subscribed: smart-hid/v1/devices/HID-00000001/command
+I (141117) led_manager: led state -> HOST_MISSING
+I (141156) main: [prov] state=ready step=ready err=none
+I (141156) NimBLE: GATT procedure initiated: notify; 
+I (141156) NimBLE: att_handle=8
+
+I (141158) NimBLE: GATT procedure initiated: notify; 
+I (141162) NimBLE: att_handle=3
+
+I (141353) status_manager: status published online=1 usb_hid_ready=0
+I (141945) ble_provision: subscribe: attr=3 notify=0
+W (142242) mqtt_client: Connection refused, not authorized
+E (142242) mqtt_manager: MQTT_EVENT_ERROR
+E (142242) mqtt_client: MQTT connect failed
+W (142245) mqtt_manager: disconnected from broker → release_all
+I (142250) hid_engine: release_all done
+I (142268) led_manager: led state -> MQTT_CONNECTING
+I (143067) ble_provision: subscribe: attr=8 notify=0
+I (143067) ble_provision: BLE disconnected (reason=531)
+I (143069) NimBLE: GAP procedure initiated: advertise; 
+I (143071) NimBLE: disc_mode=2
+I (143074) NimBLE:  adv_channel_map=0 own_addr_type=0 adv_filter_policy=0 adv_itvl_min=0 adv_itvl_max=0
+I (143083) NimBLE: 
+
+I (143085) ble_provision: provisioning advertising as SHID-00000001
+W (145398) mqtt_client: Connection refused, not authorized
+E (145398) mqtt_manager: MQTT_EVENT_ERROR
+E (145399) mqtt_client: MQTT connect failed
+W (145401) mqtt_manager: disconnected from broker → release_all
+I (145406) hid_engine: release_all done
+W (148581) mqtt_client: Connection refused, not authorized
+E (148582) mqtt_manager: MQTT_EVENT_ERROR
+E (148582) mqtt_client: MQTT connect failed
+W (148584) mqtt_manager: disconnected from broker → release_all
+I (148589) hid_engine: release_all done
+I (151354) status_manager: status published online=1 usb_hid_ready=0
+W (151660) mqtt_client: Connection refused, not authorized
+E (151661) mqtt_manager: MQTT_EVENT_ERROR
+E (151661) mqtt_client: MQTT connect failed
+W (151664) mqtt_manager: disconnected from broker → release_all
+I (151668) hid_engine: release_all done
+W (154931) mqtt_client: Connection refused, not authorized
+E (154932) mqtt_manager: MQTT_EVENT_ERROR
+E (154932) mqtt_client: MQTT connect failed
+W (154934) mqtt_manager: disconnected from broker → release_all
+I (154939) hid_engine: release_all done
+W (158198) mqtt_client: Connection refused, not authorized
+E (158199) mqtt_manager: MQTT_EVENT_ERROR
+E (158199) mqtt_client: MQTT connect failed
+W (158202) mqtt_manager: disconnected from broker → release_all
+I (158206) hid_engine: release_all done
+I (161354) status_manager: status published online=1 usb_hid_ready=0
+W (161597) mqtt_client: Connection refused, not authorized
+E (161598) mqtt_manager: MQTT_EVENT_ERROR
+E (161598) mqtt_client: MQTT connect failed
+W (161600) mqtt_manager: disconnected from broker → release_all
+I (161605) hid_engine: release_all done
+W (164977) mqtt_client: Connection refused, not authorized
+E (164978) mqtt_manager: MQTT_EVENT_ERROR
+E (164978) mqtt_client: MQTT connect failed
+W (164980) mqtt_manager: disconnected from broker → release_all
+I (164985) hid_engine: release_all done
+W (168236) mqtt_client: Connection refused, not authorized
+E (168236) mqtt_manager: MQTT_EVENT_ERROR
+E (168236) mqtt_client: MQTT connect failed
+W (168239) mqtt_manager: disconnected from broker → release_all
+I (168244) hid_engine: release_all done
+I (171354) status_manager: status published online=1 usb_hid_ready=0
+W (171426) mqtt_client: Connection refused, not authorized
+E (171426) mqtt_manager: MQTT_EVENT_ERROR
+E (171426) mqtt_client: MQTT connect failed
+W (171429) mqtt_manager: disconnected from broker → release_all
+I (171434) hid_engine: release_all done
+W (174505) mqtt_client: Connection refused, not authorized
+E (174505) mqtt_manager: MQTT_EVENT_ERROR
+E (174505) mqtt_client: MQTT connect failed
+W (174508) mqtt_manager: disconnected from broker → release_all
+I (174513) hid_engine: release_all done
+W (177870) mqtt_client: Connection refused, not authorized
+E (177871) mqtt_manager: MQTT_EVENT_ERROR
+E (177871) mqtt_client: MQTT connect failed
+W (177874) mqtt_manager: disconnected from broker → release_all
+I (177878) hid_engine: release_all done
+I (181354) status_manager: status published online=1 usb_hid_ready=0
+W (181463) mqtt_client: Connection refused, not authorized
+E (181464) mqtt_manager: MQTT_EVENT_ERROR
+E (181464) mqtt_client: MQTT connect failed
+W (181466) mqtt_manager: disconnected from broker → release_all
+I (181471) hid_engine: release_all done
+W (184707) mqtt_client: Connection refused, not authorized
+E (184708) mqtt_manager: MQTT_EVENT_ERROR
+E (184708) mqtt_client: MQTT connect failed
+W (184710) mqtt_manager: disconnected from broker → release_all
+I (184715) hid_engine: release_all done
+W (187901) mqtt_client: Connection refused, not authorized
+E (187902) mqtt_manager: MQTT_EVENT_ERROR
+E (187902) mqtt_client: MQTT connect failed
+W (187905) mqtt_manager: disconnected from broker → release_all
+I (187909) hid_engine: release_all done
+I (191354) status_manager: status published online=1 usb_hid_ready=0
+W (194040) mqtt_client: Connection refused, not authorized
+E (194040) mqtt_manager: MQTT_EVENT_ERROR
+E (194041) mqtt_client: MQTT connect failed
+W (194043) mqtt_manager: disconnected from broker → release_all
+I (194048) hid_engine: release_all done
+W (199275) mqtt_client: Connection refused, not authorized
+E (199275) mqtt_manager: MQTT_EVENT_ERROR
+E (199275) mqtt_client: MQTT connect failed
+W (199278) mqtt_manager: disconnected from broker → release_all
+I (199283) hid_engine: release_all done
+I (201354) status_manager: status published online=1 usb_hid_ready=0
+W (202559) mqtt_client: Connection refused, not authorized
+E (202560) mqtt_manager: MQTT_EVENT_ERROR
+E (202560) mqtt_client: MQTT connect failed
+W (202562) mqtt_manager: disconnected from broker → release_all
+I (202567) hid_engine: release_all done
+W (205721) mqtt_client: Connection refused, not authorized
+E (205722) mqtt_manager: MQTT_EVENT_ERROR
+E (205722) mqtt_client: MQTT connect failed
+W (205724) mqtt_manager: disconnected from broker → release_all
+I (205729) hid_engine: release_all done
+W (208992) mqtt_client: Connection refused, not authorized
+E (208993) mqtt_manager: MQTT_EVENT_ERROR
+E (208993) mqtt_client: MQTT connect failed
+W (208995) mqtt_manager: disconnected from broker → release_all
+I (209000) hid_engine: release_all done
+I (211354) status_manager: status published online=1 usb_hid_ready=0
+W (212074) mqtt_client: Connection refused, not authorized
+E (212075) mqtt_manager: MQTT_EVENT_ERROR
+E (212075) mqtt_client: MQTT connect failed
+W (212078) mqtt_manager: disconnected from broker → release_all
+I (212082) hid_engine: release_all done
+W (215224) mqtt_client: Connection refused, not authorized
+E (215225) mqtt_manager: MQTT_EVENT_ERROR
+E (215225) mqtt_client: MQTT connect failed
+W (215228) mqtt_manager: disconnected from broker → release_all
+I (215232) hid_engine: release_all done
+W (219148) mqtt_client: Connection refused, not authorized
+E (219149) mqtt_manager: MQTT_EVENT_ERROR
+E (219149) mqtt_client: MQTT connect failed
+W (219151) mqtt_manager: disconnected from broker → release_all
+I (219156) hid_engine: release_all done
+I (221354) status_manager: status published online=1 usb_hid_ready=0
+W (227832) mqtt_client: Connection refused, not authorized
+E (227832) mqtt_manager: MQTT_EVENT_ERROR
+E (227833) mqtt_client: MQTT connect failed
+W (227835) mqtt_manager: disconnected from broker → release_all
+I (227840) hid_engine: release_all done
+I (231354) status_manager: status published online=1 usb_hid_ready=0
+I (241354) status_manager: status published online=1 usb_hid_ready=0
+E (250332) mqtt_client: esp_mqtt_connect: mqtt_message_receive() returned 0
+E (250332) mqtt_client: MQTT connect failed
+W (250334) mqtt_manager: disconnected from broker → release_all
+I (250337) hid_engine: release_all done
+I (251354) status_manager: status published online=1 usb_hid_ready=0
+I (253068) ble_provision: BLE connected handle=1
+I (254937) ble_provision: MTU update: 256
+I (255431) ble_provision: MTU update: 247
+I (255731) ble_provision: subscribe: attr=3 notify=1
+I (255931) ble_provision: subscribe: attr=8 notify=1
+W (259385) mqtt_client: Connection refused, not authorized
+E (259386) mqtt_manager: MQTT_EVENT_ERROR
+E (259386) mqtt_client: MQTT connect failed
+W (259389) mqtt_manager: disconnected from broker → release_all
+I (259393) hid_engine: release_all done
+I (261354) status_manager: status published online=1 usb_hid_ready=0
+I (269031) ble_provision: subscribe: attr=3 notify=0
+I (269032) ble_provision: subscribe: attr=8 notify=0
+I (269032) ble_provision: BLE disconnected (reason=531)
+I (269036) NimBLE: GAP procedure initiated: advertise; 
+I (269040) NimBLE: disc_mode=2
+I (269043) NimBLE:  adv_channel_map=0 own_addr_type=0 adv_filter_policy=0 adv_itvl_min=0 adv_itvl_max=0
+I (269052) NimBLE: 
+
+I (269054) ble_provision: provisioning advertising as SHID-00000001
+I (271354) status_manager: status published online=1 usb_hid_ready=0
+E (272400) esp-tls: [sock=55] select() timeout
+E (272401) transport_base: Failed to open a new connection: 32774
+E (272401) mqtt_client: Error transport connect
+E (272403) mqtt_manager: MQTT_EVENT_ERROR
+W (272407) mqtt_manager: disconnected from broker → release_all
+I (272413) hid_engine: release_all done
+I (281354) status_manager: status published online=1 usb_hid_ready=0
+E (285420) esp-tls: [sock=55] select() timeout
+E (285421) transport_base: Failed to open a new connection: 32774
+E (285421) mqtt_client: Error transport connect
+E (285423) mqtt_manager: MQTT_EVENT_ERROR
+W (285427) mqtt_manager: disconnected from broker → release_all
+I (285433) hid_engine: release_all done
+I (291354) status_manager: status published online=1 usb_hid_ready=0
+W (299203) mqtt_client: Connection refused, not authorized
+E (299203) mqtt_manager: MQTT_EVENT_ERROR
+E (299204) mqtt_client: MQTT connect failed
+W (299206) mqtt_manager: disconnected from broker → release_all
+I (299211) hid_engine: release_all done
