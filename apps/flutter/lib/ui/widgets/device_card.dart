@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
+import '../../core/ble/profile_registry.dart';
 import '../../core/models/ble_scan_result.dart';
 import '../../themes/app_theme.dart';
 
-/// 设备卡片组件
+/// 设备卡片（对齐原型 C1 devCard · scan 变体）
+///
+/// 特殊设备（Smart HID）是标准设备的扩展：卡片保留标准「连接」入口，
+/// 叠加 profile「配置」入口；点卡片本体查看广播数据（F004）。
 class DeviceCard extends StatelessWidget {
   final BleScanResult device;
   final VoidCallback onConnect;
+
+  /// 点卡片本体：广播数据弹窗（F004）
   final VoidCallback onShowInfo;
+
+  /// profile 命中后的「配置」动作
+  final VoidCallback? onConfigure;
   final bool isConnected;
 
   const DeviceCard({
@@ -14,146 +23,314 @@ class DeviceCard extends StatelessWidget {
     required this.device,
     required this.onConnect,
     required this.onShowInfo,
+    this.onConfigure,
     this.isConnected = false,
   });
 
+  ProfileMatch? get _match => matchProfile(device);
+
+  bool get _isShid => _match != null;
+
   @override
   Widget build(BuildContext context) {
-    return Card(
+    final match = _match;
+    return Container(
       margin: const EdgeInsets.only(bottom: 12),
-      child: InkWell(
-        onTap: onShowInfo, // 点击卡片显示详情
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              // 设备图标
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  gradient: AppStyles.deviceCardGradient,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Icon(
-                  Icons.bluetooth,
-                  color: Colors.white,
-                  size: 24,
-                ),
-              ),
-              const SizedBox(width: 16),
-
-              // 设备信息
-              Expanded(
-                child: Column(
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFE3EAF3)),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onShowInfo,
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Flexible(
-                          child: Text(
-                            device.displayName,
+                    _buildAvatar(),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  device.name.isNotEmpty
+                                      ? device.name
+                                      : '未命名 BLE 设备',
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xFF18222E),
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              if (match != null) ...[
+                                const SizedBox(width: 6),
+                                _MatchChip(match: match),
+                              ],
+                            ],
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            device.name.isNotEmpty
+                                ? device.deviceId
+                                : '${device.deviceId}（未命名）',
                             style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
+                              fontSize: 10,
+                              fontFamily: 'monospace',
+                              color: Color(0xFF60758D),
                             ),
                             overflow: TextOverflow.ellipsis,
                           ),
-                        ),
-                        if (isConnected) ...[
-                          const SizedBox(width: 6),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: AppTheme.successColor.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: const Text(
-                              '已连接',
-                              style: TextStyle(
-                                fontSize: 10,
-                                color: AppTheme.successColor,
-                                fontWeight: FontWeight.w600,
+                          const SizedBox(height: 5),
+                          Row(
+                            children: [
+                              SignalBars(rssi: device.rssi),
+                              const SizedBox(width: 8),
+                              Text(
+                                '${device.rssi} dBm',
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  color: Color(0xFF60758D),
+                                ),
                               ),
-                            ),
+                            ],
                           ),
                         ],
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      device.deviceId,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: AppTheme.textSecondary,
                       ),
                     ),
                   ],
                 ),
-              ),
-
-              // 信号强度
-              _buildRssiIndicator(),
-
-              const SizedBox(width: 12),
-
-              // 连接按钮
-              IconButton(
-                onPressed: onConnect,
-                icon: Icon(
-                  isConnected ? Icons.check_circle : Icons.link,
-                  size: 20,
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    if (_isShid)
+                      Expanded(
+                        child: _ActionChip(
+                          label: match!.profile.actionLabel,
+                          primary: true,
+                          disabled: isConnected,
+                          onTap: onConfigure,
+                        ),
+                      ),
+                    if (_isShid) const SizedBox(width: 8),
+                    Expanded(
+                      child: _ActionChip(
+                        label: isConnected ? '已连接' : '连接',
+                        primary: !_isShid && !isConnected,
+                        disabled: isConnected,
+                        onTap: onConnect,
+                      ),
+                    ),
+                  ],
                 ),
-                style: IconButton.styleFrom(
-                  backgroundColor: isConnected
-                      ? AppTheme.successColor.withValues(alpha: 0.1)
-                      : AppTheme.primaryColor.withValues(alpha: 0.1),
-                  foregroundColor: isConnected ? AppTheme.successColor : AppTheme.primaryColor,
-                  padding: const EdgeInsets.all(8),
-                  minimumSize: const Size(36, 36),
-                ),
-                tooltip: isConnected ? '已连接' : '连接设备',
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildRssiIndicator() {
-    final color = AppStyles.getRssiColor(device.rssi);
-    final label = AppStyles.getRssiLabel(device.rssi);
-    final icon = _getRssiIcon();
-
-    return Column(
-      children: [
-        Icon(icon, color: color, size: 20),
-        const SizedBox(height: 2),
-        Text(
-          '${device.rssi} dBm',
-          style: TextStyle(
-            fontSize: 11,
-            color: color,
-            fontWeight: FontWeight.w500,
-          ),
+  /// 头像：标准设备蓝色系，Smart HID 命中青绿系（原型 .ava / .ava.shid）
+  Widget _buildAvatar() {
+    final initial =
+        ((device.name.isNotEmpty ? device.name : device.deviceId).trim().isEmpty
+                ? '?'
+                : (device.name.isNotEmpty ? device.name : device.deviceId)
+                    .trim()[0])
+            .toUpperCase();
+    final shid = _isShid;
+    return Container(
+      width: 44,
+      height: 44,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: shid
+              ? const [Color(0xFFD9F6F0), Color(0xFFE2F8F4)]
+              : const [Color(0xFFE8F1FF), Color(0xFFDCE9FF)],
         ),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 10,
-            color: color,
-          ),
+      ),
+      alignment: Alignment.center,
+      child: Text(
+        initial,
+        style: TextStyle(
+          fontSize: 17,
+          fontWeight: FontWeight.w700,
+          color: shid ? const Color(0xFF0E9A80) : AppTheme.primaryColor,
         ),
-      ],
+      ),
     );
   }
+}
 
-  IconData _getRssiIcon() {
-    if (device.rssi >= -50) return Icons.signal_wifi_4_bar;
-    if (device.rssi >= -70) return Icons.network_wifi_3_bar;
-    if (device.rssi >= -90) return Icons.network_wifi_2_bar;
-    return Icons.network_wifi_1_bar;
+/// 匹配 chip（强匹配 primary / 弱匹配 warning，口径同原型 B2）
+class _MatchChip extends StatelessWidget {
+  final ProfileMatch match;
+
+  const _MatchChip({required this.match});
+
+  @override
+  Widget build(BuildContext context) {
+    final strong = match.level == ProfileMatchLevel.strong;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 2),
+      decoration: BoxDecoration(
+        color: strong ? const Color(0xFFE8F1FF) : const Color(0xFFFFF3E4),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        match.chipLabel,
+        style: TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w500,
+          color: strong ? AppTheme.primaryColor : const Color(0xFFC77E14),
+        ),
+      ),
+    );
+  }
+}
+
+/// 卡片动作按钮（sm：高 32；primary 渐变 / soft 填充描边 / disabled 灰）
+class _ActionChip extends StatelessWidget {
+  final String label;
+  final bool primary;
+  final bool disabled;
+  final VoidCallback? onTap;
+
+  const _ActionChip({
+    required this.label,
+    required this.primary,
+    this.disabled = false,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (primary && !disabled) {
+      return Material(
+        color: Colors.transparent,
+        child: Ink(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF1B6DFF), Color(0xFF0E4FC4)],
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: AppTheme.primaryColor.withValues(alpha: 0.28),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(8),
+            child: SizedBox(
+              height: 32,
+              child: Center(
+                child: Text(label,
+                    style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white)),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: disabled ? null : onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          height: 32,
+          decoration: BoxDecoration(
+            color: disabled ? const Color(0xFFF1F5FB) : const Color(0xFFF1F5FB),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: disabled ? Colors.transparent : const Color(0xFFE3EAF3),
+            ),
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              color:
+                  disabled ? const Color(0xFF9AA8B6) : const Color(0xFF18222E),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// 四格信号条（对齐原型 .sig：q4 全绿 / q3 前三绿 / q2 前二黄 / q1 首格红）
+class SignalBars extends StatelessWidget {
+  final int rssi;
+
+  const SignalBars({super.key, required this.rssi});
+
+  int get _quality => rssi >= -60
+      ? 4
+      : rssi >= -70
+          ? 3
+          : rssi >= -80
+              ? 2
+              : 1;
+
+  @override
+  Widget build(BuildContext context) {
+    const heights = [4.0, 7.0, 10.0, 12.0];
+    final q = _quality;
+    Color colorFor(int i) {
+      final filled = i < q;
+      if (!filled) return const Color(0xFFE3EAF3);
+      if (q >= 3) return const Color(0xFF17C7A8);
+      if (q == 2) return const Color(0xFFFF9F43);
+      return const Color(0xFFF2555F);
+    }
+
+    return SizedBox(
+      height: 12,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          for (var i = 0; i < 4; i++) ...[
+            if (i > 0) const SizedBox(width: 2),
+            Container(
+              width: 3,
+              height: heights[i],
+              decoration: BoxDecoration(
+                color: colorFor(i),
+                borderRadius: BorderRadius.circular(1),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
   }
 }

@@ -10,16 +10,22 @@ import '../models/ble_uuids.dart';
 enum BleState {
   /// 未知
   unknown,
+
   /// 不可用
   unavailable,
+
   /// 未授权
   unauthorized,
+
   /// 开启中
   turningOn,
+
   /// 开启
   on,
+
   /// 关闭中
   turningOff,
+
   /// 关闭
   off,
 }
@@ -37,9 +43,10 @@ class BleManager {
   BleManager._internal() {
     _initializeControllers();
   }
-  
+
   /// 是否启用 E2E 测试 Mock 模式
-  static const bool useMockBLE = bool.fromEnvironment('USE_MOCK_BLE', defaultValue: false);
+  static const bool useMockBLE =
+      bool.fromEnvironment('USE_MOCK_BLE', defaultValue: false);
 
   /// 状态变化流控制器
   late StreamController<BleState> _stateController;
@@ -94,14 +101,12 @@ class BleManager {
 
   /// 获取指定设备的连接状态
   BluetoothConnectionState connectionStateFor(String deviceId) {
-    return _connectionStates[deviceId] ??
-        BluetoothConnectionState.disconnected;
+    return _connectionStates[deviceId] ?? BluetoothConnectionState.disconnected;
   }
 
   /// 判断指定设备是否已连接
   bool isDeviceConnected(String deviceId) {
-    return _connectionStates[deviceId] ==
-        BluetoothConnectionState.connected;
+    return _connectionStates[deviceId] == BluetoothConnectionState.connected;
   }
 
   /// 获取所有已连接设备 ID
@@ -119,6 +124,9 @@ class BleManager {
 
   /// 是否正在扫描
   bool get isScanning => _isScanning;
+
+  /// 扫描态流（含超时自动停止事件），页面据此同步 UI
+  Stream<bool> get isScanningStream => FlutterBluePlus.isScanning;
 
   /// 初始化 BLE
   Future<bool> initialize() async {
@@ -161,8 +169,10 @@ class BleManager {
           final deviceName = device.platformName;
 
           // Convert manufacturerData Map to List<int>
+          int? mfrId;
           List<int>? manuData;
           if (r.advertisementData.manufacturerData.isNotEmpty) {
+            mfrId = r.advertisementData.manufacturerData.keys.first;
             manuData = r.advertisementData.manufacturerData.values.first;
           }
 
@@ -179,6 +189,14 @@ class BleManager {
               serviceUuids: r.advertisementData.serviceUuids
                   .map((u) => u.toString())
                   .toList(),
+              advName: r.advertisementData.advName,
+              manufacturerId: mfrId,
+              manufacturerData: manuData,
+              serviceData: r.advertisementData.serviceData.map(
+                (uuid, bytes) => MapEntry(uuid.toString(), bytes),
+              ),
+              txPowerLevel: r.advertisementData.txPowerLevel,
+              connectable: r.advertisementData.connectable,
               timestamp: DateTime.now(),
             );
           }
@@ -186,6 +204,12 @@ class BleManager {
         if (!_scanResultsController.isClosed) {
           _scanResultsController.add(_scannedDevices.values.toList());
         }
+      });
+
+      // DEF-013 修复：以 FBP 扫描态为唯一事实源（含 5s 超时自动停止），
+      // 避免本地标志位滞留 true 导致后续 startScan 静默空转
+      FlutterBluePlus.isScanning.listen((scanning) {
+        _isScanning = scanning;
       });
 
       // 初始化状态
@@ -304,8 +328,7 @@ class BleManager {
     final nextAttempt = attempts + 1;
     _reconnectAttempts[deviceId] = nextAttempt;
     final delay = Duration(seconds: nextAttempt * 2); // 指数退避: 2s, 4s, 6s
-    debugPrint(
-        '设备 $deviceId 将在 ${delay.inSeconds}s 后尝试第 $nextAttempt 次重连...');
+    debugPrint('设备 $deviceId 将在 ${delay.inSeconds}s 后尝试第 $nextAttempt 次重连...');
 
     _cancelReconnect(deviceId);
     _reconnectTimers[deviceId] = Timer(delay, () async {
@@ -379,7 +402,8 @@ class BleManager {
                           uuid: c.uuid.toString(),
                           serviceUuid: s.uuid.toString(),
                           properties: _convertProperties(c.properties),
-                          name: BleUuids.getCharacteristicName(c.uuid.toString()),
+                          name:
+                              BleUuids.getCharacteristicName(c.uuid.toString()),
                         ))
                     .toList(),
               ))
@@ -408,8 +432,7 @@ class BleManager {
 
       final characteristic = service.characteristics.firstWhere(
         (c) =>
-            c.uuid.toString().toLowerCase() ==
-            characteristicUuid.toLowerCase(),
+            c.uuid.toString().toLowerCase() == characteristicUuid.toLowerCase(),
         orElse: () => throw Exception('特征值未找到: $characteristicUuid'),
       );
 
@@ -438,8 +461,7 @@ class BleManager {
 
       final characteristic = service.characteristics.firstWhere(
         (c) =>
-            c.uuid.toString().toLowerCase() ==
-            characteristicUuid.toLowerCase(),
+            c.uuid.toString().toLowerCase() == characteristicUuid.toLowerCase(),
         orElse: () => throw Exception('特征值未找到: $characteristicUuid'),
       );
 
@@ -466,8 +488,7 @@ class BleManager {
 
       final characteristic = service.characteristics.firstWhere(
         (c) =>
-            c.uuid.toString().toLowerCase() ==
-            characteristicUuid.toLowerCase(),
+            c.uuid.toString().toLowerCase() == characteristicUuid.toLowerCase(),
         orElse: () => throw Exception('特征值未找到: $characteristicUuid'),
       );
 
@@ -503,8 +524,7 @@ class BleManager {
 
       final characteristic = service.characteristics.firstWhere(
         (c) =>
-            c.uuid.toString().toLowerCase() ==
-            characteristicUuid.toLowerCase(),
+            c.uuid.toString().toLowerCase() == characteristicUuid.toLowerCase(),
         orElse: () => throw Exception('特征值未找到: $characteristicUuid'),
       );
 
@@ -516,8 +536,7 @@ class BleManager {
   }
 
   /// 更新连接状态并通知
-  void _updateConnectionState(
-      String deviceId, BluetoothConnectionState state) {
+  void _updateConnectionState(String deviceId, BluetoothConnectionState state) {
     if (state == BluetoothConnectionState.disconnected) {
       _connectionStates.remove(deviceId);
     } else {
@@ -604,6 +623,4 @@ class BleManager {
 
     return result;
   }
-
 }
-
