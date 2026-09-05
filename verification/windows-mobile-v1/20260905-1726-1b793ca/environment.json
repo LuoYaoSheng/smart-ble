@@ -1,0 +1,15 @@
+{
+  "runId": "20260905-1726-1b793ca",
+  "date": "2026-09-05T17:26+08:00",
+  "git": { "branch": "refactor/uniapp-v1", "head": "1b793ca", "diverged": false, "dirtyTree": "user pre-existing files only (convention: never commit)" },
+  "host": { "os": "Windows 10 Pro 22H2 19045.3803 x64", "git": "2.50.1.windows.1", "node": "v20.19.3", "npm": "10.8.2", "python": "3.13.2", "java": "24.0.1" },
+  "flutter": { "version": "3.38.3 stable", "dart": "3.10.1", "sdk": "D:\dev\flutter", "androidSdk": "35.0.1", "doctorIssues": ["cmdline-tools missing", "android license unknown"] },
+  "uniapp": { "hbuilderx": "5.24.2026081301 @ D:\HBuilderX", "wechatDevtools": "C:\Program Files (x86)\Tencent\微信web开发者工具 (cli.bat present)", "cliBuild": "npm @dcloudio vite toolchain" },
+  "pio": { "version": "6.1.18", "envs": ["fixture_peripheral_s3", "fixture_observer_s3", "fixture_peripheral", "fixture_observer", "esp32dev", "fixture_shid_sim_s3"] },
+  "phones": [
+    { "serial": "R5CR1284Y7H", "model": "SM-G9910", "android": "15 (API 35)", "wechat": "8.0.77 (3160)", "role": "primary" },
+    { "serial": "FEC0220629005177", "model": "TAS-AN00", "android": "12 (API 31)", "wechat": "not installed", "role": "secondary" }
+  ],
+  "esp32": { "board": "ESP32-S3 DevKit", "port": "COM12 (CH343 1A86:55D3)", "currentFirmware": "Smart HID V1 simplified (provisioned READY, E14 end-state)", "secondBlePeripheral": false, "controlHubRunning": true, "controlHubPid": 26260 },
+  "secretsRecorded": false
+}

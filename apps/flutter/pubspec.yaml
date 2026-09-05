@@ -25,9 +25,8 @@ dependencies:
   cupertino_icons: ^1.0.6
   google_fonts: ^6.1.0
 
-  # 工具类
+  # 工具类（零持久化：shared_preferences 已删，业务态仅内存——F023/F028 存储策略）
   permission_handler: ^11.1.0
-  shared_preferences: ^2.2.2
   intl: ^0.20.2
   url_launcher: ^6.3.2
   package_info_plus: ^8.0.0
