@@ -18,11 +18,13 @@
 | Smart HID 模拟夹具 | PASS | PlatformIO `fixture_shid_sim_s3` 构建通过；INPUT 改普通 WRITE、无 SMP 配置 |
 | iPhone 原生包 | PASS_WITH_LIMITATION | Xcode 真机 arm64 构建、通配开发签名、安装均成功；启动被物理锁屏拒绝 |
 | Android Flutter 包 | PASS_WITH_LIMITATION | debug APK 构建成功；MIUI 两次以 `INSTALL_FAILED_USER_RESTRICTED` 拒绝 USB 安装 |
+| iOS 模拟器 | PASS_WITH_LIMITATION | 原生 SwiftUI 包完成 simulator build/install/launch；扫描页正常渲染，CoreBluetooth 在模拟器显示“不支持”属预期 |
+| Kotlin Android | PASS | 使用 Android Studio JBR 21 执行 `assembleDebug testDebugUnitTest`，41 tasks 构建与单测通过；系统默认 Java 25 与 Gradle 8.2 不兼容 |
 
 ## 真机未完成与客观阻塞
 
 1. iPhone：需物理解锁并保持亮屏后重试 launch；包已安装。
-2. Mi 4c：需在设备端允许 USB 安装/确认安装弹窗；不能绕过设备安全策略。
+2. Mi 4c：ADB 已确认 `persist.security.adbinstall=1`；实际阻塞是 MIUI Security Center 的“USB安装提示”，每次需在倒计时结束前点左下角“继续安装”。未点会返回 `INSTALL_FAILED_USER_RESTRICTED`，不能绕过设备安全策略。
 3. ESP32-S3：当前仅 `/dev/cu.Bluetooth-Incoming-Port` 与 `/dev/cu.debug-console`，没有下载串口。需按住 BOOT 点 RST，或接 UART/CH343 后烧录已构建的 V1 固件。
 4. 完整 READY 配网还需要测试 Wi-Fi 凭据；凭据只经环境变量/App 内存传递，不写入仓库、日志或证据。
 

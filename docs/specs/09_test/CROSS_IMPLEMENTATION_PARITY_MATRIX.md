@@ -93,3 +93,5 @@
 | K-AND | Kotlin + Compose | ✅ | ✕ | ✕ | ✕ | ✅ | ✅ | ✅ | ✅ | ✕ | 不适用（尚无 P002） |
 
 当前最大对齐缺口不是样式，而是原生 iOS/Kotlin Android 缺 P002/P003/P005/P010 与 Smart HID Profile 路由。后续实现必须复用同一 UUID、framed-v1、8 错误码、60 秒状态跟踪和 V1 明文直连语义，不得用静态页面冒充能力完成。
+
+构建基线（2026-09-05）：N-IOS 已完成真机 arm64 签名构建/安装及模拟器 build/install/launch；K-AND 已在 JBR 21 下完成 `assembleDebug + testDebugUnitTest`。这些只证明现有页面可执行，不改变上表功能缺失判定。
