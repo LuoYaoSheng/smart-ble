@@ -1,0 +1,32 @@
+[
+  {
+    "name": "P001 启动（扫描 Tab）",
+    "ok": false,
+    "detail": ""
+  },
+  {
+    "name": "首启空态（还没有扫描结果）",
+    "ok": false,
+    "detail": ""
+  },
+  {
+    "name": "首启状态=待开始",
+    "ok": false,
+    "detail": ""
+  },
+  {
+    "name": "蓝牙就绪",
+    "ok": false,
+    "detail": ""
+  },
+  {
+    "name": "开始扫描按钮可定位",
+    "ok": false,
+    "detail": "None"
+  },
+  {
+    "name": "F003 筛选面板展开",
+    "ok": false,
+    "detail": ""
+  }
+]

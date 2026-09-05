@@ -180,79 +180,92 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
       ),
       body: Column(
         children: [
-          // 错误提示
-          if (_errorMessage != null)
-            Container(
-              margin: const EdgeInsets.all(16),
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: AppTheme.errorColor.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                    color: AppTheme.errorColor.withValues(alpha: 0.3)),
-              ),
-              child: Row(
+          // 键盘弹出/筛选展开压缩视口时固定区可内滚，杜绝底部溢出（WIN-FAND-001）
+          Flexible(
+            child: SingleChildScrollView(
+              child: Column(
                 children: [
-                  const Icon(Icons.error_outline,
-                      color: AppTheme.errorColor, size: 20),
-                  const SizedBox(width: 8),
-                  Expanded(
-                      child: Text(_errorMessage!,
-                          style: const TextStyle(color: AppTheme.errorColor))),
-                ],
-              ),
-            ),
-
-          // 过滤面板
-          FilterPanel(
-            expanded: filterExpanded,
-            onToggleExpanded: () => ref
-                .read(filterExpandedProvider.notifier)
-                .state = !filterExpanded,
-          ),
-
-          // 扫描控制按钮（状态行口径对齐原型 p001 scantool）
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8, left: 2),
-                  child: Text(
-                    isScanning
-                        ? '扫描中 · 5s 会话'
-                        : _hasScanned
-                            ? '扫描完成 · 发现 ${filteredDevices.length} 台'
-                            : '待开始扫描',
-                    style: const TextStyle(
-                        fontSize: 13, color: AppTheme.textSecondary),
-                  ),
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: _isInitialized ? _toggleScan : null,
-                        icon: Icon(isScanning ? Icons.stop : Icons.search,
-                            size: 18),
-                        label: Text(isScanning ? '停止扫描' : '开始扫描'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: isScanning
-                              ? AppTheme.errorColor
-                              : AppTheme.primaryColor,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 12),
-                        ),
+                  // 错误提示
+                  if (_errorMessage != null)
+                    Container(
+                      margin: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: AppTheme.errorColor.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                            color: AppTheme.errorColor.withValues(alpha: 0.3)),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.error_outline,
+                              color: AppTheme.errorColor, size: 20),
+                          const SizedBox(width: 8),
+                          Expanded(
+                              child: Text(_errorMessage!,
+                                  style: const TextStyle(
+                                      color: AppTheme.errorColor))),
+                        ],
                       ),
                     ),
-                    const SizedBox(width: 12),
-                    // 设备数量
-                    _buildDeviceBadge(filteredDevices.length, devices.length),
-                  ],
-                ),
-              ],
+
+                  // 过滤面板
+                  FilterPanel(
+                    expanded: filterExpanded,
+                    onToggleExpanded: () => ref
+                        .read(filterExpandedProvider.notifier)
+                        .state = !filterExpanded,
+                  ),
+
+                  // 扫描控制按钮（状态行口径对齐原型 p001 scantool）
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8, left: 2),
+                          child: Text(
+                            isScanning
+                                ? '扫描中 · 5s 会话'
+                                : _hasScanned
+                                    ? '扫描完成 · 发现 ${filteredDevices.length} 台'
+                                    : '待开始扫描',
+                            style: const TextStyle(
+                                fontSize: 13, color: AppTheme.textSecondary),
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                onPressed: _isInitialized ? _toggleScan : null,
+                                icon: Icon(
+                                    isScanning ? Icons.stop : Icons.search,
+                                    size: 18),
+                                label: Text(isScanning ? '停止扫描' : '开始扫描'),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: isScanning
+                                      ? AppTheme.errorColor
+                                      : AppTheme.primaryColor,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 12),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            // 设备数量
+                            _buildDeviceBadge(
+                                filteredDevices.length, devices.length),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
 

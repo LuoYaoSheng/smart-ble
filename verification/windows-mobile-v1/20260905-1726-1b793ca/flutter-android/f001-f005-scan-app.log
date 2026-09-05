@@ -1,0 +1,120 @@
+Flutter assets will be downloaded from https://storage.flutter-io.cn. Make sure you trust this source!
+00:00 +0: loading E:/project/xf/smart-ble/apps/flutter/integration_test/p001_scan_test.dart
+Running Gradle task 'assembleDebug'...                          
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by net.rubygrapefruit.platform.internal.NativeLibraryLoader in an unnamed module (file:/C:/Users/11066/.gradle/wrapper/dists/gradle-8.14-all/c2qonpi39x1mddn7hk5gh9iqj/gradle-8.14/lib/native-platform-0.22-milestone-28.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+Flutter assets will be downloaded from https://storage.flutter-io.cn. Make sure you trust this source!
+Running Gradle task 'assembleDebug'...                             43.2s
+√ Built build\app\outputs\flutter-apk\app-debug.apk
+Installing build\app\outputs\flutter-apk\app-debug.apk...           5.7s
+00:00 +0: F001-F005 scan domain (fixture BLEToolkit-Server)
+P001[E2E 18:03:24.769]: 启动
+P001[E2E 18:03:25.797]: F001 首启空态 ✓
+P001[E2E 18:03:26.284]: F001 扫描中状态 ✓
+P001[E2E 18:03:26.698]: 夹具卡片发现=true
+P001[E2E 18:03:31.245]: F001 5s 自动停止 ✓
+P001[E2E 18:03:31.253]: F005 具名显示 + F018 普通入口 ✓
+P001[E2E 18:03:31.697]: F004 sheet 字段 ✓
+P001[E2E 18:03:32.349]: F004 sheet 关闭 ✓
+P001[E2E 18:03:33.200]: F001 手动停止 ✓（两轮会话）
+P001[E2E 18:03:33.625]: F003 面板展开 ✓
+══╡ EXCEPTION CAUGHT BY RENDERING LIBRARY ╞═════════════════════════════════════════════════════════
+The following assertion was thrown during layout:
+A RenderFlex overflowed by 6.7 pixels on the bottom.
+
+The relevant error-causing widget was:
+  Column Column:file:///E:/project/xf/smart-ble/apps/flutter/lib/ui/pages/device_list_page.dart:354:14
+
+The overflowing RenderFlex has an orientation of Axis.vertical.
+The edge of the RenderFlex that is overflowing has been marked in the rendering with a yellow and
+black striped pattern. This is usually caused by the contents being too big for the RenderFlex.
+Consider applying a flex factor (e.g. using an Expanded widget) to force the children of the
+RenderFlex to fit within the available space instead of being sized to their natural size.
+This is considered an error condition because it indicates that there is content that cannot be
+seen. If the content is legitimately bigger than the available space, consider clipping it with a
+ClipRect widget before putting it in the flex, or using a scrollable container rather than a Flex,
+like a ListView.
+The specific RenderFlex in question is: RenderFlex#9805d relayoutBoundary=up3 OVERFLOWING:
+  creator: Column ← Center ← Expanded ← Column ← KeyedSubtree-[GlobalKey#94dbf] ← _BodyBuilder ←
+    MediaQuery ← LayoutId-[<_ScaffoldSlot.body>] ← CustomMultiChildLayout ← _ActionsScope ← Actions ←
+    AnimatedBuilder ← ⋯
+  parentData: offset=Offset(114.4, 0.0) (can use size)
+  constraints: BoxConstraints(0.0<=w<=360.0, h=0.0)
+  size: Size(131.2, 0.0)
+  direction: vertical
+  mainAxisAlignment: center
+  mainAxisSize: max
+  crossAxisAlignment: center
+  verticalDirection: down
+  spacing: 0.0
+◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY RENDERING LIBRARY ╞═════════════════════════════════════════════════════════
+The following assertion was thrown during layout:
+A RenderFlex overflowed by 0.333 pixels on the bottom.
+
+The relevant error-causing widget was:
+  Column Column:file:///E:/project/xf/smart-ble/apps/flutter/lib/ui/pages/device_list_page.dart:181:13
+
+The overflowing RenderFlex has an orientation of Axis.vertical.
+The edge of the RenderFlex that is overflowing has been marked in the rendering with a yellow and
+black striped pattern. This is usually caused by the contents being too big for the RenderFlex.
+Consider applying a flex factor (e.g. using an Expanded widget) to force the children of the
+RenderFlex to fit within the available space instead of being sized to their natural size.
+This is considered an error condition because it indicates that there is content that cannot be
+seen. If the content is legitimately bigger than the available space, consider clipping it with a
+ClipRect widget before putting it in the flex, or using a scrollable container rather than a Flex,
+like a ListView.
+The specific RenderFlex in question is: RenderFlex#585d4 relayoutBoundary=up1 OVERFLOWING:
+  needs compositing
+  creator: Column ← KeyedSubtree-[GlobalKey#94dbf] ← _BodyBuilder ← MediaQuery ←
+    LayoutId-[<_ScaffoldSlot.body>] ← CustomMultiChildLayout ← _ActionsScope ← Actions ←
+    AnimatedBuilder ← DefaultTextStyle ← AnimatedDefaultTextStyle ← _InkFeatures-[GlobalKey#1c712 ink
+    renderer] ← ⋯
+  parentData: offset=Offset(0.0, 82.7); id=_ScaffoldSlot.body (can use size)
+  constraints: BoxConstraints(0.0<=w<=360.0, 0.0<=h<=490.7)
+  size: Size(360.0, 490.7)
+  direction: vertical
+  mainAxisAlignment: start
+  mainAxisSize: max
+  crossAxisAlignment: center
+  verticalDirection: down
+  spacing: 0.0
+◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤
+════════════════════════════════════════════════════════════════════════════════════════════════════
+P001[E2E 18:03:34.342]: F003 前缀空态 ✓
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+F003 重置后夹具卡片应恢复
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///E:/project/xf/smart-ble/apps/flutter/integration_test/p001_scan_test.dart:157:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1059:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///E:/project/xf/smart-ble/apps/flutter/integration_test/p001_scan_test.dart line 157
+The test description was:
+  F001-F005 scan domain (fixture BLEToolkit-Server)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following message was thrown:
+Multiple exceptions (3) were detected during the running of the current test, and at least one was
+unexpected.
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:10 +0 -1: F001-F005 scan domain (fixture BLEToolkit-Server) [E]
+  Test failed. See exception logs above.
+  The test description was: F001-F005 scan domain (fixture BLEToolkit-Server)
+  
+00:10 +0 -1: (tearDownAll)
+00:11 +0 -1: Some tests failed.

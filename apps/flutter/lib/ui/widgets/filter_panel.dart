@@ -60,15 +60,19 @@ class FilterPanel extends ConsumerWidget {
                     ),
                   ),
                   const Spacer(),
-                  if (_hasActiveFilter(filterRssi, filterNamePrefix, filterHideUnnamed))
+                  if (_hasActiveFilter(
+                      filterRssi, filterNamePrefix, filterHideUnnamed))
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 2),
                       decoration: BoxDecoration(
                         color: AppTheme.primaryColor.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
-                        _getActiveFilterCount(filterRssi, filterNamePrefix, filterHideUnnamed).toString(),
+                        _getActiveFilterCount(
+                                filterRssi, filterNamePrefix, filterHideUnnamed)
+                            .toString(),
                         style: const TextStyle(
                           fontSize: 11,
                           color: AppTheme.primaryColor,
@@ -104,12 +108,15 @@ class FilterPanel extends ConsumerWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text('信号强度', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+            const Text('信号强度',
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
             Text(
               value > -100 ? '≥ $value dBm' : '全部',
               style: TextStyle(
                 fontSize: 12,
-                color: value > -100 ? AppTheme.primaryColor : AppTheme.textSecondary,
+                color: value > -100
+                    ? AppTheme.primaryColor
+                    : AppTheme.textSecondary,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -140,7 +147,8 @@ class FilterPanel extends ConsumerWidget {
     );
   }
 
-  Widget _buildQuickRssiButton(BuildContext context, WidgetRef ref, int value, String label) {
+  Widget _buildQuickRssiButton(
+      BuildContext context, WidgetRef ref, int value, String label) {
     final currentValue = ref.watch(filterRssiProvider);
     final isSelected = currentValue == value;
 
@@ -172,43 +180,16 @@ class FilterPanel extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('名称前缀', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+        const Text('名称前缀',
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
         const SizedBox(height: 8),
-        TextField(
-          controller: TextEditingController(text: value)..selection = TextSelection.fromPosition(TextPosition(offset: value.length)),
-          decoration: InputDecoration(
-            hintText: '输入设备名称前缀...',
-            hintStyle: TextStyle(color: AppTheme.textSecondary.withValues(alpha: 0.6)),
-            prefixIcon: const Icon(Icons.search, size: 18),
-            suffixIcon: value.isNotEmpty
-                ? IconButton(
-                    icon: const Icon(Icons.clear, size: 18),
-                    onPressed: () => ref.read(filterNamePrefixProvider.notifier).state = '',
-                  )
-                : null,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppTheme.borderColor),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppTheme.borderColor),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppTheme.primaryColor),
-            ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            isDense: true,
-          ),
-          style: const TextStyle(fontSize: 13),
-          onChanged: (value) => ref.read(filterNamePrefixProvider.notifier).state = value,
-        ),
+        _NameFilterField(value: value),
       ],
     );
   }
 
-  Widget _buildHideUnnamedFilter(BuildContext context, WidgetRef ref, bool value) {
+  Widget _buildHideUnnamedFilter(
+      BuildContext context, WidgetRef ref, bool value) {
     return InkWell(
       onTap: () => ref.read(filterHideUnnamedProvider.notifier).state = !value,
       borderRadius: BorderRadius.circular(8),
@@ -268,5 +249,83 @@ class FilterPanel extends ConsumerWidget {
     if (namePrefix.isNotEmpty) count++;
     if (hideUnnamed) count++;
     return count;
+  }
+}
+
+/// 前缀输入框：controller 由 State 持有，只在「外部值变化」（重置/清除）
+/// 时回写，用户键入路径不重建 controller——否则每次键入触发 provider 变化
+/// →重建→换 controller，IME 连接失同步（光标跳动/后续输入不生效）。
+/// （WIN-FAND-002）
+class _NameFilterField extends ConsumerStatefulWidget {
+  const _NameFilterField({required this.value});
+
+  final String value;
+
+  @override
+  ConsumerState<_NameFilterField> createState() => _NameFilterFieldState();
+}
+
+class _NameFilterFieldState extends ConsumerState<_NameFilterField> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.value);
+  }
+
+  @override
+  void didUpdateWidget(covariant _NameFilterField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.value != _controller.text) {
+      _controller.value = TextEditingValue(
+        text: widget.value,
+        selection: TextSelection.fromPosition(
+            TextPosition(offset: widget.value.length)),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: _controller,
+      decoration: InputDecoration(
+        hintText: '输入设备名称前缀...',
+        hintStyle:
+            TextStyle(color: AppTheme.textSecondary.withValues(alpha: 0.6)),
+        prefixIcon: const Icon(Icons.search, size: 18),
+        suffixIcon: widget.value.isNotEmpty
+            ? IconButton(
+                icon: const Icon(Icons.clear, size: 18),
+                onPressed: () =>
+                    ref.read(filterNamePrefixProvider.notifier).state = '',
+              )
+            : null,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: AppTheme.borderColor),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: AppTheme.borderColor),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: AppTheme.primaryColor),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        isDense: true,
+      ),
+      style: const TextStyle(fontSize: 13),
+      onChanged: (value) =>
+          ref.read(filterNamePrefixProvider.notifier).state = value,
+    );
   }
 }

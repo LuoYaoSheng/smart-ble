@@ -1,0 +1,30 @@
+Flutter assets will be downloaded from https://storage.flutter-io.cn. Make sure you trust this source!
+00:00 +0: loading E:/project/xf/smart-ble/apps/flutter/integration_test/p001_scan_test.dart
+Running Gradle task 'assembleDebug'...                          
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by net.rubygrapefruit.platform.internal.NativeLibraryLoader in an unnamed module (file:/C:/Users/11066/.gradle/wrapper/dists/gradle-8.14-all/c2qonpi39x1mddn7hk5gh9iqj/gradle-8.14/lib/native-platform-0.22-milestone-28.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+Flutter assets will be downloaded from https://storage.flutter-io.cn. Make sure you trust this source!
+Running Gradle task 'assembleDebug'...                             26.0s
+√ Built build\app\outputs\flutter-apk\app-debug.apk
+Installing build\app\outputs\flutter-apk\app-debug.apk...           6.1s
+00:00 +0: F001-F005 scan domain (fixture BLEToolkit-Server)
+P001[E2E 18:17:20.410]: 启动
+P001[E2E 18:17:21.436]: F001 首启空态 ✓
+P001[E2E 18:17:21.917]: F001 扫描中状态 ✓
+P001[E2E 18:17:22.743]: 夹具卡片发现=true
+P001[E2E 18:17:26.916]: F001 5s 自动停止 ✓
+P001[E2E 18:17:26.924]: F005 具名显示 + F018 普通入口 ✓
+P001[E2E 18:17:27.366]: F004 sheet 字段 ✓
+P001[E2E 18:17:28.029]: F004 sheet 关闭 ✓
+P001[E2E 18:17:28.879]: F001 手动停止 ✓（两轮会话）
+P001[E2E 18:17:29.305]: F003 面板展开 ✓
+P001[E2E 18:17:30.012]: F003 正向前缀 ✓
+P001[E2E 18:17:30.637]: 诊断: field=ZZZNOPE 无匹配态=true 夹具卡=false
+P001[E2E 18:17:30.638]: F003 前缀空态 ✓
+P001[E2E 18:17:31.701]: F003 重置恢复 ✓
+P001[E2E 18:17:31.702]: F001-F005 全部断言通过
+00:11 +1: (tearDownAll)
+00:11 +1: All tests passed!

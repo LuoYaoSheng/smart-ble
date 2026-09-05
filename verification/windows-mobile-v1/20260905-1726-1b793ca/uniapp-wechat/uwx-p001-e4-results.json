@@ -1,0 +1,12 @@
+[
+  {
+    "name": "开发者工具 automation 连接",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "name": "运行异常",
+    "ok": false,
+    "detail": "timeout waiting for automator response"
+  }
+]

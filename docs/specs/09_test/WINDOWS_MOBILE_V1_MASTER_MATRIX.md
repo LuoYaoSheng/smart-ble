@@ -13,11 +13,11 @@
 
 | ID | 功能（PRD 名） | P | 业务域 | 页面 | U-WX | U-AND | F-AND | 自动化 | 真机 | ESP32 角色 | 正常路径 | 异常路径 | 最终结论 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| F001 | BLE 扫描 | P0 | 扫描 | P001 | REQ | REQ | REQ | E1/E2 | E5 | Peripheral | NOT_RUN | NOT_RUN | NOT_RUN |
-| F002 | 扫描权限前置 | P0 | 扫描 | P001 | REQ | REQ | REQ | E2 | E5 | 不需要 | NOT_RUN | NOT_RUN | NOT_RUN |
-| F003 | 扫描筛选 | P0 | 扫描 | P001 | REQ | REQ | REQ | E1/E2 | E5 | 可选 | NOT_RUN | NOT_RUN | NOT_RUN |
-| F004 | 广播数据查看 | P0 | 扫描 | P001 | REQ | REQ | REQ | E2 | E5 | Peripheral | NOT_RUN | NOT_RUN | NOT_RUN |
-| F005 | 显示名智能解析 | P1 | 扫描 | P001 | REQ | REQ | REQ | E1/E2 | E5 | Peripheral | NOT_RUN | NOT_RUN | NOT_RUN |
+| F001 | BLE 扫描 | P0 | 扫描 | P001 | REQ | REQ | REQ | E1/E2 | E5 | Peripheral | F-AND PASS | NOT_RUN | F-AND PASS；U-AND BLOCKED_HOST；U-WX BLOCKED_TOOLCHAIN |
+| F002 | 扫描权限前置 | P0 | 扫描 | P001 | REQ | REQ | REQ | E2 | E5 | 不需要 | F-AND PASS(预授路径) | NOT_RUN | 同上（U-AND 弹窗链实测：定位+附近设备双弹窗） |
+| F003 | 扫描筛选 | P0 | 扫描 | P001 | REQ | REQ | REQ | E1/E2 | E5 | 可选 | F-AND PASS | NOT_RUN | F-AND PASS（含 WIN-FAND-001/002 两修复） |
+| F004 | 广播数据查看 | P0 | 扫描 | P001 | REQ | REQ | REQ | E2 | E5 | Peripheral | F-AND PASS | NOT_RUN | F-AND PASS；U-AND 驱动脚本就绪待解锁续跑 |
+| F005 | 显示名智能解析 | P1 | 扫描 | P001 | REQ | REQ | REQ | E1/E2 | E5 | Peripheral | F-AND 具名 PASS；未命名链=已知偏差 FEAT-F-003 | NOT_RUN | F-AND 部分通过（具名路径 E5）；R05 全链未实现登记 |
 | F006 | GATT 连接 | P0 | GATT | P006 | REQ | REQ | REQ | E2 | E5 | Peripheral | NOT_RUN | NOT_RUN | NOT_RUN |
 | F007 | 服务树浏览 | P0 | GATT | P006 | REQ | REQ | REQ | E2 | E5 | Peripheral | NOT_RUN | NOT_RUN | NOT_RUN |
 | F008 | 特征读取 | P0 | GATT | P006 | REQ | REQ | REQ | E2 | E5 | Peripheral(Read) | NOT_RUN | NOT_RUN | NOT_RUN |
@@ -51,11 +51,11 @@
 
 | ID | 用户入口 | 规范来源 | 证据 | 缺陷 | Git SHA |
 |---|---|---|---|---|---|
-| F001 | P001「开始扫描」按钮；进页生命周期 | FEATURE_MAP§1·PRD§4·任务书§13 | — | — | — |
-| F002 | 首次扫描触发权限链；蓝牙未开引导 | PERMISSION(10_platform)·任务书§13 | — | — | — |
-| F003 | 扫描卡片上方筛选区 | PRD·PAGE_SPEC P001 | — | — | — |
-| F004 | 扫描卡片「广播」入口 → F004 广播详情 sheet | PAGE_SPEC P001 | — | — | — |
-| F005 | 扫描卡片显示名渲染 | R05·PAGE_SPEC P001 | — | — | — |
+| F001 | P001「开始扫描」按钮；进页生命周期 | FEATURE_MAP§1·PRD§4·任务书§13 | run 20260905-1726-1b793ca/flutter-android/f001-f005-scan-v6-app.log（F-AND E5：5s 会话/自动停/手动停/首启空态全断言过） | — | 见本域提交 |
+| F002 | 首次扫描触发权限链；蓝牙未开引导 | PERMISSION(10_platform)·任务书§13 | 同上（wrapper 预授路径）+ uniapp-android 驱动（U-AND 实测定位+蓝牙双弹窗） | — | 见本域提交 |
+| F003 | 扫描卡片上方筛选区 | PRD·PAGE_SPEC P001 | 同上 v6（面板/正向前缀/反向空态/重置全过） | WIN-FAND-001/002（已修复） | 见本域提交 |
+| F004 | 扫描卡片「广播」入口 → F004 广播详情 sheet | PAGE_SPEC P001 | 同上 v6（设备ID/名称/RSSI/UUIDs/AD 逐段/厂商数据/复制/关闭） | — | 见本域提交 |
+| F005 | 扫描卡片显示名渲染 | R05·PAGE_SPEC P001 | 同上 v6（具名路径）；未命名链 R05 未实现=FEAT-F-003 在册 | FEAT-F-003（在册） | 见本域提交 |
 | F006 | P001 卡片「连接」/ Profile「连接」 | DEC-013·PAGE_SPEC P006 | — | — | — |
 | F007 | P006 服务树折叠/展开 | PAGE_SPEC P006 | — | — | — |
 | F008 | P006 特征「读」 | PAGE_SPEC P006 | — | — | — |
