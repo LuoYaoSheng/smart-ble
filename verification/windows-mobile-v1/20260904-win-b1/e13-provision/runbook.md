@@ -11,6 +11,12 @@
 >    否则设备不再广播、后续场景全部无法发现设备。
 > 4. 弹层退场动画期间模态 barrier 仍吞点击（U-01 首跑命中链含
 >    `_RenderTheater`+`RenderAbsorbPointer`）——凡点 AppBar 返回键前先等 BottomSheet 退场。
+> 5. **V1 简化（2026-09-05，用户拍板）**：PROVISIONING_V1 取消 SMP 配对——固件
+>    INPUT 改明文 write、不再 `security_initiate`；App 侧删除 createBond 与加密重试。
+>    **烧录 V1 简化固件后：§1.4 配对守护进程不再需要（无系统配对弹窗）**，
+>    仅 lost 注入场景保留 `--lost-mode bt`。另注意：Smart HID 固件以 TinyUSB HID
+>    占用 USB-OTG，运行态不暴露串口；重烧需按住 BOOT 点 RST 进下载模式
+>    （届时出现 USB 303A:1001 串口），或改插 DevKit 另一侧 UART 口。
 
 ## 0. 本轮环境常量（实测确认）
 

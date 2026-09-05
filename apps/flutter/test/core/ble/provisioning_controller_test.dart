@@ -18,10 +18,8 @@ class FakeTransport implements ProvisioningTransport {
 
   String deviceInfoJson = validInfoJson;
   bool failConnect = false;
-  bool bondFails = false;
   Object? nextWriteError;
   int writeCalls = 0;
-  int bondCalls = 0;
   final List<Uint8List> written = [];
   void Function()? lostCallback;
 
@@ -48,15 +46,6 @@ class FakeTransport implements ProvisioningTransport {
   Stream<String> get statusNotifications => statusCtl.stream;
 
   @override
-  Future<void> prepareInputWrite() async {
-    bondCalls++;
-    if (bondFails) {
-      throw const ProvisioningWriteException(
-          ProvisioningWriteErrorKind.encrypt, '设备配对失败（加密链路未建立）');
-    }
-  }
-
-  @override
   Future<void> writeFrames(List<Uint8List> frames,
       {Duration interval = const Duration(milliseconds: 30)}) async {
     writeCalls++;
@@ -81,13 +70,11 @@ void main() {
 
   ProvisioningController makeController({
     Duration timeout = const Duration(seconds: 60),
-    Duration retryDelay = const Duration(milliseconds: 10),
   }) {
     fake = FakeTransport();
     return ProvisioningController(
       transportFactory: () => fake,
       statusTimeout: timeout,
-      encryptRetryDelay: retryDelay,
     );
   }
 
@@ -283,17 +270,16 @@ void main() {
       c.dispose();
     });
 
-    test('写失败 encrypt → 延时后整包重试一次', () async {
-      final c = makeController(retryDelay: const Duration(milliseconds: 10));
+    test('写失败 encrypt（旧加密模型固件）→ 立即失败不重试（V1 简化无配对）', () async {
+      final c = makeController();
       await connectedController(c);
       fake.nextWriteError = const ProvisioningWriteException(
           ProvisioningWriteErrorKind.encrypt, 'insufficient authentication');
-      final fut = startSubmit(c);
-      await pump(40);
-      expect(fake.writeCalls, 2); // 首写失败 + 重试
-      fake.emit('{"state":"ready","step":"ready","error":null}');
-      await fut;
-      expect(c.done, isTrue);
+      await startSubmit(c);
+      expect(fake.writeCalls, 1); // 明文直连：写失败立即呈现，无配对重试
+      expect(c.failure, isNotNull);
+      expect(c.failure!.code, 'write_failed');
+      expect(c.provisioning, isFalse);
       c.dispose();
     });
 
@@ -305,19 +291,6 @@ void main() {
       await startSubmit(c);
       expect(c.failure!.code, 'connection_lost');
       expect(fake.writeCalls, 1); // disconnect 不重试
-      c.dispose();
-    });
-
-    test('bond 失败 → 重试一次配对+写入，仍失败 → write_failed 横幅（不卡死）', () async {
-      final c = makeController(retryDelay: const Duration(milliseconds: 10));
-      await connectedController(c);
-      fake.bondFails = true;
-      await startSubmit(c);
-      expect(fake.bondCalls, 2); // 首次 + encrypt 重试各一次
-      expect(fake.writeCalls, 0); // bond 未成，写入从未发生
-      expect(c.failure, isNotNull);
-      expect(c.failure!.code, 'write_failed');
-      expect(c.provisioning, isFalse); // 关键：不滞留在等待态
       c.dispose();
     });
   });

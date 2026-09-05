@@ -56,11 +56,6 @@ abstract class ProvisioningTransport {
   /// Provision Status notify 流（UTF-8 文本）
   Stream<String> get statusNotifications;
 
-  /// 写 INPUT 前确保加密链路就绪（canon §2：INPUT 要求加密链路，bonding
-  /// Just Works）。Android 经 createBond() 发起无感配对；已 bond 立即返回。
-  /// 失败抛 [ProvisioningWriteException]（encrypt 类）。
-  Future<void> prepareInputWrite();
-
   /// 顺序写入帧序列（带响应写，帧间默认 30ms，避免压垮部分 Android 栈）。
   /// 失败抛 [ProvisioningWriteException]（已分类）。
   Future<void> writeFrames(List<Uint8List> frames,
@@ -170,25 +165,6 @@ class FbpProvisioningTransport implements ProvisioningTransport {
       _statusChar!.onValueReceived.map(utf8Decode);
 
   @override
-  Future<void> prepareInputWrite() async {
-    final device = _device;
-    if (device == null || !device.isConnected) {
-      throw const ProvisioningWriteException(
-          ProvisioningWriteErrorKind.disconnect, 'BLE 连接已断开');
-    }
-    // FBP 1.36.8 无 isBonded 查询；createBond 在已配对时平台侧快速返回成功。
-    // 真机教训（E13）：未加密链路直接带响应写 WRITE_ENC 特征时，
-    // 部分 Android 栈会让 write 永远 PENDING——必须先建加密链路再写。
-    try {
-      await device.createBond(timeout: 20);
-    } catch (e) {
-      throw const ProvisioningWriteException(
-          ProvisioningWriteErrorKind.encrypt,
-          '设备配对失败（加密链路未建立），请重试或检查系统蓝牙配对设置');
-    }
-  }
-
-  @override
   Future<void> writeFrames(List<Uint8List> frames,
       {Duration interval = const Duration(milliseconds: 30)}) async {
     final input = _inputChar;
@@ -213,9 +189,11 @@ class FbpProvisioningTransport implements ProvisioningTransport {
     final message = error.toString();
     if (RegExp(r'encrypt|auth|pair|bond|insufficient|133', caseSensitive: false)
         .hasMatch(message)) {
+      // 正典 V1 简化（2026-09-05）后 INPUT 为明文 write；出现 encrypt 类错误
+      // 说明设备仍是旧加密模型固件（未重烧），提示用户升级固件而不是去配对。
       return const ProvisioningWriteException(
           ProvisioningWriteErrorKind.encrypt,
-          '写入特征需要加密链路：请在系统弹窗中确认配对（Just Works），然后重试');
+          '设备固件为旧加密模型（要求配对），请重烧 V1 简化固件后重试');
     }
     if (RegExp(r'disconnect|10008|not connect', caseSensitive: false)
         .hasMatch(message)) {

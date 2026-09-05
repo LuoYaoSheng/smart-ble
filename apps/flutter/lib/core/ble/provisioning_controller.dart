@@ -60,12 +60,10 @@ class ProvisioningController extends ChangeNotifier {
   ProvisioningController({
     required ProvisioningTransportFactory transportFactory,
     this.statusTimeout = const Duration(seconds: 60),
-    this.encryptRetryDelay = const Duration(seconds: 2),
   }) : _transportFactory = transportFactory;
 
   final ProvisioningTransportFactory _transportFactory;
   final Duration statusTimeout;
-  final Duration encryptRetryDelay;
 
   ProvisioningTransport? _transport;
   StreamSubscription<String>? _statusSub;
@@ -180,23 +178,7 @@ class ProvisioningController extends ChangeNotifier {
     final frames = buildCandidateFrames(candidateJson, transport.mtu);
     debugPrint('P002: submit frames=${frames.length} bytes=${candidateJson.length} mtu=${transport.mtu}');
     try {
-      await transport.prepareInputWrite();
       await transport.writeFrames(frames);
-    } on ProvisioningWriteException catch (e) {
-      if (e.kind == ProvisioningWriteErrorKind.encrypt) {
-        // 加密链路未就绪：给系统配对流程留时间，配对+写入整体重试一次
-        await Future.delayed(encryptRetryDelay);
-        try {
-          await transport.prepareInputWrite();
-          await transport.writeFrames(frames);
-        } catch (retryError) {
-          _setWriteFailure(retryError);
-          return;
-        }
-      } else {
-        _setWriteFailure(e);
-        return;
-      }
     } catch (e) {
       _setWriteFailure(e);
       return;
@@ -392,11 +374,11 @@ class ProvisioningController extends ChangeNotifier {
   }
 
   /// configure 阶段每 2s 读一次 STATUS 特征：
-  /// - 维持链路活跃：E13 真机实测，SMP 加密切换后若无 GATT 活动，
-  ///   三星栈 l2c_link_timeout 会以"All channels closed"拆掉 ACL，
-  ///   密钥分发永远无法完成（配对弹窗每连必现即此症状）；
+  /// - 维持链路活跃：E13 真机实测无 GATT 活动时部分 Android 栈会
+  ///   l2c_link_timeout 拆 ACL（旧加密模型下配对弹窗每连必现即此症状；
+  ///   V1 简化后配对已移除，轮询作为链路保活继续保留）；
   /// - 顺带刷新 lastStatus（连接徽标/状态新鲜度）。
-  /// 轮询读失败不打断流程（加密切换期瞬时失败属预期）；
+  /// 轮询读失败不打断流程（瞬时失败属预期）；
   /// 真实断连仍由 transport 的 onLost 回调统一上报。
   void _startStatusPoll() {
     _statusPollTimer?.cancel();

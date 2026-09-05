@@ -119,7 +119,9 @@ export function normalizeWriteError(error) {
   const normalized = new Error(`写特征失败: ${message}`);
   if (/encrypt|auth|pair|bond|139|10006|10007/i.test(message)) {
     normalized.kind = 'encrypt';
-    normalized.tip = '写入特征需要加密链路：请在系统弹窗中确认配对（Just Works），然后重试';
+    // V1 简化（2026-09-05）后 INPUT 为明文 write；此错误意味着设备固件
+    // 仍是旧加密模型（未重烧），提示升级固件而不是引导用户去配对。
+    normalized.tip = '设备固件为旧加密模型（要求配对），请重烧 V1 简化固件后重试';
   } else if (/disconnect|10008|not connect/i.test(message)) {
     normalized.kind = 'disconnect';
     normalized.tip = 'BLE 连接已断开，请重新连接设备';

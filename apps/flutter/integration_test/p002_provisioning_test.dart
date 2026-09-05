@@ -318,7 +318,7 @@ void main() {
           expect(tester.any(_k('ssidField')), isTrue, reason: '应仍在填写页');
           _log('U-01 填写态弹窗 ✓（继续填写保留现场）');
           // 下发等待态：提交 → 返回 → 继续配置
-          // （60s：覆盖提交时 createBond 触发系统配对弹窗 → SMP 完成的最坏路径）
+          // （60s 状态超时上限；V1 简化固件无配对环节，覆盖写入+设备处理耗时）
           await _submit(tester);
           expect(
               await _pumpUntil(tester, _k('cancelWaitBtn'),
