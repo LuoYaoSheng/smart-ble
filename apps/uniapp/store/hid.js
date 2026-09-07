@@ -1,10 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { logger } from '../../../core/ble-core/utils/logger';
-import {
-	KNOWN_DEVICES_MAX,
-	normalizeKnownDevices
-} from '../services/smart-hid/known-devices.js';
+import { normalizeKnownDevices } from '../services/smart-hid/known-devices.js';
 
 /**
  * Smart HID 模块 Store
@@ -13,26 +10,10 @@ import {
  *   - smartDevices / currentDevice / provisionSession / hubInfo
  *   - provisionStatus / progress / knownDevices / diagnostic / lastError
  *
- * 敏感字段（hubInfo.token / Wi-Fi 密码等）不写入持久化存储。
+ * 零本地持久化（2026-09-02 决策）：knownDevices 仅为配网会话的内存快照
+ * （P003「最近配置」lastWifi/lastHub 消费），冷启动为空，不落盘。
  */
 export const useHidStore = defineStore('hid', () => {
-	const KNOWN_DEVICES_KEY = 'smart_ble.smart_hid.known_devices.v1';
-	const loadKnownDevices = () => {
-		try {
-			const value = uni.getStorageSync(KNOWN_DEVICES_KEY);
-			return normalizeKnownDevices(Array.isArray(value) ? value : []);
-		} catch {
-			return [];
-		}
-	};
-	const persistKnownDevices = (devices) => {
-		const normalized = normalizeKnownDevices(devices);
-		try { uni.setStorageSync(KNOWN_DEVICES_KEY, normalized); } catch (error) {
-			logger.warning(`[HID] 保存非敏感设备历史失败: ${error?.message || 'unknown'}`);
-		}
-		return normalized;
-	};
-
 	const smartDevices = ref([]);
 	const currentDevice = ref(null);
 	const provisionSession = ref({ active: false, startedAt: null });
@@ -40,7 +21,7 @@ export const useHidStore = defineStore('hid', () => {
 	const hubInfo = ref(null);
 	const provisionStatus = ref(null);
 	const progress = ref({ wifi: 'pending', hub: 'pending', conn: 'pending', usb: 'pending' });
-	const knownDevices = ref(loadKnownDevices());
+	const knownDevices = ref([]);              // 内存会话快照（原 F023 本地历史已移除，不落盘）
 	const diagnostic = ref(null);
 	const lastError = ref(null);
 
@@ -135,22 +116,11 @@ export const useHidStore = defineStore('hid', () => {
 			lastHub: device.lastHub || '',
 			configuredAt: Date.now()
 		};
-		knownDevices.value = normalizeKnownDevices([meta, ...knownDevices.value], {
-			max: KNOWN_DEVICES_MAX
-		});
-		persistKnownDevices(knownDevices.value);
+		knownDevices.value = normalizeKnownDevices([meta, ...knownDevices.value]);
 	};
 
 	const removeKnownDevice = (deviceId) => {
 		knownDevices.value = knownDevices.value.filter(d => d.deviceId !== deviceId);
-		persistKnownDevices(knownDevices.value);
-	};
-
-	const pruneKnownDevices = (now = Date.now()) => {
-		knownDevices.value = persistKnownDevices(
-			normalizeKnownDevices(knownDevices.value, { now })
-		);
-		return knownDevices.value;
 	};
 
 	const startProvisionSession = () => {
@@ -191,7 +161,6 @@ export const useHidStore = defineStore('hid', () => {
 		clearError,
 		commitKnownDevice,
 		removeKnownDevice,
-		pruneKnownDevices,
 		startProvisionSession,
 		endProvisionSession,
 		setSessionOnline

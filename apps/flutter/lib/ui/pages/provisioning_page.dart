@@ -9,7 +9,6 @@
 // 字段），不写日志、不落存储；离开页面即清空（canon p002Cleanup）。
 
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,7 +19,10 @@ import '../../core/ble/provisioning_controller.dart';
 import '../../core/models/ble_scan_result.dart';
 import '../../core/protocols/hid_provisioning_protocol.dart';
 import '../../core/ble/provisioning_transport.dart';
+import '../../core/ble/hid_session_store.dart';
 import '../../themes/app_theme.dart';
+import 'hid_detail_page.dart';
+import 'hid_diagnostics_page.dart';
 
 /// 扫码失败三分类（canon F020：取消不算错误 / 权限 / 无效）
 enum QrFailureReason { cancel, permission, invalid }
@@ -246,23 +248,18 @@ class _ProvisioningPageState extends ConsumerState<ProvisioningPage> {
   }
 
   // ------------------------------------------------------------------
-  // 诊断（P005 在 Flutter 线的最小真实投影：重读两特征并展示）
+  // P005 诊断：独立职责页面（PAGE_FLOW P002 错误恢复 → diagnostics）。
   // ------------------------------------------------------------------
-  Future<void> _openDiagnostics() async {
-    try {
-      final snap = await _controller.runDiagnostics();
-      if (!mounted) return;
-      await showModalBottomSheet(
-        context: context,
-        backgroundColor: Colors.white,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+  void _openDiagnostics() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => HidDiagnosticsPage(
+          deviceId: widget.device.deviceId,
+          name: widget.device.displayName,
+          fromWizard: true,
         ),
-        builder: (context) => _DiagnosticsSheet(snapshot: snap),
-      );
-    } catch (e) {
-      _toast('诊断读取失败: $e');
-    }
+      ),
+    );
   }
 
   // ------------------------------------------------------------------
@@ -612,56 +609,26 @@ class _ProvisioningPageState extends ConsumerState<ProvisioningPage> {
   }
 
   Future<void> _openPostSuccess() async {
-    // P003（SHID 设备详情）在 Flutter 线尚未开放——展示真读到的
-    // Device Info（provisioned/state 已变化）并如实说明开放状态
-    try {
-      final snap = await _controller.runDiagnostics();
-      final info = parseDeviceInfo(snap.deviceInfoRaw);
-      if (!mounted) return;
-      await showModalBottomSheet(
-        context: context,
-        backgroundColor: Colors.white,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+    // P003（SHID 设备详情）：写入内存会话快照（零持久化）后
+    // pushReplacement 进入（uni-app redirectTo 语义：返回不回到已完成向导）。
+    final info = _controller.deviceInfo;
+    HidSessionStore.instance.commit(HidSessionSnapshot(
+      deviceId: widget.device.deviceId,
+      name: widget.device.displayName,
+      firmware: info?.firmware ?? '',
+      protocol: info?.protocol ?? '',
+      lastWifi: _ssidController.text,
+      lastHub: _hubController.text,
+    ));
+    if (!mounted) return;
+    await Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => HidDetailPage(
+          deviceId: widget.device.deviceId,
+          name: widget.device.displayName,
         ),
-        builder: (context) => Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('Smart HID 设备',
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
-              const SizedBox(height: 10),
-              Text(
-                '设备已按新配置就绪：\n'
-                '· device_id：${info?.deviceId ?? '—'}\n'
-                '· firmware：${info?.firmware ?? '—'}\n'
-                '· state：${info?.state ?? '—'}\n'
-                '· provisioned：${info?.provisioned == true ? 'true（已配网）' : 'false'}\n\n'
-                'SHID 设备详情页（P003）在 Flutter 线尚未开放，当前开放线为 uni-app。',
-                style: const TextStyle(
-                    fontSize: 13, color: Color(0xFF42536A), height: 1.6),
-              ),
-              const SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () => Navigator.pop(context),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.primaryColor,
-                    foregroundColor: Colors.white,
-                  ),
-                  child: const Text('知道了'),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    } catch (e) {
-      _toast('读取设备信息失败: $e');
-    }
+      ),
+    );
   }
 }
 
@@ -1487,82 +1454,3 @@ class _QrScannerSheetState extends State<_QrScannerSheet> {
   }
 }
 
-// ----------------------------------------------------------------------
-// 诊断面板（重读 Device Info / Provision Status 并 pretty-print）
-// ----------------------------------------------------------------------
-class _DiagnosticsSheet extends StatelessWidget {
-  const _DiagnosticsSheet({required this.snapshot});
-
-  final DiagnosticsSnapshot snapshot;
-
-  String _pretty(String raw) {
-    try {
-      const encoder = JsonEncoder.withIndent('  ');
-      return encoder.convert(jsonDecode(raw));
-    } catch (_) {
-      return raw;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      // 两段 pretty-print JSON 的高度随特征内容增长（E14-T4 真机：mqtt_invalid
-      // 状态下溢出 54px 触发渲染异常），弹层内容改为可滚动。
-      child: SingleChildScrollView(
-        child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('Smart HID 诊断',
-              style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
-          const SizedBox(height: 4),
-          Text('读取时间 ${snapshot.at.toLocal()}',
-              style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary)),
-          const SizedBox(height: 12),
-          const Text('Device Info（INFO 特征）',
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-          const SizedBox(height: 6),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF6F8FB),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(_pretty(snapshot.deviceInfoRaw),
-                style: const TextStyle(fontSize: 12, fontFamily: 'monospace', height: 1.5)),
-          ),
-          const SizedBox(height: 12),
-          const Text('Provision Status（STATUS 特征）',
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-          const SizedBox(height: 6),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF6F8FB),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(_pretty(snapshot.statusRaw),
-                style: const TextStyle(fontSize: 12, fontFamily: 'monospace', height: 1.5)),
-          ),
-          const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () => Navigator.pop(context),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.primaryColor,
-                foregroundColor: Colors.white,
-              ),
-              child: const Text('关闭'),
-            ),
-          ),
-        ],
-      ),
-      ),
-    );
-  }
-}

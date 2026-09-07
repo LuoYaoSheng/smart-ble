@@ -44,11 +44,6 @@ export function buildProfileDiagnosticsUrl(profileId, deviceId) {
   return profileRouteWithDevice(route, deviceId);
 }
 
-export function buildProfileHistoryUrl(profileId) {
-  const profile = profileId ? getProfile(profileId) : null;
-  return profile?.model?.routes?.history || '';
-}
-
 /**
  * 扫描卡片 Profile 主操作：有 provision 路由则进配网，否则进通用 GATT 详情。
  */
@@ -74,8 +69,4 @@ export function buildHidDetailUrl(deviceId) {
 
 export function buildHidDiagnosticsUrl(deviceId) {
   return buildProfileDiagnosticsUrl('smart-hid', deviceId);
-}
-
-export function buildHidHistoryUrl() {
-  return buildProfileHistoryUrl('smart-hid') || '/pages/hid/history';
 }

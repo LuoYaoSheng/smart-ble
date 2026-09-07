@@ -22,13 +22,6 @@
 			}
 		},
 		{
-			"path": "pages/hid/history",
-			"style": {
-				"navigationBarTitleText": "Smart HID 历史",
-				"navigationBarTextStyle": "black"
-			}
-		},
-		{
 			"path": "pages/hid/diagnostics",
 			"style": {
 				"navigationBarTitleText": "诊断",

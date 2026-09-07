@@ -164,6 +164,8 @@
 
 ## 9. PARITY-G1 修复范围（本轮执行）
 
+> **执行结果（2026-09-07 当轮）**：下列范围全部完成并通过自动化回归——uniapp `build:mp-weixin` 构建通过且产物 0 处 P004/storage-key 引用、页面集静态断言 9/9、Flutter `analyze` 零问题 + `flutter test` 64/64（含新增 6 项壳层断言）。运行态复核（微信开发者工具 page-flow 测试、F-AND 真机走查）为下一 Gate 起步项，UNPROVEN。
+
 **UniApp（U-WX/U-AND 同源修复）**
 1. 删除 pages.json 的 P004 路由注册 → 9 页
 2. 删除首页「已配置 Smart HID」面板及其全部交互（openHidHistory/openKnownHidDevice/removeKnownHidDevice/prune 调用）

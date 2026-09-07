@@ -42,8 +42,7 @@ export const smartHidProfile = {
     routes: {
       detail: '/pages/hid/detail',
       provision: '/pages/hid/add',
-      diagnostics: '/pages/hid/diagnostics',
-      history: '/pages/hid/history'
+      diagnostics: '/pages/hid/diagnostics'
     }
   },
   parseQr: parsePairingQrPayload,

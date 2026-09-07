@@ -116,10 +116,11 @@
 
 | 编号 | 实现线 | 偏差 | 分类 | 严重度 | 处置 Gate |
 |---|---|---|---|---|---|
-| UNIAPP-G1-001 | U-WX/U-AND | P004 路由/首页「已配置 Smart HID」面板/known_devices 本地持久化残留（违反 2026-09-02 移除决策与零持久化） | UNIAPP_IMPLEMENTATION_DRIFT | P1 | PARITY-G1 |
-| FLUTTER-G1-001 | F-AND | Tab2「连接」≠「已连接」 | FLUTTER_IMPLEMENTATION_DRIFT | P2 | PARITY-G1 |
-| FLUTTER-G1-002 | F-AND | PageView 横滑主 Tab 为规范外导航（PAGE_SPEC §0.1 仅 switchTab/点击） | FLUTTER_IMPLEMENTATION_DRIFT | P1 | PARITY-G1 |
-| FLUTTER-G1-003 | F-AND | P003/P005 由 Modal sheet 冒充、P010 缺失（9 页集合不完整，无独立路由） | FLUTTER_IMPLEMENTATION_DRIFT | P1 | PARITY-G1 |
+| UNIAPP-G1-001 | U-WX/U-AND | P004 路由/首页「已配置 Smart HID」面板/known_devices 本地持久化残留（违反 2026-09-02 移除决策与零持久化） | UNIAPP_IMPLEMENTATION_DRIFT | P1 | **PARITY-G1 已修（2026-09-07）**：路由删/面板删/Store 转纯内存/TTL 删/服务层路由删/history.vue 删/测试重写；build:mp-weixin 产物 0 引用 |
+| FLUTTER-G1-001 | F-AND | Tab2「连接」≠「已连接」 | FLUTTER_IMPLEMENTATION_DRIFT | P2 | **PARITY-G1 已修**（widget test 断言） |
+| FLUTTER-G1-002 | F-AND | PageView 横滑主 Tab 为规范外导航（PAGE_SPEC §0.1 仅 switchTab/点击） | FLUTTER_IMPLEMENTATION_DRIFT | P1 | **PARITY-G1 已修**（NeverScrollableScrollPhysics + 拖动测试） |
+| FLUTTER-G1-003 | F-AND | P003/P005 由 Modal sheet 冒充、P010 缺失（9 页集合不完整，无独立路由） | FLUTTER_IMPLEMENTATION_DRIFT | P1 | **PARITY-G1 已修**：三页补独立页面+入口+pushReplacement/栈感知；逐页四维对齐留 PARITY-G2+ |
+| FLUTTER-G1-004 | F-AND | MaterialApp i18n 基建（en/zh）与 F030「不做」相悖 | FLUTTER_IMPLEMENTATION_DRIFT | P2 | FEAT-F-007 登记，M1/M7 收缩（G1 不扩边界） |
 | MATRIX-G1-001 | 测试矩阵 | 旧记分卡 F 编号错位（见 §0） | TEST_MATRIX_DEFECT | P1 | 已于 2026-09-07 修复 |
 
 ## 5. 全平台/语言页面覆盖审计（2026-09-05 · macOS 合并后）

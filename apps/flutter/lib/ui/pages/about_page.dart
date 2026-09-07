@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../config/product.dart';
 import '../../themes/app_theme.dart';
+import 'versions_page.dart';
 
 /// 关于页 —— 对齐基准原型 p009：紧凑品牌行 + 可操作信息，去除大图与展示型区块
 class AboutPage extends StatefulWidget {
@@ -279,6 +280,13 @@ class _AboutPageState extends State<AboutPage> {
             icon: Icons.language,
             title: '官方网站',
             onTap: () => _openLink(context, ProductConfig.website),
+          ),
+          _MenuRow(
+            icon: Icons.history_outlined,
+            title: '版本记录',
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => const VersionsPage()),
+            ),
           ),
           _MenuRow(
             icon: Icons.send_outlined,

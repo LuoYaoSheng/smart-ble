@@ -67,8 +67,11 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // 主 Tab 仅点击切换（PAGE_SPEC §0.1 switchTab 语义）；
+      // NeverScrollableScrollPhysics 禁用规范外的左右横滑导航（PARITY-G1 / FLUTTER-G1-002）。
       body: PageView(
         controller: _pageController,
+        physics: const NeverScrollableScrollPhysics(),
         onPageChanged: (index) {
           setState(() {
             _currentIndex = index;
@@ -98,7 +101,7 @@ class _MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.devices_other_outlined),
             activeIcon: Icon(Icons.devices_other),
-            label: '连接',
+            label: '已连接',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.broadcast_on_personal_outlined),

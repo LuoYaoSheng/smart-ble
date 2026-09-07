@@ -2,11 +2,12 @@ const fs = require('node:fs')
 const path = require('node:path')
 const pagesConfig = require('../pages.json')
 
+// 2026-09-02 决策口径：PAGE004（pages/hid/history）已移除，正典页面集为 9 页。
+// 下方 inventory 测试同时承担「P004 不存在」断言（toEqual 精确匹配，多注册即失败）。
 const EXPECTED_PAGES = [
 	'pages/index/index',
 	'pages/hid/add',
 	'pages/hid/detail',
-	'pages/hid/history',
 	'pages/hid/diagnostics',
 	'pages/device/detail',
 	'pages/connected/index',
@@ -64,9 +65,20 @@ describe('Smart BLE complete page and navigation flow', () => {
 	test('all registered pages have source files and match the canonical inventory', () => {
 		const registered = pagesConfig.pages.map((page) => page.path)
 		expect(registered).toEqual(EXPECTED_PAGES)
+		expect(registered).not.toContain('pages/hid/history')
+		expect(fs.existsSync(path.join(__dirname, '../pages/hid/history.vue'))).toBe(false)
 		for (const pagePath of registered) {
 			expect(fs.existsSync(path.join(__dirname, '..', `${pagePath}.vue`))).toBe(true)
 		}
+	})
+
+	test('P004 removed: index shows no configured-devices panel even with session snapshots', async () => {
+		await replaceRuntimeState({ knownDevices: [HID_DEVICE], currentDevice: HID_DEVICE })
+		const page = await program.reLaunch('/pages/index/index')
+		await page.waitFor(300)
+		expect(page.path).toBe('pages/index/index')
+		expect(await page.$('.known-devices-panel')).toBeNull()
+		expect(await page.$('.known-header-actions')).toBeNull()
 	})
 
 	test('connected empty state returns to Scan', async () => {
@@ -87,22 +99,20 @@ describe('Smart BLE complete page and navigation flow', () => {
 		const state = await replaceRuntimeState({ knownDevices: [HID_DEVICE], currentDevice: HID_DEVICE })
 		expect(state.knownCount).toBe(1)
 
-		let page = await program.reLaunch('/pages/hid/history')
+		let page = await program.reLaunch('/pages/index/index')
 		await page.waitFor(300)
-		expect(page.path).toBe('pages/hid/history')
-		expect(await (await page.$('.device-name')).text()).toBe(HID_DEVICE.name)
-		await program.screenshot({ path: 'unpackage/test-output/page-flow/01-hid-history.png' })
+		expect(page.path).toBe('pages/index/index')
 
 		page = await program.navigateTo(`/pages/hid/detail?deviceId=${encodeURIComponent(HID_DEVICE.deviceId)}`)
 		await page.waitFor(300)
 		expect(page.path).toBe('pages/hid/detail')
 		expect(await (await page.$('.device-title')).text()).toBe(HID_DEVICE.name)
-		await program.screenshot({ path: 'unpackage/test-output/page-flow/02-hid-detail.png' })
+		await program.screenshot({ path: 'unpackage/test-output/page-flow/01-hid-detail.png' })
 
 		page = await program.navigateTo(`/pages/hid/add?deviceId=${encodeURIComponent(HID_DEVICE.deviceId)}`)
 		await page.waitFor(300)
 		expect(page.path).toBe('pages/hid/add')
-		await program.screenshot({ path: 'unpackage/test-output/page-flow/03-hid-provision.png' })
+		await program.screenshot({ path: 'unpackage/test-output/page-flow/02-hid-provision.png' })
 		await program.navigateBack()
 
 		page = await program.currentPage()
@@ -110,7 +120,7 @@ describe('Smart BLE complete page and navigation flow', () => {
 		page = await program.navigateTo(`/pages/hid/diagnostics?deviceId=${encodeURIComponent(HID_DEVICE.deviceId)}`)
 		await page.waitFor(300)
 		expect(page.path).toBe('pages/hid/diagnostics')
-		await program.screenshot({ path: 'unpackage/test-output/page-flow/04-hid-diagnostics.png' })
+		await program.screenshot({ path: 'unpackage/test-output/page-flow/03-hid-diagnostics.png' })
 		await program.navigateBack()
 		page = await program.currentPage()
 		expect(page.path).toBe('pages/hid/detail')
@@ -119,7 +129,7 @@ describe('Smart BLE complete page and navigation flow', () => {
 		await page.waitFor(300)
 		expect(page.path).toBe('pages/device/detail')
 		expect(await (await page.$('.device-id')).text()).toBe(HID_DEVICE.deviceId)
-		await program.screenshot({ path: 'unpackage/test-output/page-flow/05-generic-detail.png' })
+		await program.screenshot({ path: 'unpackage/test-output/page-flow/04-generic-detail.png' })
 	})
 
 	test('connected device context opens the generic GATT detail and returns', async () => {
@@ -151,7 +161,7 @@ describe('Smart BLE complete page and navigation flow', () => {
 		await page.waitFor(300)
 		expect(page.path).toBe('pages/about/version')
 		expect(await (await page.$('.version-name')).text()).toBe('v1.0.5')
-		await program.screenshot({ path: 'unpackage/test-output/page-flow/06-version-history.png' })
+		await program.screenshot({ path: 'unpackage/test-output/page-flow/05-version-history.png' })
 		await program.navigateBack()
 		page = await program.currentPage()
 		expect(page.path).toBe('pages/about/index')
@@ -164,6 +174,6 @@ describe('Smart BLE complete page and navigation flow', () => {
 		expect(page.path).toBe('pages/broadcast/index')
 		expect(await page.$('.settings-section')).not.toBeNull()
 		expect(await page.$('.action-section')).not.toBeNull()
-		await program.screenshot({ path: 'unpackage/test-output/page-flow/07-broadcast.png' })
+		await program.screenshot({ path: 'unpackage/test-output/page-flow/06-broadcast.png' })
 	})
 })
