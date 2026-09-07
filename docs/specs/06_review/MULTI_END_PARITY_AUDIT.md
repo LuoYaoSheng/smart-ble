@@ -223,3 +223,29 @@
 ### 11.3 验证
 
 uniapp `build:mp-weixin` 通过（产物 tabBar=scan/link/cast/info，8 PNG，镜像入包）；node 静态断言（canon==mirror 35 枚）；flutter analyze 0 issue；flutter test 66/66（含 2 条图标门）。同设备三线截图留待视觉 Gate 按矩阵 §3 登记。
+
+## 12. 第二轮补录：PARITY-ILL 空态插图/占位资产统一（2026-09-07，用户指令「需要的图标通过 ChatGPT2API 处理；占位图最好是透明底图」）
+
+### 12.1 审计发现（新增登记）
+
+| 编号 | 差异 | 归因 | 严重度 | 状态 |
+|---|---|---|---|---|
+| UNIAPP-ILL-001 | 4 组空态占位图（`static/placeholders/empty_{scan,connected,services,log}`）为 320×320 方形、圆角矩形渐变底、**不透明白底 PNG**（ch=3，角落像素≈#FDFEFE），与正典 B6 `C.ILL` 的 118×86 横构图透明底线性插画完全不符；P006 服务空态/P008 日志空态正典明确**无插图**（op-warn 文案块 / 单行 .logempty） | UNIAPP_IMPLEMENTATION_DRIFT | P1 | 已修 |
+| FLUTTER-ILL-001 | 空态顶替字形偏离：P001 用 AppIcon set/scan、P007 用 `x` 字形（语义错误）、P010 纯文字行，均非正典 ILL；P006 服务空态文案合并为「正在发现服务或无可用服务...」且用 scan 字形（正典=op-warn warn 字形）；P007 空态文案偏离正典 | FLUTTER_IMPLEMENTATION_DRIFT | P1 | 已修 |
+| UNIAPP-ILL-002 | P009 品牌卡用 512 位图 logo.png（正典=38px 渐变盒+bt 字形）；推广卡用 other-apps 两枚位图 PNG（正典=.promo 文字缩写块 abbr/bg/color 数据驱动）；`static/brand/about-hero.png` 无任何引用（死资产） | UNIAPP_IMPLEMENTATION_DRIFT | P2 | 已修 |
+| FLUTTER-ILL-002 | P009 品牌行用 `assets/brand/icon.png` 位图；_PromoTile 用非正典紫渐变(#7B6DFF→#4A9EFF)+首字缩写；`assets/brand/icon.png`、`assets/brand/share.png`、`assets/icons/*.png`（5 枚平台图标）无代码引用（死资产，pubspec 一并裁撤） | FLUTTER_IMPLEMENTATION_DRIFT | P2 | 已修 |
+| MATRIX-ILL-003 | 分享/启动器类必需位图（微信分享 imageUrl、F-AND launcher/splash）此前散手来源、无统一生产管线；U-AND（HBuilderX 打包）launcher 未在本轮范围 | TEST_MATRIX_DEFECT（管线缺口，非页面差异） | P2 | 已建管线（§1.6） |
+
+正典依据：原型 `components/components.js` B6 empty-state（`C.ILL` 4 幅 + `C.empty`/`C.op`/`logPanel` 空态结构）；p009 品牌卡与推广卡渲染。占位/插画类资产正典即透明底（SVG 无背景矩形），无平台差异豁免。
+
+### 12.2 修复内容
+
+- 正典 ILL 镜像：`C.ILL`（radar/link/doc/box，118×86 透明底）→ `apps/uniapp/services/design/app-illustrations.js` + `apps/flutter/lib/core/design/app_illustrations.dart`（锁定镜像，`icon-gen/gen-ills.js` 生成）。
+- U-WX/U-AND：新增 `AppIll` 组件；empty-state 换 `ill` 槽（P001 双态 radar/link + 正典文案与「开始扫描」动作、P007 link、P010 两处 doc）；P006 服务空态去插图、日志空态改单行 `.logempty` 文字（broadcast 传正典合并文案）；P009 品牌标=渐变盒+bt 字形、推广位=abbr 缩写块（product.js 增 abbr/bg/color）；`static/placeholders`（8 文件）、`static/other-apps`（2 文件）、`static/brand`（1 文件）删除。
+- F-AND：空态换 AppIll（P001 radar/link、P007 link+正典文案、P010 _emptyBlock doc）；P006 服务空态=op-warn 文案块（warn 字形+正典文案）；品牌行=渐变盒+AppIcon bt；_PromoTile=数据驱动缩写块（product.dart 同源字段）；`assets/brand`、`assets/icons` 删除，pubspec assets 裁撤（全线 `Image.asset` 归零）。
+- ChatGPT2API 位图管线（用户指令落地）：gpt-image-2 生成品牌 icon（白 BT 字形+蓝渐变，全出血）与分享卡（1024 居中构图），`analyze_image` 质检（Good/无 artifact）后经 sharp 落位：uniapp `logo.png`(512)/`share.png`(1024, palette 383KB)；F-AND `assets/images/icon.png`(512) + Android legacy mipmap（48–192 五密度）+ 原生 splash（256–1024 五密度）。管线登记于 [DESIGN_TOKEN_PLATFORM_MAPPING.md](../09_test/DESIGN_TOKEN_PLATFORM_MAPPING.md) §1.6。
+- 透明底规则成文：占位/插画类=正典 SVG 镜像（透明底），AI 位图仅用于全出血必需槽位（§1.5/§1.6）。
+
+### 12.3 验证
+
+uniapp `build:mp-weixin` 通过（dist 含 ILL 镜像 `0 0 118 86`，`placeholders/` 零引用）；node 静态断言（ILL canon==mirror 4/4 逐字锁定、无 `<rect>`、源码/产物零占位引用、三个资产目录已删）；flutter analyze 0 issue；flutter test 67/67（新增 ILL 渲染门）。page-flow.test.js 新增 2 条 PARITY-ILL 静态测试（HBuilderX 内执行）。U-AND launcher（HBuilderX 打包域）与同设备三线截图留待后续 Gate。

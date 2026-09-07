@@ -5,7 +5,7 @@
 - 事实源：[TOKEN.md](../07_design_system/TOKEN.md)（全平台唯一视觉数值来源）+ `prototype/v1-new/index.html` 内联 SVG sprite
 - 本文件定位：**实现侧映射登记**——正典值 → 三线实现载体 → 锁定方式。矩阵侧判定在 [MULTI_END_VISUAL_PARITY_MATRIX.md](MULTI_END_VISUAL_PARITY_MATRIX.md)。
 
-## 1. 图标正典（ICON CANON）——2026-09-07 PARITY-ICON 已落地
+## 1. 图标正典（ICON CANON）——2026-09-07 PARITY-ICON 落地；同日 PARITY-ILL 补空态插图（§1.5）与位图管线（§1.6）
 
 ### 1.1 正典定义（不可在本文件修改）
 
@@ -64,6 +64,37 @@
 ### 1.4 旋转/变体约定
 
 正典只有单方向字形的，用 `rotate` 派生（不改 sprite）：`chev-r` 180°=左箭头；`chev-d` 180°=上折角。除此之外禁止自造字形。
+
+### 1.5 空态插图正典（EMPTY-STATE ILL）——2026-09-07 PARITY-ILL 已落地
+
+- 唯一来源：`docs/specs/prototype/v1-new/components/components.js` 的 `C.ILL`，4 幅 118×86 线性插图（`radar` / `link` / `doc` / `box`），自配色（#1B6DFF/#17C7A8/#9AA8B6/#E3EAF3），**透明底**（无背景矩形）——占位/空态类插画一律不得带底色矩形或位图白底。
+- 页面映射（`C.empty({ill})` 正典选择）：P001 未扫描=`radar`、筛选无匹配=`link`；P007=`link`；P010 两处=`doc`；P003/P006 路由空态=`box`。**P006 服务列表空态与 P006/P008 日志空态无插图**：前者为 `C.op(mode:'warn')` 文案块（warn 字形 + 「服务发现完成 · 列表为空」），后者为单行 `.logempty` 文字。
+- 三线载体（与 §1.2 图标镜像同构的锁定镜像）：
+
+| 线 | 载体 | 位置 | 机制 |
+|---|---|---|---|
+| U-WX / U-AND | `AppIll` 组件 | `apps/uniapp/components/common/app-ill.vue` | data-URI `background-image`（118:86 等比），镜像 `services/design/app-illustrations.js` |
+| F-AND | `AppIll` 组件 | `apps/flutter/lib/core/design/app_illustrations.dart` | `flutter_svg` `SvgPicture.string`，同文件 `kAppIlls` 镜像 |
+
+- 生成脚本 `icon-gen/gen-ills.js`（仓库外临时；正典 `C.ILL` 变更后重生成两镜像）。
+- 锁定测试：uniapp `page-flow.test.js` `PARITY-ILL: empty-state illustration mirror is locked to prototype C.ILL`（4 名单 + 逐字主体 + 禁 `<rect>`）+ 占位位图零引用断言；flutter `widget_test.dart` `canon empty-state illustrations render without error`。
+- 随本轮退役的偏离资产：`apps/uniapp/static/placeholders/*`（4 组 320×320 方形白底 PNG/SVG，构图与背景均偏离正典）、`static/brand/about-hero.png`（无引用）。
+
+### 1.6 位图资产管线（ChatGPT2API）——2026-09-07 起
+
+正典之外的**必需位图**（平台 API 硬性要求图片文件的槽位）经自托管 ChatGPT2API 生图服务统一生产，禁止散手制图：
+
+| 槽位 | 文件 | 规格 | 生成 |
+|---|---|---|---|
+| 微信分享 imageUrl（朋友圈/会话） | `apps/uniapp/static/logo.png` | 512×512 全出血 | gpt-image-2 → sharp 512 |
+| F029 分享应用卡图 | `apps/uniapp/static/share.png` | 1024×1024 主体居中（5:4 裁切安全） | gpt-image-2 → palette PNG |
+| F-AND 启动器图标源图 | `apps/flutter/assets/images/icon.png` | 512×512 全出血 | 同一 icon 源派生 |
+| F-AND Android legacy 启动器 | `android/.../mipmap-{m..xxxhdpi}/ic_launcher.png` | 48/72/96/144/192 | sharp 光栅化派生 |
+| F-AND Android 原生启动图 | `android/.../drawable-{m..xxxhdpi}/splash.png` | 256→1024 | 同上 |
+
+- 服务：`POST {BASE}/v1/images/generations`，`model=gpt-image-2`，`response_format=b64_json`，单张 40–60s（超时给 300s+）；脚本 `icon-gen/gen-brand.js` + 落位 `icon-gen/install-brand.js`（仓库外临时）。视觉验收过 `analyze_image` 质检再落位。
+- 设计口径：品牌蓝渐变（#0E4FC4→#1B6DFF）+ 白色 BT 字形 + 信号弧/环点缀；与 P009 正典品牌标（§1.5 同源的渐变盒+bt 字形）同语言。
+- **透明底规则**：占位/插画类资产（§1.5）一律透明底且来自正典 SVG 镜像，不经 AI 生成；AI 位图仅用于上述全出血槽位。如未来出现需要透明底的 AI 资产，请求体加 `background:"transparent"`（gpt-image 系参数）。
 
 ## 2. 颜色 Token 映射（待视觉 Gate 回填）
 

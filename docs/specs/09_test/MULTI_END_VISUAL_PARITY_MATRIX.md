@@ -34,6 +34,10 @@
 | 输入框高度 | TOKEN.md | — | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | — |
 | TabBar 高度/图标语义 | TOKEN.md/PATTERN.md | — | PASS | PASS | PASS | 2026-09-07 PARITY-ICON：四 Tab 字形统一为正典 scan/link/cast/info（U-WX/U-AND PNG 烤色 / F-AND AppIcon），构建+静态+测试验证；同设备截图待视觉 Gate |
 | 图标字形（35 枚 `i-*` sprite） | TOKEN.md §7 | 全部页内图标 | PASS | PASS | PASS | 2026-09-07 PARITY-ICON：三线统一经镜像渲染（[DESIGN_TOKEN_PLATFORM_MAPPING.md](DESIGN_TOKEN_PLATFORM_MAPPING.md) §1）；uniapp 文字标记仅保留正典规定的 ✓/✕/·；Material 图标退役 |
+| 空态插图（4 幅 `C.ILL`） | 原型 components.js B6 | P001/P007/P010 等空态 | PASS | PASS | PASS | 2026-09-07 PARITY-ILL：radar/link/doc/box 三线锁定镜像（AppIll），U-WX 方形白底 PNG 与 F-AND Material 顶替字形全部退役 |
+| 占位/插画类资产透明底 | TOKEN.md/正典结构 | 全部空态/插画槽位 | PASS | PASS | PASS | PARITY-ILL：占位资产 100% 来自正典 SVG 镜像（无背景矩形），`static/placeholders` 8 文件删除、零引用（静态断言锁定） |
+| P009 品牌标/推广缩写块 | 原型 p009 | 关于页品牌卡/更多小程序 | PASS | PASS | PASS | PARITY-ILL：品牌标=渐变盒+bt 字形（非位图），推广位=文字缩写块（abbr/bg/color 数据驱动），other-apps PNG 与 F-AND 紫渐变退役 |
+| 分享/启动器位图 | §1.6 管线 | 微信分享/F-AND 启动器 | PASS | PASS | PASS | PARITY-ILL：ChatGPT2API(gpt-image-2) 统一生产（蓝渐变+BT 字形），logo/share/launcher/mipmap/splash 同源派生 |
 
 > 数值逐项以 TOKEN.md 当前版本为准；本表摘录核心项，回填时如正典有增补按正典补行。实现侧 Token 映射表见 `DESIGN_TOKEN_PLATFORM_MAPPING.md`（图标节 2026-09-07 已交付，其余随视觉 Gate）。
 
