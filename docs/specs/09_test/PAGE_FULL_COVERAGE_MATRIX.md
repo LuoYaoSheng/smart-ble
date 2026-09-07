@@ -12,7 +12,7 @@
 
 | 页面 | 名称 | 必须验证要点 | U-WX | U-AND | F-AND | 证据 | 结论 |
 |---|---|---|---|---|---|---|---|
-| P001 | 扫描首页 | 扫描、权限、筛选、广播详情、普通连接、Profile 双入口、空态、失败态 | NOT_RUN | U-AND PASS（核心链 13/13 v5） | F-AND PASS（核心链 v6） | f001-f005-scan-v6-app.log + uand-p001-e5-results.json（13/13）+ 截图 6 张 | 双线 PASS_WITH_LIMITATION（权限链=预授/已授权态；Profile 双入口、失败态留页面全量回归） |
+| P001 | 扫描首页 | 扫描、权限、筛选、广播详情、普通连接、Profile 双入口、空态、失败态 | NOT_RUN | U-AND PASS（核心链 13/13 v5） | F-AND PASS（核心链 v6） | f001-f005-scan-v6-app.log + uand-p001-e5-results.json（13/13）+ 截图 6 张 + android-native/aand-p001-e5-results.json（A-AND 13/13）+ 截图 6 张 | 移动三线 PASS_WITH_LIMITATION（U-AND/F-AND/A-AND；权限链=预授/已授权态；Profile 双入口、失败态留页面全量回归） |
 | P002 | Smart HID 配网 | 连接验证、表单、扫码、下发、进度、错误恢复、离开确认 | NOT_RUN | NOT_RUN | NOT_RUN | — | NOT_RUN |
 | P003 | Smart HID 详情 | 重新配置、诊断、高级 BLE 调试、上下文缺失 | NOT_RUN | NOT_RUN | NOT_RUN | — | NOT_RUN |
 | P004 | 历史页 | **必须不存在**：无路由、无入口、无持久化、不可达 | NOT_RUN | NOT_RUN | NOT_RUN | — | NOT_RUN |

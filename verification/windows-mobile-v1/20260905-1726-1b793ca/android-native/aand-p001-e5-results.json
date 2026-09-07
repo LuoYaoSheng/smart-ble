@@ -1,0 +1,67 @@
+[
+  {
+    "name": "P001 启动（扫描 Tab）",
+    "ok": true,
+    "detail": "Smart BLE 关于 发现 0 台设备 广播 开始扫描 扫描 暂无设备 点击上方按钮开始扫描 蓝牙已开启 过滤条件"
+  },
+  {
+    "name": "首启空态（暂无设备）",
+    "ok": true,
+    "detail": "暂无设备 点击上方按钮开始扫描"
+  },
+  {
+    "name": "蓝牙就绪（蓝牙已开启）",
+    "ok": true,
+    "detail": "蓝牙已开启"
+  },
+  {
+    "name": "权限预授生效（无未授权态）",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "name": "开始扫描按钮可定位",
+    "ok": true,
+    "detail": "(401, 728)"
+  },
+  {
+    "name": "扫描中（停止扫描出现）",
+    "ok": true,
+    "detail": "停止扫描"
+  },
+  {
+    "name": "5s 自动停止（回到开始扫描）",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "name": "发现计数文案",
+    "ok": true,
+    "detail": "发现 13 台设备"
+  },
+  {
+    "name": "夹具卡片 BLEToolkit-Server",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "name": "夹具卡片 RSSI 展示",
+    "ok": true,
+    "detail": "-50 dBm -74 dBm -27 dBm -49 dBm"
+  },
+  {
+    "name": "F004 广播详情展开",
+    "ok": true,
+    "detail": "-2147483648 dBm -27 dBm 1 个 10:B4:1D:CD:23:8D BLEToolkit-Server Smart BLE 信号强度 关于 关闭 发射功率 广播 广播数据"
+  },
+  {
+    "name": "F004 详情数据（MAC/名称/RSSI）",
+    "ok": true,
+    "detail": "10:B4:1D:CD:23:8D"
+  },
+  {
+    "name": "F003 筛选面板展开",
+    "ok": true,
+    "detail": "-100 dBm -50 -70 -74 dBm -90 46:0F:B7:2F:77:F1 Smart BLE 信号强度 全部 关于"
+  }
+]

@@ -67,3 +67,17 @@ F002 权限链说明：本轮为已授权态复跑（App 预装+权限已授）�
 驱动迭代（v1→v5）：① 扫描中瞬态改为 tap 后 0.5s 间隔轮询（原 sleep2+ensure_awake 的 SLEEP/WAKE 循环耗时 3s+，把 dump 推到 5s 会话之后）；② F003 与 F004 调序——广播详情弹层（×）不可达且 BACK 不关，放最后一步免关闭；③ 筛选面板两级结构（「筛选」出摘要 →「展开」露完整表单）分步断言；④ 冷启改轮询就绪（固定 9s 在 WebView 加载完成前 dump）。
 
 U-AND 线自此全通，状态由 BLOCKED_HOST → 通路+证据齐备；U-WX 仍差开发者工具扫码登录。
+
+## 2026-09-07 A-AND 线启动（Android 原生 Kotlin/Compose，扩展线登记后首跑）
+
+**结论：A-AND 真机 13/13 全 PASS**（`android-native/aand-p001-e5-results.json`，驱动 `a-and-p001-e5.py` v5，截图 6 张，E5 三星 SM-G9910）。
+
+覆盖：P001 启动（扫描 Tab/Smart BLE 标签）、首启空态（暂无设备+点击上方按钮开始扫描）、蓝牙就绪（蓝牙已开启）、权限预授态（无未授权文案）、扫描中瞬态（停止扫描）、5s 自动停止回落、发现计数（发现 N 台设备）、夹具卡片 BLEToolkit-Server（名称或 MAC 10:B4:1D:CD:23:8D 双匹配）、RSSI 展示（-27~-50dBm 四色档）、F004 广播详情（广播数据/发射功率/MAC/名称/关闭按钮）、F003 筛选面板（content-desc「展开」箭头→信号强度 -100/-90/-70/-50 预设+全部+名称前缀完整表单）。
+
+工具链：本机系统 JDK 24 不可用于 Gradle 8.2 → 便携 JDK 21 `C:\Users\11066\tools\jdk-21`（不入库）；`gradlew assembleDebug` 1m41s；`pm grant` 预授 SCAN/CONNECT/ADVERTISE+定位五权限。
+
+缺陷登记：**WIN-AAND-001（P3）** 广播详情 sheet 出现 `-2147483648 dBm`（INT_MIN 未兜底的 RSSI 渲染），v1/v4/v5 三跑复现（`aand-p001-advdetail.png` 可见）。
+
+观察：① 单轮 5s 扫描偶发漏扫夹具（v2/v3 两跑缺席，补扫即现）——A-AND 无「扫描过滤器」摘要 chips，与 U-AND 形态不同；② 未命名设备渲染为「未知设备」+MAC；③ 夹具粘性 fault 武装态曾致广播异常停止，esptool hard_reset 后恢复（串口确认 `adv status started`）；④ A-AND 广播详情 sheet 有「关闭」按钮（U-AND 的 × 不可达），但同样盖住筛选入口，驱动需显式关闭。
+
+驱动迭代（v1→v5）：① 扫描瞬态改 tap 后轻量连拍（ensure_awake 的 dumpsys 开销会拖过 5s 会话）；② F004 后显式 tap「关闭」关 sheet；③ 筛选开关是 IconButton content-desc「展开/收起」（text「过滤条件」不可点）→ bounds_of_desc；④ 夹具匹配加 MAC 兜底+最多补扫 2 轮。
