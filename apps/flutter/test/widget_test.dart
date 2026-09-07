@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:smart_ble/core/ble/hid_session_store.dart';
 import 'package:smart_ble/core/design/app_icons.dart';
+import 'package:smart_ble/core/design/app_illustrations.dart';
 import 'package:smart_ble/main.dart';
 import 'package:smart_ble/ui/pages/hid_detail_page.dart';
 import 'package:smart_ble/ui/pages/hid_diagnostics_page.dart';
@@ -137,6 +138,17 @@ void main() {
     for (final name in kAppIconNames) {
       await tester.pumpWidget(MaterialApp(
         home: Scaffold(body: Center(child: AppIcon(name, size: 24))),
+      ));
+      expect(tester.takeException(), isNull, reason: name);
+    }
+  });
+
+  // PARITY-ILL：4 幅正典空态插图（radar/link/doc/box，透明底）全部可解析渲染。
+  testWidgets('canon empty-state illustrations render without error', (tester) async {
+    expect(kAppIllNames, ['radar', 'link', 'doc', 'box']);
+    for (final name in kAppIllNames) {
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(body: Center(child: AppIll(name))),
       ));
       expect(tester.takeException(), isNull, reason: name);
     }

@@ -116,6 +116,53 @@ describe('Smart BLE complete page and navigation flow', () => {
 		}
 	})
 
+	test('PARITY-ILL: empty-state illustration mirror is locked to prototype C.ILL (transparent, 4 glyphs)', () => {
+		const comp = fs.readFileSync(
+			path.join(__dirname, '../../docs/specs/prototype/v1-new/components/components.js'),
+			'utf8'
+		)
+		const illBlock = comp.slice(comp.indexOf('ILL:{'), comp.indexOf('},', comp.indexOf('ILL:{')))
+		const canonNames = [...illBlock.matchAll(/(\w+):`<svg/g)].map((m) => m[1])
+		expect(canonNames).toEqual(['radar', 'link', 'doc', 'box'])
+
+		const mirrorSrc = fs.readFileSync(
+			path.join(__dirname, '../services/design/app-illustrations.js'),
+			'utf8'
+		)
+		const namesMatch = mirrorSrc.match(/APP_ILL_NAMES = \[([^\]]+)\]/)
+		expect(namesMatch).not.toBeNull()
+		const mirrored = namesMatch[1].split(',').map((s) => s.trim().replace(/["']/g, ''))
+		expect(mirrored).toEqual(canonNames)
+		// 逐字锁定：正典每个 ILL 主体片段必须在镜像中出现，且不得引入背景矩形
+		for (const name of canonNames) {
+			const body = illBlock.match(new RegExp(`${name}:\\\`<svg[^>]*>([\\s\\S]*?)<\\/svg>`))
+			expect(body).not.toBeNull()
+			const normalized = body[1].replace(/\s+/g, ' ').trim()
+			expect(normalized.length).toBeGreaterThan(40)
+			expect(mirrorSrc).toContain(normalized)
+		}
+		expect(mirrorSrc).not.toContain('<rect')
+	})
+
+	test('PARITY-ILL: no opaque placeholder bitmap assets remain; empty states use canonical illustrations', () => {
+		// 占位图目录整体退役：正典 B6 ILL 为透明底内联 SVG 镜像
+		expect(fs.existsSync(path.join(__dirname, '../static/placeholders'))).toBe(false)
+		expect(fs.existsSync(path.join(__dirname, '../static/other-apps'))).toBe(false)
+		expect(fs.existsSync(path.join(__dirname, '../static/brand'))).toBe(false)
+
+		const scanPages = ['pages/index/index.vue', 'pages/connected/index.vue', 'components/common/empty-state.vue']
+		for (const rel of scanPages) {
+			const src = fs.readFileSync(path.join(__dirname, '../', rel), 'utf8')
+			expect(src).not.toContain('/static/placeholders/')
+		}
+		const indexSrc = fs.readFileSync(path.join(__dirname, '../pages/index/index.vue'), 'utf8')
+		expect(indexSrc).toContain(`:ill="devices.length > 0 ? 'link' : 'radar'"`)
+		const connectedSrc = fs.readFileSync(path.join(__dirname, '../pages/connected/index.vue'), 'utf8')
+		expect(connectedSrc).toContain('ill="link"')
+		const emptyStateSrc = fs.readFileSync(path.join(__dirname, '../components/common/empty-state.vue'), 'utf8')
+		expect(emptyStateSrc).toContain("import AppIll from './app-ill.vue'")
+	})
+
 	test('P004 removed: index shows no configured-devices panel even with session snapshots', async () => {
 		await replaceRuntimeState({ knownDevices: [HID_DEVICE], currentDevice: HID_DEVICE })
 		const page = await program.reLaunch('/pages/index/index')

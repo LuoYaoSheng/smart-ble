@@ -25,9 +25,11 @@
 					<scroll-view scroll-y class="device-scroll">
 						<empty-state
 							v-if="filteredDevices.length === 0"
-							image="/static/placeholders/empty_scan.png"
+							:ill="devices.length > 0 ? 'link' : 'radar'"
 							:title="devices.length > 0 ? '当前没有匹配设备' : '还没有扫描结果'"
-							:description="devices.length > 0 ? '调整筛选试试。' : '点上方按钮开始扫描。'"
+							:description="devices.length > 0 ? '调整筛选条件试试' : '点上方按钮开始扫描附近 BLE 设备'"
+							:action-label="devices.length > 0 ? '' : '开始扫描'"
+							@action="startScan"
 						/>
 						<template v-else>
 							<device-card

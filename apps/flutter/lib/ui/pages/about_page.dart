@@ -151,14 +151,19 @@ class _AboutPageState extends State<AboutPage> {
       ),
       child: Row(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image.asset(
-              'assets/brand/icon.png',
-              width: 38,
-              height: 38,
-              fit: BoxFit.cover,
+          // p009 正典品牌标：38px 渐变盒（#0E4FC4→#1B6DFF）+ bt 字形，不用位图
+          Container(
+            width: 38,
+            height: 38,
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color(0xFF0E4FC4), Color(0xFF1B6DFF)]),
+              borderRadius: BorderRadius.circular(11),
             ),
+            alignment: Alignment.center,
+            child: const AppIcon('bt', size: 20, color: Colors.white),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -312,6 +317,9 @@ class _PromoTile extends StatelessWidget {
 
   const _PromoTile({required this.app, required this.onTap});
 
+  static Color _fromHex(String hex) =>
+      Color(int.parse(hex.replaceFirst('#', '0xFF')));
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -321,19 +329,19 @@ class _PromoTile extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
         child: Row(
           children: [
+            // p009 正典 .promo .ic：缩写块（底色/字色来自数据），替代位图图标
             Container(
               width: 38,
               height: 38,
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                    colors: [Color(0xFF7B6DFF), Color(0xFF4A9EFF)]),
+                color: _fromHex(app.bg),
                 borderRadius: BorderRadius.circular(11),
               ),
               alignment: Alignment.center,
               child: Text(
-                app.name.substring(0, 1),
-                style: const TextStyle(
-                    color: Colors.white,
+                app.abbr,
+                style: TextStyle(
+                    color: _fromHex(app.color),
                     fontWeight: FontWeight.w800,
                     fontSize: 15),
               ),

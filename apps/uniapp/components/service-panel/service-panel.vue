@@ -13,7 +13,6 @@
 			:state="operationState"
 			:title="emptyTitle"
 			:description="emptyDescription"
-			image="/static/placeholders/empty_services.png"
 			:action-label="showRetry ? '手动重试' : ''"
 			:action-disabled="retryDisabled"
 			@action="emit('retry')"

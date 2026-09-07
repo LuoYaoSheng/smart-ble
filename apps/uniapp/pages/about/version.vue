@@ -42,7 +42,7 @@
 					<text class="history-sub">{{ item.status }} · {{ item.channel }}</text>
 				</view>
 			</view>
-			<text v-else class="empty-note">暂无正式发布版本</text>
+			<empty-state v-else ill="doc" title="暂无正式发布版本" description="产品当前处于 PREVIEW 阶段，首个正式版发布后将在此列出。" />
 			<text v-if="!model.current.has_artifacts" class="empty-note subtle">当前无 Artifact，不提供下载入口。</text>
 		</view>
 
@@ -54,7 +54,7 @@
 					<text class="history-sub">{{ item.status }} · {{ item.channel }}</text>
 				</view>
 			</view>
-			<text v-else class="empty-note">暂无预览记录</text>
+			<empty-state v-else ill="doc" title="暂无预览记录" />
 		</view>
 
 		<view class="footer-note">
@@ -65,6 +65,7 @@
 
 <script setup>
 import { onShareAppMessage, onShareTimeline, onShow } from '@dcloudio/uni-app';
+import EmptyState from '../../components/common/empty-state.vue';
 import { getVersionPageModel } from '../../services/version-metadata.js';
 
 const model = getVersionPageModel();

@@ -13,6 +13,7 @@ import '../widgets/filter_panel.dart';
 import 'device_detail_page.dart';
 import 'provisioning_page.dart';
 import '../../core/design/app_icons.dart';
+import '../../core/design/app_illustrations.dart';
 
 /// BLE 状态提供者
 final bleStateProvider = StreamProvider<BleState>((ref) {
@@ -362,17 +363,13 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
     );
   }
 
-  /// 空态文案对齐原型 p001 empty 组件
+  /// 空态文案+插图对齐原型 p001 C.empty（ill: radar 未扫描 / link 筛选无匹配）
   Widget _buildEmptyState(bool hasDevices) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          AppIcon(
-            hasDevices ? 'set' : 'scan',
-            size: 64,
-            color: AppTheme.textSecondary.withValues(alpha: 0.5),
-          ),
+          AppIll(hasDevices ? 'link' : 'radar', width: 118),
           const SizedBox(height: 16),
           Text(
             hasDevices ? '当前没有匹配设备' : '还没有扫描结果',

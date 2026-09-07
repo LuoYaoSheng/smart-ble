@@ -45,7 +45,6 @@
 
 		<template v-else>
 			<view class="ble-empty-card operation-empty">
-				<image v-if="image" :src="image" class="ble-empty-image" mode="aspectFit"></image>
 				<text class="ble-empty-title">{{ title || '暂无内容' }}</text>
 				<text v-if="description" class="ble-empty-copy">{{ description }}</text>
 				<button
@@ -73,7 +72,6 @@ defineProps({
 	},
 	title: { type: String, default: '' },
 	description: { type: String, default: '' },
-	image: { type: String, default: '' },
 	actionLabel: { type: String, default: '' },
 	actionDisabled: { type: Boolean, default: false }
 });

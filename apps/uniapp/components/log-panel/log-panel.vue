@@ -9,10 +9,8 @@
 		</view>
 
 		<scroll-view class="log-content" scroll-y :scroll-top="scrollTop">
-			<view v-if="logs.length === 0" class="ble-empty-card log-empty">
-				<image v-if="emptyImage" :src="emptyImage" class="ble-empty-image" mode="aspectFit"></image>
-				<text class="ble-empty-title">{{ emptyTitle }}</text>
-				<text v-if="emptyDescription" class="ble-empty-copy">{{ emptyDescription }}</text>
+			<view v-if="logs.length === 0" class="log-empty">
+				<text>{{ emptyText }}</text>
 			</view>
 
 			<view v-else>
@@ -56,17 +54,10 @@ defineProps({
 		type: String,
 		default: 'dock' // dock | card
 	},
-	emptyTitle: {
+	// p006/p008 正典 logPanel 空态：单行居中说明文字（.logempty），无插图
+	emptyText: {
 		type: String,
-		default: '还没有日志记录'
-	},
-	emptyDescription: {
-		type: String,
-		default: '连接设备、读写特征值或开启监听后，这里会持续追加通信日志。'
-	},
-	emptyImage: {
-		type: String,
-		default: '/static/placeholders/empty_log.png'
+		default: '暂无日志'
 	}
 });
 
@@ -173,8 +164,15 @@ const formatLogTime = (log) => log.timestamp || log.time || '--:--:--';
 }
 
 .log-empty {
-	min-height: 240rpx;
-	margin-top: 0;
+	/* p006 正典 .logempty：单行居中说明，留白紧凑 */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 120rpx;
+	padding: 44rpx 26rpx;
+	color: var(--ble-text-muted);
+	font-size: 24rpx;
+	text-align: center;
 }
 
 .log-item {

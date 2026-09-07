@@ -1,32 +1,36 @@
 <template>
 	<view class="app-card" hover-class="app-card-hover" @click="$emit('select')">
-		<image v-if="app.icon && !imageFailed" class="app-icon" :src="app.icon" mode="aspectFill" @error="imageFailed = true" />
-		<view v-else class="app-icon app-icon-fallback"><text>{{ app.name.slice(0, 1) }}</text></view>
+		<view class="app-chip" :style="chipStyle"><text>{{ app.abbr || app.name.slice(0, 1) }}</text></view>
 		<view class="app-copy">
 			<view class="app-heading"><text class="app-name">{{ app.name }}</text><text class="app-tag">小程序</text></view>
 			<text class="app-desc">{{ app.description }}</text>
 		</view>
-		<text class="app-arrow">›</text>
+		<app-icon name="chev-r" :size="28" color="#93A2B4" />
 	</view>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { computed } from 'vue';
+import AppIcon from '../common/app-icon.vue';
 
-defineProps({ app: { type: Object, required: true } });
+const props = defineProps({ app: { type: Object, required: true } });
 defineEmits(['select']);
-const imageFailed = ref(false);
+
+// p009 正典 .promo .ic：42px 缩写块（底色/字色来自数据），替代位图图标
+const chipStyle = computed(() => ({
+	background: props.app.bg || 'rgba(27, 109, 255, 0.08)',
+	color: props.app.color || '#1B6DFF'
+}));
 </script>
 
 <style scoped>
-.app-card { display: grid; grid-template-columns: 92rpx 1fr auto; align-items: center; gap: 18rpx; padding: 22rpx; border: 1rpx solid rgba(27, 109, 255, 0.12); border-radius: 26rpx; background: rgba(255, 255, 255, 0.9); box-shadow: 0 12rpx 30rpx rgba(17, 43, 78, 0.06); }
-.app-card-hover { transform: translateY(2rpx); opacity: 0.92; }
-.app-icon { width: 92rpx; height: 92rpx; border-radius: 22rpx; background: #fff; box-shadow: 0 10rpx 24rpx rgba(17, 43, 78, 0.08); }
-.app-icon-fallback { display: flex; align-items: center; justify-content: center; color: var(--ble-brand); background: rgba(27, 109, 255, 0.1); font-size: 34rpx; font-weight: 800; }
+.app-card { display: grid; grid-template-columns: 84rpx 1fr auto; align-items: center; gap: 20rpx; padding: 22rpx 0; border-bottom: 1rpx solid var(--ble-line-soft); }
+.app-card:last-child { border-bottom: none; }
+.app-card-hover { opacity: 0.92; }
+.app-chip { display: flex; align-items: center; justify-content: center; width: 84rpx; height: 84rpx; border-radius: 20rpx; font-size: 30rpx; font-weight: 800; }
 .app-copy { min-width: 0; }
 .app-heading { display: flex; align-items: center; gap: 10rpx; }
-.app-name { color: var(--ble-text); font-size: 28rpx; font-weight: 800; }
+.app-name { color: var(--ble-text); font-size: 30rpx; font-weight: 800; }
 .app-tag { padding: 4rpx 10rpx; border-radius: 999rpx; color: var(--ble-brand); background: rgba(27, 109, 255, 0.09); font-size: 19rpx; font-weight: 700; }
-.app-desc { display: -webkit-box; margin-top: 8rpx; overflow: hidden; color: var(--ble-text-subtle); font-size: 22rpx; line-height: 1.5; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
-.app-arrow { color: var(--ble-brand); font-size: 38rpx; }
+.app-desc { display: -webkit-box; margin-top: 6rpx; overflow: hidden; color: var(--ble-text-muted); font-size: 22rpx; line-height: 1.5; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
 </style>

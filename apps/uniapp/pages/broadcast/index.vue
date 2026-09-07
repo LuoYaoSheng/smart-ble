@@ -100,8 +100,7 @@
 			clearable
 			title="操作日志"
 			caption="记录广播启动、停止和支持检查结果。"
-			empty-title="暂无日志"
-			empty-description="开始广播或检查支持后，这里会显示操作记录。"
+			empty-text="暂无日志 · 开始广播或检查支持后，操作记录会显示在这里"
 			:logs="logs"
 			@clear="clearLogs"
 		/>

@@ -1,7 +1,7 @@
 <template>
 	<view class="container">
 	<view class="header">
-		<view class="logo-box"><image class="logo-img" src="/static/logo.png" mode="aspectFit" /></view>
+		<view class="logo-box"><app-icon name="bt" :size="36" color="#FFFFFF" /></view>
 		<view class="brand-copy">
 			<text class="app-name">{{ product.name }}</text>
 			<text class="version">{{ appVersion }} · 零后端 · 零本地持久化</text>
@@ -55,6 +55,7 @@
 import { ref } from 'vue';
 import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import AppCard from '../../components/about/app-card.vue';
+import AppIcon from '../../components/common/app-icon.vue';
 import {
 	PRODUCT_FEATURES,
 	PRODUCT_INFO,
@@ -205,8 +206,7 @@ onShareTimeline(() => ({ title: 'BLE Toolkit+ - BLE 调试与验证工具', quer
 .container { min-height: 100vh; padding: 28rpx; background: transparent; }
 .header, .section { margin-bottom: 22rpx; border: 1rpx solid var(--ble-line-soft); border-radius: var(--ble-radius-lg); background: var(--ble-gradient-surface); box-shadow: var(--ble-shadow-soft); }
 .header { display: flex; align-items: center; gap: 20rpx; padding: 24rpx; }
-.logo-box { display: flex; align-items: center; justify-content: center; width: 76rpx; height: 76rpx; flex-shrink: 0; border: 1rpx solid rgba(21, 93, 255, 0.12); border-radius: 20rpx; background: linear-gradient(135deg, rgba(21, 93, 255, 0.14), rgba(123, 224, 255, 0.18)); }
-.logo-img { width: 52rpx; height: 52rpx; }
+.logo-box { display: flex; align-items: center; justify-content: center; width: 76rpx; height: 76rpx; flex-shrink: 0; border-radius: 22rpx; background: linear-gradient(135deg, #0E4FC4, #1B6DFF); }
 .brand-copy { min-width: 0; flex: 1; }
 .app-name { display: block; color: var(--ble-text); font-size: 30rpx; font-weight: 800; }
 .version { display: block; margin-top: 4rpx; color: var(--ble-text-muted); font-size: 20rpx; }

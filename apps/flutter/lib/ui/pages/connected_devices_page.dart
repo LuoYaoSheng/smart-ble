@@ -6,6 +6,7 @@ import '../../core/ble/ble_manager.dart';
 import '../../themes/app_theme.dart';
 import 'device_detail_page.dart';
 import '../../core/design/app_icons.dart';
+import '../../core/design/app_illustrations.dart';
 
 /// 已连接设备列表页
 ///
@@ -71,30 +72,27 @@ class _ConnectedDevicesPageState extends ConsumerState<ConnectedDevicesPage> {
     );
   }
 
+  /// 空态对齐原型 p007 C.empty（ill: link）
   Widget _buildEmptyState() {
-    return Center(
+    return const Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          AppIcon(
-            'x',
-            size: 64,
-            color: AppTheme.textSecondary.withValues(alpha: 0.5),
-          ),
-          const SizedBox(height: 16),
-          const Text(
-            '暂无已连接设备',
+          AppIll('link', width: 118),
+          SizedBox(height: 16),
+          Text(
+            '还没有连接中的设备',
             style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-              color: AppTheme.textSecondary,
+              fontSize: 17,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF18222E),
             ),
           ),
-          const SizedBox(height: 8),
-          const Text(
-            '在扫描页面点击设备进行连接',
+          SizedBox(height: 6),
+          Text(
+            '先在「扫描」页找到设备并连接，会话将保存在这里',
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 13,
               color: AppTheme.textSecondary,
             ),
           ),

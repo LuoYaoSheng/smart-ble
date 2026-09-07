@@ -1,6 +1,6 @@
 <template>
 	<view class="ble-empty-card">
-		<image v-if="image" :src="image" class="ble-empty-image" mode="aspectFit"></image>
+		<app-ill v-if="ill" :name="ill" :width="236" class="ble-empty-ill" />
 		<text class="ble-empty-title">{{ title }}</text>
 		<text v-if="description" class="ble-empty-copy">{{ description }}</text>
 		<button
@@ -15,11 +15,19 @@
 </template>
 
 <script setup>
+import AppIll from './app-ill.vue';
+
 defineProps({
-	image: { type: String, default: '' },
+	ill: { type: String, default: '' },
 	title: { type: String, required: true },
 	description: { type: String, default: '' },
 	actionLabel: { type: String, default: '' }
 });
 defineEmits(['action']);
 </script>
+
+<style scoped>
+.ble-empty-ill {
+	margin-bottom: 12rpx;
+}
+</style>

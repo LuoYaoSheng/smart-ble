@@ -18,7 +18,7 @@
 						<empty-state
 							id="connected-empty"
 							v-if="connectedDevicesList.length === 0"
-							image="/static/placeholders/empty_connected.png"
+							ill="link"
 							title="还没有连接中的设备"
 							:description="hidStore.sessionOnline ? 'Smart HID 配网连接进行中，这里列出通用调试连接。' : '先在“扫描”页找到设备并连接，这里会保留会话入口。'"
 							action-label="去扫描"

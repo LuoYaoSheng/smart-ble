@@ -16,6 +16,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../themes/app_theme.dart';
 import '../../core/design/app_icons.dart';
+import '../../core/design/app_illustrations.dart';
 
 class VersionsPage extends StatefulWidget {
   const VersionsPage({super.key});
@@ -104,12 +105,12 @@ class _VersionsPageState extends State<VersionsPage> {
           const SizedBox(height: 12),
           _card(children: [
             _sectionTitle('正式发布'),
-            _emptyRow('暂无正式发布版本'),
+            _emptyBlock('暂无正式发布版本', '产品当前处于 PREVIEW 阶段，首个正式版发布后将在此列出。'),
           ]),
           const SizedBox(height: 12),
           _card(children: [
             _sectionTitle('预览记录'),
-            _emptyRow('暂无预览记录'),
+            _emptyBlock('暂无预览记录', ''),
             _emptyRow('当前无 Artifact，不提供下载入口', small: true),
           ]),
           const SizedBox(height: 8),
@@ -195,6 +196,33 @@ class _VersionsPageState extends State<VersionsPage> {
       child: Text(text,
           style: TextStyle(
               fontSize: small ? 11 : 13, color: AppTheme.textSecondary)),
+    );
+  }
+
+  /// p010 正典 C.empty(ill:'doc')：doc 插图 + 标题 + 说明（透明底插图）
+  Widget _emptyBlock(String title, String desc) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 14),
+      child: Column(
+        children: [
+          const AppIll('doc', width: 118),
+          const SizedBox(height: 12),
+          Text(title,
+              style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: AppTheme.textPrimary)),
+          if (desc.isNotEmpty) ...[
+            const SizedBox(height: 6),
+            Text(desc,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                    fontSize: 13,
+                    height: 1.5,
+                    color: AppTheme.textSecondary)),
+          ],
+        ],
+      ),
     );
   }
 }

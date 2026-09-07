@@ -70,10 +70,6 @@ flutter:
   generate: true
   uses-material-design: true
 
-  assets:
-    - assets/brand/
-    - assets/images/
-    - assets/icons/
 
   # fonts:
   #   - family: CustomFont
