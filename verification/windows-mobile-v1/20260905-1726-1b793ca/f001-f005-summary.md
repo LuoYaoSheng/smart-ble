@@ -55,3 +55,15 @@
   锁屏窗表现为 NotificationShade 焦点、无 SIM 紧急态无法 dismiss-keyguard 解锁
 - 微信开发者工具服务端口开关在 设置→安全设置（computer-use 可代点；改 localstorage JSON 无效）
 - pio 不在 PATH：用 C:/Users/11066/.platformio/penv/Scripts/pio.exe
+
+## 2026-09-07 U-AND 续跑（三星解锁后）
+
+**结论：U-AND 真机 13/13 全 PASS**（`uniapp-android/uand-p001-e5-results.json`，驱动 `uand-p001-e5.py` v5，截图 6 张）。
+
+覆盖：P001 启动/首启空态/待开始/蓝牙就绪、扫描中瞬态（停止扫描+扫描中双文案捕获）、5s 自动停止回落、完成态（已完成·N 台）、夹具卡片 BLEToolkit-Server、RSSI 展示、F003 面板展开（扫描过滤器/RSSI 摘要 chips）+ 完整表单（信号强度滑条+预设/名称前缀/隐藏无名设备/重置过滤）、F004 广播详情（RSSI 历史序列/厂商数据/MAC 列表）。
+
+F002 权限链说明：本轮为已授权态复跑（App 预装+权限已授），全新装机弹窗链证据为此前实测记录（定位+附近设备双弹窗），不重复计。
+
+驱动迭代（v1→v5）：① 扫描中瞬态改为 tap 后 0.5s 间隔轮询（原 sleep2+ensure_awake 的 SLEEP/WAKE 循环耗时 3s+，把 dump 推到 5s 会话之后）；② F003 与 F004 调序——广播详情弹层（×）不可达且 BACK 不关，放最后一步免关闭；③ 筛选面板两级结构（「筛选」出摘要 →「展开」露完整表单）分步断言；④ 冷启改轮询就绪（固定 9s 在 WebView 加载完成前 dump）。
+
+U-AND 线自此全通，状态由 BLOCKED_HOST → 通路+证据齐备；U-WX 仍差开发者工具扫码登录。

@@ -81,7 +81,13 @@ adb('shell', 'svc', 'power', 'stayon', 'usb')  # 长跑防锁屏（跑完还原�
 adb('shell', 'am', 'force-stop', 'io.dcloud.HBuilder')
 time.sleep(1)
 adb('shell', 'monkey', '-p', 'io.dcloud.HBuilder', '-c', 'android.intent.category.LAUNCHER', '1')
-time.sleep(9)
+# 冷启 WebView 就绪轮询（v3 实测 9s 不够，固定等待会在加载完成前 dump）
+x = None
+for _ in range(20):
+    time.sleep(1.5)
+    x = dump()
+    if '开始扫描' in texts(x):
+        break
 ensure_awake()
 
 x = dump()
@@ -98,10 +104,18 @@ check('开始扫描按钮可定位', p is not None, str(p))
 if p:
     ensure_awake()
     tap(p)
-    time.sleep(2)
-    ensure_awake()
-    x2 = dump(); t2 = texts(x2)
-    check('扫描中（停止扫描出现）', '停止扫描' in t2, ' '.join(sorted(t2 & {'停止扫描', '扫描中', '待开始'})[:3]))
+    # 立即轮询扫描中瞬态（5s 会话短，不能中途 ensure_awake——其 SLEEP/WAKE
+    # 循环耗 3s+ 会把 dump 推到会话结束后，v1 首跑即此因漏检）
+    scanning_seen = False
+    x2 = None
+    for _ in range(6):
+        time.sleep(0.5)
+        x2 = dump(); t2 = texts(x2)
+        if '停止扫描' in t2:
+            scanning_seen = True
+            break
+    check('扫描中（停止扫描出现）', scanning_seen,
+          ' '.join(sorted(texts(x2) & {'停止扫描', '扫描中', '待开始'})[:3]) if x2 else '')
     shot('uand-p001-scanning.png')
     # 等 5s 会话结束
     time.sleep(6)
@@ -117,29 +131,58 @@ if p:
         check('夹具卡片 RSSI 展示', any(re.match(r'-\d+ dBm', s) for s in t3))
         shot('uand-p001-fixture-card.png')
 
-    # ---- F004 广播详情：tap 夹具卡片 ----
+        # ---- F003 筛选面板（先于 F004——广播弹层无可靠关闭路径，放最后）----
+        ensure_awake()
+        x = dump()
+        pf = bounds_of(x, '筛选')
+        if pf:
+            tap(pf)
+            panel_seen = False
+            x5 = None
+            t5 = set()
+            for _ in range(5):
+                time.sleep(0.6)
+                x5 = dump(); t5 = texts(x5)
+                if '扫描过滤器' in t5:
+                    panel_seen = True
+                    break
+            check('F003 筛选面板展开', panel_seen, ' '.join(sorted(t5)[:8]))
+            # 面板默认折叠（仅摘要 chips：RSSI ≥ x dBm 等）——再 tap「展开」露完整表单
+            if panel_seen:
+                eb = bounds_of(x5, '展开')
+                full_seen = False
+                t6 = set()
+                for _ in range(5):
+                    if eb:
+                        tap(eb)
+                        eb = None
+                    time.sleep(0.8)
+                    x6 = dump(); t6 = texts(x6)
+                    if {'信号强度', '名称前缀', '重置过滤'} <= t6:
+                        full_seen = True
+                        break
+                check('F003 完整筛选表单（展开）', full_seen, ' '.join(sorted(t6)[:10]))
+                shot('uand-p001-filter.png')
+                # 收起面板，保证后续夹具卡片 tap 不被挤位
+                x7 = dump()
+                cf = bounds_of(x7, '收起筛选')
+                if cf:
+                    tap(cf)
+                    time.sleep(1)
+        else:
+            check('F003 筛选入口可定位', False)
+
+        # ---- F004 广播详情：tap 夹具卡片（最后一步，弹层不再关闭）----
         if pb:
             ensure_awake()
+            x = dump()
+            pb = bounds_of(x, 'BLEToolkit-Server') or pb
             tap(pb)
             time.sleep(2.5)
             x4 = dump(); t4 = texts(x4)
             check('F004 广播详情展开', any('广播' in s or 'RSSI' in s or 'Manufacturer' in s or '厂商' in s for s in t4),
                   ' '.join(sorted(t4)[:12]))
             shot('uand-p001-advdetail.png')
-
-# ---- F003 筛选面板 ----
-ensure_awake()
-x = dump()
-pf = bounds_of(x, '筛选')
-if pf:
-    ensure_awake()
-    tap(pf)
-    time.sleep(2)
-    x5 = dump(); t5 = texts(x5)
-    check('F003 筛选面板展开', any(s in t5 for s in ['信号强度', '名称前缀', '隐藏无名', '重置']))
-    shot('uand-p001-filter.png')
-else:
-    check('F003 筛选入口可定位', False)
 
 ok = sum(1 for r in results if r['ok'])
 print(f'====== 汇总 PASS {ok}/{len(results)} ======')

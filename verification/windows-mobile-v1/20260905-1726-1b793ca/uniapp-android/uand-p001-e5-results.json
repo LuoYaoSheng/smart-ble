@@ -1,32 +1,67 @@
 [
   {
     "name": "P001 启动（扫描 Tab）",
-    "ok": false,
+    "ok": true,
     "detail": ""
   },
   {
     "name": "首启空态（还没有扫描结果）",
-    "ok": false,
+    "ok": true,
     "detail": ""
   },
   {
     "name": "首启状态=待开始",
-    "ok": false,
+    "ok": true,
     "detail": ""
   },
   {
     "name": "蓝牙就绪",
-    "ok": false,
+    "ok": true,
     "detail": ""
   },
   {
     "name": "开始扫描按钮可定位",
-    "ok": false,
-    "detail": "None"
+    "ok": true,
+    "detail": "(541, 445)"
+  },
+  {
+    "name": "扫描中（停止扫描出现）",
+    "ok": true,
+    "detail": "停止扫描 扫描中"
+  },
+  {
+    "name": "5s 自动停止（回到开始扫描）",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "name": "完成态文案（已完成）",
+    "ok": true,
+    "detail": "已完成"
+  },
+  {
+    "name": "夹具卡片 BLEToolkit-Server",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "name": "夹具卡片 RSSI 展示",
+    "ok": true,
+    "detail": ""
   },
   {
     "name": "F003 筛选面板展开",
-    "ok": false,
-    "detail": ""
+    "ok": true,
+    "detail": "-24 dBm -38 dBm -49 dBm -53 dBm -66 dBm -73 dBm -75 dBm -85 dBm"
+  },
+  {
+    "name": "F003 完整筛选表单（展开）",
+    "ok": true,
+    "detail": "-100 -100 dBm -24 dBm -38 dBm -49 dBm -53 dBm -55 -66 dBm -70 -73 dBm"
+  },
+  {
+    "name": "F004 广播详情展开",
+    "ok": true,
+    "detail": "-24 dBm -38 dBm -49 dBm -53 dBm -66 dBm -73 dBm -75 dBm -85 dBm -87 dBm -88 dBm 0D:A2:1C:98:F5:F9 10:B4:1D:CD:23:8D"
   }
 ]
