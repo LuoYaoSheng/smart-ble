@@ -199,3 +199,27 @@
 | Flutter 页面缺口 | 属实：P003/P005 为 Modal 冒充、P010 缺失（provisioning_page.dart 存在≠P003/P005/P010 完成，旧 FLUTTER_PRODUCT_GAP_AUDIT 的 △ 结论在本轮被坐实并细化） |
 | 旧 Flutter 审计过期 | 部分过期：provisioning/profile_registry/framing/transport 等新代码已合入（F018-F022 静态存在），但壳层三项结论（Tab/横滑/页面缺口）仍然有效 |
 | 测试矩阵错位 | 属实并已修复（MATRIX-G1-001） |
+
+---
+
+## 11. 第二轮补录：PARITY-ICON 图标资产统一（2026-09-07，用户指令「所有端图标统一」）
+
+### 11.1 审计发现（新增登记）
+
+| 编号 | 差异 | 归因 | 严重度 | 状态 |
+|---|---|---|---|---|
+| UNIAPP-ICON-001 | tabBar 四枚 PNG 字形全部偏离正典：扫描=智能手表（应 scan 放大镜）、已连接=键盘（P004 时代 hid.png 遗留，应 link 链条）、广播=填充波（应 cast 描边）、关于=旧字形；页内 P005 诊断行用文字 ✓/! 替代正典 SVG check/warn/x；P002 进度行 fail 用 `!`（应 `✕`）、active 用 `…`（应 `·`） | UNIAPP_IMPLEMENTATION_DRIFT | P1 | 已修 |
+| FLUTTER-ICON-001 | 全线 ~75 处 Material 图标（bluetooth_searching/devices_other/broadcast_on_personal 等 ~40 个字形）替代正典 35 枚 `i-*` sprite，视觉语言（填充/双态 outlined vs 1.8px 线性）整体偏离；tabBar 图标不受 IconTheme 控制需显式烤色 | FLUTTER_IMPLEMENTATION_DRIFT | P1 | 已修 |
+
+正典依据：TOKEN.md §7（24×24 线性 / stroke 1.8 / currentColor / `i-*` sprite 唯一来源）；wechat 平台 COMPONENT_RULE.md 明确「C 注册表 ic 为唯一组件来源」——图标无平台差异豁免。
+
+### 11.2 修复内容（同一提交序列 fix(parity)）
+
+- 正典镜像：35 枚 sprite → `apps/uniapp/services/design/app-icons.js` + `apps/flutter/lib/core/design/app_icons.dart`（受锁定镜像，测试锁等价性）。
+- U-WX/U-AND：tabBar PNG 按正典烤色重生成（81×81，#7B8FA5/#1B6DFF），旧 device/hid/broadcast/about 八个 PNG 删除；新增 `AppIcon` 组件（data-URI SVG）；P005 诊断行 ok/warn/fail 换正典 SVG、active/pending 保留 `·`；P002 进度行 `✕`/`·` 对齐；成功态 ✓→check 字形。
+- F-AND：新增 `AppIcon`（flutter_svg）并替换全部 Material 图标（14 文件），tabBar 显式烤选中/未选中色；方向变体统一 `rotate`（返回箭头=chev-r 180°）。
+- 映射与锁定：[DESIGN_TOKEN_PLATFORM_MAPPING.md](../09_test/DESIGN_TOKEN_PLATFORM_MAPPING.md) §1（Material→正典语义映射全表）；uniapp page-flow 2 条新测试 + flutter widget 2 条新测试。
+
+### 11.3 验证
+
+uniapp `build:mp-weixin` 通过（产物 tabBar=scan/link/cast/info，8 PNG，镜像入包）；node 静态断言（canon==mirror 35 枚）；flutter analyze 0 issue；flutter test 66/66（含 2 条图标门）。同设备三线截图留待视觉 Gate 按矩阵 §3 登记。

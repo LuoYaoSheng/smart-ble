@@ -32,9 +32,10 @@
 | 阴影 | TOKEN.md §阴影 | 卡片投影 | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | — |
 | 按钮高度 | TOKEN.md | 主/次按钮 | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | — |
 | 输入框高度 | TOKEN.md | — | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | — |
-| TabBar 高度/图标语义 | TOKEN.md/PATTERN.md | — | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | — |
+| TabBar 高度/图标语义 | TOKEN.md/PATTERN.md | — | PASS | PASS | PASS | 2026-09-07 PARITY-ICON：四 Tab 字形统一为正典 scan/link/cast/info（U-WX/U-AND PNG 烤色 / F-AND AppIcon），构建+静态+测试验证；同设备截图待视觉 Gate |
+| 图标字形（35 枚 `i-*` sprite） | TOKEN.md §7 | 全部页内图标 | PASS | PASS | PASS | 2026-09-07 PARITY-ICON：三线统一经镜像渲染（[DESIGN_TOKEN_PLATFORM_MAPPING.md](DESIGN_TOKEN_PLATFORM_MAPPING.md) §1）；uniapp 文字标记仅保留正典规定的 ✓/✕/·；Material 图标退役 |
 
-> 数值逐项以 TOKEN.md 当前版本为准；本表摘录核心项，回填时如正典有增补按正典补行。实现侧 Token 映射表另建 `DESIGN_TOKEN_PLATFORM_MAPPING.md`（PARITY 视觉 Gate 交付）。
+> 数值逐项以 TOKEN.md 当前版本为准；本表摘录核心项，回填时如正典有增补按正典补行。实现侧 Token 映射表见 `DESIGN_TOKEN_PLATFORM_MAPPING.md`（图标节 2026-09-07 已交付，其余随视觉 Gate）。
 
 ## 2. 逐页视觉项（每页正常/空/加载/错误/权限/关键弹窗六态截图后回填）
 
@@ -43,7 +44,7 @@
 | P001 | 自绘导航+工具条+设备卡信号条四格+两种空态文案 | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | — |
 | P002 | 三步骤条+表单+扫码大动作卡+四行进度+错误横幅 | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | — |
 | P003 | 身份卡/最近配置卡/操作区主次按钮 | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | — |
-| P005 | 状态行+五行图标语义（✓/!/…/·）+错误码块 mono | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | — |
+| P005 | 状态行+五行图标语义（ok=check/warn=warn/fail=x SVG + active/pending `·`）+错误码块 mono | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | 图标字形已三线统一（2026-09-07 PARITY-ICON，原表「✓/!/…/·」系旧实现口径已修正）；整页六态截图仍待视觉 Gate |
 | P006 | 设备面板+服务树折叠+日志六色 chip+写/OTA 弹窗 | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | — |
 | P007 | 汇总卡/ON 头标/空态两文案 | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | — |
 | P008 | 徽章六值+N/31 字节提示+超限红字+日志面板 | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | — |
