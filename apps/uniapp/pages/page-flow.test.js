@@ -163,6 +163,96 @@ describe('Smart BLE complete page and navigation flow', () => {
 		expect(emptyStateSrc).toContain("import AppIll from './app-ill.vue'")
 	})
 
+	test('PARITY-P001: scan page navbar / scantool copy locked to prototype p001 canon', () => {
+		const indexSrc = fs.readFileSync(path.join(__dirname, '../pages/index/index.vue'), 'utf8')
+		// 导航栏：kicker=BLE TOOLKIT+、标题=扫描、蓝牙状态三态词（正典 btWord）
+		expect(indexSrc).toContain('kicker="BLE TOOLKIT+"')
+		expect(indexSrc).toContain('title="扫描"')
+		expect(indexSrc).toContain("'蓝牙就绪'")
+		expect(indexSrc).toContain("'蓝牙未开启'")
+		expect(indexSrc).toContain("'平台不支持'")
+		// sec-t：附近设备 + 筛选/收起筛选 txtlink
+		expect(indexSrc).toContain('附近设备')
+		expect(indexSrc).toContain("showFilters ? '收起筛选' : '筛选'")
+
+		const summarySrc = fs.readFileSync(path.join(__dirname, '../components/scan/scan-summary.vue'), 'utf8')
+		// scantool 状态行三态（正典 scanLb）+ 按钮文案与图标位
+		expect(summarySrc).toContain('扫描中 · 5s 会话')
+		expect(summarySrc).toContain('扫描完成 · 发现')
+		expect(summarySrc).toContain('待开始扫描')
+		expect(summarySrc).toContain("scanning ? '停止扫描' : '开始扫描'")
+		// 图标位：开始=scan / 停止=stop（正典 C.btn icon 参数）
+		expect(summarySrc).toContain(":name=\"scanning ? 'stop' : 'scan'\"")
+		// 正典无「N 台设备 · N 台已连接」工具条行，也无「待开始/需重试」状态 chip
+		expect(summarySrc).not.toContain('台已连接')
+		expect(summarySrc).not.toContain('需重试')
+	})
+
+	test('PARITY-P001: filter rows locked to prototype .filter canon', () => {
+		const filterSrc = fs.readFileSync(path.join(__dirname, '../components/filter-panel/filter-panel.vue'), 'utf8')
+		expect(filterSrc).toContain('最弱信号')
+		expect(filterSrc).toContain('强 [-40]')
+		expect(filterSrc).toContain('较好 [-60]')
+		expect(filterSrc).toContain('一般 [-70]')
+		expect(filterSrc).toContain('弱 [-85]')
+		expect(filterSrc).toContain('阈值')
+		expect(filterSrc).toContain(':min="-100"')
+		expect(filterSrc).toContain(':max="-40"')
+		expect(filterSrc).toContain(':step="5"')
+		expect(filterSrc).toContain('placeholder="如 SHID / LightBLE"')
+		expect(filterSrc).toContain('隐藏无名')
+		expect(filterSrc).toContain('重置过滤')
+		expect(filterSrc).toContain('#17C7A8')
+		// 旧漂移值必须清除：预设档 / 滑杆范围 / 占位文案
+		expect(filterSrc).not.toContain('-55')
+		expect(filterSrc).not.toContain('例如 SHID')
+	})
+
+	test('PARITY-P001: device card scan variant locked to C1 devCard canon', () => {
+		const cardSrc = fs.readFileSync(path.join(__dirname, '../components/device-card/device-card.vue'), 'utf8')
+		expect(cardSrc).toContain('未命名 BLE 设备')
+		expect(cardSrc).toContain('（未命名）')
+		expect(cardSrc).toContain('配置 Smart HID')
+		// 匹配 chip 文案来自 profile 注册表注入（chipStrong/chipWeak）
+		expect(cardSrc).toContain('profileChipStrong')
+		// 动作按钮图标位：hid / link
+		expect(cardSrc).toContain('name="hid"')
+		expect(cardSrc).toContain('name="link"')
+		// 信号条正典配色：q4/q3 绿 / q2 黄 / q1 红 / 底灰
+		expect(cardSrc).toContain('#17C7A8')
+		expect(cardSrc).toContain('#FF9F43')
+		expect(cardSrc).toContain('#F2555F')
+		expect(cardSrc).toContain('#E3EAF3')
+		// 生态猜测 chip / JS 截断 /「未知设备」必须清除（正典 meta 仅 sig+dBm，id 走 CSS 省略）
+		expect(cardSrc).not.toContain('小米生态')
+		expect(cardSrc).not.toContain('substring')
+		expect(cardSrc).not.toContain('未知设备')
+
+		const profileSrc = fs.readFileSync(path.join(__dirname, '../services/smart-hid/profile.js'), 'utf8')
+		expect(profileSrc).toContain("actionLabel: '配置 Smart HID'")
+		expect(profileSrc).toContain("chipStrong: 'Smart HID · 强匹配'")
+		expect(profileSrc).toContain("chipWeak: '疑似 Smart HID · 弱匹配'")
+	})
+
+	test('PARITY-P001: error banner and advertisement sheet locked to B8/advdlg canon', () => {
+		const bannerSrc = fs.readFileSync(path.join(__dirname, '../components/common/error-banner.vue'), 'utf8')
+		expect(bannerSrc).toContain('扫描失败')
+		expect(bannerSrc).toContain('重试')
+		expect(bannerSrc).toContain('name="warn"')
+		expect(bannerSrc).toContain('name="refresh"')
+		expect(bannerSrc).toContain('#FDEBEC')
+
+		const advSrc = fs.readFileSync(path.join(__dirname, '../components/scan/advertisement-dialog.vue'), 'utf8')
+		expect(advSrc).toContain('广播数据 · ')
+		expect(advSrc).toContain('设备 ID')
+		expect(advSrc).toContain('profileMatch')
+		expect(advSrc).toContain('本轮平台 API 未提供此字段')
+		expect(advSrc).toContain('复制数据')
+		expect(advSrc).toContain('#101521')
+		// textarea 全量 dump 形态必须退役
+		expect(advSrc).not.toContain('textarea')
+	})
+
 	test('P004 removed: index shows no configured-devices panel even with session snapshots', async () => {
 		await replaceRuntimeState({ knownDevices: [HID_DEVICE], currentDevice: HID_DEVICE })
 		const page = await program.reLaunch('/pages/index/index')

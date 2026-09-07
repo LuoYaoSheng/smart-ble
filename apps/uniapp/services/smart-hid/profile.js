@@ -32,8 +32,10 @@ export const smartHidProfile = {
   transport: { framing: 'framed-v1' },
   presentation: {
     badge: 'Smart HID',
-    actionLabel: 'Smart HID 配网',
-    actionDescription: '配置 Wi-Fi 与 ControlHub 地址'
+    actionLabel: '配置 Smart HID',
+    actionDescription: '配置 Wi-Fi 与 ControlHub 地址',
+    chipStrong: 'Smart HID · 强匹配',
+    chipWeak: '疑似 Smart HID · 弱匹配'
   },
   model: {
     productLine: 'smart-hid',

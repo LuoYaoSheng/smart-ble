@@ -1,48 +1,55 @@
 <template>
 	<view class="ble-shell index-shell">
-		<app-navbar kicker="SmartBLE Mini" title="BLE Toolkit+" :status-active="bleState === 'on'" :status-text="bleStatusText" />
+		<app-navbar
+			kicker="BLE TOOLKIT+"
+			title="扫描"
+			:status-text="bleStatusText"
+			:status-tone="bleStatusTone"
+		/>
 
 		<view class="ble-content page-content">
 			<scan-summary
 				id="scan-summary"
-				:filtered-count="filteredDevices.length"
-				:device-count="devices.length"
-				:connected-count="connectedCount"
 				:scanning="isScanning"
+				:scanned="hasScanned"
+				:shown-count="filteredDevices.length"
 				:error="scanError"
 				@toggle="toggleScan"
 				@retry="startScan"
 			/>
 
-			<view class="results-panel ble-card">
-				<view class="results-header">
-					<text class="ble-section-title">附近设备</text>
-					<text class="filter-toggle" @click="showFilters = !showFilters">{{ showFilters ? '收起筛选' : '筛选' }}</text>
+			<view class="sec-t">
+				<view class="t">
+					<app-icon name="chip" :size="30" color="#1B6DFF" />
+					<text class="sec-title">附近设备</text>
+					<text v-if="filteredDevices.length" class="count-chip">{{ filteredDevices.length }}</text>
 				</view>
-				<filter-panel v-if="showFilters" v-model="filterSettings" class="inline-filter" />
+				<text class="filter-toggle" @click="showFilters = !showFilters">{{ showFilters ? '收起筛选' : '筛选' }}</text>
+			</view>
+			<filter-panel v-if="showFilters" v-model="filterSettings" class="inline-filter" />
 
-				<view class="tab-content">
-					<scroll-view scroll-y class="device-scroll">
-						<empty-state
-							v-if="filteredDevices.length === 0"
-							:ill="devices.length > 0 ? 'link' : 'radar'"
-							:title="devices.length > 0 ? '当前没有匹配设备' : '还没有扫描结果'"
-							:description="devices.length > 0 ? '调整筛选条件试试' : '点上方按钮开始扫描附近 BLE 设备'"
-							:action-label="devices.length > 0 ? '' : '开始扫描'"
-							@action="startScan"
+			<view class="tab-content">
+				<scroll-view scroll-y class="device-scroll">
+					<empty-state
+						v-if="filteredDevices.length === 0"
+						:ill="devices.length > 0 ? 'link' : 'radar'"
+						:title="devices.length > 0 ? '当前没有匹配设备' : '还没有扫描结果'"
+						:description="devices.length > 0 ? '调整筛选条件试试' : '点上方按钮开始扫描附近 BLE 设备'"
+						:action-label="hasScanned || devices.length > 0 ? '' : '开始扫描'"
+						action-icon="scan"
+						@action="startScan"
+					/>
+					<template v-else>
+						<device-card
+							v-for="device in filteredDevices"
+							:key="device.deviceId"
+							:device="device"
+							@click="showAdvertisingData"
+							@generic="connectDevice"
+							@profile="openProfileDevice"
 						/>
-						<template v-else>
-							<device-card
-								v-for="device in filteredDevices"
-								:key="device.deviceId"
-								:device="device"
-								@click="showAdvertisingData"
-								@generic="connectDevice"
-								@profile="openProfileDevice"
-							/>
-						</template>
-					</scroll-view>
-				</view>
+					</template>
+				</scroll-view>
 			</view>
 
 			<advertisement-dialog :visible="showAdvDataModal" :device="selectedAdvertisementDevice" @close="closeAdvDataModal" @copy="copyAdvData" />
@@ -56,6 +63,7 @@ import { onShareAppMessage } from '@dcloudio/uni-app';
 import DeviceCard from '../../components/device-card/device-card.vue';
 import FilterPanel from '../../components/filter-panel/filter-panel.vue';
 import AppNavbar from '../../components/common/app-navbar.vue';
+import AppIcon from '../../components/common/app-icon.vue';
 import EmptyState from '../../components/common/empty-state.vue';
 import ScanSummary from '../../components/scan/scan-summary.vue';
 import AdvertisementDialog from '../../components/scan/advertisement-dialog.vue';
@@ -69,15 +77,18 @@ const showAdvDataModal = ref(false);
 const selectedAdvertisementDevice = ref(null);
 const showFilters = ref(false);
 
-const { filterSettings, devices, filteredDevices, connectedDevices: connectedDevicesList, isScanning, scanError, bleState, start: startScan, toggle: toggleScan, prepareConnect } = useBleScan();
+const { filterSettings, devices, filteredDevices, hasScanned, isScanning, scanError, bleState, start: startScan, toggle: toggleScan, prepareConnect } = useBleScan();
+// 蓝牙状态三态词（正典 p001 btWord）：on 就绪 / off 未开启 / 其余 平台不支持
 const bleStatusText = computed(() => {
 	if (bleState.value === 'on') return '蓝牙就绪';
-	if (bleState.value === 'unsupported') return '当前平台不支持 BLE';
+	if (bleState.value === 'unsupported') return '平台不支持';
 	return '蓝牙未开启';
 });
-
-// 已连接计数纳入 Smart HID 配网会话，避免“配网中却显示已连接 0”的口径漂移（P001-I04）
-const connectedCount = computed(() => connectedDevicesList.value.length + (hidStore.sessionOnline ? 1 : 0));
+const bleStatusTone = computed(() => {
+	if (bleState.value === 'on') return 'on';
+	if (bleState.value === 'unsupported') return '';
+	return 'off';
+});
 
 // #ifdef MP-WEIXIN
 onShareAppMessage(() => ({
@@ -124,28 +135,40 @@ const copyAdvData = (content) => {
 	height: calc(100vh - 2rpx);
 }
 
-.results-panel {
-	flex: 1;
+.sec-t {
 	display: flex;
-	flex-direction: column;
-	padding: 26rpx;
-	min-height: 0;
-}
-
-.results-header {
-	display: flex;
-	align-items: flex-start;
+	align-items: center;
 	justify-content: space-between;
 	gap: 18rpx;
-	margin-bottom: 20rpx;
 }
 
-.filter-toggle { flex-shrink: 0; font-size: 23rpx; font-weight: 700; color: var(--ble-brand); }
-.inline-filter { margin-bottom: 18rpx; }
+.sec-t .t {
+	display: flex;
+	align-items: center;
+	gap: 12rpx;
+}
+
+.sec-title {
+	font-size: 30rpx;
+	font-weight: 700;
+	color: var(--ble-text);
+}
+
+.count-chip {
+	padding: 2rpx 16rpx;
+	border-radius: 999rpx;
+	background: #F1F5FB;
+	color: #42536A;
+	font-size: 22rpx;
+}
+
+.filter-toggle { flex-shrink: 0; font-size: 24rpx; font-weight: 500; color: var(--ble-brand); }
+.inline-filter { margin-top: 18rpx; }
 
 .tab-content {
 	flex: 1;
 	min-height: 0;
+	margin-top: 18rpx;
 }
 
 .device-scroll {

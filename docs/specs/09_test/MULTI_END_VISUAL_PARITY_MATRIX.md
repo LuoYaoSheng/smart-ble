@@ -45,7 +45,7 @@
 
 | 页面 | 视觉要点（PAGE_SPEC/原型） | U-WX | U-AND | F-AND | 归因 |
 |---|---|---|---|---|---|
-| P001 | 自绘导航+工具条+设备卡信号条四格+两种空态文案 | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | — |
+| P001 | 自绘导航+工具条+设备卡信号条四格+两种空态文案 | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | 结构/文案四维对齐已完成（2026-09-07 P001 轮，审计 §13，14 项实现漂移全修）：U-WX 静态正典锁 4/4+build 绿；F-AND analyze 0+test 69/69；U-AND 同源待 HBuilderX 真机；六态截图待视觉 Gate |
 | P002 | 三步骤条+表单+扫码大动作卡+四行进度+错误横幅 | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | — |
 | P003 | 身份卡/最近配置卡/操作区主次按钮 | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | — |
 | P005 | 状态行+五行图标语义（ok=check/warn=warn/fail=x SVG + active/pending `·`）+错误码块 mono | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | 图标字形已三线统一（2026-09-07 PARITY-ICON，原表「✓/!/…/·」系旧实现口径已修正）；整页六态截图仍待视觉 Gate |

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:smart_ble/core/ble/ble_manager.dart';
 import 'package:smart_ble/core/ble/hid_session_store.dart';
 import 'package:smart_ble/core/design/app_icons.dart';
 import 'package:smart_ble/core/design/app_illustrations.dart';
 import 'package:smart_ble/main.dart';
+import 'package:smart_ble/ui/pages/device_list_page.dart';
 import 'package:smart_ble/ui/pages/hid_detail_page.dart';
 import 'package:smart_ble/ui/pages/hid_diagnostics_page.dart';
 import 'package:smart_ble/ui/pages/versions_page.dart';
@@ -17,7 +19,8 @@ void main() {
       ),
     );
 
-    expect(find.text('扫描'), findsOneWidget);
+    // PARITY-P001：自绘导航栏标题新增「扫描」，与 Tab 文案同名共 2 处。
+    expect(find.text('扫描'), findsNWidgets(2));
     expect(find.text('广播'), findsOneWidget);
     expect(find.text('关于'), findsOneWidget);
   });
@@ -30,11 +33,65 @@ void main() {
       const ProviderScope(child: SmartBLEApp()),
     );
 
-    expect(find.text('扫描'), findsOneWidget);
+    expect(find.text('扫描'), findsNWidgets(2));
     expect(find.text('已连接'), findsOneWidget);
     expect(find.text('广播'), findsOneWidget);
     expect(find.text('关于'), findsOneWidget);
     expect(find.text('连接'), findsNothing);
+  });
+
+  // PARITY-P001：蓝牙状态词映射正典三态词表（navbar bt-chip，p001 btWord）。
+  test('P001 bt status word maps canon 3-state vocabulary', () {
+    expect(DeviceListPage.btStatusWord(BleState.on), '蓝牙就绪');
+    expect(DeviceListPage.btStatusWord(BleState.off), '蓝牙未开启');
+    expect(DeviceListPage.btStatusWord(BleState.unauthorized), '蓝牙未开启');
+    expect(DeviceListPage.btStatusWord(BleState.unavailable), '平台不支持');
+    expect(DeviceListPage.btStatusWord(BleState.unknown), '平台不支持');
+    expect(DeviceListPage.btStatusWord(null), '平台不支持');
+  });
+
+  // PARITY-P001：扫描页结构对齐原型 p001（navbar kicker/标题 + scantool +
+  // sec-t 附近设备/筛选 + filter 正典四档行）。
+  testWidgets('P001 scan page structure follows prototype canon', (tester) async {
+    await tester.pumpWidget(const ProviderScope(child: SmartBLEApp()));
+    await tester.pump(const Duration(milliseconds: 100));
+
+    // 自绘导航栏：kicker + 标题「扫描」（与 Tab 文案同名，共 2 处）
+    expect(find.text('BLE TOOLKIT+'), findsOneWidget);
+    expect(find.text('扫描'), findsNWidgets(2));
+    // 蓝牙状态 chip 一定是正典三态词之一（测试环境无适配器，具体态依流而定）
+    expect(
+      ['蓝牙就绪', '蓝牙未开启', '平台不支持']
+          .map((w) => find.text(w).evaluate().isNotEmpty)
+          .any((hit) => hit),
+      isTrue,
+    );
+    // scantool：待开始扫描 + 开始扫描（工具条 + 空态软按钮各一）
+    expect(find.text('待开始扫描'), findsOneWidget);
+    expect(find.text('开始扫描'), findsNWidgets(2));
+    // sec-t：附近设备 + 筛选 txtlink
+    expect(find.text('附近设备'), findsOneWidget);
+    expect(find.text('筛选'), findsOneWidget);
+
+    // 展开筛选：正典四档 + 行标签（展开动画用固定时长推进）
+    final filterLink = find.widgetWithText(TextButton, '筛选');
+    await tester.ensureVisible(filterLink);
+    await tester.tap(filterLink);
+    await tester.pump(const Duration(milliseconds: 350));
+    expect(find.text('最弱信号'), findsOneWidget);
+    expect(find.text('强 [-40]'), findsOneWidget);
+    expect(find.text('较好 [-60]'), findsOneWidget);
+    expect(find.text('一般 [-70]'), findsOneWidget);
+    expect(find.text('弱 [-85]'), findsOneWidget);
+    expect(find.text('名称前缀'), findsOneWidget);
+    expect(find.text('隐藏无名'), findsOneWidget);
+    expect(find.text('重置过滤'), findsOneWidget);
+    // 再次收起：txtlink 文案翻转
+    final collapseLink = find.widgetWithText(TextButton, '收起筛选');
+    await tester.ensureVisible(collapseLink);
+    await tester.tap(collapseLink);
+    await tester.pump(const Duration(milliseconds: 350));
+    expect(find.text('强 [-40]'), findsNothing);
   });
 
   // PARITY-G1：主 Tab 仅点击切换，规范外横滑被禁用（FLUTTER-G1-002）。

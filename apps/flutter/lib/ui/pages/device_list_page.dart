@@ -38,6 +38,32 @@ final filterExpandedProvider = StateProvider<bool>((ref) => false);
 class DeviceListPage extends ConsumerStatefulWidget {
   const DeviceListPage({super.key});
 
+  /// 蓝牙状态三态词（正典 p001 btWord）：on 就绪 / off+未授权 未开启 / 其余 平台不支持
+  static String btStatusWord(BleState? state) {
+    switch (state) {
+      case BleState.on:
+        return '蓝牙就绪';
+      case BleState.off:
+      case BleState.unauthorized:
+        return '蓝牙未开启';
+      default:
+        return '平台不支持';
+    }
+  }
+
+  /// 状态点三态色（正典 .bt-dot）：on 成功绿 / off 危险红 / 其余默认灰
+  static Color btDotColor(BleState? state) {
+    switch (state) {
+      case BleState.on:
+        return const Color(0xFF17C7A8);
+      case BleState.off:
+      case BleState.unauthorized:
+        return const Color(0xFFF2555F);
+      default:
+        return const Color(0xFF9AA8B6);
+    }
+  }
+
   @override
   ConsumerState<DeviceListPage> createState() => _DeviceListPageState();
 }
@@ -47,6 +73,7 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
   bool _isInitialized = false;
   bool _hasScanned = false;
   StreamSubscription<bool>? _scanningSub;
+  String? _errorCode;
   String? _errorMessage;
 
   @override
@@ -83,6 +110,7 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
         setState(() {
           _isInitialized = success;
           if (!success) {
+            _errorCode = 'BLE_001';
             _errorMessage = '蓝牙不可用';
           }
         });
@@ -91,6 +119,7 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
       if (mounted) {
         setState(() {
           _isInitialized = false;
+          _errorCode = 'BLE_001';
           _errorMessage = '初始化失败: $e';
         });
       }
@@ -99,11 +128,17 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
 
   Future<void> _startScan() async {
     try {
-      setState(() => _errorMessage = null);
+      setState(() {
+        _errorCode = null;
+        _errorMessage = null;
+      });
       await _bleManager.startScan(timeout: const Duration(seconds: 5));
     } catch (e) {
       if (mounted) {
-        setState(() => _errorMessage = '扫描失败: $e');
+        setState(() {
+          _errorCode = 'BLE_003';
+          _errorMessage = '扫描失败: $e';
+        });
         ref.read(scanningProvider.notifier).state = false;
       }
     }
@@ -164,215 +199,312 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
     final filteredDevices = _applyFilters(devices);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('BLE Toolkit+'),
-        actions: [
-          // 蓝牙状态指示器
-          bleState.when(
-            data: (state) => _buildStateIndicator(state),
-            loading: () => const SizedBox(
-                width: 16,
-                height: 16,
-                child: CircularProgressIndicator(strokeWidth: 2)),
-            error: (_, __) => const AppIcon('x',
-                color: AppTheme.errorColor),
-          ),
-          const SizedBox(width: 16),
-        ],
-      ),
-      body: Column(
-        children: [
-          // 键盘弹出/筛选展开压缩视口时固定区可内滚，杜绝底部溢出（WIN-FAND-001）
-          Flexible(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  // 错误提示
-                  if (_errorMessage != null)
-                    Container(
-                      margin: const EdgeInsets.all(16),
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: AppTheme.errorColor.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                            color: AppTheme.errorColor.withValues(alpha: 0.3)),
-                      ),
-                      child: Row(
-                        children: [
-                          const AppIcon('warn',
-                              color: AppTheme.errorColor, size: 20),
-                          const SizedBox(width: 8),
-                          Expanded(
-                              child: Text(_errorMessage!,
-                                  style: const TextStyle(
-                                      color: AppTheme.errorColor))),
-                        ],
-                      ),
-                    ),
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 自绘导航栏（正典 .navbar：kicker + 标题 + bt-chip 三态）
+            _buildNavbar(bleState),
 
-                  // 过滤面板
-                  FilterPanel(
-                    expanded: filterExpanded,
-                    onToggleExpanded: () => ref
-                        .read(filterExpandedProvider.notifier)
-                        .state = !filterExpanded,
-                  ),
+            // 键盘弹出/筛选展开压缩视口时固定区可内滚，杜绝底部溢出（WIN-FAND-001）
+            Flexible(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 扫描失败横幅（正典 B8 ebanner）
+                    if (_errorMessage != null)
+                      _buildErrorBanner(),
 
-                  // 扫描控制按钮（状态行口径对齐原型 p001 scantool）
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8, left: 2),
-                          child: Text(
-                            isScanning
-                                ? '扫描中 · 5s 会话'
-                                : _hasScanned
-                                    ? '扫描完成 · 发现 ${filteredDevices.length} 台'
-                                    : '待开始扫描',
-                            style: const TextStyle(
-                                fontSize: 13, color: AppTheme.textSecondary),
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: ElevatedButton.icon(
-                                onPressed: _isInitialized ? _toggleScan : null,
-                                icon: AppIcon(
-                                    isScanning ? 'stop' : 'scan',
-                                    size: 18),
-                                label: Text(isScanning ? '停止扫描' : '开始扫描'),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: isScanning
-                                      ? AppTheme.errorColor
-                                      : AppTheme.primaryColor,
-                                  foregroundColor: Colors.white,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 12),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            // 设备数量
-                            _buildDeviceBadge(
-                                filteredDevices.length, devices.length),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                    // 扫描工具条（正典 .scantool：左状态标签 + 右按钮）
+                    _buildScanTool(isScanning, filteredDevices.length),
+
+                    // 附近设备面板头（正典 .sec-t：chip 图标 + 标题 + 计数 + 筛选 txtlink）
+                    _buildSectionHeader(filteredDevices.length, filterExpanded),
+
+                    // 过滤行（展开时，正典 .filter）
+                    if (filterExpanded) const FilterPanel(),
+                  ],
+                ),
               ),
             ),
-          ),
 
-          // 设备列表
-          Expanded(
-            child: filteredDevices.isEmpty
-                ? _buildEmptyState(devices.isNotEmpty)
-                : ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    itemCount: filteredDevices.length,
-                    itemBuilder: (context, index) {
-                      final device = filteredDevices[index];
-                      return DeviceCard(
-                        key: ValueKey(device.deviceId),
-                        device: device,
-                        isConnected:
-                            _bleManager.isDeviceConnected(device.deviceId),
-                        onConnect: () => _connectToDevice(device),
-                        onShowInfo: () => _showAdvertisement(device),
-                        onConfigure: () => _openProvisioning(device),
-                      );
-                    },
-                  ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStateIndicator(BleState state) {
-    Color color;
-    String label;
-
-    switch (state) {
-      case BleState.on:
-        color = AppTheme.successColor;
-        label = '蓝牙已开启';
-        break;
-      case BleState.off:
-        color = AppTheme.textSecondary;
-        label = '蓝牙已关闭';
-        break;
-      case BleState.unavailable:
-        color = AppTheme.errorColor;
-        label = '蓝牙不可用';
-        break;
-      case BleState.unauthorized:
-        color = AppTheme.warningColor;
-        label = '未授权';
-        break;
-      default:
-        color = AppTheme.textSecondary;
-        label = '状态未知';
-    }
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        children: [
-          Container(
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(
-              color: color,
-              shape: BoxShape.circle,
+            // 设备列表
+            Expanded(
+              child: filteredDevices.isEmpty
+                  ? _buildEmptyState(devices.isNotEmpty)
+                  : ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount: filteredDevices.length,
+                      itemBuilder: (context, index) {
+                        final device = filteredDevices[index];
+                        return DeviceCard(
+                          key: ValueKey(device.deviceId),
+                          device: device,
+                          isConnected:
+                              _bleManager.isDeviceConnected(device.deviceId),
+                          onConnect: () => _connectToDevice(device),
+                          onShowInfo: () => _showAdvertisement(device),
+                          onConfigure: () => _openProvisioning(device),
+                        );
+                      },
+                    ),
             ),
-          ),
-          const SizedBox(width: 6),
-          Text(label, style: const TextStyle(fontSize: 12)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDeviceBadge(int filteredCount, int totalCount) {
-    final text = filteredCount == totalCount
-        ? '发现 $filteredCount 台设备'
-        : '显示 $filteredCount / $totalCount 台';
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: AppTheme.primaryColor.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(
-        text,
-        style: const TextStyle(
-          color: AppTheme.primaryColor,
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
+          ],
         ),
       ),
     );
   }
 
-  /// 空态文案+插图对齐原型 p001 C.empty（ill: radar 未扫描 / link 筛选无匹配）
+  /// 自绘导航栏：kicker「BLE TOOLKIT+」+ 标题「扫描」+ 蓝牙状态 chip（dot+三态词）
+  Widget _buildNavbar(AsyncValue<BleState> bleState) {
+    final state = bleState.valueOrNull;
+    final word = DeviceListPage.btStatusWord(state);
+    return Container(
+      padding: const EdgeInsets.fromLTRB(18, 8, 18, 12),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xFFFFFFFF), Color(0xFFF8FBFF)],
+        ),
+        border: Border(bottom: BorderSide(color: Color(0xFFEDF2F9))),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'BLE TOOLKIT+',
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 2,
+              color: AppTheme.primaryColor,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Row(
+            children: [
+              const Text(
+                '扫描',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                  color: Color(0xFF18222E),
+                ),
+              ),
+              const Spacer(),
+              Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  color: DeviceListPage.btDotColor(state),
+                  shape: BoxShape.circle,
+                  boxShadow: state == BleState.on
+                      ? const [
+                          BoxShadow(
+                              color: Color(0x8C17C7A8), blurRadius: 8),
+                        ]
+                      : null,
+                ),
+              ),
+              const SizedBox(width: 6),
+              Text(
+                word,
+                style: const TextStyle(
+                    fontSize: 11, fontWeight: FontWeight.w500,
+                    color: Color(0xFF60758D)),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 扫描失败横幅（正典 B8：danger-weak 底 + 左侧 3px danger 边 + code chip + 重试）
+  Widget _buildErrorBanner() {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFDEBEC),
+        borderRadius: BorderRadius.circular(12),
+        border: const Border(
+          left: BorderSide(color: Color(0xFFF2555F), width: 3),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const AppIcon('warn', size: 16, color: Color(0xFFF2555F)),
+              const SizedBox(width: 6),
+              const Text(
+                '扫描失败',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFFF2555F),
+                ),
+              ),
+              if (_errorCode != null) ...[
+                const SizedBox(width: 6),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 7, vertical: 1),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    _errorCode!,
+                    style: const TextStyle(
+                      fontSize: 10,
+                      fontFamily: 'monospace',
+                      color: Color(0xFFF2555F),
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+          const SizedBox(height: 5),
+          Text(
+            _errorMessage ?? '',
+            style: const TextStyle(fontSize: 14, color: Color(0xFF42536A)),
+          ),
+          const SizedBox(height: 10),
+          OutlinedButton.icon(
+            onPressed: _startScan,
+            icon: const AppIcon('refresh', size: 14, color: Color(0xFFF2555F)),
+            label: const Text('重试',
+                style: TextStyle(fontSize: 13, color: Color(0xFFF2555F))),
+            style: OutlinedButton.styleFrom(
+              minimumSize: const Size(0, 32),
+              padding: const EdgeInsets.symmetric(horizontal: 14),
+              side: const BorderSide(color: Color(0xFFF2555F)),
+              foregroundColor: const Color(0xFFF2555F),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 扫描工具条（正典 .scantool：左状态标签三态 + 右按钮，状态行带脉冲点）
+  Widget _buildScanTool(bool isScanning, int shownCount) {
+    final label = isScanning
+        ? '扫描中 · 5s 会话'
+        : _hasScanned
+            ? '扫描完成 · 发现 $shownCount 台'
+            : '待开始扫描';
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
+      child: Row(
+        children: [
+          Expanded(
+            child: Row(
+              children: [
+                if (isScanning) ...[
+                  const _PulseDot(),
+                  const SizedBox(width: 6),
+                ],
+                Flexible(
+                  child: Text(
+                    label,
+                    style: const TextStyle(
+                        fontSize: 13, color: AppTheme.textSecondary),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          ElevatedButton.icon(
+            onPressed: _isInitialized ? _toggleScan : null,
+            icon: AppIcon(isScanning ? 'stop' : 'scan', size: 18,
+                color: Colors.white),
+            label: Text(isScanning ? '停止扫描' : '开始扫描'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor:
+                  isScanning ? AppTheme.errorColor : AppTheme.primaryColor,
+              foregroundColor: Colors.white,
+              disabledBackgroundColor:
+                  const Color(0xFFF1F5FB),
+              disabledForegroundColor: const Color(0xFF9AA8B6),
+              minimumSize: const Size(0, 40),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              textStyle: const TextStyle(fontSize: 14),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 附近设备面板头（正典 .sec-t：chip 图标 + 标题 + 中性计数 chip + 筛选 txtlink）
+  Widget _buildSectionHeader(int shownCount, bool filterExpanded) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+      child: Row(
+        children: [
+          const AppIcon('chip', size: 16, color: AppTheme.primaryColor),
+          const SizedBox(width: 6),
+          const Text(
+            '附近设备',
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF18222E),
+            ),
+          ),
+          if (shownCount > 0) ...[
+            const SizedBox(width: 6),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF1F5FB),
+                borderRadius: BorderRadius.circular(999),
+              ),
+              child: Text(
+                '$shownCount',
+                style: const TextStyle(
+                    fontSize: 11, color: Color(0xFF42536A)),
+              ),
+            ),
+          ],
+          const Spacer(),
+          TextButton(
+            onPressed: () => ref
+                .read(filterExpandedProvider.notifier)
+                .state = !filterExpanded,
+            style: TextButton.styleFrom(
+              foregroundColor: AppTheme.primaryColor,
+              minimumSize: const Size(0, 32),
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              textStyle: const TextStyle(fontSize: 13),
+            ),
+            child: Text(filterExpanded ? '收起筛选' : '筛选'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 空态文案+插图+动作对齐原型 p001 C.empty（ill: radar 未扫描 / link 筛选无匹配；
+  /// 动作按钮仅在未扫描时出现，soft 色调 + scan 图标）
   Widget _buildEmptyState(bool hasDevices) {
+    final filteredMiss = hasDevices && _hasScanned;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          AppIll(hasDevices ? 'link' : 'radar', width: 118),
+          AppIll(filteredMiss ? 'link' : 'radar', width: 118),
           const SizedBox(height: 16),
           Text(
-            hasDevices ? '当前没有匹配设备' : '还没有扫描结果',
+            filteredMiss ? '当前没有匹配设备' : '还没有扫描结果',
             style: const TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w700,
@@ -381,12 +513,29 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
           ),
           const SizedBox(height: 6),
           Text(
-            hasDevices ? '调整筛选条件试试' : '点上方按钮开始扫描附近 BLE 设备',
+            filteredMiss ? '调整筛选条件试试' : '点上方按钮开始扫描附近 BLE 设备',
             style: const TextStyle(
               fontSize: 13,
               color: AppTheme.textSecondary,
             ),
           ),
+          if (!_hasScanned) ...[
+            const SizedBox(height: 16),
+            OutlinedButton.icon(
+              onPressed: _isInitialized ? _startScan : null,
+              icon: const AppIcon('scan', size: 16, color: Color(0xFF18222E)),
+              label: const Text('开始扫描',
+                  style: TextStyle(
+                      fontSize: 13, color: Color(0xFF18222E))),
+              style: OutlinedButton.styleFrom(
+                backgroundColor: const Color(0xFFF1F5FB),
+                side: const BorderSide(color: Color(0xFFE3EAF3)),
+                foregroundColor: const Color(0xFF18222E),
+                minimumSize: const Size(0, 40),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -445,6 +594,48 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
       context,
       MaterialPageRoute(
         builder: (context) => ProvisioningPage(device: device),
+      ),
+    );
+  }
+}
+
+/// 扫描中脉冲点（正典 .live：6px 主色圆点 1s 呼吸；仅扫描态挂载）
+class _PulseDot extends StatefulWidget {
+  const _PulseDot();
+
+  @override
+  State<_PulseDot> createState() => _PulseDotState();
+}
+
+class _PulseDotState extends State<_PulseDot>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+        vsync: this, duration: const Duration(seconds: 1))
+      ..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: Tween<double>(begin: 1, end: 0.25).animate(_controller),
+      child: Container(
+        width: 6,
+        height: 6,
+        decoration: const BoxDecoration(
+          color: AppTheme.primaryColor,
+          shape: BoxShape.circle,
+        ),
       ),
     );
   }

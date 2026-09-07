@@ -1,54 +1,51 @@
 <template>
-	<view class="device-item" @click="onClick">
-		<view class="device-main">
-			<view class="device-avatar">
-				<text class="avatar-text">{{ isConnectionTab ? 'ON' : 'BLE' }}</text>
-			</view>
-			<view class="device-info">
-				<view class="name-container">
-					<text class="device-name">{{ device.name || '未知设备' }}</text>
-					<text class="device-type" :class="{ profile: device.profileId }">{{ connectionTabLabel }}</text>
+	<view class="dev" @click="onClick">
+		<view class="top">
+			<view class="ava" :class="{ shid: isShid }">
+				<text class="ava-t">{{ initial }}</text>
+				<view v-if="isConnectionTab" class="on">
+					<app-icon name="check" :size="22" color="#ffffff" />
 				</view>
-				<text class="device-id ble-mono">{{ formatDeviceId(device.deviceId) }}</text>
-				<text class="device-meta">{{ deviceMeta }}</text>
+			</view>
+			<view class="mid">
+				<view class="nm">
+					<text class="nm-t">{{ displayName }}</text>
+					<text v-if="matchChipText" class="match-chip" :class="strongMatch ? 'primary' : 'warning'">{{ matchChipText }}</text>
+					<text v-else-if="isConnectionTab && connLabel" class="conn-chip">{{ connLabel }}</text>
+				</view>
+				<text class="id ble-mono">{{ idText }}</text>
+				<view class="meta">
+					<view v-if="typeof device.RSSI === 'number'" class="sig" :class="'q' + signalQuality">
+						<view v-for="i in 4" :key="i" class="bar"></view>
+					</view>
+					<text v-if="typeof device.RSSI === 'number'" class="dbm">{{ device.RSSI }} dBm</text>
+					<text v-if="isConnectionTab" class="meta-txt">{{ connMeta }}</text>
+				</view>
 			</view>
 		</view>
 
-		<view class="device-footer">
-			<view v-if="!isConnectionTab" class="signal-box">
-				<view class="signal-bars">
-					<view
-						v-for="i in 4"
-						:key="i"
-						class="signal-bar"
-						:class="{ active: i <= getSignalLevel(device.RSSI) }"
-					></view>
-				</view>
-				<text class="signal-value">{{ device.RSSI }} dBm</text>
-			</view>
-			<view v-else class="ble-chip ble-chip-success">
-				<text>连接稳定</text>
-			</view>
-
+		<view v-if="isConnectionTab" class="acts">
+			<button class="ble-btn ble-btn--sm soft-btn danger-t" @click.stop="onActionClick">断开</button>
+		</view>
+		<view v-else class="acts">
 			<button
-				v-if="isConnectionTab"
-				class="ble-btn ble-btn--danger ble-btn--sm action-btn"
-				@click.stop="onActionClick"
-			>
-				断开
-			</button>
-			<view v-else-if="device.profileId" class="profile-actions">
-				<button class="ble-btn ble-btn--secondary ble-btn--sm action-btn" @click.stop="onGenericClick">连接</button>
-				<button class="ble-btn ble-btn--primary ble-btn--sm action-btn" @click.stop="onProfileClick">{{ device.profileActionLabel || device.profileName }}</button>
-			</view>
-			<button
-				v-else
-				class="ble-btn ble-btn--primary ble-btn--sm action-btn"
+				v-if="isShid"
+				class="ble-btn ble-btn--primary ble-btn--sm"
 				:class="{ 'ble-btn--disabled': device.connected }"
+				:disabled="device.connected"
+				@click.stop="onProfileClick"
+			>
+				<app-icon name="hid" :size="26" color="#ffffff" />
+				<text>{{ device.profileActionLabel || '配置 Smart HID' }}</text>
+			</button>
+			<button
+				class="ble-btn ble-btn--sm"
+				:class="[isShid || device.connected ? 'soft-btn' : 'ble-btn--primary', { 'ble-btn--disabled': device.connected }]"
 				:disabled="device.connected"
 				@click.stop="onGenericClick"
 			>
-				{{ device.connected ? '已连接' : '连接' }}
+				<app-icon name="link" :size="26" :color="isShid || device.connected ? '#18222E' : '#ffffff'" />
+				<text>{{ device.connected ? '已连接' : '连接' }}</text>
 			</button>
 		</view>
 	</view>
@@ -56,8 +53,12 @@
 
 <script setup>
 import { computed } from 'vue';
+import AppIcon from '../common/app-icon.vue';
 import { getProfile } from '../../services/provisioning/profiles.js';
 
+// 正典 C1 devCard（scan 变体）：首字母头像 + 名称/匹配 chip + mono ID（CSS 省略）+
+// sig 信号条与 dBm（meta 仅此两项）+ 动作行（hid/link 图标）。
+// conn 变体归 P007 页管，仅对齐共享视觉（首字母头像 + sig），文案契约保持。
 const props = defineProps({
 	device: { type: Object, required: true },
 	isConnectionTab: { type: Boolean, default: false }
@@ -70,181 +71,231 @@ const onActionClick = () => emit('action', props.device);
 const onGenericClick = () => emit('generic', props.device);
 const onProfileClick = () => emit('profile', props.device);
 
-const connectionTabLabel = computed(() => {
-	if (!props.isConnectionTab) {
-		return props.device.profileBadge || props.device.profileName || getDeviceType(props.device.name);
+const isShid = computed(() => !props.isConnectionTab && (props.device.profileMatch ?? 0) >= 1);
+const strongMatch = computed(() => (props.device.profileMatch ?? 0) >= 2);
+
+const initial = computed(() => {
+	const raw = String(props.device.name || props.device.deviceId || '').trim();
+	return (raw[0] || '?').toUpperCase();
+});
+
+const displayName = computed(() => {
+	if (props.isConnectionTab) return props.device.name || '未命名设备';
+	return props.device.name || '未命名 BLE 设备';
+});
+
+const idText = computed(() => {
+	if (props.isConnectionTab || props.device.name) return props.device.deviceId;
+	return `${props.device.deviceId}（未命名）`;
+});
+
+const matchChipText = computed(() => {
+	const level = props.device.profileMatch ?? 0;
+	if (level >= 2) {
+		return props.device.profileChipStrong || `${props.device.profileBadge || props.device.profileName} · 强匹配`;
 	}
+	if (level === 1) {
+		return props.device.profileChipWeak || `疑似 ${props.device.profileBadge || props.device.profileName} · 弱匹配`;
+	}
+	return '';
+});
+
+const connLabel = computed(() => {
 	if (props.device.profileId) {
 		const profile = getProfile(props.device.profileId);
-		return profile?.model?.connectedLabel || profile?.presentation?.badge || 'Profile';
+		return profile?.model?.connectedLabel || profile?.presentation?.badge || '';
 	}
 	return '通用 GATT';
 });
 
-const deviceMeta = computed(() => {
-	if (props.isConnectionTab) {
-		if (props.device.profileId === 'smart-hid') return '点击查看 Smart HID 详情、诊断与高级 BLE';
-		if (props.device.profileId) {
-			const profile = getProfile(props.device.profileId);
-			return profile?.presentation?.actionDescription || '点击查看设备详情与 GATT 操作';
-		}
-		return '点击查看服务、特征值和通信日志';
-	}
-	if (props.device.profileId) return props.device.profileMatch >= 2
-		? `${props.device.profileActionDescription || '已匹配专属 Profile'}。`
-		: `可能支持${props.device.profileActionLabel || props.device.profileName}，进入后先连接确认身份。`;
-	return '点击卡片查看广播原始数据';
-});
+// 正典 conn 变体 meta 默认文案（d.meta||'已连接 · 可进行 GATT 调试'）；
+// P007 轮若正典给出 profile 专属 meta 再补。
+const connMeta = computed(() => '已连接 · 可进行 GATT 调试');
 
-const formatDeviceId = (id) => (id ? (id.length > 17 ? `${id.substring(0, 17)}...` : id) : '未知 ID');
-
-const getDeviceType = (name) => {
-	if (!name) return '待识别';
-	const lowerName = name.toLowerCase();
-	if (lowerName.includes('mi') || lowerName.includes('xiaomi')) return '小米生态';
-	if (lowerName.includes('huawei') || lowerName.includes('honor')) return '华为生态';
-	if (lowerName.includes('apple') || lowerName.includes('mac') || lowerName.includes('iphone')) return 'Apple 设备';
-	if (lowerName.includes('watch') || lowerName.includes('band')) return '智能穿戴';
-	if (lowerName.includes('tv')) return '家庭终端';
-	return 'BLE 设备';
-};
-
-const getSignalLevel = (rssi) => {
+const signalQuality = computed(() => {
+	const rssi = Number(props.device.RSSI);
 	if (rssi >= -60) return 4;
 	if (rssi >= -70) return 3;
 	if (rssi >= -80) return 2;
 	return 1;
-};
+});
 </script>
 
 <style scoped>
-.device-item {
+.dev {
 	display: flex;
 	flex-direction: column;
-	gap: 20rpx;
-	padding: 26rpx;
-	margin-bottom: 18rpx;
-	border-radius: 30rpx;
-	background: var(--ble-gradient-surface);
-	border: 1rpx solid var(--ble-line-soft);
-	box-shadow: var(--ble-shadow-soft);
+	margin-bottom: 24rpx;
+	padding: 28rpx;
+	border-radius: 34rpx;
+	background: var(--ble-surface-strong);
+	border: 1rpx solid #E3EAF3;
 }
 
-.device-main {
+.top {
 	display: flex;
-	gap: 20rpx;
 	align-items: flex-start;
+	gap: 24rpx;
 }
 
-.device-avatar {
-	width: 84rpx;
-	height: 84rpx;
+.ava {
+	position: relative;
+	width: 88rpx;
+	height: 88rpx;
 	border-radius: 26rpx;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background: linear-gradient(135deg, rgba(21, 93, 255, 0.16) 0%, rgba(123, 224, 255, 0.22) 100%);
-	border: 1rpx solid rgba(21, 93, 255, 0.12);
+	background: linear-gradient(135deg, #E8F1FF, #DCE9FF);
 }
 
-.avatar-text {
-	font-size: 22rpx;
+.ava.shid {
+	background: linear-gradient(135deg, #D9F6F0, #E2F8F4);
+}
+
+.ava-t {
+	font-size: 34rpx;
 	font-weight: 700;
-	color: var(--ble-brand);
-	letter-spacing: 1rpx;
+	color: #1B6DFF;
 }
 
-.device-info {
+.ava.shid .ava-t {
+	color: #0E9A80;
+}
+
+.ava .on {
+	position: absolute;
+	right: -8rpx;
+	bottom: -8rpx;
+	width: 34rpx;
+	height: 34rpx;
+	border-radius: 50%;
+	background: #17C7A8;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.mid {
 	flex: 1;
+	min-width: 0;
 	display: flex;
 	flex-direction: column;
-	gap: 10rpx;
 }
 
-.name-container {
+.nm {
 	display: flex;
 	align-items: center;
 	flex-wrap: wrap;
-	gap: 10rpx;
-}
-
-.device-name {
-	font-size: 30rpx;
-	line-height: 1.3;
-	font-weight: 700;
-	color: var(--ble-text);
-}
-
-.device-type {
-	padding: 8rpx 16rpx;
-	border-radius: 999rpx;
-	background: rgba(27, 109, 255, 0.08);
-	color: var(--ble-brand);
-	font-size: 20rpx;
-	font-weight: 700;
-}
-
-.device-type.profile { background: rgba(23,199,168,.14); color: #0e9c82; }
-
-.device-id {
-	font-size: 22rpx;
-	color: var(--ble-text-muted);
-}
-
-.device-meta {
-	font-size: 22rpx;
-	line-height: 1.5;
-	color: var(--ble-text-subtle);
-}
-
-.device-footer {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 16rpx;
-	padding-top: 18rpx;
-	border-top: 1rpx solid var(--ble-line-faint);
-}
-
-.signal-box {
-	display: flex;
-	align-items: center;
 	gap: 12rpx;
 }
 
-.signal-bars {
-	display: flex;
-	align-items: flex-end;
-	gap: 5rpx;
-	height: 26rpx;
-}
-
-.signal-bar {
-	width: 8rpx;
-	border-radius: 6rpx;
-	background: rgba(146, 161, 179, 0.34);
-}
-
-.signal-bar:nth-child(1) { height: 10rpx; }
-.signal-bar:nth-child(2) { height: 16rpx; }
-.signal-bar:nth-child(3) { height: 22rpx; }
-.signal-bar:nth-child(4) { height: 28rpx; }
-
-.signal-bar.active:nth-child(1) { background: #ff9f43; }
-.signal-bar.active:nth-child(2) { background: #3db0ff; }
-.signal-bar.active:nth-child(3) { background: #17c7a8; }
-.signal-bar.active:nth-child(4) { background: #0ea77d; }
-
-.signal-value {
-	font-size: 22rpx;
+.nm-t {
+	font-size: 30rpx;
 	font-weight: 700;
-	color: var(--ble-text-subtle);
+	color: #18222E;
 }
 
-.action-btn.ble-btn--danger {
-	background: linear-gradient(135deg, #f2555f 0%, #ff9f43 100%);
-	box-shadow: 0 12rpx 28rpx rgba(242, 85, 95, 0.18);
+.match-chip {
+	padding: 4rpx 16rpx;
+	border-radius: 999rpx;
+	font-size: 22rpx;
+	font-weight: 500;
 }
 
-.profile-actions { display: flex; gap: 10rpx; margin-left: auto; }
+.match-chip.primary {
+	background: #E8F1FF;
+	color: #1B6DFF;
+}
+
+.match-chip.warning {
+	background: #FFF3E4;
+	color: #C77E14;
+}
+
+.conn-chip {
+	padding: 4rpx 16rpx;
+	border-radius: 999rpx;
+	background: #E8F1FF;
+	color: #1B6DFF;
+	font-size: 22rpx;
+	font-weight: 500;
+}
+
+.id {
+	margin-top: 4rpx;
+	font-size: 20rpx;
+	color: #60758D;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.meta {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 16rpx;
+	margin-top: 10rpx;
+}
+
+.sig {
+	display: inline-flex;
+	align-items: flex-end;
+	gap: 4rpx;
+	height: 24rpx;
+}
+
+.sig .bar {
+	width: 6rpx;
+	border-radius: 2rpx;
+	background: #E3EAF3;
+}
+
+.sig .bar:nth-child(1) { height: 8rpx; }
+.sig .bar:nth-child(2) { height: 14rpx; }
+.sig .bar:nth-child(3) { height: 20rpx; }
+.sig .bar:nth-child(4) { height: 24rpx; }
+
+.sig.q4 .bar { background: #17C7A8; }
+.sig.q3 .bar:nth-child(-n+3) { background: #17C7A8; }
+.sig.q2 .bar:nth-child(-n+2) { background: #FF9F43; }
+.sig.q1 .bar:nth-child(1) { background: #F2555F; }
+
+.dbm {
+	font-size: 20rpx;
+	color: #60758D;
+}
+
+.meta-txt {
+	font-size: 20rpx;
+	color: #60758D;
+}
+
+.acts {
+	display: flex;
+	gap: 16rpx;
+	margin-top: 24rpx;
+}
+
+.acts .ble-btn {
+	flex: 1;
+}
+
+.soft-btn {
+	color: #18222E;
+	background: #F1F5FB;
+	box-shadow: inset 0 0 0 2rpx #E3EAF3;
+}
+
+.soft-btn.danger-t {
+	color: #F2555F;
+	background: #FDEBEC;
+	box-shadow: none;
+}
+
+.soft-btn.ble-btn--disabled {
+	opacity: 0.54;
+	box-shadow: none;
+}
 </style>

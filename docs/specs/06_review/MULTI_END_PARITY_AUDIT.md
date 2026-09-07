@@ -249,3 +249,46 @@ uniapp `build:mp-weixin` 通过（产物 tabBar=scan/link/cast/info，8 PNG，�
 ### 12.3 验证
 
 uniapp `build:mp-weixin` 通过（dist 含 ILL 镜像 `0 0 118 86`，`placeholders/` 零引用）；node 静态断言（ILL canon==mirror 4/4 逐字锁定、无 `<rect>`、源码/产物零占位引用、三个资产目录已删）；flutter analyze 0 issue；flutter test 67/67（新增 ILL 渲染门）。page-flow.test.js 新增 2 条 PARITY-ILL 静态测试（HBuilderX 内执行）。U-AND launcher（HBuilderX 打包域）与同设备三线截图留待后续 Gate。
+
+## 13. 第三轮补录：P001 逐页四维对齐（2026-09-07，逐页 Gate 顺序 P001→P006→P007→P008→P002→P003→P005→P009→P010）
+
+正典依据（四源）：`docs/specs/03_flow/PAGE_SPEC.md` §1 P001（结构①自绘导航栏②扫描工具条③附近设备面板④广播数据弹窗）；公共原型 `prototype/v1-new/pages/p001-scan.js` + `components/components.js`（C1 devCard/B6 empty/B8 ebanner/C.btn icon 位）；`assets/pages.css`（.navbar/.bt-chip/.scantool/.sec-t/.filter/.ad-sec）+ `components.css`（.dev/.sig q1–q4/.pre/.switch）；`08_development/ERROR_CODE.md`（平台码不上屏、BLE_00x 应用码可入 code chip）。双平台原型（wechat/app）对 P001 **无视觉版式差异**，仅行为域（授权弹窗/拒绝横幅/蓝牙关闭引流），不构成本轮差异项。
+
+### 13.1 审计发现（U-WX 与 F-AND 两条实现线，基线=公共原型）
+
+| 编号 | 差异 | 归因 | 严重度 | 状态 |
+|---|---|---|---|---|
+| U-P001-001 | 导航栏文案倒置：kicker「SmartBLE Mini」/title「BLE Toolkit+」（正典 kicker `BLE TOOLKIT+`/title `扫描`）；蓝牙状态词 5+ 态（「当前平台不支持 BLE」等）且胶囊底 chip（正典 3 态词 + 无底 dot+text）；kicker 弱化灰 | UNIAPP_IMPLEMENTATION_DRIFT | P1 | 已修 |
+| U-P001-002 | 扫描工具条卡片化：额外「扫描」标题/状态 chip（待开始/需重试/已完成）/「N 台设备 · N 台已连接」计数行/无图标通栏大按钮（正典=纯行：scanLb 三态左 + 带 scan/stop 图标按钮右） | UNIAPP_IMPLEMENTATION_DRIFT | P1 | 已修 |
+| U-P001-003 | 「附近设备」无中性计数 chip、无 chip 图标；列表被包进大 ble-card 容器（正典 .sec-t 平铺 + 设备卡独立成卡） | UNIAPP_IMPLEMENTATION_DRIFT | P2 | 已修 |
+| U-P001-004 | 过滤面板自成 header（扫描过滤器/展开收起/摘要 chips）+预设档 -100/-85/-70/-55（正典 强[-40]/较好[-60]/一般[-70]/弱[-85]）+滑杆 max 0 step 1（正典 -40/5）+「信号强度」标签（正典 最弱信号/阈值 N dBm）+占位「例如 SHID / Light / Test」+开关 #1B6DFF（正典 #17C7A8）+红色药丸重置（正典 soft sm） | UNIAPP_IMPLEMENTATION_DRIFT | P1 | 已修 |
+| U-P001-005 | 设备卡：头像「BLE/ON」文字（正典首字母渐变）、「未知设备」fallback（正典 未命名 BLE 设备/（未命名））、小米/华为生态猜测 chip（产品级发明，正典无）、meta 长引导文案（正典仅 sig+dBm）、四色信号条（正典 q4/q3 绿/q2 黄/q1 红）、JS 17 字符截断（正典 CSS 省略）、动作无图标、actionLabel「Smart HID 配网」（正典 配置 Smart HID）、footer 分隔线 | UNIAPP_IMPLEMENTATION_DRIFT | P1 | 已修 |
+| U-P001-006 | 错误横幅：标题「扫描失败（code）」拼串、无 warn 字形/code chip/ghost-danger 重试（正典 B8：danger-weak 底+左 3px 边+code chip+refresh 重试） | UNIAPP_IMPLEMENTATION_DRIFT | P2 | 已修 |
+| U-P001-007 | 广播弹窗：居中 modal+textarea 全量 dump+通栏大按钮（正典=底部弹层+kv 四行+深色 ad-sec 逐段/整包+缺失逐项标注+sm 按钮） | UNIAPP_IMPLEMENTATION_DRIFT | P1 | 已修 |
+| F-P001-001 | AppBar title「BLE TOOLKIT+」无 kicker/无「扫描」标题；状态词 5 态（蓝牙已开启/已关闭/不可用/未授权/状态未知）+off 灰点（正典 3 态词+off 红点），自绘导航栏缺失 | FLUTTER_IMPLEMENTATION_DRIFT | P1 | 已修 |
+| F-P001-002 | 体序倒置：FilterPanel 在 scantool 之上；无 .sec-t（附近设备标题/计数 chip/筛选 txtlink）；FilterPanel 自有 header（过滤条件/chev-d/计数徽章） | FLUTTER_IMPLEMENTATION_DRIFT | P1 | 已修 |
+| F-P001-003 | 工具条：标签在按钮上方+通栏大按钮+自创「发现 N 台设备/显示 N/N 台」徽章行（正典=行内 label+右按钮，计数归 .sec-t chip） | FLUTTER_IMPLEMENTATION_DRIFT | P1 | 已修 |
+| F-P001-004 | 过滤行：预设 全部/-90/-70/-50+滑杆 max -30（正典四档强/较好/一般/弱+max -40 step 5）+checkbox 隐藏无名（正典 switch 绿轨）+通栏重置按钮（正典 soft sm）+占位「输入设备名称前缀...」 | FLUTTER_IMPLEMENTATION_DRIFT | P1 | 已修 |
+| F-P001-005 | 错误横幅=红字单行 Row（无 B8 结构/code chip/重试按钮），错误码与消息未分层 | FLUTTER_IMPLEMENTATION_DRIFT | P1 | 已修 |
+| F-P001-006 | 空态缺「开始扫描」soft 动作按钮（正典 C.empty act，仅未扫描态显示） | FLUTTER_IMPLEMENTATION_DRIFT | P2 | 已修 |
+| F-P001-007 | 设备卡动作无 hid/link 图标；广播弹窗 hex 区浅底 #F1F5FB（正典 .ad-sec 深色 ink 底+#8FA3C0 标头+#D6E2F5 hex） | FLUTTER_IMPLEMENTATION_DRIFT | P2 | 已修 |
+
+全部 14 项归因均为**实现线漂移**（UNIAPP_IMPLEMENTATION_DRIFT ×7 / FLUTTER_IMPLEMENTATION_DRIFT ×7）：公共原型与 PAGE_SPEC 自 PARITY-G1 起即上述口径，无 BASE_PROTOTYPE_DEFECT / SPEC_CONFLICT；平台原型未引入 P001 视觉差异，无 ALLOWED_PLATFORM_DIFFERENCE 项。
+
+### 13.2 修复内容
+
+- **U-WX/U-AND（10 文件）**：`pages/index/index.vue`（navbar 正典 kicker/title/三态词+tone、.sec-t 平铺+计数 chip+txtlink、设备卡列表出卡容器、空态 act 仅未扫描态）；`scan-summary.vue` 重写为 .scantool 纯行（live 脉冲点+scan/stop 图标，正典无台数计数行——PAGE_SPEC「已连接计数」规则的正典展示位随已配置面板移除而消失，计算口径保留在 P007，登记为规格侧残留）；`app-navbar.vue`（statusTone 三态 dot、去胶囊底、kicker 主色 xbold）；`filter-panel.vue` 重写为正典四行（展开控制移交宿主 sec-t）；`device-card.vue` 重写（首字母头像/匹配 chip 注册表注入/未命名双 fallback/sig q1–q4 正典配色/CSS 省略/hid+link 图标/acts 无分隔线；conn 变体保留 P007 契约仅对齐共享视觉，meta 暂用正典默认文案）；`error-banner.vue` 重写为 B8（code chip 参数化）；`empty-state.vue` act 改 soft 色调+可选图标位；`advertisement-dialog.vue` 重写为底部弹层（kv 四行+深色 ad-sec 逐段【平台解析字段重建】/整包 hex/缺失标注/长度 0 警示）；`services/smart-hid/profile.js`（actionLabel=配置 Smart HID + chipStrong/chipWeak 正典文案）；`composables/use-ble-scan.js`（hasScanned 标记+chip 字段注入）；`services/ble-runtime/advertisement.js` 新增 `buildAdSegments()`（与 F-AND `_segments` 同口径的 AD 段重建纯函数）。
+- **F-AND（4 文件）**：`device_list_page.dart` 重构（AppBar→自绘 .navbar + `btStatusWord/btDotColor` 静态映射、体序 ebanner→scantool→sec-t→filter→list、_buildDeviceBadge 退役计数归 sec-t、错误码/消息分层 BLE_001/BLE_003+B8 横幅+重试、空态 soft 开始扫描按钮（仅未扫描态）、_PulseDot 呼吸点）；`filter_panel.dart` 重写为正典四行（header/展开参数退役，_NameFilterField controller 同步逻辑原样保留——WIN-FAND-002）；`device_card.dart` _ActionChip 加图标位（hid/link，primary 白/soft 正文色）；`advertisement_sheet.dart` hex 区改深色 ink 段（_DarkSection/_SectionHd/_hexText，.miss 弱化色，复制按钮加 copy 图标；「整包 hex」因平台无原始帧逐项标注缺失，不以拼接冒充）。
+- **测试先行（先红后绿）**：U-WX `page-flow.test.js` 新增 4 条 PARITY-P001 静态正典锁（navbar/scantool 文案、filter 四档与滑杆参数、devCard 结构与配色禁项、B8/advdlg 键串）；F-AND `widget_test.dart` 新增 `btStatusWord` 三态映射单测 + P001 结构 widget 测试（kicker/标题×2/三态词之一/待开始扫描/开始扫描×2/附近设备/筛选→四档展开→收起翻转），既有 2 处 `find.text('扫描') findsOneWidget` 更新为 `findsNWidgets(2)`（navbar 标题+Tab 同名）。
+
+### 13.3 范围决策（非差异项）
+
+1. **双平台原型仅行为域**：wechat（授权弹窗+去设置）/app（FINE_LOCATION→拒绝横幅 bluetooth_permission_denied→永久拒绝引导、蓝牙关闭→系统设置→回流续扫）无 P001 视觉版式差异，行为域已在 F002 实现线覆盖，本轮无新增项。
+2. **BLE 状态映射**（F-AND）：on→蓝牙就绪（绿）；off/unauthorized→蓝牙未开启（红）；unavailable/unknown/turningOn/turningOff→平台不支持（默认灰）——正典三态词表无法一一映射 6 个底层态，瞬态并入「平台不支持」，unauthorized 并入「蓝牙未开启」（平台授权弹窗行为域消化）。
+3. **匹配 chip 文案注册表化**：chipStrong/chipWeak 文案入 profile presentation（U-WX）/profile_registry（F-AND 已有 chipLabel），devCard 仅消费——后续设备家族按 profile 扩展，不再硬编码 Smart HID 字串于组件。
+4. **AD 结构逐段**：正典 adStructures 为 mock 预置；两实现线均以平台解析字段重建（0x09/0x03/0x07/0xFF/0x16/0x0A），小端序口径一致（U-WX `buildAdSegments` ↔ F-AND `_segments`）；整包 hex 在无原始帧的平台标注缺失，不拼接冒充。
+5. **Token 渐变差异延后**：uniapp `ble-btn--primary` 三停渐变（#155dff→#33b2ff→#7be0ff）与 `--ble-brand-deep` #134dbe 对正典（#1B6DFF→#0E4FC4）的全局漂移不在本页范围，P001 页内新样式直接取正典值，全局映射随 DESIGN_TOKEN_PLATFORM_MAPPING 视觉 Gate 轮统一。
+
+### 13.4 验证
+
+U-WX：`npm run build:mp-weixin` 通过；`npx jest -t "PARITY-P001"` 4/4 绿（静态正典锁；automator 全量流待 HBuilderX/devtools 环境）。F-AND：`flutter analyze` 0 issue；`flutter test` 69/69（含新增 P001 两测，全量绿）。同设备六态截图（393×852 → `verification/windows-mobile-v1/<run-id>/parity/P001/`）随视觉 Gate 执行（U-WX devtools 登录态与 U-AND HBuilderX 打包为既有阻塞，见 §12.3）。

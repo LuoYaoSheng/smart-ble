@@ -7,16 +7,16 @@
 				<text class="nav-title">{{ title }}</text>
 			</view>
 			<slot v-if="!showStatusBelow" name="action">
-				<view v-if="statusText" class="status-indicator" :class="{ active: statusActive }">
-					<view class="status-dot" :class="statusActive ? 'active' : ''"></view>
-					<text class="status-text">{{ statusText }}</text>
+				<view v-if="statusText" class="bt-chip">
+					<view class="bt-dot" :class="statusToneClass"></view>
+					<text class="bt-word">{{ statusText }}</text>
 				</view>
 			</slot>
 		</view>
 		<view v-if="showStatusBelow" class="nav-status-row" :style="navStatusStyle">
-			<view class="status-indicator" :class="{ active: statusActive }">
-				<view class="status-dot" :class="statusActive ? 'active' : ''"></view>
-				<text class="status-text">{{ statusText }}</text>
+			<view class="bt-chip">
+				<view class="bt-dot" :class="statusToneClass"></view>
+				<text class="bt-word">{{ statusText }}</text>
 			</view>
 		</view>
 	</view>
@@ -29,7 +29,14 @@ const props = defineProps({
 	kicker: { type: String, default: '' },
 	title: { type: String, required: true },
 	statusText: { type: String, default: '' },
-	statusActive: { type: Boolean, default: false }
+	statusActive: { type: Boolean, default: false },
+	// 蓝牙状态三态（正典 p001 bt-chip）：'on' 就绪绿 / 'off' 未开启红 / '' 默认灰
+	statusTone: { type: String, default: '' }
+});
+
+const statusToneClass = computed(() => {
+	const tone = props.statusTone || (props.statusActive ? 'on' : '');
+	return tone === 'on' ? 'on' : tone === 'off' ? 'off' : '';
 });
 
 const windowInfo = uni.getWindowInfo?.() || {};
@@ -57,15 +64,15 @@ trailingSafeWidth.value = Math.max((windowInfo.windowWidth || 0) - menu.left + 1
 </script>
 
 <style scoped>
-.custom-navbar { background: var(--ble-gradient-surface); border-bottom: 1rpx solid var(--ble-line-soft); }
+.custom-navbar { background: linear-gradient(180deg, #FFFFFF, #F8FBFF); border-bottom: 1rpx solid var(--ble-line-soft); }
 .nav-content { display: flex; align-items: center; justify-content: space-between; gap: 20rpx; padding-left: 28rpx; }
 .nav-copy { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 4rpx; }
-.nav-kicker { font-size: 18rpx; letter-spacing: 3rpx; color: var(--ble-text-muted); text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.nav-title { font-size: 34rpx; font-weight: 700; color: var(--ble-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nav-kicker { font-size: 20rpx; letter-spacing: 4rpx; color: var(--ble-brand); font-weight: 800; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nav-title { font-size: 40rpx; font-weight: 800; color: var(--ble-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .nav-status-row { display: flex; padding-left: 28rpx; padding-bottom: 18rpx; }
-.status-indicator { display: flex; align-items: center; gap: 10rpx; padding: 12rpx 18rpx; border-radius: 999rpx; background: rgba(96,117,141,.08); }
-.status-indicator.active { background: rgba(23,199,168,.12); }
-.status-dot { width: 16rpx; height: 16rpx; border-radius: 50%; background: #9aa8b6; }
-.status-dot.active { background: var(--ble-mint); box-shadow: 0 0 18rpx rgba(23,199,168,.48); }
-.status-text { font-size: 22rpx; font-weight: 600; color: var(--ble-text-subtle); white-space: nowrap; }
+.bt-chip { display: flex; align-items: center; gap: 12rpx; }
+.bt-word { font-size: 22rpx; font-weight: 500; color: var(--ble-text-muted); white-space: nowrap; }
+.bt-dot { width: 16rpx; height: 16rpx; border-radius: 50%; background: #9aa8b6; }
+.bt-dot.on { background: #17C7A8; box-shadow: 0 0 16rpx rgba(23, 199, 168, 0.55); }
+.bt-dot.off { background: #F2555F; }
 </style>

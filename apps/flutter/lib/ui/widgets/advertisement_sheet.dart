@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import '../../core/ble/profile_registry.dart';
 import '../../core/models/ble_scan_result.dart';
 import '../../core/utils/data_converter.dart';
+import '../../core/design/app_icons.dart';
 import '../../themes/app_theme.dart';
 
 /// 广播数据弹窗（对齐原型 p001-advdlg · F004/R04 口径）
@@ -133,34 +134,49 @@ class AdvertisementSheet extends StatelessWidget {
               mono: true),
 
           // Service UUIDs
-          _sectionHeader(
-              'Service UUIDs',
-              device.serviceUuids.isNotEmpty
+          _DarkSection(
+              title: 'Service UUIDs',
+              right: device.serviceUuids.isNotEmpty
                   ? '${device.serviceUuids.length} 项'
-                  : '—'),
-          if (device.serviceUuids.isNotEmpty)
-            ...device.serviceUuids.map((u) => _hexBlock(u))
-          else
-            const _MissNote(),
+                  : '—',
+              child: device.serviceUuids.isNotEmpty
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        for (final u in device.serviceUuids)
+                          _hexText(u),
+                      ],
+                    )
+                  : const _MissNote()),
 
           if (_hasAdvertisement) ...[
             // AD 结构逐段（平台解析字段重建）
-            _sectionHeader('AD 结构 · 逐段（平台解析字段重建）', '$totalBytes B'),
-            if (segments.isNotEmpty)
-              ...segments.map((s) => Padding(
-                    padding: const EdgeInsets.only(top: 5),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _sectionHeader(
-                            '${s.type} · ${s.name}', '${s.frame.length} B',
-                            dense: true),
-                        _hexBlock(s.hex),
-                      ],
-                    ),
-                  ))
-            else
-              const _MissNote(),
+            _DarkSection(
+              title: 'AD 结构 · 逐段（平台解析字段重建）',
+              right: 'advertisement $totalBytes B',
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (segments.isNotEmpty)
+                    for (final s in segments)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _darkHd('${s.type} · ${s.name}', '${s.frame.length} B'),
+                            _hexText(s.hex),
+                          ],
+                        ),
+                      )
+                  else
+                    const _MissNote(),
+                  // 整包 hex：Android API 不提供原始广播帧字节，逐项标注缺失
+                  _darkHd('整包 hex', '—'),
+                  const _MissNote(),
+                ],
+              ),
+            ),
 
             // Manufacturer Data
             const SizedBox(height: 4),
@@ -168,23 +184,21 @@ class AdvertisementSheet extends StatelessWidget {
               _kv('厂商 ID（Manufacturer Data）',
                   '0x${device.manufacturerId!.toRadixString(16).padLeft(4, '0').toUpperCase()}',
                   mono: true)
-            else ...[
-              _sectionHeader('Manufacturer Data', '—'),
-              const _MissNote(),
-            ],
+            else
+              const _DarkSection(
+                  title: 'Manufacturer Data', right: '—', child: _MissNote()),
 
             // Service Data
-            _sectionHeader(
-              'Service Data',
-              device.serviceData.isNotEmpty
+            _DarkSection(
+              title: 'Service Data',
+              right: device.serviceData.isNotEmpty
                   ? '${device.serviceData.keys.first.toUpperCase()} · ${device.serviceData.values.first.length} B'
                   : '—',
+              child: device.serviceData.isNotEmpty
+                  ? _hexText(
+                      DataConverter.bytesToHex(device.serviceData.values.first))
+                  : const _MissNote(),
             ),
-            if (device.serviceData.isNotEmpty)
-              _hexBlock(
-                  DataConverter.bytesToHex(device.serviceData.values.first))
-            else
-              const _MissNote(),
           ] else
             Container(
               margin: const EdgeInsets.only(top: 8),
@@ -205,6 +219,7 @@ class AdvertisementSheet extends StatelessWidget {
               Expanded(
                 child: _SheetButton(
                   label: '复制数据',
+                  icon: 'copy',
                   primary: true,
                   onTap: () {
                     Clipboard.setData(ClipboardData(text: _copyText()));
@@ -299,44 +314,88 @@ class AdvertisementSheet extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _sectionHeader(String title, String right, {bool dense = false}) {
+/// 深色 ad-sec 段落（正典 .ad-sec：ink 底 + mono 小标头 + hex 正文）
+class _DarkSection extends StatelessWidget {
+  final String title;
+  final String right;
+  final Widget child;
+
+  const _DarkSection(
+      {required this.title, required this.right, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(top: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: const Color(0xFF101521),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _SectionHd(title: title, right: right),
+          child,
+        ],
+      ),
+    );
+  }
+}
+
+Widget _darkHd(String title, String right) => _SectionHd(title: title, right: right, top: true);
+
+class _SectionHd extends StatelessWidget {
+  final String title;
+  final String right;
+  final bool top;
+
+  const _SectionHd({required this.title, required this.right, this.top = false});
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: dense ? 4 : 10, bottom: 4),
+      padding: EdgeInsets.only(top: top ? 7 : 0, bottom: 5),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.baseline,
+        textBaseline: TextBaseline.alphabetic,
         children: [
           Expanded(
             child: Text(
               title,
               style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF42536A)),
+                fontSize: 10,
+                fontFamily: 'monospace',
+                color: Color(0xFF8FA3C0),
+              ),
             ),
           ),
           Text(right,
-              style: const TextStyle(fontSize: 12, color: Color(0xFF60758D))),
+              style: const TextStyle(
+                  fontSize: 10,
+                  fontFamily: 'monospace',
+                  color: Color(0xFF8FA3C0))),
         ],
       ),
     );
   }
-
-  Widget _hexBlock(String hex) => Container(
-        width: double.infinity,
-        margin: const EdgeInsets.only(bottom: 4),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-        decoration: BoxDecoration(
-          color: const Color(0xFFF1F5FB),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Text(
-          hex,
-          style: const TextStyle(fontSize: 11, fontFamily: 'monospace'),
-        ),
-      );
 }
 
-/// 缺失字段标注（对齐原型 .miss 口径）
+Widget _hexText(String hex) => Text(
+      hex,
+      style: const TextStyle(
+        fontSize: 11,
+        fontFamily: 'monospace',
+        color: Color(0xFFD6E2F5),
+        wordSpacing: 0,
+      ),
+    );
+
+
+/// 缺失字段标注（对齐原型 .ad-sec .miss 口径：深色段内弱化色）
 class _MissNote extends StatelessWidget {
   const _MissNote();
 
@@ -344,10 +403,10 @@ class _MissNote extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 6),
       child: const Text(
         '本轮平台 API 未提供此字段',
-        style: TextStyle(fontSize: 11, color: Color(0xFF9AA8B6)),
+        style: TextStyle(fontSize: 11, color: Color(0xFF7C8DA6)),
       ),
     );
   }
@@ -355,11 +414,16 @@ class _MissNote extends StatelessWidget {
 
 class _SheetButton extends StatelessWidget {
   final String label;
+  final String? icon;
   final bool primary;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
-  const _SheetButton(
-      {required this.label, required this.primary, required this.onTap});
+  const _SheetButton({
+    required this.label,
+    this.icon,
+    required this.primary,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -371,7 +435,16 @@ class _SheetButton extends StatelessWidget {
           foregroundColor: Colors.white,
           minimumSize: const Size.fromHeight(36),
         ),
-        child: Text(label, style: const TextStyle(fontSize: 13)),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (icon != null) ...[
+              AppIcon(icon!, size: 14, color: Colors.white),
+              const SizedBox(width: 4),
+            ],
+            Text(label, style: const TextStyle(fontSize: 13)),
+          ],
+        ),
       );
     }
     return OutlinedButton(

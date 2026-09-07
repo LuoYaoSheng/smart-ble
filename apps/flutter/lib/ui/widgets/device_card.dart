@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/ble/profile_registry.dart';
 import '../../core/models/ble_scan_result.dart';
+import '../../core/design/app_icons.dart';
 import '../../themes/app_theme.dart';
 
 /// 设备卡片（对齐原型 C1 devCard · scan 变体）
@@ -120,6 +121,7 @@ class DeviceCard extends StatelessWidget {
                         child: _ActionChip(
                           key: const ValueKey('shidConfigureBtn'),
                           label: match!.profile.actionLabel,
+                          icon: 'hid',
                           primary: true,
                           disabled: isConnected,
                           onTap: onConfigure,
@@ -129,6 +131,7 @@ class DeviceCard extends StatelessWidget {
                     Expanded(
                       child: _ActionChip(
                         label: isConnected ? '已连接' : '连接',
+                        icon: 'link',
                         primary: !_isShid && !isConnected,
                         disabled: isConnected,
                         onTap: onConnect,
@@ -206,9 +209,11 @@ class _MatchChip extends StatelessWidget {
   }
 }
 
-/// 卡片动作按钮（sm：高 32；primary 渐变 / soft 填充描边 / disabled 灰）
+/// 卡片动作按钮（sm：高 32；primary 渐变 / soft 填充描边 / disabled 灰；
+/// 图标随按钮色：primary 白字 / soft 正文色 / disabled 弱化）
 class _ActionChip extends StatelessWidget {
   final String label;
+  final String? icon;
   final bool primary;
   final bool disabled;
   final VoidCallback? onTap;
@@ -216,6 +221,7 @@ class _ActionChip extends StatelessWidget {
   const _ActionChip({
     super.key,
     required this.label,
+    this.icon,
     required this.primary,
     this.disabled = false,
     this.onTap,
@@ -223,6 +229,17 @@ class _ActionChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final iconColor = primary && !disabled
+        ? Colors.white
+        : disabled
+            ? const Color(0xFF9AA8B6)
+            : const Color(0xFF18222E);
+    final iconWidget = icon == null
+        ? null
+        : Padding(
+            padding: const EdgeInsets.only(right: 4),
+            child: AppIcon(icon!, size: 14, color: iconColor),
+          );
     if (primary && !disabled) {
       return Material(
         color: Colors.transparent,
@@ -248,11 +265,17 @@ class _ActionChip extends StatelessWidget {
             child: SizedBox(
               height: 32,
               child: Center(
-                child: Text(label,
-                    style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white)),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (iconWidget != null) iconWidget,
+                    Text(label,
+                        style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white)),
+                  ],
+                ),
               ),
             ),
           ),
@@ -267,21 +290,27 @@ class _ActionChip extends StatelessWidget {
         child: Container(
           height: 32,
           decoration: BoxDecoration(
-            color: disabled ? const Color(0xFFF1F5FB) : const Color(0xFFF1F5FB),
+            color: const Color(0xFFF1F5FB),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
               color: disabled ? Colors.transparent : const Color(0xFFE3EAF3),
             ),
           ),
           alignment: Alignment.center,
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w500,
-              color:
-                  disabled ? const Color(0xFF9AA8B6) : const Color(0xFF18222E),
-            ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (iconWidget != null) iconWidget,
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                  color:
+                      disabled ? const Color(0xFF9AA8B6) : const Color(0xFF18222E),
+                ),
+              ),
+            ],
           ),
         ),
       ),

@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { onHide, onLoad, onShow, onUnload } from '@dcloudio/uni-app';
 import { useBleStore } from '../store/ble';
 import { matchScannedDevices } from '../services/provisioning/profiles.js';
@@ -9,6 +9,11 @@ export function useBleScan() {
   const store = useBleStore();
   const filterSettings = ref({ rssi: -100, prefix: '', hideNoName: false });
   const autoStopSeconds = 5;
+  // 「已扫描过」标记：scanLb 终态（扫描完成 · 发现 N 台）只在首个会话后出现（正典 p001 scanned）
+  const hasScanned = ref(false);
+  watch(() => store.isScanning, (scanning) => {
+    if (scanning) hasScanned.value = true;
+  });
 
   const devices = computed(() => {
     const matches = new Map(matchScannedDevices(store.scannedDevices).map((match) => [match.device.deviceId, match]));
@@ -21,7 +26,9 @@ export function useBleScan() {
         profileMatch: match.matchLevel,
         profileBadge: match.profile.presentation.badge,
         profileActionLabel: match.profile.presentation.actionLabel,
-        profileActionDescription: match.profile.presentation.actionDescription
+        profileActionDescription: match.profile.presentation.actionDescription,
+        profileChipStrong: match.profile.presentation.chipStrong,
+        profileChipWeak: match.profile.presentation.chipWeak
       } : device;
     });
   });
@@ -94,7 +101,7 @@ export function useBleScan() {
   onUnload(() => stop('page_unload'));
 
   return {
-    filterSettings, devices, filteredDevices,
+    filterSettings, devices, filteredDevices, hasScanned,
     connectedDevices: computed(() => store.connectedDevicesList),
     isScanning: computed(() => store.isScanning),
     scanError: computed(() => store.scanError),

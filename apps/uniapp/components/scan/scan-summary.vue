@@ -1,87 +1,82 @@
 <template>
-	<view class="scan-toolbar ble-card">
-		<view class="scan-head">
-			<view class="scan-title-group">
-				<text class="scan-label">扫描</text>
-				<text class="scan-state" :class="{ scanning, warning: !!error }">{{ stateText }}</text>
+	<view class="scantool">
+		<view class="tool-row">
+			<view class="lb">
+				<view v-if="scanning" class="live"></view>
+				<text>{{ stateLabel }}</text>
 			</view>
-			<text class="scan-secondary">{{ deviceCount }} 台设备 · {{ connectedCount }} 台已连接</text>
+			<button
+				class="ble-btn ble-btn--md"
+				:class="scanning ? 'ble-btn--danger' : 'ble-btn--primary'"
+				@click="$emit('toggle')"
+			>
+				<app-icon :name="scanning ? 'stop' : 'scan'" :size="30" color="#ffffff" />
+				<text>{{ scanning ? '停止扫描' : '开始扫描' }}</text>
+			</button>
 		</view>
-		<button class="ble-btn ble-btn--lg ble-btn--block" :class="scanning ? 'ble-btn--danger' : 'ble-btn--primary'" @click="$emit('toggle')">
-			{{ scanning ? '停止扫描' : '开始扫描' }}
-		</button>
-		<error-banner v-if="error" class="scan-error" :title="`扫描失败（${error.code}）`" :message="`${error.message}。请确认蓝牙/定位权限后重试。`" action-label="重试" @action="$emit('retry')" />
+		<error-banner
+			v-if="error"
+			:code="error.code"
+			:message="error.message"
+			@action="$emit('retry')"
+		/>
 	</view>
 </template>
 
 <script setup>
 import { computed } from 'vue';
+import AppIcon from '../common/app-icon.vue';
 import ErrorBanner from '../common/error-banner.vue';
+
+// 正典 p001 .scantool：纯行布局——左侧状态标签（scanLb 三态）+ 右侧按钮；
+// 扫描失败横幅（B8）整块跟随其后。
 const props = defineProps({
-	filteredCount: { type: Number, default: 0 }, deviceCount: { type: Number, default: 0 }, connectedCount: { type: Number, default: 0 },
-	scanning: { type: Boolean, default: false }, error: { type: Object, default: null }
+	scanning: { type: Boolean, default: false },
+	scanned: { type: Boolean, default: false },
+	shownCount: { type: Number, default: 0 },
+	error: { type: Object, default: null }
 });
 defineEmits(['toggle', 'retry']);
 
-const stateText = computed(() => {
-	if (props.scanning) return '扫描中';
-	if (props.error) return '需重试';
-	return props.deviceCount > 0 ? '已完成' : '待开始';
+const stateLabel = computed(() => {
+	if (props.scanning) return '扫描中 · 5s 会话';
+	if (props.scanned) return `扫描完成 · 发现 ${props.shownCount} 台`;
+	return '待开始扫描';
 });
 </script>
 
 <style scoped>
-.scan-toolbar {
-	padding: 24rpx;
+.scantool {
 	display: flex;
 	flex-direction: column;
 	gap: 18rpx;
 }
 
-.scan-head {
+.tool-row {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
-	gap: 16rpx;
+	gap: 20rpx;
 }
 
-.scan-title-group {
+.lb {
+	flex: 1;
 	display: flex;
 	align-items: center;
-	flex-wrap: wrap;
-	gap: 10rpx;
-}
-
-.scan-label {
-	font-size: 30rpx;
-	font-weight: 700;
-	color: var(--ble-text);
-}
-
-.scan-secondary {
-	font-size: 22rpx;
-	font-weight: 600;
+	gap: 12rpx;
+	font-size: 24rpx;
 	color: var(--ble-text-muted);
 }
 
-.scan-state {
-	padding: 8rpx 16rpx;
-	border-radius: 999rpx;
-	background: rgba(96, 117, 141, 0.1);
-	font-size: 20rpx;
-	font-weight: 700;
-	color: var(--ble-text-subtle);
-}
-.scan-state.scanning {
-	background: rgba(23, 199, 168, 0.14);
-	color: #0e9c82;
-}
-.scan-state.warning {
-	background: rgba(242, 85, 95, 0.14);
-	color: #d14550;
+.live {
+	width: 12rpx;
+	height: 12rpx;
+	border-radius: 50%;
+	background: var(--ble-brand);
+	animation: scan-pulse 1s infinite;
 }
 
-.scan-error {
-	margin-top: 4rpx;
+@keyframes scan-pulse {
+	0%, 100% { opacity: 1; }
+	50% { opacity: 0.25; }
 }
 </style>

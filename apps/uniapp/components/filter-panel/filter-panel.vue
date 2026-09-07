@@ -1,71 +1,56 @@
 <template>
-	<view class="filter-panel ble-card">
-		<view class="filter-header" @click="toggleExpand">
-			<view class="filter-title-group">
-				<text class="filter-title">扫描过滤器</text>
-				<text class="filter-caption">按信号阈值、名称前缀和空名称设备过滤结果。</text>
-			</view>
-			<text class="filter-arrow">{{ expanded ? '收起' : '展开' }}</text>
-		</view>
-
-		<view class="filter-summary" v-if="!expanded">
-			<view class="summary-chip">
-				<text>RSSI ≥ {{ modelValue.rssi }} dBm</text>
-			</view>
-			<view class="summary-chip" v-if="modelValue.prefix">
-				<text>前缀 {{ modelValue.prefix }}</text>
-			</view>
-			<view class="summary-chip" v-if="modelValue.hideNoName">
-				<text>隐藏无名设备</text>
+	<view class="filter ble-card">
+		<view class="row">
+			<text class="lb">最弱信号</text>
+			<view class="presets">
+				<view
+					v-for="preset in rssiPresets"
+					:key="preset.value"
+					class="pre"
+					:class="{ on: modelValue.rssi === preset.value }"
+					@click="setFilterRSSI(preset.value)"
+				>
+					{{ preset.label }}
+				</view>
 			</view>
 		</view>
 
-		<view v-if="expanded" class="filter-body">
-			<view class="filter-item">
-				<view class="filter-row">
-					<text class="filter-label">信号强度</text>
-					<text class="filter-value-badge">{{ modelValue.rssi }} dBm</text>
-				</view>
-				<slider :value="modelValue.rssi" :min="-100" :max="0" :step="1" activeColor="#1B6DFF" @change="onRSSIChange" />
-				<view class="rssi-presets">
-					<view
-						v-for="preset in rssiPresets"
-						:key="preset"
-						class="preset-btn"
-						:class="{ active: modelValue.rssi === preset }"
-						@click="setFilterRSSI(preset)"
-					>
-						{{ preset }}
-					</view>
-				</view>
-			</view>
+		<view class="row">
+			<text class="lb">阈值 {{ modelValue.rssi }} dBm</text>
+			<slider
+				class="slider"
+				:value="modelValue.rssi"
+				:min="-100"
+				:max="-40"
+				:step="5"
+				activeColor="#1B6DFF"
+				@change="onRSSIChange"
+			/>
+		</view>
 
-			<view class="filter-option">
-				<text class="filter-label">名称前缀</text>
-				<input
-					type="text"
-					:value="modelValue.prefix"
-					@input="onPrefixChange"
-					placeholder="例如 SHID / Light / Test"
-					class="prefix-input"
-				/>
-			</view>
+		<view class="row">
+			<text class="lb">名称前缀</text>
+			<input
+				type="text"
+				:value="modelValue.prefix"
+				@input="onPrefixChange"
+				placeholder="如 SHID / LightBLE"
+				class="prefix-input"
+			/>
+		</view>
 
-			<view class="filter-option">
-				<text class="filter-label">隐藏无名设备</text>
-				<switch :checked="modelValue.hideNoName" @change="onHideNoNameChange" color="#1B6DFF" class="custom-switch" />
-			</view>
-
-			<view class="filter-reset-row">
-				<view class="reset-btn" @click="resetFilter">重置过滤</view>
-			</view>
+		<view class="row">
+			<text class="lb">隐藏无名</text>
+			<switch :checked="modelValue.hideNoName" @change="onHideNoNameChange" color="#17C7A8" class="custom-switch" />
+			<view class="spacer"></view>
+			<button class="ble-btn ble-btn--sm reset-btn" @click="resetFilter">重置过滤</button>
 		</view>
 	</view>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-
+// 正典 p001 .filter：四行结构（最弱信号四档 / 阈值滑杆 / 名称前缀 / 隐藏无名+重置）。
+// 展开收起由宿主页 sec-t 的 txtlink 控制（本组件只承载行内容）。
 const props = defineProps({
 	modelValue: {
 		type: Object,
@@ -79,12 +64,12 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue']);
 
-const expanded = ref(false);
-const rssiPresets = [-100, -85, -70, -55];
-
-const toggleExpand = () => {
-	expanded.value = !expanded.value;
-};
+const rssiPresets = [
+	{ value: -40, label: '强 [-40]' },
+	{ value: -60, label: '较好 [-60]' },
+	{ value: -70, label: '一般 [-70]' },
+	{ value: -85, label: '弱 [-85]' }
+];
 
 const onRSSIChange = (e) => emitValue('rssi', e.detail.value);
 const setFilterRSSI = (preset) => emitValue('rssi', preset);
@@ -104,106 +89,59 @@ const resetFilter = () => {
 </script>
 
 <style scoped>
-.filter-panel {
+.filter {
+	display: flex;
+	flex-direction: column;
+	gap: 20rpx;
 	padding: 26rpx;
 }
 
-.filter-header {
-	display: flex;
-	align-items: flex-start;
-	justify-content: space-between;
-	gap: 16rpx;
-}
-
-.filter-title-group {
-	display: flex;
-	flex-direction: column;
-	gap: 6rpx;
-}
-
-.filter-title {
-	font-size: 30rpx;
-	font-weight: 700;
-	color: var(--ble-text);
-}
-
-.filter-caption {
-	font-size: 22rpx;
-	line-height: 1.5;
-	color: var(--ble-text-muted);
-}
-
-.filter-arrow {
-	padding: 10rpx 18rpx;
-	border-radius: 999rpx;
-	background: rgba(27, 109, 255, 0.08);
-	color: var(--ble-brand);
-	font-size: 22rpx;
-	font-weight: 700;
-}
-
-.filter-summary {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 12rpx;
-	margin-top: 18rpx;
-}
-
-.summary-chip {
-	padding: 10rpx 16rpx;
-	border-radius: 999rpx;
-	background: rgba(27, 109, 255, 0.08);
-	color: var(--ble-text-subtle);
-	font-size: 22rpx;
-}
-
-.filter-body {
-	display: flex;
-	flex-direction: column;
-	gap: 22rpx;
-	margin-top: 20rpx;
-	padding-top: 20rpx;
-	border-top: 1rpx solid var(--ble-line-soft);
-}
-
-.filter-item {
-	display: flex;
-	flex-direction: column;
-	gap: 14rpx;
-}
-
-.filter-row,
-.filter-option {
+.row {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
 	gap: 20rpx;
 }
 
-.filter-label {
-	font-size: 26rpx;
-	font-weight: 600;
-	color: var(--ble-text);
+.lb {
+	width: 128rpx;
+	flex-shrink: 0;
+	font-size: 24rpx;
+	font-weight: 500;
+	color: var(--ble-text-muted);
 }
 
-.filter-value-badge {
-	padding: 8rpx 16rpx;
-	border-radius: 999rpx;
-	background: rgba(27, 109, 255, 0.1);
-	color: var(--ble-brand);
-	font-size: 22rpx;
-	font-weight: 700;
+.presets {
+	flex: 1;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+	gap: 12rpx;
 }
+
+.pre {
+	padding: 10rpx 20rpx;
+	border-radius: 999rpx;
+	background: #F1F5FB;
+	color: #42536A;
+	font-size: 22rpx;
+	font-weight: 500;
+}
+
+.pre.on {
+	background: var(--ble-brand);
+	color: #ffffff;
+}
+
+.slider { flex: 1; margin: 0; }
 
 .prefix-input {
 	flex: 1;
 	height: 76rpx;
 	padding: 0 22rpx;
-	border-radius: 20rpx;
-	background: rgba(241, 246, 252, 0.92);
-	border: 1rpx solid var(--ble-line-soft);
-	font-size: 24rpx;
-	text-align: right;
+	border-radius: 16rpx;
+	background: #F1F5FB;
+	border: none;
+	font-size: 26rpx;
 	color: var(--ble-text);
 }
 
@@ -212,37 +150,11 @@ const resetFilter = () => {
 	margin-right: -12rpx;
 }
 
-.rssi-presets {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 12rpx;
-}
-
-.preset-btn {
-	padding: 10rpx 18rpx;
-	border-radius: 999rpx;
-	background: rgba(96, 117, 141, 0.08);
-	color: var(--ble-text-subtle);
-	font-size: 22rpx;
-	font-weight: 700;
-}
-
-.preset-btn.active {
-	background: var(--ble-gradient-brand);
-	color: #ffffff;
-}
-
-.filter-reset-row {
-	display: flex;
-	justify-content: flex-end;
-}
+.spacer { flex: 1; }
 
 .reset-btn {
-	padding: 12rpx 18rpx;
-	border-radius: 999rpx;
-	background: rgba(242, 85, 95, 0.1);
-	color: var(--ble-red);
-	font-size: 22rpx;
-	font-weight: 700;
+	color: #18222E;
+	background: #F1F5FB;
+	box-shadow: inset 0 0 0 2rpx #E3EAF3;
 }
 </style>
