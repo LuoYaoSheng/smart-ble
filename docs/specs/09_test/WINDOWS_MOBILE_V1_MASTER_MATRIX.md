@@ -148,6 +148,6 @@ A-AND 启动（构建→E5 安装→F001-F005 等价真机）→ F013 双手机�
 
 - 本机系统 JDK 24（Gradle 8.2/AGP 8.2 不支持）→ 备便携 JDK 21 `C:\Users\11066\tools\jdk-21`（用户目录，不入库）；apps/android 既往构建产物存在证明曾在他 JDK 下构建成功
 - cargo/rustup 未安装 → T-WIN BLOCKED_TOOLCHAIN
-- 双手机在位：R5CR1284Y7H=三星 SM-G9910/Android 15（E5）；FEC0220629005177=华为 TAS-AN00/Android 12（新到，未入既往战役）
+- 双手机在位：R5CR1284Y7H=三星 SM-G9910/Android 15（E5）；FEC0220629005177=华为 TAS-AN00/Android 12。**F013 双手机夹具配方已固化**（f013-dualphone/f013-summary.md）：华为跑 A-AND 广播（EMUI uiautomator 变体 xpos/几何推算、按钮 (540,1683)）；Mate 30 5G 默认 GATT=5 服务与 ESP32 撞数，身份用详情页页头名判别；EMUI 空闲 GATT 回收 ~90s + RPA 轮转双条目（WIN-UAND-001）→ 不适合长会话，适合单轮验证
 - ESP32 夹具现处 `fixture_peripheral_s3` 粘性 fault 武装态（F012 v12 遗留）：任何 GATT 写测试前先 esptool chip_id hard_reset
 - Electron `node_modules` 已含编译好的 noble WinRT binding（曾实跑）；Avalonia 无 .sln、csproj 断引用

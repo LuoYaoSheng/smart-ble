@@ -1,0 +1,58 @@
+{
+  "line": "U-AND",
+  "driver": "f013b-focused-all-disconnect",
+  "device": "SM-G9910(E5) + Huawei TAS-AN00 advertiser + ESP32 fixture",
+  "total": 7,
+  "passed": 6,
+  "results": [
+    {
+      "name": "启动（扫描 Tab 就绪）",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "b-bletoolkit 连接成功（页头身份=BLEToolkit-Server，4FAFC201=有，服务数 5）",
+      "ok": true,
+      "detail": "断开连接 设备连接成功"
+    },
+    {
+      "name": "b-mate 30 5g 连接成功（页头身份=Mate 30 5G，4FAFC201=无(面板折叠,观察)，服务数 5）",
+      "ok": true,
+      "detail": "断开连接 设备连接成功"
+    },
+    {
+      "name": "b#0 列表 N=2（App 汇总卡数字）",
+      "ok": true,
+      "detail": "实测 N=2"
+    },
+    {
+      "name": "全断前置：N=2 双设备在线",
+      "ok": true,
+      "detail": "N=2"
+    },
+    {
+      "name": "全部断开后空态（还没有连接中的设备）",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "全断成功 toast（尽力）",
+      "ok": false,
+      "detail": "not-captured"
+    }
+  ],
+  "link_log": [
+    {
+      "phase": "b#0",
+      "n": 2,
+      "empty": false,
+      "all_btn": true
+    },
+    {
+      "phase": "b-全断后",
+      "n": 0,
+      "empty": true,
+      "all_btn": false
+    }
+  ]
+}
