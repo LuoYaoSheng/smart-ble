@@ -81,6 +81,9 @@ class BleManager {
   bool _isScanning = false;
 
   /// 自动重连相关（per-device）
+  /// 重连后服务重发现进行中的设备：门控 FBP 原生流的 connected 广播，
+  /// 服务就绪后才对外报「已连接」（WIN-FAND-005）
+  final Set<String> _rediscovering = {};
   static const int _maxReconnectAttempts = 3;
   final Map<String, int> _reconnectAttempts = {};
   final Map<String, Timer> _reconnectTimers = {};
@@ -302,6 +305,10 @@ class BleManager {
       // 监听连接状态变化，用于自动重连
       _connectionStateSubs[deviceId]?.cancel();
       _connectionStateSubs[deviceId] = device.connectionState.listen((state) {
+        if (state == BluetoothConnectionState.connected &&
+            _rediscovering.contains(deviceId)) {
+          return;
+        }
         _updateConnectionState(deviceId, state);
 
         if (state == BluetoothConnectionState.disconnected &&
@@ -335,10 +342,19 @@ class BleManager {
       try {
         debugPrint('正在重连 $deviceId (第 $nextAttempt 次)...');
         final device = BluetoothDevice.fromId(deviceId);
+        _rediscovering.add(deviceId);
         await device.connect(timeout: const Duration(seconds: 10));
-        _reconnectAttempts[deviceId] = 0;
-        _updateConnectionState(deviceId, BluetoothConnectionState.connected);
-        debugPrint('重连成功: $deviceId');
+        try {
+          // 重连是新 GATT 会话，FBP 1.36 不会自动重发现服务——不补这步
+          // 重连后读写全部 service not found（WIN-FAND-005）
+          await device.discoverServices();
+          _servicesByDevice[deviceId] = _mapServices(device.servicesList);
+          _reconnectAttempts[deviceId] = 0;
+          debugPrint('重连成功: $deviceId');
+        } finally {
+          _rediscovering.remove(deviceId);
+          _updateConnectionState(deviceId, BluetoothConnectionState.connected);
+        }
       } catch (e) {
         debugPrint('重连失败: $deviceId - $e');
         // 递归尝试下一次
@@ -390,31 +406,31 @@ class BleManager {
     try {
       final device = BluetoothDevice.fromId(deviceId);
       await device.discoverServices();
-      final services = device.servicesList;
-
-      final bleServices = services
-          .map((s) => BleService(
-                uuid: s.uuid.toString(),
-                isPrimary: s.isPrimary,
-                name: BleUuids.getServiceName(s.uuid.toString()),
-                characteristics: s.characteristics
-                    .map((c) => BleCharacteristic(
-                          uuid: c.uuid.toString(),
-                          serviceUuid: s.uuid.toString(),
-                          properties: _convertProperties(c.properties),
-                          name:
-                              BleUuids.getCharacteristicName(c.uuid.toString()),
-                        ))
-                    .toList(),
-              ))
-          .toList();
-
+      final bleServices = _mapServices(device.servicesList);
       _servicesByDevice[deviceId] = bleServices;
       return bleServices;
     } catch (e) {
       print('发现服务失败: $e');
       return [];
     }
+  }
+
+  List<BleService> _mapServices(List<BluetoothService> services) {
+    return services
+        .map((s) => BleService(
+              uuid: s.uuid.toString(),
+              isPrimary: s.isPrimary,
+              name: BleUuids.getServiceName(s.uuid.toString()),
+              characteristics: s.characteristics
+                  .map((c) => BleCharacteristic(
+                        uuid: c.uuid.toString(),
+                        serviceUuid: s.uuid.toString(),
+                        properties: _convertProperties(c.properties),
+                        name: BleUuids.getCharacteristicName(c.uuid.toString()),
+                      ))
+                  .toList(),
+            ))
+        .toList();
   }
 
   /// 读取特征值

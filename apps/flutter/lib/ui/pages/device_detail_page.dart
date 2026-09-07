@@ -41,6 +41,9 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
   String? _errorMessage;
   StreamSubscription? _connectionStatesSub;
 
+  /// 各特征的通知值订阅（按特征 UUID 管理，禁用/离页时取消）
+  final Map<String, StreamSubscription<List<int>>> _valueSubs = {};
+
   /// Convenience accessor — delegated to the global logger history.
   List<LogEntry> get _logs => logger.history;
 
@@ -299,9 +302,27 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
   Future<void> _toggleNotification(BleService service, BleCharacteristic characteristic) async {
     try {
       final newState = !characteristic.isNotifying;
+      final charKey = characteristic.uuid.toLowerCase();
 
       if (newState) {
         logger.info('启用通知 ${characteristic.displayName}...');
+        // 先挂监听再写 CCCD——订阅瞬间服务端即推的首条通知才不会丢（WIN-FAND-004）；
+        // 同时按特征管理订阅，重复开关不叠加监听
+        _valueSubs[charKey]?.cancel();
+        final valueSub = _bleManager
+            .listenCharacteristicValue(
+              deviceId: widget.deviceId,
+              serviceUuid: service.uuid,
+              characteristicUuid: characteristic.uuid,
+            )
+            ?.listen((value) {
+          final hex = DataConverter.bytesToHex(value);
+          final text = DataConverter.bytesToString(value);
+          logger.receive('HEX: $hex\nTEXT: $text');
+        });
+        if (valueSub != null) {
+          _valueSubs[charKey] = valueSub;
+        }
       } else {
         logger.info('禁用通知 ${characteristic.displayName}...');
       }
@@ -322,25 +343,15 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
           setState(() {
             _services[serviceIndex].characteristics[charIndex] =
                 _services[serviceIndex].characteristics[charIndex].copyWith(
-                      isNotifying: newState,
-                    );
+              isNotifying: newState,
+            );
           });
         }
       }
 
-      // 如果启用通知，监听值变化
-      if (newState) {
-        final stream = _bleManager.listenCharacteristicValue(
-          deviceId: widget.deviceId,
-          serviceUuid: service.uuid,
-          characteristicUuid: characteristic.uuid,
-        );
-
-        stream?.listen((value) {
-          final hex = DataConverter.bytesToHex(value);
-          final text = DataConverter.bytesToString(value);
-          logger.receive('HEX: $hex\nTEXT: $text');
-        });
+      if (!newState) {
+        _valueSubs[charKey]?.cancel();
+        _valueSubs.remove(charKey);
       }
 
       logger.success(newState ? '通知已启用' : '通知已禁用');
@@ -367,6 +378,14 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
   void dispose() {
     _connectionStatesSub?.cancel();
     _logSubscription?.cancel();
+    for (final sub in _valueSubs.values) {
+      sub.cancel();
+    }
+    _valueSubs.clear();
+    // 先摘回调再 clear——clear→stopLoop 会同步触发 onQueueStateChanged，
+    // dispose 期间 mounted 仍为 true，setState 打到 defunct 元素会炸框架
+    // 收尾断言（WIN-FAND-006）
+    _commandQueue?.onQueueStateChanged = null;
     _commandQueue?.clear();
     super.dispose();
   }

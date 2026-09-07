@@ -17,7 +17,7 @@
 | P003 | Smart HID 详情 | 重新配置、诊断、高级 BLE 调试、上下文缺失 | NOT_RUN | NOT_RUN | NOT_RUN | — | NOT_RUN |
 | P004 | 历史页 | **必须不存在**：无路由、无入口、无持久化、不可达 | NOT_RUN | NOT_RUN | NOT_RUN | — | NOT_RUN |
 | P005 | Smart HID 诊断 | 在线检测、离线连接检测、五项结果、失败恢复、栈感知导航 | NOT_RUN | NOT_RUN | NOT_RUN | — | NOT_RUN |
-| P006 | GATT 调试 | 连接、服务、Read/Write/Notify、日志、重连、OTA BLOCKED 展示 | NOT_RUN | NOT_RUN | NOT_RUN | — | NOT_RUN |
+| P006 | GATT 调试 | 连接、服务、Read/Write/Notify、日志、重连、OTA BLOCKED 展示 | NOT_RUN | NOT_RUN | F-AND PASS（核心链 v12） | f006-f012-gatt-v12-app.log（exit=0）+ f006-serial-v12.txt | F-AND PASS_WITH_LIMITATION（OTA BLOCKED 展示未覆盖，留 F025 域；20 项逐查留页面全量回归） |
 | P007 | 已连接 | 活动 Session、单断、全断、部分失败、Profile 分流 | NOT_RUN | NOT_RUN | NOT_RUN | — | NOT_RUN |
 | P008 | 广播 | 能力检查、表单、31B、开始/停止、权限、平台降级、日志 | NOT_RUN | NOT_RUN | NOT_RUN | — | NOT_RUN |
 | P009 | 关于 | 产品信息、版本、外链、推广、分享、平台状态 | NOT_RUN | NOT_RUN | NOT_RUN | — | NOT_RUN |

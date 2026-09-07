@@ -1,0 +1,71 @@
+Flutter assets will be downloaded from https://storage.flutter-io.cn. Make sure you trust this source!
+00:00 +0: loading E:/project/xf/smart-ble/apps/flutter/integration_test/p006_gatt_test.dart
+Running Gradle task 'assembleDebug'...                          
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by net.rubygrapefruit.platform.internal.NativeLibraryLoader in an unnamed module (file:/C:/Users/11066/.gradle/wrapper/dists/gradle-8.14-all/c2qonpi39x1mddn7hk5gh9iqj/gradle-8.14/lib/native-platform-0.22-milestone-28.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+Flutter assets will be downloaded from https://storage.flutter-io.cn. Make sure you trust this source!
+Running Gradle task 'assembleDebug'...                             44.4s
+√ Built build\app\outputs\flutter-apk\app-debug.apk
+Installing build\app\outputs\flutter-apk\app-debug.apk...           5.5s
+00:00 +0: F006-F012 GATT domain (fixture BLEToolkit-Server)
+P006[E2E 09:05:31.347]: 启动
+P006[E2E 09:05:33.273]: 夹具卡片发现=true
+[INFO] 发现 5 个服务
+P006[E2E 09:05:35.340]: F006 GATT 连接 ✓
+P006[E2E 09:05:35.346]: F007 服务命名：OTA=1（应 1）/ 未知=2（主服务+权限矩阵）
+P006[E2E 09:05:36.107]: F007 服务树 ✓（主服务 2 特征：控制=读+写+通知，状态=写+通知）
+[INFO] 读取 未知特征值...
+[SUCCESS] HEX: 7B 22 66 69 72 6D 77 61 72 65 5F 76 65 72 73 69 6F 6E 22 3A 22 31 2E 30 2E 30 22 2C 22 68 61 72 64 77 61 72 65 22 3A 22 65 73 70 33 32 2D 77 72 6F 6F 6D 2D 33 32 22 2C 22 75 70 74 69 6D 65 22 3A 31 31 31 2C 22 75 70 74 69 6D 65 5F 73 22 3A 31 31 31 2C 22 66 69 78 74 75 72 65 5F 72 6F 6C 65 22 3A 22 70 65 72 69 70 68 65 72 61 6C 22 2C 22 6E 61 6D 65 22 3A 22 42 4C 45 54 6F 6F 6C 6B 69 74 2D 53 65 72 76 65 72 22 2C 22 74 79 70 65 22 3A 22 73 79 73 74 65 6D 5F 69 6E 66 6F 22 7D
+TEXT: {"firmware_version":"1.0.0","hardware":"esp32-wroom-32","uptime":111,"uptime_s":111,"fixture_role":"peripheral","name":"BLEToolkit-Server","type":"system_info"}
+P006[E2E 09:05:36.861]: F008 控制特征读 ✓（注：返回 4 字节随机值而非设备信息 JSON，夹具观察项）
+[INFO] 启用通知 未知特征值...
+[SUCCESS] 通知已启用
+[INFO] 写入 未知特征值: FF 01
+[RECEIVE] HEX: 7B 22 74 79 70 65 22 3A 22 77 72 69 74 65 5F 72 65 73 70 6F 6E 73 65 22 2C 22 63 6F 6D 6D 61 6E 64 22 3A 22 46 46 30 31 22 2C 22 6C 65 64 5F 73 74 61 74 65 22 3A 22 6F 6E 22 2C 22 62 6C 69 6E 6B 5F 70 61 74 74 65 72 6E 22 3A 31 7D
+TEXT: {"type":"write_response","command":"FF01","led_state":"on","blink_pattern":1}
+[SUCCESS] 写入成功
+P006[E2E 09:05:39.994]: F009 HEX FF01 写入 + 回显 ✓（LED 开）
+[INFO] 写入 未知特征值: FF 00
+[RECEIVE] HEX: 7B 22 74 79 70 65 22 3A 22 77 72 69 74 65 5F 72 65 73 70 6F 6E 73 65 22 2C 22 63 6F 6D 6D 61 6E 64 22 3A 22 46 46 30 30 22 2C 22 6C 65 64 5F 73 74 61 74 65 22 3A 22 6F 66 66 22 2C 22 62 6C 69 6E 6B 5F 70 61 74 74 65 72 6E 22 3A 30 7D
+TEXT: {"type":"write_response","command":"FF00","led_state":"off","blink_pattern":0}
+[SUCCESS] 写入成功
+P006[E2E 09:05:41.809]: F009 HEX FF00 写入 + 回显 ✓（LED 关）
+[INFO] 写入 未知特征值: 开灯
+[RECEIVE] HEX: 7B 22 74 79 70 65 22 3A 22 77 72 69 74 65 5F 72 65 73 70 6F 6E 73 65 22 2C 22 63 6F 6D 6D 61 6E 64 22 3A 22 E5 BC 80 E7 81 AF 22 2C 22 6C 65 64 5F 73 74 61 74 65 22 3A 22 6F 6E 22 2C 22 62 6C 69 6E 6B 5F 70 61 74 74 65 72 6E 22 3A 31 7D
+TEXT: {"type":"write_response","command":"开灯","led_state":"on","blink_pattern":1}
+[SUCCESS] 写入成功
+P006[E2E 09:05:43.971]: F009 UTF-8 开灯写入 ✓
+[INFO] 启用通知 未知特征值...
+[SUCCESS] 通知已启用
+[RECEIVE] HEX: 7B 22 74 79 70 65 22 3A 22 64 65 76 69 63 65 5F 73 74 61 74 75 73 22 2C 22 6C 65 64 22 3A 22 6F 6E 22 2C 22 75 70 74 69 6D 65 22 3A 31 32 33 37 33 38 2C 22 66 69 78 74 75 72 65 5F 72 6F 6C 65 22 3A 22 70 65 72 69 70 68 65 72 61 6C 22 7D
+TEXT: {"type":"device_status","led":"on","uptime":123738,"fixture_role":"peripheral"}
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+F010 订阅后未收到欢迎推送
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///E:/project/xf/smart-ble/apps/flutter/integration_test/p006_gatt_test.dart:256:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1059:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///E:/project/xf/smart-ble/apps/flutter/integration_test/p006_gatt_test.dart line 256
+The test description was:
+  F006-F012 GATT domain (fixture BLEToolkit-Server)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:21 +0 -1: F006-F012 GATT domain (fixture BLEToolkit-Server) [E]
+  Test failed. See exception logs above.
+  The test description was: F006-F012 GATT domain (fixture BLEToolkit-Server)
+  
+00:21 +0 -1: (tearDownAll)
+00:22 +0 -1: Some tests failed.

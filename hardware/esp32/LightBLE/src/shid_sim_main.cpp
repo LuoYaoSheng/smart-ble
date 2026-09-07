@@ -23,6 +23,7 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #include <NimBLEDevice.h>
+#include "ble_value_util.h"
 
 static const char* kServiceUuid = "9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04";
 static const char* kInfoUuid = "9f1d1002-e73b-4c8f-9d2a-6f0b5e8a1c04";
@@ -77,7 +78,7 @@ static void publishStatus(const char* state, const char* step,
                "\",\"error\":\"" + err + "\"}";
     }
     if (sStatusChar != nullptr) {
-        sStatusChar->setValue(json);
+        bleSetValue(sStatusChar, json);
         sStatusChar->notify();
     }
     logLine(String("status ") + json);
@@ -92,7 +93,7 @@ static void publishInfo() {
                   "\",\"provisioned\":" + (sProvisioned ? "true" : "false") +
                   "}";
     if (sInfoChar != nullptr) {
-        sInfoChar->setValue(json);
+        bleSetValue(sInfoChar, json);
     }
     logLine(String("info ") + json);
 }

@@ -4,6 +4,18 @@
 #include "fixture_config.h"
 #include "serial_events.h"
 
+// 单连接夹具：解析真实连接句柄再拆链——硬编码 disconnect(0) 因句柄不存在
+// 会 ble_gap_terminate rc=7 失败，链路实际不断（真机串口实证）
+static void faultDisconnectPeer(NimBLEServer* server) {
+    if (server == nullptr) {
+        return;
+    }
+    const std::vector<uint16_t> peers = server->getPeerDevices();
+    for (const uint16_t id : peers) {
+        server->disconnect(server->getPeerIDInfo(id).getConnHandle());
+    }
+}
+
 static uint8_t s_ledPin = LED_PIN;
 static int s_blinkPattern = BLINK_OFF;
 static bool s_ledState = false;
@@ -100,7 +112,7 @@ static bool handleJsonCommand(const std::string& value, NimBLEServer* server, St
             s_faults.disconnect_on_write = true;
             if (server) {
                 emitSerialEvent("err", "disconnect_on_write");
-                server->disconnect(0);
+                faultDisconnectPeer(server);
             }
         } else if (strcmp(type, "delay") == 0 || strcmp(type, "delayed_response") == 0) {
             s_faults.delayed_response = true;
@@ -137,7 +149,7 @@ bool testControlHandleWrite(
     }
     if (s_faults.disconnect_on_write && server) {
         emitSerialEvent("err", "disconnect_on_write");
-        server->disconnect(0);
+        faultDisconnectPeer(server);
         StaticJsonDocument<128> out;
         out["type"] = "write_response";
         out["status"] = "disconnected";

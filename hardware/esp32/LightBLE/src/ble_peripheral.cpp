@@ -11,6 +11,7 @@
 
 #include "device_info.h"
 #include "fixture_config.h"
+#include "ble_value_util.h"
 #include "ota_server.h"
 #include "permissions_demo.h"
 #include "serial_events.h"
@@ -44,7 +45,7 @@ class ServerCallbacks : public NimBLEServerCallbacks {
             doc["status"] = "connected";
             String jsonString;
             serializeJson(doc, jsonString);
-            pCharacteristicStatusNotify->setValue(jsonString.c_str());
+            bleSetValue(pCharacteristicStatusNotify, jsonString);
             pCharacteristicStatusNotify->notify();
         }
     }
@@ -61,7 +62,7 @@ class ServerCallbacks : public NimBLEServerCallbacks {
             doc["status"] = "disconnected";
             String jsonString;
             serializeJson(doc, jsonString);
-            pCharacteristicStatusNotify->setValue(jsonString.c_str());
+            bleSetValue(pCharacteristicStatusNotify, jsonString);
             pCharacteristicStatusNotify->notify();
         }
     }
@@ -71,17 +72,17 @@ class ServerCallbacks : public NimBLEServerCallbacks {
 class ControlCharacteristicCallbacks : public NimBLECharacteristicCallbacks {
     void onRead(NimBLECharacteristic* pCharacteristic) override {
         String info = buildDeviceInfoJson();
-        pCharacteristic->setValue(info.c_str());
+        bleSetValue(pCharacteristic, info);
     }
 
     void onWrite(NimBLECharacteristic* pCharacteristic) override {
         std::string value = pCharacteristic->getValue();
         String responseJson;
         if (!testControlHandleWrite(value, pServer, responseJson)) return;
-        pCharacteristic->setValue(responseJson.c_str());
+        bleSetValue(pCharacteristic, responseJson);
         pCharacteristic->notify();
         if (pCharacteristicStatusNotify) {
-            pCharacteristicStatusNotify->setValue(responseJson.c_str());
+            bleSetValue(pCharacteristicStatusNotify, responseJson);
             pCharacteristicStatusNotify->notify();
         }
     }
@@ -93,7 +94,7 @@ class StatusNotifyCharacteristicCallbacks : public NimBLECharacteristicCallbacks
         std::string value = pCharacteristic->getValue();
         String responseJson;
         if (!testControlHandleWrite(value, pServer, responseJson)) return;
-        pCharacteristic->setValue(responseJson.c_str());
+        bleSetValue(pCharacteristic, responseJson);
         pCharacteristic->notify();
     }
 
@@ -158,7 +159,7 @@ void blePeripheralBegin() {
         NIMBLE_PROPERTY::NOTIFY
     );
     pCharacteristicControl->setCallbacks(new ControlCharacteristicCallbacks());
-    pCharacteristicControl->setValue(buildDeviceInfoJson().c_str());
+    bleSetValue(pCharacteristicControl, buildDeviceInfoJson());
 
     // Contract: StatusNotify = write + notify (no read)
     pCharacteristicStatusNotify = pService->createCharacteristic(
@@ -242,7 +243,7 @@ void blePeripheralLoop() {
             doc["fixture_role"] = FIXTURE_ROLE_PERIPHERAL;
             String jsonString;
             serializeJson(doc, jsonString);
-            pCharacteristicStatusNotify->setValue(jsonString.c_str());
+            bleSetValue(pCharacteristicStatusNotify, jsonString);
             pCharacteristicStatusNotify->notify();
             emitSerialEvent("notify", "device_status");
             lastStatusTime = millis();

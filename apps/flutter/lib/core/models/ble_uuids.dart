@@ -64,7 +64,9 @@ class BleUuids {
     '00001812': '人机界面(HID)',
     '0000180d': '心率服务',
     '00001809': '健康温度计',
-    '4fafc201': 'OTA 升级服务',
+    // 4fafc201 前缀为多服务共用（夹具 914b 控制 / 914c 权限 / 914d OTA），
+    // 仅精确匹配 OTA 服务，避免前缀把非 OTA 服务误标（WIN-FAND-003）
+    '4fafc2011fb5459e8fccc5c9c331914d': 'OTA 升级服务',
   };
 
   static final Map<String, String> _characteristicNames = {
@@ -86,16 +88,25 @@ class BleUuids {
   };
 
   /// 获取标准服务名称（中文）
+  ///
+  /// flutter_blue_plus 1.36 的 Guid.toString() 对 16 位 UUID 返回短形式
+  /// （如 "1800"），需归一为 "00001800" 再查表（WIN-FAND-003）；
+  /// 32 位 UUID 先精确匹配再回退前 8 位。
   static String? getServiceName(String uuid) {
     final s = uuid.toLowerCase().replaceAll('-', '');
-    final short = s.length >= 8 ? s.substring(0, 8) : s;
-    return _serviceNames[short];
+    if (s.length == 4) return _serviceNames['0000$s'];
+    if (s.length < 8) return _serviceNames[s];
+    return _serviceNames[s] ?? _serviceNames[s.substring(0, 8)];
   }
 
   /// 获取标准特征值名称（中文）
+  ///
+  /// 同上：16 位短形式（如 "2a00"）直接查表；32 位 UUID 先精确后取 4-8 位。
   static String? getCharacteristicName(String uuid) {
     final s = uuid.toLowerCase().replaceAll('-', '');
-    final short = s.length >= 8 ? s.substring(4, 8) : s;
-    return _characteristicNames[short];
+    if (s.length >= 8) {
+      return _characteristicNames[s] ?? _characteristicNames[s.substring(4, 8)];
+    }
+    return _characteristicNames[s];
   }
 }

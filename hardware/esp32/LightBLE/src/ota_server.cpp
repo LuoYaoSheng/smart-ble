@@ -4,6 +4,7 @@
 #include <Update.h>
 #include <Preferences.h>
 #include <mbedtls/sha256.h>
+#include "ble_value_util.h"
 
 static const char* kOtaNvsNamespace = "smart_ble";
 static const char* kOtaNvsVersionKey = "fw_version";
@@ -146,7 +147,7 @@ void OtaServer::notifyStatus(
 
     String json;
     serializeJson(doc, json);
-    _status->setValue(json.c_str());
+    bleSetValue(_status, json);
     _status->notify();
 }
 
@@ -411,7 +412,7 @@ void OtaServer::handleCtrlRead(NimBLECharacteristic* characteristic) {
     doc["firmware_version"] = activeFirmwareVersion();
     String json;
     serializeJson(doc, json);
-    characteristic->setValue(json.c_str());
+    bleSetValue(characteristic, json);
 }
 
 void OtaServer::handleCtrlWrite(NimBLECharacteristic* characteristic) {
