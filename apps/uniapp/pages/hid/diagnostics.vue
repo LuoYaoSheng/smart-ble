@@ -8,7 +8,15 @@
 				</view>
 				<view class="diag-row" v-for="d in diagnosticItems" :key="d.key">
 					<view class="diag-head">
-						<text :class="['diag-dot', d.state]">{{ stateIcon(d.state) }}</text>
+						<view :class="['diag-dot', d.state]">
+							<app-icon
+								v-if="stateMeta(d.state)"
+								:name="stateMeta(d.state).name"
+								:size="26"
+								:color="stateMeta(d.state).color"
+							/>
+							<text v-else>·</text>
+						</view>
 						<text class="diag-label">{{ d.label }}</text>
 						<text class="diag-state">{{ stateText(d.state) }}</text>
 					</view>
@@ -42,6 +50,7 @@ import { onLoad, onUnload } from '@dcloudio/uni-app';
 import { useHidStore } from '../../store/hid';
 import { smartHidService } from '../../services/smart-hid/index.js';
 import { buildHidDetailUrl, buildHidProvisionUrl } from '../../services/hid-navigation.js';
+import AppIcon from '../../components/common/app-icon.vue';
 
 const hidStore = useHidStore();
 const deviceId = ref('');
@@ -82,7 +91,12 @@ onUnload(() => {
 	if (ownsConnection) smartHidService.disconnect().catch(() => {});
 });
 
-const stateIcon = (s) => s === 'ok' ? '✓' : s === 'warn' ? '!' : s === 'active' ? '…' : '·';
+// p005 正典 stIcon：ok=check / warn=warn / fail=x 用 SVG 字形，active/pending 用文字 '·'
+const stateMeta = (s) => ({
+	ok: { name: 'check', color: '#0E9C82' },
+	warn: { name: 'warn', color: '#D37A12' },
+	fail: { name: 'x', color: '#F2555F' }
+}[s] || null);
 const stateText = (s) => ({ ok: '正常', warn: '异常', active: '检测中', pending: '待检测', fail: '失败' }[s] || s);
 
 const refresh = async () => {

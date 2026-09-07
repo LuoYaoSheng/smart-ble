@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/models/ble_service.dart';
 import 'service_tile.dart';
+import '../../core/design/app_icons.dart';
 
 class ServiceListWidget extends StatelessWidget {
   final List<BleService> services;
@@ -25,7 +26,7 @@ class ServiceListWidget extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.bluetooth_searching, size: 48, color: Colors.grey),
+              AppIcon('scan', size: 48, color: Colors.grey),
               SizedBox(height: 16),
               Text('正在发现服务或无可用服务...', style: TextStyle(color: Colors.grey)),
             ],

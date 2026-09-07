@@ -12,6 +12,7 @@ import '../widgets/filter_panel.dart';
 
 import 'device_detail_page.dart';
 import 'provisioning_page.dart';
+import '../../core/design/app_icons.dart';
 
 /// BLE 状态提供者
 final bleStateProvider = StreamProvider<BleState>((ref) {
@@ -172,7 +173,7 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
                 width: 16,
                 height: 16,
                 child: CircularProgressIndicator(strokeWidth: 2)),
-            error: (_, __) => const Icon(Icons.bluetooth_disabled,
+            error: (_, __) => const AppIcon('x',
                 color: AppTheme.errorColor),
           ),
           const SizedBox(width: 16),
@@ -198,7 +199,7 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.error_outline,
+                          const AppIcon('warn',
                               color: AppTheme.errorColor, size: 20),
                           const SizedBox(width: 8),
                           Expanded(
@@ -241,8 +242,8 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
                             Expanded(
                               child: ElevatedButton.icon(
                                 onPressed: _isInitialized ? _toggleScan : null,
-                                icon: Icon(
-                                    isScanning ? Icons.stop : Icons.search,
+                                icon: AppIcon(
+                                    isScanning ? 'stop' : 'scan',
                                     size: 18),
                                 label: Text(isScanning ? '停止扫描' : '开始扫描'),
                                 style: ElevatedButton.styleFrom(
@@ -367,8 +368,8 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            hasDevices ? Icons.filter_list_off : Icons.bluetooth_searching,
+          AppIcon(
+            hasDevices ? 'set' : 'scan',
             size: 64,
             color: AppTheme.textSecondary.withValues(alpha: 0.5),
           ),

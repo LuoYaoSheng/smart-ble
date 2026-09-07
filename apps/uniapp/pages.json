@@ -89,26 +89,26 @@
 		"list": [
 			{
 				"pagePath": "pages/index/index",
-				"iconPath": "static/tabs/device.png",
-				"selectedIconPath": "static/tabs/device_active.png",
+				"iconPath": "static/tabs/scan.png",
+				"selectedIconPath": "static/tabs/scan_active.png",
 				"text": "扫描"
 			},
 			{
 				"pagePath": "pages/connected/index",
-				"iconPath": "static/tabs/hid.png",
-				"selectedIconPath": "static/tabs/hid_active.png",
+				"iconPath": "static/tabs/link.png",
+				"selectedIconPath": "static/tabs/link_active.png",
 				"text": "已连接"
 			},
 			{
 				"pagePath": "pages/broadcast/index",
-				"iconPath": "static/tabs/broadcast.png",
-				"selectedIconPath": "static/tabs/broadcast_active.png",
+				"iconPath": "static/tabs/cast.png",
+				"selectedIconPath": "static/tabs/cast_active.png",
 				"text": "广播"
 			},
 			{
 				"pagePath": "pages/about/index",
-				"iconPath": "static/tabs/about.png",
-				"selectedIconPath": "static/tabs/about_active.png",
+				"iconPath": "static/tabs/info.png",
+				"selectedIconPath": "static/tabs/info_active.png",
 				"text": "关于"
 			}
 		]

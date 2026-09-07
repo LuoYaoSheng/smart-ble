@@ -11,7 +11,7 @@
 <script setup>
 defineProps({ rows: { type: Array, default: () => [] } });
 
-const marker = (state) => ({ done: '✓', active: '…', fail: '!', warn: '!' }[state] || '·');
+const marker = (state) => ({ done: '✓', fail: '✕', active: '·', pending: '·', warn: '!' }[state] || '·');
 const stateText = (state) => ({ done: '完成', active: '进行中', fail: '失败', warn: '待确认' }[state] || '等待');
 </script>
 

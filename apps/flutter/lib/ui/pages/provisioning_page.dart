@@ -23,6 +23,7 @@ import '../../core/ble/hid_session_store.dart';
 import '../../themes/app_theme.dart';
 import 'hid_detail_page.dart';
 import 'hid_diagnostics_page.dart';
+import '../../core/design/app_icons.dart';
 
 /// 扫码失败三分类（canon F020：取消不算错误 / 权限 / 无效）
 enum QrFailureReason { cancel, permission, invalid }
@@ -286,7 +287,7 @@ class _ProvisioningPageState extends ConsumerState<ProvisioningPage> {
           elevation: 0,
           scrolledUnderElevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.chevron_left, size: 26),
+            icon: const AppIcon('chev-r', rotate: 180, size: 26),
             onPressed: _confirmLeave,
           ),
           title: const Text('配置 Smart HID',
@@ -370,7 +371,7 @@ class _ProvisioningPageState extends ConsumerState<ProvisioningPage> {
   Widget _buildConnectPhase() {
     if (_controller.connecting) {
       return _OpCard(
-        icon: Icons.bluetooth_searching,
+        icon: 'scan',
         iconColor: AppTheme.primaryColor,
         title: '连接并确认设备中…',
         desc: '正在建立 GATT 连接 · ${widget.device.displayName}',
@@ -387,7 +388,7 @@ class _ProvisioningPageState extends ConsumerState<ProvisioningPage> {
             Expanded(
               child: _PrimaryButton(
                 label: '重新连接',
-                icon: Icons.refresh,
+                icon: 'refresh',
                 onPressed: () => _controller.connectDevice(widget.device.deviceId),
               ),
             ),
@@ -424,7 +425,7 @@ class _ProvisioningPageState extends ConsumerState<ProvisioningPage> {
           const SizedBox(height: 12),
           _PrimaryButton(
             label: '重新连接',
-            icon: Icons.refresh,
+            icon: 'refresh',
             onPressed: () => _controller.connectDevice(widget.device.deviceId),
           ),
           const SizedBox(height: 12),
@@ -469,7 +470,7 @@ class _ProvisioningPageState extends ConsumerState<ProvisioningPage> {
                 hint: '无密码可留空',
                 obscure: !_showPwd,
                 suffix: IconButton(
-                  icon: Icon(_showPwd ? Icons.visibility_off : Icons.visibility,
+                  icon: AppIcon(_showPwd ? 'eye-off' : 'eye',
                       size: 18, color: AppTheme.textSecondary),
                   onPressed: () => setState(() => _showPwd = !_showPwd),
                 ),
@@ -510,7 +511,7 @@ class _ProvisioningPageState extends ConsumerState<ProvisioningPage> {
         _PrimaryButton(
           key: const ValueKey('submitBtn'),
           label: '下发配置',
-          icon: Icons.send,
+          icon: 'send',
           onPressed: canSubmit ? _doSubmit : null,
         ),
       ],
@@ -540,7 +541,7 @@ class _ProvisioningPageState extends ConsumerState<ProvisioningPage> {
                     color: Color(0xFFD9F6F0),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.check,
+                  child: const AppIcon('check',
                       size: 30, color: Color(0xFF0E9A80)),
                 ),
                 const SizedBox(height: 12),
@@ -553,7 +554,7 @@ class _ProvisioningPageState extends ConsumerState<ProvisioningPage> {
                 const SizedBox(height: 16),
                 _PrimaryButton(
                   label: '查看设备',
-                  icon: Icons.chevron_right,
+                  icon: 'chev-r',
                   onPressed: _openPostSuccess,
                 ),
               ],
@@ -647,13 +648,13 @@ class _RecoveryButton extends StatelessWidget {
       case 'form':
         return _PrimaryButton(
           label: '返回表单修改',
-          icon: Icons.edit,
+          icon: 'set',
           onPressed: page._controller.backToForm,
         );
       case 'pairing':
         return _PrimaryButton(
           label: '重新扫描配对码',
-          icon: Icons.qr_code,
+          icon: 'qr',
           onPressed: () {
             page._token = null;
             page._qrErr = null;
@@ -663,13 +664,13 @@ class _RecoveryButton extends StatelessWidget {
       case 'diagnostics':
         return _PrimaryButton(
           label: '运行诊断',
-          icon: Icons.monitor_heart,
+          icon: 'pulse',
           onPressed: page._openDiagnostics,
         );
       case 'reconnect':
         return _PrimaryButton(
           label: '重新连接设备',
-          icon: Icons.refresh,
+          icon: 'refresh',
           onPressed: () async {
             await page._controller.connectDevice(page.widget.device.deviceId);
             if (page._controller.phase == ProvisionPhase.configure) {
@@ -680,7 +681,7 @@ class _RecoveryButton extends StatelessWidget {
       default:
         return _PrimaryButton(
           label: '重新下发',
-          icon: Icons.send,
+          icon: 'send',
           onPressed: page._doSubmit,
         );
     }
@@ -740,7 +741,7 @@ class _Stepper extends StatelessWidget {
                 ),
                 alignment: Alignment.center,
                 child: i < current
-                    ? const Icon(Icons.check,
+                    ? const AppIcon('check',
                         size: 14, color: Color(0xFF0E9A80))
                     : Text(
                         '${i + 1}',
@@ -785,7 +786,7 @@ class _OpCard extends StatelessWidget {
     required this.desc,
   });
 
-  final IconData icon;
+  final String icon;
   final Color iconColor;
   final String title;
   final String desc;
@@ -801,7 +802,7 @@ class _OpCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Icon(icon, size: 40, color: iconColor),
+          AppIcon(icon, size: 40, color: iconColor),
           const SizedBox(height: 12),
           Text(title,
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
@@ -831,7 +832,7 @@ class _ErrorBanner extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.warning_amber_rounded,
+          const AppIcon('warn',
               size: 16, color: Color(0xFFF2555F)),
           const SizedBox(width: 8),
           Expanded(
@@ -995,7 +996,7 @@ class _QrActionCard extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(Icons.qr_code,
+            AppIcon('qr',
                 size: 30, color: hasToken ? const Color(0xFF0E9A80) : AppTheme.primaryColor),
             const SizedBox(width: 12),
             Expanded(
@@ -1095,7 +1096,7 @@ class _QrErrorPanel extends StatelessWidget {
               const SizedBox(width: 9),
             ],
             Expanded(
-              child: _PrimaryButton(label: '重新扫码', icon: Icons.qr_code, onPressed: onRetry),
+              child: _PrimaryButton(label: '重新扫码', icon: 'qr', onPressed: onRetry),
             ),
           ]),
         ],
@@ -1120,7 +1121,7 @@ class _InfoNote extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.info_outline, size: 15, color: AppTheme.primaryColor),
+          const AppIcon('info', size: 15, color: AppTheme.primaryColor),
           const SizedBox(width: 6),
           Expanded(
             child: Text(
@@ -1182,7 +1183,7 @@ class _ProgressRow extends StatelessWidget {
             shape: BoxShape.circle,
             border: Border.all(color: const Color(0xFF17C7A8), width: 1.5),
           ),
-          child: const Icon(Icons.check, size: 13, color: Color(0xFF0E9A80)),
+          child: const AppIcon('check', size: 13, color: Color(0xFF0E9A80)),
         );
       case ProvisionRowState.fail:
         indicator = Container(
@@ -1193,7 +1194,7 @@ class _ProgressRow extends StatelessWidget {
             shape: BoxShape.circle,
             border: Border.all(color: const Color(0xFFF2555F), width: 1.5),
           ),
-          child: const Icon(Icons.close, size: 13, color: Color(0xFFF2555F)),
+          child: const AppIcon('x', size: 13, color: Color(0xFFF2555F)),
         );
     }
     final strong = state == ProvisionRowState.active || state == ProvisionRowState.done;
@@ -1238,7 +1239,7 @@ class _PrimaryButton extends StatelessWidget {
   const _PrimaryButton({super.key, required this.label, this.icon, this.onPressed});
 
   final String label;
-  final IconData? icon;
+  final String? icon;
   final VoidCallback? onPressed;
 
   @override
@@ -1248,7 +1249,7 @@ class _PrimaryButton extends StatelessWidget {
       child: ElevatedButton.icon(
         onPressed: onPressed,
         icon: icon != null
-            ? Icon(icon, size: 17,
+            ? AppIcon(icon!, size: 17,
                 color: onPressed == null ? Colors.white70 : Colors.white)
             : const SizedBox.shrink(),
         label: Text(label,
@@ -1277,7 +1278,7 @@ class _SoftButton extends StatelessWidget {
 
   final String label;
   final VoidCallback? onPressed;
-  final IconData? icon;
+  final String? icon;
 
   @override
   Widget build(BuildContext context) {
@@ -1286,7 +1287,7 @@ class _SoftButton extends StatelessWidget {
       child: OutlinedButton.icon(
         onPressed: onPressed,
         icon: icon != null
-            ? Icon(icon, size: 16, color: AppTheme.textSecondary)
+            ? AppIcon(icon!, size: 16, color: AppTheme.textSecondary)
             : const SizedBox.shrink(),
         label: Text(label,
             style: const TextStyle(
@@ -1357,7 +1358,7 @@ class _QrScannerSheetState extends State<_QrScannerSheet> {
                     style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
               ),
               IconButton(
-                icon: const Icon(Icons.close, size: 20),
+                icon: const AppIcon('x', size: 20),
                 onPressed: _close,
               ),
             ],
@@ -1401,7 +1402,7 @@ class _QrScannerSheetState extends State<_QrScannerSheet> {
             _SoftButton(
               key: const ValueKey('qrPasteExpand'),
               label: '手动粘贴配对码（无摄像头兜底）',
-              icon: Icons.content_paste,
+              icon: 'copy',
               onPressed: () => setState(() => _pasteExpanded = true),
             )
           else

@@ -5,6 +5,7 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import '../../core/ble/ble_manager.dart';
 import '../../themes/app_theme.dart';
 import 'device_detail_page.dart';
+import '../../core/design/app_icons.dart';
 
 /// 已连接设备列表页
 ///
@@ -58,7 +59,7 @@ class _ConnectedDevicesPageState extends ConsumerState<ConnectedDevicesPage> {
           if (connectedIds.length > 1)
             TextButton.icon(
               onPressed: _disconnectAll,
-              icon: const Icon(Icons.bluetooth_disabled, size: 18),
+              icon: const AppIcon('x', size: 18),
               label: const Text('全部断开'),
               style: TextButton.styleFrom(
                 foregroundColor: AppTheme.errorColor,
@@ -75,8 +76,8 @@ class _ConnectedDevicesPageState extends ConsumerState<ConnectedDevicesPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.bluetooth_disabled,
+          AppIcon(
+            'x',
             size: 64,
             color: AppTheme.textSecondary.withValues(alpha: 0.5),
           ),
@@ -133,8 +134,8 @@ class _ConnectedDevicesPageState extends ConsumerState<ConnectedDevicesPage> {
                       color: AppTheme.successColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Icon(
-                      Icons.bluetooth_connected,
+                    child: const AppIcon(
+                      'link',
                       color: AppTheme.successColor,
                       size: 24,
                     ),
@@ -185,14 +186,14 @@ class _ConnectedDevicesPageState extends ConsumerState<ConnectedDevicesPage> {
                       // 断开
                       IconButton(
                         onPressed: () => _disconnectDevice(deviceId),
-                        icon: const Icon(Icons.link_off),
+                        icon: const AppIcon('x'),
                         color: AppTheme.errorColor,
                         iconSize: 20,
                         tooltip: '断开',
                       ),
                       // 箭头
-                      const Icon(
-                        Icons.chevron_right,
+                      const AppIcon(
+                        'chev-r',
                         color: AppTheme.textSecondary,
                       ),
                     ],

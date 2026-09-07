@@ -72,6 +72,50 @@ describe('Smart BLE complete page and navigation flow', () => {
 		}
 	})
 
+	test('PARITY-ICON: tabBar uses canonical glyph assets (scan/link/cast/info)', () => {
+		const tabs = pagesConfig.tabBar.list.map((tab) => ({
+			text: tab.text,
+			icon: path.basename(tab.iconPath, '.png')
+		}))
+		expect(tabs).toEqual([
+			{ text: '扫描', icon: 'scan' },
+			{ text: '已连接', icon: 'link' },
+			{ text: '广播', icon: 'cast' },
+			{ text: '关于', icon: 'info' }
+		])
+		for (const tab of pagesConfig.tabBar.list) {
+			expect(fs.existsSync(path.join(__dirname, '..', tab.iconPath))).toBe(true)
+			expect(fs.existsSync(path.join(__dirname, '..', tab.selectedIconPath))).toBe(true)
+		}
+		// 旧字形资产（智能手表/键盘等 P004 时代遗留）必须清理干净
+		const legacy = ['device', 'device_active', 'hid', 'hid_active', 'broadcast', 'broadcast_active', 'about', 'about_active']
+		for (const name of legacy) {
+			expect(fs.existsSync(path.join(__dirname, `../static/tabs/${name}.png`))).toBe(false)
+		}
+	})
+
+	test('PARITY-ICON: icon canon mirror is locked to the prototype sprite', () => {
+		const sprite = fs.readFileSync(
+			path.join(__dirname, '../../docs/specs/prototype/v1-new/index.html'),
+			'utf8'
+		)
+		const canonNames = [...sprite.matchAll(/<g id="(i-[a-z0-9-]+)"/g)].map((m) => m[1].slice(2))
+		expect(canonNames.length).toBeGreaterThanOrEqual(30)
+
+		const mirrorSrc = fs.readFileSync(
+			path.join(__dirname, '../services/design/app-icons.js'),
+			'utf8'
+		)
+		const namesMatch = mirrorSrc.match(/APP_ICON_NAMES = \[([^\]]+)\]/)
+		expect(namesMatch).not.toBeNull()
+		const mirrored = namesMatch[1].split(',').map((s) => s.trim().replace(/["']/g, ''))
+		expect(mirrored).toEqual(canonNames)
+		for (const name of canonNames) {
+			expect(mirrorSrc).toContain(`  ${name}: `)
+			expect(mirrorSrc).toContain('{C}')
+		}
+	})
+
 	test('P004 removed: index shows no configured-devices panel even with session snapshots', async () => {
 		await replaceRuntimeState({ knownDevices: [HID_DEVICE], currentDevice: HID_DEVICE })
 		const page = await program.reLaunch('/pages/index/index')

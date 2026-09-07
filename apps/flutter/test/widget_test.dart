@@ -1,8 +1,8 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:smart_ble/core/ble/hid_session_store.dart';
+import 'package:smart_ble/core/design/app_icons.dart';
 import 'package:smart_ble/main.dart';
 import 'package:smart_ble/ui/pages/hid_detail_page.dart';
 import 'package:smart_ble/ui/pages/hid_diagnostics_page.dart';
@@ -119,5 +119,26 @@ void main() {
     expect(find.text('官方网站'), findsOneWidget);
     expect(find.text('问题反馈'), findsOneWidget);
     expect(find.text('分享应用'), findsOneWidget);
+  });
+  // PARITY-ICON：tabBar 四枚图标必须是正典字形（scan/link/cast/info），
+  // 禁止回退 Material 图标（TOKEN.md §7 图标正典）。
+  testWidgets('tab icons are canon AppIcon glyphs (PARITY-ICON)', (tester) async {
+    await tester.pumpWidget(const ProviderScope(child: SmartBLEApp()));
+    await tester.pump();
+    final names = tester
+        .widgetList<AppIcon>(find.byType(AppIcon))
+        .map((w) => w.name)
+        .toSet();
+    expect(names.containsAll(['scan', 'link', 'cast', 'info']), isTrue);
+  });
+
+  // PARITY-ICON：35 枚正典字形全部可解析渲染（flutter_svg 真实解析，坏字形在此抛异常）。
+  testWidgets('canon icon set renders all glyphs without error', (tester) async {
+    for (final name in kAppIconNames) {
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(body: Center(child: AppIcon(name, size: 24))),
+      ));
+      expect(tester.takeException(), isNull, reason: name);
+    }
   });
 }

@@ -9,6 +9,7 @@ import '../../core/models/log_entry.dart';
 import '../../core/utils/logger.dart';
 import '../../themes/app_theme.dart';
 import '../widgets/log_panel.dart';
+import '../../core/design/app_icons.dart';
 
 /// 广播状态提供者
 final isAdvertisingProvider = StateProvider<bool>((ref) => false);
@@ -328,7 +329,7 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.info_outline, color: color, size: 18),
+          AppIcon('info', color: color, size: 18),
           const SizedBox(width: 8),
           Expanded(
             child: Column(
@@ -425,7 +426,7 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
                 child: ElevatedButton.icon(
                   onPressed:
                       (_overBudget || _uuidInvalid) ? null : _toggleAdvertising,
-                  icon: Icon(_isAdvertising ? Icons.stop : Icons.cast),
+                  icon: AppIcon(_isAdvertising ? 'stop' : 'cast'),
                   label: Text(_isAdvertising ? '停止广播' : '开始广播'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _isAdvertising
@@ -443,7 +444,7 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
               const SizedBox(width: 10),
               OutlinedButton.icon(
                 onPressed: dis ? null : _checkSupport,
-                icon: const Icon(Icons.refresh, size: 18),
+                icon: const AppIcon('refresh', size: 18),
                 label: const Text('检查支持'),
                 style: OutlinedButton.styleFrom(
                   padding:

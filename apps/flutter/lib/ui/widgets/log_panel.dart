@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import '../../core/models/ble_service.dart';
 import '../../core/models/log_entry.dart';
 import '../../themes/app_theme.dart';
+import '../../core/design/app_icons.dart';
 
 /// 日志面板组件
 class LogPanel extends StatelessWidget {
@@ -121,7 +122,7 @@ class LogPanel extends StatelessWidget {
             ),
             child: Row(
               children: [
-                const Icon(Icons.article, size: 16, color: AppTheme.textSecondary),
+                const AppIcon('log', size: 16, color: AppTheme.textSecondary),
                 const SizedBox(width: 8),
                 const Text(
                   '操作日志',
@@ -142,8 +143,8 @@ class LogPanel extends StatelessWidget {
                 // 导出按钮
                 GestureDetector(
                   onTap: onExport ?? () => _copyLogsToClipboard(context),
-                  child: const Icon(
-                    Icons.ios_share,
+                  child: const AppIcon(
+                    'share',
                     size: 16,
                     color: AppTheme.primaryColor,
                   ),
@@ -203,7 +204,7 @@ class _LogItem extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 14, color: color),
+          AppIcon(icon, size: 14, color: color),
           const SizedBox(width: 8),
           Expanded(
             child: Column(
@@ -231,20 +232,20 @@ class _LogItem extends StatelessWidget {
     );
   }
 
-  (IconData, Color) _getTypeInfo() {
+  (String, Color) _getTypeInfo() {
     switch (entry.type) {
       case LogType.info:
-        return (Icons.info_outline, AppTheme.primaryColor);
+        return ('info', AppTheme.primaryColor);
       case LogType.success:
-        return (Icons.check_circle_outline, AppTheme.successColor);
+        return ('check', AppTheme.successColor);
       case LogType.warning:
-        return (Icons.warning_amber_rounded, AppTheme.warningColor);
+        return ('warn', AppTheme.warningColor);
       case LogType.error:
-        return (Icons.error_outline, AppTheme.errorColor);
+        return ('warn', AppTheme.errorColor);
       case LogType.receive:
-        return (Icons.arrow_downward, AppTheme.secondaryColor);
+        return ('dl', AppTheme.secondaryColor);
       case LogType.send:
-        return (Icons.arrow_upward, AppTheme.primaryColor);
+        return ('send', AppTheme.primaryColor);
     }
   }
 

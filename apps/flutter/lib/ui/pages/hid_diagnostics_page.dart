@@ -18,6 +18,7 @@ import '../../core/protocols/hid_provisioning_protocol.dart';
 import '../../themes/app_theme.dart';
 import 'hid_detail_page.dart';
 import 'provisioning_page.dart';
+import '../../core/design/app_icons.dart';
 
 enum _DiagRowState { pending, active, ok, warn, fail }
 
@@ -393,7 +394,7 @@ class _HidDiagnosticsPageState extends State<HidDiagnosticsPage> {
       children: [
         ElevatedButton.icon(
           onPressed: _pageState == _PageState.checking ? null : _rerun,
-          icon: const Icon(Icons.refresh, size: 18),
+          icon: const AppIcon('refresh', size: 18),
           label: Text(_pageState == _PageState.checking ? '连接中…' : '重新检测'),
           style: ElevatedButton.styleFrom(
             backgroundColor: AppTheme.primaryColor,
@@ -407,7 +408,7 @@ class _HidDiagnosticsPageState extends State<HidDiagnosticsPage> {
         const SizedBox(height: 10),
         OutlinedButton.icon(
           onPressed: () => setState(() => _showError = !_showError),
-          icon: Icon(_showError ? Icons.visibility_off : Icons.visibility,
+          icon: AppIcon(_showError ? 'eye-off' : 'eye',
               size: 18, color: AppTheme.primaryColor),
           label: Text(_showError ? '隐藏错误码' : '显示错误码（详细信息）'),
           style: OutlinedButton.styleFrom(
@@ -421,7 +422,8 @@ class _HidDiagnosticsPageState extends State<HidDiagnosticsPage> {
         const SizedBox(height: 10),
         OutlinedButton.icon(
           onPressed: _backToDetail,
-          icon: const Icon(Icons.arrow_back, size: 18, color: AppTheme.primaryColor),
+          icon: const AppIcon('chev-r',
+              rotate: 180, size: 18, color: AppTheme.primaryColor),
           label: const Text('返回设备详情'),
           style: OutlinedButton.styleFrom(
             foregroundColor: AppTheme.primaryColor,
@@ -434,7 +436,7 @@ class _HidDiagnosticsPageState extends State<HidDiagnosticsPage> {
         const SizedBox(height: 10),
         OutlinedButton.icon(
           onPressed: _reprovision,
-          icon: const Icon(Icons.settings_remote_outlined,
+          icon: const AppIcon('refresh',
               size: 18, color: AppTheme.primaryColor),
           label: const Text('重新配网'),
           style: OutlinedButton.styleFrom(

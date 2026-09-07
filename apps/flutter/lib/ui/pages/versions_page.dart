@@ -15,6 +15,7 @@ import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../themes/app_theme.dart';
+import '../../core/design/app_icons.dart';
 
 class VersionsPage extends StatefulWidget {
   const VersionsPage({super.key});
@@ -82,7 +83,7 @@ class _VersionsPageState extends State<VersionsPage> {
               width: double.infinity,
               child: ElevatedButton.icon(
                 onPressed: _copyVersion,
-                icon: const Icon(Icons.copy, size: 16),
+                icon: const AppIcon('copy', size: 16),
                 label: const Text('复制版本信息'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppTheme.primaryColor,

@@ -26,7 +26,7 @@
 
 		<template v-else-if="state === 'success'">
 			<view class="ble-success-box">
-				<view class="ble-success-icon">✓</view>
+				<view class="ble-success-icon"><app-icon name="check" :size="28" color="#FFFFFF" /></view>
 				<view>
 					<text class="operation-title">{{ title || '已完成' }}</text>
 					<text v-if="description" class="operation-copy">{{ description }}</text>
@@ -64,6 +64,8 @@
 </template>
 
 <script setup>
+import AppIcon from './app-icon.vue';
+
 defineProps({
 	state: {
 		type: String,

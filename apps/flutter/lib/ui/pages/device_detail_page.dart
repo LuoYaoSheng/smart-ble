@@ -14,6 +14,7 @@ import '../widgets/log_panel.dart';
 import '../widgets/ota_dialog.dart';
 import '../widgets/write_dialog.dart';
 import '../widgets/service_list.dart';
+import '../../core/design/app_icons.dart';
 
 /// 设备详情页
 class DeviceDetailPage extends ConsumerStatefulWidget {
@@ -413,7 +414,7 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
             Padding(
               padding: const EdgeInsets.only(right: 8.0),
               child: IconButton(
-                icon: const Icon(Icons.system_update_alt, color: AppTheme.primaryColor),
+                icon: const AppIcon('dl', color: AppTheme.primaryColor),
                 tooltip: 'OTA 固件升级',
                 onPressed: () {
                   showDialog(
@@ -491,7 +492,7 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
                         logger.clear();
                         setState(() {});
                       },
-                      icon: const Icon(Icons.clear, size: 18),
+                      icon: const AppIcon('x', size: 18),
                       label: const Text('清空'),
                     ),
                   ),
@@ -500,7 +501,7 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
                   Expanded(
                     child: OutlinedButton.icon(
                       onPressed: _logs.isEmpty ? null : _exportLogs,
-                      icon: const Icon(Icons.ios_share, size: 18),
+                      icon: const AppIcon('share', size: 18),
                       label: const Text('导出'),
                     ),
                   ),
@@ -509,7 +510,7 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: _disconnect,
-                      icon: const Icon(Icons.bluetooth_disabled, size: 18),
+                      icon: const AppIcon('x', size: 18),
                       label: const Text('断开'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppTheme.errorColor,
@@ -544,13 +545,13 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
                   if (_commandQueue?.isPaused ?? false)
                     TextButton.icon(
                       onPressed: () => _commandQueue?.resume(),
-                      icon: const Icon(Icons.play_arrow, size: 16),
+                      icon: const AppIcon('play', size: 16),
                       label: const Text('继续', style: TextStyle(fontSize: 12)),
                     )
                   else
                     TextButton.icon(
                       onPressed: () => _commandQueue?.pause(),
-                      icon: const Icon(Icons.pause, size: 16),
+                      icon: const AppIcon('stop', size: 16),
                       label: const Text('暂停', style: TextStyle(fontSize: 12)),
                     ),
                   TextButton.icon(
@@ -558,7 +559,7 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
                       _commandQueue?.clear();
                       _addLog('指令队列已停止', LogType.info);
                     },
-                    icon: const Icon(Icons.stop, size: 16, color: AppTheme.errorColor),
+                    icon: const AppIcon('stop', size: 16, color: AppTheme.errorColor),
                     label: const Text('停止', style: TextStyle(fontSize: 12, color: AppTheme.errorColor)),
                   ),
                 ],
@@ -592,7 +593,7 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.error_outline, size: 48, color: AppTheme.errorColor),
+          const AppIcon('warn', size: 48, color: AppTheme.errorColor),
           const SizedBox(height: 16),
           Text(_errorMessage ?? '发生错误'),
           const SizedBox(height: 16),

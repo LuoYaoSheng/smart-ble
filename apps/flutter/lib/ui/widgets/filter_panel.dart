@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../themes/app_theme.dart';
 import '../pages/device_list_page.dart';
+import '../../core/design/app_icons.dart';
 
 /// 过滤面板组件
 class FilterPanel extends ConsumerWidget {
@@ -46,8 +47,9 @@ class FilterPanel extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               child: Row(
                 children: [
-                  Icon(
-                    expanded ? Icons.expand_less : Icons.expand_more,
+                  AppIcon(
+                    'chev-d',
+                    rotate: expanded ? 180 : 0,
                     color: AppTheme.primaryColor,
                     size: 20,
                   ),
@@ -209,7 +211,7 @@ class FilterPanel extends ConsumerWidget {
                 ),
               ),
               child: value
-                  ? const Icon(Icons.check, size: 14, color: Colors.white)
+                  ? const AppIcon('check', size: 14, color: Colors.white)
                   : null,
             ),
             const SizedBox(width: 12),
@@ -229,7 +231,7 @@ class FilterPanel extends ConsumerWidget {
           ref.read(filterNamePrefixProvider.notifier).state = '';
           ref.read(filterHideUnnamedProvider.notifier).state = false;
         },
-        icon: const Icon(Icons.refresh, size: 16),
+        icon: const AppIcon('refresh', size: 16),
         label: const Text('重置过滤条件'),
         style: OutlinedButton.styleFrom(
           foregroundColor: AppTheme.textSecondary,
@@ -300,10 +302,10 @@ class _NameFilterFieldState extends ConsumerState<_NameFilterField> {
         hintText: '输入设备名称前缀...',
         hintStyle:
             TextStyle(color: AppTheme.textSecondary.withValues(alpha: 0.6)),
-        prefixIcon: const Icon(Icons.search, size: 18),
+        prefixIcon: const AppIcon('scan', size: 18),
         suffixIcon: widget.value.isNotEmpty
             ? IconButton(
-                icon: const Icon(Icons.clear, size: 18),
+                icon: const AppIcon('x', size: 18),
                 onPressed: () =>
                     ref.read(filterNamePrefixProvider.notifier).state = '',
               )

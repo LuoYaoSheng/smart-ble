@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:file_picker/file_picker.dart';
 import '../../core/ble/ota_manager.dart';
+import '../../core/design/app_icons.dart';
 
 class OtaUpgradeDialog extends ConsumerWidget {
   final String deviceId;
@@ -42,7 +43,7 @@ class OtaUpgradeDialog extends ConsumerWidget {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.description, color: Colors.blue),
+                  const AppIcon('doc', color: Colors.blue),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Column(
@@ -113,7 +114,7 @@ class OtaUpgradeDialog extends ConsumerWidget {
                       ),
                     ),
                     if (state.isCompleted)
-                      const Icon(Icons.check_circle,
+                      const AppIcon('check',
                           color: Colors.green, size: 24),
                   ],
                 ),

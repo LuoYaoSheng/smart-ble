@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../config/product.dart';
 import '../../themes/app_theme.dart';
 import 'versions_page.dart';
+import '../../core/design/app_icons.dart';
 
 /// 关于页 —— 对齐基准原型 p009：紧凑品牌行 + 可操作信息，去除大图与展示型区块
 class AboutPage extends StatefulWidget {
@@ -277,24 +278,24 @@ class _AboutPageState extends State<AboutPage> {
       child: Column(
         children: [
           _MenuRow(
-            icon: Icons.language,
+            icon: 'ext',
             title: '官方网站',
             onTap: () => _openLink(context, ProductConfig.website),
           ),
           _MenuRow(
-            icon: Icons.history_outlined,
+            icon: 'doc',
             title: '版本记录',
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (context) => const VersionsPage()),
             ),
           ),
           _MenuRow(
-            icon: Icons.send_outlined,
+            icon: 'send',
             title: '问题反馈',
             onTap: () => _openLink(context, ProductConfig.feedback),
           ),
           _MenuRow(
-            icon: Icons.share_outlined,
+            icon: 'share',
             title: '分享应用',
             onTap: _shareApp,
             last: true,
@@ -381,7 +382,7 @@ class _PromoTile extends StatelessWidget {
 }
 
 class _MenuRow extends StatelessWidget {
-  final IconData icon;
+  final String icon;
   final String title;
   final VoidCallback onTap;
   final bool last;
@@ -406,7 +407,7 @@ class _MenuRow extends StatelessWidget {
               ),
         child: Row(
           children: [
-            Icon(icon, size: 19, color: AppTheme.textSecondary),
+            AppIcon(icon, size: 19, color: AppTheme.textSecondary),
             const SizedBox(width: 12),
             Expanded(
               child: Text(title,
@@ -415,7 +416,7 @@ class _MenuRow extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                       color: AppTheme.textPrimary)),
             ),
-            const Icon(Icons.chevron_right,
+            const AppIcon('chev-r',
                 size: 18, color: AppTheme.textSecondary),
           ],
         ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'core/design/app_icons.dart';
 import 'themes/app_theme.dart';
 import 'ui/pages/device_list_page.dart';
 import 'ui/pages/connected_devices_page.dart';
@@ -94,23 +95,33 @@ class _MainScreenState extends State<MainScreen> {
         unselectedFontSize: 12,
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.bluetooth_searching),
-            activeIcon: Icon(Icons.bluetooth),
+            // 正典字形 scan/link/cast/info（PARITY-ICON）；AppIcon 不走 IconTheme，
+            // 选中/未选中色需显式烘焙（与 selectedItemColor/unselectedItemColor 一致）。
+            icon: AppIcon('scan',
+                size: 22, color: AppTheme.textSecondary),
+            activeIcon: AppIcon('scan',
+                size: 22, color: AppTheme.primaryColor),
             label: '扫描',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.devices_other_outlined),
-            activeIcon: Icon(Icons.devices_other),
+            icon: AppIcon('link',
+                size: 22, color: AppTheme.textSecondary),
+            activeIcon: AppIcon('link',
+                size: 22, color: AppTheme.primaryColor),
             label: '已连接',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.broadcast_on_personal_outlined),
-            activeIcon: Icon(Icons.broadcast_on_personal),
+            icon: AppIcon('cast',
+                size: 22, color: AppTheme.textSecondary),
+            activeIcon: AppIcon('cast',
+                size: 22, color: AppTheme.primaryColor),
             label: '广播',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.info_outline),
-            activeIcon: Icon(Icons.info),
+            icon: AppIcon('info',
+                size: 22, color: AppTheme.textSecondary),
+            activeIcon: AppIcon('info',
+                size: 22, color: AppTheme.primaryColor),
             label: '关于',
           ),
         ],

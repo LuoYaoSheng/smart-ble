@@ -15,6 +15,7 @@ import '../../themes/app_theme.dart';
 import 'device_detail_page.dart';
 import 'hid_diagnostics_page.dart';
 import 'provisioning_page.dart';
+import '../../core/design/app_icons.dart';
 
 class HidDetailPage extends StatefulWidget {
   const HidDetailPage({super.key, required this.deviceId, this.name = ''});
@@ -142,19 +143,19 @@ class _HidDetailPageState extends State<HidDetailPage> {
                 const SizedBox(height: 16),
                 _PrimaryButton(
                   label: '重新配置',
-                  icon: Icons.settings_remote_outlined,
+                  icon: 'refresh',
                   onPressed: _reconfigure,
                 ),
                 const SizedBox(height: 10),
                 _SecondaryButton(
                   label: '运行诊断',
-                  icon: Icons.monitor_heart_outlined,
+                  icon: 'pulse',
                   onPressed: _runDiagnostics,
                 ),
                 const SizedBox(height: 10),
                 _SecondaryButton(
                   label: '高级 BLE 调试',
-                  icon: Icons.developer_mode_outlined,
+                  icon: 'chip',
                   onPressed: _openAdvancedBle,
                 ),
               ],
@@ -254,7 +255,7 @@ class _PrimaryButton extends StatelessWidget {
       {required this.label, required this.icon, required this.onPressed});
 
   final String label;
-  final IconData icon;
+  final String icon;
   final VoidCallback onPressed;
 
   @override
@@ -263,7 +264,7 @@ class _PrimaryButton extends StatelessWidget {
       width: double.infinity,
       child: ElevatedButton.icon(
         onPressed: onPressed,
-        icon: Icon(icon, size: 18),
+        icon: AppIcon(icon, size: 18),
         label: Text(label),
         style: ElevatedButton.styleFrom(
           backgroundColor: AppTheme.primaryColor,
@@ -282,7 +283,7 @@ class _SecondaryButton extends StatelessWidget {
       {required this.label, required this.icon, required this.onPressed});
 
   final String label;
-  final IconData icon;
+  final String icon;
   final VoidCallback onPressed;
 
   @override
@@ -291,7 +292,7 @@ class _SecondaryButton extends StatelessWidget {
       width: double.infinity,
       child: OutlinedButton.icon(
         onPressed: onPressed,
-        icon: Icon(icon, size: 18, color: AppTheme.primaryColor),
+        icon: AppIcon(icon, size: 18, color: AppTheme.primaryColor),
         label: Text(label),
         style: OutlinedButton.styleFrom(
           foregroundColor: AppTheme.primaryColor,
