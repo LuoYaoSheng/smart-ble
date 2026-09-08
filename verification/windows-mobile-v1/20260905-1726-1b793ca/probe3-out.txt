@@ -1,0 +1,4 @@
+connected: True
+[S-1 清空后大窗] scrollables=[(0, 1446, 1080, 2016)] hdr=[1577, 1829] icons=[(1602, '展开'), (1854, '展开')] log=False
+main card: None
+probe3 done
