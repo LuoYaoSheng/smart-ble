@@ -1,0 +1,246 @@
+{
+  "line": "A-AND",
+  "driver": "v17",
+  "device": "SM-G9910(E5) + ESP32 fixture(BLEToolkit-Server)",
+  "defects": [
+    "WIN-AAND-002 服务命名大小写（GAP/GATT 不具名）",
+    "WIN-AAND-003 服务区被压至 570px/44dp 滚动区（P1）",
+    "WIN-AAND-004 读值不进 UI",
+    "WIN-AAND-005 userInitiated 标志被 disconnect 内部移除（日志恒 false，功能正常）",
+    "WIN-AAND-006 常规连接不 requestMtu → 通知 20 字节截断（P2）"
+  ],
+  "total": 46,
+  "passed": 37,
+  "results": [
+    {
+      "name": "前置启动（扫描 Tab 就绪）",
+      "ok": true,
+      "detail": "Smart BLE 关于 发现 0 台设备 广播 开始扫描 扫描 暂无设备 点击上方按钮开始扫描"
+    },
+    {
+      "name": "F006 夹具卡片发现",
+      "ok": true,
+      "detail": "10:B4:1D:CD:23:8D BLEToolkit-Server"
+    },
+    {
+      "name": "F006 夹具卡连接按钮可定位",
+      "ok": true,
+      "detail": "name@[(478, 1589)] icon@(924, 1620)"
+    },
+    {
+      "name": "F006 连接成功（断开连接出现+已连接徽标）",
+      "ok": true,
+      "detail": "已连接 断开连接"
+    },
+    {
+      "name": "F006 服务发现（发现 5 个服务 日志）",
+      "ok": true,
+      "detail": "发现 5 个服务"
+    },
+    {
+      "name": "F011 清空后面板隐藏（滚动区 1446-2016）",
+      "ok": true,
+      "detail": "scrollable=(1446, 2016) unknown_cards=2"
+    },
+    {
+      "name": "F007 GAP 卡（短码 1800 · 2 特征值）",
+      "ok": true,
+      "detail": "1800:2 1801:1 OTA:-1 c201:2 c201:3 c201:7"
+    },
+    {
+      "name": "F007 GATT 卡（短码 1801 · 1 特征值）",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "F007 主服务卡（短码 c201 · 2 特征值）",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "F007 权限矩阵卡（短码 c201 · 7 特征值）",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "F007 OTA 卡（第 5 服务）",
+      "ok": true,
+      "detail": "具名:未开始 OTA OTA Service BLE OTA 升级 开始 OTA"
+    },
+    {
+      "name": "F007 缺陷登记：GAP/GATT 不具名（WIN-AAND-002）",
+      "ok": true,
+      "detail": "BleUuids map 键大写 vs Android 小写 → 标准服务显示 Unknown Service（F-AND WIN-FAND-003 同类，待修）"
+    },
+    {
+      "name": "F007 缺陷登记：服务区被压至 ~44dp/滚动区仅 570px（WIN-AAND-003）",
+      "ok": true,
+      "detail": "ActionButtons+OtaCard+LogPanel(固定150dp) 挤占 → 需清空日志才能获得 570px 滚动区，服务树近乎不可读（P1）"
+    },
+    {
+      "name": "F007 主服务两行分步签名（控制{R,W,N}→状态{W,N}）",
+      "ok": true,
+      "detail": "r1=[['写入', '启用通知', '读取']] r2=[['写入', '启用通知', '读取'], ['写入', '启用通知']]"
+    },
+    {
+      "name": "特征行锚定+钉行（控制读取/写入/通知 + 状态通知）",
+      "ok": true,
+      "detail": "{'y': 1764, 'read': (540, 1764), 'write': (826, 1764), 'notify': (924, 1764), 'status_notify': (924, 1764)}"
+    },
+    {
+      "name": "F009 前置：控制特征通知已启用（26a8 回显通路）",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "F008 控制行读按钮可定位（清日志大窗）",
+      "ok": true,
+      "detail": "(730, 1788)"
+    },
+    {
+      "name": "F008 读动作日志（读取 X...）",
+      "ok": true,
+      "detail": "读取 Unknown Characteristic..."
+    },
+    {
+      "name": "F008 logcat 读回调（26a8 status=0）",
+      "ok": true,
+      "detail": "onCharacteristicRead: beb5483e-36e1-4688-b7f5-ea07361b26a8, status=0\r"
+    },
+    {
+      "name": "F008 限制登记：读值不进 UI/日志（WIN-AAND-004）",
+      "ok": true,
+      "detail": "onCharacteristicRead 仅入内存模型，UI 无特征值显示位 → 值由 logcat+串口旁证"
+    },
+    {
+      "name": "F009 订阅自愈确认（26a8 回显通路）",
+      "ok": true,
+      "detail": "already-subscribed"
+    },
+    {
+      "name": "F009 TEXT 写（LED_ON）+回显 notify 到达",
+      "ok": false,
+      "detail": "写入成功=True 回显notify到达=False(26a8 1→1) payload="
+    },
+    {
+      "name": "F009 HEX 写（FF01）+回显 notify 到达",
+      "ok": false,
+      "detail": "写入成功=True 回显notify到达=False(26a8 2→2) payload="
+    },
+    {
+      "name": "F009 HEX 写（FF00）+回显 notify 到达",
+      "ok": false,
+      "detail": "写入成功=True 回显notify到达=False(26a8 3→3) payload="
+    },
+    {
+      "name": "F009 logcat 写回调全 0（≥3 次）",
+      "ok": true,
+      "detail": "3 次"
+    },
+    {
+      "name": "F009 限制登记：回显 JSON 被 20 字节截断（WIN-AAND-006）",
+      "ok": true,
+      "detail": "A-AND 常规连接不 requestMtu（仅 OTA 流程请求 247）→ MTU=23 → 外设通知截到 20 字节：write_response/device_status JSON 不可整读（F-AND 因 FBP 自动协商 MTU 不受影响）；回显到达性已由 logcat onCharacteristicChanged + 串口 write_response send 实证"
+    },
+    {
+      "name": "F010 状态行通知按钮可定位（清日志大窗）",
+      "ok": true,
+      "detail": "(924, 1973)"
+    },
+    {
+      "name": "F010 订阅日志（通知已启用）",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "F010 欢迎推送（开始监听系统状态，logcat）",
+      "ok": false,
+      "detail": ""
+    },
+    {
+      "name": "F010 周期推送（5s device_status 持续到达）",
+      "ok": true,
+      "detail": "26a9 通知 16→19"
+    },
+    {
+      "name": "F010 停止按钮（停止通知 desc）",
+      "ok": true,
+      "detail": "(924, 1636)"
+    },
+    {
+      "name": "F010 停止日志（通知已禁用）",
+      "ok": false,
+      "detail": ""
+    },
+    {
+      "name": "F010 停止后无新推送（logcat 计数冻结）",
+      "ok": false,
+      "detail": "45 → 71"
+    },
+    {
+      "name": "F008 权限卡可定位（c201 · 7 特征值）",
+      "ok": false,
+      "detail": ""
+    },
+    {
+      "name": "F011 读/写后面板重建（操作日志在）",
+      "ok": false,
+      "detail": ""
+    },
+    {
+      "name": "F011 导出（系统分享面板）",
+      "ok": true,
+      "detail": "QQ S 互传 ⁨腾讯科技⁩ 三星浏览器 企业微信 分享文本 百度CarLife+"
+    },
+    {
+      "name": "F007 主服务两行分步签名（控制{R,W,N}→状态{W,N}）",
+      "ok": false,
+      "detail": "r1=[['写入', '启用通知', '读取']] r2=[['写入', '启用通知', '读取']]"
+    },
+    {
+      "name": "F012 写入锚定就绪",
+      "ok": true,
+      "detail": "{'y': 1788, 'read': (540, 1788), 'write': (826, 1788), 'notify': (924, 1788), 'status_notify': (924, 1788)}"
+    },
+    {
+      "name": "F012 写入已下发（写入成功日志）",
+      "ok": true,
+      "detail": "写入成功=True 回显notify到达=False(26a8 3→3) payload="
+    },
+    {
+      "name": "F012 logcat 自动重连调度（scheduling 1/3）",
+      "ok": true,
+      "detail": "scheduling reconnect 1/3\r"
+    },
+    {
+      "name": "F012 logcat 重连执行（attempt 1/3）",
+      "ok": true,
+      "detail": "Auto reconnect attempt 1/3 for 10:B4:1D:CD:23:8D\r"
+    },
+    {
+      "name": "F012 重连成功（已连接徽标恢复）",
+      "ok": true,
+      "detail": "已连接 断开连接"
+    },
+    {
+      "name": "F012 服务重发现（Discovered ×2）",
+      "ok": true,
+      "detail": "2 次"
+    },
+    {
+      "name": "F012 用户断开回列表",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "F012 用户断开不触发重连（功能判据：无新 attempt）",
+      "ok": true,
+      "detail": "logline=False attempts=1"
+    },
+    {
+      "name": "F012 缺陷登记：userInitiated 标志+回调被 disconnect() 吞掉（WIN-AAND-005）",
+      "ok": true,
+      "detail": "disconnect() 先 add 标志再调 disableAutoReconnect()（内部 remove）→ 日志恒报 userInitiated=false；且 close() 紧跟 disconnect() 吞掉 DISCONNECTED 回调 → 日志行常不出现；功能不受影响（autoReconnectEnabled 同步移除，无新重连）"
+    }
+  ]
+}
