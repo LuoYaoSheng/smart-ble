@@ -28,10 +28,10 @@
 | F011 | 通信日志 | P0 | GATT | P006/P008 | REQ | REQ | REQ | E1/E2 | E5 | 不需要 | F-AND PASS | NOT_RUN | F-AND PASS（清空→面板隐藏、读重建、导出剪贴板回执）；A-AND PASS（清空→隐藏+滚动区 570px 实测→重建→系统分享面板导出全绿） |
 | F012 | 断线自动重连 | P0 | GATT | P006/P007 | REQ | REQ | REQ | E2 | E5 | Peripheral(断电/重启) | F-AND PASS | NOT_RUN | F-AND PASS（固件 fault 注入拆链→重连中→2s 自动重连；串口交叉验证）；WIN-FAND-005/006 修复后；重连后首读 8s 无响应=观察项；UI 为状态 chip 非「重新连接」横幅=形态差异；A-AND PASS（fault 拆链→scheduling 1/3→attempt 1/3→重连+重发现×2→用户断开无新 attempt 全链真机；WIN-AAND-005 日志形态在册） |
 | F013 | 多设备会话管理 | P1 | 多设备 | P007 | REQ | REQ | REQ | E2 | E5 | 严格 E5 需第二外设 | U-AND PASS_WITH_LIMITATION | NOT_RUN | U-AND PASS_WITH_LIMITATION（双手机夹具：E5 中央 + ESP32 + 华为 A-AND 广播者；列表 N=2/单断→N=1/重连→N=2/全断→空态真机；部分失败清单弹窗未触发；WIN-UAND-001 在册）；F-AND/A-AND 待复用夹具跑 |
-| F014 | 微信 peripheral 广播 | P1 | 广播 | P008 | REQ | N/A | N/A | E2 | E5 | Observer | NOT_RUN | NOT_RUN | NOT_RUN |
-| F015 | App 原生插件广播 | P1 | 广播 | P008 | N/A | REQ | REQ | E2 | E5 | Observer | NOT_RUN | NOT_RUN | NOT_RUN |
-| F016 | 31 字节负载预算 | P1 | 广播 | P008 | REQ | REQ | REQ | E1/E2 | E5 | Observer(合法包) | NOT_RUN | NOT_RUN | NOT_RUN |
-| F017 | 观察侧证据匹配 | P2 | 广播 | 无独立页 | REQ | REQ | REQ | E1 | E5 | Observer(JSON) | NOT_RUN | NOT_RUN | NOT_RUN |
+| F014 | 微信 peripheral 广播 | P1 | 广播 | P008 | REQ | N/A | N/A | E2 | E5 | Observer | NOT_RUN | NOT_RUN | U-WX BLOCKED_TOOLCHAIN（开发者工具扫码登录，沿用）；U-AND/F-AND/A-AND 依矩阵 N/A（微信专属）|
+| F015 | App 原生插件广播 | P1 | 广播 | P008 | N/A | REQ | REQ | E2 | E5 | Observer | NOT_RUN | NOT_RUN | F-AND PASS（p008 集成测试 30s 全过：FF 非法长度/空 UUID 拦截+广播中 15s+停止；观察侧 15 条 fff0 交叉）；A-AND PASS（F015 等价并入 9/9：启停 UI+logcat+观察侧净停）；U-AND PASS_WITH_LIMITATION（降级路径 9/9 实证；正路径=自定义基座需 HBuilderX 云打包登录=BLOCKED_TOOLCHAIN）|
+| F016 | 31 字节负载预算 | P1 | 广播 | P008 | REQ | REQ | REQ | E1/E2 | E5 | Observer(合法包) | NOT_RUN | NOT_RUN | F-AND PASS（46/31 红显+按钮禁用+25/31 恢复）；U-AND PASS（预算算术 7→11→23→34/超限红显+toast 拦截+冷重启恢复 7，9/9）；U-WX BLOCKED_TOOLCHAIN；A-AND NOT_APPLICABLE（广播页无负载编辑器）|
+| F017 | 观察侧证据匹配 | P2 | 广播 | 无独立页 | REQ | REQ | REQ | E1 | E5 | Observer(JSON) | NOT_RUN | NOT_RUN | A-AND PASS（fixture_observer_s3 串口 JSON：services=fff0+name=「耀生 的 S21」23 条 10s 窗口+停止后净停）；F-AND PASS（15 条 fff0 全名匹配，mfg=0100424c45=ID 0x0001+ASCII BLE 逐字节交叉）；U-AND BLOCKED_TOOLCHAIN（随 F015 正路径）|
 | F018 | Profile 设备识别 | P0 | Profile | P001/P007 | REQ | REQ | REQ | E1/E2 | E5 | Peripheral/SHID | NOT_RUN | NOT_RUN | NOT_RUN |
 | F019 | 配网向导 | P0 | Smart HID | P002 | REQ | REQ | REQ | E2 | E5 | 真实 Smart HID | NOT_RUN | NOT_RUN | NOT_RUN |
 | F020 | 配对码扫码 | P0 | Smart HID | P002 | REQ | REQ | REQ | E2 | E5 | 真实 ControlHub | NOT_RUN | NOT_RUN | NOT_RUN |
@@ -66,10 +66,10 @@
 | F011 | P006/P008 日志区（清空/复制/导出） | PAGE_SPEC P006/P008 | v12：清空→面板隐藏→读重建→导出「已复制到剪贴板」回执；A-AND v16/v17：清空→面板隐藏（滚动区 1446-2016 实测）→重建→导出=系统分享面板（导出文本全预览） | — | 见本域提交 |
 | F012 | 断开后横幅「重新连接」 | F012·SEQUENCE | v12：fault/disconnect 外设拆链（串口实证）→「重连中...」→2s 重连成功；用户主动断开不触发重连。UI 为状态 chip 非「重新连接」横幅（形态差异）；重连后首读 8s 无响应（观察项，后续 b0 读正常）；A-AND v16/v17：fault 拆链→scheduling 1/3→attempt 1/3→已连接恢复→Discovered×2→用户断开回列表无新 attempt（全链真机+串口对时序） | WIN-ESP32-002(disconnect(0) rc=7)、WIN-FAND-005/006（均已修复）；WIN-AAND-005（在册：userInitiated 日志形态） | 见本域提交 |
 | F013 | P007 已连接列表（单断/全断） | PAGE_SPEC P007 | f013-dualphone/f013-summary.md：uand-f013-e5 v28 + uand-f013b 6/7（E5 中央 + ESP32 + 华为 A-AND 广播双机布景；列表 N=2/单断 N=1/重连 N=2/全断空态截图+dump 链） | WIN-UAND-001（在册，P3：RPA 轮转双条目）；部分失败清单弹窗未真机触发（限制） | 见 8d2dcd8 |
-| F014 | P008 微信广播开关（wx API） | C1 supported_limited·10_platform | — | — | — |
-| F015 | P008 App 广播表单+开关（插件） | 10_platform·任务书§16 | — | — | — |
-| F016 | P008 负载编辑器预算条 | F016·10_platform | — | — | — |
-| F017 | 无页面（服务层+Observer 交叉核对） | F017·任务书§16 | — | — | — |
+| F014 | P008 微信广播开关（wx API） | C1 supported_limited·10_platform | （U-WX 仍 BLOCKED_TOOLCHAIN：开发者工具扫码登录；无本轮新证据） | — | — |
+| F015 | P008 App 广播表单+开关（插件） | 10_platform·任务书§16 | android-native/aand-f014-f017-results.json（A-AND 9/9：非法 UUID 拦截/启停 UI+logcat/净停）+ flutter-android/f014-f017-broadcast-app.log（F-AND dart 全过）+ uniapp-android/uand-f014-f017-results.json（U-AND 9/9 降级路径） | WIN-UAND-002（已修复：APP-ANDROID/APP-IOS 条件编译 token 未定义→Android 块编译丢弃；改 runtime systemInfo 分支） | 见本域提交 |
+| F016 | P008 负载编辑器预算条 | F016·10_platform | 同上（F-AND 46/31→25/31；U-AND 7→11→23→34 拦截算术+toast+冷启动恢复；A-AND NOT_APPLICABLE 证据帧 aand-f016-notapplicable-page.png） | — | 见本域提交 |
+| F017 | 无页面（服务层+Observer 交叉核对） | F017·任务书§16 | android-native/aand-f014-f017-observer-serial.txt（A-AND fff0 34 条+净停）+ flutter-android/f014-f017-broadcast-observer-serial.txt/-observer-analysis.txt（F-AND 15 条 mfg=0100424c45 全名匹配） | — | 见本域提交 |
 | F018 | P001 扫描卡片 SHID 徽章+双入口 | PROFILE 注册表 | — | — | — |
 | F019 | P001「配置 Smart HID」→ P002 向导 | PROVISIONING_V1 | — | — | — |
 | F020 | P002 扫码面板（相机/粘贴） | PROVISIONING_V1·F020 | — | — | — |
@@ -100,7 +100,7 @@
 
 | 线 | 目标 | 层级 | BLE 后端（Windows） | 2026-09-07 状态 |
 |---|---|---|---|---|
-| A-AND | apps/android（Kotlin+Compose，`com.smartble`，纯 android.bluetooth 框架，780 行 BleManager 实装）真机 | Primary | Android 手机radio | **扫描+GATT 域已通**：F001-F005 等价 13/13（a-and-p001-e5 v5）；F006-F012 GATT 域 PASS×3+PASS_WITH_LIMITATION×4（a-and-f006-f012-e5 v16=39/46/v17=37/46，E5 真机+串口旁证；缺陷 WIN-AAND-001..008 在册，其中 006/007/008 为通知/UI 链路结构性缺陷待修）；广播域 F014-F017 待跑 |
+| A-AND | apps/android（Kotlin+Compose，`com.smartble`，纯 android.bluetooth 框架，780 行 BleManager 实装）真机 | Primary | Android 手机radio | **扫描+GATT+广播域已通**：F001-F005 等价 13/13（a-and-p001-e5 v5）；F006-F012 GATT 域 PASS×3+PASS_WITH_LIMITATION×4（a-and-f006-f012-e5 v16=39/46/v17=37/46，E5 真机+串口旁证；缺陷 WIN-AAND-001..008 在册，其中 006/007/008 为通知/UI 链路结构性缺陷待修）；广播域 F014-F017 已跑 9/9（a-and-f014-f017-e5：F015 等价启停+非法 UUID+观察侧 fff0 交叉+净停；F016 NOT_APPLICABLE 无负载编辑器） |
 | E-WIN | apps/desktop/electron Windows 桌面 | Secondary | `@abandonware/noble` WinRT 绑定（本机 node_modules 已编译 binding.node，曾实跑） | 已登记待启动：`npm start` + Playwright 驱动，F001-F012 等价（主机蓝牙） |
 | T-WIN | apps/desktop/tauri Windows 桌面 | Primary | btleplug 0.11（WinRT；源码完整：lib.rs 1063 行 + 完整前端的 Electron 镜像） | BLOCKED_TOOLCHAIN：本机无 Rust/cargo；解锁=安装 rustup 后 `cargo tauri dev` |
 | V-WIN | apps/desktop/avalonia 原型 | Experimental | WindowsBluetooth NuGet（真 WinRT 代码；读写通知 ViewModel 未接线） | 编译阻断（PARITY-006）；修复后仅 Build Smoke，不入功能对齐 |
@@ -124,7 +124,7 @@
 | F001-F005 扫描 | ✅ 真机 E5 | ✅ 主机蓝牙 | ✅ 主机蓝牙 |
 | F006-F012 GATT | ✅（夹具先 esptool 复位粘性 fault） | ✅ | ✅ |
 | F013 多设备 | ✅ 双手机方案候选：华为 TAS-AN00 跑 A-AND 广播=第二外设 + ESP32，三星 E5 做中央；不成立再议 ESP32 双广播实例固件或 BLOCKED_FIXTURE | ✅ 同方案 | ✅ 同方案 |
-| F014-F017 广播 | ✅ BroadcastScreen(624 行)+BlePeripheralManager 实装 | NOT_APPLICABLE（noble 广播仅 Linux） | NOT_APPLICABLE（btleplug 仅 central） |
+| F014-F017 广播 | ✅ 已跑 9/9（BroadcastScreen+BlePeripheralManager，F015 等价；观察侧 fixture_observer_s3 交叉） | NOT_APPLICABLE（noble 广播仅 Linux） | NOT_APPLICABLE（btleplug 仅 central） |
 | F018-F024 Smart HID | ❌ 无配网页=PARITY-001 | ❌ PARITY-002 | ❌ PARITY-002 |
 | F025 OTA | ⚠️ OtaCard 实装但无分块 ACK（写入成功=入队） | OtaDialog 在 | OtaDialog 在 |
 | F026-F030 | 逐项回填 | 逐项回填 | 逐项回填 |
@@ -149,5 +149,6 @@ A-AND 启动（构建→E5 安装→F001-F005 等价真机）→ F013 双手机�
 - 本机系统 JDK 24（Gradle 8.2/AGP 8.2 不支持）→ 备便携 JDK 21 `C:\Users\11066\tools\jdk-21`（用户目录，不入库）；apps/android 既往构建产物存在证明曾在他 JDK 下构建成功
 - cargo/rustup 未安装 → T-WIN BLOCKED_TOOLCHAIN
 - 双手机在位：R5CR1284Y7H=三星 SM-G9910/Android 15（E5）；FEC0220629005177=华为 TAS-AN00/Android 12。**F013 双手机夹具配方已固化**（f013-dualphone/f013-summary.md）：华为跑 A-AND 广播（EMUI uiautomator 变体 xpos/几何推算、按钮 (540,1683)）；Mate 30 5G 默认 GATT=5 服务与 ESP32 撞数，身份用详情页页头名判别；EMUI 空闲 GATT 回收 ~90s + RPA 轮转双条目（WIN-UAND-001）→ 不适合长会话，适合单轮验证
-- ESP32 夹具现处 `fixture_peripheral_s3` 粘性 fault 武装态（F012 v12 遗留）：任何 GATT 写测试前先 esptool chip_id hard_reset
+- ESP32 夹具现处 `fixture_observer_s3`（2026-09-09 F014-F017 广播域刷入；F018-F024 Smart HID 域前需刷回
+  `fixture_peripheral_s3`/SHID 夹具；任何 GATT 写测试前先 esptool chip_id hard_reset 清粘性 fault）
 - Electron `node_modules` 已含编译好的 noble WinRT binding（曾实跑）；Avalonia 无 .sln、csproj 断引用

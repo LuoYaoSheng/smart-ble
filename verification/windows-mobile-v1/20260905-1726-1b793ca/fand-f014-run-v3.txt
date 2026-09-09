@@ -1,0 +1,162 @@
+== 预授权 + 防三星管控 ==
+== 观察侧串口采集（COM12，全程）==
+== grant-watch（flutter test 重装 APK 会重置授权）==
+Flutter assets will be downloaded from https://storage.flutter-io.cn. Make sure you trust this source!
+Resolving dependencies...
+Downloading packages...
+  archive 4.0.9 (4.2.0 available)
+  async 2.13.0 (2.13.1 available)
+  characters 1.4.0 (1.4.1 available)
+  cli_util 0.4.2 (0.6.0 available)
+  clock 1.1.2 (1.1.3 available)
+  cross_file 0.3.5+2 (0.3.5+5 available)
+  cupertino_icons 1.0.8 (1.0.9 available)
+  dbus 0.7.11 (0.7.15 available)
+  device_info_plus 11.5.0 (13.2.0 available)
+  device_info_plus_platform_interface 7.0.3 (8.1.0 available)
+  ffi 2.1.4 (2.2.0 available)
+  file_picker 11.0.2 (12.2.0 available)
+  flutter_ble_peripheral 2.0.1 (3.1.0 available)
+  flutter_blue_plus 1.36.8 (2.3.12 available)
+  flutter_blue_plus_android 7.0.4 (9.0.3 available)
+  flutter_blue_plus_darwin 7.0.3 (9.0.4 available)
+  flutter_blue_plus_linux 7.0.3 (9.0.3 available)
+  flutter_blue_plus_platform_interface 7.0.0 (9.0.3 available)
+  flutter_blue_plus_web 7.0.2 (9.0.3 available)
+  flutter_lints 3.0.2 (6.0.0 available)
+  flutter_native_splash 2.4.7 (2.4.8 available)
+  flutter_platform_widgets 6.1.0 (discontinued)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  flutter_riverpod 2.6.1 (3.4.3 available)
+  google_fonts 6.3.3 (8.2.1 available)
+  html 0.15.6 (0.15.7 available)
+  image 4.8.0 (4.9.2 available)
+  intl 0.20.2 (0.20.3 available)
+  json_annotation 4.9.0 (4.12.0 available)
+  lints 3.0.0 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.1 available)
+  meta 1.17.0 (1.19.0 available)
+  mobile_scanner 5.2.3 (7.4.0 available)
+  package_info_plus 8.3.1 (10.2.1 available)
+  package_info_plus_platform_interface 3.2.1 (4.1.0 available)
+  path_provider 2.1.5 (2.1.6 available)
+  path_provider_android 2.2.22 (2.3.1 available)
+  path_provider_foundation 2.5.1 (2.6.0 available)
+  path_provider_linux 2.2.1 (2.2.2 available)
+  path_provider_platform_interface 2.1.2 (2.1.3 available)
+  permission_handler 11.4.0 (13.0.2 available)
+  permission_handler_android 12.1.0 (14.1.0 available)
+  permission_handler_apple 9.4.7 (9.6.1 available)
+  permission_handler_html 0.1.3+5 (0.1.4+1 available)
+  permission_handler_platform_interface 4.3.0 (4.4.1 available)
+  permission_handler_windows 0.2.1 (0.2.2 available)
+  petitparser 7.0.1 (7.0.2 available)
+  posix 6.5.0 (6.5.2 available)
+  riverpod 2.6.1 (3.4.3 available)
+  rxdart 0.27.7 (0.28.0 available)
+  share_plus 10.1.4 (13.3.0 available)
+  share_plus_platform_interface 5.0.2 (7.2.0 available)
+  source_span 1.10.1 (1.10.2 available)
+  stack_trace 1.12.1 (1.12.2 available)
+  test_api 0.7.7 (0.7.14 available)
+  url_launcher_android 6.3.29 (6.3.33 available)
+  url_launcher_ios 6.4.1 (6.4.2 available)
+  url_launcher_linux 3.2.2 (3.2.3 available)
+  url_launcher_macos 3.2.5 (3.2.6 available)
+  url_launcher_web 2.4.2 (2.4.3 available)
+  url_launcher_windows 3.1.5 (3.1.6 available)
+  vector_math 2.2.0 (2.4.2 available)
+  vm_service 15.0.2 (15.3.0 available)
+  win32 5.15.0 (6.4.0 available)
+  win32_registry 2.1.0 (3.0.3 available)
+  xml 6.6.1 (7.0.1 available)
+  yaml 3.1.3 (3.1.4 available)
+Got dependencies!
+1 package is discontinued.
+68 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+00:00 +0: loading E:/project/xf/smart-ble/apps/flutter/integration_test/p008_broadcast_test.dart
+Running Gradle task 'assembleDebug'...                          
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by net.rubygrapefruit.platform.internal.NativeLibraryLoader in an unnamed module (file:/C:/Users/11066/.gradle/wrapper/dists/gradle-8.14-all/c2qonpi39x1mddn7hk5gh9iqj/gradle-8.14/lib/native-platform-0.22-milestone-28.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+Flutter assets will be downloaded from https://storage.flutter-io.cn. Make sure you trust this source!
+Running Gradle task 'assembleDebug'...                             39.3s
+√ Built build\app\outputs\flutter-apk\app-debug.apk
+Installing build\app\outputs\flutter-apk\app-debug.apk...           5.7s
+[grant-watch] 安装已补授权 @08:48:51
+00:00 +0: P008 广播域 F015/F016/F017（F-AND E5）
+P008[E2E 08:48:53.534]: 启动应用
+P008[E2E 08:48:54.860]: 已进入广播页
+P008[E2E 08:48:54.867]: F016：厂商数据输入 24 字符（预算 46/31）
+P008[E2E 08:48:59.970]: DUMP field text="BLE Toolkit+"
+P008[E2E 08:48:59.972]: DUMP field text="FFF0"
+P008[E2E 08:48:59.973]: DUMP field text="0001"
+P008[E2E 08:48:59.973]: DUMP field text="BLE"
+P008[E2E 08:48:59.975]: DUMP text="设备名称"
+P008[E2E 08:48:59.975]: DUMP text="实际用系统蓝牙名"
+P008[E2E 08:48:59.975]: DUMP text="自定义名称"
+P008[E2E 08:48:59.976]: DUMP text="服务 UUID"
+P008[E2E 08:48:59.976]: DUMP text="4 / 8 / 36 位 HEX"
+P008[E2E 08:48:59.976]: DUMP text="广播模式"
+P008[E2E 08:48:59.976]: DUMP text="平衡"
+P008[E2E 08:48:59.977]: DUMP text="发射功率"
+P008[E2E 08:48:59.977]: DUMP text="高功率"
+P008[E2E 08:48:59.977]: DUMP text="厂商 ID（HEX）"
+P008[E2E 08:48:59.977]: DUMP text="0001"
+P008[E2E 08:48:59.978]: DUMP text="厂商数据（ASCII）"
+P008[E2E 08:48:59.978]: DUMP text="广播携带的数据"
+P008[E2E 08:48:59.978]: DUMP text="ADV 负载预算"
+P008[E2E 08:48:59.979]: DUMP text="25"
+P008[E2E 08:48:59.979]: DUMP text=" / 31 字节"
+P008[E2E 08:48:59.979]: DUMP text="完整名称 (0x09)"
+P008[E2E 08:48:59.979]: DUMP text="14 B"
+P008[E2E 08:48:59.979]: DUMP text="服务 UUID (0x03/0x07)"
+P008[E2E 08:48:59.979]: DUMP text="4 B"
+P008[E2E 08:48:59.980]: DUMP text="厂商块 (0xFF)"
+P008[E2E 08:48:59.980]: DUMP text="7 B"
+P008[E2E 08:48:59.980]: DUMP text="合计"
+P008[E2E 08:48:59.980]: DUMP text="25 / 31 B"
+P008[E2E 08:48:59.981]: DUMP text="开始广播"
+P008[E2E 08:48:59.981]: DUMP text="检查支持"
+P008[E2E 08:48:59.981]: DUMP text="广播"
+P008[E2E 08:48:59.981]: DUMP text="已停止"
+P008[E2E 08:48:59.981]: DUMP text="扫描"
+P008[E2E 08:48:59.981]: DUMP text="已连接"
+P008[E2E 08:48:59.981]: DUMP text="广播"
+P008[E2E 08:48:59.982]: DUMP text="关于"
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+F016 预算总数 46 红显
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///E:/project/xf/smart-ble/apps/flutter/integration_test/p008_broadcast_test.dart:102:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1059:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///E:/project/xf/smart-ble/apps/flutter/integration_test/p008_broadcast_test.dart line 102
+The test description was:
+  P008 广播域 F015/F016/F017（F-AND E5）
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:07 +0 -1: P008 广播域 F015/F016/F017（F-AND E5） [E]
+  Test failed. See exception logs above.
+  The test description was: P008 广播域 F015/F016/F017（F-AND E5）
+  
+00:07 +0 -1: (tearDownAll)
+00:07 +0 -1: Some tests failed.
+== 停采集并分析观察侧证据 ==
+观察侧 advertisement 总数: 1474
+F017 services 含 fff0 的 advertisement: 0 条
+F017 厂商数据含 ASCII "BLE" (hex 424c45): 0 条
+exit=1 log=/e/project/xf/smart-ble/verification/windows-mobile-v1/20260905-1726-1b793ca/flutter-android/f014-f017-broadcast-app.log cap=/e/project/xf/smart-ble/verification/windows-mobile-v1/20260905-1726-1b793ca/flutter-android/f014-f017-broadcast-observer-serial.txt

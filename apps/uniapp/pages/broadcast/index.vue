@@ -549,51 +549,56 @@ const stopAdvertising = async () => {
 };
 
 const checkBluetoothAndPermissionsBeforeAdvertise = () => {
-	// #ifdef APP-ANDROID
-	try {
-		const BluetoothAdapter = plus.android.importClass("android.bluetooth.BluetoothAdapter");
-		const bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-		if (!bluetoothAdapter || !bluetoothAdapter.isEnabled()) {
-			uni.showModal({
-				title: '提示',
-				content: '请先开启系统蓝牙',
-				confirmText: '去开启',
-				success: (res) => {
-					if (res.confirm) {
-						try {
-							const Intent = plus.android.importClass("android.content.Intent");
-							const enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-							plus.android.runtimeMainActivity().startActivityForResult(enableIntent, 1);
-						} catch (error) {
-							reportBroadcastError('无法打开系统蓝牙设置：' + (error?.message || '未知错误'));
+	// WIN-UAND-002 修复：原 `#ifdef APP-ANDROID/APP-IOS` 条件块编译期被丢（token
+	// 未定义），此函数曾被编译成空函数——改运行时 platform 分支（platform 由
+	// onLoad 依 systemInfo 设置）。
+	if (platform.value === 'android') {
+		try {
+			const BluetoothAdapter = plus.android.importClass("android.bluetooth.BluetoothAdapter");
+			const bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+			if (!bluetoothAdapter || !bluetoothAdapter.isEnabled()) {
+				uni.showModal({
+					title: '提示',
+					content: '请先开启系统蓝牙',
+					confirmText: '去开启',
+					success: (res) => {
+						if (res.confirm) {
+							try {
+								const Intent = plus.android.importClass("android.content.Intent");
+								const enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+								plus.android.runtimeMainActivity().startActivityForResult(enableIntent, 1);
+							} catch (error) {
+								reportBroadcastError('无法打开系统蓝牙设置：' + (error?.message || '未知错误'));
+							}
 						}
 					}
-				}
-			});
-			return;
+				});
+				return;
+			}
+			requestAndroidPermissions(
+				() => startAdvertising(),
+				(reason) => reportBroadcastError(reason || '未获得启动广播所需权限。')
+			);
+		} catch (error) {
+			reportBroadcastError('检查 Android 蓝牙状态失败：' + (error?.message || '未知错误'));
 		}
-		requestAndroidPermissions(
-			() => startAdvertising(),
-			(reason) => reportBroadcastError(reason || '未获得启动广播所需权限。')
-		);
-	} catch (error) {
-		reportBroadcastError('检查 Android 蓝牙状态失败：' + (error?.message || '未知错误'));
+		return;
 	}
-	// #endif
-	// #ifdef APP-IOS
-	startAdvertising();
-	// #endif
-	// #ifdef MP-WEIXIN
-	wxPeripheralAdapter.open()
+	if (platform.value === 'ios') {
+		startAdvertising();
+		return;
+	}
+	if (platform.value === 'weixin') {
+		wxPeripheralAdapter.open()
 			.then(() => wxPeripheralServer.ensureCreated())
 			.then(() => startAdvertising())
-		.catch((error) => {
-			const content = error?.code === 'active_connections'
-				? error.message
-				: error?.errCode === 10001 ? '请先开启系统蓝牙。' : '当前无法启动蓝牙广播。';
-			uni.showModal({ title: '无法开始广播', content, showCancel: false });
-		});
-	// #endif
+			.catch((error) => {
+				const content = error?.code === 'active_connections'
+					? error.message
+					: error?.errCode === 10001 ? '请先开启系统蓝牙。' : '当前无法启动蓝牙广播。';
+				uni.showModal({ title: '无法开始广播', content, showCancel: false });
+			});
+	}
 };
 
 const toggleAdvertising = () => {
@@ -619,24 +624,24 @@ const onIncludeDeviceNameChange = (e) => androidSettings.value.includeDeviceName
 const onAddServiceUuidChange = (e) => androidSettings.value.addServiceUuid = e.detail.value;
 
 onLoad(() => {
+	// WIN-UAND-002：`#ifdef APP-ANDROID/#ifdef APP-IOS` 在本仓工具链（HBuilderX CLI
+	// 标准基座与 npm build:app）中不被定义，条件块整体编译丢弃——Android 参数块/
+	// 默认载荷/权限前置链路曾为死代码。App 端细分平台改用运行时 systemInfo 判定；
+	// APP-PLUS / MP-WEIXIN / H5 单层 token 已验证有效，保留条件编译。
 	// #ifdef APP-PLUS
 	blePeripheral.value = uni.requireNativePlugin('LysBlePeripheral');
-	// #ifdef APP-ANDROID
+	const sysPlatform = uni.getSystemInfoSync().platform;
+	if (sysPlatform === 'android') {
 		platform.value = 'android';
 		deviceName.value = 'SmartBLE-A';
-		serviceUUID.value = DEFAULT_ADVERTISING_PAYLOAD.serviceUuid;
-		manufacturerId.value = DEFAULT_ADVERTISING_PAYLOAD.manufacturerId;
-		manufacturerData.value = DEFAULT_ADVERTISING_PAYLOAD.manufacturerData;
-	// #endif
-	// #ifdef APP-IOS
+	} else if (sysPlatform === 'ios') {
 		platform.value = 'ios';
 		deviceName.value = 'SmartBLE-I';
-		serviceUUID.value = DEFAULT_ADVERTISING_PAYLOAD.serviceUuid;
-		manufacturerId.value = DEFAULT_ADVERTISING_PAYLOAD.manufacturerId;
-		manufacturerData.value = DEFAULT_ADVERTISING_PAYLOAD.manufacturerData;
+	}
+	serviceUUID.value = DEFAULT_ADVERTISING_PAYLOAD.serviceUuid;
+	manufacturerId.value = DEFAULT_ADVERTISING_PAYLOAD.manufacturerId;
+	manufacturerData.value = DEFAULT_ADVERTISING_PAYLOAD.manufacturerData;
 	// #endif
-	// #endif
-
 	// #ifdef MP-WEIXIN
 	platform.value = 'weixin';
 	deviceName.value = DEFAULT_ADVERTISING_PAYLOAD.deviceName;
@@ -644,11 +649,10 @@ onLoad(() => {
 	manufacturerId.value = DEFAULT_ADVERTISING_PAYLOAD.manufacturerId;
 	manufacturerData.value = DEFAULT_ADVERTISING_PAYLOAD.manufacturerData;
 	// #endif
-
-	// #ifndef MP-WEIXIN
-	// #ifndef APP-PLUS
+	// #ifdef H5
 	platform.value = 'web';
 	// #endif
+	// #ifndef MP-WEIXIN
 	checkSupport();
 	// #endif
 });

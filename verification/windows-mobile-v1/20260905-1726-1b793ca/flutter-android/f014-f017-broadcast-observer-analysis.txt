@@ -1,0 +1,5 @@
+观察侧 advertisement 总数: 2163
+F017 services 含 fff0 的 advertisement: 15 条
+F017 厂商数据含 ASCII "BLE" (hex 424c45): 15 条
+F017 fff0 设备名分布: {"耀生 的 S21": 15}
+F017 首条完整匹配样本: {"type": "advertisement", "address": "74:c6:10:a2:d6:ae", "name": "耀生 的 S21", "rssi": -48, "services": ["fff0", "0xfff0"], "manufacturer": "0100424c45", "timestamp": 85556, "t": "obs", "ts": 85556, "uuids": ["fff0", "0xfff0"], "mfg": "0100424c45", "svc_data": "", "raw": "0201020f09e88080e7949f20e79a842053323106ff0100424c450303f0ff", "last_seen": 85556, "fixture_match": false, "ota_service_match": 

@@ -1,0 +1,11 @@
+== A-AND F014-F017 广播域驱动 start 08:25:39 ==
+FAIL F015-page-open | 广播页就绪：未广播徽标+开始广播按钮（滚动后可见）；texts=Android|Android 设备 (显示实际名称)|BLE 广播|关于|如何测试|广播|广播设置|开始广播|扫描|服务UUID|设备名称|连接
+PASS F015-invalid-uuid-blocked | 非法 UUID 拦截，错误卡文案命中
+PASS F015-start-advertising | UUID 恢复=True；按钮→停止广播；状态卡=正在广播；logcat started_success=True
+PASS F017-observer-fff0-seen | 观察侧 10s 窗口 services 含 fff0 的 advertisement 23 条（≥5）；窗口总 advertisement 增量 215
+PASS F017-observer-name-match | name 含 E5 蓝牙名「耀生 的 S21」匹配 23 条
+PASS F017-observer-continuous | 再 8s 后 fff0 条数 23→33（持续广播中）
+PASS F015-stop-advertising | 按钮回开始广播；状态卡回未广播；logcat stopped=True
+FAIL F017-observer-ceased | 停止后 3s 宽限+8s 窗口 fff0 新增 1 条（期望 0）
+PASS F016-aand-not-applicable | A-AND 广播页无负载编辑器/预算条（仅服务 UUID 字段）；F016 REQ=U-WX/U-AND/F-AND，A-AND 记 NOT_APPLICABLE
+== 完成：7/9 PASS，结果 E:\project\xf\smart-ble\verification\windows-mobile-v1\20260905-1726-1b793ca\android-native\aand-f014-f017-results.json ==

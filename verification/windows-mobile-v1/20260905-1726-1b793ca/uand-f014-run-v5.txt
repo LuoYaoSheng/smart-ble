@@ -1,0 +1,11 @@
+== U-AND F014-F017 广播域驱动 v3 start 09:30:37 ==
+PASS P008-open | 广播页就绪：Android 块（模式/功率/开关）+4 字段默认值 ['SmartBLE-A', 'FFE0', '0001', 'BLE']（WIN-UAND-002 修复后）
+PASS F016-budget-default | 默认预算 7/31（名称不含+UUID不含+厂商块 2+2+3）
+PASS F016-budget-uuid-toggle | 添加服务UUID 开 → 7→11（+2+2 FFE0）
+PASS F016-budget-name-toggle | 包含设备名称 开 → 11→23（+2+10 SmartBLE-A）
+PASS F016-budget-toggles-restore | 两开关还原关 → 7/31
+PASS F016-overflow-blocked | 厂商数据 30 字符 → 34/31 超限红显=True；toast 拦截=True；未进入广播=True
+PASS F016-budget-restore | 冷重启默认恢复 → 7/31（字段=['SmartBLE-A', 'FFE0', '0001', 'BLE']）
+PASS F015-standard-base-plugin-missing | 标准基座无原生插件：检查支持 → 日志「插件未初始化」（未就绪态）
+PASS F015-standard-base-start-fallback | 合法载荷启动 → 插件未初始化错误且不进入广播；正路径需自定义基座=BLOCKED_TOOLCHAIN
+== 完成：9/9 PASS，结果 E:\project\xf\smart-ble\verification\windows-mobile-v1\20260905-1726-1b793ca\uniapp-android\uand-f014-f017-results.json ==
