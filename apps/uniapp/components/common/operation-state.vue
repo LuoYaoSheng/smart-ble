@@ -63,7 +63,7 @@
 </template>
 
 <script setup>
-import AppIcon from './app-icon.vue';
+import AppIcon from '../ui/AppIcon.vue';
 
 defineProps({
 	state: {

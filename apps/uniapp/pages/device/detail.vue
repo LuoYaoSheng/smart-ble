@@ -1,5 +1,11 @@
 <template>
 	<view class="container">
+		<AppSubnav title="GATT 调试">
+			<template #action>
+				<AppButton v-if="hasOtaService" label="固件更新" tone="ghost" size="sm" danger-text icon="dl" @tap="showOtaModal = true" />
+			</template>
+		</AppSubnav>
+
 		<view class="device-panel">
 			<view class="device-header">
 				<view class="device-info">
@@ -8,45 +14,46 @@
 						<view class="status-dot" :class="{'connected': isConnected}"></view>
 					</view>
 					<view class="device-id-container">
-						<text class="device-id-label">设备ID:</text>
 						<text class="device-id">{{deviceInfo.deviceId}}</text>
+						<text class="conn-word">· {{ connWord }}</text>
 					</view>
 				</view>
-				<view class="device-actions-top">
-					<button v-if="hasOtaService" class="ble-btn ble-btn--danger ble-btn--sm" @click="showOtaModal = true">固件更新</button>
-				</view>
-			</view>
-			<view class="device-actions-row">
-				<button class="ble-btn ble-btn--ghost ble-btn--md ble-btn--block" @click="clearLogs">清空日志</button>
-				<button class="ble-btn ble-btn--secondary ble-btn--md ble-btn--block" @click="shareLogs">导出日志</button>
-				<button
-					class="ble-btn ble-btn--md ble-btn--block"
-					:class="[
-						isConnected ? 'ble-btn--danger' : 'ble-btn--primary',
-						(isInitializing || isConnecting) ? 'ble-btn--busy' : ''
-					]"
+				<AppButton
+					class="conn-btn"
+					:label="connLabel"
+					:tone="isConnected ? 'danger' : 'primary'"
+					:icon="isConnected ? 'x' : 'link'"
+					:loading="isInitializing || isConnecting"
 					:disabled="isInitializing || isConnecting"
-					@click="toggleConnection"
-				>
-					{{ isInitializing || isConnecting ? '连接中…' : (isConnected ? '断开连接' : '连接设备') }}
-				</button>
+					@tap="toggleConnection"
+				/>
 			</view>
 		</view>
 
 		<scroll-view class="main-content" scroll-y>
-			<service-panel
-				:services="services"
+			<view v-if="servicePanelState === 'ready'" class="sec-t">
+				<view class="t">
+					<AppIcon name="chip" :size="30" tone="primary" />
+					<text class="sec-title">服务与特征</text>
+					<AppChip :text="`${canonServices.length} 服务 / ${charCount} 特征`" tone="neutral" />
+				</view>
+				<text class="expand-toggle" @click="toggleExpandAll">{{ allExpanded ? '全部收起' : '全部展开' }}</text>
+			</view>
+			<ServicePanel
+				:services="canonServices"
 				:state="servicePanelState"
-				:error-message="lastConnectError"
-				:retry-disabled="isInitializing || isConnecting"
+				:error-text="lastConnectError"
+				:expanded="expandedMap"
+				:notifying="notifyingMap"
+				@toggle-service="onToggleService"
 				@read="onReadCharacteristic"
 				@write="onBeforeWriteCharacteristic"
-				@notifyToggle="onToggleNotify"
+				@notify="onToggleNotify"
 				@retry="manualRetryConnection"
 			/>
 		</scroll-view>
 
-		<log-panel :logs="logs" :scrollTop="logScrollTop" />
+		<LogPanel :logs="logs" variant="dock" @clear="clearLogs" @export="shareLogs" />
 
 		<write-dialog
 			:visible="showWriteDataModal"
@@ -64,18 +71,24 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { onShareAppMessage, onUnload } from '@dcloudio/uni-app';
+// UI-G2：P006 改挂正典组件层（AppSubnav + 固件更新右键 / ServicePanel 五态 / LogPanel dock）
+import AppSubnav from '../../components/ui/AppSubnav.vue';
+import AppButton from '../../components/ui/AppButton.vue';
+import AppIcon from '../../components/ui/AppIcon.vue';
+import AppChip from '../../components/ui/AppChip.vue';
+import ServicePanel from '../../components/ui/ServicePanel.vue';
+import LogPanel from '../../components/ui/LogPanel.vue';
+import OtaDialog from '../../components/ota-dialog/ota-dialog.vue';
+import WriteDialog from '../../components/write-dialog/write-dialog.vue';
+import { OTA_UUIDS } from '../../utils/ota_manager.js';
 import {
 	readValue,
 	setNotifyEnabled,
 	subscribe as subscribeBleValue,
 	writeValue as writeBleValue
 } from '../../services/ble-runtime/index.js';
-import OtaDialog from '../../components/ota-dialog/ota-dialog.vue';
-import ServicePanel from '../../components/service-panel/service-panel.vue';
-import LogPanel from '../../components/log-panel/log-panel.vue';
-import WriteDialog from '../../components/write-dialog/write-dialog.vue';
 import { utf8Decode } from '../../../../core/ble-core/provisioning/framing.js';
 import {
 	createNotifyToggleController,
@@ -94,7 +107,6 @@ const {
 	lastConnectError,
 	hasOtaService,
 	logs,
-	logScrollTop,
 	getSession,
 	addLog,
 	clearLogs,
@@ -108,6 +120,47 @@ const writeServiceId = ref('');
 const writeCharacteristicId = ref('');
 const showOtaModal = ref(false);
 const isSending = ref(false);
+const expandedMap = ref({});
+const notifyingMap = ref({});
+
+// 运行时 services 形状 → 正典 ServicePanel 形状（uuid/name/ota + chars[].props）
+const canonServices = computed(() => (services.value || []).map((s) => ({
+	uuid: s.uuid,
+	name: s.name,
+	ota: String(s.uuid).toLowerCase() === OTA_UUIDS.SERVICE_OTA,
+	chars: (s.characteristics || []).map((c) => ({
+		uuid: c.uuid,
+		name: c.name,
+		props: {
+			read: !!c.properties?.read,
+			write: !!c.properties?.write,
+			notify: !!c.properties?.notify
+		}
+	}))
+})));
+const charCount = computed(() => canonServices.value.reduce((n, s) => n + s.chars.length, 0));
+const allExpanded = computed(() =>
+	canonServices.value.length > 0 && canonServices.value.every((s, i) => expandedMap.value[i]));
+
+const connWord = computed(() => {
+	if (isConnected.value) return '已连接';
+	if (isInitializing.value || isConnecting.value) return '连接中';
+	return '未连接';
+});
+const connLabel = computed(() => {
+	if (isInitializing.value || isConnecting.value) return '连接中…';
+	return isConnected.value ? '断开连接' : '连接设备';
+});
+
+const onToggleService = (index) => {
+	expandedMap.value = { ...expandedMap.value, [index]: !expandedMap.value[index] };
+};
+const toggleExpandAll = () => {
+	const next = !allExpanded.value;
+	const map = {};
+	canonServices.value.forEach((s, i) => { map[i] = next; });
+	expandedMap.value = map;
+};
 
 const notifyController = createNotifyToggleController({
 	subscribe: ({ session, serviceId, characteristicId, callback }) => subscribeBleValue(session, serviceId, characteristicId, callback),
@@ -193,6 +246,7 @@ const onToggleNotify = ({ serviceId, charId }) => {
 		.then((enabled) => {
 			if (!isPageActive() || getSession() !== target.session) return;
 			char.notifying = enabled;
+			notifyingMap.value = { ...notifyingMap.value, [charId]: enabled };
 			addLog('系统', enabled ? '开启监听成功' : '关闭监听成功');
 		})
 		.catch((error) => addLog('错误', '设置监听失败: ' + (error?.errMsg || error?.message || '未知错误')));
@@ -221,9 +275,8 @@ const onToggleNotify = ({ serviceId, charId }) => {
 .device-header {
 	display: flex;
 	justify-content: space-between;
-	align-items: flex-start;
+	align-items: center;
 	gap: 16rpx;
-	margin-bottom: 22rpx;
 }
 
 .device-info {
@@ -231,6 +284,7 @@ const onToggleNotify = ({ serviceId, charId }) => {
 	flex-direction: column;
 	gap: 10rpx;
 	flex: 1;
+	min-width: 0;
 }
 
 .name-container {
@@ -251,7 +305,7 @@ const onToggleNotify = ({ serviceId, charId }) => {
 	width: 18rpx;
 	height: 18rpx;
 	border-radius: 50%;
-	background: #9aa8b6;
+	background: var(--c-ph);
 }
 
 .status-dot.connected {
@@ -266,25 +320,41 @@ const onToggleNotify = ({ serviceId, charId }) => {
 	gap: 8rpx;
 }
 
-.device-id-label {
-	font-size: 22rpx;
-	color: var(--ble-text-muted);
-}
-
 .device-id {
 	font-size: 22rpx;
 	color: var(--ble-text-subtle);
 	font-family: "SF Mono", "Roboto Mono", Menlo, monospace;
 }
 
-.device-actions-top {
-	margin-left: auto;
+.conn-word {
+	font-size: 22rpx;
+	color: var(--ble-text-muted);
 }
 
-.device-actions-row {
+.conn-btn { flex-shrink: 0; }
+
+.sec-t {
 	display: flex;
-	gap: 14rpx;
+	align-items: center;
+	justify-content: space-between;
+	gap: 18rpx;
+	margin-bottom: 18rpx;
 }
+
+.sec-t .t {
+	display: flex;
+	align-items: center;
+	gap: 12rpx;
+	min-width: 0;
+}
+
+.sec-title {
+	font-size: var(--fs-h1);
+	font-weight: var(--fw-bold);
+	color: var(--c-text);
+}
+
+.expand-toggle { flex-shrink: 0; font-size: var(--fs-cap); font-weight: var(--fw-med); color: var(--c-primary); }
 
 .main-content {
 	flex: 1;

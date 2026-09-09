@@ -30,15 +30,17 @@
 ## A1. AppNavbar（tab 页自绘导航栏）
 
 - 结构：kicker（`--fs-micro` 品牌蓝 +2px 字距）+ 标题行（`--fs-title` w800）+ 右侧蓝牙状态 chip（`bt-dot` 8px 圆点 + 状态词 `--fs-mini`）。
-- props：`kicker` / `title` / `statusText` / `statusTone`(`on`|`off`|``)。
+- props：`kicker` / `title` / `statusText` / `statusTone`(`on`|`off`|``)；`status` 槽位（UI-G2 新增）——提供时覆盖默认「点+词」右区：P007 会话 AppChip（warning/neutral）、P008 平台 AppChip + 状态 AppBadge（on/err/warn/dim，「不支持」无点）、P009 版本 AppChip（mono）。
 - 视觉：白→`--c-bg` 渐变底、底边 `--c-line-soft`、sticky（`--z-nav`）。on 点 `--c-success`+微光，off 点 `--c-danger`，默认 `--c-ph`。
+- 平台安全区（UI-G2）：MP-WEIXIN 顶部状态栏占位（`statusBarHeight` px）+ 右侧胶囊避让（`windowWidth - menuButton.left + 12` px 右内边距）；APP 端 webview 默认在状态栏之下不占位。
 - 用于 P001/007/008/009。
 
 ## A2. AppSubnav（二级页导航栏）
 
 - 结构：返回键（30×30 `--c-fill` 圆角 9 + `chev-r` rotate180）+ 标题（`--fs-h1` w700）+ 右槽（可选动作，如 P006「固件更新」ghost sm danger-t）。
-- props：`title` / `back`(默认 navigateBack/pop) / 右槽 slot `action`。
-- 事件：`back`。
+- props：`title` / 右槽 slot `action`；MP-WEIXIN 同 A1 状态栏占位 + 胶囊避让。
+- 事件：`back`——页面绑定 `@back` 时**完全交由页面处理**（P002 U-01 离开确认：配网中 / configure 脏表单 → modal 确认后才返回），未绑定时默认 navigateBack（fail 回扫描 Tab）。
+- 标题正典（UI-G2 落地）：P002「配置 Smart HID」/ P003「Smart HID 设备详情」/ P005「SHID 诊断」/ P006「GATT 调试」/ P010「版本记录」。
 
 ## A3. AppTabBar（四 Tab 底栏）
 

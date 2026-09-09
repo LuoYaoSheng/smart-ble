@@ -9,6 +9,9 @@ import '../../core/models/log_entry.dart';
 import '../../core/utils/logger.dart';
 import '../../themes/app_theme.dart';
 import '../widgets/log_panel.dart';
+import '../design/app_navbar.dart';
+import '../design/app_chip.dart';
+import '../design/app_badge.dart';
 import '../../core/design/app_icons.dart';
 
 /// 广播状态提供者
@@ -106,18 +109,18 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
     super.dispose();
   }
 
-  /// AppBar 状态小徽章文案与配色（对齐 p008 badge 口径）
-  (String, Color) get _statusBadge {
-    if (!_platformSupported) return ('不支持', AppTheme.textSecondary);
-    if (_isAdvertising) return ('广播中', AppTheme.successColor);
-    if (_errorMessage != null) return ('失败', AppTheme.errorColor);
+  /// 导航栏状态徽章口径（对齐 p008 badge：广播中 on / 失败 err / 已就绪 warn / 其余 dim；不支持无点）
+  (String, AppBadgeTone, bool) get _statusBadge {
+    if (!_platformSupported) return ('不支持', AppBadgeTone.dim, false);
+    if (_isAdvertising) return ('广播中', AppBadgeTone.on, true);
+    if (_errorMessage != null) return ('失败', AppBadgeTone.err, true);
     if (_checked &&
         _runtimeSupported &&
         _peripheralState == PeripheralState.idle) {
-      return ('已停止', AppTheme.textSecondary);
+      return ('已停止', AppBadgeTone.dim, true);
     }
-    if (_checked && _runtimeSupported) return ('已就绪', AppTheme.warningColor);
-    return ('未就绪', AppTheme.textSecondary);
+    if (_checked && _runtimeSupported) return ('已就绪', AppBadgeTone.warn, true);
+    return ('未就绪', AppBadgeTone.dim, true);
   }
 
   bool get _uuidInvalid {
@@ -236,76 +239,62 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('广播'),
-        actions: [
-          _buildStatusBadge(),
-          const SizedBox(width: 16),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (!_platformSupported)
-              _buildNote(
-                color: AppTheme.warningColor,
-                title: '当前平台不支持 BLE 广播',
-                message: '浏览器未提供外围模式 API，请使用 App（Android / iOS）。',
-              ),
-            _buildSettingsCard(),
-            if (_errorMessage != null) ...[
-              const SizedBox(height: 12),
-              _buildNote(
-                color: AppTheme.errorColor,
-                title: '广播失败',
-                message: _errorMessage!,
-              ),
-            ],
-            const SizedBox(height: 16),
-            // LogPanel 内部是 Expanded(ListView)，必须给有界高度，
-            // 否则放进滚动视图后日志非空即抛无界高度异常
-            SizedBox(
-              height: 240,
-              child: LogPanel(
-                entries: logger.history,
-                onClear: () {
-                  logger.clear();
-                  if (mounted) setState(() {});
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  /// AppBar 内的状态小徽章（p008：状态只占一枚 chip，不再做大卡片）
-  Widget _buildStatusBadge() {
-    final (text, color) = _statusBadge;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
+      // UI-G2：正典 AppNavbar（PERIPHERAL + 平台 chip + 状态 badge），状态收进导航栏
+      body: Column(
         children: [
-          Container(
-            width: 7,
-            height: 7,
-            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+          AppNavbar(
+            kicker: 'PERIPHERAL',
+            title: '广播',
+            status: Builder(builder: (context) {
+              final (text, tone, dot) = _statusBadge;
+              return Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AppChip(
+                    '平台：${_isAndroid ? 'Android' : Platform.isIOS ? 'iOS' : 'Web'}',
+                  ),
+                  const SizedBox(width: 6),
+                  AppBadge(text, tone: tone, dot: dot),
+                ],
+              );
+            }),
           ),
-          const SizedBox(width: 6),
-          Text(
-            text,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: color,
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (!_platformSupported)
+                    _buildNote(
+                      color: AppTheme.warningColor,
+                      title: '当前平台不支持 BLE 广播',
+                      message: '浏览器未提供外围模式 API，请使用 App（Android / iOS）。',
+                    ),
+                  _buildSettingsCard(),
+                  if (_errorMessage != null) ...[
+                    const SizedBox(height: 12),
+                    _buildNote(
+                      color: AppTheme.errorColor,
+                      title: '广播失败',
+                      message: _errorMessage!,
+                    ),
+                  ],
+                  const SizedBox(height: 16),
+                  // LogPanel 内部是 Expanded(ListView)，必须给有界高度，
+                  // 否则放进滚动视图后日志非空即抛无界高度异常
+                  SizedBox(
+                    height: 240,
+                    child: LogPanel(
+                      entries: logger.history,
+                      onClear: () {
+                        logger.clear();
+                        if (mounted) setState(() {});
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],

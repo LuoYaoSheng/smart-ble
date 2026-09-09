@@ -25,7 +25,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import AppIcon from '../common/app-icon.vue';
+import AppIcon from '../ui/AppIcon.vue';
 import ErrorBanner from '../common/error-banner.vue';
 
 // 正典 p001 .scantool：纯行布局——左侧状态标签（scanLb 三态）+ 右侧按钮；

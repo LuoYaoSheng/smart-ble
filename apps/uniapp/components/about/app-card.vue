@@ -11,7 +11,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import AppIcon from '../common/app-icon.vue';
+import AppIcon from '../ui/AppIcon.vue';
 
 const props = defineProps({ app: { type: Object, required: true } });
 defineEmits(['select']);

@@ -19,6 +19,8 @@ import '../../themes/app_theme.dart';
 import 'hid_detail_page.dart';
 import 'provisioning_page.dart';
 import '../../core/design/app_icons.dart';
+import '../design/app_subnav.dart';
+import '../design/app_status_icon.dart';
 
 enum _DiagRowState { pending, active, ok, warn, fail }
 
@@ -73,9 +75,8 @@ class _HidDiagnosticsPageState extends State<HidDiagnosticsPage> {
 
   Future<void> _rerun() async {
     final controller = _controller;
-    final live = controller != null &&
-        controller.deviceInfo != null &&
-        !controller.lost;
+    final live =
+        controller != null && controller.deviceInfo != null && !controller.lost;
     if (!live) {
       await _confirmConnectAndDiagnose();
       return;
@@ -104,8 +105,8 @@ class _HidDiagnosticsPageState extends State<HidDiagnosticsPage> {
     if (confirmed != true || !mounted) return;
 
     setState(() => _pageState = _PageState.checking);
-    final controller =
-        _controller ??= ProvisioningController(transportFactory: () => FbpProvisioningTransport());
+    final controller = _controller ??= ProvisioningController(
+        transportFactory: () => FbpProvisioningTransport());
     await controller.connectDevice(widget.deviceId);
     if (!mounted) return;
     if (controller.connError != null || controller.deviceInfo == null) {
@@ -154,7 +155,8 @@ class _HidDiagnosticsPageState extends State<HidDiagnosticsPage> {
         _pageState = _PageState.live;
         _rows[0].state = _DiagRowState.ok;
         _rows[0].detail = 'INFO 特征读取成功';
-        _rows[1].detail = 'state=${info?.state ?? '—'} provisioned=${info?.provisioned ?? '—'}';
+        _rows[1].detail =
+            'state=${info?.state ?? '—'} provisioned=${info?.provisioned ?? '—'}';
         _rows[2].detail = 'status.state=${status?.state ?? '—'}';
         _rows[3].detail = 'status.step=${status?.step ?? '—'}';
         _rows[4].detail = 'ready=${status?.state == 'ready' ? '是' : '否'}';
@@ -264,12 +266,7 @@ class _HidDiagnosticsPageState extends State<HidDiagnosticsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
-      appBar: AppBar(
-        title: const Text('Smart HID 诊断'),
-        backgroundColor: AppTheme.backgroundColor,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: AppTheme.textPrimary),
-      ),
+      appBar: const AppSubnav(title: 'SHID 诊断'),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -288,15 +285,16 @@ class _HidDiagnosticsPageState extends State<HidDiagnosticsPage> {
   }
 
   Widget _statusLine() {
+    // UI-G2：正典状态行（B7 stIcon 五态 + 语义词），退役文本字形 ✓/!/·/…
     const statusByState = {
-      _PageState.idle: ('·', '尚未检测'),
-      _PageState.connected: ('·', '设备已连接，可开始检测'),
-      _PageState.checking: ('…', '正在读取实时状态'),
-      _PageState.live: ('✓', '实时检测完成'),
-      _PageState.offline: ('·', '设备未连接'),
-      _PageState.error: ('!', '检测失败'),
+      _PageState.idle: (AppStatusIconState.pending, '尚未检测'),
+      _PageState.connected: (AppStatusIconState.pending, '设备已连接，可开始检测'),
+      _PageState.checking: (AppStatusIconState.active, '正在读取实时状态…'),
+      _PageState.live: (AppStatusIconState.ok, '实时检测完成'),
+      _PageState.offline: (AppStatusIconState.fail, '设备未连接'),
+      _PageState.error: (AppStatusIconState.fail, '检测失败'),
     };
-      final (icon, label) = statusByState[_pageState]!;
+    final (stIconState, label) = statusByState[_pageState]!;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
@@ -306,17 +304,17 @@ class _HidDiagnosticsPageState extends State<HidDiagnosticsPage> {
       ),
       child: Row(
         children: [
-          Text(icon,
-              style: const TextStyle(
-                  fontSize: 16, fontWeight: FontWeight.w800, color: AppTheme.primaryColor)),
+          AppStatusIcon(state: stIconState, size: 22),
           const SizedBox(width: 8),
           Text(label,
               style: const TextStyle(
-                  fontSize: 14, fontWeight: FontWeight.w600, color: AppTheme.textPrimary)),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: AppTheme.textPrimary)),
           const Spacer(),
           Text(widget.name,
-              style: const TextStyle(
-                  fontSize: 12, color: AppTheme.textSecondary)),
+              style:
+                  const TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
         ],
       ),
     );
@@ -324,11 +322,18 @@ class _HidDiagnosticsPageState extends State<HidDiagnosticsPage> {
 
   Widget _rowsCard() {
     const stateMeta = {
-      _DiagRowState.pending: ('·', '待检测', AppTheme.textSecondary),
-      _DiagRowState.active: ('…', '检测中', AppTheme.primaryColor),
-      _DiagRowState.ok: ('✓', '正常', AppTheme.successColor),
-      _DiagRowState.warn: ('!', '异常', AppTheme.warningColor),
-      _DiagRowState.fail: ('✕', '失败', AppTheme.errorColor),
+      _DiagRowState.pending: '待检测',
+      _DiagRowState.active: '检测中',
+      _DiagRowState.ok: '正常',
+      _DiagRowState.warn: '异常',
+      _DiagRowState.fail: '失败',
+    };
+    const stIconByRowState = {
+      _DiagRowState.pending: AppStatusIconState.pending,
+      _DiagRowState.active: AppStatusIconState.active,
+      _DiagRowState.ok: AppStatusIconState.ok,
+      _DiagRowState.warn: AppStatusIconState.warn,
+      _DiagRowState.fail: AppStatusIconState.fail,
     };
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -352,11 +357,8 @@ class _HidDiagnosticsPageState extends State<HidDiagnosticsPage> {
                 children: [
                   Row(
                     children: [
-                      Text(stateMeta[_rows[i].state]!.$1,
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w800,
-                              color: stateMeta[_rows[i].state]!.$3)),
+                      AppStatusIcon(
+                          state: stIconByRowState[_rows[i].state]!, size: 24),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(_rows[i].title,
@@ -365,10 +367,9 @@ class _HidDiagnosticsPageState extends State<HidDiagnosticsPage> {
                                 fontWeight: FontWeight.w600,
                                 color: AppTheme.textPrimary)),
                       ),
-                      Text(stateMeta[_rows[i].state]!.$2,
-                          style: TextStyle(
-                              fontSize: 12,
-                              color: stateMeta[_rows[i].state]!.$3)),
+                      Text(stateMeta[_rows[i].state]!,
+                          style: const TextStyle(
+                              fontSize: 12, color: AppTheme.textSecondary)),
                     ],
                   ),
                   if (_rows[i].detail.isNotEmpty)
@@ -436,8 +437,8 @@ class _HidDiagnosticsPageState extends State<HidDiagnosticsPage> {
         const SizedBox(height: 10),
         OutlinedButton.icon(
           onPressed: _reprovision,
-          icon: const AppIcon('refresh',
-              size: 18, color: AppTheme.primaryColor),
+          icon:
+              const AppIcon('refresh', size: 18, color: AppTheme.primaryColor),
           label: const Text('重新配网'),
           style: OutlinedButton.styleFrom(
             foregroundColor: AppTheme.primaryColor,
@@ -465,15 +466,21 @@ class _HidDiagnosticsPageState extends State<HidDiagnosticsPage> {
         children: [
           const Text('错误详情',
               style: TextStyle(
-                  fontSize: 13, fontWeight: FontWeight.w700, color: AppTheme.errorColor)),
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: AppTheme.errorColor)),
           const SizedBox(height: 6),
           Text('code: ${_errorCode ?? '—'}',
               style: const TextStyle(
-                  fontSize: 12, fontFamily: 'monospace', color: AppTheme.textPrimary)),
+                  fontSize: 12,
+                  fontFamily: 'monospace',
+                  color: AppTheme.textPrimary)),
           const SizedBox(height: 2),
           Text(_errorMessage ?? '—',
               style: const TextStyle(
-                  fontSize: 12, fontFamily: 'monospace', color: AppTheme.textSecondary)),
+                  fontSize: 12,
+                  fontFamily: 'monospace',
+                  color: AppTheme.textSecondary)),
         ],
       ),
     );

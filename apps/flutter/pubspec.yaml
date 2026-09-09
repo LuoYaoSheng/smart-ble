@@ -60,10 +60,15 @@ flutter_launcher_icons:
   min_sdk_android: 21
 
 flutter_native_splash:
-  color: "#FFFFFF"
-  image: "assets/images/icon.png"
+  # UI-G2：品牌启动图（ChatGPT2API 生成 · 透明底 logo 居中 + 正典冰蓝底 #F8FBFF）
+  color: "#F8FBFF"
+  image: "assets/images/splash_logo.png"
   android: true
   ios: false
+  android_12:
+    color: "#F8FBFF"
+    icon_background_color: "#F8FBFF"
+    image: "assets/images/splash_logo.png"
 
 # Flutter 配置
 flutter:

@@ -1,5 +1,6 @@
 <template>
 	<view class="container">
+		<AppSubnav title="配置 Smart HID" @back="onSubnavBack" />
 		<view class="page-content">
 			<provision-stepper :steps="steps" :current="currentStep" />
 
@@ -97,6 +98,7 @@ import { onLoad, onUnload, onBackPress } from '@dcloudio/uni-app';
 import ProvisionStepper from '../../components/hid/provision-stepper.vue';
 import ProvisionProgress from '../../components/hid/provision-progress.vue';
 import OperationState from '../../components/common/operation-state.vue';
+import AppSubnav from '../../components/ui/AppSubnav.vue';
 import AppIcon from '../../components/ui/AppIcon.vue'; // UI-PARITY-G0 正典图标入口
 import { useSmartHidProvisioning } from '../../composables/use-smart-hid-provisioning.js';
 
@@ -111,11 +113,16 @@ const {
 onLoad((options) => { initialize(options); });
 onUnload(dispose);
 
-onBackPress(() => {
-	if (!provisioning.value) return false;
+// Subnav 返回与系统返回共用 U-01 离开确认（配网中 / configure 脏表单 → modal 确认）
+const onSubnavBack = () => {
 	confirmLeaveIfNeeded().then((allowed) => {
 		if (allowed) uni.navigateBack();
 	});
+};
+
+onBackPress(() => {
+	if (!provisioning.value) return false;
+	onSubnavBack();
 	return true;
 });
 </script>
@@ -128,10 +135,10 @@ onBackPress(() => {
 .panel-kicker { margin-bottom: 8rpx; color: var(--ble-brand); font-size: 20rpx; font-weight: 800; letter-spacing: 2rpx; }
 .panel-title { display: block; color: var(--ble-text); font-size: 38rpx; font-weight: 800; line-height: 1.2; }
 .panel-desc { color: var(--ble-text-subtle); font-size: 25rpx; line-height: 1.65; }
-.connected-badge { flex-shrink: 0; padding: 8rpx 14rpx; border-radius: 999rpx; color: #0e8f79; background: rgba(23, 199, 168, 0.16); font-size: 21rpx; font-weight: 700; }
+.connected-badge { flex-shrink: 0; padding: 8rpx 14rpx; border-radius: 999rpx; color: var(--c-success-deep); background: rgba(23, 199, 168, 0.16); font-size: 21rpx; font-weight: 700; }
 .connected-badge.lost { color: var(--ble-red); background: rgba(242, 85, 95, 0.12); }
 .device-card { display: flex; align-items: center; gap: 18rpx; padding: 22rpx; border-radius: var(--ble-radius-md); background: rgba(255, 255, 255, 0.84); border: 1rpx solid var(--ble-line-soft); }
-.device-mark { display: flex; align-items: center; justify-content: center; width: 82rpx; height: 82rpx; flex-shrink: 0; border-radius: 24rpx; color: #fff; background: var(--ble-gradient-brand); font-size: 23rpx; font-weight: 800; }
+.device-mark { display: flex; align-items: center; justify-content: center; width: 82rpx; height: 82rpx; flex-shrink: 0; border-radius: 24rpx; color: var(--c-card); background: var(--ble-gradient-brand); font-size: 23rpx; font-weight: 800; }
 .device-copy { min-width: 0; flex: 1; }
 .device-name { display: block; color: var(--ble-text); font-size: 28rpx; font-weight: 750; }
 .device-id, .device-summary { color: var(--ble-text-muted); font-family: "SF Mono", "Roboto Mono", Menlo, monospace; font-size: 21rpx; line-height: 1.5; word-break: break-all; }

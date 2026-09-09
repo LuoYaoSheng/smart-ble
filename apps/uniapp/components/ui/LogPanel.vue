@@ -11,9 +11,9 @@
 		<scroll-view scroll-y class="loglist">
 			<view v-if="logs.length === 0" class="logempty">{{ emptyText }}</view>
 			<view v-for="(l, i) in logs" :key="i" class="logrow">
-				<text class="tm">{{ l.time }}</text>
-				<text class="logchip" :class="'lc-' + l.type">{{ TYPE_WORDS[l.type] || l.type }}</text>
-				<text class="msg">{{ l.msg }}</text>
+				<text class="tm">{{ timeOf(l) }}</text>
+				<text class="logchip" :class="'lc-' + keyOf(l.type)">{{ wordOf(l.type) }}</text>
+				<text class="msg">{{ msgOf(l) }}</text>
 			</view>
 		</scroll-view>
 	</view>
@@ -22,6 +22,7 @@
 <script setup>
 // 正典通信日志面板（COMPONENT_CONTRACT C5 · 原型 components.js C.logPanel 单一来源）
 // variant: dock（深色 --c-ink，P006 底部）/ card（白卡，P008）· 六色类型 chip · 脱敏由调用侧（F026）完成
+// 兼容存量条目形状 {type:中文别名, message, timestamp} 与正典 {type:sys|err|…, msg, time}
 import AppIcon from './AppIcon.vue';
 import AppButton from './AppButton.vue';
 
@@ -32,7 +33,16 @@ defineProps({
 });
 defineEmits(['clear', 'export']);
 
+const TYPE_KEYS = {
+	sys: 'sys', err: 'err', read: 'read', write: 'write', recv: 'recv', ok: 'ok',
+	'系统': 'sys', '错误': 'err', '读取': 'read', '写入': 'write', '接收': 'recv', '成功': 'ok', '操作': 'write',
+	info: 'sys', error: 'err', warning: 'err', success: 'ok', receive: 'recv', send: 'write'
+};
 const TYPE_WORDS = { sys: '系统', err: '错误', read: '读取', write: '写入', recv: '接收', ok: '成功' };
+const keyOf = (t) => TYPE_KEYS[t] || 'sys';
+const wordOf = (t) => TYPE_WORDS[keyOf(t)];
+const timeOf = (l) => l.timestamp || l.time || '--:--:--';
+const msgOf = (l) => l.message || l.msg || '';
 </script>
 
 <style scoped>

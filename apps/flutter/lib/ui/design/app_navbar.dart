@@ -5,19 +5,22 @@ import 'app_tokens.dart';
 ///
 /// kicker（--fs-micro 品牌蓝 +2px 字距）+ 标题（--fs-title w800）+ 右侧蓝牙状态 chip。
 /// [statusTone]: on=就绪(success 点微光) / off=未开启(danger 点) / null=平台不支持(ph 点)。
+/// [status]: 自定义右区（P007 会话 chip / P008 平台 chip + badge / P009 版本 chip），提供时覆盖默认点+词。
 class AppNavbar extends StatelessWidget {
   const AppNavbar({
     super.key,
     this.kicker = 'BLE TOOLKIT+',
     required this.title,
-    required this.statusText,
+    this.statusText = '',
     this.statusTone,
+    this.status,
   });
 
   final String kicker;
   final String title;
   final String statusText;
   final BtStatusTone? statusTone;
+  final Widget? status;
 
   @override
   Widget build(BuildContext context) {
@@ -62,26 +65,30 @@ class AppNavbar extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 6),
-              Container(
-                width: 8,
-                height: 8,
-                decoration: BoxDecoration(
-                  color: dotColor,
-                  shape: BoxShape.circle,
-                  boxShadow: statusTone == BtStatusTone.on
-                      ? const [BoxShadow(color: Color.fromRGBO(23, 199, 168, 0.55), blurRadius: 8)]
-                      : null,
+              if (status != null)
+                status!
+              else ...[
+                Container(
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: dotColor,
+                    shape: BoxShape.circle,
+                    boxShadow: statusTone == BtStatusTone.on
+                        ? const [BoxShadow(color: Color.fromRGBO(23, 199, 168, 0.55), blurRadius: 8)]
+                        : null,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 6),
-              Text(
-                statusText,
-                style: const TextStyle(
-                  fontSize: AppTokens.fsMini,
-                  color: AppTokens.cMut,
-                  fontWeight: AppTokens.fsMiniW,
+                const SizedBox(width: 6),
+                Text(
+                  statusText,
+                  style: const TextStyle(
+                    fontSize: AppTokens.fsMini,
+                    color: AppTokens.cMut,
+                    fontWeight: AppTokens.fsMiniW,
+                  ),
                 ),
-              ),
+              ],
             ],
           ),
         ],

@@ -16,7 +16,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../themes/app_theme.dart';
 import '../../core/design/app_icons.dart';
-import '../../core/design/app_illustrations.dart';
+import '../design/app_subnav.dart';
+import '../design/app_empty.dart';
 
 class VersionsPage extends StatefulWidget {
   const VersionsPage({super.key});
@@ -38,7 +39,8 @@ class _VersionsPageState extends State<VersionsPage> {
     try {
       final info = await PackageInfo.fromPlatform();
       if (mounted) {
-        setState(() => _displayVersion = 'v${info.version}+${info.buildNumber}');
+        setState(
+            () => _displayVersion = 'v${info.version}+${info.buildNumber}');
       }
     } catch (_) {
       if (mounted) setState(() => _displayVersion = 'dev.unknown');
@@ -65,12 +67,7 @@ class _VersionsPageState extends State<VersionsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
-      appBar: AppBar(
-        title: const Text('版本记录'),
-        backgroundColor: AppTheme.backgroundColor,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: AppTheme.textPrimary),
-      ),
+      appBar: const AppSubnav(title: '版本记录'),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -100,7 +97,8 @@ class _VersionsPageState extends State<VersionsPage> {
           const SizedBox(height: 12),
           _card(children: [
             _sectionTitle('当前限制'),
-            _limitRow('OTA 固件升级端到端 BLOCKED（P-03）：客户端与固件完整事务未对齐，入口仅对 OTA 服务设备开放'),
+            _limitRow(
+                'OTA 固件升级端到端 BLOCKED（P-03）：客户端与固件完整事务未对齐，入口仅对 OTA 服务设备开放'),
           ]),
           const SizedBox(height: 12),
           _card(children: [
@@ -135,7 +133,8 @@ class _VersionsPageState extends State<VersionsPage> {
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: AppTheme.borderColor),
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: children),
+      child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start, children: children),
     );
   }
 
@@ -156,8 +155,8 @@ class _VersionsPageState extends State<VersionsPage> {
           SizedBox(
             width: 76,
             child: Text(k,
-                style:
-                    const TextStyle(fontSize: 13, color: AppTheme.textSecondary)),
+                style: const TextStyle(
+                    fontSize: 13, color: AppTheme.textSecondary)),
           ),
           Expanded(
             child: Text(v,
@@ -179,7 +178,9 @@ class _VersionsPageState extends State<VersionsPage> {
         children: [
           const Text('· ',
               style: TextStyle(
-                  fontSize: 13, fontWeight: FontWeight.w700, color: AppTheme.warningColor)),
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: AppTheme.warningColor)),
           Expanded(
             child: Text(text,
                 style: const TextStyle(
@@ -199,30 +200,9 @@ class _VersionsPageState extends State<VersionsPage> {
     );
   }
 
-  /// p010 正典 C.empty(ill:'doc')：doc 插图 + 标题 + 说明（透明底插图）
+  /// UI-G2：p010 空态改用正典 AppEmpty（B6 C.empty · ill: doc）
   Widget _emptyBlock(String title, String desc) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 14),
-      child: Column(
-        children: [
-          const AppIll('doc', width: 118),
-          const SizedBox(height: 12),
-          Text(title,
-              style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  color: AppTheme.textPrimary)),
-          if (desc.isNotEmpty) ...[
-            const SizedBox(height: 6),
-            Text(desc,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                    fontSize: 13,
-                    height: 1.5,
-                    color: AppTheme.textSecondary)),
-          ],
-        ],
-      ),
-    );
+    return AppEmpty(
+        ill: 'doc', title: title, description: desc.isEmpty ? null : desc);
   }
 }

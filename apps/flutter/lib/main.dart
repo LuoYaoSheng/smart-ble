@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'core/design/app_icons.dart';
+import 'dart:async';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'core/ble/ble_manager.dart';
 import 'themes/app_theme.dart';
+import 'ui/design/app_tab_bar.dart';
 import 'ui/pages/device_list_page.dart';
 import 'ui/pages/connected_devices_page.dart';
 import 'ui/pages/broadcast_page.dart';
@@ -50,10 +53,29 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
+  int _connectedBadge = 0;
   final PageController _pageController = PageController();
+  StreamSubscription<Map<String, BluetoothConnectionState>>? _statesSub;
+
+  static const _tabKeys = ['scan', 'connected', 'cast', 'info'];
+
+  @override
+  void initState() {
+    super.initState();
+    // 角标口径（正典 tab-bar）：通用连接会话数（+SHID 配网会话，当前实现无该通道）
+    _statesSub = BleManager().connectionStatesStream.listen((states) {
+      final count = states.values
+          .where((s) => s == BluetoothConnectionState.connected)
+          .length;
+      if (mounted && count != _connectedBadge) {
+        setState(() => _connectedBadge = count);
+      }
+    });
+  }
 
   @override
   void dispose() {
+    _statesSub?.cancel();
     _pageController.dispose();
     super.dispose();
   }
@@ -78,53 +100,18 @@ class _MainScreenState extends State<MainScreen> {
             _currentIndex = index;
           });
         },
-        children: const [
-          DeviceListPage(),
-          ConnectedDevicesPage(),
-          BroadcastPage(),
-          AboutPage(),
+        children: [
+          const DeviceListPage(),
+          ConnectedDevicesPage(onGoScan: () => _onTabTapped(0)),
+          const BroadcastPage(),
+          const AboutPage(),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: _onTabTapped,
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: AppTheme.primaryColor,
-        unselectedItemColor: AppTheme.textSecondary,
-        selectedFontSize: 12,
-        unselectedFontSize: 12,
-        items: const [
-          BottomNavigationBarItem(
-            // 正典字形 scan/link/cast/info（PARITY-ICON）；AppIcon 不走 IconTheme，
-            // 选中/未选中色需显式烘焙（与 selectedItemColor/unselectedItemColor 一致）。
-            icon: AppIcon('scan',
-                size: 22, color: AppTheme.textSecondary),
-            activeIcon: AppIcon('scan',
-                size: 22, color: AppTheme.primaryColor),
-            label: '扫描',
-          ),
-          BottomNavigationBarItem(
-            icon: AppIcon('link',
-                size: 22, color: AppTheme.textSecondary),
-            activeIcon: AppIcon('link',
-                size: 22, color: AppTheme.primaryColor),
-            label: '已连接',
-          ),
-          BottomNavigationBarItem(
-            icon: AppIcon('cast',
-                size: 22, color: AppTheme.textSecondary),
-            activeIcon: AppIcon('cast',
-                size: 22, color: AppTheme.primaryColor),
-            label: '广播',
-          ),
-          BottomNavigationBarItem(
-            icon: AppIcon('info',
-                size: 22, color: AppTheme.textSecondary),
-            activeIcon: AppIcon('info',
-                size: 22, color: AppTheme.primaryColor),
-            label: '关于',
-          ),
-        ],
+      // UI-G2：正典 AppTabBar（A3 · AppIcon 字形 + 已连接角标）
+      bottomNavigationBar: AppTabBar(
+        activeKey: _tabKeys[_currentIndex],
+        onSwitch: (key) => _onTabTapped(_tabKeys.indexOf(key)),
+        connectedBadge: _connectedBadge,
       ),
     );
   }

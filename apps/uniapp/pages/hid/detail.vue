@@ -1,40 +1,49 @@
 <template>
-	<view class="ble-shell">
+	<view class="subpage">
+		<AppSubnav title="Smart HID 设备详情" />
+
 		<view class="page-content">
 			<view class="card ble-card">
 				<view class="device-title-row">
-					<text class="device-title">{{ device?.name || 'Smart HID 设备' }}</text>
-					<view class="ble-chip ble-chip-success"><text>{{ device?.protocol || '协议未记录' }}</text></view>
+					<view class="device-head">
+						<AppIcon name="hid" :size="40" tone="successDeep" />
+						<text class="device-title">{{ device?.name || 'Smart HID 设备' }}</text>
+					</view>
+					<AppBadge text="配置成功 · READY" tone="on" />
 				</view>
-				<view class="card-row">
-					<text class="card-label">Device ID</text>
-					<text class="card-value mono">{{ device?.deviceId || '—' }}</text>
+			</view>
+
+			<view class="card ble-card">
+				<view class="card-title-row">
+					<text class="card-title">设备身份</text>
 				</view>
-				<view class="card-row">
-					<text class="card-label">固件版本</text>
-					<text class="card-value">{{ device?.firmware || '—' }}</text>
+				<AppListRow label="Device ID" :value="device?.deviceId || ''" mono />
+				<view class="proto-row">
+					<text class="card-label">协议版本</text>
+					<AppChip v-if="device?.protocol" :text="device.protocol" tone="neutral" />
+					<AppChip v-else text="协议未记录" tone="neutral" />
 				</view>
+				<AppListRow label="固件版本" :value="device?.firmware || ''" mono />
 			</view>
 
 			<view class="card ble-card">
 				<view class="card-title-row">
 					<text class="card-title">最近配置</text>
 				</view>
-				<view class="card-row">
-					<text class="card-label">Wi-Fi</text>
-					<text class="card-value">{{ device?.lastWifi || '—' }}</text>
-				</view>
-				<view class="card-row">
-					<text class="card-label">ControlHub</text>
-					<text class="card-value">{{ device?.lastHub || '—' }}</text>
-				</view>
+				<AppListRow label="Wi-Fi" :value="device?.lastWifi || ''" />
+				<AppListRow label="ControlHub" :value="device?.lastHub || ''" mono />
+			</view>
+
+			<view class="note note-info">
+				<AppIcon name="doc" :size="28" tone="primary" />
+				<text class="note-text">本页为本次配网会话的内存快照，退出后不再可见（零本地持久化）。重新配置前需让设备进入配网模式。</text>
 			</view>
 
 			<view class="actions">
-				<button class="ble-btn ble-btn--primary ble-btn--lg ble-btn--block" @click="reconfigure">重新配置</button>
+				<AppButton label="重新配置" tone="primary" icon="refresh" block @tap="reconfigure" />
 				<view class="secondary-actions">
-					<button class="ble-btn ble-btn--secondary ble-btn--md ble-btn--block" @click="goDiagnostics">运行诊断</button>
-					<button class="ble-btn ble-btn--ghost ble-btn--md ble-btn--block" @click="goAdvancedBle">高级 BLE 调试</button>
+					<AppButton label="运行诊断" tone="soft" icon="pulse" block @tap="goDiagnostics" />
+					<AppButton label="高级 BLE 调试" tone="soft" icon="set" block @tap="goAdvancedBle" />
 				</view>
 			</view>
 		</view>
@@ -44,6 +53,13 @@
 <script setup>
 import { computed, ref } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
+// UI-G2：P003 改挂正典组件层（AppSubnav/AppBadge/AppChip/AppListRow/AppButton）
+import AppSubnav from '../../components/ui/AppSubnav.vue';
+import AppBadge from '../../components/ui/AppBadge.vue';
+import AppChip from '../../components/ui/AppChip.vue';
+import AppListRow from '../../components/ui/AppListRow.vue';
+import AppButton from '../../components/ui/AppButton.vue';
+import AppIcon from '../../components/ui/AppIcon.vue';
 import { useHidStore } from '../../store/hid';
 import {
 	buildGenericDeviceDetailUrl,
@@ -95,7 +111,7 @@ const goAdvancedBle = () => {
 	padding: 22rpx;
 	display: flex;
 	flex-direction: column;
-	gap: 16rpx;
+	gap: 8rpx;
 }
 
 .device-title-row,
@@ -108,6 +124,8 @@ const goAdvancedBle = () => {
 	border-bottom: 1rpx solid var(--ble-line-soft);
 }
 
+.device-head { display: flex; align-items: center; gap: 14rpx; min-width: 0; }
+
 .device-title { min-width: 0; color: var(--ble-text); font-size: 32rpx; font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .card-title {
@@ -116,11 +134,13 @@ const goAdvancedBle = () => {
 	color: var(--ble-text);
 }
 
-.card-row {
+.proto-row {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	gap: 16rpx;
+	padding: 18rpx 0;
+	border-bottom: 2rpx solid var(--c-line-soft);
 }
 
 .card-label {
@@ -128,15 +148,23 @@ const goAdvancedBle = () => {
 	color: var(--ble-text-muted);
 }
 
-.card-value {
-	font-size: 26rpx;
-	font-weight: 600;
-	color: var(--ble-text);
-	text-align: right;
+.note {
+	display: flex;
+	align-items: flex-start;
+	gap: 12rpx;
+	padding: 18rpx 20rpx;
+	border-radius: var(--ble-radius-md, 18rpx);
 }
 
-.card-value.mono {
-	font-family: "SF Mono", "Roboto Mono", Menlo, monospace;
+.note-info {
+	background: var(--c-primary-weak);
+	color: var(--ble-text);
+}
+
+.note-text {
+	flex: 1;
+	font-size: 22rpx;
+	line-height: 1.6;
 }
 
 .actions {
@@ -146,5 +174,5 @@ const goAdvancedBle = () => {
 }
 
 .secondary-actions { display: flex; gap: 12rpx; }
-.secondary-actions .ble-btn { flex: 1; min-width: 0; padding: 0 16rpx; }
+.secondary-actions .app-btn { flex: 1; min-width: 0; }
 </style>

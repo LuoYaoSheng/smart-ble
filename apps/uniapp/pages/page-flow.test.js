@@ -150,7 +150,7 @@ describe('Smart BLE complete page and navigation flow', () => {
 		expect(fs.existsSync(path.join(__dirname, '../static/other-apps'))).toBe(false)
 		expect(fs.existsSync(path.join(__dirname, '../static/brand'))).toBe(false)
 
-		const scanPages = ['pages/index/index.vue', 'pages/connected/index.vue', 'components/common/empty-state.vue']
+		const scanPages = ['pages/index/index.vue', 'pages/connected/index.vue', 'components/ui/AppEmpty.vue']
 		for (const rel of scanPages) {
 			const src = fs.readFileSync(path.join(__dirname, '../', rel), 'utf8')
 			expect(src).not.toContain('/static/placeholders/')
@@ -159,8 +159,8 @@ describe('Smart BLE complete page and navigation flow', () => {
 		expect(indexSrc).toContain(`:ill="devices.length > 0 ? 'link' : 'radar'"`)
 		const connectedSrc = fs.readFileSync(path.join(__dirname, '../pages/connected/index.vue'), 'utf8')
 		expect(connectedSrc).toContain('ill="link"')
-		const emptyStateSrc = fs.readFileSync(path.join(__dirname, '../components/common/empty-state.vue'), 'utf8')
-		expect(emptyStateSrc).toContain("import AppIll from './app-ill.vue'")
+		const emptyStateSrc = fs.readFileSync(path.join(__dirname, '../components/ui/AppEmpty.vue'), 'utf8')
+		expect(emptyStateSrc).toContain("import AppIll from './AppIll.vue'")
 	})
 
 	test('PARITY-P001: scan page navbar / scantool copy locked to prototype p001 canon', () => {
@@ -209,20 +209,19 @@ describe('Smart BLE complete page and navigation flow', () => {
 	})
 
 	test('PARITY-P001: device card scan variant locked to C1 devCard canon', () => {
-		const cardSrc = fs.readFileSync(path.join(__dirname, '../components/device-card/device-card.vue'), 'utf8')
+		const cardSrc = fs.readFileSync(path.join(__dirname, '../components/ui/DeviceCard.vue'), 'utf8')
 		expect(cardSrc).toContain('未命名 BLE 设备')
 		expect(cardSrc).toContain('（未命名）')
 		expect(cardSrc).toContain('配置 Smart HID')
 		// 匹配 chip 文案来自 profile 注册表注入（chipStrong/chipWeak）
 		expect(cardSrc).toContain('profileChipStrong')
-		// 动作按钮图标位：hid / link
-		expect(cardSrc).toContain('name="hid"')
-		expect(cardSrc).toContain('name="link"')
-		// 信号条正典配色：q4/q3 绿 / q2 黄 / q1 红 / 底灰
-		expect(cardSrc).toContain('#17C7A8')
-		expect(cardSrc).toContain('#FF9F43')
-		expect(cardSrc).toContain('#F2555F')
-		expect(cardSrc).toContain('#E3EAF3')
+		// 动作按钮图标位：hid / link（正典 AppButton icon 参数）
+		expect(cardSrc).toContain('icon="hid"')
+		expect(cardSrc).toContain('icon="link"')
+		// 信号条正典四档配色走 token（q4/q3 绿 / q2 黄 / q1 红 / 底灰）
+		expect(cardSrc).toContain('.sig.q4 .bar { background: var(--c-success); }')
+		expect(cardSrc).toContain('.sig.q2 .bar:nth-child(-n+2) { background: var(--c-warning); }')
+		expect(cardSrc).toContain('.sig.q1 .bar:nth-child(1) { background: var(--c-danger); }')
 		// 生态猜测 chip / JS 截断 /「未知设备」必须清除（正典 meta 仅 sig+dBm，id 走 CSS 省略）
 		expect(cardSrc).not.toContain('小米生态')
 		expect(cardSrc).not.toContain('substring')
@@ -240,7 +239,7 @@ describe('Smart BLE complete page and navigation flow', () => {
 		expect(bannerSrc).toContain('重试')
 		expect(bannerSrc).toContain('name="warn"')
 		expect(bannerSrc).toContain('name="refresh"')
-		expect(bannerSrc).toContain('#FDEBEC')
+		expect(bannerSrc).toContain('var(--c-danger-weak)')
 
 		const advSrc = fs.readFileSync(path.join(__dirname, '../components/scan/advertisement-dialog.vue'), 'utf8')
 		expect(advSrc).toContain('广播数据 · ')
@@ -248,7 +247,7 @@ describe('Smart BLE complete page and navigation flow', () => {
 		expect(advSrc).toContain('profileMatch')
 		expect(advSrc).toContain('本轮平台 API 未提供此字段')
 		expect(advSrc).toContain('复制数据')
-		expect(advSrc).toContain('#101521')
+		expect(advSrc).toContain('var(--c-ink)')
 		// textarea 全量 dump 形态必须退役
 		expect(advSrc).not.toContain('textarea')
 	})
@@ -270,7 +269,7 @@ describe('Smart BLE complete page and navigation flow', () => {
 		expect(page.path).toBe('pages/connected/index')
 		const emptyState = await page.$('#connected-empty')
 		expect(emptyState).not.toBeNull()
-		await (await emptyState.$('.ble-btn')).trigger('tap')
+		await (await emptyState.$('.app-btn')).trigger('tap')
 		await page.waitFor(250)
 		page = await program.currentPage()
 		expect(page.path).toBe('pages/index/index')

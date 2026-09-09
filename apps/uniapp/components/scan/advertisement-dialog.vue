@@ -64,7 +64,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import AppIcon from '../common/app-icon.vue';
+import AppIcon from '../ui/AppIcon.vue';
 import { buildAdSegments } from '../../services/ble-runtime/advertisement.js';
 
 // 正典 p001-advdlg：底部弹层 + kv 四行 + 深色 ad-sec 段（Service UUIDs /

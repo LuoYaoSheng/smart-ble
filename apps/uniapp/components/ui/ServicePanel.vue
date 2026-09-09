@@ -42,11 +42,11 @@
 							<AppChip v-if="ch.props.write" text="write" tone="success" />
 							<AppChip v-if="ch.props.notify" text="notify" tone="warning" />
 						</view>
-						<view class="char-r2">
-							<AppButton v-if="ch.props.read" label="读取" tone="soft" size="sm" @tap="$emit('read', ch)" />
-							<AppButton v-if="ch.props.write" label="写入" tone="soft" size="sm" @tap="$emit('write', ch)" />
-							<AppButton v-if="ch.props.notify" :label="notifying[ch.uuid] ? '停止监听' : '开始监听'" tone="ghost" size="sm" @tap="$emit('notify', ch)" />
-						</view>
+					<view class="char-r2">
+						<AppButton v-if="ch.props.read" label="读取" tone="soft" size="sm" @tap="$emit('read', { serviceId: sv.uuid, charId: ch.uuid })" />
+						<AppButton v-if="ch.props.write" label="写入" tone="soft" size="sm" @tap="$emit('write', { serviceId: sv.uuid, charId: ch.uuid })" />
+						<AppButton v-if="ch.props.notify" :label="notifying[ch.uuid] ? '停止监听' : '开始监听'" tone="ghost" size="sm" @tap="$emit('notify', { serviceId: sv.uuid, charId: ch.uuid })" />
+					</view>
 					</view>
 				</view>
 			</view>

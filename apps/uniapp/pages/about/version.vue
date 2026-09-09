@@ -1,9 +1,11 @@
 <template>
-	<view class="container">
-		<view class="card current-card">
-			<view class="card-kicker">当前版本</view>
-			<view class="current-row">
-				<text class="current-version">{{ model.current.version || model.current.display_version }}</text>
+	<view class="subpage">
+		<AppSubnav title="版本记录" />
+		<view class="container">
+			<view class="card current-card">
+				<view class="card-kicker">当前版本</view>
+				<view class="current-row">
+					<text class="current-version version-name">{{ model.current.version || model.current.display_version }}</text>
 				<text class="status-pill">{{ model.current.status }}</text>
 			</view>
 			<view class="meta-row">
@@ -42,7 +44,7 @@
 					<text class="history-sub">{{ item.status }} · {{ item.channel }}</text>
 				</view>
 			</view>
-			<empty-state v-else ill="doc" title="暂无正式发布版本" description="产品当前处于 PREVIEW 阶段，首个正式版发布后将在此列出。" />
+			<AppEmpty v-else ill="doc" title="暂无正式发布版本" description="产品当前处于 PREVIEW 阶段，首个正式版发布后将在此列出。" />
 			<text v-if="!model.current.has_artifacts" class="empty-note subtle">当前无 Artifact，不提供下载入口。</text>
 		</view>
 
@@ -54,18 +56,21 @@
 					<text class="history-sub">{{ item.status }} · {{ item.channel }}</text>
 				</view>
 			</view>
-			<empty-state v-else ill="doc" title="暂无预览记录" />
+			<AppEmpty v-else ill="doc" title="暂无预览记录" />
 		</view>
 
 		<view class="footer-note">
 			<text>本页数据来自 Release Metadata 投影，不是手写版本事实源。</text>
+		</view>
 		</view>
 	</view>
 </template>
 
 <script setup>
 import { onShareAppMessage, onShareTimeline, onShow } from '@dcloudio/uni-app';
-import EmptyState from '../../components/common/empty-state.vue';
+// UI-G2：P010 改挂正典组件层（AppSubnav + AppEmpty）
+import AppSubnav from '../../components/ui/AppSubnav.vue';
+import AppEmpty from '../../components/ui/AppEmpty.vue';
 import { getVersionPageModel } from '../../services/version-metadata.js';
 
 const model = getVersionPageModel();

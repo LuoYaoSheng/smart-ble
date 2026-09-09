@@ -24,6 +24,8 @@ import '../../themes/app_theme.dart';
 import 'hid_detail_page.dart';
 import 'hid_diagnostics_page.dart';
 import '../../core/design/app_icons.dart';
+import '../design/app_subnav.dart';
+import '../design/app_tokens.dart';
 
 /// 扫码失败三分类（canon F020：取消不算错误 / 权限 / 无效）
 enum QrFailureReason { cancel, permission, invalid }
@@ -119,17 +121,22 @@ class _ProvisioningPageState extends ConsumerState<ProvisioningPage> {
     final result = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+        title: Text(title,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
         content: Text(content,
-            style: const TextStyle(fontSize: 13, height: 1.6, color: Color(0xFF42536A))),
+            style: const TextStyle(
+                fontSize: 13, height: 1.6, color: AppTokens.cSub)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: Text(cancelText, style: const TextStyle(color: AppTheme.textSecondary)),
+            child: Text(cancelText,
+                style: const TextStyle(color: AppTheme.textSecondary)),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: Text(confirmText, style: const TextStyle(color: AppTheme.primaryColor, fontWeight: FontWeight.w600)),
+            child: Text(confirmText,
+                style: const TextStyle(
+                    color: AppTheme.primaryColor, fontWeight: FontWeight.w600)),
           ),
         ],
       ),
@@ -222,7 +229,8 @@ class _ProvisioningPageState extends ConsumerState<ProvisioningPage> {
     _qrHandled = true;
     final payload = parsePairingQrPayload(text);
     // 日志不落 token/URI 全文（隐私约定）
-    debugPrint('P002: qr parse ${payload != null ? "ok host=${payload.host}:${payload.port}" : "INVALID"} len=${text.length}');
+    debugPrint(
+        'P002: qr parse ${payload != null ? "ok host=${payload.host}:${payload.port}" : "INVALID"} len=${text.length}');
     // 注意：这里不 pop 扫码面板——面板在两条路径下都自行退场
     // （粘贴路径 qrParseBtn 先 pop 再回调；相机路径 onDetect 自 pop）。
     // 早期版本这里再 pop 一次会把配网页本身弹掉（E2E 实测 DEF）。
@@ -281,19 +289,8 @@ class _ProvisioningPageState extends ConsumerState<ProvisioningPage> {
       },
       child: Scaffold(
         backgroundColor: const Color(0xFFF6F8FB),
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          surfaceTintColor: Colors.white,
-          elevation: 0,
-          scrolledUnderElevation: 0,
-          leading: IconButton(
-            icon: const AppIcon('chev-r', rotate: 180, size: 26),
-            onPressed: _confirmLeave,
-          ),
-          title: const Text('配置 Smart HID',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
-          centerTitle: true,
-        ),
+        // UI-G2：正典 AppSubnav（返回走 U-01 离开确认，PopScope 同口径）
+        appBar: AppSubnav(title: '配置 Smart HID', onBack: _confirmLeave),
         body: ListView(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
           children: [
@@ -332,14 +329,16 @@ class _ProvisioningPageState extends ConsumerState<ProvisioningPage> {
               gradient: const LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [Color(0xFFD9F6F0), Color(0xFFE2F8F4)],
+                colors: [AppTokens.cSuccessWeak, AppTokens.cSuccess],
               ),
             ),
             alignment: Alignment.center,
             child: Text(
               name.isNotEmpty ? name.substring(0, 1).toUpperCase() : 'S',
               style: const TextStyle(
-                  color: Color(0xFF0E9A80), fontWeight: FontWeight.w800, fontSize: 16),
+                  color: AppTokens.cSuccessDeep,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 16),
             ),
           ),
           const SizedBox(width: 11),
@@ -348,7 +347,8 @@ class _ProvisioningPageState extends ConsumerState<ProvisioningPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(name.isNotEmpty ? name : 'Smart HID 设备',
-                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+                    style: const TextStyle(
+                        fontSize: 15, fontWeight: FontWeight.w700)),
                 const SizedBox(height: 2),
                 Text(
                   info != null
@@ -389,7 +389,8 @@ class _ProvisioningPageState extends ConsumerState<ProvisioningPage> {
               child: _PrimaryButton(
                 label: '重新连接',
                 icon: 'refresh',
-                onPressed: () => _controller.connectDevice(widget.device.deviceId),
+                onPressed: () =>
+                    _controller.connectDevice(widget.device.deviceId),
               ),
             ),
             const SizedBox(width: 9),
@@ -505,8 +506,7 @@ class _ProvisioningPageState extends ConsumerState<ProvisioningPage> {
           ),
         ],
         const SizedBox(height: 12),
-        const _InfoNote(
-            text: 'Wi-Fi 密码和配对凭据只用于本次下发，不写入日志或本地存储。'),
+        const _InfoNote(text: 'Wi-Fi 密码和配对凭据只用于本次下发，不写入日志或本地存储。'),
         const SizedBox(height: 16),
         _PrimaryButton(
           key: const ValueKey('submitBtn'),
@@ -538,11 +538,11 @@ class _ProvisioningPageState extends ConsumerState<ProvisioningPage> {
                   width: 56,
                   height: 56,
                   decoration: const BoxDecoration(
-                    color: Color(0xFFD9F6F0),
+                    color: AppTokens.cSuccessWeak,
                     shape: BoxShape.circle,
                   ),
                   child: const AppIcon('check',
-                      size: 30, color: Color(0xFF0E9A80)),
+                      size: 30, color: AppTokens.cSuccessDeep),
                 ),
                 const SizedBox(height: 12),
                 const Text('配置成功 · 设备 READY',
@@ -550,7 +550,8 @@ class _ProvisioningPageState extends ConsumerState<ProvisioningPage> {
                         TextStyle(fontSize: 20, fontWeight: FontWeight.w800)),
                 const SizedBox(height: 8),
                 const Text('HID 控制请通过 ControlHub 下发',
-                    style: TextStyle(fontSize: 14, color: AppTheme.textSecondary)),
+                    style:
+                        TextStyle(fontSize: 14, color: AppTheme.textSecondary)),
                 const SizedBox(height: 16),
                 _PrimaryButton(
                   label: '查看设备',
@@ -592,7 +593,9 @@ class _ProvisioningPageState extends ConsumerState<ProvisioningPage> {
                 _ProgressRow(
                   title: title,
                   state: c.progress[key] ?? ProvisionRowState.pending,
-                  errorCode: failure != null && failure.row == key ? failure.code : null,
+                  errorCode: failure != null && failure.row == key
+                      ? failure.code
+                      : null,
                 ),
             ],
           ),
@@ -707,7 +710,7 @@ class _Stepper extends StatelessWidget {
               child: Container(
                 height: 2,
                 margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 12),
-                color: i <= current ? const Color(0xFF17C7A8) : AppTheme.borderColor,
+                color: i <= current ? AppTokens.cSuccess : AppTheme.borderColor,
               ),
             ),
           Column(
@@ -718,13 +721,13 @@ class _Stepper extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: i < current
-                      ? const Color(0xFFD9F6F0)
+                      ? AppTokens.cSuccessWeak
                       : i == current
                           ? AppTheme.primaryColor
                           : Colors.white,
                   border: Border.all(
                     color: i < current
-                        ? const Color(0xFF17C7A8)
+                        ? AppTokens.cSuccess
                         : i == current
                             ? AppTheme.primaryColor
                             : AppTheme.borderColor,
@@ -733,7 +736,8 @@ class _Stepper extends StatelessWidget {
                   boxShadow: i == current
                       ? [
                           BoxShadow(
-                            color: AppTheme.primaryColor.withValues(alpha: 0.15),
+                            color:
+                                AppTheme.primaryColor.withValues(alpha: 0.15),
                             spreadRadius: 4,
                           )
                         ]
@@ -742,7 +746,7 @@ class _Stepper extends StatelessWidget {
                 alignment: Alignment.center,
                 child: i < current
                     ? const AppIcon('check',
-                        size: 14, color: Color(0xFF0E9A80))
+                        size: 14, color: AppTokens.cSuccessDeep)
                     : Text(
                         '${i + 1}',
                         style: TextStyle(
@@ -761,7 +765,7 @@ class _Stepper extends StatelessWidget {
                   fontSize: 10,
                   fontWeight: i == current ? FontWeight.w700 : FontWeight.w500,
                   color: i < current
-                      ? const Color(0xFF0E9A80)
+                      ? AppTokens.cSuccessDeep
                       : i == current
                           ? AppTheme.primaryColor
                           : AppTheme.textSecondary,
@@ -805,11 +809,12 @@ class _OpCard extends StatelessWidget {
           AppIcon(icon, size: 40, color: iconColor),
           const SizedBox(height: 12),
           Text(title,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+              style:
+                  const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
           const SizedBox(height: 6),
           Text(desc,
-              style: const TextStyle(
-                  fontSize: 13, color: AppTheme.textSecondary)),
+              style:
+                  const TextStyle(fontSize: 13, color: AppTheme.textSecondary)),
         ],
       ),
     );
@@ -817,7 +822,8 @@ class _OpCard extends StatelessWidget {
 }
 
 class _ErrorBanner extends StatelessWidget {
-  const _ErrorBanner({required this.code, required this.message});  final String code;
+  const _ErrorBanner({required this.code, required this.message});
+  final String code;
   final String message;
 
   @override
@@ -827,13 +833,12 @@ class _ErrorBanner extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFFFDEEEF),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFFF2555F).withValues(alpha: 0.3)),
+        border: Border.all(color: AppTokens.cDanger.withValues(alpha: 0.3)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const AppIcon('warn',
-              size: 16, color: Color(0xFFF2555F)),
+          const AppIcon('warn', size: 16, color: AppTokens.cDanger),
           const SizedBox(width: 8),
           Expanded(
             child: Column(
@@ -874,9 +879,7 @@ class _StatusBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
-        color: connected
-            ? const Color(0xFFE8F8F1)
-            : const Color(0xFFFDEEEF),
+        color: connected ? const Color(0xFFE8F8F1) : const Color(0xFFFDEEEF),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
@@ -887,7 +890,7 @@ class _StatusBadge extends StatelessWidget {
             height: 6,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: connected ? const Color(0xFF17C7A8) : const Color(0xFFF2555F),
+              color: connected ? AppTokens.cSuccess : AppTokens.cDanger,
             ),
           ),
           const SizedBox(width: 4),
@@ -896,7 +899,8 @@ class _StatusBadge extends StatelessWidget {
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
-              color: connected ? const Color(0xFF0E9A80) : const Color(0xFFB33A44),
+              color:
+                  connected ? AppTokens.cSuccessDeep : const Color(0xFFB33A44),
             ),
           ),
         ],
@@ -936,10 +940,11 @@ class _FormField extends StatelessWidget {
       children: [
         Row(children: [
           Text(label,
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+              style:
+                  const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
           if (required)
             const Text(' *',
-                style: TextStyle(fontSize: 13, color: Color(0xFFF2555F))),
+                style: TextStyle(fontSize: 13, color: AppTokens.cDanger)),
         ]),
         const SizedBox(height: 8),
         TextField(
@@ -947,13 +952,13 @@ class _FormField extends StatelessWidget {
           maxLength: maxLength,
           obscureText: obscure,
           onChanged: onChanged,
-          style: TextStyle(
-              fontSize: 14, fontFamily: mono ? 'monospace' : null),
+          style: TextStyle(fontSize: 14, fontFamily: mono ? 'monospace' : null),
           decoration: InputDecoration(
             counterText: '',
             hintText: hint,
             hintStyle: TextStyle(
-                fontSize: 13, color: AppTheme.textSecondary.withValues(alpha: 0.6)),
+                fontSize: 13,
+                color: AppTheme.textSecondary.withValues(alpha: 0.6)),
             suffixIcon: suffix,
             isDense: true,
             contentPadding:
@@ -964,7 +969,8 @@ class _FormField extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppTheme.primaryColor, width: 1.5),
+              borderSide:
+                  const BorderSide(color: AppTheme.primaryColor, width: 1.5),
             ),
           ),
         ),
@@ -990,14 +996,16 @@ class _QrActionCard extends StatelessWidget {
           color: hasToken ? const Color(0xFFEFFBF8) : Colors.white,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: hasToken ? const Color(0xFF17C7A8) : AppTheme.borderColor,
+            color: hasToken ? AppTokens.cSuccess : AppTheme.borderColor,
             width: hasToken ? 1.5 : 1,
           ),
         ),
         child: Row(
           children: [
             AppIcon('qr',
-                size: 30, color: hasToken ? const Color(0xFF0E9A80) : AppTheme.primaryColor),
+                size: 30,
+                color:
+                    hasToken ? AppTokens.cSuccessDeep : AppTheme.primaryColor),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -1005,11 +1013,14 @@ class _QrActionCard extends StatelessWidget {
                 children: [
                   Text(
                     hasToken ? '重新扫描配对码' : '扫描 ControlHub 配对码',
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+                    style: const TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.w700),
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    hasToken ? 'token 已获取（内存会话，不落盘）' : '扫码解析 shid://pair 自动回填地址与令牌',
+                    hasToken
+                        ? 'token 已获取（内存会话，不落盘）'
+                        : '扫码解析 shid://pair 自动回填地址与令牌',
                     style: const TextStyle(
                         fontSize: 11, color: AppTheme.textSecondary),
                   ),
@@ -1019,9 +1030,8 @@ class _QrActionCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               decoration: BoxDecoration(
-                color: hasToken
-                    ? const Color(0xFFD9F6F0)
-                    : const Color(0xFFFFF3E4),
+                color:
+                    hasToken ? AppTokens.cSuccessWeak : AppTokens.cWarningWeak,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Text(
@@ -1029,7 +1039,9 @@ class _QrActionCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
-                  color: hasToken ? const Color(0xFF0E9A80) : const Color(0xFFC77E14),
+                  color: hasToken
+                      ? AppTokens.cSuccessDeep
+                      : AppTokens.cWarningDeep,
                 ),
               ),
             ),
@@ -1062,7 +1074,8 @@ class _QrErrorPanel extends StatelessWidget {
     final descs = {
       QrFailureReason.cancel: '未完成扫码（用户取消，不算错误）。已填写的配置信息不受影响，可重新扫描。',
       QrFailureReason.permission: '扫码权限被拒绝。请在系统设置中允许相机权限后重试。',
-      QrFailureReason.invalid: '未识别到有效配对码（非 shid://pair 或缺少参数）。请对准 ControlHub 屏显二维码重试。',
+      QrFailureReason.invalid:
+          '未识别到有效配对码（非 shid://pair 或缺少参数）。请对准 ControlHub 屏显二维码重试。',
     };
     return Container(
       padding: const EdgeInsets.all(12),
@@ -1071,8 +1084,8 @@ class _QrErrorPanel extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
           color: isWarn
-              ? const Color(0xFFC77E14).withValues(alpha: 0.4)
-              : const Color(0xFFF2555F).withValues(alpha: 0.3),
+              ? AppTokens.cWarningDeep.withValues(alpha: 0.4)
+              : AppTokens.cDanger.withValues(alpha: 0.3),
         ),
       ),
       child: Column(
@@ -1082,21 +1095,25 @@ class _QrErrorPanel extends StatelessWidget {
               style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
-                  color: isWarn ? const Color(0xFF9A6210) : const Color(0xFFB33A44))),
+                  color: isWarn
+                      ? const Color(0xFF9A6210)
+                      : const Color(0xFFB33A44))),
           const SizedBox(height: 4),
           Text(descs[reason]!,
               style: const TextStyle(
-                  fontSize: 12, height: 1.5, color: Color(0xFF42536A))),
+                  fontSize: 12, height: 1.5, color: AppTokens.cSub)),
           const SizedBox(height: 10),
           Row(children: [
             if (reason == QrFailureReason.permission) ...[
               Expanded(
-                child: _SoftButton(label: '去设置', onPressed: () => onOpenSettings()),
+                child: _SoftButton(
+                    label: '去设置', onPressed: () => onOpenSettings()),
               ),
               const SizedBox(width: 9),
             ],
             Expanded(
-              child: _PrimaryButton(label: '重新扫码', icon: 'qr', onPressed: onRetry),
+              child:
+                  _PrimaryButton(label: '重新扫码', icon: 'qr', onPressed: onRetry),
             ),
           ]),
         ],
@@ -1115,7 +1132,7 @@ class _InfoNote extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: const Color(0xFFE8F1FF),
+        color: AppTokens.cPrimaryWeak,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
@@ -1126,7 +1143,8 @@ class _InfoNote extends StatelessWidget {
           Expanded(
             child: Text(
               text,
-              style: const TextStyle(fontSize: 12, height: 1.5, color: Color(0xFF2F5B8F)),
+              style: const TextStyle(
+                  fontSize: 12, height: 1.5, color: Color(0xFF2F5B8F)),
             ),
           ),
         ],
@@ -1179,11 +1197,12 @@ class _ProgressRow extends StatelessWidget {
           width: 22,
           height: 22,
           decoration: BoxDecoration(
-            color: const Color(0xFFD9F6F0),
+            color: AppTokens.cSuccessWeak,
             shape: BoxShape.circle,
-            border: Border.all(color: const Color(0xFF17C7A8), width: 1.5),
+            border: Border.all(color: AppTokens.cSuccess, width: 1.5),
           ),
-          child: const AppIcon('check', size: 13, color: Color(0xFF0E9A80)),
+          child:
+              const AppIcon('check', size: 13, color: AppTokens.cSuccessDeep),
         );
       case ProvisionRowState.fail:
         indicator = Container(
@@ -1192,12 +1211,13 @@ class _ProgressRow extends StatelessWidget {
           decoration: BoxDecoration(
             color: const Color(0xFFFDEEEF),
             shape: BoxShape.circle,
-            border: Border.all(color: const Color(0xFFF2555F), width: 1.5),
+            border: Border.all(color: AppTokens.cDanger, width: 1.5),
           ),
-          child: const AppIcon('x', size: 13, color: Color(0xFFF2555F)),
+          child: const AppIcon('x', size: 13, color: AppTokens.cDanger),
         );
     }
-    final strong = state == ProvisionRowState.active || state == ProvisionRowState.done;
+    final strong =
+        state == ProvisionRowState.active || state == ProvisionRowState.done;
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 11),
       decoration: const BoxDecoration(
@@ -1218,8 +1238,10 @@ class _ProgressRow extends StatelessWidget {
                     ? FontWeight.w700
                     : FontWeight.w500,
                 color: state == ProvisionRowState.fail
-                    ? const Color(0xFFF2555F)
-                    : strong ? const Color(0xFF18222E) : AppTheme.textSecondary,
+                    ? AppTokens.cDanger
+                    : strong
+                        ? AppTokens.cText
+                        : AppTheme.textSecondary,
               ),
             ),
           ),
@@ -1236,7 +1258,8 @@ class _ProgressRow extends StatelessWidget {
 }
 
 class _PrimaryButton extends StatelessWidget {
-  const _PrimaryButton({super.key, required this.label, this.icon, this.onPressed});
+  const _PrimaryButton(
+      {super.key, required this.label, this.icon, this.onPressed});
 
   final String label;
   final String? icon;
@@ -1249,7 +1272,8 @@ class _PrimaryButton extends StatelessWidget {
       child: ElevatedButton.icon(
         onPressed: onPressed,
         icon: icon != null
-            ? AppIcon(icon!, size: 17,
+            ? AppIcon(icon!,
+                size: 17,
                 color: onPressed == null ? Colors.white70 : Colors.white)
             : const SizedBox.shrink(),
         label: Text(label,
@@ -1266,7 +1290,8 @@ class _PrimaryButton extends StatelessWidget {
               AppTheme.primaryColor.withValues(alpha: 0.45),
           disabledForegroundColor: Colors.white70,
           padding: const EdgeInsets.symmetric(vertical: 12),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ),
       ),
     );
@@ -1274,7 +1299,8 @@ class _PrimaryButton extends StatelessWidget {
 }
 
 class _SoftButton extends StatelessWidget {
-  const _SoftButton({super.key, required this.label, this.onPressed, this.icon});
+  const _SoftButton(
+      {super.key, required this.label, this.onPressed, this.icon});
 
   final String label;
   final VoidCallback? onPressed;
@@ -1297,7 +1323,8 @@ class _SoftButton extends StatelessWidget {
         style: OutlinedButton.styleFrom(
           side: const BorderSide(color: AppTheme.borderColor),
           padding: const EdgeInsets.symmetric(vertical: 12),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ),
       ),
     );
@@ -1344,7 +1371,9 @@ class _QrScannerSheetState extends State<_QrScannerSheet> {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(
-        left: 16, right: 16, top: 12,
+        left: 16,
+        right: 16,
+        top: 12,
         bottom: MediaQuery.of(context).viewInsets.bottom + 16,
       ),
       child: Column(
@@ -1355,7 +1384,8 @@ class _QrScannerSheetState extends State<_QrScannerSheet> {
             children: [
               const Expanded(
                 child: Text('扫描 ControlHub 配对码',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+                    style:
+                        TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
               ),
               IconButton(
                 icon: const AppIcon('x', size: 20),
@@ -1412,13 +1442,15 @@ class _QrScannerSheetState extends State<_QrScannerSheet> {
                   child: TextField(
                     key: const ValueKey('qrPasteField'),
                     controller: _pasteController,
-                    style: const TextStyle(fontSize: 13, fontFamily: 'monospace'),
+                    style:
+                        const TextStyle(fontSize: 13, fontFamily: 'monospace'),
                     decoration: InputDecoration(
                       hintText: 'shid://pair?token=…&host=…&port=…',
                       isDense: true,
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
-                        borderSide: const BorderSide(color: AppTheme.borderColor),
+                        borderSide:
+                            const BorderSide(color: AppTheme.borderColor),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -1454,4 +1486,3 @@ class _QrScannerSheetState extends State<_QrScannerSheet> {
     );
   }
 }
-

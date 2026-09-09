@@ -16,6 +16,7 @@ import 'device_detail_page.dart';
 import 'hid_diagnostics_page.dart';
 import 'provisioning_page.dart';
 import '../../core/design/app_icons.dart';
+import '../design/app_subnav.dart';
 
 class HidDetailPage extends StatefulWidget {
   const HidDetailPage({super.key, required this.deviceId, this.name = ''});
@@ -115,12 +116,7 @@ class _HidDetailPageState extends State<HidDetailPage> {
     final name = snap?.name.isNotEmpty == true ? snap!.name : 'Smart HID 设备';
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
-      appBar: AppBar(
-        title: const Text('Smart HID 设备'),
-        backgroundColor: AppTheme.backgroundColor,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: AppTheme.textPrimary),
-      ),
+      appBar: const AppSubnav(title: 'Smart HID 设备详情'),
       body: snap == null
           ? const SizedBox.shrink()
           : ListView(
@@ -129,8 +125,7 @@ class _HidDetailPageState extends State<HidDetailPage> {
                 _card(children: [
                   _cardTitle('设备身份'),
                   _row('名称', name),
-                  _row('协议',
-                      snap.protocol.isEmpty ? '协议未记录' : snap.protocol),
+                  _row('协议', snap.protocol.isEmpty ? '协议未记录' : snap.protocol),
                   _monoRow('Device ID', snap.deviceId),
                   _row('固件版本', _orDash(snap.firmware)),
                 ]),
@@ -197,8 +192,7 @@ class _HidDetailPageState extends State<HidDetailPage> {
       decoration: last
           ? null
           : const BoxDecoration(
-              border:
-                  Border(bottom: BorderSide(color: AppTheme.borderColor))),
+              border: Border(bottom: BorderSide(color: AppTheme.borderColor))),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -226,8 +220,7 @@ class _HidDetailPageState extends State<HidDetailPage> {
       decoration: last
           ? null
           : const BoxDecoration(
-              border:
-                  Border(bottom: BorderSide(color: AppTheme.borderColor))),
+              border: Border(bottom: BorderSide(color: AppTheme.borderColor))),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

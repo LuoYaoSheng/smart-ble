@@ -1,16 +1,20 @@
 <template>
-	<scroll-view class="page-container" scroll-y>
-		<view class="settings-section">
-			<view class="settings-heading">
-				<text class="section-title">广播设置</text>
-				<view class="settings-meta">
-					<text class="platform-tag">{{ platformLabel }}</text>
-					<view class="runtime-state" :class="{ active: advertising, ready: !advertising && isSupported }">
-						<view class="status-indicator-dot"></view>
-						<text>{{ broadcastStateText }}</text>
-					</view>
+	<view class="ble-shell broadcast-shell">
+		<AppNavbar kicker="PERIPHERAL" title="广播">
+			<template #status>
+				<view class="nav-status-group">
+					<AppChip :text="'平台：' + platformLabel" tone="neutral" />
+					<AppBadge :text="statusBadge.text" :tone="statusBadge.tone" :dot="statusBadge.dot" />
 				</view>
-			</view>
+			</template>
+		</AppNavbar>
+
+		<view class="ble-content page-content">
+		<scroll-view class="page-container" scroll-y>
+			<view class="settings-section">
+				<view class="settings-heading">
+					<text class="section-title">广播设置</text>
+				</view>
 
 			<view class="field-group">
 				<view class="field-label-row">
@@ -93,22 +97,26 @@
 			</view>
 		</view>
 
-		<log-panel
+		<LogPanel
 			class="broadcast-log"
 			variant="card"
-			compact
-			clearable
-			title="操作日志"
-			caption="记录广播启动、停止和支持检查结果。"
 			empty-text="暂无日志 · 开始广播或检查支持后，操作记录会显示在这里"
 			:logs="logs"
 			@clear="clearLogs"
+			@export="exportLogs"
 		/>
-	</scroll-view>
+		</scroll-view>
+		</view>
+	</view>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
+// UI-G2：P008 改挂正典组件层（AppNavbar 平台 chip + 状态 badge / LogPanel card + 导出）
+import AppNavbar from '../../components/ui/AppNavbar.vue';
+import AppChip from '../../components/ui/AppChip.vue';
+import AppBadge from '../../components/ui/AppBadge.vue';
+import LogPanel from '../../components/ui/LogPanel.vue';
 import AppIcon from '../../components/ui/AppIcon.vue'; // UI-PARITY-G0 正典图标入口
 import { onHide, onLoad, onShow, onUnload, onShareAppMessage } from '@dcloudio/uni-app';
 import { logger } from '../../../../core/ble-core/utils/logger';
@@ -126,7 +134,6 @@ import {
 	buildBroadcastPayload,
 } from '../../services/broadcast/index.js';
 import { useBroadcastSession } from '../../composables/use-broadcast-session.js';
-import LogPanel from '../../components/log-panel/log-panel.vue';
 const bleStore = useBleStore();
 
 const blePeripheral = ref(null);
@@ -197,6 +204,12 @@ const broadcastStateText = computed(() => {
 	if (pageState.value === 'Stopped') return '已停止';
 	return isSupported.value ? '已就绪' : '未就绪';
 });
+// 正典 P008 导航栏状态徽章：广播中 on / 失败 err / 已就绪 warn / 其余 dim；「不支持」无点
+const statusBadge = computed(() => {
+	const text = broadcastStateText.value;
+	const tone = text === '广播中' ? 'on' : text === '失败' ? 'err' : text === '已就绪' ? 'warn' : 'dim';
+	return { text, tone, dot: text !== '不支持' };
+});
 
 const payloadAnalysis = computed(() => buildBroadcastPayload({
 	deviceName: deviceName.value,
@@ -227,6 +240,14 @@ const reportBroadcastError = (message) => {
 const clearLogs = () => {
 	logger.clear('broadcast');
 	sessionClearLogs();
+};
+
+const exportLogs = () => {
+	const lines = logs.value.map((l) => `[${l.timestamp || l.time || '--:--:--'}][${l.type}] ${l.message || l.msg || ''}`);
+	uni.setClipboardData({
+		data: lines.join('\n') || '（空日志）',
+		success: () => uni.showToast({ title: '日志已复制', icon: 'success' })
+	});
 };
 
 const checkSupport = () => {
@@ -701,11 +722,21 @@ onShareAppMessage(() => ({
 </script>
 
 <style>
+.page-content {
+	height: calc(100vh - 2rpx);
+}
+
 .page-container {
-	min-height: 100vh;
+	min-height: 100%;
 	padding: 20rpx;
 	box-sizing: border-box;
 	background: transparent;
+}
+
+.nav-status-group {
+	display: flex;
+	align-items: center;
+	gap: 12rpx;
 }
 
 .settings-section {
@@ -736,28 +767,12 @@ onShareAppMessage(() => ({
 	color: var(--ble-text);
 }
 
-.settings-meta,
-.runtime-state,
 .field-label-row {
 	display: flex;
 	align-items: center;
+	justify-content: space-between;
+	gap: 12rpx;
 }
-
-.settings-meta { gap: 10rpx; }
-.field-label-row { justify-content: space-between; gap: 12rpx; }
-
-.platform-tag,
-.runtime-state {
-	padding: 8rpx 14rpx;
-	border-radius: 999rpx;
-	font-size: 20rpx;
-	font-weight: 700;
-}
-
-.platform-tag { color: var(--ble-brand); background: rgba(27, 109, 255, 0.08); }
-.runtime-state { gap: 8rpx; color: #a6630a; background: rgba(255, 159, 67, 0.12); }
-.runtime-state.ready { color: #0e8d75; background: rgba(23, 199, 168, 0.12); }
-.runtime-state.active { color: #ffffff; background: var(--ble-gradient-brand); }
 
 .field-group {
 	display: flex;
@@ -846,12 +861,4 @@ onShareAppMessage(() => ({
 
 .action-primary { flex: 1; min-width: 0; }
 .action-secondary { flex: 0 0 190rpx; padding: 0 18rpx; }
-
-.status-indicator-dot {
-	width: 14rpx;
-	height: 14rpx;
-	border-radius: 50%;
-	background: currentColor;
-	flex-shrink: 0;
-}
 </style>

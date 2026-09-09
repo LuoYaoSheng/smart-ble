@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-import AppIcon from './app-icon.vue';
+import AppIcon from '../ui/AppIcon.vue';
 
 // 正典 B8 ebanner：danger-weak 底 + 左侧 3px danger 边；标题固定「扫描失败」+ code chip；
 // message 正文 + ghost danger-t 重试按钮。code 为应用层错误码（ERROR_CODE.md BLE_00x）。

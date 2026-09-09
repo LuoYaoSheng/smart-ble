@@ -7,6 +7,9 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../config/product.dart';
 import '../../themes/app_theme.dart';
+import '../design/app_navbar.dart';
+import '../design/app_chip.dart';
+import '../design/app_tokens.dart';
 import 'versions_page.dart';
 import '../../core/design/app_icons.dart';
 
@@ -80,62 +83,48 @@ class _AboutPageState extends State<AboutPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('关于'),
-        actions: [
-          if (_version.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(right: 16),
-              child: Center(
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: AppTheme.primaryColor.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(999),
-                  ),
-                  child: Text(
-                    _version,
-                    style: const TextStyle(
-                      fontSize: 11,
-                      fontFamily: 'monospace',
-                      fontWeight: FontWeight.w600,
-                      color: AppTheme.primaryColor,
+      // UI-G2：正典 AppNavbar（ABOUT + 版本 chip mono）
+      body: Column(
+        children: [
+          AppNavbar(
+            kicker: 'ABOUT',
+            title: '关于',
+            status: _version.isNotEmpty
+                ? AppChip(_version, tone: AppChipTone.mono)
+                : null,
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildBrandRow(),
+                  const SizedBox(height: 16),
+                  _buildSectionTitle('更多小程序'),
+                  _buildPromoCard(),
+                  const SizedBox(height: 16),
+                  _buildSectionTitle('应用信息'),
+                  _buildAppInfoCard(),
+                  const SizedBox(height: 16),
+                  _buildMenuCard(),
+                  const SizedBox(height: 24),
+                  Center(
+                    child: Text(
+                      '日志全局脱敏：敏感凭据显示为 token=***\n© 2026 ${ProductConfig.name} · Smart BLE 产品家族',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: AppTheme.textSecondary.withValues(alpha: 0.72),
+                        height: 1.6,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
-                ),
+                ],
               ),
             ),
+          ),
         ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildBrandRow(),
-            const SizedBox(height: 16),
-            _buildSectionTitle('更多小程序'),
-            _buildPromoCard(),
-            const SizedBox(height: 16),
-            _buildSectionTitle('应用信息'),
-            _buildAppInfoCard(),
-            const SizedBox(height: 16),
-            _buildMenuCard(),
-            const SizedBox(height: 24),
-            Center(
-              child: Text(
-                '日志全局脱敏：敏感凭据显示为 token=***\n© 2026 ${ProductConfig.name} · Smart BLE 产品家族',
-                style: TextStyle(
-                  fontSize: 11,
-                  color: AppTheme.textSecondary.withValues(alpha: 0.72),
-                  height: 1.6,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -151,7 +140,7 @@ class _AboutPageState extends State<AboutPage> {
       ),
       child: Row(
         children: [
-          // p009 正典品牌标：38px 渐变盒（#0E4FC4→#1B6DFF）+ bt 字形，不用位图
+          // p009 正典品牌标：38px 渐变盒（cPrimaryDeep→cPrimary）+ bt 字形，不用位图
           Container(
             width: 38,
             height: 38,
@@ -159,11 +148,11 @@ class _AboutPageState extends State<AboutPage> {
               gradient: const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [Color(0xFF0E4FC4), Color(0xFF1B6DFF)]),
+                  colors: [AppTokens.cPrimaryDeep, AppTokens.cPrimary]),
               borderRadius: BorderRadius.circular(11),
             ),
             alignment: Alignment.center,
-            child: const AppIcon('bt', size: 20, color: Colors.white),
+            child: const AppIcon('bt', size: 20, color: AppTokens.cCard),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -424,8 +413,7 @@ class _MenuRow extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                       color: AppTheme.textPrimary)),
             ),
-            const AppIcon('chev-r',
-                size: 18, color: AppTheme.textSecondary),
+            const AppIcon('chev-r', size: 18, color: AppTheme.textSecondary),
           ],
         ),
       ),

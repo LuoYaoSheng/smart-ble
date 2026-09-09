@@ -21,8 +21,16 @@ enum AppStatusIconState { ok, warn, fail, active, pending }
 
 class _AppStatusIconState extends State<AppStatusIcon>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _pulse =
-      AnimationController(vsync: this, duration: const Duration(seconds: 1))..repeat();
+  // 必须在 initState 创建：lazy late final 会在「从未 build 即 dispose」时
+  // 于失活元素树上取 TickerMode，抛 deactivated-ancestor 异常（UI-G2 真机化首用暴露）
+  late final AnimationController _pulse;
+
+  @override
+  void initState() {
+    super.initState();
+    _pulse = AnimationController(vsync: this, duration: const Duration(seconds: 1))
+      ..repeat();
+  }
 
   @override
   void dispose() {

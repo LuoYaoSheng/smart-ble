@@ -15,6 +15,7 @@ import '../widgets/ota_dialog.dart';
 import '../widgets/write_dialog.dart';
 import '../widgets/service_list.dart';
 import '../../core/design/app_icons.dart';
+import '../design/app_subnav.dart';
 
 /// 设备详情页
 class DeviceDetailPage extends ConsumerStatefulWidget {
@@ -50,18 +51,31 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
 
   void _addLog(String message, LogType type) {
     switch (type) {
-      case LogType.info:    logger.info(message);    break;
-      case LogType.success: logger.success(message); break;
-      case LogType.error:   logger.error(message);   break;
-      case LogType.receive: logger.receive(message); break;
-      case LogType.warning: logger.warning(message); break;
-      case LogType.send:    logger.send(message);    break;
+      case LogType.info:
+        logger.info(message);
+        break;
+      case LogType.success:
+        logger.success(message);
+        break;
+      case LogType.error:
+        logger.error(message);
+        break;
+      case LogType.receive:
+        logger.receive(message);
+        break;
+      case LogType.warning:
+        logger.warning(message);
+        break;
+      case LogType.send:
+        logger.send(message);
+        break;
     }
   }
 
   void _exportLogs() => _exportData();
 
-  bool get _hasOtaService => _services.any((s) => s.uuid.toLowerCase() == '4fafc201-1fb5-459e-8fcc-c5c9c331914d');
+  bool get _hasOtaService => _services.any(
+      (s) => s.uuid.toLowerCase() == '4fafc201-1fb5-459e-8fcc-c5c9c331914d');
 
   @override
   void initState() {
@@ -108,8 +122,7 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
 
   /// 监听连接状态变化
   void _listenConnectionState() {
-    _connectionStatesSub =
-        _bleManager.connectionStatesStream.listen((states) {
+    _connectionStatesSub = _bleManager.connectionStatesStream.listen((states) {
       if (!mounted) return;
 
       final state = states[widget.deviceId];
@@ -170,7 +183,8 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
     }
   }
 
-  Future<void> _readCharacteristic(BleService service, BleCharacteristic characteristic) async {
+  Future<void> _readCharacteristic(
+      BleService service, BleCharacteristic characteristic) async {
     try {
       logger.info('读取 ${characteristic.displayName}...');
 
@@ -191,24 +205,29 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
     }
   }
 
-  void _updateCharacteristicValue(String serviceUuid, String characteristicUuid, List<int> value) {
+  void _updateCharacteristicValue(
+      String serviceUuid, String characteristicUuid, List<int> value) {
     setState(() {
       final serviceIndex = _services.indexWhere((s) => s.uuid == serviceUuid);
       if (serviceIndex >= 0) {
-        final charIndex = _services[serviceIndex].characteristics
+        final charIndex = _services[serviceIndex]
+            .characteristics
             .indexWhere((c) => c.uuid == characteristicUuid);
         if (charIndex >= 0) {
           _services[serviceIndex] = _services[serviceIndex].copyWith(
             characteristics: List<BleCharacteristic>.from(
-              _services[serviceIndex].characteristics
-            )..[charIndex] = _services[serviceIndex].characteristics[charIndex].copyWith(value: value),
+                _services[serviceIndex].characteristics)
+              ..[charIndex] = _services[serviceIndex]
+                  .characteristics[charIndex]
+                  .copyWith(value: value),
           );
         }
       }
     });
   }
 
-  Future<void> _writeCharacteristic(BleService service, BleCharacteristic characteristic) async {
+  Future<void> _writeCharacteristic(
+      BleService service, BleCharacteristic characteristic) async {
     final controller = TextEditingController();
 
     if (!mounted) return;
@@ -238,7 +257,8 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
             serviceUuid: service.uuid,
             characteristicUuid: characteristic.uuid,
             data: bytes,
-            withoutResponse: !characteristic.properties.contains(BleCharacteristicProperty.write),
+            withoutResponse: !characteristic.properties
+                .contains(BleCharacteristicProperty.write),
           );
 
           logger.success('写入成功');
@@ -246,7 +266,8 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
 
         case SendMode.batch:
           // 批量发送: 每行一条指令
-          final lines = result.data.split('\n')
+          final lines = result.data
+              .split('\n')
               .map((l) => l.trim())
               .where((l) => l.isNotEmpty)
               .toList();
@@ -263,8 +284,11 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
               serviceUuid: service.uuid,
               characteristicUuid: characteristic.uuid,
               data: bytes,
-              withoutResponse: !characteristic.properties.contains(BleCharacteristicProperty.write),
-              displayHex: result.isHexMode ? entry.value : CommandQueue.formatHex(bytes),
+              withoutResponse: !characteristic.properties
+                  .contains(BleCharacteristicProperty.write),
+              displayHex: result.isHexMode
+                  ? entry.value
+                  : CommandQueue.formatHex(bytes),
             );
           }).toList();
 
@@ -278,18 +302,24 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
               ? DataConverter.hexToBytes(result.data)
               : DataConverter.stringToBytes(result.data);
 
-          final loopDesc = result.loopCount == 0 ? '无限' : '${result.loopCount}次';
+          final loopDesc =
+              result.loopCount == 0 ? '无限' : '${result.loopCount}次';
           logger.info('循环发送 ($loopDesc, 间隔${result.intervalMs}ms)...');
 
-          final template = [CommandItem(
-            id: 'loop_${DateTime.now().millisecondsSinceEpoch}',
-            deviceId: widget.deviceId,
-            serviceUuid: service.uuid,
-            characteristicUuid: characteristic.uuid,
-            data: bytes,
-            withoutResponse: !characteristic.properties.contains(BleCharacteristicProperty.write),
-            displayHex: result.isHexMode ? result.data : CommandQueue.formatHex(bytes),
-          )];
+          final template = [
+            CommandItem(
+              id: 'loop_${DateTime.now().millisecondsSinceEpoch}',
+              deviceId: widget.deviceId,
+              serviceUuid: service.uuid,
+              characteristicUuid: characteristic.uuid,
+              data: bytes,
+              withoutResponse: !characteristic.properties
+                  .contains(BleCharacteristicProperty.write),
+              displayHex: result.isHexMode
+                  ? result.data
+                  : CommandQueue.formatHex(bytes),
+            )
+          ];
 
           _commandQueue?.intervalMs = result.intervalMs;
           _commandQueue?.startLoop(template, loopCount: result.loopCount);
@@ -300,7 +330,8 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
     }
   }
 
-  Future<void> _toggleNotification(BleService service, BleCharacteristic characteristic) async {
+  Future<void> _toggleNotification(
+      BleService service, BleCharacteristic characteristic) async {
     try {
       final newState = !characteristic.isNotifying;
       final charKey = characteristic.uuid.toLowerCase();
@@ -312,10 +343,10 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
         _valueSubs[charKey]?.cancel();
         final valueSub = _bleManager
             .listenCharacteristicValue(
-              deviceId: widget.deviceId,
-              serviceUuid: service.uuid,
-              characteristicUuid: characteristic.uuid,
-            )
+          deviceId: widget.deviceId,
+          serviceUuid: service.uuid,
+          characteristicUuid: characteristic.uuid,
+        )
             ?.listen((value) {
           final hex = DataConverter.bytesToHex(value);
           final text = DataConverter.bytesToString(value);
@@ -338,14 +369,15 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
       // 更新本地状态
       final serviceIndex = _services.indexWhere((s) => s.uuid == service.uuid);
       if (serviceIndex >= 0) {
-        final charIndex = _services[serviceIndex].characteristics
+        final charIndex = _services[serviceIndex]
+            .characteristics
             .indexWhere((c) => c.uuid == characteristic.uuid);
         if (charIndex >= 0) {
           setState(() {
             _services[serviceIndex].characteristics[charIndex] =
                 _services[serviceIndex].characteristics[charIndex].copyWith(
-              isNotifying: newState,
-            );
+                      isNotifying: newState,
+                    );
           });
         }
       }
@@ -394,91 +426,112 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      // UI-G2：正典 AppSubnav（GATT 调试 + 固件更新右键 + 连接状态 chip）
+      appBar: AppSubnav(
+        title: 'GATT 调试',
+        action: Row(
           children: [
-            Text(widget.deviceName, style: const TextStyle(fontSize: 17)),
-            Text(
-              widget.deviceId,
-              style: const TextStyle(
-                fontSize: 12,
-                color: AppTheme.textSecondary,
-              ),
-            ),
-          ],
-        ),
-        elevation: 0,
-        actions: [
-          if (_hasOtaService && _isConnected)
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: IconButton(
+            if (_hasOtaService && _isConnected)
+              IconButton(
                 icon: const AppIcon('dl', color: AppTheme.primaryColor),
                 tooltip: 'OTA 固件升级',
                 onPressed: () {
                   showDialog(
                     context: context,
-                    builder: (ctx) => OtaUpgradeDialog(deviceId: widget.deviceId),
+                    builder: (ctx) =>
+                        OtaUpgradeDialog(deviceId: widget.deviceId),
                   );
                 },
               ),
-            ),
-          // 连接状态
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Center(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: _isReconnecting
-                      ? AppTheme.warningColor.withValues(alpha: 0.1)
-                      : _isConnected
-                          ? AppTheme.successColor.withValues(alpha: 0.1)
-                          : AppTheme.errorColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (_isReconnecting)
-                      const SizedBox(
-                        width: 10,
-                        height: 10,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 1.5,
-                          color: AppTheme.warningColor,
+            const SizedBox(width: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Center(
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: _isReconnecting
+                        ? AppTheme.warningColor.withValues(alpha: 0.1)
+                        : _isConnected
+                            ? AppTheme.successColor.withValues(alpha: 0.1)
+                            : AppTheme.errorColor.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (_isReconnecting)
+                        const SizedBox(
+                          width: 10,
+                          height: 10,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 1.5,
+                            color: AppTheme.warningColor,
+                          ),
+                        )
+                      else
+                        Container(
+                          width: 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            color: _isConnected
+                                ? AppTheme.successColor
+                                : AppTheme.errorColor,
+                            shape: BoxShape.circle,
+                          ),
                         ),
-                      )
-                    else
-                      Container(
-                        width: 8,
-                        height: 8,
-                        decoration: BoxDecoration(
-                          color: _isConnected ? AppTheme.successColor : AppTheme.errorColor,
-                          shape: BoxShape.circle,
+                      const SizedBox(width: 6),
+                      Text(
+                        _isReconnecting
+                            ? '重连中...'
+                            : (_isConnected ? '已连接' : '未连接'),
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: _isReconnecting
+                              ? AppTheme.warningColor
+                              : (_isConnected
+                                  ? AppTheme.successColor
+                                  : AppTheme.errorColor),
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
-                    const SizedBox(width: 6),
-                    Text(
-                      _isReconnecting ? '重连中...' : (_isConnected ? '已连接' : '未连接'),
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: _isReconnecting
-                            ? AppTheme.warningColor
-                            : (_isConnected ? AppTheme.successColor : AppTheme.errorColor),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       body: Column(
         children: [
+          // devhead：设备名 + deviceId（自 AppBar 标题下沉到正文，正典 .devhead 口径）
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(widget.deviceName,
+                          style: const TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w700,
+                              color: AppTheme.textPrimary)),
+                      const SizedBox(height: 2),
+                      Text(widget.deviceId,
+                          style: const TextStyle(
+                              fontSize: 12,
+                              color: AppTheme.textSecondary,
+                              fontFamily: 'monospace')),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
           // 操作按钮
           if (_isConnected || _isReconnecting)
             Padding(
@@ -522,7 +575,9 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
             ),
 
           // 指令队列状态栏
-          if ((_commandQueue?.isRunning ?? false) || (_commandQueue?.isLooping ?? false) || (_commandQueue?.pendingCount ?? 0) > 0)
+          if ((_commandQueue?.isRunning ?? false) ||
+              (_commandQueue?.isLooping ?? false) ||
+              (_commandQueue?.pendingCount ?? 0) > 0)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               color: AppTheme.primaryColor.withValues(alpha: 0.08),
@@ -539,7 +594,8 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
                       (_commandQueue?.isLooping ?? false)
                           ? '循环发送中 (${_commandQueue?.currentLoop}/${(_commandQueue?.targetLoopCount ?? 0) == 0 ? "∞" : _commandQueue?.targetLoopCount}) | 待发送: ${_commandQueue?.pendingCount ?? 0}'
                           : '发送中 | 待发送: ${_commandQueue?.pendingCount ?? 0}',
-                      style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                      style: const TextStyle(
+                          fontSize: 12, color: AppTheme.textSecondary),
                     ),
                   ),
                   if (_commandQueue?.isPaused ?? false)
@@ -559,8 +615,11 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
                       _commandQueue?.clear();
                       _addLog('指令队列已停止', LogType.info);
                     },
-                    icon: const AppIcon('stop', size: 16, color: AppTheme.errorColor),
-                    label: const Text('停止', style: TextStyle(fontSize: 12, color: AppTheme.errorColor)),
+                    icon: const AppIcon('stop',
+                        size: 16, color: AppTheme.errorColor),
+                    label: const Text('停止',
+                        style: TextStyle(
+                            fontSize: 12, color: AppTheme.errorColor)),
                   ),
                 ],
               ),
@@ -610,15 +669,18 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
     return ServiceListWidget(
       services: _services,
       onRead: (char) {
-        final service = _services.firstWhere((s) => s.characteristics.contains(char));
+        final service =
+            _services.firstWhere((s) => s.characteristics.contains(char));
         _readCharacteristic(service, char);
       },
       onWrite: (char) {
-        final service = _services.firstWhere((s) => s.characteristics.contains(char));
+        final service =
+            _services.firstWhere((s) => s.characteristics.contains(char));
         _writeCharacteristic(service, char);
       },
       onToggleNotify: (char) {
-        final service = _services.firstWhere((s) => s.characteristics.contains(char));
+        final service =
+            _services.firstWhere((s) => s.characteristics.contains(char));
         _toggleNotification(service, char);
       },
     );
