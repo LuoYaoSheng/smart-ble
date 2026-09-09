@@ -32,13 +32,13 @@
 | F015 | App 原生插件广播 | P1 | 广播 | P008 | N/A | REQ | REQ | E2 | E5 | Observer | NOT_RUN | NOT_RUN | F-AND PASS（p008 集成测试 30s 全过：FF 非法长度/空 UUID 拦截+广播中 15s+停止；观察侧 15 条 fff0 交叉）；A-AND PASS（F015 等价并入 9/9：启停 UI+logcat+观察侧净停）；U-AND PASS_WITH_LIMITATION（降级路径 9/9 实证；正路径=自定义基座需 HBuilderX 云打包登录=BLOCKED_TOOLCHAIN）|
 | F016 | 31 字节负载预算 | P1 | 广播 | P008 | REQ | REQ | REQ | E1/E2 | E5 | Observer(合法包) | NOT_RUN | NOT_RUN | F-AND PASS（46/31 红显+按钮禁用+25/31 恢复）；U-AND PASS（预算算术 7→11→23→34/超限红显+toast 拦截+冷重启恢复 7，9/9）；U-WX BLOCKED_TOOLCHAIN；A-AND NOT_APPLICABLE（广播页无负载编辑器）|
 | F017 | 观察侧证据匹配 | P2 | 广播 | 无独立页 | REQ | REQ | REQ | E1 | E5 | Observer(JSON) | NOT_RUN | NOT_RUN | A-AND PASS（fixture_observer_s3 串口 JSON：services=fff0+name=「耀生 的 S21」23 条 10s 窗口+停止后净停）；F-AND PASS（15 条 fff0 全名匹配，mfg=0100424c45=ID 0x0001+ASCII BLE 逐字节交叉）；U-AND BLOCKED_TOOLCHAIN（随 F015 正路径）|
-| F018 | Profile 设备识别 | P0 | Profile | P001/P007 | REQ | REQ | REQ | E1/E2 | E5 | Peripheral/SHID | NOT_RUN | NOT_RUN | NOT_RUN |
-| F019 | 配网向导 | P0 | Smart HID | P002 | REQ | REQ | REQ | E2 | E5 | 真实 Smart HID | NOT_RUN | NOT_RUN | NOT_RUN |
-| F020 | 配对码扫码 | P0 | Smart HID | P002 | REQ | REQ | REQ | E2 | E5 | 真实 ControlHub | NOT_RUN | NOT_RUN | NOT_RUN |
-| F021 | 分帧明文写入+状态跟踪 | P0 | Smart HID | P002 | REQ | REQ | REQ | E2 | E5 | 真实 Smart HID | NOT_RUN | NOT_RUN | NOT_RUN |
-| F022 | 配网错误恢复 | P0 | Smart HID | P002/P005 | REQ | REQ | REQ | E2 | E5 | 真实 Smart HID+Hub | NOT_RUN | NOT_RUN | NOT_RUN |
-| F023 | ~~设备历史~~（删除红线） | P0 | Smart HID | P004 应不存在 | 禁止 | 禁止 | 禁止 | E1/E2 | E5 | 不需要 | NOT_RUN | NOT_RUN | NOT_RUN |
-| F024 | 实时诊断（五项） | P1 | Smart HID | P005 | REQ | REQ | REQ | E2 | E5 | 真实 Smart HID+Hub | NOT_RUN | NOT_RUN | NOT_RUN |
+| F018 | Profile 设备识别 | P0 | Profile | P001/P007 | REQ | REQ | REQ | E1/E2 | E5 | Peripheral/SHID | NOT_RUN | NOT_RUN | F-AND PASS（HEAD 复跑 p002 三场景 `shidConfigureBtn` 命中+p001 负向断言）；U-AND PASS（run2/run3 双轮真机：`Smart HID · 强匹配` 徽章+`配置 Smart HID`/`连接` 双入口截图）；A-AND NOT_RUN（PARITY-001）；U-WX BLOCKED_TOOLCHAIN |
+| F019 | 配网向导 | P0 | Smart HID | P002 | REQ | REQ | REQ | E2 | E5 | 真实 Smart HID | NOT_RUN | NOT_RUN | F-AND PASS（HEAD 复跑 leave/cancel_wait/wifi_fail：connect→configure 相位 1 次连接即达+U-01 双态弹窗）；U-AND FAIL（WIN-UAND-003b 读特征 10007→连接失败态 5/5，向导不可达 configure）；A-AND NOT_RUN（PARITY-001）；U-WX BLOCKED_TOOLCHAIN |
+| F020 | 配对码扫码 | P0 | Smart HID | P002 | REQ | REQ | REQ | E2 | E5 | 真实 ControlHub | NOT_RUN | NOT_RUN | F-AND PASS（qrPaste 粘贴路径三场景全过：「已获取」回填）；T1 相机路径引用 E14；U-AND NOT_RUN（被 003b 阻在前置连接；相册路径 QR 已备未达）；A-AND NOT_RUN（PARITY-001）；U-WX BLOCKED_TOOLCHAIN |
+| F021 | 分帧明文写入+状态跟踪 | P0 | Smart HID | P002 | REQ | REQ | REQ | E2 | E5 | 真实 Smart HID | NOT_RUN | NOT_RUN | F-AND PASS（设备串口逐场景：`candidate: ssid=… token=**redacted**`→`received`→`connecting_wifi`，STATUS 轮询跟踪在案；E14 引用 T1 success 全链）；U-AND NOT_RUN（003b）；A-AND NOT_RUN（PARITY-001）；U-WX BLOCKED_TOOLCHAIN |
+| F022 | 配网错误恢复 | P0 | Smart HID | P002/P005 | REQ | REQ | REQ | E2 | E5 | 真实 Smart HID+Hub | NOT_RUN | NOT_RUN | F-AND PASS（HEAD 复跑：伪 SSID→`wifi_failed` 终态+「返回表单修改」+cancel→`timeout`+「重新下发」；pairing/mqtt 分流引用 E14 T3/T4 真机）；U-AND NOT_RUN（003b）；A-AND NOT_RUN（PARITY-001）；U-WX BLOCKED_TOOLCHAIN |
+| F023 | ~~设备历史~~（删除红线） | P0 | Smart HID | P004 应不存在 | 禁止 | 禁止 | 禁止 | E1/E2 | E5 | 不需要 | NOT_RUN | NOT_RUN | 三线 PASS（静态检查：U-AND 9 路由/F-AND 9 页面/A-AND 4 Tab 均无历史页/路由/持久化；known-devices.js 与 hid_session_store.dart 内存化+2026-09-02 移除决策注释在案） |
+| F024 | 实时诊断（五项） | P1 | Smart HID | P005 | REQ | REQ | REQ | E2 | E5 | 真实 Smart HID+Hub | NOT_RUN | NOT_RUN | F-AND PASS_WITH_LIMITATION（E14 T4 真机诊断面板重读 INFO/STATUS@3638f66 + HEAD 代码复核 `HidDiagnosticsPage(fromWizard)` 五行映射；独立页真机复跑需 mqtt_invalid=真凭据，本轮未达）；U-AND NOT_RUN（003b：诊断依赖读特征）；A-AND NOT_RUN（PARITY-001）；U-WX BLOCKED_TOOLCHAIN |
 | F025 | 固件升级 OTA | P1 | OTA | P006 子流程 | BLOCKED | BLOCKED | BLOCKED | E2 | 仅契约/UI | 不需要 | NOT_RUN | NOT_RUN | BLOCKED(P-03) |
 | F026 | 日志脱敏 | P0 | 横切 | 横切 | REQ | REQ | REQ | E1/E2 | E5 | 不需要 | NOT_RUN | NOT_RUN | NOT_RUN |
 | F027 | 版本元数据展示 | P2 | 系统 | P009/P010 | REQ | REQ | REQ | E2 | E5 | 不需要 | NOT_RUN | NOT_RUN | NOT_RUN |
@@ -70,13 +70,13 @@
 | F015 | P008 App 广播表单+开关（插件） | 10_platform·任务书§16 | android-native/aand-f014-f017-results.json（A-AND 9/9：非法 UUID 拦截/启停 UI+logcat/净停）+ flutter-android/f014-f017-broadcast-app.log（F-AND dart 全过）+ uniapp-android/uand-f014-f017-results.json（U-AND 9/9 降级路径） | WIN-UAND-002（已修复：APP-ANDROID/APP-IOS 条件编译 token 未定义→Android 块编译丢弃；改 runtime systemInfo 分支） | 见本域提交 |
 | F016 | P008 负载编辑器预算条 | F016·10_platform | 同上（F-AND 46/31→25/31；U-AND 7→11→23→34 拦截算术+toast+冷启动恢复；A-AND NOT_APPLICABLE 证据帧 aand-f016-notapplicable-page.png） | — | 见本域提交 |
 | F017 | 无页面（服务层+Observer 交叉核对） | F017·任务书§16 | android-native/aand-f014-f017-observer-serial.txt（A-AND fff0 34 条+净停）+ flutter-android/f014-f017-broadcast-observer-serial.txt/-observer-analysis.txt（F-AND 15 条 mfg=0100424c45 全名匹配） | — | 见本域提交 |
-| F018 | P001 扫描卡片 SHID 徽章+双入口 | PROFILE 注册表 | — | — | — |
-| F019 | P001「配置 Smart HID」→ P002 向导 | PROVISIONING_V1 | — | — | — |
-| F020 | P002 扫码面板（相机/粘贴） | PROVISIONING_V1·F020 | — | — | — |
-| F021 | P002「下发配置」（framed-v1 分帧） | PROVISIONING_V1 §写入 | — | — | — |
-| F022 | P002 错误终态四分流恢复 | ERROR_CODE·PAGE_SPEC | — | — | — |
-| F023 | 无入口（验证不存在：页面/路由/存储/文案） | 变更记录 2026-09-02 | — | — | — |
-| F024 | P003「诊断」/P005 直接进入 | PAGE_SPEC P005 | — | — | — |
+| F018 | P001 扫描卡片 SHID 徽章+双入口 | PROFILE 注册表 | f018-f024/flutter-android/f019-leave-v2 等（`shidConfigureBtn` 6 轮扫描等待命中） | （PARITY-001 无入口） | f018-f024/uniapp-android/f018-01-shid-card.png + uand-f018-f024-results.json（run2/run3 双 PASS） | 见本域提交 |
+| F019 | P001「配置 Smart HID」→ P002 向导 | PROVISIONING_V1 | f018-f024/flutter-android/f019-leave-v2-app.log（`configure 阶段已到达（第 1 次连接）`）+f022-cancel/wififail | （PARITY-001） | f018-f024/uniapp-android/f019-02-configure.png（连接失败态）+run2-uand-shid-device-serial.txt（连接→订阅 attr=3→拆链） | WIN-UAND-003a 已修复/003b 在册 | 见本域提交 |
+| F020 | P002 扫码面板（相机/粘贴） | PROVISIONING_V1·F020 | 同上（`表单已就绪（token 已回填…扫码面板已退场）`） | （PARITY-001） | 相册路径 QR 已备（f020-pairing-qr.png+推送 DCIM），被 003b 阻未达 | — | 见本域提交 |
+| F021 | P002「下发配置」（framed-v1 分帧） | PROVISIONING_V1 §写入 | f018-f024/flutter-android/*-device-serial.txt（`candidate: ssid=… token=**redacted**`→received→connecting_wifi 逐场景） | （PARITY-001） | （003b 阻塞） | — | 见本域提交 |
+| F022 | P002 错误终态四分流恢复 | ERROR_CODE·PAGE_SPEC | f022-wififail-v2-app.log（`outcome=wifi_failed`+返回表单修改）+f022-cancel-v1（timeout+重新下发）；T3/T4 引用 E14 run-id 20260904-win-b1/e14-macos-return | （PARITY-001） | （003b 阻塞） | — | 见本域提交 |
+| F023 | 无入口（验证不存在：页面/路由/存储/文案） | 变更记录 2026-09-02 | 三线静态检查全过（路由清单/存储 API 清零/CommandQueue.clearHistory=写队列概念非设备历史） | 同左 | 同左（业务源码零 setStorageSync；命中项=FORBIDDEN_TOKEN_SINKS 禁用清单） | — | 见本域提交 |
+| F024 | P003「诊断」/P005 直接进入 | PAGE_SPEC P005 | E14 T4 真机（mqtt_invalid→运行诊断→面板重读两特征）+HEAD 路由复核（provisioning_page `_openDiagnostics` fromWizard） | （PARITY-001） | f024-11-connected-detail.png（已连接可达）+f024-12-p003.png（P003 仅配网成功后填充 hidStore，未达运行诊断；诊断读路径被 003b 阻塞） | WIN-UAND-003b（连带） | 见本域提交 |
 | F025 | P006 内 OTA 入口（BLOCKED 展示） | P-03 决议 | — | — | — |
 | F026 | 全局日志管线 | F026·任务书§19 | — | — | — |
 | F027 | P009 关于/P010 版本记录 | Release Metadata | — | — | — |
@@ -100,7 +100,7 @@
 
 | 线 | 目标 | 层级 | BLE 后端（Windows） | 2026-09-07 状态 |
 |---|---|---|---|---|
-| A-AND | apps/android（Kotlin+Compose，`com.smartble`，纯 android.bluetooth 框架，780 行 BleManager 实装）真机 | Primary | Android 手机radio | **扫描+GATT+广播域已通**：F001-F005 等价 13/13（a-and-p001-e5 v5）；F006-F012 GATT 域 PASS×3+PASS_WITH_LIMITATION×4（a-and-f006-f012-e5 v16=39/46/v17=37/46，E5 真机+串口旁证；缺陷 WIN-AAND-001..008 在册，其中 006/007/008 为通知/UI 链路结构性缺陷待修）；广播域 F014-F017 已跑 9/9（a-and-f014-f017-e5：F015 等价启停+非法 UUID+观察侧 fff0 交叉+净停；F016 NOT_APPLICABLE 无负载编辑器） |
+| A-AND | apps/android（Kotlin+Compose，`com.smartble`，纯 android.bluetooth 框架，780 行 BleManager 实装）真机 | Primary | Android 手机radio | **扫描+GATT+广播域已通**：F001-F005 等价 13/13（a-and-p001-e5 v5）；F006-F012 GATT 域 PASS×3+PASS_WITH_LIMITATION×4（a-and-f006-f012-e5 v16=39/46/v17=37/46，E5 真机+串口旁证；缺陷 WIN-AAND-001..008 在册，其中 006/007/008 为通知/UI 链路结构性缺陷待修）；广播域 F014-F017 已跑 9/9（a-and-f014-f017-e5：F015 等价启停+非法 UUID+观察侧 fff0 交叉+净停；F016 NOT_APPLICABLE 无负载编辑器）；Smart HID 域 F018-F024=PARITY-001 裁决 NOT_RUN |
 | E-WIN | apps/desktop/electron Windows 桌面 | Secondary | `@abandonware/noble` WinRT 绑定（本机 node_modules 已编译 binding.node，曾实跑） | 已登记待启动：`npm start` + Playwright 驱动，F001-F012 等价（主机蓝牙） |
 | T-WIN | apps/desktop/tauri Windows 桌面 | Primary | btleplug 0.11（WinRT；源码完整：lib.rs 1063 行 + 完整前端的 Electron 镜像） | BLOCKED_TOOLCHAIN：本机无 Rust/cargo；解锁=安装 rustup 后 `cargo tauri dev` |
 | V-WIN | apps/desktop/avalonia 原型 | Experimental | WindowsBluetooth NuGet（真 WinRT 代码；读写通知 ViewModel 未接线） | 编译阻断（PARITY-006）；修复后仅 Build Smoke，不入功能对齐 |
@@ -149,6 +149,8 @@ A-AND 启动（构建→E5 安装→F001-F005 等价真机）→ F013 双手机�
 - 本机系统 JDK 24（Gradle 8.2/AGP 8.2 不支持）→ 备便携 JDK 21 `C:\Users\11066\tools\jdk-21`（用户目录，不入库）；apps/android 既往构建产物存在证明曾在他 JDK 下构建成功
 - cargo/rustup 未安装 → T-WIN BLOCKED_TOOLCHAIN
 - 双手机在位：R5CR1284Y7H=三星 SM-G9910/Android 15（E5）；FEC0220629005177=华为 TAS-AN00/Android 12。**F013 双手机夹具配方已固化**（f013-dualphone/f013-summary.md）：华为跑 A-AND 广播（EMUI uiautomator 变体 xpos/几何推算、按钮 (540,1683)）；Mate 30 5G 默认 GATT=5 服务与 ESP32 撞数，身份用详情页页头名判别；EMUI 空闲 GATT 回收 ~90s + RPA 轮转双条目（WIN-UAND-001）→ 不适合长会话，适合单轮验证
-- ESP32 夹具现处 `fixture_observer_s3`（2026-09-09 F014-F017 广播域刷入；F018-F024 Smart HID 域前需刷回
-  `fixture_peripheral_s3`/SHID 夹具；任何 GATT 写测试前先 esptool chip_id hard_reset 清粘性 fault）
+- ESP32 夹具现处**真 Smart HID 固件 v1.1.0**（smart-hid-workspace 78bc4ef 构建；2026-09-09 F018-F024 域
+  erase_flash+全量烧录，`unprovisioned`+SHID-00000001 广播中）。F025-F030 前若需 LightBLE 夹具
+  重刷 `fixture_peripheral_s3`；开串口（serial-tap）会经 DTR/RTS 脉冲复位设备——夹具状态以串口
+  首启横幅为准
 - Electron `node_modules` 已含编译好的 noble WinRT binding（曾实跑）；Avalonia 无 .sln、csproj 断引用

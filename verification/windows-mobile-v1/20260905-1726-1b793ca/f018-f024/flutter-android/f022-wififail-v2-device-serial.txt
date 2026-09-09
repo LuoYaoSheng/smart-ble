@@ -1,0 +1,220 @@
+[serial-tap] start 10:11:53 port=COM12
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x8 (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce2810,len:0x15a0
+load:0x403c8700,len:0x4
+load:0x403c8704,len:0xd20
+load:0x403cb700,len:0x2ee4
+entry 0x403c8928
+I (27) boot: ESP-IDF v5.4-dirty 2nd stage bootloader
+I (27) boot: compile time Sep  5 2026 15:57:52
+I (27) boot: Multicore bootloader
+I (27) boot: chip revision: v0.2
+I (30) boot: efuse block revision: v1.3
+I (34) boot.esp32s3: Boot SPI Speed : 80MHz
+I (38) boot.esp32s3: SPI Mode       : DIO
+I (41) boot.esp32s3: SPI Flash Size : 8MB
+I (45) boot: Enabling RNG early entropy source...
+I (50) boot: Partition Table:
+I (52) boot: ## Label            Usage          Type ST Offset   Length
+I (59) boot:  0 nvs              WiFi data        01 02 00009000 00008000
+I (65) boot:  1 otadata          OTA data         01 00 00011000 00002000
+I (72) boot:  2 phy_init         RF data          01 01 00013000 00001000
+I (78) boot:  3 factory          factory app      00 00 00020000 00180000
+I (85) boot:  4 ota_0            OTA app          00 10 001a0000 00180000
+I (91) boot:  5 ota_1            OTA app          00 11 00320000 00180000
+I (98) boot: End of partition table
+I (101) boot: Defaulting to factory image
+I (105) esp_image: segment 0: paddr=00020020 vaddr=3c0d0020 size=27574h (161140) map
+I (141) esp_image: segment 1: paddr=0004759c vaddr=3fc9e200 size=05a10h ( 23056) load
+I (146) esp_image: segment 2: paddr=0004cfb4 vaddr=40374000 size=03064h ( 12388) load
+I (149) esp_image: segment 3: paddr=00050020 vaddr=42000020 size=c3bf4h (801780) map
+I (293) esp_image: segment 4: paddr=00113c1c vaddr=40377064 size=170e8h ( 94440) load
+I (314) esp_image: segment 5: paddr=0012ad0c vaddr=600fe100 size=0001ch (    28) load
+I (324) boot: Loaded app from partition at offset 0x20000
+I (325) boot: Disabling RNG early entropy source...
+I (335) octal_psram: vendor id    : 0x0d (AP)
+I (335) octal_psram: dev id       : 0x02 (generation 3)
+I (335) octal_psram: density      : 0x03 (64 Mbit)
+I (337) octal_psram: good-die     : 0x01 (Pass)
+I (341) octal_psram: Latency      : 0x01 (Fixed)
+I (346) octal_psram: VCC          : 0x01 (3V)
+I (350) octal_psram: SRF          : 0x01 (Fast Refresh)
+I (355) octal_psram: BurstType    : 0x01 (Hybrid Wrap)
+I (360) octal_psram: BurstLen     : 0x01 (32 Byte)
+I (364) octal_psram: Readlatency  : 0x02 (10 cycles@Fixed)
+I (369) octal_psram: DriveStrength: 0x00 (1/1)
+I (374) MSPI Timing: PSRAM timing tuning index: 5
+I (378) esp_psram: Found 8MB PSRAM device
+I (382) esp_psram: Speed: 80MHz
+I (385) cpu_start: Multicore app
+I (810) esp_psram: SPI SRAM memory test OK
+I (819) cpu_start: Pro cpu start user code
+I (819) cpu_start: cpu freq: 160000000 Hz
+I (819) app_init: Application information:
+I (819) app_init: Project name:     smart-hid-firmware
+I (824) app_init: App version:      1.1.0
+I (828) app_init: Compile time:     Sep  5 2026 15:57:22
+I (833) app_init: ELF file SHA256:  6a9594861...
+I (837) app_init: ESP-IDF:          v5.4-dirty
+I (841) efuse_init: Min chip rev:     v0.0
+I (845) efuse_init: Max chip rev:     v0.99 
+I (849) efuse_init: Chip rev:         v0.2
+I (853) heap_init: Initializing. RAM available for dynamic allocation:
+I (859) heap_init: At 3FCB0320 len 000393F0 (228 KiB): RAM
+I (864) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM
+I (870) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM
+I (875) heap_init: At 600FE11C len 00001ECC (7 KiB): RTCRAM
+I (880) esp_psram: Adding pool of 8192K of PSRAM memory to heap allocator
+I (887) spi_flash: detected chip: generic
+I (890) spi_flash: flash io: dio
+W (893) spi_flash: Detected size(16384k) larger than the size in the binary image header(8192k). Using the size in the binary image header.
+I (906) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+I (912) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+I (918) coexist: coex firmware version: 49a8cdc
+I (930) coexist: coexist rom version e7ae62f
+I (931) main_task: Started on CPU0
+I (932) esp_psram: Reserving pool of 32K of internal memory for DMA/internal allocations
+I (938) main_task: Calling app_main()
+I (941) main: === Smart HID Firmware boot ===
+I (968) device_identity: device_id loaded from NVS: HID-00000001
+I (969) device_identity: boot_id generated: B-21E95C
+I (969) main: device_id=HID-00000001 boot_id=B-21E95C firmware=1.1.0
+I (975) led_manager: led state -> WIFI_CONNECTING
+I (979) led_manager: led_manager started (type=ws2812 gpio=48 brightness=32)
+I (986) tusb_desc: 
+┌─────────────────────────────────┐
+│  USB Device Descriptor Summary  │
+├───────────────────┬─────────────┤
+│bDeviceClass       │ 0           │
+├───────────────────┼─────────────┤
+│bDeviceSubClass    │ 0           │
+├───────────────────┼─────────────┤
+│bDeviceProtocol    │ 0           │
+├───────────────────┼─────────────┤
+│bMaxPacketSize0    │ 64          │
+├───────────────────┼─────────────┤
+│idVendor           │ 0x303a      │
+├───────────────────┼─────────────┤
+│idProduct          │ 0x4001      │
+├───────────────────┼─────────────┤
+│bcdDevice          │ 0x100       │
+├───────────────────┼─────────────┤
+│iManufacturer      │ 0x1         │
+├───────────────────┼─────────────┤
+│iProduct           │ 0x2         │
+├───────────────────┼─────────────┤
+│iSerialNumber      │ 0x3         │
+├───────────────────┼─────────────┤
+│bNumConfigurations │ 0x1         │
+└───────────────────┴─────────────┘
+I (1153) TinyUSB: TinyUSB Driver installed on port 0
+I (1157) hid_engine: tinyusb_driver_install ok (composite HID: keyboard+mouse)
+I (1164) hid_engine: hid_engine initialized
+I (1168) command_engine: command_engine started: queue=32 dedup=256
+I (1174) runtime_config: runtime config ready (ns=rt_active/rt_pending schema=1)
+I (1182) pp: pp rom version: e7ae62f
+I (1185) net80211: net80211 rom version: e7ae62f
+I (1190) wifi:wifi driver task: 3fcda358, prio:23, stack:6656, core=0
+I (1204) wifi:wifi firmware version: 48ea317a7
+I (1205) wifi:wifi certification version: v7.0
+I (1205) wifi:config NVS flash: enabled
+I (1207) wifi:config nano formatting: disabled
+I (1211) wifi:Init data frame dynamic rx buffer num: 32
+I (1216) wifi:Init static rx mgmt buffer num: 5
+I (1220) wifi:Init management short buffer num: 32
+I (1225) wifi:Init dynamic tx buffer num: 32
+I (1229) wifi:Init static tx FG buffer num: 2
+I (1233) wifi:Init static rx buffer size: 1600
+I (1237) wifi:Init static rx buffer num: 10
+I (1241) wifi:Init dynamic rx buffer num: 32
+I (1246) wifi_init: rx ba win: 6
+I (1248) wifi_init: accept mbox: 6
+I (1251) wifi_init: tcpip mbox: 32
+I (1254) wifi_init: udp mbox: 6
+I (1257) wifi_init: tcp mbox: 6
+I (1260) wifi_init: tcp tx win: 5760
+I (1263) wifi_init: tcp rx win: 5760
+I (1266) wifi_init: tcp mss: 1440
+I (1269) wifi_init: WiFi IRAM OP enabled
+I (1273) wifi_init: WiFi RX IRAM OP enabled
+I (1278) phy_init: phy_version 680,a6008b2,Jun  4 2024,16:41:10
+I (1319) wifi:mode : sta (10:b4:1d:cd:23:8c)
+I (1319) wifi:enable tsf
+I (1321) wifi:Set ps type: 0, coexist: 0
+
+I (1322) wifi_manager: wifi STA started (runtime config mode)
+I (1324) main: [prov] state=unprovisioned step=- err=none
+I (1329) main: boot: no config → provisioning mode
+I (1333) BLE_INIT: BT controller compile version [d752dea]
+I (1339) BLE_INIT: Bluetooth MAC: 10:b4:1d:cd:23:8e
+I (1344) status_manager: status_manager started
+I (1345) wifi:Coexist!!! Wi-Fi station would only keep waked when available
+I (1350) ble_provision: ble provision service initialized (SHID-00000001)
+
+I (1357) NimBLE: GAP procedure initiated: stop advertising.
+
+I (1368) NimBLE: GAP procedure initiated: advertise; 
+I (1371) NimBLE: disc_mode=2
+I (1374) NimBLE:  adv_channel_map=0 own_addr_type=0 adv_filter_policy=0 adv_itvl_min=0 adv_itvl_max=0
+I (1383) NimBLE: 
+
+I (1385) ble_provision: provisioning advertising as SHID-00000001
+I (1357) main: === Smart HID Firmware boot complete (state machine running) ===
+I (1397) main_task: Returned from app_main()
+I (11344) status_manager: status published online=1 usb_hid_ready=0
+I (21344) status_manager: status published online=1 usb_hid_ready=0
+I (31344) status_manager: status published online=1 usb_hid_ready=0
+I (41344) status_manager: status published online=1 usb_hid_ready=0
+I (51344) status_manager: status published online=1 usb_hid_ready=0
+I (61344) status_manager: status published online=1 usb_hid_ready=0
+I (65371) ble_provision: BLE connected handle=1
+I (66102) ble_provision: MTU update: 256
+I (66519) ble_provision: subscribe: attr=3 notify=1
+I (66616) ble_provision: subscribe: attr=8 notify=1
+I (71344) status_manager: status published online=1 usb_hid_ready=0
+I (78414) ble_provision: candidate: ssid=f018-wififail-net hub=192.168.21.77:17892 token=**redacted**
+I (78415) main: [prov] state=provisioning step=received err=none
+I (78419) NimBLE: GATT procedure initiated: notify; 
+I (78423) NimBLE: att_handle=8
+
+I (78426) NimBLE: GATT procedure initiated: notify; 
+I (78431) NimBLE: att_handle=3
+
+I (78442) runtime_config: staged pending: schema=1 gen=0 ssid=f018-wififail-net hub=192.168.21.77:17892 mqtt=-:0 user=- complete=0
+I (78445) main: [prov] state=connecting_wifi step=connecting_wifi err=none
+I (78452) NimBLE: GATT procedure initiated: notify; 
+I (78456) NimBLE: att_handle=8
+
+I (78460) NimBLE: GATT procedure initiated: notify; 
+I (78464) NimBLE: att_handle=3
+
+W (78468) wifi:Password length matches WPA2 standards, authmode threshold changes from OPEN to WPA2
+W (78502) wifi_manager: connecting to ssid=f018-wififail-net ...
+I (81344) status_manager: status published online=1 usb_hid_ready=0
+I (83318) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (83319) wifi_manager: disconnected → release_all + retry
+I (83320) hid_engine: release_all done
+I (88138) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (88139) wifi_manager: disconnected → release_all + retry
+I (88139) hid_engine: release_all done
+I (91344) status_manager: status published online=1 usb_hid_ready=0
+I (92957) wifi:Coexist: Wi-Fi connect fail, apply reconnect coex policy
+
+W (92959) wifi_manager: disconnected → release_all + retry
+I (92959) hid_engine: release_all done
+W (93504) wifi_manager: wifi connect timeout (15000 ms)
+I (93516) main: [prov] state=provisioning step=wifi_failed err=wifi_failed
+I (93517) NimBLE: GATT procedure initiated: notify; 
+I (93517) NimBLE: att_handle=8
+
+I (93520) NimBLE: GATT procedure initiated: notify; 
+I (93524) NimBLE: att_handle=3
+
+I (93771) ble_provision: subscribe: attr=3 notify=0
+I (93868) ble_provision: subscribe: attr=8 notify=0

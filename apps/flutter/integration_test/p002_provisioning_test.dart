@@ -84,7 +84,9 @@ Future<void> _startScanAndWaitDevice(WidgetTester tester) async {
   var found = false;
   for (var round = 0; round < 6 && !found; round++) {
     if (tester.any(find.text('开始扫描'))) {
-      await tester.tap(find.text('开始扫描'));
+      // HEAD 扫描页有操作条与空态两处「开始扫描」（P001 改版），
+      // text finder 命中 2 个，取第一个可点实例。
+      await tester.tap(find.text('开始扫描').first);
     }
     found = await _pumpUntil(tester, _k('shidConfigureBtn'),
         timeout: const Duration(seconds: 12));

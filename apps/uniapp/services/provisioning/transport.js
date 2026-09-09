@@ -51,9 +51,25 @@ export async function connect(deviceId, options = {}) {
 
   session.serviceId = service.uuid;
   session.chars = chars;
-  try {
-    for (const uuid of notifyUuids) {
+  // WIN-UAND-003：Android 标准基座上相邻两次 notifyBLECharacteristicValueChange
+  // 背靠背调用会竞态失败（errCode 10003 且无 errMsg→无 message，真机 5/5 复现）。
+  // 订阅间留出间隔，失败再退避重试一次。
+  const enableNotify = async (uuid) => {
+    try {
       await setNotifyEnabled(session, session.serviceId, charFor(session, uuid), true);
+    } catch (first) {
+      await sleep(500);
+      try {
+        await setNotifyEnabled(session, session.serviceId, charFor(session, uuid), true);
+      } catch (second) {
+        throw second;
+      }
+    }
+  };
+  try {
+    for (const [index, uuid] of notifyUuids.entries()) {
+      if (index > 0) await sleep(300);
+      await enableNotify(uuid);
     }
   } catch (error) {
     await session.close().catch(() => {});
