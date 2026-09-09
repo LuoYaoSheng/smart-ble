@@ -8,7 +8,7 @@
 //           （桥对 .ts 做类型剥离，需 Node >= 22.18 / >= 23.6；verify-target 同款口径）
 //   dart    spawn `dart run tool/smart_hid_parity.dart`（apps/flutter，纯 Dart）
 //   kotlin  检测 core/profile/SmartHidProtocol.kt —— W3 落地前如实登记 NOT_IMPLEMENTED
-//   swift   Mac 阶段 M1（core/apple/SmartHidCore）接入，登记 DEFERRED_TO_MAC
+//   swift   spawn `swift test` 执行 core/apple/SmartHidCore 的 XCTest 向量消费者
 //
 // 退出码：所有「已执行」平台零失败 → 0；任一平台断言失败 → 1。
 // NOT_IMPLEMENTED / DEFERRED / BLOCKED(toolchain) 是在册状态，不判失败。
@@ -209,13 +209,43 @@ function runKotlinLane() {
 }
 
 // ---------------------------------------------------------------------------
-// Swift 线：Mac 阶段 M1（core/apple/SmartHidCore）接入
+// Swift 线：Mac 执行共享 SmartHidCore XCTest；Windows 无 Swift 时如实 BLOCKED
 // ---------------------------------------------------------------------------
 function runSwiftLane() {
+  const swiftProbe = spawnSync('swift', ['--version'], { encoding: 'utf8', shell: process.platform === 'win32' });
+  if (swiftProbe.error || swiftProbe.status !== 0) {
+    return { status: 'BLOCKED', detail: 'swift 工具链不可用（Windows 阶段允许，Mac Gate 必须执行）', pass: 0, failures: [] };
+  }
+  const packagePath = join(ROOT, 'core/apple/SmartHidCore');
+  if (!existsSync(join(packagePath, 'Package.swift'))) {
+    return {
+      status: 'NOT_IMPLEMENTED',
+      detail: 'core/apple/SmartHidCore 尚未实现',
+      pass: 0,
+      failures: [],
+    };
+  }
+  const result = spawnSync('swift', ['test', '--package-path', packagePath], {
+    cwd: ROOT,
+    encoding: 'utf8',
+    maxBuffer: 16 * 1024 * 1024,
+    shell: process.platform === 'win32',
+  });
+  const output = `${result.stdout || ''}${result.stderr || ''}`;
+  if (result.error || result.status !== 0) {
+    return {
+      status: 'FAIL',
+      detail: 'SmartHidCore XCTest failed',
+      pass: 0,
+      failures: [{ suite: 'swift', case: 'SmartHidCoreTests', detail: output.slice(-1000) }],
+    };
+  }
+  const matches = [...output.matchAll(/Executed (\d+) tests?, with 0 failures/g)];
+  const pass = matches.length ? Number(matches.at(-1)[1]) : 1;
   return {
-    status: 'DEFERRED_TO_MAC',
-    detail: '计划 M1：core/apple/SmartHidCore 接入同一向量文件（Windows 阶段不执行）',
-    pass: 0,
+    status: 'PASS',
+    detail: 'SmartHidCore XCTest consumes canonical vectors',
+    pass,
     failures: [],
   };
 }
@@ -244,7 +274,9 @@ for (const name of platformsWanted) {
     ? `（constants 20, qr ${suiteCaseCount('qr')}, candidate ${suiteCaseCount('candidate')}, framingMtu ${suiteCaseCount('framingMtu')}, frames ${suiteCaseCount('frames')}, deviceInfo ${suiteCaseCount('deviceInfo')}, status ${suiteCaseCount('status')}, errorRecovery ${suiteCaseCount('errorRecovery')}）`
     : name === 'dart'
       ? `（constants 17, qr ${suiteCaseCount('qr')}, candidate ${suiteCaseCount('candidate')}, framingMtu ${suiteCaseCount('framingMtu')}, frames ${suiteCaseCount('frames')}, deviceInfo ${suiteCaseCount('deviceInfo')}, status ${suiteCaseCount('status')}）`
-      : '';
+      : name === 'swift'
+        ? `（SmartHidCore XCTest consumes all suites declared for swift）`
+        : '';
   if (result.status === 'PASS') {
     line(`  ${name.padEnd(8)} PASS  ${result.pass}/${result.pass}  ${suiteNote}`);
   } else {
