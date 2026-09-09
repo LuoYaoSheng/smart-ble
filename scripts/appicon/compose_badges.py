@@ -257,6 +257,13 @@ UNIAPP_SPLASH_SIZES = {  # manifest distribute.splashscreen.android 引用的四
     "xxhdpi": (1080, 1818), "xxxhdpi": (1440, 2424),
 }
 
+ANDROID_RES = APPS / "android/app/src/main/res"
+# 安卓原生（kotlin）：density -> (lockup px, A12 磁贴 px)，尺寸与 flutter_native_splash 生成规格一致
+ANDROID_SPLASH_DENSITIES = {
+    "mdpi": (313, 288), "hdpi": (470, 432), "xhdpi": (627, 576),
+    "xxhdpi": (940, 864), "xxxhdpi": (1254, 1152),
+}
+
 
 def make_lockup(variant_img: Image.Image, canvas: int = 1254, tile: int = 640) -> Image.Image:
     """透明底竖排组合：圆角磁贴 + 字标（flutter_native_splash image 用）。"""
@@ -301,6 +308,14 @@ def cmd_splash(args):
         save_png(make_portrait(base, w, h), splash_dir / f"{name}.png")
     print("[splash] flutter: splash_logo.png(1254 lockup) + splash_icon_a12.png(1152) 已更新（统一 base）")
     print("[splash] uniapp: static/splash/ 四密度竖屏已更新（统一 base；重打包需 HBuilderX）")
+    # 安卓原生：A12 前用 lockup（windowBackground），A12+ 用磁贴（系统圆裁）
+    lockup, a12 = make_lockup(base), make_a12_icon(base)
+    for d, (s_lockup, s_a12) in ANDROID_SPLASH_DENSITIES.items():
+        dd = ANDROID_RES / f"drawable-{d}"
+        dd.mkdir(exist_ok=True)
+        save_png(resize_to(lockup, s_lockup), dd / "splash.png")
+        save_png(resize_to(a12, s_a12), dd / "android12splash.png")
+    print("[splash] android: drawable-{mdpi..xxxhdpi}/splash.png + android12splash.png 已更新（统一 base）")
 
 
 def main():
