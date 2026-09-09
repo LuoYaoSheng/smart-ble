@@ -316,7 +316,7 @@ enum PageSmoke {
             }
         }
 
-        // UIS-10 P009 内容（品牌/菜单/OS 行/生态矩阵）→ 版本记录进 P010
+        // UIS-10 P009 内容（HTML 正典：品牌/推广/应用信息/四菜单）→ 版本记录进 P010
         do {
             button(titled: "关于", in: views())?.performClick(nil)
             await settle(400)
@@ -326,24 +326,25 @@ enum PageSmoke {
             let menus = menuIds.map { button(actionId: $0, in: v) != nil }
             let menuTitles = ["官方网站", "问题反馈", "版本记录", "分享应用"]
                 .allSatisfy { anyLabel(contains: $0, in: v) }
-            let osRow = button(actionId: "dtk-ossheet", in: v) != nil
-                && anyLabel(contains: "macOS · CoreBluetooth", in: v)
-            let matrix = anyLabel(contains: "生态能力矩阵", in: v) && anyLabel(contains: "广播发送", in: v)
-                && anyLabel(contains: "待验证", in: v)
+            let appInfo = anyLabel(contains: "应用信息", in: v)
+                && anyLabel(contains: "当前环境", in: v)
+                && anyLabel(contains: "Smart HID 配网", in: v)
+                && anyLabel(contains: "NOT_RELEASED", in: v)
             button(actionId: "p009-versions", in: v)?.performClick(nil)
             await settle(400)
             let inP010 = anyLabel(contains: "当前版本", in: views())
-            check("UIS-10", brand && menus.allSatisfy { $0 } && menuTitles && osRow && matrix && inP010,
-                  "brand=\(brand) menus=\(menus.map { $0 ? 1 : 0 }) titles=\(menuTitles) osRow=\(osRow) matrix=\(matrix) p010=\(inP010)")
+            check("UIS-10", brand && menus.allSatisfy { $0 } && menuTitles && appInfo && inP010,
+                  "brand=\(brand) menus=\(menus.map { $0 ? 1 : 0 }) titles=\(menuTitles) appInfo=\(appInfo) p010=\(inP010)")
         }
 
         // UIS-11 P010 内容（限制清单/发布空态/预览记录/页脚声明）
         do {
             let v = views()
-            let limits = anyLabel(contains: "BLOCKED_FIXTURE", in: v) && anyLabel(contains: "BLOCKED_OBSERVER", in: v)
+            let limits = anyLabel(contains: "OTA 端到端链路 BLOCKED", in: v)
+                && anyLabel(contains: "H5 平台不支持 BLE 外围模式", in: v)
             let emptyRel = anyLabel(contains: "暂无正式发布版本", in: v)
             let foot = anyLabel(contains: "本页数据来自 Release Metadata 投影", in: v)
-            let previews = anyLabel(contains: "v0.1.0-spike r3", in: v)
+            let previews = anyLabel(contains: "v1.0.5-preview", in: v)
             button(actionId: "back", in: v)?.performClick(nil)
             await settle(300)
             check("UIS-11", limits && emptyRel && foot && previews,

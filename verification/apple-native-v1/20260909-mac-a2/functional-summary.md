@@ -6,7 +6,7 @@ host: macOS
 branch: feature/apple-native-core
 baseline: 1ec8d05e2f5598d2d45e5cd3950e79208d2a79b3
 status: PASS_WITH_BLOCKED_E5
-visual_status: FAIL
+visual_status: PARTIAL_DEFAULT_STATE_PASS
 ```
 
 ## Scope
@@ -69,4 +69,4 @@ Unlock condition: sign in to the intended Apple Developer account in Xcode and c
 
 ## UI status
 
-The 2026-09-09 screenshot audit found visible product drift, so Apple visual status is **FAIL**, not merely NOT_AUDITED. iOS still uses the legacy SwiftUI shell and a non-canonical About hierarchy; macOS P009/P010 diverge in content density and P010 contains a severe compressed-version layout defect. See `verification/apple-native-v1/20260909-ui-audit/audit.md`. The Apple UI Gate must rebuild the shared shell/components and compare identical HTML/native states before marking visual PASS.
+The initial 2026-09-09 screenshot audit found visible product drift. The correction pass replaced the iOS legacy shell, aligned all nine iOS default states, rebuilt macOS P009/P010, fixed the compressed-version layout defect, and preserved macOS PageSmoke 17/17. Default-state evidence is under `verification/apple-native-v1/20260909-ui-audit/{ios,macos}-after-pass2/`. Overall status remains **PARTIAL** until error/expanded/filter/rotation/accessibility states are captured and compared.

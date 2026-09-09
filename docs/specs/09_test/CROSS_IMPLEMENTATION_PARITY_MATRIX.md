@@ -161,5 +161,5 @@
 - N-MAC 已迁移到共享 Core，保持 CoreUnit 62/62、PageSmoke 17/17。
 - N-IOS 已补齐 P002/P003/P005/P010、Profile STRONG/WEAK 双入口、INFO/INPUT/STATUS、framed-v1、60 秒状态跟踪、五项诊断和 Release Metadata 投影。
 - iOS SwiftPM 测试 12/12、iOS Simulator Xcode XCTest 12/12；物理 iPhone 可见，但本机 Xcode 无登录账号/描述文件，当前 E5=`BLOCKED_SIGNING`。
-- UI 结构和文案应以 `prototype/platform/{app,desktop}/high-fi` 为源；2026-09-09 当前截图审计已确认 N-IOS/N-MAC 视觉 **FAIL**，不是未审计。主要断点为 iOS 旧系统壳/P009 内容树、macOS P009/P010 内容密度与 P010 约束崩坏；见 `verification/apple-native-v1/20260909-ui-audit/audit.md`。
+- UI 结构和文案以 `prototype/platform/{app,desktop}/high-fi` 为源。2026-09-09 初审确认 N-IOS/N-MAC 视觉 FAIL；同日修正轮已替换 iOS 系统壳并产出九页默认态截图，重建 macOS P009/P010 并修复 P010 约束崩坏。当前为 **PARTIAL_DEFAULT_STATE_PASS**，错误/展开/筛选/旋转/无障碍态未完成前不得写整体验收 PASS；见 `verification/apple-native-v1/20260909-ui-audit/audit.md`。
 - 证据：`verification/apple-native-v1/20260909-mac-a2/functional-summary.md`。

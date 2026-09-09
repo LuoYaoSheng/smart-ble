@@ -60,9 +60,11 @@ final class TextLinkButton: NSButton {
 func navbar(kicker: String, title: String, trailing: [NSView] = []) -> NSView {
     let kickerLabel = makeLabel(kicker, size: 10, weight: .heavy, color: DS.primary)
     let titleLabel = makeLabel(title, size: 20, weight: .heavy)
-    var trailingViews = trailing
-    let row = hstack([titleLabel, NSView()] + trailingViews, spacing: 8)
-    row.distribution = .gravityAreas
+    titleLabel.setContentHuggingPriority(.required, for: .horizontal)
+    titleLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+    let spacer = NSView()
+    spacer.setContentHuggingPriority(.defaultLow, for: .horizontal)
+    let row = hstack([titleLabel, spacer] + trailing, spacing: 8)
     row.translatesAutoresizingMaskIntoConstraints = false
     let column = vstack([kickerLabel, row], spacing: 2)
     let box = NSView()

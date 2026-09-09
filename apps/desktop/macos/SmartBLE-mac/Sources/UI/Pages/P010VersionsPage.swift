@@ -1,7 +1,6 @@
 //
-// P010VersionsPage.swift — PAGE010 版本记录（F027 构建元数据投影 · 探针口径）
-// 当前限制 = r3 实测限制清单（BLOCKED_FIXTURE / BLOCKED_OBSERVER / 单连接 / P-03 / NOT_RUN 项）；
-// 预览记录 = spike 轮次；正式发布历史 = 空态。页脚固定声明。
+// P010VersionsPage.swift — PAGE010 版本记录（F027 · Desktop HTML 对齐）
+// 卡片顺序、尺寸与状态词遵循 prototype/platform/desktop/high-fi/pages/p010-versions.js。
 //
 
 import AppKit
@@ -11,22 +10,15 @@ final class P010VersionsPage: NSViewController, PageProtocol {
     weak var host: PageHost?
     private var scroll: PageScroll!
 
-    /// 当前限制（r6 开发轮实测口径）
-    private let limitations: [(String, String)] = [
-        ("warn", "GATT 正向链：环境外设已实证（连接/ATT 协商/服务与特征枚举）；对目标固件（ESP32）的读写监听与 OTA 传输仍 BLOCKED_FIXTURE"),
-        ("warn", "E5 外部可见性 BLOCKED_OBSERVER：无第二观察端，广播仅本地 API 成功口径"),
-        ("warn", "OTA 端到端链路 BLOCKED（P-03）：固件侧暂未开放升级通道；客户端调用链已完整（选包校验/start/分块/commit/版本回读）"),
-        ("warn", "Smart HID 配网端到端 BLOCKED_FIXTURE：无真实 SHID 设备，身份验证/下发/诊断停在诚实错误态；协议层（framed-v1/明文写/STATUS 轮询）已接线"),
-        ("warn", "多设备并行会话已支持（F013），≥2 台外设的并行实测 BLOCKED_FIXTURE（本机环境至多 1 台可连）"),
-        ("warn", "摄像头取景器已实现（AVFoundation）；实机配对码识别 NOT_RUN（未在 shid://pair 实景验证，授权链待真机）"),
+    private let limitations = [
+        "OTA 端到端链路 BLOCKED：固件侧暂未开放升级通道",
+        "iOS 广播依赖原生能力与签名真机验证",
+        "H5 平台不支持 BLE 外围模式",
     ]
 
-    /// 预览记录（spike/开发轮次投影）
-    private let previews: [(String, String, String, String)] = [
-        ("v0.1.0-spike r6", "2026-09-04", "能力层补齐：多设备会话/断线重连/写队列/OTA 真实链/HID 配网协议+摄像头扫码 · 62 单测+17 冒烟", "90682bd+"),
-        ("v0.1.0-spike r3", "2026-09-04", "页面按平台原型对齐（四 Tab + 9 页 + 桌面差异点）", "f8b0e70"),
-        ("v0.1.0-spike r2", "2026-09-04", "页面级覆盖（原生 11/11 + Flutter 探针 8/8）· D16/D17", "c6fc88d"),
-        ("v0.1.0-spike r1", "2026-09-03", "macOS 平台层验证（构建/权限/插件能力）· D1-D15", "f9a4516"),
+    private let previews: [(version: String, date: String, note: String, sha: String)] = [
+        ("v1.0.5-preview", "2026-09-09", "Apple 原生 Smart HID 与 HTML 对齐进行中", "local"),
+        ("v1.0.4-preview", "2026-08-21", "Profile 注册表与诊断五项链路", "a91e3d7"),
     ]
 
     init(host: PageHost) {
@@ -44,68 +36,127 @@ final class P010VersionsPage: NSViewController, PageProtocol {
     }
 
     func rebuild() {
-        guard let host else { return }
+        guard host != nil else { return }
         var views: [NSView] = []
         views.append(subnav(title: "版本记录", onBack: { [weak self] in
             self?.host?.router.back()
         }))
 
-        // 当前版本卡
-        let verCard = Card()
-        verCard.setViews([
+        views.append(currentVersionCard())
+        views.append(limitationsCard())
+        views.append(releaseHistoryCard())
+        views.append(previewHistoryCard())
+
+        let foot = makeLabel("本页数据来自 Release Metadata 投影，不是手写版本事实源。", size: 10, color: DS.ph, align: .center)
+        views.append(foot)
+        scroll.setViews(views)
+    }
+
+    private func currentVersionCard() -> NSView {
+        let version = makeLabel(DS.probeVersion, size: 24, weight: .heavy, color: DS.primary)
+        version.setContentCompressionResistancePriority(.required, for: .horizontal)
+
+        let card = Card(padding: 14)
+        card.setViews([
             sectionTitle("doc", "当前版本"),
-            hstack([makeLabel(DS.probeVersion, size: 24, weight: .heavy, color: DS.primary),
-                    chip(DS.probeChannel, tone: "primary")], spacing: 10),
-            kvRow("构建", "\(DS.probeVersion)（\(DS.probeBranch)）", mono: true),
+            version,
+            makeLabel(DS.probeChannel, size: 10, weight: .bold, color: DS.primary, mono: true),
+            kvRow("构建", "v+local", mono: true),
             kvRow("Release tag", "已登记（preview）"),
-            hstack([chip("微信小程序 PREVIEW", tone: "primary"), chip("桌面端 NOT_RELEASED", tone: "danger")], spacing: 6),
+            makeLabel("微信小程序 PREVIEW   App · Android NOT_RELEASED   App · iOS NOT_RELEASED", size: 10, weight: .bold, color: DS.primary, mono: true),
+            makeLabel("H5 / Web NOT_RELEASED   桌面端 NOT_RELEASED", size: 10, weight: .bold, color: DS.danger, mono: true),
             DSButton("复制版本信息", tone: .soft, small: true, symbol: "doc.on.doc", actionId: "p010-copy") { [weak self] in
                 NSPasteboard.general.clearContents()
                 NSPasteboard.general.setString("\(DS.probeVersion) · \(DS.probeChannel) · \(DS.probeBranch)", forType: .string)
                 self?.host?.toast("版本已复制", ok: true)
             },
-        ], spacing: 9)
-        views.append(verCard)
-
-        // 当前限制卡（实测限制清单）
-        let limitCard = Card()
-        limitCard.setViews([sectionTitle("exclamationmark.triangle", "当前限制")]
-            + limitations.map { kind, text in
-                let row = hstack([
-                    makeIcon(kind == "warn" ? "exclamationmark.triangle.fill" : "info.circle.fill", color: DS.warningDeep, size: 12),
-                    makeLabel(text, size: 13, color: DS.sub),
-                ], spacing: 8, alignment: .top)
-                row.translatesAutoresizingMaskIntoConstraints = false
-                return row
-            } + [noteBanner("info", "当前无 Artifact，不提供下载入口。")], spacing: 8)
-        views.append(limitCard)
-
-        // 正式发布历史（空态）
-        let relCard = Card()
-        relCard.setViews([
-            sectionTitle("checkmark", "正式发布历史"),
-            emptyState(symbol: "doc", title: "暂无正式发布版本",
-                       desc: "产品当前处于 PREVIEW 阶段，首个正式版发布后将在此列出。"),
         ], spacing: 8)
-        views.append(relCard)
+        return card
+    }
 
-        // 预览记录（spike 轮次）
-        let prevCard = Card()
-        prevCard.setViews([sectionTitle("arrow.down.circle", "预览记录")]
-            + previews.map { v, date, note, sha in
-                hstack([
-                    makeLabel("\(v)  ", size: 13, weight: .semibold),
-                    makeLabel("\(date) · \(note)", size: 11, color: DS.mut),
-                    NSView(),
-                    makeLabel(sha, size: 12, color: DS.mut, mono: true),
-                ], spacing: 8)
-            }, spacing: 9)
-        views.append(prevCard)
+    private func limitationsCard() -> NSView {
+        let rows = limitations.map { text -> NSView in
+            let label = makeLabel(text, size: 13, color: DS.sub)
+            label.maximumNumberOfLines = 0
+            label.lineBreakMode = .byWordWrapping
+            return hstack([
+                makeIcon("exclamationmark.triangle.fill", color: DS.warningDeep, size: 12),
+                label,
+            ], spacing: 8, alignment: .top)
+        }
+        let card = Card(padding: 14)
+        card.setViews(
+            [sectionTitle("exclamationmark.triangle", "当前限制")]
+                + rows
+                + [noteBanner("info", "当前无 Artifact，不提供下载入口。")],
+            spacing: 8
+        )
+        return card
+    }
 
-        let foot = makeLabel("本页数据来自 Release Metadata 投影，不是手写版本事实源。\n桌面探针（\(DS.probeBranch)）· D2 选型未定，不预判实现技术。", size: 11, color: DS.ph, align: .center)
-        foot.maximumNumberOfLines = 0
-        views.append(foot)
+    private func releaseHistoryCard() -> NSView {
+        let card = Card(padding: 14)
+        card.setViews([
+            sectionTitle("checkmark.circle", "正式发布历史"),
+            emptyState(
+                symbol: "doc",
+                title: "暂无正式发布版本",
+                desc: "产品当前处于 PREVIEW 阶段，首个正式版发布后将在此列出。"
+            ),
+        ], spacing: 8)
+        return card
+    }
 
-        scroll.setViews(views)
+    private func previewHistoryCard() -> NSView {
+        let rows = previews.map { item -> NSView in
+            let top = hstack([
+                makeLabel(item.version, size: 13, weight: .semibold),
+                NSView(),
+                makeLabel(item.sha, size: 12, color: DS.mut, mono: true),
+            ], spacing: 8)
+            let detail = makeLabel("\(item.date) · \(item.note)", size: 11, color: DS.mut)
+            detail.maximumNumberOfLines = 0
+            return vstack([top, detail], spacing: 3)
+        }
+        let card = Card(padding: 14)
+        card.setViews([sectionTitle("arrow.down.circle", "预览记录")] + rows, spacing: 9)
+        return card
+    }
+
+    private func statusWord(_ text: String, tone: String) -> NSView {
+        let foreground: NSColor
+        let background: NSColor
+        switch tone {
+        case "primary":
+            foreground = DS.primary
+            background = DS.primaryWeak
+        case "success":
+            foreground = DS.successDeep
+            background = DS.successWeak
+        case "warning":
+            foreground = DS.warningDeep
+            background = DS.warningWeak
+        default:
+            foreground = DS.danger
+            background = DS.dangerWeak
+        }
+
+        let label = makeLabel(text, size: 10, weight: .bold, color: foreground, mono: true)
+        label.setContentCompressionResistancePriority(.required, for: .horizontal)
+        let box = NSView()
+        box.wantsLayer = true
+        box.layer?.backgroundColor = background.cgColor
+        box.layer?.cornerRadius = 5
+        box.translatesAutoresizingMaskIntoConstraints = false
+        box.addSubview(label)
+        NSLayoutConstraint.activate([
+            box.widthAnchor.constraint(equalToConstant: max(24, label.intrinsicContentSize.width + 14)),
+            box.heightAnchor.constraint(equalToConstant: 22),
+            label.topAnchor.constraint(equalTo: box.topAnchor, constant: 2),
+            label.bottomAnchor.constraint(equalTo: box.bottomAnchor, constant: -2),
+            label.leadingAnchor.constraint(equalTo: box.leadingAnchor, constant: 7),
+            label.trailingAnchor.constraint(equalTo: box.trailingAnchor, constant: -7),
+        ])
+        return box
     }
 }

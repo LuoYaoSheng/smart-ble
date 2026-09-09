@@ -236,6 +236,8 @@ func chip(_ text: String, tone: String = "neutral", mono: Bool = false) -> NSVie
     box.translatesAutoresizingMaskIntoConstraints = false
     box.addSubview(label)
     NSLayoutConstraint.activate([
+        box.widthAnchor.constraint(equalToConstant: max(24, label.intrinsicContentSize.width + 18)),
+        box.heightAnchor.constraint(equalToConstant: mono ? 22 : 23),
         label.topAnchor.constraint(equalTo: box.topAnchor, constant: 2),
         label.bottomAnchor.constraint(equalTo: box.bottomAnchor, constant: -2),
         label.leadingAnchor.constraint(equalTo: box.leadingAnchor, constant: 9),
@@ -325,6 +327,9 @@ final class Card: NSView {
             stack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding),
             stack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding),
         ])
+        for view in views {
+            view.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
+        }
         body = stack
     }
 
@@ -347,6 +352,7 @@ func kvRow(_ key: String, _ value: String?, mono: Bool = false) -> NSView {
     line.heightAnchor.constraint(equalToConstant: 1).isActive = true
     box.addSubview(line)
     NSLayoutConstraint.activate([
+        box.heightAnchor.constraint(equalToConstant: 38),
         k.leadingAnchor.constraint(equalTo: box.leadingAnchor),
         k.topAnchor.constraint(equalTo: box.topAnchor, constant: 9),
         v.leadingAnchor.constraint(equalTo: k.trailingAnchor),
@@ -371,6 +377,7 @@ func sectionTitle(_ symbol: String, _ text: String, trailing: NSView? = nil) -> 
     }
     let row = hstack(views, spacing: 6)
     row.translatesAutoresizingMaskIntoConstraints = false
+    row.heightAnchor.constraint(equalToConstant: 24).isActive = true
     return row
 }
 
@@ -399,10 +406,12 @@ final class MenuRowButton: NSButton {
         self.actionId = actionId
         self.handler = handler
         isBordered = false
+        self.title = ""
         translatesAutoresizingMaskIntoConstraints = false
         focusRingType = .none
         target = self
         action = #selector(tapped)
+        heightAnchor.constraint(equalToConstant: 46).isActive = true
 
         let icon = makeIcon(symbol, color: DS.mut, size: 14)
         let label = makeLabel(title, size: 13, weight: .semibold)

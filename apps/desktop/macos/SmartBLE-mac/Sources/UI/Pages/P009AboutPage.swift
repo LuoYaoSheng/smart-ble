@@ -114,127 +114,99 @@ final class P009AboutPage: NSViewController, PageProtocol {
     }
 
     func rebuild() {
-        guard let host else { return }
+        guard host != nil else { return }
         var views: [NSView] = []
-        views.append(navbar(kicker: "ABOUT", title: "关于", trailing: [chip("\(DS.probeVersion)", mono: true)]))
+        views.append(navbar(kicker: "ABOUT", title: "关于", trailing: [
+            makeLabel(DS.probeVersion, size: 10, weight: .semibold, color: DS.mut, mono: true),
+        ]))
 
-        // 品牌卡（渐变 · --c-primary→deep）
-        let brand = NSView()
-        brand.wantsLayer = true
-        brand.layer?.cornerRadius = DS.rLg
-        brand.layer?.backgroundColor = DS.primary.cgColor
-        brand.translatesAutoresizingMaskIntoConstraints = false
-        let gradient = CAGradientLayer()
-        gradient.colors = [DS.primaryDeep.cgColor, DS.primary.cgColor, #colorLiteral(red: 0x3F/255, green: 0x86/255, blue: 0xFF/255, alpha: 1).cgColor]
-        gradient.startPoint = CGPoint(x: 0, y: 0)
-        gradient.endPoint = CGPoint(x: 1, y: 1)
-        gradient.cornerRadius = DS.rLg
-        brand.layer?.addSublayer(gradient)
-        let icon = makeIcon("dot.radiowaves.left.and.right", color: .white, size: 24)
-        let iconBox = NSView()
-        iconBox.wantsLayer = true
-        iconBox.layer?.backgroundColor = NSColor.white.withAlphaComponent(0.18).cgColor
-        iconBox.layer?.cornerRadius = 13
-        iconBox.translatesAutoresizingMaskIntoConstraints = false
-        iconBox.addSubview(icon)
+        let brandIcon = NSView()
+        brandIcon.wantsLayer = true
+        brandIcon.layer?.cornerRadius = 10
+        brandIcon.layer?.backgroundColor = DS.primary.cgColor
+        brandIcon.translatesAutoresizingMaskIntoConstraints = false
+        let brandGlyph = makeIcon("dot.radiowaves.left.and.right", color: .white, size: 20)
+        brandIcon.addSubview(brandGlyph)
         NSLayoutConstraint.activate([
-            iconBox.widthAnchor.constraint(equalToConstant: 46),
-            iconBox.heightAnchor.constraint(equalToConstant: 46),
-            icon.centerXAnchor.constraint(equalTo: iconBox.centerXAnchor),
-            icon.centerYAnchor.constraint(equalTo: iconBox.centerYAnchor),
+            brandIcon.widthAnchor.constraint(equalToConstant: 42),
+            brandIcon.heightAnchor.constraint(equalToConstant: 42),
+            brandGlyph.centerXAnchor.constraint(equalTo: brandIcon.centerXAnchor),
+            brandGlyph.centerYAnchor.constraint(equalTo: brandIcon.centerYAnchor),
         ])
-        let lg = makeLabel("BLE Toolkit+", size: 24, weight: .heavy, color: .white)
-        let vsChip = makeLabel("✓ v\(DS.probeVersion) · \(DS.probeChannel)", size: 11, weight: .semibold, color: .white)
-        let desc = makeLabel("面向 UniApp、微信小程序与 ESP32 协同验证的 BLE 调试工具 · 零后端 · 零本地持久化", size: 12, color: NSColor.white.withAlphaComponent(0.85))
-        desc.lineBreakMode = .byWordWrapping
-        desc.maximumNumberOfLines = 0
-        let brandColumn = vstack([
-            hstack([iconBox, vstack([lg, vsChip], spacing: 4)], spacing: 12, alignment: .centerY),
-            desc,
-        ], spacing: 9)
-        brand.addSubview(brandColumn)
-        views.append(containerView(brand, brandColumn))
+        let brandCard = Card(padding: 14)
+        brandCard.setViews([
+            hstack([
+                brandIcon,
+                vstack([
+                    makeLabel("BLE Toolkit+", size: 15, weight: .bold),
+                    makeLabel("v\(DS.probeVersion) · \(DS.probeChannel) · 零后端 · 零本地持久化", size: 10, color: DS.mut),
+                ], spacing: 2),
+                NSView(),
+            ], spacing: 12, alignment: .centerY),
+        ], spacing: 0)
+        views.append(brandCard)
 
-        // 更多小程序（F028 · 非微信渠道承接）
-        views.append(sectionTitle("square.and.arrow.up.on.square", "更多小程序"))
+        views.append(sectionTitle("point.3.connected.trianglepath.dotted", "更多小程序"))
         let promoCard = Card(padding: 6)
         promoCard.setViews(promos.map { p in
             let abbrBox = NSView()
             abbrBox.wantsLayer = true
-            abbrBox.layer?.backgroundColor = DS.primaryWeak.cgColor
-            abbrBox.layer?.cornerRadius = DS.rSm
+            abbrBox.layer?.backgroundColor = (p.abbr == "LB" ? DS.primaryWeak : DS.successWeak).cgColor
+            abbrBox.layer?.cornerRadius = 10
             abbrBox.translatesAutoresizingMaskIntoConstraints = false
-            abbrBox.addSubview(makeLabel(p.abbr, size: 15, weight: .heavy, color: DS.primary, align: .center))
+            let abbr = makeLabel(p.abbr, size: 15, weight: .heavy,
+                                 color: p.abbr == "LB" ? DS.primary : DS.successDeep, align: .center)
+            abbrBox.addSubview(abbr)
             NSLayoutConstraint.activate([
-                abbrBox.widthAnchor.constraint(equalToConstant: 38),
-                abbrBox.heightAnchor.constraint(equalToConstant: 38),
+                abbrBox.widthAnchor.constraint(equalToConstant: 42),
+                abbrBox.heightAnchor.constraint(equalToConstant: 42),
+                abbr.centerXAnchor.constraint(equalTo: abbrBox.centerXAnchor),
+                abbr.centerYAnchor.constraint(equalTo: abbrBox.centerYAnchor),
             ])
             let go = DSButton("前往", tone: .soft, small: true, actionId: "p009-promo") { [weak self] in
                 self?.openPromo(name: p.name, land: p.land)
             }
-            let row = hstack([abbrBox, vstack([
-                makeLabel(p.name, size: 13, weight: .semibold),
-                makeLabel(p.desc, size: 11, color: DS.mut),
-            ], spacing: 2), NSView(), go], spacing: 11, alignment: .centerY)
-            row.translatesAutoresizingMaskIntoConstraints = false
-            return row
-        }, spacing: 4)
+            return hstack([
+                abbrBox,
+                vstack([
+                    makeLabel(p.name, size: 15, weight: .bold),
+                    makeLabel(p.desc, size: 11, color: DS.mut),
+                ], spacing: 2),
+                NSView(),
+                go,
+            ], spacing: 10, alignment: .centerY)
+        }, spacing: 0)
         views.append(promoCard)
 
-        // 应用信息（真实环境）
         views.append(sectionTitle("info.circle", "应用信息"))
-        let infoCard = Card()
-        infoCard.setViews([
-            kvRow("当前环境", "Desktop · \(osVersionText)"),
-            kvRow("设备型号", Host.current().localizedName ?? "Mac"),
-            kvRow("构建", "\(DS.probeVersion)（\(DS.probeBranch) 探针构建投影）", mono: true),
-        ], spacing: 0)
-        // 操作系统行（桌面差异注入点 · 实机=真实宿主）
-        let osRow = MenuRowButton(symbol: "gearshape", title: "操作系统",
-                                  subtitle: "macOS · CoreBluetooth · 点按查看", actionId: "dtk-ossheet") { [weak self] in
-            self?.openOsSheet()
+        let infoCard = Card(padding: 14)
+        let featureRow1 = makeLabel(features.prefix(3).joined(separator: "   "), size: 10, weight: .semibold, color: DS.primary)
+        let featureRow2 = makeLabel(features.suffix(3).joined(separator: "   "), size: 10, weight: .semibold, color: DS.primary)
+        let statusRows = platformStatus.map { item -> NSView in
+            let capColor: NSColor = item.cap == "PREVIEW" ? DS.primary : item.cap == "VERIFIED" ? DS.successDeep : DS.mut
+            return hstack([
+                makeLabel(item.name, size: 12, weight: .semibold),
+                makeLabel(item.cap, size: 10, weight: .bold, color: capColor, mono: true),
+                makeLabel(item.rel, size: 10, weight: .bold, color: DS.danger, mono: true),
+                NSView(),
+            ], spacing: 10)
         }
         infoCard.setViews([
             kvRow("当前环境", "Desktop · \(osVersionText)"),
             kvRow("设备型号", Host.current().localizedName ?? "Mac"),
-            osRow,
-            kvRow("构建", "\(DS.probeVersion)（\(DS.probeBranch) 探针构建投影）", mono: true),
-            hstack(features.map { chip($0, tone: "primary") }, spacing: 6),
-        ], spacing: 8)
+            kvRow("构建", "Release Metadata · \(DS.probeChannel)", mono: true),
+            featureRow1,
+            featureRow2,
+        ] + statusRows, spacing: 5)
         views.append(infoCard)
 
-        // 平台状态（五词表）
-        let statusCard = Card()
-        statusCard.setViews(platformStatus.map { p in
-            let capChip = statusWord(p.cap)
-            let relChip = p.cap == p.rel ? nil : statusWord(p.rel)
-            return hstack([makeLabel(p.name, size: 13)] + (relChip.map { [capChip, $0] } ?? [capChip]) + [NSView()], spacing: 8)
-        }, spacing: 9)
-        views.append(statusCard)
-
-        // 生态能力矩阵卡（11_ecosystem · 随真实宿主 macOS）
-        let mxCard = Card()
-        var mxViews: [NSView] = [makeLabel("生态能力矩阵（11_ecosystem · macOS）", size: 13, weight: .bold)]
-        for (k, v, note) in matrixRows {
-            let tone = v.hasPrefix("✅") ? DS.successDeep : v.hasPrefix("⚠") ? DS.warningDeep : DS.danger
-            var row = [makeLabel(k, size: 12, color: DS.sub), NSView(), makeLabel(v, size: 12, weight: .bold, color: tone)]
-            mxViews.append(hstack(row, spacing: 8))
-            if !note.isEmpty {
-                mxViews.append(makeLabel(note, size: 10, color: DS.mut))
-            }
-        }
-        mxViews.append(makeLabel("来源：Smart_BLE_平台功能差异矩阵 v1.0（11_ecosystem）· 桌面行 MAC；能力细节待 D2 spike 实测后回写。", size: 10, color: DS.mut))
-        mxCard.setViews(mxViews, spacing: 5)
-        views.append(mxCard)
-
-        // 相关链接菜单
-        let menuCard = Card(padding: 8)
+        let menuCard = Card(padding: 0)
         menuCard.setViews([
             MenuRowButton(symbol: "arrow.up.right.square", title: "官方网站", actionId: "p009-openweb") { [weak self] in
-                self?.openExternal("smartble.example.com")
+                self?.openExternal("lightble.i2kai.com")
             },
             MenuRowButton(symbol: "paperplane", title: "问题反馈", actionId: "p009-feedback") { [weak self] in
-                self?.openExternal("feedback.example.com/ble-toolkit")
+                self?.openExternal("github.com/luoyaosheng/smart-ble/issues")
             },
             MenuRowButton(symbol: "doc", title: "版本记录", actionId: "p009-versions") { [weak self] in
                 self?.host?.router.go(.p010)
@@ -245,7 +217,7 @@ final class P009AboutPage: NSViewController, PageProtocol {
         ], spacing: 0)
         views.append(menuCard)
 
-        let foot = makeLabel("日志全局脱敏：敏感凭据显示为 token=***\nBLE Toolkit+ · Smart BLE 产品家族 · 桌面探针（\(DS.probeBranch)）", size: 11, color: DS.ph, align: .center)
+        let foot = makeLabel("日志全局脱敏：敏感凭据显示为 token=***\nBLE Toolkit+ · Smart BLE 产品家族", size: 10, color: DS.ph, align: .center)
         foot.maximumNumberOfLines = 0
         views.append(foot)
 
@@ -281,6 +253,8 @@ final class P009AboutPage: NSViewController, PageProtocol {
         box.translatesAutoresizingMaskIntoConstraints = false
         box.addSubview(label)
         NSLayoutConstraint.activate([
+            box.widthAnchor.constraint(equalToConstant: max(24, label.intrinsicContentSize.width + 14)),
+            box.heightAnchor.constraint(equalToConstant: 22),
             label.topAnchor.constraint(equalTo: box.topAnchor, constant: 1),
             label.bottomAnchor.constraint(equalTo: box.bottomAnchor, constant: -1),
             label.leadingAnchor.constraint(equalTo: box.leadingAnchor, constant: 7),

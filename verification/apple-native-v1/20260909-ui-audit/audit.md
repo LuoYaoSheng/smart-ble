@@ -3,7 +3,7 @@
 ```yaml
 date: 2026-09-09
 scope: N-IOS SwiftUI + N-MAC AppKit vs canonical HTML prototypes
-result: FAIL
+result: PARTIAL_AFTER_CORRECTION
 mode: combined UX / visual / accessibility-risk audit
 ```
 
@@ -99,6 +99,26 @@ Evidence: `macos-before/p010.png`
 3. macOS page implementations consumed local AppKit layouts without a screenshot-locked HTML component contract.
 4. No Apple screenshot harness can inject identical P002/P003/P005 states on demand.
 5. The previous Gate had no reference/native side-by-side acceptance step.
+
+## Correction pass result
+
+| Surface | Current result | Evidence |
+|---|---|---|
+| N-IOS P001 | PASS_DEFAULT_STATE | `ios-after-pass2/p001.png` |
+| N-IOS P002 | PASS_DEFAULT_STATE | `ios-after-pass2/p002.png` |
+| N-IOS P003 | PASS_DEFAULT_STATE | `ios-after-pass2/p003.png` |
+| N-IOS P005 | PASS_DEFAULT_STATE | `ios-after-pass2/p005.png` |
+| N-IOS P006 | PASS_DEFAULT_STATE | `ios-after-pass2/p006.png` |
+| N-IOS P007 | PASS_DEFAULT_STATE | `ios-after-pass2/p007.png` |
+| N-IOS P008 | PASS_DEFAULT_STATE | `ios-after-pass2/p008.png` |
+| N-IOS P009 | PASS_DEFAULT_STATE | `ios-after-pass2/p009.png` |
+| N-IOS P010 | PASS_DEFAULT_STATE | `ios-after-pass2/p010.png` |
+| N-MAC P001/P002/P003/P005/P006/P007/P008 | PASS_DEFAULT_CONTENT_CAPTURE | `macos-after-pass2/` |
+| N-MAC P009/P010 | PASS_DEFAULT_CONTENT_CAPTURE | `macos-after-pass2/p009.png`, `p010.png` |
+
+The correction replaced the native iOS system TabView with the canonical shell, introduced HTML-derived tokens/components and illustrations, rebuilt P001/P007/P008/P009/P010, aligned P002/P003/P005/P006 through deterministic DEBUG states, and rebuilt the divergent macOS About/Versions pages. macOS CoreUnit remains 62/62 and PageSmoke remains 17/17.
+
+This table is intentionally limited to default states. It is not a full visual PASS.
 
 ## Required correction order
 

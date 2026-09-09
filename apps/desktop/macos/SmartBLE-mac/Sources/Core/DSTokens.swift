@@ -68,6 +68,6 @@ enum DS {
 
     // MARK: 探针构建元数据（P009/P010 投影；对应 spike 分支与运行轮次）
     static let probeChannel = "preview"
-    static let probeVersion = "0.1.0-spike"
-    static let probeBranch  = "spike/macos-extension-v1"
+    static let probeVersion = "1.0.5-preview"
+    static let probeBranch  = "refactor/uniapp-v1"
 }
