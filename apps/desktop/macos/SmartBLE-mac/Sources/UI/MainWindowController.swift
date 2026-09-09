@@ -67,7 +67,9 @@ private final class TabButton: NSButton {
         focusRingType = .none
         target = self
         action = #selector(tapped)
-        title = label
+        title = ""
+        toolTip = label
+        setAccessibilityLabel(label)
 
         let column = NSStackView(views: [iconView, labelField])
         column.orientation = .vertical

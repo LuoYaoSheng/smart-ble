@@ -3,7 +3,7 @@
 ```yaml
 date: 2026-09-09
 scope: N-IOS SwiftUI + N-MAC AppKit vs canonical HTML prototypes
-result: PARTIAL_AFTER_CORRECTION
+result: PARTIAL_KEY_STATES_AFTER_CORRECTION
 mode: combined UX / visual / accessibility-risk audit
 ```
 
@@ -119,6 +119,8 @@ Evidence: `macos-before/p010.png`
 The correction replaced the native iOS system TabView with the canonical shell, introduced HTML-derived tokens/components and illustrations, rebuilt P001/P007/P008/P009/P010, aligned P002/P003/P005/P006 through deterministic DEBUG states, and rebuilt the divergent macOS About/Versions pages. macOS CoreUnit remains 62/62 and PageSmoke remains 17/17.
 
 This table is intentionally limited to default states. It is not a full visual PASS.
+
+The follow-up audit in `../20260909-ui-audit-round2/audit.md` closes the P001 filter-expanded, no-match, scan-failure, Bluetooth-off, unsupported-platform, and iOS landscape gaps, and rechecks P009/P010 with current-run HTML/native pairs. The remaining visual gate is now concentrated on P002/P003/P005 success/error variants and assistive-technology checks.
 
 ## Required correction order
 

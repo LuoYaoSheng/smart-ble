@@ -14,11 +14,16 @@ enum PageSmoke {
 
     nonisolated static func runIfRequested() {
         let args = CommandLine.arguments
-        guard args.contains("--smoke-pages") || args.contains("--snap-pages") else { return }
+        let preview = args
+            .first(where: { $0.hasPrefix("--ui-preview=") })
+            .map { String($0.dropFirst("--ui-preview=".count)) }
+        guard args.contains("--smoke-pages") || args.contains("--snap-pages") || preview != nil else { return }
         Task { @MainActor in
             for _ in 0..<10 {
                 if let wc = NSApp.windows.compactMap({ $0.windowController as? MainWindowController }).first {
-                    if args.contains("--snap-pages") {
+                    if let preview {
+                        await PageSmoke.preparePreview(preview, controller: wc)
+                    } else if args.contains("--snap-pages") {
                         await PageSmoke.snapPages(controller: wc)
                     } else {
                         print("[UISMOKE] mode=smoke-pages app=SmartBLE-mac r3=prototype-aligned")
@@ -32,6 +37,40 @@ enum PageSmoke {
             fflush(stdout)
             exit(1)
         }
+    }
+
+    private static func preparePreview(_ previewValue: String, controller: MainWindowController) async {
+        if previewValue == "p009" {
+            controller.router.switchTab(.p009)
+            print("[UIPREVIEW] ready=p009")
+            fflush(stdout)
+            return
+        }
+        if previewValue == "p010" {
+            controller.router.go(.p010)
+            print("[UIPREVIEW] ready=p010")
+            fflush(stdout)
+            return
+        }
+        guard let preview = P001ScanPage.PreviewState(rawValue: previewValue) else {
+            print("[UIPREVIEW] unsupported=\(previewValue)")
+            fflush(stdout)
+            return
+        }
+        controller.router.switchTab(.p001)
+        if preview == .filterExpanded || preview == .filterEmpty || preview == .unsupported {
+            for _ in 0..<8 {
+                if controller.ble.btState != .unknown { break }
+                await settle(250)
+            }
+            if (preview == .filterExpanded || preview == .filterEmpty), controller.ble.btState == .on {
+                controller.ble.startScan()
+                await settle(5_600)
+            }
+        }
+        (controller.page(.p001) as? P001ScanPage)?.applyPreviewState(preview)
+        print("[UIPREVIEW] ready=\(preview.rawValue)")
+        fflush(stdout)
     }
 
     /// --snap-pages：9 页渲染为 PNG（cacheDisplay · 不依赖屏幕录制权限）作为对齐证据
@@ -109,7 +148,9 @@ enum PageSmoke {
     }
 
     private static func button(titled title: String, in views: [NSView]) -> NSButton? {
-        views.compactMap { $0 as? NSButton }.first { $0.title == title || $0.attributedTitle.string == title }
+        views.compactMap { $0 as? NSButton }.first {
+            $0.title == title || $0.attributedTitle.string == title || $0.toolTip == title
+        }
     }
 
     private static func button(actionId: String, in views: [NSView]) -> NSButton? {

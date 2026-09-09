@@ -3,90 +3,96 @@ import SwiftUI
 struct FilterPanel: View {
     @EnvironmentObject var bleManager: BLEManager
 
+    private let presets: [(value: Int, title: String, detail: String)] = [
+        (-40, "强", "[-40]"),
+        (-60, "较好", "[-60]"),
+        (-70, "一般", "[-70]"),
+        (-85, "弱", "[-85]"),
+    ]
+
     var body: some View {
-        VStack(spacing: 12) {
-            // Filter header with reset button
-            HStack {
-                Text("过滤条件")
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
-
-                Spacer()
-
-                Button(action: resetFilters) {
-                    Text("重置")
-                        .font(.caption)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(Color.gray.opacity(0.2))
-                        .cornerRadius(6)
-                }
-                .buttonStyle(.plain)
-            }
-
-            // RSSI Filter - aligned with UniApp (-100 to -30)
-            VStack(alignment: .leading, spacing: 8) {
-                HStack {
-                    Text("信号强度: \(bleManager.filterRSSI) dBm")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    Spacer()
-                }
-
-                HStack {
-                    Text("-100")
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
-                    Slider(value: Binding(
-                        get: { Double(bleManager.filterRSSI) },
-                        set: { bleManager.filterRSSI = Int($0) }
-                    ), in: -100 ... -30, step: 5)
-                    Text("-30")
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
-                }
-
-                // Preset buttons - aligned with UniApp
-                HStack(spacing: 8) {
-                    ForEach([-100, -90, -70, -50], id: \.self) { value in
-                        Button(action: { bleManager.filterRSSI = value }) {
-                            Text(value == -100 ? "全部" : "\(value)")
-                                .font(.caption2)
-                                .padding(.horizontal, 10)
-                                .padding(.vertical, 4)
-                                .background(bleManager.filterRSSI == value ? Color.blue : Color.gray.opacity(0.2))
-                                .foregroundColor(bleManager.filterRSSI == value ? .white : .primary)
-                                .cornerRadius(6)
-                        }
-                        .buttonStyle(.plain)
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 10) {
+                fieldLabel("最弱信号")
+                HStack(spacing: 6) {
+                    ForEach(presets, id: \.value) { preset in
+                        presetButton(preset)
                     }
                 }
             }
 
-            // Name prefix filter
-            HStack(spacing: 12) {
-                Text("名称前缀:")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                TextField("输入前缀", text: $bleManager.filterNamePrefix)
-                    .textFieldStyle(.roundedBorder)
-                    .frame(width: 120)
-                    .font(.caption)
+            HStack(spacing: 10) {
+                fieldLabel("阈值 \(bleManager.filterRSSI)\ndBm")
+                Slider(value: Binding(
+                    get: { Double(bleManager.filterRSSI) },
+                    set: { bleManager.filterRSSI = Int($0) }
+                ), in: -100 ... -40, step: 1)
+                .tint(NativeDS.primary)
+                .accessibilityLabel("最弱信号阈值")
+                .accessibilityValue("\(bleManager.filterRSSI) dBm")
+            }
 
+            HStack(spacing: 10) {
+                fieldLabel("名称前缀")
+                TextField("如 SHID / LightBLE", text: $bleManager.filterNamePrefix)
+                    .font(.system(size: 13))
+                    .padding(.horizontal, 12)
+                    .frame(height: 38)
+                    .background(NativeDS.fill)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .accessibilityHint("只显示名称以前缀开头的设备")
+            }
+
+            HStack(spacing: 10) {
+                fieldLabel("隐藏无名")
+                Toggle("", isOn: $bleManager.hideNoNameDevices)
+                    .labelsHidden()
+                    .toggleStyle(.switch)
+                    .tint(NativeDS.primary)
+                    .accessibilityLabel("隐藏无名设备")
                 Spacer()
-
-                // Hide no name toggle
-                HStack(spacing: 8) {
-                    Text("隐藏无名设备")
-                        .font(.caption)
-                    Toggle("", isOn: $bleManager.hideNoNameDevices)
-                        .toggleStyle(.switch)
-                }
+                Button("重置过滤", action: resetFilters)
+                    .buttonStyle(.plain)
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundColor(NativeDS.ink)
+                    .padding(.horizontal, 13)
+                    .frame(height: 34)
+                    .background(NativeDS.fill)
+                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(NativeDS.line))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
             }
         }
-        .padding()
-        .background(Color.blue.opacity(0.08))
+        .padding(14)
+        .background(Color.white)
+        .overlay(RoundedRectangle(cornerRadius: 14).stroke(NativeDS.line))
+        .clipShape(RoundedRectangle(cornerRadius: 14))
         .transition(.opacity.combined(with: .move(edge: .top)))
+    }
+
+    private func fieldLabel(_ text: String) -> some View {
+        Text(text)
+            .font(.system(size: 12, weight: .semibold))
+            .foregroundColor(NativeDS.sub)
+            .frame(width: 66, alignment: .leading)
+    }
+
+    private func presetButton(_ preset: (value: Int, title: String, detail: String)) -> some View {
+        let selected = bleManager.filterRSSI == preset.value
+        return Button(action: { bleManager.filterRSSI = preset.value }) {
+            VStack(spacing: 1) {
+                Text(preset.title)
+                    .font(.system(size: 11, weight: .semibold))
+                Text(preset.detail)
+                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+            }
+            .foregroundColor(selected ? .white : NativeDS.sub)
+            .frame(maxWidth: .infinity)
+            .frame(height: 38)
+            .background(selected ? NativeDS.primary : NativeDS.fill)
+            .clipShape(RoundedRectangle(cornerRadius: 9))
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("最弱信号 \(preset.title) \(preset.value) dBm")
     }
 
     private func resetFilters() {

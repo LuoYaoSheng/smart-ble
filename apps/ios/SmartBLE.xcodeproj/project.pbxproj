@@ -14,8 +14,10 @@
 		069755C8343B8C3B00C74985 /* AppleSharedCoreWiringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13E2AA0791F9F19E24C9AB33 /* AppleSharedCoreWiringTests.swift */; };
 		096EC2E2DD28621B93D2E4EF /* SmartHidQrScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39729EE1F35ECA27CD1C6D57 /* SmartHidQrScanner.swift */; };
 		097C4AFB40A786795E7927CE /* SmartHidCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3248CA4C5D97F11B0A524166 /* SmartHidCore */; };
+		10EA2585DDFD1748B70C74D2 /* bt.svg in Resources */ = {isa = PBXBuildFile; fileRef = 932FCEB76F117168BE34D4FF /* bt.svg */; };
 		1BFF657A638115F8CBB179D2 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = E22A8998DC94EAC6893EC901 /* Logger.swift */; };
 		1F4F7E8A02FD10B207986A5C /* SmartHidCore in Frameworks */ = {isa = PBXBuildFile; productRef = 8F9D803588D9FB74511D876F /* SmartHidCore */; };
+		225C429A6FDD1EDC1AE93C26 /* bt.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D67DC154DABAD8A2D7A79CC /* bt.png */; };
 		2CE70E0DA00FF8E86555F06B /* LogPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 137F253935B8138373A74D80 /* LogPanel.swift */; };
 		3B84C81AA4A1C69D6F02E4D3 /* ServicePanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 462DA3B443181DB32C47D13E /* ServicePanel.swift */; };
 		3CDB7BCA1DD5A74CEC88270B /* WriteDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A4DB018938F07D52FB634F /* WriteDialog.swift */; };
@@ -96,10 +98,12 @@
 		645316AC737BA9B099928B61 /* doc.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = doc.png; sourceTree = "<group>"; };
 		73DB8A6CEF567DD328E7BA62 /* DeviceDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceDetailView.swift; sourceTree = "<group>"; };
 		7824A16A76CDD2CC6CFCE21A /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
+		7D67DC154DABAD8A2D7A79CC /* bt.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bt.png; sourceTree = "<group>"; };
 		7F15F8549CEC94A4D6D44FF1 /* ScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
 		86DA21BADC602366106B63A4 /* NativeDesignTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeDesignTokens.swift; sourceTree = "<group>"; };
 		8A64A4937D6D7D446DBFD205 /* SmartBLETests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SmartBLETests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F9C6D9C12C339F05AF590B8 /* HidDiagnosticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HidDiagnosticsView.swift; sourceTree = "<group>"; };
+		932FCEB76F117168BE34D4FF /* bt.svg */ = {isa = PBXFileReference; path = bt.svg; sourceTree = "<group>"; };
 		9DC41E4EFEC71424985D1200 /* CommandQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandQueue.swift; sourceTree = "<group>"; };
 		A8E7C88C56F5158B76242441 /* BLEModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEModels.swift; sourceTree = "<group>"; };
 		B19E5990363F73DC83E6CA57 /* box.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = box.png; sourceTree = "<group>"; };
@@ -151,6 +155,8 @@
 			children = (
 				B19E5990363F73DC83E6CA57 /* box.png */,
 				CD00758FA9E1472EF9D44AAE /* box.svg */,
+				7D67DC154DABAD8A2D7A79CC /* bt.png */,
+				932FCEB76F117168BE34D4FF /* bt.svg */,
 				645316AC737BA9B099928B61 /* doc.png */,
 				D66EE12FDF3F5AA7EEF2FF7E /* doc.svg */,
 				CA7C6628309E85F067A29348 /* link.png */,
@@ -421,6 +427,8 @@
 				02984DA30B01E06660866F19 /* box.png in Resources */,
 				976F4B7E80EE2460DC4793DD /* box.svg in Resources */,
 				A9F8C08269495D941B20F684 /* brand_icon.png in Resources */,
+				225C429A6FDD1EDC1AE93C26 /* bt.png in Resources */,
+				10EA2585DDFD1748B70C74D2 /* bt.svg in Resources */,
 				921A0C2494361B62648FBA71 /* doc.png in Resources */,
 				CD311A2DE490374E88DCCBCE /* doc.svg in Resources */,
 				867E847F34BD49BA30B88F77 /* icon.png in Resources */,

@@ -19,6 +19,9 @@ let package = Package(
                 .product(name: "SmartHidCore", package: "SmartHidCore"),
             ],
             path: "Sources",
+            resources: [
+                .process("Resources")
+            ],
             swiftSettings: [
                 .unsafeFlags(["-parse-as-library"])
             ]

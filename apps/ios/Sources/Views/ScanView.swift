@@ -13,30 +13,75 @@ private struct ScanDeviceIdRoute: Identifiable {
     let id: String
 }
 
+enum ScanPreviewScenario: Equatable {
+    case filterExpanded
+    case filterEmpty
+    case scanFailed
+    case bluetoothOff
+    case unsupported
+}
+
+private struct ScanFailure: Equatable {
+    let code: String
+    let message: String
+}
+
+private struct ScanSystemNotice: Identifiable, Equatable {
+    let id: String
+    let title: String
+    let message: String
+    let actionTitle: String
+}
+
 struct ScanView: View {
     @EnvironmentObject var bleManager: BLEManager
     @State private var selectedDevice: ScanResult?
     @State private var showingDeviceDetails = false
-    @State private var showFilterPanel = false
-    @State private var hasScanned = false
+    @State private var showFilterPanel: Bool
+    @State private var hasScanned: Bool
+    @State private var scanFailure: ScanFailure?
+    @State private var systemNotice: ScanSystemNotice?
     @State private var provisioningDevice: ScanResult?
     @State private var hidDetailRoute: ScanDeviceIdRoute?
     @State private var hidDiagnosticsRoute: ScanDeviceIdRoute?
+
+    init(previewScenario: ScanPreviewScenario? = nil) {
+        _showFilterPanel = State(initialValue: previewScenario == .filterExpanded)
+        _hasScanned = State(initialValue: previewScenario == .filterExpanded || previewScenario == .filterEmpty)
+        _scanFailure = State(initialValue: previewScenario == .scanFailed
+            ? ScanFailure(
+                code: "scan_failed",
+                message: "扫描启动失败：蓝牙适配器初始化超时。请在系统设置确认蓝牙已开启后重试。"
+            )
+            : nil)
+        _systemNotice = State(initialValue: previewScenario == .bluetoothOff
+            ? ScanSystemNotice(
+                id: "bluetooth_off",
+                title: "提示",
+                message: "请先打开系统蓝牙",
+                actionTitle: "去开启"
+            )
+            : nil)
+    }
 
     var body: some View {
         VStack(spacing: 0) {
             navbar
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 0) {
+                    if let scanFailure {
+                        scanErrorBanner(scanFailure)
+                            .padding(.top, 12)
+                    }
                     scanToolbar
                     sectionHeader
                     if showFilterPanel {
                         FilterPanel()
                             .padding(.bottom, 12)
                     }
-                    if bleManager.filteredScanResults.isEmpty {
+                    if scanFailure == nil, bleManager.filteredScanResults.isEmpty {
                         emptyState
-                    } else {
+                    } else if scanFailure == nil {
                         deviceList
                     }
                 }
@@ -79,6 +124,18 @@ struct ScanView: View {
         .onChange(of: bleManager.filterRSSI) { _ in bleManager.applyFilters() }
         .onChange(of: bleManager.filterNamePrefix) { _ in bleManager.applyFilters() }
         .onChange(of: bleManager.hideNoNameDevices) { _ in bleManager.applyFilters() }
+        .onChange(of: bleManager.bluetoothState) { state in
+            if state == .poweredOff || state == .unauthorized {
+                presentBluetoothOffNotice()
+            }
+        }
+        .alert(item: $systemNotice) { notice in
+            Alert(
+                title: Text(notice.title),
+                message: Text(notice.message),
+                dismissButton: .default(Text(notice.actionTitle), action: openBluetoothSettings)
+            )
+        }
     }
 
     private var navbar: some View {
@@ -106,7 +163,7 @@ struct ScanView: View {
             }
             Spacer()
             Button(action: toggleScan) {
-                Label(bleManager.isScanning ? "停止扫描" : "开始扫描", systemImage: bleManager.isScanning ? "stop.fill" : "magnifyingglass")
+                Label(bleManager.isScanning ? "停止扫描" : "开始扫描", systemImage: bleManager.isScanning ? "stop.fill" : "plus.circle")
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundColor(.white)
                     .padding(.horizontal, 18)
@@ -129,6 +186,45 @@ struct ScanView: View {
         .padding(.bottom, 10)
     }
 
+    private func scanErrorBanner(_ failure: ScanFailure) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 7) {
+                Image(systemName: "exclamationmark.triangle")
+                    .font(.system(size: 15, weight: .bold))
+                Text("扫描失败")
+                    .font(.system(size: 15, weight: .bold))
+                NativeStatusChip(text: failure.code, tone: NativeDS.danger)
+            }
+            .foregroundColor(NativeDS.danger)
+            Text(failure.message)
+                .font(.system(size: 13))
+                .foregroundColor(NativeDS.sub)
+                .fixedSize(horizontal: false, vertical: true)
+                .lineSpacing(3)
+            Button(action: retryScan) {
+                Label("重试", systemImage: "arrow.clockwise")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundColor(NativeDS.danger)
+                    .padding(.horizontal, 13)
+                    .frame(height: 34)
+                    .background(NativeDS.dangerWeak)
+                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(NativeDS.danger.opacity(0.45)))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+            }
+            .buttonStyle(.plain)
+            .accessibilityHint("重新尝试启动蓝牙扫描")
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(14)
+        .background(NativeDS.dangerWeak)
+        .overlay(alignment: .leading) {
+            Rectangle().fill(NativeDS.danger).frame(width: 3)
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .overlay(RoundedRectangle(cornerRadius: 12).stroke(NativeDS.danger.opacity(0.18)))
+        .accessibilityElement(children: .contain)
+    }
+
     private var sectionHeader: some View {
         NativeSectionHeading(icon: "cpu", title: "附近设备") {
             HStack(spacing: 10) {
@@ -141,7 +237,7 @@ struct ScanView: View {
                         .background(NativeDS.fill)
                         .clipShape(Capsule())
                 }
-                Button(showFilterPanel ? "收起" : "筛选") {
+                Button(showFilterPanel ? "收起筛选" : "筛选") {
                     withAnimation(.easeInOut(duration: 0.2)) { showFilterPanel.toggle() }
                 }
                 .buttonStyle(.plain)
@@ -154,10 +250,11 @@ struct ScanView: View {
 
     private var emptyState: some View {
         NativeEmptyState(
-            illustration: "radar",
-            title: hasScanned ? "没有匹配的设备" : "还没有扫描结果",
-            description: hasScanned ? "调整筛选条件，或重新扫描附近 BLE 设备" : "点上方按钮开始扫描附近 BLE 设备",
+            illustration: hasScanned ? "link" : "radar",
+            title: hasScanned ? "当前没有匹配设备" : "还没有扫描结果",
+            description: hasScanned ? "调整筛选条件试试" : "点上方按钮开始扫描附近 BLE 设备",
             actionTitle: hasScanned ? nil : "开始扫描",
+            actionIcon: hasScanned ? nil : "plus.circle",
             action: hasScanned ? nil : toggleScan
         )
         .padding(.top, 26)
@@ -210,8 +307,39 @@ struct ScanView: View {
             bleManager.stopScan()
         } else {
             hasScanned = true
-            bleManager.startScan()
+            scanFailure = nil
+            if bleManager.bluetoothState == .poweredOff || bleManager.bluetoothState == .unauthorized {
+                presentBluetoothOffNotice()
+                return
+            }
+            if !bleManager.startScan() {
+                scanFailure = ScanFailure(
+                    code: "scan_failed",
+                    message: "扫描启动失败：蓝牙当前不可用。请在系统设置确认蓝牙已开启后重试。"
+                )
+            }
         }
+    }
+
+    private func retryScan() {
+        scanFailure = nil
+        toggleScan()
+    }
+
+    private func openBluetoothSettings() {
+        #if os(iOS)
+        guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+        UIApplication.shared.open(url)
+        #endif
+    }
+
+    private func presentBluetoothOffNotice() {
+        systemNotice = ScanSystemNotice(
+            id: "bluetooth_off",
+            title: "提示",
+            message: "请先打开系统蓝牙",
+            actionTitle: "去开启"
+        )
     }
 }
 

@@ -72,7 +72,7 @@ final class P009AboutPage: NSViewController, PageProtocol {
     private let platformStatus: [(name: String, cap: String, rel: String)] = [
         ("微信小程序", "VERIFIED", "PREVIEW"),
         ("App · Android", "PREVIEW", "NOT_RELEASED"),
-        ("App · iOS", "UNSUPPORTED", "NOT_RELEASED"),
+        ("App · iOS", "PREVIEW", "NOT_RELEASED"),
         ("H5 / Web", "UNSUPPORTED", "NOT_RELEASED"),
         ("桌面端", "REFERENCE", "NOT_RELEASED"),
     ]
@@ -125,7 +125,8 @@ final class P009AboutPage: NSViewController, PageProtocol {
         brandIcon.layer?.cornerRadius = 10
         brandIcon.layer?.backgroundColor = DS.primary.cgColor
         brandIcon.translatesAutoresizingMaskIntoConstraints = false
-        let brandGlyph = makeIcon("dot.radiowaves.left.and.right", color: .white, size: 20)
+        let brandGlyph = bundledSVG("bt", width: 22, height: 22)
+            ?? makeIcon("dot.radiowaves.left.and.right", color: .white, size: 20)
         brandIcon.addSubview(brandGlyph)
         NSLayoutConstraint.activate([
             brandIcon.widthAnchor.constraint(equalToConstant: 42),
@@ -182,23 +183,35 @@ final class P009AboutPage: NSViewController, PageProtocol {
         let infoCard = Card(padding: 14)
         let featureRow1 = makeLabel(features.prefix(3).joined(separator: "   "), size: 10, weight: .semibold, color: DS.primary)
         let featureRow2 = makeLabel(features.suffix(3).joined(separator: "   "), size: 10, weight: .semibold, color: DS.primary)
-        let statusRows = platformStatus.map { item -> NSView in
-            let capColor: NSColor = item.cap == "PREVIEW" ? DS.primary : item.cap == "VERIFIED" ? DS.successDeep : DS.mut
-            return hstack([
-                makeLabel(item.name, size: 12, weight: .semibold),
-                makeLabel(item.cap, size: 10, weight: .bold, color: capColor, mono: true),
-                makeLabel(item.rel, size: 10, weight: .bold, color: DS.danger, mono: true),
-                NSView(),
-            ], spacing: 10)
+        let osRow = MenuRowButton(
+            symbol: "slider.horizontal.3",
+            title: "操作系统",
+            subtitle: "macOS · CoreBluetooth · 点按查看",
+            actionId: "dtk-ossheet"
+        ) { [weak self] in
+            self?.openOsSheet()
         }
         infoCard.setViews([
             kvRow("当前环境", "Desktop · \(osVersionText)"),
+            osRow,
             kvRow("设备型号", Host.current().localizedName ?? "Mac"),
             kvRow("构建", "Release Metadata · \(DS.probeChannel)", mono: true),
             featureRow1,
             featureRow2,
-        ] + statusRows, spacing: 5)
+        ], spacing: 5)
         views.append(infoCard)
+
+        let statusRows = platformStatus.map { item -> NSView in
+            hstack([
+                makeLabel(item.name, size: 12, weight: .semibold),
+                statusWord(item.cap),
+                statusWord(item.rel),
+                NSView(),
+            ], spacing: 10)
+        }
+        let statusCard = Card(padding: 14)
+        statusCard.setViews(statusRows, spacing: 4)
+        views.append(statusCard)
 
         let menuCard = Card(padding: 0)
         menuCard.setViews([
@@ -217,7 +230,7 @@ final class P009AboutPage: NSViewController, PageProtocol {
         ], spacing: 0)
         views.append(menuCard)
 
-        let foot = makeLabel("日志全局脱敏：敏感凭据显示为 token=***\nBLE Toolkit+ · Smart BLE 产品家族", size: 10, color: DS.ph, align: .center)
+        let foot = makeLabel("日志全局脱敏：敏感凭据显示为 token=***\nBLE Toolkit+ · Smart BLE 产品家族 · 微信小程序 wxf6c58b1dcac4c82d", size: 10, color: DS.ph, align: .center)
         foot.maximumNumberOfLines = 0
         views.append(foot)
 

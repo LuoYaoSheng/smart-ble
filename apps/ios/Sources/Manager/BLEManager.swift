@@ -94,6 +94,15 @@ class BLEManager: NSObject, ObservableObject {
     // MARK: - Timer
     private var autoStopTimer: Timer?
 
+    #if DEBUG
+    private var previewBluetoothStateLock: BLEState?
+
+    func lockBluetoothStateForPreview(_ state: BLEState) {
+        previewBluetoothStateLock = state
+        bluetoothState = state
+    }
+    #endif
+
     // MARK: - T06: Auto-Reconnect (aligned with Flutter: max 3 attempts, exponential backoff)
     private let maxReconnectAttempts = 3
     private var reconnectAttempts: [String: Int] = [:]     // deviceId -> attempt count
@@ -168,10 +177,11 @@ class BLEManager: NSObject, ObservableObject {
     }
 
     // MARK: - Scanning
-    func startScan() {
+    @discardableResult
+    func startScan() -> Bool {
         guard centralManager.state == .poweredOn else {
             log("Bluetooth not ready", type: .error)
-            return
+            return false
         }
 
         scanResults.removeAll()
@@ -196,6 +206,7 @@ class BLEManager: NSObject, ObservableObject {
                 }
             }
         }
+        return true
     }
 
     func stopScan() {
@@ -577,6 +588,12 @@ class BLEManager: NSObject, ObservableObject {
 // MARK: - CBCentralManagerDelegate
 extension BLEManager: @preconcurrency CBCentralManagerDelegate {
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
+        #if DEBUG
+        if let previewBluetoothStateLock {
+            bluetoothState = previewBluetoothStateLock
+            return
+        }
+        #endif
         switch central.state {
         case .unknown:
             bluetoothState = .unknown

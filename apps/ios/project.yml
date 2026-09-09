@@ -42,8 +42,6 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.luoyaosheng.smartble.ios
         INFOPLIST_FILE: SmartBLE/Resources/Info.plist
         CODE_SIGN_ENTITLEMENTS: SmartBLE/Resources/SmartBLE.entitlements
-    scheme:
-      gatherCoverageData: false
   SmartBLETests:
     type: bundle.unit-test
     platform: iOS
@@ -62,3 +60,13 @@ targets:
         INFOPLIST_FILE: ""
         TEST_HOST: "$(BUILT_PRODUCTS_DIR)/SmartBLE.app/SmartBLE"
         BUNDLE_LOADER: "$(TEST_HOST)"
+schemes:
+  SmartBLEiOS:
+    build:
+      targets:
+        SmartBLEiOS: all
+        SmartBLETests: [test]
+    test:
+      gatherCoverageData: false
+      targets:
+        - SmartBLETests

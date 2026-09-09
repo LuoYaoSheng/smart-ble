@@ -39,11 +39,12 @@ struct AboutView: View {
                         EmptyView()
                     }
                     applicationCard
+                    platformStatusCard
                     menuCard
 
                     VStack(spacing: 2) {
                         Text("日志全局脱敏：敏感凭据显示为 token=***")
-                        Text("BLE Toolkit+ · Smart BLE 产品家族")
+                        Text("BLE Toolkit+ · Smart BLE 产品家族 · 微信小程序 wxf6c58b1dcac4c82d")
                     }
                     .font(.system(size: 10))
                     .foregroundColor(NativeDS.placeholder)
@@ -72,9 +73,9 @@ struct AboutView: View {
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
-                Image(systemName: "antenna.radiowaves.left.and.right")
-                    .font(.system(size: 20, weight: .semibold))
-                    .foregroundColor(.white)
+                NativeResourceImage(name: "bt")
+                    .scaledToFit()
+                    .frame(width: 22, height: 22)
             }
             .frame(width: 42, height: 42)
             .clipShape(RoundedRectangle(cornerRadius: 10))
@@ -155,6 +156,12 @@ struct AboutView: View {
             }
             .padding(.vertical, 12)
 
+        }
+        .nativeCard(padding: 14)
+    }
+
+    private var platformStatusCard: some View {
+        VStack(spacing: 2) {
             platformRow("微信小程序", capability: "PREVIEW", release: "NOT_RELEASED")
             platformRow("App · Android", capability: "PREVIEW", release: "NOT_RELEASED")
             platformRow(

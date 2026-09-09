@@ -1,4 +1,9 @@
 import SwiftUI
+#if canImport(UIKit)
+import UIKit
+#elseif canImport(AppKit)
+import AppKit
+#endif
 
 enum NativeTab: Int, CaseIterable, Identifiable {
     case scan
@@ -128,17 +133,45 @@ struct NativeIllustration: View {
     var width: CGFloat = 118
 
     var body: some View {
-        illustration
-            .resizable()
+        NativeResourceImage(name: name)
             .scaledToFit()
             .frame(width: width, height: width * 86 / 118)
     }
+}
 
-    private var illustration: Image {
-        #if SWIFT_PACKAGE
-        Image(name, bundle: .module)
+struct NativeResourceImage: View {
+    let name: String
+
+    var body: some View { resourceImage.resizable() }
+
+    private var resourceImage: Image {
+        let resourceBundle: Bundle = {
+            #if SWIFT_PACKAGE
+            return .module
+            #else
+            return .main
+            #endif
+        }()
+
+        guard let url = resourceBundle.url(forResource: name, withExtension: "png") else {
+            assertionFailure("Missing illustration resource: \(name).png")
+            return Image(systemName: "photo")
+        }
+
+        #if canImport(UIKit)
+        guard let bitmap = UIImage(contentsOfFile: url.path) else {
+            assertionFailure("Unreadable illustration resource: \(url.path)")
+            return Image(systemName: "photo")
+        }
+        return Image(uiImage: bitmap)
+        #elseif canImport(AppKit)
+        guard let bitmap = NSImage(contentsOf: url) else {
+            assertionFailure("Unreadable illustration resource: \(url.path)")
+            return Image(systemName: "photo")
+        }
+        return Image(nsImage: bitmap)
         #else
-        Image(name)
+        return Image(name, bundle: resourceBundle)
         #endif
     }
 }
@@ -148,6 +181,7 @@ struct NativeEmptyState: View {
     let title: String
     let description: String
     var actionTitle: String?
+    var actionIcon: String? = nil
     var action: (() -> Void)?
 
     var body: some View {
@@ -165,7 +199,13 @@ struct NativeEmptyState: View {
                 .lineSpacing(3)
                 .frame(maxWidth: 250)
             if let actionTitle, let action {
-                Button(actionTitle, action: action)
+                Button(action: action) {
+                    if let actionIcon {
+                        Label(actionTitle, systemImage: actionIcon)
+                    } else {
+                        Text(actionTitle)
+                    }
+                }
                     .buttonStyle(.plain)
                     .font(.system(size: 13, weight: .semibold))
                     .foregroundColor(NativeDS.ink)

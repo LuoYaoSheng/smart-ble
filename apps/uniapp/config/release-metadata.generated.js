@@ -36,9 +36,10 @@ export const RELEASE_METADATA = {
     },
     "ios": {
       "name": "iOS",
-      "role": "future",
-      "capability_status": "NOT_RELEASED",
-      "release_status": "NOT_RELEASED"
+      "role": "mainline",
+      "capability_status": "PREVIEW",
+      "release_status": "NOT_RELEASED",
+      "reason": "纯原生 SwiftUI 功能与默认/关键交互态已实现；真机签名 E5 尚未完成"
     },
     "flutter_tauri_native": {
       "name": "Flutter / Tauri / 原生端",
@@ -81,6 +82,7 @@ export const RELEASE_METADATA = {
     "微信正式小程序码尚未发布",
     "Playwright / Page Driver E4 尚未完成",
     "Android、微信、ESP32 E5 尚未执行",
+    "iOS 真机签名与 E5 验证尚未完成",
     "OTA 当前 BLOCKED",
     "ESP32 Observer 尚未完成",
     "Smart HID 尚未完成端到端 E5",

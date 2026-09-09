@@ -12,6 +12,13 @@ final class P001ScanPage: NSViewController, PageProtocol {
     private var scanError: (code: String, message: String)?
     private var filterOpen = false
 
+    enum PreviewState: String {
+        case filterExpanded = "p001-filter-expanded"
+        case filterEmpty = "p001-filter-empty"
+        case scanFailed = "p001-scan-failed"
+        case unsupported = "p001-unsupported"
+    }
+
     init(host: PageHost) {
         self.host = host
         super.init(nibName: nil, bundle: nil)
@@ -46,6 +53,8 @@ final class P001ScanPage: NSViewController, PageProtocol {
         let scanLb: String
         if ble.isScanning {
             scanLb = "扫描中 · 5s 会话"
+        } else if ble.filteredToEmpty {
+            scanLb = "扫描完成 · 发现 0 台"
         } else {
             scanLb = ble.lastScanSummary
         }
@@ -61,7 +70,6 @@ final class P001ScanPage: NSViewController, PageProtocol {
         }
         let tool = hstack([makeLabel(scanLb, size: 12, color: DS.mut), NSView(), scanBtn], spacing: 10)
         tool.translatesAutoresizingMaskIntoConstraints = false
-        views.append(tool)
 
         // 错误横幅（扫描失败 → 重试）
         if let err = scanError {
@@ -71,6 +79,7 @@ final class P001ScanPage: NSViewController, PageProtocol {
             }
             views.append(errorBanner(code: err.code, message: err.message, retry: retry))
         }
+        views.append(tool)
 
         // ③ 附近设备面板（筛选 + 列表）
         let shown = ble.filteredScanResults
@@ -85,7 +94,9 @@ final class P001ScanPage: NSViewController, PageProtocol {
             views.append(filterPanel())
         }
 
-        if shown.isEmpty {
+        if scanError != nil {
+            // HTML 正典：错误态保留分节标题，不同时显示空态插画。
+        } else if shown.isEmpty {
             if ble.filteredToEmpty {
                 views.append(emptyState(symbol: "link.badge.plus", title: "当前没有匹配设备", desc: "调整筛选条件试试"))
             } else {
@@ -102,6 +113,29 @@ final class P001ScanPage: NSViewController, PageProtocol {
         }
 
         scroll.setViews(views)
+    }
+
+    func applyPreviewState(_ state: PreviewState) {
+        switch state {
+        case .filterExpanded:
+            filterOpen = true
+            scanError = nil
+        case .filterEmpty:
+            filterOpen = false
+            scanError = nil
+            host?.ble.filterNamePrefix = "__no_matching_device__"
+        case .scanFailed:
+            filterOpen = false
+            scanError = (
+                code: "scan_failed",
+                message: "扫描启动失败：蓝牙适配器初始化超时。请在系统设置确认蓝牙已开启后重试。"
+            )
+        case .unsupported:
+            filterOpen = false
+            scanError = nil
+            host?.ble.btState = .unsupported
+        }
+        rebuild()
     }
 
     private func startScan() {
@@ -222,6 +256,7 @@ final class P001ScanPage: NSViewController, PageProtocol {
         acts.append(connectBtn)
         let top = hstack([avatar, mid], spacing: 12, alignment: .top)
         let actsRow = hstack(acts, spacing: 9)
+        actsRow.distribution = .fillEqually
         actsRow.translatesAutoresizingMaskIntoConstraints = false
 
         let card = Card()

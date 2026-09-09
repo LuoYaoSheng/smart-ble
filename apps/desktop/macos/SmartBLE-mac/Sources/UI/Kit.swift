@@ -441,9 +441,13 @@ final class MenuRowButton: NSButton {
 @MainActor
 func emptyState(symbol: String, title: String, desc: String, action: DSButton? = nil) -> NSView {
     var views: [NSView] = []
-    let icon = makeIcon(symbol, color: DS.ph, size: 34)
-    icon.contentTintColor = DS.primary
-    views.append(icon)
+    if let illustration = canonicalIllustration(symbol: symbol) {
+        views.append(illustration)
+    } else {
+        let icon = makeIcon(symbol, color: DS.ph, size: 34)
+        icon.contentTintColor = DS.primary
+        views.append(icon)
+    }
     views.append(makeLabel(title, size: 17, weight: .bold, align: .center))
     views.append(makeLabel(desc, size: 13, color: DS.mut, align: .center))
     if let action {
@@ -460,6 +464,48 @@ func emptyState(symbol: String, title: String, desc: String, action: DSButton? =
         stack.centerXAnchor.constraint(equalTo: box.centerXAnchor),
     ])
     return box
+}
+
+@MainActor
+private func canonicalIllustration(symbol: String) -> NSImageView? {
+    let name: String
+    switch symbol {
+    case "dot.radiowaves.left.and.right": name = "radar"
+    case "link.badge.plus", "link": name = "link"
+    case "doc", "doc.text": name = "doc"
+    case "shippingbox", "shippingbox.fill": name = "box"
+    default: return nil
+    }
+    guard let url = Bundle.module.url(forResource: name, withExtension: "svg"),
+          let image = NSImage(contentsOf: url) else {
+        fputs("[UI] missing canonical illustration: \(name).svg\n", stderr)
+        return nil
+    }
+    let view = NSImageView(image: image)
+    view.imageScaling = .scaleProportionallyUpOrDown
+    view.translatesAutoresizingMaskIntoConstraints = false
+    NSLayoutConstraint.activate([
+        view.widthAnchor.constraint(equalToConstant: 118),
+        view.heightAnchor.constraint(equalToConstant: 86),
+    ])
+    return view
+}
+
+@MainActor
+func bundledSVG(_ name: String, width: CGFloat, height: CGFloat) -> NSImageView? {
+    guard let url = Bundle.module.url(forResource: name, withExtension: "svg"),
+          let image = NSImage(contentsOf: url) else {
+        fputs("[UI] missing bundled SVG: \(name).svg\n", stderr)
+        return nil
+    }
+    let view = NSImageView(image: image)
+    view.imageScaling = .scaleProportionallyUpOrDown
+    view.translatesAutoresizingMaskIntoConstraints = false
+    NSLayoutConstraint.activate([
+        view.widthAnchor.constraint(equalToConstant: width),
+        view.heightAnchor.constraint(equalToConstant: height),
+    ])
+    return view
 }
 
 @MainActor

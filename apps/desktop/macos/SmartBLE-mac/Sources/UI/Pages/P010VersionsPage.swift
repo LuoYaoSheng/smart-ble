@@ -57,14 +57,24 @@ final class P010VersionsPage: NSViewController, PageProtocol {
         version.setContentCompressionResistancePriority(.required, for: .horizontal)
 
         let card = Card(padding: 14)
+        let platformRow1 = hstack([
+            statusWord("微信小程序 PREVIEW", tone: "primary"),
+            statusWord("App · Android NOT_RELEASED", tone: "danger"),
+            statusWord("App · iOS NOT_RELEASED", tone: "danger"),
+            NSView(),
+        ], spacing: 6)
+        let platformRow2 = hstack([
+            statusWord("H5 / Web NOT_RELEASED", tone: "danger"),
+            statusWord("桌面端 NOT_RELEASED", tone: "danger"),
+            NSView(),
+        ], spacing: 6)
         card.setViews([
             sectionTitle("doc", "当前版本"),
-            version,
-            makeLabel(DS.probeChannel, size: 10, weight: .bold, color: DS.primary, mono: true),
+            hstack([version, statusWord(DS.probeChannel, tone: "primary"), NSView()], spacing: 10),
             kvRow("构建", "v+local", mono: true),
             kvRow("Release tag", "已登记（preview）"),
-            makeLabel("微信小程序 PREVIEW   App · Android NOT_RELEASED   App · iOS NOT_RELEASED", size: 10, weight: .bold, color: DS.primary, mono: true),
-            makeLabel("H5 / Web NOT_RELEASED   桌面端 NOT_RELEASED", size: 10, weight: .bold, color: DS.danger, mono: true),
+            platformRow1,
+            platformRow2,
             DSButton("复制版本信息", tone: .soft, small: true, symbol: "doc.on.doc", actionId: "p010-copy") { [weak self] in
                 NSPasteboard.general.clearContents()
                 NSPasteboard.general.setString("\(DS.probeVersion) · \(DS.probeChannel) · \(DS.probeBranch)", forType: .string)
