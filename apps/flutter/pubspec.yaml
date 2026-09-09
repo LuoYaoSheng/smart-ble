@@ -68,7 +68,8 @@ flutter_native_splash:
   android_12:
     color: "#F8FBFF"
     icon_background_color: "#F8FBFF"
-    image: "assets/images/splash_logo.png"
+    # A12 系统会把图标裁成圆——用无字标的磁贴专用图，防字标被裁掉
+    image: "assets/images/splash_icon_a12.png"
 
 # Flutter 配置
 flutter:

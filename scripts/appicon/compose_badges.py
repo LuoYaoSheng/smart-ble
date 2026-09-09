@@ -239,16 +239,81 @@ def cmd_distribute(args):
           "`cd apps/flutter && dart run flutter_launcher_icons` 重生成 Android mipmap/macOS 图标集")
 
 
+def rounded_tile(img: Image.Image, size: int) -> Image.Image:
+    """满幅底图 → 圆角磁贴（透明角），iOS 风 22.5% 圆角。"""
+    tile = img.convert("RGBA").resize((size, size), Image.LANCZOS)
+    mask = Image.new("L", (size, size), 0)
+    ImageDraw.Draw(mask).rounded_rectangle((0, 0, size - 1, size - 1), int(size * 0.225), fill=255)
+    tile.putalpha(mask)
+    return tile
+
+
+SPLASH_BG = "#F8FBFF"   # 正典 cBg 冰蓝（启动图 → 首页自然衔接）
+WORDMARK = "BLE Toolkit+"  # 与两端 android:label 一致；Pillow 渲染，杜绝 AI 拼写
+INK = "#18222E"         # 正典 cText
+
+UNIAPP_SPLASH_SIZES = {  # manifest distribute.splashscreen.android 引用的四密度竖屏
+    "hdpi": (480, 762), "xhdpi": (720, 1184),
+    "xxhdpi": (1080, 1818), "xxxhdpi": (1440, 2424),
+}
+
+
+def make_lockup(variant_img: Image.Image, canvas: int = 1254, tile: int = 640) -> Image.Image:
+    """透明底竖排组合：圆角磁贴 + 字标（flutter_native_splash image 用）。"""
+    im = Image.new("RGBA", (canvas, canvas), (0, 0, 0, 0))
+    top = int(canvas * 0.30)
+    im.alpha_composite(rounded_tile(variant_img, tile), ((canvas - tile) // 2, top))
+    d = ImageDraw.Draw(im)
+    d.text((canvas // 2, top + tile + int(canvas * 0.10)), WORDMARK,
+           font=load_font(int(canvas * 0.085)), fill=hex_rgb(INK), anchor="mm")
+    return im
+
+
+def make_a12_icon(variant_img: Image.Image, canvas: int = 1152, tile: int = 712) -> Image.Image:
+    """Android12 系统启动图图标：磁贴居中，tile ≤ 2/3 画布防圆形裁切。"""
+    im = Image.new("RGBA", (canvas, canvas), (0, 0, 0, 0))
+    im.alpha_composite(rounded_tile(variant_img, tile), ((canvas - tile) // 2, (canvas - tile) // 2))
+    return im
+
+
+def make_portrait(variant_img: Image.Image, w: int, h: int) -> Image.Image:
+    """uniapp 竖屏整幅启动图：冰蓝底 + 磁贴 + 字标。"""
+    im = Image.new("RGB", (w, h), hex_rgb(SPLASH_BG))
+    s = w / 1080.0
+    tile = int(432 * s)                       # 40% 画布宽
+    top = int(h * 0.40)
+    t = rounded_tile(variant_img, tile)
+    im.paste(t, ((w - tile) // 2, top), t)
+    ImageDraw.Draw(im).text((w // 2, top + tile + int(84 * s)), WORDMARK,
+                            font=load_font(int(96 * s)), fill=hex_rgb(INK), anchor="mm")
+    return im
+
+
+def cmd_splash(args):
+    # 启动页是品牌时刻：各端统一用无角标母版（角标只用于桌面图标区分技术栈）
+    OUT_DIR.mkdir(exist_ok=True)
+    base = Image.open(OUT_DIR / "base.png")
+    save_png(make_lockup(base), APPS / "flutter/assets/images/splash_logo.png")
+    save_png(make_a12_icon(base), APPS / "flutter/assets/images/splash_icon_a12.png")
+    splash_dir = APPS / "uniapp/static/splash"
+    splash_dir.mkdir(exist_ok=True)
+    for name, (w, h) in UNIAPP_SPLASH_SIZES.items():
+        save_png(make_portrait(base, w, h), splash_dir / f"{name}.png")
+    print("[splash] flutter: splash_logo.png(1254 lockup) + splash_icon_a12.png(1152) 已更新（统一 base）")
+    print("[splash] uniapp: static/splash/ 四密度竖屏已更新（统一 base；重打包需 HBuilderX）")
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     sub = ap.add_subparsers(dest="cmd", required=True)
     c = sub.add_parser("compose", help="生成角标变体")
     c.add_argument("--base", help="底图路径，默认 .gen/base.png")
+    sub.add_parser("splash", help="从 out/base.png（无角标）重生成两端启动图")
     d = sub.add_parser("distribute", help="分发变体到各端")
     d.add_argument("--variant", help="单个变体名")
     d.add_argument("--all", action="store_true", help="全部分发")
     args = ap.parse_args()
-    {"compose": cmd_compose, "distribute": cmd_distribute}[args.cmd](args)
+    {"compose": cmd_compose, "distribute": cmd_distribute, "splash": cmd_splash}[args.cmd](args)
 
 
 if __name__ == "__main__":
