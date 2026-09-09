@@ -22,6 +22,9 @@ settings:
     ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
     ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
     INFOPLIST_KEY_CFBundleDisplayName: Smart BLE
+packages:
+  SmartHidCore:
+    path: ../../core/apple/SmartHidCore
 targets:
   SmartBLEiOS:
     type: application
@@ -32,6 +35,8 @@ targets:
     resources:
       - path: Sources/Resources
       - path: SmartBLE/Resources
+    dependencies:
+      - package: SmartHidCore
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.luoyaosheng.smartble.ios
@@ -39,3 +44,21 @@ targets:
         CODE_SIGN_ENTITLEMENTS: SmartBLE/Resources/SmartBLE.entitlements
     scheme:
       gatherCoverageData: false
+  SmartBLETests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "15.0"
+    sources:
+      - path: Tests/SmartBLETests
+    dependencies:
+      - target: SmartBLEiOS
+      - package: SmartHidCore
+    settings:
+      base:
+        PRODUCT_NAME: SmartBLETests
+        PRODUCT_MODULE_NAME: SmartBLETests
+        PRODUCT_BUNDLE_IDENTIFIER: com.luoyaosheng.smartble.ios.tests
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_FILE: ""
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/SmartBLE.app/SmartBLE"
+        BUNDLE_LOADER: "$(TEST_HOST)"

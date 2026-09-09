@@ -14,15 +14,27 @@ let package = Package(
             targets: ["SmartBLE"]
         )
     ],
-    dependencies: [],
+    dependencies: [
+        .package(path: "../../core/apple/SmartHidCore"),
+    ],
     targets: [
         .executableTarget(
             name: "SmartBLE",
-            dependencies: [],
+            dependencies: [
+                .product(name: "SmartHidCore", package: "SmartHidCore"),
+            ],
             path: "Sources",
             resources: [
                 .process("Resources")
             ]
-        )
+        ),
+        .testTarget(
+            name: "SmartBLETests",
+            dependencies: [
+                "SmartBLE",
+                .product(name: "SmartHidCore", package: "SmartHidCore"),
+            ],
+            path: "Tests/SmartBLETests"
+        ),
     ]
 )

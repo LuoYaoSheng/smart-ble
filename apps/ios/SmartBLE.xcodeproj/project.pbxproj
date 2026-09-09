@@ -9,7 +9,10 @@
 /* Begin PBXBuildFile section */
 		02C1E9A863F5B0F75C07AAC3 /* FilterPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56BB7ACAD0145FCA623322D7 /* FilterPanel.swift */; };
 		034E5E5D025224B4D6451B32 /* OtaUpgradeDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52779D52F0DFC170465641E4 /* OtaUpgradeDialog.swift */; };
+		069755C8343B8C3B00C74985 /* AppleSharedCoreWiringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13E2AA0791F9F19E24C9AB33 /* AppleSharedCoreWiringTests.swift */; };
+		097C4AFB40A786795E7927CE /* SmartHidCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3248CA4C5D97F11B0A524166 /* SmartHidCore */; };
 		1BFF657A638115F8CBB179D2 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = E22A8998DC94EAC6893EC901 /* Logger.swift */; };
+		1F4F7E8A02FD10B207986A5C /* SmartHidCore in Frameworks */ = {isa = PBXBuildFile; productRef = 8F9D803588D9FB74511D876F /* SmartHidCore */; };
 		2CE70E0DA00FF8E86555F06B /* LogPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 137F253935B8138373A74D80 /* LogPanel.swift */; };
 		3B84C81AA4A1C69D6F02E4D3 /* ServicePanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 462DA3B443181DB32C47D13E /* ServicePanel.swift */; };
 		3CDB7BCA1DD5A74CEC88270B /* WriteDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A4DB018938F07D52FB634F /* WriteDialog.swift */; };
@@ -36,17 +39,29 @@
 		FE762B7F1B90CDBBC342B45C /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F15F8549CEC94A4D6D44FF1 /* ScanView.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		4E445857C51810495BDE7378 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9B59E989B69DB407E991FF5D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5D5E79DDF7640D48210797D7;
+			remoteInfo = SmartBLEiOS;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		0006B12F2F5FEC51463E3F10 /* SmartBLEiOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SmartBLEiOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		07D15368FDB6F074D15A8402 /* DeviceCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceCard.swift; sourceTree = "<group>"; };
 		1182918520BEA6E16E071F11 /* about-hero.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "about-hero.png"; sourceTree = "<group>"; };
 		137F253935B8138373A74D80 /* LogPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogPanel.swift; sourceTree = "<group>"; };
+		13E2AA0791F9F19E24C9AB33 /* AppleSharedCoreWiringTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleSharedCoreWiringTests.swift; sourceTree = "<group>"; };
 		16B84EDEAA2DEDB0F1D69892 /* brand_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = brand_icon.png; sourceTree = "<group>"; };
 		2D23893A779509A137E6E969 /* SmartBLEApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartBLEApp.swift; sourceTree = "<group>"; };
 		379EDFD1A1865294CCF5CCBB /* share.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = share.png; sourceTree = "<group>"; };
 		42A816227B7BB813884F682C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		462DA3B443181DB32C47D13E /* ServicePanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServicePanel.swift; sourceTree = "<group>"; };
 		4CC42244C97C0B70F43BD70C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		4E41D4D2C89B1487693E71F2 /* SmartHidCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = SmartHidCore; path = ../../core/apple/SmartHidCore; sourceTree = SOURCE_ROOT; };
 		52779D52F0DFC170465641E4 /* OtaUpgradeDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtaUpgradeDialog.swift; sourceTree = "<group>"; };
 		56BB7ACAD0145FCA623322D7 /* FilterPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterPanel.swift; sourceTree = "<group>"; };
 		5AF4F26029430920BAAF663F /* BLEManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEManager.swift; sourceTree = "<group>"; };
@@ -54,6 +69,7 @@
 		73DB8A6CEF567DD328E7BA62 /* DeviceDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceDetailView.swift; sourceTree = "<group>"; };
 		7824A16A76CDD2CC6CFCE21A /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		7F15F8549CEC94A4D6D44FF1 /* ScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
+		8A64A4937D6D7D446DBFD205 /* SmartBLETests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SmartBLETests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9DC41E4EFEC71424985D1200 /* CommandQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandQueue.swift; sourceTree = "<group>"; };
 		A8E7C88C56F5158B76242441 /* BLEModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEModels.swift; sourceTree = "<group>"; };
 		C147C380D7B5409A069AEE00 /* share_card.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = share_card.png; sourceTree = "<group>"; };
@@ -67,6 +83,25 @@
 		E1A96626176E83F3A438B76B /* BLEUuids.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEUuids.swift; sourceTree = "<group>"; };
 		E22A8998DC94EAC6893EC901 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		9D401AAD787D321BA047D2DF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1F4F7E8A02FD10B207986A5C /* SmartHidCore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C008BD92757D83E153157784 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				097C4AFB40A786795E7927CE /* SmartHidCore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		074619DEEB58FA52AE4B6055 /* Components */ = {
@@ -107,7 +142,9 @@
 		1492C0988AC6DFA601A79B0C = {
 			isa = PBXGroup;
 			children = (
+				D202D305B895CB95AF4F1FCB /* Packages */,
 				DC29378558504D916094B1C1 /* Sources */,
+				E15FBA08F868FDC35E52C296 /* Tests */,
 				D4F575CA4A1F02C47DB76674 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -145,10 +182,27 @@
 			path = Manager;
 			sourceTree = "<group>";
 		};
+		C16DABF9813871244D78B9F0 /* SmartBLETests */ = {
+			isa = PBXGroup;
+			children = (
+				13E2AA0791F9F19E24C9AB33 /* AppleSharedCoreWiringTests.swift */,
+			);
+			path = SmartBLETests;
+			sourceTree = "<group>";
+		};
+		D202D305B895CB95AF4F1FCB /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				4E41D4D2C89B1487693E71F2 /* SmartHidCore */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
 		D4F575CA4A1F02C47DB76674 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				0006B12F2F5FEC51463E3F10 /* SmartBLEiOS.app */,
+				8A64A4937D6D7D446DBFD205 /* SmartBLETests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -164,6 +218,14 @@
 				83C8021035DA3D27361A5DAA /* Views */,
 			);
 			path = Sources;
+			sourceTree = "<group>";
+		};
+		E15FBA08F868FDC35E52C296 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				C16DABF9813871244D78B9F0 /* SmartBLETests */,
+			);
+			path = Tests;
 			sourceTree = "<group>";
 		};
 		E41A79DB22F7A89D0340E2B5 /* Models */ = {
@@ -184,6 +246,7 @@
 			buildPhases = (
 				D8DD48684AB17B41843B6166 /* Sources */,
 				6832461B6C4AEAA28F6A20A9 /* Resources */,
+				9D401AAD787D321BA047D2DF /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -191,10 +254,31 @@
 			);
 			name = SmartBLEiOS;
 			packageProductDependencies = (
+				8F9D803588D9FB74511D876F /* SmartHidCore */,
 			);
 			productName = SmartBLEiOS;
 			productReference = 0006B12F2F5FEC51463E3F10 /* SmartBLEiOS.app */;
 			productType = "com.apple.product-type.application";
+		};
+		903D17A032C79A2CFA2D10DF /* SmartBLETests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 95E8A6F4AE13A372EEA26412 /* Build configuration list for PBXNativeTarget "SmartBLETests" */;
+			buildPhases = (
+				0152000A20C28315165359E7 /* Sources */,
+				C008BD92757D83E153157784 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				31D942686DD26F5C3E60128E /* PBXTargetDependency */,
+			);
+			name = SmartBLETests;
+			packageProductDependencies = (
+				3248CA4C5D97F11B0A524166 /* SmartHidCore */,
+			);
+			productName = SmartBLETests;
+			productReference = 8A64A4937D6D7D446DBFD205 /* SmartBLETests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -206,6 +290,10 @@
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					5D5E79DDF7640D48210797D7 = {
+						DevelopmentTeam = "${IOS_DEVELOPMENT_TEAM}";
+						ProvisioningStyle = Automatic;
+					};
+					903D17A032C79A2CFA2D10DF = {
 						DevelopmentTeam = "${IOS_DEVELOPMENT_TEAM}";
 						ProvisioningStyle = Automatic;
 					};
@@ -222,10 +310,14 @@
 			);
 			mainGroup = 1492C0988AC6DFA601A79B0C;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				843E5B301A225031DBE64A55 /* XCLocalSwiftPackageReference "../../core/apple/SmartHidCore" */,
+			);
 			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
+				903D17A032C79A2CFA2D10DF /* SmartBLETests */,
 				5D5E79DDF7640D48210797D7 /* SmartBLEiOS */,
 			);
 		};
@@ -249,6 +341,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		0152000A20C28315165359E7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				069755C8343B8C3B00C74985 /* AppleSharedCoreWiringTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D8DD48684AB17B41843B6166 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -277,6 +377,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		31D942686DD26F5C3E60128E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5D5E79DDF7640D48210797D7 /* SmartBLEiOS */;
+			targetProxy = 4E445857C51810495BDE7378 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		BD8A44D01A06FE97C69A66BF /* Localizable.strings */ = {
@@ -377,6 +485,48 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
+		};
+		640A23928784B354284AF39B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.luoyaosheng.smartble.ios.tests;
+				PRODUCT_MODULE_NAME = SmartBLETests;
+				PRODUCT_NAME = SmartBLETests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SmartBLE.app/SmartBLE";
+			};
+			name = Release;
+		};
+		7E3575436FC4438071A40409 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.luoyaosheng.smartble.ios.tests;
+				PRODUCT_MODULE_NAME = SmartBLETests;
+				PRODUCT_NAME = SmartBLETests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SmartBLE.app/SmartBLE";
+			};
+			name = Debug;
 		};
 		D6F426C39E4CE3DD28D9BDF0 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -484,6 +634,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
+		95E8A6F4AE13A372EEA26412 /* Build configuration list for PBXNativeTarget "SmartBLETests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7E3575436FC4438071A40409 /* Debug */,
+				640A23928784B354284AF39B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		A56082D7BF03C9319A00BDC8 /* Build configuration list for PBXProject "SmartBLE" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -494,6 +653,24 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		843E5B301A225031DBE64A55 /* XCLocalSwiftPackageReference "../../core/apple/SmartHidCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../core/apple/SmartHidCore;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3248CA4C5D97F11B0A524166 /* SmartHidCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SmartHidCore;
+		};
+		8F9D803588D9FB74511D876F /* SmartHidCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SmartHidCore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 9B59E989B69DB407E991FF5D /* Project object */;
 }
