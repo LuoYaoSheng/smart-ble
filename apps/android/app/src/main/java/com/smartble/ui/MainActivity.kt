@@ -6,28 +6,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Android
-import androidx.compose.material.icons.filled.Bluetooth
-import androidx.compose.material.icons.filled.BluetoothSearching
-import androidx.compose.material.icons.filled.BroadcastOnPersonal
-import androidx.compose.material.icons.filled.Campaign
-import androidx.compose.material.icons.filled.DevicesOther
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.outlined.DevicesOther
-import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.Campaign
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -35,10 +20,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -46,15 +31,20 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import com.smartble.ui.screen.AboutScreen
+import com.smartble.BuildConfig
+import com.smartble.core.ble.BluetoothState
+import com.smartble.ui.design.AppNavbar
+import com.smartble.ui.design.AppTabBar
+import com.smartble.ui.design.BtTone
+import com.smartble.ui.design.DsBadge
+import com.smartble.ui.design.DsBadgeTone
+import com.smartble.ui.design.DsChip
 import com.smartble.ui.screen.AboutContent
-import com.smartble.ui.screen.BroadcastScreen
 import com.smartble.ui.screen.BroadcastContent
-import com.smartble.ui.screen.BluetoothStateIndicator
+import com.smartble.ui.screen.ConnectedDevicesContent
 import com.smartble.ui.screen.DeviceDetailScreen
 import com.smartble.ui.screen.DeviceListContent
-import com.smartble.ui.screen.DeviceListScreen
-import com.smartble.ui.screen.ConnectedDevicesContent
+import com.smartble.ui.screen.VersionsScreen
 import com.smartble.ui.theme.SmartBLETheme
 import com.smartble.ui.viewmodel.BroadcastViewModel
 import com.smartble.ui.viewmodel.DeviceDetailViewModel
@@ -83,25 +73,19 @@ class MainActivity : ComponentActivity() {
 }
 
 /**
- * 底部导航项
+ * 底部导航项（路由；图标/文案见 design.DsTabs —— 正典 TabBar 单一来源）
  */
-sealed class BottomNavItem(
-    val route: String,
-    val icon: ImageVector,
-    val iconSelected: ImageVector,
-    val label: String
-) {
-    data object Scan : BottomNavItem("scan", Icons.Default.BluetoothSearching, Icons.Default.Bluetooth, "扫描")
-    data object Connected : BottomNavItem("connected", Icons.Outlined.DevicesOther, Icons.Default.DevicesOther, "连接")
-    data object Broadcast : BottomNavItem("broadcast", Icons.Outlined.Campaign, Icons.Default.BroadcastOnPersonal, "广播")
-    data object About : BottomNavItem("about", Icons.Outlined.Info, Icons.Default.Info, "关于")
+sealed class BottomNavItem(val route: String) {
+    data object Scan : BottomNavItem("scan")
+    data object Connected : BottomNavItem("connected")
+    data object Broadcast : BottomNavItem("broadcast")
+    data object About : BottomNavItem("about")
 
     companion object {
         val entries: List<BottomNavItem> = listOf(Scan, Connected, Broadcast, About)
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SmartBLEApp(
     deviceListViewModel: DeviceListViewModel,
@@ -115,54 +99,88 @@ fun SmartBLEApp(
 
     // Track current destination for hiding bottom bar on detail screen
     val currentRoute = navController.currentDestination?.route
-    val showBottomBar = currentRoute != "device_detail/{deviceId}/{deviceName}"
+    val showBottomBar = currentRoute != "device_detail/{deviceId}/{deviceName}" && currentRoute != "versions"
+
+    // 广播 VM 提升到 App 级（导航栏 badge 与页面共享同一状态）
+    val broadcastViewModel: BroadcastViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
+        factory = ViewModelProvider.AndroidViewModelFactory(application)
+    )
+
+    // 正典导航层：AppNavbar（各页 kicker + 右槽）/ AppTabBar（品牌蓝激活）
+    val bluetoothState by deviceListViewModel.bluetoothState.collectAsState()
+    val connectedDevices by deviceListViewModel.connectedDevices.collectAsState()
+    val isAdvertising by broadcastViewModel.isAdvertising.collectAsState()
+    val broadcastError by broadcastViewModel.errorMessage.collectAsState()
+    val broadcastChecked by broadcastViewModel.checked.collectAsState()
+    val broadcastSupported by broadcastViewModel.runtimeSupported.collectAsState()
+    val broadcastStopped by broadcastViewModel.stopped.collectAsState()
+
+    fun switchTab(index: Int) {
+        selectedItem = index
+        val item = BottomNavItem.entries[index]
+        if (navController.currentDestination?.route != item.route) {
+            navController.navigate(item.route) {
+                popUpTo(navController.graph.startDestinationId) {
+                    saveState = true
+                }
+                launchSingleTop = true
+                restoreState = true
+            }
+        }
+    }
 
     Scaffold(
+        containerColor = com.smartble.ui.theme.cBg,
         topBar = {
             if (showBottomBar) {
-                TopAppBar(
-                    title = { Text(getTitle(selectedItem)) },
-                    actions = {
-                        when (selectedItem) {
-                            0 -> {
-                                // Scan tab actions
-                                val bluetoothState by deviceListViewModel.bluetoothState.collectAsState()
-                                BluetoothStateIndicator(bluetoothState)
-                            }
-                            else -> {}
+                when (selectedItem) {
+                    0 -> {
+                        val (tone, statusWord) = when (bluetoothState) {
+                            BluetoothState.On -> BtTone.On to "蓝牙就绪"
+                            BluetoothState.Off -> BtTone.Off to "蓝牙未开启"
+                            else -> null to "平台不支持"
                         }
+                        AppNavbar(title = "扫描", statusText = statusWord, statusTone = tone)
                     }
-                )
+                    1 -> AppNavbar(
+                        title = "已连接",
+                        kicker = "SESSIONS",
+                        trailing = { DsChip(text = "通用调试会话") },
+                    )
+                    2 -> {
+                        val (badgeText, badgeTone) = when {
+                            isAdvertising -> "广播中" to DsBadgeTone.On
+                            broadcastError != null -> "失败" to DsBadgeTone.Err
+                            broadcastStopped -> "已停止" to DsBadgeTone.Dim
+                            broadcastChecked && broadcastSupported -> "已就绪" to DsBadgeTone.Warn
+                            else -> "未就绪" to DsBadgeTone.Dim
+                        }
+                        AppNavbar(
+                            title = "广播",
+                            kicker = "PERIPHERAL",
+                            trailing = {
+                                Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
+                                    DsChip(text = "平台：Android")
+                                    DsBadge(text = badgeText, tone = badgeTone)
+                                }
+                            },
+                        )
+                    }
+                    else -> AppNavbar(
+                        title = "关于",
+                        kicker = "ABOUT",
+                        trailing = { DsChip(text = "v${BuildConfig.VERSION_NAME}+${BuildConfig.VERSION_CODE}", mono = true) },
+                    )
+                }
             }
         },
         bottomBar = {
             if (showBottomBar) {
-                NavigationBar {
-                    BottomNavItem.entries.forEachIndexed { index, item ->
-                        NavigationBarItem(
-                            selected = selectedItem == index,
-                            onClick = {
-                                selectedItem = index
-                                if (navController.currentDestination?.route != item.route) {
-                                    navController.navigate(item.route) {
-                                        popUpTo(navController.graph.startDestinationId) {
-                                            saveState = true
-                                        }
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
-                                }
-                            },
-                            icon = {
-                                Icon(
-                                    if (selectedItem == index) item.iconSelected else item.icon,
-                                    contentDescription = item.label
-                                )
-                            },
-                            label = { Text(item.label) }
-                        )
-                    }
-                }
+                AppTabBar(
+                    activeIndex = selectedItem,
+                    onSelect = ::switchTab,
+                    connectedBadge = connectedDevices.size,
+                )
             }
         }
     ) { paddingValues ->
@@ -187,22 +205,24 @@ fun SmartBLEApp(
                     viewModel = deviceListViewModel,
                     onDeviceClick = { deviceId, deviceName ->
                         navController.navigate("device_detail/$deviceId/$deviceName")
-                    }
+                    },
+                    onGoScan = { switchTab(0) },
                 )
             }
 
             // Broadcast tab
             composable(BottomNavItem.Broadcast.route) {
-                val factory = ViewModelProvider.AndroidViewModelFactory(application)
-                val viewModel: BroadcastViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
-                    factory = factory
-                )
-                BroadcastContent(viewModel = viewModel)
+                BroadcastContent(viewModel = broadcastViewModel)
             }
 
             // About tab
             composable(BottomNavItem.About.route) {
-                AboutContent()
+                AboutContent(onOpenVersions = { navController.navigate("versions") })
+            }
+
+            // Versions (sub page, no bottom bar)
+            composable("versions") {
+                VersionsScreen(onBack = { navController.popBackStack() })
             }
 
             // Device detail (full screen, no bottom bar)
@@ -240,16 +260,6 @@ fun SmartBLEApp(
                 )
             }
         }
-    }
-}
-
-fun getTitle(selectedItem: Int): String {
-    return when (selectedItem) {
-        0 -> "Smart BLE"
-        1 -> "已连接设备"
-        2 -> "BLE 广播"
-        3 -> "关于"
-        else -> "Smart BLE"
     }
 }
 

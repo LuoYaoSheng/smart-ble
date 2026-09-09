@@ -42,11 +42,14 @@ class BlePeripheralManager(private val context: Context) {
         get() = advertiser != null && bluetoothAdapter?.isEnabled == true
 
     /**
-     * 开始广播
+     * 开始广播（P008：支持厂商数据块与设备名开关；名称始终为系统蓝牙名）
      */
     @SuppressLint("MissingPermission")
     fun startAdvertising(
         serviceUuid: String,
+        manufacturerId: Int? = null,
+        manufacturerData: ByteArray? = null,
+        includeDeviceName: Boolean = true,
         onComplete: (Boolean) -> Unit
     ) {
         if (!isAdvertisingSupported) {
@@ -78,7 +81,10 @@ class BlePeripheralManager(private val context: Context) {
             setIncludeTxPowerLevel(false)
             addServiceUuid(ParcelUuid(uuid))
             // Android 会使用设备名称，无法自定义
-            setIncludeDeviceName(true)
+            setIncludeDeviceName(includeDeviceName)
+            if (manufacturerId != null && manufacturerData != null && manufacturerData.isNotEmpty()) {
+                addManufacturerData(manufacturerId, manufacturerData)
+            }
         }.build()
 
         advertiseCallback = object : AdvertiseCallback() {

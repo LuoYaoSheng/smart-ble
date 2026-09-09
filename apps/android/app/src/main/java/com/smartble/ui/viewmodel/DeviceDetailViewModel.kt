@@ -107,6 +107,13 @@ class DeviceDetailViewModel(
         }
     }
 
+    /** P006 devhead「连接设备」：断开后手动重连 */
+    fun connect() {
+        _errorMessage.value = null
+        _isLoading.value = true
+        connectToDevice()
+    }
+
     fun disconnect() {
         Logger.info("断开连接")
         bleManager.disconnect(deviceId)

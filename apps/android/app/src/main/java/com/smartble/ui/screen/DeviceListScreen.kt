@@ -2,6 +2,7 @@ package com.smartble.ui.screen
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bluetooth
@@ -57,12 +59,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.smartble.core.ble.BluetoothState
 import com.smartble.core.model.BleDevice
 import com.smartble.core.model.ConnectionState
 import com.smartble.core.model.RssiLevel
+import com.smartble.ui.design.AppEmpty
+import com.smartble.ui.design.DsIcons
+import com.smartble.ui.design.DsPrimaryButton
+import com.smartble.ui.design.DsSoftButton
 import com.smartble.ui.theme.Error
 import com.smartble.ui.theme.Primary
+import com.smartble.ui.theme.cFill
+import com.smartble.ui.theme.cMut
+import com.smartble.ui.theme.cPrimary
+import com.smartble.ui.theme.cSub
+import com.smartble.ui.theme.cText
 import com.smartble.ui.theme.RssiExcellent
 import com.smartble.ui.theme.RssiFair
 import com.smartble.ui.theme.RssiGood
@@ -130,6 +142,7 @@ fun DeviceListContent(
 
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
+        containerColor = com.smartble.ui.theme.cBg,
         sheetContent = {
             currentSheetDevice?.let { device ->
                 DeviceDetailSheet(
@@ -170,40 +183,71 @@ fun DeviceListContent(
                     is DeviceListUiState.BluetoothUnavailable -> BluetoothUnavailableCard()
                     is DeviceListUiState.BluetoothUnauthorized -> BluetoothUnauthorizedCard()
                     is DeviceListUiState.Ready -> {
-                        FilterPanel(
-                            expanded = filterExpanded,
-                            onToggleExpanded = { filterExpanded = !filterExpanded },
-                            filterRSSI = filterRSSI,
-                            onFilterRSSIChange = { viewModel.setFilterRSSI(it) },
-                            filterNamePrefix = filterNamePrefix,
-                            onFilterNamePrefixChange = { viewModel.setFilterNamePrefix(it) },
-                            hideUnnamed = hideUnnamed,
-                            onHideUnnamedChange = { viewModel.setHideUnnamed(it) },
-                            onReset = { viewModel.resetFilters() }
-                        )
-
-                        ScanControlsCard(
-                            isScanning = isScanning,
-                            deviceCount = filteredScanResults.size,
-                            onToggleScan = { viewModel.toggleScan() }
-                        )
-
-                        if (filteredScanResults.isEmpty()) {
-                            EmptyState()
-                        } else {
-                            DeviceList(
-                                devices = filteredScanResults,
-                                onDeviceClick = { device ->
-                                    selectedDevice = device
-                                    scope.launch {
-                                        scaffoldState.bottomSheetState.expand()
-                                    }
-                                },
-                                onConnectClick = { deviceId ->
-                                    val target = filteredScanResults.find { it.deviceId == deviceId } ?: return@DeviceList
-                                    onDeviceClick(target.deviceId, target.displayName)
-                                },
-                            )
+                        // 正典 P001（PAGE_LAYOUT_CONTRACT §4）：整页单列滚动
+                        // scantool → 组标题「附近设备」 → 筛选面板(展开) → 设备列表 / 空态
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            contentPadding = PaddingValues(bottom = 24.dp)
+                        ) {
+                            item {
+                                ScanTool(
+                                    isScanning = isScanning,
+                                    foundCount = filteredScanResults.size,
+                                    onToggleScan = { viewModel.toggleScan() }
+                                )
+                            }
+                            item {
+                                SectionTitle(
+                                    count = filteredScanResults.size,
+                                    filterOpen = filterExpanded,
+                                    onToggleFilter = { filterExpanded = !filterExpanded }
+                                )
+                            }
+                            if (filterExpanded) {
+                                item {
+                                    FilterPanel(
+                                        filterRSSI = filterRSSI,
+                                        onFilterRSSIChange = { viewModel.setFilterRSSI(it) },
+                                        filterNamePrefix = filterNamePrefix,
+                                        onFilterNamePrefixChange = { viewModel.setFilterNamePrefix(it) },
+                                        hideUnnamed = hideUnnamed,
+                                        onHideUnnamedChange = { viewModel.setHideUnnamed(it) },
+                                        onReset = { viewModel.resetFilters() }
+                                    )
+                                }
+                            }
+                            if (filteredScanResults.isEmpty()) {
+                                item {
+                                    AppEmpty(
+                                        title = "还没有扫描结果",
+                                        desc = "点上方按钮开始扫描附近 BLE 设备",
+                                        action = if (isScanning) null else {
+                                            {
+                                                DsSoftButton(
+                                                    label = "开始扫描",
+                                                    icon = DsIcons.Scan,
+                                                    onClick = { viewModel.toggleScan() }
+                                                )
+                                            }
+                                        }
+                                    )
+                                }
+                            } else {
+                                items(filteredScanResults, key = { it.deviceId }) { device ->
+                                    DeviceCard(
+                                        device = device,
+                                        onDeviceClick = { d ->
+                                            selectedDevice = d
+                                            scope.launch {
+                                                scaffoldState.bottomSheetState.expand()
+                                            }
+                                        },
+                                        onAction = { target ->
+                                            onDeviceClick(target.deviceId, target.displayName)
+                                        },
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -568,84 +612,97 @@ fun BluetoothUnavailableCard() {
 }
 
 @Composable
-fun ScanControlsCard(
+fun ScanTool(
     isScanning: Boolean,
-    deviceCount: Int,
+    foundCount: Int,
     onToggleScan: () -> Unit
 ) {
-    Card(
+    // 正典 scantool（pages.css .scantool）：左标签三态 + 右主按钮
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            .padding(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 10.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            modifier = Modifier.weight(1f)
         ) {
-            Button(
-                onClick = onToggleScan,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = if (isScanning) Error else Primary
-                ),
-                modifier = Modifier.weight(1f)
-            ) {
-                Icon(
-                    if (isScanning) Icons.Default.Stop else Icons.Default.Search,
-                    contentDescription = null,
-                    modifier = Modifier.size(18.dp)
+            if (isScanning) {
+                Box(
+                    modifier = Modifier
+                        .size(6.dp)
+                        .background(cPrimary, CircleShape)
                 )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(if (isScanning) "停止扫描" else "开始扫描")
             }
-
-            Spacer(modifier = Modifier.width(12.dp))
-
-            DeviceCountBadge(count = deviceCount)
+            Text(
+                if (isScanning) "扫描中 · 5s 会话"
+                else if (foundCount > 0) "扫描完成 · 发现 $foundCount 台"
+                else "待开始扫描",
+                fontSize = 12.sp,
+                color = cMut,
+                fontWeight = FontWeight.W600
+            )
         }
-    }
-}
-
-@Composable
-fun DeviceCountBadge(count: Int) {
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = Primary.copy(alpha = 0.1f)
-        )
-    ) {
-        Text(
-            "发现 $count 台设备",
-            style = MaterialTheme.typography.labelLarge,
-            color = Primary,
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+        DsPrimaryButton(
+            label = if (isScanning) "停止扫描" else "开始扫描",
+            icon = if (isScanning) DsIcons.Stop else DsIcons.Scan,
+            danger = isScanning,
+            onClick = onToggleScan
         )
     }
 }
 
 @Composable
-fun EmptyState() {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+fun SectionTitle(
+    count: Int,
+    filterOpen: Boolean,
+    onToggleFilter: () -> Unit
+) {
+    // 正典 sec-t：chip 图标 + 「附近设备」 + 计数 chip + 「筛选」文字链
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 18.dp, end = 18.dp, top = 2.dp, bottom = 10.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            Icons.Default.Bluetooth,
+            DsIcons.Chip,
             contentDescription = null,
-            tint = TextSecondary.copy(alpha = 0.5f),
-            modifier = Modifier.size(64.dp)
+            modifier = Modifier.size(22.dp),
+            tint = cPrimary
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.width(7.dp))
         Text(
-            "暂无设备",
-            style = MaterialTheme.typography.titleMedium,
-            color = TextSecondary
+            "附近设备",
+            fontSize = 17.sp,
+            fontWeight = FontWeight.W700,
+            color = cText
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        if (count > 0) {
+            Spacer(modifier = Modifier.width(7.dp))
+            Text(
+                "$count",
+                fontSize = 11.sp,
+                color = cSub,
+                fontWeight = FontWeight.W600,
+                modifier = Modifier
+                    .background(cFill, RoundedCornerShape(999.dp))
+                    .padding(horizontal = 9.dp, vertical = 2.dp)
+            )
+        }
+        Spacer(modifier = Modifier.weight(1f))
         Text(
-            "点击上方按钮开始扫描",
-            style = MaterialTheme.typography.bodyMedium,
-            color = TextSecondary.copy(alpha = 0.7f)
+            if (filterOpen) "收起筛选" else "筛选",
+            fontSize = 12.sp,
+            color = cPrimary,
+            fontWeight = FontWeight.W600,
+            modifier = Modifier.clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onToggleFilter
+            )
         )
     }
 }
