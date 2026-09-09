@@ -8,10 +8,16 @@ struct ContentView: View {
     @EnvironmentObject var bleManager: BLEManager
     @State private var selectedTab: NativeTab
     private let scanPreviewScenario: ScanPreviewScenario?
+    private let connectedCountOverride: Int?
 
-    init(initialTab: NativeTab = .scan, scanPreviewScenario: ScanPreviewScenario? = nil) {
+    init(
+        initialTab: NativeTab = .scan,
+        scanPreviewScenario: ScanPreviewScenario? = nil,
+        connectedCountOverride: Int? = nil
+    ) {
         _selectedTab = State(initialValue: initialTab)
         self.scanPreviewScenario = scanPreviewScenario
+        self.connectedCountOverride = connectedCountOverride
     }
 
     var body: some View {
@@ -32,15 +38,10 @@ struct ContentView: View {
 
             NativeTabBar(
                 selection: $selectedTab,
-                connectedCount: scanPreviewScenario == nil ? bleManager.connectedDeviceIds.count : 3
+                connectedCount: connectedCountOverride
+                    ?? (scanPreviewScenario == nil ? bleManager.connectedDeviceIds.count : 3)
             )
         }
         .background(NativeDS.page.ignoresSafeArea())
-        .onChange(of: bleManager.connectionStates) { _ in
-            let hasConnected = !bleManager.connectedDeviceIds.isEmpty
-            if hasConnected && selectedTab != .connected {
-                selectedTab = .connected
-            }
-        }
     }
 }

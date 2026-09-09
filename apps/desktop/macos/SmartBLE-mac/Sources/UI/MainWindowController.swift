@@ -49,17 +49,22 @@ private final class TabButton: NSButton {
     let labelField: NSTextField
     let iconView: NSImageView
     private(set) var badgeLabel: NSTextField?
+    private var badgeWidthConstraint: NSLayoutConstraint?
 
-    init(page: PageId, symbol: String, label: String, handler: @escaping () -> Void) {
+    init(page: PageId, iconAsset: String, label: String, handler: @escaping () -> Void) {
         self.page = page
         self.handler = handler
-        self.labelField = makeLabel(label, size: 10, weight: .semibold, color: DS.mut, align: .center)
-        let config = NSImage.SymbolConfiguration(pointSize: 16, weight: .medium)
-        iconView = NSImageView()
-        iconView.image = NSImage(systemSymbolName: symbol, accessibilityDescription: nil)?
-            .withSymbolConfiguration(config)
-        iconView.translatesAutoresizingMaskIntoConstraints = false
-        iconView.symbolConfiguration = config
+        self.labelField = makeLabel(label, size: 10, weight: .medium, color: DS.mut, align: .center)
+        if let sourceIcon = bundledSVG(iconAsset, width: 23, height: 23, template: true) {
+            self.iconView = sourceIcon
+        } else {
+            let fallback = NSImageView()
+            fallback.image = NSImage(systemSymbolName: "circle", accessibilityDescription: nil)
+            fallback.translatesAutoresizingMaskIntoConstraints = false
+            fallback.widthAnchor.constraint(equalToConstant: 23).isActive = true
+            fallback.heightAnchor.constraint(equalToConstant: 23).isActive = true
+            self.iconView = fallback
+        }
 
         super.init(frame: .zero)
         isBordered = false
@@ -79,7 +84,7 @@ private final class TabButton: NSButton {
         addSubview(column)
         NSLayoutConstraint.activate([
             column.centerXAnchor.constraint(equalTo: centerXAnchor),
-            column.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -6),
+            column.centerYAnchor.constraint(equalTo: centerYAnchor),
         ])
     }
 
@@ -91,6 +96,7 @@ private final class TabButton: NSButton {
         active = on
         iconView.contentTintColor = on ? DS.primary : DS.mut
         labelField.textColor = on ? DS.primary : DS.mut
+        labelField.font = DS.font(10, on ? .bold : .medium)
         needsDisplay = true
     }
 
@@ -106,15 +112,18 @@ private final class TabButton: NSButton {
                 b.layer?.cornerRadius = 8
                 b.translatesAutoresizingMaskIntoConstraints = false
                 addSubview(b)
+                let width = b.widthAnchor.constraint(equalToConstant: n > 9 ? 24 : 16)
                 NSLayoutConstraint.activate([
                     b.topAnchor.constraint(equalTo: topAnchor, constant: 2),
-                    b.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 16),
-                    b.widthAnchor.constraint(greaterThanOrEqualToConstant: 16),
+                    b.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 13),
+                    width,
                     b.heightAnchor.constraint(equalToConstant: 16),
                 ])
                 badgeLabel = b
+                badgeWidthConstraint = width
             }
             badgeLabel?.stringValue = "\(n)"
+            badgeWidthConstraint?.constant = n > 9 ? 24 : 16
             badgeLabel?.isHidden = false
         } else {
             badgeLabel?.isHidden = true
@@ -134,6 +143,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, PageHost
     private var pageControllers: [PageId: NSViewController & PageProtocol] = [:]
     private var pageContainer: NSView!
     private var tabBar: NSView!
+    private var pageBottomToTabConstraint: NSLayoutConstraint!
+    private var pageBottomToContentConstraint: NSLayoutConstraint!
     private var tabButtons: [TabButton] = []
     private var layerMask: NSView?
     private var layerCard: NSView?
@@ -141,6 +152,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, PageHost
     private var toastStack: NSStackView!
     private var rebuildScheduled = false
     private var quitConfirmed = false
+    private var previewConnectedCountOverride: Int?
 
     // 冒烟辅助：外部只读访问当前页面
     var currentPage: (NSViewController & PageProtocol)? { pageControllers[router.cur] }
@@ -200,19 +212,19 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, PageHost
         tabBar.translatesAutoresizingMaskIntoConstraints = false
         content.addSubview(tabBar)
         let tabs: [(PageId, String, String)] = [
-            (.p001, "dot.radiowaves.left.and.right", "扫描"),
-            (.p007, "link", "已连接"),
-            (.p008, "antenna.radiowaves.left.and.right", "广播"),
-            (.p009, "info.circle", "关于"),
+            (.p001, "tab-scan", "扫描"),
+            (.p007, "tab-link", "已连接"),
+            (.p008, "tab-cast", "广播"),
+            (.p009, "tab-info", "关于"),
         ]
-        for (page, symbol, label) in tabs {
-            let btn = TabButton(page: page, symbol: symbol, label: label) { [weak self] in
+        for (page, iconAsset, label) in tabs {
+            let btn = TabButton(page: page, iconAsset: iconAsset, label: label) { [weak self] in
                 self?.router.switchTab(page)
             }
             tabButtons.append(btn)
             tabBar.addSubview(btn)
             btn.widthAnchor.constraint(greaterThanOrEqualToConstant: 88).isActive = true
-            btn.heightAnchor.constraint(equalToConstant: 48).isActive = true
+            btn.heightAnchor.constraint(equalToConstant: 44).isActive = true
         }
         let tabRow = hstack(tabButtons, spacing: 4, alignment: .centerY)
         tabRow.distribution = .fillEqually
@@ -228,12 +240,14 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, PageHost
         pageContainer = NSView()
         pageContainer.translatesAutoresizingMaskIntoConstraints = false
         content.addSubview(pageContainer)
+        pageBottomToTabConstraint = pageContainer.bottomAnchor.constraint(equalTo: tabBar.topAnchor)
+        pageBottomToContentConstraint = pageContainer.bottomAnchor.constraint(equalTo: content.bottomAnchor)
 
         NSLayoutConstraint.activate([
             pageContainer.topAnchor.constraint(equalTo: content.topAnchor),
             pageContainer.leadingAnchor.constraint(equalTo: content.leadingAnchor),
             pageContainer.trailingAnchor.constraint(equalTo: content.trailingAnchor),
-            pageContainer.bottomAnchor.constraint(equalTo: tabBar.topAnchor),
+            pageBottomToTabConstraint,
             tabBar.leadingAnchor.constraint(equalTo: content.leadingAnchor),
             tabBar.trailingAnchor.constraint(equalTo: content.trailingAnchor),
             tabBar.bottomAnchor.constraint(equalTo: content.bottomAnchor),
@@ -241,7 +255,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, PageHost
             tabRow.topAnchor.constraint(equalTo: tabBar.topAnchor, constant: 4),
             tabRow.leadingAnchor.constraint(equalTo: tabBar.leadingAnchor, constant: 8),
             tabRow.trailingAnchor.constraint(equalTo: tabBar.trailingAnchor, constant: -8),
-            tabRow.bottomAnchor.constraint(equalTo: tabBar.bottomAnchor, constant: -12),
+            tabRow.bottomAnchor.constraint(equalTo: tabBar.bottomAnchor, constant: -16),
             topLine.topAnchor.constraint(equalTo: tabBar.topAnchor),
             topLine.leadingAnchor.constraint(equalTo: tabBar.leadingAnchor),
             topLine.trailingAnchor.constraint(equalTo: tabBar.trailingAnchor),
@@ -306,14 +320,21 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, PageHost
     private func updateTabBar() {
         let isTab = router.cur.isTab
         tabBar.isHidden = !isTab
+        pageBottomToTabConstraint.isActive = false
+        pageBottomToContentConstraint.isActive = false
+        (isTab ? pageBottomToTabConstraint : pageBottomToContentConstraint).isActive = true
         for btn in tabButtons {
             btn.setActive(btn.page == router.cur)
             // 徽标 = 通用连接会话数 + SHID 配网会话在线（正典 P001 计数口径；配网会话带标记计入）
-            let badge = btn.page == .p007 ? ble.connectedCountForBadge : 0
+            let connectedCount = previewConnectedCountOverride ?? ble.connectedCountForBadge
+            let badge = btn.page == .p007 ? connectedCount : 0
             btn.setBadge(badge)
         }
-        // TabBar 隐藏时页面容器占满
-        pageContainer.bottomAnchor.constraint(equalTo: tabBar.topAnchor).isActive = true
+    }
+
+    func setTabBarPreviewConnectedCount(_ count: Int?) {
+        previewConnectedCountOverride = count
+        updateTabBar()
     }
 
     /// P002 配网会话在线（正典 P007：SHID 配网会话计入徽标但不含于通用列表）

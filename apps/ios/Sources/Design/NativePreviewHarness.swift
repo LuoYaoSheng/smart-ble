@@ -15,6 +15,8 @@ enum NativePreviewScenario: String {
     case p006Gatt = "p006-gatt"
     case p009About = "p009"
     case p010Versions = "p010"
+    case tabConnected = "tab-connected"
+    case tabBroadcast = "tab-broadcast"
 
     static func fromArguments(_ arguments: [String] = ProcessInfo.processInfo.arguments) -> NativePreviewScenario? {
         guard let argument = arguments.first(where: { $0.hasPrefix("--ui-preview=") }) else { return nil }
@@ -57,9 +59,13 @@ struct NativePreviewRoot: View {
             case .p006Gatt:
                 DeviceDetailView(deviceId: device.id)
             case .p009About:
-                ContentView(initialTab: .about)
+                ContentView(initialTab: .about, connectedCountOverride: 3)
             case .p010Versions:
                 VersionHistoryView()
+            case .tabConnected:
+                ContentView(initialTab: .connected, connectedCountOverride: 3)
+            case .tabBroadcast:
+                ContentView(initialTab: .broadcast, connectedCountOverride: 3)
             }
         }
         .environmentObject(bleManager)
@@ -101,7 +107,7 @@ struct NativePreviewRoot: View {
             bleManager.filteredScanResults = []
             return
         }
-        if scenario == .p009About || scenario == .p010Versions {
+        if scenario == .p009About || scenario == .p010Versions || scenario == .tabConnected || scenario == .tabBroadcast {
             return
         }
 

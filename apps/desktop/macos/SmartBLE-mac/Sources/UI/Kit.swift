@@ -492,12 +492,13 @@ private func canonicalIllustration(symbol: String) -> NSImageView? {
 }
 
 @MainActor
-func bundledSVG(_ name: String, width: CGFloat, height: CGFloat) -> NSImageView? {
+func bundledSVG(_ name: String, width: CGFloat, height: CGFloat, template: Bool = false) -> NSImageView? {
     guard let url = Bundle.module.url(forResource: name, withExtension: "svg"),
           let image = NSImage(contentsOf: url) else {
         fputs("[UI] missing bundled SVG: \(name).svg\n", stderr)
         return nil
     }
+    image.isTemplate = template
     let view = NSImageView(image: image)
     view.imageScaling = .scaleProportionallyUpOrDown
     view.translatesAutoresizingMaskIntoConstraints = false

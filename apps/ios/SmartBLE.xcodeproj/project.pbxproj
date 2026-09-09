@@ -11,6 +11,7 @@
 		02C1E9A863F5B0F75C07AAC3 /* FilterPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56BB7ACAD0145FCA623322D7 /* FilterPanel.swift */; };
 		034E5E5D025224B4D6451B32 /* OtaUpgradeDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52779D52F0DFC170465641E4 /* OtaUpgradeDialog.swift */; };
 		0559D24DED38048DE321B2E1 /* HidProvisionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082D316469BAA45C08860A49 /* HidProvisionManager.swift */; };
+		06330C84ACA2567B81B0F84E /* tab-link.svg in Resources */ = {isa = PBXBuildFile; fileRef = FD6E9C113CB540672F223626 /* tab-link.svg */; };
 		069755C8343B8C3B00C74985 /* AppleSharedCoreWiringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13E2AA0791F9F19E24C9AB33 /* AppleSharedCoreWiringTests.swift */; };
 		096EC2E2DD28621B93D2E4EF /* SmartHidQrScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39729EE1F35ECA27CD1C6D57 /* SmartHidQrScanner.swift */; };
 		097C4AFB40A786795E7927CE /* SmartHidCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3248CA4C5D97F11B0A524166 /* SmartHidCore */; };
@@ -26,6 +27,8 @@
 		53E924BCD78C282F5EA12FAF /* BroadcastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A6671DD294AC769FEBC338 /* BroadcastView.swift */; };
 		5669025A5A57E48D9EEFADCC /* radar.svg in Resources */ = {isa = PBXBuildFile; fileRef = D4732E6CD458D0E53506B9DB /* radar.svg */; };
 		57537C7182D48D0BB032C814 /* about-hero.png in Resources */ = {isa = PBXBuildFile; fileRef = 1182918520BEA6E16E071F11 /* about-hero.png */; };
+		633C94A76093D159A92F37CB /* tab-scan.svg in Resources */ = {isa = PBXBuildFile; fileRef = DB960B568BF716F01E75939B /* tab-scan.svg */; };
+		6696F7BB157029F12D505B04 /* tab-scan.png in Resources */ = {isa = PBXBuildFile; fileRef = 214EC627A3E1D4D8CCA10D18 /* tab-scan.png */; };
 		68DF476C49CA0238E0B54BD7 /* share.png in Resources */ = {isa = PBXBuildFile; fileRef = 379EDFD1A1865294CCF5CCBB /* share.png */; };
 		6DCF321F6600F24CF5E1EB53 /* VersionHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF1B6E77489C8AC6C3ECAC0 /* VersionHistoryView.swift */; };
 		6F88CC4C9F9D9C85A883134C /* BLEModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8E7C88C56F5158B76242441 /* BLEModels.swift */; };
@@ -37,7 +40,9 @@
 		867E847F34BD49BA30B88F77 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7824A16A76CDD2CC6CFCE21A /* icon.png */; };
 		86A678FF0DF9734FF19EEF3B /* DataConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3C8A3330117FC4EC6D55498 /* DataConverter.swift */; };
 		86DE1391F763FA1C6895A088 /* about_hero.png in Resources */ = {isa = PBXBuildFile; fileRef = DDDC19B0D22B1B8D86C4C147 /* about_hero.png */; };
+		8B0C48C4D852F371C97C947A /* tab-cast.png in Resources */ = {isa = PBXBuildFile; fileRef = C456B76E2FA635551DED9D51 /* tab-cast.png */; };
 		8B466CEF6EEB506F706652F2 /* release-manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = DEDDFE96A80D8CEA4E5DCD37 /* release-manifest.json */; };
+		8E875D75443157D1942302F3 /* tab-link.png in Resources */ = {isa = PBXBuildFile; fileRef = 64446958EAA8151FD51250CF /* tab-link.png */; };
 		921A0C2494361B62648FBA71 /* doc.png in Resources */ = {isa = PBXBuildFile; fileRef = 645316AC737BA9B099928B61 /* doc.png */; };
 		976F4B7E80EE2460DC4793DD /* box.svg in Resources */ = {isa = PBXBuildFile; fileRef = CD00758FA9E1472EF9D44AAE /* box.svg */; };
 		9DF938C7F616441174818F61 /* OtaManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB8E6F17BFD1EA4EF3D1B8E /* OtaManager.swift */; };
@@ -47,11 +52,15 @@
 		BD3B1F7ACB4B72188ABCAEFD /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E03F506E73F4818C8C49EE0B /* AboutView.swift */; };
 		BE73AEB9EE5747CC1968A919 /* link.svg in Resources */ = {isa = PBXBuildFile; fileRef = 0AEF5FEA1618A22575AE0793 /* link.svg */; };
 		BE99955DE93D1F5C3AAD8F47 /* DeviceDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DB8A6CEF567DD328E7BA62 /* DeviceDetailView.swift */; };
+		BFBCA87701F55D368E05BA3E /* tab-info.svg in Resources */ = {isa = PBXBuildFile; fileRef = 8B0DE8E7916A717E4BF42C4B /* tab-info.svg */; };
+		C350EBA39BF658FEB325C20B /* TabBarUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3C549E074D57F5E8E3CA779 /* TabBarUITests.swift */; };
+		CABCEAA67DCE0A935C2145CC /* tab-info.png in Resources */ = {isa = PBXBuildFile; fileRef = 24CCE1BA335EB3411D838C7C /* tab-info.png */; };
 		CD311A2DE490374E88DCCBCE /* doc.svg in Resources */ = {isa = PBXBuildFile; fileRef = D66EE12FDF3F5AA7EEF2FF7E /* doc.svg */; };
 		CE247E438536BF94BE0708EE /* BLEUuids.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A96626176E83F3A438B76B /* BLEUuids.swift */; };
 		CF5B97C48C1C398F8AD1E53A /* NativePageContractTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24DD3605F4F3CD0706C750F /* NativePageContractTests.swift */; };
 		D4AD18A276CF9CCBC44BB3DC /* link.png in Resources */ = {isa = PBXBuildFile; fileRef = CA7C6628309E85F067A29348 /* link.png */; };
 		D4CEBC4D886103DA81578CC6 /* SmartBLEApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D23893A779509A137E6E969 /* SmartBLEApp.swift */; };
+		D776576A1CF81F8866F36D4E /* tab-cast.svg in Resources */ = {isa = PBXBuildFile; fileRef = 3B5EC11B28D06A472BE58F69 /* tab-cast.svg */; };
 		D938AD1BAD032D40DD56B2F9 /* CommandQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DC41E4EFEC71424985D1200 /* CommandQueue.swift */; };
 		D9768503732DD0C86F0BFA92 /* HidDiagnosticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9C6D9C12C339F05AF590B8 /* HidDiagnosticsView.swift */; };
 		ECCD5E68DF06C2B9BF5500D7 /* ConnectedDevicesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3005D87D1119428FB1ECB66 /* ConnectedDevicesView.swift */; };
@@ -70,6 +79,13 @@
 			remoteGlobalIDString = 5D5E79DDF7640D48210797D7;
 			remoteInfo = SmartBLEiOS;
 		};
+		9216AD43A3C3A5054518BE8F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9B59E989B69DB407E991FF5D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5D5E79DDF7640D48210797D7;
+			remoteInfo = SmartBLEiOS;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -81,11 +97,14 @@
 		137F253935B8138373A74D80 /* LogPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogPanel.swift; sourceTree = "<group>"; };
 		13E2AA0791F9F19E24C9AB33 /* AppleSharedCoreWiringTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleSharedCoreWiringTests.swift; sourceTree = "<group>"; };
 		16B84EDEAA2DEDB0F1D69892 /* brand_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = brand_icon.png; sourceTree = "<group>"; };
+		214EC627A3E1D4D8CCA10D18 /* tab-scan.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tab-scan.png"; sourceTree = "<group>"; };
+		24CCE1BA335EB3411D838C7C /* tab-info.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tab-info.png"; sourceTree = "<group>"; };
 		2A26FEFDAD57751BC05BA2C6 /* NativePreviewHarness.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativePreviewHarness.swift; sourceTree = "<group>"; };
 		2D23893A779509A137E6E969 /* SmartBLEApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartBLEApp.swift; sourceTree = "<group>"; };
 		353DD7C7D567716B4275A7DA /* radar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = radar.png; sourceTree = "<group>"; };
 		379EDFD1A1865294CCF5CCBB /* share.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = share.png; sourceTree = "<group>"; };
 		39729EE1F35ECA27CD1C6D57 /* SmartHidQrScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartHidQrScanner.swift; sourceTree = "<group>"; };
+		3B5EC11B28D06A472BE58F69 /* tab-cast.svg */ = {isa = PBXFileReference; path = "tab-cast.svg"; sourceTree = "<group>"; };
 		42A816227B7BB813884F682C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		462DA3B443181DB32C47D13E /* ServicePanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServicePanel.swift; sourceTree = "<group>"; };
 		4CC42244C97C0B70F43BD70C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -95,13 +114,16 @@
 		5887751BF8D9EEF34776C108 /* ReleaseMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReleaseMetadata.swift; sourceTree = "<group>"; };
 		5AF4F26029430920BAAF663F /* BLEManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEManager.swift; sourceTree = "<group>"; };
 		5BB8E6F17BFD1EA4EF3D1B8E /* OtaManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtaManager.swift; sourceTree = "<group>"; };
+		64446958EAA8151FD51250CF /* tab-link.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tab-link.png"; sourceTree = "<group>"; };
 		645316AC737BA9B099928B61 /* doc.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = doc.png; sourceTree = "<group>"; };
+		64BC9EE8BC96882601EF97FA /* SmartBLEUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SmartBLEUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		73DB8A6CEF567DD328E7BA62 /* DeviceDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceDetailView.swift; sourceTree = "<group>"; };
 		7824A16A76CDD2CC6CFCE21A /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		7D67DC154DABAD8A2D7A79CC /* bt.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bt.png; sourceTree = "<group>"; };
 		7F15F8549CEC94A4D6D44FF1 /* ScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
 		86DA21BADC602366106B63A4 /* NativeDesignTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeDesignTokens.swift; sourceTree = "<group>"; };
 		8A64A4937D6D7D446DBFD205 /* SmartBLETests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SmartBLETests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8B0DE8E7916A717E4BF42C4B /* tab-info.svg */ = {isa = PBXFileReference; path = "tab-info.svg"; sourceTree = "<group>"; };
 		8F9C6D9C12C339F05AF590B8 /* HidDiagnosticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HidDiagnosticsView.swift; sourceTree = "<group>"; };
 		932FCEB76F117168BE34D4FF /* bt.svg */ = {isa = PBXFileReference; path = bt.svg; sourceTree = "<group>"; };
 		9DC41E4EFEC71424985D1200 /* CommandQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandQueue.swift; sourceTree = "<group>"; };
@@ -110,6 +132,7 @@
 		C147C380D7B5409A069AEE00 /* share_card.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = share_card.png; sourceTree = "<group>"; };
 		C3005D87D1119428FB1ECB66 /* ConnectedDevicesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectedDevicesView.swift; sourceTree = "<group>"; };
 		C3A4DB018938F07D52FB634F /* WriteDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteDialog.swift; sourceTree = "<group>"; };
+		C456B76E2FA635551DED9D51 /* tab-cast.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tab-cast.png"; sourceTree = "<group>"; };
 		CA7C6628309E85F067A29348 /* link.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = link.png; sourceTree = "<group>"; };
 		CAAC8A5AE64E60A45F81D477 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		CC56BBFE341687CB91A8A352 /* HidProvisionManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HidProvisionManagerTests.swift; sourceTree = "<group>"; };
@@ -121,6 +144,7 @@
 		D6BCAF2E71B8AF57EA743C28 /* HidDeviceDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HidDeviceDetailView.swift; sourceTree = "<group>"; };
 		D8A6671DD294AC769FEBC338 /* BroadcastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BroadcastView.swift; sourceTree = "<group>"; };
 		DA521172CCE7B2C0D1D797CF /* NativeComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeComponents.swift; sourceTree = "<group>"; };
+		DB960B568BF716F01E75939B /* tab-scan.svg */ = {isa = PBXFileReference; path = "tab-scan.svg"; sourceTree = "<group>"; };
 		DDDC19B0D22B1B8D86C4C147 /* about_hero.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = about_hero.png; sourceTree = "<group>"; };
 		DEDDFE96A80D8CEA4E5DCD37 /* release-manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "release-manifest.json"; sourceTree = "<group>"; };
 		DEF1B6E77489C8AC6C3ECAC0 /* VersionHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionHistoryView.swift; sourceTree = "<group>"; };
@@ -128,6 +152,8 @@
 		E1A96626176E83F3A438B76B /* BLEUuids.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEUuids.swift; sourceTree = "<group>"; };
 		E22A8998DC94EAC6893EC901 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		E2574585324CB104700E0434 /* ProvisioningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProvisioningView.swift; sourceTree = "<group>"; };
+		E3C549E074D57F5E8E3CA779 /* TabBarUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarUITests.swift; sourceTree = "<group>"; };
+		FD6E9C113CB540672F223626 /* tab-link.svg */ = {isa = PBXFileReference; path = "tab-link.svg"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -163,6 +189,14 @@
 				0AEF5FEA1618A22575AE0793 /* link.svg */,
 				353DD7C7D567716B4275A7DA /* radar.png */,
 				D4732E6CD458D0E53506B9DB /* radar.svg */,
+				C456B76E2FA635551DED9D51 /* tab-cast.png */,
+				3B5EC11B28D06A472BE58F69 /* tab-cast.svg */,
+				24CCE1BA335EB3411D838C7C /* tab-info.png */,
+				8B0DE8E7916A717E4BF42C4B /* tab-info.svg */,
+				64446958EAA8151FD51250CF /* tab-link.png */,
+				FD6E9C113CB540672F223626 /* tab-link.svg */,
+				214EC627A3E1D4D8CCA10D18 /* tab-scan.png */,
+				DB960B568BF716F01E75939B /* tab-scan.svg */,
 			);
 			path = Illustrations;
 			sourceTree = "<group>";
@@ -178,6 +212,14 @@
 				C3A4DB018938F07D52FB634F /* WriteDialog.swift */,
 			);
 			path = Components;
+			sourceTree = "<group>";
+		};
+		0F2D896D906E2A03F9579C5E /* SmartBLEUITests */ = {
+			isa = PBXGroup;
+			children = (
+				E3C549E074D57F5E8E3CA779 /* TabBarUITests.swift */,
+			);
+			path = SmartBLEUITests;
 			sourceTree = "<group>";
 		};
 		1145D73BB312F3C2534CC4B9 /* Utils */ = {
@@ -294,6 +336,7 @@
 			children = (
 				0006B12F2F5FEC51463E3F10 /* SmartBLEiOS.app */,
 				8A64A4937D6D7D446DBFD205 /* SmartBLETests.xctest */,
+				64BC9EE8BC96882601EF97FA /* SmartBLEUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -316,6 +359,7 @@
 			isa = PBXGroup;
 			children = (
 				C16DABF9813871244D78B9F0 /* SmartBLETests */,
+				0F2D896D906E2A03F9579C5E /* SmartBLEUITests */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -353,6 +397,24 @@
 			productReference = 0006B12F2F5FEC51463E3F10 /* SmartBLEiOS.app */;
 			productType = "com.apple.product-type.application";
 		};
+		6264790AE0994A11A55F705C /* SmartBLEUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BA7EE3345AEEA455A59835CF /* Build configuration list for PBXNativeTarget "SmartBLEUITests" */;
+			buildPhases = (
+				D2144346991005CE17C299EE /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B4795C36D72F9044E334CBC3 /* PBXTargetDependency */,
+			);
+			name = SmartBLEUITests;
+			packageProductDependencies = (
+			);
+			productName = SmartBLEUITests;
+			productReference = 64BC9EE8BC96882601EF97FA /* SmartBLEUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		903D17A032C79A2CFA2D10DF /* SmartBLETests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 95E8A6F4AE13A372EEA26412 /* Build configuration list for PBXNativeTarget "SmartBLETests" */;
@@ -386,6 +448,11 @@
 						DevelopmentTeam = "${IOS_DEVELOPMENT_TEAM}";
 						ProvisioningStyle = Automatic;
 					};
+					6264790AE0994A11A55F705C = {
+						DevelopmentTeam = "${IOS_DEVELOPMENT_TEAM}";
+						ProvisioningStyle = Automatic;
+						TestTargetID = 5D5E79DDF7640D48210797D7;
+					};
 					903D17A032C79A2CFA2D10DF = {
 						DevelopmentTeam = "${IOS_DEVELOPMENT_TEAM}";
 						ProvisioningStyle = Automatic;
@@ -411,6 +478,7 @@
 			projectRoot = "";
 			targets = (
 				903D17A032C79A2CFA2D10DF /* SmartBLETests */,
+				6264790AE0994A11A55F705C /* SmartBLEUITests */,
 				5D5E79DDF7640D48210797D7 /* SmartBLEiOS */,
 			);
 		};
@@ -439,6 +507,14 @@
 				8B466CEF6EEB506F706652F2 /* release-manifest.json in Resources */,
 				68DF476C49CA0238E0B54BD7 /* share.png in Resources */,
 				40B426BD179EFB99E60E7821 /* share_card.png in Resources */,
+				8B0C48C4D852F371C97C947A /* tab-cast.png in Resources */,
+				D776576A1CF81F8866F36D4E /* tab-cast.svg in Resources */,
+				CABCEAA67DCE0A935C2145CC /* tab-info.png in Resources */,
+				BFBCA87701F55D368E05BA3E /* tab-info.svg in Resources */,
+				8E875D75443157D1942302F3 /* tab-link.png in Resources */,
+				06330C84ACA2567B81B0F84E /* tab-link.svg in Resources */,
+				6696F7BB157029F12D505B04 /* tab-scan.png in Resources */,
+				633C94A76093D159A92F37CB /* tab-scan.svg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -452,6 +528,14 @@
 				069755C8343B8C3B00C74985 /* AppleSharedCoreWiringTests.swift in Sources */,
 				F8C01FF7D5BEF63745C1D55F /* HidProvisionManagerTests.swift in Sources */,
 				CF5B97C48C1C398F8AD1E53A /* NativePageContractTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D2144346991005CE17C299EE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C350EBA39BF658FEB325C20B /* TabBarUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -500,6 +584,11 @@
 			target = 5D5E79DDF7640D48210797D7 /* SmartBLEiOS */;
 			targetProxy = 4E445857C51810495BDE7378 /* PBXContainerItemProxy */;
 		};
+		B4795C36D72F9044E334CBC3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5D5E79DDF7640D48210797D7 /* SmartBLEiOS */;
+			targetProxy = 9216AD43A3C3A5054518BE8F /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -532,6 +621,26 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
+		};
+		0C522C647FF92DDD5E153EE4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.luoyaosheng.smartble.ios.uitests;
+				PRODUCT_MODULE_NAME = SmartBLEUITests;
+				PRODUCT_NAME = SmartBLEUITests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = SmartBLEiOS;
+			};
+			name = Debug;
 		};
 		52859278A4165C5CD9F30F24 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -643,6 +752,26 @@
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SmartBLE.app/SmartBLE";
 			};
 			name = Debug;
+		};
+		B7FB2677054671EEF2342DF0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.luoyaosheng.smartble.ios.uitests;
+				PRODUCT_MODULE_NAME = SmartBLEUITests;
+				PRODUCT_NAME = SmartBLEUITests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = SmartBLEiOS;
+			};
+			name = Release;
 		};
 		D6F426C39E4CE3DD28D9BDF0 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -764,6 +893,15 @@
 			buildConfigurations = (
 				F6157FABD53930025EE2DE68 /* Debug */,
 				52859278A4165C5CD9F30F24 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		BA7EE3345AEEA455A59835CF /* Build configuration list for PBXNativeTarget "SmartBLEUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0C522C647FF92DDD5E153EE4 /* Debug */,
+				B7FB2677054671EEF2342DF0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

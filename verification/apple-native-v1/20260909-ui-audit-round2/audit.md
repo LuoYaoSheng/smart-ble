@@ -54,10 +54,13 @@ result: PASS_KEY_STATES_WITH_DOCUMENTED_PLATFORM_DIFFERENCES
 
 This round closes the previously named P001 filter/error/permission/rotation gaps and the P009/P010 structural gaps. Full Apple visual acceptance still requires matched P002/P003/P005 success and error captures plus VoiceOver/Dynamic Type/keyboard checks and physical-iPhone signing validation.
 
+TabBar was audited separately after this pass; see `../20260910-tabbar-audit/audit.md`. All four selected states, the connected badge, tap routing, and secondary-page hiding now pass against the HTML component contract.
+
 ## Verification
 
 - iOS SwiftPM XCTest: 12/12 PASS.
 - iOS Simulator Xcode XCTest: 12/12 PASS.
+- iOS Simulator TabBar UI XCTest: 2/2 PASS.
 - macOS CoreUnit: 62/62 PASS.
 - macOS PageSmoke: 17/17 PASS, 0 skipped.
 - Shared Swift Smart HID vectors: 9/9 PASS.

@@ -23,6 +23,20 @@
          </BuildActionEntry>
          <BuildActionEntry
             buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "6264790AE0994A11A55F705C"
+               BuildableName = "SmartBLEUITests.xctest"
+               BlueprintName = "SmartBLEUITests"
+               ReferencedContainer = "container:SmartBLE.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
             buildForRunning = "YES"
             buildForProfiling = "YES"
             buildForArchiving = "YES"
@@ -61,6 +75,17 @@
                BlueprintIdentifier = "903D17A032C79A2CFA2D10DF"
                BuildableName = "SmartBLETests.xctest"
                BlueprintName = "SmartBLETests"
+               ReferencedContainer = "container:SmartBLE.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "6264790AE0994A11A55F705C"
+               BuildableName = "SmartBLEUITests.xctest"
+               BlueprintName = "SmartBLEUITests"
                ReferencedContainer = "container:SmartBLE.xcodeproj">
             </BuildableReference>
          </TestableReference>

@@ -40,7 +40,7 @@ visual_status: PARTIAL_DEFAULT_STATE_PASS
 | N-MAC CoreUnit | `swift run SmartBLE-mac --unit-core` | PASS · 62/62 |
 | N-MAC PageSmoke | `swift run SmartBLE-mac --smoke-pages` | PASS · 17/17 |
 | N-IOS SwiftPM | `cd apps/ios && swift test` | PASS · 12/12 |
-| N-IOS Simulator XCTest | `xcodebuild -project SmartBLE.xcodeproj -scheme SmartBLETests -destination 'platform=iOS Simulator,name=iPhone 17 Pro Max' CODE_SIGNING_ALLOWED=NO test` | PASS · 12/12 |
+| N-IOS Simulator XCTest | `xcodebuild -project SmartBLE.xcodeproj -scheme SmartBLEiOS -destination 'platform=iOS Simulator,name=iPhone 17 Pro Max' CODE_SIGNING_ALLOWED=NO test` | PASS · unit 12/12 + TabBar UI 2/2 |
 
 ## N-IOS functional coverage
 

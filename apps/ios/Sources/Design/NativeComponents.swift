@@ -22,12 +22,12 @@ enum NativeTab: Int, CaseIterable, Identifiable {
         }
     }
 
-    var icon: String {
+    var iconAsset: String {
         switch self {
-        case .scan: return "magnifyingglass"
-        case .connected: return "link"
-        case .broadcast: return "dot.radiowaves.up.forward"
-        case .about: return "info.circle"
+        case .scan: return "tab-scan"
+        case .connected: return "tab-link"
+        case .broadcast: return "tab-cast"
+        case .about: return "tab-info"
         }
     }
 }
@@ -42,9 +42,9 @@ struct NativeTabBar: View {
                 Button(action: { selection = tab }) {
                     VStack(spacing: 3) {
                         ZStack(alignment: .topTrailing) {
-                            Image(systemName: tab.icon)
-                                .font(.system(size: 20, weight: selection == tab ? .semibold : .regular))
-                                .frame(width: 26, height: 24)
+                            NativeResourceImage(name: tab.iconAsset, template: true)
+                                .scaledToFit()
+                                .frame(width: 23, height: 23)
                             if tab == .connected, connectedCount > 0 {
                                 Text("\(min(connectedCount, 99))")
                                     .font(.system(size: 9, weight: .bold))
@@ -57,18 +57,26 @@ struct NativeTabBar: View {
                             }
                         }
                         Text(tab.title)
-                            .font(.system(size: 10, weight: selection == tab ? .bold : .semibold))
+                            .font(.system(size: 10, weight: selection == tab ? .bold : .medium))
                     }
                     .foregroundColor(selection == tab ? NativeDS.primary : NativeDS.muted)
                     .frame(maxWidth: .infinity)
+                    .frame(maxHeight: .infinity)
+                    .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel(
+                    tab == .connected && connectedCount > 0
+                        ? "\(tab.title)，\(min(connectedCount, 99))"
+                        : tab.title
+                )
+                .accessibilityValue(selection == tab ? "已选择" : "")
             }
         }
         .padding(.horizontal, 8)
-        .padding(.top, 5)
-        .padding(.bottom, 10)
-        .frame(height: 62)
+        .padding(.top, 4)
+        .padding(.bottom, 16)
+        .frame(height: 64)
         .background(Color.white.opacity(0.98).ignoresSafeArea(edges: .bottom))
         .overlay(alignment: .top) { Rectangle().fill(NativeDS.lineSoft).frame(height: 1) }
     }
@@ -141,6 +149,7 @@ struct NativeIllustration: View {
 
 struct NativeResourceImage: View {
     let name: String
+    var template = false
 
     var body: some View { resourceImage.resizable() }
 
@@ -163,12 +172,13 @@ struct NativeResourceImage: View {
             assertionFailure("Unreadable illustration resource: \(url.path)")
             return Image(systemName: "photo")
         }
-        return Image(uiImage: bitmap)
+        return Image(uiImage: bitmap.withRenderingMode(template ? .alwaysTemplate : .alwaysOriginal))
         #elseif canImport(AppKit)
         guard let bitmap = NSImage(contentsOf: url) else {
             assertionFailure("Unreadable illustration resource: \(url.path)")
             return Image(systemName: "photo")
         }
+        bitmap.isTemplate = template
         return Image(nsImage: bitmap)
         #else
         return Image(name, bundle: resourceBundle)

@@ -60,13 +60,29 @@ targets:
         INFOPLIST_FILE: ""
         TEST_HOST: "$(BUILT_PRODUCTS_DIR)/SmartBLE.app/SmartBLE"
         BUNDLE_LOADER: "$(TEST_HOST)"
+  SmartBLEUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    deploymentTarget: "15.0"
+    sources:
+      - path: Tests/SmartBLEUITests
+    dependencies:
+      - target: SmartBLEiOS
+    settings:
+      base:
+        PRODUCT_NAME: SmartBLEUITests
+        PRODUCT_MODULE_NAME: SmartBLEUITests
+        PRODUCT_BUNDLE_IDENTIFIER: com.luoyaosheng.smartble.ios.uitests
+        GENERATE_INFOPLIST_FILE: YES
 schemes:
   SmartBLEiOS:
     build:
       targets:
         SmartBLEiOS: all
         SmartBLETests: [test]
+        SmartBLEUITests: [test]
     test:
       gatherCoverageData: false
       targets:
         - SmartBLETests
+        - SmartBLEUITests

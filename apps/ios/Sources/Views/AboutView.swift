@@ -188,6 +188,7 @@ struct AboutView: View {
             Button(action: { versionRoute = AboutVersionRoute(id: "versions") }) {
                 menuRow(icon: "doc.text", title: "版本记录")
             }
+            .accessibilityIdentifier("about-version-row")
             Divider()
             Button(action: {
                 sharePayload = SharePayload(items: [
@@ -218,6 +219,8 @@ struct AboutView: View {
         }
         .padding(.horizontal, 14)
         .frame(height: 46)
+        .frame(maxWidth: .infinity)
+        .contentShape(Rectangle())
     }
 
     private func keyValue(_ key: String, _ value: String) -> some View {

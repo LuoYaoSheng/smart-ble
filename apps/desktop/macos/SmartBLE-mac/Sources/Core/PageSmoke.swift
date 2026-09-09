@@ -17,12 +17,15 @@ enum PageSmoke {
         let preview = args
             .first(where: { $0.hasPrefix("--ui-preview=") })
             .map { String($0.dropFirst("--ui-preview=".count)) }
-        guard args.contains("--smoke-pages") || args.contains("--snap-pages") || preview != nil else { return }
+        guard args.contains("--smoke-pages") || args.contains("--snap-pages")
+            || args.contains("--snap-tabbar") || preview != nil else { return }
         Task { @MainActor in
             for _ in 0..<10 {
                 if let wc = NSApp.windows.compactMap({ $0.windowController as? MainWindowController }).first {
                     if let preview {
                         await PageSmoke.preparePreview(preview, controller: wc)
+                    } else if args.contains("--snap-tabbar") {
+                        await PageSmoke.snapTabBar(controller: wc)
                     } else if args.contains("--snap-pages") {
                         await PageSmoke.snapPages(controller: wc)
                     } else {
@@ -39,10 +42,60 @@ enum PageSmoke {
         }
     }
 
+    private static func snapTabBar(controller: MainWindowController) async {
+        let outDir = URL(fileURLWithPath: "snaps-tabbar")
+        try? FileManager.default.createDirectory(at: outDir, withIntermediateDirectories: true)
+        controller.setTabBarPreviewConnectedCount(3)
+        let tabs: [(PageId, String)] = [
+            (.p001, "01-scan"),
+            (.p007, "02-connected"),
+            (.p008, "03-broadcast"),
+            (.p009, "04-about"),
+        ]
+        await settle(600)
+        for (page, name) in tabs {
+            controller.router.switchTab(page)
+            await settle(250)
+            captureBottomStrip(controller: controller, name: name, outDir: outDir)
+        }
+        controller.router.go(.p010)
+        await settle(250)
+        captureBottomStrip(controller: controller, name: "05-secondary-hidden", outDir: outDir)
+        print("[UITABSNAP] done")
+        fflush(stdout)
+        exit(0)
+    }
+
+    private static func captureBottomStrip(controller: MainWindowController, name: String, outDir: URL) {
+        guard let root = controller.window?.contentView else { return }
+        root.layoutSubtreeIfNeeded()
+        let rect = NSRect(x: 0, y: 0, width: root.bounds.width, height: 64)
+        guard let rep = root.bitmapImageRepForCachingDisplay(in: rect) else { return }
+        root.cacheDisplay(in: rect, to: rep)
+        guard let png = rep.representation(using: .png, properties: [:]) else { return }
+        let url = outDir.appendingPathComponent("\(name).png")
+        try? png.write(to: url)
+        print("[UITABSNAP] \(name) -> \(url.path)")
+        fflush(stdout)
+    }
+
     private static func preparePreview(_ previewValue: String, controller: MainWindowController) async {
+        controller.setTabBarPreviewConnectedCount(3)
         if previewValue == "p009" {
             controller.router.switchTab(.p009)
             print("[UIPREVIEW] ready=p009")
+            fflush(stdout)
+            return
+        }
+        if previewValue == "p007" {
+            controller.router.switchTab(.p007)
+            print("[UIPREVIEW] ready=p007")
+            fflush(stdout)
+            return
+        }
+        if previewValue == "p008" {
+            controller.router.switchTab(.p008)
+            print("[UIPREVIEW] ready=p008")
             fflush(stdout)
             return
         }
@@ -159,6 +212,15 @@ enum PageSmoke {
 
     private static func anyLabel(contains text: String, in views: [NSView]) -> Bool {
         views.compactMap { $0 as? NSTextField }.contains { !$0.isBezeled && $0.stringValue.contains(text) }
+    }
+
+    private static func isEffectivelyHidden(_ view: NSView) -> Bool {
+        var current: NSView? = view
+        while let node = current {
+            if node.isHidden { return true }
+            current = node.superview
+        }
+        return false
     }
 
     // MARK: - 主流程
@@ -386,10 +448,13 @@ enum PageSmoke {
             let emptyRel = anyLabel(contains: "暂无正式发布版本", in: v)
             let foot = anyLabel(contains: "本页数据来自 Release Metadata 投影", in: v)
             let previews = anyLabel(contains: "v1.0.5-preview", in: v)
+            let tabHidden = ["扫描", "已连接", "广播", "关于"].allSatisfy { title in
+                button(titled: title, in: v).map(isEffectivelyHidden) ?? true
+            }
             button(actionId: "back", in: v)?.performClick(nil)
             await settle(300)
-            check("UIS-11", limits && emptyRel && foot && previews,
-                  "limits=\(limits) emptyRelease=\(emptyRel) foot=\(foot) previews=\(previews)")
+            check("UIS-11", limits && emptyRel && foot && previews && tabHidden,
+                  "limits=\(limits) emptyRelease=\(emptyRel) foot=\(foot) previews=\(previews) tabHidden=\(tabHidden)")
         }
 
         // UIS-12 P005 诊断 + P003 详情守卫态
