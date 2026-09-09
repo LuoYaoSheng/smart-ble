@@ -11,6 +11,7 @@
 		034E5E5D025224B4D6451B32 /* OtaUpgradeDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52779D52F0DFC170465641E4 /* OtaUpgradeDialog.swift */; };
 		0559D24DED38048DE321B2E1 /* HidProvisionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082D316469BAA45C08860A49 /* HidProvisionManager.swift */; };
 		069755C8343B8C3B00C74985 /* AppleSharedCoreWiringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13E2AA0791F9F19E24C9AB33 /* AppleSharedCoreWiringTests.swift */; };
+		096EC2E2DD28621B93D2E4EF /* SmartHidQrScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39729EE1F35ECA27CD1C6D57 /* SmartHidQrScanner.swift */; };
 		097C4AFB40A786795E7927CE /* SmartHidCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3248CA4C5D97F11B0A524166 /* SmartHidCore */; };
 		1BFF657A638115F8CBB179D2 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = E22A8998DC94EAC6893EC901 /* Logger.swift */; };
 		1F4F7E8A02FD10B207986A5C /* SmartHidCore in Frameworks */ = {isa = PBXBuildFile; productRef = 8F9D803588D9FB74511D876F /* SmartHidCore */; };
@@ -29,7 +30,9 @@
 		86A678FF0DF9734FF19EEF3B /* DataConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3C8A3330117FC4EC6D55498 /* DataConverter.swift */; };
 		86DE1391F763FA1C6895A088 /* about_hero.png in Resources */ = {isa = PBXBuildFile; fileRef = DDDC19B0D22B1B8D86C4C147 /* about_hero.png */; };
 		9DF938C7F616441174818F61 /* OtaManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB8E6F17BFD1EA4EF3D1B8E /* OtaManager.swift */; };
+		9E1139FC8334639C7B7679E9 /* NativeDesignTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DA21BADC602366106B63A4 /* NativeDesignTokens.swift */; };
 		A9F8C08269495D941B20F684 /* brand_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 16B84EDEAA2DEDB0F1D69892 /* brand_icon.png */; };
+		AF90DC11BCEA2443999D36D6 /* ProvisioningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2574585324CB104700E0434 /* ProvisioningView.swift */; };
 		BD3B1F7ACB4B72188ABCAEFD /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E03F506E73F4818C8C49EE0B /* AboutView.swift */; };
 		BE99955DE93D1F5C3AAD8F47 /* DeviceDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DB8A6CEF567DD328E7BA62 /* DeviceDetailView.swift */; };
 		CE247E438536BF94BE0708EE /* BLEUuids.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A96626176E83F3A438B76B /* BLEUuids.swift */; };
@@ -61,6 +64,7 @@
 		16B84EDEAA2DEDB0F1D69892 /* brand_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = brand_icon.png; sourceTree = "<group>"; };
 		2D23893A779509A137E6E969 /* SmartBLEApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartBLEApp.swift; sourceTree = "<group>"; };
 		379EDFD1A1865294CCF5CCBB /* share.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = share.png; sourceTree = "<group>"; };
+		39729EE1F35ECA27CD1C6D57 /* SmartHidQrScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartHidQrScanner.swift; sourceTree = "<group>"; };
 		42A816227B7BB813884F682C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		462DA3B443181DB32C47D13E /* ServicePanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServicePanel.swift; sourceTree = "<group>"; };
 		4CC42244C97C0B70F43BD70C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -72,6 +76,7 @@
 		73DB8A6CEF567DD328E7BA62 /* DeviceDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceDetailView.swift; sourceTree = "<group>"; };
 		7824A16A76CDD2CC6CFCE21A /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		7F15F8549CEC94A4D6D44FF1 /* ScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
+		86DA21BADC602366106B63A4 /* NativeDesignTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeDesignTokens.swift; sourceTree = "<group>"; };
 		8A64A4937D6D7D446DBFD205 /* SmartBLETests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SmartBLETests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9DC41E4EFEC71424985D1200 /* CommandQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandQueue.swift; sourceTree = "<group>"; };
 		A8E7C88C56F5158B76242441 /* BLEModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEModels.swift; sourceTree = "<group>"; };
@@ -86,6 +91,7 @@
 		E03F506E73F4818C8C49EE0B /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		E1A96626176E83F3A438B76B /* BLEUuids.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEUuids.swift; sourceTree = "<group>"; };
 		E22A8998DC94EAC6893EC901 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		E2574585324CB104700E0434 /* ProvisioningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProvisioningView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +121,7 @@
 				56BB7ACAD0145FCA623322D7 /* FilterPanel.swift */,
 				137F253935B8138373A74D80 /* LogPanel.swift */,
 				462DA3B443181DB32C47D13E /* ServicePanel.swift */,
+				39729EE1F35ECA27CD1C6D57 /* SmartHidQrScanner.swift */,
 				C3A4DB018938F07D52FB634F /* WriteDialog.swift */,
 			);
 			path = Components;
@@ -162,6 +169,14 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		82D97F554CFCA7A23CBC31A7 /* Design */ = {
+			isa = PBXGroup;
+			children = (
+				86DA21BADC602366106B63A4 /* NativeDesignTokens.swift */,
+			);
+			path = Design;
+			sourceTree = "<group>";
+		};
 		83C8021035DA3D27361A5DAA /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -171,6 +186,7 @@
 				42A816227B7BB813884F682C /* ContentView.swift */,
 				73DB8A6CEF567DD328E7BA62 /* DeviceDetailView.swift */,
 				52779D52F0DFC170465641E4 /* OtaUpgradeDialog.swift */,
+				E2574585324CB104700E0434 /* ProvisioningView.swift */,
 				7F15F8549CEC94A4D6D44FF1 /* ScanView.swift */,
 				074619DEEB58FA52AE4B6055 /* Components */,
 			);
@@ -217,6 +233,7 @@
 			isa = PBXGroup;
 			children = (
 				2D23893A779509A137E6E969 /* SmartBLEApp.swift */,
+				82D97F554CFCA7A23CBC31A7 /* Design */,
 				9C98EB5DED394E8806520DC1 /* Manager */,
 				E41A79DB22F7A89D0340E2B5 /* Models */,
 				5B60B2FB338B0A2F8323C460 /* Resources */,
@@ -375,11 +392,14 @@
 				0559D24DED38048DE321B2E1 /* HidProvisionManager.swift in Sources */,
 				2CE70E0DA00FF8E86555F06B /* LogPanel.swift in Sources */,
 				1BFF657A638115F8CBB179D2 /* Logger.swift in Sources */,
+				9E1139FC8334639C7B7679E9 /* NativeDesignTokens.swift in Sources */,
 				9DF938C7F616441174818F61 /* OtaManager.swift in Sources */,
 				034E5E5D025224B4D6451B32 /* OtaUpgradeDialog.swift in Sources */,
+				AF90DC11BCEA2443999D36D6 /* ProvisioningView.swift in Sources */,
 				FE762B7F1B90CDBBC342B45C /* ScanView.swift in Sources */,
 				3B84C81AA4A1C69D6F02E4D3 /* ServicePanel.swift in Sources */,
 				D4CEBC4D886103DA81578CC6 /* SmartBLEApp.swift in Sources */,
+				096EC2E2DD28621B93D2E4EF /* SmartHidQrScanner.swift in Sources */,
 				3CDB7BCA1DD5A74CEC88270B /* WriteDialog.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -191,6 +191,15 @@ final class HidProvisionManager: ObservableObject {
         transport?.logProvisioning("已取消等待设备确认", deviceId: deviceId ?? "", isError: false)
     }
 
+    func resumeConfiguration() {
+        guard deviceInfo != nil, let deviceId, transport?.isProvisioningDeviceConnected(deviceId) == true else {
+            return
+        }
+        cancelTasks()
+        rows = Self.pendingRows
+        stage = .verified
+    }
+
     func abandon(preserveConnection: Bool) {
         generation += 1
         cancelTasks()

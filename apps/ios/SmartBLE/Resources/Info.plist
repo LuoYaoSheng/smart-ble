@@ -26,6 +26,8 @@
 	<string>Smart BLE 需要蓝牙权限来扫描、连接和调试附近的 BLE 设备。</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>Smart BLE 需要蓝牙外设权限来创建广播并验证设备侧行为。</string>
+	<key>NSCameraUsageDescription</key>
+	<string>BLE Toolkit+ 使用相机扫描 ControlHub 显示的 Smart HID 配对二维码。</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

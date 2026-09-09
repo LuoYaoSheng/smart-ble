@@ -112,6 +112,10 @@ final class HidProvisionManagerTests: XCTestCase {
         XCTAssertEqual(code, "mqtt_invalid")
         XCTAssertEqual(recovery, "diagnostics")
         XCTAssertEqual(manager.rows["conn"], "fail")
+
+        manager.resumeConfiguration()
+        XCTAssertEqual(manager.stage, .verified)
+        XCTAssertTrue(manager.rows.values.allSatisfy { $0 == "pending" })
     }
 
     func testCancelReturnsToVerifiedAndAbandonCancelsOwnedSession() async {

@@ -14,6 +14,7 @@ struct ScanView: View {
     @State private var selectedDevice: ScanResult?
     @State private var showingDeviceDetails = false
     @State private var showFilterPanel = false
+    @State private var provisioningDevice: ScanResult?
 
     var body: some View {
         VStack(spacing: 0) {
@@ -38,6 +39,13 @@ struct ScanView: View {
                 DeviceDetailSheet(device: device)
                     .environmentObject(bleManager)
             }
+        }
+        .nativePageCover(item: $provisioningDevice) { device in
+            ProvisioningView(
+                manager: bleManager.hidProvisionManager,
+                device: device,
+                onViewDevice: { _ in provisioningDevice = nil }
+            )
         }
         .onChange(of: bleManager.filterRSSI) { _ in bleManager.applyFilters() }
         .onChange(of: bleManager.filterNamePrefix) { _ in bleManager.applyFilters() }
@@ -121,12 +129,17 @@ struct ScanView: View {
         ScrollView {
             LazyVStack(spacing: 12) {
                 ForEach(bleManager.filteredScanResults) { device in
-                    DeviceCard(device: device)
-                        .environmentObject(bleManager)
-                        .onTapGesture {
+                    DeviceCard(
+                        device: device,
+                        onGattAction: {
                             selectedDevice = device
                             showingDeviceDetails = true
+                        },
+                        onSmartHidAction: {
+                            provisioningDevice = device
                         }
+                    )
+                        .environmentObject(bleManager)
                 }
             }
             .padding()
