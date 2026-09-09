@@ -5,6 +5,7 @@
 //
 
 import AppKit
+import SmartHidCore
 
 @MainActor
 final class P005DiagnosticsPage: NSViewController, PageProtocol {

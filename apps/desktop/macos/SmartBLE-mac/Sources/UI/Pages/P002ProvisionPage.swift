@@ -9,6 +9,7 @@
 
 import AppKit
 import AVFoundation
+import SmartHidCore
 
 @MainActor
 final class P002ProvisionPage: NSViewController, PageProtocol {

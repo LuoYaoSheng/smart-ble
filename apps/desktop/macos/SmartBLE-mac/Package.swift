@@ -9,11 +9,15 @@ let package = Package(
     products: [
         .executable(name: "SmartBLE-mac", targets: ["SmartBLE-mac"])
     ],
-    dependencies: [],
+    dependencies: [
+        .package(path: "../../../../core/apple/SmartHidCore"),
+    ],
     targets: [
         .executableTarget(
             name: "SmartBLE-mac",
-            dependencies: [],
+            dependencies: [
+                .product(name: "SmartHidCore", package: "SmartHidCore"),
+            ],
             path: "Sources",
             swiftSettings: [
                 .unsafeFlags(["-parse-as-library"])

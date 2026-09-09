@@ -50,7 +50,7 @@
 3. Keep only BLE session ownership, timers, Combine bindings, and CoreBluetooth-facing orchestration in `HidProvisionManager`.
 4. Update CoreUnit assertions to call the shared module and correct any behavior that conflicts with the canonical vectors.
 5. Run `swift build` and `swift run SmartBLE-mac --unit-core`; expected all existing assertions PASS.
-6. Run `swift run SmartBLE-mac --page-smoke`; expected all page smoke checks PASS.
+6. Run `swift run SmartBLE-mac --smoke-pages`; expected all page smoke checks PASS.
 7. Commit: `refactor(macos): consume shared Smart HID core`
 
 ### Task 3: Wire SmartHidCore into native iOS
@@ -172,4 +172,3 @@
 3. Mark only OS-owned presentation differences as allowed and cite the platform specification.
 4. Rebase/merge onto the latest shared `refactor/uniapp-v1` after checking concurrent Windows changes.
 5. Push the integrated commit to Gitee and GitHub only after both refs resolve to the same SHA.
-

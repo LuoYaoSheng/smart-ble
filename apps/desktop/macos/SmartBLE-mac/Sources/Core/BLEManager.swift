@@ -14,6 +14,7 @@
 import Foundation
 import CoreBluetooth
 import Combine
+import SmartHidCore
 
 // MARK: - Connection State
 enum ConnectionState {

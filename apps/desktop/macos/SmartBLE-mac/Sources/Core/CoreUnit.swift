@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SmartHidCore
 
 @MainActor
 enum CoreUnit {
@@ -120,10 +121,10 @@ enum CoreUnit {
                                                         token: "3f9a7c1e5b6d48c2a1e0f7b3d5c6a9b4")
         check("CU-24", json2?.contains("\"hub_port\":17892") == true, "默认端口注入")
 
-        // 桌面双口径：t= 短令牌放行（交设备侧裁决）
+        // token 只接受正典 32 位小写 hex；不保留桌面私有宽口径
         let json3 = try? HidProtocol.buildCandidateJson(ssid: "s", password: "", hubAddress: "h:1",
                                                         token: "tok-3f9a7c1e")
-        check("CU-25", json3 != nil, "短令牌宽口径=\(json3 != nil)")
+        check("CU-25", json3 == nil, "短令牌严格拒绝=\(json3 == nil)")
 
         // 非法分支
         check("CU-26", (try? HidProtocol.buildCandidateJson(ssid: "", password: "", hubAddress: "h", token: "3f9a7c1e5b6d48c2a1e0f7b3d5c6a9b4")) == nil, "空 SSID 拒绝")
@@ -189,9 +190,9 @@ enum CoreUnit {
 
     private static func testRecoveryAndHints() {
         let expect: [String: String] = [
-            "invalid_payload": "form", "wifi_failed": "form", "controlhub_unreachable": "diagnostics",
+            "invalid_payload": "form", "wifi_failed": "form", "controlhub_unreachable": "pairing",
             "pairing_invalid": "pairing", "pairing_expired": "pairing", "pairing_used": "pairing",
-            "mqtt_invalid": "form", "storage_failed": "retry",
+            "mqtt_invalid": "diagnostics", "storage_failed": "retry",
         ]
         for (code, action) in expect {
             check("CU-47-\(code)", HidProtocol.recoveryAction(forErrorCode: code) == action,
