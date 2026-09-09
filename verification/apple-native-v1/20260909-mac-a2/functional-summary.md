@@ -6,7 +6,7 @@ host: macOS
 branch: feature/apple-native-core
 baseline: 1ec8d05e2f5598d2d45e5cd3950e79208d2a79b3
 status: PASS_WITH_BLOCKED_E5
-visual_status: NOT_AUDITED
+visual_status: FAIL
 ```
 
 ## Scope
@@ -69,4 +69,4 @@ Unlock condition: sign in to the intended Apple Developer account in Xcode and c
 
 ## UI status
 
-P002/P003/P005/P010 already use the HTML hierarchy, Chinese copy, semantic colors, cards, status rows, and recovery actions. Pixel-level fidelity is **not yet claimed**. The Apple UI Gate must capture identical HTML/native states and compare spacing, typography, radius, border, icon, and scrolling behavior before marking visual PASS.
+The 2026-09-09 screenshot audit found visible product drift, so Apple visual status is **FAIL**, not merely NOT_AUDITED. iOS still uses the legacy SwiftUI shell and a non-canonical About hierarchy; macOS P009/P010 diverge in content density and P010 contains a severe compressed-version layout defect. See `verification/apple-native-v1/20260909-ui-audit/audit.md`. The Apple UI Gate must rebuild the shared shell/components and compare identical HTML/native states before marking visual PASS.
