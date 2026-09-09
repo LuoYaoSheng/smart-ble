@@ -123,7 +123,7 @@
 | FLUTTER-G1-004 | F-AND | MaterialApp i18n 基建（en/zh）与 F030「不做」相悖 | FLUTTER_IMPLEMENTATION_DRIFT | P2 | FEAT-F-007 登记，M1/M7 收缩（G1 不扩边界） |
 | MATRIX-G1-001 | 测试矩阵 | 旧记分卡 F 编号错位（见 §0） | TEST_MATRIX_DEFECT | P1 | 已于 2026-09-07 修复 |
 
-## 5. 全平台/语言页面覆盖审计（2026-09-05 · macOS 合并后）
+## 5. 全平台/语言页面覆盖审计（2026-09-09 · Apple Native 功能 Gate）
 
 > 用户约束：开源项目应尽量让功能、页面、文案和协议在不同语言/平台间对齐。
 > `✅` 表示存在对应可执行页面，`△` 表示能力被合并进其他页面或缺专属恢复流，`✕` 表示当前缺失；编译通过不等于真机验收。
@@ -133,10 +133,10 @@
 | U-WX / U-AND | JavaScript + Vue/uni-app | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅（本轮 fail-fast 测试） |
 | F-AND / F-MAC | Dart + Flutter | ✅ | ✅ | △ | △ | ✅ | ✅ | ✅ | ✅ | △ | ✅（59 tests） |
 | N-MAC | Swift + AppKit | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅（62 assertions + 17 page smoke） |
-| N-IOS | Swift + SwiftUI | ✅ | ✕ | ✕ | ✕ | ✅ | ✅ | ✅ | ✅ | ✕ | 不适用（尚无 P002） |
+| N-IOS | Swift + SwiftUI | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅（共享 SmartHidCore + SwiftPM/Xcode XCTest；E5 待签名/夹具） |
 | K-AND | Kotlin + Compose | ✅ | ✕ | ✕ | ✕ | ✅ | ✅ | ✅ | ✅ | ✕ | 不适用（尚无 P002） |
 
-当前最大对齐缺口不是样式，而是原生 iOS/Kotlin Android 缺 P002/P003/P005/P010 与 Smart HID Profile 路由。后续实现必须复用同一 UUID、framed-v1、8 错误码、60 秒状态跟踪和 V1 明文直连语义，不得用静态页面冒充能力完成。
+原生 iOS 的 P002/P003/P005/P010 与 Smart HID Profile 路由已在 Apple Native 功能 Gate 补齐；Kotlin Android 仍保留对应缺口。N-IOS 已消费同一 UUID、framed-v1、8 错误码、60 秒状态跟踪和 V1 明文直连语义，真机 E5 因签名描述文件与夹具条件未完成，不以模拟器结果冒充。
 
 > 2026-09-07 更正：U-WX/U-AND 行曾记 P003/P005 `✅`——P004 路由与首页历史面板残留曝光后（§4.2 UNIAPP-G1-001），该行按页面存在性维持 `✅`，但页面集合合规性（9 页、无 P004、零持久化）在 PARITY-G1 修复前为 FAIL 口径，修复后以 PARITY-G1 回填为准。
 
@@ -154,3 +154,12 @@
 - 三线（U-WX / U-AND / F-AND）统一按 `prototype/v1-new` + `prototype/platform/{wechat,app}` 验收；禁止互相抄实现。
 - 页面/组件/状态/视觉四张专项矩阵见 `MULTI_END_PAGE_PARITY_MATRIX.md` / `MULTI_END_COMPONENT_PARITY_MATRIX.md` / `MULTI_END_STATE_PARITY_MATRIX.md` / `MULTI_END_VISUAL_PARITY_MATRIX.md`（初始 NOT_AUDITED，不预填 PASS）。
 - 总审计报告：`../06_review/MULTI_END_PARITY_AUDIT.md`。
+
+### 2026-09-09 Apple Native 功能 Gate
+
+- 新增 `core/apple/SmartHidCore`，Swift 真实消费 `smart-hid-v1-vectors.json`；跨平台调度 Swift lane 9/9 PASS。
+- N-MAC 已迁移到共享 Core，保持 CoreUnit 62/62、PageSmoke 17/17。
+- N-IOS 已补齐 P002/P003/P005/P010、Profile STRONG/WEAK 双入口、INFO/INPUT/STATUS、framed-v1、60 秒状态跟踪、五项诊断和 Release Metadata 投影。
+- iOS SwiftPM 测试 12/12、iOS Simulator Xcode XCTest 12/12；物理 iPhone 可见，但本机 Xcode 无登录账号/描述文件，当前 E5=`BLOCKED_SIGNING`。
+- UI 结构和文案以 `prototype/platform/app/high-fi` 为源；同尺寸截图差异验收属于后续 Apple UI Gate，当前不宣称像素级 PASS。
+- 证据：`verification/apple-native-v1/20260909-mac-a2/functional-summary.md`。
