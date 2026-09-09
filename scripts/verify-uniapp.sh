@@ -82,8 +82,14 @@ run_check "UniAutomator config syntax" "$NODE_BIN" --check apps/uniapp/env.js
 run_check "UniAutomator Jest syntax" "$NODE_BIN" --check apps/uniapp/jest.config.js
 run_check "UniAutomator page-test syntax" "$NODE_BIN" --check apps/uniapp/pages/index/index.test.js
 run_check "UniAutomator page-flow syntax" "$NODE_BIN" --check apps/uniapp/pages/page-flow.test.js
+# Release metadata check
 run_check "Release metadata check" "$NODE_BIN" scripts/generate-release-metadata.mjs --check
 run_check "Version consistency" "$NODE_BIN" scripts/check-version-consistency.mjs
-run_check "Git whitespace" git diff --check
+# 跨语言协议向量 parity：js 线（本机 NODE_BIN 已具备 .ts 能力）+ dart/kotlin/swift 线状态登记；
+# 断言失败才非零退出，BLOCKED(toolchain)/NOT_IMPLEMENTED(kotlin W3) 为在册状态。
+run_check "Smart HID platform parity" "$NODE_BIN" scripts/check-platform-parity.mjs
+# 原始证据日志（ESP32 串口等）必须逐字保留，行尾空白是设备输出的一部分；
+# 空白门禁只针对产品源码与脚本的未提交改动。
+run_check "Git whitespace" git diff --check -- . ':(exclude)verification'
 
-printf '\nUniApp verification PASS (%d unit files plus 11 static gates)\n' "${#test_files[@]}"
+printf '\nUniApp verification PASS (%d unit files plus 12 static gates)\n' "${#test_files[@]}"

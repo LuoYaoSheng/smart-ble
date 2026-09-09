@@ -96,9 +96,9 @@ assert.match(indexPage, /bleState\.value === 'unsupported'/);
 assert.match(scanComposable, /typeof uni\.getBluetoothAdapterState !== 'function'/);
 assert.match(scanPermission, /reason:\s*'ble_not_supported'/);
 assert.match(indexPage, /buildGenericDeviceDetailUrl/);
-assert.match(indexPage, /pruneKnownDevices/);
-assert.match(indexPage, /const knownDevices = computed\(\(\) => hidStore\.knownDevices\)/);
-assert.match(indexPage, /buildProfileActionUrl|buildHidHistoryUrl|openHidHistory/);
+// F023（2026-09-02 用户决策）：首页「已配置 Smart HID」面板与已知设备历史整链移除
+assert.doesNotMatch(indexPage, /pruneKnownDevices|knownDevices|openHidHistory|buildHidHistoryUrl/);
+assert.match(indexPage, /buildProfileActionUrl/);
 
 const hidAddPage = fs.readFileSync(path.join(uniappRoot, 'pages/hid/add.vue'), 'utf8');
 const provisionStepper = fs.readFileSync(path.join(uniappRoot, 'components/hid/provision-stepper.vue'), 'utf8');
@@ -127,8 +127,10 @@ assert.equal(mainSource.includes('vue-i18n'), false, 'unused vue-i18n initializa
 const productSource = fs.readFileSync(path.join(uniappRoot, 'config/product.js'), 'utf8');
 assert.match(productSource, /萌喵圈[\s\S]*?wxe0ed0e6727a0a5cd/);
 assert.match(productSource, /宝宝点滴[\s\S]*?wx1bb2d5c6821a7883/);
-assert.match(productSource, /cute-meow-circle\.png/);
-assert.match(productSource, /baby-diary\.png/);
+// 86952f4（PARITY-ILL/P009 正典化）：推广卡片改缩写徽章块，icon PNG 已移除
+assert.match(productSource, /abbr:\s*'萌喵'/);
+assert.match(productSource, /abbr:\s*'宝宝'/);
+assert.doesNotMatch(productSource, /other-apps\/.*\.png/);
 
 const versionSource = fs.readFileSync(path.join(uniappRoot, 'pages/about/version.vue'), 'utf8');
 assert.match(versionSource, /getVersionPageModel/, 'Version page must project Release Metadata via getVersionPageModel');

@@ -81,32 +81,19 @@ if (oversized.length) throw new Error(`UniApp PNG assets exceed 250 KiB; compres
 if (pngBytes > 650 * 1024) throw new Error(`UniApp referenced PNG budget exceeded: ${pngBytes} bytes > 650 KiB`);
 
 const productSource = await readFile(join(uniapp, 'config/product.js'), 'utf8');
+// 86952f4（PARITY-ILL/P009 正典化）：推广卡片改缩写徽章块（abbr/bg/color），
+// icon PNG 资产与哈希锁定随之移除；身份锚点 = 名称 + appId + 缩写徽章。
 const requiredIdentity = [
-  ['萌喵圈', 'wxe0ed0e6727a0a5cd', '/static/other-apps/cute-meow-circle.png'],
-  ['宝宝点滴', 'wx1bb2d5c6821a7883', '/static/other-apps/baby-diary.png']
+  ['萌喵圈', 'wxe0ed0e6727a0a5cd', '萌喵'],
+  ['宝宝点滴', 'wx1bb2d5c6821a7883', '宝宝']
 ];
-for (const [name, appId, icon] of requiredIdentity) {
-  if (!productSource.includes(name) || !productSource.includes(appId) || !productSource.includes(icon)) {
+for (const [name, appId, abbr] of requiredIdentity) {
+  if (!productSource.includes(name) || !productSource.includes(appId) || !productSource.includes(`abbr: '${abbr}'`)) {
     throw new Error(`Sibling mini-program identity mismatch: ${name}`);
   }
 }
-
-const expectedSiblingHashes = {
-  '/static/other-apps/baby-diary.png': '945d081c34ed41c996b5ca5206ed861d8ee6349c5d08e966e69df0652051c2aa',
-  '/static/other-apps/cute-meow-circle.png': 'e087721cd7a1eafa7d7c82fdb8b5841ec2e8aee5184efa26c7d0ff9338e068c9'
-};
-const siblingHashes = [];
-for (const [reference, expectedHash] of Object.entries(expectedSiblingHashes)) {
-  const bytes = await readFile(join(uniapp, reference.slice(1)));
-  const hash = createHash('sha256').update(bytes).digest('hex');
-  if (hash !== expectedHash) throw new Error(`Established sibling icon was replaced: ${reference}`);
-  siblingHashes.push(hash);
-}
-const smartBleLogoHash = createHash('sha256')
-  .update(await readFile(join(uniapp, 'static/logo.png')))
-  .digest('hex');
-if (siblingHashes.includes(smartBleLogoHash) || new Set(siblingHashes).size !== siblingHashes.length) {
-  throw new Error('Smart BLE and sibling mini-program icons must remain distinct identities');
+if (/other-apps\/[^"']+\.png/.test(productSource)) {
+  throw new Error('Sibling mini-program icons must stay abbr badges (86952f4); icon PNG references regressed');
 }
 
 const compiledLabel = compiledAvailable ? 'source + compiled' : 'source only';

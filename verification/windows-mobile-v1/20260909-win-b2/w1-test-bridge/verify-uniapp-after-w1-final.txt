@@ -1,0 +1,678 @@
+unit-test node: C:\Users\11066\AppData\Roaming\nvm/v23.8.0/node.exe (v23.8.0)
+
+[tests/unit/advertisement.test.mjs]
+[advertisement snapshot]
+  ✓ absence, empty bytes, raw bytes, manufacturer and service data are distinct
+(node:2560) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/apps/uniapp/services/ble-runtime/advertisement.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\apps\uniapp\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[tests/unit/advertising-payload.test.mjs]
+(node:21048) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/apps/uniapp/utils/advertising-payload.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\apps\uniapp\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[advertising payload]
+  ✓ accepts empty, 16-bit, 32-bit, and canonical 128-bit service UUIDs
+  ✓ counts UTF-8 bytes and all AD structure overhead
+  ✓ accepts exactly 31 bytes and rejects 32 bytes
+  ✓ rejects malformed manufacturer ID or data without an ID
+  ✓ ships a valid default that matches the first-run fields
+(node:21048) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/core/ble-core/provisioning/framing.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\core\package.json.
+
+[tests/unit/ble-platform.test.mjs]
+[ble platform]
+  ✓ injected platform wins and missing runtime fails explicitly
+(node:20020) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/apps/uniapp/services/ble-runtime/platform.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\apps\uniapp\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[tests/unit/ble-runtime.test.mjs]
+(node:1780) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/apps/uniapp/services/ble-runtime/index.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\apps\uniapp\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[ble runtime]
+  ✓ routes equal characteristic UUIDs by device and service identity
+  ✓ disconnecting one device leaves another device subscription alive
+  ✓ routes discovery through the single BLE runtime listener
+  ✓ unsupported web runtimes can mount before a BLE operation is requested
+  ✓ opening an already-open adapter is idempotent while real open errors remain visible
+  ✓ read timeout removes its one-shot value listener
+  ✓ missing expected service closes the half-open connection
+  ✓ reopening a connected device reuses its active runtime session
+  ✓ reused sessions still enforce a caller expected service requirement
+  ✓ active and passive disconnects invalidate the session exactly once
+  ✓ concurrent same-device connects share one platform attempt and one session
+  ✓ a rejected platform connect clears the pending attempt so retry can succeed
+  ✓ read resolves the matching value and ignores a late value after timeout
+  ✓ disconnect rejects a pending read immediately and removes its listener
+  ✓ write sends one exact payload and exposes platform rejection or dead session
+  ✓ notify routes while subscribed and cleans up on disable or disconnect
+
+[tests/unit/broadcast-validation.test.mjs]
+[broadcast validation]
+  ✓ validates plugin, required fields, and payload before App broadcast
+(node:3476) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/apps/uniapp/services/broadcast/validation.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\apps\uniapp\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[tests/unit/connected-session-registry.test.mjs]
+(node:26296) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/apps/uniapp/services/connected-session-registry.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\apps\uniapp\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[connected session registry]
+  ✓ binds one session and reuses it without duplicate callbacks
+  ✓ replacement unsubscribes the old callback and ignores its later disconnect
+  ✓ passive or active disconnect removes only the current session and emits one sync event
+  ✓ remove unsubscribes callbacks and can guard against stale-session removal
+  ✓ rejects invalid or already-dead sessions
+
+[tests/unit/device-collection.test.mjs]
+[device collection]
+  ✓ deduplicates by deviceId and keeps the latest advertisement fields
+  ✓ preserves connection state unless an explicit Store state overrides it
+  ✓ sorts finite RSSI first and keeps missing RSSI devices deterministically
+  ✓ ignores invalid identities and caps the result at 100 strongest devices
+(node:11900) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/apps/uniapp/services/ble-runtime/device-collection.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\apps\uniapp\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[tests/unit/device-filter.test.mjs]
+[device filter]
+  ✓ filters RSSI/name/localName without mutating source devices
+(node:15012) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/apps/uniapp/services/ble-runtime/device-filter.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\apps\uniapp\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[tests/unit/device-session-operations.test.mjs]
+(node:24156) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/apps/uniapp/services/device-session-operations.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\apps\uniapp\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[device session operations]
+  ✓ encodes UTF-8 and strict even-length HEX payloads
+  ✓ formats device logs and keeps empty export explicit
+(node:24156) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/core/ble-core/provisioning/framing.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\core\package.json.
+  ✓ serializes repeated Notify toggles and disables remote state during cleanup
+  ✓ a completed second toggle disables one active Notify subscription
+
+[tests/unit/esp32-demo-profile.test.mjs]
+(node:12360) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/core/ble-core/provisioning/profile-contract.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\core\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[esp32 demo profile]
+  ✓ esp32-demo registers as GATT-only profile with service UUID match
+(node:12360) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/apps/uniapp/services/esp32-demo/profile.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\apps\uniapp\package.json.
+
+[tests/unit/hid-navigation.test.mjs]
+(node:24168) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/apps/uniapp/services/provisioning/builtins.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\apps\uniapp\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:24168) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/core/ble-core/provisioning/profile-contract.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\core\package.json.
+(node:24168) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+[HID navigation]
+  ✓ preserves selected-device context in all secondary routes
+  ✓ advanced BLE action does not fall back to the Scan Tab
+  ✓ diagnostics clears stale data and distinguishes borrowed from owned sessions
+  ✓ generic device detail uses session composable and compact routes
+  ✓ connected tab routes Smart HID devices to HID detail
+  ✓ smart HID service exposes isConnected and binds connected tab entries
+  ✓ provisioning preserves BLE session when opening HID detail after success
+
+[tests/unit/logger.test.mjs]
+[logger]
+[BLE][INFO] A-1
+[BLE][WARNING] A-2
+[BLE][ERROR] B-1
+  ✓ keeps global and per-device history separate
+[BLE][SUCCESS] A-3
+[BLE][SUCCESS] A-4
+  ✓ supports listener cleanup while preserving reopen history
+  ✓ clears one device without clearing another, then clears all
+[BLE][INFO] row-0
+[BLE][INFO] row-1
+[BLE][INFO] row-2
+[BLE][INFO] row-3
+[BLE][INFO] row-4
+[BLE][INFO] row-5
+[BLE][INFO] row-6
+[BLE][INFO] row-7
+[BLE][INFO] row-8
+[BLE][INFO] row-9
+[BLE][INFO] row-10
+[BLE][INFO] row-11
+[BLE][INFO] row-12
+[BLE][INFO] row-13
+[BLE][INFO] row-14
+[BLE][INFO] row-15
+[BLE][INFO] row-16
+[BLE][INFO] row-17
+[BLE][INFO] row-18
+[BLE][INFO] row-19
+[BLE][INFO] row-20
+[BLE][INFO] row-21
+[BLE][INFO] row-22
+[BLE][INFO] row-23
+[BLE][INFO] row-24
+[BLE][INFO] row-25
+[BLE][INFO] row-26
+[BLE][INFO] row-27
+[BLE][INFO] row-28
+[BLE][INFO] row-29
+[BLE][INFO] row-30
+[BLE][INFO] row-31
+[BLE][INFO] row-32
+[BLE][INFO] row-33
+[BLE][INFO] row-34
+[BLE][INFO] row-35
+[BLE][INFO] row-36
+[BLE][INFO] row-37
+[BLE][INFO] row-38
+[BLE][INFO] row-39
+[BLE][INFO] row-40
+[BLE][INFO] row-41
+[BLE][INFO] row-42
+[BLE][INFO] row-43
+[BLE][INFO] row-44
+[BLE][INFO] row-45
+[BLE][INFO] row-46
+[BLE][INFO] row-47
+[BLE][INFO] row-48
+[BLE][INFO] row-49
+[BLE][INFO] row-50
+[BLE][INFO] row-51
+[BLE][INFO] row-52
+[BLE][INFO] row-53
+[BLE][INFO] row-54
+[BLE][INFO] row-55
+[BLE][INFO] row-56
+[BLE][INFO] row-57
+[BLE][INFO] row-58
+[BLE][INFO] row-59
+[BLE][INFO] row-60
+[BLE][INFO] row-61
+[BLE][INFO] row-62
+[BLE][INFO] row-63
+[BLE][INFO] row-64
+[BLE][INFO] row-65
+[BLE][INFO] row-66
+[BLE][INFO] row-67
+[BLE][INFO] row-68
+[BLE][INFO] row-69
+[BLE][INFO] row-70
+[BLE][INFO] row-71
+[BLE][INFO] row-72
+[BLE][INFO] row-73
+[BLE][INFO] row-74
+[BLE][INFO] row-75
+[BLE][INFO] row-76
+[BLE][INFO] row-77
+[BLE][INFO] row-78
+[BLE][INFO] row-79
+[BLE][INFO] row-80
+[BLE][INFO] row-81
+[BLE][INFO] row-82
+[BLE][INFO] row-83
+[BLE][INFO] row-84
+[BLE][INFO] row-85
+[BLE][INFO] row-86
+[BLE][INFO] row-87
+[BLE][INFO] row-88
+[BLE][INFO] row-89
+[BLE][INFO] row-90
+[BLE][INFO] row-91
+[BLE][INFO] row-92
+[BLE][INFO] row-93
+[BLE][INFO] row-94
+[BLE][INFO] row-95
+[BLE][INFO] row-96
+[BLE][INFO] row-97
+[BLE][INFO] row-98
+[BLE][INFO] row-99
+[BLE][INFO] row-100
+[BLE][INFO] row-101
+[BLE][INFO] row-102
+[BLE][INFO] row-103
+[BLE][INFO] row-104
+[BLE][INFO] row-105
+[BLE][INFO] row-106
+[BLE][INFO] row-107
+[BLE][INFO] row-108
+[BLE][INFO] row-109
+[BLE][INFO] row-110
+[BLE][INFO] row-111
+[BLE][INFO] row-112
+[BLE][INFO] row-113
+[BLE][INFO] row-114
+[BLE][INFO] row-115
+[BLE][INFO] row-116
+[BLE][INFO] row-117
+[BLE][INFO] row-118
+[BLE][INFO] row-119
+[BLE][INFO] row-120
+[BLE][INFO] row-121
+[BLE][INFO] row-122
+[BLE][INFO] row-123
+[BLE][INFO] row-124
+[BLE][INFO] row-125
+[BLE][INFO] row-126
+[BLE][INFO] row-127
+[BLE][INFO] row-128
+[BLE][INFO] row-129
+[BLE][INFO] row-130
+[BLE][INFO] row-131
+[BLE][INFO] row-132
+[BLE][INFO] row-133
+[BLE][INFO] row-134
+[BLE][INFO] row-135
+[BLE][INFO] row-136
+[BLE][INFO] row-137
+[BLE][INFO] row-138
+[BLE][INFO] row-139
+[BLE][INFO] row-140
+[BLE][INFO] row-141
+[BLE][INFO] row-142
+[BLE][INFO] row-143
+[BLE][INFO] row-144
+[BLE][INFO] row-145
+[BLE][INFO] row-146
+[BLE][INFO] row-147
+[BLE][INFO] row-148
+[BLE][INFO] row-149
+[BLE][INFO] row-150
+[BLE][INFO] row-151
+[BLE][INFO] row-152
+[BLE][INFO] row-153
+[BLE][INFO] row-154
+[BLE][INFO] row-155
+[BLE][INFO] row-156
+[BLE][INFO] row-157
+[BLE][INFO] row-158
+[BLE][INFO] row-159
+[BLE][INFO] row-160
+[BLE][INFO] row-161
+[BLE][INFO] row-162
+[BLE][INFO] row-163
+[BLE][INFO] row-164
+[BLE][INFO] row-165
+[BLE][INFO] row-166
+[BLE][INFO] row-167
+[BLE][INFO] row-168
+[BLE][INFO] row-169
+[BLE][INFO] row-170
+[BLE][INFO] row-171
+[BLE][INFO] row-172
+[BLE][INFO] row-173
+[BLE][INFO] row-174
+[BLE][INFO] row-175
+[BLE][INFO] row-176
+[BLE][INFO] row-177
+[BLE][INFO] row-178
+[BLE][INFO] row-179
+[BLE][INFO] row-180
+[BLE][INFO] row-181
+[BLE][INFO] row-182
+[BLE][INFO] row-183
+[BLE][INFO] row-184
+[BLE][INFO] row-185
+[BLE][INFO] row-186
+[BLE][INFO] row-187
+[BLE][INFO] row-188
+[BLE][INFO] row-189
+[BLE][INFO] row-190
+[BLE][INFO] row-191
+[BLE][INFO] row-192
+[BLE][INFO] row-193
+[BLE][INFO] row-194
+[BLE][INFO] row-195
+[BLE][INFO] row-196
+[BLE][INFO] row-197
+[BLE][INFO] row-198
+[BLE][INFO] row-199
+[BLE][INFO] row-200
+[BLE][INFO] row-201
+[BLE][INFO] row-202
+[BLE][INFO] row-203
+[BLE][INFO] row-204
+[BLE][INFO] row-205
+[BLE][INFO] row-206
+[BLE][INFO] row-207
+[BLE][INFO] row-208
+[BLE][INFO] row-209
+[BLE][INFO] row-210
+[BLE][INFO] row-211
+[BLE][INFO] row-212
+[BLE][INFO] row-213
+[BLE][INFO] row-214
+[BLE][INFO] row-215
+[BLE][INFO] row-216
+[BLE][INFO] row-217
+[BLE][INFO] row-218
+[BLE][INFO] row-219
+[BLE][INFO] row-220
+[BLE][INFO] row-221
+[BLE][INFO] row-222
+[BLE][INFO] row-223
+[BLE][INFO] row-224
+[BLE][INFO] row-225
+[BLE][INFO] row-226
+[BLE][INFO] row-227
+[BLE][INFO] row-228
+[BLE][INFO] row-229
+[BLE][INFO] row-230
+[BLE][INFO] row-231
+[BLE][INFO] row-232
+[BLE][INFO] row-233
+[BLE][INFO] row-234
+[BLE][INFO] row-235
+[BLE][INFO] row-236
+[BLE][INFO] row-237
+[BLE][INFO] row-238
+[BLE][INFO] row-239
+[BLE][INFO] row-240
+[BLE][INFO] row-241
+[BLE][INFO] row-242
+[BLE][INFO] row-243
+[BLE][INFO] row-244
+[BLE][INFO] row-245
+[BLE][INFO] row-246
+[BLE][INFO] row-247
+[BLE][INFO] row-248
+[BLE][INFO] row-249
+  ✓ caps per-device history at 200 entries
+(node:26580) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:26580) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/core/ble-core/utils/logger.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\core\package.json.
+
+[tests/unit/ota-manager.test.mjs]
+(node:3364) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/apps/uniapp/utils/ota_manager.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\apps\uniapp\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[OTA manager]
+  ✓ parses documented JSON status payloads and ignores non-JSON
+  ✓ rejects missing or empty firmware before MTU, Notify, or transfer
+  ✓ does not succeed after bytes alone; requires CTRL start, commit, and status success
+  ✓ accepts full transaction with ready and success notifications
+  ✓ timeout, device failure, cancel, and write rejection never report success
+
+[tests/unit/phase2-remediation.test.mjs]
+(node:14248) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/apps/uniapp/services/smart-hid/scan-code-feedback.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\apps\uniapp\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[phase-2 remediation helpers]
+  ✓ scan fail, service panel state, and disconnect summary helpers
+
+[tests/unit/phase3-route-history.test.mjs]
+(node:22404) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/apps/uniapp/services/smart-hid/known-devices.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\apps\uniapp\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[phase-3/4 helpers]
+  ✓ known-device snapshot dedupe (F023 no-TTL/no-persist) and compact device routes
+(node:22404) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/core/ble-core/provisioning/profile-contract.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\core\package.json.
+
+[tests/unit/profile-contract.test.mjs]
+[profile contract]
+  ✓ UUID is normalized and descriptor is immutable
+  ✓ duplicate Profile ID is rejected
+  ✓ required characteristic aliases must exist
+  ✓ matchAdvertisement is constrained to defined match levels
+(node:16028) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/core/ble-core/provisioning/profile-contract.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\core\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[tests/unit/profile-navigation.test.mjs]
+(node:11660) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/apps/uniapp/services/provisioning/builtins.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\apps\uniapp\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11660) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+(node:11660) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/core/protocols/hid-provisioning-protocol.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\core\package.json.
+[profile navigation]
+  ✓ profile-driven routes for Smart HID and GATT-only profiles
+
+[tests/unit/provisioning-orchestrator.test.mjs]
+(node:9516) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/core/ble-core/provisioning/framing-strategies.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\core\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:9516) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/apps/uniapp/services/provisioning/orchestrator.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\apps\uniapp\package.json.
+[provisioning orchestrator]
+  ✓ framing strategies and waiter-before-write transaction
+  ✓ writeProfileCandidate rejects dead sessions
+  ✓ legacy encrypted firmware fails fast after one write
+
+[tests/unit/provisioning-transport.test.mjs]
+(node:16276) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/apps/uniapp/services/provisioning/transport.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\apps\uniapp\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16276) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/core/ble-core/provisioning/framing.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\core\package.json.
+[provisioning transport]
+  ✓ notify enable and callback registration are separate without enabling twice
+  ✓ notify setup failure closes the half-initialized session
+
+[tests/unit/provisioning.test.mjs]
+(node:17336) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/core/ble-core/provisioning/framing.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\core\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[framing]
+  ✓ chunkSizeForMtu: MTU 23 → 17B（协议 §3 合法下限）
+  ✓ chunkSizeForMtu: MTU 185/247 → 128B（封顶）
+  ✓ chunkSizeForMtu: 非法/未知 MTU → 保守 17B
+  ✓ buildFrames: 单帧（payload ≤ chunk）帧头正确
+  ✓ buildFrames: 多帧切块与 [seq][total][len] 递增
+  ✓ buildFrames ↔ FrameAssembler 往返（含中文/代理对）
+  ✓ FrameAssembler: 乱序拒绝
+  ✓ FrameAssembler: seq=0 重启（客户端出错从 0 重发）
+  ✓ buildFrames: 空 payload / 超限 抛错
+  ✓ utf8 往返（ASCII / 中文 / 表情）
+[protocol V1]
+  ✓ UUID 与固件正典一致（9f1d1001-1002-1003-1004）
+  ✓ parsePairingQrPayload: 正典载荷
+  ✓ parsePairingQrPayload: port 缺省 17892 / 大写 scheme / 大写 token
+  ✓ parsePairingQrPayload: 拒绝非 shid:// 码 / 坏 token / 坏 port
+  ✓ buildProvisionCandidateJson: 字段与默认端口
+  ✓ buildProvisionCandidateJson: 校验抛错（ssid 空 / token 形态 / port 范围）
+  ✓ parseDeviceInfo: 固件真实格式（ble_proto_build_info）
+  ✓ parseProvisionStatus: 固件真实格式（含 error:null / error:string）
+  ✓ 错误码表：8 个稳定字符串码，提示全覆盖
+  ✓ candidate 分帧尺寸符合设备侧约束（≤128B/帧，≤1024B 总量，≤64 帧）
+
+=== 20 passed ===
+(node:17336) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+
+[tests/unit/scan-permission.test.mjs]
+(node:25612) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/apps/uniapp/services/ble-runtime/index.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\apps\uniapp\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[scan permission]
+  ✓ returns ok when bluetooth and location permission are ready
+  ✓ requests location after an undetermined bluetooth authorization can open the adapter
+  ✓ shows a modal when bluetooth is unavailable before scan starts
+  ✓ preserves a generic adapter error instead of reporting a permission denial
+  ✓ opens app authorization settings when bluetooth permission was denied
+  ✓ waits for bluetooth settings to return before resolving a denied permission check
+  ✓ opens settings guidance when location permission is denied
+
+[tests/unit/scan-session.test.mjs]
+[scan session]
+  ✓ manual stop finishes the active session and returns to idle
+  ✓ two scans are serialized and receive independent session IDs
+  ✓ stopping during adapter open cannot create an orphan scan
+  ✓ duplicate start joins one active session without a second discovery
+  ✓ start errors stay distinguishable from an empty successful scan
+  ✓ stop failure is explicit and still releases controller ownership
+(node:11696) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/apps/uniapp/services/ble-runtime/scan-session.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\apps\uniapp\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓ timed scans auto-stop and preserve the timeout reason
+
+[tests/unit/smart-hid-profile.test.mjs]
+(node:8788) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/core/ble-core/provisioning/profile-contract.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\core\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:8788) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/apps/uniapp/services/smart-hid/workflow.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\apps\uniapp\package.json.
+(node:8788) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+[smart hid profile]
+  ✓ strong Service UUID match wins over name-only discovery
+  ✓ Device Info must confirm product, protocol and device identity
+  ✓ Profile contract accepts Smart HID as an explicit first-party Profile
+  ✓ workflow distinguishes terminal result and recovery action
+
+[tests/unit/smart-hid-provision-form.test.mjs]
+[smart hid provision form]
+  ✓ server address defaults to the V1 pairing port
+  ✓ server address rejects URLs, paths and invalid ports
+  ✓ QR address formatting stays editable without exposing token
+  ✓ form candidate keeps the canonical V1 fields
+  ✓ persistent known-device metadata excludes token and Wi-Fi password
+  ✓ late connect and QR callbacks are ignored after page disposal
+(node:3728) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/apps/uniapp/services/smart-hid/provision-form.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\apps\uniapp\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[tests/unit/smart-hid-workflow.test.mjs]
+(node:7328) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/apps/uniapp/services/smart-hid/workflow.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\apps\uniapp\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:7328) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+(node:7328) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/core/protocols/hid-provisioning-protocol.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\core\package.json.
+[smart hid workflow]
+  ✓ maps every stable error to one canonical recovery action and message
+  ✓ classifies ready, progress, recovery, malformed, and error states
+  ✓ waiters resolve immediate status, time out, cancel, and fail together on disconnect
+  ✓ creates the result waiter before write so an immediate terminal status is not lost
+
+[tests/unit/uniapp-ui-contract.test.mjs]
+[uniapp UI contract]
+  ✓ 35 Vue files keep native, labeled, shared-style buttons
+
+[tests/unit/wx-peripheral-mode.test.mjs]
+[wx peripheral mode]
+  ✓ opens peripheral mode once and reuses controller ownership
+  ✓ hands an already-open central adapter over to peripheral mode
+  ✓ does not close the adapter while device sessions are active
+  ✓ release is idempotent and only closes an owned adapter once
+  ✓ page release during initialization cannot leave an orphan adapter
+  ✓ close failure remains owned and can be retried without reopening
+  ✓ repeated support checks share one open and release refuses a newly active connection
+  ✓ concurrent release closes once and re-entry waits for a fresh peripheral open
+(node:2984) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/apps/uniapp/services/wx-peripheral-mode.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\apps\uniapp\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[tests/unit/wx-peripheral-server.test.mjs]
+[wx peripheral server]
+  ✓ creates once, starts, stops, closes, and can re-enter with a new server
+  ✓ surfaces create/start failures without claiming ownership or advertising
+  ✓ close still runs after stop failure and releases a successfully closed server
+  ✓ concurrent close calls share one stop/close lifecycle
+(node:7616) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/project/xf/smart-ble/apps/uniapp/services/wx-peripheral-server.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\project\xf\smart-ble\apps\uniapp\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[Smart HID protocol contract]
+Smart HID contract lock PASS (c0b5a25bdf8a1cded7125888aa47145217e9d91cd2f1e4c332600e23815e3433, canonical ef4506795b8f689da110b223cc7bcb7770e22e1a, vectors ×50 cases canon-locked)
+
+[UniApp package lock]
+UniApp package lock gate PASS
+
+[UniApp static assets]
+UniApp asset gate PASS (10 source + compiled references, 416460 PNG bytes, 2 locked sibling identities)
+
+[UniApp Vue SFC parse]
+UniApp SFC parse PASS (35 files)
+
+[UniAutomator config syntax]
+
+[UniAutomator Jest syntax]
+
+[UniAutomator page-test syntax]
+
+[UniAutomator page-flow syntax]
+
+[Release metadata check]
+generate-release-metadata --check PASS
+
+[Version consistency]
+check-version-consistency PASS (VERSION=1.0.5, versionCode=101)
+
+[Smart HID platform parity]
+Smart HID V1 platform parity（vectors E:\project\xf\smart-ble\core\protocols\smart-hid-v1-vectors.json）
+  js       PASS  68/68  （constants 20, qr 10, candidate 9, framingMtu 7, frames 7, deviceInfo 5, status 4, errorRecovery 8）
+  dart     PASS  59/59  （constants 17, qr 10, candidate 9, framingMtu 7, frames 7, deviceInfo 5, status 4）
+  kotlin   NOT_IMPLEMENTED  K-AND Smart HID 协议层尚未实现（W3：core/profile/SmartHidProtocol.kt 落地后接入本向量）
+  swift    DEFERRED_TO_MAC  计划 M1：core/apple/SmartHidCore 接入同一向量文件（Windows 阶段不执行）
+parity PASS（已执行平台零失败；NOT_IMPLEMENTED/DEFERRED/BLOCKED 为在册状态）
+
+[Git whitespace]
+warning: in the working copy of 'apps/android/app/src/main/java/com/smartble/ui/MainActivity.kt', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'apps/android/app/src/main/java/com/smartble/ui/components/FilterPanel.kt', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'apps/android/app/src/main/java/com/smartble/ui/screen/DeviceListScreen.kt', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'apps/android/app/src/main/java/com/smartble/ui/theme/Theme.kt', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'apps/android/app/src/main/res/values/strings.xml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'apps/flutter/lib/l10n/app_localizations.dart', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'apps/flutter/lib/l10n/app_localizations_en.dart', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'apps/flutter/lib/l10n/app_localizations_zh.dart', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'apps/uniapp/pages/broadcast/index.vue', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/appicon/compose_badges.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/verify-uniapp.sh', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/target/pages/page-behavior.manifest.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/target/pages/page-behavior.schema.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/target/pages/pages.manifest.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/target/pages/specs/PAGE-001.spec.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/target/pages/specs/PAGE-002.spec.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/target/pages/specs/PAGE-003.spec.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/target/pages/specs/PAGE-004.spec.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/target/pages/specs/PAGE-005.spec.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/target/pages/specs/PAGE-006.spec.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/target/pages/specs/PAGE-007.spec.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/target/pages/specs/PAGE-008.spec.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/target/pages/specs/PAGE-009.spec.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/target/pages/specs/PAGE-010.spec.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/target/pages/specs/WEB-001.spec.js', LF will be replaced by CRLF the next time Git touches it
+
+UniApp verification PASS (28 unit files plus 12 static gates)

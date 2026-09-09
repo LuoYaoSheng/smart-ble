@@ -652,7 +652,7 @@ onLoad(() => {
 	// APP-PLUS / MP-WEIXIN / H5 单层 token 已验证有效，保留条件编译。
 	// #ifdef APP-PLUS
 	blePeripheral.value = uni.requireNativePlugin('LysBlePeripheral');
-	const sysPlatform = uni.getSystemInfoSync().platform;
+	const sysPlatform = uni.getDeviceInfo?.().platform || '';
 	if (sysPlatform === 'android') {
 		platform.value = 'android';
 		deviceName.value = 'SmartBLE-A';

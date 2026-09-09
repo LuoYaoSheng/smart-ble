@@ -1,0 +1,132 @@
+{
+  "version": "1",
+  "updated": "2026-09-09",
+  "source": {
+    "contract": "smart-hid-workspace protocols/contracts/smart-hid-v1.json（SHA-256 由 core/protocols/smart-hid-contract.lock.json 锁定）",
+    "canon": "Smart-HID-Workspace protocols/ble/PROVISIONING_V1.md",
+    "note": "本文件是跨语言可执行测试向量单源：JS/Dart/Kotlin（及 Mac 阶段 Swift）必须消费同一组向量。scripts/check-smart-hid-contract.mjs 校验本文件常量与正典契约一致；scripts/check-platform-parity.mjs 执行各平台实现。"
+  },
+  "constants": {
+    "serviceUuid": "9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04",
+    "characteristicUuids": {
+      "info": "9f1d1002-e73b-4c8f-9d2a-6f0b5e8a1c04",
+      "input": "9f1d1003-e73b-4c8f-9d2a-6f0b5e8a1c04",
+      "status": "9f1d1004-e73b-4c8f-9d2a-6f0b5e8a1c04"
+    },
+    "namePrefix": "SHID-",
+    "protocolVersion": "1.0",
+    "candidateVersion": 1,
+    "deviceIdPattern": "^HID-[A-Z0-9]{8}$",
+    "deviceNamePattern": "^SHID-[A-Z0-9]{6,8}$",
+    "tokenPattern": "^[0-9a-f]{32}$",
+    "qrScheme": "shid://pair",
+    "defaultPairingPort": 17892,
+    "frame": {
+      "headerSize": 3,
+      "maxChunkBytes": 128,
+      "maxAssembledBytes": 1024,
+      "maxFrames": 64,
+      "defaultAttMtu": 23
+    },
+    "states": ["boot", "load_config", "unprovisioned", "provisioning", "connecting_wifi", "pairing", "mqtt_connecting", "ready", "recovery", "error"],
+    "steps": ["received", "connecting_wifi", "wifi_connected", "pairing", "pairing_success", "mqtt_connecting", "ready"],
+    "errorCodes": ["invalid_payload", "wifi_failed", "controlhub_unreachable", "pairing_invalid", "pairing_expired", "pairing_used", "mqtt_invalid", "storage_failed"],
+    "errorHints": {
+      "invalid_payload": "配置内容非法，请检查输入",
+      "wifi_failed": "Wi-Fi 连接失败，请检查 SSID / 密码",
+      "controlhub_unreachable": "连不上 ControlHub，请确认它在运行、地址可达",
+      "pairing_invalid": "配对码无效，请重新扫码",
+      "pairing_expired": "配对码已过期，请重新扫码",
+      "pairing_used": "配对码已被使用，请重新扫码",
+      "mqtt_invalid": "MQTT 连接失败，请进入诊断",
+      "storage_failed": "设备存储失败，请重试或联系支持"
+    }
+  },
+  "suites": {
+    "qr": {
+      "platforms": ["js", "dart", "kotlin"],
+      "cases": [
+        { "id": "qr_ok_full", "input": "shid://pair?token=0123456789abcdef0123456789abcdef&host=192.168.1.10&port=17892", "expect": { "ok": true, "token": "0123456789abcdef0123456789abcdef", "host": "192.168.1.10", "port": 17892 } },
+        { "id": "qr_ok_default_port", "input": "shid://pair?token=0123456789abcdef0123456789abcdef&host=hub.lan", "expect": { "ok": true, "token": "0123456789abcdef0123456789abcdef", "host": "hub.lan", "port": 17892 } },
+        { "id": "qr_ok_uppercase_token_normalized", "input": "shid://pair?token=0123456789ABCDEF0123456789ABCDEF&host=192.168.1.10", "expect": { "ok": true, "token": "0123456789abcdef0123456789abcdef", "host": "192.168.1.10", "port": 17892 } },
+        { "id": "qr_bad_token_short", "input": "shid://pair?token=0123456789abcdef0123456789abcde&host=192.168.1.10", "expect": { "ok": false } },
+        { "id": "qr_bad_token_nonhex", "input": "shid://pair?token=0123456789abcdef0123456789abcdeg&host=192.168.1.10", "expect": { "ok": false } },
+        { "id": "qr_bad_scheme", "input": "https://pair?token=0123456789abcdef0123456789abcdef&host=192.168.1.10", "expect": { "ok": false } },
+        { "id": "qr_missing_host", "input": "shid://pair?token=0123456789abcdef0123456789abcdef", "expect": { "ok": false } },
+        { "id": "qr_host_with_space", "input": "shid://pair?token=0123456789abcdef0123456789abcdef&host=192.168.1.1%20x", "expect": { "ok": false } },
+        { "id": "qr_bad_port_range", "input": "shid://pair?token=0123456789abcdef0123456789abcdef&host=192.168.1.10&port=70000", "expect": { "ok": false } },
+        { "id": "qr_duplicate_param", "input": "shid://pair?token=0123456789abcdef0123456789abcdef&token=0123456789abcdef0123456789abcdef&host=192.168.1.10", "expect": { "ok": false } }
+      ]
+    },
+    "candidate": {
+      "platforms": ["js", "dart", "kotlin"],
+      "cases": [
+        { "id": "cand_ok_full", "input": { "wifi_ssid": "Home-2.4G", "wifi_password": "p@ss w0rd", "hub_host": "192.168.1.10", "hub_port": 17892, "token": "0123456789abcdef0123456789abcdef" }, "expect": { "ok": true, "json": "{\"v\":1,\"wifi_ssid\":\"Home-2.4G\",\"wifi_password\":\"p@ss w0rd\",\"hub_host\":\"192.168.1.10\",\"hub_port\":17892,\"token\":\"0123456789abcdef0123456789abcdef\"}" } },
+        { "id": "cand_ok_default_port", "input": { "wifi_ssid": "Home", "wifi_password": "pw", "hub_host": "hub.lan", "token": "0123456789abcdef0123456789abcdef" }, "expect": { "ok": true, "json": "{\"v\":1,\"wifi_ssid\":\"Home\",\"wifi_password\":\"pw\",\"hub_host\":\"hub.lan\",\"hub_port\":17892,\"token\":\"0123456789abcdef0123456789abcdef\"}" } },
+        { "id": "cand_ok_trim", "input": { "wifi_ssid": "  Home  ", "wifi_password": "pw", "hub_host": " 192.168.1.10 ", "token": " 0123456789abcdef0123456789abcdef " }, "expect": { "ok": true, "json": "{\"v\":1,\"wifi_ssid\":\"Home\",\"wifi_password\":\"pw\",\"hub_host\":\"192.168.1.10\",\"hub_port\":17892,\"token\":\"0123456789abcdef0123456789abcdef\"}" } },
+        { "id": "cand_bad_ssid_empty", "input": { "wifi_ssid": "", "wifi_password": "pw", "hub_host": "hub.lan", "token": "0123456789abcdef0123456789abcdef" }, "expect": { "ok": false, "throws": true } },
+        { "id": "cand_bad_ssid_long", "input": { "wifi_ssid": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "wifi_password": "pw", "hub_host": "hub.lan", "token": "0123456789abcdef0123456789abcdef" }, "expect": { "ok": false, "throws": true } },
+        { "id": "cand_bad_password_long", "input": { "wifi_ssid": "Home", "wifi_password": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "hub_host": "hub.lan", "token": "0123456789abcdef0123456789abcdef" }, "expect": { "ok": false, "throws": true } },
+        { "id": "cand_bad_host_empty", "input": { "wifi_ssid": "Home", "wifi_password": "pw", "hub_host": "", "token": "0123456789abcdef0123456789abcdef" }, "expect": { "ok": false, "throws": true } },
+        { "id": "cand_bad_token", "input": { "wifi_ssid": "Home", "wifi_password": "pw", "hub_host": "hub.lan", "token": "not-a-token" }, "expect": { "ok": false, "throws": true } },
+        { "id": "cand_bad_port_zero", "input": { "wifi_ssid": "Home", "wifi_password": "pw", "hub_host": "hub.lan", "hub_port": 0, "token": "0123456789abcdef0123456789abcdef" }, "expect": { "ok": false, "throws": true } }
+      ]
+    },
+    "framingMtu": {
+      "platforms": ["js", "dart", "kotlin"],
+      "cases": [
+        { "id": "mtu_default_23", "mtu": 23, "expect": 17 },
+        { "id": "mtu_26", "mtu": 26, "expect": 20 },
+        { "id": "mtu_129", "mtu": 129, "expect": 123 },
+        { "id": "mtu_185_capped", "mtu": 185, "expect": 128 },
+        { "id": "mtu_247_capped", "mtu": 247, "expect": 128 },
+        { "id": "mtu_below_default_22", "mtu": 22, "expect": 17 },
+        { "id": "mtu_zero", "mtu": 0, "expect": 17 }
+      ]
+    },
+    "frames": {
+      "platforms": ["js", "dart", "kotlin"],
+      "cases": [
+        { "id": "frames_basic_5b_chunk4", "payloadHex": "0102030405", "chunkSize": 4, "expect": { "ok": true, "frames": ["00020401020304", "01020105"] } },
+        { "id": "frames_exact_multiple_8b_chunk4", "payloadHex": "0001020304050607", "chunkSize": 4, "expect": { "ok": true, "frames": ["00020400010203", "01020404050607"] } },
+        { "id": "frames_single_chunk_gt_payload", "payloadHex": "aabbcc", "chunkSize": 128, "expect": { "ok": true, "frames": ["000103aabbcc"] } },
+        { "id": "frames_chunk_capped_to_128", "payloadHex": "aabbcc", "chunkSize": 500, "expect": { "ok": true, "frames": ["000103aabbcc"] } },
+        { "id": "frames_empty_throws", "payloadHex": "", "chunkSize": 4, "expect": { "ok": false, "throws": true } },
+        { "id": "frames_over_assembly_max_throws", "fill": { "byte": "ab", "length": 1025 }, "chunkSize": 128, "expect": { "ok": false, "throws": true } },
+        { "id": "frames_over_max_frames_throws", "fill": { "byte": "cd", "length": 65 }, "chunkSize": 1, "expect": { "ok": false, "throws": true } }
+      ]
+    },
+    "deviceInfo": {
+      "platforms": ["js", "dart", "kotlin"],
+      "cases": [
+        { "id": "info_ok_full", "input": "{\"product\":\"smart-hid\",\"protocol\":\"1.0\",\"device_id\":\"HID-ABCD1234\",\"firmware\":\"1.1.0\",\"state\":\"unprovisioned\",\"provisioned\":false}", "expect": { "ok": true, "product": "smart-hid", "protocol": "1.0", "device_id": "HID-ABCD1234", "firmware": "1.1.0", "state": "unprovisioned", "provisioned": false } },
+        { "id": "info_ok_minimal_fields_defaulted", "input": "{\"device_id\":\"HID-00000001\"}", "expect": { "ok": true, "product": "", "protocol": "", "device_id": "HID-00000001", "firmware": "", "state": "", "provisioned": false } },
+        { "id": "info_bad_json", "input": "{oops", "expect": { "ok": false } },
+        { "id": "info_missing_device_id", "input": "{\"product\":\"smart-hid\"}", "expect": { "ok": false } },
+        { "id": "info_non_object", "input": "[1,2]", "expect": { "ok": false } }
+      ]
+    },
+    "status": {
+      "platforms": ["js", "dart", "kotlin"],
+      "cases": [
+        { "id": "status_ok_progress", "input": "{\"state\":\"provisioning\",\"step\":\"connecting_wifi\",\"error\":null}", "expect": { "ok": true, "state": "provisioning", "step": "connecting_wifi", "error": null } },
+        { "id": "status_ok_error_passthrough", "input": "{\"state\":\"error\",\"step\":\"\",\"error\":\"wifi_failed\"}", "expect": { "ok": true, "state": "error", "step": "", "error": "wifi_failed" } },
+        { "id": "status_bad_json", "input": "not-json", "expect": { "ok": false } },
+        { "id": "status_missing_fields_defaulted", "input": "{}", "expect": { "ok": true, "state": "", "step": "", "error": null } }
+      ]
+    },
+    "errorRecovery": {
+      "platforms": ["js", "kotlin"],
+      "cases": [
+        { "id": "rec_invalid_payload", "code": "invalid_payload", "expect": "form" },
+        { "id": "rec_wifi_failed", "code": "wifi_failed", "expect": "form" },
+        { "id": "rec_controlhub_unreachable", "code": "controlhub_unreachable", "expect": "pairing" },
+        { "id": "rec_pairing_invalid", "code": "pairing_invalid", "expect": "pairing" },
+        { "id": "rec_pairing_expired", "code": "pairing_expired", "expect": "pairing" },
+        { "id": "rec_pairing_used", "code": "pairing_used", "expect": "pairing" },
+        { "id": "rec_mqtt_invalid", "code": "mqtt_invalid", "expect": "diagnostics" },
+        { "id": "rec_storage_failed", "code": "storage_failed", "expect": "retry" }
+      ]
+    }
+  }
+}

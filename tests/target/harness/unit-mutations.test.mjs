@@ -116,15 +116,19 @@ test('HARNESS-U-010 参照层：静默修正非法 HEX 必须被抓', () => {
   assert.notEqual(brokenHex('AA ZZ'), null, '目标要求：非法输入必须整体拒绝（返回错误），不得局部修正');
 });
 
-// from history-retention-target.test.mjs
+// from history-retention-target.test.mjs（F023 后：内存快照清洗，无 TTL/容量）
 function brokenNormalize(devices) {
-  return devices.slice(); // 错误：原样返回，不清理不封顶
+  return devices.slice(); // 错误：原样返回，不去重不过滤空 ID
 }
-test('HARNESS-U-REF：过期历史不清理必须被抓（90 天 TTL）', () => {
-  const stale = { deviceId: 'H1', configuredAt: Date.now() - 91 * DAY };
-  const kept = brokenNormalize([stale]);
-  assert.equal(kept.length, 1, '参照实现确实保留过期项');
-  assert.ok(kept.length > 0, '目标：>90 天记录必须被清理（S-21 声明的 90 天口径）');
+test('HARNESS-U-REF：快照不去重/不过滤必须被抓（F023 内存快照清洗）', () => {
+  const raw = [
+    { deviceId: 'H1', configuredAt: 200 },
+    { deviceId: 'H1', configuredAt: 100 },
+    { deviceId: '', configuredAt: 300 }
+  ];
+  const kept = brokenNormalize(raw);
+  assert.equal(kept.length, 3, '参照实现确实未清洗');
+  assert.ok(kept.some((x) => !x.deviceId), '目标：空 deviceId 必须被过滤；同 ID 必须按最新 configuredAt 去重');
 });
 
 // from logging-redaction-target.test.mjs

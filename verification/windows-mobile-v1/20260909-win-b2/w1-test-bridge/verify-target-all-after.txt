@@ -1,0 +1,444 @@
+[TS 桥] 当前 Node v20.19.3 无类型剥离，改用 C:\Users\11066\AppData\Roaming\nvm\v23.8.0\node.exe 重新执行
+
+===== Checker TEST-C-contract =====
+ok   : [TEST-C-002] contracts/target/product-target.json JSON 可解析
+ok   : [TEST-C-002] contracts/target/product-target.json 必备字段齐全（缺 ）
+ok   : [TEST-C-003] contracts/target/product-target.json 审批元数据应为 APPROVED/user（实际 APPROVED/user）
+ok   : [TEST-C-002] contracts/target/pages-target.json JSON 可解析
+ok   : [TEST-C-002] contracts/target/pages-target.json 必备字段齐全（缺 ）
+ok   : [TEST-C-003] contracts/target/pages-target.json 审批元数据应为 APPROVED/user（实际 APPROVED/user）
+ok   : [TEST-C-002] contracts/target/flows-target.json JSON 可解析
+ok   : [TEST-C-002] contracts/target/flows-target.json 必备字段齐全（缺 ）
+ok   : [TEST-C-003] contracts/target/flows-target.json 审批元数据应为 APPROVED/user（实际 APPROVED/user）
+ok   : [TEST-C-002] contracts/target/platform-target.json JSON 可解析
+ok   : [TEST-C-002] contracts/target/platform-target.json 必备字段齐全（缺 ）
+ok   : [TEST-C-003] contracts/target/platform-target.json 审批元数据应为 APPROVED/user（实际 APPROVED/user）
+ok   : [TEST-C-002] contracts/target/ble-fixture-target.json JSON 可解析
+ok   : [TEST-C-002] contracts/target/ble-fixture-target.json 必备字段齐全（缺 ）
+ok   : [TEST-C-003] contracts/target/ble-fixture-target.json 审批元数据应为 APPROVED/user（实际 APPROVED/user）
+ok   : [TEST-C-002] contracts/target/smart-hid-target.json JSON 可解析
+ok   : [TEST-C-002] contracts/target/smart-hid-target.json 必备字段齐全（缺 ）
+ok   : [TEST-C-003] contracts/target/smart-hid-target.json 审批元数据应为 APPROVED/user（实际 APPROVED/user）
+ok   : [TEST-C-002] contracts/target/landing-target.json JSON 可解析
+ok   : [TEST-C-002] contracts/target/landing-target.json 必备字段齐全（缺 ）
+ok   : [TEST-C-003] contracts/target/landing-target.json 审批元数据应为 APPROVED/user（实际 APPROVED/user）
+ok   : [TEST-C-002] docs/target-product/00_DOCUMENT_CONTROL_AND_GLOSSARY.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/00_DOCUMENT_CONTROL_AND_GLOSSARY.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/01_PRODUCT_VISION_SCOPE_AND_PRINCIPLES.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/01_PRODUCT_VISION_SCOPE_AND_PRINCIPLES.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/02_PERSONAS_JOBS_AND_SCENARIOS.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/02_PERSONAS_JOBS_AND_SCENARIOS.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/03_TARGET_FEATURE_CATALOG.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/03_TARGET_FEATURE_CATALOG.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/04_INFORMATION_ARCHITECTURE_AND_NAVIGATION.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/04_INFORMATION_ARCHITECTURE_AND_NAVIGATION.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/05_TARGET_PAGE_CATALOG.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/05_TARGET_PAGE_CATALOG.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/06_TARGET_USER_FLOWS.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/06_TARGET_USER_FLOWS.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/07_INTERACTION_STATE_AND_ERROR_MODEL.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/07_INTERACTION_STATE_AND_ERROR_MODEL.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/08_PLATFORM_CAPABILITY_AND_DEGRADATION_MATRIX.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/08_PLATFORM_CAPABILITY_AND_DEGRADATION_MATRIX.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/09_DATA_MODEL_STORAGE_RETENTION_AND_PRIVACY.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/09_DATA_MODEL_STORAGE_RETENTION_AND_PRIVACY.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/10_RUNTIME_ARCHITECTURE_AND_RESOURCE_OWNERSHIP.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/10_RUNTIME_ARCHITECTURE_AND_RESOURCE_OWNERSHIP.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/11_BLE_GATT_PROTOCOL_CONTRACT.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/11_BLE_GATT_PROTOCOL_CONTRACT.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/12_ESP32_FIXTURE_CONTRACT.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/12_ESP32_FIXTURE_CONTRACT.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/13_SMART_HID_PROFILE_CONTRACT.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/13_SMART_HID_PROFILE_CONTRACT.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/14_OBSERVABILITY_LOGGING_AND_EVIDENCE.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/14_OBSERVABILITY_LOGGING_AND_EVIDENCE.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/15_SECURITY_AND_THREAT_MODEL.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/15_SECURITY_AND_THREAT_MODEL.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/16_NON_FUNCTIONAL_REQUIREMENTS.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/16_NON_FUNCTIONAL_REQUIREMENTS.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/17_ACCESSIBILITY_I18N_AND_CONTENT_GUIDE.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/17_ACCESSIBILITY_I18N_AND_CONTENT_GUIDE.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/18_VERSION_RELEASE_METADATA_AND_PUBLIC_STATUS.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/18_VERSION_RELEASE_METADATA_AND_PUBLIC_STATUS.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/19_OPEN_SOURCE_DEVELOPER_EXPERIENCE.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/19_OPEN_SOURCE_DEVELOPER_EXPERIENCE.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/20_OPERATIONS_SUPPORT_AND_MAINTENANCE.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/20_OPERATIONS_SUPPORT_AND_MAINTENANCE.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/21_RISK_REGISTER_AND_DECISION_LOG.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/21_RISK_REGISTER_AND_DECISION_LOG.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/22_TARGET_TRACEABILITY_MATRIX.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/22_TARGET_TRACEABILITY_MATRIX.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/23_DEFINITION_OF_DONE.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/23_DEFINITION_OF_DONE.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/pages/PAGE-001_SCAN.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/pages/PAGE-001_SCAN.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/pages/PAGE-002_HID_PROVISION.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/pages/PAGE-002_HID_PROVISION.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/pages/PAGE-003_HID_DETAIL.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/pages/PAGE-003_HID_DETAIL.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/pages/PAGE-004_HID_HISTORY.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/pages/PAGE-004_HID_HISTORY.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/pages/PAGE-005_HID_DIAGNOSTICS.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/pages/PAGE-005_HID_DIAGNOSTICS.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/pages/PAGE-007_CONNECTED.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/pages/PAGE-007_CONNECTED.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/pages/PAGE-008_BROADCAST.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/pages/PAGE-008_BROADCAST.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/pages/PAGE-009_ABOUT.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/pages/PAGE-009_ABOUT.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/pages/PAGE-010_VERSION.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/pages/PAGE-010_VERSION.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/web/WEB-001_LANDING_PAGE.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/web/WEB-001_LANDING_PAGE.md 状态应为 APPROVED/user
+ok   : [TEST-C-001] REQ 重复：无
+ok   : [TEST-C-001] FEAT 重复：无
+ok   : [TEST-C-001] REQ ID 形如 REQ-xxx
+ok   : [TEST-C-001] FEAT ID 形如 FEAT-xxx
+ok   : [TEST-C-001] REQ 登记 JSON↔Markdown 一致（仅JSON: 仅MD:）
+ok   : [TEST-C-001] FEAT 登记 JSON↔Markdown 一致（仅JSON: 仅MD:）
+ok   : [TEST-C-008] 每个 FEAT 必须有 planned_tests（缺：）
+ok   : [TEST-C-008] 每个 REQ 必须映射 FEAT（缺：）
+ok   : [TEST-C-002] FEAT 优先级 03 号↔product-target.json 一致（漂移：）
+ok   : [TEST-C-010] 07 号 ERR 登记 ≥60（实际 68）
+ok   : [TEST-C-010] 07 号+页面文档 STATE 登记 ≥100（实际 108）
+ok   : [TEST-C-010] 09 号 DATA 登记 ≥13（实际 13）
+ok   : [TEST-C-011] 页面禁止直接注册全局 BLE 回调（违规：无）
+ok   : [TEST-C-011] 通用层禁止 import Smart HID（违规：无）
+ok   : [TEST-C-014] DEC-016 OTA 固件包已登记
+ok   : [TEST-C-014] DEC-017 统一订阅语义已登记
+ok   : [TEST-C-014] NFR 默认扫描时长 10 秒（DEC-013）
+ok   : [TEST-C-014] FLOW-002 扫描时长 10 秒（DEC-013）
+ok   : [TEST-C-003] 平台公开状态必须取自五词表（违规：）
+ok   : [TEST-C-003] product.public_status_vocabulary 与五词表一致
+check-target-contract: PASS（111/111）
+
+===== Checker TEST-C-pages =====
+ok   : [TEST-C-005] pages-target.json 可解析
+ok   : [TEST-C-005] 页面集合 = PAGE-001..010 + WEB-001（实际 PAGE-001,PAGE-002,PAGE-003,PAGE-004,PAGE-005,PAGE-006,PAGE-007,PAGE-008,PAGE-009,PAGE-010,WEB-001）
+ok   : [TEST-C-005] 四 Tab 恰为 PAGE-001/PAGE-007/PAGE-008/PAGE-009（实际 PAGE-001/PAGE-007/PAGE-008/PAGE-009）
+ok   : [TEST-C-005] 路由非空且唯一
+ok   : [TEST-C-005] App 页面路由必须以 pages/ 开头
+ok   : [TEST-C-005] WEB-001 路由为 /
+ok   : [TEST-C-005] PAGE-001 required/forbidden 参数不冲突（冲突 ）
+ok   : [TEST-C-005] PAGE-001 有状态与计划测试登记
+ok   : [TEST-C-005] PAGE-001 存在目标页面文档
+ok   : [TEST-C-005] PAGE-002 required/forbidden 参数不冲突（冲突 ）
+ok   : [TEST-C-005] PAGE-002 有状态与计划测试登记
+ok   : [TEST-C-005] PAGE-002 存在目标页面文档
+ok   : [TEST-C-005] PAGE-003 required/forbidden 参数不冲突（冲突 ）
+ok   : [TEST-C-005] PAGE-003 有状态与计划测试登记
+ok   : [TEST-C-005] PAGE-003 存在目标页面文档
+ok   : [TEST-C-005] PAGE-004 required/forbidden 参数不冲突（冲突 ）
+ok   : [TEST-C-005] PAGE-004 有状态与计划测试登记
+ok   : [TEST-C-005] PAGE-004 存在目标页面文档
+ok   : [TEST-C-005] PAGE-005 required/forbidden 参数不冲突（冲突 ）
+ok   : [TEST-C-005] PAGE-005 有状态与计划测试登记
+ok   : [TEST-C-005] PAGE-005 存在目标页面文档
+ok   : [TEST-C-005] PAGE-006 required/forbidden 参数不冲突（冲突 ）
+ok   : [TEST-C-005] PAGE-006 有状态与计划测试登记
+ok   : [TEST-C-005] PAGE-006 存在目标页面文档
+ok   : [TEST-C-005] PAGE-007 required/forbidden 参数不冲突（冲突 ）
+ok   : [TEST-C-005] PAGE-007 有状态与计划测试登记
+ok   : [TEST-C-005] PAGE-007 存在目标页面文档
+ok   : [TEST-C-005] PAGE-008 required/forbidden 参数不冲突（冲突 ）
+ok   : [TEST-C-005] PAGE-008 有状态与计划测试登记
+ok   : [TEST-C-005] PAGE-008 存在目标页面文档
+ok   : [TEST-C-005] PAGE-009 required/forbidden 参数不冲突（冲突 ）
+ok   : [TEST-C-005] PAGE-009 有状态与计划测试登记
+ok   : [TEST-C-005] PAGE-009 存在目标页面文档
+ok   : [TEST-C-005] PAGE-010 required/forbidden 参数不冲突（冲突 ）
+ok   : [TEST-C-005] PAGE-010 有状态与计划测试登记
+ok   : [TEST-C-005] PAGE-010 存在目标页面文档
+ok   : [TEST-C-005] WEB-001 required/forbidden 参数不冲突（冲突 ）
+ok   : [TEST-C-005] WEB-001 有状态与计划测试登记
+ok   : [TEST-C-005] PAGE-001 废弃操作不在册（冲突 ）
+ok   : [TEST-C-005] PAGE-002 废弃操作不在册（冲突 ）
+ok   : [TEST-C-005] PAGE-003 废弃操作不在册（冲突 ）
+ok   : [TEST-C-005] PAGE-004 废弃操作不在册（冲突 ）
+ok   : [TEST-C-005] PAGE-005 废弃操作不在册（冲突 ）
+ok   : [TEST-C-005] PAGE-006 废弃操作不在册（冲突 ）
+ok   : [TEST-C-005] PAGE-007 废弃操作不在册（冲突 ）
+ok   : [TEST-C-005] PAGE-008 废弃操作不在册（冲突 ）
+ok   : [TEST-C-005] PAGE-009 废弃操作不在册（冲突 ）
+ok   : [TEST-C-005] PAGE-010 废弃操作不在册（冲突 ）
+ok   : [TEST-C-005] WEB-001 废弃操作不在册（冲突 ）
+ok   : [TEST-C-005] PAGE-001 ≥10 状态（含 5 个独立错误/空态）
+ok   : [TEST-C-005] PAGE-002 ≥12 状态（四步进度+八类错误）
+ok   : [TEST-C-005] PAGE-006 ≥14 在册操作（GATT 工作台）
+ok   : [TEST-C-005] PAGE-008 ≥12 状态
+ok   : [TEST-C-005] 04 号信息架构登记路由 pages/index/index
+ok   : [TEST-C-005] 04 号信息架构登记路由 pages/hid/add
+ok   : [TEST-C-005] 04 号信息架构登记路由 pages/hid/detail
+ok   : [TEST-C-005] 04 号信息架构登记路由 pages/hid/history
+ok   : [TEST-C-005] 04 号信息架构登记路由 pages/hid/diagnostics
+ok   : [TEST-C-005] 04 号信息架构登记路由 pages/device/detail
+ok   : [TEST-C-005] 04 号信息架构登记路由 pages/connected/index
+ok   : [TEST-C-005] 04 号信息架构登记路由 pages/broadcast/index
+ok   : [TEST-C-005] 04 号信息架构登记路由 pages/about/index
+ok   : [TEST-C-005] 04 号信息架构登记路由 pages/about/version
+check-target-pages: PASS（63/63）
+
+===== Checker TEST-C-flows =====
+ok   : [TEST-C-009] flows-target.json 可解析
+ok   : [TEST-C-009] FLOW-001..014 连续完整（实际 FLOW-001,FLOW-002,FLOW-003,FLOW-004,FLOW-005,FLOW-006,FLOW-007,FLOW-008,FLOW-009,FLOW-010,FLOW-011,FLOW-012,FLOW-013,FLOW-014）
+ok   : [TEST-C-009] FLOW-001 actors/preconditions/happy_path 齐备
+ok   : [TEST-C-009] FLOW-001 有错误路径（Web 发布流程可豁免）
+ok   : [TEST-C-009] FLOW-001 有取消与清理语义
+ok   : [TEST-C-009] FLOW-001 mermaid 登记为图数量
+ok   : [TEST-C-009] FLOW-001 有计划测试
+ok   : [TEST-C-009] FLOW-001 引用页面均存在（坏引用 ）
+ok   : [TEST-C-009] FLOW-002 actors/preconditions/happy_path 齐备
+ok   : [TEST-C-009] FLOW-002 有错误路径（Web 发布流程可豁免）
+ok   : [TEST-C-009] FLOW-002 有取消与清理语义
+ok   : [TEST-C-009] FLOW-002 mermaid 登记为图数量
+ok   : [TEST-C-009] FLOW-002 有计划测试
+ok   : [TEST-C-009] FLOW-002 引用页面均存在（坏引用 ）
+ok   : [TEST-C-009] FLOW-003 actors/preconditions/happy_path 齐备
+ok   : [TEST-C-009] FLOW-003 有错误路径（Web 发布流程可豁免）
+ok   : [TEST-C-009] FLOW-003 有取消与清理语义
+ok   : [TEST-C-009] FLOW-003 mermaid 登记为图数量
+ok   : [TEST-C-009] FLOW-003 有计划测试
+ok   : [TEST-C-009] FLOW-003 引用页面均存在（坏引用 ）
+ok   : [TEST-C-009] FLOW-004 actors/preconditions/happy_path 齐备
+ok   : [TEST-C-009] FLOW-004 有错误路径（Web 发布流程可豁免）
+ok   : [TEST-C-009] FLOW-004 有取消与清理语义
+ok   : [TEST-C-009] FLOW-004 mermaid 登记为图数量
+ok   : [TEST-C-009] FLOW-004 有计划测试
+ok   : [TEST-C-009] FLOW-004 引用页面均存在（坏引用 ）
+ok   : [TEST-C-009] FLOW-005 actors/preconditions/happy_path 齐备
+ok   : [TEST-C-009] FLOW-005 有错误路径（Web 发布流程可豁免）
+ok   : [TEST-C-009] FLOW-005 有取消与清理语义
+ok   : [TEST-C-009] FLOW-005 mermaid 登记为图数量
+ok   : [TEST-C-009] FLOW-005 有计划测试
+ok   : [TEST-C-009] FLOW-005 引用页面均存在（坏引用 ）
+ok   : [TEST-C-009] FLOW-006 actors/preconditions/happy_path 齐备
+ok   : [TEST-C-009] FLOW-006 有错误路径（Web 发布流程可豁免）
+ok   : [TEST-C-009] FLOW-006 有取消与清理语义
+ok   : [TEST-C-009] FLOW-006 mermaid 登记为图数量
+ok   : [TEST-C-009] FLOW-006 有计划测试
+ok   : [TEST-C-009] FLOW-006 引用页面均存在（坏引用 ）
+ok   : [TEST-C-009] FLOW-007 actors/preconditions/happy_path 齐备
+ok   : [TEST-C-009] FLOW-007 有错误路径（Web 发布流程可豁免）
+ok   : [TEST-C-009] FLOW-007 有取消与清理语义
+ok   : [TEST-C-009] FLOW-007 mermaid 登记为图数量
+ok   : [TEST-C-009] FLOW-007 有计划测试
+ok   : [TEST-C-009] FLOW-007 引用页面均存在（坏引用 ）
+ok   : [TEST-C-009] FLOW-008 actors/preconditions/happy_path 齐备
+ok   : [TEST-C-009] FLOW-008 有错误路径（Web 发布流程可豁免）
+ok   : [TEST-C-009] FLOW-008 有取消与清理语义
+ok   : [TEST-C-009] FLOW-008 mermaid 登记为图数量
+ok   : [TEST-C-009] FLOW-008 有计划测试
+ok   : [TEST-C-009] FLOW-008 引用页面均存在（坏引用 ）
+ok   : [TEST-C-009] FLOW-009 actors/preconditions/happy_path 齐备
+ok   : [TEST-C-009] FLOW-009 有错误路径（Web 发布流程可豁免）
+ok   : [TEST-C-009] FLOW-009 有取消与清理语义
+ok   : [TEST-C-009] FLOW-009 mermaid 登记为图数量
+ok   : [TEST-C-009] FLOW-009 有计划测试
+ok   : [TEST-C-009] FLOW-009 引用页面均存在（坏引用 ）
+ok   : [TEST-C-009] FLOW-010 actors/preconditions/happy_path 齐备
+ok   : [TEST-C-009] FLOW-010 有错误路径（Web 发布流程可豁免）
+ok   : [TEST-C-009] FLOW-010 有取消与清理语义
+ok   : [TEST-C-009] FLOW-010 mermaid 登记为图数量
+ok   : [TEST-C-009] FLOW-010 有计划测试
+ok   : [TEST-C-009] FLOW-010 引用页面均存在（坏引用 ）
+ok   : [TEST-C-009] FLOW-011 actors/preconditions/happy_path 齐备
+ok   : [TEST-C-009] FLOW-011 有错误路径（Web 发布流程可豁免）
+ok   : [TEST-C-009] FLOW-011 有取消与清理语义
+ok   : [TEST-C-009] FLOW-011 mermaid 登记为图数量
+ok   : [TEST-C-009] FLOW-011 有计划测试
+ok   : [TEST-C-009] FLOW-011 引用页面均存在（坏引用 ）
+ok   : [TEST-C-009] FLOW-012 actors/preconditions/happy_path 齐备
+ok   : [TEST-C-009] FLOW-012 有错误路径（Web 发布流程可豁免）
+ok   : [TEST-C-009] FLOW-012 有取消与清理语义
+ok   : [TEST-C-009] FLOW-012 mermaid 登记为图数量
+ok   : [TEST-C-009] FLOW-012 有计划测试
+ok   : [TEST-C-009] FLOW-012 引用页面均存在（坏引用 ）
+ok   : [TEST-C-009] FLOW-013 actors/preconditions/happy_path 齐备
+ok   : [TEST-C-009] FLOW-013 有错误路径（Web 发布流程可豁免）
+ok   : [TEST-C-009] FLOW-013 有取消与清理语义
+ok   : [TEST-C-009] FLOW-013 mermaid 登记为图数量
+ok   : [TEST-C-009] FLOW-013 有计划测试
+ok   : [TEST-C-009] FLOW-013 引用页面均存在（坏引用 ）
+ok   : [TEST-C-009] FLOW-014 actors/preconditions/happy_path 齐备
+ok   : [TEST-C-009] FLOW-014 有错误路径（Web 发布流程可豁免）
+ok   : [TEST-C-009] FLOW-014 有取消与清理语义
+ok   : [TEST-C-009] FLOW-014 mermaid 登记为图数量
+ok   : [TEST-C-009] FLOW-014 有计划测试
+ok   : [TEST-C-009] FLOW-014 引用页面均存在（坏引用 ）
+ok   : [TEST-C-009] ≥7 条流程带 mermaid 时序图（实际 14）
+ok   : [TEST-C-009] 06 号用户流程文档登记 FLOW-001
+ok   : [TEST-C-009] 06 号用户流程文档登记 FLOW-002
+ok   : [TEST-C-009] 06 号用户流程文档登记 FLOW-003
+ok   : [TEST-C-009] 06 号用户流程文档登记 FLOW-004
+ok   : [TEST-C-009] 06 号用户流程文档登记 FLOW-005
+ok   : [TEST-C-009] 06 号用户流程文档登记 FLOW-006
+ok   : [TEST-C-009] 06 号用户流程文档登记 FLOW-007
+ok   : [TEST-C-009] 06 号用户流程文档登记 FLOW-008
+ok   : [TEST-C-009] 06 号用户流程文档登记 FLOW-009
+ok   : [TEST-C-009] 06 号用户流程文档登记 FLOW-010
+ok   : [TEST-C-009] 06 号用户流程文档登记 FLOW-011
+ok   : [TEST-C-009] 06 号用户流程文档登记 FLOW-012
+ok   : [TEST-C-009] 06 号用户流程文档登记 FLOW-013
+ok   : [TEST-C-009] 06 号用户流程文档登记 FLOW-014
+ok   : [TEST-C-009] 06 号 mermaid 图 ≥10（实际 28）
+ok   : [TEST-C-009] FLOW-001 planned_tests 形如 TEST-X-nnn（坏 ）
+ok   : [TEST-C-009] FLOW-002 planned_tests 形如 TEST-X-nnn（坏 ）
+ok   : [TEST-C-009] FLOW-003 planned_tests 形如 TEST-X-nnn（坏 ）
+ok   : [TEST-C-009] FLOW-004 planned_tests 形如 TEST-X-nnn（坏 ）
+ok   : [TEST-C-009] FLOW-005 planned_tests 形如 TEST-X-nnn（坏 ）
+ok   : [TEST-C-009] FLOW-006 planned_tests 形如 TEST-X-nnn（坏 ）
+ok   : [TEST-C-009] FLOW-007 planned_tests 形如 TEST-X-nnn（坏 ）
+ok   : [TEST-C-009] FLOW-008 planned_tests 形如 TEST-X-nnn（坏 ）
+ok   : [TEST-C-009] FLOW-009 planned_tests 形如 TEST-X-nnn（坏 ）
+ok   : [TEST-C-009] FLOW-010 planned_tests 形如 TEST-X-nnn（坏 ）
+ok   : [TEST-C-009] FLOW-011 planned_tests 形如 TEST-X-nnn（坏 ）
+ok   : [TEST-C-009] FLOW-012 planned_tests 形如 TEST-X-nnn（坏 ）
+ok   : [TEST-C-009] FLOW-013 planned_tests 形如 TEST-X-nnn（坏 ）
+ok   : [TEST-C-009] FLOW-014 planned_tests 形如 TEST-X-nnn（坏 ）
+check-target-flows: PASS（116/116）
+
+===== Checker TEST-C-platforms =====
+ok   : [TEST-C-004] platform-target.json 可解析
+ok   : [TEST-C-004] 恰好四平台（实际 4）
+ok   : [TEST-C-004] android-app 目标公开状态 VERIFIED（实际 VERIFIED）
+ok   : [TEST-C-004] android-app 状态取自五词表
+ok   : [TEST-C-004] wechat-miniprogram 目标公开状态 VERIFIED（实际 VERIFIED）
+ok   : [TEST-C-004] wechat-miniprogram 状态取自五词表
+ok   : [TEST-C-004] h5 目标公开状态 UNSUPPORTED（实际 UNSUPPORTED）
+ok   : [TEST-C-004] h5 状态取自五词表
+ok   : [TEST-C-004] ios-app 目标公开状态 NOT_RELEASED（实际 NOT_RELEASED）
+ok   : [TEST-C-004] ios-app 状态取自五词表
+ok   : [TEST-C-004] 能力条目 ≥28（实际 28）
+ok   : [TEST-C-004] 能力 ID 唯一
+ok   : [TEST-C-004] 能力值在值域内且正式入口降级必有说明（违规 ）
+ok   : [TEST-C-004] 08 号能力矩阵登记 android-app（Android App）
+ok   : [TEST-C-004] 08 号能力矩阵登记 wechat-miniprogram（微信小程序）
+ok   : [TEST-C-004] 08 号能力矩阵登记 h5（H5）
+ok   : [TEST-C-004] 08 号能力矩阵登记 ios-app（iOS App）
+check-target-platforms: PASS（17/17）
+
+===== Checker TEST-C-protocols =====
+ok   : [TEST-C-012] ble-fixture-target.json 可解析
+ok   : [TEST-C-012] SVC-01 服务 UUID 形态合法（4fafc201-1fb5-459e-8fcc-c5c9c331914b）
+ok   : [TEST-C-012] SVC-01 特征 UUID 形态合法（beb5483e-36e1-4688-b7f5-ea07361b26a8）
+ok   : [TEST-C-012] SVC-01 特征 UUID 形态合法（beb5483e-36e1-4688-b7f5-ea07361b26a9）
+ok   : [TEST-C-012] SVC-02 服务 UUID 形态合法（4fafc201-1fb5-459e-8fcc-c5c9c331914c）
+ok   : [TEST-C-012] SVC-02 特征 UUID 形态合法（beb5483e-36e1-4688-b7f5-ea07361b26b0）
+ok   : [TEST-C-012] SVC-02 特征 UUID 形态合法（beb5483e-36e1-4688-b7f5-ea07361b26b1）
+ok   : [TEST-C-012] SVC-02 特征 UUID 形态合法（beb5483e-36e1-4688-b7f5-ea07361b26b2）
+ok   : [TEST-C-012] SVC-02 特征 UUID 形态合法（beb5483e-36e1-4688-b7f5-ea07361b26b3）
+ok   : [TEST-C-012] SVC-02 特征 UUID 形态合法（beb5483e-36e1-4688-b7f5-ea07361b26b4）
+ok   : [TEST-C-012] SVC-02 特征 UUID 形态合法（beb5483e-36e1-4688-b7f5-ea07361b26b5）
+ok   : [TEST-C-012] SVC-02 特征 UUID 形态合法（beb5483e-36e1-4688-b7f5-ea07361b26b6）
+ok   : [TEST-C-012] SVC-03 服务 UUID 形态合法（4fafc201-1fb5-459e-8fcc-c5c9c331914d）
+ok   : [TEST-C-012] SVC-03 特征 UUID 形态合法（beb5483e-36e1-4688-b7f5-ea07361b26c0）
+ok   : [TEST-C-012] SVC-03 特征 UUID 形态合法（beb5483e-36e1-4688-b7f5-ea07361b26c1）
+ok   : [TEST-C-012] SVC-03 特征 UUID 形态合法（beb5483e-36e1-4688-b7f5-ea07361b26c2）
+ok   : [TEST-C-012] ≥12 个特征/服务 UUID 全局唯一（实际 15）
+ok   : [TEST-C-012] OTA 事务为 10 步（实际 10）
+ok   : [TEST-C-012] OTA 步骤 pre_step_package_validation 含锚点语义
+ok   : [TEST-C-012] OTA 步骤 steps[0] 含锚点语义
+ok   : [TEST-C-012] OTA 步骤 steps[1] 含锚点语义
+ok   : [TEST-C-012] OTA 步骤 steps[3] 含锚点语义
+ok   : [TEST-C-012] OTA 步骤 steps[4] 含锚点语义
+ok   : [TEST-C-012] OTA 步骤 steps[5] 含锚点语义
+ok   : [TEST-C-012] OTA 步骤 steps[6] 含锚点语义
+ok   : [TEST-C-012] OTA 步骤 steps[8] 含锚点语义
+ok   : [TEST-C-012] OTA 步骤 steps[9] 含锚点语义
+ok   : [TEST-C-012] OTA 步骤严格递增（位置 1→3→4→5→6→8→9）
+ok   : [TEST-C-012] OTA 错误码 ≥5（实际 5）
+ok   : [TEST-C-012] DEC-016 固件包 = manifest.json + firmware.bin
+ok   : [TEST-C-012] DEC-016 六项传输前校验字段齐全
+ok   : [TEST-C-012] 串口 JSON：115200 波特、≥8 类事件
+ok   : [TEST-C-012] LED 指令 ≥4
+ok   : [TEST-C-012] 故障注入 ≥7
+ok   : [TEST-C-012] 双夹具：peripheral + observer
+ok   : [TEST-C-012] 12 号文档登记 UUID 4fafc201-1fb5-459e-8fcc-c5c9c331914b
+ok   : [TEST-C-012] 12 号文档登记 UUID 4fafc201-1fb5-459e-8fcc-c5c9c331914c
+ok   : [TEST-C-012] 12 号文档登记 UUID 4fafc201-1fb5-459e-8fcc-c5c9c331914d
+ok   : [TEST-C-013] smart-hid-target.json 可解析
+ok   : [TEST-C-013] 恰好八类错误（实际 8）
+ok   : [TEST-C-013] ERR-HID-01..08 连续登记
+ok   : [TEST-C-013] 状态机含 ready 终态
+ok   : [TEST-C-013] 分帧上限 128B 且公式含 min(128)
+ok   : [TEST-C-013] 配网 token 仅内存（发现持久化语义："仅内存；不持久化、不入日志/URL/截图"）
+ok   : [TEST-C-013] Smart HID GATT UUID ≥4、形态合法、唯一
+ok   : [TEST-C-013] 受锁定镜像包含 HID 服务 UUID
+ok   : [TEST-C-013] 镜像 lock 边界可追溯
+ok   : [TEST-C-013] 13 号文档登记 HID 服务 UUID
+ok   : [TEST-C-013] 13 号文档登记 ERR-HID-01
+ok   : [TEST-C-013] 13 号文档登记 ERR-HID-02
+ok   : [TEST-C-013] 13 号文档登记 ERR-HID-03
+ok   : [TEST-C-013] 13 号文档登记 ERR-HID-04
+ok   : [TEST-C-013] 13 号文档登记 ERR-HID-05
+ok   : [TEST-C-013] 13 号文档登记 ERR-HID-06
+ok   : [TEST-C-013] 13 号文档登记 ERR-HID-07
+ok   : [TEST-C-013] 13 号文档登记 ERR-HID-08
+check-target-protocols: PASS（56/56）
+
+===== Checker TEST-C-traceability =====
+ok   : [TEST-C-009] test-traceability.json 可解析
+ok   : [TEST-C-009] TEST ID 形如 TEST-[CUIPEAWHR]-nnn
+ok   : [TEST-C-009] TEST ID 唯一
+ok   : [TEST-C-009] 套件 TEST-C- 计数 14（实算 14）
+ok   : [TEST-C-009] 套件 TEST-U- 计数 16（实算 16）
+ok   : [TEST-C-009] 套件 TEST-I- 计数 10（实算 10）
+ok   : [TEST-C-009] 套件 TEST-P- 计数 12（实算 12）
+ok   : [TEST-C-009] 套件 TEST-E- 计数 8（实算 8）
+ok   : [TEST-C-009] 套件 TEST-A- 计数 14（实算 14）
+ok   : [TEST-C-009] 套件 TEST-W- 计数 10（实算 10）
+ok   : [TEST-C-009] 套件 TEST-H- 计数 8（实算 8）
+ok   : [TEST-C-009] 套件 TEST-R- 计数 11（实算 11）
+ok   : [TEST-C-009] 九套件计数之和 = 测试总数
+ok   : [TEST-C-009] 测试引用无悬空（坏引用 ）
+ok   : [TEST-C-009] 每条测试映射目标（未映射且非 meta：）
+ok   : [TEST-C-008] Must FEAT 100% 有测试（缺 ；81/81）
+ok   : [TEST-C-008] 每条 REQ 直接或经 FEAT 覆盖（缺 ）
+ok   : [TEST-C-009] PAGE/WEB/FLOW 无孤立目标（缺 ）
+ok   : [TEST-C-009] CLAIM 无孤立目标（缺 ）
+ok   : [TEST-C-009] coverage.requirements_total=66 与实算 66 一致
+ok   : [TEST-C-009] coverage.must_features_total=81 与实算 81 一致
+check-target-traceability: PASS（21/21）
+
+===== Checker TEST-C-landing =====
+ok   : [TEST-C-010] landing-target.json 可解析
+ok   : [TEST-C-010] 落地页区块 ≥14 且有序（实际 14）
+ok   : [TEST-C-010] CLAIM ≥31（实际 31）
+ok   : [TEST-C-010] 每条 Claim 有陈述/证据前置/测试（缺 ）
+ok   : [TEST-C-010] CLAIM ID 唯一
+ok   : [TEST-C-010] Claim 引用测试存在（坏 ）
+ok   : [TEST-C-010] download_rules.no_fake_download = true
+ok   : [TEST-C-010] download_rules.sha_required = true
+ok   : [TEST-C-010] 缺产物行为 = NOT_RELEASED（不得挂空链接/假下载）
+ok   : [TEST-C-010] 二维码仅官方 + 文本等价
+ok   : [TEST-C-010] VERIFIED 声明必须带 artifact_url+sha256（缺证据 ）
+ok   : [TEST-C-010] 18 号登记全部 Claim（缺 ）
+ok   : [TEST-C-010] WEB-001 文档引用 CLAIM 登记处
+ok   : [TEST-C-010] 目标文档内链为相对路径（违规 ）
+ok   : [TEST-C-010] 生产落地页 APK 直链必须伴随 SHA（APK 链接 0 个，SHA 说明 false）
+check-target-landing-claims: PASS（15/15）
+
+===== Current unit =====
+PASS 199 / FAIL 0 / CASES 199
+
+===== Current integration =====
+PASS 48 / FAIL 0 / CASES 48
+
+===== Current firmware =====
+PASS 60 / FAIL 0 / CASES 60
+
+===== Current release =====
+PASS 10 / FAIL 0 / CASES 10
+
+================ TARGET VERIFY SUMMARY ================
+SYSTEM  pass=412 fail=0 TARGET_CONTRACT_FAIL=0
+HARNESS pass=108 fail=0
+TEST_INFRA_FAIL=0
+PAGE_ENV {"playwright":true,"browser":true,"config":true,"testDir":true,"driver_env":false,"driver_runtime":true,"base_url_set":false,"status":"READY_FOR_PAGE_E4","page_execution":"RUNNABLE"}
+CURRENT pass=547 fail=0 cases=317
+PAGES  {"specs":11,"state_cases":67,"operation_cases":92,"assertion_cases":849,"totals":{"pages":11,"states":67,"operations":92,"error_variants":50,"failure_variants":92,"cleanup_assertions":39},"blocked_specs":0,"blocked_cases":0,"reason":null,"pass":230,"fail":0,"skipped":0,"notExecuted":false}
+BLOCKED {"BLOCKED_BY_TOOLCHAIN":0,"BLOCKED_BY_TARGET_DRIVER":0,"BLOCKED_BY_FIXTURE":0,"BLOCKED_BY_CREDENTIAL":0,"NOT_EXECUTED":0}
+
+第一断点预览（Current only，前 10）：
