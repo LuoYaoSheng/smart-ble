@@ -15,17 +15,17 @@
 /* 颜色变量 */
 
 /* 颜色变量映射到 CSS Variables (为支持 Dark Mode 动态切换)。
-   小程序侧唯一色彩来源是 styles/design-system.css 的 --ble-* 体系，
-   此处 fallback 与之对齐（BLE 品牌蓝），避免 uni-ui 组件引入时出现双品牌色。 */
+   UI-PARITY-G0（2026-09-09）：兜底值对齐正典 design-tokens.json（--c-* / styles/tokens.css），
+   避免 uni-ui 组件引入时出现双品牌色。旧 iOS 色（#007AFF 等）已全仓禁用。 */
 $uni-color-primary: var(--uni-color-primary, #1b6dff);
 $uni-color-success: var(--uni-color-success, #17c7a8);
 $uni-color-warning: var(--uni-color-warning, #ff9f43);
 $uni-color-error: var(--uni-color-error, #f2555f);
 
-$uni-text-color: var(--uni-text-color, #12263f);
+$uni-text-color: var(--uni-text-color, #18222e);
 $uni-text-color-inverse: var(--uni-text-color-inverse, #fff);
 $uni-text-color-grey: var(--uni-text-color-grey, #60758d);
-$uni-text-color-placeholder: var(--uni-text-color-placeholder, #93a2b4);
+$uni-text-color-placeholder: var(--uni-text-color-placeholder, #9aa8b6);
 $uni-text-color-disable: var(--uni-text-color-disable, #c0c0c0);
 
 $uni-bg-color: var(--uni-bg-color, #ffffff);

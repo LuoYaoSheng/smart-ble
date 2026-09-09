@@ -40,10 +40,10 @@
 		<view class="section ble-card">
 			<view class="section-title">相关链接</view>
 			<view class="menu-list">
-				<view class="menu-item" hover-class="menu-item-hover" @click="openWebsite"><text>官方网站</text><text class="menu-arrow">›</text></view>
-				<view class="menu-item" hover-class="menu-item-hover" @click="goVersion"><text>版本记录</text><text class="menu-arrow">›</text></view>
-				<view class="menu-item" hover-class="menu-item-hover" @click="openFeedback"><text>问题反馈</text><text class="menu-arrow">›</text></view>
-				<view class="menu-item" hover-class="menu-item-hover" @click="shareApp"><text>分享应用</text><text class="menu-arrow">›</text></view>
+				<view class="menu-item" hover-class="menu-item-hover" @click="openWebsite"><text>官方网站</text><AppIcon name="chev-r" :size="28" tone="primary" class="menu-arrow" /></view>
+				<view class="menu-item" hover-class="menu-item-hover" @click="goVersion"><text>版本记录</text><AppIcon name="chev-r" :size="28" tone="primary" class="menu-arrow" /></view>
+				<view class="menu-item" hover-class="menu-item-hover" @click="openFeedback"><text>问题反馈</text><AppIcon name="chev-r" :size="28" tone="primary" class="menu-arrow" /></view>
+				<view class="menu-item" hover-class="menu-item-hover" @click="shareApp"><text>分享应用</text><AppIcon name="chev-r" :size="28" tone="primary" class="menu-arrow" /></view>
 			</view>
 		</view>
 
@@ -55,7 +55,7 @@
 import { ref } from 'vue';
 import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import AppCard from '../../components/about/app-card.vue';
-import AppIcon from '../../components/common/app-icon.vue';
+import AppIcon from '../../components/ui/AppIcon.vue'; // UI-PARITY-G0 正典图标入口
 import {
 	PRODUCT_FEATURES,
 	PRODUCT_INFO,
@@ -229,6 +229,6 @@ onShareTimeline(() => ({ title: 'BLE Toolkit+ - BLE 调试与验证工具', quer
 .platform-status { font-size: 18rpx; font-weight: 800; opacity: 0.85; }
 .menu-item { color: var(--ble-text); font-size: 25rpx; font-weight: 650; }
 .menu-item-hover { transform: translateY(2rpx); opacity: 0.92; }
-.menu-arrow { color: var(--ble-brand); font-size: 34rpx; }
+.menu-arrow { margin-left: auto; }
 .footer { padding: 8rpx 0 28rpx; color: var(--ble-text-muted); font-size: 21rpx; text-align: center; }
 </style>

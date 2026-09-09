@@ -34,27 +34,27 @@ defineEmits(['action']);
 	gap: 10rpx;
 	padding: 22rpx 24rpx;
 	border-radius: 26rpx;
-	background: #FDEBEC;
-	border-left: 6rpx solid #F2555F;
+	background: var(--c-danger-weak);
+	border-left: 6rpx solid var(--c-danger);
 }
 
 .eb-t { display: flex; align-items: center; gap: 12rpx; }
 
-.eb-title { font-size: 32rpx; font-weight: 700; color: #F2555F; }
+.eb-title { font-size: 32rpx; font-weight: 700; color: var(--c-danger); }
 
 .eb-code {
 	padding: 2rpx 14rpx;
 	border-radius: 12rpx;
-	background: #ffffff;
+	background: var(--c-card);
 	font-size: 22rpx;
-	color: #F2555F;
+	color: var(--c-danger);
 }
 
-.eb-d { font-size: 26rpx; line-height: 1.5; color: #42536A; }
+.eb-d { font-size: 26rpx; line-height: 1.5; color: var(--c-sub); }
 
 .eb-retry {
-	color: #F2555F;
+	color: var(--c-danger);
 	background: transparent;
-	box-shadow: inset 0 0 0 3rpx #F2555F;
+	box-shadow: inset 0 0 0 3rpx var(--c-danger);
 }
 </style>

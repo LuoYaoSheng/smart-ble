@@ -49,6 +49,8 @@
 </template>
 
 <script setup>
+// UI-PARITY-G0：slider activeColor / switch color 为原生组件属性（不解析 CSS var），
+// 取正典 hex（--c-primary #1B6DFF / --c-success #17C7A8，design-tokens.json）。
 // 正典 p001 .filter：四行结构（最弱信号四档 / 阈值滑杆 / 名称前缀 / 隐藏无名+重置）。
 // 展开收起由宿主页 sec-t 的 txtlink 控制（本组件只承载行内容）。
 const props = defineProps({
@@ -121,15 +123,15 @@ const resetFilter = () => {
 .pre {
 	padding: 10rpx 20rpx;
 	border-radius: 999rpx;
-	background: #F1F5FB;
-	color: #42536A;
+	background: var(--c-fill);
+	color: var(--c-sub);
 	font-size: 22rpx;
 	font-weight: 500;
 }
 
 .pre.on {
 	background: var(--ble-brand);
-	color: #ffffff;
+	color: var(--c-card);
 }
 
 .slider { flex: 1; margin: 0; }
@@ -139,7 +141,7 @@ const resetFilter = () => {
 	height: 76rpx;
 	padding: 0 22rpx;
 	border-radius: 16rpx;
-	background: #F1F5FB;
+	background: var(--c-fill);
 	border: none;
 	font-size: 26rpx;
 	color: var(--ble-text);
@@ -153,8 +155,8 @@ const resetFilter = () => {
 .spacer { flex: 1; }
 
 .reset-btn {
-	color: #18222E;
-	background: #F1F5FB;
-	box-shadow: inset 0 0 0 2rpx #E3EAF3;
+	color: var(--c-text);
+	background: var(--c-fill);
+	box-shadow: inset 0 0 0 2rpx var(--c-line);
 }
 </style>

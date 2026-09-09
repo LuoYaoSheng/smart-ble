@@ -18,7 +18,7 @@ const props = defineProps({
 });
 
 const iconStyle = computed(() => {
-	const color = props.color || '#12263F';
+	const color = props.color || '#18222E' /* 正典 --c-text（UI-PARITY-G0） */;
 	let body = (APP_ICONS[props.name] || APP_ICONS.info)
 		.split('{C}')
 		.join(color)

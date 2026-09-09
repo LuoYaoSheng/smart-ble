@@ -1,13 +1,15 @@
 <template>
 	<view class="stepper" aria-label="Smart HID 配网进度">
 		<view v-for="(step, index) in steps" :key="step.key" :class="['step', index === current ? 'active' : '', index < current ? 'done' : '']">
-			<view class="step-index">{{ index < current ? '✓' : index + 1 }}</view>
+			<view class="step-index"><AppIcon v-if="index < current" name="check" :size="24" tone="successDeep" /><template v-else>{{ index + 1 }}</template></view>
 			<text class="step-label">{{ step.label }}</text>
 		</view>
 	</view>
 </template>
 
 <script setup>
+import AppIcon from '../ui/AppIcon.vue'; // UI-PARITY-G0 正典图标入口
+
 defineProps({
 	steps: { type: Array, required: true },
 	current: { type: Number, default: 0 }

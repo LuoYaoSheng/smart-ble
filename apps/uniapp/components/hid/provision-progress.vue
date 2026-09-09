@@ -1,7 +1,10 @@
 <template>
 	<view class="progress-list">
 		<view v-for="row in rows" :key="row.key" class="progress-row">
-			<view :class="['progress-dot', row.state]">{{ marker(row.state) }}</view>
+			<view :class="['progress-dot', row.state]">
+				<AppIcon v-if="markerIcon(row.state)" :name="markerIcon(row.state)" :size="26" :tone="markerTone(row.state)" />
+				<text v-else>·</text>
+			</view>
 			<text class="progress-label">{{ row.label }}</text>
 			<text class="progress-state">{{ stateText(row.state) }}</text>
 		</view>
@@ -9,9 +12,13 @@
 </template>
 
 <script setup>
+import AppIcon from '../ui/AppIcon.vue'; // UI-PARITY-G0 正典图标入口
+
 defineProps({ rows: { type: Array, default: () => [] } });
 
-const marker = (state) => ({ done: '✓', fail: '✕', active: '·', pending: '·', warn: '!' }[state] || '·');
+// UI-PARITY-G0：状态图标走正典 AppIcon（check/x/warn）；active/pending 保留原型 stIcon 的 '·' 文字点位
+const markerIcon = (state) => ({ done: 'check', fail: 'x', warn: 'warn' }[state] || '');
+const markerTone = (state) => ({ done: 'successDeep', fail: 'danger', warn: 'warningDeep' }[state] || 'mut');
 const stateText = (state) => ({ done: '完成', active: '进行中', fail: '失败', warn: '待确认' }[state] || '等待');
 </script>
 

@@ -54,7 +54,7 @@
 				</view>
 
 				<button class="ble-action-card-btn" @click="scanControlHubQr">
-					<view class="ble-action-card-btn__icon">⌁</view>
+					<view class="ble-action-card-btn__icon"><AppIcon name="qr" :size="30" tone="card" /></view>
 					<view class="ble-action-card-btn__copy">
 						<text class="ble-action-card-btn__title">{{ pairingReady ? '重新扫描 ControlHub 配对码' : '扫描 ControlHub 配对码' }}</text>
 						<text class="ble-action-card-btn__desc">{{ pairingReady ? '一次性配对凭据已获取，服务器地址仍可修改' : '自动带入服务器地址和一次性配对凭据' }}</text>
@@ -97,6 +97,7 @@ import { onLoad, onUnload, onBackPress } from '@dcloudio/uni-app';
 import ProvisionStepper from '../../components/hid/provision-stepper.vue';
 import ProvisionProgress from '../../components/hid/provision-progress.vue';
 import OperationState from '../../components/common/operation-state.vue';
+import AppIcon from '../../components/ui/AppIcon.vue'; // UI-PARITY-G0 正典图标入口
 import { useSmartHidProvisioning } from '../../composables/use-smart-hid-provisioning.js';
 
 const {

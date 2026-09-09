@@ -13,7 +13,12 @@ import '../widgets/filter_panel.dart';
 import 'device_detail_page.dart';
 import 'provisioning_page.dart';
 import '../../core/design/app_icons.dart';
-import '../../core/design/app_illustrations.dart';
+// UI-PARITY-G0：P001 改挂正典组件层 lib/ui/design/（COMPONENT_CONTRACT）
+import '../design/app_tokens.dart';
+import '../design/app_navbar.dart';
+import '../design/app_button.dart';
+import '../design/app_chip.dart';
+import '../design/app_empty.dart';
 
 /// BLE 状态提供者
 final bleStateProvider = StreamProvider<BleState>((ref) {
@@ -51,16 +56,16 @@ class DeviceListPage extends ConsumerStatefulWidget {
     }
   }
 
-  /// 状态点三态色（正典 .bt-dot）：on 成功绿 / off 危险红 / 其余默认灰
-  static Color btDotColor(BleState? state) {
+  /// 状态点三态（正典 .bt-dot → AppNavbar statusTone）：on 绿 / off 红 / 其余灰
+  static BtStatusTone? btStatusTone(BleState? state) {
     switch (state) {
       case BleState.on:
-        return const Color(0xFF17C7A8);
+        return BtStatusTone.on;
       case BleState.off:
       case BleState.unauthorized:
-        return const Color(0xFFF2555F);
+        return BtStatusTone.off;
       default:
-        return const Color(0xFF9AA8B6);
+        return null;
     }
   }
 
@@ -256,69 +261,13 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
     );
   }
 
-  /// 自绘导航栏：kicker「BLE TOOLKIT+」+ 标题「扫描」+ 蓝牙状态 chip（dot+三态词）
+  /// 自绘导航栏 → 正典组件 AppNavbar（kicker「BLE TOOLKIT+」+ 标题 + 蓝牙三态 chip）
   Widget _buildNavbar(AsyncValue<BleState> bleState) {
     final state = bleState.valueOrNull;
-    final word = DeviceListPage.btStatusWord(state);
-    return Container(
-      padding: const EdgeInsets.fromLTRB(18, 8, 18, 12),
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFFFFFFFF), Color(0xFFF8FBFF)],
-        ),
-        border: Border(bottom: BorderSide(color: Color(0xFFEDF2F9))),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'BLE TOOLKIT+',
-            style: TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 2,
-              color: AppTheme.primaryColor,
-            ),
-          ),
-          const SizedBox(height: 2),
-          Row(
-            children: [
-              const Text(
-                '扫描',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
-                  color: Color(0xFF18222E),
-                ),
-              ),
-              const Spacer(),
-              Container(
-                width: 8,
-                height: 8,
-                decoration: BoxDecoration(
-                  color: DeviceListPage.btDotColor(state),
-                  shape: BoxShape.circle,
-                  boxShadow: state == BleState.on
-                      ? const [
-                          BoxShadow(
-                              color: Color(0x8C17C7A8), blurRadius: 8),
-                        ]
-                      : null,
-                ),
-              ),
-              const SizedBox(width: 6),
-              Text(
-                word,
-                style: const TextStyle(
-                    fontSize: 11, fontWeight: FontWeight.w500,
-                    color: Color(0xFF60758D)),
-              ),
-            ],
-          ),
-        ],
-      ),
+    return AppNavbar(
+      title: '扫描',
+      statusText: DeviceListPage.btStatusWord(state),
+      statusTone: DeviceListPage.btStatusTone(state),
     );
   }
 
@@ -328,10 +277,10 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
       margin: const EdgeInsets.fromLTRB(16, 14, 16, 0),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFFFDEBEC),
+        color: AppTokens.cDangerWeak,
         borderRadius: BorderRadius.circular(12),
         border: const Border(
-          left: BorderSide(color: Color(0xFFF2555F), width: 3),
+          left: BorderSide(color: AppTokens.cDanger, width: 3),
         ),
       ),
       child: Column(
@@ -339,14 +288,14 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
         children: [
           Row(
             children: [
-              const AppIcon('warn', size: 16, color: Color(0xFFF2555F)),
+              const AppIcon('warn', size: 16, color: AppTokens.cDanger),
               const SizedBox(width: 6),
               const Text(
                 '扫描失败',
                 style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xFFF2555F),
+                  fontSize: AppTokens.fsH2,
+                  fontWeight: AppTokens.fsH2W,
+                  color: AppTokens.cDanger,
                 ),
               ),
               if (_errorCode != null) ...[
@@ -355,15 +304,15 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 7, vertical: 1),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: AppTokens.cCard,
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
                     _errorCode!,
                     style: const TextStyle(
-                      fontSize: 10,
-                      fontFamily: 'monospace',
-                      color: Color(0xFFF2555F),
+                      fontSize: AppTokens.fsMicro,
+                      fontFamily: AppTokens.fontMono,
+                      color: AppTokens.cDanger,
                     ),
                   ),
                 ),
@@ -373,19 +322,19 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
           const SizedBox(height: 5),
           Text(
             _errorMessage ?? '',
-            style: const TextStyle(fontSize: 14, color: Color(0xFF42536A)),
+            style: const TextStyle(fontSize: AppTokens.fsBody + 1, color: AppTokens.cSub),
           ),
           const SizedBox(height: 10),
           OutlinedButton.icon(
             onPressed: _startScan,
-            icon: const AppIcon('refresh', size: 14, color: Color(0xFFF2555F)),
+            icon: const AppIcon('refresh', size: 14, color: AppTokens.cDanger),
             label: const Text('重试',
-                style: TextStyle(fontSize: 13, color: Color(0xFFF2555F))),
+                style: TextStyle(fontSize: AppTokens.fsBody, color: AppTokens.cDanger)),
             style: OutlinedButton.styleFrom(
               minimumSize: const Size(0, 32),
               padding: const EdgeInsets.symmetric(horizontal: 14),
-              side: const BorderSide(color: Color(0xFFF2555F)),
-              foregroundColor: const Color(0xFFF2555F),
+              side: const BorderSide(color: AppTokens.cDanger),
+              foregroundColor: AppTokens.cDanger,
             ),
           ),
         ],
@@ -422,22 +371,12 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
               ],
             ),
           ),
-          ElevatedButton.icon(
-            onPressed: _isInitialized ? _toggleScan : null,
-            icon: AppIcon(isScanning ? 'stop' : 'scan', size: 18,
-                color: Colors.white),
-            label: Text(isScanning ? '停止扫描' : '开始扫描'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor:
-                  isScanning ? AppTheme.errorColor : AppTheme.primaryColor,
-              foregroundColor: Colors.white,
-              disabledBackgroundColor:
-                  const Color(0xFFF1F5FB),
-              disabledForegroundColor: const Color(0xFF9AA8B6),
-              minimumSize: const Size(0, 40),
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              textStyle: const TextStyle(fontSize: 14),
-            ),
+          AppButton(
+            label: isScanning ? '停止扫描' : '开始扫描',
+            tone: isScanning ? AppButtonTone.danger : AppButtonTone.primary,
+            icon: isScanning ? 'stop' : 'scan',
+            disabled: !_isInitialized,
+            onTap: _toggleScan,
           ),
         ],
       ),
@@ -455,25 +394,14 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
           const Text(
             '附近设备',
             style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w700,
-              color: Color(0xFF18222E),
+              fontSize: AppTokens.fsH2,
+              fontWeight: AppTokens.fsH2W,
+              color: AppTokens.cText,
             ),
           ),
           if (shownCount > 0) ...[
             const SizedBox(width: 6),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-              decoration: BoxDecoration(
-                color: const Color(0xFFF1F5FB),
-                borderRadius: BorderRadius.circular(999),
-              ),
-              child: Text(
-                '$shownCount',
-                style: const TextStyle(
-                    fontSize: 11, color: Color(0xFF42536A)),
-              ),
-            ),
+            AppChip('$shownCount', tone: AppChipTone.neutral),
           ],
           const Spacer(),
           TextButton(
@@ -493,50 +421,19 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
     );
   }
 
-  /// 空态文案+插图+动作对齐原型 p001 C.empty（ill: radar 未扫描 / link 筛选无匹配；
-  /// 动作按钮仅在未扫描时出现，soft 色调 + scan 图标）
+  /// 空态 → 正典组件 AppEmpty（ill: radar 未扫描 / link 筛选无匹配；动作仅未扫描时）
   Widget _buildEmptyState(bool hasDevices) {
     final filteredMiss = hasDevices && _hasScanned;
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          AppIll(filteredMiss ? 'link' : 'radar', width: 118),
-          const SizedBox(height: 16),
-          Text(
-            filteredMiss ? '当前没有匹配设备' : '还没有扫描结果',
-            style: const TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.w700,
-              color: Color(0xFF18222E),
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            filteredMiss ? '调整筛选条件试试' : '点上方按钮开始扫描附近 BLE 设备',
-            style: const TextStyle(
-              fontSize: 13,
-              color: AppTheme.textSecondary,
-            ),
-          ),
-          if (!_hasScanned) ...[
-            const SizedBox(height: 16),
-            OutlinedButton.icon(
-              onPressed: _isInitialized ? _startScan : null,
-              icon: const AppIcon('scan', size: 16, color: Color(0xFF18222E)),
-              label: const Text('开始扫描',
-                  style: TextStyle(
-                      fontSize: 13, color: Color(0xFF18222E))),
-              style: OutlinedButton.styleFrom(
-                backgroundColor: const Color(0xFFF1F5FB),
-                side: const BorderSide(color: Color(0xFFE3EAF3)),
-                foregroundColor: const Color(0xFF18222E),
-                minimumSize: const Size(0, 40),
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-              ),
-            ),
-          ],
-        ],
+      child: SingleChildScrollView(
+        child: AppEmpty(
+          ill: filteredMiss ? 'link' : 'radar',
+          title: filteredMiss ? '当前没有匹配设备' : '还没有扫描结果',
+          description: filteredMiss ? '调整筛选条件试试' : '点上方按钮开始扫描附近 BLE 设备',
+          actionLabel: !_hasScanned ? '开始扫描' : null,
+          actionIcon: 'scan',
+          onAction: _isInitialized ? _startScan : null,
+        ),
       ),
     );
   }
@@ -633,7 +530,7 @@ class _PulseDotState extends State<_PulseDot>
         width: 6,
         height: 6,
         decoration: const BoxDecoration(
-          color: AppTheme.primaryColor,
+          color: AppTokens.cPrimary,
           shape: BoxShape.circle,
         ),
       ),

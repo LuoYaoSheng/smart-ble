@@ -1,6 +1,6 @@
 <template>
 	<view class="ble-shell index-shell">
-		<app-navbar
+		<AppNavbar
 			kicker="BLE TOOLKIT+"
 			title="扫描"
 			:status-text="bleStatusText"
@@ -20,9 +20,9 @@
 
 			<view class="sec-t">
 				<view class="t">
-					<app-icon name="chip" :size="30" color="#1B6DFF" />
+					<AppIcon name="chip" :size="30" tone="primary" />
 					<text class="sec-title">附近设备</text>
-					<text v-if="filteredDevices.length" class="count-chip">{{ filteredDevices.length }}</text>
+					<AppChip v-if="filteredDevices.length" :text="filteredDevices.length" tone="neutral" />
 				</view>
 				<text class="filter-toggle" @click="showFilters = !showFilters">{{ showFilters ? '收起筛选' : '筛选' }}</text>
 			</view>
@@ -30,7 +30,7 @@
 
 			<view class="tab-content">
 				<scroll-view scroll-y class="device-scroll">
-					<empty-state
+					<AppEmpty
 						v-if="filteredDevices.length === 0"
 						:ill="devices.length > 0 ? 'link' : 'radar'"
 						:title="devices.length > 0 ? '当前没有匹配设备' : '还没有扫描结果'"
@@ -40,13 +40,13 @@
 						@action="startScan"
 					/>
 					<template v-else>
-						<device-card
+						<DeviceCard
 							v-for="device in filteredDevices"
 							:key="device.deviceId"
 							:device="device"
-							@click="showAdvertisingData"
-							@generic="connectDevice"
-							@profile="openProfileDevice"
+							@tap="showAdvertisingData"
+							@connect="connectDevice"
+							@configure="openProfileDevice"
 						/>
 					</template>
 				</scroll-view>
@@ -60,11 +60,13 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { onShareAppMessage } from '@dcloudio/uni-app';
-import DeviceCard from '../../components/device-card/device-card.vue';
+// UI-PARITY-G0：P001 改挂正典组件层 components/ui/（COMPONENT_CONTRACT）
+import DeviceCard from '../../components/ui/DeviceCard.vue';
+import AppNavbar from '../../components/ui/AppNavbar.vue';
+import AppIcon from '../../components/ui/AppIcon.vue';
+import AppChip from '../../components/ui/AppChip.vue';
+import AppEmpty from '../../components/ui/AppEmpty.vue';
 import FilterPanel from '../../components/filter-panel/filter-panel.vue';
-import AppNavbar from '../../components/common/app-navbar.vue';
-import AppIcon from '../../components/common/app-icon.vue';
-import EmptyState from '../../components/common/empty-state.vue';
 import ScanSummary from '../../components/scan/scan-summary.vue';
 import AdvertisementDialog from '../../components/scan/advertisement-dialog.vue';
 import { useHidStore } from '../../store/hid';
@@ -149,20 +151,12 @@ const copyAdvData = (content) => {
 }
 
 .sec-title {
-	font-size: 30rpx;
-	font-weight: 700;
-	color: var(--ble-text);
+	font-size: var(--fs-h1);
+	font-weight: var(--fw-bold);
+	color: var(--c-text);
 }
 
-.count-chip {
-	padding: 2rpx 16rpx;
-	border-radius: 999rpx;
-	background: #F1F5FB;
-	color: #42536A;
-	font-size: 22rpx;
-}
-
-.filter-toggle { flex-shrink: 0; font-size: 24rpx; font-weight: 500; color: var(--ble-brand); }
+.filter-toggle { flex-shrink: 0; font-size: var(--fs-cap); font-weight: var(--fw-med); color: var(--c-primary); }
 .inline-filter { margin-top: 18rpx; }
 
 .tab-content {

@@ -54,7 +54,7 @@
 			</scroll-view>
 			<view class="sheet-acts">
 				<button class="ble-btn ble-btn--primary ble-btn--sm" @click="$emit('copy', copyText)">
-					<app-icon name="copy" :size="26" color="#ffffff" />
+					<app-icon name="copy" :size="26" color="#FFFFFF" />
 					<text>复制数据</text>
 				</button>
 			</view>
@@ -148,14 +148,14 @@ const copyText = computed(() => {
 	flex-direction: column;
 	padding: 0 32rpx 32rpx;
 	border-radius: 42rpx 42rpx 0 0;
-	background: #ffffff;
+	background: var(--c-card);
 }
 
 .grip {
 	width: 72rpx;
 	height: 8rpx;
 	border-radius: 4rpx;
-	background: #E3EAF3;
+	background: var(--c-line);
 	margin: 20rpx auto 8rpx;
 }
 
@@ -170,7 +170,7 @@ const copyText = computed(() => {
 	flex: 1;
 	font-size: 34rpx;
 	font-weight: 700;
-	color: #18222E;
+	color: var(--c-text);
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -182,21 +182,21 @@ const copyText = computed(() => {
 	display: flex;
 	align-items: baseline;
 	padding: 18rpx 0;
-	border-bottom: 1rpx solid #EDF2F9;
+	border-bottom: 1rpx solid var(--c-line-soft);
 	font-size: 28rpx;
 }
 
 .kv .k {
 	width: 220rpx;
 	flex-shrink: 0;
-	color: #60758D;
+	color: var(--c-mut);
 	font-size: 24rpx;
 	font-weight: 500;
 }
 
 .kv .v {
 	flex: 1;
-	color: #18222E;
+	color: var(--c-text);
 	word-break: break-all;
 	line-height: 1.5;
 }
@@ -205,7 +205,7 @@ const copyText = computed(() => {
 	margin-top: 18rpx;
 	padding: 20rpx 24rpx;
 	border-radius: 26rpx;
-	background: #101521;
+	background: var(--c-ink);
 }
 
 .ad-sec .hd {
@@ -215,7 +215,7 @@ const copyText = computed(() => {
 	gap: 16rpx;
 	margin-bottom: 10rpx;
 	font-size: 20rpx;
-	color: #8FA3C0;
+	color: var(--c-review-label);
 }
 
 .ad-sec .seg .hd { margin-top: 12rpx; }
@@ -225,14 +225,14 @@ const copyText = computed(() => {
 .ad-sec .hex {
 	font-family: "SF Mono", "Roboto Mono", Menlo, monospace;
 	font-size: 22rpx;
-	color: #D6E2F5;
+	color: var(--c-ink-text);
 	word-break: break-all;
 	line-height: 1.7;
 }
 
 .ad-sec .miss {
 	font-size: 22rpx;
-	color: #7C8DA6;
+	color: var(--c-review-sub);
 	padding: 6rpx 0;
 }
 
@@ -246,8 +246,8 @@ const copyText = computed(() => {
 	font-size: 24rpx;
 }
 
-.note.info { background: #E8F1FF; color: #2E5290; }
-.note.warn { background: #FFF3E4; color: #C77E14; }
+.note.info { background: var(--c-primary-weak); color: var(--c-note-info-fg); }
+.note.warn { background: var(--c-warning-weak); color: var(--c-warning-deep); }
 
 .sheet-acts {
 	display: flex;
@@ -258,8 +258,8 @@ const copyText = computed(() => {
 .sheet-acts .ble-btn { flex: 1; }
 
 .soft-btn {
-	color: #18222E;
-	background: #F1F5FB;
-	box-shadow: inset 0 0 0 2rpx #E3EAF3;
+	color: var(--c-text);
+	background: var(--c-fill);
+	box-shadow: inset 0 0 0 2rpx var(--c-line);
 }
 </style>

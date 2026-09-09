@@ -1,0 +1,159 @@
+{
+  "$meta": {
+    "name": "smart-ble-design-tokens",
+    "version": "1.0.0",
+    "frozen": "2026-09-09",
+    "task": "UI-PARITY-G0",
+    "spec": "docs/specs/07_design_system/TOKEN.md",
+    "prototype": "docs/specs/prototype/v1-new/assets/tokens.css",
+    "generator": "core/assets-generator/generate_assets.py --theme-only",
+    "outputs": {
+      "uniapp": "apps/uniapp/styles/tokens.css",
+      "flutter": "apps/flutter/lib/ui/design/app_tokens.dart"
+    },
+    "unitRules": {
+      "uniapp": "px x2 -> rpx (750 base); color/shadow/z/duration raw",
+      "flutter": "px -> logical pixel 1:1"
+    }
+  },
+
+  "color": {
+    "brand": {
+      "primary":       { "value": "#1B6DFF", "css": "--c-primary",       "dart": "cPrimary",       "use": "品牌蓝：主按钮/选中态/链接/TabBar 激活" },
+      "primaryDeep":   { "value": "#0E4FC4", "css": "--c-primary-deep",  "dart": "cPrimaryDeep",   "use": "主按钮按压/渐变深端" },
+      "primaryWeak":   { "value": "#E8F1FF", "css": "--c-primary-weak",  "dart": "cPrimaryWeak",   "use": "主色浅底" },
+      "success":       { "value": "#17C7A8", "css": "--c-success",       "dart": "cSuccess",       "use": "成功：READY/诊断 ok/广播中" },
+      "successWeak":   { "value": "#E2F8F4", "css": "--c-success-weak",  "dart": "cSuccessWeak",   "use": "成功浅底" },
+      "successDeep":   { "value": "#0E9A80", "css": "--c-success-deep",  "dart": "cSuccessDeep",   "use": "成功前景深色（chip/badge/op.ok 文字）" },
+      "danger":        { "value": "#F2555F", "css": "--c-danger",        "dart": "cDanger",        "use": "危险：断开/停止/错误" },
+      "dangerWeak":    { "value": "#FDEBEC", "css": "--c-danger-weak",   "dart": "cDangerWeak",    "use": "危险浅底" },
+      "dangerGradHi":  { "value": "#FF6B74", "css": "--c-danger-grad-hi","dart": "cDangerGradHi",  "use": "danger 渐变亮端（登记于 components.css .btn.danger）" },
+      "warning":       { "value": "#FF9F43", "css": "--c-warning",       "dart": "cWarning",       "use": "警告" },
+      "warningWeak":   { "value": "#FFF3E4", "css": "--c-warning-weak",  "dart": "cWarningWeak",   "use": "警告浅底" },
+      "warningDeep":   { "value": "#C77E14", "css": "--c-warning-deep",  "dart": "cWarningDeep",   "use": "警告前景深色（read 日志/chip 文字）" }
+    },
+    "neutral": {
+      "text":     { "value": "#18222E", "css": "--c-text",      "dart": "cText",     "use": "主文字" },
+      "sub":      { "value": "#42536A", "css": "--c-sub",       "dart": "cSub",      "use": "次级文字" },
+      "mut":      { "value": "#60758D", "css": "--c-mut",       "dart": "cMut",      "use": "弱文字" },
+      "ph":       { "value": "#9AA8B6", "css": "--c-ph",        "dart": "cPh",       "use": "占位/禁用" },
+      "line":     { "value": "#E3EAF3", "css": "--c-line",      "dart": "cLine",     "use": "强分割线/卡片描边" },
+      "lineSoft": { "value": "#EDF2F9", "css": "--c-line-soft", "dart": "cLineSoft", "use": "弱分割线" },
+      "fill":     { "value": "#F1F5FB", "css": "--c-fill",      "dart": "cFill",     "use": "填充底" },
+      "bg":       { "value": "#F8FBFF", "css": "--c-bg",        "dart": "cBg",       "use": "页面背景" },
+      "card":     { "value": "#FFFFFF", "css": "--c-card",      "dart": "cCard",     "use": "卡片背景" }
+    },
+    "ink": {
+      "ink":     { "value": "#101521", "css": "--c-ink",      "dart": "cInk",     "use": "控制台底（日志 dock/评审）" },
+      "inkLine": { "value": "#263149", "css": "--c-ink-line", "dart": "cInkLine", "use": "控制台分割线" },
+      "inkText": { "value": "#D6E2F5", "css": "--c-ink-text", "dart": "cInkText", "use": "控制台文字" }
+    },
+    "log": {
+      "sys":     { "fg": "#5E7EA6", "bg": "#EDF3FA", "cssFg": "--log-sys",     "cssBg": "--log-sys-bg",     "dart": "logSys" },
+      "err":     { "fg": "#F2555F", "bg": "#FDEBEC", "cssFg": "--log-err",     "cssBg": "--log-err-bg",     "dart": "logErr" },
+      "read":    { "fg": "#C77E14", "bg": "#FFF6E8", "cssFg": "--log-read",    "cssBg": "--log-read-bg",    "dart": "logRead" },
+      "write":   { "fg": "#1B6DFF", "bg": "#E8F1FF", "cssFg": "--log-write",   "cssBg": "--log-write-bg",   "dart": "logWrite" },
+      "recv":    { "fg": "#7C5CFF", "bg": "#F0EBFF", "cssFg": "--log-recv",    "cssBg": "--log-recv-bg",    "dart": "logRecv" },
+      "ok":      { "fg": "#17C7A8", "bg": "#E2F8F4", "cssFg": "--log-ok",      "cssBg": "--log-ok-bg",      "dart": "logOk" },
+      "dockSys":   { "fg": "#9FB6D6", "bg": "#1B2536", "dart": "logDockSys" },
+      "dockErr":   { "fg": "#FF8B94", "bg": "#3A1F26", "dart": "logDockErr" },
+      "dockRead":  { "fg": "#FFC37E", "bg": "#39301C", "dart": "logDockRead" },
+      "dockWrite": { "fg": "#8FB8FF", "bg": "#1B2B4A", "dart": "logDockWrite" },
+      "dockRecv":  { "fg": "#BBA8FF", "bg": "#2A2344", "dart": "logDockRecv" },
+      "dockOk":    { "fg": "#5EE0C4", "bg": "#14342E", "dart": "logDockOk" }
+    },
+    "derived": {
+      "_doc": "组件级登记值（COMPONENT_CONTRACT 引用；源自 prototype components.css，圈外值收敛登记）",
+      "avatarGradEnd":  { "value": "#DCE9FF", "dart": "avatarGradEnd",  "use": "DeviceCard 标准头像渐变端" },
+      "shidAvatarStart":{ "value": "#D9F6F0", "dart": "shidAvatarStart","use": "DeviceCard SHID 头像渐变起" },
+      "noteInfoFg":     { "value": "#2E5290", "dart": "noteInfoFg",     "use": "banner-note info 前景" },
+      "noteWarnFg":     { "value": "#8A5410", "dart": "noteWarnFg",     "use": "banner-note warn 前景" },
+      "toastOkIcon":    { "value": "#4CDDBE", "dart": "toastOkIcon",    "use": "toast success 图标色" },
+      "reviewSub":      { "value": "#7C8DA6", "dart": "reviewSub",      "use": "深色面板次级文字（adv-sheet/评审）" },
+      "reviewLabel":    { "value": "#8FA3C0", "dart": "reviewLabel",    "use": "深色面板标签（adv-sheet .hd）" },
+      "otaBarGradHi":   { "value": "#5B9BFF", "dart": "otaBarGradHi",   "use": "OTA 进度条渐变亮端" },
+      "dangerOverFg":   { "value": "#FF8B94", "dart": "dangerOverFg",   "use": "超限红字（bytebar.over）" }
+    }
+  },
+
+  "font": {
+    "family": {
+      "sans": { "value": "-apple-system, BlinkMacSystemFont, \"PingFang SC\", \"Helvetica Neue\", sans-serif", "css": "--font",      "dart": "fontFamily" },
+      "mono": { "value": "\"SF Mono\", Menlo, Consolas, monospace",                                            "css": "--font-mono", "dart": "fontMono" }
+    },
+    "size": {
+      "display": { "value": 24, "weight": 800, "css": "--fs-display", "dart": "fsDisplay", "use": "品牌卡标题" },
+      "title":   { "value": 20, "weight": 800, "css": "--fs-title",   "dart": "fsTitle",   "use": "tab 页导航标题" },
+      "h1":      { "value": 17, "weight": 700, "css": "--fs-h1",      "dart": "fsH1",      "use": "二级页标题/卡片组标题" },
+      "h2":      { "value": 15, "weight": 700, "css": "--fs-h2",      "dart": "fsH2",      "use": "卡片标题/按钮主文案" },
+      "body":    { "value": 13, "weight": 400, "css": "--fs-body",    "dart": "fsBody",    "use": "正文" },
+      "cap":     { "value": 12, "weight": 600, "css": "--fs-cap",     "dart": "fsCap",     "use": "标签/辅助说明" },
+      "mini":    { "value": 11, "weight": 600, "css": "--fs-mini",    "dart": "fsMini",    "use": "徽章/状态词/计数" },
+      "micro":   { "value": 10, "weight": 800, "css": "--fs-micro",   "dart": "fsMicro",   "use": "kicker（字距+2px）" }
+    },
+    "weight": {
+      "reg":   { "value": 400, "css": "--fw-reg",   "dart": "fwReg" },
+      "med":   { "value": 600, "css": "--fw-med",   "dart": "fwMed" },
+      "bold":  { "value": 700, "css": "--fw-bold",  "dart": "fwBold" },
+      "xbold": { "value": 800, "css": "--fw-xbold", "dart": "fwXbold" }
+    },
+    "lineHeight": { "title": 1.3, "body": 1.55, "dart": "lhTitle/lhBody" }
+  },
+
+  "space": {
+    "_unit": "px, base 4",
+    "sp1": { "value": 4,  "css": "--sp-1", "dart": "sp1" },
+    "sp2": { "value": 8,  "css": "--sp-2", "dart": "sp2" },
+    "sp3": { "value": 12, "css": "--sp-3", "dart": "sp3" },
+    "sp4": { "value": 16, "css": "--sp-4", "dart": "sp4" },
+    "sp5": { "value": 20, "css": "--sp-5", "dart": "sp5" },
+    "sp6": { "value": 24, "css": "--sp-6", "dart": "sp6" },
+    "sp7": { "value": 28, "css": "--sp-7", "dart": "sp7" },
+    "sp8": { "value": 32, "css": "--sp-8", "dart": "sp8" },
+    "convention": { "pageGutter": 16, "cardPadding": 16, "cardGap": 12, "cardGroupGap": 20, "navbarBottom": 12 }
+  },
+
+  "radius": {
+    "sm":    { "value": 8,  "css": "--r-sm",    "dart": "rSm",    "use": "chips/输入框/返回键" },
+    "md":    { "value": 12, "css": "--r-md",    "dart": "rMd",    "use": "按钮/日志行" },
+    "lg":    { "value": 16, "css": "--r-lg",    "dart": "rLg",    "use": "卡片" },
+    "xl":    { "value": 20, "css": "--r-xl",    "dart": "rXl",    "use": "弹窗/大动作卡" },
+    "round": { "value": 999,"css": "--r-round", "dart": "rRound", "use": "徽章/pill" }
+  },
+
+  "shadow": {
+    "shadow1": {
+      "css": "--shadow-1", "dart": "shadow1", "use": "卡片",
+      "layers": [ { "x": 0, "y": 1, "blur": 2,  "color": [16, 32, 64, 0.04] },
+                  { "x": 0, "y": 4, "blur": 12, "color": [16, 32, 64, 0.06] } ]
+    },
+    "shadow2": {
+      "css": "--shadow-2", "dart": "shadow2", "use": "弹窗/抽屉",
+      "layers": [ { "x": 0, "y": 8, "blur": 24, "color": [16, 32, 64, 0.16] } ]
+    },
+    "shadowPrimary": {
+      "css": "--shadow-primary", "dart": "shadowPrimary", "use": "主按钮",
+      "layers": [ { "x": 0, "y": 6, "blur": 16, "color": [27, 109, 255, 0.32] } ]
+    }
+  },
+
+  "z": {
+    "nav":   { "value": 10,  "css": "--z-nav",   "dart": "zNav" },
+    "tab":   { "value": 20,  "css": "--z-tab",   "dart": "zTab" },
+    "sheet": { "value": 80,  "css": "--z-sheet", "dart": "zSheet" },
+    "modal": { "value": 90,  "css": "--z-modal", "dart": "zModal" },
+    "toast": { "value": 100, "css": "--z-toast", "dart": "zToast" }
+  },
+
+  "motion": {
+    "durFast": { "value": 120, "unit": "ms", "css": "--dur-fast", "dart": "durFast", "use": "按压/折叠" },
+    "dur":     { "value": 200, "unit": "ms", "css": "--dur",      "dart": "dur",     "use": "弹窗/页面切换" },
+    "spinner": { "value": 800, "unit": "ms", "dart": "spinnerMs", "use": "内联加载（唯一动画元素）" },
+    "ease":    { "value": "cubic-bezier(.2,.7,.3,1)", "css": "--ease", "dart": "ease", "dartValue": "Curves.easeOutCubic" }
+  },
+
+  "legacy": {
+    "_doc": "旧 iOS 色禁用清单（check-token-usage.mjs 全仓扫描清零；系统 UI 除外）",
+    "banned": ["#007AFF", "#0A84FF", "#0051D5", "#34C759", "#30D158", "#F2F2F7", "#FF9500", "#FF9F0A", "#FF3B30", "#FF453A", "#E5E5EA", "#38383A", "#8E8E93", "#C7C7CC"]
+  }
+}

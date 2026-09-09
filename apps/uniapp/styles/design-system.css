@@ -1,35 +1,39 @@
 :root {
-  --ble-brand: #1b6dff;
-  --ble-brand-deep: #134dbe;
-  --ble-brand-soft: #e7f1ff;
-  --ble-cyan: #7be0ff;
-  --ble-mint: #17c7a8;
-  --ble-orange: #ff9f43;
-  --ble-red: #f2555f;
-  --ble-bg-top: #f7fbff;
-  --ble-bg-bottom: #eaf2fb;
-  --ble-surface: rgba(255, 255, 255, 0.96);
-  --ble-surface-soft: rgba(245, 250, 255, 0.95);
-  --ble-surface-strong: #ffffff;
-  --ble-line: rgba(20, 76, 136, 0.1);
+  /* ── 正典别名层（UI-PARITY-G0 · 2026-09-09）──────────────────────────
+     值唯一来源 styles/tokens.css（--c-*，由 core/assets-generator/meta/design-tokens.json 生成）。
+     本层 --ble-* 仅供存量页面兼容，新页面一律直接使用 --c-* / --r-* / --sp-* / --fs-*。
+     标注「legacy 登记值」= 旧 v0 复合样式自有值，无正典对应，待存量页迁移后随本层删除。 */
+  --ble-brand: var(--c-primary);
+  --ble-brand-deep: var(--c-primary-deep); /* #134dbe → #0E4FC4 圈外值收敛 */
+  --ble-brand-soft: var(--c-primary-weak); /* #e7f1ff → #E8F1FF 圈外值收敛 */
+  --ble-cyan: #7be0ff; /* legacy 登记值：渐变点缀色 */
+  --ble-mint: var(--c-success);
+  --ble-orange: var(--c-warning);
+  --ble-red: var(--c-danger);
+  --ble-bg-top: var(--c-bg); /* #f7fbff → #F8FBFF 圈外值收敛 */
+  --ble-bg-bottom: #eaf2fb; /* legacy 登记值：页面渐变底端 */
+  --ble-surface: rgba(255, 255, 255, 0.96); /* legacy 登记值：半透面 */
+  --ble-surface-soft: rgba(245, 250, 255, 0.95); /* legacy 登记值 */
+  --ble-surface-strong: var(--c-card);
+  --ble-line: rgba(20, 76, 136, 0.1); /* legacy 登记值：半透描边系 */
   --ble-line-strong: rgba(20, 76, 136, 0.16);
   --ble-line-soft: rgba(20, 76, 136, 0.08);
   --ble-line-faint: rgba(20, 76, 136, 0.06);
-  --ble-text: #12263f;
-  --ble-text-subtle: #60758d;
-  --ble-text-muted: #93a2b4;
-  --ble-shadow-soft: 0 18rpx 44rpx rgba(17, 43, 78, 0.08);
-  --ble-shadow-brand: 0 18rpx 42rpx rgba(27, 109, 255, 0.18);
-  --ble-shadow-modal: 0 24rpx 60rpx rgba(10, 20, 35, 0.18);
-  --ble-input-bg: rgba(247, 250, 253, 0.96);
-  --ble-radius-sm: 18rpx;
-  --ble-radius-md: 26rpx;
-  --ble-radius-lg: 34rpx;
-  --ble-radius-xl: 42rpx;
-  --ble-gradient-brand: linear-gradient(135deg, #155dff 0%, #33b2ff 58%, #7be0ff 100%);
-  --ble-gradient-surface: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(242, 248, 255, 0.94) 100%);
-  --ble-gradient-hero: linear-gradient(135deg, rgba(21, 93, 255, 0.12) 0%, rgba(123, 224, 255, 0.18) 100%);
-  --ble-grid: rgba(27, 109, 255, 0.06);
+  --ble-text: var(--c-text); /* #12263f → #18222E 圈外值收敛 */
+  --ble-text-subtle: var(--c-mut);
+  --ble-text-muted: var(--c-ph); /* #93a2b4 → #9AA8B6 圈外值收敛 */
+  --ble-shadow-soft: 0 18rpx 44rpx rgba(17, 43, 78, 0.08); /* legacy 登记值 */
+  --ble-shadow-brand: 0 18rpx 42rpx rgba(27, 109, 255, 0.18); /* legacy 登记值 */
+  --ble-shadow-modal: 0 24rpx 60rpx rgba(10, 20, 35, 0.18); /* legacy 登记值 */
+  --ble-input-bg: rgba(247, 250, 253, 0.96); /* legacy 登记值 */
+  --ble-radius-sm: var(--r-sm);
+  --ble-radius-md: var(--r-md);
+  --ble-radius-lg: var(--r-lg);
+  --ble-radius-xl: var(--r-xl);
+  --ble-gradient-brand: linear-gradient(135deg, #155dff 0%, #33b2ff 58%, #7be0ff 100%); /* legacy 登记值 */
+  --ble-gradient-surface: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(242, 248, 255, 0.94) 100%); /* legacy 登记值 */
+  --ble-gradient-hero: linear-gradient(135deg, rgba(21, 93, 255, 0.12) 0%, rgba(123, 224, 255, 0.18) 100%); /* legacy 登记值 */
+  --ble-grid: rgba(27, 109, 255, 0.06); /* legacy 登记值 */
 }
 
 page {

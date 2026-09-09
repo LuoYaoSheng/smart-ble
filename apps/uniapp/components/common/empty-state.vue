@@ -32,8 +32,8 @@ defineEmits(['action']);
 }
 
 .empty-action {
-	color: #18222E;
-	background: #F1F5FB;
-	box-shadow: inset 0 0 0 2rpx #E3EAF3;
+	color: var(--c-text);
+	background: var(--c-fill);
+	box-shadow: inset 0 0 0 2rpx var(--c-line);
 }
 </style>

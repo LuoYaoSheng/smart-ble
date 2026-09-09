@@ -38,7 +38,7 @@
 					<picker @change="onModeChange" :value="modeIndex" :range="modeOptions">
 						<view class="field-picker">
 							<text>{{modeOptions[modeIndex]}}</text>
-							<text class="picker-arrow">▼</text>
+							<AppIcon name="chev-d" :size="26" tone="mut" class="picker-arrow" />
 						</view>
 					</picker>
 				</view>
@@ -48,7 +48,7 @@
 					<picker @change="onPowerChange" :value="powerIndex" :range="powerOptions">
 						<view class="field-picker">
 							<text>{{powerOptions[powerIndex]}}</text>
-							<text class="picker-arrow">▼</text>
+							<AppIcon name="chev-d" :size="26" tone="mut" class="picker-arrow" />
 						</view>
 					</picker>
 				</view>
@@ -109,6 +109,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
+import AppIcon from '../../components/ui/AppIcon.vue'; // UI-PARITY-G0 正典图标入口
 import { onHide, onLoad, onShow, onUnload, onShareAppMessage } from '@dcloudio/uni-app';
 import { logger } from '../../../../core/ble-core/utils/logger';
 import { useBleStore } from '../../store/ble';
@@ -788,8 +789,7 @@ onShareAppMessage(() => ({
 }
 
 .picker-arrow {
-	font-size: 20rpx;
-	color: var(--ble-text-muted);
+	flex-shrink: 0;
 }
 
 .switch-row {

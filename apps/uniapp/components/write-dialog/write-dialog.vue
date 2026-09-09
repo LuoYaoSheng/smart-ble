@@ -3,7 +3,7 @@
 		<view class="modal-content">
 			<view class="modal-header">
 				<text class="modal-title">写入数据</text>
-				<text class="modal-close" @click="close">×</text>
+				<view class="modal-close" @click="close"><AppIcon name="x" :size="30" tone="mut" /></view>
 			</view>
 			<view class="modal-body">
 				<view class="input-group">
@@ -36,6 +36,7 @@
 
 <script setup>
 import { ref, watch } from 'vue';
+import AppIcon from '../ui/AppIcon.vue'; // UI-PARITY-G0 正典图标入口
 
 const props = defineProps({
 	visible: { type: Boolean, default: false },
@@ -80,7 +81,7 @@ const confirm = () => {
 .modal-content { width: 100%; background: var(--ble-gradient-surface); border-radius: var(--ble-radius-lg); overflow: hidden; box-shadow: var(--ble-shadow-modal); }
 .modal-header { padding: 28rpx 30rpx; border-bottom: 1rpx solid var(--ble-line-soft); display: flex; justify-content: space-between; align-items: center; }
 .modal-title { font-size: 32rpx; font-weight: 700; color: var(--ble-text); }
-.modal-close { font-size: 40rpx; color: var(--ble-text-muted); line-height: 1; padding: 0 10rpx; }
+.modal-close { padding: 0 10rpx; display: flex; align-items: center; }
 .modal-body { padding: 30rpx; display: flex; flex-direction: column; gap: 24rpx; }
 .input-group:last-child { margin-bottom: 0; }
 .input-label { font-size: 26rpx; font-weight: 600; color: var(--ble-text); margin-bottom: 14rpx; display: block; }
