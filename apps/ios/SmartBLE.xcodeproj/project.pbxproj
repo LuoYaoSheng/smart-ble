@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		02C1E9A863F5B0F75C07AAC3 /* FilterPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56BB7ACAD0145FCA623322D7 /* FilterPanel.swift */; };
 		034E5E5D025224B4D6451B32 /* OtaUpgradeDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52779D52F0DFC170465641E4 /* OtaUpgradeDialog.swift */; };
+		0559D24DED38048DE321B2E1 /* HidProvisionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082D316469BAA45C08860A49 /* HidProvisionManager.swift */; };
 		069755C8343B8C3B00C74985 /* AppleSharedCoreWiringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13E2AA0791F9F19E24C9AB33 /* AppleSharedCoreWiringTests.swift */; };
 		097C4AFB40A786795E7927CE /* SmartHidCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3248CA4C5D97F11B0A524166 /* SmartHidCore */; };
 		1BFF657A638115F8CBB179D2 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = E22A8998DC94EAC6893EC901 /* Logger.swift */; };
@@ -35,6 +36,7 @@
 		D4CEBC4D886103DA81578CC6 /* SmartBLEApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D23893A779509A137E6E969 /* SmartBLEApp.swift */; };
 		D938AD1BAD032D40DD56B2F9 /* CommandQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DC41E4EFEC71424985D1200 /* CommandQueue.swift */; };
 		ECCD5E68DF06C2B9BF5500D7 /* ConnectedDevicesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3005D87D1119428FB1ECB66 /* ConnectedDevicesView.swift */; };
+		F8C01FF7D5BEF63745C1D55F /* HidProvisionManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC56BBFE341687CB91A8A352 /* HidProvisionManagerTests.swift */; };
 		FD678CB4442BC9E2083C76BE /* BLEManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AF4F26029430920BAAF663F /* BLEManager.swift */; };
 		FE762B7F1B90CDBBC342B45C /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F15F8549CEC94A4D6D44FF1 /* ScanView.swift */; };
 /* End PBXBuildFile section */
@@ -52,6 +54,7 @@
 /* Begin PBXFileReference section */
 		0006B12F2F5FEC51463E3F10 /* SmartBLEiOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SmartBLEiOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		07D15368FDB6F074D15A8402 /* DeviceCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceCard.swift; sourceTree = "<group>"; };
+		082D316469BAA45C08860A49 /* HidProvisionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HidProvisionManager.swift; sourceTree = "<group>"; };
 		1182918520BEA6E16E071F11 /* about-hero.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "about-hero.png"; sourceTree = "<group>"; };
 		137F253935B8138373A74D80 /* LogPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogPanel.swift; sourceTree = "<group>"; };
 		13E2AA0791F9F19E24C9AB33 /* AppleSharedCoreWiringTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleSharedCoreWiringTests.swift; sourceTree = "<group>"; };
@@ -76,6 +79,7 @@
 		C3005D87D1119428FB1ECB66 /* ConnectedDevicesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectedDevicesView.swift; sourceTree = "<group>"; };
 		C3A4DB018938F07D52FB634F /* WriteDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteDialog.swift; sourceTree = "<group>"; };
 		CAAC8A5AE64E60A45F81D477 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		CC56BBFE341687CB91A8A352 /* HidProvisionManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HidProvisionManagerTests.swift; sourceTree = "<group>"; };
 		D3C8A3330117FC4EC6D55498 /* DataConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataConverter.swift; sourceTree = "<group>"; };
 		D8A6671DD294AC769FEBC338 /* BroadcastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BroadcastView.swift; sourceTree = "<group>"; };
 		DDDC19B0D22B1B8D86C4C147 /* about_hero.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = about_hero.png; sourceTree = "<group>"; };
@@ -177,6 +181,7 @@
 			isa = PBXGroup;
 			children = (
 				5AF4F26029430920BAAF663F /* BLEManager.swift */,
+				082D316469BAA45C08860A49 /* HidProvisionManager.swift */,
 				5BB8E6F17BFD1EA4EF3D1B8E /* OtaManager.swift */,
 			);
 			path = Manager;
@@ -186,6 +191,7 @@
 			isa = PBXGroup;
 			children = (
 				13E2AA0791F9F19E24C9AB33 /* AppleSharedCoreWiringTests.swift */,
+				CC56BBFE341687CB91A8A352 /* HidProvisionManagerTests.swift */,
 			);
 			path = SmartBLETests;
 			sourceTree = "<group>";
@@ -346,6 +352,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				069755C8343B8C3B00C74985 /* AppleSharedCoreWiringTests.swift in Sources */,
+				F8C01FF7D5BEF63745C1D55F /* HidProvisionManagerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -365,6 +372,7 @@
 				866C4AE30F140F29EA983246 /* DeviceCard.swift in Sources */,
 				BE99955DE93D1F5C3AAD8F47 /* DeviceDetailView.swift in Sources */,
 				02C1E9A863F5B0F75C07AAC3 /* FilterPanel.swift in Sources */,
+				0559D24DED38048DE321B2E1 /* HidProvisionManager.swift in Sources */,
 				2CE70E0DA00FF8E86555F06B /* LogPanel.swift in Sources */,
 				1BFF657A638115F8CBB179D2 /* Logger.swift in Sources */,
 				9DF938C7F616441174818F61 /* OtaManager.swift in Sources */,

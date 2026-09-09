@@ -5,6 +5,7 @@
 import Foundation
 @preconcurrency import CoreBluetooth
 import Combine
+import SmartHidCore
 
 // MARK: - BLE Manager
 @MainActor
@@ -93,6 +94,10 @@ class BLEManager: NSObject, ObservableObject {
     // MARK: - Notify State Tracking
     /// "deviceId:serviceUUID:characteristicUUID" -> Bool
     private var notifyingCharacteristics: Set<String> = []
+
+    // MARK: - Smart HID native adapter
+    var hidEventHandler: ((HidProvisionTransportEvent) -> Void)?
+    lazy var hidProvisionManager = HidProvisionManager(transport: self)
 
     // MARK: - UUID Helper
     // T07: 服务 UUID 中文名称表（对齐 Android BleUuids）
@@ -313,9 +318,11 @@ class BLEManager: NSObject, ObservableObject {
 
     // MARK: - Read Characteristic (Multi-device)
     func readCharacteristic(deviceId: String, serviceUUID: String, characteristicUUID: String) {
-        guard let peripheral = connectedPeripherals[deviceId],
-              let service = peripheral.services?.first(where: { $0.uuid.uuidString == serviceUUID }),
-              let characteristic = service.characteristics?.first(where: { $0.uuid.uuidString == characteristicUUID }) else {
+        guard let (peripheral, characteristic) = findCharacteristic(
+            deviceId: deviceId,
+            serviceUUID: serviceUUID,
+            characteristicUUID: characteristicUUID
+        ) else {
             log("Characteristic not found", type: .error)
             return
         }
@@ -334,9 +341,11 @@ class BLEManager: NSObject, ObservableObject {
 
     // MARK: - Write Characteristic (Multi-device)
     func writeCharacteristic(deviceId: String, serviceUUID: String, characteristicUUID: String, data: Data, withoutResponse: Bool = false) {
-        guard let peripheral = connectedPeripherals[deviceId],
-              let service = peripheral.services?.first(where: { $0.uuid.uuidString == serviceUUID }),
-              let characteristic = service.characteristics?.first(where: { $0.uuid.uuidString == characteristicUUID }) else {
+        guard let (peripheral, characteristic) = findCharacteristic(
+            deviceId: deviceId,
+            serviceUUID: serviceUUID,
+            characteristicUUID: characteristicUUID
+        ) else {
             log("Characteristic not found", type: .error)
             return
         }
@@ -356,9 +365,11 @@ class BLEManager: NSObject, ObservableObject {
 
     // MARK: - Notify Characteristic (Multi-device)
     func setNotification(deviceId: String, serviceUUID: String, characteristicUUID: String, enabled: Bool) {
-        guard let peripheral = connectedPeripherals[deviceId],
-              let service = peripheral.services?.first(where: { $0.uuid.uuidString == serviceUUID }),
-              let characteristic = service.characteristics?.first(where: { $0.uuid.uuidString == characteristicUUID }) else {
+        guard let (peripheral, characteristic) = findCharacteristic(
+            deviceId: deviceId,
+            serviceUUID: serviceUUID,
+            characteristicUUID: characteristicUUID
+        ) else {
             log("Characteristic not found", type: .error)
             return
         }
@@ -496,6 +507,23 @@ class BLEManager: NSObject, ObservableObject {
         log("Discovered \(result.count) services for device \(deviceId.prefix(8))...", type: .success)
     }
 
+    private func findCharacteristic(
+        deviceId: String,
+        serviceUUID: String,
+        characteristicUUID: String
+    ) -> (CBPeripheral, CBCharacteristic)? {
+        guard let peripheral = connectedPeripherals[deviceId],
+              let service = peripheral.services?.first(where: {
+                  $0.uuid.uuidString.caseInsensitiveCompare(serviceUUID) == .orderedSame
+              }),
+              let characteristic = service.characteristics?.first(where: {
+                  $0.uuid.uuidString.caseInsensitiveCompare(characteristicUUID) == .orderedSame
+              }) else {
+            return nil
+        }
+        return (peripheral, characteristic)
+    }
+
 
 
     // MARK: - T06: Auto-Reconnect helpers
@@ -618,6 +646,8 @@ extension BLEManager: @preconcurrency CBCentralManagerDelegate {
             connectedDevices[deviceId] = device
         }
 
+        hidEventHandler?(.connectionChanged(deviceId: deviceId, connected: true))
+
         log("Connected to \(peripheral.name ?? "Unknown Device"), discovering services...", type: .success)
 
         // Auto-discover services immediately after connection
@@ -627,6 +657,7 @@ extension BLEManager: @preconcurrency CBCentralManagerDelegate {
     func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
         let deviceId = peripheral.identifier.uuidString
         connectionStates[deviceId] = .disconnected
+        hidEventHandler?(.connectionChanged(deviceId: deviceId, connected: false))
         if let error = error {
             log("Failed to connect: \(error.localizedDescription)", type: .error)
         }
@@ -634,6 +665,8 @@ extension BLEManager: @preconcurrency CBCentralManagerDelegate {
 
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         let deviceId = peripheral.identifier.uuidString
+
+        hidEventHandler?(.connectionChanged(deviceId: deviceId, connected: false))
 
         connectedPeripherals.removeValue(forKey: deviceId)
         connectionStates.removeValue(forKey: deviceId)
@@ -660,6 +693,10 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
         }
 
         updateServices(for: peripheral)
+        for service in peripheral.services ?? [] {
+            peripheral.discoverCharacteristics(nil, for: service)
+        }
+        hidEventHandler?(.servicesChanged(deviceId: peripheral.identifier.uuidString))
     }
 
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
@@ -669,6 +706,7 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
         }
 
         updateServices(for: peripheral)
+        hidEventHandler?(.servicesChanged(deviceId: peripheral.identifier.uuidString))
     }
 
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
@@ -679,6 +717,11 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
 
         let value = characteristic.value ?? Data()
         let deviceId = peripheral.identifier.uuidString
+        hidEventHandler?(.value(
+            deviceId: deviceId,
+            characteristicUUID: characteristic.uuid.uuidString,
+            data: value
+        ))
         // T03+T05: HEX + TEXT 双行格式，嵌入 per-device 日志
         let hexString = DataConverter.bytesToHex(value)
         let textString = String(bytes: value, encoding: .utf8) ??
@@ -718,6 +761,82 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
         if scanResults.contains(where: { $0.id == peripheral.identifier.uuidString }) {
             // Update RSSI
         }
+    }
+}
+
+// MARK: - Smart HID provisioning transport
+extension BLEManager: HidProvisionTransport {
+    func connectForProvisioning(deviceId: String) -> Bool {
+        if isDeviceConnected(deviceId) {
+            hidEventHandler?(.connectionChanged(deviceId: deviceId, connected: true))
+            return true
+        }
+        guard let device = scanResults.first(where: { $0.id == deviceId }) else { return false }
+        connect(to: device)
+        return true
+    }
+
+    func disconnectForProvisioning(deviceId: String) {
+        disconnect(deviceId: deviceId)
+    }
+
+    func isProvisioningDeviceConnected(_ deviceId: String) -> Bool {
+        isDeviceConnected(deviceId)
+    }
+
+    func hasProvisioningCharacteristic(deviceId: String, characteristicUUID: String) -> Bool {
+        findCharacteristic(
+            deviceId: deviceId,
+            serviceUUID: HidProtocol.serviceUuid,
+            characteristicUUID: characteristicUUID
+        ) != nil
+    }
+
+    func setProvisioningNotification(deviceId: String, characteristicUUID: String, enabled: Bool) -> Bool {
+        guard hasProvisioningCharacteristic(deviceId: deviceId, characteristicUUID: characteristicUUID) else {
+            return false
+        }
+        setNotification(
+            deviceId: deviceId,
+            serviceUUID: HidProtocol.serviceUuid,
+            characteristicUUID: characteristicUUID,
+            enabled: enabled
+        )
+        return true
+    }
+
+    func readProvisioningCharacteristic(deviceId: String, characteristicUUID: String) -> Bool {
+        guard hasProvisioningCharacteristic(deviceId: deviceId, characteristicUUID: characteristicUUID) else {
+            return false
+        }
+        readCharacteristic(
+            deviceId: deviceId,
+            serviceUUID: HidProtocol.serviceUuid,
+            characteristicUUID: characteristicUUID
+        )
+        return true
+    }
+
+    func writeProvisioningCharacteristic(deviceId: String, characteristicUUID: String, data: Data) -> Bool {
+        guard hasProvisioningCharacteristic(deviceId: deviceId, characteristicUUID: characteristicUUID) else {
+            return false
+        }
+        writeCharacteristic(
+            deviceId: deviceId,
+            serviceUUID: HidProtocol.serviceUuid,
+            characteristicUUID: characteristicUUID,
+            data: data,
+            withoutResponse: false
+        )
+        return true
+    }
+
+    func provisioningAttMtu(deviceId: String) -> Int {
+        (connectedPeripherals[deviceId]?.maximumWriteValueLength(for: .withResponse) ?? 20) + 3
+    }
+
+    func logProvisioning(_ message: String, deviceId: String, isError: Bool) {
+        logForDevice(deviceId, message, type: isError ? .error : .info)
     }
 }
 
