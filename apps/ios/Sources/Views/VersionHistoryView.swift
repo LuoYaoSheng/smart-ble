@@ -60,10 +60,10 @@ struct VersionHistoryView: View {
         VStack(alignment: .leading, spacing: 12) {
             Label("当前版本", systemImage: "doc.text").font(.headline)
             HStack(alignment: .firstTextBaseline, spacing: 10) {
-                Text("v\(metadata.appVersion)")
-                    .font(.system(size: 30, weight: .heavy))
+                Text(displayVersion)
+                    .font(.system(size: 24, weight: .heavy))
                     .foregroundColor(NativeDS.primary)
-                Text(metadata.channel.uppercased())
+                Text(metadata.channel)
                     .font(.caption.weight(.bold))
                     .foregroundColor(NativeDS.primary)
                     .padding(.horizontal, 8).padding(.vertical, 4)
@@ -71,10 +71,12 @@ struct VersionHistoryView: View {
             }
             keyValue("构建", "\(metadata.appBuildCode)" + (metadata.commit.map { " · \($0.prefix(8))" } ?? ""))
             keyValue("Release tag", metadata.releaseTag ?? "未登记（preview）")
-            HStack(spacing: 6) {
-                surfaceChip("iOS", metadata.publicSurfaces["ios"]?.releaseStatus ?? "UNKNOWN")
-                surfaceChip("Native", metadata.publicSurfaces["flutter_tauri_native"]?.releaseStatus ?? "UNKNOWN")
-                surfaceChip("OTA", metadata.publicSurfaces["ota"]?.capabilityStatus ?? "UNKNOWN")
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 122), spacing: 6)], alignment: .leading, spacing: 6) {
+                surfaceChip("微信小程序", metadata.publicSurfaces["wechat"]?.capabilityStatus ?? "UNKNOWN")
+                surfaceChip("App · Android", metadata.publicSurfaces["android"]?.releaseStatus ?? "UNKNOWN")
+                surfaceChip("App · iOS", metadata.publicSurfaces["ios"]?.releaseStatus ?? "UNKNOWN")
+                surfaceChip("H5 / Web", metadata.publicSurfaces["h5"]?.releaseStatus ?? "UNKNOWN")
+                surfaceChip("桌面端", metadata.publicSurfaces["flutter_tauri_native"]?.releaseStatus ?? "UNKNOWN")
             }
             Button(action: copyVersion) {
                 Label(copied ? "已复制" : "复制版本信息", systemImage: "doc.on.doc")
@@ -122,7 +124,7 @@ struct VersionHistoryView: View {
         VStack(alignment: .leading, spacing: 12) {
             Label(title, systemImage: icon).font(.headline)
             VStack(spacing: 8) {
-                Image(systemName: "doc.text").font(.title2).foregroundColor(NativeDS.muted)
+                NativeIllustration(name: "doc", width: 72)
                 Text(emptyTitle).font(.subheadline.weight(.semibold))
                 if !emptyDescription.isEmpty {
                     Text(emptyDescription).font(.caption).foregroundColor(NativeDS.muted).multilineTextAlignment(.center)
@@ -145,7 +147,14 @@ struct VersionHistoryView: View {
     }
 
     private func surfaceChip(_ name: String, _ status: String) -> some View {
-        let color = status == "BLOCKED" ? NativeDS.warning : status.contains("RELEASED") ? NativeDS.muted : NativeDS.primary
+        let color: Color
+        switch status {
+        case "BLOCKED": color = NativeDS.warning
+        case "NOT_RELEASED": color = NativeDS.danger
+        case "UNSUPPORTED": color = NativeDS.muted
+        case "VERIFIED": color = NativeDS.success
+        default: color = NativeDS.primary
+        }
         return Text("\(name) \(status)")
             .font(.caption2.weight(.bold))
             .foregroundColor(color)
@@ -162,5 +171,9 @@ struct VersionHistoryView: View {
         NSPasteboard.general.setString(value, forType: .string)
         #endif
         copied = true
+    }
+
+    private var displayVersion: String {
+        metadata.channel == "preview" ? "\(metadata.appVersion)-preview" : metadata.appVersion
     }
 }

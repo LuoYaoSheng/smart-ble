@@ -245,6 +245,10 @@ class BLEManager: NSObject, ObservableObject {
             log("Bluetooth not ready", type: .error)
             return
         }
+        guard let peripheral = device.peripheral else {
+            log("Device preview has no CoreBluetooth peripheral", type: .error)
+            return
+        }
 
         // T06: 标记为用户主动连接，允许自动重连
         userInitiatedDisconnects.remove(device.id)
@@ -254,7 +258,7 @@ class BLEManager: NSObject, ObservableObject {
         connectionStates[device.id] = .connecting
         stopScan()
 
-        centralManager.connect(device.peripheral, options: nil)
+        centralManager.connect(peripheral, options: nil)
         log("Connecting to \(device.name)", type: .info)
     }
 

@@ -5,24 +5,24 @@ struct ServicePanel: View {
     let deviceId: String
 
     var body: some View {
-        Group {
-            let services = bleManager.servicesByDevice[deviceId] ?? []
-            if services.isEmpty {
-                VStack(spacing: 16) {
-                    ProgressView()
-                    Text(bleManager.connectionStates[deviceId] == .connected ? "正在发现服务..." : "请先连接设备")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
+        let services = bleManager.servicesByDevice[deviceId] ?? []
+        if services.isEmpty {
+            HStack(alignment: .top, spacing: 12) {
+                ProgressView().tint(NativeDS.primary)
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(bleManager.connectionStates[deviceId] == .connected ? "正在发现服务…" : "未初始化")
+                        .font(.system(size: 15, weight: .bold))
+                    Text(bleManager.connectionStates[deviceId] == .connected ? "等待 CoreBluetooth 返回服务与特征值" : "点击「连接设备」建立 GATT 会话。")
+                        .font(.system(size: 13))
+                        .foregroundColor(NativeDS.sub)
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else {
-                ScrollView {
-                    LazyVStack(spacing: 12) {
-                        ForEach(services) { service in
-                            ServiceCard(deviceId: deviceId, serviceId: service.id)
-                        }
-                    }
-                    .padding()
+                Spacer()
+            }
+            .nativeCard()
+        } else {
+            LazyVStack(spacing: 10) {
+                ForEach(services) { service in
+                    ServiceCard(deviceId: deviceId, serviceId: service.id)
                 }
             }
         }
@@ -34,40 +34,43 @@ struct ServiceCard: View {
     let deviceId: String
     let serviceId: String
     @State private var isExpanded = false
-    @State private var hasDiscoveredCharacteristics = false
 
     private var service: BLEService? {
         bleManager.servicesByDevice[deviceId]?.first { $0.id == serviceId }
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(service?.name ?? "Unknown Service")
-                        .font(.headline)
-                        .foregroundColor(.primary)
-
-                    Text(service?.uuid ?? "")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+        VStack(alignment: .leading, spacing: 10) {
+            Button(action: { withAnimation(.easeInOut(duration: 0.18)) { isExpanded.toggle() } }) {
+                HStack(spacing: 8) {
+                    Image(systemName: isOta ? "arrow.down.circle" : "cpu")
+                        .foregroundColor(isOta ? NativeDS.danger : NativeDS.primary)
+                    Text(service?.name ?? "未知服务")
+                        .font(.system(size: 15, weight: .bold))
+                        .foregroundColor(NativeDS.ink)
+                    Text(shortUuid)
+                        .font(.system(size: 10, design: .monospaced))
+                        .foregroundColor(NativeDS.sub)
+                        .padding(.horizontal, 7).padding(.vertical, 2)
+                        .background(NativeDS.fill).clipShape(Capsule())
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundColor(NativeDS.muted)
+                        .rotationEffect(.degrees(isExpanded ? 90 : 0))
                 }
-
-                Spacer()
-
-                Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
-                    .foregroundColor(.secondary)
             }
+            .buttonStyle(.plain)
 
             if isExpanded {
-                VStack(spacing: 8) {
-                    if let service = service, service.characteristics.isEmpty {
-                        Text("正在发现特征值...")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            .padding()
-                    } else if let service = service {
+                if let service, service.characteristics.isEmpty {
+                    Text("正在发现特征值…")
+                        .font(.system(size: 11))
+                        .foregroundColor(NativeDS.muted)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                } else if let service {
+                    VStack(spacing: 8) {
                         ForEach(service.characteristics) { characteristic in
                             CharacteristicRow(
                                 deviceId: deviceId,
@@ -77,34 +80,23 @@ struct ServiceCard: View {
                         }
                     }
                 }
-                .transition(.opacity.combined(with: .move(edge: .top)))
             }
         }
-        .padding()
-        .background(Color.gray.opacity(0.15))
-        .cornerRadius(12)
-        .contentShape(Rectangle())
-        .onTapGesture {
-            withAnimation(.spring(response: 0.3)) {
-                isExpanded.toggle()
+        .nativeCard()
+        .onChange(of: isExpanded) { expanded in
+            if expanded, let service, let peripheralService = service.peripheralService {
+                bleManager.discoverCharacteristics(for: peripheralService)
             }
         }
-        .onChange(of: isExpanded) { newValue in
-            if newValue && !hasDiscoveredCharacteristics {
-                if let service = service, let peripheralService = service.peripheralService {
-                    bleManager.discoverCharacteristics(for: peripheralService)
-                    hasDiscoveredCharacteristics = true
-                }
-            }
-        }
-        .onAppear {
-            if isExpanded && !hasDiscoveredCharacteristics {
-                if let service = service, let peripheralService = service.peripheralService {
-                    bleManager.discoverCharacteristics(for: peripheralService)
-                    hasDiscoveredCharacteristics = true
-                }
-            }
-        }
+    }
+
+    private var shortUuid: String {
+        guard let uuid = service?.uuid else { return "" }
+        return uuid.count > 8 ? "\(uuid.prefix(8))…" : uuid
+    }
+
+    private var isOta: Bool {
+        service?.uuid.uppercased().hasPrefix("4FAFC201") == true
     }
 }
 
@@ -113,119 +105,78 @@ struct CharacteristicRow: View {
     let deviceId: String
     let serviceId: String
     let characteristicId: String
-    @State private var isExpanded = false
     @State private var showWriteSheet = false
 
     private var characteristic: BLECharacteristic? {
-        guard let service = bleManager.servicesByDevice[deviceId]?.first(where: { $0.id == serviceId }) else {
-            return nil
-        }
-        return service.characteristics.first { $0.id == characteristicId }
+        bleManager.servicesByDevice[deviceId]?
+            .first(where: { $0.id == serviceId })?
+            .characteristics
+            .first(where: { $0.id == characteristicId })
     }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(characteristic?.name ?? "Unknown Characteristic")
-                        .font(.subheadline)
-                        .fontWeight(.medium)
-                        .foregroundColor(.primary)
-
-                    Text(characteristic?.uuid ?? "")
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
+            HStack(spacing: 5) {
+                Text(characteristic?.name ?? "未知特征值")
+                    .font(.system(size: 13, weight: .semibold))
+                if let characteristic {
+                    ForEach(characteristic.properties.description, id: \.self) { property in
+                        Text(property.lowercased())
+                            .font(.system(size: 9, weight: .semibold))
+                            .foregroundColor(property.lowercased().contains("write") ? NativeDS.success : property.lowercased().contains("notify") ? NativeDS.warning : NativeDS.primary)
+                            .padding(.horizontal, 6).padding(.vertical, 2)
+                            .background(NativeDS.primaryWeak.opacity(0.7))
+                            .clipShape(RoundedRectangle(cornerRadius: 5))
+                    }
                 }
-
                 Spacer()
+            }
 
-                if let characteristic = characteristic {
-                    HStack(spacing: 4) {
-                        ForEach(Array(characteristic.properties.description), id: \.self) { prop in
-                            Text(prop)
-                                .font(.caption2)
-                                .padding(.horizontal, 6)
-                                .padding(.vertical, 2)
-                                .background(Color.blue.opacity(0.1))
-                                .cornerRadius(4)
-                        }
+            Text(characteristic?.uuid ?? "")
+                .font(.system(size: 10, design: .monospaced))
+                .foregroundColor(NativeDS.muted)
+
+            if let value = characteristic?.value {
+                Text(value)
+                    .font(.system(size: 10, design: .monospaced))
+                    .foregroundColor(NativeDS.sub)
+                    .padding(8)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color.white)
+                    .clipShape(RoundedRectangle(cornerRadius: 6))
+            }
+
+            HStack(spacing: 8) {
+                if characteristic?.properties.contains(.read) == true {
+                    smallButton("读取") {
+                        guard let characteristic else { return }
+                        bleManager.readCharacteristic(deviceId: deviceId, serviceUUID: serviceId, characteristicUUID: characteristic.uuid)
                     }
                 }
-
-                Image(systemName: isExpanded ? "chevron.up" : "chevron.down.circle.fill")
-                    .foregroundColor(.blue)
-            }
-
-            if isExpanded {
-                VStack(spacing: 8) {
-                    if let value = characteristic?.value {
-                        HStack {
-                            Text("值:")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-
-                            Text(value)
-                                .font(.system(.caption, design: .monospaced))
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 4)
-                                .background(Color.gray.opacity(0.15))
-                                .cornerRadius(6)
-                        }
-                    }
-
-                    HStack(spacing: 8) {
-                        if let characteristic = characteristic, characteristic.properties.contains(.read) {
-                            Button("读取") {
-                                bleManager.readCharacteristic(
-                                    deviceId: deviceId,
-                                    serviceUUID: serviceId,
-                                    characteristicUUID: characteristic.uuid
-                                )
-                            }
-                            .buttonStyle(.bordered)
-                        }
-
-                        if let characteristic = characteristic,
-                           characteristic.properties.contains(.write) || characteristic.properties.contains(.writeWithoutResponse) {
-                            Button("写入") {
-                                showWriteSheet = true
-                            }
-                            .buttonStyle(.bordered)
-                        }
-
-                        Spacer()
-
-                        if let characteristic = characteristic,
-                           characteristic.properties.contains(.notify) || characteristic.properties.contains(.indicate) {
-                            Button(isNotifying ? "停止通知" : "通知") {
-                                bleManager.setNotification(
-                                    deviceId: deviceId,
-                                    serviceUUID: serviceId,
-                                    characteristicUUID: characteristic.uuid,
-                                    enabled: !isNotifying
-                                )
-                            }
-                            .buttonStyle(.bordered)
-                            .foregroundColor(isNotifying ? .red : .blue)
-                        }
+                if characteristic?.properties.contains(.write) == true
+                    || characteristic?.properties.contains(.writeWithoutResponse) == true {
+                    smallButton("写入") { showWriteSheet = true }
+                }
+                if characteristic?.properties.contains(.notify) == true
+                    || characteristic?.properties.contains(.indicate) == true {
+                    smallButton(isNotifying ? "停止监听" : "开始监听", outlined: true) {
+                        guard let characteristic else { return }
+                        bleManager.setNotification(
+                            deviceId: deviceId,
+                            serviceUUID: serviceId,
+                            characteristicUUID: characteristic.uuid,
+                            enabled: !isNotifying
+                        )
                     }
                 }
-                .padding(.top, 4)
-                .transition(.opacity.combined(with: .move(edge: .top)))
+                Spacer()
             }
         }
-        .padding(.vertical, 8)
-        .padding(.horizontal, 12)
-        .background(Color.gray.opacity(0.15))
-        .cornerRadius(10)
-        .contentShape(Rectangle())
-        .onTapGesture {
-            withAnimation(.spring(response: 0.3)) {
-                isExpanded.toggle()
-            }
-        }
+        .padding(12)
+        .background(NativeDS.fill)
+        .clipShape(RoundedRectangle(cornerRadius: 10))
         .sheet(isPresented: $showWriteSheet) {
-            if let characteristic = characteristic {
+            if let characteristic {
                 WriteDialog(
                     characteristic: characteristic,
                     deviceId: deviceId,
@@ -236,8 +187,20 @@ struct CharacteristicRow: View {
         }
     }
 
+    private func smallButton(_ title: String, outlined: Bool = false, action: @escaping () -> Void) -> some View {
+        Button(title, action: action)
+            .buttonStyle(.plain)
+            .font(.system(size: 12, weight: .semibold))
+            .foregroundColor(outlined ? NativeDS.primary : NativeDS.ink)
+            .padding(.horizontal, 12)
+            .frame(height: 32)
+            .background(outlined ? Color.clear : Color.white)
+            .overlay(RoundedRectangle(cornerRadius: 8).stroke(outlined ? NativeDS.primary : NativeDS.line))
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+    }
+
     private var isNotifying: Bool {
-        guard let characteristic = characteristic else { return false }
+        guard let characteristic else { return false }
         return bleManager.isNotifying(deviceId: deviceId, serviceUUID: serviceId, characteristicUUID: characteristic.uuid)
     }
 }

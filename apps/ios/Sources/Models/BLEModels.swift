@@ -20,7 +20,7 @@ struct ScanResult: Identifiable, Equatable {
     let id: String
     let name: String
     let rssi: Int
-    let peripheral: CBPeripheral
+    let peripheral: CBPeripheral?
 
     // Advertisement data
     var serviceUUIDs: [String] = []

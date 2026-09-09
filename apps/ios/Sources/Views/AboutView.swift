@@ -1,302 +1,302 @@
 import SwiftUI
 
-struct AboutView: View {
-    @State private var versionRoute: AboutVersionRoute?
-
-    var body: some View {
-        ScrollView {
-            VStack(spacing: 20) {
-                heroCard
-                sectionCard(title: "产品定位") {
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("Smart BLE 是跨平台 BLE 控制台与统一协议内核，不是单一端上的小工具。")
-                            .font(.headline)
-                            .foregroundStyle(.primary)
-                        Text("它把扫描、连接、读写特征值、通知监听、广播模式和硬件联动收进同一套工作流里，既适合现场调试，也适合作为多平台 BLE 参考实现。")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                }
-
-                sectionCard(title: "核心能力") {
-                    VStack(spacing: 14) {
-                        FeatureRow(icon: "dot.radiowaves.left.and.right", title: "设备扫描", text: "快速发现附近 BLE 设备并实时展示 RSSI 状态")
-                        FeatureRow(icon: "link", title: "连接与服务发现", text: "建立会话后继续查看服务树和特征值层级")
-                        FeatureRow(icon: "arrow.up.arrow.down", title: "读写与监听", text: "支持 HEX / UTF-8 写入、读取和通知订阅")
-                        FeatureRow(icon: "dot.radiowaves.up.forward", title: "广播模式", text: "验证设备名称、UUID 与广播载荷的配置效果")
-                        FeatureRow(icon: "cpu", title: "硬件联动", text: "与 ESP32 / 固件示例配套使用，形成协议验证闭环")
-                    }
-                }
-
-                sectionCard(title: "平台矩阵") {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 10) {
-                            PlatformChip(icon: "iphone", label: "iOS")
-                            PlatformChip(icon: "laptopcomputer", label: "macOS")
-                            PlatformChip(icon: "desktopcomputer", label: "Windows")
-                            PlatformChip(icon: "antenna.radiowaves.left.and.right", label: "UniApp")
-                            PlatformChip(icon: "swift", label: "Native")
-                            PlatformChip(icon: "cpu", label: "Hardware")
-                        }
-                    }
-                }
-
-                sectionCard(title: "相关链接") {
-                    VStack(spacing: 12) {
-                        LinkRow(icon: "globe", title: "项目主页", subtitle: "查看平台矩阵、下载入口与架构说明", url: "https://lightble.i2kai.com/")
-                        ActionLinkRow(icon: "clock.arrow.circlepath", title: "版本记录", subtitle: "查看 Release Metadata 与当前限制") {
-                            versionRoute = AboutVersionRoute(id: "versions")
-                        }
-                        LinkRow(icon: "square.stack.3d.up", title: "架构白皮书", subtitle: "统一协议内核、组件拆分与交互流规范", url: "https://lightble.i2kai.com/MASTER_ARCHITECTURE")
-                        LinkRow(icon: "chevron.left.forwardslash.chevron.right", title: "源码仓库", subtitle: "查看全部平台实现与共享资产生成器", url: "https://github.com/luoyaosheng/smart-ble")
-                        LinkRow(icon: "ladybug", title: "问题反馈", subtitle: "提交 issue 或查看已知问题", url: "https://github.com/luoyaosheng/smart-ble/issues")
-                    }
-                }
-
-                Text("© 2026 Smart BLE\nReleased under MIT License")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.top, 8)
-            }
-            .padding()
-            .frame(maxWidth: 860)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(
-            LinearGradient(
-                colors: [Color(red: 0.96, green: 0.98, blue: 1.0), Color(red: 0.93, green: 0.96, blue: 1.0)],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            .ignoresSafeArea()
-        )
-        .nativePageCover(item: $versionRoute) { _ in
-            VersionHistoryView()
-        }
-    }
-
-    private var heroCard: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            brandHeroImage
-                .resizable()
-                .scaledToFill()
-                .frame(height: 220)
-                .clipped()
-                .clipShape(RoundedRectangle(cornerRadius: 24))
-
-            HStack(spacing: 16) {
-                brandIconImage
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 68, height: 68)
-                    .clipShape(RoundedRectangle(cornerRadius: 18))
-                    .shadow(color: .blue.opacity(0.16), radius: 12, y: 8)
-
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Smart BLE")
-                        .font(.system(size: 30, weight: .bold))
-                    Text("原生 Apple 运行面")
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.blue)
-                }
-                Spacer()
-            }
-
-            HStack(spacing: 10) {
-                MetaChip(text: "Version 2.0.0")
-                MetaChip(text: "SwiftUI")
-                MetaChip(text: "CoreBluetooth")
-            }
-
-            Text("跨平台 BLE 控制台与统一协议内核，用原生 Apple 体验承接扫描、连接、广播和设备调试。")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-        .padding(20)
-        .background(
-            RoundedRectangle(cornerRadius: 28)
-                .fill(
-                    LinearGradient(
-                        colors: [Color.white.opacity(0.98), Color(red: 0.95, green: 0.98, blue: 1.0)],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 28)
-                .stroke(Color.blue.opacity(0.08), lineWidth: 1)
-        )
-        .shadow(color: Color.black.opacity(0.05), radius: 18, y: 10)
-    }
-
-    private func sectionCard<Content: View>(title: String, @ViewBuilder content: () -> Content) -> some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text(title)
-                .font(.title3.weight(.bold))
-            content()
-        }
-        .padding(20)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            RoundedRectangle(cornerRadius: 24)
-                .fill(Color.white.opacity(0.94))
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 24)
-                .stroke(Color.blue.opacity(0.06), lineWidth: 1)
-        )
-    }
-}
+#if os(iOS)
+import UIKit
+#elseif os(macOS)
+import AppKit
+#endif
 
 private struct AboutVersionRoute: Identifiable {
     let id: String
 }
 
-private extension AboutView {
-    var brandHeroImage: Image {
-        #if SWIFT_PACKAGE
-        Image("about_hero", bundle: .module)
-        #else
-        Image("AboutHero")
-        #endif
-    }
-
-    var brandIconImage: Image {
-        #if SWIFT_PACKAGE
-        Image("brand_icon", bundle: .module)
-        #else
-        Image("BrandIcon")
-        #endif
-    }
+private struct SharePayload: Identifiable {
+    let id = UUID()
+    let items: [Any]
 }
 
-private struct FeatureRow: View {
-    let icon: String
-    let title: String
-    let text: String
+struct AboutView: View {
+    private let metadata = ReleaseMetadata.load()
+    @State private var versionRoute: AboutVersionRoute?
+    @State private var sharePayload: SharePayload?
 
     var body: some View {
-        HStack(alignment: .top, spacing: 14) {
+        VStack(spacing: 0) {
+            NativeNavbar(kicker: "ABOUT", title: "关于") {
+                NativeStatusChip(text: displayVersion, tone: NativeDS.muted)
+            }
+
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 12) {
+                    brandCard
+
+                    NativeSectionHeading(icon: "point.3.connected.trianglepath.dotted", title: "更多小程序") {
+                        EmptyView()
+                    }
+                    promotionCard
+
+                    NativeSectionHeading(icon: "info.circle", title: "应用信息") {
+                        EmptyView()
+                    }
+                    applicationCard
+                    menuCard
+
+                    VStack(spacing: 2) {
+                        Text("日志全局脱敏：敏感凭据显示为 token=***")
+                        Text("BLE Toolkit+ · Smart BLE 产品家族")
+                    }
+                    .font(.system(size: 10))
+                    .foregroundColor(NativeDS.placeholder)
+                    .multilineTextAlignment(.center)
+                    .padding(.vertical, 8)
+                }
+                .padding(.horizontal, 16)
+                .padding(.top, 12)
+                .padding(.bottom, 20)
+            }
+            .background(NativeDS.page)
+        }
+        .nativePageCover(item: $versionRoute) { _ in
+            VersionHistoryView()
+        }
+        .sheet(item: $sharePayload) { payload in
+            NativeShareSheet(items: payload.items)
+        }
+    }
+
+    private var brandCard: some View {
+        HStack(spacing: 12) {
             ZStack {
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(Color.blue.opacity(0.1))
-                    .frame(width: 42, height: 42)
-                Image(systemName: icon)
-                    .foregroundStyle(.blue)
+                LinearGradient(
+                    colors: [NativeDS.primary, NativeDS.primaryDeep],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                Image(systemName: "antenna.radiowaves.left.and.right")
+                    .font(.system(size: 20, weight: .semibold))
+                    .foregroundColor(.white)
             }
+            .frame(width: 42, height: 42)
+            .clipShape(RoundedRectangle(cornerRadius: 10))
 
-            VStack(alignment: .leading, spacing: 4) {
-                Text(title)
-                    .font(.subheadline.weight(.semibold))
-                Text(text)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("BLE Toolkit+")
+                    .font(.system(size: 15, weight: .bold))
+                    .foregroundColor(NativeDS.ink)
+                Text("v\(displayVersion) · \(metadata.channel) · 零后端 · 零本地持久化")
+                    .font(.system(size: 10))
+                    .foregroundColor(NativeDS.muted)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
             }
-
             Spacer()
         }
+        .nativeCard(padding: 14)
     }
-}
 
-private struct PlatformChip: View {
-    let icon: String
-    let label: String
+    private var promotionCard: some View {
+        VStack(spacing: 0) {
+            promotionRow(
+                abbreviation: "LB",
+                title: "LightBLE 调试台",
+                subtitle: "同开发者桌面端 BLE 工具",
+                colors: [NativeDS.primaryWeak, Color(red: 220 / 255, green: 233 / 255, blue: 1)]
+            )
+            Divider()
+            promotionRow(
+                abbreviation: "ES",
+                title: "ESP32 快速配网",
+                subtitle: "ESP32 设备配网演示小程序",
+                colors: [NativeDS.successWeak, Color(red: 217 / 255, green: 246 / 255, blue: 240 / 255)]
+            )
+        }
+        .nativeCard(padding: 0)
+    }
 
-    var body: some View {
-        HStack(spacing: 6) {
+    private func promotionRow(
+        abbreviation: String,
+        title: String,
+        subtitle: String,
+        colors: [Color]
+    ) -> some View {
+        HStack(spacing: 10) {
+            Text(abbreviation)
+                .font(.system(size: 15, weight: .heavy))
+                .foregroundColor(abbreviation == "LB" ? NativeDS.primary : NativeDS.success)
+                .frame(width: 42, height: 42)
+                .background(LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing))
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title).font(.system(size: 15, weight: .bold)).foregroundColor(NativeDS.ink)
+                Text(subtitle).font(.system(size: 11)).foregroundColor(NativeDS.muted)
+            }
+            Spacer()
+            Text("前往")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundColor(NativeDS.ink)
+                .padding(.horizontal, 12)
+                .frame(height: 32)
+                .background(NativeDS.fill)
+                .overlay(RoundedRectangle(cornerRadius: 8).stroke(NativeDS.line))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 10)
+    }
+
+    private var applicationCard: some View {
+        VStack(spacing: 0) {
+            keyValue("当前环境", "原生 iOS · CoreBluetooth")
+            keyValue("设备型号", deviceModel)
+            keyValue("构建", metadata.commit.map { "v+\($0.prefix(8))（Release Metadata 投影）" } ?? "Release Metadata · preview")
+
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 118), spacing: 6)], alignment: .leading, spacing: 6) {
+                ForEach(featureTitles, id: \.self) { featureChip($0) }
+            }
+            .padding(.vertical, 12)
+
+            platformRow("微信小程序", capability: "PREVIEW", release: "NOT_RELEASED")
+            platformRow("App · Android", capability: "PREVIEW", release: "NOT_RELEASED")
+            platformRow(
+                "App · iOS",
+                capability: metadata.publicSurfaces["ios"]?.capabilityStatus ?? "NOT_RELEASED",
+                release: metadata.publicSurfaces["ios"]?.releaseStatus ?? "NOT_RELEASED"
+            )
+            platformRow("H5 / Web", capability: "UNSUPPORTED", release: "NOT_RELEASED")
+            platformRow("桌面端", capability: "REFERENCE", release: "NOT_RELEASED")
+        }
+        .nativeCard(padding: 14)
+    }
+
+    private var menuCard: some View {
+        VStack(spacing: 0) {
+            Link(destination: URL(string: "https://lightble.i2kai.com/")!) {
+                menuRow(icon: "arrow.up.right.square", title: "官方网站")
+            }
+            Divider()
+            Link(destination: URL(string: "https://github.com/luoyaosheng/smart-ble/issues")!) {
+                menuRow(icon: "paperplane", title: "问题反馈")
+            }
+            Divider()
+            Button(action: { versionRoute = AboutVersionRoute(id: "versions") }) {
+                menuRow(icon: "doc.text", title: "版本记录")
+            }
+            Divider()
+            Button(action: {
+                sharePayload = SharePayload(items: [
+                    "BLE Toolkit+ · 跨平台 BLE 调试工具",
+                    URL(string: "https://lightble.i2kai.com/")!,
+                ])
+            }) {
+                menuRow(icon: "square.and.arrow.up", title: "分享应用")
+            }
+        }
+        .buttonStyle(.plain)
+        .foregroundColor(NativeDS.ink)
+        .nativeCard(padding: 0)
+    }
+
+    private func menuRow(icon: String, title: String) -> some View {
+        HStack(spacing: 11) {
             Image(systemName: icon)
-                .font(.caption)
-            Text(label)
-                .font(.caption.weight(.semibold))
+                .font(.system(size: 15))
+                .foregroundColor(NativeDS.muted)
+                .frame(width: 20)
+            Text(title)
+                .font(.system(size: 13, weight: .semibold))
+            Spacer()
+            Image(systemName: "chevron.right")
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundColor(NativeDS.placeholder)
         }
-        .foregroundStyle(.blue)
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
-        .background(Capsule().fill(Color.blue.opacity(0.08)))
+        .padding(.horizontal, 14)
+        .frame(height: 46)
     }
-}
 
-private struct MetaChip: View {
-    let text: String
-
-    var body: some View {
-        Text(text)
-            .font(.caption.weight(.semibold))
-            .foregroundStyle(.blue)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .background(Capsule().fill(Color.blue.opacity(0.08)))
+    private func keyValue(_ key: String, _ value: String) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: 8) {
+            Text(key)
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundColor(NativeDS.muted)
+                .frame(width: 88, alignment: .leading)
+            Text(value)
+                .font(.system(size: 13))
+                .foregroundColor(NativeDS.ink)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(.vertical, 9)
+        .overlay(alignment: .bottom) { Rectangle().fill(NativeDS.lineSoft).frame(height: 1) }
     }
-}
 
-private struct LinkRow: View {
-    let icon: String
-    let title: String
-    let subtitle: String
-    let url: String
-
-    var body: some View {
-        Link(destination: URL(string: url)!) {
-            HStack(spacing: 14) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.blue.opacity(0.1))
-                        .frame(width: 42, height: 42)
-                    Image(systemName: icon)
-                        .foregroundStyle(.blue)
-                }
-
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(title)
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.primary)
-                    Text(subtitle)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-
-                Spacer()
-
-                Image(systemName: "arrow.up.right")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
+    private func featureChip(_ title: String) -> some View {
+        Text(title)
+            .font(.system(size: 10, weight: .semibold))
+            .foregroundColor(NativeDS.primary)
+            .padding(.horizontal, 8)
             .padding(.vertical, 4)
+            .background(NativeDS.primaryWeak)
+            .clipShape(Capsule())
+    }
+
+    private func platformRow(_ name: String, capability: String, release: String) -> some View {
+        HStack(spacing: 7) {
+            Text(name)
+                .font(.system(size: 12, weight: .semibold))
+                .frame(width: 92, alignment: .leading)
+            NativeStatusChip(text: capability, tone: statusColor(capability))
+            NativeStatusChip(text: release, tone: statusColor(release))
+            Spacer(minLength: 0)
         }
-        .buttonStyle(.plain)
+        .padding(.vertical, 4)
+    }
+
+    private func statusColor(_ status: String) -> Color {
+        switch status {
+        case "VERIFIED": return NativeDS.success
+        case "PREVIEW": return NativeDS.primary
+        case "BLOCKED": return NativeDS.warning
+        case "NOT_RELEASED": return NativeDS.danger
+        default: return NativeDS.muted
+        }
+    }
+
+    private var displayVersion: String {
+        metadata.channel == "preview" ? "\(metadata.appVersion)-preview" : metadata.appVersion
+    }
+
+    private var featureTitles: [String] {
+        [
+            "01 蓝牙扫描与筛选", "02 GATT 读写与监听", "03 多设备会话管理",
+            "04 BLE 广播发射", "05 Smart HID 配网", "06 固件升级（受限）",
+        ]
+    }
+
+    private var deviceModel: String {
+        #if os(iOS)
+        UIDevice.current.userInterfaceIdiom == .pad ? "iPad" : "iPhone"
+        #else
+        "Mac"
+        #endif
     }
 }
 
-private struct ActionLinkRow: View {
-    let icon: String
-    let title: String
-    let subtitle: String
-    let action: () -> Void
+#if os(iOS)
+private struct NativeShareSheet: UIViewControllerRepresentable {
+    let items: [Any]
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: items, applicationActivities: nil)
+    }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
+}
+#else
+private struct NativeShareSheet: View {
+    let items: [Any]
 
     var body: some View {
-        Button(action: action) {
-            HStack(spacing: 14) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.blue.opacity(0.1))
-                        .frame(width: 42, height: 42)
-                    Image(systemName: icon).foregroundStyle(.blue)
-                }
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(title).font(.subheadline.weight(.semibold)).foregroundStyle(.primary)
-                    Text(subtitle).font(.caption).foregroundStyle(.secondary)
-                }
-                Spacer()
-                Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
-            }
-            .padding(.vertical, 4)
-        }
-        .buttonStyle(.plain)
+        Text("请在 iOS 上使用系统分享")
+            .padding()
     }
 }
+#endif

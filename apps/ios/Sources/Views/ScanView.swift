@@ -18,28 +18,32 @@ struct ScanView: View {
     @State private var selectedDevice: ScanResult?
     @State private var showingDeviceDetails = false
     @State private var showFilterPanel = false
+    @State private var hasScanned = false
     @State private var provisioningDevice: ScanResult?
     @State private var hidDetailRoute: ScanDeviceIdRoute?
     @State private var hidDiagnosticsRoute: ScanDeviceIdRoute?
 
     var body: some View {
         VStack(spacing: 0) {
-            // Header
-            header
-
-            // Filter Panel (collapsible)
-            if showFilterPanel {
-                FilterPanel()
-            }
-
-            // Device List
-            if bleManager.filteredScanResults.isEmpty {
-                emptyState
-            } else {
-                deviceList
+            navbar
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 0) {
+                    scanToolbar
+                    sectionHeader
+                    if showFilterPanel {
+                        FilterPanel()
+                            .padding(.bottom, 12)
+                    }
+                    if bleManager.filteredScanResults.isEmpty {
+                        emptyState
+                    } else {
+                        deviceList
+                    }
+                }
+                .padding(.horizontal, 16)
             }
         }
-        .navigationTitle("蓝牙设备")
+        .background(NativeDS.page)
         .sheet(isPresented: $showingDeviceDetails) {
             if let device = selectedDevice {
                 DeviceDetailSheet(device: device)
@@ -77,97 +81,136 @@ struct ScanView: View {
         .onChange(of: bleManager.hideNoNameDevices) { _ in bleManager.applyFilters() }
     }
 
-    private var header: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(bleManager.bluetoothState.rawValue)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-
-                if !bleManager.filteredScanResults.isEmpty {
-                    Text("发现 \(bleManager.filteredScanResults.count) 台设备")
-                        .font(.subheadline)
-                        .fontWeight(.medium)
-                }
+    private var navbar: some View {
+        NativeNavbar(kicker: "BLE TOOLKIT+", title: "扫描") {
+            HStack(spacing: 6) {
+                Circle()
+                    .fill(bluetoothStatusColor)
+                    .frame(width: 8, height: 8)
+                Text(bluetoothStatusText)
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundColor(NativeDS.muted)
             }
-
-            Spacer()
-
-            // Filter toggle button
-            Button(action: {
-                withAnimation(.easeInOut(duration: 0.2)) {
-                    showFilterPanel.toggle()
-                }
-            }) {
-                Image(systemName: showFilterPanel ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle")
-                    .font(.title3)
-                    .foregroundColor(showFilterPanel ? .blue : .secondary)
-            }
-            .buttonStyle(.plain)
-            .help("过滤设置")
-
-            Button(action: {
-                if bleManager.isScanning {
-                    bleManager.stopScan()
-                } else {
-                    bleManager.startScan()
-                }
-            }) {
-                HStack(spacing: 6) {
-                    Image(systemName: bleManager.isScanning ? "stop.circle.fill" : "play.circle.fill")
-                        .font(.title3)
-                    Text(bleManager.isScanning ? "停止" : "扫描")
-                        .fontWeight(.medium)
-                }
-                .foregroundColor(.white)
-                .padding(.horizontal, 20)
-                .padding(.vertical, 10)
-                .background(bleManager.isScanning ? Color.orange : Color.blue)
-                .cornerRadius(20)
-            }
-            .disabled(bleManager.bluetoothState != .poweredOn)
         }
-        .padding()
-        .background(Color.gray.opacity(0.1))
     }
 
+    private var scanToolbar: some View {
+        HStack(spacing: 10) {
+            HStack(spacing: 6) {
+                if bleManager.isScanning {
+                    Circle().fill(NativeDS.primary).frame(width: 6, height: 6)
+                }
+                Text(scanStatusText)
+                    .font(.system(size: 12))
+                    .foregroundColor(NativeDS.muted)
+            }
+            Spacer()
+            Button(action: toggleScan) {
+                Label(bleManager.isScanning ? "停止扫描" : "开始扫描", systemImage: bleManager.isScanning ? "stop.fill" : "magnifyingglass")
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 18)
+                    .frame(height: 40)
+                    .background(
+                        LinearGradient(
+                            colors: bleManager.isScanning ? [NativeDS.danger, NativeDS.danger] : [NativeDS.primary, NativeDS.primaryDeep],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .shadow(color: (bleManager.isScanning ? NativeDS.danger : NativeDS.primary).opacity(0.25), radius: 8, y: 4)
+            }
+            .buttonStyle(.plain)
+            .disabled(bleManager.bluetoothState != .poweredOn)
+            .opacity(bleManager.bluetoothState == .poweredOn ? 1 : 0.45)
+        }
+        .padding(.top, 14)
+        .padding(.bottom, 10)
+    }
 
+    private var sectionHeader: some View {
+        NativeSectionHeading(icon: "cpu", title: "附近设备") {
+            HStack(spacing: 10) {
+                if !bleManager.filteredScanResults.isEmpty {
+                    Text("\(bleManager.filteredScanResults.count) 台")
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundColor(NativeDS.sub)
+                        .padding(.horizontal, 9)
+                        .padding(.vertical, 3)
+                        .background(NativeDS.fill)
+                        .clipShape(Capsule())
+                }
+                Button(showFilterPanel ? "收起" : "筛选") {
+                    withAnimation(.easeInOut(duration: 0.2)) { showFilterPanel.toggle() }
+                }
+                .buttonStyle(.plain)
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundColor(NativeDS.primary)
+            }
+        }
+        .padding(.bottom, 4)
+    }
 
     private var emptyState: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "antenna.radiowaves.left.and.right")
-                .font(.system(size: 60))
-                .foregroundColor(.blue.opacity(0.5))
-
-            Text("暂无设备")
-                .font(.headline)
-                .foregroundColor(.secondary)
-
-            Text("点击上方按钮开始扫描")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        NativeEmptyState(
+            illustration: "radar",
+            title: hasScanned ? "没有匹配的设备" : "还没有扫描结果",
+            description: hasScanned ? "调整筛选条件，或重新扫描附近 BLE 设备" : "点上方按钮开始扫描附近 BLE 设备",
+            actionTitle: hasScanned ? nil : "开始扫描",
+            action: hasScanned ? nil : toggleScan
+        )
+        .padding(.top, 26)
     }
 
     private var deviceList: some View {
-        ScrollView {
-            LazyVStack(spacing: 12) {
-                ForEach(bleManager.filteredScanResults) { device in
-                    DeviceCard(
-                        device: device,
-                        onGattAction: {
-                            selectedDevice = device
-                            showingDeviceDetails = true
-                        },
-                        onSmartHidAction: {
-                            provisioningDevice = device
-                        }
-                    )
-                        .environmentObject(bleManager)
-                }
+        LazyVStack(spacing: 12) {
+            ForEach(bleManager.filteredScanResults) { device in
+                DeviceCard(
+                    device: device,
+                    onGattAction: {
+                        selectedDevice = device
+                        showingDeviceDetails = true
+                    },
+                    onSmartHidAction: {
+                        provisioningDevice = device
+                    }
+                )
+                .environmentObject(bleManager)
             }
-            .padding()
+        }
+        .padding(.top, 8)
+        .padding(.bottom, 20)
+    }
+
+    private var bluetoothStatusText: String {
+        switch bleManager.bluetoothState {
+        case .poweredOn: return "蓝牙就绪"
+        case .poweredOff, .unauthorized: return "蓝牙未开启"
+        default: return "平台不支持"
+        }
+    }
+
+    private var bluetoothStatusColor: Color {
+        switch bleManager.bluetoothState {
+        case .poweredOn: return NativeDS.success
+        case .poweredOff, .unauthorized: return NativeDS.danger
+        default: return NativeDS.placeholder
+        }
+    }
+
+    private var scanStatusText: String {
+        if bleManager.isScanning { return "扫描中…" }
+        if hasScanned { return "扫描完成 · \(bleManager.filteredScanResults.count) 台设备" }
+        return "待开始扫描"
+    }
+
+    private func toggleScan() {
+        if bleManager.isScanning {
+            bleManager.stopScan()
+        } else {
+            hasScanned = true
+            bleManager.startScan()
         }
     }
 }

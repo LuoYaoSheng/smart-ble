@@ -14,6 +14,14 @@ enum NativeDS {
     static let line = Color(red: 227 / 255, green: 234 / 255, blue: 243 / 255)
     static let fill = Color(red: 241 / 255, green: 245 / 255, blue: 251 / 255)
     static let page = Color(red: 248 / 255, green: 251 / 255, blue: 1)
+    static let placeholder = Color(red: 154 / 255, green: 168 / 255, blue: 182 / 255)
+    static let lineSoft = Color(red: 237 / 255, green: 242 / 255, blue: 249 / 255)
+    static let primaryDeep = Color(red: 14 / 255, green: 79 / 255, blue: 196 / 255)
+    static let warningWeak = Color(red: 1, green: 243 / 255, blue: 228 / 255)
+
+    static let radiusSmall: CGFloat = 8
+    static let radiusMedium: CGFloat = 12
+    static let radiusLarge: CGFloat = 16
 }
 
 struct NativeCard: ViewModifier {
@@ -23,8 +31,8 @@ struct NativeCard: ViewModifier {
         content
             .padding(padding)
             .background(Color.white)
-            .overlay(RoundedRectangle(cornerRadius: 14).stroke(NativeDS.line, lineWidth: 1))
-            .clipShape(RoundedRectangle(cornerRadius: 14))
+            .overlay(RoundedRectangle(cornerRadius: NativeDS.radiusLarge).stroke(NativeDS.line, lineWidth: 1))
+            .clipShape(RoundedRectangle(cornerRadius: NativeDS.radiusLarge))
     }
 }
 
@@ -42,6 +50,15 @@ extension View {
         fullScreenCover(item: item, content: content)
         #else
         sheet(item: item, content: content)
+        #endif
+    }
+
+    @ViewBuilder
+    func nativeNavigationBarHidden() -> some View {
+        #if os(iOS)
+        navigationBarHidden(true)
+        #else
+        self
         #endif
     }
 }
