@@ -41,6 +41,7 @@ final class HidProvisionManager: ObservableObject {
         "wifi": "pending", "hub": "pending", "conn": "pending", "usb": "pending",
     ]
     @Published private(set) var deviceInfo: HidProtocol.DeviceInfo?
+    @Published private(set) var latestStatus: HidProtocol.ProvisionStatus?
 
     var onProvisioned: (() -> Void)?
     var onStatusRaw: ((String, HidProtocol.ProvisionStatus?) -> Void)?
@@ -57,6 +58,7 @@ final class HidProvisionManager: ObservableObject {
     private var frameTask: Task<Void, Never>?
     private var pollTask: Task<Void, Never>?
     private var tokenAcquiredAt: Date?
+    private var diagnosticsMode = false
 
     static let identityTimeoutSeconds: TimeInterval = 8
     static let pollTimeoutSeconds: TimeInterval = 60
@@ -88,6 +90,8 @@ final class HidProvisionManager: ObservableObject {
         self.deviceId = deviceId
         ownsConnection = !(transport?.isProvisioningDeviceConnected(deviceId) ?? false)
         deviceInfo = nil
+        latestStatus = nil
+        diagnosticsMode = false
         tokenAcquiredAt = nil
         rows = Self.pendingRows
         stage = .connecting
@@ -200,6 +204,45 @@ final class HidProvisionManager: ObservableObject {
         stage = .verified
     }
 
+    func beginDiagnostics(deviceId: String) {
+        generation += 1
+        cancelTasks()
+        self.deviceId = deviceId
+        ownsConnection = false
+        diagnosticsMode = true
+        deviceInfo = nil
+        latestStatus = nil
+        rows = Self.pendingRows
+
+        guard let transport, transport.isProvisioningDeviceConnected(deviceId) else {
+            fail(code: "connection_lost", message: "设备未连接，无法读取实时诊断", recovery: "form")
+            return
+        }
+        guard transport.hasProvisioningCharacteristic(deviceId: deviceId, characteristicUUID: HidProtocol.infoCharUuid),
+              transport.hasProvisioningCharacteristic(deviceId: deviceId, characteristicUUID: HidProtocol.statusCharUuid) else {
+            fail(code: "smart_hid_service_missing", message: "设备缺少 Smart HID 诊断特征值", recovery: "form")
+            return
+        }
+
+        stage = .verified
+        _ = transport.setProvisioningNotification(deviceId: deviceId, characteristicUUID: HidProtocol.infoCharUuid, enabled: true)
+        _ = transport.setProvisioningNotification(deviceId: deviceId, characteristicUUID: HidProtocol.statusCharUuid, enabled: true)
+        _ = transport.readProvisioningCharacteristic(deviceId: deviceId, characteristicUUID: HidProtocol.infoCharUuid)
+        _ = transport.readProvisioningCharacteristic(deviceId: deviceId, characteristicUUID: HidProtocol.statusCharUuid)
+    }
+
+    func refreshDiagnostics() {
+        guard diagnosticsMode, let deviceId, let transport,
+              transport.isProvisioningDeviceConnected(deviceId) else {
+            fail(code: "connection_lost", message: "设备未连接，无法重新检测", recovery: "form")
+            return
+        }
+        latestStatus = nil
+        rows = Self.pendingRows
+        _ = transport.readProvisioningCharacteristic(deviceId: deviceId, characteristicUUID: HidProtocol.infoCharUuid)
+        _ = transport.readProvisioningCharacteristic(deviceId: deviceId, characteristicUUID: HidProtocol.statusCharUuid)
+    }
+
     func abandon(preserveConnection: Bool) {
         generation += 1
         cancelTasks()
@@ -210,6 +253,8 @@ final class HidProvisionManager: ObservableObject {
         ownsConnection = false
         tokenAcquiredAt = nil
         deviceInfo = nil
+        latestStatus = nil
+        diagnosticsMode = false
         rows = Self.pendingRows
         stage = .idle
     }
@@ -276,6 +321,10 @@ final class HidProvisionManager: ObservableObject {
     }
 
     private func handleDeviceInfo(_ text: String) {
+        if diagnosticsMode {
+            deviceInfo = HidProtocol.parseDeviceInfo(text)
+            return
+        }
         guard stage == .verifying else { return }
         guard let info = HidProtocol.parseDeviceInfo(text), HidProtocol.verifyIdentity(info) else {
             fail(code: "identity_failed", message: "设备身份验证未通过，已停止配网", recovery: "form")
@@ -319,6 +368,7 @@ final class HidProvisionManager: ObservableObject {
 
     private func handleStatus(_ text: String) {
         let status = HidProtocol.parseProvisionStatus(text)
+        latestStatus = status
         onStatusRaw?(text, status)
         guard stage == .waiting || stage == .sending, let status else { return }
         rows = HidProtocol.mapRows(state: status.state, step: status.step, error: status.error)

@@ -34,6 +34,16 @@ struct ScanResult: Identifiable, Equatable {
     }
 }
 
+// MARK: - Smart HID in-memory session snapshot (F023 remains removed)
+struct HidSessionSnapshot: Equatable {
+    let deviceId: String
+    let name: String
+    let protocolVersion: String?
+    let firmware: String?
+    let lastWifi: String
+    let lastHub: String
+}
+
 // MARK: - Service
 struct BLEService: Identifiable, Equatable {
     let id: String

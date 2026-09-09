@@ -25,6 +25,8 @@ class BLEManager: NSObject, ObservableObject {
     @Published var connectedDevices: [String: ScanResult] = [:]
     /// Per-device services (deviceId -> [BLEService])
     @Published var servicesByDevice: [String: [BLEService]] = [:]
+    /// Session-only Smart HID snapshots. Never persisted to disk (F023 removal / zero persistence).
+    @Published private(set) var hidSessionSnapshots: [String: HidSessionSnapshot] = [:]
 
     // MARK: - Backward compatibility (single-device convenience)
     /// Returns the first connected device (for views that only show one)
@@ -62,6 +64,14 @@ class BLEManager: NSObject, ObservableObject {
     /// Check if a specific device is connected
     func isDeviceConnected(_ deviceId: String) -> Bool {
         connectionStates[deviceId] == .connected
+    }
+
+    func saveHidSessionSnapshot(_ snapshot: HidSessionSnapshot) {
+        hidSessionSnapshots[snapshot.deviceId] = snapshot
+    }
+
+    func clearHidSessionSnapshot(deviceId: String) {
+        hidSessionSnapshots.removeValue(forKey: deviceId)
     }
 
     // MARK: - Filter Settings

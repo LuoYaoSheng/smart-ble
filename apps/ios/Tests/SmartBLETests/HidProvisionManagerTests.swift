@@ -145,6 +145,27 @@ final class HidProvisionManagerTests: XCTestCase {
         XCTAssertEqual(manager.stage, .idle)
     }
 
+    func testDiagnosticsReadsInfoAndStatusWithoutOwningConnection() {
+        let transport = FakeHidProvisionTransport(connected: true)
+        let manager = makeManager(transport)
+
+        manager.beginDiagnostics(deviceId: "D1")
+        XCTAssertEqual(manager.stage, .verified)
+        XCTAssertEqual(transport.reads, [HidProtocol.infoCharUuid, HidProtocol.statusCharUuid])
+
+        transport.emitValue(deviceId: "D1", uuid: HidProtocol.infoCharUuid, text: validInfo)
+        transport.emitValue(
+            deviceId: "D1",
+            uuid: HidProtocol.statusCharUuid,
+            text: #"{"state":"mqtt_connecting","step":"mqtt_connecting","error":null}"#
+        )
+        XCTAssertEqual(manager.deviceInfo?.deviceId, "HID-ABCD1234")
+        XCTAssertEqual(manager.latestStatus?.state, "mqtt_connecting")
+
+        manager.abandon(preserveConnection: true)
+        XCTAssertTrue(transport.disconnects.isEmpty)
+    }
+
     private func makeVerifiedWaitingManager(_ transport: FakeHidProvisionTransport) -> HidProvisionManager {
         let manager = makeManager(transport, frameIntervalNanoseconds: 0)
         manager.begin(deviceId: "D1")

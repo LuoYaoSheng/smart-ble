@@ -21,6 +21,7 @@ const OUT_PATHS = {
   docsLatest: 'docs/public/release/latest.json',
   appJson: 'apps/uniapp/config/release-metadata.generated.json',
   appJs: 'apps/uniapp/config/release-metadata.generated.js',
+  appleJson: 'apps/ios/Sources/Resources/Release/release-manifest.json',
 };
 
 function readText(rel) {
@@ -146,6 +147,7 @@ function main() {
     [OUT_PATHS.docsLatest]: stableStringify(manifest),
     [OUT_PATHS.appJson]: stableStringify(manifest),
     [OUT_PATHS.appJs]: jsModuleSource(manifest),
+    [OUT_PATHS.appleJson]: stableStringify(manifest),
   };
 
   if (CHECK) {

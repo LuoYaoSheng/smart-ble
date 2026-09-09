@@ -3,6 +3,7 @@ import SwiftUI
 
 struct ProvisioningView: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var bleManager: BLEManager
     @ObservedObject var manager: HidProvisionManager
     let device: ScanResult
     var onViewDevice: (String) -> Void = { _ in }
@@ -269,6 +270,14 @@ struct ProvisioningView: View {
                     Text("配置成功 · 设备 READY").font(.title3.bold())
                     Text("HID 控制请通过 ControlHub 下发").foregroundColor(NativeDS.muted)
                     primaryButton("查看设备", icon: "chevron.right") {
+                        bleManager.saveHidSessionSnapshot(HidSessionSnapshot(
+                            deviceId: device.id,
+                            name: device.name,
+                            protocolVersion: manager.deviceInfo?.protocolVersion,
+                            firmware: manager.deviceInfo?.firmware,
+                            lastWifi: ssid,
+                            lastHub: hubPort.map { "\(hubHost):\($0)" } ?? hubHost
+                        ))
                         onViewDevice(device.id)
                         leave(preserveConnection: true)
                     }

@@ -3,6 +3,7 @@
 //
 
 import SwiftUI
+import SmartHidCore
 
 #if os(macOS)
 private let connectedEmptyBackground = Color(NSColor.windowBackgroundColor)
@@ -59,7 +60,7 @@ struct ConnectedDevicesView: View {
     private var deviceList: some View {
         List {
             ForEach(Array(bleManager.connectedDevices.values), id: \.id) { device in
-                NavigationLink(destination: DeviceDetailView(deviceId: device.id)) {
+                NavigationLink(destination: destination(for: device)) {
                     DeviceCard(
                         device: device,
                         isConnectionTab: true,
@@ -71,5 +72,14 @@ struct ConnectedDevicesView: View {
             }
         }
         .listStyle(PlainListStyle())
+    }
+
+    @ViewBuilder
+    private func destination(for device: ScanResult) -> some View {
+        if SmartHidProfile.match(name: device.name, serviceUUIDs: device.serviceUUIDs) != nil {
+            HidDeviceDetailView(deviceId: device.id)
+        } else {
+            DeviceDetailView(deviceId: device.id)
+        }
     }
 }

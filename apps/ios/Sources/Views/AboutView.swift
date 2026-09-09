@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct AboutView: View {
+    @State private var versionRoute: AboutVersionRoute?
+
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
@@ -43,6 +45,9 @@ struct AboutView: View {
                 sectionCard(title: "相关链接") {
                     VStack(spacing: 12) {
                         LinkRow(icon: "globe", title: "项目主页", subtitle: "查看平台矩阵、下载入口与架构说明", url: "https://lightble.i2kai.com/")
+                        ActionLinkRow(icon: "clock.arrow.circlepath", title: "版本记录", subtitle: "查看 Release Metadata 与当前限制") {
+                            versionRoute = AboutVersionRoute(id: "versions")
+                        }
                         LinkRow(icon: "square.stack.3d.up", title: "架构白皮书", subtitle: "统一协议内核、组件拆分与交互流规范", url: "https://lightble.i2kai.com/MASTER_ARCHITECTURE")
                         LinkRow(icon: "chevron.left.forwardslash.chevron.right", title: "源码仓库", subtitle: "查看全部平台实现与共享资产生成器", url: "https://github.com/luoyaosheng/smart-ble")
                         LinkRow(icon: "ladybug", title: "问题反馈", subtitle: "提交 issue 或查看已知问题", url: "https://github.com/luoyaosheng/smart-ble/issues")
@@ -67,6 +72,9 @@ struct AboutView: View {
             )
             .ignoresSafeArea()
         )
+        .nativePageCover(item: $versionRoute) { _ in
+            VersionHistoryView()
+        }
     }
 
     private var heroCard: some View {
@@ -142,6 +150,10 @@ struct AboutView: View {
                 .stroke(Color.blue.opacity(0.06), lineWidth: 1)
         )
     }
+}
+
+private struct AboutVersionRoute: Identifiable {
+    let id: String
 }
 
 private extension AboutView {
@@ -254,6 +266,34 @@ private struct LinkRow: View {
                 Image(systemName: "arrow.up.right")
                     .font(.caption)
                     .foregroundStyle(.secondary)
+            }
+            .padding(.vertical, 4)
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+private struct ActionLinkRow: View {
+    let icon: String
+    let title: String
+    let subtitle: String
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 14) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Color.blue.opacity(0.1))
+                        .frame(width: 42, height: 42)
+                    Image(systemName: icon).foregroundStyle(.blue)
+                }
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(title).font(.subheadline.weight(.semibold)).foregroundStyle(.primary)
+                    Text(subtitle).font(.caption).foregroundStyle(.secondary)
+                }
+                Spacer()
+                Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
             }
             .padding(.vertical, 4)
         }

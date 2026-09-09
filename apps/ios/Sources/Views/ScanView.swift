@@ -9,12 +9,18 @@ import AppKit
 import UIKit
 #endif
 
+private struct ScanDeviceIdRoute: Identifiable {
+    let id: String
+}
+
 struct ScanView: View {
     @EnvironmentObject var bleManager: BLEManager
     @State private var selectedDevice: ScanResult?
     @State private var showingDeviceDetails = false
     @State private var showFilterPanel = false
     @State private var provisioningDevice: ScanResult?
+    @State private var hidDetailRoute: ScanDeviceIdRoute?
+    @State private var hidDiagnosticsRoute: ScanDeviceIdRoute?
 
     var body: some View {
         VStack(spacing: 0) {
@@ -44,8 +50,27 @@ struct ScanView: View {
             ProvisioningView(
                 manager: bleManager.hidProvisionManager,
                 device: device,
-                onViewDevice: { _ in provisioningDevice = nil }
+                onViewDevice: { deviceId in
+                    provisioningDevice = nil
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        hidDetailRoute = ScanDeviceIdRoute(id: deviceId)
+                    }
+                },
+                onOpenDiagnostics: { deviceId in
+                    provisioningDevice = nil
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        hidDiagnosticsRoute = ScanDeviceIdRoute(id: deviceId)
+                    }
+                }
             )
+        }
+        .nativePageCover(item: $hidDetailRoute) { route in
+            HidDeviceDetailView(deviceId: route.id)
+                .environmentObject(bleManager)
+        }
+        .nativePageCover(item: $hidDiagnosticsRoute) { route in
+            HidDiagnosticsView(manager: bleManager.hidProvisionManager, deviceId: route.id)
+                .environmentObject(bleManager)
         }
         .onChange(of: bleManager.filterRSSI) { _ in bleManager.applyFilters() }
         .onChange(of: bleManager.filterNamePrefix) { _ in bleManager.applyFilters() }
