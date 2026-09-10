@@ -106,9 +106,6 @@ class _AboutPageState extends State<AboutPage> {
                 children: [
                   _buildBrandRow(),
                   const SizedBox(height: 16),
-                  _buildSectionTitle('更多小程序'),
-                  _buildPromoCard(),
-                  const SizedBox(height: 16),
                   _buildSectionTitle('应用信息'),
                   _buildAppInfoCard(),
                   const SizedBox(height: 16),
@@ -200,25 +197,6 @@ class _AboutPageState extends State<AboutPage> {
     );
   }
 
-  /// F028 推广跳转：卡片点击即打开对应站点
-  Widget _buildPromoCard() {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppTheme.cardColor,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppTheme.borderColor),
-      ),
-      child: Column(
-        children: ProductConfig.promos
-            .map((p) => _PromoTile(
-                  app: p,
-                  onTap: () => _openLink(context, p.url),
-                ))
-            .toList(),
-      ),
-    );
-  }
-
   Widget _buildAppInfoCard() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
@@ -300,84 +278,6 @@ class _AboutPageState extends State<AboutPage> {
             last: true,
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _PromoTile extends StatelessWidget {
-  final PromoApp app;
-  final VoidCallback onTap;
-
-  const _PromoTile({required this.app, required this.onTap});
-
-  static Color _fromHex(String hex) =>
-      Color(int.parse(hex.replaceFirst('#', '0xFF')));
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
-        child: Row(
-          children: [
-            // p009 正典 .promo .ic：缩写块（底色/字色来自数据），替代位图图标
-            Container(
-              width: 38,
-              height: 38,
-              decoration: BoxDecoration(
-                color: _fromHex(app.bg),
-                borderRadius: BorderRadius.circular(11),
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                app.abbr,
-                style: TextStyle(
-                    color: _fromHex(app.color),
-                    fontWeight: FontWeight.w800,
-                    fontSize: 15),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(app.name,
-                      style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: AppTheme.textPrimary)),
-                  const SizedBox(height: 2),
-                  Text(
-                    app.description,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                        fontSize: 12,
-                        height: 1.4,
-                        color: AppTheme.textSecondary),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 8),
-            OutlinedButton(
-              onPressed: onTap,
-              style: OutlinedButton.styleFrom(
-                minimumSize: const Size(0, 34),
-                padding: const EdgeInsets.symmetric(horizontal: 14),
-                foregroundColor: AppTheme.primaryColor,
-                side: const BorderSide(color: AppTheme.borderColor),
-                textStyle:
-                    const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
-              ),
-              child: const Text('前往'),
-            ),
-          ],
-        ),
       ),
     );
   }
