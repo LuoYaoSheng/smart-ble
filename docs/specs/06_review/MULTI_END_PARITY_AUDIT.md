@@ -386,3 +386,28 @@ PRD（F028 行/U6/功能域图/页面结构/R27）、FEATURE_MAP、PRODUCT_MODEL
 ### 15.4 残留清扫（同日补扫）
 
 全仓关键词复扫（更多小程序/navigateToMiniProgram/promotion/_PromoTile/PseudoQRView/p009-promo/RELATED_MINI_PROGRAMS/other-apps）后补正 6 文件 8 处活文档漏标：apps/uniapp README 功能清单行、PAGE_FLOW P009 出口行、PAGE_CAPABILITY_COVERAGE_AUDIT F028 行（改删除线存档）+§4-7 落地清单（navigateToMiniProgram/小程序码不再是落地项）、DEPENDENCY_LIST 其他 API 枚举（navigateToMiniProgram 除名）+§6 外链资源（兄弟小程序 appId 移除、指向禁止身份锁出）、ASSET_INVENTORY app-card 行（删除线）+product.js 描述/other-apps 目录确认不存在。复扫后剩余命中均为：移除标注本体、带日期轮次日志、已修问题行、逆向记录（01_reverse/tests/target 原工程基线）、守护测试断言（page-flow.test.js:150）。
+
+---
+
+## 16. Apple Token 生成管道收编轮（2026-09-10 晚 · UI-CONV 欠账销案）
+
+### 16.1 动机与方案
+
+§14.3 的钉子机制（check-apple-tokens.mjs 值比对）是「正典改值 → Apple 静默漂移」缺口的**底线方案**；本 轮把 Apple 双线手写镜像收编进 `generate_assets.py --theme-only` 单源生成管线，钉子退役。
+
+- **生成段标记**：N-IOS `NativeDesignTokens.swift` 内 `@generated:ios-tokens`（17 色 + 圆角 sm/md/lg）；N-MAC `DSTokens.swift` 内 `@generated:mac-colors`（35 色：brand 11 + 中性 8+card + ink 深色 3+inkMut≙derived.reviewLabel + 日志六色 12 字面量）与 `@generated:mac-scale`（sp1–8 + 圆角 sm..xl）。标记对之外的手写区（iOS ViewModifier/Dynamic Type 助手、macOS 字号助手/探针元数据）不受影响。
+- **命名映射入生成器**：`IOS_BRAND`/`IOS_NEUTRAL`（ink≙text/page≙bg 平台命名）、`MAC_*` 清单化；inkMut 指向 derived.reviewLabel（#8FA3C0）。
+- **`--check` 漂移门禁**：write_file 比对模式，`--theme-only --check` 对 8 个 theme 输出（app_theme.css×3 + app_colors.dart + tokens.css + app_tokens.dart + 两 Swift）逐字节比对，漂移/缺失退出码 1。
+- **接线**：`npm run check:apple-tokens` → python 生成器 `--check`；scripts/check-apple-tokens.mjs 删除（§14.3 为其历史记录）；design-tokens.json `$meta.outputs` 增 ios/mac 两项 + apple 单位规则。
+
+### 16.2 验证
+
+```
+generate_assets.py --theme-only --check → CHECK PASS：8 个输出全部同步（css/dart 零连带漂移）
+swift build (N-MAC)                    → Build complete!（12.5s）
+xcodebuild test (iPhone 17 Pro Max)    → 12/12 TEST SUCCEEDED（AccessibilityAudit 6 + AdvData 1 + FlowState 3 + TabBar 2）
+```
+
+### 16.3 账本同步
+
+DESIGN_TOKEN_PLATFORM_MAPPING（机制总览 + §2.5 机制/I1 改生成口径 + §2.5 数据豁免随 F028 失效登记）、VISUAL 矩阵 §1（判定口径升级，Apple 列 `PASS·钉子`→`PASS·生成`，card 行 iOS 直用特例）、DESIGN_SYSTEM_INDEX §3/§4（门禁与载体行）。§14.3/§15 历史轮记录不回溯。

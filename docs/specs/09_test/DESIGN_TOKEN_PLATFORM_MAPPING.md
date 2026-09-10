@@ -4,7 +4,7 @@
 - 验收对象：U-WX（apps/uniapp → 微信小程序）/ U-AND（apps/uniapp → Android）/ F-AND（apps/flutter → Android）/ **N-IOS（apps/ios → SwiftUI）/ N-MAC（apps/desktop/macos → AppKit，2026-09-10 加入）**
 - 事实源：[TOKEN.md](../07_design_system/TOKEN.md)（全平台唯一视觉数值来源）+ `prototype/v1-new/index.html` 内联 SVG sprite
 - 本文件定位：**实现侧映射登记**——正典值 → 五线实现载体 → 锁定方式。矩阵侧判定在 [MULTI_END_VISUAL_PARITY_MATRIX.md](MULTI_END_VISUAL_PARITY_MATRIX.md)。
-- 锁定机制总览（2026-09-10）：U/F 三线 = `design-tokens.json` 生成产物（`generate_assets.py --theme-only`）+ `scripts/check-token-usage.mjs`（登记值圈定 + banned 清零 + 产物同步抽检；**LEGACY_DRIFT 已清空**）；Apple 双线 = 手写镜像 + `scripts/check-apple-tokens.mjs` 钉子（实现值 == 正典值逐项比对，含别名解析与间距/圆角）。
+- 锁定机制总览（2026-09-10，晚同日生成管道收编）：U/F 三线 = `design-tokens.json` 生成产物（`generate_assets.py --theme-only`）+ `scripts/check-token-usage.mjs`（登记值圈定 + banned 清零 + 产物同步抽检；**LEGACY_DRIFT 已清空**）；Apple 双线 = 同源 `@generated` 生成段（`--theme-only` 写入，`npm run check:apple-tokens` = `--theme-only --check` 8 输出逐字节比对，漂移即 FAIL）。钉子脚本（check-apple-tokens.mjs 值比对）为收编前过渡机制，已退役（见 PARITY_AUDIT §16）。
 
 ## 1. 图标正典（ICON CANON）——2026-09-07 PARITY-ICON 落地；同日 PARITY-ILL 补空态插图（§1.5）与位图管线（§1.6）
 
@@ -160,10 +160,10 @@
 
 ### 2.5 覆盖差与机制登记
 
-- **I1**：N-IOS 未镜像 `successDeep/warningDeep`（iOS 侧当前无深色阶消费位；P005 诊断状态行如后续接入需先扩 `NativeDS` 再过钉子）。
+- **I1**：N-IOS 未镜像 `successDeep/warningDeep`（iOS 侧当前无深色阶消费位；P005 诊断状态行如后续接入需先扩 `generate_assets.py` 的 `IOS_BRAND` 映射并 `--theme-only` 再生成，`--check` 自动锁定新值）。
 - **I2**：N-IOS 未镜像 ink 族/日志六色（无 dock 深色与日志面板，不适用而非遗漏）。
-- **机制**：Apple 双线**不在生成管线 outputs 内**（手写镜像），由 `scripts/check-apple-tokens.mjs`（`npm run check:apple-tokens`）钉死「实现值 == 正典值」；正典改值后 Apple 线未同步会在该门禁 FAIL——这补上了「正典改值 → Apple 静默漂移」的缺口。镜像内新增未登记色亦 FAIL（防圈外值混入）。
-- **数据豁免**：F-AND `config/product.dart` 推广位 bg/color 为**产品内容数据**（p009 `.promo .ic` 缩写块数据，与 uniapp `config/product.js` 同源），非设计 Token，在 check-token-usage 中走 DATA_SKIP。
+- **机制**：Apple 双线数值段已收编 `generate_assets.py --theme-only` 生成管线（2026-09-10 晚；此前为手写镜像+钉子值比对）——N-IOS `@generated:ios-tokens` 段（17 色+圆角 sm/md/lg）、N-MAC `@generated:mac-colors`+`@generated:mac-scale` 段（35 色+sp1–8+圆角 sm..xl），与 tokens.css/app_tokens.dart 同源同跑；`npm run check:apple-tokens` 以 `--check` 模式对全部 8 个 theme 输出逐字节比对，正典改值后未再生成即 FAIL。手写区（iOS Dynamic Type/ViewModifier 助手、macOS 字号助手/探针元数据）在标记对之外，不受生成影响。
+- **数据豁免（已失效）**：F-AND `config/product.dart` 推广位 bg/color 豁免（DATA_SKIP）随 F028 推广区 2026-09-10 移除而撤销——product.dart 已无内容数据 hex，check-token-usage DATA_SKIP 为空表。
 
 ## 3. 字号/字重/圆角/间距/阴影映射（2026-09-10 UI-CONV 回填）
 

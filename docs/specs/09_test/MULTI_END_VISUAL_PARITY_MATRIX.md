@@ -10,29 +10,29 @@
 
 ## 1. 设计 Token 全局映射（三线逐项核对；2026-09-10 UI-CONV 轮回填静态档，N-IOS/N-MAC 列加入）
 
-> 判定口径：`PASS·生成` = 单源生成产物+门禁（check-token-usage）；`PASS·钉子` = 手写镜像+check-apple-tokens 值比对；**静态值一致 ≠ 渲染级视觉一致，六态截图仍在 §2/§3 视觉 Gate 范围**。载体明细见 [DESIGN_TOKEN_PLATFORM_MAPPING.md](DESIGN_TOKEN_PLATFORM_MAPPING.md) §2/§3。
+> 判定口径：`PASS·生成` = 单源生成产物+门禁（U/F: check-token-usage；Apple: `@generated` 生成段 + `--check` 逐字节比对，2026-09-10 晚收编——此前 `PASS·生成` 手写镜像值比对机制已随生成管道退役）；**静态值一致 ≠ 渲染级视觉一致，六态截图仍在 §2/§3 视觉 Gate 范围**。载体明细见 [DESIGN_TOKEN_PLATFORM_MAPPING.md](DESIGN_TOKEN_PLATFORM_MAPPING.md) §2/§3。
 
 | Token（TOKEN.md） | 值 | 用途 | U-WX | U-AND | F-AND | N-IOS | N-MAC | 归因 |
 |---|---|---|---|---|---|---|---|---|
-| `--c-primary` | #1B6DFF | 主按钮/选中/TabBar 激活 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·钉子 | PASS·钉子 | 2026-09-10 UI-CONV：五线值一致（生成/钉子机制见 mapping §2） |
-| `--c-primary-deep` | #0E4FC4 | 按压态/渐变深端 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·钉子 | PASS·钉子 | 同上；U 侧 v0 `--ble-brand-deep #134dbe` 已于 G0 收敛 |
-| `--c-primary-weak` | #E8F1FF | 主色浅底 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·钉子 | PASS·钉子 | 同上 |
-| `--c-success` | #17C7A8 | 就绪/ok/广播中 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·钉子 | PASS·钉子 | 同上 |
-| `--c-danger` | #F2555F | 断开/停止/错误 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·钉子 | PASS·钉子 | 同上 |
-| `--c-warning` | #FF9F43 | warn/UUID 黄条 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·钉子 | PASS·钉子 | 同上 |
-| `--c-text` | #18222E | 主文字 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·钉子 | PASS·钉子 | 同上 |
-| `--c-sub` | #42536A | 次文字 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·钉子 | PASS·钉子 | 同上 |
-| `--c-mut` | #60758D | 弱文字 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·钉子 | PASS·钉子 | 同上 |
-| `--c-line` | #E3EAF3 | 强分割/卡片描边 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·钉子 | PASS·钉子 | 同上 |
-| `--c-fill` | #F1F5FB | 次按钮/输入框底 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·钉子 | PASS·钉子 | 同上；v0 `--ble-bg-bottom #eaf2fb` 2026-09-10 收敛至此 |
-| `--c-bg` | #F8FBFF | 页面背景 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·钉子 | PASS·钉子 | 同上 |
-| `--c-card` | #FFFFFF | 卡片背景 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·钉子（Color.white） | PASS·钉子（NSColor.white） | 同上 |
-| deep/weak 全族（success/warning/danger deep+weak 等 7 值） | TOKEN.md §2 | 深色阶前景/弱底 | PASS·生成 | PASS·生成 | PASS·生成 | 部分未镜像（I1 登记） | PASS·钉子 | mapping §2.1/§2.5；F 侧 provisioning 16 深色阶 2026-09-10 收敛 |
-| ink 族/日志六色/派生色 | TOKEN_REFERENCE §2 | dock 深色/日志 chip/头像渐变/note 前景 | PASS·生成 | PASS·生成 | PASS·生成 | 不适用/部分 | PASS·钉子 | mapping §2.2–§2.4 |
+| `--c-primary` | #1B6DFF | 主按钮/选中/TabBar 激活 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·生成 | 2026-09-10 UI-CONV：五线值一致（生成/钉子机制见 mapping §2） |
+| `--c-primary-deep` | #0E4FC4 | 按压态/渐变深端 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·生成 | 同上；U 侧 v0 `--ble-brand-deep #134dbe` 已于 G0 收敛 |
+| `--c-primary-weak` | #E8F1FF | 主色浅底 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·生成 | 同上 |
+| `--c-success` | #17C7A8 | 就绪/ok/广播中 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·生成 | 同上 |
+| `--c-danger` | #F2555F | 断开/停止/错误 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·生成 | 同上 |
+| `--c-warning` | #FF9F43 | warn/UUID 黄条 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·生成 | 同上 |
+| `--c-text` | #18222E | 主文字 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·生成 | 同上 |
+| `--c-sub` | #42536A | 次文字 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·生成 | 同上 |
+| `--c-mut` | #60758D | 弱文字 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·生成 | 同上 |
+| `--c-line` | #E3EAF3 | 强分割/卡片描边 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·生成 | 同上 |
+| `--c-fill` | #F1F5FB | 次按钮/输入框底 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·生成 | 同上；v0 `--ble-bg-bottom #eaf2fb` 2026-09-10 收敛至此 |
+| `--c-bg` | #F8FBFF | 页面背景 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·生成 | 同上 |
+| `--c-card` | #FFFFFF | 卡片背景 | PASS·生成 | PASS·生成 | PASS·生成 | PASS（Color.white 直用，非 NativeDS 成员） | PASS·生成（NSColor.white） | 同上 |
+| deep/weak 全族（success/warning/danger deep+weak 等 7 值） | TOKEN.md §2 | 深色阶前景/弱底 | PASS·生成 | PASS·生成 | PASS·生成 | 部分未镜像（I1 登记） | PASS·生成 | mapping §2.1/§2.5；F 侧 provisioning 16 深色阶 2026-09-10 收敛 |
+| ink 族/日志六色/派生色 | TOKEN_REFERENCE §2 | dock 深色/日志 chip/头像渐变/note 前景 | PASS·生成 | PASS·生成 | PASS·生成 | 不适用/部分 | PASS·生成 | mapping §2.2–§2.4 |
 | 字号层级 | TOKEN.md §字号 | 标题/正文/meta/mono | PASS·生成 | PASS·生成 | PASS·生成 | ALLOWED_PLATFORM_DIFF（Dynamic Type） | ALLOWED_PLATFORM_DIFF（系统字体+DS.mono） | mapping §3；iOS ScaledFontTests 锁可读档 |
 | 字重 | TOKEN.md §字重 | — | PASS·生成 | PASS·生成 | PASS·生成 | 同上 | 同上 | mapping §3 |
-| 圆角 | TOKEN.md §圆角 | 卡片/按钮/输入 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·钉子（sm/md/lg） | PASS·钉子（sm..xl） | mapping §3 |
-| 间距 | TOKEN.md §间距 | — | PASS·生成 | PASS·生成 | PASS·生成 | NOT_AUDITED（未成体系，差距登记） | PASS·钉子（sp1–8） | mapping §3 |
+| 圆角 | TOKEN.md §圆角 | 卡片/按钮/输入 | PASS·生成 | PASS·生成 | PASS·生成 | PASS·生成（sm/md/lg） | PASS·生成（sm..xl） | mapping §3 |
+| 间距 | TOKEN.md §间距 | — | PASS·生成 | PASS·生成 | PASS·生成 | NOT_AUDITED（未成体系，差距登记） | PASS·生成（sp1–8） | mapping §3 |
 | 阴影 | TOKEN.md §阴影 | 卡片投影 | PASS·生成 | PASS·生成 | PASS·生成 | NOT_AUDITED（未成体系） | NOT_AUDITED（未成体系） | mapping §3 差距登记 |
 | 按钮高度 | TOKEN.md | 主/次按钮 | PASS | PASS | PASS | PASS（44pt 命中区） | PASS | COMPONENT_CONTRACT 各组件登记；Apple 无障碍 Gate |
 | 输入框高度 | TOKEN.md | — | PASS | PASS | PASS | PASS | PASS | 同上 |
