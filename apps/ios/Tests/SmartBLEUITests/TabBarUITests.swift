@@ -20,7 +20,7 @@ final class TabBarUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["ADV 负载预算"].waitForExistence(timeout: 2))
 
         app.buttons["关于"].tap()
-        XCTAssertTrue(app.staticTexts["更多小程序"].waitForExistence(timeout: 2))
+        XCTAssertTrue(app.staticTexts["应用信息"].waitForExistence(timeout: 2)) // F028 移除后锚点改应用信息
 
         app.buttons["扫描"].tap()
         XCTAssertTrue(app.staticTexts["附近设备"].waitForExistence(timeout: 2))

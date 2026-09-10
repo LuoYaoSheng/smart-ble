@@ -51,7 +51,7 @@ final class AccessibilityAuditUITests: XCTestCase {
     func testP009P010PassAccessibilityAudit() throws {
         launch("p001-filter-empty")
         app.buttons["关于"].tap()
-        XCTAssertTrue(app.staticTexts["更多小程序"].waitForExistence(timeout: 3))
+        XCTAssertTrue(app.staticTexts["应用信息"].waitForExistence(timeout: 3)) // F028 移除后锚点改应用信息
         try auditStrictly()
 
         app.buttons["about-version-row"].tap()
@@ -84,7 +84,7 @@ final class AccessibilityAuditUITests: XCTestCase {
         // P009/P010 经 TabBar 导航
         launch("p001-filter-empty")
         app.buttons["关于"].tap()
-        _ = app.staticTexts["更多小程序"].waitForExistence(timeout: 3)
+        _ = app.staticTexts["应用信息"].waitForExistence(timeout: 3) // F028 移除后锚点改应用信息
         try auditLoggingOnly("p009-about")
         app.buttons["about-version-row"].tap()
         _ = app.buttons["复制版本信息"].waitForExistence(timeout: 3)

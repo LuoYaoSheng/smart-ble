@@ -30,11 +30,6 @@ struct AboutView: View {
                 VStack(spacing: 12) {
                     brandCard
 
-                    NativeSectionHeading(icon: "point.3.connected.trianglepath.dotted", title: "更多小程序") {
-                        EmptyView()
-                    }
-                    promotionCard
-
                     NativeSectionHeading(icon: "info.circle", title: "应用信息") {
                         EmptyView()
                     }
@@ -97,55 +92,7 @@ struct AboutView: View {
         .nativeCard(padding: 14)
     }
 
-    private var promotionCard: some View {
-        VStack(spacing: 0) {
-            promotionRow(
-                abbreviation: "LB",
-                title: "LightBLE 调试台",
-                subtitle: "同开发者桌面端 BLE 工具",
-                colors: [NativeDS.primaryWeak, Color(red: 220 / 255, green: 233 / 255, blue: 1)]
-            )
-            Divider()
-            promotionRow(
-                abbreviation: "ES",
-                title: "ESP32 快速配网",
-                subtitle: "ESP32 设备配网演示小程序",
-                colors: [NativeDS.successWeak, Color(red: 217 / 255, green: 246 / 255, blue: 240 / 255)]
-            )
-        }
-        .nativeCard(padding: 0)
-    }
-
-    private func promotionRow(
-        abbreviation: String,
-        title: String,
-        subtitle: String,
-        colors: [Color]
-    ) -> some View {
-        HStack(spacing: 10) {
-            Text(abbreviation)
-                .scaledFont(15, .heavy)
-                .foregroundColor(abbreviation == "LB" ? NativeDS.primary : NativeDS.success)
-                .frame(width: 42, height: 42)
-                .background(LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing))
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title).scaledFont(15, .bold).foregroundColor(NativeDS.ink)
-                Text(subtitle).scaledFont(11).foregroundColor(NativeDS.muted)
-            }
-            Spacer()
-            Text("前往")
-                .scaledFont(13, .semibold)
-                .foregroundColor(NativeDS.ink)
-                .padding(.horizontal, 12)
-                .frame(height: 32)
-                .background(NativeDS.fill)
-                .overlay(RoundedRectangle(cornerRadius: 8).stroke(NativeDS.line))
-                .clipShape(RoundedRectangle(cornerRadius: 8))
-        }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 10)
-    }
+    // F028 推广跳转（更多小程序卡）2026-09-10 移除——promotionCard/promotionRow 随之退役
 
     private var applicationCard: some View {
         VStack(spacing: 0) {
