@@ -15,7 +15,7 @@ struct ConnectedDevicesView: View {
         VStack(spacing: 0) {
             NativeNavbar(kicker: "SESSIONS", title: "已连接") {
                 Text("通用调试会话")
-                    .font(.system(size: 11, weight: .semibold))
+                    .scaledFont(11, .semibold)
                     .foregroundColor(NativeDS.sub)
                     .padding(.horizontal, 9)
                     .padding(.vertical, 3)
@@ -65,16 +65,16 @@ struct ConnectedDevicesView: View {
         HStack {
             VStack(alignment: .leading, spacing: 2) {
                 Text("\(devices.count)")
-                    .font(.system(size: 24, weight: .heavy))
+                    .scaledFont(24, .heavy)
                     .foregroundColor(NativeDS.primary)
                 Text("台在线 · 全部为内存会话")
-                    .font(.system(size: 11))
+                    .scaledFont(11)
                     .foregroundColor(NativeDS.muted)
             }
             Spacer()
             Button(action: bleManager.disconnectAll) {
                 Label("全部断开", systemImage: "xmark")
-                    .font(.system(size: 13, weight: .semibold))
+                    .scaledFont(13, .semibold)
                     .foregroundColor(.white)
                     .padding(.horizontal, 13)
                     .frame(height: 32)

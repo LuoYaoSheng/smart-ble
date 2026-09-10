@@ -35,7 +35,7 @@ struct FilterPanel: View {
             HStack(spacing: 10) {
                 fieldLabel("名称前缀")
                 TextField("如 SHID / LightBLE", text: $bleManager.filterNamePrefix)
-                    .font(.system(size: 13))
+                    .scaledFont(13)
                     .padding(.horizontal, 12)
                     .frame(height: 38)
                     .background(NativeDS.fill)
@@ -53,13 +53,14 @@ struct FilterPanel: View {
                 Spacer()
                 Button("重置过滤", action: resetFilters)
                     .buttonStyle(.plain)
-                    .font(.system(size: 13, weight: .semibold))
+                    .scaledFont(13, .semibold)
                     .foregroundColor(NativeDS.ink)
                     .padding(.horizontal, 13)
                     .frame(height: 34)
                     .background(NativeDS.fill)
                     .overlay(RoundedRectangle(cornerRadius: 8).stroke(NativeDS.line))
                     .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .nativeHitTarget()
             }
         }
         .padding(14)
@@ -71,7 +72,7 @@ struct FilterPanel: View {
 
     private func fieldLabel(_ text: String) -> some View {
         Text(text)
-            .font(.system(size: 12, weight: .semibold))
+            .scaledFont(12, .semibold)
             .foregroundColor(NativeDS.sub)
             .frame(width: 66, alignment: .leading)
     }
@@ -81,9 +82,9 @@ struct FilterPanel: View {
         return Button(action: { bleManager.filterRSSI = preset.value }) {
             VStack(spacing: 1) {
                 Text(preset.title)
-                    .font(.system(size: 11, weight: .semibold))
+                    .scaledFont(11, .semibold)
                 Text(preset.detail)
-                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    .scaledFont(10, .semibold, design: .monospaced)
             }
             .foregroundColor(selected ? .white : NativeDS.sub)
             .frame(maxWidth: .infinity)
@@ -93,6 +94,7 @@ struct FilterPanel: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel("最弱信号 \(preset.title) \(preset.value) dBm")
+        .nativeHitTarget(minHeight: 44)
     }
 
     private func resetFilters() {

@@ -145,7 +145,7 @@ struct ScanView: View {
                     .fill(bluetoothStatusColor)
                     .frame(width: 8, height: 8)
                 Text(bluetoothStatusText)
-                    .font(.system(size: 11, weight: .semibold))
+                    .scaledFont(11, .semibold)
                     .foregroundColor(NativeDS.muted)
             }
         }
@@ -158,13 +158,13 @@ struct ScanView: View {
                     Circle().fill(NativeDS.primary).frame(width: 6, height: 6)
                 }
                 Text(scanStatusText)
-                    .font(.system(size: 12))
+                    .scaledFont(12)
                     .foregroundColor(NativeDS.muted)
             }
             Spacer()
             Button(action: toggleScan) {
                 Label(bleManager.isScanning ? "停止扫描" : "开始扫描", systemImage: bleManager.isScanning ? "stop.fill" : "plus.circle")
-                    .font(.system(size: 15, weight: .semibold))
+                    .scaledFont(15, .semibold)
                     .foregroundColor(.white)
                     .padding(.horizontal, 18)
                     .frame(height: 40)
@@ -190,20 +190,20 @@ struct ScanView: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 7) {
                 Image(systemName: "exclamationmark.triangle")
-                    .font(.system(size: 15, weight: .bold))
+                    .scaledFont(15, .bold)
                 Text("扫描失败")
-                    .font(.system(size: 15, weight: .bold))
+                    .scaledFont(15, .bold)
                 NativeStatusChip(text: failure.code, tone: NativeDS.danger)
             }
             .foregroundColor(NativeDS.danger)
             Text(failure.message)
-                .font(.system(size: 13))
+                .scaledFont(13)
                 .foregroundColor(NativeDS.sub)
                 .fixedSize(horizontal: false, vertical: true)
                 .lineSpacing(3)
             Button(action: retryScan) {
                 Label("重试", systemImage: "arrow.clockwise")
-                    .font(.system(size: 13, weight: .semibold))
+                    .scaledFont(13, .semibold)
                     .foregroundColor(NativeDS.danger)
                     .padding(.horizontal, 13)
                     .frame(height: 34)
@@ -230,7 +230,7 @@ struct ScanView: View {
             HStack(spacing: 10) {
                 if !bleManager.filteredScanResults.isEmpty {
                     Text("\(bleManager.filteredScanResults.count) 台")
-                        .font(.system(size: 11, weight: .semibold))
+                        .scaledFont(11, .semibold)
                         .foregroundColor(NativeDS.sub)
                         .padding(.horizontal, 9)
                         .padding(.vertical, 3)
@@ -241,8 +241,9 @@ struct ScanView: View {
                     withAnimation(.easeInOut(duration: 0.2)) { showFilterPanel.toggle() }
                 }
                 .buttonStyle(.plain)
-                .font(.system(size: 12, weight: .semibold))
+                .scaledFont(12, .semibold)
                 .foregroundColor(NativeDS.primary)
+                .nativeHitTarget()
             }
         }
         .padding(.bottom, 4)
@@ -408,7 +409,7 @@ struct DeviceDetailSheet: View {
 
                 Button(action: copyDeviceInfo) {
                     Label("复制", systemImage: "doc.on.doc")
-                        .font(.caption)
+                        .scaledFont(12)
                 }
                 .buttonStyle(.borderless)
             }
@@ -432,7 +433,7 @@ struct DeviceDetailSheet: View {
 
                 Button(action: copyAdvData) {
                     Label("复制", systemImage: "doc.on.doc")
-                        .font(.caption)
+                        .scaledFont(12)
                 }
                 .buttonStyle(.borderless)
             }
@@ -445,7 +446,7 @@ struct DeviceDetailSheet: View {
 
                     ForEach(device.serviceUUIDs, id: \.self) { uuid in
                         Text(uuid)
-                            .font(.caption)
+                            .scaledFont(12)
                             .padding(.horizontal, 12)
                             .padding(.vertical, 6)
                             .background(Color.blue.opacity(0.1))

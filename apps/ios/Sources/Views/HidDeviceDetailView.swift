@@ -84,7 +84,7 @@ struct HidDeviceDetailView: View {
             VStack(alignment: .leading, spacing: 5) {
                 Text(snapshot.name.isEmpty ? "Smart HID 设备" : snapshot.name).font(.title3.bold())
                 Text(bleManager.isDeviceConnected(deviceId) ? "配置成功 · READY" : "会话已断开")
-                    .font(.caption.weight(.bold))
+                    .scaledFont(12, .bold)
                     .foregroundColor(bleManager.isDeviceConnected(deviceId) ? NativeDS.success : NativeDS.danger)
                     .padding(.horizontal, 8).padding(.vertical, 3)
                     .background((bleManager.isDeviceConnected(deviceId) ? NativeDS.successWeak : NativeDS.dangerWeak).clipShape(Capsule()))
@@ -132,7 +132,7 @@ struct HidDeviceDetailView: View {
 
     private var note: some View {
         Text("本页为本次配网会话的内存快照，退出应用后不再可见（零本地持久化）。重新配置前需让设备进入配网模式。")
-            .font(.footnote)
+            .scaledFont(13)
             .foregroundColor(NativeDS.sub)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(12)
@@ -157,7 +157,7 @@ struct HidDeviceDetailView: View {
                     Label("高级 BLE 调试", systemImage: "slider.horizontal.3").frame(maxWidth: .infinity)
                 }
             }
-            .buttonStyle(.plain).font(.caption.weight(.semibold)).foregroundColor(NativeDS.sub)
+            .buttonStyle(.plain).scaledFont(12, .semibold).foregroundColor(NativeDS.sub)
             .padding(.vertical, 11).background(NativeDS.fill).clipShape(RoundedRectangle(cornerRadius: 10))
         }
     }

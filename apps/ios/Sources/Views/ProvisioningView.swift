@@ -105,11 +105,11 @@ struct ProvisioningView: View {
                     .overlay(Circle().stroke(index < current ? NativeDS.success : index == current ? NativeDS.primary : NativeDS.line, lineWidth: 1))
                     .frame(width: 28, height: 28)
                 Text(index < current ? "✓" : "\(number)")
-                    .font(.caption.weight(.bold))
+                    .scaledFont(12, .bold)
                     .foregroundColor(index < current ? NativeDS.success : index == current ? .white : NativeDS.muted)
             }
             Text(label)
-                .font(.caption2.weight(index == current ? .bold : .medium))
+                .scaledFont(11, index == current ? .bold : .medium)
                 .foregroundColor(index < current ? NativeDS.success : index == current ? NativeDS.primary : NativeDS.muted)
         }
         .frame(width: 78)
@@ -136,7 +136,7 @@ struct ProvisioningView: View {
                 Text(device.name.isEmpty ? "Smart HID 设备" : device.name)
                     .font(.headline)
                 Text(summaryLine)
-                    .font(.system(size: 10, design: .monospaced))
+                    .scaledFont(10, design: .monospaced)
                     .foregroundColor(NativeDS.muted)
             }
             Spacer()
@@ -177,7 +177,7 @@ struct ProvisioningView: View {
                     ProgressView()
                     Text("连接并确认设备中…").font(.headline)
                     Text("正在建立 GATT 连接并验证 Device Info · \(device.name)")
-                        .font(.footnote)
+                        .scaledFont(13)
                         .foregroundColor(NativeDS.muted)
                         .multilineTextAlignment(.center)
                 }
@@ -195,13 +195,13 @@ struct ProvisioningView: View {
 
             HStack(spacing: 8) {
                 Text(manager.stage == .verified ? "已连接" : "已断开")
-                    .font(.caption.weight(.bold))
+                    .scaledFont(12, .bold)
                     .foregroundColor(manager.stage == .verified ? NativeDS.success : NativeDS.danger)
                     .padding(.horizontal, 9)
                     .padding(.vertical, 4)
                     .background((manager.stage == .verified ? NativeDS.successWeak : NativeDS.dangerWeak).clipShape(Capsule()))
                 Text(device.id)
-                    .font(.system(size: 11, design: .monospaced))
+                    .scaledFont(11, design: .monospaced)
                     .foregroundColor(NativeDS.muted)
                 Spacer()
             }
@@ -226,6 +226,8 @@ struct ProvisioningView: View {
                             Image(systemName: showPassword ? "eye.slash" : "eye")
                         }
                         .buttonStyle(.plain)
+                        .accessibilityLabel(showPassword ? "隐藏密码" : "显示密码")
+                        .nativeHitTarget()
                     }
                     .onChange(of: password) { value in password = String(value.prefix(64)) }
                 }
@@ -243,11 +245,11 @@ struct ProvisioningView: View {
                         Text(token.isEmpty ? "扫描 ControlHub 配对码" : "重新扫描配对码")
                             .font(.headline)
                         Text(token.isEmpty ? "扫码解析 shid://pair 自动回填地址与令牌" : "token 已获取（内存会话，不落盘）")
-                            .font(.caption)
+                            .scaledFont(12)
                     }
                     Spacer()
                     Text(token.isEmpty ? "必需" : "已获取")
-                        .font(.caption.weight(.bold))
+                        .scaledFont(12, .bold)
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
                         .background((token.isEmpty ? NativeDS.warning.opacity(0.15) : NativeDS.successWeak).clipShape(Capsule()))
@@ -261,7 +263,7 @@ struct ProvisioningView: View {
             .buttonStyle(.plain)
 
             Text("Wi-Fi 密码和配对凭据只用于本次下发，不写入日志或本地存储。")
-                .font(.footnote)
+                .scaledFont(13)
                 .foregroundColor(NativeDS.sub)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(12)
@@ -348,7 +350,7 @@ struct ProvisioningView: View {
             Text(title)
             Spacer()
             Text(state == "active" ? "进行中" : state == "done" ? "完成" : state == "fail" ? "失败" : "待处理")
-                .font(.caption)
+                .scaledFont(12)
                 .foregroundColor(color)
         }
         .padding(.horizontal, 16)
@@ -360,11 +362,11 @@ struct ProvisioningView: View {
             HStack {
                 Image(systemName: "exclamationmark.triangle.fill")
                 Text("操作失败").font(.headline)
-                Text(code).font(.system(size: 10, design: .monospaced))
+                Text(code).scaledFont(10, design: .monospaced)
                     .padding(.horizontal, 7).padding(.vertical, 2).background(Color.white).clipShape(RoundedRectangle(cornerRadius: 6))
             }
             .foregroundColor(NativeDS.danger)
-            Text(message).font(.footnote).foregroundColor(NativeDS.sub)
+            Text(message).scaledFont(13).foregroundColor(NativeDS.sub)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(12)
@@ -385,6 +387,7 @@ struct ProvisioningView: View {
         .foregroundColor(.white)
         .background(NativeDS.primary)
         .clipShape(RoundedRectangle(cornerRadius: 10))
+        .nativeHitTarget()
     }
 
     private func softButton(_ title: String, action: @escaping () -> Void) -> some View {
@@ -396,6 +399,7 @@ struct ProvisioningView: View {
             .padding(.vertical, 11)
             .background(NativeDS.fill)
             .clipShape(RoundedRectangle(cornerRadius: 10))
+            .nativeHitTarget()
     }
 
     private var phaseIndex: Int {

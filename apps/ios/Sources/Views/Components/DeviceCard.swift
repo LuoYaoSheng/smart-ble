@@ -17,12 +17,12 @@ struct DeviceCard: View {
                 VStack(alignment: .leading, spacing: 3) {
                     HStack(spacing: 6) {
                         Text(displayName)
-                            .font(.system(size: 15, weight: .bold))
+                            .scaledFont(15, .bold)
                             .foregroundColor(NativeDS.ink)
                             .lineLimit(1)
                         if let smartHidMatch {
                             Text(smartHidMatch == .strong ? "Smart HID · 强匹配" : "Smart HID · 弱匹配")
-                                .font(.system(size: 10, weight: .semibold))
+                                .scaledFont(10, .semibold)
                                 .foregroundColor(NativeDS.success)
                                 .padding(.horizontal, 7)
                                 .padding(.vertical, 2)
@@ -32,7 +32,7 @@ struct DeviceCard: View {
                     }
 
                     Text(device.id)
-                        .font(.system(size: 10, design: .monospaced))
+                        .scaledFont(10, design: .monospaced)
                         .foregroundColor(NativeDS.muted)
                         .lineLimit(1)
                         .truncationMode(.middle)
@@ -40,11 +40,11 @@ struct DeviceCard: View {
                     HStack(spacing: 8) {
                         signalBars
                         Text("\(device.rssi) dBm")
-                            .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                            .scaledFont(10, .semibold, design: .monospaced)
                             .foregroundColor(NativeDS.muted)
                         if isConnectionTab {
                             Text("已连接")
-                                .font(.system(size: 10, weight: .bold))
+                                .scaledFont(10, .bold)
                                 .foregroundColor(NativeDS.success)
                         }
                     }
@@ -57,7 +57,7 @@ struct DeviceCard: View {
             if isConnectionTab {
                 Button(action: onAction ?? { bleManager.disconnect(deviceId: device.id) }) {
                     Text("断开")
-                        .font(.system(size: 13, weight: .semibold))
+                        .scaledFont(13, .semibold)
                         .foregroundColor(NativeDS.danger)
                         .frame(maxWidth: .infinity)
                         .frame(height: 34)
@@ -65,6 +65,7 @@ struct DeviceCard: View {
                         .clipShape(RoundedRectangle(cornerRadius: 8))
                 }
                 .buttonStyle(.plain)
+                .nativeHitTarget()
             } else if onGattAction != nil || onSmartHidAction != nil {
                 HStack(spacing: 8) {
                     if smartHidMatch != nil, let onSmartHidAction {
@@ -103,7 +104,7 @@ struct DeviceCard: View {
                 endPoint: .bottomTrailing
             )
             Text(String(displayName.prefix(1)).uppercased())
-                .font(.system(size: 17, weight: .heavy))
+                .scaledFont(17, .heavy)
                 .foregroundColor(smartHidMatch == nil ? NativeDS.primary : NativeDS.success)
         }
         .frame(width: 44, height: 44)
@@ -129,7 +130,7 @@ struct DeviceCard: View {
     ) -> some View {
         Button(action: action) {
             Label(title, systemImage: icon)
-                .font(.system(size: 13, weight: .semibold))
+                .scaledFont(13, .semibold)
                 .foregroundColor(primary ? .white : NativeDS.ink)
                 .frame(maxWidth: .infinity)
                 .frame(height: 34)
@@ -138,6 +139,7 @@ struct DeviceCard: View {
                 .clipShape(RoundedRectangle(cornerRadius: 8))
         }
         .buttonStyle(.plain)
+        .nativeHitTarget()
     }
 
     private var displayName: String {
