@@ -9,11 +9,17 @@
 //             for --duration seconds (default 20)
 //   connect   scan for --uuid, connect, discover services/characteristics,
 //             read once, collect 2 notifications, write once, disconnect
+//   ota       对 LightBLE 夹具走十步 OTA 正典（contracts/target/ble-fixture-target.json）：
+//             发现 4FAFC201 广播 → 连接 → system_info 读回 → manifest 六项预检 →
+//             订阅 OTA STATUS → CTRL start → DATA 分包(无响应·按序) → CTRL commit →
+//             等 success/rebooting → 重连读回 firmware_version 与 target 比对
+//             （--ota-file 固件包 · --ota-manifest 清单 · 端到端结论仍受 P-03 约束）
 //
 // All output lines are structured: [PROBE] key=value ...
 // Exit code 0 = expected milestones reached; non-zero = failure/timeout.
 
 import CoreBluetooth
+import CryptoKit
 import Foundation
 
 setbuf(stdout, nil)
@@ -37,6 +43,9 @@ var localName = "SmartBLE-Native"
 var serviceUUIDString = "0000FD6A-7263-4F1E-A1C2-8F5D3B2A1001"
 var expectUUIDString = ""
 var noWrite = false
+var writeHex = ""   // 自定义写入负载（hex），空则用默认 ping 负载
+var otaFilePath = ""
+var otaManifestPath = ""
 
 func nextArg(_ label: String) -> String {
     guard !args.isEmpty else { fail("missing \(label) value") }
@@ -52,6 +61,9 @@ while !args.isEmpty {
     case "--uuid": serviceUUIDString = nextArg("--uuid")
     case "--expect-uuid": expectUUIDString = nextArg("--expect-uuid")
     case "--no-write": noWrite = true
+    case "--write-hex": writeHex = nextArg("--write-hex")
+    case "--ota-file": otaFilePath = nextArg("--ota-file")
+    case "--ota-manifest": otaManifestPath = nextArg("--ota-manifest")
     default: fail("unknown argument \(a)")
     }
 }
@@ -90,6 +102,23 @@ final class Probe: NSObject, CBCentralManagerDelegate, CBPeripheralManagerDelega
     var notifyCounter = 0
     var notifyTimer: Timer?
 
+    // ota state（十步正典 · P-03：相位全部可测可记录，端到端结论不越权）
+    var otaFile = Data()
+    var otaManifest: [String: Any] = [:]
+    var otaFileSha = ""
+    var sysInfoChar: CBCharacteristic?      // SVC-01 Control（读 system_info）
+    var otaCtrl: CBCharacteristic?          // SVC-03 26C0
+    var otaDataChar: CBCharacteristic?      // SVC-03 26C1
+    var otaStatusChar: CBCharacteristic?    // SVC-03 26C2
+    var otaPhase = "scan"                   // scan→connect→discover→checks→subscribed→starting→receiving→committing→reboot→verify→done
+    var otaMaxChunk = 180
+    var otaSentBytes = 0
+    var otaLastLoggedPct = -1
+    var otaVersionBefore = "?"
+    var otaTargetVersion = "?"
+    var otaChecksDone = false
+    var otaStatusSubscribed = false
+
     var finishAfter: (() -> Void)?
 
     // MARK: lifecycle
@@ -111,6 +140,24 @@ final class Probe: NSObject, CBCentralManagerDelegate, CBPeripheralManagerDelega
         case "connect":
             targetService = CBUUID(string: serviceUUIDString)
             central = CBCentralManager(delegate: self, queue: nil)
+        case "ota":
+            targetService = CBUUID(string: serviceUUIDString)
+            guard !otaFilePath.isEmpty, !otaManifestPath.isEmpty else {
+                fail("ota mode requires --ota-file and --ota-manifest")
+            }
+            otaFile = (try? Data(contentsOf: URL(fileURLWithPath: otaFilePath))) ?? Data()
+            guard !otaFile.isEmpty else { fail("ota file unreadable/empty: \(otaFilePath)") }
+            otaFileSha = SHA256.hash(data: otaFile).map { String(format: "%02x", $0) }.joined()
+            guard let m = (try? JSONSerialization.jsonObject(with: Data(contentsOf: URL(fileURLWithPath: otaManifestPath)))) as? [String: Any] else {
+                fail("ota manifest unreadable: \(otaManifestPath)")
+            }
+            otaManifest = m
+            otaTargetVersion = (m["firmware_version"] as? String) ?? "?"
+            central = CBCentralManager(delegate: self, queue: nil)
+            // 全链看门狗：默认 240s
+            DispatchQueue.main.asyncAfter(deadline: .now() + max(duration, 240)) {
+                if self.otaPhase != "done" { fail("ota flow watchdog timeout phase=\(self.otaPhase) sent=\(self.otaSentBytes)/\(self.otaFile.count)") }
+            }
         default:
             fail("unknown mode \(mode)")
         }
@@ -145,6 +192,14 @@ final class Probe: NSObject, CBCentralManagerDelegate, CBPeripheralManagerDelega
                 }
                 fail("connect flow did not complete within timeout")
             }
+        case "ota":
+            log("EVENT=ota_scan_start service=\(targetService.uuidString) file_bytes=\(otaFile.count) target_version=\(otaTargetVersion) sha256=\(String(otaFileSha.prefix(12)))…")
+            central.scanForPeripherals(withServices: [targetService], options: nil)
+            DispatchQueue.main.asyncAfter(deadline: .now() + max(duration, 20)) {
+                if self.pendingPeripheral == nil {
+                    fail("ota target not discovered within timeout")
+                }
+            }
         default:
             break
         }
@@ -170,7 +225,7 @@ final class Probe: NSObject, CBCentralManagerDelegate, CBPeripheralManagerDelega
         for s in services where s.uuidString.lowercased() == expectUUIDString.lowercased() {
             expectedSeen = true
         }
-        if mode == "connect", services.contains(where: { $0 == targetService }), pendingPeripheral == nil {
+        if mode == "connect" || mode == "ota", services.contains(where: { $0 == targetService }), pendingPeripheral == nil {
             pendingPeripheral = peripheral
             peripheral.delegate = self
             log("EVENT=connect_to name=\(name.isEmpty ? "(none)" : name.replacingOccurrences(of: " ", with: "_")) id=\(peripheral.identifier.uuidString)")
@@ -186,6 +241,11 @@ final class Probe: NSObject, CBCentralManagerDelegate, CBPeripheralManagerDelega
 
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         log("EVENT=connected id=\(peripheral.identifier.uuidString)")
+        if mode == "ota" {
+            otaPhase = "discover"
+            peripheral.discoverServices(nil)
+            return
+        }
         peripheral.discoverServices([targetService])
     }
 
@@ -194,6 +254,22 @@ final class Probe: NSObject, CBCentralManagerDelegate, CBPeripheralManagerDelega
     }
 
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
+        if mode == "ota" {
+            // commit success 后设备 1.5s 内主动重启断链 = 正典第 7 步
+            if otaPhase == "reboot" {
+                log("EVENT=ota_reboot_disconnect（预期 · 设备重启）")
+                pendingPeripheral = nil
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                    log("EVENT=ota_rescan_for_rebooted")
+                    self.central.scanForPeripherals(withServices: [self.targetService], options: nil)
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 40) {
+                    if self.otaPhase == "reboot" { fail("rebooted fixture not back within 40s") }
+                }
+                return
+            }
+            fail("ota disconnected unexpectedly phase=\(otaPhase) err=\(error.map { "\($0)" } ?? "nil")")
+        }
         if noWrite {
             // 环境设备探测：发现 + 读 即达标；通知为加分项（计数入日志）
             if readDone && discoveredDone {
@@ -214,8 +290,19 @@ final class Probe: NSObject, CBCentralManagerDelegate, CBPeripheralManagerDelega
     // MARK: CBPeripheralDelegate (client side of connect flow)
 
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
-        guard error == nil, let svc = peripheral.services?.first else {
+        guard error == nil else {
             fail("service discovery failed err=\(error.map { "\($0)" } ?? "nil")")
+        }
+        if mode == "ota" {
+            let wanted = peripheral.services ?? []
+            log("EVENT=services_discovered count=\(wanted.count) uuids=\(wanted.map { $0.uuid.uuidString }.joined(separator: ","))")
+            for svc in wanted {
+                peripheral.discoverCharacteristics(nil, for: svc)
+            }
+            return
+        }
+        guard let svc = peripheral.services?.first else {
+            fail("service discovery returned no service")
         }
         log("EVENT=service_discovered uuid=\(svc.uuid.uuidString)")
         peripheral.discoverCharacteristics(nil, for: svc)
@@ -223,6 +310,32 @@ final class Probe: NSObject, CBCentralManagerDelegate, CBPeripheralManagerDelega
 
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
         guard error == nil else { fail("characteristic discovery failed") }
+        if mode == "ota" {
+            for c in service.characteristics ?? [] {
+                let u = c.uuid.uuidString.uppercased()
+                log("OTA_CHAR=\(u) svc=\(service.uuid.uuidString.suffix(4)) props=\(c.properties.rawValue)")
+                if u.hasSuffix("26A8") { sysInfoChar = c }
+                if u.hasSuffix("26C0") { otaCtrl = c }
+                if u.hasSuffix("26C1") { otaDataChar = c }
+                if u.hasSuffix("26C2") { otaStatusChar = c }
+            }
+            // 特征齐全即开链：读 system_info（第 0 步包预检依据）+ 订阅 STATUS（正典第 1 步）
+            if sysInfoChar != nil, otaCtrl != nil, otaDataChar != nil, otaStatusChar != nil, otaPhase == "discover" || otaPhase == "reboot" {
+                if otaPhase == "reboot" {
+                    // 重启后重连：正典第 8 步 → 第 9 步读 firmware_version
+                    otaPhase = "verify"
+                    log("EVENT=ota_reconnected（正典第 8 步 · 重启后重连成功）")
+                    peripheral.readValue(for: sysInfoChar!)
+                    return
+                }
+                otaPhase = "checks"
+                let mtu = peripheral.maximumWriteValueLength(for: .withoutResponse)
+                log("EVENT=ota_chars_ready mtu_write_limit=\(mtu)")
+                peripheral.readValue(for: sysInfoChar!)
+                peripheral.setNotifyValue(true, for: otaStatusChar!)
+            }
+            return
+        }
         discoveredDone = true
         for c in service.characteristics ?? [] {
             log("CHAR=\(c.uuid.uuidString) props=\(c.properties.rawValue)")
@@ -238,8 +351,15 @@ final class Probe: NSObject, CBCentralManagerDelegate, CBPeripheralManagerDelega
     }
 
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
-        guard error == nil else { fail("read/notify failed") }
+        guard error == nil else {
+            if mode == "ota" { fail("ota read/notify failed char=\(characteristic.uuid.uuidString.suffix(4)) err=\(error.map { "\($0)" } ?? "nil")") }
+            fail("read/notify failed")
+        }
         let data = characteristic.value ?? Data()
+        if mode == "ota" {
+            handleOtaValue(peripheral, characteristic, data)
+            return
+        }
         let hex = data.map { String(format: "%02x", $0) }.joined()
         if characteristic == notifyCharacteristic {
             notificationsReceived += 1
@@ -253,8 +373,15 @@ final class Probe: NSObject, CBCentralManagerDelegate, CBPeripheralManagerDelega
 
     func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
         guard error == nil else {
+            if mode == "ota" { fail("ota subscribe failed char=\(characteristic.uuid.uuidString.suffix(4)) err=\(error.map { "\($0)" } ?? "nil")") }
             if noWrite { log("NOTE=notify_subscribe_error（环境设备限制 · 如实记录）"); return }
             fail("subscribe notify failed")
+        }
+        if mode == "ota", characteristic == otaStatusChar {
+            otaStatusSubscribed = true
+            log("EVENT=ota_status_subscribed（正典第 1 步）")
+            maybeSendOtaStart(peripheral)
+            return
         }
         notifySubscribed = true
         log("EVENT=notify_subscribed char=\(characteristic.uuid.uuidString)")
@@ -280,14 +407,27 @@ final class Probe: NSObject, CBCentralManagerDelegate, CBPeripheralManagerDelega
         }
         if readDone, notifySubscribed, !wroteDone, let w = writeCharacteristic {
             wroteDone = true
-            let payload = Data("ping-from-native".utf8)
+            // --write-hex：字节级自定义写入（如夹具 LED FF00..FF03）
+            let payload = writeHex.isEmpty
+                ? Data("ping-from-native".utf8)
+                : Data(stride(from: 0, to: writeHex.count, by: 2).compactMap {
+                    UInt8(writeHex[writeHex.index(writeHex.startIndex, offsetBy: $0)..<writeHex.index(writeHex.startIndex, offsetBy: min($0 + 2, writeHex.count))], radix: 16)
+                })
+            guard !payload.isEmpty else { fail("--write-hex 解析为空：\(writeHex)") }
             peripheral.writeValue(payload, for: w, type: .withResponse)
-            log("EVENT=write_sent bytes=\(payload.count)")
+            log("EVENT=write_sent bytes=\(payload.count) hex=\(payload.map { String(format: "%02x", $0) }.joined())")
         }
     }
 
     func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
-        guard error == nil else { fail("write failed") }
+        guard error == nil else {
+            if mode == "ota" { fail("ota ctrl write failed err=\(error.map { "\($0)" } ?? "nil")") }
+            fail("write failed")
+        }
+        if mode == "ota" {
+            log("EVENT=ota_ctrl_acked op=\(otaPhase)")
+            return
+        }
         log("EVENT=write_acked char=\(characteristic.uuid.uuidString)")
         // wait for 2 notifications then disconnect
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
@@ -298,6 +438,121 @@ final class Probe: NSObject, CBCentralManagerDelegate, CBPeripheralManagerDelega
                 fail("expected 2 notifications, got \(self.notificationsReceived)")
             }
         }
+    }
+
+    // MARK: OTA 十步正典（probe 侧驱动）
+
+    private func maybeSendOtaStart(_ peripheral: CBPeripheral) {
+        guard otaChecksDone, otaStatusSubscribed, otaPhase == "checks" else { return }
+        otaPhase = "starting"
+        var start: [String: Any] = [
+            "op": "start",
+            "size": otaFile.count,
+            "chunk_size": 180,
+            "target_version": otaTargetVersion,
+            "sha256": otaFileSha,
+        ]
+        start["target"] = (otaManifest["target"] as? String) ?? "lightble-peripheral"
+        let json = (try? JSONSerialization.data(withJSONObject: start)) ?? Data()
+        log("EVENT=ota_start_sent（正典第 2 步）json=\(String(data: json, encoding: .utf8) ?? "?")")
+        peripheral.writeValue(json, for: otaCtrl!, type: .withResponse)
+    }
+
+    private func handleOtaValue(_ peripheral: CBPeripheral, _ characteristic: CBCharacteristic, _ data: Data) {
+        let text = String(data: data, encoding: .utf8) ?? data.map { String(format: "%02x", $0) }.joined()
+        guard let obj = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any] else {
+            log("OTA_VALUE(raw) char=\(characteristic.uuid.uuidString.suffix(4)) text=\(text)")
+            return
+        }
+        if characteristic == sysInfoChar {
+            if otaPhase == "verify" {
+                // 正典第 9/10 步：重连后读 firmware_version 与 target_version 比对
+                let after = (obj["firmware_version"] as? String) ?? "?"
+                let match = after == otaTargetVersion
+                otaPhase = "done"
+                peripheral.setNotifyValue(false, for: otaStatusChar!)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                    self.central.cancelPeripheralConnection(peripheral)
+                    log("OTA_RESULT=version_before=\(self.otaVersionBefore) version_after=\(after) target=\(self.otaTargetVersion) match=\(match)")
+                    log("NOTE=十步正典全部走通（真无线电 · 真包 · 真重启）；端到端成功宣称仍受 P-03/F025 约束")
+                    log(match ? "RESULT=PASS" : "RESULT=FAIL reason=version_readback_mismatch")
+                    exit(match ? 0 : 1)
+                }
+                return
+            }
+            // 第 0 步：包预检（manifest 六项 vs 设备 system_info/文件实测）
+            otaVersionBefore = (obj["firmware_version"] as? String) ?? "?"
+            let hardware = (obj["hardware"] as? String) ?? "?"
+            let mTarget = (otaManifest["target"] as? String) ?? ""
+            let mHardware = (otaManifest["hardware"] as? String) ?? ""
+            let mSize = (otaManifest["size"] as? Int) ?? -1
+            let mSha = (otaManifest["sha256"] as? String) ?? ""
+            var problems = [String]()
+            if mTarget != "lightble-peripheral" && mTarget != "lightble-observer" { problems.append("target_invalid(\(mTarget))") }
+            if mHardware != hardware { problems.append("hardware_mismatch(manifest=\(mHardware) device=\(hardware))") }
+            if mSize != otaFile.count { problems.append("size_mismatch(manifest=\(mSize) file=\(otaFile.count))") }
+            if mSha.lowercased() != otaFileSha { problems.append("sha_mismatch") }
+            if otaTargetVersion.isEmpty || otaTargetVersion == "?" { problems.append("missing_firmware_version") }
+            log("OTA_PRECHECK version_before=\(otaVersionBefore) device_hardware=\(hardware) manifest=\(mTarget)/\(mHardware)/\(mSize)/\(String(mSha.prefix(12)))… problems=\(problems.isEmpty ? "none" : problems.joined(separator: ";"))")
+            guard problems.isEmpty else { fail("ota package pre-check failed（第 0 步 · ERR-OTA-09..13 域）") }
+            otaChecksDone = true
+            maybeSendOtaStart(peripheral)
+            return
+        }
+        if characteristic == otaStatusChar {
+            let status = (obj["status"] as? String) ?? "?"
+            let pct = (obj["percent"] as? Int) ?? -1
+            log("OTA_STATUS status=\(status) received=\(obj["received"] ?? 0) total=\(obj["total"] ?? 0) percent=\(pct) code=\(obj["code"] ?? "-") detail=\(obj["detail"] ?? "-") rebooting=\(obj["rebooting"] ?? false)")
+            switch status {
+            case "ready":
+                let deviceMax = (obj["max_chunk"] as? Int) ?? 180
+                let mtuLimit = peripheral.maximumWriteValueLength(for: .withoutResponse)
+                otaMaxChunk = min(deviceMax, mtuLimit)
+                otaPhase = "receiving"
+                log("EVENT=ota_ready（正典第 3 步）max_chunk_device=\(deviceMax) mtu_limit=\(mtuLimit) effective=\(otaMaxChunk)")
+                pumpOtaChunks(peripheral)
+            case "progress":
+                break
+            case "error":
+                fail("ota device error code=\(obj["code"] ?? "?") detail=\(obj["detail"] ?? "?") phase=\(otaPhase)")
+            case "success":
+                guard otaPhase == "committing" || otaPhase == "receiving" else { return }
+                otaPhase = "reboot"
+                log("EVENT=ota_commit_success（正典第 6 步 · 设备即将重启）")
+            default:
+                break
+            }
+            return
+        }
+        log("OTA_VALUE(?) char=\(characteristic.uuid.uuidString.suffix(4)) text=\(text)")
+    }
+
+    private func pumpOtaChunks(_ peripheral: CBPeripheral) {
+        guard otaPhase == "receiving", let dataChar = otaDataChar else { return }
+        while otaSentBytes < otaFile.count {
+            guard peripheral.canSendWriteWithoutResponse else { return } // 等 peripheralIsReady 续传
+            let len = min(otaMaxChunk, otaFile.count - otaSentBytes)
+            let chunk = otaFile.subdata(in: otaSentBytes..<otaSentBytes + len)
+            peripheral.writeValue(chunk, for: dataChar, type: .withoutResponse)
+            otaSentBytes += len
+            let pct = otaFile.count == 0 ? 100 : otaSentBytes * 100 / otaFile.count
+            if pct / 10 > otaLastLoggedPct / 10 || otaSentBytes == otaFile.count {
+                otaLastLoggedPct = pct
+                log("EVENT=ota_progress percent=\(pct) bytes=\(otaSentBytes)/\(otaFile.count)")
+            }
+        }
+        // 全部到达（正典第 4 步完成）→ 第 5 步 commit
+        otaPhase = "committing"
+        log("EVENT=ota_all_data_sent bytes=\(otaFile.count)（正典第 4 步完成 · 严格按序）")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+            let commit = #"{"op":"commit"}"#.data(using: .utf8)!
+            log("EVENT=ota_commit_sent（正典第 5 步）")
+            peripheral.writeValue(commit, for: self.otaCtrl!, type: .withResponse)
+        }
+    }
+
+    func peripheralIsReady(toWriteSubscribers peripheral: CBPeripheral) {
+        if mode == "ota" { pumpOtaChunks(peripheral) }
     }
 
     // MARK: CBPeripheralManagerDelegate (GATT server + advertising)
