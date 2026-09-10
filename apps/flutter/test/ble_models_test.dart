@@ -21,7 +21,8 @@ void main() {
 
     test('displayName returns correctly for named and unnamed devices', () {
       expect(deviceA.displayName, 'SmartBle_Device');
-      expect(deviceB.displayName, '未知设备');
+      // F005 批准链终点：未命名 BLE · ID后四位（永不「未知设备」）
+      expect(deviceB.displayName, '未命名 BLE · AABB');
     });
 
     test('matchesNamePrefix correctly ignores case and filters', () {

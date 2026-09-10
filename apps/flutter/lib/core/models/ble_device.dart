@@ -1,3 +1,8 @@
+/// BLE 设备模型与状态。
+library;
+
+import '../ble/device_display_name.dart';
+
 /// BLE 设备状态
 enum BleDeviceState {
   /// 未连接
@@ -39,8 +44,9 @@ class BleDevice {
   /// 是否正在连接
   bool get isConnecting => state == BleDeviceState.connecting;
 
-  /// 显示名称（优先使用 name，否则显示设备 ID）
-  String get displayName => name.isNotEmpty ? name : '未知设备 ($id)';
+  /// 显示名称（F005 批准链终点：永不「未知设备」）
+  String get displayName => resolveDeviceDisplayName(deviceId: id, name: name)
+      .displayName;
 
   const BleDevice({
     required this.id,
