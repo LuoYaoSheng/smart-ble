@@ -97,7 +97,7 @@
 | 组件/区块 | 规范要求摘要 | U-WX | U-AND | F-AND | 归因 |
 |---|---|---|---|---|---|
 | 品牌卡（logo/名称/运行时版本/技术栈 chips/总体状态） | 版本三态 fallback | PASS·struct（AppNavbar ABOUT+版本 mono chip+品牌渐变挂 token） | 同 U-WX | PASS·struct | UI-G2 §1 P009 |
-| 更多小程序推广卡 | 微信直跳/非微信落地页+小程序码 | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | — |
+| ~~更多小程序推广卡~~ | **已移除（2026-09-10 · F028）**——C11 编号退役，组件随原型+五线下线 | REMOVED | REMOVED | REMOVED | — |
 | 应用信息卡（环境三行/特性 6 chips/平台状态） | 五词表 | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | — |
 | 相关链接菜单（官网/版本记录/反馈/分享） | 4 项 | PASS·struct | 同 U-WX | PASS·struct（G1 补「版本记录」=4 项菜单） | UI-G2 §1 P009 |
 | 页脚版权 | — | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | — |

@@ -350,3 +350,35 @@ devicectl install/launch（iPhone 真机）→ com.smartble.ios v2.0.0 装包+�
 2. F-AND P001 三件旧 widget（advertisement_sheet/device_card/filter_panel）迁移 ui/design 后删除（G2 §5-1 原样保留；hex 全为注册值，非漂移）。
 3. iOS 间距/阴影未成体系；iOS deep/ink/log token 未镜像（无消费位；接入时先扩镜像再过钉子）。
 4. E1/E2/E3（10001 modal 文案/横幅形态/权限时机）待 F 域证据链更新窗口。
+
+---
+
+## 15. F028 推广区移除轮（2026-09-10 · 用户指示）
+
+### 15.1 范围与执行
+
+「关于页更多小程序」推广信息整链下线，正典与实现同步清除：
+
+- **正典原型 v1-new**：`pages/p009-about.js`（区块+feats F028）、`app.js` `p009-promo` action、`mock-data/mock.js` promo 数组、`assets/components.css` `.promo` 规则（C11 编号退役）、README 两处。
+- **平台高保真**：app/desktop/wechat `p009-about.js` 三件 + 各自内核 `app.js` action；`android.js`/`desktop.js` 覆写层（PROMO_LAND/qrDemo/承接 sheet 三个 action）；`web.js` W6 卡 + PROMO 数据 + 3 action；3× mock promo、4× components.css `.promo`。
+- **U-WX**：`pages/about/index.vue`（模板/脚本/样式）、`config/product.js` RELATED_MINI_PROGRAMS、`components/about/app-card.vue` 组件删除（git rm）。
+- **F-AND**：`about_page.dart` `_buildPromoCard`/`_PromoTile`、`product.dart` promos+PromoApp；check-token-usage `DATA_SKIP` 撤销（例外不再需要）。
+- **N-IOS**：`AboutView.swift` promotionCard/promotionRow；TabBarUITests+AccessibilityAuditUITests 锚点「更多小程序」→「应用信息」。
+- **N-MAC**：`P009AboutPage.swift` promos/推广卡/openPromo sheet + 孤儿组件 PseudoQRView 删除。
+
+### 15.2 门禁与验证
+
+```
+node scripts/check-token-usage.mjs    → PASS（DATA_SKIP 撤销后仍 0 漂移）
+node scripts/check-icon-usage.mjs     → PASS（vue 34→33 文件 = app-card 退役）
+node scripts/check-apple-tokens.mjs   → PASS
+flutter analyze / test                → 0 issue / 113/113
+bash scripts/verify-uniapp.sh         → PASS（28+14；check-uniapp-assets 兄弟小程序身份由「锁入」改「锁出」）
+xcodebuild build + test (iOS 模拟器)  → BUILD SUCCEEDED + 12/12 TEST SUCCEEDED
+swift build (N-MAC)                   → Build complete
+P009 三线重采（smoke-uwx/fand/nios）  → 均验证推广区零残留（§3 重采行）
+```
+
+### 15.3 账本同步
+
+PRD（F028 行/U6/功能域图/页面结构/R27）、FEATURE_MAP、PRODUCT_MODEL、PAGE_SPEC §9、COMPONENT C11（退役）、FEATURE_IMPLEMENTATION_MATRIX、LEGACY_REUSE_MATRIX、RUNTIME_ARCHITECTURE（ExternalNavigationPort 收窄/差异圈 7→6 行）、API_SPEC、API_ACTION_MATRIX（P09-04 移除）、PLATFORM_ADAPTER_SPEC、10_platform §4 推广跳转行作废、COVERAGE_CHECKLIST、WINDOWS_MOBILE_V1_MASTER_MATRIX、CROSS_IMPLEMENTATION_PARITY_MATRIX、VISUAL/COMPONENT 矩阵、prototype v1-new/平台 README+PLATFORM_SPEC、target-product PAGE-009、MINIAPP_PAGE_MAP。历史归档（v0-old、verification、plans、product-review、01_reverse、06_review 既有轮记录、README 带日期审计行）按账本纪律不回溯修改。

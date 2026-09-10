@@ -40,7 +40,7 @@
 | 图标字形（35 枚 `i-*` sprite） | TOKEN.md §7 | 全部页内图标 | PASS | PASS | PASS | 平台原生 SF Symbol 语义对照（Apple 线独立图标体系） | 同左 | 2026-09-07 PARITY-ICON：三线统一经镜像渲染（[DESIGN_TOKEN_PLATFORM_MAPPING.md](DESIGN_TOKEN_PLATFORM_MAPPING.md) §1）；uniapp 文字标记仅保留正典规定的 ✓/✕/·；Material 图标退役 |
 | 空态插图（4 幅 `C.ILL`） | 原型 components.js B6 | P001/P007/P010 等空态 | PASS | PASS | PASS | 文字+图标空态（平台惯例） | 同左 | 2026-09-07 PARITY-ILL：radar/link/doc/box 三线锁定镜像（AppIll），U-WX 方形白底 PNG 与 F-AND Material 顶替字形全部退役 |
 | 占位/插画类资产透明底 | TOKEN.md/正典结构 | 全部空态/插画槽位 | PASS | PASS | PASS | N/A | N/A | PARITY-ILL：占位资产 100% 来自正典 SVG 镜像（无背景矩形），`static/placeholders` 8 文件删除、零引用（静态断言锁定） |
-| P009 品牌标/推广缩写块 | 原型 p009 | 关于页品牌卡/更多小程序 | PASS | PASS | PASS | PASS（品牌渐变=NativeDS primary→primaryDeep，钉子值） | 同左（DS） | PARITY-ILL：品牌标=渐变盒+bt 字形（非位图），推广位=文字缩写块（abbr/bg/color 数据驱动，product.dart 属内容数据非 Token），other-apps PNG 与 F-AND 紫渐变退役 |
+| P009 品牌标 | 原型 p009 | 关于页品牌卡 | PASS | PASS | PASS | PASS（品牌渐变=NativeDS primary→primaryDeep，钉子值） | 同左（DS） | PARITY-ILL：品牌标=渐变盒+bt 字形（非位图），other-apps PNG 与 F-AND 紫渐变退役；~~推广缩写块~~随 F028 于 2026-09-10 整链移除（原型+五线+product 配置清除，DATA_SKIP 同步撤销） |
 | 分享/启动器位图 | §1.6 管线 | 微信分享/F-AND 启动器 | PASS | PASS | PASS | 图标资产在位（AppIcon.appiconset 全梯队；是否经 §1.6 管线同源未登记） | 图标资产在位（AppIcon.icns；同源未登记） | PARITY-ILL：ChatGPT2API(gpt-image-2) 统一生产（蓝渐变+BT 字形），logo/share/launcher/mipmap/splash 同源派生；UI-G2 §3 启动图接入（U-AND/F-AND）；Apple 线图标来源待登记 |
 
 > 数值逐项以 TOKEN.md 当前版本为准；本表摘录核心项，回填时如正典有增补按正典补行。实现侧 Token 映射表见 `DESIGN_TOKEN_PLATFORM_MAPPING.md`（§1 图标 2026-09-07、§2/§3 色彩与尺寸 2026-09-10 已交付）。**2026-09-10 UI-CONV：LEGACY_DRIFT 登记清零**（v0 漂移值全量收敛正典，机制保留——再出圈外值即 FAIL）。
@@ -58,7 +58,7 @@
 | P006 | 设备面板+服务树折叠+日志六色 chip+写/OTA 弹窗 | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | UI-G2 结构对齐（ServicePanel 五态+LogPanel dock 接管旧件） |
 | P007 | 汇总卡/ON 头标/空态两文案 | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | UI-G2 结构对齐（DeviceCard conn 变体+AppEmpty+sumcard）；2026-09-10 烟测默认态（已连接空态+占位设备卡）三线+Apple 同构截图落袋（§3） |
 | P008 | 徽章六值+N/31 字节提示+超限红字+日志面板 | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | UI-G2 结构对齐（AppNavbar PERIPHERAL+AppBadge 三态+LogPanel card）；2026-09-10 UUID 黄条深字收敛 --c-warning-deep；烟测默认态（未开启+日志空卡）三线+Apple 截图落袋（§3） |
-| P009 | 品牌卡+推广卡+信息卡+菜单 4 项+页脚 | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | UI-G2 结构对齐（AppNavbar ABOUT+版本 chip+品牌渐变挂 token）；烟测默认态三线+Apple 截图落袋（§3；F-AND/U-WX 平台字段各报其实、属内容数据） |
+| P009 | 品牌卡+信息卡+菜单 4 项+页脚（推广卡 2026-09-10 随 F028 移除） | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | UI-G2 结构对齐（AppNavbar ABOUT+版本 chip+品牌渐变挂 token）；烟测默认态三线+Apple 截图落袋（§3）；推广区移除后 P009 截图已三线重采（§3 重采行） |
 | P010 | 版本卡+限制卡+历史/预览卡+页脚声明 | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | UI-G2 结构对齐（AppSubnav+AppEmpty doc×2） |
 | 全局 | TabBar 4 项文案/图标语义/激活色；错误横幅样式；toast 规范 | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | TabBar 图标层 PASS（§1）；页面级横幅/toast 六态截图待视觉 Gate |
 
@@ -70,4 +70,5 @@
 | 2026-09-10 | 20260910-ui-conv/parity/smoke-uwx | P001/P007/P008/P009 默认态（烟测） | — | uwx-p001-default / uwx-p007-connected-empty / uwx-p008-broadcast / uwx-p009-about（4 张，automator） | —（HBuilderX 打包域未装，仍缺） | — | — | [MULTI_END_PARITY_AUDIT.md](../06_review/MULTI_END_PARITY_AUDIT.md) §14.6 |
 | 2026-09-10 | 20260910-ui-conv/parity/smoke-fand | P001/P007/P008/P009 默认态（烟测） | — | — | — | fand-p001-default / fand-p007-connected-empty / fand-p008-broadcast / fand-p009-about（4 张，宿主窗口截屏） | — | 同上 |
 | 2026-09-10 | 20260910-ui-conv/parity/smoke-nios | P001/P007/P008/P009 默认态（烟测） | — | — | — | — | nios-p001-default / nios-p007-connected-empty / nios-p008-broadcast / nios-p009-about（4 张，iPhone 17 Pro Max 模拟器 simctl） | 同上 |
+| 2026-09-10 | smoke-{uwx,fand,nios} P009 **重采**（F028 推广区移除后） | P009 移除后默认态 | — | uwx-p009-about.png（覆盖，重建包 automator） | — | fand-p009-about.png（覆盖，重建 APK 宿主截屏） | nios-p009-about.png（覆盖，移除后构建） | 三线均验证：品牌卡直接衔接应用信息卡，推广区零残留；门禁全绿（审计 §15） |
 | — | **视觉 Gate 六态全量（六态×9 页×三端+Apple）** | — | — | — | — | — | — | 烟测默认态已破零（上行 12 张）；全量六态仍待：U-WX 登录已恢复（automator 通道可用）、U-AND HBuilderX 打包域仍未装、F-AND 模拟器 guest 侧 screencap 故障（宿主窗口截屏绕过已验证，见审计 §14.6）、iPhone 真机程序化截图无工具链（devictl 无 screenshot 子命令，已装包+拉起烟测代替） |
