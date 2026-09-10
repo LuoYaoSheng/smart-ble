@@ -4,6 +4,7 @@
 #include <ArduinoJson.h>
 #include <NimBLECharacteristic.h>
 #include <functional>
+#include <vector>
 
 #ifndef FIRMWARE_VERSION
 #define FIRMWARE_VERSION "1.0.0"
@@ -80,6 +81,16 @@ private:
     bool _restartPending = false;
     unsigned long _restartAt = 0;
 
+    // DEV-014（E5 phase-7 实证）：NimBLE 回调里做任何 flash 操作（begin 的多秒
+    // 同步擦除 / write / end / abort）都会饿死 BLE 主机并触发设备复位——真机
+    // 证据：op=start 后 ~800ms 链路监督超时 + uptime 归零，且与包大小无关。
+    // 回调只做 RAM 级校验与排队，全部 flash 工作在 loop() 上下文执行。
+    bool _beginPending = false;
+    bool _commitPending = false;
+    bool _abortPending = false;
+    std::vector<uint8_t> _staging;          // DATA 分片暂存（loop 侧落盘）
+    static constexpr size_t kOtaStagingCap = 32 * 1024;
+
     void resetSession(bool abortUpdate);
     void setState(OtaState next);
     void emitSerialEvent(const char* stateName);
@@ -97,7 +108,8 @@ private:
 
     bool validateSha256Hex(const char* sha) const;
     bool handleStart(const JsonDocument& doc, String& errorCode, String& errorDetail);
-    bool handleCommit(String& errorCode, String& errorDetail);
+    // commit 链（校验 + Update.end + NVS + success 通知）在 loop() 上下文执行
+    void loopCommit();
     void handleAbort();
 
     class CtrlCallbacks;

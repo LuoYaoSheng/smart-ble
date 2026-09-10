@@ -12,6 +12,13 @@ static const char* kBuildFirmwareVersion = FIRMWARE_VERSION;
 
 static OtaServer gOtaServer;
 
+// 前置声明：sha 助手定义在本文件后段，loop()/loopCommit()（DEV-014 移入
+// loop 上下文的 flash 操作）先于其定义使用。
+static void sha256Begin();
+static void sha256Update(const uint8_t* data, size_t len);
+static String sha256FinalizeHex();
+static void sha256Reset();
+
 OtaServer& otaServerInstance() {
     return gOtaServer;
 }
@@ -245,12 +252,6 @@ bool OtaServer::handleStart(const JsonDocument& doc, String& errorCode, String& 
         return false;
     }
 
-    if (!Update.begin(size)) {
-        errorCode = "OTA_ERR_SPACE";
-        errorDetail = "update_begin_failed";
-        return false;
-    }
-
     _target = String(target);
     _targetVersion = String(targetVersion);
     _expectedSha256 = String(sha256);
@@ -259,88 +260,22 @@ bool OtaServer::handleStart(const JsonDocument& doc, String& errorCode, String& 
     _receivedSize = 0;
     _lastProgressMs = millis();
 
-    setState(OTA_READY);
-    notifyStatus("ready");
-    setState(OTA_RECEIVING);
+    // DEV-014：Update.begin 的同步擦除（数十~数百扇区，秒级）不得在 NimBLE
+    // 回调里执行（真机证据：链路监督超时 + 设备复位）。排队到 loop()，
+    // ready 通知在分区真正备好后从 loop 上下文发出。
+    _beginPending = true;
+    _staging.clear();
+    setState(OTA_STARTING);
     return true;
 }
 
-bool OtaServer::handleCommit(String& errorCode, String& errorDetail) {
-    if (_state != OTA_RECEIVING && _state != OTA_READY) {
-        errorCode = "OTA_ERR_STATE";
-        errorDetail = "ota_not_started";
-        return false;
-    }
-
-    setState(OTA_COMMITTING);
-
-    if (_faults.timeoutNext) {
-        _faults.timeoutNext = false;
-        errorCode = "OTA_ERR_STATE";
-        errorDetail = "fault_timeout";
-        resetSession(true);
-        setState(OTA_FAILED);
-        return false;
-    }
-
-    if (_faults.commitFail) {
-        _faults.commitFail = false;
-        errorCode = "OTA_ERR_FLASH";
-        errorDetail = "fault_commit_fail";
-        resetSession(true);
-        setState(OTA_FAILED);
-        return false;
-    }
-
-    size_t expectedCommitSize = _expectedSize;
-    if (_receivedSize != expectedCommitSize) {
-        errorCode = "OTA_SIZE_MISMATCH";
-        errorDetail = "size_mismatch";
-        resetSession(true);
-        setState(OTA_FAILED);
-        return false;
-    }
-
-    uint8_t digest[32];
-    (void)digest;
-    if (!Update.end(true)) {
-        errorCode = "OTA_ERR_FLASH";
-        errorDetail = "update_end_failed";
-        resetSession(true);
-        setState(OTA_FAILED);
-        return false;
-    }
-
-    // Update.end validates written size; SHA256 verified from staging buffer via Update API is unavailable.
-    // Re-hash is done by reading back written partition is expensive — use Update.getSHA256 if available.
-    // ESP32 Arduino Update may expose MD5; for contract compliance compute from Update written stream.
-    // We tracked SHA256 during DATA writes via mbedtls context stored in callbacks file scope.
-
-    if (_faults.wrongHash) {
-        _faults.wrongHash = false;
-        errorCode = "OTA_HASH_MISMATCH";
-        errorDetail = "fault_wrong_hash";
-        resetSession(true);
-        setState(OTA_FAILED);
-        return false;
-    }
-
-    Preferences prefs;
-    if (prefs.begin(kOtaNvsNamespace, false)) {
-        prefs.putString(kOtaNvsVersionKey, _targetVersion);
-        prefs.end();
-    }
-
-    setState(OTA_SUCCESS);
-    notifyStatus("success", nullptr, nullptr, true, true);
-    _restartPending = true;
-    _restartAt = millis() + 1500;
-    setState(OTA_IDLE);
-    return true;
-}
+// DEV-014：原 handleCommit（flash 校验 + Update.end + NVS）已整体移入
+// loopCommit()，由 loop() 在 _commitPending 置位后调用——回调里做 flash
+// 操作会在真机上复位设备（E5 phase-7 实证，见 ota_server.h DEV-014 注记）。
 
 void OtaServer::handleAbort() {
-    resetSession(true);
+    // DEV-014：Update.abort 触及 flash — 排队到 loop；状态与通知立即返回。
+    _abortPending = true;
     setState(OTA_ABORTED);
     notifyStatus("aborted");
     resetSession(false);
@@ -351,7 +286,9 @@ void OtaServer::onDisconnect() {
         if (_faults.disconnectNext) {
             _faults.disconnectNext = false;
         }
-        resetSession(true);
+        // DEV-014：Update.abort 延迟到 loop；回调只复位状态
+        _abortPending = true;
+        resetSession(false);
         setState(OTA_FAILED);
         notifyStatus("error", "OTA_ERR_STATE", "disconnect");
     }
@@ -360,6 +297,53 @@ void OtaServer::onDisconnect() {
 void OtaServer::loop() {
     if (_restartPending && millis() >= _restartAt) {
         ESP.restart();
+    }
+
+    // DEV-014：全部 flash 操作集中在此（loop/arduino 任务上下文，BLE 主机
+    // 独立任务不受阻塞）。
+    if (_abortPending) {
+        _abortPending = false;
+        _staging.clear();
+        Update.abort();
+    }
+
+    if (_beginPending) {
+        _beginPending = false;
+        if (!Update.begin(_expectedSize)) {
+            resetSession(false);
+            setState(OTA_FAILED);
+            notifyStatus("error", "OTA_ERR_SPACE", "update_begin_failed");
+        } else {
+            setState(OTA_READY);
+            notifyStatus("ready");
+            setState(OTA_RECEIVING);
+        }
+    }
+
+    if (_state == OTA_RECEIVING && !_staging.empty() && !_commitPending) {
+        size_t len = _staging.size();
+        size_t written = Update.write(_staging.data(), len);
+        if (written != len) {
+            _staging.clear();
+            Update.abort();
+            resetSession(false);
+            setState(OTA_FAILED);
+            notifyStatus("error", "OTA_ERR_FLASH", "chunk_write_failed");
+        } else {
+            sha256Update(_staging.data(), len);
+            _receivedSize += written;
+            _staging.clear();
+            if (millis() - _lastProgressMs >= 250 || _receivedSize == _expectedSize) {
+                _lastProgressMs = millis();
+                notifyStatus("progress", nullptr, nullptr, true);
+                emitSerialEvent("receiving");
+            }
+        }
+    }
+
+    if (_commitPending && _staging.empty()) {
+        _commitPending = false;
+        loopCommit();
     }
 }
 
@@ -401,6 +385,62 @@ static void sha256Reset() {
         mbedtls_sha256_free(&gOtaSha256);
         gOtaSha256Active = false;
     }
+}
+
+// DEV-014：commit 链（hash 比对 + 故障相位 + Update.end + NVS + success）
+// 在 loop() 上下文执行；由 handleCtrlWrite 置 _commitPending 后调用。
+void OtaServer::loopCommit() {
+    auto fail = [this](const char* code, const char* detail) {
+        resetSession(true);
+        setState(OTA_FAILED);
+        notifyStatus("error", code, detail);
+    };
+
+    String actualSha = sha256FinalizeHex();
+    if (_faults.wrongHash) {
+        _faults.wrongHash = false;
+        actualSha = "ff";
+    }
+    if (actualSha.length() == 64 && _expectedSha256.length() == 64 && actualSha != _expectedSha256) {
+        fail("OTA_HASH_MISMATCH", "sha256_mismatch");
+        return;
+    }
+
+    if (_faults.timeoutNext) {
+        _faults.timeoutNext = false;
+        fail("OTA_ERR_STATE", "fault_timeout");
+        return;
+    }
+
+    if (_faults.commitFail) {
+        _faults.commitFail = false;
+        fail("OTA_ERR_FLASH", "fault_commit_fail");
+        return;
+    }
+
+    if (_receivedSize != _expectedSize) {
+        fail("OTA_SIZE_MISMATCH", "size_mismatch");
+        return;
+    }
+
+    if (!Update.end(true)) {
+        // Update.end 校验镜像结构（magic/segment/checksum/app_desc）——
+        // 合成负载在此被拒（真机实证 update_end_failed），不切启动分区。
+        fail("OTA_ERR_FLASH", "update_end_failed");
+        return;
+    }
+
+    Preferences prefs;
+    if (prefs.begin(kOtaNvsNamespace, false)) {
+        prefs.putString(kOtaNvsVersionKey, _targetVersion);
+        prefs.end();
+    }
+
+    setState(OTA_SUCCESS);
+    notifyStatus("success", nullptr, nullptr, true, true);
+    _restartPending = true;
+    _restartAt = millis() + 1500;
+    setState(OTA_IDLE);
 }
 
 void OtaServer::handleCtrlRead(NimBLECharacteristic* characteristic) {
@@ -450,22 +490,13 @@ void OtaServer::handleCtrlWrite(NimBLECharacteristic* characteristic) {
     }
 
     if (strcmp(op, "commit") == 0) {
-        String actualSha = sha256FinalizeHex();
-        if (_faults.wrongHash) {
-            actualSha = "ff";
-        }
-        if (actualSha.length() == 64 && _expectedSha256.length() == 64 && actualSha != _expectedSha256) {
-            errorCode = "OTA_HASH_MISMATCH";
-            errorDetail = "sha256_mismatch";
-            resetSession(true);
-            setState(OTA_FAILED);
-            notifyStatus("error", errorCode.c_str(), errorDetail.c_str());
+        if (_state != OTA_RECEIVING && _state != OTA_READY) {
+            notifyStatus("error", "OTA_ERR_STATE", "ota_not_started");
             return;
         }
-        if (!handleCommit(errorCode, errorDetail)) {
-            notifyStatus("error", errorCode.c_str(), errorDetail.c_str());
-        }
-        sha256Reset();
+        // DEV-014：hash 比对 + Update.end + NVS 全部在 loopCommit（loop 上下文）
+        setState(OTA_COMMITTING);
+        _commitPending = true;
         return;
     }
 
@@ -493,29 +524,24 @@ void OtaServer::handleDataWrite(NimBLECharacteristic* characteristic) {
     const uint8_t* bytes = reinterpret_cast<const uint8_t*>(value.data());
     size_t len = value.length();
 
-    if (_receivedSize + len > _expectedSize) {
-        resetSession(true);
+    if (_receivedSize + _staging.size() + len > _expectedSize) {
+        _abortPending = true;
+        resetSession(false);
         setState(OTA_FAILED);
         notifyStatus("error", "OTA_ERR_SIZE", "overflow");
         sha256Reset();
         return;
     }
 
-    size_t written = Update.write(const_cast<uint8_t*>(bytes), len);
-    if (written != len) {
-        resetSession(true);
+    // DEV-014：分片只进 RAM 暂存环（32KB），flash 写入在 loop() 统一执行。
+    // BLE 到包速率（~4-8KB/s）远低于 flash 写入速率，环不会成为瓶颈。
+    if (_staging.size() + len > kOtaStagingCap) {
+        _abortPending = true;
+        resetSession(false);
         setState(OTA_FAILED);
-        notifyStatus("error", "OTA_ERR_FLASH", "chunk_write_failed");
+        notifyStatus("error", "OTA_ERR_STATE", "staging_overflow");
         sha256Reset();
         return;
     }
-
-    sha256Update(bytes, len);
-    _receivedSize += written;
-
-    if (millis() - _lastProgressMs >= 250 || _receivedSize == _expectedSize) {
-        _lastProgressMs = millis();
-        notifyStatus("progress", nullptr, nullptr, true);
-        emitSerialEvent("receiving");
-    }
+    _staging.insert(_staging.end(), bytes, bytes + len);
 }
