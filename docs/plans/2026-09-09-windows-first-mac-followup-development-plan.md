@@ -340,3 +340,8 @@ Mac 从 Windows 交接 commit 开始，不另起产品线。
   - **`HidProvisionController.kt`**：P002 三阶段状态机 Kotlin 镜像（StateFlow<ProvisionUiState> 单一不可变快照；CompletableDeferred+withTimeoutOrNull 对齐 Dart Completer+Timer；步进→行推进单调表；错误码→行/提示/恢复映射走 SmartHidProtocol；cancelWait/backToForm/诊断快照/2s STATUS 轮询保活；F023 红线：token/密码仅作 submit 参数不落字段）。
   - **测试**：`HidProvisionControllerTest` 14 例全绿（happy 帧头契约+载荷重组=candidate、wifi_failed/pairing_used 行映射、60s 虚拟时间超时、下发中断线、写失败分类、单调推进（旧 step 回放/迟到 error 不回退）、cancelWait、backToForm、轮询刷新）；FakeTransport 双形态对齐 Flutter。全仓 34 测试 0 失败 + assembleDebug 过。UI 接线（P002 页面）留 Windows UI 阶段。
   - 真机窗口仍被 steering-ble 并行会话占用（前台 com.steering.ble.g0），K-AND/F-AND 复验继续顺延。
+- **2026-09-10（W3 续·F023 零持久化静态门禁）**：
+  - **全仓静态扫落地**（`scripts/check-f023-zero-persistence.mjs`，接入 verify-uniapp 第 13 门禁）：① Z-2 存储/文件持久化调用（js/dart/kt/swift/rs/cs 六语言模式 × uniapp/flutter/K-AND/iOS/E-WIN/T-WIN/macOS/avalonia/core 共 299 文件）；② F023 旧存储键 `smart_ble.smart_hid.known_devices(.v1)` 与 `pruneKnownDevices`；③ PAGE004 hid history 路由残留；④「已配置 Smart HID」/「全部历史」面板字符串；⑤ uniapp pages.json 结构检查（hid 路由白名单仅 add/detail/diagnostics + 不占 Tab）。排除测试目录与注释行（W1 反向守卫测试合法提及禁用 API）；provisioning.js FORBIDDEN_TOKEN_SINKS 守卫清单靠调用式正则不误报。**门禁自检：注入 4 类违规（含 pages.json 结构）全部检出后还原**（gate-selftest.log）。
+  - **扫出并修复唯一真实残留**：E-WIN 与 T-WIN 的 `I18nManager.js` 用 localStorage 持久化 `app_lang` 键（违反 Z-2；该 i18n 脚手架本身与 F030「不做国际化」红线冲突，整体移除留 W5）。修复=语言改会话内状态，每次启动按系统语言检测，不落任何存储。
+  - 其余实现线全干净；uniapp `knownDevices` 为内存会话快照概念（STORAGE_POLICY §3 内存实体），不属残留；K-AND CommandQueue history 为内存命令历史，与设备历史无关。
+  - 证据 `verification/windows-mobile-v1/20260909-win-b2/w3-smart-hid/f023-zero-persistence/`（自检注入日志 + verify-uniapp 全量 28 单测 + 13 门禁）。**W3 纯代码项全部完成**，未完仅剩硬件依赖项：WIN-UAND-003b（HBuilderX 基座）、F018-F024 三线真机回归。

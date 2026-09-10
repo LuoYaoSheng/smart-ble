@@ -88,8 +88,11 @@ run_check "Version consistency" "$NODE_BIN" scripts/check-version-consistency.mj
 # 跨语言协议向量 parity：js 线（本机 NODE_BIN 已具备 .ts 能力）+ dart/kotlin/swift 线状态登记；
 # 断言失败才非零退出，BLOCKED(toolchain)/NOT_IMPLEMENTED(kotlin W3) 为在册状态。
 run_check "Smart HID platform parity" "$NODE_BIN" scripts/check-platform-parity.mjs
+# F023 零持久化红线（W3）：全实现线静态扫——存储调用/known_devices 残留/PAGE004 路由/
+# 首页面板字符串/uniapp hid 路由白名单（正典 STORAGE_POLICY Z-2/§8 + PRD 2026-09-02）。
+run_check "F023 zero persistence & residue" "$NODE_BIN" scripts/check-f023-zero-persistence.mjs
 # 原始证据日志（ESP32 串口等）必须逐字保留，行尾空白是设备输出的一部分；
 # 空白门禁只针对产品源码与脚本的未提交改动。
 run_check "Git whitespace" git diff --check -- . ':(exclude)verification'
 
-printf '\nUniApp verification PASS (%d unit files plus 12 static gates)\n' "${#test_files[@]}"
+printf '\nUniApp verification PASS (%d unit files plus 13 static gates)\n' "${#test_files[@]}"

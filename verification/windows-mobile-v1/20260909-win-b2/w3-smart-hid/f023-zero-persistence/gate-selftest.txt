@@ -1,0 +1,17 @@
+=== F023 gate self-test: injection detection (4 rule groups) ===
+--- inject 1: z2-storage-call (localStorage.setItem in tauri I18nManager) ---
+FAIL F023 zero-persistence & residue scan — 1 violation(s):
+  [z2-storage-call] apps/desktop/tauri/src/I18nManager.js:66  localStorage.setItem('app_lang','zh-CN');
+exit=1
+--- inject 2: f023-legacy-key + page004-route + homepage-panel-string + uniapp-hid-route ---
+FAIL F023 zero-persistence & residue scan — 5 violation(s):
+  [f023-legacy-key] apps/uniapp/services/zz-gate-selftest.js:1  const key = "smart_ble.smart_hid.known_devices.v1";
+  [page004-route] apps/uniapp/services/zz-gate-selftest.js:2  const h = navigateTo("pages/hid/history");
+  [homepage-panel-string] apps/uniapp/services/zz-gate-selftest.js:3  const label = "已配置 Smart HID";
+  [z2-storage-call] apps/desktop/tauri/src/I18nManager.js:66  localStorage.setItem('app_lang','zh-CN');
+  [uniapp-hid-route] apps/uniapp/pages.json:0  hid route not in allowlist: pages/hid/history
+exit=1
+--- restore (rm selftest file; git checkout pages.json) ---
+FAIL F023 zero-persistence & residue scan — 1 violation(s):
+  [z2-storage-call] apps/desktop/tauri/src/I18nManager.js:66  localStorage.setItem('app_lang','zh-CN');
+exit=1

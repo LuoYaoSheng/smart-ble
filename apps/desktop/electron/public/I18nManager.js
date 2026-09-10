@@ -1,9 +1,8 @@
 class I18nManager {
     constructor() {
-        // Default to system language or saved preference
-        const savedLang = localStorage.getItem('app_lang');
+        // Session-only locale: system detection each launch, never persisted (canon Z-2 zero local persistence)
         const sysLang = navigator.language === 'zh-CN' ? 'zh-CN' : 'en-US';
-        this.currentLocale = savedLang || sysLang;
+        this.currentLocale = sysLang;
         this.dictionary = {};
     }
 
@@ -19,7 +18,6 @@ class I18nManager {
             const resp = await fetch(`./locales/${locale}.json`);
             this.dictionary = await resp.json();
             this.currentLocale = locale;
-            localStorage.setItem('app_lang', locale);
             document.documentElement.lang = locale.split('-')[0];
             
             this.translateDOM();
