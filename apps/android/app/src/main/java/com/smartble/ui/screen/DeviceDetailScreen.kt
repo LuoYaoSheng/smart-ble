@@ -93,7 +93,9 @@ fun DeviceDetailScreen(
     val otaState by viewModel.otaState.collectAsState()
     var pendingWriteTarget by remember { mutableStateOf<WriteTarget?>(null) }
     var otaVisible by remember { mutableStateOf(false) }
-    var expanded by remember(services) {
+    // WIN-AAND-007：key 用服务 UUID 集合而非整列表——读/写/notify 的特征值更新
+    // 会替换列表实例（remember(services) 会让展开态全量重置），UUID 集合不变则保留用户折叠态
+    var expanded by remember(services.map { it.uuid }.toSet()) {
         mutableStateOf(services.map { it.uuid }.toSet())
     }
 

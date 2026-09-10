@@ -1,0 +1,147 @@
+Flutter assets will be downloaded from https://storage.flutter-io.cn. Make sure you trust this source!
+00:00 +0: loading E:/project/xf/smart-ble/apps/flutter/test/ble_models_test.dart
+00:00 +0: E:/project/xf/smart-ble/apps/flutter/test/ble_models_test.dart: BleScanResult filtering logic displayName returns correctly for named and unnamed devices
+00:00 +1: E:/project/xf/smart-ble/apps/flutter/test/ble_models_test.dart: BleScanResult filtering logic matchesNamePrefix correctly ignores case and filters
+00:00 +2: E:/project/xf/smart-ble/apps/flutter/test/ble_models_test.dart: BleScanResult filtering logic matchesRssiThreshold handles negative values accurately
+00:00 +3: E:/project/xf/smart-ble/apps/flutter/test/core/ble/ble_contract_test.dart: F006: 连接超时默认 10 秒
+00:00 +4: E:/project/xf/smart-ble/apps/flutter/test/core/ble/ble_contract_test.dart: F012: 重连退避 1s/3s/5s
+00:01 +5: E:/project/xf/smart-ble/apps/flutter/test/core/ble/command_queue_test.dart: CommandQueue F009（同设备串行 / 深 16 / 单写 5s） FIFO 串行：后一条必须等前一条完成
+00:01 +6: E:/project/xf/smart-ble/apps/flutter/test/core/ble/command_queue_test.dart: CommandQueue F009（同设备串行 / 深 16 / 单写 5s） 深度上限 16：第 17 条整批拒绝且不留半批
+00:01 +7: E:/project/xf/smart-ble/apps/flutter/test/core/ble/command_queue_test.dart: CommandQueue F009（同设备串行 / 深 16 / 单写 5s） 默认参数即契约：深 16 / 单写 5s
+00:01 +8: E:/project/xf/smart-ble/apps/flutter/test/core/ble/command_queue_test.dart: CommandQueue F009（同设备串行 / 深 16 / 单写 5s） 单写超时：挂死的 write 标记失败并放行下一条
+指令发送超时: 01
+00:01 +9: E:/project/xf/smart-ble/apps/flutter/test/core/ble/command_queue_test.dart: CommandQueue F009（同设备串行 / 深 16 / 单写 5s） 单写超时：挂死的 write 标记失败并放行下一条
+00:01 +10: E:/project/xf/smart-ble/apps/flutter/test/core/ble/command_queue_test.dart: CommandQueue F009（同设备串行 / 深 16 / 单写 5s） 单写超时：挂死的 write 标记失败并放行下一条
+00:01 +11: E:/project/xf/smart-ble/apps/flutter/test/core/ble/command_queue_test.dart: CommandQueue F009（同设备串行 / 深 16 / 单写 5s） 单写超时：挂死的 write 标记失败并放行下一条
+00:01 +12: E:/project/xf/smart-ble/apps/flutter/test/core/ble/command_queue_test.dart: CommandQueue F009（同设备串行 / 深 16 / 单写 5s） 单写超时：挂死的 write 标记失败并放行下一条
+00:01 +13: E:/project/xf/smart-ble/apps/flutter/test/core/ble/command_queue_test.dart: CommandQueue F009（同设备串行 / 深 16 / 单写 5s） 单写超时：挂死的 write 标记失败并放行下一条
+00:01 +14: E:/project/xf/smart-ble/apps/flutter/test/core/ble/command_queue_test.dart: CommandQueue F009（同设备串行 / 深 16 / 单写 5s） 单写超时：挂死的 write 标记失败并放行下一条
+00:01 +15: E:/project/xf/smart-ble/apps/flutter/test/core/ble/command_queue_test.dart: CommandQueue F009（同设备串行 / 深 16 / 单写 5s） 单写超时：挂死的 write 标记失败并放行下一条
+00:01 +16: E:/project/xf/smart-ble/apps/flutter/test/core/ble/command_queue_test.dart: CommandQueue F009（同设备串行 / 深 16 / 单写 5s） 单写超时：挂死的 write 标记失败并放行下一条
+00:01 +17: E:/project/xf/smart-ble/apps/flutter/test/core/ble/command_queue_test.dart: CommandQueue F009（同设备串行 / 深 16 / 单写 5s） 单写超时：挂死的 write 标记失败并放行下一条
+00:01 +18: E:/project/xf/smart-ble/apps/flutter/test/core/ble/command_queue_test.dart: CommandQueue F009（同设备串行 / 深 16 / 单写 5s） 单写超时：挂死的 write 标记失败并放行下一条
+00:01 +19: E:/project/xf/smart-ble/apps/flutter/test/core/ble/command_queue_test.dart: CommandQueue F009（同设备串行 / 深 16 / 单写 5s） 循环模板超过深度上限拒绝启动
+00:01 +20: E:/project/xf/smart-ble/apps/flutter/test/core/ble/command_queue_test.dart: CommandQueue F009（同设备串行 / 深 16 / 单写 5s） 跨设备并行：per-device 队列互不阻塞（F009 跨设备并行语义）
+00:01 +21: E:/project/xf/smart-ble/apps/flutter/test/core/ble/profile_registry_test.dart: ProfileRegistry matchProfile（口径对齐 profile-contract.js） 广播 Service UUID 命中 → STRONG
+00:02 +22: E:/project/xf/smart-ble/apps/flutter/test/core/ble/profile_registry_test.dart: ProfileRegistry matchProfile（口径对齐 profile-contract.js） 完整 128 位 UUID 大小写不敏感
+00:02 +23: E:/project/xf/smart-ble/apps/flutter/test/core/ble/profile_registry_test.dart: ProfileRegistry matchProfile（口径对齐 profile-contract.js） 名称前缀命中（GAP 名）→ WEAK
+00:02 +24: E:/project/xf/smart-ble/apps/flutter/test/core/ble/profile_registry_test.dart: ProfileRegistry matchProfile（口径对齐 profile-contract.js） Scan Response 本地名（advName）前缀命中 → WEAK
+00:02 +25: E:/project/xf/smart-ble/apps/flutter/test/core/ble/profile_registry_test.dart: ProfileRegistry matchProfile（口径对齐 profile-contract.js） 无关设备 → null
+00:02 +26: E:/project/xf/smart-ble/apps/flutter/test/core/ble/profile_registry_test.dart: ProfileRegistry matchProfile（口径对齐 profile-contract.js） STRONG 优先于 WEAK（同设备双信号）
+00:02 +27: E:/project/xf/smart-ble/apps/flutter/test/core/ble/profile_registry_test.dart: ProfileRegistry matchProfile（口径对齐 profile-contract.js） 非本档案 UUID 不误命中
+00:02 +28: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 连接阶段（F018） 连接 + Device Info 验证通过 → 进入 configure
+P002: connected+verified device_id=HID-5EEDC0DE fw=1.2.0-sim mtu=247
+00:02 +29: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 连接阶段（F018） 连接失败 → connError 呈现，阶段停留 connect
+00:02 +30: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 连接阶段（F018） Device Info 身份不符 → 身份验证失败
+P002: identity check FAILED (other/1.0/HID-5EEDC0DE)
+00:02 +31: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 下发 → 终态（F021） 七步全走完 → done，四行全 done，帧已写入
+P002: connected+verified device_id=HID-5EEDC0DE fw=1.2.0-sim mtu=247
+P002: submit frames=2 bytes=136 mtu=247
+P002: status state=provisioning step=received error=null
+P002: status state=provisioning step=connecting_wifi error=null
+P002: status state=provisioning step=wifi_connected error=null
+P002: status state=provisioning step=pairing error=null
+P002: status state=provisioning step=pairing_success error=null
+P002: status state=provisioning step=mqtt_connecting error=null
+P002: status state=ready step=ready error=null
+P002: terminal=ready failure=null
+00:02 +32: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 下发 → 终态（F021） 校验失败抛 FormatException 且不切阶段
+P002: connected+verified device_id=HID-5EEDC0DE fw=1.2.0-sim mtu=247
+00:02 +33: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 错误恢复映射（F022） wifi_failed → wifi 行失败 + 返回表单
+P002: connected+verified device_id=HID-5EEDC0DE fw=1.2.0-sim mtu=247
+P002: submit frames=2 bytes=136 mtu=247
+P002: status state=provisioning step=connecting_wifi error=null
+P002: status state=error step=connecting_wifi error=wifi_failed
+P002: terminal=error failure=null
+00:02 +34: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 错误恢复映射（F022） pairing_expired → hub 行失败 + 重新扫码
+P002: connected+verified device_id=HID-5EEDC0DE fw=1.2.0-sim mtu=247
+P002: submit frames=2 bytes=136 mtu=247
+P002: status state=provisioning step=connecting_wifi error=null
+P002: status state=error step=connecting_wifi error=pairing_expired
+P002: terminal=error failure=null
+00:02 +35: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 错误恢复映射（F022） mqtt_invalid → diagnostics；未知码 → retry
+P002: connected+verified device_id=HID-5EEDC0DE fw=1.2.0-sim mtu=247
+P002: submit frames=2 bytes=136 mtu=247
+P002: status state=provisioning step=connecting_wifi error=null
+P002: status state=error step=connecting_wifi error=mqtt_invalid
+P002: terminal=error failure=null
+P002: connected+verified device_id=HID-5EEDC0DE fw=1.2.0-sim mtu=247
+P002: submit frames=2 bytes=136 mtu=247
+P002: status state=provisioning step=connecting_wifi error=null
+P002: status state=error step=connecting_wifi error=weird_error
+P002: terminal=error failure=null
+00:02 +36: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_framing_test.dart: chunkSizeForMtu MTU 23 → 17B；MTU 247 → 封顶 128B
+00:02 +36: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 超时 / 取消 / 断线 终态超时 → timeout 失败（conn 行，可重试）
+P002: connected+verified device_id=HID-5EEDC0DE fw=1.2.0-sim mtu=247
+00:02 +37: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 超时 / 取消 / 断线 终态超时 → timeout 失败（conn 行，可重试）
+P002: submit frames=2 bytes=136 mtu=247
+00:02 +38: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 超时 / 取消 / 断线 终态超时 → timeout 失败（conn 行，可重试）
+00:02 +39: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 超时 / 取消 / 断线 终态超时 → timeout 失败（conn 行，可重试）
+00:02 +40: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 超时 / 取消 / 断线 终态超时 → timeout 失败（conn 行，可重试）
+00:02 +41: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 超时 / 取消 / 断线 终态超时 → timeout 失败（conn 行，可重试）
+00:02 +42: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 超时 / 取消 / 断线 终态超时 → timeout 失败（conn 行，可重试）
+00:02 +43: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 超时 / 取消 / 断线 终态超时 → timeout 失败（conn 行，可重试）
+00:02 +44: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 超时 / 取消 / 断线 终态超时 → timeout 失败（conn 行，可重试）
+00:02 +45: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 超时 / 取消 / 断线 终态超时 → timeout 失败（conn 行，可重试）
+00:02 +46: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 超时 / 取消 / 断线 终态超时 → timeout 失败（conn 行，可重试）
+P002: terminal=timeout failure=null
+00:03 +47: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 超时 / 取消 / 断线 取消等待 → 本地按 timeout 呈现
+P002: connected+verified device_id=HID-5EEDC0DE fw=1.2.0-sim mtu=247
+P002: submit frames=2 bytes=136 mtu=247
+P002: terminal=timeout failure=timeout
+00:03 +48: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 超时 / 取消 / 断线 configure 阶段断线 → lost 横幅语义
+P002: connected+verified device_id=HID-5EEDC0DE fw=1.2.0-sim mtu=247
+P002: connection lost (phase=configure provisioning=false)
+00:03 +49: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 超时 / 取消 / 断线 下发中断线 → connection_lost，可重连
+P002: connected+verified device_id=HID-5EEDC0DE fw=1.2.0-sim mtu=247
+P002: submit frames=2 bytes=136 mtu=247
+P002: connection lost (phase=status provisioning=true)
+P002: terminal=lost failure=null
+00:03 +50: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 超时 / 取消 / 断线 写失败 encrypt（旧加密模型固件）→ 立即失败不重试（V1 简化无配对）
+P002: connected+verified device_id=HID-5EEDC0DE fw=1.2.0-sim mtu=247
+P002: submit frames=2 bytes=136 mtu=247
+00:03 +51: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 超时 / 取消 / 断线 写失败 disconnect → connection_lost 呈现
+P002: connected+verified device_id=HID-5EEDC0DE fw=1.2.0-sim mtu=247
+P002: submit frames=2 bytes=136 mtu=247
+00:03 +52: E:/project/xf/smart-ble/apps/flutter/test/core/protocols/hid_provisioning_protocol_test.dart: GATT UUID 常量 服务与三特征 UUID 末段 1001/1002/1003/1004
+00:03 +53: E:/project/xf/smart-ble/apps/flutter/test/core/protocols/hid_provisioning_protocol_test.dart: buildProvisionCandidateJson 合法输入生成含全部字段的 JSON
+00:03 +54: E:/project/xf/smart-ble/apps/flutter/test/core/protocols/hid_provisioning_protocol_test.dart: buildProvisionCandidateJson 端口缺省 17892
+00:03 +55: E:/project/xf/smart-ble/apps/flutter/test/core/protocols/hid_provisioning_protocol_test.dart: buildProvisionCandidateJson SSID 前后空格被 trim，超长/为空抛错
+00:03 +56: E:/project/xf/smart-ble/apps/flutter/test/core/protocols/hid_provisioning_protocol_test.dart: buildProvisionCandidateJson 密码超 64 抛错
+00:03 +57: E:/project/xf/smart-ble/apps/flutter/test/core/protocols/hid_provisioning_protocol_test.dart: buildProvisionCandidateJson host 为空 / token 形态非法抛错
+00:03 +58: E:/project/xf/smart-ble/apps/flutter/test/core/protocols/hid_provisioning_protocol_test.dart: buildProvisionCandidateJson 密码特殊字符被 JSON 转义
+00:03 +59: E:/project/xf/smart-ble/apps/flutter/test/core/protocols/hid_provisioning_protocol_test.dart: parsePairingQrPayload 完整 URI 解析 token/host/port
+00:03 +60: E:/project/xf/smart-ble/apps/flutter/test/core/protocols/hid_provisioning_protocol_test.dart: parsePairingQrPayload 缺 port 用默认 17892；scheme 大小写不敏感
+00:03 +61: E:/project/xf/smart-ble/apps/flutter/test/core/protocols/hid_provisioning_protocol_test.dart: parsePairingQrPayload 非 shid scheme / 坏 token / 坏 host / 坏 port 返回 null
+00:03 +62: E:/project/xf/smart-ble/apps/flutter/test/core/protocols/hid_provisioning_protocol_test.dart: parsePairingQrPayload 重复参数返回 null
+00:03 +63: E:/project/xf/smart-ble/apps/flutter/test/core/protocols/hid_provisioning_protocol_test.dart: parseDeviceInfo / parseProvisionStatus 合法 JSON 解析
+00:03 +64: E:/project/xf/smart-ble/apps/flutter/test/core/protocols/hid_provisioning_protocol_test.dart: parseDeviceInfo / parseProvisionStatus 非法/缺 device_id 返回 null
+00:03 +65: E:/project/xf/smart-ble/apps/flutter/test/core/protocols/hid_provisioning_protocol_test.dart: verifySmartHidDeviceInfo product/protocol/device_id 三项全对才通过
+00:03 +66: E:/project/xf/smart-ble/apps/flutter/test/core/protocols/hid_provisioning_protocol_test.dart: 错误码表 / 行映射 / 恢复动作 全部协议错误码都有提示文案
+00:03 +67: E:/project/xf/smart-ble/apps/flutter/test/core/protocols/hid_provisioning_protocol_test.dart: 错误码表 / 行映射 / 恢复动作 错误码 → 行映射
+00:03 +68: E:/project/xf/smart-ble/apps/flutter/test/core/protocols/hid_provisioning_protocol_test.dart: 错误码表 / 行映射 / 恢复动作 错误码 → 恢复动作映射（对齐 uni-app smartHidRecoveryAction）
+00:03 +69: E:/project/xf/smart-ble/apps/flutter/test/core/utils/data_converter_test.dart: DataConverter Tests hexToBytes should convert valid hex correctly
+00:03 +70: E:/project/xf/smart-ble/apps/flutter/test/core/utils/data_converter_test.dart: DataConverter Tests hexToBytes should throw on odd length
+00:03 +71: E:/project/xf/smart-ble/apps/flutter/test/core/utils/data_converter_test.dart: DataConverter Tests bytesToHex should format bytes correctly
+00:03 +72: E:/project/xf/smart-ble/apps/flutter/test/core/utils/data_converter_test.dart: DataConverter Tests stringToBytes should convert utf8 properly
+00:03 +73: E:/project/xf/smart-ble/apps/flutter/test/core/utils/data_converter_test.dart: DataConverter Tests bytesToString should decode utf8 properly
+00:03 +74: E:/project/xf/smart-ble/apps/flutter/test/core/utils/data_converter_test.dart: DataConverter Tests bytesToString should fallback gracefully on malformed utf8
+00:03 +75: E:/project/xf/smart-ble/apps/flutter/test/core/utils/data_converter_test.dart: DataConverter Tests isValidHex should validate hex strictly
+00:04 +76: E:/project/xf/smart-ble/apps/flutter/test/widget_test.dart: main tabs render
+BleManager 初始化失败: Unsupported operation: flutter_blue_plus is unsupported on this platform
+00:05 +77: E:/project/xf/smart-ble/apps/flutter/test/widget_test.dart: tab labels match PAGE_SPEC exactly (FLUTTER-G1-001)
+BleManager 初始化失败: Unsupported operation: flutter_blue_plus is unsupported on this platform
+00:06 +78: E:/project/xf/smart-ble/apps/flutter/test/widget_test.dart: P001 bt status word maps canon 3-state vocabulary
+00:06 +79: E:/project/xf/smart-ble/apps/flutter/test/widget_test.dart: P001 scan page structure follows prototype canon
+BleManager 初始化失败: Unsupported operation: flutter_blue_plus is unsupported on this platform
+00:06 +80: E:/project/xf/smart-ble/apps/flutter/test/widget_test.dart: main tab swipe is disabled (NeverScrollableScrollPhysics)
+BleManager 初始化失败: Unsupported operation: flutter_blue_plus is unsupported on this platform
+00:07 +81: E:/project/xf/smart-ble/apps/flutter/test/widget_test.dart: P003/P005/P010 pages exist as independent routes
+00:07 +82: E:/project/xf/smart-ble/apps/flutter/test/widget_test.dart: HidSessionStore is memory-only with cold-start empty (zero persistence)
+00:07 +83: E:/project/xf/smart-ble/apps/flutter/test/widget_test.dart: about page exposes 版本记录 menu entry
+BleManager 初始化失败: Unsupported operation: flutter_blue_plus is unsupported on this platform
+00:07 +84: E:/project/xf/smart-ble/apps/flutter/test/widget_test.dart: tab icons are canon AppIcon glyphs (PARITY-ICON)
+BleManager 初始化失败: Unsupported operation: flutter_blue_plus is unsupported on this platform
+00:08 +85: E:/project/xf/smart-ble/apps/flutter/test/widget_test.dart: canon icon set renders all glyphs without error
+00:08 +86: E:/project/xf/smart-ble/apps/flutter/test/widget_test.dart: canon empty-state illustrations render without error
+00:08 +87: All tests passed!

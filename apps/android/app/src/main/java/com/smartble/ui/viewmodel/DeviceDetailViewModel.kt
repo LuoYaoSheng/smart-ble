@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.smartble.core.ble.BleManager
+import com.smartble.core.ble.CharacteristicChangeKind
 import com.smartble.core.model.BleService
 import com.smartble.core.model.BleUuids
 import com.smartble.core.model.ConnectionState
@@ -56,14 +57,15 @@ class DeviceDetailViewModel(
         connectToDevice()
     }
 
+    private var lastAnnouncedServiceUuids: Set<String> = emptySet()
+
     private fun observeConnectionState() {
         viewModelScope.launch {
             bleManager.connectionState(deviceId).collect { state ->
                 _connectionState.value = state
                 _isLoading.value = state == ConnectionState.Connecting || state == ConnectionState.Disconnecting
-                if (state == ConnectionState.Connected && _services.value.isEmpty()) {
-                    bleManager.discoverServices(deviceId)
-                }
+                // 服务发现由 BleManager 串行编排（requestMtu→onMtuChanged→discover，
+                // WIN-AAND-006）；这里不再并发补发，避免 GATT 操作互斥失败
             }
         }
     }
@@ -72,9 +74,12 @@ class DeviceDetailViewModel(
         viewModelScope.launch {
             bleManager.services(deviceId).collect { serviceList ->
                 _services.value = serviceList
-                if (serviceList.isNotEmpty()) {
+                // WIN-AAND-007：读/写/notify 的特征值更新同样重放本流，
+                // 「发现 N 个服务」只在服务 UUID 集合真正变化时播报一次
+                if (shouldAnnounceServices(lastAnnouncedServiceUuids, serviceList)) {
                     _isLoading.value = false
                     Logger.info("发现 ${serviceList.size} 个服务")
+                    lastAnnouncedServiceUuids = serviceList.map { it.uuid }.toSet()
                 }
             }
         }
@@ -92,7 +97,12 @@ class DeviceDetailViewModel(
                     return@collect
                 }
                 val hex = DataConverter.bytesToHex(event.value)
-                Logger.receive("收到通知: $hex")
+                // WIN-AAND-004：读值与通知同样进入日志（按 kind 区分呈现）
+                if (event.kind == CharacteristicChangeKind.Read) {
+                    Logger.receive("读取结果: $hex")
+                } else {
+                    Logger.receive("收到通知: $hex")
+                }
             }
         }
     }
@@ -364,6 +374,15 @@ class DeviceDetailViewModel(
 }
 
 private const val OTA_CHUNK_SIZE = 180
+
+/**
+ * WIN-AAND-007：服务列表播报判定——仅当服务 UUID 集合真正变化（首次发现/
+ * 重新发现后集合不同）时播报；特征值更新（读/写/notify 重放同集合）不播报。
+ */
+internal fun shouldAnnounceServices(lastUuids: Set<String>, next: List<BleService>): Boolean {
+    val nextUuids = next.map { it.uuid }.toSet()
+    return nextUuids.isNotEmpty() && nextUuids != lastUuids
+}
 
 data class OtaUiState(
     val fileUri: Uri? = null,
