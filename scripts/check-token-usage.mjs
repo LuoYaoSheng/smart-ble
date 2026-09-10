@@ -48,12 +48,11 @@ const banned = tokens.legacy.banned.map((h) => h.slice(1).toLowerCase())
 //   uniapp：design-system.css/uni.scss/存量组件与页面（provision-stepper/progress、ota-dialog、
 //           app-card、broadcast、hid/add）改挂 --c-*；--ble-cyan/--ble-gradient-brand 删除；
 //   flutter：provisioning_page 16 处深色阶/弱底 → AppTokens（对齐原型 ebanner/note/prow 正典），
-//           app_icons 兜底色 → --c-text；
-//   推广位配色（product.dart）属产品内容数据非设计 Token，移入 DATA_SKIP。
+//           app_icons 兜底色 → --c-text。
 // 本机制保留：如再出现圈外漂移值，直接 FAIL（不再登记容忍）。
 const LEGACY_DRIFT = new Set([])
-// 产品内容数据文件（p009 推广缩写块 bg/color 为内容数据，与 uniapp config/product.js 同源；非设计 Token）
-const DATA_SKIP = [join('apps', 'flutter', 'lib', 'config', 'product.dart')]
+// DATA_SKIP 已随 F028 推广区移除（2026-09-10）撤销：product.dart 推广配色下线后无内容数据例外
+const DATA_SKIP = []
 // 白名单（正典 rgba 表达等）：跳过
 const BANNED_SCAN_SKIP = ['pages.json', 'project.config.json', 'manifest.json', 'design-tokens.json', 'app.css', 'tauri.conf.json']
 

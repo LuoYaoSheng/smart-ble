@@ -17,14 +17,6 @@
 		</view>
 	</view>
 
-		<view class="section promotion-section ble-card">
-			<view class="section-title">更多小程序</view>
-			<text class="section-caption">同一开发者的实用小程序，点击卡片直接打开。</text>
-			<view class="apps-list">
-				<app-card v-for="app in otherApps" :key="app.name" :app="app" @select="openApp(app)" />
-			</view>
-		</view>
-
 		<view class="section ble-card">
 			<view class="section-title">应用信息</view>
 			<view class="subsection-title">当前环境</view>
@@ -66,15 +58,13 @@
 <script setup>
 import { ref } from 'vue';
 import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
-import AppCard from '../../components/about/app-card.vue';
 // UI-G2：P009 改挂正典导航层（AppNavbar + 版本 chip）
 import AppNavbar from '../../components/ui/AppNavbar.vue';
 import AppChip from '../../components/ui/AppChip.vue';
 import AppIcon from '../../components/ui/AppIcon.vue'; // UI-PARITY-G0 正典图标入口
 import {
 	PRODUCT_FEATURES,
-	PRODUCT_INFO,
-	RELATED_MINI_PROGRAMS
+	PRODUCT_INFO
 } from '../../config/product.js';
 import {
 	buildVersionString,
@@ -93,7 +83,6 @@ const metadataVersionLabel = buildVersionString({
 const product = PRODUCT_INFO;
 const features = PRODUCT_FEATURES;
 const platforms = getPlatformPublicStatuses();
-const otherApps = RELATED_MINI_PROGRAMS;
 const appVersion = ref(metadataVersionLabel);
 const systemInfo = ref({ platform: 'unknown', system: 'unknown', model: 'unknown' });
 const currentYear = new Date().getFullYear();
@@ -184,31 +173,6 @@ const shareApp = () => {
 // #endif
 };
 
-const openApp = (app) => {
-// #ifdef MP-WEIXIN
-	if (!app.miniProgram?.appId) {
-		uni.showToast({ title: '该小程序暂未配置跳转', icon: 'none' });
-		return;
-	}
-	uni.navigateToMiniProgram({
-		appId: app.miniProgram.appId,
-		path: app.miniProgram.path,
-		envVersion: app.miniProgram.envVersion,
-		fail: () => uni.showModal({
-			title: `暂时无法打开${app.name}`,
-			content: '请确认微信版本和小程序跳转权限，稍后重试。',
-			showCancel: false
-		})
-	});
-// #endif
-// #ifdef APP-PLUS
-	plus.runtime.openURL(app.url);
-// #endif
-// #ifdef H5
-	window.open(app.url, '_blank');
-// #endif
-};
-
 onLoad(() => { getSystemInfo(); getAppVersion(); });
 
 // #ifdef MP-WEIXIN
@@ -230,8 +194,6 @@ onShareTimeline(() => ({ title: 'BLE Toolkit+ - BLE 调试与验证工具', quer
 .section { padding: 28rpx; }
 .section-title { color: var(--ble-text); font-size: 30rpx; font-weight: 800; }
 .section-caption { display: block; margin: 8rpx 0 20rpx; color: var(--ble-text-muted); font-size: 22rpx; line-height: 1.5; }
-.promotion-section { border-color: rgba(27, 109, 255, 0.13); }
-.apps-list { display: flex; flex-direction: column; gap: 16rpx; }
 .subsection-title { margin: 24rpx 0 12rpx; color: var(--ble-text-muted); font-size: 21rpx; font-weight: 800; }
 .info-list, .menu-list { display: flex; flex-direction: column; gap: 12rpx; }
 .info-item, .menu-item { display: flex; align-items: center; justify-content: space-between; gap: 18rpx; padding: 18rpx 20rpx; border-radius: 22rpx; background: rgba(255, 255, 255, 0.82); }

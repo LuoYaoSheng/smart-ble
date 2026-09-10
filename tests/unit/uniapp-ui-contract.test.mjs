@@ -127,11 +127,9 @@ const mainSource = fs.readFileSync(path.join(uniappRoot, 'main.js'), 'utf8');
 assert.equal(mainSource.includes('vue-i18n'), false, 'unused vue-i18n initialization must not return without translated UI');
 
 const productSource = fs.readFileSync(path.join(uniappRoot, 'config/product.js'), 'utf8');
-assert.match(productSource, /萌喵圈[\s\S]*?wxe0ed0e6727a0a5cd/);
-assert.match(productSource, /宝宝点滴[\s\S]*?wx1bb2d5c6821a7883/);
-// 86952f4（PARITY-ILL/P009 正典化）：推广卡片改缩写徽章块，icon PNG 已移除
-assert.match(productSource, /abbr:\s*'萌喵'/);
-assert.match(productSource, /abbr:\s*'宝宝'/);
+// 2026-09-10（F028 推广跳转移除）：更多小程序推广区整链下线，产品配置不得回流跳转数据
+assert.equal(productSource.includes('RELATED_MINI_PROGRAMS'), false, 'promo mini-program registry must not return with the F028 removal');
+assert.doesNotMatch(productSource, /wxe0ed0e6727a0a5cd|wx1bb2d5c6821a7883|萌喵圈|宝宝点滴/);
 assert.doesNotMatch(productSource, /other-apps\/.*\.png/);
 
 const versionSource = fs.readFileSync(path.join(uniappRoot, 'pages/about/version.vue'), 'utf8');
@@ -143,8 +141,8 @@ assert.equal(versionSource.includes('智能蓝牙助手'), false, 'Version Histo
 assert.match(versionSource, /BLE Toolkit\+/);
 
 const aboutSource = fs.readFileSync(path.join(uniappRoot, 'pages/about/index.vue'), 'utf8');
-assert.match(aboutSource, /navigateToMiniProgram/);
-assert.match(aboutSource, /暂时无法打开/);
+// 2026-09-10（F028 移除）：关于页不得再含推广区/小程序跳转
+assert.doesNotMatch(aboutSource, /更多小程序|navigateToMiniProgram|openApp|promotion-section/);
 
 const prototype = fs.readFileSync(path.join(repoRoot, 'docs/prototypes/unified-device-discovery.html'), 'utf8');
 assert.equal((prototype.match(/data-tab="(?:device|connected|broadcast|about)"/g) || []).length, 4, 'prototype must keep four top-level tabs');
