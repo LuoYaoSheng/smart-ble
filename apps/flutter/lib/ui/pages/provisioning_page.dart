@@ -288,7 +288,7 @@ class _ProvisioningPageState extends ConsumerState<ProvisioningPage> {
         if (!didPop) _confirmLeave();
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFFF6F8FB),
+        backgroundColor: AppTokens.cBg /* --c-bg #F8FBFF · UI-CONV 2026-09-10 */,
         // UI-G2：正典 AppSubnav（返回走 U-01 离开确认，PopScope 同口径）
         appBar: AppSubnav(title: '配置 Smart HID', onBack: _confirmLeave),
         body: ListView(
@@ -831,7 +831,7 @@ class _ErrorBanner extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFFFDEEEF),
+        color: AppTokens.cDangerWeak,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: AppTokens.cDanger.withValues(alpha: 0.3)),
       ),
@@ -849,17 +849,17 @@ class _ErrorBanner extends StatelessWidget {
                       style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFFB33A44))),
+                          color: AppTokens.cDanger)),
                   Text(code,
                       style: const TextStyle(
                           fontSize: 12,
                           fontFamily: 'monospace',
-                          color: Color(0xFFB33A44))),
+                          color: AppTokens.cDanger)),
                 ]),
                 const SizedBox(height: 4),
                 Text(message,
                     style: const TextStyle(
-                        fontSize: 12, height: 1.5, color: Color(0xFF8A4A50))),
+                        fontSize: 12, height: 1.5, color: AppTokens.cSub /* 正典 .ebanner .d 文本色 --c-sub */)),
               ],
             ),
           ),
@@ -879,7 +879,7 @@ class _StatusBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
-        color: connected ? const Color(0xFFE8F8F1) : const Color(0xFFFDEEEF),
+        color: connected ? AppTokens.cSuccessWeak : AppTokens.cDangerWeak,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
@@ -900,7 +900,7 @@ class _StatusBadge extends StatelessWidget {
               fontSize: 11,
               fontWeight: FontWeight.w600,
               color:
-                  connected ? AppTokens.cSuccessDeep : const Color(0xFFB33A44),
+                  connected ? AppTokens.cSuccessDeep : AppTokens.cDanger,
             ),
           ),
         ],
@@ -993,7 +993,7 @@ class _QrActionCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: hasToken ? const Color(0xFFEFFBF8) : Colors.white,
+          color: hasToken ? AppTokens.cSuccessWeak : Colors.white,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: hasToken ? AppTokens.cSuccess : AppTheme.borderColor,
@@ -1080,7 +1080,7 @@ class _QrErrorPanel extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: isWarn ? const Color(0xFFFFF8EE) : const Color(0xFFFDEEEF),
+        color: isWarn ? AppTokens.cWarningWeak : AppTokens.cDangerWeak,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
           color: isWarn
@@ -1096,8 +1096,8 @@ class _QrErrorPanel extends StatelessWidget {
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
                   color: isWarn
-                      ? const Color(0xFF9A6210)
-                      : const Color(0xFFB33A44))),
+                      ? AppTokens.cWarningDeep
+                      : AppTokens.cDanger)),
           const SizedBox(height: 4),
           Text(descs[reason]!,
               style: const TextStyle(
@@ -1144,7 +1144,7 @@ class _InfoNote extends StatelessWidget {
             child: Text(
               text,
               style: const TextStyle(
-                  fontSize: 12, height: 1.5, color: Color(0xFF2F5B8F)),
+                  fontSize: 12, height: 1.5, color: AppTokens.noteInfoFg /* 正典 .note.info #2E5290 */),
             ),
           ),
         ],
@@ -1209,7 +1209,7 @@ class _ProgressRow extends StatelessWidget {
           width: 22,
           height: 22,
           decoration: BoxDecoration(
-            color: const Color(0xFFFDEEEF),
+            color: AppTokens.cDangerWeak,
             shape: BoxShape.circle,
             border: Border.all(color: AppTokens.cDanger, width: 1.5),
           ),
@@ -1222,7 +1222,7 @@ class _ProgressRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 11),
       decoration: const BoxDecoration(
         border: Border(
-          bottom: BorderSide(color: Color(0xFFEFF3F8), width: 1),
+          bottom: BorderSide(color: AppTokens.cLineSoft, width: 1),
         ),
       ),
       child: Row(

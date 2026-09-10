@@ -67,7 +67,7 @@ class AppIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = color ??
         DefaultTextStyle.of(context).style.color ??
-        const Color(0xFF12263F);
+        const Color(0xFF18222E); // --c-text 正典兜底（#12263F 圈外值收敛 UI-CONV 2026-09-10）
     final hex = '#${(c.toARGB32() & 0xFFFFFF).toRadixString(16).padLeft(6, '0').toUpperCase()}';
     final body = (kAppIcons[name] ?? kAppIcons['info']!)
         .replaceAll('{C}', hex)

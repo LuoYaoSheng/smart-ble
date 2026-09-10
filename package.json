@@ -7,7 +7,8 @@
   "scripts": {
     "check:page-env": "node scripts/check-page-test-environment.mjs",
     "verify:target:system": "node scripts/verify-target.mjs --mode=system --format=json",
-    "verify:target:current": "node scripts/verify-target.mjs --mode=current --format=json"
+    "verify:target:current": "node scripts/verify-target.mjs --mode=current --format=json",
+    "check:apple-tokens": "node scripts/check-apple-tokens.mjs"
   },
   "dependencies": {
     "@abandonware/noble": "^1.9.2-26"

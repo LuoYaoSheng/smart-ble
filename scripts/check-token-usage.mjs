@@ -44,20 +44,16 @@ const registeredList = [...registered]
 
 // banned（旧 iOS 色）与 legacy 漂移登记
 const banned = tokens.legacy.banned.map((h) => h.slice(1).toLowerCase())
-const LEGACY_DRIFT = new Set([
-  // v0 存量视觉残留（design-system.css legacy 登记值 + uni-app 框架默认 + 未迁移存量页近似色），
-  // 仅允许出现在存量文件；新文件出现即 FAIL。迁移完成后本清单应清空。
-  '7be0ff', 'eaf2fb', 'f7fbff', 'e7f1ff', '12263f', '134dbe', '93a2b4',
-  '0e9c82', 'd37a12', '5662d6', '155dff', '33b2ff', '0e8f79', '0e8d75', 'a6630a', 'c86d00',
-  '5ac8fa', '9aa8b6',
-  // design-system.css v0 按钮/成功块渐变
-  '238eff', '31adf5', '258ff7', '087765', '17b99b',
-  // uni.scss 框架默认兜底段
-  'c0c0c0', '2c405a', '555555', '3f536e',
-  // flutter config/product.dart 品牌推广色与存量页漂移
-  'ffedf2', 'e06c9a', 'fff3e2', 'f6f8fb', 'fdeeef', 'b33a44', '8a4a50',
-  'e8f8f1', 'effbf8', 'fff8ee', '9a6210', '2f5b8f', 'eff3f8',
-])
+// LEGACY_DRIFT 清空（UI-CONV 2026-09-10）：v0 漂移值已全部收敛至正典 Token——
+//   uniapp：design-system.css/uni.scss/存量组件与页面（provision-stepper/progress、ota-dialog、
+//           app-card、broadcast、hid/add）改挂 --c-*；--ble-cyan/--ble-gradient-brand 删除；
+//   flutter：provisioning_page 16 处深色阶/弱底 → AppTokens（对齐原型 ebanner/note/prow 正典），
+//           app_icons 兜底色 → --c-text；
+//   推广位配色（product.dart）属产品内容数据非设计 Token，移入 DATA_SKIP。
+// 本机制保留：如再出现圈外漂移值，直接 FAIL（不再登记容忍）。
+const LEGACY_DRIFT = new Set([])
+// 产品内容数据文件（p009 推广缩写块 bg/color 为内容数据，与 uniapp config/product.js 同源；非设计 Token）
+const DATA_SKIP = [join('apps', 'flutter', 'lib', 'config', 'product.dart')]
 // 白名单（正典 rgba 表达等）：跳过
 const BANNED_SCAN_SKIP = ['pages.json', 'project.config.json', 'manifest.json', 'design-tokens.json', 'app.css', 'tauri.conf.json']
 
@@ -78,7 +74,8 @@ const uniVue = await walk(join(root, 'apps/uniapp'), (n) => n.endsWith('.vue'))
 const uniCss = await walk(join(root, 'apps/uniapp/styles'), (n) => n.endsWith('.css'))
 const uniScss = [join(root, 'apps/uniapp/uni.scss')]
 const uniTheme = [join(root, 'apps/uniapp/app_theme.css')]
-const dartFiles = await walk(join(root, 'apps/flutter/lib'), (n) => n.endsWith('.dart'))
+const dartFiles = (await walk(join(root, 'apps/flutter/lib'), (n) => n.endsWith('.dart')))
+  .filter((f) => !DATA_SKIP.some((d) => f === join(root, d)))
 
 const canonVue = (f) => f.includes(join('components', 'ui')) || f.includes(join('pages', 'index'))
 const canonDart = (f) => f.includes(join('ui', 'design')) || f.endsWith('device_list_page.dart') || f.includes(join('themes', 'app_theme.dart'))
