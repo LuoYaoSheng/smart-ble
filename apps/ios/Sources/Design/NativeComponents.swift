@@ -120,19 +120,73 @@ extension NativeNavbar where Trailing == EmptyView {
 struct NativeSectionHeading<Trailing: View>: View {
     let icon: String
     let title: String
+    var tone: Color = NativeDS.primary
     @ViewBuilder let trailing: () -> Trailing
 
     var body: some View {
         HStack(spacing: 8) {
             Image(systemName: icon)
                 .font(.system(size: 17, weight: .semibold))
-                .foregroundColor(NativeDS.primary)
+                .foregroundColor(tone)
             Text(title)
                 .font(.system(size: 17, weight: .bold))
                 .foregroundColor(NativeDS.ink)
             Spacer()
             trailing()
         }
+    }
+}
+
+extension NativeSectionHeading where Trailing == EmptyView {
+    init(icon: String, title: String, tone: Color = NativeDS.primary) {
+        self.init(icon: icon, title: title, tone: tone, trailing: { EmptyView() })
+    }
+}
+
+/// 统一的子页返回按钮：32×32 圆角方块，全 App 五个子页共用同一规格
+struct NativeBackButton: View {
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: "chevron.left")
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundColor(NativeDS.ink)
+                .frame(width: 32, height: 32)
+                .background(NativeDS.fill)
+                .overlay(RoundedRectangle(cornerRadius: 9).stroke(NativeDS.line))
+                .clipShape(RoundedRectangle(cornerRadius: 9))
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("返回")
+    }
+}
+
+/// 统一的子页导航栏：返回按钮 + 17pt 标题 + lineSoft 分割线
+struct NativeSubnavBar<Trailing: View>: View {
+    let title: String
+    let onBack: () -> Void
+    @ViewBuilder let trailing: () -> Trailing
+
+    var body: some View {
+        HStack(spacing: 10) {
+            NativeBackButton(action: onBack)
+            Text(title)
+                .font(.system(size: 17, weight: .bold))
+                .foregroundColor(NativeDS.ink)
+            Spacer()
+            trailing()
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 9)
+        .background(Color.white)
+        .overlay(alignment: .bottom) { Rectangle().fill(NativeDS.lineSoft).frame(height: 1) }
+    }
+}
+
+extension NativeSubnavBar where Trailing == EmptyView {
+    init(title: String, onBack: @escaping () -> Void) {
+        self.init(title: title, onBack: onBack, trailing: { EmptyView() })
     }
 }
 

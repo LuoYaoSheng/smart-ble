@@ -55,8 +55,8 @@ struct ServiceCard: View {
                         .background(NativeDS.fill).clipShape(Capsule())
                     Spacer()
                     Image(systemName: "chevron.right")
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundColor(NativeDS.muted)
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundColor(NativeDS.placeholder)
                         .rotationEffect(.degrees(isExpanded ? 90 : 0))
                 }
             }

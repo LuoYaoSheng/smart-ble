@@ -71,18 +71,7 @@ struct HidDeviceDetailView: View {
     }
 
     private var subnavigation: some View {
-        HStack(spacing: 10) {
-            Button(action: { dismiss() }) {
-                Image(systemName: "chevron.left").frame(width: 32, height: 32)
-            }
-            .buttonStyle(.plain)
-            Text("Smart HID 设备详情").font(.title3.bold())
-            Spacer()
-        }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 10)
-        .background(Color.white)
-        .overlay(alignment: .bottom) { Rectangle().fill(NativeDS.line).frame(height: 1) }
+        NativeSubnavBar(title: "Smart HID 设备详情", onBack: { dismiss() })
     }
 
     private func hero(_ snapshot: HidSessionSnapshot) -> some View {
@@ -109,7 +98,7 @@ struct HidDeviceDetailView: View {
         let protocolVersion = nonEmpty(snapshot.protocolVersion)
         let firmware = nonEmpty(snapshot.firmware) ?? "—"
         return VStack(alignment: .leading, spacing: 10) {
-            Label("设备身份", systemImage: "cpu").font(.headline)
+            NativeSectionHeading(icon: "cpu", title: "设备身份")
             keyValue("Device ID", snapshot.deviceId, mono: true)
             keyValue("协议版本", protocolVersion.map { "Smart HID \($0)" } ?? "—")
             keyValue("固件版本", firmware, mono: true)
@@ -123,7 +112,7 @@ struct HidDeviceDetailView: View {
 
     private func lastConfigurationCard(_ snapshot: HidSessionSnapshot) -> some View {
         VStack(alignment: .leading, spacing: 10) {
-            Label("最近配置", systemImage: "wifi").font(.headline)
+            NativeSectionHeading(icon: "wifi", title: "最近配置")
             keyValue("Wi-Fi", nonEmpty(snapshot.lastWifi) ?? "—")
             keyValue("ControlHub", nonEmpty(snapshot.lastHub) ?? "—", mono: true)
         }

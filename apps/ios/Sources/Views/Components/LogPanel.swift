@@ -16,10 +16,13 @@ struct LogPanel: View {
     var body: some View {
         VStack(spacing: 0) {
             // Header
-            HStack {
-                Label("通信日志", systemImage: "doc.text.fill")
+            HStack(spacing: 8) {
+                Image(systemName: "doc.text.fill")
                     .font(.subheadline.weight(.semibold))
-                    .foregroundColor(.primary)
+                    .foregroundColor(NativeDS.primary)
+                Text("通信日志")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundColor(NativeDS.ink)
 
                 Spacer()
 

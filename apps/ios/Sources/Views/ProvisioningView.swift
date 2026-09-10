@@ -82,20 +82,7 @@ struct ProvisioningView: View {
     }
 
     private var subnavigation: some View {
-        HStack(spacing: 10) {
-            Button(action: requestLeave) {
-                Image(systemName: "chevron.left")
-                    .frame(width: 32, height: 32)
-            }
-            .buttonStyle(.plain)
-            Text("配置 Smart HID")
-                .font(.title3.weight(.bold))
-            Spacer()
-        }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 10)
-        .background(Color.white)
-        .overlay(alignment: .bottom) { Rectangle().fill(NativeDS.line).frame(height: 1) }
+        NativeSubnavBar(title: "配置 Smart HID", onBack: requestLeave)
     }
 
     private var stepper: some View {

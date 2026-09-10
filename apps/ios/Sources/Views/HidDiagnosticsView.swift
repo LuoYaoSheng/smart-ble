@@ -88,18 +88,7 @@ struct HidDiagnosticsView: View {
     }
 
     private var subnavigation: some View {
-        HStack(spacing: 10) {
-            Button(action: { dismiss() }) {
-                Image(systemName: "chevron.left").frame(width: 32, height: 32)
-            }
-            .buttonStyle(.plain)
-            Text("SHID 诊断").font(.title3.bold())
-            Spacer()
-        }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 10)
-        .background(Color.white)
-        .overlay(alignment: .bottom) { Rectangle().fill(NativeDS.line).frame(height: 1) }
+        NativeSubnavBar(title: "SHID 诊断", onBack: { dismiss() })
     }
 
     private var statusCard: some View {
@@ -147,7 +136,7 @@ struct HidDiagnosticsView: View {
     @ViewBuilder
     private func errorDetails(code: String, message: String) -> some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("错误详情").font(.headline).foregroundColor(NativeDS.danger)
+            NativeSectionHeading(icon: "exclamationmark.octagon", title: "错误详情", tone: NativeDS.danger)
             Text(message).font(.footnote).foregroundColor(NativeDS.sub)
             Button(showErrorCode ? "隐藏错误码" : "显示错误码（详细信息）") {
                 showErrorCode.toggle()

@@ -59,19 +59,7 @@ struct DeviceDetailView: View {
     }
 
     private var subnavigation: some View {
-        HStack(spacing: 10) {
-            Button(action: { dismiss() }) {
-                Image(systemName: "chevron.left")
-                    .frame(width: 30, height: 30)
-                    .background(NativeDS.fill)
-                    .clipShape(RoundedRectangle(cornerRadius: 9))
-            }
-            .buttonStyle(.plain)
-
-            Text("GATT 调试")
-                .font(.system(size: 17, weight: .bold))
-            Spacer()
-
+        NativeSubnavBar(title: "GATT 调试", onBack: { dismiss() }) {
             if isConnected, hasOtaService {
                 Button(action: { showingOtaDialog = true }) {
                     Label("固件更新", systemImage: "arrow.down.circle")
@@ -84,10 +72,6 @@ struct DeviceDetailView: View {
                 .buttonStyle(.plain)
             }
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 9)
-        .background(Color.white)
-        .overlay(alignment: .bottom) { Rectangle().fill(NativeDS.lineSoft).frame(height: 1) }
     }
 
     private var deviceHeader: some View {

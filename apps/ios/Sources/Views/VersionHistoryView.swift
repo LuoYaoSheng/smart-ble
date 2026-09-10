@@ -42,23 +42,12 @@ struct VersionHistoryView: View {
     }
 
     private var subnavigation: some View {
-        HStack(spacing: 10) {
-            Button(action: { dismiss() }) {
-                Image(systemName: "chevron.left").frame(width: 32, height: 32)
-            }
-            .buttonStyle(.plain)
-            Text("版本记录").font(.title3.bold())
-            Spacer()
-        }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 10)
-        .background(Color.white)
-        .overlay(alignment: .bottom) { Rectangle().fill(NativeDS.line).frame(height: 1) }
+        NativeSubnavBar(title: "版本记录", onBack: { dismiss() })
     }
 
     private var currentVersionCard: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Label("当前版本", systemImage: "doc.text").font(.headline)
+            NativeSectionHeading(icon: "doc.text", title: "当前版本")
             HStack(alignment: .firstTextBaseline, spacing: 10) {
                 Text(displayVersion)
                     .font(.system(size: 24, weight: .heavy))
@@ -95,7 +84,7 @@ struct VersionHistoryView: View {
 
     private var limitationsCard: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Label("当前限制", systemImage: "exclamationmark.triangle").font(.headline)
+            NativeSectionHeading(icon: "exclamationmark.triangle", title: "当前限制", tone: NativeDS.warning)
             if metadata.knownLimitations.isEmpty {
                 Text("暂无已知限制条目").font(.footnote).foregroundColor(NativeDS.muted)
             } else {
@@ -122,7 +111,7 @@ struct VersionHistoryView: View {
 
     private func historyCard(title: String, icon: String, emptyTitle: String, emptyDescription: String) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            Label(title, systemImage: icon).font(.headline)
+            NativeSectionHeading(icon: icon, title: title)
             VStack(spacing: 8) {
                 NativeIllustration(name: "doc", width: 72)
                 Text(emptyTitle).font(.subheadline.weight(.semibold))
