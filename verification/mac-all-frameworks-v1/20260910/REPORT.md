@@ -80,3 +80,36 @@ cd apps/desktop/electron && npm run build:mac
 - tauri-02-scan-result.png（修复前：0 台）→ 03-scan-result-fixed.png（修复后：2 台）
 - fmac-01-launch.png（Release 首屏）→ 02-scan-result.png（SHID-00000001 -37dBm Smart HID 强匹配 + SHID-00000004）
 - N-MAC 本轮证据 = CoreUnit/PageSmoke stdout（/tmp 日志已判读；在案历史证据见 verification/apple-native-v1/ 与 macos-mainline-v1/）
+
+---
+
+# 第二轮（R2）：连接/GATT 链路真测（同日追加，用户「继续」驱动）
+
+范围 = R1 刻意 NOT_RUN 的连接链下沉，对象为真实 ESP32 夹具 **SHID-00000001**（串行单连、用后即断，遵守夹具单连接约束）。交互通道 = 全屏截屏+sips 裁剪+视觉定位+Quartz CGEvent 点击（§6 定案通道）。
+
+## R2.1 结果
+
+| 线 | 连接 | 服务发现 | 读（F008） | 断开 | 附加 |
+|---|---|---|---|---|---|
+| F-MAC | ✅ 自动进 P006 | ✅ 9F1D1001（WRITE 9F1D1002 / NOTIFY 9F1D1003）+ 180A | **✅ 2A26 真读 = HEX `01 02 03 04`** | ✅「已断开」toast | P008 广播启停 ✅（未开启→广播中→停止→未开启，flutter_ble_peripheral 在 macOS 真实可启）；P002 入口 ✅（设备卡双入口→向导步骤 1/3 渲染） |
+| Electron | ✅ 进设备详情 | ✅ 同款服务树 | NOT_RUN（连接冒烟口径） | ✅ 日志「[断开连接] 已断开」 | LogPanel 连接/服务发现记录 ✅（noble 对 ESP32 全通） |
+| Tauri | ✅ 进设备详情 | ✅ 同款服务树 | NOT_RUN（同左） | ✅ 日志「已断开」 | btleplug 连接链授权后全通（叠加 FIX-1） |
+
+三线连接闭环（连→发现→断）全 PASS；F-MAC 达最深（真读）。F009 写 / F010 Notify 字节级仍按矩阵口径留硬件在环轮（需对端语义断言，不在冒烟尺度）。F-MAC P008 外部可见性受 P-F1 本机铁律限制，登记 NOT_SELF_VERIFIABLE（N-MAC 已有观察端先例）。
+
+## R2.2 FIX-2 前端标题对齐产品名
+
+- 现象：Electron/Tauri 共用前端窗口标题、顶栏、关于页 h1 均「Smart BLE」，与其自身打包 productName「BLE Toolkit+」及家族正典（N-MAC 标题）矛盾（R1 §4 登记项，本轮升级为修复）。
+- 修复：`apps/desktop/electron/public/index.html` 与 `apps/desktop/tauri/src/index.html` 各 6 处 `Smart BLE → BLE Toolkit+`（title/顶栏/关于 h1/3 处 alt），两打包产物已重建（E_EXIT=0 / T_EXIT=0）。
+- 复核：tauri-05-title-aligned.png / electron-07-title-aligned.png 顶栏均显示「BLE Toolkit+」。
+
+## R2.3 新增工具链事故（补入 §6 定案）
+
+7. **Quartz 合成点击可被置顶窗口吃掉**：Tauri R2 首轮扫描点击无效（目标窗未置前、坐标被别家窗口占据）——点击前必须 `System Events → set frontmost to true`。
+
+## R2.4 证据追加（smoke/ 共 15 张）
+
+- fmac-03-broadcast-running.png（P008 广播中）、fmac-04-provisioning-entry.png（P002 向导）
+- electron-06-connected-servicetree.png（连接+服务树）、electron-07-title-aligned.png
+- tauri-04-connected-servicetree.png、tauri-05-title-aligned.png
+- F-MAC 连接链/读值/断开过程帧存 /tmp 会话日志判读（值 `01 02 03 04` 已由视觉转录双确认）
