@@ -13,6 +13,7 @@ class App {
         this.logs = [];
         this.currentDevice = null;
         this.isScanning = false;
+        this.hasScanned = false; // P001 正典状态词：扫描完成后显示「扫描完成 · 发现 N 台」
         this.writeDialogCallback = null;
         this.characteristicsMap = new Map(); // 存储特征值引用以便更新状态
         this.isBroadcasting = false; // 广播状态
@@ -78,9 +79,19 @@ class App {
     }
 
     bindEvents() {
-        // Tab 切换
-        document.querySelectorAll('.tab-btn').forEach(btn => {
+        // Tab 切换（P001 正典底部 TabBar）
+        document.querySelectorAll('.tabbar .tb').forEach(btn => {
             btn.addEventListener('click', () => this.switchTab(btn.dataset.tab));
+        });
+
+        // 筛选面板折叠（正典 sec-t txtlink：筛选 / 收起筛选）
+        const filterToggle = document.getElementById('filterToggle');
+        const collapsePanel = document.getElementById('mainFilterPanel');
+        filterToggle?.addEventListener('click', () => {
+            const open = collapsePanel?.hasAttribute('hidden');
+            if (open) collapsePanel.removeAttribute('hidden');
+            else collapsePanel?.setAttribute('hidden', '');
+            filterToggle.textContent = open ? '收起筛选' : '筛选';
         });
 
         // Scan button
@@ -258,9 +269,9 @@ class App {
     }
 
     switchTab(tab) {
-        // 更新标签按钮状态
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.tab === tab);
+        // 更新标签按钮状态（P001 正典 TabBar：.tb.on）
+        document.querySelectorAll('.tabbar .tb').forEach(btn => {
+            btn.classList.toggle('on', btn.dataset.tab === tab);
         });
 
         // 切换视图
@@ -311,8 +322,8 @@ class App {
     // P010：进入版本记录二级视图
     showVersionsView() {
         this.switchTab('versions');
-        const aboutBtn = document.querySelector('.tab-btn[data-tab="about"]');
-        aboutBtn?.classList.add('active');
+        const aboutBtn = document.querySelector('.tabbar .tb[data-tab="about"]');
+        aboutBtn?.classList.add('on');
     }
 
     // P009：关于页投影（结构对齐 docs/specs/prototype/platform/desktop/high-fi/pages/p009-about.js）
@@ -509,7 +520,10 @@ class App {
 
         const text = `${info.name} - BLE 调试与验证工具\n${info.summary}\n版本：${versionLabel}\n${info.website}`;
 
-        const done = (msg) => this.addLog?.('success', msg) || console.log(msg);
+        const done = (msg) => {
+            this.addLog?.(msg, 'success');
+            console.log(msg);
+        };
         const fallbackCopy = () => {
             navigator.clipboard?.writeText(text).then(
                 () => done('分享文本已复制到剪贴板'),
@@ -544,7 +558,7 @@ class App {
         const count = this.connectedDevices.size;
         if (badge) {
             badge.textContent = count;
-            badge.style.display = count > 0 ? 'inline' : 'none';
+            badge.style.display = count > 0 ? 'flex' : 'none';
         }
         if (disconnectAllBtn) {
             disconnectAllBtn.style.display = count > 1 ? 'inline-block' : 'none';
@@ -714,28 +728,19 @@ class App {
         });
     }
 
+    // P001 蓝牙状态芯片（正典 navbar bt-chip：bt-dot on/off + 状态词）
     updateBluetoothStatus(state) {
-        console.log('updateBluetoothStatus called with state:', state);
-        const statusEl = document.getElementById('bluetoothStatus');
-        if (!statusEl) {
-            console.log('bluetoothStatus element not found');
-            return;
-        }
-
-        const dot = statusEl.querySelector('.status-dot');
-        const text = statusEl.querySelector('.status-text');
-
+        const dot = document.querySelector('#btChip .bt-dot');
+        const word = document.getElementById('btWord');
         const stateMap = {
-            'poweredOn': { text: '蓝牙已开启', class: 'active' },
-            'poweredOff': { text: '蓝牙已关闭', class: '' },
-            'unauthorized': { text: '未授权', class: 'error' },
-            'unknown': { text: '初始化中...', class: '' }
+            'poweredOn': { text: '蓝牙就绪', cls: 'on' },
+            'poweredOff': { text: '蓝牙未开启', cls: 'off' },
+            'unauthorized': { text: '未授权', cls: 'off' },
+            'unknown': { text: '初始化中…', cls: '' }
         };
-
-        const status = stateMap[state] || { text: '状态未知', class: '' };
-        console.log('Setting status to:', status);
-        if (text) text.textContent = status.text;
-        if (dot) dot.className = 'status-dot ' + status.class;
+        const status = stateMap[state] || { text: '状态未知', cls: '' };
+        if (dot) dot.className = 'bt-dot ' + status.cls;
+        if (word) word.textContent = status.text;
     }
 
     async toggleScan() {
@@ -770,15 +775,18 @@ class App {
         try {
             this.devices.clear();
             this.characteristicsMap.clear();
+            this.hasScanned = false;
             this.updateDeviceList();
             this.isScanning = true;
             this.updateScanButton();
+            this.updateScanStatus();
 
             const result = await window.bleAPI.startScan();
             if (!result.success) {
                 this.showError('扫描失败: ' + result.error);
                 this.isScanning = false;
                 this.updateScanButton();
+                this.updateScanStatus();
             } else {
                 // Auto-stop after 5 seconds - aligned with UniApp
                 this.scheduleAutoStop();
@@ -787,6 +795,7 @@ class App {
             this.showError('扫描失败: ' + error.message);
             this.isScanning = false;
             this.updateScanButton();
+            this.updateScanStatus();
         }
     }
 
@@ -800,7 +809,9 @@ class App {
         try {
             await window.bleAPI.stopScan();
             this.isScanning = false;
+            this.hasScanned = true;
             this.updateScanButton();
+            this.updateScanStatus();
         } catch (error) {
             this.showError('停止扫描失败: ' + error.message);
         }
@@ -841,21 +852,29 @@ class App {
         }).sort((a, b) => b.rssi - a.rssi); // Sort by RSSI (strongest first)
     }
 
+    // P001 扫描按钮（正典 C.btn：primary+scan / danger+stop）
     updateScanButton() {
         const btn = document.getElementById('scanButton');
         if (!btn) return;
-
-        const icon = btn.querySelector('.icon');
-        const text = btn.querySelector('.text');
-
         if (this.isScanning) {
-            if (icon) icon.textContent = '⏹';
-            if (text) text.textContent = '停止扫描';
-            btn.classList.add('scanning');
+            btn.className = 'btn danger';
+            btn.innerHTML = '<svg class="ic sm" aria-hidden="true"><use href="#i-stop"/></svg><span>停止扫描</span>';
         } else {
-            if (icon) icon.textContent = '🔍';
-            if (text) text.textContent = '开始扫描';
-            btn.classList.remove('scanning');
+            btn.className = 'btn primary';
+            btn.innerHTML = '<svg class="ic sm" aria-hidden="true"><use href="#i-scan"/></svg><span>开始扫描</span>';
+        }
+    }
+
+    // P001 扫描状态词（正典 scantool.lb：扫描中 live 点 · 5s 会话 / 扫描完成 · 发现 N 台 / 待开始扫描）
+    updateScanStatus() {
+        const el = document.getElementById('scanStatusLabel');
+        if (!el) return;
+        if (this.isScanning) {
+            el.innerHTML = '<span class="live"></span>扫描中 · 5s 会话';
+        } else if (this.hasScanned) {
+            el.textContent = `扫描完成 · 发现 ${this.getFilteredDevices().length} 台`;
+        } else {
+            el.textContent = '待开始扫描';
         }
     }
 
@@ -868,6 +887,7 @@ class App {
         if (isNew) {
             // 新设备才重新渲染列表
             this.updateDeviceList();
+            this.updateScanStatus();
         } else {
             // 已存在的设备只更新 RSSI
             this.updateDeviceRSSI(device);
@@ -888,6 +908,23 @@ class App {
         });
     }
 
+    // P001 空态插图（正典 C.ILL 同源 SVG：radar 扫描空态 / link 筛选无匹配）
+    emptyIll(kind) {
+        if (kind === 'link') {
+            return `<svg width="118" height="86" viewBox="0 0 118 86" fill="none">
+      <path d="M46 40a12 12 0 0017 17l8-8a12 12 0 10-17-17" stroke="#9AA8B6" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M72 46A12 12 0 0055 29l-8 8a12 12 0 1017 17" stroke="#1B6DFF" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M24 74h70" stroke="#E3EAF3" stroke-width="2" stroke-linecap="round"/></svg>`;
+        }
+        return `<svg width="118" height="86" viewBox="0 0 118 86" fill="none">
+      <circle cx="59" cy="46" r="34" stroke="#E3EAF3" stroke-width="2"/>
+      <circle cx="59" cy="46" r="21" stroke="#E3EAF3" stroke-width="2"/>
+      <circle cx="59" cy="46" r="8" stroke="#1B6DFF" stroke-width="2"/>
+      <path d="M59 46L88 20" stroke="#1B6DFF" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="76" cy="54" r="3.5" fill="#17C7A8"/><circle cx="48" cy="34" r="2.5" fill="#9AA8B6"/>
+      <path d="M18 78h82" stroke="#E3EAF3" stroke-width="2" stroke-linecap="round"/></svg>`;
+    }
+
     updateDeviceList() {
         const list = document.getElementById('deviceList');
         const count = document.getElementById('deviceCount');
@@ -896,23 +933,20 @@ class App {
         const filteredDevices = this.getFilteredDevices();
         const allDevices = Array.from(this.devices.values());
 
+        // 正典 sec-t chip：仅在列表非空时显示数量
         if (count) {
-            if (filteredDevices.length === allDevices.length) {
-                count.textContent = `发现 ${allDevices.length} 台设备`;
-            } else {
-                count.textContent = `显示 ${filteredDevices.length} / ${allDevices.length} 台`;
-            }
+            count.textContent = String(filteredDevices.length);
+            count.style.display = filteredDevices.length ? '' : 'none';
         }
 
         if (allDevices.length === 0) {
             if (list) {
                 list.innerHTML = `
-                    <div class="empty-state">
-                        <img src="placeholders/empty_scan.png" class="empty-icon-img" alt="scan">
-                        <div class="empty-text">暂无设备</div>
-                        <div class="empty-hint">点击上方按钮开始扫描</div>
-                    </div>
-                `;
+                    <div class="empty">
+                        <div class="ill">${this.emptyIll('radar')}</div>
+                        <div class="t">还没有扫描结果</div>
+                        <div class="d">点上方按钮开始扫描附近 BLE 设备</div>
+                    </div>`;
             }
             return;
         }
@@ -920,12 +954,11 @@ class App {
         if (filteredDevices.length === 0) {
             if (list) {
                 list.innerHTML = `
-                    <div class="empty-state">
-                        <img src="placeholders/empty_scan.png" class="empty-icon-img" alt="search">
-                        <div class="empty-text">没有符合过滤条件的设备</div>
-                        <div class="empty-hint">尝试调整过滤条件</div>
-                    </div>
-                `;
+                    <div class="empty">
+                        <div class="ill">${this.emptyIll('link')}</div>
+                        <div class="t">当前没有匹配设备</div>
+                        <div class="d">调整筛选条件试试</div>
+                    </div>`;
             }
             return;
         }
@@ -944,6 +977,7 @@ class App {
     createDeviceCard(device) {
         const card = document.createElement('device-card');
         card.device = device;
+        card.connectedHint = this.connectedDevices.has(device.id);
         card.addEventListener('connect', (e) => {
             e.stopPropagation();
             this.connectToDevice({ id: e.detail.id, name: device.name });
@@ -1254,28 +1288,19 @@ class App {
         if (panel) panel.clearLogs();
     }
 
+    // 正典 toast（#toasts 容器 + 深色胶囊；success 带对勾图标）
     showToast(message, type = 'info') {
-        // Create toast element
+        const host = document.getElementById('toasts') || document.body;
         const toast = document.createElement('div');
-        toast.className = `toast toast-${type}`;
-        toast.textContent = message;
-
-        document.body.appendChild(toast);
-
-        // Show
-        requestAnimationFrame(() => {
-            toast.classList.add('show');
-        });
-
-        // Auto hide after 3 seconds
-        setTimeout(() => {
-            toast.classList.remove('show');
-            setTimeout(() => {
-                if (toast.parentNode) {
-                    toast.parentNode.removeChild(toast);
-                }
-            }, 300);
-        }, 3000);
+        toast.className = 'toast';
+        if (type === 'success') {
+            toast.innerHTML = '<span class="ok-i"><svg class="ic xs" aria-hidden="true"><use href="#i-check"/></svg></span>';
+        }
+        const span = document.createElement('span');
+        span.textContent = message;
+        toast.appendChild(span);
+        host.appendChild(toast);
+        setTimeout(() => toast.remove(), 2200);
     }
 
     showError(message) {

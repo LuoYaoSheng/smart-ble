@@ -33,6 +33,7 @@ const PERIPHERAL_SUPPORT = {
 const state = {
     bluetoothReady: false,
     scanning: false,
+    hasScanned: false, // P001 正典状态词：扫描完成后显示「扫描完成 · 发现 N 台」
     devices: new Map(),
     currentDevice: null,
     connectedDevices: new Set(),
@@ -64,7 +65,6 @@ const state = {
 
 // DOM Elements
 const elements = {
-    bluetoothStatus: document.getElementById('bluetoothStatus'),
     scanButton: document.getElementById('scanButton'),
     deviceCount: document.getElementById('deviceCount'),
     deviceList: document.getElementById('deviceList'),
@@ -155,9 +155,19 @@ async function init() {
 
 // Setup Event Listeners
 function setupEventListeners() {
-    // Tab navigation
-    document.querySelectorAll('.tab-btn').forEach(btn => {
+    // Tab navigation（P001 正典底部 TabBar）
+    document.querySelectorAll('.tabbar .tb').forEach(btn => {
         btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+
+    // 筛选面板折叠（正典 sec-t txtlink：筛选 / 收起筛选）
+    const filterToggle = document.getElementById('filterToggle');
+    const collapsePanel = document.getElementById('mainFilterPanel');
+    filterToggle?.addEventListener('click', () => {
+        const open = collapsePanel?.hasAttribute('hidden');
+        if (open) collapsePanel.removeAttribute('hidden');
+        else collapsePanel?.setAttribute('hidden', '');
+        filterToggle.textContent = open ? '收起筛选' : '筛选';
     });
 
     // Scan button
@@ -330,6 +340,7 @@ async function setupTauriListeners() {
             state.devices.set(device.id, device);
         });
         renderDeviceList();
+        updateScanStatus();
     });
 
     // Listen for notification data
@@ -424,34 +435,26 @@ async function initBluetooth() {
     }
 }
 
-// Update Status
+// Update Status（P001 正典 navbar bt-chip：bt-dot on/off + 状态词）
 function updateStatus(text, status) {
-    const dot = elements.bluetoothStatus?.querySelector('.status-dot');
-    const statusText = elements.bluetoothStatus?.querySelector('.status-text');
-    const statusIndicator = elements.bluetoothStatus;
-
-    if (statusText) statusText.textContent = text;
-    if (statusIndicator) {
-        statusIndicator.classList.remove('connecting');
-    }
-    if (dot) {
-        dot.classList.remove('active', 'error');
-        if (status === 'ready') {
-            dot.classList.add('active');
-        } else if (status === 'error') {
-            dot.classList.add('error');
-        } else if (status === 'initializing') {
-            if (statusIndicator) {
-                statusIndicator.classList.add('connecting');
-            }
-        }
+    const dot = document.querySelector('#btChip .bt-dot');
+    const word = document.getElementById('btWord');
+    if (status === 'ready') {
+        if (dot) dot.className = 'bt-dot on';
+        if (word) word.textContent = '蓝牙就绪';
+    } else if (status === 'error') {
+        if (dot) dot.className = 'bt-dot off';
+        if (word) word.textContent = '蓝牙不可用';
+    } else {
+        if (dot) dot.className = 'bt-dot';
+        if (word) word.textContent = '初始化中…';
     }
 }
 
 // Tab Navigation
 function switchTab(tab) {
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.tab === tab);
+    document.querySelectorAll('.tabbar .tb').forEach(btn => {
+        btn.classList.toggle('on', btn.dataset.tab === tab);
     });
     document.querySelectorAll('.view').forEach(view => {
         view.classList.remove('active');
@@ -472,7 +475,7 @@ function switchTab(tab) {
         // P010：关于页二级视图，Tab 状态保持「关于」
         document.getElementById('versionsView')?.classList.add('active');
         renderVersionsPage();
-        document.querySelector('.tab-btn[data-tab="about"]')?.classList.add('active');
+        document.querySelector('.tabbar .tb[data-tab="about"]')?.classList.add('on');
     }
 }
 
@@ -734,7 +737,7 @@ function renderConnectedDevicesPanel() {
     const count = state.connectedDevices.size;
     if (badge) {
         badge.textContent = count;
-        badge.style.display = count > 0 ? 'inline' : 'none';
+        badge.style.display = count > 0 ? 'flex' : 'none';
     }
     if (disconnectAllBtn) {
         disconnectAllBtn.style.display = count > 1 ? 'inline-block' : 'none';
@@ -820,12 +823,14 @@ async function startScan() {
 
     try {
         state.devices.clear();
+        state.hasScanned = false;
         renderDeviceList();
 
         const result = await invoke('start_scan');
         if (result.success) {
             state.scanning = true;
             updateScanButton(true);
+            updateScanStatus();
             addLog('info', 'Scanning started');
 
             // Auto-stop after 5 seconds
@@ -848,28 +853,56 @@ async function stopScan() {
     try {
         await invoke('stop_scan');
         state.scanning = false;
+        state.hasScanned = true;
         updateScanButton(false);
+        updateScanStatus();
         addLog('info', 'Scanning stopped');
     } catch (error) {
         addLog('error', `Stop scan error: ${error}`);
     }
 }
 
+// P001 扫描按钮（正典 C.btn：primary+scan / danger+stop）
 function updateScanButton(scanning) {
-    if (!elements.scanButton) return;
-    const icon = elements.scanButton.querySelector('.icon');
-    const text = elements.scanButton.querySelector('.text');
+    const btn = elements.scanButton;
+    if (!btn) return;
     if (scanning) {
-        if (icon) icon.textContent = '';
-        if (text) text.textContent = 'Stop Scan';
-        elements.scanButton.classList.add('btn-danger', 'scanning');
-        elements.scanButton.classList.remove('btn-primary');
+        btn.className = 'btn danger';
+        btn.innerHTML = '<svg class="ic sm" aria-hidden="true"><use href="#i-stop"/></svg><span>停止扫描</span>';
     } else {
-        if (icon) icon.textContent = ' Search';
-        if (text) text.textContent = 'Start Scan';
-        elements.scanButton.classList.remove('btn-danger', 'scanning');
-        elements.scanButton.classList.add('btn-primary');
+        btn.className = 'btn primary';
+        btn.innerHTML = '<svg class="ic sm" aria-hidden="true"><use href="#i-scan"/></svg><span>开始扫描</span>';
     }
+}
+
+// P001 扫描状态词（正典 scantool.lb：扫描中 live 点 · 5s 会话 / 扫描完成 · 发现 N 台 / 待开始扫描）
+function updateScanStatus() {
+    const el = document.getElementById('scanStatusLabel');
+    if (!el) return;
+    if (state.scanning) {
+        el.innerHTML = '<span class="live"></span>扫描中 · 5s 会话';
+    } else if (state.hasScanned) {
+        el.textContent = `扫描完成 · 发现 ${applyFilters().length} 台`;
+    } else {
+        el.textContent = '待开始扫描';
+    }
+}
+
+// P001 空态插图（正典 C.ILL 同源 SVG：radar 扫描空态 / link 筛选无匹配）
+function emptyIll(kind) {
+    if (kind === 'link') {
+        return `<svg width="118" height="86" viewBox="0 0 118 86" fill="none">
+      <path d="M46 40a12 12 0 0017 17l8-8a12 12 0 10-17-17" stroke="#9AA8B6" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M72 46A12 12 0 0055 29l-8 8a12 12 0 1017 17" stroke="#1B6DFF" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M24 74h70" stroke="#E3EAF3" stroke-width="2" stroke-linecap="round"/></svg>`;
+    }
+    return `<svg width="118" height="86" viewBox="0 0 118 86" fill="none">
+      <circle cx="59" cy="46" r="34" stroke="#E3EAF3" stroke-width="2"/>
+      <circle cx="59" cy="46" r="21" stroke="#E3EAF3" stroke-width="2"/>
+      <circle cx="59" cy="46" r="8" stroke="#1B6DFF" stroke-width="2"/>
+      <path d="M59 46L88 20" stroke="#1B6DFF" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="76" cy="54" r="3.5" fill="#17C7A8"/><circle cx="48" cy="34" r="2.5" fill="#9AA8B6"/>
+      <path d="M18 78h82" stroke="#E3EAF3" stroke-width="2" stroke-linecap="round"/></svg>`;
 }
 
 // Render Device List - Smart update to prevent flickering
@@ -879,30 +912,22 @@ function renderDeviceList() {
     // Apply filters and get device list
     const filteredDevices = applyFilters();
 
-    // Update device count
+    // 正典 sec-t chip：仅在列表非空时显示数量
     if (elements.deviceCount) {
-        elements.deviceCount.textContent = `Found ${filteredDevices.length} device${filteredDevices.length !== 1 ? 's' : ''}`;
+        elements.deviceCount.textContent = String(filteredDevices.length);
+        elements.deviceCount.style.display = filteredDevices.length ? '' : 'none';
     }
 
-    // Handle empty state
+    // Handle empty state（正典 C.empty：radar 还没有扫描结果 / link 当前没有匹配设备）
     if (filteredDevices.length === 0) {
-        if (!elements.deviceList.querySelector('.empty-state')) {
-            const hasDevices = state.devices.size > 0;
-            elements.deviceList.innerHTML = `
-                <div class="empty-state">
-                    <img src="placeholders/empty_scan.png" class="empty-icon-img" alt="scan">
-                    <div class="empty-text">${hasDevices ? '没有符合过滤条件的设备' : '暂无发现设备'}</div>
-                    <div class="empty-hint">${state.scanning ? '正在扫描发现周边设备...' : '尝试调整过滤条件或开始扫描'}</div>
-                </div>
-            `;
-        }
+        const hasDevices = state.devices.size > 0;
+        elements.deviceList.innerHTML = `
+            <div class="empty">
+                <div class="ill">${emptyIll(hasDevices ? 'link' : 'radar')}</div>
+                <div class="t">${hasDevices ? '当前没有匹配设备' : '还没有扫描结果'}</div>
+                <div class="d">${hasDevices ? '调整筛选条件试试' : '点上方按钮开始扫描附近 BLE 设备'}</div>
+            </div>`;
         return;
-    }
-
-    // Clear empty state if it exists
-    const emptyState = elements.deviceList.querySelector('.empty-state');
-    if (emptyState) {
-        emptyState.remove();
     }
 
     // Track current device IDs
@@ -931,10 +956,11 @@ function renderDeviceList() {
             card = document.createElement('device-card');
             card.dataset.id = device.id;
             card.device = device;
-            
+            card.connectedHint = state.connectedDevices.has(device.id);
+
             card.addEventListener('connect', (e) => connectDevice(e.detail.id));
             card.addEventListener('show-detail', (e) => showDeviceInfoDialog(e.detail.id));
-            
+
             elements.deviceList.appendChild(card);
         } else {
             // Update existing device card properties
