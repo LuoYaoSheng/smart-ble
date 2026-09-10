@@ -292,3 +292,61 @@ uniapp `build:mp-weixin` 通过（dist 含 ILL 镜像 `0 0 118 86`，`placeholde
 ### 13.4 验证
 
 U-WX：`npm run build:mp-weixin` 通过；`npx jest -t "PARITY-P001"` 4/4 绿（静态正典锁；automator 全量流待 HBuilderX/devtools 环境）。F-AND：`flutter analyze` 0 issue；`flutter test` 69/69（含新增 P001 两测，全量绿）。同设备六态截图（393×852 → `verification/windows-mobile-v1/<run-id>/parity/P001/`）随视觉 Gate 执行（U-WX devtools 登录态与 U-AND HBuilderX 打包为既有阻塞，见 §12.3）。
+
+## 14. 第四轮补录：UI-CONV Token 收敛 + Apple 镜像钉子 + 账本回正（2026-09-10，用户指令「UI 统一四步收口」）
+
+### 14.1 背景与范围
+
+用户质疑「HTML 原型→各端实现」统一链路真实进度。核查结论：G0（P001 样板）与 UI-G2（同日全页面结构对齐）为真实地基，但 (a) check-token-usage 的 LEGACY_DRIFT 白名单仍容忍约 40 个 v0 漂移 hex；(b) DESIGN_TOKEN_PLATFORM_MAPPING §2/§3 与三张 MULTI_END 矩阵大面积 NOT_AUDITED/占位，账本落后于实际；(c) Apple 双线（N-IOS/N-MAC）不在统一体系内，手写镜像无锁定。本轮三项收口：**漂移清零 → Apple 钉子 → 账本回正**。
+
+### 14.2 漂移收敛（LEGACY_DRIFT 清零）
+
+- **U-WX/U-AND（10 文件）**：`design-system.css`（--ble-cyan/--ble-gradient-brand 删除、bg-bottom/渐变/深字/成功块收敛正典——主按钮/pill 渐变改挂正典 `.btn.primary` 135° primary→primaryDeep，§13.3-5 登记的「三停渐变全局漂移」就此销案）；`uni.scss`（框架兜底 6 值对齐正典）；`provision-stepper`（当前步纯色化=正典 C6、done 挂 success-deep）、`provision-progress`（done/warn/fail 挂 deep/weak token=正典 prow）、`ota-dialog`/`app-card`/`broadcast`/`hid/add`（深字色→success/warning-deep、设备头像→正典 SHID 渐变）。
+- **F-AND（2 文件）**：`provisioning_page.dart` 16 处深色阶/弱底 → AppTokens（错误块对齐正典 B8：danger 标题+sub 正文+dangerWeak 底；进度行对齐 prow；info 行→noteInfoFg；分割线→lineSoft；页底→bg）；`app_icons.dart` 兜底色→--c-text。
+- **分类修正**：`config/product.dart` 推广位 bg/color 为产品内容数据（p009 缩写块数据，与 uniapp product.js 同源），移入 DATA_SKIP 豁免而非漂移容忍。
+- **守卫同步**：`tests/unit/uniapp-ui-contract.test.mjs` stepper 断言由旧渐变模式改为正典纯色+success-deep。
+- **check-token-usage.mjs**：LEGACY_DRIFT 置空（机制保留——再出圈外值直接 FAIL）。
+
+### 14.3 Apple 镜像钉子（scripts/check-apple-tokens.mjs · npm run check:apple-tokens）
+
+- 逐一比对 N-IOS `NativeDS` / N-MAC `DS` 与 design-tokens.json：色彩（含 macOS 别名定义解析、日志六色、ink 族）、圆角、macOS 间距 sp1–8；镜像内新增未登记色即 FAIL。
+- **首跑即抓到真实漂移**：iOS `dangerWeak=#FEEFF0` ≠ 正典 `#FDEBEC`（macOS 侧正确）——已修正并经 iOS 全量测试验证（单元+4 套 UI 测试 TEST SUCCEEDED，iPhone 17 Pro Max 模拟器）。
+- 覆盖差如实登记（mapping §2.5）：iOS 未镜像 successDeep/warningDeep（无消费位）、ink/log 族（不适用）；iOS 间距/阴影未成体系（mapping §3 差距行）。
+
+### 14.4 账本回正
+
+- `DESIGN_TOKEN_PLATFORM_MAPPING` §2（五线色彩映射）/§3（字号·圆角·间距·阴影）回填，N-IOS/N-MAC 列加入。
+- `MULTI_END_VISUAL_PARITY_MATRIX` §1 核心 Token 行回填（PASS·生成/PASS·钉子分级，静态≠渲染级）；§2 归因列挂 UI-G2/UI-G1 证据；§3 登记 G1 P001 截图证据行+视觉 Gate 首跑阻塞。
+- `MULTI_END_PAGE_PARITY_MATRIX` §3 四维记分卡：9 页 STRUCTURE 维回填（UI-G2），BEHAVIOR/STATE/VISUAL 诚实保持 NOT_AUDITED。
+- `MULTI_END_COMPONENT_PARITY_MATRIX`：G1/G2 有据行回填 PASS·struct（P001 全节+P002-P010 主区块），无运行态证据的表单细节行保留 NOT_AUDITED；「已配置面板 修复中」stale 行销案。
+- `MULTI_END_STATE_PARITY_MATRIX` §2 扫描会话五行按 G1 真机证据回填（E1/E2/E3 偏差如实登记）。
+
+### 14.5 验证
+
+```
+node scripts/check-token-usage.mjs    → PASS（登记色 49 · banned 14 清零 · 漂移登记 0）
+node scripts/check-icon-usage.mjs     → PASS（dart 63 · vue 34 · 目录 35 · 镜像同步）
+node scripts/check-apple-tokens.mjs   → PASS（N-IOS 色17+圆角3 · N-MAC 色35+间距8+圆角4）
+flutter analyze                       → No issues found
+flutter test                          → 113/113 passed
+npm run build:mp-weixin / build:app   → DONE ×2
+bash scripts/verify-uniapp.sh         → PASS（28 unit files + 14 static gates）
+xcodebuild test（iOS 模拟器）          → TEST SUCCEEDED（单元+AccessibilityAudit/AdvData/FlowState/TabBar UI）
+--- 2026-09-10 晚补跑（视觉烟测，见 §14.6-1）---
+simctl install/launch + io screenshot → N-IOS 四页 PNG（smoke-nios/）
+微信 cli auto + automator screenshot  → U-WX 四页 PNG（smoke-uwx/；automator 补丁后全通）
+screencapture -R + CGEvent Tab 点击   → F-AND 四页 PNG（smoke-fand/；绕过 guest screencap 故障）
+devicectl install/launch（iPhone 真机）→ com.smartble.ios v2.0.0 装包+拉起 PASS
+```
+
+### 14.6 遗留登记（非本轮范围）
+
+1. **视觉 Gate：烟测首跑完成，六态全量仍待**。2026-09-10 晚补跑（`verification/windows-mobile-v1/20260910-ui-conv/parity/smoke-{uwx,fand,nios}/`，12 张全部经视觉核验为真实 app 页面、正典结构）：
+   - **U-WX ×4**（P001/P007/P008/P009 默认态）：微信开发者工具登录已恢复（`cli islogin → {"login":true}`，G1 阻塞解除），automator 通道打通——注意 devtools 3.17.2 的 `Tool.getInfo` 不再回 `SDKVersion`，`miniprogram-automator@0.12.1` 连接即崩，本地 node_modules 补丁容忍缺省后 connect/reLaunch/screenshot 全通。
+   - **F-AND ×4**（同四页）：Pixel_API35 模拟器（DY21_AVD 损毁弃用）+ `app-debug.apk`；**guest 侧 `adb screencap` 故障**——窗口焦点/进程/EGL 渲染均为 app，截屏却恒返回桌面（两轮复现），改 **macOS 宿主窗口区域截屏**（`screencapture -R`，qemu 主窗 [100,100,411,942]）+ CGEvent 点击 Tab 绕过，四页落袋。
+   - **N-IOS ×4**（同四页）：iPhone 17 Pro Max 模拟器 `simctl io screenshot`；Tab 导航经宿主 Simulator 窗口点击。**iPhone 11 Pro 真机**：最新构建 devicectl 装包+拉起 PASS（`com.smartble.ios` v2.0.0），但程序化截图无工具链（devicectl 无 screenshot 子命令、idevicescreenshot 未装、连接形态为 CoreDevice），真机像素级截图留人工/装 libimobiledevice 再议。
+   - **U-AND 仍缺**：HBuilderX 打包域未装；Android 真机 adb/mdns 均不可见（未以调试形态连本机）。
+   - 六态全量（含权限/错误/加载/弹窗态）按 §3 待办行推进；烟测默认态截图不折算为 VISUAL PASS（矩阵 §2 判定列维持 NOT_AUDITED）。
+2. F-AND P001 三件旧 widget（advertisement_sheet/device_card/filter_panel）迁移 ui/design 后删除（G2 §5-1 原样保留；hex 全为注册值，非漂移）。
+3. iOS 间距/阴影未成体系；iOS deep/ink/log token 未镜像（无消费位；接入时先扩镜像再过钉子）。
+4. E1/E2/E3（10001 modal 文案/横幅形态/权限时机）待 F 域证据链更新窗口。

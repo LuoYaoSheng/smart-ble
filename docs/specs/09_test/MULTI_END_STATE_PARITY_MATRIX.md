@@ -23,15 +23,15 @@
 | success | 成功（toast/进度全绿） | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | — |
 | cancelled | 用户取消（静默/分类提示） | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | — |
 
-## 2. 扫描会话（STATE_MACHINE §7 · P001）
+## 2. 扫描会话（STATE_MACHINE §7 · P001）——2026-09-10 回填（G1 真机证据 + code 层）
 
 | 状态 | U-WX | U-AND | F-AND | 归因 |
 |---|---|---|---|---|
-| 未扫（idle） | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | — |
-| 扫描中（scanning，工具条标签） | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | — |
-| 完成（5s 自动停+toast「发现 N 台」） | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | — |
-| 失败（failed，横幅+重试） | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | — |
-| 权限态（微信授权引导） | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED（平台差异合法性待查） | — |
+| 未扫（idle） | PASS·code | PASS（G1 真机：空态 A 逐字实证 uand-01/09） | PASS（G1：空态 A widget_test 断言+真机） | UI_G1_P001_FINAL §1 #8；U-WX=同码 code-verified |
+| 扫描中（scanning，工具条标签） | PASS·code | PASS（G1 真机：danger 停止键+「扫描中 · 5s 会话」标签实证 uand-02） | PASS（G1 真机：danger 键 9437 红像素+PulseDot fand-02） | UI_G1 §1 #3/9 |
+| 完成（5s 自动停+toast「发现 N 台」） | PASS·code | PASS（G1 真机：「扫描完成 · 发现 8 台」dump 逐字） | PASS·code（同口径实现；toast 断言待运行态复核） | UI_G1 §1 #3 |
+| 失败（failed，横幅+重试） | PASS·code（scan_failed 横幅组件对齐；10001 modal 文案偏差 E1 登记） | PASS（横幅）/ FAIL 登记（10001 modal 文案≠正典，E1 受 F 域证据链约束延后） | FAIL 登记（蓝牙未开走 B8 横幅而非 10001 modal，E2） | UI_G1 §1 #10/§2 E1-E3——三端各一子偏差，待 F 域证据链更新窗口统一修复 |
+| 权限态（微信授权引导） | code（宿主弹窗承接，待 U-WX 截图复核） | PASS（G1 真机：点「开始扫描」即时触发系统定位弹窗 uand-06） | ALLOWED_PLATFORM_DIFF（init 时机 vs 首扫触发，E3 登记） | UI_G1 §1 #11 |
 
 ## 3. BLE 连接会话 8 态（STATE_MACHINE §1 · session-registry）
 

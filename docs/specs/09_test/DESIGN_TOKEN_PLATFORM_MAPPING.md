@@ -1,9 +1,10 @@
 # 设计 Token 平台映射（DESIGN_TOKEN_PLATFORM_MAPPING）
 
-- 创建：2026-09-07 · Multi-end Parity Gate（图标节先行交付；其余 Token 节随视觉 Gate 补齐）
-- 验收对象：U-WX（apps/uniapp → 微信小程序）/ U-AND（apps/uniapp → Android）/ F-AND（apps/flutter → Android）
+- 创建：2026-09-07 · Multi-end Parity Gate（图标节先行交付；§2/§3 于 2026-09-10 UI-CONV 轮回填）
+- 验收对象：U-WX（apps/uniapp → 微信小程序）/ U-AND（apps/uniapp → Android）/ F-AND（apps/flutter → Android）/ **N-IOS（apps/ios → SwiftUI）/ N-MAC（apps/desktop/macos → AppKit，2026-09-10 加入）**
 - 事实源：[TOKEN.md](../07_design_system/TOKEN.md)（全平台唯一视觉数值来源）+ `prototype/v1-new/index.html` 内联 SVG sprite
-- 本文件定位：**实现侧映射登记**——正典值 → 三线实现载体 → 锁定方式。矩阵侧判定在 [MULTI_END_VISUAL_PARITY_MATRIX.md](MULTI_END_VISUAL_PARITY_MATRIX.md)。
+- 本文件定位：**实现侧映射登记**——正典值 → 五线实现载体 → 锁定方式。矩阵侧判定在 [MULTI_END_VISUAL_PARITY_MATRIX.md](MULTI_END_VISUAL_PARITY_MATRIX.md)。
+- 锁定机制总览（2026-09-10）：U/F 三线 = `design-tokens.json` 生成产物（`generate_assets.py --theme-only`）+ `scripts/check-token-usage.mjs`（登记值圈定 + banned 清零 + 产物同步抽检；**LEGACY_DRIFT 已清空**）；Apple 双线 = 手写镜像 + `scripts/check-apple-tokens.mjs` 钉子（实现值 == 正典值逐项比对，含别名解析与间距/圆角）。
 
 ## 1. 图标正典（ICON CANON）——2026-09-07 PARITY-ICON 落地；同日 PARITY-ILL 补空态插图（§1.5）与位图管线（§1.6）
 
@@ -96,12 +97,83 @@
 - 设计口径：品牌蓝渐变（#0E4FC4→#1B6DFF）+ 白色 BT 字形 + 信号弧/环点缀；与 P009 正典品牌标（§1.5 同源的渐变盒+bt 字形）同语言。
 - **透明底规则**：占位/插画类资产（§1.5）一律透明底且来自正典 SVG 镜像，不经 AI 生成；AI 位图仅用于上述全出血槽位。如未来出现需要透明底的 AI 资产，请求体加 `background:"transparent"`（gpt-image 系参数）。
 
-## 2. 颜色 Token 映射（待视觉 Gate 回填）
+## 2. 颜色 Token 映射（2026-09-10 UI-CONV 回填）
 
-| Token | 正典值 | U-WX/U-AND 载体 | F-AND 载体 | 判定 |
-|---|---|---|---|---|
-| （占位——随视觉 Gate 逐项补齐） | | | | |
+> 正典值清单与用途见 [TOKEN_REFERENCE.md](../07_design_system/TOKEN_REFERENCE.md) §2（同源 design-tokens.json）。本表登记**五线实现载体与锁定**。
+> U-WX/U-AND 载体 = `apps/uniapp/styles/tokens.css` CSS var（生成）；F-AND 载体 = `AppTokens` 常量（生成）；N-IOS 载体 = `NativeDS`（手写镜像·钉子锁定）；N-MAC 载体 = `DS`（手写镜像·钉子锁定）。
 
-## 3. 字号/字重/圆角/间距/阴影映射（待视觉 Gate 回填）
+### 2.1 核心语义色（13 主 + deep/weak 扩展）
 
-（占位）
+| Token | 正典值 | U-WX/U-AND | F-AND | N-IOS | N-MAC | 判定 |
+|---|---|---|---|---|---|---|
+| `--c-primary` | #1B6DFF | `--c-primary` | `cPrimary` | `NativeDS.primary` | `DS.primary` | PASS·五线值一致（生成+钉子） |
+| `--c-primary-deep` | #0E4FC4 | `--c-primary-deep` | `cPrimaryDeep` | `NativeDS.primaryDeep` | `DS.primaryDeep` | PASS |
+| `--c-primary-weak` | #E8F1FF | `--c-primary-weak` | `cPrimaryWeak` | `NativeDS.primaryWeak` | `DS.primaryWeak` | PASS |
+| `--c-success` | #17C7A8 | `--c-success` | `cSuccess` | `NativeDS.success` | `DS.success` | PASS |
+| `--c-success-weak` | #E2F8F4 | `--c-success-weak` | `cSuccessWeak` | `NativeDS.successWeak` | `DS.successWeak` | PASS |
+| `--c-success-deep` | #0E9A80 | `--c-success-deep` | `cSuccessDeep` | （未镜像——iOS 侧无消费位） | `DS.successDeep` | PASS（覆盖差登记 §2.5-I1） |
+| `--c-danger` | #F2555F | `--c-danger` | `cDanger` | `NativeDS.danger` | `DS.danger` | PASS |
+| `--c-danger-weak` | #FDEBEC | `--c-danger-weak` | `cDangerWeak` | `NativeDS.dangerWeak`（2026-09-10 钉子轮修正 #FEEFF0 笔误） | `DS.dangerWeak` | PASS |
+| `--c-warning` | #FF9F43 | `--c-warning` | `cWarning` | `NativeDS.warning` | `DS.warning` | PASS |
+| `--c-warning-weak` | #FFF3E4 | `--c-warning-weak` | `cWarningWeak` | `NativeDS.warningWeak` | `DS.warningWeak` | PASS |
+| `--c-warning-deep` | #C77E14 | `--c-warning-deep` | `cWarningDeep` | （未镜像，同 I1） | `DS.warningDeep` | PASS（覆盖差登记 §2.5-I1） |
+| `--c-text` | #18222E | `--c-text` | `cText` | `NativeDS.ink`（命名 ink，值=正典 text） | `DS.text` | PASS |
+| `--c-sub` | #42536A | `--c-sub` | `cSub` | `NativeDS.sub` | `DS.sub` | PASS |
+| `--c-mut` | #60758D | `--c-mut` | `cMut` | `NativeDS.muted` | `DS.mut` | PASS |
+| `--c-ph` | #9AA8B6 | `--c-ph` | `cPh` | `NativeDS.placeholder` | `DS.ph` | PASS |
+| `--c-line` | #E3EAF3 | `--c-line` | `cLine` | `NativeDS.line` | `DS.line` | PASS |
+| `--c-line-soft` | #EDF2F9 | `--c-line-soft` | `cLineSoft` | `NativeDS.lineSoft` | `DS.lineSoft` | PASS |
+| `--c-fill` | #F1F5FB | `--c-fill` | `cFill` | `NativeDS.fill` | `DS.fill` | PASS |
+| `--c-bg` | #F8FBFF | `--c-bg` | `cBg` | `NativeDS.page` | `DS.bg` | PASS |
+| `--c-card` | #FFFFFF | `--c-card` | `cCard` | `Color.white` | `NSColor.white` | PASS |
+
+### 2.2 控制台深色（ink 族，日志 dock/评审深色块）
+
+| Token | 正典值 | U-WX/U-AND | F-AND | N-IOS | N-MAC | 判定 |
+|---|---|---|---|---|---|---|
+| `--c-ink` | #101521 | `--c-ink` | `cInk` | （未镜像——iOS 无 dock 深色位） | `DS.ink` | PASS（覆盖差登记 §2.5-I2） |
+| `--c-ink-line` | #263149 | `--c-ink-line` | `cInkLine` | （同上） | `DS.inkLine` | PASS |
+| `--c-ink-text` | #D6E2F5 | `--c-ink-text` | `cInkText` | `NativeDS` 有 `inkText` 语义位走 AppIcon tone | `DS.inkText` | PASS |
+
+### 2.3 日志六色（P006/P008 日志 chip；正典 log 节）
+
+| 语义 | 正典 fg/bg | U-WX/U-AND | F-AND | N-MAC | 判定 |
+|---|---|---|---|---|---|
+| sys | #5E7EA6 / #EDF3FA | `--log-sys(-bg)`（tokens.css 生成） | `AppTokens.logSys/logSysBg` | `DS.logSys/logSysBg` | PASS |
+| err | #F2555F / #FDEBEC | `--log-err(-bg)` | `logErr/logErrBg`（=danger/dangerWeak 别名） | `DS.logErr/logErrBg`（别名） | PASS |
+| read | #C77E14 / #FFF6E8 | `--log-read(-bg)` | `logRead/logReadBg` | `DS.logRead/logReadBg`（别名 warningDeep + 字面 bg） | PASS |
+| write | #1B6DFF / #E8F1FF | `--log-write(-bg)` | `logWrite/logWriteBg` | `DS.logWrite/logWriteBg`（别名） | PASS |
+| recv | #7C5CFF / #F0EBFF | `--log-recv(-bg)` | `logRecv/logRecvBg` | `DS.logRecv/logRecvBg` | PASS |
+| ok | #17C7A8 / #E2F8F4 | `--log-ok(-bg)` | `logOk/logOkBg` | `DS.logOk/logOkBg`（别名） | PASS |
+
+（dock 深色六色仅 F-AND/N-MAC 消费；钉子脚本对两侧在册值逐一比对。N-IOS 无日志面板，不适用。）
+
+### 2.4 派生色（derived 节：头像渐变端/note 前景/toast 等）
+
+| Token | 正典值 | 消费线 | 判定 |
+|---|---|---|---|
+| `--c-avatar-grad-end` | #DCE9FF | U/F（P001 头像渐变） | PASS（生成产物） |
+| `--c-shid-avatar-start` | #D9F6F0 | U/F（P002 设备头像渐变起点；2026-09-10 U 侧 `.device-mark` 由 v0 渐变改挂） | PASS |
+| `--c-note-info-fg` | #2E5290 | U/F（P002 隐私/info 行；F 侧 2026-09-10 由 #2F5B8F 收敛） | PASS |
+| `--c-note-warn-fg` | #8A5410 | U/F | PASS |
+| `--c-toast-ok-icon` / `--c-review-sub` / `--c-review-label` / `--c-ota-bar-grad-hi` / `--c-danger-over-fg` / `--c-danger-grad-hi` | 见 TOKEN_REFERENCE §2 | U/F（N-MAC `inkMut`=reviewLabel 钉子在册） | PASS |
+
+### 2.5 覆盖差与机制登记
+
+- **I1**：N-IOS 未镜像 `successDeep/warningDeep`（iOS 侧当前无深色阶消费位；P005 诊断状态行如后续接入需先扩 `NativeDS` 再过钉子）。
+- **I2**：N-IOS 未镜像 ink 族/日志六色（无 dock 深色与日志面板，不适用而非遗漏）。
+- **机制**：Apple 双线**不在生成管线 outputs 内**（手写镜像），由 `scripts/check-apple-tokens.mjs`（`npm run check:apple-tokens`）钉死「实现值 == 正典值」；正典改值后 Apple 线未同步会在该门禁 FAIL——这补上了「正典改值 → Apple 静默漂移」的缺口。镜像内新增未登记色亦 FAIL（防圈外值混入）。
+- **数据豁免**：F-AND `config/product.dart` 推广位 bg/color 为**产品内容数据**（p009 `.promo .ic` 缩写块数据，与 uniapp `config/product.js` 同源），非设计 Token，在 check-token-usage 中走 DATA_SKIP。
+
+## 3. 字号/字重/圆角/间距/阴影映射（2026-09-10 UI-CONV 回填）
+
+> 尺寸族正典：design-tokens.json `font/size`（display 24·800 / title 20·800 / h1 17·700 / h2 15·700 / body 14 / cap 12 / mini 11 / micro 10 + mono 族）、`radius`（sm 8 / md 12 / lg 16 / xl 20 / round 999）、`space`（4 基准，sp1–sp8 = 4..32）、`shadow`（shadow1/2/primary）。
+> 单位规则：uniapp px×2→rpx（750 基）；flutter px→逻辑像素 1:1；Apple pt 1:1。
+
+| 族 | U-WX / U-AND | F-AND | N-IOS | N-MAC | 判定 |
+|---|---|---|---|---|---|
+| 字号/字重 | `--fs-*`/`--fw-*`（tokens.css 生成） | `AppTokens.fs*` + `FontWeight` | **Dynamic Type 平台适配**（ScaledFontTests 锁最小可读档；映射=正典档位为默认视觉目标，不逐 pt 钉死——平台无障碍优先） | `DS.font(size, weight)` 系统字体 + `monoFont` 11（正典 mono 档） | U/F PASS·生成；Apple=ALLOWED_PLATFORM_DIFFERENCE（无障碍适配，登记于此） |
+| 圆角 | `--r-sm..round` | `rSm/rMd/rLg/rXl/rRound` | `radiusSmall/Medium/Large`（sm/md/lg 三档；xl/round 无弹窗位未镜像） | `rSm/rMd/rLg/rXl`（round 未镜像） | PASS·钉子在册 |
+| 间距 | `--sp-1..8` | `sp1..sp8` | 未成体系（组件内固定 padding，如 `nativeCard` 16=sp4）——**差距登记**，后续页面接入时逐位对齐 | `sp1..sp8` 全八档 | U/F/MAC PASS；IOS NOT_AUDITED（差距） |
+| 阴影 | `--shadow-*`（生成） | `shadow1/shadow2/shadowPrimary` | 未成体系（SwiftUI 阴影位散置）——差距登记 | 未成体系（AppKit 同）——差距登记 | U/F PASS；Apple NOT_AUDITED（差距） |
+| 控件高度 | 按钮高度走 `--fs-*`+padding 组合（COMPONENT_CONTRACT 登记各组件尺寸） | 同左（AppButton 等） | 44pt 命中区（无障碍 Gate 605abf4） | AppKit 标准控件 | PASS（各自门禁；跨端逐像素一致不作为目标，见 VISUAL_CONTRACT §2） |

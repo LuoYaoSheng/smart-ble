@@ -34,13 +34,13 @@
 2. **页面禁止自行定义图标**：不得使用 Unicode 字符图标（✓ ✕ ▶ ▼ › × 等作 UI 图标）、未登记 png、平台字体图标（`Icons.*` / `CupertinoIcons.*`）。业务代码只能引用 ICON_CATALOG 登记的 semantic icon id，经 `AppIcon` 渲染。
 3. **页面禁止自行定义尺寸**：字号/间距/圆角/阴影引用 Token；组件内部尺寸以 COMPONENT_CONTRACT 登记为准。
 4. **不触碰范围**：BLE Runtime（`services/ble-runtime/`）、协议（`core/protocols/`）、数据模型、功能范围。
-5. **门禁**：`scripts/check-icon-usage.mjs` 与 `scripts/check-token-usage.mjs` 为提交前检查；违例即 FAIL。
+5. **门禁**：`scripts/check-icon-usage.mjs` 与 `scripts/check-token-usage.mjs` 为提交前检查；违例即 FAIL。Apple 双线镜像由 `scripts/check-apple-tokens.mjs`（`npm run check:apple-tokens`）钉死「实现值 == 正典值」（2026-09-10 UI-CONV 加入；LEGACY_DRIFT 漂移容忍清单同轮清零，机制保留）。
 
 ## 4. 三端映射总表
 
 | 层 | U-WX / U-AND（apps/uniapp） | F-AND（apps/flutter） |
 |---|---|---|
-| Token 载体 | `styles/tokens.css` CSS variables（`--c-*`）+ rpx 映射（px×2） | `lib/ui/design/app_tokens.dart`（`AppTokens.*`，px→逻辑像素 1:1） |
+| Token 载体 | `styles/tokens.css` CSS variables（`--c-*`）+ rpx 映射（px×2） | `lib/ui/design/app_tokens.dart`（`AppTokens.*`，px→逻辑像素 1:1） | Apple 双线（N-IOS `NativeDesignTokens.swift` / N-MAC `DSTokens.swift`）为**手写镜像**，不在生成管线 outputs 内，由 check-apple-tokens 钉子锁定（映射登记：09_test/DESIGN_TOKEN_PLATFORM_MAPPING §2/§3） |
 | 图标组件 | `components/ui/AppIcon.vue`（data-URI SVG，mp-weixin 无内联 svg） | `lib/ui/design/app_icon.dart`（转接 `core/design/app_icons.dart` 的 `AppIcon` widget，flutter_svg 渲染） |
 | 插图组件 | `components/common/app-ill.vue`（4 幅） | `lib/core/design/app_illustrations.dart` `AppIll`（4 幅） |
 | 公共组件 | `components/ui/`（AppNavbar/AppButton/…） | `lib/ui/design/`（AppNavbar/AppButton/…） |
@@ -51,7 +51,7 @@
 
 | 旧资产 | 处置 |
 |---|---|
-| `--ble-*`（design-system.css） | 保留为**别名层**：值逐一指向 `--c-*` 正典 var，不再自带 hex；仅存量页面兼容，新页面禁用 |
+| `--ble-*`（design-system.css） | 保留为**别名层**：值逐一指向 `--c-*` 正典 var；**2026-09-10 UI-CONV：全部自有 hex（v0 渐变/深字/兜底）收敛正典，`--ble-cyan`/`--ble-gradient-brand` 删除（零消费者），check-token-usage LEGACY_DRIFT 清零**；仅存量页面兼容，新页面禁用 |
 | `components/common/app-icon.vue`、`app-navbar.vue`、`empty-state.vue` 等 | 存量页面继续使用；新页面一律用 `components/ui/` 正典组件；后续阶段迁移后删除 |
 | `lib/ui/widgets/device_card.dart` 等 | 存量页面继续使用；P001 起改用 `lib/ui/design/` 正典组件 |
 | `app_theme.css` / `app_colors.dart`（colors.json 生成） | 值全部对齐 design-tokens.json 正典（清除 #007AFF / #34C759 / #F2F2F7 旧 iOS 色双轨） |
