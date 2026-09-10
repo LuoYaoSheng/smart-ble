@@ -1,0 +1,5 @@
+09:54:41.620 HBuilderX Version: 5.24
+09:54:43.256 项目 uniapp 开始编译
+09:54:49.622 当前应用配置的 fallbackLocale 或 locale 为：en，但 locale 目录缺少该语言文件
+09:54:53.201 Invalid value "iife" for option "output.format" - UMD and IIFE output formats are not supported for code-splitting builds.
+09:54:53.545 已停止运行...
