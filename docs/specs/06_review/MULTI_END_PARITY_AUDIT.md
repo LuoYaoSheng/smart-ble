@@ -436,3 +436,14 @@ DESIGN_TOKEN_PLATFORM_MAPPING（机制总览 + §2.5 机制/I1 改生成口径 +
 ### 17.3 账本同步
 
 VISUAL §2（P001/P002/P010 归因列）+ §3（vis1 三行+全量行更新）；UI_G1 §3 U-WX 列补采回填 + §4-① 勾销（U-WX P001 判定升级 code+截图复核）；判定矩阵数值不动（E1 FAIL 行仍有效）。
+
+### 17.4 N-MAC 补采（同日续 · 用户指示优先 Mac 端）
+
+U-WX 线按用户指示暂停后转 N-MAC——此前视觉 Gate 唯一零证据实现线。产出 9 张（vis1-nmac，全部经视觉模型逐张目检且 URL 名实相符）：
+
+- **P001 四态**：空态A（fresh 实例）/ 筛选展开（全项）/ **扫描中（danger 停止钮）** / **扫描完成 7 台真实设备卡**（SHID-00000001 `10:B4:1D:CD:23:8E` -37dBm 强匹配徽章 + 6 邻居）——Mac 真实 CoreBluetooth 射频，全 Gate 首份真实设备列表证据。
+- **P007** 设备页空态（去扫描动作）；**P008** 未开启默认态 + **广播中真实态**（徽章/6/31 字节/adv_start 日志，AXPress 开启、采后即停恢复射频）；**P009** 关于页（macOS 真实环境行，零推广残留）；**P010** 版本记录四卡。
+
+**双实例窗口叠放事故（工具链教训）**：采集期间发现桌面上遗留一个 flow-preview 实例（`/private/tmp/smartble-flow-preview.*/SmartBLEPreview.app --ui-preview=p003-missing-fields`，前会话残留）与本轮 debug 实例**同坐标同尺寸窗口叠放**——早期按「侧栏布局」的定位与点击实际作用于预览窗（其布局为左侧栏，本 app 为底部 TabBar），期间还出现预览窗置顶时对本窗 screencapture 返回黑帧（WindowServer 表面伪影）。处置：kill 预览实例；P001 四态与 P007–P010 全部对唯一确认实例（fresh 重启）重采；判定依据以 AX 树实名按钮（开始广播/停止广播/筛选/收起筛选）为准。
+
+**通道定案**：CGEvent 会话中段整体失效（与 CUA 辅助功能授权丢失同源，系统权限变更）——N-MAC 最终通道 = osascript System Events AX（TabBar 按序点击 + `whose title` 命中页内自绘按钮 + AXPress 不受折叠线限制）；CDN 上传按内容去重会返回别名 URL，视觉核验必须校验返回 URL 文件名与请求一致（本轮据此废弃一次引导性幻觉答案）。

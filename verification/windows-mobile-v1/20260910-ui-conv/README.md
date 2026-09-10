@@ -19,3 +19,5 @@ UI 统一收敛轮（2026-09-10）截图证据与采集工具归档。
 - Flutter semantics 未开时 uiautomator dump 无节点（返回 launcher 层）。
 - CUA 辅助功能授权失效时：Quartz CGWindowList 查窗口 bounds（dict 取值）+ CGEvent 点击；坐标用像素聚类定位（品牌蓝文字簇）而非视觉模型坐标（噪声大）。
 - 微信开发者工具窗口为 GPU 合成，screencapture 取色有偏移，勿依赖精确色值匹配。
+
+| vis1-nmac | 可达态首轮·续（用户指示优先 Mac 端） | P001 空态A/筛选/扫描中/扫描结果（真实射频 7 台含 SHID-00000001 强匹配）+ P007 空态 + P008 未开启/广播中（真实外设）+ P009 + P010 | screencapture 窗口 + osascript System Events AX（TabBar 按序 + whose title 页内按钮 + AXPress 越折叠线） |
