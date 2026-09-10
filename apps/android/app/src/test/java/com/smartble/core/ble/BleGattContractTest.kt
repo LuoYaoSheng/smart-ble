@@ -62,5 +62,9 @@ class BleGattContractTest {
         // 重连后 UUID 集合变化 → 重新播报
         val changed = services + service("0000180F-0000-1000-8000-00805F9B34FB")
         assertTrue(shouldAnnounceServices(uuids, changed))
+        // 构造序防御：lastUuids=null（属性未初始化/无历史）→ 非空集合即播报，
+        // 空列表仍不播报（4c9d31a 连接即崩回归锁：null 不得抛 NPE）
+        assertTrue(shouldAnnounceServices(null, services))
+        assertFalse(shouldAnnounceServices(null, emptyList()))
     }
 }

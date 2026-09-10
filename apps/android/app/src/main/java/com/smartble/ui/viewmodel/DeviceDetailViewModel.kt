@@ -33,6 +33,10 @@ class DeviceDetailViewModel(
 
     private val bleManager = BleManager.getInstance(application)
 
+    // 必须在 init 之前初始化：viewModelScope 走 Main.immediate，observeServices
+    // 的首个 StateFlow 发射会在构造期间同步执行（4c9d31a 连接即崩根因）。
+    private var lastAnnouncedServiceUuids: Set<String>? = emptySet()
+
     private val _connectionState = MutableStateFlow(ConnectionState.Disconnected)
     val connectionState: StateFlow<ConnectionState> = _connectionState.asStateFlow()
 
@@ -56,8 +60,6 @@ class DeviceDetailViewModel(
         observeCharacteristicChanges()
         connectToDevice()
     }
-
-    private var lastAnnouncedServiceUuids: Set<String> = emptySet()
 
     private fun observeConnectionState() {
         viewModelScope.launch {
@@ -378,10 +380,14 @@ private const val OTA_CHUNK_SIZE = 180
 /**
  * WIN-AAND-007：服务列表播报判定——仅当服务 UUID 集合真正变化（首次发现/
  * 重新发现后集合不同）时播报；特征值更新（读/写/notify 重放同集合）不播报。
+ * lastUuids 可空：null = 无历史（首次）→ 非空集合即播报。可空是构造序防御——
+ * viewModelScope 为 Main.immediate，collector 首个发射可能在属性初始化前同步执行。
  */
-internal fun shouldAnnounceServices(lastUuids: Set<String>, next: List<BleService>): Boolean {
+internal fun shouldAnnounceServices(lastUuids: Set<String>?, next: List<BleService>): Boolean {
     val nextUuids = next.map { it.uuid }.toSet()
-    return nextUuids.isNotEmpty() && nextUuids != lastUuids
+    if (nextUuids.isEmpty()) return false
+    val last = lastUuids ?: return true
+    return nextUuids != last
 }
 
 data class OtaUiState(
