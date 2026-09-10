@@ -411,3 +411,28 @@ xcodebuild test (iPhone 17 Pro Max)    → 12/12 TEST SUCCEEDED（AccessibilityA
 ### 16.3 账本同步
 
 DESIGN_TOKEN_PLATFORM_MAPPING（机制总览 + §2.5 机制/I1 改生成口径 + §2.5 数据豁免随 F028 失效登记）、VISUAL 矩阵 §1（判定口径升级，Apple 列 `PASS·钉子`→`PASS·生成`，card 行 iOS 直用特例）、DESIGN_SYSTEM_INDEX §3/§4（门禁与载体行）。§14.3/§15 历史轮记录不回溯。
+
+---
+
+## 17. 视觉 Gate 可达态首轮（2026-09-10 晚 · vis1）
+
+### 17.1 范围与产出
+
+六态全量中不依赖硬件/打包域的**可达态**先行采集，三线 10 张全部经视觉模型逐字复核为真实页面：
+
+| 线 | 采集物 | 通道 |
+|---|---|---|
+| U-WX | P001 空态A + 筛选展开（setData 直驱）+ P010 + P002 默认态（reLaunch 直达）×4 | automator（脚本归档 `20260910-ui-conv/vis1-uwx-capture.cjs`） |
+| N-IOS | P001 空态A（**平台不支持 chip+禁用钮**=模拟器真实态，兼证 UI-G1 #11 平台不支持场景）+ 筛选展开（CGEvent 像素定位）+ P010 ×3 | simctl screenshot + Quartz CGWindowList/CGEvent（CUA 辅助功能授权失效后的既定绕行） |
+| F-AND | P001 空态A（蓝牙不可用 chip）+ **Error B8 横幅**（bluetooth_unavailable+重试，E2 横幅形态模拟器复现）+ P010 ×3 | 宿主窗口 screencapture + adb input tap（窗口 411×942 ↔ guest 1080×2400 换算） |
+
+### 17.2 如实登记的不可达项
+
+- U-WX 扫描态：scan-summary 为自定义组件，automator 元素级穿透失败（探针证实 page 树仅 5 个 view、`>>>` 无效）；CGEvent 误触下拉刷新后弃用——留六态全量轮（真机预览或 HBuilderX 基座）。
+- F-AND 筛选展开态：Flutter semantics 未开启时 uiautomator 拿不到节点（dump 返回 launcher 层），坐标定位未果；FilterPanel 四档行有 widget_test 断言 + U-WX/N-IOS 两线截图佐证。
+- N-IOS 10001 modal：模拟器为「平台不支持」而非「蓝牙未开」，点扫描无 modal 反馈（chip 即正典反馈形态）；Error modal 态不可达。
+- P002 F-AND/N-IOS、P003/P005/P006 连接态：需 BLE 设备对象，待夹具/真机。
+
+### 17.3 账本同步
+
+VISUAL §2（P001/P002/P010 归因列）+ §3（vis1 三行+全量行更新）；UI_G1 §3 U-WX 列补采回填 + §4-① 勾销（U-WX P001 判定升级 code+截图复核）；判定矩阵数值不动（E1 FAIL 行仍有效）。

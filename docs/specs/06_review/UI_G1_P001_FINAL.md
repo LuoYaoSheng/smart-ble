@@ -48,18 +48,18 @@
 
 | 状态 | prototype | U-AND | F-AND | U-WX |
 |---|---|---|---|---|
-| 默认/空态 A | proto-01（已扫描列表）/ proto-04（空态 A） | uand-01 | fand-01 | （登录受限，见 §0） |
-| 扫描中 Loading | proto-02 | uand-02 | fand-02 | — |
-| 筛选展开 | proto-03 | uand-04 | fand-04 | — |
-| 设备列表/SHID 卡 | proto-01 | uand-03 / uand-05 | fand-03 | — |
+| 默认/空态 A | proto-01（已扫描列表）/ proto-04（空态 A） | uand-01 | fand-01 | ~~（登录受限，见 §0）~~ **uwx-p001-empty-a（2026-09-10 vis1 补采，automator）** |
+| 扫描中 Loading | proto-02 | uand-02 | fand-02 | —（devtools 宿主蓝牙可开，扫描态待六态全量轮） |
+| 筛选展开 | proto-03 | uand-04 | fand-04 | **uwx-p001-filter（2026-09-10 vis1 补采，setData 直驱；四预设/滑杆/名称前缀/隐藏无名/重置全项）** |
+| 设备列表/SHID 卡 | proto-01 | uand-03 / uand-05 | fand-03 | —（需真射频设备） |
 | 空态 B 筛选无匹配 | proto-05 | uand-09 | fand-09 | — |
-| Error（10001） | proto-06（scan_failed）/ proto-07（modal） | uand-08（modal） | fand-08（横幅） | — |
+| Error（10001） | proto-06（scan_failed）/ proto-07（modal） | uand-08（modal） | fand-08（横幅）+ **fand-p001-scan-error（2026-09-10 vis1：bluetooth_unavailable B8 横幅模拟器复现，E2 形态）** | —（E1 文案偏差仍以 code 判定为准） |
 | 蓝牙未开 navbar | proto-07 | uand-07 | fand-07 | — |
-| 平台不支持 | proto-08 | （代码态，不可复现） | （代码态） | — |
+| 平台不支持 | proto-08 | （代码态，不可复现） | （代码态） | —（另证：nios-p001-empty-a 同场景 N-IOS 真实态，VISUAL §3 vis1-nios） |
 | Permission 系统弹窗 | —（六态模拟内置） | uand-06 | fand-06 | — |
 
 ## 4. 门禁与验证
 
 - 本轮零代码改动（判定+证据+文档）；G0 门禁仍全绿：`check-icon-usage` / `check-token-usage` PASS、`flutter analyze` 0 / `test` 69、`build:mp-weixin` DONE。
 - 真机环境：E5 + ESP32（真 SHID 固件，SHID-00000001 强匹配源）+ 邻居 8 台；蓝牙状态机经 `svc bluetooth disable` + 设置页开关往返验证。
-- 后续（超出 G1 范围）：①开发者工具登录后补 U-WX 截图与复核；②E1/E2/E3 随 F 域证据链更新窗口修复。
+- 后续（超出 G1 范围）：①~~开发者工具登录后补 U-WX 截图与复核~~ **已完成（2026-09-10 vis1 可达态首轮）：U-WX 空态A+筛选展开截图落袋（§3），P001 判定 U-WX 列由 code-verified 升级为 code+截图复核；E1 modal 态 devtools 不可达仍以 code 判定为准**；②E1/E2/E3 随 F 域证据链更新窗口修复（红线锁定，待用户放权）。

@@ -51,15 +51,15 @@
 
 | 页面 | 视觉要点（PAGE_SPEC/原型） | U-WX | U-AND | F-AND | 归因 |
 |---|---|---|---|---|---|
-| P001 | 自绘导航+工具条+设备卡信号条四格+两种空态文案 | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | 结构/文案四维对齐已完成（2026-09-07 P001 轮 + UI-G1 11 项判定 9 PASS：U-AND/F-AND 真机逐字+像素证据、U-WX code-verified；E1–E3 偏差登记于 UI_G1 §2）；2026-09-10 烟测默认态截图三线+Apple 落袋（§3 smoke-uwx/fand/nios，U-WX automator/U-AND 仍缺）；六态截图待视觉 Gate |
-| P002 | 三步骤条+表单+扫码大动作卡+四行进度+错误横幅 | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | UI-G2 结构对齐（AppSubnav/离开确认）；2026-09-10 UI-CONV：stepper 当前步纯色化/进度行/错误块 token 收敛（正典 C6/B8/prow） |
+| P001 | 自绘导航+工具条+设备卡信号条四格+两种空态文案 | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | 结构/文案四维对齐已完成（2026-09-07 P001 轮 + UI-G1 11 项判定 9 PASS：U-AND/F-AND 真机逐字+像素证据、U-WX code-verified；E1–E3 偏差登记于 UI_G1 §2）；2026-09-10 烟测默认态截图三线+Apple 落袋（§3 smoke-uwx/fand/nios，U-WX automator/U-AND 仍缺）；同日 vis1 可达态首轮：空态A 三线（含 N-IOS 平台不支持 chip+禁用钮、F-AND 蓝牙不可用 chip 真实态）、筛选展开 U-WX/N-IOS（四预设+滑杆+名称前缀+隐藏无名+重置全项）、Error B8 横幅 F-AND（bluetooth_unavailable+重试，E2 形态模拟器复现）（§3 vis1-*）；扫描中/设备列表/权限弹窗仍待硬件态 |
+| P002 | 三步骤条+表单+扫码大动作卡+四行进度+错误横幅 | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | UI-G2 结构对齐（AppSubnav/离开确认）；2026-09-10 UI-CONV：stepper 当前步纯色化/进度行/错误块 token 收敛（正典 C6/B8/prow）；vis1 可达态：U-WX 默认表单直达截图（§3 vis1-uwx p002-default）；F-AND/N-IOS 需设备入口（模拟器/模拟器无 BLE，待硬件态） |
 | P003 | 身份卡/最近配置卡/操作区主次按钮 | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | UI-G2 结构对齐（AppBadge/AppChip/AppListRow/AppButton×3+info 说明条） |
 | P005 | 状态行+五行图标语义（ok=check/warn=warn/fail=x SVG + active/pending `·`）+错误码块 mono | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | 图标字形已三线统一（2026-09-07 PARITY-ICON）；UI-G2 AppStatusIcon 五态行+正典词表；整页六态截图仍待视觉 Gate |
 | P006 | 设备面板+服务树折叠+日志六色 chip+写/OTA 弹窗 | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | UI-G2 结构对齐（ServicePanel 五态+LogPanel dock 接管旧件） |
 | P007 | 汇总卡/ON 头标/空态两文案 | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | UI-G2 结构对齐（DeviceCard conn 变体+AppEmpty+sumcard）；2026-09-10 烟测默认态（已连接空态+占位设备卡）三线+Apple 同构截图落袋（§3） |
 | P008 | 徽章六值+N/31 字节提示+超限红字+日志面板 | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | UI-G2 结构对齐（AppNavbar PERIPHERAL+AppBadge 三态+LogPanel card）；2026-09-10 UUID 黄条深字收敛 --c-warning-deep；烟测默认态（未开启+日志空卡）三线+Apple 截图落袋（§3） |
 | P009 | 品牌卡+信息卡+菜单 4 项+页脚（推广卡 2026-09-10 随 F028 移除） | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | UI-G2 结构对齐（AppNavbar ABOUT+版本 chip+品牌渐变挂 token）；烟测默认态三线+Apple 截图落袋（§3）；推广区移除后 P009 截图已三线重采（§3 重采行） |
-| P010 | 版本卡+限制卡+历史/预览卡+页脚声明 | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | UI-G2 结构对齐（AppSubnav+AppEmpty doc×2） |
+| P010 | 版本卡+限制卡+历史/预览卡+页脚声明 | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | UI-G2 结构对齐（AppSubnav+AppEmpty doc×2）；vis1 可达态：三线默认态截图（N-IOS simctl / U-WX automator reLaunch / F-AND 宿主窗口），四卡结构+版本 1.0.5（构建 101）+渠道 preview+tag 逐字一致（§3 vis1-*） |
 | 全局 | TabBar 4 项文案/图标语义/激活色；错误横幅样式；toast 规范 | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | TabBar 图标层 PASS（§1）；页面级横幅/toast 六态截图待视觉 Gate |
 
 ## 3. 截图登记（每次视觉 Gate 回填）
@@ -71,4 +71,7 @@
 | 2026-09-10 | 20260910-ui-conv/parity/smoke-fand | P001/P007/P008/P009 默认态（烟测） | — | — | — | fand-p001-default / fand-p007-connected-empty / fand-p008-broadcast / fand-p009-about（4 张，宿主窗口截屏） | — | 同上 |
 | 2026-09-10 | 20260910-ui-conv/parity/smoke-nios | P001/P007/P008/P009 默认态（烟测） | — | — | — | — | nios-p001-default / nios-p007-connected-empty / nios-p008-broadcast / nios-p009-about（4 张，iPhone 17 Pro Max 模拟器 simctl） | 同上 |
 | 2026-09-10 | smoke-{uwx,fand,nios} P009 **重采**（F028 推广区移除后） | P009 移除后默认态 | — | uwx-p009-about.png（覆盖，重建包 automator） | — | fand-p009-about.png（覆盖，重建 APK 宿主截屏） | nios-p009-about.png（覆盖，移除后构建） | 三线均验证：品牌卡直接衔接应用信息卡，推广区零残留；门禁全绿（审计 §15） |
-| — | **视觉 Gate 六态全量（六态×9 页×三端+Apple）** | — | — | — | — | — | — | 烟测默认态已破零（上行 12 张）；全量六态仍待：U-WX 登录已恢复（automator 通道可用）、U-AND HBuilderX 打包域仍未装、F-AND 模拟器 guest 侧 screencap 故障（宿主窗口截屏绕过已验证，见审计 §14.6）、iPhone 真机程序化截图无工具链（devictl 无 screenshot 子命令，已装包+拉起烟测代替） |
+| 2026-09-10 | 20260910-ui-conv/parity/vis1-uwx | P001 空态A+筛选展开 · P010 · P002 默认态 | — | uwx-p001-empty-a / uwx-p001-filter（setData 直驱）/ uwx-p010-default（reLaunch）/ uwx-p002-default（reLaunch） | — | — | — | 可达态首轮·U-WX：automator（采集脚本 vis1-uwx-capture.cjs 同目录归档）；扫描态不可元素级驱动（scan-summary 自定义组件 automator 穿透失败·探针证实 page 树仅 5 view；CGEvent 点到下拉刷新已弃）——留待六态全量 |
+| 2026-09-10 | 20260910-ui-conv/parity/vis1-nios | P001 空态A（含平台不支持 chip+禁用钮）+筛选展开 · P010 默认态 | — | — | — | — | nios-p001-empty-a（simctl+平台不支持真实态）/ nios-p001-filter（CGEvent 像素定位筛选链接）/ nios-p010-default | 可达态首轮·N-IOS：iPhone 17 Pro Max 模拟器；不支持平台点扫描无 modal 反馈（chip 即正典反馈形态）；10001 modal 态模拟器不可达 |
+| 2026-09-10 | 20260910-ui-conv/parity/vis1-fand | P001 空态A（蓝牙不可用 chip）+Error B8 横幅 · P010 默认态 | — | — | — | fand-p001-empty-a / fand-p001-scan-error（bluetooth_unavailable+重试，E2 横幅形态模拟器复现）/ fand-p010-default | — | 可达态首轮·F-AND：Pixel_API35 模拟器（宿主窗口截屏+adb input tap）；筛选展开态本轮未采（Flutter semantics off→uiautomator 无节点，坐标定位未果；FilterPanel 四档行有 widget_test 断言，两线截图佐证）；P002 需设备对象不可达 |
+| — | **视觉 Gate 六态全量（六态×9 页×三端+Apple）** | — | — | — | — | — | — | vis1 可达态首轮已落袋（上行 10 张：空态A×3/筛选×2/Error 横幅×1/P010×3/P002×1）；剩余待：扫描中/设备列表/权限弹窗/连接态页（P003/P005/P006）需 BLE 夹具或真机、U-AND 需 HBuilderX 打包域、U-WX 扫描态需元素级驱动方案（或 devtools 真机预览） |
