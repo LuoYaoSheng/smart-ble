@@ -27,4 +27,10 @@ final class NativePageContractTests: XCTestCase {
         XCTAssertEqual(rows.count, 5)
         XCTAssertTrue(rows.allSatisfy { $0.state == .ok })
     }
+
+    /// F012 重连退避钉住冻结契约（API_SPEC C-8 / SM §2：1s/3s/5s ×3），
+    /// 防止再次漂移到页面层 composable 的 2s/4s/6s（uniapp use-device-session / Flutter 线口径）
+    func testReconnectBackoffScheduleMatchesFrozenContract() {
+        XCTAssertEqual(BLEManager.reconnectBackoffSchedule, [1.0, 3.0, 5.0])
+    }
 }

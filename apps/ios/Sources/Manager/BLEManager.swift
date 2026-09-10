@@ -103,7 +103,8 @@ class BLEManager: NSObject, ObservableObject {
     }
     #endif
 
-    // MARK: - T06: Auto-Reconnect (aligned with Flutter: max 3 attempts, exponential backoff)
+    // MARK: - T06: Auto-Reconnect（冻结契约 API_SPEC C-8 / SM §2：backoff 1s/3s/5s ×3；用户主动断开永不重连）
+    static let reconnectBackoffSchedule: [TimeInterval] = [1.0, 3.0, 5.0]
     private let maxReconnectAttempts = 3
     private var reconnectAttempts: [String: Int] = [:]     // deviceId -> attempt count
     private var reconnectTimers: [String: Timer] = [:]     // deviceId -> pending timer
@@ -583,8 +584,8 @@ class BLEManager: NSObject, ObservableObject {
 
         let nextAttempt = attempts + 1
         reconnectAttempts[deviceId] = nextAttempt
-        // 指数退避：2s, 4s, 6s
-        let delay = Double(nextAttempt * 2)
+        // 冻结契约 C-8：1s/3s/5s ×3（对齐 macOS 端与 uniapp ble-runtime reconnect-policy）
+        let delay = Self.reconnectBackoffSchedule[nextAttempt - 1]
         log("Will reconnect to \(deviceId.prefix(8))... in \(Int(delay))s (attempt \(nextAttempt)/\(maxReconnectAttempts))", type: .info)
 
         cancelReconnect(deviceId: deviceId)
