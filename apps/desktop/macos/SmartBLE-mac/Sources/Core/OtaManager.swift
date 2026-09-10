@@ -2,18 +2,19 @@
 // OtaManager.swift — OTA 事务（F025 · SM §6 · REVERSE_ANALYSIS §4.6.1）
 // 真实调用链：选包(.bin)→包校验(manifest 可选：SemVer+size+sha256 实测比对；无 manifest 跳过)
 // →接管会话（WORKFLOW:'ota-manager' · 禁自动重连）→订阅版本回读特征
-// →CTRL 写 {op:start,target,size,chunk_size,sha256} →等 ready(30s)
+// →CTRL 写 {op:start,target,target_version,size,chunk_size,sha256} →等 ready(30s)
 // →DATA 分块 writeNoResponse(块间隔 20ms)→{op:commit} 等 success(30s)
 // →重连回读 2A26 firmware_version 比对(OTA_VERSION_MISMATCH)→成功 2s 自动关闭；取消 {op:abort}。
 // 诚实口径：端到端 BLOCKED（P-03 · 固件侧暂未开放升级通道）——无固件配合时流程真实执行并
 // 停在等待/失败态，不伪造传输进度或成功。
-// 注：manifest 六字段白名单精确清单【待 legacy 实证固化】（API_SPEC §16），此处按
-// version/size/sha256 三硬字段 + SemVer 校验实现，多余字段忽略并记日志。
+// manifest 契约（R-1 对齐）：contracts/target/ota-package.schema.json 六字段
+// format_version/target(枚举)/hardware/firmware_version(SemVer)/size/sha256，
+// legacy "version" 键兼容保留；决策记录 docs/specs/06_review/OTA_CONTRACT_R1_R2_DECISION.md。
 //
 
 import Foundation
 import Combine
-import CryptoKit
+import SmartHidCore
 
 @MainActor
 final class OtaManager: ObservableObject {
@@ -72,6 +73,7 @@ final class OtaManager: ObservableObject {
     private var firmware: Data?
     private var firmwareSha256 = ""
     private var manifestVersion: String?
+    private var manifestTarget: String?
     private var chunkSize = 180
     private var chunkOffset = 0
     private var verifyReadSent = false
@@ -96,42 +98,38 @@ final class OtaManager: ObservableObject {
             fileName = url.lastPathComponent
             fileSize = data.count
             sentBytes = 0
-            firmwareSha256 = SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+            // 重选包先清旧 manifest 态，防止上一包的 target/version 残留进本包 start 帧
+            manifestVersion = nil
+            manifestTarget = nil
+            firmwareSha256 = OtaManifest.sha256Hex(data)
             phase = .validating
             ble?.log("OTA 选包 · \(url.lastPathComponent)（\(data.count) 字节 · sha256 \(firmwareSha256.prefix(12))…）")
 
-            // manifest 可选 sidecar：<file>.manifest.json（六字段白名单待 legacy 固化：此处硬校验 version/size/sha256）
+            // manifest 可选 sidecar：<file>.manifest.json —— 契约六字段（共享 OtaManifest 解析，R-1 对齐见文件头）
             let manifestUrl = url.deletingPathExtension().appendingPathExtension("manifest.json")
             if let mdata = try? Data(contentsOf: manifestUrl),
                let json = (try? JSONSerialization.jsonObject(with: mdata)) as? [String: Any] {
-                var ok = true
-                if let version = json["version"] as? String {
-                    if Self.isSemVer(version) {
-                        manifestVersion = version
-                    } else {
-                        ok = false
-                        fail(code: "OTA_PACKAGE_INVALID", message: "manifest version 非 SemVer：\(version)")
-                    }
-                }
-                if ok, let size = json["size"] as? Int, size != data.count {
-                    ok = false
-                    fail(code: "OTA_PACKAGE_INVALID", message: "manifest size 不符：\(size) ≠ 实测 \(data.count)")
-                }
-                if ok, let sha = json["sha256"] as? String, sha.lowercased() != firmwareSha256 {
-                    ok = false
-                    fail(code: "OTA_HASH_MISMATCH", message: "manifest sha256 与实测不符")
-                }
-                if ok {
-                    let ignored = json.keys.filter { !["version", "size", "sha256"].contains($0) }
-                    if !ignored.isEmpty {
-                        ble?.log("OTA manifest 附加字段忽略（白名单待固化）：\(ignored.joined(separator: ", "))")
+                switch OtaManifest.parse(json, fileSize: data.count, actualSha256: firmwareSha256) {
+                case .success(let info):
+                    manifestTarget = info.target
+                    manifestVersion = info.version
+                    if !info.ignoredKeys.isEmpty {
+                        ble?.log("OTA manifest 附加字段忽略：\(info.ignoredKeys.joined(separator: ", "))")
                     }
                     phase = .ready
-                    ble?.log("OTA 包校验通过（manifest：version=\(manifestVersion ?? "—") size=\(data.count)）", .ok)
+                    ble?.log("OTA 包校验通过（manifest：target=\(info.target ?? "—") version=\(info.version ?? "—") size=\(data.count)）", .ok)
+                case .failure(.invalidTarget(let t)):
+                    fail(code: "OTA_PACKAGE_INVALID", message: "manifest target 非契约枚举（lightble-peripheral|lightble-observer）：\(t)")
+                case .failure(.invalidSemVer(let key, let value)):
+                    fail(code: "OTA_PACKAGE_INVALID", message: "manifest \(key) 非 SemVer：\(value)")
+                case .failure(.sizeMismatch(let m, let actual)):
+                    fail(code: "OTA_PACKAGE_INVALID", message: "manifest size 不符：\(m) ≠ 实测 \(actual)")
+                case .failure(.hashMismatch):
+                    fail(code: "OTA_HASH_MISMATCH", message: "manifest sha256 与实测不符")
                 }
             } else {
                 phase = .ready
-                ble?.log("OTA 无 manifest → 跳过包校验（正典允许），版本验证阶段将无版本可比对", .sys)
+                ble?.log("OTA 无 manifest → 跳过包校验（正典允许）；start 帧将省略 target/target_version，真固件按 missing_target 拒绝", .sys)
             }
         } catch {
             fail(code: "OTA_PACKAGE_INVALID", message: "读取文件失败：\(error.localizedDescription)")
@@ -139,7 +137,7 @@ final class OtaManager: ObservableObject {
     }
 
     nonisolated static func isSemVer(_ v: String) -> Bool {
-        v.range(of: #"^\d+\.\d+\.\d+(-[0-9A-Za-z.]+)?$"#, options: .regularExpression) != nil
+        OtaManifest.isSemVer(v)
     }
 
     // MARK: - 启动（接管会话 → start → 等就绪）
@@ -177,17 +175,15 @@ final class OtaManager: ObservableObject {
         sentBytes = 0
         verifyReadSent = false
 
-        let startJson: [String: Any] = [
-            "op": "start",
-            "target": manifestVersion ?? fileName ?? "unknown",
-            "size": fileSize,
-            "chunk_size": chunkSize,
-            "sha256": firmwareSha256,
-        ]
+        let startJson = OtaStartPayload.build(manifestTarget: manifestTarget, manifestVersion: manifestVersion,
+                                              fileSize: fileSize, chunkSize: chunkSize, sha256: firmwareSha256)
+        if manifestTarget == nil || manifestVersion == nil {
+            ble.log("OTA start 帧省略 target/target_version（无 manifest 契约字段）→ 真固件将拒绝（missing_target/missing_target_version），见 OTA_CONTRACT_R1_R2_DECISION", .sys)
+        }
         phase = .waitingReady
         _ = ble.enqueueWrite(deviceId: deviceId, characteristicUUID: Self.ctrlCharUuid,
                              data: try! JSONSerialization.data(withJSONObject: startJson),
-                             display: "op=start size=\(fileSize) chunk=\(chunkSize)", priority: true)
+                             display: OtaStartPayload.display(startJson), priority: true)
         armWait(seconds: 30, code: "OTA_READY_TIMEOUT", what: "等待设备 ready（30s）")
     }
 
@@ -354,29 +350,22 @@ final class OtaManager: ObservableObject {
             return
         }
 
-        // JSON 优先（{"state":"ready"} / {"event":"success"}），非 JSON 回退关键字匹配
-        var stateWords: Set<String> = []
-        if let json = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any] {
-            for v in json.values {
-                if let s = v as? String { stateWords.insert(s.lowercased()) }
-            }
-        } else {
-            let lower = text.lowercased()
-            for kw in ["ready", "success", "ok", "error", "fail"] where lower.contains(kw) {
-                stateWords.insert(kw)
-            }
-        }
-        if stateWords.contains("ready"), case .waitingReady = phase {
+        // 分类器纯逻辑（OtaStatusClassifier · R-2：failed/aborted 子串命中错误类），
+        // 阶段门控保持旧口径：ready 仅在 waitingReady、success/ok 仅在 committing 生效
+        switch OtaStatusClassifier.classify(data) {
+        case .ready:
+            guard case .waitingReady = phase else { return }
             waitTimer?.cancel()
             ble?.log("OTA 设备 ready → 开始分块传输", .ok)
             beginTransfer()
-        } else if stateWords.contains("success") || stateWords.contains("ok") {
-            if case .committing = phase {
-                waitTimer?.cancel()
-                beginVerify()
-            }
-        } else if stateWords.contains("error") || stateWords.contains("fail") {
-            fail(code: "OTA_DEVICE_FAILED", message: "设备报告错误：\(text)")
+        case .success, .ok:
+            guard case .committing = phase else { return }
+            waitTimer?.cancel()
+            beginVerify()
+        case .error(let t):
+            fail(code: "OTA_DEVICE_FAILED", message: "设备报告错误：\(t)")
+        case nil:
+            break
         }
     }
 }

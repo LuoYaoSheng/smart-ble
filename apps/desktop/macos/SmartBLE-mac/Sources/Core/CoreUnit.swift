@@ -37,6 +37,54 @@ enum CoreUnit {
         testRecoveryAndHints()
         testSemVer()
         testConstants()
+        testOtaStatusClassifier()
+        testOtaStartPayload()
+    }
+
+    // MARK: - CU-56.. OTA 状态帧分类（R-2 · 固件 status 帧口径）
+
+    private static func testOtaStatusClassifier() {
+        // 固件真实帧：{"type":"ota","status":…}（ota_server.cpp notifyStatus）
+        let ready = OtaStatusClassifier.classify(Data("{\"type\":\"ota\",\"status\":\"ready\",\"max_chunk\":180}".utf8))
+        check("CU-56", { if case .ready = ready { return true }; return false }(), "ready 帧")
+        let success = OtaStatusClassifier.classify(Data("{\"type\":\"ota\",\"status\":\"success\",\"rebooting\":true}".utf8))
+        check("CU-57", { if case .success = success { return true }; return false }(), "success 帧")
+        // R-2：JSON 分支旧实现集合精确匹配，"failed"/"aborted" 不命中 error/fail → 漏检拖 30s 超时
+        let failed = OtaStatusClassifier.classify(Data("{\"type\":\"ota\",\"status\":\"failed\",\"code\":\"OTA_ERR_STATE\"}".utf8))
+        check("CU-58", { if case .error = failed { return true }; return false }(), "failed 帧判 error（R-2）")
+        let error = OtaStatusClassifier.classify(Data("{\"type\":\"ota\",\"status\":\"error\",\"code\":\"OTA_ERR_SPACE\",\"detail\":\"update_begin_failed\"}".utf8))
+        check("CU-59", { if case .error = error { return true }; return false }(), "error 帧判 error")
+        let aborted = OtaStatusClassifier.classify(Data("{\"type\":\"ota\",\"status\":\"aborted\"}".utf8))
+        check("CU-60", { if case .error = aborted { return true }; return false }(), "aborted 帧判 error（固件 abort 通知同族漏检）")
+        // 非 JSON 文本回退 + 无关键词静默忽略（如版本串回读）
+        let textOk = OtaStatusClassifier.classify(Data("ok".utf8))
+        check("CU-61", { if case .ok = textOk { return true }; return false }(), "文本 ok")
+        let version = OtaStatusClassifier.classify(Data("1.0.5".utf8))
+        check("CU-62", version == nil, "版本串不误判")
+    }
+
+    // MARK: - CU-63.. OTA start 帧契约（R-1 · contracts/target/ota-package.schema.json）
+
+    private static func testOtaStartPayload() {
+        let sha = String(repeating: "a", count: 64)
+        let p = OtaStartPayload.build(manifestTarget: "lightble-peripheral", manifestVersion: "1.2.3",
+                                      fileSize: 1024, chunkSize: 180, sha256: sha)
+        check("CU-63", (p["target"] as? String) == "lightble-peripheral"
+              && (p["target_version"] as? String) == "1.2.3",
+              "start 帧含契约 target/target_version（R-1 · 旧实现发版本号且缺 target_version）")
+        check("CU-64", (p["op"] as? String) == "start" && (p["size"] as? Int) == 1024
+              && (p["chunk_size"] as? Int) == 180 && (p["sha256"] as? String) == sha
+              && p.count == 6, "六键齐全 op/target/target_version/size/chunk_size/sha256")
+        let bare = OtaStartPayload.build(manifestTarget: nil, manifestVersion: nil,
+                                         fileSize: 10, chunkSize: 20, sha256: "x")
+        check("CU-65", bare["target"] == nil && bare["target_version"] == nil,
+              "无 manifest 不伪造枚举（省略键 → 真固件 missing_target 诚实拒绝）")
+        check("CU-66", OtaStartPayload.isValidTarget("lightble-peripheral")
+              && OtaStartPayload.isValidTarget("lightble-observer")
+              && !OtaStartPayload.isValidTarget("1.2.3")
+              && !OtaStartPayload.isValidTarget("lightble")
+              && !OtaStartPayload.isValidTarget(""),
+              "target 契约枚举校验")
     }
 
     // MARK: - CU-01.. framed-v1 分帧
