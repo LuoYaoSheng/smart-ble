@@ -1,0 +1,75 @@
+TAP version 13
+# Subtest: mirror: version-metadata.js / product.js / generated artifact byte-identical across E-WIN & T-WIN
+ok 1 - mirror: version-metadata.js / product.js / generated artifact byte-identical across E-WIN & T-WIN
+  ---
+  duration_ms: 3.5128
+  ...
+# Subtest: mirror: 桌面生成产物值 = uniapp 正典产物值
+ok 2 - mirror: 桌面生成产物值 = uniapp 正典产物值
+  ---
+  duration_ms: 2.2451
+  ...
+# Subtest: V1 缺失版本 → dev.unknown（不编造 0.0.0）
+ok 3 - V1 缺失版本 → dev.unknown（不编造 0.0.0）
+  ---
+  duration_ms: 0.405
+  ...
+# Subtest: V2 release + sha → version+sha
+ok 4 - V2 release + sha → version+sha
+  ---
+  duration_ms: 0.478
+  ...
+# Subtest: V3 release 无 sha → 裸版本
+ok 5 - V3 release 无 sha → 裸版本
+  ---
+  duration_ms: 0.1925
+  ...
+# Subtest: V4 preview + sha → version-dev.sha（sha 取 7 位）
+ok 6 - V4 preview + sha → version-dev.sha（sha 取 7 位）
+  ---
+  duration_ms: 0.1426
+  ...
+# Subtest: V5 preview 无 sha → version-dev.unknown
+ok 7 - V5 preview 无 sha → version-dev.unknown
+  ---
+  duration_ms: 1.2543
+  ...
+# Subtest: M1 默认元数据：platforms 四键序 / 限制非空 / preview 1 条 / release 不编造
+ok 8 - M1 默认元数据：platforms 四键序 / 限制非空 / preview 1 条 / release 不编造
+  ---
+  duration_ms: 0.6865
+  ...
+# Subtest: M2 空元数据兜底：不抛异常、字段有形
+ok 9 - M2 空元数据兜底：不抛异常、字段有形
+  ---
+  duration_ms: 0.3751
+  ...
+# Subtest: M3 注入 release 元数据 → releases 一条 VERIFIED；注入不污染全局
+ok 10 - M3 注入 release 元数据 → releases 一条 VERIFIED；注入不污染全局
+  ---
+  duration_ms: 0.7354
+  ...
+# Subtest: F028 product 投影：两条推广卡，含落地页 URL 与 appId
+ok 11 - F028 product 投影：两条推广卡，含落地页 URL 与 appId
+  ---
+  duration_ms: 0.3338
+  ...
+# Subtest: T-WIN 线 API 行为与 E-WIN 一致
+ok 12 - T-WIN 线 API 行为与 E-WIN 一致
+  ---
+  duration_ms: 0.6119
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 168.2661
+
+=== generate pipeline ===
+generate-release-metadata --check PASS
+=== verify-uniapp tail ===
+UniApp verification PASS (28 unit files plus 14 static gates)

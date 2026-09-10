@@ -73,6 +73,7 @@ class App {
     async init() {
         this.bindEvents();
         this.setupEventListeners(); // 先设置监听器
+        this.renderAboutPage(); // F027/F028/F029：关于页投影（版本三态/推广卡/平台状态）
         await this.initBLE(); // 再初始化 BLE
     }
 
@@ -98,6 +99,19 @@ class App {
         // Back button
         document.getElementById('backButton')?.addEventListener('click', () => {
             this.showDeviceList();
+        });
+
+        // F027/F028/F029：关于页二级导航与分享（桌面口径）
+        document.getElementById('goVersionsLink')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.showVersionsView();
+        });
+        document.getElementById('versionsBackButton')?.addEventListener('click', () => {
+            this.switchTab('about');
+        });
+        document.getElementById('shareAppLink')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.shareApp();
         });
 
         // Clear logs button
@@ -183,6 +197,7 @@ class App {
         const broadcastView = document.getElementById('broadcastView');
         const connectedView = document.getElementById('connectedView'); // T14
         const aboutView = document.getElementById('aboutView');
+        const versionsView = document.getElementById('versionsView'); // P010
 
         // Hide all views first
         deviceListView?.classList.remove('active');
@@ -193,6 +208,8 @@ class App {
         connectedView.style.display = 'none';
         aboutView?.classList.remove('active');
         aboutView.style.display = 'none';
+        versionsView?.classList.remove('active');
+        versionsView.style.display = 'none';
 
         if (tab === 'scan') {
             deviceListView?.classList.add('active');
@@ -212,6 +229,210 @@ class App {
         } else if (tab === 'about') {
             aboutView?.classList.add('active');
             aboutView.style.display = 'block';
+        } else if (tab === 'versions') {
+            // P010：关于页二级视图，Tab 状态保持「关于」
+            versionsView?.classList.add('active');
+            versionsView.style.display = 'block';
+            this.renderVersionsPage();
+        }
+    }
+
+    // P010：进入版本记录二级视图
+    showVersionsView() {
+        this.switchTab('versions');
+        const aboutBtn = document.querySelector('.tab-btn[data-tab="about"]');
+        aboutBtn?.classList.add('active');
+    }
+
+    // F027：关于页投影（版本三态 + 平台状态 + F028 推广卡）
+    renderAboutPage() {
+        const VM = window.SmartBLEVersionMetadata;
+        const PRODUCT = window.SmartBLEProduct;
+        if (!VM || !PRODUCT) {
+            const chip = document.getElementById('aboutVersionChip');
+            if (chip) chip.textContent = 'dev.unknown';
+            return;
+        }
+
+        const release = VM.getReleaseMetadata();
+        const metadataVersionLabel = VM.buildVersionString({
+            version: VM.getProductVersion(),
+            commit: release.commit,
+            channel: release.channel,
+        });
+
+        // P009 三态：基准 = metadata 投影；运行时渠道成功才覆盖
+        const chip = document.getElementById('aboutVersionChip');
+        if (chip) {
+            chip.textContent = 'v' + metadataVersionLabel;
+            const applyRuntimeVersion = (value) => {
+                const next = typeof value === 'string' ? value.trim() : '';
+                chip.textContent = 'v' + VM.buildVersionString({
+                    version: next || VM.getProductVersion(),
+                    commit: release.commit,
+                    channel: release.channel,
+                });
+            };
+            if (window.bleAPI?.getAppVersion) {
+                window.bleAPI.getAppVersion().then(applyRuntimeVersion).catch(() => {});
+            }
+        }
+
+        // F027：平台与公开状态（七键投影）
+        const grid = document.getElementById('platformGrid');
+        if (grid) {
+            grid.innerHTML = '';
+            VM.getPlatformPublicStatuses().forEach((p) => {
+                const el = document.createElement('div');
+                el.className = 'about-platform-chip';
+                const status = p.role === 'REFERENCE' ? 'REFERENCE' : (p.capability_status || p.release_status || 'NOT_RELEASED');
+                el.innerHTML = '<span class="about-platform-name"></span><span class="about-platform-status"></span>';
+                el.querySelector('.about-platform-name').textContent = p.name;
+                el.querySelector('.about-platform-status').textContent = status;
+                grid.appendChild(el);
+            });
+        }
+
+        // F028：推广卡（桌面 = 落地页 + 小程序码状态如实显示）
+        const promoList = document.getElementById('promoList');
+        if (promoList) {
+            promoList.innerHTML = '';
+            PRODUCT.RELATED_MINI_PROGRAMS.forEach((app) => {
+                const card = document.createElement('div');
+                card.className = 'about-promo-item';
+                card.innerHTML = `
+                    <span class="about-promo-badge"></span>
+                    <div class="about-promo-copy">
+                        <div class="about-promo-name"></div>
+                        <div class="about-promo-desc"></div>
+                    </div>
+                    <button class="btn btn-secondary about-promo-open">打开落地页</button>`;
+                const badge = card.querySelector('.about-promo-badge');
+                badge.textContent = app.abbr;
+                badge.style.background = app.bg;
+                badge.style.color = app.color;
+                card.querySelector('.about-promo-name').textContent = app.name;
+                card.querySelector('.about-promo-desc').textContent = app.description;
+                card.querySelector('.about-promo-open').addEventListener('click', () => {
+                    window.open(app.url, '_blank');
+                });
+                promoList.appendChild(card);
+            });
+        }
+        const qrNote = document.getElementById('promoQrNote');
+        if (qrNote) {
+            const qr = release.wechat_qr || {};
+            if (qr.status === 'released' && qr.image) {
+                qrNote.textContent = '小程序码：可从落地页下载。';
+            } else {
+                qrNote.textContent = '小程序码尚未发布，落地页暂无可下载码图。';
+            }
+        }
+    }
+
+    // P010：版本记录页（Release Metadata 纯投影，禁止手写版本事实）
+    renderVersionsPage() {
+        const VM = window.SmartBLEVersionMetadata;
+        const body = document.getElementById('versionsBody');
+        if (!body) return;
+        if (!VM) {
+            body.innerHTML = '<p class="versions-empty">版本元数据不可用（dev.unknown）</p>';
+            return;
+        }
+
+        const model = VM.getVersionPageModel();
+        const c = model.current;
+        const esc = (s) => String(s == null ? '' : s)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+        const platformRows = c.platforms.map((p) =>
+            `<tr><td>${esc(p.name)}</td><td>${esc(p.display_status)}</td></tr>`).join('');
+        const limitationItems = c.limitations.map((x) => `<li>${esc(x)}</li>`).join('');
+
+        const releaseItems = model.history.releases.length
+            ? model.history.releases.map((r) => `
+                <div class="versions-release-card">
+                    <div class="versions-release-head">
+                        <span class="versions-release-tag">${esc(r.tag)}</span>
+                        <span class="versions-release-status">${esc(r.status)}</span>
+                    </div>
+                    <div class="versions-release-meta">${esc(r.version)} · Release · ${esc(r.built_at || '')}</div>
+                </div>`).join('')
+            : '<p class="versions-empty">暂无正式发布记录（当前为 Preview 渠道）。</p>';
+
+        const previewItems = model.history.previews.length
+            ? model.history.previews.map((p) => `
+                <div class="versions-release-card versions-preview-card">
+                    <div class="versions-release-head">
+                        <span class="versions-release-tag">${esc(p.label)}</span>
+                        <span class="versions-release-status">${esc(p.status)}</span>
+                    </div>
+                    <div class="versions-release-meta">${esc(p.channel)} 渠道</div>
+                </div>`).join('')
+            : '<p class="versions-empty">暂无预览记录。</p>';
+
+        body.innerHTML = `
+            <section class="about-card versions-current">
+                <h3>当前版本</h3>
+                <div class="versions-current-grid">
+                    <div class="versions-kv"><span>版本</span><strong>${esc(c.display_version)}</strong></div>
+                    <div class="versions-kv"><span>状态</span><strong>${esc(c.status)}</strong></div>
+                    <div class="versions-kv"><span>渠道</span><strong>${esc(c.channel_label)}</strong></div>
+                </div>
+                <h4>平台状态</h4>
+                <table class="versions-platform-table">${platformRows}</table>
+                <h4>已知限制</h4>
+                <ul class="versions-limitations">${limitationItems}</ul>
+            </section>
+            <section class="about-card">
+                <h3>正式发布</h3>
+                ${releaseItems}
+            </section>
+            <section class="about-card">
+                <h3>预览记录</h3>
+                ${previewItems}
+            </section>`;
+    }
+
+    // F029 桌面口径（10_platform §4：分享 = 导出文本/文件）
+    shareApp() {
+        const PRODUCT = window.SmartBLEProduct;
+        const VM = window.SmartBLEVersionMetadata;
+        const info = PRODUCT ? PRODUCT.PRODUCT_INFO : null;
+        if (!info) return;
+
+        const versionLabel = VM
+            ? VM.buildVersionString({
+                version: VM.getProductVersion(),
+                commit: VM.getReleaseMetadata().commit,
+                channel: VM.getReleaseMetadata().channel,
+            })
+            : 'dev.unknown';
+
+        const text = `${info.name} - BLE 调试与验证工具\n${info.summary}\n版本：${versionLabel}\n${info.website}`;
+
+        const done = (msg) => this.addLog?.('success', msg) || console.log(msg);
+        const fallbackCopy = () => {
+            navigator.clipboard?.writeText(text).then(
+                () => done('分享文本已复制到剪贴板'),
+                () => done('复制失败，请手动复制下载文件内容'),
+            );
+        };
+
+        // 优先导出 .txt 文件，失败回退剪贴板
+        try {
+            const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'smartble-share.txt';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+            done('分享文本已导出为 smartble-share.txt');
+        } catch {
+            fallbackCopy();
         }
     }
 

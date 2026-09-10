@@ -164,12 +164,19 @@
                                 </div>
                             </div>
                             <div class="about-chip-row">
-                                <span class="about-chip">Version 2.0.0</span>
+                                <span class="about-chip" id="aboutVersionChip">版本读取中…</span>
                                 <span class="about-chip">Framework: Electron</span>
                                 <span class="about-chip">Language: Node.js + JavaScript</span>
                             </div>
                             <p class="about-copy">跨平台 BLE 控制台与统一协议内核，在桌面端提供更适合长时间调试的工作台体验。</p>
                         </div>
+                    </section>
+
+                    <section class="about-card about-promo-card">
+                        <h3>更多小程序</h3>
+                        <p class="about-section-caption">同一开发者的实用小程序，桌面端点击卡片打开落地页。</p>
+                        <div id="promoList" class="about-promo-list"></div>
+                        <p class="about-qr-note" id="promoQrNote"></p>
                     </section>
 
                     <section class="about-info-grid">
@@ -187,15 +194,33 @@
                             </ul>
                         </article>
                         <article class="about-card">
-                            <h3>相关入口</h3>
-                            <div class="about-link-list">
-                                <a href="https://lightble.i2kai.com/" target="_blank">项目主页</a>
-                                <a href="https://lightble.i2kai.com/MASTER_ARCHITECTURE" target="_blank">架构白皮书</a>
-                                <a href="https://github.com/luoyaosheng/smart-ble" target="_blank">源码仓库</a>
-                                <a href="https://github.com/luoyaosheng/smart-ble/issues" target="_blank">问题反馈</a>
-                            </div>
+                            <h3>平台与公开状态</h3>
+                            <div id="platformGrid" class="about-platform-grid"></div>
                         </article>
                     </section>
+
+                    <section class="about-card">
+                        <h3>相关入口</h3>
+                        <div class="about-link-list">
+                            <a href="https://lightble.i2kai.com/" target="_blank">项目主页</a>
+                            <a href="#" id="goVersionsLink">版本记录</a>
+                            <a href="https://gitee.com/luoyaosheng/smart-ble/issues" target="_blank">问题反馈</a>
+                            <a href="#" id="shareAppLink">分享应用</a>
+                            <a href="https://lightble.i2kai.com/MASTER_ARCHITECTURE" target="_blank">架构白皮书</a>
+                            <a href="https://github.com/luoyaosheng/smart-ble" target="_blank">源码仓库</a>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- 版本记录视图（P010：Release Metadata 纯投影，禁止手写版本事实） -->
+            <div id="versionsView" class="view" style="display: none;">
+                <div class="versions-shell">
+                    <div class="versions-header">
+                        <button id="versionsBackButton" class="btn btn-secondary">← 返回</button>
+                        <h2>版本记录</h2>
+                    </div>
+                    <div id="versionsBody" class="versions-body"></div>
                 </div>
             </div>
 
@@ -238,6 +263,9 @@
     <script src="components/WriteDialog.js"></script>
     <script src="components/OtaDialog.js"></script>
     <script src="BleUtils.js"></script>
+    <script src="config/release-metadata.generated.js"></script>
+    <script src="config/product.js"></script>
+    <script src="version-metadata.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

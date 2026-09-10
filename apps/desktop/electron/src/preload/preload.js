@@ -6,6 +6,9 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 // 暴露安全的 API 给渲染进程
 contextBridge.exposeInMainWorld('bleAPI', {
+  // F027 版本元数据：运行时渠道版本（主进程 app.getVersion()）
+  getAppVersion: () => ipcRenderer.invoke('app:getVersion'),
+
   // 初始化
   init: () => ipcRenderer.invoke('ble:init'),
 

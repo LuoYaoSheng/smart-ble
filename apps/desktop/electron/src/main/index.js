@@ -193,6 +193,9 @@ function getDevice(deviceId) {
 }
 
 // IPC 处理器
+// F027 版本元数据：运行时渠道版本（package.json version，与仓库根 VERSION 单源同步）
+ipcMain.handle('app:getVersion', () => app.getVersion());
+
 ipcMain.handle('ble:init', async () => {
   debugLog('IPC: ble:init called');
   const loaded = await loadBLEModule();

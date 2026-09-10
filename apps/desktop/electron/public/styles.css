@@ -1140,3 +1140,222 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+/* ============================================================
+   F027/F028/F029 — 关于页投影（版本三态/推广卡/平台状态）与 P010 版本记录
+   ============================================================ */
+
+.about-promo-card {
+    margin-bottom: 16px;
+}
+
+.about-section-caption {
+    margin: 6px 0 12px;
+    color: var(--text-secondary, #8e8e93);
+    font-size: 13px;
+}
+
+.about-promo-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.about-promo-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: var(--bg-secondary, rgba(255, 255, 255, 0.82));
+}
+
+.about-promo-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.about-promo-copy {
+    flex: 1;
+    min-width: 0;
+}
+
+.about-promo-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary, #1c1c1e);
+}
+
+.about-promo-desc {
+    margin-top: 2px;
+    font-size: 12px;
+    color: var(--text-secondary, #8e8e93);
+}
+
+.about-qr-note {
+    margin: 10px 0 0;
+    font-size: 12px;
+    color: var(--text-secondary, #8e8e93);
+}
+
+.about-platform-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.about-platform-chip {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 10px 8px;
+    border-radius: 10px;
+    background: rgba(27, 109, 255, 0.08);
+    text-align: center;
+}
+
+.about-platform-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--primary, #007aff);
+}
+
+.about-platform-status {
+    font-size: 11px;
+    font-weight: 700;
+    opacity: 0.85;
+    color: var(--primary, #007aff);
+}
+
+/* ---------- P010 版本记录 ---------- */
+
+.versions-shell {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.versions-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+}
+
+.versions-header h2 {
+    font-size: 20px;
+    color: var(--text-primary, #1c1c1e);
+}
+
+.versions-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.versions-current h4,
+.versions-body h4 {
+    margin: 16px 0 8px;
+    font-size: 14px;
+    color: var(--text-secondary, #8e8e93);
+}
+
+.versions-current-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.versions-kv {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px;
+    border-radius: 10px;
+    background: var(--bg-secondary, rgba(255, 255, 255, 0.82));
+}
+
+.versions-kv span {
+    font-size: 12px;
+    color: var(--text-secondary, #8e8e93);
+}
+
+.versions-kv strong {
+    font-size: 14px;
+    color: var(--text-primary, #1c1c1e);
+    word-break: break-all;
+}
+
+.versions-platform-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.versions-platform-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border-color, rgba(0, 0, 0, 0.06));
+    color: var(--text-primary, #1c1c1e);
+}
+
+.versions-platform-table td:last-child {
+    text-align: right;
+    font-weight: 700;
+    color: var(--text-secondary, #8e8e93);
+}
+
+.versions-limitations {
+    margin: 0;
+    padding-left: 18px;
+    font-size: 13px;
+    color: var(--text-secondary, #8e8e93);
+    line-height: 1.7;
+}
+
+.versions-release-card {
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: var(--bg-secondary, rgba(255, 255, 255, 0.82));
+    margin-bottom: 10px;
+}
+
+.versions-preview-card {
+    background: rgba(27, 109, 255, 0.06);
+}
+
+.versions-release-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.versions-release-tag {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary, #1c1c1e);
+}
+
+.versions-release-status {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--primary, #007aff);
+}
+
+.versions-release-meta {
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--text-secondary, #8e8e93);
+}
+
+.versions-empty {
+    margin: 0;
+    font-size: 13px;
+    color: var(--text-secondary, #8e8e93);
+}
