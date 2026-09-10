@@ -51,7 +51,7 @@ python3 -m http.server 8941
 | P006 调试 | F006–F012 F025 | idle / ready / error / 服务空 / 断线重连 / 脱敏日志 / OTA 两预设 |
 | P007 已连接 | F006 F013 | 3 台 / 1 台 / 双空态 / 批量失败 |
 | P008 广播 | F014 F015 F016 | 微信/Android/Web 平台 × 就绪/冲突/未开/权限/广播中/超限/失败 |
-| P009 关于 | F026 F027 F028 F029 | 版本回退 |
+| P009 关于 | F026 F027 F029 | 版本回退（F028 推广跳转 2026-09-10 移除） |
 | P010 版本 | F027 | 三列表空态 |
 
 ## 本轮吸收的整改项（对照 06_review / QA 报告）
@@ -71,7 +71,7 @@ python3 -m http.server 8941
 
 骨架：app-navbar · subnav · tab-bar（角标=通用连接+配网在线）
 通用：btn(5 变体×2 尺寸) · chip(6 色) · badge · kv · form-field(input/password/select/switch/slider) · empty-state(4 插图) · op-state · error-banner · banner-note(info/warn)
-业务：device-card(scan/conn/SHID) · adv-sheet · filter-panel · service-panel(五态) · log-panel(dock/card 六色) · provision-stepper · provision-progress · diag-row · write-dialog · ota-dialog · promo-card · summary-card
+业务：device-card(scan/conn/SHID) · adv-sheet · filter-panel · service-panel(五态) · log-panel(dock/card 六色) · provision-stepper · provision-progress · diag-row · write-dialog · ota-dialog · summary-card（promo-card 随 F028 移除）
 全局层：toast · modal（对应 uni.showToast/showModal，遮罩不可点关） · sheet
 
 ## 资源清单（全自包含，零外部依赖）

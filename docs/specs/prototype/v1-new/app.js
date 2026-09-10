@@ -441,10 +441,7 @@ const ACTIONS = {
   'p008-logclear': ()=>{ const s=S.pages.p008; s.logs=[]; renderAll(); },
   'p008-logexport': ()=>{ const s=S.pages.p008; s.logs.length?toast('日志已复制',true):toast('暂无日志'); },
 
-  /* PAGE009 */
-  'p009-promo': el=>{ const p=MOCK.promo[+el.dataset.i];
-    /* 微信渠道点击直接发起 navigateToMiniProgram（无确认弹窗，实证 openApp）；无 appId/失败分支见 PAGE_SPEC 与场景按钮 */
-    toast(`已直接发起跳转「${p.name}」（演示）`,true); },
+  /* PAGE009（F028 推广跳转 2026-09-10 移除） */
   'p009-openweb': el=>toast(el.dataset.k==='web'?'网址已复制':'反馈链接已复制',true),
   'p009-versions': ()=>go('p010'),
   'p009-shareapp': ()=>toast('请点击右上角 · 分享给朋友或朋友圈'),

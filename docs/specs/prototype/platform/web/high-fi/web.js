@@ -126,22 +126,6 @@ function wsysDownload(){
     <button class="wsys-x" data-act="wsys-close">${C.ic('x','sm')}</button></div>`;
 }
 
-/* ---------- 推广卡数据 + 伪二维码（F028 非微信渠道承接 · 用户指示 2026-09-03）---------- */
-const PROMO = [
-  { name:'LightBLE 调试台', desc:'同开发者桌面端 BLE 工具', land:'lightble.example.com' },        /* 脱敏演示域；真值=旧代码 config/product.js */
-  { name:'ESP32 快速配网',  desc:'ESP32 设备配网演示小程序', land:'esp-config.example.com' },
-];
-function qrDemo(seed){ /* 确定性伪二维码（示意图形 · 非真实可扫码） */
-  let h=2166136261>>>0; for(let i=0;i<seed.length;i++){ h^=seed.charCodeAt(i); h=Math.imul(h,16777619)>>>0; }
-  const rnd=()=>{ h^=h<<13; h>>>=0; h^=h>>>17; h^=h<<5; h>>>=0; return h/4294967296; };
-  const n=21,c=6,dots=[];
-  const fin=(x,y)=>`<rect x="${x*c}" y="${y*c}" width="${7*c}" height="${7*c}"/><rect x="${(x+1)*c}" y="${(y+1)*c}" width="${5*c}" height="${5*c}" fill="#fff"/><rect x="${(x+2)*c}" y="${(y+2)*c}" width="${3*c}" height="${3*c}"/>`;
-  for(let y=0;y<n;y++)for(let x=0;x<n;x++){
-    if((x<8&&y<8)||(x>=n-8&&y<8)||(x<8&&y>=n-8)) continue;
-    if(rnd()<.44) dots.push(`<rect x="${x*c}" y="${y*c}" width="${c}" height="${c}"/>`); }
-  return `<svg style="width:128px;height:128px" viewBox="0 0 ${n*c} ${n*c}" fill="#111" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">${fin(0,0)}${fin(n-7,0)}${fin(0,n-7)}${dots.join('')}</svg>`;
-}
-
 /* ---------- 域可用性（10_platform §3 矩阵 Web 列） ---------- */
 const st = (cls,label)=>`<span class="stword st-${cls}">${label}</span>`;
 function domRows(s){
@@ -357,13 +341,6 @@ render(s){
         <div class="kv"><span class="k">版本投影（F027）</span><span class="v">小程序 release-metadata 通道不可用 → 回退构建内置（对标基准 P009 verFallback 场景）</span></div>
       </div>
       <div class="card">
-        <div class="card-t">${C.ic('ext')} 更多小程序（F028 · 非微信渠道承接）</div>
-        <div class="kv"><span class="k">渠道规则</span><span class="v">Web 无微信直跳 → 新标签打开落地页 + 出示小程序码〔2026-09-03〕</span></div>
-        ${PROMO.map((p,i)=>`<div class="menu-row" data-act="web-promo" data-i="${i}"><span style="color:var(--c-primary);display:flex">${C.ic('ext')}</span>
-          <span class="t">${p.name} <span style="font-size:var(--fs-mini);color:var(--c-mut)">${p.desc}</span></span>
-          <span class="arr">${C.ic('chev-r','xs')}</span></div>`).join('')}
-      </div>
-      <div class="card">
         <div class="card-t">${C.ic('share')} 出口（F029 / F011）</div>
         <div class="menu-row" data-act="web-copyurl"><span style="color:var(--c-primary);display:flex">${C.ic('copy')}</span>
           <span class="t">复制页面 URL <span style="font-size:var(--fs-mini);color:var(--c-mut)">分享 = 复制 URL（无社交面板）</span></span><span class="arr">${C.ic('chev-r','sm')}</span></div>
@@ -457,18 +434,6 @@ const ACTIONS = {
   'web-copylog': ()=>toast('日志文本已复制（同基准 F011 剪贴板 · 演示）',true),
   'web-prefill': ()=>toast('候选能力：URL 参数预填未决策，暂不提供（10_platform §2.3）'),
 
-  /* W6 推广卡（F028 非微信渠道承接 · 用户指示 2026-09-03） */
-  'web-promo': el=>{ const i=+el.dataset.i, p=PROMO[i]; S.pages.about._land=p.land;
-    sheet(`${p.name} · 推广详情`, `
-      <div style="margin:0 0 10px">${C.note('info','非微信渠道承接（用户指示 2026-09-03）：Web 无法直跳微信小程序 → <b>新标签打开落地页</b>（旧代码实证 <span class="mono">window.open</span>）+ 出示<b>小程序码</b>，微信扫码可达。')}</div>
-      <div style="display:flex;justify-content:center;padding:14px;background:#fff;border-radius:12px">${qrDemo(p.name)}</div>
-      <div style="text-align:center;font-size:var(--fs-mini);color:var(--c-mut);margin-top:6px">小程序码（示意图形 · 实机为静态预生成资源，零后端）· 落地页 <span class="mono">${p.land}</span></div>
-      <div style="display:flex;gap:9px;margin-top:12px;flex-wrap:wrap">
-        ${C.btn({label:'打开落地页',tone:'primary',icon:'ext',act:'web-promoland'})}
-        ${C.btn({label:'保存小程序码（演示）',tone:'soft',act:'web-promoqr'})}
-      </div>`); },
-  'web-promoland': ()=>{ const u=S.pages.about._land||''; closeLayer(); toast(`已在新标签打开落地页（演示）· ${u}`,true); },
-  'web-promoqr': ()=>toast('小程序码已保存（演示）'),
 };
 
 /* ---------- 场景库（幂等复位） ---------- */

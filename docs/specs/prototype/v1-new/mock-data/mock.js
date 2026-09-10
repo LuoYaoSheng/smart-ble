@@ -111,11 +111,6 @@ window.MOCK = {
   },
   env: { platform:'微信小程序', system:'iOS 17.5.1', model:'iPhone 15 Pro' },
 
-  /* 推广卡（PAGE009）——静态配置恒非空 */
-  promo: [
-    { name:'LightBLE 调试台', desc:'同开发者桌面端 BLE 工具', color:'#1B6DFF', bg:'#E8F1FF', abbr:'LB' },
-    { name:'ESP32 快速配网', desc:'ESP32 设备配网演示小程序', color:'#0E9A80', bg:'#E2F8F4', abbr:'ES' },
-  ],
 
   /* 配网错误码表（F022 · BUSINESS_FLOW 8 码 → 4 类恢复动作） */
   provErrors: {
