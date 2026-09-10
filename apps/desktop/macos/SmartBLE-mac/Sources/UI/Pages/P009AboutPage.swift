@@ -1,72 +1,19 @@
 //
-// P009AboutPage.swift — PAGE009 关于（F026 脱敏演示 / F027 版本元数据 / F028 推广跳转 / F029 分享）
-// 桌面差异：推广卡 = 落地页（系统浏览器，真实 NSWorkspace）+ 小程序码示意；外链 = 系统浏览器 modal；
-// 分享 = 复制介绍文本（文件候选拦截）；应用信息卡含「操作系统」行（真实宿主 macOS · CoreBluetooth，
+// P009AboutPage.swift — PAGE009 关于（F026 脱敏演示 / F027 版本元数据 / F029 分享；F028 推广跳转 2026-09-10 移除）
+// 外链 = 系统浏览器 modal；分享 = 复制介绍文本（文件候选拦截）；应用信息卡含「操作系统」行（真实宿主 macOS · CoreBluetooth，
 // 原型的三 OS 切换为评审演示装置，实机呈现真实宿主——分歧登记 integration-notes）+ 生态能力矩阵卡（macOS 行）。
 //
 
 import AppKit
 
-// 确定性伪二维码（desktop.js qrDemo 同算法 · FNV-1a 21×21 · 示意图形非真实可扫）
-@MainActor
-final class PseudoQRView: NSView {
-    let seed: String
-    init(seed: String, size: CGFloat = 128) {
-        self.seed = seed
-        super.init(frame: NSRect(x: 0, y: 0, width: size, height: size))
-        translatesAutoresizingMaskIntoConstraints = false
-        widthAnchor.constraint(equalToConstant: size).isActive = true
-        heightAnchor.constraint(equalToConstant: size).isActive = true
-    }
-    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
-
-    override func draw(_ dirtyRect: NSRect) {
-        NSColor.white.setFill()
-        bounds.fill()
-        var h: UInt32 = 2166136261
-        for b in seed.utf8 {
-            h ^= UInt32(b)
-            h = h &* 16777619
-        }
-        func rnd() -> Double {
-            h ^= h << 13; h &= 0xFFFFFFFF
-            h ^= h >> 17
-            h ^= h << 5; h &= 0xFFFFFFFF
-            return Double(h) / 4294967296.0
-        }
-        let n = 21
-        let c = bounds.width / CGFloat(n)
-        NSColor(red: 0.07, green: 0.07, blue: 0.1, alpha: 1).setFill()
-        func finder(_ x: Int, _ y: Int) {
-            let r = NSRect(x: CGFloat(x) * c, y: bounds.height - CGFloat(y + 7) * c, width: 7 * c, height: 7 * c)
-            r.fill()
-            NSColor.white.setFill()
-            NSRect(x: r.minX + c, y: r.minY + c, width: 5 * c, height: 5 * c).fill()
-            NSColor(red: 0.07, green: 0.07, blue: 0.1, alpha: 1).setFill()
-            NSRect(x: r.minX + 2 * c, y: r.minY + 2 * c, width: 3 * c, height: 3 * c).fill()
-        }
-        for y in 0..<n {
-            for x in 0..<n {
-                if (x < 8 && y < 8) || (x >= n - 8 && y < 8) || (x < 8 && y >= n - 8) { continue }
-                if rnd() < 0.44 {
-                    NSRect(x: CGFloat(x) * c, y: bounds.height - CGFloat(y + 1) * c, width: c, height: c).fill()
-                }
-            }
-        }
-        finder(0, 0); finder(n - 7, 0); finder(0, n - 7)
-    }
-}
+// PseudoQRView（伪二维码）随 F028 推广区 2026-09-10 移除
 
 @MainActor
 final class P009AboutPage: NSViewController, PageProtocol {
     weak var host: PageHost?
     private var scroll: PageScroll!
 
-    /// 推广卡静态配置（产品 RELATED_MINI_PROGRAMS 投影 · 脱敏演示域）
-    private let promos: [(name: String, desc: String, abbr: String, land: String)] = [
-        ("LightBLE 调试台", "同开发者桌面端 BLE 工具", "LB", "lightble.example.com"),
-        ("ESP32 快速配网", "ESP32 设备配网演示小程序", "ES", "esp-config.example.com"),
-    ]
+    // F028 推广跳转（更多小程序卡）2026-09-10 移除——promos 配置与 promo 卡/sheet 随之退役
 
     /// 平台状态（Release Metadata 投影 · 产品口径）
     private let platformStatus: [(name: String, cap: String, rel: String)] = [
@@ -146,38 +93,6 @@ final class P009AboutPage: NSViewController, PageProtocol {
             ], spacing: 12, alignment: .centerY),
         ], spacing: 0)
         views.append(brandCard)
-
-        views.append(sectionTitle("point.3.connected.trianglepath.dotted", "更多小程序"))
-        let promoCard = Card(padding: 6)
-        promoCard.setViews(promos.map { p in
-            let abbrBox = NSView()
-            abbrBox.wantsLayer = true
-            abbrBox.layer?.backgroundColor = (p.abbr == "LB" ? DS.primaryWeak : DS.successWeak).cgColor
-            abbrBox.layer?.cornerRadius = 10
-            abbrBox.translatesAutoresizingMaskIntoConstraints = false
-            let abbr = makeLabel(p.abbr, size: 15, weight: .heavy,
-                                 color: p.abbr == "LB" ? DS.primary : DS.successDeep, align: .center)
-            abbrBox.addSubview(abbr)
-            NSLayoutConstraint.activate([
-                abbrBox.widthAnchor.constraint(equalToConstant: 42),
-                abbrBox.heightAnchor.constraint(equalToConstant: 42),
-                abbr.centerXAnchor.constraint(equalTo: abbrBox.centerXAnchor),
-                abbr.centerYAnchor.constraint(equalTo: abbrBox.centerYAnchor),
-            ])
-            let go = DSButton("前往", tone: .soft, small: true, actionId: "p009-promo") { [weak self] in
-                self?.openPromo(name: p.name, land: p.land)
-            }
-            return hstack([
-                abbrBox,
-                vstack([
-                    makeLabel(p.name, size: 15, weight: .bold),
-                    makeLabel(p.desc, size: 11, color: DS.mut),
-                ], spacing: 2),
-                NSView(),
-                go,
-            ], spacing: 10, alignment: .centerY)
-        }, spacing: 0)
-        views.append(promoCard)
 
         views.append(sectionTitle("info.circle", "应用信息"))
         let infoCard = Card(padding: 14)
@@ -274,33 +189,6 @@ final class P009AboutPage: NSViewController, PageProtocol {
             label.trailingAnchor.constraint(equalTo: box.trailingAnchor, constant: -7),
         ])
         return box
-    }
-
-    // MARK: - 推广详情 sheet（F028 非微信渠道承接 · 落地页真实打开）
-
-    private func openPromo(name: String, land: String) {
-        guard let host else { return }
-        var body: [NSView] = []
-        body.append(noteBanner("info", "非微信渠道承接（用户指示 2026-09-03）：Desktop 无法直跳微信小程序 → 浏览器打开落地页 + 出示小程序码（微信扫码可达 · 可下载）。"))
-        let qrHost = NSView()
-        qrHost.wantsLayer = true
-        qrHost.layer?.backgroundColor = NSColor.white.cgColor
-        qrHost.layer?.cornerRadius = DS.rMd
-        qrHost.addSubview(PseudoQRView(seed: name))
-        body.append(qrHost)
-        body.append(makeLabel("小程序码（示意图形 · 实机为静态预生成资源，零后端）· 落地页 \(land)", size: 11, color: DS.mut, align: .center))
-        let open = DSButton("打开落地页", tone: .primary, symbol: "arrow.up.right.square", actionId: "dtk-promoland") { [weak self] in
-            self?.host?.closeLayer()
-            if let url = URL(string: "https://\(land)") {
-                NSWorkspace.shared.open(url)
-            }
-            self?.host?.toast("已在系统浏览器打开落地页 · \(land)", ok: true)
-        }
-        let download = DSButton("下载小程序码", tone: .soft, symbol: "arrow.down.circle", actionId: "dtk-promoqr") { [weak self] in
-            self?.host?.toast("候选能力：文件导出未决策，暂不提供（10_platform §2.4）")
-        }
-        body.append(hstack([open, download], spacing: 9))
-        host.showSheet(title: "\(name) · 推广详情", body: vstack(body, spacing: 12))
     }
 
     // MARK: - 操作系统 sheet（信息呈现：三系原生层口径 · 实机不切换）
