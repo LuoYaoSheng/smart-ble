@@ -1,8 +1,14 @@
 /**
- * OtaDialog Web Component — Electron版
- * 固件升级流程: start → chunk → commit
- * 通过 window.bleAPI.writeRaw (preload暴露) 发送原始字节数组
- * CSS token 与 SSOT 对齐 (--primary / --surface / --border / --error)
+ * OtaDialog Web Component — Electron版（OTA 契约对齐 · R-1/R-2）
+ *
+ * 流程（对齐 macOS OtaManager / core/apple SmartHidCore OtaContract.swift）：
+ *   选包(.bin) → 包校验(manifest 可选：SemVer+size+sha256 实测比对；无 manifest 跳过)
+ *   → CTRL 写 {op:start,target,target_version,size,chunk_size,sha256} → 等 ready(30s)
+ *   → DATA 分块 writeNoResponse(块间隔 20ms) → {op:commit} 等 success(30s)
+ *   → 取消 {op:abort}。
+ * 状态帧分类走共享 ota-contract.js（子串匹配，failed/aborted 不漏检）。
+ * 契约事实源：contracts/target/ota-package.schema.json + 固件 ota_server.cpp；
+ * 决策记录：docs/specs/06_review/OTA_CONTRACT_R1_R2_DECISION.md（方案 A）。
  */
 class OtaDialog extends HTMLElement {
     constructor() {
@@ -10,12 +16,20 @@ class OtaDialog extends HTMLElement {
         this.attachShadow({ mode: 'open' });
         this.deviceId = null;
         this.fileBuffer = null;
+        this.fileSha256 = null;
+        this.manifestJson = null;   // 可选 manifest（契约六字段）
+        this.manifestTarget = null;
+        this.manifestVersion = null;
         this.chunkSize = 180;
+        this._phase = 'idle';       // idle | waiting_ready | transferring | committing | done
         this._cancelled = false;
+        this._waitTimer = null;
+        this._unsubscribeValue = null;
 
         this.otaServiceUuid  = '4fafc201-1fb5-459e-8fcc-c5c9c331914d';
         this.charControlUuid = 'beb5483e-36e1-4688-b7f5-ea07361b26c0';
         this.charDataUuid    = 'beb5483e-36e1-4688-b7f5-ea07361b26c1';
+        this.charStatusUuid  = 'beb5483e-36e1-4688-b7f5-ea07361b26c2';
 
         this.shadowRoot.innerHTML = `
             <style>
@@ -37,7 +51,7 @@ class OtaDialog extends HTMLElement {
                     color: var(--text-primary, #000);
                     border-radius: 16px;
                     padding: 24px;
-                    width: 420px;
+                    width: 440px;
                     max-width: 92vw;
                     box-shadow: 0 16px 48px rgba(0,0,0,0.25);
                     animation: fadeIn 0.2s ease-out;
@@ -60,7 +74,7 @@ class OtaDialog extends HTMLElement {
                     padding: 24px 16px;
                     text-align: center;
                     cursor: pointer;
-                    margin-bottom: 16px;
+                    margin-bottom: 10px;
                     transition: border-color 0.2s, background 0.2s;
                 }
                 .drop-zone:hover,
@@ -72,7 +86,25 @@ class OtaDialog extends HTMLElement {
                 .drop-zone .drop-hint  { font-size: 13px; color: var(--text-secondary, #8e8e93); }
                 .drop-zone .file-name  { font-size: 14px; font-weight: 500; color: var(--primary, #007aff); margin-top: 6px; }
 
-                .status-row { font-size: 13px; color: var(--text-secondary, #8e8e93); margin-bottom: 10px; min-height: 18px; }
+                .manifest-row {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 10px;
+                    margin-bottom: 16px;
+                    padding: 8px 12px;
+                    border-radius: 8px;
+                    background: rgba(0, 122, 255, 0.04);
+                    font-size: 13px;
+                }
+                .manifest-row .manifest-state { color: var(--text-secondary, #8e8e93); }
+                .manifest-row .manifest-state.loaded { color: var(--primary, #007aff); font-weight: 500; }
+                .manifest-row button {
+                    padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border, #e5e5ea);
+                    background: var(--surface, #fff); font-size: 12px; cursor: pointer;
+                }
+
+                .status-row { font-size: 13px; color: var(--text-secondary, #8e8e93); margin-bottom: 10px; min-height: 18px; word-break: break-all; }
                 .status-row.error   { color: var(--error, #ff3b30); }
                 .status-row.success { color: var(--success, #34c759); }
 
@@ -104,8 +136,14 @@ class OtaDialog extends HTMLElement {
                     <input type="file" id="fileInput" accept=".bin" style="display:none;" />
                     <div class="drop-zone" id="dropZone">
                         <div class="drop-icon">📦</div>
-                        <div class="drop-hint">点击选择 .bin 文件，或将文件拖入此处</div>
+                        <div class="drop-hint">点击选择 .bin 固件，或将文件拖入此处</div>
                         <div class="file-name" id="fileName"></div>
+                    </div>
+
+                    <div class="manifest-row">
+                        <span class="manifest-state" id="manifestState">manifest（可选）：未选择</span>
+                        <input type="file" id="manifestInput" accept=".json" style="display:none;" />
+                        <button id="manifestBtn">选择 manifest</button>
                     </div>
 
                     <div class="status-row" id="statusText">等待选择固件文件……</div>
@@ -126,8 +164,10 @@ class OtaDialog extends HTMLElement {
         const sr = this.shadowRoot;
         this.overlay      = sr.getElementById('overlay');
         this.fileInput    = sr.getElementById('fileInput');
+        this.manifestInput = sr.getElementById('manifestInput');
         this.dropZone     = sr.getElementById('dropZone');
         this.fileNameEl   = sr.getElementById('fileName');
+        this.manifestStateEl = sr.getElementById('manifestState');
         this.statusText   = sr.getElementById('statusText');
         this.progressFill = sr.getElementById('progressFill');
         this.startBtn     = sr.getElementById('startBtn');
@@ -135,6 +175,8 @@ class OtaDialog extends HTMLElement {
 
         this.dropZone.addEventListener('click', () => this.fileInput.click());
         this.fileInput.addEventListener('change', (e) => this._handleFile(e.target.files[0]));
+        sr.getElementById('manifestBtn').addEventListener('click', () => this.manifestInput.click());
+        this.manifestInput.addEventListener('change', (e) => this._handleManifest(e.target.files[0]));
 
         this.dropZone.addEventListener('dragover', (e) => {
             e.preventDefault();
@@ -148,18 +190,13 @@ class OtaDialog extends HTMLElement {
             if (f) this._handleFile(f);
         });
 
-        this.cancelBtn.addEventListener('click', () => {
-            this._cancelled = true;
-            this.hide();
-        });
+        this.cancelBtn.addEventListener('click', () => this._cancel());
         this.startBtn.addEventListener('click', () => this._startOta());
     }
 
     show(deviceId) {
         this.deviceId = deviceId;
-        this.fileBuffer = null;
-        this._cancelled = false;
-        this.fileNameEl.textContent = '';
+        this._resetPackageState();
         this._setStatus('等待选择固件文件……', '');
         this._setProgress(0);
         this.startBtn.disabled = true;
@@ -167,8 +204,24 @@ class OtaDialog extends HTMLElement {
     }
 
     hide() {
+        this._teardownSession();
         this.overlay.classList.remove('visible');
         if (this.fileInput) this.fileInput.value = '';
+        if (this.manifestInput) this.manifestInput.value = '';
+    }
+
+    _resetPackageState() {
+        this.fileBuffer = null;
+        this.fileSha256 = null;
+        this.manifestJson = null;
+        this.manifestTarget = null;
+        this.manifestVersion = null;
+        this._phase = 'idle';
+        this._cancelled = false;
+        this._clearWait();
+        this.fileNameEl.textContent = '';
+        this.manifestStateEl.textContent = 'manifest（可选）：未选择';
+        this.manifestStateEl.classList.remove('loaded');
     }
 
     _setStatus(msg, type = '') {
@@ -180,7 +233,7 @@ class OtaDialog extends HTMLElement {
         this.progressFill.style.width = `${pct}%`;
     }
 
-    _handleFile(file) {
+    async _handleFile(file) {
         if (!file) return;
         if (!file.name.endsWith('.bin')) {
             this._setStatus('请选择 .bin 格式的固件文件', 'error');
@@ -188,15 +241,69 @@ class OtaDialog extends HTMLElement {
         }
         this.fileNameEl.textContent = file.name;
         this._setStatus(`正在读取 ${file.name} …`);
+        this.fileBuffer = null;
+        this.startBtn.disabled = true;
 
+        const readAsBuffer = () => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(new Uint8Array(e.target.result));
+            reader.onerror = () => reject(new Error('文件读取失败'));
+            reader.readAsArrayBuffer(file);
+        });
+
+        try {
+            const bytes = await readAsBuffer();
+            const OC = window.SmartBLEOtaContract;
+            if (!OC) throw new Error('ota-contract.js 未加载');
+            this.fileBuffer = bytes;
+            this.fileSha256 = await OC.OtaManifest.sha256Hex(bytes);
+            this._setStatus(`已就绪：${bytes.length.toLocaleString()} 字节 · sha256 ${this.fileSha256.slice(0, 12)}…`);
+            // 选包后重校验已选的 manifest（如有）
+            if (this.manifestJson) this._validateManifest();
+            this.startBtn.disabled = false;
+        } catch (err) {
+            this._setStatus(`❌ ${err.message || err}`, 'error');
+        }
+    }
+
+    _handleManifest(file) {
+        if (!file) return;
         const reader = new FileReader();
         reader.onload = (e) => {
-            this.fileBuffer = new Uint8Array(e.target.result);
-            this._setStatus(`已就绪：${this.fileBuffer.length.toLocaleString()} 字节`);
-            this.startBtn.disabled = false;
+            try {
+                this.manifestJson = JSON.parse(e.target.result);
+                this.manifestStateEl.textContent = `manifest：${file.name}`;
+                this.manifestStateEl.classList.add('loaded');
+                this._validateManifest();
+            } catch {
+                this.manifestJson = null;
+                this.manifestTarget = null;
+                this.manifestVersion = null;
+                this.manifestStateEl.textContent = 'manifest：JSON 解析失败';
+                this.manifestStateEl.classList.remove('loaded');
+                this._setStatus('manifest JSON 解析失败', 'error');
+            }
         };
-        reader.onerror = () => this._setStatus('文件读取失败', 'error');
-        reader.readAsArrayBuffer(file);
+        reader.readAsText(file);
+    }
+
+    _validateManifest() {
+        const OC = window.SmartBLEOtaContract;
+        if (!this.manifestJson || !this.fileBuffer || !OC) return;
+        const result = OC.OtaManifest.parse(this.manifestJson, this.fileBuffer.length, this.fileSha256);
+        if (!result.ok) {
+            this.manifestTarget = null;
+            this.manifestVersion = null;
+            this.startBtn.disabled = true;
+            this._setStatus(`❌ 包校验失败（${result.code}）：${result.message}`, 'error');
+            return;
+        }
+        this.manifestTarget = result.target;
+        this.manifestVersion = result.version;
+        this.startBtn.disabled = false;
+        const t = result.target || '—';
+        const v = result.version || '—';
+        this._setStatus(`包校验通过（manifest：target=${t} version=${v} size=${this.fileBuffer.length.toLocaleString()}）`, 'success');
     }
 
     async _writeRaw(charUuid, bytes, withoutResponse) {
@@ -210,30 +317,99 @@ class OtaDialog extends HTMLElement {
         if (!result.success) throw new Error(result.error || 'writeRaw failed');
     }
 
+    // ---- 契约状态帧处理（R-2 子串分类） ----
+
+    _onValueChanged(data) {
+        if (!data || data.deviceId !== this.deviceId) return;
+        if ((data.characteristicUuid || '').toLowerCase() !== this.charStatusUuid) return;
+        const OC = window.SmartBLEOtaContract;
+        const text = OC.bytesToUtf8(OC.hexToBytes(data.value || ''));
+        const kind = OC.OtaStatusClassifier.classify(text);
+
+        if (kind === 'ready' && this._phase === 'waiting_ready') {
+            this._clearWait();
+            this._setStatus('设备就绪（ready），开始传输……');
+            this._transferChunks();
+        } else if (kind === 'success' && this._phase === 'committing') {
+            this._clearWait();
+            this._phase = 'done';
+            this._setProgress(100);
+            this._setStatus('✅ OTA 完成！设备正在重启……', 'success');
+            setTimeout(() => this.hide(), 3000);
+        } else if (kind === 'error') {
+            this._clearWait();
+            this._phase = 'idle';
+            this._setStatus(`❌ 设备报错：${text}`, 'error');
+            this._restoreUi();
+        }
+        // ok / 未命中（如版本串）静默忽略
+    }
+
+    _armWait(seconds, onTimeout) {
+        this._clearWait();
+        this._waitTimer = setTimeout(onTimeout, seconds * 1000);
+    }
+
+    _clearWait() {
+        if (this._waitTimer) {
+            clearTimeout(this._waitTimer);
+            this._waitTimer = null;
+        }
+    }
+
     async _startOta() {
         if (!this.fileBuffer || !this.deviceId) return;
+        const OC = window.SmartBLEOtaContract;
+        if (!OC) return;
         this._cancelled = false;
+        this._phase = 'waiting_ready';
         this.startBtn.disabled = true;
         this.dropZone.style.pointerEvents = 'none';
         this._setProgress(0);
 
         const encoder = new TextEncoder();
-        const total   = this.fileBuffer.length;
 
         try {
-            // 1. Start
-            this._setStatus('发送 OTA 开始指令……');
-            await this._writeRaw(
-                this.charControlUuid,
-                encoder.encode(JSON.stringify({
-                    action: 'start', size: total,
-                    chunk_size: this.chunkSize, firmware_version: 'electron-build',
-                })),
-                false, // WithoutResponse for speed; firmware ACKs via notify
+            // 订阅 STATUS 特征 notify（bleAPI 支持多监听者，互不影响 App 展示）
+            await window.bleAPI.notifyCharacteristic(
+                this.deviceId, this.otaServiceUuid, this.charStatusUuid, true,
             );
-            await this._sleep(200);
+            if (this._unsubscribeValue) this._unsubscribeValue();
+            this._unsubscribeValue = window.bleAPI.onCharacteristicValueChanged((data) => this._onValueChanged(data));
 
-            // 2. Chunks
+            // 契约 start 帧（R-1 方案 A）：manifest 缺项省略，真固件按 missing_target 诚实拒绝
+            const payload = OC.OtaStartPayload.build({
+                manifestTarget: this.manifestTarget,
+                manifestVersion: this.manifestVersion,
+                fileSize: this.fileBuffer.length,
+                chunkSize: this.chunkSize,
+                sha256: this.fileSha256,
+            });
+            if (!this.manifestTarget || !this.manifestVersion) {
+                this._setStatus('start 帧省略 target/target_version（无 manifest 契约字段）→ 真固件将拒绝（missing_target），详见 OTA_CONTRACT_R1_R2_DECISION', '');
+            } else {
+                this._setStatus(`发送 OTA 开始指令（${OC.OtaStartPayload.display(payload)}）……`);
+            }
+            await this._writeRaw(this.charControlUuid, encoder.encode(JSON.stringify(payload)), false);
+
+            this._armWait(30, () => {
+                if (this._phase !== 'waiting_ready') return;
+                this._phase = 'idle';
+                this._setStatus('❌ 等待设备 ready 超时（30s）', 'error');
+                this._restoreUi();
+            });
+        } catch (err) {
+            this._phase = 'idle';
+            this._setStatus(`❌ OTA 失败: ${err.message || err}`, 'error');
+            this._restoreUi();
+        }
+    }
+
+    async _transferChunks() {
+        this._phase = 'transferring';
+        const total = this.fileBuffer.length;
+
+        try {
             let sent = 0;
             while (sent < total) {
                 if (this._cancelled) throw new Error('用户已取消');
@@ -249,27 +425,61 @@ class OtaDialog extends HTMLElement {
                 await this._sleep(20);
             }
 
-            // 3. Commit
-            this._setStatus('发送提交指令，等待设备重启……');
-            await this._writeRaw(
-                this.charControlUuid,
-                encoder.encode(JSON.stringify({ action: 'commit' })),
-                false,
-            );
-
-            this._setProgress(100);
-            this._setStatus('✅ OTA 传输完成！设备正在重启……', 'success');
-            setTimeout(() => this.hide(), 3000);
-
+            // 分块完成 → 提交（op=commit）并等 success（30s）
+            this._phase = 'committing';
+            this._setStatus('分块传输完成，发送提交指令（op=commit）……');
+            const encoder = new TextEncoder();
+            await this._writeRaw(this.charControlUuid, encoder.encode(JSON.stringify({ op: 'commit' })), false);
+            this._armWait(30, () => {
+                if (this._phase !== 'committing') return;
+                this._phase = 'idle';
+                this._setStatus('❌ 等待设备 success 超时（30s）', 'error');
+                this._restoreUi();
+            });
         } catch (err) {
+            this._phase = 'idle';
             if (this._cancelled) {
                 this._setStatus('已取消', '');
             } else {
                 this._setStatus(`❌ OTA 失败: ${err.message || err}`, 'error');
             }
-        } finally {
-            this.dropZone.style.pointerEvents = 'auto';
-            this.startBtn.disabled = false;
+            this._restoreUi();
+        }
+    }
+
+    async _cancel() {
+        if (this._phase === 'waiting_ready' || this._phase === 'transferring' || this._phase === 'committing') {
+            // 传输/等待期取消：发送 {op:abort} 契约帧后关闭
+            this._cancelled = true;
+            this._clearWait();
+            this._phase = 'idle';
+            try {
+                const encoder = new TextEncoder();
+                await this._writeRaw(this.charControlUuid, encoder.encode(JSON.stringify({ op: 'abort' })), false);
+            } catch { /* 设备可能已断开 */ }
+            this._setStatus('已取消（op=abort 已发送）', '');
+            this._restoreUi();
+        }
+        this.hide();
+    }
+
+    _restoreUi() {
+        this.dropZone.style.pointerEvents = 'auto';
+        this.startBtn.disabled = !this.fileBuffer;
+    }
+
+    _teardownSession() {
+        this._clearWait();
+        this._phase = 'idle';
+        if (this._unsubscribeValue) {
+            this._unsubscribeValue();
+            this._unsubscribeValue = null;
+        }
+        // 关 notify（失败静默——设备可能已断开）
+        if (this.deviceId) {
+            window.bleAPI?.notifyCharacteristic(
+                this.deviceId, this.otaServiceUuid, this.charStatusUuid, false,
+            ).catch(() => {});
         }
     }
 
