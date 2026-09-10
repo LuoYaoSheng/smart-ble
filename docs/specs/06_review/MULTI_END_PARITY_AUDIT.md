@@ -382,3 +382,7 @@ P009 三线重采（smoke-uwx/fand/nios）  → 均验证推广区零残留（§
 ### 15.3 账本同步
 
 PRD（F028 行/U6/功能域图/页面结构/R27）、FEATURE_MAP、PRODUCT_MODEL、PAGE_SPEC §9、COMPONENT C11（退役）、FEATURE_IMPLEMENTATION_MATRIX、LEGACY_REUSE_MATRIX、RUNTIME_ARCHITECTURE（ExternalNavigationPort 收窄/差异圈 7→6 行）、API_SPEC、API_ACTION_MATRIX（P09-04 移除）、PLATFORM_ADAPTER_SPEC、10_platform §4 推广跳转行作废、COVERAGE_CHECKLIST、WINDOWS_MOBILE_V1_MASTER_MATRIX、CROSS_IMPLEMENTATION_PARITY_MATRIX、VISUAL/COMPONENT 矩阵、prototype v1-new/平台 README+PLATFORM_SPEC、target-product PAGE-009、MINIAPP_PAGE_MAP。历史归档（v0-old、verification、plans、product-review、01_reverse、06_review 既有轮记录、README 带日期审计行）按账本纪律不回溯修改。
+
+### 15.4 残留清扫（同日补扫）
+
+全仓关键词复扫（更多小程序/navigateToMiniProgram/promotion/_PromoTile/PseudoQRView/p009-promo/RELATED_MINI_PROGRAMS/other-apps）后补正 6 文件 8 处活文档漏标：apps/uniapp README 功能清单行、PAGE_FLOW P009 出口行、PAGE_CAPABILITY_COVERAGE_AUDIT F028 行（改删除线存档）+§4-7 落地清单（navigateToMiniProgram/小程序码不再是落地项）、DEPENDENCY_LIST 其他 API 枚举（navigateToMiniProgram 除名）+§6 外链资源（兄弟小程序 appId 移除、指向禁止身份锁出）、ASSET_INVENTORY app-card 行（删除线）+product.js 描述/other-apps 目录确认不存在。复扫后剩余命中均为：移除标注本体、带日期轮次日志、已修问题行、逆向记录（01_reverse/tests/target 原工程基线）、守护测试断言（page-flow.test.js:150）。

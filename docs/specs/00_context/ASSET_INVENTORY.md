@@ -36,7 +36,7 @@
 | ota-dialog/ota-dialog | OTA 完整交互弹窗（非受控） | device/detail |
 | hid/provision-stepper | 配网三步骤条 | hid/add |
 | hid/provision-progress | 配网四行进度 | hid/add |
-| about/app-card | 推广小程序卡片 | about/index |
+| ~~about/app-card~~ | ~~推广小程序卡片~~（随 F028 推广区 2026-09-10 移除） | — |
 
 ## 3. 组合式函数（4 个，每页一个专属编排器）
 
@@ -59,8 +59,8 @@
 
 ## 6. 配置与静态资源
 
-- `config/product.js`（产品信息/推广位 RELATED_MINI_PROGRAMS）、`config/release-metadata.generated.*`（脚本生成）
-- `static/`：logo / share / tabs 8 图 / placeholders 8 图 / brand / other-apps
+- `config/product.js`（产品信息/功能特性；推广位 RELATED_MINI_PROGRAMS 随 F028 2026-09-10 移除）、`config/release-metadata.generated.*`（脚本生成）
+- `static/`：logo / share / tabs 8 图 / placeholders 8 图 / brand（other-apps 图标目录随 86952f4 缩写徽章方案先行退役，2026-09-10 F028 移除后目录确认不存在）
 - `styles/design-system.css`：`--ble-*` token 唯一来源
 - `locale/`：zh-CN + en-US（未接线资产）
 

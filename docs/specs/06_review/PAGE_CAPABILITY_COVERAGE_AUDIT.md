@@ -84,7 +84,7 @@
 |---|---|---|---|---|---|---|---|---|---|
 | F026 | 日志脱敏 · P0 | 敏感键→***（R28） | 横切（P006/P008/P009） | 日志路径被动呈现 | ✅ | token=*** 条目（app.js:149,474）+ P009 页脚声明（p009-about.js:43） | — | ✅ | — |
 | F027 | 版本元数据展示 · P2 | 关于页+版本页消费 Release Metadata | P009/P010 | tabBar「关于」→「版本记录」 | ✅ | verFallback 回退场景（app.js:498）+ 三列表空态（p010-versions.js:10-15） | — | ✅ | P2-3（限制条数 3/8） |
-| F028 | 推广跳转 · P2 | navigateToMiniProgram 直跳/非微信渠道承接（部分实现：二维码待实现） | P009 | 推广卡（p009-about.js:21-24） | ✅ | 失败 modal 场景（app.js:499-501）；非微信承接 sheet 在 app/desktop/web 实例覆写层 | — | ✅ | 小程序码为示意图形（PRD §5 F028「二维码待实现」——开发期需真实预生成资源） |
+| ~~F028~~ | ~~推广跳转 · P2~~ | **已移除（2026-09-10 用户指示）**：关于页「更多小程序」推广区整链下线（原型/五实现线/配置/测试同步清除），无存续能力项 | — | — | — | — | — | ✅（移除登记） | PRD.md §5 F028 移除行；历史行为见 2026-09-10 前版本 |
 | F029 | 分享 · P2 | 微信页面级分享/APP 系统分享/H5 navigator.share | P009 | 「分享应用」菜单 | ✅ | 平台分支 toast | 失败降级复制（app 实例覆写） | ✅ | 页面级 onShareAppMessage/onShareTimeline 属平台能力，原型不承载（开发期落地） |
 | ~~F030~~ | ~~国际化~~ | **未实现且不做**（P-05 关闭） | — | — | 不得引入 | — | — | ✅（全中文现状=R30） | 红线行（N-6） |
 
@@ -164,7 +164,7 @@
 | 4 | web 子集缺失 | **有意缺失，非遗漏**：缺 P003/P005/P007/P010 对应屏，系 D3 暂缓 + 「GATT 调试器」子集定位；缺失域显式 ✗+指引（W4/W5），W2 SHID 双入口与基准同口径 | web/PAGE_SPEC.md §1；10_platform/PLATFORM_EXTENSION.md §6 D3 行 |
 | 5 | iOS 不演示 | 符合现状：iOS NOT_RELEASED（P008 platform 分支与默认值 SmartBLE-I 已预留，mock.js:136） | 10_platform §2.2/§3；PRD.md §1.2 |
 | 6 | 三壳共担缺陷 | **P0-1 随内核字节同步波及 wechat/app/desktop 三实例**（grep 证实三壳 app.js 均为「有引用无定义」；web 独立内核无 p005 不涉及） | prototype/platform/README.md §2 共享口径；本轮 grep 证据 |
-| 7 | 平台能力项（原型不承载、开发期落地清单） | 微信分享卡片入口 / 页面级分享 / navigateToMiniProgram 真实调用 / 小程序码真实预生成资源（F028 待实现）/ chooseMessageFile | PAGE_SPEC.md §9；PRD.md §5 F028 |
+| 7 | 平台能力项（原型不承载、开发期落地清单） | 微信分享卡片入口 / 页面级分享 / chooseMessageFile（navigateToMiniProgram 真实调用与小程序码资源随 F028 推广区 2026-09-10 移除，不再是落地项） | PAGE_SPEC.md §9；PRD.md §5 F028 移除行 |
 
 ---
 

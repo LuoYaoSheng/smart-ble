@@ -22,7 +22,7 @@ vue / vue-i18n 由 HBuilderX 编译器内置；历史 vue-i18n@9.14.4 当前未�
 | GATT | getBLEDeviceServices / getBLEDeviceCharacteristics / readBLECharacteristicValue / writeBLECharacteristicValue / notifyBLECharacteristicValueChange / onBLECharacteristicValueChange |
 | 微信外围广播 | wx.createBLEPeripheralServer / server.startAdvertising / stopAdvertising / close |
 | 权限（scan-permission.js） | wx.getAppAuthorizeSetting / openAppAuthorizeSetting / openSetting / getSetting / showModal / authorize(scope.userLocation) |
-| 其他 | uni.scanCode（配网扫码）/ uni.setClipboardData / uni.showModal / uni.showToast / uni.navigateTo·navigateBack·redirectTo·switchTab / uni.navigateToMiniProgram / uni.share（APP）/ wx.chooseMessageFile + FileSystemManager（OTA 选文件）/ uni.getDeviceInfo / uni.getAccountInfoSync / onShareAppMessage·onShareTimeline |
+| 其他 | uni.scanCode（配网扫码）/ uni.setClipboardData / uni.showModal / uni.showToast / uni.navigateTo·navigateBack·redirectTo·switchTab / uni.share（APP）/ wx.chooseMessageFile + FileSystemManager（OTA 选文件）/ uni.getDeviceInfo / uni.getAccountInfoSync / onShareAppMessage·onShareTimeline（uni.navigateToMiniProgram 随 F028 推广区 2026-09-10 移除，不再依赖） |
 
 ## 3. App 原生桥（plus.\*，仅 APP 条件编译）
 
@@ -43,7 +43,7 @@ Android AAR（fastjson 1.1.46 + appcompat 1.6.1，minSdk 21）+ iOS framework（
 
 ## 6. 外链资源（仅展示，无网络请求）
 
-官网 lightble.i2kai.com / Gitee Issues / 同开发者小程序：萌喵圈 `wxe0ed0e6727a0a5cd`、宝宝点滴 `wx1bb2d5c6821a7883`（config/product.js RELATED_MINI_PROGRAMS）。
+官网 lightble.i2kai.com / Gitee Issues（同开发者小程序 萌喵圈/宝宝点滴 及其 appId 随 F028 推广区 2026-09-10 移除，已列入 check-uniapp-assets 禁止身份锁出）。
 
 ## 7. 构建与测试工具链
 
