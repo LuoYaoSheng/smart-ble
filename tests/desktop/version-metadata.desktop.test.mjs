@@ -1,5 +1,5 @@
 /**
- * F027/F028/F029 桌面投影测试（E-WIN / T-WIN）
+ * F027/F029 桌面投影测试（E-WIN / T-WIN；F028 推广卡已于桌面线裁撤）
  *
  * 锁定三件事：
  * 1. 两线镜像文件逐字节一致（version-metadata.js / config/product.js / 生成产物）；
@@ -139,12 +139,12 @@ test('M3 注入 release 元数据 → releases 一条 VERIFIED；注入不污染
   assert.equal(again.current.version, '1.0.5');
 });
 
-test('F028 product 投影：两条推广卡，含落地页 URL 与 appId', () => {
-  const apps = electron.PRODUCT.RELATED_MINI_PROGRAMS;
-  assert.equal(apps.length, 2);
-  for (const app of apps) {
-    assert.ok(app.url.startsWith('https://'));
-    assert.ok(app.miniProgram.appId);
+test('F028 桌面裁撤：两线不再导出 RELATED_MINI_PROGRAMS，产品基础信息保留', () => {
+  assert.equal(electron.PRODUCT.RELATED_MINI_PROGRAMS, undefined);
+  assert.equal(tauri.PRODUCT.RELATED_MINI_PROGRAMS, undefined);
+  for (const api of [electron, tauri]) {
+    assert.ok(api.PRODUCT.PRODUCT_INFO.website.startsWith('https://'));
+    assert.ok(api.PRODUCT.PRODUCT_FEATURES.length > 0);
   }
 });
 

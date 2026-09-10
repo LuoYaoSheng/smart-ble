@@ -363,42 +363,6 @@ class App {
                 grid.appendChild(el);
             });
         }
-
-        // F028：推广卡（桌面 = 落地页 + 小程序码状态如实显示）
-        const promoList = document.getElementById('promoList');
-        if (promoList) {
-            promoList.innerHTML = '';
-            PRODUCT.RELATED_MINI_PROGRAMS.forEach((app) => {
-                const card = document.createElement('div');
-                card.className = 'about-promo-item';
-                card.innerHTML = `
-                    <span class="about-promo-badge"></span>
-                    <div class="about-promo-copy">
-                        <div class="about-promo-name"></div>
-                        <div class="about-promo-desc"></div>
-                    </div>
-                    <button class="btn btn-secondary about-promo-open">打开落地页</button>`;
-                const badge = card.querySelector('.about-promo-badge');
-                badge.textContent = app.abbr;
-                badge.style.background = app.bg;
-                badge.style.color = app.color;
-                card.querySelector('.about-promo-name').textContent = app.name;
-                card.querySelector('.about-promo-desc').textContent = app.description;
-                card.querySelector('.about-promo-open').addEventListener('click', () => {
-                    window.open(app.url, '_blank');
-                });
-                promoList.appendChild(card);
-            });
-        }
-        const qrNote = document.getElementById('promoQrNote');
-        if (qrNote) {
-            const qr = release.wechat_qr || {};
-            if (qr.status === 'released' && qr.image) {
-                qrNote.textContent = '小程序码：可从落地页下载。';
-            } else {
-                qrNote.textContent = '小程序码尚未发布，落地页暂无可下载码图。';
-            }
-        }
     }
 
     // P010：版本记录页（Release Metadata 纯投影，禁止手写版本事实）

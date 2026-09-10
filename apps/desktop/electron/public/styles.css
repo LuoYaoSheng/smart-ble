@@ -1142,68 +1142,9 @@ body {
 }
 
 /* ============================================================
-   F027/F028/F029 — 关于页投影（版本三态/推广卡/平台状态）与 P010 版本记录
+   F027/F029 — 关于页投影（版本三态/平台状态）与 P010 版本记录
+   （F028 推广卡已按产品决定于桌面线裁撤）
    ============================================================ */
-
-.about-promo-card {
-    margin-bottom: 16px;
-}
-
-.about-section-caption {
-    margin: 6px 0 12px;
-    color: var(--text-secondary, #8e8e93);
-    font-size: 13px;
-}
-
-.about-promo-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.about-promo-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 14px;
-    border-radius: 12px;
-    background: var(--bg-secondary, rgba(255, 255, 255, 0.82));
-}
-
-.about-promo-badge {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    flex-shrink: 0;
-    border-radius: 12px;
-    font-size: 15px;
-    font-weight: 700;
-}
-
-.about-promo-copy {
-    flex: 1;
-    min-width: 0;
-}
-
-.about-promo-name {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--text-primary, #1c1c1e);
-}
-
-.about-promo-desc {
-    margin-top: 2px;
-    font-size: 12px;
-    color: var(--text-secondary, #8e8e93);
-}
-
-.about-qr-note {
-    margin: 10px 0 0;
-    font-size: 12px;
-    color: var(--text-secondary, #8e8e93);
-}
 
 .about-platform-grid {
     display: grid;
