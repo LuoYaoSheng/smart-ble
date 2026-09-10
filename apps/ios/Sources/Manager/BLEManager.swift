@@ -114,6 +114,22 @@ class BLEManager: NSObject, ObservableObject {
     /// "deviceId:serviceUUID:characteristicUUID" -> Bool
     private var notifyingCharacteristics: Set<String> = []
 
+    // MARK: - 息屏后台自测状态（--ble-bg-selftest，见 BackgroundSelfTest.swift）
+    private var bgEchoDeviceId: String?
+    private var bgControlServiceUUID = ""
+    private var bgControlCharUUID = ""
+    private var bgStatusNotifyCharUUID = ""
+    private var bgEchoCounter = 0
+    private var bgLastEchoAt: Date?
+    private var bgSubscribeDone = false
+    private var bgKeepAliveTimer: Timer?
+
+    /// BGT 事件双写：文件（devicectl 锁屏可拉）+ 应用内日志
+    private func bgLog(_ line: String) {
+        BackgroundSelfTest.appendLog(line)
+        log("BGT \(line)", type: .info)
+    }
+
     // MARK: - Smart HID native adapter
     var hidEventHandler: ((HidProvisionTransportEvent) -> Void)?
     lazy var hidProvisionManager = HidProvisionManager(transport: self)
@@ -134,6 +150,9 @@ class BLEManager: NSObject, ObservableObject {
         super.init()
         setupCentral()
         setupPeripheral()
+        if BackgroundSelfTest.isEnabled {
+            bgLog("armed：息屏后台存活自测启动（--ble-bg-selftest）")
+        }
     }
 
     private func setupCentral() {
@@ -583,6 +602,50 @@ class BLEManager: NSObject, ObservableObject {
         reconnectTimers[deviceId]?.invalidate()
         reconnectTimers.removeValue(forKey: deviceId)
     }
+
+    // MARK: - 息屏后台自测回声（--ble-bg-selftest）
+    /// 保活写：每 10s 写一次 led on/off（自产 notify = 接收证据；ack = 下发证据）
+    private func bgKeepAliveTick() {
+        guard BackgroundSelfTest.isEnabled,
+              let deviceId = bgEchoDeviceId,
+              isDeviceConnected(deviceId),
+              !bgControlServiceUUID.isEmpty else { return }
+        bgEchoCounter += 1
+        let payload = BackgroundSelfTest.echoPayload(echoCounter: bgEchoCounter)
+        BackgroundSelfTest.appendLog("timer_write #\(bgEchoCounter) \(String(bytes: payload, encoding: .utf8) ?? "-")")
+        writeCharacteristic(
+            deviceId: deviceId,
+            serviceUUID: bgControlServiceUUID,
+            characteristicUUID: bgControlCharUUID,
+            data: payload,
+            withoutResponse: false
+        )
+    }
+
+    private func handleBackgroundSelfTestNotify(deviceId: String, value: Data) {
+        let text = String(bytes: value, encoding: .utf8) ?? "-"
+        guard !BackgroundSelfTest.isSelfEcho(value) else {
+            logForDevice(deviceId, "BGT notify（自身回声 · 跳过）\(text.prefix(80))", type: .info)
+            return
+        }
+        // 节流：>=1.2s 才回声一次（双保险防自激）
+        let now = Date()
+        if let last = bgLastEchoAt, now.timeIntervalSince(last) < 1.2 {
+            logForDevice(deviceId, "BGT notify（节流窗口内 · 跳过）\(text.prefix(80))", type: .info)
+            return
+        }
+        bgLastEchoAt = now
+        bgEchoCounter += 1
+        let payload = BackgroundSelfTest.echoPayload(echoCounter: bgEchoCounter)
+        logForDevice(deviceId, "BGT notify #\(bgEchoCounter) → echo \(String(bytes: payload, encoding: .utf8) ?? "-")", type: .receive)
+        writeCharacteristic(
+            deviceId: deviceId,
+            serviceUUID: bgControlServiceUUID,
+            characteristicUUID: bgControlCharUUID,
+            data: payload,
+            withoutResponse: false
+        )
+    }
 }
 
 // MARK: - CBCentralManagerDelegate
@@ -613,6 +676,13 @@ extension BLEManager: @preconcurrency CBCentralManagerDelegate {
         case .poweredOn:
             bluetoothState = .poweredOn
             log("Bluetooth state: Powered On", type: .success)
+            if BackgroundSelfTest.isEnabled {
+                centralManager.scanForPeripherals(
+                    withServices: [CBUUID(string: BackgroundSelfTest.fixtureServiceUUID)],
+                    options: nil
+                )
+                bgLog("scan_start service=…914B（等待夹具 BLEToolkit-Server）")
+            }
         @unknown default:
             bluetoothState = .unknown
         }
@@ -659,6 +729,14 @@ extension BLEManager: @preconcurrency CBCentralManagerDelegate {
             discoveredPeripherals[peripheral.identifier.uuidString] = peripheral
         }
 
+        // BGT：发现夹具即自动连接（只连第一个，一次）
+        if BackgroundSelfTest.isEnabled, bgEchoDeviceId == nil,
+           BackgroundSelfTest.isFixtureAdvertisement(serviceUUIDs: serviceUUIDs, name: name) {
+            bgLog("fixture_discovered name=\(name) rssi=\(RSSI.intValue) → connect")
+            connect(to: result)
+            return
+        }
+
         // Apply filters and update UI immediately
         applyFilters()
     }
@@ -678,6 +756,11 @@ extension BLEManager: @preconcurrency CBCentralManagerDelegate {
         }
 
         hidEventHandler?(.connectionChanged(deviceId: deviceId, connected: true))
+
+        if BackgroundSelfTest.isEnabled, bgEchoDeviceId == nil {
+            bgEchoDeviceId = deviceId
+            bgLog("connected device=\(deviceId.prefix(8))… 服务发现中")
+        }
 
         log("Connected to \(peripheral.name ?? "Unknown Device"), discovering services...", type: .success)
 
@@ -704,6 +787,17 @@ extension BLEManager: @preconcurrency CBCentralManagerDelegate {
         connectedDevices.removeValue(forKey: deviceId)
         servicesByDevice.removeValue(forKey: deviceId)
         clearNotifyStates(for: deviceId)
+
+        // BGT：夹具断链 → 复位订阅标记；无错误路径也强制走自动重连（锁屏期间链路必须自愈）
+        if BackgroundSelfTest.isEnabled, deviceId == bgEchoDeviceId {
+            bgSubscribeDone = false
+            bgKeepAliveTimer?.invalidate()
+            bgKeepAliveTimer = nil
+            if error == nil {
+                attemptReconnect(deviceId: deviceId, peripheral: peripheral)
+            }
+            bgLog("disconnected err=\(error.map { "\($0)" } ?? "nil")（重连接管）")
+        }
 
         if let error = error {
             log("Disconnected from \(deviceId.prefix(8))...: \(error.localizedDescription)", type: .error)
@@ -738,6 +832,30 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
 
         updateServices(for: peripheral)
         hidEventHandler?(.servicesChanged(deviceId: peripheral.identifier.uuidString))
+
+        // BGT：特征就绪即订阅夹具 StatusNotify（断线重连后 bgSubscribeDone 已复位，会重新订阅）
+        if BackgroundSelfTest.isEnabled, !bgSubscribeDone,
+           peripheral.identifier.uuidString == bgEchoDeviceId,
+           let fixture = BackgroundSelfTest.locateFixtureCharacteristics(in: peripheral) {
+            bgSubscribeDone = true
+            bgControlServiceUUID = fixture.serviceUUID
+            bgControlCharUUID = fixture.control.uuid.uuidString
+            bgStatusNotifyCharUUID = fixture.statusNotify.uuid.uuidString
+            setNotification(
+                deviceId: peripheral.identifier.uuidString,
+                serviceUUID: fixture.serviceUUID,
+                characteristicUUID: fixture.statusNotify.uuid.uuidString,
+                enabled: true
+            )
+            bgLog("subscribe StatusNotify …\(bgStatusNotifyCharUUID.suffix(4)) + 保活写定时器启动（10s）")
+            bgKeepAliveTimer?.invalidate()
+            bgKeepAliveTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true) { [weak self] _ in
+                Task { @MainActor [weak self] in
+                    self?.bgKeepAliveTick()
+                }
+            }
+            bgKeepAliveTick()
+        }
     }
 
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
@@ -753,6 +871,15 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
             characteristicUUID: characteristic.uuid.uuidString,
             data: value
         ))
+
+        // BGT：夹具 StatusNotify → 记录 + 回声（自身回声跳过，见 BackgroundSelfTest 自激防护）
+        if BackgroundSelfTest.isEnabled,
+           deviceId == bgEchoDeviceId,
+           !bgStatusNotifyCharUUID.isEmpty,
+           characteristic.uuid.uuidString.caseInsensitiveCompare(bgStatusNotifyCharUUID) == .orderedSame {
+            BackgroundSelfTest.appendLog("notify \(String(bytes: value, encoding: .utf8) ?? value.map { String(format: "%02x", $0) }.joined())")
+            handleBackgroundSelfTestNotify(deviceId: deviceId, value: value)
+        }
         // T03+T05: HEX + TEXT 双行格式，嵌入 per-device 日志
         let hexString = DataConverter.bytesToHex(value)
         let textString = String(bytes: value, encoding: .utf8) ??
@@ -770,6 +897,12 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
             logForDevice(deviceId, "Write failed: \(error.localizedDescription)", type: .error)
         } else {
             logForDevice(deviceId, "Write success", type: .success)
+        }
+        // BGT：写结果入文件日志（锁屏取证通道）
+        if BackgroundSelfTest.isEnabled, deviceId == bgEchoDeviceId {
+            BackgroundSelfTest.appendLog(error == nil
+                ? "write_acked char=…\(characteristic.uuid.uuidString.suffix(4))"
+                : "write_failed err=\(error.map { "\($0.localizedDescription)" } ?? "?")")
         }
     }
 

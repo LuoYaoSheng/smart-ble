@@ -11,6 +11,7 @@
 		02C1E9A863F5B0F75C07AAC3 /* FilterPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56BB7ACAD0145FCA623322D7 /* FilterPanel.swift */; };
 		034E5E5D025224B4D6451B32 /* OtaUpgradeDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52779D52F0DFC170465641E4 /* OtaUpgradeDialog.swift */; };
 		0559D24DED38048DE321B2E1 /* HidProvisionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082D316469BAA45C08860A49 /* HidProvisionManager.swift */; };
+		A1B2C3D4E5F60718A1B2C3D4 /* BackgroundSelfTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60719A1B2C3D4 /* BackgroundSelfTest.swift */; };
 		06330C84ACA2567B81B0F84E /* tab-link.svg in Resources */ = {isa = PBXBuildFile; fileRef = FD6E9C113CB540672F223626 /* tab-link.svg */; };
 		069755C8343B8C3B00C74985 /* AppleSharedCoreWiringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13E2AA0791F9F19E24C9AB33 /* AppleSharedCoreWiringTests.swift */; };
 		096EC2E2DD28621B93D2E4EF /* SmartHidQrScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39729EE1F35ECA27CD1C6D57 /* SmartHidQrScanner.swift */; };
@@ -93,6 +94,7 @@
 		0006B12F2F5FEC51463E3F10 /* SmartBLEiOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SmartBLEiOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		07D15368FDB6F074D15A8402 /* DeviceCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceCard.swift; sourceTree = "<group>"; };
 		082D316469BAA45C08860A49 /* HidProvisionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HidProvisionManager.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60719A1B2C3D4 /* BackgroundSelfTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundSelfTest.swift; sourceTree = "<group>"; };
 		0AEF5FEA1618A22575AE0793 /* link.svg */ = {isa = PBXFileReference; path = link.svg; sourceTree = "<group>"; };
 		1182918520BEA6E16E071F11 /* about-hero.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "about-hero.png"; sourceTree = "<group>"; };
 		137F253935B8138373A74D80 /* LogPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogPanel.swift; sourceTree = "<group>"; };
@@ -310,6 +312,7 @@
 			isa = PBXGroup;
 			children = (
 				5AF4F26029430920BAAF663F /* BLEManager.swift */,
+				A1B2C3D4E5F60719A1B2C3D4 /* BackgroundSelfTest.swift */,
 				082D316469BAA45C08860A49 /* HidProvisionManager.swift */,
 				5BB8E6F17BFD1EA4EF3D1B8E /* OtaManager.swift */,
 			);
@@ -549,6 +552,7 @@
 			files = (
 				BD3B1F7ACB4B72188ABCAEFD /* AboutView.swift in Sources */,
 				FD678CB4442BC9E2083C76BE /* BLEManager.swift in Sources */,
+				A1B2C3D4E5F60718A1B2C3D4 /* BackgroundSelfTest.swift in Sources */,
 				6F88CC4C9F9D9C85A883134C /* BLEModels.swift in Sources */,
 				CE247E438536BF94BE0708EE /* BLEUuids.swift in Sources */,
 				53E924BCD78C282F5EA12FAF /* BroadcastView.swift in Sources */,
