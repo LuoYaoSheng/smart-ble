@@ -105,7 +105,9 @@ const provisionStepper = fs.readFileSync(path.join(uniappRoot, 'components/hid/p
 assert.match(hidAddPage, /取消等待/);
 assert.match(hidAddPage, /onBackPress/);
 assert.match(hidAddPage, /confirmLeaveIfNeeded/);
-assert.match(provisionStepper, /var\(--ble-gradient-brand,\s*linear-gradient/);
+// UI-CONV 2026-09-10：stepper 当前步改挂正典纯色（原型 C6 .st.cur .n=--c-primary）；v0 品牌渐变退役
+assert.match(provisionStepper, /background:\s*var\(--c-primary\)/);
+assert.match(provisionStepper, /var\(--c-success-deep\)/);
 
 const scanSummary = fs.readFileSync(path.join(uniappRoot, 'components/scan/scan-summary.vue'), 'utf8');
 assert.match(scanSummary, /停止扫描/);

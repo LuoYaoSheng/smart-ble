@@ -267,7 +267,7 @@ const cancel = () => {
   display: block;
 }
 .info { color: var(--ble-brand); }
-.success { color: #0e9c82; }
+.success { color: var(--c-success-deep); } /* #0e9c82 → #0E9A80 圈外值收敛 UI-CONV 2026-09-10 */
 .error { color: var(--ble-red); }
 
 .ota-footer {

@@ -6,12 +6,12 @@
   --ble-brand: var(--c-primary);
   --ble-brand-deep: var(--c-primary-deep); /* #134dbe → #0E4FC4 圈外值收敛 */
   --ble-brand-soft: var(--c-primary-weak); /* #e7f1ff → #E8F1FF 圈外值收敛 */
-  --ble-cyan: #7be0ff; /* legacy 登记值：渐变点缀色 */
+  /* UI-CONV 2026-09-10：--ble-cyan 已删除（零消费者）；v0 青色渐变点缀退役 */
   --ble-mint: var(--c-success);
   --ble-orange: var(--c-warning);
   --ble-red: var(--c-danger);
   --ble-bg-top: var(--c-bg); /* #f7fbff → #F8FBFF 圈外值收敛 */
-  --ble-bg-bottom: #eaf2fb; /* legacy 登记值：页面渐变底端 */
+  --ble-bg-bottom: var(--c-fill); /* #eaf2fb → #F1F5FB（--c-fill）圈外值收敛 UI-CONV 2026-09-10 */
   --ble-surface: rgba(255, 255, 255, 0.96); /* legacy 登记值：半透面 */
   --ble-surface-soft: rgba(245, 250, 255, 0.95); /* legacy 登记值 */
   --ble-surface-strong: var(--c-card);
@@ -30,7 +30,8 @@
   --ble-radius-md: var(--r-md);
   --ble-radius-lg: var(--r-lg);
   --ble-radius-xl: var(--r-xl);
-  --ble-gradient-brand: linear-gradient(135deg, #155dff 0%, #33b2ff 58%, #7be0ff 100%); /* legacy 登记值 */
+  /* UI-CONV 2026-09-10：--ble-gradient-brand 已删除（原消费者改挂正典：stepper 当前步=纯 --c-primary、
+     P002 设备头像=--c-shid-avatar-start→--c-success-weak 渐变、品牌渐变=--c-primary→--c-primary-deep） */
   --ble-gradient-surface: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(242, 248, 255, 0.94) 100%); /* legacy 登记值 */
   --ble-gradient-hero: linear-gradient(135deg, rgba(21, 93, 255, 0.12) 0%, rgba(123, 224, 255, 0.18) 100%); /* legacy 登记值 */
   --ble-grid: rgba(27, 109, 255, 0.06); /* legacy 登记值 */
@@ -102,7 +103,7 @@ image {
 
 .ble-chip-success {
   background: rgba(23, 199, 168, 0.14);
-  color: #0e9c82;
+  color: var(--c-success-deep); /* #0e9c82 → #0E9A80 圈外值收敛 UI-CONV 2026-09-10 */
 }
 
 .ble-chip-muted {
@@ -159,7 +160,7 @@ image {
   box-sizing: border-box;
   border: none;
   border-radius: 999rpx;
-  color: #12263f;
+  color: var(--ble-text); /* #12263f → #18222E 圈外值收敛 UI-CONV 2026-09-10 */
   background: #ffffff;
   font-weight: 700;
   text-align: center;
@@ -196,7 +197,8 @@ image {
 
 .ble-btn--primary {
   color: #ffffff;
-  background: linear-gradient(135deg, #155dff 0%, #238eff 58%, #31adf5 100%);
+  /* 正典 .btn.primary：135° primary→primaryDeep 渐变（components.css）；v0 三段青蓝渐变退役 UI-CONV 2026-09-10 */
+  background: linear-gradient(135deg, var(--c-primary), var(--c-primary-deep));
   box-shadow: var(--ble-shadow-brand);
 }
 
@@ -243,7 +245,7 @@ image {
   padding: 18rpx 20rpx;
   border: 1rpx solid rgba(27, 109, 255, 0.14);
   border-radius: 24rpx;
-  color: #12263f;
+  color: var(--ble-text); /* #12263f → #18222E 圈外值收敛 UI-CONV 2026-09-10 */
   background: rgba(27, 109, 255, 0.07);
   text-align: left;
 }
@@ -261,7 +263,7 @@ image {
   height: 52rpx;
   border-radius: 16rpx;
   color: #ffffff;
-  background: linear-gradient(135deg, #155dff 0%, #238eff 58%, #31adf5 100%);
+  background: linear-gradient(135deg, var(--c-primary), var(--c-primary-deep)); /* 正典 .btn.primary 渐变 UI-CONV 2026-09-10 */
   font-size: 30rpx;
   font-weight: 800;
   flex-shrink: 0;
@@ -277,7 +279,7 @@ image {
 .ble-action-card-btn__title {
   font-size: 25rpx;
   font-weight: 750;
-  color: #12263f;
+  color: var(--ble-text); /* #12263f → #18222E 圈外值收敛 UI-CONV 2026-09-10 */
 }
 
 .ble-action-card-btn__desc {
@@ -321,8 +323,8 @@ image {
 
 .ble-pill-tab.active {
   color: #ffffff !important;
-  background-color: #155dff;
-  background-image: linear-gradient(135deg, #155dff 0%, #258ff7 100%);
+  background-color: var(--c-primary);
+  background-image: linear-gradient(135deg, var(--c-primary), var(--c-primary-deep)); /* 正典 .btn.primary 渐变 UI-CONV 2026-09-10 */
   box-shadow: 0 10rpx 24rpx rgba(27, 109, 255, 0.18);
 }
 
@@ -424,7 +426,7 @@ image {
   gap: 18rpx;
   padding: 22rpx;
   border-radius: 24rpx;
-  color: #087765;
+  color: var(--c-success-deep); /* #087765 → #0E9A80 圈外值收敛 UI-CONV 2026-09-10 */
   background: rgba(23, 199, 168, 0.12);
 }
 
@@ -437,7 +439,7 @@ image {
   flex-shrink: 0;
   border-radius: 50%;
   color: #fff;
-  background: #17b99b;
+  background: var(--c-success); /* #17b99b → #17C7A8 圈外值收敛 UI-CONV 2026-09-10 */
   font-size: 30rpx;
   font-weight: 800;
 }

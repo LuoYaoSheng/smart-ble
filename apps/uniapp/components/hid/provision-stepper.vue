@@ -31,7 +31,7 @@ defineProps({
 	height: 66rpx;
 	border-radius: 20rpx;
 	background: rgba(96, 117, 141, 0.08);
-	color: var(--ble-text-muted, #93a2b4);
+	color: var(--ble-text-muted, #9AA8B6); /* #93a2b4 → #9AA8B6 圈外值收敛 UI-CONV 2026-09-10 */
 }
 
 .step-index {
@@ -53,7 +53,8 @@ defineProps({
 
 .step.active {
 	color: #ffffff;
-	background: var(--ble-gradient-brand, linear-gradient(135deg, #155dff 0%, #33b2ff 58%, #7be0ff 100%));
+	/* 正典 C6 stepper 当前步：纯 --c-primary（原型 .st.cur .n）；v0 品牌青蓝渐变退役 UI-CONV 2026-09-10 */
+	background: var(--c-primary);
 	box-shadow: 0 12rpx 28rpx rgba(27, 109, 255, 0.18);
 }
 
@@ -62,8 +63,8 @@ defineProps({
 }
 
 .step.done {
-	color: #0e8f79;
-	background: rgba(23, 199, 168, 0.16);
+	color: var(--c-success-deep); /* #0e8f79 → #0E9A80 圈外值收敛（正典 .st.done .lb=#0E9A80）UI-CONV 2026-09-10 */
+	background: var(--c-success-weak);
 }
 
 .step.done .step-index {

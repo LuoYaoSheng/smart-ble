@@ -5,7 +5,7 @@
 			<view class="app-heading"><text class="app-name">{{ app.name }}</text><text class="app-tag">小程序</text></view>
 			<text class="app-desc">{{ app.description }}</text>
 		</view>
-		<app-icon name="chev-r" :size="28" color="#93A2B4" />
+		<app-icon name="chev-r" :size="28" tone="ph" /> <!-- #93A2B4 → 正典 ph #9AA8B6 UI-CONV 2026-09-10 -->
 	</view>
 </template>
 
