@@ -77,7 +77,7 @@
 | F009 | 特征写入（TEXT/HEX，写队列串行） | R09 | P006 | — | — | — | BLOCKED（写字节级·Phase2）| NOT_RUN | — | — | — |
 | F010 | Notify 监听（防抖去重） | R10 | P006 | — | — | — | BLOCKED（Notify 字节级·Phase2）| NOT_RUN | — | — | — |
 | F011 | 通信日志（六色/清空/导出） | R11 | P006 | — | — | — | PASS（UIS-06 日志）| PASS（测试） | — | — | — |
-| F012 | 断线自动重连（3 次 backoff） | R12 | P006/P007 | — | — | — | PASS·真无线电重连全环（Phase2/UIS-18·1s/3s/5s 契约）| PASS（契约 C-8 1s/3s/5s×3 常量断言·单测 24+UI 12 全绿；原 2/4/6 为 FEAT-F-005 同源偏差已修） | — | — | apple-native-v1/20260910-reconnect-backoff-align |
+| F012 | 断线自动重连（3 次 backoff） | R12 | P006/P007 | 已修（契约级：被动断线 runtime 独占 1/3/5×3·connect 重试 n×2s=§7；双层竞争 U-REC-001 销案·单测 6/6+构建绿） | 同 U-WX（共码基） | — | PASS·真无线电重连全环（Phase2/UIS-18·1s/3s/5s 契约）| PASS（契约 C-8 1s/3s/5s×3 常量断言·单测 24+UI 12 全绿；原 2/4/6 为 FEAT-F-005 同源偏差已修） | — | — | apple-native-v1/20260910-reconnect-backoff-align + uniapp-v1/20260910-reconnect-ownership-split |
 | F013 | 多设备会话管理（批量断开） | R13 | P007 | — | — | — | PASS（M1 多设备·UIS-18 n=2）| PASS（P007 测试） | — | — | — |
 | F014 | 微信外围广播 | R22 + R24 | P008 | — | — | — | N/A（微信线）| N/A（微信线） | — | — | — |
 | F015 | App 外围广播（LysBlePeripheral） | R23 + R24 | P008 | — | — | — | PASS（广播启动·Phase2/UIS-09）| PASS（实现；真机广播 NOT_RUN） | — | — | — |

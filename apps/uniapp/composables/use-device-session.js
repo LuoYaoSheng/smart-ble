@@ -4,11 +4,18 @@ import { useBleStore } from '../store/ble';
 import { logger } from '../../../core/ble-core/utils/logger';
 import {
   connectDevice as connectBleDevice,
-  openAdapter as openBleAdapter
+  openAdapter as openBleAdapter,
+  subscribeConnectionState,
+  getRuntimeSession as getLiveRuntimeSession
 } from '../services/ble-runtime/index.js';
 import { OTA_UUIDS } from '../utils/ota_manager.js';
 import { resolveServicePanelState } from '../services/device-session-ui.js';
 import { resolveDeviceRouteContext } from '../services/device-route-context.js';
+
+// API_SPEC §7 connect：连接失败自动重试 3 次退避 n×2s（页面层执行；uniapp 现状，runtime 未内建）
+const CONNECT_RETRY_DELAYS_MS = [2000, 4000, 6000];
+// API_SPEC §6 initialize：初始化失败指数退避重试 3 次（1s/2s/4s）
+const ADAPTER_INIT_RETRY_DELAYS_MS = [1000, 2000, 4000];
 
 /**
  * Generic GATT device detail session orchestration.
@@ -33,6 +40,7 @@ export function useDeviceSession(options = {}) {
   let bleSession = null;
   let reconnectTimer = null;
   let pageDisconnectUnsubscribe = null;
+  let runtimeStateUnsubscribe = null;
   let pageActive = true;
 
   const storeDevice = computed(() => bleStore.connectedDevicesMap[deviceId.value] || {});
@@ -77,12 +85,15 @@ export function useDeviceSession(options = {}) {
       if (bleSession !== session) return;
       bleSession = null;
       if (!pageActive) return;
+      connectionRetryCount.value = 0;
+      autoRetryExhausted.value = false;
       if (isUserDisconnected.value) {
         addLog('系统', '已手动断开连接');
         return;
       }
-      addLog('系统', '设备已断开连接');
-      retryConnection();
+      // 被动断线重连由 ble-runtime reconnect-manager 独占（API_SPEC C-8：1s/3s/5s ×3；§13 所有权冻结），
+      // 页面不再自建重连环；恢复/耗尽经 subscribeConnectionState 回传（handleRuntimeConnectionState）。
+      addLog('系统', '设备已断开连接，将自动重连（最多 3 次）');
     });
 
     connectionRetryCount.value = 0;
@@ -131,13 +142,35 @@ export function useDeviceSession(options = {}) {
       return;
     }
     connectionRetryCount.value += 1;
-    const delay = connectionRetryCount.value * 2000;
-    addLog('系统', `设备断线，将在 ${delay / 1000}s 后进行第 ${connectionRetryCount.value}/${maxRetryCount} 次重连...`);
+    const delay = CONNECT_RETRY_DELAYS_MS[connectionRetryCount.value - 1];
+    addLog('系统', `连接失败，将在 ${delay / 1000}s 后进行第 ${connectionRetryCount.value}/${maxRetryCount} 次重试...`);
     if (reconnectTimer) clearTimeout(reconnectTimer);
     reconnectTimer = setTimeout(() => {
       reconnectTimer = null;
       connectDevice({ autoRetry: true });
     }, delay);
+  };
+
+  // 运行时独占的被动断线重连之页面回传：
+  // - reconnectState EXHAUSTED → 面板 error 态（resolveServicePanelState autoRetryExhausted）
+  // - connectionState READY 且有新会话 → 重绑会话（操作/服务树即刻恢复可用）
+  const handleRuntimeConnectionState = (event) => {
+    if (!deviceId.value || event.deviceId !== deviceId.value) return;
+    if (isInitializing.value || isConnecting.value) return; // 页面自身连接流程以本地结果为准
+    if (event.reconnectState === 'EXHAUSTED') {
+      if (!autoRetryExhausted.value) {
+        autoRetryExhausted.value = true;
+        addLog('错误', '自动重连次数达上限，请手动重试');
+      }
+      return;
+    }
+    if (event.connectionState === 'READY') {
+      const liveSession = getLiveRuntimeSession(deviceId.value);
+      if (liveSession && !liveSession.dead && bleSession !== liveSession) {
+        bindPageSession(liveSession, {});
+        addLog('系统', '自动重连成功');
+      }
+    }
   };
 
   const manualRetryConnection = () => {
@@ -149,6 +182,22 @@ export function useDeviceSession(options = {}) {
     lastConnectError.value = '';
     isUserDisconnected.value = false;
     connectDevice({ autoRetry: false });
+  };
+
+  const openAdapterWithContractRetry = async () => {
+    for (let attempt = 0; ; attempt += 1) {
+      try {
+        await openBleAdapter();
+        return;
+      } catch (error) {
+        if (attempt >= ADAPTER_INIT_RETRY_DELAYS_MS.length) throw error;
+        const delay = ADAPTER_INIT_RETRY_DELAYS_MS[attempt];
+        addLog('系统', `蓝牙初始化失败，${delay / 1000}s 后重试（${attempt + 1}/${ADAPTER_INIT_RETRY_DELAYS_MS.length}）`);
+        await new Promise((resolve) => {
+          reconnectTimer = setTimeout(resolve, delay);
+        });
+      }
+    }
   };
 
   const initBluetoothAdapter = async () => {
@@ -165,13 +214,12 @@ export function useDeviceSession(options = {}) {
     lastConnectError.value = '';
     try {
       addLog('系统', '正在初始化蓝牙...');
-      await openBleAdapter();
+      await openAdapterWithContractRetry();
       await connectDevice({ autoRetry: true });
     } catch (error) {
       const message = error?.errMsg || error?.message || '未知错误';
       lastConnectError.value = '蓝牙初始化失败: ' + message;
       addLog('错误', lastConnectError.value);
-      retryConnection();
     } finally {
       isInitializing.value = false;
     }
@@ -215,6 +263,8 @@ export function useDeviceSession(options = {}) {
 
     deviceId.value = parsedDevice.deviceId;
     bleStore.initConnectedDevice(parsedDevice);
+    runtimeStateUnsubscribe?.();
+    runtimeStateUnsubscribe = subscribeConnectionState(handleRuntimeConnectionState);
     const existingSession = bleStore.getRuntimeSession(deviceId.value);
     if (existingSession && !existingSession.dead) {
       isUserDisconnected.value = false;
@@ -252,6 +302,8 @@ export function useDeviceSession(options = {}) {
     unsubLogger?.();
     unsubLogger = null;
     if (reconnectTimer) clearTimeout(reconnectTimer);
+    runtimeStateUnsubscribe?.();
+    runtimeStateUnsubscribe = null;
     pageDisconnectUnsubscribe?.();
     pageDisconnectUnsubscribe = null;
     bleSession = null;

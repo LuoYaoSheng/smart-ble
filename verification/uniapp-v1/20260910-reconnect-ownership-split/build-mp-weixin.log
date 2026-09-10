@@ -1,0 +1,9 @@
+
+> LightBLE@1.0.5 build:mp-weixin
+> node ../../scripts/uniapp/run-uni.mjs build mp-weixin
+
+Compiler version: 5.25（vue3）
+Compiling...
+​[plugin:vite:resolve]  Module "node:crypto" has been externalized for browser compatibility, imported by "/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/uniapp/services/ota/package-validator.js". See https://vitejs.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.​
+DONE  Build complete.
+Run method: open Weixin Mini Program Devtools, import unpackage/dist/build/mp-weixin run.
