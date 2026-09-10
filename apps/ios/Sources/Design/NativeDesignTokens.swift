@@ -6,7 +6,7 @@ enum NativeDS {
     static let success = Color(red: 23 / 255, green: 199 / 255, blue: 168 / 255)
     static let successWeak = Color(red: 226 / 255, green: 248 / 255, blue: 244 / 255)
     static let danger = Color(red: 242 / 255, green: 85 / 255, blue: 95 / 255)
-    static let dangerWeak = Color(red: 1, green: 238 / 255, blue: 240 / 255)
+    static let dangerWeak = Color(red: 253 / 255, green: 235 / 255, blue: 236 / 255) // #FDEBEC 正典 --c-danger-weak（UI-CONV 2026-09-10 钉子对齐，原 #FEEFF0 系镜像笔误）
     static let warning = Color(red: 1, green: 159 / 255, blue: 67 / 255)
     static let ink = Color(red: 24 / 255, green: 34 / 255, blue: 46 / 255)
     static let sub = Color(red: 66 / 255, green: 83 / 255, blue: 106 / 255)
