@@ -91,8 +91,12 @@ run_check "Smart HID platform parity" "$NODE_BIN" scripts/check-platform-parity.
 # F023 零持久化红线（W3）：全实现线静态扫——存储调用/known_devices 残留/PAGE004 路由/
 # 首页面板字符串/uniapp hid 路由白名单（正典 STORAGE_POLICY Z-2/§8 + PRD 2026-09-02）。
 run_check "F023 zero persistence & residue" "$NODE_BIN" scripts/check-f023-zero-persistence.mjs
+# F030 不做国际化红线（W5）：全实现线静态扫——i18n 机器（I18nManager/data-i18n/vue-i18n/
+# AppLocalizations 接线/NSLocalizedString…）/语言切换入口/Android localeConfig/locale 资产
+# （正典 PRD §5 F030 + §8 R30 + 2026-09-02 P-05 关闭决议；flutter l10n 未接线脚手架白名单）。
+run_check "F030 no-i18n gate" "$NODE_BIN" scripts/check-f030-no-i18n.mjs
 # 原始证据日志（ESP32 串口等）必须逐字保留，行尾空白是设备输出的一部分；
 # 空白门禁只针对产品源码与脚本的未提交改动。
 run_check "Git whitespace" git diff --check -- . ':(exclude)verification'
 
-printf '\nUniApp verification PASS (%d unit files plus 13 static gates)\n' "${#test_files[@]}"
+printf '\nUniApp verification PASS (%d unit files plus 14 static gates)\n' "${#test_files[@]}"

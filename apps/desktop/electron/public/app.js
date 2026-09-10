@@ -983,10 +983,7 @@ class App {
 }
 
 // Initialize app when DOM is ready
+// F030：产品决议不做国际化——UI 文案硬编码中文，无语言切换（正典 R30 现状确认）。
 document.addEventListener('DOMContentLoaded', async () => {
-    // Initialize localization before app
-    if (window.i18n) {
-        await window.i18n.init();
-    }
     window.appInstance = new App();
 });

@@ -1155,11 +1155,7 @@ function escapeHtml(text) {
 }
 
 // ── Entry Point ───────────────────────────────────────────────
-// Initialize i18n first, then kick off the main Tauri BLE app.
-// Mirrors the Electron pattern in public/app.js (DOMContentLoaded).
+// F030：产品决议不做国际化——UI 文案硬编码中文，无语言切换（正典 R30 现状确认）。
 document.addEventListener('DOMContentLoaded', async () => {
-    if (window.i18n) {
-        await window.i18n.init();
-    }
     await init();
 });
