@@ -212,9 +212,9 @@ AppEvent 信封公共字段（eventId / type / timestamp / source / operationId?
 | **PermissionPort** | 权限查询 / 申请 / 订阅状态变化 / 权限设置页跳转（open_settings 恢复动作的通道） | 不含任何 BLE 方法；不含通用外链 | F002/F015/F020（[PERMISSION](PERMISSION.md) §2/§3） |
 | **QrScanPort** | 摄像头扫码（shid://pair 解析前置的原始内容获取；取消/权限/失败三分支） | 不属 BlePlatformPort | F020 |
 | **SharePort** | 分享（微信社交卡片/Timeline、系统分享面板；失败降级复制由 ClipboardPort 协作） | — | F029 |
-| **ClipboardPort** | 剪贴板单次写入（复制广播数据/日志/外链/版本；瞬态通道，STORAGE_POLICY §6） | 敏感字段永不进入（S-4） | F004/F011/F027/F028 |
+| **ClipboardPort** | 剪贴板单次写入（复制广播数据/日志/外链/版本；瞬态通道，STORAGE_POLICY §6） | 敏感字段永不进入（S-4） | F004/F011/F027 |
 | **FilePickerPort** | 文件选择（OTA 选 .bin：微信 chooseMessageFile / App chooseFile；一次性读入） | 不属 BlePlatformPort | F025 |
-| **ExternalNavigationPort** | 通用外链跳转（系统浏览器/新窗）、小程序跳转（F028 navigateToMiniProgram）、落地页 | 权限设置页跳转归 PermissionPort | F027/F028 |
+| **ExternalNavigationPort** | 通用外链跳转（系统浏览器/新窗） | 权限设置页跳转归 PermissionPort；小程序跳转随 F028 移除（2026-09-10） | F027 |
 | **DeviceInfoPort** | 设备/宿主信息（platform / osName / 型号；wxhost 宿主维度判定）与运行时版本取值（APP widget / 微信 getAccountInfoSync） | — | F002（宿主分支）/F014（devtools 拦截）/F027 |
 | **LifecyclePort** | 宿主生命周期订阅（onShow/onHide/onUnload → LifecycleChanged） | — | BR-06 全部隐式动作 |
 
@@ -237,7 +237,7 @@ AppEvent 信封公共字段（eventId / type / timestamp / source / operationId?
 
 ### 1.6 ⑤ Platform Adapter（适配层 = Port 实现者）
 
-- **职责**：WeChatAdapter（MP-WEIXIN · wxhost，含宿主系统子维度）/ AndroidAdapter（APP-PLUS）实现 PlatformPortBundle 中的端口，调用 System BLE / 平台能力框架；权限链 / 扫码 / 分享 / 推广 / 日志导出 / 生命周期表达 / 广播外围能力分支全部收敛于此；**订阅平台原生回调并归一化为 PlatformEvent**（§0.5）。详契约见 [PLATFORM_ADAPTER_SPEC](PLATFORM_ADAPTER_SPEC.md) §2–§4。
+- **职责**：WeChatAdapter（MP-WEIXIN · wxhost，含宿主系统子维度）/ AndroidAdapter（APP-PLUS）实现 PlatformPortBundle 中的端口，调用 System BLE / 平台能力框架；权限链 / 扫码 / 分享 / 日志导出 / 生命周期表达 / 广播外围能力分支全部收敛于此（推广随 F028 于 2026-09-10 移除）；**订阅平台原生回调并归一化为 PlatformEvent**（§0.5）。详契约见 [PLATFORM_ADAPTER_SPEC](PLATFORM_ADAPTER_SPEC.md) §2–§4。
 - **允许/禁止**：见本文 §4；接入方式 = 实现端口（组装根注入，一个 Adapter 可实现多个 Port），禁止与 Base Core 隐式双向依赖（§0.1 规则 4）。
 - **来源**：PLATFORM_ADAPTER_SPEC §0/§2/§3/§4 · 10_platform §4。
 
@@ -380,7 +380,7 @@ P006 进页（Device Detail；←P001 普通卡「连接」/ ←P007 点卡 / �
 | 系统 API | uni.\*/wx.\*/plus.\* 调用只出现在 Adapter（各 Port 实现内部）；能力探测（如 getCapabilities 判定、C1 真机运行时探测）在 Adapter 完成并归一化上报 | API_UNIFIED_SPEC §3 · PLATFORM_CAPABILITY_DECISION §1 · PZ-8 |
 | 宿主差异 | wxhost 宿主子维度（安卓/iOS 真机同一 wx BLE 路径；开发者工具外围广播 unsupported→三处拦截；PC 端微信【未知】登记不建模——宿主判定经 DeviceInfoPort） | PLATFORM_ADAPTER_SPEC §3.1 · 10_platform §2.1 |
 
-合法差异圈全集 = 10_platform §4 差异表 **7 行**（设备发现交互 / 权限模型 / 分享 / 扫码 / 推广跳转 / 日志导出 / 生命周期守则）；**圈外差异须先回写 10_platform §4 再开发**（BR-12 · specs/README 总纲 L3）。
+合法差异圈全集 = 10_platform §4 差异表 **6 行**（设备发现交互 / 权限模型 / 分享 / 扫码 / 日志导出 / 生命周期守则；推广跳转行随 F028 于 2026-09-10 移除）；**圈外差异须先回写 10_platform §4 再开发**（BR-12 · specs/README 总纲 L3）。
 
 ### 4.2 禁止（任何 Adapter 不得触碰）
 

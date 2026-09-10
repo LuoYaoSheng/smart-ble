@@ -44,7 +44,7 @@
 | 字段 | 内容 |
 |---|---|
 | 旧路径 | `apps/uniapp/config/product.js`、`config/release-metadata.generated.{js,json}`、`replace_about.py`、`env.js`、`vite.config.js`、`jest.config.js`、`uni.promisify.adaptor.js` |
-| 当前职责 | 品牌信息/关联小程序清单（F028 推广跳转数据源）、发布元数据、About 页替换脚本、自动化环境、构建与测试配置 |
+| 当前职责 | 品牌信息/发布元数据、About 页替换脚本、自动化环境、构建与测试配置（关联小程序清单随 F028 于 2026-09-10 移除） |
 | 已有验证证据 | tests/target/release/{release-artifacts,links-and-qr,public-claims}.test.mjs 覆盖发布产物与外链声明；version-release-metadata / version-page-model 单测在位 |
 | 与新规范的一致性 | 基本一致；`replace_about.py` 为一次性工具脚本（生成物流），`env.js` 为 HBuilderX 自动化配置——目标架构未要求变化 |
 | 处理决定 | config/ **保留**；`replace_about.py`【待验证】（若无再生成需求→删除）；`env.js`/`jest.config.js`/`vite.config.js` **保留**（改版分支继续用） |
@@ -303,10 +303,10 @@
 | 字段 | 内容 |
 |---|---|
 | 旧路径 | `apps/uniapp/static/**`、`apps/uniapp/styles/design-system.css`（--ble-\* token）、`apps/uniapp/app_theme.css` |
-| 当前职责 | 图标/分享图/tab 图标/占位图/关联小程序推广图（F028）；旧设计 token |
+| 当前职责 | 图标/分享图/tab 图标/占位图；旧设计 token（关联小程序推广图随 F028 于 2026-09-10 移除） |
 | 已有验证证据 | release 套件（links-and-qr/public-claims）覆盖外链与二维码声明；token 与 07_design_system/TOKEN 的对应关系已冻结 v1.0 |
 | 与新规范的一致性 | 资产复用一致；design-system.css 须对齐 TOKEN 正典（A-07 派生色值问题属原型侧登记，App 侧同类问题随重构核对） |
-| 处理决定 | static **保留**（other-apps 推广图随 F028 保留）；design-system.css **重构**（对齐 TOKEN；A-07 同类派生色清理） |
+| 处理决定 | static **保留**（other-apps 推广图 2026-09-10 随 F028 移除而废弃）；design-system.css **重构**（对齐 TOKEN；A-07 同类派生色清理） |
 | 目标落位 | 原路径 |
 | 迁移风险 | 低 |
 | 所需测试 | 视觉对照 + release 套件回归 |

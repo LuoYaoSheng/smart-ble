@@ -58,7 +58,7 @@ Base Core（平台无关层）
 |---|---|---|
 | 平台 API 唯一入口 | 平台 API 调用（uni.\*/wx.\*/plus.\*）只出现在 Adapter——即 PlatformPortBundle 各端口的实现模块内部；Base Core 其余文件禁止直调。旧工程「仅 4 个收敛文件 + scan-permission 唯一直调 wx.\* 先例」为 legacy reference（收敛**原则**采纳，收敛**形态**不复刻；IMPLEMENTATION_TARGET §2 规则 5，RUNTIME_ARCHITECTURE v1.2 §0.3） | RUNTIME_ARCHITECTURE v1.2 §1.4/§1.6 · MODULE_ARCH §1/§2/§3（legacy 实证）· PZ-8 |
 | Port 接入与职责拆分 | Adapter implements PlatformPortBundle 所需端口，由组装根注入（条件编译或运行时）；**禁止与 Base Core 形成隐式双向依赖**（Port 归领域持有，Adapter 只向内实现）；权限经 PermissionPort、扫码经 QrScanPort、分享经 SharePort、剪贴板经 ClipboardPort、文件选择经 FilePickerPort、外链跳转经 ExternalNavigationPort、宿主/版本经 DeviceInfoPort、生命周期经 LifecyclePort——**均不得混入 BlePlatformPort**（BlePlatformPort 只含 BLE 中央/GATT/Notify/外围广播/蓝牙状态）；一个 Adapter 可实现多个 Port；所有 Port 禁止泄露 wx.\*/plus.\* 原生对象 | RUNTIME_ARCHITECTURE v1.2 §0.1 规则 3/4/5 · §1.4 · API_SPEC §2 |
-| 合法差异圈（L3） | 仅 10_platform §4 差异表 7 行：设备发现交互 / 权限模型 / 分享 / 扫码 / 推广跳转 / 日志导出 / 生命周期守则；**圈外差异须先回写 10_platform 再开发** | specs/README 总纲 L3 · 10_platform §4 · BR-12 |
+| 合法差异圈（L3） | 仅 10_platform §4 差异表 6 行：设备发现交互 / 权限模型 / 分享 / 扫码 / 日志导出 / 生命周期守则（推广跳转行随 F028 于 2026-09-10 移除）；**圈外差异须先回写 10_platform 再开发** | specs/README 总纲 L3 · 10_platform §4 · BR-12 |
 | 实现形态 | 条件编译（MP-WEIXIN / APP-PLUS）或运行时覆写；差异收敛到可整体评审的少量文件（原型先例：android.js = ACTION 覆写 + renderAll 后处理 + defaults 包装，基线零改动） | prototype/platform/app/PLATFORM_SPEC §1 |
 | 平台补充态 | 平台特有失败分支（如 Android 权限永久拒绝）为平台补充态：须在该平台 PAGE_SPEC 标注并引 10_platform 条目，**不得改产品状态集合** | STATE_MODEL §3 |
 | 错误码分层 | 两层并行：平台原生错误 → BLE_001～008（SDK 层）→ 业务错误码/用户文案；异常三要素（提示 + 下一步 + 恢复动作）任何平台不得省略；完整分层与三级映射契约见 [ERROR_CODE](ERROR_CODE.md)（四层：platform-native / sdk-transport / product-domain / validation-capability） | API_ACTION_MATRIX §5 · BR-07 · ERROR_CODE §1/§2 |
@@ -87,7 +87,7 @@ Base Core（平台无关层）
 | 权限模型 | 微信授权弹窗 + 去设置（P001 六态权限分支，F002）；拒绝后横幅含 code 与重试 |
 | 扫码（F020） | uni.scanCode（shid://pair 解析） |
 | 分享（F029） | 页面级 onShareAppMessage/onShareTimeline（右上角菜单触发，不由页面绘制） |
-| 推广跳转（F028） | **点击直接发起 navigateToMiniProgram（无确认弹窗，实证 openApp）**；无 appId→toast、失败→modal 重试 |
+| ~~推广跳转（F028）~~ | 已移除（2026-09-10） |
 | 日志导出（F011） | 剪贴板（文件流候选不做） |
 | 生命周期 | 后台挂起即停扫/停广播（BR-06 的微信表达） |
 | 外链 | 复制到剪贴板 + toast |
@@ -113,7 +113,7 @@ Base Core（平台无关层）
 | BLE 写语义 | P002：V1 简化为普通明文 write，不弹系统配对；旧加密固件错误单次失败并提示重烧（DEVELOPMENT_SCOPE §7） |
 | 广播增强 | P008：模式/功率 picker ×2 + 三开关（可连接/含设备名/添加服务 UUID）；预算按开关重算，超限拦截；LysBlePeripheral 原生插件 |
 | 分享/外链/日志导出 | p009-openweb→系统浏览器（实证 plus.runtime.openURL）；系统分享面板（失败降级复制；文件流候选拦截） |
-| 推广承接（F028） | 无 navigateToMiniProgram → 推广 sheet = 小程序码 + 打开落地页（系统浏览器） |
+| ~~推广承接（F028）~~ | 已移除（2026-09-10） |
 
 来源：prototype/platform/app/PLATFORM_SPEC.md §3（覆写点表逐行对应）。
 

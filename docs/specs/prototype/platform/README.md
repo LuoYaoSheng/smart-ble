@@ -91,7 +91,7 @@ cd docs/specs/prototype/platform && python3 -m http.server 8952
 
 ### 推广承接轮（2026-09-03 · 用户指示「非微信平台的更多小程序需落地页或二维码承接」+ 指正「微信内应直接跳转，不能跳才弹窗」）
 
-产品规则（F028 渠道分流，写入 03_flow/PAGE_SPEC · 02_product/PRD · 07 C11 · 10_platform §4）：**微信点击直接发起 `navigateToMiniProgram`（无确认弹窗，实证 openApp；无 appId→toast、失败→modal）**；非微信渠道（APP/Desktop/Web）无法直跳微信小程序 → 推广详情 sheet = **打开落地页**（APP 系统浏览器=实证 `plus.runtime.openURL` / Web 新窗=实证 `window.open` / Desktop 系统浏览器）+ **小程序码**（示意图形，实机=静态预生成资源，零后端；微信扫码可达，Desktop 可下载）。非微信承接纯覆写层实现；微信直跳流为内核 `p009-promo` 修正（去确认弹窗），三实例字节同步。
+**F028 推广跳转已移除（2026-09-10 · 用户指示）**：更多小程序推广区整链下线——各平台 `p009-promo` 内核 action 与覆写层（APP/Desktop 承接 sheet、Web W6 卡）、mock promo 数据、`.promo` 样式全部删除；03_flow/PAGE_SPEC §9、02_product/PRD、07 C11（编号退役）、10_platform §4 差异行同步作废。下方历史审计行中关于 `p009-promo` 的记录为当时事实，不回溯修改。
 
 | 实例 | 断言 | console |
 |---|---|---|
