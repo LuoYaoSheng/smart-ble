@@ -6,6 +6,7 @@
 import Foundation
 import CoreBluetooth
 import SwiftUI
+import SmartHidCore
 
 /// OTA 状态
 struct OtaState {
@@ -31,6 +32,13 @@ class OtaManager: ObservableObject {
     
     private let otaChunkSize = 180
     private var fileData: Data? = nil
+
+    // R-1 契约对齐（docs/specs/06_review/OTA_CONTRACT_R1_R2_DECISION.md）
+    private var manifestTarget: String? = nil
+    private var manifestVersion: String? = nil
+    private var firmwareSha256: String = ""
+    /// commit 帧（契约 op 口径 · 常量便于测试断言）
+    static let commitFrame = Data(#"{"op":"commit"}"#.utf8)
     
     // OTA UUIDs
     private let otaServiceUuid = "4FAFC201-1FB5-459E-8FCC-C5C9C331914D"
@@ -50,7 +58,27 @@ class OtaManager: ObservableObject {
             
             let data = try Data(contentsOf: url)
             self.fileData = data
-            
+
+            // R-1 契约对齐：sha256 实测 + manifest sidecar（共享 OtaManifest 解析，legacy "version" 兼容）
+            self.firmwareSha256 = OtaManifest.sha256Hex(data)
+            self.manifestTarget = nil
+            self.manifestVersion = nil
+            let manifestUrl = url.deletingPathExtension().appendingPathExtension("manifest.json")
+            if let mdata = try? Data(contentsOf: manifestUrl),
+               let json = (try? JSONSerialization.jsonObject(with: mdata)) as? [String: Any] {
+                switch OtaManifest.parse(json, fileSize: data.count, actualSha256: firmwareSha256) {
+                case .success(let info):
+                    manifestTarget = info.target
+                    manifestVersion = info.version
+                    if !info.ignoredKeys.isEmpty {
+                        Logger.shared.info("manifest 附加字段忽略: \(info.ignoredKeys.joined(separator: ", "))", deviceId: deviceId)
+                    }
+                case .failure(let err):
+                    state.errorMessage = "manifest 校验失败：\(err)"
+                    Logger.shared.error(state.errorMessage!, deviceId: deviceId)
+                }
+            }
+
             state.fileUrl = url
             state.fileName = url.lastPathComponent
             state.fileSize = data.count
@@ -83,13 +111,15 @@ class OtaManager: ObservableObject {
         
         Logger.shared.info("开始 OTA 升级流程...", deviceId: deviceId)
         
-        // 申请 MTU 与监听等 (如果 iOS 没自动申请)
-        // 发送开始控制指令: JSON格式 {"action":"start","size":...,"chunk_size":...,"firmware_version":"..."}
-        let startJson = """
-            {"action":"start","size":\(state.fileSize),"chunk_size":\(otaChunkSize),"firmware_version":"iOS-build"}
-        """
-        guard let startData = startJson.data(using: .utf8) else { return }
-        
+        // 发送开始控制指令（契约 op 口径 · R-1）：op/target/target_version/size/chunk_size/sha256，
+        // 无 manifest 契约字段时省略 target/target_version（不伪造枚举，真固件按 missing_target 拒绝）
+        let startPayload = OtaStartPayload.build(manifestTarget: manifestTarget, manifestVersion: manifestVersion,
+                                                 fileSize: state.fileSize, chunkSize: otaChunkSize, sha256: firmwareSha256)
+        if manifestTarget == nil || manifestVersion == nil {
+            Logger.shared.warning("OTA start 帧省略 target/target_version（无 manifest 契约字段），真固件将拒绝", deviceId: deviceId)
+        }
+        guard let startData = try? JSONSerialization.data(withJSONObject: startPayload) else { return }
+
         sendCommand(uuid: charControlUuid, data: startData) { [weak self] success in
             guard let self = self else { return }
             if success {
@@ -115,13 +145,10 @@ class OtaManager: ObservableObject {
         guard state.isInProgress, let data = fileData else { return }
         
         if offset >= data.count {
-            // 发送完成，发送结束指令: JSON格式 {"action":"commit"}
+            // 发送完成，发送结束指令（契约 op 口径）
             state.statusMessage = "数据发送完毕，等待设备确认..."
-            let commitJson = """
-                {"action":"commit"}
-            """
-            guard let commitData = commitJson.data(using: .utf8) else { return }
-            
+            let commitData = Self.commitFrame
+
             sendCommand(uuid: charControlUuid, data: commitData) { [weak self] success in
                 guard let self = self else { return }
                 if success {
@@ -197,14 +224,18 @@ class OtaManager: ObservableObject {
     }
     
     func handleOtaStatusResponse(_ hexString: String) {
-        // 类似 Android 的 applyOtaStatusPayload，针对设备的订阅通知回调，例如设备校验失败或升级百分比提示
-        let text = String(data: DataConverter.hexToBytes(hexString), encoding: .utf8) ?? ""
+        // 设备订阅通知回调：共享 OtaStatusClassifier 分类（R-2：failed/aborted 不再漏检）
+        let frameData = DataConverter.hexToBytes(hexString)
+        let text = String(data: frameData, encoding: .utf8) ?? ""
         Logger.shared.receive("OTA回复: \(text)", deviceId: deviceId)
-        
-        if text.contains("success") || text.contains("OK") {
+
+        switch OtaStatusClassifier.classify(frameData) {
+        case .success, .ok:
             state.statusMessage = "设备已确认接收成功"
-        } else if text.contains("error") || text.contains("fail") {
-            failOta(reason: "设备报告错误: \(text)")
+        case .error(let t):
+            failOta(reason: "设备报告错误: \(t)")
+        case .ready, nil:
+            break
         }
     }
 }
