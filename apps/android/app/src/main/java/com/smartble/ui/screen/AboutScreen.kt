@@ -38,6 +38,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.smartble.BuildConfig
+import com.smartble.core.utils.VersionMetadata
 import com.smartble.ui.design.DsChip
 import com.smartble.ui.design.DsFoot
 import com.smartble.ui.design.DsIcons
@@ -64,7 +65,11 @@ fun AboutContent(
     onOpenVersions: () -> Unit = {},
 ) {
     val context = LocalContext.current
-    val version = "v${BuildConfig.VERSION_NAME}+${BuildConfig.VERSION_CODE}"
+    // F027 版本三态：基准 = Release Metadata 投影（verFallback），
+    // 运行时渠道（包版本）非空才覆盖，失败保留基准。
+    val version = BuildConfig.VERSION_NAME.takeIf { it.isNotBlank() }
+        ?.let { "v$it+${BuildConfig.VERSION_CODE}" }
+        ?: VersionMetadata.metadataVersionLabel()
 
     fun openUrl(url: String) {
         runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url))) }

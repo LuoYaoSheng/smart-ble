@@ -4,18 +4,16 @@
 // PAGE_SPEC §10：①当前版本卡（版本行+渠道+平台状态+复制按钮）②当前限制卡
 // ③正式发布历史卡 ④预览记录卡 ⑤页脚声明。
 //
-// 数据口径：当前版本为运行时真值（PackageInfo）；限制列表为正典已知限制
-// （OTA 端到端 BLOCKED P-03）；正式发布/预览记录为 Release Metadata 投影
-// ——Flutter 线暂无该投影数据源，按 PAGE_SPEC 空态如实展示
-// （「暂无正式发布版本」「暂无预览记录」），不手写版本事实（F027 深接线
-// 留待逐功能 Gate）。
+// F027 数据口径：整页消费 Release Metadata 投影（core/utils/version_metadata.dart
+// 的 getVersionPageModel，与 uniapp services/version-metadata.js 同源镜像），
+// 不再读 PackageInfo，也不手写版本/渠道/限制事实（版本唯一事实源 = 根 VERSION）。
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../themes/app_theme.dart';
 import '../../core/design/app_icons.dart';
+import '../../core/utils/version_metadata.dart';
 import '../design/app_subnav.dart';
 import '../design/app_empty.dart';
 
@@ -27,28 +25,14 @@ class VersionsPage extends StatefulWidget {
 }
 
 class _VersionsPageState extends State<VersionsPage> {
-  String _displayVersion = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _loadVersion();
-  }
-
-  Future<void> _loadVersion() async {
-    try {
-      final info = await PackageInfo.fromPlatform();
-      if (mounted) {
-        setState(
-            () => _displayVersion = 'v${info.version}+${info.buildNumber}');
-      }
-    } catch (_) {
-      if (mounted) setState(() => _displayVersion = 'dev.unknown');
-    }
-  }
+  final VersionPageModel _model = getVersionPageModel();
 
   Future<void> _copyVersion() async {
-    final text = _displayVersion.isEmpty ? 'dev.unknown' : _displayVersion;
+    final text = _model.current.displayVersion.isNotEmpty
+        ? _model.current.displayVersion
+        : _model.current.version.isNotEmpty
+            ? _model.current.version
+            : 'dev.unknown';
     try {
       await Clipboard.setData(ClipboardData(text: text));
       if (mounted) {
@@ -63,8 +47,21 @@ class _VersionsPageState extends State<VersionsPage> {
     }
   }
 
+  /// 正典 formatPlatformStatus：REFERENCE 直接展示；
+  /// capability/release 不一致时 `cap / rel`，否则取其一，兜底 NOT_RELEASED。
+  String _formatPlatformStatus(PlatformPublicStatus p) {
+    if (p.role == 'REFERENCE') return 'REFERENCE';
+    final cap = p.capabilityStatus ?? '';
+    final rel = p.releaseStatus;
+    if (cap.isNotEmpty && rel.isNotEmpty && cap != rel) return '$cap / $rel';
+    if (cap.isNotEmpty) return cap;
+    if (rel.isNotEmpty) return rel;
+    return 'NOT_RELEASED';
+  }
+
   @override
   Widget build(BuildContext context) {
+    final current = _model.current;
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
       appBar: const AppSubnav(title: '版本记录'),
@@ -73,9 +70,16 @@ class _VersionsPageState extends State<VersionsPage> {
         children: [
           _card(children: [
             _sectionTitle('当前版本'),
-            _kvRow('版本', _displayVersion.isEmpty ? '…' : _displayVersion),
-            _kvRow('渠道', 'preview'),
-            _kvRow('平台状态', 'Android · PREVIEW'),
+            _kvRow(
+                '版本',
+                current.version.isNotEmpty
+                    ? current.version
+                    : current.displayVersion),
+            _kvRow('渠道', current.channelLabel),
+            if (current.hasReleaseTag) _kvRow('Release tag', '已登记'),
+            _sectionTitle('平台状态'),
+            for (final p in current.platforms)
+              _kvRow(p.name, _formatPlatformStatus(p)),
             const SizedBox(height: 12),
             SizedBox(
               width: double.infinity,
@@ -97,19 +101,31 @@ class _VersionsPageState extends State<VersionsPage> {
           const SizedBox(height: 12),
           _card(children: [
             _sectionTitle('当前限制'),
-            _limitRow(
-                'OTA 固件升级端到端 BLOCKED（P-03）：客户端与固件完整事务未对齐，入口仅对 OTA 服务设备开放'),
+            if (current.limitations.isNotEmpty)
+              for (final item in current.limitations) _limitRow(item)
+            else
+              _emptyRow('暂无已知限制条目。'),
           ]),
           const SizedBox(height: 12),
           _card(children: [
             _sectionTitle('正式发布'),
-            _emptyBlock('暂无正式发布版本', '产品当前处于 PREVIEW 阶段，首个正式版发布后将在此列出。'),
+            if (_model.history.releases.isNotEmpty)
+              for (final r in _model.history.releases)
+                _historyRow(r.tag.isNotEmpty ? r.tag : r.version,
+                    '${r.status} · ${r.channel}')
+            else
+              _emptyBlock('暂无正式发布版本', '产品当前处于 PREVIEW 阶段，首个正式版发布后将在此列出。'),
+            if (!current.hasArtifacts)
+              _emptyRow('当前无 Artifact，不提供下载入口', small: true),
           ]),
           const SizedBox(height: 12),
           _card(children: [
             _sectionTitle('预览记录'),
-            _emptyBlock('暂无预览记录', ''),
-            _emptyRow('当前无 Artifact，不提供下载入口', small: true),
+            if (_model.history.previews.isNotEmpty)
+              for (final p in _model.history.previews)
+                _historyRow(p.label, '${p.status} · ${p.channel}')
+            else
+              _emptyBlock('暂无预览记录', ''),
           ]),
           const SizedBox(height: 8),
           const Padding(
@@ -186,6 +202,26 @@ class _VersionsPageState extends State<VersionsPage> {
                 style: const TextStyle(
                     fontSize: 13, height: 1.5, color: AppTheme.textPrimary)),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _historyRow(String title, String sub) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title,
+              style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: AppTheme.textPrimary)),
+          const SizedBox(height: 2),
+          Text(sub,
+              style:
+                  const TextStyle(fontSize: 11, color: AppTheme.textSecondary)),
         ],
       ),
     );

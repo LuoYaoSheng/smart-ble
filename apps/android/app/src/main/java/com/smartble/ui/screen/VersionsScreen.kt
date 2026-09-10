@@ -26,7 +26,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.smartble.BuildConfig
+import com.smartble.core.utils.VersionMetadata
 import com.smartble.ui.design.AppEmpty
 import com.smartble.ui.design.AppSubnav
 import com.smartble.ui.design.DsChip
@@ -49,14 +49,18 @@ import com.smartble.ui.theme.cWarnStrong
 
 /**
  * P010 版本记录（prototype p010-versions.js · sub 型）：
- * 当前版本(display + channel chip + kv + 平台 chip + 复制) → 当前限制 →
- * 正式发布历史(空态) → 预览记录(空态) → 页脚（Release Metadata 投影声明）。
- * 正式/预览列表无投影数据源，按正典空态如实展示，不手写版本事实。
+ * 当前版本(display + channel chip + 渠道 kv + 平台状态列表 + 复制) → 当前限制 →
+ * 正式发布历史(投影/空态) → 预览记录(投影/空态) → 页脚（Release Metadata 投影声明）。
+ * F027：整页消费 VersionMetadata.versionPageModel（Release Metadata 投影），
+ * 不读 BuildConfig，也不手写版本/渠道/限制事实。
  */
 @Composable
 fun VersionsScreen(onBack: () -> Unit) {
     val context = LocalContext.current
-    val displayVersion = "v${BuildConfig.VERSION_NAME}+${BuildConfig.VERSION_CODE}"
+    val model = VersionMetadata.versionPageModel()
+    val current = model.current
+    val displayVersion = current.version.ifBlank { current.displayVersion }
+    val copyText = current.displayVersion.ifBlank { current.version }.ifBlank { "dev.unknown" }
 
     Column(
         modifier = Modifier.fillMaxSize().background(cBg),
@@ -76,19 +80,20 @@ fun VersionsScreen(onBack: () -> Unit) {
                 Spacer(modifier = Modifier.height(6.dp))
                 Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     Text(displayVersion, fontSize = 24.sp, fontWeight = FontWeight.W800, color = cPrimary)
-                    Box(modifier = Modifier.padding(bottom = 2.dp)) { DsChip(text = "preview", tone = DsChipTone.Primary) }
+                    Box(modifier = Modifier.padding(bottom = 2.dp)) { DsChip(text = current.channel, tone = DsChipTone.Primary) }
                 }
-                DsKv(k = "构建", v = "v+${BuildConfig.VERSION_CODE}", mono = true)
-                DsKv(k = "Release tag", v = "已登记（preview）")
-                Row(modifier = Modifier.padding(top = 10.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    DsChip(text = "Android PREVIEW", tone = DsChipTone.Primary)
+                DsKv(k = "渠道", v = current.channelLabel)
+                if (current.hasReleaseTag) {
+                    DsKv(k = "Release tag", v = "已登记")
                 }
+                Spacer(modifier = Modifier.height(10.dp))
+                current.platforms.forEach { p -> DsKv(k = p.name, v = formatPlatformStatus(p)) }
                 Spacer(modifier = Modifier.height(12.dp))
                 Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                     DsSoftButton(
                         label = "复制版本信息",
                         icon = DsIcons.Copy,
-                        onClick = { copyVersion(context, displayVersion) },
+                        onClick = { copyVersion(context, copyText) },
                         small = true,
                     )
                 }
@@ -97,43 +102,80 @@ fun VersionsScreen(onBack: () -> Unit) {
             // ② 当前限制
             Column(Modifier.dsCard()) {
                 DsCardTitle(icon = DsIcons.Warn, text = "当前限制")
-                Row(
-                    modifier = Modifier.padding(top = 7.dp).fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.Top,
-                ) {
-                    Icon(DsIcons.Warn, contentDescription = null, tint = cWarnStrong, modifier = Modifier.size(13.dp))
-                    Text(
-                        "OTA 固件升级端到端 BLOCKED（P-03）：客户端与固件完整事务未对齐，入口仅对 OTA 服务设备开放",
-                        fontSize = 13.sp,
-                        color = cSub,
-                        lineHeight = 13.sp * 1.55f,
-                        modifier = Modifier.weight(1f),
-                    )
+                if (current.limitations.isNotEmpty()) {
+                    current.limitations.forEach { item ->
+                        Row(
+                            modifier = Modifier.padding(top = 7.dp).fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.Top,
+                        ) {
+                            Icon(DsIcons.Warn, contentDescription = null, tint = cWarnStrong, modifier = Modifier.size(13.dp))
+                            Text(
+                                item,
+                                fontSize = 13.sp,
+                                color = cSub,
+                                lineHeight = 13.sp * 1.55f,
+                                modifier = Modifier.weight(1f),
+                            )
+                        }
+                    }
+                } else {
+                    Text("暂无已知限制条目。", fontSize = 13.sp, color = cMut, modifier = Modifier.padding(top = 7.dp))
                 }
-                Spacer(modifier = Modifier.height(8.dp))
-                DsNote(kind = DsNoteKind.Info, text = "当前无 Artifact，不提供下载入口。")
             }
 
-            // ③ 正式发布历史（空态）
+            // ③ 正式发布历史（投影/空态）
             Column(Modifier.dsCard()) {
                 DsCardTitle(icon = DsIcons.Check, text = "正式发布历史")
-                AppEmpty(
-                    title = "暂无正式发布版本",
-                    desc = "产品当前处于 PREVIEW 阶段，首个正式版发布后将在此列出。",
-                    ill = DsIll.Doc,
-                )
+                if (model.history.releases.isNotEmpty()) {
+                    model.history.releases.forEach { r ->
+                        HistoryRow(title = r.tag.ifBlank { r.version }, sub = "${r.status} · ${r.channel}")
+                    }
+                } else {
+                    AppEmpty(
+                        title = "暂无正式发布版本",
+                        desc = "产品当前处于 PREVIEW 阶段，首个正式版发布后将在此列出。",
+                        ill = DsIll.Doc,
+                    )
+                }
+                if (!current.hasArtifacts) {
+                    DsNote(kind = DsNoteKind.Info, text = "当前无 Artifact，不提供下载入口。")
+                }
             }
 
-            // ④ 预览记录（空态）
+            // ④ 预览记录（投影/空态）
             Column(Modifier.dsCard()) {
                 DsCardTitle(icon = DsIcons.Dl, text = "预览记录")
-                AppEmpty(title = "暂无预览记录", desc = "", ill = DsIll.Doc)
+                if (model.history.previews.isNotEmpty()) {
+                    model.history.previews.forEach { p ->
+                        HistoryRow(title = p.label, sub = "${p.status} · ${p.channel}")
+                    }
+                } else {
+                    AppEmpty(title = "暂无预览记录", desc = "", ill = DsIll.Doc)
+                }
             }
 
             DsFoot("本页数据来自 Release Metadata 投影，不是手写版本事实源。")
             Spacer(modifier = Modifier.height(8.dp))
         }
+    }
+}
+
+/** 正典 formatPlatformStatus：REFERENCE 直接展示；cap/rel 不一致 → "cap / rel"，
+ * 否则取其一，兜底 NOT_RELEASED。 */
+private fun formatPlatformStatus(p: VersionMetadata.PlatformPublicStatus): String {
+    if (p.role == "REFERENCE") return "REFERENCE"
+    val cap = p.capabilityStatus.orEmpty()
+    val rel = p.releaseStatus
+    if (cap.isNotEmpty() && rel.isNotEmpty() && cap != rel) return "$cap / $rel"
+    return if (cap.isNotEmpty()) cap else rel.ifEmpty { "NOT_RELEASED" }
+}
+
+@Composable
+private fun HistoryRow(title: String, sub: String) {
+    Column(modifier = Modifier.padding(top = 10.dp)) {
+        Text(title, fontSize = 14.sp, fontWeight = FontWeight.W800, color = cText)
+        Text(sub, fontSize = 12.sp, color = cMut, modifier = Modifier.padding(top = 3.dp))
     }
 }
 

@@ -1,0 +1,54 @@
+F026 日志脱敏——E1 三线证据摘要（2026-09-10）
+====================================================
+
+正典：BUSINESS_FLOW §7 / DATA_FLOW §7 / STORAGE_POLICY S-3 / R28
+实现：uniapp 既有（services/logger/log-redaction.js，未改动）；
+     F-AND core/utils/log_redaction.dart + Logger._emit/command_queue 接线（本轮新增）；
+     K-AND core/utils/LogRedaction.kt + Logger.emit 接线（本轮新增）。
+
+[F-AND] flutter analyze（2026-09-10 复跑）
+-------------------------------------------
+$ flutter analyze
+Analyzing flutter...
+No issues found! (ran in 13.0s)
+
+[F-AND] flutter test 全量（2026-09-10 复跑，含新增 log_redaction_test.dart 13 向量）
+-------------------------------------------
+$ flutter test
+00:09 +99: ... canon empty-state illustrations render without error
+00:09 +99: All tests passed!
+
+[A-AND] gradle testDebugUnitTest（2026-09-10，JDK=corretto-18.0.2）
+-------------------------------------------
+$ JAVA_HOME=corretto-18.0.2 ./gradlew testDebugUnitTest
+BUILD SUCCESSFUL
+
+TEST-com.smartble.core.utils.LogRedactionTest.xml:
+tests="12" skipped="0" failures="0" errors="0"
+
+[U-AND] 既有集成测试（本轮未改动 uniapp 代码，引用既有套件）
+-------------------------------------------
+tests/target/integration/logging-target.test.mjs：
+  - BLE runtime logger redacts callback errors
+  - OTA logger redacts event listener errors
+  - Smart HID logger redacts provision secrets
+  - legacy ble-runtime redact entry keeps deviceId
+（随 verify-target 七层套件运行）
+
+向量组（F-AND 13 / A-AND 12 同源镜像）
+-------------------------------------------
+V1  配网 candidate JSON：token/wifi_password→***，ssid/host/端口保留（F 精确串；A 按键断言——JVM org.json HashMap 不保序）
+V2  token=abc123&x=1 → token=***&x=1
+V3  Bearer 裸串 → Bearer ***
+V4  authorization: Bearer xyz789 → 语义断言（正典多趟替换产出 'authorization: Bearer *** ***'，三线一致）
+V5  保护键白名单（deviceId/serviceUuid/sha256）不脱敏
+V6  对象嵌套脱敏（nested.password→***）
+V7  十六进制转储无键不脱敏（写入完成: 7B 22 ...）
+V8  非法 JSON 原样保留
+V9  "qr_token":"z9" 字符串形态 → "qr_token":***
+V10 api_key=ZZZ&password=q1 → api_key=***&password=***
+V11 键归一化（wifi-password/API_KEY 大小写与 -/_ 变体命中）
+V12 Logger 漏斗集成（logger.info('{"token":"abcdef"}') → 历史条目含 ***、不含密文）
+（F-AND 另含 sanitizeLogObject 空入参分支，共 13 例）
+
+E5（真机 logcat 抽查）留硬件窗口，矩阵行已注明。

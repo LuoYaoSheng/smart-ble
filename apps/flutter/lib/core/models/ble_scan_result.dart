@@ -1,4 +1,8 @@
 /// BLE 扫描结果
+library;
+
+import '../ble/device_display_name.dart';
+
 class BleScanResult {
   /// 设备 ID
   final String deviceId;
@@ -51,13 +55,17 @@ class BleScanResult {
     required this.timestamp,
   });
 
-  /// 显示名称
-  String get displayName => name.isNotEmpty ? name : '未知设备';
+  /// 显示名称（F005 批准链：name → advName → 未命名 BLE · ID后四位）
+  String get displayName => resolveDeviceDisplayName(
+        deviceId: deviceId,
+        name: name,
+        advName: advName,
+      ).displayName;
 
-  /// 是否匹配前缀过滤
+  /// 是否匹配前缀过滤（按显示名匹配——SHID 等仅广播名设备也要命中）
   bool matchesNamePrefix(String? prefix) {
     if (prefix == null || prefix.isEmpty) return true;
-    return name.toLowerCase().startsWith(prefix.toLowerCase());
+    return displayName.toLowerCase().startsWith(prefix.toLowerCase());
   }
 
   /// 是否匹配信号强度过滤

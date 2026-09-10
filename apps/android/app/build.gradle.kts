@@ -45,6 +45,11 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.4"
     }
+
+    testOptions {
+        // JVM 单测直接调用 Logger（内部 android.util.Log）时不抛 not-mocked
+        unitTests.isReturnDefaultValues = true
+    }
 }
 
 dependencies {
@@ -77,6 +82,7 @@ dependencies {
     // Unit tests
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.json:json:20240303")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
 
     // Debug
     debugImplementation("androidx.compose.ui:ui-tooling")

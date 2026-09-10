@@ -7,7 +7,8 @@
 //   js      进程内经 tests/target ESM 桥加载 TS 镜像 + framing.js + workflow.js
 //           （桥对 .ts 做类型剥离，需 Node >= 22.18 / >= 23.6；verify-target 同款口径）
 //   dart    spawn `dart run tool/smart_hid_parity.dart`（apps/flutter，纯 Dart）
-//   kotlin  检测 core/profile/SmartHidProtocol.kt —— W3 落地前如实登记 NOT_IMPLEMENTED
+//   kotlin  gradle 调 JUnit 向量执行器（core/profile/SmartHidVectorParityTest），
+//           读 apps/android/app/build/smart-hid-parity-kotlin.json（需 JDK 17–19 运行 Gradle 8.2）
 //   swift   spawn `swift test` 执行 core/apple/SmartHidCore 的 XCTest 向量消费者
 //
 // 退出码：所有「已执行」平台零失败 → 0；任一平台断言失败 → 1。
@@ -16,7 +17,7 @@
 // 用法：node scripts/check-platform-parity.mjs [--platform=js,dart] [--vectors=<path>]
 
 import { spawnSync } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, rmSync, readdirSync } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { importTarget } from '../tests/target/lib/import-target.mjs';
@@ -57,6 +58,10 @@ async function runJsLane() {
   if (!wf.ok) return { status: 'BLOCKED', detail: wf.message, pass: 0, failures: [] };
   const W = wf.module;
 
+  // 正则常量取 .source（TS 导出 RegExp 字面量，String() 会带斜杠——W1 起 3 例比较式
+  // 写错且被无条件 PASS 掩盖，本轮修正后 js 应为 71/71）
+  const patternStr = (v) => (v instanceof RegExp ? v.source : String(v));
+
   // constants（含正典错误提示表；JS 独有面）
   const constChecks = {
     serviceUuid: P.SMART_HID_PROVISIONING_SERVICE_UUID === constants.serviceUuid,
@@ -66,9 +71,9 @@ async function runJsLane() {
     namePrefix: P.SMART_HID_NAME_PREFIX === constants.namePrefix,
     protocolVersion: P.PROVISIONING_CONSTANTS.PROTOCOL_VERSION === constants.protocolVersion,
     candidateVersion: P.PROVISIONING_CONSTANTS.CANDIDATE_VERSION === constants.candidateVersion,
-    deviceIdPattern: String(P.PROVISIONING_CONSTANTS.DEVICE_ID_PATTERN) === constants.deviceIdPattern,
-    deviceNamePattern: String(P.PROVISIONING_CONSTANTS.DEVICE_NAME_PATTERN) === constants.deviceNamePattern,
-    tokenPattern: String(P.PROVISIONING_CONSTANTS.TOKEN_PATTERN) === constants.tokenPattern,
+    deviceIdPattern: patternStr(P.PROVISIONING_CONSTANTS.DEVICE_ID_PATTERN) === constants.deviceIdPattern,
+    deviceNamePattern: patternStr(P.PROVISIONING_CONSTANTS.DEVICE_NAME_PATTERN) === constants.deviceNamePattern,
+    tokenPattern: patternStr(P.PROVISIONING_CONSTANTS.TOKEN_PATTERN) === constants.tokenPattern,
     qrScheme: P.PROVISIONING_CONSTANTS.QR_SCHEME === constants.qrScheme,
     defaultPairingPort: P.PROVISIONING_CONSTANTS.DEFAULT_PAIRING_PORT === constants.defaultPairingPort,
     frameHeaderSize: F.FRAME_HEADER_SIZE === constants.frame.headerSize,
@@ -150,7 +155,7 @@ async function runJsLane() {
     check('errorRecovery', c.id, got === c.expect, `code ${c.code} -> ${got}, expect ${c.expect}`);
   }
 
-  return { status: 'PASS', pass, failures };
+  return { status: failures.length === 0 ? 'PASS' : 'FAIL', pass, failures };
 }
 
 // ---------------------------------------------------------------------------
@@ -186,26 +191,80 @@ function runDartLane() {
 }
 
 // ---------------------------------------------------------------------------
-// Kotlin 线：W3 前如实登记（SmartHidProtocol.kt 落地后切换为 gradle 向量测试）
+// Kotlin 线：gradle 调 JUnit 向量执行器（SmartHidVectorParityTest），读结果文件
 // ---------------------------------------------------------------------------
+const KOTLIN_RESULT_FILE = 'apps/android/app/build/smart-hid-parity-kotlin.json';
+
+/** Gradle 8.2 运行时需 JDK 17–19（上限 19）；探测 env JAVA_HOME 与 ~/.jdks */
+function resolveGradleJavaHome() {
+  const candidates = [];
+  if (process.env.JAVA_HOME) candidates.push(process.env.JAVA_HOME);
+  const home = process.env.USERPROFILE || process.env.HOME;
+  if (home) {
+    const jdks = join(home, '.jdks');
+    if (existsSync(jdks)) {
+      for (const d of readdirSync(jdks)) candidates.push(join(jdks, d));
+    }
+  }
+  for (const dir of candidates) {
+    const exe = join(dir, 'bin', process.platform === 'win32' ? 'java.exe' : 'java');
+    if (!existsSync(exe)) continue;
+    const v = spawnSync(exe, ['-version'], { encoding: 'utf8' });
+    const m = `${v.stderr || ''}${v.stdout || ''}`.match(/version "(\d+)/);
+    if (!m) continue;
+    const major = m[1] === '1' ? 8 : parseInt(m[1], 10);
+    if (major >= 17 && major <= 19) return dir;
+  }
+  return null;
+}
+
 function runKotlinLane() {
   const protocolFile = join(ROOT, 'apps/android/app/src/main/java/com/smartble/core/profile/SmartHidProtocol.kt');
-  if (!existsSync(protocolFile)) {
+  const testFile = join(ROOT, 'apps/android/app/src/test/java/com/smartble/core/profile/SmartHidVectorParityTest.kt');
+  if (!existsSync(protocolFile) || !existsSync(testFile)) {
     return {
       status: 'NOT_IMPLEMENTED',
-      detail: 'K-AND Smart HID 协议层尚未实现（W3：core/profile/SmartHidProtocol.kt 落地后接入本向量）',
+      detail: 'K-AND Smart HID 协议层/向量执行器缺失（core/profile/SmartHidProtocol.kt + SmartHidVectorParityTest.kt）',
       pass: 0,
       failures: [],
     };
   }
-  // W3 落地后的执行入口（JUnit 向量测试读同一 JSON）：
-  //   cd apps/android && JAVA_HOME=<jdk21> ./gradlew testDebugUnitTest --tests "*SmartHidVectorParity*"
-  return {
-    status: 'BLOCKED',
-    detail: 'SmartHidProtocol.kt 已存在但向量 JUnit 执行器未接线（W3 补齐 SmartHidVectorParityTest）',
-    pass: 0,
-    failures: [],
-  };
+  const javaHome = resolveGradleJavaHome();
+  if (!javaHome) {
+    return {
+      status: 'BLOCKED',
+      detail: '无可用的 JDK 17–19（Gradle 8.2 运行时上限）：设 JAVA_HOME 或安装到 ~/.jdks',
+      pass: 0,
+      failures: [],
+    };
+  }
+  const resultFile = join(ROOT, KOTLIN_RESULT_FILE);
+  if (existsSync(resultFile)) rmSync(resultFile);
+  const gradlew = process.platform === 'win32' ? 'gradlew.bat' : './gradlew';
+  const r = spawnSync(`${gradlew} testDebugUnitTest --tests "*SmartHidVectorParity*" --rerun`, {
+    cwd: join(ROOT, 'apps/android'),
+    encoding: 'utf8',
+    maxBuffer: 64 * 1024 * 1024,
+    shell: true,
+    env: { ...process.env, JAVA_HOME: javaHome },
+    timeout: 300000,
+  });
+  if (!existsSync(resultFile)) {
+    const tail = `${r.stdout || ''}${r.stderr || ''}`.trim().slice(-240);
+    return {
+      status: 'BLOCKED',
+      detail: `kotlin 向量测试未产出结果（gradle status=${r.status}${r.error ? ` ${r.error.message}` : ''}）：${tail}`,
+      pass: 0,
+      failures: [],
+    };
+  }
+  try {
+    const parsed = JSON.parse(readFileSync(resultFile, 'utf8'));
+    const failures = (parsed.failures || []).map((f) => ({ suite: f.suite, case: f.case, detail: f.detail }));
+    return { status: parsed.fail === 0 ? 'PASS' : 'FAIL', pass: parsed.pass, failures };
+  } catch (e) {
+    return { status: 'BLOCKED', detail: `parity JSON 解析失败：${e.message}`, pass: 0, failures: [] };
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -271,11 +330,13 @@ for (const name of platformsWanted) {
   const result = lane.async ? await lane.run() : lane.run();
   totals[name] = result;
   const suiteNote = name === 'js'
-    ? `（constants 20, qr ${suiteCaseCount('qr')}, candidate ${suiteCaseCount('candidate')}, framingMtu ${suiteCaseCount('framingMtu')}, frames ${suiteCaseCount('frames')}, deviceInfo ${suiteCaseCount('deviceInfo')}, status ${suiteCaseCount('status')}, errorRecovery ${suiteCaseCount('errorRecovery')}）`
+    ? `（constants 21, qr ${suiteCaseCount('qr')}, candidate ${suiteCaseCount('candidate')}, framingMtu ${suiteCaseCount('framingMtu')}, frames ${suiteCaseCount('frames')}, deviceInfo ${suiteCaseCount('deviceInfo')}, status ${suiteCaseCount('status')}, errorRecovery ${suiteCaseCount('errorRecovery')}）`
     : name === 'dart'
       ? `（constants 17, qr ${suiteCaseCount('qr')}, candidate ${suiteCaseCount('candidate')}, framingMtu ${suiteCaseCount('framingMtu')}, frames ${suiteCaseCount('frames')}, deviceInfo ${suiteCaseCount('deviceInfo')}, status ${suiteCaseCount('status')}）`
       : name === 'swift'
         ? `（SmartHidCore XCTest consumes all suites declared for swift）`
+      : name === 'kotlin'
+        ? `（constants 21, qr ${suiteCaseCount('qr')}, candidate ${suiteCaseCount('candidate')}, framingMtu ${suiteCaseCount('framingMtu')}, frames ${suiteCaseCount('frames')}, deviceInfo ${suiteCaseCount('deviceInfo')}, status ${suiteCaseCount('status')}, errorRecovery ${suiteCaseCount('errorRecovery')}）`
         : '';
   if (result.status === 'PASS') {
     line(`  ${name.padEnd(8)} PASS  ${result.pass}/${result.pass}  ${suiteNote}`);

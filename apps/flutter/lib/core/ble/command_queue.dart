@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import '../../core/utils/data_converter.dart';
+import '../../core/utils/log_redaction.dart';
 
 /// 指令队列项
 class CommandItem {
@@ -73,12 +74,19 @@ typedef CommandQueueCallback = void Function(CommandItem command);
 /// - 批量发送（多条指令排队）
 /// - 循环发送（重复 N 次或无限循环）
 /// - 暂停/恢复/清空
+/// - 深度上限（默认 16）与单写超时（默认 5s）——F009 Base 契约
 class CommandQueue {
   /// 队列
   final List<CommandItem> _queue = [];
 
   /// 发送间隔（毫秒）
   int intervalMs;
+
+  /// 队列深度上限（含待发送；F009：深 16）
+  final int maxDepth;
+
+  /// 单写超时（F009：5s）
+  final Duration writeTimeout;
 
   /// 是否正在运行
   bool _isRunning = false;
@@ -108,6 +116,8 @@ class CommandQueue {
   CommandQueue({
     required CommandSender sender,
     this.intervalMs = 50,
+    this.maxDepth = 16,
+    this.writeTimeout = const Duration(seconds: 5),
     this.onCommandStart,
     this.onCommandComplete,
     this.onCommandError,
@@ -117,6 +127,9 @@ class CommandQueue {
 
   /// 队列中待发送的指令数
   int get pendingCount => _queue.length;
+
+  /// 队列是否已满（F009：深 16）
+  bool get isFull => _queue.length >= maxDepth;
 
   /// 是否正在运行
   bool get isRunning => _isRunning;
@@ -139,15 +152,21 @@ class CommandQueue {
   /// 待发送队列
   List<CommandItem> get queue => List.unmodifiable(_queue);
 
-  /// 添加单条指令
+  /// 添加单条指令；队列满时抛 [StateError]（调用方须捕获并提示）
   void enqueue(CommandItem command) {
+    if (_queue.length + 1 > maxDepth) {
+      throw StateError('写队列已满（$maxDepth）');
+    }
     _queue.add(command);
     onQueueStateChanged?.call();
     _startProcessing();
   }
 
-  /// 批量添加指令
+  /// 批量添加指令；总量超上限时整批拒绝（不留半批）
   void enqueueBatch(List<CommandItem> commands) {
+    if (_queue.length + commands.length > maxDepth) {
+      throw StateError('写队列已满（$maxDepth，含在途批量 ${commands.length} 条）');
+    }
     _queue.addAll(commands);
     onQueueStateChanged?.call();
     _startProcessing();
@@ -158,6 +177,9 @@ class CommandQueue {
   /// [commands] 每次循环要发送的指令列表
   /// [loopCount] 循环次数，0 表示无限循环
   void startLoop(List<CommandItem> commands, {int loopCount = 0}) {
+    if (commands.length > maxDepth) {
+      throw StateError('循环模板 ${commands.length} 条超过队列深度上限 $maxDepth');
+    }
     stopLoop();
     _isLooping = true;
     _loopCount = loopCount;
@@ -236,14 +258,20 @@ class CommandQueue {
     onQueueStateChanged?.call();
 
     try {
-      await _sender(command);
+      // 单写超时（F009：5s）——挂死的 write 不得阻塞整条队列
+      await _sender(command).timeout(writeTimeout);
       command.status = CommandStatus.success;
       onCommandComplete?.call(command);
+    } on TimeoutException {
+      command.status = CommandStatus.failed;
+      command.error = '写入超时（${writeTimeout.inSeconds}s）';
+      onCommandError?.call(command);
+      debugPrint('指令发送超时: ${sanitizeLogString(command.displayHex)}');
     } catch (e) {
       command.status = CommandStatus.failed;
       command.error = e.toString();
       onCommandError?.call(command);
-      debugPrint('指令发送失败: $e');
+      debugPrint('指令发送失败: ${sanitizeLogString(e.toString())}');
     }
 
     _history.add(command);

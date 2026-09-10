@@ -40,11 +40,11 @@
 | F023 | ~~设备历史~~（删除红线） | P0 | Smart HID | P004 应不存在 | 禁止 | 禁止 | 禁止 | E1/E2 | E5 | 不需要 | NOT_RUN | NOT_RUN | 三线 PASS（静态检查：U-AND 9 路由/F-AND 9 页面/A-AND 4 Tab 均无历史页/路由/持久化；known-devices.js 与 hid_session_store.dart 内存化+2026-09-02 移除决策注释在案） |
 | F024 | 实时诊断（五项） | P1 | Smart HID | P005 | REQ | REQ | REQ | E2 | E5 | 真实 Smart HID+Hub | NOT_RUN | NOT_RUN | F-AND PASS_WITH_LIMITATION（E14 T4 真机诊断面板重读 INFO/STATUS@3638f66 + HEAD 代码复核 `HidDiagnosticsPage(fromWizard)` 五行映射；独立页真机复跑需 mqtt_invalid=真凭据，本轮未达）；U-AND NOT_RUN（003b：诊断依赖读特征）；A-AND NOT_RUN（PARITY-001）；U-WX BLOCKED_TOOLCHAIN |
 | F025 | 固件升级 OTA | P1 | OTA | P006 子流程 | BLOCKED | BLOCKED | BLOCKED | E2 | 仅契约/UI | 不需要 | NOT_RUN | NOT_RUN | BLOCKED(P-03) |
-| F026 | 日志脱敏 | P0 | 横切 | 横切 | REQ | REQ | REQ | E1/E2 | E5 | 不需要 | NOT_RUN | NOT_RUN | NOT_RUN |
-| F027 | 版本元数据展示 | P2 | 系统 | P009/P010 | REQ | REQ | REQ | E2 | E5 | 不需要 | NOT_RUN | NOT_RUN | NOT_RUN |
+| F026 | 日志脱敏 | P0 | 横切 | 横切 | REQ | REQ | REQ | E1/E2 | E5 | 不需要 | 三线 E1 PASS（2026-09-10：F-AND/A-AND 新增 Logger 漏斗脱敏 + 同向量单测 13/12 例；U-AND 沿用 logging-target 集成测试） | E1 PASS（边界向量：hex 转储不误伤/非法 JSON 原样/保护键白名单） | E1 三线 PASS（F-AND log_redaction_test.dart 13 例、A-AND LogRedactionTest 12 例、U-AND logging-target.test.mjs 既有）；E5 真机 logcat 抽查留硬件窗口 |
+| F027 | 版本元数据展示 | P2 | 系统 | P009/P010 | REQ | REQ | REQ | E2 | E5 | 不需要 | 三线 E1 PASS（2026-09-10：生成管线 1→6 产物含 F-AND Dart/A-AND Kotlin 锁定镜像；P009 三态+P010 整页投影接线，手写版本事实清零） | E1 PASS（空元数据→dev.unknown 不编造/release 注入→VERIFIED 历史/注入不污染全局） | E1 三线 PASS（F-AND version_metadata_test.dart 14 例、A-AND VersionMetadataTest 14 例 XML 实证、U-AND version-*-target.test.mjs 既有）；A-AND 假「Release tag 已登记」行与两线错误预览空态已修；E2/E5 真机 P009/P010 抽查留硬件窗口 |
 | F028 | 小程序推广跳转 | P2 | 系统 | P009 | REQ | REQ | REQ | E2 | E5 | 不需要 | NOT_RUN | NOT_RUN | NOT_RUN |
 | F029 | 分享 | P2 | 系统 | 页面级/P009 | REQ | REQ | REQ | E2 | E5 | 不需要 | NOT_RUN | NOT_RUN | NOT_RUN |
-| F030 | 国际化（禁止新增） | P2 | 系统 | 无页面 | 禁止新增 | 禁止新增 | 禁止新增 | E1 | 不适用 | 不需要 | NOT_RUN | NOT_RUN | NOT_RUN |
+| F030 | 国际化（禁止新增） | P2 | 系统 | 无页面 | 禁止新增 | 禁止新增 | 禁止新增 | E1 | 不适用 | 不需要 | E1 PASS（2026-09-10：E-WIN/T-WIN i18n 机器+uniapp 孤儿字典移除清零；check-f030-no-i18n.mjs 静态守卫入 verify-uniapp 第 14 门禁，注入 4 类违规自检全检出） | NOT_RUN | E1 PASS（全实现线静态守卫：i18n 机器/语言切换入口/Android localeConfig/locale 资产 300 文件全净；F-AND l10n=PRD「就绪未接线」白名单、Global delegates=FLUTTER-G1-004 框架基建在册；F030 未被误实现） |
 
 ## 2. 每项明细（用户入口 / 规范来源 / 证据 / 缺陷 / Git SHA）
 

@@ -27,6 +27,7 @@ import com.smartble.core.model.ConnectionState
 import com.smartble.core.model.Property
 import com.smartble.core.model.ScanRecord
 import com.smartble.core.model.ScanResult
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -54,6 +55,10 @@ class BleManager private constructor(private val context: Context) {
         // Auto reconnect policy
         private const val AUTO_RECONNECT_DELAY_MS = 2000L
         private const val MAX_AUTO_RECONNECT_ATTEMPTS = 3
+
+        // 常规连接也统一协商的 MTU（WIN-AAND-006：不协商则通知载荷被截到 20 字节；
+        // 与 OTA 流程、F-AND（FBP 自动协商 247）对齐）
+        const val REQUESTED_MTU = 247
 
         @Volatile
         private var instance: BleManager? = null
@@ -96,8 +101,18 @@ class BleManager private constructor(private val context: Context) {
     private val _servicesByDevice = MutableStateFlow<Map<String, List<BleService>>>(emptyMap())
     val servicesByDevice: Flow<Map<String, List<BleService>>> = _servicesByDevice.asStateFlow()
 
-    private val _characteristicChanges = MutableSharedFlow<CharacteristicChangeEvent>()
+    // WIN-AAND-008：无缓冲 SharedFlow 的 tryEmit 在采集方未就绪/忙碌时静默丢事件
+    // （栈层 89 次 onCharacteristicChanged 而 collect 0 次实证）——加缓冲 + 丢最旧。
+    private val _characteristicChanges = MutableSharedFlow<CharacteristicChangeEvent>(
+        replay = 0,
+        extraBufferCapacity = 64,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
     val characteristicChanges: Flow<CharacteristicChangeEvent> = _characteristicChanges.asSharedFlow()
+
+    // 协商后的 ATT MTU（WIN-AAND-006 记录；配网分帧按它切 chunk——缺失时保守 23）
+    private val _negotiatedMtus = MutableStateFlow<Map<String, Int>>(emptyMap())
+    val negotiatedMtus: Flow<Map<String, Int>> = _negotiatedMtus.asStateFlow()
 
     // Scan result storage
     private val scanResultsMap = mutableMapOf<String, ScanResult>()
@@ -300,6 +315,16 @@ class BleManager private constructor(private val context: Context) {
     }
 
     /**
+     * 幂等服务发现：已有服务表时跳过（避免 onMtuChanged 与 UI 层重复触发
+     * 造成整表重放，WIN-AAND-007 的翻倍/重置链路之一）
+     */
+    @SuppressLint("MissingPermission")
+    private fun discoverServicesOnce(deviceId: String): Boolean {
+        if (!_servicesByDevice.value[deviceId].isNullOrEmpty()) return true
+        return discoverServices(deviceId)
+    }
+
+    /**
      * 读取特征值
      */
     @SuppressLint("MissingPermission")
@@ -398,6 +423,9 @@ class BleManager private constructor(private val context: Context) {
             .map { it[deviceId] ?: emptyList() }
             .distinctUntilChanged()
     }
+
+    /** 设备当前协商 MTU；未协商/未知返回保守默认 23（ATT 规范下限，配网分帧按此切 chunk） */
+    fun currentMtu(deviceId: String): Int = _negotiatedMtus.value[deviceId] ?: 23
 
     fun currentConnectionState(deviceId: String): ConnectionState {
         return _connectionStates.value[deviceId] ?: ConnectionState.Disconnected
@@ -513,8 +541,13 @@ class BleManager private constructor(private val context: Context) {
                     userInitiatedDisconnects.remove(device.address)
                     gattConnections[device.address] = gatt
                     updateConnectionState(device.address, ConnectionState.Connected)
-                    // 自动发现服务
-                    discoverServices(device.address)
+                    // WIN-AAND-006：连接即协商 MTU 247，协商完成（onMtuChanged）
+                    // 后再发现服务——并发 GATT 操作会互斥失败，顺序固定为
+                    // requestMtu → onMtuChanged → discoverServices。
+                    val requested = gatt.requestMtu(REQUESTED_MTU)
+                    if (!requested) {
+                        discoverServicesOnce(device.address)
+                    }
                 }
                 BluetoothGatt.STATE_DISCONNECTED -> {
                     val deviceId = device.address
@@ -568,6 +601,19 @@ class BleManager private constructor(private val context: Context) {
         }
 
         @SuppressLint("MissingPermission")
+        override fun onMtuChanged(gatt: BluetoothGatt, mtu: Int, status: Int) {
+            Log.d(TAG, "onMtuChanged: mtu=$mtu, status=$status")
+            if (status == BluetoothGatt.GATT_SUCCESS && mtu > 0) {
+                _negotiatedMtus.value = _negotiatedMtus.value + (gatt.device.address to mtu)
+            }
+            // WIN-AAND-006：MTU 协商完成后进入服务发现（连接路径唯一入口，
+            // requestMtu 失败的兜底分支与 OTA 的二次 requestMtu 都汇到这里）
+            if (currentConnectionState(gatt.device.address) == ConnectionState.Connected) {
+                discoverServicesOnce(gatt.device.address)
+            }
+        }
+
+        @SuppressLint("MissingPermission")
         override fun onCharacteristicRead(
             gatt: BluetoothGatt,
             characteristic: BluetoothGattCharacteristic,
@@ -583,6 +629,17 @@ class BleManager private constructor(private val context: Context) {
                     characteristic.uuid.toString(),
                     value
                 )
+                // WIN-AAND-004：读取结果必须进可观察流（此前只写内存模型，
+                // UI/日志层结构性看不到读值）
+                _characteristicChanges.tryEmit(
+                    CharacteristicChangeEvent(
+                        deviceId = gatt.device.address,
+                        serviceUuid = characteristic.service.uuid.toString(),
+                        characteristicUuid = characteristic.uuid.toString(),
+                        value = value,
+                        kind = CharacteristicChangeKind.Read
+                    )
+                )
             }
         }
 
@@ -593,6 +650,20 @@ class BleManager private constructor(private val context: Context) {
             status: Int
         ) {
             Log.d(TAG, "onCharacteristicWrite: ${characteristic.uuid}, status=$status")
+            // 写完成进可观察流（配网分帧写需要逐帧确认；GATT_SUCCESS 携带所写字节）
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                @Suppress("DEPRECATION")
+                val written = characteristic.value ?: ByteArray(0)
+                _characteristicChanges.tryEmit(
+                    CharacteristicChangeEvent(
+                        deviceId = gatt.device.address,
+                        serviceUuid = characteristic.service.uuid.toString(),
+                        characteristicUuid = characteristic.uuid.toString(),
+                        value = written,
+                        kind = CharacteristicChangeKind.Write
+                    )
+                )
+            }
         }
 
         @SuppressLint("MissingPermission")
@@ -747,13 +818,24 @@ enum class BluetoothState {
 }
 
 /**
+ * 特征值事件来源：通知推送 vs 主动读取 vs 带响应写完成（WIN-AAND-004：读值
+ * 必须进可观察流；W3：写完成为配网分帧逐帧确认进同一流，UI 按 kind 区分呈现）
+ */
+enum class CharacteristicChangeKind {
+    Notify,
+    Read,
+    Write,
+}
+
+/**
  * 特征值变化事件
  */
 data class CharacteristicChangeEvent(
     val deviceId: String,
     val serviceUuid: String,
     val characteristicUuid: String,
-    val value: ByteArray
+    val value: ByteArray,
+    val kind: CharacteristicChangeKind = CharacteristicChangeKind.Notify
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -764,6 +846,7 @@ data class CharacteristicChangeEvent(
         if (deviceId != other.deviceId) return false
         if (serviceUuid != other.serviceUuid) return false
         if (characteristicUuid != other.characteristicUuid) return false
+        if (kind != other.kind) return false
         if (!value.contentEquals(other.value)) return false
 
         return true
@@ -773,6 +856,7 @@ data class CharacteristicChangeEvent(
         var result = deviceId.hashCode()
         result = 31 * result + serviceUuid.hashCode()
         result = 31 * result + characteristicUuid.hashCode()
+        result = 31 * result + kind.hashCode()
         result = 31 * result + value.contentHashCode()
         return result
     }

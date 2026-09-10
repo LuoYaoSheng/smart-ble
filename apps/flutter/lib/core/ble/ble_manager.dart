@@ -84,6 +84,10 @@ class BleManager {
   /// 重连后服务重发现进行中的设备：门控 FBP 原生流的 connected 广播，
   /// 服务就绪后才对外报「已连接」（WIN-FAND-005）
   final Set<String> _rediscovering = {};
+  /// 重连 3×（1s/3s/5s）backoff，Base 契约（FEATURE_IMPLEMENTATION_MATRIX F012）
+  static const List<int> reconnectDelaysMs = [1000, 3000, 5000];
+  /// 连接超时 10s，Base 契约（FEATURE_IMPLEMENTATION_MATRIX F006）
+  static const Duration defaultConnectTimeout = Duration(seconds: 10);
   static const int _maxReconnectAttempts = 3;
   final Map<String, int> _reconnectAttempts = {};
   final Map<String, Timer> _reconnectTimers = {};
@@ -289,8 +293,9 @@ class BleManager {
   ///
   /// 支持多设备并发连接。连接成功后会自动监听连接状态，
   /// 异常断开时触发自动重连（最多 [_maxReconnectAttempts] 次）。
+  /// 超时 10s 为 Base 契约（FEATURE_IMPLEMENTATION_MATRIX F006）。
   Future<void> connect(String deviceId,
-      {Duration timeout = const Duration(seconds: 30)}) async {
+      {Duration timeout = defaultConnectTimeout}) async {
     _userInitiatedDisconnects.remove(deviceId);
     _reconnectAttempts[deviceId] = 0;
     _cancelReconnect(deviceId);
@@ -334,7 +339,9 @@ class BleManager {
 
     final nextAttempt = attempts + 1;
     _reconnectAttempts[deviceId] = nextAttempt;
-    final delay = Duration(seconds: nextAttempt * 2); // 指数退避: 2s, 4s, 6s
+    final delay = Duration(
+        milliseconds: reconnectDelaysMs[
+            (nextAttempt - 1).clamp(0, reconnectDelaysMs.length - 1)]);
     debugPrint('设备 $deviceId 将在 ${delay.inSeconds}s 后尝试第 $nextAttempt 次重连...');
 
     _cancelReconnect(deviceId);

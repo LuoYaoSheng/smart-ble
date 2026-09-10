@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import '../models/log_entry.dart';
+import 'log_redaction.dart';
 
 /// 全局事件/日志总线 (统一单例)
 class Logger {
@@ -22,8 +23,10 @@ class Logger {
 
   /// 核心发送方法
   void _emit(String message, LogType type) {
+    // F026：任意日志输出路径先脱敏（BUSINESS_FLOW §7 / R28）
+    final sanitized = sanitizeLogString(message) ?? message;
     final entry = LogEntry(
-      message: message,
+      message: sanitized,
       type: type,
       timestamp: DateTime.now(),
     );
@@ -37,7 +40,7 @@ class Logger {
 
     if (kDebugMode) {
       final prefix = '[${type.name.toUpperCase()}]';
-      debugPrint('$prefix $message');
+      debugPrint('$prefix $sanitized');
     }
   }
 

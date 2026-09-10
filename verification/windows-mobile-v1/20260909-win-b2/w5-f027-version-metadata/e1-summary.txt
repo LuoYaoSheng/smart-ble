@@ -1,0 +1,86 @@
+F027 版本元数据——E1 三线证据摘要（2026-09-10）
+====================================================
+
+正典：PRD §5 F027 / R26 · FEATURE_IMPLEMENTATION_MATRIX「F027 版本元数据展示」·
+     DATA_MODEL「版本投影」；版本唯一事实源 = 根 VERSION，
+     确定性管线 scripts/generate-release-metadata.mjs（无时间/无 git 探测/无网络）。
+实现：uniapp 正典既有（services/version-metadata.js + 3 份既有测试，本轮未改动
+     任何 uniapp 代码——复跑生成器后 4 个既有产物字节不变）；
+     F-AND core/utils/version_metadata.dart + P009/P010 接线（本轮新增）；
+     A-AND core/utils/VersionMetadata.kt + About/Versions 接线（本轮新增）。
+
+管线扩展：一源六产物
+-------------------------------------------
+scripts/generate-release-metadata.mjs 新增两条产物（--check 自动纳入漂移守卫）：
+  - apps/flutter/lib/core/config/release_metadata_generated.dart
+    （Dart const 镜像；单引号 + $ 转义适配 flutter_lints；dart format 稳定）
+  - apps/android/app/src/main/java/com/smartble/core/config/ReleaseMetadataGenerated.kt
+    （Kotlin mapOf 镜像；与 uniapp 产物同源同序）
+
+$ node scripts/generate-release-metadata.mjs
+generate-release-metadata wrote 6 files (app_version=1.0.5)
+$ node scripts/generate-release-metadata.mjs --check
+generate-release-metadata --check PASS
+$ git status apps/uniapp/config/ release/ docs/public/
+（空——4 个既有产物复跑字节不变，U 线零漂移）
+
+[F-AND] flutter analyze（2026-09-10 复跑）
+-------------------------------------------
+$ flutter analyze
+No issues found! (ran in 8.0s)
+
+[F-AND] flutter test 全量（2026-09-10 复跑，含新增 version_metadata_test.dart 14 向量）
+-------------------------------------------
+$ flutter test
+00:09 +113: All tests passed!
+
+[F-AND] dart format 稳定性（生成物不受格式化影响）
+-------------------------------------------
+$ dart format --output=none --set-exit-if-changed lib/core/config/release_metadata_generated.dart
+Formatted 1 file (0 changed)
+
+[A-AND] gradle testDebugUnitTest（2026-09-10，JDK=corretto-18.0.2）
+-------------------------------------------
+$ JAVA_HOME=corretto-18.0.2 ./gradlew testDebugUnitTest
+BUILD SUCCESSFUL
+
+TEST-com.smartble.core.utils.VersionMetadataTest.xml:
+tests="14" skipped="0" failures="0" errors="0"
+
+[U-AND] 正典既有测试（本轮未改动 uniapp 代码，引用既有套件）
+-------------------------------------------
+$ node --test tests/target/unit/version-release-metadata-target.test.mjs \
+             tests/target/unit/version-page-model-target.test.mjs
+# pass 2 / # fail 0
+（另有 tests/target/harness/page-version-projection.test.mjs 随 verify-target 七层套件）
+
+向量组（F-AND 14 / A-AND 14 同源镜像；M2/M3 与 U 正典注入向量对齐）
+-------------------------------------------
+V1  版本缺失（null/空/空白）→ dev.unknown，不编造 0.0.0
+V2  release 渠道：1.0.5+abcdef0；无 sha → 裸 1.0.5
+V3  preview 渠道（默认）：1.0.5-dev.abcdef0；无 sha → 1.0.5-dev.unknown
+V4  shortSha：trim + 前 7 位（abc123456789 → abc1234；空白 commit → dev.unknown）
+V5  渠道大小写不敏感（RELEASE == release）
+G1  生成物与正典事实同源：schema 1.0 / 1.0.5 / build 101 / preview / PREVIEW
+G2  能力如实：ota BLOCKED 带 reason、smart_hid PREVIEW
+G3  平台七键顺序 android/wechat/h5/ios/flutter_tauri_native/peripheral/observer + REFERENCE 角色
+G4  P009 verFallback 基准：commit null → 1.0.5-dev.unknown
+M1  默认元数据：版本页当前卡（渠道 Preview/限制≥8 条/平台四键/h5 UNSUPPORTED）
+M2  注入 preview 元数据（正典向量）：releases 空 + previews 1 条「1.0.5 Preview」+ 限制含 APK
+M3  注入 release 元数据（正典向量）：releases 1 条 VERIFIED + tag v1.0.5 + display 1.0.5+abcdef0
+M4  空元数据兜底：version 空 + display dev.unknown + 三列表全空
+M5  注入不污染全局生成物
+
+三态接线（P009 关于 / P010 版本记录）
+-------------------------------------------
+- F-AND about_page：_version 初始化= metadataVersionLabel()（Release Metadata 基准），
+  PackageInfo 运行时渠道成功才覆盖（版本非空），失败保留基准（原行为=直接 dev.unknown，已修正）
+- F-AND versions_page：整页改消费 getVersionPageModel——渠道/平台状态四行/限制 8 条/
+  releases/previews 全部来自投影；复制=display_version||version||dev.unknown；
+  原「暂无预览记录」手写空态修正为投影实况（当前 1 条 1.0.5 Preview）；移除 PackageInfo 依赖
+- A-AND AboutScreen：BuildConfig.VERSION_NAME 非空才覆盖 v{ver}+{code}，否则 metadataVersionLabel()
+- A-AND VersionsScreen：整页改消费 versionPageModel——渠道 chip/channelLabel/Release tag 条件行
+  （原「已登记（preview）」与 release_tag=null 相悖的假事实已清除）/平台四行/限制列表/
+  releases/previews 投影；复制三态与正典一致；移除 BuildConfig 依赖
+
+E5（真机 P009/P010 抽查）留硬件窗口，矩阵行已注明。

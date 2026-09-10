@@ -6,6 +6,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../config/product.dart';
+import '../../core/utils/version_metadata.dart';
 import '../../themes/app_theme.dart';
 import '../design/app_navbar.dart';
 import '../design/app_chip.dart';
@@ -22,7 +23,9 @@ class AboutPage extends StatefulWidget {
 }
 
 class _AboutPageState extends State<AboutPage> {
-  String _version = '';
+  // F027 版本三态：基准 = Release Metadata 投影（verFallback），
+  // 运行时渠道（PackageInfo）成功才覆盖，失败保留基准。
+  String _version = metadataVersionLabel();
   String _deviceModel = '';
   bool _loadingInfo = true;
 
@@ -51,7 +54,9 @@ class _AboutPageState extends State<AboutPage> {
       }
       if (mounted) {
         setState(() {
-          _version = 'v${info.version}+${info.buildNumber}';
+          if (info.version.trim().isNotEmpty) {
+            _version = 'v${info.version}+${info.buildNumber}';
+          }
           _deviceModel = model;
           _loadingInfo = false;
         });
