@@ -137,9 +137,12 @@ struct DeviceCard: View {
                 .background(primary ? NativeDS.primary : NativeDS.fill)
                 .overlay(RoundedRectangle(cornerRadius: 8).stroke(primary ? Color.clear : NativeDS.line))
                 .clipShape(RoundedRectangle(cornerRadius: 8))
+                // 44pt 命中区放在 label 内部（与 NativeTabBar/AboutView 菜单行同构：
+                // contentShape 在 Button label 内才能被合成触摸稳定命中）
+                .frame(minHeight: 44)
+                .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .nativeHitTarget()
     }
 
     private var displayName: String {

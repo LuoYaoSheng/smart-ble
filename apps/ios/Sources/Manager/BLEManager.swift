@@ -653,7 +653,11 @@ extension BLEManager: @preconcurrency CBCentralManagerDelegate {
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         #if DEBUG
         if let previewBluetoothStateLock {
-            bluetoothState = previewBluetoothStateLock
+            // 幂等写：@Published 赋值即使同值也会发 objectWillChange，
+            // 启动期这次多余重渲染会取消进行中的合成触摸（UI 测试偶发吞 tap）
+            if bluetoothState != previewBluetoothStateLock {
+                bluetoothState = previewBluetoothStateLock
+            }
             return
         }
         #endif

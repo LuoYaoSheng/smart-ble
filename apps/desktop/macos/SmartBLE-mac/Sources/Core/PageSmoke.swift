@@ -486,7 +486,7 @@ enum PageSmoke {
 
         let hasDevices = !controller.ble.discoveredDevices.isEmpty
 
-        // UIS-05 广播数据弹窗（F004：设备报告 + 缺失字段标注 + 复制/关闭）
+        // UIS-05 广播数据弹窗（F004：设备报告 + 缺失字段标注 + 复制→剪贴板+toast + 关闭）
         if hasDevices {
             if let p001 = controller.page(.p001) as? P001ScanPage {
                 let device = controller.ble.discoveredDevices[0]
@@ -497,11 +497,16 @@ enum PageSmoke {
                 let fields = anyLabel(contains: "设备 ID", in: v) && anyLabel(contains: "RSSI", in: v)
                 let missMarked = anyLabel(contains: "本轮平台 API 未提供此字段", in: v)
                 let copyBtn = button(titled: "复制数据", in: v)
-                button(titled: "关闭", in: v)?.performClick(nil)
+                // R04：点「复制数据」写入剪贴板并 toast「已复制」（复制动作自身会关层）
+                NSPasteboard.general.clearContents()
+                copyBtn?.performClick(nil)
                 await settle(300)
+                let pasted = NSPasteboard.general.string(forType: .string) ?? ""
+                let copied = pasted.contains("广播数据 ·") && pasted.contains("设备 ID:")
+                let toastShown = anyLabel(contains: "已复制", in: views())
                 let closed = !anyLabel(contains: "复制数据", in: views())
-                check("UIS-05", sheetVisible && fields && missMarked && copyBtn != nil && closed,
-                      "sheet=\(sheetVisible) fields=\(fields) missMarked=\(missMarked) closed=\(closed)")
+                check("UIS-05", sheetVisible && fields && missMarked && copyBtn != nil && copied && toastShown && closed,
+                      "sheet=\(sheetVisible) fields=\(fields) missMarked=\(missMarked) copied=\(copied) toast=\(toastShown) closed=\(closed)")
             } else {
                 check("UIS-05", false, "p001 page missing")
             }

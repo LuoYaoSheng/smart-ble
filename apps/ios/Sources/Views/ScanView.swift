@@ -36,7 +36,6 @@ private struct ScanSystemNotice: Identifiable, Equatable {
 struct ScanView: View {
     @EnvironmentObject var bleManager: BLEManager
     @State private var selectedDevice: ScanResult?
-    @State private var showingDeviceDetails = false
     @State private var showFilterPanel: Bool
     @State private var hasScanned: Bool
     @State private var scanFailure: ScanFailure?
@@ -89,11 +88,11 @@ struct ScanView: View {
             }
         }
         .background(NativeDS.page)
-        .sheet(isPresented: $showingDeviceDetails) {
-            if let device = selectedDevice {
-                DeviceDetailSheet(device: device)
-                    .environmentObject(bleManager)
-            }
+        // item 单一事实来源：isPresented + 外部 selectedDevice 双状态在启动窗口
+        // 存在内容闭包捕获过期状态的竞争（偶发空呈现/丢呈现）
+        .sheet(item: $selectedDevice) { device in
+            DeviceDetailSheet(device: device)
+                .environmentObject(bleManager)
         }
         .nativePageCover(item: $provisioningDevice) { device in
             ProvisioningView(
@@ -268,7 +267,6 @@ struct ScanView: View {
                     device: device,
                     onGattAction: {
                         selectedDevice = device
-                        showingDeviceDetails = true
                     },
                     onSmartHidAction: {
                         provisioningDevice = device
@@ -351,6 +349,10 @@ struct DeviceDetailSheet: View {
     @EnvironmentObject var bleManager: BLEManager
     @Environment(\.dismiss) var dismiss
     let device: ScanResult
+    @State private var toast: String?
+    #if DEBUG
+    @State private var pasteEcho: String?
+    #endif
 
     var body: some View {
         VStack(spacing: 0) {
@@ -391,12 +393,58 @@ struct DeviceDetailSheet: View {
                     // Advertisement Data
                     advertisementSection
 
+                    #if DEBUG
+                    // UI 测试回显探针：--ui-test-echo-pasteboard 开启。
+                    // App 读自己刚写入的剪贴板不触发系统粘贴板隐私授权（runner 进程直读会挂），
+                    // 测试通过该按钮 + 标签验证复制内容真正落板。
+                    if ProcessInfo.processInfo.arguments.contains("--ui-test-echo-pasteboard") {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Button("回显剪贴板") {
+                                pasteEcho = UIPasteboard.general.string
+                            }
+                            .buttonStyle(.borderless)
+
+                            if let pasteEcho {
+                                Text("PASTE-ECHO \(pasteEcho)")
+                                    .font(.system(.caption2, design: .monospaced))
+                                    .foregroundColor(.secondary)
+                                    .lineLimit(4)
+                                    .accessibilityIdentifier("paste-echo")
+                            }
+                        }
+                    }
+                    #endif
+
                     Spacer()
                 }
                 .padding()
             }
         }
         .frame(minWidth: 450, minHeight: 350)
+        .overlay(alignment: .bottom) {
+            if let toast {
+                Text(toast)
+                    .scaledFont(12, .semibold)
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 8)
+                    .background(Color.black.opacity(0.75))
+                    .clipShape(Capsule())
+                    .padding(.bottom, 18)
+                    .transition(.opacity)
+                    .accessibilityIdentifier("copy-toast")
+            }
+        }
+    }
+
+    /// R04：复制反馈 toast（与 macOS 端 2.2s 时长一致）
+    private func showToast(_ text: String) {
+        withAnimation(.easeInOut(duration: 0.15)) { toast = text }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.2) {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                if toast == text { toast = nil }
+            }
+        }
     }
 
     private var deviceInfoSection: some View {
@@ -453,6 +501,27 @@ struct DeviceDetailSheet: View {
                             .cornerRadius(8)
                     }
                 }
+            } else {
+                missingFieldRow("服务 UUIDs")
+            }
+
+            if !device.serviceData.isEmpty {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Service Data")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+
+                    ForEach(device.serviceData.keys.sorted(), id: \.self) { uuid in
+                        Text("\(uuid): \(hexText(device.serviceData[uuid] ?? Data()))")
+                            .scaledFont(12)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(Color.purple.opacity(0.1))
+                            .cornerRadius(8)
+                    }
+                }
+            } else {
+                missingFieldRow("Service Data")
             }
 
             if let manufacturerData = device.manufacturerData {
@@ -461,18 +530,44 @@ struct DeviceDetailSheet: View {
                         .font(.subheadline)
                         .foregroundColor(.secondary)
 
-                    Text(manufacturerData.map { String(format: "%02x", $0) }.joined(separator: " ").uppercased())
+                    Text(hexText(manufacturerData))
                         .font(.system(.caption, design: .monospaced))
                         .padding(.horizontal, 12)
                         .padding(.vertical, 6)
                         .background(Color.orange.opacity(0.1))
                         .cornerRadius(8)
                 }
+            } else {
+                missingFieldRow("厂商数据")
             }
+
+            // CoreBluetooth 仅提供结构化字段，无整包 hex（R04 缺失字段标注口径）
+            missingFieldRow("原始广播整包 hex")
         }
         .padding()
         .background(Color.gray.opacity(0.15))
         .cornerRadius(12)
+    }
+
+    /// R04：平台本轮未提供的字段标注行
+    private func missingFieldRow(_ field: String) -> some View {
+        HStack(alignment: .firstTextBaseline) {
+            Text(field)
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+            Spacer()
+            Text("本轮平台 API 未提供此字段")
+                .scaledFont(11)
+                .foregroundColor(NativeDS.muted)
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 6)
+        .background(Color.gray.opacity(0.08))
+        .cornerRadius(8)
+    }
+
+    private func hexText(_ data: Data) -> String {
+        data.map { String(format: "%02x", $0) }.joined(separator: " ").uppercased()
     }
 
     private func copyDeviceInfo() {
@@ -483,25 +578,39 @@ struct DeviceDetailSheet: View {
         可连接: \(device.connectable ? "是" : "否")
         """
         copyToClipboard(info)
+        showToast("已复制")
     }
 
     private func copyAdvData() {
+        let miss = "本轮平台 API 未提供此字段"
         var content = "设备 ID: \(device.id)\n"
         content += "名称: \(device.name)\n"
         content += "信号强度: \(device.rssi) dBm\n\n"
         content += "服务 UUIDs:\n"
         if device.serviceUUIDs.isEmpty {
-            content += "  无\n"
+            content += "  \(miss)\n"
         } else {
             for uuid in device.serviceUUIDs {
                 content += "  \(uuid)\n"
             }
         }
-        if let manufacturerData = device.manufacturerData {
-            content += "\n厂商数据:\n  "
-            content += manufacturerData.map { String(format: "%02x", $0) }.joined(separator: " ").uppercased()
+        content += "\nService Data:\n"
+        if device.serviceData.isEmpty {
+            content += "  \(miss)\n"
+        } else {
+            for uuid in device.serviceData.keys.sorted() {
+                content += "  \(uuid): \(hexText(device.serviceData[uuid] ?? Data()))\n"
+            }
         }
+        content += "\n厂商数据:\n  "
+        if let manufacturerData = device.manufacturerData {
+            content += hexText(manufacturerData)
+        } else {
+            content += miss
+        }
+        content += "\n\n原始广播整包 hex: \(miss)"
         copyToClipboard(content)
+        showToast("已复制")
     }
 
     private func copyToClipboard(_ string: String) {

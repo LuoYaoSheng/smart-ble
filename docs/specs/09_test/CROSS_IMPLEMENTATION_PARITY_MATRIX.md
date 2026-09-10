@@ -64,38 +64,38 @@
 
 > F 编号/名称逐字对齐 FEATURE_MAP §1；验收 R 编号对齐 PRD §8。F017/F029 在 PRD §8 无专属 R 条目，如实标注。页面映射依据 FEATURE_MAP §3。
 
-| 功能 | 名称（FEATURE_MAP 口径） | 验收（PRD §8） | 页面 | U-WX | U-AND | F-AND | 实际差异 | 合理 | 证据 |
-|---|---|---|---|---|---|---|---|---|---|
-| F001 | BLE 扫描（5s 会话/节流合并/自动停） | R01 | P001 | — | — | —  PASS·真无线电（Phase2）| PASS（测试+真机后台链路 4c19a58） | — | — | — |
-| F002 | 扫描权限前置（微信授权引导） | R02 | P001 | — | — | —  N/A（系统权限·10_platform）| N/A（同左） | — | — | — |
-| F003 | 扫描筛选（RSSI/前缀/隐藏无名） | R03 | P001 | — | — | —  PASS（UIS-04）| PASS（UI 测试筛选态） | — | — | — |
-| F004 | 广播数据查看（原始数据弹窗/复制） | R04 | P001 | — | — | —  NOT_RUN（未专项冒烟）| NOT_RUN | — | — | — |
-| F005 | 显示名智能解析（多级 fallback） | R05 | P001 | — | — | —  PASS（UIS-03 found=6 含未命名 fallback）| PASS（测试） | — | — | — |
-| F006 | GATT 连接（8 态/发现/MTU） | R06 | P006 | — | — | —  PASS·真无线电（Phase2）| PASS（测试；真机收发 4c19a58） | — | — | — |
-| F007 | 服务树浏览（折叠/UUID 中文名） | R07 | P006 | — | — | —  PASS（UIS-06 服务树）| PASS（P006 测试） | — | — | — |
-| F008 | 特征读取（HEX+TEXT，3s 超时） | R08 | P006 | — | — | —  BLOCKED（待 ESP32 烧录；midea 无 read）| NOT_RUN（真机读未验） | — | — | — |
-| F009 | 特征写入（TEXT/HEX，写队列串行） | R09 | P006 | — | — | —  BLOCKED（写字节级·Phase2）| NOT_RUN | — | — | — |
-| F010 | Notify 监听（防抖去重） | R10 | P006 | — | — | —  BLOCKED（Notify 字节级·Phase2）| NOT_RUN | — | — | — |
-| F011 | 通信日志（六色/清空/导出） | R11 | P006 | — | — | —  PASS（UIS-06 日志）| PASS（测试） | — | — | — |
-| F012 | 断线自动重连（3 次 backoff） | R12 | P006/P007 | — | — | —  PASS·真无线电重连全环（Phase2/UIS-18）| PASS（测试） | — | — | — |
-| F013 | 多设备会话管理（批量断开） | R13 | P007 | — | — | —  PASS（M1 多设备·UIS-18 n=2）| PASS（P007 测试） | — | — | — |
-| F014 | 微信外围广播 | R22 + R24 | P008 | — | — | —  N/A（微信线）| N/A（微信线） | — | — | — |
-| F015 | App 外围广播（LysBlePeripheral） | R23 + R24 | P008 | — | — | —  PASS（广播启动·Phase2/UIS-09）| PASS（实现；真机广播 NOT_RUN） | — | — | — |
-| F016 | 31 字节负载预算（不静默截断） | R21 | P008 | — | — | —  PASS（UIS-08 31B blocked=true）| PASS（实现） | — | — | — |
-| F017 | 观察侧证据匹配（服务层就绪） | 无专属 R（PRD §8 未覆盖，服务层验收） | 无页面消费 | — | — | —  NOT_RUN | NOT_RUN | — | — | — |
-| F018 | Profile 设备识别（UUID STRONG/前缀 WEAK） | R14 | P001 | — | — | —  PASS（UIS-15/16 双入口）| PASS（STRONG/WEAK 测试） | — | — | — |
-| F019 | Smart HID 配网向导（三阶段/断线续填/离开确认） | R15 | P002 | — | — | —  PASS 协议层（UIS-07/12）；E2E BLOCKED（无夹具）| PASS 协议层（测试）；E2E BLOCKED | — | — | — |
-| F020 | ControlHub 配对码扫码（shid://pair） | R16 | P002 | — | — | —  PASS（粘贴兜底）；实景扫码 NOT_RUN | PASS（粘贴）；实景 NOT_RUN | — | — | — |
-| F021 | 分帧明文写入 + 状态机跟踪（60s） | R17 | P002 | — | — | —  PASS 协议层（CU 62 断言）；E2E BLOCKED | PASS_E2（canonical frames 测试） | — | — | — |
-| F022 | 配网错误恢复（8 错误码→动作） | R18 | P002 | — | — | —  PASS（8 错误码映射·CU）| PASS_E2（共享 Core 测试） | — | — | — |
+| 功能 | 名称（FEATURE_MAP 口径） | 验收（PRD §8） | 页面 | U-WX | U-AND | F-AND | N-MAC | N-IOS | 合理 | 证据 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| F001 | BLE 扫描（5s 会话/节流合并/自动停） | R01 | P001 | — | — | — | PASS·真无线电（Phase2）| PASS（测试+真机后台链路 4c19a58） | — | — | — |
+| F002 | 扫描权限前置（微信授权引导） | R02 | P001 | — | — | — | N/A（系统权限·10_platform）| N/A（同左） | — | — | — |
+| F003 | 扫描筛选（RSSI/前缀/隐藏无名） | R03 | P001 | — | — | — | PASS（UIS-04）| PASS（UI 测试筛选态） | — | — | — |
+| F004 | 广播数据查看（原始数据弹窗/复制） | R04 | P001 | — | — | — | PASS（UIS-05 复制→剪贴板+toast+关闭）| PASS（UI 测试：详情两段/缺失标注/复制 toast+剪贴板探针） | — | — | apple-native-v1/20260910-advdata-observer |
+| F005 | 显示名智能解析（多级 fallback） | R05 | P001 | — | — | — | PASS（UIS-03 found=6 含未命名 fallback）| PASS（测试） | — | — | — |
+| F006 | GATT 连接（8 态/发现/MTU） | R06 | P006 | — | — | — | PASS·真无线电（Phase2）| PASS（测试；真机收发 4c19a58） | — | — | — |
+| F007 | 服务树浏览（折叠/UUID 中文名） | R07 | P006 | — | — | — | PASS（UIS-06 服务树）| PASS（P006 测试） | — | — | — |
+| F008 | 特征读取（HEX+TEXT，3s 超时） | R08 | P006 | — | — | — | BLOCKED（待 ESP32 烧录；midea 无 read）| NOT_RUN（真机读未验） | — | — | — |
+| F009 | 特征写入（TEXT/HEX，写队列串行） | R09 | P006 | — | — | — | BLOCKED（写字节级·Phase2）| NOT_RUN | — | — | — |
+| F010 | Notify 监听（防抖去重） | R10 | P006 | — | — | — | BLOCKED（Notify 字节级·Phase2）| NOT_RUN | — | — | — |
+| F011 | 通信日志（六色/清空/导出） | R11 | P006 | — | — | — | PASS（UIS-06 日志）| PASS（测试） | — | — | — |
+| F012 | 断线自动重连（3 次 backoff） | R12 | P006/P007 | — | — | — | PASS·真无线电重连全环（Phase2/UIS-18）| PASS（测试） | — | — | — |
+| F013 | 多设备会话管理（批量断开） | R13 | P007 | — | — | — | PASS（M1 多设备·UIS-18 n=2）| PASS（P007 测试） | — | — | — |
+| F014 | 微信外围广播 | R22 + R24 | P008 | — | — | — | N/A（微信线）| N/A（微信线） | — | — | — |
+| F015 | App 外围广播（LysBlePeripheral） | R23 + R24 | P008 | — | — | — | PASS（广播启动·Phase2/UIS-09）| PASS（实现；真机广播 NOT_RUN） | — | — | — |
+| F016 | 31 字节负载预算（不静默截断） | R21 | P008 | — | — | — | PASS（UIS-08 31B blocked=true）| PASS（实现） | — | — | — |
+| F017 | 观察侧证据匹配（服务层就绪） | 无专属 R（PRD §8 未覆盖，服务层验收） | 无页面消费 | — | — | — | PASS（SmartHidCore 移植 32/32） | PASS（同左·共享 Core） | — | — | apple-native-v1/20260910-advdata-observer |
+| F018 | Profile 设备识别（UUID STRONG/前缀 WEAK） | R14 | P001 | — | — | — | PASS（UIS-15/16 双入口）| PASS（STRONG/WEAK 测试） | — | — | — |
+| F019 | Smart HID 配网向导（三阶段/断线续填/离开确认） | R15 | P002 | — | — | — | PASS 协议层（UIS-07/12）；E2E BLOCKED（无夹具）| PASS 协议层（测试）；E2E BLOCKED | — | — | — |
+| F020 | ControlHub 配对码扫码（shid://pair） | R16 | P002 | — | — | — | PASS（粘贴兜底）；实景扫码 NOT_RUN | PASS（粘贴）；实景 NOT_RUN | — | — | — |
+| F021 | 分帧明文写入 + 状态机跟踪（60s） | R17 | P002 | — | — | — | PASS 协议层（CU 62 断言）；E2E BLOCKED | PASS_E2（canonical frames 测试） | — | — | — |
+| F022 | 配网错误恢复（8 错误码→动作） | R18 | P002 | — | — | — | PASS（8 错误码映射·CU）| PASS_E2（共享 Core 测试） | — | — | — |
 | F023 | ~~设备历史~~【已移除 2026-09-02，不得复刻】 | R19（已作废） | ~~P004~~ | 不适用 | 不适用 | 不适用 | 不适用（零持久化反向守卫） | 不适用（同左） | 见 §4.2 登记项 UNIAPP-G1-001 | — | — |
-| F024 | Smart HID 诊断（五项链路） | R20 | P005 | — | — | —  PASS（UIS-12 四行+真实 STATUS 轮询）| PASS（五行诊断测试）；真机 BLOCKED | — | — | — |
-| F025 | OTA 固件升级（端到端 BLOCKED） | R25 | P006 子流程 | — | — | —  BLOCKED（P-03；R-1/R-2 契约已对齐·CU-56..66；UIS-18-OTA 对未烧录旧固件如实 FAIL）| BLOCKED（同口径；start 帧已契约对齐） | — | — | — |
-| F026 | 日志脱敏（敏感键→***） | R28 | 横切（P006 日志等） | — | — | —  PASS（日志脱敏）| PASS（测试） | — | — | — |
-| F027 | 版本元数据展示（Release Metadata 投影） | R26 | P009/P010 | — | — | —  PASS（UIS-10/11 Release Metadata 投影）| PASS（生成资源+解码测试） | — | — | — |
-| F028 | 小程序推广跳转 | R27 | P009 | — | — | —  PASS（P009 推广卡+外链）| PASS（同左） | — | — | — |
-| F029 | 分享（微信/APP/H5 分支） | 无专属 R（PAGE_SPEC §0.3 分享约定验收） | P009 + 全局 | — | — | —  PASS（系统分享）| PASS（实现） | — | — | — |
-| F030 | 国际化【不做，UI 全中文硬编码】 | R30（现状确认） | 全局 | — | — | —  PASS（全中文硬编码现状确认）| PASS（同左） | — | — | — |
+| F024 | Smart HID 诊断（五项链路） | R20 | P005 | — | — | — | PASS（UIS-12 四行+真实 STATUS 轮询）| PASS（五行诊断测试）；真机 BLOCKED | — | — | — |
+| F025 | OTA 固件升级（端到端 BLOCKED） | R25 | P006 子流程 | — | — | — | BLOCKED（P-03；R-1/R-2 契约已对齐·CU-56..66；UIS-18-OTA 对未烧录旧固件如实 FAIL）| BLOCKED（同口径；start 帧已契约对齐） | — | — | — |
+| F026 | 日志脱敏（敏感键→***） | R28 | 横切（P006 日志等） | — | — | — | PASS（日志脱敏）| PASS（测试） | — | — | — |
+| F027 | 版本元数据展示（Release Metadata 投影） | R26 | P009/P010 | — | — | — | PASS（UIS-10/11 Release Metadata 投影）| PASS（生成资源+解码测试） | — | — | — |
+| F028 | 小程序推广跳转 | R27 | P009 | — | — | — | PASS（P009 推广卡+外链）| PASS（同左） | — | — | — |
+| F029 | 分享（微信/APP/H5 分支） | 无专属 R（PAGE_SPEC §0.3 分享约定验收） | P009 + 全局 | — | — | — | PASS（系统分享）| PASS（实现） | — | — | — |
+| F030 | 国际化【不做，UI 全中文硬编码】 | R30（现状确认） | 全局 | — | — | — | PASS（全中文硬编码现状确认）| PASS（同左） | — | — | — |
 | （附）平台降级（Web/H5 明确不支持） | R29（非 F 编号项） | R29 | 全局 | — | — | — | N/A | N/A | — | — | — |
 
 记分值：`PASS / FAIL / BLOCKED(+原因) / NOT_RUN`；各线在对应 Gate 完成前为 NOT_RUN 属预期（页面/功能尚未对齐），不得记 PASS。**禁止把 F014–F016、F018–F024 再合并记分。**
