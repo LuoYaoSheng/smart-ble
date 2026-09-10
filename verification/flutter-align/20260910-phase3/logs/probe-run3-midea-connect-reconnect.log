@@ -1,0 +1,50 @@
+00:00 +0: loading /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/flutter/integration_test/phase3_probe_test.dart                                                                               00:01 +0: loading /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/flutter/integration_test/phase3_probe_test.dart                                                                               00:02 +0: loading /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/flutter/integration_test/phase3_probe_test.dart                                                                               Building macOS application...                                   00:03 +0: loading /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/flutter/integration_test/phase3_probe_test.dart                                                                               00:04 +0: loading /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/flutter/integration_test/phase3_probe_test.dart                                                                               00:05 +0: loading /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/flutter/integration_test/phase3_probe_test.dart                                                                               00:06 +0: loading /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/flutter/integration_test/phase3_probe_test.dart                                                                               00:07 +0: loading /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/flutter/integration_test/phase3_probe_test.dart                                                                               00:08 +0: loading /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/flutter/integration_test/phase3_probe_test.dart                                                                               00:09 +0: loading /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/flutter/integration_test/phase3_probe_test.dart                                                                               00:10 +0: loading /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/flutter/integration_test/phase3_probe_test.dart                                                                               00:11 +0: loading /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/flutter/integration_test/phase3_probe_test.dart                                                                               00:12 +0: loading /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/flutter/integration_test/phase3_probe_test.dart                                                                               00:13 +0: loading /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/flutter/integration_test/phase3_probe_test.dart                                                                               
+ld: warning: search path '/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.VYm3Te/Metal.xctoolchain/usr/lib/swift/macosx' not found
+ld: warning: search path '/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.VYm3Te/Metal.xctoolchain/usr/lib/swift/macosx' not found
+00:14 +0: loading /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/flutter/integration_test/phase3_probe_test.dart                                                                               00:15 +0: loading /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/flutter/integration_test/phase3_probe_test.dart                                                                               ✓ Built build/macos/Build/Products/Debug/smart_ble.app
+00:16 +0: loading /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/flutter/integration_test/phase3_probe_test.dart                                                                               Failed to foreground app; open returned 1
+00:17 +0: loading /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/flutter/integration_test/phase3_probe_test.dart                                                                               00:17 +0: PP3-A path_provider 注销回归 + About 页 package_info 探针                                                                                                                                           00:17 +0: PP3-A path_provider 注销回归 + About 页 package_info 探针                                                                                                                                           
+PP3[E2E 11:35:56.029]: PP3-A 启动
+PP3[E2E 11:35:58.534]: PP3-A 版本 chip 加载=v2.0.0+1 ✓
+PP3[E2E 11:35:58.616]: PP3-A getTemporaryPath=意外可用 path=/Users/luoyaosheng/Library/Containers/com.smartble.flutter/Data/Library/Caches/com.smartble.flutter（插件仍注册？）
+PP3[E2E 11:35:58.617]: PP3-A About 页结构完整 ✓
+00:19 +1: PP3-A path_provider 注销回归 + About 页 package_info 探针                                                                                                                                           00:19 +1: PP3-B 真实无线电对齐：扫描/连接/服务发现/重连/广播                                                                                                                                                               00:19 +1: PP3-B 真实无线电对齐：扫描/连接/服务发现/重连/广播                                                                                                                                                               
+PP3[E2E 11:35:58.639]: PP3-B 启动
+PP3[E2E 11:36:12.661]: PP3-B 扫描具名设备=2 台: iphone@-40, midea@-87
+PP3[E2E 11:36:13.077]: PP3-B 连接 midea (1AB0FE3F-960B-CC14-632C-B22674C484AE)
+PP3[E2E 11:36:22.865]: PP3-B 服务发现 services=3 characteristics=6 (ffa0×2 ff80×2 ff90×2)
+PP3[E2E 11:36:22.865]: PP3-B conn-state midea → BluetoothConnectionState.connected
+设备 1AB0FE3F-960B-CC14-632C-B22674C484AE 将在 2s 后尝试第 1 次重连...
+PP3[E2E 11:36:24.227]: PP3-B conn-state midea → BluetoothConnectionState.disconnected
+正在重连 1AB0FE3F-960B-CC14-632C-B22674C484AE (第 1 次)...
+PP3[E2E 11:36:27.029]: PP3-B conn-state midea → BluetoothConnectionState.connected
+PP3[E2E 11:36:27.505]: PP3-B 重连观察窗结束 dropped=1 reconnected=1（被动断线→自动重连全环 ✓）
+重连失败: 1AB0FE3F-960B-CC14-632C-B22674C484AE - FlutterBluePlusException | discoverServices | fbp-code: 6 | Device is disconnected
+设备 1AB0FE3F-960B-CC14-632C-B22674C484AE 将在 2s 后尝试第 1 次重连...
+PP3[E2E 11:36:27.842]: PP3-B 清理断开 midea ✓
+PP3[E2E 11:36:27.844]: PP3-B 广播平台支持=true
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following ArgumentError was thrown running a test:
+Invalid argument(s): 厂商 ID 需为 4 位十六进制
+
+When the exception was thrown, this was the stack:
+#0      BlePeripheralManager.startAdvertising (package:smart_ble/core/ble/ble_peripheral_manager.dart:107:9)
+#1      main.<anonymous closure> (file:///Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/flutter/integration_test/phase3_probe_test.dart:209:28)
+<asynchronous suspension>
+#2      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#3      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1059:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+The test description was:
+  PP3-B 真实无线电对齐：扫描/连接/服务发现/重连/广播
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:49 +1 -1: PP3-B 真实无线电对齐：扫描/连接/服务发现/重连/广播 [E]                                                                                                                                                        
+  Test failed. See exception logs above.
+  The test description was: PP3-B 真实无线电对齐：扫描/连接/服务发现/重连/广播
+  
+
+To run this test again: /Users/luoyaosheng/flutter/bin/cache/dart-sdk/bin/dart test /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/flutter/integration_test/phase3_probe_test.dart -p vm --plain-name 'PP3-B 真实无线电对齐：扫描/连接/服务发现/重连/广播'
+00:49 +1 -1: (tearDownAll)                                                                                                                                                                             00:49 +1 -1: Some tests failed.                                                                                                                                                                        
