@@ -150,59 +150,61 @@
                 </div>
             </div>
 
-            <!-- 关于视图 -->
+            <!-- 关于视图（P009：结构对齐 docs/specs/prototype/platform/desktop/high-fi/pages/p009-about.js；F028 推广卡桌面线裁撤） -->
             <div id="aboutView" class="view" style="display: none;">
                 <div class="about-shell">
-                    <section class="about-hero-card">
-                        <img src="brand/about-hero.png" alt="Smart BLE Hero" class="about-hero-image">
-                        <div class="about-hero-body">
-                            <div class="about-hero-head">
-                                <img src="brand/icon.png" alt="Smart BLE Icon" class="about-app-icon">
-                                <div>
-                                    <h1 class="about-title">Smart BLE</h1>
-                                    <p class="about-subtitle">Electron 桌面工作台</p>
-                                </div>
-                            </div>
-                            <div class="about-chip-row">
-                                <span class="about-chip" id="aboutVersionChip">版本读取中…</span>
-                                <span class="about-chip">Framework: Electron</span>
-                                <span class="about-chip">Language: Node.js + JavaScript</span>
-                            </div>
-                            <p class="about-copy">跨平台 BLE 控制台与统一协议内核，在桌面端提供更适合长时间调试的工作台体验。</p>
+                    <div class="about-navbar">
+                        <div class="about-kicker">ABOUT</div>
+                        <div class="about-navrow">
+                            <div class="about-page-title">关于</div>
+                            <span class="about-verchip" id="aboutVersionChip">版本读取中…</span>
+                        </div>
+                    </div>
+
+                    <section class="about-card about-identity">
+                        <span class="about-logo"><svg class="about-ic sm" aria-hidden="true"><use href="#i-bt"/></svg></span>
+                        <div class="about-brand">
+                            <div class="about-app-name">BLE Toolkit+</div>
+                            <div class="about-verline" id="aboutVersionLine">…</div>
                         </div>
                     </section>
 
-                    <section class="about-info-grid">
-                        <article class="about-card">
-                            <h3>定位</h3>
-                            <p>Electron 版本承担的是完整桌面实现与教学对照线，适合快速开发和跨平台分发。</p>
-                        </article>
-                        <article class="about-card">
-                            <h3>核心能力</h3>
-                            <ul>
-                                <li>扫描、过滤与连接 BLE 设备</li>
-                                <li>查看服务树与读写特征值</li>
-                                <li>通知监听、日志导出与 OTA</li>
-                                <li>广播模式与工作台级调试密度</li>
-                            </ul>
-                        </article>
-                        <article class="about-card">
-                            <h3>平台与公开状态</h3>
-                            <div id="platformGrid" class="about-platform-grid"></div>
-                        </article>
+                    <div class="about-sec-t"><div class="t"><svg class="about-ic" aria-hidden="true"><use href="#i-info"/></svg> 应用信息</div></div>
+                    <section class="about-card">
+                        <div class="about-kv"><span class="k">当前环境</span><span class="v" id="aboutEnvValue">—</span></div>
+                        <div class="about-kv"><span class="k">设备型号</span><span class="v" id="aboutModelValue">—</span></div>
+                        <div class="about-kv"><span class="k">构建</span><span class="v mono" id="aboutBuildValue">—</span></div>
+                        <div class="about-chiprow" id="aboutFeatureChips"></div>
                     </section>
 
                     <section class="about-card">
-                        <h3>相关入口</h3>
-                        <div class="about-link-list">
-                            <a href="https://lightble.i2kai.com/" target="_blank">项目主页</a>
-                            <a href="#" id="goVersionsLink">版本记录</a>
-                            <a href="https://gitee.com/luoyaosheng/smart-ble/issues" target="_blank">问题反馈</a>
-                            <a href="#" id="shareAppLink">分享应用</a>
-                            <a href="https://lightble.i2kai.com/MASTER_ARCHITECTURE" target="_blank">架构白皮书</a>
-                            <a href="https://github.com/luoyaosheng/smart-ble" target="_blank">源码仓库</a>
-                        </div>
+                        <div id="platformGrid"></div>
                     </section>
+
+                    <section class="about-card about-menu">
+                        <a class="about-menu-row" id="aboutWebsiteRow" href="#" target="_blank" rel="noreferrer">
+                            <span class="lead"><svg class="about-ic" aria-hidden="true"><use href="#i-ext"/></svg></span>
+                            <span class="t">官方网站</span>
+                            <span class="arr"><svg class="about-ic xs" aria-hidden="true"><use href="#i-chev-r"/></svg></span>
+                        </a>
+                        <a class="about-menu-row" id="aboutFeedbackRow" href="#" target="_blank" rel="noreferrer">
+                            <span class="lead"><svg class="about-ic" aria-hidden="true"><use href="#i-send"/></svg></span>
+                            <span class="t">问题反馈</span>
+                            <span class="arr"><svg class="about-ic xs" aria-hidden="true"><use href="#i-chev-r"/></svg></span>
+                        </a>
+                        <a class="about-menu-row" id="goVersionsLink" href="#">
+                            <span class="lead"><svg class="about-ic" aria-hidden="true"><use href="#i-doc"/></svg></span>
+                            <span class="t">版本记录</span>
+                            <span class="arr"><svg class="about-ic xs" aria-hidden="true"><use href="#i-chev-r"/></svg></span>
+                        </a>
+                        <a class="about-menu-row" id="shareAppLink" href="#">
+                            <span class="lead"><svg class="about-ic" aria-hidden="true"><use href="#i-share"/></svg></span>
+                            <span class="t">分享应用</span>
+                            <span class="arr"><svg class="about-ic xs" aria-hidden="true"><use href="#i-chev-r"/></svg></span>
+                        </a>
+                    </section>
+
+                    <div class="about-foot">日志全局脱敏：敏感凭据显示为 token=***<br>BLE Toolkit+ · Smart BLE 产品家族 · 微信小程序 wxf6c58b1dcac4c82d</div>
                 </div>
             </div>
 
@@ -242,6 +244,26 @@
             </div>
         </main>
     </div>
+
+    <!-- P009 图标 sprite（24×24 · stroke 1.8 · currentColor，与 docs/specs/prototype/platform/desktop/high-fi/index.html 同源） -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+      <defs>
+        <g id="i-bt" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 7l10 10-5 4V3l5 4L7 17"/></g>
+        <g id="i-info" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><circle cx="12" cy="8" r="0.6" fill="currentColor"/></g>
+        <g id="i-share" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="M8.3 10.8l7.4-4.3M8.3 13.2l7.4 4.3"/></g>
+        <g id="i-chev-r" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 6l6 6-6 6"/></g>
+        <g id="i-ext" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M13.5 4.5H19.5V10.5M19.5 4.5L11 13M19.5 13.5V19a1.5 1.5 0 01-1.5 1.5H5A1.5 1.5 0 013.5 19V6A1.5 1.5 0 015 4.5h5.5"/></g>
+        <g id="i-send" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21.5 2.5L11 13M21.5 2.5l-7 19-3.5-8.5-8.5-3.5z"/></g>
+        <g id="i-doc" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2.5H6.5A1.5 1.5 0 005 4v16a1.5 1.5 0 001.5 1.5h11A1.5 1.5 0 0019 20V7.5z"/><path d="M14 2.5v5h5"/></g>
+      </defs>
+    </svg>
 
     <!-- Write Data Dialog Component -->
     <write-dialog id="mainWriteDialog"></write-dialog>

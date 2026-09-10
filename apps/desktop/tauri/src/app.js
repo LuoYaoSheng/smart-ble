@@ -476,17 +476,21 @@ function switchTab(tab) {
     }
 }
 
-// F027：关于页投影（版本三态 + 平台状态 + F028 推广卡）
+// P009：关于页投影（结构对齐 docs/specs/prototype/platform/desktop/high-fi/pages/p009-about.js）
+// F027 版本三态 + 平台状态；F028 推广卡桌面线已裁撤；F029 菜单行为不变
 function renderAboutPage() {
     const VM = window.SmartBLEVersionMetadata;
     const PRODUCT = window.SmartBLEProduct;
     if (!VM || !PRODUCT) {
         const chip = document.getElementById('aboutVersionChip');
         if (chip) chip.textContent = 'dev.unknown';
+        const line = document.getElementById('aboutVersionLine');
+        if (line) line.textContent = 'vdev.unknown · 零后端 · 零本地持久化';
         return;
     }
 
     const release = VM.getReleaseMetadata();
+    const channel = String(release.channel || 'preview').toLowerCase();
     const metadataVersionLabel = VM.buildVersionString({
         version: VM.getProductVersion(),
         commit: release.commit,
@@ -495,36 +499,97 @@ function renderAboutPage() {
 
     // P009 三态：基准 = metadata 投影；运行时渠道（tauri.conf version）成功才覆盖
     const chip = document.getElementById('aboutVersionChip');
-    if (chip) {
-        chip.textContent = 'v' + metadataVersionLabel;
-        const applyRuntimeVersion = (value) => {
+    const verLine = document.getElementById('aboutVersionLine');
+    const applyLabels = (versionLabel) => {
+        if (chip) chip.textContent = 'v' + versionLabel;
+        if (verLine) verLine.textContent = `v${versionLabel} · ${channel} · 零后端 · 零本地持久化`;
+    };
+    applyLabels(metadataVersionLabel);
+    const appApi = window.__TAURI__?.app;
+    if (appApi?.getVersion) {
+        appApi.getVersion().then((value) => {
             const next = typeof value === 'string' ? value.trim() : '';
-            chip.textContent = 'v' + VM.buildVersionString({
-                version: next || VM.getProductVersion(),
-                commit: release.commit,
-                channel: release.channel,
-            });
-        };
-        const appApi = window.__TAURI__?.app;
-        if (appApi?.getVersion) {
-            appApi.getVersion().then(applyRuntimeVersion).catch(() => {});
-        }
+            if (next) {
+                applyLabels(VM.buildVersionString({
+                    version: next,
+                    commit: release.commit,
+                    channel: release.channel,
+                }));
+            }
+        }).catch(() => {});
     }
 
-    // F027：平台与公开状态（七键投影）
+    // P009 应用信息：当前环境 / 设备型号（Tauri allowlist 未开 os 模块，走 navigator 真实值）
+    const envValue = document.getElementById('aboutEnvValue');
+    if (envValue) {
+        const os = navigator.userAgentData?.platform
+            || (/Windows/.test(navigator.userAgent) ? 'Windows'
+                : /Mac OS/.test(navigator.userAgent) ? 'macOS'
+                : /Linux/.test(navigator.userAgent) ? 'Linux' : '—');
+        envValue.textContent = `Desktop · ${os}`;
+    }
+    const modelValue = document.getElementById('aboutModelValue');
+    if (modelValue) {
+        const arch = /x64|Win64/.test(navigator.userAgent) ? 'x64'
+            : (/arm/i.test(navigator.userAgent) ? 'arm' : '');
+        modelValue.textContent = arch ? `PC · ${arch}` : '—';
+    }
+
+    // P009 构建：Release Metadata 投影（无 commit 时如实留空）
+    const buildValue = document.getElementById('aboutBuildValue');
+    if (buildValue) {
+        const sha = release.commit ? String(release.commit).trim().slice(0, 7) : '';
+        buildValue.textContent = sha ? `v+${sha}（Release Metadata 投影）` : '—';
+        buildValue.classList.toggle('dim', !sha);
+    }
+
+    // P009 功能特性 chips（product.js 单一来源）
+    const chipRow = document.getElementById('aboutFeatureChips');
+    if (chipRow) {
+        chipRow.innerHTML = '';
+        (PRODUCT.PRODUCT_FEATURES || []).forEach((f) => {
+            const el = document.createElement('span');
+            el.className = 'about-feature-chip';
+            el.textContent = f;
+            chipRow.appendChild(el);
+        });
+    }
+
+    // F027：平台与公开状态（rel-row + 双状态词）
     const grid = document.getElementById('platformGrid');
     if (grid) {
         grid.innerHTML = '';
+        const stword = (word) => {
+            const el = document.createElement('span');
+            el.className = 'about-stword about-st-' + word;
+            el.textContent = word;
+            return el;
+        };
         VM.getPlatformPublicStatuses().forEach((p) => {
-            const el = document.createElement('div');
-            el.className = 'about-platform-chip';
-            const status = p.role === 'REFERENCE' ? 'REFERENCE' : (p.capability_status || p.release_status || 'NOT_RELEASED');
-            el.innerHTML = '<span class="about-platform-name"></span><span class="about-platform-status"></span>';
-            el.querySelector('.about-platform-name').textContent = p.name;
-            el.querySelector('.about-platform-status').textContent = status;
-            grid.appendChild(el);
+            const row = document.createElement('div');
+            row.className = 'about-rel-row';
+            const name = document.createElement('span');
+            name.className = 'about-rel-name';
+            name.textContent = p.name;
+            const st = document.createElement('span');
+            st.className = 'about-rel-st';
+            const cap = p.role === 'REFERENCE' ? 'REFERENCE' : (p.capability_status || '');
+            const rel = p.role === 'REFERENCE' ? '' : (p.release_status || '');
+            if (cap && rel && cap !== rel) {
+                st.append(stword(cap), stword(rel));
+            } else {
+                st.append(stword(cap || rel || 'NOT_RELEASED'));
+            }
+            row.append(name, st);
+            grid.appendChild(row);
         });
     }
+
+    // F029 菜单外链：product.js 单一来源
+    const websiteRow = document.getElementById('aboutWebsiteRow');
+    if (websiteRow) websiteRow.href = PRODUCT.PRODUCT_INFO.website;
+    const feedbackRow = document.getElementById('aboutFeedbackRow');
+    if (feedbackRow) feedbackRow.href = PRODUCT.PRODUCT_INFO.feedback;
 }
 
 // P010：版本记录页（Release Metadata 纯投影，禁止手写版本事实）
