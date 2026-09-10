@@ -51,6 +51,10 @@ The app requires Bluetooth permissions:
 ### macOS
 - Bluetooth access permission will be requested on first run
 - If using a built app, ensure it's signed or the user has explicitly allowed it
+- **打包产物必须带蓝牙用途声明**：`src-tauri/Info.plist` 模板（Tauri v1 机制，构建时并入 bundle）声明了
+  `NSBluetoothAlwaysUsageDescription` / `NSBluetoothPeripheralUsageDescription`。缺失该声明时 macOS
+  **不会弹权限窗而是静默拒绝**，扫描表现为 0 设备（2026-09-10 实证并修复，见
+  `verification/mac-all-frameworks-v1/20260910/REPORT.md`）。改动 Info.plist 后需重新 `tauri build`
 
 ### Windows
 - No special permissions required for standard BLE operations
