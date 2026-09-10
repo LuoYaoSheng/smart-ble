@@ -17,6 +17,7 @@
     "@dcloudio/uni-app-plus": "3.0.0-alpha-5020520260829001",
     "@dcloudio/uni-mp-weixin": "3.0.0-alpha-5020520260829001",
     "@dcloudio/vite-plugin-uni": "3.0.0-alpha-5020520260829001",
+    "miniprogram-automator": "^0.12.1",
     "vite": "5.2.8",
     "vue": "3.4.21"
   }
