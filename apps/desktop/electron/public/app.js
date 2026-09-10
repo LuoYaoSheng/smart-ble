@@ -13,6 +13,7 @@ class App {
         this.logs = [];
         this.currentDevice = null;
         this.isScanning = false;
+        this.isConnecting = false;
         this.hasScanned = false; // P001 正典状态词：扫描完成后显示「扫描完成 · 发现 N 台」
         this.writeDialogCallback = null;
         this.characteristicsMap = new Map(); // 存储特征值引用以便更新状态
@@ -107,11 +108,6 @@ class App {
             this.stopBroadcast();
         });
 
-        // Back button
-        document.getElementById('backButton')?.addEventListener('click', () => {
-            this.showDeviceList();
-        });
-
         // F027/F028/F029：关于页二级导航与分享（桌面口径）
         document.getElementById('goVersionsLink')?.addEventListener('click', (e) => {
             e.preventDefault();
@@ -125,19 +121,19 @@ class App {
             this.shareApp();
         });
 
-        // Clear logs button
-        document.getElementById('clearLogsButton')?.addEventListener('click', () => {
-            this.clearLogs();
+        // P006 详情页按钮（正典 devhead.acts：连接/断开；OTA 在 subnav 右侧）
+        document.getElementById('connectButton')?.addEventListener('click', () => {
+            if (this.currentDevice && !this.connectedDevices.has(this.currentDevice.id)) {
+                this.connectToDevice(this.currentDevice);
+            }
         });
-
-        // Disconnect button
         document.getElementById('disconnectButton')?.addEventListener('click', () => {
             if (this.currentDevice) {
                 this.disconnect();
             }
         });
 
-        // OTA button (connected-view header; dialog element id is mainOtaDialog)
+        // OTA button（subnav 固件更新；dialog element id is mainOtaDialog）
         document.getElementById('otaButton')?.addEventListener('click', () => {
             if (this.currentDevice) {
                 const otaDialog = document.getElementById('mainOtaDialog');
@@ -248,22 +244,21 @@ class App {
 
         // Setup Detail View Buttons
         document.getElementById('backButton')?.addEventListener('click', () => this.goBack());
-        document.getElementById('disconnectButton')?.addEventListener('click', () => {
-            if (this.currentDevice) this.disconnectDevice(this.currentDevice.id);
-        });
 
-        // Service panel via Web Component
+        // Service panel via Web Component（契约统一：char-action 单事件，action ∈ read/write/notify）
         const servicePanel = document.getElementById('mainServicePanel');
         if (servicePanel) {
-            servicePanel.addEventListener('read', (e) => {
-                this.readCharacteristic(e.detail.serviceUuid, e.detail.charUuid);
-            });
-            servicePanel.addEventListener('write', (e) => {
-                const writeDialog = document.getElementById('mainWriteDialog');
-                if (writeDialog) writeDialog.open(e.detail.serviceUuid, e.detail.charUuid);
-            });
-            servicePanel.addEventListener('notify', (e) => {
-                this.toggleNotify(e.detail.serviceUuid, e.detail.charUuid, e.detail.enabled);
+            servicePanel.addEventListener('char-action', async (e) => {
+                const { serviceUuid, charUuid, action, btn } = e.detail;
+                if (action === 'read') {
+                    this.readCharacteristic(serviceUuid, charUuid);
+                } else if (action === 'write') {
+                    const writeDialog = document.getElementById('mainWriteDialog');
+                    if (writeDialog) writeDialog.show(serviceUuid, charUuid);
+                } else if (action === 'notify') {
+                    const enabled = btn ? btn.classList.contains('listening') : false;
+                    this.toggleNotify(serviceUuid, charUuid, enabled, btn);
+                }
             });
         }
     }
@@ -1002,14 +997,14 @@ class App {
         });
         document.getElementById('deviceDetailView').classList.add('active');
 
-        // Update header
+        // Update header（正典显示名批准链口径：未命名兜底）
         const nameEl = document.getElementById('deviceName');
         const idEl = document.getElementById('deviceId');
-        if (nameEl) nameEl.textContent = device.name || '未知设备';
+        const resolved = window.SmartBLEDisplayName?.resolveDeviceDisplayName(device);
+        if (nameEl) nameEl.textContent = (resolved ? resolved.displayName : device.name) || '未命名 BLE 设备';
         if (idEl) idEl.textContent = device.id;
 
-        const isConn = this.connectedDevices.has(deviceId);
-        this.updateConnectionStatus(isConn);
+        this.updateConnectionStatus(this.connectedDevices.has(deviceId) ? 'connected' : 'disconnected');
 
         // Render services
         this.renderServices();
@@ -1017,6 +1012,15 @@ class App {
 
     goBack() {
         this.currentDevice = null;
+        const panel = document.getElementById('gattPanel');
+        if (panel) panel.innerHTML = '';
+        const otaBtn = document.getElementById('otaButton');
+        if (otaBtn) otaBtn.style.display = 'none';
+        this.servicesByDevice.clear();
+        this.characteristicsMap.clear();
+        this.logs = [];
+        const logPanel = document.getElementById('mainLogPanel');
+        if (logPanel) logPanel.clearLogs();
         document.querySelectorAll('.view').forEach(view => {
             view.classList.remove('active');
         });
@@ -1034,16 +1038,27 @@ class App {
             }
 
             this.currentDevice = device;
-            this.showDeviceDetail();
+            // 进入详情视图并写头部（修复历史缺陷：从扫描卡直连时头部名称/ID 从未写入）
+            document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
+            document.getElementById('deviceDetailView')?.classList.add('active');
+            const nameEl = document.getElementById('deviceName');
+            const idEl = document.getElementById('deviceId');
+            const resolved = window.SmartBLEDisplayName?.resolveDeviceDisplayName(device);
+            if (nameEl) nameEl.textContent = (resolved ? resolved.displayName : device.name) || '未命名 BLE 设备';
+            if (idEl) idEl.textContent = device.id;
             this.updateConnectionStatus('connecting');
+            this.isConnecting = true;
+            this.renderServices();
             this.addLog(`正在连接 ${device.name || device.id}...`, 'info');
 
             const result = await window.bleAPI.connect(device.id);
+            this.isConnecting = false;
             if (!result.success) {
                 this.addLog(`连接失败: ${result.error}`, 'error');
                 this.updateConnectionStatus('disconnected');
             }
         } catch (error) {
+            this.isConnecting = false;
             this.addLog('连接失败: ' + error.message, 'error');
             this.updateConnectionStatus('disconnected');
         }
@@ -1154,29 +1169,64 @@ class App {
         }
     }
 
+    // P006 面板状态机（正典 panel：idle / connecting / 服务发现中 / ready / empty）
     renderServices() {
         const servicePanel = document.getElementById('mainServicePanel');
+        const panel = document.getElementById('gattPanel');
         if (!servicePanel) return;
 
         if (!this.currentDevice) {
             servicePanel.services = [];
+            if (panel) panel.innerHTML = '';
+            const otaBtn = document.getElementById('otaButton');
+            if (otaBtn) otaBtn.style.display = 'none';
             return;
         }
         const deviceId = this.currentDevice.id;
+        const isConn = this.connectedDevices.has(deviceId);
         // 从 onServicesDiscovered 维护的状态渲染；不得在此再触发 ble:discoverServices，
         // 否则与主进程的 servicesDiscovered 事件互喂成发现风暴
+        const discovered = this.servicesByDevice.has(deviceId);
         const currentServices = this.servicesByDevice.get(deviceId) || [];
 
-        servicePanel.services = currentServices;
-
-        // Check for OTA service — 切换头部静态按钮可见性
-        // （不得动态创建按钮：历史动态块指向不存在的 'otaDialog' id，点击即抛错）
         // UUID 规范化后比较：noble/bleAPI 给的是无横线小写，常量历史版本带横线导致永不相等
         const normalizeUuid = (u) => (u || '').toLowerCase().replace(/-/g, '');
         const otaServiceUuid = '4fafc2011fb5459e8fccc5c9c331914d';
         const hasOta = currentServices.some(s => normalizeUuid(s.uuid) === otaServiceUuid);
+
+        // OTA 按钮（正典 subnav：仅 ready 态 + OTA 服务存在时可见）
         const otaBtn = document.getElementById('otaButton');
-        if (otaBtn) otaBtn.style.display = hasOta ? 'inline-block' : 'none';
+        if (otaBtn) otaBtn.style.display = (isConn && hasOta) ? 'inline-flex' : 'none';
+
+        const op = (title, desc, mode = 'loading') => `
+            <div class="op ${mode === 'loading' ? '' : mode}">
+                ${mode === 'loading' ? '<span class="spin"></span>'
+                    : `<span class="ico" style="color:${mode === 'ok' ? '#0E9A80' : mode === 'warn' ? '#C77E14' : 'var(--c-danger)'}"><svg class="ic" aria-hidden="true"><use href="#i-${mode === 'warn' ? 'warn' : 'x'}"/></svg></span>`}
+                <div style="flex:1"><div class="t">${title}</div>${desc ? `<div class="d">${desc}</div>` : ''}</div>
+            </div>`;
+
+        if (!isConn) {
+            servicePanel.services = [];
+            if (panel) panel.innerHTML = this.isConnecting
+                ? op('连接中…', `正在连接 ${this.currentDevice.name || this.currentDevice.id}（10s 超时 · 失败自动重试 3 次）`)
+                : op('未初始化', '点击「连接设备」建立 GATT 会话。');
+            return;
+        }
+
+        if (!discovered) {
+            servicePanel.services = [];
+            if (panel) panel.innerHTML = op('服务发现中…', `正在读取 ${this.currentDevice.name || this.currentDevice.id} 的 GATT 树`);
+            return;
+        }
+
+        servicePanel.services = currentServices;
+        if (currentServices.length === 0) {
+            if (panel) panel.innerHTML = op('服务发现完成 · 列表为空', '该设备未暴露任何 GATT 服务（或权限受限）。', 'warn');
+        } else {
+            if (panel) panel.innerHTML = hasOta
+                ? '<div style="margin-bottom:12px"><div class="note warn"><span class="ic"><svg class="ic sm" aria-hidden="true"><use href="#i-warn"/></svg></span><div><b>OTA 走真实契约链路</b>（选包→校验→传输→提交 · R-1/R-2）；无 manifest 时真固件按 missing_target 拒绝。</div></div></div>'
+                : '';
+        }
     }
 
     async readCharacteristic(serviceUuid, charUuid) {
@@ -1201,20 +1251,31 @@ class App {
         }
     }
 
-    async toggleNotify(serviceUuid, charUuid, enabled) {
+    // P006 监听（正典：listening 类为唯一态源，组件已乐观翻转，失败回翻）
+    revertNotifyBtn(btn) {
+        if (!btn) return;
+        const on = btn.classList.toggle('listening');
+        btn.classList.toggle('on', on);
+        const label = btn.querySelector('span');
+        if (label) label.textContent = on ? '停止监听' : '开始监听';
+    }
+
+    async toggleNotify(serviceUuid, charUuid, enabled, btn = null) {
         if (!this.currentDevice) return;
 
-        this.addLog(`${enabled ? '启用' : '禁用'}通知...`, 'info');
+        this.addLog(`${enabled ? '开始监听' : '停止监听'} ${String(charUuid).slice(0, 8)}…${enabled ? ' · 防抖去重 300ms' : ''}`, 'info');
 
         try {
             const result = await window.bleAPI.notifyCharacteristic(this.currentDevice.id, serviceUuid, charUuid, enabled);
 
             if (result.success) {
-                this.addLog(`通知已${enabled ? '启用' : '禁用'}`, 'success');
+                // 态由组件持有，无需回写
             } else {
+                this.revertNotifyBtn(btn);
                 this.addLog(`设置通知失败: ${result.error}`, 'error');
             }
         } catch (error) {
+            this.revertNotifyBtn(btn);
             this.addLog(`设置通知失败: ${error.message}`, 'error');
         }
     }
@@ -1237,40 +1298,30 @@ class App {
         this.showToast(`收到数据: ${hex}`, 'info');
     }
 
-    showDeviceList() {
-        const deviceListView = document.getElementById('deviceListView');
-        const deviceDetailView = document.getElementById('deviceDetailView');
-
-        if (deviceListView) deviceListView.classList.add('active');
-        if (deviceDetailView) deviceDetailView.classList.remove('active');
-
-        this.currentDevice = null;
-        this.servicesByDevice.clear();
-        this.logs = [];
-        this.characteristicsMap.clear();
-
-        // Hide log panel
-        const logPanel = document.getElementById('mainLogPanel');
-        if (logPanel) logPanel.clearLogs();
-    }
-
     showDeviceDetail() {
         // Redundant since selectDevice already manages view changes and sets up state
     }
 
+    // P006 连接状态（正典 devhead：st 圆点 on/mid + 状态词 + 连接/断开按钮互斥）
     updateConnectionStatus(status) {
-        const statusEl = document.getElementById('connectionStatus');
-        if (!statusEl) return;
+        const st = document.getElementById('gattSt');
+        const word = document.getElementById('gattStateWord');
+        const connectBtn = document.getElementById('connectButton');
+        const disconnectBtn = document.getElementById('disconnectButton');
 
-        const statusMap = {
-            'connected': { text: '已连接', class: 'connected' },
-            'connecting': { text: '连接中', class: 'connecting' },
-            'disconnected': { text: '未连接', class: 'disconnected' }
-        };
+        const isConn = status === 'connected';
+        const isMid = status === 'connecting';
 
-        const statusInfo = statusMap[status] || { text: '未知', class: '' };
-        statusEl.textContent = statusInfo.text;
-        statusEl.className = 'status-badge ' + statusInfo.class;
+        if (st) st.className = 'st' + (isConn ? ' on' : isMid ? ' mid' : '');
+        if (word) word.textContent = isConn ? '已连接' : isMid ? '连接中' : '未连接';
+
+        if (connectBtn) {
+            connectBtn.style.display = isConn ? 'none' : 'inline-flex';
+            connectBtn.disabled = isMid;
+            const label = connectBtn.querySelector('span');
+            if (label) label.textContent = isMid ? '连接中…' : '连接设备';
+        }
+        if (disconnectBtn) disconnectBtn.style.display = isConn ? 'inline-flex' : 'none';
     }
 
     addLog(message, type = 'info') {

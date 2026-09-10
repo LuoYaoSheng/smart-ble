@@ -189,28 +189,46 @@
                     </div>
                 </div>
 
-                <!-- 设备详情视图（P006 对齐待后续提交） -->
+                <!-- ═══ P006 GATT 调试（结构对齐 prototype/pages/p006-gatt.js + desktop.js 双栏） ═══ -->
                 <div id="deviceDetailView" class="view">
-                    <div class="detail-header">
-                        <button id="backButton" class="btn btn-secondary">← 返回</button>
-                        <div class="device-info">
-                            <h2 id="deviceName">设备名称</h2>
-                            <span id="deviceId" class="device-id">设备 ID</span>
+                    <div class="subnav">
+                        <button id="backButton" class="back-btn"><svg class="ic sm" aria-hidden="true"><use href="#i-chev-r"/></svg></button>
+                        <span class="t">GATT 调试</span>
+                        <button id="otaButton" class="btn ghost danger-t sm" style="display:none;">
+                            <svg class="ic sm" aria-hidden="true"><use href="#i-dl"/></svg><span>固件更新</span>
+                        </button>
+                    </div>
+                    <div class="page">
+                        <div class="dcol1">
+                            <div class="devhead">
+                                <div class="r1">
+                                    <span id="gattSt" class="st"></span>
+                                    <div style="flex:1;min-width:0">
+                                        <div id="deviceName" style="font-size:var(--fs-h1);font-weight:var(--fw-bold)">设备名称</div>
+                                        <div class="mono" style="font-size:var(--fs-micro);color:var(--c-mut);margin-top:2px"><span id="deviceId">设备 ID</span> · <span id="gattStateWord">未连接</span></div>
+                                    </div>
+                                </div>
+                                <div class="acts">
+                                    <button id="connectButton" class="btn primary" style="display:none;">
+                                        <svg class="ic sm" aria-hidden="true"><use href="#i-link"/></svg><span>连接设备</span>
+                                    </button>
+                                    <button id="disconnectButton" class="btn danger" style="display:none;">
+                                        <svg class="ic sm" aria-hidden="true"><use href="#i-x"/></svg><span>断开连接</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="gattPanel" style="margin-top:12px"></div>
+                            <!-- Service Panel Component（ready 态由 gattPanel 装载） -->
+                            <service-panel id="mainServicePanel"></service-panel>
                         </div>
-                        <div id="connectionStatus" class="status-badge">未连接</div>
+                        <div class="dcol2">
+                            <div class="dnote">桌面布局（SOP §12 圈内调整）：右栏日志常驻 · 左区设备/服务/操作，流程与数据模型同基准。</div>
+                            <div class="logdock">
+                                <!-- Log Panel Component（正典 dock 深色变体） -->
+                                <log-panel id="mainLogPanel"></log-panel>
+                            </div>
+                        </div>
                     </div>
-
-                    <div class="detail-controls">
-                        <button id="otaButton" class="btn btn-primary" style="display:none;">OTA 升级</button>
-                        <button id="clearLogsButton" class="btn btn-secondary">清空日志</button>
-                        <button id="disconnectButton" class="btn btn-danger">断开连接</button>
-                    </div>
-
-                    <!-- Service Panel Component -->
-                    <service-panel id="mainServicePanel"></service-panel>
-
-                    <!-- Log Panel Component -->
-                    <log-panel id="mainLogPanel"></log-panel>
                 </div>
             </div>
 

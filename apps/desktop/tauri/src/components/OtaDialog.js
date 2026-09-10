@@ -14,7 +14,6 @@
 class OtaDialog extends HTMLElement {
     constructor() {
         super();
-        this.attachShadow({ mode: 'open' });
         this.deviceId = null;
         this.fileBuffer = null;
         this.fileSha256 = null;
@@ -33,153 +32,39 @@ class OtaDialog extends HTMLElement {
         this.charDataUuid    = 'beb5483e-36e1-4688-b7f5-ea07361b26c1';
         this.charStatusUuid  = 'beb5483e-36e1-4688-b7f5-ea07361b26c2';
 
-        this.shadowRoot.innerHTML = `
-            <style>
-                :host { display: contents; }
-
-                .overlay {
-                    display: none;
-                    position: fixed;
-                    inset: 0;
-                    background: rgba(0,0,0,0.5);
-                    z-index: 2000;
-                    align-items: center;
-                    justify-content: center;
-                }
-                .overlay.visible { display: flex; }
-
-                .dialog {
-                    background: var(--surface, #fff);
-                    color: var(--text-primary, #000);
-                    border-radius: 16px;
-                    padding: 24px;
-                    width: 440px;
-                    max-width: 92vw;
-                    box-shadow: 0 16px 48px rgba(0,0,0,0.25);
-                    animation: fadeIn 0.2s ease-out;
-                }
-
-                @keyframes fadeIn {
-                    from { opacity: 0; transform: translateY(-12px); }
-                    to   { opacity: 1; transform: translateY(0); }
-                }
-
-                h3 {
-                    margin: 0 0 20px;
-                    font-size: 18px;
-                    font-weight: 600;
-                }
-
-                .drop-zone {
-                    border: 2px dashed var(--border, #e5e5ea);
-                    border-radius: 12px;
-                    padding: 24px 16px;
-                    text-align: center;
-                    cursor: pointer;
-                    margin-bottom: 10px;
-                    transition: border-color 0.2s, background 0.2s;
-                    background: transparent;
-                }
-                .drop-zone:hover,
-                .drop-zone.drag-over {
-                    border-color: var(--primary, #007aff);
-                    background: rgba(0, 122, 255, 0.05);
-                }
-                .drop-zone .drop-icon { font-size: 28px; margin-bottom: 8px; }
-                .drop-zone .drop-hint { font-size: 13px; color: var(--text-secondary, #8e8e93); }
-                .drop-zone .file-name { font-size: 14px; font-weight: 500; color: var(--primary, #007aff); margin-top: 6px; }
-
-                .manifest-row {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    gap: 10px;
-                    margin-bottom: 16px;
-                    padding: 8px 12px;
-                    border-radius: 8px;
-                    background: rgba(0, 122, 255, 0.04);
-                    font-size: 13px;
-                }
-                .manifest-row .manifest-state { color: var(--text-secondary, #8e8e93); }
-                .manifest-row .manifest-state.loaded { color: var(--primary, #007aff); font-weight: 500; }
-                .manifest-row button {
-                    padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border, #e5e5ea);
-                    background: var(--surface, #fff); font-size: 12px; cursor: pointer;
-                }
-
-                .status-row {
-                    font-size: 13px;
-                    color: var(--text-secondary, #8e8e93);
-                    margin-bottom: 10px;
-                    min-height: 18px;
-                    word-break: break-all;
-                }
-                .status-row.error { color: var(--error, #ff3b30); }
-                .status-row.success { color: var(--success, #34c759); }
-
-                .progress-track {
-                    width: 100%;
-                    height: 8px;
-                    background: var(--border, #e5e5ea);
-                    border-radius: 4px;
-                    overflow: hidden;
-                    margin-bottom: 16px;
-                }
-                .progress-fill {
-                    height: 100%;
-                    background: var(--primary, #007aff);
-                    width: 0%;
-                    border-radius: 4px;
-                    transition: width 0.15s linear;
-                }
-
-                .btn-row {
-                    display: flex;
-                    justify-content: flex-end;
-                    gap: 10px;
-                    margin-top: 4px;
-                }
-                button {
-                    padding: 9px 18px;
-                    border-radius: 8px;
-                    border: none;
-                    font-size: 14px;
-                    font-weight: 500;
-                    cursor: pointer;
-                    transition: opacity 0.15s;
-                }
-                button:disabled { opacity: 0.45; cursor: not-allowed; }
-                .btn-cancel { background: var(--border, #e5e5ea); color: var(--text-primary, #000); }
-                .btn-start  { background: var(--primary, #007aff); color: #fff; }
-                .btn-cancel:hover:not(:disabled) { opacity: 0.8; }
-                .btn-start:hover:not(:disabled)  { opacity: 0.88; }
-            </style>
-
-            <div class="overlay" id="overlay">
-                <div class="dialog">
-                    <h3>固件升级 (OTA)</h3>
+        // P006 正典弹窗壳：.mask/.modal + .bigact 选包 + .ota-bar 进度（light DOM，样式走 prototype.css）
+        this.innerHTML = `
+            <div class="mask" id="overlay" style="display:none">
+                <div class="modal" style="max-width:440px">
+                    <div class="t">固件更新</div>
 
                     <input type="file" id="fileInput" accept=".bin" style="display:none;" />
-                    <div class="drop-zone" id="dropZone">
-                        <div class="drop-icon">📦</div>
-                        <div class="drop-hint">点击选择 .bin 固件，或将文件拖入此处</div>
-                        <div class="file-name" id="fileName"></div>
+                    <div class="bigact" id="dropZone" style="margin-bottom:10px">
+                        <svg class="ic lg" aria-hidden="true"><use href="#i-dl"/></svg>
+                        <div style="flex:1">
+                            <div class="t" id="dropTitle">选择固件包</div>
+                            <div class="d">点击选择 .bin，或将文件拖入此处 · sha256 实测校验</div>
+                            <div class="d" id="fileName" style="color:var(--c-primary);font-weight:var(--fw-med)"></div>
+                        </div>
                     </div>
 
-                    <div class="manifest-row">
-                        <span class="manifest-state" id="manifestState">manifest（可选）：未选择</span>
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:var(--fs-cap)">
+                        <span id="manifestState" style="color:var(--c-mut);flex:1">manifest（可选）：未选择</span>
                         <input type="file" id="manifestInput" accept=".json" style="display:none;" />
-                        <button id="manifestBtn">选择 manifest</button>
+                        <button class="btn soft sm" id="manifestBtn"><span>选择 manifest</span></button>
                     </div>
 
-                    <div class="status-row" id="statusText">等待选择固件文件……</div>
-                    <div class="progress-track">
-                        <div class="progress-fill" id="progressFill"></div>
+                    <div style="text-align:center;margin:6px 0 4px">
+                        <div id="phaseTitle" style="font-size:var(--fs-h2);font-weight:var(--fw-bold)">等待选包</div>
+                        <div id="statusText" style="font-size:var(--fs-cap);color:var(--c-mut);margin-top:3px;min-height:18px;word-break:break-all">等待选择固件文件……</div>
+                    </div>
+                    <div class="ota-bar" id="otaBar" style="margin-top:10px">
+                        <i id="progressFill" style="width:0%"></i>
                     </div>
 
-                    <div class="btn-row">
-                        <button class="btn-cancel" id="cancelBtn">取消</button>
-                        <button class="btn-start"  id="startBtn" disabled>开始升级</button>
+                    <div class="btns" style="margin-top:14px">
+                        <button class="btn soft" id="cancelBtn"><span>取消</span></button>
+                        <button class="btn primary" id="startBtn" disabled><svg class="ic sm" aria-hidden="true"><use href="#i-play"/></svg><span>开始升级</span></button>
                     </div>
                 </div>
             </div>
@@ -187,31 +72,31 @@ class OtaDialog extends HTMLElement {
     }
 
     connectedCallback() {
-        const sr = this.shadowRoot;
-        this.overlay      = sr.getElementById('overlay');
-        this.fileInput    = sr.getElementById('fileInput');
-        this.manifestInput = sr.getElementById('manifestInput');
-        this.dropZone     = sr.getElementById('dropZone');
-        this.fileNameEl   = sr.getElementById('fileName');
-        this.manifestStateEl = sr.getElementById('manifestState');
-        this.statusText   = sr.getElementById('statusText');
-        this.progressFill = sr.getElementById('progressFill');
-        this.startBtn     = sr.getElementById('startBtn');
-        this.cancelBtn    = sr.getElementById('cancelBtn');
+        this.overlay      = this.querySelector('#overlay');
+        this.fileInput    = this.querySelector('#fileInput');
+        this.manifestInput = this.querySelector('#manifestInput');
+        this.dropZone     = this.querySelector('#dropZone');
+        this.fileNameEl   = this.querySelector('#fileName');
+        this.manifestStateEl = this.querySelector('#manifestState');
+        this.statusText   = this.querySelector('#statusText');
+        this.phaseTitle   = this.querySelector('#phaseTitle');
+        this.progressFill = this.querySelector('#progressFill');
+        this.startBtn     = this.querySelector('#startBtn');
+        this.cancelBtn    = this.querySelector('#cancelBtn');
 
         this.dropZone.addEventListener('click', () => this.fileInput.click());
         this.fileInput.addEventListener('change', (e) => this._handleFile(e.target.files[0]));
-        sr.getElementById('manifestBtn').addEventListener('click', () => this.manifestInput.click());
+        this.querySelector('#manifestBtn').addEventListener('click', () => this.manifestInput.click());
         this.manifestInput.addEventListener('change', (e) => this._handleManifest(e.target.files[0]));
 
         this.dropZone.addEventListener('dragover', (e) => {
             e.preventDefault();
-            this.dropZone.classList.add('drag-over');
+            this.dropZone.style.borderColor = 'var(--c-primary)';
         });
-        this.dropZone.addEventListener('dragleave', () => this.dropZone.classList.remove('drag-over'));
+        this.dropZone.addEventListener('dragleave', () => { this.dropZone.style.borderColor = ''; });
         this.dropZone.addEventListener('drop', (e) => {
             e.preventDefault();
-            this.dropZone.classList.remove('drag-over');
+            this.dropZone.style.borderColor = '';
             const f = e.dataTransfer.files[0];
             if (f) this._handleFile(f);
         });
@@ -226,12 +111,12 @@ class OtaDialog extends HTMLElement {
         this._setStatus('等待选择固件文件……', '');
         this._setProgress(0);
         this.startBtn.disabled = true;
-        this.overlay.classList.add('visible');
+        this.overlay.style.display = 'flex';
     }
 
     hide() {
         this._teardownSession();
-        this.overlay.classList.remove('visible');
+        this.overlay.style.display = 'none';
         if (this.fileInput) this.fileInput.value = '';
         if (this.manifestInput) this.manifestInput.value = '';
     }
@@ -252,7 +137,9 @@ class OtaDialog extends HTMLElement {
 
     _setStatus(msg, type = '') {
         this.statusText.textContent = msg;
-        this.statusText.className = 'status-row' + (type ? ` ${type}` : '');
+        this.statusText.style.color = type === 'error' ? 'var(--c-danger)' : type === 'success' ? '#0E9A80' : 'var(--c-mut)';
+        const bar = this.querySelector('#otaBar');
+        if (bar) bar.className = 'ota-bar' + (type === 'error' ? ' err' : type === 'success' ? ' ok' : '');
     }
 
     _setProgress(pct) {
@@ -298,14 +185,14 @@ class OtaDialog extends HTMLElement {
             try {
                 this.manifestJson = JSON.parse(e.target.result);
                 this.manifestStateEl.textContent = `manifest：${file.name}`;
-                this.manifestStateEl.classList.add('loaded');
+                this.manifestStateEl.style.color = 'var(--c-primary)';
                 this._validateManifest();
             } catch {
                 this.manifestJson = null;
                 this.manifestTarget = null;
                 this.manifestVersion = null;
                 this.manifestStateEl.textContent = 'manifest：JSON 解析失败';
-                this.manifestStateEl.classList.remove('loaded');
+                this.manifestStateEl.style.color = '';
                 this._setStatus('manifest JSON 解析失败', 'error');
             }
         };
