@@ -10,6 +10,7 @@ import '../../core/models/log_entry.dart';
 import '../../core/utils/data_converter.dart';
 import '../../core/utils/logger.dart';
 import '../../themes/app_theme.dart';
+import '../design/app_tokens.dart';
 import '../widgets/log_panel.dart';
 import '../widgets/ota_dialog.dart';
 import '../widgets/write_dialog.dart';
@@ -423,6 +424,47 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
     super.dispose();
   }
 
+  /// B9 banner-note（warn）—— P-03 OTA 入口受限预警。
+  /// 文案逐字对齐原型 p006 服务就绪态；前景/底色用 warningDeep/warningWeak token
+  /// （N-MAC noteBanner 同口径，#8A5410 为原型 CSS 局部值未入 TOKEN.md）。
+  Widget _buildOtaWarnNote() {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: AppTokens.cWarningWeak,
+        borderRadius: BorderRadius.circular(AppTokens.rMd),
+      ),
+      child: const Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AppIcon('warn', size: 14, color: AppTokens.cWarningDeep),
+          SizedBox(width: 9),
+          Expanded(
+            child: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: 'OTA 端到端链路 BLOCKED',
+                    style: TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                  TextSpan(
+                    text: '（固件侧暂未开放）：右上「固件更新」可演示完整流程，正式使用前需固件配合。',
+                  ),
+                ],
+              ),
+              style: TextStyle(
+                fontSize: 12,
+                height: 1.6,
+                color: AppTokens.cWarningDeep,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -532,6 +574,8 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
               ],
             ),
           ),
+          // P-03 OTA 入口受限预警（B9 warn 说明条，正典 p006 服务就绪态）
+          if (_isConnected && _services.isNotEmpty) _buildOtaWarnNote(),
           // 操作按钮
           if (_isConnected || _isReconnecting)
             Padding(

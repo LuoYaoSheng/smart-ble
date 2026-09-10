@@ -170,7 +170,8 @@ class _AboutPageState extends State<AboutPage> {
                 ),
                 const SizedBox(height: 3),
                 Text(
-                  '${_loadingInfo ? '…' : _version} · ${ProductConfig.tagline}',
+                  // 正典 p009 品牌行副标题三段式：版本 · 渠道 · 隐私主张（vis1-fmac 对照补渠道段）
+                  '${_loadingInfo ? '…' : _version} · ${getReleaseMetadata()['channel']} · ${ProductConfig.tagline}',
                   style: const TextStyle(
                       fontSize: 11,
                       fontFamily: 'monospace',

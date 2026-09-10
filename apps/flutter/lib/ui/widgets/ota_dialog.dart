@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:file_picker/file_picker.dart';
 import '../../core/ble/ota_manager.dart';
 import '../../core/design/app_icons.dart';
+import '../design/app_tokens.dart';
 
 class OtaUpgradeDialog extends ConsumerWidget {
   final String deviceId;
@@ -22,6 +23,32 @@ class OtaUpgradeDialog extends ConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            // P-03 固定预警（PATTERN §75 逐字；N-MAC 弹窗同款）
+            Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              decoration: BoxDecoration(
+                color: AppTokens.cWarningWeak,
+                borderRadius: BorderRadius.circular(AppTokens.rSm),
+              ),
+              child: const Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AppIcon('warn', size: 13, color: AppTokens.cWarningDeep),
+                  SizedBox(width: 7),
+                  Expanded(
+                    child: Text(
+                      '端到端升级链路当前 BLOCKED（固件侧暂未开放），流程可演示，正式使用前需固件配合。',
+                      style: TextStyle(
+                        fontSize: 11,
+                        height: 1.5,
+                        color: AppTokens.cWarningDeep,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             if (state.errorMessage != null)
               Container(
                 margin: const EdgeInsets.only(bottom: 16),
