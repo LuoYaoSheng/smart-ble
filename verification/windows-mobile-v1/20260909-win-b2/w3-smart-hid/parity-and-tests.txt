@@ -10,3 +10,12 @@ BUILD SUCCESSFUL in 5s
 ====
 $ cat apps/android/app/build/smart-hid-parity-kotlin.json
 {"platform":"kotlin","pass":71,"fail":0,"failures":[]}
+
+==== W3 续：配网会话编排（同日第二轮，gradle corretto-18）====
+$ gradlew testDebugUnitTest --console=plain
+BUILD SUCCESSFUL in 38s
+测试类计数（test-results XML 汇总）：total tests: 34, total failures: 0
+  HidProvisionControllerTest  tests=14 failures=0
+  SmartHidVectorParityTest    tests=1  failures=0（71 断言，见上方 parity 输出）
+$ gradlew assembleDebug
+BUILD SUCCESSFUL in 16s

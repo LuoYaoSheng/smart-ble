@@ -99,11 +99,12 @@ class DeviceDetailViewModel(
                     return@collect
                 }
                 val hex = DataConverter.bytesToHex(event.value)
-                // WIN-AAND-004：读值与通知同样进入日志（按 kind 区分呈现）
-                if (event.kind == CharacteristicChangeKind.Read) {
-                    Logger.receive("读取结果: $hex")
-                } else {
-                    Logger.receive("收到通知: $hex")
+                // WIN-AAND-004：读值与通知同样进入日志（按 kind 区分呈现）；
+                // W3：带响应写完成同流（配网分帧逐帧确认），按发送方向呈现
+                when (event.kind) {
+                    CharacteristicChangeKind.Read -> Logger.receive("读取结果: $hex")
+                    CharacteristicChangeKind.Write -> Logger.send("写入完成: $hex")
+                    CharacteristicChangeKind.Notify -> Logger.receive("收到通知: $hex")
                 }
             }
         }

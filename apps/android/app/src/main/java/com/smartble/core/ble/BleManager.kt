@@ -110,6 +110,10 @@ class BleManager private constructor(private val context: Context) {
     )
     val characteristicChanges: Flow<CharacteristicChangeEvent> = _characteristicChanges.asSharedFlow()
 
+    // 协商后的 ATT MTU（WIN-AAND-006 记录；配网分帧按它切 chunk——缺失时保守 23）
+    private val _negotiatedMtus = MutableStateFlow<Map<String, Int>>(emptyMap())
+    val negotiatedMtus: Flow<Map<String, Int>> = _negotiatedMtus.asStateFlow()
+
     // Scan result storage
     private val scanResultsMap = mutableMapOf<String, ScanResult>()
 
@@ -420,6 +424,9 @@ class BleManager private constructor(private val context: Context) {
             .distinctUntilChanged()
     }
 
+    /** 设备当前协商 MTU；未协商/未知返回保守默认 23（ATT 规范下限，配网分帧按此切 chunk） */
+    fun currentMtu(deviceId: String): Int = _negotiatedMtus.value[deviceId] ?: 23
+
     fun currentConnectionState(deviceId: String): ConnectionState {
         return _connectionStates.value[deviceId] ?: ConnectionState.Disconnected
     }
@@ -596,6 +603,9 @@ class BleManager private constructor(private val context: Context) {
         @SuppressLint("MissingPermission")
         override fun onMtuChanged(gatt: BluetoothGatt, mtu: Int, status: Int) {
             Log.d(TAG, "onMtuChanged: mtu=$mtu, status=$status")
+            if (status == BluetoothGatt.GATT_SUCCESS && mtu > 0) {
+                _negotiatedMtus.value = _negotiatedMtus.value + (gatt.device.address to mtu)
+            }
             // WIN-AAND-006：MTU 协商完成后进入服务发现（连接路径唯一入口，
             // requestMtu 失败的兜底分支与 OTA 的二次 requestMtu 都汇到这里）
             if (currentConnectionState(gatt.device.address) == ConnectionState.Connected) {
@@ -640,6 +650,20 @@ class BleManager private constructor(private val context: Context) {
             status: Int
         ) {
             Log.d(TAG, "onCharacteristicWrite: ${characteristic.uuid}, status=$status")
+            // 写完成进可观察流（配网分帧写需要逐帧确认；GATT_SUCCESS 携带所写字节）
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                @Suppress("DEPRECATION")
+                val written = characteristic.value ?: ByteArray(0)
+                _characteristicChanges.tryEmit(
+                    CharacteristicChangeEvent(
+                        deviceId = gatt.device.address,
+                        serviceUuid = characteristic.service.uuid.toString(),
+                        characteristicUuid = characteristic.uuid.toString(),
+                        value = written,
+                        kind = CharacteristicChangeKind.Write
+                    )
+                )
+            }
         }
 
         @SuppressLint("MissingPermission")
@@ -794,12 +818,13 @@ enum class BluetoothState {
 }
 
 /**
- * 特征值事件来源：通知推送 vs 主动读取（WIN-AAND-004：读值也要进可观察流，
- * UI 按 kind 区分「收到通知」/「读取结果」呈现）
+ * 特征值事件来源：通知推送 vs 主动读取 vs 带响应写完成（WIN-AAND-004：读值
+ * 必须进可观察流；W3：写完成为配网分帧逐帧确认进同一流，UI 按 kind 区分呈现）
  */
 enum class CharacteristicChangeKind {
     Notify,
     Read,
+    Write,
 }
 
 /**

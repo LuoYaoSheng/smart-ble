@@ -334,3 +334,9 @@ Mac 从 Windows 交接 commit 开始，不另起产品线。
   - **js 车道静默失败修复（W1 遗留）**：js 车道实际 3 例常量比较失败（TS 导出 RegExp 字面量，`String()` 带斜杠≠向量 pattern 串）但 `runJsLane` 无条件返回 PASS，W1 证据「js 68/68」实为 71 中 3 静默失败；修正比较式取 `.source` + FAIL 状态按 failures 判定，**js 71/71 真绿**。
   - 全量核验：parity 四车道 js 71/71 + dart 59/59 + kotlin 71/71 + swift DEFERRED_TO_MAC；gradle testDebugUnitTest 全绿；verify-uniapp 28 unit + 12 门禁（含 parity 新车道）全过。证据 `verification/windows-mobile-v1/20260909-win-b2/w3-smart-hid/`。
   - **W3 未完**：WIN-UAND-003b（重建 uniapp 资源 + HBuilderX 自定义基座复现 10007，需 E5）；K-AND HidProvisionManager（配网会话编排，UI 后置）；F018-F024 三线回归（需硬件）；F023 零持久化静态扫（纯代码，可继续）。
+- **2026-09-10（W3 续·配网会话编排落地）**：
+  - **BleManager 三扩展**：`CharacteristicChangeKind.Write`（onCharacteristicWrite 成功进同一特征事件流，配网分帧逐帧确认用；ViewModel 日志三分支「写入完成/读取结果/收到通知」）；`_negotiatedMtus` + `currentMtu(deviceId)`（onMtuChanged 记录协商值，缺失保守 23）。
+  - **`HidProvisionTransport.kt`**：接口 + `BleManagerHidTransport`（镜像 Flutter transport：连接→等服务表出现配网服务→三特征确认→开 notify；读特征先挂采集再发起防丢事件；写帧 15s 单帧超时；断线即停 BleManager 静默自动重连并上报 onLost）+ `buildCandidateFrames`。
+  - **`HidProvisionController.kt`**：P002 三阶段状态机 Kotlin 镜像（StateFlow<ProvisionUiState> 单一不可变快照；CompletableDeferred+withTimeoutOrNull 对齐 Dart Completer+Timer；步进→行推进单调表；错误码→行/提示/恢复映射走 SmartHidProtocol；cancelWait/backToForm/诊断快照/2s STATUS 轮询保活；F023 红线：token/密码仅作 submit 参数不落字段）。
+  - **测试**：`HidProvisionControllerTest` 14 例全绿（happy 帧头契约+载荷重组=candidate、wifi_failed/pairing_used 行映射、60s 虚拟时间超时、下发中断线、写失败分类、单调推进（旧 step 回放/迟到 error 不回退）、cancelWait、backToForm、轮询刷新）；FakeTransport 双形态对齐 Flutter。全仓 34 测试 0 失败 + assembleDebug 过。UI 接线（P002 页面）留 Windows UI 阶段。
+  - 真机窗口仍被 steering-ble 并行会话占用（前台 com.steering.ble.g0），K-AND/F-AND 复验继续顺延。
