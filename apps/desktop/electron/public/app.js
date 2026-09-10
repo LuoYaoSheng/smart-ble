@@ -543,10 +543,12 @@ class App {
         }
     }
 
-    // T14: 渲染已连接设备面板
+    // P007 已连接面板（正典：sumcard 汇总卡 + conn 变体设备卡 + link 空态）
     renderConnectedDevicesPanel() {
         const list = document.getElementById('connectedDeviceList');
         const badge = document.getElementById('connectedBadge');
+        const sumcard = document.getElementById('connectedSumcard');
+        const countEl = document.getElementById('connectedCount');
         const disconnectAllBtn = document.getElementById('disconnectAllBtn');
         if (!list) return;
 
@@ -555,8 +557,10 @@ class App {
             badge.textContent = count;
             badge.style.display = count > 0 ? 'flex' : 'none';
         }
+        // 正典：单台不显示汇总卡（one 模式），两台及以上才出现（multi 模式 + 全部断开）
+        if (sumcard) sumcard.style.display = count > 1 ? 'flex' : 'none';
+        if (countEl) countEl.textContent = String(count);
         if (disconnectAllBtn) {
-            disconnectAllBtn.style.display = count > 1 ? 'inline-block' : 'none';
             disconnectAllBtn.onclick = () => {
                 [...this.connectedDevices].forEach(id => {
                     this.currentDevice = this.devices.get(id) || { id };
@@ -567,11 +571,13 @@ class App {
 
         if (count === 0) {
             list.innerHTML = `
-                <div class="empty-state">
-                    <img src="placeholders/empty_connected.png" class="empty-icon-img" alt="connected">
-                    <div class="empty-text">暂无已连接设备</div>
-                    <div class="empty-hint">在扫描页面点击设备进行连接</div>
+                <div class="empty">
+                    <div class="ill">${this.emptyIll('link')}</div>
+                    <div class="t">还没有连接中的设备</div>
+                    <div class="d">先在「扫描」页找到设备并连接，会话将保存在这里</div>
+                    <button class="btn soft" id="connectedGoScan"><svg class="ic sm" aria-hidden="true"><use href="#i-scan"/></svg><span>去扫描</span></button>
                 </div>`;
+            list.querySelector('#connectedGoScan')?.addEventListener('click', () => this.switchTab('scan'));
             return;
         }
 

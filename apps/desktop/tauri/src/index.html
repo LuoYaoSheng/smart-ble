@@ -41,20 +41,27 @@
                     </div>
                 </div>
 
-                <!-- T13: 已连接视图（P007 对齐待后续提交） -->
+                <!-- ═══ P007 已连接（结构对齐 prototype/pages/p007-connected.js） ═══ -->
                 <div id="connectedView" class="view">
-                    <div style="padding:16px">
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-                            <h3 style="margin:0;font-size:16px">已连接设备</h3>
-                            <button id="disconnectAllBtn" class="btn btn-danger" style="display:none;font-size:12px;padding:4px 10px">全部断开</button>
+                    <div class="navbar">
+                        <div class="kicker">SESSIONS</div>
+                        <div class="row">
+                            <div class="title">已连接</div>
+                            <div class="bt-chip"><span class="chip neutral">通用调试会话</span></div>
                         </div>
-                        <div id="connectedDeviceList">
-                            <div class="empty-state">
-                                <img src="placeholders/empty_connected.png" class="empty-icon-img" alt="connected">
-                                <div class="empty-text">暂无已连接设备</div>
-                                <div class="empty-hint">在扫描页面点击设备进行连接</div>
+                    </div>
+                    <div class="page">
+                        <div class="sumcard" id="connectedSumcard" style="display:none">
+                            <div>
+                                <div class="num" id="connectedCount">0</div>
+                                <div class="lb">台在线 · 全部为内存会话</div>
                             </div>
+                            <div style="flex:1"></div>
+                            <button id="disconnectAllBtn" class="btn danger sm">
+                                <svg class="ic sm" aria-hidden="true"><use href="#i-x"/></svg><span>全部断开</span>
+                            </button>
                         </div>
+                        <div id="connectedDeviceList"></div>
                     </div>
                 </div>
 
