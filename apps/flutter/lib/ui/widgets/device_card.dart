@@ -65,9 +65,7 @@ class DeviceCard extends StatelessWidget {
                             children: [
                               Flexible(
                                 child: Text(
-                                  device.name.isNotEmpty
-                                      ? device.name
-                                      : '未命名 BLE 设备',
+                                  device.displayName,
                                   style: const TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w700,
@@ -84,9 +82,7 @@ class DeviceCard extends StatelessWidget {
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            device.name.isNotEmpty
-                                ? device.deviceId
-                                : '${device.deviceId}（未命名）',
+                            device.deviceId,
                             style: const TextStyle(
                               fontSize: 10,
                               fontFamily: 'monospace',
