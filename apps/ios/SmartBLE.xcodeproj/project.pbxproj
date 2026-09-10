@@ -448,16 +448,16 @@
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					5D5E79DDF7640D48210797D7 = {
-						DevelopmentTeam = "${IOS_DEVELOPMENT_TEAM}";
+						DevelopmentTeam = 72MZZQB893;
 						ProvisioningStyle = Automatic;
 					};
 					6264790AE0994A11A55F705C = {
-						DevelopmentTeam = "${IOS_DEVELOPMENT_TEAM}";
+						DevelopmentTeam = 72MZZQB893;
 						ProvisioningStyle = Automatic;
 						TestTargetID = 5D5E79DDF7640D48210797D7;
 					};
 					903D17A032C79A2CFA2D10DF = {
-						DevelopmentTeam = "${IOS_DEVELOPMENT_TEAM}";
+						DevelopmentTeam = 72MZZQB893;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -620,7 +620,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.luoyaosheng.smartble.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = com.smartble.ios;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -637,7 +637,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.luoyaosheng.smartble.ios.uitests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.smartble.ios.uitests;
 				PRODUCT_MODULE_NAME = SmartBLEUITests;
 				PRODUCT_NAME = SmartBLEUITests;
 				SDKROOT = iphoneos;
@@ -686,7 +686,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = "${IOS_DEVELOPMENT_TEAM}";
+				DEVELOPMENT_TEAM = 72MZZQB893;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -704,7 +704,7 @@
 				MARKETING_VERSION = 2.0.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.luoyaosheng.smartble.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = com.smartble.ios;
 				PRODUCT_DISPLAY_NAME = "Smart BLE";
 				PRODUCT_NAME = SmartBLE;
 				SDKROOT = iphoneos;
@@ -727,7 +727,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.luoyaosheng.smartble.ios.tests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.smartble.ios.tests;
 				PRODUCT_MODULE_NAME = SmartBLETests;
 				PRODUCT_NAME = SmartBLETests;
 				SDKROOT = iphoneos;
@@ -748,7 +748,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.luoyaosheng.smartble.ios.tests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.smartble.ios.tests;
 				PRODUCT_MODULE_NAME = SmartBLETests;
 				PRODUCT_NAME = SmartBLETests;
 				SDKROOT = iphoneos;
@@ -768,7 +768,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.luoyaosheng.smartble.ios.uitests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.smartble.ios.uitests;
 				PRODUCT_MODULE_NAME = SmartBLEUITests;
 				PRODUCT_NAME = SmartBLEUITests;
 				SDKROOT = iphoneos;
@@ -789,7 +789,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.luoyaosheng.smartble.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = com.smartble.ios;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -835,7 +835,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = "${IOS_DEVELOPMENT_TEAM}";
+				DEVELOPMENT_TEAM = 72MZZQB893;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -860,7 +860,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.luoyaosheng.smartble.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = com.smartble.ios;
 				PRODUCT_DISPLAY_NAME = "Smart BLE";
 				PRODUCT_NAME = SmartBLE;
 				SDKROOT = iphoneos;

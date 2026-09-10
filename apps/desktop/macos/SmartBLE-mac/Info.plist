@@ -13,7 +13,7 @@
     <key>ITSAppUsesNonExemptEncryption</key>
     <false/>
     <key>CFBundleIdentifier</key>
-    <string>com.smartble.desktop</string>
+    <string>com.smartble.macos</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>

@@ -98,9 +98,9 @@ open SmartBLE.xcodeproj
 正式上架前仍需要按真实账号与产品资料补齐：
 
 1. `DEVELOPMENT_TEAM`
-   在本地环境或 Xcode Signing 设置中替换为真实团队 ID。
+   已定稿为 `72MZZQB893`（本机开发团队，见 `docs/specs/10_platform/BUNDLE_IDS.md`），如换团队改 `project.yml` 后重跑 `xcodegen generate`。
 2. `PRODUCT_BUNDLE_IDENTIFIER`
-   当前默认值为 `com.luoyaosheng.smartble.ios`，正式上架前请替换为真实 bundle id。
+   已定稿为 `com.smartble.ios`（家族包名规划见 `docs/specs/10_platform/BUNDLE_IDS.md`，签名走团队通配 profile）。
 3. App Store Connect 元数据
    包括截图、描述、隐私问答、年龄分级、支持网址等。
 4. 真机验证

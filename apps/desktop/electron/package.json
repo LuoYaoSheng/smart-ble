@@ -26,7 +26,7 @@
     "electron-builder": "^24.6.4"
   },
   "build": {
-    "appId": "com.smartble.desktop",
+    "appId": "com.smartble.electron",
     "productName": "BLE Toolkit+",
     "directories": {
       "output": "dist"

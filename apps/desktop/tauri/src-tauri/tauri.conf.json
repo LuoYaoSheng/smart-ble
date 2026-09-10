@@ -41,7 +41,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.smartble.desktop",
+      "identifier": "com.smartble.tauri",
       "longDescription": "",
       "macOS": {
         "entitlements": null,

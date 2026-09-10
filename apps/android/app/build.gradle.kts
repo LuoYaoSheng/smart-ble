@@ -8,7 +8,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.smartble"
+        applicationId = "com.smartble.android"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

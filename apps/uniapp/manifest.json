@@ -20,6 +20,7 @@
         },
         "distribute" : {
             "android" : {
+                "packagename" : "com.smartble.uniapp",
                 "permissions" : [
                     "<uses-permission android:name=\"android.permission.BLUETOOTH\"/>",
                     "<uses-permission android:name=\"android.permission.BLUETOOTH_ADMIN\"/>",
@@ -44,6 +45,7 @@
                 }
             },
             "ios" : {
+                "appid" : "com.smartble.uniapp",
                 "capabilities" : {
                     "bluetooth" : {
                         "description" : "用于搜索和连接蓝牙设备"

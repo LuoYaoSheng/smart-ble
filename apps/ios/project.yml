@@ -7,14 +7,14 @@ configs:
 settings:
   base:
     PRODUCT_NAME: SmartBLE
-    PRODUCT_BUNDLE_IDENTIFIER: com.luoyaosheng.smartble.ios
+    PRODUCT_BUNDLE_IDENTIFIER: com.smartble.ios
     PRODUCT_DISPLAY_NAME: Smart BLE
     MARKETING_VERSION: 2.0.0
     CURRENT_PROJECT_VERSION: 1
     SWIFT_VERSION: 5.9
     IPHONEOS_DEPLOYMENT_TARGET: 15.0
     TARGETED_DEVICE_FAMILY: "1,2"
-    DEVELOPMENT_TEAM: ${IOS_DEVELOPMENT_TEAM}
+    DEVELOPMENT_TEAM: 72MZZQB893  # 本机开发团队（通配 profile 72MZZQB893.* 已含本机证书与真机）；换团队改这里后重跑 xcodegen generate
     CODE_SIGN_STYLE: Automatic
     DEVELOPMENT_ASSET_PATHS: ""
     GENERATE_INFOPLIST_FILE: NO
@@ -39,7 +39,7 @@ targets:
       - package: SmartHidCore
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.luoyaosheng.smartble.ios
+        PRODUCT_BUNDLE_IDENTIFIER: com.smartble.ios
         INFOPLIST_FILE: SmartBLE/Resources/Info.plist
         CODE_SIGN_ENTITLEMENTS: SmartBLE/Resources/SmartBLE.entitlements
   SmartBLETests:
@@ -55,7 +55,7 @@ targets:
       base:
         PRODUCT_NAME: SmartBLETests
         PRODUCT_MODULE_NAME: SmartBLETests
-        PRODUCT_BUNDLE_IDENTIFIER: com.luoyaosheng.smartble.ios.tests
+        PRODUCT_BUNDLE_IDENTIFIER: com.smartble.ios.tests
         GENERATE_INFOPLIST_FILE: YES
         INFOPLIST_FILE: ""
         TEST_HOST: "$(BUILT_PRODUCTS_DIR)/SmartBLE.app/SmartBLE"
@@ -72,7 +72,7 @@ targets:
       base:
         PRODUCT_NAME: SmartBLEUITests
         PRODUCT_MODULE_NAME: SmartBLEUITests
-        PRODUCT_BUNDLE_IDENTIFIER: com.luoyaosheng.smartble.ios.uitests
+        PRODUCT_BUNDLE_IDENTIFIER: com.smartble.ios.uitests
         GENERATE_INFOPLIST_FILE: YES
 schemes:
   SmartBLEiOS:
