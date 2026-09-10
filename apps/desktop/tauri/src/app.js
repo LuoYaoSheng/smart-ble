@@ -1137,27 +1137,14 @@ function renderServices() {
 
     servicePanel.services = currentServices;
     
-    // Check for OTA service
-    const otaUuid = '4FAFC201-1FB5-459E-8FCC-C5C9C331914D'.toLowerCase();
-    const hasOta = currentServices.some(s => s.uuid.toLowerCase() === otaUuid);
-    
-    // Add OTA button to header dynamically if it doesn't exist
-    let otaBtn = document.getElementById('otaActionBtn');
-    if (hasOta) {
-        if (!otaBtn) {
-            otaBtn = document.createElement('button');
-            otaBtn.id = 'otaActionBtn';
-            otaBtn.className = 'icon-btn';
-            otaBtn.innerHTML = '⬆️ OTA升级';
-            otaBtn.style.marginRight = '10px';
-            otaBtn.onclick = () => document.getElementById('otaDialog').show(deviceId);
-            
-            elements.disconnectButton.parentNode.insertBefore(otaBtn, elements.disconnectButton);
-        }
-        otaBtn.style.display = 'inline-block';
-    } else if (otaBtn) {
-        otaBtn.style.display = 'none';
-    }
+    // Check for OTA service — 切换头部静态按钮可见性
+    // （不得动态创建按钮：历史动态块指向不存在的 'otaDialog' id，点击即抛错）
+    // UUID 规范化后比较：bleplug 可能给大写/带横线，常量历史版本带横线导致永不相等
+    const normalizeUuid = (u) => (u || '').toLowerCase().replace(/-/g, '');
+    const otaServiceUuid = '4fafc2011fb5459e8fccc5c9c331914d';
+    const hasOta = currentServices.some(s => normalizeUuid(s.uuid) === otaServiceUuid);
+    const otaBtn = document.getElementById('otaButton');
+    if (otaBtn) otaBtn.style.display = hasOta ? 'inline-block' : 'none';
 }
 
 // Read Characteristic

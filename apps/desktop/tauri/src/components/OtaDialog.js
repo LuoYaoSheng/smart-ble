@@ -365,7 +365,9 @@ class OtaDialog extends HTMLElement {
     _onNotification(event) {
         const { deviceId, charUuid, value } = event.payload || {};
         if (deviceId !== this.deviceId) return;
-        if ((charUuid || '').toLowerCase() !== this.charStatusUuid) return;
+        // UUID 规范化比较：通知事件可能带无横线 UUID，常量是带横线书写
+        const norm = (u) => (u || '').toLowerCase().replace(/-/g, '');
+        if (norm(charUuid) !== norm(this.charStatusUuid)) return;
         const OC = window.SmartBLEOtaContract;
         const text = OC.bytesToUtf8(OC.hexToBytes(value || ''));
         const kind = OC.OtaStatusClassifier.classify(text);
