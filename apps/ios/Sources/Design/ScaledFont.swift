@@ -53,6 +53,7 @@ private struct ScaledFontModifier: ViewModifier {
         #endif
     }
 
+    #if canImport(UIKit)
     private static func baseFont(size: CGFloat, weight: Font.Weight, design: Font.Design) -> UIFont {
         let w = weight.uiKitValue
         switch design {
@@ -66,6 +67,7 @@ private struct ScaledFontModifier: ViewModifier {
             return .systemFont(ofSize: size, weight: w)
         }
     }
+    #endif
 }
 
 #if canImport(UIKit)

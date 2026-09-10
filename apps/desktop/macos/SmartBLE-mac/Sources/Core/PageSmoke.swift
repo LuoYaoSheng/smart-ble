@@ -915,7 +915,7 @@ enum PageSmoke {
             let payload = Data((0..<2048).map { UInt8(truncatingIfNeeded: $0 &* 31 &+ 7) })
             try? payload.write(to: bin)
             let sha = SHA256.hash(data: payload).map { String(format: "%02x", $0) }.joined()
-            let manifestJson = #"{"version":"9.9.9","size":\#(payload.count),"sha256":"\#(sha)"}"#
+            let manifestJson = #"{"target":"lightble-peripheral","firmware_version":"9.9.9","size":\#(payload.count),"sha256":"\#(sha)"}"#
             try? manifestJson.data(using: .utf8)!.write(to: manifest)
 
             let ota = ble.ota

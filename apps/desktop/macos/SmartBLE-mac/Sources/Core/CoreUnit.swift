@@ -39,7 +39,46 @@ enum CoreUnit {
         testConstants()
         testOtaStatusClassifier()
         testOtaStartPayload()
+        testContrast()
     }
+
+    // MARK: - CU-67.. 正典 token 对比度（WCAG · 设计令牌 07_design_system/TOKEN.md 冻结值）
+
+    private static func wcag(_ fg: String, _ bg: String) -> Double {
+        func lum(_ hex: String) -> Double {
+            var c: [Double] = []
+            var idx = hex.startIndex
+            while idx < hex.endIndex {
+                let v = Double(Int(hex[idx..<hex.index(idx, offsetBy: 2)], radix: 16)!) / 255.0
+                c.append(v <= 0.04045 ? v / 12.92 : pow((v + 0.055) / 1.055, 2.4))
+                idx = hex.index(idx, offsetBy: 2)
+            }
+            return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
+        }
+        let la = lum(fg), lb = lum(bg)
+        return (max(la, lb) + 0.05) / (min(la, lb) + 0.05)
+    }
+
+    private static func testContrast() {
+        // 正文/次文/弱文 全过 WCAG AA（4.5:1）
+        check("CU-67", wcag("18222E", "FFFFFF") >= 4.5 && wcag("18222E", "F8FBFF") >= 4.5,
+              "text/ink on card+bg（实测 16.07/15.48）")
+        check("CU-68", wcag("42536A", "FFFFFF") >= 4.5 && wcag("42536A", "F8FBFF") >= 4.5,
+              "sub on card+bg（实测 7.84/7.56）")
+        check("CU-69", wcag("60758D", "FFFFFF") >= 4.5 && wcag("60758D", "F8FBFF") >= 4.5,
+              "mut on card+bg（实测 4.74/4.57）")
+        // 动作色对：大字号文本/图形件 ≥3:1 达标
+        check("CU-70", wcag("1B6DFF", "FFFFFF") >= 3.0 && wcag("FFFFFF", "1B6DFF") >= 3.0,
+              "primary 双向（实测 4.49；小号正文差 0.01 达 AA——正典约束在案）")
+        check("CU-71", wcag("F2555F", "FFFFFF") >= 3.0 && wcag("FFFFFF", "F2555F") >= 3.0,
+              "danger 双向（实测 3.37；仅大字号/图形件口径）")
+        // 正典硬约束（<3:1，仅状态图标/语义色块用途，不做正文）——锁数值防漂移
+        check("CU-72", abs(wcag("17C7A8", "FFFFFF") - 2.15) < 0.02 && abs(wcag("FFFFFF", "17C7A8") - 2.15) < 0.02,
+              "success 对 2.15（正典约束：仅状态语义，禁正文）")
+        check("CU-73", abs(wcag("FF9F43", "FFFFFF") - 2.04) < 0.02 && abs(wcag("FFFFFF", "FF9F43") - 2.04) < 0.02,
+              "warning 对 2.04（正典约束：仅状态语义，禁正文）")
+    }
+
 
     // MARK: - CU-56.. OTA 状态帧分类（R-2 · 固件 status 帧口径）
 
