@@ -16,8 +16,15 @@ function getLogPath() {
   }
   return debugLogPath;
 }
+// F026：主进程日志统一脱敏（uniapp logger/log-redaction.js 的桌面锁定镜像，挂 globalThis）
+let LOG_REDACTION = null;
+try {
+  require('../../public/log-redaction.js');
+  LOG_REDACTION = globalThis.SmartBLELogRedaction || null;
+} catch (_) { /* 脱敏镜像缺失时不阻断主进程 */ }
 function debugLog(...args) {
-  const msg = args.map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(' ');
+  let msg = args.map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(' ');
+  if (LOG_REDACTION) msg = LOG_REDACTION.sanitizeLogString(msg);
   try {
     fs.appendFileSync(getLogPath(), new Date().toISOString() + ' ' + msg + '\n');
   } catch (_) { /* ignore log write errors */ }

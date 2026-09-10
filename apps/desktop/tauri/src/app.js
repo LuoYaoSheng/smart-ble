@@ -1376,8 +1376,10 @@ function updateAdvertisingUI(advertising) {
 
 // Log Functions
 function addLog(type, message) {
+    // F026：渲染端日志唯一漏斗，统一脱敏（uniapp logger/log-redaction.js 锁定镜像）
+    const text = window.SmartBLELogRedaction ? window.SmartBLELogRedaction.sanitizeLogString(message) : message;
     const panel = document.getElementById('mainLogPanel');
-    if (panel) panel.addLog(type, message);
+    if (panel) panel.addLog(type, text);
 }
 
 function clearLogs() {
