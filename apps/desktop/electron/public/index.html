@@ -65,64 +65,57 @@
                     </div>
                 </div>
 
-                <!-- 广播视图（P008 对齐待后续提交） -->
+                <!-- ═══ P008 广播（结构对齐 prototype/pages/p008-broadcast.js：bytebar + 31B 预算四行） ═══ -->
                 <div id="broadcastView" class="view">
-                    <div class="broadcast-container">
-                        <div class="broadcast-card">
-                            <div class="card-header">
-                                <h3>创建 BLE 广播</h3>
+                    <div class="navbar">
+                        <div class="kicker">PERIPHERAL</div>
+                        <div class="row">
+                            <div class="title">广播</div>
+                            <div class="bt-chip">
+                                <span class="chip neutral" id="broadcastPlatformChip">平台：Desktop</span>
+                                <span class="badge dim" id="broadcastStateBadge"><i class="dot"></i>未就绪</span>
                             </div>
-                            <div class="card-body">
-                                <div class="form-group">
-                                    <label>广播名称</label>
-                                    <input type="text" id="broadcastName" class="input" placeholder="MyDevice" value="SmartBLE">
-                                </div>
-                                <div class="form-group">
-                                    <label>服务 UUID</label>
-                                    <input type="text" id="broadcastServiceUuid" class="input" placeholder="FFF0" value="FFF0">
-                                    <small class="input-hint">自定义 128 位 UUID 或标准 16 位 UUID</small>
-                                </div>
-                                <div class="form-group">
-                                    <label>Manufacturer ID (hex)</label>
-                                    <input type="text" id="broadcastManufacturerId" class="input" placeholder="0x0A00" value="0A00">
-                                    <small class="input-hint">Company identifier (e.g., 0x0A00 for testing)</small>
-                                </div>
-                                <div class="form-group">
-                                    <label>Manufacturer Data</label>
-                                    <input type="text" id="broadcastManufacturerData" class="input" placeholder="Test123" value="SmartBLE_Broadcast">
-                                    <small class="input-hint">Custom data to include in advertisement</small>
-                                </div>
-                                <div class="form-group">
-                                    <label class="checkbox">
-                                        <input type="checkbox" id="broadcastIncludeName" checked style="margin-right: 8px;">
-                                        <span>Include device name in advertisement</span>
-                                    </label>
-                                </div>
-                                <div class="broadcast-status" id="broadcastStatus">
-                                    <span class="status-dot"></span>
-                                    <span class="status-text">未广播</span>
-                                </div>
+                        </div>
+                    </div>
+                    <div class="page">
+                        <div class="card">
+                            <div class="field">
+                                <label>设备名称 <span class="chip neutral" id="broadcastNameLock" style="display:none">广播中禁用</span></label>
+                                <div class="inp"><input maxlength="20" id="broadcastName" placeholder="SmartBLE" value="SmartBLE"></div>
                             </div>
-                            <div class="card-footer">
-                                <button id="startBroadcastButton" class="btn btn-primary">
-                                    <span class="icon">📢</span>
-                                    <span>开始广播</span>
+                            <div class="field">
+                                <label>服务 UUID</label>
+                                <div class="inp"><input class="mono" maxlength="36" id="broadcastServiceUuid" placeholder="4 / 8 / 36 位 HEX" value="FFE0"></div>
+                                <div class="err-line" id="broadcastUuidErr" style="display:none"><svg class="ic xs" aria-hidden="true"><use href="#i-warn"/></svg>UUID 需为 4 / 8 / 36 位十六进制</div>
+                            </div>
+                            <div class="field">
+                                <label>厂商 ID（HEX）</label>
+                                <div class="inp"><input class="mono" maxlength="4" id="broadcastManufacturerId" placeholder="0001" value="0001"></div>
+                            </div>
+                            <div class="field">
+                                <label>厂商数据（ASCII）</label>
+                                <div class="inp"><input maxlength="26" id="broadcastManufacturerData" placeholder="BLE" value="BLE"></div>
+                            </div>
+                            <div class="bytebar" id="broadcastBytebar">
+                                <span class="bt">ADV 负载预算</span>
+                                <span class="num" id="broadcastByteTotal">0</span><span class="cap">/ 31 字节</span>
+                            </div>
+                            <div class="budget" id="broadcastBudget"></div>
+                            <div style="display:flex;gap:9px;margin-top:14px">
+                                <button id="startBroadcastButton" class="btn primary">
+                                    <svg class="ic sm" aria-hidden="true"><use href="#i-cast"/></svg><span>开始广播</span>
                                 </button>
-                                <button id="stopBroadcastButton" class="btn btn-danger" style="display: none;">
-                                    <span class="icon">⏹</span>
-                                    <span>停止广播</span>
+                                <button id="stopBroadcastButton" class="btn danger" style="display:none;">
+                                    <svg class="ic sm" aria-hidden="true"><use href="#i-stop"/></svg><span>停止广播</span>
+                                </button>
+                                <button id="checkSupportButton" class="btn soft">
+                                    <svg class="ic sm" aria-hidden="true"><use href="#i-refresh"/></svg><span>检查支持</span>
                                 </button>
                             </div>
                         </div>
-
-                        <div class="broadcast-info">
-                            <h4>广播说明</h4>
-                            <ul>
-                                <li>设备将以设置的名称和 UUID 进行广播</li>
-                                <li>其他设备可以通过扫描发现此广播</li>
-                                <li>macOS 上可能需要额外权限</li>
-                                <li>广播时无法扫描其他设备</li>
-                            </ul>
+                        <div style="margin-top:2px">
+                            <!-- 广播日志（正典 cardv 白卡变体） -->
+                            <log-panel id="broadcastLogPanel" variant="cardv"></log-panel>
                         </div>
                     </div>
                 </div>

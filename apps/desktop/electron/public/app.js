@@ -33,6 +33,11 @@ class App {
         this.userDisconnected = new Set();
         this.autoReconnectEnabled = true;
 
+        this.isBroadcasting = false; // 广播状态
+        this.broadcastSupportChecked = false; // P008 检查支持状态
+        this.broadcastUuidError = false; // P008 UUID 校验态
+        this.broadcastFailed = false; // P008 启动失败徽章态
+
         // E2E UI Testing Mock Fallback (Polyfill bleAPI if running strictly in browser)
         if (this.USE_MOCK_BLE && !window.bleAPI) {
             console.warn('[MOCK] Polyfilling window.bleAPI for Playwright test environment');
@@ -100,12 +105,18 @@ class App {
             this.toggleScan();
         });
 
-        // Broadcast buttons
+        // Broadcast buttons（P008 正典：开始/停止/检查支持 + 预算实时计算）
         document.getElementById('startBroadcastButton')?.addEventListener('click', () => {
             this.startBroadcast();
         });
         document.getElementById('stopBroadcastButton')?.addEventListener('click', () => {
             this.stopBroadcast();
+        });
+        document.getElementById('checkSupportButton')?.addEventListener('click', () => {
+            this.checkBroadcastSupport();
+        });
+        ['broadcastName', 'broadcastServiceUuid', 'broadcastManufacturerId', 'broadcastManufacturerData'].forEach((id) => {
+            document.getElementById(id)?.addEventListener('input', () => this.updateByteBudget());
         });
 
         // F027/F028/F029：关于页二级导航与分享（桌面口径）
@@ -618,24 +629,122 @@ class App {
         }
     }
 
+    // P008 广播表单读取（includeName 恒真：桌面 noble 路径始终带名）
+    readBroadcastForm() {
+        return {
+            name: document.getElementById('broadcastName')?.value || 'SmartBLE',
+            uuid: (document.getElementById('broadcastServiceUuid')?.value || '').trim(),
+            mfgId: (document.getElementById('broadcastManufacturerId')?.value || '').trim(),
+            mfgData: document.getElementById('broadcastManufacturerData')?.value || '',
+        };
+    }
+
+    // P008 31B 预算（正典口径：名称 2+len / UUID 2+len/2 / 厂商块 4+dataLen）
+    calcAdvertiseBytes(f) {
+        const nameB = f.name ? 2 + f.name.length : 0;
+        const uuidB = f.uuid && this.isValidBroadcastUuid(f.uuid) ? 2 + f.uuid.length / 2 : 0;
+        const mfgB = (f.mfgId || f.mfgData) ? 4 + f.mfgData.length : 0;
+        return { name: nameB, uuid: uuidB, mfg: mfgB, total: nameB + uuidB + mfgB };
+    }
+
+    isValidBroadcastUuid(u) {
+        return /^([0-9a-fA-F]{4}|[0-9a-fA-F]{8}|[0-9a-fA-F]{36})$/.test(u);
+    }
+
+    // P008 预算条 + 四行明细 + 超限拦截态
+    updateByteBudget() {
+        const f = this.readBroadcastForm();
+        const b = this.calcAdvertiseBytes(f);
+        const over = b.total > 31;
+        const uuidOk = !f.uuid || this.isValidBroadcastUuid(f.uuid);
+
+        const bar = document.getElementById('broadcastBytebar');
+        if (bar) bar.classList.toggle('over', over);
+        const totalEl = document.getElementById('broadcastByteTotal');
+        if (totalEl) totalEl.textContent = String(b.total);
+
+        const budget = document.getElementById('broadcastBudget');
+        if (budget) {
+            budget.innerHTML = `
+                <div class="b-r ${b.name > 31 ? 'over' : ''}"><span>完整名称 (0x09)</span><span>${b.name} B</span></div>
+                <div class="b-r"><span>服务 UUID (0x03/0x07)</span><span>${b.uuid} B</span></div>
+                <div class="b-r"><span>厂商块 (0xFF = 2+2+${f.mfgData.length})</span><span>${b.mfg} B</span></div>
+                <div class="b-r tot ${over ? 'over' : ''}"><span>合计 ${over ? '· 超限，启动将被拦截（不静默截断）' : ''}</span><span>${b.total} / 31 B</span></div>`;
+        }
+
+        const errEl = document.getElementById('broadcastUuidErr');
+        if (errEl) errEl.style.display = uuidOk ? 'none' : 'flex';
+        this.broadcastUuidError = !uuidOk;
+
+        const startBtn = document.getElementById('startBroadcastButton');
+        if (startBtn && !this.isBroadcasting) startBtn.disabled = over || !uuidOk;
+    }
+
+    // P008 广播状态徽章（正典：广播中 on / 失败 err / 已就绪 warn / 未就绪 dim）+ 输入禁用
+    updateBroadcastStatus(state) {
+        const badge = document.getElementById('broadcastStateBadge');
+        const startBtn = document.getElementById('startBroadcastButton');
+        const stopBtn = document.getElementById('stopBroadcastButton');
+        const lock = document.getElementById('broadcastNameLock');
+        const words = { advertising: ['on', '广播中'], failed: ['err', '失败'], ready: ['warn', '已就绪'], idle: ['dim', '未就绪'] };
+        const [tone, word] = words[state] || words.idle;
+
+        if (badge) {
+            badge.className = 'badge ' + tone;
+            badge.innerHTML = `<i class="dot"></i>${word}`;
+        }
+        const broadcasting = state === 'advertising';
+        ['broadcastName', 'broadcastServiceUuid', 'broadcastManufacturerId', 'broadcastManufacturerData'].forEach((id) => {
+            const el = document.getElementById(id);
+            if (el) el.disabled = broadcasting;
+        });
+        if (lock) lock.style.display = broadcasting ? '' : 'none';
+        if (startBtn) startBtn.style.display = broadcasting ? 'none' : 'inline-flex';
+        if (stopBtn) stopBtn.style.display = broadcasting ? 'inline-flex' : 'none';
+        if (broadcasting && badge) badge.classList.add('on');
+    }
+
+    // P008 广播日志（cardv 白卡 + F026 脱敏漏斗）
+    bLog(type, msg) {
+        const text = window.SmartBLELogRedaction ? window.SmartBLELogRedaction.sanitizeLogString(msg) : msg;
+        const panel = document.getElementById('broadcastLogPanel');
+        if (panel) panel.addLog(type, text);
+    }
+
     async startBroadcast() {
-        const name = document.getElementById('broadcastName')?.value || 'SmartBLE';
-        const serviceUuid = document.getElementById('broadcastServiceUuid')?.value || 'FFF0';
-        const manufacturerId = document.getElementById('broadcastManufacturerId')?.value || '0A00';
-        const manufacturerData = document.getElementById('broadcastManufacturerData')?.value || 'SmartBLE_Broadcast';
-        const includeName = document.getElementById('broadcastIncludeName')?.checked ?? true;
+        const f = this.readBroadcastForm();
+        const b = this.calcAdvertiseBytes(f);
+
+        if (this.broadcastUuidError) {
+            this.bLog('error', 'UUID 非法：需为 4 / 8 / 36 位十六进制');
+            this.showToast('UUID 非法，请检查服务 UUID 格式', 'error');
+            return;
+        }
+        if (b.total > 31) {
+            this.bLog('error', `广播数据超限：当前 ${b.total} 字节，BLE 最多支持 31 字节（不静默截断）`);
+            this.showToast(`广播数据超限（${b.total}/31 字节）`, 'error');
+            return;
+        }
 
         try {
-            const result = await window.bleAPI.startAdvertising(name, [serviceUuid], manufacturerId, manufacturerData, includeName);
+            this.bLog('info', `启动广播 · 名称 ${f.name} · UUID ${f.uuid || '—'} · 厂商 0x${f.mfgId || '0000'}`);
+            const result = await window.bleAPI.startAdvertising(f.name, f.uuid ? [f.uuid] : [], f.mfgId, f.mfgData, true);
             if (result.success) {
                 this.isBroadcasting = true;
-                this.updateBroadcastStatus(true);
+                this.updateBroadcastStatus('advertising');
+                this.bLog('success', '广播已启动');
                 this.showToast('广播已启动', 'success');
             } else {
+                this.broadcastFailed = true;
+                this.updateBroadcastStatus('failed');
+                this.bLog('error', `广播启动失败: ${result.error}`);
                 this.showToast(`启动失败: ${result.error}`, 'error');
             }
         } catch (error) {
-            this.showToast(`启动失败: ${error.message}`, 'error');
+            this.broadcastFailed = true;
+            this.updateBroadcastStatus('failed');
+            this.bLog('error', `广播启动失败: ${error.message || error}`);
+            this.showToast(`启动失败: ${error.message || error}`, 'error');
         }
     }
 
@@ -644,7 +753,8 @@ class App {
             const result = await window.bleAPI.stopAdvertising();
             if (result.success) {
                 this.isBroadcasting = false;
-                this.updateBroadcastStatus(false);
+                this.updateBroadcastStatus(this.broadcastSupportChecked ? 'ready' : 'idle');
+                this.bLog('info', '广播已停止');
                 this.showToast('广播已停止', 'info');
             }
         } catch (error) {
@@ -652,27 +762,19 @@ class App {
         }
     }
 
-    updateBroadcastStatus(isBroadcasting) {
-        const statusEl = document.getElementById('broadcastStatus');
-        const startBtn = document.getElementById('startBroadcastButton');
-        const stopBtn = document.getElementById('stopBroadcastButton');
-
-        if (!statusEl) return;
-
-        const dot = statusEl.querySelector('.status-dot');
-        const text = statusEl.querySelector('.status-text');
-
-        if (isBroadcasting) {
-            if (dot) dot.className = 'status-dot active';
-            if (text) text.textContent = '正在广播';
-            if (startBtn) startBtn.style.display = 'none';
-            if (stopBtn) stopBtn.style.display = 'inline-flex';
-        } else {
-            if (dot) dot.className = 'status-dot';
-            if (text) text.textContent = '未广播';
-            if (startBtn) startBtn.style.display = 'inline-flex';
-            if (stopBtn) stopBtn.style.display = 'none';
+    // P008 检查支持（桌面原生层口径：Linux=BlueZ 可用，mac/win 原生层受限）
+    checkBroadcastSupport() {
+        const os = window.platform?.platform || '';
+        const layer = { linux: 'BlueZ', darwin: 'CoreBluetooth', win32: 'WinRT' }[os] || '未知原生层';
+        const supported = os === 'linux';
+        this.broadcastSupportChecked = true;
+        this.broadcastFailed = false;
+        this.updateBroadcastStatus(supported ? 'ready' : 'idle');
+        this.bLog('info', `桌面原生层 ${layer}（${os || '未知平台'}）——${supported ? '支持外围广播' : '扫描/连接可用，广播外围受限（10_platform §2.4）'}`);
+        if (!supported) {
+            this.bLog('info', '请使用手机客户端执行虚拟外设测试');
         }
+        this.showToast(supported ? '已就绪：支持广播' : '当前平台广播外围受限', supported ? 'success' : 'info');
     }
 
     async initBLE() {
@@ -686,6 +788,12 @@ class App {
             if (window.platform?.platform === 'linux') {
                 document.getElementById('broadcastTab').style.display = 'flex';
             }
+            // P008 平台 chip + 初始徽章态 + 31B 预算首算
+            const osNames = { win32: 'Windows', darwin: 'macOS', linux: 'Linux' };
+            const chip = document.getElementById('broadcastPlatformChip');
+            if (chip) chip.textContent = `平台：Desktop · ${osNames[window.platform?.platform] || '未知'}`;
+            this.updateBroadcastStatus('idle');
+            this.updateByteBudget();
         } catch (error) {
             console.error('BLE init error:', error);
             this.showError('初始化失败: ' + error.message);

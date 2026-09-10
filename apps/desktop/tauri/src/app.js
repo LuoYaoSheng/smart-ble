@@ -41,6 +41,10 @@ const state = {
     servicesByDevice: new Map(),
     logs: [],
     advertising: false,
+    broadcastSupportChecked: false, // P008 检查支持状态
+    broadcastUuidError: false,      // P008 UUID 校验态
+    broadcastUnsupported: false,    // P008 平台拦截态
+    broadcastOsName: '',
     // Filter options
     filters: {
         rssi: -100,
@@ -207,9 +211,13 @@ function setupEventListeners() {
         }
     });
 
-    // Broadcast buttons
+    // Broadcast buttons（P008 正典：开始/停止/检查支持 + 预算实时计算）
     elements.startBroadcastButton?.addEventListener('click', startAdvertising);
     elements.stopBroadcastButton?.addEventListener('click', stopAdvertising);
+    document.getElementById('checkSupportButton')?.addEventListener('click', checkBroadcastSupport);
+    ['broadcastName', 'broadcastServiceUuid', 'broadcastManufacturerId', 'broadcastManufacturerData'].forEach((id) => {
+        document.getElementById(id)?.addEventListener('input', () => updateByteBudget());
+    });
 
     // Filter controls (via Web Component)
     const filterPanel = document.getElementById('mainFilterPanel');
@@ -702,31 +710,6 @@ function shareApp() {
 }
 
 // T14: OS Support Verification for Peripheral Broadcaster
-function checkBroadcastSupport() {
-    // navigator.platform is deprecated but userAgent serves equally well
-    const uc = navigator.userAgent.toLowerCase();
-    const isMac = uc.includes('mac') || uc.includes('darwin');
-    
-    const startBtn = document.getElementById('startBroadcastButton');
-    const statusEl = document.getElementById('broadcastStatus');
-    
-    // Disable on Windows and Linux fallback
-    if (!isMac) {
-        let osName = uc.includes('win') ? 'Windows' : 'Linux';
-        if (startBtn) {
-            startBtn.disabled = true;
-            startBtn.style.opacity = '0.5';
-            startBtn.style.cursor = 'not-allowed';
-        }
-        if (statusEl) {
-            statusEl.innerHTML = `
-                <span class="status-dot error"></span>
-                <span class="status-text" style="color:var(--error)">当前操作系统（${osName}）底层严格限制 BLE 外设广播。<br/>请使用手机客户端执行虚拟外设测试。</span>
-            `;
-        }
-    }
-}
-
 // P007 已连接面板（正典：sumcard 汇总卡 + conn 变体设备卡 + link 空态）
 function renderConnectedDevicesPanel() {
     const list = document.getElementById('connectedDeviceList');
@@ -1311,107 +1294,146 @@ function updateCharacteristicValue(deviceId, serviceUuid, charUuid, value) {
 }
 
 // Update broadcast UI based on platform - matches Flutter pattern
-function updateBroadcastPlatformInfo() {
-    const broadcastInfo = document.querySelector('.broadcast-info ul');
-    if (!broadcastInfo) return;
-
-    // Platform-specific messages based on Flutter implementation
-    let infoItems = [];
-
-    if (PLATFORM.isMacOS) {
-        infoItems = [
-            '<li><strong>macOS 平台：</strong>支持自定义广播名称</li>',
-            '<li>其他设备可以扫描发现此广播</li>',
-            '<li class="warning-item">⚠️ 此 Tauri 版本外设模式功能受限</li>',
-            '<li class="info-item">💡 建议使用 <code>apps/desktop/macos/SmartBLE-mac</code> 原生应用</li>',
-            '<li>btleplug 库对 macOS 外设模式支持有限</li>'
-        ];
-    } else if (PLATFORM.isWindows) {
-        infoItems = [
-            '<li><strong>Windows 平台暂不支持外设模式</strong></li>',
-            '<li class="error-item">❌ btleplug 库在 Windows 上不支持广播功能</li>',
-            '<li class="info-item">💡 请使用 Android/iOS/macOS 原生应用进行广播</li>',
-            '<li>扫描功能正常可用</li>'
-        ];
-    } else if (PLATFORM.isLinux) {
-        infoItems = [
-            '<li><strong>Linux 平台暂不支持外设模式</strong></li>',
-            '<li class="error-item">❌ 需要 BlueZ 外设模式支持（当前未实现）</li>',
-            '<li class="info-item">💡 请使用 Android/iOS/macOS 原生应用进行广播</li>',
-            '<li>扫描功能正常可用</li>'
-        ];
-    } else {
-        infoItems = [
-            '<li><strong>当前平台不支持外设模式</strong></li>',
-            '<li>请使用对应平台的原生应用</li>',
-            '<li>扫描功能正常可用</li>'
-        ];
-    }
-
-    broadcastInfo.innerHTML = infoItems.join('');
+// P008 广播表单读取
+function readBroadcastForm() {
+    return {
+        name: elements.broadcastName?.value || 'SmartBLE',
+        uuid: (elements.broadcastServiceUuid?.value || '').trim(),
+        mfgId: (elements.broadcastManufacturerId?.value || '').trim(),
+        mfgData: elements.broadcastManufacturerData?.value || '',
+    };
 }
 
-// T08+T09: Advertising - aligned with UniApp broadcast options
-// Platform-specific messaging matches Flutter pattern
-async function startAdvertising() {
-    const name = elements.broadcastName?.value || 'SmartBLE';
-    const serviceUuid = elements.broadcastServiceUuid?.value || 'FFF0';
-    const manufacturerId = elements.broadcastManufacturerId?.value || '0A00';
-    const manufacturerData = elements.broadcastManufacturerData?.value || 'SmartBLE_Broadcast';
-    const includeName = elements.broadcastIncludeName?.checked !== false;
+// P008 31B 预算（正典口径：名称 2+len / UUID 2+len/2 / 厂商块 4+dataLen）
+function calcAdvertiseBytes(f) {
+    const nameB = f.name ? 2 + f.name.length : 0;
+    const uuidB = f.uuid && isValidBroadcastUuid(f.uuid) ? 2 + f.uuid.length / 2 : 0;
+    const mfgB = (f.mfgId || f.mfgData) ? 4 + f.mfgData.length : 0;
+    return { name: nameB, uuid: uuidB, mfg: mfgB, total: nameB + uuidB + mfgB };
+}
 
-    // T08: 统一广播数据超限校验（BLE ADV payload 上限 31 字节）
-    const totalBytes = calcAdvertiseBytesJs(serviceUuid, manufacturerData);
-    if (totalBytes > 31) {
-        addLog('error', `广播数据超限：当前 ${totalBytes} 字节，BLE 最多支持 31 字节`);
+function isValidBroadcastUuid(u) {
+    return /^([0-9a-fA-F]{4}|[0-9a-fA-F]{8}|[0-9a-fA-F]{36})$/.test(u);
+}
+
+// P008 预算条 + 四行明细 + 超限拦截态
+function updateByteBudget() {
+    const f = readBroadcastForm();
+    const b = calcAdvertiseBytes(f);
+    const over = b.total > 31;
+    const uuidOk = !f.uuid || isValidBroadcastUuid(f.uuid);
+
+    const bar = document.getElementById('broadcastBytebar');
+    if (bar) bar.classList.toggle('over', over);
+    const totalEl = document.getElementById('broadcastByteTotal');
+    if (totalEl) totalEl.textContent = String(b.total);
+
+    const budget = document.getElementById('broadcastBudget');
+    if (budget) {
+        budget.innerHTML = `
+            <div class="b-r ${b.name > 31 ? 'over' : ''}"><span>完整名称 (0x09)</span><span>${b.name} B</span></div>
+            <div class="b-r"><span>服务 UUID (0x03/0x07)</span><span>${b.uuid} B</span></div>
+            <div class="b-r"><span>厂商块 (0xFF = 2+2+${f.mfgData.length})</span><span>${b.mfg} B</span></div>
+            <div class="b-r tot ${over ? 'over' : ''}"><span>合计 ${over ? '· 超限，启动将被拦截（不静默截断）' : ''}</span><span>${b.total} / 31 B</span></div>`;
+    }
+
+    const errEl = document.getElementById('broadcastUuidErr');
+    if (errEl) errEl.style.display = uuidOk ? 'none' : 'flex';
+    state.broadcastUuidError = !uuidOk;
+
+    const startBtn = document.getElementById('startBroadcastButton');
+    if (startBtn && !state.advertising) startBtn.disabled = over || !uuidOk || state.broadcastUnsupported;
+}
+
+// P008 广播状态徽章（正典：广播中 on / 失败 err / 已就绪 warn / 未就绪 dim）+ 输入禁用
+function updateBroadcastStatus(state) {
+    const badge = document.getElementById('broadcastStateBadge');
+    const startBtn = document.getElementById('startBroadcastButton');
+    const stopBtn = document.getElementById('stopBroadcastButton');
+    const lock = document.getElementById('broadcastNameLock');
+    const words = { advertising: ['on', '广播中'], failed: ['err', '失败'], ready: ['warn', '已就绪'], idle: ['dim', '未就绪'] };
+    const [tone, word] = words[state] || words.idle;
+
+    if (badge) {
+        badge.className = 'badge ' + tone;
+        badge.innerHTML = `<i class="dot"></i>${word}`;
+    }
+    const advertising = state === 'advertising';
+    ['broadcastName', 'broadcastServiceUuid', 'broadcastManufacturerId', 'broadcastManufacturerData'].forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) el.disabled = advertising;
+    });
+    if (lock) lock.style.display = advertising ? '' : 'none';
+    if (startBtn) startBtn.style.display = advertising ? 'none' : 'inline-flex';
+    if (stopBtn) stopBtn.style.display = advertising ? 'inline-flex' : 'none';
+}
+
+// P008 广播日志（cardv 白卡 + F026 脱敏漏斗）
+function bLog(type, msg) {
+    const text = window.SmartBLELogRedaction ? window.SmartBLELogRedaction.sanitizeLogString(msg) : msg;
+    const panel = document.getElementById('broadcastLogPanel');
+    if (panel) panel.addLog(type, text);
+}
+
+// P008 检查支持（平台原生层口径：mac=btleplug 受限 / win·linux 不支持）
+function checkBroadcastSupport() {
+    const uc = navigator.userAgent.toLowerCase();
+    const isMac = uc.includes('mac') || uc.includes('darwin');
+    const isWin = uc.includes('win');
+    state.broadcastOsName = isMac ? 'macOS' : isWin ? 'Windows' : 'Linux';
+    state.broadcastUnsupported = !isMac;
+    state.broadcastSupportChecked = true;
+
+    updateBroadcastStatus(isMac ? 'ready' : 'idle');
+    const layer = isMac ? 'btleplug/CoreBluetooth' : isWin ? 'WinRT' : 'BlueZ';
+    bLog('info', `桌面原生层 ${layer}（${state.broadcastOsName}）——${isMac ? '外围能力受限，以实测为准（10_platform §2.4）' : '底层严格限制 BLE 外设广播'}`);
+    if (!isMac) {
+        bLog('info', '请使用手机客户端执行虚拟外设测试');
+    }
+    updateByteBudget();
+}
+
+async function startAdvertising() {
+    const f = readBroadcastForm();
+    const b = calcAdvertiseBytes(f);
+
+    if (state.broadcastUuidError) {
+        bLog('error', 'UUID 非法：需为 4 / 8 / 36 位十六进制');
+        return;
+    }
+    if (b.total > 31) {
+        bLog('error', `广播数据超限：当前 ${b.total} 字节，BLE 最多支持 31 字节（不静默截断）`);
         return;
     }
 
-    // Show platform-specific warning before attempting
-    if (PLATFORM.isWindows) {
-        addLog('warning', 'Windows 平台暂不支持外设模式');
-        addLog('info', '💡 请使用 Android/iOS/macOS 原生应用进行广播');
-    } else if (PLATFORM.isLinux) {
-        addLog('warning', 'Linux 平台暂不支持外设模式');
-        addLog('info', '💡 请使用 Android/iOS/macOS 原生应用进行广播');
-    } else if (PLATFORM.isMacOS) {
-        addLog('warning', 'macOS 外设模式需要原生应用支持');
-        addLog('info', '💡 建议使用 apps/desktop/macos/SmartBLE-mac 原生应用');
+    if (state.broadcastUnsupported) {
+        bLog('error', `当前平台（${state.broadcastOsName || '此系统'}）底层严格限制 BLE 外设广播，启动已拦截`);
+        bLog('info', '请使用手机客户端执行虚拟外设测试');
+        return;
     }
 
     try {
+        bLog('info', `启动广播 · 名称 ${f.name} · UUID ${f.uuid || '—'} · 厂商 0x${f.mfgId || '0000'}`);
         const result = await invoke('start_advertising', {
-            name,
-            serviceUuids: [serviceUuid],
-            manufacturerId,
-            manufacturerData,
-            includeName
+            name: f.name,
+            serviceUuids: f.uuid ? [f.uuid] : [],
+            manufacturerId: f.mfgId,
+            manufacturerData: f.mfgData,
+            includeName: true
         });
         if (result.success) {
             state.advertising = true;
-            updateAdvertisingUI(true);
-            // Platform-specific success message (like Flutter)
-            if (PLATFORM.isMacOS) {
-                addLog('success', `开始广播: ${name}`);
-            } else {
-                addLog('success', `Advertising started as "${name}"`);
-            }
+            updateBroadcastStatus('advertising');
+            bLog('success', `广播已启动 · ${f.name}`);
         } else {
-            // Platform-specific error messages
-            if (PLATFORM.isMacOS) {
-                addLog('error', `macOS 外设模式需要原生应用支持: ${result.error}`);
-            } else if (PLATFORM.isWindows) {
-                addLog('error', `Windows 不支持外设模式: ${result.error}`);
-            } else if (PLATFORM.isLinux) {
-                addLog('error', `Linux 不支持外设模式: ${result.error}`);
-            } else {
-                addLog('error', `Advertising failed: ${result.error}`);
-            }
-            addLog('info', PERIPHERAL_SUPPORT.recommendation);
+            updateBroadcastStatus('failed');
+            bLog('error', `广播启动失败: ${result.error}`);
+            bLog('info', PERIPHERAL_SUPPORT.recommendation);
         }
     } catch (error) {
-        addLog('error', `Advertising error: ${error}`);
-        addLog('info', PERIPHERAL_SUPPORT.recommendation);
+        updateBroadcastStatus('failed');
+        bLog('error', `广播启动失败: ${error}`);
+        bLog('info', PERIPHERAL_SUPPORT.recommendation);
     }
 }
 
@@ -1420,50 +1442,24 @@ async function stopAdvertising() {
         const result = await invoke('stop_advertising');
         if (result.success) {
             state.advertising = false;
-            updateAdvertisingUI(false);
-            addLog('info', 'Advertising stopped');
+            updateBroadcastStatus(state.broadcastSupportChecked && !state.broadcastUnsupported ? 'ready' : 'idle');
+            bLog('info', '广播已停止');
         }
     } catch (error) {
-        addLog('error', `Stop advertising error: ${error}`);
+        bLog('error', `停止广播失败: ${error}`);
     }
 }
 
-// T08: 计算广播包字节数（BLE ADV payload 上限 31 字节）
-function calcAdvertiseBytesJs(serviceUuid, manufacturerData) {
-    let total = 0;
-    if (serviceUuid) {
-        const isShort = serviceUuid.replace(/-/g, '').length <= 8;
-        total += 2 + (isShort ? 2 : 16);
-    }
-    if (manufacturerData) {
-        const dataBytes = new TextEncoder().encode(manufacturerData).length;
-        total += 2 + 2 + dataBytes; // AD头(2) + 厂商ID(2) + 数据
-    }
-    return total;
+// Update broadcast UI based on platform（P008：平台 chip + 初始徽章态 + 预算首算；旧平台说明列表由广播日志承接）
+function updateBroadcastPlatformInfo() {
+    const uc = navigator.userAgent.toLowerCase();
+    const osName = (uc.includes('mac') || uc.includes('darwin')) ? 'macOS' : uc.includes('win') ? 'Windows' : 'Linux';
+    const chip = document.getElementById('broadcastPlatformChip');
+    if (chip) chip.textContent = `平台：Desktop · ${osName}`;
+    updateBroadcastStatus('idle');
+    updateByteBudget();
 }
 
-function updateAdvertisingUI(advertising) {
-    const statusDot = elements.broadcastStatus?.querySelector('.status-dot');
-    const statusText = elements.broadcastStatus?.querySelector('.status-text');
-
-    if (advertising) {
-        if (statusDot) statusDot.classList.add('active');
-        if (statusText) statusText.textContent = 'Broadcasting';
-        if (elements.startBroadcastButton) elements.startBroadcastButton.style.display = 'none';
-        if (elements.stopBroadcastButton) elements.stopBroadcastButton.style.display = 'inline-flex';
-        elements.broadcastName?.setAttribute('disabled', 'true');
-        elements.broadcastServiceUuid?.setAttribute('disabled', 'true');
-    } else {
-        if (statusDot) statusDot.classList.remove('active');
-        if (statusText) statusText.textContent = 'Not broadcasting';
-        if (elements.startBroadcastButton) elements.startBroadcastButton.style.display = 'inline-flex';
-        if (elements.stopBroadcastButton) elements.stopBroadcastButton.style.display = 'none';
-        elements.broadcastName?.removeAttribute('disabled');
-        elements.broadcastServiceUuid?.removeAttribute('disabled');
-    }
-}
-
-// Log Functions
 function addLog(type, message) {
     // F026：渲染端日志唯一漏斗，统一脱敏（uniapp logger/log-redaction.js 锁定镜像）
     const text = window.SmartBLELogRedaction ? window.SmartBLELogRedaction.sanitizeLogString(message) : message;
