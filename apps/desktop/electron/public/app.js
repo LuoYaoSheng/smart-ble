@@ -141,17 +141,80 @@ class App {
         const writeDialog = document.getElementById('mainWriteDialog');
         if (writeDialog) {
             writeDialog.addEventListener('write', async (e) => {
-                const { serviceUuid, charUuid, data, format } = e.detail;
+                const { serviceUuid, charUuid, data, format, mode } = e.detail;
                 if (!this.currentDevice) return;
-                
-                try {
+
+                const writeOnce = async (payload) => {
                     const result = await window.bleAPI.writeCharacteristic(
                         this.currentDevice.id,
                         serviceUuid,
                         charUuid,
-                        data,
+                        payload,
                         format
                     );
+                    return result;
+                };
+
+                // C9 写入分段执行（对齐 F-AND 参照实现）
+                if (mode === 'batch' && Array.isArray(e.detail.lines)) {
+                    const lines = e.detail.lines;
+                    this.addLog(`批量发送: ${lines.length} 条指令…`);
+                    let ok = 0;
+                    let fail = 0;
+                    for (const line of lines) {
+                        try {
+                            const result = await writeOnce(line);
+                            if (result.success) { ok++; this.addLog(`写入成功: ${line}`, 'success'); }
+                            else { fail++; this.addLog(`写入失败: ${result.error}`, 'error'); }
+                        } catch (error) {
+                            fail++;
+                            this.addLog(`写入失败: ${error.message || error}`, 'error');
+                        }
+                    }
+                    this.addLog(`批量发送完成（成功 ${ok} / 失败 ${fail}）`, fail === 0 ? 'success' : 'error');
+                    if (fail === 0) writeDialog.close();
+                    return;
+                }
+
+                if (mode === 'loop') {
+                    const { loopCount, intervalMs } = e.detail;
+                    const infinite = !loopCount || loopCount <= 0;
+                    const total = infinite ? '∞' : String(loopCount);
+                    this._writeLoopCancelled = false;
+                    const cancelLoop = () => { this._writeLoopCancelled = true; };
+                    writeDialog.addEventListener('close', cancelLoop, { once: true });
+                    this.addLog(`循环发送（${total} 次 × ${intervalMs}ms）开始…`);
+                    let sent = 0;
+                    try {
+                        while (!this._writeLoopCancelled && (infinite || sent < loopCount)) {
+                            const result = await writeOnce(data);
+                            sent++;
+                            if (!result.success) {
+                                this.addLog(`循环第 ${sent} 次写入失败: ${result.error}`, 'error');
+                                break;
+                            }
+                            this.addLog(`循环发送中 (${sent}/${total})`);
+                            if (infinite || sent < loopCount) {
+                                await new Promise((r) => setTimeout(r, intervalMs));
+                            }
+                        }
+                        if (this._writeLoopCancelled) {
+                            this.addLog(`循环发送已停止（已发 ${sent} 次）`);
+                        } else {
+                            this.addLog(`循环发送完成（共 ${sent} 次）`, 'success');
+                            writeDialog.close();
+                        }
+                    } catch (error) {
+                        this.addLog(`循环发送中断: ${error.message || error}`, 'error');
+                    } finally {
+                        writeDialog.removeEventListener('close', cancelLoop);
+                    }
+                    return;
+                }
+
+                // 单次（默认，原路径）
+                try {
+                    const result = await writeOnce(data);
                     if (result.success) {
                         this.addLog(`写入成功: ${data}`, 'success');
                         writeDialog.close();
@@ -159,7 +222,7 @@ class App {
                         this.addLog(`写入失败: ${result.error}`, 'error');
                     }
                 } catch (error) {
-                    this.addLog(`写入失败: ${error.message}`, 'error');
+                    this.addLog(`写入失败: ${error.message || error}`, 'error');
                 }
             });
         }

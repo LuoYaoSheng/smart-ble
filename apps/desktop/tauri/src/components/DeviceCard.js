@@ -70,6 +70,10 @@ class DeviceCard extends HTMLElement {
         if (!this._device) return;
         const device = this._device;
 
+        // F005 显示名批准链：name → localName → AD 0x09/0x08 → Profile → 未命名 BLE · ID后四位
+        const resolved = window.SmartBLEDisplayName?.resolveDeviceDisplayName(device);
+        const displayName = resolved ? resolved.displayName : (device.name || '未知设备');
+
         // Base styles shared across platforms
         const style = `
             <style>
@@ -206,7 +210,7 @@ class DeviceCard extends HTMLElement {
                 <div class="device-card" style="box-shadow: none; border-color: rgba(0,0,0,0.05); cursor: default;">
                     <div class="device-icon connection-icon">●</div>
                     <div class="device-info">
-                        <div class="device-name">${device.name || 'Unknown Device'}</div>
+                        <div class="device-name">${displayName}</div>
                         <div class="device-id">${device.id}</div>
                     </div>
                     <button class="btn btn-secondary" id="detailBtn">详情</button>
@@ -242,7 +246,7 @@ class DeviceCard extends HTMLElement {
                 <div class="device-card" id="cardContainer">
                     <div class="device-icon">📡</div>
                     <div class="device-info">
-                        <div class="device-name">${device.name || '未知设备'}</div>
+                        <div class="device-name">${displayName}</div>
                         <div class="device-id">${this.formatShortUuid(device.id)}</div>
                         ${serviceInfo}
                         ${manufacturerInfo}

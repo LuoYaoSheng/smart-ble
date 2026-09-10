@@ -41,13 +41,32 @@ class WriteDialog extends HTMLElement {
         const formatNode = this.shadowRoot.querySelector('input[name="format"]:checked');
         const format = formatNode ? formatNode.value : 'hex';
 
+        // C9 写入分段（对齐 F-AND 参照实现 device_detail_page.dart）：单次 / 批量（每行一条）/ 循环（次数×间隔，0=∞）
+        const modeNode = this.shadowRoot.querySelector('input[name="sendMode"]:checked');
+        const mode = modeNode ? modeNode.value : 'single';
+
+        const detail = {
+            serviceUuid: this._serviceUuid,
+            charUuid: this._charUuid,
+            data,
+            format,
+            mode,
+        };
+
+        if (mode === 'batch') {
+            detail.lines = data.split(/\r?\n/).map((l) => l.trim()).filter((l) => l.length > 0);
+            if (detail.lines.length === 0) return;
+        } else if (mode === 'loop') {
+            const loopNode = this.shadowRoot.getElementById('loopCountInput');
+            const intervalNode = this.shadowRoot.getElementById('loopIntervalInput');
+            const loopCount = Math.max(0, parseInt(loopNode ? loopNode.value : '0', 10) || 0);
+            const intervalMs = Math.max(0, parseInt(intervalNode ? intervalNode.value : '1000', 10) || 1000);
+            detail.loopCount = loopCount;
+            detail.intervalMs = intervalMs;
+        }
+
         this.dispatchEvent(new CustomEvent('write', {
-            detail: {
-                serviceUuid: this._serviceUuid,
-                charUuid: this._charUuid,
-                data,
-                format
-            },
+            detail,
             bubbles: true,
             composed: true
         }));
@@ -125,6 +144,13 @@ class WriteDialog extends HTMLElement {
                     outline: none;
                     border-color: #007aff;
                 }
+                .loop-inputs {
+                    display: flex;
+                    gap: 10px;
+                }
+                .loop-input {
+                    width: 50%;
+                }
                 .format-toggle {
                     display: flex;
                     gap: 16px;
@@ -166,17 +192,44 @@ class WriteDialog extends HTMLElement {
                     <div class="dialog-body">
                         <div class="form-group">
                             <label id="writeCharLabel">Characteristic: </label>
-                            <input type="text" id="writeDataInput" class="input" placeholder="FF 01 02">
+                            <textarea type="text" id="writeDataInput" class="input" placeholder="FF 01 02（批量模式每行一条）" rows="3"></textarea>
                         </div>
-                        <div class="format-toggle">
-                            <label class="radio">
-                                <input type="radio" name="format" value="hex" checked>
-                                <span>HEX</span>
-                            </label>
-                            <label class="radio">
-                                <input type="radio" name="format" value="utf8">
-                                <span>UTF-8</span>
-                            </label>
+                        <div class="form-group">
+                            <label>数据类型</label>
+                            <div class="format-toggle">
+                                <label class="radio">
+                                    <input type="radio" name="format" value="hex" checked>
+                                    <span>HEX</span>
+                                </label>
+                                <label class="radio">
+                                    <input type="radio" name="format" value="utf8">
+                                    <span>UTF-8</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>发送模式</label>
+                            <div class="format-toggle">
+                                <label class="radio">
+                                    <input type="radio" name="sendMode" value="single" checked>
+                                    <span>单次</span>
+                                </label>
+                                <label class="radio">
+                                    <input type="radio" name="sendMode" value="batch">
+                                    <span>批量（每行一条）</span>
+                                </label>
+                                <label class="radio">
+                                    <input type="radio" name="sendMode" value="loop">
+                                    <span>循环</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group loop-params" id="loopParams" style="display:none;">
+                            <label>循环参数（次数 0 = 无限循环，关闭弹窗即停止）</label>
+                            <div class="loop-inputs">
+                                <input type="number" id="loopCountInput" class="input loop-input" value="3" min="0" placeholder="次数">
+                                <input type="number" id="loopIntervalInput" class="input loop-input" value="1000" min="0" placeholder="间隔 ms">
+                            </div>
                         </div>
                     </div>
                     <div class="dialog-footer">
@@ -191,9 +244,20 @@ class WriteDialog extends HTMLElement {
         this.shadowRoot.querySelector('.dialog-cancel').addEventListener('click', () => this.close());
         this.shadowRoot.querySelector('.dialog-confirm').addEventListener('click', () => this._handleWrite());
 
+        // C9：循环模式才显示参数区
+        this.shadowRoot.querySelectorAll('input[name="sendMode"]').forEach((radio) => {
+            radio.addEventListener('change', () => {
+                const params = this.shadowRoot.getElementById('loopParams');
+                if (params) {
+                    params.style.display = radio.checked && radio.value === 'loop' ? 'block' : 'none';
+                }
+            });
+        });
+
         // Also allow pressing "Enter" to submit
         this.shadowRoot.getElementById('writeDataInput').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
                 this._handleWrite();
             }
         });

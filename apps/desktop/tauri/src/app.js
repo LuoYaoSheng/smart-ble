@@ -215,20 +215,80 @@ function setupEventListeners() {
     if (writeDialog) {
         writeDialog.addEventListener('write', async (e) => {
             if (!state.currentDevice) return;
-            const { serviceUuid, charUuid, data, format } = e.detail;
+            const { serviceUuid, charUuid, data, format, mode } = e.detail;
             const deviceId = state.currentDevice.id;
 
+            const writeOnce = async (payload) => invoke('write_characteristic', {
+                deviceId, serviceUuid, charUuid, data: payload, format
+            });
+
+            // C9 写入分段执行（对齐 F-AND 参照实现；与 Electron 版互为镜像）
+            if (mode === 'batch' && Array.isArray(e.detail.lines)) {
+                const lines = e.detail.lines;
+                addLog('info', `批量发送: ${lines.length} 条指令…`);
+                let ok = 0;
+                let fail = 0;
+                for (const line of lines) {
+                    try {
+                        const result = await writeOnce(line);
+                        if (result.success) { ok++; addLog('success', `写入成功: ${line}`); }
+                        else { fail++; addLog('error', `写入失败: ${result.error}`); }
+                    } catch (error) {
+                        fail++;
+                        addLog('error', `写入失败: ${error}`);
+                    }
+                }
+                addLog(fail === 0 ? 'success' : 'error', `批量发送完成（成功 ${ok} / 失败 ${fail}）`);
+                if (fail === 0) writeDialog.close();
+                return;
+            }
+
+            if (mode === 'loop') {
+                const { loopCount, intervalMs } = e.detail;
+                const infinite = !loopCount || loopCount <= 0;
+                const total = infinite ? '∞' : String(loopCount);
+                state.writeLoopCancelled = false;
+                const cancelLoop = () => { state.writeLoopCancelled = true; };
+                writeDialog.addEventListener('close', cancelLoop, { once: true });
+                addLog('info', `循环发送（${total} 次 × ${intervalMs}ms）开始…`);
+                let sent = 0;
+                try {
+                    while (!state.writeLoopCancelled && (infinite || sent < loopCount)) {
+                        const result = await writeOnce(data);
+                        sent++;
+                        if (!result.success) {
+                            addLog('error', `循环第 ${sent} 次写入失败: ${result.error}`);
+                            break;
+                        }
+                        addLog('info', `循环发送中 (${sent}/${total})`);
+                        if (infinite || sent < loopCount) {
+                            await new Promise((r) => setTimeout(r, intervalMs));
+                        }
+                    }
+                    if (state.writeLoopCancelled) {
+                        addLog('info', `循环发送已停止（已发 ${sent} 次）`);
+                    } else {
+                        addLog('success', `循环发送完成（共 ${sent} 次）`);
+                        writeDialog.close();
+                    }
+                } catch (error) {
+                    addLog('error', `循环发送中断: ${error}`);
+                } finally {
+                    writeDialog.removeEventListener('close', cancelLoop);
+                }
+                return;
+            }
+
+            // 单次（默认，原路径）
             try {
-                const result = await invoke('write_characteristic', {
-                    deviceId, serviceUuid, charUuid, data, format
-                });
+                const result = await writeOnce(data);
                 if (result.success) {
                     addLog('success', `Write successful`);
                     writeDialog.close();
                 } else {
                     addLog('error', `Write failed: ${result.error}`);
                 }
-        
+
             } catch (error) {
                 addLog('error', `Write error: ${error}`);
             }

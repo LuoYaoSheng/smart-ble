@@ -140,9 +140,12 @@ function setupBLEEvents() {
     const adv = peripheral.advertisement || {};
 
     // 解析广播数据
+    // F005 显示名批准链：name 投影广播 localName，空名保持空串（渲染层批准链兜底，
+    // 不在数据层污染为「未知设备」——批准链正典见 uniapp device-display-name.js）
     const device = {
       id: peripheral.id,
-      name: adv.localName || '未知设备',
+      name: adv.localName || '',
+      localName: adv.localName || '',
       rssi: peripheral.rssi,
       address: peripheral.address,
       connectionState: peripheral.state === 'connected' ? 'connected' : 'disconnected',
