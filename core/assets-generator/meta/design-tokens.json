@@ -9,11 +9,14 @@
     "generator": "core/assets-generator/generate_assets.py --theme-only",
     "outputs": {
       "uniapp": "apps/uniapp/styles/tokens.css",
-      "flutter": "apps/flutter/lib/ui/design/app_tokens.dart"
+      "flutter": "apps/flutter/lib/ui/design/app_tokens.dart",
+      "ios": "apps/ios/Sources/Design/NativeDesignTokens.swift（@generated:ios-tokens 段）",
+      "mac": "apps/desktop/macos/SmartBLE-mac/Sources/Core/DSTokens.swift（@generated:mac-colors / mac-scale 段）"
     },
     "unitRules": {
       "uniapp": "px x2 -> rpx (750 base); color/shadow/z/duration raw",
-      "flutter": "px -> logical pixel 1:1"
+      "flutter": "px -> logical pixel 1:1",
+      "apple": "pt 1:1；色彩/圆角/间距入生成段，字号走 Dynamic Type/系统字体（手写区）"
     }
   },
 

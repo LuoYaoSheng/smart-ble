@@ -12,6 +12,8 @@ Outputs
               → Flutter (app_colors.dart)
 1b. Design Tokens (UI-PARITY-G0, 2026-09-09) → UniApp (styles/tokens.css)
                                            → Flutter (lib/ui/design/app_tokens.dart)
+                                           → N-IOS (Sources/Design/NativeDesignTokens.swift @generated 段)
+                                           → N-MAC (Sources/Core/DSTokens.swift @generated 段)
     Source of truth: meta/design-tokens.json (docs/specs/07_design_system/TOKEN_REFERENCE.md)
 2. i18n JSON  → Electron, Tauri, UniApp
              → Flutter (.arb)
@@ -22,6 +24,7 @@ Outputs
 Usage:
     python core/assets-generator/generate_assets.py               # 全量
     python core/assets-generator/generate_assets.py --theme-only  # 仅 1 + 1b（Token 收口通道）
+    python core/assets-generator/generate_assets.py --theme-only --check  # 漂移门禁：比对不落盘，漂移退出码 1
 """
 
 import json
@@ -56,14 +59,33 @@ ANDROID_RES       = PROJECT_ROOT / "apps/android/app/src/main/res"
 ELECTRON_PUBLIC = PROJECT_ROOT / "apps/desktop/electron/public"
 TAURI_SRC       = PROJECT_ROOT / "apps/desktop/tauri/src"
 
+# --- Apple Design Token 生成段宿主（UI-CONV 2026-09-10 收编） ---
+SWIFT_IOS_TOKENS = PROJECT_ROOT / "apps/ios/Sources/Design/NativeDesignTokens.swift"
+SWIFT_MAC_TOKENS = PROJECT_ROOT / "apps/desktop/macos/SmartBLE-mac/Sources/Core/DSTokens.swift"
+
 # ── Helpers ───────────────────────────────────────────────────────────────────
 def load_json(filepath):
     with open(filepath, 'r', encoding='utf-8') as f:
         return json.load(f)
 
+# --check 模式：不落盘，逐输出比对（设计令牌漂移门禁；check:apple-tokens 走此通道）
+CHECK_MODE = False
+_DRIFT = []
+_OK = []
+
 def write_file(filepath, content):
-    """Write text content; create parent dirs as needed."""
+    """Write text content; create parent dirs as needed. CHECK_MODE 下只比对不写。"""
     path = Path(filepath)
+    rel = path.relative_to(PROJECT_ROOT)
+    if CHECK_MODE:
+        try:
+            existing = path.read_text(encoding='utf-8')
+        except FileNotFoundError:
+            _DRIFT.append(f"缺失 {rel}")
+            return
+        (_OK if existing == content else _DRIFT).append(
+            f"{rel}" if existing == content else f"漂移 {rel}")
+        return
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, 'w', encoding='utf-8') as f:
         f.write(content)
@@ -277,6 +299,108 @@ def generate_design_tokens(tokens):
 
     write_file(PROJECT_ROOT / "apps/flutter/lib/ui/design/app_tokens.dart", dart)
     print("  ✓ lib/ui/design/app_tokens.dart → Flutter")
+
+    # Swift（Apple 双线 @generated 段）------------------------------------
+    generate_design_tokens_swift(color, radius, space)
+    print("  ✓ NativeDesignTokens.swift / DSTokens.swift → N-IOS / N-MAC（@generated 段）")
+
+# ── 1c. Design Tokens → Apple 双线生成段（UI-CONV 2026-09-10：手写镜像收编） ───
+# 命名映射（swift 名 → 正典 color 段路径）；iOS 中性命名为平台习惯（ink≙text/page≙bg/…）
+IOS_BRAND = ['primary', 'primaryDeep', 'primaryWeak', 'success', 'successWeak',
+             'danger', 'dangerWeak', 'warning', 'warningWeak']
+IOS_NEUTRAL = [('ink', 'text'), ('sub', 'sub'), ('muted', 'mut'), ('placeholder', 'ph'),
+               ('line', 'line'), ('lineSoft', 'lineSoft'), ('fill', 'fill'), ('page', 'bg')]
+MAC_BRAND = ['primary', 'primaryDeep', 'primaryWeak', 'success', 'successDeep', 'successWeak',
+             'danger', 'dangerWeak', 'warning', 'warningDeep', 'warningWeak']
+MAC_NEUTRAL = ['text', 'sub', 'mut', 'ph', 'line', 'lineSoft', 'fill', 'bg']
+MAC_INK = [('ink', ('ink', 'ink')), ('inkLine', ('ink', 'inkLine')), ('inkText', ('ink', 'inkText')),
+           ('inkMut', ('derived', 'reviewLabel'))]  # inkMut ≙ derived.reviewLabel 深色面板标签
+
+def _rgb(value):
+    v = value.lstrip('#')
+    if len(v) != 6:
+        raise SystemExit(f'[ERROR] 非 6 位 hex 令牌: {value}')
+    return int(v[0:2], 16), int(v[2:4], 16), int(v[4:6], 16)
+
+def _ios_chan(n):
+    return '1' if n == 255 else f'{n} / 255'
+
+def _replace_generated_section(text, marker, body):
+    """把 body 写入成对标记 // @generated:<marker> begin/end 之间（幂等；标记行缩进跟随原文件）"""
+    begin, end = f'// @generated:{marker} begin', f'// @generated:{marker} end'
+    i, j = text.find(begin), text.find(end)
+    if i < 0 or j < 0 or j < i:
+        raise SystemExit(f'[ERROR] 标记 {marker} 缺失或乱序——目标文件需先插入成对 @generated 标记行')
+    line_start = text.rfind('\n', 0, i) + 1
+    indent = ' ' * (i - line_start)
+    return (text[:line_start]
+            + f'{indent}{begin}（generate_assets.py --theme-only 生成段 · 源=meta/design-tokens.json · 勿手改）\n'
+            + body
+            + f'{indent}{end}'
+            + text[j + len(end):])
+
+def generate_design_tokens_swift(color, radius, space):
+    """N-IOS NativeDS 数值段 + N-MAC DS 色彩/尺度段（字体助手/探针元数据等手写区不动）"""
+    # ── N-IOS：SwiftUI Color 分量（字号走 Dynamic Type，不入段） ──
+    ios_w = max(len(n) for n, _ in IOS_NEUTRAL + [(n, '') for n in IOS_BRAND])
+    ios = '    // MARK: 品牌与语义（--c-*）\n'
+    for key in IOS_BRAND:
+        s = color['brand'][key]
+        r, g, b = _rgb(s['value'])
+        ios += f"    static let {key:<{ios_w}} = Color(red: {_ios_chan(r)}, green: {_ios_chan(g)}, blue: {_ios_chan(b)}) // {s['value']} {s['css']}\n"
+    ios += '    // MARK: 中性（iOS 命名 ≙ 正典 neutral.*）\n'
+    for name, key in IOS_NEUTRAL:
+        s = color['neutral'][key]
+        r, g, b = _rgb(s['value'])
+        ios += f"    static let {name:<{ios_w}} = Color(red: {_ios_chan(r)}, green: {_ios_chan(g)}, blue: {_ios_chan(b)}) // {s['value']} {s['css']}\n"
+    ios += '    // MARK: 圆角（--r-sm/md/lg）\n'
+    for name, key in (('radiusSmall', 'sm'), ('radiusMedium', 'md'), ('radiusLarge', 'lg')):
+        ios += f"    static let {name}: CGFloat = {radius[key]['value']}\n"
+    ios_src = SWIFT_IOS_TOKENS.read_text(encoding='utf-8')
+    write_file(SWIFT_IOS_TOKENS, _replace_generated_section(ios_src, 'ios-tokens', ios))
+
+    # ── N-MAC：AppKit colorLiteral ──
+    def lit(v):
+        r, g, b = _rgb(v)
+        return f"#colorLiteral(red: 0x{r:02X}/255, green: 0x{g:02X}/255, blue: 0x{b:02X}/255, alpha: 1)"
+    mac_names = MAC_BRAND + MAC_NEUTRAL + [n for n, _ in MAC_INK] \
+        + [color['log'][k]['dart'] for k in ('sys', 'err', 'read', 'write', 'recv', 'ok')] \
+        + [color['log'][k]['dart'] + 'Bg' for k in ('sys', 'err', 'read', 'write', 'recv', 'ok')]
+    mac_w = max(len(n) for n in mac_names) + 1
+    mac = '    // MARK: 品牌与语义（--c-*）\n'
+    for key in MAC_BRAND:
+        s = color['brand'][key]
+        mac += f"    static let {key:<{mac_w}} = {lit(s['value'])} // {s['value']} {s['css']}\n"
+    mac += '    // MARK: 中性（--c-*）\n'
+    for key in MAC_NEUTRAL:
+        s = color['neutral'][key]
+        mac += f"    static let {key:<{mac_w}} = {lit(s['value'])} // {s['value']} {s['css']}\n"
+    s = color['neutral']['card']
+    mac += f"    static let {'card':<{mac_w}} = NSColor.white // {s['value']} {s['css']}\n"
+    mac += '    // MARK: 控制台深色（--c-ink-*；inkMut ≙ derived.reviewLabel）\n'
+    for name, (group, key) in MAC_INK:
+        s = color[group][key]
+        mac += f"    static let {name:<{mac_w}} = {lit(s['value'])} // {s['value']} {s.get('css') or '（derived）'}\n"
+    mac += '    // MARK: 日志六色（fg/bg 字面量，值=正典 log 段；dock 深色变体 mac 不用）\n'
+    for key in ('sys', 'err', 'read', 'write', 'recv', 'ok'):
+        s = color['log'][key]
+        mac += f"    static let {s['dart']:<{mac_w}} = {lit(s['fg'])} // {s['fg']} {s['cssFg']}\n"
+        mac += f"    static let {s['dart'] + 'Bg':<{mac_w}} = {lit(s['bg'])} // {s['bg']} {s['cssBg']}\n"
+    mac_src = SWIFT_MAC_TOKENS.read_text(encoding='utf-8')
+    mac_src = _replace_generated_section(mac_src, 'mac-colors', mac)
+
+    # ── N-MAC：间距/圆角 ──
+    sp_keys = sorted([k for k in space if re.fullmatch(r'sp\d', k)], key=lambda k: int(k[2:]))
+    sp_vals = [(k, space[k]['value']) for k in sp_keys]
+    scale = '    // MARK: 间距（4 基准 --sp-1..8）\n'
+    for row in (sp_vals[:4], sp_vals[4:]):
+        scale += '    static let ' + ', '.join(f"{k}: CGFloat = {v}" for k, v in row) + '\n'
+    scale += '    // MARK: 圆角（--r-sm..xl）\n'
+    rnames = {'sm': 'rSm', 'md': 'rMd', 'lg': 'rLg', 'xl': 'rXl'}
+    scale += '    static let ' + ', '.join(
+        f"{rnames[k]}: CGFloat = {radius[k]['value']}" for k in ('sm', 'md', 'lg', 'xl')) + '\n'
+    mac_src = _replace_generated_section(mac_src, 'mac-scale', scale)
+    write_file(SWIFT_MAC_TOKENS, mac_src)
 
 # ── 2. i18n ───────────────────────────────────────────────────────────────────
 def generate_i18n():
@@ -492,6 +616,7 @@ if __name__ == "__main__":
         sys.stdout.reconfigure(encoding='utf-8')
 
     theme_only = "--theme-only" in sys.argv
+    CHECK_MODE = "--check" in sys.argv  # 漂移门禁：只比对不落盘（--theme-only 域内全部输出）
 
     print("\nSmartBLE Asset Generator")
     print("-" * 40)
@@ -504,6 +629,18 @@ if __name__ == "__main__":
 
     print("\n[2/5] Design Tokens (UI-PARITY-G0)...")
     generate_design_tokens(tokens_data)
+
+    if CHECK_MODE:
+        print("\n[check] 生成物比对（不落盘）：")
+        for rel in _OK:
+            print(f"  in-sync  {rel}")
+        for d in _DRIFT:
+            print(f"  DRIFT    {d}")
+        if _DRIFT:
+            print(f"\nCHECK FAIL：{len(_DRIFT)} 处漂移/缺失——运行 python3 core/assets-generator/generate_assets.py --theme-only 再生成")
+            sys.exit(1)
+        print(f"\nCHECK PASS：{len(_OK)} 个输出全部同步")
+        sys.exit(0)
 
     if theme_only:
         print("\n--theme-only: skip i18n / components / shared-js / graphics.\nAll theme assets generated successfully.\n")
