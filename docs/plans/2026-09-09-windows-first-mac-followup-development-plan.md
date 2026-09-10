@@ -375,3 +375,20 @@ Mac 从 Windows 交接 commit 开始，不另起产品线。
   - **保持（在册决议）**：F-AND main.dart Global* delegates+supportedLocales=框架级基建（FLUTTER-G1-004，Material 内建控件串本地化，产品文案仍硬编码中文）；lib/l10n/**=PRD「就绪未接线」在册现状，守卫路径白名单，目录外任何 AppLocalizations 接线违规。A-AND 无 localeConfig/values-<locale>（扫描干净）。
   - **守卫**：`scripts/check-f030-no-i18n.mjs` 接入 verify-uniapp 第 14 门禁——10 产品源集×三规则（i18n 机器调用式正则/语言切换入口文案/Android localeConfig）+ 结构检查（uniapp locale(s)//E/T-WIN locales//I18nManager.js/Android 限定符目录不存在）；自检注入 4 类违规全检出后还原（gate-selftest.log）。
   - 验证：verify-uniapp 28+14 全过；build:mp-weixin DONE（locale 移除无副作用）；两桌面线 app.js node --check 过。限制：桌面线运行级走查随 W6（T-WIN 待 Rust 工具链）。矩阵 F030 行回填 E1 PASS。证据 `verification/.../w5-f030-no-i18n/`。
+- **2026-09-10（W6 桌面线·E-WIN 功能补齐 + T-WIN 镜像）**：
+  - **F027 版本元数据桌面投影**（a340de7）：生成管线一源九产物（uniapp 全套 + F-AND Dart + K-AND Kotlin + E-WIN/T-WIN `config/release-metadata.generated.js` 全局脚本）；E-WIN preload 补 `app:getVersion`（运行时渠道成功才覆盖 metadata 基准）；P010 版本记录视图 + F029 分享（导出 .txt / 剪贴板兜底）；`tests/desktop/version-metadata.desktop.test.mjs` 12 例。
+  - **OTA 契约对齐**（8278a89）：OtaDialog 重写为真实契约链路（选包 .bin → sha256/manifest 校验（R-1 方案 A：无 manifest 省略 target 字段，真固件按 missing_target 拒绝）→ CTRL start/ready(30s) → DATA 分块 writeNoResponse(20ms 间隔) → commit/success(30s) → abort）；共享 `ota-contract.js`（OtaManifest/OtaStartPayload/OtaStatusClassifier R-2 子串分类）；T-WIN invoke/listen 适配层镜像。
+  - **F005 批准链 + C9 写入分段**（01973e0）：`device-display-name.js`（uniapp 锁定镜像）+ DeviceCard 接线；WriteDialog 单次/批量（每行一条）/循环（次数×间隔，0=∞）三模式。
+  - **F026 日志脱敏**（dfeded8）：`log-redaction.js` 镜像 + 渲染端 addLog 唯一漏斗。
+  - **Smart HID 协议 bundle**（bf1ddd7）：`smart-hid.bundle.js`（uniapp 服务层纯逻辑单文件合并挂 window.SmartHid：errors→framing→profile-contract→session-registry→provisioning→diagnostic→workflow-engine）+ 向量锁测试；传输/页面编排在桌面层待 P002/P003/P005。
+  - **E-WIN 启动 + 扫描链修复**（b0cd7fd）：Electron 27.3.11 实启过（noble poweredOn/真实扫描发现设备）；四缺陷修（服务发现风暴互喂/OTA UUID 规范化不等/动态 OTA 按钮指向不存在 id/连接状态更新时机）。
+  - **P009 关于页首轮对齐**（43609b4，用户走查驱动）：结构对齐 prototype p009-about.js（navbar/身份卡/应用信息/平台状态 rel-row/四行菜单/foot）；F028 推广卡桌面线裁撤（a88c358，uniapp 移动端保留）；滚动修复（switchTab 内联 display 覆盖 flex → .about-shell height:100%）。
+  - Mac 线并行：macos-ota 5d59358 / ios-ota 2d6e79c（OTA 契约镜像，Mac 主机完成）。
+- **2026-09-10（用户指令：原型对齐全量提前——六页正典化）**：用户明确「都要对齐，不是只有关于页面」，第二阶段 UI 对齐从 P009 单点提前为全量执行（顺序 P001→P006→P007→P008→P010；P002/P003/P005 桌面未实现待功能开发）。
+  - **基建+P001**（d914351）：新增 `prototype.css`（原型正典 tokens/components/pages/desktop 产品部分整体搬运，适配仅三处：screen 铺满视口/P006 双栏挂 #deviceDetailView/.view 显隐）；外壳重构 screen/pagehost/底部 TabBar 四枚+图标 sprite 全集（24 枚）；DeviceCard/FilterPanel 转 light DOM 正典结构（.dev 卡双变体/.filter 四行）；空态换 C.ILL SVG 插图；toast 正典化。
+  - **P006**（5d9a956）：subnav+devhead（st 三态圆点/状态词/连接断开互斥钮——E-WIN 补齐详情页连接按钮）+ renderServices 状态机（idle/connecting/服务发现中/ready/empty）+ ServicePanel 正典 .svc 树（折叠/全部展开收起/OTA 服务红 dl）+ LogPanel dock 六色中文 chip + WriteDialog/OtaDialog .mask/.modal 换壳（逻辑全保留）+ desktop.js 双栏（左设备/服务·右日志常驻）。**三个存量缺陷修复**：E-WIN ServicePanel 只派发 char-action 但监听 read/write/notify 三事件（读写通知按钮全部无响应）；写入弹窗调用不存在的 open()（从未能打开）；从扫描卡直连进入详情头部名称/ID 从未写入。WriteDialog 补 close 事件派发（循环模式关闭弹窗中止修复）。
+  - **P007**（79e2e99）：SESSIONS navbar + sumcard 双模式（1 台隐藏/≥2 台 num+全部断开）+ link 空态去扫描按钮。
+  - **P008**（828de92）：bytebar 31B 预算四行明细+超限拦截（E-WIN 补齐预算拦截能力）+ UUID 4/8/36 位校验 + 状态徽章四态 + 检查支持（原生层口径日志）+ cardv 日志卡；T-WIN 广播 Tab 恢复可达（原 display:none 无人解除）。
+  - **P010**（2b70689）：subnav+四卡（当前版本大字/当前限制 warn 行/发布历史/预览记录 rel-row）+ 复制版本信息按钮 + foot 投影声明；移除手写表格结构。
+  - **收尾**（4090563）：styles.css 1435→429 行（仅留 about-* 命名空间，两线归一零差异，T-WIN legacy 变量别名零引用退役）；placeholders/ 8×2 占位图退役。
+  - 验证口径：每页 CDP DOM 审计（P001 29/29 · P006 39/39 · P007 22/22 · P008 22/22 · P010 18/18，真实 Electron + --disable-gpu + 注入确定性设备走真实代码路径）+ 桌面测试 58/58 + 镜像文件（prototype.css/DeviceCard/FilterPanel/ServicePanel/LogPanel/WriteDialog/styles.css）两线零差异；P001/P006 另有实像素截图核对。限制：T-WIN 仅静态镜像验证（Rust 工具链未解锁，运行级走查待 P7）。
