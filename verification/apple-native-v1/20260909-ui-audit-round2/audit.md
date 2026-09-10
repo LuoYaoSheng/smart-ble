@@ -52,7 +52,7 @@ result: PASS_KEY_STATES_WITH_DOCUMENTED_PLATFORM_DIFFERENCES
 
 ## Remaining gate
 
-This round closes the previously named P001 filter/error/permission/rotation gaps and the P009/P010 structural gaps. Full Apple visual acceptance still requires matched P002/P003/P005 success and error captures plus VoiceOver/Dynamic Type/keyboard checks and physical-iPhone signing validation.
+This round closes the previously named P001 filter/error/permission/rotation gaps and the P009/P010 structural gaps. P002/P003/P005 success and error states were closed in the follow-up `../20260910-flow-states-audit/audit.md`. Full Apple visual acceptance now requires VoiceOver/Dynamic Type/keyboard checks and physical-iPhone signing validation.
 
 TabBar was audited separately after this pass; see `../20260910-tabbar-audit/audit.md`. All four selected states, the connected badge, tap routing, and secondary-page hiding now pass against the HTML component contract.
 

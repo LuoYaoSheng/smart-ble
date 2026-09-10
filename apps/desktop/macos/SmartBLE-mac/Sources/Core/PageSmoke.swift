@@ -89,6 +89,7 @@ enum PageSmoke {
             await settle(350)
             captureRoot(controller: controller, name: "06-p003-empty", outDir: outDir)
             controller.closeLayer()
+            p003.applyPreviewState(.normal)
         }
 
         controller.shared.currentDevice = nil
@@ -243,6 +244,8 @@ enum PageSmoke {
             }
             if let p005State {
                 controller.shared.currentDevice = nil
+                (controller.page(.p003) as? P003HidDetailPage)?.applyPreviewState(.normal)
+                controller.closeLayer()
                 p005.applyPreviewState(p005State)
                 controller.router.go(.p005)
                 print("[UIPREVIEW] ready=\(previewValue)")

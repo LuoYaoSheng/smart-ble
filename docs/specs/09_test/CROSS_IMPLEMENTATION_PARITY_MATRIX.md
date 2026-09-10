@@ -160,6 +160,6 @@
 - 新增 `core/apple/SmartHidCore`，Swift 真实消费 `smart-hid-v1-vectors.json`；跨平台调度 Swift lane 9/9 PASS。
 - N-MAC 已迁移到共享 Core，保持 CoreUnit 62/62、PageSmoke 17/17。
 - N-IOS 已补齐 P002/P003/P005/P010、Profile STRONG/WEAK 双入口、INFO/INPUT/STATUS、framed-v1、60 秒状态跟踪、五项诊断和 Release Metadata 投影。
-- iOS SwiftPM 测试 12/12、iOS Simulator 单元 XCTest 12/12、TabBar UI XCTest 2/2；物理 iPhone 可见，但本机 Xcode 无登录账号/描述文件，当前 E5=`BLOCKED_SIGNING`。
-- UI 结构和文案以 `prototype/platform/{app,desktop}/high-fi` 为源。2026-09-09 初审确认 N-IOS/N-MAC 视觉 FAIL；两轮修正已覆盖九页默认态、P001 筛选展开/无匹配/扫描失败/蓝牙关闭/平台不支持及 iOS 横屏，并重建 P009/P010。当前为 **PARTIAL_KEY_STATES_PASS**；P002/P003/P005 成功/错误变体与 VoiceOver/Dynamic Type/键盘遍历未完成前不得写整体验收 PASS。见 `verification/apple-native-v1/20260909-ui-audit/audit.md` 与 `verification/apple-native-v1/20260909-ui-audit-round2/audit.md`。
+- iOS SwiftPM 测试 12/12、iOS Simulator 单元 XCTest 12/12、UI XCTest 5/5（TabBar 2 + flow-state 3）；物理 iPhone 可见，但本机 Xcode 无登录账号/描述文件，当前 E5=`BLOCKED_SIGNING`。
+- UI 结构和文案以 `prototype/platform/{app,desktop}/high-fi` 为源。修正轮现已覆盖九页默认态、P001 筛选/错误/权限/横屏、四 Tab 选中与二级页隐藏，以及 P002/P003/P005 关键成功/错误/空态。当前为 **PARTIAL_ACCESSIBILITY_GATE**；VoiceOver、Dynamic Type、macOS 键盘遍历与物理 iPhone 签名验证未完成前不得写整体验收 PASS。证据见 `verification/apple-native-v1/20260909-ui-audit/`、`20260909-ui-audit-round2/`、`20260910-tabbar-audit/`、`20260910-flow-states-audit/`。
 - 证据：`verification/apple-native-v1/20260909-mac-a2/functional-summary.md`。

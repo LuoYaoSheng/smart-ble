@@ -112,7 +112,10 @@ final class P003HidDetailPage: NSViewController, PageProtocol {
         ))
         let heroLabel = NSTextField(labelWithAttributedString: heroText)
         heroLabel.maximumNumberOfLines = 2
+        heroLabel.lineBreakMode = .byWordWrapping
+        heroLabel.cell?.wraps = true
         heroLabel.translatesAutoresizingMaskIntoConstraints = false
+        heroLabel.heightAnchor.constraint(equalToConstant: 42).isActive = true
         let heroContent = NSView()
         heroContent.translatesAutoresizingMaskIntoConstraints = false
         heroContent.addSubview(iconBox)
@@ -137,7 +140,7 @@ final class P003HidDetailPage: NSViewController, PageProtocol {
             kvRow("固件版本", device.firmware, mono: true),
         ]
         if device.proto == nil {
-            identityRows.append(hstack([chip("协议未记录"), NSView()], spacing: 0))
+            identityRows.append(makeLabel("协议未记录", size: 10, weight: .semibold, color: DS.mut))
         }
         let identityCard = Card()
         identityCard.setViews(identityRows, spacing: 2)

@@ -6,7 +6,7 @@ host: macOS
 branch: feature/apple-native-core
 baseline: 1ec8d05e2f5598d2d45e5cd3950e79208d2a79b3
 status: PASS_WITH_BLOCKED_E5
-visual_status: PARTIAL_DEFAULT_STATE_PASS
+visual_status: PARTIAL_ACCESSIBILITY_GATE
 ```
 
 ## Scope
@@ -40,7 +40,7 @@ visual_status: PARTIAL_DEFAULT_STATE_PASS
 | N-MAC CoreUnit | `swift run SmartBLE-mac --unit-core` | PASS · 62/62 |
 | N-MAC PageSmoke | `swift run SmartBLE-mac --smoke-pages` | PASS · 17/17 |
 | N-IOS SwiftPM | `cd apps/ios && swift test` | PASS · 12/12 |
-| N-IOS Simulator XCTest | `xcodebuild -project SmartBLE.xcodeproj -scheme SmartBLEiOS -destination 'platform=iOS Simulator,name=iPhone 17 Pro Max' CODE_SIGNING_ALLOWED=NO test` | PASS · unit 12/12 + TabBar UI 2/2 |
+| N-IOS Simulator XCTest | `xcodebuild -project SmartBLE.xcodeproj -scheme SmartBLEiOS -destination 'platform=iOS Simulator,name=iPhone 17 Pro Max' CODE_SIGNING_ALLOWED=NO test` | PASS · unit 12/12 + UI 5/5（TabBar 2 + flow-state 3） |
 
 ## N-IOS functional coverage
 
@@ -69,4 +69,4 @@ Unlock condition: sign in to the intended Apple Developer account in Xcode and c
 
 ## UI status
 
-The initial 2026-09-09 screenshot audit found visible product drift. The correction passes replaced the iOS legacy shell, aligned all nine default states, rebuilt macOS P009/P010, fixed the compressed-version layout defect, and then closed P001 filter-expanded/no-match/scan-failure/Bluetooth-off/unsupported states plus iOS landscape reflow. Evidence is under `verification/apple-native-v1/20260909-ui-audit/` and `verification/apple-native-v1/20260909-ui-audit-round2/`. Overall status remains **PARTIAL** until P002/P003/P005 success/error variants and VoiceOver/Dynamic Type/keyboard traversal are captured and compared.
+The initial 2026-09-09 screenshot audit found visible product drift. The correction passes now cover all nine default pages, P001 filter/error/permission/rotation states, all four TabBar selections and hiding behavior, plus P002/P003/P005 key success/error/empty variants. Evidence is under `verification/apple-native-v1/20260909-ui-audit/`, `20260909-ui-audit-round2/`, `20260910-tabbar-audit/`, and `20260910-flow-states-audit/`. Overall status remains **PARTIAL_ACCESSIBILITY_GATE** until VoiceOver, Dynamic Type, macOS keyboard traversal, and physical-iPhone signing validation complete.
