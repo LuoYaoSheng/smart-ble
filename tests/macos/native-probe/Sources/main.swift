@@ -44,6 +44,8 @@ var serviceUUIDString = "0000FD6A-7263-4F1E-A1C2-8F5D3B2A1001"
 var expectUUIDString = ""
 var noWrite = false
 var writeHex = ""   // 自定义写入负载（hex），空则用默认 ping 负载
+var triggerInterval = 8.0   // echo-trigger 模式：触发间隔秒
+var deviceUUIDString = ""   // echo-trigger 模式：已知外设 UUID（夹具被连停广播时免扫描直连）
 var otaFilePath = ""
 var otaManifestPath = ""
 
@@ -62,6 +64,8 @@ while !args.isEmpty {
     case "--expect-uuid": expectUUIDString = nextArg("--expect-uuid")
     case "--no-write": noWrite = true
     case "--write-hex": writeHex = nextArg("--write-hex")
+    case "--interval": triggerInterval = Double(nextArg("--interval")) ?? 8
+    case "--device-uuid": deviceUUIDString = nextArg("--device-uuid")
     case "--ota-file": otaFilePath = nextArg("--ota-file")
     case "--ota-manifest": otaManifestPath = nextArg("--ota-manifest")
     default: fail("unknown argument \(a)")
@@ -121,6 +125,19 @@ final class Probe: NSObject, CBCentralManagerDelegate, CBPeripheralManagerDelega
 
     var finishAfter: (() -> Void)?
 
+    // echo-trigger state（息屏后台回声触发器：周期写 FF01，观察 "command":"led" 回声）
+    var echoPhase = "scan"        // scan→connect→discover→armed→running→done
+    var echoControl: CBCharacteristic?        // SVC-01 26A8 Control
+    var echoStatusNotify: CBCharacteristic?   // SVC-01 26A9 StatusNotify
+    var echoTriggerTimer: Timer?
+    var echoRound = 0
+    var echoTriggerResponses = 0
+    var echoResponses = 0         // "command":"led" = iPhone 回声（锁屏存活证明）
+    var echoLastTriggerAt: Date?
+    var echoEchoLatencies: [Double] = []
+    var echoRoundsWithEcho = Set<Int>()
+    var echoGraceEcho = 0         // 订阅标记等触发前回声
+
     // MARK: lifecycle
 
     func run() {
@@ -140,6 +157,13 @@ final class Probe: NSObject, CBCentralManagerDelegate, CBPeripheralManagerDelega
         case "connect":
             targetService = CBUUID(string: serviceUUIDString)
             central = CBCentralManager(delegate: self, queue: nil)
+        case "echo-trigger":
+            targetService = CBUUID(string: serviceUUIDString)
+            central = CBCentralManager(delegate: self, queue: nil)
+            // 全程看门狗：duration + 30s（连接+发现余量）
+            DispatchQueue.main.asyncAfter(deadline: .now() + duration + 30) {
+                if self.echoPhase != "done" { fail("echo-trigger watchdog timeout phase=\(self.echoPhase)") }
+            }
         case "ota":
             targetService = CBUUID(string: serviceUUIDString)
             guard !otaFilePath.isEmpty, !otaManifestPath.isEmpty else {
@@ -192,6 +216,34 @@ final class Probe: NSObject, CBCentralManagerDelegate, CBPeripheralManagerDelega
                 }
                 fail("connect flow did not complete within timeout")
             }
+        case "echo-trigger":
+            if !deviceUUIDString.isEmpty {
+                // 夹具已被 iPhone 连接（停广播）→ 免扫描直连
+                guard let known = UUID(uuidString: deviceUUIDString) else {
+                    fail("invalid --device-uuid \(deviceUUIDString)")
+                }
+                let retrieved = central.retrievePeripherals(withIdentifiers: [known])
+                guard let peripheral = retrieved.first else {
+                    fail("retrievePeripherals returned nothing for \(deviceUUIDString)")
+                }
+                pendingPeripheral = peripheral
+                peripheral.delegate = self
+                log("EVENT=echo_retrieve_connect id=\(peripheral.identifier.uuidString) interval=\(triggerInterval)s duration=\(duration)s")
+                central.connect(peripheral, options: nil)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 15) {
+                    if self.pendingPeripheral?.state != .connected && self.echoPhase == "scan" {
+                        fail("echo-trigger direct connect timeout")
+                    }
+                }
+            } else {
+                log("EVENT=echo_trigger_scan_start service=\(targetService.uuidString) interval=\(triggerInterval)s duration=\(duration)s")
+                central.scanForPeripherals(withServices: [targetService], options: nil)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 20) {
+                    if self.pendingPeripheral == nil {
+                        fail("echo-trigger target not discovered within 20s")
+                    }
+                }
+            }
         case "ota":
             log("EVENT=ota_scan_start service=\(targetService.uuidString) file_bytes=\(otaFile.count) target_version=\(otaTargetVersion) sha256=\(String(otaFileSha.prefix(12)))…")
             central.scanForPeripherals(withServices: [targetService], options: nil)
@@ -225,7 +277,7 @@ final class Probe: NSObject, CBCentralManagerDelegate, CBPeripheralManagerDelega
         for s in services where s.uuidString.lowercased() == expectUUIDString.lowercased() {
             expectedSeen = true
         }
-        if mode == "connect" || mode == "ota", services.contains(where: { $0 == targetService }), pendingPeripheral == nil {
+        if mode == "connect" || mode == "ota" || mode == "echo-trigger", services.contains(where: { $0 == targetService }), pendingPeripheral == nil {
             pendingPeripheral = peripheral
             peripheral.delegate = self
             log("EVENT=connect_to name=\(name.isEmpty ? "(none)" : name.replacingOccurrences(of: " ", with: "_")) id=\(peripheral.identifier.uuidString)")
@@ -246,6 +298,11 @@ final class Probe: NSObject, CBCentralManagerDelegate, CBPeripheralManagerDelega
             peripheral.discoverServices(nil)
             return
         }
+        if mode == "echo-trigger" {
+            echoPhase = "discover"
+            peripheral.discoverServices(nil)
+            return
+        }
         peripheral.discoverServices([targetService])
     }
 
@@ -254,6 +311,11 @@ final class Probe: NSObject, CBCentralManagerDelegate, CBPeripheralManagerDelega
     }
 
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
+        if mode == "echo-trigger" {
+            log("EVENT=echo_disconnected_unexpected round=\(echoRound) err=\(error.map { "\($0)" } ?? "nil")")
+            log("SUMMARY_DISCONNECTED rounds=\(echoRound) trigger_responses=\(echoTriggerResponses) echo_responses=\(echoResponses)")
+            fail("echo-trigger: fixture link dropped mid-run")
+        }
         if mode == "ota" {
             // commit success 后设备 1.5s 内主动重启断链 = 正典第 7 步
             if otaPhase == "reboot" {
@@ -301,6 +363,14 @@ final class Probe: NSObject, CBCentralManagerDelegate, CBPeripheralManagerDelega
             }
             return
         }
+        if mode == "echo-trigger" {
+            let wanted = peripheral.services ?? []
+            log("EVENT=echo_services_discovered count=\(wanted.count) uuids=\(wanted.map { $0.uuid.uuidString }.joined(separator: ","))")
+            for svc in wanted {
+                peripheral.discoverCharacteristics(nil, for: svc)
+            }
+            return
+        }
         guard let svc = peripheral.services?.first else {
             fail("service discovery returned no service")
         }
@@ -336,6 +406,22 @@ final class Probe: NSObject, CBCentralManagerDelegate, CBPeripheralManagerDelega
             }
             return
         }
+        if mode == "echo-trigger" {
+            for c in service.characteristics ?? [] {
+                let u = c.uuid.uuidString.uppercased()
+                if u.hasSuffix("26A8") { echoControl = c }
+                if u.hasSuffix("26A9") { echoStatusNotify = c }
+            }
+            if echoControl != nil, echoStatusNotify != nil, echoPhase == "discover" {
+                echoPhase = "armed"
+                log("EVENT=echo_chars_ready control=…26A8 status_notify=…26A9")
+                // 订阅 StatusNotify：与 iPhone 同一视角（设备 notify 广播给所有订阅者）
+                peripheral.setNotifyValue(true, for: echoStatusNotify!)
+                // 读一次 Control（system_info 存活快照）
+                peripheral.readValue(for: echoControl!)
+            }
+            return
+        }
         discoveredDone = true
         for c in service.characteristics ?? [] {
             log("CHAR=\(c.uuid.uuidString) props=\(c.properties.rawValue)")
@@ -360,6 +446,10 @@ final class Probe: NSObject, CBCentralManagerDelegate, CBPeripheralManagerDelega
             handleOtaValue(peripheral, characteristic, data)
             return
         }
+        if mode == "echo-trigger" {
+            handleEchoValue(peripheral, characteristic, data)
+            return
+        }
         let hex = data.map { String(format: "%02x", $0) }.joined()
         if characteristic == notifyCharacteristic {
             notificationsReceived += 1
@@ -381,6 +471,15 @@ final class Probe: NSObject, CBCentralManagerDelegate, CBPeripheralManagerDelega
             otaStatusSubscribed = true
             log("EVENT=ota_status_subscribed（正典第 1 步）")
             maybeSendOtaStart(peripheral)
+            return
+        }
+        if mode == "echo-trigger", characteristic == echoStatusNotify {
+            echoPhase = "running"
+            log("EVENT=echo_running interval=\(triggerInterval)s duration=\(duration)s")
+            scheduleEchoTrigger()
+            DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+                self.finishEchoRun(peripheral)
+            }
             return
         }
         notifySubscribed = true
@@ -553,6 +652,71 @@ final class Probe: NSObject, CBCentralManagerDelegate, CBPeripheralManagerDelega
 
     func peripheralIsReady(toWriteSubscribers peripheral: CBPeripheral) {
         if mode == "ota" { pumpOtaChunks(peripheral) }
+    }
+
+    // MARK: echo-trigger helpers（息屏后台回声链：Mac 触发 → 设备 notify → iPhone 回写 → 设备 notify → Mac 观察回声）
+
+    private func handleEchoValue(_ peripheral: CBPeripheral, _ characteristic: CBCharacteristic, _ data: Data) {
+        // Control 上只发生读值（system_info）；写响应一律经 StatusNotify notify 到达
+        if characteristic == echoControl {
+            log("ECHO_SYSINFO=\(String(bytes: data, encoding: .utf8) ?? data.map { String(format: "%02x", $0) }.joined())")
+            return
+        }
+        guard characteristic == echoStatusNotify else { return }
+        guard let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let command = obj["command"] as? String else {
+            let text = String(bytes: data, encoding: .utf8) ?? data.map { String(format: "%02x", $0) }.joined()
+            log("NOTIFY_OTHER char=…\(characteristic.uuid.uuidString.suffix(4)) text=\(text.prefix(60))")
+            return
+        }
+        if command.uppercased().hasPrefix("FF") {
+            echoTriggerResponses += 1
+            log("TRIGGER_RESPONSE command=\(command) round=\(echoRound) led_state=\(obj["led_state"] ?? "-")")
+        } else {
+            // "command":"led" = iPhone 回写产生的响应（锁屏存活直接证据）
+            echoResponses += 1
+            if let trigger = echoLastTriggerAt {
+                let rtt = Date().timeIntervalSince(trigger)
+                echoEchoLatencies.append(rtt)
+                if echoRound > 0 { echoRoundsWithEcho.insert(echoRound) }
+                log("ECHO_RESPONSE command=\(command) led_state=\(obj["led_state"] ?? "-") round=\(echoRound) rtt_since_trigger=\(String(format: "%.2f", rtt))s count=\(echoResponses)")
+            } else {
+                echoGraceEcho += 1
+                log("ECHO_RESPONSE command=\(command) led_state=\(obj["led_state"] ?? "-") round=pre（订阅标记触发）count=\(echoResponses)")
+            }
+        }
+    }
+
+    private func scheduleEchoTrigger() {
+        guard echoPhase == "running", let peripheral = pendingPeripheral, let control = echoControl else { return }
+        echoRound += 1
+        echoLastTriggerAt = Date()
+        log("TRIGGER_ROUND=\(echoRound) write=FF01")
+        peripheral.writeValue(Data([0xFF, 0x01]), for: control, type: .withResponse)
+        echoTriggerTimer = Timer.scheduledTimer(withTimeInterval: triggerInterval, repeats: false) { [weak self] _ in
+            self?.scheduleEchoTrigger()
+        }
+    }
+
+    private func finishEchoRun(_ peripheral: CBPeripheral) {
+        guard echoPhase != "done" else { return }
+        echoPhase = "done"
+        echoTriggerTimer?.invalidate()
+        // 收尾：LED 复位关灯
+        if let control = echoControl {
+            peripheral.writeValue(Data([0xFF, 0x00]), for: control, type: .withResponse)
+        }
+        let roundsWithEcho = echoRoundsWithEcho.count
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            let lat = self.echoEchoLatencies
+            log("SUMMARY rounds=\(self.echoRound) trigger_responses=\(self.echoTriggerResponses) echo_responses=\(self.echoResponses) rounds_with_echo=\(roundsWithEcho) grace_echos=\(self.echoGraceEcho) echo_rtt_min=\(lat.min().map { String(format: "%.2f", $0) } ?? "-")s echo_rtt_max=\(lat.max().map { String(format: "%.2f", $0) } ?? "-")s")
+            // 判据：每一轮都有回声（首2轮宽限，容忍订阅标记时序）
+            let graded = max(self.echoRound - 2, 0)
+            let pass = self.echoResponses > 0 && roundsWithEcho >= graded
+            log("RESULT=\(pass ? "PASS" : "ECHO_GAP") rounds_graded=\(graded) rounds_with_echo=\(roundsWithEcho)")
+            self.central.cancelPeripheralConnection(peripheral)
+            exit(pass ? 0 : 3)
+        }
     }
 
     // MARK: CBPeripheralManagerDelegate (GATT server + advertising)
