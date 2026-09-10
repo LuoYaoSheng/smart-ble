@@ -407,4 +407,25 @@ final class HidProvisionManager: ObservableObject {
         frameTask = nil
         pollTask = nil
     }
+
+    #if DEBUG
+    func configurePreview(
+        deviceId: String,
+        stage: Stage,
+        rows: [String: String]? = nil,
+        deviceInfo: HidProtocol.DeviceInfo? = nil,
+        latestStatus: HidProtocol.ProvisionStatus? = nil
+    ) {
+        generation += 1
+        cancelTasks()
+        self.deviceId = deviceId
+        ownsConnection = false
+        diagnosticsMode = false
+        tokenAcquiredAt = nil
+        self.rows = rows ?? Self.pendingRows
+        self.deviceInfo = deviceInfo
+        self.latestStatus = latestStatus
+        self.stage = stage
+    }
+    #endif
 }

@@ -1,6 +1,15 @@
 import SmartHidCore
 import SwiftUI
 
+struct ProvisioningPreviewSeed {
+    var ssid = ""
+    var password = ""
+    var hubHost = ""
+    var hubPort: Int? = HidProtocol.defaultPairingPort
+    var token = ""
+    var submitted = false
+}
+
 struct ProvisioningView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var bleManager: BLEManager
@@ -18,6 +27,25 @@ struct ProvisioningView: View {
     @State private var showQrScanner = false
     @State private var showLeaveAlert = false
     @State private var submitted = false
+
+    init(
+        manager: HidProvisionManager,
+        device: ScanResult,
+        previewSeed: ProvisioningPreviewSeed? = nil,
+        onViewDevice: @escaping (String) -> Void = { _ in },
+        onOpenDiagnostics: @escaping (String) -> Void = { _ in }
+    ) {
+        self.manager = manager
+        self.device = device
+        self.onViewDevice = onViewDevice
+        self.onOpenDiagnostics = onOpenDiagnostics
+        _ssid = State(initialValue: previewSeed?.ssid ?? "")
+        _password = State(initialValue: previewSeed?.password ?? "")
+        _hubHost = State(initialValue: previewSeed?.hubHost ?? "")
+        _hubPort = State(initialValue: previewSeed?.hubPort ?? HidProtocol.defaultPairingPort)
+        _token = State(initialValue: previewSeed?.token ?? "")
+        _submitted = State(initialValue: previewSeed?.submitted ?? false)
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -138,12 +166,12 @@ struct ProvisioningView: View {
             configurationContent
         case .sending, .waiting, .done:
             statusContent
+        case .failed where manager.deviceInfo == nil && !submitted:
+            connectionContent
+        case .failed where !submitted:
+            configurationContent
         case .failed:
-            if manager.deviceInfo != nil, !submitted {
-                configurationContent
-            } else {
-                statusContent
-            }
+            statusContent
         }
     }
 
@@ -386,6 +414,7 @@ struct ProvisioningView: View {
     private var phaseIndex: Int {
         switch manager.stage {
         case .idle, .connecting, .verifying: return 0
+        case .failed where manager.deviceInfo == nil && !submitted: return 0
         case .verified: return 1
         case .failed where !submitted && manager.deviceInfo != nil: return 1
         default: return 2

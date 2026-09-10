@@ -66,6 +66,7 @@
 		ECCD5E68DF06C2B9BF5500D7 /* ConnectedDevicesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3005D87D1119428FB1ECB66 /* ConnectedDevicesView.swift */; };
 		F81B4CB9570607007AAD9CC6 /* HidDeviceDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6BCAF2E71B8AF57EA743C28 /* HidDeviceDetailView.swift */; };
 		F8C01FF7D5BEF63745C1D55F /* HidProvisionManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC56BBFE341687CB91A8A352 /* HidProvisionManagerTests.swift */; };
+		FB256CDF65871B3407AAACF3 /* FlowStateUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D93B0E6E73BE2DC9FDB13B2 /* FlowStateUITests.swift */; };
 		FB96638A871C24E9EEBE8643 /* NativeComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA521172CCE7B2C0D1D797CF /* NativeComponents.swift */; };
 		FD678CB4442BC9E2083C76BE /* BLEManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AF4F26029430920BAAF663F /* BLEManager.swift */; };
 		FE762B7F1B90CDBBC342B45C /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F15F8549CEC94A4D6D44FF1 /* ScanView.swift */; };
@@ -114,6 +115,7 @@
 		5887751BF8D9EEF34776C108 /* ReleaseMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReleaseMetadata.swift; sourceTree = "<group>"; };
 		5AF4F26029430920BAAF663F /* BLEManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEManager.swift; sourceTree = "<group>"; };
 		5BB8E6F17BFD1EA4EF3D1B8E /* OtaManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtaManager.swift; sourceTree = "<group>"; };
+		5D93B0E6E73BE2DC9FDB13B2 /* FlowStateUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowStateUITests.swift; sourceTree = "<group>"; };
 		64446958EAA8151FD51250CF /* tab-link.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tab-link.png"; sourceTree = "<group>"; };
 		645316AC737BA9B099928B61 /* doc.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = doc.png; sourceTree = "<group>"; };
 		64BC9EE8BC96882601EF97FA /* SmartBLEUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SmartBLEUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -217,6 +219,7 @@
 		0F2D896D906E2A03F9579C5E /* SmartBLEUITests */ = {
 			isa = PBXGroup;
 			children = (
+				5D93B0E6E73BE2DC9FDB13B2 /* FlowStateUITests.swift */,
 				E3C549E074D57F5E8E3CA779 /* TabBarUITests.swift */,
 			);
 			path = SmartBLEUITests;
@@ -535,6 +538,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FB256CDF65871B3407AAACF3 /* FlowStateUITests.swift in Sources */,
 				C350EBA39BF658FEB325C20B /* TabBarUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

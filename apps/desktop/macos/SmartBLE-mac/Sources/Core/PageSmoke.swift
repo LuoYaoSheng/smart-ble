@@ -18,12 +18,15 @@ enum PageSmoke {
             .first(where: { $0.hasPrefix("--ui-preview=") })
             .map { String($0.dropFirst("--ui-preview=".count)) }
         guard args.contains("--smoke-pages") || args.contains("--snap-pages")
-            || args.contains("--snap-tabbar") || preview != nil else { return }
+            || args.contains("--snap-tabbar") || args.contains("--snap-flow-states")
+            || preview != nil else { return }
         Task { @MainActor in
             for _ in 0..<10 {
                 if let wc = NSApp.windows.compactMap({ $0.windowController as? MainWindowController }).first {
                     if let preview {
                         await PageSmoke.preparePreview(preview, controller: wc)
+                    } else if args.contains("--snap-flow-states") {
+                        await PageSmoke.snapFlowStates(controller: wc)
                     } else if args.contains("--snap-tabbar") {
                         await PageSmoke.snapTabBar(controller: wc)
                     } else if args.contains("--snap-pages") {
@@ -40,6 +43,107 @@ enum PageSmoke {
             fflush(stdout)
             exit(1)
         }
+    }
+
+    private static func snapFlowStates(controller: MainWindowController) async {
+        let outDir = URL(fileURLWithPath: "snaps-flow-states")
+        try? FileManager.default.createDirectory(at: outDir, withIntermediateDirectories: true)
+
+        for _ in 0..<8 {
+            if controller.ble.btState != .unknown { break }
+            await settle(250)
+        }
+        if controller.ble.btState == .on {
+            controller.router.switchTab(.p001)
+            controller.ble.startScan()
+            await settle(5_600)
+        }
+
+        if let device = controller.ble.discoveredDevices.first,
+           let p002 = controller.page(.p002) as? P002ProvisionPage {
+            controller.router.go(.p002)
+            for (state, name) in [
+                (P002ProvisionPage.PreviewState.identityFailed, "01-p002-identity-failed"),
+                (.success, "02-p002-success"),
+                (.wifiFailed, "03-p002-wifi-failed"),
+            ] {
+                p002.applyPreviewState(state, device: device)
+                await settle(250)
+                capturePageColumn(controller: controller, name: name, outDir: outDir)
+            }
+        } else {
+            print("[UIFLOWSNAP] P002 BLOCKED_FIXTURE: no discovered BLE device")
+        }
+
+        if let p003 = controller.page(.p003) as? P003HidDetailPage {
+            controller.router.go(.p003)
+            for (state, name) in [
+                (P003HidDetailPage.PreviewState.normal, "04-p003-normal"),
+                (.missingFields, "05-p003-missing-fields"),
+            ] {
+                p003.applyPreviewState(state)
+                await settle(250)
+                capturePageColumn(controller: controller, name: name, outDir: outDir)
+            }
+            p003.applyPreviewState(.empty)
+            await settle(350)
+            captureRoot(controller: controller, name: "06-p003-empty", outDir: outDir)
+            controller.closeLayer()
+        }
+
+        controller.shared.currentDevice = nil
+        if let p005 = controller.page(.p005) as? P005DiagnosticsPage {
+            controller.router.go(.p005)
+            for (state, name) in [
+                (P005DiagnosticsPage.PreviewState.healthy, "07-p005-healthy"),
+                (.offline, "08-p005-offline"),
+                (.error, "09-p005-error"),
+            ] {
+                p005.applyPreviewState(state)
+                await settle(250)
+                capturePageColumn(controller: controller, name: name, outDir: outDir)
+            }
+        }
+
+        print("[UIFLOWSNAP] done")
+        fflush(stdout)
+        exit(0)
+    }
+
+    private static func capturePageColumn(controller: MainWindowController, name: String, outDir: URL) {
+        guard let root = controller.window?.contentView,
+              let target = allSubviews(of: root).compactMap({ $0 as? PageScroll }).first?.column else { return }
+        target.layoutSubtreeIfNeeded()
+        capture(view: target, rect: target.bounds, background: DS.bg, name: name, outDir: outDir)
+    }
+
+    private static func captureRoot(controller: MainWindowController, name: String, outDir: URL) {
+        guard let root = controller.window?.contentView else { return }
+        root.layoutSubtreeIfNeeded()
+        capture(view: root, rect: root.bounds, background: DS.bg, name: name, outDir: outDir)
+    }
+
+    private static func capture(
+        view: NSView,
+        rect: NSRect,
+        background: NSColor,
+        name: String,
+        outDir: URL
+    ) {
+        guard let rep = view.bitmapImageRepForCachingDisplay(in: rect) else { return }
+        NSGraphicsContext.saveGraphicsState()
+        if let context = NSGraphicsContext(bitmapImageRep: rep) {
+            NSGraphicsContext.current = context
+            background.setFill()
+            rect.fill()
+        }
+        NSGraphicsContext.restoreGraphicsState()
+        view.cacheDisplay(in: rect, to: rep)
+        guard let png = rep.representation(using: .png, properties: [:]) else { return }
+        let url = outDir.appendingPathComponent("\(name).png")
+        try? png.write(to: url)
+        print("[UIFLOWSNAP] \(name) -> \(url.path)")
+        fflush(stdout)
     }
 
     private static func snapTabBar(controller: MainWindowController) async {
@@ -81,6 +185,71 @@ enum PageSmoke {
 
     private static func preparePreview(_ previewValue: String, controller: MainWindowController) async {
         controller.setTabBarPreviewConnectedCount(3)
+        if previewValue.hasPrefix("p002-") {
+            for _ in 0..<8 {
+                if controller.ble.btState != .unknown { break }
+                await settle(250)
+            }
+            if controller.ble.btState == .on {
+                controller.ble.startScan()
+                await settle(5_600)
+            }
+            if let device = controller.ble.discoveredDevices.first,
+               let p002 = controller.page(.p002) as? P002ProvisionPage {
+                let state: P002ProvisionPage.PreviewState?
+                switch previewValue {
+                case "p002-identity-failed": state = .identityFailed
+                case "p002-success": state = .success
+                case "p002-wifi-failed": state = .wifiFailed
+                default: state = nil
+                }
+                if let state {
+                    p002.applyPreviewState(state, device: device)
+                    controller.router.go(.p002)
+                }
+            }
+            print("[UIPREVIEW] ready=\(previewValue)")
+            fflush(stdout)
+            return
+        }
+        if let p003 = controller.page(.p003) as? P003HidDetailPage {
+            let p003State: P003HidDetailPage.PreviewState?
+            switch previewValue {
+            case "p003-normal": p003State = .normal
+            case "p003-missing-fields": p003State = .missingFields
+            case "p003-empty": p003State = .empty
+            default: p003State = nil
+            }
+            if let p003State {
+                if p003State == .empty {
+                    controller.router.go(.p003)
+                    p003.applyPreviewState(p003State)
+                } else {
+                    p003.applyPreviewState(p003State)
+                    controller.router.go(.p003)
+                }
+                print("[UIPREVIEW] ready=\(previewValue)")
+                fflush(stdout)
+                return
+            }
+        }
+        if let p005 = controller.page(.p005) as? P005DiagnosticsPage {
+            let p005State: P005DiagnosticsPage.PreviewState?
+            switch previewValue {
+            case "p005-healthy": p005State = .healthy
+            case "p005-offline": p005State = .offline
+            case "p005-error": p005State = .error
+            default: p005State = nil
+            }
+            if let p005State {
+                controller.shared.currentDevice = nil
+                p005.applyPreviewState(p005State)
+                controller.router.go(.p005)
+                print("[UIPREVIEW] ready=\(previewValue)")
+                fflush(stdout)
+                return
+            }
+        }
         if previewValue == "p009" {
             controller.router.switchTab(.p009)
             print("[UIPREVIEW] ready=p009")
@@ -462,18 +631,52 @@ enum PageSmoke {
             controller.router.go(.p005)
             await settle(400)
             var v = views()
-            let p005 = anyLabel(contains: "SHID 诊断", in: v)
+            let p005Base = anyLabel(contains: "SHID 诊断", in: v)
                 && anyLabel(contains: "BLE 链路", in: v) && anyLabel(contains: "设备 Ready 状态", in: v)
                 && button(titled: "重新检测", in: v) != nil && button(titled: "重新配网", in: v) != nil
+
+            var p005Variants = false
+            if let p005 = controller.page(.p005) as? P005DiagnosticsPage {
+                p005.applyPreviewState(.healthy)
+                await settle await settle(200)
+                let healthy = anyLabel(contains: "实时检测完成", in: views())
+                    && anyLabel(contains: "GATT 连接保持", in: views())
+                p005.applyPreviewState(.offline)
+                await settle(200)
+                let offline = anyLabel(contains: "设备未连接", in: views())
+                    && anyLabel(contains: "待检测", in: views())
+                p005.applyPreviewState(.error)
+                await settle(200)
+                let error = anyLabel(contains: "检测失败", in: views())
+                    && button(titled: "显示错误码（详细信息）", in: views()) != nil
+                p005Variants = healthy && offline && error
+            }
             controller.router.back()
             await settle(300)
             controller.router.go(.p003)
             await settle(400)
             v = views()
-            let p003 = anyLabel(contains: "设备记录不存在", in: v)
+            let p003Guard = anyLabel(contains: "设备记录不存在", in: v)
+            var p003Variants = false
+            if let p003 = controller.page(.p003) as? P003HidDetailPage {
+                controller.closeLayer()
+                p003.applyPreviewState(.normal)
+                await settle(200)
+                let normal = anyLabel(contains: "配置成功 · READY", in: views())
+                    && button(actionId: "p003-reconfig", in: views()) != nil
+                p003.applyPreviewState(.missingFields)
+                await settle(200)
+                let missing = anyLabel(contains: "协议未记录", in: views())
+                p003.applyPreviewState(.empty)
+                await settle(300)
+                let empty = anyLabel(contains: "设备记录不存在", in: views()) && controller.layerVisible
+                controller.closeLayer()
+                p003Variants = normal && missing && empty
+            }
             controller.router.back()
             await settle(300)
-            check("UIS-12", p005 && p003, "p005=\(p005) p003Guard=\(p003)")
+            check("UIS-12", p005Base && p005Variants && p003Guard && p003Variants,
+                  "p005Base=\(p005Base) p005Variants=\(p005Variants) p003Guard=\(p003Guard) p003Variants=\(p003Variants)")
         }
 
         // UIS-13 退出确认（关闭 = 确认 modal；继续使用 → 留存不退出）

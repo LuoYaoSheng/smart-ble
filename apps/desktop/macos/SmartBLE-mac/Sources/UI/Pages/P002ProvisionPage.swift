@@ -36,6 +36,42 @@ final class P002ProvisionPage: NSViewController, PageProtocol {
     private var configuredOnce = false
     private let scanner = QrScannerController()
 
+    enum PreviewState {
+        case identityFailed
+        case success
+        case wifiFailed
+    }
+
+    func applyPreviewState(_ state: PreviewState, device: BLEDevice) {
+        guard let host else { return }
+        host.shared.currentDevice = device
+        reset()
+        connecting = false
+        switch state {
+        case .identityFailed:
+            phase = .connect
+            connError = "设备身份验证失败：Device Info 返回 product≠smart-hid，已断开连接。"
+            err = ProvisionError(code: "identity_failed", msg: connError!, row: "wifi", recovery: "form")
+        case .success:
+            phase = .status
+            done = true
+            progress = ["wifi": "done", "hub": "done", "conn": "done", "usb": "done"]
+        case .wifiFailed:
+            phase = .status
+            ssid = "Home-5G"
+            hub = "192.168.1.8:17892"
+            token = "0123456789abcdef0123456789abcdef"
+            progress = ["wifi": "fail", "hub": "pending", "conn": "pending", "usb": "pending"]
+            err = ProvisionError(
+                code: "wifi_failed",
+                msg: "设备侧报告 Wi-Fi 连接失败，请核对 SSID 与密码。",
+                row: "wifi",
+                recovery: "form"
+            )
+        }
+        rebuild()
+    }
+
     /// 携带设备进入（P001 配置入口 / P003 重新配置）：连接 + 启动身份验证
     func begin(device: BLEDevice) {
         guard let host else { return }
@@ -465,11 +501,29 @@ final class P002ProvisionPage: NSViewController, PageProtocol {
 
     private func statusBody() -> [NSView] {
         if done {
+            let successIcon = NSView()
+            successIcon.wantsLayer = true
+            successIcon.layer?.backgroundColor = DS.successWeak.cgColor
+            successIcon.layer?.cornerRadius = 28
+            successIcon.translatesAutoresizingMaskIntoConstraints = false
+            let check = makeIcon("checkmark", color: DS.successDeep, size: 24)
+            successIcon.addSubview(check)
+            NSLayoutConstraint.activate([
+                successIcon.widthAnchor.constraint(equalToConstant: 56),
+                successIcon.heightAnchor.constraint(equalToConstant: 56),
+                check.centerXAnchor.constraint(equalTo: successIcon.centerXAnchor),
+                check.centerYAnchor.constraint(equalTo: successIcon.centerYAnchor),
+            ])
+            let viewButton = DSButton("查看设备", tone: .primary, small: true, symbol: "chevron.right", actionId: "p002-view") { [weak self] in
+                self?.host?.router.redirect(.p003)
+            }
             let card = Card()
             card.setViews([
+                centered(successIcon),
                 makeLabel("配置成功 · 设备 READY", size: 17, weight: .heavy, align: .center),
                 makeLabel("HID 控制请通过 ControlHub 下发", size: 13, color: DS.mut, align: .center),
-            ], spacing: 8)
+                centered(viewButton),
+            ], spacing: 10)
             return [card]
         }
 
@@ -514,7 +568,7 @@ final class P002ProvisionPage: NSViewController, PageProtocol {
                 }
                 self.rebuild()
             }
-            return [banner, progressCard, recBtn]
+            return [banner, progressCard, hstack([recBtn, NSView()], spacing: 0)]
         }
 
         let cancel = DSButton("取消等待", tone: .soft, actionId: "p002-cancelwait") { [weak self] in

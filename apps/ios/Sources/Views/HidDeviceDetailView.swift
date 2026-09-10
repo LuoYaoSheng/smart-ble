@@ -13,6 +13,7 @@ struct HidDeviceDetailView: View {
     @State private var reconfigureDevice: ScanResult?
     @State private var diagnosticsRoute: DeviceIdRoute?
     @State private var gattRoute: DeviceIdRoute?
+    @State private var showMissingRecordAlert = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -28,16 +29,12 @@ struct HidDeviceDetailView: View {
                     }
                     .padding(16)
                 } else {
-                    VStack(spacing: 12) {
-                        Image(systemName: "shippingbox")
-                            .font(.system(size: 44))
-                            .foregroundColor(NativeDS.muted)
-                        Text("设备记录不存在").font(.headline)
-                        Text("该设备快照已随会话结束释放，请重新配网后查看。")
-                            .font(.footnote).foregroundColor(NativeDS.muted).multilineTextAlignment(.center)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.top, 100)
+                    NativeEmptyState(
+                        illustration: "box",
+                        title: "设备记录不存在",
+                        description: "该设备快照已随会话结束释放，请重新配网后查看。"
+                    )
+                    .padding(.top, 62)
                 }
             }
             .background(NativeDS.page)
@@ -60,6 +57,16 @@ struct HidDeviceDetailView: View {
         .nativePageCover(item: $gattRoute) { route in
             DeviceDetailView(deviceId: route.id)
                 .environmentObject(bleManager)
+        }
+        .onAppear {
+            if snapshot == nil {
+                showMissingRecordAlert = true
+            }
+        }
+        .alert("提示", isPresented: $showMissingRecordAlert) {
+            Button("知道了") { dismiss() }
+        } message: {
+            Text("该历史设备记录已不存在")
         }
     }
 
@@ -99,11 +106,16 @@ struct HidDeviceDetailView: View {
     }
 
     private func identityCard(_ snapshot: HidSessionSnapshot) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
+        let protocolVersion = nonEmpty(snapshot.protocolVersion)
+        let firmware = nonEmpty(snapshot.firmware) ?? "—"
+        return VStack(alignment: .leading, spacing: 10) {
             Label("设备身份", systemImage: "cpu").font(.headline)
             keyValue("Device ID", snapshot.deviceId, mono: true)
-            keyValue("协议版本", snapshot.protocolVersion.map { "Smart HID \($0)" } ?? "协议未记录")
-            keyValue("固件版本", snapshot.firmware ?? "未记录", mono: true)
+            keyValue("协议版本", protocolVersion.map { "Smart HID \($0)" } ?? "—")
+            keyValue("固件版本", firmware, mono: true)
+            if protocolVersion == nil {
+                NativeStatusChip(text: "协议未记录", tone: NativeDS.muted)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .nativeCard()
@@ -112,8 +124,8 @@ struct HidDeviceDetailView: View {
     private func lastConfigurationCard(_ snapshot: HidSessionSnapshot) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             Label("最近配置", systemImage: "wifi").font(.headline)
-            keyValue("Wi-Fi", snapshot.lastWifi)
-            keyValue("ControlHub", snapshot.lastHub, mono: true)
+            keyValue("Wi-Fi", nonEmpty(snapshot.lastWifi) ?? "—")
+            keyValue("ControlHub", nonEmpty(snapshot.lastHub) ?? "—", mono: true)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .nativeCard()
@@ -163,6 +175,11 @@ struct HidDeviceDetailView: View {
 
     private var snapshot: HidSessionSnapshot? {
         bleManager.hidSessionSnapshots[deviceId]
+    }
+
+    private func nonEmpty(_ value: String?) -> String? {
+        guard let value, !value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
+        return value
     }
 
     private func presentReconfigure() {

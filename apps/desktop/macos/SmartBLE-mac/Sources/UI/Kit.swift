@@ -29,6 +29,20 @@ func vstack(_ views: [NSView], spacing: CGFloat = DS.sp3, alignment: NSLayoutCon
 }
 
 @MainActor
+func centered(_ child: NSView) -> NSView {
+    let box = NSView()
+    box.translatesAutoresizingMaskIntoConstraints = false
+    child.translatesAutoresizingMaskIntoConstraints = false
+    box.addSubview(child)
+    NSLayoutConstraint.activate([
+        child.centerXAnchor.constraint(equalTo: box.centerXAnchor),
+        child.topAnchor.constraint(equalTo: box.topAnchor),
+        child.bottomAnchor.constraint(equalTo: box.bottomAnchor),
+    ])
+    return box
+}
+
+@MainActor
 func makeLabel(_ text: String, size: CGFloat, weight: NSFont.Weight = .regular,
                color: NSColor = DS.text, mono: Bool = false, align: NSTextAlignment = .left) -> NSTextField {
     let label = NSTextField(labelWithAttributedString: NSAttributedString(string: text, attributes: [
@@ -276,6 +290,8 @@ func badge(_ text: String, tone: String = "dim") -> NSView {
     box.translatesAutoresizingMaskIntoConstraints = false
     box.addSubview(row)
     NSLayoutConstraint.activate([
+        box.widthAnchor.constraint(equalToConstant: max(24, label.intrinsicContentSize.width + (dot == nil ? 20 : 37))),
+        box.heightAnchor.constraint(equalToConstant: 25),
         row.topAnchor.constraint(equalTo: box.topAnchor, constant: 3),
         row.bottomAnchor.constraint(equalTo: box.bottomAnchor, constant: -3),
         row.leadingAnchor.constraint(equalTo: box.leadingAnchor, constant: 10),

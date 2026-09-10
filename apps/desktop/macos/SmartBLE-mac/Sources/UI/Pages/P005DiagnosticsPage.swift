@@ -19,6 +19,42 @@ final class P005DiagnosticsPage: NSViewController, PageProtocol {
     private var rowStates: [String] = ["pending", "pending", "pending", "pending", "pending"]
     private var rowDetails: [Int: String] = [:]
 
+    enum PreviewState {
+        case healthy
+        case offline
+        case error
+    }
+
+    func applyPreviewState(_ preview: PreviewState) {
+        showErr = false
+        rowDetails = [:]
+        switch preview {
+        case .healthy:
+            state = .live
+            error = nil
+            rowStates = ["ok", "ok", "ok", "ok", "ok"]
+            rowDetails = [
+                0: "GATT 连接保持 · RSSI -52 dBm",
+                1: "Home-5G · IP 192.168.1.42",
+                2: "192.168.1.8:17892 · 已配对",
+                3: "MQTT 已建立 · QoS1",
+                4: "HID 已就绪，等待 ControlHub 指令",
+            ]
+        case .offline:
+            state = .offline
+            error = nil
+            rowStates = ["pending", "pending", "pending", "pending", "pending"]
+        case .error:
+            state = .error
+            error = (
+                code: "diagnostic_connect_failed",
+                message: "连接超时：请让设备进入配网/恢复模式后重试（READY 设备会关闭蓝牙广播）。"
+            )
+            rowStates = ["pending", "pending", "pending", "pending", "pending"]
+        }
+        rebuild()
+    }
+
     init(host: PageHost) {
         self.host = host
         super.init(nibName: nil, bundle: nil)
@@ -39,6 +75,7 @@ final class P005DiagnosticsPage: NSViewController, PageProtocol {
     ]
 
     func rebuild() {
+        _ = view
         guard let host else { return }
         var views: [NSView] = []
         views.append(subnav(title: "SHID 诊断", onBack: { [weak self] in
@@ -66,7 +103,7 @@ final class P005DiagnosticsPage: NSViewController, PageProtocol {
             let mark = st == "ok" ? "✓" : st == "warn" ? "!" : st == "fail" ? "✕" : st == "active" ? "•" : "·"
             let color: NSColor = st == "ok" ? DS.successDeep : st == "warn" ? DS.warningDeep : st == "fail" ? DS.danger : st == "active" ? DS.primary : DS.mut
             let wordLabel = ["pending": "待检测", "active": "检测中", "ok": "正常", "warn": "异常", "fail": "失败"][st] ?? ""
-            var mid = hstack([makeLabel(def.1, size: 13), makeLabel(wordLabel, size: 12, color: color)], spacing: 8)
+            let mid = hstack([makeLabel(def.1, size: 13), makeLabel(wordLabel, size: 12, color: color)], spacing: 8)
             let detail = rowDetails[i].map { makeLabel($0, size: 11, color: DS.mut) }
             let row = hstack([makeLabel(mark, size: 13, weight: .bold, color: color),
                               vstack(detail == nil ? [mid] : [mid, detail!], spacing: 2)], spacing: 10)
@@ -120,7 +157,12 @@ final class P005DiagnosticsPage: NSViewController, PageProtocol {
                                self?.host?.toast("已取消")
                            })
         }
-        views.append(vstack([run, hstack([backDetail, reprov], spacing: 9)], spacing: 9))
+        let secondaryActions = hstack([backDetail, reprov], spacing: 9)
+        secondaryActions.distribution = .fillEqually
+        let actionStack = vstack([run, secondaryActions], spacing: 9)
+        run.widthAnchor.constraint(equalTo: actionStack.widthAnchor).isActive = true
+        secondaryActions.widthAnchor.constraint(equalTo: actionStack.widthAnchor).isActive = true
+        views.append(actionStack)
 
         scroll.setViews(views)
     }

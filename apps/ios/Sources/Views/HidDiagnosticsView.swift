@@ -59,6 +59,7 @@ struct HidDiagnosticsView: View {
     @ObservedObject var manager: HidProvisionManager
     let deviceId: String
     var onReconfigure: (String) -> Void = { _ in }
+    var autoRun = true
 
     @State private var showErrorCode = false
 
@@ -78,7 +79,9 @@ struct HidDiagnosticsView: View {
             }
             .background(NativeDS.page)
         }
-        .onAppear { manager.beginDiagnostics(deviceId: deviceId) }
+        .onAppear {
+            if autoRun { manager.beginDiagnostics(deviceId: deviceId) }
+        }
         .onDisappear {
             if manager.stage != .idle { manager.abandon(preserveConnection: true) }
         }
@@ -195,7 +198,16 @@ struct HidDiagnosticsView: View {
     }
 
     private var rows: [HidDiagnosticAssessment.Row] {
-        HidDiagnosticAssessment.rows(
+        if !bleManager.isDeviceConnected(deviceId), manager.latestStatus == nil {
+            return [
+                .init(id: "ble", label: "BLE 链路", state: .pending, detail: nil),
+                .init(id: "wifi", label: "Wi-Fi 连接", state: .pending, detail: nil),
+                .init(id: "hub", label: "ControlHub", state: .pending, detail: nil),
+                .init(id: "conn", label: "控制连接", state: .pending, detail: nil),
+                .init(id: "usb", label: "设备 Ready 状态", state: .pending, detail: nil),
+            ]
+        }
+        return HidDiagnosticAssessment.rows(
             connected: bleManager.isDeviceConnected(deviceId),
             info: manager.deviceInfo,
             status: manager.latestStatus

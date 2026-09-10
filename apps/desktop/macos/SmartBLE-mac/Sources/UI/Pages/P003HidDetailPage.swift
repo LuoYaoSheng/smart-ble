@@ -9,6 +9,41 @@ import AppKit
 final class P003HidDetailPage: NSViewController, PageProtocol {
     weak var host: PageHost?
     private var scroll: PageScroll!
+    private var missingModalShown = false
+
+    enum PreviewState: Equatable {
+        case normal
+        case missingFields
+        case empty
+    }
+
+    func applyPreviewState(_ state: PreviewState) {
+        guard let host else { return }
+        missingModalShown = false
+        switch state {
+        case .normal:
+            host.shared.provSnapshot = ProvisionSnapshot(
+                deviceId: "HID-9F3E2A1C",
+                name: "SHID-9F3E2A1C",
+                proto: "V1",
+                firmware: "1.1.1",
+                lastWifi: "Home-5G",
+                lastHub: "192.168.1.8:17892"
+            )
+        case .missingFields:
+            host.shared.provSnapshot = ProvisionSnapshot(
+                deviceId: "HID-9F3E2A1C",
+                name: "SHID-9F3E2A1C",
+                proto: nil,
+                firmware: nil,
+                lastWifi: "",
+                lastHub: ""
+            )
+        case .empty:
+            host.shared.provSnapshot = nil
+        }
+        rebuild()
+    }
 
     init(host: PageHost) {
         self.host = host
@@ -25,6 +60,7 @@ final class P003HidDetailPage: NSViewController, PageProtocol {
     }
 
     func rebuild() {
+        _ = view
         guard let host else { return }
         var views: [NSView] = []
         views.append(subnav(title: "Smart HID 设备详情", onBack: { [weak self] in
@@ -35,6 +71,20 @@ final class P003HidDetailPage: NSViewController, PageProtocol {
             views.append(emptyState(symbol: "shippingbox", title: "设备记录不存在",
                                     desc: "该设备快照已随会话结束释放，请重新配网后查看。"))
             scroll.setViews(views)
+            if !missingModalShown {
+                missingModalShown = true
+                DispatchQueue.main.async { [weak self] in
+                    self?.host?.showModal(
+                        title: "提示",
+                        content: "该历史设备记录已不存在",
+                        confirmText: "知道了",
+                        cancelText: nil,
+                        hideCancel: true,
+                        onConfirm: { [weak self] in self?.host?.router.back() },
+                        onCancel: nil
+                    )
+                }
+            }
             return
         }
 
@@ -44,27 +94,53 @@ final class P003HidDetailPage: NSViewController, PageProtocol {
         iconBox.layer?.backgroundColor = DS.successWeak.cgColor
         iconBox.layer?.cornerRadius = 14
         iconBox.translatesAutoresizingMaskIntoConstraints = false
-        iconBox.addSubview(makeIcon("keyboard", color: DS.successDeep, size: 24))
+        let keyboard = makeIcon("keyboard", color: DS.successDeep, size: 24)
+        iconBox.addSubview(keyboard)
         NSLayoutConstraint.activate([
             iconBox.widthAnchor.constraint(equalToConstant: 52),
             iconBox.heightAnchor.constraint(equalToConstant: 52),
+            keyboard.centerXAnchor.constraint(equalTo: iconBox.centerXAnchor),
+            keyboard.centerYAnchor.constraint(equalTo: iconBox.centerYAnchor),
+        ])
+        let heroText = NSMutableAttributedString(
+            string: device.name.isEmpty ? "Smart HID 设备" : device.name,
+            attributes: [.font: DS.font(17, .heavy), .foregroundColor: DS.text]
+        )
+        heroText.append(NSAttributedString(
+            string: "\n配置成功 · READY",
+            attributes: [.font: DS.font(11, .bold), .foregroundColor: DS.successDeep]
+        ))
+        let heroLabel = NSTextField(labelWithAttributedString: heroText)
+        heroLabel.maximumNumberOfLines = 2
+        heroLabel.translatesAutoresizingMaskIntoConstraints = false
+        let heroContent = NSView()
+        heroContent.translatesAutoresizingMaskIntoConstraints = false
+        heroContent.addSubview(iconBox)
+        heroContent.addSubview(heroLabel)
+        NSLayoutConstraint.activate([
+            heroContent.heightAnchor.constraint(equalToConstant: 52),
+            iconBox.leadingAnchor.constraint(equalTo: heroContent.leadingAnchor),
+            iconBox.centerYAnchor.constraint(equalTo: heroContent.centerYAnchor),
+            heroLabel.leadingAnchor.constraint(equalTo: iconBox.trailingAnchor, constant: 13),
+            heroLabel.centerYAnchor.constraint(equalTo: heroContent.centerYAnchor),
+            heroLabel.trailingAnchor.constraint(lessThanOrEqualTo: heroContent.trailingAnchor),
         ])
         let identityHead = Card()
-        identityHead.setViews([hstack([iconBox, vstack([
-            makeLabel(device.name.isEmpty ? "Smart HID 设备" : device.name, size: 17, weight: .heavy),
-            badge("配置成功 · READY", tone: "on"),
-        ], spacing: 4)], spacing: 13, alignment: .centerY)], spacing: 0)
+        identityHead.setViews([heroContent], spacing: 0)
         views.append(identityHead)
 
         let protoText = device.proto.map { "Smart HID \($0)" }
-        let identityCard = Card()
-        identityCard.setViews([
+        var identityRows: [NSView] = [
             sectionTitle("cpu", "设备身份"),
             kvRow("Device ID", device.deviceId, mono: true),
             kvRow("协议版本", protoText),
             kvRow("固件版本", device.firmware, mono: true),
-            device.proto == nil ? chip("协议未记录") : NSView(),
-        ].compactMap { $0 }, spacing: 2)
+        ]
+        if device.proto == nil {
+            identityRows.append(hstack([chip("协议未记录"), NSView()], spacing: 0))
+        }
+        let identityCard = Card()
+        identityCard.setViews(identityRows, spacing: 2)
         views.append(identityCard)
 
         let lastCard = Card()
@@ -93,7 +169,12 @@ final class P003HidDetailPage: NSViewController, PageProtocol {
         let gatt = DSButton("高级 BLE 调试", tone: .soft, symbol: "slider.horizontal.3", actionId: "p003-gatt") { [weak self] in
             self?.host?.router.go(.p006)
         }
-        views.append(vstack([reconfig, hstack([diag, gatt], spacing: 9)], spacing: 9))
+        let secondaryActions = hstack([diag, gatt], spacing: 9)
+        secondaryActions.distribution = .fillEqually
+        let actionStack = vstack([reconfig, secondaryActions], spacing: 9)
+        reconfig.widthAnchor.constraint(equalTo: actionStack.widthAnchor).isActive = true
+        secondaryActions.widthAnchor.constraint(equalTo: actionStack.widthAnchor).isActive = true
+        views.append(actionStack)
 
         scroll.setViews(views)
     }
