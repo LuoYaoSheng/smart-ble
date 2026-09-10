@@ -1,0 +1,74 @@
+Test Case '-[SmartBLETests.AppleSharedCoreWiringTests testCanonicalCoreIsAvailableToNativeIOS]' started.
+Test Case '-[SmartBLETests.AppleSharedCoreWiringTests testCanonicalCoreIsAvailableToNativeIOS]' passed (0.000 seconds).
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+Test Case '-[SmartBLETests.HidProvisionManagerTests testAbandonPreventsOldIdentityTimeoutFromChangingState]' started.
+Test Case '-[SmartBLETests.HidProvisionManagerTests testAbandonPreventsOldIdentityTimeoutFromChangingState]' passed (0.008 seconds).
+Test Case '-[SmartBLETests.HidProvisionManagerTests testBeginVerifiesConnectedDeviceAndAcceptsCanonicalIdentity]' started.
+Test Case '-[SmartBLETests.HidProvisionManagerTests testBeginVerifiesConnectedDeviceAndAcceptsCanonicalIdentity]' passed (0.001 seconds).
+Test Case '-[SmartBLETests.HidProvisionManagerTests testCancelReturnsToVerifiedAndAbandonCancelsOwnedSession]' started.
+Test Case '-[SmartBLETests.HidProvisionManagerTests testCancelReturnsToVerifiedAndAbandonCancelsOwnedSession]' passed (0.012 seconds).
+Test Case '-[SmartBLETests.HidProvisionManagerTests testCanonicalErrorUsesCanonicalRecoveryAction]' started.
+Test Case '-[SmartBLETests.HidProvisionManagerTests testCanonicalErrorUsesCanonicalRecoveryAction]' passed (0.011 seconds).
+Test Case '-[SmartBLETests.HidProvisionManagerTests testDiagnosticsReadsInfoAndStatusWithoutOwningConnection]' started.
+Test Case '-[SmartBLETests.HidProvisionManagerTests testDiagnosticsReadsInfoAndStatusWithoutOwningConnection]' passed (0.000 seconds).
+Test Case '-[SmartBLETests.HidProvisionManagerTests testIdentityMismatchFailsAndDisconnectsOwnedSession]' started.
+Test Case '-[SmartBLETests.HidProvisionManagerTests testIdentityMismatchFailsAndDisconnectsOwnedSession]' passed (0.000 seconds).
+Test Case '-[SmartBLETests.HidProvisionManagerTests testProfileMatchingUsesStrongUuidBeforeWeakName]' started.
+Test Case '-[SmartBLETests.HidProvisionManagerTests testProfileMatchingUsesStrongUuidBeforeWeakName]' passed (0.000 seconds).
+Test Case '-[SmartBLETests.HidProvisionManagerTests testReadyStatusCompletesAndPreservesConnectedSession]' started.
+Test Case '-[SmartBLETests.HidProvisionManagerTests testReadyStatusCompletesAndPreservesConnectedSession]' passed (0.012 seconds).
+Test Case '-[SmartBLETests.HidProvisionManagerTests testSubmitWritesCanonicalFramesInOrderThenWaitsForStatus]' started.
+Test Case '-[SmartBLETests.HidProvisionManagerTests testSubmitWritesCanonicalFramesInOrderThenWaitsForStatus]' passed (0.013 seconds).
+	 Executed 9 tests, with 0 failures (0 unexpected) in 0.057 (0.059) seconds
+Test Case '-[SmartBLETests.NativePageContractTests testReadyStatusProducesFiveHealthyDiagnosticRows]' started.
+Test Case '-[SmartBLETests.NativePageContractTests testReadyStatusProducesFiveHealthyDiagnosticRows]' passed (0.000 seconds).
+Test Case '-[SmartBLETests.NativePageContractTests testReleaseMetadataIsBundledFromCanonicalManifest]' started.
+Test Case '-[SmartBLETests.NativePageContractTests testReleaseMetadataIsBundledFromCanonicalManifest]' passed (0.003 seconds).
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.004 (0.004) seconds
+Test Case '-[SmartBLETests.OtaContractFrameTests testCommitFrameUsesContractOp]' started.
+Test Case '-[SmartBLETests.OtaContractFrameTests testCommitFrameUsesContractOp]' passed (0.000 seconds).
+Test Case '-[SmartBLETests.OtaContractFrameTests testStartFrameSixContractKeys]' started.
+Test Case '-[SmartBLETests.OtaContractFrameTests testStartFrameSixContractKeys]' passed (0.000 seconds).
+Test Case '-[SmartBLETests.OtaContractFrameTests testStatusClassifierRejectsAbortedFrame]' started.
+Test Case '-[SmartBLETests.OtaContractFrameTests testStatusClassifierRejectsAbortedFrame]' passed (0.000 seconds).
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.001 (0.002) seconds
+Test Case '-[SmartBLETests.ScaledFontTests testAccessibilitySizesScaleUp]' started.
+Test Case '-[SmartBLETests.ScaledFontTests testAccessibilitySizesScaleUp]' passed (0.000 seconds).
+Test Case '-[SmartBLETests.ScaledFontTests testCaptionCurveIsSteeperAtAXThanBody]' started.
+Test Case '-[SmartBLETests.ScaledFontTests testCaptionCurveIsSteeperAtAXThanBody]' passed (0.000 seconds).
+Test Case '-[SmartBLETests.ScaledFontTests testDefaultSizeUnchanged]' started.
+Test Case '-[SmartBLETests.ScaledFontTests testDefaultSizeUnchanged]' passed (0.000 seconds).
+Test Case '-[SmartBLETests.ScaledFontTests testScaledFontDescriptorKeepsDefaultPointSize]' started.
+Test Case '-[SmartBLETests.ScaledFontTests testScaledFontDescriptorKeepsDefaultPointSize]' passed (0.000 seconds).
+Test Case '-[SmartBLETests.ScaledFontTests testSmallerSizesScaleDown]' started.
+Test Case '-[SmartBLETests.ScaledFontTests testSmallerSizesScaleDown]' passed (0.000 seconds).
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.002 (0.003) seconds
+	 Executed 20 tests, with 0 failures (0 unexpected) in 0.065 (0.069) seconds
+	 Executed 20 tests, with 0 failures (0 unexpected) in 0.065 (0.070) seconds
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testAccessibilityXXXLTextSizeSmoke]' started.
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testAccessibilityXXXLTextSizeSmoke]' passed (6.723 seconds).
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testAuditIssueInventoryDiagnostic]' started.
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testAuditIssueInventoryDiagnostic]' passed (86.273 seconds).
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testP001KeyStatesPassAccessibilityAudit]' started.
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testP001KeyStatesPassAccessibilityAudit]' passed (19.939 seconds).
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testP002FlowStatesPassAccessibilityAudit]' started.
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testP002FlowStatesPassAccessibilityAudit]' passed (19.335 seconds).
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testP003P005StatesPassAccessibilityAudit]' started.
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testP003P005StatesPassAccessibilityAudit]' passed (25.417 seconds).
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testP009P010PassAccessibilityAudit]' started.
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testP009P010PassAccessibilityAudit]' passed (12.592 seconds).
+	 Executed 6 tests, with 0 failures (0 unexpected) in 170.279 (170.282) seconds
+Test Case '-[SmartBLEUITests.FlowStateUITests testP002IdentitySuccessAndWifiFailureStates]' started.
+Test Case '-[SmartBLEUITests.FlowStateUITests testP002IdentitySuccessAndWifiFailureStates]' passed (12.917 seconds).
+Test Case '-[SmartBLEUITests.FlowStateUITests testP003SnapshotMissingFieldsAndMissingRecordStates]' started.
+Test Case '-[SmartBLEUITests.FlowStateUITests testP003SnapshotMissingFieldsAndMissingRecordStates]' passed (12.896 seconds).
+Test Case '-[SmartBLEUITests.FlowStateUITests testP005HealthyOfflineAndFailureStates]' started.
+Test Case '-[SmartBLEUITests.FlowStateUITests testP005HealthyOfflineAndFailureStates]' passed (13.072 seconds).
+	 Executed 3 tests, with 0 failures (0 unexpected) in 38.886 (38.887) seconds
+Test Case '-[SmartBLEUITests.TabBarUITests testFourTabsSwitchWithoutConnectionStateHijackingSelection]' started.
+Test Case '-[SmartBLEUITests.TabBarUITests testFourTabsSwitchWithoutConnectionStateHijackingSelection]' passed (9.924 seconds).
+Test Case '-[SmartBLEUITests.TabBarUITests testSecondaryPageCoversTabBar]' started.
+Test Case '-[SmartBLEUITests.TabBarUITests testSecondaryPageCoversTabBar]' passed (6.919 seconds).
+	 Executed 2 tests, with 0 failures (0 unexpected) in 16.842 (16.845) seconds
+	 Executed 11 tests, with 0 failures (0 unexpected) in 226.006 (226.016) seconds
+	 Executed 11 tests, with 0 failures (0 unexpected) in 226.006 (226.017) seconds
