@@ -45,6 +45,11 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.4"
     }
+
+    testOptions {
+        // JVM 单测直接调用 Logger（内部 android.util.Log）时不抛 not-mocked
+        unitTests.isReturnDefaultValues = true
+    }
 }
 
 dependencies {

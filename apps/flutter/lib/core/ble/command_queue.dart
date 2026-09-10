@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import '../../core/utils/data_converter.dart';
+import '../../core/utils/log_redaction.dart';
 
 /// 指令队列项
 class CommandItem {
@@ -265,12 +266,12 @@ class CommandQueue {
       command.status = CommandStatus.failed;
       command.error = '写入超时（${writeTimeout.inSeconds}s）';
       onCommandError?.call(command);
-      debugPrint('指令发送超时: ${command.displayHex}');
+      debugPrint('指令发送超时: ${sanitizeLogString(command.displayHex)}');
     } catch (e) {
       command.status = CommandStatus.failed;
       command.error = e.toString();
       onCommandError?.call(command);
-      debugPrint('指令发送失败: $e');
+      debugPrint('指令发送失败: ${sanitizeLogString(e.toString())}');
     }
 
     _history.add(command);

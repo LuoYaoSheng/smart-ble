@@ -30,9 +30,11 @@ object Logger {
     }
 
     private fun emit(message: String, type: LogType) {
-        Log.d(TAG, "[${type.name}] $message")
-        
-        val entry = LogEntry(message = message, type = type)
+        // F026：任意日志输出路径先脱敏（BUSINESS_FLOW §7 / R28）
+        val safe = LogRedaction.sanitizeLogString(message) ?: message
+        Log.d(TAG, "[${type.name}] $safe")
+
+        val entry = LogEntry(message = safe, type = type)
         val currentLogs = _logs.value.toMutableList()
         currentLogs.add(entry)
         
