@@ -1,0 +1,40 @@
+[0/1] Planning build
+Building for debugging...
+[0/3] Write swift-version--58304C5D6DBC2206.txt
+Build complete! (0.69s)
+===BUILD OK===
+[UNIT] CU-49 result=PASS detail="SemVer 判定"
+[UNIT] CU-50 result=PASS detail="写队列深度 16"
+[UNIT] CU-51 result=PASS detail="单写超时 5s"
+[UNIT] CU-52 result=PASS detail="STATUS 轮询 60s"
+[UNIT] CU-53 result=PASS detail="token TTL 5min"
+[UNIT] CU-54 result=PASS detail="framed-v1 常量"
+[UNIT] CU-55 result=PASS detail="协议常量"
+[UNIT] SUMMARY failures=0 total=62
+===UNITCORE DONE===
+[UISMOKE] UIS-13 result=PASS detail="modal=true dismissed=true alive=true"
+[BLE] 连接 未命名 BLE · 0A26 · 暂存路由上下文
+[BLE] 连接成功 · 未命名 BLE · 0A26
+[BLE] ATT 协商 · 最大写入 20 字节（withResponse 512）
+[BLE] 服务发现中… · 未命名 BLE · 0A26
+[BLE] 服务发现完成 · 未命名 BLE · 0A26（5 服务）
+[BLE] 服务 设备信息：2 特征 · 未命名 BLE · 0A26
+[BLE] 服务 自定义服务：1 特征 · 未命名 BLE · 0A26
+[BLE] 服务 自定义服务：1 特征 · 未命名 BLE · 0A26
+[BLE] 服务 电池服务：1 特征 · 未命名 BLE · 0A26
+[BLE] 服务 自定义服务：2 特征 · 未命名 BLE · 0A26
+[BLE] 配网失败 · smart_hid_service_missing：未在设备上发现 smart-hid 配网服务（需真实 SHID 设备 · BLOCKED_FIXTURE）
+[BLE] 断开连接中… · 未命名 BLE · 0A26
+[BLE] 已断开连接 · 未命名 BLE · 0A26
+[UISMOKE] UIS-15 result=PASS detail="honestState=true sawError=true retryable=true hid=failed(code: "smart_hid_service_missing", message: "未在设备上发现 smart-hid 配网服务（需真实 SHID 设备 · BLOCKED_FIXTURE）", recovery: "form")"
+[BLE] OTA 选包 · smartble-ota-smoke.bin（4 字节 · sha256 8d70d691c822…）
+[BLE] OTA 无 manifest → 跳过包校验（正典允许），版本验证阶段将无版本可比对
+[BLE] OTA 失败 · OTA_SESSION_LOST：设备未连接，无法开始 OTA
+[BLE] OTA 选包 · smartble-ota-smoke.bin（4 字节 · sha256 8d70d691c822…）
+[BLE] OTA 失败 · OTA_HASH_MISMATCH：manifest sha256 与实测不符
+[BLE] OTA 选包 · smartble-ota-smoke.bin（4 字节 · sha256 8d70d691c822…）
+[BLE] OTA 包校验通过（manifest：version=1.2.3 size=4）
+[UISMOKE] UIS-16 result=PASS detail="readyNoManifest=true noSession=true hashMismatch=true readyWithManifest=true"
+[UISMOKE] UIS-17 result=PASS detail="n=0 consistent=true single/empty（≥2 台并行需外设 · BLOCKED_FIXTURE）"
+[UISMOKE] SUMMARY failures=0 skips=0
+===SMOKE DONE===

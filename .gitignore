@@ -73,6 +73,9 @@ apps/uniapp/unpackage/
 # PlatformIO build artifacts
 **/.pio/
 
+# Phase-2 verification evidence logs (in git on purpose)
+!verification/macos-mainline-v1/**/*.log
+
 # OTA E5 local verification binaries (manifests/logs in git)
 verification/ota-e5/**/packages/
 verification/ota-e5/**/*.bin

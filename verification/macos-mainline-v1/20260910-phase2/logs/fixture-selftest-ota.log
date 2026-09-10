@@ -1,0 +1,8 @@
+[FX] t=1789010035.808 MODE=ota DURATION=4.0 NAME=LightBLE-OTA-SIM START_VERSION=1.0.0-sim FAULT=none
+[FX] t=1789010035.813 boot start_version=1.0.0-sim fault=none
+[FX] t=1789010035.813 contract_note=固件期望 target=lightble-peripheral|observer + target_version 字段；App 实发 target=<版本/文件名> 且无 target_version —— 本模拟器按 App 实际形态收口（差异已登记 phase-7 调和）
+[FX] t=1789010035.831 PERIPHERAL_STATE=5
+[FX] t=1789010035.832 EVENT=service_added uuid=4FAFC201-1FB5-459E-914D-914D0CDFF40D
+[FX] t=1789010035.832 EVENT=advertising_started name=LightBLE-OTA-SIM
+[FX] t=1789010040.032 EVENT=advertising_stopped
+[FX] t=1789010040.032 RESULT=DONE mode=ota
