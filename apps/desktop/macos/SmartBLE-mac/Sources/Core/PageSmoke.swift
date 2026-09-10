@@ -638,7 +638,7 @@ enum PageSmoke {
             var p005Variants = false
             if let p005 = controller.page(.p005) as? P005DiagnosticsPage {
                 p005.applyPreviewState(.healthy)
-                await settle await settle(200)
+                await settle(200)
                 let healthy = anyLabel(contains: "实时检测完成", in: views())
                     && anyLabel(contains: "GATT 连接保持", in: views())
                 p005.applyPreviewState(.offline)
@@ -675,8 +675,29 @@ enum PageSmoke {
             }
             controller.router.back()
             await settle(300)
-            check("UIS-12", p005Base && p005Variants && p003Guard && p003Variants,
-                  "p005Base=\(p005Base) p005Variants=\(p005Variants) p003Guard=\(p003Guard) p003Variants=\(p003Variants)")
+
+            var p002Variants = true
+            if let device = controller.ble.discoveredDevices.first,
+               let p002 = controller.page(.p002) as? P002ProvisionPage {
+                controller.router.go(.p002)
+                p002.applyPreviewState(.identityFailed, device: device)
+                await settle(200)
+                let identity = button(titled: "重新连接", in: views()) != nil
+                    && button(titled: "返回设备列表", in: views()) != nil
+                p002.applyPreviewState(.success, device: device)
+                await settle(200)
+                let success = anyLabel(contains: "配置成功 · 设备 READY", in: views())
+                    && button(titled: "查看设备", in: views()) != nil
+                p002.applyPreviewState(.wifiFailed, device: device)
+                await settle(200)
+                let wifi = anyLabel(contains: "wifi_failed", in: views())
+                    && button(titled: "返回表单修改", in: views()) != nil
+                p002Variants = identity && success && wifi
+                controller.router.back()
+                await settle(200)
+            }
+            check("UIS-12", p005Base && p005Variants && p003Guard && p003Variants && p002Variants,
+                  "p002Variants=\(p002Variants) p005Base=\(p005Base) p005Variants=\(p005Variants) p003Guard=\(p003Guard) p003Variants=\(p003Variants)")
         }
 
         // UIS-13 退出确认（关闭 = 确认 modal；继续使用 → 留存不退出）
