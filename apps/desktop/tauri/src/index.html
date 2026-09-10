@@ -178,14 +178,14 @@
                     </div>
                 </div>
 
-                <!-- 版本记录视图（P010：Release Metadata 纯投影，禁止手写版本事实；结构对齐待后续提交） -->
+                <!-- ═══ P010 版本记录（结构对齐 prototype/pages/p010-versions.js：Release Metadata 纯投影） ═══ -->
                 <div id="versionsView" class="view" style="display: none;">
-                    <div class="versions-shell">
-                        <div class="versions-header">
-                            <button id="versionsBackButton" class="btn btn-secondary">← 返回</button>
-                            <h2>版本记录</h2>
-                        </div>
-                        <div id="versionsBody" class="versions-body"></div>
+                    <div class="subnav">
+                        <button id="versionsBackButton" class="back-btn"><svg class="ic sm" aria-hidden="true"><use href="#i-chev-r"/></svg></button>
+                        <span class="t">版本记录</span>
+                    </div>
+                    <div class="page">
+                        <div id="versionsBody"></div>
                     </div>
                 </div>
 

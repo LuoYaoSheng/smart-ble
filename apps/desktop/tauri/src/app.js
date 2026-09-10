@@ -603,68 +603,76 @@ function renderAboutPage() {
     if (feedbackRow) feedbackRow.href = PRODUCT.PRODUCT_INFO.feedback;
 }
 
-// P010：版本记录页（Release Metadata 纯投影，禁止手写版本事实）
+// P010：版本记录页（正典结构：当前版本/当前限制/发布历史/预览记录四卡 + foot；
+// Release Metadata 纯投影，禁止手写版本事实）
 function renderVersionsPage() {
     const VM = window.SmartBLEVersionMetadata;
     const body = document.getElementById('versionsBody');
     if (!body) return;
     if (!VM) {
-        body.innerHTML = '<p class="versions-empty">版本元数据不可用（dev.unknown）</p>';
+        body.innerHTML = '<div class="card"><div class="logempty">版本元数据不可用（dev.unknown）</div></div>';
         return;
     }
 
     const model = VM.getVersionPageModel();
     const c = model.current;
+    const commit = String(VM.getReleaseMetadata().commit || '').trim();
+    const sha7 = commit ? commit.slice(0, 7) : '';
     const esc = (s) => String(s == null ? '' : s)
         .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-    const platformRows = c.platforms.map((p) =>
-        `<tr><td>${esc(p.name)}</td><td>${esc(p.display_status)}</td></tr>`).join('');
-    const limitationItems = c.limitations.map((x) => `<li>${esc(x)}</li>`).join('');
+    const chipTone = (st) => st === 'VERIFIED' ? 'success' : st === 'PREVIEW' ? 'primary' : st === 'BLOCKED' ? 'warning' : 'neutral';
+    const platformChips = c.platforms.map((p) =>
+        `<span class="chip ${chipTone(p.display_status)}">${esc(p.name)} ${esc(p.display_status)}</span>`).join('');
 
-    const releaseItems = model.history.releases.length
-        ? model.history.releases.map((r) => `
-            <div class="versions-release-card">
-                <div class="versions-release-head">
-                    <span class="versions-release-tag">${esc(r.tag)}</span>
-                    <span class="versions-release-status">${esc(r.status)}</span>
-                </div>
-                <div class="versions-release-meta">${esc(r.version)} · Release · ${esc(r.built_at || '')}</div>
-            </div>`).join('')
-        : '<p class="versions-empty">暂无正式发布记录（当前为 Preview 渠道）。</p>';
+    const limitationRows = c.limitations.length
+        ? c.limitations.map((x) => `<div style="display:flex;gap:8px;padding:7px 0;font-size:var(--fs-body);color:var(--c-sub);line-height:1.55;border-bottom:1px solid var(--c-line-soft)"><span style="color:var(--c-warning);display:flex;flex-shrink:0;margin-top:2px"><svg class="ic xs" aria-hidden="true"><use href="#i-warn"/></svg></span>${esc(x)}</div>`).join('')
+        : '<div class="logempty">暂无已知限制条目</div>';
 
-    const previewItems = model.history.previews.length
-        ? model.history.previews.map((p) => `
-            <div class="versions-release-card versions-preview-card">
-                <div class="versions-release-head">
-                    <span class="versions-release-tag">${esc(p.label)}</span>
-                    <span class="versions-release-status">${esc(p.status)}</span>
-                </div>
-                <div class="versions-release-meta">${esc(p.channel)} 渠道</div>
-            </div>`).join('')
-        : '<p class="versions-empty">暂无预览记录。</p>';
+    const relRows = model.history.releases.length
+        ? model.history.releases.map((r) => `<div class="rel-row"><span>v${esc(r.version)} <span class="dt">${esc(r.built_at || '')}</span></span><span class="v">${esc(r.commit ? String(r.commit).slice(0, 7) : '')}</span></div>`).join('')
+        : '<div class="logempty">暂无正式发布版本——产品当前处于 PREVIEW 阶段，首个正式版发布后将在此列出。</div>';
+
+    const prevRows = model.history.previews.length
+        ? model.history.previews.map((p) => `<div class="rel-row"><span>v${esc(p.version)} <span class="dt">${esc(p.channel)} 渠道 · ${esc(p.status)}</span></span><span class="v">${esc(sha7)}</span></div>`).join('')
+        : '<div class="logempty">暂无预览记录</div>';
 
     body.innerHTML = `
-        <section class="about-card versions-current">
-            <h3>当前版本</h3>
-            <div class="versions-current-grid">
-                <div class="versions-kv"><span>版本</span><strong>${esc(c.display_version)}</strong></div>
-                <div class="versions-kv"><span>状态</span><strong>${esc(c.status)}</strong></div>
-                <div class="versions-kv"><span>渠道</span><strong>${esc(c.channel_label)}</strong></div>
+        <div class="card" style="margin-top:12px">
+            <div class="card-t"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg> 当前版本</div>
+            <div style="display:flex;align-items:baseline;gap:10px;margin:6px 0 10px">
+                <span style="font-size:var(--fs-display);font-weight:var(--fw-xbold);color:var(--c-primary)">${esc(c.display_version)}</span>
+                <span class="chip ${chipTone(c.status)}">${esc(c.channel_label)}</span>
             </div>
-            <h4>平台状态</h4>
-            <table class="versions-platform-table">${platformRows}</table>
-            <h4>已知限制</h4>
-            <ul class="versions-limitations">${limitationItems}</ul>
-        </section>
-        <section class="about-card">
-            <h3>正式发布</h3>
-            ${releaseItems}
-        </section>
-        <section class="about-card">
-            <h3>预览记录</h3>
-            ${previewItems}
-        </section>`;
+            <div class="kv"><span class="k">构建</span><span class="v mono ${sha7 ? '' : 'dim'}">${sha7 ? 'v+' + esc(sha7) : '—'}</span></div>
+            <div class="kv"><span class="k">Release tag</span><span class="v">${c.has_release_tag ? '已登记（preview）' : '未登记'}</span></div>
+            <div class="chip-row" style="margin-top:10px">${platformChips}</div>
+            <div style="margin-top:12px"><button class="btn soft sm block" id="versionsCopyBtn"><svg class="ic sm" aria-hidden="true"><use href="#i-copy"/></svg><span>复制版本信息</span></button></div>
+        </div>
+        <div class="card">
+            <div class="card-t"><svg class="ic" aria-hidden="true"><use href="#i-warn"/></svg> 当前限制</div>
+            ${limitationRows}
+            <div style="margin-top:8px"><div class="note info"><span class="ic"><svg class="ic sm" aria-hidden="true"><use href="#i-info"/></svg></span><div>当前无 Artifact，不提供下载入口。</div></div></div>
+        </div>
+        <div class="card"><div class="card-t"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg> 正式发布历史</div>${relRows}</div>
+        <div class="card"><div class="card-t"><svg class="ic" aria-hidden="true"><use href="#i-dl"/></svg> 预览记录</div>${prevRows}</div>
+        <div class="foot">本页数据来自 Release Metadata 投影，不是手写版本事实源。</div>`;
+
+    // P010 复制版本信息（剪贴板 + 按钮态反馈）
+    body.querySelector('#versionsCopyBtn')?.addEventListener('click', (e) => {
+        const info = `BLE Toolkit+ v${c.display_version} · ${c.channel_label} · 构建 v+${sha7 || 'unknown'} · ${c.platforms.map((p) => `${p.name} ${p.display_status}`).join(' / ')}`;
+        const btn = e.currentTarget;
+        const done = (ok) => {
+            const label = btn.querySelector('span');
+            if (label) label.textContent = ok ? '已复制 ✓' : '复制失败';
+            setTimeout(() => { if (label) label.textContent = '复制版本信息'; }, 1600);
+        };
+        if (navigator.clipboard?.writeText) {
+            navigator.clipboard.writeText(info).then(() => done(true), () => done(false));
+        } else {
+            done(false);
+        }
+    });
 }
 
 // F029 桌面口径（10_platform §4：分享 = 导出文本/文件）
