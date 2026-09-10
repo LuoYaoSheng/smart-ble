@@ -818,6 +818,189 @@ enum PageSmoke {
             check("UIS-17", consistent, "n=\(n) consistent=\(consistent) \(badgeNote)")
         }
 
+        // UIS-17 真实多设备连接 + 被动断线重连观察（phase-2 R2）
+        // 具名环境设备（如 iphone / midea）逐台 connect；达 n≥1 即验 P007 口径；
+        // 观察窗内若发生被动断线 → 必须出现 1s/3s/5s 退避日志，且结局（重连成功 / 3 次耗尽 FAILED）如实记录。
+        uis18: do {
+            let ble = controller.ble
+            let named = ble.discoveredDevices
+                .filter { !($0.rawName.isEmpty && ($0.adv?.localName ?? "").isEmpty) }
+                .sorted { $0.rssi > $1.rssi }
+            guard !named.isEmpty else {
+                skip("UIS-18", "no named env device discovered in this environment")
+                break uis18
+            }
+            let targets = named.prefix(2)
+            for device in targets {
+                ble.connect(device: device)
+            }
+            var connected: [String] = []
+            for _ in 0..<80 {   // ≤40s
+                await settle(500)
+                connected = targets.compactMap { ble.sessionState($0.id) == .connected ? $0.name : nil }
+                if connected.count == targets.count { break }
+            }
+            guard !connected.isEmpty else {
+                check("UIS-18", false, "targets=\(targets.map(\.name)) 0 台在 \(40)s 内连接成功（环境不可连 · 如实 FAIL）")
+                break uis18
+            }
+            controller.router.switchTab(.p007)
+            await settle(400)
+            let v = views()
+            let n = ble.connectedDevices.count
+            let uiConsistent = n >= 2
+                ? (anyLabel(contains: "台在线 · 全部为内存会话", in: v) && button(titled: "全部断开", in: v) != nil)
+                : (anyLabel(contains: "已连接 · 可进行 GATT 调试", in: v) && button(titled: "全部断开", in: v) == nil)
+            // 被动断线观察窗（45s）：iOS 类设备常主动甩掉未配对链接 → 触发真实重连链
+            var reconnectEvidence = "no-passive-drop-in-window"
+            var reconnectOutcome = "n/a"
+            for _ in 0..<90 {
+                await settle(500)
+                let dropped = targets.filter { ble.sessionState($0.id) == .reconnecting || ble.sessions[$0.id] == nil }
+                if !dropped.isEmpty {
+                    let sawBackoff = ble.logs.contains { $0.message.contains("被动断线") && $0.message.contains("自动重连") }
+                    if !sawBackoff { reconnectEvidence = "drop-without-backoff-log"; break }
+                    reconnectEvidence = "backoff-log-ok"
+                    // 结局：重连成功（connected）或 3 次耗尽（日志 + 会话移除）
+                    for _ in 0..<40 {
+                        await settle(500)
+                        let id = dropped[0].id
+                        if ble.sessionState(id) == .connected { reconnectOutcome = "reconnected"; break }
+                        if ble.sessions[id] == nil
+                            || ble.logs.contains(where: { $0.message.contains("自动重连 3 次未成功") }) {
+                            reconnectOutcome = "exhausted-3-attempts"
+                            break
+                        }
+                    }
+                    if reconnectOutcome == "n/a" { reconnectOutcome = "still-reconnecting-at-window-end" }
+                    break
+                }
+            }
+            // 清理：逐台断开（不触发重连）
+            for device in targets where ble.sessions[device.id] != nil {
+                ble.disconnect(deviceId: device.id)
+            }
+            await settle(600)
+            check("UIS-18", !connected.isEmpty && uiConsistent && reconnectEvidence != "drop-without-backoff-log",
+                  "connected=\(connected) n=\(n) uiConsistent=\(uiConsistent) reconnect=\(reconnectEvidence) outcome=\(reconnectOutcome)")
+        }
+
+        // UIS-18 OTA 真实链（phase-2 R6）：需广播 4FAFC201 的 OTA 设备
+        // （ESP32 真固件 / tests/macos/ble-fixture --mode ota；本机夹具同机不可见时 SKIP）
+        uis18ota: do {
+            let ble = controller.ble
+            guard let target = ble.discoveredDevices.first(where: {
+                ($0.adv?.serviceUUIDs ?? []).contains { $0.uppercased().hasPrefix("4FAFC201") }
+            }) else {
+                skip("UIS-18-OTA", "no OTA fixture advertising 4FAFC201 in this environment")
+                break uis18ota
+            }
+            ble.connect(device: target)
+            var serviceReady = false
+            for _ in 0..<60 {   // ≤30s 连接 + 服务发现
+                await settle(500)
+                if ble.sessionState(target.id) == .connected,
+                   ble.sessionServices(target.id).contains(where: { $0.uuid.uppercased().hasPrefix("4FAFC201") }) {
+                    serviceReady = true
+                    break
+                }
+                if ble.sessions[target.id] == nil { break }   // 连接失败/超时
+            }
+            guard serviceReady else {
+                check("UIS-18-OTA", false, "fixture found but connect/service-discovery failed（如实 FAIL）")
+                break uis18ota
+            }
+            let bin = URL(fileURLWithPath: "/tmp/smartble-ota-realchain.bin")
+            let manifest = URL(fileURLWithPath: "/tmp/smartble-ota-realchain.manifest.json")
+            let payload = Data((0..<2048).map { UInt8(truncatingIfNeeded: $0 &* 31 &+ 7) })
+            try? payload.write(to: bin)
+            let sha = SHA256.hash(data: payload).map { String(format: "%02x", $0) }.joined()
+            let manifestJson = #"{"version":"9.9.9","size":\#(payload.count),"sha256":"\#(sha)"}"#
+            try? manifestJson.data(using: .utf8)!.write(to: manifest)
+
+            let ota = ble.ota
+            ota.selectFile(url: bin)
+            let ready = ota.phase == OtaManager.Phase.ready
+            ota.start(deviceId: target.id)
+            var finalPhase = "n/a"
+            for _ in 0..<180 {   // ≤90s：ready→传输→commit→2A26 回读
+                await settle(500)
+                switch ota.phase {
+                case .success: finalPhase = "success"; case .failed: finalPhase = "failed"
+                case .cancelled: finalPhase = "cancelled"
+                default: continue
+                }
+                break
+            }
+            try? FileManager.default.removeItem(at: bin)
+            try? FileManager.default.removeItem(at: manifest)
+            ble.disconnect(deviceId: target.id)
+            await settle(400)
+            check("UIS-18-OTA", ready && finalPhase == "success",
+                  "ready=\(ready) phase=\(finalPhase) target=\(target.name)（真实无线电 OTA 链）")
+        }
+
+        // UIS-19 Smart HID 真实配网链（phase-2 R6）：需广播 9F1D1001 的 SHID 设备
+        // （ESP32 fixture_shid_sim_s3 / ble-fixture --mode shid；成功走链至 ready）
+        uis19: do {
+            let ble = controller.ble
+            let target = ble.discoveredDevices.first(where: {
+                ($0.adv?.serviceUUIDs ?? []).contains { $0.uppercased().hasPrefix("9F1D1001") }
+            }) ?? ble.discoveredDevices.first(where: { $0.name.uppercased().hasPrefix("SHID") })
+            guard let target else {
+                skip("UIS-19", "no SHID fixture advertising 9F1D1001 in this environment")
+                break uis19
+            }
+            ble.connect(device: target)
+            var connected = false
+            for _ in 0..<60 {
+                await settle(500)
+                if ble.sessionState(target.id) == .connected { connected = true; break }
+                if ble.sessions[target.id] == nil { break }
+            }
+            guard connected else {
+                check("UIS-19", false, "SHID fixture found but connect failed（如实 FAIL）")
+                break uis19
+            }
+            let hid = ble.hid
+            hid.begin(deviceId: target.id)
+            var verified = false
+            for _ in 0..<40 {   // ≤20s INFO 验证
+                await settle(500)
+                if case .verified = hid.stage { verified = true; break }
+                if case .failed = hid.stage { break }
+            }
+            guard verified else {
+                let stageText: String
+                switch hid.stage {
+                case .failed(let code, _, _): stageText = "failed(\(code))"
+                default: stageText = "\(hid.stage)"
+                }
+                ble.disconnect(deviceId: target.id)
+                await settle(300)
+                check("UIS-19", false, "SHID fixture connected but identity verify did not pass: \(stageText)（如实 FAIL）")
+                break uis19
+            }
+            // 下发 candidate：token 32 位小写 hex（不以 ff/ee/dd 开头 → success 场景）
+            hid.submit(ssid: "SimNet", password: "fixture-pass", hubAddress: "hub.local:17892",
+                       token: "a1b2c3d4e5f60718293a4b5c6d7e8f90")
+            var outcome = "n/a"
+            for _ in 0..<180 {   // ≤90s：7 步 × 600ms + 轮询节拍
+                await settle(500)
+                switch hid.stage {
+                case .done: outcome = "done"
+                case .failed(let code, _, _): outcome = "failed(\(code))"
+                default: continue
+                }
+                break
+            }
+            ble.markProvisioningSession(deviceId: target.id, on: false)
+            ble.disconnect(deviceId: target.id)
+            await settle(300)
+            check("UIS-19", outcome == "done",
+                  "identity=verified outcome=\(outcome) target=\(target.name)（真实无线电配网走链）")
+        }
+
         print("[UISMOKE] SUMMARY failures=\(failures) skips=\(skips)")
         fflush(stdout)
         exit(failures > 0 ? 1 : 0)

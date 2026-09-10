@@ -36,6 +36,7 @@ var duration: Double = 12
 var localName = "SmartBLE-Native"
 var serviceUUIDString = "0000FD6A-7263-4F1E-A1C2-8F5D3B2A1001"
 var expectUUIDString = ""
+var noWrite = false
 
 func nextArg(_ label: String) -> String {
     guard !args.isEmpty else { fail("missing \(label) value") }
@@ -50,6 +51,7 @@ while !args.isEmpty {
     case "--name": localName = nextArg("--name")
     case "--uuid": serviceUUIDString = nextArg("--uuid")
     case "--expect-uuid": expectUUIDString = nextArg("--expect-uuid")
+    case "--no-write": noWrite = true
     default: fail("unknown argument \(a)")
     }
 }
@@ -63,6 +65,7 @@ final class Probe: NSObject, CBCentralManagerDelegate, CBPeripheralManagerDelega
 
     // scan state
     var seen = [UUID: (name: String, rssi: Int, updates: Int)]()
+    var advServices = [UUID: [String]]()
     var expectedSeen = false
 
     // connect state
@@ -73,6 +76,7 @@ final class Probe: NSObject, CBCentralManagerDelegate, CBPeripheralManagerDelega
     var writeCharacteristic: CBCharacteristic?
     var notificationsReceived = 0
     var wroteDone = false
+    var nowriteKick = false
     var readDone = false
     var discoveredDone = false
     var notifySubscribed = false
@@ -126,7 +130,8 @@ final class Probe: NSObject, CBCentralManagerDelegate, CBPeripheralManagerDelega
                 log("EVENT=scan_stop unique_devices=\(self.seen.count) total_updates=\(self.seen.values.reduce(0) { $0 + $1.updates }) expected_uuid_seen=\(self.expectedSeen)")
                 central.stopScan()
                 for (id, info) in self.seen.sorted(by: { $0.value.rssi > $1.value.rssi }) {
-                    log("DEVICE=\(id.uuidString) name=\(info.name.isEmpty ? "(none)" : info.name.replacingOccurrences(of: " ", with: "_")) rssi=\(info.rssi) updates=\(info.updates)")
+                    let uuids = self.advServices[id]?.joined(separator: ",") ?? "-"
+                    log("DEVICE=\(id.uuidString) name=\(info.name.isEmpty ? "(none)" : info.name.replacingOccurrences(of: " ", with: "_")) rssi=\(info.rssi) updates=\(info.updates) uuids=\(uuids)")
                 }
                 log("RESULT=PASS")
                 exit(0)
@@ -158,6 +163,10 @@ final class Probe: NSObject, CBCentralManagerDelegate, CBPeripheralManagerDelega
             log("DISCOVERED=\(peripheral.identifier.uuidString) name=\(name.isEmpty ? "(none)" : name.replacingOccurrences(of: " ", with: "_")) rssi=\(RSSI.intValue)")
         }
         let services = (advertisementData[CBAdvertisementDataServiceUUIDsKey] as? [CBUUID]) ?? []
+        if !services.isEmpty {
+            let list = services.map { $0.uuidString }
+            advServices[peripheral.identifier] = (advServices[peripheral.identifier] ?? []) + list.filter { !(advServices[peripheral.identifier] ?? []).contains($0) }
+        }
         for s in services where s.uuidString.lowercased() == expectUUIDString.lowercased() {
             expectedSeen = true
         }
@@ -185,6 +194,15 @@ final class Probe: NSObject, CBCentralManagerDelegate, CBPeripheralManagerDelega
     }
 
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
+        if noWrite {
+            // 环境设备探测：发现 + 读 即达标；通知为加分项（计数入日志）
+            if readDone && discoveredDone {
+                log("EVENT=disconnected_clean nowrite=1 notifications=\(notificationsReceived)")
+                log("RESULT=PASS")
+                exit(0)
+            }
+            fail("disconnected before discovery/read completed err=\(error.map { "\($0)" } ?? "nil")")
+        }
         if wroteDone && readDone && notificationsReceived >= 2 && discoveredDone {
             log("EVENT=disconnected_clean")
             log("RESULT=PASS")
@@ -234,13 +252,32 @@ final class Probe: NSObject, CBCentralManagerDelegate, CBPeripheralManagerDelega
     }
 
     func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
-        guard error == nil else { fail("subscribe notify failed") }
+        guard error == nil else {
+            if noWrite { log("NOTE=notify_subscribe_error（环境设备限制 · 如实记录）"); return }
+            fail("subscribe notify failed")
+        }
         notifySubscribed = true
         log("EVENT=notify_subscribed char=\(characteristic.uuid.uuidString)")
         maybeWrite(peripheral)
     }
 
     private func maybeWrite(_ peripheral: CBPeripheral) {
+        if noWrite {
+            // 读完成（且通知订阅结果已知或 3s 宽限）后主动断开，不写任何字节
+            if readDone, !nowriteKick {
+                nowriteKick = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                    if self.notificationsReceived > 0 {
+                        log("NOTE=notifications_seen=\(self.notificationsReceived)")
+                    } else {
+                        log("NOTE=no_notification_within_grace（设备无 notify 推送 · 如实记录）")
+                    }
+                    log("EVENT=client_disconnect")
+                    self.central.cancelPeripheralConnection(peripheral)
+                }
+            }
+            return
+        }
         if readDone, notifySubscribed, !wroteDone, let w = writeCharacteristic {
             wroteDone = true
             let payload = Data("ping-from-native".utf8)
@@ -334,7 +371,7 @@ final class Probe: NSObject, CBCentralManagerDelegate, CBPeripheralManagerDelega
                 return
             }
             writeCount += 1
-            log("EVENT=gatt_write_received bytes=\(req.value?.count ?? 0) text=\(req.value.flatMap { String(data: $0, encoding: .utf8) } ?? "-")")
+            log("EVENT=gatt_write_received bytes=\(req.value?.count ?? 0) text=\(req.value.flatMap { String(data: $0, encoding: .utf8) } ?? "-") hex=\(req.value.map { $0.map { String(format: "%02x", $0) }.joined() } ?? "-")")
             gattWrite.value = req.value
         }
         peripheralManager.respond(to: requests[0], withResult: .success)
