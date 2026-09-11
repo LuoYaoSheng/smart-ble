@@ -26,7 +26,7 @@ hero:
     <div class="sb-section-head">
       <div class="sb-kicker">Get</div>
       <h2>Get BLE Toolkit+</h2>
-      <p>The WeChat mini program is the fastest way to get started — scan and use. Android, iOS / macOS, desktop and Flutter all build from source today; direct downloads appear here once installers and firmware are released.</p>
+      <p>Scan with WeChat to try it now; every other framework × platform has its own download slot — shown as "in preparation" until real packages ship, all buildable from source today.</p>
     </div>
     <div class="sb-get-grid">
       <div class="sb-get-qr-card">
@@ -36,25 +36,30 @@ hero:
         <p>Scan the mini program code with WeChat to use it — no install needed.</p>
         <span class="sb-get-hint">Scan the code above with WeChat</span>
       </div>
-      <a href="/tutorials/platforms/uniapp" class="sb-get-card">
-        <span class="sb-get-tag">Android</span>
-        <h3>BLE Toolkit+ for Android</h3>
-        <p>Installer in preparation. You can build it yourself from source with HBuilderX today.</p>
-        <span class="sb-get-cta">Build tutorial (Chinese) →</span>
-      </a>
-      <a href="/tutorials/hardware/01_Hardware_Philosophy" class="sb-get-card">
-        <span class="sb-get-tag">ESP32</span>
-        <h3>BLE Toolkit+ ESP32 Firmware</h3>
-        <p>Companion peripheral firmware source and build guide, as the real-device counterpart.</p>
-        <span class="sb-get-cta">Firmware guide (Chinese) →</span>
-      </a>
-      <a href="https://github.com/luoyaosheng/smart-ble" target="_blank" rel="noopener" class="sb-get-card">
-        <span class="sb-get-tag">Source</span>
-        <h3>GitHub Source</h3>
-        <p>MIT licensed. Clone the repo to build, develop and report issues.</p>
-        <span class="sb-get-cta">Open repository →</span>
-      </a>
+      <div class="sb-get-qr-card">
+        <h3>Download matrix</h3>
+        <p>One slot per framework × platform: each becomes a real download entry (with SHA256) once its package ships; until then every slot reads "in preparation".</p>
+        <span class="sb-get-hint">Reserved row by row in the table below</span>
+      </div>
     </div>
+    <div class="sb-dl-wrap"><table class="sb-dl-table">
+      <thead>
+        <tr><th>Version</th><th>Framework / tech</th><th>Download</th><th>Get it today</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>WeChat Mini Program</td><td>uni-app (Vue 3)</td><td><span class="sb-dl-ok">Scan &amp; use</span></td><td>Scan the QR above with WeChat</td></tr>
+        <tr><td>Android App</td><td>uni-app line</td><td><span class="sb-dl-wait">APK in preparation</span></td><td><a href="/tutorials/platforms/uniapp">Build from source (HBuilderX)</a></td></tr>
+        <tr><td>Android native</td><td>Kotlin + Jetpack Compose</td><td><span class="sb-dl-wait">APK in preparation</span></td><td><a href="/tutorials/platforms/native_mobile">Build from source (gradlew)</a></td></tr>
+        <tr><td>iOS</td><td>Swift Package + SwiftUI</td><td><span class="sb-dl-wait">TestFlight slot reserved</span></td><td><a href="/tutorials/platforms/native_mobile">Build from source (swift run)</a></td></tr>
+        <tr><td>macOS native</td><td>SwiftUI (apps/ios)</td><td><span class="sb-dl-wait">Installer in preparation</span></td><td><a href="/tutorials/platforms/native_mobile">Build from source</a></td></tr>
+        <tr><td>Windows desktop</td><td>Tauri (Rust + btleplug)</td><td><span class="sb-dl-wait">Installer in preparation</span></td><td><a href="/tutorials/platforms/desktop">Build from source (cargo tauri)</a></td></tr>
+        <tr><td>Windows / Linux desktop</td><td>Electron (Node.js + noble)</td><td><span class="sb-dl-wait">Installer in preparation</span></td><td><a href="/tutorials/platforms/desktop">Build from source (npm start)</a></td></tr>
+        <tr><td>macOS desktop native</td><td>Swift + AppKit</td><td><span class="sb-dl-wait">Installer in preparation</span></td><td><a href="/tutorials/platforms/desktop">Build from source</a></td></tr>
+        <tr><td>Flutter</td><td>Flutter + Dart (Android / macOS)</td><td><span class="sb-dl-wait">Installer in preparation</span></td><td><a href="/tutorials/platforms/flutter">Build from source (flutter run)</a></td></tr>
+        <tr><td>ESP32 firmware</td><td>PlatformIO / ESP-IDF</td><td><span class="sb-dl-wait">Firmware bundle in preparation</span></td><td><a href="/tutorials/hardware/01_Hardware_Philosophy">Firmware build guide</a></td></tr>
+      </tbody>
+    </table></div>
+    <p class="sb-platform-footnote">Download slots are reserved per framework × platform: no entry becomes clickable before a real package exists (no fake downloads); releases ship with SHA256 and release notes. Source and status: <a href="https://github.com/luoyaosheng/smart-ble" target="_blank" rel="noopener">GitHub repository</a> and the <a href="/status/">status page</a> (Chinese).</p>
   </section>
 
   <section id="why" class="sb-section">
@@ -254,16 +259,17 @@ hero:
     </div>
   </section>
 
-  <section class="sb-section">
+  <section id="gallery" class="sb-section">
     <div class="sb-section-head">
       <div class="sb-kicker">Gallery</div>
-      <h2>Interface gallery</h2>
-      <p>Screenshots captured from the Android preview build.</p>
+      <h2>Gallery: mobile and desktop</h2>
+      <p>Android screenshots are captured from a real device running the development preview; the mini program / App form factors and desktop shots come from the interactive high-fidelity prototype (mock data).</p>
     </div>
+    <h3 class="sb-gallery-h3">Mobile · Android real device (development preview)</h3>
     <div class="sb-gallery-grid">
       <figure>
         <img src="/gallery/scan.webp" alt="Scan page: nearby BLE device list" loading="lazy">
-        <figcaption>Scan</figcaption>
+        <figcaption>Scan list</figcaption>
       </figure>
       <figure>
         <img src="/gallery/device-detail.webp" alt="Device detail page: services and characteristics" loading="lazy">
@@ -282,6 +288,25 @@ hero:
         <figcaption>Broadcast</figcaption>
       </figure>
     </div>
+    <h3 class="sb-gallery-h3">Mobile · WeChat mini program and App form factors (prototype captures)</h3>
+    <div class="sb-gallery-grid--duo">
+      <figure>
+        <img src="/gallery/proto-wechat.png" alt="WeChat mini program form factor: scan page with page/state navigator" loading="lazy">
+        <figcaption>WeChat mini program form · scan page + state navigator (Android / iOS host switch)</figcaption>
+      </figure>
+      <figure>
+        <img src="/gallery/proto-app.png" alt="App form factor: Android instance scan page" loading="lazy">
+        <figcaption>App form · Android instance (permission chain and broadcast differences)</figcaption>
+      </figure>
+    </div>
+    <h3 class="sb-gallery-h3">Desktop (prototype captures)</h3>
+    <div class="sb-gallery-grid--duo">
+      <figure>
+        <img src="/gallery/proto-desktop.png" alt="Desktop workspace: mac window chrome, scan page with page/state navigator" loading="lazy">
+        <figcaption>Desktop workspace · mac window chrome (switch to win / linux online)</figcaption>
+      </figure>
+    </div>
+    <p class="sb-platform-footnote">The three form-factor captures come from the <a href="/prototype/desktop/high-fi/">live interactive prototype</a> — one base kernel + a single override layer per platform; pages, states and host dimensions are all switchable online. Desktop installers: see the download matrix above.</p>
   </section>
 
   <section class="sb-section">

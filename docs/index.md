@@ -26,7 +26,7 @@ hero:
     <div class="sb-section-head">
       <div class="sb-kicker">Get</div>
       <h2>获取 BLE Toolkit+</h2>
-      <p>微信小程序是当前最快的上手方式——扫码即用。Android、iOS / macOS、桌面、Flutter 等其余平台均可从源码构建，安装包与固件发布后将在此处提供直接下载。</p>
+      <p>微信扫码即刻体验；其余每个框架 × 平台都有独立下载位——正式包发布前显示筹备中，当前均可从源码构建。</p>
     </div>
     <div class="sb-get-grid">
       <div class="sb-get-qr-card">
@@ -36,25 +36,30 @@ hero:
         <p>微信扫码使用小程序，无需安装，打开即用。</p>
         <span class="sb-get-hint">手机微信「扫一扫」上方小程序码</span>
       </div>
-      <a href="/tutorials/platforms/uniapp" class="sb-get-card">
-        <span class="sb-get-tag">Android</span>
-        <h3>BLE Toolkit+ for Android</h3>
-        <p>安装包筹备中。当前可从源码用 HBuilderX 自行构建体验。</p>
-        <span class="sb-get-cta">查看构建教程 →</span>
-      </a>
-      <a href="/tutorials/hardware/01_Hardware_Philosophy" class="sb-get-card">
-        <span class="sb-get-tag">ESP32</span>
-        <h3>BLE Toolkit+ ESP32 固件</h3>
-        <p>配套 Peripheral 固件源码与构建说明，作为真机联调的对手方。</p>
-        <span class="sb-get-cta">查看固件构建 →</span>
-      </a>
-      <a href="https://github.com/luoyaosheng/smart-ble" target="_blank" rel="noopener" class="sb-get-card">
-        <span class="sb-get-tag">Source</span>
-        <h3>GitHub 源码</h3>
-        <p>MIT 开源。克隆仓库即可参与开发、构建与问题反馈。</p>
-        <span class="sb-get-cta">前往仓库 →</span>
-      </a>
+      <div class="sb-get-qr-card">
+        <h3>下载矩阵</h3>
+        <p>每个框架 × 平台各占一个下载位：有真实安装包时此处变为下载入口（附 SHA256），发布前一律显示筹备中。</p>
+        <span class="sb-get-hint">下方表格按版本逐行预留</span>
+      </div>
     </div>
+    <div class="sb-dl-wrap"><table class="sb-dl-table">
+      <thead>
+        <tr><th>版本</th><th>框架 / 技术</th><th>下载</th><th>当前获取方式</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>微信小程序</td><td>uni-app（Vue 3）</td><td><span class="sb-dl-ok">扫码即用</span></td><td>微信「扫一扫」上方码图</td></tr>
+        <tr><td>Android App</td><td>uni-app 一线</td><td><span class="sb-dl-wait">APK 筹备中</span></td><td><a href="/tutorials/platforms/uniapp">源码构建（HBuilderX）</a></td></tr>
+        <tr><td>Android 原生</td><td>Kotlin + Jetpack Compose</td><td><span class="sb-dl-wait">APK 筹备中</span></td><td><a href="/tutorials/platforms/native_mobile">源码构建（gradlew）</a></td></tr>
+        <tr><td>iOS</td><td>Swift Package + SwiftUI</td><td><span class="sb-dl-wait">TestFlight 预留</span></td><td><a href="/tutorials/platforms/native_mobile">源码构建（swift run）</a></td></tr>
+        <tr><td>macOS 原生</td><td>SwiftUI（apps/ios 同仓）</td><td><span class="sb-dl-wait">安装包筹备中</span></td><td><a href="/tutorials/platforms/native_mobile">源码构建</a></td></tr>
+        <tr><td>Windows 桌面</td><td>Tauri（Rust + btleplug）</td><td><span class="sb-dl-wait">安装包筹备中</span></td><td><a href="/tutorials/platforms/desktop">源码构建（cargo tauri）</a></td></tr>
+        <tr><td>Windows / Linux 桌面</td><td>Electron（Node.js + noble）</td><td><span class="sb-dl-wait">安装包筹备中</span></td><td><a href="/tutorials/platforms/desktop">源码构建（npm start）</a></td></tr>
+        <tr><td>macOS 桌面原生</td><td>Swift + AppKit</td><td><span class="sb-dl-wait">安装包筹备中</span></td><td><a href="/tutorials/platforms/desktop">源码构建</a></td></tr>
+        <tr><td>Flutter</td><td>Flutter + Dart（Android / macOS）</td><td><span class="sb-dl-wait">安装包筹备中</span></td><td><a href="/tutorials/platforms/flutter">源码构建（flutter run）</a></td></tr>
+        <tr><td>ESP32 固件</td><td>PlatformIO / ESP-IDF</td><td><span class="sb-dl-wait">固件包筹备中</span></td><td><a href="/tutorials/hardware/01_Hardware_Philosophy">固件构建教程</a></td></tr>
+      </tbody>
+    </table></div>
+    <p class="sb-platform-footnote">下载位按框架 × 平台逐一预留：放上真实安装包之前，任何下载入口都不会可点（无产物不放假下载）；发布时将附 SHA256 与版本说明。源码与发布状态见 <a href="https://github.com/luoyaosheng/smart-ble" target="_blank" rel="noopener">GitHub 仓库</a>与<a href="/status/">项目状态页</a>。</p>
   </section>
 
   <section id="why" class="sb-section">
@@ -254,12 +259,13 @@ hero:
     </div>
   </section>
 
-  <section class="sb-section">
+  <section id="gallery" class="sb-section">
     <div class="sb-section-head">
       <div class="sb-kicker">Gallery</div>
-      <h2>界面一览</h2>
-      <p>以下截图来自 Android 开发预览版真机界面实拍。</p>
+      <h2>界面一览：移动端与桌面端</h2>
+      <p>Android 截图来自开发预览版真机实拍；微信小程序 / App 形态与桌面端截图来自可交互高保真原型（模拟数据）。</p>
     </div>
+    <h3 class="sb-gallery-h3">移动端 · Android 真机（开发预览版）</h3>
     <div class="sb-gallery-grid">
       <figure>
         <img src="/gallery/scan.webp" alt="扫描页：周边 BLE 设备列表" loading="lazy">
@@ -282,6 +288,25 @@ hero:
         <figcaption>广播页</figcaption>
       </figure>
     </div>
+    <h3 class="sb-gallery-h3">移动端 · 微信小程序与 App 形态（高保真原型实拍）</h3>
+    <div class="sb-gallery-grid--duo">
+      <figure>
+        <img src="/gallery/proto-wechat.png" alt="微信小程序形态：扫描页与页面/场景导航面板" loading="lazy">
+        <figcaption>微信小程序形态 · 扫描页与状态导航（可切安卓 / iOS 宿主）</figcaption>
+      </figure>
+      <figure>
+        <img src="/gallery/proto-app.png" alt="App 形态：Android 实例扫描页" loading="lazy">
+        <figcaption>App 形态 · Android 实例（权限链与广播增强差异）</figcaption>
+      </figure>
+    </div>
+    <h3 class="sb-gallery-h3">桌面端（高保真原型实拍）</h3>
+    <div class="sb-gallery-grid--duo">
+      <figure>
+        <img src="/gallery/proto-desktop.png" alt="桌面工作台：mac 窗形、扫描页与页面/场景导航面板" loading="lazy">
+        <figcaption>桌面工作台 · mac 窗形（窗口 chrome 可切 win / linux）</figcaption>
+      </figure>
+    </div>
+    <p class="sb-platform-footnote">三张形态截图来自<a href="/prototype/desktop/high-fi/">线上可交互原型</a>——同一基准内核 + 各平台单一覆写层，页面、场景与宿主维度均可在线切换；桌面端正式安装包见上方下载矩阵。</p>
   </section>
 
   <section class="sb-section">

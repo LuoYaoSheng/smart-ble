@@ -824,6 +824,85 @@ a.sb-feature-card--link:hover {
   box-shadow: var(--shadow-2);
 }
 
+/* —— 下载矩阵 —— */
+.sb-dl-wrap {
+  margin-top: var(--sp-6);
+  overflow-x: auto;
+  border-radius: var(--r-lg);
+}
+
+.sb-dl-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--c-card);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+
+.sb-dl-table th,
+.sb-dl-table td {
+  padding: var(--sp-3) var(--sp-4);
+  border-bottom: 1px solid var(--c-line-soft);
+  font-size: var(--fs-body);
+  text-align: left;
+  vertical-align: top;
+}
+
+.sb-dl-table th {
+  background: var(--c-fill);
+  font-weight: var(--fw-bold);
+  color: var(--c-sub);
+}
+
+.sb-dl-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.sb-dl-table td:first-child {
+  font-weight: var(--fw-med);
+}
+
+.sb-dl-wait,
+.sb-dl-ok {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--sp-3);
+  border-radius: 999px;
+  font-size: var(--fs-cap);
+  font-weight: var(--fw-med);
+  white-space: nowrap;
+}
+
+.sb-dl-wait {
+  border: 1px dashed var(--c-line);
+  color: var(--c-mut);
+}
+
+.sb-dl-ok {
+  border: 1px solid rgba(27, 109, 255, .32);
+  color: var(--c-primary);
+}
+
+.sb-dl-table a {
+  color: var(--c-sub);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* —— 界面一览分组 —— */
+.sb-gallery-h3 {
+  margin: var(--sp-6) 0 var(--sp-4);
+  font-size: var(--fs-title);
+  letter-spacing: -0.01em;
+}
+
+.sb-gallery-grid--duo {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-4);
+}
+
 .sb-platform-card h3 {
   margin: var(--sp-2) 0 var(--sp-3);
   font-size: var(--fs-title);
@@ -1012,6 +1091,7 @@ a.sb-feature-card--link:hover {
   .sb-feature-grid,
   .sb-flow-grid,
   .sb-platform-grid,
+  .sb-gallery-grid--duo,
   .sb-oss-grid {
     grid-template-columns: 1fr;
   }
