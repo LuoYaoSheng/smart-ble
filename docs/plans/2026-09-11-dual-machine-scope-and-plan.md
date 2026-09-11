@@ -66,3 +66,11 @@
 - 用户质询「多平台/安卓跨框架差异大」后补的缺口：U-AND（uniapp→app-android）自 09-09 UI-G1 E5 真机后三轮无像素证据，卡点「HBuilderX 打包域」本轮在 Mac 打通（HBuilderX 5.24 CLI 标准基座 → Pixel_API35 模拟器）。
 - 落袋 `verification/windows-mobile-v1/20260911-uand-vis1/`：12 张（P001×6 含真实扫描启停、P002 深链、P007/P008/P009/P010、基座权限弹窗）+ bundle 文案核对 113/121 硬命中；无 UI 缺陷；六线可达态首轮就此齐整。
 - 注意项：基座弹窗（标识码/CALL_PHONE）为标准基座噪声；Tab 点击 y≈2270（避开 Android 15 手势区）；截图 OCR 有幻觉风险，文案裁定以 bundle grep 为准。
+
+## 七、同日增补 III：F-MAC 深态轮（2026-09-11 深夜，Mac）
+
+- 目标：补「连接态页（P003/P005/P006）需 BLE 夹具或真机」缺口——发现 `tests/macos/ble-fixture` 即 SHID 配网模拟器（七步状态机+场景注入+粘贴兜底），配网深链在本机可完整走通。
+- 落袋 `verification/windows-mobile-v1/20260911-fmac-deep/`：Release 直启真窗 4 帧（P001 扫描结果/SHID 卡 + P002 step1 连接中/step2 表单，均中性裁剪复核）。
+- **修复 3 项 F 线缺陷**：DEF-01 相机 entitlement 缺失（正式构建 P002 token 唯一入口死锁，Release+Debug entitlements 补 `device.camera`）；DEF-02 P005 offline 态从未赋值（controller.lost 监听，PAGE_SPEC:326 验收项）；DEF-03 shidConfigureBtn 键挂所有 Profile 卡（按 profile.id 分流）。analyze 0 / test 122/122。
+- 受阻裁定：flutter test 实例扫描看不见本机软件夹具广播（手动 Release 可见）——环境级怪癖；深链（step3/P003/P005）留待续走，交互序列已验证在案。
+- 注意项（长会话三坑）：`open` 同 bundle id 只激活不换进程（须 pgrep 验二进制路径）；诱导式视觉提问放大 OCR 幻觉（只用中性转述+裁剪复核）；工具结果刷新会抢窗口前置（每步激活+断言）。

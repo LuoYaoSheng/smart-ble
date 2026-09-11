@@ -115,8 +115,13 @@ class DeviceCard extends StatelessWidget {
                     if (_isShid)
                       Expanded(
                         child: _ActionChip(
-                          key: const ValueKey('shidConfigureBtn'),
-                          label: match!.profile.actionLabel,
+                          // 键语义修正：仅 smart-hid 卡持有 shidConfigureBtn
+                          // （历史实现按 matchLevel!=null 挂键，ESP32 等其他
+                          // Profile 卡同名同键，E2E finder/语义定位歧义）。
+                          key: ValueKey(match!.profile.id == 'smart-hid'
+                              ? 'shidConfigureBtn'
+                              : 'profileActionBtn'),
+                          label: match.profile.actionLabel,
                           icon: 'hid',
                           primary: true,
                           disabled: isConnected,

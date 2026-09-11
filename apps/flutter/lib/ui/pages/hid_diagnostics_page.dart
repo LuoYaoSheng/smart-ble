@@ -69,8 +69,20 @@ class _HidDiagnosticsPageState extends State<HidDiagnosticsPage> {
   @override
   void dispose() {
     // 本页持有连接则卸载时断开（PAGE_SPEC §5）。
+    _controller?.removeListener(_onConnLost);
     _controller?.dispose();
     super.dispose();
+  }
+
+  // F-MAC-DEF-02：正典 P005 offline 态（PAGE_SPEC:326「offline 态+连接确认」）。
+  // uniapp 侧由全局会话掉线驱动；F 侧页面持有 ProvisioningController，
+  // 以 controller.lost 通知等价映射（live/checking 中掉线 → offline）。
+  void _onConnLost() {
+    final c = _controller;
+    if (!mounted || c == null || !c.lost) return;
+    if (_pageState == _PageState.live || _pageState == _PageState.checking) {
+      setState(() => _pageState = _PageState.offline);
+    }
   }
 
   Future<void> _rerun() async {
@@ -107,6 +119,7 @@ class _HidDiagnosticsPageState extends State<HidDiagnosticsPage> {
     setState(() => _pageState = _PageState.checking);
     final controller = _controller ??= ProvisioningController(
         transportFactory: () => FbpProvisioningTransport());
+    controller.addListener(_onConnLost);
     await controller.connectDevice(widget.deviceId);
     if (!mounted) return;
     if (controller.connError != null || controller.deviceInfo == null) {
@@ -181,6 +194,12 @@ class _HidDiagnosticsPageState extends State<HidDiagnosticsPage> {
       });
     } catch (e) {
       if (!mounted) return;
+      // F-MAC-DEF-02：掉线优先按 offline 呈现（错误横幅让位断线态），
+      // 避免监听器先置 offline 又被 catch 覆盖为 error。
+      if (controller.lost) {
+        setState(() => _pageState = _PageState.offline);
+        return;
+      }
       setState(() {
         _pageState = _PageState.error;
         _errorCode = 'diagnostic_failed';
