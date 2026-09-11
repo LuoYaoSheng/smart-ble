@@ -406,7 +406,7 @@ Mac 从 Windows 交接 commit 开始，不另起产品线。
 
 ## 双机并行分工基线（2026-09-11 起）
 
-用户裁决：**另一台（Windows）机器核心处理 Windows 专项，其余全部由 Mac 处理**。原"Windows 先行→Mac 收尾"串行模型自此改为双机并行。
+用户裁决：**另一台（Windows）机器核心处理 Windows 专项，其余全部由 Mac 处理**。原"Windows 先行→Mac 收尾"串行模型自此改为双机并行。执行细化（双机各自范围与任务计划 W1-W6 / M1-M7 / 用户裁决队列）见《2026-09-11-dual-machine-scope-and-plan.md》。
 
 ### 合并基线
 
