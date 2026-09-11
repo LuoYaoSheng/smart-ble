@@ -696,9 +696,17 @@ onShow(() => {
 });
 
 onMounted(() => {
+	// 恢复全局日志历史到会话面板。历史条目 type 是 logger 词汇（info/success/...），
+	// 页面面板用 UI 词汇（系统/成功/...）——先归一化再按 type|message 去重，
+	// 防止 onLoad/onShow 的 checkSupport 已写入的同一条日志双显
+	const LOGGER_TYPE_TO_UI = { info: '系统', success: '成功', error: '错误', warning: '系统', receive: '接收', send: '操作' };
 	const history = logger.getHistory('broadcast') || [];
+	const present = new Set(logs.value.map((l) => `${l.type}|${l.message}`));
 	for (const entry of [...history].reverse()) {
-		sessionAddLog(entry.type || '系统', entry.message || entry);
+		const type = LOGGER_TYPE_TO_UI[entry.type] || entry.type || '系统';
+		const message = entry.message || entry;
+		if (present.has(`${type}|${message}`)) continue;
+		sessionAddLog(type, message);
 	}
 	stopOnLeave(() => cleanup());
 });

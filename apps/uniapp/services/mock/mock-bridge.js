@@ -18,6 +18,7 @@
 import { useBleStore } from '../../store/ble';
 import { useHidStore } from '../../store/hid';
 import { getPageTargets } from './mock-registry.js';
+import { mergeDeviceCollection } from '../ble-runtime/device-collection.js';
 import {
 	scanDevices,
 	connectedSessions,
@@ -50,7 +51,9 @@ function resolveStores() {
 }
 
 function seedScanned(stores, count = scanDevices.length) {
-	stores.ble.scannedDevices = scanDevices.slice(0, count);
+	// 经生产合并管线注入：与真实 onDiscovery 同构（deviceId 去重 + RSSI 降序稳定排序），
+	// 保证 H5 走查的列表顺序与生产一致，而非数据集书写顺序
+	stores.ble.scannedDevices = mergeDeviceCollection([], scanDevices.slice(0, count));
 }
 
 function seedConnectedMap(stores, list) {
@@ -178,6 +181,15 @@ function seedP005(stores, preset) {
 	if (t?.deviceId) t.deviceId.value = hidCurrentDevice.deviceId;
 }
 
+/** 假运行时会话：满足 registry.bind 最小契约（services + onDisconnect），让 P006 走「连接复用」真实分支 */
+function fakeRuntimeSession(services) {
+	return {
+		dead: false,
+		services,
+		onDisconnect: () => () => {}
+	};
+}
+
 function seedP006(stores, preset) {
 	const ble = stores.ble;
 	seedConnectedMap(stores, []);
@@ -189,7 +201,13 @@ function seedP006(stores, preset) {
 		case 'idle': break;
 		case 'connecting': apply({ isConnecting: true }); break;
 		case 'ready':
-			seedConnectedMap(stores, [{ ...target, services: gattServices }]);
+			// 经 bindConnectedSession 注入（store 会话表 + 运行时会话注册表同源），
+			// 页面 onLoad 命中 getRuntimeSession 复用分支，服务树/已连接态即刻可用
+			ble.bindConnectedSession(
+				{ deviceId: target.deviceId, name: target.name, RSSI: target.RSSI },
+				fakeRuntimeSession(gattServices),
+				gattServices
+			);
 			apply({ hasOtaService: true });
 			apply({
 				logs: [
@@ -201,7 +219,11 @@ function seedP006(stores, preset) {
 			});
 			break;
 		case 'empty':
-			seedConnectedMap(stores, [{ ...target, services: [] }]);
+			ble.bindConnectedSession(
+				{ deviceId: target.deviceId, name: target.name, RSSI: target.RSSI },
+				fakeRuntimeSession([]),
+				[]
+			);
 			break;
 		case 'error':
 			apply({ lastConnectError: '连接超时（10s）：设备无响应，已自动重试 3 次。' });

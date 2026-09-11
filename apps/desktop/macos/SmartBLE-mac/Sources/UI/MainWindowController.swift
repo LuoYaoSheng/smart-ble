@@ -176,7 +176,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, PageHost
 
     private func setupWindow() {
         let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 740, height: 620),
+            // contentRect 高度以 P008 广播页完全显示为准：页面列 768pt + 底部 TabBar 64pt = 832pt，
+            // 取 840 留 8pt 余量（旧值 620 首屏只显示约 2/3，需滚动才能看全广播日志）
+            contentRect: NSRect(x: 0, y: 0, width: 740, height: 840),
             styleMask: [.titled, .closable, .miniaturizable, .resizable],
             backing: .buffered,
             defer: false
