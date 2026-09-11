@@ -15,6 +15,8 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
+    <!-- 单一根面板：主界面 + 写入对话框覆盖层 -->
+    <Grid>
     <Grid RowDefinitions="Auto,*">
 
         <!-- Title Bar -->
@@ -27,7 +29,7 @@
 
             <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="20,0">
                 <PathIcon Data="M7 7h10M7 12h10M7 17h10M17 7l4-4M21 7l-4 4"
-                          Foreground="#007AFF" Width="24" Height="24" Stretch="Uniform"/>
+                          Foreground="#007AFF" Width="24" Height="24"/>
                 <TextBlock Text="SmartBLE" FontSize="18" FontWeight="SemiBold"
                           Margin="10,0,0,0" VerticalAlignment="Center"/>
             </StackPanel>
@@ -91,7 +93,7 @@
                                 <!-- Name Filter -->
                                 <StackPanel Spacing="8">
                                     <TextBlock Text="名称前缀" FontSize="13"/>
-                                    <TextBox Text="{Binding FilterNamePrefix}" WatermarkText="输入设备名称前缀..."/>
+                                    <TextBox Text="{Binding FilterNamePrefix}" Watermark="输入设备名称前缀..."/>
                                 </StackPanel>
 
                                 <!-- Hide Unnamed -->
@@ -102,7 +104,7 @@
                         <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled">
                             <ItemsControl ItemsSource="{Binding FilteredDevices}">
                                 <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
+                                    <DataTemplate x:DataType="vm:BleDeviceViewModel">
                                         <Border Classes="DeviceCard" Margin="20,0,20,12">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
@@ -186,7 +188,7 @@
                         <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled">
                             <ItemsControl ItemsSource="{Binding Services}">
                                 <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
+                                    <DataTemplate x:DataType="vm:BleServiceViewModel">
                                         <Border Classes="ServiceCard" Margin="20,0,20,12">
                                             <StackPanel Spacing="12">
                                                 <!-- Service Header -->
@@ -219,7 +221,7 @@
                                                 <!-- Characteristics -->
                                                 <ItemsControl ItemsSource="{Binding Characteristics}">
                                                     <ItemsControl.ItemTemplate>
-                                                        <DataTemplate>
+                                                        <DataTemplate x:DataType="vm:BleCharacteristicInfo">
                                                             <Border Background="#F5F5F5" CornerRadius="8"
                                                                     Padding="12,8" Margin="4,0">
                                                                 <Grid ColumnDefinitions="Auto,*,Auto">
@@ -247,7 +249,7 @@
                                                                                 </ItemsPanelTemplate>
                                                                             </ItemsControl.ItemsPanel>
                                                                             <ItemsControl.ItemTemplate>
-                                                                                <DataTemplate>
+                                                                                <DataTemplate x:DataType="x:String">
                                                                                     <Border Background="#007AFF" CornerRadius="3"
                                                                                             Padding="5,2" Margin="0,0,4,0">
                                                                                         <TextBlock Text="{Binding}" FontSize="9"
@@ -262,8 +264,8 @@
                                                                     <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6">
                                                                         <!-- Read Button -->
                                                                         <Button Classes="CharButton"
-                                                                                Command="{Binding $parent[UserControl].((ViewModels.MainWindowViewModel)DataContext).ReadCharacteristicCommand}"
-                                                                                CommandParameter="{Binding $parent[ContentControl].((ViewModels.BleServiceViewModel)DataContext).Uuid + '|' + $parent[ContentControl].((ViewModels.BleCharacteristicInfo)DataContext).Uuid}">
+                                                                                Command="{Binding $parent[UserControl].((vm:MainWindowViewModel)DataContext).ReadCharacteristicCommand}"
+                                                                                CommandParameter="{Binding CommandKey}">
                                                                             <StackPanel Spacing="2">
                                                                                 <TextBlock Text="📥" FontSize="12"/>
                                                                                 <TextBlock Text="读" FontSize="9"/>
@@ -272,8 +274,8 @@
 
                                                                         <!-- Write Button -->
                                                                         <Button Classes="CharButton"
-                                                                                Command="{Binding $parent[UserControl].((ViewModels.MainWindowViewModel)DataContext).ShowWriteDialogCommand}"
-                                                                                CommandParameter="{Binding $parent[ContentControl].((ViewModels.BleServiceViewModel)DataContext).Uuid + '|' + $parent[ContentControl].((ViewModels.BleCharacteristicInfo)DataContext).Uuid}">
+                                                                                Command="{Binding $parent[UserControl].((vm:MainWindowViewModel)DataContext).OpenWriteDialogCommand}"
+                                                                                CommandParameter="{Binding CommandKey}">
                                                                             <StackPanel Spacing="2">
                                                                                 <TextBlock Text="📤" FontSize="12"/>
                                                                                 <TextBlock Text="写" FontSize="9"/>
@@ -282,8 +284,8 @@
 
                                                                         <!-- Notify Button -->
                                                                         <Button Classes="CharButton"
-                                                                                Command="{Binding $parent[UserControl].((ViewModels.MainWindowViewModel)DataContext).ToggleNotificationCommand}"
-                                                                                CommandParameter="{Binding $parent[ContentControl].((ViewModels.BleServiceViewModel)DataContext).Uuid + '|' + $parent[ContentControl].((ViewModels.BleCharacteristicInfo)DataContext).Uuid}">
+                                                                                Command="{Binding $parent[UserControl].((vm:MainWindowViewModel)DataContext).ToggleNotificationCommand}"
+                                                                                CommandParameter="{Binding CommandKey}">
                                                                             <StackPanel Spacing="2">
                                                                                 <TextBlock Text="🔔" FontSize="12"/>
                                                                                 <TextBlock Text="通知" FontSize="9"/>
@@ -305,15 +307,17 @@
                         <!-- Log Panel -->
                         <Border Grid.Row="3" Classes="LogPanel" IsVisible="{Binding HasLogs}">
                             <Grid RowDefinitions="Auto,*">
-                                <Grid Grid.Row="0" Background="#F2F2F7" Padding="16,8">
-                                    <TextBlock Text="操作日志" FontWeight="Medium"/>
-                                    <TextBlock Text="{Binding LogCountText}" HorizontalAlignment="Right"
+                                <Border Grid.Row="0" Background="#F2F2F7" Padding="16,8">
+                                    <Grid>
+                                        <TextBlock Text="操作日志" FontWeight="Medium"/>
+                                        <TextBlock Text="{Binding LogCountText}" HorizontalAlignment="Right"
                                               FontSize="12" Foreground="#8E8E93"/>
-                                </Grid>
+                                    </Grid>
+                                </Border>
                                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                                     <ItemsControl ItemsSource="{Binding Logs}">
                                         <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
+                                            <DataTemplate x:DataType="vm:LogEntry">
                                                 <Grid Margin="12,4">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="16"/>
@@ -378,5 +382,6 @@
                 </StackPanel>
             </StackPanel>
         </Border>
+    </Grid>
     </Grid>
 </Window>

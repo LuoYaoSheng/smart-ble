@@ -103,7 +103,7 @@
 | A-AND | apps/android（Kotlin+Compose，`com.smartble`，纯 android.bluetooth 框架，780 行 BleManager 实装）真机 | Primary | Android 手机radio | **扫描+GATT+广播域已通**：F001-F005 等价 13/13（a-and-p001-e5 v5）；F006-F012 GATT 域 PASS×3+PASS_WITH_LIMITATION×4（a-and-f006-f012-e5 v16=39/46/v17=37/46，E5 真机+串口旁证；缺陷 WIN-AAND-001..008 在册，其中 006/007/008 为通知/UI 链路结构性缺陷待修）；广播域 F014-F017 已跑 9/9（a-and-f014-f017-e5：F015 等价启停+非法 UUID+观察侧 fff0 交叉+净停；F016 NOT_APPLICABLE 无负载编辑器）；Smart HID 域 F018-F024=PARITY-001 裁决 NOT_RUN |
 | E-WIN | apps/desktop/electron Windows 桌面 | Secondary | `@abandonware/noble` WinRT 绑定（本机 node_modules 已编译 binding.node，曾实跑） | 已登记待启动：`npm start` + Playwright 驱动，F001-F012 等价（主机蓝牙） |
 | T-WIN | apps/desktop/tauri Windows 桌面 | Primary | btleplug 0.11（WinRT；源码完整：lib.rs 1063 行 + 完整前端的 Electron 镜像） | BLOCKED_TOOLCHAIN：本机无 Rust/cargo；解锁=安装 rustup 后 `cargo tauri dev` |
-| V-WIN | apps/desktop/avalonia 原型 | Experimental | WindowsBluetooth NuGet（真 WinRT 代码；读写通知 ViewModel 未接线） | 编译阻断（PARITY-006）；修复后仅 Build Smoke，不入功能对齐 |
+| V-WIN | apps/desktop/avalonia 原型 | Experimental | 真 WinRT 代码（net8.0-windows10.0.19041.0 TFM 投影；原 WindowsBluetooth NuGet 为幽灵包已除名；读写通知 ViewModel 未接线） | **Build Smoke PASS**（2026-09-11 W1：dotnet build exit 0/0 错误，PARITY-006 收口；证据 verification/windows-mobile-v1/20260911-win-b3/w1-vwin-build-smoke/；维持不入功能对齐裁决） |
 
 ### 4.2 NOT_APPLICABLE / NOT_CONFIGURED 一次性裁决
 
@@ -138,7 +138,7 @@
 | PARITY-003 | A-AND | WriteDialog 批量/循环模式 UI-only：onConfirm 只发一次拼接载荷；CommandQueue.kt(289 行) 为死代码未被引用 | P2 |
 | PARITY-004 | A-AND | manufacturerData=null（源码注「Simplified for now」）→ F004 广播详情缺厂商数据段 | P2 |
 | PARITY-005 | E-WIN | electron-builder build:win 引用不存在的 assets/icon.ico → Windows 打包阻断（npm start 不受影响） | P2 |
-| PARITY-006 | V-WIN | csproj 引用不存在的 app.manifest 与 Assets/icon.ico → dotnet build 直接失败 | P2 |
+| PARITY-006 | V-WIN | csproj 引用不存在的 app.manifest 与 Assets/icon.ico → dotnet build 直接失败 | P2 | → **已收口 2026-09-11**（W1）：补齐 manifest+图标，另修幽灵 NuGet 包（nuget.org 无 WindowsBluetooth，改 TFM 投影）/保留字 char/Avalonia 10→11 语法等 11 项隐性缺陷，dotnet build exit 0；证据 20260911-win-b3/w1-vwin-build-smoke |
 
 ### 4.5 执行顺序（并入 §28 战役流）
 

@@ -2,6 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!-- Colors -->
+    <Styles.Resources>
     <SolidColorBrush x:Key="Primary" Color="#007AFF"/>
     <SolidColorBrush x:Key="PrimaryDark" Color="#0051D5"/>
     <SolidColorBrush x:Key="PrimaryLight" Color="#E8F2FF"/>
@@ -14,9 +15,10 @@
     <SolidColorBrush x:Key="Background" Color="#F2F2F7"/>
     <SolidColorBrush x:Key="Border" Color="#E5E5EA"/>
     <SolidColorBrush x:Key="TextSecondary" Color="#8E8E93"/>
+    </Styles.Resources>
 
     <!-- Button Styles -->
-    <Style Selector="button.primary">
+    <Style Selector="Button.primary">
         <Setter Property="Background" Value="{DynamicResource Primary}"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="Padding" Value="20,10"/>
@@ -24,15 +26,15 @@
         <Setter Property="FontWeight" Value="Medium"/>
     </Style>
 
-    <Style Selector="button.primary:hover">
+    <Style Selector="Button.primary:hover">
         <Setter Property="Background" Value="{DynamicResource PrimaryDark}"/>
     </Style>
 
-    <Style Selector="button.primary.scanning">
+    <Style Selector="Button.primary.scanning">
         <Setter Property="Background" Value="{DynamicResource Error}"/>
     </Style>
 
-    <Style Selector="button.secondary">
+    <Style Selector="Button.secondary">
         <Setter Property="Background" Value="{DynamicResource Background}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
         <Setter Property="BorderThickness" Value="1"/>
@@ -40,79 +42,73 @@
         <Setter Property="CornerRadius" Value="10"/>
     </Style>
 
-    <Style Selector="button.secondary:hover">
+    <Style Selector="Button.secondary:hover">
         <Setter Property="Background" Value="{DynamicResource Border}"/>
     </Style>
 
-    <Style Selector="button.danger">
+    <Style Selector="Button.danger">
         <Setter Property="Background" Value="{DynamicResource Error}"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="Padding" Value="20,10"/>
         <Setter Property="CornerRadius" Value="10"/>
     </Style>
 
-    <Style Selector="button.danger:hover">
-        <Setter Property="Background" Color="#E8352A"/>
+    <Style Selector="Button.danger:hover">
+        <Setter Property="Background" Value="#E8352A"/>
     </Style>
 
     <!-- DeviceCount Badge -->
-    <Style Selector="border.devicecount">
+    <Style Selector="Border.devicecount">
         <Setter Property="Background" Value="{DynamicResource PrimaryLight}"/>
         <Setter Property="CornerRadius" Value="20"/>
     </Style>
-    <Style Selector="border.devicecount textblock">
+    <Style Selector="Border.devicecount TextBlock">
         <Setter Property="Foreground" Value="{DynamicResource Primary}"/>
         <Setter Property="FontWeight" Value="Medium"/>
     </Style>
 
     <!-- DeviceCard -->
-    <Style Selector="border.devicecard">
+    <Style Selector="Border.devicecard">
         <Setter Property="Background" Value="White"/>
         <Setter Property="CornerRadius" Value="12"/>
         <Setter Property="Padding" Value="16"/>
-        <Setter Property="BoxShadow">
-            <BoxShadow OffsetX="0" OffsetY="2" Blur="5" Color="#10000000"/>
-        </Setter>
+        <Setter Property="BoxShadow" Value="0 2 5 #10000000"/>
     </Style>
-    <Style Selector="border.devicecard:pointerover /template/ border">
+    <Style Selector="Border.devicecard:pointerover /template/ Border">
         <Setter Property="Background" Value="White"/>
-        <Setter Property="BoxShadow">
-            <BoxShadow OffsetX="0" OffsetY="4" Blur="12" Color="#20000000"/>
-        </Setter>
+        <Setter Property="BoxShadow" Value="0 4 12 #20000000"/>
     </Style>
 
     <!-- StatusBadge -->
-    <Style Selector="border.statusbadge">
+    <Style Selector="Border.statusbadge">
         <Setter Property="CornerRadius" Value="20"/>
         <Setter Property="Padding" Value="12,6"/>
     </Style>
-    <Style Selector="border.statusbadge textblock">
+    <Style Selector="Border.statusbadge TextBlock">
         <Setter Property="FontWeight" Value="Medium"/>
         <Setter Property="FontSize" Value="13"/>
     </Style>
 
     <!-- ServiceCard -->
-    <Style Selector="border.servicecard">
+    <Style Selector="Border.servicecard">
         <Setter Property="Background" Value="White"/>
         <Setter Property="CornerRadius" Value="12"/>
         <Setter Property="Padding" Value="16"/>
-        <Setter Property="BoxShadow">
-            <BoxShadow OffsetX="0" OffsetY="2" Blur="5" Color="#10000000"/>
-        </Setter>
+        <Setter Property="BoxShadow" Value="0 2 5 #10000000"/>
     </Style>
 
     <!-- ServiceCount -->
-    <Style Selector="border.servicecount">
+    <Style Selector="Border.servicecount">
         <Setter Property="Background" Value="{DynamicResource PrimaryLight}"/>
         <Setter Property="CornerRadius" Value="12"/>
     </Style>
-    <Style Selector="border.servicecount textblock">
+    <Style Selector="Border.servicecount TextBlock">
         <Setter Property="Foreground" Value="{DynamicResource Primary}"/>
         <Setter Property="FontWeight" Value="Medium"/>
     </Style>
 
     <!-- LogPanel -->
-    <Style Selector="border.logpanel">
+    <Style Selector="Border.logpanel">
         <Setter Property="Background" Value="White"/>
         <Setter Property="CornerRadius" Value="0"/>
         <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
@@ -121,7 +117,7 @@
     </Style>
 
     <!-- Characteristic Buttons -->
-    <Style Selector="button.charbutton">
+    <Style Selector="Button.charbutton">
         <Setter Property="Background" Value="White"/>
         <Setter Property="BorderBrush" Value="#E0E0E0"/>
         <Setter Property="BorderThickness" Value="1"/>
@@ -129,30 +125,28 @@
         <Setter Property="CornerRadius" Value="6"/>
         <Setter Property="MinWidth" Value="40"/>
     </Style>
-    <Style Selector="button.charbutton:hover">
+    <Style Selector="Button.charbutton:hover">
         <Setter Property="Background" Value="#F5F5F5"/>
         <Setter Property="BorderBrush" Value="#D0D0D0"/>
     </Style>
-    <Style Selector="button.charbutton stackpanel">
+    <Style Selector="Button.charbutton StackPanel">
         <Setter Property="HorizontalAlignment" Value="Center"/>
     </Style>
 
     <!-- FilterPanel -->
-    <Style Selector="border.filterpanel">
+    <Style Selector="Border.filterpanel">
         <Setter Property="Background" Value="White"/>
         <Setter Property="CornerRadius" Value="12"/>
-        <Setter Property="BoxShadow">
-            <BoxShadow OffsetX="0" OffsetY="2" Blur="8" Color="#10000000"/>
-        </Setter>
+        <Setter Property="BoxShadow" Value="0 2 8 #10000000"/>
     </Style>
 
     <!-- TextButton -->
-    <Style Selector="button.textbutton">
+    <Style Selector="Button.textbutton">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="#007AFF"/>
         <Setter Property="BorderThickness" Value="0"/>
     </Style>
-    <Style Selector="button.textbutton:pointerover">
+    <Style Selector="Button.textbutton:pointerover">
         <Setter Property="Foreground" Value="#0051D5"/>
     </Style>
 
