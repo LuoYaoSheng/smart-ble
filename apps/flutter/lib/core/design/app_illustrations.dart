@@ -25,8 +25,10 @@ class AppIll extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final body = kAppIlls[name] ?? kAppIlls['box']!;
+    // 包装层必须带 fill="none"（对齐 uni-app AppIll.vue）：SVG 默认 fill=black，
+    // 无 fill 属性的描边圆会被填充成实心黑盘（P001 空态发黑根因）。
     return SvgPicture.string(
-      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="$kAppIllViewBox">$body</svg>',
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="$kAppIllViewBox" fill="none">$body</svg>',
       width: width,
     );
   }
