@@ -1,0 +1,14 @@
+Asset `favicon.ico` not found; fallback to favicon.ico.html
+Asset `favicon.ico` not found; fallback to favicon.ico/index.html
+Asset `favicon.ico` not found; fallback to index.html
+[BLE] Starting scan...
+[BLE] Scan started successfully
+[BLE] Found 6 peripherals
+[BLE] Device:  - RSSI: -86
+[BLE] Device:  - RSSI: -85
+[BLE] Device:  - RSSI: -56
+[BLE] Device: BLEToolkit-Server - RSSI: -38
+[BLE] Device:  - RSSI: -74
+[BLE] Device:  - RSSI: -69
+[BLE] Device disconnected: PeripheralId(10:B4:1D:CD:23:8D)
+[BLE] Notification stream ended for char beb5483e-36e1-4688-b7f5-ea07361b26a8

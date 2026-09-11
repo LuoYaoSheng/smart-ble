@@ -20,13 +20,13 @@
 | F003 | 扫描筛选 | P0 | 扫描 | P001 | REQ | REQ | REQ | E1/E2 | E5 | 可选 | F-AND PASS | NOT_RUN | F-AND PASS（含 WIN-FAND-001/002）；U-AND PASS（面板展开+完整表单：信号强度/名称前缀/重置过滤）；A-AND PASS（content-desc 展开箭头→信号强度预设+全部+名称前缀） |
 | F004 | 广播数据查看 | P0 | 扫描 | P001 | REQ | REQ | REQ | E2 | E5 | Peripheral | F-AND PASS | NOT_RUN | F-AND PASS；U-AND PASS（广播详情含 RSSI 历史/厂商数据）；A-AND PASS（广播数据/发射功率/MAC；WIN-AAND-001 INT_MIN dBm 在册） |
 | F005 | 显示名智能解析 | P1 | 扫描 | P001 | REQ | REQ | REQ | E1/E2 | E5 | Peripheral | F-AND 具名 PASS；未命名链=已知偏差 FEAT-F-003 | NOT_RUN | F-AND/U-AND 具名路径均 PASS（BLEToolkit-Server 卡片）；A-AND 具名 PASS、未命名渲染「未知设备」+MAC；R05 全链未实现登记 |
-| F006 | GATT 连接 | P0 | GATT | P006 | REQ | REQ | REQ | E2 | E5 | Peripheral | F-AND PASS | NOT_RUN | F-AND PASS（连接→服务发现→已连接，E5 真机）；A-AND PASS（E5 真机 v16/v17：连接+发现 5 服务+已连接徽标全绿） |
-| F007 | 服务树浏览 | P0 | GATT | P006 | REQ | REQ | REQ | E2 | E5 | Peripheral | F-AND PASS | NOT_RUN | F-AND PASS；服务命名修复 WIN-FAND-003 后 GAP/GATT 具名、仅 914d 标 OTA；A-AND PASS_WITH_LIMITATION（5 卡身份+计数+OTA 具名+主卡两行签名全验证；WIN-AAND-002 不具名/003 视口挤压/007 通信期列表重置在册） |
-| F008 | 特征读取 | P0 | GATT | P006 | REQ | REQ | REQ | E2 | E5 | Peripheral(Read) | F-AND PASS | NOT_RUN | F-AND PASS（控制=system_info JSON、权限 b0=read_only JSON）；固件 WIN-ESP32-002 修复后；A-AND PASS_WITH_LIMITATION（26a8+b0 读 logcat status=0+UI 日志；读值不进 UI=WIN-AAND-004） |
-| F009 | 特征写入 | P0 | GATT | P006 | REQ | REQ | REQ | E2 | E5 | Peripheral(LED FF00–FF03) | F-AND PASS | NOT_RUN | F-AND PASS（HEX FF01/FF00 + UTF-8 开灯，write_response led_state/command 回显）；A-AND PASS_WITH_LIMITATION（TEXT+HEX 三写：写入成功+logcat status=0×3+串口 Write event/LED 实变；回显 UI 断=WIN-AAND-006/008） |
-| F010 | Notify 监听 | P0 | GATT | P006 | REQ | REQ | REQ | E2 | E5 | Peripheral(Notify) | F-AND PASS | NOT_RUN | F-AND PASS（欢迎推送/5s 周期 device_status/开关往返）；WIN-FAND-004 修复后；A-AND PASS_WITH_LIMITATION（订阅/停止往返+26a9 周期到达 logcat 计数实证；载荷 UI 断=WIN-AAND-006/008） |
-| F011 | 通信日志 | P0 | GATT | P006/P008 | REQ | REQ | REQ | E1/E2 | E5 | 不需要 | F-AND PASS | NOT_RUN | F-AND PASS（清空→面板隐藏、读重建、导出剪贴板回执）；A-AND PASS（清空→隐藏+滚动区 570px 实测→重建→系统分享面板导出全绿） |
-| F012 | 断线自动重连 | P0 | GATT | P006/P007 | REQ | REQ | REQ | E2 | E5 | Peripheral(断电/重启) | F-AND PASS | NOT_RUN | F-AND PASS（固件 fault 注入拆链→重连中→2s 自动重连；串口交叉验证）；WIN-FAND-005/006 修复后；重连后首读 8s 无响应=观察项；UI 为状态 chip 非「重新连接」横幅=形态差异；A-AND PASS（fault 拆链→scheduling 1/3→attempt 1/3→重连+重发现×2→用户断开无新 attempt 全链真机；WIN-AAND-005 日志形态在册） |
+| F006 | GATT 连接 | P0 | GATT | P006 | REQ | REQ | REQ | E2 | E5 | Peripheral | F-AND PASS | NOT_RUN | F-AND PASS（连接→服务发现→已连接，E5 真机）；A-AND PASS（E5 真机 v16/v17：连接+发现 5 服务+已连接徽标全绿）；**E-WIN PASS + T-WIN PASS（2026-09-11 W3：扫描命中→连接→5 服务，CDP 真链路；证据 20260911-win-b3/w3-gatt-*）** |
+| F007 | 服务树浏览 | P0 | GATT | P006 | REQ | REQ | REQ | E2 | E5 | Peripheral | F-AND PASS | NOT_RUN | F-AND PASS；服务命名修复 WIN-FAND-003 后 GAP/GATT 具名、仅 914d 标 OTA；A-AND PASS_WITH_LIMITATION（5 卡身份+计数+OTA 具名+主卡两行签名全验证；WIN-AAND-002 不具名/003 视口挤压/007 通信期列表重置在册）；**E-WIN PASS + T-WIN PASS（W3：1800/1801/914b/c/d 五服务特征 2/1/2/7/3=15 双线同构）** |
+| F008 | 特征读取 | P0 | GATT | P006 | REQ | REQ | REQ | E2 | E5 | Peripheral(Read) | F-AND PASS | NOT_RUN | F-AND PASS（控制=system_info JSON、权限 b0=read_only JSON）；固件 WIN-ESP32-002 修复后；A-AND PASS_WITH_LIMITATION（26a8+b0 读 logcat status=0+UI 日志；读值不进 UI=WIN-AAND-004）；**E-WIN PASS + T-WIN PASS（W3：26a8 system_info JSON + 26b0 read_only JSON（hex→utf8 含 firmware_version/read_only））** |
+| F009 | 特征写入 | P0 | GATT | P006 | REQ | REQ | REQ | E2 | E5 | Peripheral(LED FF00–FF03) | F-AND PASS | NOT_RUN | F-AND PASS（HEX FF01/FF00 + UTF-8 开灯，write_response led_state/command 回显）；A-AND PASS_WITH_LIMITATION（TEXT+HEX 三写：写入成功+logcat status=0×3+串口 Write event/LED 实变；回显 UI 断=WIN-AAND-006/008）；**E-WIN PASS + T-WIN PASS（W3：HEX FF01/FF00 + UTF-8 开灯/关灯 四写四中，write_response 回显 led_state 翻转+串口 led on/on/off/off 逐条对应；E-WIN 主进程写路径缺陷已修=format 语义+withoutResponse 错位）** |
+| F010 | Notify 监听 | P0 | GATT | P006 | REQ | REQ | REQ | E2 | E5 | Peripheral(Notify) | F-AND PASS | NOT_RUN | F-AND PASS（欢迎推送/5s 周期 device_status/开关往返）；WIN-FAND-004 修复后；A-AND PASS_WITH_LIMITATION（订阅/停止往返+26a9 周期到达 logcat 计数实证；载荷 UI 断=WIN-AAND-006/008）；**E-WIN PASS + T-WIN PASS（W3：26a8+26a9 双订阅（真按钮）+26a8 回显渲染+26a9 周期 device_status+退订后 8s 净停；E-WIN noble subscribe 签名缺陷已修）** |
+| F011 | 通信日志 | P0 | GATT | P006/P008 | REQ | REQ | REQ | E1/E2 | E5 | 不需要 | F-AND PASS | NOT_RUN | F-AND PASS（清空→面板隐藏、读重建、导出剪贴板回执）；A-AND PASS（清空→隐藏+滚动区 570px 实测→重建→系统分享面板导出全绿）；**E-WIN PASS + T-WIN PASS（W3：清空→0 条→读取重建；LogPanel dock 常驻=与移动端清空即隐藏的形态差异记录在案）** |
+| F012 | 断线自动重连 | P0 | GATT | P006/P007 | REQ | REQ | REQ | E2 | E5 | Peripheral(断电/重启) | F-AND PASS | NOT_RUN | F-AND PASS（固件 fault 注入拆链→重连中→2s 自动重连；串口交叉验证）；WIN-FAND-005/006 修复后；重连后首读 8s 无响应=观察项；UI 为状态 chip 非「重新连接」横幅=形态差异；A-AND PASS（fault 拆链→scheduling 1/3→attempt 1/3→重连+重发现×2→用户断开无新 attempt 全链真机；WIN-AAND-005 日志形态在册）；**E-WIN PASS + T-WIN PASS（W3：fault 注入断链→1/3 重连→服务恢复→用户断开无新重连，串口 connected/disconnected/re-connected 三段交叉；T-WIN btleplug 重连 Device not found 已修=未命中 6s 重扫重建 WinRT 缓存）** |
 | F013 | 多设备会话管理 | P1 | 多设备 | P007 | REQ | REQ | REQ | E2 | E5 | 严格 E5 需第二外设 | U-AND PASS_WITH_LIMITATION | NOT_RUN | U-AND PASS_WITH_LIMITATION（双手机夹具：E5 中央 + ESP32 + 华为 A-AND 广播者；列表 N=2/单断→N=1/重连→N=2/全断→空态真机；部分失败清单弹窗未触发；WIN-UAND-001 在册）；F-AND/A-AND 待复用夹具跑 |
 | F014 | 微信 peripheral 广播 | P1 | 广播 | P008 | REQ | N/A | N/A | E2 | E5 | Observer | NOT_RUN | NOT_RUN | U-WX BLOCKED_TOOLCHAIN（开发者工具扫码登录，沿用）；U-AND/F-AND/A-AND 依矩阵 N/A（微信专属）|
 | F015 | App 原生插件广播 | P1 | 广播 | P008 | N/A | REQ | REQ | E2 | E5 | Observer | NOT_RUN | NOT_RUN | F-AND PASS（p008 集成测试 30s 全过：FF 非法长度/空 UUID 拦截+广播中 15s+停止；观察侧 15 条 fff0 交叉）；A-AND PASS（F015 等价并入 9/9：启停 UI+logcat+观察侧净停）；U-AND PASS_WITH_LIMITATION（降级路径 9/9 实证；正路径=自定义基座需 HBuilderX 云打包登录=BLOCKED_TOOLCHAIN）|
@@ -101,8 +101,8 @@
 | 线 | 目标 | 层级 | BLE 后端（Windows） | 2026-09-07 状态 |
 |---|---|---|---|---|
 | A-AND | apps/android（Kotlin+Compose，`com.smartble`，纯 android.bluetooth 框架，780 行 BleManager 实装）真机 | Primary | Android 手机radio | **扫描+GATT+广播域已通**：F001-F005 等价 13/13（a-and-p001-e5 v5）；F006-F012 GATT 域 PASS×3+PASS_WITH_LIMITATION×4（a-and-f006-f012-e5 v16=39/46/v17=37/46，E5 真机+串口旁证；缺陷 WIN-AAND-001..008 在册，其中 006/007/008 为通知/UI 链路结构性缺陷待修）；广播域 F014-F017 已跑 9/9（a-and-f014-f017-e5：F015 等价启停+非法 UUID+观察侧 fff0 交叉+净停；F016 NOT_APPLICABLE 无负载编辑器）；Smart HID 域 F018-F024=PARITY-001 裁决 NOT_RUN |
-| E-WIN | apps/desktop/electron Windows 桌面 | Secondary | `@abandonware/noble` WinRT 绑定（本机 node_modules 已编译 binding.node，曾实跑） | 已登记待启动：`npm start` + Playwright 驱动，F001-F012 等价（主机蓝牙） |
-| T-WIN | apps/desktop/tauri Windows 桌面 | Primary | btleplug 0.11（WinRT；源码完整：lib.rs 1063 行 + 完整前端的 Electron 镜像） | BLOCKED_TOOLCHAIN：本机无 Rust/cargo；解锁=安装 rustup 后 `cargo tauri dev` |
+| E-WIN | apps/desktop/electron Windows 桌面 | Secondary | `@abandonware/noble` WinRT 绑定（本机 node_modules 已编译 binding.node，曾实跑） | **F006-F012 GATT 域真实收口 PASS（2026-09-11 W3：20/20，含 write format/notify subscribe 两主进程缺陷修复）**；Smart HID 域=PARITY-002 待 W4 |
+| T-WIN | apps/desktop/tauri Windows 桌面 | Primary | btleplug 0.11（WinRT；源码完整：lib.rs 1063 行 + 完整前端的 Electron 镜像） | **F006-F012 GATT 域真实收口 PASS（2026-09-11 W3：20/20，含 btleplug 断链重连重扫修复）**；Smart HID 域=PARITY-002 待 W4 |
 | V-WIN | apps/desktop/avalonia 原型 | Experimental | 真 WinRT 代码（net8.0-windows10.0.19041.0 TFM 投影；原 WindowsBluetooth NuGet 为幽灵包已除名；读写通知 ViewModel 未接线） | **Build Smoke PASS**（2026-09-11 W1：dotnet build exit 0/0 错误，PARITY-006 收口；证据 verification/windows-mobile-v1/20260911-win-b3/w1-vwin-build-smoke/；维持不入功能对齐裁决） |
 
 ### 4.2 NOT_APPLICABLE / NOT_CONFIGURED 一次性裁决
@@ -149,9 +149,9 @@ A-AND 启动（构建→E5 安装→F001-F005 等价真机）→ F013 双手机�
 - 本机系统 JDK 24（Gradle 8.2/AGP 8.2 不支持）→ 备便携 JDK 21 `C:\Users\11066\tools\jdk-21`（用户目录，不入库）；apps/android 既往构建产物存在证明曾在他 JDK 下构建成功
 - cargo/rustup 未安装 → T-WIN BLOCKED_TOOLCHAIN
 - 双手机在位：R5CR1284Y7H=三星 SM-G9910/Android 15（E5）；FEC0220629005177=华为 TAS-AN00/Android 12。**F013 双手机夹具配方已固化**（f013-dualphone/f013-summary.md）：华为跑 A-AND 广播（EMUI uiautomator 变体 xpos/几何推算、按钮 (540,1683)）；Mate 30 5G 默认 GATT=5 服务与 ESP32 撞数，身份用详情页页头名判别；EMUI 空闲 GATT 回收 ~90s + RPA 轮转双条目（WIN-UAND-001）→ 不适合长会话，适合单轮验证
-- ESP32 夹具现处**真 Smart HID 固件 v1.1.0**（smart-hid-workspace 78bc4ef 构建；2026-09-09 F018-F024 域
-  erase_flash+全量烧录，`unprovisioned`+SHID-00000001 广播中）。F025-F030 前若需 LightBLE 夹具
-  重刷 `fixture_peripheral_s3`；开串口（serial-tap）会经 DTR/RTS 脉冲复位设备——夹具状态以串口
-  首启横幅为准
+- ESP32 夹具现处**`fixture_peripheral_s3`**（2026-09-11 W3 开工串口 boot JSON 实证 `git_sha=835f1cf=HEAD`、
+  firmware_role=peripheral；2026-09-10 二次刷回后未再变——此前所记「真 SHID 固件 v1.1.0」已过时）。W3 GATT 域即对此夹具收口；
+  **W4（E5 Smart HID 真机全链）前须重刷真 SHID 固件 v1.1.0**（smart-hid-workspace 构建，erase_flash+全量烧录）；
+  开串口（serial-tap）会经 DTR/RTS 脉冲复位设备——夹具状态以串口首启横幅为准（复位同时清 test_control 粘性 fault）
 - Electron `node_modules` 已含编译好的 noble WinRT binding（曾实跑）；Avalonia 无 .sln、csproj 断引用（csproj 已修复=PARITY-006 收口 2026-09-11）
 - electron-builder Windows 打包直连 GitHub 拉取 winCodeSign/NSIS 工具链大概率超时（2026-09-11 run1 实证）；复现需镜像变量 `ELECTRON_BUILDER_BINARIES_MIRROR=https://npmmirror.com/mirrors/electron-builder-binaries/`（+`ELECTRON_MIRROR`，证据 20260911-win-b3/w2-ewin-buildwin）；rcedit 嵌图标偶发 `Unable to commit changes`（AV/文件锁抖动），builder 自带重试可过

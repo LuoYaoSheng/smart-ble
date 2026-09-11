@@ -27,8 +27,8 @@ contextBridge.exposeInMainWorld('bleAPI', {
   readCharacteristic: (deviceId, serviceUuid, charUuid) =>
     ipcRenderer.invoke('ble:readCharacteristic', deviceId, serviceUuid, charUuid),
 
-  writeCharacteristic: (deviceId, serviceUuid, charUuid, data, withoutResponse) =>
-    ipcRenderer.invoke('ble:writeCharacteristic', deviceId, serviceUuid, charUuid, data, withoutResponse),
+  writeCharacteristic: (deviceId, serviceUuid, charUuid, data, format) =>
+    ipcRenderer.invoke('ble:writeCharacteristic', deviceId, serviceUuid, charUuid, data, format),
 
   // writeRaw: accepts raw byte array — used by OTA chunked transfer
   writeRaw: (deviceId, serviceUuid, charUuid, data, withoutResponse) =>

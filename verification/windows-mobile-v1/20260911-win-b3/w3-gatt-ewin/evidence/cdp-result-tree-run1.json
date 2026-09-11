@@ -1,0 +1,27 @@
+[
+  {
+    "uuid": "1800",
+    "name": "通用访问",
+    "chars": []
+  },
+  {
+    "uuid": "1801",
+    "name": "通用属性",
+    "chars": []
+  },
+  {
+    "uuid": "4fafc2011fb5459e8fccc5c9c331914b",
+    "name": "OTA 升级服务",
+    "chars": []
+  },
+  {
+    "uuid": "4fafc2011fb5459e8fccc5c9c331914c",
+    "name": "OTA 升级服务",
+    "chars": []
+  },
+  {
+    "uuid": "4fafc2011fb5459e8fccc5c9c331914d",
+    "name": "OTA 升级服务",
+    "chars": []
+  }
+]

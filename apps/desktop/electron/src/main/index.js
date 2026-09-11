@@ -628,7 +628,7 @@ ipcMain.handle('ble:readCharacteristic', async (event, deviceId, serviceUuid, ch
   });
 });
 
-ipcMain.handle('ble:writeCharacteristic', async (event, deviceId, serviceUuid, charUuid, data, withoutResponse) => {
+ipcMain.handle('ble:writeCharacteristic', async (event, deviceId, serviceUuid, charUuid, data, format, withoutResponse) => {
   const targetPeripheral = deviceId ? connectedPeripherals.get(deviceId) : connectedPeripherals.values().next().value;
 
   if (!targetPeripheral) {
@@ -648,10 +648,13 @@ ipcMain.handle('ble:writeCharacteristic', async (event, deviceId, serviceUuid, c
       return;
     }
 
-    const buffer = Buffer.from(data.replace(/\s/g, ''), 'hex');
-    console.log('Writing:', data);
+    // format: 'utf8' | 'hex'（WriteDialog 契约；对齐 T-WIN WriteFormat）
+    const buffer = format === 'utf8'
+      ? Buffer.from(data, 'utf8')
+      : Buffer.from(data.replace(/\s/g, ''), 'hex');
+    console.log('Writing:', data, 'format:', format || 'hex');
 
-    characteristic.write(buffer, withoutResponse, (error) => {
+    characteristic.write(buffer, !!withoutResponse, (error) => {
       if (error) {
         console.error('Write error:', error);
         resolve({ success: false, error: error.message });
@@ -725,7 +728,9 @@ ipcMain.handle('ble:notifyCharacteristic', async (event, deviceId, serviceUuid, 
       });
     }
 
-    characteristic.subscribe(notify, (error) => {
+    // noble 的 subscribe/unsubscribe 各收单 callback（旧代码把布尔传进 callback 位：
+    // promise 悬挂 + notify=false 反而再次订阅）
+    const onNotifySettled = (error) => {
       if (error) {
         console.error('Notify error:', error);
         resolve({ success: false, error: error.message });
@@ -733,7 +738,13 @@ ipcMain.handle('ble:notifyCharacteristic', async (event, deviceId, serviceUuid, 
         console.log('Notify set to:', notify);
         resolve({ success: true });
       }
-    });
+    };
+
+    if (notify) {
+      characteristic.subscribe(onNotifySettled);
+    } else {
+      characteristic.unsubscribe(onNotifySettled);
+    }
   });
 });
 
