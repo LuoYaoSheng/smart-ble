@@ -1,0 +1,1385 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild test -project SmartBLE.xcodeproj -scheme SmartBLEiOS -destination id=00008030-001211062EC0802E -derivedDataPath build/DerivedData "-only-testing:SmartBLEUITests" -resultBundlePath ../../verification/ios-device/20260911-uitest-retry/UITests-retry.xcresult
+
+Resolve Package Graph
+
+
+Resolved source packages:
+  SmartHidCore: /Users/luoyaosheng/Desktop/project/Open/smart-ble/core/apple/SmartHidCore
+
+Writing result bundle at path:
+	/Users/luoyaosheng/Desktop/project/Open/smart-ble/verification/ios-device/20260911-uitest-retry/UITests-retry.xcresult
+
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (5 targets)
+    Target 'SmartBLEUITests' in project 'SmartBLE'
+        ➜ Explicit dependency on target 'SmartBLEiOS' in project 'SmartBLE'
+    Target 'SmartBLETests' in project 'SmartBLE'
+        ➜ Explicit dependency on target 'SmartBLEiOS' in project 'SmartBLE'
+        ➜ Explicit dependency on target 'SmartHidCore' in project 'SmartHidCore'
+    Target 'SmartBLEiOS' in project 'SmartBLE'
+        ➜ Explicit dependency on target 'SmartHidCore' in project 'SmartHidCore'
+    Target 'SmartHidCore' in project 'SmartHidCore'
+        ➜ Explicit dependency on target 'SmartHidCore' in project 'SmartHidCore'
+    Target 'SmartHidCore' in project 'SmartHidCore' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+Build description signature: d6c3558f7b4b9df830f58684d0d4fe78
+Build description path: /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/XCBuildData/d6c3558f7b4b9df830f58684d0d4fe78.xcbuilddata
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/SDKStatCaches.noindex/iphoneos26.1-23B77-3885c01c3e6b6a337905948deab2002e69b33fc7382b27d9b5d46e82a00f8e78.sdkstatcache
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/SmartBLE.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/SDKStatCaches.noindex/iphoneos26.1-23B77-3885c01c3e6b6a337905948deab2002e69b33fc7382b27d9b5d46e82a00f8e78.sdkstatcache
+
+Ld /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartHidCore.o normal (in target 'SmartHidCore' from project 'SmartHidCore')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/core/apple/SmartHidCore
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios15.0 -r -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk -O0 -L/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphoneos -L/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -L/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib -F/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphoneos -F/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -iframework /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/Frameworks -iframework /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk/Developer/Library/Frameworks -filelist /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore.LinkFileList -nostdlib -Xlinker -object_path_lto -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -dependency_info -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore.swiftmodule @/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore-linker-args.resp -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartHidCore.o
+
+ExtractAppIntentsMetadata (in target 'SmartHidCore' from project 'SmartHidCore')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/core/apple/SmartHidCore
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.VYm3Te/Metal.xctoolchain --module-name SmartHidCore --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk --xcode-version 17B100 --platform-family iOS --deployment-target 15.0 --bundle-identifier smarthidcore.SmartHidCore --output /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartHidCore.appintents --target-triple arm64-apple-ios15.0 --binary-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartHidCore.o --dependency-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore_dependency_info.dat --stringsdata-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore.SwiftFileList --metadata-file-list /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/SmartHidCore.DependencyMetadataFileList --static-metadata-file-list /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/SmartHidCore.DependencyStaticMetadataFileList --swift-const-vals-list /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore.SwiftConstValuesFileList --force --compile-time-extraction --deployment-aware-processing --validate-assistant-intents --no-app-shortcuts-localization
+2026-09-11 08:28:17.396 appintentsmetadataprocessor[89950:6826022] Starting appintentsmetadataprocessor export
+2026-09-11 08:28:17.471 appintentsmetadataprocessor[89950:6826022] Extracted no relevant App Intents symbols, skipping writing output
+
+RegisterExecutionPolicyException /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartHidCore.o (in target 'SmartHidCore' from project 'SmartHidCore')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/core/apple/SmartHidCore
+    builtin-RegisterExecutionPolicyException /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartHidCore.o
+
+Ld /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework/SmartHidCore_3F573FBA8ADD02B1_PackageProduct normal (in target 'SmartHidCore' from project 'SmartHidCore')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/core/apple/SmartHidCore
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios15.0 -dynamiclib -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk -O0 -L/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphoneos -L/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -L/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib -F/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphoneos -F/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks -F/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -iframework /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/Frameworks -iframework /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk/Developer/Library/Frameworks -filelist /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore\ product.build/Objects-normal/arm64/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.LinkFileList -install_name @rpath/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework/SmartHidCore_3F573FBA8ADD02B1_PackageProduct -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks -dead_strip -Xlinker -object_path_lto -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore\ product.build/Objects-normal/arm64/SmartHidCore_3F573FBA8ADD02B1_PackageProduct_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -dependency_info -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore\ product.build/Objects-normal/arm64/SmartHidCore_3F573FBA8ADD02B1_PackageProduct_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos -L/usr/lib/swift -Wl,-no_warn_duplicate_libraries -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework/SmartHidCore_3F573FBA8ADD02B1_PackageProduct -Xlinker -add_ast_path -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore.swiftmodule @/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore-linker-args.resp
+
+ProcessInfoPlistFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework/Info.plist /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore\ product.build/empty-SmartHidCore_3F573FBA8ADD02B1_PackageProduct.plist (in target 'SmartHidCore' from project 'SmartHidCore')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/core/apple/SmartHidCore
+    builtin-infoPlistUtility /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore\ product.build/empty-SmartHidCore_3F573FBA8ADD02B1_PackageProduct.plist -producttype com.apple.product-type.framework -expandbuildsettings -format binary -platform iphoneos -requiredArchitecture arm64 -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework/Info.plist
+
+GenerateTAPI /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphoneos/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.tbd (in target 'SmartHidCore' from project 'SmartHidCore')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/core/apple/SmartHidCore
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/tapi stubify -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk -F/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks -F/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -iframework /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/Frameworks -iframework /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk/Developer/Library/Frameworks -L/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -L/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework/SmartHidCore_3F573FBA8ADD02B1_PackageProduct -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphoneos/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.tbd
+
+ProcessProductPackaging /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/SmartBLE/Resources/SmartBLE.entitlements /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE.app.xcent (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+    Entitlements:
+    
+    {
+    "application-identifier" = "72MZZQB893.com.smartble.ios";
+    "com.apple.developer.team-identifier" = 72MZZQB893;
+    "get-task-allow" = 1;
+}
+    
+    builtin-productPackagingUtility /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/SmartBLE/Resources/SmartBLE.entitlements -entitlements -format xml -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE.app.xcent
+
+ProcessProductPackagingDER /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE.app.xcent /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE.app.xcent.der (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /usr/bin/derq query -f xml -i /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE.app.xcent -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE.app.xcent.der --raw
+
+Ld /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/SmartBLE.debug.dylib normal (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios15.0 -dynamiclib -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk -O0 -L/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphoneos -L/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -F/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphoneos -F/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks -F/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -filelist /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE.LinkFileList -install_name @rpath/SmartBLE.debug.dylib -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks -Xlinker -rpath -Xlinker @executable_path/Frameworks -dead_strip -Xlinker -object_path_lto -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -dependency_info -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE.swiftmodule @/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE-linker-args.resp -Wl,-no_warn_duplicate_libraries -Xlinker -alias -Xlinker _main -Xlinker ___debug_main_executable_dylib_entry_point /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework/SmartHidCore_3F573FBA8ADD02B1_PackageProduct -Xlinker -no_adhoc_codesign -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/SmartBLE.debug.dylib
+
+Ld /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/__preview.dylib normal (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios15.0 -dynamiclib -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk -O0 -L/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -F/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks -F/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -install_name @rpath/SmartBLE.debug.dylib -dead_strip -rdynamic -Xlinker -no_deduplicate -Xlinker -dependency_info -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE_dependency_info.dat -Xlinker -no_adhoc_codesign -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/__preview.dylib
+
+Copy /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/Frameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -bitcode-strip all -bitcode-strip-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip -resolve-src-symlinks -remove-static-executable /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/Frameworks
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework/SmartHidCore_3F573FBA8ADD02B1_PackageProduct -r -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/Frameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework/SmartHidCore_3F573FBA8ADD02B1_PackageProduct
+
+ProcessInfoPlistFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/Info.plist /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/SmartBLE/Resources/Info.plist (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-infoPlistUtility /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/SmartBLE/Resources/Info.plist -producttype com.apple.product-type.application -genpkginfo /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PkgInfo -expandbuildsettings -format binary -platform iphoneos -scanforprivacyfile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/Frameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework -requiredArchitecture arm64 -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/Info.plist
+
+ConstructStubExecutorLinkFileList /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-ExecutorLinkFileList-normal-arm64.txt (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    construct-stub-executor-link-file-list /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/SmartBLE.debug.dylib /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/libPreviewsJITStubExecutor_no_swift_entry_point.a /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/libPreviewsJITStubExecutor.a --output /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-ExecutorLinkFileList-normal-arm64.txt
+note: Using stub executor library with Swift entry point. (in target 'SmartBLEiOS' from project 'SmartBLE')
+
+Ld /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/SmartBLE normal (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios15.0 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk -O0 -L/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -F/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks -F/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -Xlinker -rpath -Xlinker @executable_path -Xlinker -rpath -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks -Xlinker -rpath -Xlinker @executable_path/Frameworks -rdynamic -Xlinker -no_deduplicate -e ___debug_blank_executor_main -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_dylib -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-DebugDylibPath-normal-arm64.txt -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_instlnm -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-DebugDylibInstallName-normal-arm64.txt -Xlinker -filelist -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-ExecutorLinkFileList-normal-arm64.txt /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/SmartBLE.debug.dylib -Xlinker -no_adhoc_codesign -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/SmartBLE
+
+CopySwiftLibs /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-swiftStdLibTool --copy --verbose --sign 4B44C08A097080BA2CA99BBE2C1EE443EE53B319 --scan-executable /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/SmartBLE.debug.dylib --scan-folder /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/Frameworks --scan-folder /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns --scan-folder /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/SystemExtensions --scan-folder /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/Extensions --scan-folder /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework --platform iphoneos --toolchain /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.VYm3Te/Metal.xctoolchain --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/Frameworks --strip-bitcode --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+
+ExtractAppIntentsMetadata (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.VYm3Te/Metal.xctoolchain --module-name SmartBLE --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk --xcode-version 17B100 --platform-family iOS --deployment-target 15.0 --bundle-identifier com.smartble.ios --output /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app --target-triple arm64-apple-ios15.0 --binary-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/SmartBLE --dependency-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE_dependency_info.dat --stringsdata-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE.SwiftFileList --metadata-file-list /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE.DependencyMetadataFileList --static-metadata-file-list /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE.DependencyStaticMetadataFileList --swift-const-vals-list /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --validate-assistant-intents --no-app-shortcuts-localization
+2026-09-11 08:28:17.960 appintentsmetadataprocessor[89966:6826096] Starting appintentsmetadataprocessor export
+2026-09-11 08:28:17.961 appintentsmetadataprocessor[89966:6826096] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+
+CodeSign /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/Frameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+    Signing Identity:     "Apple Development: longcan cai (L5Q7JP9RH9)"
+    Provisioning Profile: "iOS Team Provisioning Profile: *"
+                          (711a0591-dcd8-4f7f-a504-c70173141d18)
+    
+    /usr/bin/codesign --force --sign 4B44C08A097080BA2CA99BBE2C1EE443EE53B319 --timestamp\=none --preserve-metadata\=identifier,entitlements,flags --generate-entitlement-der /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/Frameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework
+
+Ld /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns/SmartBLETests.xctest/SmartBLETests normal (in target 'SmartBLETests' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios15.0 -bundle -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk -O0 -L/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphoneos -L/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -L/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib -F/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphoneos -F/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks -F/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks -F/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -iframework /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/Frameworks -iframework /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk/Developer/Library/Frameworks -filelist /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLETests.build/Objects-normal/arm64/SmartBLETests.LinkFileList -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks -Xlinker -rpath -Xlinker @loader_path/Frameworks -Xlinker -rpath -Xlinker @executable_path/Frameworks -dead_strip -bundle_loader /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/SmartBLE -Xlinker -object_path_lto -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLETests.build/Objects-normal/arm64/SmartBLETests_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -dependency_info -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLETests.build/Objects-normal/arm64/SmartBLETests_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLETests.build/Objects-normal/arm64/SmartBLETests.swiftmodule @/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLETests.build/Objects-normal/arm64/SmartBLETests-linker-args.resp -Wl,-no_warn_duplicate_libraries -Wl,-no_warn_duplicate_libraries -Xlinker -needed_framework -Xlinker XCTest -framework XCTest -Xlinker -needed-lXCTestSwiftSupport -lXCTestSwiftSupport /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework/SmartHidCore_3F573FBA8ADD02B1_PackageProduct /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/SmartBLE.debug.dylib -Xlinker -no_adhoc_codesign -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns/SmartBLETests.xctest/SmartBLETests
+
+ExtractAppIntentsMetadata (in target 'SmartBLETests' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.VYm3Te/Metal.xctoolchain --module-name SmartBLETests --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk --xcode-version 17B100 --platform-family iOS --deployment-target 15.0 --bundle-identifier com.smartble.ios.tests --output /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns/SmartBLETests.xctest --target-triple arm64-apple-ios15.0 --binary-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns/SmartBLETests.xctest/SmartBLETests --dependency-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLETests.build/Objects-normal/arm64/SmartBLETests_dependency_info.dat --stringsdata-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLETests.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLETests.build/Objects-normal/arm64/SmartBLETests.SwiftFileList --metadata-file-list /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLETests.build/SmartBLETests.DependencyMetadataFileList --static-metadata-file-list /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLETests.build/SmartBLETests.DependencyStaticMetadataFileList --swift-const-vals-list /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLETests.build/Objects-normal/arm64/SmartBLETests.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --validate-assistant-intents --no-app-shortcuts-localization
+2026-09-11 08:28:18.264 appintentsmetadataprocessor[89975:6826126] Starting appintentsmetadataprocessor export
+2026-09-11 08:28:18.265 appintentsmetadataprocessor[89975:6826126] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+
+Copy /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns/SmartBLETests.xctest/Frameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework (in target 'SmartBLETests' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -bitcode-strip all -bitcode-strip-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip -resolve-src-symlinks -remove-static-executable /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns/SmartBLETests.xctest/Frameworks
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework/SmartHidCore_3F573FBA8ADD02B1_PackageProduct -r -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns/SmartBLETests.xctest/Frameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework/SmartHidCore_3F573FBA8ADD02B1_PackageProduct
+ProcessProductPackaging "" /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEUITests.build/SmartBLEUITests.xctest.xcent (in target 'SmartBLEUITests' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+    Entitlements:
+    
+    {
+    "application-identifier" = "72MZZQB893.com.smartble.ios.uitests.xctrunner";
+    "com.apple.developer.team-identifier" = 72MZZQB893;
+    "get-task-allow" = 1;
+    "keychain-access-groups" =     (
+        "72MZZQB893.com.smartble.ios.uitests.xctrunner"
+    );
+}
+    
+    builtin-productPackagingUtility -entitlements -format xml -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEUITests.build/SmartBLEUITests.xctest.xcent
+
+ProcessInfoPlistFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns/SmartBLETests.xctest/Info.plist /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLETests.build/empty-SmartBLETests.plist (in target 'SmartBLETests' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-infoPlistUtility /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLETests.build/empty-SmartBLETests.plist -producttype com.apple.product-type.bundle.unit-test -expandbuildsettings -format binary -platform iphoneos -requiredArchitecture arm64 -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns/SmartBLETests.xctest/Info.plist
+
+ProcessProductPackagingDER /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEUITests.build/SmartBLEUITests.xctest.xcent /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEUITests.build/SmartBLEUITests.xctest.xcent.der (in target 'SmartBLEUITests' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /usr/bin/derq query -f xml -i /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEUITests.build/SmartBLEUITests.xctest.xcent -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEUITests.build/SmartBLEUITests.xctest.xcent.der --raw
+
+CopySwiftLibs /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns/SmartBLETests.xctest (in target 'SmartBLETests' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-swiftStdLibTool --copy --verbose --sign 4B44C08A097080BA2CA99BBE2C1EE443EE53B319 --scan-executable /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns/SmartBLETests.xctest/SmartBLETests --scan-folder /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns/SmartBLETests.xctest/Frameworks --scan-folder /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns/SmartBLETests.xctest/PlugIns --scan-folder /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns/SmartBLETests.xctest/SystemExtensions --scan-folder /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns/SmartBLETests.xctest/Extensions --scan-folder /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework --platform iphoneos --toolchain /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.VYm3Te/Metal.xctoolchain --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns/SmartBLETests.xctest/Frameworks --strip-bitcode --scan-executable /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLETests.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+
+CodeSign /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns/SmartBLETests.xctest/Frameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework (in target 'SmartBLETests' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+    Signing Identity:     "Apple Development: longcan cai (L5Q7JP9RH9)"
+    
+    /usr/bin/codesign --force --sign 4B44C08A097080BA2CA99BBE2C1EE443EE53B319 --timestamp\=none --preserve-metadata\=identifier,entitlements,flags --generate-entitlement-der /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns/SmartBLETests.xctest/Frameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework
+
+GenerateDSYMFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns/SmartBLETests.xctest.dSYM /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns/SmartBLETests.xctest/SmartBLETests (in target 'SmartBLETests' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/dsymutil /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns/SmartBLETests.xctest/SmartBLETests -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns/SmartBLETests.xctest.dSYM
+
+CodeSign /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns/SmartBLETests.xctest (in target 'SmartBLETests' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+    Signing Identity:     "Apple Development: longcan cai (L5Q7JP9RH9)"
+    
+    /usr/bin/codesign --force --sign 4B44C08A097080BA2CA99BBE2C1EE443EE53B319 --timestamp\=none --generate-entitlement-der /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns/SmartBLETests.xctest
+
+CodeSign /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/SmartBLE.debug.dylib (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+    Signing Identity:     "Apple Development: longcan cai (L5Q7JP9RH9)"
+    Provisioning Profile: "iOS Team Provisioning Profile: *"
+                          (711a0591-dcd8-4f7f-a504-c70173141d18)
+    
+    /usr/bin/codesign --force --sign 4B44C08A097080BA2CA99BBE2C1EE443EE53B319 --timestamp\=none --generate-entitlement-der /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/SmartBLE.debug.dylib
+
+CodeSign /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/__preview.dylib (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+    Signing Identity:     "Apple Development: longcan cai (L5Q7JP9RH9)"
+    Provisioning Profile: "iOS Team Provisioning Profile: *"
+                          (711a0591-dcd8-4f7f-a504-c70173141d18)
+    
+    /usr/bin/codesign --force --sign 4B44C08A097080BA2CA99BBE2C1EE443EE53B319 --timestamp\=none --generate-entitlement-der /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/__preview.dylib
+
+CodeSign /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+    Signing Identity:     "Apple Development: longcan cai (L5Q7JP9RH9)"
+    Provisioning Profile: "iOS Team Provisioning Profile: *"
+                          (711a0591-dcd8-4f7f-a504-c70173141d18)
+    
+    /usr/bin/codesign --force --sign 4B44C08A097080BA2CA99BBE2C1EE443EE53B319 --entitlements /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE.app.xcent --timestamp\=none --generate-entitlement-der /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app
+
+Validate /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-validationUtility /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app -shallow-bundle -infoplist-subpath Info.plist
+
+ProcessInfoPlistFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLEUITests-Runner.app/PlugIns/SmartBLEUITests.xctest/Info.plist /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/SmartBLE/Resources/Info.plist (in target 'SmartBLEUITests' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-infoPlistUtility /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/SmartBLE/Resources/Info.plist -producttype com.apple.product-type.bundle.ui-testing -expandbuildsettings -format binary -platform iphoneos -additionalcontentfile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEUITests.build/ProductTypeInfoPlistAdditions.plist -requiredArchitecture arm64 -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLEUITests-Runner.app/PlugIns/SmartBLEUITests.xctest/Info.plist
+
+Ld /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLEUITests-Runner.app/PlugIns/SmartBLEUITests.xctest/SmartBLEUITests normal (in target 'SmartBLEUITests' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios17.0 -bundle -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk -O0 -L/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphoneos -L/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -L/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib -F/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphoneos -F/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -iframework /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/Frameworks -iframework /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk/Developer/Library/Frameworks -filelist /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEUITests.build/Objects-normal/arm64/SmartBLEUITests.LinkFileList -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker @loader_path/Frameworks -Xlinker -rpath -Xlinker @executable_path/Frameworks -dead_strip -Xlinker -object_path_lto -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEUITests.build/Objects-normal/arm64/SmartBLEUITests_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -dependency_info -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEUITests.build/Objects-normal/arm64/SmartBLEUITests_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEUITests.build/Objects-normal/arm64/SmartBLEUITests.swiftmodule @/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEUITests.build/Objects-normal/arm64/SmartBLEUITests-linker-args.resp -Xlinker -needed_framework -Xlinker XCTest -framework XCTest -Xlinker -needed-lXCTestSwiftSupport -lXCTestSwiftSupport -Xlinker -no_adhoc_codesign -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLEUITests-Runner.app/PlugIns/SmartBLEUITests.xctest/SmartBLEUITests
+
+GenerateDSYMFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLEUITests-Runner.app/PlugIns/SmartBLEUITests.xctest.dSYM /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLEUITests-Runner.app/PlugIns/SmartBLEUITests.xctest/SmartBLEUITests (in target 'SmartBLEUITests' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/dsymutil /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLEUITests-Runner.app/PlugIns/SmartBLEUITests.xctest/SmartBLEUITests -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLEUITests-Runner.app/PlugIns/SmartBLEUITests.xctest.dSYM
+
+ExtractAppIntentsMetadata (in target 'SmartBLEUITests' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.VYm3Te/Metal.xctoolchain --module-name SmartBLEUITests --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk --xcode-version 17B100 --platform-family iOS --deployment-target 17.0 --bundle-identifier com.smartble.ios.uitests --output /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLEUITests-Runner.app/PlugIns/SmartBLEUITests.xctest --target-triple arm64-apple-ios17.0 --binary-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLEUITests-Runner.app/PlugIns/SmartBLEUITests.xctest/SmartBLEUITests --dependency-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEUITests.build/Objects-normal/arm64/SmartBLEUITests_dependency_info.dat --stringsdata-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEUITests.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEUITests.build/Objects-normal/arm64/SmartBLEUITests.SwiftFileList --metadata-file-list /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEUITests.build/SmartBLEUITests.DependencyMetadataFileList --static-metadata-file-list /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEUITests.build/SmartBLEUITests.DependencyStaticMetadataFileList --swift-const-vals-list /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEUITests.build/Objects-normal/arm64/SmartBLEUITests.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --validate-assistant-intents --no-app-shortcuts-localization
+2026-09-11 08:28:18.876 appintentsmetadataprocessor[89991:6826202] Starting appintentsmetadataprocessor export
+2026-09-11 08:28:18.877 appintentsmetadataprocessor[89991:6826202] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+
+CopySwiftLibs /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLEUITests-Runner.app/PlugIns/SmartBLEUITests.xctest (in target 'SmartBLEUITests' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-swiftStdLibTool --copy --verbose --sign 4B44C08A097080BA2CA99BBE2C1EE443EE53B319 --scan-executable /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLEUITests-Runner.app/PlugIns/SmartBLEUITests.xctest/SmartBLEUITests --scan-folder /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLEUITests-Runner.app/PlugIns/SmartBLEUITests.xctest/Frameworks --scan-folder /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLEUITests-Runner.app/PlugIns/SmartBLEUITests.xctest/PlugIns --scan-folder /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLEUITests-Runner.app/PlugIns/SmartBLEUITests.xctest/SystemExtensions --scan-folder /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLEUITests-Runner.app/PlugIns/SmartBLEUITests.xctest/Extensions --platform iphoneos --toolchain /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.VYm3Te/Metal.xctoolchain --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLEUITests-Runner.app/PlugIns/SmartBLEUITests.xctest/Frameworks --strip-bitcode --scan-executable /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEUITests.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+
+CodeSign /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLEUITests-Runner.app/PlugIns/SmartBLEUITests.xctest (in target 'SmartBLEUITests' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+    Signing Identity:     "Apple Development: longcan cai (L5Q7JP9RH9)"
+    Provisioning Profile: "iOS Team Provisioning Profile: *"
+                          (711a0591-dcd8-4f7f-a504-c70173141d18)
+    
+    /usr/bin/codesign --force --sign 4B44C08A097080BA2CA99BBE2C1EE443EE53B319 --entitlements /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEUITests.build/SmartBLEUITests.xctest.xcent --timestamp\=none --generate-entitlement-der /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLEUITests-Runner.app/PlugIns/SmartBLEUITests.xctest
+
+CodeSign /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLEUITests-Runner.app (in target 'SmartBLEUITests' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+    Signing Identity:     "Apple Development: longcan cai (L5Q7JP9RH9)"
+    Provisioning Profile: "iOS Team Provisioning Profile: *"
+                          (711a0591-dcd8-4f7f-a504-c70173141d18)
+    
+    /usr/bin/codesign --force --sign 4B44C08A097080BA2CA99BBE2C1EE443EE53B319 --entitlements /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEUITests.build/SmartBLEUITests.xctest.xcent --timestamp\=none --generate-entitlement-der /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLEUITests-Runner.app
+/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLEUITests-Runner.app: replacing existing signature
+
+2026-09-11 08:28:22.884489+0800 SmartBLEUITests-Runner[6268:3151756] [Default] Running tests...
+    t =      nans Interface orientation changed to Portrait
+Test Suite 'All tests' started at 2026-09-11 08:28:25.725.
+Test Suite 'SmartBLEUITests.xctest' started at 2026-09-11 08:28:25.726.
+Test Suite 'AccessibilityAuditUITests' started at 2026-09-11 08:28:25.726.
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testAccessibilityXXXLTextSizeSmoke]' started.
+    t =     0.00s Start Test at 2026-09-11 08:28:25.727
+    t =     0.19s Set Up
+    t =     0.19s Open com.smartble.ios
+    t =     0.19s     Launch com.smartble.ios
+    t =     0.20s         Terminate com.smartble.ios:6251
+    t =     4.75s         Setting up automation session
+    t =     4.91s         Wait for com.smartble.ios to idle
+    t =     6.27s Waiting 5.0s for "扫描" Button to exist
+    t =     7.28s     Checking `Expect predicate `existsNoRetry == 1` for object "扫描" Button`
+    t =     7.29s         Checking existence of `"扫描" Button`
+    t =     7.41s Tap "已连接，3" Button
+    t =     7.41s     Wait for com.smartble.ios to idle
+    t =     7.42s     Find the "已连接，3" Button
+    t =     7.44s     Check for interrupting elements affecting "已连接，3" Button
+    t =     7.48s     Synthesize event
+    t =     7.91s     Wait for com.smartble.ios to idle
+    t =     7.92s Waiting 3.0s for "广播" Button to exist
+    t =     8.94s     Checking `Expect predicate `existsNoRetry == 1` for object "广播" Button`
+    t =     8.94s         Checking existence of `"广播" Button`
+    t =    11.57s Tear Down
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testAccessibilityXXXLTextSizeSmoke]' passed (11.848 seconds).
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testAuditIssueInventoryDiagnostic]' started.
+    t =     0.00s Start Test at 2026-09-11 08:28:37.580
+    t =     0.04s Set Up
+    t =     0.04s Terminate com.smartble.ios:6270
+    t =     1.06s Open com.smartble.ios
+    t =     1.06s     Launch com.smartble.ios
+    t =     1.33s         Setting up automation session
+    t =     1.54s         Wait for com.smartble.ios to idle
+    t =     2.68s Waiting 3.0s for StaticText (First Match) to exist
+    t =     3.68s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =     3.69s         Checking existence of `StaticText (First Match)`
+    t =     6.76s Find the Any (Descendant with identity binding to AX element pid: 6272, elementOrHash.elementID: 4390950144.9)
+    t =     6.81s Find the "BLE TOOLKIT+" StaticText
+    t =     6.82s Find the "BLE TOOLKIT+" StaticText
+[A11Y-INVENTORY] state=p001-filter-empty | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=BLE TOOLKIT+ | frame=(18.0, 52.0, 100.0, 12.0)
+    t =     6.84s Find the Any (Descendant with identity binding to AX element pid: 6272, elementOrHash.elementID: 4390956864.23)
+    t =     6.86s Find the "扫描" StaticText
+    t =     6.88s Find the "扫描" StaticText
+[A11Y-INVENTORY] state=p001-filter-empty | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=扫描 | frame=(42.875, 747.0, 20.0, 12.0)
+    t =     6.89s Find the Any (Descendant with identity binding to AX element pid: 6272, elementOrHash.elementID: 4390958208.24)
+    t =     6.91s Find the "3" StaticText
+    t =     6.92s Find the "3" StaticText
+[A11Y-INVENTORY] state=p001-filter-empty | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=3 | frame=(152.95833333333334, 717.5, 6.333333333333343, 11.0)
+    t =     6.93s Find the Any (Descendant with identity binding to AX element pid: 6272, elementOrHash.elementID: 4390954176.20)
+    t =     6.94s Find the "筛选" Button
+    t =     6.95s Find the "筛选" Button
+[A11Y-INVENTORY] state=p001-filter-empty | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=筛选 | frame=(335.0, 166.0, 24.0, 44.0)
+    t =     6.96s Find the Any (Descendant with identity binding to AX element pid: 6272, elementOrHash.elementID: 4390952384.28)
+    t =     6.97s Find the "开始扫描" StaticText
+    t =     6.99s Find the "开始扫描" StaticText
+[A11Y-INVENTORY] state=p001-filter-empty | XCUIAccessibilityAuditType(rawValue: 131072) | Text clipped | label=开始扫描 | frame=(256.6666564941406, 126.97554779052734, 84.33334350585938, 18.00000762939453)
+    t =     7.00s Terminate com.smartble.ios:6272
+    t =     8.03s Open com.smartble.ios
+    t =     8.03s     Launch com.smartble.ios
+    t =     8.26s         Setting up automation session
+    t =     8.43s         Wait for com.smartble.ios to idle
+    t =     9.74s Waiting 3.0s for StaticText (First Match) to exist
+    t =    10.76s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    10.77s         Checking existence of `StaticText (First Match)`
+    t =    16.01s Find the Any (Descendant with identity binding to AX element pid: 6276, elementOrHash.elementID: 4802820096.9)
+    t =    16.08s Find the "BLE TOOLKIT+" StaticText
+    t =    16.11s Find the "BLE TOOLKIT+" StaticText
+[A11Y-INVENTORY] state=p001-filter-expanded | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=BLE TOOLKIT+ | frame=(18.0, 52.0, 100.0, 12.0)
+    t =    16.14s Find the Any (Descendant with identity binding to AX element pid: 6276, elementOrHash.elementID: 4808106304.46)
+    t =    16.17s Find the "扫描" StaticText
+    t =    16.31s Find the "扫描" StaticText
+[A11Y-INVENTORY] state=p001-filter-expanded | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=扫描 | frame=(42.875, 747.0, 20.0, 12.0)
+    t =    16.38s Find the Any (Descendant with identity binding to AX element pid: 6276, elementOrHash.elementID: 4808107648.47)
+    t =    16.43s Find the "3" StaticText
+    t =    16.47s Find the "3" StaticText
+[A11Y-INVENTORY] state=p001-filter-expanded | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=3 | frame=(152.95833333333334, 717.5, 6.333333333333343, 11.0)
+    t =    16.51s Find the Any (Descendant with identity binding to AX element pid: 6276, elementOrHash.elementID: 4424505920.21)
+    t =    16.55s Find the "收起筛选" Button
+    t =    16.58s Find the "收起筛选" Button
+[A11Y-INVENTORY] state=p001-filter-expanded | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=收起筛选 | frame=(311.0, 166.0, 48.0, 44.0)
+    t =    16.62s Find the Any (Descendant with identity binding to AX element pid: 6276, elementOrHash.elementID: 4807792320.36)
+    t =    16.66s Find the "S" StaticText
+    t =    16.70s Find the "S" StaticText
+[A11Y-INVENTORY] state=p001-filter-expanded | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=S | frame=(48.166666666666664, 482.8333333333333, 11.666666666666671, 20.33333333333337)
+    t =    16.73s Find the Any (Descendant with identity binding to AX element pid: 6276, elementOrHash.elementID: 4807793216.35)
+    t =    16.77s Find the "Smart HID · 强匹配" StaticText
+    t =    16.80s Find the "Smart HID · 强匹配" StaticText
+[A11Y-INVENTORY] state=p001-filter-expanded | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=Smart HID · 强匹配 | frame=(220.66666666666666, 474.0, 91.66666666666666, 12.0)
+    t =    16.84s Find the Any (Descendant with identity binding to AX element pid: 6276, elementOrHash.elementID: 4807797248.42)
+    t =    16.98s Find the "M" StaticText
+    t =    17.15s Find the "M" StaticText
+[A11Y-INVENTORY] state=p001-filter-expanded | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=M | frame=(46.333333333333336, 632.8333333333334, 15.333333333333329, 20.33333333333337)
+    t =    17.24s Find the Any (Descendant with identity binding to AX element pid: 6276, elementOrHash.elementID: 4807795008.64)
+    t =    17.40s Find the "配置 Smart HID" StaticText
+    t =    17.47s Find the "配置 Smart HID" StaticText
+[A11Y-INVENTORY] state=p001-filter-expanded | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=配置 Smart HID | frame=(32.0, 533.0, 151.66666666666666, 44.0)
+    t =    17.53s Find the Any (Descendant with identity binding to AX element pid: 6276, elementOrHash.elementID: 4807799488.66)
+    t =    17.57s Find the "连接" StaticText
+    t =    17.60s Find the "连接" StaticText
+[A11Y-INVENTORY] state=p001-filter-expanded | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=连接 | frame=(32.0, 683.0, 311.0, 44.0)
+    t =    17.64s Find the Any (Descendant with identity binding to AX element pid: 6276, elementOrHash.elementID: 4807797248.42)
+    t =    17.78s Find the "M" StaticText
+    t =    17.85s Find the "M" StaticText
+[A11Y-INVENTORY] state=p001-filter-expanded | XCUIAccessibilityAuditType(rawValue: 65536) | Dynamic Type font sizes are partially unsupported | label=M | frame=(46.333333333333336, 632.8333333333334, 15.333333333333329, 20.33333333333337)
+    t =    17.90s Find the Any (Descendant with identity binding to AX element pid: 6276, elementOrHash.elementID: 4807796352.65)
+    t =    17.94s Find the "连接" StaticText
+    t =    18.08s Find the "连接" StaticText
+[A11Y-INVENTORY] state=p001-filter-expanded | XCUIAccessibilityAuditType(rawValue: 65536) | Dynamic Type font sizes are partially unsupported | label=连接 | frame=(191.66666666666666, 533.0, 151.33333333333334, 44.0)
+    t =    18.16s Find the Any (Descendant with identity binding to AX element pid: 6276, elementOrHash.elementID: 4807792320.36)
+    t =    18.20s Find the "S" StaticText
+    t =    18.24s Find the "S" StaticText
+[A11Y-INVENTORY] state=p001-filter-expanded | XCUIAccessibilityAuditType(rawValue: 65536) | Dynamic Type font sizes are partially unsupported | label=S | frame=(48.166666666666664, 482.8333333333333, 11.666666666666671, 20.33333333333337)
+    t =    18.28s Find the Any (Descendant with identity binding to AX element pid: 6276, elementOrHash.elementID: 4807795008.64)
+    t =    18.42s Find the "配置 Smart HID" StaticText
+    t =    18.48s Find the "配置 Smart HID" StaticText
+[A11Y-INVENTORY] state=p001-filter-expanded | XCUIAccessibilityAuditType(rawValue: 65536) | Dynamic Type font sizes are partially unsupported | label=配置 Smart HID | frame=(32.0, 533.0, 151.66666666666666, 44.0)
+    t =    18.54s Find the Any (Descendant with identity binding to AX element pid: 6276, elementOrHash.elementID: 4807799488.66)
+    t =    18.57s Find the "连接" StaticText
+    t =    18.61s Find the "连接" StaticText
+[A11Y-INVENTORY] state=p001-filter-expanded | XCUIAccessibilityAuditType(rawValue: 65536) | Dynamic Type font sizes are partially unsupported | label=连接 | frame=(32.0, 683.0, 311.0, 44.0)
+    t =    18.65s Find the Any (Descendant with identity binding to AX element pid: 6276, elementOrHash.elementID: 4807797696.41)
+    t =    18.68s Find the "Mi Smart Band 8" StaticText
+    t =    18.71s Find the "Mi Smart Band 8" StaticText
+[A11Y-INVENTORY] state=p001-filter-expanded | XCUIAccessibilityAuditType(rawValue: 65536) | Dynamic Type font sizes are partially unsupported | label=Mi Smart Band 8 | frame=(88.0, 621.0, 121.0, 18.0)
+    t =    18.75s Find the Any (Descendant with identity binding to AX element pid: 6276, elementOrHash.elementID: 4807798144.43)
+    t =    18.78s Find the "D8:A6:3A:41:F2:09" StaticText
+    t =    18.82s Find the "D8:A6:3A:41:F2:09" StaticText
+[A11Y-INVENTORY] state=p001-filter-expanded | XCUIAccessibilityAuditType(rawValue: 65536) | Dynamic Type font sizes are partially unsupported | label=D8:A6:3A:41:F2:09 | frame=(88.0, 642.0, 105.33333333333334, 12.0)
+    t =    18.85s Find the Any (Descendant with identity binding to AX element pid: 6276, elementOrHash.elementID: 4807793216.35)
+    t =    18.89s Find the "Smart HID · 强匹配" StaticText
+    t =    18.92s Find the "Smart HID · 强匹配" StaticText
+[A11Y-INVENTORY] state=p001-filter-expanded | XCUIAccessibilityAuditType(rawValue: 65536) | Dynamic Type font sizes are partially unsupported | label=Smart HID · 强匹配 | frame=(220.66666666666666, 474.0, 91.66666666666666, 12.0)
+    t =    18.96s Find the Any (Descendant with identity binding to AX element pid: 6276, elementOrHash.elementID: 4807792768.34)
+    t =    18.99s Find the "SHID-9F3E2A1C" StaticText
+    t =    19.02s Find the "SHID-9F3E2A1C" StaticText
+[A11Y-INVENTORY] state=p001-filter-expanded | XCUIAccessibilityAuditType(rawValue: 65536) | Dynamic Type font sizes are partially unsupported | label=SHID-9F3E2A1C | frame=(88.0, 471.0, 119.66666666666666, 18.0)
+    t =    19.06s Find the Any (Descendant with identity binding to AX element pid: 6276, elementOrHash.elementID: 4807793664.37)
+    t =    19.09s Find the "SHID-9F3E2A1C" StaticText
+    t =    19.12s Find the "SHID-9F3E2A1C" StaticText
+[A11Y-INVENTORY] state=p001-filter-expanded | XCUIAccessibilityAuditType(rawValue: 65536) | Dynamic Type font sizes are partially unsupported | label=SHID-9F3E2A1C | frame=(88.0, 492.0, 80.66666666666666, 12.0)
+    t =    19.17s Find the Any (Descendant with identity binding to AX element pid: 6276, elementOrHash.elementID: 4807798592.44)
+    t =    19.20s Find the "-66 dBm" StaticText
+    t =    19.24s Find the "-66 dBm" StaticText
+[A11Y-INVENTORY] state=p001-filter-expanded | XCUIAccessibilityAuditType(rawValue: 65536) | Dynamic Type font sizes are partially unsupported | label=-66 dBm | frame=(114.0, 659.0, 43.333333333333314, 12.0)
+    t =    19.27s Find the Any (Descendant with identity binding to AX element pid: 6276, elementOrHash.elementID: 4807794112.38)
+    t =    19.31s Find the "-52 dBm" StaticText
+    t =    19.34s Find the "-52 dBm" StaticText
+[A11Y-INVENTORY] state=p001-filter-expanded | XCUIAccessibilityAuditType(rawValue: 65536) | Dynamic Type font sizes are partially unsupported | label=-52 dBm | frame=(114.0, 509.0, 43.333333333333314, 12.0)
+    t =    19.38s Find the Any (Descendant with identity binding to AX element pid: 6276, elementOrHash.elementID: 4373710080.30)
+    t =    19.41s Find the "如 SHID / LightBLE" TextField
+    t =    19.45s Find the "如 SHID / LightBLE" TextField
+[A11Y-INVENTORY] state=p001-filter-expanded | XCUIAccessibilityAuditType(rawValue: 131072) | Text clipped | label= | frame=(106.0, 327.0, 239.0, 38.0)
+    t =    19.48s Find the Any (Descendant with identity binding to AX element pid: 6276, elementOrHash.elementID: 4807792768.34)
+    t =    19.52s Find the "SHID-9F3E2A1C" StaticText
+    t =    19.55s Find the "SHID-9F3E2A1C" StaticText
+[A11Y-INVENTORY] state=p001-filter-expanded | XCUIAccessibilityAuditType(rawValue: 131072) | Text clipped | label=SHID-9F3E2A1C | frame=(88.0, 471.0, 119.66666666666666, 18.0)
+    t =    19.59s Find the Any (Descendant with identity binding to AX element pid: 6276, elementOrHash.elementID: 4807786496.57)
+    t =    19.62s Find the "[-70]" StaticText
+    t =    19.66s Find the "[-70]" StaticText
+[A11Y-INVENTORY] state=p001-filter-expanded | XCUIAccessibilityAuditType(rawValue: 131072) | Text clipped | label=[-70] | frame=(240.625, 251.16666666666666, 31.0, 12.000000000000028)
+    t =    19.69s Find the Any (Descendant with identity binding to AX element pid: 6276, elementOrHash.elementID: 4807787840.59)
+    t =    19.73s Find the "[-85]" StaticText
+    t =    19.76s Find the "[-85]" StaticText
+[A11Y-INVENTORY] state=p001-filter-expanded | XCUIAccessibilityAuditType(rawValue: 131072) | Text clipped | label=[-85] | frame=(301.875, 251.16666666666666, 31.0, 12.000000000000028)
+    t =    19.80s Find the Any (Descendant with identity binding to AX element pid: 6276, elementOrHash.elementID: 4807797696.41)
+    t =    19.94s Find the "Mi Smart Band 8" StaticText
+    t =    20.01s Find the "Mi Smart Band 8" StaticText
+[A11Y-INVENTORY] state=p001-filter-expanded | XCUIAccessibilityAuditType(rawValue: 131072) | Text clipped | label=Mi Smart Band 8 | frame=(88.0, 621.0, 121.0, 18.0)
+    t =    20.06s Find the Any (Descendant with identity binding to AX element pid: 6276, elementOrHash.elementID: 4807791872.33)
+    t =    20.10s Find the "重置过滤" Button
+    t =    20.13s Find the "重置过滤" Button
+[A11Y-INVENTORY] state=p001-filter-expanded | XCUIAccessibilityAuditType(rawValue: 131072) | Text clipped | label=重置过滤 | frame=(267.3333333333333, 377.0, 77.66666666666669, 44.0)
+    t =    20.17s Find the Any (Descendant with identity binding to AX element pid: 6276, elementOrHash.elementID: 4424507264.51)
+    t =    20.21s Find the "开始扫描" StaticText
+    t =    20.24s Find the "开始扫描" StaticText
+[A11Y-INVENTORY] state=p001-filter-expanded | XCUIAccessibilityAuditType(rawValue: 131072) | Text clipped | label=开始扫描 | frame=(256.6666564941406, 126.97554779052734, 84.33334350585938, 18.00000762939453)
+    t =    20.28s Find the Any (Descendant with identity binding to AX element pid: 6276, elementOrHash.elementID: 4424509952.53)
+    t =    20.32s Find the "[-40]" StaticText
+    t =    20.46s Find the "[-40]" StaticText
+[A11Y-INVENTORY] state=p001-filter-expanded | XCUIAccessibilityAuditType(rawValue: 131072) | Text clipped | label=[-40] | frame=(118.125, 251.16666666666666, 31.0, 12.000000000000028)
+    t =    20.53s Find the Any (Descendant with identity binding to AX element pid: 6276, elementOrHash.elementID: 4807795008.64)
+    t =    20.57s Find the "配置 Smart HID" StaticText
+    t =    20.61s Find the "配置 Smart HID" StaticText
+[A11Y-INVENTORY] state=p001-filter-expanded | XCUIAccessibilityAuditType(rawValue: 131072) | Text clipped | label=配置 Smart HID | frame=(32.0, 533.0, 151.66666666666666, 44.0)
+    t =    20.65s Find the Any (Descendant with identity binding to AX element pid: 6276, elementOrHash.elementID: 4424509056.55)
+    t =    20.68s Find the "[-60]" StaticText
+    t =    20.72s Find the "[-60]" StaticText
+[A11Y-INVENTORY] state=p001-filter-expanded | XCUIAccessibilityAuditType(rawValue: 131072) | Text clipped | label=[-60] | frame=(179.375, 251.16666666666666, 31.0, 12.000000000000028)
+    t =    20.76s Terminate com.smartble.ios:6276
+    t =    21.83s Open com.smartble.ios
+    t =    21.83s     Launch com.smartble.ios
+    t =    22.06s         Setting up automation session
+    t =    22.23s         Wait for com.smartble.ios to idle
+    t =    23.40s Waiting 3.0s for StaticText (First Match) to exist
+    t =    24.43s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    24.43s         Checking existence of `StaticText (First Match)`
+    t =    27.58s Find the Any (Descendant with identity binding to AX element pid: 6277, elementOrHash.elementID: 5921953024.9)
+    t =    27.63s Find the "BLE TOOLKIT+" StaticText
+    t =    27.65s Find the "BLE TOOLKIT+" StaticText
+[A11Y-INVENTORY] state=p001-scan-failed | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=BLE TOOLKIT+ | frame=(18.0, 52.0, 100.0, 12.0)
+    t =    27.67s Find the Any (Descendant with identity binding to AX element pid: 6277, elementOrHash.elementID: 5921961984.26)
+    t =    27.69s Find the "扫描" StaticText
+    t =    27.71s Find the "扫描" StaticText
+[A11Y-INVENTORY] state=p001-scan-failed | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=扫描 | frame=(42.875, 747.0, 20.0, 12.0)
+    t =    27.72s Find the Any (Descendant with identity binding to AX element pid: 6277, elementOrHash.elementID: 5921963328.27)
+    t =    27.74s Find the "3" StaticText
+    t =    27.75s Find the "3" StaticText
+[A11Y-INVENTORY] state=p001-scan-failed | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=3 | frame=(152.95833333333334, 717.5, 6.333333333333343, 11.0)
+    t =    27.76s Find the Any (Descendant with identity binding to AX element pid: 6277, elementOrHash.elementID: 5921960640.25)
+    t =    27.77s Find the "筛选" Button
+    t =    27.79s Find the "筛选" Button
+[A11Y-INVENTORY] state=p001-scan-failed | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=筛选 | frame=(335.0, 312.3333333333333, 24.0, 44.0)
+    t =    27.80s Find the Any (Descendant with identity binding to AX element pid: 6277, elementOrHash.elementID: 5921954816.18)
+    t =    27.82s Find the "扫描失败" StaticText
+    t =    27.83s Find the "扫描失败" StaticText
+[A11Y-INVENTORY] state=p001-scan-failed | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=扫描失败 | frame=(55.666666666666664, 128.0, 59.666666666666664, 18.0)
+    t =    27.85s Find the Any (Descendant with identity binding to AX element pid: 6277, elementOrHash.elementID: 5921955264.19)
+    t =    27.87s Find the "scan_failed" StaticText
+    t =    27.88s Find the "scan_failed" StaticText
+[A11Y-INVENTORY] state=p001-scan-failed | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=scan_failed | frame=(129.33333333333331, 131.0, 68.00000000000003, 12.0)
+    t =    27.90s Find the Any (Descendant with identity binding to AX element pid: 6277, elementOrHash.elementID: 5921956608.32)
+    t =    27.92s Find the "重试" StaticText
+    t =    27.94s Find the "重试" StaticText
+[A11Y-INVENTORY] state=p001-scan-failed | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=重试 | frame=(44.0, 210.0, 46.666664123535156, 15.706588745117188)
+    t =    27.96s Find the Any (Descendant with identity binding to AX element pid: 6277, elementOrHash.elementID: 5921958848.31)
+    t =    27.98s Find the "开始扫描" StaticText
+    t =    27.99s Find the "开始扫描" StaticText
+[A11Y-INVENTORY] state=p001-scan-failed | XCUIAccessibilityAuditType(rawValue: 131072) | Text clipped | label=开始扫描 | frame=(256.6666564941406, 273.3088684082031, 84.33334350585938, 18.0)
+    t =    28.01s Terminate com.smartble.ios:6277
+    t =    29.08s Open com.smartble.ios
+    t =    29.08s     Launch com.smartble.ios
+    t =    29.37s         Setting up automation session
+    t =    29.50s         Wait for com.smartble.ios to idle
+    t =    30.80s Waiting 3.0s for StaticText (First Match) to exist
+    t =    31.84s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    31.84s         Checking existence of `StaticText (First Match)`
+    t =    35.30s Find the Any (Descendant with identity binding to AX element pid: 6278, elementOrHash.elementID: 4428298240.12)
+    t =    35.35s Find the "✓" StaticText
+    t =    35.38s Find the "✓" StaticText
+[A11Y-INVENTORY] state=p002-configure | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=✓ | frame=(53.5, 116.83333333333333, 11.0, 14.333333333333357)
+    t =    35.40s Find the Any (Descendant with identity binding to AX element pid: 6278, elementOrHash.elementID: 4428299136.13)
+    t =    35.42s Find the "2" StaticText
+    t =    35.44s Find the "2" StaticText
+[A11Y-INVENTORY] state=p002-configure | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=2 | frame=(183.5, 116.83333333333333, 8.0, 14.333333333333357)
+    t =    35.45s Find the Any (Descendant with identity binding to AX element pid: 6278, elementOrHash.elementID: 4428298688.15)
+    t =    35.47s Find the "连接设备" StaticText
+    t =    35.48s Find the "连接设备" StaticText
+[A11Y-INVENTORY] state=p002-configure | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=连接设备 | frame=(37.0, 143.0, 44.0, 13.333333333333314)
+    t =    35.50s Find the Any (Descendant with identity binding to AX element pid: 6278, elementOrHash.elementID: 4428299584.16)
+    t =    35.52s Find the "填写配置" StaticText
+    t =    35.54s Find the "填写配置" StaticText
+[A11Y-INVENTORY] state=p002-configure | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=填写配置 | frame=(165.5, 143.0, 44.0, 13.333333333333314)
+    t =    35.56s Find the Any (Descendant with identity binding to AX element pid: 6278, elementOrHash.elementID: 4840293248.18)
+    t =    35.58s Find the "S" StaticText
+    t =    35.60s Find the "S" StaticText
+[A11Y-INVENTORY] state=p002-configure | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=S | frame=(42.16666666666667, 192.16666666666666, 11.666666666666664, 20.333333333333343)
+    t =    35.62s Find the Any (Descendant with identity binding to AX element pid: 6278, elementOrHash.elementID: 4840294592.21)
+    t =    35.64s Find the "已连接" StaticText
+    t =    35.66s Find the "已连接" StaticText
+[A11Y-INVENTORY] state=p002-configure | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=已连接 | frame=(25.0, 252.33333333333334, 36.0, 14.333333333333286)
+    t =    35.68s Find the Any (Descendant with identity binding to AX element pid: 6278, elementOrHash.elementID: 4840295936.24)
+    t =    35.70s Find the "*" StaticText
+    t =    35.72s Find the "*" StaticText
+[A11Y-INVENTORY] state=p002-configure | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=* | frame=(106.66666666666667, 298.66666666666663, 7.666666666666657, 20.33333333333337)
+    t =    35.75s Find the Any (Descendant with identity binding to AX element pid: 6278, elementOrHash.elementID: 4840298624.30)
+    t =    35.77s Find the "*" StaticText
+    t =    35.79s Find the "*" StaticText
+[A11Y-INVENTORY] state=p002-configure | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=* | frame=(151.33333333333331, 455.0, 7.666666666666657, 20.333333333333314)
+    t =    35.81s Find the Any (Descendant with identity binding to AX element pid: 6278, elementOrHash.elementID: 4840299968.35)
+    t =    35.83s Find the "扫描 ControlHub 配对码" StaticText
+    t =    35.85s Find the "扫描 ControlHub 配对码" StaticText
+[A11Y-INVENTORY] state=p002-configure | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=扫描 ControlHub 配对码 | frame=(68.66666666666667, 557.3333333333333, 184.33333333333331, 20.333333333333258)
+    t =    35.87s Find the Any (Descendant with identity binding to AX element pid: 6278, elementOrHash.elementID: 4840300416.36)
+    t =    35.90s Find the "扫码解析 shid://pair 自动回填地址与令牌" StaticText
+    t =    35.92s Find the "扫码解析 shid://pair 自动回填地址与令牌" StaticText
+[A11Y-INVENTORY] state=p002-configure | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=扫码解析 shid://pair 自动回填地址与令牌 | frame=(68.66666666666667, 580.6666666666665, 194.0, 28.666666666666742)
+    t =    35.94s Find the Any (Descendant with identity binding to AX element pid: 6278, elementOrHash.elementID: 4840300864.37)
+    t =    35.95s Find the "必需" StaticText
+    t =    35.97s Find the "必需" StaticText
+[A11Y-INVENTORY] state=p002-configure | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=必需 | frame=(313.0, 576.1666666666665, 24.0, 14.333333333333371)
+    t =    36.00s Find the Any (Descendant with identity binding to AX element pid: 6278, elementOrHash.elementID: 4840302656.38)
+    t =    36.01s Find the "下发配置" StaticText
+    t =    36.03s Find the "下发配置" StaticText
+[A11Y-INVENTORY] state=p002-configure | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=下发配置 | frame=(145.3333282470703, 715.3088989257812, 85.50001525878906, 18.0)
+    t =    36.06s Find the Any (Descendant with identity binding to AX element pid: 6278, elementOrHash.elementID: 4377872896.25)
+    t =    36.07s Find the "家庭 / 办公 2.4G Wi-Fi" TextField
+    t =    36.09s Find the "家庭 / 办公 2.4G Wi-Fi" TextField
+[A11Y-INVENTORY] state=p002-configure | XCUIAccessibilityAuditType(rawValue: 131072) | Text clipped | label= | frame=(32.0, 325.0, 311.0, 34.0)
+    t =    36.11s Find the Any (Descendant with identity binding to AX element pid: 6278, elementOrHash.elementID: 4377871616.27)
+    t =    36.13s Find the "无密码可留空" SecureTextField
+    t =    36.15s Find the "无密码可留空" SecureTextField
+[A11Y-INVENTORY] state=p002-configure | XCUIAccessibilityAuditType(rawValue: 131072) | Text clipped | label= | frame=(32.0, 402.0, 276.66666666666663, 34.0)
+    t =    36.18s Find the Any (Descendant with identity binding to AX element pid: 6278, elementOrHash.elementID: 4840293696.19)
+    t =    36.20s Find the "SHID-9F3E2A1C" StaticText
+    t =    36.22s Find the "SHID-9F3E2A1C" StaticText
+[A11Y-INVENTORY] state=p002-configure | XCUIAccessibilityAuditType(rawValue: 131072) | Text clipped | label=SHID-9F3E2A1C | frame=(79.0, 185.16666666666666, 130.33333333333334, 20.333333333333343)
+    t =    36.24s Find the Any (Descendant with identity binding to AX element pid: 6278, elementOrHash.elementID: 4377874176.31)
+    t =    36.26s Find the "192.168.1.8:17892" TextField
+    t =    36.28s Find the "192.168.1.8:17892" TextField
+[A11Y-INVENTORY] state=p002-configure | XCUIAccessibilityAuditType(rawValue: 131072) | Text clipped | label= | frame=(32.0, 481.3333333333333, 311.0, 33.99999999999994)
+    t =    36.30s Terminate com.smartble.ios:6278
+    t =    37.31s Open com.smartble.ios
+    t =    37.32s     Launch com.smartble.ios
+    t =    37.56s         Setting up automation session
+    t =    37.68s         Wait for com.smartble.ios to idle
+    t =    38.85s Waiting 3.0s for StaticText (First Match) to exist
+    t =    39.87s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    39.87s         Checking existence of `StaticText (First Match)`
+    t =    42.84s Find the Any (Descendant with identity binding to AX element pid: 6279, elementOrHash.elementID: 4457977984.12)
+    t =    42.90s Find the "1" StaticText
+    t =    42.91s Find the "1" StaticText
+[A11Y-INVENTORY] state=p002-identity-failed | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=1 | frame=(55.833333333333336, 116.83333333333333, 6.333333333333329, 14.333333333333357)
+    t =    42.93s Find the Any (Descendant with identity binding to AX element pid: 6279, elementOrHash.elementID: 4457978432.15)
+    t =    42.95s Find the "连接设备" StaticText
+    t =    42.97s Find the "连接设备" StaticText
+[A11Y-INVENTORY] state=p002-identity-failed | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=连接设备 | frame=(37.0, 143.0, 44.0, 13.333333333333314)
+    t =    42.98s Find the Any (Descendant with identity binding to AX element pid: 6279, elementOrHash.elementID: 4457980672.18)
+    t =    43.00s Find the "S" StaticText
+    t =    43.01s Find the "S" StaticText
+[A11Y-INVENTORY] state=p002-identity-failed | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=S | frame=(42.16666666666667, 192.16666666666666, 11.666666666666664, 20.333333333333343)
+    t =    43.02s Find the Any (Descendant with identity binding to AX element pid: 6279, elementOrHash.elementID: 4457982464.22)
+    t =    43.03s Find the "操作失败" StaticText
+    t =    43.04s Find the "操作失败" StaticText
+[A11Y-INVENTORY] state=p002-identity-failed | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=操作失败 | frame=(57.0, 260.3333333333333, 67.66666666666667, 20.333333333333314)
+    t =    43.06s Find the Any (Descendant with identity binding to AX element pid: 6279, elementOrHash.elementID: 4457982912.23)
+    t =    43.07s Find the "identity_failed" StaticText
+    t =    43.09s Find the "identity_failed" StaticText
+[A11Y-INVENTORY] state=p002-identity-failed | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=identity_failed | frame=(139.66666666666666, 264.5, 93.0, 12.0)
+    t =    43.10s Find the Any (Descendant with identity binding to AX element pid: 6279, elementOrHash.elementID: 4457984256.27)
+    t =    43.12s Find the "重新连接" StaticText
+    t =    43.13s Find the "重新连接" StaticText
+[A11Y-INVENTORY] state=p002-identity-failed | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=重新连接 | frame=(82.33333587646484, 357.6422119140625, 82.33333587646484, 18.0)
+    t =    43.15s Find the Any (Descendant with identity binding to AX element pid: 6279, elementOrHash.elementID: 4457981120.19)
+    t =    43.17s Find the "SHID-9F3E2A1C" StaticText
+    t =    43.18s Find the "SHID-9F3E2A1C" StaticText
+[A11Y-INVENTORY] state=p002-identity-failed | XCUIAccessibilityAuditType(rawValue: 131072) | Text clipped | label=SHID-9F3E2A1C | frame=(79.0, 185.16666666666666, 130.33333333333334, 20.333333333333343)
+    t =    43.20s Terminate com.smartble.ios:6279
+    t =    44.27s Open com.smartble.ios
+    t =    44.27s     Launch com.smartble.ios
+    t =    44.50s         Setting up automation session
+    t =    44.63s         Wait for com.smartble.ios to idle
+    t =    45.76s Waiting 3.0s for StaticText (First Match) to exist
+    t =    46.77s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    46.77s         Checking existence of `StaticText (First Match)`
+    t =    49.64s Find the Any (Descendant with identity binding to AX element pid: 6280, elementOrHash.elementID: 5720938176.12)
+    t =    49.69s Find the "✓" StaticText
+    t =    49.71s Find the "✓" StaticText
+[A11Y-INVENTORY] state=p002-success | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=✓ | frame=(53.5, 116.83333333333333, 11.0, 14.333333333333357)
+    t =    49.73s Find the Any (Descendant with identity binding to AX element pid: 6280, elementOrHash.elementID: 5720939072.13)
+    t =    49.74s Find the "✓" StaticText
+    t =    49.76s Find the "✓" StaticText
+[A11Y-INVENTORY] state=p002-success | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=✓ | frame=(182.0, 116.83333333333333, 11.0, 14.333333333333357)
+    t =    49.78s Find the Any (Descendant with identity binding to AX element pid: 6280, elementOrHash.elementID: 5720939968.14)
+    t =    49.79s Find the "3" StaticText
+    t =    49.80s Find the "3" StaticText
+[A11Y-INVENTORY] state=p002-success | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=3 | frame=(311.8333333333333, 116.83333333333333, 8.333333333333314, 14.333333333333357)
+    t =    49.81s Find the Any (Descendant with identity binding to AX element pid: 6280, elementOrHash.elementID: 5720938624.15)
+    t =    49.83s Find the "连接设备" StaticText
+    t =    49.84s Find the "连接设备" StaticText
+[A11Y-INVENTORY] state=p002-success | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=连接设备 | frame=(37.0, 143.0, 44.0, 13.333333333333314)
+    t =    49.85s Find the Any (Descendant with identity binding to AX element pid: 6280, elementOrHash.elementID: 5720939520.16)
+    t =    49.86s Find the "填写配置" StaticText
+    t =    49.88s Find the "填写配置" StaticText
+[A11Y-INVENTORY] state=p002-success | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=填写配置 | frame=(165.5, 143.0, 44.0, 13.333333333333314)
+    t =    49.89s Find the Any (Descendant with identity binding to AX element pid: 6280, elementOrHash.elementID: 5720940416.17)
+    t =    49.91s Find the "下发状态" StaticText
+    t =    49.92s Find the "下发状态" StaticText
+[A11Y-INVENTORY] state=p002-success | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=下发状态 | frame=(294.0, 143.0, 44.0, 13.333333333333314)
+    t =    49.93s Find the Any (Descendant with identity binding to AX element pid: 6280, elementOrHash.elementID: 5720940864.18)
+    t =    49.95s Find the "S" StaticText
+    t =    49.96s Find the "S" StaticText
+[A11Y-INVENTORY] state=p002-success | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=S | frame=(42.16666666666667, 192.16666666666666, 11.666666666666664, 20.333333333333343)
+    t =    49.98s Find the Any (Descendant with identity binding to AX element pid: 6280, elementOrHash.elementID: 5720944000.25)
+    t =    49.99s Find the "查看设备" StaticText
+    t =    50.00s Find the "查看设备" StaticText
+[A11Y-INVENTORY] state=p002-success | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=查看设备 | frame=(150.6666717529297, 415.6666564941406, 76.66667175292969, 18.0)
+    t =    50.02s Find the Any (Descendant with identity binding to AX element pid: 6280, elementOrHash.elementID: 5720941312.19)
+    t =    50.03s Find the "SHID-9F3E2A1C" StaticText
+    t =    50.05s Find the "SHID-9F3E2A1C" StaticText
+[A11Y-INVENTORY] state=p002-success | XCUIAccessibilityAuditType(rawValue: 131072) | Text clipped | label=SHID-9F3E2A1C | frame=(79.0, 185.16666666666666, 130.33333333333334, 20.333333333333343)
+    t =    50.06s Terminate com.smartble.ios:6280
+    t =    51.11s Open com.smartble.ios
+    t =    51.12s     Launch com.smartble.ios
+    t =    51.36s         Setting up automation session
+    t =    51.50s         Wait for com.smartble.ios to idle
+    t =    52.77s Waiting 3.0s for StaticText (First Match) to exist
+    t =    53.80s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    53.80s         Checking existence of `StaticText (First Match)`
+    t =    56.52s Find the Any (Descendant with identity binding to AX element pid: 6281, elementOrHash.elementID: 4397675008.23)
+    t =    56.59s Find the "提示" StaticText
+    t =    56.62s Find the "提示" StaticText
+[A11Y-INVENTORY] state=p003-detail | XCUIAccessibilityAuditType(rawValue: 65536) | Dynamic Type font sizes are partially unsupported | label=提示 | frame=(57.66666666666666, 357.0, 260.0, 20.333333333333314)
+    t =    56.64s Find the Any (Descendant with identity binding to AX element pid: 6281, elementOrHash.elementID: 4397675904.24)
+    t =    56.66s Find the "该历史设备记录已不存在" StaticText
+    t =    56.68s Find the "该历史设备记录已不存在" StaticText
+[A11Y-INVENTORY] state=p003-detail | XCUIAccessibilityAuditType(rawValue: 65536) | Dynamic Type font sizes are partially unsupported | label=该历史设备记录已不存在 | frame=(57.66666666666666, 384.6666666666667, 260.0, 18.0)
+    t =    56.71s Find the Any (Descendant with identity binding to AX element pid: 6281, elementOrHash.elementID: 4397676800.26)
+    t =    57.73s     Find the Any (Descendant with identity binding to AX element pid: 6281, elementOrHash.elementID: 4397676800.26) (retry 1)
+    t =    58.81s     Find the Any (Descendant with identity binding to AX element pid: 6281, elementOrHash.elementID: 4397676800.26) (retry 2)
+[A11Y-INVENTORY] state=p003-detail | XCUIAccessibilityAuditType(rawValue: 65536) | Dynamic Type font sizes are partially unsupported | label=? | frame=?
+    t =    58.88s Terminate com.smartble.ios:6281
+    t =    59.93s Open com.smartble.ios
+    t =    59.93s     Launch com.smartble.ios
+    t =    60.17s         Setting up automation session
+    t =    60.33s         Wait for com.smartble.ios to idle
+    t =    61.51s Waiting 3.0s for StaticText (First Match) to exist
+    t =    62.52s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    62.53s         Checking existence of `StaticText (First Match)`
+    t =    65.24s Find the Any (Descendant with identity binding to AX element pid: 6283, elementOrHash.elementID: 4389951168.26)
+    t =    66.32s     Find the Any (Descendant with identity binding to AX element pid: 6283, elementOrHash.elementID: 4389951168.26) (retry 1)
+    t =    67.40s     Find the Any (Descendant with identity binding to AX element pid: 6283, elementOrHash.elementID: 4389951168.26) (retry 2)
+[A11Y-INVENTORY] state=p003-missing-fields | XCUIAccessibilityAuditType(rawValue: 65536) | Dynamic Type font sizes are partially unsupported | label=? | frame=?
+    t =    67.48s Find the Any (Descendant with identity binding to AX element pid: 6283, elementOrHash.elementID: 4389949376.23)
+    t =    67.53s Find the "提示" StaticText
+    t =    67.57s Find the "提示" StaticText
+[A11Y-INVENTORY] state=p003-missing-fields | XCUIAccessibilityAuditType(rawValue: 65536) | Dynamic Type font sizes are partially unsupported | label=提示 | frame=(57.66666666666666, 357.0, 260.0, 20.333333333333314)
+    t =    67.61s Find the Any (Descendant with identity binding to AX element pid: 6283, elementOrHash.elementID: 4389950272.24)
+    t =    67.75s Find the "该历史设备记录已不存在" StaticText
+    t =    67.80s Find the "该历史设备记录已不存在" StaticText
+[A11Y-INVENTORY] state=p003-missing-fields | XCUIAccessibilityAuditType(rawValue: 65536) | Dynamic Type font sizes are partially unsupported | label=该历史设备记录已不存在 | frame=(57.66666666666666, 384.6666666666667, 260.0, 18.0)
+    t =    67.83s Terminate com.smartble.ios:6283
+    t =    68.86s Open com.smartble.ios
+    t =    68.86s     Launch com.smartble.ios
+    t =    69.10s         Setting up automation session
+    t =    69.21s         Wait for com.smartble.ios to idle
+    t =    70.35s Waiting 3.0s for StaticText (First Match) to exist
+    t =    71.37s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    71.37s         Checking existence of `StaticText (First Match)`
+    t =    74.54s Find the Any (Descendant with identity binding to AX element pid: 6284, elementOrHash.elementID: 4432419840.12)
+    t =    74.59s Find the "实时检测完成" StaticText
+    t =    74.61s Find the "实时检测完成" StaticText
+[A11Y-INVENTORY] state=p005-diagnostics | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=实时检测完成 | frame=(37.0, 126.0, 71.66666666666667, 14.333333333333314)
+    t =    74.63s Find the Any (Descendant with identity binding to AX element pid: 6284, elementOrHash.elementID: 4432421632.16)
+    t =    74.65s Find the "正常" StaticText
+    t =    74.67s Find the "正常" StaticText
+[A11Y-INVENTORY] state=p005-diagnostics | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=正常 | frame=(131.0, 185.16666666666666, 24.0, 14.333333333333343)
+    t =    74.68s Find the Any (Descendant with identity binding to AX element pid: 6284, elementOrHash.elementID: 4432423424.20)
+    t =    74.70s Find the "正常" StaticText
+    t =    74.71s Find the "正常" StaticText
+[A11Y-INVENTORY] state=p005-diagnostics | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=正常 | frame=(141.66666666666666, 258.83333333333337, 24.0, 14.333333333333314)
+    t =    74.72s Find the Any (Descendant with identity binding to AX element pid: 6284, elementOrHash.elementID: 4432425216.24)
+    t =    74.74s Find the "正常" StaticText
+    t =    74.75s Find the "正常" StaticText
+[A11Y-INVENTORY] state=p005-diagnostics | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=正常 | frame=(152.66666666666666, 319.5, 24.0, 14.333333333333371)
+    t =    74.77s Find the Any (Descendant with identity binding to AX element pid: 6284, elementOrHash.elementID: 4432427008.28)
+    t =    74.79s Find the "正常" StaticText
+    t =    74.92s Find the "正常" StaticText
+[A11Y-INVENTORY] state=p005-diagnostics | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=正常 | frame=(129.66666666666666, 380.1666666666667, 24.0, 14.333333333333258)
+    t =    74.97s Find the Any (Descendant with identity binding to AX element pid: 6284, elementOrHash.elementID: 4812996608.32)
+    t =    75.01s Find the "正常" StaticText
+    t =    75.04s Find the "正常" StaticText
+[A11Y-INVENTORY] state=p005-diagnostics | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=正常 | frame=(181.66666666666666, 440.83333333333326, 24.0, 14.333333333333314)
+    t =    75.07s Find the Any (Descendant with identity binding to AX element pid: 6284, elementOrHash.elementID: 4812997504.36)
+    t =    75.09s Find the "重新检测" StaticText
+    t =    75.11s Find the "重新检测" StaticText
+[A11Y-INVENTORY] state=p005-diagnostics | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=重新检测 | frame=(147.0, 498.6666564941406, 82.33334350585938, 18.142181396484375)
+    t =    75.13s Find the Any (Descendant with identity binding to AX element pid: 6284, elementOrHash.elementID: 4813000192.38)
+    t =    75.15s Find the "重新配网" StaticText
+    t =    75.17s Find the "重新配网" StaticText
+[A11Y-INVENTORY] state=p005-diagnostics | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=重新配网 | frame=(242.3333282470703, 564.0, 67.50001525878906, 14.86376953125)
+    t =    75.19s Terminate com.smartble.ios:6284
+    t =    76.20s Open com.smartble.ios
+    t =    76.21s     Launch com.smartble.ios
+    t =    76.45s         Setting up automation session
+    t =    76.58s         Wait for com.smartble.ios to idle
+    t =    77.70s Waiting 3.0s for StaticText (First Match) to exist
+    t =    78.71s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    78.71s         Checking existence of `StaticText (First Match)`
+    t =    81.71s Find the Any (Descendant with identity binding to AX element pid: 6285, elementOrHash.elementID: 5854124160.12)
+    t =    81.76s Find the "设备未连接" StaticText
+    t =    81.78s Find the "设备未连接" StaticText
+[A11Y-INVENTORY] state=p005-offline | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=设备未连接 | frame=(37.0, 126.0, 59.66666666666667, 14.333333333333314)
+    t =    81.80s Find the Any (Descendant with identity binding to AX element pid: 6285, elementOrHash.elementID: 5854132224.32)
+    t =    81.82s Find the "重新检测" StaticText
+    t =    81.84s Find the "重新检测" StaticText
+[A11Y-INVENTORY] state=p005-offline | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=重新检测 | frame=(147.0, 424.3333435058594, 82.33334350585938, 18.1422119140625)
+    t =    81.85s Find the Any (Descendant with identity binding to AX element pid: 6285, elementOrHash.elementID: 5857117056.34)
+    t =    81.86s Find the "重新配网" StaticText
+    t =    81.88s Find the "重新配网" StaticText
+[A11Y-INVENTORY] state=p005-offline | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=重新配网 | frame=(242.3333282470703, 489.6666564941406, 67.50001525878906, 14.863800048828125)
+    t =    81.89s Terminate com.smartble.ios:6285
+    t =    82.93s Open com.smartble.ios
+    t =    82.94s     Launch com.smartble.ios
+    t =    83.18s         Setting up automation session
+    t =    83.32s         Wait for com.smartble.ios to idle
+    t =    84.45s Waiting 3.0s for StaticText (First Match) to exist
+    t =    85.46s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    85.46s         Checking existence of `StaticText (First Match)`
+    t =    85.52s Tap "关于" Button
+    t =    85.52s     Wait for com.smartble.ios to idle
+    t =    85.54s     Find the "关于" Button
+    t =    85.59s     Check for interrupting elements affecting "关于" Button
+    t =    85.63s     Synthesize event
+    t =    85.94s     Wait for com.smartble.ios to idle
+    t =    85.95s Waiting 3.0s for "应用信息" StaticText to exist
+    t =    86.97s     Checking `Expect predicate `existsNoRetry == 1` for object "应用信息" StaticText`
+    t =    86.97s         Checking existence of `"应用信息" StaticText`
+    t =    91.98s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4767078080.35)
+    t =    92.05s Find the "ABOUT" StaticText
+    t =    92.08s Find the "ABOUT" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=ABOUT | frame=(18.0, 52.0, 48.0, 12.0)
+    t =    92.10s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4767078976.37)
+    t =    92.12s Find the "1.0.5-preview" StaticText
+    t =    92.14s Find the "1.0.5-preview" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=1.0.5-preview | frame=(269.33333333333337, 72.0, 80.66666666666663, 12.0)
+    t =    92.17s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4382553216.21)
+    t =    92.20s Find the "3" StaticText
+    t =    92.23s Find the "3" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=3 | frame=(152.95833333333334, 717.5, 6.333333333333343, 11.0)
+    t =    92.26s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4767072704.26)
+    t =    92.29s Find the "关于" StaticText
+    t =    92.43s Find the "关于" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=关于 | frame=(312.125, 747.0, 20.0, 12.0)
+    t =    92.49s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4767087936.51)
+    t =    92.65s Find the "PREVIEW" StaticText
+    t =    92.71s Find the "PREVIEW" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=PREVIEW | frame=(136.0, 486.3333333333333, 43.33333333333334, 12.0)
+    t =    92.76s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4798595072.52)
+    t =    92.80s Find the "NOT_RELEASED" StaticText
+    t =    92.83s Find the "NOT_RELEASED" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=NOT_RELEASED | frame=(200.33333333333334, 486.3333333333333, 74.33333333333329, 12.0)
+    t =    92.87s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4798595968.54)
+    t =    92.89s Find the "PREVIEW" StaticText
+    t =    92.92s Find the "PREVIEW" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=PREVIEW | frame=(136.0, 514.3333333333333, 43.33333333333334, 12.0)
+    t =    92.95s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4798596416.55)
+    t =    93.09s Find the "NOT_RELEASED" StaticText
+    t =    93.15s Find the "NOT_RELEASED" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=NOT_RELEASED | frame=(200.33333333333334, 514.3333333333333, 74.33333333333329, 12.0)
+    t =    93.20s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4798597312.57)
+    t =    93.24s Find the "PREVIEW" StaticText
+    t =    93.27s Find the "PREVIEW" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=PREVIEW | frame=(136.0, 542.3333333333333, 43.33333333333334, 12.0)
+    t =    93.31s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4798597760.58)
+    t =    93.34s Find the "NOT_RELEASED" StaticText
+    t =    93.37s Find the "NOT_RELEASED" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=NOT_RELEASED | frame=(200.33333333333334, 542.3333333333333, 74.33333333333329, 12.0)
+    t =    93.41s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4798598656.60)
+    t =    93.44s Find the "UNSUPPORTED" StaticText
+    t =    93.48s Find the "UNSUPPORTED" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=UNSUPPORTED | frame=(136.0, 570.3333333333333, 68.0, 12.0)
+    t =    93.51s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4798599104.61)
+    t =    93.55s Find the "NOT_RELEASED" StaticText
+    t =    93.68s Find the "NOT_RELEASED" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=NOT_RELEASED | frame=(225.0, 570.3333333333333, 74.33333333333331, 12.0)
+    t =    93.74s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4798600000.63)
+    t =    93.79s Find the "REFERENCE" StaticText
+    t =    93.83s Find the "REFERENCE" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=REFERENCE | frame=(136.0, 598.3333333333333, 55.66666666666666, 12.0)
+    t =    93.87s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4798600448.64)
+    t =    93.90s Find the "NOT_RELEASED" StaticText
+    t =    94.04s Find the "NOT_RELEASED" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=NOT_RELEASED | frame=(212.66666666666666, 598.3333333333333, 74.33333333333334, 12.0)
+    t =    94.10s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4767084352.71)
+    t =    94.14s Find the "01 蓝牙扫描与筛选" StaticText
+    t =    94.17s Find the "01 蓝牙扫描与筛选" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=01 蓝牙扫描与筛选 | frame=(38.0, 359.33333333333326, 84.33333333333333, 12.0)
+    t =    94.21s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4767084800.72)
+    t =    94.25s Find the "02 GATT 读写与监听" StaticText
+    t =    94.28s Find the "02 GATT 读写与监听" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=02 GATT 读写与监听 | frame=(198.5, 359.33333333333326, 95.66666666666663, 12.0)
+    t =    94.32s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4767085248.73)
+    t =    94.35s Find the "03 多设备会话管理" StaticText
+    t =    94.48s Find the "03 多设备会话管理" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=03 多设备会话管理 | frame=(38.0, 385.33333333333326, 86.0, 12.0)
+    t =    94.55s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4767085696.74)
+    t =    94.59s Find the "04 BLE 广播发射" StaticText
+    t =    94.62s Find the "04 BLE 广播发射" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=04 BLE 广播发射 | frame=(198.5, 385.33333333333326, 78.33333333333331, 12.0)
+    t =    94.67s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4767086144.75)
+    t =    94.70s Find the "05 Smart HID 配网" StaticText
+    t =    94.73s Find the "05 Smart HID 配网" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=05 Smart HID 配网 | frame=(38.0, 411.33333333333326, 90.33333333333331, 12.0)
+    t =    94.76s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4767086592.76)
+    t =    94.79s Find the "06 固件升级（受限）" StaticText
+    t =    94.83s Find the "06 固件升级（受限）" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=06 固件升级（受限） | frame=(198.5, 411.33333333333326, 88.66666666666663, 12.0)
+    t =    94.86s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4767086144.75)
+    t =    94.88s Find the "05 Smart HID 配网" StaticText
+    t =    94.91s Find the "05 Smart HID 配网" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 65536) | Dynamic Type font sizes are partially unsupported | label=05 Smart HID 配网 | frame=(38.0, 411.33333333333326, 90.33333333333331, 12.0)
+    t =    94.95s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4767085696.74)
+    t =    94.98s Find the "04 BLE 广播发射" StaticText
+    t =    95.01s Find the "04 BLE 广播发射" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 65536) | Dynamic Type font sizes are partially unsupported | label=04 BLE 广播发射 | frame=(198.5, 385.33333333333326, 78.33333333333331, 12.0)
+    t =    95.04s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4767084800.72)
+    t =    95.07s Find the "02 GATT 读写与监听" StaticText
+    t =    95.10s Find the "02 GATT 读写与监听" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 65536) | Dynamic Type font sizes are partially unsupported | label=02 GATT 读写与监听 | frame=(198.5, 359.33333333333326, 95.66666666666663, 12.0)
+    t =    95.13s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4767085248.73)
+    t =    95.16s Find the "03 多设备会话管理" StaticText
+    t =    95.19s Find the "03 多设备会话管理" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 65536) | Dynamic Type font sizes are partially unsupported | label=03 多设备会话管理 | frame=(38.0, 385.33333333333326, 86.0, 12.0)
+    t =    95.22s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4767084352.71)
+    t =    95.24s Find the "01 蓝牙扫描与筛选" StaticText
+    t =    95.27s Find the "01 蓝牙扫描与筛选" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 65536) | Dynamic Type font sizes are partially unsupported | label=01 蓝牙扫描与筛选 | frame=(38.0, 359.33333333333326, 84.33333333333333, 12.0)
+    t =    95.31s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4767086592.76)
+    t =    95.34s Find the "06 固件升级（受限）" StaticText
+    t =    95.37s Find the "06 固件升级（受限）" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 65536) | Dynamic Type font sizes are partially unsupported | label=06 固件升级（受限） | frame=(198.5, 411.33333333333326, 88.66666666666663, 12.0)
+    t =    95.40s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4767085696.74)
+    t =    95.43s Find the "04 BLE 广播发射" StaticText
+    t =    95.56s Find the "04 BLE 广播发射" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 131072) | Text clipped | label=04 BLE 广播发射 | frame=(198.5, 385.33333333333326, 78.33333333333331, 12.0)
+    t =    95.63s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4767085248.73)
+    t =    95.67s Find the "03 多设备会话管理" StaticText
+    t =    95.71s Find the "03 多设备会话管理" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 131072) | Text clipped | label=03 多设备会话管理 | frame=(38.0, 385.33333333333326, 86.0, 12.0)
+    t =    95.74s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4767084800.72)
+    t =    95.77s Find the "02 GATT 读写与监听" StaticText
+    t =    95.80s Find the "02 GATT 读写与监听" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 131072) | Text clipped | label=02 GATT 读写与监听 | frame=(198.5, 359.33333333333326, 95.66666666666663, 12.0)
+    t =    95.83s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4767084352.71)
+    t =    95.86s Find the "01 蓝牙扫描与筛选" StaticText
+    t =    96.00s Find the "01 蓝牙扫描与筛选" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 131072) | Text clipped | label=01 蓝牙扫描与筛选 | frame=(38.0, 359.33333333333326, 84.33333333333333, 12.0)
+    t =    96.06s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4767086592.76)
+    t =    96.10s Find the "06 固件升级（受限）" StaticText
+    t =    96.14s Find the "06 固件升级（受限）" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 131072) | Text clipped | label=06 固件升级（受限） | frame=(198.5, 411.33333333333326, 88.66666666666663, 12.0)
+    t =    96.17s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4767086144.75)
+    t =    96.20s Find the "05 Smart HID 配网" StaticText
+    t =    96.23s Find the "05 Smart HID 配网" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 131072) | Text clipped | label=05 Smart HID 配网 | frame=(38.0, 411.33333333333326, 90.33333333333331, 12.0)
+    t =    96.26s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4767080320.41)
+    t =    96.29s Find the "v1.0.5-preview · preview · 零后端 · 零本地持久化" StaticText
+    t =    96.32s Find the "v1.0.5-preview · preview · 零后端 · 零本地持久化" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 131072) | Text clipped | label=v1.0.5-preview · preview · 零后端 · 零本地持久化 | frame=(84.0, 153.0, 229.33333333333331, 12.0)
+    t =    96.35s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4767078976.37)
+    t =    96.38s Find the "1.0.5-preview" StaticText
+    t =    96.41s Find the "1.0.5-preview" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 8) | Label not human-readable | label=1.0.5-preview | frame=(269.33333333333337, 72.0, 80.66666666666663, 12.0)
+    t =    96.44s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4798595072.52)
+    t =    96.46s Find the "NOT_RELEASED" StaticText
+    t =    96.49s Find the "NOT_RELEASED" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 8) | Label not human-readable | label=NOT_RELEASED | frame=(200.33333333333334, 486.3333333333333, 74.33333333333329, 12.0)
+    t =    96.52s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4798596416.55)
+    t =    96.55s Find the "NOT_RELEASED" StaticText
+    t =    96.58s Find the "NOT_RELEASED" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 8) | Label not human-readable | label=NOT_RELEASED | frame=(200.33333333333334, 514.3333333333333, 74.33333333333329, 12.0)
+    t =    96.61s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4798597760.58)
+    t =    96.64s Find the "NOT_RELEASED" StaticText
+    t =    96.66s Find the "NOT_RELEASED" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 8) | Label not human-readable | label=NOT_RELEASED | frame=(200.33333333333334, 542.3333333333333, 74.33333333333329, 12.0)
+    t =    96.70s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4798599104.61)
+    t =    96.72s Find the "NOT_RELEASED" StaticText
+    t =    96.75s Find the "NOT_RELEASED" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 8) | Label not human-readable | label=NOT_RELEASED | frame=(225.0, 570.3333333333333, 74.33333333333331, 12.0)
+    t =    96.78s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4798600448.64)
+    t =    96.80s Find the "NOT_RELEASED" StaticText
+    t =    96.84s Find the "NOT_RELEASED" StaticText
+[A11Y-INVENTORY] state=p009-about | XCUIAccessibilityAuditType(rawValue: 8) | Label not human-readable | label=NOT_RELEASED | frame=(212.66666666666666, 598.3333333333333, 74.33333333333334, 12.0)
+    t =    96.87s Tap "about-version-row" Button
+    t =    96.87s     Wait for com.smartble.ios to idle
+    t =    96.87s     Find the "about-version-row" Button
+    t =    96.91s     Check for interrupting elements affecting "about-version-row" Button
+    t =    96.95s         Wait for com.apple.springboard to idle
+    t =    97.10s     Synthesize event
+    t =    97.13s         Scroll element to visible
+    t =    97.14s         Find the "about-version-row" Button
+    t =    97.22s         Computed hit point {187.5, 571} after scrolling to visible
+    t =    97.52s     Wait for com.smartble.ios to idle
+    t =    97.96s Waiting 3.0s for "复制版本信息" Button to exist
+    t =    98.97s     Checking `Expect predicate `existsNoRetry == 1` for object "复制版本信息" Button`
+    t =    98.97s         Checking existence of `"复制版本信息" Button`
+    t =   103.03s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4382546048.93)
+    t =   103.11s Find the "版本记录" StaticText
+    t =   103.15s Find the "版本记录" StaticText
+[A11Y-INVENTORY] state=p010-versions | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=版本记录 | frame=(56.0, 58.833333333333336, 67.66666666666667, 20.333333333333336)
+    t =   103.19s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4818764224.99)
+    t =   103.23s Find the "preview" StaticText
+    t =   103.28s Find the "preview" StaticText
+[A11Y-INVENTORY] state=p010-versions | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=preview | frame=(209.66666666666666, 170.66666666666666, 47.66666666666666, 14.333333333333343)
+    t =   103.33s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4818766464.133)
+    t =   103.38s Find the "微信小程序 PREVIEW" StaticText
+    t =   103.43s Find the "微信小程序 PREVIEW" StaticText
+[A11Y-INVENTORY] state=p010-versions | XCUIAccessibilityAuditType(rawValue: 1) | Contrast nearly passed | label=微信小程序 PREVIEW | frame=(39.0, 271.5, 109.33333333333331, 13.333333333333371)
+    t =   103.48s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4818766912.134)
+    t =   103.63s Find the "App · Android NOT_RELEASED" StaticText
+    t =   103.71s Find the "App · Android NOT_RELEASED" StaticText
+[A11Y-INVENTORY] state=p010-versions | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=App · Android NOT_RELEASED | frame=(197.5, 265.0, 89.66666666666663, 26.33333333333337)
+    t =   103.76s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4818767360.135)
+    t =   103.81s Find the "App · iOS NOT_RELEASED" StaticText
+    t =   103.86s Find the "App · iOS NOT_RELEASED" StaticText
+[A11Y-INVENTORY] state=p010-versions | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=App · iOS NOT_RELEASED | frame=(39.0, 305.3333333333333, 89.66666666666666, 26.333333333333314)
+    t =   103.91s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4818767808.136)
+    t =   103.97s Find the "H5 / Web NOT_RELEASED" StaticText
+    t =   104.02s Find the "H5 / Web NOT_RELEASED" StaticText
+[A11Y-INVENTORY] state=p010-versions | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=H5 / Web NOT_RELEASED | frame=(197.5, 305.3333333333333, 89.66666666666663, 26.333333333333314)
+    t =   104.07s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4818768256.137)
+    t =   104.12s Find the "桌面端 NOT_RELEASED" StaticText
+    t =   104.28s Find the "桌面端 NOT_RELEASED" StaticText
+[A11Y-INVENTORY] state=p010-versions | XCUIAccessibilityAuditType(rawValue: 1) | Contrast failed | label=桌面端 NOT_RELEASED | frame=(39.0, 345.6666666666667, 125.33333333333331, 13.333333333333314)
+    t =   104.36s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4818767360.135)
+    t =   104.41s Find the "App · iOS NOT_RELEASED" StaticText
+    t =   104.46s Find the "App · iOS NOT_RELEASED" StaticText
+[A11Y-INVENTORY] state=p010-versions | XCUIAccessibilityAuditType(rawValue: 65536) | Dynamic Type font sizes are partially unsupported | label=App · iOS NOT_RELEASED | frame=(39.0, 305.3333333333333, 89.66666666666666, 26.333333333333314)
+    t =   104.52s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4818768256.137)
+    t =   104.56s Find the "桌面端 NOT_RELEASED" StaticText
+    t =   104.72s Find the "桌面端 NOT_RELEASED" StaticText
+[A11Y-INVENTORY] state=p010-versions | XCUIAccessibilityAuditType(rawValue: 65536) | Dynamic Type font sizes are partially unsupported | label=桌面端 NOT_RELEASED | frame=(39.0, 345.6666666666667, 125.33333333333331, 13.333333333333314)
+    t =   104.80s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4818767808.136)
+    t =   104.85s Find the "H5 / Web NOT_RELEASED" StaticText
+    t =   104.90s Find the "H5 / Web NOT_RELEASED" StaticText
+[A11Y-INVENTORY] state=p010-versions | XCUIAccessibilityAuditType(rawValue: 65536) | Dynamic Type font sizes are partially unsupported | label=H5 / Web NOT_RELEASED | frame=(197.5, 305.3333333333333, 89.66666666666663, 26.333333333333314)
+    t =   104.95s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4818767360.135)
+    t =   105.00s Find the "App · iOS NOT_RELEASED" StaticText
+    t =   105.26s Find the "App · iOS NOT_RELEASED" StaticText
+[A11Y-INVENTORY] state=p010-versions | XCUIAccessibilityAuditType(rawValue: 131072) | Text clipped | label=App · iOS NOT_RELEASED | frame=(39.0, 305.3333333333333, 89.66666666666666, 26.333333333333314)
+    t =   105.47s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4818768256.137)
+    t =   105.56s Find the "桌面端 NOT_RELEASED" StaticText
+    t =   105.62s Find the "桌面端 NOT_RELEASED" StaticText
+[A11Y-INVENTORY] state=p010-versions | XCUIAccessibilityAuditType(rawValue: 131072) | Text clipped | label=桌面端 NOT_RELEASED | frame=(39.0, 345.6666666666667, 125.33333333333331, 13.333333333333314)
+    t =   105.68s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4818767808.136)
+    t =   105.72s Find the "H5 / Web NOT_RELEASED" StaticText
+    t =   105.77s Find the "H5 / Web NOT_RELEASED" StaticText
+[A11Y-INVENTORY] state=p010-versions | XCUIAccessibilityAuditType(rawValue: 131072) | Text clipped | label=H5 / Web NOT_RELEASED | frame=(197.5, 305.3333333333333, 89.66666666666663, 26.333333333333314)
+    t =   105.82s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4818763776.98)
+    t =   105.88s Find the "1.0.5-preview" StaticText
+    t =   105.92s Find the "1.0.5-preview" StaticText
+[A11Y-INVENTORY] state=p010-versions | XCUIAccessibilityAuditType(rawValue: 8) | Label not human-readable | label=1.0.5-preview | frame=(32.0, 159.0, 159.66666666666666, 28.666666666666657)
+    t =   105.97s Find the Any (Descendant with identity binding to AX element pid: 6286, elementOrHash.elementID: 4818768256.137)
+    t =   106.02s Find the "桌面端 NOT_RELEASED" StaticText
+    t =   106.07s Find the "桌面端 NOT_RELEASED" StaticText
+[A11Y-INVENTORY] state=p010-versions | XCUIAccessibilityAuditType(rawValue: 8) | Label not human-readable | label=桌面端 NOT_RELEASED | frame=(39.0, 345.6666666666667, 125.33333333333331, 13.333333333333314)
+    t =   106.15s Tear Down
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testAuditIssueInventoryDiagnostic]' passed (106.691 seconds).
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testP001KeyStatesPassAccessibilityAudit]' started.
+    t =     0.00s Start Test at 2026-09-11 08:30:24.272
+    t =     0.04s Set Up
+    t =     0.05s Terminate com.smartble.ios:6286
+    t =     1.06s Open com.smartble.ios
+    t =     1.06s     Launch com.smartble.ios
+    t =     1.29s         Setting up automation session
+    t =     1.44s         Wait for com.smartble.ios to idle
+    t =     2.58s Waiting 3.0s for StaticText (First Match) to exist
+    t =     3.61s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =     3.61s         Checking existence of `StaticText (First Match)`
+    t =     6.64s Terminate com.smartble.ios:6287
+    t =     7.72s Open com.smartble.ios
+    t =     7.72s     Launch com.smartble.ios
+    t =     7.97s         Setting up automation session
+    t =     8.09s         Wait for com.smartble.ios to idle
+    t =     9.28s Waiting 3.0s for StaticText (First Match) to exist
+    t =    10.30s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    10.30s         Checking existence of `StaticText (First Match)`
+    t =    15.66s Terminate com.smartble.ios:6288
+    t =    16.71s Open com.smartble.ios
+    t =    16.72s     Launch com.smartble.ios
+    t =    16.94s         Setting up automation session
+    t =    17.07s         Wait for com.smartble.ios to idle
+    t =    18.20s Waiting 3.0s for StaticText (First Match) to exist
+    t =    19.21s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    19.21s         Checking existence of `StaticText (First Match)`
+    t =    22.36s Tear Down
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testP001KeyStatesPassAccessibilityAudit]' passed (22.650 seconds).
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testP002FlowStatesPassAccessibilityAudit]' started.
+    t =     0.00s Start Test at 2026-09-11 08:30:46.926
+    t =     0.04s Set Up
+    t =     0.04s Terminate com.smartble.ios:6289
+    t =     1.06s Open com.smartble.ios
+    t =     1.06s     Launch com.smartble.ios
+    t =     1.29s         Setting up automation session
+    t =     1.43s         Wait for com.smartble.ios to idle
+    t =     2.60s Waiting 3.0s for StaticText (First Match) to exist
+    t =     3.61s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =     3.62s         Checking existence of `StaticText (First Match)`
+    t =     7.00s Terminate com.smartble.ios:6290
+    t =     8.09s Open com.smartble.ios
+    t =     8.09s     Launch com.smartble.ios
+    t =     8.33s         Setting up automation session
+    t =     8.47s         Wait for com.smartble.ios to idle
+    t =     9.59s Waiting 3.0s for StaticText (First Match) to exist
+    t =    10.62s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    10.62s         Checking existence of `StaticText (First Match)`
+    t =    13.54s Terminate com.smartble.ios:6291
+    t =    14.60s Open com.smartble.ios
+    t =    14.61s     Launch com.smartble.ios
+    t =    14.84s         Setting up automation session
+    t =    14.96s         Wait for com.smartble.ios to idle
+    t =    16.12s Waiting 3.0s for StaticText (First Match) to exist
+    t =    17.13s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    17.13s         Checking existence of `StaticText (First Match)`
+    t =    19.95s Tear Down
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testP002FlowStatesPassAccessibilityAudit]' passed (20.229 seconds).
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testP003P005StatesPassAccessibilityAudit]' started.
+    t =     0.00s Start Test at 2026-09-11 08:31:07.158
+    t =     0.04s Set Up
+    t =     0.04s Terminate com.smartble.ios:6292
+    t =     1.06s Open com.smartble.ios
+    t =     1.06s     Launch com.smartble.ios
+    t =     1.29s         Setting up automation session
+    t =     1.41s         Wait for com.smartble.ios to idle
+    t =     2.62s Waiting 3.0s for StaticText (First Match) to exist
+    t =     3.62s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =     3.62s         Checking existence of `StaticText (First Match)`
+    t =     6.33s Terminate com.smartble.ios:6293
+    t =     7.36s Open com.smartble.ios
+    t =     7.37s     Launch com.smartble.ios
+    t =     7.59s         Setting up automation session
+    t =     7.71s         Wait for com.smartble.ios to idle
+    t =     8.90s Waiting 3.0s for StaticText (First Match) to exist
+    t =     9.91s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =     9.92s         Checking existence of `StaticText (First Match)`
+    t =    12.60s Terminate com.smartble.ios:6294
+    t =    13.66s Open com.smartble.ios
+    t =    13.67s     Launch com.smartble.ios
+    t =    13.89s         Setting up automation session
+    t =    14.00s         Wait for com.smartble.ios to idle
+    t =    15.15s Waiting 3.0s for StaticText (First Match) to exist
+    t =    16.18s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    16.19s         Checking existence of `StaticText (First Match)`
+    t =    19.33s Terminate com.smartble.ios:6295
+    t =    20.36s Open com.smartble.ios
+    t =    20.36s     Launch com.smartble.ios
+    t =    20.60s         Setting up automation session
+    t =    20.73s         Wait for com.smartble.ios to idle
+    t =    21.85s Waiting 3.0s for StaticText (First Match) to exist
+    t =    22.87s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    22.88s         Checking existence of `StaticText (First Match)`
+    t =    25.90s Tear Down
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testP003P005StatesPassAccessibilityAudit]' passed (26.212 seconds).
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testP009P010PassAccessibilityAudit]' started.
+    t =     0.00s Start Test at 2026-09-11 08:31:33.373
+    t =     0.04s Set Up
+    t =     0.04s Terminate com.smartble.ios:6296
+    t =     1.05s Open com.smartble.ios
+    t =     1.06s     Launch com.smartble.ios
+    t =     1.30s         Setting up automation session
+    t =     1.43s         Wait for com.smartble.ios to idle
+    t =     2.56s Waiting 3.0s for StaticText (First Match) to exist
+    t =     3.58s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =     3.58s         Checking existence of `StaticText (First Match)`
+    t =     3.64s Tap "关于" Button
+    t =     3.64s     Wait for com.smartble.ios to idle
+    t =     3.66s     Find the "关于" Button
+    t =     3.71s     Check for interrupting elements affecting "关于" Button
+    t =     3.75s     Synthesize event
+    t =     4.06s     Wait for com.smartble.ios to idle
+    t =     4.07s Waiting 3.0s for "应用信息" StaticText to exist
+    t =     5.09s     Checking `Expect predicate `existsNoRetry == 1` for object "应用信息" StaticText`
+    t =     5.10s         Checking existence of `"应用信息" StaticText`
+    t =    10.18s Tap "about-version-row" Button
+    t =    10.18s     Wait for com.smartble.ios to idle
+    t =    10.18s     Find the "about-version-row" Button
+    t =    10.27s     Check for interrupting elements affecting "about-version-row" Button
+    t =    10.30s     Synthesize event
+    t =    10.32s         Scroll element to visible
+    t =    10.32s         Find the "about-version-row" Button
+    t =    10.36s         Computed hit point {187.5, 571} after scrolling to visible
+    t =    10.65s     Wait for com.smartble.ios to idle
+    t =    11.02s Waiting 3.0s for "复制版本信息" Button to exist
+    t =    12.03s     Checking `Expect predicate `existsNoRetry == 1` for object "复制版本信息" Button`
+    t =    12.04s         Checking existence of `"复制版本信息" Button`
+    t =    15.87s Tear Down
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testP009P010PassAccessibilityAudit]' passed (16.135 seconds).
+Test Suite 'AccessibilityAuditUITests' passed at 2026-09-11 08:31:49.509.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 203.765 (203.783) seconds
+Test Suite 'AdvDataUITests' started at 2026-09-11 08:31:49.514.
+Test Case '-[SmartBLEUITests.AdvDataUITests testP001DeviceDetailShowsAdvertisementDataAndCopies]' started.
+    t =     0.00s Start Test at 2026-09-11 08:31:49.518
+    t =     0.04s Set Up
+    t =     0.04s Open com.smartble.ios
+    t =     0.04s     Launch com.smartble.ios
+    t =     0.04s         Terminate com.smartble.ios:6297
+    t =     1.30s         Setting up automation session
+    t =     1.43s         Wait for com.smartble.ios to idle
+    t =     2.63s Waiting 5.0s for "连接" Button to exist
+    t =     3.66s     Checking `Expect predicate `existsNoRetry == 1` for object "连接" Button`
+    t =     3.66s         Checking existence of `"连接" Button`
+    t =     3.77s Find the "连接" Button
+    t =     3.83s Find the "连接" Button
+    t =     3.88s Tap "连接" Button
+    t =     3.88s     Wait for com.smartble.ios to idle
+    t =     3.88s     Find the "连接" Button
+    t =     3.90s     Check for interrupting elements affecting "连接" Button
+    t =     3.94s     Synthesize event
+    t =     4.24s     Wait for com.smartble.ios to idle
+    t =     4.67s Waiting 2.0s for "设备信息" StaticText to exist
+    t =     5.68s     Checking `Expect predicate `existsNoRetry == 1` for object "设备信息" StaticText`
+    t =     5.69s         Checking existence of `"设备信息" StaticText`
+    t =     5.81s Checking existence of `"广播数据" StaticText`
+    t =     5.87s Checking existence of `"服务 UUIDs" StaticText`
+    t =     5.92s Waiting 2.0s for "本轮平台 API 未提供此字段" StaticText to exist
+    t =     6.95s     Checking `Expect predicate `existsNoRetry == 1` for object "本轮平台 API 未提供此字段" StaticText`
+    t =     6.95s         Checking existence of `"本轮平台 API 未提供此字段" StaticText`
+    t =     7.07s Get number of matches for: Elements matching predicate '"本轮平台 API 未提供此字段" IN identifiers'
+    t =     7.12s Get all elements bound by index for: Elements matching predicate 'label CONTAINS "复制"'
+    t =     7.17s Tap Button (Element at index 1)
+    t =     7.17s     Wait for com.smartble.ios to idle
+    t =     7.18s     Find the Button (Element at index 1)
+    t =     7.24s     Check for interrupting elements affecting "复制" Button
+    t =     7.31s     Synthesize event
+    t =     7.61s     Wait for com.smartble.ios to idle
+    t =     7.62s Waiting 2.0s for "已复制" StaticText to exist
+    t =     8.62s     Checking `Expect predicate `existsNoRetry == 1` for object "已复制" StaticText`
+    t =     8.63s         Checking existence of `"已复制" StaticText`
+    t =     8.74s Waiting 2.0s for "回显剪贴板" Button to exist
+    t =     9.77s     Checking `Expect predicate `existsNoRetry == 1` for object "回显剪贴板" Button`
+    t =     9.77s         Checking existence of `"回显剪贴板" Button`
+    t =     9.89s Tap "回显剪贴板" Button
+    t =     9.89s     Wait for com.smartble.ios to idle
+    t =     9.90s     Find the "回显剪贴板" Button
+    t =     9.95s     Check for interrupting elements affecting "回显剪贴板" Button
+    t =    10.01s     Synthesize event
+    t =    10.32s     Wait for com.smartble.ios to idle
+    t =    10.34s Waiting 2.0s for "paste-echo" StaticText to exist
+    t =    11.35s     Checking `Expect predicate `existsNoRetry == 1` for object "paste-echo" StaticText`
+    t =    11.35s         Checking existence of `"paste-echo" StaticText`
+    t =    11.47s Find the "paste-echo" StaticText
+    t =    11.52s Tear Down
+Test Case '-[SmartBLEUITests.AdvDataUITests testP001DeviceDetailShowsAdvertisementDataAndCopies]' passed (11.780 seconds).
+Test Suite 'AdvDataUITests' passed at 2026-09-11 08:32:01.298.
+	 Executed 1 test, with 0 failures (0 unexpected) in 11.780 (11.784) seconds
+Test Suite 'FlowStateUITests' started at 2026-09-11 08:32:01.303.
+Test Case '-[SmartBLEUITests.FlowStateUITests testP002IdentitySuccessAndWifiFailureStates]' started.
+    t =     0.00s Start Test at 2026-09-11 08:32:01.307
+    t =     0.04s Set Up
+    t =     0.04s Terminate com.smartble.ios:6298
+    t =     1.05s Open com.smartble.ios
+    t =     1.06s     Launch com.smartble.ios
+    t =     1.29s         Setting up automation session
+    t =     1.40s         Wait for com.smartble.ios to idle
+    t =     2.55s Waiting 3.0s for "重新连接" Button to exist
+    t =     3.56s     Checking `Expect predicate `existsNoRetry == 1` for object "重新连接" Button`
+    t =     3.56s         Checking existence of `"重新连接" Button`
+    t =     3.65s Checking existence of `"返回设备列表" Button`
+    t =     3.68s Terminate com.smartble.ios:6299
+    t =     4.75s Open com.smartble.ios
+    t =     4.75s     Launch com.smartble.ios
+    t =     4.98s         Setting up automation session
+    t =     5.11s         Wait for com.smartble.ios to idle
+    t =     6.24s Waiting 3.0s for "配置成功 · 设备 READY" StaticText to exist
+    t =     7.28s     Checking `Expect predicate `existsNoRetry == 1` for object "配置成功 · 设备 READY" StaticText`
+    t =     7.28s         Checking existence of `"配置成功 · 设备 READY" StaticText`
+    t =     7.37s Checking existence of `"查看设备" Button`
+    t =     7.40s Terminate com.smartble.ios:6300
+    t =     8.43s Open com.smartble.ios
+    t =     8.44s     Launch com.smartble.ios
+    t =     8.67s         Setting up automation session
+    t =     8.79s         Wait for com.smartble.ios to idle
+    t =     9.94s Waiting 3.0s for "wifi_failed" StaticText to exist
+    t =    10.98s     Checking `Expect predicate `existsNoRetry == 1` for object "wifi_failed" StaticText`
+    t =    10.98s         Checking existence of `"wifi_failed" StaticText`
+    t =    11.09s Checking existence of `"返回表单修改" Button`
+    t =    11.12s Tear Down
+Test Case '-[SmartBLEUITests.FlowStateUITests testP002IdentitySuccessAndWifiFailureStates]' passed (11.392 seconds).
+Test Case '-[SmartBLEUITests.FlowStateUITests testP003SnapshotMissingFieldsAndMissingRecordStates]' started.
+    t =     0.00s Start Test at 2026-09-11 08:32:12.701
+    t =     0.04s Set Up
+    t =     0.04s Terminate com.smartble.ios:6301
+    t =     1.10s Open com.smartble.ios
+    t =     1.11s     Launch com.smartble.ios
+    t =     1.34s         Setting up automation session
+    t =     1.47s         Wait for com.smartble.ios to idle
+    t =     2.66s Waiting 3.0s for "设备身份" StaticText to exist
+    t =     3.68s     Checking `Expect predicate `existsNoRetry == 1` for object "设备身份" StaticText`
+    t =     3.69s         Checking existence of `"设备身份" StaticText`
+    t =     3.80s Checking existence of `"重新配置" Button`
+    t =     3.83s Terminate com.smartble.ios:6302
+    t =     4.90s Open com.smartble.ios
+    t =     4.91s     Launch com.smartble.ios
+    t =     5.14s         Setting up automation session
+    t =     5.27s         Wait for com.smartble.ios to idle
+    t =     6.45s Waiting 3.0s for "协议未记录" StaticText to exist
+    t =     7.49s     Checking `Expect predicate `existsNoRetry == 1` for object "协议未记录" StaticText`
+    t =     7.49s         Checking existence of `"协议未记录" StaticText`
+    t =     7.60s Terminate com.smartble.ios:6303
+    t =     8.66s Open com.smartble.ios
+    t =     8.66s     Launch com.smartble.ios
+    t =     8.90s         Setting up automation session
+    t =     9.03s         Wait for com.smartble.ios to idle
+    t =    10.19s Waiting 3.0s for "设备记录不存在" StaticText to exist
+    t =    11.21s     Checking `Expect predicate `existsNoRetry == 1` for object "设备记录不存在" StaticText`
+    t =    11.21s         Checking existence of `"设备记录不存在" StaticText`
+    t =    11.31s Checking existence of `"知道了" Button`
+    t =    11.34s Tear Down
+Test Case '-[SmartBLEUITests.FlowStateUITests testP003SnapshotMissingFieldsAndMissingRecordStates]' passed (11.622 seconds).
+Test Case '-[SmartBLEUITests.FlowStateUITests testP005HealthyOfflineAndFailureStates]' started.
+    t =     0.00s Start Test at 2026-09-11 08:32:24.327
+    t =     0.04s Set Up
+    t =     0.04s Terminate com.smartble.ios:6304
+    t =     1.14s Open com.smartble.ios
+    t =     1.14s     Launch com.smartble.ios
+    t =     1.38s         Setting up automation session
+    t =     1.51s         Wait for com.smartble.ios to idle
+    t =     2.64s Waiting 3.0s for "实时检测完成" StaticText to exist
+    t =     3.65s     Checking `Expect predicate `existsNoRetry == 1` for object "实时检测完成" StaticText`
+    t =     3.66s         Checking existence of `"实时检测完成" StaticText`
+    t =     3.76s Terminate com.smartble.ios:6305
+    t =     4.80s Open com.smartble.ios
+    t =     4.80s     Launch com.smartble.ios
+    t =     5.03s         Setting up automation session
+    t =     5.15s         Wait for com.smartble.ios to idle
+    t =     6.27s Waiting 3.0s for "设备未连接" StaticText to exist
+    t =     7.30s     Checking `Expect predicate `existsNoRetry == 1` for object "设备未连接" StaticText`
+    t =     7.30s         Checking existence of `"设备未连接" StaticText`
+    t =     7.40s Checking existence of `"待检测" StaticText`
+    t =     7.43s Terminate com.smartble.ios:6306
+    t =     8.49s Open com.smartble.ios
+    t =     8.49s     Launch com.smartble.ios
+    t =     8.73s         Setting up automation session
+    t =     8.86s         Wait for com.smartble.ios to idle
+    t =    10.01s Waiting 3.0s for "检测失败" StaticText to exist
+    t =    11.03s     Checking `Expect predicate `existsNoRetry == 1` for object "检测失败" StaticText`
+    t =    11.03s         Checking existence of `"检测失败" StaticText`
+    t =    11.13s Checking existence of `"显示错误码（详细信息）" Button`
+    t =    11.16s Tear Down
+Test Case '-[SmartBLEUITests.FlowStateUITests testP005HealthyOfflineAndFailureStates]' passed (11.429 seconds).
+Test Suite 'FlowStateUITests' passed at 2026-09-11 08:32:35.756.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 34.443 (34.453) seconds
+Test Suite 'TabBarUITests' started at 2026-09-11 08:32:35.761.
+Test Case '-[SmartBLEUITests.TabBarUITests testFourTabsSwitchWithoutConnectionStateHijackingSelection]' started.
+    t =     0.00s Start Test at 2026-09-11 08:32:35.765
+    t =     0.04s Set Up
+    t =     0.04s     Open com.smartble.ios
+    t =     0.04s         Launch com.smartble.ios
+    t =     0.04s             Terminate com.smartble.ios:6307
+    t =     1.37s             Setting up automation session
+    t =     1.49s             Wait for com.smartble.ios to idle
+    t =     2.62s Waiting 3.0s for "扫描" Button to exist
+    t =     3.64s     Checking `Expect predicate `existsNoRetry == 1` for object "扫描" Button`
+    t =     3.64s         Checking existence of `"扫描" Button`
+    t =     3.74s Tap "已连接，3" Button
+    t =     3.74s     Wait for com.smartble.ios to idle
+    t =     3.75s     Find the "已连接，3" Button
+    t =     3.78s     Check for interrupting elements affecting "已连接，3" Button
+    t =     3.82s     Synthesize event
+    t =     4.12s     Wait for com.smartble.ios to idle
+    t =     4.13s Waiting 2.0s for "还没有连接中的设备" StaticText to exist
+    t =     5.14s     Checking `Expect predicate `existsNoRetry == 1` for object "还没有连接中的设备" StaticText`
+    t =     5.14s         Checking existence of `"还没有连接中的设备" StaticText`
+    t =     5.20s Tap "广播" Button
+    t =     5.20s     Wait for com.smartble.ios to idle
+    t =     5.22s     Find the "广播" Button
+    t =     5.25s     Check for interrupting elements affecting "广播" Button
+    t =     5.29s     Synthesize event
+    t =     5.60s     Wait for com.smartble.ios to idle
+    t =     5.61s Waiting 2.0s for "ADV 负载预算" StaticText to exist
+    t =     6.64s     Checking `Expect predicate `existsNoRetry == 1` for object "ADV 负载预算" StaticText`
+    t =     6.64s         Checking existence of `"ADV 负载预算" StaticText`
+    t =     6.73s Tap "关于" Button
+    t =     6.73s     Wait for com.smartble.ios to idle
+    t =     6.74s     Find the "关于" Button
+    t =     6.89s     Check for interrupting elements affecting "关于" Button
+    t =     6.99s     Synthesize event
+    t =     7.31s     Wait for com.smartble.ios to idle
+    t =     7.32s Waiting 2.0s for "应用信息" StaticText to exist
+    t =     8.33s     Checking `Expect predicate `existsNoRetry == 1` for object "应用信息" StaticText`
+    t =     8.33s         Checking existence of `"应用信息" StaticText`
+    t =     8.42s Tap "扫描" Button
+    t =     8.42s     Wait for com.smartble.ios to idle
+    t =     8.43s     Find the "扫描" Button
+    t =     8.48s     Check for interrupting elements affecting "扫描" Button
+    t =     8.52s     Synthesize event
+    t =     8.82s     Wait for com.smartble.ios to idle
+    t =     8.83s Waiting 2.0s for "附近设备" StaticText to exist
+    t =     9.86s     Checking `Expect predicate `existsNoRetry == 1` for object "附近设备" StaticText`
+    t =     9.86s         Checking existence of `"附近设备" StaticText`
+    t =     9.93s Tear Down
+Test Case '-[SmartBLEUITests.TabBarUITests testFourTabsSwitchWithoutConnectionStateHijackingSelection]' passed (10.186 seconds).
+Test Case '-[SmartBLEUITests.TabBarUITests testSecondaryPageCoversTabBar]' started.
+    t =     0.00s Start Test at 2026-09-11 08:32:45.954
+    t =     0.04s Set Up
+    t =     0.04s     Open com.smartble.ios
+    t =     0.04s         Launch com.smartble.ios
+    t =     0.04s             Terminate com.smartble.ios:6308
+    t =     1.30s             Setting up automation session
+    t =     1.45s             Wait for com.smartble.ios to idle
+    t =     2.56s Tap "关于" Button
+    t =     2.56s     Wait for com.smartble.ios to idle
+    t =     2.58s     Find the "关于" Button
+    t =     2.66s     Check for interrupting elements affecting "关于" Button
+    t =     2.71s     Synthesize event
+    t =     3.01s     Wait for com.smartble.ios to idle
+    t =     3.03s Waiting 2.0s for "about-version-row" Button to exist
+    t =     4.05s     Checking `Expect predicate `existsNoRetry == 1` for object "about-version-row" Button`
+    t =     4.05s         Checking existence of `"about-version-row" Button`
+    t =     4.15s Tap "about-version-row" Button
+    t =     4.15s     Wait for com.smartble.ios to idle
+    t =     4.16s     Find the "about-version-row" Button
+    t =     4.31s     Check for interrupting elements affecting "about-version-row" Button
+    t =     4.41s     Synthesize event
+    t =     4.43s         Scroll element to visible
+    t =     4.44s         Find the "about-version-row" Button
+    t =     4.50s         Computed hit point {187.5, 571} after scrolling to visible
+    t =     4.80s     Wait for com.smartble.ios to idle
+    t =     5.18s Waiting 3.0s for "复制版本信息" Button to exist
+    t =     6.19s     Checking `Expect predicate `existsNoRetry == 1` for object "复制版本信息" Button`
+    t =     6.19s         Checking existence of `"复制版本信息" Button`
+    t =     6.31s Find the "扫描" Button
+    t =     6.41s Find the "已连接，3" Button
+    t =     6.52s Tear Down
+Test Case '-[SmartBLEUITests.TabBarUITests testSecondaryPageCoversTabBar]' passed (6.764 seconds).
+Test Suite 'TabBarUITests' passed at 2026-09-11 08:32:52.719.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 16.950 (16.958) seconds
+Test Suite 'SmartBLEUITests.xctest' passed at 2026-09-11 08:32:52.723.
+	 Executed 12 tests, with 0 failures (0 unexpected) in 266.939 (266.997) seconds
+Test Suite 'All tests' passed at 2026-09-11 08:32:52.726.
+	 Executed 12 tests, with 0 failures (0 unexpected) in 266.939 (267.001) seconds
+2026-09-11 08:32:53.031 xcodebuild[89867:6825234] [MT] IDETestOperationsObserverDebug: 273.970 elapsed -- Testing started completed.
+2026-09-11 08:32:53.031 xcodebuild[89867:6825234] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-09-11 08:32:53.031 xcodebuild[89867:6825234] [MT] IDETestOperationsObserverDebug: 273.970 sec, +273.970 sec -- end
+
+Test session results, code coverage, and logs:
+	/Users/luoyaosheng/Desktop/project/Open/smart-ble/verification/ios-device/20260911-uitest-retry/UITests-retry.xcresult
+
+** TEST SUCCEEDED **
+
+Testing started

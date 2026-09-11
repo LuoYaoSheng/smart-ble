@@ -38,7 +38,7 @@ cd apps/ios && xcodebuild test -project SmartBLE.xcodeproj -scheme SmartBLEiOS \
 | 签名链（通配 profile×证书×设备）+ 构建 + 安装 + 首启存活 | 20260910-phase4 |
 | 息屏后台 BLE 收发全环（10.5min：notify 接收/GATT 写下发/链路游标 LINK_UP） | e5/20260910-ios-bg-ble |
 | 单元测试 24/24（真机宿主执行） | **本轮** |
-| UI 自动化 11 用例 | **BLOCKED（本报告 §2，待一次亮屏/点弹窗）** |
+| UI 自动化 11 用例 | ~~BLOCKED~~ → **2026-09-11 解除，12/12 PASS**（见 [../20260911-uitest-retry/REPORT.md](../20260911-uitest-retry/REPORT.md)；实际用例数 12，本表初记 11 系漏数） |
 
 真机**视觉**证据（截图）仍空缺：vis1 轮 N-IOS 证据均为模拟器 simctl 通道；待 UI 自动化解锁后由 XCUITest 截图/XCTAttachment 补首份真机截图。
 
