@@ -68,6 +68,14 @@ const state = {
     useMockBLE: window.location.search.includes('mock=true')
 };
 
+// P002/P003/P005 Smart HID 线（PARITY-002 桌面接入）：
+// hidProv / hidDiag 为纯内存状态；F023 红线——密码/令牌仅 submit 参数，不落任何存储。
+const hid = {
+    svc: null,
+    prov: null, // { device, phase, connecting, connError, lost, ssid, pwd, hub, pairing, provisioning, done, err, progress }
+    diag: null  // { deviceId, state, rows, error, connecting, showErr }
+};
+
 // DOM Elements
 const elements = {
     scanButton: document.getElementById('scanButton'),
@@ -150,6 +158,7 @@ async function init() {
         setupEventListeners();
         renderAboutPage(); // F027/F028/F029：关于页投影（版本三态/推广卡/平台状态）
         updateBroadcastPlatformInfo(); // Update broadcast UI based on platform
+        attachHidService(); // P002/P003/P005：Smart HID 会话服务（Tauri invoke/listen 适配）
         await initBluetooth();
         setupTauriListeners();
     } catch (error) {
@@ -195,6 +204,32 @@ function setupEventListeners() {
     });
     document.getElementById('connectButton')?.addEventListener('click', () => connectDevice(state.currentDevice?.id));
     document.getElementById('disconnectButton')?.addEventListener('click', disconnectDevice);
+
+    // P002/P003/P005 Smart HID 二级页
+    document.getElementById('hidProvBackButton')?.addEventListener('click', () => hidLeaveProvision());
+    document.getElementById('hidProvReconnect')?.addEventListener('click', () => hidConnect());
+    document.getElementById('hidProvBackToList')?.addEventListener('click', () => switchTab('scan'));
+    document.getElementById('hidProvRejoin')?.addEventListener('click', () => hidConnect());
+    document.getElementById('hidPwdEye')?.addEventListener('click', () => hidTogglePwdEye());
+    document.getElementById('hidQrBigact')?.addEventListener('click', () => hidOpenQrSheet());
+    document.getElementById('hidSubmitButton')?.addEventListener('click', () => hidSubmit());
+    document.getElementById('hidCancelWaitButton')?.addEventListener('click', () => hidCancelWait());
+    document.getElementById('hidDoneViewButton')?.addEventListener('click', () => openHidDetail());
+    document.getElementById('hidRecoveryButton')?.addEventListener('click', () => hidRunRecovery());
+    ['hidSsidInput', 'hidHubInput'].forEach((id) => {
+        document.getElementById(id)?.addEventListener('input', () => {
+            if (hid.prov) {
+                hid.prov.ssid = document.getElementById('hidSsidInput').value;
+                hid.prov.hub = document.getElementById('hidHubInput').value;
+                hidUpdateSubmitState();
+            }
+        });
+    });
+    document.getElementById('hidDetailBackButton')?.addEventListener('click', () => switchTab('scan'));
+    document.getElementById('hidDiagBackButton')?.addEventListener('click', () => {
+        if (hid.svc?.getKnownDevice()) openHidDetail();
+        else switchTab('scan');
+    });
     document.getElementById('otaButton')?.addEventListener('click', () => {
         if (state.currentDevice) {
             // Correct id is 'mainOtaDialog', not 'otaDialog'
@@ -345,6 +380,11 @@ function setupEventListeners() {
 async function setupTauriListeners() {
     await listen('device-discovered', (event) => {
         event.payload.forEach(device => {
+            // P001 扫描卡 SHID 徽章双入口：Profile 广告匹配（强=服务 UUID / 弱=名称前缀）
+            if (window.SmartHidDesktop) {
+                const match = window.SmartHidDesktop.matchScannedDevice(device);
+                if (match) device.profileMatch = match; // 1=WEAK / 2=STRONG
+            }
             state.devices.set(device.id, device);
         });
         renderDeviceList();
@@ -367,6 +407,12 @@ async function setupTauriListeners() {
         }
         renderConnectedDevicesPanel(); // T13: 更新已连接面板
         addLog('info', `Device disconnected: ${deviceId}`);
+
+        // U-REC-001 同型预防：Smart HID 会话设备的断开/重连归 hidService 独占（P002 向导自管重连）
+        if (window.SmartHidService?.ownsDevice?.(deviceId)) {
+            addLog('warning', `Device ${deviceId} handled by Smart HID session, skip auto-reconnect`);
+            return;
+        }
 
         // Start reconnection if not user initiated
         if (!state.reconnect.userDisconnected.has(deviceId)) {
@@ -466,6 +512,7 @@ function switchTab(tab) {
     });
     document.querySelectorAll('.view').forEach(view => {
         view.classList.remove('active');
+        view.style.display = ''; // 清内联 display（P010/P002/P003/P005 初始内联 none 由 active class 接管显隐）
     });
 
     if (tab === 'scan') {
@@ -953,6 +1000,10 @@ function renderDeviceList() {
             card.connectedHint = state.connectedDevices.has(device.id);
 
             card.addEventListener('connect', (e) => connectDevice(e.detail.id));
+            card.addEventListener('configure-hid', (e) => {
+                const dev = state.devices.get(e.detail.id);
+                openHidProvision({ id: e.detail.id, name: dev?.name });
+            });
             card.addEventListener('show-detail', (e) => showDeviceInfoDialog(e.detail.id));
 
             elements.deviceList.appendChild(card);
@@ -1525,6 +1576,670 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+// ═════════════════════════════════════════════════════════════════════
+// Smart HID 线（P002 配网 / P003 详情 / P005 诊断 · PARITY-002 桌面接入）
+// 正典：prototype/platform/desktop/high-fi/pages/{p002,p003,p005}-*.js
+//       + uniapp composables/use-smart-hid-provisioning.js 编排语义。
+// F023 红线：token / 密码仅作 submit 参数（内存），不写日志 / 不落存储。
+// ═════════════════════════════════════════════════════════════════════
+
+// 正典 toast（#toasts 容器 + 深色胶囊；与 E-WIN app.js 同型）
+function showToast(message, type = 'info') {
+    const host = document.getElementById('toasts') || document.body;
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    if (type === 'success') {
+        toast.innerHTML = '<span class="ok-i"><svg class="ic xs" aria-hidden="true"><use href="#i-check"/></svg></span>';
+    }
+    const span = document.createElement('span');
+    span.textContent = message;
+    toast.appendChild(span);
+    host.appendChild(toast);
+    setTimeout(() => toast.remove(), 2200);
+}
+
+
+// hid-service（字节镜像 E-WIN）的 Tauri invoke/listen 适配层
+function tauriHidAdapter() {
+    return {
+        connect: (id) => invoke('connect', { deviceId: id }),
+        disconnect: (id) => invoke('disconnect', { deviceId: id }),
+        discoverServices: (id) => invoke('discover_services', { deviceId: id }),
+        readCharacteristic: (id, serviceUuid, charUuid) =>
+            invoke('read_characteristic', { deviceId: id, serviceUuid, charUuid }),
+        writeRaw: (id, serviceUuid, charUuid, data, withoutResponse) =>
+            invoke('write_raw', { deviceId: id, serviceUuid, charUuid, data, writeWithResponse: !withoutResponse }),
+        notifyCharacteristic: (id, serviceUuid, charUuid, notify) =>
+            invoke('notify_characteristic', { deviceId: id, serviceUuid, charUuid, notify }),
+        onCharacteristicValueChanged: (cb) => {
+            let stop = null;
+            listen('notification-received', (e) => {
+                const p = e.payload || {};
+                cb({ deviceId: p.deviceId, characteristicUuid: p.charUuid, value: p.value });
+            }).then((unlisten) => { stop = unlisten; }).catch(() => {});
+            return () => { try { stop?.(); } catch (e) { /* noop */ } };
+        },
+        onDeviceDisconnected: (cb) => {
+            let stop = null;
+            listen('device-disconnected', (e) => {
+                cb({ id: (e.payload || {}).deviceId });
+            }).then((unlisten) => { stop = unlisten; }).catch(() => {});
+            return () => { try { stop?.(); } catch (e) { /* noop */ } };
+        }
+    };
+}
+
+function attachHidService() {
+    if (!window.SmartHidDesktop) return;
+    try {
+        hid.svc = window.SmartHidDesktop.attach(tauriHidAdapter());
+        hid.svc.onSessionDisconnect(() => hidHandleLost());
+        hid.svc.onStatus((status) => {
+            if (hid.prov && hid.prov.phase === 'status' && status) {
+                hid.prov.progress = window.SmartHidDesktop.deriveProgress(status, hid.prov.progress);
+                hidRenderProgressCard();
+            }
+        });
+    } catch (e) {
+        console.error('attachHidService failed:', e);
+    }
+}
+
+// 二级页视图切换（class active 机制；switchTab 同口径清内联 display）
+function showHidView(viewId) {
+    document.querySelectorAll('.tabbar .tb').forEach(btn => btn.classList.remove('on'));
+    document.querySelectorAll('.view').forEach(view => {
+        view.classList.remove('active');
+        view.style.display = '';
+    });
+    const view = document.getElementById(viewId);
+    if (view) view.classList.add('active');
+}
+
+// ---- P002 配网向导 ----------------------------------------------------
+
+function openHidProvision(device) {
+    if (!hid.svc) {
+        showToast('Smart HID 模块未加载', 'error');
+        return;
+    }
+    hid.prov = {
+        device,
+        phase: 'connect',
+        connecting: false,
+        connError: '',
+        lost: false,
+        ssid: '',
+        pwd: '',
+        hub: '',
+        pairing: null,
+        provisioning: false,
+        done: false,
+        err: null,
+        progress: window.SmartHidDesktop.initialProgress()
+    };
+    showHidView('hidProvisionView');
+    hidRenderWizard();
+    hidConnect();
+}
+
+function hidStepIndex() {
+    const p = hid.prov;
+    if (!p) return 0;
+    return p.phase === 'connect' ? 0 : p.phase === 'configure' ? 1 : 2;
+}
+
+function hidStepperHtml(current) {
+    const steps = ['连接设备', '填写配置', '下发状态'];
+    return steps.map((label, i) => {
+        const cls = i < current ? 'st done' : i === current ? 'st cur' : 'st';
+        const node = `<div class="${cls}"><div class="n">${i < current ? '✓' : i + 1}</div><div class="lb">${label}</div></div>`;
+        return (i > 0 ? `<div class="ln ${i <= current ? 'done' : ''}"></div>` : '') + node;
+    }).join('');
+}
+
+function hidRenderWizard() {
+    const p = hid.prov;
+    if (!p) return;
+
+    document.getElementById('hidProvStepper').innerHTML = hidStepperHtml(hidStepIndex());
+    document.getElementById('hidProvAva').textContent = ((p.device?.name || 'S').trim()[0] || 'S').toUpperCase();
+    document.getElementById('hidProvDevName').textContent = p.device?.name || 'Smart HID 设备';
+    document.getElementById('hidProvDevId').textContent = `${p.device?.id || '—'}${p.done || p.phase === 'status' ? ' · Device Info 已验证' : ''}`;
+
+    const show = (id, visible) => {
+        const el = document.getElementById(id);
+        if (el) el.hidden = !visible;
+    };
+    show('hidProvConnectPhase', p.phase === 'connect');
+    show('hidProvConfigurePhase', p.phase === 'configure');
+    show('hidProvStatusPhase', p.phase === 'status');
+
+    // 阶段一
+    show('hidProvConnecting', p.phase === 'connect' && p.connecting);
+    show('hidProvConnError', p.phase === 'connect' && !p.connecting && Boolean(p.connError));
+    if (p.connError) document.getElementById('hidProvConnErrorText').textContent = p.connError;
+
+    // 阶段二
+    show('hidProvLostBanner', p.lost);
+    show('hidProvLostActions', p.lost);
+    const badge = document.getElementById('hidProvConnBadge');
+    badge.className = 'badge ' + (p.lost ? 'err' : 'on');
+    document.getElementById('hidProvConnWord').textContent = p.lost ? '已断开' : '已连接';
+    const info = hid.svc?.getDeviceInfo();
+    document.getElementById('hidProvDevSummary').textContent = info
+        ? `${info.device_id} · fw ${info.firmware} · ${info.state}`
+        : (p.device?.id || '');
+    document.getElementById('hidProvRejoinWord').textContent = p.connecting ? '重连中…' : '重新连接设备';
+    const ssidInput = document.getElementById('hidSsidInput');
+    const hubInput = document.getElementById('hidHubInput');
+    if (ssidInput && document.activeElement !== ssidInput) ssidInput.value = p.ssid;
+    if (hubInput && document.activeElement !== hubInput) hubInput.value = p.hub;
+    const qrReady = Boolean(p.pairing?.token);
+    document.getElementById('hidQrTitle').textContent = qrReady ? '重新获取配对码（已回填）' : '获取 ControlHub 配对码';
+    document.getElementById('hidQrDesc').textContent = qrReady
+        ? 'token 已获取（内存会话，不落盘）；地址仍可修改'
+        : '粘贴 / 手输 shid://pair 配对码，自动回填地址与令牌';
+    const qrBadge = document.getElementById('hidQrBadge');
+    qrBadge.className = 'chip ' + (qrReady ? 'success' : 'warning');
+    qrBadge.textContent = qrReady ? '已获取' : '必需';
+    document.getElementById('hidQrBigact').classList.toggle('got', qrReady);
+    hidUpdateSubmitState();
+
+    // 阶段三
+    show('hidProvDoneCard', p.done);
+    show('hidProvErrBlock', !p.done && Boolean(p.err));
+    document.getElementById('hidProvWaitingBlock').style.display = (!p.done && !p.err) ? '' : 'none';
+    if (p.err) {
+        document.getElementById('hidProvErrCode').textContent = p.err.code || 'provision_failed';
+        document.getElementById('hidProvErrText').textContent = p.err.msg || '';
+        const rec = document.getElementById('hidRecoveryButton');
+        rec.textContent = ({
+            diagnostics: '进入诊断',
+            pairing: '重新获取配对码',
+            form: '修改配置',
+            retry: '重新下发'
+        }[p.err.recovery] || '重试');
+    }
+    hidRenderProgressCard();
+}
+
+function hidRenderProgressCard() {
+    const p = hid.prov;
+    const card = document.getElementById('hidProvProgressCard');
+    if (!p || !card) return;
+    const rows = [
+        ['wifi', 'Wi-Fi 连接'],
+        ['hub', 'ControlHub 配对'],
+        ['conn', 'MQTT 控制链路'],
+        ['usb', 'USB HID Ready']
+    ];
+    card.innerHTML = rows.map(([key, label]) => {
+        const st = p.progress[key] || 'pending';
+        const glyph = st === 'done' ? '✓' : st === 'fail' ? '✕' : '·';
+        const dt = (p.err && p.err.row === key) ? `<span class="dt mono">${p.err.code}</span>` : '';
+        return `<div class="prow ${st}"><span class="st-i">${glyph}</span><span class="t">${label}</span>${dt}</div>`;
+    }).join('');
+}
+
+function hidUpdateSubmitState() {
+    const p = hid.prov;
+    const btn = document.getElementById('hidSubmitButton');
+    if (!p || !btn) return;
+    const can = Boolean(p.ssid.trim() && p.hub.trim() && p.pairing?.token && !p.provisioning);
+    btn.disabled = !can;
+}
+
+async function hidConnect() {
+    const svc = hid.svc;
+    const p = hid.prov;
+    if (!svc || !p) return;
+    p.phase = 'connect';
+    p.connecting = true;
+    p.connError = '';
+    hidRenderWizard();
+    addLog('info', `[SmartHID] 连接 ${p.device.id} 并验证 Device Info…`);
+    try {
+        const { info } = await svc.connect(p.device.id);
+        p.connecting = false;
+        p.lost = false;
+        p.phase = 'configure';
+        addLog('success', `[SmartHID] device ${info.device_id} fw=${info.firmware} state=${info.state}`);
+    } catch (error) {
+        p.connecting = false;
+        p.connError = error?.message || '连接失败，请靠近设备后重试。';
+        addLog('error', `[SmartHID] 连接失败: ${p.connError}`);
+    }
+    hidRenderWizard();
+}
+
+function hidHandleLost() {
+    const p = hid.prov;
+    if (!p) return;
+    if (p.phase === 'configure') {
+        p.lost = true;
+        hidRenderWizard();
+        showToast('设备连接已断开，请重新连接后再下发', 'error');
+    }
+}
+
+function hidTogglePwdEye() {
+    const input = document.getElementById('hidPwdInput');
+    const eye = document.getElementById('hidPwdEye');
+    if (!input || !eye) return;
+    const showPlain = input.type === 'password';
+    input.type = showPlain ? 'text' : 'password';
+    eye.querySelector('use')?.setAttribute('href', showPlain ? '#i-eye-off' : '#i-eye');
+}
+
+// 通用小弹层（.mask/.modal 正典壳；按钮数组驱动）
+function hidShowModal({ title, bodyHtml, buttons, onMount }) {
+    hidCloseModal();
+    const mask = document.createElement('div');
+    mask.className = 'mask';
+    mask.id = 'hidModalMask';
+    mask.innerHTML = `
+        <div class="modal" style="max-width:440px">
+            <div class="t">${title}</div>
+            <div class="m-body" id="hidModalBody">${bodyHtml || ''}</div>
+            <div style="display:flex;gap:9px;margin-top:14px" id="hidModalActs"></div>
+        </div>`;
+    document.body.appendChild(mask);
+    const acts = mask.querySelector('#hidModalActs');
+    for (const btn of buttons || []) {
+        const el = document.createElement('button');
+        el.className = 'btn ' + (btn.tone || 'soft') + ' sm';
+        el.style.flex = '1';
+        el.textContent = btn.label;
+        el.addEventListener('click', () => {
+            if (btn.onClick?.(mask) !== false) hidCloseModal();
+        });
+        acts.appendChild(el);
+    }
+    onMount?.(mask);
+    return mask;
+}
+
+function hidCloseModal() {
+    document.getElementById('hidModalMask')?.remove();
+}
+
+// F020 配对码（桌面口径 10_platform §2.4：粘贴 / 手输兜底为主路径）
+function hidOpenQrSheet() {
+    const p = hid.prov;
+    if (!p) return;
+    hidShowModal({
+        title: '粘贴 / 手输配对码',
+        bodyHtml: `
+            <div class="note info" style="margin:0 0 10px">
+                <div>粘贴 ControlHub 屏显 <span class="mono">shid://pair</span> 二维码内容，识别后自动回填地址与令牌（纯前端解析，不落盘）。</div>
+            </div>
+            <div class="field"><label>配对码内容 <span class="req">*</span></label>
+                <div class="inp"><input class="mono" id="hidQrPasteInput" placeholder="shid://pair?token=…&host=…&port=17892"></div>
+                <div class="err-line" id="hidQrPasteErr" style="display:none"></div>
+            </div>`,
+        buttons: [
+            { label: '解析并回填', tone: 'primary', onClick: () => hidParseQrInput() },
+            { label: '取消', tone: 'soft' }
+        ],
+        onMount: (mask) => {
+            const input = mask.querySelector('#hidQrPasteInput');
+            input?.focus();
+            input?.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (hidParseQrInput() !== false) hidCloseModal();
+                }
+            });
+        }
+    });
+}
+
+function hidParseQrInput() {
+    const p = hid.prov;
+    const input = document.getElementById('hidQrPasteInput');
+    const errLine = document.getElementById('hidQrPasteErr');
+    if (!p || !hid.svc || !input) return false;
+    const payload = hid.svc.parseQr(input.value);
+    if (!payload) {
+        if (errLine) {
+            errLine.style.display = '';
+            errLine.textContent = '未识别到有效配对码（非 shid://pair 或缺少/非法参数）';
+        }
+        return false;
+    }
+    p.pairing = payload;
+    p.hub = window.SmartHidDesktop.formatControlHubAddress(payload);
+    addLog('success', '[SmartHID] 配对码已解析 · 地址与令牌已回填（token 不落日志）');
+    showToast('配对码已解析 · 地址与令牌已回填', 'success');
+    hidRenderWizard();
+    return true;
+}
+
+async function hidSubmit() {
+    const svc = hid.svc;
+    const p = hid.prov;
+    if (!svc || !p) return;
+    if (!p.pairing?.token) {
+        showToast('请先获取 ControlHub 配对码', 'error');
+        return;
+    }
+    let candidate;
+    try {
+        candidate = window.SmartHidDesktop.buildProvisionFormCandidate({
+            wifiSsid: p.ssid,
+            wifiPassword: p.pwd,
+            hubAddress: p.hub,
+            token: p.pairing.token
+        });
+    } catch (error) {
+        showToast(error?.message || '请检查配网信息', 'error');
+        return;
+    }
+
+    p.phase = 'status';
+    p.provisioning = true;
+    p.done = false;
+    p.err = null;
+    p.progress = window.SmartHidDesktop.initialProgress();
+    hidRenderWizard();
+    addLog('info', `[SmartHID] 下发 candidate：${candidate.wifi_ssid} → ${candidate.hub_host}:${candidate.hub_port}`);
+
+    try {
+        const { ok, status } = await svc.provisionAndWait(candidate, 60000);
+        if (!ok) {
+            const err = new Error(window.SmartHid.describeSmartHidStatus(status));
+            err.status = status;
+            throw err;
+        }
+        p.provisioning = false;
+        p.done = true;
+        const info = svc.getDeviceInfo() || {};
+        svc.commitKnownDevice({
+            deviceId: p.device.id,
+            name: p.device.name || info.device_id || 'Smart HID',
+            protocol: info.protocol || '',
+            firmware: info.firmware || '—',
+            lastWifi: p.ssid,
+            lastHub: p.hub
+        });
+        addLog('success', '[SmartHID] 配网完成 · 设备 READY');
+    } catch (error) {
+        p.provisioning = false;
+        const message = error?.message || '配网失败';
+        if (/取消/.test(message)) {
+            p.phase = 'configure';
+            p.err = null;
+            p.progress = window.SmartHidDesktop.initialProgress();
+            showToast('已取消等待', 'info');
+            hidRenderWizard();
+            return;
+        }
+        const offline = !svc.isConnected();
+        if (error?.status) {
+            p.err = {
+                code: error.status.error || error.status.state || 'provision_failed',
+                msg: message,
+                recovery: window.SmartHid.smartHidRecoveryAction(error.status)
+            };
+        } else {
+            p.err = {
+                code: offline ? 'ble_disconnected' : 'provision_failed',
+                msg: offline ? '设备 BLE 连接已断开，重新连接后可继续下发' : message,
+                recovery: offline ? 'retry' : window.SmartHid.smartHidRecoveryAction('provision_failed')
+            };
+        }
+        addLog('error', `[SmartHID] 配网失败: ${p.err.code} · ${p.err.msg}`);
+    }
+    hidRenderWizard();
+}
+
+function hidCancelWait() {
+    const p = hid.prov;
+    if (!hid.svc || !p || !p.provisioning) return;
+    hid.svc.cancelProvisionWait('用户已取消等待');
+    p.provisioning = false;
+    p.phase = 'configure';
+    p.err = null;
+    p.progress = window.SmartHidDesktop.initialProgress();
+    showToast('已取消等待', 'info');
+    hidRenderWizard();
+}
+
+function hidRunRecovery() {
+    const p = hid.prov;
+    if (!p || !p.err) return;
+    const action = p.err.recovery;
+    if (action === 'diagnostics') {
+        openHidDiagnostics(p.device.id);
+        return;
+    }
+    if (action === 'pairing') {
+        p.pairing = null;
+        p.phase = 'configure';
+        p.err = null;
+        hidRenderWizard();
+        hidOpenQrSheet();
+        return;
+    }
+    if (action === 'form') {
+        p.phase = 'configure';
+        p.err = null;
+        hidRenderWizard();
+        return;
+    }
+    // retry：连接不在则先重连，再重新下发
+    hidRetryProvision();
+}
+
+async function hidRetryProvision() {
+    const svc = hid.svc;
+    const p = hid.prov;
+    if (!svc || !p) return;
+    if (!svc.isConnected()) {
+        p.err = null;
+        await hidConnect();
+        if (p.phase !== 'configure') return;
+    }
+    p.err = null;
+    hidSubmit();
+}
+
+// U-01 离开确认（配网中 → modal 确认；对齐 uniapp confirmLeaveIfNeeded）
+function hidLeaveProvision() {
+    const p = hid.prov;
+    if (!p || !p.provisioning) {
+        switchTab('scan');
+        return;
+    }
+    hidShowModal({
+        title: '配网进行中',
+        bodyHtml: '<div style="font-size:var(--fs-body);color:var(--c-sub);line-height:1.6">离开将取消等待设备状态。确定离开吗？</div>',
+        buttons: [
+            { label: '确定离开', tone: 'primary', onClick: () => { hidCancelWait(); switchTab('scan'); } },
+            { label: '继续等待', tone: 'soft' }
+        ]
+    });
+}
+
+// ---- P003 设备详情（会话级内存快照） -----------------------------------
+
+function openHidDetail() {
+    const snapshot = hid.svc?.getKnownDevice?.() || null;
+    const body = document.getElementById('hidDetailBody');
+    if (!body) return;
+    if (!snapshot) {
+        body.innerHTML = `
+            <div class="empty" style="margin-top:12px">
+                <div class="ill"><svg width="118" height="86" viewBox="0 0 118 86" fill="none">
+                    <rect x="20" y="14" width="78" height="58" rx="6" stroke="#E3EAF3" stroke-width="2"/>
+                    <path d="M32 30h54M32 42h54M32 54h34" stroke="#9AA8B6" stroke-width="2" stroke-linecap="round"/></svg></div>
+                <div class="t">设备记录不存在</div>
+                <div class="d">该设备快照已随会话结束释放，请重新配网后查看。</div>
+            </div>`;
+    } else {
+        const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+        const kv = (k, v, mono) => `<div class="kv"><span class="k">${k}</span><span class="v${mono ? ' mono' : ''}">${esc(v) || '<span class="dim">—</span>'}</span></div>`;
+        body.innerHTML = `
+            <div class="card" style="margin-top:12px;display:flex;gap:13px;align-items:center">
+                <div style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#D9F6F0,#E2F8F4);color:#0E9A80;display:flex;align-items:center;justify-content:center">
+                    <svg class="ic lg" aria-hidden="true"><use href="#i-hid"/></svg></div>
+                <div style="flex:1;min-width:0">
+                    <div style="font-size:var(--fs-h1);font-weight:var(--fw-xbold)">${esc(snapshot.name || 'Smart HID 设备')}</div>
+                    <div style="margin-top:4px"><span class="badge on"><span class="dot"></span><span>配置成功 · READY</span></span></div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-t"><svg class="ic sm" aria-hidden="true"><use href="#i-chip"/></svg> 设备身份</div>
+                ${kv('Device ID', snapshot.deviceId, true)}
+                ${kv('协议版本', snapshot.protocol ? `Smart HID ${snapshot.protocol}` : '')}
+                ${kv('固件版本', snapshot.firmware, true)}
+                ${snapshot.protocol ? '' : '<div style="margin-top:8px"><span class="chip neutral">协议未记录</span></div>'}
+            </div>
+            <div class="card">
+                <div class="card-t"><svg class="ic sm" aria-hidden="true"><use href="#i-wifi"/></svg> 最近配置</div>
+                ${kv('Wi-Fi', snapshot.lastWifi)}
+                ${kv('ControlHub', snapshot.lastHub, true)}
+            </div>
+            <div class="note info" style="margin-top:4px">
+                <svg class="ic sm" aria-hidden="true"><use href="#i-info"/></svg>
+                <div>本页为<b>本次配网会话的内存快照</b>，退出应用后不再可见（零本地持久化）。重新配置前需让设备进入配网模式。</div>
+            </div>
+            <div style="margin-top:16px;display:flex;flex-direction:column;gap:9px">
+                <button class="btn primary" id="hidDetailReconfig" style="width:100%"><svg class="ic sm" aria-hidden="true"><use href="#i-refresh"/></svg><span>重新配置</span></button>
+                <div style="display:flex;gap:9px">
+                    <button class="btn soft" id="hidDetailDiag" style="flex:1"><svg class="ic sm" aria-hidden="true"><use href="#i-pulse"/></svg><span>运行诊断</span></button>
+                    <button class="btn soft" id="hidDetailGatt" style="flex:1"><svg class="ic sm" aria-hidden="true"><use href="#i-set"/></svg><span>高级 BLE 调试</span></button>
+                </div>
+            </div>`;
+        const deviceId = snapshot.deviceId;
+        const name = snapshot.name;
+        body.querySelector('#hidDetailReconfig')?.addEventListener('click', () => {
+            openHidProvision({ id: deviceId, name });
+        });
+        body.querySelector('#hidDetailDiag')?.addEventListener('click', () => {
+            openHidDiagnostics(deviceId);
+        });
+        body.querySelector('#hidDetailGatt')?.addEventListener('click', () => {
+            const device = state.devices.get(deviceId) || { id: deviceId, name };
+            state.currentDevice = device;
+            showDeviceDetail();
+        });
+    }
+    showHidView('hidDetailView');
+}
+
+// ---- P005 五项诊断 ----------------------------------------------------
+
+function openHidDiagnostics(deviceId) {
+    if (!hid.svc) {
+        showToast('Smart HID 模块未加载', 'error');
+        return;
+    }
+    const session = hid.svc.getSessionState();
+    hid.diag = {
+        deviceId,
+        state: session.connected && session.deviceId === deviceId ? 'connected' : 'offline',
+        rows: null,
+        error: null,
+        connecting: false,
+        showErr: false
+    };
+    showHidView('hidDiagnosticsView');
+    hidRenderDiag();
+}
+
+function hidRenderDiag() {
+    const d = hid.diag;
+    const body = document.getElementById('hidDiagBody');
+    if (!d || !body) return;
+    const word = ({
+        idle: '尚未检测',
+        connected: '设备已连接可开始检测',
+        checking: '正在读取实时状态…',
+        live: '实时检测完成',
+        offline: '设备未连接',
+        error: '检测失败'
+    })[d.state];
+    const tone = d.state === 'live' ? 'on' : (d.state === 'error' || d.state === 'offline') ? 'err' : 'dim';
+    const defaults = [
+        ['ble', 'BLE 链路'], ['wifi', 'Wi-Fi 连接'], ['hub', 'ControlHub'],
+        ['conn', '控制连接 (MQTT)'], ['usb', '设备 Ready 状态']
+    ];
+    const rows = (d.rows || defaults.map(([key, label]) => ({ key, label, state: 'pending', detail: '' })));
+    const wordMap = { pending: '待检测', active: '检测中', ok: '正常', warn: '异常', fail: '失败' };
+    const rowsHtml = rows.map((r) => {
+        const icon = r.state === 'ok' ? '<svg class="ic sm" aria-hidden="true"><use href="#i-check"/></svg>'
+            : r.state === 'warn' ? '<svg class="ic sm" aria-hidden="true"><use href="#i-warn"/></svg>'
+                : r.state === 'fail' ? '<svg class="ic sm" aria-hidden="true"><use href="#i-x"/></svg>'
+                    : '·';
+        return `<div class="diag ${r.state}"><span class="ico">${icon}</span>
+            <div style="flex:1"><div style="display:flex;align-items:center"><span class="t">${r.label}</span>
+            <span class="word">${wordMap[r.state] || r.state}</span></div>
+            ${r.detail ? `<div class="dt">${r.detail}</div>` : ''}</div></div>`;
+    }).join('');
+    body.innerHTML = `
+        <div class="card" style="margin-top:12px;display:flex;align-items:center;gap:10px">
+            <span class="badge ${tone}"><span class="dot"></span><span>${word}</span></span>
+            <span class="mono" style="font-size:var(--fs-mini);color:var(--c-mut)">${d.deviceId}</span></div>
+        <div class="card">${rowsHtml}</div>
+        ${d.error ? `
+        <div class="op ${d.state === 'error' ? 'err' : 'warn'}" style="margin-bottom:12px">
+            <div><div class="t">错误详情</div><div class="d">${d.error.message}</div></div></div>
+        <button class="btn ghost sm" id="hidDiagToggleErr" style="width:100%">${d.showErr ? '隐藏错误码' : '显示错误码（详细信息）'}</button>
+        ${d.showErr ? `<div class="ad-sec" style="margin-top:10px"><div class="hd"><span>code</span></div><div class="hex mono" style="color:#FF8B94">${d.error.code}</div></div>` : ''}` : ''}
+        <div style="margin-top:14px;display:flex;flex-direction:column;gap:9px">
+            <button class="btn primary" id="hidDiagRun" style="width:100%" ${d.connecting || d.state === 'checking' ? 'disabled' : ''}>
+                <svg class="ic sm" aria-hidden="true"><use href="#i-refresh"/></svg><span>${d.connecting || d.state === 'checking' ? '检测中…' : '重新检测'}</span></button>
+            <div style="display:flex;gap:9px">
+                <button class="btn soft" id="hidDiagGoDetail" style="flex:1"><svg class="ic sm" aria-hidden="true"><use href="#i-chev-r"/></svg><span>返回设备详情</span></button>
+                <button class="btn soft danger-t" id="hidDiagReprov" style="flex:1"><svg class="ic sm" aria-hidden="true"><use href="#i-refresh"/></svg><span>重新配网</span></button>
+            </div>
+        </div>`;
+    body.querySelector('#hidDiagRun')?.addEventListener('click', () => hidRunDiagnose());
+    body.querySelector('#hidDiagGoDetail')?.addEventListener('click', () => openHidDetail());
+    body.querySelector('#hidDiagReprov')?.addEventListener('click', () => openHidProvision({ id: d.deviceId, name: hid.svc?.getKnownDevice()?.name }));
+    body.querySelector('#hidDiagToggleErr')?.addEventListener('click', () => {
+        d.showErr = !d.showErr;
+        hidRenderDiag();
+    });
+}
+
+async function hidRunDiagnose() {
+    const svc = hid.svc;
+    const d = hid.diag;
+    if (!svc || !d) return;
+    d.error = null;
+    const session = svc.getSessionState();
+    if (!session.connected || session.deviceId !== d.deviceId) {
+        d.connecting = true;
+        d.state = 'connected';
+        hidRenderDiag();
+        try {
+            await svc.connect(d.deviceId);
+        } catch (error) {
+            d.connecting = false;
+            d.state = 'error';
+            d.error = { code: 'connect_failed', message: error?.message || '连接失败' };
+            hidRenderDiag();
+            return;
+        }
+        d.connecting = false;
+    }
+    d.state = 'checking';
+    hidRenderDiag();
+    try {
+        d.rows = await svc.diagnose();
+        d.state = 'live';
+        addLog('info', `[SmartHID] 诊断完成：${d.rows.map((r) => `${r.label}=${r.state}`).join(' · ')}`);
+    } catch (error) {
+        d.state = 'error';
+        d.error = { code: 'diag_failed', message: error?.message || '读取设备状态失败' };
+        addLog('error', `[SmartHID] 诊断失败: ${d.error.message}`);
+    }
+    hidRenderDiag();
 }
 
 // ── Entry Point ───────────────────────────────────────────────

@@ -79,13 +79,18 @@ class DeviceCard extends HTMLElement {
         const nameInitial = ((displayName || '?').trim()[0] || '?').toUpperCase();
 
         if (this._isConnectionTab) {
-            // P007 conn 变体：ava + 在线角标 + 名称/ID + 信号 + 「已连接 · 可进行 GATT 调试」+ 断开
+            // P007 conn 变体：ava + 在线角标 + 名称/ID + SHID chip + 信号 + 「已连接 · 可进行 GATT 调试」+ 断开
+            const match = Number(device.profileMatch) || 0;
+            const pres = window.SmartHid?.smartHidProfile?.presentation;
+            const matchChip = match >= 1
+                ? `<span class="chip ${match >= 2 ? 'primary' : 'warning'}" style="margin-left:6px;vertical-align:1px">${match >= 2 ? (pres?.chipStrong || 'Smart HID · 强匹配') : (pres?.chipWeak || '疑似 Smart HID · 弱匹配')}</span>`
+                : '';
             this.innerHTML = `
                 <div class="dev conn">
                     <div class="top">
-                        <div class="ava">${this.esc(nameInitial)}<span class="on">${this.ic('check', 'xs')}</span></div>
+                        <div class="ava ${match >= 1 ? 'shid' : ''}">${this.esc(nameInitial)}<span class="on">${this.ic('check', 'xs')}</span></div>
                         <div class="mid">
-                            <div class="nm">${this.esc(displayName)}</div>
+                            <div class="nm">${this.esc(displayName)}${matchChip}</div>
                             <div class="id mono">${this.esc(device.id)}</div>
                             <div class="meta">${this.sigHtml(device.rssi)}<span style="font-size:var(--fs-mini);color:var(--c-mut)">已连接 · 可进行 GATT 调试</span></div>
                         </div>
@@ -101,27 +106,44 @@ class DeviceCard extends HTMLElement {
                 this.dispatchEvent(new CustomEvent('show-detail', { detail: { id: device.id }, bubbles: true, composed: true }));
             });
         } else {
-            // P001 scan 变体：ava + 名称/ID（未命名标注）/信号 + 连接按钮；整卡可点进详情
+            // P001 scan 变体：ava + 名称/ID（未命名标注）+ SHID 匹配 chip/信号 + 连接按钮；整卡可点进详情
+            // SHID 双入口（正典 C1 devCard）：匹配卡名称行加 chip，acts 出「配置 Smart HID」主按钮
+            const match = Number(device.profileMatch) || 0;
+            const isShid = match >= 1;
+            const pres = window.SmartHid?.smartHidProfile?.presentation;
+            const matchChip = isShid
+                ? `<span class="chip ${match >= 2 ? 'primary' : 'warning'}" style="margin-left:6px;vertical-align:1px">${match >= 2 ? (pres?.chipStrong || 'Smart HID · 强匹配') : (pres?.chipWeak || '疑似 Smart HID · 弱匹配')}</span>`
+                : '';
             const unnamed = !displayName || displayName.startsWith('未命名');
             const idLine = unnamed ? `${this.esc(device.id)}（未命名）` : this.esc(device.id);
             const connected = this._connectedHint || false;
+            const actionLabel = pres?.actionLabel || '配置 Smart HID';
             this.innerHTML = `
                 <div class="dev">
                     <div class="top">
-                        <div class="ava">${this.esc(nameInitial)}</div>
+                        <div class="ava ${isShid ? 'shid' : ''}">${this.esc(nameInitial)}</div>
                         <div class="mid">
-                            <div class="nm">${this.esc(displayName)}</div>
+                            <div class="nm">${this.esc(displayName)}${matchChip}</div>
                             <div class="id mono">${idLine}</div>
                             <div class="meta">${this.sigHtml(device.rssi)}</div>
                         </div>
                     </div>
                     <div class="acts">
-                        <button class="btn ${connected ? 'soft' : 'primary'} sm" id="connectBtn" ${connected ? 'disabled' : ''}>
+                        ${isShid ? `
+                        <button class="btn primary sm" id="configureHidBtn" ${connected ? 'disabled' : ''}>
+                            ${this.ic('hid', 'sm')}<span>${actionLabel}</span>
+                        </button>` : ''}
+                        <button class="btn ${connected || isShid ? 'soft' : 'primary'} sm" id="connectBtn" ${connected ? 'disabled' : ''}>
                             ${this.ic('link', 'sm')}<span>${connected ? '已连接' : '连接'}</span>
                         </button>
                     </div>
                 </div>`;
 
+            this.querySelector('#configureHidBtn')?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (connected) return;
+                this.dispatchEvent(new CustomEvent('configure-hid', { detail: { id: device.id }, bubbles: true, composed: true }));
+            });
             this.querySelector('#connectBtn')?.addEventListener('click', (e) => {
                 e.stopPropagation();
                 if (connected) return;

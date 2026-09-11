@@ -452,3 +452,12 @@ body{font-family:var(--font);background:var(--c-bg);color:var(--c-text);overflow
 
 /* ---- guard 态 ---- */
 .guard{display:flex;flex-direction:column;align-items:center;padding:60px 24px;text-align:center;}
+
+/* ---- PAGE002 bigact（F020 配对码入口 · 正典源 desktop/high-fi/assets/pages.css §PAGE002） ---- */
+.bigact{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,var(--c-primary-weak),#F0F6FF);
+  border:1.5px dashed var(--c-primary);border-radius:var(--r-lg);padding:14px;cursor:pointer;margin-bottom:var(--sp-3);}
+.bigact .ic{color:var(--c-primary);}
+.bigact .t{font-size:var(--fs-h2);font-weight:var(--fw-bold);color:var(--c-primary);}
+.bigact .d{font-size:var(--fs-mini);color:var(--c-mut);margin-top:2px;}
+.bigact.got{border-style:solid;background:var(--c-success-weak);border-color:var(--c-success);}
+.bigact.got .t,.bigact.got .ic{color:#0E9A80;}
