@@ -177,6 +177,8 @@ class App {
             if (this.hidSvc?.getKnownDevice()) this.openHidDetail();
             else this.switchTab('scan');
         });
+        // 退出确认（10_platform §4 生命周期：常驻，退出确认）：主进程拦截 close 后通知 → 应用内模态
+        window.bleAPI?.onConfirmExit?.((payload) => this.showExitConfirm(payload?.connected || 0));
 
         // OTA button（subnav 固件更新；dialog element id is mainOtaDialog）
         document.getElementById('otaButton')?.addEventListener('click', () => {
@@ -1712,7 +1714,7 @@ class App {
         document.getElementById('hidQrTitle').textContent = qrReady ? '重新获取配对码（已回填）' : '获取 ControlHub 配对码';
         document.getElementById('hidQrDesc').textContent = qrReady
             ? 'token 已获取（内存会话，不落盘）；地址仍可修改'
-            : '粘贴 / 手输 shid://pair 配对码，自动回填地址与令牌';
+            : '摄像头读取 ControlHub 屏显二维码，识别后自动回填地址与令牌';
         const qrBadge = document.getElementById('hidQrBadge');
         qrBadge.className = 'chip ' + (qrReady ? 'success' : 'warning');
         qrBadge.textContent = qrReady ? '已获取' : '必需';
@@ -1748,7 +1750,7 @@ class App {
             ['usb', 'USB HID Ready']
         ];
         card.innerHTML = rows.map(([key, label]) => {
-            const state = p.progress[key] || 'pending';
+            const state = (p.progress || {})[key] || 'pending';
             const glyph = state === 'done' ? '✓' : state === 'fail' ? '✕' : '·';
             const dt = (p.err && p.err.row === key) ? `<span class="dt mono">${p.err.code}</span>` : '';
             return `<div class="prow ${state}"><span class="st-i">${glyph}</span><span class="t">${label}</span>${dt}</div>`;
@@ -1836,15 +1838,206 @@ class App {
     }
 
     hidCloseModal() {
+        this.hidStopQrCamera();
         document.getElementById('hidModalMask')?.remove();
     }
 
-    // F020 配对码（桌面口径 10_platform §2.4：粘贴 / 手输兜底为主路径）
-    hidOpenQrSheet() {
+    // 退出确认（10_platform §4 生命周期：常驻，退出确认；文案对齐原型 desktop.js dwin-quit）
+    showExitConfirm(connected) {
+        if (document.getElementById('exitConfirmBody')) return; // 确认中勿叠层
+        const busy = connected > 0;
+        this.hidShowModal({
+            title: '退出确认',
+            bodyHtml: `
+                <div id="exitConfirmBody" data-connected="${connected}">
+                    ${busy
+                        ? '有 BLE 会话正在运行（连接/广播）。<br>确认退出将断开会话并停止监听。'
+                        : '桌面端为常驻运行。确认退出？'}
+                    <div class="mono" style="margin-top:8px;font-size:var(--fs-micro);color:var(--c-mut)">
+                        ${busy ? `当前连接设备：${connected} 台` : '（10_platform §4 生命周期：常驻，退出确认）'}
+                    </div>
+                </div>`,
+            buttons: [
+                { label: '退出', tone: 'primary', onClick: () => { window.bleAPI?.confirmExit?.(true); return false; } },
+                { label: '继续使用', tone: 'soft' }
+            ]
+        });
+        this.addLog('[App] 退出确认已弹出（常驻运行 · 确认后才退出）', 'info');
+    }
+
+    // F020 配对码（10_platform §2.4 桌面主路径：摄像头扫码读取 ControlHub 屏显二维码；粘贴 / 手输为兜底）
+    async hidOpenQrSheet() {
         const p = this.hidProv;
         if (!p) return;
         this.hidShowModal({
-            title: '粘贴 / 手输配对码',
+            title: '扫描 ControlHub 配对码',
+            bodyHtml: `
+                <div class="note info" style="margin:0 0 10px">
+                    <div>配对码通过<b>扫描二维码</b>获取（产品统一口径 · F020）：摄像头读取 ControlHub 屏显 <span class="mono">shid://pair</span> 二维码，识别后自动回填地址与令牌（纯前端解析，不落盘）。</div>
+                </div>
+                <div id="hidQrVf" style="position:relative;height:220px;background:#101521;border-radius:12px;overflow:hidden">
+                    <video id="hidQrVideo" muted playsinline autoplay style="width:100%;height:100%;object-fit:cover;display:none"></video>
+                    <div id="hidQrVfPlaceholder" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
+                        <svg class="ic lg" aria-hidden="true" style="color:#8FA3C0"><use href="#i-qr"/></svg>
+                    </div>
+                    <span style="position:absolute;left:10px;top:10px;width:22px;height:22px;border-left:3px solid #D6E2F5;border-top:3px solid #D6E2F5;border-radius:3px 0 0 0"></span>
+                    <span style="position:absolute;right:10px;top:10px;width:22px;height:22px;border-right:3px solid #D6E2F5;border-top:3px solid #D6E2F5;border-radius:0 3px 0 0"></span>
+                    <span style="position:absolute;left:10px;bottom:10px;width:22px;height:22px;border-left:3px solid #D6E2F5;border-bottom:3px solid #D6E2F5;border-radius:0 0 0 3px"></span>
+                    <span style="position:absolute;right:10px;bottom:10px;width:22px;height:22px;border-right:3px solid #D6E2F5;border-bottom:3px solid #D6E2F5;border-radius:0 0 3px 0"></span>
+                    <div id="hidQrVfStatus" style="position:absolute;left:0;right:0;bottom:0;padding:8px 12px;background:rgba(16,21,33,.82);color:#D6E2F5;font-size:var(--fs-mini);text-align:center">正在启动摄像头…</div>
+                </div>
+                <div style="display:flex;gap:9px;margin-top:12px;align-items:center;flex-wrap:wrap">
+                    <button class="btn soft sm" type="button" id="hidQrFallbackBtn"><span>无法扫码？粘贴 / 手输配对码 →</span></button>
+                </div>`,
+            buttons: [
+                { label: '关闭', tone: 'soft' }
+            ],
+            onMount: (mask) => {
+                mask.querySelector('#hidQrFallbackBtn')?.addEventListener('click', () => {
+                    this.hidStopQrCamera();
+                    this.hidOpenPasteSheet();
+                });
+                this.hidStartQrCamera();
+            }
+        });
+    }
+
+    hidQrVfStatus(text, tone) {
+        const el = document.getElementById('hidQrVfStatus');
+        if (!el) return;
+        el.textContent = text;
+        el.style.color = tone === 'err' ? '#FF9F43' : '#D6E2F5';
+    }
+
+    // vendored 解码库按需注入（public/vendor/jsQR.js，首次扫码才加载）
+    hidEnsureJsQr() {
+        if (window.jsQR) return Promise.resolve(window.jsQR);
+        if (!this._jsQrPromise) {
+            this._jsQrPromise = new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = 'vendor/jsQR.js';
+                script.onload = () => (window.jsQR ? resolve(window.jsQR) : reject(new Error('jsQR 未挂载')));
+                script.onerror = () => reject(new Error('vendor/jsQR.js 加载失败'));
+                document.head.appendChild(script);
+            }).catch((err) => {
+                this._jsQrPromise = null;
+                throw err;
+            });
+        }
+        return this._jsQrPromise;
+    }
+
+    async hidStartQrCamera() {
+        this.hidStopQrCamera();
+        const video = document.getElementById('hidQrVideo');
+        if (!video || !navigator.mediaDevices?.getUserMedia) {
+            this.hidQrVfStatus('当前环境不支持摄像头（无 mediaDevices）——请改用粘贴 / 手输入口', 'err');
+            return;
+        }
+        let lib;
+        try {
+            lib = await this.hidEnsureJsQr();
+        } catch (err) {
+            this.hidQrVfStatus(`解码库不可用（${err?.message || err}）——请改用粘贴 / 手输入口`, 'err');
+            return;
+        }
+        let stream;
+        try {
+            // 5s 竞速超时：WebView2/wry 不处理 PermissionRequested 时 getUserMedia 会永久悬挂
+            const mediaPromise = navigator.mediaDevices.getUserMedia({
+                video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
+                audio: false
+            });
+            let timeoutId = null;
+            try {
+                stream = await Promise.race([
+                    mediaPromise,
+                    new Promise((_, reject) => {
+                        timeoutId = setTimeout(() => {
+                            const err = new Error('camera-timeout');
+                            err.name = 'TimeoutError';
+                            reject(err);
+                        }, 5000);
+                    })
+                ]);
+            } finally {
+                clearTimeout(timeoutId);
+                // 超时后迟到的授权流不再使用，直接回收（防悬挂句柄）
+                mediaPromise.then((late) => {
+                    if (late !== stream) late.getTracks().forEach((t) => t.stop());
+                }).catch(() => {});
+            }
+        } catch (err) {
+            const reason = err?.name === 'NotAllowedError' ? '摄像头权限被拒绝'
+                : err?.name === 'NotFoundError' ? '未检测到摄像头'
+                : err?.name === 'NotReadableError' ? '摄像头被占用'
+                : err?.name === 'TimeoutError' ? '摄像头启动超时（宿主未授权或未响应）'
+                : (err?.message || '摄像头不可用');
+            this.hidQrVfStatus(`${reason}——请改用粘贴 / 手输入口`, 'err');
+            return;
+        }
+        if (!document.getElementById('hidQrVideo')) { // sheet 已被关闭
+            stream.getTracks().forEach((t) => t.stop());
+            return;
+        }
+        this._qrStream = stream;
+        video.srcObject = stream;
+        video.style.display = '';
+        document.getElementById('hidQrVfPlaceholder')?.setAttribute('hidden', '');
+        try { await video.play(); } catch (_) { /* 静音视频自动播，失败不阻断解码 */ }
+        this.hidQrVfStatus('取景识别中…（摄像头）');
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        this._qrTimer = setInterval(() => {
+            if (!video.videoWidth || video.readyState < 2) return;
+            const scale = Math.min(1, 640 / video.videoWidth);
+            canvas.width = Math.round(video.videoWidth * scale);
+            canvas.height = Math.round(video.videoHeight * scale);
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            let code = null;
+            try {
+                const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                code = lib(img.data, canvas.width, canvas.height);
+            } catch (_) { /* 单帧解码异常忽略 */ }
+            if (code?.data) this.hidHandleScanned(code.data);
+        }, 250);
+    }
+
+    hidHandleScanned(text) {
+        const p = this.hidProv;
+        const svc = this.hidEnsureService();
+        if (!p || !svc) return;
+        const payload = svc.parseQr(text);
+        this.hidStopQrCamera();
+        if (!payload) {
+            this.hidQrVfStatus('二维码内容不是有效配对码（非 shid://pair）——请改用粘贴 / 手输入口', 'err');
+            return;
+        }
+        p.pairing = payload;
+        p.hub = window.SmartHidDesktop.formatControlHubAddress(payload);
+        this.hidCloseModal();
+        this.addLog('[SmartHID] 扫码识别配对码 · 地址与令牌已回填（token 不落日志）', 'success');
+        this.showToast('配对码已识别 · 地址与令牌已回填', 'success');
+        this.hidRenderWizard();
+    }
+
+    hidStopQrCamera() {
+        if (this._qrTimer) {
+            clearInterval(this._qrTimer);
+            this._qrTimer = null;
+        }
+        if (this._qrStream) {
+            this._qrStream.getTracks().forEach((t) => t.stop());
+            this._qrStream = null;
+        }
+    }
+
+    // 兜底路径（10_platform §2.4：无摄像头或无法扫码时，粘贴 / 手输直接解析）
+    hidOpenPasteSheet() {
+        const p = this.hidProv;
+        if (!p) return;
+        this.hidShowModal({
+            title: '粘贴 / 手输配对码（兜底）',
             bodyHtml: `
                 <div class="note info" style="margin:0 0 10px">
                     <div>粘贴 ControlHub 屏显 <span class="mono">shid://pair</span> 二维码内容，识别后自动回填地址与令牌（纯前端解析，不落盘）。</div>

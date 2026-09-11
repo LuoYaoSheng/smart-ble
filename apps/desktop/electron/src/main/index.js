@@ -34,6 +34,8 @@ debugLog('=== Electron Main Process Started ===');
 
 let mainWindow = null;
 let bleModule = null;
+// 退出确认旗：渲染层确认后置 true，放行下一次 close（app.quit() 会再触发 close）
+let exitConfirmed = false;
 
 // 存储发现的设备
 const discoveredDevices = new Map();
@@ -133,6 +135,16 @@ function createWindow() {
     mainWindow.show();
   });
 
+  // 退出确认（10_platform §4 生命周期：常驻，退出确认；原型 desktop.js dwin-quit 同口径）
+  // X/Alt+F4 → 拦截 close → 通知渲染层弹应用内模态（正典 modal 形态）→ 确认后置旗放行
+  mainWindow.on('close', (event) => {
+    if (exitConfirmed) return;
+    event.preventDefault();
+    const connected = connectedPeripherals.size;
+    debugLog(`Close requested -> exit confirm (connected=${connected})`);
+    mainWindow.webContents.send('app:confirm-exit', { connected });
+  });
+
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
@@ -217,6 +229,16 @@ function getDevice(deviceId) {
 // IPC 处理器
 // F027 版本元数据：运行时渠道版本（package.json version，与仓库根 VERSION 单源同步）
 ipcMain.handle('app:getVersion', () => app.getVersion());
+
+// 退出确认回执：渲染层模态「退出」→ quit=true（「继续使用」不发消息，直接关模态）
+ipcMain.handle('app:confirm-exit', (_event, quit) => {
+  if (quit === true) {
+    exitConfirmed = true;
+    debugLog('Exit confirmed by user -> quitting');
+    app.quit();
+  }
+  return true;
+});
 
 ipcMain.handle('ble:init', async () => {
   debugLog('IPC: ble:init called');
