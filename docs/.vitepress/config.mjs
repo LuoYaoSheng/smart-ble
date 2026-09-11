@@ -99,10 +99,10 @@ export default defineConfig({
     // 侧边树结构正规化大纲（文档树不动，中文共享）
     sidebar: [
       {
-        text: '📋 UniApp 第一完整版本（当前正典）',
+        text: '📐 产品规范（整体）',
         collapsed: false,
         items: [
-          { text: '产品契约入口', link: '/product-contract/' },
+          { text: '产品规范总览', link: '/product-contract/' },
           { text: '功能目录', link: '/product-contract/02_FEATURE_CATALOG' },
           { text: '用户流程', link: '/product-contract/03_USER_FLOWS' },
           { text: '页面契约', link: '/product-contract/04_PAGE_CONTRACTS' },
