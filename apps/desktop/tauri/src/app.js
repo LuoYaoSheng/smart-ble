@@ -422,8 +422,8 @@ async function setupTauriListeners() {
 }
 
 // T06: Auto-Reconnect (aligned with Flutter: max 3 attempts, 2s/4s/6s backoff)
-// MAX_RECONNECT_ATTEMPTS is defined in BleUtils.js (shared with Electron)
-const MAX_RECONNECT_ATTEMPTS = (window.BleUtils && window.BleUtils.MAX_RECONNECT_ATTEMPTS) || 3;
+// MAX_RECONNECT_ATTEMPTS 顶层常量由 BleUtils.js 声明（经典脚本共享全局词法环境）；
+// 此处不得重复声明——重复声明会让整个 app.js 在实例化期 SyntaxError 而完全不执行。
 
 function attemptReconnect(deviceId) {
     const rc = state.reconnect;
@@ -1570,13 +1570,8 @@ async function goBack() {
     addLog('info', state.connectedDevices.size > 0 ? 'Returned to list (connection active)' : 'Returned to list');
 }
 
-// Utility — delegates to BleUtils when available, falls back to inline
-function escapeHtml(text) {
-    if (window.BleUtils) return window.BleUtils.escapeHtml(text);
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
+// escapeHtml 顶层函数由 BleUtils.js 提供（经典脚本共享全局），此处不得重复声明
+// （重复声明会使整个 app.js 实例化失败——P7 真机走查实测教训）。
 
 // ═════════════════════════════════════════════════════════════════════
 // Smart HID 线（P002 配网 / P003 详情 / P005 诊断 · PARITY-002 桌面接入）
@@ -1670,6 +1665,7 @@ function openHidProvision(device) {
         phase: 'connect',
         connecting: false,
         connError: '',
+        connErrorCode: '',
         lost: false,
         ssid: '',
         pwd: '',
@@ -1721,6 +1717,11 @@ function hidRenderWizard() {
     show('hidProvConnecting', p.phase === 'connect' && p.connecting);
     show('hidProvConnError', p.phase === 'connect' && !p.connecting && Boolean(p.connError));
     if (p.connError) document.getElementById('hidProvConnErrorText').textContent = p.connError;
+    const connCodeEl = document.getElementById('hidProvConnErrorCode');
+    if (connCodeEl) {
+        connCodeEl.textContent = p.connErrorCode || '';
+        connCodeEl.style.display = p.connErrorCode ? '' : 'none';
+    }
 
     // 阶段二
     show('hidProvLostBanner', p.lost);
@@ -1799,6 +1800,7 @@ async function hidConnect() {
     p.phase = 'connect';
     p.connecting = true;
     p.connError = '';
+    p.connErrorCode = '';
     hidRenderWizard();
     addLog('info', `[SmartHID] 连接 ${p.device.id} 并验证 Device Info…`);
     try {
@@ -1810,6 +1812,7 @@ async function hidConnect() {
     } catch (error) {
         p.connecting = false;
         p.connError = error?.message || '连接失败，请靠近设备后重试。';
+        p.connErrorCode = error?.code || '';
         addLog('error', `[SmartHID] 连接失败: ${p.connError}`);
     }
     hidRenderWizard();

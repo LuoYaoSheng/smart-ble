@@ -1,0 +1,70 @@
+P7 T-WIN Rust 工具链恢复 + Tauri 构建运行级走查（2026-09-11）
+================================================================================
+
+范围（计划 W6 节：「T-WIN：安装/恢复 Rust 工具链，构建并运行 Tauri」）
+- 安装 rustup（stable-x86_64-pc-windows-msvc 1.98.1，minimal profile，~/.cargo）
+  宿主 MSVC 链接器已具备：VS 2022 Community（VC.Tools.x86.x64）+ Windows SDK 10.0.22621
+- cargo build（apps/desktop/tauri/src-tauri）→ target/debug/smart-ble-tauri.exe（14.8MB）
+- WebView2 CDP 运行级走查（此前 T-WIN 仅静态镜像验证，本步为首度真实运行）
+
+修掉的缺陷（3 个，全部本步实测发现）
+--------------------------------------------------------------------------------
+D1[P1·构建] Cargo.toml tauri features 缺 app-all，与 tauri.conf.json allowlist(app.all)
+    不匹配 → tauri-build 自定义构建脚本直接失败。修复=features 增补 "app-all"。
+
+D2[P0·运行级致命] T-WIN app.js 顶层重复声明 BleUtils.js 的顶层名
+    （const MAX_RECONNECT_ATTEMPTS + function escapeHtml）→ 浏览器在脚本实例化期抛
+    "Identifier 'MAX_RECONNECT_ATTEMPTS' has already been declared" → 整个 app.js
+    不执行 → T-WIN 前端逻辑（Tab 切换/扫描/重连/Smart HID 全部）从未运行过，
+    页面只是 index.html 静态壳（默认 Tab 高亮 + 占位文案）。Rust 工具链此前未解锁、
+    无运行级验证，故一直未暴露。
+    定位链：CDP 走查函数全 undefined → 资源时序证明 app.js 已加载执行 →
+    addScriptToEvaluateOnNewDocument 预埋错误陷阱 → 重载抓到实例化期 SyntaxError。
+    修复=删除 app.js 两处重复声明（escapeHtml 调用数=0，纯死代码；MAX_RECONNECT_
+    ATTEMPTS 引用改用 BleUtils 顶层常量，经典脚本共享全局词法环境）。
+    防回归=新增 tests/desktop/script-co-load.test.mjs（7 例）：把两线 index.html
+    脚本链按真实顺序装入同一 vm 上下文（vm 全局词法环境跨脚本持久，重复顶层声明
+    与浏览器同语义抛错）。反证已做：把重复声明注回 → 门禁立即以同款错误失败。
+
+D3[P2·显示] P002 连接失败横幅的协议码片是静态占位 identity_failed（两线同病），
+    渲染只填文本不更新码片 → 任何传输级错误（如 Device not found）都顶着
+    identity_failed 假码。修复=码片加 id hidProvConnErrorCode，渲染按 error.code
+    填充、无协议码则隐藏（E-WIN/T-WIN 双线镜像修；E-WIN 为 CRLF、T-WIN 为 LF，
+    补丁按各自行尾口径）。
+
+验证
+--------------------------------------------------------------------------------
+- cargo build：exit 0（56s 首建 + 11s×2 增量），零 warning 输出
+- 桌面测试套：85/85（78 存量 + 7 新共载门禁）
+- CDP 运行级走查 30/30 全绿（cdp-walkthrough.mjs → cdp-walkthrough-run.txt）：
+  * 脚本链/挂载：SmartHid、SmartHidDesktop、bundle→hid-service→app.js 顺序、
+    __TAURI__(withGlobalTauri)
+  * 五 Tab + 版本二级视图可达、renderVersionsPage 非空、P009 chip v1.0.5-dev.unknown
+    （Release Metadata 投影，commit 如实留空）
+  * Smart HID 三视图激活；P002 向导六锚点 + stepper 渲染 + 设备名投影
+  * P002 假设备真实 IPC 优雅失败：invoke('connect','FAKE-DEV-001') → Rust/btleplug
+    → "Device not found" 回显 + 码片正确隐藏 + 连接中指示复位
+  * P005 诊断五项 5/5（BLE 链路/Wi-Fi 连接/ControlHub/控制连接 MQTT/设备 Ready）
+  * F023 红线：localStorage/sessionStorage 空、DOM 无 32hex token
+  * 真实 BLE（btleplug WinRT）：init_ble 成功、start_scan 4s 发现 7 台真实设备、
+    stop_scan 优雅停止
+  * ownsDevice 守卫（U-REC-001）attach 注入在位
+  * 全程无页面 JS 异常
+
+方法与坑（复现要点）
+--------------------------------------------------------------------------------
+- WebView2 CDP：WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS=--remote-debugging-port=9444
+  启动 exe → http://127.0.0.1:9444/json 取 page target → node 23.8 WebSocket
+  Runtime.evaluate（与 Electron 冒烟同一套驱动）。
+- Page.reload 会摧毁在途 Runtime.evaluate 上下文（"Execution context was destroyed"），
+  走查期间勿并发 reload。
+- Cargo.toml 是 LF、E-WIN app.js 是 CRLF、T-WIN app.js 是 LF——跨线补丁必须先探行尾。
+- ~/.cargo/bin 不在 Git Bash 默认 PATH，cargo 命令需 export PATH 前置。
+
+限制与后续
+--------------------------------------------------------------------------------
+- T-WIN 真实 GATT 连接/读写/通知（F-AND 对应桌面口径）需真实外设窗口；
+  本步 BLE 真实性覆盖到扫描级（发现 7 台）。
+- 摄像头扫码桌面不实现（粘贴/手输为主路径，正典 10_platform §2.4 允许）。
+- 剩余主线：E3 OTA 实刷（需硬件窗口）、P8 V-WIN PARITY-006 Build Smoke、
+  P9 矩阵回填。

@@ -1589,6 +1589,7 @@ class App {
             phase: 'connect',
             connecting: false,
             connError: '',
+            connErrorCode: '',
             lost: false,
             ssid: '',
             pwd: '',
@@ -1641,6 +1642,11 @@ class App {
         show('hidProvConnecting', p.phase === 'connect' && p.connecting);
         show('hidProvConnError', p.phase === 'connect' && !p.connecting && Boolean(p.connError));
         if (p.connError) document.getElementById('hidProvConnErrorText').textContent = p.connError;
+        const connCodeEl = document.getElementById('hidProvConnErrorCode');
+        if (connCodeEl) {
+            connCodeEl.textContent = p.connErrorCode || '';
+            connCodeEl.style.display = p.connErrorCode ? '' : 'none';
+        }
 
         // 阶段二
         show('hidProvLostBanner', p.lost);
@@ -1719,6 +1725,7 @@ class App {
         p.phase = 'connect';
         p.connecting = true;
         p.connError = '';
+        p.connErrorCode = '';
         this.hidRenderWizard();
         this.addLog(`[SmartHID] 连接 ${p.device.id} 并验证 Device Info…`, 'info');
         try {
@@ -1730,6 +1737,7 @@ class App {
         } catch (error) {
             p.connecting = false;
             p.connError = error?.message || '连接失败，请靠近设备后重试。';
+            p.connErrorCode = error?.code || '';
             this.addLog(`[SmartHID] 连接失败: ${p.connError}`, 'error');
         }
         this.hidRenderWizard();
