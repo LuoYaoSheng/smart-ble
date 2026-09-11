@@ -73,7 +73,7 @@ PermissionState → AppError / BLE_00x → 用户文案 → recoveryAction
 
 | PermissionState | 映射 | 用户文案要点 | recoveryAction |
 |---|---|---|---|
-| denied / permanentlyDenied | AppError{layer: sdk-transport, code: BLE_002（platformCode=reason）} | 授权拒绝横幅（reason 分类）+ 指引 | open_settings |
+| denied / permanentlyDenied | `AppError{layer: sdk-transport, code: BLE_002（platformCode=reason）}` | 授权拒绝横幅（reason 分类）+ 指引 | open_settings |
 | unsupported（权限/能力不存在） | validation-capability 层（能力/宿主限制，**不占 BLE_002**） | 「不支持 + 指引」（不静默降级） | dismiss / none（指引文案内含去向） |
 | notRequired / granted | 无 AppError | — | none |
 | checking / unknown | 无 AppError（过程态） | 内联加载表达（无遮罩） | none |

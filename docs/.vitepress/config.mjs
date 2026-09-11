@@ -7,6 +7,15 @@ export default defineConfig({
   base: '/',
   cleanUrls: true,
 
+  // specs/ 文档树用「目录指针/源码指针」链接做溯源（如 [02_product](../02_product/)、
+  // design-tokens.json、app_icons.dart——目录无 index.md 或指向 docs 外的仓库源码）。
+  // 仅豁免目录/源码指针形态，不掩盖指向具体 .md 文件的真实死链。
+  ignoreDeadLinks: [
+    /\/index$/, /\/$/, /^\.\/\.$/,
+    /\.dart$/, /\.py$/, /\.json$/, /\.js$/, /\.vue$/, /\.swift$/, /\.kt$/, /\.md\.js$/,
+    /app-prototype$/, /v1-new$/
+  ],
+
   // ═══ SEO 与社交元数据（与 PREVIEW 诚实状态一致） ═══
   head: [
     // Favicon

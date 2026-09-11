@@ -337,7 +337,7 @@ Mac 从 Windows 交接 commit 开始，不另起产品线。
 - **2026-09-10（W3 续·配网会话编排落地）**：
   - **BleManager 三扩展**：`CharacteristicChangeKind.Write`（onCharacteristicWrite 成功进同一特征事件流，配网分帧逐帧确认用；ViewModel 日志三分支「写入完成/读取结果/收到通知」）；`_negotiatedMtus` + `currentMtu(deviceId)`（onMtuChanged 记录协商值，缺失保守 23）。
   - **`HidProvisionTransport.kt`**：接口 + `BleManagerHidTransport`（镜像 Flutter transport：连接→等服务表出现配网服务→三特征确认→开 notify；读特征先挂采集再发起防丢事件；写帧 15s 单帧超时；断线即停 BleManager 静默自动重连并上报 onLost）+ `buildCandidateFrames`。
-  - **`HidProvisionController.kt`**：P002 三阶段状态机 Kotlin 镜像（StateFlow<ProvisionUiState> 单一不可变快照；CompletableDeferred+withTimeoutOrNull 对齐 Dart Completer+Timer；步进→行推进单调表；错误码→行/提示/恢复映射走 SmartHidProtocol；cancelWait/backToForm/诊断快照/2s STATUS 轮询保活；F023 红线：token/密码仅作 submit 参数不落字段）。
+  - **`HidProvisionController.kt`**：P002 三阶段状态机 Kotlin 镜像（`StateFlow<ProvisionUiState>` 单一不可变快照；`CompletableDeferred`+`withTimeoutOrNull` 对齐 Dart `Completer`+`Timer`；步进→行推进单调表；错误码→行/提示/恢复映射走 SmartHidProtocol；cancelWait/backToForm/诊断快照/2s STATUS 轮询保活；F023 红线：token/密码仅作 submit 参数不落字段）。
   - **测试**：`HidProvisionControllerTest` 14 例全绿（happy 帧头契约+载荷重组=candidate、wifi_failed/pairing_used 行映射、60s 虚拟时间超时、下发中断线、写失败分类、单调推进（旧 step 回放/迟到 error 不回退）、cancelWait、backToForm、轮询刷新）；FakeTransport 双形态对齐 Flutter。全仓 34 测试 0 失败 + assembleDebug 过。UI 接线（P002 页面）留 Windows UI 阶段。
   - 真机窗口仍被 steering-ble 并行会话占用（前台 com.steering.ble.g0），K-AND/F-AND 复验继续顺延。
 - **2026-09-10（W3 续·F023 零持久化静态门禁）**：
@@ -372,6 +372,6 @@ Mac 从 Windows 交接 commit 开始，不另起产品线。
 - **2026-09-10（W5 纯代码·F030 不做国际化静态守卫 + i18n 脚手架清零）**：
   - 正典=PRD §5 F030/§8 R30/2026-09-02 P-05 关闭决议：不做 i18n，UI 全中文硬编码；验证方式=删除红线静态检查（同 F023 性质）。
   - **移除**：E-WIN/T-WIN 整套 i18n 机器（I18nManager.js 系统语言探测+字典 fetch+data-i18n DOM 翻译+language-changed；两线字典/标注 diff 实证逐字节一致；index.html 剥 12 处 data-i18n 属性留内联中文；app.js 移除 init 块）——F023 轮已预告「i18n 脚手架整体移除留 W5（F030）」本轮兑现；uniapp `locale/{zh-CN,en-US}.json` 孤儿字典同批删除（与桌面线同键族，零接线实证：0 处 $t/manifest 无 locale 配置/0 引用）。
-  - **保持（在册决议）**：F-AND main.dart Global* delegates+supportedLocales=框架级基建（FLUTTER-G1-004，Material 内建控件串本地化，产品文案仍硬编码中文）；lib/l10n/**=PRD「就绪未接线」在册现状，守卫路径白名单，目录外任何 AppLocalizations 接线违规。A-AND 无 localeConfig/values-<locale>（扫描干净）。
+  - **保持（在册决议）**：F-AND main.dart Global* delegates+supportedLocales=框架级基建（FLUTTER-G1-004，Material 内建控件串本地化，产品文案仍硬编码中文）；lib/l10n/**=PRD「就绪未接线」在册现状，守卫路径白名单，目录外任何 AppLocalizations 接线违规。A-AND 无 localeConfig/`values-<locale>`（扫描干净）。
   - **守卫**：`scripts/check-f030-no-i18n.mjs` 接入 verify-uniapp 第 14 门禁——10 产品源集×三规则（i18n 机器调用式正则/语言切换入口文案/Android localeConfig）+ 结构检查（uniapp locale(s)//E/T-WIN locales//I18nManager.js/Android 限定符目录不存在）；自检注入 4 类违规全检出后还原（gate-selftest.log）。
   - 验证：verify-uniapp 28+14 全过；build:mp-weixin DONE（locale 移除无副作用）；两桌面线 app.js node --check 过。限制：桌面线运行级走查随 W6（T-WIN 待 Rust 工具链）。矩阵 F030 行回填 E1 PASS。证据 `verification/.../w5-f030-no-i18n/`。
