@@ -30,6 +30,12 @@
 			</view>
 		</view>
 
+		<!-- P-03 受限预警（原型 p006 ready 态 B9 warn 逐字；N-MAC/F-MAC 双实现对齐） -->
+		<view v-if="servicePanelState === 'ready'" class="note note-warn">
+			<AppIcon name="warn" :size="28" tone="warningDeep" />
+			<text class="note-text"><text class="note-strong">OTA 端到端链路 BLOCKED</text>（固件侧暂未开放）：右上「固件更新」可演示完整流程，正式使用前需固件配合。</text>
+		</view>
+
 		<scroll-view class="main-content" scroll-y>
 			<view v-if="servicePanelState === 'ready'" class="sec-t">
 				<view class="t">
@@ -268,6 +274,30 @@ const onToggleNotify = ({ serviceId, charId }) => {
 	display: flex;
 	flex-direction: column;
 	background: transparent;
+}
+
+/* P-03 预警条（B9 warn 正典：warning-weak 底 + warning-deep 字；同 hid/detail .note 形态） */
+.note {
+	display: flex;
+	align-items: flex-start;
+	gap: 12rpx;
+	padding: 18rpx 20rpx;
+	border-radius: var(--ble-radius-md, 18rpx);
+}
+
+.note-warn {
+	background: var(--c-warning-weak);
+	color: var(--c-warning-deep);
+}
+
+.note-text {
+	flex: 1;
+	font-size: 22rpx;
+	line-height: 1.6;
+}
+
+.note-strong {
+	font-weight: var(--fw-bold);
 }
 
 .device-panel {

@@ -86,7 +86,7 @@ const showFilters = ref(false);
 const { filterSettings, devices, filteredDevices, hasScanned, isScanning, scanError, bleState, start: startScan, toggle: toggleScan, prepareConnect } = useBleScan();
 
 // #ifdef H5
-registerPageTargets('p001', { hasScanned, showFilters, filterSettings });
+registerPageTargets('p001', { hasScanned, showFilters, filterSettings, showAdvDataModal, selectedAdvertisementDevice });
 // #endif
 // 蓝牙状态三态词（正典 p001 btWord）：on 就绪 / off 未开启 / 其余 平台不支持
 const bleStatusText = computed(() => {

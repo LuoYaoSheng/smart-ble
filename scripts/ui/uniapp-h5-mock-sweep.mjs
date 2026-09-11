@@ -118,6 +118,40 @@ const SWEEP = [
 	{
 		page: 'P010', dir: 'pages/about/version', nav: 'go', url: '/pages/about/version', key: 'p010',
 		states: [{ id: '01-default' }]
+	},
+	// ---- 关键弹窗/覆盖层（六态矩阵「关键弹窗」维度；actions=文本点击序列 / clickSel=CSS 点击）----
+	{
+		page: 'DIALOG-P001', dir: 'pages/index/index', nav: 'switchTab', key: 'p001',
+		states: [
+			{ id: 'p001-advertisement-dialog', seed: ['p001', 'complete'], set: ['p001', { hasScanned: true }], actions: [{ click: 'SHID-9F3E2A1C' }], fixAdv: 'SHID-9F3E2A1C' }
+		]
+	},
+	{
+		page: 'DIALOG-P006', dir: 'pages/device/detail', nav: 'go', url: '/pages/device/detail?deviceId=D8%3AA6%3A3A%3A41%3AF2%3A09&name=Mi%20Smart%20Band%208&rssi=-66', key: 'p006',
+		states: [
+			{ id: 'p006-write-dialog', seed: ['p006', 'ready'], repeatSeed: true, actions: [{ click: '全部展开' }, { click: '写入' }] },
+			{ id: 'p006-ota-dialog', seed: ['p006', 'ready'], repeatSeed: true, actions: [{ click: '固件更新' }] }
+		]
+	},
+	{
+		page: 'DIALOG-P002', dir: 'pages/hid/add', nav: 'go', url: '/pages/hid/add?deviceId=SHID-9F3E2A1C', key: 'p002',
+		preSeed: ['p002', 'connect-idle'],
+		states: [
+			{ id: 'p002-leave-confirm', seed: ['p002', 'status-running'], clickSel: '.back-btn' }
+		]
+	},
+	{
+		page: 'DIALOG-P005', dir: 'pages/hid/diagnostics', nav: 'go', url: '/pages/hid/diagnostics?deviceId=SHID-9F3E2A1C', key: 'p005',
+		preSeed: ['p005', 'idle'],
+		states: [
+			{ id: 'p005-offline-modal', seed: ['p005', 'offline'], actions: [{ click: '重新检测' }] }
+		]
+	},
+	{
+		page: 'DIALOG-P003', dir: 'pages/hid/detail', nav: 'go', url: '/pages/hid/detail?deviceId=SHID-GHOST-404', key: 'p003',
+		states: [
+			{ id: 'p003-record-missing-modal' }
+		]
 	}
 ];
 
@@ -151,6 +185,27 @@ async function captureState(context, spec, state, pageDir) {
 			if (state.repeatSeed) { await sleep(400); await page.evaluate(([k, p, payload]) => window.__MOCK__.seed(k, p, payload), state.seed); }
 		}
 		if (state.set) await page.evaluate(([k, patch]) => window.__MOCK__.set(k, patch), state.set);
+
+		// 5. 交互动作（文本点击 / CSS 点击）——弹窗与覆盖层触发
+		if (state.actions) {
+			for (const action of state.actions) {
+				await page.getByText(action.click, { exact: true }).first().click({ timeout: 4000 });
+				await sleep(350);
+			}
+		}
+		// H5 载体特例：组件自定义事件 tap 与原生 tap 冲突，$emit 载荷丢失（真机目标端无此问题）——
+		// 点击后经桥回填广播数据弹窗 payload（deviceId 由 state.fixAdv 指定）
+		if (state.fixAdv) {
+			await page.evaluate(([k, deviceId]) => {
+				const device = window.__MOCK__.dataset.scanDevices.find((d) => d.deviceId === deviceId);
+				window.__MOCK__.set(k, { showAdvDataModal: true, selectedAdvertisementDevice: device });
+			}, ['p001', state.fixAdv]);
+			await sleep(350);
+		}
+		if (state.clickSel) {
+			await page.locator(state.clickSel).first().click({ timeout: 4000 });
+			await sleep(350);
+		}
 
 		await sleep(450);
 		const file = resolve(pageDir, `${state.id}.png`);

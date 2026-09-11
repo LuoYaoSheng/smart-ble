@@ -56,3 +56,48 @@
 - **Mac（后续候选）**：F-AND 六态视觉 sweep 需 Flutter 侧 mock 桥（本轮未建，登记待排期）；真机/开发者工具复核仍待窗口
 - **Windows 机（不在本轮）**：桌面三线（apps/desktop）G1-G10 结构级重建（P002/P003/P005/P010 四页缺失 + 窗口形态/退出确认/三栏 GATT/字节预算等）——依赖用户 D2 二选一裁决（Electron vs Tauri）后由胜者壳先行套「基准内核 + desktop.js 覆写」；`?mock=true` 静态渲染通道已具备（D2 准备轮）
 - **用户队列（不自主执行）**：main 推送/站点部署、U-WX 开发者工具扫码、W-3 营销字号、C-1 stepper ✓、C4、D2 胜者
+
+---
+
+## 7. 同日第二轮：关键弹窗补齐 + F-AND 六态测试 + UI-DEF-04/05/06（2026-09-11 晚）
+
+用户指令：「继续推进，把 UI 都处理好」。
+
+### uniapp 关键弹窗（六态矩阵「关键弹窗」维度，7 态新增）
+
+截图 **49/49**（43 页面态 + 6 弹窗态，DIALOG-* 目录）、文案断言 **43/43**（+7 弹窗组）：
+广播数据弹层（kv 四行+Service UUIDs+AD 结构逐段+整包 hex+厂商 ID）/ 写入弹窗（TEXT·HEX 单选）/
+OTA 弹窗 / P002 离开确认（「离开将取消等待设备状态。确定离开吗？」）/ P005 离线确认（BLE 未连接·连接并检测）/
+P003 记录不存在 modal。
+
+载体注记：H5 上组件自定义事件 `tap` 与原生 tap 命名冲突致 $emit 载荷丢失（真机目标端无此问题，F004 有真机在案证据）——
+驱动层 `fixAdv` 经桥回填弹窗 payload，不影响产品码。
+
+### UI-DEF-04（本轮修复）：U 线 P-03 预警条两处皆缺
+
+原型 p006 ready 态有 B9 warn 预警（N-MAC 双实现、F-MAC 2026-09-10 已修，U 线两处皆无）：
+1. `pages/device/detail.vue` ready 态补 note-warn（原型逐字：**OTA 端到端链路 BLOCKED**（固件侧暂未开放）：右上「固件更新」可演示完整流程…）
+2. `components/ota-dialog/ota-dialog.vue` 头部补预警行（PATTERN §75 / N-MAC·F-MAC 同款逐字）
+
+### F-AND 六态正典文案测试（新增 `apps/flutter/test/ui_six_state_copy_test.dart`，9/9）
+
+provider override 驱动（bleState/scanResults/scanning/filters）+ 393×1800 视口（ListView 懒构建防漏建）：
+P001 idle/complete(六设备卡)/scanning/bt-off/unavailable/filter 门控 + P007 空态 + P008 表单 + P009/P010。
+边界如实登记：空态B 与「扫描完成·发现 N 台」受 `_hasScanned` 门控（与 uniapp hasScanned 同口径），
+harness 无 seam——F-MAC 真扫描路径已有 vis1-fmac 截图在册；golden 未做（无 CJK 字体资产会渲染豆腐块）。
+
+### UI-DEF-05（本轮修复）：F-AND 缺 ESP32 演示 Profile
+
+Dart `_builtinProfiles` 仅 smartHid（uniapp 注册双内置）→ BLEToolkit-Server 卡无徽章无入口。修复：
+`profile_registry.dart` 补 `esp32DemoProfile`（含 badge 字段，chip「ESP32 · 强匹配」对齐 uniapp presentation.badge）；
+`device_list_page.dart` `_openProvisioning` 按 Profile 分流（非 smart-hid → 通用 GATT 详情，对齐 buildProfileActionUrl）。
+
+### UI-DEF-06（本轮修复）：F-AND 动作按钮行溢出
+
+`_ActionChip` 内 label 无弹性收尾，393 宽双按钮行（「配置 Smart HID」+「连接」）溢出 18px（测试字体放大实测暴露）——
+Flexible+ellipsis 修复，长文案窄屏同样受保护。
+
+### 防回归（第二轮）
+
+flutter analyze 0 issues · test **122/122**（113 既有 + 9 新增）；uniapp 门禁四件全 PASS ·
+copycheck 43/43 · mp-weixin 构建 DONE 产物零 mock 引用。

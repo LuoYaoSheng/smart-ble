@@ -98,6 +98,41 @@ const PAGES = [
 	{
 		page: 'P010', dir: 'pages/about/version', nav: 'go', url: '/pages/about/version',
 		states: [{ id: 'default', expect: [['版本记录', 1], ['本页数据来自 Release Metadata 投影', 1]] }]
+	},
+	// ---- 关键弹窗/覆盖层断言（六态矩阵「关键弹窗」维度）----
+	{
+		page: 'DLG-P001', dir: 'pages/index/index', nav: 'switchTab', key: 'p001',
+		states: [
+			{ id: 'adv-dialog', seed: ['p001', 'complete'], set: { hasScanned: true }, actions: [{ click: 'SHID-9F3E2A1C' }], fixAdv: 'SHID-9F3E2A1C', expect: [['广播数据', 1], ['Service UUIDs', 1], ['AD 结构', 1], ['复制数据', 1]] }
+		]
+	},
+	{
+		page: 'DLG-P006', dir: 'pages/device/detail', nav: 'go', url: '/pages/device/detail?deviceId=D8%3AA6%3A3A%3A41%3AF2%3A09&name=Mi%20Smart%20Band%208&rssi=-66', key: 'p006',
+		states: [
+			{ id: 'p03-warn-ready', seed: ['p006', 'ready'], repeatSeed: true, expect: [['OTA 端到端链路 BLOCKED', 1], ['固件更新', 1]] },
+			{ id: 'write-dialog', seed: ['p006', 'ready'], repeatSeed: true, actions: [{ click: '全部展开' }, { click: '写入' }], expect: [['数据类型', 1], ['HEX', 1]] },
+			{ id: 'ota-dialog', seed: ['p006', 'ready'], repeatSeed: true, actions: [{ click: '固件更新' }], expect: [['固件更新 (OTA)', 1], ['端到端升级链路当前 BLOCKED', 1], ['选择文件', 1], ['开始升级', 1]] }
+		]
+	},
+	{
+		page: 'DLG-P002', dir: 'pages/hid/add', nav: 'go', url: '/pages/hid/add?deviceId=SHID-9F3E2A1C', key: 'p002',
+		preSeed: ['p002', 'connect-idle'],
+		states: [
+			{ id: 'leave-confirm', seed: ['p002', 'status-running'], clickSel: '.back-btn', expect: [['离开将取消等待设备状态', 1], ['确定离开吗', 1]] }
+		]
+	},
+	{
+		page: 'DLG-P005', dir: 'pages/hid/diagnostics', nav: 'go', url: '/pages/hid/diagnostics?deviceId=SHID-9F3E2A1C', key: 'p005',
+		preSeed: ['p005', 'idle'],
+		states: [
+			{ id: 'offline-modal', seed: ['p005', 'offline'], actions: [{ click: '重新检测' }], expect: [['BLE 未连接', 1], ['是否连接并检测', 1]] }
+		]
+	},
+	{
+		page: 'DLG-P003', dir: 'pages/hid/detail', nav: 'go', url: '/pages/hid/detail?deviceId=SHID-GHOST-404', key: 'p003',
+		states: [
+			{ id: 'record-missing-modal', expect: [['设备记录不存在', 1], ['该历史设备记录已不存在', 1]] }
+		]
 	}
 ];
 
@@ -120,6 +155,25 @@ async function main() {
 					if (state.repeatSeed) { await sleep(350); await page.evaluate(([k, p, payload]) => window.__MOCK__.seed(k, p, payload), state.seed); }
 				}
 				if (state.set) await page.evaluate(([k, patch]) => window.__MOCK__.set(k, patch), [spec.key, state.set]);
+				if (state.actions) {
+					for (const action of state.actions) {
+						await page.getByText(action.click, { exact: true }).first().click({ timeout: 4000 });
+						await sleep(350);
+					}
+				}
+				// H5 载体特例：组件自定义事件 tap 与原生 tap 冲突，$emit 载荷丢失（真机目标端无此问题）——
+		// 点击后经桥回填广播数据弹窗 payload（deviceId 由 state.fixAdv 指定）
+		if (state.fixAdv) {
+			await page.evaluate(([k, deviceId]) => {
+				const device = window.__MOCK__.dataset.scanDevices.find((d) => d.deviceId === deviceId);
+				window.__MOCK__.set(k, { showAdvDataModal: true, selectedAdvertisementDevice: device });
+			}, ['p001', state.fixAdv]);
+			await sleep(350);
+		}
+		if (state.clickSel) {
+					await page.locator(state.clickSel).first().click({ timeout: 4000 });
+					await sleep(350);
+				}
 				await sleep(400);
 				const text = await page.evaluate(() => document.body.innerText);
 				const missing = state.expect.filter(([str, req]) => req && !text.includes(str)).map(([str]) => str);
@@ -127,6 +181,12 @@ async function main() {
 				const ok = missing.length === 0 && unexpected.length === 0;
 				results.push({ ok, page: spec.page, state: state.id });
 				console.log(`${ok ? '✓' : '✗'} ${spec.page}/${state.id}${ok ? '' : ` missing=${JSON.stringify(missing)} unexpected=${JSON.stringify(unexpected)}`}`);
+				// 弹窗态收尾：关闭已打开的覆盖层，避免遮挡下一态交互
+				if (state.actions || state.clickSel) {
+					await page.getByText('取消', { exact: true }).first().click({ timeout: 1500 }).catch(() => {});
+					await page.getByText('关闭', { exact: true }).first().click({ timeout: 1200 }).catch(() => {});
+					await sleep(250);
+				}
 			}
 		} catch (error) {
 			results.push({ ok: false, page: spec.page, state: 'NAV', error: String(error).slice(0, 200) });

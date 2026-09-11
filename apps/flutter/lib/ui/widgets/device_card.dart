@@ -265,11 +265,17 @@ class _ActionChip extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     if (iconWidget != null) iconWidget,
-                    Text(label,
-                        style: const TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white)),
+                    // 窄屏/长动作文案（如「配置 Smart HID」在双按钮行）超宽时省略收尾，
+                    // 不再横向溢出（UI-DEF-06：393 宽双按钮行实测溢出 18px）
+                    Flexible(
+                      child: Text(label,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white)),
+                    ),
                   ],
                 ),
               ),
