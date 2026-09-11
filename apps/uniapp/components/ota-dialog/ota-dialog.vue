@@ -4,7 +4,13 @@
       <view class="ota-header">
         <text class="ota-title">固件更新 (OTA)</text>
       </view>
-      
+
+      <!-- P-03 预警（PATTERN §75 / N-MAC·F-MAC 同款逐字） -->
+      <view class="ota-warn">
+        <AppIcon name="warn" :size="26" tone="warningDeep" />
+        <text class="ota-warn-text">端到端升级链路当前 BLOCKED（固件侧暂未开放），流程可演示，正式使用前需固件配合。</text>
+      </view>
+
       <view class="ota-body">
         <view v-if="!isTransmitting" class="ota-prompt">
           <text class="ota-desc">发现 OTA 升级服务。选择固件 (.bin) 后开始传输；只有设备返回确认状态后才会显示升级成功。</text>
@@ -33,6 +39,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue';
 import { OtaManager } from '../../utils/ota_manager.js';
+import AppIcon from '../ui/AppIcon.vue';
 
 const props = defineProps({
   visible: {
@@ -212,6 +219,22 @@ const cancel = () => {
   overflow: hidden;
   box-shadow: var(--ble-shadow-modal);
 }
+.ota-warn {
+	display: flex;
+	align-items: flex-start;
+	gap: 12rpx;
+	padding: 14rpx 20rpx;
+	border-radius: var(--ble-radius-md, 18rpx);
+	background: var(--c-warning-weak);
+	color: var(--c-warning-deep);
+}
+
+.ota-warn-text {
+	flex: 1;
+	font-size: 22rpx;
+	line-height: 1.5;
+}
+
 .ota-header {
   padding: 28rpx 32rpx;
   border-bottom: 1rpx solid var(--ble-line-soft);

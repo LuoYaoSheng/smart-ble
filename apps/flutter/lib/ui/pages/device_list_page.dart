@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../core/ble/ble_manager.dart';
+import '../../core/ble/profile_registry.dart';
 import '../../core/models/ble_scan_result.dart';
 import '../../themes/app_theme.dart';
 import '../widgets/advertisement_sheet.dart';
@@ -487,6 +488,21 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
 
   /// Smart HID「配置」入口 → P002 配网向导（三阶段：连接确认/填写配置/下发状态）
   void _openProvisioning(BleScanResult device) {
+    // Profile 分流（对齐 uniapp buildProfileActionUrl）：Smart HID 进配网向导，
+    // 其余命中 Profile（如 ESP32 演示，GATT 调试型）直达通用 GATT 详情。
+    final match = matchProfile(device);
+    if (match != null && match.profile.id != 'smart-hid') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DeviceDetailPage(
+            deviceId: device.deviceId,
+            deviceName: device.displayName,
+          ),
+        ),
+      );
+      return;
+    }
     Navigator.push(
       context,
       MaterialPageRoute(

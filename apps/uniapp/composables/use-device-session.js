@@ -318,6 +318,7 @@ export function useDeviceSession(options = {}) {
     isInitializing,
     isConnecting,
     lastConnectError,
+    autoRetryExhausted,
     hasOtaService,
     logs,
     logScrollTop,

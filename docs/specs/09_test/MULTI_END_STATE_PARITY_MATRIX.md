@@ -23,6 +23,8 @@
 | success | 成功（toast/进度全绿） | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | — |
 | cancelled | 用户取消（静默/分类提示） | NOT_AUDITED | NOT_AUDITED | NOT_AUDITED | — |
 
+> 2026-09-11 假数据通道补充：U 线经 H5 mock 桥（`?mock=1`）已可离线驱动本表多数状态（idle/loading/empty/error/unsupported/disconnected/connecting/timeout(种子)/success/cancelled 的 U 侧 UI 形态），36/36 正典文案断言在册（[REPORT](../../../verification/windows-mobile-v1/20260911-h5-mock-sweep/REPORT.md)）；为 code-level 证据，真机/开发者工具运行态复核仍待窗口，不据此回填 PASS。
+
 ## 2. 扫描会话（STATE_MACHINE §7 · P001）——2026-09-10 回填（G1 真机证据 + code 层）
 
 | 状态 | U-WX | U-AND | F-AND | 归因 |

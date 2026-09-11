@@ -38,6 +38,16 @@
 | M7 | **F029 分享域** | U-AND/F-AND 先行验证（页面级分享+P009 入口）；A-AND 复验按设备在位。 |
 | 持续 | 维护线 | docs 站与部署链、`check:dimensions`/token/icon 三门禁、`generate-release-metadata` 管线、双机合并的冲突域裁决（uniapp/Flutter/docs 归 Mac 语义优先）；P2×13 原型遗留（06_review 在册，低优先）。 |
 
+## 五、同日增补：Mac 线「假数据先全面处理页面 UI」轮（2026-09-11 下午）
+
+用户指令口径：真机暂不可用，模拟器/H5 优先（Mac 本机窗口可用）。Mac 线落地：
+
+- **uniapp H5 假数据通道**：`apps/uniapp/services/mock/`（`?mock=1` 桥，正典演示集驱动真实渲染管线；mp/app 构建条件编译剥离，产物 0 引用实证）。根因修复：`@dcloudio/uni-h5{,-vite,-vue}` 补声明（此前 uni CLI 扫不到 h5 平台插件，H5 构建长期空壳）。
+- **九页 43 态截图 + 36/36 正典文案断言**：`verification/windows-mobile-v1/20260911-h5-mock-sweep/`；修复 UI-DEF-01（DeviceCard displayName 多级链）/02（eb-title fs-h2）/03（P003 设备名 fs-h1）。
+- **M5 完成**：`check:dimensions` phase-2 角色级断言（wrapper 32rpx / navbar·subnav padding 域 / 阴影白名单 css+flutter / regFS 9/16 文件圈定）全绿；门禁套件+mp-weixin 构建+jest 基线对照+flutter analyze/test 113/113 零回归。
+- **遗留（Mac 后续）**：F-AND 六态视觉 sweep 需 Flutter 侧 mock 桥（未建，待排期）；U-WX 扫描态元素级驱动仍 automator 受限。
+- **Windows 界内（本轮未动）**：桌面三线 G1-G10 结构级重建（四页缺失等）依赖用户 D2 二选一裁决后由胜者壳套「基准内核 + desktop.js 覆写」；`?mock=true` 静态渲染通道已具备。
+
 ## 三、用户裁决/放行队列（两机均不自主执行）
 
 1. **main 推送与站点部署**：main 冻结 dbb38a8；双机只动 `refactor/uniapp-v1`。
@@ -50,3 +60,17 @@
 
 - 双机各自单元完成即推双远端；`主矩阵 §1` 全行结论化（M1 吸收 W1-W5 证据）+ F025 裁决 = windows-mobile-v1 战役收口条件。
 - 任何一方开工前 `git pull`；冲突按文件域：`apps/desktop/**`+`tests/desktop/**` Windows 语义优先，uniapp/Flutter/docs/specs Mac 语义优先。
+
+## 六、同日增补 II：U-AND 模拟器可达态首轮（2026-09-11 晚，Mac）
+
+- 用户质询「多平台/安卓跨框架差异大」后补的缺口：U-AND（uniapp→app-android）自 09-09 UI-G1 E5 真机后三轮无像素证据，卡点「HBuilderX 打包域」本轮在 Mac 打通（HBuilderX 5.24 CLI 标准基座 → Pixel_API35 模拟器）。
+- 落袋 `verification/windows-mobile-v1/20260911-uand-vis1/`：12 张（P001×6 含真实扫描启停、P002 深链、P007/P008/P009/P010、基座权限弹窗）+ bundle 文案核对 113/121 硬命中；无 UI 缺陷；六线可达态首轮就此齐整。
+- 注意项：基座弹窗（标识码/CALL_PHONE）为标准基座噪声；Tab 点击 y≈2270（避开 Android 15 手势区）；截图 OCR 有幻觉风险，文案裁定以 bundle grep 为准。
+
+## 七、同日增补 III：F-MAC 深态轮（2026-09-11 深夜，Mac）
+
+- 目标：补「连接态页（P003/P005/P006）需 BLE 夹具或真机」缺口——发现 `tests/macos/ble-fixture` 即 SHID 配网模拟器（七步状态机+场景注入+粘贴兜底），配网深链在本机可完整走通。
+- 落袋 `verification/windows-mobile-v1/20260911-fmac-deep/`：Release 直启真窗 4 帧（P001 扫描结果/SHID 卡 + P002 step1 连接中/step2 表单，均中性裁剪复核）。
+- **修复 3 项 F 线缺陷**：DEF-01 相机 entitlement 缺失（正式构建 P002 token 唯一入口死锁，Release+Debug entitlements 补 `device.camera`）；DEF-02 P005 offline 态从未赋值（controller.lost 监听，PAGE_SPEC:326 验收项）；DEF-03 shidConfigureBtn 键挂所有 Profile 卡（按 profile.id 分流）。analyze 0 / test 122/122。
+- 受阻裁定：flutter test 实例扫描看不见本机软件夹具广播（手动 Release 可见）——环境级怪癖；深链（step3/P003/P005）留待续走，交互序列已验证在案。
+- 注意项（长会话三坑）：`open` 同 bundle id 只激活不换进程（须 pgrep 验二进制路径）；诱导式视觉提问放大 OCR 幻觉（只用中性转述+裁剪复核）；工具结果刷新会抢窗口前置（每步激活+断言）。

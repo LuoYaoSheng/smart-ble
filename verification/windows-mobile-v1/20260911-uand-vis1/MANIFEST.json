@@ -1,0 +1,26 @@
+{
+  "run_id": "20260911-uand-vis1",
+  "date": "2026-09-11",
+  "line": "U-AND (uniapp -> app-android)",
+  "channel": "HBuilderX 5.24 CLI launch app-android --playground standard -> Pixel_API35 emulator (emulator-5554, Android 15, 420dpi)",
+  "host_package": "io.dcloud.HBuilder (standard base; release would be com.smartble.uniapp)",
+  "bundle": "apps/uniapp/unpackage/dist/dev/app-plus/app-service.js (compiled 2026-09-11 12:29 from HEAD 5d074cd)",
+  "evidence_level": "app-android real render pipeline, reachable-states round (same bar as vis1); NOT full six-state visual gate",
+  "captures": [
+    "uand-sys-permission-dialog.png",
+    "uand-p001-default.png",
+    "uand-p001-empty-a.png",
+    "uand-p001-scanning.png",
+    "uand-p001-scan-done.png",
+    "uand-p001-filter.png",
+    "uand-p002-default.png",
+    "uand-p007-devices-empty.png",
+    "uand-p008-off.png",
+    "uand-p009-about.png",
+    "uand-p010-versions.png",
+    "uand-p001-after-scan.png (superseded by scan-done)"
+  ],
+  "bundle_copycheck": { "expects": 121, "hard_hits": 113, "h5_mock_only_absent": 8, "tree_shaken_unreferenced": 1 },
+  "defects_found": 0,
+  "ocr_notes": "two vision-model hallucinations adjudicated via source+bundle grep (see REPORT.md §3)"
+}

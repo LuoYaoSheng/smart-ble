@@ -134,6 +134,10 @@ import {
 	buildBroadcastPayload,
 } from '../../services/broadcast/index.js';
 import { useBroadcastSession } from '../../composables/use-broadcast-session.js';
+// #ifdef H5
+// H5 假数据通道：暴露广播页本地态给 window.__MOCK__（?mock=1 时才有消费者）
+import { registerPageTargets } from '../../services/mock/mock-registry.js';
+// #endif
 const bleStore = useBleStore();
 
 const blePeripheral = ref(null);
@@ -155,6 +159,7 @@ const {
 	logs,
 	broadcastStateText: sessionStateText,
 	pageState,
+	sessionSnap,
 	addLog: sessionAddLog,
 	clearLogs: sessionClearLogs,
 	reportBroadcastError: sessionReportError,
@@ -196,6 +201,11 @@ const modeOptions = ['低功耗', '平衡', '低延迟'];
 const powerOptions = ['超低功率', '低功率', '中功率', '高功率'];
 const manufacturerId = ref('');
 const manufacturerData = ref('');
+
+// #ifdef H5
+// H5 假数据通道：暴露广播页本地态给 window.__MOCK__（?mock=1 时才有消费者；置于表单 refs 声明后避免 TDZ）
+registerPageTargets('p008', { sessionSnap, isSupported, logs, sessionAddLog, platform, deviceName, serviceUUID, manufacturerId, manufacturerData, androidSettings });
+// #endif
 const platformLabel = computed(() => ({ android: 'Android', ios: 'iOS', weixin: '微信', web: 'Web' }[platform.value] || 'BLE'));
 const broadcastStateText = computed(() => {
 	if (advertising.value) return '广播中';
@@ -686,9 +696,17 @@ onShow(() => {
 });
 
 onMounted(() => {
+	// 恢复全局日志历史到会话面板。历史条目 type 是 logger 词汇（info/success/...），
+	// 页面面板用 UI 词汇（系统/成功/...）——先归一化再按 type|message 去重，
+	// 防止 onLoad/onShow 的 checkSupport 已写入的同一条日志双显
+	const LOGGER_TYPE_TO_UI = { info: '系统', success: '成功', error: '错误', warning: '系统', receive: '接收', send: '操作' };
 	const history = logger.getHistory('broadcast') || [];
+	const present = new Set(logs.value.map((l) => `${l.type}|${l.message}`));
 	for (const entry of [...history].reverse()) {
-		sessionAddLog(entry.type || '系统', entry.message || entry);
+		const type = LOGGER_TYPE_TO_UI[entry.type] || entry.type || '系统';
+		const message = entry.message || entry;
+		if (present.has(`${type}|${message}`)) continue;
+		sessionAddLog(type, message);
 	}
 	stopOnLeave(() => cleanup());
 });

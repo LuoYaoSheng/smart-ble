@@ -28,13 +28,18 @@ class ProvisioningProfile {
   /// 卡片动作按钮文案（如「Smart HID 配网」）
   final String actionLabel;
 
+  /// 匹配徽章短名（卡片 chip「X · 强/弱匹配」用；uniapp presentation.badge 对齐，
+  /// 缺省回落 displayName——Smart HID 两者相同，ESP32 演示 badge 为「ESP32」）
+  final String badge;
+
   const ProvisioningProfile({
     required this.id,
     required this.displayName,
     required this.serviceUuid,
     this.namePrefix = '',
     this.actionLabel = '',
-  });
+    String? badge,
+  }) : badge = badge ?? displayName;
 
   /// 扫描结果匹配（口径同 profile-contract.js 默认 matchAdvertisement）
   ProfileMatchLevel matchAdvertisement(BleScanResult device) {
@@ -59,6 +64,17 @@ const smartHidProfile = ProvisioningProfile(
   actionLabel: '配置 Smart HID',
 );
 
+/// ESP32 演示档案（对齐 uniapp services/esp32-demo/profile.js：GATT 调试型，
+/// 无配网向导路由——动作按钮直达通用 GATT 详情）
+const esp32DemoProfile = ProvisioningProfile(
+  id: 'esp32-demo',
+  displayName: 'ESP32 演示',
+  serviceUuid: '4fafc201-1fb5-459e-8fcc-c5c9c331914b',
+  namePrefix: 'BLEToolkit-Server',
+  actionLabel: 'ESP32 调试',
+  badge: 'ESP32',
+);
+
 /// 一次匹配结果
 class ProfileMatch {
   final ProvisioningProfile profile;
@@ -68,8 +84,8 @@ class ProfileMatch {
 
   /// 卡片 chip 文案（对齐原型 C1 devCard）
   String get chipLabel => level == ProfileMatchLevel.strong
-      ? '${profile.displayName} · 强匹配'
-      : '疑似 ${profile.displayName} · 弱匹配';
+      ? '${profile.badge} · 强匹配'
+      : '疑似 ${profile.badge} · 弱匹配';
 }
 
 String _normalizeUuid(String value) {
@@ -89,7 +105,7 @@ bool _isHex(String v) => v.codeUnits.every(
     );
 
 /// 内置第一方 Profile（后续设备家族按此扩展）
-const _builtinProfiles = [smartHidProfile];
+const _builtinProfiles = [smartHidProfile, esp32DemoProfile];
 
 /// 按已注册 Profile 匹配扫描结果，返回最佳命中（无命中返回 null）
 ProfileMatch? matchProfile(BleScanResult device) {

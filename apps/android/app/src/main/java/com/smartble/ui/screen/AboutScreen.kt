@@ -1,8 +1,12 @@
 package com.smartble.ui.screen
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -23,7 +27,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,18 +39,23 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import com.smartble.BuildConfig
+import com.smartble.R
 import com.smartble.core.utils.VersionMetadata
 import com.smartble.ui.design.DsChip
 import com.smartble.ui.design.DsFoot
 import com.smartble.ui.design.DsIcons
 import com.smartble.ui.design.DsKv
 import com.smartble.ui.design.DsMenuRow
+import com.smartble.ui.design.DsPrimaryButton
 import com.smartble.ui.design.DsSectionTitle
 import com.smartble.ui.design.DsSoftButton
 import com.smartble.ui.design.dsCard
@@ -65,6 +77,7 @@ fun AboutContent(
     onOpenVersions: () -> Unit = {},
 ) {
     val context = LocalContext.current
+    var showFeedback by remember { mutableStateOf(false) }
     // F027 版本三态：基准 = Release Metadata 投影（verFallback），
     // 运行时渠道（包版本）非空才覆盖，失败保留基准。
     val version = BuildConfig.VERSION_NAME.takeIf { it.isNotBlank() }
@@ -99,11 +112,94 @@ fun AboutContent(
         Column(Modifier.dsCard(innerPadding = 8.dp)) {
             DsMenuRow(icon = DsIcons.Ext, label = "官方网站", onClick = { openUrl(WEBSITE) })
             DsMenuRow(icon = DsIcons.Doc, label = "版本记录", onClick = onOpenVersions)
-            DsMenuRow(icon = DsIcons.Send, label = "问题反馈", onClick = { openUrl(FEEDBACK_URL) })
+            DsMenuRow(icon = DsIcons.Send, label = "问题反馈", onClick = { showFeedback = true })
             DsMenuRow(icon = DsIcons.Share, label = "分享应用", onClick = { shareApp(context) }, showDivider = false)
         }
         DsFoot("日志全局脱敏：敏感凭据显示为 token=***\n© 2026 BLE Toolkit+ · Smart BLE 产品家族")
         Spacer(modifier = Modifier.height(8.dp))
+    }
+
+    if (showFeedback) {
+        FeedbackQrDialog(onDismiss = { showFeedback = false })
+    }
+}
+
+/** 问题反馈弹窗（P009 · 与 uniapp/iOS 同口径）：微信扫码进小程序客服；复制 issues 链接兜底 */
+@Composable
+private fun FeedbackQrDialog(onDismiss: () -> Unit) {
+    val context = LocalContext.current
+    var linkCopied by remember { mutableStateOf(false) }
+
+    fun copyLink() {
+        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        clipboard.setPrimaryClip(ClipData.newPlainText("feedback-url", FEEDBACK_URL))
+        linkCopied = true
+    }
+
+    Dialog(onDismissRequest = onDismiss) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(20.dp))
+                .background(cCard)
+                .padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text("问题反馈", fontSize = 16.sp, fontWeight = FontWeight.W700, color = cText)
+                Spacer(modifier = Modifier.weight(1f))
+                Icon(
+                    DsIcons.X,
+                    contentDescription = "关闭",
+                    modifier = Modifier
+                        .size(28.dp)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                        ) { onDismiss() },
+                    tint = cMut,
+                )
+            }
+            Spacer(modifier = Modifier.height(14.dp))
+            Image(
+                painter = painterResource(R.drawable.wx_mini_qr),
+                contentDescription = "微信小程序码",
+                modifier = Modifier
+                    .size(172.dp)
+                    .clip(RoundedCornerShape(12.dp)),
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                "使用微信「扫一扫」扫描上方小程序码\n进入「BLE Toolkit+」小程序，即可直接联系客服反馈问题",
+                fontSize = 12.sp,
+                color = cMut,
+                textAlign = TextAlign.Center,
+                lineHeight = 12.sp * 1.5f,
+            )
+            if (linkCopied) {
+                Spacer(modifier = Modifier.height(6.dp))
+                Text("反馈链接已复制", fontSize = 11.sp, fontWeight = FontWeight.W600, color = cPrimary)
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(9.dp)) {
+                DsSoftButton(
+                    label = if (linkCopied) "已复制" else "复制反馈链接",
+                    onClick = { copyLink() },
+                    modifier = Modifier.weight(1f),
+                    small = true,
+                )
+                DsPrimaryButton(
+                    label = "我知道了",
+                    icon = null,
+                    onClick = onDismiss,
+                    modifier = Modifier.weight(1f),
+                    small = true,
+                )
+            }
+        }
     }
 }
 

@@ -101,6 +101,10 @@ import OperationState from '../../components/common/operation-state.vue';
 import AppSubnav from '../../components/ui/AppSubnav.vue';
 import AppIcon from '../../components/ui/AppIcon.vue'; // UI-PARITY-G0 正典图标入口
 import { useSmartHidProvisioning } from '../../composables/use-smart-hid-provisioning.js';
+// #ifdef H5
+// H5 假数据通道：暴露向导本地态给 window.__MOCK__（?mock=1 时才有消费者）
+import { registerPageTargets } from '../../services/mock/mock-registry.js';
+// #endif
 
 const {
 	steps, phase, currentStep, connecting, connectionError, connectionLost, deviceInfoSummary,
@@ -109,6 +113,10 @@ const {
 	recoveryLabel, initialize, connectDevice, scanControlHubQr, provision,
 	cancelWaiting, confirmLeaveIfNeeded, runRecovery, goDetail, goDevices, dispose
 } = useSmartHidProvisioning();
+
+// #ifdef H5
+registerPageTargets('p002', { phase, connecting, connectionError, connectionLost, deviceInfoSummary, wifiSsid, wifiPassword, hubAddress, provisioning, provisionDone, errorMessage });
+// #endif
 
 onLoad((options) => { initialize(options); });
 onUnload(dispose);

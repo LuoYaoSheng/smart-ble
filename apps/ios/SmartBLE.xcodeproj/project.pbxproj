@@ -26,6 +26,7 @@
 		40B426BD179EFB99E60E7821 /* share_card.png in Resources */ = {isa = PBXBuildFile; fileRef = C147C380D7B5409A069AEE00 /* share_card.png */; };
 		4863F887A4C22764F1B558B5 /* ScaledFontTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FCB845E116BD052EB881F7 /* ScaledFontTests.swift */; };
 		53E924BCD78C282F5EA12FAF /* BroadcastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A6671DD294AC769FEBC338 /* BroadcastView.swift */; };
+		55189D1792650429928EFDA8 /* wx_mini_qr.png in Resources */ = {isa = PBXBuildFile; fileRef = E8BA894108715527B32127FA /* wx_mini_qr.png */; };
 		5669025A5A57E48D9EEFADCC /* radar.svg in Resources */ = {isa = PBXBuildFile; fileRef = D4732E6CD458D0E53506B9DB /* radar.svg */; };
 		57537C7182D48D0BB032C814 /* about-hero.png in Resources */ = {isa = PBXBuildFile; fileRef = 1182918520BEA6E16E071F11 /* about-hero.png */; };
 		633C94A76093D159A92F37CB /* tab-scan.svg in Resources */ = {isa = PBXBuildFile; fileRef = DB960B568BF716F01E75939B /* tab-scan.svg */; };
@@ -168,6 +169,7 @@
 		E22A8998DC94EAC6893EC901 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		E2574585324CB104700E0434 /* ProvisioningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProvisioningView.swift; sourceTree = "<group>"; };
 		E3C549E074D57F5E8E3CA779 /* TabBarUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarUITests.swift; sourceTree = "<group>"; };
+		E8BA894108715527B32127FA /* wx_mini_qr.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = wx_mini_qr.png; sourceTree = "<group>"; };
 		FCDCE4B9BB088AC277627A32 /* AdvDataUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvDataUITests.swift; sourceTree = "<group>"; };
 		FD6E9C113CB540672F223626 /* tab-link.svg */ = {isa = PBXFileReference; path = "tab-link.svg"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -213,6 +215,7 @@
 				FD6E9C113CB540672F223626 /* tab-link.svg */,
 				214EC627A3E1D4D8CCA10D18 /* tab-scan.png */,
 				DB960B568BF716F01E75939B /* tab-scan.svg */,
+				E8BA894108715527B32127FA /* wx_mini_qr.png */,
 			);
 			path = Illustrations;
 			sourceTree = "<group>";
@@ -539,6 +542,7 @@
 				06330C84ACA2567B81B0F84E /* tab-link.svg in Resources */,
 				6696F7BB157029F12D505B04 /* tab-scan.png in Resources */,
 				633C94A76093D159A92F37CB /* tab-scan.svg in Resources */,
+				55189D1792650429928EFDA8 /* wx_mini_qr.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

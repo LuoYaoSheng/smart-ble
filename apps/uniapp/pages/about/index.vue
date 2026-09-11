@@ -43,7 +43,16 @@
 			<view class="menu-list">
 				<view class="menu-item" hover-class="menu-item-hover" @click="openWebsite"><text>官方网站</text><AppIcon name="chev-r" :size="28" tone="primary" class="menu-arrow" /></view>
 				<view class="menu-item" hover-class="menu-item-hover" @click="goVersion"><text>版本记录</text><AppIcon name="chev-r" :size="28" tone="primary" class="menu-arrow" /></view>
+				<!-- #ifdef MP-WEIXIN -->
+				<!-- 微信小程序版本：直连小程序客服（button open-type="contact" 唤起客服会话） -->
+				<button class="ble-btn menu-item menu-item--contact" hover-class="menu-item-hover" open-type="contact" session-from="about-feedback">
+					<text class="menu-item__label">问题反馈</text>
+					<AppIcon name="chev-r" :size="28" tone="primary" class="menu-arrow" />
+				</button>
+				<!-- #endif -->
+				<!-- #ifndef MP-WEIXIN -->
 				<view class="menu-item" hover-class="menu-item-hover" @click="openFeedback"><text>问题反馈</text><AppIcon name="chev-r" :size="28" tone="primary" class="menu-arrow" /></view>
+				<!-- #endif -->
 				<view class="menu-item" hover-class="menu-item-hover" @click="shareApp"><text>分享应用</text><AppIcon name="chev-r" :size="28" tone="primary" class="menu-arrow" /></view>
 			</view>
 		</view>
@@ -52,6 +61,27 @@
 		</view>
 		</scroll-view>
 		</view>
+
+		<!-- 问题反馈弹窗（非微信小程序版本）：小程序码 + 说明；微信小程序版本走客服按钮，不渲染本弹窗 -->
+		<!-- #ifndef MP-WEIXIN -->
+		<view v-if="feedbackVisible" class="feedback-mask" @click="closeFeedback">
+			<view class="feedback-sheet" @click.stop>
+				<view class="feedback-head">
+					<text class="feedback-title">问题反馈</text>
+					<view class="feedback-close" hover-class="feedback-close-hover" @click="closeFeedback"><AppIcon name="x" :size="30" tone="mut" /></view>
+				</view>
+				<image class="feedback-qr" :src="product.miniProgram.qrImage" mode="aspectFit" />
+				<view class="feedback-desc">
+					<text class="feedback-line">使用微信「扫一扫」扫描上方小程序码</text>
+					<text class="feedback-line">进入「{{ product.name }}」小程序，即可直接联系客服反馈问题</text>
+				</view>
+				<view class="feedback-actions">
+					<button class="ble-btn ble-btn--sm feedback-btn feedback-btn--soft" @click="copyFeedbackLink">复制反馈链接</button>
+					<button class="ble-btn ble-btn--sm feedback-btn feedback-btn--primary" @click="closeFeedback">我知道了</button>
+				</view>
+			</view>
+		</view>
+		<!-- #endif -->
 	</view>
 </template>
 
@@ -142,7 +172,11 @@ const openExternal = (url, copyTitle) => {
 };
 
 const openWebsite = () => openExternal(product.website, '网址已复制');
-const openFeedback = () => openExternal(product.feedback, '反馈链接已复制');
+// 问题反馈（非微信小程序版本）：弹窗展示小程序二维码 + 说明
+const feedbackVisible = ref(false);
+const openFeedback = () => { feedbackVisible.value = true; };
+const closeFeedback = () => { feedbackVisible.value = false; };
+const copyFeedbackLink = () => copyLink(product.feedback, '反馈链接已复制');
 const goVersion = () => uni.navigateTo({ url: '/pages/about/version' });
 
 const shareApp = () => {
@@ -209,5 +243,78 @@ onShareTimeline(() => ({ title: 'BLE Toolkit+ - BLE 调试与验证工具', quer
 .menu-item { color: var(--ble-text); font-size: 26rpx; font-weight: 600; }
 .menu-item-hover { transform: translateY(2rpx); opacity: 0.92; }
 .menu-arrow { margin-left: auto; }
+
+/* 微信小程序客服按钮：挂正典 ble-btn 基座（UI 契约），menu-item--contact 覆写为行样式 */
+.menu-item--contact {
+	width: 100%;
+	padding: 18rpx 20rpx;
+	height: auto;
+	line-height: inherit;
+	text-align: left;
+	justify-content: space-between;
+	gap: 18rpx;
+	border-radius: var(--ble-radius-sm);
+	font-size: 26rpx;
+	font-weight: 600;
+	color: var(--ble-text);
+	background: rgba(255, 255, 255, 0.82);
+}
+
+/* 问题反馈弹窗（mask + 居中卡片） */
+.feedback-mask {
+	position: fixed;
+	inset: 0;
+	z-index: 1000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 48rpx;
+	background: rgba(9, 18, 33, 0.55);
+}
+.feedback-sheet {
+	width: 560rpx;
+	max-height: 82vh;
+	overflow-y: auto;
+	padding: 32rpx;
+	border-radius: var(--ble-radius-lg);
+	background: #FFFFFF;
+	box-shadow: var(--ble-shadow-soft);
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	gap: 20rpx;
+}
+.feedback-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16rpx;
+}
+.feedback-title { color: var(--ble-text); font-size: 30rpx; font-weight: 800; }
+.feedback-close {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 56rpx;
+	height: 56rpx;
+	border-radius: var(--ble-radius-sm);
+	background: rgba(96, 117, 141, 0.10);
+}
+.feedback-close-hover { opacity: 0.8; }
+.feedback-qr {
+	width: 360rpx;
+	height: 360rpx;
+	align-self: center;
+	border-radius: var(--ble-radius-sm);
+	border: 1rpx solid var(--ble-line-soft);
+	background: #FFFFFF;
+}
+.feedback-desc { display: flex; flex-direction: column; gap: 6rpx; }
+.feedback-line { color: var(--ble-text-subtle); font-size: 24rpx; line-height: 1.55; }
+.feedback-actions { display: flex; gap: 16rpx; }
+/* 挂正典 ble-btn 基座（UI 契约）；feedback-btn 只做弹窗内布局尺寸覆写 */
+.feedback-btn { flex: 1; height: 76rpx; padding: 0 18rpx; }
+.feedback-btn--soft { background: rgba(27, 109, 255, 0.08); color: var(--ble-brand); }
+.feedback-btn--primary { background: var(--c-primary); color: #FFFFFF; }
 .footer { padding: 8rpx 0 28rpx; color: var(--ble-text-muted); font-size: 22rpx; text-align: center; }
 </style>

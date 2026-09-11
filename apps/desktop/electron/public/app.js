@@ -476,8 +476,53 @@ class App {
         // F029 菜单外链：product.js 单一来源
         const websiteRow = document.getElementById('aboutWebsiteRow');
         if (websiteRow) websiteRow.href = PRODUCT.PRODUCT_INFO.website;
+        // 问题反馈（2026-09-11 正典更新）：桌面版非微信小程序宿主 → 弹窗展示小程序码 + 说明，
+        // 用户微信扫码进入小程序联系客服；Gitee Issues 保留为复制链接兜底
         const feedbackRow = document.getElementById('aboutFeedbackRow');
-        if (feedbackRow) feedbackRow.href = PRODUCT.PRODUCT_INFO.feedback;
+        if (feedbackRow) {
+            feedbackRow.href = '#';
+            feedbackRow.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.showFeedbackSheet();
+            });
+        }
+    }
+
+    // 问题反馈弹窗（P009）：小程序码 + 引导说明（.mask/.modal 正典壳）
+    showFeedbackSheet() {
+        const PRODUCT = window.SmartBLEProduct;
+        if (!PRODUCT) return;
+        const info = PRODUCT.PRODUCT_INFO;
+        const qrSrc = (info.miniProgram && info.miniProgram.qrImage) || 'assets/wx-mini-qr.jpg';
+        const mpName = (info.miniProgram && info.miniProgram.name) || info.name;
+        const body = `
+            <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+                <img src="${qrSrc}" alt="${mpName} 微信小程序码" width="200" height="200"
+                     style="border:1px solid #E4EBF5;border-radius:12px;background:#fff">
+                <div style="font-size:13px;color:#60758D;line-height:1.6;text-align:center">
+                    使用微信「扫一扫」扫描小程序码<br>
+                    进入「${mpName}」小程序，即可直接联系客服反馈问题
+                </div>
+            </div>`;
+        this.hidShowModal({
+            title: '问题反馈',
+            bodyHtml: body,
+            buttons: [
+                {
+                    label: '复制反馈链接',
+                    tone: 'soft',
+                    onClick: () => {
+                        const url = info.feedback || '';
+                        const done = () => this.addLog('反馈链接已复制到剪贴板', 'info');
+                        if (navigator.clipboard?.writeText) {
+                            navigator.clipboard.writeText(url).then(done, done);
+                        } else { done(); }
+                        return false; // 不关闭弹窗，允许继续扫码
+                    }
+                },
+                { label: '我知道了', tone: 'primary', block: true }
+            ]
+        });
     }
 
     // P010：版本记录页（正典结构：当前版本/当前限制/发布历史/预览记录四卡 + foot；

@@ -14,6 +14,11 @@
     summary: '面向 UniApp、微信小程序与 ESP32 协同验证的 BLE 调试工具。',
     website: 'https://lightble.i2kai.com/',
     feedback: 'https://gitee.com/luoyaosheng/smart-ble/issues',
+    // 问题反馈（2026-09-11）：桌面版展示小程序码引导用户进小程序联系客服
+    miniProgram: {
+      appId: 'wxf6c58b1dcac4c82d',
+      qrImage: 'assets/wx-mini-qr.jpg',
+    },
   };
 
   const PRODUCT_FEATURES = [

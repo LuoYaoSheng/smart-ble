@@ -19,6 +19,7 @@ struct AboutView: View {
     private let metadata = ReleaseMetadata.load()
     @State private var versionRoute: AboutVersionRoute?
     @State private var sharePayload: SharePayload?
+    @State private var feedbackVisible = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -54,6 +55,9 @@ struct AboutView: View {
         }
         .nativePageCover(item: $versionRoute) { _ in
             VersionHistoryView()
+        }
+        .sheet(isPresented: $feedbackVisible) {
+            FeedbackSheet()
         }
         .sheet(item: $sharePayload) { payload in
             NativeShareSheet(items: payload.items)
@@ -130,9 +134,11 @@ struct AboutView: View {
                 menuRow(icon: "arrow.up.right.square", title: "官方网站")
             }
             Divider()
-            Link(destination: URL(string: "https://github.com/luoyaosheng/smart-ble/issues")!) {
+            // 问题反馈：弹窗展示小程序码引导（非微信渠道的复制链接兜底）
+            Button(action: { feedbackVisible = true }) {
                 menuRow(icon: "paperplane", title: "问题反馈")
             }
+            .accessibilityIdentifier("about-feedback-row")
             Divider()
             Button(action: { versionRoute = AboutVersionRoute(id: "versions") }) {
                 menuRow(icon: "doc.text", title: "版本记录")
@@ -259,3 +265,104 @@ private struct NativeShareSheet: View {
     }
 }
 #endif
+
+/// 问题反馈弹窗（P009 · 与 uniapp/桌面同口径）：微信扫码进小程序客服；
+/// 其余渠道提供 issues 链接复制兜底。
+private struct FeedbackSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var linkCopied = false
+
+    private let feedbackUrl = "https://github.com/luoyaosheng/smart-ble/issues"
+
+    var body: some View {
+        VStack(spacing: 16) {
+            HStack {
+                Text("问题反馈")
+                    .scaledFont(16, .bold)
+                    .foregroundColor(NativeDS.ink)
+                Spacer()
+                Button(action: { dismiss() }) {
+                    Image(systemName: "xmark")
+                        .scaledFont(13, .semibold)
+                        .foregroundColor(NativeDS.muted)
+                        .frame(width: 30, height: 30)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("feedback-close")
+            }
+
+            NativeResourceImage(name: "wx_mini_qr")
+                .scaledToFit()
+                .frame(width: 172, height: 172)
+                .clipShape(RoundedRectangle(cornerRadius: NativeDS.radiusMedium))
+                .overlay(
+                    RoundedRectangle(cornerRadius: NativeDS.radiusMedium)
+                        .stroke(NativeDS.lineSoft, lineWidth: 1)
+                )
+                .accessibilityLabel("微信小程序码")
+
+            VStack(spacing: 4) {
+                Text("使用微信「扫一扫」扫描上方小程序码")
+                Text("进入「BLE Toolkit+」小程序，即可直接联系客服反馈问题")
+            }
+            .scaledFont(11)
+            .foregroundColor(NativeDS.sub)
+            .multilineTextAlignment(.center)
+
+            if linkCopied {
+                Text("反馈链接已复制")
+                    .scaledFont(11, .semibold)
+                    .foregroundColor(NativeDS.success)
+            }
+
+            HStack(spacing: 10) {
+                Button(action: copyLink) {
+                    Text(linkCopied ? "已复制" : "复制反馈链接")
+                        .scaledFont(13, .semibold)
+                        .foregroundColor(NativeDS.primary)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 42)
+                        .background(NativeDS.primaryWeak)
+                        .clipShape(RoundedRectangle(cornerRadius: NativeDS.radiusMedium))
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("feedback-copy")
+
+                Button(action: { dismiss() }) {
+                    Text("我知道了")
+                        .scaledFont(13, .semibold)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 42)
+                        .background(
+                            LinearGradient(
+                                colors: [NativeDS.primary, NativeDS.primaryDeep],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .clipShape(RoundedRectangle(cornerRadius: NativeDS.radiusMedium))
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("feedback-done")
+            }
+        }
+        .padding(20)
+        .frame(width: 320)
+        .background(Color.white)
+        .clipShape(RoundedRectangle(cornerRadius: NativeDS.radiusLarge))
+        .overlay(RoundedRectangle(cornerRadius: NativeDS.radiusLarge).stroke(NativeDS.line, lineWidth: 1))
+        .padding(24)
+    }
+
+    private func copyLink() {
+        #if os(iOS)
+        UIPasteboard.general.string = feedbackUrl
+        #else
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(feedbackUrl, forType: .string)
+        #endif
+        withAnimation(.easeInOut(duration: 0.2)) { linkCopied = true }
+    }
+}

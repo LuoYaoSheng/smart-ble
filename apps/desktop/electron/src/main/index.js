@@ -103,8 +103,10 @@ async function loadBLEModule() {
 function createWindow() {
   debugLog('Creating main window...');
   mainWindow = new BrowserWindow({
+    // 基础窗口高度以 P008 广播页完全显示为准：页面内容 786px + 底部 TabBar 64px = 850px 视口，
+    // 加窗口标题栏后取 900（旧值 800 会在首屏裁掉广播日志面板约 50px）
     width: 1200,
-    height: 800,
+    height: 900,
     minWidth: 900,
     minHeight: 600,
     webPreferences: {

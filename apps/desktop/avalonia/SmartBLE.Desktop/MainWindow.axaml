@@ -9,7 +9,9 @@
         Title="SmartBLE"
         Icon="/Assets/icon.png"
         MinWidth="900" MinHeight="600"
-        Width="1200" Height="800">
+        Width="1200" Height="900">
+        <!-- 基础窗口高度以 P008 广播页完全显示为准（对齐 Electron 壳 2026-09-11 同轮调整：
+             页面内容 786px + TabBar 64px ≈ 850px 视口 + 标题栏 → 900；旧值 800 首屏裁掉日志面板） -->
 
     <Design.DataContext>
         <vm:MainWindowViewModel/>

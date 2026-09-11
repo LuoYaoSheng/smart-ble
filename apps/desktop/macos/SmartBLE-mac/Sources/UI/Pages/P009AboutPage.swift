@@ -134,7 +134,7 @@ final class P009AboutPage: NSViewController, PageProtocol {
                 self?.openExternal("lightble.i2kai.com")
             },
             MenuRowButton(symbol: "paperplane", title: "问题反馈", actionId: "p009-feedback") { [weak self] in
-                self?.openExternal("github.com/luoyaosheng/smart-ble/issues")
+                self?.openFeedbackSheet()
             },
             MenuRowButton(symbol: "doc", title: "版本记录", actionId: "p009-versions") { [weak self] in
                 self?.host?.router.go(.p010)
@@ -211,6 +211,53 @@ final class P009AboutPage: NSViewController, PageProtocol {
             noteBanner("info", "桌面操作系统区分原生 BLE 层（10_platform §2.4）：macOS CoreBluetooth / Windows WinRT / Linux BlueZ。本机为 macOS——原型的三 OS 切换为评审演示装置，实机呈现真实宿主。D2 技术选型 spike 进行中，能力细节不预判；Linux 广播外围受 BlueZ / 内核权限影响【待验证】。"),
         ], spacing: 10)
         host.showSheet(title: "操作系统（桌面宿主）", body: body)
+    }
+
+    // MARK: - 问题反馈（小程序码引导 · 与 uniapp/iOS 同口径）
+
+    /// 弹窗展示微信小程序码：扫码进小程序客服；非微信渠道复制 issues 链接兜底
+    private func openFeedbackSheet() {
+        guard let host else { return }
+        let qrView: NSView
+        if let url = Bundle.module.url(forResource: "wx_mini_qr", withExtension: "jpg"),
+           let image = NSImage(contentsOf: url) {
+            let iv = NSImageView(image: image)
+            iv.imageScaling = .scaleProportionallyUpOrDown
+            iv.translatesAutoresizingMaskIntoConstraints = false
+            let box = NSView()
+            box.wantsLayer = true
+            box.layer?.backgroundColor = DS.card.cgColor
+            box.layer?.cornerRadius = 12
+            box.layer?.masksToBounds = true
+            box.translatesAutoresizingMaskIntoConstraints = false
+            box.addSubview(iv)
+            NSLayoutConstraint.activate([
+                iv.widthAnchor.constraint(equalToConstant: 172),
+                iv.heightAnchor.constraint(equalToConstant: 172),
+                iv.centerXAnchor.constraint(equalTo: box.centerXAnchor),
+                iv.centerYAnchor.constraint(equalTo: box.centerYAnchor),
+            ])
+            qrView = box
+        } else {
+            qrView = noteBanner("warn", "小程序码资源缺失（Illustrations/wx_mini_qr.jpg）")
+        }
+        let desc = makeLabel("使用微信「扫一扫」扫描上方小程序码\n进入「BLE Toolkit+」小程序，即可直接联系客服反馈问题", size: 11, color: DS.sub, align: .center)
+        desc.maximumNumberOfLines = 0
+        let copyBtn = DSButton("复制反馈链接", tone: .soft, small: true, actionId: "p009-feedback-copy") { [weak host] in
+            NSPasteboard.general.clearContents()
+            NSPasteboard.general.setString("https://github.com/luoyaosheng/smart-ble/issues", forType: .string)
+            host?.toast("反馈链接已复制", ok: true)
+        }
+        let doneBtn = DSButton("我知道了", tone: .primary, small: true, actionId: "p009-feedback-done") { [weak host] in
+            host?.closeLayer()
+        }
+        let column = vstack([
+            qrView,
+            desc,
+            hstack([copyBtn, doneBtn], spacing: 9),
+        ], spacing: 12)
+        column.alignment = .centerX
+        host.showSheet(title: "问题反馈", body: column)
     }
 
     // MARK: - 外链 / 分享（桌面覆写口径）

@@ -40,7 +40,7 @@ defineEmits(['action']);
 
 .eb-t { display: flex; align-items: center; gap: 12rpx; }
 
-.eb-title { font-size: 32rpx; font-weight: 700; color: var(--c-danger); }
+.eb-title { font-size: var(--fs-h2); font-weight: 700; color: var(--c-danger); }
 
 .eb-code {
 	padding: 2rpx 14rpx;
