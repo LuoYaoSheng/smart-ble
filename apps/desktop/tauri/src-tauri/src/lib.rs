@@ -265,10 +265,12 @@ async fn start_scan(
 
                                 let device = DeviceInfo {
                                     id: p.id().to_string(),
+                                    // F005 显示名批准链：name 投影广播 localName，空名保持空串
+                                    // （渲染层批准链兜底，不在数据层污染为 "Unknown"）
                                     name: props
                                         .as_ref()
                                         .and_then(|pr| pr.local_name.clone())
-                                        .unwrap_or_else(|| "Unknown".to_string()),
+                                        .unwrap_or_default(),
                                     rssi: props.as_ref().and_then(|pr| pr.rssi).unwrap_or(0),
                                     connected: is_connected,
                                     service_uuids,

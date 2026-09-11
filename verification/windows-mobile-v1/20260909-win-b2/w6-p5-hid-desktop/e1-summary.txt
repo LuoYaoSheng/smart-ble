@@ -1,0 +1,44 @@
+W6 · P5 第二步：Smart HID 桌面传输编排 + P002/P003/P005 + 扫描卡双入口（E1 证据）
+日期：2026-09-11 · 分支：refactor/uniapp-v1
+
+═══ 交付物（E-WIN/T-WIN 两线）═══
+- hid-service.js（两线逐字节锁定镜像）：
+  uniapp services/smart-hid + provisioning/{transport,orchestrator} + provision-form 的桌面投影。
+  依赖注入 bleAPI（E-WIN preload / T-WIN invoke+listen 适配层 tauriHidAdapter）。
+  GATT 链：connect → discoverServices → 服务/特征确认（UUID 形状自适应，原样回传）→
+  先订阅 STATUS/INFO（150ms 间隔，WIN-FAND-004 同型教训）→ 读 INFO → verifyDeviceInfo。
+  candidate：buildCandidate → encodePayloadFrames(framed-v1, ATT 23) → writeRaw 帧间 30ms 带响应写。
+  provisionAndWait：waiter 先建再写（runProvisionTransaction 语义；shaped.cancel 桥接）。
+  ownsDevice 重连独占（U-REC-001 同型预防）；diagnose 五项映射；P003 会话内存快照。
+  F023 红线：token/密码仅 submit 参数，全文零持久化 API（测试锁）。
+- P002/P003/P005 三视图（index.html 两线同构，正典结构 stepper/card/prow/diag/bigact）：
+  P002 三阶段向导（连接/填写配置/下发状态）+ U-01 离开确认 + F020 粘贴/手输配对码
+  （桌面口径 10_platform §2.4）+ F022 恢复四分支（diagnostics/pairing/form/retry）。
+  P003 会话内存快照（身份/最近配置/重新配置/运行诊断/高级 BLE 调试）。
+  P005 五项诊断（offline→connect→diagnose 状态机 + 错误码显隐）。
+- 扫描卡 SHID 徽章双入口（DeviceCard 两线镜像）：强/弱匹配 chip + ava.shid +
+  「配置 Smart HID」主按钮 + 连接降 soft（正典 C1 devCard 双 acts）。
+- prototype.css 补 .bigact 正典块（两线；源 desktop/high-fi/assets/pages.css §PAGE002）。
+
+═══ E1 门禁（全绿）═══
+- node --test tests/desktop/ ：78/78（含新增 smart-hid-desktop.test.mjs 20 例：
+  镜像一致性 3 / 传输编排 10 / 红线 1 / 纯函数向量 6）
+- ./scripts/verify-uniapp.sh ：PASS（28 unit + 14 static gates）
+- node --check：两线 app.js / hid-service.js / DeviceCard.js
+
+═══ 真实 Electron 冒烟（CDP --remote-debugging-port=9333，真实 noble）═══
+- 脚本链加载：window.SmartHid=object / window.SmartHidDesktop=object / appInstance=object
+- 三视图 DOM 存在且经各自入口激活：P002/P003/P005 = VISIBLE
+- hidEnsureService() attach 成功（bleAPI 注入）
+- F023 红线：token/密码不落 DOM = true
+- 真实 noble 失败路径：假设备 ID → P002 优雅报错横幅「Device not found」，无崩溃
+
+═══ 测试抓出的真 bug（已修）═══
+1. waitForProvisionResult 链式 .then() 丢失 .cancel 通道 → 写帧失败后 waiter 5s 超时悬挂
+   （修：shaped.cancel 显式桥接 raw.cancel）
+2. shaped 在写入期间被拒（断链/取消）存在 unhandledRejection 窗口（修：shaped.catch(()=>{}) 兜底）
+3. deriveProgress 错误态须以 base 累加（uniapp store 就地突变语义：配网中段失败时 wifi=done 保留）
+
+═══ 限制（留后续轮）═══
+- E5 真机（真 SHID 固件 + ControlHub 配对码全链）留硬件窗口；T-WIN 运行级走查留 P7（Rust 工具链）
+- P002 摄像头扫码未实现（桌面口径以粘贴/手输为主路径，正典 10_platform §2.4 允许）

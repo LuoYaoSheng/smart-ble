@@ -8,222 +8,442 @@
     <link rel="stylesheet" href="app_theme.css">
     <!-- Component and structural styles -->
     <link rel="stylesheet" href="styles.css">
+    <!-- 原型正典样式（最后加载：docs/specs/prototype/platform/desktop/high-fi 全量对齐层） -->
+    <link rel="stylesheet" href="prototype.css">
 </head>
 <body>
     <div id="app">
-        <!-- 顶部标题栏 -->
-        <header class="header">
-            <div class="header-content">
-                <div class="logo">
-                    <img src="brand/icon.png" alt="BLE Toolkit+ Logo" class="logo-image">
-                    <span>BLE Toolkit+</span>
-                </div>
-                <div class="status-bar">
-                    <div id="bluetoothStatus" class="status-indicator">
-                        <span class="status-dot"></span>
-                        <span class="status-text">初始化中...</span>
-                    </div>
-                </div>
-            </div>
-        </header>
+        <div class="screen">
+            <div class="pagehost">
 
-        <!-- 主内容区 -->
-        <main class="main">
-            <!-- 标签页导航 -->
-            <div class="tab-nav">
-                <button class="tab-btn active" data-tab="scan">
-                    <span class="icon">📡</span>
-                    <span>扫描设备</span>
-                </button>
-                <button class="tab-btn" data-tab="connected" id="connectedTab">
-                    <span class="icon">🔗</span>
-                    <span><span>已连接</span> <span id="connectedBadge" class="badge" style="display:none;background:#FF3B30;padding:2px 6px;border-radius:10px;color:white;font-size:12px;margin-left:4px">0</span></span>
-                </button>
-                <button class="tab-btn" data-tab="broadcast" id="broadcastTab" style="display: none;">
-                    <span class="icon">📢</span>
-                    <span>创建广播</span>
-                </button>
-                <button class="tab-btn" data-tab="about" id="aboutTab">
-                    <span class="icon">ℹ️</span>
-                    <span>关于</span>
-                </button>
-            </div>
-
-            <!-- 设备列表视图 -->
-            <div id="deviceListView" class="view active">
-                <!-- Filter Panel Component -->
-                <filter-panel id="mainFilterPanel"></filter-panel>
-
-                <div class="controls">
-                    <button id="scanButton" class="btn btn-primary">
-                        <span class="icon">🔍</span>
-                        <span class="text">开始扫描</span>
-                    </button>
-                    <div id="deviceCount" class="device-count"></div>
-                </div>
-
-                <div id="deviceList" class="device-list">
-                    <div class="empty-state">
-                        <img src="placeholders/empty_scan.png" class="empty-icon-img" alt="scan">
-                        <div class="empty-text">暂无设备</div>
-                        <div class="empty-hint">点击上方按钮开始扫描</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- T14: 已连接视图 -->
-            <div id="connectedView" class="view" style="display: none;">
-                <div style="padding:16px">
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-                        <h3 style="margin:0;font-size:16px">已连接设备</h3>
-                        <button id="disconnectAllBtn" class="btn btn-danger" style="display:none;font-size:12px;padding:4px 10px">全部断开</button>
-                    </div>
-                    <div id="connectedDeviceList">
-                        <div class="empty-state">
-                            <img src="placeholders/empty_connected.png" class="empty-icon-img" alt="connected">
-                            <div class="empty-text">暂无已连接设备</div>
-                            <div class="empty-hint">在扫描页面点击设备进行连接</div>
+                <!-- ═══ P001 扫描（结构对齐 prototype/pages/p001-scan.js） ═══ -->
+                <div id="deviceListView" class="view active">
+                    <div class="navbar">
+                        <div class="kicker">BLE TOOLKIT+</div>
+                        <div class="row">
+                            <div class="title">扫描</div>
+                            <div class="bt-chip" id="btChip"><i class="bt-dot"></i><span id="btWord">初始化中…</span></div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- 广播视图 -->
-            <div id="broadcastView" class="view">
-                <div class="broadcast-container">
-                    <div class="broadcast-card">
-                        <div class="card-header">
-                            <h3>创建 BLE 广播</h3>
+                    <div class="page">
+                        <div class="scantool">
+                            <div class="lb" id="scanStatusLabel">待开始扫描</div>
+                            <button id="scanButton" class="btn primary">
+                                <svg class="ic sm" aria-hidden="true"><use href="#i-scan"/></svg><span>开始扫描</span>
+                            </button>
                         </div>
-                        <div class="card-body">
-                            <div class="form-group">
-                                <label>广播名称</label>
-                                <input type="text" id="broadcastName" class="input" placeholder="MyDevice" value="SmartBLE">
+                        <div class="sec-t">
+                            <div class="t"><svg class="ic" aria-hidden="true"><use href="#i-chip"/></svg> 附近设备 <span class="chip neutral" id="deviceCount" style="display:none"></span></div>
+                            <button class="txtlink" id="filterToggle">筛选</button>
+                        </div>
+                        <filter-panel id="mainFilterPanel" hidden></filter-panel>
+                        <div id="deviceList" class="devlist"></div>
+                    </div>
+                </div>
+
+                <!-- ═══ P007 已连接（结构对齐 prototype/pages/p007-connected.js） ═══ -->
+                <div id="connectedView" class="view" style="display: none;">
+                    <div class="navbar">
+                        <div class="kicker">SESSIONS</div>
+                        <div class="row">
+                            <div class="title">已连接</div>
+                            <div class="bt-chip"><span class="chip neutral">通用调试会话</span></div>
+                        </div>
+                    </div>
+                    <div class="page">
+                        <div class="sumcard" id="connectedSumcard" style="display:none">
+                            <div>
+                                <div class="num" id="connectedCount">0</div>
+                                <div class="lb">台在线 · 全部为内存会话</div>
                             </div>
-                            <div class="form-group">
+                            <div style="flex:1"></div>
+                            <button id="disconnectAllBtn" class="btn danger sm">
+                                <svg class="ic sm" aria-hidden="true"><use href="#i-x"/></svg><span>全部断开</span>
+                            </button>
+                        </div>
+                        <div id="connectedDeviceList"></div>
+                    </div>
+                </div>
+
+                <!-- ═══ P008 广播（结构对齐 prototype/pages/p008-broadcast.js：bytebar + 31B 预算四行） ═══ -->
+                <div id="broadcastView" class="view">
+                    <div class="navbar">
+                        <div class="kicker">PERIPHERAL</div>
+                        <div class="row">
+                            <div class="title">广播</div>
+                            <div class="bt-chip">
+                                <span class="chip neutral" id="broadcastPlatformChip">平台：Desktop</span>
+                                <span class="badge dim" id="broadcastStateBadge"><i class="dot"></i>未就绪</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="page">
+                        <div class="card">
+                            <div class="field">
+                                <label>设备名称 <span class="chip neutral" id="broadcastNameLock" style="display:none">广播中禁用</span></label>
+                                <div class="inp"><input maxlength="20" id="broadcastName" placeholder="SmartBLE" value="SmartBLE"></div>
+                            </div>
+                            <div class="field">
                                 <label>服务 UUID</label>
-                                <input type="text" id="broadcastServiceUuid" class="input" placeholder="FFF0" value="FFF0">
-                                <small class="input-hint">自定义 128 位 UUID 或标准 16 位 UUID</small>
+                                <div class="inp"><input class="mono" maxlength="36" id="broadcastServiceUuid" placeholder="4 / 8 / 36 位 HEX" value="FFE0"></div>
+                                <div class="err-line" id="broadcastUuidErr" style="display:none"><svg class="ic xs" aria-hidden="true"><use href="#i-warn"/></svg>UUID 需为 4 / 8 / 36 位十六进制</div>
                             </div>
-                            <div class="form-group">
-                                <label>Manufacturer ID (hex)</label>
-                                <input type="text" id="broadcastManufacturerId" class="input" placeholder="0x0A00" value="0A00">
-                                <small class="input-hint">Company identifier (e.g., 0x0A00 for testing)</small>
+                            <div class="field">
+                                <label>厂商 ID（HEX）</label>
+                                <div class="inp"><input class="mono" maxlength="4" id="broadcastManufacturerId" placeholder="0001" value="0001"></div>
                             </div>
-                            <div class="form-group">
-                                <label>Manufacturer Data</label>
-                                <input type="text" id="broadcastManufacturerData" class="input" placeholder="Test123" value="SmartBLE_Broadcast">
-                                <small class="input-hint">Custom data to include in advertisement</small>
+                            <div class="field">
+                                <label>厂商数据（ASCII）</label>
+                                <div class="inp"><input maxlength="26" id="broadcastManufacturerData" placeholder="BLE" value="BLE"></div>
                             </div>
-                            <div class="form-group">
-                                <label class="checkbox">
-                                    <input type="checkbox" id="broadcastIncludeName" checked style="margin-right: 8px;">
-                                    <span>Include device name in advertisement</span>
-                                </label>
+                            <div class="bytebar" id="broadcastBytebar">
+                                <span class="bt">ADV 负载预算</span>
+                                <span class="num" id="broadcastByteTotal">0</span><span class="cap">/ 31 字节</span>
                             </div>
-                            <div class="broadcast-status" id="broadcastStatus">
-                                <span class="status-dot"></span>
-                                <span class="status-text">未广播</span>
+                            <div class="budget" id="broadcastBudget"></div>
+                            <div style="display:flex;gap:9px;margin-top:14px">
+                                <button id="startBroadcastButton" class="btn primary">
+                                    <svg class="ic sm" aria-hidden="true"><use href="#i-cast"/></svg><span>开始广播</span>
+                                </button>
+                                <button id="stopBroadcastButton" class="btn danger" style="display:none;">
+                                    <svg class="ic sm" aria-hidden="true"><use href="#i-stop"/></svg><span>停止广播</span>
+                                </button>
+                                <button id="checkSupportButton" class="btn soft">
+                                    <svg class="ic sm" aria-hidden="true"><use href="#i-refresh"/></svg><span>检查支持</span>
+                                </button>
                             </div>
                         </div>
-                        <div class="card-footer">
-                            <button id="startBroadcastButton" class="btn btn-primary">
-                                <span class="icon">📢</span>
-                                <span>开始广播</span>
-                            </button>
-                            <button id="stopBroadcastButton" class="btn btn-danger" style="display: none;">
-                                <span class="icon">⏹</span>
-                                <span>停止广播</span>
-                            </button>
+                        <div style="margin-top:2px">
+                            <!-- 广播日志（正典 cardv 白卡变体） -->
+                            <log-panel id="broadcastLogPanel" variant="cardv"></log-panel>
                         </div>
-                    </div>
-
-                    <div class="broadcast-info">
-                        <h4>广播说明</h4>
-                        <ul>
-                            <li>设备将以设置的名称和 UUID 进行广播</li>
-                            <li>其他设备可以通过扫描发现此广播</li>
-                            <li>macOS 上可能需要额外权限</li>
-                            <li>广播时无法扫描其他设备</li>
-                        </ul>
                     </div>
                 </div>
-            </div>
 
-            <!-- 关于视图 -->
-            <div id="aboutView" class="view" style="display: none;">
-                <div class="about-shell">
-                    <section class="about-hero-card">
-                        <img src="brand/about-hero.png" alt="BLE Toolkit+ Hero" class="about-hero-image">
-                        <div class="about-hero-body">
-                            <div class="about-hero-head">
-                                <img src="brand/icon.png" alt="BLE Toolkit+ Icon" class="about-app-icon">
-                                <div>
-                                    <h1 class="about-title">BLE Toolkit+</h1>
-                                    <p class="about-subtitle">Electron 桌面工作台</p>
+                <!-- 关于视图（P009：结构对齐 docs/specs/prototype/platform/desktop/high-fi/pages/p009-about.js；F028 推广卡桌面线裁撤） -->
+                <div id="aboutView" class="view" style="display: none;">
+                    <div class="about-shell">
+                        <div class="about-navbar">
+                            <div class="about-kicker">ABOUT</div>
+                            <div class="about-navrow">
+                                <div class="about-page-title">关于</div>
+                                <span class="about-verchip" id="aboutVersionChip">版本读取中…</span>
+                            </div>
+                        </div>
+
+                        <section class="about-card about-identity">
+                            <span class="about-logo"><svg class="about-ic sm" aria-hidden="true"><use href="#i-bt"/></svg></span>
+                            <div class="about-brand">
+                                <div class="about-app-name">BLE Toolkit+</div>
+                                <div class="about-verline" id="aboutVersionLine">…</div>
+                            </div>
+                        </section>
+
+                        <div class="about-sec-t"><div class="t"><svg class="about-ic" aria-hidden="true"><use href="#i-info"/></svg> 应用信息</div></div>
+                        <section class="about-card">
+                            <div class="about-kv"><span class="k">当前环境</span><span class="v" id="aboutEnvValue">—</span></div>
+                            <div class="about-kv"><span class="k">设备型号</span><span class="v" id="aboutModelValue">—</span></div>
+                            <div class="about-kv"><span class="k">构建</span><span class="v mono" id="aboutBuildValue">—</span></div>
+                            <div class="about-chiprow" id="aboutFeatureChips"></div>
+                        </section>
+
+                        <section class="about-card">
+                            <div id="platformGrid"></div>
+                        </section>
+
+                        <section class="about-card about-menu">
+                            <a class="about-menu-row" id="aboutWebsiteRow" href="#" target="_blank" rel="noreferrer">
+                                <span class="lead"><svg class="about-ic" aria-hidden="true"><use href="#i-ext"/></svg></span>
+                                <span class="t">官方网站</span>
+                                <span class="arr"><svg class="about-ic xs" aria-hidden="true"><use href="#i-chev-r"/></svg></span>
+                            </a>
+                            <a class="about-menu-row" id="aboutFeedbackRow" href="#" target="_blank" rel="noreferrer">
+                                <span class="lead"><svg class="about-ic" aria-hidden="true"><use href="#i-send"/></svg></span>
+                                <span class="t">问题反馈</span>
+                                <span class="arr"><svg class="about-ic xs" aria-hidden="true"><use href="#i-chev-r"/></svg></span>
+                            </a>
+                            <a class="about-menu-row" id="goVersionsLink" href="#">
+                                <span class="lead"><svg class="about-ic" aria-hidden="true"><use href="#i-doc"/></svg></span>
+                                <span class="t">版本记录</span>
+                                <span class="arr"><svg class="about-ic xs" aria-hidden="true"><use href="#i-chev-r"/></svg></span>
+                            </a>
+                            <a class="about-menu-row" id="shareAppLink" href="#">
+                                <span class="lead"><svg class="about-ic" aria-hidden="true"><use href="#i-share"/></svg></span>
+                                <span class="t">分享应用</span>
+                                <span class="arr"><svg class="about-ic xs" aria-hidden="true"><use href="#i-chev-r"/></svg></span>
+                            </a>
+                        </section>
+
+                        <div class="about-foot">日志全局脱敏：敏感凭据显示为 token=***<br>BLE Toolkit+ · Smart BLE 产品家族 · 微信小程序 wxf6c58b1dcac4c82d</div>
+                    </div>
+                </div>
+
+                <!-- ═══ P010 版本记录（结构对齐 prototype/pages/p010-versions.js：Release Metadata 纯投影） ═══ -->
+                <div id="versionsView" class="view" style="display: none;">
+                    <div class="subnav">
+                        <button id="versionsBackButton" class="back-btn"><svg class="ic sm" aria-hidden="true"><use href="#i-chev-r"/></svg></button>
+                        <span class="t">版本记录</span>
+                    </div>
+                    <div class="page">
+                        <div id="versionsBody"></div>
+                    </div>
+                </div>
+
+                <!-- ═══ P002 Smart HID 配网（结构对齐 prototype/pages/p002-provision.js：F019 三阶段/F020 配对码/F021 下发/F022 恢复） ═══ -->
+                <div id="hidProvisionView" class="view" style="display: none;">
+                    <div class="subnav">
+                        <button id="hidProvBackButton" class="back-btn"><svg class="ic sm" aria-hidden="true"><use href="#i-chev-r"/></svg></button>
+                        <span class="t">配置 Smart HID</span>
+                    </div>
+                    <div class="page">
+                        <div class="stepper" id="hidProvStepper"></div>
+                        <div class="card" style="display:flex;gap:11px;align-items:center;padding:12px 16px;margin-bottom:12px">
+                            <div class="ava shid" style="width:38px;height:38px;border-radius:10px" id="hidProvAva">S</div>
+                            <div style="min-width:0">
+                                <div style="font-size:var(--fs-h2);font-weight:var(--fw-bold)" id="hidProvDevName">Smart HID 设备</div>
+                                <div class="mono" style="font-size:var(--fs-micro);color:var(--c-mut)" id="hidProvDevId">—</div>
+                            </div>
+                        </div>
+
+                        <!-- 阶段一：连接设备 -->
+                        <div id="hidProvConnectPhase" hidden>
+                            <div class="op" id="hidProvConnecting" hidden>
+                                <span class="spin"></span>
+                                <div><div class="t">连接并确认设备中…</div>
+                                <div class="d">正在建立 GATT 连接并读取 Device Info 验证设备身份</div></div>
+                            </div>
+                            <div id="hidProvConnError" hidden>
+                                <div class="ebanner" style="margin-bottom:12px">
+                                    <div class="t">连接失败 <span class="code" id="hidProvConnErrorCode">identity_failed</span></div>
+                                    <div class="d" id="hidProvConnErrorText"></div>
+                                </div>
+                                <div style="display:flex;gap:9px">
+                                    <button class="btn primary" id="hidProvReconnect"><svg class="ic sm" aria-hidden="true"><use href="#i-refresh"/></svg><span>重新连接</span></button>
+                                    <button class="btn soft" id="hidProvBackToList"><span>返回设备列表</span></button>
                                 </div>
                             </div>
-                            <div class="about-chip-row">
-                                <span class="about-chip">Version 2.0.0</span>
-                                <span class="about-chip">Framework: Electron</span>
-                                <span class="about-chip">Language: Node.js + JavaScript</span>
-                            </div>
-                            <p class="about-copy">跨平台 BLE 控制台与统一协议内核，在桌面端提供更适合长时间调试的工作台体验。</p>
                         </div>
-                    </section>
 
-                    <section class="about-info-grid">
-                        <article class="about-card">
-                            <h3>定位</h3>
-                            <p>Electron 版本承担的是完整桌面实现与教学对照线，适合快速开发和跨平台分发。</p>
-                        </article>
-                        <article class="about-card">
-                            <h3>核心能力</h3>
-                            <ul>
-                                <li>扫描、过滤与连接 BLE 设备</li>
-                                <li>查看服务树与读写特征值</li>
-                                <li>通知监听、日志导出与 OTA</li>
-                                <li>广播模式与工作台级调试密度</li>
-                            </ul>
-                        </article>
-                        <article class="about-card">
-                            <h3>相关入口</h3>
-                            <div class="about-link-list">
-                                <a href="https://lightble.i2kai.com/" target="_blank">项目主页</a>
-                                <a href="https://lightble.i2kai.com/MASTER_ARCHITECTURE" target="_blank">架构白皮书</a>
-                                <a href="https://github.com/luoyaosheng/smart-ble" target="_blank">源码仓库</a>
-                                <a href="https://github.com/luoyaosheng/smart-ble/issues" target="_blank">问题反馈</a>
+                        <!-- 阶段二：填写配置 -->
+                        <div id="hidProvConfigurePhase" hidden>
+                            <div class="ebanner" id="hidProvLostBanner" hidden style="margin-bottom:12px">
+                                <div class="t">连接已断开 <span class="code">connection_lost</span></div>
+                                <div class="d">设备 BLE 连接已断开。已填写的配网信息不会丢失，重新连接后可继续下发。</div>
                             </div>
-                        </article>
-                    </section>
-                </div>
-            </div>
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+                                <span class="badge on" id="hidProvConnBadge"><span class="dot"></span><span id="hidProvConnWord">已连接</span></span>
+                                <span class="mono" style="font-size:var(--fs-mini);color:var(--c-mut)" id="hidProvDevSummary"></span>
+                            </div>
+                            <div id="hidProvLostActions" hidden style="margin-bottom:12px">
+                                <button class="btn primary" id="hidProvRejoin"><svg class="ic sm" aria-hidden="true"><use href="#i-refresh"/></svg><span id="hidProvRejoinWord">重新连接设备</span></button>
+                            </div>
+                            <div class="card">
+                                <div class="field"><label>Wi-Fi 名称 <span class="req">*</span></label>
+                                    <div class="inp"><input maxlength="32" placeholder="家庭 / 办公 2.4G Wi-Fi" id="hidSsidInput"></div></div>
+                                <div class="field"><label>Wi-Fi 密码</label>
+                                    <div class="inp"><input type="password" maxlength="64" placeholder="无密码可留空" id="hidPwdInput">
+                                        <button class="eye" id="hidPwdEye" type="button"><svg class="ic sm" aria-hidden="true"><use href="#i-eye"/></svg></button></div></div>
+                                <div class="field"><label>ControlHub 地址 <span class="req">*</span></label>
+                                    <div class="inp"><input class="mono" placeholder="192.168.1.8:17892" id="hidHubInput"></div></div>
+                            </div>
+                            <div class="bigact" id="hidQrBigact" role="button" tabindex="0">
+                                <svg class="ic lg" aria-hidden="true"><use href="#i-qr"/></svg>
+                                <div style="flex:1">
+                                    <div class="t" id="hidQrTitle">获取 ControlHub 配对码</div>
+                                    <div class="d" id="hidQrDesc">粘贴 / 手输 shid://pair 配对码，自动回填地址与令牌</div>
+                                </div>
+                                <span class="chip warning" id="hidQrBadge">必需</span>
+                            </div>
+                            <div class="note info" style="margin-top:12px">
+                                <svg class="ic sm" aria-hidden="true"><use href="#i-info"/></svg>
+                                <div>Wi-Fi 密码和配对凭据只用于本次下发，<b>不写入日志或本地存储</b>。</div>
+                            </div>
+                            <div style="margin-top:16px">
+                                <button class="btn primary" id="hidSubmitButton" style="width:100%" disabled>
+                                    <svg class="ic sm" aria-hidden="true"><use href="#i-send"/></svg><span>下发配置</span></button>
+                            </div>
+                        </div>
 
-            <!-- 设备详情视图 -->
-            <div id="deviceDetailView" class="view">
-                <div class="detail-header">
-                    <button id="backButton" class="btn btn-secondary">← 返回</button>
-                    <div class="device-info">
-                        <h2 id="deviceName">设备名称</h2>
-                        <span id="deviceId" class="device-id">设备 ID</span>
+                        <!-- 阶段三：下发状态 -->
+                        <div id="hidProvStatusPhase" hidden>
+                            <div class="card" id="hidProvProgressCard"></div>
+                            <div id="hidProvDoneCard" hidden style="text-align:center;padding-top:26px">
+                                <div style="width:56px;height:56px;border-radius:50%;background:var(--c-success-weak);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;color:#0E9A80">
+                                    <svg class="ic lg" aria-hidden="true"><use href="#i-check"/></svg></div>
+                                <div style="font-size:var(--fs-h1);font-weight:var(--fw-xbold)">配置成功 · 设备 READY</div>
+                                <div style="font-size:var(--fs-body);color:var(--c-mut);margin:8px 0 4px">HID 控制请通过 ControlHub 下发</div>
+                                <div style="margin-top:16px"><button class="btn primary" id="hidDoneViewButton"><span>查看设备</span><svg class="ic sm" aria-hidden="true"><use href="#i-chev-r"/></svg></button></div>
+                            </div>
+                            <div id="hidProvErrBlock" hidden>
+                                <div class="ebanner" style="margin-bottom:12px">
+                                    <div class="t">配置失败 <span class="code" id="hidProvErrCode"></span></div>
+                                    <div class="d" id="hidProvErrText"></div>
+                                </div>
+                                <div style="margin-top:16px"><button class="btn primary" id="hidRecoveryButton"></button></div>
+                            </div>
+                            <div id="hidProvWaitingBlock">
+                                <div style="margin-top:16px"><button class="btn soft" id="hidCancelWaitButton" style="width:100%"><span>取消等待</span></button></div>
+                            </div>
+                        </div>
                     </div>
-                    <div id="connectionStatus" class="status-badge">未连接</div>
                 </div>
 
-                <div class="detail-controls">
-                    <button id="otaButton" class="btn btn-primary">OTA 升级</button>
-                    <button id="clearLogsButton" class="btn btn-secondary">清空日志</button>
-                    <button id="disconnectButton" class="btn btn-danger">断开连接</button>
+                <!-- ═══ P003 Smart HID 设备详情（结构对齐 prototype/pages/p003-hid-detail.js：会话级内存快照） ═══ -->
+                <div id="hidDetailView" class="view" style="display: none;">
+                    <div class="subnav">
+                        <button id="hidDetailBackButton" class="back-btn"><svg class="ic sm" aria-hidden="true"><use href="#i-chev-r"/></svg></button>
+                        <span class="t">Smart HID 设备详情</span>
+                    </div>
+                    <div class="page"><div id="hidDetailBody"></div></div>
                 </div>
 
-                <!-- Service Panel Component -->
-                <service-panel id="mainServicePanel"></service-panel>
+                <!-- ═══ P005 SHID 诊断（结构对齐 prototype/pages/p005-diagnostics.js：F024 五项链路） ═══ -->
+                <div id="hidDiagnosticsView" class="view" style="display: none;">
+                    <div class="subnav">
+                        <button id="hidDiagBackButton" class="back-btn"><svg class="ic sm" aria-hidden="true"><use href="#i-chev-r"/></svg></button>
+                        <span class="t">SHID 诊断</span>
+                    </div>
+                    <div class="page"><div id="hidDiagBody"></div></div>
+                </div>
 
-                <!-- Log Panel Component -->
-                <log-panel id="mainLogPanel"></log-panel>
+                <!-- ═══ P006 GATT 调试（结构对齐 prototype/pages/p006-gatt.js + desktop.js 双栏） ═══ -->
+                <div id="deviceDetailView" class="view">
+                    <div class="subnav">
+                        <button id="backButton" class="back-btn"><svg class="ic sm" aria-hidden="true"><use href="#i-chev-r"/></svg></button>
+                        <span class="t">GATT 调试</span>
+                        <button id="otaButton" class="btn ghost danger-t sm" style="display:none;">
+                            <svg class="ic sm" aria-hidden="true"><use href="#i-dl"/></svg><span>固件更新</span>
+                        </button>
+                    </div>
+                    <div class="page">
+                        <div class="dcol1">
+                            <div class="devhead">
+                                <div class="r1">
+                                    <span id="gattSt" class="st"></span>
+                                    <div style="flex:1;min-width:0">
+                                        <div id="deviceName" style="font-size:var(--fs-h1);font-weight:var(--fw-bold)">设备名称</div>
+                                        <div class="mono" style="font-size:var(--fs-micro);color:var(--c-mut);margin-top:2px"><span id="deviceId">设备 ID</span> · <span id="gattStateWord">未连接</span></div>
+                                    </div>
+                                </div>
+                                <div class="acts">
+                                    <button id="connectButton" class="btn primary" style="display:none;">
+                                        <svg class="ic sm" aria-hidden="true"><use href="#i-link"/></svg><span>连接设备</span>
+                                    </button>
+                                    <button id="disconnectButton" class="btn danger" style="display:none;">
+                                        <svg class="ic sm" aria-hidden="true"><use href="#i-x"/></svg><span>断开连接</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="gattPanel" style="margin-top:12px"></div>
+                            <!-- Service Panel Component（ready 态由 gattPanel 装载） -->
+                            <service-panel id="mainServicePanel"></service-panel>
+                        </div>
+                        <div class="dcol2">
+                            <div class="dnote">桌面布局（SOP §12 圈内调整）：右栏日志常驻 · 左区设备/服务/操作，流程与数据模型同基准。</div>
+                            <div class="logdock">
+                                <!-- Log Panel Component（正典 dock 深色变体） -->
+                                <log-panel id="mainLogPanel"></log-panel>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </main>
+
+            <!-- TabBar（正典底部四枚：扫描/已连接/广播/关于） -->
+            <nav class="tabbar" id="tabbar">
+                <button class="tb on" data-tab="scan">
+                    <svg class="ic" aria-hidden="true"><use href="#i-scan"/></svg><span>扫描</span>
+                </button>
+                <button class="tb" data-tab="connected" id="connectedTab">
+                    <svg class="ic" aria-hidden="true"><use href="#i-link"/></svg><span>已连接</span><span class="n" id="connectedBadge" style="display:none">0</span>
+                </button>
+                <button class="tb" data-tab="broadcast" id="broadcastTab" style="display:none;">
+                    <svg class="ic" aria-hidden="true"><use href="#i-cast"/></svg><span>广播</span>
+                </button>
+                <button class="tb" data-tab="about">
+                    <svg class="ic" aria-hidden="true"><use href="#i-info"/></svg><span>关于</span>
+                </button>
+            </nav>
+
+            <div id="toasts" style="position:absolute;inset:0;pointer-events:none;z-index:var(--z-toast);"></div>
+        </div>
     </div>
+
+    <!-- SVG 图标 sprite（24×24 · stroke 1.8 · currentColor，与 docs/specs/prototype/platform/desktop/high-fi/index.html 同源全集） -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+      <defs>
+        <g id="i-scan" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21M11 8v6M8 11h6"/></g>
+        <g id="i-bt" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 7l10 10-5 4V3l5 4L7 17"/></g>
+        <g id="i-link" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.72-1.71"/></g>
+        <g id="i-cast" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><path d="M8.2 15.8a5.4 5.4 0 010-7.6M15.8 8.2a5.4 5.4 0 010 7.6M5.3 18.7a9.5 9.5 0 010-13.4M18.7 5.3a9.5 9.5 0 010 13.4"/></g>
+        <g id="i-info" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><circle cx="12" cy="8" r="0.6" fill="currentColor"/></g>
+        <g id="i-share" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="M8.3 10.8l7.4-4.3M8.3 13.2l7.4 4.3"/></g>
+        <g id="i-chev-r" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 6l6 6-6 6"/></g>
+        <g id="i-chev-d" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 9l6 6 6-6"/></g>
+        <g id="i-check" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12.5l4.5 4.5L19 7"/></g>
+        <g id="i-x" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M6 6l12 12M18 6L6 18"/></g>
+        <g id="i-warn" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3.5L2.5 19.5h19z"/><path d="M12 10v4"/><circle cx="12" cy="16.8" r="0.6" fill="currentColor"/></g>
+        <g id="i-copy" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="12" height="12" rx="2.5"/><path d="M5 15H4.5A1.5 1.5 0 013 13.5v-9A1.5 1.5 0 014.5 3h9A1.5 1.5 0 0115 4.5V5"/></g>
+        <g id="i-refresh" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12a9 9 0 11-2.64-6.36"/><path d="M21 3v6h-6"/></g>
+        <g id="i-play" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round">
+          <path d="M7 4.8l14 7.2-14 7.2z"/></g>
+        <g id="i-stop" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round">
+          <rect x="6" y="6" width="12" height="12" rx="2"/></g>
+        <g id="i-qr" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 14h3v3h-3zM20 14v3M14 20h6"/></g>
+        <g id="i-wifi" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <path d="M2.5 9.5a14 14 0 0119 0M5.5 13a10 10 0 0113 0M8.7 16.4a5.5 5.5 0 016.6 0"/><circle cx="12" cy="19.4" r="0.7" fill="currentColor" stroke="none"/></g>
+        <g id="i-usb" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 7V3.5M15 7V3.5M7 7h10v4.5a5 5 0 01-10 0zM12 16.5v4"/><path d="M9.5 20.5h5"/></g>
+        <g id="i-send" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21.5 2.5L11 13M21.5 2.5l-7 19-3.5-8.5-8.5-3.5z"/></g>
+        <g id="i-eye" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></g>
+        <g id="i-eye-off" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 12s3.5-6.5 10-6.5c1.8 0 3.4.5 4.7 1.3M22 12s-3.5 6.5-10 6.5c-1.8 0-3.4-.5-4.7-1.3"/><path d="M4 20L20 4"/></g>
+        <g id="i-trash" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3.5 6.5h17M8 6.5V4.8A1.3 1.3 0 019.3 3.5h5.4A1.3 1.3 0 0116 4.8v1.7M19 6.5v13a1.5 1.5 0 01-1.5 1.5h-11A1.5 1.5 0 015 19.5v-13"/><path d="M10 11v6M14 11v6"/></g>
+        <g id="i-chip" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="6" y="6" width="12" height="12" rx="2.5"/><rect x="10" y="10" width="4" height="4" rx="1"/><path d="M9 2.5V6M15 2.5V6M9 18v3.5M15 18v3.5M2.5 9H6M2.5 15H6M18 9h3.5M18 15h3.5"/></g>
+        <g id="i-log" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2.5H6.5A1.5 1.5 0 005 4v16a1.5 1.5 0 001.5 1.5h11A1.5 1.5 0 0019 20V7.5z"/><path d="M14 2.5v5h5M8.5 13h7M8.5 16.5h4.5"/></g>
+        <g id="i-set" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9" cy="7" r="2" fill="var(--c-card,#fff)"/><circle cx="15" cy="12" r="2" fill="var(--c-card,#fff)"/><circle cx="8" cy="17" r="2" fill="var(--c-card,#fff)"/></g>
+        <g id="i-lock" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V7a4 4 0 018 0v3.5M12 14.5v2.5"/></g>
+        <g id="i-doc" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2.5H6.5A1.5 1.5 0 005 4v16a1.5 1.5 0 001.5 1.5h11A1.5 1.5 0 0019 20V7.5z"/><path d="M14 2.5v5h5"/></g>
+        <g id="i-ext" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M13.5 4.5H19.5V10.5M19.5 4.5L11 13M19.5 13.5V19a1.5 1.5 0 01-1.5 1.5H5A1.5 1.5 0 013.5 19V6A1.5 1.5 0 015 4.5h5.5"/></g>
+        <g id="i-hid" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2.5" y="6.5" width="19" height="11" rx="2"/><path d="M6.5 10v.5M9.5 10v.5M12 10v.5M14.5 10v.5M17.5 10v.5M7.5 14h9"/></g>
+        <g id="i-pulse" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2.5 12H6l2.5-6 4.5 12 2.5-6h6"/></g>
+        <g id="i-folder" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3.5 6.5A1.5 1.5 0 015 5h4.5l2 2.5H19a1.5 1.5 0 011.5 1.5v10A1.5 1.5 0 0119 20.5H5a1.5 1.5 0 01-1.5-1.5z"/></g>
+        <g id="i-dl" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3.5v11M7.5 10L12 14.5 16.5 10M4 17.5v1.5a1.5 1.5 0 001.5 1.5h13a1.5 1.5 0 001.5-1.5v-1.5"/></g>
+        <g id="i-box" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 7.5l-9-5-9 5v9l9 5 9-5z"/><path d="M3 7.5l9 5 9-5M12 12.5v9"/></g>
+        <g id="i-signal" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M4 18h1.5M9 14.5v3.5M14 10.5v7.5M19 6.5v11.5"/></g>
+        <g id="i-batt" fill="none" stroke="currentColor" stroke-width="1.6">
+          <rect x="1.5" y="6" width="18" height="12" rx="3"/><path d="M22 10.5v3" stroke-linecap="round"/><rect x="4" y="8.5" width="10" height="7" rx="1.5" fill="currentColor" stroke="none"/></g>
+      </defs>
+    </svg>
 
     <!-- Write Data Dialog Component -->
     <write-dialog id="mainWriteDialog"></write-dialog>
@@ -231,13 +451,21 @@
     <!-- OTA Update Dialog Component -->
     <ota-dialog id="mainOtaDialog"></ota-dialog>
 
+    <script src="device-display-name.js"></script>
     <script src="components/DeviceCard.js"></script>
     <script src="components/FilterPanel.js"></script>
     <script src="components/ServicePanel.js"></script>
     <script src="components/LogPanel.js"></script>
     <script src="components/WriteDialog.js"></script>
+    <script src="ota-contract.js"></script>
     <script src="components/OtaDialog.js"></script>
     <script src="BleUtils.js"></script>
+    <script src="config/release-metadata.generated.js"></script>
+    <script src="config/product.js"></script>
+    <script src="version-metadata.js"></script>
+    <script src="log-redaction.js"></script>
+    <script src="smart-hid.bundle.js"></script>
+    <script src="hid-service.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

@@ -8,11 +8,14 @@
   },
   "package": {
     "productName": "BLE Toolkit+",
-    "version": "1.0.0"
+    "version": "1.0.5"
   },
   "tauri": {
     "allowlist": {
       "all": false,
+      "app": {
+        "all": true
+      },
       "shell": {
         "all": false,
         "open": true

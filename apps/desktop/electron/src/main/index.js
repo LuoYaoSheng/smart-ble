@@ -16,8 +16,15 @@ function getLogPath() {
   }
   return debugLogPath;
 }
+// F026：主进程日志统一脱敏（uniapp logger/log-redaction.js 的桌面锁定镜像，挂 globalThis）
+let LOG_REDACTION = null;
+try {
+  require('../../public/log-redaction.js');
+  LOG_REDACTION = globalThis.SmartBLELogRedaction || null;
+} catch (_) { /* 脱敏镜像缺失时不阻断主进程 */ }
 function debugLog(...args) {
-  const msg = args.map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(' ');
+  let msg = args.map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(' ');
+  if (LOG_REDACTION) msg = LOG_REDACTION.sanitizeLogString(msg);
   try {
     fs.appendFileSync(getLogPath(), new Date().toISOString() + ' ' + msg + '\n');
   } catch (_) { /* ignore log write errors */ }
@@ -32,6 +39,16 @@ let bleModule = null;
 const discoveredDevices = new Map();
 // 多设备并发连接 (deviceId -> peripheral)
 const connectedPeripherals = new Map();
+// 服务发现缓存：deviceId -> Promise<{success, services}>（防重入 + 防渲染端回环风暴）
+const serviceDiscoveryCache = new Map();
+
+// UUID 规范化匹配：noble 给无横线小写，调用方（OtaDialog 等）可能传带横线/大写
+function normalizeBleUuid(uuid) {
+  return (uuid || '').toLowerCase().replace(/-/g, '');
+}
+function matchBleUuid(a, b) {
+  return normalizeBleUuid(a) === normalizeBleUuid(b);
+}
 
 // 加载 BLE 模块
 let bleModuleLoaded = false;
@@ -140,9 +157,12 @@ function setupBLEEvents() {
     const adv = peripheral.advertisement || {};
 
     // 解析广播数据
+    // F005 显示名批准链：name 投影广播 localName，空名保持空串（渲染层批准链兜底，
+    // 不在数据层污染为「未知设备」——批准链正典见 uniapp device-display-name.js）
     const device = {
       id: peripheral.id,
-      name: adv.localName || '未知设备',
+      name: adv.localName || '',
+      localName: adv.localName || '',
       rssi: peripheral.rssi,
       address: peripheral.address,
       connectionState: peripheral.state === 'connected' ? 'connected' : 'disconnected',
@@ -193,6 +213,9 @@ function getDevice(deviceId) {
 }
 
 // IPC 处理器
+// F027 版本元数据：运行时渠道版本（package.json version，与仓库根 VERSION 单源同步）
+ipcMain.handle('app:getVersion', () => app.getVersion());
+
 ipcMain.handle('ble:init', async () => {
   debugLog('IPC: ble:init called');
   const loaded = await loadBLEModule();
@@ -344,6 +367,7 @@ ipcMain.handle('ble:connect', async (event, deviceId) => {
         peripheral.on('disconnect', () => {
           debugLog('Peripheral disconnected unexpectedly:', peripheral.id);
           connectedPeripherals.delete(peripheral.id);
+          serviceDiscoveryCache.delete(peripheral.id);
           sendToRenderer('ble:deviceDisconnected', { id: peripheral.id });
         });
 
@@ -384,6 +408,7 @@ ipcMain.handle('ble:disconnect', async (event, deviceId) => {
       peripheral.removeAllListeners('disconnect'); // Clean up all disconnect listeners
       // Remove from map only after disconnect event fires
       connectedPeripherals.delete(targetId);
+      serviceDiscoveryCache.delete(targetId);
       if (error) {
         resolve({ success: false, error: error.message });
       } else {
@@ -406,14 +431,29 @@ ipcMain.handle('ble:discoverServices', async (event, deviceId) => {
     return { success: false, services: [] };
   }
 
+  // 重入/缓存：同一设备的发现只跑一次，断开时失效
+  if (serviceDiscoveryCache.has(targetPeripheral.id)) {
+    const cached = await serviceDiscoveryCache.get(targetPeripheral.id);
+    debugLog('Service discovery cache hit for:', targetPeripheral.id);
+    // 命中缓存时重发一次快照，让渲染端状态自愈（不重新走 GATT 发现）
+    if (cached.success) {
+      sendToRenderer('ble:servicesDiscovered', {
+        deviceId: targetPeripheral.id,
+        services: cached.services
+      });
+    }
+    return cached;
+  }
+
   debugLog('Starting service discovery for:', targetPeripheral.id);
 
-  return new Promise((resolve) => {
+  const discoveryPromise = new Promise((resolve) => {
     const peripheral = targetPeripheral;
 
     // 设置超时
     const timeout = setTimeout(() => {
       debugLog('Service discovery timeout');
+      serviceDiscoveryCache.delete(peripheral.id);
       resolve({ success: false, services: [], error: 'Timeout discovering services' });
     }, 30000);
 
@@ -426,6 +466,7 @@ ipcMain.handle('ble:discoverServices', async (event, deviceId) => {
 
           if (error) {
             debugLog('Service discovery error:', error);
+            serviceDiscoveryCache.delete(peripheral.id);
             resolve({ success: false, services: [], error: error.message });
             return;
           }
@@ -449,19 +490,18 @@ ipcMain.handle('ble:discoverServices', async (event, deviceId) => {
             characteristics: []
           }));
 
-          // 保存服务引用
-          if (!peripheral.services) {
-            peripheral.services = [];
-          }
+          // 固定本轮服务数量：noble 的 services 数组是共享引用，
+          // 异步期间若被并发流程撑长会导致 servicesData[i] 越界
+          const serviceCount = services.length;
 
-          // 发送初始服务列表
+          // 发送初始服务列表（特征值到达前先出骨架）
           sendToRenderer('ble:servicesDiscovered', {
             deviceId: peripheral.id,
             services: servicesData
           });
 
           // 异步发现特征值
-          for (let i = 0; i < services.length; i++) {
+          for (let i = 0; i < serviceCount; i++) {
             const service = services[i];
             try {
               const characteristics = await discoverCharacteristics(service);
@@ -476,7 +516,6 @@ ipcMain.handle('ble:discoverServices', async (event, deviceId) => {
 
               servicesData[i].characteristics = charData;
               service.characteristics = characteristics;
-              peripheral.services.push(service);
 
               // 发送更新后的服务列表
               sendToRenderer('ble:servicesDiscovered', {
@@ -488,12 +527,16 @@ ipcMain.handle('ble:discoverServices', async (event, deviceId) => {
             }
           }
 
+          // 整体引用替换（不可 push：会向 noble 共享数组重复塞服务）
+          peripheral.services = services;
+
           debugLog('Service discovery completed, total services:', servicesData.length);
           resolve({ success: true, services: servicesData });
         });
       } catch (e) {
         clearTimeout(timeout);
         debugLog('discoverServices() exception:', e);
+        serviceDiscoveryCache.delete(peripheral.id);
         resolve({ success: false, services: [], error: e.message });
       }
     };
@@ -501,6 +544,9 @@ ipcMain.handle('ble:discoverServices', async (event, deviceId) => {
     // 延迟调用，确保连接稳定
     setTimeout(discoverWithCallback, 500);
   });
+
+  serviceDiscoveryCache.set(targetPeripheral.id, discoveryPromise);
+  return discoveryPromise;
 });
 
 // 辅助函数：发现特征值
@@ -547,14 +593,16 @@ ipcMain.handle('ble:readCharacteristic', async (event, deviceId, serviceUuid, ch
   }
 
   return new Promise((resolve) => {
-    const service = targetPeripheral.services.find(s => s.uuid === serviceUuid);
+    const service = targetPeripheral.services.find(s => matchBleUuid(s.uuid, serviceUuid));
     if (!service) {
       resolve({ success: false, error: 'Service not found' });
       return;
     }
 
-    const characteristic = service.characteristics.find(c => c.uuid === charUuid);
+    const characteristic = service.characteristics.find(c => matchBleUuid(c.uuid, charUuid));
     if (!characteristic) {
+      debugLog('[diag] char not found: want', charUuid, 'in service', service.uuid,
+        'avail:', JSON.stringify((service.characteristics || []).map(c => c.uuid)));
       resolve({ success: false, error: 'Characteristic not found' });
       return;
     }
@@ -588,13 +636,13 @@ ipcMain.handle('ble:writeCharacteristic', async (event, deviceId, serviceUuid, c
   }
 
   return new Promise((resolve) => {
-    const service = targetPeripheral.services.find(s => s.uuid === serviceUuid);
+    const service = targetPeripheral.services.find(s => matchBleUuid(s.uuid, serviceUuid));
     if (!service) {
       resolve({ success: false, error: 'Service not found' });
       return;
     }
 
-    const characteristic = service.characteristics.find(c => c.uuid === charUuid);
+    const characteristic = service.characteristics.find(c => matchBleUuid(c.uuid, charUuid));
     if (!characteristic) {
       resolve({ success: false, error: 'Characteristic not found' });
       return;
@@ -621,10 +669,10 @@ ipcMain.handle('ble:writeRaw', async (event, deviceId, serviceUuid, charUuid, da
   if (!targetPeripheral) return { success: false, error: 'No device connected' };
 
   return new Promise((resolve) => {
-    const service = targetPeripheral.services.find(s => s.uuid === serviceUuid);
+    const service = targetPeripheral.services.find(s => matchBleUuid(s.uuid, serviceUuid));
     if (!service) { resolve({ success: false, error: 'Service not found' }); return; }
 
-    const characteristic = service.characteristics.find(c => c.uuid === charUuid);
+    const characteristic = service.characteristics.find(c => matchBleUuid(c.uuid, charUuid));
     if (!characteristic) { resolve({ success: false, error: 'Characteristic not found' }); return; }
 
     // data is already a byte array — convert directly to Buffer
@@ -647,13 +695,13 @@ ipcMain.handle('ble:notifyCharacteristic', async (event, deviceId, serviceUuid, 
   }
 
   return new Promise((resolve) => {
-    const service = targetPeripheral.services.find(s => s.uuid === serviceUuid);
+    const service = targetPeripheral.services.find(s => matchBleUuid(s.uuid, serviceUuid));
     if (!service) {
       resolve({ success: false, error: 'Service not found' });
       return;
     }
 
-    const characteristic = service.characteristics.find(c => c.uuid === charUuid);
+    const characteristic = service.characteristics.find(c => matchBleUuid(c.uuid, charUuid));
     if (!characteristic) {
       resolve({ success: false, error: 'Characteristic not found' });
       return;

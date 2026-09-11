@@ -1,12 +1,21 @@
+//
+// ServicePanel — GATT 服务/特征树（P006）
+// 结构对齐 docs/specs/prototype/platform/desktop/high-fi/pages/p006-gatt.js ready 面板：
+//   sec-t（服务与特征 + N/M chip + 全部展开/收起）+ .svc/.svc-h/.svc-b/.char 树
+//   （OTA 服务红 dl 图标区分）+ read/write/notify chips + 读取/写入/监听按钮。
+// light DOM，样式走全局 prototype.css。
+// 事件契约保持：char-action { detail: { serviceUuid, charUuid, action, btn } }。
+//
 class ServicePanel extends HTMLElement {
     constructor() {
         super();
-        this.attachShadow({ mode: 'open' });
         this._services = [];
+        this._expanded = { 0: true }; // 正典默认：首个服务展开
     }
 
     set services(val) {
         this._services = val || [];
+        this._expanded = { 0: true };
         this.render();
     }
 
@@ -15,214 +24,133 @@ class ServicePanel extends HTMLElement {
     }
 
     updateCharacteristicValue(serviceUuid, charUuid, value) {
-        const charItem = this.shadowRoot.querySelector(`[data-service-uuid="${serviceUuid}"][data-char-uuid="${charUuid}"]`);
+        const charItem = this.querySelector(`[data-service-uuid="${serviceUuid}"][data-char-uuid="${charUuid}"]`);
         if (!charItem) return;
 
-        let valueDiv = charItem.querySelector('.characteristic-value');
+        let valueDiv = charItem.querySelector('.char-value');
         if (!valueDiv) {
             valueDiv = document.createElement('div');
-            valueDiv.className = 'characteristic-value';
-            charItem.insertBefore(valueDiv, charItem.querySelector('.characteristic-actions'));
+            valueDiv.className = 'char-value';
+            charItem.insertBefore(valueDiv, charItem.querySelector('.r2'));
         }
         valueDiv.textContent = value || '(empty)';
     }
 
     escapeHtml(text) {
         const div = document.createElement('div');
-        div.textContent = text || '';
+        div.textContent = text == null ? '' : String(text);
         return div.innerHTML;
     }
 
+    ic(name, cls = '') {
+        return `<svg class="ic ${cls}" aria-hidden="true"><use href="#i-${name}"/></svg>`;
+    }
+
     connectedCallback() {
+        this.style.display = 'block';
         this.render();
     }
 
     render() {
         if (!this._services || this._services.length === 0) {
-            this.shadowRoot.innerHTML = `
-                <style>
-                    .empty-state { text-align: center; padding: 40px 20px; color: #8e8e93; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-                    .empty-state img { width: 64px; height: 64px; opacity: 0.5; margin-bottom: 12px; }
-                </style>
-                <div class="empty-state">
-                    <img src="placeholders/empty_services.svg" alt="no services">
-                    <div>No services found or connect to discover</div>
-                </div>
-            `;
+            this.innerHTML = '';
             return;
         }
 
-        this.shadowRoot.innerHTML = `
-            <style>
-                :host {
-                    display: block;
-                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-                }
-                .service-card {
-                    background: white;
-                    border-radius: 12px;
-                    border: 1px solid rgba(0,0,0,0.05);
-                    margin-bottom: 12px;
-                    overflow: hidden;
-                }
-                .service-header {
-                    padding: 16px;
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    cursor: pointer;
-                    background: #f8f9fa;
-                    user-select: none;
-                }
-                .service-header:hover { background: #f2f2f7; }
-                .service-info h4 {
-                    margin: 0 0 4px 0;
-                    font-size: 15px;
-                    color: #1c1c1e;
-                }
-                .service-uuid {
-                    font-size: 12px;
-                    color: #8e8e93;
-                    font-family: monospace;
-                }
-                .service-expand {
-                    color: #8e8e93;
-                    transition: transform 0.2s;
-                }
-                .characteristics-list {
-                    border-top: 1px solid rgba(0,0,0,0.05);
-                    display: none;
-                }
-                .service-card.expanded .characteristics-list { display: block; }
-                .service-card.expanded .service-expand { transform: rotate(180deg); }
-                
-                .characteristic-item {
-                    padding: 16px;
-                    border-bottom: 1px solid rgba(0,0,0,0.05);
-                }
-                .characteristic-item:last-child { border-bottom: none; }
-                .characteristic-header {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: flex-start;
-                    margin-bottom: 12px;
-                }
-                .characteristic-name {
-                    font-weight: 500;
-                    font-size: 14px;
-                    color: #1c1c1e;
-                    margin-bottom: 4px;
-                }
-                .characteristic-uuid {
-                    font-size: 12px;
-                    color: #8e8e93;
-                    font-family: monospace;
-                }
-                .char-props {
-                    display: flex;
-                    gap: 4px;
-                    flex-wrap: wrap;
-                    justify-content: flex-end;
-                }
-                .prop-badge {
-                    font-size: 10px;
-                    padding: 2px 6px;
-                    border-radius: 4px;
-                    background: #e5e5ea;
-                    color: #48484a;
-                    text-transform: uppercase;
-                }
-                .characteristic-value {
-                    font-family: monospace;
-                    font-size: 13px;
-                    padding: 8px 12px;
-                    background: #f2f2f7;
-                    border-radius: 6px;
-                    margin-bottom: 12px;
-                    word-break: break-all;
-                }
-                .characteristic-actions {
-                    display: flex;
-                    gap: 8px;
-                }
-                .btn {
-                    padding: 6px 12px;
-                    border-radius: 6px;
-                    font-size: 13px;
-                    font-weight: 500;
-                    cursor: pointer;
-                    border: none;
-                }
-                .btn-primary { background: #007aff; color: white; }
-                .btn-secondary { background: #f2f2f7; color: #007aff; }
-                .btn:active { opacity: 0.8; }
-                .btn.active { background: #34c759; color: white; }
-            </style>
-            ${this._services.map((service, sIdx) => `
-                <div class="service-card expanded" data-service-idx="${sIdx}">
-                    <div class="service-header">
-                        <div class="service-info">
-                            <h4>${this.escapeHtml(service.name || 'Unknown Service')}</h4>
-                            <div class="service-uuid">${this.escapeHtml(service.uuid)}</div>
-                        </div>
-                        <span class="service-expand">▼</span>
-                    </div>
-                    <div class="characteristics-list">
-                        ${service.characteristics && service.characteristics.length > 0
-                            ? service.characteristics.map(char => this.renderCharacteristic(service.uuid, char)).join('')
-                            : '<div style="padding:16px;color:#8e8e93;font-size:13px;text-align:center;">No characteristics</div>'
-                        }
-                    </div>
-                </div>
-            `).join('')}
-        `;
+        const normalizeUuid = (u) => (u || '').toLowerCase().replace(/-/g, '');
+        const otaServiceUuid = '4fafc2011fb5459e8fccc5c9c331914d';
+        const charCount = this._services.reduce((n, s) => n + ((s.characteristics && s.characteristics.length) || 0), 0);
 
-        this.shadowRoot.querySelectorAll('.service-header').forEach(header => {
-            header.addEventListener('click', () => {
-                const card = header.closest('.service-card');
-                card.classList.toggle('expanded');
-                const expandIcon = card.querySelector('.service-expand');
-                expandIcon.textContent = card.classList.contains('expanded') ? '▼' : '▶';
+        const tree = this._services.map((service, sIdx) => {
+            const isOta = normalizeUuid(service.uuid) === otaServiceUuid;
+            const chars = (service.characteristics || []);
+            return `
+            <div class="svc ${this._expanded[sIdx] ? 'open' : ''}" data-svc-idx="${sIdx}">
+                <div class="svc-h" data-role="fold" data-idx="${sIdx}">
+                    <span style="color:${isOta ? 'var(--c-danger)' : 'var(--c-primary)'};display:flex">${this.ic(isOta ? 'dl' : 'chip', 'sm')}</span>
+                    <span class="nm">${this.escapeHtml(service.name || 'Unknown Service')}</span>
+                    <span class="chip neutral mono">${this.escapeHtml((service.uuid || '').slice(0, 8))}…</span>
+                    <span class="chev">${this.ic('chev-r', 'sm')}</span>
+                </div>
+                <div class="svc-b">
+                    ${chars.length ? chars.map((ch) => this.renderCharacteristic(service.uuid, ch)).join('')
+                        : '<div style="padding:12px 14px;color:var(--c-mut);font-size:var(--fs-cap);text-align:center">无特征</div>'}
+                </div>
+            </div>`;
+        }).join('');
+
+        this.innerHTML = `
+            <div class="sec-t" style="margin-top:12px">
+                <div class="t">${this.ic('chip')} 服务与特征 <span class="chip neutral">${this._services.length} 服务 / ${charCount} 特征</span></div>
+                <span style="display:flex;gap:4px">
+                    <button class="txtlink" data-role="expand">全部展开</button>
+                    <button class="txtlink" data-role="collapse">全部收起</button>
+                </span>
+            </div>
+            ${tree}`;
+
+        this.querySelectorAll('[data-role="fold"]').forEach((h) => {
+            h.addEventListener('click', () => {
+                const i = +h.dataset.idx;
+                this._expanded[i] = !this._expanded[i];
+                const card = h.closest('.svc');
+                if (card) card.classList.toggle('open', !!this._expanded[i]);
             });
         });
-
-        this.shadowRoot.querySelectorAll('[data-action]').forEach(btn => {
+        this.querySelector('[data-role="expand"]')?.addEventListener('click', () => {
+            this._expanded = {};
+            this._services.forEach((_, i) => { this._expanded[i] = true; });
+            this.querySelectorAll('.svc').forEach((c) => c.classList.add('open'));
+        });
+        this.querySelector('[data-role="collapse"]')?.addEventListener('click', () => {
+            this._expanded = {};
+            this.querySelectorAll('.svc').forEach((c) => c.classList.remove('open'));
+        });
+        this.querySelectorAll('[data-action]').forEach((btn) => {
             btn.addEventListener('click', (e) => {
-                const charItem = e.target.closest('.characteristic-item');
+                e.stopPropagation();
+                const charItem = e.target.closest('.char');
                 const serviceUuid = charItem.dataset.serviceUuid;
                 const charUuid = charItem.dataset.charUuid;
                 const action = e.target.dataset.action;
-
+                if (action === 'notify') {
+                    // 监听按钮自翻转（正典：开始监听/停止监听）
+                    const on = btn.classList.toggle('listening');
+                    btn.querySelector('span').textContent = on ? '停止监听' : '开始监听';
+                    btn.classList.toggle('on', on);
+                }
                 this.dispatchEvent(new CustomEvent('char-action', {
                     detail: { serviceUuid, charUuid, action, btn: e.target },
-                    bubbles: true,
-                    composed: true
+                    bubbles: true, composed: true
                 }));
             });
         });
     }
 
-    renderCharacteristic(serviceUuid, char) {
-        const props = char.properties || [];
-        const propBadges = props.map(p => `<span class="prop-badge">${this.escapeHtml(p)}</span>`).join('');
+    renderCharacteristic(serviceUuid, ch) {
+        const props = ch.properties || [];
+        const has = (p) => props.includes(p);
+        const hasRead = has('read');
+        const hasWrite = has('write') || has('writeWithoutResponse');
+        const hasNotify = has('notify') || has('indicate');
+
+        const chip = (cond, label, tone) => (cond ? `<span class="chip ${tone}">${label}</span>` : '');
 
         return `
-            <div class="characteristic-item" data-service-uuid="${serviceUuid}" data-char-uuid="${char.uuid}">
-                <div class="characteristic-header">
-                    <div>
-                        <div class="characteristic-name">${this.escapeHtml(char.name || 'Unknown Characteristic')}</div>
-                        <div class="characteristic-uuid">${this.escapeHtml(char.uuid)}</div>
-                    </div>
-                    <div class="char-props">${propBadges}</div>
+            <div class="char" data-service-uuid="${this.escapeHtml(serviceUuid)}" data-char-uuid="${this.escapeHtml(ch.uuid)}">
+                <div class="r1">
+                    <span class="nm">${this.escapeHtml(ch.name || 'Unknown Characteristic')}</span>
+                    ${chip(hasRead, 'read', 'primary')}
+                    ${chip(hasWrite, 'write', 'success')}
+                    ${chip(hasNotify, 'notify', 'warning')}
                 </div>
-                ${char.value ? `<div class="characteristic-value">${this.escapeHtml(char.value)}</div>` : ''}
-                <div class="characteristic-actions">
-                    ${props.includes('read') ? `<button class="btn btn-secondary" data-action="read">Read</button>` : ''}
-                    ${props.includes('write') || props.includes('writeWithoutResponse') ? `<button class="btn btn-primary" data-action="write">Write</button>` : ''}
-                    ${props.includes('notify') || props.includes('indicate') ? `<button class="btn btn-secondary" data-action="notify">Notify</button>` : ''}
+                ${ch.value ? `<div class="char-value">${this.escapeHtml(ch.value)}</div>` : ''}
+                <div class="r2">
+                    ${hasRead ? `<button class="btn soft sm" data-action="read"><span>读取</span></button>` : ''}
+                    ${hasWrite ? `<button class="btn soft sm" data-action="write"><span>写入</span></button>` : ''}
+                    ${hasNotify ? `<button class="btn ghost sm" data-action="notify"><span>开始监听</span></button>` : ''}
                 </div>
-            </div>
-        `;
+            </div>`;
     }
 }
 

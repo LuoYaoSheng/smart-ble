@@ -1,0 +1,32 @@
+PASS  CDP 目标发现  -- https://tauri.localhost/
+PASS  SmartHid bundle 挂载
+PASS  SmartHidDesktop 挂载
+PASS  hid-service 先于 app.js
+PASS  __TAURI__ 注入(withGlobalTauri)
+PASS  Tab scan 激活 deviceListView
+PASS  Tab connected 激活 connectedView
+PASS  Tab broadcast 激活 broadcastView
+PASS  Tab about 激活 aboutView
+PASS  版本二级视图可达(versionsView)
+PASS  版本页渲染非空(renderVersionsPage)
+PASS  P009 版本 chip 投影  -- v1.0.5-dev.unknown
+PASS  HID 视图 hidProvisionView 激活
+PASS  HID 视图 hidDetailView 激活
+PASS  HID 视图 hidDiagnosticsView 激活
+PASS  P002 向导六锚点齐备  -- ["hidProvStepper","hidProvDevName","hidProvDevId","hidProvConnectPhase","hidProvConfigurePhase","hidProvStatusPhase"]
+PASS  P002 stepper 渲染  -- len=260
+PASS  P002 设备名投影  -- SHID-FAKE
+PASS  P002 假设备连接优雅失败（真实 IPC 往返）  -- {"err":"连接失败 \n                                    Device not found\n                     ","errShown":true,"connecting":false,"codeHidden":true}
+PASS  P002 传输级错误无协议码片（code chip 隐藏）  -- true
+PASS  P005 诊断页五项渲染  -- labels=5/5
+PASS  F023 localStorage 空
+PASS  F023 sessionStorage 空
+PASS  F023 DOM 无 32hex token
+PASS  init_ble 真实调用  -- {"success":true,"data":"BLE initialized"}
+PASS  start_scan 真实调用  -- started
+PASS  扫描窗口 4s 设备计数读取  -- devices=7
+PASS  stop_scan 优雅停止
+PASS  ownsDevice 守卫注入(attach)
+PASS  无页面 JS 异常
+
+== P7 T-WIN CDP walkthrough: 30/30 PASS ==
