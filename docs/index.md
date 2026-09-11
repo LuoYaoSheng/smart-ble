@@ -4,7 +4,7 @@ layout: home
 hero:
   name: "BLE Toolkit+"
   text: "一套工具，调通每一台 BLE 设备"
-  tagline: "扫描、连接、读写、订阅、广播与 ESP32 验证，收进同一条工作流。"
+  tagline: "多平台多框架的开源 BLE 工具家族——微信小程序、Android、iOS / macOS 原生、桌面与 ESP32 固件，收进同一条调试工作流。"
   image:
     src: /brand/hero-duo.webp
     alt: BLE Toolkit+ 界面截图（Android 开发预览，automator 实拍）
@@ -26,7 +26,7 @@ hero:
     <div class="sb-section-head">
       <div class="sb-kicker">Get</div>
       <h2>获取 BLE Toolkit+</h2>
-      <p>微信小程序是当前最快的上手方式——扫码即用。其他平台提供源码构建路径，安装包与固件发布后将在此处提供直接下载。</p>
+      <p>微信小程序是当前最快的上手方式——扫码即用。Android、iOS / macOS、桌面、Flutter 等其余平台均可从源码构建，安装包与固件发布后将在此处提供直接下载。</p>
     </div>
     <div class="sb-get-grid">
       <div class="sb-get-qr-card">
@@ -129,26 +129,52 @@ hero:
   <section class="sb-section">
     <div class="sb-section-head">
       <div class="sb-kicker">Platforms</div>
-      <h2>三条主线，一个工具家族</h2>
+      <h2>多平台多框架，一个工具家族</h2>
+      <p>所有实现共用同一套产品规范与 BLE 协议内核，按平台差异各自落地——从微信小程序到桌面端，再到 ESP32 固件。</p>
     </div>
     <div class="sb-platform-grid">
-      <article class="sb-platform-card">
-        <span class="sb-platform-status">工具入口 · 开发预览</span>
-        <h3>BLE Toolkit+ 微信小程序</h3>
-        <p>扫码即用的轻量入口，覆盖扫描、连接与调试主路径。</p>
-      </article>
-      <article class="sb-platform-card">
+      <a href="/tutorials/platforms/uniapp" class="sb-platform-card">
+        <span class="sb-platform-status">扫码即用 · 开发预览</span>
+        <h3>微信小程序</h3>
+        <p>UniApp（Vue）一线出品，无需安装的轻量入口，覆盖扫描、连接与调试主路径。</p>
+      </a>
+      <a href="/tutorials/platforms/uniapp" class="sb-platform-card">
         <span class="sb-platform-status">客户端主线 · 开发预览</span>
-        <h3>BLE Toolkit+ for Android</h3>
-        <p>UniApp 工程构建的 Android 客户端，承载完整功能目录。</p>
-      </article>
-      <article class="sb-platform-card">
-        <span class="sb-platform-status">固件验证 · 开发中</span>
-        <h3>BLE Toolkit+ ESP32 固件</h3>
-        <p>配套参考固件，为广播与 OTA 提供真机对手方。</p>
-      </article>
+        <h3>Android</h3>
+        <p>UniApp 一线与原生 Kotlin 双实现，承载完整功能目录与原生插件能力。</p>
+      </a>
+      <a href="/tutorials/platforms/native_mobile" class="sb-platform-card">
+        <span class="sb-platform-status">原生线 · 源码可构建</span>
+        <h3>iOS / macOS</h3>
+        <p>SwiftUI + CoreBluetooth 原生实现，iOS 与 macOS 共享 SmartHidCore 内核。</p>
+      </a>
+      <a href="/tutorials/platforms/flutter" class="sb-platform-card">
+        <span class="sb-platform-status">跨框架 · 源码可构建</span>
+        <h3>Flutter</h3>
+        <p>Android / macOS 跨框架实现，与 UniApp 线、原生线互为对照。</p>
+      </a>
+      <a href="/tutorials/platforms/desktop" class="sb-platform-card">
+        <span class="sb-platform-status">桌面线 · 源码可构建</span>
+        <h3>Windows / macOS / Linux</h3>
+        <p>Tauri、Electron、macOS Native 多技术路线的桌面工具与横向参考。</p>
+      </a>
+      <a href="/tutorials/platforms/uniapp" class="sb-platform-card">
+        <span class="sb-platform-status">降级体验 · 无真实 BLE</span>
+        <h3>H5</h3>
+        <p>产品预览与文档体验；真实 BLE 在 H5 上明确标注不支持。</p>
+      </a>
+      <a href="https://github.com/luoyaosheng/smart-ble" target="_blank" rel="noopener" class="sb-platform-card">
+        <span class="sb-platform-status">原型 · 可交互</span>
+        <h3>Web</h3>
+        <p>本站与 HTML 交互原型，可切换各平台视图查看正常、空、失败与不支持状态。</p>
+      </a>
+      <a href="/tutorials/hardware/01_Hardware_Philosophy" class="sb-platform-card">
+        <span class="sb-platform-status">硬件夹具 · 开发中</span>
+        <h3>ESP32 固件</h3>
+        <p>ESP-IDF 构建的 Peripheral / Observer 参考固件，广播与 OTA 的真机对手方。</p>
+      </a>
     </div>
-    <p class="sb-platform-footnote">Flutter / Tauri 等为历史参考实现，不在当前主线——完整状态见<a href="/status/">项目状态页</a>。</p>
+    <p class="sb-platform-footnote">各实现共用同一产品规范与协议内核，当前均未发布正式产物：微信小程序可扫码体验，其余平台可从源码构建。能力与发布状态见<a href="/status/">项目状态页</a>与<a href="/product-contract/05_PLATFORM_MATRIX">平台适配矩阵</a>。</p>
   </section>
 
   <section class="sb-section">
