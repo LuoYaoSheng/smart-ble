@@ -60,3 +60,9 @@
 
 - 双机各自单元完成即推双远端；`主矩阵 §1` 全行结论化（M1 吸收 W1-W5 证据）+ F025 裁决 = windows-mobile-v1 战役收口条件。
 - 任何一方开工前 `git pull`；冲突按文件域：`apps/desktop/**`+`tests/desktop/**` Windows 语义优先，uniapp/Flutter/docs/specs Mac 语义优先。
+
+## 六、同日增补 II：U-AND 模拟器可达态首轮（2026-09-11 晚，Mac）
+
+- 用户质询「多平台/安卓跨框架差异大」后补的缺口：U-AND（uniapp→app-android）自 09-09 UI-G1 E5 真机后三轮无像素证据，卡点「HBuilderX 打包域」本轮在 Mac 打通（HBuilderX 5.24 CLI 标准基座 → Pixel_API35 模拟器）。
+- 落袋 `verification/windows-mobile-v1/20260911-uand-vis1/`：12 张（P001×6 含真实扫描启停、P002 深链、P007/P008/P009/P010、基座权限弹窗）+ bundle 文案核对 113/121 硬命中；无 UI 缺陷；六线可达态首轮就此齐整。
+- 注意项：基座弹窗（标识码/CALL_PHONE）为标准基座噪声；Tab 点击 y≈2270（避开 Android 15 手势区）；截图 OCR 有幻觉风险，文案裁定以 bundle grep 为准。
