@@ -361,56 +361,85 @@ async fn connect(
     state: State<'_, Arc<Mutex<BleState>>>,
 ) -> Result<Response<bool>, String> {
     let device_id = deviceId;
-    let ble_state = state.lock().await;
 
-    if let Some(central) = &ble_state.central {
-        let peripherals_result = central.peripherals().await;
+    // F012 断线重连：WinRT 适配器缓存会在断链后丢弃外设，直接查 peripherals() 会
+    // "Device not found"（noble/E-WIN 持有 peripheral 对象可直连，btleplug 须重扫
+    // 重建缓存后再连接）。未在扫描态时临时起一轮短扫描。
+    let find_peripheral = |peripherals: &[btleplug::platform::Peripheral]| {
+        peripherals.iter().find(|p| p.id().to_string() == device_id).cloned()
+    };
 
-        if let Ok(peripherals) = peripherals_result {
-            if let Some(peripheral) = peripherals.iter().find(|p| p.id().to_string() == device_id) {
-                drop(ble_state);
-                match peripheral.connect().await {
-                    Ok(_) => {
-                        // Store connected peripheral in HashMap (multi-device)
-                        let mut state = state.lock().await;
-                        state.connected_peripherals.insert(device_id.clone(), peripheral.clone());
-                        Ok(Response {
-                            success: true,
-                            data: Some(true),
-                            error: None,
-                            value: None,
-                        })
-                    }
-                    Err(e) => Ok(Response {
-                        success: false,
-                        data: None,
-                        error: Some(format!("Connect failed: {}", e)),
-                        value: None,
-                    }),
-                }
-            } else {
-                Ok(Response {
+    let first_pass = {
+        let ble_state = state.lock().await;
+        match &ble_state.central {
+            Some(central) => central.peripherals().await.unwrap_or_default(),
+            None => {
+                return Ok(Response {
                     success: false,
                     data: None,
-                    error: Some("Device not found".to_string()),
+                    error: Some("BLE not initialized".to_string()),
                     value: None,
                 })
             }
-        } else {
-            Ok(Response {
+        }
+    };
+    let mut peripheral_opt = find_peripheral(&first_pass);
+
+    if peripheral_opt.is_none() {
+        let was_scanning = {
+            let mut ble_state = state.lock().await;
+            let scanning = ble_state.scanning;
+            if !scanning {
+                if let Some(central) = &ble_state.central {
+                    let _ = central.start_scan(btleplug::api::ScanFilter::default()).await;
+                }
+                ble_state.scanning = true;
+            }
+            scanning
+        };
+        tokio::time::sleep(Duration::from_secs(6)).await;
+        let second_pass = {
+            let mut ble_state = state.lock().await;
+            if !was_scanning {
+                if let Some(central) = &ble_state.central {
+                    let _ = central.stop_scan().await;
+                }
+                ble_state.scanning = false;
+            }
+            match &ble_state.central {
+                Some(central) => central.peripherals().await.unwrap_or_default(),
+                None => Vec::new(),
+            }
+        };
+        peripheral_opt = find_peripheral(&second_pass);
+    }
+
+    match peripheral_opt {
+        Some(peripheral) => match peripheral.connect().await {
+            Ok(_) => {
+                // Store connected peripheral in HashMap (multi-device)
+                let mut ble_state = state.lock().await;
+                ble_state.connected_peripherals.insert(device_id.clone(), peripheral.clone());
+                Ok(Response {
+                    success: true,
+                    data: Some(true),
+                    error: None,
+                    value: None,
+                })
+            }
+            Err(e) => Ok(Response {
                 success: false,
                 data: None,
-                error: Some("Failed to get peripherals".to_string()),
+                error: Some(format!("Connect failed: {}", e)),
                 value: None,
-            })
-        }
-    } else {
-        Ok(Response {
+            }),
+        },
+        None => Ok(Response {
             success: false,
             data: None,
-            error: Some("BLE not initialized".to_string()),
+            error: Some("Device not found".to_string()),
             value: None,
-        })
+        }),
     }
 }
 

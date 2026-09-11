@@ -1,0 +1,163 @@
+
+> smart-ble-desktop@1.0.5 build:win
+> electron-builder --win
+
+  • electron-builder  version=24.13.3 os=10.0.19045
+  • loaded configuration  file=package.json ("build" field)
+  • rebuilding native dependencies  dependencies=@abandonware/bluetooth-hci-socket@0.5.3-12, @abandonware/noble@1.9.2-26, usb@2.16.0 platform=win32 arch=x64
+  • packaging       platform=win32 arch=x64 electron=27.3.11 appOutDir=dist\win-unpacked
+  • downloading     url=https://github.com/electron/electron/releases/download/v27.3.11/electron-v27.3.11-win32-x64.zip size=105 MB parts=8
+  • downloaded      url=https://github.com/electron/electron/releases/download/v27.3.11/electron-v27.3.11-win32-x64.zip duration=4m11.503s
+  ⨯ Get "https://github.com/electron-userland/electron-builder-binaries/releases/download/winCodeSign-2.6.0/winCodeSign-2.6.0.7z": read tcp 192.168.21.77:54730->20.205.243.166:443: wsarecv: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond.
+github.com/develar/app-builder/pkg/download.(*Downloader).follow.func1
+	/Volumes/data/Documents/app-builder/pkg/download/downloader.go:206
+github.com/develar/app-builder/pkg/download.(*Downloader).follow
+	/Volumes/data/Documents/app-builder/pkg/download/downloader.go:234
+github.com/develar/app-builder/pkg/download.(*Downloader).DownloadNoRetry
+	/Volumes/data/Documents/app-builder/pkg/download/downloader.go:128
+github.com/develar/app-builder/pkg/download.(*Downloader).Download
+	/Volumes/data/Documents/app-builder/pkg/download/downloader.go:112
+github.com/develar/app-builder/pkg/download.DownloadArtifact
+	/Volumes/data/Documents/app-builder/pkg/download/artifactDownloader.go:107
+github.com/develar/app-builder/pkg/download.downloadFromGithub
+	/Volumes/data/Documents/app-builder/pkg/download/tool.go:63
+github.com/develar/app-builder/pkg/download.DownloadWinCodeSign
+	/Volumes/data/Documents/app-builder/pkg/download/tool.go:58
+github.com/develar/app-builder/pkg/rcedit.editResources
+	/Volumes/data/Documents/app-builder/pkg/rcedit/rcedit.go:30
+github.com/develar/app-builder/pkg/rcedit.ConfigureCommand.func1
+	/Volumes/data/Documents/app-builder/pkg/rcedit/rcedit.go:25
+github.com/alecthomas/kingpin.(*actionMixin).applyActions
+	/Volumes/data/go/pkg/mod/github.com/alecthomas/kingpin@v2.2.6+incompatible/actions.go:28
+github.com/alecthomas/kingpin.(*Application).applyActions
+	/Volumes/data/go/pkg/mod/github.com/alecthomas/kingpin@v2.2.6+incompatible/app.go:557
+github.com/alecthomas/kingpin.(*Application).execute
+	/Volumes/data/go/pkg/mod/github.com/alecthomas/kingpin@v2.2.6+incompatible/app.go:390
+github.com/alecthomas/kingpin.(*Application).Parse
+	/Volumes/data/go/pkg/mod/github.com/alecthomas/kingpin@v2.2.6+incompatible/app.go:222
+main.main
+	/Volumes/data/Documents/app-builder/main.go:90
+runtime.main
+	/usr/local/Cellar/go/1.17/libexec/src/runtime/proc.go:255
+runtime.goexit
+	/usr/local/Cellar/go/1.17/libexec/src/runtime/asm_amd64.s:1581  
+  • Above command failed, retrying 3 more times
+  ⨯ Get "https://github.com/electron-userland/electron-builder-binaries/releases/download/winCodeSign-2.6.0/winCodeSign-2.6.0.7z": read tcp 192.168.21.77:54736->20.205.243.166:443: wsarecv: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond.
+github.com/develar/app-builder/pkg/download.(*Downloader).follow.func1
+	/Volumes/data/Documents/app-builder/pkg/download/downloader.go:206
+github.com/develar/app-builder/pkg/download.(*Downloader).follow
+	/Volumes/data/Documents/app-builder/pkg/download/downloader.go:234
+github.com/develar/app-builder/pkg/download.(*Downloader).DownloadNoRetry
+	/Volumes/data/Documents/app-builder/pkg/download/downloader.go:128
+github.com/develar/app-builder/pkg/download.(*Downloader).Download
+	/Volumes/data/Documents/app-builder/pkg/download/downloader.go:112
+github.com/develar/app-builder/pkg/download.DownloadArtifact
+	/Volumes/data/Documents/app-builder/pkg/download/artifactDownloader.go:107
+github.com/develar/app-builder/pkg/download.downloadFromGithub
+	/Volumes/data/Documents/app-builder/pkg/download/tool.go:63
+github.com/develar/app-builder/pkg/download.DownloadWinCodeSign
+	/Volumes/data/Documents/app-builder/pkg/download/tool.go:58
+github.com/develar/app-builder/pkg/rcedit.editResources
+	/Volumes/data/Documents/app-builder/pkg/rcedit/rcedit.go:30
+github.com/develar/app-builder/pkg/rcedit.ConfigureCommand.func1
+	/Volumes/data/Documents/app-builder/pkg/rcedit/rcedit.go:25
+github.com/alecthomas/kingpin.(*actionMixin).applyActions
+	/Volumes/data/go/pkg/mod/github.com/alecthomas/kingpin@v2.2.6+incompatible/actions.go:28
+github.com/alecthomas/kingpin.(*Application).applyActions
+	/Volumes/data/go/pkg/mod/github.com/alecthomas/kingpin@v2.2.6+incompatible/app.go:557
+github.com/alecthomas/kingpin.(*Application).execute
+	/Volumes/data/go/pkg/mod/github.com/alecthomas/kingpin@v2.2.6+incompatible/app.go:390
+github.com/alecthomas/kingpin.(*Application).Parse
+	/Volumes/data/go/pkg/mod/github.com/alecthomas/kingpin@v2.2.6+incompatible/app.go:222
+main.main
+	/Volumes/data/Documents/app-builder/main.go:90
+runtime.main
+	/usr/local/Cellar/go/1.17/libexec/src/runtime/proc.go:255
+runtime.goexit
+	/usr/local/Cellar/go/1.17/libexec/src/runtime/asm_amd64.s:1581  
+  • Above command failed, retrying 2 more times
+  ⨯ Get "https://github.com/electron-userland/electron-builder-binaries/releases/download/winCodeSign-2.6.0/winCodeSign-2.6.0.7z": dial tcp 20.205.243.166:443: connectex: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond.
+github.com/develar/app-builder/pkg/download.(*Downloader).follow.func1
+	/Volumes/data/Documents/app-builder/pkg/download/downloader.go:206
+github.com/develar/app-builder/pkg/download.(*Downloader).follow
+	/Volumes/data/Documents/app-builder/pkg/download/downloader.go:234
+github.com/develar/app-builder/pkg/download.(*Downloader).DownloadNoRetry
+	/Volumes/data/Documents/app-builder/pkg/download/downloader.go:128
+github.com/develar/app-builder/pkg/download.(*Downloader).Download
+	/Volumes/data/Documents/app-builder/pkg/download/downloader.go:112
+github.com/develar/app-builder/pkg/download.DownloadArtifact
+	/Volumes/data/Documents/app-builder/pkg/download/artifactDownloader.go:107
+github.com/develar/app-builder/pkg/download.downloadFromGithub
+	/Volumes/data/Documents/app-builder/pkg/download/tool.go:63
+github.com/develar/app-builder/pkg/download.DownloadWinCodeSign
+	/Volumes/data/Documents/app-builder/pkg/download/tool.go:58
+github.com/develar/app-builder/pkg/rcedit.editResources
+	/Volumes/data/Documents/app-builder/pkg/rcedit/rcedit.go:30
+github.com/develar/app-builder/pkg/rcedit.ConfigureCommand.func1
+	/Volumes/data/Documents/app-builder/pkg/rcedit/rcedit.go:25
+github.com/alecthomas/kingpin.(*actionMixin).applyActions
+	/Volumes/data/go/pkg/mod/github.com/alecthomas/kingpin@v2.2.6+incompatible/actions.go:28
+github.com/alecthomas/kingpin.(*Application).applyActions
+	/Volumes/data/go/pkg/mod/github.com/alecthomas/kingpin@v2.2.6+incompatible/app.go:557
+github.com/alecthomas/kingpin.(*Application).execute
+	/Volumes/data/go/pkg/mod/github.com/alecthomas/kingpin@v2.2.6+incompatible/app.go:390
+github.com/alecthomas/kingpin.(*Application).Parse
+	/Volumes/data/go/pkg/mod/github.com/alecthomas/kingpin@v2.2.6+incompatible/app.go:222
+main.main
+	/Volumes/data/Documents/app-builder/main.go:90
+runtime.main
+	/usr/local/Cellar/go/1.17/libexec/src/runtime/proc.go:255
+runtime.goexit
+	/usr/local/Cellar/go/1.17/libexec/src/runtime/asm_amd64.s:1581  
+  • Above command failed, retrying 1 more times
+  • downloading     url=https://github.com/electron-userland/electron-builder-binaries/releases/download/winCodeSign-2.6.0/winCodeSign-2.6.0.7z size=5.6 MB parts=1
+  • downloaded      url=https://github.com/electron-userland/electron-builder-binaries/releases/download/winCodeSign-2.6.0/winCodeSign-2.6.0.7z duration=21.187s
+  • building        target=nsis file=dist\BLE Toolkit+ Setup 1.0.5.exe archs=x64 oneClick=true perMachine=false
+  ⨯ Get "https://github.com/electron-userland/electron-builder-binaries/releases/download/nsis-3.0.4.1/nsis-3.0.4.1.7z": read tcp 192.168.21.77:54771->20.205.243.166:443: wsarecv: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond.
+github.com/develar/app-builder/pkg/download.(*Downloader).follow.func1
+	/Volumes/data/Documents/app-builder/pkg/download/downloader.go:206
+github.com/develar/app-builder/pkg/download.(*Downloader).follow
+	/Volumes/data/Documents/app-builder/pkg/download/downloader.go:234
+github.com/develar/app-builder/pkg/download.(*Downloader).DownloadNoRetry
+	/Volumes/data/Documents/app-builder/pkg/download/downloader.go:128
+github.com/develar/app-builder/pkg/download.(*Downloader).Download
+	/Volumes/data/Documents/app-builder/pkg/download/downloader.go:112
+github.com/develar/app-builder/pkg/download.DownloadArtifact
+	/Volumes/data/Documents/app-builder/pkg/download/artifactDownloader.go:107
+github.com/develar/app-builder/pkg/download.ConfigureArtifactCommand.func1
+	/Volumes/data/Documents/app-builder/pkg/download/artifactDownloader.go:27
+github.com/alecthomas/kingpin.(*actionMixin).applyActions
+	/Volumes/data/go/pkg/mod/github.com/alecthomas/kingpin@v2.2.6+incompatible/actions.go:28
+github.com/alecthomas/kingpin.(*Application).applyActions
+	/Volumes/data/go/pkg/mod/github.com/alecthomas/kingpin@v2.2.6+incompatible/app.go:557
+github.com/alecthomas/kingpin.(*Application).execute
+	/Volumes/data/go/pkg/mod/github.com/alecthomas/kingpin@v2.2.6+incompatible/app.go:390
+github.com/alecthomas/kingpin.(*Application).Parse
+	/Volumes/data/go/pkg/mod/github.com/alecthomas/kingpin@v2.2.6+incompatible/app.go:222
+main.main
+	/Volumes/data/Documents/app-builder/main.go:90
+runtime.main
+	/usr/local/Cellar/go/1.17/libexec/src/runtime/proc.go:255
+runtime.goexit
+	/usr/local/Cellar/go/1.17/libexec/src/runtime/asm_amd64.s:1581  
+  ⨯ E:\project\xf\smart-ble\apps\desktop\electron\node_modules\app-builder-bin\win\x64\app-builder.exe process failed ERR_ELECTRON_BUILDER_CANNOT_EXECUTE
+Exit code:
+1  failedTask=build stackTrace=Error: E:\project\xf\smart-ble\apps\desktop\electron\node_modules\app-builder-bin\win\x64\app-builder.exe process failed ERR_ELECTRON_BUILDER_CANNOT_EXECUTE
+Exit code:
+1
+    at ChildProcess.<anonymous> (E:\project\xf\smart-ble\apps\desktop\electron\node_modules\builder-util\src\util.ts:252:14)
+    at Object.onceWrapper (node:events:639:26)
+    at ChildProcess.emit (node:events:524:28)
+    at ChildProcess.cp.emit (E:\project\xf\smart-ble\apps\desktop\electron\node_modules\cross-spawn\lib\enoent.js:34:29)
+    at maybeClose (node:internal/child_process:1104:16)
+    at Process.ChildProcess._handle.onexit (node:internal/child_process:304:5)
+From previous event:
+    at processImmediate (node:internal/timers:483:21)
+From previous event:
+    at NsisTarget.buildInstaller (E:\project\xf\smart-ble\apps\desktop\electron\node_modules\app-builder-lib\src\targets\nsis\NsisTarget.ts:236:29)
+    at NsisTarget.finishBuild (E:\project\xf\smart-ble\apps\desktop\electron\node_modules\app-builder-lib\src\targets\nsis\NsisTarget.ts:138:9)
+    at Packager.doBuild (E:\project\xf\smart-ble\apps\desktop\electron\node_modules\app-builder-lib\src\packager.ts:464:7)
+    at executeFinally (E:\project\xf\smart-ble\apps\desktop\electron\node_modules\builder-util\src\promise.ts:12:14)
+    at Packager._build (E:\project\xf\smart-ble\apps\desktop\electron\node_modules\app-builder-lib\src\packager.ts:379:31)
+    at Packager.build (E:\project\xf\smart-ble\apps\desktop\electron\node_modules\app-builder-lib\src\packager.ts:340:12)
+    at executeFinally (E:\project\xf\smart-ble\apps\desktop\electron\node_modules\builder-util\src\promise.ts:12:14)

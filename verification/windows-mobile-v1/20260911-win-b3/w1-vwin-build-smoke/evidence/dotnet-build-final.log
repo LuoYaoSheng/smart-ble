@@ -1,0 +1,24 @@
+  正在确定要还原的项目…
+  所有项目均是最新的，无法还原。
+E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\ViewModels\MainWindowViewModel.cs(108,9): warning CS4014: 由于此调用不会等待，因此在此调用完成之前将会继续执行当前方法。请考虑将 "await" 运算符应用于调用结果。 [E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\SmartBLE.Desktop.csproj]
+E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\ViewModels\MainWindowViewModel.cs(104,42): warning CS8622: “void MainWindowViewModel.OnServiceDiscovered(BleServiceInfo[] services)”的参数“services”类型中引用类型的为 Null 性与目标委托“Action<BleServiceInfo[]?>”不匹配(可能是由于为 Null 性特性)。 [E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\SmartBLE.Desktop.csproj]
+E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\ViewModels\BleService.cs(49,23): warning CS1998: 此异步方法缺少 "await" 运算符，将以同步方式运行。请考虑使用 "await" 运算符等待非阻止的 API 调用，或者使用 "await Task.Run(...)" 在后台线程上执行占用大量 CPU 的工作。 [E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\SmartBLE.Desktop.csproj]
+E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\ViewModels\BleService.cs(72,23): warning CS1998: 此异步方法缺少 "await" 运算符，将以同步方式运行。请考虑使用 "await" 运算符等待非阻止的 API 调用，或者使用 "await Task.Run(...)" 在后台线程上执行占用大量 CPU 的工作。 [E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\SmartBLE.Desktop.csproj]
+E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\ViewModels\BleService.cs(117,23): warning CS1998: 此异步方法缺少 "await" 运算符，将以同步方式运行。请考虑使用 "await" 运算符等待非阻止的 API 调用，或者使用 "await Task.Run(...)" 在后台线程上执行占用大量 CPU 的工作。 [E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\SmartBLE.Desktop.csproj]
+E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\ViewModels\BleService.cs(29,34): warning CS0067: 从不使用事件“BleService.DeviceDisconnected” [E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\SmartBLE.Desktop.csproj]
+  SmartBLE.Desktop -> E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\bin\Debug\net8.0-windows10.0.19041.0\SmartBLE.Desktop.dll
+
+已成功生成。
+
+E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\ViewModels\MainWindowViewModel.cs(108,9): warning CS4014: 由于此调用不会等待，因此在此调用完成之前将会继续执行当前方法。请考虑将 "await" 运算符应用于调用结果。 [E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\SmartBLE.Desktop.csproj]
+E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\ViewModels\MainWindowViewModel.cs(104,42): warning CS8622: “void MainWindowViewModel.OnServiceDiscovered(BleServiceInfo[] services)”的参数“services”类型中引用类型的为 Null 性与目标委托“Action<BleServiceInfo[]?>”不匹配(可能是由于为 Null 性特性)。 [E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\SmartBLE.Desktop.csproj]
+E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\ViewModels\BleService.cs(49,23): warning CS1998: 此异步方法缺少 "await" 运算符，将以同步方式运行。请考虑使用 "await" 运算符等待非阻止的 API 调用，或者使用 "await Task.Run(...)" 在后台线程上执行占用大量 CPU 的工作。 [E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\SmartBLE.Desktop.csproj]
+E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\ViewModels\BleService.cs(72,23): warning CS1998: 此异步方法缺少 "await" 运算符，将以同步方式运行。请考虑使用 "await" 运算符等待非阻止的 API 调用，或者使用 "await Task.Run(...)" 在后台线程上执行占用大量 CPU 的工作。 [E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\SmartBLE.Desktop.csproj]
+E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\ViewModels\BleService.cs(117,23): warning CS1998: 此异步方法缺少 "await" 运算符，将以同步方式运行。请考虑使用 "await" 运算符等待非阻止的 API 调用，或者使用 "await Task.Run(...)" 在后台线程上执行占用大量 CPU 的工作。 [E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\SmartBLE.Desktop.csproj]
+E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\ViewModels\BleService.cs(29,34): warning CS0067: 从不使用事件“BleService.DeviceDisconnected” [E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\SmartBLE.Desktop.csproj]
+    6 个警告
+    0 个错误
+
+已用时间 00:00:05.01
+
+有可用的工作负载更新。有关详细信息，请运行 `dotnet workload list`。

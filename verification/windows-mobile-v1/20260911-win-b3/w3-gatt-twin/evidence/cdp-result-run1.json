@@ -1,0 +1,151 @@
+{
+  "mode": "twin",
+  "startedAt": "2026-09-11T03:53:11.794Z",
+  "device": {
+    "id": "10:B4:1D:CD:23:8D",
+    "name": "BLEToolkit-Server",
+    "rssi": -38
+  },
+  "results": [
+    {
+      "fid": "006",
+      "name": "扫描发现 BLEToolkit-Server",
+      "pass": true,
+      "detail": "{\"id\":\"10:B4:1D:CD:23:8D\",\"name\":\"BLEToolkit-Server\",\"rssi\":-38}",
+      "t": "1.3s"
+    },
+    {
+      "fid": "006",
+      "name": "连接+服务发现",
+      "pass": true,
+      "detail": "currentDevice set + services=5",
+      "t": "5.8s"
+    },
+    {
+      "fid": "007",
+      "name": "特征渐进填充就绪",
+      "pass": true,
+      "detail": "特征行 15 个（GAP2+GATT1+914b2+914c7+914d3=15 预期）",
+      "t": "5.8s"
+    },
+    {
+      "fid": "007",
+      "name": "服务树 ≥5 服务",
+      "pass": true,
+      "detail": "1800,1801,C201,C201,C201",
+      "t": "5.8s"
+    },
+    {
+      "fid": "007",
+      "name": "特征计数 914b=2/914c=7/914d=3",
+      "pass": true,
+      "detail": "914b=2 914c=7 914d=3",
+      "t": "5.8s"
+    },
+    {
+      "fid": "010",
+      "name": "订阅 26a8（回显通知）",
+      "pass": true,
+      "detail": "btn ready=true; log 开始监听 seen",
+      "t": "6.3s"
+    },
+    {
+      "fid": "010",
+      "name": "订阅 26a9（周期通知）",
+      "pass": true,
+      "detail": "clicked; log 开始监听 seen",
+      "t": "6.7s"
+    },
+    {
+      "fid": "008",
+      "name": "26a8 读 system_info",
+      "pass": true,
+      "detail": "utf8={\"firmware_version\":\"1.0.0\",\"hardware\":\"esp32-wroom-32\",\"uptime\":44,\"uptime_s\":44,\"fixture_role\":\"peripheral\",",
+      "t": "7.3s"
+    },
+    {
+      "fid": "008",
+      "name": "26b0 读只读 JSON",
+      "pass": true,
+      "detail": "utf8={\"type\":\"read_only\",\"value\":\"这是一个只读特征值\",\"timestamp\":45386}",
+      "t": "7.9s"
+    },
+    {
+      "fid": "009",
+      "name": "写入 HEX FF01（开灯）",
+      "pass": true,
+      "detail": "Write successful=true; 回显={\"type\":\"write_response\",\"command\":\"FF01\",\"led_state\":\"on\",\"blink_pattern\":1}",
+      "t": "8.7s"
+    },
+    {
+      "fid": "010",
+      "name": "26a8 订阅回显渲染",
+      "pass": true,
+      "detail": "26a8 行 char-value=7b 22 74 79 70 65 22 3a 22 77 72 69 74 6",
+      "t": "8.7s"
+    },
+    {
+      "fid": "009",
+      "name": "写入 UTF-8 开灯",
+      "pass": true,
+      "detail": "Write successful=true; 回显={\"type\":\"write_response\",\"command\":\"FF01\",\"led_state\":\"on\",\"blink_pattern\":1}",
+      "t": "9.6s"
+    },
+    {
+      "fid": "009",
+      "name": "写入 UTF-8 关灯",
+      "pass": true,
+      "detail": "Write successful=true; 回显={\"type\":\"write_response\",\"command\":\"FF01\",\"led_state\":\"on\",\"blink_pattern\":1}",
+      "t": "10.4s"
+    },
+    {
+      "fid": "009",
+      "name": "写入 HEX FF00（关灯复位）",
+      "pass": true,
+      "detail": "Write successful=true; 回显={\"type\":\"write_response\",\"command\":\"FF01\",\"led_state\":\"on\",\"blink_pattern\":1}",
+      "t": "11.2s"
+    },
+    {
+      "fid": "010",
+      "name": "26a9 周期 device_status",
+      "pass": true,
+      "detail": "周期通知 +3 条（12s 窗）",
+      "t": "23.2s"
+    },
+    {
+      "fid": "010",
+      "name": "退订 26a9 后净停",
+      "pass": true,
+      "detail": "停止监听=true; 退订后 8s 新增 0 条",
+      "t": "31.7s"
+    },
+    {
+      "fid": "011",
+      "name": "日志清空→重建",
+      "pass": true,
+      "detail": "清空前 28 条→0 条；读取后重建=true",
+      "t": "32.1s"
+    },
+    {
+      "fid": "011",
+      "name": "日志面板常驻观察",
+      "pass": true,
+      "detail": "桌面 P006 LogPanel 为 dock 常驻形态（与移动端清空即隐藏不同，形态差异记录）",
+      "t": "32.1s"
+    },
+    {
+      "fid": "012",
+      "name": "fault 断链→自动重连",
+      "pass": false,
+      "detail": "断链=true; info|Reconnecting to 10:B4:1D:CD:23:8D (attempt 1)...; 重连后服务=false",
+      "t": "59.7s"
+    },
+    {
+      "fid": "012",
+      "name": "用户断开无新重连",
+      "pass": true,
+      "detail": "Disconnected successfully=true; 重连日志 3→3",
+      "t": "67.8s"
+    }
+  ]
+}

@@ -5,12 +5,13 @@ using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.Advertisement;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
+using Windows.Devices.Radios;
 using Windows.Storage.Streams;
-using Windows.UI.Xaml;
+using Avalonia.Threading;
 
 namespace SmartBLE.Desktop.ViewModels;
 
-// Note: This uses WindowsBluetooth NuGet package which works on Windows 10/11
+// Note: WinRT BLE APIs come from the net8.0-windows10.0.19041.0 TFM projection (PARITY-006)
 // For cross-platform, consider using btleplug with .NET
 
 public class BleService
@@ -139,27 +140,27 @@ public class BleService
 
                     if (characteristicsResult.Status == GattCommunicationStatus.Success)
                     {
-                        foreach (var char in characteristicsResult.Characteristics)
+                        foreach (var characteristic in characteristicsResult.Characteristics)
                         {
                             // Store for later access
-                            var key = $"{service.Uuid}-{char.Uuid}";
-                            _characteristics[key] = char;
+                            var key = $"{service.Uuid}-{characteristic.Uuid}";
+                            _characteristics[key] = characteristic;
 
                             var props = new List<string>();
-                            if (char.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Read))
+                            if (characteristic.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Read))
                                 props.Add("read");
-                            if (char.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Write))
+                            if (characteristic.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Write))
                                 props.Add("write");
-                            if (char.CharacteristicProperties.HasFlag(GattCharacteristicProperties.WriteWithoutResponse))
+                            if (characteristic.CharacteristicProperties.HasFlag(GattCharacteristicProperties.WriteWithoutResponse))
                                 props.Add("writeWithoutResponse");
-                            if (char.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Notify))
+                            if (characteristic.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Notify))
                                 props.Add("notify");
-                            if (char.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Indicate))
+                            if (characteristic.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Indicate))
                                 props.Add("indicate");
 
                             characteristics.Add(new BleCharacteristicInfo(
-                                char.Uuid.ToString(),
-                                GetCharacteristicName(char.Uuid.ToString()),
+                                characteristic.Uuid.ToString(),
+                                GetCharacteristicName(characteristic.Uuid.ToString()),
                                 props.ToArray()
                             ));
                         }

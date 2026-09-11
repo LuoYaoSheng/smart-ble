@@ -109,10 +109,10 @@ class ServicePanel extends HTMLElement {
         this.querySelectorAll('[data-action]').forEach((btn) => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                const charItem = e.target.closest('.char');
+                const charItem = e.currentTarget.closest('.char');
                 const serviceUuid = charItem.dataset.serviceUuid;
                 const charUuid = charItem.dataset.charUuid;
-                const action = e.target.dataset.action;
+                const action = e.currentTarget.dataset.action;
                 if (action === 'notify') {
                     // 监听按钮自翻转（正典：开始监听/停止监听）
                     const on = btn.classList.toggle('listening');
@@ -120,7 +120,7 @@ class ServicePanel extends HTMLElement {
                     btn.classList.toggle('on', on);
                 }
                 this.dispatchEvent(new CustomEvent('char-action', {
-                    detail: { serviceUuid, charUuid, action, btn: e.target },
+                    detail: { serviceUuid, charUuid, action, btn: e.currentTarget },
                     bubbles: true, composed: true
                 }));
             });

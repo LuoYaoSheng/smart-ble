@@ -2,6 +2,7 @@ using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
@@ -357,7 +358,7 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void ShowWriteDialog(string parameter)
+    private void OpenWriteDialog(string parameter)
     {
         var parts = parameter?.Split('|');
         if (parts?.Length != 2) return;
@@ -540,11 +541,18 @@ public class BleServiceViewModel
     {
         Uuid = service.Uuid;
         Name = service.Name;
-        Characteristics = service.Characteristics;
+        Characteristics = service.Characteristics
+            .Select(c => c with { ServiceUuid = service.Uuid })
+            .ToArray();
     }
 }
 
-public record BleCharacteristicInfo(string Uuid, string Name, string[] Properties);
+public record BleCharacteristicInfo(string Uuid, string Name, string[] Properties)
+{
+    // 所属服务 UUID，由 BleServiceViewModel 构造时回填；CommandKey 供 XAML 命令参数绑定（service|characteristic）
+    public string ServiceUuid { get; init; } = string.Empty;
+    public string CommandKey => $"{ServiceUuid}|{Uuid}";
+}
 
 public class LogEntry
 {
