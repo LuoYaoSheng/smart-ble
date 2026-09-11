@@ -299,7 +299,7 @@ class _HidDiagnosticsPageState extends State<HidDiagnosticsPage> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: AppTheme.cardColor,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppTheme.borderColor),
       ),
       child: Row(
@@ -308,7 +308,7 @@ class _HidDiagnosticsPageState extends State<HidDiagnosticsPage> {
           const SizedBox(width: 8),
           Text(label,
               style: const TextStyle(
-                  fontSize: 14,
+                  fontSize: 13,
                   fontWeight: FontWeight.w600,
                   color: AppTheme.textPrimary)),
           const Spacer(),
@@ -339,7 +339,7 @@ class _HidDiagnosticsPageState extends State<HidDiagnosticsPage> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       decoration: BoxDecoration(
         color: AppTheme.cardColor,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppTheme.borderColor),
       ),
       child: Column(
@@ -363,7 +363,7 @@ class _HidDiagnosticsPageState extends State<HidDiagnosticsPage> {
                       Expanded(
                         child: Text(_rows[i].title,
                             style: const TextStyle(
-                                fontSize: 14,
+                                fontSize: 13,
                                 fontWeight: FontWeight.w600,
                                 color: AppTheme.textPrimary)),
                       ),
@@ -458,7 +458,7 @@ class _HidDiagnosticsPageState extends State<HidDiagnosticsPage> {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: AppTheme.cardColor,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppTheme.errorColor),
       ),
       child: Column(

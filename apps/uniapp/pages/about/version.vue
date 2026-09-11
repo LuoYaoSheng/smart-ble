@@ -122,7 +122,7 @@ onShareTimeline(() => ({
 .card {
 	padding: 26rpx;
 	border: 1rpx solid var(--ble-line-soft);
-	border-radius: 28rpx;
+	border-radius: 32rpx;
 	background: var(--ble-gradient-surface);
 	box-shadow: var(--ble-shadow-soft);
 }
@@ -130,7 +130,7 @@ onShareTimeline(() => ({
 .card-kicker {
 	margin-bottom: 12rpx;
 	color: var(--ble-text-muted);
-	font-size: 21rpx;
+	font-size: 22rpx;
 	font-weight: 800;
 }
 
@@ -150,7 +150,7 @@ onShareTimeline(() => ({
 
 .status-pill {
 	padding: 6rpx 14rpx;
-	border-radius: 999rpx;
+	border-radius: var(--r-round);
 	background: rgba(27, 109, 255, 0.1);
 	color: var(--ble-brand);
 	font-size: 20rpx;
@@ -169,13 +169,13 @@ onShareTimeline(() => ({
 .meta-label,
 .platform-name {
 	color: var(--ble-text-muted);
-	font-size: 23rpx;
+	font-size: 24rpx;
 }
 
 .meta-value,
 .platform-status {
 	color: var(--ble-text);
-	font-size: 23rpx;
+	font-size: 24rpx;
 	font-weight: 700;
 	text-align: right;
 }
@@ -183,7 +183,7 @@ onShareTimeline(() => ({
 .subsection-title {
 	margin: 18rpx 0 8rpx;
 	color: var(--ble-text-muted);
-	font-size: 21rpx;
+	font-size: 22rpx;
 	font-weight: 800;
 }
 
@@ -213,7 +213,7 @@ onShareTimeline(() => ({
 .history-title {
 	display: block;
 	color: var(--ble-text);
-	font-size: 28rpx;
+	font-size: 30rpx;
 	font-weight: 800;
 }
 

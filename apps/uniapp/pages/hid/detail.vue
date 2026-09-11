@@ -129,7 +129,7 @@ const goAdvancedBle = () => {
 .device-title { min-width: 0; color: var(--ble-text); font-size: 32rpx; font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .card-title {
-	font-size: 28rpx;
+	font-size: 30rpx;
 	font-weight: 700;
 	color: var(--ble-text);
 }

@@ -34,7 +34,7 @@
 2. **页面禁止自行定义图标**：不得使用 Unicode 字符图标（✓ ✕ ▶ ▼ › × 等作 UI 图标）、未登记 png、平台字体图标（`Icons.*` / `CupertinoIcons.*`）。业务代码只能引用 ICON_CATALOG 登记的 semantic icon id，经 `AppIcon` 渲染。
 3. **页面禁止自行定义尺寸**：字号/间距/圆角/阴影引用 Token；组件内部尺寸以 COMPONENT_CONTRACT 登记为准。
 4. **不触碰范围**：BLE Runtime（`services/ble-runtime/`）、协议（`core/protocols/`）、数据模型、功能范围。
-5. **门禁**：`scripts/check-icon-usage.mjs` 与 `scripts/check-token-usage.mjs` 为提交前检查；违例即 FAIL。Apple 双线色彩/圆角/间距已收编 `generate_assets.py --theme-only` 生成段（2026-09-10 UI-CONV 加入钉子、同日晚收编生成管道），漂移门禁 = `npm run check:apple-tokens`（`--theme-only --check`，8 输出逐字节比对；LEGACY_DRIFT 清零，机制保留）。
+5. **门禁**：`scripts/check-icon-usage.mjs` 与 `scripts/check-token-usage.mjs` 为提交前检查；违例即 FAIL。Apple 双线色彩/圆角/间距已收编 `generate_assets.py --theme-only` 生成段（2026-09-10 UI-CONV 加入钉子、同日晚收编生成管道），漂移门禁 = `npm run check:apple-tokens`（`--theme-only --check`，8 输出逐字节比对；LEGACY_DRIFT 清零，机制保留）。**2026-09-11 全维度收敛轮补齐红线 3 机器门禁 = `npm run check:dimensions`**（`scripts/check-dimension-usage.mjs`：间距/圆角/字号三维度，白名单 = design-tokens.json SSOT ∪ 契约登记内部值；存量别名层 design-system.css 与未迁移组件 report-only）。
 
 ## 4. 三端映射总表
 

@@ -100,3 +100,44 @@ hero clamp 上限 42/58px 超 token 阶梯上限（`--fs-display` 24px）。本�
 ## 6. 铁律遵守
 
 全程无窗口置前/无合成点击（用户在用机）：渲染验证走本地 http.server + Playwright 无头通道；CDN 上传仅限本目录证据截图（Read 工具自动行为，4 帧，均为站点渲染内容，无桌面/隐私内容）。
+
+---
+
+# 第二轮：全维度收敛（间距 / 边角 / 圆角 / 字号 / 行高）· 2026-09-11 下午
+
+用户复核指出：UI 设计规范不止配色——间距、边角、圆角等维度同受 TOKEN.md 约束（§2 字号/§3 间距 4px 网格/§4 圆角阴影；红线 3）。本轮按全维度重审。
+
+## 7. 机制根因
+
+- `check-token-usage.mjs` 只锁**色彩**（hex/banned/rgba + 4 值抽检）——间距/圆角/字号**无机器门禁**，红线 3 长期裸奔，页面半档值（10.5/11.5/12.5px、圆角 11/14px）静默漂移。
+- 合规口径澄清：白名单 = design-tokens.json SSOT（font/space/radius 段）∪ **契约登记内部值**（COMPONENT_CONTRACT/PAGE_LAYOUT_CONTRACT/v1-new 实现：btn 18/13、chip 2/9、badge 3/10、modal 标题 16、TabBar 角标 9、信号条圆角 1、seg 段钮 7 等）。正典组件里的非网格值多数有登记出处，非违例。
+
+## 8. 违例登记（W-7 系）
+
+| # | 面 | 事实 | 处置 |
+|---|---|---|---|
+| W-7 | 落地页 style.css（上轮遗留） | 间距非网格值 10/14/6/2px；硬编码 8/4px；行高 1.65/1.7/1.8 ≠ 正典 1.55；kicker 用 fs-cap 而非正典 fs-micro 档；投影缺 --fs-micro/--r-sm/--dur-fast | 全清：非网格归 0；间距全 token 化；行高归 1.55（展示型行高入例外①）；kicker 归 fs-micro/800/+2px；三令牌补投影；例外头注扩至④条 |
+| W-8 | uniapp 存量页面 7 文件（about×2/broadcast/hid×3/device） | 半档 rpx 漂移：21/23/25/27/28rpx 字号、22/28rpx 圆角、999rpx 手写 pill、9px 小字 | 纯值归一（不动 --ble-* 架构）：→ 22/24/26/30rpx 阶梯；圆角 → 24/32rpx；999rpx → var(--r-round)；deviceId → fs-micro；输入框 → r-sm；9px 小字 → 10px |
+| W-9 | flutter 页面 7 文件 | 圆角 10/11/14 漂移；字号 14 游离；垂直距 26；4 处 16 字号角色错位 | 输入/下拉 10→8（r-sm）；卡 14→16（r-lg）；logo 11→12（r-md）；14→13（body）；26→24（sp-6）；16 按角色归 17（页题）/15（设备名/计数）；modal 标题 16 为契约登记值保留 |
+| W-10 | design-system.css（别名层） | rpx 半档值 + 999rpx ×5 | 不动（DESIGN_SYSTEM_INDEX §5 存量登记，随页面迁移退役）；门禁归 report-only |
+
+## 9. 新增机器门禁（红线 3 补钉）
+
+- **`scripts/check-dimension-usage.mjs`** + `npm run check:dimensions`：间距/圆角/字号三维度静态扫描（rpx÷2 折算；em/% 跳过；var() 引用不检；@generated 段跳过）。
+  - enforce：uniapp pages/components-ui/tokens.css + flutter ui/design/ui/pages/themes + docs 主题。
+  - report-only：存量别名层/存量组件/widgets + v1-new 正典（校准靶，预期零未登记）。
+  - 白名单：SSOT json 派生 ∪ 契约登记值集合（逐值带出处注释）；落地页例外文件级注入。
+- DESIGN_SYSTEM_INDEX §3 门禁行已登记本门禁。
+- 校准记录：正典校准靶首轮 10 命中经逐行核实全部有契约/正典出处 → 入白名单（1/7 圆角、9/16 字号、2.5/36/40/60 间距等）。
+
+## 10. 验证记录（第二轮）
+
+- `npm run check:dimensions`：修前 enforce 112 处违例 → 修后 **0 处（PASS）**；report-only 残留 = 存量组件 + 正典预览壳内部值（46/37/3 手机壳圆角等，登记性质）。
+- `flutter analyze`（apps/flutter）：**No issues found!**（纯值替换无语法破坏）。
+- `npm run docs:build`：✔ 全绿；无头截图 3 帧（dimension-after-home/content/platform）console 0 error；AI 视觉复核 PASS（全页帧曾报卡片文案「…」疑点，经源文件 grep 无省略号 + 局部高清帧复核确认系全页图缩放误读，文字完整）。
+- 上轮三道门禁（icon/token/apple-tokens）口径不受影响（本轮零色彩改动）。
+
+## 11. 遗留登记
+
+- 存量组件（uniapp common/scan/hid、flutter widgets）仍有 report-only 维度值——随 UI-PARITY 组件迁移退役，不单独清洗。
+- flutter 页面 fontSize 16（modal 标题契约档）现为全局白名单值，理论上可被页面挪用；phase-1 接受，phase-2 可收窄为文件级豁免。

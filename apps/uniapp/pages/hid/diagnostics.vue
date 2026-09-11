@@ -184,14 +184,14 @@ const reconfigure = () => {
 .diag-row { display: flex; flex-direction: column; gap: 8rpx; padding: 12rpx 0; border-bottom: 1rpx solid var(--ble-line-faint); }
 .diag-row:last-of-type { border-bottom: none; }
 .diag-head { display: flex; align-items: center; gap: 16rpx; }
-.diag-label { flex: 1; font-size: 27rpx; color: var(--ble-text); font-weight: 600; }
-.diag-state { font-size: 23rpx; color: var(--ble-text-muted); }
-.diag-detail { font-size: 23rpx; line-height: 1.55; color: var(--ble-text-subtle); padding-left: 58rpx; }
+.diag-label { flex: 1; font-size: 26rpx; color: var(--ble-text); font-weight: 600; }
+.diag-state { font-size: 24rpx; color: var(--ble-text-muted); }
+.diag-detail { font-size: 24rpx; line-height: 1.55; color: var(--ble-text-subtle); padding-left: 58rpx; }
 .actions { display: flex; flex-direction: column; gap: 14rpx; margin-top: 10rpx; }
 .error-detail { background: rgba(242,85,95,.08); border-radius: 24rpx; padding: 20rpx; display: flex; flex-direction: column; align-items: flex-start; gap: 8rpx; border: 1rpx solid rgba(242,85,95,.12); }
 .error-detail .app-btn { align-self: stretch; }
 .error-title { font-size: 24rpx; color: var(--ble-red); font-weight: 700; }
-.error-code { font-size: 23rpx; color: var(--ble-red); font-family: var(--ble-mono, "SF Mono", "Roboto Mono", Menlo, monospace); }
-.error-msg { font-size: 23rpx; line-height: 1.55; color: var(--ble-text-subtle); }
+.error-code { font-size: 24rpx; color: var(--ble-red); font-family: var(--ble-mono, "SF Mono", "Roboto Mono", Menlo, monospace); }
+.error-msg { font-size: 24rpx; line-height: 1.55; color: var(--ble-text-subtle); }
 .error-raw { font-size: 22rpx; line-height: 1.55; color: var(--ble-text-muted); word-break: break-all; }
 </style>

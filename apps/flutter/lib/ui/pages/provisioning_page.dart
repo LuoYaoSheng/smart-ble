@@ -325,7 +325,7 @@ class _ProvisioningPageState extends ConsumerState<ProvisioningPage> {
             width: 38,
             height: 38,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(8),
               gradient: const LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -338,7 +338,7 @@ class _ProvisioningPageState extends ConsumerState<ProvisioningPage> {
               style: const TextStyle(
                   color: AppTokens.cSuccessDeep,
                   fontWeight: FontWeight.w800,
-                  fontSize: 16),
+                  fontSize: 15),
             ),
           ),
           const SizedBox(width: 11),
@@ -551,7 +551,7 @@ class _ProvisioningPageState extends ConsumerState<ProvisioningPage> {
                 const SizedBox(height: 8),
                 const Text('HID 控制请通过 ControlHub 下发',
                     style:
-                        TextStyle(fontSize: 14, color: AppTheme.textSecondary)),
+                        TextStyle(fontSize: 13, color: AppTheme.textSecondary)),
                 const SizedBox(height: 16),
                 _PrimaryButton(
                   label: '查看设备',
@@ -798,7 +798,7 @@ class _OpCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 26),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -832,7 +832,7 @@ class _ErrorBanner extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: AppTokens.cDangerWeak,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(8),
         border: Border.all(color: AppTokens.cDanger.withValues(alpha: 0.3)),
       ),
       child: Row(
@@ -880,7 +880,7 @@ class _StatusBadge extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
         color: connected ? AppTokens.cSuccessWeak : AppTokens.cDangerWeak,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -952,7 +952,7 @@ class _FormField extends StatelessWidget {
           maxLength: maxLength,
           obscureText: obscure,
           onChanged: onChanged,
-          style: TextStyle(fontSize: 14, fontFamily: mono ? 'monospace' : null),
+          style: TextStyle(fontSize: 13, fontFamily: mono ? 'monospace' : null),
           decoration: InputDecoration(
             counterText: '',
             hintText: hint,
@@ -1014,7 +1014,7 @@ class _QrActionCard extends StatelessWidget {
                   Text(
                     hasToken ? '重新扫描配对码' : '扫描 ControlHub 配对码',
                     style: const TextStyle(
-                        fontSize: 14, fontWeight: FontWeight.w700),
+                        fontSize: 13, fontWeight: FontWeight.w700),
                   ),
                   const SizedBox(height: 2),
                   Text(
@@ -1032,7 +1032,7 @@ class _QrActionCard extends StatelessWidget {
               decoration: BoxDecoration(
                 color:
                     hasToken ? AppTokens.cSuccessWeak : AppTokens.cWarningWeak,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
                 hasToken ? '已获取' : '必需',
@@ -1081,7 +1081,7 @@ class _QrErrorPanel extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: isWarn ? AppTokens.cWarningWeak : AppTokens.cDangerWeak,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color: isWarn
               ? AppTokens.cWarningDeep.withValues(alpha: 0.4)
@@ -1233,7 +1233,7 @@ class _ProgressRow extends StatelessWidget {
             child: Text(
               title,
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 13,
                 fontWeight: state == ProvisionRowState.fail || strong
                     ? FontWeight.w700
                     : FontWeight.w500,
@@ -1278,7 +1278,7 @@ class _PrimaryButton extends StatelessWidget {
             : const SizedBox.shrink(),
         label: Text(label,
             style: TextStyle(
-                fontSize: 14,
+                fontSize: 13,
                 fontWeight: FontWeight.w600,
                 color: onPressed == null ? Colors.white70 : Colors.white)),
         style: ElevatedButton.styleFrom(
@@ -1291,7 +1291,7 @@ class _PrimaryButton extends StatelessWidget {
           disabledForegroundColor: Colors.white70,
           padding: const EdgeInsets.symmetric(vertical: 12),
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
       ),
     );
@@ -1317,14 +1317,14 @@ class _SoftButton extends StatelessWidget {
             : const SizedBox.shrink(),
         label: Text(label,
             style: const TextStyle(
-                fontSize: 14,
+                fontSize: 13,
                 color: AppTheme.textSecondary,
                 fontWeight: FontWeight.w500)),
         style: OutlinedButton.styleFrom(
           side: const BorderSide(color: AppTheme.borderColor),
           padding: const EdgeInsets.symmetric(vertical: 12),
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
       ),
     );

@@ -167,7 +167,7 @@ class _HidDetailPageState extends State<HidDetailPage> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       decoration: BoxDecoration(
         color: AppTheme.cardColor,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppTheme.borderColor),
       ),
       child: Column(children: children),
@@ -205,7 +205,7 @@ class _HidDetailPageState extends State<HidDetailPage> {
           Expanded(
             child: Text(value,
                 style: const TextStyle(
-                    fontSize: 14,
+                    fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: AppTheme.textPrimary)),
           ),

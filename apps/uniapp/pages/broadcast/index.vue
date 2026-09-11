@@ -782,7 +782,7 @@ onShareAppMessage(() => ({
 
 .field-label,
 .switch-label {
-	font-size: 25rpx;
+	font-size: 26rpx;
 	font-weight: 600;
 	color: var(--ble-text);
 }
@@ -793,13 +793,13 @@ onShareAppMessage(() => ({
 .field-picker {
 	height: 76rpx;
 	padding: 0 22rpx;
-	border-radius: 22rpx;
+	border-radius: var(--ble-radius-sm);
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	background: rgba(241, 246, 252, 0.92);
 	border: 1rpx solid var(--ble-line-soft);
-	font-size: 25rpx;
+	font-size: 26rpx;
 	color: var(--ble-text);
 }
 
@@ -822,7 +822,7 @@ onShareAppMessage(() => ({
 .uuid-hint,
 .bytes-hint {
 	padding: 14rpx 18rpx;
-	border-radius: 22rpx;
+	border-radius: var(--ble-radius-sm);
 	display: flex;
 	align-items: center;
 	gap: 10rpx;
@@ -843,12 +843,12 @@ onShareAppMessage(() => ({
 }
 
 .bytes-hint-text {
-	font-size: 23rpx;
+	font-size: 24rpx;
 	color: var(--ble-brand);
 }
 
 .bytes-hint-warn {
-	font-size: 23rpx;
+	font-size: 24rpx;
 	font-weight: 700;
 	color: var(--ble-red);
 }

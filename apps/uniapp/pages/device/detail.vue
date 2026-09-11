@@ -295,7 +295,7 @@ const onToggleNotify = ({ serviceId, charId }) => {
 }
 
 .device-name {
-	font-size: 36rpx;
+	font-size: 34rpx;
 	line-height: 1.2;
 	font-weight: 700;
 	color: var(--ble-text);

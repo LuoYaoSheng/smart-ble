@@ -6,6 +6,7 @@
   },
   "scripts": {
     "check:page-env": "node scripts/check-page-test-environment.mjs",
+    "check:dimensions": "node scripts/check-dimension-usage.mjs",
     "verify:target:system": "node scripts/verify-target.mjs --mode=system --format=json",
     "verify:target:current": "node scripts/verify-target.mjs --mode=current --format=json",
     "check:apple-tokens": "python3 core/assets-generator/generate_assets.py --theme-only --check"

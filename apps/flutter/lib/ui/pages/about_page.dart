@@ -137,7 +137,7 @@ class _AboutPageState extends State<AboutPage> {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: AppTheme.cardColor,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppTheme.borderColor),
       ),
       child: Row(
@@ -151,7 +151,7 @@ class _AboutPageState extends State<AboutPage> {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [AppTokens.cPrimaryDeep, AppTokens.cPrimary]),
-              borderRadius: BorderRadius.circular(11),
+              borderRadius: BorderRadius.circular(12),
             ),
             alignment: Alignment.center,
             child: const AppIcon('bt', size: 20, color: AppTokens.cCard),
@@ -164,7 +164,7 @@ class _AboutPageState extends State<AboutPage> {
                 const Text(
                   ProductConfig.name,
                   style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 17,
                       fontWeight: FontWeight.w700,
                       color: AppTheme.textPrimary),
                 ),
@@ -203,7 +203,7 @@ class _AboutPageState extends State<AboutPage> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       decoration: BoxDecoration(
         color: AppTheme.cardColor,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppTheme.borderColor),
       ),
       child: Column(
@@ -250,7 +250,7 @@ class _AboutPageState extends State<AboutPage> {
     return Container(
       decoration: BoxDecoration(
         color: AppTheme.cardColor,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppTheme.borderColor),
       ),
       child: Column(
@@ -315,7 +315,7 @@ class _MenuRow extends StatelessWidget {
             Expanded(
               child: Text(title,
                   style: const TextStyle(
-                      fontSize: 14,
+                      fontSize: 13,
                       fontWeight: FontWeight.w500,
                       color: AppTheme.textPrimary)),
             ),

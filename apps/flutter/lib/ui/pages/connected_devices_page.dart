@@ -163,7 +163,7 @@ class _ConnectedDevicesPageState extends ConsumerState<ConnectedDevicesPage> {
                               Text(
                                 _getDeviceName(deviceId),
                                 style: const TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 15,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),

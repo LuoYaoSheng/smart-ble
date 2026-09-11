@@ -312,7 +312,7 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(8),
         border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(
@@ -349,7 +349,7 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppTheme.cardColor,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppTheme.borderColor),
       ),
       child: Column(
@@ -441,7 +441,7 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
                   foregroundColor: AppTheme.primaryColor,
                   side: const BorderSide(color: AppTheme.borderColor),
                   textStyle: const TextStyle(
-                      fontSize: 14, fontWeight: FontWeight.w600),
+                      fontSize: 13, fontWeight: FontWeight.w600),
                 ),
               ),
             ],
@@ -461,7 +461,7 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
         color: over
             ? AppTheme.errorColor.withValues(alpha: 0.06)
             : AppTheme.backgroundColor,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(8),
         border: Border.all(
             color: over
                 ? AppTheme.errorColor.withValues(alpha: 0.4)
@@ -478,7 +478,7 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
               Text(
                 '${b.total}',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 15,
                   fontWeight: FontWeight.w700,
                   color: over ? AppTheme.errorColor : AppTheme.textPrimary,
                 ),
@@ -557,7 +557,7 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
           enabled: enabled,
           onChanged: (_) => setState(() {}),
           style: TextStyle(
-              fontSize: 14,
+              fontSize: 13,
               fontFamily: mono ? 'monospace' : null,
               color: AppTheme.textPrimary),
           inputFormatters: mono
@@ -575,16 +575,16 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
             contentPadding:
                 const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
             border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(8),
                 borderSide: const BorderSide(color: AppTheme.borderColor)),
             enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(8),
                 borderSide: const BorderSide(color: AppTheme.borderColor)),
             focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(8),
                 borderSide: const BorderSide(color: AppTheme.primaryColor)),
             disabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(8),
                 borderSide: const BorderSide(color: AppTheme.borderColor)),
           ),
         ),
@@ -610,7 +610,7 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(8),
             border: Border.all(color: AppTheme.borderColor),
             color: AppTheme.backgroundColor,
           ),
@@ -618,14 +618,14 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
             child: DropdownButton<int>(
               value: items.indexOf(value),
               isExpanded: true,
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(8),
               items: items
                   .asMap()
                   .entries
                   .map((e) => DropdownMenuItem(
                       value: e.key,
                       child:
-                          Text(e.value, style: const TextStyle(fontSize: 14))))
+                          Text(e.value, style: const TextStyle(fontSize: 13))))
                   .toList(),
               onChanged: onChanged == null
                   ? null
