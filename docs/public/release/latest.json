@@ -10,7 +10,7 @@
   "artifacts": [],
   "wechat_qr": {
     "status": "not_released",
-    "image": null
+    "image": "/qr/wechat-miniprogram.jpg"
   },
   "public_surfaces": {
     "android": {

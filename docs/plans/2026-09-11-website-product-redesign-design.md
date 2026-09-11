@@ -1,7 +1,7 @@
 # 官网产品化重设计（lightble.i2kai.com）· 设计文档
 
 > 日期：2026-09-11
-> 状态：待用户评审
+> 状态：已确认（含 2026-09-11 用户修订 D7–D9）
 > 范围：`docs/index.md`、`docs/en/index.md`（新增）、`docs/status/index.md`（新增）、`docs/.vitepress/config.mjs`、`docs/.vitepress/theme/`、`docs/public/`（新增素材）、`docs/specs/07_design_system/TOKEN.md`（v1.0 → v1.1）
 > 技术路线：VitePress 同栈深化（方案 A），部署链零改动
 
@@ -24,6 +24,9 @@
 | D4 | 素材 | 真机截图（项目内现成）+ 生成氛围图（仅装饰） |
 | D5 | 语言 | 首页中英双语，文档保持中文 |
 | D6 | 技术路线 | 方案 A：VitePress 同栈深化（否决 Astro 换栈） |
+| D7 | 产品命名（2026-09-11 修订） | 对外统一 **BLE Toolkit+**：hero、siteTitle、og/site_name、nav、页脚、平台卡全部使用；仓库内部名 smart-ble 与域名 lightble.i2kai.com 不变 |
+| D8 | 主推入口（2026-09-11 修订） | **微信小程序为第一推荐入口，首页放真实小程序码**。码图资产：`docs/qr_code.jpg`（430×430，与 `apps/uniapp/static/wx-mini-qr.jpg` 同源，圆形点阵小程序码）。码旁文案用中性词「微信扫码使用小程序」，不声明正式版/体验版（码类型待用户口径，见 §11 注） |
+| D9 | 多版本获取（2026-09-11 修订） | 每个平台卡都有**真实可得路径**：微信=扫码；Android/ESP32=源码构建教程入口；源码=GitHub。GitHub Releases 当前仅 2022 年无关 Draft、无本线产物，因此**无产物的平台不放假下载按钮**，明确「安装包筹备中」；产物+SHA 发布到 Releases 后卡片切换为真下载（数据驱动，一处激活） |
 
 ## 3. 信息架构
 
@@ -34,25 +37,25 @@
 /specs/ /tutorials/ 等   现有文档 URL 全部保留，不动
 ```
 
-顶部导航（全站统一）：`Logo + Smart BLE` ｜ 功能（首页锚点）｜ 文档 ｜ 状态 ｜ GitHub（外链图标） ｜ 中/EN 切换。
+顶部导航（全站统一）：`Logo + BLE Toolkit+` ｜ 功能（首页锚点）｜ 文档 ｜ 状态 ｜ GitHub（外链图标） ｜ 中/EN 切换。
 
 ## 4. 首页分区规格（/ 与 /en/）
 
-自上而下七个区块：
+自上而下七个区块（2026-09-11 修订：获取入口提前至第 2 位，微信小程序码为第一主角）：
 
 | # | 区块 | 内容 | 要点 |
 |---|---|---|---|
-| 1 | Hero | 产品主张大标题（营销字号档）+ 一句话价值说明 + 主 CTA「快速开始」→ `/tutorials/01_introduction_and_setup` + 次 CTA「GitHub」+ 低调版本徽章 `v1.0.5 · PREVIEW` | 右侧真机截图组合视觉 + 生成氛围背景；版本徽章是首页唯一徽章 |
+| 1 | Hero | 产品主张大标题（营销字号档）+ 一句话价值说明 + 主 CTA「微信扫码使用」→ `#get` + 次 CTA「GitHub」+ 低调版本徽章 `v1.0.5 · PREVIEW` | 右侧视觉 = 真机截图组合 + **小程序码浮卡**（首屏即可扫码）；版本徽章是首页唯一徽章 |
 
 Hero 文案草案（实施时可润色，语义不得越诚实红线）：
 - 中文主张：`一套工具，调通每一台 BLE 设备`；价值说明：`扫描、连接、读写、订阅、广播与 ESP32 验证，收进同一条工作流。`
 - 英文主张：`One toolkit to debug and verify every BLE device`；价值说明：`Scan, connect, read, write, subscribe, broadcast — and verify on real ESP32 hardware.`
-| 2 | 能力区 | 6 卡产品语言：扫描与广播解析 / 连接与服务发现 / 读写与订阅 / 多设备与日志 / 手机 Peripheral 广播 / OTA 与固件验证 | 不带大徽章；每卡可有一行小字状态说明（中性灰） |
-| 3 | 工作流 | Scan → Connect → Inspect → Broadcast 四段横向流程 | WEB-001 评审明确保留的骨架 |
-| 4 | 平台主线 | 三主角卡：UniApp Android / 微信小程序 / LightBLE ESP32 | 卡内状态措辞固定：UniApp Android「客户端主线 · 开发预览」、微信小程序「工具入口 · 开发预览」、LightBLE ESP32「固件验证 · 开发中」；下方一行"Flutter/Tauri 等为历史参考实现"→ 链接 `/status/` |
-| 5 | 产品视觉 Gallery | 3-5 张 `apps/uniapp` 精选真机截图 | webp ≤150KB/张，lazy load |
-| 6 | 开源与参与 | GitHub / Issue / 贡献指南 / MIT License / 「项目状态与路线图」入口卡 | Security 卡保留现状（如实注明待补充，不造假链接） |
-| 7 | 页脚 | 简版导航 + 状态一行 + 版权 | 全站统一（见 §7） |
+| 2 | 获取入口 `#get` | **第一卡：微信小程序码大图**（`/qr/wechat-miniprogram.jpg`）+ 文字等价说明（TEST-R-009 契约：码图必须伴随「扫码」文字）；随后 Android / ESP32 固件 / 源码三张获取卡 | 每卡真实可得路径：Android「安装包筹备中 · 从源码构建」、ESP32「固件源码构建」、源码「GitHub 克隆」；无假下载按钮；产物+SHA 发布后此处切换真下载 |
+| 3 | 能力区 | 6 卡产品语言：扫描与广播解析 / 连接与服务发现 / 读写与订阅 / 多设备与日志 / 手机 Peripheral 广播 / OTA 与固件验证 | 不带大徽章；每卡可有一行小字状态说明（中性灰） |
+| 4 | 工作流 | Scan → Connect → Inspect → Broadcast 四段横向流程 | WEB-001 评审明确保留的骨架 |
+| 5 | 平台主线 | 三主角卡：BLE Toolkit+ for Android / BLE Toolkit+ 微信小程序 / BLE Toolkit+ ESP32 固件 | 卡内状态措辞固定：Android「客户端主线 · 开发预览」、微信小程序「工具入口 · 开发预览」、ESP32 固件「固件验证 · 开发中」；下方一行"Flutter/Tauri 等为历史参考实现"→ 链接 `/status/` |
+| 6 | 产品视觉 Gallery | 3-5 张 `apps/uniapp` 精选真机截图 | webp ≤150KB/张，lazy load |
+| 7 | 开源与参与 | GitHub / Issue / 贡献指南 / MIT License / 「项目状态与路线图」入口卡 | Security 卡保留现状（如实注明待补充，不造假链接）；页脚见 §7 |
 
 文案原则：营销区用产品语言讲价值与场景；状态五态词（VERIFIED/PREVIEW/BLOCKED/UNSUPPORTED/NOT_RELEASED）只出现在状态语境（版本徽章、/status 页），不混入营销文案。
 
@@ -92,7 +95,8 @@ Hero 文案草案（实施时可润色，语义不得越诚实红线）：
 
 | 素材 | 来源 | 处理 |
 |---|---|---|
-| 真机截图 3-5 张 | `apps/uniapp` 现有 PNG（174 张内精选：扫描列表/设备详情/日志） | 压缩 webp ≤150KB/张，存 `docs/public/gallery/` |
+| **微信小程序码** | `docs/qr_code.jpg`（真实小程序码，430×430） | 复制到 `docs/public/qr/wechat-miniprogram.jpg`；首页获取区大图 + Hero 浮卡；`latest.json` 的 `wechat_qr.image` 同步指向 |
+| 真机截图 3-5 张 | `apps/uniapp/unpackage/test-output/page-flow/*.png` + `automator-scan.png`（automator 实拍） | cwebp 压缩 ≤150KB/张，存 `docs/public/gallery/` |
 | Hero 氛围图 | 生图服务生成 1536×1024 | 深蓝低饱和抽象信号波形，存 `docs/public/brand/` |
 | icon.png / share.png | 现有 | 本轮复用 |
 
@@ -108,9 +112,11 @@ Hero 文案草案（实施时可润色，语义不得越诚实红线）：
 1. 无真实产物（APK/固件/SHA）不得出现可点击下载入口
 2. 无 E5/E6 证据不得声明 VERIFIED / RELEASED
 3. 状态五态词语义不得弱化或复用为营销词
-4. 生成图仅用于装饰，不得伪造产品界面/截图
+4. 生成图仅用于装饰，不得伪造产品界面/截图；**不得伪造二维码**（只放真实 `docs/qr_code.jpg`）
 5. Security 入口无 SECURITY.md 则如实注明，不造假链接
 6. 所有工程状态信息**降级收纳**到 /status，不删除
+7. 码图伴随文本等价（TEST-R-009 契约）：码图出现处必须有「扫码」文字说明
+8. 小程序码类型口径（正式/体验）待用户明确：站点文案统一用中性「微信扫码使用小程序」；`latest.json` 的 `wechat_qr.status` 维持诚实值、仅补 `image` 字段；`known_limitations` 中「微信正式小程序码尚未发布」一行在用户确认码类型前不改写
 
 ## 12. 验收标准
 

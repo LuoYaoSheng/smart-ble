@@ -2,9 +2,10 @@
    —— Smart BLE 站点皮肤 · 2026-09-11 收编设计系统（07_design_system 冻结 v1.0）
    SSOT：docs/specs/07_design_system/TOKEN.md · core/assets-generator/meta/design-tokens.json
    本文件为落地页投影（手工同步，值不得另立；与 apps/uniapp/styles/tokens.css 同源对齐）。
-   登记例外（见 verification/web-ui-conv/20260911-landing/REPORT.md）：
-   ① 营销展示型 clamp 字号上限（42/58px）及其行高（0.98/1.08）与字距（负 tracking）超出 token 阶梯——待 07_design_system 增设营销阶梯裁决；
-   ② 区块节奏间距（36/72/84/88/96px）为 4px 网格对齐的版式值，超出命名间距令牌上限 32px；
+   例外登记（原 ①② 见 verification/web-ui-conv/20260911-landing/REPORT.md）：
+   ① 营销展示型 clamp 字号（42/58px 上限）——2026-09-11 官网重设计轮已收编为 v1.1 营销档
+     （--fs-display-md/lg），不再是例外；
+   ② 区块节奏间距（36–96px）——2026-09-11 已收编为 v1.1 节奏档（--sec-md/lg/xl = 48/64/96），不再是例外；
    ③ #C77E14 为正典衍生警告文字色（与 specs/prototype/v1-new components.css chip.warning 同源，对应 --log-read）；
    ④ 组件级登记内距沿用契约：.smartble-platform-badge 3px 10px = B3 AppBadge（components.css .badge）、
      .smartble-inline-badge 2px 9px = B2 AppChip；正文行高一律 1.55（TOKEN.md §2），kicker 依 §2 用 --fs-micro/+2px 字距。 */
@@ -502,4 +503,497 @@
 .smartble-learning-card--static:hover {
   transform: none;
   box-shadow: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   产品化首页（2026-09-11 重设计，sb- 前缀）
+   v1.1 营销档与节奏档已收编 TOKEN.md（见文件头注 ①②）
+   ═══════════════════════════════════════════════════════════════ */
+
+/* v1.1 营销字号档 + 区块节奏档 */
+:root {
+  --fs-display-lg: clamp(36px, 5vw, 58px);
+  --fs-display-md: clamp(28px, 4vw, 42px);
+  --sec-md: 48px;
+  --sec-lg: 64px;
+  --sec-xl: 96px;
+}
+
+/* —— Hero：氛围图仅装饰（诚实红线 ④），层级与蓝色收敛 —— */
+.VPHomeHero {
+  position: relative;
+  overflow: hidden;
+}
+
+.VPHomeHero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('/brand/ambiance.webp') right center / cover no-repeat;
+  opacity: .14;
+  pointer-events: none;
+}
+
+.VPHomeHero .container {
+  position: relative;
+}
+
+.VPHomeHero .name {
+  font-size: var(--fs-h1);
+  font-weight: var(--fw-xbold);
+  letter-spacing: .02em;
+  color: var(--c-primary);
+}
+
+.VPHomeHero .text {
+  font-size: var(--fs-display-lg);
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+  color: var(--c-text);
+}
+
+.VPHomeHero .tagline {
+  font-size: var(--fs-h1);
+  line-height: 1.55;
+  color: var(--c-sub);
+}
+
+.sb-hero-badge {
+  margin: var(--sp-4) 0 0;
+  font-size: var(--fs-cap);
+  font-weight: var(--fw-med);
+  letter-spacing: .04em;
+  color: var(--c-mut);
+}
+
+.sb-hero-badge a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* —— 首页区块骨架 —— */
+.sb-home {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 var(--sp-6);
+  color: var(--c-text);
+}
+
+.sb-section {
+  margin-top: var(--sec-xl);
+}
+
+.sb-section:first-child {
+  margin-top: var(--sec-md);
+}
+
+.sb-section-head {
+  max-width: 720px;
+  margin-bottom: var(--sp-7);
+}
+
+.sb-section-head h2 {
+  margin: 0 0 var(--sp-3);
+  font-size: var(--fs-display-md);
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  color: var(--c-text);
+}
+
+.sb-section-head p {
+  margin: 0;
+  color: var(--c-sub);
+  font-size: var(--fs-h1);
+  line-height: 1.55;
+}
+
+.sb-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-3);
+  font-size: var(--fs-micro);
+  font-weight: var(--fw-xbold);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--c-primary);
+}
+
+/* —— #get 获取区：微信码主卡 + 平台获取卡（真实路径，无假下载） —— */
+.sb-get-grid {
+  display: grid;
+  grid-template-columns: minmax(300px, .95fr) repeat(3, minmax(0, 1fr));
+  gap: var(--sp-4);
+  align-items: stretch;
+}
+
+.sb-get-qr-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--sp-7) var(--sp-6);
+  border-radius: var(--r-xl);
+  border: 1px solid rgba(27, 109, 255, .30);
+  background: linear-gradient(180deg, #FFFFFF 0%, var(--c-primary-weak) 100%);
+  box-shadow: var(--shadow-1);
+}
+
+.sb-qr-img {
+  width: 172px;
+  height: 172px;
+  padding: 6px;
+  border-radius: var(--r-md);
+  background: #FFFFFF;
+}
+
+.sb-get-qr-card h3 {
+  margin: var(--sp-4) 0 var(--sp-2);
+  font-size: var(--fs-title);
+  letter-spacing: -0.02em;
+}
+
+.sb-get-qr-card p {
+  margin: 0;
+  color: var(--c-sub);
+  font-size: var(--fs-body);
+  line-height: 1.55;
+}
+
+.sb-get-qr-card .sb-get-hint {
+  margin-top: var(--sp-3);
+  font-size: var(--fs-cap);
+  color: var(--c-mut);
+}
+
+.sb-get-card {
+  display: flex;
+  flex-direction: column;
+  padding: var(--sp-6);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-xl);
+  background: var(--c-card);
+  box-shadow: var(--shadow-1);
+  color: inherit;
+  text-decoration: none;
+  transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+.sb-get-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(27, 109, 255, .32);
+  box-shadow: var(--shadow-2);
+}
+
+.sb-get-tag {
+  font-size: var(--fs-micro);
+  font-weight: var(--fw-bold);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--c-mut);
+}
+
+.sb-get-card h3 {
+  margin: var(--sp-2) 0 var(--sp-3);
+  font-size: var(--fs-title);
+  letter-spacing: -0.02em;
+}
+
+.sb-get-card p {
+  margin: 0;
+  color: var(--c-sub);
+  font-size: var(--fs-body);
+  line-height: 1.55;
+}
+
+.sb-get-cta {
+  margin-top: auto;
+  padding-top: var(--sp-5);
+  color: var(--c-primary);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+}
+
+/* —— 能力区 6 卡 —— */
+.sb-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sp-4);
+}
+
+.sb-feature-card {
+  padding: var(--sp-6);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-xl);
+  background: var(--c-card);
+  box-shadow: var(--shadow-1);
+}
+
+.sb-feature-card h3 {
+  margin: 0 0 var(--sp-2);
+  font-size: var(--fs-h1);
+  letter-spacing: -0.02em;
+}
+
+.sb-feature-card p {
+  margin: 0;
+  color: var(--c-sub);
+  font-size: var(--fs-body);
+  line-height: 1.55;
+}
+
+.sb-feature-note {
+  margin-top: var(--sp-2);
+  font-size: var(--fs-cap);
+  color: var(--c-mut);
+}
+
+/* —— 工作流四段 —— */
+.sb-flow-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--sp-4);
+}
+
+.sb-flow-card {
+  padding: var(--sp-6);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-xl);
+  background: var(--c-card);
+  box-shadow: var(--shadow-1);
+}
+
+.sb-flow-index {
+  display: inline-flex;
+  margin-bottom: var(--sp-3);
+  color: var(--c-primary);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  letter-spacing: .14em;
+}
+
+.sb-flow-card h3 {
+  margin: 0 0 var(--sp-2);
+  font-size: var(--fs-h1);
+  letter-spacing: -0.02em;
+}
+
+.sb-flow-card p {
+  margin: 0;
+  color: var(--c-sub);
+  font-size: var(--fs-body);
+  line-height: 1.55;
+}
+
+/* —— 平台主线三卡 —— */
+.sb-platform-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sp-4);
+}
+
+.sb-platform-card {
+  padding: var(--sp-6);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-xl);
+  background: var(--c-card);
+  box-shadow: var(--shadow-1);
+}
+
+.sb-platform-card h3 {
+  margin: var(--sp-2) 0 var(--sp-3);
+  font-size: var(--fs-title);
+  letter-spacing: -0.02em;
+}
+
+.sb-platform-card p {
+  margin: 0;
+  color: var(--c-sub);
+  font-size: var(--fs-body);
+  line-height: 1.55;
+}
+
+.sb-platform-status {
+  display: inline-flex;
+  font-size: var(--fs-cap);
+  font-weight: var(--fw-med);
+  color: var(--c-mut);
+}
+
+.sb-platform-footnote {
+  margin: var(--sp-5) 0 0;
+  font-size: var(--fs-cap);
+  color: var(--c-mut);
+}
+
+.sb-platform-footnote a {
+  color: var(--c-sub);
+}
+
+/* —— Gallery —— */
+.sb-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--sp-4);
+}
+
+.sb-gallery-grid figure {
+  margin: 0;
+}
+
+.sb-gallery-grid img {
+  width: 100%;
+  display: block;
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-1);
+}
+
+.sb-gallery-grid figcaption {
+  margin-top: var(--sp-2);
+  font-size: var(--fs-cap);
+  color: var(--c-mut);
+  text-align: center;
+}
+
+/* —— 开源与参与 —— */
+.sb-oss-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--sp-4);
+}
+
+.sb-oss-card {
+  display: block;
+  padding: var(--sp-6);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-xl);
+  background: var(--c-card);
+  box-shadow: var(--shadow-1);
+  color: inherit;
+  text-decoration: none;
+  transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+.sb-oss-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(27, 109, 255, .32);
+  box-shadow: var(--shadow-2);
+}
+
+.sb-oss-card h3 {
+  margin: 0 0 var(--sp-2);
+  font-size: var(--fs-h1);
+  letter-spacing: -0.02em;
+}
+
+.sb-oss-card p {
+  margin: 0;
+  color: var(--c-sub);
+  font-size: var(--fs-body);
+  line-height: 1.55;
+}
+
+.sb-oss-card--static {
+  cursor: default;
+  border-style: dashed;
+}
+
+.sb-oss-card--static:hover {
+  transform: none;
+  box-shadow: var(--shadow-1);
+  border-color: var(--c-line);
+}
+
+/* —— 全站页脚 —— */
+.sb-footer {
+  margin-top: var(--sec-xl);
+  border-top: 1px solid var(--c-line);
+  background: var(--c-fill);
+}
+
+.sb-footer-inner {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: var(--sp-7) var(--sp-6);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-5) var(--sp-8);
+}
+
+.sb-footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-xbold);
+  letter-spacing: -0.01em;
+  color: var(--c-text);
+}
+
+.sb-footer-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-5);
+  font-size: var(--fs-cap);
+}
+
+.sb-footer-nav a {
+  color: var(--c-sub);
+  text-decoration: none;
+}
+
+.sb-footer-nav a:hover {
+  color: var(--c-primary);
+}
+
+.sb-footer-status {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: var(--fs-cap);
+  line-height: 1.55;
+  color: var(--c-mut);
+}
+
+.sb-footer-status a {
+  color: var(--c-sub);
+}
+
+/* —— 响应式 —— */
+@media (max-width: 1100px) {
+  .sb-get-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sb-feature-grid,
+  .sb-flow-grid,
+  .sb-platform-grid,
+  .sb-oss-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sb-gallery-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .sb-home {
+    padding: 0 var(--sp-5);
+  }
+
+  .sb-get-grid,
+  .sb-feature-grid,
+  .sb-flow-grid,
+  .sb-platform-grid,
+  .sb-oss-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sb-gallery-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
