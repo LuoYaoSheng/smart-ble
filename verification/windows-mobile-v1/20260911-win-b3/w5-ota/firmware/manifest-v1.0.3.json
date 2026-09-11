@@ -1,0 +1,8 @@
+{
+  "format_version": 1,
+  "target": "lightble-peripheral",
+  "hardware": "esp32-s3-devkitc-1",
+  "firmware_version": "1.0.3",
+  "size": 570480,
+  "sha256": "70bc64b67ee63fe0a8370c92f4832d61517bcd33f11128c37403222e26deb0db"
+}

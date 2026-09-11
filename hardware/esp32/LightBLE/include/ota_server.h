@@ -90,6 +90,10 @@ private:
     bool _abortPending = false;
     std::vector<uint8_t> _staging;          // DATA 分片暂存（loop 侧落盘）
     static constexpr size_t kOtaStagingCap = 32 * 1024;
+    // DEV-014c：单次 loop 落盘批次上限。整环一次性 Update.write 的 flash
+    // 编程临界区（32KB ≈ 350ms）会触发中断看门狗（TG0WDT 默认 300ms，
+    // 实测高速率传输 87% 处复位）；4KB 批次临界区 ~50ms 安全。
+    static constexpr size_t kOtaDrainBatch = 4 * 1024;
 
     void resetSession(bool abortUpdate);
     void setState(OtaState next);

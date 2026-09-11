@@ -1,0 +1,91 @@
+{
+  "mode": "ewin",
+  "startedAt": "2026-09-11T04:34:01.409Z",
+  "device": {
+    "id": "10b41dcd238d",
+    "name": "BLEToolkit-Server"
+  },
+  "targetVersion": "1.0.1",
+  "baseVersion": "1.0.0",
+  "progressSamples": [
+    {
+      "at": "65.9s",
+      "status": "等待选择固件文件……",
+      "pct": "0%"
+    }
+  ],
+  "results": [
+    {
+      "name": "连接前置：扫描发现夹具",
+      "pass": true,
+      "detail": "{\"id\":\"10b41dcd238d\",\"name\":\"BLEToolkit-Server\"}",
+      "t": "0.7s"
+    },
+    {
+      "name": "连接+服务发现",
+      "pass": true,
+      "detail": "conn=true; 特征行≥12=true",
+      "t": "4.5s"
+    },
+    {
+      "name": "基线版本回读（预期 1.0.0）",
+      "pass": true,
+      "detail": "system_info={\"firmware_version\":\"1.0.0\",\"hardware\":\"esp32-wroom-32\",\"uptime\":32,\"uptime_s\":32,\"fixture_role\":\"peripheral\",\"name\":\"BLEToolkit-S",
+      "t": "5.1s"
+    },
+    {
+      "name": "OTA 入口按钮→弹窗",
+      "pass": true,
+      "detail": "btn visible=true; overlay flex=true",
+      "t": "5.1s"
+    },
+    {
+      "name": "选包（bin+sha256 实测）",
+      "pass": false,
+      "detail": "setFile=no-node; 等待选择固件文件……",
+      "t": "20.4s"
+    },
+    {
+      "name": "manifest 六字段校验",
+      "pass": false,
+      "detail": "等待选择固件文件……",
+      "t": "30.7s"
+    },
+    {
+      "name": "start 帧→设备 ready",
+      "pass": false,
+      "detail": "超时（等待选择固件文件……）",
+      "t": "65.9s"
+    },
+    {
+      "name": "分块下发+ACK 进度+commit success",
+      "pass": false,
+      "detail": "480s 超时未达 success",
+      "t": "546.6s"
+    },
+    {
+      "name": "进度条 100%",
+      "pass": false,
+      "detail": "maxPct=0%",
+      "t": "546.6s"
+    },
+    {
+      "name": "success 后自动关窗（3s）",
+      "pass": false,
+      "detail": "overlay hidden=false",
+      "t": "556.9s"
+    },
+    {
+      "name": "设备复位后重连（新分区启动）",
+      "pass": true,
+      "detail": "connected=true",
+      "t": "568.9s"
+    },
+    {
+      "name": "目标版本回读（预期 1.0.1）",
+      "pass": false,
+      "detail": "system_info={\"firmware_version\":\"1.0.0\",\"hardware\":\"esp32-wroom-32\",\"uptime\":596,\"uptime_s\":596,\"fixture_role\":\"peripheral\",\"name\":\"BLEToolkit",
+      "t": "569.5s"
+    }
+  ]
+}

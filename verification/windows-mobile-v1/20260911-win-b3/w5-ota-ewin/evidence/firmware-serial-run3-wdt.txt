@@ -1,0 +1,1043 @@
+[serial-tap] start 12:56:23 port=COM12
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x8 (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce3808,len:0x4bc
+load:0x403c9700,len:0xbd8
+load:0x403cc700,len:0x2a0c
+entry 0x403c98d0
+E (135) esp_core_dump_flash: No core dump partition found!
+E (135) esp_core_dump_flash: No core dump partition found!
+[   144][V][esp32-hal-uart.c:330] uartBegin(): UART0 baud(115200) Mode(800001c) rxPin(44) txPin(43)
+[   155][V][esp32-hal-uart.c:416] uartBegin(): UART0 not installed. Starting installation
+[   163][V][esp32-hal-uart.c:467] uartBegin(): UART0 initialization done.
+{"type":"boot","firmware_name":"LightBLE","firmware_version":"1.0.0","git_sha":"4eae543","fixture_role":"peripheral"}
+Starting BLE Peripheral Fixture...
+I NimBLEDevice: BLE Host Task Started
+I NimBLEDevice: NimBle host synced.
+D NimBLEServer: >> createService - 4fafc201-1fb5-459e-8fcc-c5c9c331914b
+D NimBLEServer: << createService
+[  3238][E][Preferences.cpp:50] begin(): nvs_open failed: NOT_FOUND
+D NimBLECharacteristic: >> setValue: length=156, data=7b226669726d776172655f76657273696f6e223a22312e302e30222c226861726477617265223a2265737033322d77726f6f6d2d3332222c22757074696d65223a332c22757074696d655f73223a332c22666978747572655f726f6c65223a2270657269, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a8
+D NimBLECharacteristic: << setValue
+D NimBLEService: >> start(): Starting service: UUID: 4fafc201-1fb5-459e-8fcc-c5c9c331914b, handle: 0xffff
+D NimBLEService: Adding 2 characteristics for service UUID: 4fafc201-1fb5-459e-8fcc-c5c9c331914b, handle: 0xffff
+D NimBLEService: << start()
+D NimBLEServer: >> createService - 4fafc201-1fb5-459e-8fcc-c5c9c331914c
+D NimBLEServer: << createService
+D NimBLEService: >> start(): Starting service: UUID: 4fafc201-1fb5-459e-8fcc-c5c9c331914c, handle: 0xffff
+D NimBLEService: Adding 7 characteristics for service UUID: 4fafc201-1fb5-459e-8fcc-c5c9c331914c, handle: 0xffff
+D NimBLEService: << start()
+D NimBLEServer: >> createService - 4fafc201-1fb5-459e-8fcc-c5c9c331914d
+D NimBLEServer: << createService
+D NimBLEService: >> start(): Starting service: UUID: 4fafc201-1fb5-459e-8fcc-c5c9c331914d, handle: 0xffff
+D NimBLEService: Adding 3 characteristics for service UUID: 4fafc201-1fb5-459e-8fcc-c5c9c331914d, handle: 0xffff
+D NimBLEService: << start()
+D NimBLEAdvertising: >> setScanResponseData
+D NimBLEAdvertising: << setScanResponseData
+D NimBLEAdvertising: >> Advertising start: customAdvData: 0, customScanResponseData: 1
+primary service
+           uuid 0x1800
+         handle 1
+     end_handle 5
+characteristic
+           uuid 0x2a00
+     def_handle 2
+     val_handle 3
+   min_key_size 0
+          flags [READ]
+characteristic
+           uuid 0x2a01
+     def_handle 4
+     val_handle 5
+   min_key_size 0
+          flags [READ]
+primary service
+           uuid 0x1801
+         handle 6
+     end_handle 9
+characteristic
+           uuid 0x2a05
+     def_handle 7
+     val_handle 8
+   min_key_size 0
+          flags [INDICATE]
+ccc descriptor
+           uuid 0x2902
+         handle 9
+   min_key_size 0
+          flags [READ|WRITE]
+primary service
+           uuid 4fafc201-1fb5-459e-8fcc-c5c9c331914b
+         handle 10
+     end_handle 16
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26a8
+     def_handle 11
+     val_handle 12
+   min_key_size 0
+          flags [READ|WRITE|NOTIFY]
+ccc descriptor
+           uuid 0x2902
+         handle 13
+   min_key_size 0
+          flags [READ|WRITE]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26a9
+     def_handle 14
+     val_handle 15
+   min_key_size 0
+          flags [WRITE|NOTIFY]
+ccc descriptor
+           uuid 0x2902
+         handle 16
+   min_key_size 0
+          flags [READ|WRITE]
+primary service
+           uuid 4fafc201-1fb5-459e-8fcc-c5c9c331914c
+         handle 17
+     end_handle 35
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26b0
+     def_handle 18
+     val_handle 19
+   min_key_size 0
+          flags [READ]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26b1
+     def_handle 20
+     val_handle 21
+   min_key_size 0
+          flags [WRITE]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26b2
+     def_handle 22
+     val_handle 23
+   min_key_size 0
+          flags [NOTIFY]
+ccc descriptor
+           uuid 0x2902
+         handle 24
+   min_key_size 0
+          flags [READ|WRITE]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26b3
+     def_handle 25
+     val_handle 26
+   min_key_size 0
+          flags [READ|WRITE]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26b4
+     def_handle 27
+     val_handle 28
+   min_key_size 0
+          flags [READ|NOTIFY]
+ccc descriptor
+           uuid 0x2902
+         handle 29
+   min_key_size 0
+          flags [READ|WRITE]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26b5
+     def_handle 30
+     val_handle 31
+   min_key_size 0
+          flags [WRITE|NOTIFY]
+ccc descriptor
+           uuid 0x2902
+         handle 32
+   min_key_size 0
+          flags [READ|WRITE]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26b6
+     def_handle 33
+     val_handle 34
+   min_key_size 0
+          flags [READ|WRITE|NOTIFY]
+ccc descriptor
+           uuid 0x2902
+         handle 35
+   min_key_size 0
+          flags [READ|WRITE]
+primary service
+           uuid 4fafc201-1fb5-459e-8fcc-c5c9c331914d
+         handle 36
+     end_handle 43
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26c0
+     def_handle 37
+     val_handle 38
+   min_key_size 0
+          flags [READ|WRITE]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26c1
+     def_handle 39
+     val_handle 40
+   min_key_size 0
+          flags [WRITE_NO_RSP]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26c2
+     def_handle 41
+     val_handle 42
+   min_key_size 0
+          flags [READ|NOTIFY]
+ccc descriptor
+           uuid 0x2902
+         handle 43
+   min_key_size 0
+          flags [READ|WRITE]
+D NimBLEAdvertising: << Advertising start
+{"type":"ble","event":"advertising","ts":3694}
+{"type":"adv","status":"started","ts":3705}
+BLE Peripheral Fixture is ready!
+D NimBLEServer: >> handleGapEvent: 
+{"type":"ble","event":"connected","ts":12775}
+{"type":"conn","status":"connected","ts":12775}
+{"D NimBLECharacteristic: >> setValue: length=79, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a31323737352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 79
+D NimBLECharacteristic: << notify: No clients subscribed.
+type":"adv","status":"connectable","ts":12775}
+{"type":"notify","status":"device_status","ts":12811}
+{"type":"disc","status":"service_ready","ts":12822}
+{"type":"led","status":"idle","ts":12832}
+{"type":"notify","status":"enabled","ts":12832}
+{"type":"err","status":"none","ts":12842}
+{"type":"obs","status":"peripheral","ts":12842}
+D NimBLECharacteristic: >> setValue: length=42, data=7b2274797065223a22636f6e6e656374696f6e222c22737461747573223a22636f6e6e6563746564227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 42
+D NimBLECharacteristic: << notify: No clients subscribed.
+D NimBLEServerCallbacks: onConnect(): Default
+D NimBLEServer: >> handleGapEvent: 
+I NimBLEServer: mtu update event; conn_handle=1 mtu=255
+D NimBLEServerCallbacks: onMTUChange(): Default
+D NimBLEServer: >> handleGapEvent: 
+I NimBLEServer: subscribe event; attr_handle=8, subscribed: false
+D NimBLEServer: >> handleGapEvent: 
+D NimBLEServer: << handleGATTServerEvent
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26a8 Read event
+[ 15697][E][Preferences.cpp:50] begin(): nvs_open failed: NOT_FOUND
+D NimBLECharacteristic: >> setValue: length=158, data=7b226669726d776172655f76657273696f6e223a22312e302e30222c226861726477617265223a2265737033322d77726f6f6d2d3332222c22757074696d65223a31352c22757074696d655f73223a31352c22666978747572655f726f6c65223a227065, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a8
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onRead: default
+D NimBLEServer: >> handleGapEvent: 
+I NimBLEServer: subscribe event; attr_handle=42, subscribed: true
+I NimBLECharacteristic: New subscribe value for conn: 1 val: 1
+D NimBLECharacteristicCallbacks: onSubscribe: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c0 Write event
+D NimBLECharacteristic: >> setValue: length=177, data=7b226f70223a227374617274222c2273697a65223a3538333432342c226368756e6b5f73697a65223a3138302c22736861323536223a22353165386263343033326136383763623137306238373637396562316635626533313162633064633239613339, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c0
+D NimBLECharacteristic: << setValue
+{"type":"ota","state":"starting","received":0,"total":0}
+{"type":"ota","state":"starting","received":0,"total":583424,"target[ 17182][D][Updater.cpp:139] begin(): OTA Partition: app1
+_version":"1.0.1"}
+D NimBLECharacteristicCallbacks: onWrite: default
+{"type":"ota","state":"ready","received":0,"total":583424,"target_version":"1.0.1"}
+D NimBLECharacteristic: >> setValue: length=47, data=7b2274797065223a226f7461222c22737461747573223a227265616479222c226d61785f6368756e6b223a3138307d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c2
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 47
+D NimBLECharacteristicCallbacks: onNotify: default
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"ota","state":"receiving","received":0,"total":583424,"target_version":"1.0.1"}
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=e905023fd0703740ee0000000900000000ffff00000000012000063c6cae01003254cdab0000000000000000000000006573702d6964663a2076342e342e37203338656562613231336100000000000061726475696e6f2d6c69622d6275696c64657200, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=b98b4363c3cc9609465435001e0cb2f295093972adf3f43548bf3746000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=3a207265616c6c6f63206661696c656422002f2e70696f2f6c6962646570732f666978747572655f7065726970686572616c5f73332f4e696d424c452d41726475696e6f2f7372632f4e696d424c4541747456616c75652e6800e5bc80e5a78be79b91e5, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=76, data=7b2274797065223a226f7461222c22737461747573223a2270726f6772657373222c227265636569766564223a3534302c22746f74616c223a3538333432342c2270657263656e74223a307d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c2
+D NimBLECharacteristic: >> setValue: length=180, data=65727665720034666166633230312d316662352d343539652d386663632d633563396333333139313462004c69676874424c45006164766572746973696e67006164760073746172745f6661696c65640062656235343833652d333665312d343638382d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 76
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristicCallbacks: onNotify: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristic: >> setValue: length=180, data=35633963333331393134640062656235343833652d333665312d343638382d623766352d6561303733363162323663300062656235343833652d333665312d343638382d623766352d6561303733363162323663310062656235343833652d333665312d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: << notify
+D N{imBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=7300757074696d6500666978747572655f726f6c6500636f6e6e00636f6e6e65637461626c6500736572766963655f726561647900646973630069646c6500656e61626c6564006e6f6e6500657272006f627300636f6e6e656374696f6e00646973636f, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=303600423c970042603700425c9700426c9700427c97004290970042a0970042000000000000000098250042ac25004224270042dc820042cc2a0042fc8200420c8300421c8300422c8300420000000000000000c0250042d4250042cc820042dc820042, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=08ba5b25436fac642806c80a00000000000024400000000000005940000000000088c3400000000084d797410080e03779c34143176e05b5b5b89346f5f93fe9034f384d321d30f94877825a3cbf737fdd4f15756669726d776172655f76657273696f6e, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=00424c45205065726970686572616c204669787475726520697320726561647921007374617274696e6700726563656976696e6700636f6d6d697474696e6700737563636573730061626f7274656400756e6b6e6f776e00736d6172745f626c65006677, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=657461696c006d65737361676500726563656976656400746f74616c0070657263656e74007265626f6f74696e67006d61785f6368756e6b004f54415f4552525f5354415445006661756c745f61626f7274006d697373696e675f746172676574006c69, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=616c69645f6368756e6b5f73697a65006d697373696e675f7461726765745f76657273696f6e004f54415f4552525f434845434b53554d00696e76616c69645f736861323536006661756c745f77726f6e675f73697a6500646973636f6e6e6563740073, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=697a655f6d69736d61746368004f54415f53495a455f4d49534d41544348007570646174655f656e645f6661696c656400656d7074795f636f6e74726f6c5f7061796c6f616400696e76616c69645f636f6e74726f6c5f6a736f6e006d697373696e675f, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=61696c6564004f54415f4552525f5350414345006368756e6b5f77726974655f6661696c65640070726f677265737300626f6f6c204e696d424c4541747456616c75653a3a73657456616c756528636f6e73742075696e74385f742a2c2075696e743136, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=0c8300421c8300422c830042e8bf99e698afe4b880e4b8aae8afbbe5928ce9809ae79fa5e789b9e5be81e580bc00e8bf99e698afe4b880e4b8aae8afbbe58699e5928ce9809ae79fa5e789b9e5be81e580bc00e8bf99e698afe4b880e4b8aae58faae980, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=363162323662300052656164204f6e6c792043686172616374657269737469630062656235343833652d333665312d343638382d623766352d6561303733363162323662310062656235343833652d333665312d343638382d623766352d656130373336, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=3665312d343638382d623766352d6561303733363162323662340052656164204e6f746966792043686172616374657269737469630062656235343833652d333665312d343638382d623766352d6561303733363162323662350062656235343833652d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=afe4b880e4b8aae58faae8afbbe789b9e5be81e580bc0074696d657374616d7000726561645f777269746500e8bf99e698afe4b880e4b8aae8afbbe58699e789b9e5be81e580bc00726561645f6e6f746966790000000000000000005c5b0042705b0042, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=ac5b0042c05b0042cc820042dc820042ec820042fc8200420c8300421c830042d05c00420000000000000000d45b0042e85b004234600042dc8200425c990542fc8200420c8300421c8300422c8300420000000000000000fc5b0042105c004210610042, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=605c0042ec610042dc820042c05e0042fc8200420c8300421c830042b45c0042626f6f74006669726d776172655f6e616d65006769745f7368610034656165353433007473006576656e74006c65645f6f6e00e5bc80e781af006c65645f6f666600e585, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=645f737461746500626c696e6b5f7061747465726e006661756c745f64656c617965645f726573706f6e7365006661756c745f646973636f6e6e6563745f6f6e5f777269746500464625303258004c45445f4f4e004c45445f4f464600424c494e4b004e, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=6974656c6973744f6e6c793a2025640a00442025733a203c3c207365745363616e46696c7465720a00442025733a203e3e207365745363616e526573706f6e7365446174610a00452025733a20626c655f6761705f6164765f7273705f7365745f646174, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=3d25642025730a00442025733a203c3c2073746f700a00435249542025733a20686f73742072657365742c2072633d25640a00452025733a204164766572746973656d656e742064617461206c656e6774682065786365656465640a00442025733a203e, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=657365742c207761697420666f722073796e632e0a00452025733a204d617820636f6e6e656374696f6e732072656163686564202d206e6f74206164766572746973696e670a00572025733a204164766572746973696e6720616c726561647920616374, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=0a00452025733a204572726f722073657474696e67207363616e20726573706f6e736520646174613b2072633d25642c2025730a00452025733a204164766572746973656d656e74206461746120746f6f206c6f6e670a00452025733a204572726f7220, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=20556e61626c6520746f20616476657274697365202d204475726174696f6e20746f6f206c6f6e670a00452025733a20556e61626c6520746f20616476657274697365202d20627573790a00452025733a20556e61626c6520746f206164766572746973, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=672073746172740a00442025733a20486f73742072652d73796e6365640a004e696d424c45436861726163746572697374696343616c6c6261636b7300442025733a206f6e526561643a2064656661756c740a00442025733a206f6e57726974653a2064, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=61756c740a006d5f617474725f76616c756520262620224e6f204d656d2200726573202626202264656570436f70793a207265616c6c6f63206661696c656422004e696d424c45436861726163746572697374696300442025733a203e3e206e6f746966, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=737469633a2025730a00442025733a203c3c206e6f746966793a204e6f20636c69656e747320737562736372696265642e0a00572025733a202d205472756e636174696e6720746f20256420627974657320286d6178696d756d206e6f74696679207369, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=69636174696f6e20696e73746561640a00572025733a2053656e64696e6720696e6469636174696f6e20746f20636c69656e74207375627363726962656420746f206e6f74696669636174696f6e2c2073656e64696e67206e6f74696669636174696f6e, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=3a206c656e6774683d25642c20646174613d25732c20636861726163746572697374696320555549443d25730a00442025733a203c3c2073657456616c75650a005265616400577269746500572025733a20436f6e6e5f68616e646c6520282564292069, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=63726962652076616c756520666f7220636f6e6e3a2025642076616c3a2025640a00626f6f6c204e696d424c4541747456616c75653a3a73657456616c756528636f6e73742075696e74385f742a2c2075696e7431365f742900766f6964204e696d424c, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=5f742c2075696e7431365f74290000000000000000000000489a0542c0820042cc820042dc820042ec820042fc8200420c8300421c8300422c8300424e696d424c4544657363726970746f7200442025733a203e3e2073657448616e646c65283078252e, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=746f72202573202573206576656e740a007263203d3d2030002f2e70696f2f6c6962646570732f666978747572655f7065726970686572616c5f73332f4e696d424c452d41726475696e6f2f7372632f4e696d424c4544657363726970746f722e637070, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=70746f723a3a68616e646c654761704576656e742875696e7431365f742c2075696e7431365f742c20626c655f676174745f6163636573735f637478742a2c20766f69642a29004e696d424c4544657669636500492025733a20424c4520486f73742054, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=002f2e70696f2f6c6962646570732f666978747572655f7065726970686572616c5f73332f4e696d424c452d41726475696e6f2f7372632f4e696d424c454465766963652e637070006e76735f666c6173685f6572617365282900657272526300657370, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=655f6863695f696e6974282900000000a5a55a5a20114002001017000106000000001e00000000010000000000000b0001000000000064000000000000000102050014000000000001000000452025733a20626c655f6761705f73656375726974795f69, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=424c454465766963653a3a6f6e53796e632829004e696d424c455363616e00442025733a206572617365206465766963653a2025730a00442025733a203e3e2073746172743a206475726174696f6e3d25750a00452025733a20556e61626c6520746f20, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=7220696e6974696174696e672047415020646973636f766572792070726f6365647572653b2072633d25642c2025730a00442025733a203c3c20737461727428290a00492025733a205363616e206f7020696e2070726f6772657373202d2069676e6f72, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=205570646174656420616476657274697365723a2025730a00442025733a20646973636f7665727920636f6d706c6574653b20726561736f6e3d25640a004e696d424c4553657276657243616c6c6261636b7300442025733a206f6e436f6e6e65637428, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=6e506173734b6579526571756573743a2064656661756c743a203132333435360a00442025733a206f6e41757468656e7469636174696f6e436f6d706c6574653a2064656661756c740a00442025733a206f6e436f6e6669726d50494e3a206465666175, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=3d25642025730a00442025733a203c3c20646973636f6e6e65637428290a00452025733a205065657220696e666f206e6f7420666f756e640a006d697373696e67006e6f74207374617274656400572025733a20476174742073657276657220616c7265, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=20736572766963653a2025732c20536572766963652025730a00442025733a203e3e2063726561746553657276696365202d2025730a00572025733a205761726e696e67206372656174696e672061206475706c69636174652073657276696365205555, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=696c65640a00435249542025733a20446973636f6e6e656374202d20686f73742072657365742c2072633d25640a00492025733a20737562736372696265206576656e743b20617474725f68616e646c653d25642c20737562736372696265643a202573, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=617465642e0a00442025733a20424c455f534d5f494f4143545f444953503b20626c655f736d5f696e6a6563745f696f20726573756c743a2025640a00442025733a20506173736b6579206f6e20646576696365277320646973706c61793a2025750a00, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=626c655f736d5f696e6a6563745f696f20726573756c743a2025640a00442025733a20456e7465722074686520706173736b65790a00442025733a20424c455f534d5f494f4143545f494e5055543b20626c655f736d5f696e6a6563745f696f20726573, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=00000000749a0542209700422c9700423c9700424c9700425c9700426c9700427c97004290970042a0970042000000000000000000000000000000004e696d424c455365727669636500442025733a20536572766963653a20757569643a25732c206861, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=3e3e20737461727428293a205374617274696e6720736572766963653a2025730a00442025733a20416464696e672025642063686172616374657269737469637320666f7220736572766963652025730a00452025733a20626c655f67617474735f636f, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=672061206475706c6963617465206368617261637465726973746963207769746820555549443a2025730a004e696d424c455555494400452025733a20496e76616c696420555549442073697a650a00442025733a203c3c2052657475726e206f662075, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=206d616c6c6f63206661696c65640a00252e3278002f2e70696f2f6c6962646570732f666978747572655f7065726970686572616c5f73332f4e696d424c452d41726475696e6f2f7372632f6e696d626c652f6573705f706f72742f6573702d6863692f, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=65656473206d6178696d756d20636f6e6669677572656420484349206576656e74206275666665722073697a6520282564292e0a00657662756620213d204e554c4c004520282575292025733a202573206661696c656420746f20616c6c6f6361746520, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=3d2025640a006f735f6d656d626c6f636b5f66726f6d2826626c655f6863695f636d645f706f6f6c2c206275662900636d6420213d204e554c4c00626c655f6863695f61636c5f706f6f6c00626c655f6863695f636d645f706f6f6c00626c655f686369, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=706b7400626c655f6863695f7472616e735f6275665f6672656500626c655f6863695f7472616e735f6275665f616c6c6f6300626c655f6863695f7472616e735f68735f636d645f74780000d8ac004214ae004275756964313620213d2030002f2e7069, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=61702f7372632f626c655f7376635f6761702e6300626c655f7376635f6761705f617070656172616e63655f77726974655f61636365737300626c655f7376635f6761705f6465766963655f6e616d655f77726974655f61636365737300626c655f7376, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=474154545f4143434553535f4f505f524541445f434852002f2e70696f2f6c6962646570732f666978747572655f7065726970686572616c5f73332f4e696d424c452d41726475696e6f2f7372632f6e696d626c652f6e696d626c652f686f73742f7365, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=735b305d00626c655f7376635f676174745f61636365737300626c655f7376635f676174745f696e6974000001000000dc6dc93f00000000a86dc93f0000000000000000000000000000000001000000a4b4004202000000e8bf004203000000d4b40042, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=0e000000e0c600420f00000060b80042100000008cc7004211000000c4b8004212000000b4c90042130000003cb900421600000080ca004217000000b8b9004218000000d4cb00421900000028ba00421b0000001ccd00421d00000064cd00421e000000, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=747572655f7065726970686572616c5f73332f4e696d424c452d41726475696e6f2f7372632f6e696d626c652f6e696d626c652f686f73742f7372632f626c655f6761702e6300626c655f6761705f75706461746500626c655f6761705f72785f636f6e, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=0ce800420900000060f200420300000094f000420300000020f3004204000000ecf2004205000000b8f200420800000010ef00420300000090f3004204000000a0ed0042050000002cee00420800000040ed00427ce50042cce5004224e600427ce60042, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=3cf2004200000000000000008cef004268ef00420000000090e50042e0e5004238e6004290e60042f0e6004248e70042a0e70042f8e7004270e80042c0e8004220e9004298ea0042f4ea00427cf1004274ed0042626c655f67617474735f636c745f6366, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=636c75646564207365727669636500617474722068616e646c65006368617261637465726973746963006465665f68616e646c650076616c5f68616e646c65006d696e5f6b65795f73697a6500666c616773006363632064657363726970746f72005245, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=54455f4e4f5f525350004e4f5449465900494e44494341544500415554485f5349474e5f57524954450052454c4941424c455f5752495445004155585f575249544500007db0063c632a063cde29063ce729063cf329063cff29063c092a063c162a063c, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=732f666978747572655f7065726970686572616c5f73332f4e696d424c452d41726475696e6f2f7372632f6e696d626c652f6e696d626c652f686f73742f7372632f626c655f68732e6300626c655f68735f6863695f65765f706f6f6c00626c655f6873, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=7572655f7065726970686572616c5f73332f4e696d424c452d41726475696e6f2f7372632f6e696d626c652f6e696d626c652f686f73742f7372632f626c655f68735f636f6e6e2e6300626c655f68735f636f6e6e5f706f6f6c00626c655f68735f636f, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=701e0142009d0542189d0542209d0542289d0542389d0542089d0542109d054200000000000000000000000000000000309d05423e000000081e0142130000002820014205000000f41f0142080000005c1e014230000000481e014210000000341e0142, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=6d626c652f686f73742f7372632f626c655f6c326361702e6300626c655f6c326361705f6368616e5f706f6f6c00626c655f6c326361705f617070656e645f727800626c655f6c326361705f7369675f70726f635f706f6f6c000000000000003c2c0142, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=8c9d05428c9d05428c9d05428c9d05428c9d0542626c655f736d5f70726f635f706f6f6c0000000040450142c4330142a833014204330142583301424c32014240320142ac340142e830014204530142c454014200000000b83b0142c83e0142243e0142, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=03020003000000000003030200030000030003000403000402020200020000000000020403000400000200020004020004030302000300000000000304020004307825303468780030782530387800253032782530327825303278253032782d25303278, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=4c455f4e5653004520282575292025733a204e5653206f70656e206f7065726174696f6e206661696c65642021210a004520282575292025733a204e5653207772697465206f7065726174696f6e206661696c65642021210a004520282575292025733a, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=25735f2564006f75725f73656300636363645f736563004520282575292025733a204e56532072656164206f7065726174696f6e206661696c65642021210a004520282575292025733a20496e76616c696420696e6465782070726f766964656420746f, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=204e5653206f7065726174696f6e206661696c65642021210a004520282575292025733a204e5653206f7065726174696f6e206661696c6564207768696c652070657273697374696e6720434343440a004520282575292025733a204e56532064656c65, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=656572207365630a004520282575292025733a204e56532064656c657465206f7065726174696f6e206661696c656420666f722070656572207365630a004520282575292025733a204e5653206f7065726174696f6e206661696c6564207768696c6520, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=733a204e5653206f7065726174696f6e206661696c656420666f7220276f757220736563270a004520282575292025733a204e5653206f7065726174696f6e206661696c656420666f7220277065657220736563270a004520282575292025733a204e56, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=686520626f6e64696e6720696e666f0a00424c455f494e4954004520282575292025733a206e696d626c6520686f737420696e6974206661696c65640a0a006e65775f6275662d3e6f6d5f6c656e203d3d2030002f2e70696f2f6c6962646570732f6669, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=6275665f636f7079706b74686472006d7379735f31002f2e70696f2f6c6962646570732f666978747572655f7065726970686572616c5f73332f4e696d424c452d41726475696e6f2f7372632f6e696d626c652f706f7274696e672f6e696d626c652f73, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=65726970686572616c5f73332f4e696d424c452d41726475696e6f2f7372632f6e696d626c652f706f7274696e672f6e706c2f6672656572746f732f7372632f6e706c5f6f735f6672656572746f732e6300726574203d3d20706450415353207c7c2072, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=6c6f75745f74696d65725f6362006e706c5f6672656572746f735f73656d5f72656c65617365006e706c5f6672656572746f735f73656d5f70656e64006e706c5f6672656572746f735f73656d5f696e6974006e706c5f6672656572746f735f6d757465, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=6d6f7665006e706c5f6672656572746f735f6576656e74715f707574006e706c5f6672656572746f735f6576656e74715f676574004e696d424c454164647265737300442025733a20496e76616c6964206164647265737320272573270a0025783a2578, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=40b7995899b8a6cd3c1abd0008200001ffffffffffffffffffffffff00000000000000000000000001000000ffffffff512563fcc2cab9f3849e17a7adfae6bcffffffffffffffff00000000ffffffff96c298d84539a1f4a033eb2d817d0377f240a463, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=108a0142448501420000000000000001000000020000000400000008000000100000002000000040000000800000001b00000036637c777bf26b6fc53001672bfed7ab76ca82c97dfa5947f0add4a2af9ca472c0b7fd9326363ff7cc34a5e5f171d83115, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=cd0c13ec5f974417c4a77e3d645d197360814fdc222a908846eeb814de5e0bdbe0323a0a4906245cc2d3ac629195e479e7c8376d8dd54ea96c56f4ea657aae08ba78252e1ca6b4c6e8dd741f4bbd8b8a703eb5664803f60e613557b986c11d9ee1f89811, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=ffffffffffffffff00000000ffffffff96c298d84539a1f4a033eb2d817d0377f240a463e5e6bcf847422ce1f2d1176bf551bf376840b6cbce5e316b5733ce2b169e0f7c4aebe78e9b7f1afee242e34f4b60d2273e3cce3bf6b053ccb0061d65bc869876, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=72657373696633322f6c69627261726965732f507265666572656e6365732f7372632f507265666572656e6365732e637070005b2536755d5b455d5b25733a25755d20257328293a206e76735f666c6173685f696e69745f706172746974696f6e206661, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=5f65726173655f6b6579206661696c3a2025732025730d0a005b2536755d5b455d5b25733a25755d20257328293a206e76735f636f6d6d6974206661696c3a2025732025730d0a005b2536755d5b455d5b25733a25755d20257328293a206e76735f7365, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=5b25733a25755d20257328293a206e6f7420656e6f75676820737061636520696e2076616c75653a202575203c2025750d0a005b2536755d5b455d5b25733a25755d20257328293a206e76735f6765745f737472206661696c3a2025732025730d0a0067, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=75696e6f65737072657373696633322f6c69627261726965732f5570646174652f7372632f557064617465722e637070005b2536755d5b575d5b25733a25755d20257328293a20616c72656164792072756e6e696e670d0a005b2536755d5b445d5b2573, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=733a25755d20257328293a20746f6f206c61726765202575203e2025750d0a005b2536755d5b455d5b25733a25755d20257328293a206d616c6c6f63206661696c65640d0a005b2536755d5b455d5b25733a25755d20257328293a207072656d61747572, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=636b616765732f6672616d65776f726b2d61726475696e6f65737072657373696633322f636f7265732f65737033322f486172647761726553657269616c2e637070005b2536755d5b575d5b25733a25755d20257328293a20554152542564204649464f, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=5b25733a25755d20257328293a20554152542564204275666665722046756c6c2e20436f6e736964657220696e6372656173696e6720796f7572206275666665722073697a65206f6620796f7572204170706c69636174696f6e2e0d0a005b2536755d5b, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=5b2536755d5b565d5b25733a25755d20257328293a20554152542564206672616d65206572726f722e0d0a005b2536755d5b565d5b25733a25755d20257328293a2055415254256420756e6b6e6f776e206576656e7420747970652025642e0d0a005b25, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=755d20257328293a20202d2d20554152542564204576656e74205461736b206e6f742043726561746564210d0a005b2536755d5b455d5b25733a25755d20257328293a2053657269616c206e756d62657220697320696e76616c69642c20706c65617365, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=6e2e0d0a005b2536755d5b455d5b25733a25755d20257328293a205541525420647269766572206661696c656420746f2073746172742e20506c6561736520636865636b20746865206c6f67732e0d0a005b2536755d5b575d5b25733a25755d20257328, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=612062617564207261746520756e64657220393630302e0d0a005b2536755d5b455d5b25733a25755d20257328293a20436f756c64206e6f74206465746563742062617564726174652e2053657269616c20646174612061742074686520706f7274206d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=745461736b005f6372656174654576656e745461736b00486172647761726553657269616c000000000000000000000064a401428ca40142889f01429c9f0142149f01427c9f0142089f0142409f0142209f01428ca50542609f0142e8a50142433a2f55, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=616c2d6770696f2e63005b2536755d5b455d5b25733a25755d20257328293a20496e76616c69642070696e2073656c65637465640d0a005b2536755d5b455d5b25733a25755d20257328293a204750494f20636f6e666967206661696c65640d0a005f5f, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=737033322f65737033322d68616c2d6d6973632e63005b2536755d5b455d5b25733a25755d20257328293a204661696c656420746f20616464206c6f6f70207461736b20746f205744540d0a005b2536755d5b455d5b25733a25755d20257328293a204f, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=25733a25755d20257328293a204661696c656420746f20666f726d6174207468652062726f6b656e204e565320706172746974696f6e210d0a005b2536755d5b455d5b25733a25755d20257328293a20436f756c64206e6f742066696e64204e56532070, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=6e6f00433a2f55736572732f31313036362f2e706c6174666f726d696f2f7061636b616765732f6672616d65776f726b2d61726475696e6f65737072657373696633322f636f7265732f65737033322f65737033322d68616c2d7267622d6c65642e6300, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=736572732f31313036362f2e706c6174666f726d696f2f7061636b616765732f6672616d65776f726b2d61726475696e6f65737072657373696633322f636f7265732f65737033322f65737033322d68616c2d726d742e63005b2536755d5b455d5b2573, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=696e676275666665722068616e646c650d0a005b2536755d5b445d5b25733a25755d20257328293a20202d2d20476f74202564206279746573206f6e2052582052696e67627566666572202d2043482025640d0a005b2536755d5b455d5b25733a25755d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=5820524d54204368616e6e656c0d0a00545800525800415042202838304d487a2900314d487a005b2536755d5b445d5b25733a25755d20257328293a2053746174757320666f7220524d54206368616e6e656c2025640d0a005b2536755d5b445d5b2573, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=5d5b445d5b25733a25755d20257328293a202d204e756d626572206f66206d656d6f727920626c6f636b733a2025640d0a005b2536755d5b445d5b25733a25755d20257328293a202d204c6f7720706f776572206d6f64653a2025640d0a005b2536755d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=0d0a005b2536755d5b445d5b25733a25755d20257328293a202d205374617475733a2025640d0a005b2536755d5b445d5b25733a25755d20257328293a202d20536f7572636520636c6f636b3a2025730d0a005b2536755d5b455d5b25733a25755d2025, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=202564202d2025642052414d20426c6f636b73202d2070696e2025640d0a005b2536755d5b455d5b25733a25755d20257328293a20524d54206661696c656420746f20696e6974696c697a652e0d0a00726d74496e6974005f726d74436865636b54586e, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=2f6672616d65776f726b2d61726475696e6f65737072657373696633322f636f7265732f65737033322f65737033322d68616c2d756172742e6300756172745f666c7573685f696e70757428756172742d3e6e756d29002573005b2536755d5b455d5b25, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=25733a25755d20257328293a20554152542564206661696c656420746f206174746163682052582070696e2025640d0a005b2536755d5b455d5b25733a25755d20257328293a20554152542564206661696c656420746f20617474616368205458207069, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=5d20257328293a20554152542564206661696c656420746f20617474616368205254532070696e2025640d0a005b2536755d5b455d5b25733a25755d20257328293a20554152542564207365742070696e73206661696c65642e0d0a004556454e004f44, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=005b2536755d5b565d5b25733a25755d20257328293a20554152542564206261756428256c6429204d6f64652825782920727850696e2825642920747850696e282564290d0a005b2536755d5b455d5b25733a25755d20257328293a204c6f636b20284d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=005b2536755d5b565d5b25733a25755d20257328293a20554152542564206368616e67696e67206275666665722073697a6573206f7220696e766572746564207369676e616c206f722072786669666f5f66756c6c5f74687268642e2049444620647269, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=005b2536755d5b565d5b25733a25755d20257328293a20554152542564206368616e67656420626175647261746520746f2025640d0a005b2536755d5b455d5b25733a25755d20257328293a20554152542564206368616e67696e672064617461206c65, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=5b25733a25755d20257328293a20554152542564206368616e67696e6720706172697479206661696c65642e0d0a005b2536755d5b565d5b25733a25755d20257328293a20554152542564206368616e6765642070617269747920746f2025730d0a005b, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=4152542564206368616e6765642073746f70206269747320746f2025640d0a005b2536755d5b455d5b25733a25755d20257328293a20554152542564206368616e67696e672052582070696e206661696c65642e0d0a005b2536755d5b565d5b25733a25, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=70696e206661696c65642e0d0a005b2536755d5b565d5b25733a25755d20257328293a20554152542564206368616e6765642054582070696e20746f2025640d0a005b2536755d5b565d5b25733a25755d20257328293a20554152542564206e6f742069, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=6e652e0d0a0000002c01000058020000b004000060090000c012000080250000004b00000096000000e100008024010000c201000084030090d0030000e803000008070020a1070000100e0040420f0000201c0080841e000040380075617274466c7573, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=6c6174666f726d696f2f7061636b616765732f6672616d65776f726b2d61726475696e6f65737072657373696633322f636f7265732f65737033322f65737033322d68616c2d6370752e63005b2536755d5b455d5b25733a25755d20257328293a204361, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=0041504c4c005854414c00384d005b2536755d5b455d5b25733a25755d20257328293a20426164206672657175656e63793a202575204d487a21204f7074696f6e73206172653a203234302c203136302c2038302c2025752c20257520616e6420257520, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=20616e64202575204d487a0d0a005b2536755d5b455d5b25733a25755d20257328293a2043505520636c6f636b20636f756c64206e6f742062652073657420746f202575204d487a0d0a005b2536755d5b445d5b25733a25755d20257328293a2025733a, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=3e203029202626202828707852696e676275666665722d3e7075635265616420213d20707852696e676275666665722d3e707563577269746529207c7c2028707852696e676275666665722d3e757852696e67627566666572466c616773202620282028, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=203e3d20707852696e676275666665722d3e7075634865616420262620707852696e676275666665722d3e70756352656164203c20707852696e676275666665722d3e7075635461696c00707852696e676275666665722d3e70756352656164203d3d20, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=3c3d20707852696e676275666665722d3e7075635461696c0070784375724865616465722d3e784974656d4c656e203c3d20707852696e676275666665722d3e784d61784974656d53697a65002870784375724865616465722d3e75784974656d466c61, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=202929203d3d203000707852696e676275666665722d3e70756346726565203c3d20707852696e676275666665722d3e70756348656164202b20707852696e676275666665722d3e7853697a65007078497353706c697420213d202828766f6964202a29, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=74656d4c656e203c3d20707852696e676275666665722d3e784d61784974656d53697a6529207c7c202870784865616465722d3e75784974656d466c616773202620282028205542617365547970655f74202920322029290070784865616465722d3e78, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacteristic: >> setValue: length=180, data=75726e203c3d20707852696e676275666665722d3e7075635461696c00706352657475726e203e3d20707852696e676275666665722d3e7075634865616420262620706352657475726e203c20707852696e676275666665722d3e7075635461696c0028, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26c1
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26c1 Write event
+D NimBLECharacE (27088) task_wdt: Task watchdog got triggered. The following tasks did not reset the watchdog in time:
+E (27088) task_wdt:  - IDLE0 (CPU 0)
+E (27088) task_wdt: Tasks currently running:
+E (27088) task_wdt: CPU 0: nimble_host
+E (27088) task_wdt: CPU 1: IDLE1
+E (27088) task_wdt: Aborting.
+
+abort() was called at PC 0x420253f0 on core 0
+
+
+Backtrace: 0x40377966:0x3fc97e70 0x4037f455:0x3fc97e90 0x40385251:0x3fc97eb0 0x420253f0:0x3fc97f30 0x40378bcd:0x3fc97f50 0x42027b91:0x3fcf7100 0x42028611:0x3fcf7120 0x42027639:0x3fcf7140 0x420272bd:0x3fcf7160 0x42046401:0x3fcf7180 0x420451ee:0x3fcf71a0 0x42045276:0x3fcf71c0 0x42045c7e:0x3fcf71f0 0x4205758d:0x3fcf7220 0x420503a6:0x3fcf7240 0x42045e6d:0x3fcf7550 0x420086a5:0x3fcf75a0 0x4200892b:0x3fcf7600 0x4200fd69:0x3fcf7890 0x4200fda1:0x3fcf78c0 0x4200bcd5:0x3fcf7900 0x4200bead:0x3fcf7930 0x4200ca63:0x3fcf7950 0x4200b3dd:0x3fcf7980 0x42012287:0x3fcf79b0 0x42010d90:0x3fcf79e0 0x42010d9b:0x3fcf7a00 0x4037535e:0x3fcf7a20 0x42008d23:0x3fcf7a40
+
+
+
+
+ELF file SHA256: 8990e04e3358e32d
+
+E (4794) esp_core_dump_flash: Core dump flash config is corrupted! CRC=0x7bd5c66f instead of 0x0
+Rebooting...
+x��ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0xc (RTC_SW_CPU_RST),boot:0x8 (SPI_FAST_FLASH_BOOT)
+Saved PC:0x40377574
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce3808,len:0x4bc
+load:0x403c9700,len:0xbd8
+load:0x403cc700,len:0x2a0c
+entry 0x403c98d0
+E (140) esp_core_dump_flash: No core dump partition found!
+E (140) esp_core_dump_flash: No core dump partition found!
+[   149][V][esp32-hal-uart.c:330] uartBegin(): UART0 baud(115200) Mode(800001c) rxPin(44) txPin(43)
+[   159][V][esp32-hal-uart.c:416] uartBegin(): UART0 not installed. Starting installation
+[   168][V][esp32-hal-uart.c:467] uartBegin(): UART0 initialization done.
+{"type":"boot","firmware_name":"LightBLE","firmware_version":"1.0.0","git_sha":"4eae543","fixture_role":"peripheral"}
+Starting BLE Peripheral Fixture...
+I NimBLEDevice: BLE Host Task Started
+I NimBLEDevice: NimBle host synced.
+D NimBLEServer: >> createService - 4fafc201-1fb5-459e-8fcc-c5c9c331914b
+D NimBLEServer: << createService
+[  3246][E][Preferences.cpp:50] begin(): nvs_open failed: NOT_FOUND
+D NimBLECharacteristic: >> setValue: length=156, data=7b226669726d776172655f76657273696f6e223a22312e302e30222c226861726477617265223a2265737033322d77726f6f6d2d3332222c22757074696d65223a332c22757074696d655f73223a332c22666978747572655f726f6c65223a2270657269, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a8
+D NimBLECharacteristic: << setValue
+D NimBLEService: >> start(): Starting service: UUID: 4fafc201-1fb5-459e-8fcc-c5c9c331914b, handle: 0xffff
+D NimBLEService: Adding 2 characteristics for service UUID: 4fafc201-1fb5-459e-8fcc-c5c9c331914b, handle: 0xffff
+D NimBLEService: << start()
+D NimBLEServer: >> createService - 4fafc201-1fb5-459e-8fcc-c5c9c331914c
+D NimBLEServer: << createService
+D NimBLEService: >> start(): Starting service: UUID: 4fafc201-1fb5-459e-8fcc-c5c9c331914c, handle: 0xffff
+D NimBLEService: Adding 7 characteristics for service UUID: 4fafc201-1fb5-459e-8fcc-c5c9c331914c, handle: 0xffff
+D NimBLEService: << start()
+D NimBLEServer: >> createService - 4fafc201-1fb5-459e-8fcc-c5c9c331914d
+D NimBLEServer: << createService
+D NimBLEService: >> start(): Starting service: UUID: 4fafc201-1fb5-459e-8fcc-c5c9c331914d, handle: 0xffff
+D NimBLEService: Adding 3 characteristics for service UUID: 4fafc201-1fb5-459e-8fcc-c5c9c331914d, handle: 0xffff
+D NimBLEService: << start()
+D NimBLEAdvertising: >> setScanResponseData
+D NimBLEAdvertising: << setScanResponseData
+D NimBLEAdvertising: >> Advertising start: customAdvData: 0, customScanResponseData: 1
+primary service
+           uuid 0x1800
+         handle 1
+     end_handle 5
+characteristic
+           uuid 0x2a00
+     def_handle 2
+     val_handle 3
+   min_key_size 0
+          flags [READ]
+characteristic
+           uuid 0x2a01
+     def_handle 4
+     val_handle 5
+   min_key_size 0
+          flags [READ]
+primary service
+           uuid 0x1801
+         handle 6
+     end_handle 9
+characteristic
+           uuid 0x2a05
+     def_handle 7
+     val_handle 8
+   min_key_size 0
+          flags [INDICATE]
+ccc descriptor
+           uuid 0x2902
+         handle 9
+   min_key_size 0
+          flags [READ|WRITE]
+primary service
+           uuid 4fafc201-1fb5-459e-8fcc-c5c9c331914b
+         handle 10
+     end_handle 16
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26a8
+     def_handle 11
+     val_handle 12
+   min_key_size 0
+          flags [READ|WRITE|NOTIFY]
+ccc descriptor
+           uuid 0x2902
+         handle 13
+   min_key_size 0
+          flags [READ|WRITE]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26a9
+     def_handle 14
+     val_handle 15
+   min_key_size 0
+          flags [WRITE|NOTIFY]
+ccc descriptor
+           uuid 0x2902
+         handle 16
+   min_key_size 0
+          flags [READ|WRITE]
+primary service
+           uuid 4fafc201-1fb5-459e-8fcc-c5c9c331914c
+         handle 17
+     end_handle 35
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26b0
+     def_handle 18
+     val_handle 19
+   min_key_size 0
+          flags [READ]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26b1
+     def_handle 20
+     val_handle 21
+   min_key_size 0
+          flags [WRITE]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26b2
+     def_handle 22
+     val_handle 23
+   min_key_size 0
+          flags [NOTIFY]
+ccc descriptor
+           uuid 0x2902
+         handle 24
+   min_key_size 0
+          flags [READ|WRITE]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26b3
+     def_handle 25
+     val_handle 26
+   min_key_size 0
+          flags [READ|WRITE]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26b4
+     def_handle 27
+     val_handle 28
+   min_key_size 0
+          flags [READ|NOTIFY]
+ccc descriptor
+           uuid 0x2902
+         handle 29
+   min_key_size 0
+          flags [READ|WRITE]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26b5
+     def_handle 30
+     val_handle 31
+   min_key_size 0
+          flags [WRITE|NOTIFY]
+ccc descriptor
+           uuid 0x2902
+         handle 32
+   min_key_size 0
+          flags [READ|WRITE]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26b6
+     def_handle 33
+     val_handle 34
+   min_key_size 0
+          flags [READ|WRITE|NOTIFY]
+ccc descriptor
+           uuid 0x2902
+         handle 35
+   min_key_size 0
+          flags [READ|WRITE]
+primary service
+           uuid 4fafc201-1fb5-459e-8fcc-c5c9c331914d
+         handle 36
+     end_handle 43
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26c0
+     def_handle 37
+     val_handle 38
+   min_key_size 0
+          flags [READ|WRITE]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26c1
+     def_handle 39
+     val_handle 40
+   min_key_size 0
+          flags [WRITE_NO_RSP]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26c2
+     def_handle 41
+     val_handle 42
+   min_key_size 0
+          flags [READ|NOTIFY]
+ccc descriptor
+           uuid 0x2902
+         handle 43
+   min_key_size 0
+          flags [READ|WRITE]
+D NimBLEAdvertising: << Advertising start
+{"type":"ble","event":"advertising","ts":3702}
+{"type":"adv","status":"started","ts":3712}
+BLE Peripheral Fixture is ready!
+D NimBLEServer: >> handleGapEvent: 
+{"type":"ble","event":"connected","ts":12348}
+{"type":"conn","status":"connected","ts":12348}
+{D NimBLECharacteristic: >> setValue: length=79, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a31323335332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 79
+D NimBLECharacteristic: << notify: No clients subscribed.
+"type":"adv","status":"connectable","ts":12348}
+{"type":"notify","status":"device_status","ts":12385}
+{"type":"disc","status":"service_ready","ts":12395}
+{"type":"led","status":"idle","ts":12405}
+{"type":"notify","status":"enabled","ts":12405}
+{"type":"err","status":"none","ts":12415}
+{"type":"obs","status":"peripheral","ts":12415}
+D NimBLECharacteristic: >> setValue: length=42, data=7b2274797065223a22636f6e6e656374696f6e222c22737461747573223a22636f6e6e6563746564227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 42
+D NimBLECharacteristic: << notify: No clients subscribed.
+D NimBLEServerCallbacks: onConnect(): Default
+D NimBLEServer: >> handleGapEvent: 
+I NimBLEServer: mtu update event; conn_handle=1 mtu=255
+D NimBLEServerCallbacks: onMTUChange(): Default
+D NimBLEServer: >> handleGapEvent: 
+I NimBLEServer: subscribe event; attr_handle=8, subscribed: false
+D NimBLEServer: >> handleGapEvent: 
+D NimBLEServer: << handleGATTServerEvent
+D NimBLECharacteristic: >> setValue: length=79, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a31373430352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 79
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":17430}
+D NimBLECharacteristic: >> setValue: length=79, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a32323435312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 79
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":22476}
+D NimBLECharacteristic: >> setValue: length=79, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a32373439372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 79
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":27522}
+D NimBLECharacteristic: >> setValue: length=79, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a33323534332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 79
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":32568}
+D NimBLECharacteristic: >> setValue: length=79, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a33373538392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 79
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":37614}
+D NimBLECharacteristic: >> setValue: length=79, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a34323633352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 79
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":42660}
+D NimBLECharacteristic: >> setValue: length=79, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a34373638312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 79
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":47706}
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26a8 Read event
+[ 51667][E][Preferences.cpp:50] begin(): nvs_open failed: NOT_FOUND
+D NimBLECharacteristic: >> setValue: length=158, data=7b226669726d776172655f76657273696f6e223a22312e302e30222c226861726477617265223a2265737033322d77726f6f6d2d3332222c22757074696d65223a35312c22757074696d655f73223a35312c22666978747572655f726f6c65223a227065, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a8
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onRead: default
+D NimBLECharacteristic: >> setValue: length=79, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a35323732372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 79
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":52752}
+D NimBLEServer: >> handleGapEvent: 
+I NimBLEServer: subscribe event; attr_handle=8, subscribed: false
+D NimBLEServer: >> handleGapEvent: 
+{"type":"ble","event":"disconnected","ts":55268}
+{"type":"conn","status":"disconnected","ts":55279}
+D NimBLECharacteristic: >> setValue: length=45, data=7b2274797065223a22636f6e6e656374696f6e222c22737461747573223a22646973636f6e6e6563746564227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 45
+D NimBLECharacteristic: << notify: No clients subscribed.
+D NimBLEServerCallbacks: onDisconnect(): Default
+D NimBLEAdvertising: >> Advertising start: customAdvData: 0, customScanResponseData: 1
+D NimBLEAdvertising: << Advertising start
+D NimBLEAdvertising: >> setScanResponseData
+D NimBLEAdvertising: << setScanResponseData
+D NimBLEAdvertising: >> Advertising start: customAdvData: 0, customScanResponseData: 1
+W NimBLEAdvertising: Advertising already active
+{"type":"ble","event":"advertising","ts":55782}
+{"type":"adv","status":"started","ts":55792}
