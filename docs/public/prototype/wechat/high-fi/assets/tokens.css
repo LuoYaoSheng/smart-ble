@@ -1,0 +1,41 @@
+/* ============================================================
+   BLE Toolkit+ · Design Tokens v1.0（唯一数值来源）
+   规格：docs/specs/07_design_system/TOKEN.md · 禁止圈外值
+   ============================================================ */
+:root{
+  /* 品牌与语义 */
+  --c-primary:#1B6DFF; --c-primary-deep:#0E4FC4; --c-primary-weak:#E8F1FF;
+  --c-success:#17C7A8; --c-success-weak:#E2F8F4;
+  --c-danger:#F2555F;  --c-danger-weak:#FDEBEC;
+  --c-warning:#FF9F43; --c-warning-weak:#FFF3E4;
+  /* 中性 */
+  --c-text:#18222E; --c-sub:#42536A; --c-mut:#60758D; --c-ph:#9AA8B6;
+  --c-line:#E3EAF3; --c-line-soft:#EDF2F9; --c-fill:#F1F5FB;
+  --c-bg:#F8FBFF; --c-card:#FFFFFF;
+  /* 控制台深色 */
+  --c-ink:#101521; --c-ink-line:#263149; --c-ink-text:#D6E2F5;
+  /* 日志六色 */
+  --log-sys:#5E7EA6;  --log-sys-bg:#EDF3FA;
+  --log-err:#F2555F;  --log-err-bg:#FDEBEC;
+  --log-read:#C77E14; --log-read-bg:#FFF6E8;
+  --log-write:#1B6DFF;--log-write-bg:#E8F1FF;
+  --log-recv:#7C5CFF; --log-recv-bg:#F0EBFF;
+  --log-ok:#17C7A8;   --log-ok-bg:#E2F8F4;
+  /* 字号/字重 */
+  --fs-display:24px; --fs-title:20px; --fs-h1:17px; --fs-h2:15px;
+  --fs-body:13px; --fs-cap:12px; --fs-mini:11px; --fs-micro:10px;
+  --fw-reg:400; --fw-med:600; --fw-bold:700; --fw-xbold:800;
+  /* 间距 4 基准 */
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:20px;
+  --sp-6:24px; --sp-7:28px; --sp-8:32px;
+  /* 圆角/阴影/层级/动效 */
+  --r-sm:8px; --r-md:12px; --r-lg:16px; --r-xl:20px; --r-round:999px;
+  --shadow-1:0 1px 2px rgba(16,32,64,.04), 0 4px 12px rgba(16,32,64,.06);
+  --shadow-2:0 8px 24px rgba(16,32,64,.16);
+  --shadow-primary:0 6px 16px rgba(27,109,255,.32);
+  --z-nav:10; --z-tab:20; --z-sheet:80; --z-modal:90; --z-toast:100;
+  --dur-fast:120ms; --dur:200ms; --ease:cubic-bezier(.2,.7,.3,1);
+  /* 字体族 */
+  --font:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;
+  --font-mono:"SF Mono",Menlo,Consolas,monospace;
+}

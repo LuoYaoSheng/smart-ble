@@ -186,7 +186,7 @@ hero:
         <h3>H5</h3>
         <p>同一 uni-app 一线的产品预览与文档体验；真实 BLE 在 H5 上明确标注不支持。</p>
       </a>
-      <a href="https://github.com/luoyaosheng/smart-ble" target="_blank" rel="noopener" class="sb-platform-card">
+      <a href="/prototype/web/high-fi/" class="sb-platform-card">
         <span class="sb-platform-status">原型 · 可交互</span>
         <h3>Web</h3>
         <p>本站与 HTML 交互原型——产品与交互母版，可切换各平台视图查看全部状态。</p>
@@ -198,6 +198,37 @@ hero:
       </a>
     </div>
     <p class="sb-platform-footnote">各实现共用同一产品规范与协议内核，当前均未发布正式产物：微信小程序可扫码体验，其余平台可从源码构建。能力与发布状态见<a href="/status/">项目状态页</a>与<a href="/product-contract/05_PLATFORM_MATRIX">平台适配矩阵</a>。</p>
+  </section>
+
+  <section id="prototype" class="sb-section">
+    <div class="sb-section-head">
+      <div class="sb-kicker">Interactive Prototype</div>
+      <h2>一个产品，四种平台形态，现在就能点</h2>
+      <p>同一基准内核 + 各平台单一覆写层的高保真可交互原型：扫描、连接、调试、配网全流程，正常、空、失败、断线与不支持状态全部可切换。</p>
+    </div>
+    <div class="sb-platform-grid">
+      <a href="/prototype/wechat/high-fi/" class="sb-platform-card">
+        <span class="sb-platform-status">基准平台 · 高保真</span>
+        <h3>微信小程序版</h3>
+        <p>基准内核 + wxhost 覆写层，可切换安卓 / iOS 宿主与开发者工具视图。</p>
+      </a>
+      <a href="/prototype/app/high-fi/" class="sb-platform-card">
+        <span class="sb-platform-status">Android 实例 · 高保真</span>
+        <h3>App 版</h3>
+        <p>基准内核 + Android 覆写层：权限链、广播增强与系统分享差异。</p>
+      </a>
+      <a href="/prototype/desktop/high-fi/" class="sb-platform-card">
+        <span class="sb-platform-status">桌面形态 · 高保真</span>
+        <h3>桌面版</h3>
+        <p>基准内核 + desktop 覆写层：mac / win / linux 窗框三形态，扫码配对主路径。</p>
+      </a>
+      <a href="/prototype/web/high-fi/" class="sb-platform-card">
+        <span class="sb-platform-status">GATT 子集 · 高保真</span>
+        <h3>Web 版</h3>
+        <p>独立子集内核：环境门禁、requestDevice 选择器与缺失能力显式标注。</p>
+      </a>
+    </div>
+    <p class="sb-platform-footnote">每平台另配有 <a href="/prototype/wechat/low-fi/">低保真线框</a>（页面 × 状态 × 流程）与 PLATFORM_SPEC / PAGE_SPEC / FLOW / COMPONENT_RULE 四份说明文档；基准内核经 Playwright 26/26 验证。原型使用模拟数据，是产品与交互母版，不代表平台发布状态——桌面与 Web 为原型先行。</p>
   </section>
 
   <section id="profile" class="sb-section">

@@ -186,7 +186,7 @@ hero:
         <h3>H5</h3>
         <p>Same uni-app line, degraded to product preview and docs; real BLE is explicitly marked unsupported.</p>
       </a>
-      <a href="https://github.com/luoyaosheng/smart-ble" target="_blank" rel="noopener" class="sb-platform-card">
+      <a href="/prototype/web/high-fi/" class="sb-platform-card">
         <span class="sb-platform-status">Prototype · Interactive</span>
         <h3>Web</h3>
         <p>This site plus the HTML interactive prototype — the product and interaction master with per-platform views.</p>
@@ -198,6 +198,37 @@ hero:
       </a>
     </div>
     <p class="sb-platform-footnote">All implementations share one product spec and protocol core; no official artifacts are released yet — the mini program is scannable today, everything else builds from source. Capability and release status: <a href="/status/">status page</a> and <a href="/product-contract/05_PLATFORM_MATRIX">platform matrix</a> (Chinese).</p>
+  </section>
+
+  <section id="prototype" class="sb-section">
+    <div class="sb-section-head">
+      <div class="sb-kicker">Interactive Prototype</div>
+      <h2>One product, four platform form factors — clickable now</h2>
+      <p>High-fidelity interactive prototypes on a shared base kernel with one override layer per platform: the full scan → connect → debug → provisioning flow, with normal, empty, failed, disconnected and unsupported states all switchable.</p>
+    </div>
+    <div class="sb-platform-grid">
+      <a href="/prototype/wechat/high-fi/" class="sb-platform-card">
+        <span class="sb-platform-status">Base platform · High-fi</span>
+        <h3>WeChat Mini Program</h3>
+        <p>Base kernel + wxhost override layer; switch between Android / iOS hosts and the devtools view.</p>
+      </a>
+      <a href="/prototype/app/high-fi/" class="sb-platform-card">
+        <span class="sb-platform-status">Android instance · High-fi</span>
+        <h3>App</h3>
+        <p>Base kernel + Android override layer: permission chains, broadcast enhancements and system sharing.</p>
+      </a>
+      <a href="/prototype/desktop/high-fi/" class="sb-platform-card">
+        <span class="sb-platform-status">Desktop form · High-fi</span>
+        <h3>Desktop</h3>
+        <p>Base kernel + desktop override layer: mac / win / linux window chrome and scan-first pairing.</p>
+      </a>
+      <a href="/prototype/web/high-fi/" class="sb-platform-card">
+        <span class="sb-platform-status">GATT subset · High-fi</span>
+        <h3>Web</h3>
+        <p>Independent subset kernel: environment gating, the requestDevice picker and explicit missing-capability marks.</p>
+      </a>
+    </div>
+    <p class="sb-platform-footnote">Each platform also ships a <a href="/prototype/wechat/low-fi/">low-fi wireframe</a> (pages × states × flows) with PLATFORM_SPEC / PAGE_SPEC / FLOW / COMPONENT_RULE docs; the base kernel passed Playwright 26/26. Prototypes run on mock data — they are the product and interaction master, not a release status; desktop and web are prototype-first.</p>
   </section>
 
   <section id="profile" class="sb-section">

@@ -1,0 +1,83 @@
+/* ============================================================
+   Desktop 窗框与桌面层样式（平台还原层 · 非 Desktop 设计系统管辖）
+   仅用于「桌面窗口 chrome」还原：标题栏 / 红黄绿窗控 / 宽幅画布。
+   产品界面一律 tokens.css + components.css（07_design_system 冻结 v1.0）；
+   本文件窗框色值（#2A2A2E 等）为桌面平台还原值，不属于「圈外色值」
+   违规 —— 见本目录 README 资源清单。P006 三栏为 SOP §12 圈内布局调整
+   （DOM 重排由 desktop.js 完成，产品逻辑不变）。
+   ============================================================ */
+
+/* ---- 桌面窗口框（原型展示框 · D2 技术选型未定，形态不预判 Electron/Tauri） ---- */
+.dwin{width:756px;flex-shrink:0;background:#2A2A2E;border-radius:14px;padding:8px;
+  box-shadow:0 24px 60px rgba(10,20,40,.4);align-self:flex-start;}
+.dtb{display:flex;align-items:center;gap:10px;padding:6px 6px 9px;color:#D9D9DE;
+  font-size:var(--fs-cap);font-family:var(--font);}
+.dtb-dots{display:flex;gap:7px;}
+.dtb-dots i{width:12px;height:12px;border-radius:50%;}
+.dtb-t{flex:1;text-align:center;font-weight:var(--fw-med);letter-spacing:.5px;}
+.dtb-x{border:none;background:rgba(255,255,255,.1);color:#D9D9DE;width:34px;height:22px;border-radius:6px;
+  cursor:pointer;font-size:var(--fs-cap);line-height:1;transition:background var(--dur-fast);font-family:var(--font);}
+.dtb-x:hover{background:rgba(255,255,255,.22);}
+.dwin .screen{width:740px;height:600px;border-radius:8px;}
+
+/* ---- P006 三栏工作台（左：设备/服务 · 中：特征操作 · 右：日志常驻） ---- */
+[data-pg="p006"] .page{display:grid;grid-template-columns:1fr 300px;gap:0 14px;align-items:start;}
+.dcol1{grid-column:1;display:flex;flex-direction:column;min-width:0;}
+.dcol2{grid-column:2;display:flex;flex-direction:column;gap:10px;position:sticky;top:8px;}
+.dcol2 .logdock{position:static;margin:0;padding:0;background:none;}
+.dcol2 .dnote{font-size:var(--fs-mini);color:var(--c-mut);line-height:1.6;padding:0 2px;}
+
+/* ---- 差异屏辅助（与 app/android.css 同口径复制 · 走设计系统变量） ---- */
+.refbar{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 2px;}
+.swrow{display:flex;align-items:center;gap:10px;padding:9px 0;}
+.swrow .mid{flex:1;}
+.swrow .t{font-size:var(--fs-body);font-weight:var(--fw-med);}
+.swrow .d{font-size:var(--fs-mini);color:var(--c-mut);margin-top:1px;}
+.opt-row{display:flex;align-items:center;gap:10px;width:100%;border:none;background:none;cursor:pointer;
+  padding:12px 4px;font-family:var(--font);border-bottom:1px solid var(--c-line-soft);text-align:left;}
+.opt-row:last-child{border-bottom:none;}
+.opt-row .t{flex:1;font-size:var(--fs-h2);font-weight:var(--fw-med);}
+.opt-row.on .t{color:var(--c-primary);font-weight:var(--fw-bold);}
+.opt-row .ck{color:var(--c-primary);display:flex;visibility:hidden;}
+.opt-row.on .ck{visibility:visible;}
+
+/* ---- P002 配对码扫码取景器（覆写层 · 桌面系统层还原：摄像头取景 UI） ---- */
+.dtk-vf{position:relative;height:190px;border-radius:var(--r-md);background:#101521;overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;}
+.dtk-vf .c{position:absolute;width:22px;height:22px;border:3px solid #9AB8E8;}
+.dtk-vf .c1{top:10px;left:10px;border-right:none;border-bottom:none;border-radius:6px 0 0 0;}
+.dtk-vf .c2{top:10px;right:10px;border-left:none;border-bottom:none;border-radius:0 6px 0 0;}
+.dtk-vf .c3{bottom:10px;left:10px;border-right:none;border-top:none;border-radius:0 0 0 6px;}
+.dtk-vf .c4{bottom:10px;right:10px;border-left:none;border-top:none;border-radius:0 0 6px 0;}
+.dtk-vf .ln{position:absolute;left:14px;right:14px;height:2px;background:var(--c-success);
+  box-shadow:0 0 10px rgba(23,199,168,.75);animation:dtk-scan 1.6s ease-in-out infinite;}
+@keyframes dtk-scan{0%{top:16px}50%{top:168px}100%{top:16px}}
+.dtk-vf .vf-ic{color:#D6E2F5;display:flex;}
+.dtk-vf .vf-t{font-size:var(--fs-cap);color:#9AB8E8;font-family:var(--font);}
+.dtk-fb{border:none;background:none;cursor:pointer;font-family:var(--font);
+  font-size:var(--fs-cap);color:var(--c-primary);padding:6px 2px;}
+.dtk-fb:hover{text-decoration:underline;}
+
+/* ---- 操作系统窗口形态（desktop.js OS 维度：os-mac / os-win / os-linux） ---- */
+.dtb-r{display:none;gap:4px;}
+.dtb-min,.dtb-max{border:none;background:rgba(255,255,255,.1);color:#D9D9DE;width:30px;height:22px;border-radius:6px;
+  cursor:pointer;font-size:var(--fs-cap);line-height:1;transition:background var(--dur-fast);font-family:var(--font);}
+.dtb-min:hover,.dtb-max:hover{background:rgba(255,255,255,.22);}
+.dwin.os-mac .dtb-r{display:none;}                 /* mac：交通灯（红点可关） */
+.dwin.os-win .dtb-dots,.dwin.os-linux .dtb-dots{display:none;}
+.dwin.os-win .dtb-r{display:flex;}                 /* win：右侧 ─ ▢ ✕ */
+.dwin.os-linux .dtb-r{display:flex;}               /* linux(GNOME)：仅 ✕ */
+.dwin.os-linux .dtb-min,.dwin.os-linux .dtb-max{display:none;}
+.dwin.os-win .dtb-t,.dwin.os-linux .dtb-t{text-align:left;}
+.dwin.os-mac .dtb-dots{border:none;background:none;padding:0;cursor:pointer;}
+.dwin.os-mac .dtb-dots:hover i:first-child{box-shadow:0 0 0 2px rgba(255,95,87,.35);}
+
+/* ---- 生态能力矩阵卡（11_ecosystem · 平台功能差异矩阵 v1.0 · 2026-09-03，评审栏呈现层） ---- */
+.rev-mx{display:flex;flex-direction:column;gap:3px;margin:6px 0 2px;}
+.mx-row{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;
+  font-size:var(--fs-cap);color:var(--c-sub);padding:4px 8px;border-radius:8px;background:rgba(96,117,141,.08);}
+.mx-row .k{flex-shrink:0;font-weight:var(--fw-med);}
+.mx-row .v{text-align:right;}
+.mx-row .v .mx-n{display:block;font-size:var(--fs-mini);color:var(--c-mut);font-weight:400;line-height:1.5;}
+.mx-ok{color:var(--c-success);} .mx-warn{color:var(--c-warning);}
+.mx-bad{color:var(--c-danger);} .mx-conf{color:var(--c-danger);font-weight:var(--fw-bold);}

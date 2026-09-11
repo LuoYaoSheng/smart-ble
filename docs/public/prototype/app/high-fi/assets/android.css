@@ -1,0 +1,100 @@
+/* ============================================================
+   Android 系统层样式（平台还原层 · 非 App 设计系统管辖）
+   仅用于「系统渲染」的 UI：运行时权限弹窗 / 系统蓝牙配对 /
+   系统分享面板 / 系统设置页 / 系统浏览器。
+   App 自身界面一律使用 tokens.css + components.css（07_design_system 冻结 v1.0），
+   本文件色值为 Android 平台还原值（Material 系蓝 #0B57D0 等），
+   不属于「圈外色值」违规 —— 详见本目录 README 资源清单。
+   ============================================================ */
+
+/* ---- 系统弹窗（权限 / 配对）---- */
+.asys-scrim{position:absolute;inset:0;background:rgba(0,0,0,.32);z-index:var(--z-modal);
+  display:flex;align-items:center;justify-content:center;padding:28px;animation:fadein var(--dur) var(--ease);}
+.asys-scrim.bottom{align-items:flex-end;padding:0;z-index:var(--z-sheet);}
+.asys-dlg{width:100%;max-width:312px;background:#F6EFF9;border-radius:28px;padding:20px 22px 10px;
+  animation:pop var(--dur) var(--ease);font-family:var(--font);}
+.asys-app{font-size:var(--fs-cap);color:#444746;font-weight:var(--fw-med);margin-bottom:10px;}
+.asys-ico{width:44px;height:44px;border-radius:50%;background:#D9E2FF;color:#0B57D0;
+  display:flex;align-items:center;justify-content:center;margin-bottom:12px;}
+.asys-t{font-size:20px;font-weight:var(--fw-bold);color:#1B1B1F;line-height:1.3;}
+.asys-d{font-size:var(--fs-body);color:#444746;line-height:1.55;margin-top:8px;}
+.asys-pin{font-family:var(--font-mono);font-size:30px;letter-spacing:9px;color:#1B1B1F;
+  text-align:center;margin:16px 0 2px;font-weight:var(--fw-bold);}
+.asys-sub{font-size:var(--fs-mini);color:#5F6368;text-align:center;margin-bottom:4px;}
+.asys-btns{display:flex;justify-content:flex-end;gap:2px;flex-wrap:wrap;margin-top:6px;}
+.asys-btn{border:none;background:transparent;color:#0B57D0;font-family:var(--font);font-size:var(--fs-h2);
+  font-weight:var(--fw-bold);padding:10px 14px;border-radius:999px;cursor:pointer;transition:background var(--dur-fast);}
+.asys-btn:hover{background:rgba(11,87,208,.08);}
+
+/* ---- 系统分享面板（底部）---- */
+.asys-sheet{width:100%;background:#F6F2FA;border-radius:28px 28px 0 0;animation:up var(--dur) var(--ease);
+  padding:16px 20px 26px;font-family:var(--font);}
+.asys-sh-t{text-align:center;font-size:var(--fs-cap);color:#5F6368;font-weight:var(--fw-med);margin-bottom:14px;}
+.asys-targets{display:flex;justify-content:space-between;padding:0 6px 16px;}
+.asys-tg{display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;border:none;
+  background:none;font-family:var(--font);font-size:var(--fs-mini);color:#3C4043;}
+.asys-ava{width:48px;height:48px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:17px;font-weight:var(--fw-bold);}
+.asys-targets + .asys-hr{height:1px;background:#E3DFEB;margin:0 -4px 6px;}
+.asys-hr{height:1px;background:#E3DFEB;margin:6px 0;}
+.asys-mrow{display:flex;align-items:center;gap:13px;padding:11px 4px;cursor:pointer;border:none;
+  background:none;width:100%;font-family:var(--font);text-align:left;}
+.asys-mrow .ico{width:34px;height:34px;border-radius:50%;background:#E8EAF6;color:#3C4043;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.asys-mrow .t{flex:1;font-size:15px;color:#1B1B1F;font-weight:var(--fw-med);}
+.asys-mrow .tag{font-size:var(--fs-micro);color:#5F6368;background:#fff;border-radius:999px;padding:2px 8px;}
+
+/* ---- 系统设置 / 浏览器（整页覆盖）---- */
+.asys-page{position:absolute;inset:0;background:#F5F3F7;z-index:var(--z-sheet);
+  display:flex;flex-direction:column;animation:fadein .18s ease;font-family:var(--font);}
+.asys-ph{padding:14px 18px 12px;font-size:16px;font-weight:var(--fw-bold);background:#fff;
+  border-bottom:1px solid #E3E1E9;display:flex;align-items:center;gap:10px;color:#1B1B1F;flex-shrink:0;}
+.asys-row{display:flex;align-items:center;gap:13px;padding:15px 18px;background:#fff;
+  border-bottom:1px solid #F0EDF3;font-size:15px;color:#1B1B1F;}
+.asys-row .d{font-size:var(--fs-mini);color:#5F6368;margin-top:2px;}
+.asys-row .mid{flex:1;}
+.asw{margin-left:auto;position:relative;width:52px;height:32px;border-radius:16px;background:#DADCE0;
+  border:none;cursor:pointer;transition:background .18s;flex-shrink:0;}
+.asw.on{background:#0B57D0;}
+.asw::after{content:'';position:absolute;top:6px;left:6px;width:20px;height:20px;border-radius:50%;
+  background:#fff;transition:left .18s;box-shadow:0 1px 3px rgba(0,0,0,.25);}
+.asw.on::after{left:26px;}
+.asys-web{position:absolute;inset:0;background:#fff;z-index:var(--z-sheet);
+  display:flex;flex-direction:column;animation:fadein .18s ease;font-family:var(--font);}
+.asys-wb{background:#F1F3F4;padding:10px 12px;display:flex;align-items:center;gap:10px;flex-shrink:0;
+  border-bottom:1px solid #E0E1E5;}
+.asys-url{flex:1;background:#fff;border-radius:999px;height:34px;display:flex;align-items:center;gap:8px;
+  padding:0 14px;font-size:var(--fs-cap);color:#3C4043;font-family:var(--font-mono);}
+.asys-url .lk{color:#5F6368;display:flex;}
+.asys-dot3{letter-spacing:2px;color:#5F6368;font-weight:var(--fw-bold);font-size:18px;line-height:1;}
+.asys-wbody{flex:1;overflow:auto;padding:22px 20px;}
+.skel{height:12px;border-radius:6px;background:#EDEFF2;margin-bottom:10px;}
+
+/* ---- 差异屏辅助（App 层 · 走设计系统变量的布局类）---- */
+.refbar{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 2px;}
+.difrow{display:flex;align-items:center;gap:11px;padding:12px 2px;border-bottom:1px solid var(--c-line-soft);cursor:pointer;}
+.difrow:last-child{border-bottom:none;}
+.difrow .t{flex:1;font-size:var(--fs-body);font-weight:var(--fw-med);}
+.difrow .d{font-size:var(--fs-mini);color:var(--c-mut);margin-top:2px;}
+.difrow .arr{color:var(--c-ph);display:flex;}
+.swrow{display:flex;align-items:center;gap:10px;padding:9px 0;}
+.swrow .mid{flex:1;}
+.swrow .t{font-size:var(--fs-body);font-weight:var(--fw-med);}
+.swrow .d{font-size:var(--fs-mini);color:var(--c-mut);margin-top:1px;}
+.opt-row{display:flex;align-items:center;gap:10px;width:100%;border:none;background:none;cursor:pointer;
+  padding:12px 4px;font-family:var(--font);border-bottom:1px solid var(--c-line-soft);text-align:left;}
+.opt-row:last-child{border-bottom:none;}
+.opt-row .t{flex:1;font-size:var(--fs-h2);font-weight:var(--fw-med);}
+.opt-row.on .t{color:var(--c-primary);font-weight:var(--fw-bold);}
+.opt-row .ck{color:var(--c-primary);display:flex;visibility:hidden;}
+.opt-row.on .ck{visibility:visible;}
+
+/* ---- 生态能力矩阵卡（11_ecosystem · 平台功能差异矩阵 v1.0 · 2026-09-03，评审栏呈现层） ---- */
+.rev-mx{display:flex;flex-direction:column;gap:3px;margin:6px 0 2px;}
+.mx-row{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;
+  font-size:var(--fs-cap);color:var(--c-sub);padding:4px 8px;border-radius:8px;background:rgba(96,117,141,.08);}
+.mx-row .k{flex-shrink:0;font-weight:var(--fw-med);}
+.mx-row .v{text-align:right;}
+.mx-row .v .mx-n{display:block;font-size:var(--fs-mini);color:var(--c-mut);font-weight:400;line-height:1.5;}
+.mx-ok{color:var(--c-success);} .mx-warn{color:var(--c-warning);}
+.mx-bad{color:var(--c-danger);} .mx-conf{color:var(--c-danger);font-weight:var(--fw-bold);}

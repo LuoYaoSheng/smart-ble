@@ -1,0 +1,69 @@
+/* ============================================================
+   Web 浏览器层样式（平台还原层 · 非 Web 端设计系统管辖）
+   仅用于「浏览器渲染」的 UI：窗框地址栏 / 设备选择器弹窗 / 下载条。
+   Web 自身界面一律 tokens.css + components.css（07_design_system 冻结 v1.0）；
+   本文件色值为 Chrome 风格平台还原值（#1A73EE / #F8F9FA / #5F6368 / #202124），
+   不属于「圈外色值」违规 —— 见本目录 README 资源清单。
+   ============================================================ */
+
+/* ---- 浏览器窗框（原型展示框） ---- */
+.wframe{width:512px;flex-shrink:0;background:#DEE5F0;border-radius:16px;padding:8px;
+  box-shadow:0 24px 60px rgba(10,20,40,.35);align-self:flex-start;}
+.wbr-bar{display:flex;align-items:center;gap:10px;padding:7px 10px 8px;}
+.wbr-dots{display:flex;gap:6px;}
+.wbr-dots i{width:11px;height:11px;border-radius:50%;}
+.wbr-url{flex:1;height:30px;background:#fff;border-radius:999px;display:flex;align-items:center;gap:7px;
+  padding:0 13px;font-family:var(--font-mono);font-size:var(--fs-cap);color:#474747;
+  box-shadow:inset 0 0 0 1px #E2E6EE;min-width:0;overflow:hidden;white-space:nowrap;}
+.wbr-url .lk{color:#5F6368;display:flex;flex-shrink:0;}
+.wbr-url.bad{box-shadow:inset 0 0 0 1px #F3ABAB;color:#B3261E;}
+.wbr-tab{width:26px;height:26px;border-radius:50%;background:#fff;color:#5F6368;display:flex;
+  align-items:center;justify-content:center;font-size:15px;line-height:1;flex-shrink:0;}
+.wframe .screen{width:496px;height:648px;border-radius:9px;}
+
+/* ---- 系统层：设备选择器（requestDevice · 浏览器渲染，页面不可定制） ---- */
+.wsys-scrim{position:absolute;inset:0;background:rgba(32,33,36,.4);z-index:var(--z-modal);
+  display:flex;align-items:center;justify-content:center;padding:26px;animation:fadein var(--dur) var(--ease);}
+.wsys-dlg{width:100%;max-width:332px;background:#fff;border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.28);
+  overflow:hidden;animation:pop var(--dur) var(--ease);font-family:var(--font);}
+.wsys-t{padding:15px 18px 6px;font-size:16px;font-weight:var(--fw-bold);color:#202124;}
+.wsys-d{padding:0 18px 12px;font-size:var(--fs-mini);color:#5F6368;line-height:1.55;}
+.wsys-dev{display:flex;align-items:center;gap:12px;padding:11px 18px;border-top:1px solid #F1F3F4;
+  cursor:pointer;border:none;background:none;width:100%;font-family:var(--font);text-align:left;transition:background var(--dur-fast);}
+.wsys-dev:hover{background:#F8F9FA;}
+.wsys-dev .ico{width:34px;height:34px;border-radius:50%;background:#E8F0FE;color:#1A73EE;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.wsys-dev .nm{font-size:var(--fs-body);color:#202124;font-weight:var(--fw-med);}
+.wsys-dev .id{font-family:var(--font-mono);font-size:var(--fs-micro);color:#5F6368;margin-top:1px;}
+.wsys-cancel{display:block;width:100%;padding:12px;border:none;border-top:1px solid #E0E1E5;background:none;
+  color:#1A73EE;font-size:var(--fs-h2);font-weight:var(--fw-med);cursor:pointer;font-family:var(--font);}
+
+/* ---- 系统层：下载条（浏览器渲染） ---- */
+.wsys-dlbar{position:absolute;left:12px;right:12px;bottom:14px;z-index:var(--z-sheet);background:#fff;
+  border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.22);display:flex;align-items:center;gap:11px;
+  padding:11px 14px;animation:up var(--dur) var(--ease);font-family:var(--font);}
+.wsys-dlbar .ico{width:34px;height:34px;border-radius:8px;background:#E8F0FE;color:#1A73EE;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.wsys-dlbar .t{font-size:var(--fs-body);color:#202124;font-weight:var(--fw-med);}
+.wsys-dlbar .d{font-size:var(--fs-mini);color:#5F6368;margin-top:1px;}
+.wsys-x{margin-left:auto;border:none;background:#F1F3F4;width:28px;height:28px;border-radius:50%;color:#5F6368;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+
+/* ---- 差异屏辅助（与 app/android.css 同口径复制 · 走设计系统变量） ---- */
+.refbar{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 2px;}
+.difrow{display:flex;align-items:center;gap:11px;padding:12px 2px;border-bottom:1px solid var(--c-line-soft);cursor:pointer;}
+.difrow:last-child{border-bottom:none;}
+.difrow .t{flex:1;font-size:var(--fs-body);font-weight:var(--fw-med);}
+.difrow .d{font-size:var(--fs-mini);color:var(--c-mut);margin-top:2px;}
+.difrow .arr{color:var(--c-ph);display:flex;}
+.swrow{display:flex;align-items:center;gap:10px;padding:9px 0;}
+.swrow .mid{flex:1;}
+.swrow .t{font-size:var(--fs-body);font-weight:var(--fw-med);}
+.swrow .d{font-size:var(--fs-mini);color:var(--c-mut);margin-top:1px;}
+.opt-row{display:flex;align-items:center;gap:10px;width:100%;border:none;background:none;cursor:pointer;
+  padding:12px 4px;font-family:var(--font);border-bottom:1px solid var(--c-line-soft);text-align:left;}
+.opt-row:last-child{border-bottom:none;}
+.opt-row .t{flex:1;font-size:var(--fs-h2);font-weight:var(--fw-med);}
+.opt-row.on .t{color:var(--c-primary);font-weight:var(--fw-bold);}
+.opt-row .ck{color:var(--c-primary);display:flex;visibility:hidden;}
+.opt-row.on .ck{visibility:visible;}

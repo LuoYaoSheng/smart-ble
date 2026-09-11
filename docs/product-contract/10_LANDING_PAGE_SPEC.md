@@ -22,9 +22,10 @@
 4. **当前能力（#features）**：扫描与智能状态过滤、连接与动态发现、读写订阅（UTF-8 / HEX 封解包）、多设备并行与事件防串扰、外设模式广播（128 位 UUID 强校验）、OTA 分包下发验证；每卡带诚实状态注记。
 5. **工作流**：发现设备 → 检查广播 → 连接 → GATT 读写/Notify → 日志 → 广播/OTA → ESP32 验证。
 6. **平台状态（#platforms）**：多平台多框架家族八卡（微信小程序 / Android / iOS·macOS / Flutter / 桌面多路线 / H5 / Web / ESP32），每卡列技术栈与角色、链接对应教程；脚注诚实声明发布状态。
-7. **Smart HID 与 Profile 生态（#profile）**：第一方 Smart HID Profile（配网/诊断/历史）、SHA-256 契约锁对齐 Smart-HID-Workspace、开放 Profile 扩展流程。
-8. **界面一览（#gallery）**：真机实拍截图，标注来源平台与版本。
-9. **开源与贡献**：仓库、Issue、贡献指南、License、状态页；Security 入口缺失时不提供假链接。
+7. **可交互原型（#prototype）**：四平台形态高保真实例卡（微信小程序 / App / 桌面 / Web，链接 `/prototype/<平台>/high-fi/`），注明「同一基准内核 + 各平台单一覆写层」架构与全状态可切换；脚注声明模拟数据、非生产运行时、原型齐备 ≠ 开发排期（桌面 / Web 原型先行）。
+8. **Smart HID 与 Profile 生态（#profile）**：第一方 Smart HID Profile（配网/诊断/历史）、SHA-256 契约锁对齐 Smart-HID-Workspace、开放 Profile 扩展流程。
+9. **界面一览（#gallery）**：真机实拍截图，标注来源平台与版本。
+10. **开源与贡献**：仓库、Issue、贡献指南、License、状态页；Security 入口缺失时不提供假链接。
 
 落地页不展示内部审计与未验证完成度；多平台实现家族按统一产品规范如实呈现，不把在研实现线伪装成已发布，也不使用「多端大一统」「全平台统一下载」类定位。
 
@@ -68,7 +69,7 @@
 
 ### 附：交互原型
 
-嵌入或链接 HTML 原型，说明可切换微信、Android、iOS、H5，查看正常、空、失败、断线和不支持状态。
+链接 HTML 原型（部署于 `/prototype/<平台>/high-fi/` 与 `/prototype/<平台>/low-fi/`，源在 `docs/specs/prototype/platform/`，四平台 = 微信 / App / 桌面 / Web）：说明可切换平台与宿主维度，查看正常、空、失败、断线和不支持状态；原型使用模拟数据，是非生产运行时的产品与交互母版。
 
 ### 附：快速开始
 
