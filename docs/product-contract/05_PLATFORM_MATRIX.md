@@ -9,12 +9,30 @@
 
 ## 平台定位
 
+> 本节与能力矩阵描述**第一完整版本**的验收目标平台；产品完整的实现家族见下一节。
+
 | 平台 | 第一阶段等级 | 定位 |
 |---|---|---|
 | UniApp Android App | Full | 第一个完整 Core BLE、ESP32、广播和 OTA 运行时 |
 | 微信小程序 | Full/Adapted | 微信生态入口，完成微信允许的 BLE 与 Profile 能力 |
 | UniApp iOS App | Later | 使用同一页面契约，按 CoreBluetooth/插件能力补证据 |
 | H5 | Degraded | 产品预览、文档和页面体验；不支持真实 BLE |
+
+## 实现家族（多平台多框架）
+
+产品是多平台多框架家族：所有实现线共用同一套产品规范（[`specs/`](../specs/README.md)）与 BLE 协议内核，按平台差异各自落地。除上表第一完整版本目标外，以下实现线均在研、可从源码构建，正式产物发布状态以状态页为准：
+
+| 实现线 | 位置 | 框架 / 技术 | 角色 |
+|---|---|---|---|
+| 微信小程序 / Android / H5 | `apps/uniapp` | UniApp（Vue） | 第一完整版本运行时（一线多端） |
+| iOS / macOS 原生 | `apps/ios` | SwiftUI + CoreBluetooth，共享 SmartHidCore | Apple 原生线 |
+| Android 原生 | `apps/android` | Kotlin | Android 原生线 |
+| Flutter | `apps/flutter` | Flutter | 跨框架对照线 |
+| 桌面 | `apps/desktop` | Tauri / Electron / macOS Native | 桌面多路线实现区（Windows / macOS / Linux） |
+| Web | `docs/.vitepress` + HTML 交互原型 | VitePress / HTML | 官网与可交互原型 |
+| ESP32 固件 | `hardware/` | ESP-IDF | 参考固件（Peripheral / Observer，见 06） |
+
+非第一版本目标的实现线，其能力差异按 [specs/10_platform 平台差异设计](../specs/10_platform/PLATFORM_EXTENSION.md) 圈定范围实现，不进入第一完整版本的验收统计，也不在对外页面宣称已发布。
 
 ## 能力矩阵
 

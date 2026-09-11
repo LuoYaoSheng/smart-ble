@@ -34,8 +34,10 @@ function surfaceStatus(surface) {
       <div class="smartble-status-pill smartble-status-pill--preview">{{ overall }}</div>
     </div>
     <p>
-      BLE Toolkit+ 当前处于预览阶段：主线是 <strong>UniApp Android</strong>、<strong>BLE Toolkit+ 微信小程序</strong>、
-      <strong>ESP32 固件</strong> 与 <strong>Smart HID 第一方 Profile</strong>。
+      BLE Toolkit+ 是多平台多框架的 BLE 工具家族：首个正式发布目标（主线）是 <strong>UniApp Android</strong>、
+      <strong>BLE Toolkit+ 微信小程序</strong>、<strong>Apple 原生 iOS</strong>、<strong>ESP32 固件</strong> 与
+      <strong>Smart HID 第一方 Profile</strong>；Android 原生（Kotlin）、Apple 原生（iOS / macOS）、Flutter
+      与桌面多框架为并行在研实现线，均可从源码构建。
       正式产物尚未发布（<strong>NOT_RELEASED</strong>）。
     </p>
     <p>
@@ -47,7 +49,7 @@ function surfaceStatus(surface) {
   <section class="smartble-platform-matrix">
     <div class="smartble-section-head">
       <div class="smartble-kicker">Current Mainline</div>
-      <h2>正式工作面与参考实现</h2>
+      <h2>正式工作面与在研实现线</h2>
       <p>下列状态来自 PREVIEW Release Metadata（{{ version }}），不是发布门禁结论。</p>
     </div>
     <div class="smartble-platform-grid">
@@ -77,14 +79,28 @@ function surfaceStatus(surface) {
           <span :class="badgeClass(surfaceStatus(surfaces.ios))">{{ surfaceStatus(surfaces.ios) }}</span>
         </div>
         <h3>{{ surfaces.ios.name }}</h3>
-        <p>目标能力存在规划，正式入口尚未发布。</p>
+        <p>SwiftUI + CoreBluetooth，iOS 与 macOS 共享 SmartHidCore 内核；真机签名 E5 尚未完成。</p>
       </article>
       <article class="smartble-platform-card">
         <div class="smartble-platform-top">
-          <span class="smartble-platform-badge smartble-badge--reference">REFERENCE</span>
+          <span :class="badgeClass(surfaceStatus(surfaces.android_native))">{{ surfaceStatus(surfaces.android_native) }}</span>
         </div>
-        <h3>{{ surfaces.flutter_tauri_native.name }}</h3>
-        <p>历史与参考实现（角色 REFERENCE），不是当前正式工作台；对外发布状态 {{ surfaces.flutter_tauri_native.release_status }}。</p>
+        <h3>{{ surfaces.android_native.name }}</h3>
+        <p>原生 Kotlin 实现线，承载产品级体验与原生能力验证；源码可构建，正式产物未发布。</p>
+      </article>
+      <article class="smartble-platform-card">
+        <div class="smartble-platform-top">
+          <span :class="badgeClass(surfaceStatus(surfaces.flutter))">{{ surfaceStatus(surfaces.flutter) }}</span>
+        </div>
+        <h3>{{ surfaces.flutter.name }}</h3>
+        <p>跨框架对照实现线，与 UniApp 线、原生线互为对照；源码可构建，正式产物未发布。</p>
+      </article>
+      <article class="smartble-platform-card">
+        <div class="smartble-platform-top">
+          <span :class="badgeClass(surfaceStatus(surfaces.desktop))">{{ surfaceStatus(surfaces.desktop) }}</span>
+        </div>
+        <h3>{{ surfaces.desktop.name }}</h3>
+        <p>Windows / macOS / Linux 多技术路线桌面实现区；源码可构建，正式产物未发布。</p>
       </article>
       <article class="smartble-platform-card">
         <div class="smartble-platform-top">
@@ -217,10 +233,12 @@ function surfaceStatus(surface) {
         <li>微信正式小程序码尚未发布。</li>
         <li>Playwright / Page Driver E4 尚未完成。</li>
         <li>Android、微信、ESP32 E5 尚未执行。</li>
+        <li>Apple 原生（iOS / macOS）真机签名与 E5 验证尚未完成。</li>
+        <li>Android 原生（Kotlin）、Flutter、桌面多框架实现线均可源码构建，正式产物均未发布。</li>
         <li>OTA 当前 BLOCKED。</li>
         <li>ESP32 Observer 尚未完成。</li>
         <li>Smart HID 尚未完成端到端 E5。</li>
-        <li>Release Pipeline 仍为历史 Flutter/Tauri 路线。</li>
+        <li>Release Pipeline 仍为历史 Flutter/Tauri 路线，UniApp 正式产物管线未切换。</li>
       </ul>
     </noscript>
   </section>
