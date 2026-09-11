@@ -403,3 +403,26 @@ Mac 从 Windows 交接 commit 开始，不另起产品线。
   - **修掉三缺陷（全部本步实测发现）**：①Cargo.toml 缺 tauri `app-all` feature → tauri-build 失败（增补）；②**P0 运行级致命**——T-WIN app.js 顶层重复声明 BleUtils.js 顶层名（`MAX_RECONNECT_ATTEMPTS`/`escapeHtml`）→ 实例化期 SyntaxError → **app.js 从未执行过**（Tab/扫描/重连/Smart HID 全瘫，页面只是静态壳；此前无运行级验证故未暴露）。修复=删重复声明（escapeHtml 是 0 调用死代码）；防回归=新增 `tests/desktop/script-co-load.test.mjs` 7 例，两线脚本链按真实顺序装入同一 vm 上下文（重复顶层声明与浏览器同语义抛错），反证注回重复声明即失败；③P2——P002 连接失败横幅协议码片是静态占位 identity_failed（两线同病），渲染只填文本；修复=码片加 id 按 error.code 填充/无码隐藏（E-WIN CRLF / T-WIN LF 各按行尾口径补丁）。
   - **WebView2 CDP 运行级走查 30/30 全绿**（`WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS=--remote-debugging-port` + node WebSocket 同套驱动）：脚本链/挂载/五 Tab+版本页/P009 chip 投影（v1.0.5-dev.unknown，commit 如实留空）/Smart HID 三视图/P002 向导（stepper+设备名+假设备真实 IPC 优雅失败「Device not found」+码片隐藏）/P005 五项/F023（storage 空+DOM 无 token）/真实 BLE（btleplug WinRT：init_ble+start_scan 4s 发现 7 台真实设备+优雅停止）/ownsDevice 守卫/零 JS 异常。坑：Page.reload 摧毁在途 evaluate 上下文。
   - 验证：tests/desktop **85/85**（78+7）+ cargo build exit 0。证据 `verification/.../p7-twin-rust/e1-summary.txt`（含 cdp-walkthrough.mjs 脚本与 run 记录）。限制：T-WIN 真实 GATT 连接/读写通知需外设窗口（本步 BLE 真实性覆盖到扫描级）。`make verify` 的 cargo check 自此可用。
+
+## 双机并行分工基线（2026-09-11 起）
+
+用户裁决：**另一台（Windows）机器核心处理 Windows 专项，其余全部由 Mac 处理**。原"Windows 先行→Mac 收尾"串行模型自此改为双机并行。
+
+### 合并基线
+
+- Windows 机已推 18 提交（e9095e8..4cd1db6：W6 桌面线 15 + merge 并入 Mac 线 3）至双远端 `refactor/uniapp-v1`。
+- Mac 于 a533a5b 合并 4cd1db6：冲突仅 E-WIN/T-WIN 两壳 `index.html`，取 Windows 正典重建结构 + 保留 Mac 产品名正典（`<title>BLE Toolkit+</title>`，SSOT=electron productName；about-foot"Smart BLE 产品家族"为刻意保留）；计划文档自动合并无损。
+- 合并后双端复核：tests/desktop **85/85**（Mac node 复跑与 Windows 一致）、`generate-release-metadata --check` PASS、check:dimensions / token / icon 三门禁 PASS。合并基线推送 gitee+github `refactor/uniapp-v1`（两 workflow 均只盯 main，不触发部署）。
+
+### 分工表
+
+| 机器 | 职责 | 在册事项 |
+| --- | --- | --- |
+| **Windows 机** | Windows 专项（E-WIN/T-WIN/V-WIN 运行级与构建） | P8 V-WIN PARITY-006 Build Smoke（csproj 引用修复 + dotnet build）；T-WIN 真实 GATT 连接/读写/通知（外设独占窗口）；E5 Smart HID 真机全链（真 SHID 固件 + ControlHub 配对码）；E3 OTA 实刷（ESP32 夹具 + 桌面 OtaDialog 全链，硬件窗口） |
+| **Mac** | 其余全部（矩阵/文档/uniapp/Flutter/Apple/ESP32 工具链/门禁） | P9 主矩阵 §1 最终结论列回填（Windows 证据已随合并入库，可离线回填）；uniapp/Flutter/Apple 线维护与 UI 契约 phase-2（角色级断言，已登记待点名）；ESP32 DEV-014 烧录协调（用户 BOOT+RST 物理动作）；docs 站与门禁体系维护 |
+
+### 同步规则
+
+1. 共用分支 `refactor/uniapp-v1`，双远端（gitee=origin / github）保持同 commit。
+2. 每完成一个工作单元：提交 → 推双远端；开始新单元前先 `git pull`（两机互推互拉，按文件域解冲突：`apps/desktop/**`+`tests/desktop/**` 归 Windows 语义优先，uniapp/Flutter/docs 门禁归 Mac 语义优先）。
+3. `main` 仍冻结于 dbb38a8，双机均不得推送 main（用户放行前）。
