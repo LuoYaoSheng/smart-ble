@@ -1,0 +1,157 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild test -project SmartBLE.xcodeproj -scheme SmartBLEiOS -destination id=00008030-001211062EC0802E -derivedDataPath build/DerivedData "-only-testing:SmartBLEUITests" -resultBundlePath ../../verification/ios-device/20260910-uitest-device/UITests-device.xcresult
+
+Resolve Package Graph
+
+
+Resolved source packages:
+  SmartHidCore: /Users/luoyaosheng/Desktop/project/Open/smart-ble/core/apple/SmartHidCore
+
+Writing result bundle at path:
+	/Users/luoyaosheng/Desktop/project/Open/smart-ble/verification/ios-device/20260910-uitest-device/UITests-device.xcresult
+
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (5 targets)
+    Target 'SmartBLEUITests' in project 'SmartBLE'
+        ➜ Explicit dependency on target 'SmartBLEiOS' in project 'SmartBLE'
+    Target 'SmartBLETests' in project 'SmartBLE'
+        ➜ Explicit dependency on target 'SmartBLEiOS' in project 'SmartBLE'
+        ➜ Explicit dependency on target 'SmartHidCore' in project 'SmartHidCore'
+    Target 'SmartBLEiOS' in project 'SmartBLE'
+        ➜ Explicit dependency on target 'SmartHidCore' in project 'SmartHidCore'
+    Target 'SmartHidCore' in project 'SmartHidCore'
+        ➜ Explicit dependency on target 'SmartHidCore' in project 'SmartHidCore'
+    Target 'SmartHidCore' in project 'SmartHidCore' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/SDKStatCaches.noindex/iphoneos26.1-23B77-3885c01c3e6b6a337905948deab2002e69b33fc7382b27d9b5d46e82a00f8e78.sdkstatcache
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/SmartBLE.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/SDKStatCaches.noindex/iphoneos26.1-23B77-3885c01c3e6b6a337905948deab2002e69b33fc7382b27d9b5d46e82a00f8e78.sdkstatcache
+
+Copy /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/Frameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -bitcode-strip all -bitcode-strip-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip -resolve-src-symlinks -remove-static-executable /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/Frameworks
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework/SmartHidCore_3F573FBA8ADD02B1_PackageProduct -r -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/Frameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework/SmartHidCore_3F573FBA8ADD02B1_PackageProduct
+ProcessInfoPlistFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/Info.plist /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/SmartBLE/Resources/Info.plist (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-infoPlistUtility /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/SmartBLE/Resources/Info.plist -producttype com.apple.product-type.application -genpkginfo /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PkgInfo -expandbuildsettings -format binary -platform iphoneos -scanforprivacyfile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/Frameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework -requiredArchitecture arm64 -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/Info.plist
+
+CopySwiftLibs /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-swiftStdLibTool --copy --verbose --sign 4B44C08A097080BA2CA99BBE2C1EE443EE53B319 --scan-executable /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/SmartBLE.debug.dylib --scan-folder /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/Frameworks --scan-folder /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns --scan-folder /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/SystemExtensions --scan-folder /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/Extensions --scan-folder /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework --platform iphoneos --toolchain /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.VYm3Te/Metal.xctoolchain --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/Frameworks --strip-bitcode --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+
+CodeSign /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/Frameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+    Signing Identity:     "Apple Development: longcan cai (L5Q7JP9RH9)"
+    Provisioning Profile: "iOS Team Provisioning Profile: *"
+                          (711a0591-dcd8-4f7f-a504-c70173141d18)
+    
+    /usr/bin/codesign --force --sign 4B44C08A097080BA2CA99BBE2C1EE443EE53B319 --timestamp\=none --preserve-metadata\=identifier,entitlements,flags --generate-entitlement-der /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/Frameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework
+
+Copy /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns/SmartBLETests.xctest/Frameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework (in target 'SmartBLETests' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -bitcode-strip all -bitcode-strip-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip -resolve-src-symlinks -remove-static-executable /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns/SmartBLETests.xctest/Frameworks
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework/SmartHidCore_3F573FBA8ADD02B1_PackageProduct -r -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns/SmartBLETests.xctest/Frameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework/SmartHidCore_3F573FBA8ADD02B1_PackageProduct
+CodeSign /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns/SmartBLETests.xctest/Frameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework (in target 'SmartBLETests' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+    Signing Identity:     "Apple Development: longcan cai (L5Q7JP9RH9)"
+    
+    /usr/bin/codesign --force --sign 4B44C08A097080BA2CA99BBE2C1EE443EE53B319 --timestamp\=none --preserve-metadata\=identifier,entitlements,flags --generate-entitlement-der /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns/SmartBLETests.xctest/Frameworks/SmartHidCore_3F573FBA8ADD02B1_PackageProduct.framework
+
+CodeSign /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns/SmartBLETests.xctest (in target 'SmartBLETests' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+    Signing Identity:     "Apple Development: longcan cai (L5Q7JP9RH9)"
+    
+    /usr/bin/codesign --force --sign 4B44C08A097080BA2CA99BBE2C1EE443EE53B319 --timestamp\=none --generate-entitlement-der /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns/SmartBLETests.xctest
+/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns/SmartBLETests.xctest: replacing existing signature
+
+CodeSign /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/SmartBLE.debug.dylib (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+    Signing Identity:     "Apple Development: longcan cai (L5Q7JP9RH9)"
+    Provisioning Profile: "iOS Team Provisioning Profile: *"
+                          (711a0591-dcd8-4f7f-a504-c70173141d18)
+    
+    /usr/bin/codesign --force --sign 4B44C08A097080BA2CA99BBE2C1EE443EE53B319 --timestamp\=none --generate-entitlement-der /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/SmartBLE.debug.dylib
+/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/SmartBLE.debug.dylib: replacing existing signature
+
+CodeSign /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/__preview.dylib (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+    Signing Identity:     "Apple Development: longcan cai (L5Q7JP9RH9)"
+    Provisioning Profile: "iOS Team Provisioning Profile: *"
+                          (711a0591-dcd8-4f7f-a504-c70173141d18)
+    
+    /usr/bin/codesign --force --sign 4B44C08A097080BA2CA99BBE2C1EE443EE53B319 --timestamp\=none --generate-entitlement-der /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/__preview.dylib
+/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/__preview.dylib: replacing existing signature
+
+CodeSign /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+    Signing Identity:     "Apple Development: longcan cai (L5Q7JP9RH9)"
+    Provisioning Profile: "iOS Team Provisioning Profile: *"
+                          (711a0591-dcd8-4f7f-a504-c70173141d18)
+    
+    /usr/bin/codesign --force --sign 4B44C08A097080BA2CA99BBE2C1EE443EE53B319 --entitlements /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE.app.xcent --timestamp\=none --generate-entitlement-der /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app
+/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app: replacing existing signature
+
+Validate /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-validationUtility /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app -shallow-bundle -infoplist-subpath Info.plist
+
+2026-09-11 07:54:25.970362+0800 SmartBLEUITests-Runner[6239:3140123] [Default] Running tests...
+2026-09-11 07:55:26.400541+0800 SmartBLEUITests-Runner[6239:3140123] [Default] Failed to initialize for UI testing: Error Domain=com.apple.dt.XCTest.XCTFuture Code=1000 "Timed out while enabling automation mode." UserInfo={NSLocalizedDescription=Timed out while enabling automation mode.}
+
+
+*** If you believe this error represents a bug, please attach the result bundle at /Users/luoyaosheng/Desktop/project/Open/smart-ble/verification/ios-device/20260910-uitest-device/UITests-device.xcresult
+
+2026-09-11 07:55:26.668 xcodebuild[52411:6662841]  IDETestOperationsObserverDebug: Failure collecting diagnostics from devices: Process exited with error 1:
+ ERROR: The operation couldn?t be completed. (CoreDeviceCLISupport.DiagnoseError error 0.)
+This tool generates files that allow Apple to investigate issues with your
+computer and help improve Apple products. The files might contain personal
+information found on your device or associated with your Apple Account(s),
+including but not limited to your name, serial numbers of your device,
+your device name, your device's location over the last one to two days,
+your attached peripheral devices, your user name, your email address and
+email settings, file paths, file names, Siri suggestions, your computer's
+IP addresses, and network connection information.
+
+This information is used by Apple in accordance with its privacy policy
+(www.apple.com/privacy) and is not shared with any other company. By using
+this tool and sending the results to Apple, you consent to Apple using the
+contents of these files to improve Apple products.
+
+An error occurred while running devicectl diagnose. Will archive the diagnostics collected thus far.
+Wrote file to /Users/luoyaosheng/Desktop/project/Open/smart-ble/verification/ios-device/20260910-uitest-device/UITests-device.xcresult/Staging/1_Test/Diagnostics/devicectl_diagnostics.zip
+Partial devicectl diagnose bundle located here: /Users/luoyaosheng/Desktop/project/Open/smart-ble/verification/ios-device/20260910-uitest-device/UITests-device.xcresult/Staging/1_Test/Diagnostics/devicectl_diagnostics.zip
+
+2026-09-11 07:55:26.673 xcodebuild[52411:6662760] [MT] IDETestOperationsObserverDebug: 64.478 elapsed -- Testing started completed.
+2026-09-11 07:55:26.673 xcodebuild[52411:6662760] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-09-11 07:55:26.673 xcodebuild[52411:6662760] [MT] IDETestOperationsObserverDebug: 64.478 sec, +64.478 sec -- end
+
+Test session results, code coverage, and logs:
+	/Users/luoyaosheng/Desktop/project/Open/smart-ble/verification/ios-device/20260910-uitest-device/UITests-device.xcresult
+
+Testing failed:
+	SmartBLEUITests-Runner (6239) encountered an error (The test runner failed to initialize for UI testing. (Underlying Error: Timed out while enabling automation mode.))
+
+** TEST FAILED **
+
+Testing started
