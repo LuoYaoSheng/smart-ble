@@ -47,7 +47,7 @@ struct NativeTabBar: View {
                                 .frame(width: 23, height: 23)
                             if tab == .connected, connectedCount > 0 {
                                 Text("\(min(connectedCount, 99))")
-                                    .font(.system(size: 9, weight: .bold))
+                                    .scaledFont(9, .bold)
                                     .foregroundColor(.white)
                                     .padding(.horizontal, 4)
                                     .frame(minWidth: 16, minHeight: 16)
@@ -57,7 +57,7 @@ struct NativeTabBar: View {
                             }
                         }
                         Text(tab.title)
-                            .font(.system(size: 10, weight: selection == tab ? .bold : .medium))
+                            .scaledFont(10, selection == tab ? .bold : .medium)
                     }
                     .foregroundColor(selection == tab ? NativeDS.primary : NativeDS.muted)
                     .frame(maxWidth: .infinity)
@@ -90,12 +90,12 @@ struct NativeNavbar<Trailing: View>: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(kicker)
-                .font(.system(size: 10, weight: .heavy))
                 .tracking(2)
+                .scaledFont(10, .heavy)
                 .foregroundColor(NativeDS.primary)
             HStack {
                 Text(title)
-                    .font(.system(size: 20, weight: .heavy))
+                    .scaledFont(20, .heavy)
                     .foregroundColor(NativeDS.ink)
                 Spacer()
                 trailing()
@@ -126,10 +126,12 @@ struct NativeSectionHeading<Trailing: View>: View {
     var body: some View {
         HStack(spacing: 8) {
             Image(systemName: icon)
-                .font(.system(size: 17, weight: .semibold))
+                .scaledFont(17, .semibold)
                 .foregroundColor(tone)
+                // 装饰性节图标：对辅助技术隐藏，语义由标题文本承担
+                .accessibilityHidden(true)
             Text(title)
-                .font(.system(size: 17, weight: .bold))
+                .scaledFont(17, .bold)
                 .foregroundColor(NativeDS.ink)
             Spacer()
             trailing()
@@ -150,7 +152,7 @@ struct NativeBackButton: View {
     var body: some View {
         Button(action: action) {
             Image(systemName: "chevron.left")
-                .font(.system(size: 15, weight: .semibold))
+                .scaledFont(15, .semibold)
                 .foregroundColor(NativeDS.ink)
                 .frame(width: 32, height: 32)
                 .background(NativeDS.fill)
@@ -172,7 +174,7 @@ struct NativeSubnavBar<Trailing: View>: View {
         HStack(spacing: 10) {
             NativeBackButton(action: onBack)
             Text(title)
-                .font(.system(size: 17, weight: .bold))
+                .scaledFont(17, .bold)
                 .foregroundColor(NativeDS.ink)
             Spacer()
             trailing()
@@ -198,6 +200,8 @@ struct NativeIllustration: View {
         NativeResourceImage(name: name)
             .scaledToFit()
             .frame(width: width, height: width * 86 / 118)
+            // 装饰性插画：对辅助技术隐藏，语义由相邻标题/描述文本承担
+            .accessibilityHidden(true)
     }
 }
 
@@ -240,6 +244,15 @@ struct NativeResourceImage: View {
     }
 }
 
+extension View {
+    /// 无障碍命中目标下限：可点元素 ≥44pt（正典 TabBar 同标准）。
+    /// 只撑命中/AX 帧，不改变文本排版；带背景的控件视觉高度不变。
+    func nativeHitTarget(minHeight: CGFloat = 44) -> some View {
+        frame(minHeight: minHeight, alignment: .center)
+            .contentShape(.rect)
+    }
+}
+
 struct NativeEmptyState: View {
     let illustration: String
     let title: String
@@ -253,11 +266,11 @@ struct NativeEmptyState: View {
             NativeIllustration(name: illustration)
                 .padding(.bottom, 16)
             Text(title)
-                .font(.system(size: 17, weight: .bold))
+                .scaledFont(17, .bold)
                 .foregroundColor(NativeDS.ink)
                 .padding(.bottom, 6)
             Text(description)
-                .font(.system(size: 13))
+                .scaledFont(13)
                 .foregroundColor(NativeDS.muted)
                 .multilineTextAlignment(.center)
                 .lineSpacing(3)
@@ -271,13 +284,14 @@ struct NativeEmptyState: View {
                     }
                 }
                     .buttonStyle(.plain)
-                    .font(.system(size: 13, weight: .semibold))
+                    .scaledFont(13, .semibold)
                     .foregroundColor(NativeDS.ink)
                     .padding(.horizontal, 13)
-                    .frame(height: 32)
+                    .frame(minHeight: 32)
                     .background(NativeDS.fill)
                     .overlay(RoundedRectangle(cornerRadius: 8).stroke(NativeDS.line))
                     .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .nativeHitTarget()
                     .padding(.top, 16)
             }
         }
@@ -293,7 +307,7 @@ struct NativeStatusChip: View {
 
     var body: some View {
         Text(text)
-            .font(.system(size: 10, weight: .bold, design: .monospaced))
+            .scaledFont(10, .bold, design: .monospaced)
             .foregroundColor(tone)
             .padding(.horizontal, 7)
             .padding(.vertical, 3)

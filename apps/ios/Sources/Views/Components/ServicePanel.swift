@@ -11,9 +11,9 @@ struct ServicePanel: View {
                 ProgressView().tint(NativeDS.primary)
                 VStack(alignment: .leading, spacing: 3) {
                     Text(bleManager.connectionStates[deviceId] == .connected ? "正在发现服务…" : "未初始化")
-                        .font(.system(size: 15, weight: .bold))
+                        .scaledFont(15, .bold)
                     Text(bleManager.connectionStates[deviceId] == .connected ? "等待 CoreBluetooth 返回服务与特征值" : "点击「连接设备」建立 GATT 会话。")
-                        .font(.system(size: 13))
+                        .scaledFont(13)
                         .foregroundColor(NativeDS.sub)
                 }
                 Spacer()
@@ -46,16 +46,16 @@ struct ServiceCard: View {
                     Image(systemName: isOta ? "arrow.down.circle" : "cpu")
                         .foregroundColor(isOta ? NativeDS.danger : NativeDS.primary)
                     Text(service?.name ?? "未知服务")
-                        .font(.system(size: 15, weight: .bold))
+                        .scaledFont(15, .bold)
                         .foregroundColor(NativeDS.ink)
                     Text(shortUuid)
-                        .font(.system(size: 10, design: .monospaced))
+                        .scaledFont(10, design: .monospaced)
                         .foregroundColor(NativeDS.sub)
                         .padding(.horizontal, 7).padding(.vertical, 2)
                         .background(NativeDS.fill).clipShape(Capsule())
                     Spacer()
                     Image(systemName: "chevron.right")
-                        .font(.system(size: 11, weight: .semibold))
+                        .scaledFont(11, .semibold)
                         .foregroundColor(NativeDS.placeholder)
                         .rotationEffect(.degrees(isExpanded ? 90 : 0))
                 }
@@ -65,7 +65,7 @@ struct ServiceCard: View {
             if isExpanded {
                 if let service, service.characteristics.isEmpty {
                     Text("正在发现特征值…")
-                        .font(.system(size: 11))
+                        .scaledFont(11)
                         .foregroundColor(NativeDS.muted)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 12)
@@ -118,11 +118,11 @@ struct CharacteristicRow: View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 5) {
                 Text(characteristic?.name ?? "未知特征值")
-                    .font(.system(size: 13, weight: .semibold))
+                    .scaledFont(13, .semibold)
                 if let characteristic {
                     ForEach(characteristic.properties.description, id: \.self) { property in
                         Text(property.lowercased())
-                            .font(.system(size: 9, weight: .semibold))
+                            .scaledFont(9, .semibold)
                             .foregroundColor(property.lowercased().contains("write") ? NativeDS.success : property.lowercased().contains("notify") ? NativeDS.warning : NativeDS.primary)
                             .padding(.horizontal, 6).padding(.vertical, 2)
                             .background(NativeDS.primaryWeak.opacity(0.7))
@@ -133,12 +133,12 @@ struct CharacteristicRow: View {
             }
 
             Text(characteristic?.uuid ?? "")
-                .font(.system(size: 10, design: .monospaced))
+                .scaledFont(10, design: .monospaced)
                 .foregroundColor(NativeDS.muted)
 
             if let value = characteristic?.value {
                 Text(value)
-                    .font(.system(size: 10, design: .monospaced))
+                    .scaledFont(10, design: .monospaced)
                     .foregroundColor(NativeDS.sub)
                     .padding(8)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -190,7 +190,7 @@ struct CharacteristicRow: View {
     private func smallButton(_ title: String, outlined: Bool = false, action: @escaping () -> Void) -> some View {
         Button(title, action: action)
             .buttonStyle(.plain)
-            .font(.system(size: 12, weight: .semibold))
+            .scaledFont(12, .semibold)
             .foregroundColor(outlined ? NativeDS.primary : NativeDS.ink)
             .padding(.horizontal, 12)
             .frame(height: 32)

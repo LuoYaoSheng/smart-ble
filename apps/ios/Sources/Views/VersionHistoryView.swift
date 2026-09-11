@@ -31,7 +31,7 @@ struct VersionHistoryView: View {
                         emptyDescription: metadata.releaseTag == nil ? "" : "当前 Release tag"
                     )
                     Text("本页数据来自 Release Metadata 投影，不是手写版本事实源。")
-                        .font(.caption2)
+                        .scaledFont(11)
                         .foregroundColor(NativeDS.muted)
                         .padding(.vertical, 8)
                 }
@@ -50,10 +50,10 @@ struct VersionHistoryView: View {
             NativeSectionHeading(icon: "doc.text", title: "当前版本")
             HStack(alignment: .firstTextBaseline, spacing: 10) {
                 Text(displayVersion)
-                    .font(.system(size: 24, weight: .heavy))
+                    .scaledFont(24, .heavy)
                     .foregroundColor(NativeDS.primary)
                 Text(metadata.channel)
-                    .font(.caption.weight(.bold))
+                    .scaledFont(12, .bold)
                     .foregroundColor(NativeDS.primary)
                     .padding(.horizontal, 8).padding(.vertical, 4)
                     .background(NativeDS.primaryWeak.clipShape(Capsule()))
@@ -69,7 +69,7 @@ struct VersionHistoryView: View {
             }
             Button(action: copyVersion) {
                 Label(copied ? "已复制" : "复制版本信息", systemImage: "doc.on.doc")
-                    .font(.caption.weight(.bold))
+                    .scaledFont(12, .bold)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 10)
             }
@@ -77,6 +77,7 @@ struct VersionHistoryView: View {
             .foregroundColor(NativeDS.sub)
             .background(NativeDS.fill)
             .clipShape(RoundedRectangle(cornerRadius: 9))
+            .nativeHitTarget()
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .nativeCard()
@@ -86,19 +87,19 @@ struct VersionHistoryView: View {
         VStack(alignment: .leading, spacing: 10) {
             NativeSectionHeading(icon: "exclamationmark.triangle", title: "当前限制", tone: NativeDS.warning)
             if metadata.knownLimitations.isEmpty {
-                Text("暂无已知限制条目").font(.footnote).foregroundColor(NativeDS.muted)
+                Text("暂无已知限制条目").scaledFont(13).foregroundColor(NativeDS.muted)
             } else {
                 ForEach(Array(metadata.knownLimitations.enumerated()), id: \.offset) { _, limitation in
                     HStack(alignment: .top, spacing: 8) {
                         Image(systemName: "exclamationmark.triangle.fill")
-                            .font(.caption).foregroundColor(NativeDS.warning)
-                        Text(limitation).font(.footnote).foregroundColor(NativeDS.sub)
+                            .scaledFont(12).foregroundColor(NativeDS.warning)
+                        Text(limitation).scaledFont(13).foregroundColor(NativeDS.sub)
                     }
                     Divider()
                 }
             }
             Text(metadata.artifacts.isEmpty ? "当前无 Artifact，不提供下载入口。" : "Artifact 以 Release Metadata 为准。")
-                .font(.caption)
+                .scaledFont(12)
                 .foregroundColor(NativeDS.sub)
                 .padding(10)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -116,7 +117,7 @@ struct VersionHistoryView: View {
                 NativeIllustration(name: "doc", width: 72)
                 Text(emptyTitle).font(.subheadline.weight(.semibold))
                 if !emptyDescription.isEmpty {
-                    Text(emptyDescription).font(.caption).foregroundColor(NativeDS.muted).multilineTextAlignment(.center)
+                    Text(emptyDescription).scaledFont(12).foregroundColor(NativeDS.muted).multilineTextAlignment(.center)
                 }
             }
             .frame(maxWidth: .infinity)
@@ -145,7 +146,7 @@ struct VersionHistoryView: View {
         default: color = NativeDS.primary
         }
         return Text("\(name) \(status)")
-            .font(.caption2.weight(.bold))
+            .scaledFont(11, .bold)
             .foregroundColor(color)
             .padding(.horizontal, 7).padding(.vertical, 4)
             .background(color.opacity(0.12).clipShape(Capsule()))

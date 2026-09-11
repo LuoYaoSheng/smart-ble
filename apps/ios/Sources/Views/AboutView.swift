@@ -46,7 +46,7 @@ struct AboutView: View {
                         Text("日志全局脱敏：敏感凭据显示为 token=***")
                         Text("BLE Toolkit+ · Smart BLE 产品家族 · 微信小程序 wxf6c58b1dcac4c82d")
                     }
-                    .font(.system(size: 10))
+                    .scaledFont(10)
                     .foregroundColor(NativeDS.placeholder)
                     .multilineTextAlignment(.center)
                     .padding(.vertical, 8)
@@ -79,13 +79,15 @@ struct AboutView: View {
             }
             .frame(width: 42, height: 42)
             .clipShape(RoundedRectangle(cornerRadius: 10))
+            // 品牌字装饰：语义由相邻 "BLE Toolkit+" 文本承担
+            .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text("BLE Toolkit+")
-                    .font(.system(size: 15, weight: .bold))
+                    .scaledFont(15, .bold)
                     .foregroundColor(NativeDS.ink)
                 Text("v\(displayVersion) · \(metadata.channel) · 零后端 · 零本地持久化")
-                    .font(.system(size: 10))
+                    .scaledFont(10)
                     .foregroundColor(NativeDS.muted)
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
@@ -122,18 +124,18 @@ struct AboutView: View {
     ) -> some View {
         HStack(spacing: 10) {
             Text(abbreviation)
-                .font(.system(size: 15, weight: .heavy))
+                .scaledFont(15, .heavy)
                 .foregroundColor(abbreviation == "LB" ? NativeDS.primary : NativeDS.success)
                 .frame(width: 42, height: 42)
                 .background(LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing))
                 .clipShape(RoundedRectangle(cornerRadius: 10))
             VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(.system(size: 15, weight: .bold)).foregroundColor(NativeDS.ink)
-                Text(subtitle).font(.system(size: 11)).foregroundColor(NativeDS.muted)
+                Text(title).scaledFont(15, .bold).foregroundColor(NativeDS.ink)
+                Text(subtitle).scaledFont(11).foregroundColor(NativeDS.muted)
             }
             Spacer()
             Text("前往")
-                .font(.system(size: 13, weight: .semibold))
+                .scaledFont(13, .semibold)
                 .foregroundColor(NativeDS.ink)
                 .padding(.horizontal, 12)
                 .frame(height: 32)
@@ -207,14 +209,14 @@ struct AboutView: View {
     private func menuRow(icon: String, title: String) -> some View {
         HStack(spacing: 11) {
             Image(systemName: icon)
-                .font(.system(size: 15))
+                .scaledFont(15)
                 .foregroundColor(NativeDS.muted)
                 .frame(width: 20)
             Text(title)
-                .font(.system(size: 13, weight: .semibold))
+                .scaledFont(13, .semibold)
             Spacer()
             Image(systemName: "chevron.right")
-                .font(.system(size: 11, weight: .semibold))
+                .scaledFont(11, .semibold)
                 .foregroundColor(NativeDS.placeholder)
         }
         .padding(.horizontal, 14)
@@ -226,11 +228,11 @@ struct AboutView: View {
     private func keyValue(_ key: String, _ value: String) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
             Text(key)
-                .font(.system(size: 12, weight: .semibold))
+                .scaledFont(12, .semibold)
                 .foregroundColor(NativeDS.muted)
                 .frame(width: 88, alignment: .leading)
             Text(value)
-                .font(.system(size: 13))
+                .scaledFont(13)
                 .foregroundColor(NativeDS.ink)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
@@ -240,7 +242,7 @@ struct AboutView: View {
 
     private func featureChip(_ title: String) -> some View {
         Text(title)
-            .font(.system(size: 10, weight: .semibold))
+            .scaledFont(10, .semibold)
             .foregroundColor(NativeDS.primary)
             .padding(.horizontal, 8)
             .padding(.vertical, 4)
@@ -251,7 +253,7 @@ struct AboutView: View {
     private func platformRow(_ name: String, capability: String, release: String) -> some View {
         HStack(spacing: 7) {
             Text(name)
-                .font(.system(size: 12, weight: .semibold))
+                .scaledFont(12, .semibold)
                 .frame(width: 92, alignment: .leading)
             NativeStatusChip(text: capability, tone: statusColor(capability))
             NativeStatusChip(text: release, tone: statusColor(release))

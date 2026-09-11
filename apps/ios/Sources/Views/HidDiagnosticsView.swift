@@ -94,13 +94,13 @@ struct HidDiagnosticsView: View {
     private var statusCard: some View {
         HStack(spacing: 10) {
             Text(statusWord)
-                .font(.caption.weight(.bold))
+                .scaledFont(12, .bold)
                 .foregroundColor(statusColor)
                 .padding(.horizontal, 9)
                 .padding(.vertical, 4)
                 .background(statusColor.opacity(0.12).clipShape(Capsule()))
             Text(deviceId)
-                .font(.system(size: 11, design: .monospaced))
+                .scaledFont(11, design: .monospaced)
                 .foregroundColor(NativeDS.muted)
             Spacer()
         }
@@ -117,10 +117,10 @@ struct HidDiagnosticsView: View {
                     VStack(alignment: .leading, spacing: 3) {
                         HStack {
                             Text(row.label).font(.subheadline.weight(.semibold))
-                            Text(word(for: row.state)).font(.caption).foregroundColor(color(for: row.state))
+                            Text(word(for: row.state)).scaledFont(12).foregroundColor(color(for: row.state))
                         }
                         if let detail = row.detail, !detail.isEmpty {
-                            Text(detail).font(.caption2).foregroundColor(NativeDS.muted)
+                            Text(detail).scaledFont(11).foregroundColor(NativeDS.muted)
                         }
                     }
                     Spacer()
@@ -137,14 +137,14 @@ struct HidDiagnosticsView: View {
     private func errorDetails(code: String, message: String) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             NativeSectionHeading(icon: "exclamationmark.octagon", title: "错误详情", tone: NativeDS.danger)
-            Text(message).font(.footnote).foregroundColor(NativeDS.sub)
+            Text(message).scaledFont(13).foregroundColor(NativeDS.sub)
             Button(showErrorCode ? "隐藏错误码" : "显示错误码（详细信息）") {
                 showErrorCode.toggle()
             }
             .buttonStyle(.borderless)
             if showErrorCode {
                 Text(code)
-                    .font(.system(.footnote, design: .monospaced))
+                    .scaledFont(13, design: .monospaced)
                     .foregroundColor(Color(red: 1, green: 139 / 255, blue: 148 / 255))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(12)
@@ -168,18 +168,21 @@ struct HidDiagnosticsView: View {
             .foregroundColor(.white)
             .background(NativeDS.primary)
             .clipShape(RoundedRectangle(cornerRadius: 10))
+            .nativeHitTarget()
 
             HStack(spacing: 9) {
                 Button(action: { dismiss() }) {
                     Label("返回设备详情", systemImage: "chevron.left").frame(maxWidth: .infinity)
                 }
+                .nativeHitTarget()
                 Button(action: { onReconfigure(deviceId) }) {
                     Label("重新配网", systemImage: "arrow.clockwise").frame(maxWidth: .infinity)
                 }
                 .foregroundColor(NativeDS.danger)
+                .nativeHitTarget()
             }
             .buttonStyle(.plain)
-            .font(.caption.weight(.semibold))
+            .scaledFont(12, .semibold)
             .padding(.vertical, 11)
             .background(NativeDS.fill)
             .clipShape(RoundedRectangle(cornerRadius: 10))

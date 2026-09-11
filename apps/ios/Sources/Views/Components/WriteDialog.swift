@@ -93,7 +93,7 @@ struct WriteDialog: View {
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text("输入数据")
-                        .font(.caption)
+                        .scaledFont(12)
                         .foregroundColor(.secondary)
 
                     TextField(selectedFormat.placeholder, text: $inputText)
@@ -109,7 +109,7 @@ struct WriteDialog: View {
             if selectedFormat == .hex {
                 Section(header: Text("提示")) {
                     Text("HEX 格式: 输入十六进制字节，例如 48 65 6C 6C 6F")
-                        .font(.caption)
+                        .scaledFont(12)
                         .foregroundColor(.secondary)
                 }
             }

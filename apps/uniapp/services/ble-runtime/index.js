@@ -41,7 +41,8 @@ import {
 
 const log = createLogger('ble-runtime');
 
-const registry = getSessionRegistry();
+// let：resetBleRuntimeForTesting 会重建 registry 单例，需重绑（否则 reset 后 index 静默持有死实例）
+let registry = getSessionRegistry();
 let reconnectManager = null;
 let connectionDiscovery = null;
 
@@ -88,7 +89,7 @@ function getRegistrySession(deviceId) {
   return registry.getSession(deviceId);
 }
 
-function getRuntimeSession(deviceId) {
+export function getRuntimeSession(deviceId) {
   const entry = getRegistrySession(deviceId);
   const runtime = entry?.runtime;
   if (!runtime || runtime.dead) return null;
@@ -804,6 +805,32 @@ export function scheduleReconnect(deviceId, options = {}) {
   return ensureReconnectManager().scheduleReconnect(deviceId, options);
 }
 
+// API_SPEC §7 subscribeConnectionState（F006/F012）：listener → unsubscribe，重复注册可检测（同 listener 复用同一订阅）。
+// 事件源 = session-registry 变更；被动断线重连（含 backoff）由 reconnect-manager 独占，页面经此订阅感知恢复/耗尽。
+const connectionStateSubscriptions = new Map();
+
+export function subscribeConnectionState(listener) {
+  if (typeof listener !== 'function') throw new Error('connection state listener must be a function');
+  const existing = connectionStateSubscriptions.get(listener);
+  if (existing) return existing;
+
+  const unsubscribe = registry.subscribe((session, phase) => {
+    listener({
+      deviceId: session.deviceId,
+      connectionState: session.connectionState,
+      reconnectState: session.reconnectState,
+      disconnectReason: session.disconnectReason,
+      phase,
+    });
+  });
+  const teardown = () => {
+    connectionStateSubscriptions.delete(listener);
+    unsubscribe();
+  };
+  connectionStateSubscriptions.set(listener, teardown);
+  return teardown;
+}
+
 export function getBleRuntimeSnapshotForTesting() {
   return {
     sessions: registry.listSessions().length,
@@ -822,11 +849,14 @@ export function resetBleRuntimeForTesting() {
   state.writeQueue = null;
   resetReconnectManagerForTesting();
   reconnectManager = null;
+  for (const teardown of [...connectionStateSubscriptions.values()]) teardown();
+  connectionStateSubscriptions.clear();
   resetConnectionDiscoveryForTesting(connectionDiscovery);
   connectionDiscovery = null;
   state.platform = null;
   state.callbacksRegistered = false;
   resetSessionRegistryForTesting();
+  registry = getSessionRegistry();
   state.connectionAttempts.clear();
   state.valueListeners.clear();
   state.disconnectListeners.clear();

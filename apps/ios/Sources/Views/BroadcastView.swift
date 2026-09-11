@@ -14,12 +14,12 @@ struct BroadcastView: View {
             NativeNavbar(kicker: "PERIPHERAL", title: "广播") {
                 HStack(spacing: 6) {
                     Text("平台：iOS")
-                        .font(.system(size: 10, weight: .semibold))
+                        .scaledFont(10, .semibold)
                         .foregroundColor(NativeDS.sub)
                         .padding(.horizontal, 8).padding(.vertical, 3)
                         .background(NativeDS.fill).clipShape(Capsule())
                     Text(statusText)
-                        .font(.system(size: 10, weight: .bold))
+                        .scaledFont(10, .bold)
                         .foregroundColor(statusColor)
                         .padding(.horizontal, 8).padding(.vertical, 3)
                         .background(statusColor.opacity(0.11)).clipShape(Capsule())
@@ -58,7 +58,7 @@ struct BroadcastView: View {
                     }
                     if uuidInvalid {
                         Label("UUID 需为 4 / 8 / 36 位十六进制", systemImage: "exclamationmark.triangle.fill")
-                            .font(.system(size: 11))
+                            .scaledFont(11)
                             .foregroundColor(Color(red: 199 / 255, green: 126 / 255, blue: 20 / 255))
                             .padding(.horizontal, 8)
                             .padding(.vertical, 5)
@@ -84,14 +84,14 @@ struct BroadcastView: View {
 
             HStack(spacing: 6) {
                 Text("ADV 负载预算")
-                    .font(.system(size: 10, weight: .semibold))
+                    .scaledFont(10, .semibold)
                     .foregroundColor(Color(red: 143 / 255, green: 163 / 255, blue: 192 / 255))
                 Spacer()
                 Text("\(payloadBytes.total)")
-                    .font(.system(size: 15, weight: .bold, design: .monospaced))
+                    .scaledFont(15, .bold, design: .monospaced)
                     .foregroundColor(payloadOver ? Color(red: 1, green: 139 / 255, blue: 148 / 255) : .white)
                 Text("/ 31 字节")
-                    .font(.system(size: 11, design: .monospaced))
+                    .scaledFont(11, design: .monospaced)
                     .foregroundColor(Color(red: 124 / 255, green: 141 / 255, blue: 166 / 255))
             }
             .padding(.horizontal, 13)
@@ -113,7 +113,7 @@ struct BroadcastView: View {
             HStack(spacing: 9) {
                 Button(action: toggleAdvertising) {
                     Label(bleManager.isAdvertising ? "停止广播" : "开始广播", systemImage: bleManager.isAdvertising ? "stop.fill" : "dot.radiowaves.up.forward")
-                        .font(.system(size: 15, weight: .semibold))
+                        .scaledFont(15, .semibold)
                         .foregroundColor(.white)
                         .padding(.horizontal, 16)
                         .frame(height: 40)
@@ -126,7 +126,7 @@ struct BroadcastView: View {
 
                 Button(action: checkSupport) {
                     Label("检查支持", systemImage: "arrow.clockwise")
-                        .font(.system(size: 13, weight: .semibold))
+                        .scaledFont(13, .semibold)
                         .foregroundColor(NativeDS.ink)
                         .padding(.horizontal, 13)
                         .frame(height: 40)
@@ -147,19 +147,19 @@ struct BroadcastView: View {
                 if !localLogs.isEmpty {
                     Button("清空") { localLogs.removeAll() }
                         .buttonStyle(.plain)
-                        .font(.system(size: 12, weight: .semibold))
+                        .scaledFont(12, .semibold)
                         .foregroundColor(NativeDS.danger)
                 }
             }
             if localLogs.isEmpty {
                 Text("暂无日志 · 开始广播或检查支持后，操作记录会显示在这里")
-                    .font(.system(size: 11))
+                    .scaledFont(11)
                     .foregroundColor(NativeDS.muted)
                     .padding(.vertical, 8)
             } else {
                 ForEach(Array(localLogs.enumerated()), id: \.offset) { _, log in
                     Text(log)
-                        .font(.system(size: 11, design: .monospaced))
+                        .scaledFont(11, design: .monospaced)
                         .foregroundColor(NativeDS.sub)
                 }
             }
@@ -171,7 +171,7 @@ struct BroadcastView: View {
     private func field<Content: View>(_ title: String, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(title)
-                .font(.system(size: 12, weight: .semibold))
+                .scaledFont(12, .semibold)
                 .foregroundColor(NativeDS.sub)
             content()
         }
@@ -179,7 +179,7 @@ struct BroadcastView: View {
 
     private func fieldInput<Content: View>(@ViewBuilder content: () -> Content) -> some View {
         content()
-            .font(.system(size: 13))
+            .scaledFont(13)
             .textFieldStyle(.plain)
             .padding(.horizontal, 12)
             .frame(height: 42)
@@ -195,7 +195,7 @@ struct BroadcastView: View {
             Spacer()
             Text("\(bytes) B")
         }
-        .font(.system(size: 11, weight: bold ? .bold : .regular, design: .monospaced))
+        .scaledFont(11, bold ? .bold : .regular, design: .monospaced)
         .foregroundColor(payloadOver && bold ? NativeDS.danger : NativeDS.sub)
     }
 

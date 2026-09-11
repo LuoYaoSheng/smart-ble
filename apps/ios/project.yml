@@ -63,7 +63,8 @@ targets:
   SmartBLEUITests:
     type: bundle.ui-testing
     platform: iOS
-    deploymentTarget: "15.0"
+    # UI 测试包仅在 iOS 17+ 模拟器执行；performAccessibilityAudit 要求 iOS 17（App 本体保持 15）
+    deploymentTarget: "17.0"
     sources:
       - path: Tests/SmartBLEUITests
     dependencies:

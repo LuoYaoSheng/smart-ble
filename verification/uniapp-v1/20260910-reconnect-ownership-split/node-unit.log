@@ -1,0 +1,18 @@
+(node:98217) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/uniapp/services/ble-runtime/__tests__/reconnect-ownership.test.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/uniapp/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ C-8 契约钉子：重连退避 1s/3s/5s ×3 (0.513291ms)
+✔ C-8/C-9 策略：被动断线按档退避，用户主动断开永不重连，3 次耗尽 (0.099625ms)
+✔ reconnect-manager 独占重连：REMOTE_LOST 排期 1s/3s/5s，3 次失败后 EXHAUSTED (1.431ms)
+✔ session-registry.subscribe：created/updated/removed 事件携带 connectionState/reconnectState (0.296875ms)
+✔ subscribeConnectionState（API_SPEC §7）：事件经 registry 单例透出，重复注册去重，可退订 (0.209625ms)
+✔ getRuntimeSession 导出：活会话返回，dead 会话返回 null (0.092084ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 48.638541

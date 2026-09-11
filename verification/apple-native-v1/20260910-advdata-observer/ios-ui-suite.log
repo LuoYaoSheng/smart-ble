@@ -1,0 +1,12 @@
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testAccessibilityXXXLTextSizeSmoke]' passed (7.525 seconds).
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testAuditIssueInventoryDiagnostic]' passed (87.060 seconds).
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testP001KeyStatesPassAccessibilityAudit]' passed (20.054 seconds).
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testP002FlowStatesPassAccessibilityAudit]' passed (19.147 seconds).
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testP003P005StatesPassAccessibilityAudit]' passed (25.044 seconds).
+Test Case '-[SmartBLEUITests.AccessibilityAuditUITests testP009P010PassAccessibilityAudit]' passed (12.367 seconds).
+Test Case '-[SmartBLEUITests.AdvDataUITests testP001DeviceDetailShowsAdvertisementDataAndCopies]' passed (11.638 seconds).
+Test Case '-[SmartBLEUITests.FlowStateUITests testP002IdentitySuccessAndWifiFailureStates]' passed (12.869 seconds).
+Test Case '-[SmartBLEUITests.FlowStateUITests testP003SnapshotMissingFieldsAndMissingRecordStates]' passed (12.986 seconds).
+Test Case '-[SmartBLEUITests.FlowStateUITests testP005HealthyOfflineAndFailureStates]' passed (12.801 seconds).
+Test Case '-[SmartBLEUITests.TabBarUITests testFourTabsSwitchWithoutConnectionStateHijackingSelection]' passed (9.935 seconds).
+Test Case '-[SmartBLEUITests.TabBarUITests testSecondaryPageCoversTabBar]' passed (6.960 seconds).

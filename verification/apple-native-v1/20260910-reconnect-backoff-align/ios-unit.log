@@ -1,0 +1,14 @@
+$ cd apps/ios && xcodebuild test -project SmartBLE.xcodeproj -scheme SmartBLEiOS \
+    -destination 'platform=iOS Simulator,id=807B4008-57AB-4056-851F-98F8D7274086' \
+    -derivedDataPath /Users/luoyaosheng/Library/Developer/Xcode/DerivedData/SmartBLE-fntgpymnayxuohcocafobrwjxnhp \
+    -only-testing:SmartBLETests
+2026-09-10 17:31:19.788
+Test Suite 'SmartBLETests.xctest' passed at 2026-09-10 17:31:19.788.
+	 Executed 24 tests, with 0 failures (0 unexpected) in 0.068 (0.073) seconds
+Test Suite 'All tests' passed at 2026-09-10 17:31:19.788.
+	 Executed 24 tests, with 0 failures (0 unexpected) in 0.068 (0.074) seconds
+** TEST SUCCEEDED **
+
+# 明细（24 = 旧 23 + 新增 testReconnectBackoffScheduleMatchesFrozenContract）
+# HidProvisionManagerTests 9 · ContrastTests 3 · NativePageContractTests 3（含新增）
+# ScaledFontTests 5 · OtaContractFrameTests 3 · AppleSharedCoreWiringTests 1

@@ -69,7 +69,7 @@ private final class TabButton: NSButton {
         super.init(frame: .zero)
         isBordered = false
         translatesAutoresizingMaskIntoConstraints = false
-        focusRingType = .none
+        focusRingType = .exterior  // 键盘遍历焦点可见性（无障碍；仅聚焦时显示，默认态像素不变）
         target = self
         action = #selector(tapped)
         title = ""
@@ -229,6 +229,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, PageHost
         let tabRow = hstack(tabButtons, spacing: 4, alignment: .centerY)
         tabRow.distribution = .fillEqually
         tabBar.addSubview(tabRow)
+        // 键盘遍历入口：初始焦点落在扫描 Tab（无障碍；Tab/Shift-Tab 沿 keyViewLoop 遍历全部控件）
+        window.initialFirstResponder = tabButtons.first
         let topLine = NSView()
         topLine.wantsLayer = true
         topLine.layer?.backgroundColor = DS.lineSoft.cgColor

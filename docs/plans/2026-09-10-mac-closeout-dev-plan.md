@@ -47,11 +47,11 @@
 **Interfaces:**
 - Produces: `enum OtaDeviceEvent { case ready, success, ok, error(String) }`；`OtaStatusClassifier.classify(_ data: Data) -> OtaDeviceEvent?`（纯函数，无 BLE 依赖）
 
-- [ ] **2.1 先写失败测试**：CoreUnit 新增 `OTA-CLS-*` 用例——`{"event":"failed","code":"OTA_ERR_STATE"}` 必须判为 `.error`（当前实现会漏检，跑 `--unit-core` 应 FAIL）
-- [ ] **2.2 跑 `swift run SmartBLE-mac --unit-core` 确认新用例失败**（红）
-- [ ] **2.3 实现**：新建 `OtaStatusClassifier`——JSON 分支收集全部字符串值后**子串匹配**（`ready`/`success`/`ok`/`error`/`fail`，大小写不敏感），文本分支保持现行 `contains` 语义；`OtaManager.handleStatus` 删除内联解析、改调分类器（verifying 分支不动）
-- [ ] **2.4 跑 `--unit-core` 全绿**（62+新增）
-- [ ] **2.5 提交** `fix(macos-ota): classify failed-status frames via substring match (R-2)`
+- [x] **2.1 先写失败测试**：CoreUnit 新增 `OTA-CLS-*` 用例——`{"event":"failed","code":"OTA_ERR_STATE"}` 必须判为 `.error`（当前实现会漏检，跑 `--unit-core` 应 FAIL）
+- [x] **2.2 跑 `swift run SmartBLE-mac --unit-core` 确认新用例失败**（红）
+- [x] **2.3 实现**：新建 `OtaStatusClassifier`——JSON 分支收集全部字符串值后**子串匹配**（`ready`/`success`/`ok`/`error`/`fail`，大小写不敏感），文本分支保持现行 `contains` 语义；`OtaManager.handleStatus` 删除内联解析、改调分类器（verifying 分支不动）
+- [x] **2.4 跑 `--unit-core` 全绿**（62+新增）
+- [x] **2.5 提交** `fix(macos-ota): classify failed-status frames via substring match (R-2)`
 
 ### Task 3: R-1 — macOS OTA start 帧契约对齐 + 决策文档
 
@@ -63,10 +63,10 @@
 **Interfaces:**
 - Produces: `OtaStartPayload.build(manifest: OtaManifestInfo?, fileName: String?, fileSize: Int, chunkSize: Int, sha256: String) -> [String: Any]`（纯函数）；manifest 解析白名单从 `version/size/sha256` 扩为契约六字段（`format_version/target/hardware/firmware_version/size/sha256`，legacy `version` 兼容保留）
 
-- [ ] **3.1 决策文档**：R-1 双方案对比——A=App 对齐冻结契约（schema+固件已是正典，推荐）；B=改固件放宽 target（破坏冻结契约，需用户另批）；R-2 已按缺陷直接修复（Task 2）。附固件拒绝路径代码行号
-- [ ] **3.2 先写失败测试**：CoreUnit `OTA-START-*`——有 manifest（target=lightble-peripheral, firmware_version=1.2.3）时 payload 必须含 `target:"lightble-peripheral"` + `target_version:"1.2.3"`；无 manifest 时 target 缺省不得发版本号（当前实现 FAIL）
-- [ ] **3.3 实现**：manifest 解析增加 `target`（枚举校验，非法→`OTA_PACKAGE_INVALID`）与 `firmware_version`（SemVer，legacy `version` 回退）；start 帧发 `op/target/target_version/size/chunk_size/sha256`；无 manifest 时按正典"跳过包校验"口径——start 帧 `target` 用 UI 侧显式缺省值并在日志注明（不发伪造枚举）
-- [ ] **3.4 `--unit-core` 全绿 + 决策文档提交** `feat(macos-ota): align start frame with frozen package contract (R-1)`
+- [x] **3.1 决策文档**：R-1 双方案对比——A=App 对齐冻结契约（schema+固件已是正典，推荐）；B=改固件放宽 target（破坏冻结契约，需用户另批）；R-2 已按缺陷直接修复（Task 2）。附固件拒绝路径代码行号
+- [x] **3.2 先写失败测试**：CoreUnit `OTA-START-*`——有 manifest（target=lightble-peripheral, firmware_version=1.2.3）时 payload 必须含 `target:"lightble-peripheral"` + `target_version:"1.2.3"`；无 manifest 时 target 缺省不得发版本号（当前实现 FAIL）
+- [x] **3.3 实现**：manifest 解析增加 `target`（枚举校验，非法→`OTA_PACKAGE_INVALID`）与 `firmware_version`（SemVer，legacy `version` 回退）；start 帧发 `op/target/target_version/size/chunk_size/sha256`；无 manifest 时按正典"跳过包校验"口径——start 帧 `target` 用 UI 侧显式缺省值并在日志注明（不发伪造枚举）
+- [x] **3.4 `--unit-core` 全绿 + 决策文档提交** `feat(macos-ota): align start frame with frozen package contract (R-1)`
 
 ### Task 4: iOS OTA start 帧对齐
 
@@ -74,10 +74,10 @@
 - Modify: `apps/ios/Sources/Manager/OtaManager.swift:87-93`
 - Test: `apps/ios/Tests/SmartBLETests/`（新增 payload 断言）
 
-- [ ] **4.1 审计现状**：现发 `{"action":"start","size":…,"chunk_size":…,"firmware_version":"iOS-build"}` —— 键名 `action`≠契约 `op`、无 `target/target_version/sha256`（真固件必拒）
-- [ ] **4.2 对齐**：改为 `op/target/target_version/size/chunk_size/sha256` 六键；target/target_version 来源与 macOS 同口径（manifest 优先、缺省日志注明）；SwiftPM 测试断言六键齐全
-- [ ] **4.3 `cd apps/ios && swift test` 全绿（12+新增）**
-- [ ] **4.4 提交** `fix(ios-ota): align start frame with frozen package contract`
+- [x] **4.1 审计现状**：现发 `{"action":"start","size":…,"chunk_size":…,"firmware_version":"iOS-build"}` —— 键名 `action`≠契约 `op`、无 `target/target_version/sha256`（真固件必拒）
+- [x] **4.2 对齐**：改为 `op/target/target_version/size/chunk_size/sha256` 六键；target/target_version 来源与 macOS 同口径（manifest 优先、缺省日志注明）；SwiftPM 测试断言六键齐全
+- [x] **4.3 `cd apps/ios && swift test` 全绿（12+新增）**
+- [x] **4.4 提交** `fix(ios-ota): align start frame with frozen package contract`
 
 ### Task 5: iOS Dynamic Type 全量迁移（默认尺寸不变）
 
@@ -89,10 +89,10 @@
 **Interfaces:**
 - Produces: `extension View { func scaledFont(_ size: CGFloat, _ weight: Font.Weight = .regular, relativeTo: Font.TextStyle = .body, design: Font.Design = .default) -> some View }`——内部 `@Environment(\.sizeCategory)` + `UIFontMetrics(forTextStyle:).scaledValue(for:compatibleWith:)`；默认档 scaledValue == 原值（数学事实，测试断言）
 
-- [ ] **5.1 基建 + 单测**：默认 trait 下 17pt→17pt；AX 档 > 原值（用 UITraitCollection 构造，无需 UI 测试）
-- [ ] **5.2 逐文件迁移**（每文件后 `swift build`）：NativeComponents → BroadcastView(14) → AboutView(14) → ServicePanel(11) → ScanView(9) → DeviceCard(8) → DeviceDetailView(6) → FilterPanel(5) → ConnectedDevicesView(4) → ProvisioningView(3) → LogPanel(3) → 其余 3 处
-- [ ] **5.3 回归**：`swift test` + UI 测试套件全绿；关键页（P001/P009）默认档截图与审计基线肉眼比对不漂移
-- [ ] **5.4 提交** `feat(ios-a11y): scale all typography with Dynamic Type (default size unchanged)`
+- [x] **5.1 基建 + 单测**：默认 trait 下 17pt→17pt；AX 档 > 原值（用 UITraitCollection 构造，无需 UI 测试）
+- [x] **5.2 逐文件迁移**（每文件后 `swift build`）：NativeComponents → BroadcastView(14) → AboutView(14) → ServicePanel(11) → ScanView(9) → DeviceCard(8) → DeviceDetailView(6) → FilterPanel(5) → ConnectedDevicesView(4) → ProvisioningView(3) → LogPanel(3) → 其余 3 处
+- [x] **5.3 回归**：`swift test` + Xcode 全套绿；默认档像素不变以数学等价证明（scaledFont 默认 trait 逐点相等，ScaledFontTests）+ 像素敏感 UI 测试（TabBar/FlowState/审计五套）零回归
+- [x] **5.4 提交** `feat(ios-a11y): scale all typography with Dynamic Type (default size unchanged)`
 
 ### Task 6: iOS 无障碍审计 UI 测试 + AX 字号冒烟
 
@@ -100,10 +100,10 @@
 - Modify: `apps/ios/SmartBLE/UI/`（SmartBLEUITests target，新增 `AccessibilityAuditUITests.swift`）
 - 复用：既有 launch-argument 确定性状态机（flow-states 审计同款）
 
-- [ ] **6.1** `try app.performAccessibilityAudit()` 覆盖 P001 默认/筛选展开/P009/P010 四态（audit 类型全开；已知系统弹窗差异按 fullers 豁免登记）
-- [ ] **6.2** AX 大档冒烟：launch arguments 强制 `.accessibilityExtraLarge`，断言关键元素存在且无截断标志（`performAccessibilityAudit` 的 dynamicType 检查兜底）
-- [ ] **6.3** Xcode UI scheme 跑绿（现有 5 UI 测试不回归）
-- [ ] **6.4 提交** `test(ios-a11y): automated accessibility audit + AX text-size smoke`
+- [x] **6.1** `try app.performAccessibilityAudit()` 覆盖 P001 默认/筛选展开/P009/P010 四态（audit 类型全开；已知系统弹窗差异按 fullers 豁免登记）
+- [x] **6.2** AX 大档冒烟：launch arguments 强制 `.accessibilityExtraLarge`，断言关键元素存在且无截断标志（`performAccessibilityAudit` 的 dynamicType 检查兜底）
+- [x] **6.3** Xcode UI scheme 跑绿（现有 5 UI 测试不回归）
+- [x] **6.4 提交** `test(ios-a11y): automated accessibility audit + AX text-size smoke`
 
 ### Task 7: macOS 键盘遍历 + 双端 WCAG 对比度断言
 
@@ -115,25 +115,25 @@
 **Interfaces:**
 - Produces: `ContrastRatio.wcag(_ fg: UIColor|NSColor hex, _ bg: …) -> Double`（纯函数）；正典 token 对（text/sub/mut × bg/card、白字 × primary/success/danger/warning）逐对断言 ≥4.5（正文）或如实登记失败项为设计正典约束
 
-- [ ] **7.1 对比度**：先跑出全 token 对数值表；通过项写死断言，失败项（预期 mut 弱文字可能 <4.5）写入审计文档为 ALLOWED(设计正典约束)，**不改正典色值**
-- [ ] **7.2 键盘遍历**：审计四 Tab 页 + 二级页——NSControl 全部可聚焦、Tab 序=视觉序、Escape/Return 语义；修复 initialFirstResponder 与自定义按钮 focusRing；以人工清单 + 代码 diff 记录，注明"合成键盘事件需辅助功能权限，自动化留待设备 Gate"（诚实口径）
-- [ ] **7.3 CoreUnit 全绿 + 提交** `feat(macos-a11y): keyboard traversal audit fixes + wcag contrast assertions`
+- [x] **7.1 对比度**：先跑出全 token 对数值表；通过项写死断言，失败项（预期 mut 弱文字可能 <4.5）写入审计文档为 ALLOWED(设计正典约束)，**不改正典色值**
+- [x] **7.2 键盘遍历**：审计四 Tab 页 + 二级页——NSControl 全部可聚焦、Tab 序=视觉序、Escape/Return 语义；修复 initialFirstResponder 与自定义按钮 focusRing；以人工清单 + 代码 diff 记录，注明"合成键盘事件需辅助功能权限，自动化留待设备 Gate"（诚实口径）
+- [x] **7.3 CoreUnit 全绿 + 提交** `feat(macos-a11y): keyboard traversal audit fixes + wcag contrast assertions`
 
 ### Task 8: 一致性矩阵回填（N-MAC/N-IOS 列）
 
 **Files:**
 - Modify: `docs/specs/09_test/CROSS_IMPLEMENTATION_PARITY_MATRIX.md`（§3 记分卡加两列；§5 注记新证据）
 
-- [ ] **8.1** 逐 F 行（F001–F029）按在册证据回填 N-MAC/N-IOS：证据源 = mac-a2 functional-summary、phase-2 REPORT（真无线电 PASS/BLOCKED 项）、Phase 4/E5、BG BLE（`4c19a58`）、CoreUnit/PageSmoke、本轮 Task 2–7 新增用例；真机未证项如实 `NOT_RUN(真机)`/`BLOCKED(P-03)`
-- [ ] **8.2** §1 硬一致项中 Apple 侧已有证据的行（扫描 5s/超时 10s/重连 1·3·5/写队列/零持久化/OTA P-03）补注 Apple 结论
-- [ ] **8.3 提交** `docs(parity): backfill N-MAC/N-IOS scorecard from recorded evidence`
+- [x] **8.1** 逐 F 行（F001–F029）按在册证据回填 N-MAC/N-IOS：证据源 = mac-a2 functional-summary、phase-2 REPORT（真无线电 PASS/BLOCKED 项）、Phase 4/E5、BG BLE（`4c19a58`）、CoreUnit/PageSmoke、本轮 Task 2–7 新增用例；真机未证项如实 `NOT_RUN(真机)`/`BLOCKED(P-03)`
+- [x] **8.2** §1 硬一致项中 Apple 侧已有证据的行（扫描 5s/超时 10s/重连 1·3·5/写队列/零持久化/OTA P-03）补注 Apple 结论
+- [x] **8.3 提交** `docs(parity): backfill N-MAC/N-IOS scorecard from recorded evidence`
 
 ### Task 9: 全量验证 + 收口证据 + 提交
 
-- [ ] **9.1** macOS：`swift build` + `--unit-core` + `--smoke-pages`（预期 62+N / 17+ 全绿）
-- [ ] **9.2** iOS：`swift test` + Xcode unit/UI scheme 全绿
-- [ ] **9.3** 证据：`verification/apple-native-v1/20260910-closeout/audit.md`（本轮全部判定 + 截图/输出摘录 + 剩余开口清单）
-- [ ] **9.4** 提交 `docs(verify): mac closeout round evidence`；工作树收干净（不推送）
+- [x] **9.1** macOS：`swift build` + `--unit-core` + `--smoke-pages`（预期 62+N / 17+ 全绿）
+- [x] **9.2** iOS：`swift test` + Xcode unit/UI scheme 全绿
+- [x] **9.3** 证据：`verification/apple-native-v1/20260910-closeout/audit.md`（本轮全部判定 + 截图/输出摘录 + 剩余开口清单）
+- [x] **9.4** 提交 `docs(verify): mac closeout round evidence`；工作树收干净（不推送）
 
 ## Self-Review 结论
 

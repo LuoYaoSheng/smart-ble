@@ -24,7 +24,7 @@ struct SmartHidQrScanner: View {
                 .overlay(RoundedRectangle(cornerRadius: 14).stroke(NativeDS.line))
 
                 Text(scannerMessage)
-                    .font(.footnote)
+                    .scaledFont(13)
                     .foregroundColor(NativeDS.muted)
 
                 VStack(alignment: .leading, spacing: 8) {
@@ -181,7 +181,7 @@ private struct NativeQrCameraView: View {
     var body: some View {
         VStack(spacing: 8) {
             Image(systemName: "qrcode.viewfinder")
-                .font(.system(size: 48))
+                .scaledFont(48)
             Text("相机扫码仅在 iOS 真机可用")
                 .foregroundColor(.secondary)
         }

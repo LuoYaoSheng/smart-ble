@@ -43,6 +43,11 @@
 | 零本地持久化（冷启动为空） | 08_development/STORAGE_POLICY + PRD 变更记录 2026-09-02/03 | 待 Gate M1 回填 |
 | OTA = BLOCKED P-03 口径 | F025 / R25 / P-03 | 待 Gate M8 回填 |
 
+> **Apple 线现值（2026-09-10 回填）**：扫描 5s 会话 / deviceId 去重·节流·RSSI 排序 / 连接超时 10s /
+> 重连 3 次 backoff 1s·3s·5s / 写队列深 16·单写 5s（CU-50/51）/ 零持久化——N-MAC 与 N-IOS 均与正典
+> 一致（N-MAC 另有 Phase 2 真无线电重连全环实证）；OTA 维持 P-03 BLOCKED，协议帧已按冻结契约对齐
+> （R-1/R-2，见 `06_review/OTA_CONTRACT_R1_R2_DECISION.md` 与共享核心 OtaContract 13 例测试）。
+
 ## 2. 允许的平台差异（须注明规范来源）
 
 | 差异 | 规范来源 | 说明 |
@@ -59,39 +64,39 @@
 
 > F 编号/名称逐字对齐 FEATURE_MAP §1；验收 R 编号对齐 PRD §8。F017/F029 在 PRD §8 无专属 R 条目，如实标注。页面映射依据 FEATURE_MAP §3。
 
-| 功能 | 名称（FEATURE_MAP 口径） | 验收（PRD §8） | 页面 | U-WX | U-AND | F-AND | 实际差异 | 合理 | 证据 |
-|---|---|---|---|---|---|---|---|---|---|
-| F001 | BLE 扫描（5s 会话/节流合并/自动停） | R01 | P001 | — | — | — | — | — | — |
-| F002 | 扫描权限前置（微信授权引导） | R02 | P001 | — | — | — | — | — | — |
-| F003 | 扫描筛选（RSSI/前缀/隐藏无名） | R03 | P001 | — | — | — | — | — | — |
-| F004 | 广播数据查看（原始数据弹窗/复制） | R04 | P001 | — | — | — | — | — | — |
-| F005 | 显示名智能解析（多级 fallback） | R05 | P001 | — | — | — | — | — | — |
-| F006 | GATT 连接（8 态/发现/MTU） | R06 | P006 | — | — | — | — | — | — |
-| F007 | 服务树浏览（折叠/UUID 中文名） | R07 | P006 | — | — | — | — | — | — |
-| F008 | 特征读取（HEX+TEXT，3s 超时） | R08 | P006 | — | — | — | — | — | — |
-| F009 | 特征写入（TEXT/HEX，写队列串行） | R09 | P006 | — | — | — | — | — | — |
-| F010 | Notify 监听（防抖去重） | R10 | P006 | — | — | — | — | — | — |
-| F011 | 通信日志（六色/清空/导出） | R11 | P006 | — | — | — | — | — | — |
-| F012 | 断线自动重连（3 次 backoff） | R12 | P006/P007 | — | — | — | — | — | — |
-| F013 | 多设备会话管理（批量断开） | R13 | P007 | — | — | — | — | — | — |
-| F014 | 微信外围广播 | R22 + R24 | P008 | — | — | — | — | — | — |
-| F015 | App 外围广播（LysBlePeripheral） | R23 + R24 | P008 | — | — | — | — | — | — |
-| F016 | 31 字节负载预算（不静默截断） | R21 | P008 | — | — | — | — | — | — |
-| F017 | 观察侧证据匹配（服务层就绪） | 无专属 R（PRD §8 未覆盖，服务层验收） | 无页面消费 | — | — | — | — | — | — |
-| F018 | Profile 设备识别（UUID STRONG/前缀 WEAK） | R14 | P001 | — | — | — | — | — | — |
-| F019 | Smart HID 配网向导（三阶段/断线续填/离开确认） | R15 | P002 | — | — | — | — | — | — |
-| F020 | ControlHub 配对码扫码（shid://pair） | R16 | P002 | — | — | — | — | — | — |
-| F021 | 分帧明文写入 + 状态机跟踪（60s） | R17 | P002 | — | — | — | — | — | — |
-| F022 | 配网错误恢复（8 错误码→动作） | R18 | P002 | — | — | — | — | — | — |
-| F023 | ~~设备历史~~【已移除 2026-09-02，不得复刻】 | R19（已作废） | ~~P004~~ | 不适用 | 不适用 | 不适用 | 见 §4.2 登记项 UNIAPP-G1-001 | — | — |
-| F024 | Smart HID 诊断（五项链路） | R20 | P005 | — | — | — | — | — | — |
-| F025 | OTA 固件升级（端到端 BLOCKED） | R25 | P006 子流程 | — | — | — | — | — | — |
-| F026 | 日志脱敏（敏感键→***） | R28 | 横切（P006 日志等） | — | — | — | — | — | — |
-| F027 | 版本元数据展示（Release Metadata 投影） | R26 | P009/P010 | — | — | — | — | — | — |
-| F028 | 小程序推广跳转 | R27 | P009 | — | — | — | — | — | — |
-| F029 | 分享（微信/APP/H5 分支） | 无专属 R（PAGE_SPEC §0.3 分享约定验收） | P009 + 全局 | — | — | — | — | — | — |
-| F030 | 国际化【不做，UI 全中文硬编码】 | R30（现状确认） | 全局 | — | — | — | — | — | — |
-| （附）平台降级（Web/H5 明确不支持） | R29（非 F 编号项） | R29 | 全局 | — | — | — | — | — | — |
+| 功能 | 名称（FEATURE_MAP 口径） | 验收（PRD §8） | 页面 | U-WX | U-AND | F-AND | N-MAC | N-IOS | 合理 | 证据 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| F001 | BLE 扫描（5s 会话/节流合并/自动停） | R01 | P001 | — | — | — | PASS·真无线电（Phase2）| PASS（测试+真机后台链路 4c19a58） | — | — | — |
+| F002 | 扫描权限前置（微信授权引导） | R02 | P001 | — | — | — | N/A（系统权限·10_platform）| N/A（同左） | — | — | — |
+| F003 | 扫描筛选（RSSI/前缀/隐藏无名） | R03 | P001 | — | — | — | PASS（UIS-04）| PASS（UI 测试筛选态） | — | — | — |
+| F004 | 广播数据查看（原始数据弹窗/复制） | R04 | P001 | — | — | — | PASS（UIS-05 复制→剪贴板+toast+关闭）| PASS（UI 测试：详情两段/缺失标注/复制 toast+剪贴板探针） | — | — | apple-native-v1/20260910-advdata-observer |
+| F005 | 显示名智能解析（多级 fallback） | R05 | P001 | — | — | — | PASS（UIS-03 found=6 含未命名 fallback）| PASS（测试） | — | — | — |
+| F006 | GATT 连接（8 态/发现/MTU） | R06 | P006 | — | — | — | PASS·真无线电（Phase2）| PASS（测试；真机收发 4c19a58） | — | — | — |
+| F007 | 服务树浏览（折叠/UUID 中文名） | R07 | P006 | — | — | — | PASS（UIS-06 服务树）| PASS（P006 测试） | — | — | — |
+| F008 | 特征读取（HEX+TEXT，3s 超时） | R08 | P006 | — | — | — | BLOCKED（待 ESP32 烧录；midea 无 read）| NOT_RUN（真机读未验） | — | — | — |
+| F009 | 特征写入（TEXT/HEX，写队列串行） | R09 | P006 | — | — | — | BLOCKED（写字节级·Phase2）| NOT_RUN | — | — | — |
+| F010 | Notify 监听（防抖去重） | R10 | P006 | — | — | — | BLOCKED（Notify 字节级·Phase2）| NOT_RUN | — | — | — |
+| F011 | 通信日志（六色/清空/导出） | R11 | P006 | — | — | — | PASS（UIS-06 日志）| PASS（测试） | — | — | — |
+| F012 | 断线自动重连（3 次 backoff） | R12 | P006/P007 | 已修（契约级：被动断线 runtime 独占 1/3/5×3·connect 重试 n×2s=§7；双层竞争 U-REC-001 销案·单测 6/6+构建绿） | 同 U-WX（共码基） | — | PASS·真无线电重连全环（Phase2/UIS-18·1s/3s/5s 契约）| PASS（契约 C-8 1s/3s/5s×3 常量断言·单测 24+UI 12 全绿；原 2/4/6 为 FEAT-F-005 同源偏差已修） | — | — | apple-native-v1/20260910-reconnect-backoff-align + uniapp-v1/20260910-reconnect-ownership-split |
+| F013 | 多设备会话管理（批量断开） | R13 | P007 | — | — | — | PASS（M1 多设备·UIS-18 n=2）| PASS（P007 测试） | — | — | — |
+| F014 | 微信外围广播 | R22 + R24 | P008 | — | — | — | N/A（微信线）| N/A（微信线） | — | — | — |
+| F015 | App 外围广播（LysBlePeripheral） | R23 + R24 | P008 | — | — | — | PASS（广播启动·Phase2/UIS-09）| PASS（实现；真机广播 NOT_RUN） | — | — | — |
+| F016 | 31 字节负载预算（不静默截断） | R21 | P008 | — | — | — | PASS（UIS-08 31B blocked=true）| PASS（实现） | — | — | — |
+| F017 | 观察侧证据匹配（服务层就绪） | 无专属 R（PRD §8 未覆盖，服务层验收） | 无页面消费 | — | — | — | PASS（SmartHidCore 移植 32/32） | PASS（同左·共享 Core） | — | — | apple-native-v1/20260910-advdata-observer |
+| F018 | Profile 设备识别（UUID STRONG/前缀 WEAK） | R14 | P001 | — | — | — | PASS（UIS-15/16 双入口）| PASS（STRONG/WEAK 测试） | — | — | — |
+| F019 | Smart HID 配网向导（三阶段/断线续填/离开确认） | R15 | P002 | — | — | — | PASS 协议层（UIS-07/12）；E2E BLOCKED（无夹具）| PASS 协议层（测试）；E2E BLOCKED | — | — | — |
+| F020 | ControlHub 配对码扫码（shid://pair） | R16 | P002 | — | — | — | PASS（粘贴兜底）；实景扫码 NOT_RUN | PASS（粘贴）；实景 NOT_RUN | — | — | — |
+| F021 | 分帧明文写入 + 状态机跟踪（60s） | R17 | P002 | — | — | — | PASS 协议层（CU 62 断言）；E2E BLOCKED | PASS_E2（canonical frames 测试） | — | — | — |
+| F022 | 配网错误恢复（8 错误码→动作） | R18 | P002 | — | — | — | PASS（8 错误码映射·CU）| PASS_E2（共享 Core 测试） | — | — | — |
+| F023 | ~~设备历史~~【已移除 2026-09-02，不得复刻】 | R19（已作废） | ~~P004~~ | 不适用 | 不适用 | 不适用 | 不适用（零持久化反向守卫） | 不适用（同左） | 见 §4.2 登记项 UNIAPP-G1-001 | — | — |
+| F024 | Smart HID 诊断（五项链路） | R20 | P005 | — | — | — | PASS（UIS-12 四行+真实 STATUS 轮询）| PASS（五行诊断测试）；真机 BLOCKED | — | — | — |
+| F025 | OTA 固件升级（端到端 BLOCKED） | R25 | P006 子流程 | — | — | — | BLOCKED（P-03；R-1/R-2 契约已对齐·CU-56..66；UIS-18-OTA 对未烧录旧固件如实 FAIL）| BLOCKED（同口径；start 帧已契约对齐） | — | — | — |
+| F026 | 日志脱敏（敏感键→***） | R28 | 横切（P006 日志等） | — | — | — | PASS（日志脱敏）| PASS（测试） | — | — | — |
+| F027 | 版本元数据展示（Release Metadata 投影） | R26 | P009/P010 | — | — | — | PASS（UIS-10/11 Release Metadata 投影）| PASS（生成资源+解码测试） | — | — | — |
+| F028 | 小程序推广跳转 | R27 | P009 | — | — | — | PASS（P009 推广卡+外链）| PASS（同左） | — | — | — |
+| F029 | 分享（微信/APP/H5 分支） | 无专属 R（PAGE_SPEC §0.3 分享约定验收） | P009 + 全局 | — | — | — | PASS（系统分享）| PASS（实现） | — | — | — |
+| F030 | 国际化【不做，UI 全中文硬编码】 | R30（现状确认） | 全局 | — | — | — | PASS（全中文硬编码现状确认）| PASS（同左） | — | — | — |
+| （附）平台降级（Web/H5 明确不支持） | R29（非 F 编号项） | R29 | 全局 | — | — | — | N/A | N/A | — | — | — |
 
 记分值：`PASS / FAIL / BLOCKED(+原因) / NOT_RUN`；各线在对应 Gate 完成前为 NOT_RUN 属预期（页面/功能尚未对齐），不得记 PASS。**禁止把 F014–F016、F018–F024 再合并记分。**
 
@@ -163,3 +168,14 @@
 - iOS SwiftPM 测试 12/12、iOS Simulator 单元 XCTest 12/12、UI XCTest 5/5（TabBar 2 + flow-state 3）；物理 iPhone 可见，但本机 Xcode 无登录账号/描述文件，当前 E5=`BLOCKED_SIGNING`。
 - UI 结构和文案以 `prototype/platform/{app,desktop}/high-fi` 为源。修正轮现已覆盖九页默认态、P001 筛选/错误/权限/横屏、四 Tab 选中与二级页隐藏，以及 P002/P003/P005 关键成功/错误/空态。当前为 **PARTIAL_ACCESSIBILITY_GATE**；VoiceOver、Dynamic Type、macOS 键盘遍历与物理 iPhone 签名验证未完成前不得写整体验收 PASS。证据见 `verification/apple-native-v1/20260909-ui-audit/`、`20260909-ui-audit-round2/`、`20260910-tabbar-audit/`、`20260910-flow-states-audit/`。
 - 证据：`verification/apple-native-v1/20260909-mac-a2/functional-summary.md`。
+
+### 2026-09-10 Mac 收尾轮：§3 记分卡 N-MAC/N-IOS 列回填
+
+- 触发：Mac 收尾开发计划（`docs/plans/2026-09-10-mac-closeout-dev-plan.md`）Task 8；依据全部为在册证据，不预填 PASS。
+- 证据源：Phase 2 真无线电九项（`verification/macos-mainline-v1/20260910-phase2/REPORT.md`）· mac-a2 功能 Gate ·
+  CoreUnit 80 断言（含 CU-56..66 OTA 契约 / CU-67..73 对比度）· PageSmoke 18 PASS（UIS-18 真机 n=2 重连）·
+  iOS 单测 20/20 + UI 11/11（无障碍五套）· 真机息屏后台 BLE（4c19a58）· Phase 4 真机签名链。
+- 判定纪律：`PASS` 仅限有自动化断言或真无线电实证的行；协议层已测而 E2E 无夹具的行明确拆分
+  `协议层 PASS / E2E BLOCKED`；真机未验写 `NOT_RUN`；平台差异（微信授权/微信广播/系统分享）按 §2 记 `N/A`。
+- 已知 FAIL（如实保留）：UIS-18-OTA 对**未烧录旧固件**的 ESP32 真机跑 OTA，ready 超时——DEV-014 修复
+  待烧录（Phase 7 解锁项），烧录后该行应转正；不以此 FAIL 回退 R-1/R-2 契约对齐（单测与 UIS-16 已证解析正确）。

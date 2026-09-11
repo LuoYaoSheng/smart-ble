@@ -28,7 +28,7 @@ struct LogPanel: View {
 
                 if !logs.isEmpty {
                     Button("清空") { onClear() }
-                        .font(.caption)
+                        .scaledFont(12)
                         .foregroundColor(.secondary)
                 }
             }
@@ -43,7 +43,7 @@ struct LogPanel: View {
                 HStack {
                     Spacer()
                     Text("暂无日志")
-                        .font(.caption)
+                        .scaledFont(12)
                         .foregroundColor(.secondary)
                     Spacer()
                 }
@@ -79,19 +79,19 @@ struct LogRow: View {
         HStack(alignment: .top, spacing: 6) {
             // Time
             Text(formatter.string(from: entry.timestamp))
-                .font(.system(size: 10, design: .monospaced))
+                .scaledFont(10, design: .monospaced)
                 .foregroundColor(.secondary)
                 .fixedSize()
 
             // Type badge
             Text(typeLabel)
-                .font(.system(size: 10).weight(.semibold))
+                .scaledFont(10, .semibold)
                 .foregroundColor(typeColor)
                 .fixedSize()
 
             // Message (supports HEX\nTEXT multi-line)
             Text(entry.message)
-                .font(.system(size: 11, design: .monospaced))
+                .scaledFont(11, design: .monospaced)
                 .foregroundColor(.primary)
                 .lineLimit(3)
         }

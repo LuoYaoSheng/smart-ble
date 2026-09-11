@@ -23,7 +23,7 @@ struct DeviceDetailView: View {
                     if isConnected {
                         NativeSectionHeading(icon: "doc.text", title: "服务与特征") {
                             Text(serviceSummary)
-                                .font(.system(size: 11, weight: .semibold))
+                                .scaledFont(11, .semibold)
                                 .foregroundColor(NativeDS.sub)
                                 .padding(.horizontal, 9).padding(.vertical, 3)
                                 .background(NativeDS.fill).clipShape(Capsule())
@@ -63,7 +63,7 @@ struct DeviceDetailView: View {
             if isConnected, hasOtaService {
                 Button(action: { showingOtaDialog = true }) {
                     Label("固件更新", systemImage: "arrow.down.circle")
-                        .font(.system(size: 12, weight: .semibold))
+                        .scaledFont(12, .semibold)
                         .foregroundColor(NativeDS.danger)
                         .padding(.horizontal, 10)
                         .frame(height: 32)
@@ -82,9 +82,9 @@ struct DeviceDetailView: View {
                     .frame(width: 10, height: 10)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(device?.name ?? "未命名设备")
-                        .font(.system(size: 17, weight: .bold))
+                        .scaledFont(17, .bold)
                     Text("\(deviceId) · \(connectionText)")
-                        .font(.system(size: 10, design: .monospaced))
+                        .scaledFont(10, design: .monospaced)
                         .foregroundColor(NativeDS.muted)
                         .lineLimit(1)
                         .truncationMode(.middle)
@@ -95,7 +95,7 @@ struct DeviceDetailView: View {
             Button(action: toggleConnection) {
                 Label(isConnected ? "断开连接" : connectionState == .connecting ? "连接中…" : "连接设备",
                       systemImage: isConnected ? "xmark" : "link")
-                    .font(.system(size: 15, weight: .semibold))
+                    .scaledFont(15, .semibold)
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .frame(height: 40)
@@ -112,7 +112,7 @@ struct DeviceDetailView: View {
         HStack(alignment: .top, spacing: 9) {
             Image(systemName: "exclamationmark.triangle")
             Text("OTA 端到端链路 BLOCKED（固件侧暂未开放）：正式使用前需固件配合。")
-                .font(.system(size: 12))
+                .scaledFont(12)
         }
         .foregroundColor(Color(red: 138 / 255, green: 84 / 255, blue: 16 / 255))
         .frame(maxWidth: .infinity, alignment: .leading)

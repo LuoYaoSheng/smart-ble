@@ -148,7 +148,7 @@ final class DSButton: NSButton {
         self.actionId = actionId
         isBordered = false
         wantsLayer = true
-        focusRingType = .none
+        focusRingType = .exterior  // 键盘遍历焦点可见性（无障碍；仅聚焦时显示，默认态像素不变）
         translatesAutoresizingMaskIntoConstraints = false
         if let symbol {
             image = NSImage(systemSymbolName: symbol, accessibilityDescription: nil)
@@ -424,7 +424,7 @@ final class MenuRowButton: NSButton {
         isBordered = false
         self.title = ""
         translatesAutoresizingMaskIntoConstraints = false
-        focusRingType = .none
+        focusRingType = .exterior  // 键盘遍历焦点可见性（无障碍；仅聚焦时显示，默认态像素不变）
         target = self
         action = #selector(tapped)
         heightAnchor.constraint(equalToConstant: 46).isActive = true

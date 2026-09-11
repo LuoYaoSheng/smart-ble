@@ -1,0 +1,3 @@
+[UNIT] CU-72 result=PASS detail="success 对 2.15（正典约束：仅状态语义，禁正文）"
+[UNIT] CU-73 result=PASS detail="warning 对 2.04（正典约束：仅状态语义，禁正文）"
+[UNIT] SUMMARY failures=0 total=80
