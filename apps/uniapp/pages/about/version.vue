@@ -3,7 +3,7 @@
 		<AppSubnav title="版本记录" />
 		<view class="container">
 			<view class="card current-card">
-				<view class="card-kicker">当前版本</view>
+				<view class="card-kicker">BLE Toolkit+ 当前版本</view>
 				<view class="current-row">
 					<text class="current-version version-name">{{ model.current.version || model.current.display_version }}</text>
 				<text class="status-pill">{{ model.current.status }}</text>
@@ -67,7 +67,7 @@
 </template>
 
 <script setup>
-import { onShareAppMessage, onShareTimeline, onShow } from '@dcloudio/uni-app';
+import { onShow } from '@dcloudio/uni-app';
 // UI-G2：P010 改挂正典组件层（AppSubnav + AppEmpty）
 import AppSubnav from '../../components/ui/AppSubnav.vue';
 import AppEmpty from '../../components/ui/AppEmpty.vue';
@@ -94,19 +94,6 @@ const copyVersion = () => {
 
 onShow(() => uni.pageScrollTo({ scrollTop: 0, duration: 0 }));
 
-// #ifdef MP-WEIXIN
-onShareAppMessage(() => ({
-	title: 'BLE Toolkit+ 版本记录',
-	path: '/pages/about/version',
-	imageUrl: '/static/logo.png',
-}));
-
-onShareTimeline(() => ({
-	title: 'BLE Toolkit+ 版本记录',
-	query: '',
-	imageUrl: '/static/logo.png',
-}));
-// #endif
 </script>
 
 <style>

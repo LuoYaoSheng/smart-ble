@@ -118,15 +118,12 @@ import AppChip from '../../components/ui/AppChip.vue';
 import AppBadge from '../../components/ui/AppBadge.vue';
 import LogPanel from '../../components/ui/LogPanel.vue';
 import AppIcon from '../../components/ui/AppIcon.vue'; // UI-PARITY-G0 正典图标入口
-import { onHide, onLoad, onShow, onUnload, onShareAppMessage } from '@dcloudio/uni-app';
+import { onHide, onLoad, onUnload } from '@dcloudio/uni-app';
 import { logger } from '../../../../core/ble-core/utils/logger';
 import { useBleStore } from '../../store/ble';
-import { createWxPeripheralAdapterController } from '../../services/wx-peripheral-mode.js';
-import { createWxPeripheralServerController } from '../../services/wx-peripheral-server.js';
 import {
 	DEFAULT_ADVERTISING_PAYLOAD,
-	analyzeAdvertisingPayload,
-	manufacturerDataBuffer
+	analyzeAdvertisingPayload
 } from '../../utils/advertising-payload.js';
 import { validateAppBroadcastStart } from '../../services/broadcast/validation.js';
 import {
@@ -175,13 +172,6 @@ const {
 	owner: { type: 'PAGE', id: 'PAGE-008' },
 });
 
-// #ifdef MP-WEIXIN
-const wxPeripheralAdapter = createWxPeripheralAdapterController({
-	platform: wx,
-	getConnectedCount: () => bleStore.connectedDevicesList.length
-});
-const wxPeripheralServer = createWxPeripheralServerController({ platform: wx });
-// #endif
 
 // Android 参数
 const androidSettings = ref({
@@ -206,7 +196,7 @@ const manufacturerData = ref('');
 // H5 假数据通道：暴露广播页本地态给 window.__MOCK__（?mock=1 时才有消费者；置于表单 refs 声明后避免 TDZ）
 registerPageTargets('p008', { sessionSnap, isSupported, logs, sessionAddLog, platform, deviceName, serviceUUID, manufacturerId, manufacturerData, androidSettings });
 // #endif
-const platformLabel = computed(() => ({ android: 'Android', ios: 'iOS', weixin: '微信', web: 'Web' }[platform.value] || 'BLE'));
+const platformLabel = computed(() => ({ android: 'Android', ios: 'iOS', web: 'Web' }[platform.value] || 'BLE'));
 const broadcastStateText = computed(() => {
 	if (advertising.value) return '广播中';
 	if (platform.value === 'web') return '不支持';
@@ -274,52 +264,11 @@ const checkSupport = () => {
 	});
 	// #endif
 
-	// #ifdef MP-WEIXIN
-	checkWxBleSupport();
-	// #endif
-
 	// #ifndef APP-PLUS
-	// #ifndef MP-WEIXIN
 	markSupported(false);
-	addLog('系统', '当前平台不支持 BLE 广播，请使用微信小程序或 App。');
-	// #endif
+	addLog('系统', '当前平台不支持 BLE 广播，请使用 App。');
 	// #endif
 };
-
-// #ifdef MP-WEIXIN
-const checkWxBleSupport = async () => {
-	try {
-		await wxPeripheralAdapter.open();
-		await wxPeripheralServer.ensureCreated();
-		addLog('系统', '蓝牙从机模式已就绪');
-		markSupported(true);
-	} catch (error) {
-		if (error?.code === 'released_during_open') return;
-		const detail = error?.errMsg || error?.message || JSON.stringify(error);
-		if (isWeixinDevTools()) addLog('系统', '开发者工具不支持 BLE 外围服务，请使用真机调试广播功能');
-		else addLog('错误', '蓝牙从机模式初始化失败: ' + detail);
-		markSupported(false);
-	}
-};
-
-const isWeixinDevTools = () => {
-	try {
-		return wx.getDeviceInfo?.().platform === 'devtools';
-	} catch {
-		return false;
-	}
-};
-
-const releaseWxPeripheralMode = async () => {
-	await wxPeripheralServer.close().catch((error) => {
-		addLog('错误', '关闭 BLE 外围服务器失败: ' + (error?.errMsg || error?.message || error));
-	});
-	await cleanup().catch(() => {});
-	markSupported(false);
-	await wxPeripheralAdapter.release();
-	wxPeripheralServer.invalidate();
-};
-// #endif
 
 const openAppSettings = () => {
 	if (platform.value !== 'android') return;
@@ -435,31 +384,6 @@ const requestAndroidPermissions = (onGranted, onDenied) => {
 
 const calcAdvertiseBytes = () => payloadAnalysis.value.totalBytes;
 
-// #ifdef MP-WEIXIN
-const getPowerLevel = () => {
-	const levels = ['low', 'medium', 'high', 'high'];
-	return levels[powerIndex.value] || 'high';
-};
-const runWxStart = async (payload) => {
-	const advertiseRequest = {
-		deviceName: payload.deviceName,
-		serviceUuids: payload.serviceUuid ? [payload.serviceUuid] : []
-	};
-	if (payload.manufacturerId != null) {
-		advertiseRequest.manufacturerData = [{
-			manufacturerId: payload.manufacturerId,
-			manufacturerSpecificData: manufacturerDataBuffer(payload.manufacturerData)
-		}];
-	}
-	await wxPeripheralServer.start(advertiseRequest, getPowerLevel());
-	return { ok: true };
-};
-const runWxStop = async () => {
-	await wxPeripheralServer.stop();
-	return { ok: true };
-};
-// #endif
-
 // #ifdef APP-PLUS
 const runAppStart = (payload) => new Promise((resolve, reject) => {
 	if (!blePeripheral.value) {
@@ -518,13 +442,8 @@ platformStartAdvertising = async (payload) => {
 	// #ifdef APP-PLUS
 	return runAppStart(payload);
 	// #endif
-	// #ifdef MP-WEIXIN
-	return runWxStart(payload);
-	// #endif
 	// #ifndef APP-PLUS
-	// #ifndef MP-WEIXIN
 	throw new Error('当前平台不支持 BLE 广播');
-	// #endif
 	// #endif
 };
 
@@ -532,13 +451,8 @@ platformStopAdvertising = async () => {
 	// #ifdef APP-PLUS
 	return runAppStop();
 	// #endif
-	// #ifdef MP-WEIXIN
-	return runWxStop();
-	// #endif
 	// #ifndef APP-PLUS
-	// #ifndef MP-WEIXIN
 	return { ok: true };
-	// #endif
 	// #endif
 };
 
@@ -620,22 +534,11 @@ const checkBluetoothAndPermissionsBeforeAdvertise = () => {
 		startAdvertising();
 		return;
 	}
-	if (platform.value === 'weixin') {
-		wxPeripheralAdapter.open()
-			.then(() => wxPeripheralServer.ensureCreated())
-			.then(() => startAdvertising())
-			.catch((error) => {
-				const content = error?.code === 'active_connections'
-					? error.message
-					: error?.errCode === 10001 ? '请先开启系统蓝牙。' : '当前无法启动蓝牙广播。';
-				uni.showModal({ title: '无法开始广播', content, showCancel: false });
-			});
-	}
 };
 
 const toggleAdvertising = () => {
 	if (platform.value === 'web') {
-		reportBroadcastError('当前平台不支持 BLE 广播，请使用微信小程序或 App。');
+		reportBroadcastError('当前平台不支持 BLE 广播，请使用 App。');
 		return;
 	}
 	if (advertising.value) {
@@ -659,7 +562,7 @@ onLoad(() => {
 	// WIN-UAND-002：`#ifdef APP-ANDROID/#ifdef APP-IOS` 在本仓工具链（HBuilderX CLI
 	// 标准基座与 npm build:app）中不被定义，条件块整体编译丢弃——Android 参数块/
 	// 默认载荷/权限前置链路曾为死代码。App 端细分平台改用运行时 systemInfo 判定；
-	// APP-PLUS / MP-WEIXIN / H5 单层 token 已验证有效，保留条件编译。
+	// APP-PLUS / H5 单层 token 已验证有效，保留条件编译。
 	// #ifdef APP-PLUS
 	blePeripheral.value = uni.requireNativePlugin('LysBlePeripheral');
 	const sysPlatform = uni.getDeviceInfo?.().platform || '';
@@ -674,26 +577,12 @@ onLoad(() => {
 	manufacturerId.value = DEFAULT_ADVERTISING_PAYLOAD.manufacturerId;
 	manufacturerData.value = DEFAULT_ADVERTISING_PAYLOAD.manufacturerData;
 	// #endif
-	// #ifdef MP-WEIXIN
-	platform.value = 'weixin';
-	deviceName.value = DEFAULT_ADVERTISING_PAYLOAD.deviceName;
-	serviceUUID.value = DEFAULT_ADVERTISING_PAYLOAD.serviceUuid;
-	manufacturerId.value = DEFAULT_ADVERTISING_PAYLOAD.manufacturerId;
-	manufacturerData.value = DEFAULT_ADVERTISING_PAYLOAD.manufacturerData;
-	// #endif
 	// #ifdef H5
 	platform.value = 'web';
 	// #endif
-	// #ifndef MP-WEIXIN
 	checkSupport();
-	// #endif
 });
 
-onShow(() => {
-	// #ifdef MP-WEIXIN
-	checkSupport();
-	// #endif
-});
 
 onMounted(() => {
 	// 恢复全局日志历史到会话面板。历史条目 type 是 logger 词汇（info/success/...），
@@ -716,27 +605,12 @@ onUnmounted(() => {
 });
 
 onHide(() => {
-	// #ifndef MP-WEIXIN
 	if (advertising.value) stopAdvertising();
-	// #endif
-	// #ifdef MP-WEIXIN
-	releaseWxPeripheralMode();
-	// #endif
 });
 
 onUnload(() => {
-	// #ifdef MP-WEIXIN
-	releaseWxPeripheralMode();
-	// #endif
 	cleanup().catch(() => {});
 });
-
-// #ifdef MP-WEIXIN
-onShareAppMessage(() => ({
-	title: '分享一个好用的BLE工具: BLE Toolkit+ - 广播',
-	path: '/pages/index/index'
-}));
-// #endif
 </script>
 
 <style>

@@ -59,7 +59,6 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import { onShareAppMessage } from '@dcloudio/uni-app';
 // UI-PARITY-G0：P001 改挂正典组件层 components/ui/（COMPONENT_CONTRACT）
 import DeviceCard from '../../components/ui/DeviceCard.vue';
 import AppNavbar from '../../components/ui/AppNavbar.vue';
@@ -99,13 +98,6 @@ const bleStatusTone = computed(() => {
 	if (bleState.value === 'unsupported') return '';
 	return 'off';
 });
-
-// #ifdef MP-WEIXIN
-onShareAppMessage(() => ({
-	title: '分享一个好用的 BLE 工具: BLE Toolkit+',
-	path: '/pages/index/index'
-}));
-// #endif
 
 const connectDevice = async (device) => {
 	await prepareConnect();

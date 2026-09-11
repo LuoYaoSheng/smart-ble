@@ -9,10 +9,6 @@ export const RELEASE_METADATA = {
   "built_at": null,
   "overall_status": "PREVIEW",
   "artifacts": [],
-  "wechat_qr": {
-    "status": "not_released",
-    "image": null
-  },
   "public_surfaces": {
     "android": {
       "name": "UniApp Android",
@@ -20,13 +16,6 @@ export const RELEASE_METADATA = {
       "capability_status": "PREVIEW",
       "release_status": "NOT_RELEASED",
       "artifact": null
-    },
-    "wechat": {
-      "name": "BLE Toolkit+ 微信小程序",
-      "role": "mainline",
-      "capability_status": "PREVIEW",
-      "release_status": "NOT_RELEASED",
-      "qr": null
     },
     "h5": {
       "name": "H5",
@@ -79,9 +68,8 @@ export const RELEASE_METADATA = {
   "verified_capabilities": [],
   "known_limitations": [
     "Android 正式 APK 尚未发布",
-    "微信正式小程序码尚未发布",
     "Playwright / Page Driver E4 尚未完成",
-    "Android、微信、ESP32 E5 尚未执行",
+    "Android、ESP32 E5 尚未执行",
     "iOS 真机签名与 E5 验证尚未完成",
     "OTA 当前 BLOCKED",
     "ESP32 Observer 尚未完成",

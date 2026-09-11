@@ -17,7 +17,6 @@ final class P009AboutPage: NSViewController, PageProtocol {
 
     /// 平台状态（Release Metadata 投影 · 产品口径）
     private let platformStatus: [(name: String, cap: String, rel: String)] = [
-        ("微信小程序", "VERIFIED", "PREVIEW"),
         ("App · Android", "PREVIEW", "NOT_RELEASED"),
         ("App · iOS", "PREVIEW", "NOT_RELEASED"),
         ("H5 / Web", "UNSUPPORTED", "NOT_RELEASED"),
@@ -145,7 +144,7 @@ final class P009AboutPage: NSViewController, PageProtocol {
         ], spacing: 0)
         views.append(menuCard)
 
-        let foot = makeLabel("日志全局脱敏：敏感凭据显示为 token=***\nBLE Toolkit+ · Smart BLE 产品家族 · 微信小程序 wxf6c58b1dcac4c82d", size: 10, color: DS.ph, align: .center)
+        let foot = makeLabel("日志全局脱敏：敏感凭据显示为 token=***\nBLE Toolkit+ · Smart BLE 产品家族", size: 10, color: DS.ph, align: .center)
         foot.maximumNumberOfLines = 0
         views.append(foot)
 
@@ -213,35 +212,12 @@ final class P009AboutPage: NSViewController, PageProtocol {
         host.showSheet(title: "操作系统（桌面宿主）", body: body)
     }
 
-    // MARK: - 问题反馈（小程序码引导 · 与 uniapp/iOS 同口径）
+    // MARK: - 问题反馈（GitHub Issues 引导 · 2026-09-11 小程序反馈通道裁撤）
 
-    /// 弹窗展示微信小程序码：扫码进小程序客服；非微信渠道复制 issues 链接兜底
+    /// 弹窗引导通过 GitHub Issues 提交反馈
     private func openFeedbackSheet() {
         guard let host else { return }
-        let qrView: NSView
-        if let url = Bundle.module.url(forResource: "wx_mini_qr", withExtension: "jpg"),
-           let image = NSImage(contentsOf: url) {
-            let iv = NSImageView(image: image)
-            iv.imageScaling = .scaleProportionallyUpOrDown
-            iv.translatesAutoresizingMaskIntoConstraints = false
-            let box = NSView()
-            box.wantsLayer = true
-            box.layer?.backgroundColor = DS.card.cgColor
-            box.layer?.cornerRadius = 12
-            box.layer?.masksToBounds = true
-            box.translatesAutoresizingMaskIntoConstraints = false
-            box.addSubview(iv)
-            NSLayoutConstraint.activate([
-                iv.widthAnchor.constraint(equalToConstant: 172),
-                iv.heightAnchor.constraint(equalToConstant: 172),
-                iv.centerXAnchor.constraint(equalTo: box.centerXAnchor),
-                iv.centerYAnchor.constraint(equalTo: box.centerYAnchor),
-            ])
-            qrView = box
-        } else {
-            qrView = noteBanner("warn", "小程序码资源缺失（Illustrations/wx_mini_qr.jpg）")
-        }
-        let desc = makeLabel("使用微信「扫一扫」扫描上方小程序码\n进入「BLE Toolkit+」小程序，即可直接联系客服反馈问题", size: 11, color: DS.sub, align: .center)
+        let desc = makeLabel("通过 GitHub Issues 提交问题反馈\n描述复现步骤与环境信息，我们会尽快跟进处理\nhttps://github.com/luoyaosheng/smart-ble/issues", size: 11, color: DS.sub, align: .center)
         desc.maximumNumberOfLines = 0
         let copyBtn = DSButton("复制反馈链接", tone: .soft, small: true, actionId: "p009-feedback-copy") { [weak host] in
             NSPasteboard.general.clearContents()
@@ -252,7 +228,6 @@ final class P009AboutPage: NSViewController, PageProtocol {
             host?.closeLayer()
         }
         let column = vstack([
-            qrView,
             desc,
             hstack([copyBtn, doneBtn], spacing: 9),
         ], spacing: 12)

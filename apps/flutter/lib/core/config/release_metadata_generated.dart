@@ -11,10 +11,6 @@ const Map<String, dynamic> kReleaseMetadata = <String, dynamic>{
   'built_at': null,
   'overall_status': 'PREVIEW',
   'artifacts': <dynamic>[],
-  'wechat_qr': <String, dynamic>{
-    'status': 'not_released',
-    'image': null,
-  },
   'public_surfaces': <String, dynamic>{
     'android': <String, dynamic>{
       'name': 'UniApp Android',
@@ -22,13 +18,6 @@ const Map<String, dynamic> kReleaseMetadata = <String, dynamic>{
       'capability_status': 'PREVIEW',
       'release_status': 'NOT_RELEASED',
       'artifact': null,
-    },
-    'wechat': <String, dynamic>{
-      'name': 'BLE Toolkit+ 微信小程序',
-      'role': 'mainline',
-      'capability_status': 'PREVIEW',
-      'release_status': 'NOT_RELEASED',
-      'qr': null,
     },
     'h5': <String, dynamic>{
       'name': 'H5',
@@ -81,9 +70,8 @@ const Map<String, dynamic> kReleaseMetadata = <String, dynamic>{
   'verified_capabilities': <dynamic>[],
   'known_limitations': <dynamic>[
     'Android 正式 APK 尚未发布',
-    '微信正式小程序码尚未发布',
     'Playwright / Page Driver E4 尚未完成',
-    'Android、微信、ESP32 E5 尚未执行',
+    'Android、ESP32 E5 尚未执行',
     'iOS 真机签名与 E5 验证尚未完成',
     'OTA 当前 BLOCKED',
     'ESP32 Observer 尚未完成',

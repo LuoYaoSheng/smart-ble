@@ -5,7 +5,7 @@
 <script setup>
 // 正典图标组件（UI-PARITY-G0 · COMPONENT_CONTRACT B0）
 // 字形唯一来源：services/design/app-icons.js（prototype/v1-new/index.html sprite 的受锁定镜像，35 枚）。
-// 业务代码只允许传 semantic icon id（ICON_CATALOG）；mp-weixin 不支持内联 <svg>，以 data-URI 渲染。
+// 业务代码只允许传 semantic icon id（ICON_CATALOG）；以 data-URI 渲染。
 // 色彩入参优先 tone（语义名 → design-tokens.json 正典值），legacy 调用可继续传裸 color hex。
 import { computed } from 'vue';
 import { APP_ICONS } from '../../services/design/app-icons.js';

@@ -4,13 +4,13 @@ layout: home
 hero:
   name: "BLE Toolkit+"
   text: "开源 BLE 工具家族，调通每一台 BLE 设备"
-  tagline: "调试 · 学习 · 多平台多框架对照 · 硬件联动——同一套产品规范，从微信小程序、Android、iOS / macOS、桌面到 ESP32 固件与 Smart HID Profile。"
+  tagline: "调试 · 学习 · 多平台多框架对照 · 硬件联动——同一套产品规范，覆盖 Android、iOS / macOS、桌面、Web 到 ESP32 固件与 Smart HID Profile。"
   image:
     src: /brand/hero-duo.webp
     alt: BLE Toolkit+ 界面截图（Android 开发预览，automator 实拍）
   actions:
     - theme: brand
-      text: 微信扫码使用
+      text: 获取与下载
       link: /#get
     - theme: alt
       text: 查看文档
@@ -26,15 +26,13 @@ hero:
     <div class="sb-section-head">
       <div class="sb-kicker">Get</div>
       <h2>获取 BLE Toolkit+</h2>
-      <p>微信扫码即刻体验；其余每个框架 × 平台都有独立下载位——正式包发布前显示筹备中，当前均可从源码构建。</p>
+      <p>当前版本 v1.0.5 · PREVIEW 开发预览。每个框架 × 平台都有独立下载位——正式包发布前显示筹备中，当前均可从源码构建。</p>
     </div>
     <div class="sb-get-grid">
       <div class="sb-get-qr-card">
-        <img class="sb-qr-img" src="/qr/wechat-miniprogram.jpg" width="172" height="172"
-             alt="BLE Toolkit+ 微信小程序码">
-        <h3>BLE Toolkit+ 微信小程序</h3>
-        <p>微信扫码使用小程序，无需安装，打开即用。</p>
-        <span class="sb-get-hint">手机微信「扫一扫」上方小程序码</span>
+        <h3>GitHub 源码</h3>
+        <p>克隆仓库即可构建任意平台版本，所有端共用同一套产品规范与 BLE 协议内核。</p>
+        <span class="sb-get-hint"><a href="https://github.com/luoyaosheng/smart-ble" target="_blank" rel="noopener">github.com/luoyaosheng/smart-ble</a></span>
       </div>
       <div class="sb-get-qr-card">
         <h3>下载矩阵</h3>
@@ -47,7 +45,6 @@ hero:
         <tr><th>版本</th><th>框架 / 技术</th><th>下载</th><th>当前获取方式</th></tr>
       </thead>
       <tbody>
-        <tr><td>微信小程序</td><td>uni-app（Vue 3）</td><td><span class="sb-dl-ok">扫码即用</span></td><td>微信「扫一扫」上方码图</td></tr>
         <tr><td>Android App</td><td>uni-app 一线</td><td><span class="sb-dl-wait">APK 筹备中</span></td><td><a href="/tutorials/platforms/uniapp">源码构建（HBuilderX）</a></td></tr>
         <tr><td>Android 原生</td><td>Kotlin + Jetpack Compose</td><td><span class="sb-dl-wait">APK 筹备中</span></td><td><a href="/tutorials/platforms/native_mobile">源码构建（gradlew）</a></td></tr>
         <tr><td>iOS</td><td>Swift Package + SwiftUI</td><td><span class="sb-dl-wait">TestFlight 预留</span></td><td><a href="/tutorials/platforms/native_mobile">源码构建（swift run）</a></td></tr>
@@ -71,7 +68,7 @@ hero:
     <div class="sb-feature-grid">
       <article class="sb-feature-card">
         <h3>可直接使用的调试工具</h3>
-        <p>扫描、连接、读写、订阅、广播、OTA 收进同一条工作流；微信小程序扫码即用，其余各端从源码直接跑起。</p>
+        <p>扫描、连接、读写、订阅、广播、OTA 收进同一条工作流；各端从源码直接跑起。</p>
       </article>
       <article class="sb-feature-card">
         <h3>多平台多框架对照样例</h3>
@@ -82,7 +79,7 @@ hero:
         <p>ESP32 参考固件、公开协议与教程配套，从刷入固件到首次扫描、连接、读写、Notify 全链路可复现。</p>
       </article>
     </div>
-    <p class="sb-platform-footnote">适用人群：BLE 设备开发者 · Android / iOS / 微信小程序开发者 · 嵌入式工程师 · BLE 学习者与需要多实现对照的团队。配套从 <a href="/tutorials/01_introduction_and_setup">快速起步教案</a> 与 <a href="/MASTER_ARCHITECTURE">整体架构指南</a> 进入。</p>
+    <p class="sb-platform-footnote">适用人群：BLE 设备开发者 · Android / iOS 开发者 · 嵌入式工程师 · BLE 学习者与需要多实现对照的团队。配套从 <a href="/tutorials/01_introduction_and_setup">快速起步教案</a> 与 <a href="/MASTER_ARCHITECTURE">整体架构指南</a> 进入。</p>
   </section>
 
   <section id="features" class="sb-section">
@@ -162,11 +159,6 @@ hero:
     </div>
     <div class="sb-platform-grid">
       <a href="/tutorials/platforms/uniapp" class="sb-platform-card">
-        <span class="sb-platform-status">扫码即用 · 开发预览</span>
-        <h3>微信小程序</h3>
-        <p>uni-app（Vue 3）一线出品，轻量传播入口，覆盖扫描、连接与调试主路径。</p>
-      </a>
-      <a href="/tutorials/platforms/uniapp" class="sb-platform-card">
         <span class="sb-platform-status">客户端主线 · 开发预览</span>
         <h3>Android</h3>
         <p>uni-app 一线 + Kotlin / Jetpack Compose 原生增强，承载完整功能目录。</p>
@@ -202,7 +194,7 @@ hero:
         <p>PlatformIO / ESP-IDF 参考固件，硬件联动与协议示例，广播与 OTA 的真机对手方；STM32 规划中。</p>
       </a>
     </div>
-    <p class="sb-platform-footnote">各实现共用同一产品规范与协议内核，当前均未发布正式产物：微信小程序可扫码体验，其余平台可从源码构建。能力与发布状态见<a href="/status/">项目状态页</a>与<a href="/product-contract/05_PLATFORM_MATRIX">平台适配矩阵</a>。</p>
+    <p class="sb-platform-footnote">各实现共用同一产品规范与协议内核，当前均未发布正式产物，可从源码构建。能力与发布状态见<a href="/status/">项目状态页</a>与<a href="/product-contract/05_PLATFORM_MATRIX">平台适配矩阵</a>。</p>
   </section>
 
   <section id="prototype" class="sb-section">

@@ -190,7 +190,7 @@ object DsIcons {
         )
     }
 
-    /** #i-share：分享节点（P009 更多小程序 / 分享应用） */
+    /** #i-share：分享节点（P009 分享应用） */
     val Share: ImageVector by lazy {
         dsIcon(
             "share",

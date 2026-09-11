@@ -4,7 +4,7 @@
  * 页面 setup 内经条件编译（#ifdef H5）调用 registerPageTargets('p00x', { ...refs })，
  * 把页面本地响应式状态暴露给 mock-bridge（window.__MOCK__.targets('p00x')）。
  *
- * 生产剥离：本目录仅被 H5 条件编译块引用；mp-weixin/app 构建不包含。
+ * 生产剥离：本目录仅被 H5 条件编译块引用；app 构建不包含。
  */
 
 const registry = new Map();

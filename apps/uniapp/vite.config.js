@@ -12,7 +12,7 @@
  * (IIFE) while rollup templates may still carry manualChunks; the combination
  * is rejected by rollup. Force inlineDynamicImports and drop manualChunks for
  * APP targets ONLY — the previous unconditional inlineDynamicImports broke
- * mp-weixin compiles (manualChunks is required there), see DEF-003.
+ * some legacy builds (manualChunks is required there), see DEF-003.
  */
 
 import { createRequire } from 'node:module';

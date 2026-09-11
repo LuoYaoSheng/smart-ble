@@ -76,7 +76,6 @@ void main() {
       final platforms = getPlatformPublicStatuses();
       expect(platforms.map((p) => p.key).toList(), [
         'android',
-        'wechat',
         'h5',
         'ios',
         'flutter_tauri_native',
@@ -106,7 +105,7 @@ void main() {
       expect(model.current.limitations.length, greaterThanOrEqualTo(8));
       expect(model.current.limitations.first, 'Android 正式 APK 尚未发布');
       expect(model.current.platforms.map((p) => p.key).toList(),
-          ['android', 'wechat', 'h5', 'ios']);
+          ['android', 'h5', 'ios']);
       expect(
         model.current.platforms
             .firstWhere((p) => p.key == 'h5')
@@ -134,12 +133,6 @@ void main() {
         'public_surfaces': {
           'android': {
             'name': 'UniApp Android',
-            'role': 'mainline',
-            'capability_status': 'PREVIEW',
-            'release_status': 'NOT_RELEASED'
-          },
-          'wechat': {
-            'name': 'WeChat',
             'role': 'mainline',
             'capability_status': 'PREVIEW',
             'release_status': 'NOT_RELEASED'

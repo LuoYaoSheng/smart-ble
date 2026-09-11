@@ -1,6 +1,6 @@
 <template>
 	<view class="app-subnav">
-		<view class="status-bar" :style="{ height: statusBarHeight + 'px' }"></view>
+		<view class="status-bar"></view>
 		<view class="subnav-row" :style="{ paddingRight: trailingSafe + 'px' }">
 			<view class="back-btn" hover-class="back-btn-hover" :hover-stay-time="80" @click="onBack">
 				<AppIcon name="chev-r" :size="34" tone="text" :rotate="180" />
@@ -24,17 +24,7 @@ defineProps({ title: { type: String, required: true } });
 const emit = defineEmits(['back']);
 
 const instance = getCurrentInstance();
-const windowInfo = uni.getWindowInfo?.() || {};
-const statusBarHeight = ref(0);
-const trailingSafe = ref(16); // 非小程序端 = 正典 subnav 右距 16px；MP-WEIXIN 覆盖为胶囊避让
-
-// #ifdef MP-WEIXIN
-statusBarHeight.value = windowInfo.statusBarHeight || 20;
-const menu = uni.getMenuButtonBoundingClientRect?.();
-if (menu && menu.top != null) {
-	trailingSafe.value = Math.max((windowInfo.windowWidth || 375) - menu.left + 12, 16);
-}
-// #endif
+const trailingSafe = ref(16); // 正典 subnav 右距 16px
 
 const onBack = () => {
 	emit('back');

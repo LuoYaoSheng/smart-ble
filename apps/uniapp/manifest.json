@@ -113,14 +113,6 @@
         }
     },
     "quickapp" : {},
-    "mp-weixin" : {
-        "appid" : "wxf6c58b1dcac4c82d",
-        "setting" : {
-            "urlCheck" : false
-        },
-        "usingComponents" : true,
-        "lazyCodeLoading" : "requiredComponents"
-    },
     "mp-alipay" : {
         "usingComponents" : true
     },

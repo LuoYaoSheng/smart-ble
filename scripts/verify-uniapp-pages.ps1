@@ -1,4 +1,4 @@
-# Windows PowerShell entry for UniApp page/navigation tests (UniAutomator mp-weixin).
+# Windows PowerShell entry for UniApp page/navigation tests (UniAutomator h5).
 # Delegates to scripts/verify-uniapp-pages.sh (Git Bash required). The .sh resolves
 # HBuilderX CLI via HBUILDERX_CLI or common install paths and fails with a BLOCKED
 # message when the CLI is unavailable.

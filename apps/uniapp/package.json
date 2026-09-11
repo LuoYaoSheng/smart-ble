@@ -4,8 +4,6 @@
   "description": "BLE调试工具",
   "main": "main.js",
   "scripts": {
-    "build:mp-weixin": "node ../../scripts/uniapp/run-uni.mjs build mp-weixin",
-    "dev:mp-weixin": "node ../../scripts/uniapp/run-uni.mjs dev mp-weixin",
     "build:app": "node ../../scripts/uniapp/run-uni.mjs build app",
     "dev:h5": "node ../../scripts/uniapp/run-uni.mjs dev h5",
     "build:h5": "node ../../scripts/uniapp/run-uni.mjs build h5"
@@ -20,9 +18,7 @@
     "@dcloudio/uni-h5": "3.0.0-alpha-5020520260829001",
     "@dcloudio/uni-h5-vite": "3.0.0-alpha-5020520260829001",
     "@dcloudio/uni-h5-vue": "3.0.0-alpha-5020520260829001",
-    "@dcloudio/uni-mp-weixin": "3.0.0-alpha-5020520260829001",
     "@dcloudio/vite-plugin-uni": "3.0.0-alpha-5020520260829001",
-    "miniprogram-automator": "^0.12.1",
     "vite": "5.2.8",
     "vue": "3.4.21"
   }

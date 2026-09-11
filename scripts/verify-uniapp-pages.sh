@@ -31,4 +31,4 @@ HBUILDER_CLI="$(hb_cli_default)" || {
   exit 1
 }
 
-"$HBUILDER_CLI" uniapp.test mp-weixin --project "$REPO_ROOT/apps/uniapp"
+"$HBUILDER_CLI" uniapp.test h5 --project "$REPO_ROOT/apps/uniapp"

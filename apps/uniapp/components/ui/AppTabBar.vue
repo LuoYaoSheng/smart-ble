@@ -12,7 +12,7 @@
 
 <script setup>
 // 正典 TabBar（COMPONENT_CONTRACT A3 · prototype pages.css .tabbar）
-// U-WX(mp-weixin) 使用 pages.json 原生 tabBar（png 资产对）；本组件用于 APP 端自绘与其他自定义场景。
+// 本组件用于 APP 端自绘 tabBar 与其他自定义场景。
 // 仅 switchTab 语义，无返回。角标口径：通用连接 + SHID 会话在线（PRD）。
 import AppIcon from './AppIcon.vue';
 

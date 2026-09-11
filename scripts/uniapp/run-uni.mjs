@@ -9,9 +9,8 @@
  * so existing tooling (check-uniapp-assets, build-android-test) keeps one output layout.
  *
  * Usage: node scripts/uniapp/run-uni.mjs <build|dev> [platform] [extra uni args...]
- *   npm run build:mp-weixin   -> uni build -p mp-weixin
- *   npm run dev:mp-weixin     -> uni -p mp-weixin (watch)
  *   npm run build:app         -> uni build -p app
+ *   （2026-09-11 小程序整体裁撤：mp-weixin 目标与脚本一并移除）
  */
 import { spawn } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';

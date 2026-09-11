@@ -651,8 +651,7 @@ function renderAboutPage() {
     // F029 菜单外链：product.js 单一来源
     const websiteRow = document.getElementById('aboutWebsiteRow');
     if (websiteRow) websiteRow.href = PRODUCT.PRODUCT_INFO.website;
-    // 问题反馈（2026-09-11 正典更新）：桌面版非微信小程序宿主 → 弹窗展示小程序码 + 说明，
-    // 用户微信扫码进入小程序联系客服；Gitee Issues 保留为复制链接兜底
+    // 问题反馈（2026-09-11 小程序反馈通道裁撤）：弹窗引导 GitHub Issues 提交反馈
     const feedbackRow = document.getElementById('aboutFeedbackRow');
     if (feedbackRow) {
         feedbackRow.href = '#';
@@ -663,20 +662,18 @@ function renderAboutPage() {
     }
 }
 
-// 问题反馈弹窗（P009）：小程序码 + 引导说明（.mask/.modal 正典壳）
+// 问题反馈弹窗（P009）：GitHub Issues 引导（.mask/.modal 正典壳）
 function showFeedbackSheet() {
     const PRODUCT = window.SmartBLEProduct;
     if (!PRODUCT) return;
     const info = PRODUCT.PRODUCT_INFO;
-    const qrSrc = (info.miniProgram && info.miniProgram.qrImage) || 'assets/wx-mini-qr.jpg';
-    const mpName = (info.miniProgram && info.miniProgram.name) || info.name;
+    const feedbackUrl = info.feedback || 'https://github.com/luoyaosheng/smart-ble/issues';
     const body = `
         <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
-            <img src="${qrSrc}" alt="${mpName} 微信小程序码" width="200" height="200"
-                 style="border:1px solid #E4EBF5;border-radius:12px;background:#fff">
             <div style="font-size:13px;color:#60758D;line-height:1.6;text-align:center">
-                使用微信「扫一扫」扫描小程序码<br>
-                进入「${mpName}」小程序，即可直接联系客服反馈问题
+                通过 GitHub Issues 提交问题反馈<br>
+                描述复现步骤与环境信息，我们会尽快跟进处理<br>
+                <span style="color:#1B6DFF">${feedbackUrl}</span>
             </div>
         </div>`;
     hidShowModal({
@@ -692,7 +689,7 @@ function showFeedbackSheet() {
                     if (navigator.clipboard?.writeText) {
                         navigator.clipboard.writeText(url).then(done, done);
                     } else { done(); }
-                    return false; // 不关闭弹窗，允许继续扫码
+                    return false; // 不关闭弹窗，允许继续复制
                 }
             },
             { label: '我知道了', tone: 'primary' }

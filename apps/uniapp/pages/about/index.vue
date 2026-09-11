@@ -43,16 +43,7 @@
 			<view class="menu-list">
 				<view class="menu-item" hover-class="menu-item-hover" @click="openWebsite"><text>官方网站</text><AppIcon name="chev-r" :size="28" tone="primary" class="menu-arrow" /></view>
 				<view class="menu-item" hover-class="menu-item-hover" @click="goVersion"><text>版本记录</text><AppIcon name="chev-r" :size="28" tone="primary" class="menu-arrow" /></view>
-				<!-- #ifdef MP-WEIXIN -->
-				<!-- 微信小程序版本：直连小程序客服（button open-type="contact" 唤起客服会话） -->
-				<button class="ble-btn menu-item menu-item--contact" hover-class="menu-item-hover" open-type="contact" session-from="about-feedback">
-					<text class="menu-item__label">问题反馈</text>
-					<AppIcon name="chev-r" :size="28" tone="primary" class="menu-arrow" />
-				</button>
-				<!-- #endif -->
-				<!-- #ifndef MP-WEIXIN -->
 				<view class="menu-item" hover-class="menu-item-hover" @click="openFeedback"><text>问题反馈</text><AppIcon name="chev-r" :size="28" tone="primary" class="menu-arrow" /></view>
-				<!-- #endif -->
 				<view class="menu-item" hover-class="menu-item-hover" @click="shareApp"><text>分享应用</text><AppIcon name="chev-r" :size="28" tone="primary" class="menu-arrow" /></view>
 			</view>
 		</view>
@@ -62,18 +53,16 @@
 		</scroll-view>
 		</view>
 
-		<!-- 问题反馈弹窗（非微信小程序版本）：小程序码 + 说明；微信小程序版本走客服按钮，不渲染本弹窗 -->
-		<!-- #ifndef MP-WEIXIN -->
+		<!-- 问题反馈弹窗：GitHub Issues 引导（2026-09-11 小程序反馈通道裁撤） -->
 		<view v-if="feedbackVisible" class="feedback-mask" @click="closeFeedback">
 			<view class="feedback-sheet" @click.stop>
 				<view class="feedback-head">
 					<text class="feedback-title">问题反馈</text>
 					<view class="feedback-close" hover-class="feedback-close-hover" @click="closeFeedback"><AppIcon name="x" :size="30" tone="mut" /></view>
 				</view>
-				<image class="feedback-qr" :src="product.miniProgram.qrImage" mode="aspectFit" />
 				<view class="feedback-desc">
-					<text class="feedback-line">使用微信「扫一扫」扫描上方小程序码</text>
-					<text class="feedback-line">进入「{{ product.name }}」小程序，即可直接联系客服反馈问题</text>
+					<text class="feedback-line">通过 GitHub Issues 提交问题反馈，描述复现步骤与环境信息即可。</text>
+					<text class="feedback-line">反馈链接：{{ product.feedback }}</text>
 				</view>
 				<view class="feedback-actions">
 					<button class="ble-btn ble-btn--sm feedback-btn feedback-btn--soft" @click="copyFeedbackLink">复制反馈链接</button>
@@ -81,13 +70,12 @@
 				</view>
 			</view>
 		</view>
-		<!-- #endif -->
 	</view>
 </template>
 
 <script setup>
 import { ref } from 'vue';
-import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
+import { onLoad } from '@dcloudio/uni-app';
 // UI-G2：P009 改挂正典导航层（AppNavbar + 版本 chip）
 import AppNavbar from '../../components/ui/AppNavbar.vue';
 import AppChip from '../../components/ui/AppChip.vue';
@@ -145,14 +133,6 @@ const getAppVersion = () => {
 		applyRuntimeVersion(widgetInfo?.version);
 	});
 // #endif
-// #ifdef MP-WEIXIN
-	try {
-		const accountInfo = uni.getAccountInfoSync();
-		applyRuntimeVersion(accountInfo?.miniProgram?.version);
-	} catch {
-		appVersion.value = metadataVersionLabel;
-	}
-// #endif
 };
 
 const copyLink = (url, title) => {
@@ -166,13 +146,10 @@ const openExternal = (url, copyTitle) => {
 // #ifdef H5
 	window.open(url, '_blank');
 // #endif
-// #ifdef MP-WEIXIN
-	copyLink(url, copyTitle);
-// #endif
 };
 
 const openWebsite = () => openExternal(product.website, '网址已复制');
-// 问题反馈（非微信小程序版本）：弹窗展示小程序二维码 + 说明
+// 问题反馈：GitHub Issues 引导弹窗（小程序反馈通道已裁撤）
 const feedbackVisible = ref(false);
 const openFeedback = () => { feedbackVisible.value = true; };
 const closeFeedback = () => { feedbackVisible.value = false; };
@@ -180,13 +157,6 @@ const copyFeedbackLink = () => copyLink(product.feedback, '反馈链接已复制
 const goVersion = () => uni.navigateTo({ url: '/pages/about/version' });
 
 const shareApp = () => {
-// #ifdef MP-WEIXIN
-	uni.showShareMenu({
-		withShareTicket: true,
-		menus: ['shareAppMessage', 'shareTimeline'],
-		success: () => uni.showToast({ title: '请点击右上角分享', icon: 'none' })
-	});
-// #endif
 // #ifdef APP-PLUS
 	uni.share({
 		provider: 'system',
@@ -208,11 +178,6 @@ const shareApp = () => {
 };
 
 onLoad(() => { getSystemInfo(); getAppVersion(); });
-
-// #ifdef MP-WEIXIN
-onShareAppMessage(() => ({ title: 'BLE Toolkit+ - BLE 调试与验证工具', path: '/pages/about/index' }));
-onShareTimeline(() => ({ title: 'BLE Toolkit+ - BLE 调试与验证工具', query: '', imageUrl: '/static/logo.png' }));
-// #endif
 </script>
 
 <style scoped>
@@ -243,22 +208,6 @@ onShareTimeline(() => ({ title: 'BLE Toolkit+ - BLE 调试与验证工具', quer
 .menu-item { color: var(--ble-text); font-size: 26rpx; font-weight: 600; }
 .menu-item-hover { transform: translateY(2rpx); opacity: 0.92; }
 .menu-arrow { margin-left: auto; }
-
-/* 微信小程序客服按钮：挂正典 ble-btn 基座（UI 契约），menu-item--contact 覆写为行样式 */
-.menu-item--contact {
-	width: 100%;
-	padding: 18rpx 20rpx;
-	height: auto;
-	line-height: inherit;
-	text-align: left;
-	justify-content: space-between;
-	gap: 18rpx;
-	border-radius: var(--ble-radius-sm);
-	font-size: 26rpx;
-	font-weight: 600;
-	color: var(--ble-text);
-	background: rgba(255, 255, 255, 0.82);
-}
 
 /* 问题反馈弹窗（mask + 居中卡片） */
 .feedback-mask {
@@ -301,14 +250,6 @@ onShareTimeline(() => ({ title: 'BLE Toolkit+ - BLE 调试与验证工具', quer
 	background: rgba(96, 117, 141, 0.10);
 }
 .feedback-close-hover { opacity: 0.8; }
-.feedback-qr {
-	width: 360rpx;
-	height: 360rpx;
-	align-self: center;
-	border-radius: var(--ble-radius-sm);
-	border: 1rpx solid var(--ble-line-soft);
-	background: #FFFFFF;
-}
 .feedback-desc { display: flex; flex-direction: column; gap: 6rpx; }
 .feedback-line { color: var(--ble-text-subtle); font-size: 24rpx; line-height: 1.55; }
 .feedback-actions { display: flex; gap: 16rpx; }

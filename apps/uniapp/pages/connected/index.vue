@@ -48,7 +48,6 @@
 
 <script setup>
 import { computed } from 'vue';
-import { onShareAppMessage } from '@dcloudio/uni-app';
 // UI-G2：P007 改挂正典组件层（AppNavbar 会话 chip / DeviceCard conn 变体 / AppEmpty）
 import AppNavbar from '../../components/ui/AppNavbar.vue';
 import AppChip from '../../components/ui/AppChip.vue';
@@ -65,13 +64,6 @@ const bleStore = useBleStore();
 const hidStore = useHidStore();
 
 const connectedDevicesList = computed(() => bleStore.connectedDevicesList);
-
-// #ifdef MP-WEIXIN
-onShareAppMessage(() => ({
-	title: '分享一个好用的 BLE 工具: BLE Toolkit+',
-	path: '/pages/connected/index'
-}));
-// #endif
 
 const goScan = () => {
 	uni.switchTab({ url: '/pages/index/index' });

@@ -4,13 +4,13 @@ layout: home
 hero:
   name: "BLE Toolkit+"
   text: "An open-source BLE tool family for every BLE device"
-  tagline: "Debug · Learn · Multi-platform multi-framework comparison · Hardware-in-the-loop — one product spec, from WeChat mini program, Android, iOS / macOS and desktop to ESP32 firmware and the Smart HID profile."
+  tagline: "Debug · Learn · Multi-platform multi-framework comparison · Hardware-in-the-loop — one product spec, covering Android, iOS / macOS, desktop, Web, ESP32 firmware and the Smart HID profile."
   image:
     src: /brand/hero-duo.webp
     alt: BLE Toolkit+ app screenshots (Android preview, captured from device)
   actions:
     - theme: brand
-      text: Use via WeChat Mini Program
+      text: Get BLE Toolkit+
       link: /en/#get
     - theme: alt
       text: Docs (Chinese)
@@ -26,15 +26,13 @@ hero:
     <div class="sb-section-head">
       <div class="sb-kicker">Get</div>
       <h2>Get BLE Toolkit+</h2>
-      <p>Scan with WeChat to try it now; every other framework × platform has its own download slot — shown as "in preparation" until real packages ship, all buildable from source today.</p>
+      <p>Current version v1.0.5 · PREVIEW (development preview). Every framework × platform has its own download slot — shown as "in preparation" until real packages ship, all buildable from source today.</p>
     </div>
     <div class="sb-get-grid">
       <div class="sb-get-qr-card">
-        <img class="sb-qr-img" src="/qr/wechat-miniprogram.jpg" width="172" height="172"
-             alt="BLE Toolkit+ WeChat mini program QR code">
-        <h3>WeChat Mini Program</h3>
-        <p>Scan the mini program code with WeChat to use it — no install needed.</p>
-        <span class="sb-get-hint">Scan the code above with WeChat</span>
+        <h3>GitHub source</h3>
+        <p>Clone the repository to build any platform — every line shares the same product spec and BLE protocol core.</p>
+        <span class="sb-get-hint"><a href="https://github.com/luoyaosheng/smart-ble" target="_blank" rel="noopener">github.com/luoyaosheng/smart-ble</a></span>
       </div>
       <div class="sb-get-qr-card">
         <h3>Download matrix</h3>
@@ -47,7 +45,6 @@ hero:
         <tr><th>Version</th><th>Framework / tech</th><th>Download</th><th>Get it today</th></tr>
       </thead>
       <tbody>
-        <tr><td>WeChat Mini Program</td><td>uni-app (Vue 3)</td><td><span class="sb-dl-ok">Scan &amp; use</span></td><td>Scan the QR above with WeChat</td></tr>
         <tr><td>Android App</td><td>uni-app line</td><td><span class="sb-dl-wait">APK in preparation</span></td><td><a href="/tutorials/platforms/uniapp">Build from source (HBuilderX)</a></td></tr>
         <tr><td>Android native</td><td>Kotlin + Jetpack Compose</td><td><span class="sb-dl-wait">APK in preparation</span></td><td><a href="/tutorials/platforms/native_mobile">Build from source (gradlew)</a></td></tr>
         <tr><td>iOS</td><td>Swift Package + SwiftUI</td><td><span class="sb-dl-wait">TestFlight slot reserved</span></td><td><a href="/tutorials/platforms/native_mobile">Build from source (swift run)</a></td></tr>
@@ -71,7 +68,7 @@ hero:
     <div class="sb-feature-grid">
       <article class="sb-feature-card">
         <h3>A usable debug tool</h3>
-        <p>Scan, connect, read/write, subscribe, broadcast and OTA in one workflow; the mini program is scan-to-use, every other line runs from source.</p>
+        <p>Scan, connect, read/write, subscribe, broadcast and OTA in one workflow; every line runs from source.</p>
       </article>
       <article class="sb-feature-card">
         <h3>Multi-platform comparison samples</h3>
@@ -82,7 +79,7 @@ hero:
         <p>ESP32 reference firmware, open protocols and tutorials — reproducible from flashing to your first scan, connect, read/write and Notify.</p>
       </article>
     </div>
-    <p class="sb-platform-footnote">For: BLE device developers · Android / iOS / mini program developers · embedded engineers · BLE learners and teams needing multi-implementation comparison. Start with the <a href="/tutorials/01_introduction_and_setup">quick-start tutorial</a> and the <a href="/MASTER_ARCHITECTURE">master architecture guide</a> (Chinese).</p>
+    <p class="sb-platform-footnote">For: BLE device developers · Android / iOS developers · embedded engineers · BLE learners and teams needing multi-implementation comparison. Start with the <a href="/tutorials/01_introduction_and_setup">quick-start tutorial</a> and the <a href="/MASTER_ARCHITECTURE">master architecture guide</a> (Chinese).</p>
   </section>
 
   <section id="features" class="sb-section">
@@ -158,14 +155,9 @@ hero:
     <div class="sb-section-head">
       <div class="sb-kicker">Platforms</div>
       <h2>Multi-platform, multi-framework — one family</h2>
-      <p>Every implementation shares one product spec and BLE protocol core, adapted per platform — from the WeChat mini program to desktop and ESP32 firmware.</p>
+      <p>Every implementation shares one product spec and BLE protocol core, adapted per platform — from Android and iOS / macOS to desktop and ESP32 firmware.</p>
     </div>
     <div class="sb-platform-grid">
-      <a href="/tutorials/platforms/uniapp" class="sb-platform-card">
-        <span class="sb-platform-status">Scan &amp; use · Preview</span>
-        <h3>WeChat Mini Program</h3>
-        <p>Built from the uni-app (Vue 3) line — a lightweight, install-free entry covering scan, connect and debug.</p>
-      </a>
       <a href="/tutorials/platforms/uniapp" class="sb-platform-card">
         <span class="sb-platform-status">Client mainline · Preview</span>
         <h3>Android</h3>
@@ -202,7 +194,7 @@ hero:
         <p>PlatformIO / ESP-IDF reference firmware for hardware linkage and protocol demos; STM32 planned.</p>
       </a>
     </div>
-    <p class="sb-platform-footnote">All implementations share one product spec and protocol core; no official artifacts are released yet — the mini program is scannable today, everything else builds from source. Capability and release status: <a href="/status/">status page</a> and <a href="/product-contract/05_PLATFORM_MATRIX">platform matrix</a> (Chinese).</p>
+    <p class="sb-platform-footnote">All implementations share one product spec and protocol core; no official artifacts are released yet — everything builds from source. Capability and release status: <a href="/status/">status page</a> and <a href="/product-contract/05_PLATFORM_MATRIX">platform matrix</a> (Chinese).</p>
   </section>
 
   <section id="prototype" class="sb-section">

@@ -89,23 +89,6 @@ const reset = () => {
 };
 
 const selectFile = () => {
-  // #ifdef MP-WEIXIN
-  wx.chooseMessageFile({
-    count: 1,
-    type: 'file',
-    extension: ['.bin'],
-    success: (res) => {
-      const file = res.tempFiles[0];
-      fileName.value = file.name;
-      readFile(file.path);
-    },
-    fail: (err) => {
-      console.error("Choose file failed", err);
-    }
-  });
-  // #endif
-
-  // #ifndef MP-WEIXIN
   uni.chooseFile({
     count: 1,
     extension: ['.bin'],
@@ -115,26 +98,9 @@ const selectFile = () => {
       readFile(res.tempFilePaths[0]);
     }
   });
-  // #endif
 };
 
 const readFile = (path) => {
-  // #ifdef MP-WEIXIN
-  wx.getFileSystemManager().readFile({
-    filePath: path,
-    success: (res) => {
-      fileBuffer.value = res.data;
-      statusText.value = '文件加载成功，可开始升级';
-      statusType.value = 'success';
-    },
-    fail: (err) => {
-      statusText.value = '文件读取失败';
-      statusType.value = 'error';
-    }
-  });
-  // #endif
-  
-  // #ifndef MP-WEIXIN
   uni.getFileSystemManager().readFile({
     filePath: path,
     success: (res) => {
@@ -147,7 +113,6 @@ const readFile = (path) => {
       statusType.value = 'error';
     }
   });
-  // #endif
 };
 
 const startOta = () => {

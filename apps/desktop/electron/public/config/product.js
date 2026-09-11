@@ -1,8 +1,8 @@
 //
 // SmartBLE Desktop - 产品配置（F029）
 //
-// 桌面线已按产品决定裁撤 F028 推广卡（“更多小程序”），不再镜像 uniapp 的
-// RELATED_MINI_PROGRAMS；小程序正典数据仍以 apps/uniapp/config/product.js 为准。
+// 桌面线已按产品决定裁撤 F028 推广卡（“更多小程序”）；
+// 2026-09-11 小程序整体裁撤：miniProgram 配置与反馈码通道一并移除。
 // F029 桌面口径：分享 = 导出文本/文件（复制 + 下载 .txt）。
 //
 
@@ -11,14 +11,9 @@
 
   const PRODUCT_INFO = {
     name: 'BLE Toolkit+',
-    summary: '面向 UniApp、微信小程序与 ESP32 协同验证的 BLE 调试工具。',
+    summary: '面向 UniApp 与 ESP32 协同验证的 BLE 调试工具。',
     website: 'https://lightble.i2kai.com/',
     feedback: 'https://gitee.com/luoyaosheng/smart-ble/issues',
-    // 问题反馈（2026-09-11）：桌面版展示小程序码引导用户进小程序联系客服
-    miniProgram: {
-      appId: 'wxf6c58b1dcac4c82d',
-      qrImage: 'assets/wx-mini-qr.jpg',
-    },
   };
 
   const PRODUCT_FEATURES = [

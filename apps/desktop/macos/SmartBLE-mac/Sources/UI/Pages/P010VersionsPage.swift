@@ -58,7 +58,6 @@ final class P010VersionsPage: NSViewController, PageProtocol {
 
         let card = Card(padding: 14)
         let platformRow1 = hstack([
-            statusWord("微信小程序 PREVIEW", tone: "primary"),
             statusWord("App · Android NOT_RELEASED", tone: "danger"),
             statusWord("App · iOS NOT_RELEASED", tone: "danger"),
             NSView(),

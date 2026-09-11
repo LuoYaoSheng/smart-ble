@@ -86,8 +86,8 @@ if (!Array.isArray(releaseManifest.artifacts) || releaseManifest.artifacts.lengt
 if (releaseManifest.release_tag != null) fail('PREVIEW release_tag 必须为 null（不得生成 v1.0.5 tag 投影）');
 if (releaseManifest.commit != null) fail('PREVIEW commit 必须为 null');
 if (releaseManifest.built_at != null) fail('PREVIEW built_at 必须为 null');
-if (releaseManifest.wechat_qr?.image != null) fail('WeChat QR image 必须为 null');
-if (releaseManifest.wechat_qr?.status !== 'not_released') fail('WeChat QR status 必须为 not_released');
+// 2026-09-11（小程序整体裁撤）：wechat_qr 字段随生成器移除，不得回流
+if (releaseManifest.wechat_qr != null) fail('wechat_qr 已随小程序裁撤，metadata 不得再携带该字段');
 
 const fakeUrl = JSON.stringify(releaseManifest).match(/"url"\s*:\s*"[^"]+"/);
 const fakeSha = JSON.stringify(releaseManifest).match(/"sha256"\s*:\s*"[^"]+"/);

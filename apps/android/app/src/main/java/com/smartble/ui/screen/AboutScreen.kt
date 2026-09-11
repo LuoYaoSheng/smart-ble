@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -39,7 +38,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -69,7 +67,8 @@ import com.smartble.ui.theme.cText
 
 /**
  * P009 关于（prototype p009-about.js · 数据口径对齐 flutter ProductConfig）：
- * 品牌行 → 更多小程序(promo) → 应用信息(kv) → 菜单(网站/版本记录/反馈/分享) → 页脚。
+ * 品牌行 → 应用信息(kv) → 菜单(网站/版本记录/反馈/分享) → 页脚。
+ * 2026-09-11（小程序整体裁撤）：F028 更多小程序推广卡与反馈小程序码一并移除。
  */
 @Composable
 fun AboutContent(
@@ -97,10 +96,6 @@ fun AboutContent(
         Spacer(modifier = Modifier.height(12.dp))
         BrandRow(version)
         Spacer(modifier = Modifier.height(16.dp))
-        DsSectionTitle(icon = DsIcons.Share, text = "更多小程序")
-        Spacer(modifier = Modifier.height(10.dp))
-        PromoCard(onOpen = ::openUrl)
-        Spacer(modifier = Modifier.height(16.dp))
         DsSectionTitle(icon = DsIcons.Info, text = "应用信息")
         Spacer(modifier = Modifier.height(10.dp))
         Column(Modifier.dsCard()) {
@@ -124,7 +119,7 @@ fun AboutContent(
     }
 }
 
-/** 问题反馈弹窗（P009 · 与 uniapp/iOS 同口径）：微信扫码进小程序客服；复制 issues 链接兜底 */
+/** 问题反馈弹窗（P009）：GitHub Issues 引导；2026-09-11 小程序反馈通道裁撤 */
 @Composable
 private fun FeedbackQrDialog(onDismiss: () -> Unit) {
     val context = LocalContext.current
@@ -164,16 +159,8 @@ private fun FeedbackQrDialog(onDismiss: () -> Unit) {
                 )
             }
             Spacer(modifier = Modifier.height(14.dp))
-            Image(
-                painter = painterResource(R.drawable.wx_mini_qr),
-                contentDescription = "微信小程序码",
-                modifier = Modifier
-                    .size(172.dp)
-                    .clip(RoundedCornerShape(12.dp)),
-            )
-            Spacer(modifier = Modifier.height(12.dp))
             Text(
-                "使用微信「扫一扫」扫描上方小程序码\n进入「BLE Toolkit+」小程序，即可直接联系客服反馈问题",
+                "通过 GitHub Issues 提交问题反馈\n描述复现步骤与环境信息，我们会尽快跟进处理\n$FEEDBACK_URL",
                 fontSize = 12.sp,
                 color = cMut,
                 textAlign = TextAlign.Center,
@@ -233,55 +220,6 @@ private fun BrandRow(version: String) {
     }
 }
 
-/** 推广卡（.promo 行：缩写块 + 名称/描述 + 前往） */
-@Composable
-private fun PromoCard(onOpen: (String) -> Unit) {
-    Column(Modifier.fillMaxWidth().dsCard(innerPadding = 6.dp)) {
-        PROMOS.forEachIndexed { i, p ->
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .drawBehind {
-                        if (i < PROMOS.lastIndex) {
-                            val y = size.height - 0.5.dp.toPx()
-                            drawLine(cLineSoft, Offset(0f, y), Offset(size.width, y), strokeWidth = 1.dp.toPx())
-                        }
-                    }
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                    ) { onOpen(p.url) }
-                    .padding(vertical = 12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(38.dp)
-                        .clip(RoundedCornerShape(11.dp))
-                        .background(p.bg),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(p.abbr, color = p.color, fontSize = 15.sp, fontWeight = FontWeight.W800)
-                }
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(p.name, fontSize = 14.sp, fontWeight = FontWeight.W600, color = cText)
-                    Text(
-                        p.desc,
-                        fontSize = 12.sp,
-                        color = cMut,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                        lineHeight = 12.sp * 1.4f,
-                        modifier = Modifier.padding(top = 2.dp),
-                    )
-                }
-                DsSoftButton(label = "前往", onClick = { onOpen(p.url) }, small = true)
-            }
-        }
-    }
-}
-
 private fun shareApp(context: android.content.Context) {
     val text = "BLE Toolkit+ —— 跨平台 BLE 调试工具 $WEBSITE"
     val intent = Intent(Intent.ACTION_SEND).apply {
@@ -292,27 +230,6 @@ private fun shareApp(context: android.content.Context) {
     runCatching { context.startActivity(Intent.createChooser(intent, "分享应用")) }
 }
 
-/* 产品推广位（与 flutter ProductConfig.promos / uniapp RELATED_MINI_PROGRAMS 同源） */
-private data class Promo(val name: String, val desc: String, val abbr: String, val bg: Color, val color: Color, val url: String)
-
 private const val WEBSITE = "https://lightble.i2kai.com/"
 private const val FEEDBACK_URL = "https://gitee.com/luoyaosheng/smart-ble/issues"
 
-private val PROMOS = listOf(
-    Promo(
-        name = "萌喵圈",
-        desc = "看猫片、做问候图和轻量 AI 创作，把宠物内容变成可爱又治愈的分享素材。",
-        abbr = "萌喵",
-        bg = Color(0xFFFFEDF2),
-        color = Color(0xFFE06C9A),
-        url = "https://cutemeowcircle.anxiqing.cn",
-    ),
-    Promo(
-        name = "宝宝点滴",
-        desc = "记录喂奶、换尿布、睡眠和成长数据，帮家人一起照看宝宝的日常节奏。",
-        abbr = "宝宝",
-        bg = Color(0xFFFFF3E2),
-        color = Color(0xFFC77E14),
-        url = "https://babydiary.anxiqing.cn",
-    ),
-)

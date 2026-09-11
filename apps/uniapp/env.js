@@ -15,19 +15,6 @@ module.exports = {
         },
         "executablePath": ""
     },
-    "mp-weixin": {
-        "port": 9420,
-        "account": "",
-        "args": "",
-        "cwd": "",
-        "launch": true,
-        "teardown": "disconnect",
-        "remote": false,
-        // WeChat devtools CLI comes from WECHAT_DEVTOOLS_CLI only; no hardcoded host path.
-        // macOS example: /Applications/wechatwebdevtools.app/Contents/MacOS/cli
-        // Windows example: C:\Program Files (x86)\Tencent\微信web开发者工具\cli.bat
-        "executablePath": process.env.WECHAT_DEVTOOLS_CLI || ""
-    },
     "app-plus": {
         "android": {
             "id": "",

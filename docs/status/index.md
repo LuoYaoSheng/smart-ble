@@ -35,7 +35,7 @@ function surfaceStatus(surface) {
     </div>
     <p>
       BLE Toolkit+ 是多平台多框架的 BLE 工具家族：首个正式发布目标（主线）是 <strong>UniApp Android</strong>、
-      <strong>BLE Toolkit+ 微信小程序</strong>、<strong>Apple 原生 iOS</strong>、<strong>ESP32 固件</strong> 与
+      <strong>Apple 原生 iOS</strong>、<strong>ESP32 固件</strong> 与
       <strong>Smart HID 第一方 Profile</strong>；Android 原生（Kotlin）、Apple 原生（iOS / macOS）、Flutter
       与桌面多框架为并行在研实现线，均可从源码构建。
       正式产物尚未发布（<strong>NOT_RELEASED</strong>）。
@@ -59,13 +59,6 @@ function surfaceStatus(surface) {
         </div>
         <h3>{{ surfaces.android.name }}</h3>
         <p>当前客户端主线。正式 APK 与 SHA <strong>{{ surfaces.android.release_status }}</strong>。</p>
-      </article>
-      <article class="smartble-platform-card">
-        <div class="smartble-platform-top">
-          <span :class="badgeClass(surfaces.wechat.release_status)">{{ surfaces.wechat.release_status }}</span>
-        </div>
-        <h3>{{ surfaces.wechat.name }}</h3>
-        <p>首页小程序码可用；正式发布状态与口径以 Metadata 为准。</p>
       </article>
       <article class="smartble-platform-card">
         <div class="smartble-platform-top">
@@ -196,12 +189,6 @@ function surfaceStatus(surface) {
           <td>正式构建 + SHA + Release Pipeline 切换到 UniApp 路线</td>
         </tr>
         <tr>
-          <td>微信小程序</td>
-          <td>正式小程序码发布</td>
-          <td><span class="smartble-platform-badge smartble-badge--not-released">NOT_RELEASED</span></td>
-          <td>正式码发布与公告（首页现有码图口径见 Metadata）</td>
-        </tr>
-        <tr>
           <td>ESP32 Peripheral 固件</td>
           <td>可复现固件包 + manifest</td>
           <td><span class="smartble-platform-badge smartble-badge--not-released">NOT_RELEASED</span></td>
@@ -230,9 +217,8 @@ function surfaceStatus(surface) {
     <noscript>
       <ul>
         <li>Android 正式 APK 尚未发布。</li>
-        <li>微信正式小程序码尚未发布。</li>
         <li>Playwright / Page Driver E4 尚未完成。</li>
-        <li>Android、微信、ESP32 E5 尚未执行。</li>
+        <li>Android、ESP32 E5 尚未执行。</li>
         <li>Apple 原生（iOS / macOS）真机签名与 E5 验证尚未完成。</li>
         <li>Android 原生（Kotlin）、Flutter、桌面多框架实现线均可源码构建，正式产物均未发布。</li>
         <li>OTA 当前 BLOCKED。</li>

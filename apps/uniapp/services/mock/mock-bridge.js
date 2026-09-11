@@ -2,7 +2,7 @@
  * MOCK 桥 —— H5 假数据通道入口（2026-09-11 UI 全面轮）。
  *
  * 激活条件（三重门）：H5 条件编译引用 + URL 携带 ?mock=1 + 显式 import 安装。
- * mp-weixin / app 构建不含本文件，生产逻辑零改动。
+* app 构建不含本文件，生产逻辑零改动。
  *
  * 使用（Playwright 驱动）：
  *   1. 打开 #/pages/index/index?mock=1（任一页面均可，建议首页）

@@ -116,10 +116,6 @@ function buildManifest(version, buildCode, state) {
     built_at: state.built_at ?? null,
     overall_status: state.overall_status,
     artifacts: Array.isArray(state.artifacts) ? state.artifacts : [],
-    wechat_qr: {
-      status: state.wechat_qr?.status || 'not_released',
-      image: state.wechat_qr?.image ?? null,
-    },
     public_surfaces: state.public_surfaces,
     verified_capabilities: state.verified_capabilities || [],
     known_limitations: state.known_limitations || [],

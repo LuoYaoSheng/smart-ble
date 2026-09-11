@@ -86,7 +86,6 @@ class CapabilityPublicStatus {
 List<PlatformPublicStatus> getPlatformPublicStatuses() {
   const order = [
     'android',
-    'wechat',
     'h5',
     'ios',
     'flutter_tauri_native',
@@ -224,7 +223,7 @@ VersionPageModel getVersionPageModel([Map<String, dynamic>? metadata]) {
   final surfaces = _surfacesOf(meta);
 
   final platforms = [
-    for (final key in ['android', 'wechat', 'h5', 'ios'])
+    for (final key in ['android', 'h5', 'ios'])
       if (surfaces[key] != null)
         PlatformPublicStatus(
           key: key,

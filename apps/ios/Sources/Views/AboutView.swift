@@ -40,7 +40,7 @@ struct AboutView: View {
 
                     VStack(spacing: 2) {
                         Text("日志全局脱敏：敏感凭据显示为 token=***")
-                        Text("BLE Toolkit+ · Smart BLE 产品家族 · 微信小程序 wxf6c58b1dcac4c82d")
+                        Text("BLE Toolkit+ · Smart BLE 产品家族")
                     }
                     .scaledFont(10)
                     .foregroundColor(NativeDS.placeholder)
@@ -115,7 +115,6 @@ struct AboutView: View {
 
     private var platformStatusCard: some View {
         VStack(spacing: 2) {
-            platformRow("微信小程序", capability: "PREVIEW", release: "NOT_RELEASED")
             platformRow("App · Android", capability: "PREVIEW", release: "NOT_RELEASED")
             platformRow(
                 "App · iOS",
@@ -134,7 +133,7 @@ struct AboutView: View {
                 menuRow(icon: "arrow.up.right.square", title: "官方网站")
             }
             Divider()
-            // 问题反馈：弹窗展示小程序码引导（非微信渠道的复制链接兜底）
+            // 问题反馈：GitHub Issues 引导（2026-09-11 小程序反馈通道裁撤）
             Button(action: { feedbackVisible = true }) {
                 menuRow(icon: "paperplane", title: "问题反馈")
             }
@@ -266,8 +265,8 @@ private struct NativeShareSheet: View {
 }
 #endif
 
-/// 问题反馈弹窗（P009 · 与 uniapp/桌面同口径）：微信扫码进小程序客服；
-/// 其余渠道提供 issues 链接复制兜底。
+/// 问题反馈弹窗（P009）：GitHub Issues 引导；
+/// 2026-09-11 小程序反馈通道裁撤，码图与微信文案一并移除。
 private struct FeedbackSheet: View {
     @Environment(\.dismiss) private var dismiss
     @State private var linkCopied = false
@@ -292,19 +291,11 @@ private struct FeedbackSheet: View {
                 .accessibilityIdentifier("feedback-close")
             }
 
-            NativeResourceImage(name: "wx_mini_qr")
-                .scaledToFit()
-                .frame(width: 172, height: 172)
-                .clipShape(RoundedRectangle(cornerRadius: NativeDS.radiusMedium))
-                .overlay(
-                    RoundedRectangle(cornerRadius: NativeDS.radiusMedium)
-                        .stroke(NativeDS.lineSoft, lineWidth: 1)
-                )
-                .accessibilityLabel("微信小程序码")
-
             VStack(spacing: 4) {
-                Text("使用微信「扫一扫」扫描上方小程序码")
-                Text("进入「BLE Toolkit+」小程序，即可直接联系客服反馈问题")
+                Text("通过 GitHub Issues 提交问题反馈")
+                Text("描述复现步骤与环境信息，我们会尽快跟进处理")
+                Text(feedbackUrl)
+                    .foregroundColor(NativeDS.primary)
             }
             .scaledFont(11)
             .foregroundColor(NativeDS.sub)

@@ -83,7 +83,7 @@ const hexToBytes = (hex) => {
 
 /**
  * 由平台解析字段重建 AD 结构段（与 Flutter AdvertisementSheet._segments 同口径）：
- * 小程序平台 API 不提供原始广播帧字节，逐段按 AD 类型号重组并标注来源。
+* 平台 API 不提供原始广播帧字节时，逐段按 AD 类型号重组并标注来源。
  */
 export function buildAdSegments(advertisement) {
   const adv = advertisement || {};

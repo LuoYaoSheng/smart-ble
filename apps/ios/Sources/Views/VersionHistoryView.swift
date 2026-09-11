@@ -61,7 +61,6 @@ struct VersionHistoryView: View {
             keyValue("构建", "\(metadata.appBuildCode)" + (metadata.commit.map { " · \($0.prefix(8))" } ?? ""))
             keyValue("Release tag", metadata.releaseTag ?? "未登记（preview）")
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 122), spacing: 6)], alignment: .leading, spacing: 6) {
-                surfaceChip("微信小程序", metadata.publicSurfaces["wechat"]?.capabilityStatus ?? "UNKNOWN")
                 surfaceChip("App · Android", metadata.publicSurfaces["android"]?.releaseStatus ?? "UNKNOWN")
                 surfaceChip("App · iOS", metadata.publicSurfaces["ios"]?.releaseStatus ?? "UNKNOWN")
                 surfaceChip("H5 / Web", metadata.publicSurfaces["h5"]?.releaseStatus ?? "UNKNOWN")

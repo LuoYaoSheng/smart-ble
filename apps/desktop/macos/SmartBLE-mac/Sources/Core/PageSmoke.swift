@@ -610,15 +610,14 @@ enum PageSmoke {
                 && anyLabel(contains: "当前环境", in: v)
                 && anyLabel(contains: "Smart HID 配网", in: v)
                 && anyLabel(contains: "NOT_RELEASED", in: v)
-            // UIS-10b 问题反馈 → 小程序码弹窗（扫一扫引导 + 复制/关闭）
+            // UIS-10b 问题反馈 → GitHub Issues 引导弹窗（2026-09-11 小程序反馈通道裁撤）
             button(actionId: "p009-feedback", in: v)?.performClick(nil)
             await settle(400)
             let sheetViews = views()
-            let feedbackSheet = anyLabel(contains: "联系客服反馈问题", in: sheetViews)
-                && anyLabel(contains: "扫一扫", in: sheetViews)
+            let feedbackSheet = anyLabel(contains: "GitHub Issues 提交问题反馈", in: sheetViews)
+                && anyLabel(contains: "luoyaosheng/smart-ble/issues", in: sheetViews)
                 && button(actionId: "p009-feedback-copy", in: sheetViews) != nil
                 && button(actionId: "p009-feedback-done", in: sheetViews) != nil
-                && sheetViews.contains { $0 is NSImageView }
             button(actionId: "p009-feedback-done", in: sheetViews)?.performClick(nil)
             await settle(300)
             check("UIS-10b", feedbackSheet, "feedbackSheet=\(feedbackSheet)")

@@ -13,10 +13,6 @@ val RELEASE_METADATA: Map<String, Any?> = mapOf(
   "built_at" to null,
   "overall_status" to "PREVIEW",
   "artifacts" to emptyList<Any?>(),
-  "wechat_qr" to mapOf(
-    "status" to "not_released",
-    "image" to null,
-  ),
   "public_surfaces" to mapOf(
     "android" to mapOf(
       "name" to "UniApp Android",
@@ -24,13 +20,6 @@ val RELEASE_METADATA: Map<String, Any?> = mapOf(
       "capability_status" to "PREVIEW",
       "release_status" to "NOT_RELEASED",
       "artifact" to null,
-    ),
-    "wechat" to mapOf(
-      "name" to "BLE Toolkit+ 微信小程序",
-      "role" to "mainline",
-      "capability_status" to "PREVIEW",
-      "release_status" to "NOT_RELEASED",
-      "qr" to null,
     ),
     "h5" to mapOf(
       "name" to "H5",
@@ -83,9 +72,8 @@ val RELEASE_METADATA: Map<String, Any?> = mapOf(
   "verified_capabilities" to emptyList<Any?>(),
   "known_limitations" to listOf(
     "Android 正式 APK 尚未发布",
-    "微信正式小程序码尚未发布",
     "Playwright / Page Driver E4 尚未完成",
-    "Android、微信、ESP32 E5 尚未执行",
+    "Android、ESP32 E5 尚未执行",
     "iOS 真机签名与 E5 验证尚未完成",
     "OTA 当前 BLOCKED",
     "ESP32 Observer 尚未完成",
