@@ -166,13 +166,73 @@ function scanDart(file, text) {
 
 function check(file, line, kind, value, base, extra) {
   const pools = [base, ...(Array.isArray(extra) ? extra : extra ? [extra] : [])]
-  if (pools.some((p) => p.has(value))) return
   const rel = relative(root, file)
+  if (pools.some((p) => p.has(value))) {
+    // phase-2（M5）：regFS 9/16 文件级圈定——登记档仅限登记文件
+    if (kind === 'font-size' && isEnforced(rel) && regFsScopeViolation(rel, value)) {
+      violations.push(`${rel}:${line} [font-size] ${value} 为契约登记档（9=TabBar 角标 / 16=modal 标题），仅限登记文件`)
+    }
+    return
+  }
   const entry = `${rel}:${line} [${kind}] ${value}`
   ;(isEnforced(rel) ? violations : reportNotes).push(entry)
 }
 
 const isEnforced = (rel) => ENFORCE.some((d) => rel.startsWith(d))
+
+// ── phase-2 角色级断言（M5 · 2026-09-11 UI 全面轮）──────────────────────────
+// 依据：PAGE_LAYOUT_CONTRACT §1（页面水平 gutter 32rpx）/§2（navbar 8/18 12、subnav 8/14 10）
+//      /§6（modal 标题 16）；TOKEN §阴影 + 原型 components.css/pages.css 裸阴影族；TabBar 角标 9。
+
+// 1) regFS 9/16 文件级圈定：契约登记档只允许出现在登记文件
+const REG_FS_FILES = {
+  9: new Set(['apps/uniapp/components/ui/AppTabBar.vue', 'apps/flutter/lib/ui/design/app_tab_bar.dart']),
+  16: new Set(['apps/uniapp/components/write-dialog/write-dialog.vue', 'apps/flutter/lib/ui/pages/provisioning_page.dart'])
+}
+function regFsScopeViolation(rel, value) {
+  const allowed = REG_FS_FILES[value]
+  if (!allowed) return false
+  return !allowed.has(rel)
+}
+
+// 2) 阴影白名单：裸 box-shadow 字面量归一化后必须命中正典族（原型 tokens/components/pages.css）
+//    var()/inset ring/none 不检；rpx÷2；0px→0；去空白
+const SHADOW_OK = new Set([
+  '0 0 8px rgba(23,199,168,0.55)',                       // bt-dot.on / st.on 点光（pages.css:48/95）
+  '0 0 6px rgba(23,199,168,0.6)',                        // badge.on .dot 光（components.css:39）
+  '0 6px 16px rgba(242,85,95,0.28)',                     // btn.danger（components.css:11）
+  '0 2px 4px rgba(16,32,64,0.05),0 10px 22px rgba(16,32,64,0.09)' // dev:hover（components.css:113）
+].map((s) => normalizeShadowText(s)))
+function normalizeShadowText(value) {
+  return value
+    .replace(/(\d+(?:\.\d+)?)rpx/g, (_, n) => `${parseFloat(n) / 2}px`)
+    .replace(/0px/g, '0')
+    .replace(/\s+/g, '')
+    .replace(/,\s*/g, ',')
+    .replace(/rgba\(([^)]+)\)/g, (_, inner) => {
+      const parts = inner.split(',').map((p) => String(parseFloat(p)))
+      return `rgba(${parts.join(',')})`
+    })
+    .toLowerCase()
+}
+const normalizeShadow = normalizeShadowText
+function shadowViolation(value) {
+  const v = value.replace(/!important/g, '').trim()
+  if (/var\(/.test(v) || /^none\b/.test(v)) return false
+  return !SHADOW_OK.has(normalizeShadow(v))
+}
+
+// 3) 导航 padding 域 + 页面 gutter 角色断言
+const ROLE_RULES = [
+  { file: 'apps/uniapp/components/ui/AppNavbar.vue', test: (t) => t.includes('padding: 16rpx 36rpx 24rpx'), desc: 'navbar-inner padding 必须 16/36/24rpx（8/18/12 正典）' },
+  { file: 'apps/uniapp/components/ui/AppSubnav.vue', test: (t) => t.includes('padding: 16rpx 28rpx 20rpx'), desc: 'subnav-row padding 必须 16/28/20rpx（8/14/10 正典）' },
+  { file: 'apps/uniapp/styles/design-system.css', test: (t) => /\.ble-content\s*\{[^}]*padding:\s*32rpx/.test(t), desc: '.ble-content 页面 gutter 必须 32rpx（PAGE_LAYOUT §1）' }
+]
+const PAGE_FILES = [
+  'apps/uniapp/pages/index/index.vue', 'apps/uniapp/pages/hid/add.vue', 'apps/uniapp/pages/hid/detail.vue',
+  'apps/uniapp/pages/hid/diagnostics.vue', 'apps/uniapp/pages/device/detail.vue', 'apps/uniapp/pages/connected/index.vue',
+  'apps/uniapp/pages/broadcast/index.vue', 'apps/uniapp/pages/about/index.vue', 'apps/uniapp/pages/about/version.vue'
+]
 
 for (const dir of [...ENFORCE, ...REPORT]) {
   const abs = join(root, dir)
@@ -180,7 +240,56 @@ for (const dir of [...ENFORCE, ...REPORT]) {
     const text = await readFile(file, 'utf8')
     if (file.endsWith('.dart')) scanDart(file, text)
     else scanCss(file, text, file.includes('.vitepress'))
+
+    // phase-2：阴影白名单（css 系）
+    if (!file.endsWith('.dart')) {
+      const rel = relative(root, file)
+      const lines = text.split('\n')
+      for (let i = 0; i < lines.length; i++) {
+        const m = lines[i].match(/box-shadow\s*:\s*([^;{}]+)/)
+        if (m && isEnforced(rel) && shadowViolation(m[1])) {
+          violations.push(`${rel}:${i + 1} [box-shadow] 裸阴影圈外：${m[1].trim()}`)
+        }
+      }
+    }
+    // phase-2：flutter BoxShadow 元组对账（offset/blur/color 归一）
+    if (file.endsWith('.dart')) {
+      const rel = relative(root, file)
+      if (isEnforced(rel)) {
+        const tupleOK = new Set(['0,8,23,199,168,0.55', '0,6,23,199,168,0.6', '0,6,16,242,85,95,0.28', '0,2,16,32,64,0.05', '0,10,22,16,32,64,0.09', '0,1,16,32,64,0.04', '0,4,12,16,32,64,0.06', '0,8,24,16,32,64,0.16', '0,6,16,27,109,255,0.32'])
+        const re = /BoxShadow\(([^)]*)\)/g
+        const lines = text.split('\n')
+        for (let i = 0; i < lines.length; i++) {
+          for (const m of lines[i].matchAll(re)) {
+            const raw = m[1]
+            if (!/Color/.test(raw) || /var\(/.test(raw)) continue
+            if (!/blurRadius/.test(raw)) continue // 纯 ring/扩展不带 blur 的自定义不检
+            const off = raw.match(/offset:\s*Offset\(\s*([\d.]+)\s*,\s*([\d.]+)\s*\)/)
+            const blur = raw.match(/blurRadius:\s*([\d.]+)/)
+            const color = raw.match(/rgba\(\s*([\d.]+),\s*([\d.]+),\s*([\d.]+),\s*([\d.]+)\s*\)/)
+            if (!off || !blur || !color) { reportNotes.push(`${rel}:${i + 1} [flutter-shadow] 无法解析元组：${raw.slice(0, 80)}`); continue }
+            const key = [off[1], off[2], blur[1], ...color.slice(1)].map((n) => String(parseFloat(n))).join(',')
+            if (!tupleOK.has(key)) violations.push(`${rel}:${i + 1} [flutter-shadow] 圈外阴影元组：${key}`)
+          }
+        }
+      }
+    }
   }
+}
+
+// phase-2：导航/页面 wrapper 角色断言（文件级，独立于扫描循环）
+for (const rule of ROLE_RULES) {
+  const text = await readFile(join(root, rule.file), 'utf8')
+  if (!rule.test(text)) violations.push(`${rule.file} [role] ${rule.desc}`)
+}
+for (const pageFile of PAGE_FILES) {
+  const text = await readFile(join(root, pageFile), 'utf8')
+  // 页面 wrapper：顶层容器（page-content/container/subpage/main-content/device-panel）带 32rpx 水平
+  // padding/margin，或挂 .ble-content 全局类（由 ROLE_RULES 独立钉死 32rpx）
+  const wrapperRe = /\.(page-content|container|subpage|main-content|device-panel)\s*\{[^}]*?(?:padding|margin)\s*:[^;}]*32rpx/gs
+  const hasLocalGutter = wrapperRe.test(text)
+  const usesGlobal = /class="[^"]*ble-content/.test(text)
+  if (!hasLocalGutter && !usesGlobal) violations.push(`${pageFile} [role] 页面 wrapper 水平 padding 必须 32rpx（PAGE_LAYOUT §1）`)
 }
 
 if (reportNotes.length) {
@@ -193,4 +302,4 @@ if (violations.length) {
   console.log('\n依据：docs/specs/07_design_system/TOKEN.md §2/§3/§4 + COMPONENT_CONTRACT/PAGE_LAYOUT_CONTRACT 登记内距；新增值须先入契约再使用。')
   process.exit(1)
 }
-console.log('✓ 维度门禁通过：间距/圆角/字号 + z梯子/字重/行高/字距/flutter色彩对账 全维度零圈外值（enforce 范围）')
+console.log('✓ 维度门禁通过（含 phase-2 角色级断言）：间距/圆角/字号 + z梯子/字重/行高/字距/flutter色彩对账 + 阴影白名单 + navbar/页面 wrapper 域 + regFS 9/16 文件圈定 全零圈外（enforce 范围）')

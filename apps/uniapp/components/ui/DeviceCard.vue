@@ -71,15 +71,20 @@ const quality = computed(() => {
 	if (rssi >= -80) return 2;
 	return 1;
 });
+// 名称口径（PAGE_SPEC P001 数据展示规则）：优先运行时多级 fallback 产物 displayName
+// （name→localName→AD 0x09/0x08→Profile→厂商→「未命名 BLE · ID后四位」），再回退本地兜底
 const displayName = computed(() =>
-	props.device.name || (props.variant === 'conn' ? '未命名设备' : '未命名 BLE 设备'));
+	props.device.displayName
+	|| props.device.name
+	|| (props.variant === 'conn' ? '未命名设备' : '未命名 BLE 设备'));
+const hasNameSource = computed(() => Boolean(props.device.displayName || props.device.name));
 const idText = computed(() => {
-	if (props.variant === 'conn' || props.device.name) return props.device.deviceId;
+	if (props.variant === 'conn' || hasNameSource.value) return props.device.deviceId;
 	return `${props.device.deviceId}（未命名）`;
 });
 const connLabel = computed(() => props.device.connLabel || '');
 const avatarLetter = computed(() => {
-	const raw = String(props.device.name || props.device.deviceId || '').trim();
+	const raw = String(props.device.displayName || props.device.name || props.device.deviceId || '').trim();
 	return (raw[0] || '?').toUpperCase();
 });
 </script>

@@ -53,6 +53,10 @@ import AppButton from '../../components/ui/AppButton.vue';
 import { useHidStore } from '../../store/hid';
 import { smartHidService } from '../../services/smart-hid/index.js';
 import { buildHidDetailUrl, buildHidProvisionUrl } from '../../services/hid-navigation.js';
+// #ifdef H5
+// H5 假数据通道：暴露诊断页本地态给 window.__MOCK__（?mock=1 时才有消费者）
+import { registerPageTargets } from '../../services/mock/mock-registry.js';
+// #endif
 
 const hidStore = useHidStore();
 const deviceId = ref('');
@@ -60,6 +64,10 @@ const showAdvanced = ref(false);
 const connecting = ref(false);
 const diagnosticState = ref('idle');
 let ownsConnection = false;
+
+// #ifdef H5
+registerPageTargets('p005', { diagnosticState, showAdvanced, connecting, deviceId });
+// #endif
 
 const diagnosticItems = computed(() => hidStore.diagnostic || [
 	{ key: 'ble', label: 'BLE 链路', state: 'pending', detail: '' },

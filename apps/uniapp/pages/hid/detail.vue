@@ -126,7 +126,7 @@ const goAdvancedBle = () => {
 
 .device-head { display: flex; align-items: center; gap: 14rpx; min-width: 0; }
 
-.device-title { min-width: 0; color: var(--ble-text); font-size: 32rpx; font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.device-title { min-width: 0; color: var(--ble-text); font-size: var(--fs-h1); font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .card-title {
 	font-size: 30rpx;

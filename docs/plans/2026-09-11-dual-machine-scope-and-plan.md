@@ -38,6 +38,16 @@
 | M7 | **F029 分享域** | U-AND/F-AND 先行验证（页面级分享+P009 入口）；A-AND 复验按设备在位。 |
 | 持续 | 维护线 | docs 站与部署链、`check:dimensions`/token/icon 三门禁、`generate-release-metadata` 管线、双机合并的冲突域裁决（uniapp/Flutter/docs 归 Mac 语义优先）；P2×13 原型遗留（06_review 在册，低优先）。 |
 
+## 五、同日增补：Mac 线「假数据先全面处理页面 UI」轮（2026-09-11 下午）
+
+用户指令口径：真机暂不可用，模拟器/H5 优先（Mac 本机窗口可用）。Mac 线落地：
+
+- **uniapp H5 假数据通道**：`apps/uniapp/services/mock/`（`?mock=1` 桥，正典演示集驱动真实渲染管线；mp/app 构建条件编译剥离，产物 0 引用实证）。根因修复：`@dcloudio/uni-h5{,-vite,-vue}` 补声明（此前 uni CLI 扫不到 h5 平台插件，H5 构建长期空壳）。
+- **九页 43 态截图 + 36/36 正典文案断言**：`verification/windows-mobile-v1/20260911-h5-mock-sweep/`；修复 UI-DEF-01（DeviceCard displayName 多级链）/02（eb-title fs-h2）/03（P003 设备名 fs-h1）。
+- **M5 完成**：`check:dimensions` phase-2 角色级断言（wrapper 32rpx / navbar·subnav padding 域 / 阴影白名单 css+flutter / regFS 9/16 文件圈定）全绿；门禁套件+mp-weixin 构建+jest 基线对照+flutter analyze/test 113/113 零回归。
+- **遗留（Mac 后续）**：F-AND 六态视觉 sweep 需 Flutter 侧 mock 桥（未建，待排期）；U-WX 扫描态元素级驱动仍 automator 受限。
+- **Windows 界内（本轮未动）**：桌面三线 G1-G10 结构级重建（四页缺失等）依赖用户 D2 二选一裁决后由胜者壳套「基准内核 + desktop.js 覆写」；`?mock=true` 静态渲染通道已具备。
+
 ## 三、用户裁决/放行队列（两机均不自主执行）
 
 1. **main 推送与站点部署**：main 冻结 dbb38a8；双机只动 `refactor/uniapp-v1`。

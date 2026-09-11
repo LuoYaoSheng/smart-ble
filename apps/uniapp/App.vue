@@ -1,7 +1,14 @@
 <script>
+	// #ifdef H5
+	// H5 假数据通道（UI 六态走查专用）：?mock=1 时安装 window.__MOCK__，其余平台条件编译剥离
+	import { installMockBridge } from './services/mock/mock-bridge.js';
+	// #endif
 	export default {
 		onLaunch: function() {
 			console.log('App Launch')
+			// #ifdef H5
+			installMockBridge();
+			// #endif
 		},
 		onShow: function() {
 			console.log('App Show')

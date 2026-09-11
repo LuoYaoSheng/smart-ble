@@ -134,6 +134,10 @@ import {
 	buildBroadcastPayload,
 } from '../../services/broadcast/index.js';
 import { useBroadcastSession } from '../../composables/use-broadcast-session.js';
+// #ifdef H5
+// H5 假数据通道：暴露广播页本地态给 window.__MOCK__（?mock=1 时才有消费者）
+import { registerPageTargets } from '../../services/mock/mock-registry.js';
+// #endif
 const bleStore = useBleStore();
 
 const blePeripheral = ref(null);
@@ -155,6 +159,7 @@ const {
 	logs,
 	broadcastStateText: sessionStateText,
 	pageState,
+	sessionSnap,
 	addLog: sessionAddLog,
 	clearLogs: sessionClearLogs,
 	reportBroadcastError: sessionReportError,
@@ -196,6 +201,11 @@ const modeOptions = ['低功耗', '平衡', '低延迟'];
 const powerOptions = ['超低功率', '低功率', '中功率', '高功率'];
 const manufacturerId = ref('');
 const manufacturerData = ref('');
+
+// #ifdef H5
+// H5 假数据通道：暴露广播页本地态给 window.__MOCK__（?mock=1 时才有消费者；置于表单 refs 声明后避免 TDZ）
+registerPageTargets('p008', { sessionSnap, isSupported, logs, sessionAddLog, platform, deviceName, serviceUUID, manufacturerId, manufacturerData, androidSettings });
+// #endif
 const platformLabel = computed(() => ({ android: 'Android', ios: 'iOS', weixin: '微信', web: 'Web' }[platform.value] || 'BLE'));
 const broadcastStateText = computed(() => {
 	if (advertising.value) return '广播中';

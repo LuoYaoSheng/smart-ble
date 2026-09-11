@@ -96,6 +96,10 @@ import {
 	formatDeviceLogExport
 } from '../../services/device-session-operations.js';
 import { useDeviceSession } from '../../composables/use-device-session.js';
+// #ifdef H5
+// H5 假数据通道：暴露 GATT 调试页本地态给 window.__MOCK__（?mock=1 时才有消费者）
+import { registerPageTargets } from '../../services/mock/mock-registry.js';
+// #endif
 
 const {
 	deviceInfo,
@@ -105,6 +109,7 @@ const {
 	isInitializing,
 	isConnecting,
 	lastConnectError,
+	autoRetryExhausted,
 	hasOtaService,
 	logs,
 	getSession,
@@ -114,6 +119,10 @@ const {
 	manualRetryConnection,
 	isPageActive
 } = useDeviceSession();
+
+// #ifdef H5
+registerPageTargets('p006', { isInitializing, isConnecting, lastConnectError, autoRetryExhausted, hasOtaService, logs });
+// #endif
 
 const showWriteDataModal = ref(false);
 const writeServiceId = ref('');

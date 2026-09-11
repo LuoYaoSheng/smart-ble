@@ -1,0 +1,320 @@
+{
+  "runId": "20260911-h5-mock-sweep",
+  "base": "http://localhost:5173",
+  "generatedAt": "2026-09-11T03:33:53.152Z",
+  "vehicle": "uniapp H5 dev server + playwright headless (mock bridge ?mock=1)",
+  "total": 43,
+  "passed": 43,
+  "failed": 0,
+  "items": [
+    {
+      "page": "P001",
+      "state": "01-idle-empty",
+      "ok": true,
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P001/01-idle-empty.png"
+    },
+    {
+      "page": "P001",
+      "state": "02-scanning",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P001/02-scanning.png"
+    },
+    {
+      "page": "P001",
+      "state": "03-complete",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P001/03-complete.png"
+    },
+    {
+      "page": "P001",
+      "state": "04-scan-failed",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P001/04-scan-failed.png"
+    },
+    {
+      "page": "P001",
+      "state": "05-bt-off",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P001/05-bt-off.png"
+    },
+    {
+      "page": "P001",
+      "state": "06-bt-unsupported",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P001/06-bt-unsupported.png"
+    },
+    {
+      "page": "P001",
+      "state": "07-filter-empty",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P001/07-filter-empty.png"
+    },
+    {
+      "page": "P001",
+      "state": "08-filter-open",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P001/08-filter-open.png"
+    },
+    {
+      "page": "P002",
+      "state": "01-connect-idle",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P002/01-connect-idle.png"
+    },
+    {
+      "page": "P002",
+      "state": "02-connect-connecting",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P002/02-connect-connecting.png"
+    },
+    {
+      "page": "P002",
+      "state": "03-connect-error",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P002/03-connect-error.png"
+    },
+    {
+      "page": "P002",
+      "state": "04-configure",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P002/04-configure.png"
+    },
+    {
+      "page": "P002",
+      "state": "05-configure-lost",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P002/05-configure-lost.png"
+    },
+    {
+      "page": "P002",
+      "state": "06-status-running",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P002/06-status-running.png"
+    },
+    {
+      "page": "P002",
+      "state": "07-status-running-late",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P002/07-status-running-late.png"
+    },
+    {
+      "page": "P002",
+      "state": "08-status-done",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P002/08-status-done.png"
+    },
+    {
+      "page": "P002",
+      "state": "09-status-error",
+      "ok": true,
+      "consoleErrors": [
+        "[BLE][ERROR] [HID] controlhub_unreachable 无法连接 ControlHub（192.168.1.8:17892），请确认主机在线或运行诊断。"
+      ],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P002/09-status-error.png"
+    },
+    {
+      "page": "P002",
+      "state": "10-status-error-pairing",
+      "ok": true,
+      "consoleErrors": [
+        "[BLE][ERROR] [HID] pairing_expired 配对码已过期，请重新扫描 ControlHub 配对码。"
+      ],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P002/10-status-error-pairing.png"
+    },
+    {
+      "page": "P003",
+      "state": "01-ready",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P003/01-ready.png"
+    },
+    {
+      "page": "P003",
+      "state": "02-missing-fields",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P003/02-missing-fields.png"
+    },
+    {
+      "page": "P005",
+      "state": "01-idle-pending",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P005/01-idle-pending.png"
+    },
+    {
+      "page": "P005",
+      "state": "02-connected",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P005/02-connected.png"
+    },
+    {
+      "page": "P005",
+      "state": "03-checking",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P005/03-checking.png"
+    },
+    {
+      "page": "P005",
+      "state": "04-live-mixed",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P005/04-live-mixed.png"
+    },
+    {
+      "page": "P005",
+      "state": "05-offline",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P005/05-offline.png"
+    },
+    {
+      "page": "P005",
+      "state": "06-error-advanced",
+      "ok": true,
+      "consoleErrors": [
+        "[BLE][ERROR] [HID] diagnostic_read_failed 诊断读取失败：特征 10004 读取超时（3s）"
+      ],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P005/06-error-advanced.png"
+    },
+    {
+      "page": "P006",
+      "state": "01-idle",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P006/01-idle.png"
+    },
+    {
+      "page": "P006",
+      "state": "02-connecting",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P006/02-connecting.png"
+    },
+    {
+      "page": "P006",
+      "state": "03-ready-gatt-tree",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P006/03-ready-gatt-tree.png"
+    },
+    {
+      "page": "P006",
+      "state": "04-services-empty",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P006/04-services-empty.png"
+    },
+    {
+      "page": "P006",
+      "state": "05-connect-error",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P006/05-connect-error.png"
+    },
+    {
+      "page": "P007",
+      "state": "01-empty",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P007/01-empty.png"
+    },
+    {
+      "page": "P007",
+      "state": "02-empty-provision-online",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P007/02-empty-provision-online.png"
+    },
+    {
+      "page": "P007",
+      "state": "03-single",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P007/03-single.png"
+    },
+    {
+      "page": "P007",
+      "state": "04-multi-summary",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P007/04-multi-summary.png"
+    },
+    {
+      "page": "P008",
+      "state": "01-idle-weixin",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P008/01-idle-weixin.png"
+    },
+    {
+      "page": "P008",
+      "state": "02-advertising",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P008/02-advertising.png"
+    },
+    {
+      "page": "P008",
+      "state": "03-advertising-android",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P008/03-advertising-android.png"
+    },
+    {
+      "page": "P008",
+      "state": "04-stopped",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P008/04-stopped.png"
+    },
+    {
+      "page": "P008",
+      "state": "05-failed",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P008/05-failed.png"
+    },
+    {
+      "page": "P008",
+      "state": "06-web-unsupported",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P008/06-web-unsupported.png"
+    },
+    {
+      "page": "P009",
+      "state": "01-default",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P009/01-default.png"
+    },
+    {
+      "page": "P010",
+      "state": "01-default",
+      "ok": true,
+      "consoleErrors": [],
+      "file": "verification/windows-mobile-v1/20260911-h5-mock-sweep/P010/01-default.png"
+    }
+  ]
+}
