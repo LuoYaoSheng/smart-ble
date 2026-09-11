@@ -137,7 +137,7 @@
 | PARITY-002 | E-WIN/T-WIN | 桌面前端无 Smart HID 配网入口 | P2 |
 | PARITY-003 | A-AND | WriteDialog 批量/循环模式 UI-only：onConfirm 只发一次拼接载荷；CommandQueue.kt(289 行) 为死代码未被引用 | P2 |
 | PARITY-004 | A-AND | manufacturerData=null（源码注「Simplified for now」）→ F004 广播详情缺厂商数据段 | P2 |
-| PARITY-005 | E-WIN | electron-builder build:win 引用不存在的 assets/icon.ico → Windows 打包阻断（npm start 不受影响） | P2 |
+| PARITY-005 | E-WIN | electron-builder build:win 引用不存在的 assets/icon.ico → Windows 打包阻断（npm start 不受影响） | P2 | → **已收口 2026-09-11**（W2）：icon.ico 先由 Mac 侧 8e58f0e 跨端统一图标补齐，本机 build:win 冒烟 exit 0（nsis+portable 双产物，exe 内嵌图标逐像素比对同源）；GitHub 直连超时需 npmmirror 镜像变量（§4.6）；证据 20260911-win-b3/w2-ewin-buildwin |
 | PARITY-006 | V-WIN | csproj 引用不存在的 app.manifest 与 Assets/icon.ico → dotnet build 直接失败 | P2 | → **已收口 2026-09-11**（W1）：补齐 manifest+图标，另修幽灵 NuGet 包（nuget.org 无 WindowsBluetooth，改 TFM 投影）/保留字 char/Avalonia 10→11 语法等 11 项隐性缺陷，dotnet build exit 0；证据 20260911-win-b3/w1-vwin-build-smoke |
 
 ### 4.5 执行顺序（并入 §28 战役流）
@@ -153,4 +153,5 @@ A-AND 启动（构建→E5 安装→F001-F005 等价真机）→ F013 双手机�
   erase_flash+全量烧录，`unprovisioned`+SHID-00000001 广播中）。F025-F030 前若需 LightBLE 夹具
   重刷 `fixture_peripheral_s3`；开串口（serial-tap）会经 DTR/RTS 脉冲复位设备——夹具状态以串口
   首启横幅为准
-- Electron `node_modules` 已含编译好的 noble WinRT binding（曾实跑）；Avalonia 无 .sln、csproj 断引用
+- Electron `node_modules` 已含编译好的 noble WinRT binding（曾实跑）；Avalonia 无 .sln、csproj 断引用（csproj 已修复=PARITY-006 收口 2026-09-11）
+- electron-builder Windows 打包直连 GitHub 拉取 winCodeSign/NSIS 工具链大概率超时（2026-09-11 run1 实证）；复现需镜像变量 `ELECTRON_BUILDER_BINARIES_MIRROR=https://npmmirror.com/mirrors/electron-builder-binaries/`（+`ELECTRON_MIRROR`，证据 20260911-win-b3/w2-ewin-buildwin）；rcedit 嵌图标偶发 `Unable to commit changes`（AV/文件锁抖动），builder 自带重试可过
