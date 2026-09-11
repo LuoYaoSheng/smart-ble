@@ -24,7 +24,7 @@ const stateText = (state) => ({ done: '完成', active: '进行中', fail: '失�
 
 <style scoped>
 .progress-list { display: flex; flex-direction: column; gap: 14rpx; }
-.progress-row { display: grid; grid-template-columns: 44rpx 1fr auto; align-items: center; gap: 14rpx; padding: 18rpx 20rpx; border-radius: 22rpx; background: rgba(247, 250, 253, 0.94); }
+.progress-row { display: grid; grid-template-columns: 44rpx 1fr auto; align-items: center; gap: 14rpx; padding: 18rpx 20rpx; border-radius: 24rpx; background: rgba(247, 250, 253, 0.94); }
 .progress-dot { display: flex; align-items: center; justify-content: center; width: 44rpx; height: 44rpx; border-radius: 50%; background: rgba(96, 117, 141, 0.1); color: var(--ble-text-muted); font-size: 22rpx; font-weight: 800; }
 .progress-dot.active { color: var(--ble-brand); background: var(--c-primary-weak); }
 .progress-dot.done { color: var(--c-success-deep); background: var(--c-success-weak); } /* #0e8f79 → #0E9A80 · 正典 .prow.done UI-CONV 2026-09-10 */

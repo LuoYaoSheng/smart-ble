@@ -268,7 +268,7 @@ const onToggleNotify = ({ serviceId, charId }) => {
 	background: var(--ble-gradient-surface);
 	border: 1rpx solid var(--ble-line);
 	box-shadow: var(--ble-shadow-soft);
-	z-index: 10;
+	z-index: var(--z-nav);
 	flex-shrink: 0;
 }
 
@@ -296,7 +296,7 @@ const onToggleNotify = ({ serviceId, charId }) => {
 
 .device-name {
 	font-size: 34rpx;
-	line-height: 1.2;
+	line-height: 1.3;
 	font-weight: 700;
 	color: var(--ble-text);
 }
@@ -310,7 +310,7 @@ const onToggleNotify = ({ serviceId, charId }) => {
 
 .status-dot.connected {
 	background: var(--ble-mint);
-	box-shadow: 0 0 16rpx rgba(23, 199, 168, 0.48);
+	box-shadow: 0 0 16rpx rgba(23, 199, 168, 0.55);
 }
 
 .device-id-container {

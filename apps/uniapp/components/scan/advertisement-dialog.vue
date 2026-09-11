@@ -135,7 +135,7 @@ const copyText = computed(() => {
 .adv-mask {
 	position: fixed;
 	inset: 0;
-	z-index: 999;
+	z-index: var(--z-modal);
 	display: flex;
 	align-items: flex-end;
 	background: rgba(15, 29, 48, 0.5);
@@ -147,7 +147,7 @@ const copyText = computed(() => {
 	display: flex;
 	flex-direction: column;
 	padding: 0 32rpx 32rpx;
-	border-radius: 42rpx 42rpx 0 0;
+	border-radius: 40rpx 40rpx 0 0;
 	background: var(--c-card);
 }
 
@@ -183,7 +183,7 @@ const copyText = computed(() => {
 	align-items: baseline;
 	padding: 18rpx 0;
 	border-bottom: 1rpx solid var(--c-line-soft);
-	font-size: 28rpx;
+	font-size: 30rpx;
 }
 
 .kv .k {
@@ -191,7 +191,7 @@ const copyText = computed(() => {
 	flex-shrink: 0;
 	color: var(--c-mut);
 	font-size: 24rpx;
-	font-weight: 500;
+	font-weight: 600;
 }
 
 .kv .v {
@@ -204,7 +204,7 @@ const copyText = computed(() => {
 .ad-sec {
 	margin-top: 18rpx;
 	padding: 20rpx 24rpx;
-	border-radius: 26rpx;
+	border-radius: 24rpx;
 	background: var(--c-ink);
 }
 

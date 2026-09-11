@@ -834,7 +834,7 @@ onShareAppMessage(() => ({
 
 .uuid-hint-text {
 	font-size: 22rpx;
-	line-height: 1.5;
+	line-height: 1.55;
 	color: var(--c-warning-deep); /* #a6630a → #C77E14 圈外值收敛 UI-CONV 2026-09-10 */
 }
 

@@ -132,15 +132,15 @@ onBackPress(() => {
 .page-content { display: flex; flex-direction: column; gap: 22rpx; padding: 32rpx; }
 .panel { display: flex; flex-direction: column; gap: 20rpx; padding: 32rpx; border: 1rpx solid var(--ble-line); border-radius: var(--ble-radius-lg); background: var(--ble-gradient-surface); box-shadow: var(--ble-shadow-soft); }
 .panel-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 20rpx; }
-.panel-kicker { margin-bottom: 8rpx; color: var(--ble-brand); font-size: 20rpx; font-weight: 800; letter-spacing: 2rpx; }
-.panel-title { display: block; color: var(--ble-text); font-size: 40rpx; font-weight: 800; line-height: 1.2; }
-.panel-desc { color: var(--ble-text-subtle); font-size: 26rpx; line-height: 1.65; }
+.panel-kicker { margin-bottom: 8rpx; color: var(--ble-brand); font-size: 20rpx; font-weight: 800; letter-spacing: 4rpx; }
+.panel-title { display: block; color: var(--ble-text); font-size: 40rpx; font-weight: 800; line-height: 1.3; }
+.panel-desc { color: var(--ble-text-subtle); font-size: 26rpx; line-height: 1.55; }
 .connected-badge { flex-shrink: 0; padding: 8rpx 14rpx; border-radius: var(--r-round); color: var(--c-success-deep); background: rgba(23, 199, 168, 0.16); font-size: 20rpx; font-weight: 700; }
 .connected-badge.lost { color: var(--ble-red); background: rgba(242, 85, 95, 0.12); }
 .device-card { display: flex; align-items: center; gap: 18rpx; padding: 32rpx; border-radius: var(--ble-radius-md); background: rgba(255, 255, 255, 0.84); border: 1rpx solid var(--ble-line-soft); }
 .device-mark { display: flex; align-items: center; justify-content: center; width: 82rpx; height: 82rpx; flex-shrink: 0; border-radius: 24rpx; color: var(--c-card); background: linear-gradient(180deg, var(--c-shid-avatar-start), var(--c-success-weak)); font-size: 24rpx; font-weight: 800; } /* 正典 SHID 头像 D9F6F0→E2F8F4；v0 --ble-gradient-brand 退役 UI-CONV 2026-09-10 */
 .device-copy { min-width: 0; flex: 1; }
-.device-name { display: block; color: var(--ble-text); font-size: 30rpx; font-weight: 750; }
+.device-name { display: block; color: var(--ble-text); font-size: 30rpx; font-weight: 700; }
 .device-id, .device-summary { color: var(--ble-text-muted); font-family: "SF Mono", "Roboto Mono", Menlo, monospace; font-size: 20rpx; line-height: 1.5; word-break: break-all; }
 .device-id { display: block; margin-top: 6rpx; }
 .form-group { display: flex; flex-direction: column; gap: 10rpx; }

@@ -140,7 +140,7 @@ class FilterPanel extends ConsumerWidget {
 
   static const _lbStyle = TextStyle(
     fontSize: 12,
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.w600,
     color: Color(0xFF60758D),
   );
 }
@@ -172,7 +172,7 @@ class _PresetPill extends StatelessWidget {
           label,
           style: TextStyle(
             fontSize: 11,
-            fontWeight: active ? FontWeight.w600 : FontWeight.w500,
+            fontWeight: active ? FontWeight.w600 : FontWeight.w600,
             color: active ? Colors.white : const Color(0xFF42536A),
           ),
         ),

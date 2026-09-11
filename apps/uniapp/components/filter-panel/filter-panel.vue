@@ -108,7 +108,7 @@ const resetFilter = () => {
 	width: 128rpx;
 	flex-shrink: 0;
 	font-size: 24rpx;
-	font-weight: 500;
+	font-weight: 600;
 	color: var(--ble-text-muted);
 }
 
@@ -121,12 +121,12 @@ const resetFilter = () => {
 }
 
 .pre {
-	padding: 10rpx 20rpx;
-	border-radius: 999rpx;
+	padding: 8rpx 22rpx; /* 原型 presets 4px 11px */
+	border-radius: var(--r-round);
 	background: var(--c-fill);
 	color: var(--c-sub);
 	font-size: 22rpx;
-	font-weight: 500;
+	font-weight: 600;
 }
 
 .pre.on {

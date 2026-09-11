@@ -127,8 +127,8 @@ class LogPanel extends StatelessWidget {
                 const Text(
                   '操作日志',
                   style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 const Spacer(),

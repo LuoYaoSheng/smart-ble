@@ -29,7 +29,7 @@ defineProps({
 	justify-content: center;
 	gap: 10rpx;
 	height: 66rpx;
-	border-radius: 20rpx;
+	border-radius: var(--r-round);
 	background: rgba(96, 117, 141, 0.08);
 	color: var(--ble-text-muted, #9AA8B6); /* #93a2b4 → #9AA8B6 圈外值收敛 UI-CONV 2026-09-10 */
 }
@@ -42,7 +42,7 @@ defineProps({
 	height: 32rpx;
 	border-radius: 50%;
 	background: rgba(96, 117, 141, 0.12);
-	font-size: 19rpx;
+	font-size: 20rpx;
 	font-weight: 800;
 }
 
@@ -55,7 +55,7 @@ defineProps({
 	color: #ffffff;
 	/* 正典 C6 stepper 当前步：纯 --c-primary（原型 .st.cur .n）；v0 品牌青蓝渐变退役 UI-CONV 2026-09-10 */
 	background: var(--c-primary);
-	box-shadow: 0 12rpx 28rpx rgba(27, 109, 255, 0.18);
+	box-shadow: 0 0 0 8rpx var(--c-primary-weak); /* 原型 .st.cur .n 环 4px */
 }
 
 .step.active .step-index {

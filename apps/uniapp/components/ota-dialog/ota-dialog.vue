@@ -202,7 +202,7 @@ const cancel = () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999;
+  z-index: var(--z-modal);
   padding: 32rpx;
 }
 .ota-modal-content {
@@ -213,7 +213,7 @@ const cancel = () => {
   box-shadow: var(--ble-shadow-modal);
 }
 .ota-header {
-  padding: 28rpx 30rpx;
+  padding: 28rpx 32rpx;
   border-bottom: 1rpx solid var(--ble-line-soft);
   text-align: center;
 }
@@ -223,7 +223,7 @@ const cancel = () => {
   color: var(--ble-text);
 }
 .ota-body {
-  padding: 30rpx;
+  padding: 32rpx;
   min-height: 260rpx;
   display: flex;
   flex-direction: column;
@@ -250,7 +250,7 @@ const cancel = () => {
   align-items: center;
 }
 .ota-progress-text {
-  font-size: 42rpx;
+  font-size: 40rpx;
   font-weight: 700;
   color: var(--ble-brand);
   margin-bottom: 12rpx;
@@ -273,6 +273,6 @@ const cancel = () => {
 .ota-footer {
   display: flex;
   gap: 14rpx;
-  padding: 0 30rpx 30rpx;
+  padding: 0 32rpx 32rpx;
 }
 </style>

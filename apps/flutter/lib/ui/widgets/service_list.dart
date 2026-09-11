@@ -41,7 +41,7 @@ class ServiceListWidget extends StatelessWidget {
                 children: [
                   Text('服务发现完成 · 列表为空',
                       style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 15,
                           fontWeight: FontWeight.w700,
                           color: AppTheme.textPrimary)),
                   SizedBox(height: 4),

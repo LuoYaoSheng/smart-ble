@@ -171,3 +171,32 @@ hero clamp 上限 42/58px 超 token 阶梯上限（`--fs-display` 24px）。本�
 
 - 维度门禁为**值级**白名单，抓不到角色错位（gutter 用了 10/12/14px 合法值、组件 padding 2px 系 txtlink 登记值挪用）——phase-2 可加角色规则（页级 wrapper 水平 padding 必须 32rpx；导航组件水平 padding 正典区间）。
 - 真机/微信开发者工具实拍复核留待用户侧（本机不启用 GUI 通道铁律）。
+
+## §16 全要素收敛轮（2026-09-11 R4 ·「所有都要有规范」）
+
+用户令：导航栏只是举例，要求全量规范。本轮 = 契约全部可机检维度对三端全页面/组件过一遍 + 门禁制度化。
+
+### 16.1 审计方法
+- 底册：uniapp 9 页 + components 全量（ui 15 + 存量 common/scan/hid/ota-dialog/write-dialog/filter-panel）；flutter 9 页 + design 16 + widgets 8；对照 TOKEN.md §2/§4/§5 + PAGE_LAYOUT_CONTRACT §6 + prototype components.css（行高/阴影/glow 逐值对源）。
+- 关键发现：门禁旧 REPORT 范围含从未命中的死路径（components/device-card.vue 等文件不存在，实际目录 filter-panel/ 等从未被扫描）——存量组件是完整盲区。
+
+### 16.2 修复清单（47 处违例 + 12 处手工正典）
+| 类别 | 处数 | 代表 |
+|---|---|---|
+| z 梯子 raw | 4 | 999/1000/10 → var(--z-modal)/var(--z-nav)（write/ota/adv-dialog、device-detail） |
+| 字重圈外 | 20 | w500→w600 ×17（flutter 9 文件）· uniapp 500/650/750 → 600/700 |
+| 行高圈外 | 8 | 1.2→1.3（标题）· 1.4/1.5→1.55（正文）· 1.65→1.55 · 保留 kv/日志 1.5、note 1.6、chip 1.7（原型分档） |
+| Material 调色板 | 13 | ota_dialog Colors.red/grey/blue/green → cDanger/cMut/cPrimary/cSuccess/cDangerWeak/cPrimaryWeak/cLine |
+| 圈外值 | 14 | 半径 21/13/11/10→20/12/12/12 · 字号 21/14/11.5/9.5→20/13/12/10 · padding 15→16 · sheet 顶角 42rpx→40rpx(r-xl) |
+| 原型对源修正 | 6 | stepper 环 0 12rpx 28rpx rgba(…)→0 0 0 8rpx var(--c-primary-weak)（双端）· glow α .48→.55 · disabled 按钮→fill 底+ph 字（原型 .btn:disabled）· 卡按钮阴影→shadow-primary · .note.info 用 AppTokens.noteInfoFg（原型正典色，勿再当违例）· filter .pre 内距→原型 4/11px |
+| 遮罩/z 正典 | 2 | write-dialog mask rgba(10,20,35,.42)→rgba(12,20,36,.45) |
+
+### 16.3 门禁制度化（scripts/check-dimension-usage.mjs）
+- ENFORCE 扩容：+ apps/uniapp/components 全量、apps/flutter/lib/ui/widgets —— 存量组件豁免区清零（design-system.css 别名层与原型本体保留 report-only）。
+- 新规则层：z-index ∈ {10,20,80,90,100} · font-weight ∈ {400,600,700,800} · line-height ∈ {1,1.3,1.5,1.55,1.6,1.7}（原型分档入册）· letter-spacing = 2px（kicker）· flutter Material 调色板直用即 FAIL · flutter 原始 hex 自动对账 app_tokens.dart 全集 · 落地页行高 0.98/1.08 = 例外①。
+
+### 16.4 验证
+flutter analyze 0 issues · check:dimensions PASS（enforce 零圈外；report-only 7 处均为原型手机壳装饰）· check-token-usage PASS · check-icon-usage PASS · build:mp-weixin DONE。
+
+### 16.5 遗留（登记不阻塞）
+- role 级规则（gutter=32rpx 页级断言、navbar padding 域）仍待 phase-2；阴影值维度未机器化（本轮已逐值手工对源原型）。

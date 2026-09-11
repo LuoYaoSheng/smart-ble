@@ -535,7 +535,7 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
                               : (_isConnected
                                   ? AppTheme.successColor
                                   : AppTheme.errorColor),
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ],

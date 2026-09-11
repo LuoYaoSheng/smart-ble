@@ -735,9 +735,8 @@ class _Stepper extends StatelessWidget {
                   ),
                   boxShadow: i == current
                       ? [
-                          BoxShadow(
-                            color:
-                                AppTheme.primaryColor.withValues(alpha: 0.15),
+                          const BoxShadow(
+                            color: AppTokens.cPrimaryWeak,
                             spreadRadius: 4,
                           )
                         ]
@@ -763,7 +762,7 @@ class _Stepper extends StatelessWidget {
                 steps[i],
                 style: TextStyle(
                   fontSize: 10,
-                  fontWeight: i == current ? FontWeight.w700 : FontWeight.w500,
+                  fontWeight: i == current ? FontWeight.w700 : FontWeight.w600,
                   color: i < current
                       ? AppTokens.cSuccessDeep
                       : i == current
@@ -941,7 +940,7 @@ class _FormField extends StatelessWidget {
         Row(children: [
           Text(label,
               style:
-                  const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+                  const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
           if (required)
             const Text(' *',
                 style: TextStyle(fontSize: 13, color: AppTokens.cDanger)),
@@ -1236,7 +1235,7 @@ class _ProgressRow extends StatelessWidget {
                 fontSize: 13,
                 fontWeight: state == ProvisionRowState.fail || strong
                     ? FontWeight.w700
-                    : FontWeight.w500,
+                    : FontWeight.w600,
                 color: state == ProvisionRowState.fail
                     ? AppTokens.cDanger
                     : strong
@@ -1274,21 +1273,18 @@ class _PrimaryButton extends StatelessWidget {
         icon: icon != null
             ? AppIcon(icon!,
                 size: 17,
-                color: onPressed == null ? Colors.white70 : Colors.white)
+                color: onPressed == null ? AppTokens.cPh : Colors.white)
             : const SizedBox.shrink(),
         label: Text(label,
             style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: onPressed == null ? Colors.white70 : Colors.white)),
+                color: onPressed == null ? AppTokens.cPh : Colors.white)),
         style: ElevatedButton.styleFrom(
-          backgroundColor: onPressed == null
-              ? AppTheme.primaryColor.withValues(alpha: 0.45)
-              : AppTheme.primaryColor,
+          backgroundColor: onPressed == null ? AppTokens.cFill : AppTheme.primaryColor,
           foregroundColor: Colors.white,
-          disabledBackgroundColor:
-              AppTheme.primaryColor.withValues(alpha: 0.45),
-          disabledForegroundColor: Colors.white70,
+          disabledBackgroundColor: AppTokens.cFill,
+          disabledForegroundColor: AppTokens.cPh,
           padding: const EdgeInsets.symmetric(vertical: 12),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -1319,7 +1315,7 @@ class _SoftButton extends StatelessWidget {
             style: const TextStyle(
                 fontSize: 13,
                 color: AppTheme.textSecondary,
-                fontWeight: FontWeight.w500)),
+                fontWeight: FontWeight.w600)),
         style: OutlinedButton.styleFrom(
           side: const BorderSide(color: AppTheme.borderColor),
           padding: const EdgeInsets.symmetric(vertical: 12),

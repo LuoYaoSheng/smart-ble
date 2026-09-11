@@ -33,7 +33,7 @@ defineEmits(['action']);
 	align-items: flex-start;
 	gap: 10rpx;
 	padding: 22rpx 24rpx;
-	border-radius: 26rpx;
+	border-radius: 24rpx;
 	background: var(--c-danger-weak);
 	border-left: 6rpx solid var(--c-danger);
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/models/ble_service.dart';
 import '../../core/utils/data_converter.dart';
+import '../design/app_tokens.dart';
 
 /// 发送模式
 enum SendMode {
@@ -68,7 +69,7 @@ class _WriteDataDialogState extends State<WriteDataDialog> {
             // 格式选择
             Row(
               children: [
-                const Text('格式: ', style: TextStyle(fontSize: 14)),
+                const Text('格式: ', style: TextStyle(fontSize: 13)),
                 SegmentedButton<bool>(
                   segments: const [
                     ButtonSegment(value: true, label: Text('HEX')),
@@ -89,7 +90,7 @@ class _WriteDataDialogState extends State<WriteDataDialog> {
             // 发送模式选择
             Row(
               children: [
-                const Text('模式: ', style: TextStyle(fontSize: 14)),
+                const Text('模式: ', style: TextStyle(fontSize: 13)),
                 Expanded(
                   child: SegmentedButton<SendMode>(
                     segments: const [
@@ -183,9 +184,9 @@ class _WriteDataDialogState extends State<WriteDataDialog> {
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
                         decoration: BoxDecoration(
                           color: _intervalMs == ms
-                              ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)
-                              : Colors.grey.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(4),
+                              ? AppTokens.cPrimaryWeak
+                              : AppTokens.cFill,
+                          borderRadius: BorderRadius.circular(7),
                           border: Border.all(
                             color: _intervalMs == ms
                                 ? Theme.of(context).colorScheme.primary
@@ -206,7 +207,7 @@ class _WriteDataDialogState extends State<WriteDataDialog> {
                 padding: EdgeInsets.only(top: 8),
                 child: Text(
                   '每行一条指令，按顺序发送',
-                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                  style: TextStyle(fontSize: 12, color: AppTokens.cMut),
                 ),
               ),
           ],

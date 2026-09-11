@@ -95,7 +95,7 @@ defineEmits(['action']);
 
 .operation-copy {
 	display: block;
-	font-size: 23rpx;
+	font-size: 26rpx;
 	line-height: 1.55;
 	color: var(--ble-text-subtle);
 }

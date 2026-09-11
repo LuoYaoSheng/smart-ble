@@ -197,7 +197,7 @@ class _MatchChip extends StatelessWidget {
         match.chipLabel,
         style: TextStyle(
           fontSize: 11,
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.w600,
           color: strong ? AppTheme.primaryColor : const Color(0xFFC77E14),
         ),
       ),
@@ -249,9 +249,9 @@ class _ActionChip extends StatelessWidget {
             ),
             boxShadow: [
               BoxShadow(
-                color: AppTheme.primaryColor.withValues(alpha: 0.28),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
+                color: AppTheme.primaryColor.withValues(alpha: 0.32),
+                blurRadius: 16,
+                offset: const Offset(0, 6),
               ),
             ],
           ),
@@ -268,7 +268,7 @@ class _ActionChip extends StatelessWidget {
                     Text(label,
                         style: const TextStyle(
                             fontSize: 13,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w600,
                             color: Colors.white)),
                   ],
                 ),
@@ -301,7 +301,7 @@ class _ActionChip extends StatelessWidget {
                 label,
                 style: TextStyle(
                   fontSize: 13,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w600,
                   color:
                       disabled ? const Color(0xFF9AA8B6) : const Color(0xFF18222E),
                 ),

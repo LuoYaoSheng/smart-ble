@@ -240,7 +240,7 @@ class _AboutPageState extends State<AboutPage> {
             child: Text(
               value,
               style: const TextStyle(
-                  fontSize: 13, color: AppTheme.textPrimary, height: 1.4),
+                  fontSize: 13, color: AppTheme.textPrimary, height: 1.55),
             ),
           ),
         ],
@@ -318,7 +318,7 @@ class _MenuRow extends StatelessWidget {
               child: Text(title,
                   style: const TextStyle(
                       fontSize: 13,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w600,
                       color: AppTheme.textPrimary)),
             ),
             const AppIcon('chev-r', size: 18, color: AppTheme.textSecondary),

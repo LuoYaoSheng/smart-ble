@@ -5,6 +5,7 @@ import '../../core/models/ble_scan_result.dart';
 import '../../core/utils/data_converter.dart';
 import '../../core/design/app_icons.dart';
 import '../../themes/app_theme.dart';
+import '../design/app_tokens.dart';
 
 /// 广播数据弹窗（对齐原型 p001-advdlg · F004/R04 口径）
 ///
@@ -202,14 +203,14 @@ class AdvertisementSheet extends StatelessWidget {
           ] else
             Container(
               margin: const EdgeInsets.only(top: 8),
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10), /* 原型 .note 10px 12px */
               decoration: BoxDecoration(
-                color: AppTheme.primaryColor.withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(10),
+                color: AppTokens.cPrimaryWeak,
+                borderRadius: BorderRadius.circular(12),
               ),
               child: const Text(
                 '本轮平台 API 未提供此字段（advertisement 不存在）',
-                style: TextStyle(fontSize: 12, color: Color(0xFF2E5290)),
+                style: TextStyle(fontSize: 12, color: AppTokens.noteInfoFg), /* 正典 .note.info */
               ),
             ),
 

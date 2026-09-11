@@ -206,7 +206,7 @@ onShareTimeline(() => ({ title: 'BLE Toolkit+ - BLE 调试与验证工具', quer
 .platform-chip { display: flex; flex-direction: column; gap: 6rpx; padding: 14rpx 10rpx; border-radius: 18rpx; color: var(--ble-brand); background: rgba(27, 109, 255, 0.08); text-align: center; }
 .platform-name { font-size: 20rpx; font-weight: 700; line-height: 1.3; }
 .platform-status { font-size: 20rpx; font-weight: 800; opacity: 0.85; }
-.menu-item { color: var(--ble-text); font-size: 26rpx; font-weight: 650; }
+.menu-item { color: var(--ble-text); font-size: 26rpx; font-weight: 600; }
 .menu-item-hover { transform: translateY(2rpx); opacity: 0.92; }
 .menu-arrow { margin-left: auto; }
 .footer { padding: 8rpx 0 28rpx; color: var(--ble-text-muted); font-size: 22rpx; text-align: center; }

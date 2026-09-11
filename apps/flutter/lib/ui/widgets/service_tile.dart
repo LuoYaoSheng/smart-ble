@@ -51,7 +51,7 @@ class _ServiceTileState extends State<ServiceTile> {
             height: 40,
             decoration: BoxDecoration(
               color: AppTheme.primaryColor.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: const AppIcon(
               'cast',
@@ -113,7 +113,7 @@ class _ServiceTileState extends State<ServiceTile> {
         style: const TextStyle(
           fontSize: 12,
           color: AppTheme.primaryColor,
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );
@@ -140,7 +140,7 @@ class _CharacteristicTile extends StatelessWidget {
       margin: const EdgeInsets.only(top: 8),
       decoration: BoxDecoration(
         color: AppTheme.backgroundColor,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -173,8 +173,8 @@ class _CharacteristicTile extends StatelessWidget {
             Text(
               characteristic.displayName,
               style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
               ),
             ),
             Text(
@@ -315,7 +315,7 @@ class _PropertyChip extends StatelessWidget {
         style: TextStyle(
           fontSize: 10,
           color: color,
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );

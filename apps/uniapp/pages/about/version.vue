@@ -198,7 +198,7 @@ onShareTimeline(() => ({
 .limit-item {
 	color: var(--ble-text-subtle);
 	font-size: 24rpx;
-	line-height: 1.5;
+	line-height: 1.55;
 }
 
 .history-item {
@@ -228,7 +228,7 @@ onShareTimeline(() => ({
 	display: block;
 	color: var(--ble-text-muted);
 	font-size: 24rpx;
-	line-height: 1.5;
+	line-height: 1.55;
 }
 
 .empty-note.subtle {
@@ -256,6 +256,6 @@ onShareTimeline(() => ({
 	color: var(--ble-text-muted);
 	font-size: 20rpx;
 	text-align: center;
-	line-height: 1.5;
+	line-height: 1.55;
 }
 </style>

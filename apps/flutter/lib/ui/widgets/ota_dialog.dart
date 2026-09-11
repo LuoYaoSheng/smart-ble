@@ -53,10 +53,10 @@ class OtaUpgradeDialog extends ConsumerWidget {
               Container(
                 margin: const EdgeInsets.only(bottom: 16),
                 padding: const EdgeInsets.all(8),
-                color: Colors.red.withValues(alpha: 0.1),
+                color: AppTokens.cDangerWeak,
                 child: Text(
                   state.errorMessage!,
-                  style: const TextStyle(color: Colors.red, fontSize: 13),
+                  style: const TextStyle(color: AppTokens.cDanger, fontSize: 13),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -65,12 +65,12 @@ class OtaUpgradeDialog extends ConsumerWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade300),
+                border: Border.all(color: AppTokens.cLine),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
                 children: [
-                  const AppIcon('doc', color: Colors.blue),
+                  const AppIcon('doc', color: AppTokens.cPrimary),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Column(
@@ -86,7 +86,7 @@ class OtaUpgradeDialog extends ConsumerWidget {
                           Text(
                             '${(state.fileSize / 1024).toStringAsFixed(1)} KB',
                             style: const TextStyle(
-                                fontSize: 12, color: Colors.grey),
+                                fontSize: 12, color: AppTokens.cMut),
                           ),
                       ],
                     ),
@@ -126,8 +126,8 @@ class OtaUpgradeDialog extends ConsumerWidget {
                         ? state.sentBytes / state.totalBytes
                         : 0,
                     strokeWidth: 8,
-                    backgroundColor: Colors.blue.withValues(alpha: 0.1),
-                    color: state.isCompleted ? Colors.green : Colors.blue,
+                    backgroundColor: AppTokens.cPrimaryWeak,
+                    color: state.isCompleted ? AppTokens.cSuccess : AppTokens.cPrimary,
                   ),
                 ),
                 Column(
@@ -142,7 +142,7 @@ class OtaUpgradeDialog extends ConsumerWidget {
                     ),
                     if (state.isCompleted)
                       const AppIcon('check',
-                          color: Colors.green, size: 24),
+                          color: AppTokens.cSuccess, size: 24),
                   ],
                 ),
               ],
@@ -152,7 +152,7 @@ class OtaUpgradeDialog extends ConsumerWidget {
 
             Text(
               state.statusMessage,
-              style: const TextStyle(color: Colors.grey, fontSize: 13),
+              style: const TextStyle(color: AppTokens.cMut, fontSize: 13),
             ),
           ],
         ),
@@ -167,12 +167,12 @@ class OtaUpgradeDialog extends ConsumerWidget {
               Navigator.pop(context);
             },
             child: Text(state.isInProgress ? '取消并关闭' : '关闭',
-                style: const TextStyle(color: Colors.grey)),
+                style: const TextStyle(color: AppTokens.cMut)),
           ),
         if (state.isCompleted)
           ElevatedButton(
             onPressed: () => Navigator.pop(context),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+            style: ElevatedButton.styleFrom(backgroundColor: AppTokens.cPrimary),
             child: const Text('完成', style: TextStyle(color: Colors.white)),
           ),
         if (!state.isInProgress && !state.isCompleted)
