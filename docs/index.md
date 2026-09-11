@@ -3,8 +3,8 @@ layout: home
 
 hero:
   name: "BLE Toolkit+"
-  text: "一套工具，调通每一台 BLE 设备"
-  tagline: "多平台多框架的开源 BLE 工具家族——微信小程序、Android、iOS / macOS 原生、桌面与 ESP32 固件，收进同一条调试工作流。"
+  text: "开源 BLE 工具家族，调通每一台 BLE 设备"
+  tagline: "调试 · 学习 · 多平台多框架对照 · 硬件联动——同一套产品规范，从微信小程序、Android、iOS / macOS、桌面到 ESP32 固件与 Smart HID Profile。"
   image:
     src: /brand/hero-duo.webp
     alt: BLE Toolkit+ 界面截图（Android 开发预览，automator 实拍）
@@ -57,6 +57,29 @@ hero:
     </div>
   </section>
 
+  <section id="why" class="sb-section">
+    <div class="sb-section-head">
+      <div class="sb-kicker">Why</div>
+      <h2>不只是又一个调试工具</h2>
+      <p>BLE 工具分散、体验不统一，学习资料零散、软硬件脱节，不同平台实现难以横向对比——这个开源产品家族用三件事同时回应。</p>
+    </div>
+    <div class="sb-feature-grid">
+      <article class="sb-feature-card">
+        <h3>可直接使用的调试工具</h3>
+        <p>扫描、连接、读写、订阅、广播、OTA 收进同一条工作流；微信小程序扫码即用，其余各端从源码直接跑起。</p>
+      </article>
+      <article class="sb-feature-card">
+        <h3>多平台多框架对照样例</h3>
+        <p>uni-app（Vue 3）、Flutter、Kotlin、SwiftUI、AppKit、Tauri、Electron、Avalonia 实现同一套产品规范——横向对比本身就是学习路径。</p>
+      </article>
+      <article class="sb-feature-card">
+        <h3>软硬件一体的学习与联动</h3>
+        <p>ESP32 参考固件、公开协议与教程配套，从刷入固件到首次扫描、连接、读写、Notify 全链路可复现。</p>
+      </article>
+    </div>
+    <p class="sb-platform-footnote">适用人群：BLE 设备开发者 · Android / iOS / 微信小程序开发者 · 嵌入式工程师 · BLE 学习者与需要多实现对照的团队。配套从 <a href="/tutorials/01_introduction_and_setup">快速起步教案</a> 与 <a href="/MASTER_ARCHITECTURE">整体架构指南</a> 进入。</p>
+  </section>
+
   <section id="features" class="sb-section">
     <div class="sb-section-head">
       <div class="sb-kicker">Features</div>
@@ -65,33 +88,33 @@ hero:
     </div>
     <div class="sb-feature-grid">
       <article class="sb-feature-card">
-        <h3>扫描与广播解析</h3>
-        <p>实时扫描周边 BLE 设备，解析广播包与信号强度，快速锁定目标。</p>
+        <h3>扫描与智能状态过滤</h3>
+        <p>实时扫描周边 BLE 设备，解析广播包与信号强度，按状态过滤快速锁定目标。</p>
         <p class="sb-feature-note">开发预览</p>
       </article>
       <article class="sb-feature-card">
-        <h3>连接与服务发现</h3>
+        <h3>连接与服务动态发现</h3>
         <p>建立连接后自动枚举服务与特征，层级结构清晰、逐层可展开。</p>
         <p class="sb-feature-note">开发预览</p>
       </article>
       <article class="sb-feature-card">
         <h3>读写与订阅</h3>
-        <p>Read / Write / Notify 一致的操作语言，字节级收发明晰可查。</p>
+        <p>Read / Write / Notify 一致的操作语言，支持 UTF-8 / HEX 封解包，字节级收发明晰可查。</p>
         <p class="sb-feature-note">开发预览</p>
       </article>
       <article class="sb-feature-card">
-        <h3>多设备与日志</h3>
-        <p>多设备并行连接，会话日志留痕，回溯问题有据可依。</p>
+        <h3>多设备并行与日志</h3>
+        <p>多设备并行管控与事件防串扰，全维度实时日志留痕，回溯问题有据可依。</p>
         <p class="sb-feature-note">开发中</p>
       </article>
       <article class="sb-feature-card">
-        <h3>手机 Peripheral 广播</h3>
-        <p>把手机变成外围设备对外广播，配合 ESP32 做对称验证。</p>
+        <h3>外设模式广播</h3>
+        <p>把手机变成外围设备对外广播，128 位 UUID 格式强校验，配合 ESP32 做对称验证。</p>
         <p class="sb-feature-note">开发中</p>
       </article>
       <article class="sb-feature-card">
         <h3>OTA 与固件验证</h3>
-        <p>固件升级链路与硬件在环验证，把调试闭环延伸到设备侧。</p>
+        <p>固件升级演示支持外发固件分包下发验证，把调试闭环延伸到设备侧。</p>
         <p class="sb-feature-note">部分链路受阻，详见项目状态</p>
       </article>
     </div>
@@ -130,51 +153,74 @@ hero:
     <div class="sb-section-head">
       <div class="sb-kicker">Platforms</div>
       <h2>多平台多框架，一个工具家族</h2>
-      <p>所有实现共用同一套产品规范与 BLE 协议内核，按平台差异各自落地——从微信小程序到桌面端，再到 ESP32 固件。</p>
+      <p>所有实现共用同一套产品规范与 BLE 协议内核，按平台差异各自落地——每条实现线都是一个可运行、可对照、可学习的样例。</p>
     </div>
     <div class="sb-platform-grid">
       <a href="/tutorials/platforms/uniapp" class="sb-platform-card">
         <span class="sb-platform-status">扫码即用 · 开发预览</span>
         <h3>微信小程序</h3>
-        <p>UniApp（Vue）一线出品，无需安装的轻量入口，覆盖扫描、连接与调试主路径。</p>
+        <p>uni-app（Vue 3）一线出品，轻量传播入口，覆盖扫描、连接与调试主路径。</p>
       </a>
       <a href="/tutorials/platforms/uniapp" class="sb-platform-card">
         <span class="sb-platform-status">客户端主线 · 开发预览</span>
         <h3>Android</h3>
-        <p>UniApp 一线与原生 Kotlin 双实现，承载完整功能目录与原生插件能力。</p>
+        <p>uni-app 一线 + Kotlin / Jetpack Compose 原生增强，承载完整功能目录。</p>
       </a>
       <a href="/tutorials/platforms/native_mobile" class="sb-platform-card">
         <span class="sb-platform-status">原生线 · 源码可构建</span>
         <h3>iOS / macOS</h3>
-        <p>SwiftUI + CoreBluetooth 原生实现，iOS 与 macOS 共享 SmartHidCore 内核。</p>
+        <p>Swift Package + SwiftUI + CoreBluetooth，原生探索与增强，共享 SmartHidCore。</p>
       </a>
       <a href="/tutorials/platforms/flutter" class="sb-platform-card">
         <span class="sb-platform-status">跨框架 · 源码可构建</span>
         <h3>Flutter</h3>
-        <p>Android / macOS 跨框架实现，与 UniApp 线、原生线互为对照。</p>
+        <p>Flutter + Dart 跨平台移动实现，与 uni-app 线、原生线互为对照。</p>
       </a>
       <a href="/tutorials/platforms/desktop" class="sb-platform-card">
         <span class="sb-platform-status">桌面线 · 源码可构建</span>
         <h3>Windows / macOS / Linux</h3>
-        <p>Tauri、Electron、macOS Native 多技术路线的桌面工具与横向参考。</p>
+        <p>Tauri（Rust + btleplug）、Electron（Node.js + noble）、macOS Native（AppKit）、Avalonia（.NET）多路线对照。</p>
       </a>
       <a href="/tutorials/platforms/uniapp" class="sb-platform-card">
         <span class="sb-platform-status">降级体验 · 无真实 BLE</span>
         <h3>H5</h3>
-        <p>产品预览与文档体验；真实 BLE 在 H5 上明确标注不支持。</p>
+        <p>同一 uni-app 一线的产品预览与文档体验；真实 BLE 在 H5 上明确标注不支持。</p>
       </a>
       <a href="https://github.com/luoyaosheng/smart-ble" target="_blank" rel="noopener" class="sb-platform-card">
         <span class="sb-platform-status">原型 · 可交互</span>
         <h3>Web</h3>
-        <p>本站与 HTML 交互原型，可切换各平台视图查看正常、空、失败与不支持状态。</p>
+        <p>本站与 HTML 交互原型——产品与交互母版，可切换各平台视图查看全部状态。</p>
       </a>
       <a href="/tutorials/hardware/01_Hardware_Philosophy" class="sb-platform-card">
         <span class="sb-platform-status">硬件夹具 · 开发中</span>
         <h3>ESP32 固件</h3>
-        <p>ESP-IDF 构建的 Peripheral / Observer 参考固件，广播与 OTA 的真机对手方。</p>
+        <p>PlatformIO / ESP-IDF 参考固件，硬件联动与协议示例，广播与 OTA 的真机对手方；STM32 规划中。</p>
       </a>
     </div>
     <p class="sb-platform-footnote">各实现共用同一产品规范与协议内核，当前均未发布正式产物：微信小程序可扫码体验，其余平台可从源码构建。能力与发布状态见<a href="/status/">项目状态页</a>与<a href="/product-contract/05_PLATFORM_MATRIX">平台适配矩阵</a>。</p>
+  </section>
+
+  <section id="profile" class="sb-section">
+    <div class="sb-section-head">
+      <div class="sb-kicker">Smart HID &amp; Profiles</div>
+      <h2>第一方 Profile 与契约锁生态</h2>
+      <p>通用 BLE 之上是一套可扩展的设备 Profile 体系：移除任一 Profile，它依然是完整的通用 BLE 工具。</p>
+    </div>
+    <div class="sb-feature-grid">
+      <a href="/smart-hid/README" class="sb-feature-card sb-feature-card--link">
+        <h3>Smart HID 第一方 Profile</h3>
+        <p>配网、诊断与历史；由首页通用扫描识别，BLE 只负责配置与诊断，不承载实时控制。</p>
+        <p class="sb-feature-note">开发预览</p>
+      </a>
+      <a href="https://github.com/LuoYaoSheng/Smart-HID-Workspace" target="_blank" rel="noopener" class="sb-feature-card sb-feature-card--link">
+        <h3>契约锁对齐固件正典</h3>
+        <p>配网协议与命令 Schema 以 SHA-256 契约锁与 Smart-HID-Workspace（固件 / ControlHub / 协议正典）跨仓对齐，不漂移。</p>
+      </a>
+      <a href="/profiles/README" class="sb-feature-card sb-feature-card--link">
+        <h3>开放 Profile 扩展</h3>
+        <p>新型号按公开流程注册进 Profile 注册表——协议、测试步骤与证据格式全部公开可贡献。</p>
+      </a>
+    </div>
   </section>
 
   <section class="sb-section">

@@ -811,6 +811,19 @@ a.sb-platform-card:hover {
   box-shadow: var(--shadow-2);
 }
 
+a.sb-feature-card--link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+a.sb-feature-card--link:hover {
+  transform: translateY(-4px);
+  border-color: rgba(27, 109, 255, .32);
+  box-shadow: var(--shadow-2);
+}
+
 .sb-platform-card h3 {
   margin: var(--sp-2) 0 var(--sp-3);
   font-size: var(--fs-title);

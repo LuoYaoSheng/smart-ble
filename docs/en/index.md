@@ -3,8 +3,8 @@ layout: home
 
 hero:
   name: "BLE Toolkit+"
-  text: "One toolkit to debug and verify every BLE device"
-  tagline: "An open-source, multi-platform, multi-framework BLE toolkit family — WeChat mini program, Android, iOS / macOS native, desktop and ESP32 firmware in one debugging workflow."
+  text: "An open-source BLE tool family for every BLE device"
+  tagline: "Debug · Learn · Multi-platform multi-framework comparison · Hardware-in-the-loop — one product spec, from WeChat mini program, Android, iOS / macOS and desktop to ESP32 firmware and the Smart HID profile."
   image:
     src: /brand/hero-duo.webp
     alt: BLE Toolkit+ app screenshots (Android preview, captured from device)
@@ -57,6 +57,29 @@ hero:
     </div>
   </section>
 
+  <section id="why" class="sb-section">
+    <div class="sb-section-head">
+      <div class="sb-kicker">Why</div>
+      <h2>More than another debug tool</h2>
+      <p>BLE tools are scattered, learning material is fragmented, and platform implementations are hard to compare — this open-source family answers all three at once.</p>
+    </div>
+    <div class="sb-feature-grid">
+      <article class="sb-feature-card">
+        <h3>A usable debug tool</h3>
+        <p>Scan, connect, read/write, subscribe, broadcast and OTA in one workflow; the mini program is scan-to-use, every other line runs from source.</p>
+      </article>
+      <article class="sb-feature-card">
+        <h3>Multi-platform comparison samples</h3>
+        <p>uni-app (Vue 3), Flutter, Kotlin, SwiftUI, AppKit, Tauri, Electron and Avalonia implement the same product spec — side-by-side comparison is the learning path.</p>
+      </article>
+      <article class="sb-feature-card">
+        <h3>Software + hardware learning loop</h3>
+        <p>ESP32 reference firmware, open protocols and tutorials — reproducible from flashing to your first scan, connect, read/write and Notify.</p>
+      </article>
+    </div>
+    <p class="sb-platform-footnote">For: BLE device developers · Android / iOS / mini program developers · embedded engineers · BLE learners and teams needing multi-implementation comparison. Start with the <a href="/tutorials/01_introduction_and_setup">quick-start tutorial</a> and the <a href="/MASTER_ARCHITECTURE">master architecture guide</a> (Chinese).</p>
+  </section>
+
   <section id="features" class="sb-section">
     <div class="sb-section-head">
       <div class="sb-kicker">Features</div>
@@ -65,33 +88,33 @@ hero:
     </div>
     <div class="sb-feature-grid">
       <article class="sb-feature-card">
-        <h3>Scan &amp; Broadcast Parsing</h3>
-        <p>Scan nearby BLE devices in real time, parse advertising packets and RSSI to lock onto targets.</p>
+        <h3>Scan &amp; smart state filtering</h3>
+        <p>Scan nearby BLE devices in real time, parse advertising packets and RSSI, and lock onto targets with state filtering.</p>
         <p class="sb-feature-note">Preview</p>
       </article>
       <article class="sb-feature-card">
-        <h3>Connect &amp; Discovery</h3>
+        <h3>Connect &amp; dynamic discovery</h3>
         <p>Enumerate services and characteristics automatically after connecting, layer by layer.</p>
         <p class="sb-feature-note">Preview</p>
       </article>
       <article class="sb-feature-card">
         <h3>Read / Write / Notify</h3>
-        <p>One consistent interaction language for reading, writing and subscribing — byte-level visibility.</p>
+        <p>One consistent interaction language with UTF-8 / HEX packing — byte-level visibility.</p>
         <p class="sb-feature-note">Preview</p>
       </article>
       <article class="sb-feature-card">
-        <h3>Multi-device &amp; Logs</h3>
-        <p>Parallel connections with session logs, so you can trace issues back to the evidence.</p>
+        <h3>Multi-device &amp; logs</h3>
+        <p>Parallel connections with event anti-crosstalk and full-dimension live logs, so issues trace back to evidence.</p>
         <p class="sb-feature-note">In development</p>
       </article>
       <article class="sb-feature-card">
-        <h3>Phone as Peripheral</h3>
-        <p>Turn your phone into a broadcasting peripheral for symmetric verification with ESP32.</p>
+        <h3>Peripheral broadcasting</h3>
+        <p>Turn your phone into a broadcasting peripheral with strict 128-bit UUID validation, symmetric against ESP32.</p>
         <p class="sb-feature-note">In development</p>
       </article>
       <article class="sb-feature-card">
-        <h3>OTA &amp; Firmware Verification</h3>
-        <p>Firmware upgrade chain and hardware-in-the-loop verification extend the loop to the device side.</p>
+        <h3>OTA &amp; firmware verification</h3>
+        <p>Firmware upgrade demo with outbound chunked delivery, extending the loop to the device side.</p>
         <p class="sb-feature-note">Partially blocked — see status page</p>
       </article>
     </div>
@@ -136,45 +159,68 @@ hero:
       <a href="/tutorials/platforms/uniapp" class="sb-platform-card">
         <span class="sb-platform-status">Scan &amp; use · Preview</span>
         <h3>WeChat Mini Program</h3>
-        <p>Built from the UniApp (Vue) line — an install-free lightweight entry covering scan, connect and debug.</p>
+        <p>Built from the uni-app (Vue 3) line — a lightweight, install-free entry covering scan, connect and debug.</p>
       </a>
       <a href="/tutorials/platforms/uniapp" class="sb-platform-card">
         <span class="sb-platform-status">Client mainline · Preview</span>
         <h3>Android</h3>
-        <p>Both the UniApp line and a native Kotlin implementation, carrying the full feature catalog.</p>
+        <p>The uni-app line plus a Kotlin / Jetpack Compose native implementation, carrying the full feature catalog.</p>
       </a>
       <a href="/tutorials/platforms/native_mobile" class="sb-platform-card">
         <span class="sb-platform-status">Native line · Build from source</span>
         <h3>iOS / macOS</h3>
-        <p>SwiftUI + CoreBluetooth native implementation, with iOS and macOS sharing the SmartHidCore kernel.</p>
+        <p>Swift Package + SwiftUI + CoreBluetooth — native exploration sharing the SmartHidCore kernel.</p>
       </a>
       <a href="/tutorials/platforms/flutter" class="sb-platform-card">
         <span class="sb-platform-status">Cross-framework · Build from source</span>
         <h3>Flutter</h3>
-        <p>Android / macOS implementation, cross-checked against the UniApp and native lines.</p>
+        <p>Flutter + Dart mobile implementation, cross-checked against the uni-app and native lines.</p>
       </a>
       <a href="/tutorials/platforms/desktop" class="sb-platform-card">
         <span class="sb-platform-status">Desktop line · Build from source</span>
         <h3>Windows / macOS / Linux</h3>
-        <p>Tauri, Electron and macOS Native — multiple desktop tech routes side by side.</p>
+        <p>Tauri (Rust + btleplug), Electron (Node.js + noble), macOS Native (AppKit) and Avalonia (.NET) routes side by side.</p>
       </a>
       <a href="/tutorials/platforms/uniapp" class="sb-platform-card">
         <span class="sb-platform-status">Degraded · No real BLE</span>
         <h3>H5</h3>
-        <p>Product preview and docs experience; real BLE is explicitly marked unsupported on H5.</p>
+        <p>Same uni-app line, degraded to product preview and docs; real BLE is explicitly marked unsupported.</p>
       </a>
       <a href="https://github.com/luoyaosheng/smart-ble" target="_blank" rel="noopener" class="sb-platform-card">
         <span class="sb-platform-status">Prototype · Interactive</span>
         <h3>Web</h3>
-        <p>This site plus an HTML interactive prototype with per-platform views of normal, empty, failed and unsupported states.</p>
+        <p>This site plus the HTML interactive prototype — the product and interaction master with per-platform views.</p>
       </a>
       <a href="/tutorials/hardware/01_Hardware_Philosophy" class="sb-platform-card">
         <span class="sb-platform-status">Hardware fixture · In development</span>
         <h3>ESP32 Firmware</h3>
-        <p>Peripheral / Observer reference firmware built with ESP-IDF — the real-device counterpart for broadcast and OTA.</p>
+        <p>PlatformIO / ESP-IDF reference firmware for hardware linkage and protocol demos; STM32 planned.</p>
       </a>
     </div>
     <p class="sb-platform-footnote">All implementations share one product spec and protocol core; no official artifacts are released yet — the mini program is scannable today, everything else builds from source. Capability and release status: <a href="/status/">status page</a> and <a href="/product-contract/05_PLATFORM_MATRIX">platform matrix</a> (Chinese).</p>
+  </section>
+
+  <section id="profile" class="sb-section">
+    <div class="sb-section-head">
+      <div class="sb-kicker">Smart HID &amp; Profiles</div>
+      <h2>First-party profiles with a contract lock</h2>
+      <p>On top of generic BLE sits an extensible device profile system: remove any profile and it remains a complete generic BLE tool.</p>
+    </div>
+    <div class="sb-feature-grid">
+      <a href="/smart-hid/README" class="sb-feature-card sb-feature-card--link">
+        <h3>Smart HID first-party profile</h3>
+        <p>Provisioning, diagnostics and history; recognized by generic scanning — BLE handles configuration and diagnostics only.</p>
+        <p class="sb-feature-note">Preview</p>
+      </a>
+      <a href="https://github.com/LuoYaoSheng/Smart-HID-Workspace" target="_blank" rel="noopener" class="sb-feature-card sb-feature-card--link">
+        <h3>Contract-locked to the firmware canon</h3>
+        <p>Provisioning protocol and command schema are SHA-256 contract-locked with Smart-HID-Workspace (firmware / ControlHub / protocol canon).</p>
+      </a>
+      <a href="/profiles/README" class="sb-feature-card sb-feature-card--link">
+        <h3>Open profile extension</h3>
+        <p>New device models register into the profile registry via a public process — protocol, test steps and evidence formats are all open.</p>
+      </a>
+    </div>
   </section>
 
   <section class="sb-section">
