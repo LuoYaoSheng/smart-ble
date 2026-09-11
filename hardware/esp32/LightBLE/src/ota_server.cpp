@@ -321,7 +321,12 @@ void OtaServer::loop() {
     }
 
     if (_state == OTA_RECEIVING && !_staging.empty() && !_commitPending) {
-        size_t len = _staging.size();
+        // DEV-014c：单次 loop 只落盘一个批次（4KB）。整环 32KB 一次写入的
+        // flash 编程临界区（~350ms）会压过中断看门狗默认阈值（300ms），
+        // 高速率传输（实测 5.8KB/s 于 87% 处）触发 TG0WDT 复位；分批后
+        // 每次临界区 ~50ms，剩余数据留在环里由后续 loop 迭代消化
+        //（BLE 到包速率远低于排水能力，环不会积压）。
+        size_t len = _staging.size() > kOtaDrainBatch ? kOtaDrainBatch : _staging.size();
         size_t written = Update.write(_staging.data(), len);
         if (written != len) {
             _staging.clear();
@@ -332,7 +337,7 @@ void OtaServer::loop() {
         } else {
             sha256Update(_staging.data(), len);
             _receivedSize += written;
-            _staging.clear();
+            _staging.erase(_staging.begin(), _staging.begin() + written);
             if (millis() - _lastProgressMs >= 250 || _receivedSize == _expectedSize) {
                 _lastProgressMs = millis();
                 notifyStatus("progress", nullptr, nullptr, true);

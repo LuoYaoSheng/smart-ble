@@ -1,0 +1,3 @@
+3c74f5d91eec1021f4b8cba9eb14717421f37d6ad59821a67538d97e351e7566 */e/project/xf/smart-ble/verification/windows-mobile-v1/20260911-win-b3/w5-ota/firmware/firmware-v1.0.0-baseline.bin
+4f4e16f3417b3925bdf30f657ef7f11bb6c131fadea89e905e2dd6419ef3367b */e/project/xf/smart-ble/verification/windows-mobile-v1/20260911-win-b3/w5-ota/firmware/firmware-v1.0.2-ota-target.bin
+70bc64b67ee63fe0a8370c92f4832d61517bcd33f11128c37403222e26deb0db */e/project/xf/smart-ble/verification/windows-mobile-v1/20260911-win-b3/w5-ota/firmware/firmware-v1.0.3-ota-target.bin

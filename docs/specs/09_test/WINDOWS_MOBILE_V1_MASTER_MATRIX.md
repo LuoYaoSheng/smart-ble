@@ -39,7 +39,7 @@
 | F022 | 配网错误恢复 | P0 | Smart HID | P002/P005 | REQ | REQ | REQ | E2 | E5 | 真实 Smart HID+Hub | NOT_RUN | NOT_RUN | F-AND PASS（HEAD 复跑：伪 SSID→`wifi_failed` 终态+「返回表单修改」+cancel→`timeout`+「重新下发」；pairing/mqtt 分流引用 E14 T3/T4 真机）；U-AND NOT_RUN（003b）；A-AND NOT_RUN（PARITY-001）；U-WX BLOCKED_TOOLCHAIN |
 | F023 | ~~设备历史~~（删除红线） | P0 | Smart HID | P004 应不存在 | 禁止 | 禁止 | 禁止 | E1/E2 | E5 | 不需要 | NOT_RUN | NOT_RUN | 三线 PASS（静态检查：U-AND 9 路由/F-AND 9 页面/A-AND 4 Tab 均无历史页/路由/持久化；known-devices.js 与 hid_session_store.dart 内存化+2026-09-02 移除决策注释在案） |
 | F024 | 实时诊断（五项） | P1 | Smart HID | P005 | REQ | REQ | REQ | E2 | E5 | 真实 Smart HID+Hub | NOT_RUN | NOT_RUN | F-AND PASS_WITH_LIMITATION（E14 T4 真机诊断面板重读 INFO/STATUS@3638f66 + HEAD 代码复核 `HidDiagnosticsPage(fromWizard)` 五行映射；独立页真机复跑需 mqtt_invalid=真凭据，本轮未达）；U-AND NOT_RUN（003b：诊断依赖读特征）；A-AND NOT_RUN（PARITY-001）；U-WX BLOCKED_TOOLCHAIN |
-| F025 | 固件升级 OTA | P1 | OTA | P006 子流程 | BLOCKED | BLOCKED | BLOCKED | E2 | 仅契约/UI | 不需要 | NOT_RUN | NOT_RUN | BLOCKED(P-03) |
+| F025 | 固件升级 OTA | P1 | OTA | P006 子流程 | BLOCKED | BLOCKED | BLOCKED | E2 | 仅契约/UI | 不需要 | NOT_RUN | NOT_RUN | BLOCKED(P-03)（移动三线维持；**桌面 E3 实刷证据已产出 2026-09-11 W5**：E-WIN 1.0.0→1.0.2 全链 PASS_WITH_OBS=UI 11/12 + 串口 `ota success 570480/570480`→复位→boot@1.0.2；T-WIN 1.0.2→1.0.3 + 取消分支 PASS_WITH_OBS=UI 14/15 + noble 直读 firmware_version 1.0.3；观察项=OTA 复位后重连 UI 读 26a8 不回调（noble-winrt/btleplug 已知行为，版本证据由串口 boot 帧/直读承担）；writeNoResponse 字节腐败等 5 缺陷修复账本见 20260911-win-b3/w5-ota-SUMMARY.md；F025 解除与否仍归正典裁决，不因证据自动解除） |
 | F026 | 日志脱敏 | P0 | 横切 | 横切 | REQ | REQ | REQ | E1/E2 | E5 | 不需要 | 三线 E1 PASS（2026-09-10：F-AND/A-AND 新增 Logger 漏斗脱敏 + 同向量单测 13/12 例；U-AND 沿用 logging-target 集成测试） | E1 PASS（边界向量：hex 转储不误伤/非法 JSON 原样/保护键白名单） | E1 三线 PASS（F-AND log_redaction_test.dart 13 例、A-AND LogRedactionTest 12 例、U-AND logging-target.test.mjs 既有）；E5 真机 logcat 抽查留硬件窗口 |
 | F027 | 版本元数据展示 | P2 | 系统 | P009/P010 | REQ | REQ | REQ | E2 | E5 | 不需要 | 三线 E1 PASS（2026-09-10：生成管线 1→6 产物含 F-AND Dart/A-AND Kotlin 锁定镜像；P009 三态+P010 整页投影接线，手写版本事实清零） | E1 PASS（空元数据→dev.unknown 不编造/release 注入→VERIFIED 历史/注入不污染全局） | E1 三线 PASS（F-AND version_metadata_test.dart 14 例、A-AND VersionMetadataTest 14 例 XML 实证、U-AND version-*-target.test.mjs 既有）；A-AND 假「Release tag 已登记」行与两线错误预览空态已修；E2/E5 真机 P009/P010 抽查留硬件窗口 |
 | F028 | 小程序推广跳转 | P2 | 系统 | P009 | — | — | — | — | — | **已移除（2026-09-10）** | REMOVED | REMOVED | REMOVED |
@@ -126,7 +126,7 @@
 | F013 多设备 | ✅ 双手机方案候选：华为 TAS-AN00 跑 A-AND 广播=第二外设 + ESP32，三星 E5 做中央；不成立再议 ESP32 双广播实例固件或 BLOCKED_FIXTURE | ✅ 同方案 | ✅ 同方案 |
 | F014-F017 广播 | ✅ 已跑 9/9（BroadcastScreen+BlePeripheralManager，F015 等价；观察侧 fixture_observer_s3 交叉） | NOT_APPLICABLE（noble 广播仅 Linux） | NOT_APPLICABLE（btleplug 仅 central） |
 | F018-F024 Smart HID | ❌ 无配网页=PARITY-001 | ❌ PARITY-002 | ❌ PARITY-002 |
-| F025 OTA | ⚠️ OtaCard 实装但无分块 ACK（写入成功=入队） | OtaDialog 在 | OtaDialog 在 |
+| F025 OTA | ✅ 2026-09-11 W5 真机实刷收口（E-WIN/T-WIN 同轮；OtaDialog DATA 改带响应写+整百分比 UI 节流，PARITY-007 已修） | E-WIN PASS_WITH_OBS（1.0.0→1.0.2，串口交叉） | T-WIN PASS_WITH_OBS（1.0.2→1.0.3 + 取消分支，noble 直读交叉） |
 | F026-F030 | 逐项回填 | 逐项回填 | 逐项回填 |
 
 ### 4.4 随线登记 PARITY 缺陷（2026-09-07）
@@ -139,6 +139,7 @@
 | PARITY-004 | A-AND | manufacturerData=null（源码注「Simplified for now」）→ F004 广播详情缺厂商数据段 | P2 |
 | PARITY-005 | E-WIN | electron-builder build:win 引用不存在的 assets/icon.ico → Windows 打包阻断（npm start 不受影响） | P2 | → **已收口 2026-09-11**（W2）：icon.ico 先由 Mac 侧 8e58f0e 跨端统一图标补齐，本机 build:win 冒烟 exit 0（nsis+portable 双产物，exe 内嵌图标逐像素比对同源）；GitHub 直连超时需 npmmirror 镜像变量（§4.6）；证据 20260911-win-b3/w2-ewin-buildwin |
 | PARITY-006 | V-WIN | csproj 引用不存在的 app.manifest 与 Assets/icon.ico → dotnet build 直接失败 | P2 | → **已收口 2026-09-11**（W1）：补齐 manifest+图标，另修幽灵 NuGet 包（nuget.org 无 WindowsBluetooth，改 TFM 投影）/保留字 char/Avalonia 10→11 语法等 11 项隐性缺陷，dotnet build exit 0；证据 20260911-win-b3/w1-vwin-build-smoke |
+| PARITY-007 | E-WIN/T-WIN | OtaDialog DATA 分块用 writeNoResponse：Windows BLE 栈下字节级腐败（570480B 尺寸守恒但 sha256 不符 → commit `OTA_HASH_MISMATCH`；同镜像同链路带响应写 commit SUCCESS，剥离实验在案） | P1 | → **已收口 2026-09-11**（W5）：双线 OtaDialog DATA 改带响应写（ATT ack 逐块确认=契约「分块 ACK」本义）+ 每块同步刷 DOM 改整百分比节流（软件渲染下 ~1s/块 → 恢复 ~28ms/块）；证据 20260911-win-b3/w5-ota-* |
 
 ### 4.5 执行顺序（并入 §28 战役流）
 
@@ -155,3 +156,5 @@ A-AND 启动（构建→E5 安装→F001-F005 等价真机）→ F013 双手机�
   开串口（serial-tap）会经 DTR/RTS 脉冲复位设备——夹具状态以串口首启横幅为准（复位同时清 test_control 粘性 fault）
 - Electron `node_modules` 已含编译好的 noble WinRT binding（曾实跑）；Avalonia 无 .sln、csproj 断引用（csproj 已修复=PARITY-006 收口 2026-09-11）
 - electron-builder Windows 打包直连 GitHub 拉取 winCodeSign/NSIS 工具链大概率超时（2026-09-11 run1 实证）；复现需镜像变量 `ELECTRON_BUILDER_BINARIES_MIRROR=https://npmmirror.com/mirrors/electron-builder-binaries/`（+`ELECTRON_MIRROR`，证据 20260911-win-b3/w2-ewin-buildwin）；rcedit 嵌图标偶发 `Unable to commit changes`（AV/文件锁抖动），builder 自带重试可过
+- **W5 OTA 实刷链关键事实（2026-09-11）**：① writeNoResponse 分块在 Windows BLE 栈字节级腐败（PARITY-007 已修，剥离实验 w5-ota/firmware/withresp-isolation-leanbench-serial.txt：同镜像无响应→HASH_MISMATCH、带响应→SUCCESS+复位+boot 新版本）；② 夹具 OTA 三缺陷已修：DEV-014b `CORE_DEBUG_LEVEL=5` 每块 4 行日志（含 hex 转储）从 nimble_host 灌 UART→任务看门狗（IDLE0 饿死，16s 处 abort）→ 三环境统一降 1（JSON 串口事件走独立 print 不受影响）；DEV-014c 32KB 整环单次 `Update.write` flash 编程临界区 ~350ms 压过中断看门狗 300ms（TG0WDT，高速率 87% 处复位）→ loop 排水限 4KB/批；DEV-014d OTA 后未 `esp_ota_mark_app_valid_cancel_rollback`→下次复位 bootloader 滚回旧分区（boot 帧版本回落）→ setup() 幂等 confirm；③ Electron 本机 GPU 进程偶发崩溃循环（0xC0000409）→ 启动重试（CDP 端口探活）优于 `--disable-gpu`（软件渲染+每通知帧 toast 重绘拖垮渲染线程 ~1s/块；UI 已节流但 GPU 路径仍首选）；④ serial-tap 独占 COM12——双轮连跑须等前探针到期，否则 PermissionError 13
+- **W4 阻塞登记（2026-09-11）**：E5 Smart HID 真机全链所需 ESP32-S3 SHID 板**物理不在位**（PnP 枚举仅 CH343→WROOM fixture_peripheral_s3@COM12；S3 板=E13 时 COM13 已拔）。「W4 前须重刷 SHID 固件」前提改为**须先接回 S3 板**（用户硬件窗口）；ControlHub 凭据侧不阻塞——本机 smart-hid-workspace 可源码起 hub 自铸配对码（E13 同法）

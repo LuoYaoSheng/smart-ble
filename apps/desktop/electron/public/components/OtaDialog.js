@@ -325,17 +325,27 @@ class OtaDialog extends HTMLElement {
 
         try {
             let sent = 0;
+            let lastPct = -1;
             while (sent < total) {
                 if (this._cancelled) throw new Error('用户已取消');
 
                 const end   = Math.min(sent + this.chunkSize, total);
                 const chunk = this.fileBuffer.slice(sent, end);
-                await this._writeRaw(this.charDataUuid, chunk, true); // WithoutResponse for throughput
+                // W5 实测（2026-09-11 真机剥离实验）：writeNoResponse 在 WinRT/noble
+                // 路径下存在字节级腐败（570480B 尺寸守恒但 sha256 不符 → commit
+                // OTA_HASH_MISMATCH）；带响应写同镜像同链路 commit SUCCESS。
+                // DATA 改用带响应写（ATT ack 逐块确认 = 契约「分块 ACK」本义）。
+                await this._writeRaw(this.charDataUuid, chunk, false);
 
                 sent = end;
                 const pct = Math.floor((sent / total) * 100);
-                this._setProgress(pct);
-                this._setStatus(`传输中... ${pct}%  (${sent.toLocaleString()} / ${total.toLocaleString()} 字节)`);
+                // W5 实测：每块同步刷 DOM 在软件渲染（--disable-gpu）下把渲染主线程
+                // 刷爆（~1s/块）；按整百分比节流后整轮最多 100 次 UI 更新，速率与渲染解耦。
+                if (pct !== lastPct || sent === total) {
+                    lastPct = pct;
+                    this._setProgress(pct);
+                    this._setStatus(`传输中... ${pct}%  (${sent.toLocaleString()} / ${total.toLocaleString()} 字节)`);
+                }
                 await this._sleep(20);
             }
 
