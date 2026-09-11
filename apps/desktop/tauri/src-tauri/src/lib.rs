@@ -11,6 +11,7 @@ use futures::stream::StreamExt;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Arc;
+use std::sync::atomic::{AtomicBool, Ordering};
 use tokio::sync::Mutex;
 use std::time::Duration;
 use tauri::State;
@@ -1061,6 +1062,17 @@ fn get_properties(char: &Characteristic) -> Vec<String> {
     props
 }
 
+// 退出确认回执（10_platform §4 生命周期：常驻，退出确认）：前端模态「退出」→ 置旗并关窗
+// （CloseRequested 见旗放行；「继续使用」不调本命令，直接关模态继续运行）
+#[tauri::command]
+fn confirm_exit(quit: bool, window: tauri::Window, state: State<'_, Arc<AtomicBool>>) {
+    if quit {
+        state.store(true, Ordering::SeqCst);
+        eprintln!("[APP] Exit confirmed by user -> closing");
+        let _ = window.close();
+    }
+}
+
 // Run the app
 pub fn run() {
     let ble_state = Arc::new(Mutex::new(BleState {
@@ -1071,9 +1083,31 @@ pub fn run() {
         scan_handle: None,
         notify_handles: HashMap::new(),
     }));
+    // 退出确认旗：前端确认后置 true，放行下一次 CloseRequested（window.close 会再触发）
+    let exit_confirmed = Arc::new(AtomicBool::new(false));
+    let ble_state_for_close = Arc::clone(&ble_state);
 
     tauri::Builder::default()
         .manage(ble_state)
+        .manage(exit_confirmed.clone())
+        // 退出确认（10_platform §4；原型 desktop.js dwin-quit 同口径）：拦截关闭 → 通知前端弹应用内模态
+        .on_window_event(move |event| {
+            if let tauri::WindowEvent::CloseRequested { api, .. } = event.event() {
+                if exit_confirmed.load(Ordering::SeqCst) {
+                    return; // 已确认退出，放行默认关闭
+                }
+                api.prevent_close();
+                // 连接数读取用 try_lock：关闭瞬间恰有 BLE 命令持锁时按 0 处理（少报不误报会话）
+                let connected = ble_state_for_close
+                    .try_lock()
+                    .map(|state| state.connected_peripherals.len())
+                    .unwrap_or(0);
+                eprintln!("[APP] Close requested -> exit confirm (connected={})", connected);
+                let mut payload = HashMap::new();
+                payload.insert("connected", connected);
+                let _ = event.window().emit("app-confirm-exit", payload);
+            }
+        })
         .invoke_handler(tauri::generate_handler![
             init_ble,
             start_scan,
@@ -1087,6 +1121,7 @@ pub fn run() {
             notify_characteristic,
             start_advertising,
             stop_advertising,
+            confirm_exit,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
