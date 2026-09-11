@@ -141,3 +141,33 @@ hero clamp 上限 42/58px 超 token 阶梯上限（`--fs-display` 24px）。本�
 
 - 存量组件（uniapp common/scan/hid、flutter widgets）仍有 report-only 维度值——随 UI-PARITY 组件迁移退役，不单独清洗。
 - flutter 页面 fontSize 16（modal 标题契约档）现为全局白名单值，理论上可被页面挪用；phase-1 接受，phase-2 可收窄为文件级豁免。
+
+---
+
+# 第三轮：导航栏专项（状态栏占位 + 左右边距）· 2026-09-11 晚
+
+用户实测复核指出：「导航栏有些没注意状态栏，有些没注意左右边距」。全端核查证实两处结构性缺口（均为**角色/结构级**问题，值级门禁抓不到——值在白名单但角色错位）。
+
+## 12. 诊断矩阵
+
+| 端 | 状态栏 | 左右边距 | 根源 |
+|---|---|---|---|
+| uniapp | ✓ 9 页全 custom 导航且挂正典 AppNavbar/AppSubnav（MP-WEIXIN statusBarHeight 占位；APP 端 webview 在状态栏下不占位=契约口径；manifest 无沉浸式） | ✗ 组件水平 padding 仅 4rpx(2px)（kicker/标题/back 键贴屏幕边缘）；页面 gutter 10/12/13/14px 四种混用（正典 navbar 内容 18 / subnav back 14 / gutter 16） | 组件曾依赖外层 wrapper 补边距，但实际 wrapper（ble-shell/container/subpage）无水平 padding → 组件全宽裸奔 |
+| flutter | ✗ about/broadcast/connected 三页 body 直挂 AppNavbar 无 SafeArea → **内容顶进状态栏**（其余 5 页 AppSubnav 走 Scaffold.appBar 自动处理 ✓，device_list 自带 SafeArea ✓，main.dart 无全局兜底） | ✗ AppNavbar LTRB(2,8,2,12) 水平 2px 贴边；AppSubnav LTRB(0,8,0,10) 水平 0 贴边 | 组件移植时未带正典水平边距 |
+
+## 13. 修复
+
+- **flutter**：3 页 `body: SafeArea(child: Column(…))`（对齐 device_list_page 写法）；AppNavbar → LTRB(18,8,18,12)；AppSubnav → LTRB(14,8,16,10)（正典 back 14/右 16）；卡内 all(14)×2 → 16（broadcast 横幅 all(12) 系 note 正典 10/12 登记值保留）。
+- **uniapp**：AppNavbar padding → 16rpx 36rpx 24rpx（8/18/12）+ trailingSafe 默认 18px；AppSubnav → 16rpx 28rpx 20rpx（8/14/10）+ trailingSafe 默认 16px；胶囊避让下限 4 → 18/16。gutter 统一 32rpx（16px）：ble-content 28、about/index container 28 + header 24、hid/add page-content 28 + device-card 22、hid/detail page-content 20 + card 22、hid/diagnostics page-content 20 + card 22 + error-detail→ebanner 正典 24/28rpx、broadcast page-container 20 + 面板 24、about/version container 24 + card 26、device/detail device-panel margin 24→32 + padding 28→32 + 滚动区 24、connected results-panel 26 + summary-card 24→32；别名层 ble-error-box 20/22 → ebanner 正典 24/28rpx。
+
+## 14. 验证
+
+- `flutter analyze`：No issues found（SafeArea 包裹 + 纯值替换）。
+- `npm run build:mp-weixin`：Build complete（9 个 .vue + 2 组件改动编译通过；node:crypto externalized 为已知警告）。
+- 三门禁（dimensions/token/icon）复跑全 PASS。
+- 几何推演复核：AppNavbar 全宽 + 36rpx → kicker/标题距屏 18px ✓；页面 gutter 32rpx → 内容 16px ✓；AppSubnav back 距屏 14px ✓——与正典原型（navbar margin -16 + padding 18 / subnav 14 / gutter 16）完全同构。
+
+## 15. 遗留（phase-2 登记）
+
+- 维度门禁为**值级**白名单，抓不到角色错位（gutter 用了 10/12/14px 合法值、组件 padding 2px 系 txtlink 登记值挪用）——phase-2 可加角色规则（页级 wrapper 水平 padding 必须 32rpx；导航组件水平 padding 正典区间）。
+- 真机/微信开发者工具实拍复核留待用户侧（本机不启用 GUI 通道铁律）。

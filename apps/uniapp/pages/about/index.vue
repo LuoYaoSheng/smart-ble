@@ -184,14 +184,14 @@ onShareTimeline(() => ({ title: 'BLE Toolkit+ - BLE 调试与验证工具', quer
 <style scoped>
 .page-content { height: calc(100vh - 2rpx); }
 .page-scroll { height: 100%; }
-.container { min-height: 100%; padding: 28rpx; background: transparent; box-sizing: border-box; }
+.container { min-height: 100%; padding: 32rpx; background: transparent; box-sizing: border-box; }
 .header, .section { margin-bottom: 22rpx; border: 1rpx solid var(--ble-line-soft); border-radius: var(--ble-radius-lg); background: var(--ble-gradient-surface); box-shadow: var(--ble-shadow-soft); }
-.header { display: flex; align-items: center; gap: 20rpx; padding: 24rpx; }
+.header { display: flex; align-items: center; gap: 20rpx; padding: 32rpx; }
 .logo-box { display: flex; align-items: center; justify-content: center; width: 76rpx; height: 76rpx; flex-shrink: 0; border-radius: var(--ble-radius-sm); background: linear-gradient(135deg, var(--c-primary-deep), var(--c-primary)); }
 .brand-copy { min-width: 0; flex: 1; }
 .app-name { display: block; color: var(--ble-text); font-size: 30rpx; font-weight: 800; }
 .version { display: block; margin-top: 4rpx; color: var(--ble-text-muted); font-size: 20rpx; }
-.section { padding: 28rpx; }
+.section { padding: 32rpx; }
 .section-title { color: var(--ble-text); font-size: 30rpx; font-weight: 800; }
 .section-caption { display: block; margin: 8rpx 0 20rpx; color: var(--ble-text-muted); font-size: 22rpx; line-height: 1.5; }
 .subsection-title { margin: 24rpx 0 12rpx; color: var(--ble-text-muted); font-size: 22rpx; font-weight: 800; }

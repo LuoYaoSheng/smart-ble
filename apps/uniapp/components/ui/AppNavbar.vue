@@ -32,20 +32,20 @@ defineProps({
 
 const windowInfo = uni.getWindowInfo?.() || {};
 const statusBarHeight = ref(0);
-const trailingSafe = ref(4);
+const trailingSafe = ref(18); // 非小程序端 = 正典 navbar 右距 18px；MP-WEIXIN 覆盖为胶囊避让
 
 // #ifdef MP-WEIXIN
 statusBarHeight.value = windowInfo.statusBarHeight || 20;
 const menu = uni.getMenuButtonBoundingClientRect?.();
 if (menu && menu.top != null) {
-	trailingSafe.value = Math.max((windowInfo.windowWidth || 375) - menu.left + 12, 4);
+	trailingSafe.value = Math.max((windowInfo.windowWidth || 375) - menu.left + 12, 18);
 }
 // #endif
 </script>
 
 <style scoped>
 .app-navbar {
-	padding: 16rpx 4rpx 24rpx;
+	padding: 16rpx 36rpx 24rpx; /* 8/18/12 正典（原型 navbar 内容距屏 18px） */
 	background: linear-gradient(180deg, var(--c-card), var(--c-bg));
 	border-bottom: 2rpx solid var(--c-line-soft);
 	position: sticky;

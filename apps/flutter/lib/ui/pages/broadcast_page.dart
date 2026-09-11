@@ -240,7 +240,8 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       // UI-G2：正典 AppNavbar（PERIPHERAL + 平台 chip + 状态 badge），状态收进导航栏
-      body: Column(
+      body: SafeArea(
+        child: Column(
         children: [
           AppNavbar(
             kicker: 'PERIPHERAL',
@@ -298,6 +299,7 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
             ),
           ),
         ],
+      ),
       ),
     );
   }

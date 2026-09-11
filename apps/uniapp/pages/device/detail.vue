@@ -262,8 +262,8 @@ const onToggleNotify = ({ serviceId, charId }) => {
 }
 
 .device-panel {
-	margin: 24rpx 24rpx 0;
-	padding: 28rpx;
+	margin: 32rpx 32rpx 0;
+	padding: 32rpx;
 	border-radius: var(--ble-radius-lg);
 	background: var(--ble-gradient-surface);
 	border: 1rpx solid var(--ble-line);
@@ -359,6 +359,6 @@ const onToggleNotify = ({ serviceId, charId }) => {
 .main-content {
 	flex: 1;
 	height: 0;
-	padding: 24rpx;
+	padding: 32rpx;
 }
 </style>

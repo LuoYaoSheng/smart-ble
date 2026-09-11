@@ -728,7 +728,7 @@ onShareAppMessage(() => ({
 
 .page-container {
 	min-height: 100%;
-	padding: 20rpx;
+	padding: 32rpx;
 	box-sizing: border-box;
 	background: transparent;
 }
@@ -744,7 +744,7 @@ onShareAppMessage(() => ({
 	border: 1rpx solid var(--ble-line);
 	border-radius: var(--ble-radius-lg);
 	box-shadow: var(--ble-shadow-soft);
-	padding: 24rpx;
+	padding: 32rpx;
 	display: flex;
 	flex-direction: column;
 	gap: 14rpx;

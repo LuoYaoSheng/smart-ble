@@ -111,7 +111,7 @@ onShareTimeline(() => ({
 
 <style>
 .container {
-	padding: 24rpx;
+	padding: 32rpx;
 	background: transparent;
 	min-height: 100vh;
 	display: flex;
@@ -120,7 +120,7 @@ onShareTimeline(() => ({
 }
 
 .card {
-	padding: 26rpx;
+	padding: 32rpx;
 	border: 1rpx solid var(--ble-line-soft);
 	border-radius: 32rpx;
 	background: var(--ble-gradient-surface);

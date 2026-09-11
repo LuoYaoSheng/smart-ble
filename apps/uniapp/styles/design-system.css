@@ -62,7 +62,7 @@ image {
 }
 
 .ble-content {
-  padding: 28rpx;
+  padding: 32rpx;
   display: flex;
   flex-direction: column;
   gap: 24rpx;
@@ -411,7 +411,7 @@ image {
 }
 
 .ble-error-box {
-  padding: 20rpx 22rpx;
+  padding: 24rpx 28rpx;
   border: 1rpx solid rgba(242, 85, 95, 0.14);
   border-radius: 22rpx;
   color: var(--ble-red);

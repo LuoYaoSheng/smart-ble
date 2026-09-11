@@ -455,7 +455,7 @@ class _HidDiagnosticsPageState extends State<HidDiagnosticsPage> {
   Widget _errorBlock() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppTheme.cardColor,
         borderRadius: BorderRadius.circular(16),

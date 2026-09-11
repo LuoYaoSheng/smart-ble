@@ -60,7 +60,8 @@ class _ConnectedDevicesPageState extends ConsumerState<ConnectedDevicesPage> {
 
     // UI-G2：正典 AppNavbar（SESSIONS + 会话 chip；F-AND 无 SHID 配网通道，固定通用会话）
     return Scaffold(
-      body: Column(
+      body: SafeArea(
+        child: Column(
         children: [
           const AppNavbar(
             kicker: 'SESSIONS',
@@ -73,6 +74,7 @@ class _ConnectedDevicesPageState extends ConsumerState<ConnectedDevicesPage> {
                 : _buildDeviceList(connectedIds),
           ),
         ],
+      ),
       ),
     );
   }

@@ -176,8 +176,8 @@ const reconfigure = () => {
 
 <style>
 .subpage { min-height: 100vh; background: transparent; }
-.page-content { padding: 20rpx; }
-.card { background: var(--ble-gradient-surface); border-radius: var(--ble-radius-lg); padding: 22rpx; display: flex; flex-direction: column; gap: 14rpx; border: 1rpx solid var(--ble-line-soft); box-shadow: var(--ble-shadow-soft); }
+.page-content { padding: 32rpx; }
+.card { background: var(--ble-gradient-surface); border-radius: var(--ble-radius-lg); padding: 32rpx; display: flex; flex-direction: column; gap: 14rpx; border: 1rpx solid var(--ble-line-soft); box-shadow: var(--ble-shadow-soft); }
 .diagnostic-status { display: flex; align-items: center; justify-content: space-between; gap: 16rpx; padding: 4rpx 0 12rpx; border-bottom: 1rpx solid var(--ble-line-faint); }
 .device-id { color: var(--ble-text-muted); font-size: 22rpx; }
 .mono { font-family: var(--ble-mono, "SF Mono", "Roboto Mono", Menlo, monospace); }
@@ -188,7 +188,7 @@ const reconfigure = () => {
 .diag-state { font-size: 24rpx; color: var(--ble-text-muted); }
 .diag-detail { font-size: 24rpx; line-height: 1.55; color: var(--ble-text-subtle); padding-left: 58rpx; }
 .actions { display: flex; flex-direction: column; gap: 14rpx; margin-top: 10rpx; }
-.error-detail { background: rgba(242,85,95,.08); border-radius: 24rpx; padding: 20rpx; display: flex; flex-direction: column; align-items: flex-start; gap: 8rpx; border: 1rpx solid rgba(242,85,95,.12); }
+.error-detail { background: rgba(242,85,95,.08); border-radius: 24rpx; padding: 24rpx 28rpx; display: flex; flex-direction: column; align-items: flex-start; gap: 8rpx; border: 1rpx solid rgba(242,85,95,.12); }
 .error-detail .app-btn { align-self: stretch; }
 .error-title { font-size: 24rpx; color: var(--ble-red); font-weight: 700; }
 .error-code { font-size: 24rpx; color: var(--ble-red); font-family: var(--ble-mono, "SF Mono", "Roboto Mono", Menlo, monospace); }

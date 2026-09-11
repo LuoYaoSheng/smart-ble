@@ -18,7 +18,7 @@ class AppSubnav extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(0, 8, 0, 10),
+      padding: const EdgeInsets.fromLTRB(14, 8, 16, 10),
       decoration: const BoxDecoration(
         color: AppTokens.cCard,
         border: Border(bottom: BorderSide(color: AppTokens.cLineSoft)),

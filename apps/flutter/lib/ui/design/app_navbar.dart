@@ -30,7 +30,7 @@ class AppNavbar extends StatelessWidget {
       null => AppTokens.cPh,
     };
     return Container(
-      padding: const EdgeInsets.fromLTRB(2, 8, 2, 12),
+      padding: const EdgeInsets.fromLTRB(18, 8, 18, 12),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,

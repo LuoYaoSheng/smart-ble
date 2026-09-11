@@ -89,7 +89,8 @@ class _AboutPageState extends State<AboutPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       // UI-G2：正典 AppNavbar（ABOUT + 版本 chip mono）
-      body: Column(
+      body: SafeArea(
+        child: Column(
         children: [
           AppNavbar(
             kicker: 'ABOUT',
@@ -127,6 +128,7 @@ class _AboutPageState extends State<AboutPage> {
             ),
           ),
         ],
+      ),
       ),
     );
   }

@@ -101,14 +101,14 @@ const goAdvancedBle = () => {
 
 <style scoped>
 .page-content {
-	padding: 20rpx;
+	padding: 32rpx;
 	display: flex;
 	flex-direction: column;
 	gap: 16rpx;
 }
 
 .card {
-	padding: 22rpx;
+	padding: 32rpx;
 	display: flex;
 	flex-direction: column;
 	gap: 8rpx;
