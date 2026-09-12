@@ -23,14 +23,26 @@
       "release_status": "NOT_RELEASED"
     },
     "ios": {
-      "name": "iOS",
+      "name": "Apple 原生（iOS / macOS）",
       "role": "mainline",
       "capability_status": "PREVIEW",
       "release_status": "NOT_RELEASED",
       "reason": "纯原生 SwiftUI 功能与默认/关键交互态已实现；真机签名 E5 尚未完成"
     },
-    "flutter_tauri_native": {
-      "name": "Flutter / Tauri / 原生端",
+    "android_native": {
+      "name": "Android 原生（Kotlin）",
+      "role": "REFERENCE",
+      "capability_status": null,
+      "release_status": "NOT_RELEASED"
+    },
+    "flutter": {
+      "name": "Flutter",
+      "role": "REFERENCE",
+      "capability_status": null,
+      "release_status": "NOT_RELEASED"
+    },
+    "desktop": {
+      "name": "桌面端（Tauri / Electron / 原生）",
       "role": "REFERENCE",
       "capability_status": null,
       "release_status": "NOT_RELEASED"
