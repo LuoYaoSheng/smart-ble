@@ -39,7 +39,7 @@ body{font-family:var(--font);background:#E9EEF5;color:var(--c-text);display:flex
 
 /* ---- 导航 ---- */
 .navbar{padding:8px 2px 12px;background:linear-gradient(180deg,#FFFFFF,#F8FBFF);border-bottom:1px solid var(--c-line-soft);
-  position:sticky;top:0;z-index:var(--z-nav);margin:0 -16px;padding-left:18px;padding-right:18px;}
+  position:sticky;top:0;z-index:var(--z-nav);margin:0;padding-left:18px;padding-right:18px;}
 .navbar .kicker{font-size:var(--fs-micro);letter-spacing:2px;color:var(--c-primary);font-weight:var(--fw-xbold);}
 .navbar .row{display:flex;align-items:center;justify-content:space-between;margin-top:2px;}
 .navbar .title{font-size:var(--fs-title);font-weight:var(--fw-xbold);}
@@ -48,7 +48,7 @@ body{font-family:var(--font);background:#E9EEF5;color:var(--c-text);display:flex
 .bt-dot.on{background:var(--c-success);box-shadow:0 0 8px rgba(23,199,168,.55);}
 .bt-dot.off{background:var(--c-danger);}
 .subnav{display:flex;align-items:center;gap:10px;padding:8px 2px 10px;background:#fff;border-bottom:1px solid var(--c-line-soft);
-  position:sticky;top:0;z-index:var(--z-nav);margin:0 -16px;padding-left:14px;padding-right:16px;}
+  position:sticky;top:0;z-index:var(--z-nav);margin:0;padding-left:14px;padding-right:16px;}
 .back-btn{width:30px;height:30px;border:none;background:var(--c-fill);border-radius:9px;color:var(--c-text);
   cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
 .subnav .t{font-size:var(--fs-h1);font-weight:var(--fw-bold);flex:1;}

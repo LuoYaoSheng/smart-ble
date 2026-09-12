@@ -61,6 +61,8 @@ async function loadBLEModule() {
   // 如果已经加载过，直接返回
   if (bleModuleLoaded) {
     debugLog('BLE module already loaded');
+    // 渲染层重载后二次 init：noble 不会再发 stateChange，补发当前态，防状态芯片卡「初始化中…」
+    sendToRenderer('ble:stateChanged', { state: bleModule ? bleModule.state : 'unknown' });
     return true;
   }
 
