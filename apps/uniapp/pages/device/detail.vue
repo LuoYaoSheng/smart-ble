@@ -69,6 +69,7 @@
 		/>
 
 		<ota-dialog
+			v-if="deviceInfo.deviceId"
 			:visible="showOtaModal"
 			:deviceId="deviceInfo.deviceId"
 			@close="showOtaModal = false"

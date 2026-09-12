@@ -195,7 +195,8 @@ export const useBleStore = defineStore('ble', () => {
       }
       if (error) {
         scanError.value = {
-          code: error?.errCode ?? error?.code ?? 'scan_failed',
+          // uni errCode 是 Number（如 10006），error-banner 的 code prop 契约是 String
+          code: String(error?.errCode ?? error?.code ?? 'scan_failed'),
           message: error?.errMsg || error?.message || '扫描失败',
           sessionId: session.id
         };

@@ -127,32 +127,40 @@ async function init() {
         }
 
         if (!window.__TAURI__) {
-            console.error('__TAURI__ not found on window object');
-            updateStatus('API Error', false);
-            return;
-        }
-
-        console.log('Tauri API structure:', Object.keys(window.__TAURI__));
-
-        // Tauri v1.5 API structure - handle different paths
-        if (window.__TAURI__.core) {
-            invoke = window.__TAURI__.core.invoke;
-        } else if (window.__TAURI__.tauri) {
-            invoke = window.__TAURI__.tauri.invoke;
+            if (state.useMockBLE) {
+                // 纯浏览器 + ?mock=true：polyfill 桥（对齐 Electron mock 桥口径），
+                // 让 E2E 文档承诺的「浏览器手调 mock」路径真正可达
+                console.warn('[MOCK] Bare browser + ?mock=true: polyfilling Tauri bridge for E2E walkthrough');
+                invoke = async () => ({ success: true });
+                listen = async () => () => {};
+            } else {
+                console.error('__TAURI__ not found on window object');
+                updateStatus('API Error', false);
+                return;
+            }
         } else {
-            invoke = window.__TAURI__.invoke;
-        }
+            console.log('Tauri API structure:', Object.keys(window.__TAURI__));
 
-        if (window.__TAURI__.event) {
-            listen = window.__TAURI__.event.listen;
-        } else {
-            listen = window.__TAURI__.listen;
-        }
+            // Tauri v1.5 API structure - handle different paths
+            if (window.__TAURI__.core) {
+                invoke = window.__TAURI__.core.invoke;
+            } else if (window.__TAURI__.tauri) {
+                invoke = window.__TAURI__.tauri.invoke;
+            } else {
+                invoke = window.__TAURI__.invoke;
+            }
 
-        if (!invoke) {
-            console.error('invoke not found. Available:', Object.keys(window.__TAURI__));
-            updateStatus('API Error', false);
-            return;
+            if (window.__TAURI__.event) {
+                listen = window.__TAURI__.event.listen;
+            } else {
+                listen = window.__TAURI__.listen;
+            }
+
+            if (!invoke) {
+                console.error('invoke not found. Available:', Object.keys(window.__TAURI__));
+                updateStatus('API Error', false);
+                return;
+            }
         }
 
         setupEventListeners();
@@ -1018,6 +1026,9 @@ function renderDeviceList() {
             </div>`;
         return;
     }
+
+    // 增量更新路径不会自动清掉空态占位——有结果时必须移除，否则空态与设备卡同屏
+    elements.deviceList.querySelector('.empty')?.remove();
 
     // Track current device IDs
     const currentIds = new Set();

@@ -943,26 +943,30 @@ class App {
         if (this.isScanning) {
             await this.stopScan();
         } else {
-            await this.startScan();
-            
             // CI MOCK INJECTION
-            // Generates a fake device for automated UI E2E testing
-            if (this.USE_MOCK_BLE) {
-                console.log('[MOCK] Injecting dummy device Dummy-BLE-01 and Dummy-BLE-02');
-                this.onDeviceDiscovered({
-                    id: 'MOCK-11:22:33:44:55:66',
-                    name: 'Dummy-BLE-01',
-                    rssi: -45,
-                    connectable: true,
-                    services: ['FFF0', '180A', '4FAFC201-1FB5-459E-8FCC-C5C9C331914D']
-                });
-                this.onDeviceDiscovered({
-                    id: 'MOCK-AA:BB:CC:DD:EE:FF',
-                    name: 'Dummy-BLE-02',
-                    rssi: -60,
-                    connectable: true,
-                    services: ['FFF0']
-                });
+            // Generates a fake device for automated UI E2E testing.
+            // 语义（E2E 文档口径）：按下扫描必现 Dummy——真实 startScan 失败
+            // （如重载后主进程扫描仍在途）也不得阻断注入，故用 finally 兜底。
+            try {
+                await this.startScan();
+            } finally {
+                if (this.USE_MOCK_BLE) {
+                    console.log('[MOCK] Injecting dummy device Dummy-BLE-01 and Dummy-BLE-02');
+                    this.onDeviceDiscovered({
+                        id: 'MOCK-11:22:33:44:55:66',
+                        name: 'Dummy-BLE-01',
+                        rssi: -45,
+                        connectable: true,
+                        services: ['FFF0', '180A', '4FAFC201-1FB5-459E-8FCC-C5C9C331914D']
+                    });
+                    this.onDeviceDiscovered({
+                        id: 'MOCK-AA:BB:CC:DD:EE:FF',
+                        name: 'Dummy-BLE-02',
+                        rssi: -60,
+                        connectable: true,
+                        services: ['FFF0']
+                    });
+                }
             }
         }
     }

@@ -79,7 +79,8 @@ function seedP001(stores, preset) {
 			// hasScanned 由页面靶标补（或经 isScanning 翻转派生）
 			break;
 		case 'failed':
-			ble.scanError = { code: 10006, message: '定位权限未授权，无法进行 BLE 扫描。' };
+			// code 与 store 归一后形态一致（String）：error-banner 的 code prop 契约
+			ble.scanError = { code: '10006', message: '定位权限未授权，无法进行 BLE 扫描。' };
 			seedScanned(stores, 0);
 			break;
 		case 'ble-off': ble.setBleState('off'); break;
