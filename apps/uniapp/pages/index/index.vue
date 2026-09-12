@@ -87,15 +87,17 @@ const { filterSettings, devices, filteredDevices, hasScanned, isScanning, scanEr
 // #ifdef H5
 registerPageTargets('p001', { hasScanned, showFilters, filterSettings, showAdvDataModal, selectedAdvertisementDevice });
 // #endif
-// 蓝牙状态三态词（正典 p001 btWord）：on 就绪 / off 未开启 / 其余 平台不支持
+// 蓝牙状态词（正典 p001 btWord + 桌面壳瞬态）：on 就绪 / off 未开启 / unsupported 平台不支持 / initializing 初始化中…
 const bleStatusText = computed(() => {
 	if (bleState.value === 'on') return '蓝牙就绪';
 	if (bleState.value === 'unsupported') return '平台不支持';
+	if (bleState.value === 'initializing') return '初始化中…';
 	return '蓝牙未开启';
 });
 const bleStatusTone = computed(() => {
 	if (bleState.value === 'on') return 'on';
 	if (bleState.value === 'unsupported') return '';
+	if (bleState.value === 'initializing') return '';
 	return 'off';
 });
 

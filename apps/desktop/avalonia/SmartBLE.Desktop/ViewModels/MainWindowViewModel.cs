@@ -15,7 +15,7 @@ public partial class MainWindowViewModel : ObservableObject
     private readonly BleService _bleService = new();
 
     [ObservableProperty]
-    private string _bluetoothStatusText = "初始化中...";
+    private string _bluetoothStatusText = "初始化中…";
 
     [ObservableProperty]
     private string _bluetoothStatusColor = "#8E8E93";
@@ -117,19 +117,20 @@ public partial class MainWindowViewModel : ObservableObject
     {
         Dispatcher.UIThread.Post(() =>
         {
+            // 正典 p001 btWord 对齐：On 蓝牙就绪 / Off 蓝牙未开启（红点）/ 无适配器 平台不支持（灰）
             BluetoothStatusText = state switch
             {
-                "On" => "蓝牙已开启",
-                "Off" => "蓝牙已关闭",
-                "Unavailable" => "蓝牙不可用",
+                "On" => "蓝牙就绪",
+                "Off" => "蓝牙未开启",
+                "Unavailable" => "平台不支持",
                 _ => "状态未知"
             };
 
             BluetoothStatusColor = state switch
             {
                 "On" => "#34C759",
-                "Off" => "#8E8E93",
-                "Unavailable" => "#FF3B30",
+                "Off" => "#FF3B30",
+                "Unavailable" => "#8E8E93",
                 _ => "#8E8E93"
             };
         });

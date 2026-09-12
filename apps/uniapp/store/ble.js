@@ -20,7 +20,8 @@ export const useBleStore = defineStore('ble', () => {
   const isScanning = ref(false);
   const scanState = ref('idle'); // idle | starting | scanning | stopping | failed
   const scanError = ref(null);
-  const bleState = ref('off');
+  // initializing（尚未探测）| on | off | unsupported：首检前不预设 off，避免芯片谎称「蓝牙未开启」
+  const bleState = ref('initializing');
   
   // 发现的所有设备列表
   const scannedDevices = ref([]);

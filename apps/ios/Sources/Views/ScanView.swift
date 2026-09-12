@@ -283,6 +283,8 @@ struct ScanView: View {
         switch bleManager.bluetoothState {
         case .poweredOn: return "蓝牙就绪"
         case .poweredOff, .unauthorized: return "蓝牙未开启"
+        // .unknown=CBCentralManager 首回调前的瞬态，对齐桌面壳显示「初始化中…」而非「平台不支持」
+        case .unknown: return "初始化中…"
         default: return "平台不支持"
         }
     }

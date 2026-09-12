@@ -135,10 +135,12 @@ fun SmartBLEApp(
             if (showBottomBar) {
                 when (selectedItem) {
                     0 -> {
+                        // null=VM 首帧未出（初始化中…瞬态，勿闪「平台不支持」）；Unauthorized 同未开启（对齐桌面壳）
                         val (tone, statusWord) = when (bluetoothState) {
                             BluetoothState.On -> BtTone.On to "蓝牙就绪"
-                            BluetoothState.Off -> BtTone.Off to "蓝牙未开启"
-                            else -> null to "平台不支持"
+                            BluetoothState.Off, BluetoothState.Unauthorized -> BtTone.Off to "蓝牙未开启"
+                            BluetoothState.Unavailable -> null to "平台不支持"
+                            null -> null to "初始化中…"
                         }
                         AppNavbar(title = "扫描", statusText = statusWord, statusTone = tone)
                     }

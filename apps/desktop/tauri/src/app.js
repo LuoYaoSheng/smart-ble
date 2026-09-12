@@ -502,8 +502,9 @@ function updateStatus(text, status) {
         if (dot) dot.className = 'bt-dot on';
         if (word) word.textContent = '蓝牙就绪';
     } else if (status === 'error') {
-        if (dot) dot.className = 'bt-dot off';
-        if (word) word.textContent = '蓝牙不可用';
+        // init_ble 仅在「无适配器/异常」时返回失败——正典 p001 词汇：平台不支持（灰点，非红）
+        if (dot) dot.className = 'bt-dot';
+        if (word) word.textContent = '平台不支持';
     } else {
         if (dot) dot.className = 'bt-dot';
         if (word) word.textContent = '初始化中…';
