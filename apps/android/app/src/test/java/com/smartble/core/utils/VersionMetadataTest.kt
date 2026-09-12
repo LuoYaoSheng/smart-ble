@@ -76,11 +76,12 @@ class VersionMetadataTest {
     }
 
     @Test
-    fun g3_platformSevenKeysAndReferenceRole() {
+    fun g3_platformCanonKeysAndReferenceRole() {
         val platforms = VersionMetadata.platformPublicStatuses()
+        // 小程序裁撤（2026-09-11 用户裁决）后 wechat 退出正典键序
         assertEquals(
             listOf(
-                "android", "wechat", "h5", "ios",
+                "android", "h5", "ios",
                 "flutter_tauri_native", "peripheral", "observer",
             ),
             platforms.map { it.key },
@@ -107,7 +108,7 @@ class VersionMetadataTest {
         assertTrue(model.current.limitations.size >= 8)
         assertEquals("Android 正式 APK 尚未发布", model.current.limitations.first())
         assertEquals(
-            listOf("android", "wechat", "h5", "ios"),
+            listOf("android", "h5", "ios"),
             model.current.platforms.map { it.key },
         )
         assertEquals("UNSUPPORTED", model.current.platforms.first { it.key == "h5" }.capabilityStatus)
@@ -132,10 +133,6 @@ class VersionMetadataTest {
                 "public_surfaces" to mapOf(
                     "android" to mapOf(
                         "name" to "UniApp Android", "role" to "mainline",
-                        "capability_status" to "PREVIEW", "release_status" to "NOT_RELEASED",
-                    ),
-                    "wechat" to mapOf(
-                        "name" to "WeChat", "role" to "mainline",
                         "capability_status" to "PREVIEW", "release_status" to "NOT_RELEASED",
                     ),
                     "h5" to mapOf(

@@ -101,11 +101,11 @@ object VersionMetadata {
         channel = RELEASE_METADATA["channel"] as? String,
     )
 
-    /** 平台公开状态（顺序=正典 order 七键）。 */
+    /** 平台公开状态（顺序=正典 order；小程序裁撤后六键，wechat 已退出）。 */
     fun platformPublicStatuses(): List<PlatformPublicStatus> {
         val surfaces = surfaces()
         return listOf(
-            "android", "wechat", "h5", "ios",
+            "android", "h5", "ios",
             "flutter_tauri_native", "peripheral", "observer",
         ).mapNotNull { key ->
             (surfaces[key] as? Map<*, *>)?.let { platformStatus(key, it) }
@@ -150,7 +150,7 @@ object VersionMetadata {
         val status = (meta["overall_status"] as? String)?.takeIf { it.isNotEmpty() } ?: "PREVIEW"
         val surfaces = meta["public_surfaces"] as? Map<*, *> ?: emptyMap<Any?, Any?>()
 
-        val platforms = listOf("android", "wechat", "h5", "ios").mapNotNull { key ->
+        val platforms = listOf("android", "h5", "ios").mapNotNull { key ->
             (surfaces[key] as? Map<*, *>)?.let { platformStatus(key, it) }
         }
 

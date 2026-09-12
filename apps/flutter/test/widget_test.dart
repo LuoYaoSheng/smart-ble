@@ -40,14 +40,17 @@ void main() {
     expect(find.text('连接'), findsNothing);
   });
 
-  // PARITY-P001：蓝牙状态词映射正典三态词表（navbar bt-chip，p001 btWord）。
-  test('P001 bt status word maps canon 3-state vocabulary', () {
+  // PARITY-P001：蓝牙状态词映射正典三态词表 + 桌面壳瞬态（p001 btWord + 初始化中…）。
+  test('P001 bt status word maps canon vocabulary + desktop transient', () {
     expect(DeviceListPage.btStatusWord(BleState.on), '蓝牙就绪');
     expect(DeviceListPage.btStatusWord(BleState.off), '蓝牙未开启');
     expect(DeviceListPage.btStatusWord(BleState.unauthorized), '蓝牙未开启');
     expect(DeviceListPage.btStatusWord(BleState.unavailable), '平台不支持');
-    expect(DeviceListPage.btStatusWord(BleState.unknown), '平台不支持');
-    expect(DeviceListPage.btStatusWord(null), '平台不支持');
+    // 瞬态（null/unknown/turning*）：初始化中…，不得闪「平台不支持」
+    expect(DeviceListPage.btStatusWord(BleState.unknown), '初始化中…');
+    expect(DeviceListPage.btStatusWord(BleState.turningOn), '初始化中…');
+    expect(DeviceListPage.btStatusWord(BleState.turningOff), '初始化中…');
+    expect(DeviceListPage.btStatusWord(null), '初始化中…');
   });
 
   // PARITY-P001：扫描页结构对齐原型 p001（navbar kicker/标题 + scantool +
@@ -59,9 +62,10 @@ void main() {
     // 自绘导航栏：kicker + 标题「扫描」（与 Tab 文案同名，共 2 处）
     expect(find.text('BLE TOOLKIT+'), findsOneWidget);
     expect(find.text('扫描'), findsNWidgets(2));
-    // 蓝牙状态 chip 一定是正典三态词之一（测试环境无适配器，具体态依流而定）
+    // 蓝牙状态 chip 一定是正典词之一（测试环境初始化失败落 unavailable→平台不支持；
+    // 瞬态期短暂显示「初始化中…」）
     expect(
-      ['蓝牙就绪', '蓝牙未开启', '平台不支持']
+      ['蓝牙就绪', '蓝牙未开启', '平台不支持', '初始化中…']
           .map((w) => find.text(w).evaluate().isNotEmpty)
           .any((hit) => hit),
       isTrue,

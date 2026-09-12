@@ -229,6 +229,10 @@ class BleManager {
       return true;
     } catch (e) {
       print('BleManager 初始化失败: $e');
+      // 初始化失败（平台不支持等）也要落定状态，否则芯片永卡「初始化中…」
+      if (!_stateController.isClosed) {
+        _stateController.add(BleState.unavailable);
+      }
       return false;
     }
   }
