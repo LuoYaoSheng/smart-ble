@@ -63,7 +63,7 @@ Mac 不直接宣称 Windows 完成；只消费 Windows 计划的可复现证据�
 | MAC-002 | 恢复统一验证全绿 | `PASS` | make verify 五线全绿（uniapp/flutter/android-JDK17/apple 三步/tauri）；desktop 95/95；metadata --check PASS；verify-target 408/108/544 全 0 fail（证据 20260914-MAC-002） | MAC-001 |
 | MAC-003 | UniApp App/H5 范围收口 | `PASS_WITH_OBS` | ARCHITECTURE/README 收正（Vue3+App/H5）、node:crypto 外置告警清零、mock 默认 android；verify-uniapp 26+14 全绿、build:h5 DONE、页面层 226 pass/0 fail（证据 20260914-MAC-003） | MAC-001、MAC-002 |
 | MAC-004 | Flutter 多端候选版 | `PASS_WITH_OBS` | 三端构建全成（apk/iphonesimulator/macos.app）；iOS 平台脚手架补齐；未用依赖 flutter_platform_widgets 移除后 122/122 复验；E5 真机 BLOCKED；Artifact 登记归 MAC-011 | MAC-002、MAC-008 |
-| MAC-005 | Kotlin Android 原生页面对齐 | `IN_PROGRESS` | JDK 17 构建/单测通过，Smart HID 页面不完整 | MAC-002、MAC-008 |
+| MAC-005 | Kotlin Android 原生页面对齐 | `PASS_WITH_OBS` | 九页可达（新增 P002/P003/P005 三屏+双入口+分流+15 测试）；assembleDebug + 75/75 单测；E5 真机 BLOCKED（证据 20260914-MAC-005） | MAC-002、MAC-008 |
 | MAC-006 | SwiftUI iOS 发布链 | `IN_PROGRESS` | Xcode Simulator 构建通过，`make verify-apple` 失败，真机 E5 未完 | MAC-002、MAC-008 |
 | MAC-007 | AppKit macOS 发布链 | `IN_PROGRESS` | `swift build` 通过，无模块测试和正式发布 | MAC-008 |
 | MAC-008 | 共享 Core/协议/资产单源 | `PASS_WITH_OBS` | JS 11/11、Swift 32/32、parity 四线（js71/dart59豁免/kotlin71/swift32）、资产 8/8 in-sync、contract lock、桌面 bundle 9/9 全绿；OTA/脱敏向量扩展未做（证据 20260914-MAC-008） | MAC-001、MAC-002 |
@@ -72,7 +72,20 @@ Mac 不直接宣称 Windows 完成；只消费 Windows 计划的可复现证据�
 | MAC-011 | 官网、CI、发布与 Artifact 管线 | `FAILED` | 官网可构建；元数据漂移、Apple CI 和 Tauri Release 命令错误 | MAC-001～MAC-010、WIN-009 |
 | MAC-012 | 跨平台总验收与合入 main | `TODO` | 当前分支领先 main 204 提交 | MAC-002～MAC-011、WIN-010 |
 
-完成率统计：`PASS` 2 / `PASS_WITH_OBS` 4 / `IN_PROGRESS` 4 / `FAILED` 0 / `BLOCKED` 0 / `TODO` 1。
+完成率统计：`PASS` 2 / `PASS_WITH_OBS` 5 / `IN_PROGRESS` 3 / `FAILED` 0 / `BLOCKED` 0 / `TODO` 1。
+
+### 2026-09-14 · MAC-005
+
+- Status: PASS_WITH_OBS
+- Commit: <本次>
+- Host: macOS / JDK 17 / Gradle 8.2
+- Commands: `./gradlew assembleDebug testDebugUnitTest`；`node scripts/check-f023-zero-persistence.mjs`；`node scripts/check-platform-parity.mjs`
+- Result: BUILD SUCCESSFUL；75/75（新增 15 例）；F023 PASS；kotlin parity 71/71
+- Hardware: E5 未执行（BLOCKED；无真机排期，模拟器不冒充；代跑请求按需交 Windows）
+- Evidence: verification/mac-plan-v1/20260914-MAC-005/
+- Public status impact: none
+- Observations: 复用 HidProvisionController/Transport 未建第二套协议实现；HBuilderX 通道不受影响
+- Next: MAC-006
 
 ### 2026-09-14 · MAC-004
 

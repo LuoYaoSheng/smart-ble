@@ -58,6 +58,8 @@ fun DeviceCard(
     device: BleDevice,
     onDeviceClick: (BleDevice) -> Unit,
     onAction: (BleDevice) -> Unit,
+    profileLabel: String? = null,
+    onProfileAction: ((BleDevice) -> Unit)? = null,
 ) {
     val connected = device.state == ConnectionState.Connected
     val busy = device.state == ConnectionState.Connecting || device.state == ConnectionState.Disconnecting
@@ -142,13 +144,33 @@ fun DeviceCard(
                 ) {
                     Text("已连接", fontSize = 13.sp, fontWeight = FontWeight.W600, color = cPh)
                 }
-                else -> DsPrimaryButton(
-                    label = "连接",
-                    icon = DsIcons.Link,
-                    onClick = { onAction(device) },
-                    small = true,
-                    modifier = Modifier.weight(1f),
-                )
+                else -> {
+                    // P001 契约：Smart HID 卡 = Profile 主操作（配置）+ 标准「连接」双入口
+                    if (profileLabel != null && onProfileAction != null) {
+                        DsPrimaryButton(
+                            label = profileLabel,
+                            icon = DsIcons.Send,
+                            onClick = { onProfileAction(device) },
+                            small = true,
+                            modifier = Modifier.weight(1f),
+                        )
+                        DsSoftButton(
+                            label = "连接",
+                            icon = DsIcons.Link,
+                            onClick = { onAction(device) },
+                            small = true,
+                            modifier = Modifier.padding(start = 8.dp).weight(0.62f),
+                        )
+                    } else {
+                        DsPrimaryButton(
+                            label = "连接",
+                            icon = DsIcons.Link,
+                            onClick = { onAction(device) },
+                            small = true,
+                            modifier = Modifier.weight(1f),
+                        )
+                    }
+                }
             }
         }
     }

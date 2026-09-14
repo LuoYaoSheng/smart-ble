@@ -119,7 +119,8 @@ fun DeviceListScreen(
 fun DeviceListContent(
     viewModel: DeviceListViewModel,
     onDeviceClick: (String, String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onProfileAction: (BleDevice) -> Unit = {},
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val filteredScanResults by viewModel.filteredScanResults.collectAsState()
@@ -234,6 +235,7 @@ fun DeviceListContent(
                                 }
                             } else {
                                 items(filteredScanResults, key = { it.deviceId }) { device ->
+                                    val isSmartHid = com.smartble.core.profile.SmartHidMatcher.isSmartHid(device)
                                     DeviceCard(
                                         device = device,
                                         onDeviceClick = { d ->
@@ -245,6 +247,10 @@ fun DeviceListContent(
                                         onAction = { target ->
                                             onDeviceClick(target.deviceId, target.displayName)
                                         },
+                                        profileLabel = if (isSmartHid) "配置 Smart HID" else null,
+                                        onProfileAction = if (isSmartHid) {
+                                            { target -> onProfileAction(target) }
+                                        } else null,
                                     )
                                 }
                             }

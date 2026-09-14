@@ -42,8 +42,13 @@ import com.smartble.ui.design.DsChip
 import com.smartble.ui.screen.AboutContent
 import com.smartble.ui.screen.BroadcastContent
 import com.smartble.ui.screen.ConnectedDevicesContent
+import com.smartble.core.profile.HidRoutes
+import com.smartble.ui.hid.HidDeviceSessionViewModel
 import com.smartble.ui.screen.DeviceDetailScreen
 import com.smartble.ui.screen.DeviceListContent
+import com.smartble.ui.screen.HidDeviceDetailScreen
+import com.smartble.ui.screen.HidDiagnosticsScreen
+import com.smartble.ui.screen.ProvisioningScreen
 import com.smartble.ui.screen.VersionsScreen
 import com.smartble.ui.theme.SmartBLETheme
 import com.smartble.ui.viewmodel.BroadcastViewModel
@@ -99,7 +104,11 @@ fun SmartBLEApp(
 
     // Track current destination for hiding bottom bar on detail screen
     val currentRoute = navController.currentDestination?.route
-    val showBottomBar = currentRoute != "device_detail/{deviceId}/{deviceName}" && currentRoute != "versions"
+    val showBottomBar = currentRoute != "device_detail/{deviceId}/{deviceName}" &&
+        currentRoute != "versions" &&
+        currentRoute != HidRoutes.PROVISION_PATTERN &&
+        currentRoute != HidRoutes.DETAIL_PATTERN &&
+        currentRoute != HidRoutes.DIAGNOSTICS_PATTERN
 
     // 广播 VM 提升到 App 级（导航栏 badge 与页面共享同一状态）
     val broadcastViewModel: BroadcastViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
@@ -197,7 +206,11 @@ fun SmartBLEApp(
                     viewModel = deviceListViewModel,
                     onDeviceClick = { deviceId, deviceName ->
                         navController.navigate("device_detail/$deviceId/$deviceName")
-                    }
+                    },
+                    // P001：Smart HID 卡片 Profile 主操作 → P002 配网（HidRoutes.scanCardOpen 同源规则）
+                    onProfileAction = { device ->
+                        navController.navigate(HidRoutes.provision(device.deviceId, device.displayName))
+                    },
                 )
             }
 
@@ -206,7 +219,14 @@ fun SmartBLEApp(
                 ConnectedDevicesContent(
                     viewModel = deviceListViewModel,
                     onDeviceClick = { deviceId, deviceName ->
-                        navController.navigate("device_detail/$deviceId/$deviceName")
+                        // P007：已连接分流——Smart HID → P003 HID 详情，其余 → 通用 GATT
+                        val target = connectedDevices.firstOrNull { it.deviceId == deviceId }
+                        val route = if (target != null) {
+                            HidRoutes.connectedOpen(target)
+                        } else {
+                            "device_detail/$deviceId/$deviceName"
+                        }
+                        navController.navigate(route)
                     },
                     onGoScan = { switchTab(0) },
                 )
@@ -261,8 +281,94 @@ fun SmartBLEApp(
                     onBack = { navController.popBackStack() }
                 )
             }
+
+            // P002 Smart HID 配网（MAC-005）
+            composable(
+                route = HidRoutes.PROVISION_PATTERN,
+                arguments = hidDeviceArgs(),
+            ) { backStackEntry ->
+                val (deviceId, deviceName) = hidDeviceArgsOf(backStackEntry)
+                val viewModel = hidSessionViewModel(application, "hid_provision_$deviceId", deviceId, deviceName)
+                ProvisioningScreen(
+                    deviceId = deviceId,
+                    deviceName = deviceName,
+                    viewModel = viewModel,
+                    onBack = { navController.popBackStack() },
+                    onOpenDiagnostics = { id, name ->
+                        navController.navigate(HidRoutes.diagnostics(id, name))
+                    },
+                )
+            }
+
+            // P003 Smart HID 设备详情（MAC-005）
+            composable(
+                route = HidRoutes.DETAIL_PATTERN,
+                arguments = hidDeviceArgs(),
+            ) { backStackEntry ->
+                val (deviceId, deviceName) = hidDeviceArgsOf(backStackEntry)
+                val viewModel = hidSessionViewModel(application, "hid_detail_$deviceId", deviceId, deviceName)
+                HidDeviceDetailScreen(
+                    deviceId = deviceId,
+                    deviceName = deviceName,
+                    viewModel = viewModel,
+                    onBack = { navController.popBackStack() },
+                    onOpenProvision = { id, name ->
+                        navController.navigate(HidRoutes.provision(id, name))
+                    },
+                    onOpenDiagnostics = { id, name ->
+                        navController.navigate(HidRoutes.diagnostics(id, name))
+                    },
+                )
+            }
+
+            // P005 Smart HID 诊断（MAC-005）
+            composable(
+                route = HidRoutes.DIAGNOSTICS_PATTERN,
+                arguments = hidDeviceArgs(),
+            ) { backStackEntry ->
+                val (deviceId, deviceName) = hidDeviceArgsOf(backStackEntry)
+                val viewModel = hidSessionViewModel(application, "hid_diag_$deviceId", deviceId, deviceName)
+                HidDiagnosticsScreen(
+                    deviceId = deviceId,
+                    deviceName = deviceName,
+                    viewModel = viewModel,
+                    onBack = { navController.popBackStack() },
+                )
+            }
         }
     }
+}
+
+/** HID 三页共用参数（deviceId/deviceName 路径段） */
+private fun hidDeviceArgs() = listOf(
+    androidx.navigation.navArgument("deviceId") { type = androidx.navigation.NavType.StringType },
+    androidx.navigation.navArgument("deviceName") { type = androidx.navigation.NavType.StringType },
+)
+
+private fun hidDeviceArgsOf(backStackEntry: androidx.navigation.NavBackStackEntry): Pair<String, String> {
+    val deviceId = backStackEntry.arguments?.getString("deviceId") ?: ""
+    val deviceName = backStackEntry.arguments?.getString("deviceName") ?: ""
+    return deviceId to deviceName
+}
+
+@androidx.compose.runtime.Composable
+private fun hidSessionViewModel(
+    application: android.app.Application,
+    key: String,
+    deviceId: String,
+    deviceName: String,
+): HidDeviceSessionViewModel {
+    val factory = object : ViewModelProvider.Factory {
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
+            return HidDeviceSessionViewModel(application, deviceId, deviceName) as T
+        }
+    }
+    return androidx.lifecycle.viewmodel.compose.viewModel(
+        factory = factory,
+        viewModelStoreOwner = androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner.current!!,
+        key = key,
+    )
 }
 
 @OptIn(ExperimentalPermissionsApi::class)
