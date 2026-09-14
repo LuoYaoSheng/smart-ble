@@ -33,7 +33,12 @@ export function createFakePlatform(script = {}) {
     __failNext: {},
     failNext(method, err) { fake.__failNext[method] = err ?? { errMsg: `${method}:fail fake` }; },
 
-    openBluetoothAdapter(o = {}) { log('openAdapter'); return fake.__failNext.openBluetoothAdapter ? (delete fake.__failNext.openBluetoothAdapter, o.fail?.(fake.__failNext.openBluetoothAdapter)) : o.success?.(S({})); },
+    openBluetoothAdapter(o = {}) {
+      log('openAdapter');
+      const failure = fake.__failNext.openBluetoothAdapter;
+      if (failure) { delete fake.__failNext.openBluetoothAdapter; return o.fail?.(failure); }
+      return o.success?.(S({}));
+    },
     closeBluetoothAdapter(o = {}) { log('closeAdapter'); return o.success?.(S({})); },
     startBluetoothDevicesDiscovery(o = {}) { log('startDiscovery', { allowDuplicates: o.allowDuplicates }); return o.success?.(S({})); },
     stopBluetoothDevicesDiscovery(o = {}) { log('stopDiscovery'); return o.success?.(S({})); },

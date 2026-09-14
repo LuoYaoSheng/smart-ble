@@ -7,10 +7,11 @@ import { fileURLToPath } from 'node:url';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const uniapp = join(root, 'apps/uniapp');
 // Compiled output may come from HBuilderX dev compile or the pure-CLI build
-// (npm run build:mp-weixin); both land under unpackage/dist.
+// (npm run build:h5); both land under unpackage/dist.
+// 2026-09-14 MAC-001/MAC-002：微信小程序目标退役，编译资产门禁改为 h5 产物。
 const compiledCandidates = [
-  join(uniapp, 'unpackage/dist/dev/mp-weixin'),
-  join(uniapp, 'unpackage/dist/build/mp-weixin'),
+  join(uniapp, 'unpackage/dist/dev/h5'),
+  join(uniapp, 'unpackage/dist/build/h5'),
 ];
 let compiledUniapp = null;
 let compiledMtime = 0;
@@ -28,7 +29,7 @@ for (const candidate of compiledCandidates) {
 const compiledAvailable = compiledUniapp !== null;
 const requireCompiled = process.argv.includes('--require-compiled') || process.env.UNIAPP_REQUIRE_COMPILED_ASSETS === '1';
 if (requireCompiled && !compiledAvailable) {
-  throw new Error('Compiled WeChat output is missing; run `npm run build:mp-weixin` (or HBuilderX compile) before the required compiled-asset gate');
+  throw new Error('Compiled H5 output is missing; run `npm run build:h5` (or HBuilderX compile) before the required compiled-asset gate');
 }
 const vueFiles = [];
 async function walk(dir) {
@@ -76,7 +77,7 @@ for (const reference of references) {
   } catch { missing.push(reference); }
 }
 if (missing.length) throw new Error(`UniApp static assets missing:\n${missing.join('\n')}`);
-if (missingCompiled.length) throw new Error(`Compiled WeChat assets missing; run HBuilderX compile first:\n${missingCompiled.join('\n')}`);
+if (missingCompiled.length) throw new Error(`Compiled H5 assets missing; run npm run build:h5 first:\n${missingCompiled.join('\n')}`);
 if (oversized.length) throw new Error(`UniApp PNG assets exceed 250 KiB; compress before commit:\n${oversized.join('\n')}`);
 if (pngBytes > 650 * 1024) throw new Error(`UniApp referenced PNG budget exceeded: ${pngBytes} bytes > 650 KiB`);
 
