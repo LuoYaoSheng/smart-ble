@@ -70,9 +70,22 @@ Mac 不直接宣称 Windows 完成；只消费 Windows 计划的可复现证据�
 | MAC-009 | ESP32/STM32 硬件线 | `PASS_WITH_OBS` | ESP32 五环境全绿（默认双环境+S3 三环境，SHA/RAM/Flash 落证据）；ESP-IDF 口径冲突修正；STM32 正式降级协议样板（横幅+文档改口）；真机烧录/E5 待用户 BOOT+RST（在册） | MAC-008 |
 | MAC-010 | macOS/Linux 桌面实现 | `PASS_WITH_OBS` | Electron DMG/ZIP + Tauri App/DMG 当日构建全成且蓝牙声明齐备（零共享源码改动）；macOS 真 BLE 面由 MAC-007 原生线 + 2026-09-12 Electron 历史证据覆盖；Linux 归 MAC-011 CI | WIN-002～WIN-004 写锁协调 |
 | MAC-011 | 官网、CI、发布与 Artifact 管线 | `PASS_WITH_OBS` | CI 五线重写（分支/Apple 三步/JDK21/UniApp 全量/Tauri Linux bundle）；Release 改候选产物不自动发布；官网 SSR 崩溃修复（status 页死键）；元数据/限制同步；pages 脚本改 Playwright（证据 20260914-MAC-011） | MAC-001～MAC-010、WIN-009 |
-| MAC-012 | 跨平台总验收与合入 main | `TODO` | 当前分支领先 main 204 提交 | MAC-002～MAC-011、WIN-010 |
+| MAC-012 | 跨平台总验收与合入 main | `IN_PROGRESS` | 终验全绿（make verify/目标套件/desktop/metadata/官网）；FINAL-REPORT 已出；合入 main 待用户批准；WIN-010 Windows 报告吸收待 Windows 线回传 | MAC-002～MAC-011、WIN-010 |
 
-完成率统计：`PASS` 2 / `PASS_WITH_OBS` 10 / `IN_PROGRESS` 0 / `FAILED` 0 / `BLOCKED` 0 / `TODO` 1。
+完成率统计：`PASS` 2 / `PASS_WITH_OBS` 10 / `IN_PROGRESS` 1（MAC-012）/ `FAILED` 0 / `BLOCKED` 0 / `TODO` 0。
+
+### 2026-09-14 · MAC-012（阶段一：终验与归档）
+
+- Status: IN_PROGRESS（合入 main 门槛=用户批准 + WIN-010 吸收）
+- Commit: <本次>
+- Host: macOS 全工具链
+- Commands: `make verify`；`node scripts/verify-target.mjs --mode=all`；`node --test tests/desktop/*.test.mjs`；`node scripts/generate-release-metadata.mjs --check`；`cd docs && npm run docs:build`
+- Result: 全绿（明细见 FINAL-REPORT 第二节）；分支卫生核查无误提交产物
+- Hardware: 汇总见 FINAL-REPORT 第三节
+- Evidence: verification/mac-plan-v1/FINAL-REPORT.md
+- Public status impact: 保持 PREVIEW（无对外发布物）；官网/状态页/元数据一致
+- Observations: 未决项五条（用户决策四 + Windows 报告一）见 FINAL-REPORT 第四节
+- Next: 用户批准后合入 main + Tag；Windows 线 WIN-010 回传后关闭 MAC-012
 
 ### 2026-09-14 · MAC-011
 
