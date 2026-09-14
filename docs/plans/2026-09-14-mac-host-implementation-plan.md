@@ -61,7 +61,7 @@ Mac 不直接宣称 Windows 完成；只消费 Windows 计划的可复现证据�
 |---|---|---|---|---|
 | MAC-001 | 平台范围决策与正典冻结 | `PASS_WITH_OBS` | 路线 B 落正：用户 2026-09-11 已裁决全端撤小程序，2026-09-14 按 Route B 将三份正典、五份目标契约、schema、门禁脚本、gap 报告与目标文档全部收窄到单一解释（三平台/91 测试/30 CLAIM/80 FEAT/65 REQ/88 OP）；Windows 侧消费本结论更新 WIN-002 桌面元数据断言 | 用户确认保留或退役微信（已确认：退役） |
 | MAC-002 | 恢复统一验证全绿 | `PASS` | make verify 五线全绿（uniapp/flutter/android-JDK17/apple 三步/tauri）；desktop 95/95；metadata --check PASS；verify-target 408/108/544 全 0 fail（证据 20260914-MAC-002） | MAC-001 |
-| MAC-003 | UniApp App/H5 范围收口 | `IN_PROGRESS` | 微信面已清（MAC-001/002）；剩 ARCHITECTURE Vue2→Vue3、node:crypto 外置、H5 build + 页面 Playwright 复验 | MAC-001、MAC-002 |
+| MAC-003 | UniApp App/H5 范围收口 | `PASS_WITH_OBS` | ARCHITECTURE/README 收正（Vue3+App/H5）、node:crypto 外置告警清零、mock 默认 android；verify-uniapp 26+14 全绿、build:h5 DONE、页面层 226 pass/0 fail（证据 20260914-MAC-003） | MAC-001、MAC-002 |
 | MAC-004 | Flutter 多端候选版 | `IN_PROGRESS` | analyze 0、122/122 测试通过，尚未形成正式 Artifact | MAC-002、MAC-008 |
 | MAC-005 | Kotlin Android 原生页面对齐 | `IN_PROGRESS` | JDK 17 构建/单测通过，Smart HID 页面不完整 | MAC-002、MAC-008 |
 | MAC-006 | SwiftUI iOS 发布链 | `IN_PROGRESS` | Xcode Simulator 构建通过，`make verify-apple` 失败，真机 E5 未完 | MAC-002、MAC-008 |
@@ -72,7 +72,20 @@ Mac 不直接宣称 Windows 完成；只消费 Windows 计划的可复现证据�
 | MAC-011 | 官网、CI、发布与 Artifact 管线 | `FAILED` | 官网可构建；元数据漂移、Apple CI 和 Tauri Release 命令错误 | MAC-001～MAC-010、WIN-009 |
 | MAC-012 | 跨平台总验收与合入 main | `TODO` | 当前分支领先 main 204 提交 | MAC-002～MAC-011、WIN-010 |
 
-完成率统计：`PASS` 2 / `PASS_WITH_OBS` 2 / `IN_PROGRESS` 6 / `FAILED` 0 / `BLOCKED` 0 / `TODO` 1。
+完成率统计：`PASS` 2 / `PASS_WITH_OBS` 3 / `IN_PROGRESS` 5 / `FAILED` 0 / `BLOCKED` 0 / `TODO` 1。
+
+### 2026-09-14 · MAC-003
+
+- Status: PASS_WITH_OBS
+- Commit: aef618f
+- Host: macOS / Node 24.12
+- Commands: `./scripts/verify-uniapp.sh`；`npm run build:h5`；`node scripts/verify-target.mjs --mode=current`
+- Result: 26 单测文件+14 静态门禁 PASS；H5 构建无 externalized 告警；页面层 11 specs/825 断言 226 pass 0 fail；current 544/544
+- Hardware: N/A
+- Evidence: verification/mac-plan-v1/20260914-MAC-003/
+- Public status impact: none
+- Observations: HBuilderX 5.x CLI 已移除 uniapp.test（DEF-002）——verify-uniapp-pages.sh 需在 MAC-011 改写为 Playwright 入口；mock-bridge 默认平台已改 android
+- Next: MAC-008（已完成，见后）→ MAC-004
 
 ### 2026-09-14 · MAC-008
 
