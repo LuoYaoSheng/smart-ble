@@ -7,8 +7,6 @@
 
 > `Smart BLE` 是总项目名和主入口名。
 >
-> `BLE Toolkit+` 是微信小程序当前对外名称。
->
 > `LightBLE` 是历史命名与旧仓库线。
 
 `smart-ble` 不是单一实现仓库，而是一个围绕 BLE 调试、教学、多平台对照和硬件联动展开的产品家族。
@@ -30,7 +28,6 @@
 ## 命名说明
 
 - `Smart BLE`：总项目名、主入口名
-- `BLE Toolkit+`：微信小程序当前对外显示名
 - `LightBLE`：历史命名与旧仓库线
 
 如果你是第一次进入，建议先固定这三个名字，再进入对应平台或文档。
@@ -57,7 +54,7 @@
 
 根据你的目标直接进入对应入口：
 
-- 微信小程序 `BLE Toolkit+` / H5 / uni-app App：[`apps/uniapp/`](./apps/uniapp/)
+- uni-app App（Android/iOS）/ H5：[`apps/uniapp/`](./apps/uniapp/)（微信小程序目标已于 2026-09-11 退役）
 - 跨平台移动版：[`apps/flutter/`](./apps/flutter/)
 - Android 原生版：[`apps/android/`](./apps/android/)
 - iOS / macOS 原生版：[`apps/ios/`](./apps/ios/)
@@ -81,7 +78,7 @@ Smart-HID-Workspace (固件/ControlHub/协议正典)
 smart-ble (开源 BLE Toolkit+ + Profile 注册表 + 通用 GATT)
         │ 未来：更多第一方 Profile（ESP32 演示等）
         ▼
-真机 / 微信小程序
+真机（Android / iOS / 桌面 / ESP32 夹具）
 ```
 
 ---
@@ -92,7 +89,7 @@ smart-ble (开源 BLE Toolkit+ + Profile 注册表 + 通用 GATT)
 
 | 方向 | 技术栈 | 角色 |
 |------|--------|------|
-| uni-app | Vue 3 + uni-ui | 小程序与轻量传播入口 |
+| uni-app | Vue 3 + uni-ui | App（Android/iOS）与 H5 轻量入口 |
 | Flutter | Flutter + Dart | 跨平台移动主线 |
 | Android 原生 | Kotlin + Jetpack Compose | 原生 Android 探索与增强 |
 | iOS 原生 | Swift Package + SwiftUI + CoreBluetooth | 原生 iOS / macOS 探索与增强 |
@@ -182,13 +179,15 @@ smart-ble/
 
 ## 快速开始
 
-### uni-app
+### uni-app（H5 预览 / App 资源）
 
 ```bash
 cd apps/uniapp
 npm install
-npm run dev:mp-weixin
+npm run dev:h5
 ```
+
+> 微信小程序目标（`dev:mp-weixin` / `build:mp-weixin`）已于 2026-09-11 经用户裁决退役。
 
 ### Flutter
 
@@ -249,8 +248,7 @@ pio device monitor
 - [🔄 UI 组件交互与数据流规范 (COMPONENT SPEC)](./docs/COMPONENT_INTERACTION_SPEC.md)
 - [BLE 常见问题 (FAQ)](./docs/BLE_FAQ.md)
 - [功能回归测试表单 (QA Checklist)](./docs/test-checklist.md)
-- [微信小程序专属开发避坑指南](./docs/wechat-pitfalls.md)
-- [周边资料：公众号系列文档](./docs/wechat-articles/README.md)
+- [微信小程序开发避坑指南（历史存档，小程序目标已退役）](./docs/wechat-pitfalls.md)
 
 ---
 
@@ -272,16 +270,16 @@ pio device monitor
 
 ## Smart HID 配置支持
 
-`smart-ble` 作为 Smart HID 系统的**公开仓库**，持有 BLE 配网协议与小程序 HID 配置模块。
+`smart-ble` 作为 Smart HID 系统的**公开仓库**，持有 BLE 配网协议与 App 端 HID 配置模块（微信小程序目标已于 2026-09-11 退役）。
 
-- 小程序 Smart HID 模块：[`apps/uniapp/pages/hid/`](./apps/uniapp/pages/hid/)；Smart HID 由首页通用扫描识别，不占用独立 Tab
+- App/H5 Smart HID 模块：[`apps/uniapp/pages/hid/`](./apps/uniapp/pages/hid/)；Smart HID 由首页通用扫描识别，不占用独立 Tab
 - BLE 配网跨仓正典：Smart-HID-Workspace `protocols/ble/PROVISIONING_V1.md`；[`core/protocols/hid-provisioning-protocol.ts`](./core/protocols/hid-provisioning-protocol.ts) 是小程序侧受锁定镜像
 - MQTT 命令公开定义：[`core/protocols/hid-command-schema.ts`](./core/protocols/hid-command-schema.ts)
 - 公开侧文档：[`docs/smart-hid/`](./docs/smart-hid/)
 
 设计要点：
 
-- 微信小程序是开源个人小程序，**不做**会员 / 支付 / 订单 / License。
+- 本产品**不做**会员 / 支付 / 订单 / License。
 - Smart HID 设备当前**没有设备二维码**；首页通用扫描识别 Profile，点击“Smart HID 配网”后自动连接并读取 Device Info。
 - 配网页面只有“连接 → 填写 Wi-Fi/ControlHub → 查看状态”三个阶段；ControlHub 二维码仅用于带入服务器信息和一次性 token。
 - BLE 只负责配置与诊断，**不负责 HID 实时控制**（实时控制走 ControlHub → MQTT → ESP32，由独立的私有仓库承载）。

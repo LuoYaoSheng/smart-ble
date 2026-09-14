@@ -14,7 +14,6 @@
     "built_at",
     "overall_status",
     "artifacts",
-    "wechat_qr",
     "public_surfaces",
     "verified_capabilities",
     "known_limitations",
@@ -37,21 +36,11 @@
       "type": "array",
       "items": { "$ref": "#/$defs/artifact" }
     },
-    "wechat_qr": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["status", "image"],
-      "properties": {
-        "status": { "type": "string", "enum": ["not_released", "published"] },
-        "image": { "type": ["string", "null"] }
-      }
-    },
     "public_surfaces": {
       "type": "object",
       "additionalProperties": false,
       "required": [
         "android",
-        "wechat",
         "h5",
         "ios",
         "flutter_tauri_native",
@@ -62,7 +51,6 @@
       ],
       "properties": {
         "android": { "$ref": "#/$defs/surface" },
-        "wechat": { "$ref": "#/$defs/surface" },
         "h5": { "$ref": "#/$defs/surface" },
         "ios": { "$ref": "#/$defs/surface" },
         "flutter_tauri_native": { "$ref": "#/$defs/surface" },

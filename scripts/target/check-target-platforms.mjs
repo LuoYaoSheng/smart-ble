@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // scripts/target/check-target-platforms.mjs
-// TEST-C-004 —— 平台矩阵与公开面一致性：四平台、状态五词表、能力值域、降级必填。
+// TEST-C-004 —— 平台矩阵与公开面一致性：三平台、状态五词表、能力值域、降级必填。
+// 2026-09-14 MAC-001：微信小程序目标退役（用户 2026-09-11 裁决）。
 
 import { Checker, cliCtx } from './lib/check-utils.mjs';
 
@@ -8,7 +9,6 @@ const STATUS_VOCAB = ['VERIFIED', 'PREVIEW', 'BLOCKED', 'UNSUPPORTED', 'NOT_RELE
 const CAP_VALUES = ['Full', 'Adapted', 'Unsupported', 'N/A', 'Degraded', 'Not Released'];
 const EXPECTED_PLATFORMS = [
   { id: 'android-app', status: 'VERIFIED' },
-  { id: 'wechat-miniprogram', status: 'VERIFIED' },
   { id: 'h5', status: 'UNSUPPORTED' },
   { id: 'ios-app', status: 'NOT_RELEASED' },
 ];
@@ -20,8 +20,8 @@ export function run(ctx) {
   if (!j.ok) return c.report();
   const { platforms, capabilities } = j.data;
 
-  // 四平台与目标公开姿态
-  c.assert('TEST-C-004', 'PLATFORM 全体', platforms.length === 4, `恰好四平台（实际 ${platforms.length}）`);
+  // 三平台与目标公开姿态（微信小程序已退役）
+  c.assert('TEST-C-004', 'PLATFORM 全体', platforms.length === 3, `恰好三平台（实际 ${platforms.length}）`);
   for (const exp of EXPECTED_PLATFORMS) {
     const p = platforms.find((x) => x.id === exp.id);
     c.assert('TEST-C-004', exp.id, p && p.public_status_target === exp.status,
@@ -35,12 +35,12 @@ export function run(ctx) {
   c.assert('TEST-C-004', 'CAP 全体', new Set(capIds).size === capIds.length, '能力 ID 唯一');
   const badValue = [];
   for (const cap of capabilities) {
-    for (const k of ['android_app', 'wechat', 'h5', 'ios_app']) {
+    for (const k of ['android_app', 'h5', 'ios_app']) {
       if (!CAP_VALUES.includes(cap[k])) badValue.push(`${cap.id}.${k}=${cap[k]}`);
     }
-    // 双正式入口出现真实降级（Unsupported/Degraded/Adapted）必须给降级说明；
+    // 正式入口出现真实降级（Unsupported/Degraded/Adapted）必须给降级说明；
     // H5 全局 UNSUPPORTED 与 iOS NOT_RELEASED 属平台级姿态，由平台状态断言覆盖。
-    const primaryDegraded = ['android_app', 'wechat'].some((k) => ['Unsupported', 'Degraded', 'Adapted'].includes(cap[k]));
+    const primaryDegraded = ['android_app'].some((k) => ['Unsupported', 'Degraded', 'Adapted'].includes(cap[k]));
     if (primaryDegraded && !(cap.degradation_ui || '').trim()) badValue.push(`${cap.id}.degradation_ui 空`);
   }
   c.assert('TEST-C-004', 'CAP 全体', badValue.length === 0, `能力值在值域内且正式入口降级必有说明（违规 ${badValue.slice(0, 5).join(';')}）`);
@@ -48,7 +48,7 @@ export function run(ctx) {
   // H5 公开面：UNSUPPORTED 平台不得宣传为可用（08 号以中文标签登记平台）
   if (ctx.exists('docs/target-product/08_PLATFORM_CAPABILITY_AND_DEGRADATION_MATRIX.md')) {
     const t08 = ctx.read('docs/target-product/08_PLATFORM_CAPABILITY_AND_DEGRADATION_MATRIX.md');
-    const LABELS = { 'android-app': 'Android App', 'wechat-miniprogram': '微信小程序', h5: 'H5', 'ios-app': 'iOS App' };
+    const LABELS = { 'android-app': 'Android App', h5: 'H5', 'ios-app': 'iOS App' };
     for (const p of platforms) {
       c.assert('TEST-C-004', p.id, t08.includes(LABELS[p.id] || p.id), `08 号能力矩阵登记 ${p.id}（${LABELS[p.id]}）`);
     }

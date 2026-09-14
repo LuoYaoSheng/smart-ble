@@ -1,5 +1,7 @@
 # 微信真机执行模板（TEST-W-001..010 / E5）
 
+> **⚠️ 已归档（2026-09-14 MAC-001）**：微信小程序运行目标已于 2026-09-11 经用户裁决整体退役。本文仅作历史证据保留，不构成活跃测试目标；对应 TEST-W 套件已从 `contracts/target/test-traceability.json` 移除。
+
 > 状态：模板（TP-G1 交付；执行发生在 TP-G4+ 真机 Gate；Windows Mobile V1 轮已按 §7.1 修订）
 > Owner：Smart BLE QA；最低环境：正式 AppID 体验版/正式版、稳定基础库版本、Android 微信真机（iOS 真机缺位时相应用例标 NOT_RUN_DEVICE_MISSING，不得从 Android 推导 iOS PASS）
 > 夹具规则：只有一块 ESP32 时 Peripheral/Observer 分轮烧录，不同时承担两种角色

@@ -164,15 +164,6 @@ function defaultHbuilderxCli() {
   return candidates.find((p) => existsSync(p)) || null;
 }
 
-function defaultWechatDevtoolsCli() {
-  const fromEnv = process.env.WECHAT_DEVTOOLS_CLI;
-  if (fromEnv && existsSync(fromEnv)) return fromEnv;
-  const candidates = process.platform === 'win32'
-    ? ['C:/Program Files (x86)/Tencent/微信web开发者工具/cli.bat', 'D:/Program Files (x86)/Tencent/微信web开发者工具/cli.bat']
-    : ['/Applications/wechatwebdevtools.app/Contents/MacOS/cli'];
-  return candidates.find((p) => existsSync(p)) || null;
-}
-
 function detectBuild() {
   const hbxCli = defaultHbuilderxCli();
   const hbxVersion = hbxCli
@@ -182,13 +173,12 @@ function detectBuild() {
   const hbxCliBlockedNote = process.platform === 'win32' && hbxCli && !hbxVersion
     ? "HBuilderX CLI present but IDE not running; run 'cli open' first (version probe needs a live IDE)"
     : null;
-  const wechatCli = defaultWechatDevtoolsCli();
+  // 2026-09-14 MAC-001：微信开发者工具探针随微信目标退役移除（用户 2026-09-11 裁决）。
   const viteConfig = existsSync(join(ROOT, 'apps/uniapp/vite.config.js'))
     || existsSync(join(ROOT, 'apps/uniapp/vite.config.mjs'))
     || existsSync(join(ROOT, 'apps/uniapp/vite.config.ts'));
   return {
     hbuilderx: { present: Boolean(hbxCli), path: hbxCli, version: hbxVersion, cli: Boolean(hbxCli), cli_blocked_note: hbxCliBlockedNote },
-    wechat_devtools: { present: Boolean(wechatCli), path: wechatCli },
     viteConfigPresent: viteConfig,
     androidBuildTool: hbxCli ? 'HBuilderX cli launch app-android' : null,
   };
@@ -284,7 +274,6 @@ const md = `# E5 Environment Snapshot
 | Item | Value |
 |---|---|
 | HBuilderX | ${build.hbuilderx.present ? (build.hbuilderx.version || build.hbuilderx.cli_blocked_note || 'present') : 'MISSING'} |
-| WeChat devtools CLI | ${build.wechat_devtools.present ? build.wechat_devtools.path : 'MISSING'} |
 | vite.config | ${build.viteConfigPresent ? 'present' : 'absent'} |
 | android_toolchain | ${ready.android_toolchain} |
 

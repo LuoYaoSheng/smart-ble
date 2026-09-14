@@ -69,7 +69,7 @@ if (args.includes('--json')) {
     console.error('\nMISMATCHES:');
     for (const m of mismatches) console.error(`  ${m.id}: ${JSON.stringify(m)}`);
   } else {
-    console.log('\nOK: all 81 FEAT priorities aligned');
+    console.log(`\nOK: all ${jsonFeatures.size} FEAT priorities aligned`);
   }
 }
 

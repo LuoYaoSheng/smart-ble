@@ -209,21 +209,6 @@ const OPERATION_ACTUALS = {
       "同 OP-P001-01"
     ]
   },
-  "OP-P001-15": {
-    "page_id": "PAGE-001",
-    "control": "分享（微信菜单）",
-    "ui": [
-      "分享面板"
-    ],
-    "runtime_events": [
-      "shareApp"
-    ],
-    "device_events": [],
-    "navigation": null,
-    "cleanup_notes": [
-      "无本页额外清理"
-    ]
-  },
   "OP-P002-01": {
     "page_id": "PAGE-002",
     "control": "自动连接（进入触发）",
@@ -1031,7 +1016,7 @@ const OPERATION_ACTUALS = {
       "打开/复制 toast"
     ],
     "runtime_events": [
-      "App openURL / H5 window.open / 微信复制链接"
+      "App openURL / H5 window.open"
     ],
     "device_events": [],
     "navigation": "外部",
@@ -1166,25 +1151,10 @@ const OPERATION_ACTUALS = {
       "分享面板"
     ],
     "runtime_events": [
-      "微信 share / App uni.share / H5 Web Share→复制"
+      "App uni.share / H5 Web Share→复制"
     ],
     "device_events": [],
     "navigation": null,
-    "cleanup_notes": [
-      "无本页额外清理"
-    ]
-  },
-  "OP-P009-11": {
-    "page_id": "PAGE-009",
-    "control": "跳转其他小程序",
-    "ui": [
-      "跳转"
-    ],
-    "runtime_events": [
-      "navigateToMiniProgram"
-    ],
-    "device_events": [],
-    "navigation": "外部小程序",
     "cleanup_notes": [
       "无本页额外清理"
     ]
@@ -1212,21 +1182,6 @@ const OPERATION_ACTUALS = {
     ],
     "runtime_events": [
       "复制\"版本+shortsha\""
-    ],
-    "device_events": [],
-    "navigation": null,
-    "cleanup_notes": [
-      "无本页额外清理"
-    ]
-  },
-  "OP-P010-03": {
-    "page_id": "PAGE-010",
-    "control": "分享本页",
-    "ui": [
-      "分享面板"
-    ],
-    "runtime_events": [
-      "shareApp（本 path）"
     ],
     "device_events": [],
     "navigation": null,
@@ -1287,21 +1242,6 @@ const OPERATION_ACTUALS = {
     ],
     "runtime_events": [
       "产物 URL"
-    ],
-    "device_events": [],
-    "navigation": "外部",
-    "cleanup_notes": [
-      "无本页额外清理"
-    ]
-  },
-  "OP-W001-04": {
-    "page_id": "WEB-001",
-    "control": "微信小程序码",
-    "ui": [
-      "进入小程序"
-    ],
-    "runtime_events": [
-      "码图"
     ],
     "device_events": [],
     "navigation": "外部",

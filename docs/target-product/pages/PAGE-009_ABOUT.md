@@ -66,8 +66,8 @@ supersedes: []
 | OP-P009-07 | 隐私声明 | 页面可见 | 无 | 无 | 文档站隐私页 | 打开 | 同上 | 外部 | 无 | TEST-R-005 |
 | OP-P009-08 | 安全披露 | 页面可见 | 无 | 无 | SECURITY.md 入口 | 打开 | 同上 | 外部 | 无 | TEST-R-005 |
 | OP-P009-09 | 开源许可 | 页面可见 | 无 | 无 | LICENSE 展示 | 打开 | 同上 | 弹窗/外部 | 无 | TEST-R-005 |
-| OP-P009-10 | 分享应用 | 页面可见 | 无 | 无 | 微信 share / App uni.share / H5 Web Share→复制 | 分享面板 | 失败 toast | 无 | 无 | TEST-P-009、TEST-W-010 |
-| OP-P009-11 | 跳转其他小程序 | 仅微信、折叠区展开后 | 无 | 无 | navigateToMiniProgram | 跳转 | 无 appId toast/失败 modal | 外部小程序 | 无 | TEST-W-010 |
+| OP-P009-10 | 分享应用 | 页面可见 | 无 | 无 | App uni.share / H5 Web Share→复制 | 分享面板 | 失败 toast | 无 | 无 | TEST-P-009 |
+<!-- OP-P009-11 跳转其他小程序（navigateToMiniProgram，仅微信）已于 2026-09-14 MAC-001 随微信目标退役移入 deprecated_operations（App 内推广区更早已于 2026-09-10 F028 移除） -->
 
 ## 8. 完整状态表
 
@@ -123,7 +123,7 @@ TEST-P-009（区块/版本/链接矩阵）、TEST-C-006（版本一致性）。
 
 ## 19. 真机 / 发布测试映射
 
-TEST-A-012、TEST-W-010、TEST-R-003/005（链接与声明一致性 E6）。
+TEST-A-012、TEST-R-003/005（链接与声明一致性 E6）。
 
 ## 20. 公开声明与证据要求
 
@@ -157,7 +157,7 @@ flowchart TD
   D --> H[OP-P009-10 分享]
   E --> G
   E --> H
-  D --> I[微信折叠区 OP-P009-11]
+  D --> I[OP-P009-11 已退役]
 ```
 
 ## 24. 关联 ID 与链接

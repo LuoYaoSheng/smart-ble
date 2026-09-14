@@ -1,0 +1,22 @@
+ok   : [TEST-C-009] test-traceability.json 可解析
+ok   : [TEST-C-009] TEST ID 形如 TEST-[CUIPEAWHR]-nnn
+ok   : [TEST-C-009] TEST ID 唯一
+ok   : [TEST-C-009] 套件 TEST-C- 计数 14（实算 14）
+ok   : [TEST-C-009] 套件 TEST-U- 计数 16（实算 16）
+ok   : [TEST-C-009] 套件 TEST-I- 计数 10（实算 10）
+ok   : [TEST-C-009] 套件 TEST-P- 计数 12（实算 12）
+ok   : [TEST-C-009] 套件 TEST-E- 计数 8（实算 8）
+ok   : [TEST-C-009] 套件 TEST-A- 计数 14（实算 14）
+ok   : [TEST-C-009] 套件 TEST-H- 计数 7（实算 7）
+ok   : [TEST-C-009] 套件 TEST-R- 计数 10（实算 10）
+ok   : [TEST-C-009] 九套件计数之和 = 测试总数
+ok   : [TEST-C-009] 测试引用无悬空（坏引用 ）
+ok   : [TEST-C-009] 每条测试映射目标（未映射且非 meta：）
+ok   : [TEST-C-008] Must FEAT 100% 有测试（缺 ；80/80）
+ok   : [TEST-C-008] 每条 REQ 直接或经 FEAT 覆盖（缺 ）
+ok   : [TEST-C-009] PAGE/WEB/FLOW 无孤立目标（缺 ）
+ok   : [TEST-C-009] CLAIM 无孤立目标（缺 ）
+ok   : [TEST-C-009] coverage.requirements_total=65 与实算 65 一致
+ok   : [TEST-C-009] coverage.must_features_total=80 与实算 80 一致
+
+check-target-traceability: PASS（20/20）

@@ -100,7 +100,7 @@ supersedes: []
 | CLAIM-024 | 真实 App 截图 | 截图存在+alt | TEST-R-006 |
 | CLAIM-025 | 贡献指南与 Profile 扩展 | 文档存在 | TEST-R-005 |
 | CLAIM-026 | 文档站可离线阅读核心内容 | SSG | TEST-R-006 |
-| CLAIM-027 | 微信小程序入口 | 正式码可用 | TEST-R-009 |
+<!-- CLAIM-027（微信小程序入口）已于 2026-09-14 MAC-001 随微信目标退役移除 -->
 | CLAIM-028 | Android APK 下载 | 产物+SHA | TEST-R-001 |
 | CLAIM-029 | SEO/OG/canonical 正确 | 抓取一致 | TEST-R-006 |
 | CLAIM-030 | 无障碍承诺（对比度/键盘/alt） | a11y 走查 | TEST-R-010 |

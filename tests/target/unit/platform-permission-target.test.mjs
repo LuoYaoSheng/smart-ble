@@ -1,13 +1,13 @@
 // tests/target/unit/platform-permission-target.test.mjs
 // TEST-U-001（平台识别纯函数）/ TEST-U-003（权限状态机）/ TEST-U-004（适配器状态映射）
-// 目标：REQ-001/005/006/007/008；FEAT-001/005/006/007/008；PAGE-001/008；FLOW-001。
+// 目标：REQ-001/005/007/008；FEAT-001/005/007/008；PAGE-001/008；FLOW-001。（REQ-006/FEAT-006 随微信目标退役移除，2026-09-14 MAC-001）
 // 规则来源：DEC-003 能力驱动最小权限（不预取定位、点击扫描才申请、能力检测决定）。
 
 import test from 'node:test';
 import assert from 'node:assert';
 import { importTarget, notImplemented } from '../lib/import-target.mjs';
 
-const IDS = 'TEST-U-001/003/004 REQ-005~008 FEAT-001/005~008 DEC-003';
+const IDS = 'TEST-U-001/003/004 REQ-005/007/008 FEAT-001/005/007/008 DEC-003';
 
 // ---------- 目标层：apps/uniapp 真实模块 ----------
 test('TEST-U-001/003/004 目标层：ble-runtime/platform.js + services/scan-permission.js', async (t) => {
@@ -27,7 +27,7 @@ test('TEST-U-001/003/004 目标层：ble-runtime/platform.js + services/scan-per
   }
 
   const perm = await importTarget('apps/uniapp/services/scan-permission.js', {
-    globals: { uni: { getSystemInfoSync: () => ({ uniPlatform: 'mp-weixin', platform: 'devtools' }) } },
+    globals: { uni: { getSystemInfoSync: () => ({ uniPlatform: 'app', platform: 'android' }) } },
   });
   if (!perm.ok) return assert.fail(notImplemented(IDS, `scan-permission.js：${perm.message}`));
   if (typeof perm.module.requestBleScanPermission !== 'function') {

@@ -1,101 +1,33 @@
 {
+  "landing_fake_download": false,
+  "version_ssot_ready": true,
+  "page_version_ready": true,
+  "release_builds_flutter": true,
+  "release_builds_tauri": true,
+  "release_builds_uniapp": false,
+  "tasks": [
+    "PUBLIC-HONESTY-001",
+    "VERSION-METADATA-001",
+    "RELEASE-PIPELINE-001",
+    "PAGE-VERSION-001"
+  ],
   "records": [
     {
-      "target_id": "FEAT-004",
-      "target_type": "feature",
-      "gap_kind": "RELEASE",
-      "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "AUTOMATED_FAIL",
-      "severity": "P1",
-      "evidence_level": "E6",
-      "implementation_refs": [],
-      "test_ids": [
-        "TEST-C-006",
-        "TEST-U-002",
-        "TEST-R-002"
-      ],
-      "test_results": [
-        {
-          "status": "AUTOMATED_FAIL",
-          "message": "NOT_IMPLEMENTED: [REQ-004/056 FEAT-004/066 18号] 第一断点: 仓库根 VERSION 单源文件缺失"
-        }
-      ],
-      "expected": "版本与构建渠道 (Must)",
-      "actual": "NOT_IMPLEMENTED: [REQ-004/056 FEAT-004/066 18号] 第一断点: 仓库根 VERSION 单源文件缺失",
-      "first_breakpoint": "仓库根 VERSION 单源文件缺失",
-      "downstream_impact": [],
-      "dependencies": [],
-      "suggested_fix_id": "FIX-RELEASE-001",
-      "release_blocking": true
-    },
-    {
-      "target_id": "FEAT-066",
-      "target_type": "feature",
-      "gap_kind": "RELEASE",
-      "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "AUTOMATED_FAIL",
-      "severity": "P1",
-      "evidence_level": "E6",
-      "implementation_refs": [],
-      "test_ids": [
-        "TEST-C-006",
-        "TEST-P-010",
-        "TEST-R-002"
-      ],
-      "test_results": [],
-      "expected": "版本历史页 (Must)",
-      "actual": "存在部分实现路径，待按测试结果细分",
-      "first_breakpoint": "仓库根 VERSION 单源文件缺失",
-      "downstream_impact": [],
-      "dependencies": [],
-      "suggested_fix_id": "FIX-RELEASE-001",
-      "release_blocking": true
-    },
-    {
-      "target_id": "FEAT-075",
-      "target_type": "feature",
+      "target_id": "WEB-001",
+      "target_type": "web",
+      "dimension": "web",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
-      "verification_status": "AUTOMATED_FAIL",
-      "severity": "P0",
+      "implementation_status": "IMPLEMENTED_UNTESTED",
+      "verification_status": "AUTOMATED_PASS",
+      "static_implementation": "CONFIRMED_IMPLEMENTED",
+      "e4_verification": "EXECUTED",
+      "e5_verification": "HARDWARE_PENDING",
+      "severity": null,
       "evidence_level": "E6",
       "implementation_refs": [
         {
           "path": "docs/index.md",
-          "symbol": "download-hub",
-          "line_hint": "releases/latest"
-        }
-      ],
-      "test_ids": [
-        "TEST-R-001",
-        "TEST-R-002",
-        "TEST-R-008",
-        "TEST-R-009"
-      ],
-      "test_results": [],
-      "expected": "下载/QR/SHA/证据/限制 (Must)",
-      "actual": "存在部分实现路径，待按测试结果细分",
-      "first_breakpoint": "docs/index.md 三卡均链 releases/latest 假主下载",
-      "downstream_impact": [],
-      "dependencies": [],
-      "suggested_fix_id": "FIX-LANDING-001",
-      "release_blocking": true
-    },
-    {
-      "target_id": "WEB-001",
-      "target_type": "page",
-      "gap_kind": "LANDING",
-      "priority": "Must",
-      "implementation_status": "PARTIAL",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
-      "severity": "P0",
-      "evidence_level": "E6",
-      "implementation_refs": [
-        {
-          "path": "apps/uniapp//.vue",
           "symbol": "WEB-001",
           "line_hint": ""
         }
@@ -110,27 +42,89 @@
         "TEST-R-008",
         "TEST-R-009",
         "TEST-R-010",
-        "TEST-R-011"
+        "TEST-R-011",
+        "TEST-U-013",
+        "TEST-U-002"
       ],
-      "test_results": [],
-      "expected": "完整 4 states / 11 operations",
-      "actual": "自动化: BLOCKED_BY_TOOLCHAIN; blocked_cases≈21",
-      "first_breakpoint": "假主下载 releases/latest；另有 Playwright BLOCKED_BY_TOOLCHAIN",
+      "test_results": [
+        {
+          "test_id": "TEST-U-013",
+          "status": "PASS",
+          "case_id": "current:logging-redaction-target.test.mjs:TEST-U-013 目标层：services/ble-runtime/log-redaction.js",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-U-002",
+          "status": "PASS",
+          "case_id": "current:version-release-metadata-target.test.mjs:TEST-U-002 目标层：services/version-metadata.js",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-005",
+          "status": "PASS",
+          "case_id": "current:links-and-qr.test.mjs:TEST-R-005 落地页本站相对链接全部可达",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-005",
+          "status": "PASS",
+          "case_id": "current:links-and-qr.test.mjs:TEST-R-005 目标文档内链相对且可达（docs/target-product 抽样）",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-005",
+          "status": "PASS",
+          "case_id": "current:links-and-qr.test.mjs:TEST-R-009 二维码规则：落地页如含码图必须同时给文本等价",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-003",
+          "status": "PASS",
+          "case_id": "current:public-claims.test.mjs:TEST-R-003 生产落地页存在",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-003",
+          "status": "PASS",
+          "case_id": "current:public-claims.test.mjs:TEST-R-003 无假下载：APK/固件直链必须伴随 SHA256；无产物时必须诚实 NOT_RELEASED 且无 releases/latest 冒充",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-003",
+          "status": "PASS",
+          "case_id": "current:public-claims.test.mjs:TEST-R-003 禁用无证据强声明词（VERIFIED 语义不得无证据出现）",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-003",
+          "status": "PASS",
+          "case_id": "current:public-claims.test.mjs:TEST-R-003 禁止错误主线与 6+ 入口误导",
+          "first_breakpoint": null
+        }
+      ],
+      "expected": "4 states / 10 operations",
+      "actual": "E4 executed via Page Driver; pass=230 fail=0",
+      "first_breakpoint": "Page Driver 已执行（Fake Runtime）；产品差距另见业务/Runtime Task",
       "downstream_impact": [
         "state_cases=4",
-        "operation_cases=11"
+        "operation_cases=10"
       ],
       "dependencies": [],
-      "suggested_fix_id": "FIX-LANDING-001",
-      "release_blocking": true
+      "root_cause_id": null,
+      "task_id": null,
+      "release_blocking": false
     },
     {
       "target_id": "STATE-W001-01",
       "target_type": "state",
+      "dimension": "state",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "implementation_status": "UNASSESSED",
+      "verification_status": "EXECUTED",
+      "static_implementation": "UNASSESSED",
+      "e4_verification": "EXECUTED",
+      "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
       "implementation_refs": [],
@@ -139,22 +133,27 @@
       ],
       "test_results": [],
       "expected": "Release Metadata 完整且 E6 门通过",
-      "actual": "产品实现可能存在对应 UI；自动化未验证",
-      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "actual": "page driver executed; product gap may remain",
+      "first_breakpoint": "E4 已由 Page Driver 执行（EXECUTED）；产品态差距另见业务 Task",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
-      "suggested_fix_id": "FIX-TEST-002",
+      "root_cause_id": null,
+      "task_id": null,
       "release_blocking": false
     },
     {
       "target_id": "STATE-W001-02",
       "target_type": "state",
+      "dimension": "state",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "implementation_status": "UNASSESSED",
+      "verification_status": "EXECUTED",
+      "static_implementation": "UNASSESSED",
+      "e4_verification": "EXECUTED",
+      "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
       "implementation_refs": [],
@@ -163,23 +162,28 @@
       ],
       "test_results": [],
       "expected": "产物未齐/E5 未全",
-      "actual": "产品实现可能存在对应 UI；自动化未验证",
-      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "actual": "page driver executed; product gap may remain",
+      "first_breakpoint": "E4 已由 Page Driver 执行（EXECUTED）；产品态差距另见业务 Task",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
-      "suggested_fix_id": "FIX-TEST-002",
+      "root_cause_id": null,
+      "task_id": null,
       "release_blocking": false
     },
     {
       "target_id": "STATE-W001-03",
       "target_type": "state",
+      "dimension": "state",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "verification_status": "AUTOMATED_FAIL",
-      "severity": "P0",
+      "implementation_status": "UNASSESSED",
+      "verification_status": "EXECUTED",
+      "static_implementation": "UNASSESSED",
+      "e4_verification": "EXECUTED",
+      "e5_verification": "NOT_EXECUTED",
+      "severity": null,
       "evidence_level": "E4",
       "implementation_refs": [],
       "test_ids": [
@@ -187,22 +191,27 @@
       ],
       "test_results": [],
       "expected": "无任何公开产物",
-      "actual": "下载区未按 NOT_RELEASED 降级",
-      "first_breakpoint": "NOT_RELEASED 无产物时应无下载链接；当前仍暴露 releases/latest",
+      "actual": "page driver executed; product gap may remain",
+      "first_breakpoint": "E4 已由 Page Driver 执行（EXECUTED）；产品态差距另见业务 Task",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
-      "suggested_fix_id": "FIX-LANDING-001",
-      "release_blocking": true
+      "root_cause_id": null,
+      "task_id": null,
+      "release_blocking": false
     },
     {
       "target_id": "STATE-W001-04",
       "target_type": "state",
+      "dimension": "state",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
-      "verification_status": "BLOCKED_BY_TOOLCHAIN",
+      "implementation_status": "UNASSESSED",
+      "verification_status": "EXECUTED",
+      "static_implementation": "UNASSESSED",
+      "e4_verification": "EXECUTED",
+      "e5_verification": "NOT_EXECUTED",
       "severity": null,
       "evidence_level": "E4",
       "implementation_refs": [],
@@ -211,116 +220,433 @@
       ],
       "test_results": [],
       "expected": "截图/原型缺失",
-      "actual": "产品实现可能存在对应 UI；自动化未验证",
-      "first_breakpoint": "自动化未执行（BLOCKED_BY_TOOLCHAIN）；产品态需静态核对",
+      "actual": "page driver executed; product gap may remain",
+      "first_breakpoint": "E4 已由 Page Driver 执行（EXECUTED）；产品态差距另见业务 Task",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
-      "suggested_fix_id": "FIX-TEST-002",
+      "root_cause_id": null,
+      "task_id": null,
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-W001-01",
+      "target_type": "operation",
+      "dimension": "operation",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "UNASSESSED",
+      "verification_status": "EXECUTED",
+      "static_implementation": "UNASSESSED",
+      "e4_verification": "EXECUTED",
+      "e5_verification": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-006"
+      ],
+      "test_results": [],
+      "expected": "主 CTA（体验）",
+      "actual": "page driver executed; product gap may remain",
+      "first_breakpoint": "E4 已执行（EXECUTED）；产品操作差距另见业务 Task",
+      "downstream_impact": [],
+      "dependencies": [
+        "WEB-001"
+      ],
+      "root_cause_id": null,
+      "task_id": null,
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-W001-02",
+      "target_type": "operation",
+      "dimension": "operation",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "UNASSESSED",
+      "verification_status": "EXECUTED",
+      "static_implementation": "UNASSESSED",
+      "e4_verification": "EXECUTED",
+      "e5_verification": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-005"
+      ],
+      "test_results": [],
+      "expected": "次 CTA（GitHub）",
+      "actual": "page driver executed; product gap may remain",
+      "first_breakpoint": "E4 已执行（EXECUTED）；产品操作差距另见业务 Task",
+      "downstream_impact": [],
+      "dependencies": [
+        "WEB-001"
+      ],
+      "root_cause_id": null,
+      "task_id": null,
       "release_blocking": false
     },
     {
       "target_id": "OP-W001-03",
       "target_type": "operation",
+      "dimension": "operation",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
-      "verification_status": "AUTOMATED_FAIL",
-      "severity": "P0",
+      "implementation_status": "UNASSESSED",
+      "verification_status": "EXECUTED",
+      "static_implementation": "UNASSESSED",
+      "e4_verification": "EXECUTED",
+      "e5_verification": "NOT_EXECUTED",
+      "severity": null,
       "evidence_level": "E4",
       "implementation_refs": [],
       "test_ids": [
         "TEST-R-001"
       ],
       "test_results": [],
-      "expected": "下载 Android APK; runtime=产物 URL",
-      "actual": "假主下载链路",
-      "first_breakpoint": "下载 CTA 指向 releases/latest 而非 NOT_RELEASED/真实产物",
+      "expected": "下载 Android APK",
+      "actual": "page driver executed; product gap may remain",
+      "first_breakpoint": "E4 已执行（EXECUTED）；产品操作差距另见业务 Task",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
-      "suggested_fix_id": "FIX-LANDING-001",
-      "release_blocking": true
-    },
-    {
-      "target_id": "OP-W001-04",
-      "target_type": "operation",
-      "gap_kind": "LANDING",
-      "priority": "Must",
-      "implementation_status": "PARTIAL",
-      "verification_status": "AUTOMATED_FAIL",
-      "severity": "P0",
-      "evidence_level": "E4",
-      "implementation_refs": [],
-      "test_ids": [
-        "TEST-R-009"
-      ],
-      "test_results": [],
-      "expected": "微信小程序码; runtime=码图",
-      "actual": "假主下载链路",
-      "first_breakpoint": "下载 CTA 指向 releases/latest 而非 NOT_RELEASED/真实产物",
-      "downstream_impact": [],
-      "dependencies": [
-        "WEB-001"
-      ],
-      "suggested_fix_id": "FIX-LANDING-001",
-      "release_blocking": true
+      "root_cause_id": null,
+      "task_id": null,
+      "release_blocking": false
     },
     {
       "target_id": "OP-W001-05",
       "target_type": "operation",
+      "dimension": "operation",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
-      "verification_status": "AUTOMATED_FAIL",
-      "severity": "P0",
+      "implementation_status": "UNASSESSED",
+      "verification_status": "EXECUTED",
+      "static_implementation": "UNASSESSED",
+      "e4_verification": "EXECUTED",
+      "e5_verification": "NOT_EXECUTED",
+      "severity": null,
       "evidence_level": "E4",
       "implementation_refs": [],
       "test_ids": [
         "TEST-R-008"
       ],
       "test_results": [],
-      "expected": "固件下载; runtime=产物 URL",
-      "actual": "假主下载链路",
-      "first_breakpoint": "下载 CTA 指向 releases/latest 而非 NOT_RELEASED/真实产物",
+      "expected": "固件下载",
+      "actual": "page driver executed; product gap may remain",
+      "first_breakpoint": "E4 已执行（EXECUTED）；产品操作差距另见业务 Task",
       "downstream_impact": [],
       "dependencies": [
         "WEB-001"
       ],
-      "suggested_fix_id": "FIX-LANDING-001",
-      "release_blocking": true
+      "root_cause_id": null,
+      "task_id": null,
+      "release_blocking": false
     },
     {
-      "target_id": "CLAIM-001",
-      "target_type": "claim",
+      "target_id": "OP-W001-06",
+      "target_type": "operation",
+      "dimension": "operation",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
-      "verification_status": "NOT_EXECUTED",
+      "implementation_status": "UNASSESSED",
+      "verification_status": "EXECUTED",
+      "static_implementation": "UNASSESSED",
+      "e4_verification": "EXECUTED",
+      "e5_verification": "NOT_EXECUTED",
       "severity": null,
-      "evidence_level": "E6",
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-007"
+      ],
+      "test_results": [],
+      "expected": "查看证据",
+      "actual": "page driver executed; product gap may remain",
+      "first_breakpoint": "E4 已执行（EXECUTED）；产品操作差距另见业务 Task",
+      "downstream_impact": [],
+      "dependencies": [
+        "WEB-001"
+      ],
+      "root_cause_id": null,
+      "task_id": null,
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-W001-07",
+      "target_type": "operation",
+      "dimension": "operation",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "UNASSESSED",
+      "verification_status": "EXECUTED",
+      "static_implementation": "UNASSESSED",
+      "e4_verification": "EXECUTED",
+      "e5_verification": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E4",
       "implementation_refs": [],
       "test_ids": [
         "TEST-R-006"
       ],
       "test_results": [],
+      "expected": "查看已知限制",
+      "actual": "page driver executed; product gap may remain",
+      "first_breakpoint": "E4 已执行（EXECUTED）；产品操作差距另见业务 Task",
+      "downstream_impact": [],
+      "dependencies": [
+        "WEB-001"
+      ],
+      "root_cause_id": null,
+      "task_id": null,
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-W001-08",
+      "target_type": "operation",
+      "dimension": "operation",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "UNASSESSED",
+      "verification_status": "EXECUTED",
+      "static_implementation": "UNASSESSED",
+      "e4_verification": "EXECUTED",
+      "e5_verification": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-006"
+      ],
+      "test_results": [],
+      "expected": "导航锚点",
+      "actual": "page driver executed; product gap may remain",
+      "first_breakpoint": "E4 已执行（EXECUTED）；产品操作差距另见业务 Task",
+      "downstream_impact": [],
+      "dependencies": [
+        "WEB-001"
+      ],
+      "root_cause_id": null,
+      "task_id": null,
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-W001-09",
+      "target_type": "operation",
+      "dimension": "operation",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "UNASSESSED",
+      "verification_status": "EXECUTED",
+      "static_implementation": "UNASSESSED",
+      "e4_verification": "EXECUTED",
+      "e5_verification": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-005"
+      ],
+      "test_results": [],
+      "expected": "快速开始三选一",
+      "actual": "page driver executed; product gap may remain",
+      "first_breakpoint": "E4 已执行（EXECUTED）；产品操作差距另见业务 Task",
+      "downstream_impact": [],
+      "dependencies": [
+        "WEB-001"
+      ],
+      "root_cause_id": null,
+      "task_id": null,
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-W001-10",
+      "target_type": "operation",
+      "dimension": "operation",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "UNASSESSED",
+      "verification_status": "EXECUTED",
+      "static_implementation": "UNASSESSED",
+      "e4_verification": "EXECUTED",
+      "e5_verification": "NOT_EXECUTED",
+      "severity": null,
+      "evidence_level": "E4",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-005"
+      ],
+      "test_results": [],
+      "expected": "Smart HID 区链接",
+      "actual": "page driver executed; product gap may remain",
+      "first_breakpoint": "E4 已执行（EXECUTED）；产品操作差距另见业务 Task",
+      "downstream_impact": [],
+      "dependencies": [
+        "WEB-001"
+      ],
+      "root_cause_id": null,
+      "task_id": null,
+      "release_blocking": false
+    },
+    {
+      "target_id": "OP-W001-11",
+      "target_type": "operation",
+      "dimension": "operation",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "UNASSESSED",
+      "verification_status": "HARDWARE_PENDING",
+      "static_implementation": "UNASSESSED",
+      "e4_verification": "EXECUTED",
+      "e5_verification": "HARDWARE_PENDING",
+      "severity": null,
+      "evidence_level": "E5",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-011"
+      ],
+      "test_results": [],
+      "expected": "30 分钟 Clean Machine 入口",
+      "actual": "page driver executed; product gap may remain",
+      "first_breakpoint": "E4 已执行（EXECUTED）；产品操作差距另见业务 Task",
+      "downstream_impact": [],
+      "dependencies": [
+        "WEB-001"
+      ],
+      "root_cause_id": null,
+      "task_id": null,
+      "release_blocking": false
+    },
+    {
+      "target_id": "PROTO-010",
+      "target_type": "protocol",
+      "dimension": "protocol",
+      "gap_kind": "RELEASE",
+      "priority": "Must",
+      "implementation_status": "CONFIRMED_PARTIAL",
+      "verification_status": "AUTOMATED_PASS",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
+      "severity": "P0",
+      "evidence_level": "E5",
+      "implementation_refs": [
+        {
+          "path": ".github/workflows/release-build.yml",
+          "symbol": "jobs",
+          "line_hint": "Flutter APK / Tauri MSI"
+        }
+      ],
+      "test_ids": [
+        "TEST-E-006"
+      ],
+      "test_results": [
+        {
+          "test_id": "TEST-E-006",
+          "status": "PASS",
+          "case_id": "current:serial-schema.test.mjs:串口契约：115200 波特、≥8 事件类型、≥9 Observer 字段",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-E-006",
+          "status": "PASS",
+          "case_id": "current:serial-schema.test.mjs:观察流行解析（目标 schema 的 E1 参照）",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-E-006",
+          "status": "PASS",
+          "case_id": "current:serial-schema.test.mjs:固件侧串口事件 emit 静态探测（可 FAIL=差距）",
+          "first_breakpoint": null
+        }
+      ],
+      "expected": "Release Metadata Schema",
+      "actual": "flutter=true tauri=true uniapp=false",
+      "first_breakpoint": ".github/workflows/release-build.yml builds Flutter/Tauri; not UniApp Android + Peripheral/Observer firmware",
+      "downstream_impact": [
+        "RELEASE-PIPELINE-001: workflow builds Flutter/Tauri not UniApp+firmware"
+      ],
+      "dependencies": [],
+      "root_cause_id": "RC-RELEASE-PIPELINE",
+      "task_id": "RELEASE-PIPELINE-001",
+      "release_blocking": true
+    },
+    {
+      "target_id": "CLAIM-001",
+      "target_type": "claim",
+      "dimension": "claim",
+      "gap_kind": "LANDING",
+      "priority": "Must",
+      "implementation_status": "IMPLEMENTED_UNTESTED",
+      "verification_status": "AUTOMATED_PASS",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
+      "severity": null,
+      "evidence_level": "E6",
+      "implementation_refs": [],
+      "test_ids": [
+        "TEST-R-006",
+        "TEST-E-008",
+        "TEST-R-001"
+      ],
+      "test_results": [
+        {
+          "test_id": "TEST-E-008",
+          "status": "PASS",
+          "case_id": "current:artifact-metadata.test.mjs:VERSION 单源文件存在（18 号：版本五处同源的源头）",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-E-008",
+          "status": "PASS",
+          "case_id": "current:artifact-metadata.test.mjs:固件产物元数据：有产物必须带 manifest（版本+SHA），无产物必须 NOT_RELEASED",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-001",
+          "status": "PASS",
+          "case_id": "current:release-artifacts.test.mjs:TEST-R-002 版本单源：VERSION 或等价单源存在且与 README/manifest 同版",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-001",
+          "status": "PASS",
+          "case_id": "current:release-artifacts.test.mjs:TEST-R-001 产物登记处：任何已登记产物必须 URL+SHA256 成对",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-001",
+          "status": "PASS",
+          "case_id": "current:release-artifacts.test.mjs:TEST-R-001 下载规则与 landing-target 契约一致",
+          "first_breakpoint": null
+        }
+      ],
       "expected": "产品定位一句话（Hero）",
       "actual": "待 E6 发布门验证",
       "first_breakpoint": "E6 NOT_EXECUTED",
-      "downstream_impact": [],
+      "downstream_impact": [
+        "RELEASE-PIPELINE-001: workflow builds Flutter/Tauri not UniApp+firmware"
+      ],
       "dependencies": [],
-      "suggested_fix_id": "FIX-E6-001",
+      "root_cause_id": null,
+      "task_id": "VERIFY-E6-001",
       "release_blocking": true
     },
     {
       "target_id": "CLAIM-002",
       "target_type": "claim",
+      "dimension": "claim",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "NOT_EXECUTED",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": null,
       "evidence_level": "E6",
       "implementation_refs": [],
@@ -333,16 +659,21 @@
       "first_breakpoint": "E6 NOT_EXECUTED",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-E6-001",
+      "root_cause_id": null,
+      "task_id": "VERIFY-E6-001",
       "release_blocking": true
     },
     {
       "target_id": "CLAIM-003",
       "target_type": "claim",
+      "dimension": "claim",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "NOT_EXECUTED",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": null,
       "evidence_level": "E6",
       "implementation_refs": [],
@@ -355,22 +686,26 @@
       "first_breakpoint": "E6 NOT_EXECUTED",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-E6-001",
+      "root_cause_id": null,
+      "task_id": "VERIFY-E6-001",
       "release_blocking": true
     },
     {
       "target_id": "CLAIM-004",
       "target_type": "claim",
+      "dimension": "claim",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "NOT_EXECUTED",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": null,
       "evidence_level": "E6",
       "implementation_refs": [],
       "test_ids": [
         "TEST-A-005",
-        "TEST-W-007",
         "TEST-E-001"
       ],
       "test_results": [],
@@ -379,22 +714,26 @@
       "first_breakpoint": "E6 NOT_EXECUTED",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-E6-001",
+      "root_cause_id": null,
+      "task_id": "VERIFY-E6-001",
       "release_blocking": true
     },
     {
       "target_id": "CLAIM-005",
       "target_type": "claim",
+      "dimension": "claim",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "NOT_EXECUTED",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": null,
       "evidence_level": "E6",
       "implementation_refs": [],
       "test_ids": [
-        "TEST-A-005",
-        "TEST-W-007"
+        "TEST-A-005"
       ],
       "test_results": [],
       "expected": "两轮扫描与筛选",
@@ -402,23 +741,27 @@
       "first_breakpoint": "E6 NOT_EXECUTED",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-E6-001",
+      "root_cause_id": null,
+      "task_id": "VERIFY-E6-001",
       "release_blocking": true
     },
     {
       "target_id": "CLAIM-006",
       "target_type": "claim",
+      "dimension": "claim",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "NOT_EXECUTED",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": null,
       "evidence_level": "E6",
       "implementation_refs": [],
       "test_ids": [
         "TEST-A-006",
         "TEST-A-008",
-        "TEST-W-007",
         "TEST-E-003"
       ],
       "test_results": [],
@@ -427,16 +770,21 @@
       "first_breakpoint": "E6 NOT_EXECUTED",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-E6-001",
+      "root_cause_id": null,
+      "task_id": "VERIFY-E6-001",
       "release_blocking": true
     },
     {
       "target_id": "CLAIM-007",
       "target_type": "claim",
+      "dimension": "claim",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "NOT_EXECUTED",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": null,
       "evidence_level": "E6",
       "implementation_refs": [],
@@ -449,22 +797,26 @@
       "first_breakpoint": "E6 NOT_EXECUTED",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-E6-001",
+      "root_cause_id": null,
+      "task_id": "VERIFY-E6-001",
       "release_blocking": true
     },
     {
       "target_id": "CLAIM-008",
       "target_type": "claim",
+      "dimension": "claim",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "NOT_EXECUTED",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": null,
       "evidence_level": "E6",
       "implementation_refs": [],
       "test_ids": [
-        "TEST-A-008",
-        "TEST-W-008"
+        "TEST-A-008"
       ],
       "test_results": [],
       "expected": "按设备通信日志与导出",
@@ -472,22 +824,26 @@
       "first_breakpoint": "E6 NOT_EXECUTED",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-E6-001",
+      "root_cause_id": null,
+      "task_id": "VERIFY-E6-001",
       "release_blocking": true
     },
     {
       "target_id": "CLAIM-009",
       "target_type": "claim",
+      "dimension": "claim",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "NOT_EXECUTED",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": null,
       "evidence_level": "E6",
       "implementation_refs": [],
       "test_ids": [
-        "TEST-A-009",
-        "TEST-W-009"
+        "TEST-A-009"
       ],
       "test_results": [],
       "expected": "多设备会话管理",
@@ -495,16 +851,21 @@
       "first_breakpoint": "E6 NOT_EXECUTED",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-E6-001",
+      "root_cause_id": null,
+      "task_id": "VERIFY-E6-001",
       "release_blocking": true
     },
     {
       "target_id": "CLAIM-010",
       "target_type": "claim",
+      "dimension": "claim",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "NOT_EXECUTED",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": null,
       "evidence_level": "E6",
       "implementation_refs": [],
@@ -518,16 +879,21 @@
       "first_breakpoint": "E6 NOT_EXECUTED",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-E6-001",
+      "root_cause_id": null,
+      "task_id": "VERIFY-E6-001",
       "release_blocking": true
     },
     {
       "target_id": "CLAIM-011",
       "target_type": "claim",
+      "dimension": "claim",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "NOT_EXECUTED",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": null,
       "evidence_level": "E6",
       "implementation_refs": [],
@@ -541,16 +907,21 @@
       "first_breakpoint": "E6 NOT_EXECUTED",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-E6-001",
+      "root_cause_id": null,
+      "task_id": "VERIFY-E6-001",
       "release_blocking": true
     },
     {
       "target_id": "CLAIM-012",
       "target_type": "claim",
+      "dimension": "claim",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "NOT_EXECUTED",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": null,
       "evidence_level": "E6",
       "implementation_refs": [],
@@ -564,16 +935,21 @@
       "first_breakpoint": "E6 NOT_EXECUTED",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-E6-001",
+      "root_cause_id": null,
+      "task_id": "VERIFY-E6-001",
       "release_blocking": true
     },
     {
       "target_id": "CLAIM-013",
       "target_type": "claim",
+      "dimension": "claim",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "NOT_EXECUTED",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": null,
       "evidence_level": "E6",
       "implementation_refs": [],
@@ -586,16 +962,21 @@
       "first_breakpoint": "E6 NOT_EXECUTED",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-E6-001",
+      "root_cause_id": null,
+      "task_id": "VERIFY-E6-001",
       "release_blocking": true
     },
     {
       "target_id": "CLAIM-014",
       "target_type": "claim",
+      "dimension": "claim",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "NOT_EXECUTED",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": null,
       "evidence_level": "E6",
       "implementation_refs": [],
@@ -613,16 +994,21 @@
       "first_breakpoint": "E6 NOT_EXECUTED",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-E6-001",
+      "root_cause_id": null,
+      "task_id": "VERIFY-E6-001",
       "release_blocking": true
     },
     {
       "target_id": "CLAIM-015",
       "target_type": "claim",
+      "dimension": "claim",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "NOT_EXECUTED",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": null,
       "evidence_level": "E6",
       "implementation_refs": [],
@@ -635,150 +1021,328 @@
       "first_breakpoint": "E6 NOT_EXECUTED",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-E6-001",
+      "root_cause_id": null,
+      "task_id": "VERIFY-E6-001",
       "release_blocking": true
     },
     {
       "target_id": "CLAIM-016",
       "target_type": "claim",
+      "dimension": "claim",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
-      "verification_status": "AUTOMATED_FAIL",
-      "severity": "P0",
+      "implementation_status": "IMPLEMENTED_UNTESTED",
+      "verification_status": "AUTOMATED_PASS",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
+      "severity": null,
       "evidence_level": "E6",
       "implementation_refs": [],
       "test_ids": [
         "TEST-E-008",
-        "TEST-R-008"
+        "TEST-R-008",
+        "TEST-R-003"
       ],
-      "test_results": [],
+      "test_results": [
+        {
+          "test_id": "TEST-R-003",
+          "status": "PASS",
+          "case_id": "current:public-claims.test.mjs:TEST-R-003 生产落地页存在",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-003",
+          "status": "PASS",
+          "case_id": "current:public-claims.test.mjs:TEST-R-003 无假下载：APK/固件直链必须伴随 SHA256；无产物时必须诚实 NOT_RELEASED 且无 releases/latest 冒充",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-003",
+          "status": "PASS",
+          "case_id": "current:public-claims.test.mjs:TEST-R-003 禁用无证据强声明词（VERIFIED 语义不得无证据出现）",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-003",
+          "status": "PASS",
+          "case_id": "current:public-claims.test.mjs:TEST-R-003 禁止错误主线与 6+ 入口误导",
+          "first_breakpoint": null
+        }
+      ],
       "expected": "ESP32 双模式夹具",
-      "actual": "落地页/产物声明与证据不匹配或假下载",
-      "first_breakpoint": "docs/index.md download-hub → releases/latest",
+      "actual": "待 E6 发布门验证",
+      "first_breakpoint": "E6 NOT_EXECUTED",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-LANDING-001",
+      "root_cause_id": null,
+      "task_id": "VERIFY-E6-001",
       "release_blocking": true
     },
     {
       "target_id": "CLAIM-017",
       "target_type": "claim",
+      "dimension": "claim",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
-      "verification_status": "NOT_EXECUTED",
+      "implementation_status": "IMPLEMENTED_UNTESTED",
+      "verification_status": "AUTOMATED_PASS",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": null,
       "evidence_level": "E6",
       "implementation_refs": [],
       "test_ids": [
-        "TEST-R-005"
+        "TEST-R-005",
+        "TEST-R-003"
       ],
-      "test_results": [],
-      "expected": "三条 5 分钟快速开始（Quick Start：前置条件已满足，不含工具链从零安装，19 号文档 2.1 节）",
+      "test_results": [
+        {
+          "test_id": "TEST-R-003",
+          "status": "PASS",
+          "case_id": "current:public-claims.test.mjs:TEST-R-003 生产落地页存在",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-003",
+          "status": "PASS",
+          "case_id": "current:public-claims.test.mjs:TEST-R-003 无假下载：APK/固件直链必须伴随 SHA256；无产物时必须诚实 NOT_RELEASED 且无 releases/latest 冒充",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-003",
+          "status": "PASS",
+          "case_id": "current:public-claims.test.mjs:TEST-R-003 禁用无证据强声明词（VERIFIED 语义不得无证据出现）",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-003",
+          "status": "PASS",
+          "case_id": "current:public-claims.test.mjs:TEST-R-003 禁止错误主线与 6+ 入口误导",
+          "first_breakpoint": null
+        }
+      ],
+      "expected": "两条 5 分钟快速开始（Android / ESP32；Quick Start：前置条件已满足，不含工具链从零安装，19 号文档 2.1 节）",
       "actual": "待 E6 发布门验证",
       "first_breakpoint": "E6 NOT_EXECUTED",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-E6-001",
+      "root_cause_id": null,
+      "task_id": "VERIFY-E6-001",
       "release_blocking": true
     },
     {
       "target_id": "CLAIM-018",
       "target_type": "claim",
+      "dimension": "claim",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
-      "verification_status": "AUTOMATED_FAIL",
-      "severity": "P0",
+      "implementation_status": "IMPLEMENTED_UNTESTED",
+      "verification_status": "AUTOMATED_PASS",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
+      "severity": null,
       "evidence_level": "E6",
       "implementation_refs": [],
       "test_ids": [
         "TEST-R-001",
-        "TEST-R-008"
+        "TEST-R-008",
+        "TEST-R-003"
       ],
-      "test_results": [],
+      "test_results": [
+        {
+          "test_id": "TEST-R-003",
+          "status": "PASS",
+          "case_id": "current:public-claims.test.mjs:TEST-R-003 生产落地页存在",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-003",
+          "status": "PASS",
+          "case_id": "current:public-claims.test.mjs:TEST-R-003 无假下载：APK/固件直链必须伴随 SHA256；无产物时必须诚实 NOT_RELEASED 且无 releases/latest 冒充",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-003",
+          "status": "PASS",
+          "case_id": "current:public-claims.test.mjs:TEST-R-003 禁用无证据强声明词（VERIFIED 语义不得无证据出现）",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-003",
+          "status": "PASS",
+          "case_id": "current:public-claims.test.mjs:TEST-R-003 禁止错误主线与 6+ 入口误导",
+          "first_breakpoint": null
+        }
+      ],
       "expected": "下载含 SHA 与设备清单",
-      "actual": "落地页/产物声明与证据不匹配或假下载",
-      "first_breakpoint": "docs/index.md download-hub → releases/latest",
+      "actual": "待 E6 发布门验证",
+      "first_breakpoint": "E6 NOT_EXECUTED",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-LANDING-001",
+      "root_cause_id": null,
+      "task_id": "VERIFY-E6-001",
       "release_blocking": true
     },
     {
       "target_id": "CLAIM-019",
       "target_type": "claim",
+      "dimension": "claim",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
-      "verification_status": "NOT_EXECUTED",
+      "implementation_status": "IMPLEMENTED_UNTESTED",
+      "verification_status": "AUTOMATED_PASS",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": null,
       "evidence_level": "E6",
       "implementation_refs": [],
       "test_ids": [
         "TEST-R-003"
       ],
-      "test_results": [],
+      "test_results": [
+        {
+          "test_id": "TEST-R-003",
+          "status": "PASS",
+          "case_id": "current:public-claims.test.mjs:TEST-R-003 生产落地页存在",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-003",
+          "status": "PASS",
+          "case_id": "current:public-claims.test.mjs:TEST-R-003 无假下载：APK/固件直链必须伴随 SHA256；无产物时必须诚实 NOT_RELEASED 且无 releases/latest 冒充",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-003",
+          "status": "PASS",
+          "case_id": "current:public-claims.test.mjs:TEST-R-003 禁用无证据强声明词（VERIFIED 语义不得无证据出现）",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-003",
+          "status": "PASS",
+          "case_id": "current:public-claims.test.mjs:TEST-R-003 禁止错误主线与 6+ 入口误导",
+          "first_breakpoint": null
+        }
+      ],
       "expected": "已知限制公开",
       "actual": "待 E6 发布门验证",
       "first_breakpoint": "E6 NOT_EXECUTED",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-E6-001",
+      "root_cause_id": null,
+      "task_id": "VERIFY-E6-001",
       "release_blocking": true
     },
     {
       "target_id": "CLAIM-020",
       "target_type": "claim",
+      "dimension": "claim",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
-      "verification_status": "NOT_EXECUTED",
+      "implementation_status": "IMPLEMENTED_UNTESTED",
+      "verification_status": "AUTOMATED_PASS",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": null,
       "evidence_level": "E6",
       "implementation_refs": [],
       "test_ids": [
-        "TEST-R-007"
+        "TEST-R-007",
+        "TEST-R-005"
       ],
-      "test_results": [],
+      "test_results": [
+        {
+          "test_id": "TEST-R-005",
+          "status": "PASS",
+          "case_id": "current:links-and-qr.test.mjs:TEST-R-005 落地页本站相对链接全部可达",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-005",
+          "status": "PASS",
+          "case_id": "current:links-and-qr.test.mjs:TEST-R-005 目标文档内链相对且可达（docs/target-product 抽样）",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-005",
+          "status": "PASS",
+          "case_id": "current:links-and-qr.test.mjs:TEST-R-009 二维码规则：落地页如含码图必须同时给文本等价",
+          "first_breakpoint": null
+        }
+      ],
       "expected": "证据可查（EVID 链接）",
       "actual": "待 E6 发布门验证",
       "first_breakpoint": "E6 NOT_EXECUTED",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-E6-001",
+      "root_cause_id": null,
+      "task_id": "VERIFY-E6-001",
       "release_blocking": true
     },
     {
       "target_id": "CLAIM-021",
       "target_type": "claim",
+      "dimension": "claim",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
-      "verification_status": "NOT_EXECUTED",
+      "implementation_status": "IMPLEMENTED_UNTESTED",
+      "verification_status": "AUTOMATED_PASS",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": null,
       "evidence_level": "E6",
       "implementation_refs": [],
       "test_ids": [
-        "TEST-R-003"
+        "TEST-R-003",
+        "TEST-R-005"
       ],
-      "test_results": [],
+      "test_results": [
+        {
+          "test_id": "TEST-R-005",
+          "status": "PASS",
+          "case_id": "current:links-and-qr.test.mjs:TEST-R-005 落地页本站相对链接全部可达",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-005",
+          "status": "PASS",
+          "case_id": "current:links-and-qr.test.mjs:TEST-R-005 目标文档内链相对且可达（docs/target-product 抽样）",
+          "first_breakpoint": null
+        },
+        {
+          "test_id": "TEST-R-005",
+          "status": "PASS",
+          "case_id": "current:links-and-qr.test.mjs:TEST-R-009 二维码规则：落地页如含码图必须同时给文本等价",
+          "first_breakpoint": null
+        }
+      ],
       "expected": "隐私立场（本地优先无云端）",
       "actual": "待 E6 发布门验证",
       "first_breakpoint": "E6 NOT_EXECUTED",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-E6-001",
+      "root_cause_id": null,
+      "task_id": "VERIFY-E6-001",
       "release_blocking": true
     },
     {
       "target_id": "CLAIM-022",
       "target_type": "claim",
+      "dimension": "claim",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "NOT_EXECUTED",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": null,
       "evidence_level": "E6",
       "implementation_refs": [],
@@ -791,16 +1355,21 @@
       "first_breakpoint": "E6 NOT_EXECUTED",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-E6-001",
+      "root_cause_id": null,
+      "task_id": "VERIFY-E6-001",
       "release_blocking": true
     },
     {
       "target_id": "CLAIM-023",
       "target_type": "claim",
+      "dimension": "claim",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "NOT_EXECUTED",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": null,
       "evidence_level": "E6",
       "implementation_refs": [],
@@ -813,16 +1382,21 @@
       "first_breakpoint": "E6 NOT_EXECUTED",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-E6-001",
+      "root_cause_id": null,
+      "task_id": "VERIFY-E6-001",
       "release_blocking": true
     },
     {
       "target_id": "CLAIM-024",
       "target_type": "claim",
+      "dimension": "claim",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "NOT_EXECUTED",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": null,
       "evidence_level": "E6",
       "implementation_refs": [],
@@ -835,16 +1409,21 @@
       "first_breakpoint": "E6 NOT_EXECUTED",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-E6-001",
+      "root_cause_id": null,
+      "task_id": "VERIFY-E6-001",
       "release_blocking": true
     },
     {
       "target_id": "CLAIM-025",
       "target_type": "claim",
+      "dimension": "claim",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "NOT_EXECUTED",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": null,
       "evidence_level": "E6",
       "implementation_refs": [],
@@ -857,16 +1436,21 @@
       "first_breakpoint": "E6 NOT_EXECUTED",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-E6-001",
+      "root_cause_id": null,
+      "task_id": "VERIFY-E6-001",
       "release_blocking": true
     },
     {
       "target_id": "CLAIM-026",
       "target_type": "claim",
+      "dimension": "claim",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "NOT_EXECUTED",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": null,
       "evidence_level": "E6",
       "implementation_refs": [],
@@ -879,39 +1463,22 @@
       "first_breakpoint": "E6 NOT_EXECUTED",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-E6-001",
-      "release_blocking": true
-    },
-    {
-      "target_id": "CLAIM-027",
-      "target_type": "claim",
-      "gap_kind": "LANDING",
-      "priority": "Must",
-      "implementation_status": "PARTIAL",
-      "verification_status": "NOT_EXECUTED",
-      "severity": null,
-      "evidence_level": "E6",
-      "implementation_refs": [],
-      "test_ids": [
-        "TEST-R-009"
-      ],
-      "test_results": [],
-      "expected": "微信小程序入口",
-      "actual": "待 E6 发布门验证",
-      "first_breakpoint": "E6 NOT_EXECUTED",
-      "downstream_impact": [],
-      "dependencies": [],
-      "suggested_fix_id": "FIX-E6-001",
+      "root_cause_id": null,
+      "task_id": "VERIFY-E6-001",
       "release_blocking": true
     },
     {
       "target_id": "CLAIM-028",
       "target_type": "claim",
+      "dimension": "claim",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
-      "verification_status": "AUTOMATED_FAIL",
-      "severity": "P0",
+      "implementation_status": "UNASSESSED",
+      "verification_status": "NOT_EXECUTED",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
+      "severity": null,
       "evidence_level": "E6",
       "implementation_refs": [],
       "test_ids": [
@@ -919,20 +1486,25 @@
       ],
       "test_results": [],
       "expected": "Android APK 下载",
-      "actual": "落地页/产物声明与证据不匹配或假下载",
-      "first_breakpoint": "docs/index.md download-hub → releases/latest",
+      "actual": "待 E6 发布门验证",
+      "first_breakpoint": "E6 NOT_EXECUTED",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-LANDING-001",
+      "root_cause_id": null,
+      "task_id": "VERIFY-E6-001",
       "release_blocking": true
     },
     {
       "target_id": "CLAIM-029",
       "target_type": "claim",
+      "dimension": "claim",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "NOT_EXECUTED",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": null,
       "evidence_level": "E6",
       "implementation_refs": [],
@@ -945,16 +1517,21 @@
       "first_breakpoint": "E6 NOT_EXECUTED",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-E6-001",
+      "root_cause_id": null,
+      "task_id": "VERIFY-E6-001",
       "release_blocking": true
     },
     {
       "target_id": "CLAIM-030",
       "target_type": "claim",
+      "dimension": "claim",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "NOT_EXECUTED",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": null,
       "evidence_level": "E6",
       "implementation_refs": [],
@@ -967,16 +1544,21 @@
       "first_breakpoint": "E6 NOT_EXECUTED",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-E6-001",
+      "root_cause_id": null,
+      "task_id": "VERIFY-E6-001",
       "release_blocking": true
     },
     {
       "target_id": "CLAIM-031",
       "target_type": "claim",
+      "dimension": "claim",
       "gap_kind": "LANDING",
       "priority": "Must",
-      "implementation_status": "PARTIAL",
+      "implementation_status": "UNASSESSED",
       "verification_status": "NOT_EXECUTED",
+      "static_implementation": null,
+      "e4_verification": null,
+      "e5_verification": null,
       "severity": null,
       "evidence_level": "E6",
       "implementation_refs": [],
@@ -989,7 +1571,8 @@
       "first_breakpoint": "E6 NOT_EXECUTED",
       "downstream_impact": [],
       "dependencies": [],
-      "suggested_fix_id": "FIX-E6-001",
+      "root_cause_id": null,
+      "task_id": "VERIFY-E6-001",
       "release_blocking": true
     }
   ]

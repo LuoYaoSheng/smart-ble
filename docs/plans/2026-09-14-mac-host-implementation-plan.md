@@ -59,8 +59,8 @@ Mac 不直接宣称 Windows 完成；只消费 Windows 计划的可复现证据�
 
 | ID | 工作包 | 当前状态 | 当前事实 | 依赖 |
 |---|---|---|---|---|
-| MAC-001 | 平台范围决策与正典冻结 | `BLOCKED` | 微信构建已删除，但文档/测试仍把微信列为主入口 | 用户确认保留或退役微信 |
-| MAC-002 | 恢复统一验证全绿 | `FAILED` | `make verify`、桌面元数据、目标集成测试有失败 | MAC-001 |
+| MAC-001 | 平台范围决策与正典冻结 | `PASS_WITH_OBS` | 路线 B 落正：用户 2026-09-11 已裁决全端撤小程序，2026-09-14 按 Route B 将三份正典、五份目标契约、schema、门禁脚本、gap 报告与目标文档全部收窄到单一解释（三平台/91 测试/30 CLAIM/80 FEAT/65 REQ/88 OP）；Windows 侧消费本结论更新 WIN-002 桌面元数据断言 | 用户确认保留或退役微信（已确认：退役） |
+| MAC-002 | 恢复统一验证全绿 | `IN_PROGRESS` | wx-peripheral 两单测 + peripheral-owner 集成测试 + 权限流集成测试三处 CURRENT 失败待清；latest.json 漂移待重生成 | MAC-001 |
 | MAC-003 | UniApp App/H5/微信范围收口 | `IN_PROGRESS` | H5 可构建，权限与微信 Peripheral 契约断裂 | MAC-001、MAC-002 |
 | MAC-004 | Flutter 多端候选版 | `IN_PROGRESS` | analyze 0、122/122 测试通过，尚未形成正式 Artifact | MAC-002、MAC-008 |
 | MAC-005 | Kotlin Android 原生页面对齐 | `IN_PROGRESS` | JDK 17 构建/单测通过，Smart HID 页面不完整 | MAC-002、MAC-008 |
@@ -72,7 +72,20 @@ Mac 不直接宣称 Windows 完成；只消费 Windows 计划的可复现证据�
 | MAC-011 | 官网、CI、发布与 Artifact 管线 | `FAILED` | 官网可构建；元数据漂移、Apple CI 和 Tauri Release 命令错误 | MAC-001～MAC-010、WIN-009 |
 | MAC-012 | 跨平台总验收与合入 main | `TODO` | 当前分支领先 main 204 提交 | MAC-002～MAC-011、WIN-010 |
 
-完成率统计：`PASS` 0 / `PASS_WITH_OBS` 0 / `IN_PROGRESS` 8 / `FAILED` 2 / `BLOCKED` 1 / `TODO` 1。
+完成率统计：`PASS` 0 / `PASS_WITH_OBS` 1 / `IN_PROGRESS` 8 / `FAILED` 1 / `BLOCKED` 0 / `TODO` 1。
+
+### 2026-09-14 · MAC-001
+
+- Status: PASS_WITH_OBS
+- Commit: <本次提交>
+- Host: macOS / Node 24.12
+- Commands: `node scripts/target/{check-target-platforms,check-target-landing-claims,check-target-traceability,check-target-contract,check-target-pages,check-target-flows,check-target-protocols}.mjs`（全 PASS）；`node scripts/verify-target.mjs --mode=all`（SYSTEM 408/408、HARNESS 108/108、CURRENT 540/543——剩 3 失败属 MAC-002 范围）
+- Result: 路线 B（退役）落正。改动：`docs/product-contract/05_PLATFORM_MATRIX.md`（退役记录专节）、`docs/specs/10_platform/PLATFORM_EXTENSION.md`（退役横幅）、`docs/specs/11_ecosystem/PLATFORM_CAPABILITY_MATRIX_v1.0.md`（范围口径）、`docs/product-contract/10_LANDING_PAGE_SPEC.md`（微信码主推撤除）、`docs/target-product/{01,03,08,18,22}` 与 `web/WEB-001`、`pages/PAGE-{001,009,010}`；契约 `platform/product/landing/pages/test-traceability`（三平台、80 FEAT/65 REQ/30 CLAIM/91 TEST/88 OP、TEST-W 套件+TEST-H-008+TEST-R-009 移除、OP-P001-15/OP-P009-11/OP-P010-03/OP-W001-04 移入 deprecated）；`release/release-manifest.schema.json`（去 wechat_qr/wechat surface）；脚本 `check-target-platforms/check-target-landing-claims/generate-gap-report/sync-feature-priorities/e5/check-env`；harness 变异 `contract-mutations`（3 处 wechat 断言改用存活平台）；fixtures/manifests 重生成
+- Hardware: N/A
+- Evidence: verification/mac-plan-v1/20260914-MAC-001/
+- Public status impact: 平台范围单一解释确立；官网落地页实装（docs/index.md 微信原型卡/截图区）与 latest.json 重生成分别移交 MAC-011 / MAC-002
+- Observations: Windows 计划的 WIN-002 需消费本结论更新桌面元数据断言（经本文件传递，无直接通知通道）；audit/、docs/product-audit/、docs/prompts/、docs/smart-hid/MINIAPP_*.md、prototype/platform/wechat/ 为冻结历史证据保留
+- Next: MAC-002
 
 ## 4. 实施任务
 

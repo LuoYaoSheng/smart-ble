@@ -1,32 +1,387 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://smart-ble.local/reports/target-vs-current/report.schema.json",
-  "title": "Smart BLE target vs current gap report",
+  "title": "Smart BLE target vs current gap report v2 (TP-G2-R1)",
   "type": "object",
+  "additionalProperties": false,
   "required": [
     "schema_version",
     "gate",
-    "records",
-    "coverage"
+    "content_hash",
+    "generated_at",
+    "commit",
+    "unique_root_causes_by_severity",
+    "affected_target_records_by_severity",
+    "coverage",
+    "blockers",
+    "root_causes",
+    "records"
   ],
   "properties": {
     "schema_version": {
-      "type": "string"
+      "const": "2.0"
     },
     "gate": {
-      "const": "TP-G2"
+      "const": "TP-G2-R1"
+    },
+    "content_hash": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{7,40}$|UNKNOWN"
+    },
+    "unique_root_causes_by_severity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "P0",
+        "P1",
+        "P2",
+        "P3"
+      ],
+      "properties": {
+        "P0": {
+          "type": "integer"
+        },
+        "P1": {
+          "type": "integer"
+        },
+        "P2": {
+          "type": "integer"
+        },
+        "P3": {
+          "type": "integer"
+        }
+      }
+    },
+    "affected_target_records_by_severity": {
+      "type": "object"
+    },
+    "coverage": {
+      "type": "object"
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "blocker_id",
+          "type",
+          "status",
+          "description",
+          "task_id"
+        ],
+        "properties": {
+          "blocker_id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "TOOLCHAIN",
+              "TESTABILITY",
+              "FIXTURE",
+              "CREDENTIAL",
+              "ENVIRONMENT"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "CLEARED"
+            ]
+          },
+          "description": {
+            "type": "string"
+          },
+          "task_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "root_causes": {
+      "type": "array"
     },
     "records": {
       "type": "array",
       "items": {
         "type": "object",
+        "additionalProperties": false,
         "required": [
           "target_id",
           "target_type",
+          "dimension",
           "gap_kind",
+          "priority",
           "implementation_status",
-          "verification_status"
-        ]
+          "verification_status",
+          "severity",
+          "evidence_level",
+          "implementation_refs",
+          "test_ids",
+          "test_results",
+          "expected",
+          "actual",
+          "first_breakpoint",
+          "downstream_impact",
+          "dependencies",
+          "root_cause_id",
+          "task_id",
+          "release_blocking",
+          "static_implementation",
+          "e4_verification",
+          "e5_verification"
+        ],
+        "properties": {
+          "target_id": {
+            "type": "string"
+          },
+          "target_type": {
+            "type": "string",
+            "enum": [
+              "requirement",
+              "feature",
+              "page",
+              "web",
+              "state",
+              "operation",
+              "flow",
+              "protocol",
+              "claim",
+              "error",
+              "data",
+              "security",
+              "nfr",
+              "decision",
+              "evidence",
+              "test"
+            ]
+          },
+          "dimension": {
+            "type": "string"
+          },
+          "gap_kind": {
+            "type": "string",
+            "enum": [
+              "PRODUCT",
+              "RUNTIME",
+              "PAGE",
+              "FIRMWARE",
+              "SMART_HID",
+              "LANDING",
+              "RELEASE",
+              "TESTABILITY",
+              "TOOLCHAIN"
+            ]
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "Must",
+              "Should",
+              "Could",
+              "Won't"
+            ]
+          },
+          "implementation_status": {
+            "type": "string",
+            "enum": [
+              "UNASSESSED",
+              "NOT_IMPLEMENTED",
+              "CONFIRMED_IMPLEMENTED",
+              "CONFIRMED_PARTIAL",
+              "CONFIRMED_MISSING",
+              "IMPLEMENTED_UNTESTED",
+              "PARTIAL",
+              "N/A"
+            ]
+          },
+          "verification_status": {
+            "type": "string",
+            "enum": [
+              "AUTOMATED_PASS",
+              "AUTOMATED_FAIL",
+              "BUILD_PASS",
+              "BUILD_FAIL",
+              "HARDWARE_PENDING",
+              "HARDWARE_FAIL",
+              "BLOCKED_BY_PROTOCOL",
+              "BLOCKED_BY_FIXTURE",
+              "BLOCKED_BY_TOOLCHAIN",
+              "BLOCKED_BY_TARGET_DRIVER",
+              "BLOCKED_BY_CREDENTIAL",
+              "NOT_EXECUTED",
+              "PASS",
+              "N/A"
+            ]
+          },
+          "static_implementation": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "e4_verification": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "e5_verification": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "severity": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "P0",
+              "P1",
+              "P2",
+              "P3",
+              null
+            ]
+          },
+          "evidence_level": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "E0",
+              "E1",
+              "E2",
+              "E3",
+              "E4",
+              "E5",
+              "E6",
+              null
+            ]
+          },
+          "implementation_refs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "path",
+                "symbol",
+                "line_hint"
+              ],
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "symbol": {
+                  "type": "string"
+                },
+                "line_hint": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "test_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "test_results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "test_id",
+                "status",
+                "case_id",
+                "first_breakpoint"
+              ],
+              "properties": {
+                "test_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "PASS",
+                    "FAIL",
+                    "BLOCKED",
+                    "NOT_EXECUTED"
+                  ]
+                },
+                "case_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "first_breakpoint": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              }
+            }
+          },
+          "expected": {
+            "type": "string"
+          },
+          "actual": {
+            "type": "string"
+          },
+          "first_breakpoint": {
+            "type": "string"
+          },
+          "downstream_impact": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "dependencies": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "root_cause_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "task_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "release_blocking": {
+            "type": "boolean"
+          }
+        }
       }
     }
   }

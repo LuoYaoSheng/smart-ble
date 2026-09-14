@@ -1,0 +1,113 @@
+ok   : [TEST-C-002] contracts/target/product-target.json JSON 可解析
+ok   : [TEST-C-002] contracts/target/product-target.json 必备字段齐全（缺 ）
+ok   : [TEST-C-003] contracts/target/product-target.json 审批元数据应为 APPROVED/user（实际 APPROVED/user）
+ok   : [TEST-C-002] contracts/target/pages-target.json JSON 可解析
+ok   : [TEST-C-002] contracts/target/pages-target.json 必备字段齐全（缺 ）
+ok   : [TEST-C-003] contracts/target/pages-target.json 审批元数据应为 APPROVED/user（实际 APPROVED/user）
+ok   : [TEST-C-002] contracts/target/flows-target.json JSON 可解析
+ok   : [TEST-C-002] contracts/target/flows-target.json 必备字段齐全（缺 ）
+ok   : [TEST-C-003] contracts/target/flows-target.json 审批元数据应为 APPROVED/user（实际 APPROVED/user）
+ok   : [TEST-C-002] contracts/target/platform-target.json JSON 可解析
+ok   : [TEST-C-002] contracts/target/platform-target.json 必备字段齐全（缺 ）
+ok   : [TEST-C-003] contracts/target/platform-target.json 审批元数据应为 APPROVED/user（实际 APPROVED/user）
+ok   : [TEST-C-002] contracts/target/ble-fixture-target.json JSON 可解析
+ok   : [TEST-C-002] contracts/target/ble-fixture-target.json 必备字段齐全（缺 ）
+ok   : [TEST-C-003] contracts/target/ble-fixture-target.json 审批元数据应为 APPROVED/user（实际 APPROVED/user）
+ok   : [TEST-C-002] contracts/target/smart-hid-target.json JSON 可解析
+ok   : [TEST-C-002] contracts/target/smart-hid-target.json 必备字段齐全（缺 ）
+ok   : [TEST-C-003] contracts/target/smart-hid-target.json 审批元数据应为 APPROVED/user（实际 APPROVED/user）
+ok   : [TEST-C-002] contracts/target/landing-target.json JSON 可解析
+ok   : [TEST-C-002] contracts/target/landing-target.json 必备字段齐全（缺 ）
+ok   : [TEST-C-003] contracts/target/landing-target.json 审批元数据应为 APPROVED/user（实际 APPROVED/user）
+ok   : [TEST-C-002] docs/target-product/00_DOCUMENT_CONTROL_AND_GLOSSARY.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/00_DOCUMENT_CONTROL_AND_GLOSSARY.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/01_PRODUCT_VISION_SCOPE_AND_PRINCIPLES.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/01_PRODUCT_VISION_SCOPE_AND_PRINCIPLES.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/02_PERSONAS_JOBS_AND_SCENARIOS.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/02_PERSONAS_JOBS_AND_SCENARIOS.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/03_TARGET_FEATURE_CATALOG.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/03_TARGET_FEATURE_CATALOG.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/04_INFORMATION_ARCHITECTURE_AND_NAVIGATION.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/04_INFORMATION_ARCHITECTURE_AND_NAVIGATION.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/05_TARGET_PAGE_CATALOG.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/05_TARGET_PAGE_CATALOG.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/06_TARGET_USER_FLOWS.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/06_TARGET_USER_FLOWS.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/07_INTERACTION_STATE_AND_ERROR_MODEL.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/07_INTERACTION_STATE_AND_ERROR_MODEL.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/08_PLATFORM_CAPABILITY_AND_DEGRADATION_MATRIX.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/08_PLATFORM_CAPABILITY_AND_DEGRADATION_MATRIX.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/09_DATA_MODEL_STORAGE_RETENTION_AND_PRIVACY.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/09_DATA_MODEL_STORAGE_RETENTION_AND_PRIVACY.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/10_RUNTIME_ARCHITECTURE_AND_RESOURCE_OWNERSHIP.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/10_RUNTIME_ARCHITECTURE_AND_RESOURCE_OWNERSHIP.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/11_BLE_GATT_PROTOCOL_CONTRACT.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/11_BLE_GATT_PROTOCOL_CONTRACT.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/12_ESP32_FIXTURE_CONTRACT.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/12_ESP32_FIXTURE_CONTRACT.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/13_SMART_HID_PROFILE_CONTRACT.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/13_SMART_HID_PROFILE_CONTRACT.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/14_OBSERVABILITY_LOGGING_AND_EVIDENCE.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/14_OBSERVABILITY_LOGGING_AND_EVIDENCE.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/15_SECURITY_AND_THREAT_MODEL.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/15_SECURITY_AND_THREAT_MODEL.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/16_NON_FUNCTIONAL_REQUIREMENTS.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/16_NON_FUNCTIONAL_REQUIREMENTS.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/17_ACCESSIBILITY_I18N_AND_CONTENT_GUIDE.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/17_ACCESSIBILITY_I18N_AND_CONTENT_GUIDE.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/18_VERSION_RELEASE_METADATA_AND_PUBLIC_STATUS.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/18_VERSION_RELEASE_METADATA_AND_PUBLIC_STATUS.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/19_OPEN_SOURCE_DEVELOPER_EXPERIENCE.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/19_OPEN_SOURCE_DEVELOPER_EXPERIENCE.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/20_OPERATIONS_SUPPORT_AND_MAINTENANCE.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/20_OPERATIONS_SUPPORT_AND_MAINTENANCE.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/21_RISK_REGISTER_AND_DECISION_LOG.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/21_RISK_REGISTER_AND_DECISION_LOG.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/22_TARGET_TRACEABILITY_MATRIX.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/22_TARGET_TRACEABILITY_MATRIX.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/23_DEFINITION_OF_DONE.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/23_DEFINITION_OF_DONE.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/pages/PAGE-001_SCAN.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/pages/PAGE-001_SCAN.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/pages/PAGE-002_HID_PROVISION.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/pages/PAGE-002_HID_PROVISION.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/pages/PAGE-003_HID_DETAIL.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/pages/PAGE-003_HID_DETAIL.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/pages/PAGE-004_HID_HISTORY.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/pages/PAGE-004_HID_HISTORY.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/pages/PAGE-005_HID_DIAGNOSTICS.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/pages/PAGE-005_HID_DIAGNOSTICS.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/pages/PAGE-006_DEVICE_DETAIL.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/pages/PAGE-007_CONNECTED.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/pages/PAGE-007_CONNECTED.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/pages/PAGE-008_BROADCAST.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/pages/PAGE-008_BROADCAST.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/pages/PAGE-009_ABOUT.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/pages/PAGE-009_ABOUT.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/pages/PAGE-010_VERSION.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/pages/PAGE-010_VERSION.md 状态应为 APPROVED/user
+ok   : [TEST-C-002] docs/target-product/web/WEB-001_LANDING_PAGE.md 含完整 yaml 元数据块
+ok   : [TEST-C-003] docs/target-product/web/WEB-001_LANDING_PAGE.md 状态应为 APPROVED/user
+ok   : [TEST-C-001] REQ 重复：无
+ok   : [TEST-C-001] FEAT 重复：无
+ok   : [TEST-C-001] REQ ID 形如 REQ-xxx
+ok   : [TEST-C-001] FEAT ID 形如 FEAT-xxx
+ok   : [TEST-C-001] REQ 登记 JSON↔Markdown 一致（仅JSON: 仅MD:）
+ok   : [TEST-C-001] FEAT 登记 JSON↔Markdown 一致（仅JSON: 仅MD:）
+ok   : [TEST-C-008] 每个 FEAT 必须有 planned_tests（缺：）
+ok   : [TEST-C-008] 每个 REQ 必须映射 FEAT（缺：）
+ok   : [TEST-C-002] FEAT 优先级 03 号↔product-target.json 一致（漂移：）
+ok   : [TEST-C-010] 07 号 ERR 登记 ≥60（实际 68）
+ok   : [TEST-C-010] 07 号+页面文档 STATE 登记 ≥100（实际 108）
+ok   : [TEST-C-010] 09 号 DATA 登记 ≥13（实际 13）
+ok   : [TEST-C-011] 页面禁止直接注册全局 BLE 回调（违规：无）
+ok   : [TEST-C-011] 通用层禁止 import Smart HID（违规：无）
+ok   : [TEST-C-014] DEC-016 OTA 固件包已登记
+ok   : [TEST-C-014] DEC-017 统一订阅语义已登记
+ok   : [TEST-C-014] NFR 默认扫描时长 10 秒（DEC-013）
+ok   : [TEST-C-014] FLOW-002 扫描时长 10 秒（DEC-013）
+ok   : [TEST-C-003] 平台公开状态必须取自五词表（违规：）
+ok   : [TEST-C-003] product.public_status_vocabulary 与五词表一致
+
+check-target-contract: PASS（111/111）

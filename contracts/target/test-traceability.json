@@ -5,7 +5,7 @@
   "last_approved_at": "2026-09-01T00:00:00.000Z",
   "approved_by": "user",
   "planned_only": false,
-  "note": "TP-G1 已展开为可执行测试体系（scripts/target + tests/target）；TEST-E/A/W/H 与部分 TEST-R 真机/发布项仍为矩阵与模板，待对应 Gate 执行。implemented=true 表示自动化工件已存在并在 verify-target 中运行。",
+  "note": "2026-09-14 MAC-001：微信套件 TEST-W、TEST-H-008（Smart HID 微信侧）、TEST-R-009（小程序码）随微信目标退役移除；九套件改八套件",
   "suites": [
     {
       "prefix": "TEST-C-",
@@ -38,19 +38,14 @@
       "count": 14
     },
     {
-      "prefix": "TEST-W-",
-      "level": "E5",
-      "count": 10
-    },
-    {
       "prefix": "TEST-H-",
       "level": "E5",
-      "count": 8
+      "count": 7
     },
     {
       "prefix": "TEST-R-",
       "level": "E6",
-      "count": 11
+      "count": 10
     }
   ],
   "tests": [
@@ -308,12 +303,10 @@
       "release_blocking": true,
       "requirements": [
         "REQ-005",
-        "REQ-006",
         "REQ-007"
       ],
       "features": [
         "FEAT-005",
-        "FEAT-006",
         "FEAT-007"
       ],
       "pages_or_flows": [
@@ -1792,276 +1785,6 @@
       "scope": "target"
     },
     {
-      "id": "TEST-W-001",
-      "title": "微信权限（含定位）",
-      "evidence_level": "E5",
-      "release_blocking": true,
-      "requirements": [
-        "REQ-001",
-        "REQ-005",
-        "REQ-006",
-        "REQ-007"
-      ],
-      "features": [
-        "FEAT-001",
-        "FEAT-005",
-        "FEAT-006",
-        "FEAT-007"
-      ],
-      "pages_or_flows": [
-        "PAGE-001",
-        "FLOW-001"
-      ],
-      "claims": [],
-      "implemented": false,
-      "scope": "target"
-    },
-    {
-      "id": "TEST-W-002",
-      "title": "微信导航",
-      "evidence_level": "E5",
-      "release_blocking": true,
-      "requirements": [
-        "REQ-002"
-      ],
-      "features": [
-        "FEAT-002"
-      ],
-      "pages_or_flows": [
-        "PAGE-001",
-        "PAGE-002",
-        "PAGE-003",
-        "PAGE-004",
-        "PAGE-005",
-        "PAGE-006",
-        "PAGE-007",
-        "PAGE-008",
-        "PAGE-009",
-        "PAGE-010",
-        "FLOW-001",
-        "FLOW-006"
-      ],
-      "claims": [],
-      "implemented": false,
-      "scope": "target"
-    },
-    {
-      "id": "TEST-W-003",
-      "title": "微信生命周期",
-      "evidence_level": "E5",
-      "release_blocking": true,
-      "requirements": [
-        "REQ-003"
-      ],
-      "features": [
-        "FEAT-003"
-      ],
-      "pages_or_flows": [
-        "PAGE-001",
-        "PAGE-002",
-        "PAGE-006",
-        "PAGE-008",
-        "FLOW-001",
-        "FLOW-006"
-      ],
-      "claims": [],
-      "implemented": false,
-      "scope": "target"
-    },
-    {
-      "id": "TEST-W-004",
-      "title": "微信定位策略",
-      "evidence_level": "E5",
-      "release_blocking": true,
-      "requirements": [
-        "REQ-006"
-      ],
-      "features": [
-        "FEAT-006"
-      ],
-      "pages_or_flows": [
-        "PAGE-001",
-        "FLOW-001"
-      ],
-      "claims": [],
-      "implemented": false,
-      "scope": "target"
-    },
-    {
-      "id": "TEST-W-005",
-      "title": "微信蓝牙开关",
-      "evidence_level": "E5",
-      "release_blocking": true,
-      "requirements": [
-        "REQ-008"
-      ],
-      "features": [
-        "FEAT-008"
-      ],
-      "pages_or_flows": [
-        "PAGE-001",
-        "PAGE-008",
-        "FLOW-001"
-      ],
-      "claims": [],
-      "implemented": false,
-      "scope": "target"
-    },
-    {
-      "id": "TEST-W-006",
-      "title": "微信不支持降级",
-      "evidence_level": "E5",
-      "release_blocking": true,
-      "requirements": [
-        "REQ-009"
-      ],
-      "features": [
-        "FEAT-009"
-      ],
-      "pages_or_flows": [
-        "PAGE-001",
-        "PAGE-008",
-        "FLOW-001",
-        "WEB-001"
-      ],
-      "claims": [],
-      "implemented": false,
-      "scope": "target"
-    },
-    {
-      "id": "TEST-W-007",
-      "title": "微信扫描/GATT",
-      "evidence_level": "E5",
-      "release_blocking": true,
-      "requirements": [
-        "REQ-010",
-        "REQ-012",
-        "REQ-013",
-        "REQ-015",
-        "REQ-018",
-        "REQ-019"
-      ],
-      "features": [
-        "FEAT-010",
-        "FEAT-012",
-        "FEAT-013",
-        "FEAT-014",
-        "FEAT-015",
-        "FEAT-019",
-        "FEAT-020"
-      ],
-      "pages_or_flows": [
-        "PAGE-001",
-        "FLOW-002",
-        "FLOW-003",
-        "PAGE-006",
-        "FLOW-004"
-      ],
-      "claims": [
-        "CLAIM-004",
-        "CLAIM-005",
-        "CLAIM-006"
-      ],
-      "implemented": false,
-      "scope": "target"
-    },
-    {
-      "id": "TEST-W-008",
-      "title": "微信会话/日志导出",
-      "evidence_level": "E5",
-      "release_blocking": true,
-      "requirements": [
-        "REQ-022",
-        "REQ-030",
-        "REQ-031",
-        "REQ-035"
-      ],
-      "features": [
-        "FEAT-023",
-        "FEAT-033",
-        "FEAT-034",
-        "FEAT-039",
-        "FEAT-016"
-      ],
-      "pages_or_flows": [
-        "PAGE-006",
-        "PAGE-007",
-        "FLOW-006",
-        "FLOW-007",
-        "PAGE-002",
-        "PAGE-005",
-        "PAGE-001",
-        "PAGE-004",
-        "FLOW-011"
-      ],
-      "claims": [
-        "CLAIM-008"
-      ],
-      "implemented": false,
-      "scope": "target"
-    },
-    {
-      "id": "TEST-W-009",
-      "title": "微信多设备/广播",
-      "evidence_level": "E5",
-      "release_blocking": true,
-      "requirements": [
-        "REQ-032",
-        "REQ-038",
-        "REQ-040"
-      ],
-      "features": [
-        "FEAT-035",
-        "FEAT-041",
-        "FEAT-042",
-        "FEAT-044"
-      ],
-      "pages_or_flows": [
-        "PAGE-006",
-        "PAGE-007",
-        "FLOW-007",
-        "PAGE-008",
-        "FLOW-008"
-      ],
-      "claims": [
-        "CLAIM-009"
-      ],
-      "implemented": false,
-      "scope": "target"
-    },
-    {
-      "id": "TEST-W-010",
-      "title": "微信 Smart HID/分享",
-      "evidence_level": "E5",
-      "release_blocking": true,
-      "requirements": [
-        "REQ-048",
-        "REQ-052",
-        "REQ-055",
-        "REQ-057"
-      ],
-      "features": [
-        "FEAT-053",
-        "FEAT-060",
-        "FEAT-065",
-        "FEAT-067"
-      ],
-      "pages_or_flows": [
-        "PAGE-001",
-        "FLOW-010",
-        "PAGE-002",
-        "PAGE-003",
-        "PAGE-004",
-        "FLOW-011",
-        "PAGE-009",
-        "FLOW-012",
-        "PAGE-010"
-      ],
-      "claims": [],
-      "implemented": false,
-      "scope": "target"
-    },
-    {
       "id": "TEST-H-001",
       "title": "Smart HID 匹配/身份",
       "evidence_level": "E5",
@@ -2214,20 +1937,6 @@
       ],
       "features": [],
       "pages_or_flows": [],
-      "claims": [],
-      "implemented": false,
-      "scope": "target"
-    },
-    {
-      "id": "TEST-H-008",
-      "title": "Smart HID 微信侧",
-      "evidence_level": "E5",
-      "release_blocking": true,
-      "requirements": [],
-      "features": [],
-      "pages_or_flows": [
-        "FLOW-010"
-      ],
       "claims": [],
       "implemented": false,
       "scope": "target"
@@ -2450,26 +2159,6 @@
       "scope": "target"
     },
     {
-      "id": "TEST-R-009",
-      "title": "小程序码可用",
-      "evidence_level": "E6",
-      "release_blocking": true,
-      "requirements": [],
-      "features": [
-        "FEAT-075"
-      ],
-      "pages_or_flows": [
-        "WEB-001",
-        "FLOW-013",
-        "FLOW-014"
-      ],
-      "claims": [
-        "CLAIM-027"
-      ],
-      "implemented": false,
-      "scope": "target"
-    },
-    {
       "id": "TEST-R-010",
       "title": "Web 无障碍走查",
       "evidence_level": "E6",
@@ -2505,9 +2194,9 @@
     }
   ],
   "coverage": {
-    "requirements_total": 66,
-    "requirements_with_automation": 65,
-    "must_features_total": 81,
-    "must_features_with_automation": 81
+    "requirements_total": 65,
+    "requirements_with_automation": 64,
+    "must_features_total": 80,
+    "must_features_with_automation": 80
   }
 }

@@ -39,8 +39,7 @@
           "expected_data_changes": [],
           "expected_recovery": "平台变化（罕见）",
           "test_ids": [
-            "TEST-P-001",
-            "TEST-W-006"
+            "TEST-P-001"
           ]
         },
         {
@@ -63,8 +62,7 @@
           ],
           "expected_recovery": "重试",
           "test_ids": [
-            "TEST-A-004",
-            "TEST-W-005"
+            "TEST-A-004"
           ]
         },
         {
@@ -85,8 +83,7 @@
           ],
           "expected_recovery": "重试",
           "test_ids": [
-            "TEST-A-001",
-            "TEST-W-001"
+            "TEST-A-001"
           ]
         },
         {
@@ -111,8 +108,7 @@
             "OP-P001-10",
             "OP-P001-11",
             "OP-P001-13",
-            "OP-P001-14",
-            "OP-P001-15"
+            "OP-P001-14"
           ],
           "exit_conditions": [
             "开始扫描"
@@ -149,8 +145,7 @@
             "OP-P001-10",
             "OP-P001-11",
             "OP-P001-13",
-            "OP-P001-14",
-            "OP-P001-15"
+            "OP-P001-14"
           ],
           "exit_conditions": [
             "完成/停止/失败/超时"
@@ -161,7 +156,6 @@
           "expected_recovery": "完成/停止/失败/超时",
           "test_ids": [
             "TEST-A-005",
-            "TEST-W-007",
             "TEST-E-001"
           ]
         },
@@ -250,8 +244,7 @@
             "OP-P001-09",
             "OP-P001-10",
             "OP-P001-11",
-            "OP-P001-13",
-            "OP-P001-15"
+            "OP-P001-13"
           ],
           "exit_conditions": [
             "重试成功"
@@ -303,7 +296,6 @@
           ],
           "e5_mapping": [
             "TEST-A-005",
-            "TEST-W-007",
             "TEST-E-001"
           ],
           "expected_navigation": null,
@@ -323,7 +315,6 @@
           "test_ids": [
             "TEST-P-001",
             "TEST-A-005",
-            "TEST-W-007",
             "TEST-E-001"
           ],
           "hardware_dependent": true
@@ -417,8 +408,7 @@
             "device_effect_from_call_chain:生命周期→stopScan(page_hide/unload)"
           ],
           "e5_mapping": [
-            "TEST-A-003",
-            "TEST-W-003"
+            "TEST-A-003"
           ],
           "expected_navigation": null,
           "expected_cleanup": [
@@ -436,8 +426,7 @@
           ],
           "test_ids": [
             "TEST-I-002",
-            "TEST-A-003",
-            "TEST-W-003"
+            "TEST-A-003"
           ],
           "hardware_dependent": true
         },
@@ -534,8 +523,7 @@
             "device_effect_from_call_chain:prepareConnect(停扫)→跳 PAGE-006 并发起连接"
           ],
           "e5_mapping": [
-            "TEST-A-006",
-            "TEST-W-007"
+            "TEST-A-006"
           ],
           "expected_navigation": "→PAGE-006",
           "expected_cleanup": [
@@ -553,8 +541,7 @@
           ],
           "test_ids": [
             "TEST-P-006",
-            "TEST-A-006",
-            "TEST-W-007"
+            "TEST-A-006"
           ],
           "hardware_dependent": true
         },
@@ -575,8 +562,7 @@
             "device_effect_from_call_chain:设定 Profile 当前设备→跳 PAGE-002"
           ],
           "e5_mapping": [
-            "TEST-H-001",
-            "TEST-W-010"
+            "TEST-H-001"
           ],
           "expected_navigation": "→PAGE-002",
           "expected_cleanup": [
@@ -594,8 +580,7 @@
           ],
           "test_ids": [
             "TEST-P-002",
-            "TEST-H-001",
-            "TEST-W-010"
+            "TEST-H-001"
           ],
           "hardware_dependent": true
         },
@@ -648,9 +633,7 @@
             "剪贴板"
           ],
           "expected_device_events": [],
-          "e5_mapping": [
-            "TEST-W-007"
-          ],
+          "e5_mapping": [],
           "expected_navigation": null,
           "expected_cleanup": [
             "无本页额外清理"
@@ -666,8 +649,7 @@
             }
           ],
           "test_ids": [
-            "TEST-P-001",
-            "TEST-W-007"
+            "TEST-P-001"
           ],
           "hardware_dependent": false
         },
@@ -774,42 +756,6 @@
             "TEST-P-001"
           ],
           "hardware_dependent": true
-        },
-        {
-          "operation_id": "OP-P001-15",
-          "precondition_state": "微信环境",
-          "control": "分享（微信菜单）",
-          "visible_when": "微信环境",
-          "disabled_when": "",
-          "input_fixture": null,
-          "expected_ui": [
-            "分享面板"
-          ],
-          "expected_runtime_events": [
-            "shareApp"
-          ],
-          "expected_device_events": [],
-          "e5_mapping": [
-            "TEST-W-010"
-          ],
-          "expected_navigation": null,
-          "expected_cleanup": [
-            "无本页额外清理"
-          ],
-          "failure_variants": [
-            {
-              "name": "no_dedicated_failure_path",
-              "condition": "文档标明无专用失败反馈或静默兜底",
-              "expected_ui": [
-                "保持当前态或日志兜底"
-              ],
-              "expected_recovery": "无额外恢复控件"
-            }
-          ],
-          "test_ids": [
-            "TEST-W-010"
-          ],
-          "hardware_dependent": false
         }
       ],
       "error_variants": [
@@ -903,9 +849,9 @@
       ],
       "stats": {
         "state_count": 10,
-        "operation_count": 14,
+        "operation_count": 13,
         "error_variant_count": 10,
-        "failure_variant_count": 14
+        "failure_variant_count": 13
       }
     },
     {
@@ -3373,9 +3319,7 @@
             "脱敏→格式化→导出/复制"
           ],
           "expected_device_events": [],
-          "e5_mapping": [
-            "TEST-W-008"
-          ],
+          "e5_mapping": [],
           "expected_navigation": null,
           "expected_cleanup": [
             "文件句柄关闭"
@@ -3391,7 +3335,6 @@
             }
           ],
           "test_ids": [
-            "TEST-W-008",
             "TEST-U-012"
           ],
           "hardware_dependent": false
@@ -3723,8 +3666,7 @@
           ],
           "expected_recovery": "断开至空/打开",
           "test_ids": [
-            "TEST-A-009",
-            "TEST-W-009"
+            "TEST-A-009"
           ]
         },
         {
@@ -3743,9 +3685,7 @@
             "保留失败条目"
           ],
           "expected_recovery": "确认",
-          "test_ids": [
-            "TEST-W-009"
-          ]
+          "test_ids": []
         }
       ],
       "operations": [
@@ -3803,8 +3743,7 @@
             "device_effect_from_call_chain:统一断开入口（含 Smart HID service 通知）→Registry 移除"
           ],
           "e5_mapping": [
-            "TEST-A-007",
-            "TEST-W-008"
+            "TEST-A-007"
           ],
           "expected_navigation": null,
           "expected_cleanup": [
@@ -3821,8 +3760,7 @@
             }
           ],
           "test_ids": [
-            "TEST-A-007",
-            "TEST-W-008"
+            "TEST-A-007"
           ],
           "hardware_dependent": true
         },
@@ -3843,7 +3781,6 @@
             "device_effect_from_call_chain:对全部会话统一断开（同一入口，含 HID；allSettled）"
           ],
           "e5_mapping": [
-            "TEST-W-009",
             "TEST-A-009"
           ],
           "expected_navigation": null,
@@ -3861,7 +3798,6 @@
             }
           ],
           "test_ids": [
-            "TEST-W-009",
             "TEST-A-009"
           ],
           "hardware_dependent": true
@@ -4045,8 +3981,7 @@
           "expected_data_changes": [],
           "expected_recovery": "平台变化",
           "test_ids": [
-            "TEST-P-008",
-            "TEST-W-006"
+            "TEST-P-008"
           ]
         },
         {
@@ -4191,9 +4126,7 @@
           ],
           "expected_data_changes": [],
           "expected_recovery": "就绪",
-          "test_ids": [
-            "TEST-W-005"
-          ]
+          "test_ids": []
         },
         {
           "state_id": "STATE-P008-10",
@@ -4651,8 +4584,7 @@
             "OP-P009-07",
             "OP-P009-08",
             "OP-P009-09",
-            "OP-P009-10",
-            "OP-P009-11"
+            "OP-P009-10"
           ],
           "exit_conditions": [
             "离开"
@@ -5006,12 +4938,10 @@
             "分享面板"
           ],
           "expected_runtime_events": [
-            "微信 share / App uni.share / H5 Web Share→复制"
+            "App uni.share / H5 Web Share→复制"
           ],
           "expected_device_events": [],
-          "e5_mapping": [
-            "TEST-W-010"
-          ],
+          "e5_mapping": [],
           "expected_navigation": null,
           "expected_cleanup": [
             "无本页额外清理"
@@ -5027,44 +4957,7 @@
             }
           ],
           "test_ids": [
-            "TEST-P-009",
-            "TEST-W-010"
-          ],
-          "hardware_dependent": false
-        },
-        {
-          "operation_id": "OP-P009-11",
-          "precondition_state": "仅微信、折叠区展开后",
-          "control": "跳转其他小程序",
-          "visible_when": "仅微信、折叠区展开后",
-          "disabled_when": "",
-          "input_fixture": null,
-          "expected_ui": [
-            "跳转"
-          ],
-          "expected_runtime_events": [
-            "navigateToMiniProgram"
-          ],
-          "expected_device_events": [],
-          "e5_mapping": [
-            "TEST-W-010"
-          ],
-          "expected_navigation": "外部小程序",
-          "expected_cleanup": [
-            "无本页额外清理"
-          ],
-          "failure_variants": [
-            {
-              "name": "primary_failure",
-              "condition": "无 appId toast/失败 modal",
-              "expected_ui": [
-                "无 appId toast/失败 modal"
-              ],
-              "expected_recovery": "无 appId toast/失败 modal"
-            }
-          ],
-          "test_ids": [
-            "TEST-W-010"
+            "TEST-P-009"
           ],
           "hardware_dependent": false
         }
@@ -5094,9 +4987,9 @@
       ],
       "stats": {
         "state_count": 3,
-        "operation_count": 11,
+        "operation_count": 10,
         "error_variant_count": 1,
-        "failure_variant_count": 11
+        "failure_variant_count": 10
       }
     },
     {
@@ -5150,8 +5043,7 @@
             "OP-P010-04"
           ],
           "disabled_operations": [
-            "OP-P010-01",
-            "OP-P010-03"
+            "OP-P010-01"
           ],
           "exit_conditions": [
             "修复构建"
@@ -5233,42 +5125,6 @@
           "hardware_dependent": false
         },
         {
-          "operation_id": "OP-P010-03",
-          "precondition_state": "STATE-P010-01",
-          "control": "分享本页",
-          "visible_when": "微信",
-          "disabled_when": "",
-          "input_fixture": null,
-          "expected_ui": [
-            "分享面板"
-          ],
-          "expected_runtime_events": [
-            "shareApp（本 path）"
-          ],
-          "expected_device_events": [],
-          "e5_mapping": [
-            "TEST-W-010"
-          ],
-          "expected_navigation": null,
-          "expected_cleanup": [
-            "无本页额外清理"
-          ],
-          "failure_variants": [
-            {
-              "name": "primary_failure",
-              "condition": "失败 toast",
-              "expected_ui": [
-                "失败 toast"
-              ],
-              "expected_recovery": "失败 toast"
-            }
-          ],
-          "test_ids": [
-            "TEST-W-010"
-          ],
-          "hardware_dependent": false
-        },
-        {
           "operation_id": "OP-P010-04",
           "precondition_state": "STATE-P010-01",
           "control": "返回",
@@ -5318,7 +5174,7 @@
         ]
       },
       "platform_assertions": [
-        "三平台一致；仅微信有分享本页。"
+        "各平台一致；历史微信分享随目标退役移除（2026-09-14 MAC-001）。"
       ],
       "a11y_assertions": [
         "类型分组（新增/修复/优化/限制）用图标+文字；\"当前\"徽标读屏可读；文案表 S-47~S-48。"
@@ -5328,9 +5184,9 @@
       ],
       "stats": {
         "state_count": 2,
-        "operation_count": 4,
+        "operation_count": 3,
         "error_variant_count": 1,
-        "failure_variant_count": 4
+        "failure_variant_count": 3
       }
     },
     {
@@ -5343,16 +5199,16 @@
       ],
       "information_architecture": [
         "顶部导航：Smart BLE / 快速开始 / 平台状态 / ESP32 / 文档 / GitHub；",
-        "Hero：一句话定位 + 主 CTA（体验：微信小程序码或在线原型）+ 次 CTA（GitHub 源码）+ 当前版本与状态徽标（来自 Release Metadata）；",
+        "Hero：一句话定位 + 主 CTA（体验：在线原型或 App 下载）+ 次 CTA（GitHub 源码）+ 当前版本与状态徽标（来自 Release Metadata）；",
         "核心 BLE 闭环图：发现设备 → 检查广播 → 连接 → GATT 读写/Notify → 日志 → 广播/OTA → ESP32 验证；",
         "能力卡矩阵：每卡（扫描、广播解析、连接、GATT、多设备、日志、手机广播+Observer、OTA、Smart HID、Profile 扩展）带状态徽标与详情链接；",
         "平台状态表（`08` 投影）；",
         "真实 App 截图组（带 alt；缺失时隐藏并注明）；",
         "在线交互原型入口（10 页 HTML 原型；缺失时隐藏）；",
         "ESP32 区：fixture_peripheral 与 fixture_observer 双卡（接线、一键构建、固件下载+SHA、Observer 串口输出示例 JSON）；",
-        "快速开始三条：微信 5 分钟 / Android 5 分钟 / ESP32 5 分钟（步骤可复制；区块开头显式标注 Quick Start 前置条件\"已满足\"，不含工具链从零安装，`19` 第 2.1 节）；同区并列\"新电脑 30 分钟完整闭环\"入口（Clean Machine，`19` 第 2.2 节，两种计时不得互相冒充）；",
-        "下载区（#download）：Android APK 卡（版本/commit/SHA256/设备清单/证据链接）、微信小程序码卡、固件卡；无产物时对应卡 NOT_RELEASED；",
-        "证据与已知限制区（#evidence）：最新 Release 的 commit、App/小程序/固件版本、通过平台、证据入口（EVID 链接）、已知限制清单；",
+        "快速开始两条：Android 5 分钟 / ESP32 5 分钟（步骤可复制；区块开头显式标注 Quick Start 前置条件\"已满足\"，不含工具链从零安装，`19` 第 2.1 节）；同区并列\"新电脑 30 分钟完整闭环\"入口（Clean Machine，`19` 第 2.2 节，两种计时不得互相冒充）；",
+        "下载区（#download）：Android APK 卡（版本/commit/SHA256/设备清单/证据链接）、固件卡；无产物时对应卡 NOT_RELEASED（微信小程序码卡已于 2026-09-14 MAC-001 随微信目标退役移除）；",
+        "证据与已知限制区（#evidence）：最新 Release 的 commit、App/固件版本、通过平台、证据入口（EVID 链接）、已知限制清单；",
         "Smart HID 区（#smart-hid）：能力边界（配网/诊断，不含控制链路）与状态；",
         "开源与贡献区：GitHub/Issue/Security/License(MIT)/贡献指南；",
         "页脚：版权、License、隐私、站点地图。"
@@ -5363,7 +5219,7 @@
           "name": "VERIFIED 发布态",
           "entry_condition": "Release Metadata 完整且 E6 门通过",
           "visible_sections": [
-            "下载/码/证据全开"
+            "下载/证据全开"
           ],
           "allowed_operations": [],
           "disabled_operations": [],
@@ -5394,7 +5250,6 @@
           ],
           "disabled_operations": [
             "OP-W001-03",
-            "OP-W001-04",
             "OP-W001-05",
             "OP-W001-07",
             "OP-W001-08",
@@ -5427,7 +5282,6 @@
           ],
           "disabled_operations": [
             "OP-W001-03",
-            "OP-W001-04",
             "OP-W001-05",
             "OP-W001-07",
             "OP-W001-08",
@@ -5473,8 +5327,8 @@
           "operation_id": "OP-W001-01",
           "precondition_state": "STATE-W001-02",
           "control": "主 CTA（体验）",
-          "visible_when": "小程序码可用或原型存在",
-          "disabled_when": "均缺失时改为 GitHub CTA",
+          "visible_when": "原型存在",
+          "disabled_when": "缺失时改为 GitHub CTA",
           "input_fixture": null,
           "expected_ui": [
             "到达目标"
@@ -5568,40 +5422,6 @@
           ],
           "test_ids": [
             "TEST-R-001"
-          ],
-          "hardware_dependent": false
-        },
-        {
-          "operation_id": "OP-W001-04",
-          "precondition_state": "正式码已发布且扫码验证通过",
-          "control": "微信小程序码",
-          "visible_when": "正式码已发布且扫码验证通过",
-          "disabled_when": "未发布→NOT_RELEASED",
-          "input_fixture": "扫码",
-          "expected_ui": [
-            "进入小程序"
-          ],
-          "expected_runtime_events": [
-            "码图"
-          ],
-          "expected_device_events": [],
-          "e5_mapping": [],
-          "expected_navigation": "外部",
-          "expected_cleanup": [
-            "无本页额外清理"
-          ],
-          "failure_variants": [
-            {
-              "name": "primary_failure",
-              "condition": "失效→ERR-WEB-03",
-              "expected_ui": [
-                "失效→ERR-WEB-03"
-              ],
-              "expected_recovery": "失效→ERR-WEB-03"
-            }
-          ],
-          "test_ids": [
-            "TEST-R-009"
           ],
           "hardware_dependent": false
         },
@@ -5862,8 +5682,8 @@
         {
           "error_id": "ERR-WEB-03",
           "name": "ERR-WEB-03",
-          "expected_recovery": "二维码失效重新生成",
-          "visible": "二维码失效（重新生成）"
+          "expected_recovery": "二维码失效（重新生成",
+          "visible": "二维码失效（重新生成"
         },
         {
           "error_id": "ERR-WEB-04",
@@ -5880,7 +5700,7 @@
         "mobile/desktop 响应式；dark/light 跟随系统+切换；键盘可完成全部锚点导航；无 JS 时 Hero/闭环/平台表/快速开始文本可读（下载需 JS 的部分给出直接 URL 文本）。"
       ],
       "a11y_assertions": [
-        "对比度 ≥4.5:1（暗色同样）；全部图片 alt；键盘焦点顺序=视觉顺序；二维码有文字等效（小程序名可搜索）；文案与 `17` 一致；SEO：title/og/canonical 与 `01` 定位一致，禁用\"大一统\"旧词。"
+        "对比度 ≥4.5:1（暗色同样）；全部图片 alt；键盘焦点顺序=视觉顺序；二维码有文字等效（如未来出现码图，必须给出可搜索的文字等效）；文案与 `17` 一致；SEO：title/og/canonical 与 `01` 定位一致，禁用\"大一统\"旧词。"
       ],
       "cleanup_assertions": [
         "静态页无运行时资源（N/A：SSG 页面）；数据所有权归 Release Metadata 生成流程。"
@@ -5906,18 +5726,18 @@
       },
       "stats": {
         "state_count": 4,
-        "operation_count": 11,
+        "operation_count": 10,
         "error_variant_count": 4,
-        "failure_variant_count": 11
+        "failure_variant_count": 10
       }
     }
   ],
   "totals": {
     "pages": 11,
     "states": 67,
-    "operations": 92,
+    "operations": 88,
     "error_variants": 50,
-    "failure_variants": 92,
+    "failure_variants": 88,
     "cleanup_assertions": 39
   }
 }
