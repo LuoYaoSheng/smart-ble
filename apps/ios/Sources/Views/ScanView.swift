@@ -402,7 +402,9 @@ struct DeviceDetailSheet: View {
                     if ProcessInfo.processInfo.arguments.contains("--ui-test-echo-pasteboard") {
                         VStack(alignment: .leading, spacing: 6) {
                             Button("回显剪贴板") {
+                                #if os(iOS)
                                 pasteEcho = UIPasteboard.general.string
+                                #endif
                             }
                             .buttonStyle(.borderless)
 
