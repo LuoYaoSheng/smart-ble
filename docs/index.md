@@ -53,7 +53,7 @@ hero:
         <tr><td>Windows / Linux 桌面</td><td>Electron（Node.js + noble）</td><td><span class="sb-dl-wait">安装包筹备中</span></td><td><a href="/tutorials/platforms/desktop">源码构建（npm start）</a></td></tr>
         <tr><td>macOS 桌面原生</td><td>Swift + AppKit</td><td><span class="sb-dl-wait">安装包筹备中</span></td><td><a href="/tutorials/platforms/desktop">源码构建</a></td></tr>
         <tr><td>Flutter</td><td>Flutter + Dart（Android / macOS）</td><td><span class="sb-dl-wait">安装包筹备中</span></td><td><a href="/tutorials/platforms/flutter">源码构建（flutter run）</a></td></tr>
-        <tr><td>ESP32 固件</td><td>PlatformIO / ESP-IDF</td><td><span class="sb-dl-wait">固件包筹备中</span></td><td><a href="/tutorials/hardware/01_Hardware_Philosophy">固件构建教程</a></td></tr>
+        <tr><td>ESP32 固件</td><td>PlatformIO / Arduino</td><td><span class="sb-dl-wait">固件包筹备中</span></td><td><a href="/tutorials/hardware/01_Hardware_Philosophy">固件构建教程</a></td></tr>
       </tbody>
     </table></div>
     <p class="sb-platform-footnote">下载位按框架 × 平台逐一预留：放上真实安装包之前，任何下载入口都不会可点（无产物不放假下载）；发布时将附 SHA256 与版本说明。源码与发布状态见 <a href="https://github.com/luoyaosheng/smart-ble" target="_blank" rel="noopener">GitHub 仓库</a>与<a href="/status/">项目状态页</a>。</p>
@@ -191,7 +191,7 @@ hero:
       <a href="/tutorials/hardware/01_Hardware_Philosophy" class="sb-platform-card">
         <span class="sb-platform-status">硬件夹具 · 开发中</span>
         <h3>ESP32 固件</h3>
-        <p>PlatformIO / ESP-IDF 参考固件，硬件联动与协议示例，广播与 OTA 的真机对手方；STM32 规划中。</p>
+        <p>PlatformIO / Arduino（NimBLE）参考固件，硬件联动与协议示例，广播与 OTA 的真机对手方；STM32 为协议样板（不构建分发）。</p>
       </a>
     </div>
     <p class="sb-platform-footnote">各实现共用同一产品规范与协议内核，当前均未发布正式产物，可从源码构建。能力与发布状态见<a href="/status/">项目状态页</a>与<a href="/product-contract/05_PLATFORM_MATRIX">平台适配矩阵</a>。</p>

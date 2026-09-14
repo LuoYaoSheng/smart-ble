@@ -118,7 +118,7 @@ lys-smart-ble
 ├── iOS 原生版     → Swift（开发中，已有实现）
 ├── Android 原生   → Kotlin（开发中，已有实现）
 ├── ESP32 固件     → PlatformIO + Arduino
-└── STM32 固件     → 规划中
+└── STM32 固件     → 协议样板（不构建分发）
 ```
 
 这也是为什么这个仓库需要同时保留：

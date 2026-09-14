@@ -37,7 +37,7 @@
 | Flutter | `apps/flutter` | Flutter | 跨框架对照线 |
 | 桌面 | `apps/desktop` | Tauri / Electron / macOS Native | 桌面多路线实现区（Windows / macOS / Linux） |
 | Web | `docs/.vitepress` + HTML 交互原型 | VitePress / HTML | 官网与可交互原型 |
-| ESP32 固件 | `hardware/` | ESP-IDF | 参考固件（Peripheral / Observer，见 06） |
+| ESP32 固件 | `hardware/` | PlatformIO + Arduino（NimBLE） | 参考固件（Peripheral / Observer，见 06） |
 
 非第一版本目标的实现线，其能力差异按 [specs/10_platform 平台差异设计](../specs/10_platform/PLATFORM_EXTENSION.md) 圈定范围实现，不进入第一完整版本的验收统计，也不在对外页面宣称已发布。
 

@@ -53,7 +53,7 @@
 | 桌面 | Tauri / Electron / macOS Native（apps/desktop） | 桌面线 · 源码可构建 |
 | H5 | UniApp 一线 | 降级体验 · 无真实 BLE（明确标注不支持） |
 | Web | 本站（VitePress）+ HTML 交互原型 | 原型 · 可交互 |
-| ESP32 固件 | ESP-IDF（hardware/） | 硬件夹具 · 开发中 |
+| ESP32 固件 | PlatformIO + Arduino（NimBLE，hardware/） | 硬件夹具 · 开发中 |
 
 脚注必须诚实声明：各实现线当前均未发布正式产物，均可从源码构建；能力与发布状态以状态页与 `05_PLATFORM_MATRIX.md` 为准；微信小程序运行目标已于 2026-09-11 退役。
 
