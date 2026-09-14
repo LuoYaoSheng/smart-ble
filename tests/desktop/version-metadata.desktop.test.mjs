@@ -97,11 +97,16 @@ test('V5 preview 无 sha → version-dev.unknown', () => {
 // 3. versionPageModel 投影（M1/M3 语义）
 // ---------------------------------------------------------------------------
 
-test('M1 默认元数据：platforms 四键序 / 限制非空 / preview 1 条 / release 不编造', () => {
+test('M1 默认元数据：platforms 键序消费正典产物 / 限制非空 / preview 1 条 / release 不编造', () => {
   const model = electron.VM.getVersionPageModel();
   const c = model.current;
   assert.equal(c.version, '1.0.5');
-  assert.deepEqual(c.platforms.map((p) => p.key), ['android', 'wechat', 'h5', 'ios']);
+  // 平台成员资格消费生成元数据（wechat 在/不在由 release 管线决定），测试只锁页面键序契约。
+  const canonicalSurfaces = JSON.parse(
+    readFileSync(resolve(ROOT, 'apps/uniapp/config/release-metadata.generated.json'), 'utf8'),
+  ).public_surfaces;
+  const expectedPlatformKeys = ['android', 'wechat', 'h5', 'ios'].filter((k) => canonicalSurfaces[k]);
+  assert.deepEqual(c.platforms.map((p) => p.key), expectedPlatformKeys);
   assert.ok(c.limitations.length > 0, 'known_limitations 投影非空');
   // PREVIEW 渠道：release_tag=null 或 artifacts 空 → releases 必须为空（禁止编造 VERIFIED）
   if (!c.has_release_tag || !c.has_artifacts) {

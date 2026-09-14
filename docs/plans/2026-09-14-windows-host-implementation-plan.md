@@ -77,7 +77,7 @@ Windows 主机不负责：
 | ID | 工作包 | 当前状态 | 历史基础 | 依赖 | 当前结论 |
 |---|---|---|---|---|---|
 | WIN-001 | 当前基线与 Windows 工具链 | `PASS_WITH_OBS` | 旧基线工具链曾可用 | 无 | `760dc16` 双远端一致建档;JDK 无 17/21(Windows 线不消费) |
-| WIN-002 | 桌面共享测试恢复全绿 | `FAILED` | 94/95 | `MAC-001`、`MAC-002` | `wechat` 元数据旧断言失败 |
+| WIN-002 | 桌面共享测试恢复全绿 | `PASS` | 94/95 | `MAC-001`、`MAC-002` | 95/95;M1 断言改消费正典产物,对微信裁决中立 |
 | WIN-003 | Electron Windows 构建与启动 | `TODO` | 旧提交打包、扫描、GATT 通过 | WIN-001、WIN-002 | 需当前提交复验 |
 | WIN-004 | Tauri Windows 构建与启动 | `TODO` | 旧提交扫描、GATT 通过 | WIN-001、WIN-002 | 需当前提交复验 |
 | WIN-005 | Avalonia 功能补齐 | `IN_PROGRESS` | Build Smoke 已通过 | WIN-001、MAC-008 | 读写/Notify/页面契约未完整接线 |
@@ -87,7 +87,7 @@ Windows 主机不负责：
 | WIN-009 | Windows 安装包与安装验证 | `TODO` | Electron/Avalonia 有历史构建 | WIN-003～WIN-008、MAC-011 | 需产出可安装 Artifact 和 SHA256 |
 | WIN-010 | Windows 最终交付与矩阵回填 | `TODO` | 历史证据分散 | WIN-001～WIN-009 | 等所有必需任务结论化 |
 
-完成率统计只按本表：`PASS` 0 / `PASS_WITH_OBS` 1 / `IN_PROGRESS` 1 / `FAILED` 1 / `BLOCKED` 1 / `TODO` 6。
+完成率统计只按本表：`PASS` 1 / `PASS_WITH_OBS` 1 / `IN_PROGRESS` 1 / `FAILED` 0 / `BLOCKED` 1 / `TODO` 6。
 
 ## 4. 实施任务
 
@@ -290,6 +290,18 @@ Windows 主机不负责：
 - Evidence: verification/windows-plan-v1/20260914-WIN-001/toolchain-snapshot.md
 - Observations: JDK 无 17/21(默认 24.0.1,另有 corretto-18;Windows 任务线不消费 JDK);系统 PATH 默认 Node v20.19.3,任务执行统一前置 nvm v23.8.0;用户既有脏文件 33 个保持原样
 - Next: WIN-002
+
+### 2026-09-14 · WIN-002
+
+- Status: PASS
+- Commit: 见本日提交(基于 `0735b4f`)
+- Host: Windows 10 22H2,Node v23.8.0(PATH 前置)
+- Commands: `node --test tests/desktop/*.test.mjs`(改前 94/95 exit 1 → 改后 95/95 exit 0);两线 34 个 JS `node --check` 全过
+- Result: M1 断言由手写 wechat 四键改为消费正典产物 `apps/uniapp/config/release-metadata.generated.json` 的 `public_surfaces`(键序模板保留为页面契约);投影层实现未动(本已元数据驱动);镜像逐字节断言保留
+- Hardware: 无需
+- Evidence: verification/windows-plan-v1/20260914-WIN-002/
+- Observations: MAC-001 仍 BLOCKED(微信去留待用户裁决)——本改法对裁决中立,元数据恢复 wechat 则断言自动回四键;未改 `release/**`
+- Next: WIN-003
 
 ## 5. 每次进度回填模板
 
