@@ -68,13 +68,13 @@ export const RELEASE_METADATA = {
   "verified_capabilities": [],
   "known_limitations": [
     "Android 正式 APK 尚未发布",
-    "Playwright / Page Driver E4 尚未完成",
-    "Android、ESP32 E5 尚未执行",
-    "iOS 真机签名与 E5 验证尚未完成",
-    "OTA 当前 BLOCKED",
-    "ESP32 Observer 尚未完成",
+    "Playwright / Page Driver E4 页面驱动层为 Fake Runtime 模式（真机/真实 H5 驱动未接入）",
+    "Android、ESP32 E5 真机验证尚未执行（iOS 已有真机安装+启动证据，完整 BLE E5 链未复验）",
+    "OTA 当前 BLOCKED（客户端 CTRL 事务与固件契约分歧待裁决）",
+    "ESP32 Observer 固件尚未完成",
     "Smart HID 尚未完成端到端 E5",
-    "Release Pipeline 仍为历史 Flutter/Tauri 路线"
+    "Release Pipeline 已切换为 CI 候选产物模式（preview 渠道，artifacts 空，不自动发布）；UniApp Android 正式 APK 仍由 HBuilderX 打包，尚未管线化",
+    "微信小程序运行目标已于 2026-09-11 退役（历史文档与冻结原型保留）"
   ],
   "tested_devices": [],
   "evidence_ids": []

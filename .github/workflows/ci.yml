@@ -5,7 +5,7 @@ on:
     branches:
       - main
       - master
-      - refactor/multi-platform
+      - refactor/uniapp-v1
   pull_request:
 
 jobs:
@@ -35,7 +35,7 @@ jobs:
         run: flutter test
 
   android:
-    name: Android (build + test)
+    name: Android (build + test, JDK 21)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -44,6 +44,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # MAC-011：Android CI 固定 JDK 21（本地门禁固定 17/21，见 scripts/android/verify-android.sh）
       - name: Setup Java 21
         uses: actions/setup-java@v4
         with:
@@ -64,18 +65,31 @@ jobs:
         run: ./gradlew testDebugUnitTest
 
   apple:
-    name: iOS / macOS (swift build)
+    name: Apple (Core test + iOS xcodebuild test + native macOS build)
     runs-on: macos-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Swift build (iOS package)
+      # MAC-011：Apple 三步（对齐本地 make verify-apple；不再用裸 swift build 冒充 Apple 门禁）
+      - name: Shared Core tests (SmartHidCore)
+        working-directory: core/apple/SmartHidCore
+        run: swift test
+
+      - name: iOS build + tests (SmartBLE.xcodeproj, simulator)
         working-directory: apps/ios
+        run: |
+          DEST=$(xcrun simctl list devices available | grep -m1 -o 'iPhone [^(]*' | head -1 | sed 's/ *$//')
+          echo "Using simulator: $DEST"
+          xcodebuild -project SmartBLE.xcodeproj -scheme SmartBLEiOS \
+            -destination "platform=iOS Simulator,name=$DEST" test
+
+      - name: Native macOS build (SmartBLE-mac)
+        working-directory: apps/desktop/macos/SmartBLE-mac
         run: swift build
 
   tauri:
-    name: Tauri (cargo check)
+    name: Tauri (Linux build → deb/appimage)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -89,9 +103,26 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
+      # MAC-011：Linux 目标由 CI 承载（MAC-010 移交）：cargo check + 真实 bundle（deb/appimage）
       - name: Cargo check
         working-directory: apps/desktop/tauri/src-tauri
         run: cargo check
+
+      - name: Install tauri-cli (pinned)
+        run: cargo install tauri-cli --version ^1.6 --locked
+
+      - name: Build Linux bundles (deb, appimage)
+        working-directory: apps/desktop/tauri/src-tauri
+        run: cargo tauri build --bundles deb,appimage
+
+      - name: Upload Linux bundles
+        uses: actions/upload-artifact@v4
+        with:
+          name: tauri-linux-preview
+          path: |
+            apps/desktop/tauri/src-tauri/target/release/bundle/deb/*.deb
+            apps/desktop/tauri/src-tauri/target/release/bundle/appimage/*.AppImage
+          if-no-files-found: warn
 
   electron:
     name: Electron (install + lint)
@@ -128,55 +159,64 @@ jobs:
       - name: Install PlatformIO
         run: pip install platformio
 
-      - name: Build firmware
+      # MAC-011：全环境（默认 peripheral+observer；S3 三件套见 MAC-009 证据）
+      - name: Build default firmware envs
         working-directory: hardware/esp32/LightBLE
         run: pio run
 
-  uniapp-contract:
-    name: UniApp Smart HID contract
+      - name: Build S3 fixture envs
+        working-directory: hardware/esp32/LightBLE
+        run: pio run -e fixture_peripheral_s3 -e fixture_observer_s3 -e fixture_shid_sim_s3
+
+  uniapp:
+    name: UniApp (full verify-uniapp.sh + h5 build)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # MAC-011：完整 verify-uniapp.sh（不再是子集）；TS 剥离需 Node >= 22.18 / >= 23.6
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24"
+
       - name: Checkout pinned Smart HID canonical contract
         run: |
           git clone --no-checkout https://github.com/LuoYaoSheng/smart-hid-workspace.git ../smart-hid-canonical
           git -C ../smart-hid-canonical checkout --detach ef4506795b8f689da110b223cc7bcb7770e22e1a
-      - name: Verify compatibility lock
-        run: SMART_HID_WORKSPACE=../smart-hid-canonical node scripts/check-smart-hid-contract.mjs
-      - name: Run UniApp provisioning tests
-        run: |
-          node tests/unit/provisioning.test.mjs
-          node tests/unit/profile-contract.test.mjs
-          node tests/unit/ble-runtime.test.mjs
-          node tests/unit/provisioning-transport.test.mjs
-          node tests/unit/smart-hid-profile.test.mjs
-          node tests/unit/scan-session.test.mjs
-          node tests/unit/advertisement.test.mjs
-          node tests/unit/ble-platform.test.mjs
-          node scripts/check-uniapp-assets.mjs
+
       - name: Install UniApp compiler dependencies
         run: npm ci --prefix apps/uniapp
-      - name: Compile UniApp Vue SFCs
-        run: |
-          cd apps/uniapp
-          node --input-type=module <<'EOF'
-          import { readdir, readFile } from 'node:fs/promises'
-          import { join } from 'node:path'
-          import { parse, compileTemplate } from '@vue/compiler-sfc'
-          async function files(dir) {
-            const entries = await readdir(dir, { withFileTypes: true })
-            return (await Promise.all(entries.map((entry) => entry.isDirectory() && !['node_modules', 'unpackage'].includes(entry.name) ? files(join(dir, entry.name)) : entry.name.endsWith('.vue') ? [join(dir, entry.name)] : []))).flat()
-          }
-          for (const file of await files('.')) {
-            const source = await readFile(file, 'utf8')
-            const parsed = parse(source, { filename: file })
-            if (parsed.errors.length) throw new Error(`${file}: ${parsed.errors.join('\n')}`)
-            if (parsed.descriptor.template) {
-              const result = compileTemplate({ source: parsed.descriptor.template.content, filename: file, id: 'smart-ble' })
-              if (result.errors.length) throw new Error(`${file}: ${result.errors.join('\n')}`)
-            }
-          }
-          EOF
+
+      - name: Full UniApp verification suite
+        env:
+          SMART_HID_WORKSPACE: ../smart-hid-canonical
+        run: bash scripts/verify-uniapp.sh
+
+      - name: Build H5 (compiled-asset gate)
+        run: npm run build:h5 --prefix apps/uniapp
+
+      - name: Compiled asset gate
+        run: node scripts/check-uniapp-assets.mjs --require-compiled
+
+  release-metadata:
+    name: Release metadata & gates
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Release metadata drift check
+        run: node scripts/generate-release-metadata.mjs --check
+
+      - name: Version consistency
+        run: node scripts/check-version-consistency.mjs
+
+      - name: Target contract suite (system layer)
+        run: node scripts/verify-target.mjs --mode=system --format=json

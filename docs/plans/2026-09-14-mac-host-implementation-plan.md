@@ -69,10 +69,23 @@ Mac 不直接宣称 Windows 完成；只消费 Windows 计划的可复现证据�
 | MAC-008 | 共享 Core/协议/资产单源 | `PASS_WITH_OBS` | JS 11/11、Swift 32/32、parity 四线（js71/dart59豁免/kotlin71/swift32）、资产 8/8 in-sync、contract lock、桌面 bundle 9/9 全绿；OTA/脱敏向量扩展未做（证据 20260914-MAC-008） | MAC-001、MAC-002 |
 | MAC-009 | ESP32/STM32 硬件线 | `PASS_WITH_OBS` | ESP32 五环境全绿（默认双环境+S3 三环境，SHA/RAM/Flash 落证据）；ESP-IDF 口径冲突修正；STM32 正式降级协议样板（横幅+文档改口）；真机烧录/E5 待用户 BOOT+RST（在册） | MAC-008 |
 | MAC-010 | macOS/Linux 桌面实现 | `PASS_WITH_OBS` | Electron DMG/ZIP + Tauri App/DMG 当日构建全成且蓝牙声明齐备（零共享源码改动）；macOS 真 BLE 面由 MAC-007 原生线 + 2026-09-12 Electron 历史证据覆盖；Linux 归 MAC-011 CI | WIN-002～WIN-004 写锁协调 |
-| MAC-011 | 官网、CI、发布与 Artifact 管线 | `FAILED` | 官网可构建；元数据漂移、Apple CI 和 Tauri Release 命令错误 | MAC-001～MAC-010、WIN-009 |
+| MAC-011 | 官网、CI、发布与 Artifact 管线 | `PASS_WITH_OBS` | CI 五线重写（分支/Apple 三步/JDK21/UniApp 全量/Tauri Linux bundle）；Release 改候选产物不自动发布；官网 SSR 崩溃修复（status 页死键）；元数据/限制同步；pages 脚本改 Playwright（证据 20260914-MAC-011） | MAC-001～MAC-010、WIN-009 |
 | MAC-012 | 跨平台总验收与合入 main | `TODO` | 当前分支领先 main 204 提交 | MAC-002～MAC-011、WIN-010 |
 
-完成率统计：`PASS` 2 / `PASS_WITH_OBS` 9 / `IN_PROGRESS` 0 / `FAILED` 0 / `BLOCKED` 0 / `TODO` 1。
+完成率统计：`PASS` 2 / `PASS_WITH_OBS` 10 / `IN_PROGRESS` 0 / `FAILED` 0 / `BLOCKED` 0 / `TODO` 1。
+
+### 2026-09-14 · MAC-011
+
+- Status: PASS_WITH_OBS
+- Commit: <本次>
+- Host: macOS / Node 24 / VitePress
+- Commands: `cd docs && npm run docs:build`；`./scripts/verify-uniapp-pages.sh`；`node scripts/generate-release-metadata.mjs --check`；`node --test tests/desktop/*.test.mjs`
+- Result: 官网 build complete（修复 status 页死键 SSR 崩溃）；pages 层 226 pass/0 fail；metadata --check PASS；desktop 95/95
+- Hardware: N/A
+- Evidence: verification/mac-plan-v1/20260914-MAC-011/
+- Public status impact: 状态页/落地页/元数据三方一致（限制清单含 Release Pipeline 新口径与微信退役）；CI/Release YAML 重写待推送后 Actions 首跑取证
+- Observations: HBuilderX uniapp.test 移除后 pages 脚本已切 Playwright；CI 实跑与 Linux bundle 证据在首跑后回填
+- Next: MAC-012
 
 ### 2026-09-14 · MAC-010
 

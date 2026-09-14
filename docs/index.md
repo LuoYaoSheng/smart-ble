@@ -205,9 +205,9 @@ hero:
     </div>
     <div class="sb-platform-grid">
       <a href="/prototype/wechat/high-fi/" class="sb-platform-card">
-        <span class="sb-platform-status">基准平台 · 高保真</span>
-        <h3>微信小程序版</h3>
-        <p>基准内核 + wxhost 覆写层，可切换安卓 / iOS 宿主与开发者工具视图。</p>
+        <span class="sb-platform-status">冻结历史快照 · 2026-09-11 退役</span>
+        <h3>微信小程序版（历史原型）</h3>
+        <p>微信运行目标已退役；本实例仅作交互设计历史参考，不再随产品演进。</p>
       </a>
       <a href="/prototype/app/high-fi/" class="sb-platform-card">
         <span class="sb-platform-status">Android 实例 · 高保真</span>
@@ -225,7 +225,7 @@ hero:
         <p>独立子集内核：环境门禁、requestDevice 选择器与缺失能力显式标注。</p>
       </a>
     </div>
-    <p class="sb-platform-footnote">每平台另配有 <a href="/prototype/wechat/low-fi/">低保真线框</a>（页面 × 状态 × 流程）与 PLATFORM_SPEC / PAGE_SPEC / FLOW / COMPONENT_RULE 四份说明文档；基准内核经 Playwright 26/26 验证。原型使用模拟数据，是产品与交互母版，不代表平台发布状态——桌面与 Web 为原型先行。</p>
+    <p class="sb-platform-footnote">每平台另配有低保真线框（页面 × 状态 × 流程）与 PLATFORM_SPEC / PAGE_SPEC / FLOW / COMPONENT_RULE 四份说明文档；基准内核经 Playwright 26/26 验证。原型使用模拟数据，是产品与交互母版，不代表平台发布状态。微信小程序运行目标已于 2026-09-11 退役（原型保留为冻结历史快照）。</p>
   </section>
 
   <section id="profile" class="sb-section">
@@ -255,7 +255,7 @@ hero:
     <div class="sb-section-head">
       <div class="sb-kicker">Gallery</div>
       <h2>界面一览：移动端与桌面端</h2>
-      <p>Android 截图来自开发预览版真机实拍；微信小程序 / App 形态与桌面端截图来自可交互高保真原型（模拟数据）。</p>
+      <p>Android 截图来自开发预览版真机实拍；App 形态与桌面端截图来自可交互高保真原型（模拟数据）；微信形态为退役平台的冻结历史实拍。</p>
     </div>
     <h3 class="sb-gallery-h3">移动端 · Android 真机（开发预览版）</h3>
     <div class="sb-gallery-grid">
@@ -280,11 +280,11 @@ hero:
         <figcaption>广播页</figcaption>
       </figure>
     </div>
-    <h3 class="sb-gallery-h3">移动端 · 微信小程序与 App 形态（高保真原型实拍）</h3>
+    <h3 class="sb-gallery-h3">移动端 · App 形态与微信历史快照（高保真原型实拍）</h3>
     <div class="sb-gallery-grid--duo">
       <figure>
-        <img src="/gallery/proto-wechat.png" alt="微信小程序形态：扫描页与页面/场景导航面板" loading="lazy">
-        <figcaption>微信小程序形态 · 扫描页与状态导航（可切安卓 / iOS 宿主）</figcaption>
+        <img src="/gallery/proto-wechat.png" alt="微信小程序形态（历史冻结）：扫描页与页面/场景导航面板" loading="lazy">
+        <figcaption>微信小程序形态（2026-09-11 退役冻结）· 扫描页与状态导航</figcaption>
       </figure>
       <figure>
         <img src="/gallery/proto-app.png" alt="App 形态：Android 实例扫描页" loading="lazy">

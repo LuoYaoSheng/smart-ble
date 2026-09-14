@@ -1,81 +1,123 @@
 name: Build and Release
 
+# MAC-011：产物与实际主线一致——当前 channel=preview、artifacts=[]（release-state.json）。
+# 本工作流只【构建并上传】候选产物（GitHub Actions Artifacts，带版本/commit/平台标识），
+# 不自动创建 GitHub Release：正式 Release 由 MAC-012 总验收门禁 + 用户批准后另行发布。
+# Tauri 构建改为 cargo tauri（此前引用不存在的 `npm run tauri build`）。
+
 on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
 
 jobs:
   build-flutter:
-    name: Build Flutter APK
+    name: Build Flutter APK (REFERENCE line)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      
-      - name: Set up Java
-        uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
-          java-version: '17'
-          
+          distribution: temurin
+          java-version: "21"
+
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
-          
+          channel: stable
+
       - name: Build APK
         working-directory: apps/flutter
         run: |
           flutter pub get
           flutter build apk --release
-          
+
+      - name: Record artifact identity (version/commit/sha256)
+        working-directory: apps/flutter
+        run: |
+          APK=build/app/outputs/flutter-apk/app-release.apk
+          echo "version=$(cat ../../VERSION)" >> "$GITHUB_STEP_SUMMARY"
+          echo "commit=${GITHUB_SHA}" >> "$GITHUB_STEP_SUMMARY"
+          echo "sha256=$(sha256sum $APK | cut -d' ' -f1)" >> "$GITHUB_STEP_SUMMARY"
+          echo "platform=android-arm64 (Flutter REFERENCE line, NOT the UniApp mainline APK)" >> "$GITHUB_STEP_SUMMARY"
+          echo "verification_status=PREVIEW_UNVERIFIED" >> "$GITHUB_STEP_SUMMARY"
+
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: SmartBLE-Android.apk
+          name: SmartBLE-Flutter-Android-APK
           path: apps/flutter/build/app/outputs/flutter-apk/app-release.apk
 
-  build-tauri:
-    name: Build Tauri Windows
+  build-tauri-windows:
+    name: Build Tauri Windows MSI (cargo tauri)
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
-      
-      - name: Install Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          
+      - uses: actions/checkout@v4
+
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
-        
-      - name: Build Tauri
-        working-directory: apps/desktop/tauri
-        run: |
-          npm install
-          npm run tauri build
-          
+
+      # MAC-011：删除不存在的 `npm run tauri build`（apps/desktop/tauri 无 package.json
+      # npm scripts）；Tauri v1 纯 Rust 线用 tauri-cli 直构建。
+      - name: Install tauri-cli (pinned)
+        run: cargo install tauri-cli --version ^1.6 --locked
+
+      - name: Build Tauri (msi)
+        working-directory: apps/desktop/tauri/src-tauri
+        run: cargo tauri build
+
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: SmartBLE-Windows.msi
+          name: SmartBLE-Tauri-Windows-MSI
           path: apps/desktop/tauri/src-tauri/target/release/bundle/msi/*.msi
 
-  release:
-    name: Create GitHub Release
-    needs: [build-flutter, build-tauri]
+  build-esp32:
+    name: Build ESP32 fixtures (peripheral/observer, S3)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          path: artifacts
-          
-      - name: Create Release
-        uses: softprops/action-gh-release@v1
+          python-version: "3.11"
+
+      - name: Install PlatformIO
+        run: pip install platformio
+
+      - name: Build all firmware envs
+        working-directory: hardware/esp32/LightBLE
+        run: |
+          pio run
+          pio run -e fixture_peripheral_s3 -e fixture_observer_s3 -e fixture_shid_sim_s3
+
+      - name: Upload firmware artifacts
+        uses: actions/upload-artifact@v4
         with:
-          files: |
-            artifacts/SmartBLE-Android.apk/app-release.apk
-            artifacts/SmartBLE-Windows.msi/*.msi
-          draft: false
-          prerelease: false
-          generate_release_notes: true
+          name: SmartBLE-ESP32-Firmware
+          path: |
+            hardware/esp32/LightBLE/.pio/build/fixture_peripheral/firmware.bin
+            hardware/esp32/LightBLE/.pio/build/fixture_observer/firmware.bin
+            hardware/esp32/LightBLE/.pio/build/fixture_peripheral_s3/firmware.bin
+            hardware/esp32/LightBLE/.pio/build/fixture_observer_s3/firmware.bin
+            hardware/esp32/LightBLE/.pio/build/fixture_shid_sim_s3/firmware.bin
+
+  summary:
+    name: Candidate artifact summary (PREVIEW, no release publish)
+    needs: [build-flutter, build-tauri-windows, build-esp32]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Write PREVIEW summary
+        run: |
+          cat >> "$GITHUB_STEP_SUMMARY" <<'EOF'
+          ## Release candidates built (PREVIEW)
+
+          - 当前发布通道为 preview，release-state.json artifacts=[]；本工作流产物均为
+            未验证候选（PREVIEW_UNVERIFIED），不自动发布 GitHub Release。
+          - 正式发布路径：MAC-012 总验收（含 WIN-009/010 Windows 报告吸收）+ 用户批准。
+          - UniApp Android 主线 APK 由 HBuilderX 打包（不在此 CI），签名链见 E5 证据。
+          EOF

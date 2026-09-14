@@ -74,26 +74,14 @@ function surfaceStatus(surface) {
         <h3>{{ surfaces.ios.name }}</h3>
         <p>SwiftUI + CoreBluetooth，iOS 与 macOS 共享 SmartHidCore 内核；真机签名 E5 尚未完成。</p>
       </article>
+      <!-- MAC-011：surface 键与 release-state.json 对齐（flutter_tauri_native 合并键；
+           旧 android_native/flutter/desktop 键已不存在，直取 .name 曾致 SSR 崩溃） -->
       <article class="smartble-platform-card">
         <div class="smartble-platform-top">
-          <span :class="badgeClass(surfaceStatus(surfaces.android_native))">{{ surfaceStatus(surfaces.android_native) }}</span>
+          <span :class="badgeClass(surfaceStatus(surfaces.flutter_tauri_native))">{{ surfaceStatus(surfaces.flutter_tauri_native) }}</span>
         </div>
-        <h3>{{ surfaces.android_native.name }}</h3>
-        <p>原生 Kotlin 实现线，承载产品级体验与原生能力验证；源码可构建，正式产物未发布。</p>
-      </article>
-      <article class="smartble-platform-card">
-        <div class="smartble-platform-top">
-          <span :class="badgeClass(surfaceStatus(surfaces.flutter))">{{ surfaceStatus(surfaces.flutter) }}</span>
-        </div>
-        <h3>{{ surfaces.flutter.name }}</h3>
-        <p>跨框架对照实现线，与 UniApp 线、原生线互为对照；源码可构建，正式产物未发布。</p>
-      </article>
-      <article class="smartble-platform-card">
-        <div class="smartble-platform-top">
-          <span :class="badgeClass(surfaceStatus(surfaces.desktop))">{{ surfaceStatus(surfaces.desktop) }}</span>
-        </div>
-        <h3>{{ surfaces.desktop.name }}</h3>
-        <p>Windows / macOS / Linux 多技术路线桌面实现区；源码可构建，正式产物未发布。</p>
+        <h3>{{ surfaces.flutter_tauri_native.name }}</h3>
+        <p>Flutter / Tauri / 原生端（Kotlin、iOS/macOS 原生、桌面多路线）为 REFERENCE 对照实现线；均可从源码构建，正式产物未发布，不进入公开能力卡。</p>
       </article>
       <article class="smartble-platform-card">
         <div class="smartble-platform-top">
@@ -217,14 +205,13 @@ function surfaceStatus(surface) {
     <noscript>
       <ul>
         <li>Android 正式 APK 尚未发布。</li>
-        <li>Playwright / Page Driver E4 尚未完成。</li>
-        <li>Android、ESP32 E5 尚未执行。</li>
-        <li>Apple 原生（iOS / macOS）真机签名与 E5 验证尚未完成。</li>
-        <li>Android 原生（Kotlin）、Flutter、桌面多框架实现线均可源码构建，正式产物均未发布。</li>
-        <li>OTA 当前 BLOCKED。</li>
+        <li>Playwright / Page Driver E4 页面驱动层为 Fake Runtime 模式。</li>
+        <li>Android、ESP32 E5 真机验证尚未执行；iOS 有真机安装+启动证据，完整 BLE E5 链未复验。</li>
+        <li>OTA 当前 BLOCKED（契约分歧待裁决）。</li>
         <li>ESP32 Observer 尚未完成。</li>
         <li>Smart HID 尚未完成端到端 E5。</li>
-        <li>Release Pipeline 仍为历史 Flutter/Tauri 路线，UniApp 正式产物管线未切换。</li>
+        <li>Release Pipeline 为 CI 候选产物模式（preview 不自动发布）；UniApp 正式 APK 待管线化。</li>
+        <li>微信小程序运行目标已于 2026-09-11 退役。</li>
       </ul>
     </noscript>
   </section>

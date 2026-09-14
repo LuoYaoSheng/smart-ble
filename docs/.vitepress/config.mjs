@@ -39,7 +39,7 @@ export default defineConfig({
       label: 'English',
       lang: 'en-US',
       title: 'BLE Toolkit+',
-      description: 'One toolkit to debug and verify every BLE device. WeChat mini program, Android and ESP32 in one workflow. (Preview)',
+      description: 'One toolkit to debug and verify every BLE device. Android, iOS, desktop and ESP32 in one workflow. (Preview)',
       themeConfig: {
         nav: [
           { text: 'Features', link: '/en/#features' },
@@ -85,7 +85,7 @@ export default defineConfig({
       '@type': 'SoftwareApplication',
       name: 'BLE Toolkit+',
       applicationCategory: 'DeveloperApplication',
-      operatingSystem: 'Android, WeChat Mini Program, ESP32',
+      operatingSystem: 'Android, iOS, macOS, Windows, Linux, ESP32',
       url: 'https://lightble.i2kai.com/',
       offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
       description: '跨平台 BLE 调试与验证工具（开发预览阶段）',
@@ -158,7 +158,7 @@ export default defineConfig({
           { text: '端到端 Mock 模拟联调指导', link: '/E2E_MOCK_INSTRUCTIONS' },
           { text: '发版前回归测试天书', link: '/test-checklist' },
           { text: '开发大盘百问百科 (FAQ)', link: '/BLE_FAQ' },
-          { text: '微信开发特例与隐蔽大坑', link: '/wechat-pitfalls' },
+          { text: '微信开发避坑（历史存档）', link: '/wechat-pitfalls' },
           { text: '社区贡献指北 (Contributing)', link: '/CONTRIBUTING_GUIDE' }
         ]
       }
