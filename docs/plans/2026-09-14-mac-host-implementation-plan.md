@@ -68,11 +68,24 @@ Mac 不直接宣称 Windows 完成；只消费 Windows 计划的可复现证据�
 | MAC-007 | AppKit macOS 发布链 | `PASS_WITH_OBS` | 新增 SmartBLEMacTests 7/7；深度验证 40 行 EXIT=0（真实 BLE/快照/bundle/沙盒/soak）；修复分发 bundle 资源缺失崩溃；OTA 契约分歧 R-1/R-2 待用户裁决（证据 20260914-MAC-007） | MAC-008 |
 | MAC-008 | 共享 Core/协议/资产单源 | `PASS_WITH_OBS` | JS 11/11、Swift 32/32、parity 四线（js71/dart59豁免/kotlin71/swift32）、资产 8/8 in-sync、contract lock、桌面 bundle 9/9 全绿；OTA/脱敏向量扩展未做（证据 20260914-MAC-008） | MAC-001、MAC-002 |
 | MAC-009 | ESP32/STM32 硬件线 | `PASS_WITH_OBS` | ESP32 五环境全绿（默认双环境+S3 三环境，SHA/RAM/Flash 落证据）；ESP-IDF 口径冲突修正；STM32 正式降级协议样板（横幅+文档改口）；真机烧录/E5 待用户 BOOT+RST（在册） | MAC-008 |
-| MAC-010 | macOS/Linux 桌面实现 | `IN_PROGRESS` | Mac 四线有历史 BLE 证据，Linux 主要靠 CI | WIN-002～WIN-004 写锁协调 |
+| MAC-010 | macOS/Linux 桌面实现 | `PASS_WITH_OBS` | Electron DMG/ZIP + Tauri App/DMG 当日构建全成且蓝牙声明齐备（零共享源码改动）；macOS 真 BLE 面由 MAC-007 原生线 + 2026-09-12 Electron 历史证据覆盖；Linux 归 MAC-011 CI | WIN-002～WIN-004 写锁协调 |
 | MAC-011 | 官网、CI、发布与 Artifact 管线 | `FAILED` | 官网可构建；元数据漂移、Apple CI 和 Tauri Release 命令错误 | MAC-001～MAC-010、WIN-009 |
 | MAC-012 | 跨平台总验收与合入 main | `TODO` | 当前分支领先 main 204 提交 | MAC-002～MAC-011、WIN-010 |
 
-完成率统计：`PASS` 2 / `PASS_WITH_OBS` 8 / `IN_PROGRESS` 0 / `FAILED` 0 / `BLOCKED` 0 / `TODO` 1。
+完成率统计：`PASS` 2 / `PASS_WITH_OBS` 9 / `IN_PROGRESS` 0 / `FAILED` 0 / `BLOCKED` 0 / `TODO` 1。
+
+### 2026-09-14 · MAC-010
+
+- Status: PASS_WITH_OBS
+- Commit: <本次（证据与计划）>
+- Host: macOS arm64
+- Commands: `cd apps/desktop/electron && npm run build:mac`；`cargo-tauri build`
+- Result: 双线 DMG+ZIP/App 产物全成；NSBluetoothAlwaysUsageDescription 双双在位
+- Hardware: 复验口径见证据（原生线当日 + Electron 2026-09-12 历史链）
+- Evidence: verification/mac-plan-v1/20260914-MAC-010/
+- Public status impact: none（产物登记归 MAC-011）
+- Observations: 未触碰 Windows 写锁源码；Linux 构建在 MAC-011 CI 落地
+- Next: MAC-011
 
 ### 2026-09-14 · MAC-009
 
