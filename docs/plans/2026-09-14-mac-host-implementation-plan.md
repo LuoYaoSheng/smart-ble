@@ -85,6 +85,8 @@ Mac 不直接宣称 Windows 完成；只消费 Windows 计划的可复现证据�
 - Evidence: verification/mac-plan-v1/FINAL-REPORT.md
 - Public status impact: 保持 PREVIEW（无对外发布物）；官网/状态页/元数据一致
 - Observations: 未决项五条（用户决策四 + Windows 报告一）见 FINAL-REPORT 第四节
+- Sync gap（§6.4 登记，2026-09-14 深夜）：Gitee=8bbf1fa 全量；GitHub 停在 c3ccb06，缺 16 提交——根因：本机 gh OAuth token 无 workflow scope，推送含 .github/workflows 变更被拒。修复：用户执行 `gh auth refresh -h github.com -s workflow` 后 `git push github refactor/uniapp-v1`（历史已就绪，无需改写）。
+- Windows 吸收进展：WIN-001（Windows 基线建档）+ WIN-002（desktop 95/95，M1 平台断言改为消费正典生成元数据、对微信裁决中立——优于 Mac 的硬编码 3 键机械修订，rebase 取 Windows 版）；WIN-009/010 仍待回传。
 - Next: 用户批准后合入 main + Tag；Windows 线 WIN-010 回传后关闭 MAC-012
 
 ### 2026-09-14 · MAC-011
