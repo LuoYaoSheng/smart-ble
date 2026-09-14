@@ -76,7 +76,7 @@ Windows 主机不负责：
 
 | ID | 工作包 | 当前状态 | 历史基础 | 依赖 | 当前结论 |
 |---|---|---|---|---|---|
-| WIN-001 | 当前基线与 Windows 工具链 | `TODO` | 旧基线工具链曾可用 | 无 | 需在 `718b3c0` 或更新提交重新建档 |
+| WIN-001 | 当前基线与 Windows 工具链 | `PASS_WITH_OBS` | 旧基线工具链曾可用 | 无 | `760dc16` 双远端一致建档;JDK 无 17/21(Windows 线不消费) |
 | WIN-002 | 桌面共享测试恢复全绿 | `FAILED` | 94/95 | `MAC-001`、`MAC-002` | `wechat` 元数据旧断言失败 |
 | WIN-003 | Electron Windows 构建与启动 | `TODO` | 旧提交打包、扫描、GATT 通过 | WIN-001、WIN-002 | 需当前提交复验 |
 | WIN-004 | Tauri Windows 构建与启动 | `TODO` | 旧提交扫描、GATT 通过 | WIN-001、WIN-002 | 需当前提交复验 |
@@ -87,7 +87,7 @@ Windows 主机不负责：
 | WIN-009 | Windows 安装包与安装验证 | `TODO` | Electron/Avalonia 有历史构建 | WIN-003～WIN-008、MAC-011 | 需产出可安装 Artifact 和 SHA256 |
 | WIN-010 | Windows 最终交付与矩阵回填 | `TODO` | 历史证据分散 | WIN-001～WIN-009 | 等所有必需任务结论化 |
 
-完成率统计只按本表：`PASS` 0 / `PASS_WITH_OBS` 0 / `IN_PROGRESS` 1 / `FAILED` 1 / `BLOCKED` 1 / `TODO` 7。
+完成率统计只按本表：`PASS` 0 / `PASS_WITH_OBS` 1 / `IN_PROGRESS` 1 / `FAILED` 1 / `BLOCKED` 1 / `TODO` 6。
 
 ## 4. 实施任务
 
@@ -278,6 +278,18 @@ Windows 主机不负责：
 5. 提交最终报告，并等待 Mac 的跨平台总门禁，不自行宣布全产品发布。
 
 **Acceptance:** Windows 看板全部结论化，最终报告可独立复现，Mac 能直接据此回填跨平台矩阵。
+
+### 2026-09-14 · WIN-001
+
+- Status: PASS_WITH_OBS
+- Commit: `760dc16`(HEAD,双远端一致;本任务证据提交见下一条回填)
+- Host: Windows 10 22H2 (10.0.19045.3803)
+- Commands: `git fetch --all --prune` (0)、`git pull --ff-only` (0)、`git status --short --branch`、`node/npm/rustc/cargo/dotnet/java/pio --version`
+- Result: 工具链快照落档;Node v23.8.0(nvm PATH 前置)、rustc/cargo 1.98.1 MSVC、.NET 9.0.200、PIO 6.1.18 全部合规
+- Hardware: Intel Wireless Bluetooth;COM12=CH343(ESP32-S3);WebView2 152.0.4191.66;手机 FEC0220629005177 adb 在线
+- Evidence: verification/windows-plan-v1/20260914-WIN-001/toolchain-snapshot.md
+- Observations: JDK 无 17/21(默认 24.0.1,另有 corretto-18;Windows 任务线不消费 JDK);系统 PATH 默认 Node v20.19.3,任务执行统一前置 nvm v23.8.0;用户既有脏文件 33 个保持原样
+- Next: WIN-002
 
 ## 5. 每次进度回填模板
 
