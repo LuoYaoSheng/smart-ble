@@ -1,0 +1,3 @@
+[APP] static main entered
+[APP] applicationDidFinishLaunching
+SmartBLE_mac/resource_bundle_accessor.swift:44: Fatal error: unable to find bundle named SmartBLE-mac_SmartBLE-mac

@@ -65,14 +65,27 @@ Mac 不直接宣称 Windows 完成；只消费 Windows 计划的可复现证据�
 | MAC-004 | Flutter 多端候选版 | `PASS_WITH_OBS` | 三端构建全成（apk/iphonesimulator/macos.app）；iOS 平台脚手架补齐；未用依赖 flutter_platform_widgets 移除后 122/122 复验；E5 真机 BLOCKED；Artifact 登记归 MAC-011 | MAC-002、MAC-008 |
 | MAC-005 | Kotlin Android 原生页面对齐 | `PASS_WITH_OBS` | 九页可达（新增 P002/P003/P005 三屏+双入口+分流+15 测试）；assembleDebug + 75/75 单测；E5 真机 BLOCKED（证据 20260914-MAC-005） | MAC-002、MAC-008 |
 | MAC-006 | SwiftUI iOS 发布链 | `PASS_WITH_OBS` | UIPasteboard 门控修复（SwiftPM macOS 编译过）；Simulator test 全过；Archive+真机安装+启动全成（iPhone 11 Pro）；App Store 导出凭据红线 NOT_RUN（证据 20260914-MAC-006） | MAC-002、MAC-008 |
-| MAC-007 | AppKit macOS 发布链 | `IN_PROGRESS` | `swift build` 通过，无模块测试和正式发布 | MAC-008 |
+| MAC-007 | AppKit macOS 发布链 | `PASS_WITH_OBS` | 新增 SmartBLEMacTests 7/7；深度验证 40 行 EXIT=0（真实 BLE/快照/bundle/沙盒/soak）；修复分发 bundle 资源缺失崩溃；OTA 契约分歧 R-1/R-2 待用户裁决（证据 20260914-MAC-007） | MAC-008 |
 | MAC-008 | 共享 Core/协议/资产单源 | `PASS_WITH_OBS` | JS 11/11、Swift 32/32、parity 四线（js71/dart59豁免/kotlin71/swift32）、资产 8/8 in-sync、contract lock、桌面 bundle 9/9 全绿；OTA/脱敏向量扩展未做（证据 20260914-MAC-008） | MAC-001、MAC-002 |
 | MAC-009 | ESP32/STM32 硬件线 | `IN_PROGRESS` | ESP32-S3 单环境构建通过；STM32 仍是不可完整构建样板 | MAC-008 |
 | MAC-010 | macOS/Linux 桌面实现 | `IN_PROGRESS` | Mac 四线有历史 BLE 证据，Linux 主要靠 CI | WIN-002～WIN-004 写锁协调 |
 | MAC-011 | 官网、CI、发布与 Artifact 管线 | `FAILED` | 官网可构建；元数据漂移、Apple CI 和 Tauri Release 命令错误 | MAC-001～MAC-010、WIN-009 |
 | MAC-012 | 跨平台总验收与合入 main | `TODO` | 当前分支领先 main 204 提交 | MAC-002～MAC-011、WIN-010 |
 
-完成率统计：`PASS` 2 / `PASS_WITH_OBS` 6 / `IN_PROGRESS` 2 / `FAILED` 0 / `BLOCKED` 0 / `TODO` 1。
+完成率统计：`PASS` 2 / `PASS_WITH_OBS` 7 / `IN_PROGRESS` 1 / `FAILED` 0 / `BLOCKED` 0 / `TODO` 1。
+
+### 2026-09-14 · MAC-007
+
+- Status: PASS_WITH_OBS
+- Commit: <本次>
+- Host: macOS / swift 5.9+
+- Commands: `swift build`；`swift test`；`bash scripts/macos/verify-native-macos.sh mac-plan-20260914-r2`；`bash scripts/macos/make-app-bundle.sh --omit-bt-usage`
+- Result: 模块测试 7/7；深度验证 EXIT=0（40 汇总行；UIS-18-OTA FAIL 为在册 OTA 契约分歧，NVC-05 BLOCKED 需第二观察端）；bundle 崩溃修复并复验
+- Hardware: 本机 CoreBluetooth（环境外设连接+ATT+服务发现 NVC-04 PASS）；ESP32 夹具 OTA 链仍 FAIL（R-1/R-2 待裁决）
+- Evidence: verification/mac-plan-v1/20260914-MAC-007/ + verification/macos-extension/mac-plan-20260914-r2/
+- Public status impact: none
+- Observations: make-app-bundle 资源 bundle 拷贝修复为分发级真 bug；公证 NOT_RUN（账号红线）
+- Next: MAC-009
 
 ### 2026-09-14 · MAC-006
 

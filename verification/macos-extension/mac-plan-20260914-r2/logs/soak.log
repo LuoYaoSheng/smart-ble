@@ -1,0 +1,148 @@
+[APP] static main entered
+[APP] applicationDidFinishLaunching
+[SOAK] mode=soak-scans rounds=12 app=SmartBLE-mac
+[BLE] 蓝牙已开启
+[BLE] 外围模式已就绪
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：未命名 BLE · 8EE6（-89 dBm）
+[BLE] 发现设备：BLEToolkit-Server（-29 dBm）
+[BLE] 发现设备：1483143285的REDMI K80（-52 dBm）
+[BLE] 发现设备：未命名 BLE · E34A（-89 dBm）
+[BLE] 发现设备：HUAWEI WATCH GT 3 Pro-F0C（-91 dBm）
+[BLE] 发现设备：midea（-96 dBm）
+[BLE] 发现设备：未命名 BLE · A6FD（-92 dBm）
+[BLE] 发现设备：EDIFIER BLE（-92 dBm）
+[BLE] 发现设备：未命名 BLE · 4825（-89 dBm）
+[BLE] 发现设备：未命名 BLE · 8CDD（-94 dBm）
+[BLE] 扫描完成 · 发现 10 台设备
+[SOAK] round=1/12 auto-stopped listed_devices=10 summary="扫描完成 · 发现 10 台"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：1483143285的REDMI K80（-52 dBm）
+[BLE] 发现设备：未命名 BLE · 8F12（-48 dBm）
+[BLE] 发现设备：未命名 BLE · 8EE6（-92 dBm）
+[BLE] 发现设备：BLEToolkit-Server（-27 dBm）
+[BLE] 发现设备：HUAWEI WATCH GT 3 Pro-F0C（-84 dBm）
+[BLE] 发现设备：未命名 BLE · 5A3A（-53 dBm）
+[BLE] 发现设备：midea（-96 dBm）
+[BLE] 扫描完成 · 发现 7 台设备
+[SOAK] round=2/12 auto-stopped listed_devices=7 summary="扫描完成 · 发现 7 台"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：BLEToolkit-Server（-29 dBm）
+[BLE] 发现设备：1483143285的REDMI K80（-52 dBm）
+[BLE] 发现设备：未命名 BLE · 8EE6（-91 dBm）
+[BLE] 发现设备：HUAWEI WATCH GT 3 Pro-F0C（-86 dBm）
+[BLE] 发现设备：未命名 BLE · 356C（-50 dBm）
+[BLE] 发现设备：iphone（-50 dBm）
+[BLE] 扫描完成 · 发现 6 台设备
+[SOAK] round=3/12 auto-stopped listed_devices=6 summary="扫描完成 · 发现 6 台"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：BLEToolkit-Server（-29 dBm）
+[BLE] 发现设备：1483143285的REDMI K80（-51 dBm）
+[BLE] 发现设备：HUAWEI WATCH GT 3 Pro-F0C（-86 dBm）
+[BLE] 发现设备：midea（-91 dBm）
+[BLE] 发现设备：未命名 BLE · 8F12（-47 dBm）
+[BLE] 发现设备：未命名 BLE · 8EE6（-95 dBm）
+[BLE] 发现设备：未命名 BLE · E34A（-92 dBm）
+[BLE] 发现设备：未命名 BLE · 2E66（-66 dBm）
+[BLE] 发现设备：未命名 BLE · 356C（-48 dBm）
+[BLE] 发现设备：未命名 BLE · 474C（-87 dBm）
+[BLE] 扫描完成 · 发现 10 台设备
+[SOAK] round=4/12 auto-stopped listed_devices=10 summary="扫描完成 · 发现 10 台"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：BLEToolkit-Server（-29 dBm）
+[BLE] 发现设备：midea（-91 dBm）
+[BLE] 发现设备：1483143285的REDMI K80（-51 dBm）
+[BLE] 发现设备：HUAWEI WATCH GT 3 Pro-F0C（-85 dBm）
+[BLE] 发现设备：未命名 BLE · 8EE6（-91 dBm）
+[BLE] 发现设备：未命名 BLE · 2E66（-64 dBm）
+[BLE] 发现设备：EDIFIER BLE（-94 dBm）
+[BLE] 发现设备：iphone（-49 dBm）
+[BLE] 发现设备：未命名 BLE · 474C（-91 dBm）
+[BLE] 扫描完成 · 发现 9 台设备
+[SOAK] round=5/12 auto-stopped listed_devices=9 summary="扫描完成 · 发现 9 台"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：BLEToolkit-Server（-29 dBm）
+[BLE] 发现设备：HUAWEI WATCH GT 3 Pro-F0C（-91 dBm）
+[BLE] 发现设备：midea（-96 dBm）
+[BLE] 发现设备：1483143285的REDMI K80（-56 dBm）
+[BLE] 发现设备：未命名 BLE · E34A（-91 dBm）
+[BLE] 发现设备：未命名 BLE · 8EE6（-91 dBm）
+[BLE] 发现设备：未命名 BLE · 928B（-88 dBm）
+[BLE] 发现设备：midea（-91 dBm）
+[BLE] 发现设备：未命名 BLE · 474C（-90 dBm）
+[BLE] 扫描完成 · 发现 9 台设备
+[SOAK] round=6/12 auto-stopped listed_devices=9 summary="扫描完成 · 发现 9 台"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：BLEToolkit-Server（-29 dBm）
+[BLE] 发现设备：1483143285的REDMI K80（-52 dBm）
+[BLE] 发现设备：iphone（-48 dBm）
+[BLE] 发现设备：midea（-92 dBm）
+[BLE] 发现设备：EDIFIER BLE（-95 dBm）
+[BLE] 发现设备：midea（-95 dBm）
+[BLE] 发现设备：HUAWEI WATCH GT 3 Pro-F0C（-88 dBm）
+[BLE] 发现设备：未命名 BLE · 8F12（-43 dBm）
+[BLE] 发现设备：未命名 BLE · 4825（-93 dBm）
+[BLE] 发现设备：未命名 BLE · 2E66（-65 dBm）
+[BLE] 发现设备：未命名 BLE · 356C（-45 dBm）
+[BLE] 扫描完成 · 发现 11 台设备
+[SOAK] round=7/12 auto-stopped listed_devices=11 summary="扫描完成 · 发现 11 台"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：BLEToolkit-Server（-29 dBm）
+[BLE] 发现设备：HUAWEI WATCH GT 3 Pro-F0C（-86 dBm）
+[BLE] 发现设备：1483143285的REDMI K80（-62 dBm）
+[BLE] 发现设备：未命名 BLE · 8F12（-48 dBm）
+[BLE] 发现设备：midea（-94 dBm）
+[BLE] 发现设备：未命名 BLE · E34A（-96 dBm）
+[BLE] 发现设备：未命名 BLE · 928B（-90 dBm）
+[BLE] 发现设备：未命名 BLE · 2E66（-64 dBm）
+[BLE] 发现设备：未命名 BLE · 8EE6（-94 dBm）
+[BLE] 发现设备：未命名 BLE · 356C（-47 dBm）
+[BLE] 发现设备：未命名 BLE · 4825（-90 dBm）
+[BLE] 扫描完成 · 发现 11 台设备
+[SOAK] round=8/12 auto-stopped listed_devices=11 summary="扫描完成 · 发现 11 台"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：BLEToolkit-Server（-26 dBm）
+[BLE] 发现设备：1483143285的REDMI K80（-65 dBm）
+[BLE] 发现设备：midea（-95 dBm）
+[BLE] 发现设备：未命名 BLE · 928B（-85 dBm）
+[BLE] 发现设备：HUAWEI WATCH GT 3 Pro-F0C（-90 dBm）
+[BLE] 发现设备：未命名 BLE · 356C（-53 dBm）
+[BLE] 发现设备：iphone（-50 dBm）
+[BLE] 扫描完成 · 发现 7 台设备
+[SOAK] round=9/12 auto-stopped listed_devices=7 summary="扫描完成 · 发现 7 台"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：未命名 BLE · 8F12（-49 dBm）
+[BLE] 发现设备：iphone（-49 dBm）
+[BLE] 发现设备：BLEToolkit-Server（-29 dBm）
+[BLE] 发现设备：HUAWEI WATCH GT 3 Pro-F0C（-88 dBm）
+[BLE] 发现设备：1483143285的REDMI K80（-64 dBm）
+[BLE] 发现设备：未命名 BLE · 2E66（-74 dBm）
+[BLE] 发现设备：midea（-95 dBm）
+[BLE] 扫描完成 · 发现 7 台设备
+[SOAK] round=10/12 auto-stopped listed_devices=7 summary="扫描完成 · 发现 7 台"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：iphone（-49 dBm）
+[BLE] 发现设备：BLEToolkit-Server（-29 dBm）
+[BLE] 发现设备：1483143285的REDMI K80（-65 dBm）
+[BLE] 发现设备：midea（-96 dBm）
+[BLE] 发现设备：HUAWEI WATCH GT 3 Pro-F0C（-87 dBm）
+[BLE] 发现设备：未命名 BLE · 2E66（-71 dBm）
+[BLE] 扫描完成 · 发现 6 台设备
+[SOAK] round=11/12 auto-stopped listed_devices=6 summary="扫描完成 · 发现 6 台"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：1483143285的REDMI K80（-66 dBm）
+[BLE] 发现设备：BLEToolkit-Server（-29 dBm）
+[BLE] 发现设备：未命名 BLE · 5A3A（-60 dBm）
+[BLE] 发现设备：iphone（-49 dBm）
+[BLE] 发现设备：未命名 BLE · 474C（-92 dBm）
+[BLE] 发现设备：未命名 BLE · 2E66（-64 dBm）
+[BLE] 发现设备：HUAWEI WATCH GT 3 Pro-F0C（-88 dBm）
+[BLE] 发现设备：midea（-95 dBm）
+[BLE] 发现设备：midea（-95 dBm）
+[BLE] 扫描完成 · 发现 9 台设备
+[SOAK] round=12/12 auto-stopped listed_devices=9 summary="扫描完成 · 发现 9 台"
+[SOAK] result=PASS detail="全部 12 轮完成（实际 12）"
+[SOAK] result=PASS detail="日志条数不超上限 500（当前 128）"
+[SOAK] mem before=93952KB after=103152KB delta=9.0MB
+[SOAK] result=PASS detail="驻留内存增量 < 64MB（实测 9.0MB）"
+[SOAK] done failures=0

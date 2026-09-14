@@ -54,11 +54,22 @@ lipo -info "$BIN"
 step "2. 组装 bundle（清单：${PLIST_SRC}；图标：${ICON_SRC}）"
 [ -f "$ICON_SRC" ] || { echo "icon missing (先跑 scripts/macos/make-app-icon.sh): $ICON_SRC"; exit 1; }
 rm -rf "$DIST"
+# SwiftPM 资源 bundle（Sources/Resources 经 .process 生成）必须随包分发：
+# resource_bundle_accessor 会在 Bundle.main.resourceURL 查找，缺失即启动崩溃
+# （MAC-007：NVP-03 曾以 "unable to find bundle named SmartBLE-mac_SmartBLE-mac" 崩）。
+SPM_RES_BUNDLE="$APP_DIR/.build/debug/SmartBLE-mac_SmartBLE-mac.bundle"
+if [ ! -d "$SPM_RES_BUNDLE" ]; then
+  SPM_RES_BUNDLE="$(ls -d "$APP_DIR/.build"/*/debug/SmartBLE-mac_SmartBLE-mac.bundle 2>/dev/null | head -1 || true)"
+fi
+[ -d "$SPM_RES_BUNDLE" ] || { echo "SPM resource bundle missing: $SPM_RES_BUNDLE"; exit 1; }
+
 for app in "$BUNDLE" "$MAS"; do
   mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
   cp "$BIN" "$app/Contents/MacOS/SmartBLE-mac"
   cp "$PLIST_SRC" "$app/Contents/Info.plist"
   cp "$ICON_SRC" "$app/Contents/Resources/AppIcon.icns"
+  rm -rf "$app/Contents/Resources/SmartBLE-mac_SmartBLE-mac.bundle"
+  cp -R "$SPM_RES_BUNDLE" "$app/Contents/Resources/SmartBLE-mac_SmartBLE-mac.bundle"
 done
 
 # NVD plist：MAS 必填/关键字段完整性（r6 增相机用途：配对码扫码）
