@@ -60,8 +60,8 @@ Mac 不直接宣称 Windows 完成；只消费 Windows 计划的可复现证据�
 | ID | 工作包 | 当前状态 | 当前事实 | 依赖 |
 |---|---|---|---|---|
 | MAC-001 | 平台范围决策与正典冻结 | `PASS_WITH_OBS` | 路线 B 落正：用户 2026-09-11 已裁决全端撤小程序，2026-09-14 按 Route B 将三份正典、五份目标契约、schema、门禁脚本、gap 报告与目标文档全部收窄到单一解释（三平台/91 测试/30 CLAIM/80 FEAT/65 REQ/88 OP）；Windows 侧消费本结论更新 WIN-002 桌面元数据断言 | 用户确认保留或退役微信（已确认：退役） |
-| MAC-002 | 恢复统一验证全绿 | `IN_PROGRESS` | wx-peripheral 两单测 + peripheral-owner 集成测试 + 权限流集成测试三处 CURRENT 失败待清；latest.json 漂移待重生成 | MAC-001 |
-| MAC-003 | UniApp App/H5/微信范围收口 | `IN_PROGRESS` | H5 可构建，权限与微信 Peripheral 契约断裂 | MAC-001、MAC-002 |
+| MAC-002 | 恢复统一验证全绿 | `PASS` | make verify 五线全绿（uniapp/flutter/android-JDK17/apple 三步/tauri）；desktop 95/95；metadata --check PASS；verify-target 408/108/544 全 0 fail（证据 20260914-MAC-002） | MAC-001 |
+| MAC-003 | UniApp App/H5 范围收口 | `IN_PROGRESS` | 微信面已清（MAC-001/002）；剩 ARCHITECTURE Vue2→Vue3、node:crypto 外置、H5 build + 页面 Playwright 复验 | MAC-001、MAC-002 |
 | MAC-004 | Flutter 多端候选版 | `IN_PROGRESS` | analyze 0、122/122 测试通过，尚未形成正式 Artifact | MAC-002、MAC-008 |
 | MAC-005 | Kotlin Android 原生页面对齐 | `IN_PROGRESS` | JDK 17 构建/单测通过，Smart HID 页面不完整 | MAC-002、MAC-008 |
 | MAC-006 | SwiftUI iOS 发布链 | `IN_PROGRESS` | Xcode Simulator 构建通过，`make verify-apple` 失败，真机 E5 未完 | MAC-002、MAC-008 |
@@ -72,7 +72,20 @@ Mac 不直接宣称 Windows 完成；只消费 Windows 计划的可复现证据�
 | MAC-011 | 官网、CI、发布与 Artifact 管线 | `FAILED` | 官网可构建；元数据漂移、Apple CI 和 Tauri Release 命令错误 | MAC-001～MAC-010、WIN-009 |
 | MAC-012 | 跨平台总验收与合入 main | `TODO` | 当前分支领先 main 204 提交 | MAC-002～MAC-011、WIN-010 |
 
-完成率统计：`PASS` 0 / `PASS_WITH_OBS` 1 / `IN_PROGRESS` 8 / `FAILED` 1 / `BLOCKED` 0 / `TODO` 1。
+完成率统计：`PASS` 1 / `PASS_WITH_OBS` 1 / `IN_PROGRESS` 7 / `FAILED` 0 / `BLOCKED` 0 / `TODO` 1。
+
+### 2026-09-14 · MAC-002
+
+- Status: PASS
+- Commit: 764d8e9 + 4d6a2ba（本次）
+- Host: macOS / Node 24.12 / Xcode / JDK 17(temurin) / Gradle 8.2 / cargo
+- Commands: `make verify`（五线）；`node --test tests/desktop/*.test.mjs`；`node scripts/generate-release-metadata.mjs --check`；`node scripts/verify-target.mjs --mode=all`
+- Result: uniapp 26 单测文件+14 静态门禁；flutter analyze 0/122 测试；android JDK17 BUILD SUCCESSFUL；apple Core 32/32 + iOS Xcode TEST SUCCEEDED(2+12) + macOS swift build；tauri cargo check；desktop 95/95；SYSTEM 408/408 · HARNESS 108/108 · CURRENT 544/544
+- Hardware: N/A（E5 真机线属 MAC-004~007/009）
+- Evidence: verification/mac-plan-v1/20260914-MAC-002/
+- Public status impact: release 元数据 9 产物重生成，latest.json 漂移清零
+- Observations: tests/desktop 平台断言 4→3 键为 Windows 写锁区机械修订，WIN-002 拉取后复核；java_home -v 21 回退默认 JVM 的坑已在脚本内实测校验
+- Next: MAC-003
 
 ### 2026-09-14 · MAC-001
 
