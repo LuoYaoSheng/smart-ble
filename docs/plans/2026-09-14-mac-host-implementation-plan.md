@@ -66,13 +66,26 @@ Mac 不直接宣称 Windows 完成；只消费 Windows 计划的可复现证据�
 | MAC-005 | Kotlin Android 原生页面对齐 | `IN_PROGRESS` | JDK 17 构建/单测通过，Smart HID 页面不完整 | MAC-002、MAC-008 |
 | MAC-006 | SwiftUI iOS 发布链 | `IN_PROGRESS` | Xcode Simulator 构建通过，`make verify-apple` 失败，真机 E5 未完 | MAC-002、MAC-008 |
 | MAC-007 | AppKit macOS 发布链 | `IN_PROGRESS` | `swift build` 通过，无模块测试和正式发布 | MAC-008 |
-| MAC-008 | 共享 Core/协议/资产单源 | `IN_PROGRESS` | JS 11/11、Swift 32/32，通过；发布元数据有漂移 | MAC-001、MAC-002 |
+| MAC-008 | 共享 Core/协议/资产单源 | `PASS_WITH_OBS` | JS 11/11、Swift 32/32、parity 四线（js71/dart59豁免/kotlin71/swift32）、资产 8/8 in-sync、contract lock、桌面 bundle 9/9 全绿；OTA/脱敏向量扩展未做（证据 20260914-MAC-008） | MAC-001、MAC-002 |
 | MAC-009 | ESP32/STM32 硬件线 | `IN_PROGRESS` | ESP32-S3 单环境构建通过；STM32 仍是不可完整构建样板 | MAC-008 |
 | MAC-010 | macOS/Linux 桌面实现 | `IN_PROGRESS` | Mac 四线有历史 BLE 证据，Linux 主要靠 CI | WIN-002～WIN-004 写锁协调 |
 | MAC-011 | 官网、CI、发布与 Artifact 管线 | `FAILED` | 官网可构建；元数据漂移、Apple CI 和 Tauri Release 命令错误 | MAC-001～MAC-010、WIN-009 |
 | MAC-012 | 跨平台总验收与合入 main | `TODO` | 当前分支领先 main 204 提交 | MAC-002～MAC-011、WIN-010 |
 
-完成率统计：`PASS` 1 / `PASS_WITH_OBS` 1 / `IN_PROGRESS` 7 / `FAILED` 0 / `BLOCKED` 0 / `TODO` 1。
+完成率统计：`PASS` 2 / `PASS_WITH_OBS` 2 / `IN_PROGRESS` 6 / `FAILED` 0 / `BLOCKED` 0 / `TODO` 1。
+
+### 2026-09-14 · MAC-008
+
+- Status: PASS_WITH_OBS
+- Commit: <本次>
+- Host: macOS / Node 24.12 / JDK 17 / Xcode
+- Commands: `cd core && npx jest`；`make verify-apple-core`；`JAVA_HOME=<17> ANDROID_HOME=<sdk> node scripts/check-platform-parity.mjs`；`python3 core/assets-generator/generate_assets.py --check`；`node scripts/check-smart-hid-contract.mjs`；`node --test tests/desktop/smart-hid-bundle.desktop.test.mjs`
+- Result: 全绿（js 11/11、swift 32/32、parity 四线 PASS、资产 8/8、contract lock、bundle 9/9）
+- Hardware: N/A
+- Evidence: verification/mac-plan-v1/20260914-MAC-008/
+- Public status impact: none（元数据漂移已在 MAC-002 清零）
+- Observations: OTA manifest 与日志脱敏的跨语言向量扩展未做（需四端执行器同步改造，登记为后续轮次）；dart 豁免 errorRecovery 为向量内声明式口径
+- Next: MAC-004
 
 ### 2026-09-14 · MAC-002
 
