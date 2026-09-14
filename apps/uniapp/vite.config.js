@@ -2,7 +2,8 @@
  * UniApp Vite toolchain profile: pure-CLI first, HBuilderX fallback.
  *
  * CLI mode (primary): @dcloudio/vite-plugin-uni resolves from this project's
- * node_modules (see scripts/uniapp/run-uni.mjs; npm run build:mp-weixin).
+ * node_modules (see scripts/uniapp/run-uni.mjs; npm run build:h5 / build:app).
+ * 2026-09-11：微信小程序目标退役，mp-weixin 构建不再存在。
  *
  * HBuilderX mode (fallback): when this project has no local install, resolve
  * the plugin/vite from HBuilderX's uniapp-cli-vite bundle (macOS or Windows

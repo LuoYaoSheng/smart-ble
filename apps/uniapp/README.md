@@ -1,6 +1,8 @@
-# BLE Toolkit+（UniApp / 微信小程序）
+# BLE Toolkit+（UniApp / App · H5）
 
-BLE Toolkit+ 是 Smart BLE 产品家族的微信生态和轻量跨端入口。它提供通用 BLE 扫描、连接、GATT 读写、通知、广播能力，并通过 Profile 注册表扩展 Smart HID 等设备专属任务。
+BLE Toolkit+ 是 Smart BLE 产品家族的轻量跨端入口（UniApp 一线多端：Android App 为主线，iOS 为后续目标，H5 为降级预览）。它提供通用 BLE 扫描、连接、GATT 读写、通知、广播能力，并通过 Profile 注册表扩展 Smart HID 等设备专属任务。
+
+> **平台范围（2026-09-11 用户裁决，2026-09-14 MAC-001 落正）**：微信小程序运行目标已整体退役——`dev:mp-weixin` / `build:mp-weixin`、微信 Peripheral 模块与微信真机门禁均已删除，不得回流。H5 是页面预览与文档形态，不支持真实 BLE。
 
 > **产品规范（公共）**：本应用是 [docs/specs/](../../docs/specs/README.md) 产品基准规范的**基准平台**实现。功能、页面、流程、交互、设计系统以规范为准；平台差异只在 [10_platform 差异设计](../../docs/specs/10_platform/PLATFORM_EXTENSION.md) 圈定范围内实现。
 
@@ -31,15 +33,13 @@ Smart HID 配网只有三个用户阶段：
 
 Wi-Fi 密码和 pairing token 只存在于当前内存会话，不写入日志、路由或本地存储。BLE 只用于配网和诊断，HID 实时控制仍走 ControlHub → MQTT → ESP32。
 
-## 微信小程序专项处理
+## App / H5 平台语义
 
-- AppID：`wxf6c58b1dcac4c82d`
-- 使用微信 BLE API 完成扫描与连接
-- 微信端外部网址使用复制链接降级
-- 好友与朋友圈分享使用微信小程序原生钩子
-- 扫描前区分系统蓝牙关闭、微信蓝牙授权拒绝和定位授权拒绝，并给出对应设置入口
-- 扫描使用 central 模式，广播使用 peripheral 模式；无活动连接时由页面生命周期完成模式交接
-- 业务按钮使用原生 `button` 和 `styles/design-system.css` 的 `ble-btn` 类，避免自定义组件样式隔离导致文字不可见
+- 扫描前置权限走 `services/scan-permission.js`（可注入平台面）：无平台面或无 `openBluetoothAdapter` → 诚实 `ble_not_supported`；授权拒绝映射 `bluetooth_permission_denied`；蓝牙关闭映射 `bluetooth_unavailable`；适配器打开始终经 `services/ble-runtime` 平台缝。
+- H5 状态区恒显示“不支持 BLE”，不发起任何真实 BLE API；H5 用于页面预览、交互原型与文档。
+- App 端外部网址走系统浏览器；分享走系统分享。
+- 广播（Peripheral）在 App 端依赖原生插件；插件缺失时页面进入 Unsupported/Error，不无响应。
+- 业务按钮使用原生 `button` 和 `styles/design-system.css` 的 `ble-btn` 类，避免自定义组件样式隔离导致文字不可见。
 
 ## 代码结构
 
@@ -48,14 +48,16 @@ pages/                    页面与路由编排
 components/common/        通用状态与导航组件
 components/scan/          扫描和广播快照组件
 components/hid/           Smart HID 配网展示组件
-components/about/         关于页推广组件
+components/about/         关于页组件
 composables/              页面级生命周期和动作编排
-services/ble-runtime/     唯一 BLE Runtime 与扫描会话
-services/wx-peripheral-mode.js 微信 central/peripheral 模式所有权
+services/ble-runtime/     唯一 BLE Runtime 与扫描会话（平台注入缝）
+services/broadcast/       广播会话/负载/校验（通用，非微信专属）
+services/scan-permission.js 扫描前置权限状态机（可注入平台面）
 services/provisioning/    通用 GATT 配网 transport / Profile 注册表
 services/smart-hid/       Smart HID Profile 业务语义
+services/ota/             OTA 固件包校验（Web Crypto 优先，Node 兜底）
 store/                    Pinia 状态
-static/                   小程序资源
+static/                   静态资源
 ```
 
 ## 本地检查
@@ -64,7 +66,7 @@ static/                   小程序资源
 bash ../../scripts/verify-uniapp.sh
 ```
 
-该命令统一运行单元测试、Smart HID 协议锁、静态资源检查、Vue SFC 解析与 Git 空白检查。微信开发者工具自动化，以及最终 BLE、扫码、小程序跳转和真机页面效果仍是独立验证阶段，不能由本地检查替代。
+该命令统一运行单元测试、Smart HID 协议锁、静态资源检查、Vue SFC 解析与 Git 空白检查。最终 BLE、扫码和真机页面效果仍是独立验证阶段，不能由本地检查替代。
 
 当前 10 个注册页面及主要跳转回归：
 
@@ -77,9 +79,9 @@ bash ../../scripts/verify-uniapp-pages.sh
 编译工具链来自 `apps/uniapp/package.json` devDependencies（@dcloudio vite 线，锁定版本），首次使用先 `npm install`：
 
 ```bash
-npm run build:mp-weixin   # 微信小程序产物 -> unpackage/dist/build/mp-weixin（导入微信开发者工具运行）
-npm run dev:mp-weixin     # 微信小程序 watch 模式 -> unpackage/dist/dev/mp-weixin
-npm run build:app         # APP 资源编译 -> unpackage/dist/build/app（真机运行/基座/APK 打包仍由 HBuilderX 承担）
+npm run build:h5     # H5 产物 -> unpackage/dist/build/h5
+npm run dev:h5       # H5 dev 模式 -> unpackage/dist/dev/h5
+npm run build:app    # APP 资源编译 -> unpackage/dist/build/app（真机运行/基座/APK 打包仍由 HBuilderX 承担）
 ```
 
 入口是 `scripts/uniapp/run-uni.mjs`：它把 HBuilderX 根目录工程布局映射到 CLI（UNI_INPUT_DIR/UNI_OUTPUT_DIR），产物保持 `unpackage/dist/{dev|build}/<platform>` 布局。`vite.config.js` 的 APP inline 补丁只作用于 APP 平台；工程 node_modules 缺失时回退 HBuilderX 内置编译器。
@@ -88,13 +90,6 @@ npm run build:app         # APP 资源编译 -> unpackage/dist/build/app（真�
 
 ```bash
 node ../../scripts/check-uniapp-assets.mjs --require-compiled
-```
-
-安装官方 HBuilderX 自动化测试插件及其测试环境后，运行微信页面自动化（注意 HBuilderX 5.24 CLI 已移除 uniapp.test，见 DEF-002）：
-
-```bash
-/Applications/HBuilderX.app/Contents/MacOS/cli uniapp.test mp-weixin \
-  --project /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/uniapp
 ```
 
 验证基线与时序文档：

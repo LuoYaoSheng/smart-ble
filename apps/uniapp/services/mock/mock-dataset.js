@@ -5,7 +5,7 @@
  * 差异：设备对象按 uniapp 运行时形态构造（platform 原始字段 → normalizeAdvertisement
  * 归一化 + attachDeviceDisplayName），保证走真实渲染管线而非旁路注入展示结构。
  *
- * 作用域铁律：仅 services/mock/ 消费；mp-weixin / app 构建经条件编译整体剥离，
+ * 作用域铁律：仅 services/mock/ 消费；app 构建经条件编译整体剥离（mp-weixin 目标已退役），
  * 生产逻辑（store/services）不得 import 本文件。
  */
 

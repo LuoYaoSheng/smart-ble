@@ -253,15 +253,14 @@ function seedP008(stores, preset, payload = {}) {
 	const snapBase = t.sessionSnap?.value || {};
 	const setSnap = (patch) => { if (t.sessionSnap) t.sessionSnap.value = { ...snapBase, ...patch }; };
 	if (t.isSupported) t.isSupported.value = true;
-	// 平台靶标默认微信（徽章六值可全渲染）；unsupported 分支用 web；payload.platform 可覆盖（如 android 表单变体）
+	// 平台靶标默认 android（徽章六值可全渲染）；unsupported 分支用 web；payload.platform 可覆盖（如 ios 表单变体；微信靶标已随小程序退役移除）
 	const setPlatform = (value) => { if (t.platform) t.platform.value = value; };
-	// 表单默认值（正典 advDefaults：微信 SmartBLE/FFE0/0001/BLE → 6/31 字节预算非零）
+	// 表单默认值（正典 advDefaults：SmartBLE/FFE0/0001/BLE → 6/31 字节预算非零）
 	const seedForm = (platform) => {
 		const defaults = {
-			weixin: { name: 'SmartBLE', uuid: 'FFE0', mfgId: '0001', mfgData: 'BLE' },
 			android: { name: 'SmartBLE-A', uuid: 'FFE0', mfgId: '0001', mfgData: 'BLE' },
 			ios: { name: 'SmartBLE-I', uuid: 'FFE0', mfgId: '0001', mfgData: 'BLE' }
-		}[platform === 'web' ? 'weixin' : platform] || { name: 'SmartBLE', uuid: 'FFE0', mfgId: '0001', mfgData: 'BLE' };
+		}[platform] || { name: 'SmartBLE', uuid: 'FFE0', mfgId: '0001', mfgData: 'BLE' };
 		if (t.deviceName) t.deviceName.value = defaults.name;
 		if (t.serviceUUID) t.serviceUUID.value = defaults.uuid;
 		if (t.manufacturerId) t.manufacturerId.value = defaults.mfgId;
@@ -269,24 +268,24 @@ function seedP008(stores, preset, payload = {}) {
 	};
 	switch (preset) {
 		case 'idle':
-			setPlatform(payload.platform || 'weixin');
-			seedForm(payload.platform || 'weixin');
+			setPlatform(payload.platform || 'android');
+			seedForm(payload.platform || 'android');
 			setSnap({ state: 'IDLE', lastError: null });
 			break;
 		case 'advertising':
-			setPlatform(payload.platform || 'weixin');
-			seedForm(payload.platform || 'weixin');
+			setPlatform(payload.platform || 'android');
+			seedForm(payload.platform || 'android');
 			setSnap({ state: 'ADVERTISING', startedAt: Date.now(), lastError: null });
 			if (typeof t.sessionAddLog === 'function') broadcastLogs.slice(0, 4).forEach((l) => t.sessionAddLog(l.type, l.message));
 			break;
 		case 'stopped':
-			setPlatform(payload.platform || 'weixin');
-			seedForm(payload.platform || 'weixin');
+			setPlatform(payload.platform || 'android');
+			seedForm(payload.platform || 'android');
 			setSnap({ state: 'STOPPED', stoppedAt: Date.now(), lastError: null });
 			break;
 		case 'failed':
-			setPlatform(payload.platform || 'weixin');
-			seedForm(payload.platform || 'weixin');
+			setPlatform(payload.platform || 'android');
+			seedForm(payload.platform || 'android');
 			setSnap({ state: 'FAILED', lastError: { code: 'ADAPTER_FAILED', message: 'errCode 10001：请先开启系统蓝牙' } });
 			if (typeof t.sessionAddLog === 'function') t.sessionAddLog('错误', 'errCode 10001：请先开启系统蓝牙');
 			break;
