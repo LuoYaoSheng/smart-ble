@@ -1,0 +1,374 @@
+# Mac Host Implementation Plan
+
+> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
+
+**Goal:** 由 Mac 主机完成除 Windows 专项外的全部平台实现、共享核心、固件、官网、CI、发布元数据和最终跨平台收口。
+
+**Architecture:** `docs/specs/` 与 `docs/product-contract/` 继续作为全平台产品正典，JavaScript/TypeScript、Dart、Kotlin、Swift 和 Rust/C++ 实现通过共享向量与同一页面契约保持一致。Mac 是产品与发布整合主机；Windows 计划只回传 Windows 专项代码和证据，由 Mac 统一进入最终矩阵与发布门禁。
+
+**Tech Stack:** macOS、Node.js、UniApp/Vue 3/Pinia/Vite、Flutter/Dart/Riverpod、Kotlin/Compose、SwiftUI/AppKit/CoreBluetooth、Electron、Tauri/Rust、VitePress、PlatformIO/Arduino/NimBLE、GitHub Actions。
+
+---
+
+## 0. 文档控制
+
+| 字段 | 值 |
+|---|---|
+| 文档状态 | `CURRENT` |
+| 文档版本 | `1.0` |
+| 当前基线 | `refactor/uniapp-v1@718b3c0` |
+| 执行主机 | Mac |
+| 主负责人 | Mac 整合线 |
+| 对应 Windows 计划 | [2026-09-14-windows-host-implementation-plan.md](./2026-09-14-windows-host-implementation-plan.md) |
+| 历史来源 | [2026-09-11-dual-machine-scope-and-plan.md](./2026-09-11-dual-machine-scope-and-plan.md) |
+| 最后更新 | 2026-09-14 |
+
+本文件是非 Windows 平台和全产品总进度的唯一计划入口。旧双机计划只作为历史证据。
+
+## 1. Mac 负责范围
+
+| 领域 | Mac 负责内容 |
+|---|---|
+| UniApp | App/H5，以及微信目标是否保留后的实现或退役收口 |
+| Flutter | Android、iOS、macOS、Web/Linux 可构建边界和统一页面行为 |
+| Android 原生 | Kotlin + Compose 实现、测试、APK；真机可在 Mac 或请求 Windows 代跑，但所有代码仍归 Mac |
+| Apple 原生 | SwiftUI iOS、AppKit macOS、SmartHidCore、Xcode/SwiftPM、签名和真机验证 |
+| 桌面非 Windows | Electron macOS/Linux、Tauri macOS/Linux；修改共享桌面文件前遵守 Windows 写锁 |
+| Web | VitePress 官网、状态页、交互原型和公开声明 |
+| Core | JS/TS Core、Apple Core、跨语言协议向量、资产生成 |
+| Hardware | ESP32 全环境；STM32 实现边界和可构建性 |
+| 工程治理 | Makefile、CI、发布工作流、版本/元数据、最终矩阵、合入 main |
+
+Mac 不直接宣称 Windows 完成；只消费 Windows 计划的可复现证据。
+
+## 2. 状态、证据与进度规则
+
+状态只允许使用 `TODO / IN_PROGRESS / PASS / PASS_WITH_OBS / FAILED / BLOCKED`，定义与 Windows 计划一致。
+
+证据目录格式：`verification/mac-plan-v1/YYYYMMDD-MAC-xxx/`。
+
+任务改成 `PASS` 前必须同时具备：
+
+1. 当前 commit。
+2. 精确命令和退出码。
+3. 自动化结果。
+4. 需要真机的能力必须有真机/硬件证据。
+5. 影响发布声明时，发布元数据和官网状态同步更新。
+
+## 3. 总进度看板
+
+| ID | 工作包 | 当前状态 | 当前事实 | 依赖 |
+|---|---|---|---|---|
+| MAC-001 | 平台范围决策与正典冻结 | `BLOCKED` | 微信构建已删除，但文档/测试仍把微信列为主入口 | 用户确认保留或退役微信 |
+| MAC-002 | 恢复统一验证全绿 | `FAILED` | `make verify`、桌面元数据、目标集成测试有失败 | MAC-001 |
+| MAC-003 | UniApp App/H5/微信范围收口 | `IN_PROGRESS` | H5 可构建，权限与微信 Peripheral 契约断裂 | MAC-001、MAC-002 |
+| MAC-004 | Flutter 多端候选版 | `IN_PROGRESS` | analyze 0、122/122 测试通过，尚未形成正式 Artifact | MAC-002、MAC-008 |
+| MAC-005 | Kotlin Android 原生页面对齐 | `IN_PROGRESS` | JDK 17 构建/单测通过，Smart HID 页面不完整 | MAC-002、MAC-008 |
+| MAC-006 | SwiftUI iOS 发布链 | `IN_PROGRESS` | Xcode Simulator 构建通过，`make verify-apple` 失败，真机 E5 未完 | MAC-002、MAC-008 |
+| MAC-007 | AppKit macOS 发布链 | `IN_PROGRESS` | `swift build` 通过，无模块测试和正式发布 | MAC-008 |
+| MAC-008 | 共享 Core/协议/资产单源 | `IN_PROGRESS` | JS 11/11、Swift 32/32，通过；发布元数据有漂移 | MAC-001、MAC-002 |
+| MAC-009 | ESP32/STM32 硬件线 | `IN_PROGRESS` | ESP32-S3 单环境构建通过；STM32 仍是不可完整构建样板 | MAC-008 |
+| MAC-010 | macOS/Linux 桌面实现 | `IN_PROGRESS` | Mac 四线有历史 BLE 证据，Linux 主要靠 CI | WIN-002～WIN-004 写锁协调 |
+| MAC-011 | 官网、CI、发布与 Artifact 管线 | `FAILED` | 官网可构建；元数据漂移、Apple CI 和 Tauri Release 命令错误 | MAC-001～MAC-010、WIN-009 |
+| MAC-012 | 跨平台总验收与合入 main | `TODO` | 当前分支领先 main 204 提交 | MAC-002～MAC-011、WIN-010 |
+
+完成率统计：`PASS` 0 / `PASS_WITH_OBS` 0 / `IN_PROGRESS` 8 / `FAILED` 2 / `BLOCKED` 1 / `TODO` 1。
+
+## 4. 实施任务
+
+### MAC-001：确认微信目标并冻结平台范围
+
+**Files:**
+
+- Modify: `docs/product-contract/05_PLATFORM_MATRIX.md`
+- Modify: `docs/specs/10_platform/PLATFORM_EXTENSION.md`
+- Modify: `docs/specs/11_ecosystem/PLATFORM_CAPABILITY_MATRIX_v1.0.md`
+- Modify: `docs/public/release/latest.json` only through generator
+
+**Decision:**
+
+- 路线 A：保留微信小程序。恢复 `dev:mp-weixin` / `build:mp-weixin`、微信 Peripheral 模块和对应测试。
+- 路线 B：正式退役微信运行目标。删除活跃测试/构建/发布声明，仅保留历史文档和二维码传播入口的明确说明。
+
+**Steps:**
+
+1. 由用户选择 A 或 B；未确认前状态保持 `BLOCKED`。
+2. 搜索 `wechat / 微信 / mp-weixin / wx-peripheral` 的所有活跃引用并生成影响清单。
+3. 在产品矩阵和发布状态中一次性写明最终范围。
+4. 给 Windows 计划发送结论，使 WIN-002 能更新桌面元数据断言。
+
+**Acceptance:** 代码、测试、README、官网、元数据对微信只有一种有效解释。
+
+### MAC-002：恢复根级验证和元数据门禁
+
+**Files:**
+
+- Modify: `tests/unit/scan-permission.test.mjs`
+- Modify: `tests/target/integration/permission-flow-target.test.mjs`
+- Modify according to MAC-001: `tests/target/integration/peripheral-owner-target.test.mjs`
+- Modify: `scripts/generate-release-metadata.mjs`
+- Modify: `release/release-state.json`
+- Regenerate: `release/release-manifest.json`
+- Regenerate: `docs/public/release/latest.json`
+- Regenerate: `apps/ios/Sources/Resources/Release/release-manifest.json`
+- Modify: `Makefile`
+
+**Steps:**
+
+1. 为权限服务增加可注入平台面，先让测试证明当前 `uni is not defined`。
+2. 修正权限测试夹具，保持真实 UniApp 运行时调用路径不被 mock 替代。
+3. 根据 MAC-001 恢复或移除微信 Peripheral 集成目标。
+4. 从 `release-state.json` 单向生成全部平台元数据，禁止手改生成物。
+5. 将 Android 验证固定到 JDK 17/21；默认 JDK 25 时给出明确错误。
+6. 将 Apple 根级验证改成共享 Core `swift test` + iOS Xcode build/test + 原生 macOS build。
+7. 依次运行：
+
+```bash
+make verify
+node --test tests/desktop/*.test.mjs
+node scripts/generate-release-metadata.mjs --check
+node scripts/verify-target.mjs --mode=all --format=json
+```
+
+**Acceptance:** 根级门禁 0 失败；目标套件保持系统 0 fail、Harness 0 fail、Current 0 fail。
+
+### MAC-003：UniApp 运行目标收口
+
+**Files:**
+
+- Modify: `apps/uniapp/package.json`
+- Modify: `apps/uniapp/README.md`
+- Modify: `apps/uniapp/ARCHITECTURE.md`
+- Modify: `apps/uniapp/services/scan-permission.js`
+- Modify as decided: `apps/uniapp/services/wx-peripheral-*.js`
+- Modify: `apps/uniapp/services/ota/package-validator.js`
+
+**Steps:**
+
+1. 将架构文档从 Vue 2 修正为实际 Vue 3，构建命令与 package scripts 完全一致。
+2. H5 继续明确为 BLE 降级/页面预览，不伪装真实 BLE 成功。
+3. 处理 H5 构建对 `node:crypto` 的外置：浏览器路径使用 Web Crypto，Node 路径保留兼容实现。
+4. 按 MAC-001 完成微信构建恢复或退役清理。
+5. 跑 UniApp 单测、SFC parse、H5 build、页面 Playwright；若保留微信，再跑小程序构建和真机门禁。
+
+**Acceptance:** UniApp 所有活跃目标都有真实构建命令、0 测试失败和明确能力降级。
+
+### MAC-004：形成 Flutter 多端候选版
+
+**Files:**
+
+- Modify as needed: `apps/flutter/lib/**`
+- Modify as needed: `apps/flutter/test/**`
+- Modify as needed: `apps/flutter/integration_test/**`
+- Review: `apps/flutter/pubspec.yaml`
+
+**Steps:**
+
+1. 保持现有 122 项测试为不可回退基线。
+2. 用测试锁定九个活动页面、Smart HID、OTA、日志脱敏、重连和平台状态词。
+3. 评估已停止维护的 `flutter_platform_widgets`；无必要不做大版本升级。
+4. 分别构建 Android、iOS Simulator、macOS；Web/Linux 只声明真实插件支持范围。
+5. 在物理 Android/iPhone/Mac 上按平台能力完成 E5；无硬件时保持 BLOCKED。
+6. 生成候选 Artifact，但在总发布门禁前保持 Preview。
+
+**Acceptance:** analyze 0、全部单测/集成测试通过，三个主要目标能构建，真机证据与状态声明一致。
+
+### MAC-005：补齐 Kotlin Android 原生产品页面
+
+**Files:**
+
+- Create: `apps/android/app/src/main/java/com/smartble/ui/screen/ProvisioningScreen.kt`
+- Create: `apps/android/app/src/main/java/com/smartble/ui/screen/HidDeviceDetailScreen.kt`
+- Create: `apps/android/app/src/main/java/com/smartble/ui/screen/HidDiagnosticsScreen.kt`
+- Modify: `apps/android/app/src/main/java/com/smartble/ui/MainActivity.kt`
+- Modify: `apps/android/app/src/main/java/com/smartble/ui/components/DeviceCard.kt`
+- Test: `apps/android/app/src/test/java/com/smartble/core/profile/**`
+
+**Steps:**
+
+1. 先写 P002/P003/P005 路由、状态、恢复动作和零持久化失败测试。
+2. 复用已有 `HidProvisionController` 与 `HidProvisionTransport`，不再创建第二套协议实现。
+3. 扫描卡提供 Smart HID 与高级 GATT 双入口；已连接页按 Profile 分流。
+4. 接通二维码/手动粘贴、断线恢复、诊断和敏感字段清理。
+5. 使用 JDK 17/21 执行 `./gradlew assembleDebug testDebugUnitTest`。
+6. Mac 可用 Android 设备时真机测试；否则只把安装代跑请求交给 Windows，不转移代码所有权。
+
+**Acceptance:** Android 原生九页可达，Smart HID 不再只有 Core 而没有 UI，构建和测试全绿。
+
+### MAC-006：修复并完成 SwiftUI iOS 发布链
+
+**Files:**
+
+- Modify: `apps/ios/Sources/Views/ScanView.swift`
+- Modify: `apps/ios/Package.swift`
+- Modify: `apps/ios/project.yml`
+- Modify: `apps/ios/Tests/**`
+- Modify: `Makefile`
+
+**Steps:**
+
+1. 将 `UIPasteboard` 等 UIKit API用 `canImport(UIKit)` 或平台适配器隔离，避免 SwiftPM macOS 编译失败。
+2. 明确 `SmartBLE.xcodeproj` 是 iOS 发布入口，Swift Package 只承担可兼容的开发验证。
+3. 跑 Xcode iOS Simulator build、单测和 XCUITest，保持既有页面与无障碍用例通过。
+4. 在物理 iPhone 验证蓝牙权限、扫描、连接、GATT、Peripheral、Smart HID 和 OTA。
+5. 完成签名、Archive、导出和安装；凭据不入库。
+
+**Acceptance:** 根级 Apple 门禁通过，Simulator 与真机各有证据，Archive 可导出。
+
+### MAC-007：完成原生 macOS AppKit 发布链
+
+**Files:**
+
+- Modify: `apps/desktop/macos/SmartBLE-mac/Package.swift`
+- Modify as needed: `apps/desktop/macos/SmartBLE-mac/Sources/**`
+- Create: `apps/desktop/macos/SmartBLE-mac/Tests/SmartBLEMacTests/**`
+- Modify: `scripts/macos/verify-native-macos.sh`
+
+**Steps:**
+
+1. 给原生 macOS 模块增加纯逻辑与页面契约测试 Target。
+2. 保持扫描、GATT、广播、重连、Smart HID 和 OTA 的真实 BLE 基线。
+3. 复验历史 OTA 已知项，确保固件更新后不再沿用旧失败结论。
+4. 构建 `.app`，检查 Info.plist、Entitlements、蓝牙/相机用途说明。
+5. 完成 ad-hoc Preview；正式公证等待 Apple 账号条件。
+
+**Acceptance:** `swift build/test` 全绿，真实 Mac BLE 通过，打包应用可在干净用户环境启动。
+
+### MAC-008：锁定共享 Core、协议与资产单源
+
+**Files:**
+
+- Modify as needed: `core/ble-core/**`
+- Modify as needed: `core/protocols/**`
+- Modify as needed: `core/apple/SmartHidCore/**`
+- Modify as needed: `core/assets-generator/**`
+- Modify: `scripts/check-platform-parity.mjs`
+
+**Steps:**
+
+1. 保持 JS Core 11/11、Apple Core 32/32 为最低基线。
+2. 扩展跨语言向量，覆盖 UUID、QR、framing、状态、错误恢复、OTA manifest 和日志脱敏。
+3. 所有生成资产使用 `--check` 模式检测漂移；禁止端内手改生成物。
+4. 核对 JavaScript、Dart、Kotlin、Swift、桌面 bundle 的协议值。
+5. 运行 `check-platform-parity`、Smart HID contract 和资产/token/icon 门禁。
+
+**Acceptance:** 所有消费者与共享向量一致，无生成物漂移，无敏感信息进入日志。
+
+### MAC-009：ESP32 完整环境与 STM32 边界
+
+**Files:**
+
+- Modify as needed: `hardware/esp32/LightBLE/**`
+- Modify as needed: `hardware/stm32/BlePeripheralMock/**`
+- Modify: `hardware/README.md`
+- Modify: `docs/product-contract/06_ESP32_REFERENCE.md`
+
+**Steps:**
+
+1. 执行默认 `pio run`，覆盖 Peripheral 与 Observer，而不只单个 S3 环境。
+2. 单独构建 `fixture_peripheral_s3`、`fixture_observer_s3`、`fixture_shid_sim_s3` 和 OTA CDC 目标。
+3. 记录每个固件的 SHA、RAM/Flash、启动 JSON 和烧录步骤。
+4. 修正文档中“ESP-IDF”与实际 PlatformIO + Arduino 的冲突。
+5. 对 STM32 做二选一：补齐 `.ioc`、链接脚本、HAL/启动代码并真实构建；或正式降级为协议样板，删除“可直接构建”的声明。
+
+**Acceptance:** ESP32 全环境构建全绿；STM32 有诚实且可验证的状态，不再以缺文件工程冒充完成实现。
+
+### MAC-010：Electron/Tauri 的 macOS 与 Linux 目标
+
+**Files:**
+
+- Modify with Windows lock coordination: `apps/desktop/electron/**`
+- Modify with Windows lock coordination: `apps/desktop/tauri/**`
+- Evidence: `verification/mac-plan-v1/<date>-MAC-010/`
+
+**Steps:**
+
+1. 等 Windows 对共享目录解除写锁后再拉取最新提交。
+2. Electron macOS 构建 DMG/ZIP，Tauri macOS 构建 App/DMG，验证蓝牙权限声明。
+3. 在 Mac 上复验扫描、连接、服务发现和平台正确降级；不得以 Windows 证据代替 Mac。
+4. Linux 使用 GitHub Actions 或受控 VM 构建 AppImage/deb/rpm，并验证 BlueZ 依赖说明。
+5. 共享 UI/协议修复必须回跑 WIN-002 桌面测试，避免破坏 Windows。
+
+**Acceptance:** macOS 两线构建与基本真实 BLE 通过；Linux 至少完成 CI 构建和能力限制说明。
+
+### MAC-011：修复官网、CI、发布与 Artifact 管线
+
+**Files:**
+
+- Modify: `.github/workflows/ci.yml`
+- Modify: `.github/workflows/release-build.yml`
+- Modify: `release/release-state.json`
+- Modify: `scripts/generate-release-metadata.mjs`
+- Modify: `docs/package.json`
+- Modify as needed: `docs/.vitepress/**`
+
+**Steps:**
+
+1. CI push 分支加入 `refactor/uniapp-v1`，或明确所有改动必须经 PR 后由 required checks 阻断。
+2. Apple CI 不再使用当前失败的裸 `swift build`；改为共享 Core test、iOS Xcode build/test、原生 macOS build。
+3. Android CI 固定 JDK 21；UniApp CI运行完整 `verify-uniapp.sh` 而不是不完整子集。
+4. Tauri Release 改用 Cargo/Tauri CLI，删除不存在的 `npm run tauri build`。
+5. 发布 Artifact 与实际主线一致，消费 WIN-009 的 Windows 产物并加入 Android/iOS/macOS/固件目标。
+6. 所有 Artifact 写入版本、commit、SHA256、平台和验证状态；未验证产物只能 Preview。
+7. 执行 VitePress build、链接检查、公开声明测试和 release metadata `--check`。
+
+**Acceptance:** CI/Release 从干净 clone 可运行；官网状态、元数据和实际 Artifact 一致。
+
+### MAC-012：跨平台总验收、合入 main 与正式进度归档
+
+**Files:**
+
+- Update: `docs/plans/2026-09-14-mac-host-implementation-plan.md`
+- Consume: `verification/windows-plan-v1/FINAL-REPORT.md`
+- Create: `verification/mac-plan-v1/FINAL-REPORT.md`
+- Modify: `docs/specs/09_test/**`
+- Modify: `docs/current-state/**`
+
+**Steps:**
+
+1. 吸收 WIN-010，不复述或伪造 Windows 结果。
+2. 运行根级统一验证、目标套件、所有平台构建和页面测试。
+3. 按平台回填功能、页面、真机、Artifact、已知限制和证据链接。
+4. 清理 `refactor/uniapp-v1` 相对 `main` 的文档冲突、生成产物和无意提交的构建目录。
+5. 生成候选 Release，并完成干净安装与回滚演练。
+6. 只有所有必需项 `PASS/PASS_WITH_OBS` 且用户批准后，才合入 `main` 并发布 Tag。
+
+**Acceptance:** 两份计划全部结论化；主矩阵、当前状态、官网与 Release 一致；main 合入可审计、可回滚。
+
+## 5. 每次进度回填模板
+
+```markdown
+### YYYY-MM-DD · MAC-xxx
+
+- Status: PASS | PASS_WITH_OBS | FAILED | BLOCKED
+- Commit: <sha>
+- Host: <macOS / Xcode / toolchain>
+- Commands: <exact commands>
+- Result: <pass/fail counts and artifact>
+- Hardware: <device / firmware sha or N/A>
+- Evidence: verification/mac-plan-v1/<run>/
+- Public status impact: <metadata/docs update or none>
+- Observations: <remaining issue or none>
+- Next: <next task id>
+```
+
+## 6. 跨主机同步协议
+
+1. 任一主机开始任务前先拉取两个远端并确认同 SHA。
+2. Windows 默认持有 Electron/Tauri/Avalonia 与 `tests/desktop` 写锁；Mac 默认持有其余目录。
+3. 共享目录同一时间只能有一个活动任务；交接时必须先提交、推送、通知对方 pull。
+4. GitHub 与 Gitee 同时推送；一个远端失败时必须在计划中登记精确差距。
+5. 不把未提交工作目录直接复制到另一台机器作为交接方式。
+6. 每个任务一个或少量聚焦提交，提交信息使用 Conventional Commits。
+
+## 7. 全产品完成定义
+
+只有同时满足以下条件，Mac 计划才能将项目标记完成：
+
+- MAC-001 的平台范围已经由用户确认并贯穿代码、测试、文档和官网。
+- `make verify`、桌面测试、目标套件和元数据检查全部 0 失败。
+- UniApp、Flutter、Android 原生、iOS、原生 macOS、桌面和固件都有诚实的构建/验证状态。
+- Windows 最终报告已吸收，Windows 矩阵无悬空项。
+- 需要真实 BLE 的发布能力有真机/夹具证据；模拟器不能代替 E5。
+- Artifact、SHA256、版本、commit、公开状态完全一致。
+- 当前分支可以安全合入 main，并具备回滚路径。
