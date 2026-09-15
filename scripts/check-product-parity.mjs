@@ -217,8 +217,12 @@ function runKotlinLane() {
 
 // ---------------------------------------------------------------------------
 // Swift 线：swift test（SmartHidCore）——ProductContractVectorTests 消费镜像用例
+// 非 Darwin（Linux CI 预装 swift 但缺 CryptoKit 等 Apple 框架）在册 BLOCKED，与平台 parity 口径一致
 // ---------------------------------------------------------------------------
 function runSwiftLane() {
+  if (process.platform !== 'darwin') {
+    return { status: 'BLOCKED', detail: 'SmartHidCore 为 Apple 平台共享核（CryptoKit），非 Darwin 在册 BLOCKED；Mac Gate 必须执行', pass: 0, failures: [] };
+  }
   const probe = spawnSync('swift', ['--version'], { encoding: 'utf8', shell: process.platform === 'win32' });
   if (probe.error || probe.status !== 0) {
     return { status: 'BLOCKED', detail: 'swift 工具链不可用', pass: 0, failures: [] };
