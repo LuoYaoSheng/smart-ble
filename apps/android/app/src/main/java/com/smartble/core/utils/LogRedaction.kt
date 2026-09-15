@@ -131,6 +131,9 @@ object LogRedaction {
             for (i in 0 until value.length()) out.put(sanitizeJsonValue(value.get(i)))
             out
         }
+        // MAC-008 向量抓到的镜像缺口：容器内的字符串元素也要走模式脱敏
+        // （JS 正典 sanitizeLogValue 对 string 一律 sanitizeLogString）。
+        is String -> sanitizeLogString(value) ?: value
         null, JSONObject.NULL -> JSONObject.NULL
         else -> value
     }

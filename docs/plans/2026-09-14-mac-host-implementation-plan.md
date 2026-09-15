@@ -66,13 +66,13 @@ Mac 不直接宣称 Windows 完成；只消费 Windows 计划的可复现证据�
 | MAC-005 | Kotlin Android 原生页面对齐 | `PASS_WITH_OBS` | 九页可达（新增 P002/P003/P005 三屏+双入口+分流+15 测试）；assembleDebug + 75/75 单测；E5 真机 BLOCKED（证据 20260914-MAC-005） | MAC-002、MAC-008 |
 | MAC-006 | SwiftUI iOS 发布链 | `PASS_WITH_OBS` | UIPasteboard 门控修复（SwiftPM macOS 编译过）；Simulator test 全过；Archive+真机安装+启动全成（iPhone 11 Pro）；App Store 导出凭据红线 NOT_RUN（证据 20260914-MAC-006） | MAC-002、MAC-008 |
 | MAC-007 | AppKit macOS 发布链 | `PASS_WITH_OBS` | 新增 SmartBLEMacTests 7/7；深度验证 40 行 EXIT=0（真实 BLE/快照/bundle/沙盒/soak）；修复分发 bundle 资源缺失崩溃；OTA 契约分歧 R-1/R-2 待用户裁决（证据 20260914-MAC-007） | MAC-008 |
-| MAC-008 | 共享 Core/协议/资产单源 | `PASS_WITH_OBS` | JS 11/11、Swift 32/32、parity 四线（js71/dart59豁免/kotlin71/swift32）、资产 8/8 in-sync、contract lock、桌面 bundle 9/9 全绿；OTA/脱敏向量扩展未做（证据 20260914-MAC-008） | MAC-001、MAC-002 |
+| MAC-008 | 共享 Core/协议/资产单源 | `PASS` | 基线全绿 + 第二轮向量扩展落地：ble-product-v1 向量（脱敏 14×3 语言 + OTA 交集 13×2 语言）四线 parity 全 PASS；抓修 Kotlin F026 镜像缺口；登记 D-SEMVER-1/2 分歧（证据 20260914-MAC-008 追加节） | MAC-001、MAC-002 |
 | MAC-009 | ESP32/STM32 硬件线 | `PASS_WITH_OBS` | ESP32 五环境全绿（默认双环境+S3 三环境，SHA/RAM/Flash 落证据）；ESP-IDF 口径冲突修正；STM32 正式降级协议样板（横幅+文档改口）；真机烧录/E5 待用户 BOOT+RST（在册） | MAC-008 |
 | MAC-010 | macOS/Linux 桌面实现 | `PASS_WITH_OBS` | Electron DMG/ZIP + Tauri App/DMG 当日构建全成且蓝牙声明齐备（零共享源码改动）；macOS 真 BLE 面由 MAC-007 原生线 + 2026-09-12 Electron 历史证据覆盖；Linux 归 MAC-011 CI | WIN-002～WIN-004 写锁协调 |
 | MAC-011 | 官网、CI、发布与 Artifact 管线 | `PASS_WITH_OBS` | CI 五线重写（分支/Apple 三步/JDK21/UniApp 全量/Tauri Linux bundle）；Release 改候选产物不自动发布；官网 SSR 崩溃修复（status 页死键）；元数据/限制同步；pages 脚本改 Playwright（证据 20260914-MAC-011） | MAC-001～MAC-010、WIN-009 |
 | MAC-012 | 跨平台总验收与合入 main | `IN_PROGRESS` | 终验全绿（make verify/目标套件/desktop/metadata/官网）；FINAL-REPORT 已出；合入 main 待用户批准；WIN-010 Windows 报告吸收待 Windows 线回传 | MAC-002～MAC-011、WIN-010 |
 
-完成率统计：`PASS` 2 / `PASS_WITH_OBS` 10 / `IN_PROGRESS` 1（MAC-012）/ `FAILED` 0 / `BLOCKED` 0 / `TODO` 0。
+完成率统计：`PASS` 3 / `PASS_WITH_OBS` 9 / `IN_PROGRESS` 1（MAC-012）/ `FAILED` 0 / `BLOCKED` 0 / `TODO` 0。
 
 ### 2026-09-14 · MAC-012（阶段一：终验与归档）
 
