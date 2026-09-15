@@ -8,14 +8,15 @@ import { fileURLToPath } from 'node:url'
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const uniappRoot = join(root, 'apps/uniapp')
 
-// Locate HBuilderX's bundled @vue/compiler-sfc across hosts:
+// Locate @vue/compiler-sfc across hosts:
 // 1. UNIAPP_COMPILER_SFC_PATH env (exact package path)
-// 2. HBUILDERX_CLI env -> derive the install root
-// 3. Common install roots per OS (macOS /Applications, Windows D:\ or Program Files)
+// 2. Repo-locked apps/uniapp/node_modules（CI/Linux 无 HBuilderX；与构建同源的编译器）
+// 3. HBUILDERX_CLI env -> derive the install root
+// 4. Common install roots per OS (macOS /Applications, Windows D:\ or Program Files)
 async function resolveCompilerPath() {
   if (process.env.UNIAPP_COMPILER_SFC_PATH) return process.env.UNIAPP_COMPILER_SFC_PATH
   const relativeCompiler = 'plugins/uniapp-cli-vite/node_modules/@vue/compiler-sfc'
-  const candidates = []
+  const candidates = [join(uniappRoot, 'node_modules', '@vue', 'compiler-sfc')]
   if (process.env.HBUILDERX_CLI) candidates.push(resolve(dirname(process.env.HBUILDERX_CLI), relativeCompiler))
   if (process.platform === 'win32') {
     candidates.push('D:/HBuilderX', 'C:/Program Files/HBuilderX', 'C:/HBuilderX')
