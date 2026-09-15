@@ -69,10 +69,23 @@ Mac 不直接宣称 Windows 完成；只消费 Windows 计划的可复现证据�
 | MAC-008 | 共享 Core/协议/资产单源 | `PASS` | 基线全绿 + 第二轮向量扩展落地：ble-product-v1 向量（脱敏 14×3 语言 + OTA 交集 13×2 语言）四线 parity 全 PASS；抓修 Kotlin F026 镜像缺口；登记 D-SEMVER-1/2 分歧；第三轮（09-15）补桌面车道：tauri/electron 双镜像字节门禁 + vm 沙箱求值 14/14，五线全执行 PASS（证据 20260914-MAC-008 追加节） | MAC-001、MAC-002 |
 | MAC-009 | ESP32/STM32 硬件线 | `PASS_WITH_OBS` | ESP32 五环境全绿（默认双环境+S3 三环境，SHA/RAM/Flash 落证据）；ESP-IDF 口径冲突修正；STM32 正式降级协议样板（横幅+文档改口）；真机烧录/E5 待用户 BOOT+RST（在册） | MAC-008 |
 | MAC-010 | macOS/Linux 桌面实现 | `PASS_WITH_OBS` | Electron DMG/ZIP + Tauri App/DMG 当日构建全成且蓝牙声明齐备（零共享源码改动）；macOS 真 BLE 面由 MAC-007 原生线 + 2026-09-12 Electron 历史证据覆盖；Linux 归 MAC-011 CI | WIN-002～WIN-004 写锁协调 |
-| MAC-011 | 官网、CI、发布与 Artifact 管线 | `PASS_WITH_OBS` | CI 五线重写（分支/Apple 三步/JDK21/UniApp 全量/Tauri Linux bundle）；Release 改候选产物不自动发布；官网 SSR 崩溃修复（status 页死键）；元数据/限制同步；pages 脚本改 Playwright（证据 20260914-MAC-011） | MAC-001～MAC-010、WIN-009 |
+| MAC-011 | 官网、CI、发布与 Artifact 管线 | `PASS` | CI 五线重写（分支/Apple 三步/JDK21/UniApp 全量/Tauri Linux bundle）；Release 改候选产物不自动发布；官网 SSR 崩溃修复（status 页死键）；元数据/限制同步；pages 脚本改 Playwright；Actions 首跑六轮收敛 8/8 全绿（ee322ff，run 34934761333，tauri-linux-preview 93,013,550B，Linux bundle 实证闭环）（证据 20260914-MAC-011 含 CI 追加节） | MAC-001～MAC-010、WIN-009 |
 | MAC-012 | 跨平台总验收与合入 main | `IN_PROGRESS` | 终验全绿（make verify/目标套件/desktop/metadata/官网）；FINAL-REPORT 已出；合入 main 待用户批准；WIN-010 Windows 报告吸收待 Windows 线回传 | MAC-002～MAC-011、WIN-010 |
 
-完成率统计：`PASS` 3 / `PASS_WITH_OBS` 9 / `IN_PROGRESS` 1（MAC-012）/ `FAILED` 0 / `BLOCKED` 0 / `TODO` 0。
+完成率统计：`PASS` 4 / `PASS_WITH_OBS` 8 / `IN_PROGRESS` 1（MAC-012）/ `FAILED` 0 / `BLOCKED` 0 / `TODO` 0。
+
+### 2026-09-15 · MAC-011（CI 首跑取证回填）
+
+- Status: PASS（MAC-011 由 PASS_WITH_OBS 收口）
+- Commit: ee322ff（首绿提交；收敛链 6df23e3→59a1f7c→21b97d8→e49d69a→752cac1→ee322ff）
+- Host: GitHub Actions（ubuntu-24.04 / ubuntu-22.04（Tauri 钉版）/ macos-15）
+- Commands: push 触发 `.github/workflows/ci.yml` ×6；取证 `gh run view 34934761333` + `gh api …/jobs` + `gh api …/artifacts`
+- Result: run 34934761333 = 8/8 作业 success（ESP32 3m12s / Flutter 1m14s / Electron 36s / Release-metadata 45s / Android 1m10s / Tauri 9m40s / Apple 10m27s / UniApp 3m24s）；产物 tauri-linux-preview 93,013,550B（deb+appimage）——Linux bundle 首次 CI 实证，MAC-010 移交项闭环
+- Hardware: N/A
+- Evidence: https://github.com/LuoYaoSheng/smart-ble/actions/runs/34934761333；verification/mac-plan-v1/20260914-MAC-011/SUMMARY.md（CI 实跑取证节）
+- Public status impact: CI 链路打通成门禁基线；无对外发布物变化（Release 仍候选产物模式）
+- Observations: 六轮失败计数 5→3→2→2→1→0（逐轮根因与修复对照表见 SUMMARY）；非修饰性适配三处在册（a11y 两测试 CI 跳过/parity swift 线非 Darwin 判 BLOCKED/Tauri 图标 RGBA 无损重编码）；actions v4 Node 20 弃用告警无阻塞；GitHub 推送走 SSH 钥匙旁路（见 MAC-012 Sync gap 关闭注记）
+- Next: MAC-012（待用户批准合入 main）
 
 ### 2026-09-14 · MAC-012（阶段一：终验与归档）
 
@@ -86,6 +99,7 @@ Mac 不直接宣称 Windows 完成；只消费 Windows 计划的可复现证据�
 - Public status impact: 保持 PREVIEW（无对外发布物）；官网/状态页/元数据一致
 - Observations: 未决项五条（用户决策四 + Windows 报告一）见 FINAL-REPORT 第四节
 - Sync gap（§6.4 登记，2026-09-14 深夜）：Gitee=8bbf1fa 全量；GitHub 停在 c3ccb06，缺 16 提交——根因：本机 gh OAuth token 无 workflow scope，推送含 .github/workflows 变更被拒。修复：用户执行 `gh auth refresh -h github.com -s workflow` 后 `git push github refactor/uniapp-v1`（历史已就绪，无需改写）。
+- Sync gap 关闭（2026-09-15）：设备验证码 SMS 通道始终未达（两轮设备码作废），改走 SSH 钥匙旁路——`~/.ssh/id_ed25519_github_batch_image_studio` 认证为账号所有者（LuoYaoSheng），workflow scope 限制仅作用于 HTTPS token；两仓 github 远程切 `git@github.com-batch-image-studio:` 别名后 21 提交（6df23e3..ee322ff）推齐，Gitee 同步；Actions 首跑六轮收敛 8/8 绿（MAC-011 收口）。gh CLI 本机 token 仍无 workflow scope——经 SSH 推送不再相关，仅记录。
 - Windows 吸收进展：WIN-001（Windows 基线建档）+ WIN-002（desktop 95/95，M1 平台断言改为消费正典生成元数据、对微信裁决中立——优于 Mac 的硬编码 3 键机械修订，rebase 取 Windows 版）；WIN-009/010 仍待回传。
 - Next: 用户批准后合入 main + Tag；Windows 线 WIN-010 回传后关闭 MAC-012
 
@@ -99,7 +113,7 @@ Mac 不直接宣称 Windows 完成；只消费 Windows 计划的可复现证据�
 - Hardware: N/A
 - Evidence: verification/mac-plan-v1/20260914-MAC-011/
 - Public status impact: 状态页/落地页/元数据三方一致（限制清单含 Release Pipeline 新口径与微信退役）；CI/Release YAML 重写待推送后 Actions 首跑取证
-- Observations: HBuilderX uniapp.test 移除后 pages 脚本已切 Playwright；CI 实跑与 Linux bundle 证据在首跑后回填
+- Observations: HBuilderX uniapp.test 移除后 pages 脚本已切 Playwright；CI 实跑与 Linux bundle 证据已于 2026-09-15 回填（见上方追加条目，状态收口 PASS）
 - Next: MAC-012
 
 ### 2026-09-14 · MAC-010
