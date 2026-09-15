@@ -268,9 +268,13 @@ function runKotlinLane() {
 }
 
 // ---------------------------------------------------------------------------
-// Swift 线：Mac 执行共享 SmartHidCore XCTest；Windows 无 Swift 时如实 BLOCKED
+// Swift 线：Mac 执行共享 SmartHidCore XCTest；非 Darwin（Windows/Linux CI）如实 BLOCKED
+// （ubuntu runner 预装 swift，但 SmartHidCore 依赖 CryptoKit 等 Apple 独有框架，非 Darwin 不可能编译）
 // ---------------------------------------------------------------------------
 function runSwiftLane() {
+  if (process.platform !== 'darwin') {
+    return { status: 'BLOCKED', detail: 'SmartHidCore 为 Apple 平台共享核（CryptoKit），非 Darwin 在册 BLOCKED；Mac Gate 必须执行', pass: 0, failures: [] };
+  }
   const swiftProbe = spawnSync('swift', ['--version'], { encoding: 'utf8', shell: process.platform === 'win32' });
   if (swiftProbe.error || swiftProbe.status !== 0) {
     return { status: 'BLOCKED', detail: 'swift 工具链不可用（Windows 阶段允许，Mac Gate 必须执行）', pass: 0, failures: [] };

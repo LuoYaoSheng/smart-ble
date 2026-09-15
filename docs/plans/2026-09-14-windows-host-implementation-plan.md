@@ -302,6 +302,10 @@ Windows 主机不负责：
 
 **Acceptance:** 两壳 bt-chip 五态词与正典逐字一致；广播 Tab 可见性口径全产品一致；运行时截图（macOS/Windows 各一组）回填审计报告 N3/N4 状态。
 
+### 跨线协调记录（Mac 侧对写锁区的最小侵入，2026-09-15 CI 首跑解锁）
+
+- `apps/desktop/tauri/src-tauri/icons/{32x32,128x128,128x128@2x}.png`：RGB→RGBA 重编码（ImageMagick PNG32，AE=0 逐像素无损，备份与校验见 verification/mac-plan-v1/）。原因：tauri v1 Linux 打包路径的 `generate_context!` 强制 RGBA（`icon 32x32.png is not RGBA` proc-macro panic），macOS 构建走不到该检查故从未暴露。属纯格式转换、零视觉/逻辑改动；Windows 线后续打包不受影响（.ico/.icns 未动）。
+
 ### 2026-09-14 · WIN-001
 
 - Status: PASS_WITH_OBS
