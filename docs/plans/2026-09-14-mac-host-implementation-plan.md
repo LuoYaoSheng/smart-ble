@@ -80,7 +80,7 @@ Mac 不直接宣称 Windows 完成；只消费 Windows 计划的可复现证据�
 - Commit: <本次>
 - Host: macOS 全工具链
 - Commands: `make verify`；`node scripts/verify-target.mjs --mode=all`；`node --test tests/desktop/*.test.mjs`；`node scripts/generate-release-metadata.mjs --check`；`cd docs && npm run docs:build`
-- Result: 全绿（明细见 FINAL-REPORT 第二节）；分支卫生核查无误提交产物
+- Result: 全绿（明细见 FINAL-REPORT 第二节）；分支卫生核查无误提交产物；合并预检零冲突 + 干净安装/回滚演练通过（第五节）；MAC-008 二轮升 PASS（第六节）
 - Hardware: 汇总见 FINAL-REPORT 第三节
 - Evidence: verification/mac-plan-v1/FINAL-REPORT.md
 - Public status impact: 保持 PREVIEW（无对外发布物）；官网/状态页/元数据一致

@@ -51,7 +51,18 @@
 4. **Windows 侧**：WIN-002 桌面元数据断言复核（tests/desktop 平台断言 Mac 已机械更新）；WIN-009/010 Windows 报告吸收后 MAC-012 才能关闭。
 5. **Apple 正式分发**：Developer ID/公证/App Store 凭据条件。
 
-## 五、回滚路径
+## 五、合并预检与演练（2026-09-14 深夜补）
 
-- 分支 refactor/uniapp-v1 双远程同步；任一工作包提交独立可 revert（Conventional Commits）。
+- **合并预检**：`git merge-tree --write-tree main HEAD` EXIT=0；temp 分支真试合并 `git merge --no-commit main` EXIT=0、零冲突（UU=0）——分支可安全合入 main。
+- **干净安装演练**：分发 bundle 拷至 /tmp/clean-drill 经 LaunchServices `open` 启动成功（进程存活）→ 退出清理。
+- **回滚演练**：temp 分支 revert 倒数第二个工作包提交 → 权限单测仍全绿 → 丢弃演练分支（还原现场）。
+
+## 六、第二轮追加（同日深夜）
+
+- MAC-008 升 PASS：产品级跨语言向量落地（ble-product-v1-vectors：脱敏 14 例 ×3 语言、OTA 交集 13 例 ×2 语言；四线 parity 全 PASS）；向量抓修 Kotlin F026 镜像缺口；登记 D-SEMVER-1/2 分歧。
+- verify-uniapp 静态门禁 14→15（product parity）。
+
+## 七、回滚路径
+
+- 分支 refactor/uniapp-v1 双远程同步；任一工作包提交独立可 revert（Conventional Commits，回滚演练已证）。
 - 发布侧：channel=preview、artifacts=[]，无对外发布物；官网与元数据由生成器单源可重生成。
