@@ -58,3 +58,20 @@
 属 R-1/R-2 同族契约议题，本轮只向量化交集，不单方改契约。）
 
 - Status（更新）: PASS（Observations 1 已销项）
+
+---
+
+## 追加（2026-09-15 上午 · 第三轮）：桌面车道并入（desktop lane）
+
+二轮登记的「桌面 JS 线脱敏镜像未入 parity 车道」销项，详见
+[ROUND3-20260915-desktop-lane.md](ROUND3-20260915-desktop-lane.md)：
+
+- `check-product-parity.mjs` 新增 desktop 车道：**双副本字节门禁**（tauri/electron 镜像
+  字节不等即 FAIL）+ **vm 沙箱求值**（无构建脚本挂 `globalThis.SmartBLELogRedaction`），
+  只读消费 Windows 写锁区文件。
+- `ble-product-v1-vectors.json`：logRedaction.platforms += desktop；meta 登记。
+- 带 JDK17 复跑：js 27/27 · dart 14/14 · kotlin 14/14 · swift 45/45 · desktop 14/14
+  ——**五线全执行全 PASS**；verify-uniapp 26+15 门禁全绿。
+
+- Status（维持）: PASS
+

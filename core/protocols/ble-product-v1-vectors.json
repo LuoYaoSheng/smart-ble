@@ -5,46 +5,181 @@
   "note": "expect 为对象时是【已登记分歧】（per-platform 期望），不算失败但必须在 DIVERGENCE-REGISTER 登记，未经用户/契约裁决不得改写任一实现",
   "suites": {
     "logRedaction": {
-      "platforms": ["js", "dart", "kotlin"],
+      "platforms": [
+        "js",
+        "dart",
+        "kotlin",
+        "desktop"
+      ],
       "cases": [
-        { "id": "plain_passthrough", "input": "扫描完成 · 发现 3 台", "expect": "扫描完成 · 发现 3 台" },
-        { "id": "kv_token", "input": "token=0123456789abcdef", "expect": "token=***" },
-        { "id": "kv_password_colon", "input": "password: hunter2", "expect": "password:***" },
-        { "id": "json_password_protected_deviceid", "input": "{\"password\":\"secret\",\"deviceId\":\"HID-1\"}", "expect": "{\"password\":\"***\",\"deviceId\":\"HID-1\"}" },
-        { "id": "bearer_header", "input": "Authorization: Bearer abc.def.ghi-jwt", "expect": "authorization: Bearer *** ***" },
-        { "id": "json_nested_token_protected_firmware", "input": "{\"wifi\":{\"token\":\"abc\"},\"firmwareVersion\":\"1.0.0\"}", "expect": "{\"wifi\":{\"token\":\"***\"},\"firmwareVersion\":\"1.0.0\"}" },
-        { "id": "qrtoken_string_pattern_not_covered", "input": "qrtoken=XYZ9", "expect": "qrtoken=XYZ9" },
-        { "id": "json_protected_serviceuuid", "input": "{\"serviceUuid\":\"ffe0\"}", "expect": "{\"serviceUuid\":\"ffe0\"}" },
-        { "id": "sha256_kv_kept", "input": "sha256=0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef", "expect": "sha256=0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef" },
-        { "id": "json_apikey", "input": "{\"apiKey\":\"k-123\"}", "expect": "{\"apiKey\":\"***\"}" },
-        { "id": "cookie_kv_quirk", "input": "cookie: sessionid=1; path=/", "expect": "cookie=*** path=/" },
-        { "id": "errmsg_passthrough", "input": "connect fail errMsg=openBluetoothAdapter:fail", "expect": "connect fail errMsg=openBluetoothAdapter:fail" },
-        { "id": "json_array_elements", "input": "[\"token=abc\",\"ok\"]", "expect": "[\"token=***\",\"ok\"]" },
-        { "id": "json_chinese_values", "input": "{\"wifiSsid\":\"家\",\"wifiPassword\":\"mima\"}", "expect": "{\"wifiSsid\":\"家\",\"wifiPassword\":\"***\"}" }
+        {
+          "id": "plain_passthrough",
+          "input": "扫描完成 · 发现 3 台",
+          "expect": "扫描完成 · 发现 3 台"
+        },
+        {
+          "id": "kv_token",
+          "input": "token=0123456789abcdef",
+          "expect": "token=***"
+        },
+        {
+          "id": "kv_password_colon",
+          "input": "password: hunter2",
+          "expect": "password:***"
+        },
+        {
+          "id": "json_password_protected_deviceid",
+          "input": "{\"password\":\"secret\",\"deviceId\":\"HID-1\"}",
+          "expect": "{\"password\":\"***\",\"deviceId\":\"HID-1\"}"
+        },
+        {
+          "id": "bearer_header",
+          "input": "Authorization: Bearer abc.def.ghi-jwt",
+          "expect": "authorization: Bearer *** ***"
+        },
+        {
+          "id": "json_nested_token_protected_firmware",
+          "input": "{\"wifi\":{\"token\":\"abc\"},\"firmwareVersion\":\"1.0.0\"}",
+          "expect": "{\"wifi\":{\"token\":\"***\"},\"firmwareVersion\":\"1.0.0\"}"
+        },
+        {
+          "id": "qrtoken_string_pattern_not_covered",
+          "input": "qrtoken=XYZ9",
+          "expect": "qrtoken=XYZ9"
+        },
+        {
+          "id": "json_protected_serviceuuid",
+          "input": "{\"serviceUuid\":\"ffe0\"}",
+          "expect": "{\"serviceUuid\":\"ffe0\"}"
+        },
+        {
+          "id": "sha256_kv_kept",
+          "input": "sha256=0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+          "expect": "sha256=0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+        },
+        {
+          "id": "json_apikey",
+          "input": "{\"apiKey\":\"k-123\"}",
+          "expect": "{\"apiKey\":\"***\"}"
+        },
+        {
+          "id": "cookie_kv_quirk",
+          "input": "cookie: sessionid=1; path=/",
+          "expect": "cookie=*** path=/"
+        },
+        {
+          "id": "errmsg_passthrough",
+          "input": "connect fail errMsg=openBluetoothAdapter:fail",
+          "expect": "connect fail errMsg=openBluetoothAdapter:fail"
+        },
+        {
+          "id": "json_array_elements",
+          "input": "[\"token=abc\",\"ok\"]",
+          "expect": "[\"token=***\",\"ok\"]"
+        },
+        {
+          "id": "json_chinese_values",
+          "input": "{\"wifiSsid\":\"家\",\"wifiPassword\":\"mima\"}",
+          "expect": "{\"wifiSsid\":\"家\",\"wifiPassword\":\"***\"}"
+        }
       ]
     },
     "otaTargets": {
-      "platforms": ["js", "swift"],
+      "platforms": [
+        "js",
+        "swift"
+      ],
       "cases": [
-        { "id": "target_peripheral", "value": "lightble-peripheral", "expect": true },
-        { "id": "target_observer", "value": "lightble-observer", "expect": true },
-        { "id": "target_unknown_suffix", "value": "lightble-peripheral-x", "expect": false },
-        { "id": "target_empty", "value": "", "expect": false },
-        { "id": "target_case_sensitive", "value": "LightBLE-Peripheral", "expect": false }
+        {
+          "id": "target_peripheral",
+          "value": "lightble-peripheral",
+          "expect": true
+        },
+        {
+          "id": "target_observer",
+          "value": "lightble-observer",
+          "expect": true
+        },
+        {
+          "id": "target_unknown_suffix",
+          "value": "lightble-peripheral-x",
+          "expect": false
+        },
+        {
+          "id": "target_empty",
+          "value": "",
+          "expect": false
+        },
+        {
+          "id": "target_case_sensitive",
+          "value": "LightBLE-Peripheral",
+          "expect": false
+        }
       ]
     },
     "otaSemVer": {
-      "platforms": ["js", "swift"],
+      "platforms": [
+        "js",
+        "swift"
+      ],
       "cases": [
-        { "id": "sv_release", "value": "1.0.0", "expect": true },
-        { "id": "sv_patch_zero", "value": "0.0.1", "expect": true },
-        { "id": "sv_prerelease", "value": "1.2.3-beta.1", "expect": true },
-        { "id": "sv_two_part", "value": "1.0", "expect": false },
-        { "id": "sv_v_prefix", "value": "v1.0.0", "expect": false },
-        { "id": "sv_empty_prerelease", "value": "1.0.0-", "expect": false },
-        { "id": "sv_build_meta", "value": "1.2.3+build.5", "expect": { "js": true, "swift": false }, "divergence": "build-meta：JS 完整 SemVer 接受，Swift 正则不接受（DIVERGENCE-REGISTER D-SEMVER-1）" },
-        { "id": "sv_leading_zero", "value": "01.0.0", "expect": { "js": false, "swift": true }, "divergence": "前导零：JS 严格 SemVer 拒绝，Swift \\\\d+ 接受（DIVERGENCE-REGISTER D-SEMVER-2）" }
+        {
+          "id": "sv_release",
+          "value": "1.0.0",
+          "expect": true
+        },
+        {
+          "id": "sv_patch_zero",
+          "value": "0.0.1",
+          "expect": true
+        },
+        {
+          "id": "sv_prerelease",
+          "value": "1.2.3-beta.1",
+          "expect": true
+        },
+        {
+          "id": "sv_two_part",
+          "value": "1.0",
+          "expect": false
+        },
+        {
+          "id": "sv_v_prefix",
+          "value": "v1.0.0",
+          "expect": false
+        },
+        {
+          "id": "sv_empty_prerelease",
+          "value": "1.0.0-",
+          "expect": false
+        },
+        {
+          "id": "sv_build_meta",
+          "value": "1.2.3+build.5",
+          "expect": {
+            "js": true,
+            "swift": false
+          },
+          "divergence": "build-meta：JS 完整 SemVer 接受，Swift 正则不接受（DIVERGENCE-REGISTER D-SEMVER-1）"
+        },
+        {
+          "id": "sv_leading_zero",
+          "value": "01.0.0",
+          "expect": {
+            "js": false,
+            "swift": true
+          },
+          "divergence": "前导零：JS 严格 SemVer 拒绝，Swift \\\\d+ 接受（DIVERGENCE-REGISTER D-SEMVER-2）"
+        }
       ]
     }
+  },
+  "meta": {
+    "frozenAt": "2026-09-15",
+    "note": "logRedaction.desktop = apps/desktop/tauri/src 与 apps/desktop/electron/public 的字节一致锁定镜像（无构建传统脚本，挂 globalThis.SmartBLELogRedaction），由 check-product-parity.mjs 桌面车道经 vm 沙箱求值消费；双副本字节相等本身是门禁。",
+    "divergenceRegister": [
+      "D-SEMVER-1",
+      "D-SEMVER-2"
+    ]
   }
 }

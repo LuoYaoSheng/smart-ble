@@ -2,7 +2,7 @@
 // scripts/check-product-parity.mjs — 产品级跨语言向量 parity（MAC-008 扩展）
 //
 // 单源向量：core/protocols/ble-product-v1-vectors.json
-//   logRedaction  js（uniapp 正典）/ dart（锁定镜像）/ kotlin（锁定镜像）
+//   logRedaction  js（uniapp 正典）/ dart（锁定镜像）/ kotlin（锁定镜像）/ desktop（tauri+electron 字节一致锁定镜像）
 //   otaTargets    js / swift（交集）
 //   otaSemVer     js / swift（交集；含两条已登记分歧 D-SEMVER-1/2，per-platform expect）
 // 与 canon-locked 的 smart-hid-v1-vectors.json（check-platform-parity.mjs）互不干扰。
@@ -15,12 +15,13 @@ import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import vm from 'node:vm';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const VECTORS_PATH = join(ROOT, 'core/protocols/ble-product-v1-vectors.json');
 
 const platformArg = process.argv.find((a) => a.startsWith('--platforms='));
-const platformsWanted = platformArg ? platformArg.split('=')[1].split(',') : ['js', 'dart', 'kotlin', 'swift'];
+const platformsWanted = platformArg ? platformArg.split('=')[1].split(',') : ['js', 'dart', 'kotlin', 'swift', 'desktop'];
 
 const vectors = JSON.parse(readFileSync(VECTORS_PATH, 'utf8'));
 const suites = vectors.suites;
@@ -77,6 +78,53 @@ async function runJsLane() {
     }
   }
 
+  return { status: failures.length === 0 ? 'PASS' : 'FAIL', pass, failures };
+}
+
+// ---------------------------------------------------------------------------
+// Desktop 线：tauri/electron 双镜像（无构建传统脚本，挂 globalThis.SmartBLELogRedaction）。
+// 门禁两层：① 双副本字节相等（镜像漂移即 FAIL）；② vm 沙箱求值后跑 logRedaction 向量。
+// 桌面文件位于 Windows 写锁区（apps/desktop/**），本车道只读消费、不改动。
+// ---------------------------------------------------------------------------
+const DESKTOP_MIRRORS = [
+  'apps/desktop/tauri/src/log-redaction.js',
+  'apps/desktop/electron/public/log-redaction.js',
+];
+
+function runDesktopLane() {
+  const missing = DESKTOP_MIRRORS.filter((rel) => !existsSync(join(ROOT, rel)));
+  if (missing.length) {
+    return { status: 'NOT_IMPLEMENTED', detail: `桌面镜像缺失：${missing.join('、')}`, pass: 0, failures: [] };
+  }
+  const sources = DESKTOP_MIRRORS.map((rel) => readFileSync(join(ROOT, rel), 'utf8'));
+  if (sources[0] !== sources[1]) {
+    return {
+      status: 'FAIL', pass: 0,
+      failures: [{ suite: 'desktop', case: 'mirror-drift', detail: 'tauri 与 electron 双副本字节不一致（正典要求共用同一字节）' }],
+    };
+  }
+  const sandbox = {};
+  try {
+    vm.createContext(sandbox);
+    vm.runInContext(sources[0], sandbox, { filename: DESKTOP_MIRRORS[0] });
+  } catch (err) {
+    return { status: 'BLOCKED', detail: `桌面镜像求值失败：${err.message}`, pass: 0, failures: [] };
+  }
+  const api = sandbox.SmartBLELogRedaction;
+  if (!api || typeof api.sanitizeLogString !== 'function') {
+    return { status: 'BLOCKED', detail: '桌面镜像未暴露 globalThis.SmartBLELogRedaction.sanitizeLogString', pass: 0, failures: [] };
+  }
+
+  const failures = [];
+  let pass = 0;
+  if (declared('logRedaction', 'desktop')) {
+    for (const c of suites.logRedaction.cases) {
+      const got = api.sanitizeLogString(c.input) ?? c.input;
+      const ok = got === c.expect;
+      if (ok) pass += 1;
+      else failures.push({ suite: 'logRedaction', case: c.id, detail: `input=${c.input} got=${got} expect=${c.expect}` });
+    }
+  }
   return { status: failures.length === 0 ? 'PASS' : 'FAIL', pass, failures };
 }
 
@@ -195,6 +243,7 @@ const LANES = {
   dart: { label: 'dart', run: runDartLane, async: false },
   kotlin: { label: 'kotlin', run: runKotlinLane, async: false },
   swift: { label: 'swift', run: runSwiftLane, async: false },
+  desktop: { label: 'desktop', run: runDesktopLane, async: false },
 };
 
 console.log(`产品级跨语言向量 parity（vectors core/protocols/ble-product-v1-vectors.json）`);

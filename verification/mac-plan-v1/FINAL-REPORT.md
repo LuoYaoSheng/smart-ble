@@ -15,7 +15,7 @@
 | MAC-005 | Kotlin Android 页面对齐 | PASS_WITH_OBS | 20260914-MAC-005；九页可达、75/75、双入口+分流 |
 | MAC-006 | SwiftUI iOS 发布链 | PASS_WITH_OBS | 20260914-MAC-006；Archive+真机安装+启动；SwiftPM 修复 |
 | MAC-007 | AppKit macOS 发布链 | PASS_WITH_OBS | 20260914-MAC-007；模块测试 7/7、深度 40 行 EXIT=0、分发崩溃修复 |
-| MAC-008 | 共享 Core/协议/资产单源 | PASS_WITH_OBS | 20260914-MAC-008；js71/kotlin71/dart59(声明豁免)/swift32、资产 8/8 |
+| MAC-008 | 共享 Core/协议/资产单源 | PASS | 20260914-MAC-008 + 追加节；二轮产品向量 parity（抓修 Kotlin F026、登记 D-SEMVER-1/2）；三轮桌面车道并入（09-15，五线全执行 PASS） |
 | MAC-009 | ESP32 全环境 + STM32 边界 | PASS_WITH_OBS | 20260914-MAC-009；五环境构建、STM32 协议样板裁定 |
 | MAC-010 | 桌面 macOS 目标 | PASS_WITH_OBS | 20260914-MAC-010；Electron/Tauri DMG+蓝牙声明；Linux 归 CI |
 | MAC-011 | 官网/CI/发布管线 | PASS_WITH_OBS | 20260914-MAC-011；SSR 崩溃根治、CI/Release 重写、元数据一致 |
@@ -66,3 +66,9 @@
 
 - 分支 refactor/uniapp-v1 双远程同步；任一工作包提交独立可 revert（Conventional Commits，回滚演练已证）。
 - 发布侧：channel=preview、artifacts=[]，无对外发布物；官网与元数据由生成器单源可重生成。
+
+## 八、第三轮追加（2026-09-15 上午）
+
+- MAC-008 观察项「桌面 JS 线脱敏镜像未入 parity 车道」销项：新增 desktop 车道（tauri/electron 双副本字节相等门禁 + vm 沙箱求值 `globalThis.SmartBLELogRedaction`），logRedaction 向量 14/14。
+- 带 JDK17 复跑 product parity 五线全执行全 PASS（js 27/27、dart 14/14、kotlin 14/14、swift 45/45、desktop 14/14）；verify-uniapp 26 单测文件 + 15 静态门禁全绿。
+- 同轮事务：GitHub 推送差距（OAuth 缺 workflow scope）处理中——gh 需走本地代理 7897 重试授权（用户约 12:20 完成手机验证）；Gitee 全量同步不受影响。
