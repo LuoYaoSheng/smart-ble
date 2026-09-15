@@ -86,8 +86,9 @@ Windows 主机不负责：
 | WIN-008 | Windows OTA E2E 回归 | `TODO` | 两线曾 `PASS_WITH_OBS` | WIN-006、OTA 固件 | 需复验重启后版本回读 |
 | WIN-009 | Windows 安装包与安装验证 | `TODO` | Electron/Avalonia 有历史构建 | WIN-003～WIN-008、MAC-011 | 需产出可安装 Artifact 和 SHA256 |
 | WIN-010 | Windows 最终交付与矩阵回填 | `TODO` | 历史证据分散 | WIN-001～WIN-009 | 等所有必需任务结论化 |
+| WIN-011 | 桌面壳导航一致性修复（Electron/Tauri） | `TODO` | 2026-09-15 导航审计 N3/N4 定位 | WIN-003、WIN-004 | N4 口径待用户裁决后实施 |
 
-完成率统计只按本表：`PASS` 1 / `PASS_WITH_OBS` 1 / `IN_PROGRESS` 1 / `FAILED` 0 / `BLOCKED` 1 / `TODO` 6。
+完成率统计只按本表：`PASS` 1 / `PASS_WITH_OBS` 1 / `IN_PROGRESS` 1 / `FAILED` 0 / `BLOCKED` 1 / `TODO` 7。
 
 ## 4. 实施任务
 
@@ -278,6 +279,28 @@ Windows 主机不负责：
 5. 提交最终报告，并等待 Mac 的跨平台总门禁，不自行宣布全产品发布。
 
 **Acceptance:** Windows 看板全部结论化，最终报告可独立复现，Mac 能直接据此回填跨平台矩阵。
+
+### WIN-011：桌面壳导航一致性修复（源自 2026-09-15 导航审计 N3/N4）
+
+来源：`verification/ui-nav-audit-20260915/REPORT.md`（七端静态+运行时双轮审计）。两壳均属 Windows 写锁区，Mac 侧仅登记不改码。
+
+**Files:**
+
+- Modify: `apps/desktop/electron/public/app.js`（N3 stateMap ~927-939；N4 broadcastTab ~874-877）
+- Modify: `apps/desktop/tauri/public/app.js`（N3 updateStatus ~506-520；N4 视裁决口径）
+- Create evidence: `verification/windows-plan-v1/<date>-WIN-011/`
+
+**N3（bt-chip 状态词对齐正典）：**
+
+1. Electron stateMap：`unauthorized` 的「未授权」改「蓝牙未开启」（正典词，iOS/Android/uniapp 一致；`MainActivity.kt:147` 注释即「Unauthorized 同未开启（对齐桌面壳）」）；fallback「状态未知」改「初始化中…」；补「平台不支持」灰点态。
+2. Tauri updateStatus：补「蓝牙未开启」红点态（现 poweredOff 归入「平台不支持」分支）。
+
+**N4（广播 Tab 初始可见性，两案待用户裁决）：**
+
+- 案 A（按能力显隐，Electron 现状）：`platform==='linux'` 才显示广播 Tab（bleno 仅 Linux 支持）；若采纳，Tauri/macOS 需反向对齐（macOS 侧归 Mac 改）。
+- 案 B（恒显四 Tab +「未就绪」徽章，正典 A3 形态，Tauri/macOS 现状）：广播 Tab 恒显，不支持平台进页显示「未就绪」徽章（Android 已是此口径：`MainActivity.kt` badgeText「未就绪」）；若采纳，仅改 Electron。
+
+**Acceptance:** 两壳 bt-chip 五态词与正典逐字一致；广播 Tab 可见性口径全产品一致；运行时截图（macOS/Windows 各一组）回填审计报告 N3/N4 状态。
 
 ### 2026-09-14 · WIN-001
 

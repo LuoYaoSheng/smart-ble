@@ -28,7 +28,7 @@
 
 ## 三、问题清单
 
-### N1（Android·活代码）二级页 AppSubnav 标题三处漂移
+### N1（Android·活代码）二级页 AppSubnav 标题三处漂移 ✅已修复（2026-09-15）
 对照契约 A2 标题正典（uniapp/Flutter/iOS/macOS 四端一致）：
 | 页 | Android 现值 | 正典 |
 |---|---|---|
@@ -36,9 +36,9 @@
 | P003 HID 详情 | Smart HID 设备 | **Smart HID 设备详情** |
 | P005 诊断 | Smart HID 诊断 | **SHID 诊断** |
 
-P006「GATT 调试」、P010「版本记录」✓。位置：`ProvisioningScreen.kt:88` / `HidDeviceDetailScreen.kt:64` / `HidDiagnosticsScreen.kt:78`。修复=3 行字符串，非写锁区，Mac 可改。
+P006「GATT 调试」、P010「版本记录」✓。位置：`ProvisioningScreen.kt:88` / `HidDeviceDetailScreen.kt:64` / `HidDiagnosticsScreen.kt:78`。修复=3 行字符串，非写锁区，Mac 可改。**→ 已按正典改正，见「七、修复记录」。**
 
-### N2（Android·死代码）DeviceListScreen 整条 legacy 导航路径无人调用
+### N2（Android·死代码）DeviceListScreen 整条 legacy 导航路径无人调用 ✅已修复（2026-09-15）
 `DeviceListScreen.kt:89-108`：Scaffold+Material TopAppBar（标题「BLE Toolkit+」当页面标题、`BluetoothStateIndicator` 图标式指示器 + 另一套状态词「蓝牙已开启/已关闭/不可用/未授权/状态未知」）。全仓 grep 零调用方（MainActivity 实际走 `DeviceListContent` + 正典 AppNavbar）。死代码携带非正典导航实现与状态词，有误用风险，建议删除 DeviceListScreen 与 BluetoothStateIndicator（及其未使用 import）。
 
 ### N3（Electron）bt-chip 状态词漂移
@@ -59,7 +59,7 @@ P006「GATT 调试」、P010「版本记录」✓。位置：`ProvisioningScreen
 - `COMPONENT_CONTRACT.md` A1/A2 仍保留 2 处 MP-WEIXIN 平台规则（状态栏占位+胶囊避让）——代码中已无对应实现，文档与实现脱钩；
 - `AppNavbar.vue:3` / `AppSubnav.vue:3` 的 `<view class="status-bar">` 空元素为占位残留（无高度、无样式、无 #ifdef）。
 
-建议：契约删除 MP-WEIXIN 条目（或在退役正典中标注「历史」）、组件删空元素。
+建议：契约删除 MP-WEIXIN 条目（或在退役正典中标注「历史」）、组件删空元素。**→ 已清理，见「七、修复记录」。**
 
 ### N7（备注级）Electron P009 about-navbar/about-kicker 独立类名
 `styles.css:36-45`：类名与 `.navbar/.kicker` 不同但字型/字距/色值等价（10px/+2px/primary；padding 8/2/12 属 P009 文档式页内布局）。不算漂移，仅命名不统一。
@@ -68,12 +68,12 @@ P006「GATT 调试」、P010「版本记录」✓。位置：`ProvisioningScreen
 
 | 项 | 归属 | 动作 |
 |---|---|---|
-| N1 Android 三标题 | Mac 可改 | 3 行字符串 + 既有单测复验 |
-| N2 Android 死代码 | Mac 可改 | 删 DeviceListScreen/BluetoothStateIndicator + 编译+75 单测复验 |
-| N3 Electron 状态词 | WIN 写锁区 | 登记 WIN 项（unauthorized 词、补平台不支持态；Tauri 补未开启态） |
-| N4 广播 Tab 口径 | 用户裁决 + WIN | 先裁「按能力显隐 vs 恒显+徽章」，再改双壳 |
-| N5 Apple 返回键 | Mac 可改（视觉裁决） | iOS 32→30 / macOS 34→30 需过视觉 Gate；或修契约把 30 改为「30±2 平台适配带」 |
-| N6 契约残留 | Mac 可改 | 契约删 MP-WEIXIN 条 + 组件删空元素 |
+| N1 Android 三标题 | Mac 可改 | 3 行字符串 + 既有单测复验。**✅已修复** |
+| N2 Android 死代码 | Mac 可改 | 删 DeviceListScreen/BluetoothStateIndicator + 编译+单测复验。**✅已修复** |
+| N3 Electron 状态词 | WIN 写锁区 | 登记 WIN 项（unauthorized 词、补平台不支持态；Tauri 补未开启态）。**→ 已登记 WIN-011** |
+| N4 广播 Tab 口径 | 用户裁决 + WIN | 先裁「按能力显隐 vs 恒显+徽章」，再改双壳。**→ 已登记 WIN-011（含两案），待裁决** |
+| N5 Apple 返回键 | Mac 可改（视觉裁决） | iOS 32→30 / macOS 34→30 需过视觉 Gate；或修契约把 30 改为「30±2 平台适配带」。**待用户裁决** |
+| N6 契约残留 | Mac 可改 | 契约删 MP-WEIXIN 条 + 组件删空元素。**✅已修复** |
 
 ## 五、本轮命令与证据
 
@@ -127,3 +127,28 @@ Android 二级页（P002/P003/P005/P006）运行时需真实扫描到 SHID 设�
 
 ### 本节结论
 首页与导航栏在运行时层面与静态审计结论一致：**七端骨架全对齐；唯桌面 Electron 广播 Tab 缺失（N4）与 Electron 状态词（N3）为运行时可复现差异；Apple 返回键几何（N5）属静态量测差异，运行时视觉不可辨。**
+
+## 七、修复记录（2026-09-15 10:40，用户放行「该修改修改掉」后执行）
+
+### 已修复：N1 + N2 + N6（Mac 侧，随本报告同一提交）
+
+| 项 | 文件 | 改动 |
+|---|---|---|
+| N1 | `apps/android/.../ProvisioningScreen.kt:88` | 标题「Smart HID 配网」→「配置 Smart HID」 |
+| N1 | `apps/android/.../HidDeviceDetailScreen.kt:64` | 标题「Smart HID 设备」→「Smart HID 设备详情」 |
+| N1 | `apps/android/.../HidDiagnosticsScreen.kt:78` | 标题「Smart HID 诊断」→「SHID 诊断」 |
+| N2 | `apps/android/.../DeviceListScreen.kt` | 删 `DeviceListScreen`（legacy Scaffold+TopAppBar 路径）与 `BluetoothStateIndicator`（非正典图标指示器+五状态词）两函数；连带删孤儿 import `Scaffold`/`TopAppBar`/`BluetoothState`/`theme.Success`。删前复扫：全仓（含测试集）零外部引用；`MainActivity` 实际 import 的是 `DeviceListContent`（活代码，保留） |
+| N6 | `docs/specs/07_design_system/COMPONENT_CONTRACT.md` | A1 删 MP-WEIXIN 状态栏占位+胶囊避让规则（保留 APP webview 事实并注明移除缘由）；A2 props 删「MP-WEIXIN 同 A1」 |
+| N6 | `apps/uniapp/components/ui/AppNavbar.vue:3` / `AppSubnav.vue:3` | 删空 `<view class="status-bar">`（删前全仓 grep 确认零样式/逻辑引用） |
+
+**复验**：
+- Android：`:app:compileDebugKotlin` + `:app:testDebugUnitTest` → `BUILD SUCCESSFUL`，单测 **76/76 通过 0 失败**（报告三节原记 75 为上轮计数，本轮结果文件 10:38 新鲜生成）；
+- uniapp：`npm run build:h5` → `DONE Build complete.`（EXIT=0）。
+
+### 已登记：N3 + N4 → Windows 计划 WIN-011（写锁区，Mac 不动代码）
+
+- N3（状态词）：Electron `app.js` stateMap `unauthorized→未授权` 改「蓝牙未开启」、fallback「状态未知」改「初始化中…」、补「平台不支持」态；Tauri 补「蓝牙未开启」红点态；
+- N4（广播 Tab）：两案待用户裁决——A 按能力显隐（Electron 现状）/ B 恒显四 Tab+「未就绪」徽章（正典 A3 与 Tauri/macOS 现状）。
+
+### 仍待用户裁决：N5（Apple 返回键 30 vs 32/34，改码需过视觉 Gate 或改契约立「30±2 适配带」）
+

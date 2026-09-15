@@ -75,7 +75,7 @@ fun HidDiagnosticsScreen(
     }
 
     Column(modifier = Modifier.fillMaxSize().background(com.smartble.ui.theme.cBg)) {
-        AppSubnav(title = "Smart HID 诊断", onBack = onBack)
+        AppSubnav(title = "SHID 诊断", onBack = onBack)
         Column(
             modifier = Modifier
                 .weight(1f)

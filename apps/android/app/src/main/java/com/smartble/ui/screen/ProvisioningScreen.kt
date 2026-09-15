@@ -85,7 +85,7 @@ fun ProvisioningScreen(
     LaunchedEffect(deviceId) { viewModel.startConnect() }
 
     Column(modifier = Modifier.fillMaxSize().background(com.smartble.ui.theme.cBg)) {
-        AppSubnav(title = "Smart HID 配网", onBack = onBack)
+        AppSubnav(title = "配置 Smart HID", onBack = onBack)
         Column(
             modifier = Modifier
                 .weight(1f)

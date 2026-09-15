@@ -61,7 +61,7 @@ fun HidDeviceDetailScreen(
     }
 
     Column(modifier = Modifier.fillMaxSize().background(com.smartble.ui.theme.cBg)) {
-        AppSubnav(title = "Smart HID 设备", onBack = onBack)
+        AppSubnav(title = "Smart HID 设备详情", onBack = onBack)
         Column(
             modifier = Modifier
                 .weight(1f)

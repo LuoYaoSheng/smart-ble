@@ -1,6 +1,5 @@
 <template>
 	<view class="app-navbar">
-		<view class="status-bar"></view>
 		<view class="navbar-inner" :style="{ paddingRight: trailingSafe + 'px' }">
 			<view class="kicker">{{ kicker }}</view>
 			<view class="row">

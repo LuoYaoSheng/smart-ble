@@ -1,6 +1,5 @@
 <template>
 	<view class="app-subnav">
-		<view class="status-bar"></view>
 		<view class="subnav-row" :style="{ paddingRight: trailingSafe + 'px' }">
 			<view class="back-btn" hover-class="back-btn-hover" :hover-stay-time="80" @click="onBack">
 				<AppIcon name="chev-r" :size="34" tone="text" :rotate="180" />

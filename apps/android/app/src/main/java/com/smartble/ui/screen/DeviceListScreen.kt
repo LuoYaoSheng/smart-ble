@@ -39,12 +39,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -60,7 +58,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.smartble.core.ble.BluetoothState
 import com.smartble.core.model.BleDevice
 import com.smartble.core.model.ConnectionState
 import com.smartble.core.model.RssiLevel
@@ -79,39 +76,11 @@ import com.smartble.ui.theme.RssiExcellent
 import com.smartble.ui.theme.RssiFair
 import com.smartble.ui.theme.RssiGood
 import com.smartble.ui.theme.RssiWeak
-import com.smartble.ui.theme.Success
 import com.smartble.ui.theme.TextSecondary
 import com.smartble.ui.viewmodel.DeviceListUiState
 import com.smartble.ui.viewmodel.DeviceListViewModel
 import com.smartble.ui.components.*
 import kotlinx.coroutines.launch
-
-// === Main Screen with Scaffold ===
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun DeviceListScreen(
-    viewModel: DeviceListViewModel,
-    onDeviceClick: (String, String) -> Unit
-) {
-    val bluetoothState by viewModel.bluetoothState.collectAsState()
-
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("BLE Toolkit+") },
-                actions = {
-                    BluetoothStateIndicator(bluetoothState)
-                }
-            )
-        }
-    ) { paddingValues ->
-        DeviceListContent(
-            viewModel = viewModel,
-            onDeviceClick = onDeviceClick,
-            modifier = Modifier.padding(paddingValues)
-        )
-    }
-}
 
 // === Content without Scaffold ===
 @OptIn(ExperimentalMaterial3Api::class)
@@ -485,35 +454,6 @@ fun DetailRow(label: String, value: String) {
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Medium
         )
-    }
-}
-
-@Composable
-fun BluetoothStateIndicator(state: BluetoothState?) {
-    val (icon, tint, text) = when (state) {
-        BluetoothState.On -> Triple(Icons.Default.Bluetooth, Success, "蓝牙已开启")
-        BluetoothState.Off -> Triple(Icons.Default.BluetoothDisabled, TextSecondary, "蓝牙已关闭")
-        BluetoothState.Unavailable -> Triple(Icons.Default.BluetoothDisabled, Error, "蓝牙不可用")
-        BluetoothState.Unauthorized -> Triple(Icons.Default.BluetoothDisabled, Error, "未授权")
-        null -> Triple(Icons.Default.BluetoothDisabled, TextSecondary, "状态未知")
-    }
-
-    Row(
-        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Box(
-            modifier = Modifier.size(8.dp),
-        ) {
-            Icon(
-                icon,
-                contentDescription = null,
-                tint = tint,
-                modifier = Modifier.size(8.dp)
-            )
-        }
-        Spacer(modifier = Modifier.width(6.dp))
-        Text(text, style = MaterialTheme.typography.bodySmall)
     }
 }
 
