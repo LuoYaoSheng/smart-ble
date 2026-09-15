@@ -79,4 +79,51 @@ P006「GATT 调试」、P010「版本记录」✓。位置：`ProvisioningScreen
 
 - 定位/核对：`grep`/`sed` 全量读取七端导航实现（uniapp pages.json+components/ui、Flutter lib/ui/design、Android ui/design+MainActivity+screens、iOS Sources/Design+Views、macOS Sources/UI、electron/tauri public+src）
 - 镜像核验：`diff electron/public/index.html tauri/src/index.html`（仅 4 行差异=视图初始 display）；`diff app.js`（2420/2506 行各自独立宿主实现，非镜像契约文件）
-- 结论基于静态证据；未做运行时截图（可按需补 H5/模拟器视觉帧）
+
+## 六、运行时逐页 UI 查验（2026-09-15 上午，模拟器/本机实拍）
+
+### 通道
+| 端 | 载体 | 驱动方式 |
+|---|---|---|
+| uniapp H5 | `uni dev -p h5`（localhost:5173） | `scripts/ui/uniapp-h5-mock-sweep.mjs`（mock 桥）→ 49/49 态截图（verification/windows-mobile-v1/20260915-nav-audit/） |
+| iOS | iPhone 17 Pro Max 模拟器（iOS 26.1） | `--ui-preview=<scenario>` 启动参数（NativePreviewHarness 全九页摆态）+ `simctl io screenshot` |
+| Android | Pixel_9_Pro 模拟器 | APK 安装+BLE 权限预授 + `input tap`（uiautomator dump 定位）+ `screencap` |
+| macOS 原生 | SmartBLE-mac debug 二进制 | `--snap-pages`（PageSmoke 自带全页快照） |
+| Electron | dist/mac-arm64 发布包 + `--remote-debugging-port=9222` | 页面级 CDP（原生 WebSocket：Runtime.evaluate + Page.captureScreenshot） |
+| Tauri | src-tauri release bundle | Quartz CGEvent 点击/滚动 + `screencapture -l`（analyze_image 定位行坐标） |
+| Flutter | build/macos Release 包 | 同 Tauri 通道 |
+
+### 覆盖矩阵（本目录 shots/）
+| 端 | P001 | P002 | P003 | P005 | P006 | P007 | P008 | P009 | P010 |
+|---|---|---|---|---|---|---|---|---|---|
+| H5 | 8 态 | 9 态 | 7 态 | ✓ | ✓ | ✓ | 6 态 | ✓ | ✓ |
+| iOS | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Android | ✓ | — | — | — | — | ✓ | ✓ | ✓ | ✓ |
+| macOS 原生 | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Electron | ✓ | — | — | — | — | ✓ | ✓* | ✓ | ✓ |
+| Tauri | ✓ | — | — | — | — | ✓ | ✓ | ✓ | ✓ |
+| Flutter | ✓ | — | — | — | — | ✓ | ✓ | ✓ | ✗† |
+
+\* Electron P008 经 CDP 强制切视图拍摄（Tab 本体隐藏，见 N4）。
+† Flutter P010：三次 CGEvent 点击「版本记录」行均未触发导航（Flutter macOS 对合成点击的手势识别差异；Tab 点击正常）。页面已由静态核对覆盖（`versions_page.dart:67 AppSubnav(title:'版本记录')` ✓）。
+Android 二级页（P002/P003/P005/P006）运行时需真实扫描到 SHID 设备方可导航，模拟器无 BLE 数据源——以静态核对 + 九页可达性测试（MAC-005）覆盖。
+
+### P001 首页七端运行时验核（全部 PASS）
+| 端 | kicker | 标题 | bt-chip | Tab 栏 |
+|---|---|---|---|---|
+| H5 | BLE TOOLKIT+ ✓ | 扫描 ✓ | 绿点·蓝牙就绪 ✓ | 四 Tab·扫描高亮 ✓ |
+| iOS | ✓ | ✓ | 绿点·蓝牙就绪 ✓ | 四 Tab·已连接红角标 3 ✓ |
+| Android | ✓ | ✓ | 灰点·初始化中… ✓（VM 首帧瞬态=正典四态词） | 四 Tab ✓ |
+| macOS 原生 | ✓ | ✓ | 绿点·蓝牙就绪 ✓ | 四 Tab ✓（实拍含 SHID 卡） |
+| Electron | ✓ | ✓ | 灰/红点·平台不支持类 ✓（与 N3 词汇记录一致） | **仅三 Tab（广播缺失）→ N4 运行时实锤** |
+| Tauri | ✓ | ✓ | 灰点·平台不支持 ✓（updateStatus error 分支正典词） | 四 Tab 恒显 ✓（与 Electron 相反） |
+| Flutter | ✓ | ✓ | 红点·蓝牙未开启 ✓ | 四 Tab ✓ |
+
+### 运行时新增观察
+- **N4 双重实锤**：Electron Tab 栏运行时仅 扫描/已连接/关于（`broadcastTab` computed display:none，仅 linux 显示）；Tauri/macOS 同机恒显四 Tab。
+- **Tauri/Flutter 关于页版本 chip 显示 `v1.0.5-dev.unknown`**：本地 Release bundle 未跑正式 metadata 管线时的 fallback 表现（Electron 同构页面一致）；发布管线（候选产物模式）会注入真实值——观察项，非缺陷。
+- **iOS 预览通道资产**：NativePreviewHarness 19 情景全页摆态可复用为后续视觉回归基线。
+- Electron/Tauri P009 菜单四行一致（官方网站/问题反馈/版本记录/分享应用）；P010 需滚动后进（长页布局，非缺陷）。
+
+### 本节结论
+首页与导航栏在运行时层面与静态审计结论一致：**七端骨架全对齐；唯桌面 Electron 广播 Tab 缺失（N4）与 Electron 状态词（N3）为运行时可复现差异；Apple 返回键几何（N5）属静态量测差异，运行时视觉不可辨。**
