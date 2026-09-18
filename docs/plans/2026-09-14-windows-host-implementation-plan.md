@@ -80,8 +80,8 @@ Windows 主机不负责：
 | WIN-002 | 桌面共享测试恢复全绿 | `PASS` | 94/95 | `MAC-001`、`MAC-002` | 95/95;M1 断言改消费正典产物,对微信裁决中立 |
 | WIN-003 | Electron Windows 构建与启动 | `PASS_WITH_OBS` | 旧提交打包、扫描、GATT 通过 | WIN-001、WIN-002 | 20260918 三框架重测：build:win --dir exit0 + CDP 真机全链；见 20260918-WIN-ALL |
 | WIN-004 | Tauri Windows 构建与启动 | `PASS_WITH_OBS` | 旧提交扫描、GATT 通过 | WIN-001、WIN-002 | 20260918：fmt 修复 + check/test/build 过 + T1-T16 真机链；T-WIN-DEF-001 在册 |
-| WIN-005 | Avalonia 功能补齐 | `IN_PROGRESS` | Build Smoke 已通过 | WIN-001、MAC-008 | 20260918：BoxShadow 启动崩溃已修；写路径失败/重连归零/断链事件缺位三缺陷在册 |
-| WIN-006 | Windows 真实 GATT 与重连回归 | `IN_PROGRESS` | Electron/Tauri 曾 20/20 | WIN-003、WIN-004 | 20260918 对真 SHID 固件三框架全链：E 全过；T 重连死句柄、V 写失败两 P1 暴露；fixture_peripheral_s3 复验待硬件窗口 |
+| WIN-005 | Avalonia 功能补齐 | `IN_PROGRESS` | BoxShadow/重连归零/断链事件已修 | WIN-001、MAC-008 | 20260918 WIN-DEF-FIX：DEF-002/003 修复真机验证过；DEF-001 定性为设备侧 SHID-FW-LOCK-001，app 诊断已修 |
+| WIN-006 | Windows 真实 GATT 与重连回归 | `IN_PROGRESS` | T-WIN-DEF-001 已修 | WIN-003、WIN-004 | 20260918 WIN-DEF-FIX：重连死句柄修复，retry 探针 + T1-T16 全绿；fixture_peripheral_s3 复验待硬件窗口 |
 | WIN-007 | Smart HID Windows E2E | `BLOCKED` | UI/传输代码已存在 | WIN-006、ControlHub 配对码、SHID 固件 | 未有完整 W4 证据 |
 | WIN-008 | Windows OTA E2E 回归 | `TODO` | 两线曾 `PASS_WITH_OBS` | WIN-006、OTA 固件 | 需复验重启后版本回读 |
 | WIN-009 | Windows 安装包与安装验证 | `TODO` | Electron/Avalonia 有历史构建 | WIN-003～WIN-008、MAC-011 | 需产出可安装 Artifact 和 SHA256 |
@@ -327,6 +327,33 @@ README 占位且指向 Avalonia 线；Flutter 无 Windows 目标），逐框架�
 - Observations: npm ci postinstall 本机网络挂死（SHASUMS 校验）需缓存接管；rcedit 文件锁重试自愈；
   固件对非法 candidate 静默丢弃不回 invalid_payload；两壳 write format 词汇 text|hex vs utf8|hex
 - Next: T-WIN-DEF-001 与 V-WIN-DEF-001/002/003 修复排期（归 WIN-005/WIN-006 续作）；WIN-007 维持 BLOCKED
+
+### 2026-09-18 · WIN-DEF-FIX——四缺陷修复轮（WIN-ALL 续作）
+
+对 WIN-ALL 登记的四个缺陷逐一修复并真机复测，全程未动 ESP32（未重刷、NVS 原样）。
+
+- Status: T-WIN-DEF-001 修复 ✅（retry 探针 readA/B/C 全绿 + 主链 T1-T16 回归全绿）；
+  V-WIN-DEF-002 修复 ✅（重连 chars=3、身份 SAME）；V-WIN-DEF-003 修复 ✅（V12/V16 双断连
+  事件上报，CS0067 消除）；**V-WIN-DEF-001 重新定性为设备侧缺陷 SHID-FW-LOCK-001**
+  （见下），app 侧诊断与写选项自适应已修
+- Code: lib.rs——connect 前强制 `disconnect()` 清 btleplug 死缓存（被动掉链不清
+  `ble_services`、`discover_services` 对已有 uuid 跳过重枚举，源码级根因）+ 连接后自动
+  重建 GATT 句柄 + 断连事件收尾通知流/抑制伪事件；BleService.cs——GattSession/
+  GattDeviceService 显式释放 + 全链 `BluetoothCacheMode.Uncached` + ConnectionStatusChanged
+  接线（含主动断开上报与去重）+ 错误诊断码化（异常类型/HRESULT/status/protocolError）
+- **SHID-FW-LOCK-001（新登记，设备侧）**：16:04-16:08 E-WIN 真实写成功（status-probe
+  writeV1 success:true）累计喂入 ~44B 无 schema 载荷后，16:18 起设备对 INPUT 写请求持久回
+  ATT 0x0D（Invalid Attribute Value Length，非标准信号）。表征：1/3/14B 全拒（排除真长度）、
+  时序无关（排除 SMP 窗口）、Windows 无配对记录且 console PairAsync 失败、无响应通道补
+  `}`/`\n`/合法 JSON 解卡全败、跨重连持续 ≥75 分钟。17:20 起 T-WIN 同败 0x8065000D——三栈
+  行为一致，非任一 Windows 框架缺陷。恢复手段未知（断电重启验证待硬件窗口）；固件仓在
+  Smart-HID-Workspace（非本仓库）
+- **方法论勘误**：WIN-ALL 驱动 step「ok」只表示 invoke 未抛异常，`success:false` 同计
+  ok——「noble/btleplug 写成功」前提系误证，本轮已以显式 success 检查重测（twin-write-probe）
+- Evidence: verification/windows-plan-v1/20260918-WIN-DEF-FIX/（summary.md 总报告 +
+  retry/主链/写探针矩阵/清障实验全套日志）
+- Next: SHID-FW-LOCK-001 移交固件侧排查（断电重启验证 + 输入解析器审查）；WIN-006 的
+  fixture_peripheral_s3 复验仍待硬件窗口；WIN-007 维持 BLOCKED
 
 ### 2026-09-14 · WIN-001
 

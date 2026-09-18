@@ -127,14 +127,40 @@ async fn init_ble(
                             if let CentralEvent::DeviceDisconnected(id) = event {
                                 eprintln!("[BLE] Device disconnected: {:?}", id);
 
-                                // Remove from connected_peripherals cleanly
+                                let device_id = id.to_string();
                                 let mut ble_state_lock = state_clone.lock().await;
-                                ble_state_lock.connected_peripherals.remove(&id.to_string());
+
+                                // 收尾该设备全部通知流（key: "deviceId::charUuid"）：
+                                // 被动掉链路径此前不收尾，任务句柄滞留 notify_handles
+                                let prefix = format!("{}::", device_id);
+                                let notify_keys: Vec<String> = ble_state_lock
+                                    .notify_handles
+                                    .keys()
+                                    .filter(|k| k.starts_with(&prefix))
+                                    .cloned()
+                                    .collect();
+                                for key in notify_keys {
+                                    if let Some(handle) = ble_state_lock.notify_handles.remove(&key)
+                                    {
+                                        handle.abort();
+                                    }
+                                }
+
+                                // Remove from connected_peripherals cleanly.
+                                // 仅真实会话丢失去通知前端：connect 内的强制清缓存
+                                // disconnect() 也会触发本事件，那时设备已不在表内，
+                                // 不向前端发伪断连
+                                let was_session = ble_state_lock
+                                    .connected_peripherals
+                                    .remove(&device_id)
+                                    .is_some();
                                 drop(ble_state_lock);
 
-                                let mut payload = std::collections::HashMap::new();
-                                payload.insert("deviceId", id.to_string());
-                                let _ = window_clone.emit("device-disconnected", payload);
+                                if was_session {
+                                    let mut payload = std::collections::HashMap::new();
+                                    payload.insert("deviceId", device_id);
+                                    let _ = window_clone.emit("device-disconnected", payload);
+                                }
                             }
                         }
                     }
@@ -432,27 +458,47 @@ async fn connect(
     }
 
     match peripheral_opt {
-        Some(peripheral) => match peripheral.connect().await {
-            Ok(_) => {
-                // Store connected peripheral in HashMap (multi-device)
-                let mut ble_state = state.lock().await;
-                ble_state
-                    .connected_peripherals
-                    .insert(device_id.clone(), peripheral.clone());
-                Ok(Response {
-                    success: true,
-                    data: Some(true),
-                    error: None,
-                    value: None,
-                })
+        Some(peripheral) => {
+            // T-WIN-DEF-001：被动掉链只走连接状态回调，btleplug 不会清 ble_services，
+            // 旧特征句柄包裹已关闭的 WinRT 对象；且 discover_services 对已存在的
+            // uuid 跳过重枚举，重连后读写永远命中死句柄（HRESULT 0x80000013）。
+            // 未处于连接态时先 disconnect() 一次清空死缓存，再建全新连接；
+            // 对从未连接过的设备是无副作用的状态复位。
+            if !peripheral.is_connected().await.unwrap_or(false) {
+                let _ = peripheral.disconnect().await;
             }
-            Err(e) => Ok(Response {
-                success: false,
-                data: None,
-                error: Some(format!("Connect failed: {}", e)),
-                value: None,
-            }),
-        },
+
+            match peripheral.connect().await {
+                Ok(_) => {
+                    // Store connected peripheral in HashMap (multi-device)
+                    let mut ble_state = state.lock().await;
+                    ble_state
+                        .connected_peripherals
+                        .insert(device_id.clone(), peripheral.clone());
+                    drop(ble_state);
+
+                    // 连接成功即重建全新 GATT 句柄：覆盖所有调用路径（含不重新
+                    // discover 的重连场景），读写连接后立即可用；失败不阻断连接
+                    // 结果，仍可手动调 discover_services 兜底
+                    if let Err(e) = peripheral.discover_services().await {
+                        eprintln!("[BLE] Post-connect discovery failed: {:?}", e);
+                    }
+
+                    Ok(Response {
+                        success: true,
+                        data: Some(true),
+                        error: None,
+                        value: None,
+                    })
+                }
+                Err(e) => Ok(Response {
+                    success: false,
+                    data: None,
+                    error: Some(format!("Connect failed: {}", e)),
+                    value: None,
+                }),
+            }
+        }
         None => Ok(Response {
             success: false,
             data: None,

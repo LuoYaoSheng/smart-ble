@@ -1,0 +1,23 @@
+09:28:41.592 [mode] clear
+09:28:41.964 [scan] found 10B41DCD238E
+09:28:42.084 [device] ok connStatus=Disconnected
+09:28:42.094 [pairing] isPaired=False canPair=True protected=None
+09:28:42.117 [gsession] created maintain=False
+09:28:42.514 [services] status=Success count=1
+09:28:42.738 [chars] status=Success count=3
+09:28:42.744 [handles] input=0x5 props=Write info=0x2
+09:28:42.849 [c0 baseline] status=2(ProtocolError) proto=13
+09:28:42.854 [c1 close-brace] cmd='}' status=0(Success)
+09:28:42.859 [c1 newline] cmd='\n' status=0(Success)
+09:28:43.446 [c2 after brace+nl] status=2(ProtocolError) proto=13
+09:28:43.448 [c3 newline x4] cmd='\n' status=0(Success)
+09:28:43.450 [c3 newline x4] cmd='\n' status=0(Success)
+09:28:43.452 [c3 newline x4] cmd='\n' status=0(Success)
+09:28:43.456 [c3 newline x4] cmd='\n' status=0(Success)
+09:28:44.046 [c4 after nl x4] status=2(ProtocolError) proto=13
+09:28:44.051 [c5 valid json] cmd='{"v":1}' status=0(Success)
+09:28:46.145 [c6 after valid json] status=2(ProtocolError) proto=13
+09:28:46.147 [c7 valid json + nl] cmd='{"v":1}\n' status=0(Success)
+09:28:48.246 [c8 final] status=2(ProtocolError) proto=13
+09:28:48.374 [re-read INFO] {"product":"smart-hid","protocol":"1.0","device_id":"HID-00000001","firmware":"1.2.0","state":"provisioning","provisioned":false}
+09:28:48.377 [done] clear

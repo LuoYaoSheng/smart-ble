@@ -6,6 +6,7 @@ using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.Advertisement;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Devices.Radios;
+using Windows.Foundation;
 using Windows.Storage.Streams;
 using Avalonia.Threading;
 
@@ -18,7 +19,13 @@ public class BleService
 {
     private BluetoothLEAdvertisementWatcher? _watcher;
     private BluetoothLEDevice? _currentDevice;
+    private GattSession? _gattSession;
+    private readonly List<GattDeviceService> _gattServices = new();
+    private readonly Dictionary<string, TypedEventHandler<GattCharacteristic, GattValueChangedEventArgs>>
+        _notifyHandlers = new();
     private Dictionary<string, GattCharacteristic> _characteristics = new();
+    // 每次“已上报断连”只报一次（被动回调或主动断开二选一先到）
+    private bool _disconnectReported;
 
     // Auto-stop scan timer - aligned with UniApp (5 seconds)
     private DispatcherTimer? _autoStopTimer;
@@ -77,6 +84,7 @@ public class BleService
 
         _watcher?.Stop();
         _watcher = null;
+        await Task.CompletedTask;
     }
 
     private void OnAdvertisementReceived(BluetoothLEAdvertisementWatcher sender,
@@ -87,6 +95,20 @@ public class BleService
         DeviceDiscovered?.Invoke(device);
     }
 
+    // V-WIN-DEF-003：连接状态回调（WinRT 线程池线程触发），被动掉链也上报
+    // DeviceDisconnected（此前事件声明了但从未触发，UI 只能靠手动操作感知断连）
+    private void OnConnectionStatusChanged(BluetoothLEDevice sender, object? args)
+    {
+        if (sender.ConnectionStatus == BluetoothConnectionStatus.Disconnected)
+        {
+            if (!_disconnectReported)
+            {
+                _disconnectReported = true;
+                DeviceDisconnected?.Invoke(sender.BluetoothAddress.ToString("X"));
+            }
+        }
+    }
+
     public async Task ConnectAsync(string deviceId)
     {
         try
@@ -94,10 +116,33 @@ public class BleService
             // Parse Bluetooth address
             if (ulong.TryParse(deviceId, System.Globalization.NumberStyles.HexNumber, null, out var address))
             {
+                // V-WIN-DEF-002：先完整释放旧会话（GattSession + 全部 GattDeviceService +
+                // 设备）。GattDeviceService 不显式 Dispose 时 Windows 仍按旧 GATT 会话
+                // 归属后续查询，重连后特征枚举返回空
+                await DisconnectAsync();
+
                 _currentDevice = await BluetoothLEDevice.FromBluetoothAddressAsync(address);
 
                 if (_currentDevice != null)
                 {
+                    _disconnectReported = false;
+                    _currentDevice.ConnectionStatusChanged += OnConnectionStatusChanged;
+
+                    // GattSession.MaintainConnection 持有连接引用，避免空闲期系统侧拆链
+                    try
+                    {
+                        _gattSession = await GattSession.FromDeviceIdAsync(
+                            BluetoothDeviceId.FromId(_currentDevice.BluetoothDeviceId.Id));
+                        if (_gattSession != null)
+                        {
+                            _gattSession.MaintainConnection = true;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        LogMessage?.Invoke("连接", $"GattSession 建立失败（继续直连）: {DescribeException(ex)}");
+                    }
+
                     // Wait for connection
                     await Task.Delay(1000);
                     DeviceConnected?.Invoke(deviceId);
@@ -109,7 +154,7 @@ public class BleService
         }
         catch (Exception ex)
         {
-            LogMessage?.Invoke("连接失败", $"连接失败: {ex.Message}");
+            LogMessage?.Invoke("连接失败", $"连接失败: {DescribeException(ex)}");
             System.Diagnostics.Debug.WriteLine($"Connect error: {ex.Message}");
         }
     }
@@ -117,8 +162,41 @@ public class BleService
     public async Task DisconnectAsync()
     {
         _characteristics.Clear();
-        _currentDevice?.Dispose();
-        _currentDevice = null;
+        _notifyHandlers.Clear();
+
+        foreach (var service in _gattServices)
+        {
+            try { service.Dispose(); } catch { /* 释放期对象可能已随会话关闭 */ }
+        }
+        _gattServices.Clear();
+
+        if (_gattSession != null)
+        {
+            try
+            {
+                _gattSession.MaintainConnection = false;
+                _gattSession.Dispose();
+            }
+            catch { }
+            _gattSession = null;
+        }
+
+        if (_currentDevice != null)
+        {
+            var deviceId = _currentDevice.BluetoothAddress.ToString("X");
+            _currentDevice.ConnectionStatusChanged -= OnConnectionStatusChanged;
+            _currentDevice.Dispose();
+            _currentDevice = null;
+
+            // 主动断开也上报（对齐 E-WIN/T-WIN 语义）；_disconnectReported 防止
+            // 被动掉链（回调已报）+ 随后用户显式断开的重复上报
+            if (!_disconnectReported)
+            {
+                _disconnectReported = true;
+                DeviceDisconnected?.Invoke(deviceId);
+            }
+        }
+        await Task.CompletedTask;
     }
 
     private async Task DiscoverServicesAsync()
@@ -127,7 +205,9 @@ public class BleService
 
         try
         {
-            var servicesResult = await _currentDevice.GetGattServicesAsync();
+            // V-WIN-DEF-002：Uncached 强制走 ATT 重新枚举，与 btleplug(T-WIN)/noble(E-WIN)
+            // 的 WithCacheModeAsync(Uncached) 同口径；无参重载可能命中系统缓存
+            var servicesResult = await _currentDevice.GetGattServicesAsync(BluetoothCacheMode.Uncached);
 
             if (servicesResult.Status == GattCommunicationStatus.Success)
             {
@@ -135,7 +215,8 @@ public class BleService
 
                 foreach (var service in servicesResult.Services)
                 {
-                    var characteristicsResult = await service.GetCharacteristicsAsync();
+                    _gattServices.Add(service);
+                    var characteristicsResult = await service.GetCharacteristicsAsync(BluetoothCacheMode.Uncached);
                     var characteristics = new List<BleCharacteristicInfo>();
 
                     if (characteristicsResult.Status == GattCommunicationStatus.Success)
@@ -165,6 +246,11 @@ public class BleService
                             ));
                         }
                     }
+                    else
+                    {
+                        LogMessage?.Invoke("发现服务失败",
+                            $"{service.Uuid} 特征枚举 status={(int)characteristicsResult.Status}({characteristicsResult.Status})");
+                    }
 
                     services.Add(new BleServiceInfo(
                         service.Uuid.ToString(),
@@ -175,10 +261,15 @@ public class BleService
 
                 ServiceDiscovered?.Invoke(services.ToArray());
             }
+            else
+            {
+                LogMessage?.Invoke("发现服务失败",
+                    $"GetGattServices status={(int)servicesResult.Status}({servicesResult.Status})");
+            }
         }
         catch (Exception ex)
         {
-            LogMessage?.Invoke("发现服务失败", $"发现服务失败: {ex.Message}");
+            LogMessage?.Invoke("发现服务失败", $"发现服务失败: {DescribeException(ex)}");
             System.Diagnostics.Debug.WriteLine($"Discover services error: {ex.Message}");
         }
     }
@@ -195,7 +286,7 @@ public class BleService
             }
 
             var characteristic = _characteristics[key];
-            var result = await characteristic.ReadValueAsync();
+            var result = await characteristic.ReadValueAsync(BluetoothCacheMode.Uncached);
 
             if (result.Status == GattCommunicationStatus.Success)
             {
@@ -206,12 +297,13 @@ public class BleService
             }
             else
             {
-                LogMessage?.Invoke("读取失败", $"读取失败: {result.Status}");
+                LogMessage?.Invoke("读取失败",
+                    $"读取失败: status={(int)result.Status}({result.Status}) protocolError={result.ProtocolError}");
             }
         }
         catch (Exception ex)
         {
-            LogMessage?.Invoke("读取失败", $"读取失败: {ex.Message}");
+            LogMessage?.Invoke("读取失败", $"读取失败: {DescribeException(ex)}");
         }
 
         return null;
@@ -229,32 +321,44 @@ public class BleService
             }
 
             var characteristic = _characteristics[key];
+
+            // V-WIN-DEF-001：写选项受特征能力约束——请求带响应写但特征只支持无响应写时
+            // 自动降级（反向同理），避免对不支持的属性发起写导致失败
+            bool supportsWrite = characteristic.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Write);
+            bool supportsWriteNr = characteristic.CharacteristicProperties.HasFlag(GattCharacteristicProperties.WriteWithoutResponse);
+            var option = GattWriteOption.WriteWithResponse;
+            if (!supportsWrite && supportsWriteNr)
+            {
+                option = GattWriteOption.WriteWithoutResponse;
+                if (withResponse)
+                {
+                    LogMessage?.Invoke("写入", "特征不支持带响应写，已改用无响应写");
+                }
+            }
+            else if (!withResponse && !supportsWriteNr)
+            {
+                option = GattWriteOption.WriteWithResponse;
+                LogMessage?.Invoke("写入", "特征不支持无响应写，已改用带响应写");
+            }
+
             var writer = new DataWriter();
             writer.WriteBytes(data);
+            var result = await characteristic.WriteValueWithResultAsync(writer.DetachBuffer(), option);
 
-            GattCommunicationStatus result;
-            if (withResponse)
-            {
-                result = await characteristic.WriteValueAsync(writer.DetachBuffer());
-            }
-            else
-            {
-                result = await characteristic.WriteValueAsync(writer.DetachBuffer(), GattWriteOption.WriteWithoutResponse);
-            }
-
-            if (result == GattCommunicationStatus.Success)
+            if (result.Status == GattCommunicationStatus.Success)
             {
                 LogMessage?.Invoke("写入成功", $"写入成功: {BitConverter.ToString(data).Replace('-', ' ')}");
                 return true;
             }
             else
             {
-                LogMessage?.Invoke("写入失败", $"写入失败: {result}");
+                LogMessage?.Invoke("写入失败",
+                    $"写入失败: status={(int)result.Status}({result.Status}) protocolError={result.ProtocolError}");
             }
         }
         catch (Exception ex)
         {
-            LogMessage?.Invoke("写入失败", $"写入失败: {ex.Message}");
+            LogMessage?.Invoke("写入失败", $"写入失败: {DescribeException(ex)}");
         }
 
         return false;
@@ -275,14 +379,22 @@ public class BleService
 
             if (enable)
             {
-                // Subscribe to value changes
-                characteristic.ValueChanged += (sender, args) =>
+                // 订阅前先移除旧 handler，避免重复订阅（此前每次启用都挂新 lambda）
+                if (_notifyHandlers.TryGetValue(key, out var oldHandler))
+                {
+                    characteristic.ValueChanged -= oldHandler;
+                    _notifyHandlers.Remove(key);
+                }
+
+                TypedEventHandler<GattCharacteristic, GattValueChangedEventArgs> handler = (sender, args) =>
                 {
                     var data = new byte[args.CharacteristicValue.Length];
                     DataReader.FromBuffer(args.CharacteristicValue).ReadBytes(data);
                     CharacteristicValueChanged?.Invoke(characteristicUuid, data);
                     LogMessage?.Invoke("收到通知", $"收到通知: {BitConverter.ToString(data).Replace('-', ' ')}");
                 };
+                _notifyHandlers[key] = handler;
+                characteristic.ValueChanged += handler;
 
                 var result = await characteristic.WriteClientCharacteristicConfigurationDescriptorAsync(
                     GattClientCharacteristicConfigurationDescriptorValue.Notify);
@@ -292,10 +404,18 @@ public class BleService
                     LogMessage?.Invoke("通知已启用", "通知已启用");
                     return true;
                 }
+                else
+                {
+                    LogMessage?.Invoke("设置通知失败", $"CCCD 写入 status={(int)result}({result})");
+                }
             }
             else
             {
-                characteristic.ValueChanged -= (sender, args) => { };
+                if (_notifyHandlers.TryGetValue(key, out var handler))
+                {
+                    characteristic.ValueChanged -= handler;
+                    _notifyHandlers.Remove(key);
+                }
 
                 var result = await characteristic.WriteClientCharacteristicConfigurationDescriptorAsync(
                     GattClientCharacteristicConfigurationDescriptorValue.None);
@@ -305,15 +425,23 @@ public class BleService
                     LogMessage?.Invoke("通知已禁用", "通知已禁用");
                     return true;
                 }
+                else
+                {
+                    LogMessage?.Invoke("设置通知失败", $"CCCD 写入 status={(int)result}({result})");
+                }
             }
         }
         catch (Exception ex)
         {
-            LogMessage?.Invoke("设置通知失败", $"设置通知失败: {ex.Message}");
+            LogMessage?.Invoke("设置通知失败", $"设置通知失败: {DescribeException(ex)}");
         }
 
         return false;
     }
+
+    // WinRT 投影异常的 Message 可能为空串（仅 HRESULT），统一带上类型与错误码
+    private static string DescribeException(Exception ex)
+        => $"{ex.GetType().Name} 0x{ex.HResult:X8} {ex.Message}".TrimEnd();
 
     private static string GetServiceName(string uuid)
     {

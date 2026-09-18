@@ -1,0 +1,18 @@
+09:18:35.266 [mode] pair
+09:18:36.297 [scan] found 10B41DCD238E
+09:18:36.339 [device] ok connStatus=Disconnected
+09:18:36.342 [pairing] isPaired=False canPair=True protected=None
+09:18:36.351 [gsession] created maintain=False
+09:18:36.515 [pairAsync] status=Failed isPaired=False
+09:18:36.911 [services] status=Success count=1
+09:18:37.138 [chars] status=Success count=3
+09:18:37.142 [handles] input=0x5 props=Write info=0x2
+09:18:37.252 [w1 14B withRsp +0s] len=14 bufLen=14 opt=WriteWithResponse status=2(ProtocolError) proto=13
+09:18:37.369 [w1b AsBuffer +0s] len=14 EXC COMException 0x8065000D ''
+09:18:40.381 [wait] +3s elapsed (SMP/encryption window)
+09:18:40.546 [w5 14B withRsp +3s] len=14 bufLen=14 opt=WriteWithResponse status=2(ProtocolError) proto=13
+09:18:42.707 [w6 14B withRsp +5s] len=14 bufLen=14 opt=WriteWithResponse status=2(ProtocolError) proto=13
+09:18:42.827 [w7 3B withRsp +5s] len=3 bufLen=3 opt=WriteWithResponse status=2(ProtocolError) proto=13
+09:18:42.830 [w4 14B noRsp +5s] len=14 bufLen=14 opt=WriteWithoutResponse status=0(Success) proto=
+09:18:42.950 [re-read INFO] {"product":"smart-hid","protocol":"1.0","device_id":"HID-00000001","firmware":"1.2.0","state":"provisioning","provisioned":false}
+09:18:42.951 [done] pair
