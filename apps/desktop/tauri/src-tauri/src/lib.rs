@@ -5,16 +5,18 @@
 
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use btleplug::api::{Central, Manager as _, Peripheral as _, Characteristic, WriteType, ValueNotification};
+use btleplug::api::{
+    Central, Characteristic, Manager as _, Peripheral as _, ValueNotification, WriteType,
+};
 use btleplug::platform::Manager;
 use futures::stream::StreamExt;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
-use tokio::sync::Mutex;
+use std::sync::Arc;
 use std::time::Duration;
 use tauri::State;
+use tokio::sync::Mutex;
 
 // BLE State
 struct BleState {
@@ -89,10 +91,12 @@ async fn init_ble(
     match Manager::new().await {
         Ok(manager) => {
             let mut adapters = manager.adapters().await.unwrap_or_default();
-            
+
             // Retry mechanism for Windows startup delay (Task 6)
             if adapters.is_empty() {
-                println!("[BLE] No adapters found on first check. Retrying for up to 10 seconds...");
+                println!(
+                    "[BLE] No adapters found on first check. Retrying for up to 10 seconds..."
+                );
                 for i in 1..=10 {
                     tokio::time::sleep(tokio::time::Duration::from_millis(1000)).await;
                     adapters = manager.adapters().await.unwrap_or_default();
@@ -113,21 +117,21 @@ async fn init_ble(
                 let central_events = central.clone();
                 let window_clone = window.clone();
                 let state_clone = Arc::clone(&state.inner());
-                
+
                 // Track BLE events in background to emit disconnection
                 tokio::spawn(async move {
                     use btleplug::api::CentralEvent;
-                    
+
                     if let Ok(mut events) = central_events.events().await {
                         while let Some(event) = events.next().await {
                             if let CentralEvent::DeviceDisconnected(id) = event {
                                 eprintln!("[BLE] Device disconnected: {:?}", id);
-                                
+
                                 // Remove from connected_peripherals cleanly
                                 let mut ble_state_lock = state_clone.lock().await;
                                 ble_state_lock.connected_peripherals.remove(&id.to_string());
                                 drop(ble_state_lock);
-                                
+
                                 let mut payload = std::collections::HashMap::new();
                                 payload.insert("deviceId", id.to_string());
                                 let _ = window_clone.emit("device-disconnected", payload);
@@ -197,7 +201,9 @@ async fn start_scan(
 
     eprintln!("[BLE] Starting scan...");
 
-    let result = central.start_scan(btleplug::api::ScanFilter::default()).await;
+    let result = central
+        .start_scan(btleplug::api::ScanFilter::default())
+        .await;
 
     match result {
         Ok(_) => {
@@ -229,10 +235,9 @@ async fn start_scan(
                     }
 
                     // Use a timeout to avoid hanging
-                    let peripherals_result = tokio::time::timeout(
-                        Duration::from_secs(2),
-                        central_clone.peripherals()
-                    ).await;
+                    let peripherals_result =
+                        tokio::time::timeout(Duration::from_secs(2), central_clone.peripherals())
+                            .await;
 
                     match peripherals_result {
                         Ok(Ok(peripherals)) => {
@@ -245,23 +250,29 @@ async fn start_scan(
                                 let props = props_result.as_ref().ok().and_then(|p| p.as_ref());
 
                                 // Extract service UUIDs from advertising data
-                                let service_uuids: Option<Vec<String>> = props.as_ref().and_then(|pr| {
-                                    if !pr.services.is_empty() {
-                                        Some(pr.services.iter().map(|u| u.to_string()).collect())
-                                    } else {
-                                        None
-                                    }
-                                });
+                                let service_uuids: Option<Vec<String>> =
+                                    props.as_ref().and_then(|pr| {
+                                        if !pr.services.is_empty() {
+                                            Some(
+                                                pr.services.iter().map(|u| u.to_string()).collect(),
+                                            )
+                                        } else {
+                                            None
+                                        }
+                                    });
 
                                 // Convert advertising data to hex string
                                 let adv_data: Option<String> = props.as_ref().and_then(|pr| {
-                                    pr.manufacturer_data.iter().next().map(|(company_id, data)| {
-                                        let mut hex = format!("{:04X}", company_id);
-                                        for byte in data {
-                                            hex.push_str(&format!("{:02X}", byte));
-                                        }
-                                        hex
-                                    })
+                                    pr.manufacturer_data
+                                        .iter()
+                                        .next()
+                                        .map(|(company_id, data)| {
+                                            let mut hex = format!("{:04X}", company_id);
+                                            for byte in data {
+                                                hex.push_str(&format!("{:02X}", byte));
+                                            }
+                                            hex
+                                        })
                                 });
 
                                 let device = DeviceInfo {
@@ -367,7 +378,10 @@ async fn connect(
     // "Device not found"（noble/E-WIN 持有 peripheral 对象可直连，btleplug 须重扫
     // 重建缓存后再连接）。未在扫描态时临时起一轮短扫描。
     let find_peripheral = |peripherals: &[btleplug::platform::Peripheral]| {
-        peripherals.iter().find(|p| p.id().to_string() == device_id).cloned()
+        peripherals
+            .iter()
+            .find(|p| p.id().to_string() == device_id)
+            .cloned()
     };
 
     let first_pass = {
@@ -392,7 +406,9 @@ async fn connect(
             let scanning = ble_state.scanning;
             if !scanning {
                 if let Some(central) = &ble_state.central {
-                    let _ = central.start_scan(btleplug::api::ScanFilter::default()).await;
+                    let _ = central
+                        .start_scan(btleplug::api::ScanFilter::default())
+                        .await;
                 }
                 ble_state.scanning = true;
             }
@@ -420,7 +436,9 @@ async fn connect(
             Ok(_) => {
                 // Store connected peripheral in HashMap (multi-device)
                 let mut ble_state = state.lock().await;
-                ble_state.connected_peripherals.insert(device_id.clone(), peripheral.clone());
+                ble_state
+                    .connected_peripherals
+                    .insert(device_id.clone(), peripheral.clone());
                 Ok(Response {
                     success: true,
                     data: Some(true),
@@ -458,7 +476,9 @@ async fn disconnect(
     if let Some(device_id) = target_id {
         // Abort ALL notification streams for this device (key format: "deviceId::charUuid")
         let prefix = format!("{}::", device_id);
-        let notify_keys: Vec<String> = ble_state.notify_handles.keys()
+        let notify_keys: Vec<String> = ble_state
+            .notify_handles
+            .keys()
             .filter(|k| k.starts_with(&prefix))
             .cloned()
             .collect();
@@ -580,9 +600,9 @@ async fn read_characteristic(
     if let Some(peripheral) = ble_state.connected_peripherals.get(&deviceId) {
         let characteristics = peripheral.characteristics();
 
-        let characteristic = characteristics
-            .iter()
-            .find(|c| c.uuid.to_string() == char_uuid && c.service_uuid.to_string() == service_uuid);
+        let characteristic = characteristics.iter().find(|c| {
+            c.uuid.to_string() == char_uuid && c.service_uuid.to_string() == service_uuid
+        });
 
         if let Some(char) = characteristic {
             let peripheral = peripheral.clone();
@@ -648,9 +668,9 @@ async fn write_characteristic(
     if let Some(peripheral) = ble_state.connected_peripherals.get(&deviceId) {
         let characteristics = peripheral.characteristics();
 
-        let characteristic = characteristics
-            .iter()
-            .find(|c| c.uuid.to_string() == char_uuid && c.service_uuid.to_string() == service_uuid);
+        let characteristic = characteristics.iter().find(|c| {
+            c.uuid.to_string() == char_uuid && c.service_uuid.to_string() == service_uuid
+        });
 
         if let Some(char) = characteristic {
             let bytes = match format {
@@ -665,7 +685,10 @@ async fn write_characteristic(
             drop(ble_state);
 
             // Determine write type based on characteristic properties
-            let write_type = if char.properties.contains(btleplug::api::CharPropFlags::WRITE_WITHOUT_RESPONSE) {
+            let write_type = if char
+                .properties
+                .contains(btleplug::api::CharPropFlags::WRITE_WITHOUT_RESPONSE)
+            {
                 WriteType::WithoutResponse
             } else {
                 WriteType::WithResponse
@@ -721,9 +744,9 @@ async fn write_raw(
 
     if let Some(peripheral) = ble_state.connected_peripherals.get(&deviceId) {
         let characteristics = peripheral.characteristics();
-        let characteristic = characteristics
-            .iter()
-            .find(|c| c.uuid.to_string() == char_uuid && c.service_uuid.to_string() == service_uuid);
+        let characteristic = characteristics.iter().find(|c| {
+            c.uuid.to_string() == char_uuid && c.service_uuid.to_string() == service_uuid
+        });
 
         if let Some(char) = characteristic {
             let write_type = if writeWithResponse {
@@ -840,7 +863,9 @@ async fn notify_characteristic(
                         Ok(mut notif_stream) => {
                             let device_id_for_event = deviceId.clone();
                             let handle = tokio::spawn(async move {
-                                while let Some(ValueNotification { uuid, value }) = notif_stream.next().await {
+                                while let Some(ValueNotification { uuid, value }) =
+                                    notif_stream.next().await
+                                {
                                     // Filter: only forward notifications for our subscribed char
                                     if uuid.to_string() != char_uuid_filter {
                                         continue;
@@ -866,7 +891,10 @@ async fn notify_characteristic(
                                     }
                                 }
                                 // Stream ended (device disconnected or unsubscribed)
-                                eprintln!("[BLE] Notification stream ended for char {}", char_uuid_clone);
+                                eprintln!(
+                                    "[BLE] Notification stream ended for char {}",
+                                    char_uuid_clone
+                                );
                             });
 
                             // Store handle keyed by "deviceId::charUuid" (supports multi-char notify)
@@ -881,24 +909,20 @@ async fn notify_characteristic(
                                 value: None,
                             })
                         }
-                        Err(e) => {
-                            Ok(Response {
-                                success: false,
-                                data: None,
-                                error: Some(format!("Failed to get notification stream: {}", e)),
-                                value: None,
-                            })
-                        }
+                        Err(e) => Ok(Response {
+                            success: false,
+                            data: None,
+                            error: Some(format!("Failed to get notification stream: {}", e)),
+                            value: None,
+                        }),
                     }
                 }
-                Err(e) => {
-                    Ok(Response {
-                        success: false,
-                        data: None,
-                        error: Some(format!("Subscribe failed: {}", e)),
-                        value: None,
-                    })
-                }
+                Err(e) => Ok(Response {
+                    success: false,
+                    data: None,
+                    error: Some(format!("Subscribe failed: {}", e)),
+                    value: None,
+                }),
             }
         }
     } else {
@@ -959,7 +983,10 @@ async fn start_advertising(
         return Ok(Response {
             success: false,
             data: None,
-            error: Some("Peripheral mode not yet supported on Linux. Requires BlueZ peripheral mode.".to_string()),
+            error: Some(
+                "Peripheral mode not yet supported on Linux. Requires BlueZ peripheral mode."
+                    .to_string(),
+            ),
             value: None,
         });
     }
@@ -996,7 +1023,11 @@ async fn stop_advertising() -> Result<Response<bool>, String> {
 // T07: Helper functions - 中文名称（对齐 Android BleUuids）
 fn get_service_name(uuid: &str) -> String {
     let uuid_upper = uuid.to_uppercase();
-    let short = if uuid_upper.len() > 8 { &uuid_upper[4..8] } else { uuid_upper.as_str() };
+    let short = if uuid_upper.len() > 8 {
+        &uuid_upper[4..8]
+    } else {
+        uuid_upper.as_str()
+    };
     match short {
         "1800" => "通用访问",
         "1801" => "通用属性",
@@ -1007,14 +1038,23 @@ fn get_service_name(uuid: &str) -> String {
         "1809" => "健康温度计",
         "181C" => "用户数据",
         _ => {
-            if uuid_upper.starts_with("4FAFC201") { "OTA 升级服务" } else { "未知服务" }
+            if uuid_upper.starts_with("4FAFC201") {
+                "OTA 升级服务"
+            } else {
+                "未知服务"
+            }
         }
-    }.to_string()
+    }
+    .to_string()
 }
 
 fn get_characteristic_name(uuid: &str) -> String {
     let uuid_upper = uuid.to_uppercase();
-    let short = if uuid_upper.len() > 8 { &uuid_upper[4..8] } else { uuid_upper.as_str() };
+    let short = if uuid_upper.len() > 8 {
+        &uuid_upper[4..8]
+    } else {
+        uuid_upper.as_str()
+    };
     match short {
         "2A00" => "设备名称",
         "2A01" => "外观",
@@ -1033,11 +1073,15 @@ fn get_characteristic_name(uuid: &str) -> String {
         "2A37" => "心率测量",
         "2A38" => "身体传感器位置",
         _ => {
-            if uuid_upper.starts_with("BEB5") || uuid_upper.starts_with("BEB5483E") { "OTA 控制" } else { "未知特征值" }
+            if uuid_upper.starts_with("BEB5") || uuid_upper.starts_with("BEB5483E") {
+                "OTA 控制"
+            } else {
+                "未知特征值"
+            }
         }
-    }.to_string()
+    }
+    .to_string()
 }
-
 
 fn get_properties(char: &Characteristic) -> Vec<String> {
     let mut props = Vec::new();
@@ -1102,7 +1146,10 @@ pub fn run() {
                     .try_lock()
                     .map(|state| state.connected_peripherals.len())
                     .unwrap_or(0);
-                eprintln!("[APP] Close requested -> exit confirm (connected={})", connected);
+                eprintln!(
+                    "[APP] Close requested -> exit confirm (connected={})",
+                    connected
+                );
                 let mut payload = HashMap::new();
                 payload.insert("connected", connected);
                 let _ = event.window().emit("app-confirm-exit", payload);

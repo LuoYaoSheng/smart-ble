@@ -348,7 +348,7 @@
     <!-- Write Dialog -->
     <Grid IsVisible="{Binding ShowWriteDialog}" ZIndex="1000">
         <Border Background="#80000000"/>
-        <Border Background="White" CornerRadius="12" BoxShadow="0,8,32,#40000000"
+        <Border Background="White" CornerRadius="12" BoxShadow="0 8 32 #40000000"
                 HorizontalAlignment="Center" VerticalAlignment="Center"
                 Width="400" Padding="24">
             <StackPanel Spacing="16">

@@ -1,0 +1,154 @@
+{
+  "steps": [
+    {
+      "name": "F1 init",
+      "ok": true,
+      "ms": 5
+    },
+    {
+      "name": "F2 startScan",
+      "ok": true,
+      "ms": 25
+    },
+    {
+      "name": "F3 stopScan",
+      "ok": true,
+      "ms": 3
+    },
+    {
+      "name": "F4 connect",
+      "ok": true,
+      "ms": 230
+    },
+    {
+      "name": "F5 discoverServices",
+      "ok": true,
+      "ms": 1451
+    },
+    {
+      "name": "F6 read INFO",
+      "ok": true,
+      "ms": 110
+    },
+    {
+      "name": "F7 notify on STATUS",
+      "ok": true,
+      "ms": 357
+    },
+    {
+      "name": "F8 write TEXT",
+      "ok": true,
+      "ms": 123
+    },
+    {
+      "name": "F9 write HEX",
+      "ok": true,
+      "ms": 185
+    },
+    {
+      "name": "F10 notify off",
+      "ok": true,
+      "ms": 186
+    },
+    {
+      "name": "F11 disconnect",
+      "ok": true,
+      "ms": 9
+    },
+    {
+      "name": "F12 reconnect",
+      "ok": true,
+      "ms": 251
+    },
+    {
+      "name": "F13 rediscover",
+      "ok": true,
+      "ms": 1043
+    },
+    {
+      "name": "F14 re-read INFO",
+      "ok": true,
+      "ms": 169
+    },
+    {
+      "name": "F15 final disconnect",
+      "ok": true,
+      "ms": 8
+    }
+  ],
+  "device": {
+    "id": "10b41dcd238e",
+    "name": "",
+    "rssi": -38,
+    "advServices": null
+  },
+  "initState": null,
+  "scanSeen": 6,
+  "servicesSkeleton": [
+    {
+      "uuid": "9f1d1001e73b4c8f9d2a6f0b5e8a1c04",
+      "name": "未知服务",
+      "chars": 3
+    }
+  ],
+  "shidService": {
+    "uuid": "9f1d1001e73b4c8f9d2a6f0b5e8a1c04",
+    "name": "未知服务",
+    "characteristics": [
+      {
+        "uuid": "9f1d1002e73b4c8f9d2a6f0b5e8a1c04",
+        "name": "未知特征值",
+        "props": [
+          "read",
+          "notify"
+        ]
+      },
+      {
+        "uuid": "9f1d1003e73b4c8f9d2a6f0b5e8a1c04",
+        "name": "未知特征值",
+        "props": [
+          "write"
+        ]
+      },
+      {
+        "uuid": "9f1d1004e73b4c8f9d2a6f0b5e8a1c04",
+        "name": "未知特征值",
+        "props": [
+          "read",
+          "notify"
+        ]
+      }
+    ]
+  },
+  "readInfoRaw": {
+    "success": true,
+    "value": "7b 22 70 72 6f 64 75 63 74 22 3a 22 73 6d 61 72 74 2d 68 69 64 22 2c 22 70 72 6f 74 6f 63 6f 6c 22 3a 22 31 2e 30 22 2c 22 64 65 76 69 63 65 5f 69 64 22 3a 22 48 49 44 2d 30 30 30 30 30 30 30 31 22 2c 22 66 69 72 6d 77 61 72 65 22 3a 22 31 2e 32 2e 30 22 2c 22 73 74 61 74 65 22 3a 22 70 72 6f 76 69 73 69 6f 6e 69 6e 67 22 2c 22 70 72 6f 76 69 73 69 6f 6e 65 64 22 3a 66 61 6c 73 65 7d"
+  },
+  "readInfoAscii": "{ \" p r o d u c t \" : \" s m a r t - h i d \" , \" p r o t o c o l \" : \" 1 . 0 \" , \" d e v i c e _ i d \" : \" H I D - 0 0 0 0 0 0 0 1 \" , \" f i r m w a r e \" : \" 1 . 2 . 0 \" , \" s t a t e \" : \" p r o v i s i o n i n g \" , \" p r o v i s i o n e d \" : f a l s e }",
+  "notifyAfterTextWrite": [],
+  "notifyAfterHexWrite": [],
+  "disconnectEvent": {
+    "id": "10b41dcd238e"
+  },
+  "reconnectRead": {
+    "success": true,
+    "value": "7b 22 70 72 6f 64 75 63 74 22 3a 22 73 6d 61 72 74 2d 68 69 64 22 2c 22 70 72 6f 74 6f 63 6f 6c 22 3a 22 31 2e 30 22 2c 22 64 65 76 69 63 65 5f 69 64 22 3a 22 48 49 44 2d 30 30 30 30 30 30 30 31 22 2c 22 66 69 72 6d 77 61 72 65 22 3a 22 31 2e 32 2e 30 22 2c 22 73 74 61 74 65 22 3a 22 70 72 6f 76 69 73 69 6f 6e 69 6e 67 22 2c 22 70 72 6f 76 69 73 69 6f 6e 65 64 22 3a 66 61 6c 73 65 7d"
+  },
+  "reconnectSameIdentity": true,
+  "eventsSummary": {
+    "state": [],
+    "connectedCount": 2,
+    "disconnectedCount": 4,
+    "servicesEvents": 6,
+    "notifyCount": 2,
+    "warnings": [],
+    "discoveredNames": [
+      "603e7c138022",
+      "0fe3e08e0cd8",
+      "1db480e1f359",
+      "2d570edef9b0",
+      "10b41dcd238e",
+      "645c09864f04"
+    ]
+  }
+}

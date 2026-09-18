@@ -1,0 +1,23 @@
+{
+  "deviceId": "10b41dcd238e",
+  "statusRead": {
+    "success": true,
+    "value": "7b 22 73 74 61 74 65 22 3a 22 70 72 6f 76 69 73 69 6f 6e 69 6e 67 22 2c 22 73 74 65 70 22 3a 22 77 69 66 69 5f 66 61 69 6c 65 64 22 2c 22 65 72 72 6f 72 22 3a 22 77 69 66 69 5f 66 61 69 6c 65 64 22 7d"
+  },
+  "statusAscii": "{ \" s t a t e \" : \" p r o v i s i o n i n g \" , \" s t e p \" : \" w i f i _ f a i l e d \" , \" e r r o r \" : \" w i f i _ f a i l e d \" }",
+  "writeV1": {
+    "success": true
+  },
+  "notifyAfterV1": [],
+  "writeGarbageJson": {
+    "success": true
+  },
+  "notifyAfterJunk": [],
+  "allNotify": [
+    {
+      "uuid": "1004",
+      "data": "7b 22 73 74 61 74 65 22 3a 22 70 72 6f 76 69 73 69 6f 6e 69 6e 67 22 2c 22 73 74 65 70 22 3a 22 77 69 66 69 5f 66 61 69 6c 65 64 22 2c 22 65 72 72 6f 72 22 3a 22 77 69 66 69 5f 66 61 69 6c 65 64 22 7d"
+    }
+  ],
+  "disconnectedEvents": 1
+}

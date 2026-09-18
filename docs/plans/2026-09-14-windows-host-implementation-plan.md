@@ -78,17 +78,17 @@ Windows 主机不负责：
 |---|---|---|---|---|---|
 | WIN-001 | 当前基线与 Windows 工具链 | `PASS_WITH_OBS` | 旧基线工具链曾可用 | 无 | `760dc16` 双远端一致建档;JDK 无 17/21(Windows 线不消费) |
 | WIN-002 | 桌面共享测试恢复全绿 | `PASS` | 94/95 | `MAC-001`、`MAC-002` | 95/95;M1 断言改消费正典产物,对微信裁决中立 |
-| WIN-003 | Electron Windows 构建与启动 | `TODO` | 旧提交打包、扫描、GATT 通过 | WIN-001、WIN-002 | 需当前提交复验 |
-| WIN-004 | Tauri Windows 构建与启动 | `TODO` | 旧提交扫描、GATT 通过 | WIN-001、WIN-002 | 需当前提交复验 |
-| WIN-005 | Avalonia 功能补齐 | `IN_PROGRESS` | Build Smoke 已通过 | WIN-001、MAC-008 | 读写/Notify/页面契约未完整接线 |
-| WIN-006 | Windows 真实 GATT 与重连回归 | `TODO` | Electron/Tauri 曾 20/20 | WIN-003、WIN-004 | 需在当前固件和当前提交复验 |
+| WIN-003 | Electron Windows 构建与启动 | `PASS_WITH_OBS` | 旧提交打包、扫描、GATT 通过 | WIN-001、WIN-002 | 20260918 三框架重测：build:win --dir exit0 + CDP 真机全链；见 20260918-WIN-ALL |
+| WIN-004 | Tauri Windows 构建与启动 | `PASS_WITH_OBS` | 旧提交扫描、GATT 通过 | WIN-001、WIN-002 | 20260918：fmt 修复 + check/test/build 过 + T1-T16 真机链；T-WIN-DEF-001 在册 |
+| WIN-005 | Avalonia 功能补齐 | `IN_PROGRESS` | Build Smoke 已通过 | WIN-001、MAC-008 | 20260918：BoxShadow 启动崩溃已修；写路径失败/重连归零/断链事件缺位三缺陷在册 |
+| WIN-006 | Windows 真实 GATT 与重连回归 | `IN_PROGRESS` | Electron/Tauri 曾 20/20 | WIN-003、WIN-004 | 20260918 对真 SHID 固件三框架全链：E 全过；T 重连死句柄、V 写失败两 P1 暴露；fixture_peripheral_s3 复验待硬件窗口 |
 | WIN-007 | Smart HID Windows E2E | `BLOCKED` | UI/传输代码已存在 | WIN-006、ControlHub 配对码、SHID 固件 | 未有完整 W4 证据 |
 | WIN-008 | Windows OTA E2E 回归 | `TODO` | 两线曾 `PASS_WITH_OBS` | WIN-006、OTA 固件 | 需复验重启后版本回读 |
 | WIN-009 | Windows 安装包与安装验证 | `TODO` | Electron/Avalonia 有历史构建 | WIN-003～WIN-008、MAC-011 | 需产出可安装 Artifact 和 SHA256 |
 | WIN-010 | Windows 最终交付与矩阵回填 | `TODO` | 历史证据分散 | WIN-001～WIN-009 | 等所有必需任务结论化 |
 | WIN-011 | 桌面壳导航一致性修复（Electron/Tauri） | `TODO` | 2026-09-15 导航审计 N3/N4 定位 | WIN-003、WIN-004 | N4 口径待用户裁决后实施 |
 
-完成率统计只按本表：`PASS` 1 / `PASS_WITH_OBS` 1 / `IN_PROGRESS` 1 / `FAILED` 0 / `BLOCKED` 1 / `TODO` 7。
+完成率统计只按本表：`PASS` 1 / `PASS_WITH_OBS` 3 / `IN_PROGRESS` 2 / `FAILED` 0 / `BLOCKED` 1 / `TODO` 3。
 
 ## 4. 实施任务
 
@@ -305,6 +305,28 @@ Windows 主机不负责：
 ### 跨线协调记录（Mac 侧对写锁区的最小侵入，2026-09-15 CI 首跑解锁）
 
 - `apps/desktop/tauri/src-tauri/icons/{32x32,128x128,128x128@2x}.png`：RGB→RGBA 重编码（ImageMagick PNG32，AE=0 逐像素无损，备份与校验见 verification/mac-plan-v1/）。原因：tauri v1 Linux 打包路径的 `generate_context!` 强制 RGBA（`icon 32x32.png is not RGBA` proc-macro panic），macOS 构建走不到该检查故从未暴露。属纯格式转换、零视觉/逻辑改动；Windows 线后续打包不受影响（.ico/.icns 未动）。
+
+### 2026-09-18 · WIN-003/WIN-004/WIN-005（部分）/WIN-006（部分）——三框架 × ESP32 真机全面重测
+
+用户指令「重测 Windows 和 esp32 进行一次全面测试，Windows 应该有很多框架，一个个测试」。
+盘点确认 Windows 侧实际框架为 Electron/Tauri/Avalonia 三个（apps/desktop/windows、linux 为
+README 占位且指向 Avalonia 线；Flutter 无 Windows 目标），逐框架执行构建+启动+真机 BLE 全链。
+
+- Status: WIN-003 `PASS_WITH_OBS` / WIN-004 `PASS_WITH_OBS` / WIN-005 `IN_PROGRESS`（含 1 修复）/ WIN-006 `IN_PROGRESS`
+- Commit: 基于 `9c413e6`（开测前 pull --ff-only Already up to date；本轮提交见 git log）
+- Host: Windows 10 22H2；Node v23.8.0（nvm 前置）/ rustc-cargo 1.98.1 MSVC / .NET SDK 9.0.200（net8.0-windows TFM）
+- Commands: `npm ci`（postinstall 挂死→缓存 zip 接管）、`node --check`×19、`node --test tests/desktop/*.test.mjs`（95/95）、
+  `npm run build:win -- --dir`（exit 0）、`cargo fmt --check`（FAIL→fmt 修复→clean）、`cargo check`/`cargo test`/`cargo build`（全过，Rust 单测 0 在册）、
+  `dotnet build`（exit 0，0 错 6 警）；CDP 9222/9444 + Win32 WM_CLOSE + .NET harness 驱动真机链
+- Result: E-WIN 全链过（F1-F15，断链重连身份逐字节一致）；T-WIN T1-T16 过但暴露重连死句柄（T-WIN-DEF-001）；
+  V-WIN 启动崩溃已修（BoxShadow），harness 过扫描/连接/发现/双读/通知，写失败+重连归零两缺陷在册。
+  三框架对同一设备读到相同身份帧 HID-00000001/fw1.2.0 与 wifi_failed 状态帧
+- Hardware: Intel Wireless Bluetooth；ESP32-S3 真实 Smart HID 固件 v1.2.0（WIN-007 现场原样保留）；
+  CH343/COM12 未接线（串口旁证缺，设备侧以 GATT 真实响应帧为证）；COM4=三星手机诊断口勿认错
+- Evidence: verification/windows-plan-v1/20260918-WIN-ALL/（summary.md 为总报告，含三框架横向矩阵与缺陷清单）
+- Observations: npm ci postinstall 本机网络挂死（SHASUMS 校验）需缓存接管；rcedit 文件锁重试自愈；
+  固件对非法 candidate 静默丢弃不回 invalid_payload；两壳 write format 词汇 text|hex vs utf8|hex
+- Next: T-WIN-DEF-001 与 V-WIN-DEF-001/002/003 修复排期（归 WIN-005/WIN-006 续作）；WIN-007 维持 BLOCKED
 
 ### 2026-09-14 · WIN-001
 

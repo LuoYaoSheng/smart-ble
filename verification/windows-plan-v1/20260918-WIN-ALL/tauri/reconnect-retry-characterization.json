@@ -1,0 +1,20 @@
+{
+  "device": "SHID-00000001",
+  "read1": {
+    "success": true,
+    "value": "7b 22 70 72 6f 64 75 63 "
+  },
+  "readA": {
+    "success": false,
+    "value": "Read failed: Error { code: HRESULT(0x80000013), message: \"该对象已关闭。\" }"
+  },
+  "readB": {
+    "success": false,
+    "value": "Read failed: Error { code: HRESULT(0x80000013), message: \"该对象已关闭。\" }"
+  },
+  "readC": {
+    "success": false,
+    "value": "Read failed: Error { code: HRESULT(0x80000013), message: \"该对象已关闭。\" }"
+  },
+  "disc2services": 1
+}
