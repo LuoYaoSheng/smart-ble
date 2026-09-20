@@ -647,7 +647,7 @@
         <Setter Property="CornerRadius" Value="{DynamicResource RXl}"/>
         <Setter Property="Padding" Value="20,22,20,16"/>
         <Setter Property="BoxShadow" Value="0 8 24 #10204029"/>
-        <Setter Property="MaxWidth" Value="300"/>
+        <Setter Property="Width" Value="300"/>
     </Style>
 
     <!-- ═══ 预算条（P008 bytebar：深色 ADV 负载） ═══ -->
@@ -683,7 +683,32 @@
     </Style>
     <Style Selector="Border.noteinfo TextBlock">
         <Setter Property="Foreground" Value="#2E5290"/>
+        <Setter Property="FontSize" Value="12"/>    </Style>
+
+    <!-- ═══ subnav 返回钮（正典 .back-btn：fill 底 · r9 · 无边框） ═══ -->
+    <Style Selector="Button.backbtn">
+        <Setter Property="Background" Value="{DynamicResource CFill}"/>
+        <Setter Property="Foreground" Value="{DynamicResource CText}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="9"/>
+    </Style>
+
+    <!-- ═══ 表单错误行（正典 .err-line：warning-weak 药丸） ═══ -->
+    <Style Selector="Border.errline">
+        <Setter Property="Background" Value="{DynamicResource CWarningWeak}"/>
+        <Setter Property="CornerRadius" Value="6"/>
+        <Setter Property="Padding" Value="8,5,8,5"/>
+        <Setter Property="Margin" Value="0,6,0,0"/>
+    </Style>
+
+    <!-- ═══ 日志空态（正典 .logempty：居中 cap mut） ═══ -->
+    <Style Selector="Border.logempty">
+        <Setter Property="Padding" Value="13,22,13,22"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+    </Style>
+    <Style Selector="Border.logempty TextBlock">
         <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="{DynamicResource CMut}"/>
     </Style>
 
     <!-- ═══ 操作态（B7 op） ═══ -->
@@ -739,7 +764,7 @@
     <Style Selector="Border.stepln">
         <Setter Property="Height" Value="2"/>
         <Setter Property="Background" Value="{DynamicResource CLine}"/>
-        <Setter Property="Margin" Value="2,0,2,20"/>
+        <Setter Property="Margin" Value="2,12,2,0"/>
         <Setter Property="VerticalAlignment" Value="Top"/>
     </Style>
     <Style Selector="Border.stepln.done">

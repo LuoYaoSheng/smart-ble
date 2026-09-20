@@ -1060,6 +1060,12 @@ public partial class MainWindowViewModel : ObservableObject
 
     public string HidDevId { get; private set; } = "—";
 
+    // 正典 p002 目标设备卡：ava 首字母 + 「Device Info 已验证」尾注（E-WIN hidProvDevId 口径）
+    public string HidDevInitial => string.IsNullOrEmpty(HidDevName) ? "S"
+        : char.ToUpperInvariant(HidDevName.Trim()[0]).ToString();
+
+    public string HidDevIdLine => HidDevId == "—" ? "—" : $"{HidDevId} · Device Info 已验证";
+
     public bool HidStepDone0 => HidStepIndex > 0;
     public bool HidStepCur0 => HidStepIndex == 0;
     public bool HidStepDone1 => HidStepIndex > 1;
@@ -1097,6 +1103,8 @@ public partial class MainWindowViewModel : ObservableObject
         HidDevId = string.IsNullOrEmpty(id) ? "—" : id;
         OnPropertyChanged(nameof(HidDevName));
         OnPropertyChanged(nameof(HidDevId));
+        OnPropertyChanged(nameof(HidDevInitial));
+        OnPropertyChanged(nameof(HidDevIdLine));
 
         ActiveView = "hidprov";
         HidStepIndex = 0;
@@ -1273,6 +1281,11 @@ public partial class BleDeviceViewModel : ObservableObject
         : char.ToUpperInvariant(DisplayName.Trim()[0]).ToString();
 
     public string IdLine => IsUnnamed ? $"{Id}（未命名）" : Id;
+
+    // 正典 C1 acts：连接/已连接 同一颗按钮按连接态换词（E-WIN DeviceCard connectBtn 口径）
+    public string ConnectEntryLabel => ConnectedHint ? "已连接" : "连接";
+
+    partial void OnConnectedHintChanged(bool value) => OnPropertyChanged(nameof(ConnectEntryLabel));
 
     public string RssiText => $"{Rssi} dBm";
 

@@ -1,0 +1,9 @@
+E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop.Tests\bin\Debug\net8.0-windows10.0.19041.0\SmartBLE.Desktop.Tests.dll (.NETCoreApp,Version=v8.0)的测试运行
+VSTest 版本 17.12.0 (x64)
+
+正在启动测试执行，请稍候...
+总共 1 个测试文件与指定模式相匹配。
+
+已通过! - 失败:     0，通过:    55，已跳过:     0，总计:    55，持续时间: 49 ms - SmartBLE.Desktop.Tests.dll (net8.0)
+
+有可用的工作负载更新。有关详细信息，请运行 `dotnet workload list`。

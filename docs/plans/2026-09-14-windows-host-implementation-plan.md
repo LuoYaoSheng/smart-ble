@@ -80,7 +80,7 @@ Windows 主机不负责：
 | WIN-002 | 桌面共享测试恢复全绿 | `PASS` | 94/95 | `MAC-001`、`MAC-002` | 95/95;M1 断言改消费正典产物,对微信裁决中立 |
 | WIN-003 | Electron Windows 构建与启动 | `PASS_WITH_OBS` | 旧提交打包、扫描、GATT 通过 | WIN-001、WIN-002 | 20260918 三框架重测：build:win --dir exit0 + CDP 真机全链；见 20260918-WIN-ALL |
 | WIN-004 | Tauri Windows 构建与启动 | `PASS_WITH_OBS` | 旧提交扫描、GATT 通过 | WIN-001、WIN-002 | 20260918：fmt 修复 + check/test/build 过 + T1-T16 真机链；T-WIN-DEF-001 在册 |
-| WIN-005 | Avalonia 功能补齐 | `IN_PROGRESS` | 单测 19/19 补齐 | WIN-001、MAC-008 | 20260920：SmartBLE.Desktop.Tests 新建，先红后绿抓出 UUID 小写映射真 bug；BLE 功能缺陷已清（见 20260918-WIN-DEF-FIX）；20260920-WIN-UIFULL 走查补 T-WIN-DEF-004+离开清会话双壳修复；同日 VWIN-UIFULL 续轮清 DEF-004/005/006（DataContext/卡片命令/寻祖绑定），V-WIN 全流程走查 16/16；同日 VWIN-UIALIGN 正典 UI 全量重写（TabBar+七视图+色彩探针 81/81，DEF-007~010 清剿） |
+| WIN-005 | Avalonia 功能补齐 | `IN_PROGRESS` | 单测 19/19 补齐 | WIN-001、MAC-008 | 20260920：SmartBLE.Desktop.Tests 新建，先红后绿抓出 UUID 小写映射真 bug；BLE 功能缺陷已清（见 20260918-WIN-DEF-FIX）；20260920-WIN-UIFULL 走查补 T-WIN-DEF-004+离开清会话双壳修复；同日 VWIN-UIFULL 续轮清 DEF-004/005/006（DataContext/卡片命令/寻祖绑定），V-WIN 全流程走查 16/16；同日 VWIN-UIALIGN 正典 UI 全量重写（TabBar+七视图+色彩探针 81/81，DEF-007~010 清剿）；同日 VWIN-UIALIGN2 布局数值收口（acts 撑满/模态等宽/stepper 修复等 6 缺陷，SL1~11 布局探针 92/92） |
 | WIN-006 | Windows 真实 GATT 与重连回归 | `IN_PROGRESS` | T-WIN-DEF-001 已修 | WIN-003、WIN-004 | 20260918 WIN-DEF-FIX：重连死句柄修复，retry 探针 + T1-T16 全绿；fixture_peripheral_s3 复验待硬件窗口 |
 | WIN-007 | Smart HID Windows E2E | `BLOCKED` | UI/传输代码已存在 | WIN-006、ControlHub 配对码、SHID 固件 | 未有完整 W4 证据 |
 | WIN-008 | Windows OTA E2E 回归 | `TODO` | 两线曾 `PASS_WITH_OBS` | WIN-006、OTA 固件 | 需复验重启后版本回读 |
@@ -367,6 +367,24 @@ README 占位且指向 Avalonia 线；Flutter 无 Windows 目标），逐框架�
   ResolveWriteOption 抽取顺带修双支持特征的无响应写错按带响应 bug
 - Evidence: verification/windows-plan-v1/20260920-WIN-011/
 - Next: N4 两案（按能力显隐 vs 恒显+未就绪徽章）待用户裁决后实施
+
+### 2026-09-20 · VWIN-UIALIGN2——布局数值对齐收口（用户反馈「扫描设备的设备列表都没对齐」）
+
+- 触发：上轮 81/81 以文案/色彩为主缺布局校验，用户指出设备列表等页面视觉未对齐。
+- 方法：正典 CSS（prototype.css v1.4.7 全量数值）+ E-WIN 真实渲染层逐条比对；驱动新增
+  SL1~SL11 布局数值探针（UIA 逻辑 px + 截图像素，按正典数值 ±2~4L 断言）。
+- 修复 6 处真实缺陷：A1 C1 acts 按钮未 flex:1 撑满（61/34L→563L 等宽，连接/已连接同钮换词）；
+  A2 P006 devhead 按钮未全宽；A3 写/退模态按钮不等宽（85/119→125.3/125.3，模态固定 300 宽
+  终结居中 Border 无穷宽测量星列退化）；A4 P002 stepper 连线塌 0（StackPanel→Grid）；
+  A5 P009 shell 620→768 居中随滚动+身份卡 38/r11 渐变白图标；A6 P010 全宽+四卡图标+正典空态/note/foot。
+  另修 P007/P008 顶距、err-line 药丸、back-btn、sig/dbm 居中、TabBar 角标定位+IsHitTestVisible、
+  P002 目标卡正典化等 12 处小项。
+- 驱动新坑：窗口级联漂移致 TabBar 沉底吞点击/截图（SetWindowPos 固定窗位）；DWM 不可见边框
+  截入取证（改 EXTENDED_FRAME_BOUNDS，前轮截图左侧 11px 深条系取证瑕疵非 UI 缺陷）。
+- 走查 **92/92 GREEN**（含 ava 44.0×44.0、卡距 ~12+阴影、navbar 18.7、TabBar 底垫 16.0、
+  模态 125.3/125.3 距 9.3 高 38、stepln 渲染）；build 0 错；test 55/55；扫描/关于/写弹窗
+  三页 analyze_image 视觉复核通过；FW-LOCK 红线零触碰。
+- Evidence: verification/windows-plan-v1/20260920-VWIN-UIALIGN2/
 
 ### 2026-09-20 · VWIN-UIALIGN——V-WIN 正典 UI 对齐全量重写（用户指令「UI要对齐」）
 

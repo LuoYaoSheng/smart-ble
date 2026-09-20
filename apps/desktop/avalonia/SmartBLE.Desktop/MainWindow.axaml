@@ -157,7 +157,8 @@
                                                                    FontSize="10" Foreground="{DynamicResource CMut}"
                                                                    TextTrimming="CharacterEllipsis"/>
                                                         <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,3,0,0">
-                                                            <ItemsControl ItemsSource="{Binding SigBars}">
+                                                            <ItemsControl ItemsSource="{Binding SigBars}" Height="12"
+                                                                          VerticalAlignment="Center">
                                                                 <ItemsControl.ItemsPanel>
                                                                     <ItemsPanelTemplate>
                                                                         <StackPanel Orientation="Horizontal" Spacing="2"/>
@@ -174,37 +175,55 @@
                                                             <TextBlock Classes="mono" Text="{Binding RssiText}"
                                                                        FontSize="10" FontWeight="Medium"
                                                                        Foreground="{DynamicResource CMut}"
-                                                                       VerticalAlignment="Bottom"/>
+                                                                       VerticalAlignment="Center"/>
                                                         </StackPanel>
                                                     </StackPanel>
                                                 </Grid>
-                                                <!-- 正典 C1 双入口卡：SHID 匹配卡 = 配置(主) + 连接(soft) 两按钮并存；
-                                                     已连接态按 E-WIN 口径禁用而非隐藏 -->
-                                                <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,12,0,0">
-                                                    <Button Classes="primary sm" MinWidth="0"
-                                                            AutomationProperties.Name="配置 Smart HID"
-                                                            IsVisible="{Binding IsShid}"
-                                                            IsEnabled="{Binding !ConnectedHint}"
-                                                            Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).OpenHidProvisionCommand}"
-                                                            CommandParameter="{Binding Id}">
-                                                        <StackPanel Orientation="Horizontal" Spacing="6">
-                                                            <Path Classes="ic sm" Data="{StaticResource IcoHid}"
-                                                                  Stroke="{Binding $parent[Button].Foreground}"/>
-                                                            <TextBlock Text="配置 Smart HID"/>
-                                                        </StackPanel>
-                                                    </Button>
-                                                    <Button Classes="soft sm" Classes.primary="{Binding !IsShid}"
+                                                <!-- 正典 C1 acts：flex:1 等宽撑满（.dev .acts .btn{flex:1}）。
+                                                     SHID 双入口并存；非 SHID 单颗全宽；已连接态禁用换词不换位 -->
+                                                <Grid Margin="0,12,0,0">
+                                                    <Grid IsVisible="{Binding IsShid}" ColumnDefinitions="*,8,*">
+                                                        <Button Grid.Column="0" Classes="primary sm" MinWidth="0"
+                                                                HorizontalAlignment="Stretch"
+                                                                AutomationProperties.Name="配置 Smart HID"
+                                                                IsEnabled="{Binding !ConnectedHint}"
+                                                                Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).OpenHidProvisionCommand}"
+                                                                CommandParameter="{Binding Id}">
+                                                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                                                <Path Classes="ic sm" Data="{StaticResource IcoHid}"
+                                                                      Stroke="{Binding $parent[Button].Foreground}"/>
+                                                                <TextBlock Text="配置 Smart HID"/>
+                                                            </StackPanel>
+                                                        </Button>
+                                                        <Button Grid.Column="2" Classes="soft sm" MinWidth="0"
+                                                                Classes.primary="{Binding !IsShid}"
+                                                                HorizontalAlignment="Stretch"
+                                                                AutomationProperties.Name="连接"
+                                                                IsEnabled="{Binding !ConnectedHint}"
+                                                                Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).ConnectToDeviceCommand}"
+                                                                CommandParameter="{Binding Id}">
+                                                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                                                <Path Classes="ic sm" Data="{StaticResource IcoLink}"
+                                                                      Stroke="{Binding $parent[Button].Foreground}"/>
+                                                                <TextBlock Text="{Binding ConnectEntryLabel}"/>
+                                                            </StackPanel>
+                                                        </Button>
+                                                    </Grid>
+                                                    <Button Classes="soft sm" MinWidth="0"
+                                                            Classes.primary="{Binding !ConnectedHint}"
+                                                            HorizontalAlignment="Stretch"
                                                             AutomationProperties.Name="连接"
+                                                            IsVisible="{Binding !IsShid}"
                                                             IsEnabled="{Binding !ConnectedHint}"
                                                             Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).ConnectToDeviceCommand}"
                                                             CommandParameter="{Binding Id}">
                                                         <StackPanel Orientation="Horizontal" Spacing="6">
                                                             <Path Classes="ic sm" Data="{StaticResource IcoLink}"
                                                                   Stroke="{Binding $parent[Button].Foreground}"/>
-                                                            <TextBlock Text="连接"/>
+                                                            <TextBlock Text="{Binding ConnectEntryLabel}"/>
                                                         </StackPanel>
                                                     </Button>
-                                                </StackPanel>
+                                                </Grid>
                                             </StackPanel>
                                         </Border>
                                     </DataTemplate>
@@ -251,7 +270,7 @@
                     </Border>
 
                     <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
-                        <StackPanel Margin="16,0,16,24">
+                        <StackPanel Margin="16,12,16,24">
                             <!-- C12 汇总卡（正典 one 模式：单台不显示，两台及以上才出） -->
                             <Border Classes="card" IsVisible="{Binding ConnectedBadgeVisible}">
                                 <Grid ColumnDefinitions="Auto,*,Auto">
@@ -307,7 +326,8 @@
                                                     <TextBlock Classes="mono" Text="{Binding Id}" FontSize="10"
                                                                Foreground="{DynamicResource CMut}"/>
                                                     <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,3,0,0">
-                                                        <ItemsControl ItemsSource="{Binding SigBars}">
+                                                        <ItemsControl ItemsSource="{Binding SigBars}" Height="12"
+                                                                      VerticalAlignment="Center">
                                                             <ItemsControl.ItemsPanel>
                                                                 <ItemsPanelTemplate>
                                                                     <StackPanel Orientation="Horizontal" Spacing="2"/>
@@ -323,10 +343,10 @@
                                                         </ItemsControl>
                                                         <TextBlock Text="已连接 · 可进行 GATT 调试" FontSize="11"
                                                                    Foreground="{DynamicResource CMut}"
-                                                                   VerticalAlignment="Bottom"/>
+                                                                   VerticalAlignment="Center"/>
                                                     </StackPanel>
                                                 </StackPanel>
-                                                <Button Grid.Column="2" Classes="soft dangert sm" VerticalAlignment="Center"
+                                                <Button Grid.Column="2" Classes="soft dangert sm" VerticalAlignment="Top"
                                                         AutomationProperties.Name="断开"
                                                         Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).DisconnectCommand}">
                                                     <StackPanel Orientation="Horizontal" Spacing="6">
@@ -370,7 +390,7 @@
                                 <TextBlock Grid.Column="0" Text="广播" FontSize="20" FontWeight="ExtraBold"/>
                                 <Border Grid.Column="1" Classes="chip neutral" VerticalAlignment="Center"
                                         Margin="0,0,6,0">
-                                    <TextBlock Text="平台：Desktop"/>
+                                    <TextBlock Text="平台：Desktop · Windows"/>
                                 </Border>
                                 <Border Grid.Column="2" Classes="badge dim" VerticalAlignment="Center">
                                     <StackPanel Orientation="Horizontal" Spacing="5">
@@ -383,7 +403,7 @@
                     </Border>
 
                     <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
-                        <StackPanel Margin="16,0,16,24">
+                        <StackPanel Margin="16,12,16,24">
                             <Border Classes="card">
                                 <StackPanel Spacing="12">
                                     <StackPanel Spacing="6">
@@ -397,13 +417,14 @@
                                                    Foreground="{DynamicResource CSub}"/>
                                         <TextBox Classes="inp mono" MaxLength="36"
                                                  Text="{Binding BcUuid, Mode=TwoWay}"/>
-                                        <StackPanel Orientation="Horizontal" Spacing="5"
-                                                    IsVisible="{Binding !BcUuidValid}">
-                                            <Path Classes="ic xs" Data="{StaticResource IcoWarn}"
-                                                  Stroke="{DynamicResource CWarningText}" VerticalAlignment="Center"/>
-                                            <TextBlock Text="UUID 需为 4 / 8 / 36 位十六进制" FontSize="11"
-                                                       Foreground="{DynamicResource CWarningText}"/>
-                                        </StackPanel>
+                                        <Border Classes="errline" IsVisible="{Binding !BcUuidValid}">
+                                            <StackPanel Orientation="Horizontal" Spacing="5">
+                                                <Path Classes="ic xs" Data="{StaticResource IcoWarn}"
+                                                      Stroke="{DynamicResource CWarningText}" VerticalAlignment="Center"/>
+                                                <TextBlock Text="UUID 需为 4 / 8 / 36 位十六进制" FontSize="11"
+                                                           Foreground="{DynamicResource CWarningText}"/>
+                                            </StackPanel>
+                                        </Border>
                                     </StackPanel>
                                     <StackPanel Spacing="6">
                                         <TextBlock Text="厂商 ID（HEX）" FontSize="12" FontWeight="Medium"
@@ -468,10 +489,9 @@
                                         </StackPanel>
                                     </Border>
 
-                                    <StackPanel Orientation="Horizontal" Spacing="9" Margin="0,2,0,0">
+                                    <StackPanel Orientation="Horizontal" Spacing="9" Margin="0,14,0,0">
                                         <Button Classes="primary" AutomationProperties.Name="开始广播"
-                                                Command="{Binding StartBroadcastCommand}">
-                                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                                Command="{Binding StartBroadcastCommand}">                                            <StackPanel Orientation="Horizontal" Spacing="6">
                                                 <Path Classes="ic sm" Data="{StaticResource IcoCast}"
                                                       Stroke="{Binding $parent[Button].Foreground}"/>
                                                 <TextBlock Text="开始广播"/>
@@ -531,35 +551,34 @@
                     </ScrollViewer>
                 </Grid>
 
-                <!-- ─────────── P009 关于 ─────────── -->
-                <Grid IsVisible="{Binding IsAboutView}" RowDefinitions="Auto,*">
-                    <Border Grid.Row="0" Background="{DynamicResource GradNavbar}"
-                            BorderBrush="{DynamicResource CLineSoft}" BorderThickness="0,0,0,1"
-                            Padding="18,8,18,12">
-                        <StackPanel Spacing="2">
-                            <TextBlock Classes="kicker" Text="ABOUT"/>
-                            <Grid ColumnDefinitions="*,Auto">
-                                <TextBlock Grid.Column="0" Text="关于" FontSize="20" FontWeight="ExtraBold"/>
-                                <Border Grid.Column="1" Classes="chip primaryc" VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding AboutVersionChip}"/>
-                                </Border>
-                            </Grid>
-                        </StackPanel>
-                    </Border>
+                <!-- ─────────── P009 关于（E-WIN about-shell：768px 居中 · navbar 随内容滚动） ─────────── -->
+                <Grid IsVisible="{Binding IsAboutView}">
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel MaxWidth="768" HorizontalAlignment="Center" Margin="20,8,20,4">
+                            <Border BorderBrush="{DynamicResource CLineSoft}" BorderThickness="0,0,0,1"
+                                    Padding="2,8,2,12" Margin="0,0,0,12">
+                                <StackPanel Spacing="2">
+                                    <TextBlock Classes="kicker" Text="ABOUT"/>
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBlock Grid.Column="0" Text="关于" FontSize="20" FontWeight="ExtraBold"/>
+                                        <Border Grid.Column="1" Classes="chip neutral" VerticalAlignment="Center">
+                                            <TextBlock Classes="mono" Text="{Binding AboutVersionChip}"/>
+                                        </Border>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
 
-                    <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
-                        <StackPanel Margin="16,12,16,24" MaxWidth="620" HorizontalAlignment="Center">
-                            <!-- 身份卡 -->
+                            <!-- 身份卡（正典 p009：logo 38/r11 深蓝渐变白图标 · 名称 h2 · verline micro） -->
                             <Border Classes="card">
-                                <StackPanel Orientation="Horizontal" Spacing="14">
-                                    <Border Width="44" Height="44" CornerRadius="12"
-                                            Background="{DynamicResource CPrimaryWeak}">
-                                        <Path Classes="ic" Data="{StaticResource IcoBt}"
-                                              Stroke="{DynamicResource CPrimary}" Stretch="Uniform"/>
+                                <StackPanel Orientation="Horizontal" Spacing="11">
+                                    <Border Width="38" Height="38" CornerRadius="11"
+                                            Background="{DynamicResource GradPrimary}">
+                                        <Path Classes="ic sm" Data="{StaticResource IcoBt}"
+                                              Stroke="White" Stretch="Uniform"/>
                                     </Border>
                                     <StackPanel Spacing="2" VerticalAlignment="Center">
-                                        <TextBlock Text="BLE Toolkit+" FontSize="20" FontWeight="ExtraBold"/>
-                                        <TextBlock Text="{Binding AboutVersionLine}" FontSize="12"
+                                        <TextBlock Text="BLE Toolkit+" FontSize="15" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding AboutVersionLine}" FontSize="10"
                                                    Foreground="{DynamicResource CMut}"/>
                                     </StackPanel>
                                 </StackPanel>
@@ -702,7 +721,7 @@
                             BorderBrush="{DynamicResource CLineSoft}" BorderThickness="0,0,0,1"
                             Padding="14,8,16,10">
                         <StackPanel Orientation="Horizontal" Spacing="10">
-                            <Button Classes="soft" Width="30" Height="30" CornerRadius="9" Padding="0"
+                            <Button Classes="backbtn" Width="30" Height="30" Padding="0"
                                     AutomationProperties.Name="返回"
                                     Command="{Binding VersionsBackCommand}">
                                 <Path Classes="ic sm" Data="{StaticResource IcoChevR}"
@@ -713,13 +732,13 @@
                     </Border>
 
                     <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
-                        <StackPanel Margin="16,12,16,24" MaxWidth="620" HorizontalAlignment="Center">
+                        <StackPanel Margin="16,12,16,24">
                             <!-- 当前版本 -->
                             <Border Classes="card">
                                 <StackPanel>
-                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,0,0,4">
                                         <Path Classes="ic" Data="{StaticResource IcoDoc}"
-                                              Stroke="{DynamicResource CPrimary}"/>
+                                              Stroke="{DynamicResource CText}"/>
                                         <TextBlock Text="当前版本" FontSize="17" FontWeight="Bold"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,6,0,10">
@@ -774,9 +793,9 @@
                             <!-- 当前限制 -->
                             <Border Classes="card">
                                 <StackPanel>
-                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,0,0,4">
                                         <Path Classes="ic" Data="{StaticResource IcoWarn}"
-                                              Stroke="{DynamicResource CWarningText}"/>
+                                              Stroke="{DynamicResource CText}"/>
                                         <TextBlock Text="当前限制" FontSize="17" FontWeight="Bold"/>
                                     </StackPanel>
                                     <ItemsControl ItemsSource="{Binding VersionLimitations}" Margin="0,6,0,0">
@@ -791,13 +810,24 @@
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
+                                    <Border Classes="noteinfo" Margin="0,8,0,0">
+                                        <StackPanel Orientation="Horizontal" Spacing="9">
+                                            <Path Classes="ic sm" Data="{StaticResource IcoInfo}"
+                                                  Stroke="#2E5290" VerticalAlignment="Center"/>
+                                            <TextBlock Text="当前无 Artifact，不提供下载入口。"/>
+                                        </StackPanel>
+                                    </Border>
                                 </StackPanel>
                             </Border>
 
                             <!-- 发布历史 -->
                             <Border Classes="card">
                                 <StackPanel>
-                                    <TextBlock Text="发布历史" FontSize="17" FontWeight="Bold" Margin="0,0,0,6"/>
+                                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,0,0,4">
+                                        <Path Classes="ic" Data="{StaticResource IcoCheck}"
+                                              Stroke="{DynamicResource CText}"/>
+                                        <TextBlock Text="正式发布历史" FontSize="17" FontWeight="Bold"/>
+                                    </StackPanel>
                                     <ItemsControl ItemsSource="{Binding VersionReleases}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate x:DataType="vm:ReleaseRowViewModel">
@@ -815,17 +845,21 @@
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
-                                    <TextBlock Text="暂无正式发布版本——产品当前处于 PREVIEW 阶段，首个正式版发布后将在此列出。"
-                                               FontSize="12" Foreground="{DynamicResource CMut}" TextWrapping="Wrap"
-                                               Margin="0,10,0,0"
-                                               IsVisible="{Binding !HasVersionReleases}"/>
+                                    <Border Classes="logempty" IsVisible="{Binding !HasVersionReleases}">
+                                        <TextBlock Text="暂无正式发布版本——产品当前处于 PREVIEW 阶段，首个正式版发布后将在此列出。"
+                                                   TextWrapping="Wrap" HorizontalAlignment="Center"/>
+                                    </Border>
                                 </StackPanel>
                             </Border>
 
                             <!-- 预览记录 -->
                             <Border Classes="card">
                                 <StackPanel>
-                                    <TextBlock Text="预览记录" FontSize="17" FontWeight="Bold" Margin="0,0,0,6"/>
+                                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,0,0,4">
+                                        <Path Classes="ic" Data="{StaticResource IcoDl}"
+                                              Stroke="{DynamicResource CText}"/>
+                                        <TextBlock Text="预览记录" FontSize="17" FontWeight="Bold"/>
+                                    </StackPanel>
                                     <ItemsControl ItemsSource="{Binding VersionPreviews}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate x:DataType="vm:PreviewRowViewModel">
@@ -845,6 +879,12 @@
                                     </ItemsControl>
                                 </StackPanel>
                             </Border>
+
+                            <StackPanel Margin="0,18,0,6">
+                                <TextBlock Text="本页数据来自 Release Metadata 投影，不是手写版本事实源。"
+                                           FontSize="11" Foreground="{DynamicResource CPh}"
+                                           HorizontalAlignment="Center"/>
+                            </StackPanel>
                         </StackPanel>
                     </ScrollViewer>
                 </Grid>
@@ -855,7 +895,7 @@
                             BorderBrush="{DynamicResource CLineSoft}" BorderThickness="0,0,0,1"
                             Padding="14,8,16,10">
                         <StackPanel Orientation="Horizontal" Spacing="10">
-                            <Button Classes="soft" Width="30" Height="30" CornerRadius="9" Padding="0"
+                            <Button Classes="backbtn" Width="30" Height="30" Padding="0"
                                     AutomationProperties.Name="返回"
                                     Command="{Binding GoBackCommand}">
                                 <Path Classes="ic sm" Data="{StaticResource IcoChevR}"
@@ -887,8 +927,10 @@
                                                 </StackPanel>
                                             </StackPanel>
                                         </Grid>
-                                        <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,12,0,0">
-                                            <Button Classes="primary sm" Command="{Binding ConnectToDeviceCommand}"
+                                        <!-- 正典 devhead.acts：单颗 flex:1 全宽（默认 40px 高，非 sm） -->
+                                        <Grid Margin="0,12,0,0">
+                                            <Button Classes="primary" HorizontalAlignment="Stretch"
+                                                    Command="{Binding ConnectToDeviceCommand}"
                                                     AutomationProperties.Name="连接设备"
                                                     IsVisible="{Binding !IsGattConnected}">
                                                 <StackPanel Orientation="Horizontal" Spacing="6">
@@ -897,7 +939,8 @@
                                                     <TextBlock Text="连接设备"/>
                                                 </StackPanel>
                                             </Button>
-                                            <Button Classes="danger sm" Command="{Binding DisconnectCommand}"
+                                            <Button Classes="danger" HorizontalAlignment="Stretch"
+                                                    Command="{Binding DisconnectCommand}"
                                                     AutomationProperties.Name="断开连接"
                                                     IsVisible="{Binding IsGattConnected}">
                                                 <StackPanel Orientation="Horizontal" Spacing="6">
@@ -906,7 +949,7 @@
                                                     <TextBlock Text="断开连接"/>
                                                 </StackPanel>
                                             </Button>
-                                        </StackPanel>
+                                        </Grid>
                                     </StackPanel>
                                 </Border>
 
@@ -1081,7 +1124,7 @@
                             BorderBrush="{DynamicResource CLineSoft}" BorderThickness="0,0,0,1"
                             Padding="14,8,16,10">
                         <StackPanel Orientation="Horizontal" Spacing="10">
-                            <Button Classes="soft" Width="30" Height="30" CornerRadius="9" Padding="0"
+                            <Button Classes="backbtn" Width="30" Height="30" Padding="0"
                                     AutomationProperties.Name="返回"
                                     Command="{Binding HidBackToListCommand}">
                                 <Path Classes="ic sm" Data="{StaticResource IcoChevR}"
@@ -1093,10 +1136,10 @@
                     </Border>
 
                     <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
-                        <StackPanel Margin="16,0,16,24" MaxWidth="620" HorizontalAlignment="Center">
-                            <!-- C6 stepper：连接设备 → 填写配置 → 下发状态 -->
-                            <StackPanel Orientation="Horizontal" Margin="2,2,2,14">
-                                <StackPanel Width="72" HorizontalAlignment="Center" Spacing="5">
+                        <StackPanel Margin="16,0,16,24">
+                            <!-- C6 stepper：连接设备 → 填写配置 → 下发状态（Grid 列保证连线拉伸） -->
+                            <Grid ColumnDefinitions="72,*,72,*,72" Margin="2,2,2,14">
+                                <StackPanel Grid.Column="0" HorizontalAlignment="Center" Spacing="5">
                                     <Border Classes="stepn" Classes.cur="{Binding HidStepCur0}"
                                             Classes.done="{Binding HidStepDone0}">
                                         <TextBlock Text="1"/>
@@ -1104,8 +1147,8 @@
                                     <TextBlock Text="连接设备" FontSize="10" HorizontalAlignment="Center"
                                                Foreground="{DynamicResource CMut}" FontWeight="Medium"/>
                                 </StackPanel>
-                                <Border Classes="stepln" Classes.done="{Binding HidStepDone0}"/>
-                                <StackPanel Width="72" HorizontalAlignment="Center" Spacing="5">
+                                <Border Grid.Column="1" Classes="stepln" Classes.done="{Binding HidStepDone0}"/>
+                                <StackPanel Grid.Column="2" HorizontalAlignment="Center" Spacing="5">
                                     <Border Classes="stepn" Classes.cur="{Binding HidStepCur1}"
                                             Classes.done="{Binding HidStepDone1}">
                                         <TextBlock Text="2"/>
@@ -1113,25 +1156,28 @@
                                     <TextBlock Text="填写配置" FontSize="10" HorizontalAlignment="Center"
                                                Foreground="{DynamicResource CMut}" FontWeight="Medium"/>
                                 </StackPanel>
-                                <Border Classes="stepln" Classes.done="{Binding HidStepDone1}"/>
-                                <StackPanel Width="72" HorizontalAlignment="Center" Spacing="5">
+                                <Border Grid.Column="3" Classes="stepln" Classes.done="{Binding HidStepDone1}"/>
+                                <StackPanel Grid.Column="4" HorizontalAlignment="Center" Spacing="5">
                                     <Border Classes="stepn" Classes.cur="{Binding HidStepCur2}">
                                         <TextBlock Text="3"/>
                                     </Border>
                                     <TextBlock Text="下发状态" FontSize="10" HorizontalAlignment="Center"
                                                Foreground="{DynamicResource CMut}" FontWeight="Medium"/>
                                 </StackPanel>
-                            </StackPanel>
+                            </Grid>
 
-                            <!-- 目标设备卡 -->
-                            <Border Classes="card">
+                            <!-- 目标设备卡（正典 p002：padding 12x16 · ava 38/r10 · Device Info 已验证） -->
+                            <Border Classes="card" Padding="16,12,16,12">
                                 <StackPanel Orientation="Horizontal" Spacing="11">
-                                    <Border Classes="ava shid" Width="38" Height="38" CornerRadius="10">
-                                        <TextBlock Text="S"/>
+                                    <Border Width="38" Height="38" CornerRadius="10"
+                                            Background="{DynamicResource GradAvaShid}">
+                                        <TextBlock Text="{Binding HidDevInitial}" FontSize="15"
+                                                   FontWeight="ExtraBold" Foreground="#0E9A80"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </Border>
                                     <StackPanel Spacing="2" VerticalAlignment="Center">
                                         <TextBlock Text="{Binding HidDevName}" FontSize="15" FontWeight="Bold"/>
-                                        <TextBlock Classes="mono" Text="{Binding HidDevId}" FontSize="10"
+                                        <TextBlock Classes="mono" Text="{Binding HidDevIdLine}" FontSize="10"
                                                    Foreground="{DynamicResource CMut}"/>
                                     </StackPanel>
                                 </StackPanel>
@@ -1270,15 +1316,18 @@
                                     <StackPanel Orientation="Horizontal" Spacing="12">
                                         <Path Classes="ic lg" Data="{StaticResource IcoQr}"
                                               Stroke="{DynamicResource CPrimary}"/>
-                                        <StackPanel Grid.Column="1" Spacing="2">
-                                            <TextBlock Text="获取 ControlHub 配对码" FontSize="15" FontWeight="Bold"
+                                        <StackPanel Spacing="2">
+                                            <TextBlock Text="扫描 ControlHub 配对码" FontSize="15" FontWeight="Bold"
                                                        Foreground="{DynamicResource CPrimary}"/>
-                                            <TextBlock Text="摄像头读取 ControlHub 屏显二维码，识别后自动回填地址与令牌"
-                                                       FontSize="11" Foreground="{DynamicResource CMut}"/>
+                                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                                <TextBlock Text="摄像头读取 ControlHub 屏显二维码，识别后自动回填地址与令牌"
+                                                           FontSize="11" Foreground="{DynamicResource CMut}"
+                                                           VerticalAlignment="Center"/>
+                                                <Border Classes="chip warningc" VerticalAlignment="Center">
+                                                    <TextBlock Text="必需"/>
+                                                </Border>
+                                            </StackPanel>
                                         </StackPanel>
-                                        <Border Classes="chip warningc" VerticalAlignment="Center">
-                                            <TextBlock Text="必需"/>
-                                        </Border>
                                     </StackPanel>
                                 </Border>
 
@@ -1340,7 +1389,9 @@
                             </StackPanel>
                         </Button>
                         <Border Classes="tabn" IsVisible="{Binding ConnectedBadgeVisible}"
-                                Margin="0,2,0,0" HorizontalAlignment="Center">
+                                IsHitTestVisible="False"
+                                HorizontalAlignment="Center" VerticalAlignment="Top"
+                                Margin="13,2,-13,0">
                             <TextBlock Text="{Binding ConnectedBadgeText}"/>
                         </Border>
                     </Grid>
@@ -1367,7 +1418,7 @@
         <!-- ════════════════ C9 写入弹窗（HEX/UTF-8 + 单次/批量/循环） ════════════════ -->
         <Grid IsVisible="{Binding ShowWriteDialog}" ZIndex="90">
             <Border Classes="mask"/>
-            <Border Classes="modal" MaxWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Border Classes="modal" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <StackPanel>
                     <TextBlock Text="写入数据" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center"/>
                     <TextBlock Classes="mono" Text="{Binding WriteCharUuid}" FontSize="10"
@@ -1410,10 +1461,12 @@
                         </StackPanel>
                     </Grid>
 
-                    <Grid ColumnDefinitions="*,9,*" Margin="0,14,0,0">
-                        <Button Grid.Column="0" Classes="soft" Content="取消"
+                    <Grid ColumnDefinitions="*,*" Margin="0,14,0,0">
+                        <Button Grid.Column="0" Classes="soft" Height="38" Margin="0,0,4.5,0"
+                                Content="取消"
                                 Command="{Binding CloseWriteDialogCommand}"/>
-                        <Button Grid.Column="2" Classes="primary" AutomationProperties.Name="确认写入"
+                        <Button Grid.Column="1" Classes="primary" Height="38" Margin="4.5,0,0,0"
+                                AutomationProperties.Name="确认写入"
                                 Command="{Binding ConfirmWriteCommand}">
                             <StackPanel Orientation="Horizontal" Spacing="6">
                                 <Path Classes="ic sm" Data="{StaticResource IcoSend}"
@@ -1439,10 +1492,12 @@
                     <TextBlock Classes="mono" Text="{Binding ExitConfirmDetail}" FontSize="10"
                                Foreground="{DynamicResource CMut}" HorizontalAlignment="Center"
                                Margin="0,8,0,18"/>
-                    <Grid ColumnDefinitions="*,9,*">
-                        <Button Grid.Column="0" Classes="primary" Content="退出"
+                    <Grid ColumnDefinitions="*,*">
+                        <Button Grid.Column="0" Classes="primary" Height="38" Margin="0,0,4.5,0"
+                                Content="退出"
                                 Command="{Binding ConfirmExitCommand}"/>
-                        <Button Grid.Column="2" Classes="soft" Content="继续使用"
+                        <Button Grid.Column="1" Classes="soft" Height="38" Margin="4.5,0,0,0"
+                                Content="继续使用"
                                 Command="{Binding CancelExitCommand}"/>
                     </Grid>
                 </StackPanel>
