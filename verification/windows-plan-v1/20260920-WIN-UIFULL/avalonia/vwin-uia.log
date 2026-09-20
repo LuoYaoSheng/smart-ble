@@ -1,0 +1,65 @@
+TITLE: SmartBLE
+WIN: [] (2549,-11)
+WIN: [ZCode] (-7,-7)
+WIN: [] (0,0)
+WIN: [SmartBLE] (33,55)
+BTN: [最小化]
+BTN: [最大化]
+BTN: [关闭]
+BTN: [Avalonia.Controls.StackPanel]
+BTN: [Avalonia.Controls.StackPanel]
+BTN: [重置]
+BTN: []
+BTN: []
+BTN: [HEX]
+BTN: [UTF-8]
+BTN: [取消]
+BTN: [写入]
+STATUS: 
+CLICK:filter@(147,130)
+FILTER: open+resetVisible=True
+CLICK:reset@(1150,187)
+CLICK:filter2@(147,130)
+WIN-RECT: (33,55) 1200x900
+FG-HANDLE: 3673238 vs WIN-HANDLE: 16255160
+FG-AFTER: 16255160
+SP-BTN-COUNT: 2
+DPI-MAP: phys(25,25,1240,962) uia(33,55,1200x900) k=(1.01,1.04)
+WIN-ENABLED: True
+CLICKPHYS:filter-phys uia(162,138) phys(155,111)
+CLICKPHYS:scan uia(76,138) phys(68,111)
+POSTMSG: scan client(43,83)
+INVOKE-FAIL: Exception of type 'System.Exception' was thrown.
+SCAN-FLIP-TO-STOP: False
+SCAN: keyboard-space sent
+SCAN-FLIP-TO-STOP: False
+NAMED-ELEMENTS: 26
+E: MenuBar:系统
+E: MenuItem:系统
+E: Button:最小化
+E: Button:最大化
+E: Button:关闭
+E: Text:SmartBLE
+E: Button:Avalonia.Controls.StackPanel
+E: Text:🔍
+E: Button:Avalonia.Controls.StackPanel
+E: Text:🔽
+E: Text:过滤条件
+E: Text:过滤条件
+E: Button:重置
+E: Text:信号强度
+E: Text:≥ (unset) dBm
+E: Text:名称前缀
+E: CheckBox:隐藏无名设备
+E: Text:📡
+E: Text:暂无设备
+E: Text:点击上方按钮开始扫描
+E: Text:格式:
+E: Button:HEX
+E: Button:UTF-8
+E: Text:数据:
+E: Button:取消
+E: Button:写入
+DEVICES-SHID: 0
+NO-SHID-DEVICE
+RESULT: OK

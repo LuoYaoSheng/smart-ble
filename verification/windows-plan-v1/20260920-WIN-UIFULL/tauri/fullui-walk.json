@@ -1,0 +1,171 @@
+{
+  "flavor": "tauri",
+  "steps": [
+    {
+      "name": "boot",
+      "ok": true,
+      "detail": "BLE Toolkit+"
+    },
+    {
+      "name": "tabbar",
+      "ok": true,
+      "detail": [
+        {
+          "tab": "scan",
+          "text": "扫描",
+          "visible": true
+        },
+        {
+          "tab": "connected",
+          "text": "已连接0",
+          "visible": true
+        },
+        {
+          "tab": "broadcast",
+          "text": "广播",
+          "visible": true
+        },
+        {
+          "tab": "about",
+          "text": "关于",
+          "visible": true
+        }
+      ]
+    },
+    {
+      "name": "bt-chip",
+      "ok": true,
+      "detail": {
+        "word": "蓝牙就绪",
+        "dot": "bt-dot on"
+      }
+    },
+    {
+      "name": "filter-panel",
+      "ok": true,
+      "detail": {
+        "opened": true,
+        "closed": true,
+        "presetButtons": 4,
+        "hasReset": true
+      }
+    },
+    {
+      "name": "scan",
+      "ok": true,
+      "detail": "10 cards"
+    },
+    {
+      "name": "P002-provision-form",
+      "ok": true,
+      "detail": {
+        "reachedConfigure": true,
+        "devName": "SHID-00000001",
+        "devId": "10:B4:1D:CD:23:8E",
+        "stepper": "✓连接设备2填写配置3下发状态",
+        "connWord": "已连接",
+        "submitDisabledNoToken": true,
+        "pwdTypeAfterEye": "text"
+      }
+    },
+    {
+      "name": "P002-qr-sheet",
+      "ok": true,
+      "detail": {
+        "camStatus": "取景识别中…（摄像头）",
+        "videoVisible": true,
+        "sheetOpen": true
+      }
+    },
+    {
+      "name": "P002-paste-fallback",
+      "ok": true,
+      "detail": {
+        "invalidRejected": true,
+        "errText": "未识别到有效配对码（非 shid://pair 或缺少/非法参数）",
+        "submitEnabledWithToken": true,
+        "hubAutofilled": "192.168.1.8:17892",
+        "toast": "配对码已解析 · 地址与令牌已回填",
+        "modalClosed": true
+      }
+    },
+    {
+      "name": "P002-back",
+      "ok": true,
+      "detail": {
+        "backOnScan": true,
+        "leaveModalShown": false
+      }
+    },
+    {
+      "name": "P006-gatt-read",
+      "ok": true,
+      "detail": {
+        "headName": "SHID-00000001",
+        "actions": [
+          "read",
+          "notify",
+          "write",
+          "read",
+          "notify"
+        ],
+        "readLog": "通信日志 清空 导出 09:09:13 成功 Read: 7b 22 70 72 6f 64 75 63 74 22 3a 22 73 6d 61 72 74 2d 68 69 64 22 2c 22 70 72 6f 74 6f 63 6f 6c 22 3a 22 31 2e 30 22 2c 22 64 65 76 69 63 65 5f 69 64 22 3a 22 48 49 44 2d 30 30 30 30 30 30 30 31 22 2c 22 66 69 72 6d 77 61 72 65 22 ",
+        "readOk": true,
+        "connectAlreadyConnectedErr": false,
+        "notifyWord": "停止监听",
+        "stWord": "已连接",
+        "otaBtnHidden": true
+      }
+    },
+    {
+      "name": "P007-connected",
+      "ok": true,
+      "detail": {
+        "count": "1",
+        "cards": [
+          "1 10:B4:1D:CD:23:8 10:B4:1D:CD:23:8E 已连接 · 可进行 GATT 调试 断开"
+        ],
+        "hasDisconnectAll": true
+      }
+    },
+    {
+      "name": "P008-broadcast",
+      "ok": true,
+      "detail": {
+        "badge": "未就绪",
+        "byteTotal": "21",
+        "log": "通信日志 清空 导出 09:09:17 系统 请使用手机客户端执行虚拟外设测试09:09:17 系统 桌面原生层 WinRT（Windows）——底层严格限制 BLE 外设广播09:09:16 系统 请使用手机客户端执行虚拟外设测试09:09:16 系统 桌面原生层 WinRT（Windows）——底层严格限制 BLE 外设广播"
+      }
+    },
+    {
+      "name": "P009-about",
+      "ok": true,
+      "detail": {
+        "versionChip": "v1.0.5-dev.unknown",
+        "versionLine": "v1.0.5-dev.unknown · preview · 零后端 · 零本地持久化",
+        "env": "Desktop · Windows",
+        "model": "PC · x64",
+        "build": "—"
+      }
+    },
+    {
+      "name": "P010-versions",
+      "ok": true,
+      "detail": {
+        "visible": true,
+        "body": "当前版本 1.0.5-dev.unknown Preview 构建— Release tag未登记 UniApp Android PREVIEWH5 UNSUPPORTEDiOS PREVIEW 复制版本信息 当前限制 Android 正式 APK 尚未发布Playwright / Page Driver E4 页面驱",
+        "backOk": true
+      }
+    },
+    {
+      "name": "P003/P005-reachability",
+      "ok": true,
+      "detail": "无配网会话时入口数=1（需 ControlHub 完成配网后才可达，与 WIN-007 BLOCKED 同源）"
+    },
+    {
+      "name": "exit-confirm",
+      "ok": true,
+      "detail": "T-WIN 退出确认走 WM_CLOSE 真实路径，20260918-WIN-ALL 已取证（exit-confirm.json）"
+    }
+  ]
+}

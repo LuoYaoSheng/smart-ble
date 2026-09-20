@@ -2224,6 +2224,10 @@ class App {
     hidLeaveProvision() {
         const p = this.hidProv;
         if (!p || !p.provisioning) {
+            // 对齐 uniapp dispose（use-smart-hid-provisioning: onUnload → disconnect）：
+            // 离开配网页即释放 BLE 会话。否则连接保持 → 设备停广播 → T-WIN 重连
+            // Device not found / E-WIN already connected（20260920-WIN-UIFULL）
+            this.hidSvc?.disconnect().catch(() => {});
             this.switchTab('scan');
             return;
         }
@@ -2231,7 +2235,7 @@ class App {
             title: '配网进行中',
             bodyHtml: '<div style="font-size:var(--fs-body);color:var(--c-sub);line-height:1.6">离开将取消等待设备状态。确定离开吗？</div>',
             buttons: [
-                { label: '确定离开', tone: 'primary', onClick: () => { this.hidCancelWait(); this.switchTab('scan'); } },
+                { label: '确定离开', tone: 'primary', onClick: () => { this.hidCancelWait(); this.hidSvc?.disconnect().catch(() => {}); this.switchTab('scan'); } },
                 { label: '继续等待', tone: 'soft' }
             ]
         });

@@ -1,0 +1,7 @@
+{
+  "connErrVisible": true,
+  "errCode": "",
+  "errText": "目标设备上未找到 Smart HID 配网服务（UUID 不匹配或设备固件过旧）",
+  "configureVisible": false,
+  "logs": "通信日志 清空 导出 08:49:52 系统 Scanning stopped08:49:52 系统 Scan completed (auto-stopped after 5s)08:49:52 错误 [SmartHID] 连接失败: 目标设备上未找到 Smart HID 配网服务（UUID 不匹配或设备固件过旧）08:49:50 系统 [SmartHID] 连接 10:B4:1D:CD:23:8E 并验证 Device Info…08:49:47 系统 Scanning started"
+}

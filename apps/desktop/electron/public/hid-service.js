@@ -215,7 +215,7 @@
     async function discoverProfileService(deviceId) {
       const result = await bleAPI.discoverServices(deviceId);
       if (!result || result.success !== true) throw new Error((result && result.error) || '服务发现失败');
-      const services = result.services || [];
+      const services = result.services || result.data || []; // T-WIN 后端返回 data 键（E-WIN 为 services），双形态兼容
       const service = services.find((item) => normalizeUuid(item.uuid) === normalizeUuid(profile().serviceUuid));
       if (!service) throw new Error('目标设备上未找到 Smart HID 配网服务（UUID 不匹配或设备固件过旧）');
 

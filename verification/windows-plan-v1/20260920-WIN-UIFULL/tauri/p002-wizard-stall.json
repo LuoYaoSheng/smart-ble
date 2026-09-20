@@ -1,0 +1,150 @@
+{
+  "device": "SHID-00000001",
+  "final": {},
+  "samples": [
+    {
+      "t": 2.5,
+      "configureVisible": false,
+      "connectingVisible": false,
+      "connErrVisible": true
+    },
+    {
+      "t": 5,
+      "configureVisible": false,
+      "connectingVisible": false,
+      "connErrVisible": true
+    },
+    {
+      "t": 7.5,
+      "configureVisible": false,
+      "connectingVisible": false,
+      "connErrVisible": true
+    },
+    {
+      "t": 10,
+      "configureVisible": false,
+      "connectingVisible": false,
+      "connErrVisible": true
+    },
+    {
+      "t": 12.5,
+      "configureVisible": false,
+      "connectingVisible": false,
+      "connErrVisible": true
+    },
+    {
+      "t": 15,
+      "configureVisible": false,
+      "connectingVisible": false,
+      "connErrVisible": true
+    },
+    {
+      "t": 17.5,
+      "configureVisible": false,
+      "connectingVisible": false,
+      "connErrVisible": true
+    },
+    {
+      "t": 20,
+      "configureVisible": false,
+      "connectingVisible": false,
+      "connErrVisible": true
+    },
+    {
+      "t": 22.5,
+      "configureVisible": false,
+      "connectingVisible": false,
+      "connErrVisible": true
+    },
+    {
+      "t": 25,
+      "configureVisible": false,
+      "connectingVisible": false,
+      "connErrVisible": true
+    },
+    {
+      "t": 27.5,
+      "configureVisible": false,
+      "connectingVisible": false,
+      "connErrVisible": true
+    },
+    {
+      "t": 30,
+      "configureVisible": false,
+      "connectingVisible": false,
+      "connErrVisible": true
+    },
+    {
+      "t": 32.5,
+      "configureVisible": false,
+      "connectingVisible": false,
+      "connErrVisible": true
+    },
+    {
+      "t": 35,
+      "configureVisible": false,
+      "connectingVisible": false,
+      "connErrVisible": true
+    },
+    {
+      "t": 37.5,
+      "configureVisible": false,
+      "connectingVisible": false,
+      "connErrVisible": true
+    },
+    {
+      "t": 40,
+      "configureVisible": false,
+      "connectingVisible": false,
+      "connErrVisible": true
+    },
+    {
+      "t": 42.5,
+      "configureVisible": false,
+      "connectingVisible": false,
+      "connErrVisible": true
+    },
+    {
+      "t": 45,
+      "configureVisible": false,
+      "connectingVisible": false,
+      "connErrVisible": true
+    },
+    {
+      "t": 47.5,
+      "configureVisible": false,
+      "connectingVisible": false,
+      "connErrVisible": true
+    },
+    {
+      "t": 50,
+      "configureVisible": false,
+      "connectingVisible": false,
+      "connErrVisible": true
+    },
+    {
+      "t": 52.5,
+      "configureVisible": false,
+      "connectingVisible": false,
+      "connErrVisible": true
+    },
+    {
+      "t": 55,
+      "configureVisible": false,
+      "connectingVisible": false,
+      "connErrVisible": true
+    },
+    {
+      "t": 57.5,
+      "configureVisible": false,
+      "connectingVisible": false,
+      "connErrVisible": true
+    },
+    {
+      "t": 60,
+      "configureVisible": false,
+      "connectingVisible": false,
+      "connErrVisible": true
+    }
+  ]
+}

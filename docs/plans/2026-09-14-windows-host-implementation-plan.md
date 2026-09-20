@@ -80,7 +80,7 @@ Windows 主机不负责：
 | WIN-002 | 桌面共享测试恢复全绿 | `PASS` | 94/95 | `MAC-001`、`MAC-002` | 95/95;M1 断言改消费正典产物,对微信裁决中立 |
 | WIN-003 | Electron Windows 构建与启动 | `PASS_WITH_OBS` | 旧提交打包、扫描、GATT 通过 | WIN-001、WIN-002 | 20260918 三框架重测：build:win --dir exit0 + CDP 真机全链；见 20260918-WIN-ALL |
 | WIN-004 | Tauri Windows 构建与启动 | `PASS_WITH_OBS` | 旧提交扫描、GATT 通过 | WIN-001、WIN-002 | 20260918：fmt 修复 + check/test/build 过 + T1-T16 真机链；T-WIN-DEF-001 在册 |
-| WIN-005 | Avalonia 功能补齐 | `IN_PROGRESS` | 单测 19/19 补齐 | WIN-001、MAC-008 | 20260920：SmartBLE.Desktop.Tests 新建，先红后绿抓出 UUID 小写映射真 bug；BLE 功能缺陷已清（见 20260918-WIN-DEF-FIX） |
+| WIN-005 | Avalonia 功能补齐 | `IN_PROGRESS` | 单测 19/19 补齐 | WIN-001、MAC-008 | 20260920：SmartBLE.Desktop.Tests 新建，先红后绿抓出 UUID 小写映射真 bug；BLE 功能缺陷已清（见 20260918-WIN-DEF-FIX）；20260920-WIN-UIFULL 走查补 T-WIN-DEF-004+离开清会话双壳修复 |
 | WIN-006 | Windows 真实 GATT 与重连回归 | `IN_PROGRESS` | T-WIN-DEF-001 已修 | WIN-003、WIN-004 | 20260918 WIN-DEF-FIX：重连死句柄修复，retry 探针 + T1-T16 全绿；fixture_peripheral_s3 复验待硬件窗口 |
 | WIN-007 | Smart HID Windows E2E | `BLOCKED` | UI/传输代码已存在 | WIN-006、ControlHub 配对码、SHID 固件 | 未有完整 W4 证据 |
 | WIN-008 | Windows OTA E2E 回归 | `TODO` | 两线曾 `PASS_WITH_OBS` | WIN-006、OTA 固件 | 需复验重启后版本回读 |
@@ -367,6 +367,22 @@ README 占位且指向 Avalonia 线；Flutter 无 Windows 目标），逐框架�
   ResolveWriteOption 抽取顺带修双支持特征的无响应写错按带响应 bug
 - Evidence: verification/windows-plan-v1/20260920-WIN-011/
 - Next: N4 两案（按能力显隐 vs 恒显+未就绪徽章）待用户裁决后实施
+
+### 2026-09-20 · WIN-UIFULL 整体 UI 级走查（用户质疑触发）
+
+- 起因：用户质疑「Windows端啥都没有、整体测试了吗」。盘点澄清：E/T 双壳 9 视图全产品面，
+  V-WIN 实验级薄壳，apps/desktop/windows|linux 为设计内 README 占位；历轮为 BLE 链 API 级 +
+  零散 UI 点 + 静态导航核对，「全视图真实点击走查」此前确实空缺，本轮补齐。
+- 走查：CDP 真实点击 16 步/壳（TabBar/筛选/扫描/P002 向导含令牌门与二维码/粘贴兜底/
+  P006 读+监听/P007/P008/P009/P010/退出确认），**双壳 16/16 全绿**，真机 SHID-00000001。
+- 抓出并修复 T-WIN-DEF-004（P1）：hid-service.js 读 result.services 而后端返回 data——
+  **T-WIN 配网向导连接此前 100% 必败**（历轮从未驱动向导故从未暴露），双壳镜像改双键兼容。
+- 抓出并修复 DESKTOP-LEAVE-001（P2，双壳）：向导返回不清 BLE 会话，E-WIN 报 already connected、
+  T-WIN 因设备停广播报 Device not found；对齐 uniapp dispose 语义（离开即断开）双壳补 disconnect。
+- V-WIN：UIA 结构取证（26 命名元素+按钮清单+截图）；输入注入四通道（鼠标/物理坐标/键盘/
+  PostMessage）在本环境全灭+元素坐标系异常，定性自动化环境限制，人工点检清单移交用户。
+- 门禁：node --check×4 ✓、tests/desktop 95/95 ✓、Tauri/Avalonia 产物重建 ✓
+- Evidence: verification/windows-plan-v1/20260920-WIN-UIFULL/
 
 ### 2026-09-14 · WIN-001
 
