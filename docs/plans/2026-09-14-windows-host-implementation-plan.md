@@ -80,7 +80,7 @@ Windows 主机不负责：
 | WIN-002 | 桌面共享测试恢复全绿 | `PASS` | 94/95 | `MAC-001`、`MAC-002` | 95/95;M1 断言改消费正典产物,对微信裁决中立 |
 | WIN-003 | Electron Windows 构建与启动 | `PASS_WITH_OBS` | 旧提交打包、扫描、GATT 通过 | WIN-001、WIN-002 | 20260918 三框架重测：build:win --dir exit0 + CDP 真机全链；见 20260918-WIN-ALL |
 | WIN-004 | Tauri Windows 构建与启动 | `PASS_WITH_OBS` | 旧提交扫描、GATT 通过 | WIN-001、WIN-002 | 20260918：fmt 修复 + check/test/build 过 + T1-T16 真机链；T-WIN-DEF-001 在册 |
-| WIN-005 | Avalonia 功能补齐 | `IN_PROGRESS` | 单测 19/19 补齐 | WIN-001、MAC-008 | 20260920：SmartBLE.Desktop.Tests 新建，先红后绿抓出 UUID 小写映射真 bug；BLE 功能缺陷已清（见 20260918-WIN-DEF-FIX）；20260920-WIN-UIFULL 走查补 T-WIN-DEF-004+离开清会话双壳修复 |
+| WIN-005 | Avalonia 功能补齐 | `IN_PROGRESS` | 单测 19/19 补齐 | WIN-001、MAC-008 | 20260920：SmartBLE.Desktop.Tests 新建，先红后绿抓出 UUID 小写映射真 bug；BLE 功能缺陷已清（见 20260918-WIN-DEF-FIX）；20260920-WIN-UIFULL 走查补 T-WIN-DEF-004+离开清会话双壳修复；同日 VWIN-UIFULL 续轮清 DEF-004/005/006（DataContext/卡片命令/寻祖绑定），V-WIN 全流程走查 16/16 |
 | WIN-006 | Windows 真实 GATT 与重连回归 | `IN_PROGRESS` | T-WIN-DEF-001 已修 | WIN-003、WIN-004 | 20260918 WIN-DEF-FIX：重连死句柄修复，retry 探针 + T1-T16 全绿；fixture_peripheral_s3 复验待硬件窗口 |
 | WIN-007 | Smart HID Windows E2E | `BLOCKED` | UI/传输代码已存在 | WIN-006、ControlHub 配对码、SHID 固件 | 未有完整 W4 证据 |
 | WIN-008 | Windows OTA E2E 回归 | `TODO` | 两线曾 `PASS_WITH_OBS` | WIN-006、OTA 固件 | 需复验重启后版本回读 |
@@ -383,6 +383,27 @@ README 占位且指向 Avalonia 线；Flutter 无 Windows 目标），逐框架�
   PostMessage）在本环境全灭+元素坐标系异常，定性自动化环境限制，人工点检清单移交用户。
 - 门禁：node --check×4 ✓、tests/desktop 95/95 ✓、Tauri/Avalonia 产物重建 ✓
 - Evidence: verification/windows-plan-v1/20260920-WIN-UIFULL/
+
+### 2026-09-20 · VWIN-UIFULL 续轮：V-WIN 走查打通，三缺陷清剿 16/16 全绿
+
+- 起因：用户追问「还没做完吧，缺很多吧，不同框架」——上轮 E/T 双壳 16/16 而 V-WIN 只留
+  结构取证（且误判注入环境受限），是覆盖矩阵上唯一空格。
+- **撤回上轮误判**：FlaUI element.Click()（真实鼠标）对 Avalonia 有效；「过滤面板点击
+  成功」实为 IsVisible 绑定失败恒开假象，随后误入三条死通道得出环境限制结论。
+- 三缺陷（行为级红证→修复→绿证，全在本轮）：
+  - V-WIN-DEF-004（P0）App 未装配运行期 DataContext——UI 曾是静态壳（命令全死/绑定文本
+    全空/过滤面板恒开）；
+  - V-WIN-DEF-005（P1）设备卡片未接 ConnectToDeviceCommand——详情页（读/写/通知/日志）整体不可达；
+  - V-WIN-DEF-006（P1）特征三按钮 `$parent[UserControl]` 寻祖在 Window 树中无命中——
+    读/写/通知静默失效（编译期不报错）。
+- 走查：FlaUI 真实点击 16 步（状态/扫描/过滤/卡片进详情/连接/服务/INFO 读出真实 JSON/
+  STATUS 通知启用/写对话框开+取消（零写入，FW-LOCK 约束）/断开/重扫/重连（DEF-002 回归）/
+  返回），**16/16 全绿 + 1 观察项**（空闲 20s 无 STATUS 推送，口径对齐 E/T 仅验启用）。
+- harness 沉淀（FlaUI×Avalonia）：IsOffscreen 恒 true 不可用；Carousel 隐藏页陈旧矩形需
+  可见性过滤+多信号仲裁；「关闭」类状态用亮度探针判定；UIA COM 瞬态 E_FAIL 重试；
+  行内按钮点真实 Button 控件而非 Text 标签。
+- 门禁：dotnet build 0 err、dotnet test 19/19 ✓、走查后无残留进程
+- Evidence: verification/windows-plan-v1/20260920-WIN-UIFULL/avalonia/vwin-walk/
 
 ### 2026-09-14 · WIN-001
 

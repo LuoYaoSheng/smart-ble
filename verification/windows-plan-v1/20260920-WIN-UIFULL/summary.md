@@ -59,17 +59,63 @@
 - 修复：双壳 `hidLeaveProvision` 两条路径（非配网中直返/确定离开）补 `svc.disconnect()`，
   注释锚定正典。修复后双壳 P006 干净直连（already connected / Device not found 均消失）。
 
-## V-WIN UI 级冒烟：结构取证完成，输入注入受环境限制
+## V-WIN UI 级走查：三轮缺陷清剿后 16/16 全绿（同日续轮 VWIN-UIFULL）
 
-- UIA 树完整：26 命名元素、全按钮清单、空态文案（`vwin-uia.log`）+ 2 张截图。
-- ViewModel 命令层核对：StartScan/ToggleFilter/连接/读/监听/断开绑定齐备。
-- **输入注入四通道全灭**（FlaUI 鼠标点按元素中心、物理坐标换算点击、键盘空格、
-  PostMessage WM_LBUTTONDOWN；InvokePattern 抛异常）+ UIA 元素坐标系异常（按钮矩形
-  落在窗口左边界外）。临时文件埋点证实命令处理器从未被触发（NO_TRACE，已撤销埋点并
-  重建干净产物）。**定性：自动化注入环境限制，非应用缺陷**（真实鼠标不受影响；UI 渲染
-  与 ViewModel/命令层均有独立证据）。真机人工点检清单移交用户（见下）。
-- V-WIN 功能层（BleService 同一代码路径）已由 20260918/20260920 控制台 harness 真机验证
-  （V1-V16，含重连/断连事件修复）。
+上轮（同日早间）定性「输入注入受环境限制」**系误判，本轮撤回**：FlaUI `element.Click()`
+（真实鼠标点 UIA 矩形中心）对 Avalonia 一直有效——上轮唯一被点击成功的「过滤面板」
+其实是 `IsVisible` 绑定失败回退默认 true 的恒开假象，让人误以为点击通道是通的；随后
+误入 ClickPhys 手算坐标/PostMessage/键盘三条死岔路。真实鼠标点击通道无环境限制。
+
+误判之下掩盖的是三个叠加缺陷（全部行为级实证后修复）：
+
+### V-WIN-DEF-004（P0）：运行期 DataContext 从未装配——UI 是静态壳
+- 根因：`App.OnFrameworkInitializationCompleted` 只 `new MainWindow()`，XAML 仅
+  `Design.DataContext`（设计期专用）。全部 Binding 求值于 null：**所有命令死**（点扫描
+  无反应）、状态/计数/扫描文字空白（扫描按钮缩成 46px 光杆图标）、过滤面板恒开
+  （IsVisible 绑定失败回退默认 true）、`≥ (unset) dBm`（FilterRssi 取不到值）。
+- 红证：`vwin-walk/vwin-probe-def004-red.log`（修复前构建全量 UIA dump：绑定态文本
+  全空、点扫描按钮零状态变化）。
+- 修复：App 装配 `DataContext = new MainWindowViewModel()`。修复后状态条 42ms 出
+  「蓝牙就绪」。
+
+### V-WIN-DEF-005（P1）：设备卡片未接 ConnectToDeviceCommand——详情页整体不可达
+- 根因：命令存在于 ViewModel，XAML 无任何绑定/事件引用（卡片是纯 Border）。即使
+  DataContext 正常，读/写/通知/日志/断开全部不可达。
+- 修复：卡片 `Tapped="OnDeviceCardTapped"` + code-behind 调 `ConnectToDeviceCommand`
+  （Tapped 手势自带拖拽过滤，列表滚动松手不误触发连接）。
+
+### V-WIN-DEF-006（P1）：特征值 读/写/通知 三按钮命令绑定 `$parent[UserControl]` 失效
+- 根因：三按钮 Command 用 `$parent[UserControl].((vm:MainWindowViewModel)DataContext)`
+  强转寻祖，但窗口树根是 Window、**无 UserControl 祖先**——运行期解析静默为 null，
+  编译期不报错。读/写/通知全死而断开/返回等普通绑定正常。
+- 红证：`vwin-walk/vwin-walk-def006-red.log`（DataContext 修复后首跑：S4-S6 过、
+  S7/S8/S10 三按钮全无响应）。
+- 修复：改 `$parent[Window]`。
+
+### 修复后全流程走查（16/16 + 1 观察项，`vwin-walk/vwin-walk-green.log` + 11 截图）
+
+| 步骤 | 结果 |
+|---|---|
+| S1 状态条蓝牙就绪 | ✓ @89ms |
+| S2 扫描发现 SHID（9 台设备） | ✓ |
+| S3 过滤面板展开 | ✓ |
+| S4 卡片点击进详情页 | ✓ @2.6s |
+| S5 已连接徽标 / S6 服务发现 | ✓ / ✓ |
+| S7 INFO(9f1d1002) 读取 | ✓ 真实 JSON：smart-hid / HID-00000001 / fw 1.2.0 / unprovisioned |
+| S8 STATUS(9f1d1004) 通知启用 | ✓（CCCD 成功，日志「启用通知 1004」） |
+| S9 空闲 20s STATUS 推送 | OBS：无（口径对齐 E/T：均只验启用；推送为事件驱动） |
+| S10/S11 写对话框开→取消（INPUT 1003 行，零写入） | ✓ / ✓（亮度探针 253 判关） |
+| S12 断开回列表 | ✓ |
+| S13-S15 重扫→重连→服务重枚举（DEF-002 回归） | ✓ / ✓ @1.9s / ✓ |
+| S16 返回列表 | ✓ |
+
+- **零 GATT 写入**（SHID-FW-LOCK-001 约束）：对话框只开不写，未触碰 INPUT 特征。
+- 上轮「人工点检清单」作废——自动化通道已打通且全绿。
+- harness 坑（后续复用 FlaUI 驱动必读）：Avalonia 对 `IsOffscreen` 恒报 true（不可用）；
+  Carousel 隐藏页元素常驻 UIA 树且保留陈旧矩形（越界即隐藏，页内陈旧矩形用多信号
+  仲裁兜底）；隐藏导致的「关闭」无法用文本断言感知（元素仍在树中），用像素亮度探针
+  （遮罩 #80000000 压暗一半）硬判定；设备卡片快速增删时 UIA COM 调用瞬态 E_FAIL 需
+  重试；特征行按钮优先点真实 Button 控件（Text 标签目标偶发零触发/双触发）。
 
 ## 环境观察
 
@@ -81,13 +127,9 @@
 - 判定坑（harness 层，已记）：日志面板「成功」徽标与消息是相邻 DOM 节点，中间为 NBSP
   （\u00A0 非 \s）；T-WIN 读取成功措辞为「Read:」E-WIN 为「读取成功」。
 
-## 人工点检清单（V-WIN 移交）
-
-1. 打开应用 → 状态词「蓝牙就绪」→ 点「开始扫描」→ 5s 自动停止 → 列表出现 SHID-00000001；
-2. 点设备卡 → 详情 → 展开 9f1d1001 → 读 INFO（JSON 身份帧）/监听 STATUS；
-3. 断开 → 返回列表 → 重连（重连归零缺陷已修，20260918-WIN-DEF-FIX 验证）。
-
 ## 门禁
 
 - `node --check`×4（双壳 app.js/hid-service.js）✓；`node --test tests/desktop/` **95/95** ✓
 - Tauri debug exe 重建（cargo build）✓；Avalonia 产物重建（dotnet build 0 err，埋点已撤）✓
+- 续轮（VWIN-UIFULL）：Avalonia dotnet build 0 err；`dotnet test` **19/19** ✓；
+  走查后无残留进程 ✓

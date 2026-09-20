@@ -107,7 +107,10 @@
                             <ItemsControl ItemsSource="{Binding FilteredDevices}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="vm:BleDeviceViewModel">
-                                        <Border Classes="DeviceCard" Margin="20,0,20,12">
+                                        <!-- V-WIN-DEF-005：卡片此前未接连接命令，详情页（读/写/通知/日志）整体不可达。
+                                             Tapped 手势自带拖拽过滤，列表滚动松手不误触发连接 -->
+                                        <Border Classes="DeviceCard" Margin="20,0,20,12"
+                                                Cursor="Hand" Tapped="OnDeviceCardTapped">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto"/>
@@ -266,7 +269,7 @@
                                                                     <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6">
                                                                         <!-- Read Button -->
                                                                         <Button Classes="CharButton"
-                                                                                Command="{Binding $parent[UserControl].((vm:MainWindowViewModel)DataContext).ReadCharacteristicCommand}"
+                                                                                Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).ReadCharacteristicCommand}"
                                                                                 CommandParameter="{Binding CommandKey}">
                                                                             <StackPanel Spacing="2">
                                                                                 <TextBlock Text="📥" FontSize="12"/>
@@ -276,7 +279,7 @@
 
                                                                         <!-- Write Button -->
                                                                         <Button Classes="CharButton"
-                                                                                Command="{Binding $parent[UserControl].((vm:MainWindowViewModel)DataContext).OpenWriteDialogCommand}"
+                                                                                Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).OpenWriteDialogCommand}"
                                                                                 CommandParameter="{Binding CommandKey}">
                                                                             <StackPanel Spacing="2">
                                                                                 <TextBlock Text="📤" FontSize="12"/>
@@ -286,7 +289,7 @@
 
                                                                         <!-- Notify Button -->
                                                                         <Button Classes="CharButton"
-                                                                                Command="{Binding $parent[UserControl].((vm:MainWindowViewModel)DataContext).ToggleNotificationCommand}"
+                                                                                Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).ToggleNotificationCommand}"
                                                                                 CommandParameter="{Binding CommandKey}">
                                                                             <StackPanel Spacing="2">
                                                                                 <TextBlock Text="🔔" FontSize="12"/>
