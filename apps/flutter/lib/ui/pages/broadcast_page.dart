@@ -106,6 +106,11 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
     _uuidController.dispose();
     _mfrIdController.dispose();
     _mfrDataController.dispose();
+    // WIN-016：切走即停广播（对齐 uniapp broadcast onHide 正典）——
+    // 原生广播不随页面销毁自停，PageView 切页 dispose 后必须显式停
+    if (_isAdvertising) {
+      _peripheralManager.stopAdvertising().catchError((_) {});
+    }
     super.dispose();
   }
 

@@ -38,6 +38,8 @@ dependencies:
   # 平台特定
   file_picker: ^11.0.2
   flutter_svg: ^2.3.0
+  flutter_blue_plus_winrt: ^0.0.20
+  window_manager: ^0.5.2
 
 dev_dependencies:
   flutter_test:
@@ -48,6 +50,13 @@ dev_dependencies:
   flutter_lints: ^3.0.1
   flutter_launcher_icons: ^0.14.4
   flutter_native_splash: ^2.4.7
+
+dependency_overrides:
+  # F-WIN：FBP 1.36.x 钉 interface 7.0.0、winrt 0.0.20 要 >=9.0.0，pub 只能回退 FBP 到
+  # 1.34.5（hex 线缆）→ 与 winrt 原始字节线缆崩溃（_hexDecode 收 Uint8List）。两版接口
+  # 解码同为透传、API 差异仅 bool? 可空化（diff 已核），抬到 9.0.3 让 FBP 1.36.8 与
+  # winrt 共存，同时保住 Android/iOS 的 1.36.8 已验证基线。
+  flutter_blue_plus_platform_interface: 9.0.3
 
 flutter_launcher_icons:
   android: true

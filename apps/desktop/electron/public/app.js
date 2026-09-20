@@ -311,6 +311,11 @@ class App {
     }
 
     switchTab(tab) {
+        // 切出广播页即停广播（对齐 uniapp broadcast onHide 正典；win016）
+        const fromTab = document.querySelector('.tabbar .tb.on')?.dataset.tab;
+        if (fromTab === 'broadcast' && tab !== 'broadcast' && this.isBroadcasting) {
+            this.stopBroadcast().catch(() => {});
+        }
         // 更新标签按钮状态（P001 正典 TabBar：.tb.on）
         document.querySelectorAll('.tabbar .tb').forEach(btn => {
             btn.classList.toggle('on', btn.dataset.tab === tab);
@@ -1850,7 +1855,8 @@ class App {
     // 退出确认（10_platform §4 生命周期：常驻，退出确认；文案对齐原型 desktop.js dwin-quit）
     showExitConfirm(connected) {
         if (document.getElementById('exitConfirmBody')) return; // 确认中勿叠层
-        const busy = connected > 0;
+        // dwin-quit 正典：busy = 连接 OR 广播（win016 修复：此前漏计广播中会话）
+        const busy = connected > 0 || this.isBroadcasting === true;
         this.hidShowModal({
             title: '退出确认',
             bodyHtml: `
@@ -1863,7 +1869,10 @@ class App {
                     </div>
                 </div>`,
             buttons: [
-                { label: '退出', tone: 'primary', onClick: () => { window.bleAPI?.confirmExit?.(true); return false; } },
+                { label: '退出', tone: 'primary', onClick: () => {
+                    // dwin-quit 正典顺序：先停广播再退出（连接由主进程退出统一断开）
+                    if (this.isBroadcasting) this.stopBroadcast().catch(() => {});
+                    window.bleAPI?.confirmExit?.(true); return false; } },
                 { label: '继续使用', tone: 'soft' }
             ]
         });

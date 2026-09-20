@@ -49,6 +49,10 @@ class _AboutPageState extends State<AboutPage> {
       } else if (Platform.isMacOS) {
         final mac = await deviceInfo.macOsInfo;
         model = mac.model;
+      } else if (Platform.isWindows) {
+        // 桌面正典口径（E-WIN hostArch / V-WIN OSArchitecture 同款）：PC · 架构
+        final arch = Platform.environment['PROCESSOR_ARCHITECTURE'];
+        model = 'PC · ${arch == 'AMD64' ? 'X64' : (arch ?? '')}';
       } else {
         model = Platform.localHostname;
       }
@@ -211,7 +215,7 @@ class _AboutPageState extends State<AboutPage> {
       child: Column(
         children: [
           _kvRow('当前环境',
-              '${Platform.operatingSystem} · ${Platform.operatingSystemVersion}'),
+              Platform.isWindows ? 'Desktop · Windows' : '${Platform.operatingSystem} · ${Platform.operatingSystemVersion}'),
           _kvRow('设备型号', _loadingInfo ? '…' : _deviceModel),
           _kvRow('版本', _loadingInfo ? '…' : _version, last: true),
         ],

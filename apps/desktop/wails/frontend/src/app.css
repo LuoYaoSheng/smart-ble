@@ -1,0 +1,83 @@
+/* G-WIN v1 · 对齐 prototype tokens 的亮色线近似 */
+:root {
+    --c-primary: #1B6DFF;
+    --c-primary-deep: #0E4FC4;
+    --c-bg: #F5F7FA;
+    --c-card: #FFFFFF;
+    --c-border: #E3E9F2;
+    --c-text: #17223B;
+    --c-sub: #5A6B87;
+    --c-mut: #93A1B8;
+}
+
+* { box-sizing: border-box; margin: 0; }
+
+body {
+    font-family: 'Microsoft YaHei UI', 'Segoe UI', sans-serif;
+    background: var(--c-bg);
+    color: var(--c-text);
+    font-size: 14px;
+}
+
+#app { padding: 20px 24px; }
+
+.page-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 14px;
+}
+
+.kicker {
+    color: var(--c-primary);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.page-title { font-size: 22px; font-weight: 800; margin: 2px 0; }
+
+.status { color: var(--c-sub); font-size: 12px; }
+
+.btn {
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.btn.primary {
+    background: linear-gradient(135deg, var(--c-primary), var(--c-primary-deep));
+    color: #fff;
+    padding: 10px 22px;
+}
+
+.btn.primary:disabled { opacity: 0.6; cursor: default; }
+
+.card {
+    background: var(--c-card);
+    border: 1px solid var(--c-border);
+    border-radius: 12px;
+    padding: 14px;
+}
+
+.card-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+
+.device-list { list-style: none; padding: 0; }
+
+.device-list li {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 10px;
+    border-radius: 10px;
+}
+
+.device-list li:hover { background: #EEF2F8; }
+
+.dev-name { font-weight: 600; }
+
+.dev-meta { color: var(--c-mut); font-size: 12px; font-family: Consolas, monospace; }
+
+.dim { color: var(--c-mut); font-size: 12px; }

@@ -9,6 +9,7 @@
 // 字段），不写日志、不落存储；离开页面即清空（canon p002Cleanup）。
 
 import 'dart:async';
+import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -193,18 +194,23 @@ class _ProvisioningPageState extends ConsumerState<ProvisioningPage> {
   Future<void> _openQrScanner() async {
     setState(() => _qrErr = null);
 
-    final status = await Permission.camera.status;
-    var granted = status.isGranted;
-    if (!granted) {
-      if (status.isPermanentlyDenied) {
+    // F-WIN 降级：mobile_scanner 无 Windows 实现（也无相机权限链可走），
+    // 跳过相机直达「手动粘贴配对码」（正典桌面线「扫码为主+粘贴兜底」的无摄像头单路径）
+    final cameraAvailable = !Platform.isWindows;
+    if (cameraAvailable) {
+      final status = await Permission.camera.status;
+      var granted = status.isGranted;
+      if (!granted) {
+        if (status.isPermanentlyDenied) {
+          setState(() => _qrErr = QrFailureReason.permission);
+          return;
+        }
+        granted = (await Permission.camera.request()).isGranted;
+      }
+      if (!granted) {
         setState(() => _qrErr = QrFailureReason.permission);
         return;
       }
-      granted = (await Permission.camera.request()).isGranted;
-    }
-    if (!granted) {
-      setState(() => _qrErr = QrFailureReason.permission);
-      return;
     }
 
     _qrHandled = false;
@@ -217,6 +223,7 @@ class _ProvisioningPageState extends ConsumerState<ProvisioningPage> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (context) => _QrScannerSheet(
+        cameraAvailable: cameraAvailable,
         onScanned: _onQrText,
         onManualPaste: _onQrText,
         onClosed: () => _onQrFailed(QrFailureReason.cancel),
@@ -1335,11 +1342,15 @@ class _QrScannerSheet extends StatefulWidget {
     required this.onScanned,
     required this.onManualPaste,
     required this.onClosed,
+    this.cameraAvailable = true,
   });
 
   final ValueChanged<String> onScanned;
   final ValueChanged<String> onManualPaste;
   final VoidCallback onClosed;
+
+  /// false = 无相机环境（Windows：mobile_scanner 无实现），面板只走粘贴路径
+  final bool cameraAvailable;
 
   @override
   State<_QrScannerSheet> createState() => _QrScannerSheetState();
@@ -1347,7 +1358,7 @@ class _QrScannerSheet extends StatefulWidget {
 
 class _QrScannerSheetState extends State<_QrScannerSheet> {
   final _pasteController = TextEditingController();
-  bool _pasteExpanded = false;
+  late bool _pasteExpanded = !widget.cameraAvailable;
   bool _closed = false;
 
   void _close() {
@@ -1390,32 +1401,50 @@ class _QrScannerSheetState extends State<_QrScannerSheet> {
             ],
           ),
           const SizedBox(height: 4),
-          Container(
-            height: 300,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                  color: AppTheme.borderColor,
-                  width: 1.5,
-                  style: BorderStyle.solid),
-            ),
-            clipBehavior: Clip.antiAlias,
-            child: MobileScanner(
-              onDetect: (capture) {
-                for (final barcode in capture.barcodes) {
-                  final value = barcode.rawValue;
-                  if (value != null && value.isNotEmpty) {
-                    widget.onScanned(value);
-                    if (!_closed) {
-                      _closed = true;
-                      Navigator.of(context).pop();
-                    }
-                    return;
-                  }
-                }
-              },
-            ),
-          ),
+          widget.cameraAvailable
+              ? Container(
+                  height: 300,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                        color: AppTheme.borderColor,
+                        width: 1.5,
+                        style: BorderStyle.solid),
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: MobileScanner(
+                    onDetect: (capture) {
+                      for (final barcode in capture.barcodes) {
+                        final value = barcode.rawValue;
+                        if (value != null && value.isNotEmpty) {
+                          widget.onScanned(value);
+                          if (!_closed) {
+                            _closed = true;
+                            Navigator.of(context).pop();
+                          }
+                          return;
+                        }
+                      }
+                    },
+                  ),
+                )
+              : Container(
+                  height: 300,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                        color: AppTheme.borderColor, width: 1.5),
+                  ),
+                  child: const Text(
+                    'Windows 桌面线暂无摄像头扫码（F-WIN 降级）\n请使用下方「手动粘贴配对码」',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 12,
+                        height: 1.8,
+                        color: AppTheme.textSecondary),
+                  ),
+                ),
           const SizedBox(height: 8),
           const Text('shid://pair · ControlHub 屏显二维码',
               textAlign: TextAlign.center,

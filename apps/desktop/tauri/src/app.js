@@ -532,6 +532,12 @@ function updateStatus(text, status) {
 
 // Tab Navigation
 function switchTab(tab) {
+    // win016 对齐 E-WIN/uniapp：切入广播页先停扫描；切出广播页即停广播（onHide 正典）
+    const fromTab = document.querySelector('.tabbar .tb.on')?.dataset.tab;
+    if (tab === 'broadcast' && state.scanning) stopScan();
+    if (fromTab === 'broadcast' && tab !== 'broadcast' && state.advertising) {
+        stopAdvertising().catch(() => {});
+    }
     document.querySelectorAll('.tabbar .tb').forEach(btn => {
         btn.classList.toggle('on', btn.dataset.tab === tab);
     });
@@ -1943,7 +1949,8 @@ function hidCloseModal() {
 // 退出确认（10_platform §4 生命周期：常驻，退出确认；文案对齐原型 desktop.js dwin-quit）
 function showExitConfirm(connected) {
     if (document.getElementById('exitConfirmBody')) return; // 确认中勿叠层
-    const busy = connected > 0;
+    // dwin-quit 正典：busy = 连接 OR 广播（win016 修复：此前漏计广播中会话）
+    const busy = connected > 0 || state.advertising === true;
     hidShowModal({
         title: '退出确认',
         bodyHtml: `
@@ -1956,7 +1963,10 @@ function showExitConfirm(connected) {
                 </div>
             </div>`,
         buttons: [
-            { label: '退出', tone: 'primary', onClick: () => { invoke?.('confirm_exit', { quit: true }); return false; } },
+            { label: '退出', tone: 'primary', onClick: () => {
+                // dwin-quit 正典顺序：先停广播再退出（连接由 Rust 侧退出统一断开）
+                if (state.advertising) stopAdvertising().catch(() => {});
+                invoke?.('confirm_exit', { quit: true }); return false; } },
             { label: '继续使用', tone: 'soft' }
         ]
     });
