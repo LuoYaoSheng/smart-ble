@@ -88,12 +88,12 @@ Windows 主机不负责：
 | WIN-010 | Windows 最终交付与矩阵回填 | `TODO` | 历史证据分散 | WIN-001～WIN-009 | 等所有必需任务结论化 |
 | WIN-011 | 桌面壳导航一致性修复（Electron/Tauri） | `IN_PROGRESS` | N3 已修（20260920），N4 待裁决 | WIN-003、WIN-004 | N3 双壳对齐正典五态+CDP 回归；N4 两案仍待用户裁决 |
 | WIN-012 | F-WIN：Flutter Windows 第 4 壳立项 | `PASS_WITH_OBS` | apps/flutter 无 windows 目标（20260918 盘点确认） | WIN-001 | 20260920：windows runner 生成 + FBP 1.36.8/winrt 0.0.20/interface 9.0.3（overrides 调和 hex 线缆崩溃）+ `/utf-8` 编译修复 + 环境词/窗口对齐 + 关窗退出确认（window_manager）+ 广播切页停 + P002 扫码 Windows 降级（mobile_scanner 无实现→粘贴单路径）；门禁 analyze 0/test 122/build √；真机扫描 SHID-00000001(-45dBm)+REDMI+FREEBUDS 三台；证据 20260920-FWIN-GWIN/flutter/ |
-| WIN-013 | G-WIN：Wails(Go) 第 6 壳立项 | `IN_PROGRESS` | 无（新壳） | WIN-001 | 20260920 v1：Wails v2.16 + tinygo.org/x/bluetooth（WinRT）扫描后端 + P001 扫描 MVP（正典 kicker/标题/状态词/附近设备）+ 1200×900/SmartBLE + 正典图标；vet √ build √ 冒烟 √（真机扫描触发验证 diff=270880）；**待续**：E-WIN 前端全页镜像（P002~P010）+ 生命周期正典 + CDP 走查 |
+| WIN-013 | G-WIN：Wails(Go) 第 6 壳立项 | `PASS_WITH_OBS` | 无（新壳） | WIN-001 | 20260920 续建收口：E-WIN 前端**字节级全页镜像**（frontend/src=electron/public，diff 验证一致）+ `wails-bridge.js`（E-WIN preload 的 window.bleAPI 契约→Go 绑定，mock 旁路口径同 E-WIN）+ Go 后端全 GATT 原语（流式扫描/连接/渐进服务发现/读/带响应写=PARITY-007/notify/广播 win32 正典降级/中文名映射/UUID noble 短格式投影）+ 生命周期正典（OnBeforeClose→app:confirm-exit→模态→ConfirmExit 停扫断链退出；SetConnectHandler 断连单次事件）；**全页走查 23/23 flavor=real（真机）**：扫描出 SHID-00000001 弱匹配卡/P002 向导真机连接+身份读+令牌门+QR+粘贴兜底+返回清会话/P006 真机读+notify（动作面=read,notify,write,read,notify 与 E-WIN 一致）/P007/busy 退出确认「当前连接设备：1 台」/mock 全 UI（写弹窗/筛选/广播页/关于/版本）/常驻退出进程干净退出/console 0 错；**GWIN-DEF-001 已修**（WinRT ADV/SCAN_RSP 双事件被同 RSSI 去重吞名→按设备合并广播状态）；OBS：tinygo Uncached 枚举未配对会话仅回 9f1d 一服务（探针复现，动作面恰好对齐，配对窗口回验）；wails v2.16 封死外部 CDP→自建 automation seam（env 门控测试基建）；vet √ build √；证据 20260920-GWIN-FULL/（23 断言 JSON+13 截图+坑位账） |
 | WIN-014 | Q-WIN：Qt(PySide6+bleak) 第 5 壳立项 | `PASS_WITH_OBS` | 无（新壳） | WIN-001 | 20260920 v1：P001 扫描（真 bleak）/P007/P008 降级/P009 正典环境口径 + 关窗退出确认（WM_CLOSE 拦截实证=窗口存活）+ 切页停扫/停广播 + 正典图标；compileall/AST 门禁 √；真机扫描待后续窗口（bleak 已装）；GATT/连接管理待续；.NET 已由 V-WIN Avalonia(.NET 8) 覆盖不另立项 |
 | WIN-015 | 六壳应用图标统一 | `PASS` | E/V 已同源；F 为模板图标；T 同源异字节 | WIN-003/004/005/012/013/014 | 20260920：正典源定案 `apps/desktop/electron/public/brand/icon.png`(512) + `assets/icon.ico`；`tools/unify_icons.py` 一键分发，E/T/V/F/Q/G 六壳 .ico sha256=42139766…字节级一致；页内平台图标 E/T 目录 diff 空 |
 | WIN-016 | 流程韧性（返回/临时退出/中断）对齐 | `PASS_WITH_OBS` | E/T/V 已有骨架，口径缺漏 | WIN-003/004/005/012/014 | 正典依据=uniapp onHide/onUnload/onBackPress + desktop.js dwin-quit（busy=连接 OR 广播）。20260920 修复：E/T 关窗 busy 补广播 + 退出先停广播再断连 + E/T 切出广播页停广播（onHide 口径）+ T 切入广播页停扫描（对齐 E）+ F-WIN 补关窗退出确认 + F 广播页 dispose 停广播（原生广播不随页面销毁自停）；node --check E/T √。P006 订阅随连接存续=正典（连接常驻）；V-WIN 广播降级下 busy=连接即完整 |
 
-完成率统计只按本表：`PASS` 2 / `PASS_WITH_OBS` 6 / `IN_PROGRESS` 3 / `FAILED` 0 / `BLOCKED` 1 / `TODO` 3。
+完成率统计只按本表：`PASS` 2 / `PASS_WITH_OBS` 7 / `IN_PROGRESS` 2 / `FAILED` 0 / `BLOCKED` 1 / `TODO` 3。
 
 ## 4. 实施任务
 

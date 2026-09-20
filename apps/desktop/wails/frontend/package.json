@@ -3,11 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "devDependencies": {
-    "vite": "^7.0.0"
+    "build": "node build.mjs",
+    "dev": "node build.mjs"
   }
 }
