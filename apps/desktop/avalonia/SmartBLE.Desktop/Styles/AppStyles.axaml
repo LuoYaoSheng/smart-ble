@@ -1,153 +1,780 @@
 <Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:sys="using:System">
 
-    <!-- Colors -->
+    <!-- ═══════════════════════════════════════════════════════════════
+         正典 tokens（docs/specs/prototype/platform/desktop/high-fi
+         assets/tokens.css v1.4.7 逐条搬运；口径与 E-WIN/T-WIN 一致）
+         ═══════════════════════════════════════════════════════════════ -->
     <Styles.Resources>
-    <SolidColorBrush x:Key="Primary" Color="#007AFF"/>
-    <SolidColorBrush x:Key="PrimaryDark" Color="#0051D5"/>
-    <SolidColorBrush x:Key="PrimaryLight" Color="#E8F2FF"/>
-    <SolidColorBrush x:Key="Success" Color="#34C759"/>
-    <SolidColorBrush x:Key="SuccessLight" Color="#E8F8EE"/>
-    <SolidColorBrush x:Key="Warning" Color="#FF9500"/>
-    <SolidColorBrush x:Key="WarningLight" Color="#FFF5E8"/>
-    <SolidColorBrush x:Key="Error" Color="#FF3B30"/>
-    <SolidColorBrush x:Key="ErrorLight" Color="#FFE8E8"/>
-    <SolidColorBrush x:Key="Background" Color="#F2F2F7"/>
-    <SolidColorBrush x:Key="Border" Color="#E5E5EA"/>
-    <SolidColorBrush x:Key="TextSecondary" Color="#8E8E93"/>
+        <Color x:Key="ColPrimary">#1B6DFF</Color>
+        <Color x:Key="ColPrimaryDeep">#0E4FC4</Color>
+        <Color x:Key="ColPrimaryWeak">#E8F1FF</Color>
+        <Color x:Key="ColSuccess">#17C7A8</Color>
+        <Color x:Key="ColSuccessWeak">#E2F8F4</Color>
+        <Color x:Key="ColSuccessText">#0E9A80</Color>
+        <Color x:Key="ColDanger">#F2555F</Color>
+        <Color x:Key="ColDangerWeak">#FDEBEC</Color>
+        <Color x:Key="ColDangerGrad2">#FF6B74</Color>
+        <Color x:Key="ColWarning">#FF9F43</Color>
+        <Color x:Key="ColWarningWeak">#FFF3E4</Color>
+        <Color x:Key="ColWarningText">#C77E14</Color>
+        <Color x:Key="ColText">#18222E</Color>
+        <Color x:Key="ColSub">#42536A</Color>
+        <Color x:Key="ColMut">#60758D</Color>
+        <Color x:Key="ColPh">#9AA8B6</Color>
+        <Color x:Key="ColLine">#E3EAF3</Color>
+        <Color x:Key="ColLineSoft">#EDF2F9</Color>
+        <Color x:Key="ColFill">#F1F5FB</Color>
+        <Color x:Key="ColBg">#F8FBFF</Color>
+        <Color x:Key="ColCard">#FFFFFF</Color>
+        <Color x:Key="ColInk">#101521</Color>
+        <Color x:Key="ColInkLine">#263149</Color>
+        <Color x:Key="ColInkText">#D6E2F5</Color>
+
+        <SolidColorBrush x:Key="CPrimary" Color="{StaticResource ColPrimary}"/>
+        <SolidColorBrush x:Key="CPrimaryDeep" Color="{StaticResource ColPrimaryDeep}"/>
+        <SolidColorBrush x:Key="CPrimaryWeak" Color="{StaticResource ColPrimaryWeak}"/>
+        <SolidColorBrush x:Key="CSuccess" Color="{StaticResource ColSuccess}"/>
+        <SolidColorBrush x:Key="CSuccessWeak" Color="{StaticResource ColSuccessWeak}"/>
+        <SolidColorBrush x:Key="CSuccessText" Color="{StaticResource ColSuccessText}"/>
+        <SolidColorBrush x:Key="CDanger" Color="{StaticResource ColDanger}"/>
+        <SolidColorBrush x:Key="CDangerWeak" Color="{StaticResource ColDangerWeak}"/>
+        <SolidColorBrush x:Key="CWarning" Color="{StaticResource ColWarning}"/>
+        <SolidColorBrush x:Key="CWarningWeak" Color="{StaticResource ColWarningWeak}"/>
+        <SolidColorBrush x:Key="CWarningText" Color="{StaticResource ColWarningText}"/>
+        <SolidColorBrush x:Key="CText" Color="{StaticResource ColText}"/>
+        <SolidColorBrush x:Key="CSub" Color="{StaticResource ColSub}"/>
+        <SolidColorBrush x:Key="CMut" Color="{StaticResource ColMut}"/>
+        <SolidColorBrush x:Key="CPh" Color="{StaticResource ColPh}"/>
+        <SolidColorBrush x:Key="CLine" Color="{StaticResource ColLine}"/>
+        <SolidColorBrush x:Key="CLineSoft" Color="{StaticResource ColLineSoft}"/>
+        <SolidColorBrush x:Key="CFill" Color="{StaticResource ColFill}"/>
+        <SolidColorBrush x:Key="CBg" Color="{StaticResource ColBg}"/>
+        <SolidColorBrush x:Key="CCard" Color="{StaticResource ColCard}"/>
+        <SolidColorBrush x:Key="CInk" Color="{StaticResource ColInk}"/>
+        <SolidColorBrush x:Key="CInkLine" Color="{StaticResource ColInkLine}"/>
+        <SolidColorBrush x:Key="CInkText" Color="{StaticResource ColInkText}"/>
+
+        <!-- btn.primary / danger 渐变（135deg） -->
+        <LinearGradientBrush x:Key="GradPrimary" StartPoint="0%,0%" EndPoint="100%,100%">
+            <GradientStop Color="#1B6DFF" Offset="0"/>
+            <GradientStop Color="#0E4FC4" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="GradDanger" StartPoint="0%,0%" EndPoint="100%,100%">
+            <GradientStop Color="#FF6B74" Offset="0"/>
+            <GradientStop Color="#F2555F" Offset="1"/>
+        </LinearGradientBrush>
+        <!-- ava 渐变（135deg weak→浅端） -->
+        <LinearGradientBrush x:Key="GradAva" StartPoint="0%,0%" EndPoint="100%,100%">
+            <GradientStop Color="#E8F1FF" Offset="0"/>
+            <GradientStop Color="#DCE9FF" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="GradAvaShid" StartPoint="0%,0%" EndPoint="100%,100%">
+            <GradientStop Color="#D9F6F0" Offset="0"/>
+            <GradientStop Color="#E2F8F4" Offset="1"/>
+        </LinearGradientBrush>
+        <!-- navbar 渐变（180deg 白→bg） -->
+        <LinearGradientBrush x:Key="GradNavbar" StartPoint="0%,0%" EndPoint="0%,100%">
+            <GradientStop Color="#FFFFFF" Offset="0"/>
+            <GradientStop Color="#F8FBFF" Offset="1"/>
+        </LinearGradientBrush>
+
+        <FontFamily x:Key="FontMono">Consolas, "Cascadia Mono"</FontFamily>
+
+        <CornerRadius x:Key="RSm">8</CornerRadius>
+        <CornerRadius x:Key="RMd">12</CornerRadius>
+        <CornerRadius x:Key="RLg">16</CornerRadius>
+        <CornerRadius x:Key="RXl">20</CornerRadius>
+        <CornerRadius x:Key="RRound">999</CornerRadius>
+
+        <!-- 正典图标 path（24×24 · stroke 1.8 · currentColor；与 E-WIN SVG sprite 同源） -->
+        <StreamGeometry x:Key="IcoScan">M 11,4 A 7,7 0 1 0 11,18 A 7,7 0 1 0 11,4 Z M 16.5,16.5 L 21,21 M 11,8 L 11,14 M 8,11 L 14,11</StreamGeometry>
+        <StreamGeometry x:Key="IcoLink">M 10,13 a 5,5 0 0 0 7.54,0.54 l 3,-3 a 5,5 0 0 0 -7.07,-7.07 l -1.72,1.71 M 14,11 a 5,5 0 0 0 -7.54,-0.54 l -3,3 a 5,5 0 0 0 7.07,7.07 l 1.72,-1.71</StreamGeometry>
+        <StreamGeometry x:Key="IcoCast">M 8.2,15.8 a 5.4,5.4 0 0 1 0,-7.6 M 15.8,8.2 a 5.4,5.4 0 0 1 0,7.6 M 5.3,18.7 a 9.5,9.5 0 0 1 0,-13.4 M 18.7,5.3 a 9.5,9.5 0 0 1 0,13.4</StreamGeometry>
+        <StreamGeometry x:Key="IcoInfo">M 12,3 A 9,9 0 1 0 12,21 A 9,9 0 1 0 12,3 Z M 12,11 L 12,16 M 12,8 L 12,8.01</StreamGeometry>
+        <StreamGeometry x:Key="IcoChevR">M 9,6 L 15,12 L 9,18</StreamGeometry>
+        <StreamGeometry x:Key="IcoChevD">M 6,9 L 12,15 L 18,9</StreamGeometry>
+        <StreamGeometry x:Key="IcoCheck">M 5,12.5 L 9.5,17 L 19,7</StreamGeometry>
+        <StreamGeometry x:Key="IcoX">M 6,6 L 18,18 M 18,6 L 6,18</StreamGeometry>
+        <StreamGeometry x:Key="IcoWarn">M 12,3.5 L 2.5,19.5 L 21.5,19.5 Z M 12,10 L 12,14 M 12,16.8 L 12,16.81</StreamGeometry>
+        <StreamGeometry x:Key="IcoCopy">M 9,9 h 10 a 2.5,2.5 0 0 1 2.5,2.5 v 9 a 2.5,2.5 0 0 1 -2.5,2.5 h -10 a 2.5,2.5 0 0 1 -2.5,-2.5 v -9 A 2.5,2.5 0 0 1 9,9 Z M 5,15 L 4.5,15 A 1.5,1.5 0 0 1 3,13.5 v -9 A 1.5,1.5 0 0 1 4.5,3 h 9 A 1.5,1.5 0 0 1 15,4.5 L 15,5</StreamGeometry>
+        <StreamGeometry x:Key="IcoRefresh">M 21,12 a 9,9 0 1 1 -2.64,-6.36 M 21,3 L 21,9 L 15,9</StreamGeometry>
+        <StreamGeometry x:Key="IcoEye">M 2,12 c 0,0 3.5,-6.5 10,-6.5 c 6.5,0 10,6.5 10,6.5 c 0,0 -3.5,6.5 -10,6.5 c -6.5,0 -10,-6.5 -10,-6.5 Z M 12,9 a 3,3 0 1 0 0.01,0</StreamGeometry>
+        <StreamGeometry x:Key="IcoEyeOff">M 2,12 c 0,0 3.5,-6.5 10,-6.5 c 1.8,0 3.4,0.5 4.7,1.3 M 22,12 c 0,0 -3.5,6.5 -10,6.5 c -1.8,0 -3.4,-0.5 -4.7,-1.3 M 4,20 L 20,4</StreamGeometry>
+        <StreamGeometry x:Key="IcoQr">M 3,3 h 7 v 7 h -7 Z M 14,3 h 7 v 7 h -7 Z M 3,14 h 7 v 7 h -7 Z M 14,14 h 3 v 3 h -3 Z M 20,14 L 20,17 M 14,20 L 20,20</StreamGeometry>
+        <StreamGeometry x:Key="IcoSend">M 21.5,2.5 L 11,13 M 21.5,2.5 L 14.5,21.5 L 11,13 L 2.5,9.5 Z</StreamGeometry>
+        <StreamGeometry x:Key="IcoHid">M 2.5,6.5 h 19 a 2,2 0 0 1 2,2 v 7 a 2,2 0 0 1 -2,2 h -19 a 2,2 0 0 1 -2,-2 v -7 a 2,2 0 0 1 2,-2 Z M 6.5,10 L 6.5,10.5 M 9.5,10 L 9.5,10.5 M 12,10 L 12,10.5 M 14.5,10 L 14.5,10.5 M 17.5,10 L 17.5,10.5 M 7.5,14 L 16.5,14</StreamGeometry>
+        <StreamGeometry x:Key="IcoDl">M 12,3.5 L 12,14.5 M 7.5,10 L 12,14.5 L 16.5,10 M 4,17.5 L 4,19 a 1.5,1.5 0 0 0 1.5,1.5 h 13 a 1.5,1.5 0 0 0 1.5,-1.5 L 20,17.5</StreamGeometry>
+        <StreamGeometry x:Key="IcoDoc">M 14,2.5 L 6.5,2.5 A 1.5,1.5 0 0 0 5,4 L 5,20 A 1.5,1.5 0 0 0 6.5,21.5 L 17.5,21.5 A 1.5,1.5 0 0 0 19,20 L 19,7.5 Z M 14,2.5 L 14,7.5 L 19,7.5 M 8.5,13 L 15.5,13 M 8.5,16.5 L 13,16.5</StreamGeometry>
+        <StreamGeometry x:Key="IcoExt">M 13.5,4.5 L 19.5,4.5 L 19.5,10.5 M 19.5,4.5 L 11,13 M 19.5,13.5 L 19.5,19 A 1.5,1.5 0 0 1 18,20.5 L 5,20.5 A 1.5,1.5 0 0 1 3.5,19 L 3.5,6 A 1.5,1.5 0 0 1 5,4.5 L 10.5,4.5</StreamGeometry>
+        <StreamGeometry x:Key="IcoShare">M 18,2.4 a 2.6,2.6 0 1 0 0.01,0 M 6,9.4 a 2.6,2.6 0 1 0 0.01,0 M 18,16.4 a 2.6,2.6 0 1 0 0.01,0 M 8.3,10.8 L 15.7,6.5 M 8.3,13.2 L 15.7,17.5</StreamGeometry>
+        <StreamGeometry x:Key="IcoBt">M 7,7 L 17,17 L 12,21 L 12,3 L 17,7 L 7,17</StreamGeometry>
+        <StreamGeometry x:Key="IcoStop">M 6,6 h 12 a 2,2 0 0 1 2,2 v 8 a 2,2 0 0 1 -2,2 h -12 a 2,2 0 0 1 -2,-2 v -8 a 2,2 0 0 1 2,-2 Z</StreamGeometry>
+        <StreamGeometry x:Key="IcoChip">M 6,6 h 12 a 2.5,2.5 0 0 1 2.5,2.5 v 7 a 2.5,2.5 0 0 1 -2.5,2.5 h -12 a 2.5,2.5 0 0 1 -2.5,-2.5 v -7 A 2.5,2.5 0 0 1 6,6 Z M 10,10 h 4 v 4 h -4 Z M 9,2.5 L 9,6 M 15,2.5 L 15,6 M 9,18 L 9,21.5 M 15,18 L 15,21.5 M 2.5,9 L 6,9 M 2.5,15 L 6,15 M 18,9 L 21.5,9 M 18,15 L 21.5,15</StreamGeometry>
+        <StreamGeometry x:Key="IcoLog">M 14,2.5 L 6.5,2.5 A 1.5,1.5 0 0 0 5,4 L 5,20 A 1.5,1.5 0 0 0 6.5,21.5 L 17.5,21.5 A 1.5,1.5 0 0 0 19,20 L 19,7.5 Z M 14,2.5 L 14,7.5 L 19,7.5 M 8.5,13 L 15.5,13 M 8.5,16.5 L 13,16.5</StreamGeometry>
+    <!-- ═══ Button：正典 B1（默认模板重定义，保证渐变/禁用/按压态可控） ═══ -->
+    <ControlTheme x:Key="{x:Type Button}" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource CText}"/>
+        <Setter Property="CornerRadius" Value="{DynamicResource RMd}"/>
+        <Setter Property="Padding" Value="18,0"/>
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Bd" Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      Margin="{TemplateBinding Padding}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
     </Styles.Resources>
 
-    <!-- Button Styles -->
-    <Style Selector="Button.primary">
-        <Setter Property="Background" Value="{DynamicResource Primary}"/>
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="Padding" Value="20,10"/>
-        <Setter Property="CornerRadius" Value="10"/>
-        <Setter Property="FontWeight" Value="Medium"/>
+    <Style Selector="Button:disabled">
+        <Setter Property="Background" Value="{DynamicResource CFill}"/>
+        <Setter Property="Foreground" Value="{DynamicResource CPh}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Cursor" Value="Arrow"/>
+    </Style>
+    <Style Selector="Button:disabled /template/ Border#Bd">
+        <Setter Property="BoxShadow" Value="0 0 0 #00000000"/>
+    </Style>
+    <Style Selector="Button:pressed">
+        <Setter Property="Opacity" Value="0.9"/>
     </Style>
 
-    <Style Selector="Button.primary:hover">
-        <Setter Property="Background" Value="{DynamicResource PrimaryDark}"/>
-    </Style>
-
-    <Style Selector="Button.primary.scanning">
-        <Setter Property="Background" Value="{DynamicResource Error}"/>
-    </Style>
-
-    <Style Selector="Button.secondary">
-        <Setter Property="Background" Value="{DynamicResource Background}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
+    <!-- 顺序注意：soft/ghost 在前、primary/danger 在后——「soft primary」双类组合时
+         primary 生效（P001 连接按钮按 SHID 匹配态在两风格间切换） -->
+    <Style Selector="Button.soft">
+        <Setter Property="Background" Value="{DynamicResource CFill}"/>
+        <Setter Property="Foreground" Value="{DynamicResource CText}"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="Padding" Value="20,10"/>
-        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource CLine}"/>
     </Style>
-
-    <Style Selector="Button.secondary:hover">
-        <Setter Property="Background" Value="{DynamicResource Border}"/>
-    </Style>
-
-    <Style Selector="Button.danger">
-        <Setter Property="Background" Value="{DynamicResource Error}"/>
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="Padding" Value="20,10"/>
-        <Setter Property="CornerRadius" Value="10"/>
-    </Style>
-
-    <Style Selector="Button.danger:hover">
-        <Setter Property="Background" Value="#E8352A"/>
-    </Style>
-
-    <!-- DeviceCount Badge -->
-    <Style Selector="Border.devicecount">
-        <Setter Property="Background" Value="{DynamicResource PrimaryLight}"/>
-        <Setter Property="CornerRadius" Value="20"/>
-    </Style>
-    <Style Selector="Border.devicecount TextBlock">
-        <Setter Property="Foreground" Value="{DynamicResource Primary}"/>
-        <Setter Property="FontWeight" Value="Medium"/>
-    </Style>
-
-    <!-- DeviceCard -->
-    <Style Selector="Border.devicecard">
-        <Setter Property="Background" Value="White"/>
-        <Setter Property="CornerRadius" Value="12"/>
-        <Setter Property="Padding" Value="16"/>
-        <Setter Property="BoxShadow" Value="0 2 5 #10000000"/>
-    </Style>
-    <Style Selector="Border.devicecard:pointerover /template/ Border">
-        <Setter Property="Background" Value="White"/>
-        <Setter Property="BoxShadow" Value="0 4 12 #20000000"/>
-    </Style>
-
-    <!-- StatusBadge -->
-    <Style Selector="Border.statusbadge">
-        <Setter Property="CornerRadius" Value="20"/>
-        <Setter Property="Padding" Value="12,6"/>
-    </Style>
-    <Style Selector="Border.statusbadge TextBlock">
-        <Setter Property="FontWeight" Value="Medium"/>
-        <Setter Property="FontSize" Value="13"/>
-    </Style>
-
-    <!-- ServiceCard -->
-    <Style Selector="Border.servicecard">
-        <Setter Property="Background" Value="White"/>
-        <Setter Property="CornerRadius" Value="12"/>
-        <Setter Property="Padding" Value="16"/>
-        <Setter Property="BoxShadow" Value="0 2 5 #10000000"/>
-    </Style>
-
-    <!-- ServiceCount -->
-    <Style Selector="Border.servicecount">
-        <Setter Property="Background" Value="{DynamicResource PrimaryLight}"/>
-        <Setter Property="CornerRadius" Value="12"/>
-    </Style>
-    <Style Selector="Border.servicecount TextBlock">
-        <Setter Property="Foreground" Value="{DynamicResource Primary}"/>
-        <Setter Property="FontWeight" Value="Medium"/>
-    </Style>
-
-    <!-- LogPanel -->
-    <Style Selector="Border.logpanel">
-        <Setter Property="Background" Value="White"/>
-        <Setter Property="CornerRadius" Value="0"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
-        <Setter Property="BorderThickness" Value="1,0,0,0"/>
-        <Setter Property="Height" Value="150"/>
-    </Style>
-
-    <!-- Characteristic Buttons -->
-    <Style Selector="Button.charbutton">
-        <Setter Property="Background" Value="White"/>
-        <Setter Property="BorderBrush" Value="#E0E0E0"/>
-        <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="Padding" Value="6,4"/>
-        <Setter Property="CornerRadius" Value="6"/>
-        <Setter Property="MinWidth" Value="40"/>
-    </Style>
-    <Style Selector="Button.charbutton:hover">
-        <Setter Property="Background" Value="#F5F5F5"/>
-        <Setter Property="BorderBrush" Value="#D0D0D0"/>
-    </Style>
-    <Style Selector="Button.charbutton StackPanel">
-        <Setter Property="HorizontalAlignment" Value="Center"/>
-    </Style>
-
-    <!-- FilterPanel -->
-    <Style Selector="Border.filterpanel">
-        <Setter Property="Background" Value="White"/>
-        <Setter Property="CornerRadius" Value="12"/>
-        <Setter Property="BoxShadow" Value="0 2 8 #10000000"/>
-    </Style>
-
-    <!-- TextButton -->
-    <Style Selector="Button.textbutton">
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="#007AFF"/>
+    <Style Selector="Button.soft.dangert">
+        <Setter Property="Foreground" Value="{DynamicResource CDanger}"/>
+        <Setter Property="Background" Value="{DynamicResource CDangerWeak}"/>
         <Setter Property="BorderThickness" Value="0"/>
     </Style>
-    <Style Selector="Button.textbutton:pointerover">
-        <Setter Property="Foreground" Value="#0051D5"/>
+    <Style Selector="Button.ghost">
+        <Setter Property="Foreground" Value="{DynamicResource CPrimary}"/>
+        <Setter Property="BorderThickness" Value="1.5"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource CPrimary}"/>
+    </Style>
+    <Style Selector="Button.ghost.dangert">
+        <Setter Property="Foreground" Value="{DynamicResource CDanger}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource CDanger}"/>
+    </Style>
+    <Style Selector="Button.primary">
+        <Setter Property="Background" Value="{DynamicResource GradPrimary}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    <Style Selector="Button.primary /template/ Border#Bd">
+        <Setter Property="BoxShadow" Value="0 6 16 #1B6DFF52"/>
+    </Style>
+    <Style Selector="Button.danger">
+        <Setter Property="Background" Value="{DynamicResource GradDanger}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    <Style Selector="Button.danger /template/ Border#Bd">
+        <Setter Property="BoxShadow" Value="0 6 16 #F2555F47"/>
+    </Style>
+    <Style Selector="Button.sm">
+        <Setter Property="Height" Value="32"/>
+        <Setter Property="Padding" Value="13,0"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="CornerRadius" Value="{DynamicResource RSm}"/>
+    </Style>
+    <Style Selector="Button.block">
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+    </Style>
+    <Style Selector="Button.txtlink">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource CPrimary}"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Padding" Value="2,4"/>
+        <Setter Property="Height" Value="NaN"/>
+        <Setter Property="Cursor" Value="Hand"/>
+    </Style>
+    <!-- 图标按钮内容布局：icon + 文字横排 gap6 -->
+    <Style Selector="Button.bic StackPanel">
+        <Setter Property="Orientation" Value="Horizontal"/>
+        <Setter Property="Spacing" Value="6"/>
     </Style>
 
+    <!-- ═══ TabBar（正典 .tabbar/.tb：底部四枚，选中 primary） ═══ -->
+    <Style Selector="Border.tabbar">
+        <Setter Property="Background" Value="#F5FFFFFF"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource CLineSoft}"/>
+        <Setter Property="BorderThickness" Value="0,1,0,0"/>
+        <Setter Property="Height" Value="64"/>
+        <Setter Property="Padding" Value="8,4,8,16"/>
+    </Style>
+    <Style Selector="Button.tb">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource CMut}"/>
+        <Setter Property="Height" Value="44"/>
+        <Setter Property="CornerRadius" Value="{DynamicResource RMd}"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+    </Style>
+    <Style Selector="Button.tb.on">
+        <Setter Property="Foreground" Value="{DynamicResource CPrimary}"/>
+    </Style>
+    <Style Selector="Button.tb TextBlock">
+        <Setter Property="FontSize" Value="10"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+    </Style>
+    <Style Selector="Button.tb.on TextBlock">
+        <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+    <!-- 已连接 Tab 角标（.n 红点计数） -->
+    <Style Selector="Border.tabn">
+        <Setter Property="Background" Value="{DynamicResource CDanger}"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="MinWidth" Value="16"/>
+        <Setter Property="Height" Value="16"/>
+        <Setter Property="Padding" Value="4,0"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="Border.tabn TextBlock">
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontSize" Value="9"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+
+    <!-- ═══ chip（B2）/ badge（B3） ═══ -->
+    <Style Selector="Border.chip">
+        <Setter Property="CornerRadius" Value="{DynamicResource RRound}"/>
+        <Setter Property="Padding" Value="9,2"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="Border.chip TextBlock">
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Foreground" Value="{DynamicResource CSub}"/>
+    </Style>
+    <Style Selector="Border.chip.neutral">
+        <Setter Property="Background" Value="{DynamicResource CFill}"/>
+    </Style>
+    <Style Selector="Border.chip.primaryc">
+        <Setter Property="Background" Value="{DynamicResource CPrimaryWeak}"/>
+    </Style>
+    <Style Selector="Border.chip.primaryc TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource CPrimary}"/>
+    </Style>
+    <Style Selector="Border.chip.successc">
+        <Setter Property="Background" Value="{DynamicResource CSuccessWeak}"/>
+    </Style>
+    <Style Selector="Border.chip.successc TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource CSuccessText}"/>
+    </Style>
+    <Style Selector="Border.chip.dangerc">
+        <Setter Property="Background" Value="{DynamicResource CDangerWeak}"/>
+    </Style>
+    <Style Selector="Border.chip.dangerc TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource CDanger}"/>
+    </Style>
+    <Style Selector="Border.chip.warningc">
+        <Setter Property="Background" Value="{DynamicResource CWarningWeak}"/>
+    </Style>
+    <Style Selector="Border.chip.warningc TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource CWarningText}"/>
+    </Style>
+
+    <Style Selector="Border.badge">
+        <Setter Property="CornerRadius" Value="{DynamicResource RRound}"/>
+        <Setter Property="Padding" Value="10,3"/>
+        <Setter Property="Background" Value="{DynamicResource CFill}"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="Border.badge TextBlock">
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="{DynamicResource CSub}"/>
+    </Style>
+    <Style Selector="Border.badge.on">
+        <Setter Property="Background" Value="{DynamicResource CSuccessWeak}"/>
+    </Style>
+    <Style Selector="Border.badge.on TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource CSuccessText}"/>
+    </Style>
+    <Style Selector="Border.badge.dim TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource CMut}"/>
+    </Style>
+
+    <!-- ═══ 卡片 / 面板 ═══ -->
+    <Style Selector="Border.card">
+        <Setter Property="Background" Value="{DynamicResource CCard}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource CLine}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="{DynamicResource RLg}"/>
+        <Setter Property="Padding" Value="16"/>
+        <Setter Property="BoxShadow" Value="0 1 2 #1020400A, 0 4 12 #1020400F"/>
+        <Setter Property="Margin" Value="0,0,0,12"/>
+    </Style>
+    <Style Selector="Border.dev">
+        <Setter Property="Background" Value="{DynamicResource CCard}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource CLine}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="{DynamicResource RLg}"/>
+        <Setter Property="Padding" Value="16"/>
+        <Setter Property="BoxShadow" Value="0 1 2 #1020400A, 0 4 12 #1020400F"/>
+        <Setter Property="Margin" Value="0,0,0,12"/>
+        <Setter Property="Cursor" Value="Hand"/>
+    </Style>
+    <Style Selector="Border.dev:pointerover">
+        <Setter Property="BoxShadow" Value="0 2 4 #1020400D, 0 10 22 #10204017"/>
+    </Style>
+    <Style Selector="Border.svc">
+        <Setter Property="Background" Value="{DynamicResource CCard}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource CLine}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="{DynamicResource RLg}"/>
+        <Setter Property="BoxShadow" Value="0 1 2 #1020400A, 0 4 12 #1020400F"/>
+        <Setter Property="Margin" Value="0,0,0,12"/>
+        <Setter Property="ClipToBounds" Value="True"/>
+    </Style>
+    <Style Selector="Button.svch">
+        <Setter Property="Background" Value="{DynamicResource CCard}"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="Height" Value="NaN"/>
+        <Setter Property="Padding" Value="14,12,14,12"/>
+        <Setter Property="CornerRadius" Value="0"/>
+        <Setter Property="FontSize" Value="15"/>
+    </Style>
+    <Style Selector="Button.svch:pointerover /template/ Border#Bd">
+        <Setter Property="Background" Value="{DynamicResource CBg}"/>
+    </Style>
+    <Style Selector="Border.svcb">
+        <Setter Property="BorderBrush" Value="{DynamicResource CLineSoft}"/>
+        <Setter Property="BorderThickness" Value="0,1,0,0"/>
+    </Style>
+    <Style Selector="Border.charrow">
+        <Setter Property="Padding" Value="14,10,14,10"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource CLineSoft}"/>
+        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+    </Style>
+
+    <!-- ═══ 表单（B5 inp / field） ═══ -->
+    <Style Selector="TextBox.inp">
+        <Setter Property="Background" Value="{DynamicResource CFill}"/>
+        <Setter Property="Foreground" Value="{DynamicResource CText}"/>
+        <Setter Property="CornerRadius" Value="{DynamicResource RSm}"/>
+        <Setter Property="MinHeight" Value="42"/>
+        <Setter Property="Padding" Value="12,10,12,9"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="BorderThickness" Value="1.5"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+    </Style>
+    <Style Selector="TextBox.inp:focus">
+        <Setter Property="BorderBrush" Value="{DynamicResource CPrimary}"/>
+        <Setter Property="Background" Value="White"/>
+    </Style>
+    <Style Selector="TextBox.ta">
+        <Setter Property="Background" Value="{DynamicResource CBg}"/>
+        <Setter Property="Foreground" Value="{DynamicResource CText}"/>
+        <Setter Property="CornerRadius" Value="{DynamicResource RSm}"/>
+        <Setter Property="MinHeight" Value="84"/>
+        <Setter Property="Padding" Value="12,10,12,10"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="FontFamily" Value="{DynamicResource FontMono}"/>
+        <Setter Property="BorderThickness" Value="1.5"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource CLine}"/>
+        <Setter Property="AcceptsReturn" Value="True"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+    <Style Selector="TextBox.ta:focus">
+        <Setter Property="BorderBrush" Value="{DynamicResource CPrimary}"/>
+    </Style>
+    <Style Selector="TextBox.mono">
+        <Setter Property="FontFamily" Value="{DynamicResource FontMono}"/>
+    </Style>
+
+    <!-- ═══ 开关（B5 switch：44×26 胶囊 + 20 白圆） ═══ -->
+    <Style Selector="ToggleButton.switch">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Track" Width="44" Height="26" CornerRadius="{DynamicResource RRound}"
+                        Background="{DynamicResource CPh}">
+                    <Ellipse Name="Thumb" Width="20" Height="20" Fill="White"
+                             HorizontalAlignment="Left" Margin="3,0,0,0"/>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    <Style Selector="ToggleButton.switch:checked /template/ Border#Track">
+        <Setter Property="Background" Value="{DynamicResource CSuccess}"/>
+    </Style>
+    <Style Selector="ToggleButton.switch:checked /template/ Ellipse#Thumb">
+        <Setter Property="Margin" Value="21,0,0,0"/>
+    </Style>
+    <Style Selector="ToggleButton.switch:disabled">
+        <Setter Property="Opacity" Value="0.45"/>
+    </Style>
+
+    <!-- ═══ 预设胶囊（C3 filter .pre） ═══ -->
+    <Style Selector="Button.pre">
+        <Setter Property="Background" Value="{DynamicResource CFill}"/>
+        <Setter Property="Foreground" Value="{DynamicResource CSub}"/>
+        <Setter Property="CornerRadius" Value="{DynamicResource RRound}"/>
+        <Setter Property="Padding" Value="11,4"/>
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Height" Value="NaN"/>
+        <Setter Property="Cursor" Value="Hand"/>
+    </Style>
+    <Style Selector="Button.pre.on">
+        <Setter Property="Background" Value="{DynamicResource CPrimary}"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+
+    <!-- ═══ 分段控件（C9 seg） ═══ -->
+    <Style Selector="Border.seg">
+        <Setter Property="Background" Value="{DynamicResource CFill}"/>
+        <Setter Property="CornerRadius" Value="{DynamicResource RSm}"/>
+        <Setter Property="Padding" Value="3"/>
+    </Style>
+    <Style Selector="Button.segb">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource CSub}"/>
+        <Setter Property="CornerRadius" Value="7"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="Cursor" Value="Hand"/>
+    </Style>
+    <Style Selector="Button.segb.on">
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="Foreground" Value="{DynamicResource CPrimary}"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+    <Style Selector="Button.segb.on /template/ Border#Bd">
+        <Setter Property="BoxShadow" Value="0 1 2 #1020400A, 0 4 12 #1020400F"/>
+    </Style>
+
+    <!-- ═══ 日志（C5 dock 深色控制台 + 六色 chip） ═══ -->
+    <Style Selector="Border.logwrap">
+        <Setter Property="CornerRadius" Value="{DynamicResource RLg}"/>
+        <Setter Property="ClipToBounds" Value="True"/>
+    </Style>
+    <Style Selector="Border.logwrap.dock">
+        <Setter Property="Background" Value="{DynamicResource CInk}"/>
+    </Style>
+    <Style Selector="Border.logwrap.cardv">
+        <Setter Property="Background" Value="{DynamicResource CCard}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource CLine}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BoxShadow" Value="0 1 2 #1020400A, 0 4 12 #1020400F"/>
+    </Style>
+    <Style Selector="Border.logbar">
+        <Setter Property="Padding" Value="13,9,13,9"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource CInkLine}"/>
+        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+    </Style>
+    <Style Selector="Border.logwrap.cardv Border.logbar">
+        <Setter Property="BorderBrush" Value="{DynamicResource CLineSoft}"/>
+    </Style>
+    <Style Selector="Border.logchip">
+        <Setter Property="CornerRadius" Value="5"/>
+        <Setter Property="Padding" Value="6,0"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="Border.logchip TextBlock">
+        <Setter Property="FontSize" Value="10"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+    <!-- cardv 亮色六色 -->
+    <Style Selector="Border.logchip.lcsys">
+        <Setter Property="Background" Value="#EDF3FA"/>
+    </Style>
+    <Style Selector="Border.logchip.lcsys TextBlock">
+        <Setter Property="Foreground" Value="#5E7EA6"/>
+    </Style>
+    <Style Selector="Border.logchip.lcerr">
+        <Setter Property="Background" Value="#FDEBEC"/>
+    </Style>
+    <Style Selector="Border.logchip.lcerr TextBlock">
+        <Setter Property="Foreground" Value="#F2555F"/>
+    </Style>
+    <Style Selector="Border.logchip.lcread">
+        <Setter Property="Background" Value="#FFF6E8"/>
+    </Style>
+    <Style Selector="Border.logchip.lcread TextBlock">
+        <Setter Property="Foreground" Value="#C77E14"/>
+    </Style>
+    <Style Selector="Border.logchip.lcwrite">
+        <Setter Property="Background" Value="#E8F1FF"/>
+    </Style>
+    <Style Selector="Border.logchip.lcwrite TextBlock">
+        <Setter Property="Foreground" Value="#1B6DFF"/>
+    </Style>
+    <Style Selector="Border.logchip.lcrecv">
+        <Setter Property="Background" Value="#F0EBFF"/>
+    </Style>
+    <Style Selector="Border.logchip.lcrecv TextBlock">
+        <Setter Property="Foreground" Value="#7C5CFF"/>
+    </Style>
+    <Style Selector="Border.logchip.lcok">
+        <Setter Property="Background" Value="#E2F8F4"/>
+    </Style>
+    <Style Selector="Border.logchip.lcok TextBlock">
+        <Setter Property="Foreground" Value="#17C7A8"/>
+    </Style>
+    <!-- dock 深色六色 -->
+    <Style Selector="Border.logwrap.dock Border.logchip.lcsys">
+        <Setter Property="Background" Value="#1B2536"/>
+    </Style>
+    <Style Selector="Border.logwrap.dock Border.logchip.lcsys TextBlock">
+        <Setter Property="Foreground" Value="#9FB6D6"/>
+    </Style>
+    <Style Selector="Border.logwrap.dock Border.logchip.lcerr">
+        <Setter Property="Background" Value="#3A1F26"/>
+    </Style>
+    <Style Selector="Border.logwrap.dock Border.logchip.lcerr TextBlock">
+        <Setter Property="Foreground" Value="#FF8B94"/>
+    </Style>
+    <Style Selector="Border.logwrap.dock Border.logchip.lcread">
+        <Setter Property="Background" Value="#39301C"/>
+    </Style>
+    <Style Selector="Border.logwrap.dock Border.logchip.lcread TextBlock">
+        <Setter Property="Foreground" Value="#FFC37E"/>
+    </Style>
+    <Style Selector="Border.logwrap.dock Border.logchip.lcwrite">
+        <Setter Property="Background" Value="#1B2B4A"/>
+    </Style>
+    <Style Selector="Border.logwrap.dock Border.logchip.lcwrite TextBlock">
+        <Setter Property="Foreground" Value="#8FB8FF"/>
+    </Style>
+    <Style Selector="Border.logwrap.dock Border.logchip.lcrecv">
+        <Setter Property="Background" Value="#2A2344"/>
+    </Style>
+    <Style Selector="Border.logwrap.dock Border.logchip.lcrecv TextBlock">
+        <Setter Property="Foreground" Value="#BBA8FF"/>
+    </Style>
+    <Style Selector="Border.logwrap.dock Border.logchip.lcok">
+        <Setter Property="Background" Value="#14342E"/>
+    </Style>
+    <Style Selector="Border.logwrap.dock Border.logchip.lcok TextBlock">
+        <Setter Property="Foreground" Value="#5EE0C4"/>
+    </Style>
+
+    <!-- ═══ 设备卡头像（C1 ava / ava.shid） ═══ -->
+    <Style Selector="Border.ava">
+        <Setter Property="Width" Value="44"/>
+        <Setter Property="Height" Value="44"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Background" Value="{DynamicResource GradAva}"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+    </Style>
+    <Style Selector="Border.ava TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource CPrimary}"/>
+        <Setter Property="FontSize" Value="17"/>
+        <Setter Property="FontWeight" Value="ExtraBold"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="Border.ava.shid">
+        <Setter Property="Background" Value="{DynamicResource GradAvaShid}"/>
+    </Style>
+    <Style Selector="Border.ava.shid TextBlock">
+        <Setter Property="Foreground" Value="#0E9A80"/>
+    </Style>
+
+    <!-- ═══ 图标 Path（24×24 · stroke · currentColor 风格：Stroke 由使用处指定） ═══ -->
+    <Style Selector="Path.ic">
+        <Setter Property="Stretch" Value="Uniform"/>
+        <Setter Property="Width" Value="22"/>
+        <Setter Property="Height" Value="22"/>
+        <Setter Property="StrokeThickness" Value="1.8"/>
+        <Setter Property="StrokeLineCap" Value="Round"/>
+    </Style>
+    <Style Selector="Path.ic.lg">
+        <Setter Property="Width" Value="26"/>
+        <Setter Property="Height" Value="26"/>
+    </Style>
+    <Style Selector="Path.ic.sm">
+        <Setter Property="Width" Value="17"/>
+        <Setter Property="Height" Value="17"/>
+    </Style>
+    <Style Selector="Path.ic.xs">
+        <Setter Property="Width" Value="13"/>
+        <Setter Property="Height" Value="13"/>
+    </Style>
+
+    <!-- ═══ 文本辅助类 ═══ -->
+    <Style Selector="TextBlock.kicker">
+        <Setter Property="FontSize" Value="10"/>
+        <Setter Property="FontWeight" Value="ExtraBold"/>
+        <Setter Property="LetterSpacing" Value="2"/>
+        <Setter Property="Foreground" Value="{DynamicResource CPrimary}"/>
+    </Style>
+    <Style Selector="TextBlock.mut">
+        <Setter Property="Foreground" Value="{DynamicResource CMut}"/>
+    </Style>
+    <Style Selector="TextBlock.mono">
+        <Setter Property="FontFamily" Value="{DynamicResource FontMono}"/>
+    </Style>
+
+    <!-- ═══ 遮罩 / 弹窗（D mask/modal） ═══
+         注意：mask 不得带 ZIndex——弹窗 Border 默认 ZIndex=0，若遮罩抬到 90 会盖住
+         弹窗吞掉全部点击（真机走查 S13 实证：模态可见但按钮不可点） -->
+    <Style Selector="Border.mask">
+        <Setter Property="Background" Value="#0C142473"/>
+    </Style>
+    <Style Selector="Border.modal">
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="CornerRadius" Value="{DynamicResource RXl}"/>
+        <Setter Property="Padding" Value="20,22,20,16"/>
+        <Setter Property="BoxShadow" Value="0 8 24 #10204029"/>
+        <Setter Property="MaxWidth" Value="300"/>
+    </Style>
+
+    <!-- ═══ 预算条（P008 bytebar：深色 ADV 负载） ═══ -->
+    <Style Selector="Border.bytebar">
+        <Setter Property="Background" Value="{DynamicResource CInk}"/>
+        <Setter Property="CornerRadius" Value="{DynamicResource RMd}"/>
+        <Setter Property="Padding" Value="13,9,13,9"/>
+        <Setter Property="Margin" Value="0,12,0,0"/>
+    </Style>
+    <Style Selector="Border.budget">
+        <Setter Property="Background" Value="{DynamicResource CFill}"/>
+        <Setter Property="CornerRadius" Value="{DynamicResource RMd}"/>
+        <Setter Property="Padding" Value="12,10,12,10"/>
+        <Setter Property="Margin" Value="0,10,0,0"/>
+    </Style>
+
+    <!-- ═══ 错误横幅（B8 ebanner） ═══ -->
+    <Style Selector="Border.ebanner">
+        <Setter Property="Background" Value="{DynamicResource CDangerWeak}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource CDanger}"/>
+        <Setter Property="BorderThickness" Value="3,0,0,0"/>
+        <Setter Property="CornerRadius" Value="{DynamicResource RMd}"/>
+        <Setter Property="Padding" Value="14,12,14,12"/>
+        <Setter Property="Margin" Value="0,0,0,12"/>
+    </Style>
+
+    <!-- ═══ 提示条（B9 note） ═══ -->
+    <Style Selector="Border.noteinfo">
+        <Setter Property="Background" Value="{DynamicResource CPrimaryWeak}"/>
+        <Setter Property="CornerRadius" Value="{DynamicResource RMd}"/>
+        <Setter Property="Padding" Value="12,10,12,10"/>
+        <Setter Property="Margin" Value="0,12,0,0"/>
+    </Style>
+    <Style Selector="Border.noteinfo TextBlock">
+        <Setter Property="Foreground" Value="#2E5290"/>
+        <Setter Property="FontSize" Value="12"/>
+    </Style>
+
+    <!-- ═══ 操作态（B7 op） ═══ -->
+    <Style Selector="Border.op">
+        <Setter Property="Background" Value="{DynamicResource CCard}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource CLine}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="{DynamicResource RLg}"/>
+        <Setter Property="Padding" Value="16"/>
+    </Style>
+
+    <!-- ═══ 大操作入口（PAGE002 bigact） ═══ -->
+    <Style Selector="Border.bigact">
+        <Setter Property="Background" Value="{DynamicResource GradAva}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource CPrimary}"/>
+        <Setter Property="BorderThickness" Value="1.5"/>
+        <Setter Property="CornerRadius" Value="{DynamicResource RLg}"/>
+        <Setter Property="Padding" Value="14"/>
+        <Setter Property="Margin" Value="0,0,0,12"/>
+        <Setter Property="Cursor" Value="Hand"/>
+    </Style>
+
+    <!-- ═══ 菜单行（P009 menu-row） ═══ -->
+    <Style Selector="Button.menurow">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="Height" Value="NaN"/>
+        <Setter Property="Padding" Value="2,13,2,13"/>
+        <Setter Property="CornerRadius" Value="0"/>
+        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource CLineSoft}"/>
+        <Setter Property="Foreground" Value="{DynamicResource CMut}"/>
+    </Style>
+    <Style Selector="Button.menurow:pointerover /template/ Border#Bd">
+        <Setter Property="Background" Value="{DynamicResource CFill}"/>
+    </Style>
+
+    <!-- ═══ kv 行（B4） ═══ -->
+    <Style Selector="Border.kvrow">
+        <Setter Property="BorderBrush" Value="{DynamicResource CLineSoft}"/>
+        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        <Setter Property="Padding" Value="0,9,0,9"/>
+    </Style>
+
+    <!-- ═══ 版本行（P010 rel-row） ═══ -->
+    <Style Selector="Border.relrow">
+        <Setter Property="BorderBrush" Value="{DynamicResource CLineSoft}"/>
+        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        <Setter Property="Padding" Value="0,9,0,9"/>
+    </Style>
+
+    <!-- ═══ 步骤器（C6 stepper） ═══ -->
+    <Style Selector="Border.stepln">
+        <Setter Property="Height" Value="2"/>
+        <Setter Property="Background" Value="{DynamicResource CLine}"/>
+        <Setter Property="Margin" Value="2,0,2,20"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+    </Style>
+    <Style Selector="Border.stepln.done">
+        <Setter Property="Background" Value="{DynamicResource CSuccess}"/>
+    </Style>
+    <Style Selector="Border.stepn">
+        <Setter Property="Width" Value="26"/>
+        <Setter Property="Height" Value="26"/>
+        <Setter Property="CornerRadius" Value="{DynamicResource RRound}"/>
+        <Setter Property="Background" Value="{DynamicResource CFill}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource CLine}"/>
+        <Setter Property="BorderThickness" Value="2"/>
+    </Style>
+    <Style Selector="Border.stepn.cur">
+        <Setter Property="Background" Value="{DynamicResource CPrimary}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource CPrimary}"/>
+        <Setter Property="BoxShadow" Value="0 0 0 4 #E8F1FF"/>
+    </Style>
+    <Style Selector="Border.stepn.cur TextBlock">
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+    <Style Selector="Border.stepn.done">
+        <Setter Property="Background" Value="{DynamicResource CSuccessWeak}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource CSuccess}"/>
+    </Style>
+    <Style Selector="Border.stepn.done TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource CSuccessText}"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+    <Style Selector="Border.stepn TextBlock">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="{DynamicResource CMut}"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
 </Styles>

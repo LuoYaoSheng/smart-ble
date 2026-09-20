@@ -47,26 +47,29 @@ public class BleServiceTests
         Assert.Equal(expectedDowngraded, downgraded);
     }
 
-    // —— 服务/特征名称映射：短 UUID 抽取与未知回退 ——
+    // —— 服务/特征名称映射：对齐 E-WIN BleUtils.js 正典注册表
+    //    （20260920-VWIN-UIALIGN：短 4 位 + 8 位自定义前缀双匹配 + 中文正典词） ——
 
     [Theory]
-    [InlineData("00001800-0000-1000-8000-00805f9b34fb", "Generic Access")]
-    [InlineData("00001801-0000-1000-8000-00805f9b34fb", "Generic Attribute")]
-    [InlineData("0000180a-0000-1000-8000-00805f9b34fb", "Device Information")]
-    [InlineData("0000180f-0000-1000-8000-00805f9b34fb", "Battery Service")]
-    [InlineData("00001812-0000-1000-8000-00805f9b34fb", "HID")]
-    [InlineData("9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04", "Unknown Service")]
-    [InlineData("1800", "Generic Access")] // 短形式直接命中
+    [InlineData("00001800-0000-1000-8000-00805f9b34fb", "通用访问")]
+    [InlineData("00001801-0000-1000-8000-00805f9b34fb", "通用属性")]
+    [InlineData("0000180a-0000-1000-8000-00805f9b34fb", "设备信息")]
+    [InlineData("0000180f-0000-1000-8000-00805f9b34fb", "电池服务")]
+    [InlineData("00001812-0000-1000-8000-00805f9b34fb", "人机界面 (HID)")]
+    [InlineData("4fafc201-1fb5-459e-8fcc-c5c9c331914d", "OTA 升级服务")] // 8 位自定义前缀
+    [InlineData("9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04", "未知服务")]     // SHID 未入册 → 正典回退
+    [InlineData("1800", "通用访问")] // 短形式直接命中
     public void GetServiceName_MapsKnownShortUuids(string uuid, string expected)
     {
         Assert.Equal(expected, BleService.GetServiceName(uuid));
     }
 
     [Theory]
-    [InlineData("00002a00-0000-1000-8000-00805f9b34fb", "Device Name")]
-    [InlineData("00002a26-0000-1000-8000-00805f9b34fb", "Firmware Revision")]
-    [InlineData("00002a19-0000-1000-8000-00805f9b34fb", "Battery Level")]
-    [InlineData("9f1d1003-e73b-4c8f-9d2a-6f0b5e8a1c04", "Unknown Characteristic")]
+    [InlineData("00002a00-0000-1000-8000-00805f9b34fb", "设备名称")]
+    [InlineData("00002a26-0000-1000-8000-00805f9b34fb", "固件版本")]
+    [InlineData("00002a19-0000-1000-8000-00805f9b34fb", "电池电量")]
+    [InlineData("beb5483e-36e1-4688-b7f5-ea07361b26a8", "OTA 控制")]     // 8 位自定义前缀
+    [InlineData("9f1d1003-e73b-4c8f-9d2a-6f0b5e8a1c04", "未知特征值")]
     public void GetCharacteristicName_MapsKnownAndFallsBack(string uuid, string expected)
     {
         Assert.Equal(expected, BleService.GetCharacteristicName(uuid));

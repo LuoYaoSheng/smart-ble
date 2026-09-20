@@ -80,7 +80,7 @@ Windows 主机不负责：
 | WIN-002 | 桌面共享测试恢复全绿 | `PASS` | 94/95 | `MAC-001`、`MAC-002` | 95/95;M1 断言改消费正典产物,对微信裁决中立 |
 | WIN-003 | Electron Windows 构建与启动 | `PASS_WITH_OBS` | 旧提交打包、扫描、GATT 通过 | WIN-001、WIN-002 | 20260918 三框架重测：build:win --dir exit0 + CDP 真机全链；见 20260918-WIN-ALL |
 | WIN-004 | Tauri Windows 构建与启动 | `PASS_WITH_OBS` | 旧提交扫描、GATT 通过 | WIN-001、WIN-002 | 20260918：fmt 修复 + check/test/build 过 + T1-T16 真机链；T-WIN-DEF-001 在册 |
-| WIN-005 | Avalonia 功能补齐 | `IN_PROGRESS` | 单测 19/19 补齐 | WIN-001、MAC-008 | 20260920：SmartBLE.Desktop.Tests 新建，先红后绿抓出 UUID 小写映射真 bug；BLE 功能缺陷已清（见 20260918-WIN-DEF-FIX）；20260920-WIN-UIFULL 走查补 T-WIN-DEF-004+离开清会话双壳修复；同日 VWIN-UIFULL 续轮清 DEF-004/005/006（DataContext/卡片命令/寻祖绑定），V-WIN 全流程走查 16/16 |
+| WIN-005 | Avalonia 功能补齐 | `IN_PROGRESS` | 单测 19/19 补齐 | WIN-001、MAC-008 | 20260920：SmartBLE.Desktop.Tests 新建，先红后绿抓出 UUID 小写映射真 bug；BLE 功能缺陷已清（见 20260918-WIN-DEF-FIX）；20260920-WIN-UIFULL 走查补 T-WIN-DEF-004+离开清会话双壳修复；同日 VWIN-UIFULL 续轮清 DEF-004/005/006（DataContext/卡片命令/寻祖绑定），V-WIN 全流程走查 16/16；同日 VWIN-UIALIGN 正典 UI 全量重写（TabBar+七视图+色彩探针 81/81，DEF-007~010 清剿） |
 | WIN-006 | Windows 真实 GATT 与重连回归 | `IN_PROGRESS` | T-WIN-DEF-001 已修 | WIN-003、WIN-004 | 20260918 WIN-DEF-FIX：重连死句柄修复，retry 探针 + T1-T16 全绿；fixture_peripheral_s3 复验待硬件窗口 |
 | WIN-007 | Smart HID Windows E2E | `BLOCKED` | UI/传输代码已存在 | WIN-006、ControlHub 配对码、SHID 固件 | 未有完整 W4 证据 |
 | WIN-008 | Windows OTA E2E 回归 | `TODO` | 两线曾 `PASS_WITH_OBS` | WIN-006、OTA 固件 | 需复验重启后版本回读 |
@@ -367,6 +367,27 @@ README 占位且指向 Avalonia 线；Flutter 无 Windows 目标），逐框架�
   ResolveWriteOption 抽取顺带修双支持特征的无响应写错按带响应 bug
 - Evidence: verification/windows-plan-v1/20260920-WIN-011/
 - Next: N4 两案（按能力显隐 vs 恒显+未就绪徽章）待用户裁决后实施
+
+### 2026-09-20 · VWIN-UIALIGN——V-WIN 正典 UI 对齐全量重写（用户指令「UI要对齐」）
+
+- 范围：V-WIN UI 层按正典设计系统（prototype/desktop/high-fi v1.4.7，经 E-WIN 双层
+  CSS 镜像）全量重写——AppStyles tokens 化、TabBar 四枚壳（A3 恒显形态）、
+  P001/P007/P008/P009/P010/P006/P002 七视图、C9 写弹窗三模式、退出确认模态、
+  N3 五态词、E-WIN 服务名注册表（中文+8 位前缀）、Release Metadata 纯投影
+  （ReleaseMetadata.cs + Assets 镜像）。广播预算 31B 真值计算（calcAdvertiseBytes
+  同口径）；P002 阶段一真实 GATT（连接+INFO 读），下发/扫码按正典「或明确降级」
+  以横幅收口（vwin_camera_unsupported / vwin_provisioning_not_ported）。
+- 走查：FlaUI 全页面真实点击 **81/81 全绿**（13 节，含色彩探针：主按钮 1053CC
+  正落渐变线、TabBar FFFFFF、bytebar/右栏 #101521、底 #F8FBFF）；真机
+  SHID-00000001；16 截图。
+- 抓出并修复 V-WIN-DEF-007（mask ZIndex 反盖弹窗吞点击）/008（SHID 卡连接按钮
+  被错误隐藏）/009（每帧广播全量重建列表→真机更新风暴死锁，对齐 E-WIN 仅新设备
+  重排）/010（断开误带导航，拆分语义）+ 档案匹配常量未归一化。
+- 门禁：dotnet build 0 错；dotnet test **55/55**（19 存活 + 36 新增正典锚点：
+  预算/UUID 校验/信号档/五态词/强弱匹配）。
+- Evidence: verification/windows-plan-v1/20260920-VWIN-UIALIGN/
+- 未覆盖：P002 下发、P003/P005、广播发射、摄像头扫码（明确降级，归 WIN-007/
+  后续窗口）；N4 终裁仍待用户（V-WIN 取 A3 恒显，E/T 未动）。
 
 ### 2026-09-20 · WIN-UIFULL 整体 UI 级走查（用户质疑触发）
 

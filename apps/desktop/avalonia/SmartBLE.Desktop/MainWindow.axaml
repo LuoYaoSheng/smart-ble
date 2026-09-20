@@ -3,390 +3,1450 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="using:SmartBLE.Desktop.ViewModels"
-        mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+        mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="900"
         x:Class="SmartBLE.Desktop.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Title="SmartBLE"
+        Title="BLE Toolkit+"
         Icon="/Assets/icon.png"
-        MinWidth="900" MinHeight="600"
-        Width="1200" Height="900">
-        <!-- 基础窗口高度以 P008 广播页完全显示为准（对齐 Electron 壳 2026-09-11 同轮调整：
-             页面内容 786px + TabBar 64px ≈ 850px 视口 + 标题栏 → 900；旧值 800 首屏裁掉日志面板） -->
+        MinWidth="940" MinHeight="640"
+        Width="1200" Height="900"
+        Background="{DynamicResource CBg}">
+        <!-- 20260920-VWIN-UIALIGN：整体对齐 E-WIN/T-WIN 正典 UI（prototype/desktop/high-fi v1.4.7）。
+             结构：pagehost（P001/P007/P008/P009/P010/P006/P002 视图切换）+ 底部 TabBar 四枚 +
+             写入弹窗/退出确认模态。窗口高度仍以 P008 广播页完全显示为准（≈850px 视口 + 标题栏）。 -->
 
     <Design.DataContext>
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <!-- 单一根面板：主界面 + 写入对话框覆盖层 -->
     <Grid>
-    <Grid RowDefinitions="Auto,*">
+        <Grid RowDefinitions="*,64">
 
-        <!-- Title Bar -->
-        <Grid Grid.Row="0" Background="#F5F5F5" Height="52">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+            <!-- ════════════════ pagehost（等价正典 .view.active 单页渲染） ════════════════ -->
+            <Grid Grid.Row="0">
 
-            <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="20,0">
-                <PathIcon Data="M7 7h10M7 12h10M7 17h10M17 7l4-4M21 7l-4 4"
-                          Foreground="#007AFF" Width="24" Height="24"/>
-                <TextBlock Text="SmartBLE" FontSize="18" FontWeight="SemiBold"
-                          Margin="10,0,0,0" VerticalAlignment="Center"/>
-            </StackPanel>
-
-            <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="20,0">
-                <Ellipse Width="8" Height="8" Fill="{Binding BluetoothStatusColor}" Margin="0,0,8,0"/>
-                <TextBlock Text="{Binding BluetoothStatusText}" FontSize="13" Foreground="#8E8E93"/>
-            </StackPanel>
-        </Grid>
-
-        <!-- Main Content -->
-        <Grid Grid.Row="1">
-            <Carousel SelectedIndex="{Binding CurrentViewIndex}">
-                <!-- Device List View -->
-                <Grid>
-                    <Grid RowDefinitions="Auto,Auto,*">
-                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="20,16" Spacing="12">
-                            <Button Classes="Primary" Command="{Binding StartScanCommand}">
-                                <StackPanel Orientation="Horizontal" Spacing="8">
-                                    <TextBlock Text="🔍"/>
-                                    <TextBlock Text="{Binding ScanButtonText}"/>
+                <!-- ─────────── P001 扫描 ─────────── -->
+                <Grid IsVisible="{Binding IsScanView}" RowDefinitions="Auto,*">
+                    <Border Grid.Row="0" Background="{DynamicResource GradNavbar}"
+                            BorderBrush="{DynamicResource CLineSoft}" BorderThickness="0,0,0,1"
+                            Padding="18,8,18,12">
+                        <StackPanel Spacing="2">
+                            <TextBlock Classes="kicker" Text="BLE TOOLKIT+"/>
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Grid.Column="0" Text="扫描" FontSize="20" FontWeight="ExtraBold"/>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6"
+                                            VerticalAlignment="Center">
+                                    <Border Width="8" Height="8" CornerRadius="4"
+                                            Background="{Binding BtDotFill}" BoxShadow="{Binding BtDotShadow}"/>
+                                    <TextBlock Text="{Binding BtWord}" FontSize="11" FontWeight="Medium"
+                                               Foreground="{DynamicResource CMut}"/>
                                 </StackPanel>
-                            </Button>
-                            <Button Classes="Secondary" Command="{Binding ToggleFilterPanelCommand}">
-                                <StackPanel Orientation="Horizontal" Spacing="8">
-                                    <TextBlock Text="🔽"/>
-                                    <TextBlock Text="过滤条件"/>
-                                </StackPanel>
-                            </Button>
-                            <Border Classes="DeviceCount">
-                                <TextBlock Text="{Binding DeviceCountText}" Margin="12,6"/>
-                            </Border>
+                            </Grid>
                         </StackPanel>
+                    </Border>
 
-                        <!-- Filter Panel -->
-                        <Border Grid.Row="1" Classes="FilterPanel" IsVisible="{Binding ShowFilterPanel}"
-                                Margin="20,0,20,12">
-                            <StackPanel Spacing="16" Margin="16">
-                                <Grid ColumnDefinitions="*,Auto">
-                                    <TextBlock Text="过滤条件" Grid.Column="0" FontWeight="SemiBold"/>
-                                    <Button Grid.Column="1" Content="重置" Command="{Binding ResetFiltersCommand}"
-                                            Classes="TextButton" Padding="8,4"/>
-                                </Grid>
+                    <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel Margin="16,0,16,24">
+                            <!-- scantool：状态词 + 扫描按钮 -->
+                            <Grid ColumnDefinitions="*,Auto" Margin="0,14,0,10">
+                                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="6"
+                                            VerticalAlignment="Center">
+                                    <Border Width="6" Height="6" CornerRadius="3"
+                                            Background="{DynamicResource CPrimary}"
+                                            IsVisible="{Binding IsScanning}"/>
+                                    <TextBlock Text="{Binding ScanStatusText}" FontSize="12"
+                                               Foreground="{DynamicResource CMut}" VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <Button Grid.Column="1" Classes="primary" Command="{Binding StartScanCommand}"
+                                        AutomationProperties.Name="{Binding ScanButtonLabel}">
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <Path Classes="ic sm" Data="{StaticResource IcoScan}"
+                                              Stroke="{Binding $parent[Button].Foreground}"/>
+                                        <TextBlock Text="{Binding ScanButtonLabel}"/>
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
 
-                                <!-- RSSI Filter -->
-                                <StackPanel Spacing="8">
-                                    <Grid ColumnDefinitions="*,Auto">
-                                        <TextBlock Text="信号强度" Grid.Column="0" FontSize="13"/>
-                                        <TextBlock Grid.Column="1" FontSize="12" Foreground="#007AFF">
-                                            <TextBlock.Text>
-                                                <MultiBinding StringFormat="{}≥ {0} dBm">
-                                                    <Binding Path="FilterRssi"/>
-                                                </MultiBinding>
-                                            </TextBlock.Text>
-                                        </TextBlock>
+                            <!-- sec-t：附近设备 + 计数 chip + 筛选 -->
+                            <Grid ColumnDefinitions="*,Auto" Margin="2,2,2,10">
+                                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="7">
+                                    <Path Classes="ic" Data="{StaticResource IcoChip}"
+                                          Stroke="{DynamicResource CPrimary}" VerticalAlignment="Center"/>
+                                    <TextBlock Text="附近设备" FontSize="17" FontWeight="Bold"
+                                               VerticalAlignment="Center"/>
+                                    <Border Classes="chip neutral" IsVisible="{Binding DeviceCountChipVisible}"
+                                            VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding DeviceCountChipText}"/>
+                                    </Border>
+                                </StackPanel>
+                                <Button Grid.Column="1" Classes="txtlink" Content="筛选"
+                                        Command="{Binding ToggleFilterPanelCommand}"/>
+                            </Grid>
+
+                            <!-- C3 筛选面板 -->
+                            <Border Classes="card" IsVisible="{Binding ShowFilterPanel}">
+                                <StackPanel Spacing="10">
+                                    <StackPanel Orientation="Horizontal" Spacing="10">
+                                        <TextBlock Text="最弱信号" FontSize="12" FontWeight="Medium"
+                                                   Foreground="{DynamicResource CMut}" Width="64"
+                                                   VerticalAlignment="Center"/>
+                                        <Button Classes="pre" Classes.on="{Binding IsRssiPreset40}"
+                                                Content="强 [-40]" Command="{Binding SetRssiPresetCommand}"
+                                                CommandParameter="-40"/>
+                                        <Button Classes="pre" Classes.on="{Binding IsRssiPreset60}"
+                                                Content="较好 [-60]" Command="{Binding SetRssiPresetCommand}"
+                                                CommandParameter="-60"/>
+                                        <Button Classes="pre" Classes.on="{Binding IsRssiPreset70}"
+                                                Content="一般 [-70]" Command="{Binding SetRssiPresetCommand}"
+                                                CommandParameter="-70"/>
+                                        <Button Classes="pre" Classes.on="{Binding IsRssiPreset85}"
+                                                Content="弱 [-85]" Command="{Binding SetRssiPresetCommand}"
+                                                CommandParameter="-85"/>
+                                    </StackPanel>
+                                    <Grid ColumnDefinitions="64,*">
+                                        <TextBlock Grid.Column="0" Text="{Binding FilterRssiLabel}" FontSize="12"
+                                                   Foreground="{DynamicResource CMut}" FontWeight="Medium"
+                                                   VerticalAlignment="Center"/>
+                                        <Slider Grid.Column="1" Minimum="-100" Maximum="-40"
+                                                SmallChange="5" LargeChange="5" TickFrequency="5"
+                                                IsSnapToTickEnabled="True"
+                                                Value="{Binding FilterRssi}"/>
                                     </Grid>
-                                    <Slider Value="{Binding FilterRssi}" Minimum="-100" Maximum="-30"
-                                            TickFrequency="10" IsSnapToTickEnabled="True"/>
+                                    <Grid ColumnDefinitions="64,*">
+                                        <TextBlock Grid.Column="0" Text="名称前缀" FontSize="12"
+                                                   Foreground="{DynamicResource CMut}" FontWeight="Medium"
+                                                   VerticalAlignment="Center"/>
+                                        <TextBox Grid.Column="1" Classes="inp" Watermark="如 SHID / LightBLE"
+                                                 Text="{Binding FilterNamePrefix, Mode=TwoWay}"/>
+                                    </Grid>
+                                    <Grid ColumnDefinitions="64,Auto,*,Auto">
+                                        <TextBlock Grid.Column="0" Text="隐藏无名" FontSize="12"
+                                                   Foreground="{DynamicResource CMut}" FontWeight="Medium"
+                                                   VerticalAlignment="Center"/>
+                                        <ToggleButton Grid.Column="1" Classes="switch"
+                                                      IsChecked="{Binding FilterHideUnnamed}"/>
+                                        <Button Grid.Column="3" Classes="soft sm" Content="重置过滤"
+                                                Command="{Binding ResetFiltersCommand}"/>
+                                    </Grid>
                                 </StackPanel>
+                            </Border>
 
-                                <!-- Name Filter -->
-                                <StackPanel Spacing="8">
-                                    <TextBlock Text="名称前缀" FontSize="13"/>
-                                    <TextBox Text="{Binding FilterNamePrefix}" Watermark="输入设备名称前缀..."/>
-                                </StackPanel>
-
-                                <!-- Hide Unnamed -->
-                                <CheckBox Content="隐藏无名设备" IsChecked="{Binding FilterHideUnnamed}"/>
-                            </StackPanel>
-                        </Border>
-
-                        <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled">
+                            <!-- C1 设备卡列表（scan 变体） -->
                             <ItemsControl ItemsSource="{Binding FilteredDevices}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="vm:BleDeviceViewModel">
-                                        <!-- V-WIN-DEF-005：卡片此前未接连接命令，详情页（读/写/通知/日志）整体不可达。
-                                             Tapped 手势自带拖拽过滤，列表滚动松手不误触发连接 -->
-                                        <Border Classes="DeviceCard" Margin="20,0,20,12"
-                                                Cursor="Hand" Tapped="OnDeviceCardTapped">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-
-                                                <Border Grid.Column="0" Width="56" Height="56"
-                                                        Background="#007AFF" CornerRadius="12">
-                                                    <TextBlock Text="📡" FontSize="24"
-                                                              HorizontalAlignment="Center"
-                                                              VerticalAlignment="Center"/>
-                                                </Border>
-
-                                                <StackPanel Grid.Column="1" Margin="16,0">
-                                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold"/>
-                                                    <TextBlock Text="{Binding Id}" FontSize="12"
-                                                              Foreground="#8E8E93"/>
-                                                </StackPanel>
-
-                                                <StackPanel Grid.Column="2" HorizontalAlignment="Right">
-                                                    <TextBlock Text="{Binding RssiText}" FontSize="12"
-                                                              FontWeight="Medium"/>
-                                                </StackPanel>
-                                            </Grid>
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </ScrollViewer>
-
-                        <!-- Empty State -->
-                        <Grid IsVisible="{Binding IsDeviceListEmpty}"
-                              Grid.RowSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <StackPanel Spacing="16">
-                                <TextBlock Text="📡" FontSize="64" Opacity="0.5"/>
-                                <TextBlock Text="暂无设备" FontSize="18" Foreground="#8E8E93"/>
-                                <TextBlock Text="点击上方按钮开始扫描" FontSize="14"
-                                          Foreground="#8E8E93" Opacity="0.7"/>
-                            </StackPanel>
-                        </Grid>
-                    </Grid>
-                </Grid>
-
-                <!-- Device Detail View -->
-                <Grid>
-                    <Grid RowDefinitions="Auto,Auto,*,Auto">
-                        <!-- Detail Header -->
-                        <Grid Grid.Row="0" Margin="20,16" ColumnDefinitions="Auto,*,Auto">
-                            <Button Grid.Column="0" Classes="Secondary"
-                                    Command="{Binding GoBackCommand}">
-                                <TextBlock Text="← 返回"/>
-                            </Button>
-
-                            <StackPanel Grid.Column="1" Margin="16,0">
-                                <TextBlock Text="{Binding CurrentDeviceName}"
-                                          FontWeight="SemiBold" FontSize="18"/>
-                                <TextBlock Text="{Binding CurrentDeviceId}"
-                                          FontSize="13" Foreground="#8E8E93"/>
-                            </StackPanel>
-
-                            <Border Grid.Column="2" Classes="StatusBadge"
-                                    Background="{Binding ConnectionStatusColor}">
-                                <TextBlock Text="{Binding ConnectionStatusText}"
-                                          Padding="12,6" FontSize="13"/>
-                            </Border>
-                        </Grid>
-
-                        <!-- Detail Controls -->
-                        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="20,0,20,16" Spacing="12">
-                            <Button Classes="Secondary" Command="{Binding ClearLogsCommand}">
-                                <TextBlock Text="清空日志"/>
-                            </Button>
-                            <Button Classes="Danger" Command="{Binding DisconnectCommand}">
-                                <TextBlock Text="断开连接"/>
-                            </Button>
-                        </StackPanel>
-
-                        <!-- Services List -->
-                        <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled">
-                            <ItemsControl ItemsSource="{Binding Services}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate x:DataType="vm:BleServiceViewModel">
-                                        <Border Classes="ServiceCard" Margin="20,0,20,12">
-                                            <StackPanel Spacing="12">
-                                                <!-- Service Header -->
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                    </Grid.ColumnDefinitions>
-
-                                                    <Border Grid.Column="0" Width="44" Height="44"
-                                                            Background="#E8F2FF" CornerRadius="10">
-                                                        <TextBlock Text="⚙️" FontSize="20"
-                                                                  HorizontalAlignment="Center"
-                                                                  VerticalAlignment="Center"/>
+                                        <Border Classes="dev" Tapped="OnDeviceCardTapped">
+                                            <StackPanel>
+                                                <Grid ColumnDefinitions="Auto,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ava"
+                                                            Classes.shid="{Binding IsShid}" Margin="0,0,12,0">
+                                                        <TextBlock Text="{Binding Initial}"/>
                                                     </Border>
-
-                                                    <StackPanel Grid.Column="1" Margin="12,0">
-                                                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold"/>
-                                                        <TextBlock Text="{Binding Uuid}" FontSize="12"
-                                                                  Foreground="#8E8E93"/>
-                                                    </StackPanel>
-
-                                                    <Border Grid.Column="2" Classes="ServiceCount">
-                                                        <TextBlock Text="{Binding CharacteristicCountText}"
-                                                                  Padding="12,6"/>
-                                                    </Border>
-                                                </Grid>
-
-                                                <!-- Characteristics -->
-                                                <ItemsControl ItemsSource="{Binding Characteristics}">
-                                                    <ItemsControl.ItemTemplate>
-                                                        <DataTemplate x:DataType="vm:BleCharacteristicInfo">
-                                                            <Border Background="#F5F5F5" CornerRadius="8"
-                                                                    Padding="12,8" Margin="4,0">
-                                                                <Grid ColumnDefinitions="Auto,*,Auto">
-                                                                    <!-- Icon -->
-                                                                    <Border Grid.Column="0" Width="32" Height="32"
-                                                                            Background="White" CornerRadius="6"
-                                                                            BorderBrush="#E0E0E0" BorderThickness="1"
-                                                                            Margin="0,0,10,0">
-                                                                        <TextBlock Text="📡" FontSize="14"
-                                                                                  HorizontalAlignment="Center"
-                                                                                  VerticalAlignment="Center"/>
-                                                                    </Border>
-
-                                                                    <!-- Characteristic Info -->
-                                                                    <StackPanel Grid.Column="1" Spacing="2">
-                                                                        <TextBlock Text="{Binding Name}" FontSize="13"
-                                                                                  FontWeight="Medium"/>
-                                                                        <TextBlock Text="{Binding Uuid}" FontSize="11"
-                                                                                  Foreground="#8E8E93"/>
-                                                                        <!-- Properties -->
-                                                                        <ItemsControl ItemsSource="{Binding Properties}">
-                                                                            <ItemsControl.ItemsPanel>
-                                                                                <ItemsPanelTemplate>
-                                                                                    <WrapPanel Orientation="Horizontal"/>
-                                                                                </ItemsPanelTemplate>
-                                                                            </ItemsControl.ItemsPanel>
-                                                                            <ItemsControl.ItemTemplate>
-                                                                                <DataTemplate x:DataType="x:String">
-                                                                                    <Border Background="#007AFF" CornerRadius="3"
-                                                                                            Padding="5,2" Margin="0,0,4,0">
-                                                                                        <TextBlock Text="{Binding}" FontSize="9"
-                                                                                                  Foreground="White"/>
-                                                                                    </Border>
-                                                                                </DataTemplate>
-                                                                            </ItemsControl.ItemTemplate>
-                                                                        </ItemsControl>
-                                                                    </StackPanel>
-
-                                                                    <!-- Action Buttons -->
-                                                                    <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6">
-                                                                        <!-- Read Button -->
-                                                                        <Button Classes="CharButton"
-                                                                                Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).ReadCharacteristicCommand}"
-                                                                                CommandParameter="{Binding CommandKey}">
-                                                                            <StackPanel Spacing="2">
-                                                                                <TextBlock Text="📥" FontSize="12"/>
-                                                                                <TextBlock Text="读" FontSize="9"/>
-                                                                            </StackPanel>
-                                                                        </Button>
-
-                                                                        <!-- Write Button -->
-                                                                        <Button Classes="CharButton"
-                                                                                Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).OpenWriteDialogCommand}"
-                                                                                CommandParameter="{Binding CommandKey}">
-                                                                            <StackPanel Spacing="2">
-                                                                                <TextBlock Text="📤" FontSize="12"/>
-                                                                                <TextBlock Text="写" FontSize="9"/>
-                                                                            </StackPanel>
-                                                                        </Button>
-
-                                                                        <!-- Notify Button -->
-                                                                        <Button Classes="CharButton"
-                                                                                Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).ToggleNotificationCommand}"
-                                                                                CommandParameter="{Binding CommandKey}">
-                                                                            <StackPanel Spacing="2">
-                                                                                <TextBlock Text="🔔" FontSize="12"/>
-                                                                                <TextBlock Text="通知" FontSize="9"/>
-                                                                            </StackPanel>
-                                                                        </Button>
-                                                                    </StackPanel>
-                                                                </Grid>
+                                                    <StackPanel Grid.Column="1" Spacing="2">
+                                                        <StackPanel Orientation="Horizontal" Spacing="6">
+                                                            <TextBlock Text="{Binding DisplayName}" FontSize="15"
+                                                                       FontWeight="Bold" TextTrimming="CharacterEllipsis"/>
+                                                            <Border Classes="chip" IsVisible="{Binding IsShid}"
+                                                                    Background="{Binding MatchChipBg}"
+                                                                    VerticalAlignment="Center">
+                                                                <TextBlock Text="{Binding MatchChipText}"
+                                                                           Foreground="{Binding MatchChipFg}"/>
                                                             </Border>
-                                                        </DataTemplate>
-                                                    </ItemsControl.ItemTemplate>
-                                                </ItemsControl>
+                                                        </StackPanel>
+                                                        <TextBlock Classes="mono" Text="{Binding IdLine}"
+                                                                   FontSize="10" Foreground="{DynamicResource CMut}"
+                                                                   TextTrimming="CharacterEllipsis"/>
+                                                        <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,3,0,0">
+                                                            <ItemsControl ItemsSource="{Binding SigBars}">
+                                                                <ItemsControl.ItemsPanel>
+                                                                    <ItemsPanelTemplate>
+                                                                        <StackPanel Orientation="Horizontal" Spacing="2"/>
+                                                                    </ItemsPanelTemplate>
+                                                                </ItemsControl.ItemsPanel>
+                                                                <ItemsControl.ItemTemplate>
+                                                                    <DataTemplate x:DataType="vm:SigBarViewModel">
+                                                                        <Border Width="3" Height="{Binding Height}"
+                                                                                CornerRadius="1" Background="{Binding Fill}"
+                                                                                VerticalAlignment="Bottom"/>
+                                                                    </DataTemplate>
+                                                                </ItemsControl.ItemTemplate>
+                                                            </ItemsControl>
+                                                            <TextBlock Classes="mono" Text="{Binding RssiText}"
+                                                                       FontSize="10" FontWeight="Medium"
+                                                                       Foreground="{DynamicResource CMut}"
+                                                                       VerticalAlignment="Bottom"/>
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                </Grid>
+                                                <!-- 正典 C1 双入口卡：SHID 匹配卡 = 配置(主) + 连接(soft) 两按钮并存；
+                                                     已连接态按 E-WIN 口径禁用而非隐藏 -->
+                                                <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,12,0,0">
+                                                    <Button Classes="primary sm" MinWidth="0"
+                                                            AutomationProperties.Name="配置 Smart HID"
+                                                            IsVisible="{Binding IsShid}"
+                                                            IsEnabled="{Binding !ConnectedHint}"
+                                                            Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).OpenHidProvisionCommand}"
+                                                            CommandParameter="{Binding Id}">
+                                                        <StackPanel Orientation="Horizontal" Spacing="6">
+                                                            <Path Classes="ic sm" Data="{StaticResource IcoHid}"
+                                                                  Stroke="{Binding $parent[Button].Foreground}"/>
+                                                            <TextBlock Text="配置 Smart HID"/>
+                                                        </StackPanel>
+                                                    </Button>
+                                                    <Button Classes="soft sm" Classes.primary="{Binding !IsShid}"
+                                                            AutomationProperties.Name="连接"
+                                                            IsEnabled="{Binding !ConnectedHint}"
+                                                            Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).ConnectToDeviceCommand}"
+                                                            CommandParameter="{Binding Id}">
+                                                        <StackPanel Orientation="Horizontal" Spacing="6">
+                                                            <Path Classes="ic sm" Data="{StaticResource IcoLink}"
+                                                                  Stroke="{Binding $parent[Button].Foreground}"/>
+                                                            <TextBlock Text="连接"/>
+                                                        </StackPanel>
+                                                    </Button>
+                                                </StackPanel>
                                             </StackPanel>
                                         </Border>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
-                        </ScrollViewer>
 
-                        <!-- Log Panel -->
-                        <Border Grid.Row="3" Classes="LogPanel" IsVisible="{Binding HasLogs}">
-                            <Grid RowDefinitions="Auto,*">
-                                <Border Grid.Row="0" Background="#F2F2F7" Padding="16,8">
-                                    <Grid>
-                                        <TextBlock Text="操作日志" FontWeight="Medium"/>
-                                        <TextBlock Text="{Binding LogCountText}" HorizontalAlignment="Right"
-                                              FontSize="12" Foreground="#8E8E93"/>
-                                    </Grid>
+                            <!-- B6 空态（两文案：全库空 / 筛选后空） -->
+                            <StackPanel HorizontalAlignment="Center" IsVisible="{Binding IsDeviceListEmpty}"
+                                        Margin="0,38,0,24" Spacing="6">
+                                <Path Classes="ic lg" Data="{StaticResource IcoScan}"
+                                      Stroke="{DynamicResource CPh}" HorizontalAlignment="Center"
+                                      Margin="0,0,0,10"/>
+                                <TextBlock Text="还没有扫描结果" FontSize="17" FontWeight="Bold"
+                                           HorizontalAlignment="Center"
+                                           IsVisible="{Binding IsAllDevicesEmpty}"/>
+                                <TextBlock Text="点上方按钮开始扫描附近 BLE 设备" FontSize="13"
+                                           Foreground="{DynamicResource CMut}" HorizontalAlignment="Center"
+                                           IsVisible="{Binding IsAllDevicesEmpty}"/>
+                                <TextBlock Text="当前没有匹配设备" FontSize="17" FontWeight="Bold"
+                                           HorizontalAlignment="Center"
+                                           IsVisible="{Binding !IsAllDevicesEmpty}"/>
+                                <TextBlock Text="调整筛选条件试试" FontSize="13"
+                                           Foreground="{DynamicResource CMut}" HorizontalAlignment="Center"
+                                           IsVisible="{Binding !IsAllDevicesEmpty}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+
+                <!-- ─────────── P007 已连接 ─────────── -->
+                <Grid IsVisible="{Binding IsConnectedView}" RowDefinitions="Auto,*">
+                    <Border Grid.Row="0" Background="{DynamicResource GradNavbar}"
+                            BorderBrush="{DynamicResource CLineSoft}" BorderThickness="0,0,0,1"
+                            Padding="18,8,18,12">
+                        <StackPanel Spacing="2">
+                            <TextBlock Classes="kicker" Text="SESSIONS"/>
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Grid.Column="0" Text="已连接" FontSize="20" FontWeight="ExtraBold"/>
+                                <Border Grid.Column="1" Classes="chip neutral" VerticalAlignment="Center">
+                                    <TextBlock Text="通用调试会话"/>
                                 </Border>
-                                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                                    <ItemsControl ItemsSource="{Binding Logs}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate x:DataType="vm:LogEntry">
-                                                <Grid Margin="12,4">
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="16"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <TextBlock Grid.Column="0" Text="{Binding Icon}"
-                                                              FontSize="12"/>
-                                                    <StackPanel Grid.Column="1">
-                                                        <TextBlock Text="{Binding Message}" FontSize="12"/>
-                                                        <TextBlock Text="{Binding Timestamp}" FontSize="11"
-                                                                  Foreground="#8E8E93"/>
-                                                    </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel Margin="16,0,16,24">
+                            <!-- C12 汇总卡（正典 one 模式：单台不显示，两台及以上才出） -->
+                            <Border Classes="card" IsVisible="{Binding ConnectedBadgeVisible}">
+                                <Grid ColumnDefinitions="Auto,*,Auto">
+                                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="12">
+                                        <TextBlock Text="{Binding ConnectedCount}" FontSize="24"
+                                                   FontWeight="ExtraBold" Foreground="{DynamicResource CPrimary}"/>
+                                        <TextBlock Text="台在线 · 全部为内存会话" FontSize="12"
+                                                   Foreground="{DynamicResource CMut}" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                    <Button Grid.Column="2" Classes="danger sm" AutomationProperties.Name="全部断开"
+                                            Command="{Binding DisconnectAllCommand}">
+                                        <StackPanel Orientation="Horizontal" Spacing="6">
+                                            <Path Classes="ic sm" Data="{StaticResource IcoX}"
+                                                  Stroke="{Binding $parent[Button].Foreground}"/>
+                                            <TextBlock Text="全部断开"/>
+                                        </StackPanel>
+                                    </Button>
+                                </Grid>
+                            </Border>
+
+                            <!-- C1 设备卡（conn 变体） -->
+                            <ItemsControl ItemsSource="{Binding ConnectedDevices}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:BleDeviceViewModel">
+                                        <Border Classes="dev" Tapped="OnDeviceCardTapped">
+                                            <Grid ColumnDefinitions="Auto,*,Auto">
+                                                <Grid Grid.Column="0" Margin="0,0,12,0">
+                                                    <Border Classes="ava" Classes.shid="{Binding IsShid}">
+                                                        <TextBlock Text="{Binding Initial}"/>
+                                                    </Border>
+                                                    <Border Width="15" Height="15" CornerRadius="999"
+                                                            Background="{DynamicResource CSuccess}"
+                                                            BorderBrush="{DynamicResource CCard}"
+                                                            BorderThickness="2"
+                                                            HorizontalAlignment="Right"
+                                                            VerticalAlignment="Bottom">
+                                                        <Path Classes="ic xs" Data="{StaticResource IcoCheck}"
+                                                              Stroke="White" Stretch="Uniform"
+                                                              StrokeThickness="2.2"/>
+                                                    </Border>
                                                 </Grid>
+                                                <StackPanel Grid.Column="1" Spacing="2">
+                                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                                        <TextBlock Text="{Binding DisplayName}" FontSize="15"
+                                                                   FontWeight="Bold"/>
+                                                        <Border Classes="chip" IsVisible="{Binding IsShid}"
+                                                                Background="{Binding MatchChipBg}"
+                                                                VerticalAlignment="Center">
+                                                            <TextBlock Text="{Binding MatchChipText}"
+                                                                       Foreground="{Binding MatchChipFg}"/>
+                                                        </Border>
+                                                    </StackPanel>
+                                                    <TextBlock Classes="mono" Text="{Binding Id}" FontSize="10"
+                                                               Foreground="{DynamicResource CMut}"/>
+                                                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,3,0,0">
+                                                        <ItemsControl ItemsSource="{Binding SigBars}">
+                                                            <ItemsControl.ItemsPanel>
+                                                                <ItemsPanelTemplate>
+                                                                    <StackPanel Orientation="Horizontal" Spacing="2"/>
+                                                                </ItemsPanelTemplate>
+                                                            </ItemsControl.ItemsPanel>
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate x:DataType="vm:SigBarViewModel">
+                                                                    <Border Width="3" Height="{Binding Height}"
+                                                                            CornerRadius="1" Background="{Binding Fill}"
+                                                                            VerticalAlignment="Bottom"/>
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+                                                        <TextBlock Text="已连接 · 可进行 GATT 调试" FontSize="11"
+                                                                   Foreground="{DynamicResource CMut}"
+                                                                   VerticalAlignment="Bottom"/>
+                                                    </StackPanel>
+                                                </StackPanel>
+                                                <Button Grid.Column="2" Classes="soft dangert sm" VerticalAlignment="Center"
+                                                        AutomationProperties.Name="断开"
+                                                        Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).DisconnectCommand}">
+                                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                                        <Path Classes="ic sm" Data="{StaticResource IcoX}"
+                                                              Stroke="{Binding $parent[Button].Foreground}"/>
+                                                        <TextBlock Text="断开"/>
+                                                    </StackPanel>
+                                                </Button>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <!-- 空态 -->
+                            <StackPanel HorizontalAlignment="Center" Spacing="6" Margin="0,38,0,24"
+                                        IsVisible="{Binding !ConnectedBadgeVisible}">
+                                <Path Classes="ic lg" Data="{StaticResource IcoLink}"
+                                      Stroke="{DynamicResource CPh}" HorizontalAlignment="Center"
+                                      Margin="0,0,0,10"/>
+                                <TextBlock Text="还没有连接中的设备" FontSize="17" FontWeight="Bold"
+                                           HorizontalAlignment="Center"/>
+                                <TextBlock Text="先在「扫描」页找到设备并连接，会话将保存在这里" FontSize="13"
+                                           Foreground="{DynamicResource CMut}" HorizontalAlignment="Center"/>
+                                <Button Classes="soft" Content="去扫描" Margin="0,10,0,0"
+                                        HorizontalAlignment="Center"
+                                        Command="{Binding SwitchTabCommand}" CommandParameter="scan"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+
+                <!-- ─────────── P008 广播（31B 预算真值计算；外围发射=V-WIN 明确降级） ─────────── -->
+                <Grid IsVisible="{Binding IsBroadcastView}" RowDefinitions="Auto,*">
+                    <Border Grid.Row="0" Background="{DynamicResource GradNavbar}"
+                            BorderBrush="{DynamicResource CLineSoft}" BorderThickness="0,0,0,1"
+                            Padding="18,8,18,12">
+                        <StackPanel Spacing="2">
+                            <TextBlock Classes="kicker" Text="PERIPHERAL"/>
+                            <Grid ColumnDefinitions="*,Auto,Auto">
+                                <TextBlock Grid.Column="0" Text="广播" FontSize="20" FontWeight="ExtraBold"/>
+                                <Border Grid.Column="1" Classes="chip neutral" VerticalAlignment="Center"
+                                        Margin="0,0,6,0">
+                                    <TextBlock Text="平台：Desktop"/>
+                                </Border>
+                                <Border Grid.Column="2" Classes="badge dim" VerticalAlignment="Center">
+                                    <StackPanel Orientation="Horizontal" Spacing="5">
+                                        <Ellipse Width="7" Height="7" Fill="{DynamicResource CPh}"/>
+                                        <TextBlock Text="未就绪"/>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel Margin="16,0,16,24">
+                            <Border Classes="card">
+                                <StackPanel Spacing="12">
+                                    <StackPanel Spacing="6">
+                                        <TextBlock Text="设备名称" FontSize="12" FontWeight="Medium"
+                                                   Foreground="{DynamicResource CSub}"/>
+                                        <TextBox Classes="inp" MaxLength="20"
+                                                 Text="{Binding BcName, Mode=TwoWay}"/>
+                                    </StackPanel>
+                                    <StackPanel Spacing="6">
+                                        <TextBlock Text="服务 UUID" FontSize="12" FontWeight="Medium"
+                                                   Foreground="{DynamicResource CSub}"/>
+                                        <TextBox Classes="inp mono" MaxLength="36"
+                                                 Text="{Binding BcUuid, Mode=TwoWay}"/>
+                                        <StackPanel Orientation="Horizontal" Spacing="5"
+                                                    IsVisible="{Binding !BcUuidValid}">
+                                            <Path Classes="ic xs" Data="{StaticResource IcoWarn}"
+                                                  Stroke="{DynamicResource CWarningText}" VerticalAlignment="Center"/>
+                                            <TextBlock Text="UUID 需为 4 / 8 / 36 位十六进制" FontSize="11"
+                                                       Foreground="{DynamicResource CWarningText}"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <StackPanel Spacing="6">
+                                        <TextBlock Text="厂商 ID（HEX）" FontSize="12" FontWeight="Medium"
+                                                   Foreground="{DynamicResource CSub}"/>
+                                        <TextBox Classes="inp mono" MaxLength="4"
+                                                 Text="{Binding BcMfgId, Mode=TwoWay}"/>
+                                    </StackPanel>
+                                    <StackPanel Spacing="6">
+                                        <TextBlock Text="厂商数据（ASCII）" FontSize="12" FontWeight="Medium"
+                                                   Foreground="{DynamicResource CSub}"/>
+                                        <TextBox Classes="inp" MaxLength="26"
+                                                 Text="{Binding BcMfgData, Mode=TwoWay}"/>
+                                    </StackPanel>
+
+                                    <!-- bytebar：ADV 负载预算 -->
+                                    <Border Classes="bytebar">
+                                        <Grid ColumnDefinitions="*,Auto,Auto">
+                                            <TextBlock Grid.Column="0" Text="ADV 负载预算" FontSize="10"
+                                                       FontWeight="Medium" Foreground="#8FA3C0"
+                                                       VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Classes="mono" Text="{Binding BcTotalBytes}"
+                                                       FontSize="15" FontWeight="Bold" Margin="0,0,4,0"
+                                                       Foreground="{Binding BcTotalNumFill}"
+                                                       VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="2" Text="/ 31 字节" FontSize="11"
+                                                       Foreground="#7C8DA6" VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
+
+                                    <!-- budget 四行明细 -->
+                                    <Border Classes="budget">
+                                        <StackPanel>
+                                            <Grid ColumnDefinitions="*,Auto">
+                                                <TextBlock Grid.Column="0" Classes="mono" Text="完整名称 (0x09)"
+                                                           FontSize="11" Foreground="{DynamicResource CSub}"/>
+                                                <TextBlock Grid.Column="1" Classes="mono" FontSize="11"
+                                                           Foreground="{DynamicResource CSub}"
+                                                           Text="{Binding BcNameBytes, StringFormat={}{0} B}"/>
+                                            </Grid>
+                                            <Grid ColumnDefinitions="*,Auto">
+                                                <TextBlock Grid.Column="0" Classes="mono" Text="服务 UUID (0x03/0x07)"
+                                                           FontSize="11" Foreground="{DynamicResource CSub}"/>
+                                                <TextBlock Grid.Column="1" Classes="mono" FontSize="11"
+                                                           Foreground="{DynamicResource CSub}"
+                                                           Text="{Binding BcUuidBytes, StringFormat={}{0} B}"/>
+                                            </Grid>
+                                            <Grid ColumnDefinitions="*,Auto">
+                                                <TextBlock Grid.Column="0" Classes="mono" Text="{Binding BcMfgRowLabel}"
+                                                           FontSize="11" Foreground="{DynamicResource CSub}"/>
+                                                <TextBlock Grid.Column="1" Classes="mono" FontSize="11"
+                                                           Foreground="{DynamicResource CSub}"
+                                                           Text="{Binding BcMfgBytes, StringFormat={}{0} B}"/>
+                                            </Grid>
+                                            <Grid ColumnDefinitions="*,Auto">
+                                                <TextBlock Grid.Column="0" Classes="mono"
+                                                           Text="{Binding BcTotalRowLabel}" FontSize="11"
+                                                           FontWeight="Bold" Foreground="{Binding BcTotalFill}"/>
+                                                <TextBlock Grid.Column="1" Classes="mono" FontSize="11"
+                                                           FontWeight="Bold" Foreground="{Binding BcTotalFill}"
+                                                           Text="{Binding BcTotalBytes, StringFormat={}{0} / 31 B}"/>
+                                            </Grid>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <StackPanel Orientation="Horizontal" Spacing="9" Margin="0,2,0,0">
+                                        <Button Classes="primary" AutomationProperties.Name="开始广播"
+                                                Command="{Binding StartBroadcastCommand}">
+                                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                                <Path Classes="ic sm" Data="{StaticResource IcoCast}"
+                                                      Stroke="{Binding $parent[Button].Foreground}"/>
+                                                <TextBlock Text="开始广播"/>
+                                            </StackPanel>
+                                        </Button>
+                                        <Button Classes="soft" AutomationProperties.Name="检查支持"
+                                                Command="{Binding CheckBroadcastSupportCommand}">
+                                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                                <Path Classes="ic sm" Data="{StaticResource IcoRefresh}"
+                                                      Stroke="{Binding $parent[Button].Foreground}"/>
+                                                <TextBlock Text="检查支持"/>
+                                            </StackPanel>
+                                        </Button>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- 广播日志（cardv 白卡变体） -->
+                            <Border Classes="logwrap cardv">
+                                <Grid RowDefinitions="Auto,*">
+                                    <Border Grid.Row="0" Classes="logbar">
+                                        <Grid ColumnDefinitions="*,Auto,Auto">
+                                            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
+                                                <Path Classes="ic xs" Data="{StaticResource IcoLog}"
+                                                      Stroke="{DynamicResource CSub}" VerticalAlignment="Center"/>
+                                                <TextBlock Text="通信日志" FontSize="12" FontWeight="Bold"
+                                                           Foreground="{DynamicResource CSub}" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                            <Button Grid.Column="1" Classes="ghost dangert sm" Content="清空"
+                                                    Command="{Binding ClearBroadcastLogsCommand}"/>
+                                        </Grid>
+                                    </Border>
+                                    <ScrollViewer Grid.Row="1" MaxHeight="220" HorizontalScrollBarVisibility="Disabled">
+                                        <ItemsControl ItemsSource="{Binding BroadcastLogs}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate x:DataType="vm:LogEntry">
+                                                    <Grid ColumnDefinitions="Auto,Auto,*" Margin="13,5,13,5">
+                                                        <TextBlock Grid.Column="0" Classes="mono" Text="{Binding Time}"
+                                                                   FontSize="11" Foreground="{DynamicResource CMut}"/>
+                                                        <Border Grid.Column="1" Classes="logchip" Margin="8,0,8,0"
+                                                                Classes.lcsys="{Binding IsSys}" Classes.lcerr="{Binding IsErr}"
+                                                                Classes.lcread="{Binding IsRead}" Classes.lcwrite="{Binding IsWrite}"
+                                                                Classes.lcrecv="{Binding IsRecv}" Classes.lcok="{Binding IsOk}">
+                                                            <TextBlock Text="{Binding Word}"/>
+                                                        </Border>
+                                                        <TextBlock Grid.Column="2" Classes="mono" Text="{Binding Message}"
+                                                                   FontSize="11" TextWrapping="Wrap"
+                                                                   Foreground="{DynamicResource CSub}"/>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+
+                <!-- ─────────── P009 关于 ─────────── -->
+                <Grid IsVisible="{Binding IsAboutView}" RowDefinitions="Auto,*">
+                    <Border Grid.Row="0" Background="{DynamicResource GradNavbar}"
+                            BorderBrush="{DynamicResource CLineSoft}" BorderThickness="0,0,0,1"
+                            Padding="18,8,18,12">
+                        <StackPanel Spacing="2">
+                            <TextBlock Classes="kicker" Text="ABOUT"/>
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Grid.Column="0" Text="关于" FontSize="20" FontWeight="ExtraBold"/>
+                                <Border Grid.Column="1" Classes="chip primaryc" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding AboutVersionChip}"/>
+                                </Border>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel Margin="16,12,16,24" MaxWidth="620" HorizontalAlignment="Center">
+                            <!-- 身份卡 -->
+                            <Border Classes="card">
+                                <StackPanel Orientation="Horizontal" Spacing="14">
+                                    <Border Width="44" Height="44" CornerRadius="12"
+                                            Background="{DynamicResource CPrimaryWeak}">
+                                        <Path Classes="ic" Data="{StaticResource IcoBt}"
+                                              Stroke="{DynamicResource CPrimary}" Stretch="Uniform"/>
+                                    </Border>
+                                    <StackPanel Spacing="2" VerticalAlignment="Center">
+                                        <TextBlock Text="BLE Toolkit+" FontSize="20" FontWeight="ExtraBold"/>
+                                        <TextBlock Text="{Binding AboutVersionLine}" FontSize="12"
+                                                   Foreground="{DynamicResource CMut}"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- 应用信息 -->
+                            <Grid ColumnDefinitions="*,Auto" Margin="2,2,2,10">
+                                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="7">
+                                    <Path Classes="ic" Data="{StaticResource IcoInfo}"
+                                          Stroke="{DynamicResource CPrimary}" VerticalAlignment="Center"/>
+                                    <TextBlock Text="应用信息" FontSize="17" FontWeight="Bold"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Grid>
+                            <Border Classes="card">
+                                <StackPanel>
+                                    <Border Classes="kvrow">
+                                        <Grid ColumnDefinitions="96,*">
+                                            <TextBlock Grid.Column="0" Text="当前环境" FontSize="12"
+                                                       FontWeight="Medium" Foreground="{DynamicResource CMut}"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding AboutEnvValue}" FontSize="13"/>
+                                        </Grid>
+                                    </Border>
+                                    <Border Classes="kvrow">
+                                        <Grid ColumnDefinitions="96,*">
+                                            <TextBlock Grid.Column="0" Text="设备型号" FontSize="12"
+                                                       FontWeight="Medium" Foreground="{DynamicResource CMut}"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding AboutModelValue}" FontSize="13"/>
+                                        </Grid>
+                                    </Border>
+                                    <Border Classes="kvrow" BorderThickness="0">
+                                        <Grid ColumnDefinitions="96,*">
+                                            <TextBlock Grid.Column="0" Text="构建" FontSize="12"
+                                                       FontWeight="Medium" Foreground="{DynamicResource CMut}"/>
+                                            <TextBlock Grid.Column="1" Classes="mono" Text="{Binding AboutBuildValue}"
+                                                       FontSize="13"/>
+                                        </Grid>
+                                    </Border>
+                                    <ItemsControl ItemsSource="{Binding FeatureChips}" Margin="0,10,0,0">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel Orientation="Horizontal"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="x:String">
+                                                <Border Classes="chip neutral" Margin="0,0,6,6">
+                                                    <TextBlock Text="{Binding}"/>
+                                                </Border>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
-                                </ScrollViewer>
-                            </Grid>
-                        </Border>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- 平台与公开状态（F027） -->
+                            <Border Classes="card">
+                                <ItemsControl ItemsSource="{Binding PlatformRows}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:PlatformRowViewModel">
+                                            <Border Classes="relrow">
+                                                <Grid ColumnDefinitions="*,Auto,Auto">
+                                                    <TextBlock Grid.Column="0" Text="{Binding Name}" FontSize="13"
+                                                               VerticalAlignment="Center"/>
+                                                    <Border Grid.Column="1" Classes="chip" Margin="0,0,6,0"
+                                                            Background="{Binding Bg1}" VerticalAlignment="Center">
+                                                        <TextBlock Text="{Binding Word1}" Foreground="{Binding Fg1}"/>
+                                                    </Border>
+                                                    <Border Grid.Column="2" Classes="chip"
+                                                            IsVisible="{Binding Word2Visible}"
+                                                            Background="{Binding Bg2}" VerticalAlignment="Center">
+                                                        <TextBlock Text="{Binding Word2}" Foreground="{Binding Fg2}"/>
+                                                    </Border>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Border>
+
+                            <!-- 菜单（F029：官网/反馈/版本记录/分享） -->
+                            <Border Classes="card" Padding="16,4,16,4">
+                                <StackPanel>
+                                    <Button Classes="menurow" AutomationProperties.Name="官方网站" Command="{Binding OpenWebsiteCommand}">
+                                        <Grid ColumnDefinitions="Auto,*,Auto">
+                                            <Path Grid.Column="0" Classes="ic" Data="{StaticResource IcoExt}"
+                                                  Stroke="{DynamicResource CMut}" Margin="0,0,11,0"/>
+                                            <TextBlock Grid.Column="1" Text="官方网站" FontSize="13"
+                                                       FontWeight="Medium" Foreground="{DynamicResource CText}"/>
+                                            <Path Grid.Column="2" Classes="ic xs" Data="{StaticResource IcoChevR}"
+                                                  Stroke="{DynamicResource CPh}"/>
+                                        </Grid>
+                                    </Button>
+                                    <Button Classes="menurow" AutomationProperties.Name="问题反馈" Command="{Binding OpenFeedbackCommand}">
+                                        <Grid ColumnDefinitions="Auto,*,Auto">
+                                            <Path Grid.Column="0" Classes="ic" Data="{StaticResource IcoSend}"
+                                                  Stroke="{DynamicResource CMut}" Margin="0,0,11,0"/>
+                                            <TextBlock Grid.Column="1" Text="问题反馈" FontSize="13"
+                                                       FontWeight="Medium" Foreground="{DynamicResource CText}"/>
+                                            <Path Grid.Column="2" Classes="ic xs" Data="{StaticResource IcoChevR}"
+                                                  Stroke="{DynamicResource CPh}"/>
+                                        </Grid>
+                                    </Button>
+                                    <Button Classes="menurow" AutomationProperties.Name="版本记录" Command="{Binding GoVersionsCommand}">
+                                        <Grid ColumnDefinitions="Auto,*,Auto">
+                                            <Path Grid.Column="0" Classes="ic" Data="{StaticResource IcoDoc}"
+                                                  Stroke="{DynamicResource CMut}" Margin="0,0,11,0"/>
+                                            <TextBlock Grid.Column="1" Text="版本记录" FontSize="13"
+                                                       FontWeight="Medium" Foreground="{DynamicResource CText}"/>
+                                            <Path Grid.Column="2" Classes="ic xs" Data="{StaticResource IcoChevR}"
+                                                  Stroke="{DynamicResource CPh}"/>
+                                        </Grid>
+                                    </Button>
+                                    <Button Classes="menurow" BorderThickness="0" AutomationProperties.Name="分享应用" Command="{Binding ShareAppCommand}">
+                                        <Grid ColumnDefinitions="Auto,*,Auto">
+                                            <Path Grid.Column="0" Classes="ic" Data="{StaticResource IcoShare}"
+                                                  Stroke="{DynamicResource CMut}" Margin="0,0,11,0"/>
+                                            <TextBlock Grid.Column="1" Text="分享应用" FontSize="13"
+                                                       FontWeight="Medium" Foreground="{DynamicResource CText}"/>
+                                            <Path Grid.Column="2" Classes="ic xs" Data="{StaticResource IcoChevR}"
+                                                  Stroke="{DynamicResource CPh}"/>
+                                        </Grid>
+                                    </Button>
+                                </StackPanel>
+                            </Border>
+
+                            <StackPanel Spacing="1" Margin="0,18,0,0">
+                                <TextBlock Text="日志全局脱敏：敏感凭据显示为 token=***" FontSize="10"
+                                           Foreground="{DynamicResource CPh}" HorizontalAlignment="Center"/>
+                                <TextBlock Text="BLE Toolkit+ · Smart BLE 产品家族" FontSize="10"
+                                           Foreground="{DynamicResource CPh}" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+
+                <!-- ─────────── P010 版本记录（Release Metadata 纯投影） ─────────── -->
+                <Grid IsVisible="{Binding IsVersionsView}" RowDefinitions="Auto,*">
+                    <Border Grid.Row="0" Background="{DynamicResource CCard}"
+                            BorderBrush="{DynamicResource CLineSoft}" BorderThickness="0,0,0,1"
+                            Padding="14,8,16,10">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <Button Classes="soft" Width="30" Height="30" CornerRadius="9" Padding="0"
+                                    AutomationProperties.Name="返回"
+                                    Command="{Binding VersionsBackCommand}">
+                                <Path Classes="ic sm" Data="{StaticResource IcoChevR}"
+                                      Stroke="{DynamicResource CText}"/>
+                            </Button>
+                            <TextBlock Text="版本记录" FontSize="17" FontWeight="Bold" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel Margin="16,12,16,24" MaxWidth="620" HorizontalAlignment="Center">
+                            <!-- 当前版本 -->
+                            <Border Classes="card">
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <Path Classes="ic" Data="{StaticResource IcoDoc}"
+                                              Stroke="{DynamicResource CPrimary}"/>
+                                        <TextBlock Text="当前版本" FontSize="17" FontWeight="Bold"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,6,0,10">
+                                        <TextBlock Text="{Binding VersionDisplay}" FontSize="24"
+                                                   FontWeight="ExtraBold" Foreground="{DynamicResource CPrimary}"/>
+                                        <Border Classes="chip primaryc" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding VersionChannelChip}"/>
+                                        </Border>
+                                    </StackPanel>
+                                    <Border Classes="kvrow">
+                                        <Grid ColumnDefinitions="96,*">
+                                            <TextBlock Grid.Column="0" Text="构建" FontSize="12"
+                                                       FontWeight="Medium" Foreground="{DynamicResource CMut}"/>
+                                            <TextBlock Grid.Column="1" Classes="mono" Text="{Binding VersionBuildSha}"
+                                                       FontSize="13"/>
+                                        </Grid>
+                                    </Border>
+                                    <Border Classes="kvrow" BorderThickness="0">
+                                        <Grid ColumnDefinitions="96,*">
+                                            <TextBlock Grid.Column="0" Text="Release tag" FontSize="12"
+                                                       FontWeight="Medium" Foreground="{DynamicResource CMut}"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding VersionReleaseTag}"
+                                                       FontSize="13"/>
+                                        </Grid>
+                                    </Border>
+                                    <ItemsControl ItemsSource="{Binding VersionPlatformChips}" Margin="0,10,0,0">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel Orientation="Horizontal"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="vm:ChipViewModel">
+                                                <Border Classes="chip" Margin="0,0,6,6"
+                                                        Background="{Binding Bg}">
+                                                    <TextBlock Text="{Binding Text}" Foreground="{Binding Fg}"/>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    <Button Classes="soft sm block" Margin="0,12,0,0" AutomationProperties.Name="复制版本信息"
+                                            Command="{Binding CopyVersionInfoCommand}">
+                                        <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center">
+                                            <Path Classes="ic sm" Data="{StaticResource IcoCopy}"
+                                                  Stroke="{Binding $parent[Button].Foreground}"/>
+                                            <TextBlock Text="复制版本信息"/>
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- 当前限制 -->
+                            <Border Classes="card">
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <Path Classes="ic" Data="{StaticResource IcoWarn}"
+                                              Stroke="{DynamicResource CWarningText}"/>
+                                        <TextBlock Text="当前限制" FontSize="17" FontWeight="Bold"/>
+                                    </StackPanel>
+                                    <ItemsControl ItemsSource="{Binding VersionLimitations}" Margin="0,6,0,0">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="x:String">
+                                                <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,7,0,7">
+                                                    <Path Classes="ic xs" Data="{StaticResource IcoWarn}"
+                                                          Stroke="{DynamicResource CWarningText}" Margin="0,2,0,0"/>
+                                                    <TextBlock Text="{Binding}" FontSize="13"
+                                                               Foreground="{DynamicResource CSub}" TextWrapping="Wrap"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- 发布历史 -->
+                            <Border Classes="card">
+                                <StackPanel>
+                                    <TextBlock Text="发布历史" FontSize="17" FontWeight="Bold" Margin="0,0,0,6"/>
+                                    <ItemsControl ItemsSource="{Binding VersionReleases}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="vm:ReleaseRowViewModel">
+                                                <Border Classes="relrow">
+                                                    <Grid ColumnDefinitions="*,Auto">
+                                                        <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="6">
+                                                            <TextBlock Text="{Binding Version}" FontSize="13"/>
+                                                            <TextBlock Text="{Binding BuiltAt}" FontSize="11"
+                                                                       Foreground="{DynamicResource CMut}"/>
+                                                        </StackPanel>
+                                                        <TextBlock Grid.Column="1" Classes="mono" Text="{Binding Sha}"
+                                                                   FontSize="12" Foreground="{DynamicResource CMut}"/>
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    <TextBlock Text="暂无正式发布版本——产品当前处于 PREVIEW 阶段，首个正式版发布后将在此列出。"
+                                               FontSize="12" Foreground="{DynamicResource CMut}" TextWrapping="Wrap"
+                                               Margin="0,10,0,0"
+                                               IsVisible="{Binding !HasVersionReleases}"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- 预览记录 -->
+                            <Border Classes="card">
+                                <StackPanel>
+                                    <TextBlock Text="预览记录" FontSize="17" FontWeight="Bold" Margin="0,0,0,6"/>
+                                    <ItemsControl ItemsSource="{Binding VersionPreviews}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="vm:PreviewRowViewModel">
+                                                <Border Classes="relrow">
+                                                    <Grid ColumnDefinitions="*,Auto">
+                                                        <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="6">
+                                                            <TextBlock Text="{Binding Version}" FontSize="13"/>
+                                                            <TextBlock Text="{Binding Desc}" FontSize="11"
+                                                                       Foreground="{DynamicResource CMut}"/>
+                                                        </StackPanel>
+                                                        <TextBlock Grid.Column="1" Classes="mono" Text="{Binding Sha}"
+                                                                   FontSize="12" Foreground="{DynamicResource CMut}"/>
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+
+                <!-- ─────────── P006 GATT 调试（桌面双栏：左设备/服务 · 右日志常驻） ─────────── -->
+                <Grid IsVisible="{Binding IsGattView}" RowDefinitions="Auto,*">
+                    <Border Grid.Row="0" Background="{DynamicResource CCard}"
+                            BorderBrush="{DynamicResource CLineSoft}" BorderThickness="0,0,0,1"
+                            Padding="14,8,16,10">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <Button Classes="soft" Width="30" Height="30" CornerRadius="9" Padding="0"
+                                    AutomationProperties.Name="返回"
+                                    Command="{Binding GoBackCommand}">
+                                <Path Classes="ic sm" Data="{StaticResource IcoChevR}"
+                                      Stroke="{DynamicResource CText}"/>
+                            </Button>
+                            <TextBlock Text="GATT 调试" FontSize="17" FontWeight="Bold" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Grid Grid.Row="1" ColumnDefinitions="*,300" Margin="16,0,16,12">
+                        <!-- dcol1：设备头 + 服务树 -->
+                        <ScrollViewer Grid.Column="0" HorizontalScrollBarVisibility="Disabled" Margin="0,12,0,0">
+                            <StackPanel>
+                                <Border Classes="dev" Cursor="Arrow">
+                                    <StackPanel>
+                                        <Grid ColumnDefinitions="Auto,*">
+                                            <Border Width="10" Height="10" CornerRadius="5" Margin="0,4,11,0"
+                                                    VerticalAlignment="Top" Background="{Binding GattStFill}"/>
+                                            <StackPanel Grid.Column="1" Spacing="2">
+                                                <TextBlock Text="{Binding CurrentDeviceName}" FontSize="17"
+                                                           FontWeight="Bold" TextTrimming="CharacterEllipsis"/>
+                                                <StackPanel Orientation="Horizontal" Spacing="0">
+                                                    <TextBlock Classes="mono" Text="{Binding CurrentDeviceId}"
+                                                               FontSize="10" Foreground="{DynamicResource CMut}"/>
+                                                    <TextBlock Classes="mono" Text=" · " FontSize="10"
+                                                               Foreground="{DynamicResource CMut}"/>
+                                                    <TextBlock Classes="mono" Text="{Binding GattStateWord}" FontSize="10"
+                                                               Foreground="{DynamicResource CMut}"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Grid>
+                                        <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,12,0,0">
+                                            <Button Classes="primary sm" Command="{Binding ConnectToDeviceCommand}"
+                                                    AutomationProperties.Name="连接设备"
+                                                    IsVisible="{Binding !IsGattConnected}">
+                                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                                    <Path Classes="ic sm" Data="{StaticResource IcoLink}"
+                                                          Stroke="{Binding $parent[Button].Foreground}"/>
+                                                    <TextBlock Text="连接设备"/>
+                                                </StackPanel>
+                                            </Button>
+                                            <Button Classes="danger sm" Command="{Binding DisconnectCommand}"
+                                                    AutomationProperties.Name="断开连接"
+                                                    IsVisible="{Binding IsGattConnected}">
+                                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                                    <Path Classes="ic sm" Data="{StaticResource IcoX}"
+                                                          Stroke="{Binding $parent[Button].Foreground}"/>
+                                                    <TextBlock Text="断开连接"/>
+                                                </StackPanel>
+                                            </Button>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- C4 服务/特征树 -->
+                                <Grid ColumnDefinitions="*,Auto" Margin="2,12,2,10">
+                                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="7">
+                                        <Path Classes="ic" Data="{StaticResource IcoChip}"
+                                              Stroke="{DynamicResource CPrimary}" VerticalAlignment="Center"/>
+                                        <TextBlock Text="服务与特征" FontSize="17" FontWeight="Bold"
+                                                   VerticalAlignment="Center"/>
+                                        <Border Classes="chip neutral" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding ServiceSummaryChip}"/>
+                                        </Border>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4">
+                                        <Button Classes="txtlink" Content="全部展开"
+                                                Command="{Binding ExpandAllServicesCommand}"/>
+                                        <Button Classes="txtlink" Content="全部收起"
+                                                Command="{Binding CollapseAllServicesCommand}"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <ItemsControl ItemsSource="{Binding Services}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:BleServiceViewModel">
+                                            <Border Classes="svc">
+                                                <StackPanel>
+                                                    <Button Classes="svch" AutomationProperties.Name="{Binding Name}"
+                                                            Command="{Binding ToggleExpandedCommand}">
+                                                        <Grid ColumnDefinitions="Auto,Auto,Auto,*,Auto">
+                                                            <Path Grid.Column="0" Classes="ic sm" Margin="0,0,9,0"
+                                                                  Data="{StaticResource IcoChip}"
+                                                                  Stroke="{DynamicResource CPrimary}"/>
+                                                            <TextBlock Grid.Column="1" Text="{Binding Name}" FontSize="15"
+                                                                       FontWeight="Bold"/>
+                                                            <Border Grid.Column="2" Classes="chip neutral" Margin="9,0,9,0"
+                                                                    VerticalAlignment="Center">
+                                                                <TextBlock Classes="mono" Text="{Binding ShortUuidText}"
+                                                                           FontSize="10"/>
+                                                            </Border>
+                                                            <Path Grid.Column="4" Classes="ic sm"
+                                                                  Data="{StaticResource IcoChevR}"
+                                                                  Stroke="{DynamicResource CMut}"
+                                                                  IsVisible="{Binding !IsExpanded}"/>
+                                                            <Path Grid.Column="4" Classes="ic sm"
+                                                                  Data="{StaticResource IcoChevD}"
+                                                                  Stroke="{DynamicResource CMut}"
+                                                                  IsVisible="{Binding IsExpanded}"/>
+                                                        </Grid>
+                                                    </Button>
+                                                    <Border Classes="svcb" IsVisible="{Binding IsExpanded}">
+                                                        <ItemsControl ItemsSource="{Binding Characteristics}">
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate x:DataType="vm:BleCharacteristicViewModel">
+                                                                    <Border Classes="charrow">
+                                                                        <StackPanel Spacing="8">
+                                                                            <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+                                                                                <TextBlock Grid.Column="0"
+                                                                                           Text="{Binding Name}" FontSize="13"
+                                                                                           FontWeight="Medium"
+                                                                                           TextTrimming="CharacterEllipsis"/>
+                                                                                <Border Grid.Column="1" Classes="chip primaryc"
+                                                                                        Margin="6,0,0,0"
+                                                                                        IsVisible="{Binding HasRead}">
+                                                                                    <TextBlock Text="read"/>
+                                                                                </Border>
+                                                                                <Border Grid.Column="2" Classes="chip successc"
+                                                                                        Margin="6,0,0,0"
+                                                                                        IsVisible="{Binding HasWrite}">
+                                                                                    <TextBlock Text="write"/>
+                                                                                </Border>
+                                                                                <Border Grid.Column="3" Classes="chip warningc"
+                                                                                        Margin="6,0,0,0"
+                                                                                        IsVisible="{Binding HasNotify}">
+                                                                                    <TextBlock Text="notify"/>
+                                                                                </Border>
+                                                                            </Grid>
+                                                                            <TextBlock Classes="mono" Text="{Binding LastValue}"
+                                                                                       FontSize="11" TextWrapping="Wrap"
+                                                                                       Foreground="{DynamicResource CSub}"
+                                                                                       IsVisible="{Binding HasLastValue}"/>
+                                                                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                                                                <Button Classes="soft sm"
+                                                                                        IsVisible="{Binding HasRead}"
+                                                                                        Content="读取"
+                                                                                        Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).ReadCharacteristicCommand}"
+                                                                                        CommandParameter="{Binding CommandKey}"/>
+                                                                                <Button Classes="soft sm"
+                                                                                        IsVisible="{Binding HasWrite}"
+                                                                                        Content="写入"
+                                                                                        Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).OpenWriteDialogCommand}"
+                                                                                        CommandParameter="{Binding CommandKey}"/>
+                                                                                <Button Classes="ghost sm"
+                                                                                        IsVisible="{Binding HasNotify}"
+                                                                                        Content="{Binding NotifyButtonWord}"
+                                                                                        Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).ToggleNotificationCommand}"
+                                                                                        CommandParameter="{Binding CommandKey}"/>
+                                                                            </StackPanel>
+                                                                        </StackPanel>
+                                                                    </Border>
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+                                                    </Border>
+                                                </StackPanel>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </ScrollViewer>
+
+                        <!-- dcol2：桌面注记 + 右栏常驻深色日志 -->
+                        <StackPanel Grid.Column="1" Margin="14,12,0,0">
+                            <TextBlock Text="桌面布局（SOP §12 圈内调整）：右栏日志常驻 · 左区设备/服务/操作，流程与数据模型同基准。"
+                                       FontSize="10" Foreground="{DynamicResource CMut}" TextWrapping="Wrap"
+                                       Margin="0,0,2,10"/>
+                            <Border Classes="logwrap dock">
+                                <Grid RowDefinitions="Auto,*">
+                                    <Border Grid.Row="0" Classes="logbar">
+                                        <Grid ColumnDefinitions="*,Auto,Auto">
+                                            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
+                                                <Path Classes="ic xs" Data="{StaticResource IcoLog}"
+                                                      Stroke="{DynamicResource CInkText}" VerticalAlignment="Center"/>
+                                                <TextBlock Text="通信日志" FontSize="12" FontWeight="Bold"
+                                                           Foreground="{DynamicResource CInkText}"
+                                                           VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                            <Button Grid.Column="1" Classes="ghost dangert sm" Content="清空"
+                                                    Command="{Binding ClearLogsCommand}"/>
+                                            <Button Grid.Column="2" Classes="ghost sm" Margin="8,0,0,0"
+                                                    AutomationProperties.Name="导出"
+                                                    Command="{Binding ExportLogsCommand}">
+                                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                                    <Path Classes="ic sm" Data="{StaticResource IcoCopy}"
+                                                          Stroke="{Binding $parent[Button].Foreground}"/>
+                                                    <TextBlock Text="导出"/>
+                                                </StackPanel>
+                                            </Button>
+                                        </Grid>
+                                    </Border>
+                                    <ScrollViewer Grid.Row="1" MinHeight="200">
+                                        <ItemsControl ItemsSource="{Binding Logs}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate x:DataType="vm:LogEntry">
+                                                    <Grid ColumnDefinitions="Auto,Auto,*" Margin="13,5,13,5">
+                                                        <TextBlock Grid.Column="0" Classes="mono" Text="{Binding Time}"
+                                                                   FontSize="11" Foreground="#7C8DA6"/>
+                                                        <Border Grid.Column="1" Classes="logchip" Margin="8,0,8,0"
+                                                                Classes.lcsys="{Binding IsSys}" Classes.lcerr="{Binding IsErr}"
+                                                                Classes.lcread="{Binding IsRead}" Classes.lcwrite="{Binding IsWrite}"
+                                                                Classes.lcrecv="{Binding IsRecv}" Classes.lcok="{Binding IsOk}">
+                                                            <TextBlock Text="{Binding Word}"/>
+                                                        </Border>
+                                                        <TextBlock Grid.Column="2" Classes="mono" Text="{Binding Message}"
+                                                                   FontSize="11" TextWrapping="Wrap"
+                                                                   Foreground="{DynamicResource CInkText}"/>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                </Grid>
+                            </Border>
+                        </StackPanel>
                     </Grid>
                 </Grid>
-            </Carousel>
+
+                <!-- ─────────── P002 Smart HID 配网（阶段一真实 GATT；下发=V-WIN 明确降级） ─────────── -->
+                <Grid IsVisible="{Binding IsHidProvView}" RowDefinitions="Auto,*">
+                    <Border Grid.Row="0" Background="{DynamicResource CCard}"
+                            BorderBrush="{DynamicResource CLineSoft}" BorderThickness="0,0,0,1"
+                            Padding="14,8,16,10">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <Button Classes="soft" Width="30" Height="30" CornerRadius="9" Padding="0"
+                                    AutomationProperties.Name="返回"
+                                    Command="{Binding HidBackToListCommand}">
+                                <Path Classes="ic sm" Data="{StaticResource IcoChevR}"
+                                      Stroke="{DynamicResource CText}"/>
+                            </Button>
+                            <TextBlock Text="配置 Smart HID" FontSize="17" FontWeight="Bold"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel Margin="16,0,16,24" MaxWidth="620" HorizontalAlignment="Center">
+                            <!-- C6 stepper：连接设备 → 填写配置 → 下发状态 -->
+                            <StackPanel Orientation="Horizontal" Margin="2,2,2,14">
+                                <StackPanel Width="72" HorizontalAlignment="Center" Spacing="5">
+                                    <Border Classes="stepn" Classes.cur="{Binding HidStepCur0}"
+                                            Classes.done="{Binding HidStepDone0}">
+                                        <TextBlock Text="1"/>
+                                    </Border>
+                                    <TextBlock Text="连接设备" FontSize="10" HorizontalAlignment="Center"
+                                               Foreground="{DynamicResource CMut}" FontWeight="Medium"/>
+                                </StackPanel>
+                                <Border Classes="stepln" Classes.done="{Binding HidStepDone0}"/>
+                                <StackPanel Width="72" HorizontalAlignment="Center" Spacing="5">
+                                    <Border Classes="stepn" Classes.cur="{Binding HidStepCur1}"
+                                            Classes.done="{Binding HidStepDone1}">
+                                        <TextBlock Text="2"/>
+                                    </Border>
+                                    <TextBlock Text="填写配置" FontSize="10" HorizontalAlignment="Center"
+                                               Foreground="{DynamicResource CMut}" FontWeight="Medium"/>
+                                </StackPanel>
+                                <Border Classes="stepln" Classes.done="{Binding HidStepDone1}"/>
+                                <StackPanel Width="72" HorizontalAlignment="Center" Spacing="5">
+                                    <Border Classes="stepn" Classes.cur="{Binding HidStepCur2}">
+                                        <TextBlock Text="3"/>
+                                    </Border>
+                                    <TextBlock Text="下发状态" FontSize="10" HorizontalAlignment="Center"
+                                               Foreground="{DynamicResource CMut}" FontWeight="Medium"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <!-- 目标设备卡 -->
+                            <Border Classes="card">
+                                <StackPanel Orientation="Horizontal" Spacing="11">
+                                    <Border Classes="ava shid" Width="38" Height="38" CornerRadius="10">
+                                        <TextBlock Text="S"/>
+                                    </Border>
+                                    <StackPanel Spacing="2" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding HidDevName}" FontSize="15" FontWeight="Bold"/>
+                                        <TextBlock Classes="mono" Text="{Binding HidDevId}" FontSize="10"
+                                                   Foreground="{DynamicResource CMut}"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- 阶段一：连接设备 -->
+                            <StackPanel Spacing="12" IsVisible="{Binding HidConnectPhaseVisible}">
+                                <Border Classes="op" IsVisible="{Binding HidConnecting}">
+                                    <StackPanel Orientation="Horizontal" Spacing="12">
+                                        <ProgressBar Width="20" Height="20" IsIndeterminate="True"/>
+                                        <StackPanel Spacing="3">
+                                            <TextBlock Text="连接并确认设备中…" FontSize="15" FontWeight="Bold"/>
+                                            <TextBlock Text="正在建立 GATT 连接并读取 Device Info 验证设备身份"
+                                                       FontSize="13" Foreground="{DynamicResource CSub}"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                                <StackPanel IsVisible="{Binding HidConnErrorVisible}" Spacing="12">
+                                    <Border Classes="ebanner">
+                                        <StackPanel Spacing="5">
+                                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                                <TextBlock Text="连接失败" FontSize="15" FontWeight="Bold"
+                                                           Foreground="{DynamicResource CDanger}"/>
+                                                <Border Background="White" CornerRadius="6" Padding="7,1">
+                                                    <TextBlock Classes="mono" Text="{Binding HidConnErrorCode}"
+                                                               FontSize="11" Foreground="{DynamicResource CDanger}"/>
+                                                </Border>
+                                            </StackPanel>
+                                            <TextBlock Text="{Binding HidConnErrorText}" FontSize="13"
+                                                       Foreground="{DynamicResource CSub}" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <StackPanel Orientation="Horizontal" Spacing="9">
+                                        <Button Classes="primary" AutomationProperties.Name="重新连接"
+                                                Command="{Binding HidReconnectCommand}">
+                                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                                <Path Classes="ic sm" Data="{StaticResource IcoRefresh}"
+                                                      Stroke="{Binding $parent[Button].Foreground}"/>
+                                                <TextBlock Text="重新连接"/>
+                                            </StackPanel>
+                                        </Button>
+                                        <Button Classes="soft" Content="返回设备列表"
+                                                Command="{Binding HidBackToListCommand}"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <!-- 阶段二：填写配置 -->
+                            <StackPanel Spacing="12" IsVisible="{Binding HidConfigurePhaseVisible}">
+                                <Border Classes="ebanner" IsVisible="{Binding HidLostBannerVisible}">
+                                    <StackPanel Spacing="5">
+                                        <StackPanel Orientation="Horizontal" Spacing="6">
+                                            <TextBlock Text="连接已断开" FontSize="15" FontWeight="Bold"
+                                                       Foreground="{DynamicResource CDanger}"/>
+                                            <Border Background="White" CornerRadius="6" Padding="7,1">
+                                                <TextBlock Classes="mono" Text="connection_lost" FontSize="11"
+                                                           Foreground="{DynamicResource CDanger}"/>
+                                            </Border>
+                                        </StackPanel>
+                                        <TextBlock Text="设备 BLE 连接已断开。已填写的配网信息不会丢失，重新连接后可继续下发。"
+                                                   FontSize="13" Foreground="{DynamicResource CSub}" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <Border Classes="badge on">
+                                        <StackPanel Orientation="Horizontal" Spacing="5">
+                                            <Ellipse Width="7" Height="7" Fill="{DynamicResource CSuccess}"/>
+                                            <TextBlock Text="已连接"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <TextBlock Classes="mono" Text="{Binding HidDevSummary}" FontSize="11"
+                                               Foreground="{DynamicResource CMut}" VerticalAlignment="Center"/>
+                                </StackPanel>
+
+                                <Button Classes="primary" IsVisible="{Binding HidLostBannerVisible}"
+                                        AutomationProperties.Name="重新连接设备"
+                                        Command="{Binding HidReconnectCommand}">
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <Path Classes="ic sm" Data="{StaticResource IcoRefresh}"
+                                              Stroke="{Binding $parent[Button].Foreground}"/>
+                                        <TextBlock Text="重新连接设备"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Border Classes="card" Margin="0">
+                                    <StackPanel Spacing="12">
+                                        <StackPanel Spacing="6">
+                                            <StackPanel Orientation="Horizontal" Spacing="2">
+                                                <TextBlock Text="Wi-Fi 名称" FontSize="12" FontWeight="Medium"
+                                                           Foreground="{DynamicResource CSub}"/>
+                                                <TextBlock Text=" *" Foreground="{DynamicResource CDanger}"/>
+                                            </StackPanel>
+                                            <TextBox Classes="inp" MaxLength="32" Watermark="家庭 / 办公 2.4G Wi-Fi"
+                                                     Text="{Binding HidWifiSsid, Mode=TwoWay}"/>
+                                        </StackPanel>
+                                        <StackPanel Spacing="6">
+                                            <TextBlock Text="Wi-Fi 密码" FontSize="12" FontWeight="Medium"
+                                                       Foreground="{DynamicResource CSub}"/>
+                                            <Grid ColumnDefinitions="*,Auto">
+                                                <TextBox Grid.Column="0" Classes="inp" MaxLength="64"
+                                                         PasswordChar="●" IsVisible="{Binding !HidShowPwd}"
+                                                         Watermark="无密码可留空"
+                                                         Text="{Binding HidWifiPwd, Mode=TwoWay}"/>
+                                                <TextBox Grid.Column="0" Classes="inp" MaxLength="64"
+                                                         IsVisible="{Binding HidShowPwd}"
+                                                         Text="{Binding HidWifiPwd, Mode=TwoWay}"/>
+                                                <Button Grid.Column="1" Classes="txtlink" Width="30" Height="30"
+                                                        AutomationProperties.Name="密码可见切换"
+                                                        Padding="0" Command="{Binding HidTogglePwdCommand}">
+                                                    <Grid>
+                                                        <Path Classes="ic sm" Data="{StaticResource IcoEye}"
+                                                              Stroke="{DynamicResource CMut}"
+                                                              IsVisible="{Binding !HidShowPwd}"/>
+                                                        <Path Classes="ic sm" Data="{StaticResource IcoEyeOff}"
+                                                              Stroke="{DynamicResource CMut}"
+                                                              IsVisible="{Binding HidShowPwd}"/>
+                                                    </Grid>
+                                                </Button>
+                                            </Grid>
+                                        </StackPanel>
+                                        <StackPanel Spacing="6">
+                                            <StackPanel Orientation="Horizontal" Spacing="2">
+                                                <TextBlock Text="ControlHub 地址" FontSize="12" FontWeight="Medium"
+                                                           Foreground="{DynamicResource CSub}"/>
+                                                <TextBlock Text=" *" Foreground="{DynamicResource CDanger}"/>
+                                            </StackPanel>
+                                            <TextBox Classes="inp mono" Watermark="192.168.1.8:17892"
+                                                     Text="{Binding HidHubAddr, Mode=TwoWay}"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- bigact：配对码入口（V-WIN 无摄像头 → 点击给降级横幅） -->
+                                <Border Classes="bigact" Tapped="OnHidQrEntryTapped">
+                                    <StackPanel Orientation="Horizontal" Spacing="12">
+                                        <Path Classes="ic lg" Data="{StaticResource IcoQr}"
+                                              Stroke="{DynamicResource CPrimary}"/>
+                                        <StackPanel Grid.Column="1" Spacing="2">
+                                            <TextBlock Text="获取 ControlHub 配对码" FontSize="15" FontWeight="Bold"
+                                                       Foreground="{DynamicResource CPrimary}"/>
+                                            <TextBlock Text="摄像头读取 ControlHub 屏显二维码，识别后自动回填地址与令牌"
+                                                       FontSize="11" Foreground="{DynamicResource CMut}"/>
+                                        </StackPanel>
+                                        <Border Classes="chip warningc" VerticalAlignment="Center">
+                                            <TextBlock Text="必需"/>
+                                        </Border>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Classes="noteinfo">
+                                    <TextBlock Text="Wi-Fi 密码和配对凭据只用于本次下发，不写入日志或本地存储。"
+                                               TextWrapping="Wrap"/>
+                                </Border>
+
+                                <Button Classes="primary block" IsEnabled="{Binding HidSubmitEnabled}"
+                                        AutomationProperties.Name="下发配置"
+                                        Command="{Binding HidSubmitCommand}">
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <Path Classes="ic sm" Data="{StaticResource IcoSend}"
+                                              Stroke="{Binding $parent[Button].Foreground}"/>
+                                        <TextBlock Text="下发配置"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Border Classes="ebanner" IsVisible="{Binding HidErrVisible}">
+                                    <StackPanel Spacing="5">
+                                        <StackPanel Orientation="Horizontal" Spacing="6">
+                                            <TextBlock Text="配置失败" FontSize="15" FontWeight="Bold"
+                                                       Foreground="{DynamicResource CDanger}"/>
+                                            <Border Background="White" CornerRadius="6" Padding="7,1">
+                                                <TextBlock Classes="mono" Text="{Binding HidErrCode}" FontSize="11"
+                                                           Foreground="{DynamicResource CDanger}"/>
+                                            </Border>
+                                        </StackPanel>
+                                        <TextBlock Text="{Binding HidErrText}" FontSize="13"
+                                                   Foreground="{DynamicResource CSub}" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </Grid>
+
+            <!-- ════════════════ TabBar（正典底部四枚：扫描/已连接/广播/关于） ════════════════
+                 N4 口径：本页取正典 A3 形态（恒显 + 未就绪徽章，与 T-WIN/macOS/Android 现状一致）；
+                 E-WIN Windows 侧仍按能力显隐待用户裁决，两壳代码本轮不动。 -->
+            <Border Grid.Row="1" Classes="tabbar">
+                <Grid ColumnDefinitions="*,*,*,*">
+                    <Button Grid.Column="0" Classes="tb" AutomationProperties.Name="扫描" Classes.on="{Binding IsScanTabActive}"
+                            Command="{Binding SwitchTabCommand}" CommandParameter="scan">
+                        <StackPanel Spacing="3" HorizontalAlignment="Center">
+                            <Path Classes="ic" Data="{StaticResource IcoScan}"
+                                  Stroke="{Binding $parent[Button].Foreground}"/>
+                            <TextBlock Text="扫描" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Grid Grid.Column="1">
+                        <Button Classes="tb" AutomationProperties.Name="已连接" Classes.on="{Binding IsConnectedTabActive}"
+                                Command="{Binding SwitchTabCommand}" CommandParameter="connected">
+                            <StackPanel Spacing="3" HorizontalAlignment="Center">
+                                <Path Classes="ic" Data="{StaticResource IcoLink}"
+                                      Stroke="{Binding $parent[Button].Foreground}"/>
+                                <TextBlock Text="已连接" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Border Classes="tabn" IsVisible="{Binding ConnectedBadgeVisible}"
+                                Margin="0,2,0,0" HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding ConnectedBadgeText}"/>
+                        </Border>
+                    </Grid>
+                    <Button Grid.Column="2" Classes="tb" AutomationProperties.Name="广播" Classes.on="{Binding IsBroadcastTabActive}"
+                            Command="{Binding SwitchTabCommand}" CommandParameter="broadcast">
+                        <StackPanel Spacing="3" HorizontalAlignment="Center">
+                            <Path Classes="ic" Data="{StaticResource IcoCast}"
+                                  Stroke="{Binding $parent[Button].Foreground}"/>
+                            <TextBlock Text="广播" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Grid.Column="3" Classes="tb" AutomationProperties.Name="关于" Classes.on="{Binding IsAboutTabActive}"
+                            Command="{Binding SwitchTabCommand}" CommandParameter="about">
+                        <StackPanel Spacing="3" HorizontalAlignment="Center">
+                            <Path Classes="ic" Data="{StaticResource IcoInfo}"
+                                  Stroke="{Binding $parent[Button].Foreground}"/>
+                            <TextBlock Text="关于" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </Grid>
+            </Border>
         </Grid>
-    </Grid>
 
-    <!-- Write Dialog -->
-    <Grid IsVisible="{Binding ShowWriteDialog}" ZIndex="1000">
-        <Border Background="#80000000"/>
-        <Border Background="White" CornerRadius="12" BoxShadow="0 8 32 #40000000"
-                HorizontalAlignment="Center" VerticalAlignment="Center"
-                Width="400" Padding="24">
-            <StackPanel Spacing="16">
-                <!-- Dialog Title -->
-                <TextBlock Text="{Binding WriteDialogTitle}" FontSize="18" FontWeight="SemiBold"/>
+        <!-- ════════════════ C9 写入弹窗（HEX/UTF-8 + 单次/批量/循环） ════════════════ -->
+        <Grid IsVisible="{Binding ShowWriteDialog}" ZIndex="90">
+            <Border Classes="mask"/>
+            <Border Classes="modal" MaxWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <StackPanel>
+                    <TextBlock Text="写入数据" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    <TextBlock Classes="mono" Text="{Binding WriteCharUuid}" FontSize="10"
+                               Foreground="{DynamicResource CMut}" HorizontalAlignment="Center"
+                               TextWrapping="Wrap" Margin="0,-4,0,12"/>
 
-                <!-- Format Toggle -->
-                <StackPanel Spacing="8">
-                    <TextBlock Text="格式:" FontSize="13" FontWeight="Medium"/>
-                    <StackPanel Orientation="Horizontal" Spacing="8">
-                        <ToggleButton Content="HEX" IsChecked="{Binding IsHexWriteMode}"
-                                     Padding="12,6" Classes="FormatToggle"/>
-                        <ToggleButton Content="UTF-8" IsChecked="{Binding !IsHexWriteMode}"
-                                     Padding="12,6" Classes="FormatToggle"/>
-                    </StackPanel>
+                    <Border Classes="seg">
+                        <Grid ColumnDefinitions="*,*">
+                            <Button Grid.Column="0" Classes="segb" Classes.on="{Binding IsHexFormat}" Margin="0,0,1.5,0"
+                                    Content="HEX" Command="{Binding SetWriteFormatCommand}" CommandParameter="hex"/>
+                            <Button Grid.Column="1" Classes="segb" Classes.on="{Binding IsUtf8Format}" Margin="1.5,0,0,0"
+                                    Content="UTF-8" Command="{Binding SetWriteFormatCommand}" CommandParameter="utf8"/>
+                        </Grid>
+                    </Border>
+
+                    <TextBox Classes="ta" Margin="0,10,0,0" Text="{Binding WriteInputText, Mode=TwoWay}"
+                             Watermark="FF 01 02（批量模式每行一条）"/>
+
+                    <Border Classes="seg" Margin="0,12,0,0">
+                        <Grid ColumnDefinitions="*,*,*">
+                            <Button Grid.Column="0" Classes="segb" Classes.on="{Binding IsSingleMode}" Margin="0,0,1.5,0"
+                                    Content="单次" Command="{Binding SetWriteModeCommand}" CommandParameter="single"/>
+                            <Button Grid.Column="1" Classes="segb" Classes.on="{Binding IsBatchMode}" Margin="1.5,0,1.5,0"
+                                    Content="批量" Command="{Binding SetWriteModeCommand}" CommandParameter="batch"/>
+                            <Button Grid.Column="2" Classes="segb" Classes.on="{Binding IsLoopMode}" Margin="1.5,0,0,0"
+                                    Content="循环" Command="{Binding SetWriteModeCommand}" CommandParameter="loop"/>
+                        </Grid>
+                    </Border>
+
+                    <Grid ColumnDefinitions="*,8,*" Margin="0,10,0,0" IsVisible="{Binding IsLoopMode}">
+                        <StackPanel Grid.Column="0" Spacing="6">
+                            <TextBlock Text="次数（0 = 无限，关闭弹窗即停止）" FontSize="12" FontWeight="Medium"
+                                       Foreground="{DynamicResource CSub}"/>
+                            <TextBox Classes="inp" Text="{Binding LoopCountText, Mode=TwoWay}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" Spacing="6">
+                            <TextBlock Text="间隔 ms" FontSize="12" FontWeight="Medium"
+                                       Foreground="{DynamicResource CSub}"/>
+                            <TextBox Classes="inp" Text="{Binding LoopIntervalText, Mode=TwoWay}"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,9,*" Margin="0,14,0,0">
+                        <Button Grid.Column="0" Classes="soft" Content="取消"
+                                Command="{Binding CloseWriteDialogCommand}"/>
+                        <Button Grid.Column="2" Classes="primary" AutomationProperties.Name="确认写入"
+                                Command="{Binding ConfirmWriteCommand}">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <Path Classes="ic sm" Data="{StaticResource IcoSend}"
+                                      Stroke="{Binding $parent[Button].Foreground}"/>
+                                <TextBlock Text="确认写入"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
                 </StackPanel>
+            </Border>
+        </Grid>
 
-                <!-- Input Field -->
-                <StackPanel Spacing="8">
-                    <TextBlock Text="数据:" FontSize="13" FontWeight="Medium"/>
-                    <TextBox Text="{Binding WriteInputText, Mode=TwoWay}"
-                             AcceptsReturn="True" TextWrapping="Wrap"
-                             Height="80"/>
-                    <TextBlock Text="{Binding WriteHintText}" FontSize="11" Foreground="#8E8E93"/>
+        <!-- ════════════════ 退出确认（10_platform §4 常驻 + 确认退出） ════════════════ -->
+        <Grid IsVisible="{Binding ShowExitConfirm}" ZIndex="95">
+            <Border Classes="mask"/>
+            <Border Classes="modal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <StackPanel>
+                    <TextBlock Text="退出确认" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center"
+                               Margin="0,0,0,9"/>
+                    <TextBlock Text="{Binding ExitConfirmBusyText}" FontSize="13"
+                               Foreground="{DynamicResource CSub}" TextWrapping="Wrap"
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Classes="mono" Text="{Binding ExitConfirmDetail}" FontSize="10"
+                               Foreground="{DynamicResource CMut}" HorizontalAlignment="Center"
+                               Margin="0,8,0,18"/>
+                    <Grid ColumnDefinitions="*,9,*">
+                        <Button Grid.Column="0" Classes="primary" Content="退出"
+                                Command="{Binding ConfirmExitCommand}"/>
+                        <Button Grid.Column="2" Classes="soft" Content="继续使用"
+                                Command="{Binding CancelExitCommand}"/>
+                    </Grid>
                 </StackPanel>
-
-                <!-- Buttons -->
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
-                    <Button Content="取消" Command="{Binding CloseWriteDialogCommand}"
-                            Classes="Secondary" Padding="20,10"/>
-                    <Button Content="写入" Command="{Binding ExecuteWriteCommand}"
-                            Classes="Primary" Padding="20,10"/>
-                </StackPanel>
-            </StackPanel>
-        </Border>
-    </Grid>
+            </Border>
+        </Grid>
     </Grid>
 </Window>

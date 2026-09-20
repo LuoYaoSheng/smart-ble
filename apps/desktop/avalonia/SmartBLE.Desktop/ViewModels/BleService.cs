@@ -37,6 +37,8 @@ public class BleService
     public event Action<BleServiceInfo[]?>? ServiceDiscovered;
     public event Action<string, byte[]>? CharacteristicValueChanged;
     public event Action<string, string>? LogMessage;
+    // 5s 自动停扫回调（UI 同步 IsScanning/扫描状态词；手动停扫不触发）
+    public event Action? ScanAutoStopped;
 
     public async Task InitializeAsync()
     {
@@ -72,6 +74,7 @@ public class BleService
         {
             await StopScanAsync();
             LogMessage?.Invoke("自动停止", "扫描已自动停止（5秒）");
+            ScanAutoStopped?.Invoke();
         };
         _autoStopTimer.Start();
     }
@@ -90,8 +93,27 @@ public class BleService
     private void OnAdvertisementReceived(BluetoothLEAdvertisementWatcher sender,
         BluetoothLEAdvertisementReceivedEventArgs args)
     {
-        var name = args.Advertisement.LocalName ?? "未知设备";
-        var device = new BleDevice(args.BluetoothAddress.ToString("X"), name, (short)args.RawSignalStrengthInDBm);
+        // 正典 F005 显示名链：无名广播保持空名（由 UI 层「未命名 BLE 设备」兜底），
+        // 不再在此伪造「未知设备」
+        var name = args.Advertisement.LocalName ?? "";
+        // adv 服务 UUID 列表供 Smart HID 档案强匹配（名称前缀仅弱匹配）
+        string[]? serviceUuids = null;
+        try
+        {
+            var advUuids = args.Advertisement.ServiceUuids;
+            if (advUuids.Count > 0)
+            {
+                serviceUuids = new string[advUuids.Count];
+                for (var i = 0; i < advUuids.Count; i++)
+                    serviceUuids[i] = advUuids[i].ToString();
+            }
+        }
+        catch
+        {
+            // 个别广播帧 ServiceUuids 访问异常时按无服务列表处理（弱匹配兜底）
+        }
+        var device = new BleDevice(args.BluetoothAddress.ToString("X"), name,
+            (short)args.RawSignalStrengthInDBm, serviceUuids);
         DeviceDiscovered?.Invoke(device);
     }
 
@@ -455,41 +477,59 @@ public class BleService
         return (GattWriteOption.WriteWithoutResponse, true);
     }
 
+    // 服务/特征显示名注册表：对齐 E-WIN BleUtils.js BLE_SERVICE_NAMES/BLE_CHAR_NAMES
+    // （短 4 位 + 8 位自定义前缀双匹配；回退词 未知服务/未知特征值）
     internal static string GetServiceName(string uuid)
     {
-        // Uuid.ToString() 产出小写十六进制，switch 分支为大写——统一归一（单测抓出的真 bug：
-        // 含字母的已知短 UUID 曾全部落到 Unknown 回退）
-        var shortUuid = uuid.Length > 8 ? uuid.Substring(4, 4) : uuid;
-        shortUuid = shortUuid.ToUpperInvariant();
-        return shortUuid switch
+        var u = (uuid ?? "").Replace("-", "").ToUpperInvariant();
+        if (u.Length == 0) return "未知服务";
+        var short4 = u.Length >= 8 ? u.Substring(4, 4) : u;
+        var hit = short4 switch
         {
-            "1800" => "Generic Access",
-            "1801" => "Generic Attribute",
-            "180A" => "Device Information",
-            "180F" => "Battery Service",
-            "1812" => "HID",
-            _ => "Unknown Service"
+            "1800" => "通用访问",
+            "1801" => "通用属性",
+            "180A" => "设备信息",
+            "180D" => "心率服务",
+            "180F" => "电池服务",
+            "1809" => "健康温度计",
+            "1812" => "人机界面 (HID)",
+            "181C" => "用户数据",
+            _ => ""
         };
+        if (hit.Length > 0) return hit;
+        var prefix8 = u.Substring(0, Math.Min(8, u.Length));
+        if (prefix8 == "4FAFC201") return "OTA 升级服务";
+        return "未知服务";
     }
 
     internal static string GetCharacteristicName(string uuid)
     {
-        // Uuid.ToString() 产出小写十六进制，switch 分支为大写——统一归一（单测抓出的真 bug：
-        // 含字母的已知短 UUID 曾全部落到 Unknown 回退）
-        var shortUuid = uuid.Length > 8 ? uuid.Substring(4, 4) : uuid;
-        shortUuid = shortUuid.ToUpperInvariant();
-        return shortUuid switch
+        var u = (uuid ?? "").Replace("-", "").ToUpperInvariant();
+        if (u.Length == 0) return "未知特征值";
+        var short4 = u.Length >= 8 ? u.Substring(4, 4) : u;
+        var hit = short4 switch
         {
-            "2A00" => "Device Name",
-            "2A01" => "Appearance",
-            "2A29" => "Manufacturer Name",
-            "2A24" => "Model Number",
-            "2A25" => "Serial Number",
-            "2A27" => "Hardware Revision",
-            "2A26" => "Firmware Revision",
-            "2A28" => "Software Revision",
-            "2A19" => "Battery Level",
-            _ => "Unknown Characteristic"
+            "2A00" => "设备名称",
+            "2A01" => "外观",
+            "2A02" => "隐私标志",
+            "2A03" => "重连地址",
+            "2A04" => "连接参数",
+            "2A05" => "服务变更",
+            "2A19" => "电池电量",
+            "2A23" => "系统标识符",
+            "2A24" => "型号",
+            "2A25" => "序列号",
+            "2A26" => "固件版本",
+            "2A27" => "硬件版本",
+            "2A28" => "软件版本",
+            "2A29" => "制造商",
+            "2A37" => "心率测量",
+            "2A38" => "身体传感器位置",
+            _ => ""
         };
+        if (hit.Length > 0) return hit;
+        var prefix8 = u.Substring(0, Math.Min(8, u.Length));
+        if (prefix8 == "BEB5483E") return "OTA 控制";
+        return "未知特征值";
     }
 }
