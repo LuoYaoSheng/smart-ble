@@ -80,13 +80,13 @@ Windows 主机不负责：
 | WIN-002 | 桌面共享测试恢复全绿 | `PASS` | 94/95 | `MAC-001`、`MAC-002` | 95/95;M1 断言改消费正典产物,对微信裁决中立 |
 | WIN-003 | Electron Windows 构建与启动 | `PASS_WITH_OBS` | 旧提交打包、扫描、GATT 通过 | WIN-001、WIN-002 | 20260918 三框架重测：build:win --dir exit0 + CDP 真机全链；见 20260918-WIN-ALL |
 | WIN-004 | Tauri Windows 构建与启动 | `PASS_WITH_OBS` | 旧提交扫描、GATT 通过 | WIN-001、WIN-002 | 20260918：fmt 修复 + check/test/build 过 + T1-T16 真机链；T-WIN-DEF-001 在册 |
-| WIN-005 | Avalonia 功能补齐 | `IN_PROGRESS` | BoxShadow/重连归零/断链事件已修 | WIN-001、MAC-008 | 20260918 WIN-DEF-FIX：DEF-002/003 修复真机验证过；DEF-001 定性为设备侧 SHID-FW-LOCK-001，app 诊断已修 |
+| WIN-005 | Avalonia 功能补齐 | `IN_PROGRESS` | 单测 19/19 补齐 | WIN-001、MAC-008 | 20260920：SmartBLE.Desktop.Tests 新建，先红后绿抓出 UUID 小写映射真 bug；BLE 功能缺陷已清（见 20260918-WIN-DEF-FIX） |
 | WIN-006 | Windows 真实 GATT 与重连回归 | `IN_PROGRESS` | T-WIN-DEF-001 已修 | WIN-003、WIN-004 | 20260918 WIN-DEF-FIX：重连死句柄修复，retry 探针 + T1-T16 全绿；fixture_peripheral_s3 复验待硬件窗口 |
 | WIN-007 | Smart HID Windows E2E | `BLOCKED` | UI/传输代码已存在 | WIN-006、ControlHub 配对码、SHID 固件 | 未有完整 W4 证据 |
 | WIN-008 | Windows OTA E2E 回归 | `TODO` | 两线曾 `PASS_WITH_OBS` | WIN-006、OTA 固件 | 需复验重启后版本回读 |
 | WIN-009 | Windows 安装包与安装验证 | `TODO` | Electron/Avalonia 有历史构建 | WIN-003～WIN-008、MAC-011 | 需产出可安装 Artifact 和 SHA256 |
 | WIN-010 | Windows 最终交付与矩阵回填 | `TODO` | 历史证据分散 | WIN-001～WIN-009 | 等所有必需任务结论化 |
-| WIN-011 | 桌面壳导航一致性修复（Electron/Tauri） | `TODO` | 2026-09-15 导航审计 N3/N4 定位 | WIN-003、WIN-004 | N4 口径待用户裁决后实施 |
+| WIN-011 | 桌面壳导航一致性修复（Electron/Tauri） | `IN_PROGRESS` | N3 已修（20260920），N4 待裁决 | WIN-003、WIN-004 | N3 双壳对齐正典五态+CDP 回归；N4 两案仍待用户裁决 |
 
 完成率统计只按本表：`PASS` 1 / `PASS_WITH_OBS` 3 / `IN_PROGRESS` 2 / `FAILED` 0 / `BLOCKED` 1 / `TODO` 3。
 
@@ -354,6 +354,19 @@ README 占位且指向 Avalonia 线；Flutter 无 Windows 目标），逐框架�
   retry/主链/写探针矩阵/清障实验全套日志）
 - Next: SHID-FW-LOCK-001 移交固件侧排查（断电重启验证 + 输入解析器审查）；WIN-006 的
   fixture_peripheral_s3 复验仍待硬件窗口；WIN-007 维持 BLOCKED
+
+### 2026-09-20 · WIN-011 N3 + WIN-005 单测补齐
+
+- N3 正典五态：Electron stateMap 三处（unauthorized→蓝牙未开启、fallback 状态未知→初始化中…、
+  补 unsupported→平台不支持灰点）；Tauri updateStatus 补 off 红点态 + 后端 Radio.GetRadiosAsync
+  区分「蓝牙关闭 vs 平台不支持」（windows 0.61 target 门控依赖，与 btleplug 同投影去重）
+- 验证：node --check×2、桌面套 95/95、cargo fmt/check/test、CDP 双壳芯片词回归 蓝牙就绪+绿点
+  （蓝牙关闭分支不 toggle 系统无线电，声明为构建门覆盖）；N4 维持待用户裁决
+- WIN-005 单测：新建 SmartBLE.Desktop.Tests（xunit 19 测试），先红后绿暴露并修复真 bug——
+  Uuid.ToString() 小写 vs switch 大写分支，含字母短 UUID 名称映射全部落 Unknown；
+  ResolveWriteOption 抽取顺带修双支持特征的无响应写错按带响应 bug
+- Evidence: verification/windows-plan-v1/20260920-WIN-011/
+- Next: N4 两案（按能力显隐 vs 恒显+未就绪徽章）待用户裁决后实施
 
 ### 2026-09-14 · WIN-001
 

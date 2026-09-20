@@ -81,6 +81,32 @@ struct Response<T> {
 }
 
 // Tauri commands
+//
+// N3：蓝牙无线电状态（正典 bt-chip 词表区分「蓝牙未开启」与「平台不支持」）。
+// 返回 Some("BLUETOOTH_OFF: ...") = 蓝牙无线电存在但已关闭；None = 开启或查询失败
+// （查询失败按原路径处理，不因新增检查误伤无无线电平台）。
+#[cfg(target_os = "windows")]
+async fn bluetooth_radio_off() -> Option<String> {
+    use std::future::IntoFuture;
+    use windows::Devices::Radios::{Radio, RadioKind, RadioState};
+
+    let op = Radio::GetRadiosAsync().ok()?;
+    let radios = op.into_future().await.ok()?;
+    let bt = radios
+        .into_iter()
+        .find(|r| matches!(r.Kind(), Ok(RadioKind::Bluetooth)))?;
+    if matches!(bt.State(), Ok(RadioState::Off)) {
+        Some("BLUETOOTH_OFF: Bluetooth radio is turned off".to_string())
+    } else {
+        None
+    }
+}
+
+#[cfg(not(target_os = "windows"))]
+async fn bluetooth_radio_off() -> Option<String> {
+    None
+}
+
 #[tauri::command]
 async fn init_ble(
     state: State<'_, Arc<Mutex<BleState>>>,
@@ -90,6 +116,17 @@ async fn init_ble(
 
     match Manager::new().await {
         Ok(manager) => {
+            // N3：无线电关闭时以 BLUETOOTH_OFF 前缀失败，前端显示「蓝牙未开启」红点
+            if let Some(err) = bluetooth_radio_off().await {
+                eprintln!("[BLE] {}", err);
+                return Ok(Response {
+                    success: false,
+                    data: None,
+                    error: Some(err),
+                    value: None,
+                });
+            }
+
             let mut adapters = manager.adapters().await.unwrap_or_default();
 
             // Retry mechanism for Windows startup delay (Task 6)

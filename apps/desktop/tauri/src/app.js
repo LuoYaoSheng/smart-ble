@@ -491,7 +491,14 @@ async function initBluetooth() {
 
     try {
         const result = await invoke('init_ble');
-        updateStatus(result.success ? 'Ready' : 'Not Ready', result.success ? 'ready' : 'error');
+        if (result.success) {
+            updateStatus('Ready', 'ready');
+        } else if (result.error && String(result.error).startsWith('BLUETOOTH_OFF')) {
+            // N3：无线电关闭≠平台不支持——正典词「蓝牙未开启」红点
+            updateStatus('Bluetooth Off', 'off');
+        } else {
+            updateStatus('Not Ready', 'error');
+        }
         state.bluetoothReady = result.success;
         if (!result.success) {
             addLog('error', `Bluetooth init failed: ${result.error}`);
@@ -509,6 +516,10 @@ function updateStatus(text, status) {
     if (status === 'ready') {
         if (dot) dot.className = 'bt-dot on';
         if (word) word.textContent = '蓝牙就绪';
+    } else if (status === 'off') {
+        // N3 正典词：蓝牙未开启（红点）——后端 BLUETOOTH_OFF（Radio.State=Off）上报
+        if (dot) dot.className = 'bt-dot off';
+        if (word) word.textContent = '蓝牙未开启';
     } else if (status === 'error') {
         // init_ble 仅在「无适配器/异常」时返回失败——正典 p001 词汇：平台不支持（灰点，非红）
         if (dot) dot.className = 'bt-dot';

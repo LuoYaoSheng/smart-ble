@@ -70,7 +70,7 @@ P006「GATT 调试」、P010「版本记录」✓。位置：`ProvisioningScreen
 |---|---|---|
 | N1 Android 三标题 | Mac 可改 | 3 行字符串 + 既有单测复验。**✅已修复** |
 | N2 Android 死代码 | Mac 可改 | 删 DeviceListScreen/BluetoothStateIndicator + 编译+单测复验。**✅已修复** |
-| N3 Electron 状态词 | WIN 写锁区 | 登记 WIN 项（unauthorized 词、补平台不支持态；Tauri 补未开启态）。**→ 已登记 WIN-011** |
+| N3 Electron 状态词 | WIN 写锁区 | 登记 WIN 项（unauthorized 词、补平台不支持态；Tauri 补未开启态）。**→ 已登记 WIN-011**；**→ 2026-09-20 Windows 双壳已修（commit 见 WIN-011 回填；Windows 截图=verification/windows-plan-v1/20260920-WIN-011/；macOS 侧无此缺陷源）** |
 | N4 广播 Tab 口径 | 用户裁决 + WIN | 先裁「按能力显隐 vs 恒显+徽章」，再改双壳。**→ 已登记 WIN-011（含两案），待裁决** |
 | N5 Apple 返回键 | Mac 可改（视觉裁决） | iOS 32→30 / macOS 34→30 需过视觉 Gate；或修契约把 30 改为「30±2 平台适配带」。**待用户裁决** |
 | N6 契约残留 | Mac 可改 | 契约删 MP-WEIXIN 条 + 组件删空元素。**✅已修复** |

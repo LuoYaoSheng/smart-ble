@@ -1,0 +1,8 @@
+{
+  "shell": "electron",
+  "exe": "E:\\project\\xf\\smart-ble\\apps\\desktop\\electron\\dist\\win-unpacked\\BLE Toolkit+.exe",
+  "final": {
+    "word": "蓝牙就绪",
+    "dot": "bt-dot on"
+  }
+}

@@ -224,7 +224,7 @@ public class BleService
                         foreach (var characteristic in characteristicsResult.Characteristics)
                         {
                             // Store for later access
-                            var key = $"{service.Uuid}-{characteristic.Uuid}";
+                            var key = CharKey(service.Uuid.ToString(), characteristic.Uuid.ToString());
                             _characteristics[key] = characteristic;
 
                             var props = new List<string>();
@@ -278,7 +278,7 @@ public class BleService
     {
         try
         {
-            var key = $"{serviceUuid}-{characteristicUuid}";
+            var key = CharKey(serviceUuid, characteristicUuid);
             if (!_characteristics.ContainsKey(key))
             {
                 LogMessage?.Invoke("读取失败", "特征值未找到");
@@ -313,7 +313,7 @@ public class BleService
     {
         try
         {
-            var key = $"{serviceUuid}-{characteristicUuid}";
+            var key = CharKey(serviceUuid, characteristicUuid);
             if (!_characteristics.ContainsKey(key))
             {
                 LogMessage?.Invoke("写入失败", "特征值未找到");
@@ -322,23 +322,17 @@ public class BleService
 
             var characteristic = _characteristics[key];
 
-            // V-WIN-DEF-001：写选项受特征能力约束——请求带响应写但特征只支持无响应写时
-            // 自动降级（反向同理），避免对不支持的属性发起写导致失败
-            bool supportsWrite = characteristic.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Write);
-            bool supportsWriteNr = characteristic.CharacteristicProperties.HasFlag(GattCharacteristicProperties.WriteWithoutResponse);
-            var option = GattWriteOption.WriteWithResponse;
-            if (!supportsWrite && supportsWriteNr)
+            // V-WIN-DEF-001：写选项受特征能力约束——请求的模式不被支持时自动降级，
+            // 降级由 ResolveWriteOption 统一裁决（可单测的纯函数）
+            var (option, downgraded) = ResolveWriteOption(
+                withResponse,
+                characteristic.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Write),
+                characteristic.CharacteristicProperties.HasFlag(GattCharacteristicProperties.WriteWithoutResponse));
+            if (downgraded)
             {
-                option = GattWriteOption.WriteWithoutResponse;
-                if (withResponse)
-                {
-                    LogMessage?.Invoke("写入", "特征不支持带响应写，已改用无响应写");
-                }
-            }
-            else if (!withResponse && !supportsWriteNr)
-            {
-                option = GattWriteOption.WriteWithResponse;
-                LogMessage?.Invoke("写入", "特征不支持无响应写，已改用带响应写");
+                LogMessage?.Invoke("写入", option == GattWriteOption.WriteWithoutResponse
+                    ? "特征不支持带响应写，已改用无响应写"
+                    : "特征不支持无响应写，已改用带响应写");
             }
 
             var writer = new DataWriter();
@@ -368,7 +362,7 @@ public class BleService
     {
         try
         {
-            var key = $"{serviceUuid}-{characteristicUuid}";
+            var key = CharKey(serviceUuid, characteristicUuid);
             if (!_characteristics.ContainsKey(key))
             {
                 LogMessage?.Invoke("设置通知失败", "特征值未找到");
@@ -443,9 +437,30 @@ public class BleService
     private static string DescribeException(Exception ex)
         => $"{ex.GetType().Name} 0x{ex.HResult:X8} {ex.Message}".TrimEnd();
 
-    private static string GetServiceName(string uuid)
+    // 特征字典键：service-uuid 与 char-uuid 的精确匹配契约（单测锚点）
+    internal static string CharKey(string serviceUuid, string characteristicUuid)
+        => $"{serviceUuid}-{characteristicUuid}";
+
+    // 写选项裁决（纯函数，单测锚点）：请求模式被特征支持则原样；否则自动降级到
+    // 可用模式，Downgraded=true 提示调用方记录「已改用…」日志
+    internal static (GattWriteOption Option, bool Downgraded) ResolveWriteOption(
+        bool withResponse, bool supportsWrite, bool supportsWriteNr)
     {
+        if (!withResponse && supportsWriteNr)
+            return (GattWriteOption.WriteWithoutResponse, false);
+        if (withResponse && supportsWrite)
+            return (GattWriteOption.WriteWithResponse, false);
+        if (!withResponse && !supportsWriteNr)
+            return (GattWriteOption.WriteWithResponse, true);
+        return (GattWriteOption.WriteWithoutResponse, true);
+    }
+
+    internal static string GetServiceName(string uuid)
+    {
+        // Uuid.ToString() 产出小写十六进制，switch 分支为大写——统一归一（单测抓出的真 bug：
+        // 含字母的已知短 UUID 曾全部落到 Unknown 回退）
         var shortUuid = uuid.Length > 8 ? uuid.Substring(4, 4) : uuid;
+        shortUuid = shortUuid.ToUpperInvariant();
         return shortUuid switch
         {
             "1800" => "Generic Access",
@@ -457,9 +472,12 @@ public class BleService
         };
     }
 
-    private static string GetCharacteristicName(string uuid)
+    internal static string GetCharacteristicName(string uuid)
     {
+        // Uuid.ToString() 产出小写十六进制，switch 分支为大写——统一归一（单测抓出的真 bug：
+        // 含字母的已知短 UUID 曾全部落到 Unknown 回退）
         var shortUuid = uuid.Length > 8 ? uuid.Substring(4, 4) : uuid;
+        shortUuid = shortUuid.ToUpperInvariant();
         return shortUuid switch
         {
             "2A00" => "Device Name",

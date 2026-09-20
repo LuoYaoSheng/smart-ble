@@ -928,13 +928,17 @@ class App {
     updateBluetoothStatus(state) {
         const dot = document.querySelector('#btChip .bt-dot');
         const word = document.getElementById('btWord');
+        // N3 正典词（对齐 Flutter btStatusWord / MainActivity.kt:147 注释口径）：
+        // off+unauthorized→蓝牙未开启（红点）；unsupported→平台不支持（灰点）；
+        // unknown 及未列状态→初始化中…（灰点，fallback 不再用非正典词「状态未知」）
         const stateMap = {
             'poweredOn': { text: '蓝牙就绪', cls: 'on' },
             'poweredOff': { text: '蓝牙未开启', cls: 'off' },
-            'unauthorized': { text: '未授权', cls: 'off' },
+            'unauthorized': { text: '蓝牙未开启', cls: 'off' },
+            'unsupported': { text: '平台不支持', cls: '' },
             'unknown': { text: '初始化中…', cls: '' }
         };
-        const status = stateMap[state] || { text: '状态未知', cls: '' };
+        const status = stateMap[state] || { text: '初始化中…', cls: '' };
         if (dot) dot.className = 'bt-dot ' + status.cls;
         if (word) word.textContent = status.text;
     }

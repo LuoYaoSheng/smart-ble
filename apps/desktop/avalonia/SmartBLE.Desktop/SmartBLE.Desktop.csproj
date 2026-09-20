@@ -11,6 +11,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- WIN-005 单测：BleService 内部纯函数（CharKey/ResolveWriteOption/名称映射）对测试工程可见 -->
+    <InternalsVisibleTo Include="SmartBLE.Desktop.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
 
