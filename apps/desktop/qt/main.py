@@ -30,7 +30,6 @@ from PySide6.QtWidgets import (
     QPlainTextEdit,
     QPushButton,
     QStackedWidget,
-    QTabBar,
     QTreeWidget,
     QTreeWidgetItem,
     QVBoxLayout,
@@ -39,6 +38,7 @@ from PySide6.QtWidgets import (
 
 from automation import start_automation_if_requested
 from ble_service import BleService, ScanHit, char_display_name, service_display_name
+from tabbar import CanonTabBar
 from theme import QSS
 
 HERE = Path(__file__).resolve().parent
@@ -628,16 +628,19 @@ class MainWindow(QMainWindow):
         for _, page in pages:
             self._stack.addWidget(page)
 
-        self._tabs = QTabBar()
-        self._tabs.setExpanding(False)
-        self._tabs.setDocumentMode(True)
-        for i, (label, _) in enumerate(pages[:4]):
-            self._tabs.addTab(label)
+        # 正典底栏（tabbar.py）：64px 图标+等宽+色彩态，替代 QTabBar 文字下划线形态
+        self._tabs = CanonTabBar(
+            [("扫描", "scan"), ("已连接", "link"), ("广播", "cast"), ("关于", "info")]
+        )
         self._tabs.currentChanged.connect(self._on_tab)
+        self._tabs.setCurrentIndex(0)
         outer.addWidget(self._stack, 1)
         outer.addWidget(self._tabs)
 
         self._ble.device_connected.connect(self._on_connected)
+        # 已连接角标 .n 口径：通用连接计数（正典 connectedBadge）
+        self._ble.device_connected.connect(lambda *_: self._refresh_badge())
+        self._ble.device_disconnected.connect(lambda *_: self._refresh_badge())
 
     # ── 导航 ──
 
@@ -649,6 +652,9 @@ class MainWindow(QMainWindow):
         if leaving_broadcast and index != self.IDX_BROADCAST and self._ble.advertising:
             self._ble.advertising = False
         self._stack.setCurrentIndex(index)
+
+    def _refresh_badge(self) -> None:
+        self._tabs.set_badge(1, len(self._ble.connected))
 
     def _open_detail(self, address: str) -> None:
         info = self._ble.connected.get(address)

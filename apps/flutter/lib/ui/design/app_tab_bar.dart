@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'app_tokens.dart';
 import 'app_icon.dart';
 
-/// 正典 TabBar（COMPONENT_CONTRACT A3 · prototype pages.css .tabbar）
+/// 正典 TabBar（COMPONENT_CONTRACT A3 · prototype.css .tabbar）
 ///
-/// F-AND 实现：BottomNavigationBar 封装（AppIcon 字形）。
+/// 自绘正典底栏（非 Material BottomNavigationBar——其默认 56px 高与
+/// Material 内边距不合正典）：border-box 64px 高含 1px 顶线、四枚
+/// `flex:1` 等宽、图标 23px + 文字 10px、纯色彩选中态（无下划线）。
 /// 仅 switchTab 语义；角标口径 = 通用连接 + SHID 会话在线（PRD）。
 class AppTabBar extends StatelessWidget {
   const AppTabBar({
@@ -27,27 +29,27 @@ class AppTabBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final activeIndex =
-        tabs.indexWhere((t) => t.$1.key == activeKey).clamp(0, tabs.length - 1);
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      currentIndex: activeIndex,
-      onTap: (i) => onSwitch(tabs[i].$1.key),
-      selectedItemColor: AppTokens.cPrimary,
-      unselectedItemColor: AppTokens.cMut,
-      selectedFontSize: 10,
-      unselectedFontSize: 10,
-      items: [
-        for (final (tab, _) in tabs)
-          BottomNavigationBarItem(
-            icon: _TabIcon(
-              icon: tab.icon,
-              active: tab.key == activeKey,
-              badge: tab.key == 'connected' ? connectedBadge : 0,
+    return Container(
+      // 正典 .tabbar：rgba(255,255,255,.96) 底 + blur 顶线（桌面实底取不透明近似）
+      decoration: const BoxDecoration(
+        color: Color(0xF5FFFFFF),
+        border: Border(top: BorderSide(color: AppTokens.cLineSoft, width: 1)),
+      ),
+      height: 64, // border-box：含 1px 顶线
+      padding: const EdgeInsets.fromLTRB(8, 4, 8, 16),
+      child: Row(
+        children: [
+          for (final (tab, _) in tabs)
+            Expanded( // 正典 .tb flex:1 等宽
+              child: _TabButton(
+                tab: tab,
+                active: tab.key == activeKey,
+                badge: tab.key == 'connected' ? connectedBadge : 0,
+                onTap: () => onSwitch(tab.key),
+              ),
             ),
-            label: tab.label,
-          ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -59,11 +61,52 @@ class _Tab {
   final String icon;
 }
 
+class _TabButton extends StatelessWidget {
+  const _TabButton({
+    required this.tab,
+    required this.active,
+    required this.badge,
+    required this.onTap,
+  });
+
+  final _Tab tab;
+  final bool active;
+  final int badge;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    // 正典 .tb：color 态级联（图标 currentColor + span 同色）
+    final color = active ? AppTokens.cPrimary : AppTokens.cMut;
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque, // flex:1 全格可点
+      onTap: onTap,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _TabIcon(icon: tab.icon, color: color, badge: badge),
+          const SizedBox(height: 3), // 正典 gap:3px
+          Text(
+            tab.label,
+            style: TextStyle(
+              fontSize: 10, // 正典 .tb span
+              fontWeight: active ? AppTokens.fwBold : AppTokens.fwMed,
+              color: color,
+              height: 1.2,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _TabIcon extends StatelessWidget {
-  const _TabIcon({required this.icon, required this.active, this.badge = 0});
+  const _TabIcon({required this.icon, required this.color, this.badge = 0});
 
   final String icon;
-  final bool active;
+  final Color color;
   final int badge;
 
   @override
@@ -72,9 +115,10 @@ class _TabIcon extends StatelessWidget {
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        AppIcon(icon, size: 23, color: active ? AppTokens.cPrimary : AppTokens.cMut),
+        AppIcon(icon, size: 23, color: color), // 正典 .tb .ic 23px
         if (badge > 0)
           Positioned(
+            // 正典 .n：top:2px / right:calc(50% - 21px) ≈ 图标右上 -2/-10
             top: -2,
             right: -10,
             child: Container(
@@ -89,7 +133,7 @@ class _TabIcon extends StatelessWidget {
               child: Text(
                 badge > 99 ? '99+' : '$badge',
                 style: const TextStyle(
-                  color: AppTokens.cCard,
+                  color: Colors.white,
                   fontSize: 9,
                   fontWeight: AppTokens.fwBold,
                 ),

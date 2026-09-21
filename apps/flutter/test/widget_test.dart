@@ -6,6 +6,8 @@ import 'package:smart_ble/core/ble/hid_session_store.dart';
 import 'package:smart_ble/core/design/app_icons.dart';
 import 'package:smart_ble/core/design/app_illustrations.dart';
 import 'package:smart_ble/main.dart';
+import 'package:smart_ble/ui/design/app_tab_bar.dart';
+import 'package:smart_ble/ui/design/app_tokens.dart';
 import 'package:smart_ble/ui/pages/device_list_page.dart';
 import 'package:smart_ble/ui/pages/hid_detail_page.dart';
 import 'package:smart_ble/ui/pages/hid_diagnostics_page.dart';
@@ -38,6 +40,47 @@ void main() {
     expect(find.text('广播'), findsOneWidget);
     expect(find.text('关于'), findsOneWidget);
     expect(find.text('连接'), findsNothing);
+  });
+
+  // UIALIGN 20260921：TabBar 正典几何锁——64px border-box、四枚 flex:1 等宽、
+  // 图标 23px、文字 10px、纯色彩选中态（Material BottomNavigationBar 56px 壳已弃）。
+  testWidgets('canon tabbar geometry 64px + equal tabs (UIALIGN)', (tester) async {
+    tester.view.physicalSize = const Size(800, 600);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(MaterialApp(
+      home: Scaffold(
+        bottomNavigationBar: AppTabBar(activeKey: 'scan', onSwitch: (_) {}),
+      ),
+    ));
+
+    expect(find.byType(BottomNavigationBar), findsNothing); // Material 壳不得回流
+    expect(tester.getSize(find.byType(AppTabBar)).height, 64); // .tabbar 高
+
+    // 四枚图标等距（flex:1 等宽的中心距）
+    final centers = tester
+        .widgetList<AppIcon>(find.byType(AppIcon))
+        .map((w) => tester.getCenter(find.byWidget(w)).dx)
+        .toList();
+    expect(centers.length, 4);
+    final gaps = [
+      for (var i = 1; i < centers.length; i++) centers[i] - centers[i - 1]
+    ];
+    expect(gaps.every((g) => (g - gaps.first).abs() < 0.5), isTrue);
+
+    // 图标 23px（.tb .ic）
+    expect(tester.getSize(find.byType(AppIcon).first), const Size(23, 23));
+
+    // 文字 10px + 色彩态：选中 primary/700，未选 cMut/600
+    final on = tester.widget<Text>(find.text('扫描')).style!;
+    final off = tester.widget<Text>(find.text('广播')).style!;
+    expect(on.fontSize, 10);
+    expect(off.fontSize, 10);
+    expect(on.color, AppTokens.cPrimary);
+    expect(off.color, AppTokens.cMut);
+    expect(on.fontWeight, AppTokens.fwBold);
+    expect(off.fontWeight, AppTokens.fwMed);
   });
 
   // PARITY-P001：蓝牙状态词映射正典三态词表 + 桌面壳瞬态（p001 btWord + 初始化中…）。
@@ -112,9 +155,10 @@ void main() {
     // 不能用 pumpAndSettle，用固定时长推进。
     await tester.drag(find.byType(PageView), const Offset(-400, 0));
     await tester.pump(const Duration(milliseconds: 300));
-    final navBar = tester.widget<BottomNavigationBar>(
-        find.byType(BottomNavigationBar));
-    expect(navBar.currentIndex, 0);
+    // UIALIGN 20260921：正典自绘底栏（Material BottomNavigationBar 已弃），
+    // 断言迁移至 AppTabBar.activeKey（语义不变：仍停留扫描页）。
+    final tabBar = tester.widget<AppTabBar>(find.byType(AppTabBar));
+    expect(tabBar.activeKey, 'scan');
   });
 
   // PARITY-G1：P003/P005/P010 为独立职责页面（非 Modal 冒充，FLUTTER-G1-003）。

@@ -451,6 +451,16 @@ README 占位且指向 Avalonia 线；Flutter 无 Windows 目标），逐框架�
 - 门禁：dotnet build 0 err、dotnet test 19/19 ✓、走查后无残留进程
 - Evidence: verification/windows-plan-v1/20260920-WIN-UIFULL/avalonia/vwin-walk/
 
+### 2026-09-21 · UIALIGN-TABBAR（用户反馈「好几个 UI 没对齐，连基本的 tabbar 都没对齐」）
+
+- Status: **TabBar 层收口 GREEN**（F/Q 双壳双层级探针；无 WIN 任务行变更——P4 判定只覆盖打包链路，UI 正典对齐此前仅 V-WIN 两轮，本轮补 F/Q TabBar）
+- 缺陷账：F=Material BottomNavigationBar 56px 壳 + themeMode.system 跟随系统暗色（违 TOKEN.md §9.4 正典无全局深色）；Q=QTabBar 纯文字无图标/非等宽/下划线选态 + TEXT_MUT 圈外值 #93A1B8
+- 修复：F 自绘 64px border-box 正典条（flex:1 等宽/图标23/文字10/色彩态）+ 锁亮 ThemeMode.light + 横滑断言迁移 + 新增几何锁测试（analyze 0 issue / 123/123）；Q 新 tabbar.py CanonTabBar（QtSvg 渲染 E-WIN sprite 同源路径/等拉伸/角标 .n 口径/QTabBar 语义兼容自动化缝）+ theme 正典值
+- 探针：F（dpr1.5）bar=64.0L、4 簇等距 438.5/438/438.5、色态✓；Q（TCP seam grab，dpr1.0）bar=64.0L、等距 296.5/296/295.5、tab0/tab3 选中色随动✓；双壳 zip 产物级复验同绿；FWIN/QWIN 重打包 + SHA256SUMS 增补（25140d54…/718a6d90…）
+- 坑位：GetWindowRect DWM 边框假偏大→EXTENDED_FRAME_BOUNDS；多屏 ImageGrab 须 all_screens；venv 启动器把基础解释器当子进程→按进程树找窗；Popen 控制台盖窗→CREATE_NO_WINDOW；系统定时切暗；偶发空窗重试
+- 遗留：Q 页面级五项（Q-PA-001~005）+ F 像素级布局探针专项未跑（见证据 README §5）；N4 广播 Tab 显隐（E/T/G 三枚 vs F/V/Q 四枚恒显）仍待用户裁决
+- Evidence: verification/windows-plan-v1/20260921-UIALIGN-TABBAR/
+
 ### 2026-09-21 · WIN-009 P4 六壳安装包（用户裁决「P4 六壳安装包（推荐）」开工）
 
 - Status: WIN-009 `PASS_WITH_OBS`

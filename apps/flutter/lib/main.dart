@@ -35,7 +35,9 @@ class SmartBLEApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system,
+      // TOKEN.md §9.4：正典无全局深色模式——六壳统一亮色线（E/T/V/G/Q 恒亮），
+      // 不得跟随系统暗色（UIALIGN 20260921：曾 themeMode.system 随系统切暗，跨壳不对齐）
+      themeMode: ThemeMode.light,
       // 多语言支持（gen-l10n 自动生成）
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,

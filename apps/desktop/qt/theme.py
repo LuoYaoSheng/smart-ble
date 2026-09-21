@@ -8,7 +8,7 @@ CARD = "#FFFFFF"
 BORDER = "#E3E9F2"
 TEXT = "#17223B"
 TEXT_SUB = "#5A6B87"
-TEXT_MUT = "#93A1B8"
+TEXT_MUT = "#60758D"  # 正典 --c-mut（UIALIGN 20260921：原 #93A1B8 圈外值）
 FILL = "#EEF2F8"
 
 QSS = f"""
@@ -96,16 +96,4 @@ QPlainTextEdit#OpLog {{
     color: {TEXT_SUB};
 }}
 QTabWidget::pane {{ border: none; }}
-QTabBar::tab {{
-    background: {CARD};
-    color: {TEXT_SUB};
-    padding: 10px 0;
-    margin: 0 6px;
-    border: none;
-}}
-QTabBar::tab:selected {{
-    color: {PRIMARY};
-    font-weight: 700;
-    border-bottom: 3px solid {PRIMARY};
-}}
 """
