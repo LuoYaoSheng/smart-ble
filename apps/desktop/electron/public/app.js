@@ -882,7 +882,8 @@ class App {
             const osNames = { win32: 'Windows', darwin: 'macOS', linux: 'Linux' };
             const chip = document.getElementById('broadcastPlatformChip');
             if (chip) chip.textContent = `平台：Desktop · ${osNames[window.platform?.platform] || '未知'}`;
-            this.updateBroadcastStatus('idle');
+            // initBLE 完成可能晚于用户开播（noble 初始化慢）——广播中不得打回 idle
+            this.updateBroadcastStatus(this.isBroadcasting ? 'advertising' : 'idle');
             this.updateByteBudget();
         } catch (error) {
             console.error('BLE init error:', error);

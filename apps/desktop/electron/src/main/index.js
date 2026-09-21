@@ -281,8 +281,114 @@ ipcMain.handle('ble:stopScan', async () => {
 // 广播状态
 let advertisingService = null;
 
+// ── Win32 广播边车（WIN-BRIDGE 模板，2026-09-21 裁决项 #3）──
+// PowerShell 直呼 WinRT BluetoothLEAdvertisementPublisher（仅厂商块 0xFF，
+// 平台事实见 20260921-XDEV-BROADCAST）；行协议见 win-broadcast-bridge.ps1 头注。
+let winBridge = null; // { proc, waiters: Map<event, resolve[]>, buffer }
+
+function emitWinBridge(event, payload) {
+  if (winBridge) {
+    (winBridge.waiters.get(event) || []).forEach((resolve) => resolve(payload));
+    winBridge.waiters.set(event, []);
+  }
+}
+
+function ensureWinBridge() {
+  if (winBridge && winBridge.proc.exitCode === null) {
+    return winBridge;
+  }
+  const { spawn } = require('child_process');
+  const proc = spawn('powershell.exe', [
+    '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File',
+    path.join(__dirname, 'win-broadcast-bridge.ps1')
+  ], { stdio: ['pipe', 'pipe', 'pipe'], windowsHide: true });
+
+  winBridge = { proc, waiters: new Map(), buffer: '' };
+  proc.stdout.setEncoding('utf8');
+  proc.stdout.on('data', (chunk) => {
+    winBridge.buffer += chunk;
+    let idx;
+    while ((idx = winBridge.buffer.indexOf('\n')) >= 0) {
+      const line = winBridge.buffer.slice(0, idx).trim();
+      winBridge.buffer = winBridge.buffer.slice(idx + 1);
+      if (!line) continue;
+      try {
+        const msg = JSON.parse(line);
+        debugLog('win-bridge event:', msg);
+        if (msg.event === 'error') {
+          emitWinBridge('started', { success: false, error: msg.message });
+          emitWinBridge('stopped', { success: false, error: msg.message });
+        } else {
+          emitWinBridge(msg.event, { success: true, detail: msg });
+        }
+      } catch (e) {
+        debugLog('win-bridge unparsable line:', line);
+      }
+    }
+  });
+  proc.stderr.setEncoding('utf8');
+  proc.stderr.on('data', (d) => debugLog('win-bridge stderr:', String(d).trim()));
+  proc.on('exit', (code) => {
+    debugLog('win-bridge exited:', code);
+    emitWinBridge('started', { success: false, error: `bridge exited (${code})` });
+    emitWinBridge('stopped', { success: false, error: `bridge exited (${code})` });
+    if (winBridge && winBridge.proc === proc) winBridge = null;
+  });
+  return winBridge;
+}
+
+function waitWinBridge(event, timeoutMs) {
+  return new Promise((resolve) => {
+    const bridge = winBridge;
+    if (!bridge) return resolve({ success: false, error: 'bridge not running' });
+    const list = bridge.waiters.get(event) || [];
+    list.push(resolve);
+    bridge.waiters.set(event, list);
+    setTimeout(() => {
+      const pending = bridge.waiters.get(event) || [];
+      const i = pending.indexOf(resolve);
+      if (i >= 0) {
+        pending.splice(i, 1);
+        resolve({ success: false, error: `bridge ${event} timeout (${timeoutMs}ms)` });
+      }
+    }, timeoutMs);
+  });
+}
+
+function killWinBridge() {
+  if (!winBridge) return;
+  const bridge = winBridge;
+  winBridge = null;
+  try {
+    bridge.proc.stdin.write(JSON.stringify({ cmd: 'exit' }) + '\n');
+    bridge.proc.stdin.end();
+    setTimeout(() => { try { bridge.proc.kill(); } catch (_) {} }, 1500);
+  } catch (_) {
+    try { bridge.proc.kill(); } catch (_) {}
+  }
+}
+
 ipcMain.handle('ble:startAdvertising', async (event, name, serviceUuids, manufacturerId, manufacturerData, includeName) => {
   // 检查平台支持
+  if (process.platform === 'win32') {
+    // WIN-BRIDGE：WinRT 仅厂商块可发（LocalName/ServiceUuids 被平台拒绝，
+    // 见 20260921-XDEV-BROADCAST 平台事实）——name/uuid 参数在此路径忽略。
+    try {
+      const bridge = ensureWinBridge();
+      const idStr = String(manufacturerId || '0001').replace(/^0x/i, '');
+      const companyId = parseInt(idStr, 16) || 1;
+      const dataStr = typeof manufacturerData === 'string' && manufacturerData.length > 0
+        ? manufacturerData : 'BLE';
+      const data = Array.from(Buffer.from(dataStr, 'ascii'));
+      bridge.proc.stdin.write(JSON.stringify({ cmd: 'start', companyId, data }) + '\n');
+      // 首次调用含边车冷启动（PS 起 + csc 首编译 ~3s），超时余量放宽
+      const result = await waitWinBridge('started', 8000);
+      if (result.success) debugLog('win advertising started:', { companyId, bytes: data.length });
+      return result;
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  }
   if (process.platform !== 'linux') {
     return { success: false, error: `Advertising is not supported on ${process.platform}. True peripheral mode requires native apps (e.g., macOS SmartBLE) or Linux with bleno.` };
   }
@@ -345,6 +451,15 @@ ipcMain.handle('ble:startAdvertising', async (event, name, serviceUuids, manufac
 });
 
 ipcMain.handle('ble:stopAdvertising', async () => {
+  if (process.platform === 'win32') {
+    if (!winBridge) return { success: true };
+    try {
+      winBridge.proc.stdin.write(JSON.stringify({ cmd: 'stop' }) + '\n');
+      return await waitWinBridge('stopped', 3000);
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  }
   if (process.platform !== 'linux') {
     return { success: false, error: `Advertising is not supported on ${process.platform}` };
   }
@@ -851,6 +966,7 @@ app.on('window-all-closed', () => {
 
 // 清理
 app.on('before-quit', () => {
+  killWinBridge();
   if (bleModule) {
     bleModule.stopScanning();
     // Disconnect all connected devices

@@ -93,7 +93,7 @@ Windows 主机不负责：
 | WIN-015 | 六壳应用图标统一 | `PASS` | E/V 已同源；F 为模板图标；T 同源异字节 | WIN-003/004/005/012/013/014 | 20260920：正典源定案 `apps/desktop/electron/public/brand/icon.png`(512) + `assets/icon.ico`；`tools/unify_icons.py` 一键分发，E/T/V/F/Q/G 六壳 .ico sha256=42139766…字节级一致；页内平台图标 E/T 目录 diff 空 |
 | WIN-016 | 流程韧性（返回/临时退出/中断）对齐 | `PASS_WITH_OBS` | E/T/V 已有骨架，口径缺漏 | WIN-003/004/005/012/014 | 正典依据=uniapp onHide/onUnload/onBackPress + desktop.js dwin-quit（busy=连接 OR 广播）。20260920 修复：E/T 关窗 busy 补广播 + 退出先停广播再断连 + E/T 切出广播页停广播（onHide 口径）+ T 切入广播页停扫描（对齐 E）+ F-WIN 补关窗退出确认 + F 广播页 dispose 停广播（原生广播不随页面销毁自停）；node --check E/T √。P006 订阅随连接存续=正典（连接常驻）；V-WIN 广播降级下 busy=连接即完整。**20260921 FWIN-BC-001（新 OBS）：F-WIN Windows 上 stop() 只停 UI 不停空口（同 MAC 持续发包，进程退出才静默）→ 「切出广播页停广播」在 Windows 的空口实效受损；规避口径=需确保静默时退出应用（详见 20260921-FWIN-BROADCAST）** |
 
-| WIN-017 | Windows×Android 跨端广播联调（V-WIN 真发射参考实装） | `PASS_WITH_OBS` | 用户 20260921 指令：安卓版当空口观察者联调 | WIN-001、WIN-014 | 六壳广播盘点：E/T/G/Q 拒绝式降级、F 插件 flutter_ble_peripheral 自带 Windows 后端但被 isSupported 门控（升级项=翻门控+验证）；V-WIN 实装 WinRT BluetoothLEAdvertisementPublisher——**平台事实（adv-probe 二分）**：桌面进程仅厂商块 0xFF 可发（LocalName/ServiceUuids 一律 Start() 拒绝、空负载拒），无 Microsoft CID 劫持，LE 用随机地址；Phase A：V-WIN 发→A-AND（华为 Mate 30 5G）空口收 `06ff0100424c45`（CID 0001+BLE 原样，-41dBm，31 包/5s）；Phase B：华为发（FFF0/0001/BLE/名在 SCAN_RSP）→V-WIN 收到「Mate 30 5G」卡片（-44dBm），A/B 停播对照=消失；**VWIN-DEF-011 修复**（Update 无条件覆盖名字→ADV 帧冲掉 SCAN_RSP 名，改只在非空覆盖）；生命周期收口=切出广播页停播+广播中退出确认+publisher 防崩（曾带崩 app，事件日志栈为证）；单测 55/55；证据 20260921-XDEV-BROADCAST/（12 断言+平台事实+7 坑位）；OBS：Windows 空口无名/UUID 会输入 N4 裁决（仍待用户） |
+| WIN-017 | Windows×Android 跨端广播联调（V-WIN 真发射参考实装） | `PASS_WITH_OBS` | 用户 20260921 指令：安卓版当空口观察者联调 | WIN-001、WIN-014 | 六壳广播盘点：E/T/G/Q 拒绝式降级、F 插件 flutter_ble_peripheral 自带 Windows 后端但被 isSupported 门控（升级项=翻门控+验证）；V-WIN 实装 WinRT BluetoothLEAdvertisementPublisher——**平台事实（adv-probe 二分）**：桌面进程仅厂商块 0xFF 可发（LocalName/ServiceUuids 一律 Start() 拒绝、空负载拒），无 Microsoft CID 劫持，LE 用随机地址；Phase A：V-WIN 发→A-AND（华为 Mate 30 5G）空口收 `06ff0100424c45`（CID 0001+BLE 原样，-41dBm，31 包/5s）；Phase B：华为发（FFF0/0001/BLE/名在 SCAN_RSP）→V-WIN 收到「Mate 30 5G」卡片（-44dBm），A/B 停播对照=消失；**VWIN-DEF-011 修复**（Update 无条件覆盖名字→ADV 帧冲掉 SCAN_RSP 名，改只在非空覆盖）；生命周期收口=切出广播页停播+广播中退出确认+publisher 防崩（曾带崩 app，事件日志栈为证）；单测 55/55；证据 20260921-XDEV-BROADCAST/（12 断言+平台事实+7 坑位）；OBS：Windows 空口无名/UUID 会输入 N4 裁决（仍待用户）；**同日 EWIN-BRIDGE 轮（裁决项 #3 模板）：E-WIN 广播从拒绝式降级升级为真发射**——PowerShell 边车（行协议）+ 系统 csc 首编译 C# helper（仅厂商块 0xFF，win32 分支 name/uuid 按平台事实忽略）+ before-quit 清理；E/G 镜像 initBLE 打回 idle 时序缺陷顺修；双端验证 A1 UI 绿（广播中徽章+停止按钮）/A2 手机收 `06ff0100424c45` 44 包/**A3 停播空口真停（与 FWIN-BC-001 相反，边车优势）**/A4 退出静默；95/95+node --check；PS5.1 WinRT 坑位账 7 条（**ps1 中文注释必须 BOM** 等）；证据 20260921-EWIN-BRIDGE/ |
 
 完成率统计只按本表：`PASS` 2 / `PASS_WITH_OBS` 13 / `IN_PROGRESS` 0 / `FAILED` 0 / `BLOCKED` 2 / `TODO` 0（20260921 P5 终交付收口：含糊 TODO 清零，WIN-005/006/011 按 OBS 口径结论化，WIN-008 定格 BLOCKED 待 P3 硬件窗口）。
 
@@ -450,6 +450,14 @@ README 占位且指向 Avalonia 线；Flutter 无 Windows 目标），逐框架�
   行内按钮点真实 Button 控件而非 Text 标签。
 - 门禁：dotnet build 0 err、dotnet test 19/19 ✓、走查后无残留进程
 - Evidence: verification/windows-plan-v1/20260920-WIN-UIFULL/avalonia/vwin-walk/
+
+### 2026-09-21 · EWIN-BRIDGE——E-WIN WinRT 广播模板（用户裁决项 #3「先 E-WIN 一壳做模板」）
+
+- Status: 模板确立+双端验证全绿（A1 UI/A2 空口 44 包/A3 停播真停/A4 退出静默）；复制到 T/G/Q 待排期
+- Code: 新增 `electron/src/main/win-broadcast-bridge.ps1`（PS 边车，UTF-8 BOM）+ `index.js` win32 分支（边车生命周期/8s 超时/before-quit 清理）；E/G `app.js` 镜像修 initBLE 打回 idle 时序缺陷
+- 架构: renderer IPC 契约零改动 → main win32 分支 → 常驻 PS 边车（stdin/stdout 行协议 JSON）→ 系统 csc.exe 首编译 C# helper（PID 后缀 dll）→ BluetoothLEAdvertisementPublisher 仅厂商块
+- Evidence: verification/windows-plan-v1/20260921-EWIN-BRIDGE/（README 含 PS5.1 WinRT 坑位账 7 条——**无 BOM 中文 ps1 会被 GBK 乱码静默破坏**/AsBuffer 真名/ManufacturerData __ComObject 须下沉 C#/csc 引合并 winmd+GAC System.Runtime 等；e2e 脚本+截图+三段手机 logcat）
+- Observations: StatusChanged 事件未挂（跨 runspace 输出不可达，以 Start() 异常+空口验证覆盖）；csc 首编译 ~3s 仅首次
 
 ### 2026-09-21 · T-MSI-ELEV——T-WIN MSI 提权安装闭环（用户裁决项 #4）
 
