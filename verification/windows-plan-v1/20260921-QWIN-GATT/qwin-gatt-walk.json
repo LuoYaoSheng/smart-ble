@@ -1,0 +1,113 @@
+{
+  "results": [
+    {
+      "step": "boot",
+      "pass": true,
+      "detail": {
+        "version": "v1.0.5",
+        "scanStatus": "待开始扫描"
+      }
+    },
+    {
+      "step": "P001-real-scan",
+      "pass": true,
+      "detail": {
+        "found": 10,
+        "shid": "SHID-00000001 -51dBm 10:B4:1D:CD:23:8E"
+      }
+    },
+    {
+      "step": "connect-gatt-tree",
+      "pass": true,
+      "detail": {
+        "title": "SHID-00000001",
+        "status": "10:B4:1D:CD:23:8E · 已连接",
+        "services": 1,
+        "chars": 3,
+        "actionSurface": [
+          "notify+read",
+          "write",
+          "notify+read"
+        ]
+      }
+    },
+    {
+      "step": "P006-info-read",
+      "pass": true,
+      "detail": {
+        "readEnabled": true,
+        "logLine": "读取成功 · 设备信息 (INFO) · 7B 22 70 72 6F 64 75 63 74 22 3A 22 73 6D 61 72 74 2D 68 69 64 22 2C 22 70 72 6F 74 6F 63 6F 6C 22 3A 22 31 2E 30 22 2C 22 64 65 76 69 63 65 5F 69 64 22 3A 22 48 49 44 2D 30 30 30 30 30 30 30 31 22 2C 22 66 69 72 6D 77 61 72 65 22 3A 22 31 2E 32 2E 30 22 2C 22 73 74 61 74 65 22 3A 22 75 6E 70 72 6F 76 69 73 69 6F 6E 65 64 22 2C 22 70 72 6F 76 69 73 69 6F 6E 65 64 22 3A 66 61 6C 73 65 7D · 「{\"product\":\"smart-hid\",\"protocol\":\"1.0\",\"device_id\":\"HID-00000001\",\"firmware\":\"1.2.0\",\"state\":\"unprovisioned\",\"provisioned\":false}」"
+      }
+    },
+    {
+      "step": "P006-status-notify",
+      "pass": true,
+      "detail": {
+        "onLabel": "取消订阅",
+        "offLabel": "订阅通知",
+        "note": "未配对态 STATUS 仅状态变化推送（探针 8s 零事件），按订阅态断言"
+      }
+    },
+    {
+      "step": "P006-write-guard",
+      "pass": true,
+      "detail": {
+        "writeEnabled": true,
+        "guard": "write 失败 · INPUT 特征写入已被禁用（SHID-FW-LOCK-001 设备保护）"
+      }
+    },
+    {
+      "step": "P007-connected",
+      "pass": true,
+      "detail": {
+        "connectedCount": 1,
+        "list": [
+          "SHID-00000001   10:B4:1D:CD:23:8E"
+        ]
+      }
+    },
+    {
+      "step": "exit-busy",
+      "pass": true,
+      "detail": {
+        "modalText": "有 BLE 会话正在运行（当前连接设备：1 台）。\n确认退出将断开会话并停止监听。"
+      }
+    },
+    {
+      "step": "disconnect-all",
+      "pass": true,
+      "detail": {
+        "connectedCount": 0,
+        "list": []
+      }
+    },
+    {
+      "step": "P008-broadcast",
+      "pass": true,
+      "detail": {
+        "tip": "Windows 平台暂不支持外设模式（降级口径同 V-WIN；N4 待决）"
+      }
+    },
+    {
+      "step": "P009-about",
+      "pass": true,
+      "detail": {
+        "当前环境": "Desktop · Windows",
+        "设备型号": "PC · X64",
+        "版本": "v1.0.5"
+      }
+    },
+    {
+      "step": "exit-final",
+      "pass": true,
+      "detail": {
+        "modalText": "桌面端为常驻运行。确认退出？\n（10_platform §4 生命周期：常驻，退出确认）",
+        "processExitedClean": true
+      }
+    }
+  ],
+  "pass": 12,
+  "total": 12,
+  "fatal": false,
+  "appLogTail": ""
+}

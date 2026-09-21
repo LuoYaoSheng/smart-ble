@@ -77,6 +77,24 @@ QListWidget#DeviceList::item:selected {{
     background: {FILL};
     color: {TEXT};
 }}
+QTreeWidget#GattTree {{
+    background: {CARD};
+    border: 1px solid {BORDER};
+    border-radius: 12px;
+    padding: 6px;
+}}
+QTreeWidget#GattTree::item {{
+    padding: 6px 4px;
+}}
+QPlainTextEdit#OpLog {{
+    background: {CARD};
+    border: 1px solid {BORDER};
+    border-radius: 12px;
+    padding: 8px;
+    font-family: "Cascadia Mono", "Consolas", monospace;
+    font-size: 12px;
+    color: {TEXT_SUB};
+}}
 QTabWidget::pane {{ border: none; }}
 QTabBar::tab {{
     background: {CARD};
