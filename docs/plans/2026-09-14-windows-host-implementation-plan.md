@@ -95,7 +95,7 @@ Windows 主机不负责：
 
 | WIN-017 | Windows×Android 跨端广播联调（V-WIN 真发射参考实装） | `PASS_WITH_OBS` | 用户 20260921 指令：安卓版当空口观察者联调 | WIN-001、WIN-014 | 六壳广播盘点：E/T/G/Q 拒绝式降级、F 插件 flutter_ble_peripheral 自带 Windows 后端但被 isSupported 门控（升级项=翻门控+验证）；V-WIN 实装 WinRT BluetoothLEAdvertisementPublisher——**平台事实（adv-probe 二分）**：桌面进程仅厂商块 0xFF 可发（LocalName/ServiceUuids 一律 Start() 拒绝、空负载拒），无 Microsoft CID 劫持，LE 用随机地址；Phase A：V-WIN 发→A-AND（华为 Mate 30 5G）空口收 `06ff0100424c45`（CID 0001+BLE 原样，-41dBm，31 包/5s）；Phase B：华为发（FFF0/0001/BLE/名在 SCAN_RSP）→V-WIN 收到「Mate 30 5G」卡片（-44dBm），A/B 停播对照=消失；**VWIN-DEF-011 修复**（Update 无条件覆盖名字→ADV 帧冲掉 SCAN_RSP 名，改只在非空覆盖）；生命周期收口=切出广播页停播+广播中退出确认+publisher 防崩（曾带崩 app，事件日志栈为证）；单测 55/55；证据 20260921-XDEV-BROADCAST/（12 断言+平台事实+7 坑位）；OBS：Windows 空口无名/UUID 会输入 N4 裁决（仍待用户） |
 
-完成率统计只按本表：`PASS` 2 / `PASS_WITH_OBS` 8 / `IN_PROGRESS` 2 / `FAILED` 0 / `BLOCKED` 1 / `TODO` 3。
+完成率统计只按本表：`PASS` 2 / `PASS_WITH_OBS` 8 / `IN_PROGRESS` 3 / `FAILED` 0 / `BLOCKED` 1 / `TODO` 3。
 
 ## 4. 实施任务
 
