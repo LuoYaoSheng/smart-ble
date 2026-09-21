@@ -379,7 +379,7 @@
                     </ScrollViewer>
                 </Grid>
 
-                <!-- ─────────── P008 广播（31B 预算真值计算；外围发射=V-WIN 明确降级） ─────────── -->
+                <!-- ─────────── P008 广播（31B 预算真值 + WinRT 真发射） ─────────── -->
                 <Grid IsVisible="{Binding IsBroadcastView}" RowDefinitions="Auto,*">
                     <Border Grid.Row="0" Background="{DynamicResource GradNavbar}"
                             BorderBrush="{DynamicResource CLineSoft}" BorderThickness="0,0,0,1"
@@ -392,10 +392,11 @@
                                         Margin="0,0,6,0">
                                     <TextBlock Text="平台：Desktop · Windows"/>
                                 </Border>
-                                <Border Grid.Column="2" Classes="badge dim" VerticalAlignment="Center">
+                                <Border Grid.Column="2" Classes="badge" VerticalAlignment="Center"
+                                        Classes.on="{Binding IsBroadcasting}" Classes.dim="{Binding !IsBroadcasting}">
                                     <StackPanel Orientation="Horizontal" Spacing="5">
-                                        <Ellipse Width="7" Height="7" Fill="{DynamicResource CPh}"/>
-                                        <TextBlock Text="未就绪"/>
+                                        <Ellipse Width="7" Height="7" Fill="{Binding BcStatusDotFill}"/>
+                                        <TextBlock Text="{Binding BcStatusWord}"/>
                                     </StackPanel>
                                 </Border>
                             </Grid>
@@ -491,10 +492,20 @@
 
                                     <StackPanel Orientation="Horizontal" Spacing="9" Margin="0,14,0,0">
                                         <Button Classes="primary" AutomationProperties.Name="开始广播"
+                                                IsEnabled="{Binding !IsBroadcasting}"
                                                 Command="{Binding StartBroadcastCommand}">                                            <StackPanel Orientation="Horizontal" Spacing="6">
                                                 <Path Classes="ic sm" Data="{StaticResource IcoCast}"
                                                       Stroke="{Binding $parent[Button].Foreground}"/>
                                                 <TextBlock Text="开始广播"/>
+                                            </StackPanel>
+                                        </Button>
+                                        <Button Classes="soft" AutomationProperties.Name="停止广播"
+                                                IsEnabled="{Binding IsBroadcasting}"
+                                                Command="{Binding StopBroadcastCommand}">
+                                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                                <Path Classes="ic sm" Data="{StaticResource IcoStop}"
+                                                      Stroke="{Binding $parent[Button].Foreground}"/>
+                                                <TextBlock Text="停止广播"/>
                                             </StackPanel>
                                         </Button>
                                         <Button Classes="soft" AutomationProperties.Name="检查支持"

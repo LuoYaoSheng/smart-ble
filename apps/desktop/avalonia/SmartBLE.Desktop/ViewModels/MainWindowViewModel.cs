@@ -46,6 +46,7 @@ public partial class MainWindowViewModel : ObservableObject
         _bleService.CharacteristicValueChanged += OnCharacteristicValueChanged;
         _bleService.LogMessage += OnLogMessage;
         _bleService.ScanAutoStopped += OnScanAutoStopped;
+        _bleService.AdvertisingStateChanged += OnAdvertisingStateChanged;
 
         InitializeAsync();
     }
@@ -101,6 +102,10 @@ public partial class MainWindowViewModel : ObservableObject
         // 正典：切换 Tab 时停止扫描（E-WIN switchTab 对 broadcast 的口径推广到全部 Tab）
         if (IsScanning)
             await StopScanInternalAsync();
+
+        // 正典：切出广播页停广播（E/T onHide 口径，WIN-016）
+        if (tab != "broadcast" && _bleService.IsAdvertising)
+            _bleService.StopAdvertising();
 
         ActiveTab = tab;
         ActiveView = tab;
@@ -803,7 +808,7 @@ public partial class MainWindowViewModel : ObservableObject
     // 落盘由窗口层执行（存储选择器不在 VM 层可达）
     internal Func<string, Task>? ExportLogsRequestedAsync;
 
-    // ═══════════════════════ P008 广播（31B 预算为真值计算；发射=明确降级） ═══════════════════════
+    // ═══════════════════════ P008 广播（31B 预算真值 + WinRT 真发射，20260921 跨端联调实装） ═══════════════════════
 
     [ObservableProperty]
     private string _bcName = "SmartBLE";
@@ -818,6 +823,20 @@ public partial class MainWindowViewModel : ObservableObject
     private string _bcMfgData = "BLE";
 
     public ObservableCollection<LogEntry> BroadcastLogs { get; } = new();
+
+    [ObservableProperty]
+    private bool _isBroadcasting;
+
+    partial void OnIsBroadcastingChanged(bool value)
+    {
+        OnPropertyChanged(nameof(BcStatusWord));
+        OnPropertyChanged(nameof(BcStatusDotFill));
+    }
+
+    // P008 头部状态徽章（正典 P005 updateBroadcastStatus 口径：广播中/未发射）
+    public string BcStatusWord => IsBroadcasting ? "广播中" : "未发射";
+
+    public string BcStatusDotFill => IsBroadcasting ? "#22C55E" : "#8A97A8";
 
     private void AddBroadcastLog(string typeKey, string message)
     {
@@ -871,19 +890,40 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private void StartBroadcast()
     {
-        // V-WIN 明确降级（WIN-005 步骤4「广播降级」口径）：预算计算为真值，
-        // 外围发射未移植。超限时与 E/T 同口径拦截。
+        // 正典守卫（E-WIN startBroadcast 同口径）：UUID 非法 / 超 31B 拦截，不静默截断
+        if (BcUuid.Length > 0 && !BcUuidValid)
+        {
+            AddBroadcastLog("err", "UUID 非法：需为 4 / 8 / 36 位十六进制");
+            return;
+        }
         if (BcIsOver)
         {
             AddBroadcastLog("err", $"广播数据超限：当前 {BcTotalBytes} 字节，BLE 最多支持 31 字节（不静默截断）");
             return;
         }
-        AddBroadcastLog("err", "广播未就绪：V-WIN 实验级未实现外围发射（BluetoothLEAdvertisementPublisher 移植待排期），请使用 Electron/Tauri 壳");
+        AddBroadcastLog("sys",
+            $"启动广播 · 名称 {BcName} · UUID {(BcUuid.Length > 0 ? BcUuid : "—")} · 厂商 0x{BcMfgId} · 数据「{BcMfgData}」");
+        _bleService.StartAdvertising(BcName, BcUuid, BcMfgId, BcMfgData, includeName: true);
+        // 成败回执走 AdvertisingStateChanged（Started→「广播已启动」）
+    }
+
+    [RelayCommand]
+    private void StopBroadcast() => _bleService.StopAdvertising();
+
+    // BleService 发射态回执（线程池线程 → UI 编组）；启停日志单一来源在此
+    private void OnAdvertisingStateChanged(bool active)
+    {
+        Dispatcher.UIThread.Post(() =>
+        {
+            IsBroadcasting = active;
+            AddBroadcastLog(active ? "ok" : "sys",
+                active ? "广播已启动（publisher Started）" : "广播已停止");
+        });
     }
 
     [RelayCommand]
     private void CheckBroadcastSupport()
-        => AddBroadcastLog("sys", "平台支持检查：Windows 支持低功耗广播发射，V-WIN 实验级未移植（未就绪）");
+        => AddBroadcastLog("sys", "平台支持检查：Windows 支持低功耗广播发射（WinRT BluetoothLEAdvertisementPublisher）");
 
     [RelayCommand]
     private void ClearBroadcastLogs() => BroadcastLogs.Clear();
@@ -1197,20 +1237,24 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     private bool _showExitConfirm;
 
-    public bool ExitConfirmBusy => IsGattConnected;
+    public bool ExitConfirmBusy => IsGattConnected || IsBroadcasting;
 
     public string ExitConfirmBusyText => ExitConfirmBusy
         ? "有 BLE 会话正在运行（连接/广播）。确认退出将断开会话并停止监听。"
         : "桌面端为常驻运行。确认退出？";
 
-    public string ExitConfirmDetail => ExitConfirmBusy
+    public string ExitConfirmDetail => IsGattConnected
         ? $"当前连接设备：{ConnectedCount} 台"
-        : "（10_platform §4 生命周期：常驻，退出确认）";
+        : IsBroadcasting
+            ? "广播发射中，确认退出将停止广播"
+            : "（10_platform §4 生命周期：常驻，退出确认）";
 
     [RelayCommand]
     private void ConfirmExit()
     {
         _exitConfirmed = true;
+        if (_bleService.IsAdvertising)
+            _bleService.StopAdvertising();
         ShowExitConfirm = false;
         CloseRequested?.Invoke();
     }
@@ -1255,7 +1299,11 @@ public partial class BleDeviceViewModel : ObservableObject
 
     public void Update(BleDevice device)
     {
-        Name = device.Name;
+        // 名字只在非空时覆盖：ADV_IND（无名）与 SCAN_RSP（带名）交替到达同一 MAC，
+        // 无条件覆盖会把 SCAN_RSP 带来的名字冲回空 → 卡片恒「未命名」
+        // （20260921 跨端联调实证：华为 Mate 30 5G 名在 SCAN_RSP，ADV 帧冲掉）
+        if (!string.IsNullOrEmpty(device.Name))
+            Name = device.Name;
         Rssi = device.Rssi;
         if (_profileMatch == 0)
             _profileMatch = CanonUi.MatchScannedDevice(device.Name, device.ServiceUuids);

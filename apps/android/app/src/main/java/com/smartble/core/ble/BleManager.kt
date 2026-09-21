@@ -495,6 +495,10 @@ class BleManager private constructor(private val context: Context) {
         override fun onScanResult(callbackType: Int, result: LeScanResult) {
             val device = result.device
             val scanRecord = result.scanRecord
+            // 联调旁证（20260921 跨端广播验证）：逐条扫见记录进 logcat（含 adv 原始字节
+            // hex，验证对端厂商块保真度），绕开 EMUI uiautomator Compose 文本 bounds=[0,0] 变体（F013 坑位账）
+            val advHex = scanRecord?.bytes?.joinToString("") { "%02x".format(it) } ?: "-"
+            Log.d(TAG, "onScanResult: ${device.address} name=${device.name} rssi=${result.rssi} adv=$advHex")
 
             val bleDevice = BleDevice(
                 deviceId = device.address,

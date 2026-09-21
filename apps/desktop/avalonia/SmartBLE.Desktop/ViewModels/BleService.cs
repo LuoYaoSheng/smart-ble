@@ -117,6 +117,111 @@ public class BleService
         DeviceDiscovered?.Invoke(device);
     }
 
+    // ═══════════════ P008 广播发射（WinRT BluetoothLEAdvertisementPublisher，20260921 跨端联调实装） ═══════════════
+    // 此前 V-WIN 明确降级（外围发射「移植待排期」）；现以 WinRT publisher 补齐 Windows
+    // 原生发射，由安卓版 App 空口查见做跨端验证。厂商块编码对齐 E-WIN bleno 口径：
+    // companyId = mfgId（4 位 hex），payload = mfgData 的 UTF-8 字节。
+    private BluetoothLEAdvertisementPublisher? _advPublisher;
+
+    public bool IsAdvertising => _advPublisher != null;
+
+    // 发射态变化（Started→true；Stopped*/Aborted→false）；线程池线程触发，订阅方需自行编组
+    public event Action<bool>? AdvertisingStateChanged;
+
+    public void StartAdvertising(string name, string serviceUuid, string manufacturerId,
+        string manufacturerData, bool includeName)
+    {
+        StopAdvertising();
+
+        // WinRT 桌面（非打包）进程的 publisher 仅允许厂商数据块进空口：
+        // LocalName / ServiceUuids 一律 Start() 抛 ArgumentException（20260921 adv-probe 实证，
+        // empty 负载抛 COMException「发布者只能从非空负载启动」）。预算仍按正典 31B 全量计算，
+        // 实际发射仅 mfg 块，缺省部分以平台限制日志显式告知。
+        var adv = new BluetoothLEAdvertisement();
+        var omitted = new List<string>();
+        if (includeName && name.Length > 0) omitted.Add("名称");
+        if (serviceUuid.Trim().Length > 0) omitted.Add("服务 UUID");
+        if (omitted.Count > 0)
+            LogMessage?.Invoke("广播",
+                $"平台限制：Windows 桌面发射仅厂商数据块进空口（{string.Join("、", omitted)}不发射）");
+
+        if (manufacturerData.Length == 0)
+        {
+            LogMessage?.Invoke("广播", "发射启动失败：厂商数据为空，Windows 桌面发射需至少一个厂商块");
+            return;
+        }
+
+        var idText = manufacturerId.Trim().Replace("0x", "");
+        if (idText.Length == 4
+            && byte.TryParse(idText[..2], System.Globalization.NumberStyles.HexNumber, null, out var cidHi)
+            && byte.TryParse(idText[2..], System.Globalization.NumberStyles.HexNumber, null, out var cidLo))
+        {
+            var writer = new DataWriter();
+            writer.WriteBytes(System.Text.Encoding.UTF8.GetBytes(manufacturerData));
+            adv.ManufacturerData.Add(new BluetoothLEManufacturerData(
+                (ushort)(cidHi << 8 | cidLo), writer.DetachBuffer()));
+        }
+        else
+        {
+            LogMessage?.Invoke("广播", $"发射启动失败：厂商 ID 非法（0x{manufacturerId}）");
+            return;
+        }
+
+        var publisher = new BluetoothLEAdvertisementPublisher(adv);
+        publisher.StatusChanged += OnAdvStatusChanged;
+        _advPublisher = publisher;
+        try
+        {
+            publisher.Start();
+        }
+        catch (Exception ex)
+        {
+            _advPublisher = null;
+            publisher.StatusChanged -= OnAdvStatusChanged;
+            LogMessage?.Invoke("广播", $"发射启动失败：{ex.Message}");
+        }
+    }
+
+    private void OnAdvStatusChanged(BluetoothLEAdvertisementPublisher sender,
+        BluetoothLEAdvertisementPublisherStatusChangedEventArgs args)
+    {
+        switch (args.Status)
+        {
+            // 本机投影枚举成员：Created/Waiting/Started/Stopping/Stopped/Aborted
+            // （与 WinRT 文档名 StoppedBySystem/StoppedByAdvertisementManager 不同名）
+            case BluetoothLEAdvertisementPublisherStatus.Started:
+                AdvertisingStateChanged?.Invoke(true);
+                LogMessage?.Invoke("广播", "publisher 状态：Started（无线电已接受发射）");
+                break;
+            case BluetoothLEAdvertisementPublisherStatus.Waiting:
+                LogMessage?.Invoke("广播", "publisher 状态：Waiting（等待无线电资源）");
+                break;
+            case BluetoothLEAdvertisementPublisherStatus.Stopping:
+            case BluetoothLEAdvertisementPublisherStatus.Stopped:
+            case BluetoothLEAdvertisementPublisherStatus.Aborted:
+                AdvertisingStateChanged?.Invoke(false);
+                LogMessage?.Invoke("广播", $"publisher 状态：{args.Status} · error={args.Error}");
+                break;
+        }
+    }
+
+    public void StopAdvertising()
+    {
+        if (_advPublisher == null) return;
+        var publisher = _advPublisher;
+        _advPublisher = null;
+        publisher.StatusChanged -= OnAdvStatusChanged;
+        try
+        {
+            publisher.Stop();
+        }
+        catch
+        {
+            // 已停止/已释放的 publisher 二次 Stop 可能抛 COM 异常，忽略
+        }
+        AdvertisingStateChanged?.Invoke(false);
+    }
+
     // V-WIN-DEF-003：连接状态回调（WinRT 线程池线程触发），被动掉链也上报
     // DeviceDisconnected（此前事件声明了但从未触发，UI 只能靠手动操作感知断连）
     private void OnConnectionStatusChanged(BluetoothLEDevice sender, object? args)

@@ -93,7 +93,9 @@ Windows 主机不负责：
 | WIN-015 | 六壳应用图标统一 | `PASS` | E/V 已同源；F 为模板图标；T 同源异字节 | WIN-003/004/005/012/013/014 | 20260920：正典源定案 `apps/desktop/electron/public/brand/icon.png`(512) + `assets/icon.ico`；`tools/unify_icons.py` 一键分发，E/T/V/F/Q/G 六壳 .ico sha256=42139766…字节级一致；页内平台图标 E/T 目录 diff 空 |
 | WIN-016 | 流程韧性（返回/临时退出/中断）对齐 | `PASS_WITH_OBS` | E/T/V 已有骨架，口径缺漏 | WIN-003/004/005/012/014 | 正典依据=uniapp onHide/onUnload/onBackPress + desktop.js dwin-quit（busy=连接 OR 广播）。20260920 修复：E/T 关窗 busy 补广播 + 退出先停广播再断连 + E/T 切出广播页停广播（onHide 口径）+ T 切入广播页停扫描（对齐 E）+ F-WIN 补关窗退出确认 + F 广播页 dispose 停广播（原生广播不随页面销毁自停）；node --check E/T √。P006 订阅随连接存续=正典（连接常驻）；V-WIN 广播降级下 busy=连接即完整 |
 
-完成率统计只按本表：`PASS` 2 / `PASS_WITH_OBS` 7 / `IN_PROGRESS` 2 / `FAILED` 0 / `BLOCKED` 1 / `TODO` 3。
+| WIN-017 | Windows×Android 跨端广播联调（V-WIN 真发射参考实装） | `PASS_WITH_OBS` | 用户 20260921 指令：安卓版当空口观察者联调 | WIN-001、WIN-014 | 六壳广播盘点：E/T/G/Q 拒绝式降级、F 插件 flutter_ble_peripheral 自带 Windows 后端但被 isSupported 门控（升级项=翻门控+验证）；V-WIN 实装 WinRT BluetoothLEAdvertisementPublisher——**平台事实（adv-probe 二分）**：桌面进程仅厂商块 0xFF 可发（LocalName/ServiceUuids 一律 Start() 拒绝、空负载拒），无 Microsoft CID 劫持，LE 用随机地址；Phase A：V-WIN 发→A-AND（华为 Mate 30 5G）空口收 `06ff0100424c45`（CID 0001+BLE 原样，-41dBm，31 包/5s）；Phase B：华为发（FFF0/0001/BLE/名在 SCAN_RSP）→V-WIN 收到「Mate 30 5G」卡片（-44dBm），A/B 停播对照=消失；**VWIN-DEF-011 修复**（Update 无条件覆盖名字→ADV 帧冲掉 SCAN_RSP 名，改只在非空覆盖）；生命周期收口=切出广播页停播+广播中退出确认+publisher 防崩（曾带崩 app，事件日志栈为证）；单测 55/55；证据 20260921-XDEV-BROADCAST/（12 断言+平台事实+7 坑位）；OBS：Windows 空口无名/UUID 会输入 N4 裁决（仍待用户） |
+
+完成率统计只按本表：`PASS` 2 / `PASS_WITH_OBS` 8 / `IN_PROGRESS` 2 / `FAILED` 0 / `BLOCKED` 1 / `TODO` 3。
 
 ## 4. 实施任务
 
