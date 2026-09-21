@@ -472,6 +472,10 @@ class BleManager {
   }
 
   /// 写入特征值
+  ///
+  /// SHID-FW-LOCK-001：INPUT（9f1d1003）特征写禁——设备侧写锁死（0x0D）期间
+  /// 任何真实写入都会污染排查现场。配网传输走 provisioning_transport
+  /// 直写 FBP characteristic 对象，不经此方法，配网正业不受影响。
   Future<void> writeCharacteristic({
     required String deviceId,
     required String serviceUuid,
@@ -479,6 +483,9 @@ class BleManager {
     required List<int> data,
     bool withoutResponse = false,
   }) async {
+    if (BleUuids.isShidInputCharacteristic(characteristicUuid)) {
+      throw Exception('INPUT 特征写入已被禁用（SHID-FW-LOCK-001 设备保护）');
+    }
     try {
       final device = BluetoothDevice.fromId(deviceId);
       final service = device.servicesList.firstWhere(

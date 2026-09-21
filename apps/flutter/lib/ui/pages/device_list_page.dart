@@ -6,6 +6,7 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../core/ble/ble_manager.dart';
 import '../../core/ble/profile_registry.dart';
 import '../../core/models/ble_scan_result.dart';
+import '../../core/utils/logger.dart';
 import '../../themes/app_theme.dart';
 import '../widgets/advertisement_sheet.dart';
 import '../widgets/device_card.dart';
@@ -460,6 +461,7 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
       await _bleManager.connect(device.deviceId);
 
       if (mounted) {
+        logger.info('连接成功，关闭加载对话框并进入详情页');
         Navigator.of(context).pop(); // 关闭加载对话框
 
         // 导航到设备详情页
@@ -475,6 +477,7 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
       }
     } catch (e) {
       if (mounted) {
+        logger.info('连接失败，关闭加载对话框');
         Navigator.of(context).pop(); // 关闭加载对话框
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('连接失败: $e')),

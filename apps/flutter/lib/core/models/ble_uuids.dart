@@ -64,6 +64,9 @@ class BleUuids {
     '00001812': '人机界面(HID)',
     '0000180d': '心率服务',
     '00001809': '健康温度计',
+    // Smart HID 配网家族（正典 bundle：1002 info / 1003 input / 1004 status；
+    // 与 Q-WIN SERVICE_NAMES_CN 同源，键=完整 32 位小写）
+    '9f1d1001e73b4c8f9d2a6f0b5e8a1c04': 'Smart HID 配网服务',
     // 4fafc201 前缀为多服务共用（夹具 914b 控制 / 914c 权限 / 914d OTA），
     // 仅精确匹配 OTA 服务，避免前缀把非 OTA 服务误标（WIN-FAND-003）
     '4fafc2011fb5459e8fccc5c9c331914d': 'OTA 升级服务',
@@ -85,7 +88,17 @@ class BleUuids {
     '2a28': '软件版本',
     '2a29': '制造商',
     'beb5': 'OTA 控制',
+    // Smart HID 配网家族（与 Q-WIN CHAR_NAMES_CN 同源，键=完整 32 位小写）
+    '9f1d1002e73b4c8f9d2a6f0b5e8a1c04': '设备信息 (INFO)',
+    '9f1d1003e73b4c8f9d2a6f0b5e8a1c04': '配网数据写入 (INPUT)',
+    '9f1d1004e73b4c8f9d2a6f0b5e8a1c04': '设备状态 (STATUS)',
   };
+
+  /// SHID-FW-LOCK-001：Smart HID INPUT 特征（uuid 归一化比较）
+  static bool isShidInputCharacteristic(String uuid) {
+    final s = uuid.toLowerCase().replaceAll('-', '');
+    return s == '9f1d1003e73b4c8f9d2a6f0b5e8a1c04';
+  }
 
   /// 获取标准服务名称（中文）
   ///

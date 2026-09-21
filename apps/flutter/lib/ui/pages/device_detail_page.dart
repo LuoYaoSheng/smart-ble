@@ -6,6 +6,7 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import '../../core/ble/ble_manager.dart';
 import '../../core/ble/command_queue.dart';
 import '../../core/models/ble_service.dart';
+import '../../core/models/ble_uuids.dart';
 import '../../core/models/log_entry.dart';
 import '../../core/utils/data_converter.dart';
 import '../../core/utils/logger.dart';
@@ -137,7 +138,10 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
         _isReconnecting = reconnecting;
       });
 
-      if (state == BluetoothConnectionState.disconnected && !_isReconnecting) {
+      if (reconnecting) {
+        // O-2 插桩：区分「FBP 退订触发伪断连」与「真实断开」两条路径
+        logger.warning('连接状态流：设备 ${widget.deviceId} 中断，等待自动重连');
+      } else if (state == BluetoothConnectionState.disconnected) {
         logger.error('连接已断开');
       }
     });
@@ -172,6 +176,8 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
   }
 
   Future<void> _disconnect() async {
+    // O-2 插桩：P006 唯一的主动 pop 路径，导出文本时间线据此排除/锁定
+    logger.info('断开连接（用户操作），即将返回设备列表');
     try {
       await _bleManager.disconnect(widget.deviceId);
       if (mounted) {
@@ -229,6 +235,13 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
 
   Future<void> _writeCharacteristic(
       BleService service, BleCharacteristic characteristic) async {
+    // SHID-FW-LOCK-001：UI 层双重保险——INPUT 特征不弹写对话框直接拒绝
+    // （manager 层 writeCharacteristic 另有同语义拦截）
+    if (BleUuids.isShidInputCharacteristic(characteristic.uuid)) {
+      logger.error('INPUT 特征写入已被禁用（SHID-FW-LOCK-001 设备保护）');
+      return;
+    }
+
     final controller = TextEditingController();
 
     if (!mounted) return;
@@ -421,6 +434,9 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
     // 收尾断言（WIN-FAND-006）
     _commandQueue?.onQueueStateChanged = null;
     _commandQueue?.clear();
+    // O-2 插桩：路由弹出即 dispose——若「弹回列表」非用户操作，此行与
+    // 「断开连接（用户操作）」日志的时间差即为定位线索
+    logger.info('P006 详情页 dispose（路由已弹出）');
     super.dispose();
   }
 
