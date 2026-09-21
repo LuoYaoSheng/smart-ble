@@ -84,7 +84,7 @@ Windows 主机不负责：
 | WIN-006 | Windows 真实 GATT 与重连回归 | `IN_PROGRESS` | T-WIN-DEF-001 已修 | WIN-003、WIN-004 | 20260918 WIN-DEF-FIX：重连死句柄修复，retry 探针 + T1-T16 全绿；fixture_peripheral_s3 复验待硬件窗口 |
 | WIN-007 | Smart HID Windows E2E | `BLOCKED` | UI/传输代码已存在 | WIN-006、ControlHub 配对码、SHID 固件 | 未有完整 W4 证据 |
 | WIN-008 | Windows OTA E2E 回归 | `TODO` | 两线曾 `PASS_WITH_OBS` | WIN-006、OTA 固件 | 需复验重启后版本回读 |
-| WIN-009 | Windows 安装包与安装验证 | `TODO` | Electron/Avalonia 有历史构建 | WIN-003～WIN-008、MAC-011 | 需产出可安装 Artifact 和 SHA256 |
+| WIN-009 | Windows 安装包与安装验证 | `PASS_WITH_OBS` | Electron/Avalonia 有历史构建 | WIN-003～WIN-008、MAC-011 | 20260921 P4：六壳 8 产物全构建+SHA256（E NSIS+portable、T MSI+NSIS、V 自包含 zip、F Release zip、G 单 exe、Q venv zip；均未签名只标 Preview）；E(NSIS) 与 T(NSIS) 完成干净安装冒烟（装→启动→CDP 真首扫发现 8/7 台含 SHID-00000001→卸载→残留→重装）；T MSI 非提权 1603 待管理员窗口冒烟；证据 20260921-P4-PACKAGING/（8 OBS+8 坑位） |
 | WIN-010 | Windows 最终交付与矩阵回填 | `TODO` | 历史证据分散 | WIN-001～WIN-009 | 等所有必需任务结论化 |
 | WIN-011 | 桌面壳导航一致性修复（Electron/Tauri） | `IN_PROGRESS` | N3 已修（20260920），N4 待裁决 | WIN-003、WIN-004 | N3 双壳对齐正典五态+CDP 回归；N4 两案仍待用户裁决 |
 | WIN-012 | F-WIN：Flutter Windows 第 4 壳立项 | `PASS_WITH_OBS` | apps/flutter 无 windows 目标（20260918 盘点确认） | WIN-001 | 20260920：windows runner 生成 + FBP 1.36.8/winrt 0.0.20/interface 9.0.3（overrides 调和 hex 线缆崩溃）+ `/utf-8` 编译修复 + 环境词/窗口对齐 + 关窗退出确认（window_manager）+ 广播切页停 + P002 扫码 Windows 降级（mobile_scanner 无实现→粘贴单路径）；门禁 analyze 0/test 122/build √；真机扫描 SHID-00000001(-45dBm)+REDMI+FREEBUDS 三台；证据 20260920-FWIN-GWIN/flutter/ |
@@ -95,7 +95,7 @@ Windows 主机不负责：
 
 | WIN-017 | Windows×Android 跨端广播联调（V-WIN 真发射参考实装） | `PASS_WITH_OBS` | 用户 20260921 指令：安卓版当空口观察者联调 | WIN-001、WIN-014 | 六壳广播盘点：E/T/G/Q 拒绝式降级、F 插件 flutter_ble_peripheral 自带 Windows 后端但被 isSupported 门控（升级项=翻门控+验证）；V-WIN 实装 WinRT BluetoothLEAdvertisementPublisher——**平台事实（adv-probe 二分）**：桌面进程仅厂商块 0xFF 可发（LocalName/ServiceUuids 一律 Start() 拒绝、空负载拒），无 Microsoft CID 劫持，LE 用随机地址；Phase A：V-WIN 发→A-AND（华为 Mate 30 5G）空口收 `06ff0100424c45`（CID 0001+BLE 原样，-41dBm，31 包/5s）；Phase B：华为发（FFF0/0001/BLE/名在 SCAN_RSP）→V-WIN 收到「Mate 30 5G」卡片（-44dBm），A/B 停播对照=消失；**VWIN-DEF-011 修复**（Update 无条件覆盖名字→ADV 帧冲掉 SCAN_RSP 名，改只在非空覆盖）；生命周期收口=切出广播页停播+广播中退出确认+publisher 防崩（曾带崩 app，事件日志栈为证）；单测 55/55；证据 20260921-XDEV-BROADCAST/（12 断言+平台事实+7 坑位）；OBS：Windows 空口无名/UUID 会输入 N4 裁决（仍待用户） |
 
-完成率统计只按本表：`PASS` 2 / `PASS_WITH_OBS` 8 / `IN_PROGRESS` 3 / `FAILED` 0 / `BLOCKED` 1 / `TODO` 3。
+完成率统计只按本表：`PASS` 2 / `PASS_WITH_OBS` 9 / `IN_PROGRESS` 3 / `FAILED` 0 / `BLOCKED` 1 / `TODO` 2。
 
 ## 4. 实施任务
 
@@ -450,6 +450,18 @@ README 占位且指向 Avalonia 线；Flutter 无 Windows 目标），逐框架�
   行内按钮点真实 Button 控件而非 Text 标签。
 - 门禁：dotnet build 0 err、dotnet test 19/19 ✓、走查后无残留进程
 - Evidence: verification/windows-plan-v1/20260920-WIN-UIFULL/avalonia/vwin-walk/
+
+### 2026-09-21 · WIN-009 P4 六壳安装包（用户裁决「P4 六壳安装包（推荐）」开工）
+
+- Status: WIN-009 `PASS_WITH_OBS`
+- Commit: 开工基线 `4785b65`（=交接计划落库+看板统计行 IN_PROGRESS 2→3 修正；本轮证据提交见 git log）
+- Host: Windows 10 22H2 (10.0.19045)；node 20.19.3 / cargo 1.98.1 / dotnet 9.0.200 / flutter 3.38.3 / go 1.24.0 + wails 2.16.0 / python 3.13.2；cargo-tauri CLI 缺失→`npm i -g @tauri-apps/cli@^1` 预编译补装
+- Commands: E `npm run build:win`；T `tauri build`（release 5m32s，WiX/NSIS 工具链自动拉取）；V `dotnet publish -c Release -r win-x64 --self-contained`；F `flutter build windows --release`；G `wails build`；Q venv 自包含 zip（robocopy 避长路径 + Compress-Archive）
+- Result: 六壳 8 产物+SHA256 全登记（无签名一律 Preview）；便携/裸产物启动冒烟 6/6；E NSIS 干净安装闭环：`/currentuser /S` 装→exe 元数据 ProductName/ProductVersion 1.0.5→CDP 9223 真首扫「发现 8 台」→Quiet 串卸载（lnk/注册表全清；目录半残留根因=漏杀 Electron 进程锁文件，非卸载器缺陷）→重装→再启动；T NSIS 闭环：`/S` 装（落 `%LOCALAPPDATA%\BLE Toolkit+`）→WebView2 CDP 9224 真首扫「发现 7 台」SHID-00000001 强匹配→`uninstall.exe /S` 3 秒全清→重装；T MSI `msiexec /qn` 1603（非提权拒装，待管理员窗口）
+- Hardware: 本机 BLE 适配器；环境 ESP32-S3 真 SHID v1.2.0（SHID-00000001 于 E/T 首扫均在列）
+- Evidence: verification/windows-plan-v1/20260921-P4-PACKAGING/
+- Observations: MSI 需提权、E-portable 首启慢+壳/真身双层进程名、E/T 桌面快捷方式同名互踩、tauri NSIS DisplayName 无版本号、V/G exe 无 Win32 版本资源、F 版本口径 pubspec 2.0.0+1 未入 VERSION 单源、G 首测偶发 alive=0、无签名仅 Preview（8 OBS+8 坑位详见该 README）
+- Next: 剩 TODO=WIN-008（OTA，P3 硬件窗口待用户排期）+ WIN-010（最终交付与矩阵回填）；四项用户裁决项未动（N4 两案等）
 
 ### 2026-09-14 · WIN-001
 

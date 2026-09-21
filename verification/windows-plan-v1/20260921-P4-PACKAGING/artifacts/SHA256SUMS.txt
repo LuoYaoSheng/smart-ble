@@ -1,0 +1,8 @@
+f67d45fa307da7a2742025067449ef07035450cd2b6183d3cf163d2942016854 *EWIN-smartble-electron-1.0.5-portable-x64.exe
+ffdbc099e32a7ac35f121e762f1bd660e6a273306596249f24f514242074e54f *EWIN-smartble-electron-1.0.5-setup-x64.exe
+4bb554d06589e03c54be4c78d7c3eec0d82d992ab5df6bc9fd28b9228a6fc281 *GWIN-smartble-wails-1.0.5-x64.exe
+42ccb83b335421388a2d22e09f8c38c4fb11ce7455b594e802e5b6c1e0b29347 *TWIN-smartble-tauri-1.0.5-nsis-setup-x64.exe
+0c99a1ea0b823911c38264a7845e75f1f487f26ffe5e347a5b7666e2d56f05de *TWIN-smartble-tauri-1.0.5-msi-x64.msi
+374a66c50f2a8c01919cb39196137ab7d7186beb53387cdd05a8842e932774e8 *FWIN-smartble-flutter-release-win64.zip
+66c05f67442e4170c491f97606b4884ef684d8208631a6594234db72bc8c758d *QWIN-smartble-qt-1.0.5-venv-win64.zip
+0d99176c7358a0586dd38d84511b02f624ae295c53817e0bc75101e6596e3e64 *VWIN-smartble-avalonia-selfcontained-win64.zip
