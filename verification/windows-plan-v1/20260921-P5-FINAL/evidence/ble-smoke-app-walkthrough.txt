@@ -1,0 +1,15 @@
+PASS  boot  {"version":"v1.0.5","scanStatus":"待开始扫描"}
+PASS  P001-real-scan  {"found":11,"shid":"SHID-00000001 -42dBm 10:B4:1D:CD:23:8E"}
+PASS  connect-gatt-tree  {"title":"SHID-00000001","status":"10:B4:1D:CD:23:8E · 已连接","services":1,"chars":3,"actionSurface":["notify+read","write","notify+read"]}
+PASS  P006-info-read  {"readEnabled":true,"logLine":"读取成功 · 设备信息 (INFO) · 7B 22 70 72 6F 64 75 63 74 22 3A 22 73 6D 61 72 74 2D 68 69 64 22 2C 22 70 72 6F 74 6F 63 6F 6C 22 3A 22 31 2E 30 22 2C 22 64 65 76 69 63 65 5F 69 64 22 3A 22 48 49 44 
+PASS  P006-status-notify  {"onLabel":"取消订阅","offLabel":"订阅通知","note":"未配对态 STATUS 仅状态变化推送（探针 8s 零事件），按订阅态断言"}
+PASS  P006-write-guard  {"writeEnabled":true,"guard":"write 失败 · INPUT 特征写入已被禁用（SHID-FW-LOCK-001 设备保护）"}
+PASS  P007-connected  {"connectedCount":1,"list":["SHID-00000001   10:B4:1D:CD:23:8E"]}
+PASS  exit-busy  {"modalText":"有 BLE 会话正在运行（当前连接设备：1 台）。\n确认退出将断开会话并停止监听。"}
+PASS  disconnect-all  {"connectedCount":0,"list":[]}
+PASS  P008-broadcast  {"tip":"Windows 平台暂不支持外设模式（降级口径同 V-WIN；N4 待决）"}
+PASS  P009-about  {"当前环境":"Desktop · Windows","设备型号":"PC · X64","版本":"v1.0.5"}
+[app] exit code=0
+PASS  exit-final  {"modalText":"桌面端为常驻运行。确认退出？\n（10_platform §4 生命周期：常驻，退出确认）","processExitedClean":true}
+
+=== 12/12 PASS ===

@@ -67,4 +67,4 @@
 - [x] `a5929b2` 三方一致（2026-09-21 ls-remote 实测）。
 - [x] 主看板含 WIN-017 行；memory `refactor-uniapp-v1-baseline.md` 含 WIN-017 段。
 - [x] 工作区仅 17 个用户脏文件，无其它未提交改动（本文件除外）。
-- [ ] 新会话开工时顺手修看板统计行 IN_PROGRESS 2→3（见 §1.3）。
+- [x] 新会话开工时顺手修看板统计行 IN_PROGRESS 2→3（见 §1.3）——已由 `4785b65` 落实；该统计行后于 20260921 P5 终交付轮再次定格为 PASS 2 / PASS_WITH_OBS 13 / IN_PROGRESS 0 / BLOCKED 2 / TODO 0（WIN-010 收口）。

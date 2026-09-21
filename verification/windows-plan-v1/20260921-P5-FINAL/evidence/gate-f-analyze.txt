@@ -1,0 +1,6 @@
+Flutter assets will be downloaded from https://storage.flutter-io.cn. Make sure you trust this source!
+Analyzing flutter...                                            
+No issues found! (ran in 7.5s)
+00:09 +121: E:/project/xf/smart-ble/apps/flutter/test/widget_test.dart: canon icon set renders all glyphs without error
+00:09 +122: E:/project/xf/smart-ble/apps/flutter/test/widget_test.dart: canon empty-state illustrations render without error
+00:09 +123: All tests passed!
