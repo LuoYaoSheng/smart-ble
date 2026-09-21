@@ -6,11 +6,15 @@ import 'package:flutter_ble_peripheral/flutter_ble_peripheral.dart';
 /// BLE 外设管理器
 ///
 /// 使用 flutter_ble_peripheral v2.0+ 实现广播模式
-/// 支持 Android 和 iOS 平台
+/// 支持 Android、iOS、macOS 和 Windows 平台
 ///
 /// 平台差异说明：
 /// - iOS: 支持自定义 localName，可以设置任意广播名称
 /// - Android: localName 不生效，会使用设备实际蓝牙名称
+/// - Windows: 插件后端（WinRT BluetoothLEAdvertisementPublisher）仅发厂商
+///   数据块 0xFF——LocalName/ServiceUuids 被平台拒绝（adv-probe 二分实证，
+///   见 20260921-XDEV-BROADCAST 平台事实）；服务 UUID/名称参数在 Windows
+///   后端被忽略，空口仅见厂商块
 class BlePeripheralManager {
   /// 单例实例
   static BlePeripheralManager? _instance;
@@ -33,8 +37,14 @@ class BlePeripheralManager {
   Stream<List<int>> get dataStream => const Stream.empty();
 
   /// 检查当前平台是否支持广播
+  ///
+  /// Windows 翻门控（2026-09-21 用户裁决项 #2）：插件自带 Windows 后端，
+  /// 空口能力边界=仅厂商块（见类注释）。Linux/Web 维持不支持。
   static bool get isSupported {
-    return Platform.isAndroid || Platform.isIOS || Platform.isMacOS;
+    return Platform.isAndroid ||
+        Platform.isIOS ||
+        Platform.isMacOS ||
+        Platform.isWindows;
   }
 
   /// 获取当前平台名称
@@ -48,13 +58,19 @@ class BlePeripheralManager {
   }
 
   /// 检查是否支持广播 (运行时检查)
+  ///
+  /// 插件 Windows 后端未实现 isSupported method channel（走 else 分支恒
+  /// false），运行时能力以 start 实效为准——start 失败自然走页面错误路径。
   Future<bool> isPlatformSupported() async {
+    if (Platform.isWindows) return true;
     return await _blePeripheral.isSupported;
   }
 
   /// 初始化外设管理器
   Future<bool> initialize() async {
     if (!isSupported) return false;
+
+    if (Platform.isWindows) return true;
 
     try {
       final supported = await _blePeripheral.isSupported;
@@ -90,7 +106,7 @@ class BlePeripheralManager {
     int txPowerIndex = 3,
   }) async {
     if (!isSupported) {
-      throw UnsupportedError('广播功能仅支持 Android、iOS 和 macOS 平台');
+      throw UnsupportedError('广播功能仅支持 Android、iOS、macOS 和 Windows 平台');
     }
 
     // 原生侧 UUID.fromString 只接受 128 位标准形式，短 UUID 必须归一化
@@ -159,10 +175,14 @@ class BlePeripheralManager {
         txPowerLevel: txPower,
       );
 
-      final platform =
-          Platform.isAndroid ? 'Android' : (Platform.isIOS ? 'iOS' : 'macOS');
+      final platform = Platform.isAndroid
+          ? 'Android'
+          : (Platform.isIOS
+              ? 'iOS'
+              : (Platform.isWindows ? 'Windows' : 'macOS'));
       print('开始广播: name=$name, uuid=$normalizedUuid, mfrId=$mfrId, '
-          'connectable=$connectable, platform=$platform');
+          'connectable=$connectable, platform=$platform'
+          '${Platform.isWindows ? '（仅厂商块入空口）' : ''}');
 
       await _blePeripheral.start(
         advertiseData: advertiseData,

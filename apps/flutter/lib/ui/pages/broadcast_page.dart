@@ -257,7 +257,7 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   AppChip(
-                    '平台：${_isAndroid ? 'Android' : Platform.isIOS ? 'iOS' : 'Web'}',
+                    '平台：${BlePeripheralManager.platformName}',
                   ),
                   const SizedBox(width: 6),
                   AppBadge(text, tone: tone, dot: dot),
@@ -275,7 +275,7 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
                     _buildNote(
                       color: AppTheme.warningColor,
                       title: '当前平台不支持 BLE 广播',
-                      message: '浏览器未提供外围模式 API，请使用 App（Android / iOS）。',
+                      message: '该平台未提供外围模式实现，请使用 Android / iOS / macOS / Windows 应用。',
                     ),
                   _buildSettingsCard(),
                   if (_errorMessage != null) ...[
