@@ -451,6 +451,16 @@ README 占位且指向 Avalonia 线；Flutter 无 Windows 目标），逐框架�
 - 门禁：dotnet build 0 err、dotnet test 19/19 ✓、走查后无残留进程
 - Evidence: verification/windows-plan-v1/20260920-WIN-UIFULL/avalonia/vwin-walk/
 
+### 2026-09-21 · UIALIGN-PAGE（用户指令「继续」——承接 TABBAR 轮登记的页面级遗留）
+
+- Status: **Q/F 页面级正典对齐 GREEN**（无 WIN 任务行变更；Q-PA-001~005 全清 + F 像素专项补证）
+- 缺陷账：Q 页边距 24/20/24/16≠正典 0/16/24+navbar 8/18/12；标题 22px/卡 r12/圈外色五枚（BG/BORDER/TEXT/SUB/FILL）；设备行=QListWidget 纯文本≠.dev 卡；P001 筛选四档全缺；bt-chip 胶囊未实现。另查出 **ff679c6 的 FWIN 产物缺口**：exe(09:54) 早于 themeMode 锁亮修复(11:32)，上轮产物不含修复（过绿因系统恰亮色）
+- 修复：Q theme tokens 全量正典 + widgets.py 新（NavBar/BtChip/Chip/SigBars 四档/Ava 渐变角标/DeviceCard 两变体/FilterPanel 四行/SumCard/EmptyState 雷达/Switch/NoteInfo/LiveDot）+ main.py 五页重写（P001 bt-chip+筛选+设备卡；P007 汇总卡+conn 卡；P008 note；P009 768 窄列+身份卡；P006 subnav+devhead），automation 契约属性名全保+增量 filter 命令；F 仅重建（themeMode 入产物）+123/123
+- 探针：Q 无头冒烟 17/17 + 源码层 21/21（真扫描 8~11 台含 SHID-00000001）+ zip 层 21/21（150% DPI）；F 源码层 28/28 + zip 层 28/28（150% DPI SendInput 切 tab）；FWIN/QWIN 重打包+SHA256 增补（d37d736c…/42b9c4ce…）
+- 坑位：F 产物陈旧盲区（mtime 核鲜度）；ClearType 次像素纹污染色断言→行穿越法；dpr=GetDpiForWindow/96（物理/物理恒 1）；F 窗口 1200×900 逻辑@150%=1780×1340 物理；LINE/LINE_SOFT 距离仅 (10,8,6)→底线 tol 6；探针量法三误（蓝簇并文字/边框行 1px/空态在列表顶部）
+- 遗留：F 页面内深层（P006 双栏等）无自动化缝未做像素探针；N4 广播 Tab 两案仍待用户裁决；P3 硬件窗口/P5 回填待开
+- Evidence: verification/windows-plan-v1/20260921-UIALIGN-PAGE/
+
 ### 2026-09-21 · UIALIGN-TABBAR（用户反馈「好几个 UI 没对齐，连基本的 tabbar 都没对齐」）
 
 - Status: **TabBar 层收口 GREEN**（F/Q 双壳双层级探针；无 WIN 任务行变更——P4 判定只覆盖打包链路，UI 正典对齐此前仅 V-WIN 两轮，本轮补 F/Q TabBar）

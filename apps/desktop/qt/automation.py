@@ -101,6 +101,22 @@ class AutomationBridge(QObject):
         if cmd == "tab":
             win._tabs.setCurrentIndex(int(args["index"]))
 
+        elif cmd == "filter_toggle":
+            # UIALIGN-PAGE：驱动 P001 筛选面板开关（增量命令，原契约不变）
+            scan._toggle_filter()
+            return {"open": not scan._filter_panel.isHidden()}
+
+        elif cmd == "filter_set":
+            # UIALIGN-PAGE：设置筛选（rssi/prefix/hide 任选），回读当前筛选值
+            panel = scan._filter_panel
+            if "rssi" in args:
+                panel._set_rssi(int(args["rssi"]))
+            if "prefix" in args:
+                panel._prefix.setText(str(args["prefix"]))
+            if "hide" in args:
+                panel._hide.set_on(bool(args["hide"]))
+            return panel.filters()
+
         elif cmd == "scan":
             scan._toggle()
 

@@ -5,6 +5,12 @@
 P008 广播（降级）/ P009 关于（正典环境口径）。
 生命周期正典（win016，dwin-quit 同口径）：关窗拦截 → 应用内退出确认
 （busy = 连接 OR 广播）→ 确认后先停广播再断连再退出。
+
+UIALIGN-PAGE（20260921）：五页页面级对齐 E-WIN 正典——navbar 渐变+底线、
+.page 16/0/24 边距、设备卡（ava/nm/id/sig 四档）、筛选四档面板、bt-chip
+蓝牙状态胶囊、P007 汇总卡、P009 身份卡+kv、P008 note 提示。
+automation seam 契约保持：_hits/_status/_scan_btn/_list.currentRow/
+row_values/tip_label 等属性名不变。
 """
 
 from __future__ import annotations
@@ -13,8 +19,8 @@ import os
 import sys
 from pathlib import Path
 
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QIcon
+from PySide6.QtCore import Qt, QTimer
+from PySide6.QtGui import QColor, QFont, QIcon, QPainter, QLinearGradient, QTransform
 from PySide6.QtWidgets import (
     QApplication,
     QComboBox,
@@ -23,12 +29,11 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QLineEdit,
-    QListWidget,
-    QListWidgetItem,
     QMainWindow,
     QMessageBox,
     QPlainTextEdit,
     QPushButton,
+    QScrollArea,
     QStackedWidget,
     QTreeWidget,
     QTreeWidgetItem,
@@ -37,9 +42,23 @@ from PySide6.QtWidgets import (
 )
 
 from automation import start_automation_if_requested
-from ble_service import BleService, ScanHit, char_display_name, service_display_name
-from tabbar import CanonTabBar
-from theme import QSS
+from ble_service import BleService, ScanHit, char_display_name
+from tabbar import CanonTabBar, render_icon
+from theme import LINE_SOFT, MUT, PRIMARY, PRIMARY_DEEP, QSS, SUB
+from widgets import (
+    BtChip,
+    Chip,
+    DevList,
+    DeviceCardWidget,
+    EmptyState,
+    FilterPanelWidget,
+    LiveDot,
+    NavBar,
+    NoteInfo,
+    SumCard,
+    icon_label,
+    qfont,
+)
 
 HERE = Path(__file__).resolve().parent
 
@@ -52,6 +71,18 @@ def app_version() -> str:
         except OSError:
             pass
     return "dev"
+
+
+def page_scroll() -> tuple[QScrollArea, QVBoxLayout]:
+    """正典 .page：QScrollArea 内容滚动 + (16, 0, 16, 24) 边距（pagehost 口径）。"""
+    scroll = QScrollArea()
+    scroll.setWidgetResizable(True)
+    body = QWidget()
+    lay = QVBoxLayout(body)
+    lay.setContentsMargins(16, 0, 16, 24)
+    lay.setSpacing(0)
+    scroll.setWidget(body)
+    return scroll, lay
 
 
 class WriteDialog(QDialog):
@@ -101,82 +132,129 @@ class WriteDialog(QDialog):
 
 
 class ScanPage(QWidget):
-    """P001 扫描：kicker/标题/状态 + 扫描钮 + 附近设备列表 + 连接动作。"""
+    """P001 扫描（正典页面结构）：navbar+bt-chip / scantool / sec-t+筛选 / 设备卡列表。"""
 
     def __init__(self, ble: BleService, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self._ble = ble
         self._hits: list[ScanHit] = []
+        self._view: list[ScanHit] = []  # 筛选视图（E getFilteredDevices 同口径）
 
         root = QVBoxLayout(self)
-        root.setContentsMargins(24, 20, 24, 16)
-        root.setSpacing(12)
+        root.setContentsMargins(0, 0, 0, 0)
+        root.setSpacing(0)
 
-        header = QHBoxLayout()
-        titles = QVBoxLayout()
-        titles.setSpacing(2)
-        kicker = QLabel("BLE TOOLKIT+")
-        kicker.setObjectName("Kicker")
-        self._title = QLabel("扫描")
-        self._title.setObjectName("PageTitle")
+        navbar = NavBar("BLE TOOLKIT+", "扫描")
+        self._bt_chip = BtChip("初始化中…")
+        navbar.add_right(self._bt_chip)
+        root.addWidget(navbar)
+
+        scroll, page = page_scroll()
+
+        # scantool：状态 lb（+扫描中 live 点） | 扫描钮 btn primary
+        scantool = QHBoxLayout()
+        scantool.setSpacing(6)
+        scantool.setContentsMargins(2, 14, 2, 10)  # .scantool margin:14 0 10 10
+        self._live = LiveDot()
+        scantool.addWidget(self._live)
         self._status = QLabel("待开始扫描")
-        self._status.setObjectName("Status")
-        titles.addWidget(kicker)
-        titles.addWidget(self._title)
-        titles.addWidget(self._status)
-        header.addLayout(titles)
-        header.addStretch(1)
+        self._status.setFont(qfont(12, QFont.Weight.Normal))
+        self._status.setStyleSheet(f"color:{MUT};background:transparent;")
+        scantool.addWidget(self._status)
+        scantool.addStretch(1)
         self._scan_btn = QPushButton("开始扫描")
         self._scan_btn.setObjectName("Primary")
-        self._scan_btn.setFixedHeight(40)
+        self._scan_btn.setIcon(QIcon(render_icon("scan", "#FFFFFF", 17)))
         self._scan_btn.clicked.connect(self._toggle)
-        header.addWidget(self._scan_btn, 0, Qt.AlignTop)
-        root.addLayout(header)
+        scantool.addWidget(self._scan_btn)
+        page.addLayout(scantool)
 
-        card = QFrame()
-        card.setObjectName("Card")
-        cv = QVBoxLayout(card)
-        cv.setContentsMargins(14, 12, 14, 12)
-        head = QLabel("附近设备")
-        head.setObjectName("CardTitle")
-        cv.addWidget(head)
-        self._list = QListWidget()
-        self._list.setObjectName("DeviceList")
-        self._list.itemDoubleClicked.connect(lambda _i: self._connect_selected())
-        cv.addWidget(self._list)
-        foot = QHBoxLayout()
-        self._empty = QLabel("点击「开始扫描」搜索附近 BLE 设备")
-        self._empty.setObjectName("Dim")
-        foot.addWidget(self._empty, 1)
-        self._connect_btn = QPushButton("连接所选设备")
-        self._connect_btn.setEnabled(False)
-        self._connect_btn.clicked.connect(self._connect_selected)
-        foot.addWidget(self._connect_btn)
-        cv.addLayout(foot)
-        root.addWidget(card, 1)
+        # sec-t：芯片图标 + 附近设备 + 数量 chip | 筛选 txtlink
+        sect = QHBoxLayout()
+        sect.setSpacing(7)
+        sect.setContentsMargins(2, 2, 2, 10)  # .sec-t margin:2 2 10
+        sect.addWidget(icon_label("chip", PRIMARY, 18))
+        t = QLabel("附近设备")
+        t.setFont(qfont(17, QFont.Weight.Bold))
+        sect.addWidget(t)
+        self._count_chip = Chip("0", "neutral")
+        self._count_chip.hide()
+        sect.addWidget(self._count_chip)
+        sect.addStretch(1)
+        self._filter_toggle = QPushButton("筛选")
+        self._filter_toggle.setObjectName("TxtLink")
+        self._filter_toggle.setCursor(Qt.PointingHandCursor)
+        self._filter_toggle.clicked.connect(self._toggle_filter)
+        sect.addWidget(self._filter_toggle)
+        page.addLayout(sect)
 
-        self._list.currentRowChanged.connect(
-            lambda row: self._connect_btn.setEnabled(row >= 0)
-        )
+        self._filter_panel = FilterPanelWidget()
+        self._filter_panel.filter_changed.connect(self._on_filters)
+        page.addWidget(self._filter_panel)
+
+        body = QVBoxLayout()
+        self._empty_all = EmptyState("还没有扫描结果", "点上方按钮开始扫描附近 BLE 设备")
+        self._empty_filtered = EmptyState("当前没有匹配设备", "调整筛选条件试试")
+        self._empty_filtered.hide()
+        self._list = DevList()
+        self._list.row_activated.connect(lambda _r: self._open_connected())
+        body.addWidget(self._empty_all)
+        body.addWidget(self._empty_filtered)
+        body.addWidget(self._list, 1)
+        page.addLayout(body, 1)
+
+        root.addWidget(scroll, 1)
+
         ble.scan_done.connect(self._on_done)
         ble.scan_failed.connect(self._on_failed)
         ble.op_failed.connect(self._on_op_failed)
+        # bt-chip 初始态：bleak 后端可用即就绪（无线电关由扫描失败词映射 off）
+        QTimer.singleShot(0, lambda: self._bt_chip.set_state("on", "蓝牙就绪"))
+
+    # ── 筛选（E getFilteredDevices 同语义） ──
+
+    def _toggle_filter(self) -> None:
+        open_ = self._filter_panel.isHidden()
+        self._filter_panel.setVisible(open_)
+        self._filter_toggle.setText("收起筛选" if open_ else "筛选")
+
+    def _on_filters(self, filters: dict) -> None:
+        self._rebuild()
+
+    def _filtered(self) -> list[ScanHit]:
+        f = self._filter_panel.filters() if self._filter_panel else {
+            "rssi": -100, "namePrefix": "", "hideUnnamed": False}
+        out = []
+        for h in self._hits:
+            if f["rssi"] > -100 and (h.rssi is None or h.rssi < f["rssi"]):
+                continue
+            prefix = f["namePrefix"].strip()
+            if prefix and not (h.name or "").startswith(prefix):
+                continue
+            if f["hideUnnamed"] and not h.name:
+                continue
+            out.append(h)
+        return out
+
+    # ── 扫描 ──
 
     def _toggle(self) -> None:
         if self._ble.scanning:
             self._ble.stop_scan()
             self._status.setText("已停止")
             self._scan_btn.setText("开始扫描")
+            self._live.stop()
             return
         self._status.setText("正在扫描…")
         self._scan_btn.setText("停止扫描")
+        self._live.start()
         self._ble.start_scan(5.0)
 
     def _connect_selected(self) -> None:
         row = self._list.currentRow()
-        if row < 0 or row >= len(self._hits):
+        if row < 0 or row >= len(self._view):
             return
-        hit = self._hits[row]
+        hit = self._view[row]
         if hit.address in self._ble.connected:
             # 已连接：直接回放连接信号走「打开详情」路径
             info = self._ble.connected[hit.address]
@@ -185,20 +263,47 @@ class ScanPage(QWidget):
         self._status.setText(f"正在连接 {hit.name or hit.address} …")
         self._ble.connect_device(hit)
 
+    def _open_connected(self) -> None:
+        row = self._list.currentRow()
+        if 0 <= row < len(self._view):
+            hit = self._view[row]
+            if hit.address in self._ble.connected:
+                info = self._ble.connected[hit.address]
+                self._ble.device_connected.emit(hit.address, info["name"], info["tree"])
+
     def _on_done(self, hits: list) -> None:
         # P001 正典状态词：扫描完成 · 发现 N 台
         self._hits = hits
         self._status.setText(f"扫描完成 · 发现 {len(hits)} 台")
         self._scan_btn.setText("开始扫描")
-        self._list.clear()
-        for h in hits:
-            name = h.name or "(未命名)"
-            item = QListWidgetItem(f"{name}   {h.rssi} dBm   {h.address}")
-            self._list.addItem(item)
+        self._live.stop()
+        self._rebuild()
+
+    def _rebuild(self) -> None:
+        self._view = self._filtered()
+        n = len(self._view)
+        self._count_chip.setText(str(n))
+        self._count_chip.setVisible(n > 0)
+        cards = []
+        for h in self._view:
+            card = DeviceCardWidget(
+                h.name or "", h.address, h.rssi,
+                connected=h.address in self._ble.connected,
+                unnamed=not h.name,
+            )
+            card.connect_clicked.connect(self._connect_selected)
+            cards.append(card)
+        self._list.set_cards(cards)
+        self._empty_all.setVisible(not self._hits)
+        self._empty_filtered.setVisible(bool(self._hits) and not self._view)
 
     def _on_failed(self, msg: str) -> None:
         self._status.setText(f"扫描失败：{msg}")
         self._scan_btn.setText("开始扫描")
+        self._live.stop()
+        low = str(msg).lower()
+        if any(k in low for k in ("off", "radio", "turn", "enabled", "power")):
+            self._bt_chip.set_state("off", "蓝牙未开启")
 
     def _on_op_failed(self, op: str, address: str, msg: str) -> None:
         if op == "connect":
@@ -207,7 +312,7 @@ class ScanPage(QWidget):
 
 
 class DeviceDetailPage(QWidget):
-    """P006 设备详情（GATT）：服务/特征树 + 特征操作 + 操作日志。"""
+    """P006 设备详情（GATT）：subnav + devhead + 服务/特征树 + 操作日志。"""
 
     back_requested = None  # 由 MainWindow 注入 callable
 
@@ -221,44 +326,68 @@ class DeviceDetailPage(QWidget):
         self._write_dlg: WriteDialog | None = None
 
         root = QVBoxLayout(self)
-        root.setContentsMargins(24, 20, 24, 16)
-        root.setSpacing(12)
+        root.setContentsMargins(0, 0, 0, 0)
+        root.setSpacing(0)
 
-        header = QHBoxLayout()
-        back = QPushButton("← 返回")
+        # .subnav：返回钮（30×30 fill r9）+ GATT 调试 + 底线
+        subnav = QFrame()
+        subnav.setObjectName("SubNav")
+        sv = QHBoxLayout(subnav)
+        sv.setContentsMargins(14, 8, 16, 10)
+        sv.setSpacing(10)
+        back = QPushButton()
+        back.setObjectName("BackBtn")
+        back.setIcon(QIcon(render_icon("chev-r", "#18222E", 15).transformed(
+            QTransform().scale(-1, 1))))  # chev-r 镜像为返回左箭头
         back.clicked.connect(lambda: self.back_requested and self.back_requested())
-        header.addWidget(back, 0, Qt.AlignTop)
+        back.setCursor(Qt.PointingHandCursor)
+        sv.addWidget(back)
+        sub_t = QLabel("GATT 调试")
+        sub_t.setFont(qfont(17, QFont.Weight.Bold))
+        sv.addWidget(sub_t)
+        sv.addStretch(1)
+        root.addWidget(subnav)
+
+        scroll, page = page_scroll()
+
+        # .devhead：状态点 + 设备名 17 bold + ID/状态行 mono 10
+        devhead = QFrame()
+        devhead.setObjectName("Card")
+        dv = QHBoxLayout(devhead)
+        dv.setContentsMargins(16, 16, 16, 16)
+        dv.setSpacing(11)
+        self._st = _StDot()
+        dv.addWidget(self._st, 0, Qt.AlignTop)
         titles = QVBoxLayout()
         titles.setSpacing(2)
-        kicker = QLabel("BLE TOOLKIT+")
-        kicker.setObjectName("Kicker")
         self._title = QLabel("设备详情")
-        self._title.setObjectName("PageTitle")
+        self._title.setFont(qfont(17, QFont.Weight.Bold))
         self._status = QLabel("")
-        self._status.setObjectName("Status")
-        titles.addWidget(kicker)
+        self._status.setFont(qfont(10, QFont.Weight.Normal))
+        self._status.setStyleSheet(f"color:{MUT};font-family:Consolas,monospace;background:transparent;")
         titles.addWidget(self._title)
         titles.addWidget(self._status)
-        header.addLayout(titles)
-        header.addStretch(1)
-        root.addLayout(header)
+        dv.addLayout(titles, 1)
+        page.addWidget(devhead)
 
         card = QFrame()
         card.setObjectName("Card")
         cv = QVBoxLayout(card)
-        cv.setContentsMargins(14, 12, 14, 12)
+        cv.setContentsMargins(16, 16, 16, 16)
         cv.setSpacing(8)
         head = QLabel("GATT 服务与特征")
-        head.setObjectName("CardTitle")
+        head.setObjectName("CardHead")
         cv.addWidget(head)
         self._tree = QTreeWidget()
         self._tree.setObjectName("GattTree")
         self._tree.setHeaderLabels(["项目", "属性"])
         self._tree.setRootIsDecorated(True)
+        self._tree.setMinimumHeight(320)
         self._tree.currentItemChanged.connect(self._on_char_changed)
         cv.addWidget(self._tree, 1)
 
         actions = QHBoxLayout()
+        actions.setSpacing(8)
         self._act_read = QPushButton("读取")
         self._act_read.clicked.connect(self._read)
         self._act_notify = QPushButton("订阅通知")
@@ -267,24 +396,29 @@ class DeviceDetailPage(QWidget):
         self._act_write.clicked.connect(self._write)
         for b in (self._act_read, self._act_notify, self._act_write):
             b.setEnabled(False)
+            b.setObjectName("Sm")
             actions.addWidget(b)
         actions.addStretch(1)
         cv.addLayout(actions)
-        root.addWidget(card, 3)
+        page.addWidget(card)
 
         log_card = QFrame()
         log_card.setObjectName("Card")
         lv = QVBoxLayout(log_card)
-        lv.setContentsMargins(14, 12, 14, 12)
+        lv.setContentsMargins(16, 16, 16, 16)
         lv.setSpacing(6)
         log_head = QLabel("操作日志")
-        log_head.setObjectName("CardTitle")
+        log_head.setObjectName("CardHead")
         lv.addWidget(log_head)
         self._log = QPlainTextEdit()
         self._log.setReadOnly(True)
         self._log.setObjectName("OpLog")
+        self._log.setMinimumHeight(160)
         lv.addWidget(self._log)
-        root.addWidget(log_card, 2)
+        page.addWidget(log_card)
+        page.addStretch(1)
+
+        root.addWidget(scroll, 1)
 
         ble.char_read.connect(self._on_read)
         ble.char_notified.connect(self._on_notified)
@@ -301,6 +435,7 @@ class DeviceDetailPage(QWidget):
         self._tree_data = tree
         self._title.setText(name or address)
         self._status.setText(f"{address} · 已连接")
+        self._st.set_on(True)
         self._log.clear()
         self._rebuild_tree()
         self._log.appendPlainText(f"已连接 {name or ''} ({address})")
@@ -439,11 +574,32 @@ class DeviceDetailPage(QWidget):
     def _on_disconnected(self, address: str, expected: bool) -> None:
         if self._mine(address):
             self._status.setText(f"{address} · 已断开")
+            self._st.set_on(False)
             self._log.appendPlainText("连接已断开" + ("" if expected else "（意外断链）"))
 
 
+class _StDot(QWidget):
+    """.devhead 状态点（.st：未连接灰 / 已连接成功色）。"""
+
+    def __init__(self, parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+        self.setFixedSize(10, 10)
+        self._on = False
+
+    def set_on(self, on: bool) -> None:
+        self._on = on
+        self.update()
+
+    def paintEvent(self, event) -> None:  # noqa: N802
+        painter = QPainter(self)
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(QColor("#17C7A8" if self._on else "#9AA8B6"))
+        painter.drawEllipse(self.rect())
+        painter.end()
+
+
 class ConnectedPage(QWidget):
-    """P007 已连接：连接管理（列表 / 单断 / 全断 / 进详情）。"""
+    """P007 已连接（正典页面结构）：navbar + 汇总卡 + conn 设备卡列表。"""
 
     open_detail = None  # 由 MainWindow 注入 callable(address)
 
@@ -451,62 +607,45 @@ class ConnectedPage(QWidget):
         super().__init__(parent)
         self._ble = ble
         root = QVBoxLayout(self)
-        root.setContentsMargins(24, 20, 24, 16)
-        root.setSpacing(12)
-        kicker = QLabel("BLE TOOLKIT+")
-        kicker.setObjectName("Kicker")
-        self._title = QLabel("已连接")
-        self._title.setObjectName("PageTitle")
-        self._status = QLabel("已连接 0 台")
-        self._status.setObjectName("Status")
-        root.addWidget(kicker)
-        root.addWidget(self._title)
-        root.addWidget(self._status)
+        root.setContentsMargins(0, 0, 0, 0)
+        root.setSpacing(0)
 
-        card = QFrame()
-        card.setObjectName("Card")
-        cv = QVBoxLayout(card)
-        cv.setContentsMargins(14, 12, 14, 12)
-        cv.setSpacing(8)
-        head = QLabel("会话设备")
-        head.setObjectName("CardTitle")
-        cv.addWidget(head)
-        self._list = QListWidget()
-        self._list.setObjectName("DeviceList")
-        self._list.itemDoubleClicked.connect(lambda _i: self._open_selected())
-        cv.addWidget(self._list, 1)
-        foot = QHBoxLayout()
-        self._open_btn = QPushButton("查看详情")
-        self._open_btn.setEnabled(False)
-        self._open_btn.clicked.connect(self._open_selected)
-        self._disc_btn = QPushButton("断开所选")
-        self._disc_btn.setEnabled(False)
-        self._disc_btn.clicked.connect(self._disconnect_selected)
-        self._all_btn = QPushButton("断开全部")
-        self._all_btn.setObjectName("Primary")
-        self._all_btn.clicked.connect(self._disconnect_all)
-        foot.addWidget(self._open_btn)
-        foot.addWidget(self._disc_btn)
-        foot.addStretch(1)
-        foot.addWidget(self._all_btn)
-        cv.addLayout(foot)
-        root.addWidget(card, 1)
+        navbar = NavBar("SESSIONS", "已连接")
+        navbar.add_right(Chip("通用调试会话", "neutral"))
+        root.addWidget(navbar)
 
-        self._list.currentRowChanged.connect(self._on_row)
+        scroll, page = page_scroll()
+
+        self._sum = SumCard()
+        self._sum.disconnect_all.connect(ble.disconnect_all)
+        self._sum.hide()
+        page.addWidget(self._sum)
+
+        self._empty = EmptyState("还没有会话", "连接设备后在此管理调试会话")
+        self._list = DevList()
+        page.addWidget(self._empty)
+        page.addWidget(self._list, 1)
+
+        root.addWidget(scroll, 1)
+
+        self._list.row_activated.connect(lambda _r: self._open_selected())
         ble.device_connected.connect(lambda *_a: self.refresh())
         ble.device_disconnected.connect(lambda *_a: self.refresh())
 
     def refresh(self) -> None:
         entries = list(self._ble.connected.items())
-        self._status.setText(f"已连接 {len(entries)} 台")
-        self._list.clear()
+        self._sum.set_count(len(entries))
+        self._sum.setVisible(bool(entries))
+        self._empty.setVisible(not entries)
+        cards = []
         for address, info in entries:
-            self._list.addItem(QListWidgetItem(f"{info['name']}   {address}"))
-        has = bool(entries)
-        self._all_btn.setEnabled(has)
-        if not has:
-            self._open_btn.setEnabled(False)
-            self._disc_btn.setEnabled(False)
+            card = DeviceCardWidget(
+                info["name"] or "", address, None,
+                conn_variant=True, unnamed=not info["name"],
+            )
+            card.disconnect_clicked.connect(self._disconnect_selected)
+            cards.append(card)
+        self._list.set_cards(cards)
 
     def _current_address(self) -> str | None:
         row = self._list.currentRow()
@@ -514,10 +653,6 @@ class ConnectedPage(QWidget):
             return None
         entries = list(self._ble.connected.items())
         return entries[row][0] if row < len(entries) else None
-
-    def _on_row(self, row: int) -> None:
-        self._open_btn.setEnabled(row >= 0)
-        self._disc_btn.setEnabled(row >= 0)
 
     def _open_selected(self) -> None:
         address = self._current_address()
@@ -529,66 +664,145 @@ class ConnectedPage(QWidget):
         if address:
             self._ble.disconnect_device(address)
 
-    def _disconnect_all(self) -> None:
-        self._ble.disconnect_all()
-
 
 class BroadcastPage(QWidget):
-    """P008 广播（Windows 无外设栈，与 V-WIN 同口径降级）。"""
+    """P008 广播（Windows 无外设栈，与 V-WIN 同口径降级；正典 chrome）。"""
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
-        lay = QVBoxLayout(self)
-        lay.setContentsMargins(24, 20, 24, 16)
-        tip = QLabel("Windows 平台暂不支持外设模式（降级口径同 V-WIN；N4 待决）")
-        tip.setObjectName("Status")
-        tip.setWordWrap(True)
-        lay.addWidget(tip)
-        lay.addStretch(1)
-        self.tip_label = tip
+        root = QVBoxLayout(self)
+        root.setContentsMargins(0, 0, 0, 0)
+        root.setSpacing(0)
+
+        navbar = NavBar("PERIPHERAL", "广播")
+        navbar.add_right(Chip("平台：Desktop", "neutral"))
+        root.addWidget(navbar)
+
+        scroll, page = page_scroll()
+        note = NoteInfo(
+            "Windows 平台暂不支持外设模式（降级口径同 V-WIN；N4 待决）", sprite="warn"
+        )
+        self.tip_label = note.tip_label  # automation seam 契约（state.broadcastTip）
+        page.addWidget(note)
+        page.addStretch(1)
+        root.addWidget(scroll, 1)
+
+
+class _AboutLogo(QWidget):
+    """about-logo：38×38 r11 渐变（primary-deep→primary）+ 白色 bt 图标。"""
+
+    def __init__(self, parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+        self.setFixedSize(38, 38)
+        self._icon = render_icon("bt", "#FFFFFF", 20)
+
+    def paintEvent(self, event) -> None:  # noqa: N802
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+        grad = QLinearGradient(0, 0, 38, 38)
+        grad.setColorAt(0, QColor(PRIMARY_DEEP))
+        grad.setColorAt(1, QColor(PRIMARY))
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(grad)
+        painter.drawRoundedRect(self.rect(), 11, 11)
+        x = (38 - self._icon.width()) // 2
+        y = (38 - self._icon.height()) // 2
+        painter.drawPixmap(x, y, self._icon)
+        painter.end()
 
 
 class AboutPage(QWidget):
-    """P009 关于：正典桌面环境口径（Desktop · Windows / PC · X64）。"""
+    """P009 关于（正典窄列 768 结构）：身份卡 + 应用信息 kv（真实宿主口径）。"""
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
-        lay = QVBoxLayout(self)
-        lay.setContentsMargins(24, 20, 24, 16)
-        kicker = QLabel("BLE TOOLKIT+")
-        kicker.setObjectName("Kicker")
-        title = QLabel("关于")
-        title.setObjectName("PageTitle")
-        lay.addWidget(kicker)
-        lay.addWidget(title)
-        lay.addSpacing(10)
-        card = QFrame()
-        card.setObjectName("Card")
-        cv = QVBoxLayout(card)
-        cv.setContentsMargins(16, 8, 16, 8)
+        version = f"v{app_version()}"
+        root = QVBoxLayout(self)
+        root.setContentsMargins(0, 0, 0, 0)
+        root.setSpacing(0)
+
+        navbar = NavBar("ABOUT", "关于")
+        verchip = Chip(version, "neutral")
+        verchip.set_mono()
+        navbar.add_right(verchip)
+        root.addWidget(navbar)
+
+        scroll, page = page_scroll()
+
+        # about-shell：max-width 768 居中
+        col = QVBoxLayout()
+        col.setContentsMargins(0, 8, 0, 0)
+        identity = QFrame()
+        identity.setObjectName("Card")
+        iv = QHBoxLayout(identity)
+        iv.setContentsMargins(16, 16, 16, 16)
+        iv.setSpacing(11)
+        iv.addWidget(_AboutLogo())
+        brand = QVBoxLayout()
+        brand.setSpacing(2)
+        app_name = QLabel("BLE Toolkit+")
+        app_name.setFont(qfont(15, QFont.Weight.Bold))
+        brand.addWidget(app_name)
+        verline = QLabel(f"{version} · preview · 零后端 · 零本地持久化")
+        verline.setFont(qfont(10, QFont.Weight.Normal))
+        verline.setStyleSheet(f"color:{MUT};background:transparent;")
+        brand.addWidget(verline)
+        iv.addLayout(brand, 1)
+        col.addWidget(identity)
+
+        sec = QHBoxLayout()
+        sec.setSpacing(7)
+        sec.setContentsMargins(2, 4, 2, 10)
+        sec.addWidget(icon_label("info", PRIMARY, 18))
+        st = QLabel("应用信息")
+        st.setFont(qfont(17, QFont.Weight.Bold))
+        sec.addWidget(st)
+        sec.addStretch(1)
+        col.addLayout(sec)
+
+        info = QFrame()
+        info.setObjectName("Card")
+        info_v = QVBoxLayout(info)
+        info_v.setContentsMargins(16, 7, 16, 7)  # kv 行 padding 9 上下
+        info_v.setSpacing(0)
         arch = os.environ.get("PROCESSOR_ARCHITECTURE", "")
         rows = [
             ("当前环境", "Desktop · Windows"),
             ("设备型号", f"PC · {'X64' if arch == 'AMD64' else arch}"),
-            ("版本", f"v{app_version()}"),
+            ("版本", version),
         ]
         self.row_values: dict[str, str] = {}
         for i, (k, v) in enumerate(rows):
             row = QHBoxLayout()
             key = QLabel(k)
-            key.setObjectName("Dim")
-            key.setFixedWidth(90)
+            key.setFont(qfont(12, QFont.Weight.DemiBold))
+            key.setStyleSheet(f"color:{MUT};background:transparent;")
+            key.setFixedWidth(96)
             val = QLabel(v)
+            val.setFont(qfont(13, QFont.Weight.Normal))
             self.row_values[k] = v
             row.addWidget(key)
             row.addWidget(val, 1)
-            cv.addLayout(row)
+            info_v.addLayout(row)
             if i < len(rows) - 1:
                 sep = QFrame()
-                sep.setFrameShape(QFrame.HLine)
-                cv.addWidget(sep)
-        lay.addWidget(card)
-        lay.addStretch(1)
+                sep.setFixedHeight(1)
+                sep.setStyleSheet(f"background:{LINE_SOFT};border:none;")
+                info_v.addWidget(sep)
+        col.addWidget(info)
+        col.addStretch(1)
+
+        center = QHBoxLayout()
+        page.addLayout(center)
+        col_holder = QWidget()
+        # about-shell 正典：max-width 768 居中（窗口宽时列宽恰 768）
+        col_holder.setFixedWidth(768)
+        col_holder.setLayout(col)
+        center.addStretch(1)
+        center.addWidget(col_holder)
+        center.addStretch(1)
+
+        root.addWidget(scroll, 1)
 
 
 class MainWindow(QMainWindow):
