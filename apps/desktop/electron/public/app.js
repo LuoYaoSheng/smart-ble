@@ -875,11 +875,9 @@ class App {
             const result = await window.bleAPI.init();
             console.log('BLE initialized:', result);
 
-            // 根据平台显示/隐藏广播功能
-            // Linux (bleno) 支持广播，macOS 和 Windows 不支持
-            if (window.platform?.platform === 'linux') {
-                document.getElementById('broadcastTab').style.display = 'flex';
-            }
+            // N4 案 B（用户裁决 2026-09-21）：广播 Tab 恒显四 Tab（正典 A3 形态，
+            // 与 Tauri/macOS/Android/F/V/Q 一致）；不支持平台进页显示「未就绪」徽章，
+            // 点击开始广播走既有拒绝式降级路径
             // P008 平台 chip + 初始徽章态 + 31B 预算首算
             const osNames = { win32: 'Windows', darwin: 'macOS', linux: 'Linux' };
             const chip = document.getElementById('broadcastPlatformChip');
