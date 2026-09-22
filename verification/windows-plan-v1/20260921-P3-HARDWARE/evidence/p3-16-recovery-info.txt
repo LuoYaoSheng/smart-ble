@@ -1,0 +1,2 @@
+connected, mtu= 256
+INFO: {"product":"smart-hid","protocol":"1.0","device_id":"HID-00000001","firmware":"1.2.0","state":"provisioning","provisioned":false}

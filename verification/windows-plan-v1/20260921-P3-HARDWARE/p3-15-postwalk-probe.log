@@ -1,0 +1,12 @@
+[probe] scanning 5s ...
+[probe]   SHID-00000001  -37 dBm  10:B4:1D:CD:23:8E
+[probe] target: SHID-00000001 @ 10:B4:1D:CD:23:8E
+[probe] connected: True (mtu=256)
+[probe] enumeration: 1 service, 3 char(s)
+[probe]   CHAR 9f1d1002-e73b-4c8f-9d2a-6f0b5e8a1c04 props=['notify', 'read']
+[probe]   CHAR 9f1d1003-e73b-4c8f-9d2a-6f0b5e8a1c04 props=['write']
+[probe]   CHAR 9f1d1004-e73b-4c8f-9d2a-6f0b5e8a1c04 props=['notify', 'read']
+[probe] INFO read: 130B text={"product":"smart-hid","protocol":"1.0","device_id":"HID-00000001","firmware":"1.2.0","state":"unprovisioned","provisioned":false}
+[probe] STATUS subscribed, wait 8s ...
+[probe] notify events: 0
+[probe] unsubscribed; disconnect — probe OK

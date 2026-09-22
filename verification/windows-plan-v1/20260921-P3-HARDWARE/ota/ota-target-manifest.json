@@ -1,0 +1,8 @@
+{
+  "product": "lightble",
+  "role": "fixture_peripheral_s3",
+  "version": "1.0.1-cdc",
+  "size": 556544,
+  "sha256": "50e93f67e4aaeec3056564ff4dac6fc34a96356bc516500f67d91c2d15869de4",
+  "target": "lightble-peripheral"
+}

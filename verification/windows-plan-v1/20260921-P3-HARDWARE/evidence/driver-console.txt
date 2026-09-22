@@ -1,0 +1,51 @@
+[16:32:03] [launch] exe=E:\project\xf\smart-ble\apps\flutter\build\windows\x64\runner\Release\smart_ble.exe exists=True
+[16:32:03] [launch] pid=7004
+[16:32:05] [launch] hwnd=2232000 frame=(25,15,1805,1355) size=1780x1340 dpr=1.50
+[16:32:06] [shot] p3-01-home.png (1780, 1340)
+[16:33:08] [wclick] win(890,620) -> screen(915,635)
+[16:33:14] [shot] p3-02-scanning.png (1780, 1340)
+[16:33:42] [wclick] win(1112,448) -> screen(1137,463)
+[16:33:50] [shot] p3-03-detail.png (1780, 1340)
+[16:34:20] [wclick] win(200,430) -> screen(225,445)
+[16:34:23] [shot] p3-04-expanded.png (1780, 1340)
+[16:34:50] [wclick] win(1715,522) -> screen(1740,537)
+[16:34:53] [shot] p3-05-write-guard.png (1780, 1340)
+[16:35:26] [wclick] win(1715,598) -> screen(1740,613)
+[16:35:29] [shot] p3-06-subscribed.png (1780, 1340)
+[16:35:30] [wclick] win(1715,598) -> screen(1740,613)
+[16:35:33] [shot] p3-07-unsubscribed.png (1780, 1340)
+[16:35:58] [clipempty] 剪贴板已清空（导出前占位）
+[16:35:59] [wclick] win(860,310) -> screen(885,325)
+[16:36:01] [clip] 0 chars -> clipboard-export.txt
+[16:36:45] [clipempty] 剪贴板已清空（导出前占位）
+[16:36:46] [wclick] win(890,470) -> screen(915,485)
+[16:36:48] [clip] 0 chars -> clipboard-export.txt
+[16:38:23] [shot] p3-08-current.png (1780, 1340)
+[16:38:55] [shot] p3-09-list-now.png.png (1780, 1340)
+[16:38:56] [wclick] win(1112,448) -> screen(1137,463)
+[16:39:04] [shot] p3-10-reenter.png (1780, 1340)
+[16:41:32] [shot] p3-11-now.png (1780, 1340)
+[16:42:00] [clipempty] 剪贴板已清空（导出前占位）
+[16:42:01] [wclick] win(1640,1062) -> screen(1665,1077)
+[16:42:03] [clip] 0 chars -> clipboard-export.txt
+[16:42:19] [clipempty] 剪贴板已清空（导出前占位）
+[16:42:19] [wclick] win(1740,1062) -> screen(1765,1077)
+[16:42:22] [clip] 0 chars -> clipboard-export.txt
+[16:44:07] [clipempty] 剪贴板已清空（导出前占位）
+[16:44:08] [wclick] win(890,515) -> screen(915,530)
+[16:44:10] [clip] 0 chars -> clipboard-export.txt
+[16:44:29] [shot] p3-12-after-export.png (217, 39)
+[16:44:50] [state] hwnd=2232000 title='SmartBLE' frame=(-31990,-32000,-31773,-31961) dpr=1.50
+[16:45:06] [state] hwnd=2232000 title='SmartBLE' frame=(25,15,1805,1355) dpr=1.50
+[16:45:07] [shot] p3-13-restored.png (1780, 1340)
+[16:45:55] [clipempty] 剪贴板已清空（导出前占位）
+[16:45:55] [wclick] win(890,515) -> screen(915,530)
+[16:45:58] [clip] 0 chars -> clipboard-export.txt
+[16:45:58] [shot] p3-14-snackbar.png (1780, 1340)
+[16:46:35] [clipempty] 剪贴板已清空（导出前占位）
+[16:46:35] [wclick] win(890,480) -> screen(915,495)
+[16:46:38] [clip] 0 chars -> clipboard-export.txt
+[16:47:09] [clipempty] 剪贴板已清空（导出前占位）
+[16:47:10] [wclick] win(890,480) -> screen(915,495)
+[16:47:12] [clip] 0 chars -> clipboard-export.txt
+[16:47:41] [kill] taskkill 7004
