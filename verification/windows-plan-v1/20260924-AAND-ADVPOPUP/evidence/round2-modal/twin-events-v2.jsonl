@@ -1,0 +1,6 @@
+{"ts":1790238908182,"shell":"T","event":"driver-started","detail":"TWIN"}
+{"ts":1790238911705,"shell":"T","event":"start-result","detail":"Ok(Object {"status": String("Created"), "companyId": Number(1), "bytes": Number(4), "event": String("started")})"}
+{"ts":1790238911707,"shell":"T","event":"started","detail":"TWIN"}
+{"ts":1790239191719,"shell":"T","event":"stop-result","detail":"Ok(Object {"event": String("stopped")})"}
+{"ts":1790239191720,"shell":"T","event":"stopped","detail":"TWIN"}
+{"ts":1790239191874,"shell":"T","event":"exited","detail":""}

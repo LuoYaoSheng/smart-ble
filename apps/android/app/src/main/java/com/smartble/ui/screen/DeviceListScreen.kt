@@ -31,7 +31,6 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.Stop
-import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -41,9 +40,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SheetValue
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -55,6 +54,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontFamily
@@ -75,6 +75,8 @@ import com.smartble.ui.theme.Primary
 import com.smartble.ui.theme.cFill
 import com.smartble.ui.theme.cInk
 import com.smartble.ui.theme.cInkText
+import com.smartble.ui.theme.cCard
+import com.smartble.ui.theme.cLine
 import com.smartble.ui.theme.cLineSoft
 import com.smartble.ui.theme.cMut
 import com.smartble.ui.theme.cPrimary
@@ -110,43 +112,17 @@ fun DeviceListContent(
     val hideUnnamed by viewModel.hideUnnamed.collectAsState()
     var filterExpanded by remember { mutableStateOf(false) }
 
-    // Bottom sheet state
-    val scaffoldState = rememberBottomSheetScaffoldState()
-    val scope = rememberCoroutineScope()
+    // 广播数据弹层（正典 p001-advdlg / advertisement-dialog.vue）：
+    // ModalBottomSheet 独立 sheet 窗口——全屏遮罩 rgba(15,29,48,.5)（盖住
+    // AppNavbar/TabBar，点遮罩即关）+ 返回键 + 下滑拖关 + 内置滑入滑出；
+    // 最高 78vh、顶部 20dp 圆角；关闭钮 = 「关闭」文字软钮（canon soft-btn）
     var selectedDevice by remember { mutableStateOf<BleDevice?>(null) }
+    var sheetOpen by remember { mutableStateOf(false) }
     val currentSheetDevice = selectedDevice?.let { selected ->
         filteredScanResults.find { it.deviceId == selected.deviceId } ?: selected
     }
 
-    BottomSheetScaffold(
-        scaffoldState = scaffoldState,
-        containerColor = com.smartble.ui.theme.cBg,
-        sheetContent = {
-            currentSheetDevice?.let { device ->
-                DeviceDetailSheet(
-                    device = device,
-                    onConnect = {
-                        selectedDevice = null
-                        onDeviceClick(device.deviceId, device.displayName)
-                        scope.launch {
-                            scaffoldState.bottomSheetState.partialExpand()
-                        }
-                    },
-                    onDismiss = {
-                        scope.launch {
-                            scaffoldState.bottomSheetState.partialExpand()
-                        }
-                    }
-                )
-            }
-        },
-        sheetPeekHeight = 0.dp
-    ) { innerPadding ->
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
+    Column(modifier = modifier.fillMaxSize()) {
                 // Error message
                 errorMessage?.let { message ->
                     ErrorMessageCard(message = message, onDismiss = { viewModel.clearError() })
@@ -217,9 +193,7 @@ fun DeviceListContent(
                                         device = device,
                                         onDeviceClick = { d ->
                                             selectedDevice = d
-                                            scope.launch {
-                                                scaffoldState.bottomSheetState.expand()
-                                            }
+                                            sheetOpen = true
                                         },
                                         onAction = { target ->
                                             onDeviceClick(target.deviceId, target.displayName)
@@ -235,7 +209,36 @@ fun DeviceListContent(
                     }
                 }
             }
+
+    if (sheetOpen && currentSheetDevice != null) {
+        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        val scope = rememberCoroutineScope()
+        // 统一走 hide() 滑出动画再撤窗（关闭钮/遮罩/返回键三路一致）
+        val closeSheet: () -> Unit = {
+            scope.launch {
+                sheetState.hide()
+            }.invokeOnCompletion { sheetOpen = false }
         }
+        ModalBottomSheet(
+            onDismissRequest = closeSheet,
+            sheetState = sheetState,
+            shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
+            containerColor = cCard,
+            scrimColor = Color(0x800F1D30),
+            dragHandle = null
+        ) {
+            currentSheetDevice?.let { device ->
+                DeviceDetailSheet(
+                    device = device,
+                    onConnect = {
+                        sheetOpen = false
+                        onDeviceClick(device.deviceId, device.displayName)
+                    },
+                    onDismiss = closeSheet
+                )
+            }
+        }
+    }
 }
 
 @Composable
@@ -305,6 +308,8 @@ fun BluetoothUnauthorizedCard() {
 // + 复制数据。对齐 uniapp components/scan/advertisement-dialog.vue 与桌面五壳
 // AdvertisementSheet；Android 侧独有优势 = ScanRecord 原始字节真值逐段解析
 // （core/ble/AdvertisementParser），非「平台解析字段重建」。
+// 呈现层 = 模态弹层：遮罩 rgba(15,29,48,.5) 点击关闭 + 底部滑入（顶部 20dp
+// 圆角、最高 78vh）+「关闭」文字软钮（canon soft-btn）+ 返回键关闭。
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DeviceDetailSheet(
@@ -323,35 +328,39 @@ fun DeviceDetailSheet(
     val connecting = device.state == ConnectionState.Connecting
     val connected = device.state == ConnectionState.Connected
 
+    val sheetMaxHeight = (LocalConfiguration.current.screenHeightDp * 0.78f).dp
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(max = 580.dp)
+            .heightIn(max = sheetMaxHeight)
+            .background(cCard, RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+            // sheet 对话框窗口延伸到手势条下方但 navigationBars inset 报 0
+            // （EMUI 实测按钮蓝底到 y2297 侵入手势区），固定底衬抬出操作行
+            .padding(bottom = 24.dp)
     ) {
-        // Drag handle
+        // Grip（canon .grip：36×4dp）
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 12.dp),
+                .padding(top = 10.dp, bottom = 4.dp),
             contentAlignment = Alignment.Center
         ) {
             Box(
                 modifier = Modifier
-                    .width(40.dp)
+                    .width(36.dp)
                     .height(4.dp)
-                    .background(
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
-                        shape = RoundedCornerShape(2.dp)
-                    )
+                    .background(cLine, RoundedCornerShape(2.dp))
             )
         }
 
-        // 标题行：广播数据 · 名称 + 关闭
+        // 标题行：广播数据 · 名称 + 「关闭」软钮（canon soft-btn）
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(horizontal = 16.dp, vertical = 6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
                 "广播数据 · ${device.displayName}",
@@ -362,14 +371,11 @@ fun DeviceDetailSheet(
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.weight(1f)
             )
-            IconButton(onClick = onDismiss, modifier = Modifier.size(30.dp)) {
-                Icon(
-                    DsIcons.X,
-                    contentDescription = "关闭",
-                    tint = cMut,
-                    modifier = Modifier.size(17.dp)
-                )
-            }
+            DsSoftButton(
+                label = "关闭",
+                onClick = onDismiss,
+                small = true
+            )
         }
 
         // 弹层主体（kv + 深色分段），超高滚动

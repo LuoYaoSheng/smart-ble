@@ -84,3 +84,62 @@ WinRT publisher 实例独立随机地址，平台事实复证）。
 - 手机端广播弹窗重建**联调通过**：三壳（Q/G/T）字节级命中 + SHID/常规设备全结构渲染 + 复制按钮闭环。
 - 六壳广播模板的外部空口证据链（20260921 E/F/V + 20260924 晨 G/Q/T）至此再叠加
   「安卓真机弹窗消费侧」验证——发射、空口、接收、展示四层全通。
+
+---
+
+# Round 2 · 弹窗呈现层重建（用户反馈「感觉不到是弹窗、关闭钮不好」）
+
+## 根因（两层）
+
+1. **v1 用 `BottomSheetScaffold`（peekHeight=0、无遮罩）**：内容层被 MainActivity Scaffold
+   的 `padding(paddingValues)` inset——遮罩即使自绘也只能盖住内容区（y≥293px），
+   **AppNavbar 区域不暗化、点它也不关**（真机网格 tap 实测 y∈(160,290) 死区）。
+   正典 `.adv-mask` 是 `position:fixed; inset:0` 全屏遮罩。
+2. **关闭钮 = 30dp 小 X 图标**；正典 soft-btn 是「关闭」**文字软钮**（cFill 底 + cLine 描边）。
+
+## 修复（DeviceListScreen.kt）
+
+- 弃自绘 overlay，改 **material3 1.1.2 `ModalBottomSheet`**（独立 sheet 对话框窗口）：
+  - `scrimColor = 0x800F1D30`（canon rgba(15,29,48,.5)）→ **全屏遮罩盖住 AppNavbar/TabBar**
+  - `shape` 顶部 20dp 圆角 + `containerColor = cCard` + `dragHandle = null`（自绘 canon grip 36×4dp cLine）
+  - `skipPartiallyExpanded = true`；关闭统一走 `sheetState.hide()` 滑出后再撤窗
+  - 三+一关闭路径：**「关闭」软钮 / 点遮罩 / 返回键 / 下拉拖关**（BackHandler 由 onDismissRequest 承担）
+- 高度上限 78%（canon 78vh，LocalConfiguration）；正文 kv/ad-sec/复制 全部不动（v1 已对齐）
+- **手势区避让**：sheet 对话框窗口视觉延伸到手势条下方但 `WindowInsets.navigationBars` 报 0，
+  固定 `padding(bottom = 24.dp)` 把操作行抬出（像素级验证蓝底 y 2297→2225，手势区 2235-2340）
+
+## 真机验证（华为 TAS-AN00 / FEC0220629005177）
+
+| 项 | 判据 | 结果 |
+|---|---|---|
+| 全屏遮罩 | vision 客观题：标题栏「扫描/蓝牙就绪」是否被压暗 | **是**（13-v4-twin-popup.png） |
+| TWIN 字节回归 | dump/截图 `07 ff 01 00 54 57 49 4e` + 厂商 ID 0x0001 | **v4(2E:84) / v5(0F:EA) 两轮一致** |
+| 关闭①软钮 | tap 关闭 → dump 无「广播数据」 | **关**（首击偶被 settle 吞，二击关；已知物理特性） |
+| 关闭②遮罩 | tap (540,250)（v1 死区）→ 关 | **关**（v1 同坐标不关，对照实锤） |
+| 关闭③返回键 | keyevent 4 → 关 | **关** |
+| 关闭④下拉 | swipe 540,660→2000 → 关 | **关** |
+| 手势区避让 | PIL 找主按钮蓝底最大 y | **2297→2225 < 2235 出区** |
+| 门禁 | assembleDebug + testDebugUnitTest | **全绿（12/12 解析单测不动）** |
+
+## 本轮新坑位
+
+7. **Scaffold padding 陷阱**：NavHost 内容层做全屏遮罩永远被 topBar/bottomBar inset 咬掉一圈；
+   模态层要盖全屏必须进独立窗口（ModalBottomSheet/Dialog）。
+8. **sheet 对话框窗口 inset 谎报**：窗口画到手势条下但 navigationBars=0，避让只能固定 dp
+   （EMUI 实测手势区 2235-2340）。
+9. **EMUI 无 `screenrecord` 二进制**（`inaccessible or not found`），录屏取证不可用；
+   动画证据只能靠 on-device `input tap && screencap` 连发或省略。
+10. **意外横屏**：自动化长会话中设备可能横屏 + 锁屏（`user_rotation`/锁屏 swipe 恢复；
+    借用 `accelerometer_rotation` 后记得还原=1）。
+11. **m3 sheet settle 期吞 tap**：弹窗刚开 <1s 内的注入 tap 可能被 anchored draggable 吃掉，
+    复测即过，勿误判缺陷。
+12. **uiautomator 对 dialog 窗口的 bounds 不可全信**（报 [..,2235] 而像素实到 2297），
+    涉及系统栏边界时用像素直判（PIL 找色底）。
+
+## Round 2 证据（evidence/round2-modal/）
+
+- `13-v4-twin-popup.png`：TWIN 弹窗 + 全屏遮罩（vision 判「标题栏压暗 ✓」）
+- `15-final-popup.png`：24dp 底衬修复后的终态（蓝底 2225 出手势区）
+- `ui-popup.xml` / `ui-close-scrim*.xml` / `ui-v4-popup.xml`：v1 死区对照与 v4 内容全文
+- `twin-events-v2~v5.jsonl`：四轮 T-WIN 广播事件链（v4=2E:84:18:87:3D:28 / v5=0F:EA:12:60:FA:5E）
+- `01-06/10-12`：v1 呈现排障过程（遮罩死区网格 tap、锁屏/横屏事故链）

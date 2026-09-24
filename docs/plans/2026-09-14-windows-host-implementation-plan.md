@@ -575,6 +575,15 @@ README 占位且指向 Avalonia 线；Flutter 无 Windows 目标），逐框架�
 - Evidence: verification/windows-plan-v1/20260924-AAND-ADVPOPUP/（README + 三壳弹窗截图/XML dump + 驱动事件链）
 - 坑位：**EMUI 扫描风暴冷却**（15 分钟 ~17 次扫描→会话注册正常但结果投递静默归零，重启恢复，联调节奏须 ≥5 分钟/扫）；**EMUI 吞三方应用日志**（Log.d/Log.i 均不可见，华为侧旁证只能走 uiautomator dump/dumpsys/截图）；**视觉通道翻案**（Read 正斜杠路径→CDN 干净→analyze_image 可读；且 vision prompt 带选项会幻觉，必须中性转录）；uiautomator dump 在 Compose 静止空态可用（扫描中才 never-idle）；install -r 后权限可能整组掉须立即 pm grant
 
+#### Round 2 · 弹窗呈现层重建（同日用户反馈「感觉不到是弹窗、关闭钮不好，整体调整」）
+
+- Status: **PASS 模态呈现正典化**（v1 呈现层两缺陷修复；数据层不动）
+- 根因：①v1 `BottomSheetScaffold` 无遮罩且被 MainActivity Scaffold padding inset——遮罩只盖内容区 y≥293，AppNavbar 区不暗化点不关（真机网格 tap 实测死区 y∈(160,290)），违正典 `.adv-mask inset:0`；②关闭钮=30dp 小 X 图标≠正典「关闭」文字软钮
+- 修复（仅 DeviceListScreen.kt 呈现层）：**material3 1.1.2 `ModalBottomSheet`**（独立 sheet 窗口）——`scrimColor=0x800F1D30` 全屏遮罩盖住 Navbar/TabBar + 顶部 20dp 圆角/cCard/dragHandle=null（自绘 canon grip 36×4dp cLine）+ skipPartiallyExpanded + 统一 `hide()` 滑出撤窗；关闭四路径=「关闭」软钮/点遮罩/返回键/下拉拖关；高度 78%（canon 78vh）；**操作行 24dp 底衬抬出 EMUI 手势区**（sheet 对话框窗口 navigationBars inset 谎报 0，像素级验证蓝底 y2297→2225<2235）
+- Result（华为 TAS-AN00）：全屏遮罩 vision 判「标题栏压暗 ✓」；TWIN 字节回归 v4/v5 两轮一致（`07 ff 01 00 54 57 49 4e`）；四关闭路径全关（v1 死区坐标 540,250 对照：v1 不关→v2 关）；assembleDebug+12/12 单测绿
+- Evidence: verification/windows-plan-v1/20260924-AAND-ADVPOPUP/evidence/round2-modal/（README Round 2 章：13/15 终态截图+死区对照 dump+四轮 twin-events jsonl）
+- 坑位：NavHost 内容层做全屏遮罩必被 topBar/bottomBar inset 咬边，模态层须独立窗口；sheet 对话框窗口画进手势区但 inset=0，避让只能固定 dp；EMUI 无 screenrecord 二进制；长会话防横屏/锁屏（借 accelerometer_rotation 须还原）；m3 sheet settle 期吞注入 tap（复测即过勿误判）；uiautomator 对 dialog 窗口 bounds 不可全信，系统栏边界用 PIL 像素直判
+
 
 ### 2026-09-21 · WIN-009 P4 六壳安装包（用户裁决「P4 六壳安装包（推荐）」开工）
 
