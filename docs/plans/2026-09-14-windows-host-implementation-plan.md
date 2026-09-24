@@ -559,11 +559,22 @@ README 占位且指向 Avalonia 线；Flutter 无 Windows 目标），逐框架�
 ### 2026-09-24 · AIR-GQT 三壳广播外部空口闭环（用户「那就测试下，这边有Windows和安卓手机」）
 
 - Status: **PASS 3/3**（广播模板六壳空口证据链闭合：E/F/V 20260921 + G/Q/T 本轮）
-- Hardware: 接收端=联想平板 24117RK2CC（Android 16，序列号 50143338，A-AND 20260921 构建+四权限 pm grant）；发射=本机 WinRT（各壳独立随机地址）
+- Hardware: 接收端=平板 24117RK2CC（Android 16，序列号 50143338，A-AND 20260921 构建+四权限 pm grant；**后经 logcat 证实为 MIUI 系 zorn 设备，非联想——用户自用，后续轮勿碰**）；发射=本机 WinRT（各壳独立随机地址）
 - Method: 每壳三窗（baseline 0 命中→on ≥1→off 0），手机侧 BleManager logcat 旁证原始 adv hex，判据 `ff0100+标签hex`；驱动走各壳正式路径（G=App.StartAdvertising env 门控测试 / Q=导入 win_broadcast / T=win_bridge air 测试），事件 jsonl 落盘编排
 - Result: G 34 包(-35dBm) / Q 29 包(-34dBm) / T 31 包(-39dBm)，字节 `07 ff 0100 4757494e|5157494e|5457494e` 保真无 CID 劫持；门控测试无 env 时 Go SKIP/Rust 空过；go test/cargo test 全绿；手机动画缩放借调后已还原
 - Evidence: verification/windows-plan-v1/20260924-AIR-GQT/（README + air-summary.json + 九窗 logcat + 驱动日志）
-- 坑位：ZUI 锁屏下 adb install 直接 USER_RESTRICTED（须先划开）且 -g 被忽略；Compose 永不闲态 uiautomator 全废→盲 tap(870,370)+logcat 验证一次即中；CDN 截图 URL 反斜杠坏链目视路线不可用
+- 坑位：ZUI 锁屏下 adb install 直接 USER_RESTRICTED（须先划开）且 -g 被忽略；Compose 永不闲态 uiautomator 全废→盲 tap(870,370)+logcat 验证一次即中；CDN 截图 URL 反斜杠坏链目视路线不可用（**当晚翻案：Read 用正斜杠路径即通，见 AAND-ADVPOPUP 轮**）
+
+### 2026-09-24 · AAND-ADVPOPUP 手机端广播弹窗重建 + Windows×安卓联调（用户「效果很差，手机端的」→「尽量联调」）
+
+- Status: **PASS 三壳字节级命中**（手机端广播弹窗正典重建 + Q/G/T 三壳真机消费侧闭环）
+- Commit: 本地待推（弹窗重建 + 联调证据，见 git log）
+- Hardware: 接收=华为 TAS-AN00（Android 12，FEC0220629005177，用户指定替换小米平板 24117RK2CC——**实为 MIUI 系 zorn，用户自用勿碰**）；发射=本机三壳（复用 AIR-GQT 驱动，hold 300s）
+- 修复（apps/android 四文件）：`BleManager` 去掉 `manufacturerData=null` 桩（SparseArray 真提取+rawBytes 入模型，旁证日志 d→INFO）；`ScanRecord` 加 rawBytes+内容敏感 equals；新增 `core/ble/AdvertisementParser`（**AD 结构真值逐段解析**——比桌面「平台字段重建」多覆盖 Flags/TX/Appearance，含截断段收口+名称/TX/CID/16 位 ServiceData UUID 解码+buildAdvCopyText）；`DeviceDetailSheet` 重建为 p001-advdlg 正典（kv 五行+深色 ad-sec 四段+缺失标注+复制数据 Toast+连接并进入）；门禁=AdvertisementParserTest 12/12+全套 0 失败+assembleDebug 绿
+- Result: ①三壳字节级全中：QWIN `3D:EC:8E:54:04:66`(-35)/GWIN `2E:C6:31:58:CA:AD`(-36)/TWIN `0A:E9:7E:FA:31:92`(-34)，弹窗 `FF·厂商数据 8B` = `07 ff 01 00 <tag>` + 厂商 ID 0x0001 + Manufacturer Data `0x0001·4B·<tag>`（与 AIR-GQT 空口判据同构，随机地址三壳各异复证）；②SHID-00000001 弹窗：STRONG·smart-hid+UUID 列表+三段全解析（128 位 UUID 小端序逐字节吻合）；③常规设备：Nordic UART「873」双厂商段+名称解码 `→ 873`；④复制按钮 Toast「已复制」（剪贴板读出被 Android 10+ 后台限制挡，格式由单测锁定）；⑤对照样本：Windows 系统 MS Beacon（0x0006，一次扫描多台轮换地址）
+- Evidence: verification/windows-plan-v1/20260924-AAND-ADVPOPUP/（README + 三壳弹窗截图/XML dump + 驱动事件链）
+- 坑位：**EMUI 扫描风暴冷却**（15 分钟 ~17 次扫描→会话注册正常但结果投递静默归零，重启恢复，联调节奏须 ≥5 分钟/扫）；**EMUI 吞三方应用日志**（Log.d/Log.i 均不可见，华为侧旁证只能走 uiautomator dump/dumpsys/截图）；**视觉通道翻案**（Read 正斜杠路径→CDN 干净→analyze_image 可读；且 vision prompt 带选项会幻觉，必须中性转录）；uiautomator dump 在 Compose 静止空态可用（扫描中才 never-idle）；install -r 后权限可能整组掉须立即 pm grant
+
 
 ### 2026-09-21 · WIN-009 P4 六壳安装包（用户裁决「P4 六壳安装包（推荐）」开工）
 

@@ -1,0 +1,6 @@
+{"detail":"GWIN","event":"driver-started","shell":"G","ts":1790235666789}
+{"detail":"","event":"start-result","shell":"G","ts":1790235670169}
+{"detail":"GWIN","event":"started","shell":"G","ts":1790235670170}
+{"detail":"","event":"stop-result","shell":"G","ts":1790235970196}
+{"detail":"GWIN","event":"stopped","shell":"G","ts":1790235970196}
+{"detail":"","event":"exited","shell":"G","ts":1790235970198}

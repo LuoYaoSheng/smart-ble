@@ -496,9 +496,10 @@ class BleManager private constructor(private val context: Context) {
             val device = result.device
             val scanRecord = result.scanRecord
             // 联调旁证（20260921 跨端广播验证）：逐条扫见记录进 logcat（含 adv 原始字节
-            // hex，验证对端厂商块保真度），绕开 EMUI uiautomator Compose 文本 bounds=[0,0] 变体（F013 坑位账）
+            // hex，验证对端厂商块保真度），绕开 EMUI uiautomator Compose 文本 bounds=[0,0] 变体（F013 坑位账）。
+            // 20260924：DEBUG→INFO——EMUI/HyperOS 默认丢弃第三方 app 的 Log.d，INFO 级联调才可见。
             val advHex = scanRecord?.bytes?.joinToString("") { "%02x".format(it) } ?: "-"
-            Log.d(TAG, "onScanResult: ${device.address} name=${device.name} rssi=${result.rssi} adv=$advHex")
+            Log.i(TAG, "onScanResult: ${device.address} name=${device.name} rssi=${result.rssi} adv=$advHex")
 
             val bleDevice = BleDevice(
                 deviceId = device.address,
@@ -507,9 +508,14 @@ class BleManager private constructor(private val context: Context) {
                 state = currentConnectionState(device.address),
                 scanRecord = ScanRecord(
                     serviceUuids = scanRecord?.serviceUuids?.map { it.uuid.toString() },
-                    manufacturerData = null,  // Simplified for now
+                    manufacturerData = scanRecord?.manufacturerSpecificData?.let { sparse ->
+                        if (sparse.size() == 0) null else buildMap {
+                            for (index in 0 until sparse.size()) put(sparse.keyAt(index), sparse.valueAt(index))
+                        }
+                    },
                     serviceData = scanRecord?.serviceData?.mapKeys { it.key.toString() },
                     txPowerLevel = scanRecord?.txPowerLevel,
+                    rawBytes = scanRecord?.bytes,
                 ),
             )
 
