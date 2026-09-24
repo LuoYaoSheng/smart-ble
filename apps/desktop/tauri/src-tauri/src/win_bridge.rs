@@ -194,4 +194,52 @@ mod tests {
         // 退出后未在播：stop 报 bridge not running（命令层按幂等成功处理）
         assert!(stop().unwrap_err().contains("not running"));
     }
+
+    // T-WIN 空口取证驱动（20260924-AIR-GQT）：env 门控，无 AIR_TAG 直接返回
+    // （空跑通过，不伤常规门禁）。AIR_TAG=4 字节载荷标签（如 TWIN）；
+    // AIR_LOG=事件 jsonl 路径；AIR_HOLD=保持秒数（默认 9）。事件即时落盘供
+    // 编排器轮询（cargo 捕获输出不可靠）。
+    #[test]
+    fn bridge_air_capture() {
+        let tag = std::env::var("AIR_TAG").unwrap_or_default();
+        if tag.is_empty() {
+            return;
+        }
+        let hold: u64 = std::env::var("AIR_HOLD")
+            .ok()
+            .and_then(|v| v.parse().ok())
+            .unwrap_or(9);
+        let log_path = std::env::var("AIR_LOG").unwrap_or_default();
+        let emit = |event: &str, detail: &str| {
+            use std::io::Write;
+            let ts = std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .unwrap()
+                .as_millis();
+            let line = format!(
+                "{{\"ts\":{ts},\"shell\":\"T\",\"event\":\"{event}\",\"detail\":\"{detail}\"}}\n"
+            );
+            eprintln!("{}", line.trim_end());
+            if !log_path.is_empty() {
+                if let Ok(mut f) =
+                    std::fs::OpenOptions::new().create(true).append(true).open(&log_path)
+                {
+                    let _ = f.write_all(line.as_bytes());
+                }
+            }
+        };
+        emit("driver-started", &tag);
+        let data = tag.as_bytes().to_vec();
+        let started = start(0x0001, &data);
+        emit("start-result", &format!("{started:?}"));
+        assert!(started.is_ok(), "start failed: {started:?}");
+        emit("started", &tag);
+        std::thread::sleep(std::time::Duration::from_secs(hold));
+        let stopped = stop();
+        emit("stop-result", &format!("{stopped:?}"));
+        assert!(stopped.is_ok(), "stop failed: {stopped:?}");
+        emit("stopped", &tag);
+        shutdown();
+        emit("exited", "");
+    }
 }

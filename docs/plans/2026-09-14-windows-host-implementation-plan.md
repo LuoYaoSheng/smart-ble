@@ -553,8 +553,17 @@ README 占位且指向 Avalonia 线；Flutter 无 Windows 目标），逐框架�
 - Hardware: ESP32-S3 SHID-00000001 在广播（真机窗口开放）
 - Result: ①F004 广播数据弹窗五壳齐（E/T/G AdvertisementSheet+Q AdvDialog+V BleAdvSnapshot）；②真机补证：bleak/WinRT 双基准抓取——**新平台事实=SHID 双帧交替（UUID 在 ADV 帧无名、名称在 Extended 帧无 UUID）+本机无线电不自环（广播中 SHID 116 帧可见/自身 0 帧）**；③V 跨帧合并修复（dotnet 57/57 含 2 新单测）；④Q AdvDialog/E CDP 真机字节全吻合；⑤EWIN-DEF-PROV-001 修复（E 主进程 mergeAdvertisement+E/T/G 渲染层粘滞，CDP 3/3+tests 95/95）；⑥F O-2 意外断连错误态横幅（analyze 0/test 129）；⑦广播模板四壳齐：V 原生已有+G（Go embed 边车，go test 过）+Q（P008 页面重建+边车，UI 全链取证 3 截图）+T（Rust win_bridge 模块+前端门控放开，cargo test 过）
 - Evidence: verification/windows-plan-v1/20260924-WIN-F004/（README 含真机窗口第二轮全记录 + realdevice/ 15 件）
-- Observations: G/Q/T 外部空口收包待下轮手机窗口（本机不自环）；Q 状态徽章 Chip 仅文字换色未换底色（cosmetic）；F O-2 精确复现仍待真机观察
+- Observations: ~~G/Q/T 外部空口收包待下轮手机窗口~~（**20260924 下午 AIR-GQT 轮销账**：联想平板 24117RK2CC/Android 16 三壳三窗全 PASS——G 34/Q 29/T 31 包、停播即消失、`07ff0100+标签` 字节保真，见 20260924-AIR-GQT/）；Q 状态徽章 Chip 仅文字换色未换底色（cosmetic）；F O-2 精确复现仍待真机观察
 - Next: 剩余=配网终态待 2.4G AP（环境）+ OTA 取消路径（增强）+ F 深层像素缝（cosmetic）+ 六壳产物重打包（本轮改动后）
+
+### 2026-09-24 · AIR-GQT 三壳广播外部空口闭环（用户「那就测试下，这边有Windows和安卓手机」）
+
+- Status: **PASS 3/3**（广播模板六壳空口证据链闭合：E/F/V 20260921 + G/Q/T 本轮）
+- Hardware: 接收端=联想平板 24117RK2CC（Android 16，序列号 50143338，A-AND 20260921 构建+四权限 pm grant）；发射=本机 WinRT（各壳独立随机地址）
+- Method: 每壳三窗（baseline 0 命中→on ≥1→off 0），手机侧 BleManager logcat 旁证原始 adv hex，判据 `ff0100+标签hex`；驱动走各壳正式路径（G=App.StartAdvertising env 门控测试 / Q=导入 win_broadcast / T=win_bridge air 测试），事件 jsonl 落盘编排
+- Result: G 34 包(-35dBm) / Q 29 包(-34dBm) / T 31 包(-39dBm)，字节 `07 ff 0100 4757494e|5157494e|5457494e` 保真无 CID 劫持；门控测试无 env 时 Go SKIP/Rust 空过；go test/cargo test 全绿；手机动画缩放借调后已还原
+- Evidence: verification/windows-plan-v1/20260924-AIR-GQT/（README + air-summary.json + 九窗 logcat + 驱动日志）
+- 坑位：ZUI 锁屏下 adb install 直接 USER_RESTRICTED（须先划开）且 -g 被忽略；Compose 永不闲态 uiautomator 全废→盲 tap(870,370)+logcat 验证一次即中；CDN 截图 URL 反斜杠坏链目视路线不可用
 
 ### 2026-09-21 · WIN-009 P4 六壳安装包（用户裁决「P4 六壳安装包（推荐）」开工）
 
