@@ -18,6 +18,13 @@ namespace SmartBLE.Desktop.ViewModels;
 public class BleService
 {
     private BluetoothLEAdvertisementWatcher? _watcher;
+
+    // F004 跨帧合并态：同一设备多帧交替（20260924 真机 SHID-00000001 34 帧实证——
+    // ConnectableUndirected 帧 0x01+0x07 无名、Extended 帧 0x09 无 UUID），
+    // AD 段按类型并集、UUID 并集、厂商数据沿最新非空；每次开扫描重置
+    private readonly Dictionary<ulong, Dictionary<byte, string>> _advSections = new();
+    private readonly Dictionary<ulong, HashSet<string>> _advUuids = new();
+    private readonly Dictionary<ulong, (ushort Id, string Hex)> _advMfg = new();
     private BluetoothLEDevice? _currentDevice;
     private GattSession? _gattSession;
     private readonly List<GattDeviceService> _gattServices = new();
@@ -62,6 +69,11 @@ public class BleService
             ScanningMode = BluetoothLEScanningMode.Active
         };
 
+        // 新扫描会话重置跨帧合并态（上一会话的旧段不带入）
+        _advSections.Clear();
+        _advUuids.Clear();
+        _advMfg.Clear();
+
         _watcher.Received += OnAdvertisementReceived;
         _watcher.Start();
 
@@ -96,56 +108,56 @@ public class BleService
         // 正典 F005 显示名链：无名广播保持空名（由 UI 层「未命名 BLE 设备」兜底），
         // 不再在此伪造「未知设备」
         var name = args.Advertisement.LocalName ?? "";
-        // adv 服务 UUID 列表供 Smart HID 档案强匹配（名称前缀仅弱匹配）
-        string[]? serviceUuids = null;
-        try
-        {
-            var advUuids = args.Advertisement.ServiceUuids;
-            if (advUuids.Count > 0)
-            {
-                serviceUuids = new string[advUuids.Count];
-                for (var i = 0; i < advUuids.Count; i++)
-                    serviceUuids[i] = advUuids[i].ToString();
-            }
-        }
-        catch
-        {
-            // 个别广播帧 ServiceUuids 访问异常时按无服务列表处理（弱匹配兜底）
-        }
+        // 快照跨帧合并后同时供 Smart HID 匹配（UUID 并集，强匹配）与 F004 弹窗使用
+        var adv = BuildAdvSnapshot(args.Advertisement, args.BluetoothAddress);
+        string[]? serviceUuids = adv is { ServiceUuids.Count: > 0 } ? adv.ServiceUuids.ToArray() : null;
         var device = new BleDevice(args.BluetoothAddress.ToString("X"), name,
-            (short)args.RawSignalStrengthInDBm, serviceUuids, BuildAdvSnapshot(args.Advertisement));
+            (short)args.RawSignalStrengthInDBm, serviceUuids, adv);
         DeviceDiscovered?.Invoke(device);
     }
 
-    // F004 广播快照：WinRT DataSections 原始 AD 段（真实逐段字节）+ 解析字段；
+    // F004 广播快照：WinRT DataSections 原始 AD 段（真实逐段字节，非重建）+ 解析字段；
+    // 跨帧合并（段/UUID 按类型并集、厂商数据沿最新非空帧）——设备名与 UUID 常分居
+    // 不同帧（见类头 20260924 实证），不合并则弹窗内容随末帧漂移；
     // 任一访问异常都降级为部分快照（不阻断设备发现）
-    private static BleAdvSnapshot? BuildAdvSnapshot(BluetoothLEAdvertisement adv)
+    internal BleAdvSnapshot? BuildAdvSnapshot(BluetoothLEAdvertisement adv, ulong address)
     {
         try
         {
-            string[] uuids = Array.Empty<string>();
-            var advUuids = adv.ServiceUuids;
-            if (advUuids.Count > 0)
+            if (!_advUuids.TryGetValue(address, out var uuidSet))
             {
-                uuids = new string[advUuids.Count];
-                for (var i = 0; i < advUuids.Count; i++)
-                    uuids[i] = advUuids[i].ToString();
+                uuidSet = new HashSet<string>();
+                _advUuids[address] = uuidSet;
             }
+            var advUuids = adv.ServiceUuids;
+            for (var i = 0; i < advUuids.Count; i++)
+                uuidSet.Add(advUuids[i].ToString());
 
-            ushort? mfgId = null;
-            var mfgHex = string.Empty;
             if (adv.ManufacturerData.Count > 0)
             {
                 var md = adv.ManufacturerData[0];
-                mfgId = (ushort)md.CompanyId;
-                mfgHex = Convert.ToHexString(ToBytes(md.Data));
+                _advMfg[address] = ((ushort)md.CompanyId, Convert.ToHexString(ToBytes(md.Data)));
+            }
+            ushort? mfgId = null;
+            var mfgHex = string.Empty;
+            if (_advMfg.TryGetValue(address, out var m))
+            {
+                mfgId = m.Id;
+                mfgHex = m.Hex;
             }
 
-            var sections = new List<BleAdvSection>(adv.DataSections.Count);
+            if (!_advSections.TryGetValue(address, out var sections))
+            {
+                sections = new Dictionary<byte, string>();
+                _advSections[address] = sections;
+            }
             foreach (var ds in adv.DataSections)
-                sections.Add(new BleAdvSection((byte)ds.DataType, Convert.ToHexString(ToBytes(ds.Data))));
+                sections[(byte)ds.DataType] = Convert.ToHexString(ToBytes(ds.Data));
+            var merged = sections.OrderBy(kv => kv.Key)
+                .Select(kv => new BleAdvSection(kv.Key, kv.Value))
+                .ToList();
 
-            return new BleAdvSnapshot(uuids, mfgId, mfgHex, sections);
+            return new BleAdvSnapshot(uuidSet.ToArray(), mfgId, mfgHex, merged);
         }
         catch
         {

@@ -9,6 +9,7 @@ import (
 	"io/fs"
 	"log"
 	"runtime"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -33,6 +34,7 @@ type App struct {
 	scanEntries   map[string]*scanEntry      // id -> 合并后的广播状态（ADV+RSP）
 	scanHits      map[string]bluetooth.Address // id -> 地址（Connect 用）
 	conns         map[string]*gattConn
+	wbridge       *winBridge // Win32 广播边车（WIN-BRIDGE 同构，winbridge*.go）
 	exitConfirmed bool
 }
 
@@ -322,8 +324,9 @@ func (a *App) getConn(deviceID string) *gattConn {
 	return nil
 }
 
-// shutdownBLE E-WIN before-quit 口径：停扫描 + 断开全部链路。
+// shutdownBLE E-WIN before-quit 口径：停广播（边车）→ 停扫描 → 断开全部链路。
 func (a *App) shutdownBLE() {
+	a.killWinBridge()
 	if a.adapter == nil {
 		return
 	}
@@ -709,14 +712,53 @@ func (a *App) NotifyCharacteristic(deviceID, serviceUUID, charUUID string, notif
 	return plainResult{Success: true}
 }
 
-// ─── IPC：广播（win32 正典降级，文案对齐 E-WIN）───
+// ─── IPC：广播（win32=WIN-BRIDGE 边车真发射；其他平台正典降级，文案对齐 E-WIN）───
 
 func (a *App) StartAdvertising(name string, serviceUuids []string, manufacturerId string, manufacturerData string, includeName bool) plainResult {
+	if runtime.GOOS == "windows" {
+		// WIN-BRIDGE：WinRT 仅厂商块可发（LocalName/ServiceUuids 被平台拒绝，
+		// 见 20260921-XDEV-BROADCAST 平台事实）——name/uuid 参数在此路径忽略。
+		b, err := a.ensureWinBridge()
+		if err != nil {
+			return plainResult{Error: err.Error()}
+		}
+		idStr := strings.TrimPrefix(manufacturerId, "0x")
+		if idStr == "" {
+			idStr = "0001"
+		}
+		v, err := strconv.ParseUint(idStr, 16, 16)
+		if err != nil || v == 0 {
+			v = 1
+		}
+		data := []byte(manufacturerData)
+		if len(data) == 0 {
+			data = []byte("BLE")
+		}
+		nums := make([]int, len(data))
+		for i, c := range data {
+			nums[i] = int(c)
+		}
+		if err := b.command("start", map[string]any{"companyId": v, "data": nums}); err != nil {
+			return plainResult{Error: err.Error()}
+		}
+		// 首次调用含边车冷启动（PS 起 + csc 首编译 ~3s），超时余量放宽
+		return b.waitEvent("started", 8*time.Second)
+	}
 	p := a.HostPlatform().Platform
 	return plainResult{Error: fmt.Sprintf("Advertising is not supported on %s. True peripheral mode requires native apps (e.g., macOS SmartBLE) or Linux with bleno.", p)}
 }
 
 func (a *App) StopAdvertising() plainResult {
+	if runtime.GOOS == "windows" {
+		b, err := a.ensureWinBridge()
+		if err != nil {
+			return plainResult{Error: err.Error()}
+		}
+		if err := b.command("stop", nil); err != nil {
+			return plainResult{Error: err.Error()}
+		}
+		return b.waitEvent("stopped", 5*time.Second)
+	}
 	p := a.HostPlatform().Platform
 	return plainResult{Error: fmt.Sprintf("Advertising is not supported on %s", p)}
 }

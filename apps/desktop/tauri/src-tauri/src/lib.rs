@@ -18,6 +18,10 @@ use std::time::Duration;
 use tauri::State;
 use tokio::sync::Mutex;
 
+// Win32 广播边车（WIN-BRIDGE 同构，2026-09-24 广播模板复制轮；仅厂商块 0xFF）
+#[cfg(target_os = "windows")]
+mod win_bridge;
+
 // BLE State
 struct BleState {
     manager: Option<Manager>,
@@ -1024,6 +1028,7 @@ async fn notify_characteristic(
 // For production use, consider using the native macOS implementation instead
 #[tauri::command]
 #[allow(non_snake_case)]
+#[allow(unused_variables)]
 async fn start_advertising(
     name: String,
     serviceUuids: Vec<String>,
@@ -1031,12 +1036,6 @@ async fn start_advertising(
     manufacturerData: Option<String>,
     includeName: Option<bool>,
 ) -> Result<Response<bool>, String> {
-    let _name = name;
-    let _service_uuids = serviceUuids;
-    let _manufacturer_id = manufacturerId;
-    let _manufacturer_data = manufacturerData;
-    let _include_name = includeName;
-
     #[cfg(target_os = "macos")]
     {
         // macOS: Requires CoreBluetooth peripheral mode (not exposed by btleplug)
@@ -1051,13 +1050,38 @@ async fn start_advertising(
 
     #[cfg(target_os = "windows")]
     {
-        // Windows: BLE peripheral mode requires platform-specific implementation
-        return Ok(Response {
-            success: false,
-            data: None,
-            error: Some("Peripheral mode not yet supported on Windows. btleplug has limited peripheral support.".to_string()),
-            value: None,
-        });
+        // WIN-BRIDGE（2026-09-24 广播模板复制轮）：WinRT 仅厂商块 0xFF 可发
+        // （LocalName/ServiceUuids 被平台拒绝——20260921-XDEV-BROADCAST 平台事实），
+        // name/uuid 参数在此路径忽略；复用 E/G/Q 壳同一份边车 ps1。
+        let id_str = manufacturerId
+            .as_deref()
+            .unwrap_or("0001")
+            .trim()
+            .trim_start_matches("0x")
+            .trim_start_matches("0X");
+        let company_id = u16::from_str_radix(id_str, 16).unwrap_or(1).max(1);
+        let data = {
+            let s = manufacturerData.as_deref().unwrap_or("");
+            if s.is_empty() {
+                b"BLE".to_vec()
+            } else {
+                s.as_bytes().to_vec()
+            }
+        };
+        return match win_bridge::start(company_id, &data) {
+            Ok(detail) => Ok(Response {
+                success: true,
+                data: Some(true),
+                error: None,
+                value: Some(detail.to_string()),
+            }),
+            Err(e) => Ok(Response {
+                success: false,
+                data: None,
+                error: Some(e),
+                value: None,
+            }),
+        };
     }
 
     #[cfg(target_os = "linux")]
@@ -1095,6 +1119,31 @@ async fn start_advertising(
 
 #[tauri::command]
 async fn stop_advertising() -> Result<Response<bool>, String> {
+    #[cfg(target_os = "windows")]
+    {
+        // WIN-BRIDGE 停播；未在播（边车未起）按幂等成功处理（E/G/Q 同口径）
+        return match win_bridge::stop() {
+            Ok(_) => Ok(Response {
+                success: true,
+                data: Some(true),
+                error: None,
+                value: None,
+            }),
+            Err(e) if e.contains("not running") => Ok(Response {
+                success: true,
+                data: Some(true),
+                error: None,
+                value: None,
+            }),
+            Err(e) => Ok(Response {
+                success: false,
+                data: None,
+                error: Some(e),
+                value: None,
+            }),
+        };
+    }
+    #[cfg(not(target_os = "windows"))]
     Ok(Response {
         success: true,
         data: Some(true),
@@ -1194,6 +1243,9 @@ fn get_properties(char: &Characteristic) -> Vec<String> {
 #[tauri::command]
 fn confirm_exit(quit: bool, window: tauri::Window, state: State<'_, Arc<AtomicBool>>) {
     if quit {
+        // dwin-quit 正典顺序：退出前先停广播（WIN-BRIDGE 边车）再放行关闭
+        #[cfg(target_os = "windows")]
+        win_bridge::shutdown();
         state.store(true, Ordering::SeqCst);
         eprintln!("[APP] Exit confirmed by user -> closing");
         let _ = window.close();

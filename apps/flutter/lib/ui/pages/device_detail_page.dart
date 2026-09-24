@@ -42,6 +42,8 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
   bool _isLoading = true;
   bool _isConnected = false;
   bool _isReconnecting = false;
+  bool _connectionLost = false; // O-2：意外断连错误态（用户主动断开不置位）
+  bool _userDisconnecting = false; // O-2：用户主动断开旗标（区分意外断连）
   String? _errorMessage;
   StreamSubscription? _connectionStatesSub;
 
@@ -129,13 +131,19 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
 
       final state = states[widget.deviceId];
       final connected = state == BluetoothConnectionState.connected;
+      final wasConnected = _isConnected;
       final reconnecting = !connected &&
           !_bleManager.isDeviceConnected(widget.deviceId) &&
-          _isConnected; // 之前是连接状态，现在断开了 → 可能在重连
+          wasConnected; // 之前是连接状态，现在断开了 → 可能在重连
+
+      // O-2 断连错误态：非用户主动断开且从连接态跌落 → 置位（不再静默降级）
+      final lostUnexpectedly = !connected && wasConnected && !_userDisconnecting;
 
       setState(() {
         _isConnected = connected;
         _isReconnecting = reconnecting;
+        if (connected && _connectionLost) _connectionLost = false;
+        if (lostUnexpectedly) _connectionLost = true;
       });
 
       if (reconnecting) {
@@ -143,6 +151,9 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
         logger.warning('连接状态流：设备 ${widget.deviceId} 中断，等待自动重连');
       } else if (state == BluetoothConnectionState.disconnected) {
         logger.error('连接已断开');
+        if (lostUnexpectedly) {
+          logger.error('意外断连：保持本页并显示断连横幅（O-2 错误态，不静默弹回）');
+        }
       }
     });
   }
@@ -159,6 +170,7 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
           _services.clear();
           _services.addAll(services);
           _isConnected = true;
+          _connectionLost = false;
           _isLoading = false;
         });
         logger.info('发现 ${services.length} 个服务');
@@ -178,6 +190,7 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
   Future<void> _disconnect() async {
     // O-2 插桩：P006 唯一的主动 pop 路径，导出文本时间线据此排除/锁定
     logger.info('断开连接（用户操作），即将返回设备列表');
+    _userDisconnecting = true; // O-2：区分用户主动断开与意外断连
     try {
       await _bleManager.disconnect(widget.deviceId);
       if (mounted) {
@@ -564,6 +577,38 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
       ),
       body: Column(
         children: [
+          // O-2 断连错误态横幅：意外断连不再静默降级（服务列表保留断开前快照）
+          if (_connectionLost && !_isConnected && !_isReconnecting)
+            Container(
+              width: double.infinity,
+              margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppTheme.errorColor.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                    color: AppTheme.errorColor.withValues(alpha: 0.4)),
+              ),
+              child: Row(
+                children: [
+                  const AppIcon('warn', size: 18, color: AppTheme.errorColor),
+                  const SizedBox(width: 8),
+                  const Expanded(
+                    child: Text(
+                      '连接已断开（意外断连）· 下方服务数据为断开前快照',
+                      style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: AppTheme.errorColor),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: _checkConnectionAndDiscoverServices,
+                    child: const Text('重连', style: TextStyle(fontSize: 12)),
+                  ),
+                ],
+              ),
+            ),
           // devhead：设备名 + deviceId（自 AppBar 标题下沉到正文，正典 .devhead 口径）
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),

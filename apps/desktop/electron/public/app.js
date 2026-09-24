@@ -1107,6 +1107,18 @@ class App {
             const match = window.SmartHidDesktop.matchScannedDevice(device);
             if (match) device.profileMatch = match; // 1=WEAK / 2=STRONG
         }
+        // EWIN-DEF-PROV-001：末帧字段缺失不冲掉已建立态（名称/UUID/匹配）——
+        // E 侧另有主进程跨帧合并（index.js mergeAdvertisement），此处是 G 镜像共用的兜底
+        if (!isNew) {
+            const prev = this.devices.get(device.id);
+            if (prev) {
+                if (!device.profileMatch && prev.profileMatch) device.profileMatch = prev.profileMatch;
+                if (!device.name && prev.name) device.name = prev.name;
+                const du = device.advertisement && device.advertisement.serviceUuids;
+                const pu = prev.advertisement && prev.advertisement.serviceUuids;
+                if (du && pu && !du.length && pu.length) du.push(...pu);
+            }
+        }
 
         this.devices.set(device.id, device);
 

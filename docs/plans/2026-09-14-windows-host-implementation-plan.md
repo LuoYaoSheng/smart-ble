@@ -82,7 +82,7 @@ Windows 主机不负责：
 | WIN-004 | Tauri Windows 构建与启动 | `PASS_WITH_OBS` | 旧提交扫描、GATT 通过 | WIN-001、WIN-002 | 20260918：fmt 修复 + check/test/build 过 + T1-T16 真机链；T-WIN-DEF-001 在册 |
 | WIN-005 | Avalonia 功能补齐 | `PASS_WITH_OBS` | 单测 19/19 补齐 | WIN-001、MAC-008 | 20260920：SmartBLE.Desktop.Tests 新建，先红后绿抓出 UUID 小写映射真 bug；BLE 功能缺陷已清（见 20260918-WIN-DEF-FIX）；20260920-WIN-UIFULL 走查补 T-WIN-DEF-004+离开清会话双壳修复；同日 VWIN-UIFULL 续轮清 DEF-004/005/006（DataContext/卡片命令/寻祖绑定），V-WIN 全流程走查 16/16；同日 VWIN-UIALIGN 正典 UI 全量重写（TabBar+七视图+色彩探针 81/81，DEF-007~010 清剿）；同日 VWIN-UIALIGN2 布局数值收口（acts 撑满/模态等宽/stepper 修复等 6 缺陷，SL1~11 布局探针 92/92）；20260921 P5 终交付收口：dotnet test 55/55 复绿，验收全满足（0 编译错/新增测试全过/真 GATT 非占位）；OBS=P4 登记「自包含 exe 无 Win32 版本资源」 |
 | WIN-006 | Windows 真实 GATT 与重连回归 | `PASS_WITH_OBS` | T-WIN-DEF-001 已修 | WIN-003、WIN-004 | 20260918 WIN-DEF-FIX：重连死句柄修复，retry 探针 + T1-T16 全绿；E/T/V 真机 GATT 链全过；20260921 P5 终交付收口：真机双探针复绿（bleak 层 + Q app 12/12）；OBS=fixture_peripheral_s3 对应固件复验（烧录记 SHA）挂 P3 硬件窗口 |
-| WIN-007 | Smart HID Windows E2E | `PASS_WITH_OBS` | UI/传输代码已存在 | WIN-006、ControlHub 配对码、SHID 固件 | 20260921 P3 硬件窗口（用户拔电重启解锁）：**BLE 配网链全通**——ControlHub 源码 build+三端口起+一次性配对码（LAN 口径）+E-WIN P002（扫描→配置入口→身份→表单→QR 兜底粘贴→candidate 下发→七步）+hub 配对会话消费（17892 交换完成+devices 注册）+**SHID-FW-LOCK-001 断电恢复验证 ✓（INPUT 合法写入成功=锁清除铁证，20260918 起 0x0D 现象消失）**；wifi_failed 真实场景取证（串口日志）；**OBS①=WiFi 环境**：HJWY 路由器现为 5GHz-only（单 BSSID 信道 36），ESP32 2.4G 永不可连→终态 Ready/P003/P005 已配网分支/pairing_expired/mqtt_invalid 设备侧取证待 2.4G AP（E13 时代同 SSID 曾可达，环境 17 天内变化）；OBS②=EWIN-DEF-PROV-001（扫描卡匹配态晚于首渲，「配置」按钮需二次渲染出现）；hub devices 报 firmware 1.1.0 vs 实际 1.2.0（口径差异）；证据 20260921-P3-HARDWARE/win007-evidence.md | 
+| WIN-007 | Smart HID Windows E2E | `PASS_WITH_OBS` | UI/传输代码已存在 | WIN-006、ControlHub 配对码、SHID 固件 | 20260921 P3 硬件窗口（用户拔电重启解锁）：**BLE 配网链全通**——ControlHub 源码 build+三端口起+一次性配对码（LAN 口径）+E-WIN P002（扫描→配置入口→身份→表单→QR 兜底粘贴→candidate 下发→七步）+hub 配对会话消费（17892 交换完成+devices 注册）+**SHID-FW-LOCK-001 断电恢复验证 ✓（INPUT 合法写入成功=锁清除铁证，20260918 起 0x0D 现象消失）**；wifi_failed 真实场景取证（串口日志）；**OBS①=WiFi 环境**：HJWY 路由器现为 5GHz-only（单 BSSID 信道 36），ESP32 2.4G 永不可连→终态 Ready/P003/P005 已配网分支/pairing_expired/mqtt_invalid 设备侧取证待 2.4G AP（E13 时代同 SSID 曾可达，环境 17 天内变化）；OBS②=EWIN-DEF-PROV-001（扫描卡匹配态晚于首渲，「配置」按钮需二次渲染出现）——**20260924 已修**（跨帧合并+渲染层粘滞，CDP 3/3，见 20260924-WIN-F004/README 真机窗口第二轮）；hub devices 报 firmware 1.1.0 vs 实际 1.2.0（口径差异）；证据 20260921-P3-HARDWARE/win007-evidence.md | 
 | WIN-008 | Windows OTA E2E 回归 | `PASS_WITH_OBS` | 两线曾 `PASS_WITH_OBS` | WIN-006、OTA 固件 | 20260921 P3 硬件窗口：**两线版本迁移真实成功**——LightBLE fixture 双版本（1.0.0→1.0.1-cdc，pio 新构建 SHA 在案）+六字段 manifest（target 枚举必填：missing_target 设备侧拒绝实证）；E-WIN/T-WIN 各自全链 start→ready→DATA 556,544B（~6.5 分钟稳定传输）→commit→success→reboot→**版本回读设备侧独立证据**（bleak 直读 OTA 状态+INFO 双特征 `1.0.1-cdc`，重启后 GATT 树健康）；传输 64% 中断后重开升级成功（天然覆盖）；WIN-006 尾款 fixture_s3 复验同步达成（当前 commit 构建烧录+SHA 记录）；测试后设备归位（全擦+SHID 四分区烧回，广播/MAC 恢复出厂态）；**OBS=取消 abort 路径+缺 manifest/目标错/大小错/Hash 错真机重放未做（契约测试覆盖）**；CDC 变体串口走原生 USB（CH343 旁路，本轮以 BLE 为设备侧证据）；证据 20260921-P3-HARDWARE/ota/win008-evidence.md |
 | WIN-009 | Windows 安装包与安装验证 | `PASS_WITH_OBS` | Electron/Avalonia 有历史构建 | WIN-003～WIN-008、MAC-011 | 20260921 P4：六壳 8 产物全构建+SHA256（E NSIS+portable、T MSI+NSIS、V 自包含 zip、F Release zip、G 单 exe、Q venv zip；均未签名只标 Preview）；E(NSIS) 与 T(NSIS) 完成干净安装冒烟（装→启动→CDP 真首扫发现 8/7 台含 SHID-00000001→卸载→残留→重装）；**同日 T-MSI-ELEV 轮：MSI 提权闭环补齐（UAC 确认后 /qn 装 EXIT=0→HKLM 1.0.5 落位→CDP 真首扫 9 台含 SHID→提权卸载 EXIT=0→Program Files 与注册表零残留），P4「MSI 非提权 1603」OBS 清账**；证据 20260921-P4-PACKAGING/、20260921-T-MSI-ELEV/（余 OBS=8 条中已清 MSI 项） |
 | WIN-010 | Windows 最终交付与矩阵回填 | `PASS_WITH_OBS` | 历史证据分散 | WIN-001～WIN-009 | 20260921 P5 收口：FINAL-REPORT.md 落库（17 项台账+六壳矩阵+平台事实交 Mac+8 产物账）；最后一轮门禁六壳全绿+真机双探针（bleak 层 + Q app 12/12）+六产物新鲜度核验；含糊 TODO 清零（WIN-008 定格 BLOCKED）；OBS=WIN-007/008 BLOCKED 台账、四项用户裁决项未动、F-WIN Windows 侧 GATT 无独立真机走查（终报新登记）、F 深层无像素缝、全产物未签名仅 Preview；证据 20260921-P5-FINAL/ |
@@ -457,7 +457,7 @@ README 占位且指向 Avalonia 线；Flutter 无 Windows 目标），逐框架�
 - 四连：①断电后只读复核（设备无恙：-45dBm/1svc+3char/INFO unprovisioned）②F 三 OBS 走查（`fwin_gatt_walk` 驱动；O-3 目检/O-4 零写入闭环/O-2 时间线定位）③WIN-007（ControlHub 源码 build+LAN 配对码+WiFi 凭据提权导出→E-WIN P002 全链→**INPUT 合法写入成功=SHID-FW-LOCK-001 断电恢复验证**→hub 配对消费；WiFi 5G-only 环境定格）④WIN-008（fixture 双版本 pio 构建+烧录→E/T 两线 OTA 556,544B 版本迁移成功→bleak 版本回读设备侧证据→**设备归位**全擦+SHID 四分区烧回）
 - Hardware: ESP32-S3 SHID-00000001（CH343/COM12 全程烧录通道）；华为 TAS-AN00 adb（配网观察旁证未用）；HJWY 路由器（5GHz-only 测定）
 - Evidence: verification/windows-plan-v1/20260921-P3-HARDWARE/（fwalk-obs-evidence.md + win007-evidence.md + ota/win008-evidence.md + 全程截图/log/探针）
-- Observations: 配网终态待 2.4G AP（手机热点可解锁——PS WinRT/netsh 自动热点两路不通在案）；OTA 取消路径未显式走查；EWIN-DEF-PROV-001（匹配态晚渲染）；F O-2 精确根因待 F 侧日志基建
+- Observations: 配网终态待 2.4G AP（手机热点可解锁——PS WinRT/netsh 自动热点两路不通在案）；OTA 取消路径未显式走查；~~EWIN-DEF-PROV-001（匹配态晚渲染）~~ **20260924 已修**（根因=SHID 名称与 UUID 分居 ADV/Extended 两帧、逐帧投影无合并——E 主进程 mergeAdvertisement 跨帧合并+E/T/G 渲染层粘滞，CDP 3/3）；~~F O-2 精确根因待 F 侧日志基建~~ **20260924 修复方向落地**（P006 意外断连显式错误态横幅+重连，analyze 0 issues/test 129/129；精确复现待下轮真机窗口观察）
 - Next: Windows 线全部 BLOCKED 清零；剩余均为环境/增强型 OBS
 
 ### 2026-09-21 · EWIN-BRIDGE——E-WIN WinRT 广播模板（用户裁决项 #3「先 E-WIN 一壳做模板」）
@@ -545,6 +545,16 @@ README 占位且指向 Avalonia 线；Flutter 无 Windows 目标），逐框架�
 - 坑位：GetWindowRect DWM 边框假偏大→EXTENDED_FRAME_BOUNDS；多屏 ImageGrab 须 all_screens；venv 启动器把基础解释器当子进程→按进程树找窗；Popen 控制台盖窗→CREATE_NO_WINDOW；系统定时切暗；偶发空窗重试
 - 遗留：Q 页面级五项（Q-PA-001~005）+ F 像素级布局探针专项未跑（见证据 README §5）；N4 广播 Tab 显隐（E/T/G 三枚 vs F/V/Q 四枚恒显）仍待用户裁决
 - Evidence: verification/windows-plan-v1/20260921-UIALIGN-TABBAR/
+
+### 2026-09-24 · F004 五壳广播弹窗 + 真机窗口第二轮 + 剩余项收口（用户「剩下规划下并处理」）
+
+- Status: Windows 线遗留项代码侧全清（F004 补齐 / EWIN-DEF-PROV-001 修 / F O-2 修复方向落地 / 广播模板四壳齐）
+- Commit: F004 五壳 `afa5b3f`；本轮（真机补证+三修+广播复制）提交见 git log
+- Hardware: ESP32-S3 SHID-00000001 在广播（真机窗口开放）
+- Result: ①F004 广播数据弹窗五壳齐（E/T/G AdvertisementSheet+Q AdvDialog+V BleAdvSnapshot）；②真机补证：bleak/WinRT 双基准抓取——**新平台事实=SHID 双帧交替（UUID 在 ADV 帧无名、名称在 Extended 帧无 UUID）+本机无线电不自环（广播中 SHID 116 帧可见/自身 0 帧）**；③V 跨帧合并修复（dotnet 57/57 含 2 新单测）；④Q AdvDialog/E CDP 真机字节全吻合；⑤EWIN-DEF-PROV-001 修复（E 主进程 mergeAdvertisement+E/T/G 渲染层粘滞，CDP 3/3+tests 95/95）；⑥F O-2 意外断连错误态横幅（analyze 0/test 129）；⑦广播模板四壳齐：V 原生已有+G（Go embed 边车，go test 过）+Q（P008 页面重建+边车，UI 全链取证 3 截图）+T（Rust win_bridge 模块+前端门控放开，cargo test 过）
+- Evidence: verification/windows-plan-v1/20260924-WIN-F004/（README 含真机窗口第二轮全记录 + realdevice/ 15 件）
+- Observations: G/Q/T 外部空口收包待下轮手机窗口（本机不自环）；Q 状态徽章 Chip 仅文字换色未换底色（cosmetic）；F O-2 精确复现仍待真机观察
+- Next: 剩余=配网终态待 2.4G AP（环境）+ OTA 取消路径（增强）+ F 深层像素缝（cosmetic）+ 六壳产物重打包（本轮改动后）
 
 ### 2026-09-21 · WIN-009 P4 六壳安装包（用户裁决「P4 六壳安装包（推荐）」开工）
 

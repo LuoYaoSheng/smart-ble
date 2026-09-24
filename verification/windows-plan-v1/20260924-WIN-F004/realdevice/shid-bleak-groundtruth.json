@@ -1,0 +1,21 @@
+[
+  {
+    "address": "10:B4:1D:CD:23:8E",
+    "name": "SHID-00000001",
+    "rssi": -42,
+    "service_uuids": [
+      "9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04"
+    ],
+    "manufacturer_data": {},
+    "service_data": {},
+    "tx_power": null,
+    "local_name": "SHID-00000001",
+    "platform": [
+      "<winrt._winrt_windows_devices_bluetooth_advertisement.BluetoothLEAdvertisementWatcher object at 0x00000234C822DD50>",
+      [
+        "<winrt._winrt_windows_devices_bluetooth_advertisement.BluetoothLEAdvertisementReceivedEventArgs object at 0x00000234C822E050>",
+        "<winrt._winrt_windows_devices_bluetooth_advertisement.BluetoothLEAdvertisementReceivedEventArgs object at 0x00000234C822D590>"
+      ]
+    ]
+  }
+]

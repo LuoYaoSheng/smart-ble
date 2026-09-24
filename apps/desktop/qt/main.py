@@ -44,7 +44,7 @@ from PySide6.QtWidgets import (
 from automation import start_automation_if_requested
 from ble_service import BleService, ScanHit, char_display_name
 from tabbar import CanonTabBar, render_icon
-from theme import LINE_SOFT, MUT, PRIMARY, PRIMARY_DEEP, QSS, SUB
+from theme import DANGER, LINE_SOFT, MUT, PRIMARY, PRIMARY_DEEP, QSS, SUB
 from widgets import (
     BtChip,
     Chip,
@@ -851,26 +851,182 @@ class ConnectedPage(QWidget):
 
 
 class BroadcastPage(QWidget):
-    """P008 广播（Windows 无外设栈，与 V-WIN 同口径降级；正典 chrome）。"""
+    """P008 广播（WIN-BRIDGE 边车真发射：WinRT 仅厂商块 0xFF 可发——20260924 广播模板复制轮）。
 
-    def __init__(self, parent: QWidget | None = None) -> None:
+    E-WIN P008 同构：状态徽章 + 四字段表单（win 路径仅厂商块实际发射）+
+    31B 预算行 + 启动/停止 + 日志。平台事实见 win_broadcast.py 头注
+    （名称/UUID 不可设；本机不自环，空口收包需外部接收端）。"""
+
+    def __init__(self, ble: "BleService", parent: QWidget | None = None) -> None:
         super().__init__(parent)
+        self._ble = ble
         root = QVBoxLayout(self)
         root.setContentsMargins(0, 0, 0, 0)
         root.setSpacing(0)
 
         navbar = NavBar("PERIPHERAL", "广播")
-        navbar.add_right(Chip("平台：Desktop", "neutral"))
+        self._status_chip = Chip("未发射", "neutral")
+        navbar.add_right(self._status_chip)
         root.addWidget(navbar)
 
         scroll, page = page_scroll()
         note = NoteInfo(
-            "Windows 平台暂不支持外设模式（降级口径同 V-WIN；N4 待决）", sprite="warn"
+            "Windows 平台经 WinRT 仅支持厂商数据块广播（名称/UUID 不可设，"
+            "20260921 平台事实）；空口收包需外部接收端（本机无线电不自环）。",
+            sprite="warn",
         )
         self.tip_label = note.tip_label  # automation seam 契约（state.broadcastTip）
         page.addWidget(note)
+
+        # 表单卡：四字段（E-WIN 同构；win 路径仅厂商 ID/厂商数据生效）
+        form = QFrame()
+        form.setObjectName("Card")
+        fv = QVBoxLayout(form)
+        fv.setContentsMargins(16, 14, 16, 14)
+        fv.setSpacing(10)
+        fhead = QLabel("广播内容")
+        fhead.setObjectName("CardHead")
+        fv.addWidget(fhead)
+        self._f_name = QLineEdit("SmartBLE")
+        self._f_uuid = QLineEdit("FFE0")
+        self._f_mfg_id = QLineEdit("0001")
+        self._f_mfg_data = QLineEdit("BLE")
+        for label, edit, hint in (
+            ("名称（WinRT 平台不可设，仅预算展示）", self._f_name, "广播名称"),
+            ("Service UUID（WinRT 平台不可设，仅预算展示）", self._f_uuid, "如 FFE0"),
+            ("厂商 ID（0xFF 块 · 实际发射）", self._f_mfg_id, "4 位十六进制，如 0001"),
+            ("厂商数据（ASCII · 实际发射）", self._f_mfg_data, "如 BLE"),
+        ):
+            edit.setObjectName("FilterInput")
+            edit.setPlaceholderText(hint)
+            row = QHBoxLayout()
+            row.setSpacing(8)
+            lb = QLabel(label)
+            lb.setObjectName("Dim")
+            lb.setMinimumWidth(260)
+            row.addWidget(lb)
+            row.addWidget(edit, 1)
+            fv.addLayout(row)
+        page.addWidget(form)
+
+        # 31B 预算卡（E-WIN bytebar 口径：名称 2+len / UUID 2+len/2 / 厂商块 4+M / 合计）
+        budget = QFrame()
+        budget.setObjectName("Card")
+        bv = QVBoxLayout(budget)
+        bv.setContentsMargins(16, 14, 16, 14)
+        bv.setSpacing(6)
+        bhead = QLabel("31 字节预算")
+        bhead.setObjectName("CardHead")
+        bv.addWidget(bhead)
+        self._b_name = QLabel()
+        self._b_uuid = QLabel()
+        self._b_mfg = QLabel()
+        self._b_total = QLabel()
+        for lb in (self._b_name, self._b_uuid, self._b_mfg, self._b_total):
+            lb.setObjectName("Dim")
+            bv.addWidget(lb)
+        page.addWidget(budget)
+
+        # 动作行
+        acts = QHBoxLayout()
+        acts.setSpacing(8)
+        self._start_btn = QPushButton("启动广播")
+        self._start_btn.setObjectName("Primary")
+        self._stop_btn = QPushButton("停止广播")
+        self._stop_btn.setObjectName("Soft")
+        self._stop_btn.setEnabled(False)
+        self._start_btn.clicked.connect(self._on_start)
+        self._stop_btn.clicked.connect(self._on_stop)
+        acts.addWidget(self._start_btn, 1)
+        acts.addWidget(self._stop_btn, 1)
+        page.addLayout(acts)
+
+        # 日志
+        self._log = QPlainTextEdit()
+        self._log.setObjectName("OpLog")
+        self._log.setReadOnly(True)
+        self._log.setFixedHeight(150)
+        page.addWidget(self._log)
+
         page.addStretch(1)
         root.addWidget(scroll, 1)
+
+        for edit in (self._f_name, self._f_uuid, self._f_mfg_id, self._f_mfg_data):
+            edit.textChanged.connect(self._refresh_budget)
+        self._refresh_budget()
+
+    # ── 预算与校验 ──
+
+    def _budget(self) -> tuple[int, int, int]:
+        name_n = len(self._f_name.text().encode("utf-8"))
+        uuid_hex = self._f_uuid.text().strip().replace("-", "")
+        uuid_n = len(uuid_hex) // 2 if uuid_hex else 0
+        mfg_n = len(self._f_mfg_data.text().encode("ascii", "replace"))
+        return 2 + name_n, 2 + uuid_n, 4 + mfg_n
+
+    def _refresh_budget(self) -> None:
+        nb, ub, mb = self._budget()
+        total = nb + ub + mb
+        name_len = len(self._f_name.text().encode("utf-8"))
+        uuid_len = len(self._f_uuid.text().strip().replace("-", "")) // 2
+        mfg_len = len(self._f_mfg_data.text().encode("ascii", "replace"))
+        self._b_name.setText(f"名称 (0x09 = 2+{name_len}) —— {nb} B")
+        self._b_uuid.setText(f"UUID (0x03/0x07 = 2+{uuid_len}) —— {ub} B")
+        self._b_mfg.setText(f"厂商块 (0xFF = 2+2+{mfg_len}) —— {mb} B")
+        if total > 31:
+            self._b_total.setText(f"合计 {total} B · 超限，启动将被拦截（不静默截断）")
+            self._b_total.setStyleSheet(f"color:{DANGER};font-weight:700;background:transparent;")
+        else:
+            self._b_total.setText(f"合计 —— {total} B")
+            self._b_total.setStyleSheet("background:transparent;")
+        if not self._ble.advertising:
+            self._start_btn.setEnabled(total <= 31)
+
+    # ── 启停 ──
+
+    def _log_line(self, text: str) -> None:
+        from datetime import datetime
+
+        stamp = datetime.now().strftime("%H:%M:%S")
+        self._log.appendPlainText(f"[{stamp}] {text}")
+
+    def _on_start(self) -> None:
+        nb, ub, mb = self._budget()
+        total = nb + ub + mb
+        if total > 31:
+            self._log_line(f"超限拦截：合计 {total} B > 31 B（不静默截断）")
+            return
+        id_str = self._f_mfg_id.text().strip().lower().replace("0x", "")
+        try:
+            company_id = int(id_str, 16) if id_str else 1
+        except ValueError:
+            self._log_line(f"厂商 ID 非法：{self._f_mfg_id.text()}")
+            return
+        if not 0 < company_id <= 0xFFFF:
+            company_id = 1
+        data = self._f_mfg_data.text().encode("ascii", "replace") or b"BLE"
+        self._log_line(f"启动广播 · 厂商 0x{company_id:04X} · 数据 {data.decode('ascii', 'replace')}（首次含边车冷启动 ~3s）")
+        result = self._ble.start_broadcast(company_id, data)
+        self._sync_state(result, running=True)
+
+    def _on_stop(self) -> None:
+        self._log_line("停止广播…")
+        self._sync_state(self._ble.stop_broadcast(), running=False)
+
+    def stop_from_outside(self) -> None:
+        """切出广播页/退出时由壳调用（win016 正典：切出即停）。"""
+        self._sync_state(self._ble.stop_broadcast(), running=False)
+
+    def _sync_state(self, result: dict, running: bool) -> None:
+        ok = bool(result.get("success"))
+        if ok:
+            self._status_chip.setText("广播中" if running else "未发射")
+            self._log_line("已发射（WinRT publisher Started）" if running else "已停止（WinRT publisher Stopped）")
+        else:
+            self._status_chip.setText("未发射")
+            self._log_line(f"失败：{result.get('error', '未知错误')}")
+        self._start_btn.setEnabled(not self._ble.advertising)
+        self._stop_btn.setEnabled(self._ble.advertising)
 
 
 class _AboutLogo(QWidget):
@@ -1012,7 +1168,7 @@ class MainWindow(QMainWindow):
         self._detail_page = DeviceDetailPage(self._ble)
         self._connected_page = ConnectedPage(self._ble)
         self._about_page = AboutPage()
-        self._broadcast_page = BroadcastPage()
+        self._broadcast_page = BroadcastPage(self._ble)
         self._detail_page.back_requested = self._back_from_detail
         self._connected_page.open_detail = self._open_detail
 
@@ -1044,12 +1200,12 @@ class MainWindow(QMainWindow):
     # ── 导航 ──
 
     def _on_tab(self, index: int) -> None:
-        # win016 正典：切入广播页先停扫描；切出广播页即停广播（本壳广播降级恒 false）
+        # win016 正典：切入广播页先停扫描；切出广播页即停广播（边车真停播）
         leaving_broadcast = self._stack.currentIndex() == self.IDX_BROADCAST
         if index == self.IDX_BROADCAST and self._ble.scanning:
             self._ble.stop_scan()
         if leaving_broadcast and index != self.IDX_BROADCAST and self._ble.advertising:
-            self._ble.advertising = False
+            self._broadcast_page.stop_from_outside()
         self._stack.setCurrentIndex(index)
 
     def _refresh_badge(self) -> None:

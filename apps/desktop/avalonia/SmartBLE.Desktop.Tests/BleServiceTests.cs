@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using SmartBLE.Desktop.ViewModels;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Xunit;
@@ -73,5 +74,66 @@ public class BleServiceTests
     public void GetCharacteristicName_MapsKnownAndFallsBack(string uuid, string expected)
     {
         Assert.Equal(expected, BleService.GetCharacteristicName(uuid));
+    }
+
+    // —— F004 广播快照跨帧合并（20260924 真机 SHID-00000001 34 帧实证输入形状） ——
+
+    private static Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataSection MakeSection(
+        byte type, byte[] data)
+    {
+        var writer = new Windows.Storage.Streams.DataWriter();
+        writer.WriteBytes(data);
+        return new Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataSection(type, writer.DetachBuffer());
+    }
+
+    [Fact]
+    public void BuildAdvSnapshot_MergesNameAndUuidAcrossAlternatingFrames()
+    {
+        // 真机形状：ConnectableUndirected 帧 = 0x01 Flags + 0x07 UUID 列表、无名；
+        // Extended 帧 = 0x09 名称、无 UUID——不合并则弹窗内容随末帧漂移
+        var svc = new BleService();
+        var address = 0x10B41DCD238EUL;
+
+        var adv1 = new Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisement();
+        adv1.ServiceUuids.Add(Guid.Parse("9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04"));
+        adv1.DataSections.Add(MakeSection(0x01, Convert.FromHexString("06")));
+        adv1.DataSections.Add(MakeSection(0x07, Convert.FromHexString("041c8a5e0b6f2a9d8f4c3be701101d9f")));
+        var snap1 = svc.BuildAdvSnapshot(adv1, address);
+        Assert.NotNull(snap1);
+        Assert.Equal(2, snap1!.DataSections.Count);
+        Assert.Single(snap1.ServiceUuids);
+
+        var adv2 = new Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisement();
+        adv2.LocalName = "SHID-00000001";
+        adv2.DataSections.Add(MakeSection(0x09, System.Text.Encoding.ASCII.GetBytes("SHID-00000001")));
+        var snap2 = svc.BuildAdvSnapshot(adv2, address);
+        Assert.NotNull(snap2);
+        // 合并后三段齐全（按类型升序），UUID 跨帧保留
+        Assert.Equal(new byte[] { 0x01, 0x07, 0x09 }, snap2!.DataSections.Select(s => s.DataType).ToArray());
+        Assert.Single(snap2.ServiceUuids);
+        Assert.Equal("9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04", snap2.ServiceUuids[0]);
+        Assert.Equal("534849442D3030303030303031", snap2.DataSections.First(s => s.DataType == 0x09).Hex);
+    }
+
+    [Fact]
+    public void BuildAdvSnapshot_ManufacturerDataSurvivesEmptyFrames()
+    {
+        // 厂商数据只沿最新非空帧：后续空广播帧不得冲掉已合并的 0xFF 段与厂商 ID
+        var svc = new BleService();
+        var address = 0xAABBCCDDEEFFUL;
+
+        var adv1 = new Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisement();
+        var writer = new Windows.Storage.Streams.DataWriter();
+        writer.WriteBytes(Convert.FromHexString("0102"));
+        adv1.ManufacturerData.Add(new Windows.Devices.Bluetooth.Advertisement.BluetoothLEManufacturerData(0x4C42, writer.DetachBuffer()));
+        adv1.DataSections.Add(MakeSection(0xFF, Convert.FromHexString("424C0102")));
+        var snap1 = svc.BuildAdvSnapshot(adv1, address);
+        Assert.NotNull(snap1);
+        Assert.Equal((ushort)0x4C42, snap1!.ManufacturerCompanyId);
+
+        var snap2 = svc.BuildAdvSnapshot(new Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisement(), address);
+        Assert.NotNull(snap2);
+        Assert.Equal((ushort)0x4C42, snap2!.ManufacturerCompanyId);
+        Assert.Equal("424C0102", snap2.DataSections.First(s => s.DataType == 0xFF).Hex);
     }
 }

@@ -404,6 +404,18 @@ async function setupTauriListeners() {
                 const match = window.SmartHidDesktop.matchScannedDevice(device);
                 if (match) device.profileMatch = match; // 1=WEAK / 2=STRONG
             }
+            // EWIN-DEF-PROV-001 同型防线：末帧字段缺失不冲掉已建立态（名称/UUID/匹配/厂商数据）
+            const prev = state.devices.get(device.id);
+            if (prev) {
+                if (!device.profileMatch && prev.profileMatch) device.profileMatch = prev.profileMatch;
+                if (!device.name && prev.name) device.name = prev.name;
+                const du = device.serviceUuids || device.service_uuids;
+                const pu = prev.serviceUuids || prev.service_uuids;
+                if ((!du || !du.length) && pu && pu.length) {
+                    if (device.serviceUuids !== undefined) device.serviceUuids = pu; else device.service_uuids = pu;
+                }
+                if (!device.advData && prev.advData) device.advData = prev.advData;
+            }
             state.devices.set(device.id, device);
         });
         renderDeviceList();
@@ -1547,19 +1559,20 @@ function bLog(type, msg) {
     if (panel) panel.addLog(type, text);
 }
 
-// P008 检查支持（平台原生层口径：mac=btleplug 受限 / win·linux 不支持）
+// P008 检查支持（平台原生层口径：win=WIN-BRIDGE 边车已实装 / mac=btleplug 受限 / linux 不支持）
 function checkBroadcastSupport() {
     const uc = navigator.userAgent.toLowerCase();
     const isMac = uc.includes('mac') || uc.includes('darwin');
     const isWin = uc.includes('win');
     state.broadcastOsName = isMac ? 'macOS' : isWin ? 'Windows' : 'Linux';
-    state.broadcastUnsupported = !isMac;
+    // Windows 自 2026-09-24 广播模板复制轮起经 WIN-BRIDGE 边车真发射（仅厂商块 0xFF）
+    state.broadcastUnsupported = !isMac && !isWin;
     state.broadcastSupportChecked = true;
 
-    updateBroadcastStatus(isMac ? 'ready' : 'idle');
-    const layer = isMac ? 'btleplug/CoreBluetooth' : isWin ? 'WinRT' : 'BlueZ';
-    bLog('info', `桌面原生层 ${layer}（${state.broadcastOsName}）——${isMac ? '外围能力受限，以实测为准（10_platform §2.4）' : '底层严格限制 BLE 外设广播'}`);
-    if (!isMac) {
+    updateBroadcastStatus(isMac || isWin ? 'ready' : 'idle');
+    const layer = isMac ? 'btleplug/CoreBluetooth' : isWin ? 'WinRT（WIN-BRIDGE 边车 · 仅厂商块）' : 'BlueZ';
+    bLog('info', `桌面原生层 ${layer}（${state.broadcastOsName}）——${isWin ? '仅厂商数据块可发，名称/UUID 不可设（平台事实）' : isMac ? '外围能力受限，以实测为准（10_platform §2.4）' : '底层严格限制 BLE 外设广播'}`);
+    if (!isMac && !isWin) {
         bLog('info', '请使用手机客户端执行虚拟外设测试');
     }
     updateByteBudget();

@@ -54,5 +54,77 @@ E-WIN/T-WIN/G-WIN/Q-WIN/V-WIN 五壳**缺失**（本日补齐）。HTML 原型�
 
 ## 未做（下轮真机窗口）
 
-- 五壳真机（SHID-00000001 等真实广播）弹窗内容目检。
-- V-WIN DataSections 与 bleak 侧同设备对照（原始段 vs 重建段一致性）。
+- ~~五壳真机（SHID-00000001 等真实广播）弹窗内容目检~~ —— 20260924 晚真机窗口已补（见下章）。
+- ~~V-WIN DataSections 与 bleak 侧同设备对照~~ —— 已做并**发现真缺陷**（跨帧不合并），已修复（见下章）。
+
+## 真机窗口第二轮（2026-09-24 晚 · SHID-00000001 在广播）
+
+### 基准抓取（realdevice/）
+
+- `shid-bleak-groundtruth.json`：bleak 合并口径全字段（名称+`9f1d1001-…` UUID，
+  mfg/sd 空，RSSI -42）。
+- `shid-winrt-allframes.json`：WinRT 原生 8s 共 34 帧——**双帧交替平台事实**：
+  ConnectableUndirected 帧 = `0x01 Flags(06) + 0x07 128-bit UUID 列表`（无名）；
+  Extended 帧 = `0x09 "SHID-00000001"`（无 UUID）。名称与 UUID 分居不同帧。
+
+### V-WIN 跨帧合并修复（真缺陷）
+
+逐帧整替换快照会让弹窗内容随末帧漂移（缺名或缺 UUID）。修复（`BleService.cs`）：
+按地址累积 AD 段（类型 upsert）/UUID 并集/厂商数据沿最新非空，开扫重置；
+合并结果同时供匹配与弹窗。**dotnet build 0 错 + test 57/57**（新增 2 个
+合并单测：`BuildAdvSnapshot_MergesNameAndUuidAcrossAlternatingFrames` /
+`ManufacturerDataSurvivesEmptyFrames`，输入形状=真机 34 帧实证）。
+
+### 五壳真机/真机字节取证
+
+- **Q**（`run-q-broadcast-evidence.py` 同目录 `q-advdialog-real-shid.png`）：真实
+  bleak 扫描 → ScanHit → AdvDialog 渲染，`widget.grab()` 取证。分段
+  `0e09 5348…`/`1107 041c…` 与 WinRT 原始字节逐字节一致；复制文本 kv+段齐全。
+- **E**（`ewin-real-bytes-smoke.mjs` → `ewin-f004-real-bytes.png`）：注入 noble
+  合并投影形状的真机数据，CDP 断言 2/2（标题/kv/两段真机字节全中）。T/G 共用组件。
+- **V**：数据层与 UI 层分别由 34 帧实证输入的单测 + build/test 覆盖（见上）。
+
+### EWIN-DEF-PROV-001 修复（扫描卡匹配态晚于首渲）
+
+根因=逐帧投影无合并：SHID 名称与 UUID 分居两帧，首帧（无名无 UUID）匹配失败
+→ 首渲无「配置」按钮/chip。修复：
+- E 主进程 `mergeAdvertisement`（index.js）：按 id 跨帧合并（名称非空沿新、
+  UUID 并集、mfg/sd 沿最新非空）再投影；
+- E/G 渲染层（app.js 镜像）：末帧字段缺失不冲掉已建立态（名称/UUID/匹配粘滞）；
+- T 渲染层（app.js）：同款粘滞防线。
+验证：`ewin-defprov001-smoke.mjs` CDP 3/3（首帧无按钮 → 晚到帧自动出现
+「配置 Smart HID」+弱匹配 chip → 空名帧不回退），tests/desktop 95/95。
+
+### F O-2 修复（断连显示错误态）
+
+F-WIN `device_detail_page.dart`：意外断连（非用户主动）置 `_connectionLost` →
+页面顶部错误横幅「连接已断开（意外断连）· 下方服务数据为断开前快照」+ 重连
+按钮；用户主动断开旗标区分；重连成功/发现服务成功清态。flutter analyze 0 issues
++ test 129/129。
+
+### 广播模板复制四壳齐（WIN-BRIDGE 边车同构）
+
+V 原生实装已有（20260921）；本轮 G/Q/T 复用同一份 `win-broadcast-bridge.ps1`
+（行协议 start/stop/exit ↔ started/stopped/error）：
+
+| 壳 | 实现 | 验证 |
+|---|---|---|
+| G | `winbridge.go`（协议层）+ `winbridge_windows.go`（HideWindow 拉起）+ `winbridge_other.go`（桩）；`StartAdvertising/StopAdvertising` win 路径走边车（embed ps1 落 %TEMP%）；`shutdownBLE` 先收边车 | go vet/build 过；`winbridge_test.go` 真机往返 PASS |
+| Q | `win_broadcast.py`（subprocess+queue 等待者）+ `BleService.start/stop_broadcast` + P008 页面重建（四字段表单+31B 预算+启停+日志+状态徽章）；切页/退出真停播 | `run-q-broadcast-evidence.py` 全链 PASS（广播中→已停止态转换+超限拦截），3 截图 |
+| T | `src-tauri/src/win_bridge.rs`（windows 模块）+ `start_advertising` win 分支 + `confirm_exit` 收边车 + 前端 `broadcastUnsupported` 放开 Windows | cargo check/test 过（含 `bridge_start_stop_roundtrip` 真机单测） |
+
+**平台事实（新登记）**：本机无线电不自环——广播中 bleak 同机扫可见 SHID 116 帧、
+自身厂商块 0 帧（`g-aircheck.json` 判别实证）；空口收包须外部接收端
+（与 E-WIN 20260921 手机双端收 44 包口径一致），G/Q/T 外部空口收包待下轮手机窗口。
+
+### 坑位账（第二轮）
+
+- winrt-python `DataReader.read_bytes(buffer)` 是"填充预分配缓冲"签名（传长度报
+  TypeError）——与 V-WIN C# `ReadBytes(buffer)` 同构。
+- WinRT 抓原始段不能按 local_name 过滤（UUID 载荷帧无名会被丢）——按
+  `bluetooth_address` 过滤。
+- E 工作副本 app.js 是 CRLF（autocrlf 检出）→ G 镜像直接 `cp`（再 sed 会 CRCRLF）。
+- Q `_sync_state` 须带 running 语义（stop 成功≠广播中——首版把停播成功也报
+  「已发射」，取证脚本抓出后修正）。
+- Rust `recv_timeout` 返回双层 Result（外层 RecvTimeoutError + 内层桥结果），
+  `.and_then(|inner| inner)` 展平；`creation_flags` 需 `std::os::windows::process::CommandExt`。

@@ -181,11 +181,27 @@ class BleService(QObject):
         self._worker: _ScanWorker | None = None
         self._gatt = GattWorker()
         self._gatt.start()
-        # Windows 无外设（广播）栈：与 V-WIN 同口径降级，保留字段供生命周期判断
+        # P008 广播：Win32 走 WIN-BRIDGE 边车（仅厂商块 0xFF 可发，平台事实
+        # 见 win_broadcast.py 头注）；advertising 旗标供生命周期判断
+        from win_broadcast import WinBroadcastBridge
+
+        self._broadcast = WinBroadcastBridge()
         self.advertising = False
         self.connected: dict[str, dict] = {}   # address -> {name, tree}
         self._clients: dict[str, object] = {}  # address -> BleakClient
         self._notifying: dict[str, set] = {}   # address -> {uuid}
+
+    # ── 广播（P008 · WIN-BRIDGE 边车） ──
+
+    def start_broadcast(self, company_id: int, data: bytes) -> dict:
+        result = self._broadcast.start(company_id, data)
+        self.advertising = bool(result.get("success"))
+        return result
+
+    def stop_broadcast(self) -> dict:
+        result = self._broadcast.stop()
+        self.advertising = False
+        return result
 
     # ── 扫描 ──
 
@@ -268,7 +284,14 @@ class BleService(QObject):
             self.disconnect_device(address)
 
     def shutdown(self) -> None:
-        """退出前收尾：断全部连接，停 GATT 线程。"""
+        """退出前收尾：先停广播边车（dwin-quit 正典顺序），再断全部连接，停 GATT 线程。"""
+        if self.advertising:
+            try:
+                self._broadcast.stop(timeout=3.0)
+            except Exception:  # noqa: BLE001
+                pass
+            self.advertising = False
+        self._broadcast.shutdown()
         for address in list(self._clients):
             client = self._clients.get(address)
             if client is not None:

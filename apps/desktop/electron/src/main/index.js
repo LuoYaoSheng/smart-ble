@@ -164,13 +164,13 @@ function setupBLEEvents() {
 
   // 发现设备
   bleModule.on('discover', (peripheral) => {
-    // 存储设备（如果不存在或者需要更新）
+    // EWIN-DEF-PROV-001：跨帧合并再投影——SHID 真机 20260924 实证服务 UUID 在 ADV 帧、
+    // 名称在 Extended/SCAN_RSP 帧，逐帧投影会让匹配态/显示名随帧漂移（首渲无「配置」按钮）
     const existing = discoveredDevices.get(peripheral.id);
-    if (!existing || peripheral.rssi !== existing.rssi) {
-      discoveredDevices.set(peripheral.id, peripheral);
-    }
+    const mergedAdv = mergeAdvertisement(existing, peripheral);
+    discoveredDevices.set(peripheral.id, peripheral);
 
-    const adv = peripheral.advertisement || {};
+    const adv = mergedAdv;
 
     // 解析广播数据
     // F005 显示名批准链：name 投影广播 localName，空名保持空串（渲染层批准链兜底，
@@ -207,6 +207,37 @@ function setupBLEEvents() {
     debugLog('BLE Warning:', message);
     sendToRenderer('ble:warning', { message });
   });
+}
+
+// EWIN-DEF-PROV-001 跨帧广播合并：名称非空沿新、UUID 并集、厂商/ServiceData 沿最新非空。
+// 输入为 noble 原始 advertisement（manufacturerData 为 Buffer）；返回合并投影形状。
+function mergeAdvertisement(existing, fresh) {
+  const fa = (fresh && fresh.advertisement) || {};
+  const ea = (existing && existing.advertisement) || null;
+  if (!ea) {
+    return {
+      localName: fa.localName || '',
+      txPowerLevel: fa.txPowerLevel,
+      serviceUuids: fa.serviceUuids || [],
+      serviceData: fa.serviceData || [],
+      manufacturerData: fa.manufacturerData,
+      solicitedServiceUuids: fa.solicitedServiceUuids || [],
+      connectable: fa.connectable !== false,
+      scannable: fa.scannable !== false
+    };
+  }
+  return {
+    localName: fa.localName || ea.localName || '',
+    txPowerLevel: fa.txPowerLevel != null ? fa.txPowerLevel : ea.txPowerLevel,
+    serviceUuids: [...new Set([...(ea.serviceUuids || []), ...(fa.serviceUuids || [])])],
+    serviceData: (fa.serviceData && fa.serviceData.length) ? fa.serviceData : (ea.serviceData || []),
+    manufacturerData: (fa.manufacturerData && fa.manufacturerData.length)
+      ? fa.manufacturerData
+      : ea.manufacturerData,
+    solicitedServiceUuids: [...new Set([...(ea.solicitedServiceUuids || []), ...(fa.solicitedServiceUuids || [])])],
+    connectable: fa.connectable !== false,
+    scannable: fa.scannable !== false
+  };
 }
 
 // 发送消息到渲染进程
