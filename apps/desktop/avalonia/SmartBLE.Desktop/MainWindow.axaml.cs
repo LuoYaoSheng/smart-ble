@@ -51,6 +51,20 @@ public partial class MainWindow : Window
         mvm.SelectDeviceCommand.Execute(vm.Id);
     }
 
+    // 扫描卡整卡点击（C1 devCard p001-advdlg · F004/R04）：弹广播数据弹窗；
+    // 卡内按钮（连接/配置 Smart HID）点击不冒泡触发本入口
+    private void OnScanCardTapped(object? sender, TappedEventArgs e)
+    {
+        if (sender is not Border { DataContext: BleDeviceViewModel vm }
+            || DataContext is not MainWindowViewModel mvm)
+            return;
+
+        if (IsInsideButton(e))
+            return; // 按钮已各自处理（连接/配网），不重复触发整卡弹层
+
+        mvm.OpenAdvertisementCommand.Execute(vm.Id);
+    }
+
     private static bool IsInsideButton(TappedEventArgs e)
     {
         var current = e.Source as Control;

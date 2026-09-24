@@ -480,6 +480,159 @@ public partial class MainWindowViewModel : ObservableObject
         ActiveView = "gatt";
     }
 
+    // ═══════════════ F004 广播数据弹窗（正典 p001-advdlg / PRD §8 R04） ═══════════════
+    // kv 四行（设备 ID/名称/RSSI/profileMatch）+ 深色分段（Service UUIDs / AD 结构逐段 /
+    // 厂商 ID / Service Data），单字段缺失逐项标注；V-WIN 的 AD 段来自 WinRT
+    // DataSections 原始字节（真实逐段，非平台解析字段重建）。
+    [ObservableProperty] private bool _showAdvSheet;
+    [ObservableProperty] private string _advSheetTitle = string.Empty;
+    [ObservableProperty] private IReadOnlyList<AdvKvRow> _advKvRows = Array.Empty<AdvKvRow>();
+    [ObservableProperty] private IReadOnlyList<AdvSectionVm> _advSheetSections = Array.Empty<AdvSectionVm>();
+    [ObservableProperty] private string _advCopyFeedback = string.Empty;
+    private string _advCopyText = string.Empty;
+
+    private const string AdvMissText = "本轮平台 API 未提供此字段";
+
+    [RelayCommand]
+    private void OpenAdvertisement(string deviceId)
+    {
+        var device = Devices.FirstOrDefault(d => d.Id == deviceId);
+        if (device == null) return;
+        BuildAdvSheet(device);
+        ShowAdvSheet = true;
+    }
+
+    [RelayCommand]
+    private void CloseAdvSheet() => ShowAdvSheet = false;
+
+    [RelayCommand]
+    private async Task CopyAdvDataAsync()
+    {
+        if (ClipboardWriter != null)
+            await ClipboardWriter(_advCopyText);
+        AdvCopyFeedback = "已复制";
+        await Task.Delay(900);
+        AdvCopyFeedback = string.Empty;
+    }
+
+    private static string AdvSectionName(byte t) => t switch
+    {
+        0x01 => "Flags",
+        0x02 => "部分本地名称",
+        0x03 => "16 位 Service UUID 列表",
+        0x04 => "16 位 Service UUID 列表（补充）",
+        0x05 => "TxPower",
+        0x06 => "从设备地址类别",
+        0x07 => "128 位 Service UUID 列表",
+        0x08 => "缩短本地名称",
+        0x09 => "完整本地名称",
+        0x0A => "设备类别（TxPower 后）",
+        0x0D => "设备类别",
+        0x16 => "Service Data",
+        0x19 => "外观",
+        0x1B => "广播间隔",
+        0xFF => "厂商数据",
+        _ => "未知类型"
+    };
+
+    private void BuildAdvSheet(BleDeviceViewModel device)
+    {
+        var adv = device.Adv;
+        AdvSheetTitle = $"广播数据 · {device.DisplayName}";
+
+        var matchText = device.ProfileMatch >= 2 ? "STRONG · smart-hid-provision"
+            : device.ProfileMatch == 1 ? "WEAK · smart-hid-provision"
+            : "—";
+        AdvKvRows = new[]
+        {
+            new AdvKvRow("设备 ID", device.Id, true),
+            new AdvKvRow("名称", device.DisplayName),
+            new AdvKvRow("RSSI", $"{device.Rssi} dBm", true),
+            new AdvKvRow("profileMatch", matchText, true)
+        };
+
+        var copyLines = new List<string>
+        {
+            $"设备 ID: {device.Id}",
+            $"名称: {device.DisplayName}",
+            $"RSSI: {device.Rssi} dBm",
+            $"profileMatch: {matchText}"
+        };
+
+        var sections = new List<AdvSectionVm>();
+
+        // Service UUIDs
+        var uuids = adv?.ServiceUuids ?? Array.Empty<string>();
+        sections.Add(new AdvSectionVm(
+            $"Service UUIDs · {uuids.Count} 项",
+            uuids.Select(u => new AdvHexRow(u, "")).ToList(),
+            uuids.Count == 0));
+        if (uuids.Count > 0)
+        {
+            copyLines.Add("Service UUIDs:");
+            copyLines.AddRange(uuids);
+        }
+
+        // AD 结构逐段（WinRT 原始 DataSections，真实逐段字节）
+        var dataSections = adv?.DataSections ?? Array.Empty<BleAdvSection>();
+        var advRows = new List<AdvHexRow>();
+        foreach (var s in dataSections)
+            advRows.Add(new AdvHexRow($"0x{s.DataType:X2} · {AdvSectionName(s.DataType)} · {(s.Hex.Length / 2) + 1} B", s.Hex));
+        sections.Add(new AdvSectionVm(
+            $"AD 结构 · 逐段（WinRT DataSections 原始字节）· {dataSections.Count} 段",
+            advRows,
+            dataSections.Count == 0));
+        if (dataSections.Count > 0)
+        {
+            copyLines.Add("AD 结构（原始段）:");
+            foreach (var s in dataSections)
+                copyLines.Add($"0x{s.DataType:X2} · {AdvSectionName(s.DataType)}: {s.Hex}");
+        }
+
+        // 整包 hex（原始段顺序拼接 = ADV 帧广告区）
+        var wholeHex = string.Concat(dataSections.Select(s => s.Hex));
+        sections.Add(new AdvSectionVm(
+            $"整包 hex · {wholeHex.Length / 2} B",
+            string.IsNullOrEmpty(wholeHex) ? new List<AdvHexRow>() : new List<AdvHexRow> { new("", wholeHex) },
+            string.IsNullOrEmpty(wholeHex)));
+        if (!string.IsNullOrEmpty(wholeHex))
+            copyLines.Add($"整包 hex: {wholeHex}");
+
+        // 厂商 ID（Manufacturer Data）
+        if (adv is { ManufacturerCompanyId: { } cid })
+        {
+            sections.Add(new AdvSectionVm(
+                $"Manufacturer Data · 0x{cid:X4} · {adv.ManufacturerDataHex.Length / 2} B",
+                string.IsNullOrEmpty(adv.ManufacturerDataHex)
+                    ? new List<AdvHexRow>()
+                    : new List<AdvHexRow> { new("", adv.ManufacturerDataHex) },
+                string.IsNullOrEmpty(adv.ManufacturerDataHex)));
+            copyLines.Add($"厂商 ID: 0x{cid:X4}");
+            if (!string.IsNullOrEmpty(adv.ManufacturerDataHex))
+                copyLines.Add($"厂商数据: {adv.ManufacturerDataHex}");
+        }
+        else
+        {
+            sections.Add(new AdvSectionVm("Manufacturer Data", new List<AdvHexRow>(), true));
+        }
+
+        // Service Data（从原始 0x16 段提取）
+        var sdRows = new List<AdvHexRow>();
+        foreach (var s in dataSections.Where(s => s.DataType == 0x16 && s.Hex.Length >= 4))
+        {
+            var uuid = Convert.ToHexString(new[] { Convert.ToByte(s.Hex[2..4], 16), Convert.ToByte(s.Hex[0..2], 16) });
+            sdRows.Add(new AdvHexRow($"{uuid} · {(s.Hex.Length - 2) / 2} B", s.Hex[4..]));
+            copyLines.Add($"Service Data {uuid}: {s.Hex[4..]}");
+        }
+        sections.Add(new AdvSectionVm(
+            $"Service Data · {sdRows.Count} 项",
+            sdRows,
+            sdRows.Count == 0));
+
+        AdvSheetSections = sections;
+        _advCopyText = string.Join("\n", copyLines);
+    }
+
     // P006 返回：仅清展示（会话保留，正典 goBack 不断开；P007 已连接页仍可见）
     [RelayCommand]
     private void GoBack()
@@ -1276,7 +1429,22 @@ public partial class MainWindowViewModel : ObservableObject
 
 // ═══════════════════════ 视图模型 ═══════════════════════
 
-public record BleDevice(string Id, string Name, int Rssi, string[]? ServiceUuids = null);
+// F004 广播快照：WinRT 原始 AD 段（DataSections，真实逐段字节）+ 解析字段
+public sealed record BleAdvSection(byte DataType, string Hex);
+
+public sealed record BleAdvSnapshot(
+    IReadOnlyList<string> ServiceUuids,
+    ushort? ManufacturerCompanyId,
+    string ManufacturerDataHex,
+    IReadOnlyList<BleAdvSection> DataSections);
+
+public record BleDevice(string Id, string Name, int Rssi, string[]? ServiceUuids = null,
+    BleAdvSnapshot? Adv = null);
+
+// F004 广播数据弹窗展示模型（正典 p001-advdlg 口径）
+public sealed record AdvKvRow(string K, string V, bool Mono = false);
+public sealed record AdvHexRow(string Label, string Hex);
+public sealed record AdvSectionVm(string Head, IReadOnlyList<AdvHexRow> Rows, bool IsMiss = false);
 
 // C1 设备卡视图模型（P001 扫描 / P007 已连接两变体共用）
 public partial class BleDeviceViewModel : ObservableObject
@@ -1287,6 +1455,10 @@ public partial class BleDeviceViewModel : ObservableObject
     [ObservableProperty] private bool _connectedHint;
 
     private int _profileMatch;
+    private BleAdvSnapshot? _adv;
+
+    // F004 广播快照（弹窗打开时读取，不参与卡片渲染）
+    public BleAdvSnapshot? Adv => _adv;
 
     public BleDeviceViewModel(BleDevice device, bool connectedHint = false)
     {
@@ -1295,6 +1467,7 @@ public partial class BleDeviceViewModel : ObservableObject
         _rssi = device.Rssi;
         _connectedHint = connectedHint;
         _profileMatch = CanonUi.MatchScannedDevice(device.Name, device.ServiceUuids);
+        _adv = device.Adv;
     }
 
     public void Update(BleDevice device)
@@ -1307,6 +1480,9 @@ public partial class BleDeviceViewModel : ObservableObject
         Rssi = device.Rssi;
         if (_profileMatch == 0)
             _profileMatch = CanonUi.MatchScannedDevice(device.Name, device.ServiceUuids);
+        // 广播快照只在非空帧覆盖（无名 ADV 帧不带完整广告数据，防冲掉 SCAN_RSP 快照）
+        if (device.Adv != null)
+            _adv = device.Adv;
         OnPropertyChanged(nameof(DisplayName));
         OnPropertyChanged(nameof(IsUnnamed));
         OnPropertyChanged(nameof(Initial));

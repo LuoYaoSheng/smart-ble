@@ -926,6 +926,18 @@ class App {
         window.bleAPI.onWarning?.((data) => {
             console.log('BLE Warning:', data.message);
         });
+
+        // F004 广播数据弹窗：复制写剪贴板 + 正典 toast「已复制」（p001-advcopy 口径）
+        const advSheet = document.getElementById('mainAdvertisementSheet');
+        advSheet?.addEventListener('copy', (e) => {
+            const text = e.detail?.text || '';
+            const done = () => this.showToast('已复制', 'success');
+            if (navigator.clipboard?.writeText) {
+                navigator.clipboard.writeText(text).then(done, done);
+            } else {
+                done();
+            }
+        });
     }
 
     // P001 蓝牙状态芯片（正典 navbar bt-chip：bt-dot on/off + 状态词）
@@ -1200,11 +1212,25 @@ class App {
             e.stopPropagation();
             this.openHidProvision({ id: e.detail.id, name: device.name });
         });
+        card.addEventListener('show-advertisement', (e) => {
+            e.stopPropagation();
+            this.openAdvertisement(e.detail.id);
+        });
         card.addEventListener('show-detail', (e) => {
             e.stopPropagation();
             this.selectDevice(e.detail.id);
         });
         return card;
+    }
+
+    // F004 广播数据弹窗（正典 p001-advdlg / PRD §8 R04）：点击扫描卡本体弹出
+    // 设备 ID/名称/RSSI/profileMatch + Service UUIDs + AD 结构逐段 + 厂商 ID + Service Data，
+    // 平台未提供的字段由弹窗逐项标注
+    openAdvertisement(deviceId) {
+        const device = this.devices.get(deviceId);
+        if (!device) return;
+        const sheet = document.getElementById('mainAdvertisementSheet');
+        sheet?.show?.(device);
     }
 
     // Select Device - navigate to detail view

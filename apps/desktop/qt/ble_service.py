@@ -73,7 +73,7 @@ def try_utf8(data: bytes) -> str:
 
 @dataclass
 class ScanHit:
-    """一次扫描命中的设备（C1 设备卡字段子集）。"""
+    """一次扫描命中的设备（C1 设备卡字段子集 + F004 广播数据弹窗字段）。"""
 
     address: str
     name: str
@@ -81,6 +81,7 @@ class ScanHit:
     manufacturer_id: int | None = None
     manufacturer_data: bytes = b""
     service_uuids: list[str] = field(default_factory=list)
+    service_data: list[tuple[str, bytes]] = field(default_factory=list)
 
 
 class _ScanWorker(QThread):
@@ -113,6 +114,7 @@ class _ScanWorker(QThread):
                         manufacturer_id=mfr_id,
                         manufacturer_data=mfr_data,
                         service_uuids=[str(u) for u in adv.service_uuids],
+                        service_data=[(str(u), bytes(d)) for u, d in adv.service_data.items()],
                     )
                 )
             # 信号强度降序（与各壳设备列表排序一致）

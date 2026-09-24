@@ -382,6 +382,17 @@ function setupEventListeners() {
     elements.deviceInfoDialog?.addEventListener('click', (e) => {
         if (e.target === elements.deviceInfoDialog) closeDeviceInfoDialog();
     });
+
+    // F004 广播数据弹窗：复制写剪贴板 + 正典 toast「已复制」（p001-advcopy 口径）
+    document.getElementById('mainAdvertisementSheet')?.addEventListener('copy', (e) => {
+        const text = e.detail?.text || '';
+        const done = () => showToast('已复制', 'success');
+        if (navigator.clipboard?.writeText) {
+            navigator.clipboard.writeText(text).then(done, done);
+        } else {
+            done();
+        }
+    });
 }
 
 // Setup Tauri Event Listeners
@@ -1080,7 +1091,7 @@ function renderDeviceList() {
                 const dev = state.devices.get(e.detail.id);
                 openHidProvision({ id: e.detail.id, name: dev?.name });
             });
-            card.addEventListener('show-detail', (e) => showDeviceInfoDialog(e.detail.id));
+            card.addEventListener('show-advertisement', (e) => showAdvertisement(e.detail.id));
 
             elements.deviceList.appendChild(card);
         } else {
@@ -1125,6 +1136,32 @@ function applyFilters() {
 }
 
 // Show Device Info Dialog
+// F004 广播数据弹窗（正典 p001-advdlg / PRD §8 R04）：点击扫描卡本体弹出
+// T-WIN 数据形状投影：Rust DeviceInfo（service_uuids/adv_data 厂商数据首条大端 hex）→ 组件 advertisement 形状
+function showAdvertisement(deviceId) {
+    const device = state.devices.get(deviceId);
+    if (!device) return;
+
+    let companyId = null;
+    let payloadHex = '';
+    if (typeof device.advData === 'string' && device.advData.length >= 4) {
+        companyId = parseInt(device.advData.slice(0, 4), 16);
+        payloadHex = device.advData.slice(4).toLowerCase();
+    }
+
+    const sheet = document.getElementById('mainAdvertisementSheet');
+    sheet?.show?.({
+        ...device,
+        advertisement: {
+            serviceUuids: device.serviceUuids || [],
+            manufacturerData: companyId != null && Number.isFinite(companyId)
+                ? { id: companyId, hex: payloadHex }
+                : null,
+            serviceData: []
+        }
+    });
+}
+
 function showDeviceInfoDialog(deviceId) {
     const device = state.devices.get(deviceId);
     if (!device || !elements.deviceInfoDialog) return;

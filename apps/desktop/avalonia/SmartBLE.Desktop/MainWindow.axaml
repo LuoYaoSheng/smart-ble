@@ -131,11 +131,11 @@
                                 </StackPanel>
                             </Border>
 
-                            <!-- C1 设备卡列表（scan 变体） -->
+                            <!-- C1 设备卡列表（scan 变体；整卡点击弹广播数据 F004，正典 p001-advdlg） -->
                             <ItemsControl ItemsSource="{Binding FilteredDevices}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="vm:BleDeviceViewModel">
-                                        <Border Classes="dev" Tapped="OnDeviceCardTapped">
+                                        <Border Classes="dev" Tapped="OnScanCardTapped">
                                             <StackPanel>
                                                 <Grid ColumnDefinitions="Auto,*,Auto">
                                                     <Border Grid.Column="0" Classes="ava"
@@ -1422,6 +1422,82 @@
                             <TextBlock Text="关于" HorizontalAlignment="Center"/>
                         </StackPanel>
                     </Button>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- ════════════════ F004 广播数据弹窗（点击扫描卡本体，正典 p001-advdlg / PRD §8 R04） ════════════════ -->
+        <Grid IsVisible="{Binding ShowAdvSheet}" ZIndex="92">
+            <Border Classes="mask"/>
+            <Border Classes="modal" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Width="460" MaxHeight="660">
+                <Grid RowDefinitions="Auto,*,Auto">
+                    <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,10">
+                        <TextBlock Grid.Column="0" Text="{Binding AdvSheetTitle}" FontSize="16" FontWeight="Bold"
+                                   TextTrimming="CharacterEllipsis"/>
+                        <Button Grid.Column="1" Classes="soft" Content="关闭"
+                                AutomationProperties.Name="关闭广播数据弹窗"
+                                Command="{Binding CloseAdvSheetCommand}"/>
+                    </Grid>
+
+                    <ScrollViewer Grid.Row="1">
+                        <StackPanel Spacing="2">
+                            <ItemsControl ItemsSource="{Binding AdvKvRows}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:AdvKvRow">
+                                        <Grid ColumnDefinitions="150,*" Margin="0,7">
+                                            <TextBlock Grid.Column="0" Text="{Binding K}" FontSize="12"
+                                                       Foreground="{DynamicResource CMut}"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding V}" FontSize="12"
+                                                       TextWrapping="Wrap" TextTrimming="CharacterEllipsis"
+                                                       Classes.mono="{Binding Mono}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <ItemsControl ItemsSource="{Binding AdvSheetSections}" Margin="0,6,0,0">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:AdvSectionVm">
+                                        <Border Background="#17223B" CornerRadius="10" Padding="12,10" Margin="0,2">
+                                            <StackPanel Spacing="4">
+                                                <TextBlock Text="{Binding Head}" FontSize="11" Foreground="#8FA3C0"/>
+                                                <TextBlock IsVisible="{Binding IsMiss}" Text="本轮平台 API 未提供此字段"
+                                                           FontSize="11" Foreground="#7C8DA6"/>
+                                                <ItemsControl ItemsSource="{Binding Rows}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate x:DataType="vm:AdvHexRow">
+                                                            <StackPanel Spacing="1" Margin="0,3,0,0">
+                                                                <TextBlock Text="{Binding Label}" FontSize="11"
+                                                                           Foreground="#8FA3C0" TextWrapping="Wrap"/>
+                                                                <TextBlock Text="{Binding Hex}" FontSize="11"
+                                                                           Foreground="#D7E3F4" TextWrapping="Wrap"
+                                                                           Classes="mono"/>
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <Grid Grid.Row="2" ColumnDefinitions="*,Auto" Margin="0,12,0,0">
+                        <TextBlock Grid.Column="0" Text="{Binding AdvCopyFeedback}" FontSize="12"
+                                   Foreground="{DynamicResource CSuccess}" VerticalAlignment="Center"/>
+                        <Button Grid.Column="1" Classes="primary" Height="38" MinWidth="150"
+                                AutomationProperties.Name="复制广播数据"
+                                Command="{Binding CopyAdvDataCommand}">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <Path Classes="ic sm" Data="{StaticResource IcoCopy}"
+                                      Stroke="{Binding $parent[Button].Foreground}"/>
+                                <TextBlock Text="复制数据"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
                 </Grid>
             </Border>
         </Grid>

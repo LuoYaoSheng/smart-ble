@@ -113,8 +113,53 @@ public class BleService
             // 个别广播帧 ServiceUuids 访问异常时按无服务列表处理（弱匹配兜底）
         }
         var device = new BleDevice(args.BluetoothAddress.ToString("X"), name,
-            (short)args.RawSignalStrengthInDBm, serviceUuids);
+            (short)args.RawSignalStrengthInDBm, serviceUuids, BuildAdvSnapshot(args.Advertisement));
         DeviceDiscovered?.Invoke(device);
+    }
+
+    // F004 广播快照：WinRT DataSections 原始 AD 段（真实逐段字节）+ 解析字段；
+    // 任一访问异常都降级为部分快照（不阻断设备发现）
+    private static BleAdvSnapshot? BuildAdvSnapshot(BluetoothLEAdvertisement adv)
+    {
+        try
+        {
+            string[] uuids = Array.Empty<string>();
+            var advUuids = adv.ServiceUuids;
+            if (advUuids.Count > 0)
+            {
+                uuids = new string[advUuids.Count];
+                for (var i = 0; i < advUuids.Count; i++)
+                    uuids[i] = advUuids[i].ToString();
+            }
+
+            ushort? mfgId = null;
+            var mfgHex = string.Empty;
+            if (adv.ManufacturerData.Count > 0)
+            {
+                var md = adv.ManufacturerData[0];
+                mfgId = (ushort)md.CompanyId;
+                mfgHex = Convert.ToHexString(ToBytes(md.Data));
+            }
+
+            var sections = new List<BleAdvSection>(adv.DataSections.Count);
+            foreach (var ds in adv.DataSections)
+                sections.Add(new BleAdvSection((byte)ds.DataType, Convert.ToHexString(ToBytes(ds.Data))));
+
+            return new BleAdvSnapshot(uuids, mfgId, mfgHex, sections);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static byte[] ToBytes(IBuffer buffer)
+    {
+        if (buffer is not { Length: > 0 }) return Array.Empty<byte>();
+        var reader = DataReader.FromBuffer(buffer);
+        var bytes = new byte[buffer.Length];
+        reader.ReadBytes(bytes);
+        return bytes;
     }
 
     // ═══════════════ P008 广播发射（WinRT BluetoothLEAdvertisementPublisher，20260921 跨端联调实装） ═══════════════

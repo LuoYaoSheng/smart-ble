@@ -106,7 +106,8 @@ class DeviceCard extends HTMLElement {
                 this.dispatchEvent(new CustomEvent('show-detail', { detail: { id: device.id }, bubbles: true, composed: true }));
             });
         } else {
-            // P001 scan 变体：ava + 名称/ID（未命名标注）+ SHID 匹配 chip/信号 + 连接按钮；整卡可点进详情
+            // P001 scan 变体：ava + 名称/ID（未命名标注）+ SHID 匹配 chip/信号 + 连接按钮
+            // 整卡点击弹广播数据（正典 C1 devCard data-act=p001-advdlg · F004/R04）
             // SHID 双入口（正典 C1 devCard）：匹配卡名称行加 chip，acts 出「配置 Smart HID」主按钮
             const match = Number(device.profileMatch) || 0;
             const isShid = match >= 1;
@@ -150,7 +151,7 @@ class DeviceCard extends HTMLElement {
                 this.dispatchEvent(new CustomEvent('connect', { detail: { id: device.id }, bubbles: true, composed: true }));
             });
             this.querySelector('.dev')?.addEventListener('click', () => {
-                this.dispatchEvent(new CustomEvent('show-detail', { detail: { id: device.id }, bubbles: true, composed: true }));
+                this.dispatchEvent(new CustomEvent('show-advertisement', { detail: { id: device.id }, bubbles: true, composed: true }));
             });
         }
     }

@@ -131,6 +131,193 @@ class WriteDialog(QDialog):
             return None
 
 
+def build_ad_segments(hit: ScanHit) -> list[tuple[str, str, bytes]]:
+    """由平台解析字段重建 AD 结构段（F004 · 与 uniapp/Flutter buildAdSegments 同口径）：
+    平台 API 不提供原始广播帧字节时，逐段按 AD 类型号重组并标注来源。
+    返回 [(type, name, frame)]，frame 首字节为段长（含类型字节）。"""
+    import struct
+
+    segs: list[tuple[str, str, bytes]] = []
+
+    def add(type_: int, label: str, payload: bytes) -> None:
+        segs.append((f"0x{type_:02X}", label, bytes([len(payload) + 1, type_]) + payload))
+
+    if hit.name:
+        add(0x09, "完整本地名称", hit.name.encode("utf-8"))
+
+    shorts: list[int] = []
+    fulls: list[str] = []
+    for u in hit.service_uuids or []:
+        v = u.replace("-", "").lower()
+        if len(v) == 4:
+            shorts.append(int(v, 16))
+        elif len(v) == 32:
+            fulls.append(v)
+    if shorts:
+        # 16 位 UUID 列表按小端序拼负载
+        add(0x03, "16 位 Service UUID 列表", b"".join(struct.pack("<H", s) for s in shorts))
+    if fulls:
+        # 128 位 UUID 列表每 UUID 按小端字节序
+        add(0x07, "128 位 Service UUID 列表", b"".join(bytes.fromhex(v)[::-1] for v in fulls))
+
+    if hit.manufacturer_id is not None:
+        add(0xFF, "厂商数据", struct.pack("<H", hit.manufacturer_id) + hit.manufacturer_data)
+
+    for uuid, data in hit.service_data or []:
+        v = uuid.replace("-", "").lower()
+        if len(v) != 4:
+            continue
+        add(0x16, "Service Data", struct.pack("<H", int(v, 16)) + data)
+
+    return segs
+
+
+class AdvDialog(QDialog):
+    """P001 广播数据弹窗（F004 · R04 口径）：点击扫描卡本体弹出。
+    kv 四行（设备 ID/名称/RSSI/profileMatch）+ 深色分段（Service UUIDs /
+    AD 结构逐段（平台解析字段重建）/ 厂商 ID / Service Data），
+    单字段缺失逐项标注「本轮平台 API 未提供此字段」，支持一键复制。"""
+
+    MISS = "本轮平台 API 未提供此字段"
+    INK = "#17223B"       # 正典 var(--c-ink) 同值
+    INK_TEXT = "#D7E3F4"  # 正典 .ad-sec .hex 前景同族
+    INK_SUB = "#8FA3C0"   # 正典 .ad-sec .hd 前景同值
+
+    def __init__(self, hit: ScanHit, parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+        self._hit = hit
+        title_name = hit.name or hit.address[-6:]
+        self.setWindowTitle(f"广播数据 · {title_name}")
+        lay = QVBoxLayout(self)
+        lay.setContentsMargins(18, 16, 18, 14)
+        lay.setSpacing(8)
+
+        for label, value in self._kv_rows():
+            row = QHBoxLayout()
+            k = QLabel(label)
+            k.setFixedWidth(150)
+            k.setStyleSheet(f"color:{MUT};font-size:12px;background:transparent;")
+            v = QLabel(value)
+            v.setTextInteractionFlags(Qt.TextSelectableByMouse)
+            v.setWordWrap(True)
+            v.setStyleSheet("color:#17223B;background:transparent;")
+            row.addWidget(k)
+            row.addWidget(v, 1)
+            lay.addLayout(row)
+
+        for head, lines in self._sections():
+            lay.addWidget(self._dark_section(head, lines))
+
+        btns = QHBoxLayout()
+        btns.addStretch(1)
+        close = QPushButton("关闭")
+        close.clicked.connect(self.reject)
+        btns.addWidget(close)
+        copy_btn = QPushButton("复制数据")
+        copy_btn.setObjectName("Primary")
+        copy_btn.clicked.connect(lambda: self._copy(copy_btn))
+        btns.addWidget(copy_btn)
+        lay.addLayout(btns)
+
+    def _kv_rows(self) -> list[tuple[str, str]]:
+        hit = self._hit
+        return [
+            ("设备 ID", hit.address),
+            ("名称", hit.name or "（未命名）"),
+            ("RSSI", f"{hit.rssi} dBm"),
+            ("profileMatch", "—"),  # Q-WIN ScanHit 无 Profile 匹配字段，如实标注
+        ]
+
+    def _sections(self) -> list[tuple[str, list[tuple[str, str]]]]:
+        hit = self._hit
+        sections: list[tuple[str, list[tuple[str, str]]]] = []
+
+        uuids = hit.service_uuids or []
+        sections.append((
+            f"Service UUIDs · {len(uuids)} 项" if uuids else "Service UUIDs",
+            [(u, "") for u in uuids] if uuids else [("", self.MISS)],
+        ))
+
+        segs = build_ad_segments(hit)
+        lines = [(f"{t} · {n} · {len(f)} B", f.hex().upper()) for t, n, f in segs]
+        lines.append(("整包 hex", self.MISS))  # bleak 不提供原始整包帧
+        sections.append((
+            f"AD 结构 · 逐段（平台解析字段重建）· {len(segs)} 段" if segs
+            else "AD 结构 · 逐段（平台解析字段重建）",
+            lines if lines else [("", self.MISS)],
+        ))
+
+        if hit.manufacturer_id is not None:
+            sections.append((
+                f"Manufacturer Data · 0x{hit.manufacturer_id:04X}",
+                [(hit.manufacturer_data.hex().upper() or "（长度 0）", "")],
+            ))
+        else:
+            sections.append(("Manufacturer Data", [("", self.MISS)]))
+
+        sd = hit.service_data or []
+        sections.append((
+            f"Service Data · {len(sd)} 项" if sd else "Service Data",
+            [(u, d.hex().upper()) for u, d in sd] if sd else [("", self.MISS)],
+        ))
+        return sections
+
+    def _dark_section(self, head: str, lines: list[tuple[str, str]]) -> QFrame:
+        frame = QFrame()
+        frame.setStyleSheet(
+            f"QFrame {{ background:{self.INK}; border-radius:8px; }}"
+            f"QLabel {{ background:transparent; }}"
+        )
+        box = QVBoxLayout(frame)
+        box.setContentsMargins(12, 10, 12, 10)
+        box.setSpacing(4)
+        hd = QLabel(head)
+        hd.setStyleSheet(f"color:{self.INK_SUB};font-size:11px;background:transparent;")
+        box.addWidget(hd)
+        for text, hex_ in lines:
+            if text:
+                sub = QLabel(text)
+                sub.setStyleSheet(f"color:{self.INK_SUB};font-size:11px;background:transparent;")
+                box.addWidget(sub)
+            if hex_:
+                body = QLabel(hex_)
+                body.setTextInteractionFlags(Qt.TextSelectableByMouse)
+                body.setWordWrap(True)
+                body.setStyleSheet(
+                    f"color:{self.INK_TEXT};font-family:Consolas,monospace;"
+                    "font-size:11px;background:transparent;"
+                )
+                box.addWidget(body)
+            if not text and not hex_:
+                miss = QLabel(self.MISS)
+                miss.setStyleSheet(f"color:{self.INK_SUB};font-size:11px;background:transparent;")
+                box.addWidget(miss)
+        return frame
+
+    def _copy_text(self) -> str:
+        hit = self._hit
+        lines = [f"设备 ID: {hit.address}", f"名称: {hit.name or '（未命名）'}",
+                 f"RSSI: {hit.rssi} dBm", "profileMatch: —"]
+        if hit.service_uuids:
+            lines.append("Service UUIDs:")
+            lines.extend(hit.service_uuids)
+        segs = build_ad_segments(hit)
+        if segs:
+            lines.append("AD 结构（平台解析字段重建）:")
+            for t, n, f in segs:
+                lines.append(f"{t} · {n} ({len(f)} B): {f.hex()}")
+        if hit.manufacturer_id is not None:
+            lines.append(f"厂商 ID: 0x{hit.manufacturer_id:04X}")
+        for u, d in hit.service_data or []:
+            lines.append(f"Service Data {u}: {d.hex()}")
+        return "\n".join(lines)
+
+    def _copy(self, btn: QPushButton) -> None:
+        QApplication.clipboard().setText(self._copy_text())
+        btn.setText("已复制")
+        QTimer.singleShot(900, lambda: btn.setText("复制数据"))
+
+
 class ScanPage(QWidget):
     """P001 扫描（正典页面结构）：navbar+bt-chip / scantool / sec-t+筛选 / 设备卡列表。"""
 
@@ -197,7 +384,7 @@ class ScanPage(QWidget):
         self._empty_filtered = EmptyState("当前没有匹配设备", "调整筛选条件试试")
         self._empty_filtered.hide()
         self._list = DevList()
-        self._list.row_activated.connect(lambda _r: self._open_connected())
+        self._list.row_activated.connect(lambda _r: self._show_adv())
         body.addWidget(self._empty_all)
         body.addWidget(self._empty_filtered)
         body.addWidget(self._list, 1)
@@ -263,13 +450,11 @@ class ScanPage(QWidget):
         self._status.setText(f"正在连接 {hit.name or hit.address} …")
         self._ble.connect_device(hit)
 
-    def _open_connected(self) -> None:
+    def _show_adv(self) -> None:
+        """F004 广播数据弹窗：点击扫描卡本体（正典 p001-advdlg / R04 口径）。"""
         row = self._list.currentRow()
         if 0 <= row < len(self._view):
-            hit = self._view[row]
-            if hit.address in self._ble.connected:
-                info = self._ble.connected[hit.address]
-                self._ble.device_connected.emit(hit.address, info["name"], info["tree"])
+            AdvDialog(self._view[row], self).exec()
 
     def _on_done(self, hits: list) -> None:
         # P001 正典状态词：扫描完成 · 发现 N 台
