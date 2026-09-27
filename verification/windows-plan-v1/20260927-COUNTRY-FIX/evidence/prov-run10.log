@@ -1,0 +1,14 @@
+scan: SCAN_CLICKED
+enter: PROV_CLICKED
+SET_hidSsidInput
+SET_hidPwdInput
+SET_hidHubInput
+bigact: QR_SHEET_OPENED
+fallback: FALLBACK_OPENED
+SET_hidQrPasteInput
+parse: PARSE_CLICKED
+modal: MODAL_CLOSED
+submit: SUBMITTED
+[0s] 配置 Smart HID ✓ 连接设备 ✓ 填写配置 3 下发状态 S SHID-00000001 10b41dcd238e · Device Info 已验证 · Wi-Fi 连接 · ControlHub 配对 · MQTT 控制链路 · USB HID Ready 取消等待
+[15s] 配置 Smart HID ✓ 连接设备 ✓ 填写配置 3 下发状态 S SHID-00000001 10b41dcd238e · Device Info 已验证 ✕ Wi-Fi 连接 · ControlHub 配对 · MQTT 控制链路 · USB HID Ready 配置失败 wifi_failed Wi-Fi 连接失败，请检查 SSID / 密码 修改配置
+FINAL_STATE: NOT_READY
