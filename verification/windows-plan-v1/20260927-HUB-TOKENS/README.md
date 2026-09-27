@@ -118,3 +118,27 @@ Advertising 里广播该 service UUID（App 首页扫描按 Profile 注册表识
 - 华为 TAS-AN00：装 SmartBLE-v1.0.0-fix6-release.apk（升级，签名同 debug keystore）
 - ControlHub：继续运行（17890/17891/17892），测试设备已删除，设备列表原状
 - Windows 热点保持关闭（未启用）
+
+## 六、K80 热点拓扑预检（用户提供热点：SSID K80；板子仍在并行会话手中）
+
+用户提出用小米手机热点（K80）绕开 HJWY 23 段隔离。执行时 K80 尚未广播
+（PC 扫描 120s 仅见 HJWY/HJWY-GUEST/chejian），COM12 仍被并行会话占用
+（PermissionError 拒绝访问）。已完成可预铺的全部前置验证：
+
+1. **域网 TCP 直连**（HJWY 24 段手机 → 192.168.21.77:17892）：
+   浏览器实达 `404 page not found`（evidence/tcp17892-from-phone.png）——
+   同时反证 20260927-ANDROID-E2E 层 3 归因成立（24 段 TCP 通而 23 段
+   设备超时=子路由隔离，非防火墙）。
+2. **热点段入站防火墙风险排除**（等价测试）：Windows 热点 LYS 6679 起，
+   手机 cmd wifi 入网（192.168.137.25，2.4G 信道 11）→ 浏览器访问
+   http://192.168.137.1:17892 → 实达 `404 page not found`
+   （evidence/tcp17892-hotspot-from-phone.png）。hub 入站在热点（公用
+   profile）段不拦——K80 段同理可达。
+3. 还原：手机 WiFi 回办公网（EMUI 自动选主 HJWY）、Windows 热点 Off。
+
+### K80 就绪后的 E2E runbook（板子回归我方固件后）
+
+PC `netsh wlan connect K80`（IP 应为 192.168.43.x）→ hub 三端口照常
+（0.0.0.0 监听）→ 17890 建 token（host=PC 的 43.x IP）→ 华为 App 表单：
+SSID=K80 密码=用户热点密码 hub=<PC 43.x IP>:17892 + token → 下发 →
+串口（COM12 空闲时）+hub 日志看 POST→MQTT→READY→App 终态。
