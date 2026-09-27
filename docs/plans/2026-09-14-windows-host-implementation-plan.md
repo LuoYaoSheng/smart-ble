@@ -584,6 +584,16 @@ README 占位且指向 Avalonia 线；Flutter 无 Windows 目标），逐框架�
 - Evidence: verification/windows-plan-v1/20260924-AAND-ADVPOPUP/evidence/round2-modal/（README Round 2 章：13/15 终态截图+死区对照 dump+四轮 twin-events jsonl）
 - 坑位：NavHost 内容层做全屏遮罩必被 topBar/bottomBar inset 咬边，模态层须独立窗口；sheet 对话框窗口画进手势区但 inset=0，避让只能固定 dp；EMUI 无 screenrecord 二进制；长会话防横屏/锁屏（借 accelerometer_rotation 须还原）；m3 sheet settle 期吞注入 tap（复测即过勿误判）；uiautomator 对 dialog 窗口 bounds 不可全信，系统栏边界用 PIL 像素直判
 
+#### Round 3 · 扫描列表滚动卡顿（2026-09-27 用户「列表滚动的时候会卡顿」）
+
+- Status: **PASS 双层根因两刀修复 + 归因矩阵闭环；交付形态转 release 签名包**
+- 根因①（代码缺陷）：`BleManager.onScanResult` 每条广播回调 `tryEmit(全列表快照)`（办公环境 ALL_MATCHES+AGGRESSIVE 下 ~54-57 条/秒），每条都在主线程跑回调体（adv hex 拼串+ScanRecord/Map 重建+toList）+下游管线（map→combine→filter→整表替换→LazyColumn 全量 diff+可见卡 RSSI 全重组），滚动帧预算被吃光；根因②（形态）：debug 包纯滚动本就 60-77% 掉帧（中位 57ms，framestats=traversal 派发 26-76ms/帧）——用户侧载 debug 包的卡顿主体
+- 修复（两刀）：`DeviceListViewModel` 采集处 `sample(400)`（UI 管线 ≤2.5Hz，tick 发最新快照终态不丢）+ `BleManager` 回调体转发专用 HandlerThread `ble-scan-callbacks`（startScan 无 Handler 变体、回调固定走主 Looper，只能 post 转发；单例常驻不 quit）
+- Result（华为 TAS-AN00 归因矩阵，同场景=扫描 5s 内连滚 4 次）：debug 旧码 **95.6%/44ms** → debug+两刀 75.0%/48ms → release 旧码 **24.9%/19ms** → **release+两刀 1.45%/7ms**（另轮 TID 验尸复核 16.5%/16ms，热态方差内仍优于旧码）；纯滚动三连测 release 0.5-1.0%/6ms vs debug 61-69%/57ms；assembleDebug+单测全绿；弹窗路径 release 冒烟 PASS（遮罩压暗 y180=134,141,151→关闭后 252,253,255）
+- 交付：手机最终形态=**smartble-release-FIXED.apk**（assembleRelease+debug.keystore 签名，与 debug 同签名可原地升级）；日常侧载应转 release 包，debug 包仅作联调仪器
+- Evidence: verification/windows-plan-v1/20260927-AAND-SCROLLJANK/（README+归因矩阵+基线/逐帧分解/终态截图）
+- 坑位：**adb install 输出接管道吃掉失败退出码**（增量安装异常→静默无操作，lastUpdateTime 不变假报成功，install 必须裸跑看末行 Success）；**TID 验尸法**=onScanResult 日志 TID==PID→旧码主线程/TID≠PID→修复版工作线程，比数字更硬；debug 形态 gfxinfo 方差巨大（同场景 49%↔77%），归因必须重复测量+对照矩阵；正典 `.ble-btn--primary` 自带品牌阴影不可当优化点删；USB 长会话掉线可自愈（kill/start-server+等 1-2 分钟）
+
 
 ### 2026-09-21 · WIN-009 P4 六壳安装包（用户裁决「P4 六壳安装包（推荐）」开工）
 

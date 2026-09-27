@@ -18,6 +18,7 @@ import android.content.Context
 import android.os.Build
 import android.os.ParcelUuid
 import android.os.Handler
+import android.os.HandlerThread
 import android.os.Looper
 import android.util.Log
 import com.smartble.core.model.BleCharacteristic
@@ -79,6 +80,16 @@ class BleManager private constructor(private val context: Context) {
 
     // Auto-stop scan timer - aligned with UniApp behavior
     private val autoStopHandler = Handler(Looper.getMainLooper())
+
+    // 扫描回调线程（20260927 滚动卡顿修复第二刀）：BluetoothLeScanner 的回调
+    // 固定投递到主线程 Looper（startScan 无 Handler 变体）——办公环境
+    // ALL_MATCHES+AGGRESSIVE 下 ~57 条/秒的回调体（adv hex 拼串、ScanRecord/
+    // Map 重建、全列表快照 toList）全部挤占主线程，与滚动帧互斥。回调对象里
+    // 只做 post，重活转发到专用 HandlerThread；单例进程生命周期常驻（release
+    // 后单例仍存活，不 quit）；UI 刷新频率由 DeviceListViewModel 的
+    // sample(400ms) 节流兜底。
+    private val scanCallbackThread = HandlerThread("ble-scan-callbacks").apply { start() }
+    private val scanCallbackHandler = Handler(scanCallbackThread.looper)
     private var autoStopRunnable: Runnable? = null
 
     // Auto reconnect state
@@ -491,41 +502,9 @@ class BleManager private constructor(private val context: Context) {
 
     // Scan callback
     private val scanCallback = object : ScanCallback() {
-        @SuppressLint("MissingPermission")
         override fun onScanResult(callbackType: Int, result: LeScanResult) {
-            val device = result.device
-            val scanRecord = result.scanRecord
-            // 联调旁证（20260921 跨端广播验证）：逐条扫见记录进 logcat（含 adv 原始字节
-            // hex，验证对端厂商块保真度），绕开 EMUI uiautomator Compose 文本 bounds=[0,0] 变体（F013 坑位账）。
-            // 20260924：DEBUG→INFO——EMUI/HyperOS 默认丢弃第三方 app 的 Log.d，INFO 级联调才可见。
-            val advHex = scanRecord?.bytes?.joinToString("") { "%02x".format(it) } ?: "-"
-            Log.i(TAG, "onScanResult: ${device.address} name=${device.name} rssi=${result.rssi} adv=$advHex")
-
-            val bleDevice = BleDevice(
-                deviceId = device.address,
-                name = device.name,
-                rssi = result.rssi,
-                state = currentConnectionState(device.address),
-                scanRecord = ScanRecord(
-                    serviceUuids = scanRecord?.serviceUuids?.map { it.uuid.toString() },
-                    manufacturerData = scanRecord?.manufacturerSpecificData?.let { sparse ->
-                        if (sparse.size() == 0) null else buildMap {
-                            for (index in 0 until sparse.size()) put(sparse.keyAt(index), sparse.valueAt(index))
-                        }
-                    },
-                    serviceData = scanRecord?.serviceData?.mapKeys { it.key.toString() },
-                    txPowerLevel = scanRecord?.txPowerLevel,
-                    rawBytes = scanRecord?.bytes,
-                ),
-            )
-
-            val scanResult = ScanResult(
-                device = bleDevice,
-                timestampNanos = result.timestampNanos,
-            )
-
-            scanResultsMap[device.address] = scanResult
-            _scanResults.tryEmit(scanResultsMap.values.toList())
+            // 回调本身在主线程，重活转发（见 scanCallbackThread 注释）
+            scanCallbackHandler.post { handleScanResult(result) }
         }
 
         override fun onScanFailed(errorCode: Int) {
@@ -534,8 +513,45 @@ class BleManager private constructor(private val context: Context) {
         }
 
         override fun onBatchScanResults(results: List<LeScanResult>) {
-            results.forEach { onScanResult(ScanSettings.CALLBACK_TYPE_ALL_MATCHES, it) }
+            scanCallbackHandler.post { results.forEach { handleScanResult(it) } }
         }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun handleScanResult(result: LeScanResult) {
+        val device = result.device
+        val scanRecord = result.scanRecord
+        // 联调旁证（20260921 跨端广播验证）：逐条扫见记录进 logcat（含 adv 原始字节
+        // hex，验证对端厂商块保真度），绕开 EMUI uiautomator Compose 文本 bounds=[0,0] 变体（F013 坑位账）。
+        // 20260924：DEBUG→INFO——EMUI/HyperOS 默认丢弃第三方 app 的 Log.d，INFO 级联调才可见。
+        val advHex = scanRecord?.bytes?.joinToString("") { "%02x".format(it) } ?: "-"
+        Log.i(TAG, "onScanResult: ${device.address} name=${device.name} rssi=${result.rssi} adv=$advHex")
+
+        val bleDevice = BleDevice(
+            deviceId = device.address,
+            name = device.name,
+            rssi = result.rssi,
+            state = currentConnectionState(device.address),
+            scanRecord = ScanRecord(
+                serviceUuids = scanRecord?.serviceUuids?.map { it.uuid.toString() },
+                manufacturerData = scanRecord?.manufacturerSpecificData?.let { sparse ->
+                    if (sparse.size() == 0) null else buildMap {
+                        for (index in 0 until sparse.size()) put(sparse.keyAt(index), sparse.valueAt(index))
+                    }
+                },
+                serviceData = scanRecord?.serviceData?.mapKeys { it.key.toString() },
+                txPowerLevel = scanRecord?.txPowerLevel,
+                rawBytes = scanRecord?.bytes,
+            ),
+        )
+
+        val scanResult = ScanResult(
+            device = bleDevice,
+            timestampNanos = result.timestampNanos,
+        )
+
+        scanResultsMap[device.address] = scanResult
+        _scanResults.tryEmit(scanResultsMap.values.toList())
     }
 
     // GATT callback
