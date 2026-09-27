@@ -105,6 +105,8 @@
 | T-WIN | apps/desktop/tauri Windows 桌面 | Primary | btleplug 0.11（WinRT；源码完整：lib.rs 1063 行 + 完整前端的 Electron 镜像） | **F006-F012 GATT 域真实收口 PASS（2026-09-11 W3：20/20，含 btleplug 断链重连重扫修复）**；Smart HID 域=PARITY-002 待 W4 |
 | V-WIN | apps/desktop/avalonia 原型 | Experimental | 真 WinRT 代码（net8.0-windows10.0.19041.0 TFM 投影；原 WindowsBluetooth NuGet 为幽灵包已除名；读写通知 ViewModel 未接线） | **Build Smoke PASS**（2026-09-11 W1：dotnet build exit 0/0 错误，PARITY-006 收口；证据 verification/windows-mobile-v1/20260911-win-b3/w1-vwin-build-smoke/；维持不入功能对齐裁决） |
 
+> **2026-09-27 Mac 总门禁修订注记**：本表 §4 各线状态为 2026-09-07/11 快照。其后 Windows 线已完成 WIN-001~017 全量收口（`verification/windows-plan-v1/FINAL-REPORT.md`，六壳扩至 E/T/V/F/Q/G，看板 PASS 2/PASS_WITH_OBS 15/BLOCKED 0）+ 9/22~27 增量轮（F004 五壳/广播六壳三路径/AIR-GQT/OTA 两轮 E2E/AAND 三轮：F004 R2 模态+滚动性能+P002 配网 E2E 六连修）。**跨线一致性与平台差异的正典口径已迁移至 [CROSS_IMPLEMENTATION_PARITY_MATRIX.md](CROSS_IMPLEMENTATION_PARITY_MATRIX.md) §2/§3/§6（K-AND/W-WIN 列）**；本表保留执行日志职能（run-id/缺陷编号明细），§1 主表后续由执行线随轮回填。
+
 ### 4.2 NOT_APPLICABLE / NOT_CONFIGURED 一次性裁决
 
 | 线 | 目标 | 裁决 | 依据 |
