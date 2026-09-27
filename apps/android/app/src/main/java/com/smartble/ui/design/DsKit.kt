@@ -377,6 +377,10 @@ fun DsInput(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         BasicTextField(
+            // 20260927 真机实证：weight 必须挂在本体上——原挂在 decorationBox 内层
+            // Box 时，长文本以内容宽度参与测量把 trailing 按钮（如配网页「解析」）
+            // 挤出可视区，长配对码粘贴后按钮彻底不可点
+            modifier = Modifier.weight(1f),
             value = value,
             onValueChange = onValueChange,
             enabled = enabled,
@@ -388,7 +392,7 @@ fun DsInput(
             ),
             cursorBrush = SolidColor(cPrimary),
             decorationBox = { inner ->
-                Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart) {
                     if (value.isEmpty()) {
                         Text(
                             placeholder,

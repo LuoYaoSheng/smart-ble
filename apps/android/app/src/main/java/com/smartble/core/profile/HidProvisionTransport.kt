@@ -131,18 +131,15 @@ class BleManagerHidTransport(
             }
         }
 
-        val okInfo = bleManager.setNotification(
-            deviceId, service.uuid,
-            SmartHidProtocol.CharacteristicUuids.INFO, true,
-        )
-        val okStatus = bleManager.setNotification(
-            deviceId, service.uuid,
-            SmartHidProtocol.CharacteristicUuids.STATUS, true,
-        )
+        val okInfo = enableNotificationAwait(service.uuid, SmartHidProtocol.CharacteristicUuids.INFO)
+        val okStatus = enableNotificationAwait(service.uuid, SmartHidProtocol.CharacteristicUuids.STATUS)
         if (!okInfo || !okStatus) {
             close()
             throw HidConnectException("打开配网特征通知失败")
         }
+        // 订阅完成后的沉降：EMUI 实测紧跟的读会被栈吞（accepted 却无回调），
+        // 给 GATT 队列一个排空窗口
+        delay(NOTIFY_SETTLE_MS)
         mtu = bleManager.currentMtu(deviceId)
     }
 
@@ -207,6 +204,40 @@ class BleManagerHidTransport(
 
     /* ------------------------------------------------------------------ */
 
+    /**
+     * 订阅单个特征通知并等待 CCCD 写真正落地（onDescriptorWrite status==0）。
+     *
+     * 20260927 真机首曝（EMUI/TAS-AN00）：原实现背靠背两个 setNotification，
+     * 第二个 writeDescriptor 在前一个仍在途时被 Android GATT 串行队列拒绝
+     * （同步返回 false，无任何回调）→「打开配网特征通知失败」秒断链。
+     * 现改为「写→等事件」串行 + 假失败重试（间隔 120ms，共 4 次机会）。
+     */
+    private suspend fun enableNotificationAwait(serviceUuid: String, characteristicUuid: String): Boolean {
+        repeat(NOTIFY_SUBSCRIBE_ATTEMPTS) { attempt ->
+            if (attempt > 0) delay(NOTIFY_SUBSCRIBE_RETRY_MS)
+            // 先挂采集再发起写（SharedFlow 无重放，顺序反了会丢事件）
+            val waiter = CompletableDeferred<Boolean>()
+            val job = scope.launch {
+                val event = bleManager.descriptorWriteEvents.first {
+                    it.deviceId == deviceId &&
+                        it.characteristicUuid.equals(characteristicUuid, ignoreCase = true)
+                }
+                waiter.complete(event.status == 0)
+            }
+            val accepted = runCatching {
+                bleManager.setNotification(deviceId, serviceUuid, characteristicUuid, true)
+            }.getOrDefault(false)
+            if (accepted) {
+                val ok = withTimeoutOrNull(NOTIFY_SUBSCRIBE_ACK_MS) { waiter.await() }
+                job.cancel()
+                if (ok == true) return true
+            } else {
+                job.cancel()
+            }
+        }
+        return false
+    }
+
     private fun characteristicTextOf(
         characteristicUuid: String,
         kinds: Set<CharacteristicChangeKind>,
@@ -220,33 +251,41 @@ class BleManagerHidTransport(
             .map { String(it.value, StandardCharsets.UTF_8) }
 
     private suspend fun readCharacteristicText(characteristicUuid: String): String {
-        val ack = CompletableDeferred<String>()
-        // 先挂采集再发起读（SharedFlow 无重放，顺序反了会丢事件）
-        val waiter = sessionScope?.launch {
-            bleManager.characteristicChanges
-                .filter { event ->
-                    event.deviceId == deviceId &&
-                        event.characteristicUuid.equals(characteristicUuid, ignoreCase = true) &&
-                        event.kind == CharacteristicChangeKind.Read
-                }
-                .first()
-                .let { ack.complete(String(it.value, StandardCharsets.UTF_8)) }
-        }
-        val accepted = runCatching {
-            bleManager.readCharacteristic(deviceId, SmartHidProtocol.SERVICE_UUID, characteristicUuid)
-        }.getOrDefault(false)
-        if (!accepted) {
+        // 读重试（20260927 EMUI 实测）：accepted 的读也可能被栈吞（10s 无回调），
+        // 间隔重发通常第二次即通；「连接不可用」类拒绝同样走重试
+        repeat(READ_ATTEMPTS) { attempt ->
+            if (attempt > 0) delay(READ_RETRY_MS)
+            // 先挂采集再发起读（SharedFlow 无重放，顺序反了会丢事件）
+            val ack = CompletableDeferred<String>()
+            val waiter = sessionScope?.launch {
+                bleManager.characteristicChanges
+                    .filter { event ->
+                        event.deviceId == deviceId &&
+                            event.characteristicUuid.equals(characteristicUuid, ignoreCase = true) &&
+                            event.kind == CharacteristicChangeKind.Read
+                    }
+                    .first()
+                    .let { ack.complete(String(it.value, StandardCharsets.UTF_8)) }
+            }
+            val accepted = runCatching {
+                bleManager.readCharacteristic(deviceId, SmartHidProtocol.SERVICE_UUID, characteristicUuid)
+            }.getOrDefault(false)
+            val text = if (accepted) withTimeoutOrNull(READ_TIMEOUT_MS) { ack.await() } else null
             waiter?.cancel()
-            throw HidConnectException("读取特征失败：连接不可用")
+            if (text != null) return text
         }
-        val text = withTimeoutOrNull(READ_TIMEOUT_MS) { ack.await() }
-        waiter?.cancel()
-        return text ?: throw HidConnectException("读取特征超时（${READ_TIMEOUT_MS / 1000}s）")
+        throw HidConnectException("读取特征超时（${READ_TIMEOUT_MS / 1000}s）")
     }
 
     private companion object {
         const val CONNECT_TIMEOUT_MS = 10_000L
         const val READ_TIMEOUT_MS = 10_000L
         const val WRITE_FRAME_TIMEOUT_MS = 15_000L
+        const val NOTIFY_SUBSCRIBE_ATTEMPTS = 4
+        const val NOTIFY_SUBSCRIBE_RETRY_MS = 120L
+        const val NOTIFY_SUBSCRIBE_ACK_MS = 2_000L
+        const val NOTIFY_SETTLE_MS = 150L
+        const val READ_ATTEMPTS = 3
+        const val READ_RETRY_MS = 300L
     }
 }

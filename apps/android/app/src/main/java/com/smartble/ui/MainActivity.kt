@@ -87,7 +87,11 @@ sealed class BottomNavItem(val route: String) {
     data object About : BottomNavItem("about")
 
     companion object {
-        val entries: List<BottomNavItem> = listOf(Scan, Connected, Broadcast, About)
+        // 20260927 真机三崩实证（PID 6801/7917/…，重启后早期点 Tab 即 NPE）：
+        // companion clinit 时序竞态会把未完成初始化的单例固化为 null 进列表。
+        // getter 每次现取，结构性消除 null 捕获。
+        val entries: List<BottomNavItem>
+            get() = listOf(Scan, Connected, Broadcast, About)
     }
 }
 
@@ -125,8 +129,8 @@ fun SmartBLEApp(
     val broadcastStopped by broadcastViewModel.stopped.collectAsState()
 
     fun switchTab(index: Int) {
+        val item = BottomNavItem.entries.getOrNull(index) ?: return
         selectedItem = index
-        val item = BottomNavItem.entries[index]
         if (navController.currentDestination?.route != item.route) {
             navController.navigate(item.route) {
                 popUpTo(navController.graph.startDestinationId) {

@@ -105,7 +105,10 @@ fun ProvisioningScreen(
             Spacer(modifier = Modifier.height(12.dp))
 
             when (state.phase) {
-                ProvisionPhase.Connect -> ConnectPhaseCard(state)
+                ProvisionPhase.Connect -> ConnectPhaseCard(
+                    viewModel = viewModel,
+                    state = state,
+                )
                 ProvisionPhase.Configure -> ConfigurePhaseCard(
                     viewModel = viewModel,
                     state = state,
@@ -160,15 +163,20 @@ private fun ProvisionStepper(phase: ProvisionPhase) {
 }
 
 @Composable
-private fun ConnectPhaseCard(state: ProvisionUiState) {
+private fun ConnectPhaseCard(viewModel: HidDeviceSessionViewModel, state: ProvisionUiState) {
     Column(Modifier.dsCard()) {
         DsCardTitle(icon = DsIcons.Link, text = "连接并校验设备")
         Spacer(modifier = Modifier.height(8.dp))
         when {
+            // 失败优先呈现（20260927 真机修复：原条件顺序下 phase==Connect &&
+            // deviceInfo==null 恒先命中，connError 被永久遮蔽成「正在连接…」）
+            state.connError != null || state.lost -> {
+                DsErrLine(state.connError ?: "设备连接已断开")
+                Spacer(modifier = Modifier.height(8.dp))
+                DsSoftButton(label = "重新连接", icon = null, onClick = { viewModel.reconnect() })
+            }
             state.connecting || state.phase == ProvisionPhase.Connect && state.deviceInfo == null ->
                 DsNote(kind = DsNoteKind.Info, boldLead = "正在连接", text = "自动连接设备并读取 Device Info…")
-            state.connError != null || state.lost ->
-                DsErrLine(state.connError ?: "设备连接已断开")
             state.deviceInfo != null -> DeviceInfoRows(state.deviceInfo)
             else -> DsNote(kind = DsNoteKind.Info, boldLead = "准备连接", text = "即将开始自动连接。")
         }
@@ -251,7 +259,9 @@ private fun ConfigurePhaseCard(
         DsInput(value = port, onValueChange = { port = it; form.updateHubPort(it) }, placeholder = "17892", mono = true)
         Spacer(modifier = Modifier.height(8.dp))
         DsFieldLabel(text = "配对 token（32 位十六进制）")
-        if (token.isBlank()) {
+        // 20260927 真机修复：原 token 非空即卸载输入框——手输/注入第二个字符起
+        // 全部落空（首字即换掩码行）。改为录满 32 位才切掩码展示，保留手输路径。
+        if (token.length < 32) {
             DsInput(value = token, onValueChange = { token = it; form.updateToken(it) }, placeholder = "可扫码带入或手输", mono = true)
         } else {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {

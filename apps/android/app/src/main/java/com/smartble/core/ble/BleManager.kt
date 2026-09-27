@@ -121,6 +121,16 @@ class BleManager private constructor(private val context: Context) {
     )
     val characteristicChanges: Flow<CharacteristicChangeEvent> = _characteristicChanges.asSharedFlow()
 
+    // 20260927 真机首曝（EMUI）：连续两个 writeDescriptor 不等回调，第二个被
+    // Android GATT 串行队列拒绝（返回 false 且永远没有 onDescriptorWrite）——
+    // 订阅方必须等到本事件落地再发下一个 descriptor 写。
+    private val _descriptorWriteEvents = MutableSharedFlow<DescriptorWriteEvent>(
+        replay = 0,
+        extraBufferCapacity = 16,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST,
+    )
+    val descriptorWriteEvents: Flow<DescriptorWriteEvent> = _descriptorWriteEvents.asSharedFlow()
+
     // 协商后的 ATT MTU（WIN-AAND-006 记录；配网分帧按它切 chunk——缺失时保守 23）
     private val _negotiatedMtus = MutableStateFlow<Map<String, Int>>(emptyMap())
     val negotiatedMtus: Flow<Map<String, Int>> = _negotiatedMtus.asStateFlow()
@@ -640,6 +650,18 @@ class BleManager private constructor(private val context: Context) {
         }
 
         @SuppressLint("MissingPermission")
+        @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
+        override fun onCharacteristicRead(
+            gatt: BluetoothGatt,
+            characteristic: BluetoothGattCharacteristic,
+            status: Int
+        ) {
+            // API<33（本机实测 TAS-AN00=API31）框架只调本签名，value 自 characteristic.value；
+            // 转发到新签名统一发射，否则读值在这类设备上结构性不可见
+            onCharacteristicRead(gatt, characteristic, characteristic.value ?: ByteArray(0), status)
+        }
+
+        @SuppressLint("MissingPermission")
         override fun onCharacteristicRead(
             gatt: BluetoothGatt,
             characteristic: BluetoothGattCharacteristic,
@@ -693,6 +715,16 @@ class BleManager private constructor(private val context: Context) {
         }
 
         @SuppressLint("MissingPermission")
+        @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
+        override fun onCharacteristicChanged(
+            gatt: BluetoothGatt,
+            characteristic: BluetoothGattCharacteristic
+        ) {
+            // API<33 走本签名（value 自 characteristic.value），转发到新签名统一发射
+            onCharacteristicChanged(gatt, characteristic, characteristic.value ?: ByteArray(0))
+        }
+
+        @SuppressLint("MissingPermission")
         override fun onCharacteristicChanged(
             gatt: BluetoothGatt,
             characteristic: BluetoothGattCharacteristic,
@@ -726,6 +758,13 @@ class BleManager private constructor(private val context: Context) {
         @SuppressLint("MissingPermission")
         override fun onDescriptorWrite(gatt: BluetoothGatt, descriptor: BluetoothGattDescriptor, status: Int) {
             Log.d(TAG, "onDescriptorWrite: ${descriptor.uuid}, status=$status")
+            _descriptorWriteEvents.tryEmit(
+                DescriptorWriteEvent(
+                    deviceId = gatt.device.address,
+                    characteristicUuid = descriptor.characteristic?.uuid?.toString() ?: "",
+                    status = status,
+                )
+            )
         }
 
         override fun onReadRemoteRssi(gatt: BluetoothGatt, rssi: Int, status: Int) {
@@ -852,6 +891,13 @@ enum class CharacteristicChangeKind {
     Read,
     Write,
 }
+
+/** descriptor（CCCD）写完成事件：status==0 即 GATT_SUCCESS */
+data class DescriptorWriteEvent(
+    val deviceId: String,
+    val characteristicUuid: String,
+    val status: Int,
+)
 
 /**
  * 特征值变化事件
