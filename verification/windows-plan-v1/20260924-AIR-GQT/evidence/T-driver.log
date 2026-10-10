@@ -1,0 +1,14 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.96s
+     Running unittests src\lib.rs (target\debug\deps\smart_ble_tauri-42745e5d7c5a37cf.exe)
+
+running 1 test
+{"ts":1790229990042,"shell":"T","event":"driver-started","detail":"TWIN"}
+{"ts":1790229992427,"shell":"T","event":"start-result","detail":"Ok(Object {"status": String("Created"), "companyId": Number(1), "bytes": Number(4), "event": String("started")})"}
+{"ts":1790229992428,"shell":"T","event":"started","detail":"TWIN"}
+{"ts":1790230001435,"shell":"T","event":"stop-result","detail":"Ok(Object {"event": String("stopped")})"}
+{"ts":1790230001436,"shell":"T","event":"stopped","detail":"TWIN"}
+{"ts":1790230001539,"shell":"T","event":"exited","detail":""}
+test win_bridge::tests::bridge_air_capture ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 11.50s
+

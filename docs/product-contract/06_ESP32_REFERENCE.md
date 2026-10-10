@@ -2,7 +2,7 @@
 
 ## 角色
 
-`hardware/esp32/LightBLE` 是 UniApp 第一完整版本的公开标准测试夹具，不只是示例代码。任何人使用一块常见 ESP32 开发板和 LED，都应能复现扫描、连接、GATT、Notify、错误处理和 OTA。
+`hardware/esp32/LightBLE` 是产品第一个完整版本的公开标准测试夹具，不只是示例代码。任何人使用一块常见 ESP32 开发板和 LED，都应能复现扫描、连接、GATT、Notify、错误处理和 OTA。
 
 ## 推荐测试硬件
 

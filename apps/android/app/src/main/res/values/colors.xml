@@ -35,4 +35,7 @@
     <color name="rssi_good">#30D158</color>
     <color name="rssi_fair">#FF9500</color>
     <color name="rssi_weak">#FF3B30</color>
+
+    <!-- Splash（正典 cBg 冰蓝，与 flutter/uniapp 启动图一致） -->
+    <color name="splash_background">#F8FBFF</color>
 </resources>

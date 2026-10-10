@@ -68,7 +68,9 @@ window.C = {
   /* ---- B4 kv ---- */
   kv(k, v, mono=false){ const dim = v===''||v==null; return `<div class="kv"><span class="k">${k}</span><span class="v ${mono?'mono':''} ${dim?'dim':''}">${dim?'—':v}</span></div>`; },
 
-  /* ---- C1 device-card（单一来源 · scan/conn 两变体） ---- */
+  /* ---- C1 device-card（单一来源 · scan/conn 两变体）----
+     产品规则：特殊设备（Smart HID）是标准设备的扩展——卡片保留标准「连接」入口，
+     叠加 profile「配置」入口（2026-09-03 用户走查修正，产品模型 §0 原则）。 */
   devCard(d, mode='scan'){
     const q = d.RSSI>=-60?4:d.RSSI>=-70?3:d.RSSI>=-80?2:1;
     const sig = `<span class="sig q${q}"><i></i><i></i><i></i><i></i></span><span class="dbm">${d.RSSI} dBm</span>`;
@@ -93,7 +95,8 @@ window.C = {
       <div class="acts">
         ${isShid
           ? C.btn({label:'配置 Smart HID',tone:'primary',size:'sm',icon:'hid',act:'p001-config',data:`data-id="${d.deviceId}"`,disabled:d.connected})
-          : C.btn({label:d.connected?'已连接':'连接',tone:d.connected?'soft':'primary',size:'sm',icon:'link',act:'p001-connect',data:`data-id="${d.deviceId}"`,disabled:d.connected})}
+          : ''}
+        ${C.btn({label:d.connected?'已连接':'连接',tone:d.connected||isShid?'soft':'primary',size:'sm',icon:'link',act:'p001-connect',data:`data-id="${d.deviceId}"`,disabled:d.connected})}
       </div></div>`;
   },
 

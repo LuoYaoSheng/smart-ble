@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import '../../core/utils/data_converter.dart';
+import '../../core/utils/log_redaction.dart';
 
 /// 指令队列项
 class CommandItem {
@@ -52,12 +53,18 @@ class CommandItem {
 enum CommandStatus {
   /// 等待中
   pending,
+
   /// 发送中
   sending,
+
   /// 成功
   success,
+
   /// 失败
   failed,
+
+  /// 清空或断开时取消
+  cancelled,
 }
 
 /// 指令发送回调
@@ -73,6 +80,7 @@ typedef CommandQueueCallback = void Function(CommandItem command);
 /// - 批量发送（多条指令排队）
 /// - 循环发送（重复 N 次或无限循环）
 /// - 暂停/恢复/清空
+/// - 深度上限（默认 16）与单写超时（默认 5s）——F009 Base 契约
 class CommandQueue {
   /// 队列
   final List<CommandItem> _queue = [];
@@ -80,8 +88,16 @@ class CommandQueue {
   /// 发送间隔（毫秒）
   int intervalMs;
 
+  /// 队列深度上限（含待发送；F009：深 16）
+  final int maxDepth;
+
+  /// 单写超时（F009：5s）
+  final Duration writeTimeout;
+
   /// 是否正在运行
   bool _isRunning = false;
+  int _generation = 0;
+  CommandItem? _inFlight;
 
   /// 是否暂停
   bool _isPaused = false;
@@ -108,6 +124,8 @@ class CommandQueue {
   CommandQueue({
     required CommandSender sender,
     this.intervalMs = 50,
+    this.maxDepth = 16,
+    this.writeTimeout = const Duration(seconds: 5),
     this.onCommandStart,
     this.onCommandComplete,
     this.onCommandError,
@@ -117,6 +135,11 @@ class CommandQueue {
 
   /// 队列中待发送的指令数
   int get pendingCount => _queue.length;
+
+  /// 队列是否已满（F009：深 16）
+  bool get isFull => _depth >= maxDepth;
+
+  int get _depth => _queue.length + (_inFlight == null ? 0 : 1);
 
   /// 是否正在运行
   bool get isRunning => _isRunning;
@@ -139,15 +162,21 @@ class CommandQueue {
   /// 待发送队列
   List<CommandItem> get queue => List.unmodifiable(_queue);
 
-  /// 添加单条指令
+  /// 添加单条指令；队列满时抛 [StateError]（调用方须捕获并提示）
   void enqueue(CommandItem command) {
+    if (_depth + 1 > maxDepth) {
+      throw StateError('写队列已满（$maxDepth）');
+    }
     _queue.add(command);
     onQueueStateChanged?.call();
     _startProcessing();
   }
 
-  /// 批量添加指令
+  /// 批量添加指令；总量超上限时整批拒绝（不留半批）
   void enqueueBatch(List<CommandItem> commands) {
+    if (_depth + commands.length > maxDepth) {
+      throw StateError('写队列已满（$maxDepth，含在途批量 ${commands.length} 条）');
+    }
     _queue.addAll(commands);
     onQueueStateChanged?.call();
     _startProcessing();
@@ -158,6 +187,12 @@ class CommandQueue {
   /// [commands] 每次循环要发送的指令列表
   /// [loopCount] 循环次数，0 表示无限循环
   void startLoop(List<CommandItem> commands, {int loopCount = 0}) {
+    if (commands.isEmpty) {
+      throw ArgumentError('循环模板不能为空');
+    }
+    if (_depth + commands.length > maxDepth) {
+      throw StateError('循环模板 ${commands.length} 条超过队列深度上限 $maxDepth');
+    }
     stopLoop();
     _isLooping = true;
     _loopCount = loopCount;
@@ -165,6 +200,7 @@ class CommandQueue {
     _loopTemplate = commands;
     _enqueueNextLoop();
     onQueueStateChanged?.call();
+    _startProcessing();
   }
 
   /// 停止循环
@@ -191,9 +227,13 @@ class CommandQueue {
 
   /// 清空队列
   void clear() {
+    _generation++;
+    for (final command in [..._queue, if (_inFlight != null) _inFlight!]) {
+      command.status = CommandStatus.cancelled;
+    }
     _queue.clear();
+    // Futures cannot cancel the native GATT write. Keep one worker until it settles.
     stopLoop();
-    _isRunning = false;
     _isPaused = false;
     onQueueStateChanged?.call();
   }
@@ -203,61 +243,54 @@ class CommandQueue {
     _history.clear();
   }
 
-  /// 内部：开始处理队列
+  /// 单 worker 独占发送。清空后旧回执不能改变新运行的状态。
   void _startProcessing() {
     if (_isRunning || _isPaused || _queue.isEmpty) return;
     _isRunning = true;
     _processNext();
   }
 
-  /// 内部：处理下一条指令
   Future<void> _processNext() async {
-    if (_isPaused || _queue.isEmpty) {
-      _isRunning = false;
-      if (_queue.isEmpty && !_isLooping) {
-        onQueueEmpty?.call();
-      }
-      // 如果在循环模式，队列空了就添加下一轮
-      if (_queue.isEmpty && _isLooping) {
-        _enqueueNextLoop();
-        if (_queue.isNotEmpty) {
-          _processNext();
-        } else {
-          _isRunning = false;
+    while (!_isPaused) {
+      if (_queue.isEmpty && _isLooping) _enqueueNextLoop();
+      if (_queue.isEmpty) break;
+      final generation = _generation;
+      final command = _queue.removeAt(0);
+      _inFlight = command;
+      command.status = CommandStatus.sending;
+      command.sentAt = DateTime.now();
+      onCommandStart?.call(command);
+      onQueueStateChanged?.call();
+      try {
+        await _sender(command).timeout(writeTimeout);
+        if (generation == _generation) {
+          command.status = CommandStatus.success;
+          onCommandComplete?.call(command);
+        }
+      } on TimeoutException {
+        if (generation == _generation) {
+          command.status = CommandStatus.failed;
+          command.error = '写入超时（${writeTimeout.inSeconds}s）';
+          onCommandError?.call(command);
+        }
+      } catch (e) {
+        if (generation == _generation) {
+          command.status = CommandStatus.failed;
+          command.error = e.toString();
+          onCommandError?.call(command);
+          debugPrint('指令发送失败: ${sanitizeLogString(e.toString())}');
         }
       }
-      return;
-    }
-
-    final command = _queue.removeAt(0);
-    command.status = CommandStatus.sending;
-    command.sentAt = DateTime.now();
-    onCommandStart?.call(command);
-    onQueueStateChanged?.call();
-
-    try {
-      await _sender(command);
-      command.status = CommandStatus.success;
-      onCommandComplete?.call(command);
-    } catch (e) {
-      command.status = CommandStatus.failed;
-      command.error = e.toString();
-      onCommandError?.call(command);
-      debugPrint('指令发送失败: $e');
-    }
-
-    _history.add(command);
-    onQueueStateChanged?.call();
-
-    // 间隔后处理下一条
-    if (_queue.isNotEmpty || _isLooping) {
-      await Future.delayed(Duration(milliseconds: intervalMs));
-      _processNext();
-    } else {
-      _isRunning = false;
-      onQueueEmpty?.call();
+      _inFlight = null;
+      if (generation == _generation) _history.add(command);
       onQueueStateChanged?.call();
+      if (_queue.isNotEmpty || _isLooping) {
+        await Future<void>.delayed(Duration(milliseconds: intervalMs));
+      }
     }
+    _isRunning = false;
+    if (_queue.isEmpty && !_isLooping) onQueueEmpty?.call();
+    onQueueStateChanged?.call();
   }
 
   /// 内部：添加下一轮循环指令
@@ -276,15 +309,17 @@ class CommandQueue {
     _currentLoop++;
 
     // 深拷贝模板，生成新的指令
-    final newCommands = _loopTemplate!.map((template) => CommandItem(
-      id: '${template.id}_loop$_currentLoop',
-      deviceId: template.deviceId,
-      serviceUuid: template.serviceUuid,
-      characteristicUuid: template.characteristicUuid,
-      data: List.from(template.data),
-      withoutResponse: template.withoutResponse,
-      displayHex: template.displayHex,
-    )).toList();
+    final newCommands = _loopTemplate!
+        .map((template) => CommandItem(
+              id: '${template.id}_loop$_currentLoop',
+              deviceId: template.deviceId,
+              serviceUuid: template.serviceUuid,
+              characteristicUuid: template.characteristicUuid,
+              data: List.from(template.data),
+              withoutResponse: template.withoutResponse,
+              displayHex: template.displayHex,
+            ))
+        .toList();
 
     _queue.addAll(newCommands);
   }

@@ -1,0 +1,50 @@
+Resolving dependencies...
+Downloading packages...
+  characters 1.4.0 (1.4.1 available)
+  clock 1.1.2 (1.1.3 available)
+  code_assets 1.2.1 (2.0.0 available)
+  file_picker 11.0.3 (12.2.0 available)
+  flutter_ble_peripheral 2.1.1 (3.1.0 available)
+  flutter_blue_plus 1.36.8 (2.3.12 available)
+  flutter_blue_plus_android 7.0.4 (9.0.3 available)
+  flutter_blue_plus_darwin 7.0.3 (9.0.4 available)
+  flutter_blue_plus_linux 7.0.3 (9.0.3 available)
+  flutter_blue_plus_platform_interface 7.0.0 (9.0.3 available)
+  flutter_blue_plus_web 7.0.2 (9.0.3 available)
+  flutter_platform_widgets 6.1.0 (10.0.1 available)
+  flutter_riverpod 2.6.1 (3.4.3 available)
+  google_fonts 6.3.3 (8.2.1 available)
+  hooks 2.0.2 (2.2.0 available)
+  intl 0.20.2 (0.20.3 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.1 available)
+  meta 1.17.0 (1.19.0 available)
+  objective_c 9.5.0 (9.6.0 available)
+  package_config 2.2.0 (3.0.0 available)
+  permission_handler 11.4.0 (13.0.1 available)
+  permission_handler_android 12.1.0 (14.0.0 available)
+  record_use 0.6.0 (1.1.1 available)
+  riverpod 2.6.1 (3.4.3 available)
+  rxdart 0.27.7 (0.28.0 available)
+  shared_preferences_android 2.4.23 (2.4.28 available)
+  stack_trace 1.12.1 (1.12.2 available)
+  test_api 0.7.7 (0.7.14 available)
+  url_launcher_android 6.3.30 (6.3.33 available)
+  vector_math 2.2.0 (2.4.2 available)
+  win32 5.15.0 (6.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies!
+33 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+package:smart_ble has `uses-material-design: true` set but the primary pubspec contains `uses-material-design: false`. If the application needs material icons, then `uses-material-design`  must be set to true.
+00:00 +0: loading /Users/luoyaosheng/Desktop/project/Open/smart-ble-macos/verification/macos-extension/20260904-r2/pages-probe/test/pages_smoke_test.dart                                              00:01 +0: loading /Users/luoyaosheng/Desktop/project/Open/smart-ble-macos/verification/macos-extension/20260904-r2/pages-probe/test/pages_smoke_test.dart                                              00:01 +0: FLW-01 DeviceListPage 无 BLE 平台实现时初始化失败态                                                                                                                                                      00:01 +0: FLW-01 DeviceListPage 无 BLE 平台实现时初始化失败态
+BleManager 初始化失败: Unsupported operation: flutter_blue_plus is unsupported on this platform
+00:01 +1: FLW-01 DeviceListPage 无 BLE 平台实现时初始化失败态                                                                                                                                                      00:01 +1: FLW-02 DeviceListPage Mock 扫描全链路（USE_MOCK_BLE）                                                                                                                                               00:02 +1: FLW-02 DeviceListPage Mock 扫描全链路（USE_MOCK_BLE）                                                                                                                                               00:02 +1: FLW-02 DeviceListPage Mock 扫描全链路（USE_MOCK_BLE）
+[MOCK] Injecting dummy device Dummy-BLE-01
+[FBP] stopScan: already stopped
+00:02 +2: FLW-02 DeviceListPage Mock 扫描全链路（USE_MOCK_BLE）                                                                                                                                               00:02 +2: FLW-03 DeviceListPage 过滤面板展开与控件渲染                                                                                                                                                            00:02 +3: FLW-03 DeviceListPage 过滤面板展开与控件渲染                                                                                                                                                            00:02 +3: FLW-04 MainScreen 底部导航四页走查                                                                                                                                                                   00:02 +4: FLW-04 MainScreen 底部导航四页走查                                                                                                                                                                   00:02 +4: FLW-05 BroadcastPage UUID 校验与广播启动                                                                                                                                                            00:02 +4: FLW-05 BroadcastPage UUID 校验与广播启动
+开始广播: name=BLE Toolkit+, uuid=0000fff0-0000-1000-8000-00805f9b34fb, platform=macOS
+00:02 +5: FLW-05 BroadcastPage UUID 校验与广播启动                                                                                                                                                            00:02 +5: FLW-06 ConnectedDevicesPage 空态渲染                                                                                                                                                             00:02 +6: FLW-06 ConnectedDevicesPage 空态渲染                                                                                                                                                             00:02 +6: FLW-07 AboutPage 内容渲染                                                                                                                                                                        00:02 +7: FLW-07 AboutPage 内容渲染                                                                                                                                                                        00:02 +7: FLW-08 DeviceDetailPage 未连接设备进入的降级渲染                                                                                                                                                         00:02 +7: FLW-08 DeviceDetailPage 未连接设备进入的降级渲染
+发现服务失败: FlutterBluePlusException | discoverServices | fbp-code: 6 | device is not connected
+[INFO] 发现 0 个服务
+00:02 +8: FLW-08 DeviceDetailPage 未连接设备进入的降级渲染                                                                                                                                                         00:02 +8: All tests passed!

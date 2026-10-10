@@ -1,13 +1,14 @@
-timestamp=2026-09-02T07:31:11Z
-git=f2c2febe9e8bbaee5e3effcb1c3e6ba0ea7aebc6
-command=/Applications/HBuilderX.app/Contents/MacOS/cli launch app-android --project /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/uniapp --deviceId emulator-5554 --compile true
+timestamp=2026-09-04T01:36:03Z
+git=dbb38a8c2404b37cce4602db1f42b44eedae7e8d
+command=/d/HBuilderX/cli.exe launch app-android --project /e/project/xf/smart-ble/apps/uniapp --deviceId R5CR1284Y7H --compile true
 ---
-15:31:11.272 HBuilderX Version: 5.24
-15:31:11.634 项目 uniapp 开始编译
-15:31:12.330 请注意运行模式下，因日志输出、sourcemap 以及未压缩源码等原因，性能和包体积，均不及发行模式。
-15:31:12.332 编译器版本：5.24（vue3）
-15:31:12.333 正在编译中...
-15:31:14.447 ​当前应用配置的 fallbackLocale 或 locale 为：en，但 locale 目录缺少该语言文件​
-15:31:16.169 项目 uniapp 编译成功。
-15:31:16.172 ready in 4355ms.
-15:31:16.185 已停止运行...
+09:36:04.049 HBuilderX Version: 5.24
+09:36:05.064 项目 uniapp 开始编译
+09:36:07.417 请注意运行模式下，因日志输出、sourcemap 以及未压缩源码等原因，性能和包体积，均不及发行模式。
+09:36:07.421 编译器版本：5.24（vue3）
+09:36:07.424 正在编译中...
+09:36:07.428 编译会生成大量临时文件，杀毒软件监控时会影响编译速度，并造成CPU升高。推荐把项目目录添加到杀毒软件的监控排除名单中。[添加] [帮助]
+09:36:16.626 ​当前应用配置的 fallbackLocale 或 locale 为：en，但 locale 目录缺少该语言文件​
+09:36:21.062 项目 uniapp 编译成功。
+09:36:21.076 ready in 15336ms.
+09:36:21.089 已停止运行...

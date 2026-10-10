@@ -51,9 +51,25 @@ export async function connect(deviceId, options = {}) {
 
   session.serviceId = service.uuid;
   session.chars = chars;
-  try {
-    for (const uuid of notifyUuids) {
+  // WIN-UAND-003：Android 标准基座上相邻两次 notifyBLECharacteristicValueChange
+  // 背靠背调用会竞态失败（errCode 10003 且无 errMsg→无 message，真机 5/5 复现）。
+  // 订阅间留出间隔，失败再退避重试一次。
+  const enableNotify = async (uuid) => {
+    try {
       await setNotifyEnabled(session, session.serviceId, charFor(session, uuid), true);
+    } catch (first) {
+      await sleep(500);
+      try {
+        await setNotifyEnabled(session, session.serviceId, charFor(session, uuid), true);
+      } catch (second) {
+        throw second;
+      }
+    }
+  };
+  try {
+    for (const [index, uuid] of notifyUuids.entries()) {
+      if (index > 0) await sleep(300);
+      await enableNotify(uuid);
     }
   } catch (error) {
     await session.close().catch(() => {});
@@ -119,7 +135,9 @@ export function normalizeWriteError(error) {
   const normalized = new Error(`写特征失败: ${message}`);
   if (/encrypt|auth|pair|bond|139|10006|10007/i.test(message)) {
     normalized.kind = 'encrypt';
-    normalized.tip = '写入特征需要加密链路：请在系统弹窗中确认配对（Just Works），然后重试';
+    // V1 简化（2026-09-05）后 INPUT 为明文 write；此错误意味着设备固件
+    // 仍是旧加密模型（未重烧），提示升级固件而不是引导用户去配对。
+    normalized.tip = '设备固件为旧加密模型（要求配对），请重烧 V1 简化固件后重试';
   } else if (/disconnect|10008|not connect/i.test(message)) {
     normalized.kind = 'disconnect';
     normalized.tip = 'BLE 连接已断开，请重新连接设备';

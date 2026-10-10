@@ -247,13 +247,7 @@
 .ota-bar.ok i{background:var(--c-success);}
 .ota-bar.err i{background:var(--c-danger);}
 
-/* ---- C11 promo-card / C12 summary-card ---- */
-.promo{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--c-line-soft);}
-.promo:last-child{border-bottom:none;}
-.promo .ic{width:42px;height:42px;border-radius:var(--r-md);flex-shrink:0;display:flex;align-items:center;justify-content:center;}
-.promo .mid{flex:1;min-width:0;}
-.promo .nm{font-size:var(--fs-h2);font-weight:var(--fw-bold);}
-.promo .ds{font-size:var(--fs-cap);color:var(--c-mut);margin-top:2px;}
+/* ---- C12 summary-card（C11 promo-card 2026-09-10 随 F028 移除） ---- */
 .sumcard{display:flex;align-items:center;gap:12px;background:var(--c-card);border:1px solid var(--c-line);
   border-radius:var(--r-lg);padding:var(--sp-4);box-shadow:var(--shadow-1);margin-bottom:var(--sp-3);}
 .sumcard .num{font-size:var(--fs-display);font-weight:var(--fw-xbold);color:var(--c-primary);}

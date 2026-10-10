@@ -1,0 +1,34 @@
+# BLE Toolkit+ 隐私说明
+
+更新日期：2026-10-10。开发者主体类型：个人。适用范围：BLE Toolkit+ 原生、Flutter、UniApp 和桌面应用。
+
+BLE Toolkit+ 用于扫描附近蓝牙设备、查看广播、连接 GATT、读写特征、监听通知以及配置支持的设备。核心调试无需注册账号。
+
+## 权限与使用目的
+
+- 蓝牙：扫描、连接、读写、通知与受平台支持的广播功能。
+- Android 位置权限：部分 Android 版本要求位置权限或位置服务开启才能扫描蓝牙。本工具不以 RSSI 推导精确位置，不收集 GPS 轨迹。
+- 相机：用户选择扫码时读取 ControlHub 配对二维码；不保存拍摄图像。支持粘贴/手输的实现可使用这些路径。
+- 剪贴板、系统分享或文件选择：仅在用户主动复制、导出、分享或选择固件时使用。导出内容应脱敏，包含 Wi-Fi 密码和配对 token 的字段不进入剪贴板。
+
+## 数据与设备交互
+
+扫描会读取设备名称、标识符、信号强度、服务 UUID 和广播数据；连接后会读取用户选择的特征值。这些业务会话数据保留在运行内存中，结束会话或退出应用后不作为设备历史保存。
+
+Smart HID 配网会将用户填写的 Wi-Fi 信息、ControlHub 地址及一次性配对 token 通过蓝牙发送给用户选择的设备。设备端后续 Wi-Fi/MQTT、ControlHub 数据保存规则属于配套设备与 ControlHub 的范围，不能把客户端的零持久化承诺理解为整个设备系统不保存配置。
+
+用户主动打开项目网站或使用系统分享时，会进入相应网站或第三方应用，其数据处理规则由该服务提供方说明。构建链、系统组件及 SDK 的运行文件不应包含蓝牙业务历史、密码或配对 token。
+
+## 第三方运行组件
+
+仅 UniApp 原生安装包使用 DCloud uni-app（5+ App）引擎，提供页面运行、蓝牙和扫码能力。DCloud 引擎的应用启动和异常统计处理应用信息、设备及运行信息；设备标识的具体类别随平台及系统授权而不同，包括 Android ID、DEVICE_ID、OAID 等。引擎的数据处理规则见 [DCloud App 引擎隐私政策](https://dcloud.io/license/appprivacy.html)。蓝牙业务日志、Wi-Fi 密码及配对 token 不提交到该统计服务。UniApp 的业务统计 uniStatistics 已关闭；这不等于第三方原生引擎没有启动或异常统计。
+
+Kotlin、SwiftUI/AppKit 和 Flutter 原生应用不集成上述 DCloud 引擎。本应用没有广告、推送或账号登录功能。
+
+Flutter Android 的相机扫码使用内置 Google ML Kit 条码识别模型，图像在本机识别。ML Kit 同时处理设备型号和系统版本、应用包名和版本、每次安装的标识、识别性能和错误诊断等数据，用于诊断及使用统计，通过 HTTPS 向 Google 传输。扫码前会说明此用途；拒绝后可使用手动输入或粘贴配对信息。详情见 [ML Kit 数据处理说明](https://developers.google.com/ml-kit/android-data-disclosure) 和 [ML Kit 条款及隐私](https://developers.google.com/ml-kit/terms)。此项仅适用于 Flutter Android；Flutter iOS/macOS 使用 Apple Vision。本客户端的业务会话不落盘承诺不包括第三方 SDK 自身的诊断记录。
+
+## 选择与联系
+
+用户可以拒绝系统权限或暂不启用蓝牙和相机，并继续查看关于、版本和隐私说明。也可以在系统设置中撤销权限；受影响的蓝牙或扫码功能会停止或不可用。退出应用将清空业务会话数据。隐私说明变更后会更新本文日期，并对新增权限用途重新说明。
+
+问题反馈：121912336@qq.com。

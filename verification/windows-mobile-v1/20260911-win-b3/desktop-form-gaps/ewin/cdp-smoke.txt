@@ -1,0 +1,19 @@
+PASS app ready (appInstance + SmartHidDesktop)
+PASS 扫码 sheet 打开：标题 | "扫描 ControlHub 配对码"
+PASS 扫码 sheet：video 取景器在位
+PASS 扫码 sheet：兜底入口在位 | 无法扫码？粘贴 / 手输配对码 →
+PASS 摄像头状态落位（识别中或降级提示） | 取景识别中…（摄像头）
+PASS 兜底 sheet 打开：标题（兜底） | "粘贴 / 手输配对码（兜底）"
+PASS 粘贴解析回填 token | "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6"
+PASS hub 格式化回填 | "192.168.1.8:17892"
+PASS 模态关闭 + 摄像头资源已回收
+PASS bigact 徽章翻转（已获取） | 已获取
+PASS close 被拦截→退出确认模态弹出 | connected=0
+PASS 空闲文案（常驻口径） | 
+                    桌面端为常驻运行。确认退出？
+                    
+   
+PASS 「继续使用」→模态关闭且页面存活
+PASS 「退出」→应用退出（CDP 端口消亡）
+
+SUMMARY: 14/14 pass

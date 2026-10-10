@@ -19,7 +19,7 @@ hardware/
 │
 ├── esp32-c3/            # ESP32-C3（待添加）
 ├── nrf52/               # nRF52832/52840（待添加）
-└── stm32/               # STM32 + BLE 模块（待添加）
+└── stm32/               # STM32 + BLE 模块（协议样板，不构建分发）
 ```
 
 ## 支持的硬件
@@ -31,7 +31,7 @@ hardware/
 | ESP32-S3 | ESP32-S3 | 计划中 | PlatformIO |
 | nRF52832 | nRF52832 | 计划中 | PlatformIO |
 | nRF52840 | nRF52840 | 计划中 | PlatformIO |
-| STM32 + BLE 模块 | 外接模块 | 计划中 | Arduino/PlatformIO |
+| STM32 + BLE 模块 | 外接模块 | 协议样板（2026-09-14 MAC-009 裁定：不含可构建工程文件，不宣称可直接构建；仅承载协议与模块划分参考） | 参考 Protocols 目录 |
 
 ## BLE 服务定义
 

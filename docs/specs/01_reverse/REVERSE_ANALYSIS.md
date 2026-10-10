@@ -51,7 +51,7 @@ BLE Toolkit+ 是开源项目 **Smart BLE** 的微信小程序客户端，定位�
 
 1. **通用 BLE 调试**：扫描（5s 会话/节流合并/RSSI 排序）→ 筛选（信号/前缀/隐藏无名）→ 查看原始广播数据 → 连接 → GATT 服务树浏览 → 特征读/写（TEXT/HEX）/notify 监听 → 通信日志（复制导出）
 2. **设备 Profile 系统**：扫描结果按注册 Profile（UUID/名称前缀）识别并给出专属动作；Smart HID 是首个第一方 Profile（配网全流程），esp32-demo 为第二注册档案（证明可扩展）
-3. **Smart HID 配网**：三步向导（连接→填表→状态），扫码取 ControlHub 配对码，分帧加密写入，状态机驱动四行进度，错误码→恢复动作映射
+3. **Smart HID 配网**：三步向导（连接→填表→状态），扫码取 ControlHub 配对码，分帧明文写入，状态机驱动四行进度，错误码→恢复动作映射
 4. **BLE 广播发射**：手机变 BLE 外设（微信 peripheral API / App 原生插件双路径），31 字节预算实时核算
 5. **OTA 固件升级**：包校验（manifest+sha256）→ 分包传输 → 提交 → 版本回读验证（release-metadata 标注 BLOCKED，见 §9）
 
@@ -129,7 +129,7 @@ core/
 | 模块 | 文件数 | 职责 | 关键事实 |
 |---|---|---|---|
 | ble-runtime | 16 | uni BLE 全局回调唯一所有者 + 会话注册表 + 写队列 + 重连 | 连接态机 8 态；同 deviceId 并发连接去重；主动断开 2s marker 区分被动断线；写队列同设备串行/跨设备并行/超时 5s/深 16；重连 3 次上限 backoff 1s/3s/5s，USER_REQUEST 永不重连 |
-| provisioning | 5 | 设备无关配网框架 | Profile 注册表（契约在 core/ble-core/provisioning/profile-contract.js）；GATT transport（MTU 247、写帧间隔 30ms、加密写失败 2s 重试一次）；builtins.js 被 main.js import 即注册 smart-hid + esp32-demo |
+| provisioning | 5 | 设备无关配网框架 | Profile 注册表（契约在 core/ble-core/provisioning/profile-contract.js）；GATT transport（MTU 247、明文写帧间隔 30ms、写失败立即上抛）；builtins.js 被 main.js import 即注册 smart-hid + esp32-demo |
 | smart-hid | 11 | Smart HID 专属层 | smartHidService 门面（connect/provisionAndWait 60s/diagnose…）；workflow-engine 纯 JS 状态机（DISCOVERING→PAIRING→VERIFYING→PROVISIONED，可 CANCELLED）；token 仅内存 5 分钟 TTL |
 | broadcast | 6 | 广播会话（单 owner）+ 负载预算 | BROADCAST_STATE 6 态；广播中禁改 payload（OWNER_BUSY）；31 字节预算不静默截断（PAYLOAD_TOO_LARGE） |
 | ota | 3 | OTA 事务 | 12 态状态机；chunk 180B/20ms 间隔 writeNoResponse；commit 后重连回读版本验证 |
@@ -231,7 +231,7 @@ composables/use-ble-scan.js（本页专属编排）→ store/ble.js → services
 | 进入页面 onLoad(options) | initialize：解码 deviceId → known/current/smart 三级匹配设备 → startProvisionSession（重置进度/清错）→ connectDevice |
 | connectDevice | smartHidService.connect：复用或新建会话 → 订阅 INFO/STATUS 特征 → 读 DeviceInfo → verifyDeviceInfo（product==='smart-hid'+协议版本+deviceId 正则 ^HID-[A-Z0-9]{8}$）失败即断开报错；成功绑定 store、phase='configure' |
 | 扫码 | uni.scanCode → parsePairingQrPayload（shid://pair scheme，重复参数拒绝）→ setHubInfo + 回填 hubAddress；失败 describeScanCodeFailure 分类（取消/权限/失败）中文提示 |
-| 下发配置 | buildProvisionFormCandidate 校验（地址 host[:port] 默认端口 17892、端口范围）→ candidate JSON {v, wifi_ssid, wifi_password, hub_host, hub_port, token} → 分帧（framed-v1，MTU-3-3 封顶 128B）顺序写 INPUT 特征（加密链路，失败 2s 自动重试一次——Android 首次写触发系统配对弹窗）→ provisionAndWait（60s 超时）轮询 STATUS |
+| 下发配置 | buildProvisionFormCandidate 校验（地址 host[:port] 默认端口 17892、端口范围）→ candidate JSON {v, wifi_ssid, wifi_password, hub_host, hub_port, token} → 分帧（framed-v1，MTU-3-3 封顶 128B）顺序明文写 INPUT 特征（V1 简化不发起 SMP；旧加密固件错误立即提示重烧）→ provisionAndWait（60s 超时）轮询 STATUS |
 | 设备状态推送 | applyProvisionStatus：state/step 双映射驱动四行进度（如 pairing→hub active；ready→全 done）；error code 经 rowByCode 定位失败行（wifi_failed→wifi 行等 8 种） |
 | 配网成功 | commitKnownDevice（写非敏感历史：lastWifi/lastHub/configuredAt…）→ provisionDone → 「查看设备」redirectTo hid/detail（保留会话） |
 | 配网失败 | describeSmartHidStatus 中文文案 + smartHidRecoveryAction 映射恢复按钮：diagnostics→跳诊断页 / pairing→清 hub 重新扫码 / form→回表单 / retry→重连后重下发（runRecovery） |
@@ -243,7 +243,7 @@ composables/use-ble-scan.js（本页专属编排）→ store/ble.js → services
 phase（connect/configure/status）、connecting、connectionError、connectionLost、pairingReady、provisioning、provisionDone、errorMessage、recoveryAction（workflowState ← PROVISION_STATE）。
 
 ### 异常情况
-设备身份验证失败（非 smart-hid 产品/协议版本不符/deviceId 格式错）、扫码取消/权限拒绝、地址格式错、加密写失败（Just Works 配对提示）、BLE 断线、8 种设备侧错误码（invalid_payload/wifi_failed/controlhub_unreachable/pairing_invalid/pairing_expired/pairing_used/mqtt_invalid/storage_failed，均带中文 HINTS）、等待超时 60s、用户取消等待、离开页面确认。
+设备身份验证失败（非 smart-hid 产品/协议版本不符/deviceId 格式错）、扫码取消/权限拒绝、地址格式错、旧加密固件写入失败（重烧提示）、BLE 断线、8 种设备侧错误码（invalid_payload/wifi_failed/controlhub_unreachable/pairing_invalid/pairing_expired/pairing_used/mqtt_invalid/storage_failed，均带中文 HINTS）、等待超时 60s、用户取消等待、离开页面确认。
 
 ### 数据来源
 composables/use-smart-hid-provisioning.js（375 行，最大 composable）→ services/smart-hid/* + services/provisioning/* + store/hid.js；协议常量 core/protocols/hid-provisioning-protocol.ts。
@@ -436,7 +436,7 @@ services/version-metadata.js → config/release-metadata.generated.js（app_vers
 | F018 | Smart HID 设备识别（Profile 匹配） | 扫描结果 | provisioning/profiles + smart-hid/profile | 已实现 |
 | F019 | Smart HID 配网向导（三阶段） | 首页 SHID 卡 | hid/add + use-smart-hid-provisioning | 已实现 |
 | F020 | ControlHub 配对码扫码（shid://pair） | 配网表单 | uni.scanCode + 协议 parsePairingQrPayload | 已实现 |
-| F021 | 配网分帧加密写入 + 状态机跟踪 | 配网下发 | provisioning/{transport,orchestrator} + smart-hid/workflow-engine | 已实现 |
+| F021 | 配网分帧明文写入 + 状态机跟踪 | 配网下发 | provisioning/{transport,orchestrator} + smart-hid/workflow-engine | 已实现 |
 | F022 | 配网错误恢复（错误码→动作映射） | 配网失败 | smart-hid/workflow.js | 已实现 |
 | F023 | 已配网设备本地历史（90 天/上限 20） | 首页/历史页 | smart-hid/known-devices + store/hid | 已实现 |
 | F024 | Smart HID 实时诊断（五项链路） | 详情/配网恢复 | hid/diagnostics + smart-hid/index.diagnose | 已实现 |
@@ -483,8 +483,8 @@ flowchart TD
     S2b -- 取消/权限/失败 --> E2[分类中文提示·可重扫]
     S2c --> S3{canSubmit?}
     S3 -- 否 --> S2a
-    S3 -- 是 --> S4[下发·分帧加密写 INPUT]
-    S4 -- Android 首次写 --> E3[系统配对弹窗 Just Works·2s 后自动重试]
+    S3 -- 是 --> S4[下发·分帧明文写 INPUT]
+    S4 -- 旧加密固件 --> E3[单次写失败·提示重烧 V1 简化固件]
     S4 --> S5[phase=status·等设备 STATUS 推送 60s]
     S5 -- connecting_wifi/pairing/mqtt_connecting --> S6[四行进度实时推进]
     S5 -- ready --> S7[全部完成·写本地历史·查看设备]
@@ -625,7 +625,7 @@ plus.android.importClass（BluetoothAdapter/Intent/Settings/Uri/Build/PackageMan
 Android AAR（com.lys.bleperipheral.LysBlePeripheralModule，依赖 fastjson 1.1.46 + appcompat 1.6.1，minSdk 21）+ iOS framework（CoreBluetooth，deploymentTarget 10.0）。JS API 四个：isSupported / startAdvertising / isAdvertising / stopAdvertising。文档：docs/readme-LysBlePeripheral.md。
 
 ## 8.4 硬件 / 固件依赖（跨仓协同）
-- **Smart HID 设备**（ESP32-S3，Smart-HID-Workspace 固件）：配网 GATT 服务 9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04（INFO 1002 read+notify / INPUT 1003 write 加密 Just Works / STATUS 1004 read+notify）；名称前缀 SHID-；QR scheme `shid://pair?token=&host=&port=`；协议正典在 Smart-HID-Workspace `protocols/ble/PROVISIONING_V1.md`，本仓 core/protocols/hid-provisioning-protocol.ts 为受锁镜像（core/protocols/smart-hid-contract.lock.json：canonical_repo LuoYaoSheng/smart-hid-workspace、contract_sha256、tested_smart_hid_version 1.1.1、miniapp_version 1.0.4——**略滞后于当前 1.0.5**）
+- **Smart HID 设备**（ESP32-S3，Smart-HID-Workspace 固件）：配网 GATT 服务 9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04（INFO 1002 read+notify / INPUT 1003 明文 write、无 SMP / STATUS 1004 read+notify）；名称前缀 SHID-；QR scheme `shid://pair?token=&host=&port=`；协议正典在 Smart-HID-Workspace `protocols/ble/PROVISIONING_V1.md`，本仓 core/protocols/hid-provisioning-protocol.ts 为受锁镜像（core/protocols/smart-hid-contract.lock.json：canonical_repo LuoYaoSheng/smart-hid-workspace、contract_sha256、tested_smart_hid_version 1.1.1、miniapp_version 1.0.4——**略滞后于当前 1.0.5**）
 - **LightBLE ESP32 外设/观察者固件**（OTA target lightble-peripheral/lightble-observer）：OTA 服务 4fafc201-…-914d（CTRL 26c0 / DATA 26c1 / STATUS 26c2 JSON 协议）；ESP32 演示服务 4fafc201-…-914b（esp32-demo Profile，framing raw）
 - HID 实时控制命令（keyboard/mouse/system，MQTT）**不经小程序**——hid-command-schema.ts 仅为文档/联调对照契约
 

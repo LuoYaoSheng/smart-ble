@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'device_write_queue.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:flutter_blue_plus_platform_interface/flutter_blue_plus_platform_interface.dart';
 import 'package:rxdart/rxdart.dart';
 import '../models/ble_service.dart';
 import '../models/ble_scan_result.dart' as models;
@@ -10,16 +12,22 @@ import '../models/ble_uuids.dart';
 enum BleState {
   /// 未知
   unknown,
+
   /// 不可用
   unavailable,
+
   /// 未授权
   unauthorized,
+
   /// 开启中
   turningOn,
+
   /// 开启
   on,
+
   /// 关闭中
   turningOff,
+
   /// 关闭
   off,
 }
@@ -37,9 +45,10 @@ class BleManager {
   BleManager._internal() {
     _initializeControllers();
   }
-  
+
   /// 是否启用 E2E 测试 Mock 模式
-  static const bool useMockBLE = bool.fromEnvironment('USE_MOCK_BLE', defaultValue: false);
+  static const bool useMockBLE =
+      bool.fromEnvironment('USE_MOCK_BLE', defaultValue: false);
 
   /// 状态变化流控制器
   late StreamController<BleState> _stateController;
@@ -49,9 +58,21 @@ class BleManager {
 
   /// 是否已初始化
   bool _isInitialized = false;
+  Future<bool>? _initializationFuture;
+  int _initializationGeneration = 0;
+  static const Duration defaultInitializationTimeout = Duration(seconds: 5);
+  final List<StreamSubscription<dynamic>> _platformSubscriptions = [];
+  final Map<String, int> _sessionGenerations = {};
+  final DeviceWriteQueue _writes = DeviceWriteQueue();
+
+  int _advanceSession(String id) =>
+      _sessionGenerations[id] = (_sessionGenerations[id] ?? 0) + 1;
+  bool _ownsSession(String id, int generation) =>
+      _sessionGenerations[id] == generation;
 
   void _initializeControllers() {
-    _stateController = StreamController<BleState>.broadcast();
+    // Riverpod may subscribe after the native probe already completed.
+    _stateController = BehaviorSubject<BleState>.seeded(BleState.unknown);
     _scanResultsController =
         StreamController<List<models.BleScanResult>>.broadcast();
     _connectionStatesController =
@@ -74,6 +95,15 @@ class BleManager {
   bool _isScanning = false;
 
   /// 自动重连相关（per-device）
+  /// 重连后服务重发现进行中的设备：门控 FBP 原生流的 connected 广播，
+  /// 服务就绪后才对外报「已连接」（WIN-FAND-005）
+  final Set<String> _rediscovering = {};
+
+  /// 重连 3×（1s/3s/5s）backoff，Base 契约（FEATURE_IMPLEMENTATION_MATRIX F012）
+  static const List<int> reconnectDelaysMs = [1000, 3000, 5000];
+
+  /// 连接超时 10s，Base 契约（FEATURE_IMPLEMENTATION_MATRIX F006）
+  static const Duration defaultConnectTimeout = Duration(seconds: 10);
   static const int _maxReconnectAttempts = 3;
   final Map<String, int> _reconnectAttempts = {};
   final Map<String, Timer> _reconnectTimers = {};
@@ -83,10 +113,10 @@ class BleManager {
   /// 状态流
   Stream<BleState> get stateStream => _stateController.stream;
 
-  /// 扫描结果流（带防抖，避免频繁更新导致列表跳动）
+  /// 扫描结果节流；持续广播时也实时显示，末项不会丢失。
   Stream<List<models.BleScanResult>> get scanResultsStream =>
       _scanResultsController.stream
-          .debounceTime(const Duration(milliseconds: 300));
+          .throttleTime(const Duration(milliseconds: 300), trailing: true);
 
   /// 所有设备连接状态流
   Stream<Map<String, BluetoothConnectionState>> get connectionStatesStream =>
@@ -94,14 +124,12 @@ class BleManager {
 
   /// 获取指定设备的连接状态
   BluetoothConnectionState connectionStateFor(String deviceId) {
-    return _connectionStates[deviceId] ??
-        BluetoothConnectionState.disconnected;
+    return _connectionStates[deviceId] ?? BluetoothConnectionState.disconnected;
   }
 
   /// 判断指定设备是否已连接
   bool isDeviceConnected(String deviceId) {
-    return _connectionStates[deviceId] ==
-        BluetoothConnectionState.connected;
+    return _connectionStates[deviceId] == BluetoothConnectionState.connected;
   }
 
   /// 获取所有已连接设备 ID
@@ -120,8 +148,25 @@ class BleManager {
   /// 是否正在扫描
   bool get isScanning => _isScanning;
 
+  /// 扫描态流（含超时自动停止事件），页面据此同步 UI
+  Stream<bool> get isScanningStream => FlutterBluePlus.isScanning;
+
+  /// Permission disclosure can render an honest state without probing native
+  /// Bluetooth first (which would cache Android's unauthorized adapter state).
+  void markPermissionRequired() {
+    if (!_stateController.isClosed) _stateController.add(BleState.unauthorized);
+  }
+
   /// 初始化 BLE
-  Future<bool> initialize() async {
+  Future<bool> initialize() {
+    return _initializationFuture ??= _initialize().whenComplete(() {
+      _initializationFuture = null;
+    });
+  }
+
+  Future<bool> _initialize() async {
+    final generation = ++_initializationGeneration;
+    final subscriptions = <StreamSubscription<dynamic>>[];
     // 如果控制器已关闭，重新初始化
     if (_stateController.isClosed ||
         _scanResultsController.isClosed ||
@@ -130,47 +175,49 @@ class BleManager {
       _isInitialized = false;
     }
 
-    // 如果已经初始化，直接返回成功
-    if (_isInitialized) return true;
-
     try {
-      // 检查蓝牙是否可用
-      // Windows 平台特殊性：如果系统蓝牙开关关闭，isSupported 会返回 false
-      // 因此我们不直接 return false 中断流程，而是继续注册监听器以便热恢复
-      final isSupported = await FlutterBluePlus.isSupported;
-      if (!isSupported) {
-        if (!_stateController.isClosed) {
+      if (!_isInitialized) {
+        final supported = await FlutterBluePlus.isSupported
+            .timeout(defaultInitializationTimeout);
+        if (generation != _initializationGeneration) return false;
+        if (!supported) {
           _stateController.add(BleState.unavailable);
+          return false;
         }
       }
 
-      // 监听蓝牙状态
-      FlutterBluePlus.adapterState.listen((state) {
-        if (!_stateController.isClosed) {
-          _stateController.add(_convertBleState(state));
-        }
-      });
-
-      // 监听扫描结果
-      FlutterBluePlus.scanResults.listen((results) {
-        // 不清空现有列表，只更新已存在的设备或添加新设备
-        // 这样可以避免列表跳动
-        for (ScanResult r in results) {
-          final device = r.device;
-          final deviceId = device.remoteId.toString();
-          final deviceName = device.platformName;
-
-          // Convert manufacturerData Map to List<int>
-          List<int>? manuData;
-          if (r.advertisementData.manufacturerData.isNotEmpty) {
-            manuData = r.advertisementData.manufacturerData.values.first;
+      if (!_isInitialized) {
+        // Observe real backend events; do not replay FBP's cached initial state
+        // over a fresh query after the user enables or attaches an adapter.
+        subscriptions.add(FlutterBluePlusPlatform.instance.onAdapterStateChanged
+            .listen((state) {
+          if (!_stateController.isClosed) {
+            _stateController.add(_convertBmState(state.adapterState));
           }
+        }, onError: (Object error) {
+          if (!_stateController.isClosed) {
+            _stateController.add(BleState.unavailable);
+          }
+        }));
 
-          // 只有当设备是新设备或数据有变化时才更新
-          final existing = _scannedDevices[deviceId];
-          if (existing == null ||
-              existing.rssi != r.rssi ||
-              existing.name != deviceName) {
+        // 监听扫描结果
+        subscriptions.add(FlutterBluePlus.scanResults.listen((results) {
+          // 不清空现有列表，只更新已存在的设备或添加新设备
+          // 这样可以避免列表跳动
+          for (ScanResult r in results) {
+            final device = r.device;
+            final deviceId = device.remoteId.toString();
+            final deviceName = device.platformName;
+
+            // Convert manufacturerData Map to List<int>
+            int? mfrId;
+            List<int>? manuData;
+            if (r.advertisementData.manufacturerData.isNotEmpty) {
+              mfrId = r.advertisementData.manufacturerData.keys.first;
+              manuData = r.advertisementData.manufacturerData.values.first;
+            }
+
+            // Advertisement fields may change while name/RSSI stay constant.
             _scannedDevices[deviceId] = models.BleScanResult(
               deviceId: deviceId,
               name: deviceName,
@@ -179,34 +226,73 @@ class BleManager {
               serviceUuids: r.advertisementData.serviceUuids
                   .map((u) => u.toString())
                   .toList(),
+              advName: r.advertisementData.advName,
+              manufacturerId: mfrId,
+              manufacturerData: manuData,
+              serviceData: r.advertisementData.serviceData.map(
+                (uuid, bytes) => MapEntry(uuid.toString(), bytes),
+              ),
+              txPowerLevel: r.advertisementData.txPowerLevel,
+              connectable: r.advertisementData.connectable,
               timestamp: DateTime.now(),
             );
           }
-        }
-        if (!_scanResultsController.isClosed) {
-          _scanResultsController.add(_scannedDevices.values.toList());
-        }
-      });
+          if (!_scanResultsController.isClosed) {
+            _scanResultsController.add(_scannedDevices.values.toList());
+          }
+        }));
 
-      // 初始化状态
-      final state = await FlutterBluePlus.adapterState.first;
-      if (!_stateController.isClosed) {
-        _stateController.add(_convertBleState(state));
+        // DEF-013 修复：以 FBP 扫描态为唯一事实源（含 5s 超时自动停止），
+        // 避免本地标志位滞留 true 导致后续 startScan 静默空转
+        subscriptions.add(FlutterBluePlus.isScanning.listen((scanning) {
+          _isScanning = scanning;
+        }));
       }
 
+      final state = await getState();
+      if (generation != _initializationGeneration) return false;
+      _stateController.add(state);
+      if (state == BleState.unavailable) return false;
+      _platformSubscriptions.addAll(subscriptions);
+      subscriptions.clear();
       _isInitialized = true;
       return true;
     } catch (e) {
       print('BleManager 初始化失败: $e');
+      // 初始化失败（平台不支持等）也要落定状态，否则芯片永卡「初始化中…」
+      if (generation == _initializationGeneration &&
+          !_stateController.isClosed) {
+        _stateController.add(BleState.unavailable);
+      }
       return false;
+    } finally {
+      // Failed/timed-out attempts must not accumulate listeners on each retry.
+      for (final subscription in subscriptions) {
+        await subscription.cancel();
+      }
     }
   }
 
-  /// 获取当前状态
+  /// Query native state, including retries after an adapter is enabled/attached.
   Future<BleState> getState() async {
-    final state = await FlutterBluePlus.adapterState.first;
-    return _convertBleState(state);
+    final platform = FlutterBluePlusPlatform.instance;
+    final state = await platform
+        .getAdapterState(BmBluetoothAdapterStateRequest())
+        .timeout(defaultInitializationTimeout);
+    if (_isTerminalAdapterState(state.adapterState)) {
+      return _convertBmState(state.adapterState);
+    }
+    final terminal = await platform.onAdapterStateChanged
+        .where((event) => _isTerminalAdapterState(event.adapterState))
+        .first
+        .timeout(defaultInitializationTimeout);
+    return _convertBmState(terminal.adapterState);
   }
+
+  bool _isTerminalAdapterState(BmAdapterStateEnum state) =>
+      state != BmAdapterStateEnum.unknown &&
+      state != BmAdapterStateEnum.turningOn &&
+      state != BmAdapterStateEnum.turningOff;
 
   /// 开始扫描
   ///
@@ -262,15 +348,20 @@ class BleManager {
   ///
   /// 支持多设备并发连接。连接成功后会自动监听连接状态，
   /// 异常断开时触发自动重连（最多 [_maxReconnectAttempts] 次）。
+  /// 超时 10s 为 Base 契约（FEATURE_IMPLEMENTATION_MATRIX F006）。
   Future<void> connect(String deviceId,
-      {Duration timeout = const Duration(seconds: 30)}) async {
+      {Duration timeout = defaultConnectTimeout}) async {
+    if (isDeviceConnected(deviceId)) return;
+    final generation = _advanceSession(deviceId);
     _userInitiatedDisconnects.remove(deviceId);
     _reconnectAttempts[deviceId] = 0;
     _cancelReconnect(deviceId);
 
     try {
+      await stopScan();
       final device = BluetoothDevice.fromId(deviceId);
       await device.connect(timeout: timeout);
+      if (!_ownsSession(deviceId, generation)) return;
 
       // 更新连接状态
       _updateConnectionState(deviceId, BluetoothConnectionState.connected);
@@ -278,11 +369,18 @@ class BleManager {
       // 监听连接状态变化，用于自动重连
       _connectionStateSubs[deviceId]?.cancel();
       _connectionStateSubs[deviceId] = device.connectionState.listen((state) {
+        if (!_ownsSession(deviceId, generation)) return;
+        if (state == BluetoothConnectionState.connected &&
+            _rediscovering.contains(deviceId)) {
+          return;
+        }
         _updateConnectionState(deviceId, state);
 
         if (state == BluetoothConnectionState.disconnected &&
             !_userInitiatedDisconnects.contains(deviceId) &&
             _autoReconnectEnabled) {
+          _writes.cancel(deviceId);
+          _servicesByDevice.remove(deviceId);
           _attemptReconnect(deviceId);
         }
       });
@@ -294,6 +392,13 @@ class BleManager {
 
   /// 尝试自动重连（per-device）
   void _attemptReconnect(String deviceId) {
+    if (!_autoReconnectEnabled ||
+        _userInitiatedDisconnects.contains(deviceId) ||
+        _reconnectTimers.containsKey(deviceId) ||
+        _rediscovering.contains(deviceId)) {
+      return;
+    }
+    final generation = _sessionGenerations[deviceId] ?? 0;
     final attempts = _reconnectAttempts[deviceId] ?? 0;
     if (attempts >= _maxReconnectAttempts) {
       debugPrint('设备 $deviceId 已达最大重连次数 ($_maxReconnectAttempts)，停止重连');
@@ -303,23 +408,43 @@ class BleManager {
 
     final nextAttempt = attempts + 1;
     _reconnectAttempts[deviceId] = nextAttempt;
-    final delay = Duration(seconds: nextAttempt * 2); // 指数退避: 2s, 4s, 6s
-    debugPrint(
-        '设备 $deviceId 将在 ${delay.inSeconds}s 后尝试第 $nextAttempt 次重连...');
+    final delay = Duration(
+        milliseconds: reconnectDelaysMs[
+            (nextAttempt - 1).clamp(0, reconnectDelaysMs.length - 1)]);
+    debugPrint('设备 $deviceId 将在 ${delay.inSeconds}s 后尝试第 $nextAttempt 次重连...');
 
     _cancelReconnect(deviceId);
     _reconnectTimers[deviceId] = Timer(delay, () async {
+      _reconnectTimers.remove(deviceId);
+      if (!_ownsSession(deviceId, generation) ||
+          !_autoReconnectEnabled ||
+          _userInitiatedDisconnects.contains(deviceId)) {
+        return;
+      }
+      _rediscovering.add(deviceId);
       try {
         debugPrint('正在重连 $deviceId (第 $nextAttempt 次)...');
         final device = BluetoothDevice.fromId(deviceId);
-        await device.connect(timeout: const Duration(seconds: 10));
+        await device.connect(timeout: defaultConnectTimeout);
+        if (!_ownsSession(deviceId, generation)) return;
+        // A reconnect is a new GATT session; services must be rediscovered.
+        await device.discoverServices();
+        if (!_ownsSession(deviceId, generation)) return;
+        _servicesByDevice[deviceId] = _mapServices(device.servicesList);
         _reconnectAttempts[deviceId] = 0;
         _updateConnectionState(deviceId, BluetoothConnectionState.connected);
         debugPrint('重连成功: $deviceId');
       } catch (e) {
         debugPrint('重连失败: $deviceId - $e');
-        // 递归尝试下一次
-        _attemptReconnect(deviceId);
+        if (_ownsSession(deviceId, generation)) {
+          _rediscovering.remove(deviceId);
+          _servicesByDevice.remove(deviceId);
+          _updateConnectionState(
+              deviceId, BluetoothConnectionState.disconnected);
+          _attemptReconnect(deviceId);
+        }
+      } finally {
+        _rediscovering.remove(deviceId);
       }
     });
   }
@@ -331,12 +456,22 @@ class BleManager {
   }
 
   /// 设置是否启用自动重连
-  set autoReconnectEnabled(bool value) => _autoReconnectEnabled = value;
+  set autoReconnectEnabled(bool value) {
+    _autoReconnectEnabled = value;
+    if (!value) {
+      for (final timer in _reconnectTimers.values) {
+        timer.cancel();
+      }
+      _reconnectTimers.clear();
+    }
+  }
 
   /// 断开指定设备的连接
   ///
   /// 用户主动断开时不会触发自动重连。
   Future<void> disconnect(String deviceId) async {
+    _advanceSession(deviceId);
+    _writes.cancel(deviceId);
     _userInitiatedDisconnects.add(deviceId);
     _cancelReconnect(deviceId);
     _reconnectAttempts.remove(deviceId);
@@ -356,7 +491,7 @@ class BleManager {
 
   /// 断开所有设备
   Future<void> disconnectAll() async {
-    final deviceIds = _connectionStates.keys.toList();
+    final deviceIds = _sessionGenerations.keys.toList();
     for (final deviceId in deviceIds) {
       await disconnect(deviceId);
     }
@@ -367,30 +502,31 @@ class BleManager {
     try {
       final device = BluetoothDevice.fromId(deviceId);
       await device.discoverServices();
-      final services = device.servicesList;
-
-      final bleServices = services
-          .map((s) => BleService(
-                uuid: s.uuid.toString(),
-                isPrimary: s.isPrimary,
-                name: BleUuids.getServiceName(s.uuid.toString()),
-                characteristics: s.characteristics
-                    .map((c) => BleCharacteristic(
-                          uuid: c.uuid.toString(),
-                          serviceUuid: s.uuid.toString(),
-                          properties: _convertProperties(c.properties),
-                          name: BleUuids.getCharacteristicName(c.uuid.toString()),
-                        ))
-                    .toList(),
-              ))
-          .toList();
-
+      final bleServices = _mapServices(device.servicesList);
       _servicesByDevice[deviceId] = bleServices;
       return bleServices;
     } catch (e) {
       print('发现服务失败: $e');
       return [];
     }
+  }
+
+  List<BleService> _mapServices(List<BluetoothService> services) {
+    return services
+        .map((s) => BleService(
+              uuid: s.uuid.toString(),
+              isPrimary: s.isPrimary,
+              name: BleUuids.getServiceName(s.uuid.toString()),
+              characteristics: s.characteristics
+                  .map((c) => BleCharacteristic(
+                        uuid: c.uuid.toString(),
+                        serviceUuid: s.uuid.toString(),
+                        properties: _convertProperties(c.properties),
+                        name: BleUuids.getCharacteristicName(c.uuid.toString()),
+                      ))
+                  .toList(),
+            ))
+        .toList();
   }
 
   /// 读取特征值
@@ -408,12 +544,11 @@ class BleManager {
 
       final characteristic = service.characteristics.firstWhere(
         (c) =>
-            c.uuid.toString().toLowerCase() ==
-            characteristicUuid.toLowerCase(),
+            c.uuid.toString().toLowerCase() == characteristicUuid.toLowerCase(),
         orElse: () => throw Exception('特征值未找到: $characteristicUuid'),
       );
 
-      final value = await characteristic.read();
+      final value = await characteristic.read(timeout: 3);
       return value;
     } catch (e) {
       print('读取特征值失败: $e');
@@ -422,6 +557,10 @@ class BleManager {
   }
 
   /// 写入特征值
+  ///
+  /// SHID-FW-LOCK-001：INPUT（9f1d1003）特征写禁——设备侧写锁死（0x0D）期间
+  /// 任何真实写入都会污染排查现场。配网传输走 provisioning_transport
+  /// 直写 FBP characteristic 对象，不经此方法，配网正业不受影响。
   Future<void> writeCharacteristic({
     required String deviceId,
     required String serviceUuid,
@@ -429,25 +568,38 @@ class BleManager {
     required List<int> data,
     bool withoutResponse = false,
   }) async {
-    try {
-      final device = BluetoothDevice.fromId(deviceId);
-      final service = device.servicesList.firstWhere(
-        (s) => s.uuid.toString().toLowerCase() == serviceUuid.toLowerCase(),
-        orElse: () => throw Exception('服务未找到: $serviceUuid'),
-      );
-
-      final characteristic = service.characteristics.firstWhere(
-        (c) =>
-            c.uuid.toString().toLowerCase() ==
-            characteristicUuid.toLowerCase(),
-        orElse: () => throw Exception('特征值未找到: $characteristicUuid'),
-      );
-
-      await characteristic.write(data, withoutResponse: withoutResponse);
-    } catch (e) {
-      print('写入特征值失败: $e');
-      rethrow;
+    if (BleUuids.isShidInputCharacteristic(characteristicUuid)) {
+      throw Exception('INPUT 特征写入已被禁用（SHID-FW-LOCK-001 设备保护）');
     }
+    return _writes.run(deviceId, () async {
+      try {
+        final device = BluetoothDevice.fromId(deviceId);
+        final service = device.servicesList.firstWhere(
+          (s) => s.uuid.toString().toLowerCase() == serviceUuid.toLowerCase(),
+          orElse: () => throw Exception('服务未找到: $serviceUuid'),
+        );
+
+        final characteristic = service.characteristics.firstWhere(
+          (c) =>
+              c.uuid.toString().toLowerCase() ==
+              characteristicUuid.toLowerCase(),
+          orElse: () => throw Exception('特征值未找到: $characteristicUuid'),
+        );
+
+        try {
+          await characteristic.write(data,
+              withoutResponse: withoutResponse, timeout: 5);
+        } catch (e) {
+          // A timed-out native request cannot be safely reused for another write.
+          // Retire the session and cancel queued requests before propagating it.
+          await disconnect(deviceId);
+          rethrow;
+        }
+      } catch (e) {
+        print('写入特征值失败: $e');
+        rethrow;
+      }
+    });
   }
 
   /// 设置通知
@@ -466,8 +618,7 @@ class BleManager {
 
       final characteristic = service.characteristics.firstWhere(
         (c) =>
-            c.uuid.toString().toLowerCase() ==
-            characteristicUuid.toLowerCase(),
+            c.uuid.toString().toLowerCase() == characteristicUuid.toLowerCase(),
         orElse: () => throw Exception('特征值未找到: $characteristicUuid'),
       );
 
@@ -503,8 +654,7 @@ class BleManager {
 
       final characteristic = service.characteristics.firstWhere(
         (c) =>
-            c.uuid.toString().toLowerCase() ==
-            characteristicUuid.toLowerCase(),
+            c.uuid.toString().toLowerCase() == characteristicUuid.toLowerCase(),
         orElse: () => throw Exception('特征值未找到: $characteristicUuid'),
       );
 
@@ -516,8 +666,7 @@ class BleManager {
   }
 
   /// 更新连接状态并通知
-  void _updateConnectionState(
-      String deviceId, BluetoothConnectionState state) {
+  void _updateConnectionState(String deviceId, BluetoothConnectionState state) {
     if (state == BluetoothConnectionState.disconnected) {
       _connectionStates.remove(deviceId);
     } else {
@@ -530,6 +679,15 @@ class BleManager {
 
   /// 释放资源
   Future<void> dispose() async {
+    _initializationGeneration += 1;
+    for (final id in _sessionGenerations.keys.toList()) {
+      _advanceSession(id);
+    }
+    for (final sub in _platformSubscriptions) {
+      await sub.cancel();
+    }
+    _platformSubscriptions.clear();
+    await disconnectAll();
     // 取消所有重连定时器
     for (final timer in _reconnectTimers.values) {
       timer.cancel();
@@ -556,27 +714,23 @@ class BleManager {
     _servicesByDevice.clear();
   }
 
-  /// 转换蓝牙状态
-  BleState _convertBleState(dynamic state) {
-    if (state is BluetoothAdapterState) {
-      switch (state) {
-        case BluetoothAdapterState.unknown:
-          return BleState.unknown;
-        case BluetoothAdapterState.unavailable:
-          return BleState.unavailable;
-        case BluetoothAdapterState.unauthorized:
-          return BleState.unauthorized;
-        case BluetoothAdapterState.turningOn:
-          return BleState.turningOn;
-        case BluetoothAdapterState.on:
-          return BleState.on;
-        case BluetoothAdapterState.turningOff:
-          return BleState.turningOff;
-        case BluetoothAdapterState.off:
-          return BleState.off;
-      }
+  BleState _convertBmState(BmAdapterStateEnum state) {
+    switch (state) {
+      case BmAdapterStateEnum.unknown:
+        return BleState.unknown;
+      case BmAdapterStateEnum.unavailable:
+        return BleState.unavailable;
+      case BmAdapterStateEnum.unauthorized:
+        return BleState.unauthorized;
+      case BmAdapterStateEnum.turningOn:
+        return BleState.turningOn;
+      case BmAdapterStateEnum.on:
+        return BleState.on;
+      case BmAdapterStateEnum.turningOff:
+        return BleState.turningOff;
+      case BmAdapterStateEnum.off:
+        return BleState.off;
     }
-    return BleState.unknown;
   }
 
   /// 转换特征值属性
@@ -604,6 +758,4 @@ class BleManager {
 
     return result;
   }
-
 }
-

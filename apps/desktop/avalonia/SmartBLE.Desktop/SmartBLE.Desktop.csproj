@@ -2,13 +2,23 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <Product>BLE Toolkit+</Product>
+    <Title>BLE Toolkit+</Title>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
     <Nullable>enable</Nullable>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
+    <Version>$([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)../../../../VERSION').Trim())</Version>
+    <AssemblyVersion>$(Version).0</AssemblyVersion>
+    <FileVersion>$(Version).0</FileVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+    <!-- WIN-005 单测：BleService 内部纯函数（CharKey/ResolveWriteOption/名称映射）对测试工程可见 -->
+    <InternalsVisibleTo Include="SmartBLE.Desktop.Tests" />
+  </ItemGroup>
 
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
@@ -21,8 +31,8 @@
     <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.10" />
     <PackageReference Include="Avalonia.Diagnostics" Version="11.0.10" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
-    <!-- Windows BLE -->
-    <PackageReference Include="WindowsBluetooth" Version="1.0.1" />
+    <!-- Windows BLE：WinRT 投影由 TFM net8.0-windows10.0.19041.0 原生提供（WindowsBluetooth
+         NuGet 在 nuget.org 不存在，原引用为幽灵包；见 PARITY-006 收口记录） -->
   </ItemGroup>
 
 </Project>

@@ -71,7 +71,7 @@ BLE Toolkit+ 是开源项目 **Smart BLE** 的微信小程序客户端，一句�
 | U3 测试/售后人员 | 现场验证「设备到底有没有在广播/连得上吗」 | 扫描+筛选快速定位设备、广播页做对照源、诊断五项链路 | F001-F004、F024 |
 | U4 BLE 学习者/教学 | 理解广播包结构、AD 结构、31 字节限制 | 广播页实时字节数核算、扫描页广播数据弹窗、UUID 标准名映射 | F004、F016、F007 |
 | U5 自研硬件接入者 | 想把自己的设备接入这套工具 | 按 Profile 契约注册（代码层），小程序自动识别给专属动作 | F018（架构） |
-| U6 同生态普通用户 | 从「关于」页发现同开发者小程序 | 推广卡跳转 | F028 |
+| U6 同生态普通用户 | ~~从「关于」页发现同开发者小程序~~ | ~~推广卡跳转~~ | F028（2026-09-10 移除） |
 
 主用户是**专业人士（U1-U3）**，工具属性强，无娱乐化设计；UI 语言全中文。
 
@@ -112,7 +112,7 @@ flowchart TB
         C[Profile 配网域<br/>Smart HID 向导/扫码/状态机/诊断/历史]
         D[广播发射域<br/>微信 peripheral/原生插件/31B 预算]
         E[OTA 域<br/>包校验/传输/提交/版本验证 · BLOCKED]
-        F[系统信息域<br/>关于/版本记录/推广位/分享]
+        F[系统信息域<br/>关于/版本记录/分享]
     end
     C -.->|Profile 注册表| A
     C -->|复用| B
@@ -168,14 +168,14 @@ tabBar
 | F018 | Profile 设备识别 | 注册表匹配（UUID=STRONG 优先于名称前缀=WEAK）、专属徽章与动作按钮 | P0 | 已实现 |
 | F019 | Smart HID 配网向导 | 三阶段（连接验证/表单/状态）、步骤条、断线续填、离开确认 | P0 | 已实现 |
 | F020 | ControlHub 配对码扫码 | shid://pair 解析、地址自动回填、token 仅内存 5 分钟、取消/权限/失败分类提示 | P0 | 已实现 |
-| F021 | 分帧加密写入+状态跟踪 | framed-v1 分帧（MTU-3-3 封顶 128B）、加密写失败 2s 重试一次、STATUS 轮询 60s | P0 | 已实现 |
+| F021 | 分帧明文写入+状态跟踪 | framed-v1 分帧（MTU-3-3 封顶 128B）、无 SMP、写失败立即上抛、STATUS 轮询 60s | P0 | 已实现 |
 | F022 | 配网错误恢复 | 8 种错误码→中文提示+恢复动作（form/pairing/diagnostics/retry） | P0 | 已实现 |
 | ~~F023~~ | ~~已配网设备历史~~ | ~~本机非敏感记录、90 天 TTL、上限 20、增删查、配网完成自动落档~~ | — | **已移除（2026-09-02 用户决策，见变更记录）** |
 | F024 | Smart HID 诊断 | 五项链路实时检查（BLE/Wi-Fi/Hub/MQTT/USB Ready）、错误码详情、页面栈感知导航 | P1 | 已实现 |
 | F025 | OTA 固件升级 | 12 态事务、包六重校验、180B/20ms 分包传输、commit+版本回读验证 | P1 | 部分实现（端到端 BLOCKED） |
 | F026 | 日志脱敏 | 敏感键（token/password/…）→\*\*\*，保护键白名单不脱敏 | P0 | 已实现 |
 | F027 | 版本元数据展示 | 关于页+版本页消费构建生成的 Release Metadata（当前版本/限制/历史/平台状态） | P2 | 已实现 |
-| F028 | 小程序推广跳转 | 同开发者小程序卡片；微信 navigateToMiniProgram 直跳；非微信渠道打开落地页 + 出示小程序码承接（2026-09-03；APP/H5 开 URL 旧代码已实现，二维码为新增待实现） | P2 | 部分实现（二维码待实现） |
+| F028 | 小程序推广跳转 | ~~同开发者小程序卡片与跨渠道承接~~ | P2 | **已移除（2026-09-10）**：关于页「更多小程序」推广区整链下线（原型/五实现线/配置/测试同步清除） |
 | F029 | 微信分享 | 页面级 onShareAppMessage/onShareTimeline、APP 系统分享、H5 navigator.share | P2 | 已实现 |
 | F030 | 国际化 | locale 文件就绪但未接线（UI 全中文硬编码） | P2 | 未实现 |
 
@@ -199,9 +199,9 @@ tabBar
 - **页面目标**：三步完成 Smart HID 配网并让用户看懂每一步。
 - **入口**：首页 SHID 卡「配置」；PAGE003「重新配置」；PAGE005「重新配网」（带 READY 停广播确认）。
 - **展示内容**：三步骤条（连接→填写配置→查看状态）；connect 阶段（设备卡/loading/错误+重连）；configure 阶段（连接徽章、设备摘要、SSID≤32、密码≤64 可空、Hub 地址 mono+默认端口 17892 提示、扫码大动作卡 badge 必需→已获取、隐私声明「只用于本次下发不写日志不落盘」、下发按钮 canSubmit 联动）；status 阶段（四行进度 Wi-Fi/ControlHub/MQTT/控制链路、成功态「设备已就绪·HID 控制请通过 ControlHub 下发」、错误态+恢复按钮、取消等待）。
-- **操作与响应**：进入自动连接+身份验证（product/协议版本/deviceId 正则，失败即断开报错）；扫码（uni.scanCode→shid://pair→回填地址；分类失败提示）；下发（表单校验→candidate JSON→分帧加密写→60s 轮询 STATUS→state/step 驱动进度→ready 后 redirectTo PAGE003，设备快照保留在内存会话，不落盘）；错误→中文提示+恢复动作（form/pairing/diagnostics/retry）；配网中物理返回→确认弹窗；断线→徽章已断开+表单保留+重连续传。
+- **操作与响应**：进入自动连接+身份验证（product/协议版本/deviceId 正则，失败即断开报错）；扫码（uni.scanCode→shid://pair→回填地址；分类失败提示）；下发（表单校验→candidate JSON→分帧明文写→60s 轮询 STATUS→state/step 驱动进度→ready 后 redirectTo PAGE003，设备快照保留在内存会话，不落盘）；错误→中文提示+恢复动作（form/pairing/diagnostics/retry）；配网中物理返回→确认弹窗；断线→徽章已断开+表单保留+重连续传。
 - **状态**：phase 三态；connecting/connectionError/connectionLost/pairingReady/provisioning/provisionDone/errorMessage/recoveryAction。
-- **异常**：身份验证失败；扫码取消/权限/失败；地址格式错；加密写失败（Android 系统配对弹窗→2s 自动重试）；8 种设备侧错误码；60s 超时；用户取消；离开页面 dispose 清敏感数据。
+- **异常**：身份验证失败；扫码取消/权限/失败；地址格式错；旧加密固件写入失败（立即提示重烧）；8 种设备侧错误码；60s 超时；用户取消；离开页面 dispose 清敏感数据。
 
 ## PAGE003 Smart HID 设备详情
 
@@ -261,10 +261,10 @@ tabBar
 
 ## PAGE009 关于（tabBar「关于」）
 
-- **页面目标**：产品信息、推广、系统环境透明化。
+- **页面目标**：产品信息、系统环境透明化（推广位 2026-09-10 移除）。
 - **入口**：tabBar。
-- **展示内容**：品牌卡（logo/名称/运行时版本（APP/微信渠道取值，兜底 release-metadata）/summary/技术栈 chips+总体状态）；「更多小程序」卡片；应用信息（系统平台/版本/型号；6 项功能特性 chips；平台公开状态 chips）；菜单（官网/版本记录/问题反馈/分享应用）；页脚版权。
-- **操作与响应**：官网/反馈（微信端复制链接；APP 开浏览器；H5 新窗）；分享（微信引导右上角；APP 系统分享降级复制；H5 navigator.share 降级）；推广卡微信端 navigateToMiniProgram（未配置 appId toast、失败 modal）、非微信渠道打开落地页 + 出示小程序码（2026-09-03 承接规则）；版本记录→PAGE010。
+- **展示内容**：品牌卡（logo/名称/运行时版本（APP/微信渠道取值，兜底 release-metadata）/summary/技术栈 chips+总体状态）；应用信息（系统平台/版本/型号；6 项功能特性 chips；平台公开状态 chips）；菜单（官网/版本记录/问题反馈/分享应用）；页脚版权。
+- **操作与响应**：官网/反馈（微信端复制链接；APP 开浏览器；H5 新窗）；分享（微信引导右上角；APP 系统分享降级复制；H5 navigator.share 降级）；（推广卡 2026-09-10 移除）；版本记录→PAGE010。
 - **异常**：外链在小程序环境的降级复制策略；跳转失败提示。
 
 ## PAGE010 版本记录
@@ -306,8 +306,8 @@ flowchart TD
     D -- 取消/权限/失败 --> D1[分类提示·重扫]
     D -- 成功 --> E{信息齐全?}
     E -- 否 --> C
-    E -- 是 --> F[下发·分帧加密写]
-    F -- Android 首次 --> F1[系统配对弹窗·2s 自动重试]
+    E -- 是 --> F[下发·分帧明文写]
+    F -- 旧加密固件 --> F1[立即失败·提示重烧 V1 简化固件]
     F --> G[状态机跟踪·四行进度·60s]
     G -- ready --> H[查看设备·redirectTo PAGE003（内存快照）]
     G -- 错误码 --> I[中文提示+恢复动作]
@@ -395,7 +395,7 @@ flowchart TD
 - **R14（F018）** Given 一台广播含 9f1d1001-…-1c04 服务 UUID 的设备 When 扫描结果出现 Then 设备卡显示 Smart HID 徽章与「配置 Smart HID」动作按钮（STRONG 匹配）；仅名称前缀 SHID- 匹配时同样给出 Profile 标识（WEAK）。
 - **R15（F019）** Given 从 SHID 卡进入配网向导 When 页面加载 Then 自动连接并验证设备身份（product/协议版本/deviceId 格式），通过后进入表单阶段；不通过则断开并给出错误与「重新连接」。
 - **R16（F020）** Given 表单已填且未扫码 When 点击「扫描 ControlHub 配对码」并完成扫码 Then hubAddress 自动回填为 QR 中 host:port，动作卡 badge 变「已获取」；扫非 shid://pair 或缺参内容时给出失败分类提示，可重扫。
-- **R17（F021）** Given SSID/Hub/配对码齐全 When 点击「下发配置」Then candidate 以分帧方式写入 INPUT 特征（Android 首次触发系统配对时自动重试一次），随后 60 秒内 STATUS 推送驱动四行进度；state=ready 时四行全绿并允许「查看设备」（2026-09-02 决策后无本机历史写入，设备快照仅存内存会话）。
+- **R17（F021）** Given SSID/Hub/配对码齐全 When 点击「下发配置」Then candidate 以明文分帧方式写入 INPUT 特征（各平台均不发起系统配对），随后 60 秒内 STATUS 推送驱动四行进度；state=ready 时四行全绿并允许「查看设备」（2026-09-02 决策后无本机历史写入，设备快照仅存内存会话）。
 - **R18（F022）** Given 下发后设备报 wifi_failed When 状态到达 Then Wi-Fi 行标红、显示对应中文提示，恢复按钮引导回表单（SSID/密码已保留）；pairing_* 类错误引导重新扫码；controlhub_unreachable 可跳诊断。
 - **R19（F023·已作废）** 2026-09-02 用户决策移除已配网设备历史（面板+历史页+本地存储），本条不再适用。
 - **R20（F024）** Given 已配网设备 When 进入诊断页并点击「重新检测」Then 未连接时弹「连接并检测」确认，连接后读取实时状态并给出五项结论（BLE/Wi-Fi/ControlHub/控制连接/Ready）；「显示错误码」展示最近错误的 code 与 message。
@@ -414,7 +414,7 @@ flowchart TD
 ## 系统信息域
 
 - **R26（F027）** Given 任意用户 When 打开「版本记录」Then 当前版本显示 1.0.5（构建号 101）与渠道 preview，平台状态与当前限制（含 OTA BLOCKED）如实展示；点「复制版本信息」写入剪贴板。
-- **R27（F028）** Given 关于页 When 点击已配置 appId 的推广卡 Then 跳转对应小程序；未配置 appId 的卡片点击提示「该小程序暂未配置跳转」。
+- **R27（F028）** ~~Given 关于页 When 点击已配置 appId 的推广卡…~~ **已移除（2026-09-10）**：推广区不存在，无对应验收路径。
 - **R28（F026·安全）** Given 任意日志输出路径 When 记录中包含 token/password 等敏感键值 Then 输出中被替换为 \*\*\*；Wi-Fi 密码与配对 token 不出现在本地存储与日志中（2026-09-02 决策后应用为零本地持久化，仅内存态）。
 
 ## 平台与降级

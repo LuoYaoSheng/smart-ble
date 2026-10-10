@@ -1,0 +1,67 @@
+Flutter assets will be downloaded from https://storage.flutter-io.cn. Make sure you trust this source!
+00:00 +0: loading E:/project/xf/smart-ble/apps/flutter/integration_test/p006_gatt_test.dart
+Running Gradle task 'assembleDebug'...                          
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by net.rubygrapefruit.platform.internal.NativeLibraryLoader in an unnamed module (file:/C:/Users/11066/.gradle/wrapper/dists/gradle-8.14-all/c2qonpi39x1mddn7hk5gh9iqj/gradle-8.14/lib/native-platform-0.22-milestone-28.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+Flutter assets will be downloaded from https://storage.flutter-io.cn. Make sure you trust this source!
+Running Gradle task 'assembleDebug'...                             36.4s
+√ Built build\app\outputs\flutter-apk\app-debug.apk
+Installing build\app\outputs\flutter-apk\app-debug.apk...           5.5s
+00:00 +0: F006-F012 GATT domain (fixture BLEToolkit-Server)
+P006[E2E 08:41:52.208]: 启动
+00:01 +0: loading E:/project/xf/smart-ble/apps/flutter/integration_test/p006_gatt_test.dart
+Some possible finders for the widgets at Offset(118.5, 618.9):
+  find.byType(DeviceListPage)
+  find.byType(IndexedSemantics)
+  find.byType(NotificationListener<KeepAliveNotification>)
+  find.byType(KeepAlive)
+  find.byType(AutomaticKeepAlive)
+  find.byElementType(SliverMultiBoxAdaptorElement)
+  find.byElementType(InheritedModelElement<_ModalRouteAspect>)
+  find.byElementType(InheritedModelElement<Object>)
+00:02 +0: F006-F012 GATT domain (fixture BLEToolkit-Server)
+P006[E2E 08:41:54.089]: 夹具卡片发现=true
+[INFO] 发现 5 个服务
+P006[E2E 08:41:56.504]: F006 GATT 连接 ✓
+P006[E2E 08:41:56.508]: F007 服务命名：OTA=1（应 1）/ 未知=2（主服务+权限矩阵）
+P006[E2E 08:41:57.271]: F007 服务树 ✓（主服务 2 特征：控制=读+写+通知，状态=写+通知）
+[INFO] 读取 未知特征值...
+[SUCCESS] HEX: EC 5C CA 3F
+TEXT: �\�?
+P006[E2E 08:41:58.033]: F008 控制特征读 ✓（注：返回 4 字节随机值而非设备信息 JSON，夹具观察项）
+[INFO] 启用通知 未知特征值...
+[SUCCESS] 通知已启用
+[INFO] 写入 未知特征值: FF 01
+[RECEIVE] HEX: EC 5C CA 3F
+TEXT: �\�?
+[SUCCESS] 写入成功
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+F009 未收到 FF01 的 write_response
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///E:/project/xf/smart-ble/apps/flutter/integration_test/p006_gatt_test.dart:216:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1059:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///E:/project/xf/smart-ble/apps/flutter/integration_test/p006_gatt_test.dart line 216
+The test description was:
+  F006-F012 GATT domain (fixture BLEToolkit-Server)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:14 +0 -1: F006-F012 GATT domain (fixture BLEToolkit-Server) [E]
+  Test failed. See exception logs above.
+  The test description was: F006-F012 GATT domain (fixture BLEToolkit-Server)
+  
+00:14 +0 -1: (tearDownAll)
+00:15 +0 -1: Some tests failed.

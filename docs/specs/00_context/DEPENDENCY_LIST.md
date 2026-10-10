@@ -22,7 +22,7 @@ vue / vue-i18n 由 HBuilderX 编译器内置；历史 vue-i18n@9.14.4 当前未�
 | GATT | getBLEDeviceServices / getBLEDeviceCharacteristics / readBLECharacteristicValue / writeBLECharacteristicValue / notifyBLECharacteristicValueChange / onBLECharacteristicValueChange |
 | 微信外围广播 | wx.createBLEPeripheralServer / server.startAdvertising / stopAdvertising / close |
 | 权限（scan-permission.js） | wx.getAppAuthorizeSetting / openAppAuthorizeSetting / openSetting / getSetting / showModal / authorize(scope.userLocation) |
-| 其他 | uni.scanCode（配网扫码）/ uni.setClipboardData / uni.showModal / uni.showToast / uni.navigateTo·navigateBack·redirectTo·switchTab / uni.navigateToMiniProgram / uni.share（APP）/ wx.chooseMessageFile + FileSystemManager（OTA 选文件）/ uni.getDeviceInfo / uni.getAccountInfoSync / onShareAppMessage·onShareTimeline |
+| 其他 | uni.scanCode（配网扫码）/ uni.setClipboardData / uni.showModal / uni.showToast / uni.navigateTo·navigateBack·redirectTo·switchTab / uni.share（APP）/ wx.chooseMessageFile + FileSystemManager（OTA 选文件）/ uni.getDeviceInfo / uni.getAccountInfoSync / onShareAppMessage·onShareTimeline（uni.navigateToMiniProgram 随 F028 推广区 2026-09-10 移除，不再依赖） |
 
 ## 3. App 原生桥（plus.\*，仅 APP 条件编译）
 
@@ -36,14 +36,14 @@ Android AAR（fastjson 1.1.46 + appcompat 1.6.1，minSdk 21）+ iOS framework（
 
 | 依赖 | 契约 | 状态 |
 |---|---|---|
-| **Smart HID 设备**（ESP32-S3，Smart-HID-Workspace 固件） | 配网 GATT 服务 `9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04`（INFO 1002 read+notify / INPUT 1003 write 加密 Just Works / STATUS 1004 read+notify）；名称前缀 `SHID-`；QR scheme `shid://pair?token=&host=&port=`；协议正典 = Smart-HID-Workspace `protocols/ble/PROVISIONING_V1.md`，本仓 core/protocols 为受锁镜像 | tested_smart_hid_version 1.1.1；契约锁 miniapp_version 1.0.4 滞后于 1.0.5 |
+| **Smart HID 设备**（ESP32-S3，Smart-HID-Workspace 固件） | 配网 GATT 服务 `9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04`（INFO 1002 read+notify / INPUT 1003 明文 write、无 SMP / STATUS 1004 read+notify）；名称前缀 `SHID-`；QR scheme `shid://pair?token=&host=&port=`；协议正典 = Smart-HID-Workspace `protocols/ble/PROVISIONING_V1.md`，本仓 core/protocols 为受锁镜像 | tested_smart_hid_version 1.1.1；契约锁 miniapp_version 1.0.4 滞后于 1.0.5 |
 | **LightBLE ESP32 外设/观察者固件** | OTA 服务 `4fafc201-…-914d`（CTRL 26c0 / DATA 26c1 / STATUS 26c2，JSON 协议）；OTA target lightble-peripheral / lightble-observer | OTA 端到端 BLOCKED |
 | **ESP32 演示设备** | 服务 `4fafc201-…-914b`（esp32-demo Profile，framing raw） | 演示档案 |
 | ControlHub | HID 实时控制（keyboard/mouse/system，MQTT）**不经小程序**——hid-command-schema.ts 仅为文档/联调对照契约 | — |
 
 ## 6. 外链资源（仅展示，无网络请求）
 
-官网 lightble.i2kai.com / Gitee Issues / 同开发者小程序：萌喵圈 `wxe0ed0e6727a0a5cd`、宝宝点滴 `wx1bb2d5c6821a7883`（config/product.js RELATED_MINI_PROGRAMS）。
+官网 lightble.i2kai.com / Gitee Issues（同开发者小程序 萌喵圈/宝宝点滴 及其 appId 随 F028 推广区 2026-09-10 移除，已列入 check-uniapp-assets 禁止身份锁出）。
 
 ## 7. 构建与测试工具链
 

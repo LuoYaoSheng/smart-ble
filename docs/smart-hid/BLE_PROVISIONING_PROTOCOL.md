@@ -13,7 +13,7 @@ BLE 只负责：设备发现 / 配网 / 状态查询。**HID 实时控制不走 
 ```text
 BLE Toolkit+（小程序）
   → 扫描 Provisioning Service UUID
-  → 连接（Just Works 配对加密）
+  → 连接（明文直连，无系统配对）
   → 读 Device Info
   → 扫 ControlHub 动态 Pairing QR（shid://pair?token=…&host=…&port=…）
   → 分帧写入 Provision Input（Wi-Fi + hub + token 一个 JSON）
@@ -93,7 +93,7 @@ MQTT 账号密码**不经过小程序**——设备连上 Wi-Fi 后用 token 调
 
 ## 8. 安全模型（如实声明）
 
-- Provision Input 要求加密链路：bonding + LE Secure Connections，Just Works（IO capability = NoInputNoOutput）
-- **Just Works ≠ MITM 抗性**：配对瞬间在场的攻击者理论上可介入（V1 已知取舍）
+- Provision Input 为普通明文 write；V1 简化不发起 SMP/bonding，不出现系统配对弹窗。
+- **明文链路不提供机密性或设备认证**：近场攻击者可能嗅探 Wi-Fi 密码与 token（V1 已知取舍）。
 - 设备身份根（出厂 Setup Code / Secure Boot / Flash Encryption）属后续 Production Security
 - 设备 READY 后停止 BLE 广播

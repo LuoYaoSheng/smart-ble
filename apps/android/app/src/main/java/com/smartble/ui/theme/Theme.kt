@@ -62,7 +62,8 @@ private val DarkColorScheme = darkColorScheme(
 
 @Composable
 fun SmartBLETheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    // 设计系统契约仅定义浅色 Token（flutter/uniapp 同为仅浅色）；锁定浅色保证三端一致
+    darkTheme: Boolean = false,
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {

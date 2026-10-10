@@ -2,15 +2,25 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:permission_handler/permission_handler.dart';
+import '../widgets/permission_disclosure.dart';
 import '../../core/ble/ble_manager.dart';
+import '../../core/ble/profile_registry.dart';
 import '../../core/models/ble_scan_result.dart';
-import '../../core/utils/data_converter.dart';
+import '../../core/utils/logger.dart';
 import '../../themes/app_theme.dart';
+import '../widgets/advertisement_sheet.dart';
 import '../widgets/device_card.dart';
 import '../widgets/filter_panel.dart';
 
 import 'device_detail_page.dart';
+import 'provisioning_page.dart';
+import '../../core/design/app_icons.dart';
+// UI-PARITY-G0：P001 改挂正典组件层 lib/ui/design/（COMPONENT_CONTRACT）
+import '../design/app_tokens.dart';
+import '../design/app_navbar.dart';
+import '../design/app_button.dart';
+import '../design/app_chip.dart';
+import '../design/app_empty.dart';
 
 /// BLE 状态提供者
 final bleStateProvider = StreamProvider<BleState>((ref) {
@@ -35,6 +45,39 @@ final filterExpandedProvider = StateProvider<bool>((ref) => false);
 class DeviceListPage extends ConsumerStatefulWidget {
   const DeviceListPage({super.key});
 
+  /// 蓝牙状态三态词（正典 p001 btWord）：on 就绪 / off+未授权 未开启 / 其余 蓝牙不可用
+  /// 蓝牙状态词（正典 p001 btWord + 桌面壳瞬态）：
+  /// on 就绪 / off+未授权 未开启 / unavailable 蓝牙不可用 / null+unknown+turning* 初始化中…
+  static String btStatusWord(BleState? state) {
+    switch (state) {
+      case BleState.on:
+        return '蓝牙就绪';
+      case BleState.off:
+      case BleState.unauthorized:
+        return '蓝牙未开启';
+      case BleState.unavailable:
+        return '蓝牙不可用';
+      case null:
+      case BleState.unknown:
+      case BleState.turningOn:
+      case BleState.turningOff:
+        return '初始化中…';
+    }
+  }
+
+  /// 状态点三态（正典 .bt-dot → AppNavbar statusTone）：on 绿 / off 红 / 其余灰
+  static BtStatusTone? btStatusTone(BleState? state) {
+    switch (state) {
+      case BleState.on:
+        return BtStatusTone.on;
+      case BleState.off:
+      case BleState.unauthorized:
+        return BtStatusTone.off;
+      default:
+        return null;
+    }
+  }
+
   @override
   ConsumerState<DeviceListPage> createState() => _DeviceListPageState();
 }
@@ -42,22 +85,43 @@ class DeviceListPage extends ConsumerStatefulWidget {
 class _DeviceListPageState extends ConsumerState<DeviceListPage> {
   final BleManager _bleManager = BleManager();
   bool _isInitialized = false;
+  bool _hasScanned = false;
+  StreamSubscription<bool>? _scanningSub;
+  String? _errorCode;
   String? _errorMessage;
 
   @override
   void initState() {
     super.initState();
+    // 以底层扫描态为唯一事实源（含 5s 超时自动停止），杜绝 UI 与真实扫描脱节
+    _scanningSub = _bleManager.isScanningStream.listen((scanning) {
+      if (!mounted) return;
+      if (scanning) _hasScanned = true;
+      ref.read(scanningProvider.notifier).state = scanning;
+    });
     _initializeBle();
+  }
+
+  @override
+  void dispose() {
+    _scanningSub?.cancel();
+    _bleManager.dispose();
+    super.dispose();
+  }
+
+  bool get _canStartScan {
+    final state = ref.read(bleStateProvider).value;
+    return _isInitialized &&
+        (state == BleState.on ||
+            (Platform.isAndroid && state == BleState.unauthorized));
   }
 
   Future<void> _initializeBle() async {
     try {
-      if (Platform.isAndroid) {
-        await [
-          Permission.location,
-          Permission.bluetoothScan,
-          Permission.bluetoothConnect,
-        ].request();
+      if (Platform.isAndroid && !await hasAndroidBlePermissions()) {
+        _bleManager.markPermissionRequired();
+        if (mounted) setState(() => _isInitialized = true);
+        return;
       }
 
       final success = await _bleManager.initialize();
@@ -65,6 +129,7 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
         setState(() {
           _isInitialized = success;
           if (!success) {
+            _errorCode = 'BLE_001';
             _errorMessage = '蓝牙不可用';
           }
         });
@@ -73,6 +138,7 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
       if (mounted) {
         setState(() {
           _isInitialized = false;
+          _errorCode = 'BLE_001';
           _errorMessage = '初始化失败: $e';
         });
       }
@@ -81,19 +147,23 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
 
   Future<void> _startScan() async {
     try {
-      setState(() => _errorMessage = null);
-      ref.read(scanningProvider.notifier).state = true;
-      await _bleManager.startScan(timeout: const Duration(seconds: 5));
-
-      // 5秒后自动停止扫描 — 与 UniApp/Android/iOS/Tauri 全平台保持一致
-      Timer(const Duration(seconds: 5), () {
-        if (mounted) {
-          ref.read(scanningProvider.notifier).state = false;
-        }
+      if (!await requestAndroidBlePermissions(context)) return;
+      if (!mounted) return;
+      final initialized = await _bleManager.initialize();
+      if (!mounted) return;
+      setState(() {
+        _isInitialized = initialized;
+        _errorCode = initialized ? null : 'BLE_001';
+        _errorMessage = initialized ? null : '蓝牙不可用';
       });
+      if (!initialized) return;
+      await _bleManager.startScan(timeout: const Duration(seconds: 5));
     } catch (e) {
       if (mounted) {
-        setState(() => _errorMessage = '扫描失败: $e');
+        setState(() {
+          _errorCode = 'BLE_003';
+          _errorMessage = '扫描失败: $e';
+        });
         ref.read(scanningProvider.notifier).state = false;
       }
     }
@@ -105,7 +175,7 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
   }
 
   void _toggleScan() {
-    final isScanning = ref.watch(scanningProvider);
+    final isScanning = ref.read(scanningProvider);
     if (isScanning) {
       _stopScan();
     } else {
@@ -126,7 +196,9 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
 
       // 名称前缀过滤
       if (filterNamePrefix.isNotEmpty &&
-          !device.name.toLowerCase().startsWith(filterNamePrefix.toLowerCase())) {
+          !device.name
+              .toLowerCase()
+              .startsWith(filterNamePrefix.toLowerCase())) {
         return false;
       }
 
@@ -142,223 +214,246 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
   }
 
   @override
-  void dispose() {
-    _bleManager.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final bleState = ref.watch(bleStateProvider);
-    final scanResults = ref.watch(scanResultsProvider);
     final isScanning = ref.watch(scanningProvider);
     final filterExpanded = ref.watch(filterExpandedProvider);
 
+    final devices =
+        ref.watch(scanResultsProvider).valueOrNull ?? const <BleScanResult>[];
+    final filteredDevices = _applyFilters(devices);
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('BLE Toolkit+'),
-        actions: [
-          // 蓝牙状态指示器
-          bleState.when(
-            data: (state) => _buildStateIndicator(state),
-            loading: () => const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)),
-            error: (_, __) => const Icon(Icons.bluetooth_disabled, color: AppTheme.errorColor),
-          ),
-          const SizedBox(width: 16),
-        ],
-      ),
-      body: Column(
-        children: [
-          // 错误提示
-          if (_errorMessage != null)
-            Container(
-              margin: const EdgeInsets.all(16),
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: AppTheme.errorColor.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: AppTheme.errorColor.withValues(alpha: 0.3)),
-              ),
-              child: Row(
-                children: [
-                  const Icon(Icons.error_outline, color: AppTheme.errorColor, size: 20),
-                  const SizedBox(width: 8),
-                  Expanded(child: Text(_errorMessage!, style: const TextStyle(color: AppTheme.errorColor))),
-                ],
-              ),
-            ),
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 自绘导航栏（正典 .navbar：kicker + 标题 + bt-chip 三态）
+            _buildNavbar(bleState),
 
-          // 过滤面板
-          FilterPanel(
-            expanded: filterExpanded,
-            onToggleExpanded: () => ref.read(filterExpandedProvider.notifier).state = !filterExpanded,
-          ),
-
-          // 扫描控制按钮
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: _isInitialized ? _toggleScan : null,
-                    icon: Icon(isScanning ? Icons.stop : Icons.search, size: 18),
-                    label: Text(isScanning ? '停止扫描' : '开始扫描'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: isScanning ? AppTheme.errorColor : AppTheme.primaryColor,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                // 设备数量
-                scanResults.when(
-                  data: (devices) {
-                    final filteredDevices = _applyFilters(devices);
-                    return _buildDeviceBadge(filteredDevices.length, devices.length);
-                  },
-                  loading: () => _buildDeviceBadge(0, 0),
-                  error: (_, __) => _buildDeviceBadge(0, 0),
-                ),
-              ],
-            ),
-          ),
-
-          // 设备列表
-          Expanded(
-            child: scanResults.when(
-              data: (devices) {
-                final filteredDevices = _applyFilters(devices);
-                if (filteredDevices.isEmpty) {
-                  return _buildEmptyState(devices.isNotEmpty);
-                }
-                return ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: filteredDevices.length,
-                  itemBuilder: (context, index) {
-                    final device = filteredDevices[index];
-                    return DeviceCard(
-                      key: ValueKey(device.deviceId),
-                      device: device,
-                      isConnected: _bleManager.isDeviceConnected(device.deviceId),
-                      onConnect: () => _connectToDevice(device),
-                      onShowInfo: () => _showDeviceInfo(device),
-                    );
-                  },
-                );
-              },
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, _) => Center(
+            // 键盘弹出/筛选展开压缩视口时固定区可内滚，杜绝底部溢出（WIN-FAND-001）
+            Flexible(
+              child: SingleChildScrollView(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(Icons.error_outline, size: 48, color: AppTheme.errorColor),
-                    const SizedBox(height: 16),
-                    Text('扫描出错: $error'),
+                    // 扫描失败横幅（正典 B8 ebanner）
+                    if (_errorMessage != null) _buildErrorBanner(),
+
+                    // 扫描工具条（正典 .scantool：左状态标签 + 右按钮）
+                    _buildScanTool(isScanning, filteredDevices.length),
+
+                    // 附近设备面板头（正典 .sec-t：chip 图标 + 标题 + 计数 + 筛选 txtlink）
+                    _buildSectionHeader(filteredDevices.length, filterExpanded),
+
+                    // 过滤行（展开时，正典 .filter）
+                    if (filterExpanded) const FilterPanel(),
                   ],
                 ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
 
-  Widget _buildStateIndicator(BleState state) {
-    Color color;
-    String label;
-
-    switch (state) {
-      case BleState.on:
-        color = AppTheme.successColor;
-        label = '蓝牙已开启';
-        break;
-      case BleState.off:
-        color = AppTheme.textSecondary;
-        label = '蓝牙已关闭';
-        break;
-      case BleState.unavailable:
-        color = AppTheme.errorColor;
-        label = '蓝牙不可用';
-        break;
-      case BleState.unauthorized:
-        color = AppTheme.warningColor;
-        label = '未授权';
-        break;
-      default:
-        color = AppTheme.textSecondary;
-        label = '状态未知';
-    }
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        children: [
-          Container(
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(
-              color: color,
-              shape: BoxShape.circle,
+            // 设备列表
+            Expanded(
+              child: filteredDevices.isEmpty
+                  ? _buildEmptyState(devices.isNotEmpty)
+                  : ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount: filteredDevices.length,
+                      itemBuilder: (context, index) {
+                        final device = filteredDevices[index];
+                        return DeviceCard(
+                          key: ValueKey(device.deviceId),
+                          device: device,
+                          isConnected:
+                              _bleManager.isDeviceConnected(device.deviceId),
+                          onConnect: () => _connectToDevice(device),
+                          onShowInfo: () => _showAdvertisement(device),
+                          onConfigure: () => _openProvisioning(device),
+                        );
+                      },
+                    ),
             ),
-          ),
-          const SizedBox(width: 6),
-          Text(label, style: const TextStyle(fontSize: 12)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDeviceBadge(int filteredCount, int totalCount) {
-    final text = filteredCount == totalCount
-        ? '发现 $filteredCount 台设备'
-        : '显示 $filteredCount / $totalCount 台';
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: AppTheme.primaryColor.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(
-        text,
-        style: const TextStyle(
-          color: AppTheme.primaryColor,
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildEmptyState(bool hasDevices) {
-    return Center(
+  /// 自绘导航栏 → 正典组件 AppNavbar（kicker「BLE TOOLKIT+」+ 标题 + 蓝牙三态 chip）
+  Widget _buildNavbar(AsyncValue<BleState> bleState) {
+    final state = bleState.valueOrNull;
+    return AppNavbar(
+      title: '扫描',
+      statusText: DeviceListPage.btStatusWord(state),
+      statusTone: DeviceListPage.btStatusTone(state),
+    );
+  }
+
+  /// 扫描失败横幅（正典 B8：danger-weak 底 + 左侧 3px danger 边 + code chip + 重试）
+  Widget _buildErrorBanner() {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppTokens.cDangerWeak,
+        borderRadius: BorderRadius.circular(12),
+        border: const Border(
+          left: BorderSide(color: AppTokens.cDanger, width: 3),
+        ),
+      ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            hasDevices ? Icons.filter_list_off : Icons.bluetooth_searching,
-            size: 64,
-            color: AppTheme.textSecondary.withValues(alpha: 0.5),
+          Row(
+            children: [
+              const AppIcon('warn', size: 16, color: AppTokens.cDanger),
+              const SizedBox(width: 6),
+              const Text(
+                '扫描失败',
+                style: TextStyle(
+                  fontSize: AppTokens.fsH2,
+                  fontWeight: AppTokens.fsH2W,
+                  color: AppTokens.cDanger,
+                ),
+              ),
+              if (_errorCode != null) ...[
+                const SizedBox(width: 6),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 7, vertical: 1),
+                  decoration: BoxDecoration(
+                    color: AppTokens.cCard,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    _errorCode!,
+                    style: const TextStyle(
+                      fontSize: AppTokens.fsMicro,
+                      fontFamily: AppTokens.fontMono,
+                      color: AppTokens.cDanger,
+                    ),
+                  ),
+                ),
+              ],
+            ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 5),
           Text(
-            hasDevices ? '无匹配设备' : '暂无设备',
+            _errorMessage ?? '',
             style: const TextStyle(
-              fontSize: 18,
-              color: AppTheme.textSecondary,
-            ),
+                fontSize: AppTokens.fsBody + 1, color: AppTokens.cSub),
           ),
-          const SizedBox(height: 8),
-          Text(
-            hasDevices ? '尝试调整过滤条件' : '点击上方按钮开始扫描',
-            style: TextStyle(
-              fontSize: 14,
-              color: AppTheme.textSecondary.withValues(alpha: 0.7),
+          const SizedBox(height: 10),
+          OutlinedButton.icon(
+            onPressed: _startScan,
+            icon: const AppIcon('refresh', size: 14, color: AppTokens.cDanger),
+            label: const Text('重试',
+                style: TextStyle(
+                    fontSize: AppTokens.fsBody, color: AppTokens.cDanger)),
+            style: OutlinedButton.styleFrom(
+              minimumSize: const Size(0, 32),
+              padding: const EdgeInsets.symmetric(horizontal: 14),
+              side: const BorderSide(color: AppTokens.cDanger),
+              foregroundColor: AppTokens.cDanger,
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  /// 扫描工具条（正典 .scantool：左状态标签三态 + 右按钮，状态行带脉冲点）
+  Widget _buildScanTool(bool isScanning, int shownCount) {
+    final label = isScanning
+        ? '扫描中 · 5s 会话'
+        : _hasScanned
+            ? '扫描完成 · 发现 $shownCount 台'
+            : '待开始扫描';
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
+      child: Row(
+        children: [
+          Expanded(
+            child: Row(
+              children: [
+                if (isScanning) ...[
+                  const _PulseDot(),
+                  const SizedBox(width: 6),
+                ],
+                Flexible(
+                  child: Text(
+                    label,
+                    style: const TextStyle(
+                        fontSize: 13, color: AppTheme.textSecondary),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          AppButton(
+            label: isScanning ? '停止扫描' : '开始扫描',
+            tone: isScanning ? AppButtonTone.danger : AppButtonTone.primary,
+            icon: isScanning ? 'stop' : 'scan',
+            disabled: !isScanning && !_canStartScan,
+            onTap: _toggleScan,
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 附近设备面板头（正典 .sec-t：chip 图标 + 标题 + 中性计数 chip + 筛选 txtlink）
+  Widget _buildSectionHeader(int shownCount, bool filterExpanded) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+      child: Row(
+        children: [
+          const AppIcon('chip', size: 16, color: AppTheme.primaryColor),
+          const SizedBox(width: 6),
+          const Text(
+            '附近设备',
+            style: TextStyle(
+              fontSize: AppTokens.fsH2,
+              fontWeight: AppTokens.fsH2W,
+              color: AppTokens.cText,
+            ),
+          ),
+          if (shownCount > 0) ...[
+            const SizedBox(width: 6),
+            AppChip('$shownCount', tone: AppChipTone.neutral),
+          ],
+          const Spacer(),
+          TextButton(
+            onPressed: () => ref.read(filterExpandedProvider.notifier).state =
+                !filterExpanded,
+            style: TextButton.styleFrom(
+              foregroundColor: AppTheme.primaryColor,
+              minimumSize: const Size(0, 32),
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              textStyle: const TextStyle(fontSize: 13),
+            ),
+            child: Text(filterExpanded ? '收起筛选' : '筛选'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 空态 → 正典组件 AppEmpty（ill: radar 未扫描 / link 筛选无匹配；动作仅未扫描时）
+  Widget _buildEmptyState(bool hasDevices) {
+    final filteredMiss = hasDevices && _hasScanned;
+    return Center(
+      child: SingleChildScrollView(
+        child: AppEmpty(
+          ill: filteredMiss ? 'link' : 'radar',
+          title: filteredMiss ? '当前没有匹配设备' : '还没有扫描结果',
+          description: filteredMiss ? '调整筛选条件试试' : '点上方按钮开始扫描附近 BLE 设备',
+          actionLabel: !_hasScanned ? '开始扫描' : null,
+          actionIcon: 'scan',
+          onAction: _canStartScan ? _startScan : null,
+        ),
       ),
     );
   }
@@ -377,6 +472,7 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
       await _bleManager.connect(device.deviceId);
 
       if (mounted) {
+        logger.info('连接成功，关闭加载对话框并进入详情页');
         Navigator.of(context).pop(); // 关闭加载对话框
 
         // 导航到设备详情页
@@ -392,6 +488,7 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
       }
     } catch (e) {
       if (mounted) {
+        logger.info('连接失败，关闭加载对话框');
         Navigator.of(context).pop(); // 关闭加载对话框
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('连接失败: $e')),
@@ -400,123 +497,80 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
     }
   }
 
-  /// 显示设备信息对话框
-  void _showDeviceInfo(BleScanResult device) {
-    showDialog(
+  /// 广播数据弹窗（F004：设备 ID/名称/RSSI/profileMatch + UUID + AD 结构逐段）
+  void _showAdvertisement(BleScanResult device) {
+    showModalBottomSheet(
       context: context,
-      builder: (context) => DeviceInfoDialog(device: device),
+      isScrollControlled: true,
+      builder: (context) =>
+          SingleChildScrollView(child: AdvertisementSheet(device: device)),
+    );
+  }
+
+  /// Smart HID「配置」入口 → P002 配网向导（三阶段：连接确认/填写配置/下发状态）
+  void _openProvisioning(BleScanResult device) {
+    // Profile 分流（对齐 uniapp buildProfileActionUrl）：Smart HID 进配网向导，
+    // 其余命中 Profile（如 ESP32 演示，GATT 调试型）直达通用 GATT 详情。
+    final match = matchProfile(device);
+    if (match != null && match.profile.id != 'smart-hid') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DeviceDetailPage(
+            deviceId: device.deviceId,
+            deviceName: device.displayName,
+          ),
+        ),
+      );
+      return;
+    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProvisioningPage(device: device),
+      ),
     );
   }
 }
 
-/// 设备信息对话框
-class DeviceInfoDialog extends StatelessWidget {
-  final BleScanResult device;
+/// 扫描中脉冲点（正典 .live：6px 主色圆点 1s 呼吸；仅扫描态挂载）
+class _PulseDot extends StatefulWidget {
+  const _PulseDot();
 
-  const DeviceInfoDialog({super.key, required this.device});
+  @override
+  State<_PulseDot> createState() => _PulseDotState();
+}
+
+class _PulseDotState extends State<_PulseDot>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller =
+        AnimationController(vsync: this, duration: const Duration(seconds: 1))
+          ..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Row(
-        children: [
-          const Icon(Icons.info_outline, color: AppTheme.primaryColor),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              device.displayName,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
-      ),
-      content: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _buildInfoRow('设备 ID', device.deviceId),
-            _buildInfoRow('信号强度', '${device.rssi} dBm'),
-            _buildInfoRow('发现时间', _formatTimestamp(device.timestamp)),
-            if (device.serviceUuids.isNotEmpty)
-              _buildInfoRow('服务 UUID', device.serviceUuids.join(', ')),
-            if (device.advertisData != null && device.advertisData!.isNotEmpty)
-              _buildAdvertisData(),
-          ],
+    return FadeTransition(
+      opacity: Tween<double>(begin: 1, end: 0.25).animate(_controller),
+      child: Container(
+        width: 6,
+        height: 6,
+        decoration: const BoxDecoration(
+          color: AppTokens.cPrimary,
+          shape: BoxShape.circle,
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text('关闭'),
-        ),
-      ],
     );
-  }
-
-  Widget _buildInfoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 12,
-              color: AppTheme.textSecondary,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: const TextStyle(fontSize: 14),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAdvertisData() {
-    final hexString = DataConverter.bytesToHex(device.advertisData!, separator: true);
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            '广播数据',
-            style: TextStyle(
-              fontSize: 12,
-              color: AppTheme.textSecondary,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: AppTheme.primaryColor.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(
-              hexString,
-              style: const TextStyle(
-                fontSize: 12,
-                fontFamily: 'monospace',
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  String _formatTimestamp(DateTime timestamp) {
-    return '${timestamp.hour.toString().padLeft(2, '0')}:'
-        '${timestamp.minute.toString().padLeft(2, '0')}:'
-        '${timestamp.second.toString().padLeft(2, '0')}';
   }
 }

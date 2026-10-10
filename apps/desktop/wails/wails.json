@@ -1,0 +1,16 @@
+{
+  "$schema": "https://wails.io/schemas/config.v2.json",
+  "name": "smartble",
+  "outputfilename": "smartble",
+  "frontend:install": "npm install",
+  "frontend:build": "npm run build",
+  "frontend:dev:watcher": "npm run dev",
+  "frontend:dev:serverUrl": "auto",
+  "author": {
+    "name": "luoyaosheng",
+    "email": "121912336@qq.com"
+  },
+  "info": {
+    "productName": "BLE Toolkit+"
+  }
+}

@@ -1,14 +1,17 @@
 package com.smartble.ui.screen
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.foundation.Image
+import android.os.Build
 import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,438 +21,238 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Architecture
-import androidx.compose.material.icons.filled.BluetoothSearching
-import androidx.compose.material.icons.filled.BroadcastOnPersonal
-import androidx.compose.material.icons.filled.BugReport
-import androidx.compose.material.icons.filled.Code
-import androidx.compose.material.icons.filled.ConnectWithoutContact
-import androidx.compose.material.icons.filled.DeveloperBoard
-import androidx.compose.material.icons.filled.EditNote
-import androidx.compose.material.icons.filled.Language
-import androidx.compose.material.icons.filled.Memory
-import androidx.compose.material.icons.filled.NotificationsActive
-import androidx.compose.material.icons.filled.OpenInNew
-import androidx.compose.material.icons.filled.PhoneAndroid
-import androidx.compose.material.icons.filled.PhoneIphone
-import androidx.compose.material.icons.filled.DesktopWindows
-import androidx.compose.material.icons.filled.LaptopMac
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import com.smartble.BuildConfig
 import com.smartble.R
-import com.smartble.ui.theme.Primary
-import com.smartble.ui.theme.TextSecondary
+import com.smartble.core.utils.VersionMetadata
+import com.smartble.core.utils.PrivacyPolicy
+import android.widget.Toast
+import androidx.compose.foundation.layout.heightIn
+import com.smartble.ui.design.DsChip
+import com.smartble.ui.design.DsFoot
+import com.smartble.ui.design.DsIcons
+import com.smartble.ui.design.DsKv
+import com.smartble.ui.design.DsMenuRow
+import com.smartble.ui.design.DsPrimaryButton
+import com.smartble.ui.design.DsSectionTitle
+import com.smartble.ui.design.DsSoftButton
+import com.smartble.ui.design.dsCard
+import com.smartble.ui.theme.cCard
+import com.smartble.ui.theme.cLine
+import com.smartble.ui.theme.cLineSoft
+import com.smartble.ui.theme.cMut
+import com.smartble.ui.theme.cPrimary
+import com.smartble.ui.theme.cPrimaryDeep
+import com.smartble.ui.theme.cText
 
-@OptIn(ExperimentalMaterial3Api::class)
+/**
+ * P009 关于（prototype p009-about.js · 数据口径对齐 flutter ProductConfig）：
+ * 品牌行 → 应用信息(kv) → 菜单(网站/版本记录/反馈/分享) → 页脚。
+ * 2026-09-11（小程序整体裁撤）：F028 更多小程序推广卡与反馈小程序码一并移除。
+ */
 @Composable
-fun AboutScreen() {
-    Scaffold(
-        topBar = { TopAppBar(title = { Text("关于") }) }
-    ) { paddingValues ->
-        AboutContent(Modifier.padding(paddingValues))
+fun AboutContent(
+    modifier: Modifier = Modifier,
+    onOpenVersions: () -> Unit = {},
+) {
+    val context = LocalContext.current
+    var showFeedback by remember { mutableStateOf(false) }
+    var showPrivacy by remember { mutableStateOf(false) }
+    // F027 版本三态：基准 = Release Metadata 投影（verFallback），
+    // 运行时渠道（包版本）非空才覆盖，失败保留基准。
+    val version = BuildConfig.VERSION_NAME.takeIf { it.isNotBlank() }
+        ?.let { "v$it+${BuildConfig.VERSION_CODE}" }
+        ?: VersionMetadata.metadataVersionLabel()
+
+    fun openUrl(url: String) {
+        runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url))) }
     }
-}
 
-@Composable
-fun AboutContent(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(20.dp)
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 16.dp),
     ) {
-        HeroCard()
-        Spacer(modifier = Modifier.height(20.dp))
-        SectionCard(title = "产品定位") {
-            Text(
-                "Smart BLE 是跨平台 BLE 控制台与统一协议内核，不是单一端上的小工具。",
-                style = MaterialTheme.typography.bodyLarge.copy(
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    lineHeight = 24.sp,
-                )
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                "它把扫描、连接、读写特征值、通知监听、广播模式和硬件联动收进同一套工作流里，既适合现场调试，也适合作为多平台 BLE 参考实现。",
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    color = TextSecondary,
-                    lineHeight = 22.sp,
-                )
-            )
+        Spacer(modifier = Modifier.height(12.dp))
+        BrandRow(version)
+        Spacer(modifier = Modifier.height(16.dp))
+        DsSectionTitle(icon = DsIcons.Info, text = "应用信息")
+        Spacer(modifier = Modifier.height(10.dp))
+        Column(Modifier.dsCard()) {
+            DsKv(k = "当前环境", v = "Android · ${Build.VERSION.RELEASE}")
+            DsKv(k = "设备型号", v = "${Build.MANUFACTURER} ${Build.MODEL}")
+            DsKv(k = "版本", v = version, mono = true, showDivider = false)
         }
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        SectionCard(title = "核心能力") {
-            FeatureItem(
-                icon = Icons.Default.BluetoothSearching,
-                title = "设备扫描",
-                description = "快速发现附近 BLE 设备并实时展示 RSSI 状态"
-            )
-            FeatureItem(
-                icon = Icons.Default.ConnectWithoutContact,
-                title = "连接与服务发现",
-                description = "建立会话后查看服务树和特征值层级"
-            )
-            FeatureItem(
-                icon = Icons.Default.EditNote,
-                title = "读写与监听",
-                description = "支持 HEX / UTF-8 写入、读取和通知订阅"
-            )
-            FeatureItem(
-                icon = Icons.Default.BroadcastOnPersonal,
-                title = "广播模式",
-                description = "验证设备名称、UUID 与广播载荷的配置效果"
-            )
-            FeatureItem(
-                icon = Icons.Default.Memory,
-                title = "硬件联动",
-                description = "与 ESP32 / 固件示例配套使用，形成协议验证闭环"
-            )
+        Spacer(modifier = Modifier.height(16.dp))
+        Column(Modifier.dsCard(innerPadding = 8.dp)) {
+            DsMenuRow(icon = DsIcons.Ext, label = "官方网站", onClick = { openUrl(WEBSITE) })
+            DsMenuRow(icon = DsIcons.Doc, label = "版本记录", onClick = onOpenVersions)
+            DsMenuRow(icon = DsIcons.Doc, label = "隐私说明（离线可读）", onClick = { showPrivacy = true })
+            DsMenuRow(icon = DsIcons.Send, label = "联系支持 · ${PrivacyPolicy.SUPPORT_EMAIL}", onClick = {
+                runCatching { context.startActivity(Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:${PrivacyPolicy.SUPPORT_EMAIL}"))) }
+                    .onFailure { Toast.makeText(context, "请联系 ${PrivacyPolicy.SUPPORT_EMAIL}", Toast.LENGTH_LONG).show() }
+            })
+            DsMenuRow(icon = DsIcons.Send, label = "问题反馈", onClick = { showFeedback = true })
+            DsMenuRow(icon = DsIcons.Share, label = "分享应用", onClick = { shareApp(context) }, showDivider = false)
         }
+        DsFoot("日志全局脱敏：敏感凭据显示为 token=***\n© 2026 BLE Toolkit+")
+        Spacer(modifier = Modifier.height(8.dp))
+    }
 
-        Spacer(modifier = Modifier.height(20.dp))
-
-        SectionCard(title = "平台矩阵") {
-            Row(
-                modifier = Modifier.horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                PlatformChip(name = "Android", icon = Icons.Default.PhoneAndroid)
-                PlatformChip(name = "iOS", icon = Icons.Default.PhoneIphone)
-                PlatformChip(name = "macOS", icon = Icons.Default.LaptopMac)
-                PlatformChip(name = "Windows", icon = Icons.Default.DesktopWindows)
-                PlatformChip(name = "UniApp", icon = Icons.Default.DeveloperBoard)
-                PlatformChip(name = "Hardware", icon = Icons.Default.Memory)
-            }
-        }
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        LinkSection()
-
-        Spacer(modifier = Modifier.height(28.dp))
-
-        Text(
-            "© 2026 Smart BLE\nReleased under MIT License",
-            style = MaterialTheme.typography.bodySmall.copy(
-                color = TextSecondary.copy(alpha = 0.72f),
-                lineHeight = 18.sp,
-            ),
-            textAlign = TextAlign.Center
-        )
+    if (showPrivacy) { PrivacyPolicyDialog(onDismiss = { showPrivacy = false }) }
+    if (showFeedback) {
+        FeedbackQrDialog(onDismiss = { showFeedback = false })
     }
 }
 
+/** 问题反馈弹窗（P009）：GitHub Issues 引导；2026-09-11 小程序反馈通道裁撤 */
 @Composable
-private fun HeroCard() {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(28.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)
-    ) {
-        Column {
-            Image(
-                painter = painterResource(id = R.drawable.brand_about_hero),
-                contentDescription = "Smart BLE Hero",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(220.dp),
-                contentScale = ContentScale.Crop
-            )
+private fun FeedbackQrDialog(onDismiss: () -> Unit) {
+    val context = LocalContext.current
+    var linkCopied by remember { mutableStateOf(false) }
 
-            Column(
-                modifier = Modifier.padding(20.dp)
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.brand_icon),
-                        contentDescription = "Smart BLE Icon",
-                        modifier = Modifier
-                            .size(68.dp)
-                            .clip(RoundedCornerShape(20.dp))
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Column {
-                        Text(
-                            "Smart BLE",
-                            style = MaterialTheme.typography.headlineSmall.copy(
-                                fontWeight = FontWeight.Bold
-                            )
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            "Android 原生运行面",
-                            style = MaterialTheme.typography.labelLarge.copy(
-                                color = Primary,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    MetaChip("Version 2.0.0")
-                    MetaChip("Compose")
-                    MetaChip("Kotlin")
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    "跨平台 BLE 控制台与统一协议内核，用原生 Android 体验承接扫描、连接、广播和设备调试。",
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        color = TextSecondary,
-                        lineHeight = 22.sp,
-                    )
-                )
-            }
-        }
+    fun copyLink() {
+        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        clipboard.setPrimaryClip(ClipData.newPlainText("feedback-url", FEEDBACK_URL))
+        linkCopied = true
     }
-}
 
-@Composable
-private fun SectionCard(
-    title: String,
-    content: @Composable ColumnScope.() -> Unit
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
-    ) {
+    Dialog(onDismissRequest = onDismiss) {
         Column(
-            modifier = Modifier.padding(20.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(20.dp))
+                .background(cCard)
+                .padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(
-                title,
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight.Bold
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text("问题反馈", fontSize = 16.sp, fontWeight = FontWeight.W700, color = cText)
+                Spacer(modifier = Modifier.weight(1f))
+                Icon(
+                    DsIcons.X,
+                    contentDescription = "关闭",
+                    modifier = Modifier
+                        .size(28.dp)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                        ) { onDismiss() },
+                    tint = cMut,
                 )
+            }
+            Spacer(modifier = Modifier.height(14.dp))
+            Text(
+                "通过 GitHub Issues 提交问题反馈\n描述复现步骤与环境信息，我们会尽快跟进处理\n$FEEDBACK_URL",
+                fontSize = 12.sp,
+                color = cMut,
+                textAlign = TextAlign.Center,
+                lineHeight = 12.sp * 1.5f,
             )
+            if (linkCopied) {
+                Spacer(modifier = Modifier.height(6.dp))
+                Text("反馈链接已复制", fontSize = 11.sp, fontWeight = FontWeight.W600, color = cPrimary)
+            }
             Spacer(modifier = Modifier.height(16.dp))
-            content()
+            Row(horizontalArrangement = Arrangement.spacedBy(9.dp)) {
+                DsSoftButton(
+                    label = if (linkCopied) "已复制" else "复制反馈链接",
+                    onClick = { copyLink() },
+                    modifier = Modifier.weight(1f),
+                    small = true,
+                )
+                DsPrimaryButton(
+                    label = "我知道了",
+                    icon = null,
+                    onClick = onDismiss,
+                    modifier = Modifier.weight(1f),
+                    small = true,
+                )
+            }
         }
     }
 }
 
+/** 品牌行（.card + 38dp 渐变 bt 标 + 名称 + 单行元数据） */
 @Composable
-private fun FeatureItem(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    title: String,
-    description: String
-) {
+private fun BrandRow(version: String) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 14.dp),
-        verticalAlignment = Alignment.Top
+        modifier = Modifier.fillMaxWidth().dsCard(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(11.dp),
     ) {
         Box(
             modifier = Modifier
-                .size(42.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(Primary.copy(alpha = 0.1f)),
-            contentAlignment = Alignment.Center
+                .size(38.dp)
+                .clip(RoundedCornerShape(11.dp))
+                .background(Brush.linearGradient(listOf(cPrimaryDeep, cPrimary))),
+            contentAlignment = Alignment.Center,
         ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = Primary,
-                modifier = Modifier.size(20.dp)
-            )
+            Icon(DsIcons.Bt, contentDescription = null, modifier = Modifier.size(20.dp), tint = Color.White)
         }
-        Spacer(modifier = Modifier.width(14.dp))
         Column {
+            Text("BLE Toolkit+", fontSize = 16.sp, fontWeight = FontWeight.W700, color = cText)
             Text(
-                title,
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    fontWeight = FontWeight.SemiBold
-                )
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                description,
-                style = MaterialTheme.typography.bodySmall.copy(
-                    color = TextSecondary,
-                    lineHeight = 18.sp,
-                )
+                "$version · 零后端 · 零本地持久化",
+                fontSize = 11.sp,
+                fontFamily = FontFamily.Monospace,
+                color = cMut,
+                modifier = Modifier.padding(top = 2.dp),
             )
         }
     }
 }
 
-@Composable
-private fun PlatformChip(
-    name: String,
-    icon: androidx.compose.ui.graphics.vector.ImageVector
-) {
-    Card(
-        shape = RoundedCornerShape(18.dp),
-        colors = CardDefaults.cardColors(containerColor = Primary.copy(alpha = 0.08f))
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                modifier = Modifier.size(16.dp),
-                tint = Primary
-            )
-            Spacer(modifier = Modifier.width(6.dp))
-            Text(
-                name,
-                style = MaterialTheme.typography.labelMedium.copy(
-                    color = Primary,
-                    fontWeight = FontWeight.SemiBold
-                )
-            )
-        }
+private fun shareApp(context: android.content.Context) {
+    val text = "BLE Toolkit+ —— 跨平台 BLE 调试工具 $WEBSITE"
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_TEXT, text)
+        putExtra(Intent.EXTRA_SUBJECT, "BLE Toolkit+")
     }
+    runCatching { context.startActivity(Intent.createChooser(intent, "分享应用")) }
 }
 
-@Composable
-private fun MetaChip(text: String) {
-    Box(
-        modifier = Modifier
-            .clip(CircleShape)
-            .background(Primary.copy(alpha = 0.08f))
-            .padding(horizontal = 12.dp, vertical = 8.dp)
-    ) {
-        Text(
-            text,
-            style = MaterialTheme.typography.labelMedium.copy(
-                color = Primary,
-                fontWeight = FontWeight.SemiBold
-            )
-        )
-    }
-}
+private const val WEBSITE = "https://lightble.i2kai.com/"
+private const val FEEDBACK_URL = "https://gitee.com/luoyaosheng/smart-ble/issues"
+
 
 @Composable
-private fun LinkSection() {
-    val context = LocalContext.current
-
-    SectionCard(title = "相关链接") {
-        LinkItem(
-            icon = Icons.Default.Language,
-            title = "项目主页",
-            subtitle = "查看平台矩阵、下载入口与架构说明",
-            onClick = {
-                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://lightble.i2kai.com/")))
-            }
-        )
-        LinkItem(
-            icon = Icons.Default.Architecture,
-            title = "架构白皮书",
-            subtitle = "统一协议内核、组件拆分与交互流规范",
-            onClick = {
-                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://lightble.i2kai.com/MASTER_ARCHITECTURE")))
-            }
-        )
-        LinkItem(
-            icon = Icons.Default.Code,
-            title = "源码仓库",
-            subtitle = "查看全部平台实现与共享资产生成器",
-            onClick = {
-                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/luoyaosheng/smart-ble")))
-            }
-        )
-        LinkItem(
-            icon = Icons.Default.BugReport,
-            title = "问题反馈",
-            subtitle = "提交 issue 或查看已知问题",
-            onClick = {
-                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/luoyaosheng/smart-ble/issues")))
-            }
-        )
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun LinkItem(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    title: String,
-    subtitle: String,
-    onClick: () -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 10.dp),
-        shape = RoundedCornerShape(16.dp),
-        onClick = onClick
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(42.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(Primary.copy(alpha = 0.1f)),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(icon, contentDescription = null, tint = Primary, modifier = Modifier.size(20.dp))
-            }
-            Spacer(modifier = Modifier.width(14.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    title,
-                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold)
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    subtitle,
-                    style = MaterialTheme.typography.bodySmall.copy(
-                        color = TextSecondary,
-                        lineHeight = 18.sp
-                    )
-                )
-            }
-            Spacer(modifier = Modifier.width(10.dp))
-            Icon(
-                Icons.Default.OpenInNew,
-                contentDescription = null,
-                modifier = Modifier.size(16.dp),
-                tint = TextSecondary
-            )
+fun PrivacyPolicyDialog(onDismiss: () -> Unit) {
+    Dialog(onDismissRequest = onDismiss) {
+        Column(Modifier.fillMaxWidth().heightIn(max = 600.dp).clip(RoundedCornerShape(20.dp)).background(cCard).padding(20.dp)) {
+            Text("隐私说明", fontSize = 16.sp, fontWeight = FontWeight.W700, color = cText)
+            Spacer(Modifier.height(12.dp))
+            Text(PrivacyPolicy.text, modifier = Modifier.weight(1f).verticalScroll(rememberScrollState()), fontSize = 13.sp, lineHeight = 20.sp, color = cText)
+            Spacer(Modifier.height(12.dp))
+            DsPrimaryButton(label = "关闭", icon = null, onClick = onDismiss, modifier = Modifier.fillMaxWidth(), small = true)
         }
     }
 }

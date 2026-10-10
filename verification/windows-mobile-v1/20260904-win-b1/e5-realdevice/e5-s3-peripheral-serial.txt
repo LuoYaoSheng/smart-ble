@@ -1,0 +1,195 @@
+--- Terminal on COM12 | 115200 8-N-1
+--- Available filters and text transformations: colorize, debug, default, direct, esp32_exception_decoder, hexlify, log2file, nocontrol, printable, send_on_enter, time
+--- More details at https://bit.ly/pio-monitor-filters
+--- Quit: Ctrl+C | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x8 (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce3808,len:0x4bc
+load:0x403c9700,len:0xbd8
+load:0x403cc700,len:0x2a0c
+entry 0x403c98d0
+E (135) esp_core_dump_flash: No core dump partition found!
+E (135) esp_core_dump_flash: No core dump partition found!
+[   159][V][esp32-hal-uart.c:330] uartBegin(): UART0 baud(115200) Mode(800001c) rxPin(44) txPin(43)
+[   169][V][esp32-hal-uart.c:416] uartBegin(): UART0 not installed. Starting installation
+[   177][V][esp32-hal-uart.c:467] uartBegin(): UART0 initialization done.
+{"type":"boot","firmware_name":"LightBLE","firmware_version":"1.0.0","git_sha":"79dbc14","fixture_role":"peripheral"}
+Starting BLE Peripheral Fixture...
+I NimBLEDevice: BLE Host Task Started
+I NimBLEDevice: NimBle host synced.
+D NimBLEServer: >> createService - 4fafc201-1fb5-459e-8fcc-c5c9c331914b
+D NimBLEServer: << createService
+[  3246][E][Preferences.cpp:50] begin(): nvs_open failed: NOT_FOUND
+D NimBLEService: >> start(): Starting service: UUID: 4fafc201-1fb5-459e-8fcc-c5c9c331914b, handle: 0xffff
+D NimBLEService: Adding 2 characteristics for service UUID: 4fafc201-1fb5-459e-8fcc-c5c9c331914b, handle: 0xffff
+D NimBLEService: << start()
+D NimBLEServer: >> createService - 4fafc201-1fb5-459e-8fcc-c5c9c331914c
+D NimBLEServer: << createService
+D NimBLEService: >> start(): Starting service: UUID: 4fafc201-1fb5-459e-8fcc-c5c9c331914c, handle: 0xffff
+D NimBLEService: Adding 7 characteristics for service UUID: 4fafc201-1fb5-459e-8fcc-c5c9c331914c, handle: 0xffff
+D NimBLEService: << start()
+D NimBLEServer: >> createService - 4fafc201-1fb5-459e-8fcc-c5c9c331914d
+D NimBLEServer: << createService
+D NimBLEService: >> start(): Starting service: UUID: 4fafc201-1fb5-459e-8fcc-c5c9c331914d, handle: 0xffff
+D NimBLEService: Adding 3 characteristics for service UUID: 4fafc201-1fb5-459e-8fcc-c5c9c331914d, handle: 0xffff
+D NimBLEService: << start()
+D NimBLEAdvertising: >> setScanResponseData
+D NimBLEAdvertising: << setScanResponseData
+D NimBLEAdvertising: >> Advertising start: customAdvData: 0, customScanResponseData: 1
+primary service
+           uuid 0x1800
+         handle 1
+     end_handle 5
+characteristic
+           uuid 0x2a00
+     def_handle 2
+     val_handle 3
+   min_key_size 0
+          flags [READ]
+characteristic
+           uuid 0x2a01
+     def_handle 4
+     val_handle 5
+   min_key_size 0
+          flags [READ]
+primary service
+           uuid 0x1801
+         handle 6
+     end_handle 9
+characteristic
+           uuid 0x2a05
+     def_handle 7
+     val_handle 8
+   min_key_size 0
+          flags [INDICATE]
+ccc descriptor
+           uuid 0x2902
+         handle 9
+   min_key_size 0
+          flags [READ|WRITE]
+primary service
+           uuid 4fafc201-1fb5-459e-8fcc-c5c9c331914b
+         handle 10
+     end_handle 16
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26a8
+     def_handle 11
+     val_handle 12
+   min_key_size 0
+          flags [READ|WRITE|NOTIFY]
+ccc descriptor
+           uuid 0x2902
+         handle 13
+   min_key_size 0
+          flags [READ|WRITE]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26a9
+     def_handle 14
+     val_handle 15
+   min_key_size 0
+          flags [WRITE|NOTIFY]
+ccc descriptor
+           uuid 0x2902
+         handle 16
+   min_key_size 0
+          flags [READ|WRITE]
+primary service
+           uuid 4fafc201-1fb5-459e-8fcc-c5c9c331914c
+         handle 17
+     end_handle 35
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26b0
+     def_handle 18
+     val_handle 19
+   min_key_size 0
+          flags [READ]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26b1
+     def_handle 20
+     val_handle 21
+   min_key_size 0
+          flags [WRITE]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26b2
+     def_handle 22
+     val_handle 23
+   min_key_size 0
+          flags [NOTIFY]
+ccc descriptor
+           uuid 0x2902
+         handle 24
+   min_key_size 0
+          flags [READ|WRITE]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26b3
+     def_handle 25
+     val_handle 26
+   min_key_size 0
+          flags [READ|WRITE]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26b4
+     def_handle 27
+     val_handle 28
+   min_key_size 0
+          flags [READ|NOTIFY]
+ccc descriptor
+           uuid 0x2902
+         handle 29
+   min_key_size 0
+          flags [READ|WRITE]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26b5
+     def_handle 30
+     val_handle 31
+   min_key_size 0
+          flags [WRITE|NOTIFY]
+ccc descriptor
+           uuid 0x2902
+         handle 32
+   min_key_size 0
+          flags [READ|WRITE]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26b6
+     def_handle 33
+     val_handle 34
+   min_key_size 0
+          flags [READ|WRITE|NOTIFY]
+ccc descriptor
+           uuid 0x2902
+         handle 35
+   min_key_size 0
+          flags [READ|WRITE]
+primary service
+           uuid 4fafc201-1fb5-459e-8fcc-c5c9c331914d
+         handle 36
+     end_handle 43
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26c0
+     def_handle 37
+     val_handle 38
+   min_key_size 0
+          flags [READ|WRITE]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26c1
+     def_handle 39
+     val_handle 40
+   min_key_size 0
+          flags [WRITE_NO_RSP]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26c2
+     def_handle 41
+     val_handle 42
+   min_key_size 0
+          flags [READ|NOTIFY]
+ccc descriptor
+           uuid 0x2902
+         handle 43
+   min_key_size 0
+          flags [READ|WRITE]
+D NimBLEAdvertising: << Advertising start
+{"type":"ble","event":"advertising","ts":3672}
+{"type":"adv","status":"started","ts":3682}
+BLE Peripheral Fixture is ready!

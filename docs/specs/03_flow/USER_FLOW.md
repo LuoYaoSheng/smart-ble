@@ -26,7 +26,7 @@ P001 扫描 → SHID-XXXX 卡（UUID 强匹配 STRONG 徽章，F018）
   → phase=connect：自动连接 + 读 Device Info 身份验证（product/协议版本/deviceId 正则）
   → phase=configure：填 Wi-Fi SSID/密码 + ControlHub 地址
   → ControlHub 网页生成配对码 → 点「扫描配对码」扫码（F020，地址自动回填，token 仅内存 5 分钟）
-  →「下发配置」→ candidate JSON 分帧加密写 INPUT（F021，Android 首次写触发系统配对自动重试）
+  →「下发配置」→ candidate JSON 分帧明文写 INPUT（F021，各平台均不触发系统配对）
   → phase=status：四行进度（Wi-Fi→ControlHub→MQTT→控制链路）由 STATUS 推送驱动，60s 超时
   → state=ready 四行全绿 →「查看设备」redirectTo P003
 ```

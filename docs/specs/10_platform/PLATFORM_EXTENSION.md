@@ -6,6 +6,8 @@
 > 前提：**先有产品，再有平台**——产品恢复（SOP v2.0 Phase 1–8）已完成，Base 原型（v0-old，Level 3）即产品基准；平台只是扩展，不反向改变产品模型/数据模型/核心流程。
 > 事实口径：✅ 可用 / △ 部分可用 / ✗ 不可用 /【实验性】/【待验证：开发期 spike 核实】。Web/Desktop 的 BLE API 现状为公开技术事实，具体版本行为以开发期验证为准。
 
+> **⚠️ 平台范围退役声明（2026-09-11 用户裁决 · 2026-09-14 MAC-001 落正）**：**微信小程序运行目标已整体退役**——构建目标、微信 Peripheral 模块、微信真机门禁与二维码传播入口全部删除（详见 [05_PLATFORM_MATRIX 平台退役记录](../../product-contract/05_PLATFORM_MATRIX.md)）。本文中 D1「微信小程序 + App·Android 首批」、C1/C3 微信能力裁决、§2.1 微信优势/限制及各矩阵微信列**均为退役前的历史分析快照**，不再指导任何活跃开发；`prototype/platform/wechat/` 为冻结历史原型。活跃平台范围以 05_PLATFORM_MATRIX 现行版为准（Android / iOS / H5 + 实现家族）。
+
 ---
 
 ## 1. 产品能力的平台无关性盘点
@@ -17,7 +19,7 @@
 | 设备发现 | 扫描会话/节流合并/筛选/广播查看/显示名 fallback（F001–F005） | 扫描 API 形态（连续扫描 vs 选择器）、权限模型 |
 | GATT 调试 | 连接/服务树/读写/监听/日志/重连/多会话（F006–F013） | GATT API 差异（基本一致：connect/discover/read/write/notify） |
 | 广播发射 | 参数定义/31B 预算核算/状态机（F014–F016） | **外围能力有无**（平台分化最大点） |
-| Profile 配网 | 向导/扫码/分帧加密写/状态跟踪/错误恢复/诊断（F018–F022、F024） | 扫码实现、BLE 写语义差异（如 Android 系统配对弹窗，现状已知） |
+| Profile 配网 | 向导/扫码/分帧明文写/状态跟踪/错误恢复/诊断（F018–F022、F024） | 扫码实现、权限与 BLE API 差异；V1 简化各平台均不得发起系统配对 |
 | OTA | 12 态事务/校验/传输/版本回读（F025，BLOCKED） | 纯 GATT 事务 + 文件选择器，跟随 GATT 能力 |
 | 系统信息 | 版本投影/分享（F027–F029） | 分享机制（社交卡片/系统分享/URL/文件） |
 
@@ -58,6 +60,7 @@
 - **BLE 能力判定**：经原生层，扫描/GATT/广播外围均可为 △～✅（Linux 广播受 BlueZ/内核权限影响【待验证】）——**四平台中唯一可能全域达标的扩展平台**，代价是实现层最厚。
 - **扫码（F020）**：配对码通过**扫描二维码**获取（产品统一口径，2026-09-03 用户修正）——桌面端主路径 = 摄像头读取 ControlHub 屏显 `shid://pair` 二维码；无摄像头 / 无法扫码时以**粘贴 / 手输**兜底（内容直接解析，纯前端可解）。原型呈现：`prototype/platform/desktop/high-fi/desktop.js`（扫码 sheet 取景器 + 兜底入口）。
 - **操作系统维度（2026-09-03 用户走查追加）**：桌面端区分三宿主 OS——**macOS（CoreBluetooth）/ Windows（WinRT）/ Linux（BlueZ）**，与生态矩阵（11_ecosystem §2 平台编号 WIN/MAC/LINUX）口径一致；Linux 广播外围受 BlueZ / 内核权限影响【待验证】。窗口 chrome 随系统三形态（mac 交通灯左侧 / win 右侧─▢✕ / linux 仅✕，系统还原层豁免圈外色值）。原型呈现：`desktop.js` OSES 注册表（P009 操作系统切换入口 / P008 平台徽标 `Desktop · {OS}` 与原生层提示 / 评审栏生态能力矩阵卡随 OS 随动）。D2 spike 未启动，能力细节不预判。
+- **Windows（WinRT）实测能力事实（2026-09-27 回填，六壳 E/T/V/F/Q/G 真机）**：扫描/连接枚举/读/带响应写/Notify 订阅退订全通；广播可发但**仅厂商块 0xFF**（LocalName/ServiceUuids 被 `Start()` 拒绝=平台事实非缺陷）；**连接前停扫守则**（扫描并发连接⇒枚举 0）；未配对会话 GATT 枚举仅 9f1d 一服务、STATUS 零推送；系统缓存影响 OTA 重启回读（验收须设备侧独立证据）；安装器差异（T MSI 提权/六产物未签名=Preview）。明细与证据 = [09_test/CROSS_IMPLEMENTATION_PARITY_MATRIX.md](../09_test/CROSS_IMPLEMENTATION_PARITY_MATRIX.md) §2/§6（单一事实源，不在本文重复展开）；macOS/Linux 宿主实测仍未启动。
 - **可能增强**（建议候选）：日志文件流式导出；OTA 固件库本地管理；多设备并排工作台。
 
 ## 3. BLE 能力矩阵（六域 × 四平台 · 差异设计核心依据）
@@ -73,6 +76,8 @@
 
 零后端约束（PRD §1.2）在所有平台一致保持：任何平台增强不引入 HTTP/云端。
 
+> **Desktop 列实测升级（2026-09-27 回填）**：Windows 宿主六壳（E/T/V/F/Q/G）真机实证——S1a/S1b 升 ✅（Windows 实测；mac/linux 待验）；S4 升 ✅（仅厂商块 0xFF 可发=平台事实，N4 案 B 恒显+未就绪徽章已落地）；S5 有两轮 E/T E2E 证据（P-03 产品口径维持，解除归正典裁决）；S2/S3 部分实证（E-WIN 配网 BLE 链全通+hub 配对消费，WiFi 终态受环境观察项）。明细见 [09_test/CROSS_IMPLEMENTATION_PARITY_MATRIX.md](../09_test/CROSS_IMPLEMENTATION_PARITY_MATRIX.md) §3/§6；上表「△～✅ 原生层」为决策期快照保留不回改。
+
 > **生态矩阵对照（2026-09-03）**：《Smart BLE 平台功能差异矩阵 v1.0》已入库 `11_ecosystem/`（12 平台 / BLE-001～008 分级 / 后台 / OTA / 多设备）。与上表（六域 × 五平台）为**两级口径**：上表 = 本项目实现线实证（v1 范围），矩阵 = 生态家族全集。冲突项以 [ALIGNMENT_NOTES §2](../11_ecosystem/ALIGNMENT_NOTES.md) 为准——**C1 微信广播发送（矩阵 ❌ vs 实证 △ F014 wx.createBLEPeripheralServer）与 C3 微信多设备（矩阵 ❌ vs F013 已实现）已于 2026-09-03（08-G0）裁决：supported_limited / supported_foreground，实证行为不翻转、真机证据待补**（裁决正文 [08_development/PLATFORM_CAPABILITY_DECISION](../08_development/PLATFORM_CAPABILITY_DECISION.md)）；一致项（Android 广播 ✅ / Desktop 三系原生层 / Linux BlueZ 限制）直接吸收。原型呈现：三实例评审栏「生态能力矩阵」卡 + Web W4 第二来源卡（v1.2.0；卡内「待裁决」字样为裁决前快照，原型冻结不回改）。
 
 ## 4. 平台差异设计（SOP §9：核心功能一致，表现方式不同）
@@ -83,7 +88,7 @@
 | 权限模型 | 微信授权弹窗+去设置（F002 现状） | 运行时权限+清单引导（F015 现状） | chooser 选择即授权+HTTPS | 系统蓝牙权限/首次配对 |
 | 分享（F029） | 社交卡片/Timeline | 系统分享 | 复制 URL | 导出文本/文件 |
 | 扫码（F020） | uni.scanCode | uni.scanCode | —（S2 不可达） | 配对码扫码为主（摄像头）+ 粘贴/手输兜底（2026-09-03 修正，同 §2.4） |
-| 推广跳转（F028） | navigateToMiniProgram 直跳 | 落地页（系统浏览器）+ 小程序码 | 新窗落地页 + 小程序码 | 落地页（浏览器）+ 小程序码（可下载） |
+| ~~推广跳转（F028）~~ | **已移除（2026-09-10）** | — | — | — |
 | 日志导出（F011） | 剪贴板 | 剪贴板+系统分享（候选：文件） | 剪贴板/下载 | 候选：文件流 |
 | 生命周期守则 | 后台停扫/停广播（现状） | 受限后台保连【候选】 | 页签可见性守则 | 常驻，退出确认 |
 

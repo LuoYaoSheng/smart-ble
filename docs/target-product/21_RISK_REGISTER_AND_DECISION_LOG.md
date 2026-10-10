@@ -174,7 +174,7 @@ supersedes: []
 | ID | 风险 | 等级 | 缓解 | 关联 |
 |---|---|---|---|---|
 | RISK-001 | 夹具 OTA 无签名被刷恶意固件 | 中 | 测试定位声明+版本回读+abort 一致 | SEC-010、`15` R-OTA |
-| RISK-002 | Smart HID Just Works 无 MITM 抗性 | 中 | 如实声明+外部正典升级路径 | SEC-009、R-HID-01 |
+| RISK-002 | Smart HID V1 明文配网可被近场嗅探或篡改 | 高 | 如实声明+缩短暴露窗口+外部正典升级路径 | SEC-009、R-HID-01 |
 | RISK-003 | Pairing token 被截屏重放 | 低 | 5 分钟一次性+服务端一次性消费 | SEC-007 |
 | RISK-004 | 若不交付 Observer，广播证据永久 BLOCKED | 高 | DEC-002 采纳 A | `12`、TEST-E-006 |
 | RISK-005 | 微信基础库变更导致定位/扫描策略失效 | 中 | NFR-023 回归+`20` 兼容运维 | DEC-003 |

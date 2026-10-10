@@ -1,0 +1,4 @@
+[APP] static main entered
+[APP] applicationDidFinishLaunching
+[BLE] 蓝牙状态：CBManagerState(rawValue: 2)
+[BLE] 外围模式状态异常：CBManagerState(rawValue: 2)

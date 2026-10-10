@@ -1,0 +1,31 @@
+  正在确定要还原的项目…
+  已还原 E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\SmartBLE.Desktop.csproj (用时 13.59 秒)。
+E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\ViewModels\BleService.cs(142,38): error CS1515: '应为 "in" [E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\SmartBLE.Desktop.csproj]
+E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\ViewModels\BleService.cs(142,38): error CS0230: 在 foreach 语句中，类型和标识符都是必需的 [E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\SmartBLE.Desktop.csproj]
+E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\ViewModels\BleService.cs(142,38): error CS1525: 表达式项“char”无效 [E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\SmartBLE.Desktop.csproj]
+E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\ViewModels\BleService.cs(142,43): error CS1026: 应输入 ) [E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\SmartBLE.Desktop.csproj]
+E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\ViewModels\BleService.cs(142,43): error CS1525: 表达式项“in”无效 [E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\SmartBLE.Desktop.csproj]
+E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\ViewModels\BleService.cs(142,43): error CS1002: 应输入 ; [E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\SmartBLE.Desktop.csproj]
+E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\ViewModels\BleService.cs(142,43): error CS1513: 应输入 } [E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\SmartBLE.Desktop.csproj]
+E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\ViewModels\BleService.cs(142,83): error CS1002: 应输入 ; [E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\SmartBLE.Desktop.csproj]
+E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\ViewModels\BleService.cs(142,83): error CS1513: 应输入 } [E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\SmartBLE.Desktop.csproj]
+E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\ViewModels\BleService.cs(146,53): error CS1525: 表达式项“char”无效 [E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\SmartBLE.Desktop.csproj]
+
+生成失败。
+
+E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\ViewModels\BleService.cs(142,38): error CS1515: '应为 "in" [E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\SmartBLE.Desktop.csproj]
+E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\ViewModels\BleService.cs(142,38): error CS0230: 在 foreach 语句中，类型和标识符都是必需的 [E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\SmartBLE.Desktop.csproj]
+E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\ViewModels\BleService.cs(142,38): error CS1525: 表达式项“char”无效 [E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\SmartBLE.Desktop.csproj]
+E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\ViewModels\BleService.cs(142,43): error CS1026: 应输入 ) [E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\SmartBLE.Desktop.csproj]
+E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\ViewModels\BleService.cs(142,43): error CS1525: 表达式项“in”无效 [E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\SmartBLE.Desktop.csproj]
+E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\ViewModels\BleService.cs(142,43): error CS1002: 应输入 ; [E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\SmartBLE.Desktop.csproj]
+E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\ViewModels\BleService.cs(142,43): error CS1513: 应输入 } [E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\SmartBLE.Desktop.csproj]
+E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\ViewModels\BleService.cs(142,83): error CS1002: 应输入 ; [E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\SmartBLE.Desktop.csproj]
+E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\ViewModels\BleService.cs(142,83): error CS1513: 应输入 } [E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\SmartBLE.Desktop.csproj]
+E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\ViewModels\BleService.cs(146,53): error CS1525: 表达式项“char”无效 [E:\project\xf\smart-ble\apps\desktop\avalonia\SmartBLE.Desktop\SmartBLE.Desktop.csproj]
+    0 个警告
+    10 个错误
+
+已用时间 00:00:18.20
+
+有可用的工作负载更新。有关详细信息，请运行 `dotnet workload list`。

@@ -1,0 +1,90 @@
+[APP] static main entered
+[APP] applicationDidFinishLaunching
+[UISMOKE] mode=smoke-pages app=SmartBLE-mac r3=prototype-aligned
+[BLE] 蓝牙已开启
+[BLE] 外围模式已就绪
+[UISMOKE] UIS-01 result=PASS detail="title=BLE Toolkit+ tabs=[1, 1, 1, 1] p001=true"
+[UISMOKE] UIS-02 result=PASS detail="已连接=1 广播=1 关于=1 扫描=1"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：未命名 BLE · 9599（-49 dBm）
+[BLE] 发现设备：BLEToolkit-Server（-24 dBm）
+[BLE] 发现设备：midea（-87 dBm）
+[BLE] 发现设备：未命名 BLE · B8CA（-78 dBm）
+[BLE] 发现设备：未命名 BLE · 27B3（-50 dBm）
+[BLE] 发现设备：未命名 BLE · 5A3A（-47 dBm）
+[BLE] 扫描完成 · 发现 6 台设备
+[UISMOKE] UIS-03 result=PASS detail="scanning=true stopped=true found=6"
+[UISMOKE] UIS-04 result=PASS detail="preset=true slider=true switch=true th70=true reset=true collapsed=true"
+[UISMOKE] UIS-05 result=PASS detail="sheet=true fields=true missMarked=true closed=true"
+[BLE] 连接 BLEToolkit-Server · 暂存路由上下文
+[BLE] 连接成功 · BLEToolkit-Server
+[BLE] ATT 协商 · 最大写入 20 字节（withResponse 512）
+[UISMOKE] UIS-06 result=PASS detail="p006=true dnote=true log=true back=true conn=connected"
+[BLE] 服务发现中… · BLEToolkit-Server
+[UISMOKE] UIS-07 result=PASS detail="guard=true parse=true noToken=true hubOptional=true"
+[BLE] 服务发现完成 · BLEToolkit-Server（3 服务）
+[BLE] 服务 自定义服务：2 特征 · BLEToolkit-Server
+[BLE] 服务 自定义服务：7 特征 · BLEToolkit-Server
+[UISMOKE] UIS-08 result=PASS detail="platform=true note=true budgetBar=true default=21B over=46B blocked=true shown=true restored=21B reEnabled=true"
+[BLE] 桌面原生层 CoreBluetooth（macOS）· 蓝牙从机已就绪 · 支持 peripheral 广播（能力判定待 D2 spike，不预判）
+[BLE] 服务 自定义服务：3 特征 · BLEToolkit-Server
+[UISMOKE] UIS-09 result=PASS detail="logged=true badge=true peripheralReady=true"
+[UISMOKE] UIS-10 result=PASS detail="brand=true menus=[1, 1, 1, 1] titles=true appInfo=true p010=true"
+[UISMOKE] UIS-11 result=PASS detail="limits=true emptyRelease=true foot=true previews=true tabHidden=true"
+[UISMOKE] UIS-12 result=PASS detail="p002Variants=true p005Base=true p005Variants=true p003Guard=true p003Variants=true"
+[UISMOKE] UIS-13 result=PASS detail="modal=true dismissed=true alive=true"
+[BLE] 连接 未命名 BLE · 9599 · 暂存路由上下文
+[BLE] 连接超时（10s）· 自动重连中（1/3）· 2s backoff · 未命名 BLE · 9599
+[UISMOKE] UIS-15 result=PASS detail="honestState=true sawError=false retryable=true hid=connecting"
+[BLE] 断开连接中… · 未命名 BLE · 9599
+[BLE] 已断开连接 · 未命名 BLE · 9599
+[BLE] OTA 选包 · smartble-ota-smoke.bin（4 字节 · sha256 8d70d691c822…）
+[BLE] OTA 无 manifest → 跳过包校验（正典允许），版本验证阶段将无版本可比对
+[BLE] OTA 失败 · OTA_SESSION_LOST：设备未连接，无法开始 OTA
+[BLE] OTA 选包 · smartble-ota-smoke.bin（4 字节 · sha256 8d70d691c822…）
+[BLE] OTA 失败 · OTA_HASH_MISMATCH：manifest sha256 与实测不符
+[BLE] OTA 选包 · smartble-ota-smoke.bin（4 字节 · sha256 8d70d691c822…）
+[BLE] OTA 包校验通过（manifest：version=1.2.3 size=4）
+[UISMOKE] UIS-16 result=PASS detail="readyNoManifest=true noSession=true hashMismatch=true readyWithManifest=true"
+[UISMOKE] UIS-17 result=PASS detail="n=1 consistent=true single/empty（≥2 台并行需外设 · BLOCKED_FIXTURE）"
+[BLE] 会话复用 · BLEToolkit-Server 已连接
+[BLE] 连接 midea · 暂存路由上下文
+[BLE] 连接成功 · midea
+[BLE] ATT 协商 · 最大写入 20 字节（withResponse 512）
+[BLE] 服务发现中… · midea
+[BLE] 服务发现完成 · midea（3 服务）
+[BLE] 服务 自定义服务：2 特征 · midea
+[BLE] 服务 自定义服务：2 特征 · midea
+[BLE] 服务 自定义服务：2 特征 · midea
+[BLE] 连接已断开 · midea（The specified device has disconnected from us.）
+[BLE] 被动断线 · 1s 后自动重连 · midea（1/3）
+[BLE] 正在自动重连 · midea（1/3）
+[BLE] 自动重连成功 · midea
+[BLE] ATT 协商 · 最大写入 20 字节（withResponse 512）
+[BLE] 断开连接中… · BLEToolkit-Server
+[BLE] 断开连接中… · midea
+[BLE] 已断开连接 · BLEToolkit-Server
+[BLE] 已断开连接 · midea
+[UISMOKE] UIS-18 result=PASS detail="connected=["BLEToolkit-Server", "midea"] n=2 uiConsistent=true reconnect=backoff-log-ok outcome=reconnected"
+[BLE] 连接 BLEToolkit-Server · 暂存路由上下文
+[BLE] 连接成功 · BLEToolkit-Server
+[BLE] ATT 协商 · 最大写入 20 字节（withResponse 512）
+[BLE] 服务发现中… · BLEToolkit-Server
+[BLE] 服务发现完成 · BLEToolkit-Server（3 服务）
+[BLE] 服务 自定义服务：2 特征 · BLEToolkit-Server
+[BLE] 服务 自定义服务：7 特征 · BLEToolkit-Server
+[BLE] 服务 自定义服务：3 特征 · BLEToolkit-Server
+[BLE] OTA 选包 · smartble-ota-realchain.bin（2048 字节 · sha256 7c7272c96bd5…）
+[BLE] OTA 包校验通过（manifest：version=9.9.9 size=2048）
+[BLE] OTA 接管会话（WORKFLOW:'ota-manager'）· 期间禁自动重连
+[BLE] [BLEToolkit-Server] 开始监听 版本回读 · 防抖去重 300ms
+[BLE] [BLEToolkit-Server] 入队 w-1 · OTA 控制：op=start size=2048 chunk=180（队列 1/16）
+[BLE] [BLEToolkit-Server] 发送 w-1 · OTA 控制（5s 超时）
+[BLE] 监听已开启 · 版本回读 · BLEToolkit-Server
+[BLE] 连接已断开 · BLEToolkit-Server（The connection has timed out unexpectedly.）
+[BLE] 写队列 abort · 1 项 CANCELLED（会话结束）· BLEToolkit-Server
+[BLE] OTA 释放会话所有权 · 恢复自动重连策略
+[BLE] OTA 失败 · OTA_READY_TIMEOUT：等待设备 ready（30s）超时 — 端到端链路 BLOCKED（P-03 · 固件侧暂未开放），无固件配合时预期停在此态
+[UISMOKE] UIS-18-OTA result=FAIL detail="ready=true phase=failed target=BLEToolkit-Server（真实无线电 OTA 链）"
+[UISMOKE] UIS-19 result=SKIP detail="no SHID fixture advertising 9F1D1001 in this environment"
+[UISMOKE] SUMMARY failures=1 skips=1

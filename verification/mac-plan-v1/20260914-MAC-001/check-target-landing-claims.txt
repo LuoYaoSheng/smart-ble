@@ -1,0 +1,17 @@
+ok   : [TEST-C-010] landing-target.json 可解析
+ok   : [TEST-C-010] 落地页区块 ≥14 且有序（实际 14）
+ok   : [TEST-C-010] CLAIM ≥30（实际 30）
+ok   : [TEST-C-010] 每条 Claim 有陈述/证据前置/测试（缺 ）
+ok   : [TEST-C-010] CLAIM ID 唯一
+ok   : [TEST-C-010] Claim 引用测试存在（坏 ）
+ok   : [TEST-C-010] download_rules.no_fake_download = true
+ok   : [TEST-C-010] download_rules.sha_required = true
+ok   : [TEST-C-010] 缺产物行为 = NOT_RELEASED（不得挂空链接/假下载）
+ok   : [TEST-C-010] 二维码仅官方 + 文本等价
+ok   : [TEST-C-010] VERIFIED 声明必须带 artifact_url+sha256（缺证据 ）
+ok   : [TEST-C-010] 18 号登记全部 Claim（缺 ）
+ok   : [TEST-C-010] WEB-001 文档引用 CLAIM 登记处
+ok   : [TEST-C-010] 目标文档内链为相对路径（违规 ）
+ok   : [TEST-C-010] 生产落地页 APK 直链必须伴随 SHA（APK 链接 0 个，SHA 说明 true）
+
+check-target-landing-claims: PASS（15/15）

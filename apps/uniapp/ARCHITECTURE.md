@@ -2,12 +2,12 @@
 
 ## Overview
 
-SmartBLE UniApp is a cross-platform mobile BLE (Bluetooth Low Energy) debugging tool built with UniApp framework, supporting iOS, Android, and various mini-programs.
+SmartBLE UniApp is a cross-platform mobile BLE (Bluetooth Low Energy) debugging tool built with UniApp (Vue 3 + Pinia), targeting the Android App as the mainline, iOS App as a later goal, and H5 as a degraded preview surface (no real BLE). The WeChat mini-program target was retired on 2026-09-11 by user decision and must not come back.
 
 **Tech Stack:**
-- **Framework**: UniApp (Vue 2 based)
-- **Language**: JavaScript/Vue.js
-- **Platforms**: iOS, Android, WeChat Mini Program, Alipay Mini Program
+- **Framework**: UniApp (Vue 3 based, Composition API + Pinia store)
+- **Language**: JavaScript / Vue 3 SFC
+- **Platforms**: Android App (mainline), iOS App (later), H5 (degraded preview; BLE unsupported)
 - **BLE API**: uni.openBluetoothAdapter, uni.getBLEDeviceCharacters, etc.
 
 ---
@@ -15,20 +15,20 @@ SmartBLE UniApp is a cross-platform mobile BLE (Bluetooth Low Energy) debugging 
 ## Feature List
 
 ### Core Features
-| Feature | iOS | Android | Mini Program | Description |
+| Feature | iOS | Android | H5 | Description |
 |---------|-----|---------|--------------|-------------|
-| BLE Initialization | ✅ | ✅ | ✅ | Initialize BLE adapter |
-| Device Scanning | ✅ | ✅ | ✅ | Scan for nearby BLE devices |
-| Device Filtering | ✅ | ✅ | ✅ | Filter by RSSI, name prefix, hide unnamed |
-| Device Connection | ✅ | ✅ | ✅ | Connect to discovered peripherals |
-| Service Discovery | ✅ | ✅ | ✅ | Discover services and characteristics |
-| Characteristic Read | ✅ | ✅ | ✅ | Read values from characteristics |
-| Characteristic Write | ✅ | ✅ | ✅ | Write values to characteristics |
-| Characteristic Notify | ✅ | ✅ | ✅ | Enable/disable notifications |
-| Advertising Data | ✅ | ✅ | ✅ | View device advertising data |
-| BLE Broadcasting | ✅ | ✅ | ❌ | Advertise as BLE peripheral (native plugin) |
-| Log Panel | ✅ | ✅ | ✅ | View operation logs |
-| About Page | ✅ | ✅ | ✅ | App information and version |
+| BLE Initialization | ✅ | ✅ | ❌ (H5 preview only) | Initialize BLE adapter |
+| Device Scanning | ✅ | ✅ | ❌ (H5 preview only) | Scan for nearby BLE devices |
+| Device Filtering | ✅ | ✅ | ❌ (H5 preview only) | Filter by RSSI, name prefix, hide unnamed |
+| Device Connection | ✅ | ✅ | ❌ (H5 preview only) | Connect to discovered peripherals |
+| Service Discovery | ✅ | ✅ | ❌ (H5 preview only) | Discover services and characteristics |
+| Characteristic Read | ✅ | ✅ | ❌ (H5 preview only) | Read values from characteristics |
+| Characteristic Write | ✅ | ✅ | ❌ (H5 preview only) | Write values to characteristics |
+| Characteristic Notify | ✅ | ✅ | ❌ (H5 preview only) | Enable/disable notifications |
+| Advertising Data | ✅ | ✅ | ❌ (H5 preview only) | View device advertising data |
+| BLE Broadcasting | ✅ | ✅ | ❌ (H5 preview only) | Advertise as BLE peripheral (native plugin) |
+| Log Panel | ✅ | ✅ | ❌ (H5 preview only) | View operation logs |
+| About Page | ✅ | ✅ | ❌ (H5 preview only) | App information and version |
 
 ### UI Features
 - Real-time device list with signal strength indicators
@@ -439,11 +439,9 @@ ab2str(buffer) → String
 - Supports larger MTU (can request up to 517)
 - Background scanning more flexible
 
-### WeChat Mini Program
-- Requires ` bluetooth` permission in app.json
-- Limited to 10 low-energy devices
-- Auto-disconnect after 1 minute without activity
-- Some characterstic operations may be restricted
+### WeChat Mini Program (RETIRED 2026-09-11)
+- The mini-program runtime target was retired by user decision; build scripts, the wx-peripheral module and device gates are removed.
+- This section is kept as historical reference only and must not be treated as an active platform.
 
 ---
 

@@ -1,0 +1,19 @@
+[PASS] ping
+[PASS] tab0 scanStatus=待开始扫描
+[PASS] tab0 scanBtn=开始扫描
+[PASS] tab0 devices empty
+[PASS] tabsVisible
+[PASS] connectedCount=0
+[PASS] broadcastTip 保持降级口径
+[PASS] about 版本非空
+[PASS] about rows 三键齐
+[PASS] about 当前环境口径
+[PASS] tab1 reachable
+[PASS] tab2 reachable
+[PASS] tab3 reachable
+[PASS] filter_toggle open
+[PASS] filter_set 回读
+[PASS] filter_toggle close
+[PASS] filter 复位
+
+ALL GREEN

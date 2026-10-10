@@ -1,0 +1,261 @@
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x8 (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce2810,len:0x15a0
+load:0x403c8700,len:0x4
+load:0x403c8704,len:0xd20
+load:0x403cb700,len:0x2ee4
+entry 0x403c8928
+I (27) boot: ESP-IDF v5.4-dirty 2nd stage bootloader
+I (27) boot: compile time Sep 18 2026 11:54:13
+I (27) boot: Multicore bootloader
+I (27) boot: chip revision: v0.2
+I (30) boot: efuse block revision: v1.3
+I (34) boot.esp32s3: Boot SPI Speed : 80MHz
+I (38) boot.esp32s3: SPI Mode       : DIO
+I (41) boot.esp32s3: SPI Flash Size : 8MB
+I (45) boot: Enabling RNG early entropy source...
+I (50) boot: Partition Table:
+I (52) boot: ## Label            Usage          Type ST Offset   Length
+I (59) boot:  0 nvs              WiFi data        01 02 00009000 00008000
+I (65) boot:  1 otadata          OTA data         01 00 00011000 00002000
+I (72) boot:  2 phy_init         RF data          01 01 00013000 00001000
+I (78) boot:  3 factory          factory app      00 00 00020000 00180000
+I (85) boot:  4 ota_0            OTA app          00 10 001a0000 00180000
+I (91) boot:  5 ota_1            OTA app          00 11 00320000 00180000
+I (98) boot: End of partition table
+I (101) boot: Defaulting to factory image
+I (105) esp_image: segment 0: paddr=00020020 vaddr=3c0d0020 size=27574h (161140) map
+I (141) esp_image: segment 1: paddr=0004759c vaddr=3fc9e200 size=05950h ( 22864) load
+I (146) esp_image: segment 2: paddr=0004cef4 vaddr=40374000 size=03124h ( 12580) load
+I (149) esp_image: segment 3: paddr=00050020 vaddr=42000020 size=c2c08h (797704) map
+I (293) esp_image: segment 4: paddr=00112c30 vaddr=40377124 size=17028h ( 94248) load
+I (313) esp_image: segment 5: paddr=00129c60 vaddr=600fe100 size=0001ch (    28) load
+I (324) boot: Loaded app from partition at offset 0x20000
+I (324) boot: Disabling RNG early entropy source...
+I (334) octal_psram: vendor id    : 0x0d (AP)
+I (334) octal_psram: dev id       : 0x02 (generation 3)
+I (334) octal_psram: density      : 0x03 (64 Mbit)
+I (336) octal_psram: good-die     : 0x01 (Pass)
+I (341) octal_psram: Latency      : 0x01 (Fixed)
+I (345) octal_psram: VCC          : 0x01 (3V)
+I (349) octal_psram: SRF          : 0x01 (Fast Refresh)
+I (354) octal_psram: BurstType    : 0x01 (Hybrid Wrap)
+I (359) octal_psram: BurstLen     : 0x01 (32 Byte)
+I (363) octal_psram: Readlatency  : 0x02 (10 cycles@Fixed)
+I (369) octal_psram: DriveStrength: 0x00 (1/1)
+I (373) MSPI Timing: PSRAM timing tuning index: 5
+I (377) esp_psram: Found 8MB PSRAM device
+I (381) esp_psram: Speed: 80MHz
+I (384) cpu_start: Multicore app
+I (810) esp_psram: SPI SRAM memory test OK
+I (818) cpu_start: Pro cpu start user code
+I (818) cpu_start: cpu freq: 160000000 Hz
+I (818) app_init: Application information:
+I (818) app_init: Project name:     smart-hid-firmware
+I (823) app_init: App version:      1.2.0
+I (827) app_init: Compile time:     Sep 27 2026 11:43:12
+I (832) app_init: ELF file SHA256:  1f6a86a3b...
+I (836) app_init: ESP-IDF:          v5.4-dirty
+I (840) efuse_init: Min chip rev:     v0.0
+I (844) efuse_init: Max chip rev:     v0.99 
+I (848) efuse_init: Chip rev:         v0.2
+I (852) heap_init: Initializing. RAM available for dynamic allocation:
+I (858) heap_init: At 3FCB02D8 len 00039438 (229 KiB): RAM
+I (864) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM
+I (869) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM
+I (874) heap_init: At 600FE11C len 00001ECC (7 KiB): RTCRAM
+I (879) esp_psram: Adding pool of 8192K of PSRAM memory to heap allocator
+I (887) spi_flash: detected chip: generic
+I (889) spi_flash: flash io: dio
+W (892) spi_flash: Detected size(16384k) larger than the size in the binary image header(8192k). Using the size in the binary image header.
+I (905) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+I (911) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+I (918) coexist: coex firmware version: 49a8cdc
+I (929) coexist: coexist rom version e7ae62f
+I (930) main_task: Started on CPU0
+I (931) esp_psram: Reserving pool of 32K of internal memory for DMA/internal allocations
+I (937) main_task: Calling app_main()
+I (940) main: === Smart HID Firmware boot ===
+I (967) device_identity: device_id loaded from NVS: HID-00000001
+I (968) device_identity: boot_id generated: B-725C07
+I (968) main: device_id=HID-00000001 boot_id=B-725C07 firmware=1.2.0
+I (974) led_manager: led state -> WIFI_CONNECTING
+I (977) led_manager: led_manager started (type=ws2812 gpio=48 brightness=32)
+I (985) tusb_desc: 
+┌─────────────────────────────────┐
+│  USB Device Descriptor Summary  │
+├───────────────────┬─────────────┤
+│bDeviceClass       │ 0           │
+├───────────────────┼─────────────┤
+│bDeviceSubClass    │ 0           │
+├───────────────────┼─────────────┤
+│bDeviceProtocol    │ 0           │
+├───────────────────┼─────────────┤
+│bMaxPacketSize0    │ 64          │
+├───────────────────┼─────────────┤
+│idVendor           │ 0x303a      │
+├───────────────────┼─────────────┤
+│idProduct          │ 0x4001      │
+├───────────────────┼─────────────┤
+│bcdDevice          │ 0x100       │
+├───────────────────┼─────────────┤
+│iManufacturer      │ 0x1         │
+├───────────────────┼─────────────┤
+│iProduct           │ 0x2         │
+├───────────────────┼─────────────┤
+│iSerialNumber      │ 0x3         │
+├───────────────────┼─────────────┤
+│bNumConfigurations │ 0x1         │
+└───────────────────┴─────────────┘
+I (1152) TinyUSB: TinyUSB Driver installed on port 0
+I (1156) hid_engine: tinyusb_driver_install ok (composite HID: keyboard+mouse)
+I (1163) hid_engine: hid_engine initialized
+I (1167) command_engine: command_engine started: queue=32 dedup=256
+I (1173) runtime_config: runtime config ready (ns=rt_active/rt_pending schema=1)
+I (1181) pp: pp rom version: e7ae62f
+I (1183) net80211: net80211 rom version: e7ae62f
+I (1189) wifi:wifi driver task: 3fcda394, prio:23, stack:6656, core=0
+I (1204) wifi:wifi firmware version: 48ea317a7
+I (1204) wifi:wifi certification version: v7.0
+I (1204) wifi:config NVS flash: enabled
+I (1205) wifi:config nano formatting: disabled
+I (1210) wifi:Init data frame dynamic rx buffer num: 32
+I (1215) wifi:Init static rx mgmt buffer num: 5
+I (1219) wifi:Init management short buffer num: 32
+I (1223) wifi:Init dynamic tx buffer num: 32
+I (1227) wifi:Init static tx FG buffer num: 2
+I (1232) wifi:Init static rx buffer size: 1600
+I (1236) wifi:Init static rx buffer num: 10
+I (1239) wifi:Init dynamic rx buffer num: 32
+I (1244) wifi_init: rx ba win: 6
+I (1246) wifi_init: accept mbox: 6
+I (1250) wifi_init: tcpip mbox: 32
+I (1253) wifi_init: udp mbox: 6
+I (1256) wifi_init: tcp mbox: 6
+I (1258) wifi_init: tcp tx win: 5760
+I (1262) wifi_init: tcp rx win: 5760
+I (1265) wifi_init: tcp mss: 1440
+I (1268) wifi_init: WiFi IRAM OP enabled
+I (1272) wifi_init: WiFi RX IRAM OP enabled
+I (1276) phy_init: phy_version 680,a6008b2,Jun  4 2024,16:41:10
+I (1316) wifi:mode : sta (10:b4:1d:cd:23:8c)
+I (1317) wifi:enable tsf
+I (1319) wifi:(2.4G)set country: cc=CN  schan=1 nchan=13 policy=1
+
+I (1321) wifi:Set ps type: 0, coexist: 0
+
+I (1322) wifi_manager: wifi STA started (runtime config mode)
+I (1327) main: [prov] state=unprovisioned step=- err=none
+W (1333) main: DEV STATIC config active (NOT production; never written to NVS)
+I (1339) main: boot: normal path (src=2)
+I (1343) main: [prov] state=connecting_wifi step=connecting_wifi err=none
+W (1351) wifi:Password length matches WPA2 standards, authmode threshold changes from OPEN to WPA2
+W (1359) wifi_manager: connecting to ssid=HJWY ...
+I (1359) status_manager: status_manager started
+I (1367) main: === Smart HID Firmware boot complete (state machine running) ===
+I (1374) main_task: Returned from app_main()
+I (1384) wifi:new:<1,0>, old:<1,0>, ap:<255,255>, sta:<1,0>, prof:1, snd_ch_cfg:0x0
+I (1385) wifi:state: init -> auth (0xb0)
+I (1600) wifi:state: auth -> assoc (0x0)
+I (1674) wifi:state: assoc -> run (0x10)
+I (1766) wifi:<ba-add>idx:0 (ifx:0, 4c:ef:56:0d:45:fd), tid:6, ssn:1, winSize:64
+I (1969) wifi:connected with HJWY, aid = 1, channel 1, BW20, bssid = 4c:ef:56:0d:45:fd
+I (1969) wifi:security: WPA2-PSK, phy: bgn, rssi: -64
+I (1973) wifi:pm start, type: 0
+
+I (1974) wifi:dp: 1, bi: 102400, li: 3, scale listen interval from 307200 us to 307200 us
+I (1982) wifi:set rx beacon pti, rx_bcn_pti: 14, bcn_timeout: 25000, mt_pti: 14, mt_time: 10000
+I (1997) wifi:AP's beacon interval = 102400 us, DTIM period = 1
+I (2256) wifi:<ba-add>idx:1 (ifx:0, 4c:ef:56:0d:45:fd), tid:0, ssn:0, winSize:64
+I (3497) wifi:<ba-del>idx:1, tid:0
+I (4092) wifi:<ba-add>idx:1 (ifx:0, 4c:ef:56:0d:45:fd), tid:0, ssn:1, winSize:64
+I (4346) esp_netif_handlers: sta ip: 192.168.23.48, mask: 255.255.252.0, gw: 192.168.20.1
+I (4346) wifi_manager: got ip: 192.168.23.48
+I (4347) main: [prov] state=mqtt_connecting step=mqtt_connecting err=none
+I (4354) mqtt_manager: runtime mqtt config set: host=192.168.1.100 port=17891 user=-
+I (4382) led_manager: led state -> MQTT_CONNECTING
+I (11359) status_manager: status published online=1 usb_hid_ready=0
+E (14366) esp-tls: [sock=54] select() timeout
+E (14367) transport_base: Failed to open a new connection: 32774
+E (14367) mqtt_client: Error transport connect
+E (14369) mqtt_manager: MQTT_EVENT_ERROR
+W (14373) mqtt_manager: disconnected from broker → release_all
+I (14378) hid_engine: release_all done
+I (19362) main: [prov] state=recovery step=mqtt_invalid err=mqtt_invalid
+I (19362) BLE_INIT: BT controller compile version [d752dea]
+I (19364) BLE_INIT: Bluetooth MAC: 10:b4:1d:cd:23:8e
+I (19369) wifi:Coexist!!! Wi-Fi station would only keep waked when available
+
+I (19374) ble_provision: ble provision service initialized (SHID-00000001)
+I (19378) NimBLE: GAP procedure initiated: stop advertising.
+
+I (19388) NimBLE: GAP procedure initiated: advertise; 
+I (19391) NimBLE: disc_mode=2
+I (19394) NimBLE:  adv_channel_map=0 own_addr_type=0 adv_filter_policy=0 adv_itvl_min=0 adv_itvl_max=0
+I (19403) NimBLE: 
+
+I (19406) ble_provision: provisioning advertising as SHID-00000001
+I (21359) status_manager: status published online=1 usb_hid_ready=0
+I (25742) wifi:state: run -> init (0x22c0)
+I (25745) wifi:pm stop, total sleep time: 1461465 us / 23771235 us
+
+I (25746) wifi:<ba-del>idx:1, tid:0
+I (25746) wifi:<ba-del>idx:0, tid:6
+I (25748) wifi:new:<1,0>, old:<1,0>, ap:<255,255>, sta:<1,0>, prof:1, snd_ch_cfg:0x0
+W (25757) wifi_manager: disconnected reason=34 → release_all + retry
+E (25757) esp-tls: [sock=54] delayed connect error: Software caused connection abort
+I (25761) hid_engine: release_all done
+E (25769) transport_base: Failed to open a new connection: 32772
+E (25778) mqtt_client: Error transport connect
+E (25782) mqtt_manager: MQTT_EVENT_ERROR
+I (25785) led_manager: led state -> WIFI_CONNECTING
+W (25786) mqtt_manager: disconnected from broker → release_all
+I (25796) hid_engine: release_all done
+I (25858) wifi:new:<1,0>, old:<1,0>, ap:<255,255>, sta:<1,0>, prof:1, snd_ch_cfg:0x0
+I (25859) wifi:state: init -> auth (0xb0)
+I (25869) wifi:state: auth -> assoc (0x0)
+I (25879) wifi:state: assoc -> run (0x10)
+I (26071) wifi:<ba-add>idx:0 (ifx:0, 4c:ef:56:0d:45:fd), tid:6, ssn:0, winSize:64
+I (26684) wifi:connected with HJWY, aid = 1, channel 1, BW20, bssid = 4c:ef:56:0d:45:fd
+I (26684) wifi:security: WPA2-PSK, phy: bgn, rssi: -59
+I (26688) wifi:pm start, type: 0
+
+I (26689) wifi:set rx beacon pti, rx_bcn_pti: 14, bcn_timeout: 25000, mt_pti: 14, mt_time: 10000
+I (26734) wifi:<ba-add>idx:1 (ifx:0, 4c:ef:56:0d:45:fd), tid:0, ssn:0, winSize:64
+I (26751) wifi:<ba-del>idx:1, tid:0
+I (26778) wifi:AP's beacon interval = 102400 us, DTIM period = 1
+I (26893) wifi:<ba-add>idx:1 (ifx:0, 4c:ef:56:0d:45:fd), tid:0, ssn:1, winSize:64
+E (28800) esp-tls: [sock=54] connect() error: Host is unreachable
+E (28801) transport_base: Failed to open a new connection: 32772
+E (28801) mqtt_client: Error transport connect
+E (28805) mqtt_manager: MQTT_EVENT_ERROR
+W (28809) mqtt_manager: disconnected from broker → release_all
+I (28814) hid_engine: release_all done
+I (29248) wifi:<ba-del>idx:1, tid:0
+I (29277) wifi:<ba-add>idx:1 (ifx:0, 4c:ef:56:0d:45:fd), tid:0, ssn:2, winSize:64
+I (29394) esp_netif_handlers: sta ip: 192.168.23.48, mask: 255.255.252.0, gw: 192.168.20.1
+I (29394) wifi_manager: got ip: 192.168.23.48
+I (29442) led_manager: led state -> MQTT_CONNECTING
+I (29657) wifi:<ba-del>idx:1, tid:0
+I (29769) wifi:<ba-add>idx:1 (ifx:0, 4c:ef:56:0d:45:fd), tid:0, ssn:3, winSize:64
+I (30332) wifi:<ba-del>idx:1, tid:0
+I (30455) wifi:<ba-add>idx:1 (ifx:0, 4c:ef:56:0d:45:fd), tid:0, ssn:4, winSize:64
+I (31359) status_manager: status published online=1 usb_hid_ready=0
+I (32049) wifi:<ba-del>idx:1, tid:0
+I (32159) wifi:<ba-add>idx:1 (ifx:0, 4c:ef:56:0d:45:fd), tid:0, ssn:6, winSize:64
+I (32441) wifi:<ba-del>idx:1, tid:0
+I (32677) wifi:<ba-add>idx:1 (ifx:0, 4c:ef:56:0d:45:fd), tid:0, ssn:7, winSize:64
+I (36343) wifi:<ba-del>idx:0, tid:6
+I (36593) wifi:<ba-add>idx:0 (ifx:0, 4c:ef:56:0d:45:fd), tid:6, ssn:2, winSize:64
+I (39795) wifi:<ba-del>idx:0, tid:6
+I (39838) wifi:<ba-add>idx:0 (ifx:0, 4c:ef:56:0d:45:fd), tid:6, ssn:4, winSize:64
+I (41359) status_manager: status published online=1 usb_hid_ready=0
+E (41821) esp-tls: [sock=54] select() timeout
+E (41822) transport_base: Failed to open a new connection: 32774
+E (41822) mqtt_client: Error transport connect
+E (41825) mqtt_manager: MQTT_EVENT_ERROR
+W (41828) mqtt_manager: disconnected from broker → release_all
+I (41834) hid_engine: release_all done

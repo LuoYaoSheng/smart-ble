@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Smart BLE</string>
+    <string name="app_name">BLE Toolkit+</string>
 
     <!-- Device List -->
     <string name="scan_devices">扫描设备</string>

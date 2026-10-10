@@ -1,5 +1,7 @@
 # 09 微信硬件测试矩阵（TEST-W-001..010 / E5）
 
+> **⚠️ 已归档（2026-09-14 MAC-001）**：微信小程序运行目标已于 2026-09-11 经用户裁决整体退役。本文仅作历史证据保留，不构成活跃测试目标；对应 TEST-W 套件已从 `contracts/target/test-traceability.json` 移除。
+
 ```yaml
 status: APPROVED
 document_version: 1.0

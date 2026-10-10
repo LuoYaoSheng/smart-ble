@@ -47,7 +47,7 @@ flowchart LR
 | PAGE006 | ←PAGE001 / ←PAGE007 点卡 / ←PAGE003「高级 BLE 调试」· navigateTo | navigateBack（系统返回栏）；断开后 P007 列表同步 |
 | PAGE007 | tabBar · switchTab | →PAGE006 / Profile 路由 navigateTo（buildConnectedDeviceOpenUrl） |
 | PAGE008 | tabBar · switchTab | 无页面出口（onHide/onUnload 自动停广播/释放外围模式） |
-| PAGE009 | tabBar · switchTab | →PAGE010 navigateTo；推广卡 navigateToMiniProgram；外链复制降级 |
+| PAGE009 | tabBar · switchTab | →PAGE010 navigateTo；外链复制降级（推广卡 navigateToMiniProgram 出口随 F028 2026-09-10 移除） |
 | PAGE010 | ←PAGE009 · navigateTo | navigateBack |
 
 ## 3. 路由参数约定（现状事实）

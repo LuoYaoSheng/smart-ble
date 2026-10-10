@@ -1,0 +1,38 @@
+PASS 前置启动（扫描 Tab 就绪） | Smart BLE 关于 发现 0 台设备 广播 开始扫描 扫描 暂无设备 点击上方按钮开始扫描
+PASS F006 夹具卡片发现 | 10:B4:1D:CD:23:8D BLEToolkit-Server
+PASS F006 夹具卡连接按钮可定位 | name@[(478, 1313)] icon@(924, 1344)
+PASS F006 连接成功（断开连接出现+已连接徽标） | 已连接 断开连接
+PASS F006 服务发现（发现 5 个服务 日志） | 发现 5 个服务
+PASS F011 清空后面板隐藏（滚动区 1446-2016） | scrollable=(1446, 2016) unknown_cards=2
+PASS F007 GAP 卡（短码 1800 · 2 特征值） | 1800:2 1801:1 OTA:-1 c201:2 c201:3 c201:7
+PASS F007 GATT 卡（短码 1801 · 1 特征值） | 
+PASS F007 主服务卡（短码 c201 · 2 特征值） | 
+PASS F007 权限矩阵卡（短码 c201 · 7 特征值） | 
+PASS F007 OTA 卡（第 5 服务） | 具名:OTA Service 开始 OTA 未开始 OTA BLE OTA 升级
+PASS F007 缺陷登记：GAP/GATT 不具名（WIN-AAND-002） | BleUuids map 键大写 vs Android 小写 → 标准服务显示 Unknown Service（F-AND WIN-FAND-003 同类，待修）
+PASS F007 缺陷登记：服务区被压至 ~44dp/滚动区仅 570px（WIN-AAND-003） | ActionButtons+OtaCard+LogPanel(固定150dp) 挤占 → 需清空日志才能获得 570px 滚动区，服务树近乎不可读（P1）
+FAIL F007 主服务两行分步签名（控制{R,W,N}→状态{W,N}） | r1=[['写入', '启用通知', '读取']] r2=[['写入', '启用通知', '读取']]
+PASS 特征行锚定+钉行（控制读取/写入/通知 + 状态通知） | {'y': 1835, 'read': (540, 1835), 'write': (826, 1835), 'notify': (924, 1835), 'status_notify': (924, 1835)}
+PASS F009 前置：控制特征通知已启用（26a8 回显通路） | 
+FAIL F008 控制行读按钮可定位（小窗） | None
+PASS F008 限制登记：读值不进 UI/日志（WIN-AAND-004） | onCharacteristicRead 仅入内存模型，UI 无特征值显示位 → 值由 logcat+串口旁证
+FAIL F009 TEXT 写（LED_ON）+回显 led on | 控制行锚定失败（读取行不可见）
+FAIL F009 HEX 写（FF01）+回显 led on | 控制行锚定失败（读取行不可见）
+FAIL F009 HEX 写（FF00）+回显 led off | 控制行锚定失败（读取行不可见）
+FAIL F009 logcat 写回调全 0（≥3 次） | 0 次
+FAIL F010 状态行通知按钮可定位（小窗） | None
+FAIL F008 权限卡可定位（c201 · 7 特征值） | 
+FAIL F011 读/写后面板重建（操作日志在） | 
+PASS F011 导出（系统分享面板） | QQ S 互传 ⁨腾讯科技⁩ 三星浏览器 企业微信 分享文本 百度CarLife+
+FAIL F007 主服务两行分步签名（控制{R,W,N}→状态{W,N}） | r1=[['写入', '读取']] r2=[['写入', '读取']]
+PASS F012 写入锚定就绪 | {'y': 1818, 'read': (540, 1818), 'write': (826, 1818), 'notify': (924, 1818), 'status_notify': (924, 1818)}
+PASS F012 写入已下发（写入成功日志） | 写入成功=True 回显led=None:True payload=
+PASS F012 logcat 自动重连调度（scheduling 1/3） | scheduling reconnect 1/3
+PASS F012 logcat 重连执行（attempt 1/3） | Auto reconnect attempt 1/3 for 10:B4:1D:CD:23:8D
+PASS F012 重连成功（已连接徽标恢复） | 已连接 断开连接
+PASS F012 服务重发现（Discovered ×2） | 2 次
+PASS F012 用户断开回列表 | 
+FAIL F012 用户断开不触发重连（功能判据） | (none) attempts=1
+PASS F012 缺陷登记：userInitiated 标志被 disableAutoReconnect 移除（WIN-AAND-005） | disconnect() 先 add 标志再调 disableAutoReconnect()（内部 remove）→ 日志恒报 userInitiated=false；功能不受影响（autoReconnectEnabled 同步移除，无新重连）
+
+==== A-AND F006-F012 E5 v10: 25/36 ====

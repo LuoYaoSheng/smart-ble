@@ -52,9 +52,9 @@
 | PermissionPort | checkPermission / requestPermission / subscribePermissionState / openAppSettings | permissionKey → [PermissionState](PERMISSION.md) §2；`{}` → ok | PermissionStateChanged | F002/F015/F020 | denied→BLE_002（PERMISSION §5）；unsupported≠权限 |
 | QrScanPort | scanCode | `{}` → `{content}` \| `{outcome:'cancelled'\|'denied'\|'failed'}` | — | F020（P02-04） | 三分支分类提示（取消不算错误，ERROR_CODE §5） |
 | SharePort | share / showShareMenu | options → result | — | F029（P09-03） | 失败降级复制（ClipboardPort 协作） |
-| ClipboardPort | copyText | text → ok/fail | — | F004/F011/F027/F028（复制类） | 失败 toast「复制失败」；敏感字段禁止进入（S-4） |
+| ClipboardPort | copyText | text → ok/fail | — | F004/F011/F027（复制类） | 失败 toast「复制失败」；敏感字段禁止进入（S-4） |
 | FilePickerPort | pickFile | `{extension:'bin'}` → file \| null(取消) | — | F025（P06-12；一次性读入，STORAGE_POLICY §5.3） | 取消=cancelled 非错误 |
-| ExternalNavigationPort | openExternalUrl / openMiniProgram | url / appId(+path) → ok | — | F027/F028（P09-01/P09-04） | 未配置 appId→toast；失败→modal 重试（PAGE_SPEC §9） |
+| ExternalNavigationPort | openExternalUrl | url → ok | — | F027（P09-01） | openMiniProgram 随 F028 移除（2026-09-10） |
 | DeviceInfoPort | getDeviceInfo / getRuntimeVersion | `{}` → 宿主信息(平台/osName/机型) / 版本真值 | — | wxhost 宿主判定（F002/F014 devtools 拦截）/ F027 版本三态 | 获取失败→unknown 三字段（PAGE_SPEC §9） |
 | LifecyclePort | subscribeLifecycle | listener → unsubscribe | LifecycleChanged | BR-06 全部隐式动作（P001 停扫/P008 停广播/P002 清敏感/P005/P006 清理） | — |
 
@@ -218,7 +218,7 @@ CommandResult<T> = {
 
 - 全部公共方法（§5–§12，共 37 个）均可追溯：F 编号 + ACT 编号（见各表第二列；「—」表示无页面动作的技术注册，如 registerProfile 代码层注册）。
 - **technical-only 方法登记（含存在理由）**：`dispose`（§5）——生命周期对称与防泄漏（initialize 的逆操作），无产品行为、无页面动作。其余 subscribe\* / get\* 均绑定 F/ACT。
-- Platform Ports（§2）支撑的页面动作（扫码 P02-04 / 分享 P09-03 / 复制 P01-08·P06-03·P10-01·P09-01 / 选包 P06-12 / 推广 P09-04 / 设置跳转 P01-01 权限行）在 API_ACTION_MATRIX §3 有 ACT 编号，本文 §2 逐行对应。
+- Platform Ports（§2）支撑的页面动作（扫码 P02-04 / 分享 P09-03 / 复制 P01-08·P06-03·P10-01·P09-01 / 选包 P06-12 / 设置跳转 P01-01 权限行；推广 P09-04 随 F028 于 2026-09-10 移除）在 API_ACTION_MATRIX §3 有 ACT 编号，本文 §2 逐行对应。
 
 ## 18. 冻结校验
 

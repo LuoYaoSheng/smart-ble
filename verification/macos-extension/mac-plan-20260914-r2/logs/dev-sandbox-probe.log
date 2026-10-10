@@ -1,0 +1,5 @@
+[APP] static main entered
+[APP] applicationDidFinishLaunching
+[SANDBOX-PROBE] home=/Users/luoyaosheng
+[SANDBOX-PROBE] write-outside-container=ALLOWED
+[SANDBOX-PROBE] sandbox=OFF (entitlement 未生效)

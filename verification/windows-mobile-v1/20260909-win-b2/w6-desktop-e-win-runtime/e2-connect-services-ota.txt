@@ -1,0 +1,72 @@
+E2 连接→服务树→OTA 入口 E2E + 四缺陷修复（2026-09-10，Windows 主机，E-WIN Electron 1.0.5）
+
+夹具: LightBLE ESP32 (BLEToolkit-Server, 10:b4:1d:cd:23:8d)
+驱动: CDP (--remote-debugging-port=9222, Runtime.evaluate 点击真实 DOM/shadowRoot)
+
+== 发现的缺陷（真机首次连接即触发） ==
+
+D1 [E-WIN 主进程] 服务发现无限风暴
+   症状: 连接后主进程日志以 ~10k 行/秒刷屏（单次会话刷破 100 万行），
+   伴随 index.js:490 反复抛 "Cannot set properties of undefined (setting 'characteristics')"
+   根因(三连):
+   a) 渲染端 renderServices() 内部再调 ble:discoverServices，与主进程 servicesDiscovered
+      事件互喂成闭环（onServicesDiscovered → renderServices → discoverServices → 事件 → …）
+   b) 主进程每轮 peripheral.services.push(service) 向 noble 共享数组重复塞服务
+   c) 主进程无重入保护，并发回调把 services 数组撑长后 servicesData[i] 越界
+   另: 渲染端还读不存在的 result.data 字段（主进程返回 result.services），特征值永不渲染
+
+D2 [E-WIN/T-WIN] OTA 入口按钮从未显示
+   根因: hasOta 用带横线常量 '4FAFC201-...-914D' 与 noble 无横线 UUID 严格相等比较，永不相等
+   （Tauri 侧同病: 静态按钮 style=display:none 永不恢复 + 动态块同样比较失败）
+
+D3 [E-WIN/T-WIN] OTA 按钮点击即抛错
+   根因: 动态创建块 onclick 指向不存在的 'otaDialog' 元素 id（真实 id 为 mainOtaDialog）；
+   Electron 静态 #otaButton 则完全未绑定事件（死按钮）
+
+D4 [E-WIN/T-WIN] OTA STATUS 通知被过滤丢弃 + GATT 操作 UUID 不匹配
+   根因: OtaDialog._onValueChanged/_onNotification 用 (uuid).toLowerCase() !== 带横线常量，
+   通知事件携带无横线 UUID → 全部 return；主进程 read/write/notify 的
+   find(s => s.uuid === serviceUuid) 同样无法匹配带横线入参
+
+== 修复 ==
+
+E-WIN 主进程 (src/main/index.js):
+  + serviceDiscoveryCache: deviceId -> Promise 重入缓存（命中重发快照自愈，断开两路失效）
+  + 循环边界快照 serviceCount（防数组异步增长越界）
+  + peripheral.services 整体引用替换（不再 push 重复服务）
+  + normalizeBleUuid/matchBleUuid: 4 处 service/char 匹配全部规范化（横线/大小写无关）
+  + 读取失败点 [diag] 日志（dump 可用特征值列表，便于现场排障）
+
+E-WIN 渲染端 (public/app.js, index.html):
+  renderServices 改为从 servicesByDevice 缓存渲染（对齐 Tauri 正典），删除 IPC 回环与 result.data 误读
+  静态 #otaButton 绑定 mainOtaDialog.show；默认 display:none，hasOta（规范化比较）时恢复
+
+T-WIN 渲染端 (src/app.js, src/components/OtaDialog.js):
+  renderServices 切静态按钮 + normalizeUuid 比较（删除动态创建块）
+  OtaDialog 通知过滤规范化比较
+  （Rust 侧 to_string() 全程带横线小写、内部自洽，无需改动）
+
+== 复验（修复后全过） ==
+
+V1 服务树（两轮连接一致）:
+  1800 通用访问: 2a00(read) 2a01(read)
+  1801 通用属性: 2a05(indicate)
+  4fafc201-...-914b: beb5483e-...-26a8(read,write,notify) 26a9(write,notify)
+  4fafc201-...-914c: beb5483e-...-26b0..b6 (7 特征, Smart HID 配网域)
+  4fafc201-...-914d: 26c0(read,write)=CTRL 26c1(writeWithoutResponse)=DATA 26c2(read,notify)=STATUS
+  => OTA 冻结契约 R-1/R-2 三件套与固件 ota_server.h 完全一致
+
+V2 OTA 入口: otaButton display=inline-block（914d 在位时），点击 mainOtaDialog 打开成功
+
+V3 特征值读取（带横线 + 无横线两种入参均 success）:
+  CTRL (26c0): 7b 22 74 79 70 65 ... 解码 = {"type":"ota","status":"idle","received":0,"total":0,"firmware_version":"1.0.0"}
+  STATUS (26c2): {"type":"ota","status":"idle"}\x00
+
+V4 完整循环复刻（OTA 弹窗开→关→断开→重连→再读）: 全过，无 [diag] 失败日志
+
+V5 无风暴: 全周期（扫描+两轮连接+读取）主进程日志 ~1000 行（修复前同场景 10 万行/分钟级）
+
+== 结论 ==
+E-WIN 运行时链路（启动/页面/扫描/连接/服务发现/特征值读取/OTA 入口）在 Windows 主机蓝牙
++ LightBLE ESP32 夹具上 E2E 打通；D1-D4 四缺陷已修复并有双线一致性处理。
+OTA 实刷（传输+commit）未在本轮执行（需要固件产物与夹具独占窗口），留待 E3。

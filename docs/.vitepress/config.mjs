@@ -1,59 +1,108 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
-  title: "Smart BLE",
-  description: "Smart BLE PREVIEW：UniApp、微信小程序与 ESP32 协同的 BLE 调试和验证工具。正式产物尚未发布（NOT_RELEASED）。",
+  title: "BLE Toolkit+",
+  description: "BLE Toolkit+（开发预览）：Android、iOS / macOS、桌面与 ESP32 协同的 BLE 调试与验证工具。扫描、连接、读写、广播收进同一条工作流。",
   lang: 'zh-CN',
   base: '/',
   cleanUrls: true,
+  // 暗色从未适配（WEB-001 UNPROVEN）：本轮锁浅色，暗色列入后续轮（设计规格 §7）
+  appearance: false,
+  sitemap: { hostname: 'https://lightble.i2kai.com' },
 
-  // ═══ SEO 与社交元数据（与 PREVIEW 诚实状态一致） ═══
+  // specs/ 文档树用「目录指针/源码指针」链接做溯源（如 [02_product](../02_product/)、
+  // design-tokens.json、app_icons.dart——目录无 index.md 或指向 docs 外的仓库源码）。
+  // 仅豁免目录/源码指针形态，不掩盖指向具体 .md 文件的真实死链。
+  ignoreDeadLinks: [
+    /\/index$/, /\/$/, /^\.\/\.$/,
+    /\.dart$/, /\.py$/, /\.json$/, /\.js$/, /\.vue$/, /\.swift$/, /\.kt$/, /\.md\.js$/,
+    /app-prototype$/, /v1-new$/,
+    // 2026-09-11：specs/09_test 矩阵引用 verification/windows-mobile-v1/*/REPORT（目录指针形态）。
+    // 该目录属 Windows 机专项（双机分工），本仓/CI 暂无此目录；仍属目录指针豁免范畴，.md 真死链不豁免。
+    /windows-mobile-v1\//
+  ],
+
+  // ═══ 双语：root=中文，/en/=英文首页（D5）；语言切换用 VitePress 内置 locale 切换器（nav 不再手写 EN/中文 项）═══
+  locales: {
+    root: {
+      label: '简体中文',
+      lang: 'zh-CN',
+      themeConfig: {
+        nav: [
+          { text: '功能', link: '/#features' },
+          { text: '文档', link: '/product-contract/' },
+          { text: '状态', link: '/status/' }
+        ]
+      }
+    },
+    en: {
+      label: 'English',
+      lang: 'en-US',
+      title: 'BLE Toolkit+',
+      description: 'One toolkit to debug and verify every BLE device. Android, iOS, desktop and ESP32 in one workflow. (Preview)',
+      themeConfig: {
+        nav: [
+          { text: 'Features', link: '/en/#features' },
+          { text: 'Docs (Chinese)', link: '/product-contract/' },
+          { text: 'Status', link: '/status/' }
+        ],
+        sidebar: false
+      }
+    }
+  },
+
+  // ═══ SEO 与社交元数据（与 PREVIEW 诚实状态一致）═══
   head: [
     // Favicon
     ['link', { rel: 'icon', type: 'image/png', href: '/brand/icon.png' }],
     ['link', { rel: 'canonical', href: 'https://lightble.i2kai.com/' }],
 
-    // Canonical & Author
+    // Author & Keywords
     ['meta', { name: 'author', content: 'luoyaosheng' }],
-    ['meta', { name: 'keywords', content: 'Smart BLE,BLE,低功耗蓝牙,UniApp BLE,微信小程序 BLE,ESP32,LightBLE,PREVIEW,NOT_RELEASED' }],
+    ['meta', { name: 'keywords', content: 'BLE Toolkit+,Smart BLE,BLE,低功耗蓝牙,蓝牙调试,UniApp BLE,ESP32,LightBLE' }],
 
     // OpenGraph
     ['meta', { property: 'og:type',        content: 'website' }],
-    ['meta', { property: 'og:site_name',   content: 'Smart BLE' }],
-    ['meta', { property: 'og:title',       content: 'Smart BLE — PREVIEW · UniApp / 微信小程序 / ESP32 BLE 调试工具' }],
-    ['meta', { property: 'og:description', content: '预览阶段产品。正式 APK、小程序码与固件尚未发布（NOT_RELEASED）。请从源码与目标规范了解主线。' }],
+    ['meta', { property: 'og:site_name',   content: 'BLE Toolkit+' }],
+    ['meta', { property: 'og:title',       content: 'BLE Toolkit+ — 一套工具，调通每一台 BLE 设备（开发预览）' }],
+    ['meta', { property: 'og:description', content: '多平台 BLE 调试与验证工具：扫描、连接、读写、订阅、广播与 ESP32 验证，收进同一条工作流。' }],
     ['meta', { property: 'og:image',       content: 'https://lightble.i2kai.com/brand/share.png' }],
     ['meta', { property: 'og:url',         content: 'https://lightble.i2kai.com/' }],
     ['meta', { property: 'og:locale',      content: 'zh_CN' }],
 
     // Twitter Card
     ['meta', { name: 'twitter:card',        content: 'summary_large_image' }],
-    ['meta', { name: 'twitter:title',       content: 'Smart BLE — PREVIEW' }],
-    ['meta', { name: 'twitter:description', content: 'UniApp、微信小程序与 ESP32 协同的 BLE 调试工具。正式产物尚未发布。' }],
+    ['meta', { name: 'twitter:title',       content: 'BLE Toolkit+ — BLE 调试与验证工具（开发预览）' }],
+    ['meta', { name: 'twitter:description', content: '多平台 BLE 调试工具：Android、iOS / macOS、桌面与 ESP32 协同。' }],
     ['meta', { name: 'twitter:image',       content: 'https://lightble.i2kai.com/brand/share.png' }],
 
     // 主题色
     ['meta', { name: 'theme-color', content: '#1B6DFF' }],
+
+    // 结构化数据：诚实标注 prerelease，不标 released 造假（设计规格 §10）
+    ['script', { type: 'application/ld+json' }, JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'SoftwareApplication',
+      name: 'BLE Toolkit+',
+      applicationCategory: 'DeveloperApplication',
+      operatingSystem: 'Android, iOS, macOS, Windows, Linux, ESP32',
+      url: 'https://lightble.i2kai.com/',
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+      description: '跨平台 BLE 调试与验证工具（开发预览阶段）',
+      softwareVersion: '1.0.5-preview'
+    })]
   ],
 
   themeConfig: {
     logo: '/brand/icon.png',
-    
-    // 导航栏
-    nav: [
-      { text: '首页', link: '/' },
-      { text: 'UniApp 产品规范', link: '/product-contract/' },
-      { text: '快速上手', link: '/tutorials/01_introduction_and_setup' },
-      { text: 'API/架构参考', link: '/MASTER_ARCHITECTURE' }
-    ],
 
-    // 侧边树结构正规化大纲
+    // 侧边树结构正规化大纲（文档树不动，中文共享）
     sidebar: [
       {
-        text: '📋 UniApp 第一完整版本（当前正典）',
+        text: '📐 产品规范（整体）',
         collapsed: false,
         items: [
-          { text: '产品契约入口', link: '/product-contract/' },
+          { text: '产品规范总览', link: '/product-contract/' },
           { text: '功能目录', link: '/product-contract/02_FEATURE_CATALOG' },
           { text: '用户流程', link: '/product-contract/03_USER_FLOWS' },
           { text: '页面契约', link: '/product-contract/04_PAGE_CONTRACTS' },
@@ -65,7 +114,7 @@ export default defineConfig({
       {
         text: '📘 第一章：简介与起步 (Introduction)',
         items: [
-          { text: '什么是 Smart BLE?', link: '/tutorials/01_introduction_and_setup' }
+          { text: '什么是 BLE Toolkit+?', link: '/tutorials/01_introduction_and_setup' }
         ]
       },
       {
@@ -78,7 +127,7 @@ export default defineConfig({
         text: '🛠️ 第三章：多端编译与开发指南 (Developer Guide)',
         items: [
           { text: 'Flutter 编译与高精度权限避坑', link: '/tutorials/platforms/flutter' },
-          { text: 'UniApp/微信小程序隐私限制处理', link: '/tutorials/platforms/uniapp' },
+          { text: 'UniApp 隐私限制处理', link: '/tutorials/platforms/uniapp' },
           { text: 'Tauri & Electron 桌面双核实操', link: '/tutorials/platforms/desktop' },
           { text: 'iOS/Android 原生硬核开发通道', link: '/tutorials/platforms/native_mobile' }
         ]
@@ -109,7 +158,7 @@ export default defineConfig({
           { text: '端到端 Mock 模拟联调指导', link: '/E2E_MOCK_INSTRUCTIONS' },
           { text: '发版前回归测试天书', link: '/test-checklist' },
           { text: '开发大盘百问百科 (FAQ)', link: '/BLE_FAQ' },
-          { text: '微信开发特例与隐蔽大坑', link: '/wechat-pitfalls' },
+          { text: '微信开发避坑（历史存档）', link: '/wechat-pitfalls' },
           { text: '社区贡献指北 (Contributing)', link: '/CONTRIBUTING_GUIDE' }
         ]
       }

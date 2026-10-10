@@ -1,0 +1,131 @@
+✔ exit-confirm E-WIN: 主进程拦截 close 并转发渲染层 (3.0564ms)
+✔ exit-confirm E-WIN: preload 暴露双向桥 + 渲染层模态正典文案 (0.6726ms)
+✔ exit-confirm T-WIN: Rust 拦截 CloseRequested + confirm_exit 命令 (0.5701ms)
+✔ exit-confirm T-WIN: 渲染层监听 + 模态文案与 E-WIN 同口径 (1.8717ms)
+✔ exit-confirm: 双线模态防叠层 + 确认旗门（close 二次触发不重复弹） (1.2245ms)
+✔ qr-scan E-WIN: 扫码 sheet 主路径 + 粘贴兜底降级 (1.554ms)
+✔ qr-scan T-WIN: 与 E-WIN 同构镜像 (2.4263ms)
+✔ qr-scan: 摄像头资源回收挂接模态关闭（双线） (2.259ms)
+✔ qr-scan: 摄像头不可用文案给兜底出路（双线同串） (3.8654ms)
+✔ vendor: jsQR.js 双线字节镜像 + 许可与来源注记在位 (6.379ms)
+✔ mirror: device-display-name.js 在两线间逐字节一致 (2.6914ms)
+✔ 链 1: device.name 命中（GAP 名） (0.4494ms)
+✔ 链 2: localName 投影（noble/btleplug 主路径：name 为空时走广播名） (0.3304ms)
+✔ 链 3/4: AD 结构 0x09/0x08 解析 (2.4292ms)
+✔ 链 5: profile 名兜底（Smart HID 接入后主路径） (0.3117ms)
+✔ 链 7: 未命名兜底 = 「未命名 BLE · ID后四位」（不显示 Unknown/未知设备） (0.8081ms)
+✔ attachDeviceDisplayName: 不修改入参、附加投影字段 (0.5177ms)
+✔ T-WIN 线 API 行为与 E-WIN 一致 (1.1624ms)
+✔ mirror: log-redaction.js 在两线间逐字节一致 (4.4144ms)
+✔ 字符串: token/password 键值脱敏为 ***（Smart HID candidate 帧形状） (3.904ms)
+✔ 字符串: Bearer 头脱敏（密文不出现） (0.9487ms)
+✔ 字符串: JSON 整体解析后按键脱敏 (2.7783ms)
+✔ 对象: 敏感键 → ***；保护键（uuid/sha256）不脱敏 (0.8797ms)
+✔ 对象: 循环引用守卫 → [Circular] (0.7111ms)
+✔ 主进程 require 挂载冒烟: globalThis.SmartBLELogRedaction 可用 (1.8035ms)
+✔ T-WIN 线行为与 E-WIN 一致 (0.9213ms)
+✔ mirror: ota-contract.js 在两线间逐字节一致 (6.1505ms)
+✔ mirror: 两线 index.html 均在 OtaDialog 之前引入 ota-contract.js (3.35ms)
+✔ R-2: ready 帧触发 ready (0.9714ms)
+✔ R-2: success + rebooting 触发 success (0.402ms)
+✔ R-2: error 帧（code/detail）触发 error (0.5894ms)
+✔ R-2 回归: "failed" 整值不在旧精确匹配集合 → 子串匹配必须命中 (0.2181ms)
+✔ R-2 回归: "aborted"（固件 abort 通知）必须命中错误类 (0.3491ms)
+✔ R-2: 版本串等无关帧静默忽略（null） (0.3741ms)
+✔ R-2: 文本帧直配同样子串匹配 (0.7619ms)
+✔ R-1: 完整 manifest → 六键契约帧 (2.0322ms)
+✔ R-1: 无 manifest → 省略 target/target_version（不伪造枚举/版本） (0.5226ms)
+✔ R-1: 非枚举 target 不进帧 (0.3205ms)
+✔ R-1: display 不泄露 sha256 全文 (0.3213ms)
+✔ manifest: 契约六字段全过（firmware_version 键） (0.5992ms)
+✔ manifest: legacy "version" 键兼容 (0.5971ms)
+✔ manifest: target 非枚举 → invalid_target (0.3329ms)
+✔ manifest: 非 SemVer → invalid_semver (0.1767ms)
+✔ manifest: size 不符 → size_mismatch；sha 不符 → hash_mismatch (0.2059ms)
+✔ sha256Hex: 已知向量（空串 / abc）与 Swift CryptoKit 同源事实 (20.1493ms)
+✔ hexToBytes/bytesToUtf8: notify 值 hex → 文本 (0.7261ms)
+✔ T-WIN 线 API 行为与 E-WIN 一致 (0.4665ms)
+✔ T-WIN 脚本链共载：重复顶层声明会实例化失败（浏览器同语义） (33.8816ms)
+✔ T-WIN 装载后入口全局可达（app 主脚本确实执行） (11.8442ms)
+✔ T-WIN Smart HID 脚本链挂载（bundle + 桌面服务 attach 目标） (12.5585ms)
+✔ E-WIN 脚本链共载：重复顶层声明会实例化失败（浏览器同语义） (20.5175ms)
+✔ E-WIN 装载后入口全局可达（app 主脚本确实执行） (10.9677ms)
+✔ E-WIN Smart HID 脚本链挂载（bundle + 桌面服务 attach 目标） (8.2171ms)
+✔ 回归锁：T-WIN app.js 不得重新顶层声明 BleUtils 顶层名（实弹缺陷回归） (10.78ms)
+✔ mirror: smart-hid.bundle.js 在两线间逐字节一致 (5.542ms)
+✔ constants: UUID/前缀/协议版本/正则/帧常量与向量文件一致 (0.3703ms)
+✔ qr: 全向量（合法/非法 URL 形状） (2.4699ms)
+✔ candidate: 全向量（键序锁定 JSON） (0.8678ms)
+✔ framingMtu: 全向量 (0.5453ms)
+✔ frames: 全向量（分帧字节级） (1.1293ms)
+✔ profile: UUID 强匹配 / SHID- 前缀弱匹配 / 双无 NONE (0.4097ms)
+✔ status/errorRecovery: 全向量 (0.8777ms)
+✔ T-WIN 线协议行为与 E-WIN 一致（抽样） (1.4747ms)
+✔ mirror: hid-service.js / DeviceCard.js / prototype.css byte-identical across E-WIN & T-WIN (10.8438ms)
+✔ structure: 两线 index.html 同构——P002/P003/P005 三视图 + 脚本序 bundle→hid-service→app (2.5007ms)
+✔ structure: 两线 app.js 均含 U-REC-001 断链独占守卫 + 双入口事件接线 (3.1566ms)
+✔ transport: connect 全链——连接→服务确认→先订阅 STATUS/INFO→读 INFO 验证身份 (165.5178ms)
+✔ transport: 身份验证失败（product 不符）→ 自动断开并抛错 (155.0116ms)
+✔ transport: 配网服务缺失 / 特征缺失 → 明确错误并断开 (0.5449ms)
+✔ transport: UUID 形状自适应——发现结果带大写连字符也能解析并按原样回传 (155.1774ms)
+✔ transport: provisionAndWait——帧序列/间隔/先建 waiter；ready 终态解析 ok (448.4341ms)
+✔ transport: 写帧失败 → waiter 取消且不悬挂 (153.3226ms)
+✔ transport: 意外断链 → 会话失效 + 被动通知 + waiter 拒绝 + ownsDevice 释放 (200.2306ms)
+✔ transport: 取消等待 → waiter 以取消理由拒绝 (370.9594ms)
+✔ transport: diagnose 五项映射（wifi_failed → wifi fail + detail） (153.3268ms)
+✔ transport: P003 会话内存快照 commit/read（零持久化——无任何 storage 调用） (0.4306ms)
+✔ red-line: F023——hid-service.js 全文无 localStorage/sessionStorage/setStorageSync 调用 (0.8505ms)
+✔ derive: 阶段推进向量（state/step 双映射） (0.3538ms)
+✔ derive: 错误态只落对应行、其余保留（base 累加 = uniapp store 就地突变语义） (0.1827ms)
+✔ form: ControlHub 地址解析与格式化（默认端口 17892） (0.8004ms)
+✔ form: buildProvisionFormCandidate → bundle candidate JSON 闭环 (0.3885ms)
+✔ match: 扫描匹配三形状——E-WIN noble / T-WIN btleplug / uniapp (0.2991ms)
+✔ match: 强匹配优先语义——服务 UUID 命中即 STRONG（与名称无关） (0.099ms)
+✔ mirror: version-metadata.js / product.js / generated artifact byte-identical across E-WIN & T-WIN (4.2492ms)
+✔ mirror: 桌面生成产物值 = uniapp 正典产物值 (3.0351ms)
+✔ V1 缺失版本 → dev.unknown（不编造 0.0.0） (0.4699ms)
+✔ V2 release + sha → version+sha (0.2888ms)
+✔ V3 release 无 sha → 裸版本 (0.2085ms)
+✔ V4 preview + sha → version-dev.sha（sha 取 7 位） (0.7228ms)
+✔ V5 preview 无 sha → version-dev.unknown (1.2631ms)
+✖ M1 默认元数据：platforms 四键序 / 限制非空 / preview 1 条 / release 不编造 (2.9756ms)
+✔ M2 空元数据兜底：不抛异常、字段有形 (1.0599ms)
+✔ M3 注入 release 元数据 → releases 一条 VERIFIED；注入不污染全局 (0.9303ms)
+✔ F028 桌面裁撤：两线不再导出 RELATED_MINI_PROGRAMS，产品基础信息保留 (0.6006ms)
+✔ T-WIN 线 API 行为与 E-WIN 一致 (2.7458ms)
+ℹ tests 95
+ℹ suites 0
+ℹ pass 94
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2185.9387
+
+✖ failing tests:
+
+test at tests\desktop\version-metadata.desktop.test.mjs:100:1
+✖ M1 默认元数据：platforms 四键序 / 限制非空 / preview 1 条 / release 不编造 (2.9756ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      'android',
+  -   'wechat',
+      'h5',
+      'ios'
+    ]
+  
+      at TestContext.<anonymous> (file:///E:/project/xf/smart-ble/tests/desktop/version-metadata.desktop.test.mjs:104:10)
+      at Test.runInAsyncScope (node:async_hooks:211:14)
+      at Test.run (node:internal/test_runner/test:980:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:678:18)
+      at Test.postRun (node:internal/test_runner/test:1091:19)
+      at Test.run (node:internal/test_runner/test:1019:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:678:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'android', 'h5', 'ios' ],
+    expected: [ 'android', 'wechat', 'h5', 'ios' ],
+    operator: 'deepStrictEqual'
+  }

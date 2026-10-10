@@ -1,0 +1,40 @@
+Building macOS application...                                   
+ld: warning: search path '/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.VYm3Te/Metal.xctoolchain/usr/lib/swift/macosx' not found
+ld: warning: search path '/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.VYm3Te/Metal.xctoolchain/usr/lib/swift/macosx' not found
+ld: warning: search path '/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.VYm3Te/Metal.xctoolchain/usr/lib/swift/macosx' not found
+ld: warning: search path '/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.VYm3Te/Metal.xctoolchain/usr/lib/swift/macosx' not found
+ld: warning: search path '/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.VYm3Te/Metal.xctoolchain/usr/lib/swift/macosx' not found
+ld: warning: search path '/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.VYm3Te/Metal.xctoolchain/usr/lib/swift/macosx' not found
+ld: warning: search path '/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.VYm3Te/Metal.xctoolchain/usr/lib/swift/macosx' not found
+ld: warning: search path '/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.VYm3Te/Metal.xctoolchain/usr/lib/swift/macosx' not found
+ld: warning: search path '/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.VYm3Te/Metal.xctoolchain/usr/lib/swift/macosx' not found
+ld: warning: search path '/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.VYm3Te/Metal.xctoolchain/usr/lib/swift/macosx' not found
+ld: warning: search path '/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.VYm3Te/Metal.xctoolchain/usr/lib/swift/macosx' not found
+ld: warning: search path '/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.VYm3Te/Metal.xctoolchain/usr/lib/swift/macosx' not found
+1 | #import "Headers/mobile_scanner-umbrella.h"
+2 | #import "Headers/mobile_scanner-Swift.h"
+3 | 
+
+1 warning generated.
+/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/flutter/build/macos/Build/Products/Release/mobile_scanner/mobile_scanner.framework/Headers/mobile_scanner-Swift.h:662:31: warning: 'objc_ownership' only applies to Objective-C object or block pointer types; type here is 'CVPixelBufferRef _Nullable' (aka 'struct __CVBuffer *')
+660 | - (FlutterError * _Nullable)onListenWithArguments:(id _Nullable)arguments eventSink:(FlutterEventSink _Nonnull)events SWIFT_WARN_UNUSED_RESULT;
+661 | - (FlutterError * _Nullable)onCancelWithArguments:(id _Nullable)arguments SWIFT_WARN_UNUSED_RESULT;
+662 | - (CVPixelBufferRef _Nullable __unsafe_unretained)copyPixelBuffer SWIFT_WARN_UNUSED_RESULT;
+    |                               `- warning: 'objc_ownership' only applies to Objective-C object or block pointer types; type here is 'CVPixelBufferRef _Nullable' (aka 'struct __CVBuffer *')
+663 | - (void)captureOutput:(AVCaptureOutput * _Nonnull)output didOutputSampleBuffer:(CMSampleBufferRef _Nonnull)sampleBuffer fromConnection:(AVCaptureConnection * _Nonnull)connection;
+664 | - (void)observeValueForKeyPath:(NSString * _Nullable)keyPath ofObject:(id _Nullable)object change:(NSDictionary<NSKeyValueChangeKey, id> * _Nullable)change context:(void * _Nullable)context;
+1 | #import "Headers/mobile_scanner-umbrella.h"
+2 | #import "Headers/mobile_scanner-Swift.h"
+3 | 
+
+1 warning generated.
+/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/flutter/build/macos/Build/Products/Release/mobile_scanner/mobile_scanner.framework/Headers/mobile_scanner-Swift.h:324:31: warning: 'objc_ownership' only applies to Objective-C object or block pointer types; type here is 'CVPixelBufferRef _Nullable' (aka 'struct __CVBuffer *')
+322 | - (FlutterError * _Nullable)onListenWithArguments:(id _Nullable)arguments eventSink:(FlutterEventSink _Nonnull)events SWIFT_WARN_UNUSED_RESULT;
+323 | - (FlutterError * _Nullable)onCancelWithArguments:(id _Nullable)arguments SWIFT_WARN_UNUSED_RESULT;
+324 | - (CVPixelBufferRef _Nullable __unsafe_unretained)copyPixelBuffer SWIFT_WARN_UNUSED_RESULT;
+    |                               `- warning: 'objc_ownership' only applies to Objective-C object or block pointer types; type here is 'CVPixelBufferRef _Nullable' (aka 'struct __CVBuffer *')
+325 | - (void)captureOutput:(AVCaptureOutput * _Nonnull)output didOutputSampleBuffer:(CMSampleBufferRef _Nonnull)sampleBuffer fromConnection:(AVCaptureConnection * _Nonnull)connection;
+326 | - (void)observeValueForKeyPath:(NSString * _Nullable)keyPath ofObject:(id _Nullable)object change:(NSDictionary<NSKeyValueChangeKey, id> * _Nullable)change context:(void * _Nullable)context;
+ld: warning: search path '/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.VYm3Te/Metal.xctoolchain/usr/lib/swift/macosx' not found
+ld: warning: search path '/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.VYm3Te/Metal.xctoolchain/usr/lib/swift/macosx' not found
+✓ Built build/macos/Build/Products/Release/smart_ble.app (50.0MB)

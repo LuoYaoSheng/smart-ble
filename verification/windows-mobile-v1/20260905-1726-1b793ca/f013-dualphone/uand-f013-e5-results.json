@@ -1,0 +1,111 @@
+{
+  "line": "U-AND",
+  "driver": "v9",
+  "device": "SM-G9910(E5) central + Huawei TAS-AN00 A-AND advertiser(Mate 30 5G) + ESP32 fixture(BLEToolkit-Server)",
+  "hw_adv_mac": null,
+  "total": 15,
+  "passed": 10,
+  "results": [
+    {
+      "name": "启动（扫描 Tab 就绪）",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "外设1 卡片（ESP32 BLEToolkit-Server）",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "外设2 卡片（华为 Mate 30 5G 广播）",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "02-esp32 连接成功（页头身份=BLEToolkit-Server，4FAFC201=有，服务数 5）",
+      "ok": true,
+      "detail": "断开连接 设备连接成功"
+    },
+    {
+      "name": "03-huawei 连接成功（页头身份=Mate 30 5G，4FAFC201=无(面板折叠,观察)，服务数 5）",
+      "ok": true,
+      "detail": "断开连接 设备连接成功"
+    },
+    {
+      "name": "phase4-双设备列表#1 列表 N=2（App 汇总卡数字）",
+      "ok": true,
+      "detail": "实测 N=2"
+    },
+    {
+      "name": "全部断开按钮",
+      "ok": false,
+      "detail": ""
+    },
+    {
+      "name": "两卡名称在列（Mate 30 5G）",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "单断后仅 1 台（无汇总卡∧非空 ⇒ N=1）",
+      "ok": true,
+      "detail": "N=1 断开键=1(观察) empty=False"
+    },
+    {
+      "name": "phase6-a0-bletoolkit 连接成功（页头身份=BLEToolkit-Server，4FAFC201=有，服务数 5）",
+      "ok": true,
+      "detail": "断开连接 设备连接成功"
+    },
+    {
+      "name": "phase6-a0-mate 30 5g 连接成功（页头身份=Mate 30 5G，4FAFC201=无(面板折叠,观察)，服务数 5）",
+      "ok": true,
+      "detail": "断开连接 设备连接成功"
+    },
+    {
+      "name": "phase6#a0 列表 N=2（App 汇总卡数字）",
+      "ok": false,
+      "detail": "实测 N=3 ←出现计划外设备！"
+    },
+    {
+      "name": "phase6#a1 列表 N=2（App 汇总卡数字）",
+      "ok": false,
+      "detail": "实测 N=3 ←出现计划外设备！"
+    },
+    {
+      "name": "重连后恢复 2 台（N=2）",
+      "ok": false,
+      "detail": "实测 N=3"
+    },
+    {
+      "name": "全断前置（重连 N=2）",
+      "ok": false,
+      "detail": ""
+    }
+  ],
+  "link_log": [
+    {
+      "phase": "phase4-双设备列表#1",
+      "n": 2,
+      "empty": false,
+      "all_btn": false
+    },
+    {
+      "phase": "phase5-单断后",
+      "n": 1,
+      "empty": false,
+      "all_btn": false
+    },
+    {
+      "phase": "phase6#a0",
+      "n": 3,
+      "empty": false,
+      "all_btn": true
+    },
+    {
+      "phase": "phase6#a1",
+      "n": 3,
+      "empty": false,
+      "all_btn": true
+    }
+  ]
+}

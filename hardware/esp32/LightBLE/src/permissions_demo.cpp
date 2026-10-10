@@ -3,6 +3,7 @@
 #include <ArduinoJson.h>
 #include <NimBLEDevice.h>
 #include "fixture_config.h"
+#include "ble_value_util.h"
 
 static NimBLECharacteristic* pReadOnly = nullptr;
 static NimBLECharacteristic* pWriteOnly = nullptr;
@@ -20,7 +21,7 @@ class ReadOnlyCallbacks : public NimBLECharacteristicCallbacks {
         doc["timestamp"] = millis();
         String jsonString;
         serializeJson(doc, jsonString);
-        pCharacteristic->setValue(jsonString.c_str());
+        bleSetValue(pCharacteristic, jsonString);
     }
 };
 
@@ -47,7 +48,7 @@ class ReadWriteCallbacks : public NimBLECharacteristicCallbacks {
         doc["timestamp"] = millis();
         String jsonString;
         serializeJson(doc, jsonString);
-        pCharacteristic->setValue(jsonString.c_str());
+        bleSetValue(pCharacteristic, jsonString);
     }
 
     void onWrite(NimBLECharacteristic* pCharacteristic) override {
@@ -63,7 +64,7 @@ class ReadNotifyCallbacks : public NimBLECharacteristicCallbacks {
         doc["timestamp"] = millis();
         String jsonString;
         serializeJson(doc, jsonString);
-        pCharacteristic->setValue(jsonString.c_str());
+        bleSetValue(pCharacteristic, jsonString);
     }
 
     void onSubscribe(NimBLECharacteristic* pCharacteristic, ble_gap_conn_desc* desc, uint16_t subValue) override {
@@ -78,7 +79,7 @@ class WriteNotifyCallbacks : public NimBLECharacteristicCallbacks {
     void onWrite(NimBLECharacteristic* pCharacteristic) override {
         std::string value = pCharacteristic->getValue();
         if (!value.empty()) {
-            pCharacteristic->setValue(value);
+            bleSetValue(pCharacteristic, value);
             pCharacteristic->notify();
         }
     }
@@ -92,13 +93,13 @@ class AllCallbacks : public NimBLECharacteristicCallbacks {
         doc["timestamp"] = millis();
         String jsonString;
         serializeJson(doc, jsonString);
-        pCharacteristic->setValue(jsonString.c_str());
+        bleSetValue(pCharacteristic, jsonString);
     }
 
     void onWrite(NimBLECharacteristic* pCharacteristic) override {
         std::string value = pCharacteristic->getValue();
         if (!value.empty()) {
-            pCharacteristic->setValue(value);
+            bleSetValue(pCharacteristic, value);
             pCharacteristic->notify();
         }
     }

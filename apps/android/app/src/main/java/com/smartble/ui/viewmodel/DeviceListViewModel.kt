@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.sample
 import kotlinx.coroutines.launch
 
 /**
@@ -71,7 +72,13 @@ class DeviceListViewModel(application: Application) : AndroidViewModel(applicati
 
     private fun observeScanResults() {
         viewModelScope.launch {
-            bleManager.scanResults.collect { results ->
+            // 滚动卡顿修复（20260927 用户反馈）：BleManager 每条广播回调都发
+            // 全列表快照（ALL_MATCHES+AGGRESSIVE 下办公环境每秒可达几十条），
+            // 不采样的话每条都在主线程走 map→combine→filter→整表替换→
+            // LazyColumn 全量 diff+可见卡重组，与滚动帧争抢主线程。sample(400)
+            // = throttleLatest：整条管线压到 ≤2.5Hz；首条结果最多晚 400ms
+            // （5s 会话无感），采样 tick 发射最新快照，停止扫描后终态不丢。
+            bleManager.scanResults.sample(SCAN_UI_SAMPLE_MS).collect { results ->
                 _scanResults.value = results.map { it.device }
             }
         }
@@ -147,6 +154,12 @@ class DeviceListViewModel(application: Application) : AndroidViewModel(applicati
         updateUiState()
     }
 
+    fun refreshBluetoothState() {
+        _bluetoothState.value = bleManager.bluetoothState
+        _errorMessage.value = null
+        updateUiState()
+    }
+
     fun clearError() {
         _errorMessage.value = null
     }
@@ -190,6 +203,11 @@ class DeviceListViewModel(application: Application) : AndroidViewModel(applicati
     override fun onCleared() {
         super.onCleared()
         bleManager.release()
+    }
+
+    companion object {
+        // 扫描结果 UI 采样周期（毫秒）——见 observeScanResults 注释
+        private const val SCAN_UI_SAMPLE_MS = 400L
     }
 }
 

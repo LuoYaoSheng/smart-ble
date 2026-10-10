@@ -6,14 +6,18 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import '../../core/ble/ble_manager.dart';
 import '../../core/ble/command_queue.dart';
 import '../../core/models/ble_service.dart';
+import '../../core/models/ble_uuids.dart';
 import '../../core/models/log_entry.dart';
 import '../../core/utils/data_converter.dart';
 import '../../core/utils/logger.dart';
 import '../../themes/app_theme.dart';
+import '../design/app_tokens.dart';
 import '../widgets/log_panel.dart';
 import '../widgets/ota_dialog.dart';
 import '../widgets/write_dialog.dart';
 import '../widgets/service_list.dart';
+import '../../core/design/app_icons.dart';
+import '../design/app_subnav.dart';
 
 /// 设备详情页
 class DeviceDetailPage extends ConsumerStatefulWidget {
@@ -38,26 +42,44 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
   bool _isLoading = true;
   bool _isConnected = false;
   bool _isReconnecting = false;
+  bool _connectionLost = false; // O-2：意外断连错误态（用户主动断开不置位）
+  bool _userDisconnecting = false; // O-2：用户主动断开旗标（区分意外断连）
   String? _errorMessage;
   StreamSubscription? _connectionStatesSub;
+
+  /// 各特征的通知值订阅（按特征 UUID 管理，禁用/离页时取消）
+  final Map<String, StreamSubscription<List<int>>> _valueSubs = {};
 
   /// Convenience accessor — delegated to the global logger history.
   List<LogEntry> get _logs => logger.history;
 
   void _addLog(String message, LogType type) {
     switch (type) {
-      case LogType.info:    logger.info(message);    break;
-      case LogType.success: logger.success(message); break;
-      case LogType.error:   logger.error(message);   break;
-      case LogType.receive: logger.receive(message); break;
-      case LogType.warning: logger.warning(message); break;
-      case LogType.send:    logger.send(message);    break;
+      case LogType.info:
+        logger.info(message);
+        break;
+      case LogType.success:
+        logger.success(message);
+        break;
+      case LogType.error:
+        logger.error(message);
+        break;
+      case LogType.receive:
+        logger.receive(message);
+        break;
+      case LogType.warning:
+        logger.warning(message);
+        break;
+      case LogType.send:
+        logger.send(message);
+        break;
     }
   }
 
   void _exportLogs() => _exportData();
 
-  bool get _hasOtaService => _services.any((s) => s.uuid.toLowerCase() == '4fafc201-1fb5-459e-8fcc-c5c9c331914d');
+  bool get _hasOtaService => _services.any(
+      (s) => s.uuid.toLowerCase() == '4fafc201-1fb5-459e-8fcc-c5c9c331914d');
 
   @override
   void initState() {
@@ -104,23 +126,36 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
 
   /// 监听连接状态变化
   void _listenConnectionState() {
-    _connectionStatesSub =
-        _bleManager.connectionStatesStream.listen((states) {
+    _connectionStatesSub = _bleManager.connectionStatesStream.listen((states) {
       if (!mounted) return;
 
       final state = states[widget.deviceId];
       final connected = state == BluetoothConnectionState.connected;
+      final wasConnected = _isConnected;
       final reconnecting = !connected &&
           !_bleManager.isDeviceConnected(widget.deviceId) &&
-          _isConnected; // 之前是连接状态，现在断开了 → 可能在重连
+          wasConnected; // 之前是连接状态，现在断开了 → 可能在重连
+
+      // O-2 断连错误态：非用户主动断开且从连接态跌落 → 置位（不再静默降级）
+      final lostUnexpectedly =
+          !connected && wasConnected && !_userDisconnecting;
+      if (!connected && wasConnected) _commandQueue?.clear();
 
       setState(() {
         _isConnected = connected;
         _isReconnecting = reconnecting;
+        if (connected && _connectionLost) _connectionLost = false;
+        if (lostUnexpectedly) _connectionLost = true;
       });
 
-      if (state == BluetoothConnectionState.disconnected && !_isReconnecting) {
+      if (reconnecting) {
+        // O-2 插桩：区分「FBP 退订触发伪断连」与「真实断开」两条路径
+        logger.warning('连接状态流：设备 ${widget.deviceId} 中断，等待自动重连');
+      } else if (state == BluetoothConnectionState.disconnected) {
         logger.error('连接已断开');
+        if (lostUnexpectedly) {
+          logger.error('意外断连：保持本页并显示断连横幅（O-2 错误态，不静默弹回）');
+        }
       }
     });
   }
@@ -137,6 +172,7 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
           _services.clear();
           _services.addAll(services);
           _isConnected = true;
+          _connectionLost = false;
           _isLoading = false;
         });
         logger.info('发现 ${services.length} 个服务');
@@ -154,6 +190,9 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
   }
 
   Future<void> _disconnect() async {
+    // O-2 插桩：P006 唯一的主动 pop 路径，导出文本时间线据此排除/锁定
+    logger.info('断开连接（用户操作），即将返回设备列表');
+    _userDisconnecting = true; // O-2：区分用户主动断开与意外断连
     try {
       await _bleManager.disconnect(widget.deviceId);
       if (mounted) {
@@ -166,7 +205,8 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
     }
   }
 
-  Future<void> _readCharacteristic(BleService service, BleCharacteristic characteristic) async {
+  Future<void> _readCharacteristic(
+      BleService service, BleCharacteristic characteristic) async {
     try {
       logger.info('读取 ${characteristic.displayName}...');
 
@@ -187,24 +227,36 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
     }
   }
 
-  void _updateCharacteristicValue(String serviceUuid, String characteristicUuid, List<int> value) {
+  void _updateCharacteristicValue(
+      String serviceUuid, String characteristicUuid, List<int> value) {
     setState(() {
       final serviceIndex = _services.indexWhere((s) => s.uuid == serviceUuid);
       if (serviceIndex >= 0) {
-        final charIndex = _services[serviceIndex].characteristics
+        final charIndex = _services[serviceIndex]
+            .characteristics
             .indexWhere((c) => c.uuid == characteristicUuid);
         if (charIndex >= 0) {
           _services[serviceIndex] = _services[serviceIndex].copyWith(
             characteristics: List<BleCharacteristic>.from(
-              _services[serviceIndex].characteristics
-            )..[charIndex] = _services[serviceIndex].characteristics[charIndex].copyWith(value: value),
+                _services[serviceIndex].characteristics)
+              ..[charIndex] = _services[serviceIndex]
+                  .characteristics[charIndex]
+                  .copyWith(value: value),
           );
         }
       }
     });
   }
 
-  Future<void> _writeCharacteristic(BleService service, BleCharacteristic characteristic) async {
+  Future<void> _writeCharacteristic(
+      BleService service, BleCharacteristic characteristic) async {
+    // SHID-FW-LOCK-001：UI 层双重保险——INPUT 特征不弹写对话框直接拒绝
+    // （manager 层 writeCharacteristic 另有同语义拦截）
+    if (BleUuids.isShidInputCharacteristic(characteristic.uuid)) {
+      logger.error('INPUT 特征写入已被禁用（SHID-FW-LOCK-001 设备保护）');
+      return;
+    }
+
     final controller = TextEditingController();
 
     if (!mounted) return;
@@ -234,7 +286,8 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
             serviceUuid: service.uuid,
             characteristicUuid: characteristic.uuid,
             data: bytes,
-            withoutResponse: !characteristic.properties.contains(BleCharacteristicProperty.write),
+            withoutResponse: !characteristic.properties
+                .contains(BleCharacteristicProperty.write),
           );
 
           logger.success('写入成功');
@@ -242,7 +295,8 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
 
         case SendMode.batch:
           // 批量发送: 每行一条指令
-          final lines = result.data.split('\n')
+          final lines = result.data
+              .split('\n')
               .map((l) => l.trim())
               .where((l) => l.isNotEmpty)
               .toList();
@@ -259,8 +313,11 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
               serviceUuid: service.uuid,
               characteristicUuid: characteristic.uuid,
               data: bytes,
-              withoutResponse: !characteristic.properties.contains(BleCharacteristicProperty.write),
-              displayHex: result.isHexMode ? entry.value : CommandQueue.formatHex(bytes),
+              withoutResponse: !characteristic.properties
+                  .contains(BleCharacteristicProperty.write),
+              displayHex: result.isHexMode
+                  ? entry.value
+                  : CommandQueue.formatHex(bytes),
             );
           }).toList();
 
@@ -274,18 +331,24 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
               ? DataConverter.hexToBytes(result.data)
               : DataConverter.stringToBytes(result.data);
 
-          final loopDesc = result.loopCount == 0 ? '无限' : '${result.loopCount}次';
+          final loopDesc =
+              result.loopCount == 0 ? '无限' : '${result.loopCount}次';
           logger.info('循环发送 ($loopDesc, 间隔${result.intervalMs}ms)...');
 
-          final template = [CommandItem(
-            id: 'loop_${DateTime.now().millisecondsSinceEpoch}',
-            deviceId: widget.deviceId,
-            serviceUuid: service.uuid,
-            characteristicUuid: characteristic.uuid,
-            data: bytes,
-            withoutResponse: !characteristic.properties.contains(BleCharacteristicProperty.write),
-            displayHex: result.isHexMode ? result.data : CommandQueue.formatHex(bytes),
-          )];
+          final template = [
+            CommandItem(
+              id: 'loop_${DateTime.now().millisecondsSinceEpoch}',
+              deviceId: widget.deviceId,
+              serviceUuid: service.uuid,
+              characteristicUuid: characteristic.uuid,
+              data: bytes,
+              withoutResponse: !characteristic.properties
+                  .contains(BleCharacteristicProperty.write),
+              displayHex: result.isHexMode
+                  ? result.data
+                  : CommandQueue.formatHex(bytes),
+            )
+          ];
 
           _commandQueue?.intervalMs = result.intervalMs;
           _commandQueue?.startLoop(template, loopCount: result.loopCount);
@@ -296,12 +359,31 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
     }
   }
 
-  Future<void> _toggleNotification(BleService service, BleCharacteristic characteristic) async {
+  Future<void> _toggleNotification(
+      BleService service, BleCharacteristic characteristic) async {
     try {
       final newState = !characteristic.isNotifying;
+      final charKey = characteristic.uuid.toLowerCase();
 
       if (newState) {
         logger.info('启用通知 ${characteristic.displayName}...');
+        // 先挂监听再写 CCCD——订阅瞬间服务端即推的首条通知才不会丢（WIN-FAND-004）；
+        // 同时按特征管理订阅，重复开关不叠加监听
+        _valueSubs[charKey]?.cancel();
+        final valueSub = _bleManager
+            .listenCharacteristicValue(
+          deviceId: widget.deviceId,
+          serviceUuid: service.uuid,
+          characteristicUuid: characteristic.uuid,
+        )
+            ?.listen((value) {
+          final hex = DataConverter.bytesToHex(value);
+          final text = DataConverter.bytesToString(value);
+          logger.receive('HEX: $hex\nTEXT: $text');
+        });
+        if (valueSub != null) {
+          _valueSubs[charKey] = valueSub;
+        }
       } else {
         logger.info('禁用通知 ${characteristic.displayName}...');
       }
@@ -316,7 +398,8 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
       // 更新本地状态
       final serviceIndex = _services.indexWhere((s) => s.uuid == service.uuid);
       if (serviceIndex >= 0) {
-        final charIndex = _services[serviceIndex].characteristics
+        final charIndex = _services[serviceIndex]
+            .characteristics
             .indexWhere((c) => c.uuid == characteristic.uuid);
         if (charIndex >= 0) {
           setState(() {
@@ -328,19 +411,9 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
         }
       }
 
-      // 如果启用通知，监听值变化
-      if (newState) {
-        final stream = _bleManager.listenCharacteristicValue(
-          deviceId: widget.deviceId,
-          serviceUuid: service.uuid,
-          characteristicUuid: characteristic.uuid,
-        );
-
-        stream?.listen((value) {
-          final hex = DataConverter.bytesToHex(value);
-          final text = DataConverter.bytesToString(value);
-          logger.receive('HEX: $hex\nTEXT: $text');
-        });
+      if (!newState) {
+        _valueSubs[charKey]?.cancel();
+        _valueSubs.remove(charKey);
       }
 
       logger.success(newState ? '通知已启用' : '通知已禁用');
@@ -367,98 +440,208 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
   void dispose() {
     _connectionStatesSub?.cancel();
     _logSubscription?.cancel();
+    for (final sub in _valueSubs.values) {
+      sub.cancel();
+    }
+    _valueSubs.clear();
+    // 先摘回调再 clear——clear→stopLoop 会同步触发 onQueueStateChanged，
+    // dispose 期间 mounted 仍为 true，setState 打到 defunct 元素会炸框架
+    // 收尾断言（WIN-FAND-006）
+    _commandQueue?.onQueueStateChanged = null;
+    _commandQueue?.onQueueEmpty = null;
+    _commandQueue?.onCommandComplete = null;
+    _commandQueue?.onCommandError = null;
     _commandQueue?.clear();
+    // O-2 插桩：路由弹出即 dispose——若「弹回列表」非用户操作，此行与
+    // 「断开连接（用户操作）」日志的时间差即为定位线索
+    logger.info('P006 详情页 dispose（路由已弹出）');
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(widget.deviceName, style: const TextStyle(fontSize: 17)),
-            Text(
-              widget.deviceId,
-              style: const TextStyle(
+  /// B9 banner-note（warn）—— P-03 OTA 入口受限预警。
+  /// 文案逐字对齐原型 p006 服务就绪态；前景/底色用 warningDeep/warningWeak token
+  /// （N-MAC noteBanner 同口径，#8A5410 为原型 CSS 局部值未入 TOKEN.md）。
+  Widget _buildOtaWarnNote() {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: AppTokens.cWarningWeak,
+        borderRadius: BorderRadius.circular(AppTokens.rMd),
+      ),
+      child: const Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AppIcon('warn', size: 14, color: AppTokens.cWarningDeep),
+          SizedBox(width: 9),
+          Expanded(
+            child: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: 'OTA 端到端链路 BLOCKED',
+                    style: TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                  TextSpan(
+                    text: '（固件侧暂未开放）：右上「固件更新」可演示完整流程，正式使用前需固件配合。',
+                  ),
+                ],
+              ),
+              style: TextStyle(
                 fontSize: 12,
-                color: AppTheme.textSecondary,
-              ),
-            ),
-          ],
-        ),
-        elevation: 0,
-        actions: [
-          if (_hasOtaService && _isConnected)
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: IconButton(
-                icon: const Icon(Icons.system_update_alt, color: AppTheme.primaryColor),
-                tooltip: 'OTA 固件升级',
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (ctx) => OtaUpgradeDialog(deviceId: widget.deviceId),
-                  );
-                },
-              ),
-            ),
-          // 连接状态
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Center(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: _isReconnecting
-                      ? AppTheme.warningColor.withValues(alpha: 0.1)
-                      : _isConnected
-                          ? AppTheme.successColor.withValues(alpha: 0.1)
-                          : AppTheme.errorColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (_isReconnecting)
-                      const SizedBox(
-                        width: 10,
-                        height: 10,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 1.5,
-                          color: AppTheme.warningColor,
-                        ),
-                      )
-                    else
-                      Container(
-                        width: 8,
-                        height: 8,
-                        decoration: BoxDecoration(
-                          color: _isConnected ? AppTheme.successColor : AppTheme.errorColor,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                    const SizedBox(width: 6),
-                    Text(
-                      _isReconnecting ? '重连中...' : (_isConnected ? '已连接' : '未连接'),
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: _isReconnecting
-                            ? AppTheme.warningColor
-                            : (_isConnected ? AppTheme.successColor : AppTheme.errorColor),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
+                height: 1.6,
+                color: AppTokens.cWarningDeep,
               ),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      // UI-G2：正典 AppSubnav（GATT 调试 + 固件更新右键 + 连接状态 chip）
+      appBar: AppSubnav(
+        title: 'GATT 调试',
+        action: Row(
+          children: [
+            if (_hasOtaService && _isConnected)
+              IconButton(
+                icon: const AppIcon('dl', color: AppTheme.primaryColor),
+                tooltip: 'OTA 固件升级',
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (ctx) =>
+                        OtaUpgradeDialog(deviceId: widget.deviceId),
+                  );
+                },
+              ),
+            const SizedBox(width: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Center(
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: _isReconnecting
+                        ? AppTheme.warningColor.withValues(alpha: 0.1)
+                        : _isConnected
+                            ? AppTheme.successColor.withValues(alpha: 0.1)
+                            : AppTheme.errorColor.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (_isReconnecting)
+                        const SizedBox(
+                          width: 10,
+                          height: 10,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 1.5,
+                            color: AppTheme.warningColor,
+                          ),
+                        )
+                      else
+                        Container(
+                          width: 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            color: _isConnected
+                                ? AppTheme.successColor
+                                : AppTheme.errorColor,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      const SizedBox(width: 6),
+                      Text(
+                        _isReconnecting
+                            ? '重连中...'
+                            : (_isConnected ? '已连接' : '未连接'),
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: _isReconnecting
+                              ? AppTheme.warningColor
+                              : (_isConnected
+                                  ? AppTheme.successColor
+                                  : AppTheme.errorColor),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
       body: Column(
         children: [
+          // O-2 断连错误态横幅：意外断连不再静默降级（服务列表保留断开前快照）
+          if (_connectionLost && !_isConnected && !_isReconnecting)
+            Container(
+              width: double.infinity,
+              margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppTheme.errorColor.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                    color: AppTheme.errorColor.withValues(alpha: 0.4)),
+              ),
+              child: Row(
+                children: [
+                  const AppIcon('warn', size: 18, color: AppTheme.errorColor),
+                  const SizedBox(width: 8),
+                  const Expanded(
+                    child: Text(
+                      '连接已断开（意外断连）· 下方服务数据为断开前快照',
+                      style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: AppTheme.errorColor),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: _checkConnectionAndDiscoverServices,
+                    child: const Text('重连', style: TextStyle(fontSize: 12)),
+                  ),
+                ],
+              ),
+            ),
+          // devhead：设备名 + deviceId（自 AppBar 标题下沉到正文，正典 .devhead 口径）
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(widget.deviceName,
+                          style: const TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w700,
+                              color: AppTheme.textPrimary)),
+                      const SizedBox(height: 2),
+                      Text(widget.deviceId,
+                          style: const TextStyle(
+                              fontSize: 12,
+                              color: AppTheme.textSecondary,
+                              fontFamily: 'monospace')),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // P-03 OTA 入口受限预警（B9 warn 说明条，正典 p006 服务就绪态）
+          if (_isConnected && _services.isNotEmpty) _buildOtaWarnNote(),
           // 操作按钮
           if (_isConnected || _isReconnecting)
             Padding(
@@ -472,7 +655,7 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
                         logger.clear();
                         setState(() {});
                       },
-                      icon: const Icon(Icons.clear, size: 18),
+                      icon: const AppIcon('x', size: 18),
                       label: const Text('清空'),
                     ),
                   ),
@@ -481,7 +664,7 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
                   Expanded(
                     child: OutlinedButton.icon(
                       onPressed: _logs.isEmpty ? null : _exportLogs,
-                      icon: const Icon(Icons.ios_share, size: 18),
+                      icon: const AppIcon('share', size: 18),
                       label: const Text('导出'),
                     ),
                   ),
@@ -490,7 +673,7 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: _disconnect,
-                      icon: const Icon(Icons.bluetooth_disabled, size: 18),
+                      icon: const AppIcon('x', size: 18),
                       label: const Text('断开'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppTheme.errorColor,
@@ -502,7 +685,9 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
             ),
 
           // 指令队列状态栏
-          if ((_commandQueue?.isRunning ?? false) || (_commandQueue?.isLooping ?? false) || (_commandQueue?.pendingCount ?? 0) > 0)
+          if ((_commandQueue?.isRunning ?? false) ||
+              (_commandQueue?.isLooping ?? false) ||
+              (_commandQueue?.pendingCount ?? 0) > 0)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               color: AppTheme.primaryColor.withValues(alpha: 0.08),
@@ -519,19 +704,20 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
                       (_commandQueue?.isLooping ?? false)
                           ? '循环发送中 (${_commandQueue?.currentLoop}/${(_commandQueue?.targetLoopCount ?? 0) == 0 ? "∞" : _commandQueue?.targetLoopCount}) | 待发送: ${_commandQueue?.pendingCount ?? 0}'
                           : '发送中 | 待发送: ${_commandQueue?.pendingCount ?? 0}',
-                      style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                      style: const TextStyle(
+                          fontSize: 12, color: AppTheme.textSecondary),
                     ),
                   ),
                   if (_commandQueue?.isPaused ?? false)
                     TextButton.icon(
                       onPressed: () => _commandQueue?.resume(),
-                      icon: const Icon(Icons.play_arrow, size: 16),
+                      icon: const AppIcon('play', size: 16),
                       label: const Text('继续', style: TextStyle(fontSize: 12)),
                     )
                   else
                     TextButton.icon(
                       onPressed: () => _commandQueue?.pause(),
-                      icon: const Icon(Icons.pause, size: 16),
+                      icon: const AppIcon('stop', size: 16),
                       label: const Text('暂停', style: TextStyle(fontSize: 12)),
                     ),
                   TextButton.icon(
@@ -539,8 +725,11 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
                       _commandQueue?.clear();
                       _addLog('指令队列已停止', LogType.info);
                     },
-                    icon: const Icon(Icons.stop, size: 16, color: AppTheme.errorColor),
-                    label: const Text('停止', style: TextStyle(fontSize: 12, color: AppTheme.errorColor)),
+                    icon: const AppIcon('stop',
+                        size: 16, color: AppTheme.errorColor),
+                    label: const Text('停止',
+                        style: TextStyle(
+                            fontSize: 12, color: AppTheme.errorColor)),
                   ),
                 ],
               ),
@@ -573,7 +762,7 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.error_outline, size: 48, color: AppTheme.errorColor),
+          const AppIcon('warn', size: 48, color: AppTheme.errorColor),
           const SizedBox(height: 16),
           Text(_errorMessage ?? '发生错误'),
           const SizedBox(height: 16),
@@ -590,15 +779,18 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
     return ServiceListWidget(
       services: _services,
       onRead: (char) {
-        final service = _services.firstWhere((s) => s.characteristics.contains(char));
+        final service =
+            _services.firstWhere((s) => s.characteristics.contains(char));
         _readCharacteristic(service, char);
       },
       onWrite: (char) {
-        final service = _services.firstWhere((s) => s.characteristics.contains(char));
+        final service =
+            _services.firstWhere((s) => s.characteristics.contains(char));
         _writeCharacteristic(service, char);
       },
       onToggleNotify: (char) {
-        final service = _services.firstWhere((s) => s.characteristics.contains(char));
+        final service =
+            _services.firstWhere((s) => s.characteristics.contains(char));
         _toggleNotification(service, char);
       },
     );

@@ -1,0 +1,65 @@
+[
+  {
+    "shell": "G",
+    "tag": "GWIN",
+    "baseline": {
+      "scan_lines": 286,
+      "hits": 0
+    },
+    "started_ok": true,
+    "on": {
+      "scan_lines": 336,
+      "hits": 34,
+      "first": "09-24 14:05:36.815 15622 15622 D BleManager: onScanResult: 13:44:B5:6A:6E:69 name=null rssi=-41 adv=07ff01004757494e000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "stopped_ok": true,
+    "driver_exit": "clean",
+    "off": {
+      "scan_lines": 276,
+      "hits": 0
+    },
+    "verdict": "PASS"
+  },
+  {
+    "shell": "Q",
+    "tag": "QWIN",
+    "baseline": {
+      "scan_lines": 130,
+      "hits": 0
+    },
+    "started_ok": true,
+    "on": {
+      "scan_lines": 338,
+      "hits": 29,
+      "first": "09-24 14:06:03.163 15622 15622 D BleManager: onScanResult: 1B:A7:AC:71:FC:BA name=null rssi=-38 adv=07ff01005157494e000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "stopped_ok": true,
+    "driver_exit": "clean",
+    "off": {
+      "scan_lines": 317,
+      "hits": 0
+    },
+    "verdict": "PASS"
+  },
+  {
+    "shell": "T",
+    "tag": "TWIN",
+    "baseline": {
+      "scan_lines": 330,
+      "hits": 0
+    },
+    "started_ok": true,
+    "on": {
+      "scan_lines": 329,
+      "hits": 31,
+      "first": "09-24 14:06:33.170 15622 15622 D BleManager: onScanResult: 24:DA:52:22:04:4E name=null rssi=-49 adv=07ff01005457494e000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "stopped_ok": true,
+    "driver_exit": "clean",
+    "off": {
+      "scan_lines": 312,
+      "hits": 0
+    },
+    "verdict": "PASS"
+  }
+]

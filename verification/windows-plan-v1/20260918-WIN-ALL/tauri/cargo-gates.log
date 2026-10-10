@@ -1,0 +1,409 @@
+=== cargo fmt --check ===
+Diff in \\?\E:\project\xf\smart-ble\apps\desktop\tauri\src-tauri\src\lib.rs:5:
+ 
+ #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+ 
+[31m-use btleplug::api::{Central, Manager as _, Peripheral as _, Characteristic, WriteType, ValueNotification};
+[0m[32m+use btleplug::api::{
+[0m[32m+    Central, Characteristic, Manager as _, Peripheral as _, ValueNotification, WriteType,
+[0m[32m+};
+[0m use btleplug::platform::Manager;
+ use futures::stream::StreamExt;
+ use serde::{Deserialize, Serialize};
+Diff in \\?\E:\project\xf\smart-ble\apps\desktop\tauri\src-tauri\src\lib.rs:12:
+ use std::collections::HashMap;
+[31m-use std::sync::Arc;
+[0m use std::sync::atomic::{AtomicBool, Ordering};
+[31m-use tokio::sync::Mutex;
+[0m[32m+use std::sync::Arc;
+[0m use std::time::Duration;
+ use tauri::State;
+[32m+use tokio::sync::Mutex;
+[0m 
+ // BLE State
+ struct BleState {
+Diff in \\?\E:\project\xf\smart-ble\apps\desktop\tauri\src-tauri\src\lib.rs:89:
+     match Manager::new().await {
+         Ok(manager) => {
+             let mut adapters = manager.adapters().await.unwrap_or_default();
+[31m-            
+[0m[32m+
+[0m             // Retry mechanism for Windows startup delay (Task 6)
+             if adapters.is_empty() {
+[31m-                println!("[BLE] No adapters found on first check. Retrying for up to 10 seconds...");
+[0m[32m+                println!(
+[0m[32m+                    "[BLE] No adapters found on first check. Retrying for up to 10 seconds..."
+[0m[32m+                );
+[0m                 for i in 1..=10 {
+                     tokio::time::sleep(tokio::time::Duration::from_millis(1000)).await;
+                     adapters = manager.adapters().await.unwrap_or_default();
+Diff in \\?\E:\project\xf\smart-ble\apps\desktop\tauri\src-tauri\src\lib.rs:113:
+                 let central_events = central.clone();
+                 let window_clone = window.clone();
+                 let state_clone = Arc::clone(&state.inner());
+[31m-                
+[0m[32m+
+[0m                 // Track BLE events in background to emit disconnection
+                 tokio::spawn(async move {
+                     use btleplug::api::CentralEvent;
+Diff in \\?\E:\project\xf\smart-ble\apps\desktop\tauri\src-tauri\src\lib.rs:120:
+[31m-                    
+[0m[32m+
+[0m                     if let Ok(mut events) = central_events.events().await {
+                         while let Some(event) = events.next().await {
+                             if let CentralEvent::DeviceDisconnected(id) = event {
+Diff in \\?\E:\project\xf\smart-ble\apps\desktop\tauri\src-tauri\src\lib.rs:124:
+                                 eprintln!("[BLE] Device disconnected: {:?}", id);
+[31m-                                
+[0m[32m+
+[0m                                 // Remove from connected_peripherals cleanly
+                                 let mut ble_state_lock = state_clone.lock().await;
+                                 ble_state_lock.connected_peripherals.remove(&id.to_string());
+Diff in \\?\E:\project\xf\smart-ble\apps\desktop\tauri\src-tauri\src\lib.rs:129:
+                                 drop(ble_state_lock);
+[31m-                                
+[0m[32m+
+[0m                                 let mut payload = std::collections::HashMap::new();
+                                 payload.insert("deviceId", id.to_string());
+                                 let _ = window_clone.emit("device-disconnected", payload);
+Diff in \\?\E:\project\xf\smart-ble\apps\desktop\tauri\src-tauri\src\lib.rs:197:
+ 
+     eprintln!("[BLE] Starting scan...");
+ 
+[31m-    let result = central.start_scan(btleplug::api::ScanFilter::default()).await;
+[0m[32m+    let result = central
+[0m[32m+        .start_scan(btleplug::api::ScanFilter::default())
+[0m[32m+        .await;
+[0m 
+     match result {
+         Ok(_) => {
+Diff in \\?\E:\project\xf\smart-ble\apps\desktop\tauri\src-tauri\src\lib.rs:229:
+                     }
+ 
+                     // Use a timeout to avoid hanging
+[31m-                    let peripherals_result = tokio::time::timeout(
+[0m[31m-                        Duration::from_secs(2),
+[0m[31m-                        central_clone.peripherals()
+[0m[31m-                    ).await;
+[0m[32m+                    let peripherals_result =
+[0m[32m+                        tokio::time::timeout(Duration::from_secs(2), central_clone.peripherals())
+[0m[32m+                            .await;
+[0m 
+                     match peripherals_result {
+                         Ok(Ok(peripherals)) => {
+Diff in \\?\E:\project\xf\smart-ble\apps\desktop\tauri\src-tauri\src\lib.rs:245:
+                                 let props = props_result.as_ref().ok().and_then(|p| p.as_ref());
+ 
+                                 // Extract service UUIDs from advertising data
+[31m-                                let service_uuids: Option<Vec<String>> = props.as_ref().and_then(|pr| {
+[0m[31m-                                    if !pr.services.is_empty() {
+[0m[31m-                                        Some(pr.services.iter().map(|u| u.to_string()).collect())
+[0m[31m-                                    } else {
+[0m[31m-                                        None
+[0m[31m-                                    }
+[0m[31m-                                });
+[0m[32m+                                let service_uuids: Option<Vec<String>> =
+[0m[32m+                                    props.as_ref().and_then(|pr| {
+[0m[32m+                                        if !pr.services.is_empty() {
+[0m[32m+                                            Some(
+[0m[32m+                                                pr.services.iter().map(|u| u.to_string()).collect(),
+[0m[32m+                                            )
+[0m[32m+                                        } else {
+[0m[32m+                                            None
+[0m[32m+                                        }
+[0m[32m+                                    });
+[0m 
+                                 // Convert advertising data to hex string
+                                 let adv_data: Option<String> = props.as_ref().and_then(|pr| {
+Diff in \\?\E:\project\xf\smart-ble\apps\desktop\tauri\src-tauri\src\lib.rs:258:
+[31m-                                    pr.manufacturer_data.iter().next().map(|(company_id, data)| {
+[0m[31m-                                        let mut hex = format!("{:04X}", company_id);
+[0m[31m-                                        for byte in data {
+[0m[31m-                                            hex.push_str(&format!("{:02X}", byte));
+[0m[31m-                                        }
+[0m[31m-                                        hex
+[0m[31m-                                    })
+[0m[32m+                                    pr.manufacturer_data
+[0m[32m+                                        .iter()
+[0m[32m+                                        .next()
+[0m[32m+                                        .map(|(company_id, data)| {
+[0m[32m+                                            let mut hex = format!("{:04X}", company_id);
+[0m[32m+                                            for byte in data {
+[0m[32m+                                                hex.push_str(&format!("{:02X}", byte));
+[0m[32m+                                            }
+[0m[32m+                                            hex
+[0m[32m+                                        })
+[0m                                 });
+ 
+                                 let device = DeviceInfo {
+Diff in \\?\E:\project\xf\smart-ble\apps\desktop\tauri\src-tauri\src\lib.rs:367:
+     // "Device not found"（noble/E-WIN 持有 peripheral 对象可直连，btleplug 须重扫
+     // 重建缓存后再连接）。未在扫描态时临时起一轮短扫描。
+     let find_peripheral = |peripherals: &[btleplug::platform::Peripheral]| {
+[31m-        peripherals.iter().find(|p| p.id().to_string() == device_id).cloned()
+[0m[32m+        peripherals
+[0m[32m+            .iter()
+[0m[32m+            .find(|p| p.id().to_string() == device_id)
+[0m[32m+            .cloned()
+[0m     };
+ 
+     let first_pass = {
+Diff in \\?\E:\project\xf\smart-ble\apps\desktop\tauri\src-tauri\src\lib.rs:392:
+             let scanning = ble_state.scanning;
+             if !scanning {
+                 if let Some(central) = &ble_state.central {
+[31m-                    let _ = central.start_scan(btleplug::api::ScanFilter::default()).await;
+[0m[32m+                    let _ = central
+[0m[32m+                        .start_scan(btleplug::api::ScanFilter::default())
+[0m[32m+                        .await;
+[0m                 }
+                 ble_state.scanning = true;
+             }
+Diff in \\?\E:\project\xf\smart-ble\apps\desktop\tauri\src-tauri\src\lib.rs:420:
+             Ok(_) => {
+                 // Store connected peripheral in HashMap (multi-device)
+                 let mut ble_state = state.lock().await;
+[31m-                ble_state.connected_peripherals.insert(device_id.clone(), peripheral.clone());
+[0m[32m+                ble_state
+[0m[32m+                    .connected_peripherals
+[0m[32m+                    .insert(device_id.clone(), peripheral.clone());
+[0m                 Ok(Response {
+                     success: true,
+                     data: Some(true),
+Diff in \\?\E:\project\xf\smart-ble\apps\desktop\tauri\src-tauri\src\lib.rs:458:
+     if let Some(device_id) = target_id {
+         // Abort ALL notification streams for this device (key format: "deviceId::charUuid")
+         let prefix = format!("{}::", device_id);
+[31m-        let notify_keys: Vec<String> = ble_state.notify_handles.keys()
+[0m[32m+        let notify_keys: Vec<String> = ble_state
+[0m[32m+            .notify_handles
+[0m[32m+            .keys()
+[0m             .filter(|k| k.starts_with(&prefix))
+             .cloned()
+             .collect();
+Diff in \\?\E:\project\xf\smart-ble\apps\desktop\tauri\src-tauri\src\lib.rs:580:
+     if let Some(peripheral) = ble_state.connected_peripherals.get(&deviceId) {
+         let characteristics = peripheral.characteristics();
+ 
+[31m-        let characteristic = characteristics
+[0m[31m-            .iter()
+[0m[31m-            .find(|c| c.uuid.to_string() == char_uuid && c.service_uuid.to_string() == service_uuid);
+[0m[32m+        let characteristic = characteristics.iter().find(|c| {
+[0m[32m+            c.uuid.to_string() == char_uuid && c.service_uuid.to_string() == service_uuid
+[0m[32m+        });
+[0m 
+         if let Some(char) = characteristic {
+             let peripheral = peripheral.clone();
+Diff in \\?\E:\project\xf\smart-ble\apps\desktop\tauri\src-tauri\src\lib.rs:648:
+     if let Some(peripheral) = ble_state.connected_peripherals.get(&deviceId) {
+         let characteristics = peripheral.characteristics();
+ 
+[31m-        let characteristic = characteristics
+[0m[31m-            .iter()
+[0m[31m-            .find(|c| c.uuid.to_string() == char_uuid && c.service_uuid.to_string() == service_uuid);
+[0m[32m+        let characteristic = characteristics.iter().find(|c| {
+[0m[32m+            c.uuid.to_string() == char_uuid && c.service_uuid.to_string() == service_uuid
+[0m[32m+        });
+[0m 
+         if let Some(char) = characteristic {
+             let bytes = match format {
+Diff in \\?\E:\project\xf\smart-ble\apps\desktop\tauri\src-tauri\src\lib.rs:665:
+             drop(ble_state);
+ 
+             // Determine write type based on characteristic properties
+[31m-            let write_type = if char.properties.contains(btleplug::api::CharPropFlags::WRITE_WITHOUT_RESPONSE) {
+[0m[32m+            let write_type = if char
+[0m[32m+                .properties
+[0m[32m+                .contains(btleplug::api::CharPropFlags::WRITE_WITHOUT_RESPONSE)
+[0m[32m+            {
+[0m                 WriteType::WithoutResponse
+             } else {
+                 WriteType::WithResponse
+Diff in \\?\E:\project\xf\smart-ble\apps\desktop\tauri\src-tauri\src\lib.rs:721:
+ 
+     if let Some(peripheral) = ble_state.connected_peripherals.get(&deviceId) {
+         let characteristics = peripheral.characteristics();
+[31m-        let characteristic = characteristics
+[0m[31m-            .iter()
+[0m[31m-            .find(|c| c.uuid.to_string() == char_uuid && c.service_uuid.to_string() == service_uuid);
+[0m[32m+        let characteristic = characteristics.iter().find(|c| {
+[0m[32m+            c.uuid.to_string() == char_uuid && c.service_uuid.to_string() == service_uuid
+[0m[32m+        });
+[0m 
+         if let Some(char) = characteristic {
+             let write_type = if writeWithResponse {
+Diff in \\?\E:\project\xf\smart-ble\apps\desktop\tauri\src-tauri\src\lib.rs:840:
+                         Ok(mut notif_stream) => {
+                             let device_id_for_event = deviceId.clone();
+                             let handle = tokio::spawn(async move {
+[31m-                                while let Some(ValueNotification { uuid, value }) = notif_stream.next().await {
+[0m[32m+                                while let Some(ValueNotification { uuid, value }) =
+[0m[32m+                                    notif_stream.next().await
+[0m[32m+                                {
+[0m                                     // Filter: only forward notifications for our subscribed char
+                                     if uuid.to_string() != char_uuid_filter {
+                                         continue;
+Diff in \\?\E:\project\xf\smart-ble\apps\desktop\tauri\src-tauri\src\lib.rs:866:
+                                     }
+                                 }
+                                 // Stream ended (device disconnected or unsubscribed)
+[31m-                                eprintln!("[BLE] Notification stream ended for char {}", char_uuid_clone);
+[0m[32m+                                eprintln!(
+[0m[32m+                                    "[BLE] Notification stream ended for char {}",
+[0m[32m+                                    char_uuid_clone
+[0m[32m+                                );
+[0m                             });
+ 
+                             // Store handle keyed by "deviceId::charUuid" (supports multi-char notify)
+Diff in \\?\E:\project\xf\smart-ble\apps\desktop\tauri\src-tauri\src\lib.rs:881:
+                                 value: None,
+                             })
+                         }
+[31m-                        Err(e) => {
+[0m[31m-                            Ok(Response {
+[0m[31m-                                success: false,
+[0m[31m-                                data: None,
+[0m[31m-                                error: Some(format!("Failed to get notification stream: {}", e)),
+[0m[31m-                                value: None,
+[0m[31m-                            })
+[0m[31m-                        }
+[0m[32m+                        Err(e) => Ok(Response {
+[0m[32m+                            success: false,
+[0m[32m+                            data: None,
+[0m[32m+                            error: Some(format!("Failed to get notification stream: {}", e)),
+[0m[32m+                            value: None,
+[0m[32m+                        }),
+[0m                     }
+                 }
+[31m-                Err(e) => {
+[0m[31m-                    Ok(Response {
+[0m[31m-                        success: false,
+[0m[31m-                        data: None,
+[0m[31m-                        error: Some(format!("Subscribe failed: {}", e)),
+[0m[31m-                        value: None,
+[0m[31m-                    })
+[0m[31m-                }
+[0m[32m+                Err(e) => Ok(Response {
+[0m[32m+                    success: false,
+[0m[32m+                    data: None,
+[0m[32m+                    error: Some(format!("Subscribe failed: {}", e)),
+[0m[32m+                    value: None,
+[0m[32m+                }),
+[0m             }
+         }
+     } else {
+Diff in \\?\E:\project\xf\smart-ble\apps\desktop\tauri\src-tauri\src\lib.rs:959:
+         return Ok(Response {
+             success: false,
+             data: None,
+[31m-            error: Some("Peripheral mode not yet supported on Linux. Requires BlueZ peripheral mode.".to_string()),
+[0m[32m+            error: Some(
+[0m[32m+                "Peripheral mode not yet supported on Linux. Requires BlueZ peripheral mode."
+[0m[32m+                    .to_string(),
+[0m[32m+            ),
+[0m             value: None,
+         });
+     }
+Diff in \\?\E:\project\xf\smart-ble\apps\desktop\tauri\src-tauri\src\lib.rs:996:
+ // T07: Helper functions - 中文名称（对齐 Android BleUuids）
+ fn get_service_name(uuid: &str) -> String {
+     let uuid_upper = uuid.to_uppercase();
+[31m-    let short = if uuid_upper.len() > 8 { &uuid_upper[4..8] } else { uuid_upper.as_str() };
+[0m[32m+    let short = if uuid_upper.len() > 8 {
+[0m[32m+        &uuid_upper[4..8]
+[0m[32m+    } else {
+[0m[32m+        uuid_upper.as_str()
+[0m[32m+    };
+[0m     match short {
+         "1800" => "通用访问",
+         "1801" => "通用属性",
+Diff in \\?\E:\project\xf\smart-ble\apps\desktop\tauri\src-tauri\src\lib.rs:1007:
+         "1809" => "健康温度计",
+         "181C" => "用户数据",
+         _ => {
+[31m-            if uuid_upper.starts_with("4FAFC201") { "OTA 升级服务" } else { "未知服务" }
+[0m[32m+            if uuid_upper.starts_with("4FAFC201") {
+[0m[32m+                "OTA 升级服务"
+[0m[32m+            } else {
+[0m[32m+                "未知服务"
+[0m[32m+            }
+[0m         }
+[31m-    }.to_string()
+[0m[32m+    }
+[0m[32m+    .to_string()
+[0m }
+ 
+ fn get_characteristic_name(uuid: &str) -> String {
+Diff in \\?\E:\project\xf\smart-ble\apps\desktop\tauri\src-tauri\src\lib.rs:1016:
+     let uuid_upper = uuid.to_uppercase();
+[31m-    let short = if uuid_upper.len() > 8 { &uuid_upper[4..8] } else { uuid_upper.as_str() };
+[0m[32m+    let short = if uuid_upper.len() > 8 {
+[0m[32m+        &uuid_upper[4..8]
+[0m[32m+    } else {
+[0m[32m+        uuid_upper.as_str()
+[0m[32m+    };
+[0m     match short {
+         "2A00" => "设备名称",
+         "2A01" => "外观",
+Diff in \\?\E:\project\xf\smart-ble\apps\desktop\tauri\src-tauri\src\lib.rs:1033:
+         "2A37" => "心率测量",
+         "2A38" => "身体传感器位置",
+         _ => {
+[31m-            if uuid_upper.starts_with("BEB5") || uuid_upper.starts_with("BEB5483E") { "OTA 控制" } else { "未知特征值" }
+[0m[32m+            if uuid_upper.starts_with("BEB5") || uuid_upper.starts_with("BEB5483E") {
+[0m[32m+                "OTA 控制"
+[0m[32m+            } else {
+[0m[32m+                "未知特征值"
+[0m[32m+            }
+[0m         }
+[31m-    }.to_string()
+[0m[32m+    }
+[0m[32m+    .to_string()
+[0m }
+ 
+[31m-
+[0m fn get_properties(char: &Characteristic) -> Vec<String> {
+     let mut props = Vec::new();
+ 
+Diff in \\?\E:\project\xf\smart-ble\apps\desktop\tauri\src-tauri\src\lib.rs:1102:
+                     .try_lock()
+                     .map(|state| state.connected_peripherals.len())
+                     .unwrap_or(0);
+[31m-                eprintln!("[APP] Close requested -> exit confirm (connected={})", connected);
+[0m[32m+                eprintln!(
+[0m[32m+                    "[APP] Close requested -> exit confirm (connected={})",
+[0m[32m+                    connected
+[0m[32m+                );
+[0m                 let mut payload = HashMap::new();
+                 payload.insert("connected", connected);
+                 let _ = event.window().emit("app-confirm-exit", payload);
+FMT-EXIT=1
+=== cargo check ===
+    Checking webview2-com v0.19.1
+    Checking wry v0.24.11
+    Checking tauri-runtime v0.14.6
+    Checking tauri-runtime-wry v0.14.11
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2m 09s
+CHECK-EXIT=0
+=== cargo test ===
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\main.rs (target\debug\deps\smart_ble_tauri-93d6675df30b0f3c.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests smart_ble_tauri
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+TEST-EXIT=0
+=== cargo build --debug ===
+  = note: second unit: Unit { pkg: Package { id: PackageId { name: "smart-ble-tauri", version: "1.0.0", source: "E:\\project\\xf\\smart-ble\\apps\\desktop\\tauri\\src-tauri" }, ..: ".." }, target: TargetInner { ..: lib_target("smart_ble_tauri", ["cdylib", "staticlib", "rlib"], "E:\\project\\xf\\smart-ble\\apps\\desktop\\tauri\\src-tauri\\src\\lib.rs", Edition2021) }, profile: Profile { ..: default_dev() }, kind: Host, mode: Build, features: ["custom-protocol", "default"], rustflags: [], rustdocflags: [], links_overrides: {}, artifact: false, artifact_target_for_features: None, is_std: false, dep_hash: 9868354799903334679 }
+   Compiling smart-ble-tauri v1.0.0 (E:\project\xf\smart-ble\apps\desktop\tauri\src-tauri)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 11.26s
+BUILD-EXIT=0

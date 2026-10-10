@@ -1,9 +1,11 @@
 package com.smartble.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,44 +13,38 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ExpandLess
-import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.smartble.ui.theme.Primary
-import com.smartble.ui.theme.TextSecondary
+import androidx.compose.ui.unit.sp
+import com.smartble.ui.design.DsSoftButton
+import com.smartble.ui.theme.cCard
+import com.smartble.ui.theme.cFill
+import com.smartble.ui.theme.cLine
+import com.smartble.ui.theme.cMut
+import com.smartble.ui.theme.cPh
+import com.smartble.ui.theme.cPrimary
+import com.smartble.ui.theme.cSub
+import com.smartble.ui.theme.cSuccess
+import com.smartble.ui.theme.cText
 
 /**
- * Filter panel - aligned with UniApp reference implementation
- * Features:
- * - RSSI slider (-100 to -30) with preset buttons [-100, -90, -70, -50]
- * - Name prefix text input
- * - Hide unnamed checkbox
- * - Reset button
+ * 正典筛选面板 C3（prototype components.css .filter · PAGE_LAYOUT_CONTRACT §4-5）。
+ * 展开由 P001 组标题「筛选」文字链控制，本组件只渲染面板体：
+ * 四行 = RSSI 预设×4 / 阈值滑杆(-100..-40 step5) / 名称前缀 / 隐藏无名 + 重置。
  */
 @Composable
 fun FilterPanel(
-    expanded: Boolean,
-    onToggleExpanded: () -> Unit,
     filterRSSI: Int,
     onFilterRSSIChange: (Int) -> Unit,
     filterNamePrefix: String,
@@ -58,210 +54,122 @@ fun FilterPanel(
     onReset: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Card(
+    Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
+            .padding(start = 16.dp, end = 16.dp, bottom = 12.dp)
+            .background(cCard, RoundedCornerShape(16.dp))
+            .border(1.dp, cLine, RoundedCornerShape(16.dp))
+            .padding(16.dp)
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            // Filter header with expand/collapse and reset button
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(onClick = onToggleExpanded) {
-                    Icon(
-                        if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                        contentDescription = if (expanded) "收起" else "展开",
-                        tint = Primary
+        // 行1：最弱信号预设（激活 primary 实底白字）
+        FilterRow(label = "最弱信号") {
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                listOf(-40 to "强 [-40]", -60 to "较好 [-60]", -70 to "一般 [-70]", -85 to "弱 [-85]").forEach { (v, lb) ->
+                    PresetPill(
+                        label = lb,
+                        selected = filterRSSI == v,
+                        onClick = { onFilterRSSIChange(v) }
                     )
-                }
-
-                Text(
-                    "过滤条件",
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.SemiBold
-                )
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                // Active filter count badge
-                val activeCount = getActiveFilterCount(filterRSSI, filterNamePrefix, hideUnnamed)
-                if (activeCount > 0) {
-                    Text(
-                        "$activeCount",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = Primary,
-                        modifier = Modifier
-                            .background(Primary.copy(alpha = 0.1f), RoundedCornerShape(8.dp))
-                            .padding(horizontal = 8.dp, vertical = 2.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                }
-
-                OutlinedButton(
-                    onClick = onReset,
-                    modifier = Modifier.height(32.dp),
-                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp)
-                ) {
-                    Icon(
-                        Icons.Default.Refresh,
-                        contentDescription = null,
-                        modifier = Modifier.padding(end = 4.dp)
-                    )
-                    Text("重置", style = MaterialTheme.typography.labelSmall)
                 }
             }
-
-            // Filter options
-            if (expanded) {
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // RSSI Filter - aligned with UniApp (-100 to -30)
-                FilterItem(label = "信号强度", value = "$filterRSSI dBm") {
-                    Slider(
-                        value = filterRSSI.toFloat(),
-                        onValueChange = { onFilterRSSIChange(it.toInt()) },
-                        valueRange = -100f..-30f,
-                        steps = 13
-                    )
-
-                    // Preset buttons - aligned with UniApp
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        // 行2：阈值滑杆
+        FilterRow(label = "阈值 $filterRSSI dBm") {
+            Slider(
+                value = filterRSSI.toFloat(),
+                onValueChange = { onFilterRSSIChange(it.toInt()) },
+                valueRange = -100f..-40f,
+                steps = 11,
+                colors = SliderDefaults.colors(
+                    thumbColor = cCard,
+                    activeTrackColor = cPrimary,
+                    inactiveTrackColor = cLine
+                )
+            )
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        // 行3：名称前缀（fill 底圆角 8）
+        FilterRow(label = "名称前缀") {
+            BasicTextField(
+                value = filterNamePrefix,
+                onValueChange = onFilterNamePrefixChange,
+                singleLine = true,
+                textStyle = androidx.compose.ui.text.TextStyle(
+                    fontSize = 13.sp,
+                    color = cText
+                ),
+                cursorBrush = SolidColor(cPrimary),
+                decorationBox = { inner ->
+                    androidx.compose.foundation.layout.Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(cFill, RoundedCornerShape(8.dp))
+                            .padding(horizontal = 10.dp)
+                            .height(34.dp),
+                        contentAlignment = Alignment.CenterStart
                     ) {
-                        PresetButton(
-                            label = "全部",
-                            selected = filterRSSI == -100,
-                            onClick = { onFilterRSSIChange(-100) },
-                            modifier = Modifier.weight(1f)
-                        )
-                        PresetButton(
-                            label = "-90",
-                            selected = filterRSSI == -90,
-                            onClick = { onFilterRSSIChange(-90) },
-                            modifier = Modifier.weight(1f)
-                        )
-                        PresetButton(
-                            label = "-70",
-                            selected = filterRSSI == -70,
-                            onClick = { onFilterRSSIChange(-70) },
-                            modifier = Modifier.weight(1f)
-                        )
-                        PresetButton(
-                            label = "-50",
-                            selected = filterRSSI == -50,
-                            onClick = { onFilterRSSIChange(-50) },
-                            modifier = Modifier.weight(1f)
-                        )
+                        if (filterNamePrefix.isEmpty()) {
+                            Text("如 SHID / LightBLE", fontSize = 13.sp, color = cPh)
+                        }
+                        inner()
                     }
                 }
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                // Name prefix filter
-                FilterItem(label = "名称前缀") {
-                    TextField(
-                        value = filterNamePrefix,
-                        onValueChange = onFilterNamePrefixChange,
-                        placeholder = { Text("输入设备名称前缀...", style = MaterialTheme.typography.bodySmall) },
-                        singleLine = true,
-                        colors = TextFieldDefaults.colors(
-                            focusedIndicatorColor = Primary,
-                            unfocusedIndicatorColor = MaterialTheme.colorScheme.outline
-                        ),
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                // Hide unnamed checkbox
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        "隐藏无名设备",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                    Spacer(modifier = Modifier.weight(1f))
-                    Switch(
-                        checked = hideUnnamed,
-                        onCheckedChange = onHideUnnamedChange
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun FilterItem(
-    label: String,
-    value: String? = null,
-    content: @Composable () -> Unit
-) {
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                label,
-                style = MaterialTheme.typography.bodySmall,
-                color = TextSecondary,
-                fontWeight = FontWeight.Medium
             )
-            if (value != null) {
-                Text(
-                    value,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = if (value == "-100 dBm") TextSecondary else Primary,
-                    fontWeight = FontWeight.Medium
-                )
-            }
         }
-        Spacer(modifier = Modifier.height(8.dp))
-        content()
+        Spacer(modifier = Modifier.height(10.dp))
+        // 行4：隐藏无名开关 + 重置过滤
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("隐藏无名", fontSize = 12.sp, color = cMut, fontWeight = FontWeight.W600)
+            Spacer(modifier = Modifier.width(10.dp))
+            Switch(
+                checked = hideUnnamed,
+                onCheckedChange = onHideUnnamedChange,
+                colors = SwitchDefaults.colors(
+                    checkedTrackColor = cSuccess,
+                    checkedThumbColor = cCard,
+                    uncheckedTrackColor = cPh,
+                    uncheckedThumbColor = cCard
+                )
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            DsSoftButton(label = "重置过滤", onClick = onReset)
+        }
     }
 }
 
 @Composable
-private fun PresetButton(
-    label: String,
-    selected: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Button(
-        onClick = onClick,
-        modifier = modifier.height(32.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = if (selected) Primary else MaterialTheme.colorScheme.surfaceVariant
-        ),
-        shape = RoundedCornerShape(6.dp),
-        contentPadding = PaddingValues(horizontal = 4.dp, vertical = 0.dp)
-    ) {
+private fun FilterRow(label: String, content: @Composable () -> Unit) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
             label,
-            style = MaterialTheme.typography.labelSmall,
-            color = if (selected) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
+            fontSize = 12.sp,
+            color = cMut,
+            fontWeight = FontWeight.W600,
+            modifier = Modifier.width(64.dp)
         )
+        Column(modifier = Modifier.weight(1f)) { content() }
     }
 }
 
-private fun getActiveFilterCount(rssi: Int, namePrefix: String, hideUnnamed: Boolean): Int {
-    var count = 0
-    if (rssi > -100) count++
-    if (namePrefix.isNotEmpty()) count++
-    if (hideUnnamed) count++
-    return count
+@Composable
+private fun PresetPill(label: String, selected: Boolean, onClick: () -> Unit) {
+    Text(
+        label,
+        fontSize = 11.sp,
+        color = if (selected) cCard else cSub,
+        fontWeight = FontWeight.W600,
+        modifier = Modifier
+            .background(
+                if (selected) cPrimary else cFill,
+                RoundedCornerShape(999.dp)
+            )
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onClick
+            )
+            .padding(horizontal = 11.dp, vertical = 4.dp)
+    )
 }

@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import * as profileNavigation from '../../apps/uniapp/services/provisioning/profile-navigation.js';
 import {
   buildGenericDeviceDetailUrl,
   buildConnectedDeviceOpenUrl,
   buildProfileActionUrl,
   buildHidDetailUrl,
   buildHidDiagnosticsUrl,
-  buildHidHistoryUrl,
   buildHidProvisionUrl
 } from '../../apps/uniapp/services/provisioning/profile-navigation.js';
 import '../../apps/uniapp/services/provisioning/builtins.js';
@@ -29,7 +29,10 @@ assert.doesNotMatch(advancedUrl, /DEADBEEF|advertisDataHex/);
 assert.equal(buildHidDiagnosticsUrl(device.deviceId), '/pages/hid/diagnostics?deviceId=device%20A%2F1');
 assert.equal(buildHidProvisionUrl(device.deviceId), '/pages/hid/add?deviceId=device%20A%2F1');
 assert.equal(buildHidDetailUrl(device.deviceId), '/pages/hid/detail?deviceId=device%20A%2F1');
-assert.equal(buildHidHistoryUrl(), '/pages/hid/history');
+// F023（2026-09-02 用户决策）：历史页整链移除——导出与路由都不得回归
+assert.equal('buildHidHistoryUrl' in profileNavigation, false, 'buildHidHistoryUrl 不得再导出');
+const pagesManifest = readFileSync(new URL('../../apps/uniapp/pages.json', import.meta.url), 'utf8');
+assert.doesNotMatch(pagesManifest, /hid\/history/, 'pages.json 不得残留 /pages/hid/history 路由');
 assert.equal(
   buildProfileActionUrl('smart-hid', device),
   '/pages/hid/add?deviceId=device%20A%2F1'

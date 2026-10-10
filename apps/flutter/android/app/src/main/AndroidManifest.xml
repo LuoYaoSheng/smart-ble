@@ -10,13 +10,15 @@
     <!-- 位置权限（扫描需要） -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- Smart HID 配网（P002）：扫描 ControlHub 配对二维码 -->
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:label="BLE Toolkit+"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
-            android:name=".MainActivity"
+            android:name="com.smartble.flutter.MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:taskAffinity=""

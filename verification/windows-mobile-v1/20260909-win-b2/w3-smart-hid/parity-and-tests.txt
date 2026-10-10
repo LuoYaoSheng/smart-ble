@@ -1,0 +1,21 @@
+Smart HID V1 platform parity（vectors E:\project\xf\smart-ble\core\protocols\smart-hid-v1-vectors.json）
+  js       PASS  71/71  （constants 21, qr 10, candidate 9, framingMtu 7, frames 7, deviceInfo 5, status 4, errorRecovery 8）
+  dart     PASS  59/59  （constants 17, qr 10, candidate 9, framingMtu 7, frames 7, deviceInfo 5, status 4）
+  kotlin   PASS  71/71  （constants 21, qr 10, candidate 9, framingMtu 7, frames 7, deviceInfo 5, status 4, errorRecovery 8）
+  swift    DEFERRED_TO_MAC  计划 M1：core/apple/SmartHidCore 接入同一向量文件（Windows 阶段不执行）
+parity PASS（已执行平台零失败；NOT_IMPLEMENTED/DEFERRED/BLOCKED 为在册状态）
+====
+$ gradlew testDebugUnitTest (corretto-18, full)
+BUILD SUCCESSFUL in 5s
+====
+$ cat apps/android/app/build/smart-hid-parity-kotlin.json
+{"platform":"kotlin","pass":71,"fail":0,"failures":[]}
+
+==== W3 续：配网会话编排（同日第二轮，gradle corretto-18）====
+$ gradlew testDebugUnitTest --console=plain
+BUILD SUCCESSFUL in 38s
+测试类计数（test-results XML 汇总）：total tests: 34, total failures: 0
+  HidProvisionControllerTest  tests=14 failures=0
+  SmartHidVectorParityTest    tests=1  failures=0（71 断言，见上方 parity 输出）
+$ gradlew assembleDebug
+BUILD SUCCESSFUL in 16s

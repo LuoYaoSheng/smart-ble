@@ -1,0 +1,4 @@
+# Native Windows ARM64 wheel set verified 2026-10-10; no x64 emulation fallback.
+PySide6==6.12.0
+bleak==3.0.2
+PyInstaller==6.22.3

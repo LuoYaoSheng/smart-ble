@@ -107,7 +107,20 @@ function snapshotSession(session) {
 
 export function createSessionRegistry() {
   const sessions = new Map();
+  const changeListeners = new Set();
   let nextCallbackId = 1;
+
+  function notifyChange(session, phase) {
+    if (!session || changeListeners.size === 0) return;
+    const snapshot = snapshotSession(session);
+    for (const listener of [...changeListeners]) {
+      try {
+        listener(snapshot, phase);
+      } catch {
+        // 订阅方异常不得影响 registry 事实源
+      }
+    }
+  }
 
   function createSession(deviceOrPartial) {
     const partial = typeof deviceOrPartial === 'string' ? { deviceId: deviceOrPartial } : { ...deviceOrPartial };
@@ -129,6 +142,7 @@ export function createSessionRegistry() {
     }
     syncSubscriptionCount(session);
     sessions.set(deviceId, session);
+    notifyChange(session, 'created');
     return session;
   }
 
@@ -159,6 +173,7 @@ export function createSessionRegistry() {
 
     session.updatedAt = now();
     syncSubscriptionCount(session);
+    notifyChange(session, 'updated');
     return session;
   }
 
@@ -171,7 +186,18 @@ export function createSessionRegistry() {
     session.runtime = null;
     syncSubscriptionCount(session);
     sessions.delete(deviceId);
+    notifyChange(session, 'removed');
     return true;
+  }
+
+  /**
+   * 订阅会话变更（created/updated/removed），返回取消函数。
+   * API_SPEC §7 subscribeConnectionState 的数据源；重复注册同一 listener 自动去重。
+   */
+  function subscribe(listener) {
+    if (typeof listener !== 'function') throw new Error('session change listener must be a function');
+    changeListeners.add(listener);
+    return () => changeListeners.delete(listener);
   }
 
   function listSessions(options = {}) {
@@ -303,6 +329,7 @@ export function createSessionRegistry() {
 
   function reset() {
     sessions.clear();
+    changeListeners.clear();
     nextCallbackId = 1;
   }
 
@@ -312,6 +339,7 @@ export function createSessionRegistry() {
     updateSession,
     removeSession,
     listSessions,
+    subscribe,
     setOwner,
     getOwner,
     addSubscription,

@@ -1,0 +1,8 @@
+{
+  "shell": "tauri",
+  "exe": "E:\\project\\xf\\smart-ble\\apps\\desktop\\tauri\\src-tauri\\target\\debug\\smart-ble-tauri.exe",
+  "final": {
+    "word": "蓝牙就绪",
+    "dot": "bt-dot on"
+  }
+}

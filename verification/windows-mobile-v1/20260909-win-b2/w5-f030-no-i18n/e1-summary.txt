@@ -1,0 +1,59 @@
+F030 不做国际化——E1 静态守卫证据摘要（2026-09-10）
+====================================================
+
+正典：PRD §5 F030（locale 文件就绪但未接线 · UI 全中文硬编码）· §8 R30（现状确认）·
+     2026-09-02 变更记录（P-05/F030 i18n 关闭：不做）·
+     计划文档 W5「F030：明确不做国际化，增加静态守卫，禁止重新出现产品级语言切换」
+形态：删除红线（同 F023 性质）——验证方式=全仓+实现线内不得出现对应能力的静态检查。
+
+移除清单（本轮，i18n 脚手架清零）
+-------------------------------------------
+E-WIN（apps/desktop/electron/public/）：
+  - I18nManager.js 删除（系统语言探测+字典 fetch+data-i18n DOM 翻译+language-changed 事件）
+  - locales/{zh-CN,en-US}.json 删除
+  - index.html：i18n Engine script 标签删除；12 处 data-i18n 属性剥离（内联中文即终稿文案）
+  - app.js：window.i18n.init() 块移除（F030 决议注释锚点替代）
+T-WIN（apps/desktop/tauri/src/）：同构四项（两线字典/标注逐字节一致，diff 实证）
+uniapp（apps/uniapp/locale/）：
+  - en-US.json + zh-CN.json 删除——与桌面线同键族（tab_scan…）的孤儿字典，
+    零接线实证（0 处 $t(/manifest 无 locale 配置/0 引用），属同批脚手架
+保持不动（在册决议）：
+  - F-AND main.dart Global{Material,Widgets,Cupertino}Localizations delegates + supportedLocales：
+    框架级基建（Material 内建控件串本地化，FLUTTER-G1-004），产品文案仍硬编码中文，无切换入口
+  - F-AND lib/l10n/**：PRD F030 明示「locale 文件就绪但未接线」在册现状——脚手架保留，
+    守卫白名单限定该目录；目录之外任何 AppLocalizations 接线（delegate/.of）均违规
+  - A-AND：无 localeConfig/per-app language/values-<locale> 限定符目录（扫描干净）
+
+守卫：scripts/check-f030-no-i18n.mjs（verify-uniapp 第 14 门禁）
+-------------------------------------------
+- 范围：10 产品源集（uniapp/flutter/android/ios/electron/tauri-web/tauri-rs/macos/avalonia/core）
+  × 三类规则：i18n 机器（I18n*/window.i18n/data-i18n/vue-i18n/uni.setLocale/i18n.t/
+  AppLocalizations/NSLocalizedString/String(localized:)/rust_i18n/IStringLocalizer…）、
+  语言切换入口（切换语言/语言切换/语言设置/switchLanguage/changeLanguage）、
+  Android localeConfig；测试目录与注释行排除
+- 结构检查：uniapp locale(s)/、E-WIN/T-WIN locales/、两线 I18nManager.js、
+  Android res/values-<locale> 限定符目录必须不存在
+- 白名单：apps/flutter/lib/l10n（documented-unwired 脚手架）
+
+$ node scripts/check-f030-no-i18n.mjs
+F030 no-i18n gate PASS (300 product source files scanned; …all clean)
+
+门禁自检（gate-selftest.log，注入→检出→还原→复跑）
+-------------------------------------------
+注入① window.i18n.t() 调用（electron app.js）      → [i18n-machinery] 检出
+注入② AppLocalizations.of(context)（flutter 页面） → [i18n-machinery] 检出
+注入③ 「切换语言」UI 文案（uniapp index.vue）       → [language-switch-ui] 检出
+注入④ apps/uniapp/locale/en-US.json 资产回潮       → [locale-asset] 检出
+还原后复跑 PASS（git status 核对注入文件零残留）
+
+全量验证（2026-09-10）
+-------------------------------------------
+$ bash scripts/verify-uniapp.sh
+UniApp verification PASS (28 unit files plus 14 static gates)
+$ cd apps/uniapp && npm run build:mp-weixin
+DONE  Build complete.（locale/ 移除无副作用；node:crypto 外部化为既有告警非本轮）
+$ node --check apps/desktop/{tauri/src,electron/public}/app.js
+SYNTAX-OK（两桌面线入口语法）
+
+限制（如实）：E-WIN/T-WIN 为删除+剥离+入口简化，本轮静态验证（语法/零残留/构建守卫）；
+运行级走查随 W6 桌面线窗口（Electron npm start / Tauri 待 Rust 工具链）。

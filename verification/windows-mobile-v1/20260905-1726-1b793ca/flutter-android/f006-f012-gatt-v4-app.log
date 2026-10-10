@@ -1,0 +1,56 @@
+Flutter assets will be downloaded from https://storage.flutter-io.cn. Make sure you trust this source!
+00:00 +0: loading E:/project/xf/smart-ble/apps/flutter/integration_test/p006_gatt_test.dart
+Running Gradle task 'assembleDebug'...                          
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by net.rubygrapefruit.platform.internal.NativeLibraryLoader in an unnamed module (file:/C:/Users/11066/.gradle/wrapper/dists/gradle-8.14-all/c2qonpi39x1mddn7hk5gh9iqj/gradle-8.14/lib/native-platform-0.22-milestone-28.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+Flutter assets will be downloaded from https://storage.flutter-io.cn. Make sure you trust this source!
+Running Gradle task 'assembleDebug'...                             38.1s
+√ Built build\app\outputs\flutter-apk\app-debug.apk
+Installing build\app\outputs\flutter-apk\app-debug.apk...           5.5s
+00:00 +0: F006-F012 GATT domain (fixture BLEToolkit-Server)
+P006[E2E 08:32:54.152]: 启动
+P006[E2E 08:32:56.066]: 夹具卡片发现=true
+[INFO] 发现 5 个服务
+P006[E2E 08:32:58.092]: F006 GATT 连接 ✓
+P006[E2E 08:32:58.098]: F007 服务命名：OTA=1（应 1）/ 未知=2（主服务+权限矩阵）
+P006[E2E 08:32:58.860]: F007 服务树 ✓（主服务 2 特征：控制=读+写+通知，状态=写+通知）
+[INFO] 读取 未知特征值...
+[SUCCESS] HEX: 2C 5E CA 3F
+TEXT: ,^�?
+P006[E2E 08:32:59.606]: F008 控制特征读（设备信息 JSON）✓
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following IndexError was thrown running a test:
+RangeError (index): Index out of range: index should be less than 1: 1
+
+When the exception was thrown, this was the stack:
+#0      CachingIterable.elementAt (package:flutter/src/foundation/basic_types.dart:189:9)
+#1      _IndexFinderMixin.filter (package:flutter_test/src/finders.dart:1388:28)
+#3      _AncestorFinderMixin.allCandidates (package:flutter_test/src/finders.dart:1806:49)
+#4      FinderBase.evaluate (package:flutter_test/src/finders.dart:979:76)
+#5      _DescendantFinderMixin.allCandidates (package:flutter_test/src/finders.dart:1728:56)
+#6      ChainedFinderMixin.allCandidates (package:flutter_test/src/finders.dart:1312:55)
+#7      FinderBase.evaluate (package:flutter_test/src/finders.dart:979:76)
+#8      WidgetController._getElementPoint (package:flutter_test/src/controller.dart:2011:47)
+#9      WidgetController.getCenter (package:flutter_test/src/controller.dart:1865:12)
+#10     WidgetController.tap (package:flutter_test/src/controller.dart:1045:7)
+#11     main.<anonymous closure> (file:///E:/project/xf/smart-ble/apps/flutter/integration_test/p006_gatt_test.dart:216:20)
+<asynchronous suspension>
+#12     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#13     TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1059:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 2 frames from dart:async-patch and package:stack_trace)
+
+The test description was:
+  F006-F012 GATT domain (fixture BLEToolkit-Server)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:07 +0 -1: F006-F012 GATT domain (fixture BLEToolkit-Server) [E]
+  Test failed. See exception logs above.
+  The test description was: F006-F012 GATT domain (fixture BLEToolkit-Server)
+  
+00:07 +0 -1: (tearDownAll)
+00:08 +0 -1: Some tests failed.

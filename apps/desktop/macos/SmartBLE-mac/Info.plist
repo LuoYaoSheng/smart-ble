@@ -2,37 +2,49 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>CFBundleDevelopmentRegion</key>
-    <string>en</string>
-    <key>CFBundleExecutable</key>
-    <string>SmartBLE-mac</string>
-    <key>CFBundleIdentifier</key>
-    <string>com.smartble.desktop</string>
-    <key>CFBundleInfoDictionaryVersion</key>
-    <string>6.0</string>
-    <key>CFBundleName</key>
-    <string>SmartBLE</string>
-    <key>CFBundlePackageType</key>
-    <string>APPL</string>
-    <key>CFBundleShortVersionString</key>
-    <string>1.0.0</string>
-    <key>CFBundleVersion</key>
-    <string>1</string>
-    <key>LSMinimumSystemVersion</key>
-    <string>13.0</string>
-    <key>NSHumanReadableCopyright</key>
-    <string>Copyright © 2024 SmartBLE. All rights reserved.</string>
-    <key>NSBluetoothAlwaysUsageDescription</key>
-    <string>SmartBLE needs Bluetooth access to scan for, connect to, and interact with nearby BLE devices.</string>
-    <key>NSBluetoothPeripheralUsageDescription</key>
-    <string>SmartBLE needs Bluetooth access to scan for, connect to, and interact with nearby BLE devices.</string>
-    <key>NSPrincipalClass</key>
-    <string>NSApplication</string>
-    <key>NSHighResolutionCapable</key>
-    <true/>
-    <key>NSSupportsAutomaticTermination</key>
-    <true/>
-    <key>NSSupportsSuddenTermination</key>
-    <true/>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>zh-CN</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIconFile</key>
+	<string>AppIcon</string>
+	<key>CFBundleIconName</key>
+	<string>AppIcon</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>CFBundleIdentifier</key>
+	<string>com.i2kai.open.smartble</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleDisplayName</key>
+	<string>BLE Toolkit+</string>
+	<key>CFBundleName</key>
+	<string>BLE Toolkit+</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0.5</string>
+	<key>CFBundleVersion</key>
+	<string>101</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.utilities</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>13.0</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2026 BLE Toolkit+. All rights reserved.</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>BLE Toolkit+ needs Bluetooth access to scan for, connect to, and interact with nearby BLE devices.</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>BLE Toolkit+ needs Bluetooth access to scan for, connect to, and interact with nearby BLE devices.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>BLE Toolkit+ uses the camera to scan ControlHub pairing QR codes (shid://pair). No images are stored.</string>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>NSSupportsAutomaticTermination</key>
+	<true/>
+	<key>NSSupportsSuddenTermination</key>
+	<true/>
 </dict>
 </plist>

@@ -73,7 +73,7 @@
 | P02-02 | Wi-Fi 密码输入（≤64，password 型） | configure 阶段 | 可留空（「无密码可留空」） | F019 · R17 | —（表单；仅内存 BR-03） |
 | P02-03 | ControlHub 地址输入 | configure 阶段 | placeholder 192.168.1.8:17892；扫码后自动回填 host:port | F019 · R16 | —（表单） |
 | P02-04 | 扫描 ControlHub 配对码（大动作卡） | configure 阶段 | 调起扫码→解析 `shid://pair`→回填地址+token 入内存（badge 必需→已获取）；失败按取消/权限/失败分类提示 | F020 · R16 | 扫码为平台绑定项（10_platform §1 Profile 域行）：uni.scanCode；Desktop=摄像头扫码为主+粘贴/手输兜底（10_platform §2.4/§4） |
-| P02-05 | 下发配置 | configure 阶段（canSubmit） | canSubmit=SSID+Hub+token 齐且非配网中；点击进入 status 阶段；candidate 分帧加密写 INPUT | F021 · R17 | `BLE.write`（framed-v1 分帧加密，帧契约见 BUSINESS_FLOW §4） |
+| P02-05 | 下发配置 | configure 阶段（canSubmit） | canSubmit=SSID+Hub+token 齐且非配网中；点击进入 status 阶段；candidate 分帧明文写 INPUT | F021 · R17 | `BLE.write`（framed-v1 分帧明文 write，帧契约见 BUSINESS_FLOW §4） |
 | P02-06 | 取消等待 | status 阶段·配网进行中 | 取消 60s 等待，回到可重试状态 | F021 · R17 | —（轮询取消） |
 | P02-07 | 查看设备 | status 阶段·配网成功 | redirectTo P003（保留会话；内存快照，不落盘） | F019 · R17 | —（导航） |
 | P02-08 | 恢复按钮（文案随错误变） | status 阶段·失败 | 四种动作：回表单 form / 重新扫码 pairing / 跳诊断 diagnostics / 重下发 retry | F022 · R18 | —（错误恢复路由；错误码表见 BUSINESS_FLOW §4） |
@@ -148,7 +148,7 @@
 | P09-01 | 官方网站 / 问题反馈 | 平台分支：APP 拉起浏览器 / H5 新窗 / 微信复制链接+toast | F027 域 · PAGE_SPEC §9 | 10_platform §4 分享/外链差异行 |
 | P09-02 | 版本记录 | navigateTo P010 | F027 | — |
 | P09-03 | 分享应用 | 微信：showShareMenu+toast「请点击右上角分享」；APP：系统分享（失败降级复制）；H5：navigator.share（失败降级复制） | F029 | 10_platform §4「分享（F029）」行 |
-| P09-04 | （推广卡） | 微信：navigateToMiniProgram（未配置 appId→toast；失败→modal）；**非微信渠道（APP/Desktop/Web）：打开落地页 + 出示小程序码（静态预生成资源·零后端）** | F028 · R27 | 10_platform §4「推广跳转（F028）」行；二维码为待实现项（PRD §5 F028 状态「部分实现」） |
+| ~~P09-04~~ | ~~（推广卡）~~ | **已移除（2026-09-10 · F028）**——更多小程序推广区整链下线 | F028 · R27（失效） | 10_platform §4 推广跳转差异行同日作废 |
 
 ### 3.9 PAGE010 版本记录（PAGE_SPEC §10）
 
@@ -206,5 +206,5 @@
 - ☑ 无多：本表未含任何 PAGE_SPEC/PRD 未定义的动作（HTML 存在而 PRD 未定义的按钮属违例——开发实现同样适用）
 - ☑ 无少：F001–F030 在册 29 功能（除 F023/F017/F030 无页面动作外）均可经本表动作触达；F017 无独立页面入口（P-04 关闭，PRD 变更记录）、F030 不做（P-05 关闭）
 - ☑ OTA 全部动作（P06-01/P06-12）带 BLOCKED 标注（STATE_MODEL §1 第 6 项）
-- ☑ 平台差异仅限 10_platform §4 差异表列出的差异点（扫码/分享/推广/日志导出/生命周期/权限模型/设备发现交互）
+- ☑ 平台差异仅限 10_platform §4 差异表列出的差异点（扫码/分享/日志导出/生命周期/权限模型/设备发现交互；推广差异行随 F028 于 2026-09-10 移除）
 - ☑ **（v1.1）方法与事件契约引用切换到 API_SPEC（§0/§4/§6），本文保留页面动作映射职责；动作/功能/验收编号零改动**

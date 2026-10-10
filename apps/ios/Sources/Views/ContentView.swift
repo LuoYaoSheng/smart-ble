@@ -6,40 +6,42 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject var bleManager: BLEManager
-    @State private var selectedTab = 0
+    @State private var selectedTab: NativeTab
+    private let scanPreviewScenario: ScanPreviewScenario?
+    private let connectedCountOverride: Int?
+
+    init(
+        initialTab: NativeTab = .scan,
+        scanPreviewScenario: ScanPreviewScenario? = nil,
+        connectedCountOverride: Int? = nil
+    ) {
+        _selectedTab = State(initialValue: initialTab)
+        self.scanPreviewScenario = scanPreviewScenario
+        self.connectedCountOverride = connectedCountOverride
+    }
 
     var body: some View {
-        TabView(selection: $selectedTab) {
-            ScanView()
-                .tabItem {
-                    Label("扫描", systemImage: "antenna.radiowaves.left.and.right")
+        VStack(spacing: 0) {
+            Group {
+                switch selectedTab {
+                case .scan:
+                    ScanView(previewScenario: scanPreviewScenario)
+                case .connected:
+                    ConnectedDevicesView(onGoScan: { selectedTab = .scan })
+                case .broadcast:
+                    BroadcastView()
+                case .about:
+                    AboutView()
                 }
-                .tag(0)
-
-            ConnectedDevicesView()
-                .tabItem {
-                    Label("已连接", systemImage: "link")
-                }
-                .tag(1)
-
-            BroadcastView()
-                .tabItem {
-                    Label("广播", systemImage: "dot.radiowaves.up.forward")
-                }
-                .tag(2)
-
-            AboutView()
-                .tabItem {
-                    Label("关于", systemImage: "info.circle")
-                }
-                .tag(3)
-        }
-        .tint(.blue)
-        .onChange(of: bleManager.connectionStates) { _ in
-            let hasConnected = !bleManager.connectedDeviceIds.isEmpty
-            if hasConnected && selectedTab != 1 {
-                selectedTab = 1
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+            NativeTabBar(
+                selection: $selectedTab,
+                connectedCount: connectedCountOverride
+                    ?? (scanPreviewScenario == nil ? bleManager.connectedDeviceIds.count : 3)
+            )
         }
+        .background(NativeDS.page.ignoresSafeArea())
     }
 }

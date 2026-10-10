@@ -44,7 +44,7 @@
 | mqtt_invalid | MQTT 配置无效 | form / diagnostics |
 | storage_failed | 设备侧存储失败 | retry |
 
-另有：身份验证失败（断开报错）；扫码取消/权限/失败分类提示；加密写失败 2s 自动重试一次（Android 首次写触发系统 Just Works 配对弹窗）；60s 超时→取消等待；配网中物理返回→确认弹窗。
+另有：身份验证失败（断开报错）；扫码取消/权限/失败分类提示；旧加密固件写入失败立即提示重烧 V1 简化固件；60s 超时→取消等待；配网中物理返回→确认弹窗。
 
 **边界**：READY 设备关闭蓝牙广播——重新配网需设备进配网/恢复模式（各重配入口均带确认提示）；token/Wi-Fi 密码仅内存、不进日志不落盘（SENSITIVE_PROFILE_KEYS 黑名单）；配网会话互斥（session.provisioning 标志）。
 

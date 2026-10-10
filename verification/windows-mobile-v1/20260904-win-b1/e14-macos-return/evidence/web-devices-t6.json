@@ -1,0 +1,12 @@
+{
+  "devices": [
+    {
+      "device_id": "HID-00000001",
+      "boot_id": "B-D00422",
+      "online": true,
+      "usb_hid_ready": false,
+      "firmware": "1.1.0"
+    }
+  ],
+  "total": 1
+}

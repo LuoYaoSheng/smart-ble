@@ -27,7 +27,7 @@ export const SMART_HID_PROVISIONING_SERVICE_UUID = '9f1d1001-e73b-4c8f-9d2a-6f0b
 export const SMART_HID_CHARACTERISTIC_UUIDS = {
   /** Device Info：read + notify */
   INFO: '9f1d1002-e73b-4c8f-9d2a-6f0b5e8a1c04',
-  /** Provision Input：write（要求加密链路，bonding Just Works） */
+  /** Provision Input：write（明文，2026-09-05 V1 简化：无 SMP 配对） */
   INPUT: '9f1d1003-e73b-4c8f-9d2a-6f0b5e8a1c04',
   /** Provision Status：read + notify */
   STATUS: '9f1d1004-e73b-4c8f-9d2a-6f0b5e8a1c04'

@@ -1,0 +1,858 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project SmartBLE.xcodeproj -scheme SmartBLEiOS -destination id=00008030-001211062EC0802E -configuration Debug -derivedDataPath build/DerivedData build
+
+Resolve Package Graph
+
+
+Resolved source packages:
+  SmartHidCore: /Users/luoyaosheng/Desktop/project/Open/smart-ble/core/apple/SmartHidCore
+
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (3 targets)
+    Target 'SmartBLEiOS' in project 'SmartBLE'
+        ➜ Explicit dependency on target 'SmartHidCore' in project 'SmartHidCore'
+    Target 'SmartHidCore' in project 'SmartHidCore'
+        ➜ Explicit dependency on target 'SmartHidCore' in project 'SmartHidCore'
+    Target 'SmartHidCore' in project 'SmartHidCore' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+Build description signature: c29a307239104c511180677816bb9a52
+Build description path: /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/XCBuildData/c29a307239104c511180677816bb9a52.xcbuilddata
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/SDKStatCaches.noindex/iphoneos26.1-23B77-3885c01c3e6b6a337905948deab2002e69b33fc7382b27d9b5d46e82a00f8e78.sdkstatcache
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/SmartBLE.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/SDKStatCaches.noindex/iphoneos26.1-23B77-3885c01c3e6b6a337905948deab2002e69b33fc7382b27d9b5d46e82a00f8e78.sdkstatcache
+
+CreateBuildDirectory /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/SmartBLE.xcodeproj
+    builtin-create-build-directory /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex
+
+CreateBuildDirectory /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/SmartBLE.xcodeproj
+    builtin-create-build-directory /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products
+
+CreateBuildDirectory /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/SmartBLE.xcodeproj
+    builtin-create-build-directory /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+CreateBuildDirectory /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/SmartBLE.xcodeproj
+    builtin-create-build-directory /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules
+
+CreateBuildDirectory /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/SmartBLE.xcodeproj
+    builtin-create-build-directory /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos
+
+CreateBuildDirectory /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphoneos
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/SmartBLE.xcodeproj
+    builtin-create-build-directory /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphoneos
+
+WriteAuxiliaryFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLE-c442bf2bd89a6c4a864f9ac69b9f36ac-VFS-iphoneos/all-product-headers.yaml
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/SmartBLE.xcodeproj
+    write-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLE-c442bf2bd89a6c4a864f9ac69b9f36ac-VFS-iphoneos/all-product-headers.yaml
+
+CreateBuildDirectory /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/SmartBLE.xcodeproj
+    builtin-create-build-directory /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks
+
+WriteAuxiliaryFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-generated-files.hmap (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    write-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-generated-files.hmap
+
+WriteAuxiliaryFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-own-target-headers.hmap (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    write-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-own-target-headers.hmap
+
+WriteAuxiliaryFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-all-non-framework-target-headers.hmap (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    write-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-all-non-framework-target-headers.hmap
+
+WriteAuxiliaryFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE.DependencyStaticMetadataFileList (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    write-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE.DependencyStaticMetadataFileList
+
+WriteAuxiliaryFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE.hmap (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    write-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE.hmap
+
+WriteAuxiliaryFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-all-target-headers.hmap (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    write-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-all-target-headers.hmap
+
+WriteAuxiliaryFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-project-headers.hmap (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    write-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-project-headers.hmap
+
+WriteAuxiliaryFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/SmartHidCore.modulemap (in target 'SmartHidCore' from project 'SmartHidCore')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/core/apple/SmartHidCore
+    write-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/SmartHidCore.modulemap
+
+WriteAuxiliaryFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/SmartHidCore.DependencyStaticMetadataFileList (in target 'SmartHidCore' from project 'SmartHidCore')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/core/apple/SmartHidCore
+    write-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/SmartHidCore.DependencyStaticMetadataFileList
+
+WriteAuxiliaryFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/SmartHidCore.DependencyMetadataFileList (in target 'SmartHidCore' from project 'SmartHidCore')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/core/apple/SmartHidCore
+    write-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/SmartHidCore.DependencyMetadataFileList
+
+WriteAuxiliaryFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore.SwiftFileList (in target 'SmartHidCore' from project 'SmartHidCore')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/core/apple/SmartHidCore
+    write-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore.SwiftFileList
+
+WriteAuxiliaryFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore_const_extract_protocols.json (in target 'SmartHidCore' from project 'SmartHidCore')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/core/apple/SmartHidCore
+    write-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore_const_extract_protocols.json
+
+WriteAuxiliaryFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore.SwiftConstValuesFileList (in target 'SmartHidCore' from project 'SmartHidCore')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/core/apple/SmartHidCore
+    write-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore.SwiftConstValuesFileList
+
+WriteAuxiliaryFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore.LinkFileList (in target 'SmartHidCore' from project 'SmartHidCore')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/core/apple/SmartHidCore
+    write-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore.LinkFileList
+
+WriteAuxiliaryFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE.DependencyMetadataFileList (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    write-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE.DependencyMetadataFileList
+
+WriteAuxiliaryFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore-OutputFileMap.json (in target 'SmartHidCore' from project 'SmartHidCore')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/core/apple/SmartHidCore
+    write-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore-OutputFileMap.json
+
+WriteAuxiliaryFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-DebugDylibPath-normal-arm64.txt (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    write-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-DebugDylibPath-normal-arm64.txt
+
+WriteAuxiliaryFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-DebugDylibInstallName-normal-arm64.txt (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    write-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-DebugDylibInstallName-normal-arm64.txt
+
+Copy /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/GeneratedModuleMaps-iphoneos/SmartHidCore.modulemap /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/SmartHidCore.modulemap (in target 'SmartHidCore' from project 'SmartHidCore')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/core/apple/SmartHidCore
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/SmartHidCore.modulemap /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/GeneratedModuleMaps-iphoneos
+
+WriteAuxiliaryFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLEiOS_const_extract_protocols.json (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    write-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLEiOS_const_extract_protocols.json
+
+WriteAuxiliaryFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLEiOS-OutputFileMap.json (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    write-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLEiOS-OutputFileMap.json
+
+WriteAuxiliaryFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE.SwiftFileList (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    write-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE.SwiftFileList
+
+WriteAuxiliaryFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE.SwiftConstValuesFileList (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    write-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE.SwiftConstValuesFileList
+
+WriteAuxiliaryFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE.LinkFileList (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    write-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE.LinkFileList
+
+WriteAuxiliaryFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/DerivedSources/Entitlements.plist (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    write-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/DerivedSources/Entitlements.plist
+
+MkDir /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /bin/mkdir -p /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app
+
+SwiftDriver SmartHidCore normal arm64 com.apple.xcode.tools.swift.compiler (in target 'SmartHidCore' from project 'SmartHidCore')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/SmartBLE.xcodeproj
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name SmartHidCore -Onone -enforce-exclusivity\=checked @/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk -target arm64-apple-ios15.0 -g -module-cache-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib -F /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/Frameworks -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk/Developer/Library/Frameworks -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/SDKStatCaches.noindex/iphoneos26.1-23B77-3885c01c3e6b6a337905948deab2002e69b33fc7382b27d9b5d46e82a00f8e78.sdkstatcache -output-file-map /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex -sdk-module-cache-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/Session.modulevalidation -package-name smarthidcore -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore_const_extract_protocols.json -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/include -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/DerivedSources-normal/arm64 -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/DerivedSources/arm64 -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore-Swift.h -working-directory /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/SmartBLE.xcodeproj -experimental-emit-module-separately -disable-cmo
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/_Builtin_stddef-398I8DSDJ5IWOCPMIVNJ95STM.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/ptrcheck-BEBHUY6SGLK453IU8MKJMGQ7C.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/_Builtin_stdarg-9L3IG1E1UV1APVWXFHSOKGTZT.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/_AvailabilityInternal-6X9FE4J8RKZDF8R2VX0J905RR.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/_SwiftConcurrencyShims-80MF3XDE3Y9ORWO4XCSMFM88V.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/_Builtin_float-4PKLH4SZHQRCPNGTRHPLWX8T9.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/SwiftShims-A8N7UYVURMUJB1OJB1KGQ6G0I.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/_Builtin_stdbool-999U2MBJVE68WFP6WE6UJMF9P.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/ptrauth-XLJFB40WI93F6CDAJLKMO2K3.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/_DarwinFoundation1-C8LC2SWR4BK8MHYPKTIU150CD.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/_DarwinFoundation2-C7Q4U4NNXKUFFSG2HM2X5JEVX.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/_Builtin_limits-9ENCFQFTXYXAMR69DFBHPK318.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/_Builtin_stdint-178J3V860V4CWI5N8DLY81I66.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/sys_types-1FHY5MEJGZFV8VYGDXSJ0YCAZ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/_DarwinFoundation3-94WG96ZC8IS7LP9Z53CHSA827.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/_Builtin_inttypes-87INGSGNAT6S4UFYR475UD8EL.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/Darwin-C08RUETLAH8Z2ACNPMKJALLQS.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/ObjectiveC-3T06N6A7HXLDN5I5MH68A2QW5.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/os_object-9JCA128WSCM2TEPFR7UWW8DY9.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/os_workgroup-BII8J219QP3K2GU208NW2SU2V.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/Dispatch-52OQJWN1MJWZSACXG3DQ6LMQK.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/CoreFoundation-5J1CTHX7KBXUMAWNLTHPOJOXP.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/XPC-7USY6NWDMFZLCW85YCLX8KOXH.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/Security-CFQ2EWUWHZW93FYT9MCNKIIUI.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/CFNetwork-7L77LZJ7X4SO8Z602PR5BKTG4.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/Foundation-3EVDOSL6LU0XEO0HF9II3651T.pcm
+
+SwiftCompile normal arm64 Compiling\ SmartHidProfile.swift /Users/luoyaosheng/Desktop/project/Open/smart-ble/core/apple/SmartHidCore/Sources/SmartHidCore/SmartHidProfile.swift (in target 'SmartHidCore' from project 'SmartHidCore')
+
+SwiftCompile normal arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/core/apple/SmartHidCore/Sources/SmartHidCore/SmartHidProfile.swift (in target 'SmartHidCore' from project 'SmartHidCore')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/SmartBLE.xcodeproj
+    
+
+SwiftCompile normal arm64 Compiling\ SmartHidState.swift /Users/luoyaosheng/Desktop/project/Open/smart-ble/core/apple/SmartHidCore/Sources/SmartHidCore/SmartHidState.swift (in target 'SmartHidCore' from project 'SmartHidCore')
+SwiftCompile normal arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/core/apple/SmartHidCore/Sources/SmartHidCore/SmartHidState.swift (in target 'SmartHidCore' from project 'SmartHidCore')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/SmartBLE.xcodeproj
+    
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ SmartHidCore (in target 'SmartHidCore' from project 'SmartHidCore')
+
+EmitSwiftModule normal arm64 (in target 'SmartHidCore' from project 'SmartHidCore')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/SmartBLE.xcodeproj
+    
+
+SwiftCompile normal arm64 Compiling\ SmartHidProtocol.swift /Users/luoyaosheng/Desktop/project/Open/smart-ble/core/apple/SmartHidCore/Sources/SmartHidCore/SmartHidProtocol.swift (in target 'SmartHidCore' from project 'SmartHidCore')
+SwiftCompile normal arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/core/apple/SmartHidCore/Sources/SmartHidCore/SmartHidProtocol.swift (in target 'SmartHidCore' from project 'SmartHidCore')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/SmartBLE.xcodeproj
+    
+
+SwiftCompile normal arm64 Compiling\ SmartHidFraming.swift /Users/luoyaosheng/Desktop/project/Open/smart-ble/core/apple/SmartHidCore/Sources/SmartHidCore/SmartHidFraming.swift (in target 'SmartHidCore' from project 'SmartHidCore')
+
+SwiftCompile normal arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/core/apple/SmartHidCore/Sources/SmartHidCore/SmartHidFraming.swift (in target 'SmartHidCore' from project 'SmartHidCore')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/SmartBLE.xcodeproj
+    
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for SmartHidCore (in target 'SmartHidCore' from project 'SmartHidCore')
+
+SwiftDriver\ Compilation\ Requirements SmartHidCore normal arm64 com.apple.xcode.tools.swift.compiler (in target 'SmartHidCore' from project 'SmartHidCore')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/SmartBLE.xcodeproj
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name SmartHidCore -Onone -enforce-exclusivity\=checked @/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk -target arm64-apple-ios15.0 -g -module-cache-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib -F /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/Frameworks -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk/Developer/Library/Frameworks -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/SDKStatCaches.noindex/iphoneos26.1-23B77-3885c01c3e6b6a337905948deab2002e69b33fc7382b27d9b5d46e82a00f8e78.sdkstatcache -output-file-map /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex -sdk-module-cache-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/Session.modulevalidation -package-name smarthidcore -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore_const_extract_protocols.json -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/include -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/DerivedSources-normal/arm64 -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/DerivedSources/arm64 -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore-Swift.h -working-directory /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/SmartBLE.xcodeproj -experimental-emit-module-separately -disable-cmo
+
+SwiftMergeGeneratedHeaders /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/GeneratedModuleMaps-iphoneos/SmartHidCore-Swift.h /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore-Swift.h (in target 'SmartHidCore' from project 'SmartHidCore')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/core/apple/SmartHidCore
+    builtin-swiftHeaderTool -arch arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore-Swift.h -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/GeneratedModuleMaps-iphoneos/SmartHidCore-Swift.h
+
+Copy /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartHidCore.swiftmodule/arm64-apple-ios.swiftdoc /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore.swiftdoc (in target 'SmartHidCore' from project 'SmartHidCore')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/core/apple/SmartHidCore
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore.swiftdoc /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartHidCore.swiftmodule/arm64-apple-ios.swiftdoc
+
+Copy /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartHidCore.swiftmodule/arm64-apple-ios.abi.json /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore.abi.json (in target 'SmartHidCore' from project 'SmartHidCore')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/core/apple/SmartHidCore
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore.abi.json /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartHidCore.swiftmodule/arm64-apple-ios.abi.json
+
+Copy /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartHidCore.swiftmodule/arm64-apple-ios.swiftmodule /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore.swiftmodule (in target 'SmartHidCore' from project 'SmartHidCore')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/core/apple/SmartHidCore
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore.swiftmodule /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartHidCore.swiftmodule/arm64-apple-ios.swiftmodule
+
+Copy /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartHidCore.swiftmodule/Project/arm64-apple-ios.swiftsourceinfo /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore.swiftsourceinfo (in target 'SmartHidCore' from project 'SmartHidCore')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/core/apple/SmartHidCore
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore.swiftsourceinfo /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartHidCore.swiftmodule/Project/arm64-apple-ios.swiftsourceinfo
+
+ProcessProductPackaging /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/SmartBLE/Resources/SmartBLE.entitlements /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE.app.xcent (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+    Entitlements:
+    
+    {
+    "application-identifier" = "72MZZQB893.com.smartble.ios";
+    "com.apple.developer.team-identifier" = 72MZZQB893;
+    "get-task-allow" = 1;
+}
+    
+    builtin-productPackagingUtility /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/SmartBLE/Resources/SmartBLE.entitlements -entitlements -format xml -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE.app.xcent
+
+ProcessProductPackaging /Users/luoyaosheng/Library/Developer/Xcode/UserData/Provisioning\ Profiles/711a0591-dcd8-4f7f-a504-c70173141d18.mobileprovision /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/embedded.mobileprovision (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-productPackagingUtility /Users/luoyaosheng/Library/Developer/Xcode/UserData/Provisioning\ Profiles/711a0591-dcd8-4f7f-a504-c70173141d18.mobileprovision -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/embedded.mobileprovision
+
+ProcessProductPackagingDER /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE.app.xcent /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE.app.xcent.der (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /usr/bin/derq query -f xml -i /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE.app.xcent -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE.app.xcent.der --raw
+
+SwiftDriver SmartBLEiOS normal arm64 com.apple.xcode.tools.swift.compiler (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name SmartBLE -Onone -enforce-exclusivity\=checked @/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE.SwiftFileList -DDEBUG -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk -target arm64-apple-ios15.0 -g -module-cache-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -F /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks -F /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/SDKStatCaches.noindex/iphoneos26.1-23B77-3885c01c3e6b6a337905948deab2002e69b33fc7382b27d9b5d46e82a00f8e78.sdkstatcache -output-file-map /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLEiOS-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex -sdk-module-cache-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLEiOS_const_extract_protocols.json -Xcc -iquote -Xcc /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-generated-files.hmap -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-own-target-headers.hmap -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLE-c442bf2bd89a6c4a864f9ac69b9f36ac-VFS-iphoneos/all-product-headers.yaml -Xcc -iquote -Xcc /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-project-headers.hmap -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/include -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/DerivedSources-normal/arm64 -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/DerivedSources/arm64 -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE-Swift.h -working-directory /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios -experimental-emit-module-separately -disable-cmo
+
+SwiftDriverJobDiscovery normal arm64 Compiling SmartHidProfile.swift (in target 'SmartHidCore' from project 'SmartHidCore')
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/ptrcheck-4NU6Y00T4RR0PWLHI0L6VP5QU.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/_Builtin_stddef-DAZJ824703D4ZS8IB139XFGIO.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/ptrauth-1NAZBE8CZHTZHZ182173FY023.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/DeveloperToolsSupport-DA7SNDK5ZVT6K4N67O03556DF.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/_SwiftConcurrencyShims-ENN2ZNJVZ38KZ0Z3I27C4BPFU.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/_AvailabilityInternal-1MDTJLW4X1FM4T2WNP6VYCJMK.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/_Builtin_stdarg-8RGF7H1X53T2WMBXI7MZ19N2U.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/SwiftShims-9BA6WA741L2XI38ZCCLCTJFJR.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/_Builtin_float-1QZH3E5AERADSQG1ZGK23GENZ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/_Builtin_stdbool-2AE109WZBF0G2DLIA8PPO0NW9.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/_DarwinFoundation1-8CCA5QYV4FCPFWX2SS84R78S2.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/_Builtin_limits-AXI3ESZ0M6ARBS6GZCITO2KWE.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/_DarwinFoundation2-F5GLEAZL98V8XGZMPRB9BW3EN.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/sys_types-1CG7W6ERO6EGW7GGTZXX20V0G.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/_Builtin_stdint-50Y5LC1DHUU37NYE1PGCIES3G.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/_Builtin_tgmath-17PL89CT2EW637HYP4088JHTJ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/_Builtin_stdatomic-4RP6F4O4Z8ORIKVJA4ENBIAUB.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/_DarwinFoundation3-8RKF6NOVPD7MBY39CICVSP97X.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/_Builtin_intrinsics-2POOJ0PSYDGMF8EIDKHWF0C24.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/_Builtin_inttypes-CFIROVQ9VX0TYTBY5AIC5VWOO.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/Darwin-644CISEOG2V5P9RSRIK8G8WP0.pcm
+
+SwiftDriverJobDiscovery normal arm64 Compiling SmartHidState.swift (in target 'SmartHidCore' from project 'SmartHidCore')
+
+SwiftDriverJobDiscovery normal arm64 Compiling SmartHidFraming.swift (in target 'SmartHidCore' from project 'SmartHidCore')
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/simd-49T8UWAIXGTCE4X4XLPFJADJ1.pcm
+
+SwiftDriverJobDiscovery normal arm64 Compiling SmartHidProtocol.swift (in target 'SmartHidCore' from project 'SmartHidCore')
+
+SwiftDriver\ Compilation SmartHidCore normal arm64 com.apple.xcode.tools.swift.compiler (in target 'SmartHidCore' from project 'SmartHidCore')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/SmartBLE.xcodeproj
+    builtin-Swift-Compilation -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name SmartHidCore -Onone -enforce-exclusivity\=checked @/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk -target arm64-apple-ios15.0 -g -module-cache-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib -F /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/Frameworks -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk/Developer/Library/Frameworks -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/SDKStatCaches.noindex/iphoneos26.1-23B77-3885c01c3e6b6a337905948deab2002e69b33fc7382b27d9b5d46e82a00f8e78.sdkstatcache -output-file-map /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex -sdk-module-cache-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/Session.modulevalidation -package-name smarthidcore -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore_const_extract_protocols.json -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/include -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/DerivedSources-normal/arm64 -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/DerivedSources/arm64 -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore-Swift.h -working-directory /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/SmartBLE.xcodeproj -experimental-emit-module-separately -disable-cmo
+
+Ld /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartHidCore.o normal (in target 'SmartHidCore' from project 'SmartHidCore')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/core/apple/SmartHidCore
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios15.0 -r -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk -O0 -L/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphoneos -L/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -L/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib -F/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphoneos -F/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -iframework /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/Frameworks -iframework /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk/Developer/Library/Frameworks -filelist /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore.LinkFileList -nostdlib -Xlinker -object_path_lto -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -dependency_info -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore.swiftmodule @/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore-linker-args.resp -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartHidCore.o
+
+ExtractAppIntentsMetadata (in target 'SmartHidCore' from project 'SmartHidCore')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/core/apple/SmartHidCore
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.VYm3Te/Metal.xctoolchain --module-name SmartHidCore --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk --xcode-version 17B100 --platform-family iOS --deployment-target 15.0 --bundle-identifier smarthidcore.SmartHidCore --output /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartHidCore.appintents --target-triple arm64-apple-ios15.0 --binary-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartHidCore.o --dependency-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore_dependency_info.dat --stringsdata-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore.SwiftFileList --metadata-file-list /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/SmartHidCore.DependencyMetadataFileList --static-metadata-file-list /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/SmartHidCore.DependencyStaticMetadataFileList --swift-const-vals-list /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore.SwiftConstValuesFileList --force --compile-time-extraction --deployment-aware-processing --validate-assistant-intents --no-app-shortcuts-localization
+2026-09-10 12:01:45.871 appintentsmetadataprocessor[66272:2340381] Starting appintentsmetadataprocessor export
+2026-09-10 12:01:45.944 appintentsmetadataprocessor[66272:2340381] Extracted no relevant App Intents symbols, skipping writing output
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/MachO-S94BSX8SZMASJQ30SJZHQXBK.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/ObjectiveC-BJDAGXHP3W7ZBMAMHTBTBETX3.pcm
+
+RegisterExecutionPolicyException /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartHidCore.o (in target 'SmartHidCore' from project 'SmartHidCore')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/core/apple/SmartHidCore
+    builtin-RegisterExecutionPolicyException /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartHidCore.o
+
+CpResource /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/tab-scan.svg /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/tab-scan.svg (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/tab-scan.svg /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app
+
+CpResource /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/tab-link.svg /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/tab-link.svg (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/tab-link.svg /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app
+
+Ld /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/__preview.dylib normal (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios15.0 -dynamiclib -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk -O0 -L/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -F/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks -F/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -install_name @rpath/SmartBLE.debug.dylib -dead_strip -rdynamic -Xlinker -no_deduplicate -Xlinker -dependency_info -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE_dependency_info.dat -Xlinker -no_adhoc_codesign -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/__preview.dylib
+
+CpResource /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/tab-info.svg /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/tab-info.svg (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/tab-info.svg /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app
+
+ProcessInfoPlistFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/Info.plist /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/SmartBLE/Resources/Info.plist (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-infoPlistUtility /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/SmartBLE/Resources/Info.plist -producttype com.apple.product-type.application -genpkginfo /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PkgInfo -expandbuildsettings -format binary -platform iphoneos -requiredArchitecture arm64 -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/Info.plist
+
+CpResource /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/tab-cast.svg /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/tab-cast.svg (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/tab-cast.svg /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app
+
+CpResource /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/release-manifest.json /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Release/release-manifest.json (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Release/release-manifest.json /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app
+
+CpResource /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/radar.svg /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/radar.svg (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/radar.svg /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/os_object-8RB85FZDDZYIRJUIEXMCK9VJZ.pcm
+
+CpResource /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/doc.svg /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/doc.svg (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/doc.svg /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app
+
+CpResource /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/link.svg /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/link.svg (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/link.svg /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app
+
+CpResource /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/bt.svg /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/bt.svg (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/bt.svg /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app
+
+CpResource /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/box.svg /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/box.svg (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/box.svg /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app
+
+CopyStringsFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/zh-Hans.lproj/Localizable.strings /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/zh-Hans.lproj/Localizable.strings (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-copyStrings --validate --outputencoding binary --outfilename Localizable.strings --outdir /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/zh-Hans.lproj -- /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/zh-Hans.lproj/Localizable.strings
+/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/zh-Hans.lproj/Localizable.strings:1:1: note: detected encoding of input file as Unicode (UTF-8) (in target 'SmartBLEiOS' from project 'SmartBLE')
+
+CopyPNGFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/tab-scan.png /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/tab-scan.png (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /Applications/Xcode.app/Contents/Developer/usr/bin/copypng -compress -strip-PNG-text /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/tab-scan.png /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/tab-scan.png
+
+CopyStringsFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/en.lproj/Localizable.strings /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/en.lproj/Localizable.strings (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-copyStrings --validate --outputencoding binary --outfilename Localizable.strings --outdir /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/en.lproj -- /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/en.lproj/Localizable.strings
+/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/en.lproj/Localizable.strings:1:1: note: detected encoding of input file as Unicode (UTF-8) (in target 'SmartBLEiOS' from project 'SmartBLE')
+
+CopyPNGFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/tab-link.png /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/tab-link.png (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /Applications/Xcode.app/Contents/Developer/usr/bin/copypng -compress -strip-PNG-text /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/tab-link.png /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/tab-link.png
+
+CopyPNGFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/tab-info.png /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/tab-info.png (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /Applications/Xcode.app/Contents/Developer/usr/bin/copypng -compress -strip-PNG-text /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/tab-info.png /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/tab-info.png
+
+CopyPNGFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/tab-cast.png /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/tab-cast.png (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /Applications/Xcode.app/Contents/Developer/usr/bin/copypng -compress -strip-PNG-text /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/tab-cast.png /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/tab-cast.png
+
+CopyPNGFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/share_card.png /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Brand/share_card.png (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /Applications/Xcode.app/Contents/Developer/usr/bin/copypng -compress -strip-PNG-text /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Brand/share_card.png /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/share_card.png
+
+CopyPNGFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/share.png /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Brand/share.png (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /Applications/Xcode.app/Contents/Developer/usr/bin/copypng -compress -strip-PNG-text /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Brand/share.png /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/share.png
+
+CopyPNGFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/radar.png /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/radar.png (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /Applications/Xcode.app/Contents/Developer/usr/bin/copypng -compress -strip-PNG-text /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/radar.png /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/radar.png
+
+CopyPNGFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/link.png /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/link.png (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /Applications/Xcode.app/Contents/Developer/usr/bin/copypng -compress -strip-PNG-text /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/link.png /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/link.png
+
+CopyPNGFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/icon.png /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Brand/icon.png (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /Applications/Xcode.app/Contents/Developer/usr/bin/copypng -compress -strip-PNG-text /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Brand/icon.png /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/icon.png
+
+CopyPNGFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/doc.png /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/doc.png (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /Applications/Xcode.app/Contents/Developer/usr/bin/copypng -compress -strip-PNG-text /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/doc.png /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/doc.png
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/os_workgroup-37XBZRKXXPVMQWLMFMBGAZNX1.pcm
+
+CopyPNGFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/bt.png /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/bt.png (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /Applications/Xcode.app/Contents/Developer/usr/bin/copypng -compress -strip-PNG-text /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/bt.png /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/bt.png
+
+CopyPNGFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/brand_icon.png /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Brand/brand_icon.png (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /Applications/Xcode.app/Contents/Developer/usr/bin/copypng -compress -strip-PNG-text /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Brand/brand_icon.png /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/brand_icon.png
+
+CopyPNGFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/box.png /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/box.png (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /Applications/Xcode.app/Contents/Developer/usr/bin/copypng -compress -strip-PNG-text /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Illustrations/box.png /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/box.png
+
+CopyPNGFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/about_hero.png /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Brand/about_hero.png (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /Applications/Xcode.app/Contents/Developer/usr/bin/copypng -compress -strip-PNG-text /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Brand/about_hero.png /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/about_hero.png
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/Spatial-DMI1X3NGGSWA3G2ZE73H16DAH.pcm
+
+CopyPNGFile /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/about-hero.png /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Brand/about-hero.png (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /Applications/Xcode.app/Contents/Developer/usr/bin/copypng -compress -strip-PNG-text /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Resources/Brand/about-hero.png /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/about-hero.png
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/Dispatch-2REBJSNTVYWX4UIZ2SRIOA2CB.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/CoreFoundation-15628UTCOE9EQ60WLZTSUSYZP.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/dnssd-4H4DVN6JOHLXUQMTRWLGDFSO8.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/XPC-EJYXWQ4KZSZNEYTRSQZGHWPZY.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/os-C0F99E4WQQW1W2MCY12BFMLS5.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/CoreAudioTypes-A36W29J9AGJ59MSX9P6RQ9Q4V.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/CoreGraphics-62RXILF5KE4QGNWS72PKZF3ET.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/Security-AVXUDC0XS3IMBL7OQORYKYKE4.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/CFNetwork-17FDNBLKUOBQZGEN7A9X4UH3S.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/CoreAudio-AST9FJ1GK5EQX0N9MC1S5C3DJ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/Foundation-CS9SCT4Q89TI2U8OELYECVATU.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/ImageIO-CZA7AW3C9NGKB4P7YEOEKAQ2Y.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/CoreText-1DW3JD8QREOTXZ6WWFHULO771.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/IOSurface-3AWJFKMZL400V2737O6T2ZOM2.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/UniformTypeIdentifiers-BXJ7EIOOOZCMQ2QN7XS6T1Z1Y.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/Network-DOLXOJ5830136BUTXOX32960Y.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/UserNotifications-7EWB9JNAFI587703OW7PRNFXS.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/OSLog-3Z23QMNN4K7ZHR2HY8TR2C79T.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/CoreMIDI-B3YNM2LDPOG40KHAGDHOZJDDR.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/CoreTransferable-9WWLX49T5CJYH595TAFVTXXH6.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/Symbols-DG0W0UZWJKGKV8K4TLFELFMOF.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/CoreData-8FGVUURHBEUDP30TWUVAKRPGJ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/FileProvider-DBBJRB5WLMU7K1L3F57YVTNBT.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/CoreBluetooth-8UTGMDENZK8BJ93TRJA6V3UNN.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/Accessibility-34FWEGQ5TTTA96TXVY54R5C8Y.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/UIUtilities-8VWP3F6LENZDQDKNL8QF159LX.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/DataDetection-9T9XN8HG7ZJBIPEMR1QXBSBLP.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/Metal-7ZIVKGB0NBGP0EPLTM7I2EQWW.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/OpenGLES-HEH5F3E7AP46XL1UY3TQTP7V.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/AVRouting-6D36SQ3PVZCK11T6176FR2L2R.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/AudioToolbox-CYWGT1EG5P7LYWWDZ5R1JK2ZI.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/CoreVideo-8JJN554718I248LDL0RGANCZA.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/CoreImage-47YUJ66YZGMRI1XZRAFGD5R0A.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/QuartzCore-TDRSTAAK133XGQYCN1983OFH.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/CoreMedia-B240XU4W05GJP4167CUEQ2281.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/SwiftUICore-5S76D8JA623GQGBRNYZD0RTNM.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/AVFAudio-75F4CTWGLVAW4SQML0J4CIF34.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/MediaToolbox-1J54ZCAZT316IQBQLQNRDX2HL.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/UIKit-BIOIDKV4VSHXDUSGB76VDJFRT.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/AVFoundation-DXCMMIQ2HLWM2DWROUZA1YMR6.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/SwiftUI-C6XMQ26QKMOH9DRU4KICN0SUX.pcm
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ SmartBLE (in target 'SmartBLEiOS' from project 'SmartBLE')
+
+EmitSwiftModule normal arm64 (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+
+SwiftCompile normal arm64 Compiling\ ScanView.swift,\ ServicePanel.swift,\ SmartBLEApp.swift /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Views/ScanView.swift /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Views/Components/ServicePanel.swift /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/SmartBLEApp.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+SwiftCompile normal arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Views/ScanView.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+
+SwiftCompile normal arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Views/Components/ServicePanel.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+
+SwiftCompile normal arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/SmartBLEApp.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+
+SwiftCompile normal arm64 Compiling\ LogPanel.swift,\ Logger.swift,\ NativeComponents.swift /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Views/Components/LogPanel.swift /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Utils/Logger.swift /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Design/NativeComponents.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+
+SwiftCompile normal arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Views/Components/LogPanel.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+
+SwiftCompile normal arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Utils/Logger.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+
+SwiftCompile normal arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Design/NativeComponents.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+
+SwiftCompile normal arm64 Compiling\ HidDeviceDetailView.swift,\ HidDiagnosticsView.swift,\ HidProvisionManager.swift /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Views/HidDeviceDetailView.swift /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Views/HidDiagnosticsView.swift /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Manager/HidProvisionManager.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+
+SwiftCompile normal arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Views/HidDeviceDetailView.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+
+SwiftCompile normal arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Views/HidDiagnosticsView.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+
+SwiftCompile normal arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Manager/HidProvisionManager.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+
+SwiftCompile normal arm64 Compiling\ DeviceCard.swift,\ DeviceDetailView.swift,\ FilterPanel.swift /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Views/Components/DeviceCard.swift /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Views/DeviceDetailView.swift /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Views/Components/FilterPanel.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+
+SwiftCompile normal arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Views/Components/DeviceCard.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+
+SwiftCompile normal arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Views/DeviceDetailView.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+
+SwiftCompile normal arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Views/Components/FilterPanel.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+
+SwiftCompile normal arm64 Compiling\ SmartHidQrScanner.swift,\ VersionHistoryView.swift,\ WriteDialog.swift /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Views/Components/SmartHidQrScanner.swift /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Views/VersionHistoryView.swift /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Views/Components/WriteDialog.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+SwiftCompile normal arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Views/Components/SmartHidQrScanner.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+
+SwiftCompile normal arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Views/VersionHistoryView.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+
+SwiftCompile normal arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Views/Components/WriteDialog.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+
+SwiftCompile normal arm64 Compiling\ NativeDesignTokens.swift,\ NativePreviewHarness.swift,\ OtaManager.swift /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Design/NativeDesignTokens.swift /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Design/NativePreviewHarness.swift /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Manager/OtaManager.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+
+SwiftCompile normal arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Design/NativeDesignTokens.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+
+SwiftCompile normal arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Design/NativePreviewHarness.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+
+SwiftCompile normal arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Manager/OtaManager.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+
+SwiftCompile normal arm64 Compiling\ AboutView.swift,\ BLEManager.swift,\ BLEModels.swift /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Views/AboutView.swift /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Manager/BLEManager.swift /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Models/BLEModels.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+
+SwiftCompile normal arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Views/AboutView.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+
+SwiftCompile normal arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Manager/BLEManager.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+
+SwiftCompile normal arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Models/BLEModels.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+
+SwiftCompile normal arm64 Compiling\ ConnectedDevicesView.swift,\ ContentView.swift,\ DataConverter.swift /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Views/ConnectedDevicesView.swift /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Views/ContentView.swift /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Utils/DataConverter.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+
+SwiftCompile normal arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Views/ConnectedDevicesView.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+
+SwiftCompile normal arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Views/ContentView.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+
+SwiftCompile normal arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Utils/DataConverter.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+
+SwiftCompile normal arm64 Compiling\ BLEUuids.swift,\ BroadcastView.swift,\ CommandQueue.swift /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Models/BLEUuids.swift /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Views/BroadcastView.swift /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Utils/CommandQueue.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+
+SwiftCompile normal arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Models/BLEUuids.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+
+SwiftCompile normal arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Views/BroadcastView.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+
+SwiftCompile normal arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Utils/CommandQueue.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+
+SwiftCompile normal arm64 Compiling\ OtaUpgradeDialog.swift,\ ProvisioningView.swift,\ ReleaseMetadata.swift /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Views/OtaUpgradeDialog.swift /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Views/ProvisioningView.swift /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Models/ReleaseMetadata.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+SwiftCompile normal arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Views/OtaUpgradeDialog.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+
+SwiftCompile normal arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Views/ProvisioningView.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+
+SwiftCompile normal arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/Sources/Models/ReleaseMetadata.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for SmartBLE (in target 'SmartBLEiOS' from project 'SmartBLE')
+
+SwiftDriver\ Compilation\ Requirements SmartBLEiOS normal arm64 com.apple.xcode.tools.swift.compiler (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name SmartBLE -Onone -enforce-exclusivity\=checked @/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE.SwiftFileList -DDEBUG -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk -target arm64-apple-ios15.0 -g -module-cache-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -F /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks -F /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/SDKStatCaches.noindex/iphoneos26.1-23B77-3885c01c3e6b6a337905948deab2002e69b33fc7382b27d9b5d46e82a00f8e78.sdkstatcache -output-file-map /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLEiOS-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex -sdk-module-cache-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLEiOS_const_extract_protocols.json -Xcc -iquote -Xcc /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-generated-files.hmap -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-own-target-headers.hmap -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLE-c442bf2bd89a6c4a864f9ac69b9f36ac-VFS-iphoneos/all-product-headers.yaml -Xcc -iquote -Xcc /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-project-headers.hmap -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/include -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/DerivedSources-normal/arm64 -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/DerivedSources/arm64 -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE-Swift.h -working-directory /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios -experimental-emit-module-separately -disable-cmo
+
+SwiftDriverJobDiscovery normal arm64 Compiling BLEUuids.swift, BroadcastView.swift, CommandQueue.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+
+SwiftDriverJobDiscovery normal arm64 Compiling ConnectedDevicesView.swift, ContentView.swift, DataConverter.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+
+SwiftDriverJobDiscovery normal arm64 Compiling LogPanel.swift, Logger.swift, NativeComponents.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+
+SwiftDriverJobDiscovery normal arm64 Compiling DeviceCard.swift, DeviceDetailView.swift, FilterPanel.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+
+SwiftDriverJobDiscovery normal arm64 Compiling HidDeviceDetailView.swift, HidDiagnosticsView.swift, HidProvisionManager.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+
+SwiftMergeGeneratedHeaders /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/DerivedSources/SmartBLE-Swift.h /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE-Swift.h (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-swiftHeaderTool -arch arm64 /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE-Swift.h -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/DerivedSources/SmartBLE-Swift.h
+
+Copy /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.swiftmodule/arm64-apple-ios.swiftmodule /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE.swiftmodule (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE.swiftmodule /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.swiftmodule/arm64-apple-ios.swiftmodule
+
+Copy /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.swiftmodule/arm64-apple-ios.swiftdoc /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE.swiftdoc (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE.swiftdoc /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.swiftmodule/arm64-apple-ios.swiftdoc
+
+Copy /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.swiftmodule/arm64-apple-ios.abi.json /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE.abi.json (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE.abi.json /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.swiftmodule/arm64-apple-ios.abi.json
+
+Copy /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.swiftmodule/Project/arm64-apple-ios.swiftsourceinfo /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE.swiftsourceinfo (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE.swiftsourceinfo /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.swiftmodule/Project/arm64-apple-ios.swiftsourceinfo
+
+SwiftDriverJobDiscovery normal arm64 Compiling NativeDesignTokens.swift, NativePreviewHarness.swift, OtaManager.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+
+SwiftDriverJobDiscovery normal arm64 Compiling AboutView.swift, BLEManager.swift, BLEModels.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+
+SwiftDriverJobDiscovery normal arm64 Compiling ScanView.swift, ServicePanel.swift, SmartBLEApp.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+
+SwiftDriverJobDiscovery normal arm64 Compiling SmartHidQrScanner.swift, VersionHistoryView.swift, WriteDialog.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+
+SwiftDriverJobDiscovery normal arm64 Compiling OtaUpgradeDialog.swift, ProvisioningView.swift, ReleaseMetadata.swift (in target 'SmartBLEiOS' from project 'SmartBLE')
+
+SwiftDriver\ Compilation SmartBLEiOS normal arm64 com.apple.xcode.tools.swift.compiler (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-Swift-Compilation -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name SmartBLE -Onone -enforce-exclusivity\=checked @/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE.SwiftFileList -DDEBUG -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk -target arm64-apple-ios15.0 -g -module-cache-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -F /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks -F /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/SDKStatCaches.noindex/iphoneos26.1-23B77-3885c01c3e6b6a337905948deab2002e69b33fc7382b27d9b5d46e82a00f8e78.sdkstatcache -output-file-map /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLEiOS-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex -sdk-module-cache-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLEiOS_const_extract_protocols.json -Xcc -iquote -Xcc /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-generated-files.hmap -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-own-target-headers.hmap -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLE-c442bf2bd89a6c4a864f9ac69b9f36ac-VFS-iphoneos/all-product-headers.yaml -Xcc -iquote -Xcc /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-project-headers.hmap -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/include -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/DerivedSources-normal/arm64 -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/DerivedSources/arm64 -Xcc -I/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE-Swift.h -working-directory /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios -experimental-emit-module-separately -disable-cmo
+
+Ld /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/SmartBLE.debug.dylib normal (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios15.0 -dynamiclib -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk -O0 -L/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphoneos -L/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -F/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphoneos -F/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks -F/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -filelist /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE.LinkFileList -install_name @rpath/SmartBLE.debug.dylib -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks -Xlinker -rpath -Xlinker @executable_path/Frameworks -dead_strip -Xlinker -object_path_lto -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -dependency_info -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE.swiftmodule @/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE-linker-args.resp -Wl,-no_warn_duplicate_libraries -Xlinker -alias -Xlinker _main -Xlinker ___debug_main_executable_dylib_entry_point -Xlinker -no_adhoc_codesign -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/SmartBLE.debug.dylib -Xlinker -add_ast_path -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore.swiftmodule @/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartHidCore.build/Debug-iphoneos/SmartHidCore.build/Objects-normal/arm64/SmartHidCore-linker-args.resp
+
+ConstructStubExecutorLinkFileList /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-ExecutorLinkFileList-normal-arm64.txt (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    construct-stub-executor-link-file-list /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/SmartBLE.debug.dylib /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/libPreviewsJITStubExecutor_no_swift_entry_point.a /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/libPreviewsJITStubExecutor.a --output /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-ExecutorLinkFileList-normal-arm64.txt
+note: Using stub executor library with Swift entry point. (in target 'SmartBLEiOS' from project 'SmartBLE')
+
+Ld /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/SmartBLE normal (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios15.0 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk -O0 -L/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -F/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks -F/Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos -Xlinker -rpath -Xlinker @executable_path -Xlinker -rpath -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/PackageFrameworks -Xlinker -rpath -Xlinker @executable_path/Frameworks -rdynamic -Xlinker -no_deduplicate -e ___debug_blank_executor_main -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_dylib -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-DebugDylibPath-normal-arm64.txt -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_instlnm -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-DebugDylibInstallName-normal-arm64.txt -Xlinker -filelist -Xlinker /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE-ExecutorLinkFileList-normal-arm64.txt /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/SmartBLE.debug.dylib -Xlinker -no_adhoc_codesign -o /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/SmartBLE
+
+CopySwiftLibs /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-swiftStdLibTool --copy --verbose --sign 4B44C08A097080BA2CA99BBE2C1EE443EE53B319 --scan-executable /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/SmartBLE.debug.dylib --scan-folder /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/Frameworks --scan-folder /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/PlugIns --scan-folder /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/SystemExtensions --scan-folder /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/Extensions --platform iphoneos --toolchain /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.VYm3Te/Metal.xctoolchain --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/Frameworks --strip-bitcode --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+
+ExtractAppIntentsMetadata (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.2.54.0.VYm3Te/Metal.xctoolchain --module-name SmartBLE --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk --xcode-version 17B100 --platform-family iOS --deployment-target 15.0 --bundle-identifier com.smartble.ios --output /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app --target-triple arm64-apple-ios15.0 --binary-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/SmartBLE --dependency-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE_dependency_info.dat --stringsdata-file /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE.SwiftFileList --metadata-file-list /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE.DependencyMetadataFileList --static-metadata-file-list /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE.DependencyStaticMetadataFileList --swift-const-vals-list /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/Objects-normal/arm64/SmartBLE.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --validate-assistant-intents --no-app-shortcuts-localization
+2026-09-10 12:01:51.900 appintentsmetadataprocessor[66453:2341167] Starting appintentsmetadataprocessor export
+2026-09-10 12:01:51.903 appintentsmetadataprocessor[66453:2341167] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+
+AppIntentsSSUTraining (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsnltrainingprocessor --infoplist-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/Info.plist --temp-dir-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/ssu --bundle-id com.smartble.ios --product-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app --extracted-metadata-path /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/Metadata.appintents --metadata-file-list /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE.DependencyMetadataFileList --archive-ssu-assets
+2026-09-10 12:01:51.929 appintentsnltrainingprocessor[66454:2341170] Parsing options for appintentsnltrainingprocessor
+2026-09-10 12:01:51.929 appintentsnltrainingprocessor[66454:2341170] No AppShortcuts found - Skipping.
+
+CodeSign /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/SmartBLE.debug.dylib (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+    Signing Identity:     "Apple Development: longcan cai (L5Q7JP9RH9)"
+    Provisioning Profile: "iOS Team Provisioning Profile: *"
+                          (711a0591-dcd8-4f7f-a504-c70173141d18)
+    
+    /usr/bin/codesign --force --sign 4B44C08A097080BA2CA99BBE2C1EE443EE53B319 --timestamp\=none --generate-entitlement-der /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/SmartBLE.debug.dylib
+
+CodeSign /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/__preview.dylib (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+    Signing Identity:     "Apple Development: longcan cai (L5Q7JP9RH9)"
+    Provisioning Profile: "iOS Team Provisioning Profile: *"
+                          (711a0591-dcd8-4f7f-a504-c70173141d18)
+    
+    /usr/bin/codesign --force --sign 4B44C08A097080BA2CA99BBE2C1EE443EE53B319 --timestamp\=none --generate-entitlement-der /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app/__preview.dylib
+
+CodeSign /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    
+    Signing Identity:     "Apple Development: longcan cai (L5Q7JP9RH9)"
+    Provisioning Profile: "iOS Team Provisioning Profile: *"
+                          (711a0591-dcd8-4f7f-a504-c70173141d18)
+    
+    /usr/bin/codesign --force --sign 4B44C08A097080BA2CA99BBE2C1EE443EE53B319 --entitlements /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Intermediates.noindex/SmartBLE.build/Debug-iphoneos/SmartBLEiOS.build/SmartBLE.app.xcent --timestamp\=none --generate-entitlement-der /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app
+
+RegisterExecutionPolicyException /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-RegisterExecutionPolicyException /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app
+
+Validate /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    builtin-validationUtility /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app -shallow-bundle -infoplist-subpath Info.plist
+
+Touch /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app (in target 'SmartBLEiOS' from project 'SmartBLE')
+    cd /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios
+    /usr/bin/touch -c /Users/luoyaosheng/Desktop/project/Open/smart-ble/apps/ios/build/DerivedData/Build/Products/Debug-iphoneos/SmartBLE.app
+
+** BUILD SUCCEEDED **
+

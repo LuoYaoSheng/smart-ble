@@ -4,7 +4,13 @@
       <view class="ota-header">
         <text class="ota-title">固件更新 (OTA)</text>
       </view>
-      
+
+      <!-- P-03 预警（PATTERN §75 / N-MAC·F-MAC 同款逐字） -->
+      <view class="ota-warn">
+        <AppIcon name="warn" :size="26" tone="warningDeep" />
+        <text class="ota-warn-text">端到端升级链路当前 BLOCKED（固件侧暂未开放），流程可演示，正式使用前需固件配合。</text>
+      </view>
+
       <view class="ota-body">
         <view v-if="!isTransmitting" class="ota-prompt">
           <text class="ota-desc">发现 OTA 升级服务。选择固件 (.bin) 后开始传输；只有设备返回确认状态后才会显示升级成功。</text>
@@ -33,6 +39,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue';
 import { OtaManager } from '../../utils/ota_manager.js';
+import AppIcon from '../ui/AppIcon.vue';
 
 const props = defineProps({
   visible: {
@@ -82,23 +89,6 @@ const reset = () => {
 };
 
 const selectFile = () => {
-  // #ifdef MP-WEIXIN
-  wx.chooseMessageFile({
-    count: 1,
-    type: 'file',
-    extension: ['.bin'],
-    success: (res) => {
-      const file = res.tempFiles[0];
-      fileName.value = file.name;
-      readFile(file.path);
-    },
-    fail: (err) => {
-      console.error("Choose file failed", err);
-    }
-  });
-  // #endif
-
-  // #ifndef MP-WEIXIN
   uni.chooseFile({
     count: 1,
     extension: ['.bin'],
@@ -108,26 +98,9 @@ const selectFile = () => {
       readFile(res.tempFilePaths[0]);
     }
   });
-  // #endif
 };
 
 const readFile = (path) => {
-  // #ifdef MP-WEIXIN
-  wx.getFileSystemManager().readFile({
-    filePath: path,
-    success: (res) => {
-      fileBuffer.value = res.data;
-      statusText.value = '文件加载成功，可开始升级';
-      statusType.value = 'success';
-    },
-    fail: (err) => {
-      statusText.value = '文件读取失败';
-      statusType.value = 'error';
-    }
-  });
-  // #endif
-  
-  // #ifndef MP-WEIXIN
   uni.getFileSystemManager().readFile({
     filePath: path,
     success: (res) => {
@@ -140,7 +113,6 @@ const readFile = (path) => {
       statusType.value = 'error';
     }
   });
-  // #endif
 };
 
 const startOta = () => {
@@ -202,7 +174,7 @@ const cancel = () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999;
+  z-index: var(--z-modal);
   padding: 32rpx;
 }
 .ota-modal-content {
@@ -212,8 +184,24 @@ const cancel = () => {
   overflow: hidden;
   box-shadow: var(--ble-shadow-modal);
 }
+.ota-warn {
+	display: flex;
+	align-items: flex-start;
+	gap: 12rpx;
+	padding: 14rpx 20rpx;
+	border-radius: var(--ble-radius-md, 18rpx);
+	background: var(--c-warning-weak);
+	color: var(--c-warning-deep);
+}
+
+.ota-warn-text {
+	flex: 1;
+	font-size: 22rpx;
+	line-height: 1.5;
+}
+
 .ota-header {
-  padding: 28rpx 30rpx;
+  padding: 28rpx 32rpx;
   border-bottom: 1rpx solid var(--ble-line-soft);
   text-align: center;
 }
@@ -223,7 +211,7 @@ const cancel = () => {
   color: var(--ble-text);
 }
 .ota-body {
-  padding: 30rpx;
+  padding: 32rpx;
   min-height: 260rpx;
   display: flex;
   flex-direction: column;
@@ -250,7 +238,7 @@ const cancel = () => {
   align-items: center;
 }
 .ota-progress-text {
-  font-size: 42rpx;
+  font-size: 40rpx;
   font-weight: 700;
   color: var(--ble-brand);
   margin-bottom: 12rpx;
@@ -267,12 +255,12 @@ const cancel = () => {
   display: block;
 }
 .info { color: var(--ble-brand); }
-.success { color: #0e9c82; }
+.success { color: var(--c-success-deep); } /* #0e9c82 → #0E9A80 圈外值收敛 UI-CONV 2026-09-10 */
 .error { color: var(--ble-red); }
 
 .ota-footer {
   display: flex;
   gap: 14rpx;
-  padding: 0 30rpx 30rpx;
+  padding: 0 32rpx 32rpx;
 }
 </style>

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/models/ble_service.dart';
 import '../../themes/app_theme.dart';
+import '../../core/design/app_icons.dart';
 
 /// 服务项组件
 class ServiceTile extends StatefulWidget {
@@ -50,10 +51,10 @@ class _ServiceTileState extends State<ServiceTile> {
             height: 40,
             decoration: BoxDecoration(
               color: AppTheme.primaryColor.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(
-              Icons.settings_input_antenna,
+            child: const AppIcon(
+              'cast',
               color: AppTheme.primaryColor,
               size: 20,
             ),
@@ -112,7 +113,7 @@ class _ServiceTileState extends State<ServiceTile> {
         style: const TextStyle(
           fontSize: 12,
           color: AppTheme.primaryColor,
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );
@@ -139,7 +140,7 @@ class _CharacteristicTile extends StatelessWidget {
       margin: const EdgeInsets.only(top: 8),
       decoration: BoxDecoration(
         color: AppTheme.backgroundColor,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -158,7 +159,7 @@ class _CharacteristicTile extends StatelessWidget {
               width: 1,
             ),
           ),
-          child: Icon(
+          child: AppIcon(
             _getIcon(),
             size: 18,
             color: characteristic.isNotifying
@@ -172,8 +173,8 @@ class _CharacteristicTile extends StatelessWidget {
             Text(
               characteristic.displayName,
               style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
               ),
             ),
             Text(
@@ -216,11 +217,11 @@ class _CharacteristicTile extends StatelessWidget {
     );
   }
 
-  IconData _getIcon() {
-    if (characteristic.isNotifying) return Icons.notifications_active;
-    if (characteristic.canRead) return Icons.read_more;
-    if (characteristic.canWrite) return Icons.edit;
-    return Icons.settings_input_component;
+  String _getIcon() {
+    if (characteristic.isNotifying) return 'pulse';
+    if (characteristic.canRead) return 'doc';
+    if (characteristic.canWrite) return 'send';
+    return 'chip';
   }
 
   Widget _buildPropertiesChips() {
@@ -262,7 +263,7 @@ class _CharacteristicTile extends StatelessWidget {
       children: [
         if (characteristic.canRead)
           IconButton(
-            icon: const Icon(Icons.download, size: 18),
+            icon: const AppIcon('dl', size: 18),
             onPressed: onRead,
             tooltip: '读取',
             constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
@@ -270,7 +271,7 @@ class _CharacteristicTile extends StatelessWidget {
           ),
         if (characteristic.canWrite)
           IconButton(
-            icon: const Icon(Icons.upload, size: 18),
+            icon: const AppIcon('send', size: 18),
             onPressed: onWrite,
             tooltip: '写入',
             constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
@@ -278,8 +279,8 @@ class _CharacteristicTile extends StatelessWidget {
           ),
         if (characteristic.canNotify)
           IconButton(
-            icon: Icon(
-              characteristic.isNotifying ? Icons.notifications_active : Icons.notifications_none,
+            icon: const AppIcon(
+              'pulse',
               size: 18,
             ),
             onPressed: onToggleNotify,
@@ -314,7 +315,7 @@ class _PropertyChip extends StatelessWidget {
         style: TextStyle(
           fontSize: 10,
           color: color,
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );

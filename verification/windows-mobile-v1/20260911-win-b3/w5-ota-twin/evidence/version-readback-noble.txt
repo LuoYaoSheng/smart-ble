@@ -1,0 +1,5 @@
+T-WIN OTA 后设备版本直读（noble 绕过 UI，补串口缺席的设备侧证据）
+执行时间: 2026-09-11 16:0x（T-WIN 轮结束后约 2 分钟）
+SYSTEM_INFO: {"firmware_version":"1.0.3","hardware":"esp32-wroom-32","uptime":138,"uptime_s":138,"fixture_role":"peripheral","name":"BLEToolkit-Server","type":"system_info"}
+说明: T-WIN 轮的串口探针因 E-WIN 探针未到期占用 COM12 启动失败（PermissionError 13）；
+设备侧版本证据以此直读 + UI cdp-result.json 的 success 帧文本共同承担。

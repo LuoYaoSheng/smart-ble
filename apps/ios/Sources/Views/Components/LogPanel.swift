@@ -16,16 +16,19 @@ struct LogPanel: View {
     var body: some View {
         VStack(spacing: 0) {
             // Header
-            HStack {
-                Label("通信日志", systemImage: "doc.text.fill")
+            HStack(spacing: 8) {
+                Image(systemName: "doc.text.fill")
                     .font(.subheadline.weight(.semibold))
-                    .foregroundColor(.primary)
+                    .foregroundColor(NativeDS.primary)
+                Text("通信日志")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundColor(NativeDS.ink)
 
                 Spacer()
 
                 if !logs.isEmpty {
                     Button("清空") { onClear() }
-                        .font(.caption)
+                        .scaledFont(12)
                         .foregroundColor(.secondary)
                 }
             }
@@ -40,7 +43,7 @@ struct LogPanel: View {
                 HStack {
                     Spacer()
                     Text("暂无日志")
-                        .font(.caption)
+                        .scaledFont(12)
                         .foregroundColor(.secondary)
                     Spacer()
                 }
@@ -76,19 +79,19 @@ struct LogRow: View {
         HStack(alignment: .top, spacing: 6) {
             // Time
             Text(formatter.string(from: entry.timestamp))
-                .font(.system(size: 10, design: .monospaced))
+                .scaledFont(10, design: .monospaced)
                 .foregroundColor(.secondary)
                 .fixedSize()
 
             // Type badge
             Text(typeLabel)
-                .font(.system(size: 10).weight(.semibold))
+                .scaledFont(10, .semibold)
                 .foregroundColor(typeColor)
                 .fixedSize()
 
             // Message (supports HEX\nTEXT multi-line)
             Text(entry.message)
-                .font(.system(size: 11, design: .monospaced))
+                .scaledFont(11, design: .monospaced)
                 .foregroundColor(.primary)
                 .lineLimit(3)
         }

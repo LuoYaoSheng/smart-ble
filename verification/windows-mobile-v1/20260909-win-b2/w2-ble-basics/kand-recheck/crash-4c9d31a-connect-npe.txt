@@ -1,0 +1,51 @@
+# K-AND 连接即崩 —— FATAL 栈（2026-09-10 08:53:18.756，E5 R5CR1284Y7H，com.smartble PID 6416）
+# 场景：4c9d31a 构建 → 扫描 → 点 BLEToolkit-Server 卡片 → 设备预览面板「连接并进入」→ 连接成功+服务发现完成 → 进详情页即崩。
+# 注：本文件为事后整理——原始缓冲被复验重装前的 `adb logcat -c` 清除，以下内容为 08:53 实时读取
+#     `adb logcat -d -b crash` 的逐行原文（会话记录在案）。
+--------- beginning of crash
+09-10 08:53:18.756  6416  6416 E AndroidRuntime: FATAL EXCEPTION: main
+09-10 08:53:18.756  6416  6416 E AndroidRuntime: Process: com.smartble, PID: 6416
+09-10 08:53:18.756  6416  6416 E AndroidRuntime: java.lang.NullPointerException: Parameter specified as non-null is null: method com.smartble.ui.viewmodel.DeviceDetailViewModelKt.shouldAnnounceServices, parameter lastUuids
+09-10 08:53:18.756  6416  6416 E AndroidRuntime: 	at com.smartble.ui.viewmodel.DeviceDetailViewModelKt.shouldAnnounceServices(Unknown Source:2)
+09-10 08:53:18.756  6416  6416 E AndroidRuntime: 	at com.smartble.ui.viewmodel.DeviceDetailViewModel$observeServices$1$1.emit(DeviceDetailViewModel.kt:79)
+09-10 08:53:18.756  6416  6416 E AndroidRuntime: 	at com.smartble.ui.viewmodel.DeviceDetailViewModel$observeServices$1$1.emit(DeviceDetailViewModel.kt:75)
+09-10 08:53:18.756  6416  6416 E AndroidRuntime: 	at kotlinx.coroutines.flow.DistinctFlowImpl$collect$2.emit(Distinct.kt:77)
+09-10 08:53:18.756  6416  6416 E AndroidRuntime: 	at com.smartble.core.ble.BleManager$services$$inlined$map$1$2.emit(Emitters.kt:223)
+09-10 08:53:18.756  6416  6416 E AndroidRuntime: 	at kotlinx.coroutines.flow.StateFlowImpl.collect(StateFlow.kt:396)
+09-10 08:53:18.756  6416  6416 E AndroidRuntime: 	at kotlinx.coroutines.flow.ReadonlyStateFlow.collect(Unknown Source:2)
+09-10 08:53:18.756  6416  6416 E AndroidRuntime: 	at com.smartble.core.ble.BleManager$services$$inlined$map$1.collect(SafeCollector.common.kt:114)
+09-10 08:53:18.756  6416  6416 E AndroidRuntime: 	at kotlinx.coroutines.flow.DistinctFlowImpl.collect(Distinct.kt:72)
+09-10 08:53:18.756  6416  6416 E AndroidRuntime: 	at com.smartble.ui.viewmodel.DeviceDetailViewModel$observeServices$1.invokeSuspend(DeviceDetailViewModel.kt:75)
+09-10 08:53:18.756  6416  6416 E AndroidRuntime: 	at kotlinx.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+09-10 08:53:18.756  6416  6416 E AndroidRuntime: 	at kotlinx.coroutines.internal.DispatchedContinuationKt.resumeCancellableWith(DispatchedContinuation.kt:367)
+09-10 08:53:18.756  6416  6416 E AndroidRuntime: 	at kotlinx.coroutines.intrinsics.CancellableKt.startCoroutineCancellable(Cancellable.kt:30)
+09-10 08:53:18.756  6416  6416 E AndroidRuntime: 	at kotlinx.coroutines.intrinsics.CancellableKt.startCoroutineCancellable$default(Cancellable.kt:25)
+09-10 08:53:18.756  6416  6416 E AndroidRuntime: 	at kotlinx.coroutines.CoroutineStart.invoke(CoroutineStart.kt:110)
+09-10 08:53:18.756  6416  6416 E AndroidRuntime: 	at kotlinx.coroutines.AbstractCoroutine.start(AbstractCoroutine.kt:126)
+09-10 08:53:18.756  6416  6416 E AndroidRuntime: 	at kotlinx.coroutines.BuildersKt__Builders_common.launch(Builders.common.kt:56)
+09-10 08:53:18.756  6416  6416 E AndroidRuntime: 	at kotlinx.coroutines.BuildersKt.launch(Unknown Source:1)
+09-10 08:53:18.756  6416  6416 E AndroidRuntime: 	at kotlinx.coroutines.BuildersKt.launch$default(Builders.common.kt:47)
+09-10 08:53:18.756  6416  6416 E AndroidRuntime: 	at kotlinx.coroutines.launch$default(Unknown Source:1)
+09-10 08:53:18.756  6416  6416 E AndroidRuntime: 	at com.smartble.ui.viewmodel.DeviceDetailViewModel.observeServices(DeviceDetailViewModel.kt:74)
+09-10 08:53:18.756  6416  6416 E AndroidRuntime: 	at com.smartble.ui.viewmodel.DeviceDetailViewModel.<init>(DeviceDetailViewModel.kt:55)
+09-10 08:53:18.756  6416  6416 E AndroidRuntime: 	at com.smartble.ui.MainActivityKt$SmartBLEApp$3$1$8$factory$1.create(MainActivity.kt:242)
+09-10 08:53:18.756  6416  6416 E AndroidRuntime: 	at androidx.lifecycle.ViewModelProvider$Factory.create(ViewModelProvider.kt:83)
+09-10 08:53:18.756  6416  6416 E AndroidRuntime: 	at androidx.lifecycle.ViewModelProvider.get(ViewModelProvider.kt:187)
+09-10 08:53:18.756  6416  6416 E AndroidRuntime: 	at androidx.lifecycle.viewmodel.compose.ViewModelKt.get(ViewModel.kt:213)
+09-10 08:53:18.756  6416  6416 E AndroidRuntime: 	at androidx.lifecycle.viewmodel.compose.ViewModelKt.viewModel(ViewModel.kt:156)
+09-10 08:53:18.756  6416  6416 E AndroidRuntime: 	at com.smartble.ui.MainActivityKt$SmartBLEApp$3$1$8.invoke(MainActivity.kt:300)
+（其余为 Compose/NavHost 组合帧，与本缺陷无关，略——完整原文见会话记录 08:53 时点。）
+
+# 根因（4c9d31a 引入）：
+#   DeviceDetailViewModel 中 lastAnnouncedServiceUuids 声明于 init 块之后（原第 60 行）。
+#   viewModelScope = Dispatchers.Main.immediate：DeviceDetailScreen 在「连接并进入」完成连接+服务发现
+#   之后才进页，StateFlow 已持有非空服务表 → collect 的首个发射在 <init> 期间同步执行 →
+#   此时属性初始化器尚未运行，运行时值为 null（非空类型无法在编译期拦截）→
+#   shouldAnnounceServices 非空参数收到 null → intrinsic 参数检查抛 NPE。
+#   JUnit 只覆盖纯函数（非空入参），未覆盖 Main.immediate 构造路径，故 CI 绿灯但真机必崩。
+# 修复（本提交）：
+#   1) 属性声明移至 init 之前；
+#   2) shouldAnnounceServices 参数改 Set<String>?，null=无历史→非空集合即播报（构造序防御，
+#      任何声明顺序都不再可能崩）；BleGattContractTest 增补 null 语义回归锁。
+# 验证：gradlew assembleDebug testDebugUnitTest 全绿（corretto-18）。真机复验待硬件窗口
+#   （2026-09-10 上午 E5+ESP32 被 steering-ble 并行会话占用，复验顺延）。

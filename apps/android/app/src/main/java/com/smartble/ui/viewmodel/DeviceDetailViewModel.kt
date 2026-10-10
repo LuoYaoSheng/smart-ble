@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.smartble.core.ble.BleManager
+import com.smartble.core.ble.CharacteristicChangeKind
 import com.smartble.core.model.BleService
 import com.smartble.core.model.BleUuids
 import com.smartble.core.model.ConnectionState
@@ -32,6 +33,10 @@ class DeviceDetailViewModel(
 
     private val bleManager = BleManager.getInstance(application)
 
+    // 必须在 init 之前初始化：viewModelScope 走 Main.immediate，observeServices
+    // 的首个 StateFlow 发射会在构造期间同步执行（4c9d31a 连接即崩根因）。
+    private var lastAnnouncedServiceUuids: Set<String>? = emptySet()
+
     private val _connectionState = MutableStateFlow(ConnectionState.Disconnected)
     val connectionState: StateFlow<ConnectionState> = _connectionState.asStateFlow()
 
@@ -53,6 +58,11 @@ class DeviceDetailViewModel(
         observeConnectionState()
         observeServices()
         observeCharacteristicChanges()
+        viewModelScope.launch {
+            bleManager.operationFailures.collect { event ->
+                if (event.deviceId == deviceId) Logger.error(event.message)
+            }
+        }
         connectToDevice()
     }
 
@@ -61,9 +71,8 @@ class DeviceDetailViewModel(
             bleManager.connectionState(deviceId).collect { state ->
                 _connectionState.value = state
                 _isLoading.value = state == ConnectionState.Connecting || state == ConnectionState.Disconnecting
-                if (state == ConnectionState.Connected && _services.value.isEmpty()) {
-                    bleManager.discoverServices(deviceId)
-                }
+                // 服务发现由 BleManager 串行编排（requestMtu→onMtuChanged→discover，
+                // WIN-AAND-006）；这里不再并发补发，避免 GATT 操作互斥失败
             }
         }
     }
@@ -72,9 +81,12 @@ class DeviceDetailViewModel(
         viewModelScope.launch {
             bleManager.services(deviceId).collect { serviceList ->
                 _services.value = serviceList
-                if (serviceList.isNotEmpty()) {
+                // WIN-AAND-007：读/写/notify 的特征值更新同样重放本流，
+                // 「发现 N 个服务」只在服务 UUID 集合真正变化时播报一次
+                if (shouldAnnounceServices(lastAnnouncedServiceUuids, serviceList)) {
                     _isLoading.value = false
                     Logger.info("发现 ${serviceList.size} 个服务")
+                    lastAnnouncedServiceUuids = serviceList.map { it.uuid }.toSet()
                 }
             }
         }
@@ -92,7 +104,13 @@ class DeviceDetailViewModel(
                     return@collect
                 }
                 val hex = DataConverter.bytesToHex(event.value)
-                Logger.receive("收到通知: $hex")
+                // WIN-AAND-004：读值与通知同样进入日志（按 kind 区分呈现）；
+                // W3：带响应写完成同流（配网分帧逐帧确认），按发送方向呈现
+                when (event.kind) {
+                    CharacteristicChangeKind.Read -> Logger.receive("读取结果: $hex")
+                    CharacteristicChangeKind.Write -> Logger.send("写入完成: $hex")
+                    CharacteristicChangeKind.Notify -> Logger.receive("收到通知: $hex")
+                }
             }
         }
     }
@@ -105,6 +123,13 @@ class DeviceDetailViewModel(
             _errorMessage.value = "连接失败"
             _isLoading.value = false
         }
+    }
+
+    /** P006 devhead「连接设备」：断开后手动重连 */
+    fun connect() {
+        _errorMessage.value = null
+        _isLoading.value = true
+        connectToDevice()
     }
 
     fun disconnect() {
@@ -135,7 +160,7 @@ class DeviceDetailViewModel(
 
             val success = bleManager.writeCharacteristic(deviceId, serviceUuid, characteristicUuid, data)
             if (success) {
-                Logger.success("写入成功")
+                Logger.info("写入已提交，等待设备回执")
             } else {
                 Logger.error("写入失败")
             }
@@ -152,22 +177,7 @@ class DeviceDetailViewModel(
 
             Logger.info("$action 通知 ${characteristic?.displayName ?: characteristicUuid}...")
 
-            val success = bleManager.setNotification(deviceId, serviceUuid, characteristicUuid, newState)
-
-            val updatedServices = _services.value.map { currentService ->
-                if (currentService.uuid == serviceUuid) {
-                    currentService.copy(characteristics = currentService.characteristics.map { currentCharacteristic ->
-                        if (currentCharacteristic.uuid == characteristicUuid) {
-                            currentCharacteristic.copyWithNotifying(newState)
-                        } else {
-                            currentCharacteristic
-                        }
-                    })
-                } else {
-                    currentService
-                }
-            }
-            _services.value = updatedServices
+            val success = bleManager.setNotificationAwait(deviceId, serviceUuid, characteristicUuid, newState)
 
             if (success) {
                 Logger.success("通知已${action}")
@@ -357,6 +367,19 @@ class DeviceDetailViewModel(
 }
 
 private const val OTA_CHUNK_SIZE = 180
+
+/**
+ * WIN-AAND-007：服务列表播报判定——仅当服务 UUID 集合真正变化（首次发现/
+ * 重新发现后集合不同）时播报；特征值更新（读/写/notify 重放同集合）不播报。
+ * lastUuids 可空：null = 无历史（首次）→ 非空集合即播报。可空是构造序防御——
+ * viewModelScope 为 Main.immediate，collector 首个发射可能在属性初始化前同步执行。
+ */
+internal fun shouldAnnounceServices(lastUuids: Set<String>?, next: List<BleService>): Boolean {
+    val nextUuids = next.map { it.uuid }.toSet()
+    if (nextUuids.isEmpty()) return false
+    val last = lastUuids ?: return true
+    return nextUuids != last
+}
 
 data class OtaUiState(
     val fileUri: Uri? = null,

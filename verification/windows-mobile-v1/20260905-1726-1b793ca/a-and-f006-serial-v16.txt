@@ -1,0 +1,1848 @@
+[serial-tap] start 17:20:08 port=COM12
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x8 (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce3808,len:0x4bc
+load:0x403c9700,len:0xbd8
+load:0x403cc700,len:0x2a0c
+entry 0x403c98d0
+E (135) esp_core_dump_flash: No core dump partition found!
+E (135) esp_core_dump_flash: No core dump partition found!
+[   144][V][esp32-hal-uart.c:330] uartBegin(): UART0 baud(115200) Mode(800001c) rxPin(44) txPin(43)
+[   155][V][esp32-hal-uart.c:416] uartBegin(): UART0 not installed. Starting installation
+[   163][V][esp32-hal-uart.c:467] uartBegin(): UART0 initialization done.
+{"type":"boot","firmware_name":"LightBLE","firmware_version":"1.0.0","git_sha":"455da21","fixture_role":"peripheral"}
+Starting BLE Peripheral Fixture...
+I NimBLEDevice: BLE Host Task Started
+I NimBLEDevice: NimBle host synced.
+D NimBLEServer: >> createService - 4fafc201-1fb5-459e-8fcc-c5c9c331914b
+D NimBLEServer: << createService
+[  3223][E][Preferences.cpp:50] begin(): nvs_open failed: NOT_FOUND
+D NimBLECharacteristic: >> setValue: length=156, data=7b226669726d776172655f76657273696f6e223a22312e302e30222c226861726477617265223a2265737033322d77726f6f6d2d3332222c22757074696d65223a332c22757074696d655f73223a332c22666978747572655f726f6c65223a2270657269, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a8
+D NimBLECharacteristic: << setValue
+D NimBLEService: >> start(): Starting service: UUID: 4fafc201-1fb5-459e-8fcc-c5c9c331914b, handle: 0xffff
+D NimBLEService: Adding 2 characteristics for service UUID: 4fafc201-1fb5-459e-8fcc-c5c9c331914b, handle: 0xffff
+D NimBLEService: << start()
+D NimBLEServer: >> createService - 4fafc201-1fb5-459e-8fcc-c5c9c331914c
+D NimBLEServer: << createService
+D NimBLEService: >> start(): Starting service: UUID: 4fafc201-1fb5-459e-8fcc-c5c9c331914c, handle: 0xffff
+D NimBLEService: Adding 7 characteristics for service UUID: 4fafc201-1fb5-459e-8fcc-c5c9c331914c, handle: 0xffff
+D NimBLEService: << start()
+D NimBLEServer: >> createService - 4fafc201-1fb5-459e-8fcc-c5c9c331914d
+D NimBLEServer: << createService
+D NimBLEService: >> start(): Starting service: UUID: 4fafc201-1fb5-459e-8fcc-c5c9c331914d, handle: 0xffff
+D NimBLEService: Adding 3 characteristics for service UUID: 4fafc201-1fb5-459e-8fcc-c5c9c331914d, handle: 0xffff
+D NimBLEService: << start()
+D NimBLEAdvertising: >> setScanResponseData
+D NimBLEAdvertising: << setScanResponseData
+D NimBLEAdvertising: >> Advertising start: customAdvData: 0, customScanResponseData: 1
+primary service
+           uuid 0x1800
+         handle 1
+     end_handle 5
+characteristic
+           uuid 0x2a00
+     def_handle 2
+     val_handle 3
+   min_key_size 0
+          flags [READ]
+characteristic
+           uuid 0x2a01
+     def_handle 4
+     val_handle 5
+   min_key_size 0
+          flags [READ]
+primary service
+           uuid 0x1801
+         handle 6
+     end_handle 9
+characteristic
+           uuid 0x2a05
+     def_handle 7
+     val_handle 8
+   min_key_size 0
+          flags [INDICATE]
+ccc descriptor
+           uuid 0x2902
+         handle 9
+   min_key_size 0
+          flags [READ|WRITE]
+primary service
+           uuid 4fafc201-1fb5-459e-8fcc-c5c9c331914b
+         handle 10
+     end_handle 16
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26a8
+     def_handle 11
+     val_handle 12
+   min_key_size 0
+          flags [READ|WRITE|NOTIFY]
+ccc descriptor
+           uuid 0x2902
+         handle 13
+   min_key_size 0
+          flags [READ|WRITE]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26a9
+     def_handle 14
+     val_handle 15
+   min_key_size 0
+          flags [WRITE|NOTIFY]
+ccc descriptor
+           uuid 0x2902
+         handle 16
+   min_key_size 0
+          flags [READ|WRITE]
+primary service
+           uuid 4fafc201-1fb5-459e-8fcc-c5c9c331914c
+         handle 17
+     end_handle 35
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26b0
+     def_handle 18
+     val_handle 19
+   min_key_size 0
+          flags [READ]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26b1
+     def_handle 20
+     val_handle 21
+   min_key_size 0
+          flags [WRITE]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26b2
+     def_handle 22
+     val_handle 23
+   min_key_size 0
+          flags [NOTIFY]
+ccc descriptor
+           uuid 0x2902
+         handle 24
+   min_key_size 0
+          flags [READ|WRITE]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26b3
+     def_handle 25
+     val_handle 26
+   min_key_size 0
+          flags [READ|WRITE]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26b4
+     def_handle 27
+     val_handle 28
+   min_key_size 0
+          flags [READ|NOTIFY]
+ccc descriptor
+           uuid 0x2902
+         handle 29
+   min_key_size 0
+          flags [READ|WRITE]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26b5
+     def_handle 30
+     val_handle 31
+   min_key_size 0
+          flags [WRITE|NOTIFY]
+ccc descriptor
+           uuid 0x2902
+         handle 32
+   min_key_size 0
+          flags [READ|WRITE]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26b6
+     def_handle 33
+     val_handle 34
+   min_key_size 0
+          flags [READ|WRITE|NOTIFY]
+ccc descriptor
+           uuid 0x2902
+         handle 35
+   min_key_size 0
+          flags [READ|WRITE]
+primary service
+           uuid 4fafc201-1fb5-459e-8fcc-c5c9c331914d
+         handle 36
+     end_handle 43
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26c0
+     def_handle 37
+     val_handle 38
+   min_key_size 0
+          flags [READ|WRITE]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26c1
+     def_handle 39
+     val_handle 40
+   min_key_size 0
+          flags [WRITE_NO_RSP]
+characteristic
+           uuid beb5483e-36e1-4688-b7f5-ea07361b26c2
+     def_handle 41
+     val_handle 42
+   min_key_size 0
+          flags [READ|NOTIFY]
+ccc descriptor
+           uuid 0x2902
+         handle 43
+   min_key_size 0
+          flags [READ|WRITE]
+D NimBLEAdvertising: << Advertising start
+{"type":"ble","event":"advertising","ts":3680}
+{"type":"adv","status":"started","ts":3690}
+BLE Peripheral Fixture is ready!
+D NimBLEServer: >> handleGapEvent: 
+{"type":"ble","event":"connected","ts":74236}
+{"type":"conn","status":"connected","ts":74236}
+{D NimBLECharacteristic: >> setValue: length=79, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a37343234312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 79
+D NimBLECharacteristic: << notify: No clients subscribed.
+"type":"adv","status":"connectable","ts":74236}
+{"type":"notify","status":"device_status","ts":74272}
+{"type":"disc","status":"service_ready","ts":74283}
+{"type":"led","status":"idle","ts":74293}
+{"type":"notify","status":"enabled","ts":74293}
+{"type":"err","status":"none","ts":74303}
+{"type":"obs","status":"peripheral","ts":74303}
+D NimBLECharacteristic: >> setValue: length=42, data=7b2274797065223a22636f6e6e656374696f6e222c22737461747573223a22636f6e6e6563746564227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 42
+D NimBLECharacteristic: << notify: No clients subscribed.
+D NimBLEServerCallbacks: onConnect(): Default
+D NimBLEServer: >> handleGapEvent: 
+D NimBLEServer: << handleGATTServerEvent
+D NimBLEServer: >> handleGapEvent: 
+D NimBLEServer: Connection parameters updated.
+D NimBLEServer: >> handleGapEvent: 
+D NimBLEServer: << handleGATTServerEvent
+D NimBLEServer: >> handleGapEvent: 
+D NimBLEServer: Connection parameters updated.
+D NimBLECharacteristic: >> setValue: length=79, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a37393239332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 79
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":79319}
+D NimBLECharacteristic: >> setValue: length=79, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a38343333392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 79
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":84365}
+D NimBLECharacteristic: >> setValue: length=79, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a38393338352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 79
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":89411}
+D NimBLECharacteristic: >> setValue: length=79, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a39343433312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 79
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":94457}
+D NimBLECharacteristic: >> setValue: length=79, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a39393437372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 79
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":99503}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3130343532332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":104549}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3130393536392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":109595}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3131343631352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":114641}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3131393636312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":119687}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3132343730372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":124733}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3132393735332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":129779}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3133343739392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":134825}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3133393834352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":139871}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3134343839312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":144917}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3134393933372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":149963}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3135343938332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":155009}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3136303032392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":160055}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3136353037352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":165101}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3137303132312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":170147}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3137353136372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":175193}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3138303231332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":180239}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3138353235392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":185285}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3139303330352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":190331}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3139353335312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":195377}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3230303339372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":200423}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3230353434332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":205469}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3231303438392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":210515}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3231353533352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":215561}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3232303538312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":220607}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3232353632372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":225653}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3233303637332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":230699}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3233353731392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":235745}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3234303736352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":240791}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3234353831312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":245837}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3235303835372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":250883}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3235353930332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":255929}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3236303934392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":260975}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3236353939352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":266021}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3237313034312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":271067}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3237363038372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":276113}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3238313133332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":281159}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3238363137392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":286205}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3239313232352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":291251}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3239363237312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":296297}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3330313331372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":301343}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3330363336332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":306389}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3331313430392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":311435}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3331363435352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":316481}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3332313530312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":321527}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3332363534372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":326573}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3333313539332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":331619}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3333363633392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":336665}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3334313638352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":341711}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3334363733312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":346757}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3335313737372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":351803}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3335363832332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":356849}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3336313836392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":361895}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3336363931352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":366941}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3337313936312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":371987}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3337373030372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":377033}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3338323035332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":382079}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3338373039392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":387125}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3339323134352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":392171}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3339373139312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":397217}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3430323233372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":402263}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3430373238332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":407309}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3431323332392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":412355}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3431373337352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":417401}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3432323432312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":422447}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3432373436372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":427493}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3433323531332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":432539}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3433373535392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":437585}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3434323630352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":442631}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3434373635312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":447677}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3435323639372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":452723}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3435373734332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":457769}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3436323738392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":462815}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3436373833352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":467861}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3437323838312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":472907}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3437373932372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":477953}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3438323937332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":482999}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3438383031392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":488045}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3439333036352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":493091}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3439383131312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":498137}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3530333135372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":503183}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3530383230332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":508229}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3531333234392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":513275}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3531383239352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":518321}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3532333334312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":523367}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3532383338372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":528413}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3533333433332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":533459}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3533383437392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":538505}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3534333532352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":543551}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3534383537312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":548597}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3535333631372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":553643}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3535383636332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":558689}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3536333730392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":563735}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3536383735352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":568781}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3537333830312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":573827}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3537383834372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":578873}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3538333839332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":583919}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3538383933392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":588965}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3539333938352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":594011}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3539393033312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":599057}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3630343037372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":604103}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3630393132332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":609149}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3631343136392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":614195}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3631393231352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":619241}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3632343236312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":624287}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3632393330372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":629333}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3633343335332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":634379}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3633393339392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":639425}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3634343434352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":644471}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3634393439312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":649517}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3635343533372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":654563}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3635393538332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":659609}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3636343632392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":664655}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3636393637352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":669701}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3637343732312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":674747}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3637393736372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":679793}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3638343831332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":684839}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3638393835392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":689885}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3639343930352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":694931}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3639393935312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":699977}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3730343939372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":705023}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3731303034332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":710069}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3731353038392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":715115}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3732303133352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":720161}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3732353138312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":725207}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3733303232372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":730253}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3733353237332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":735299}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3734303331392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":740345}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3734353336352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":745391}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3735303431312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":750437}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3735353435372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":755483}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3736303530332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":760529}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3736353534392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":765575}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3737303539352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":770621}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3737353634312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":775667}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3738303638372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":780713}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3738353733332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":785759}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3739303737392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":790805}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3739353832352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":795851}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3830303837312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":800897}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3830353931372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":805943}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3831303936332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":810989}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3831363030392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":816035}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3832313035352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":821081}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3832363130312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":826127}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3833313134372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":831173}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3833363139332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":836219}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3834313233392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":841265}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3834363238352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":846311}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3835313333312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":851357}
+D NimBLEServer: >> handleGapEvent: 
+I NimBLEServer: subscribe event; attr_handle=12, subscribed: true
+I NimBLECharacteristic: New subscribe value for conn: 1 val: 1
+D NimBLECharacteristicCallbacks: onSubscribe: default
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3835363337372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":856403}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3836313432332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":861449}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3836363436392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":866495}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3837313531352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":871541}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3837363536312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":876587}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3838313630372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":881633}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3838363635332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":886679}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3839313639392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":891725}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3839363734352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":896771}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3930313739312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":901817}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3930363833372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":906863}
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26a8 Read event
+[910684][E][Preferences.cpp:50] begin(): nvs_open failed: NOT_FOUND
+D NimBLECharacteristic: >> setValue: length=160, data=7b226669726d776172655f76657273696f6e223a22312e302e30222c226861726477617265223a2265737033322d77726f6f6d2d3332222c22757074696d65223a3931302c22757074696d655f73223a3931302c22666978747572655f726f6c65223a22, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a8
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristicCallbacks: onRead: default
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26a8 Read event
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26a8 Read event
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26a8 Read event
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26a8 Read event
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26a8 Read event
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26a8 Read event
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26a8 Read event
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3931313838332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":911909}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3931363932392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":916955}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3932313937352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":922001}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3932373032312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":927047}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3933323036372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":932093}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3933373131332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":937139}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3934323135392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":942185}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3934373230352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":947231}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3935323235312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":952277}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3935373239372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":957323}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3936323334332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":962369}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3936373338392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":967415}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3937323433352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":972461}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3937373438312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":977507}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3938323532372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":982553}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3938373537332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":987599}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3939323631392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":992645}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a3939373636352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":997691}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313030323731312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1002737}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313030373735372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1007783}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313031323830332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1012829}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313031373834392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1017875}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313032323839352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1022921}
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26a8 Write event
+D NimBLECharacteristic: >> setValue: length=6, data=4c45445f4f4e, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a8
+D NimBLECharacteristic: << setValue
+{"type":"led","status":"on","ts":1027063}
+D NimBLECharacteristic: >> setValue: length=79, data=7b2274797065223a2277726974655f726573706f6e7365222c22636f6d6d616e64223a224c45445f4f4e222c226c65645f7374617465223a226f6e222c22626c696e6b5f7061747465726e223a317d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a8
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 79
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+D NimBLECharacteristic: >> setValue: length=79, data=7b2274797065223a2277726974655f726573706f6e7365222c22636f6d6d616e64223a224c45445f4f4e222c226c65645f7374617465223a226f6e222c22626c696e6b5f7061747465726e223a317d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 79
+D NimBLECharacteristic: << notify: No clients subscribed.
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313032373934312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1027967}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313033323938372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1033013}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313033383033332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1038059}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313034333037392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1043105}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313034383132352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1048151}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313035333137312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1053197}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313035383231372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1058243}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313036333236332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1063289}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313036383330392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1068335}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313037333335352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1073381}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313037383430312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1078427}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313038333434372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1083473}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313038383439332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1088519}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313039333533392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1093565}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313039383538352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1098611}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313130333633312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1103657}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313130383637372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1108703}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313131333732332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1113749}
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26a8 Write event
+D NimBLECharacteristic: >> setValue: length=2, data=ff01, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a8
+D NimBLECharacteristic: << setValue
+{"type":"led","status":"on","ts":1115302}
+D NimBLECharacteristic: >> setValue: length=77, data=7b2274797065223a2277726974655f726573706f6e7365222c22636f6d6d616e64223a2246463031222c226c65645f7374617465223a226f6e222c22626c696e6b5f7061747465726e223a317d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a8
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 77
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+D NimBLECharacteristic: >> setValue: length=77, data=7b2274797065223a2277726974655f726573706f6e7365222c22636f6d6d616e64223a2246463031222c226c65645f7374617465223a226f6e222c22626c696e6b5f7061747465726e223a317d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 77
+D NimBLECharacteristic: << notify: No clients subscribed.
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313131383736392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1118795}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313132333831352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1123841}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313132383836312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1128887}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313133333930372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1133933}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313133383935332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1138979}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313134333939392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1144025}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313134393034352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1149071}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313135343039312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1154117}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313135393133372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1159163}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313136343138332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1164209}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313136393232392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1169255}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313137343237352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1174301}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313137393332312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1179347}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313138343336372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1184393}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313138393431332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1189439}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313139343435392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1194485}
+D NimBLECharacteristic: >> setValue: length=80, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6e222c22757074696d65223a313139393530352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 80
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1199531}
+D NimBLECharacteristic: Characteristic beb5483e-36e1-4688-b7f5-ea07361b26a8 Write event
+D NimBLECharacteristic: >> setValue: length=2, data=ff00, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a8
+D NimBLECharacteristic: << setValue
+{"type":"led","status":"off","ts":1201982}
+D NimBLECharacteristic: >> setValue: length=78, data=7b2274797065223a2277726974655f726573706f6e7365222c22636f6d6d616e64223a2246463030222c226c65645f7374617465223a226f6666222c22626c696e6b5f7061747465726e223a307d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a8
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 78
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+D NimBLECharacteristic: >> setValue: length=78, data=7b2274797065223a2277726974655f726573706f6e7365222c22636f6d6d616e64223a2246463030222c226c65645f7374617465223a226f6666222c22626c696e6b5f7061747465726e223a307d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 78
+D NimBLECharacteristic: << notify: No clients subscribed.
+D NimBLECharacteristicCallbacks: onWrite: default
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313230343535312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1204577}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313230393539372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1209623}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313231343634332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1214669}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313231393638392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1219715}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313232343733352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1224761}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313232393738312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1229807}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313233343832372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1234853}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313233393837332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1239899}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313234343931392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1244945}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313234393936352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1249991}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313235353031312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1255037}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313236303035372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1260083}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313236353130332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1265129}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313237303134392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1270175}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313237353139352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1275221}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313238303234312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1280267}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313238353238372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1285313}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313239303333332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1290359}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313239353337392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1295405}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313330303432352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1300451}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313330353437312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1305497}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313331303531372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1310543}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313331353536332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1315589}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313332303630392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1320635}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313332353635352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristic: << notify: No clients subscribed.
+{"type":"notify","status":"device_status","ts":1325681}
+D NimBLEServer: >> handleGapEvent: 
+I NimBLEServer: subscribe event; attr_handle=15, subscribed: true
+I NimBLECharacteristic: New subscribe value for conn: 1 val: 1
+D NimBLECharacteristic: >> notify: length: 25
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"subscribed","ts":1326121}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313333303730312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"device_status","ts":1330743}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313333353736342c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"device_status","ts":1335806}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313334303832372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"device_status","ts":1340869}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313334353839302c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"device_status","ts":1345932}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313335303935332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"device_status","ts":1350995}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313335363031362c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"device_status","ts":1356058}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313336313037392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"device_status","ts":1361121}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313336363134322c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"device_status","ts":1366184}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313337313230352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"device_status","ts":1371247}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313337363236382c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"device_status","ts":1376310}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313338313333312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"device_status","ts":1381373}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313338363339342c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"device_status","ts":1386436}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313339313435372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"device_status","ts":1391499}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313339363532302c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"device_status","ts":1396562}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313430313538332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"device_status","ts":1401625}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313430363634362c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"device_status","ts":1406688}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313431313730392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"device_status","ts":1411751}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313431363737322c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"device_status","ts":1416814}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313432313833352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"device_status","ts":1421877}
+D NimBLEServer: >> handleGapEvent: 
+I NimBLEServer: subscribe event; attr_handle=12, subscribed: false
+I NimBLECharacteristic: New subscribe value for conn: 1 val: 0
+D NimBLECharacteristicCallbacks: onSubscribe: default
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313432363839382c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"device_status","ts":1426940}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313433313936312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"device_status","ts":1432003}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313433373032342c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"device_status","ts":1437066}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313434323038372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"device_status","ts":1442129}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313434373135302c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"device_status","ts":1447192}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313435323231332c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"device_status","ts":1452255}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313435373237362c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"device_status","ts":1457318}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313436323333392c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"device_status","ts":1462381}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313436373430322c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"device_status","ts":1467444}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313437323436352c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"device_status","ts":1472507}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313437373532382c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"device_status","ts":1477570}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313438323539312c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"device_status","ts":1482633}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313438373635342c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"device_status","ts":1487696}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313439323731372c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"device_status","ts":1492759}
+D NimBLECharacteristic: >> setValue: length=81, data=7b2274797065223a226465766963655f737461747573222c226c6564223a226f6666222c22757074696d65223a313439373738302c22666978747572655f726f6c65223a227065726970686572616c227d, characteristic UUID=beb5483e-36e1-4688-b7f5-ea07361b26a9
+D NimBLECharacteristic: << setValue
+D NimBLECharacteristic: >> notify: length: 81
+D NimBLECharacteristicCallbacks: onNotify: default
+W NimBLECharacteristic: - Truncating to 20 bytes (maximum notify size)
+D NimBLEServer: >> handleGapEvent: 
+D NimBLECharacteristicCallbacks: onStatus: default
+D NimBLECharacteristic: << notify
+{"type":"notify","status":"device_status","ts":1497822}

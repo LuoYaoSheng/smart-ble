@@ -11,35 +11,28 @@
 			"path": "pages/hid/add",
 			"style": {
 				"navigationBarTitleText": "配置 Smart HID",
-				"navigationBarTextStyle": "black"
+				"navigationStyle": "custom"
 			}
 		},
 		{
 			"path": "pages/hid/detail",
 			"style": {
-				"navigationBarTitleText": "Smart HID 设备",
-				"navigationBarTextStyle": "black"
-			}
-		},
-		{
-			"path": "pages/hid/history",
-			"style": {
-				"navigationBarTitleText": "Smart HID 历史",
-				"navigationBarTextStyle": "black"
+				"navigationBarTitleText": "Smart HID 设备详情",
+				"navigationStyle": "custom"
 			}
 		},
 		{
 			"path": "pages/hid/diagnostics",
 			"style": {
-				"navigationBarTitleText": "诊断",
-				"navigationBarTextStyle": "black"
+				"navigationBarTitleText": "SHID 诊断",
+				"navigationStyle": "custom"
 			}
 		},
 		{
 			"path": "pages/device/detail",
 			"style": {
-				"navigationBarTitleText": "设备详情",
-				"navigationBarTextStyle": "black"
+				"navigationBarTitleText": "GATT 调试",
+				"navigationStyle": "custom"
 			}
 		},
 		{
@@ -53,24 +46,28 @@
 			"path": "pages/broadcast/index",
 			"style": {
 				"navigationBarTitleText": "BLE广播",
-				"navigationBarBackgroundColor": "#ffffff",
-				"navigationBarTextStyle": "black"
+				"navigationStyle": "custom"
 			}
 		},
 		{
 			"path": "pages/about/index",
 			"style": {
 				"navigationBarTitleText": "关于",
-				"navigationBarTextStyle": "black",
-				"navigationBarBackgroundColor": "#FFFFFF"
+				"navigationStyle": "custom"
 			}
 		},
 		{
 			"path": "pages/about/version",
 			"style": {
 				"navigationBarTitleText": "版本记录",
-				"navigationBarTextStyle": "black",
-				"navigationBarBackgroundColor": "#FFFFFF"
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/about/privacy",
+			"style": {
+				"navigationBarTitleText": "隐私说明",
+				"navigationStyle": "custom"
 			}
 		}
 	],
@@ -96,26 +93,26 @@
 		"list": [
 			{
 				"pagePath": "pages/index/index",
-				"iconPath": "static/tabs/device.png",
-				"selectedIconPath": "static/tabs/device_active.png",
+				"iconPath": "static/tabs/scan.png",
+				"selectedIconPath": "static/tabs/scan_active.png",
 				"text": "扫描"
 			},
 			{
 				"pagePath": "pages/connected/index",
-				"iconPath": "static/tabs/hid.png",
-				"selectedIconPath": "static/tabs/hid_active.png",
+				"iconPath": "static/tabs/link.png",
+				"selectedIconPath": "static/tabs/link_active.png",
 				"text": "已连接"
 			},
 			{
 				"pagePath": "pages/broadcast/index",
-				"iconPath": "static/tabs/broadcast.png",
-				"selectedIconPath": "static/tabs/broadcast_active.png",
+				"iconPath": "static/tabs/cast.png",
+				"selectedIconPath": "static/tabs/cast_active.png",
 				"text": "广播"
 			},
 			{
 				"pagePath": "pages/about/index",
-				"iconPath": "static/tabs/about.png",
-				"selectedIconPath": "static/tabs/about_active.png",
+				"iconPath": "static/tabs/info.png",
+				"selectedIconPath": "static/tabs/info_active.png",
 				"text": "关于"
 			}
 		]

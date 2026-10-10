@@ -1,5 +1,4 @@
 using Avalonia;
-using Avalonia.ReactiveUI;
 using System;
 
 namespace SmartBLE.Desktop;
@@ -14,6 +13,5 @@ class Program
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .WithInterFont()
-            .LogToTrace()
-            .UseReactiveUI();
+            .LogToTrace();
 }

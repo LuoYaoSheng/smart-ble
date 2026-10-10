@@ -4,12 +4,15 @@ bin-release/
 [Oo]bj/
 [Bb]in/
 .build/
+.swiftpm/
 build/
 obj/
 bin/
 
 # Other files and folders
 .settings/
+__pycache__/
+*.pyc
 
 # Executables
 *.swf
@@ -52,6 +55,7 @@ SmartBLE/.DS_Store
 
 # Android/Gradle
 .gradle/
+.kotlin/
 apps/android/.gradle/
 apps/android/app/build/
 
@@ -73,6 +77,9 @@ apps/uniapp/unpackage/
 # PlatformIO build artifacts
 **/.pio/
 
+# Verification evidence logs under verification/ (in git on purpose, all phases)
+!verification/**/*.log
+
 # OTA E5 local verification binaries (manifests/logs in git)
 verification/ota-e5/**/packages/
 verification/ota-e5/**/*.bin
@@ -84,3 +91,7 @@ test-results/
 playwright-report/
 blob-report/
 playwright/.cache/
+output/playwright/
+
+# Xcode window state and per-user scheme preferences stay local.
+**/xcuserdata/

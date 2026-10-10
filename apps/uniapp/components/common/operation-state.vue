@@ -26,7 +26,7 @@
 
 		<template v-else-if="state === 'success'">
 			<view class="ble-success-box">
-				<view class="ble-success-icon">✓</view>
+				<view class="ble-success-icon"><app-icon name="check" :size="28" color="#FFFFFF" /></view>
 				<view>
 					<text class="operation-title">{{ title || '已完成' }}</text>
 					<text v-if="description" class="operation-copy">{{ description }}</text>
@@ -45,7 +45,6 @@
 
 		<template v-else>
 			<view class="ble-empty-card operation-empty">
-				<image v-if="image" :src="image" class="ble-empty-image" mode="aspectFit"></image>
 				<text class="ble-empty-title">{{ title || '暂无内容' }}</text>
 				<text v-if="description" class="ble-empty-copy">{{ description }}</text>
 				<button
@@ -64,6 +63,8 @@
 </template>
 
 <script setup>
+import AppIcon from '../ui/AppIcon.vue';
+
 defineProps({
 	state: {
 		type: String,
@@ -71,7 +72,6 @@ defineProps({
 	},
 	title: { type: String, default: '' },
 	description: { type: String, default: '' },
-	image: { type: String, default: '' },
 	actionLabel: { type: String, default: '' },
 	actionDisabled: { type: Boolean, default: false }
 });
@@ -95,7 +95,7 @@ defineEmits(['action']);
 
 .operation-copy {
 	display: block;
-	font-size: 23rpx;
+	font-size: 26rpx;
 	line-height: 1.55;
 	color: var(--ble-text-subtle);
 }

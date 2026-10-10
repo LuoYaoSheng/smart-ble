@@ -1,0 +1,207 @@
+Flutter assets will be downloaded from https://storage.flutter-io.cn. Make sure you trust this source!
+Resolving dependencies...
+Downloading packages...
+  archive 4.0.9 (4.2.0 available)
+  async 2.13.0 (2.13.1 available)
+  characters 1.4.0 (1.4.1 available)
+  cli_util 0.4.2 (0.6.0 available)
+  clock 1.1.2 (1.1.3 available)
+  cross_file 0.3.5+2 (0.3.5+5 available)
+  cupertino_icons 1.0.8 (1.0.9 available)
+  dbus 0.7.11 (0.7.15 available)
+  device_info_plus 11.5.0 (13.2.0 available)
+  device_info_plus_platform_interface 7.0.3 (8.1.0 available)
+  ffi 2.1.4 (2.2.0 available)
+  file_picker 11.0.2 (12.2.0 available)
+  flutter_ble_peripheral 2.0.1 (3.1.0 available)
+  flutter_blue_plus 1.36.8 (2.3.12 available)
+  flutter_blue_plus_android 7.0.4 (9.0.3 available)
+  flutter_blue_plus_darwin 7.0.3 (9.0.4 available)
+  flutter_blue_plus_linux 7.0.3 (9.0.3 available)
+  flutter_blue_plus_platform_interface 7.0.0 (9.0.3 available)
+  flutter_blue_plus_web 7.0.2 (9.0.3 available)
+  flutter_lints 3.0.2 (6.0.0 available)
+  flutter_native_splash 2.4.7 (2.4.8 available)
+  flutter_platform_widgets 6.1.0 (discontinued)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  flutter_riverpod 2.6.1 (3.4.3 available)
+  google_fonts 6.3.3 (8.2.1 available)
+  html 0.15.6 (0.15.7 available)
+  image 4.8.0 (4.9.2 available)
+  intl 0.20.2 (0.20.3 available)
+  json_annotation 4.9.0 (4.12.0 available)
+  lints 3.0.0 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.1 available)
+  meta 1.17.0 (1.19.0 available)
+  mobile_scanner 5.2.3 (7.4.0 available)
+  package_info_plus 8.3.1 (10.2.1 available)
+  package_info_plus_platform_interface 3.2.1 (4.1.0 available)
+  path_provider 2.1.5 (2.1.6 available)
+  path_provider_android 2.2.22 (2.3.1 available)
+  path_provider_foundation 2.5.1 (2.6.0 available)
+  path_provider_linux 2.2.1 (2.2.2 available)
+  path_provider_platform_interface 2.1.2 (2.1.3 available)
+  permission_handler 11.4.0 (13.0.2 available)
+  permission_handler_android 12.1.0 (14.1.0 available)
+  permission_handler_apple 9.4.7 (9.6.1 available)
+  permission_handler_html 0.1.3+5 (0.1.4+1 available)
+  permission_handler_platform_interface 4.3.0 (4.4.1 available)
+  permission_handler_windows 0.2.1 (0.2.2 available)
+  petitparser 7.0.1 (7.0.2 available)
+  platform 3.1.6 (3.2.0 available)
+  posix 6.5.0 (6.5.2 available)
+  riverpod 2.6.1 (3.4.3 available)
+  rxdart 0.27.7 (0.28.0 available)
+  share_plus 10.1.4 (13.3.0 available)
+  share_plus_platform_interface 5.0.2 (7.2.0 available)
+  source_span 1.10.1 (1.10.2 available)
+  stack_trace 1.12.1 (1.12.2 available)
+  test_api 0.7.7 (0.7.14 available)
+  url_launcher_android 6.3.29 (6.3.33 available)
+  url_launcher_ios 6.4.1 (6.4.2 available)
+  url_launcher_linux 3.2.2 (3.2.3 available)
+  url_launcher_macos 3.2.5 (3.2.6 available)
+  url_launcher_web 2.4.2 (2.4.3 available)
+  url_launcher_windows 3.1.5 (3.1.6 available)
+  vector_math 2.2.0 (2.4.2 available)
+  vm_service 15.0.2 (15.3.0 available)
+  win32 5.15.0 (6.4.0 available)
+  win32_registry 2.1.0 (3.0.3 available)
+  xml 6.6.1 (7.0.1 available)
+  yaml 3.1.3 (3.1.4 available)
+Got dependencies!
+1 package is discontinued.
+69 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Flutter assets will be downloaded from https://storage.flutter-io.cn. Make sure you trust this source!
+Analyzing flutter...                                            
+No issues found! (ran in 28.7s)
+Flutter assets will be downloaded from https://storage.flutter-io.cn. Make sure you trust this source!
+00:00 +0: loading E:/project/xf/smart-ble/apps/flutter/test/ble_models_test.dart
+00:00 +0: E:/project/xf/smart-ble/apps/flutter/test/ble_models_test.dart: BleScanResult filtering logic displayName returns correctly for named and unnamed devices
+00:00 +1: E:/project/xf/smart-ble/apps/flutter/test/ble_models_test.dart: BleScanResult filtering logic matchesNamePrefix correctly ignores case and filters
+00:00 +2: E:/project/xf/smart-ble/apps/flutter/test/ble_models_test.dart: BleScanResult filtering logic matchesRssiThreshold handles negative values accurately
+00:00 +3: E:/project/xf/smart-ble/apps/flutter/test/core/ble/profile_registry_test.dart: ProfileRegistry matchProfile（口径对齐 profile-contract.js） 广播 Service UUID 命中 → STRONG
+00:00 +4: E:/project/xf/smart-ble/apps/flutter/test/core/ble/profile_registry_test.dart: ProfileRegistry matchProfile（口径对齐 profile-contract.js） 完整 128 位 UUID 大小写不敏感
+00:00 +5: E:/project/xf/smart-ble/apps/flutter/test/core/ble/profile_registry_test.dart: ProfileRegistry matchProfile（口径对齐 profile-contract.js） 名称前缀命中（GAP 名）→ WEAK
+00:00 +6: E:/project/xf/smart-ble/apps/flutter/test/core/ble/profile_registry_test.dart: ProfileRegistry matchProfile（口径对齐 profile-contract.js） Scan Response 本地名（advName）前缀命中 → WEAK
+00:00 +7: E:/project/xf/smart-ble/apps/flutter/test/core/ble/profile_registry_test.dart: ProfileRegistry matchProfile（口径对齐 profile-contract.js） 无关设备 → null
+00:00 +8: E:/project/xf/smart-ble/apps/flutter/test/core/ble/profile_registry_test.dart: ProfileRegistry matchProfile（口径对齐 profile-contract.js） STRONG 优先于 WEAK（同设备双信号）
+00:00 +9: E:/project/xf/smart-ble/apps/flutter/test/core/ble/profile_registry_test.dart: ProfileRegistry matchProfile（口径对齐 profile-contract.js） 非本档案 UUID 不误命中
+00:01 +10: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 连接阶段（F018） 连接 + Device Info 验证通过 → 进入 configure
+P002: connected+verified device_id=HID-5EEDC0DE fw=1.2.0-sim mtu=247
+00:01 +11: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 连接阶段（F018） 连接失败 → connError 呈现，阶段停留 connect
+00:01 +12: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 连接阶段（F018） Device Info 身份不符 → 身份验证失败
+P002: identity check FAILED (other/1.0/HID-5EEDC0DE)
+00:01 +13: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 下发 → 终态（F021） 七步全走完 → done，四行全 done，帧已写入
+P002: connected+verified device_id=HID-5EEDC0DE fw=1.2.0-sim mtu=247
+P002: submit frames=2 bytes=136 mtu=247
+P002: status state=provisioning step=received error=null
+P002: status state=provisioning step=connecting_wifi error=null
+P002: status state=provisioning step=wifi_connected error=null
+P002: status state=provisioning step=pairing error=null
+P002: status state=provisioning step=pairing_success error=null
+P002: status state=provisioning step=mqtt_connecting error=null
+P002: status state=ready step=ready error=null
+P002: terminal=ready failure=null
+00:01 +14: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 下发 → 终态（F021） 校验失败抛 FormatException 且不切阶段
+P002: connected+verified device_id=HID-5EEDC0DE fw=1.2.0-sim mtu=247
+00:01 +15: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 错误恢复映射（F022） wifi_failed → wifi 行失败 + 返回表单
+P002: connected+verified device_id=HID-5EEDC0DE fw=1.2.0-sim mtu=247
+P002: submit frames=2 bytes=136 mtu=247
+P002: status state=provisioning step=connecting_wifi error=null
+P002: status state=error step=connecting_wifi error=wifi_failed
+P002: terminal=error failure=null
+00:01 +16: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 错误恢复映射（F022） pairing_expired → hub 行失败 + 重新扫码
+P002: connected+verified device_id=HID-5EEDC0DE fw=1.2.0-sim mtu=247
+P002: submit frames=2 bytes=136 mtu=247
+P002: status state=provisioning step=connecting_wifi error=null
+P002: status state=error step=connecting_wifi error=pairing_expired
+P002: terminal=error failure=null
+00:01 +17: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 错误恢复映射（F022） mqtt_invalid → diagnostics；未知码 → retry
+P002: connected+verified device_id=HID-5EEDC0DE fw=1.2.0-sim mtu=247
+P002: submit frames=2 bytes=136 mtu=247
+P002: status state=provisioning step=connecting_wifi error=null
+P002: status state=error step=connecting_wifi error=mqtt_invalid
+P002: terminal=error failure=null
+P002: connected+verified device_id=HID-5EEDC0DE fw=1.2.0-sim mtu=247
+P002: submit frames=2 bytes=136 mtu=247
+P002: status state=provisioning step=connecting_wifi error=null
+P002: status state=error step=connecting_wifi error=weird_error
+P002: terminal=error failure=null
+00:01 +18: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 超时 / 取消 / 断线 终态超时 → timeout 失败（conn 行，可重试）
+P002: connected+verified device_id=HID-5EEDC0DE fw=1.2.0-sim mtu=247
+P002: submit frames=2 bytes=136 mtu=247
+P002: terminal=timeout failure=null
+00:02 +19: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 超时 / 取消 / 断线 取消等待 → 本地按 timeout 呈现
+P002: connected+verified device_id=HID-5EEDC0DE fw=1.2.0-sim mtu=247
+P002: submit frames=2 bytes=136 mtu=247
+P002: terminal=timeout failure=timeout
+00:02 +20: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 超时 / 取消 / 断线 configure 阶段断线 → lost 横幅语义
+P002: connected+verified device_id=HID-5EEDC0DE fw=1.2.0-sim mtu=247
+P002: connection lost (phase=configure provisioning=false)
+00:02 +21: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 超时 / 取消 / 断线 下发中断线 → connection_lost，可重连
+P002: connected+verified device_id=HID-5EEDC0DE fw=1.2.0-sim mtu=247
+P002: submit frames=2 bytes=136 mtu=247
+P002: connection lost (phase=status provisioning=true)
+P002: terminal=lost failure=null
+00:02 +22: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 超时 / 取消 / 断线 写失败 encrypt（旧加密模型固件）→ 立即失败不重试（V1 简化无配对）
+P002: connected+verified device_id=HID-5EEDC0DE fw=1.2.0-sim mtu=247
+P002: submit frames=2 bytes=136 mtu=247
+00:02 +23: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_framing_test.dart: chunkSizeForMtu MTU 23 → 17B；MTU 247 → 封顶 128B
+00:02 +23: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_controller_test.dart: 超时 / 取消 / 断线 写失败 disconnect → connection_lost 呈现
+P002: connected+verified device_id=HID-5EEDC0DE fw=1.2.0-sim mtu=247
+P002: submit frames=2 bytes=136 mtu=247
+00:02 +24: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_framing_test.dart: chunkSizeForMtu MTU 23 → 17B；MTU 247 → 封顶 128B
+00:02 +25: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_framing_test.dart: chunkSizeForMtu 中间值 = MTU-6；非法值按 23 兜底
+00:02 +26: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_framing_test.dart: buildFrames 单帧：[seq=0][total=1][len][payload]
+00:02 +27: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_framing_test.dart: buildFrames 多帧按块切分，seq/total/len 头正确
+00:02 +28: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_framing_test.dart: buildFrames 空 payload / 超 1024B / 超帧数上限抛错
+00:02 +29: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_framing_test.dart: FrameAssembler 顺序喂帧可还原原始 payload
+00:02 +30: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_framing_test.dart: FrameAssembler 乱序/跳号抛错
+00:02 +31: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_framing_test.dart: FrameAssembler seq=0 重新开始；传输中途 total 变化抛错
+00:02 +32: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_framing_test.dart: FrameAssembler len 与实际长度不符抛错；帧过短抛错
+00:02 +33: E:/project/xf/smart-ble/apps/flutter/test/core/ble/provisioning_framing_test.dart: utf8 编解码往返 ASCII / 中文 / emoji 往返一致
+00:02 +34: E:/project/xf/smart-ble/apps/flutter/test/core/protocols/hid_provisioning_protocol_test.dart: GATT UUID 常量 服务与三特征 UUID 末段 1001/1002/1003/1004
+00:03 +35: E:/project/xf/smart-ble/apps/flutter/test/core/protocols/hid_provisioning_protocol_test.dart: buildProvisionCandidateJson 合法输入生成含全部字段的 JSON
+00:03 +36: E:/project/xf/smart-ble/apps/flutter/test/core/protocols/hid_provisioning_protocol_test.dart: buildProvisionCandidateJson 端口缺省 17892
+00:03 +37: E:/project/xf/smart-ble/apps/flutter/test/core/protocols/hid_provisioning_protocol_test.dart: buildProvisionCandidateJson SSID 前后空格被 trim，超长/为空抛错
+00:03 +38: E:/project/xf/smart-ble/apps/flutter/test/core/protocols/hid_provisioning_protocol_test.dart: buildProvisionCandidateJson 密码超 64 抛错
+00:03 +39: E:/project/xf/smart-ble/apps/flutter/test/core/protocols/hid_provisioning_protocol_test.dart: buildProvisionCandidateJson host 为空 / token 形态非法抛错
+00:03 +40: E:/project/xf/smart-ble/apps/flutter/test/core/protocols/hid_provisioning_protocol_test.dart: buildProvisionCandidateJson 密码特殊字符被 JSON 转义
+00:03 +41: E:/project/xf/smart-ble/apps/flutter/test/core/protocols/hid_provisioning_protocol_test.dart: parsePairingQrPayload 完整 URI 解析 token/host/port
+00:03 +42: E:/project/xf/smart-ble/apps/flutter/test/core/protocols/hid_provisioning_protocol_test.dart: parsePairingQrPayload 缺 port 用默认 17892；scheme 大小写不敏感
+00:03 +43: E:/project/xf/smart-ble/apps/flutter/test/core/protocols/hid_provisioning_protocol_test.dart: parsePairingQrPayload 非 shid scheme / 坏 token / 坏 host / 坏 port 返回 null
+00:03 +44: E:/project/xf/smart-ble/apps/flutter/test/core/protocols/hid_provisioning_protocol_test.dart: parsePairingQrPayload 重复参数返回 null
+00:03 +45: E:/project/xf/smart-ble/apps/flutter/test/core/protocols/hid_provisioning_protocol_test.dart: parseDeviceInfo / parseProvisionStatus 合法 JSON 解析
+00:03 +46: E:/project/xf/smart-ble/apps/flutter/test/core/protocols/hid_provisioning_protocol_test.dart: parseDeviceInfo / parseProvisionStatus 非法/缺 device_id 返回 null
+00:03 +47: E:/project/xf/smart-ble/apps/flutter/test/core/protocols/hid_provisioning_protocol_test.dart: verifySmartHidDeviceInfo product/protocol/device_id 三项全对才通过
+00:03 +48: E:/project/xf/smart-ble/apps/flutter/test/core/protocols/hid_provisioning_protocol_test.dart: 错误码表 / 行映射 / 恢复动作 全部协议错误码都有提示文案
+00:03 +49: E:/project/xf/smart-ble/apps/flutter/test/core/protocols/hid_provisioning_protocol_test.dart: 错误码表 / 行映射 / 恢复动作 错误码 → 行映射
+00:03 +50: E:/project/xf/smart-ble/apps/flutter/test/core/protocols/hid_provisioning_protocol_test.dart: 错误码表 / 行映射 / 恢复动作 错误码 → 恢复动作映射（对齐 uni-app smartHidRecoveryAction）
+00:03 +51: E:/project/xf/smart-ble/apps/flutter/test/core/utils/data_converter_test.dart: DataConverter Tests hexToBytes should convert valid hex correctly
+00:03 +52: E:/project/xf/smart-ble/apps/flutter/test/core/utils/data_converter_test.dart: DataConverter Tests hexToBytes should throw on odd length
+00:04 +53: E:/project/xf/smart-ble/apps/flutter/test/core/utils/data_converter_test.dart: DataConverter Tests bytesToHex should format bytes correctly
+00:04 +54: E:/project/xf/smart-ble/apps/flutter/test/core/utils/data_converter_test.dart: DataConverter Tests stringToBytes should convert utf8 properly
+00:04 +55: E:/project/xf/smart-ble/apps/flutter/test/core/utils/data_converter_test.dart: DataConverter Tests bytesToString should decode utf8 properly
+00:04 +56: E:/project/xf/smart-ble/apps/flutter/test/core/utils/data_converter_test.dart: DataConverter Tests bytesToString should fallback gracefully on malformed utf8
+00:04 +57: E:/project/xf/smart-ble/apps/flutter/test/core/utils/data_converter_test.dart: DataConverter Tests isValidHex should validate hex strictly
+00:05 +58: E:/project/xf/smart-ble/apps/flutter/test/widget_test.dart: main tabs render
+BleManager 初始化失败: Unsupported operation: flutter_blue_plus is unsupported on this platform
+00:08 +59: E:/project/xf/smart-ble/apps/flutter/test/widget_test.dart: tab labels match PAGE_SPEC exactly (FLUTTER-G1-001)
+BleManager 初始化失败: Unsupported operation: flutter_blue_plus is unsupported on this platform
+00:08 +60: E:/project/xf/smart-ble/apps/flutter/test/widget_test.dart: P001 bt status word maps canon 3-state vocabulary
+00:08 +61: E:/project/xf/smart-ble/apps/flutter/test/widget_test.dart: P001 scan page structure follows prototype canon
+BleManager 初始化失败: Unsupported operation: flutter_blue_plus is unsupported on this platform
+00:09 +62: E:/project/xf/smart-ble/apps/flutter/test/widget_test.dart: main tab swipe is disabled (NeverScrollableScrollPhysics)
+BleManager 初始化失败: Unsupported operation: flutter_blue_plus is unsupported on this platform
+00:10 +63: E:/project/xf/smart-ble/apps/flutter/test/widget_test.dart: P003/P005/P010 pages exist as independent routes
+00:10 +64: E:/project/xf/smart-ble/apps/flutter/test/widget_test.dart: HidSessionStore is memory-only with cold-start empty (zero persistence)
+00:10 +65: E:/project/xf/smart-ble/apps/flutter/test/widget_test.dart: about page exposes 版本记录 menu entry
+BleManager 初始化失败: Unsupported operation: flutter_blue_plus is unsupported on this platform
+00:11 +66: E:/project/xf/smart-ble/apps/flutter/test/widget_test.dart: tab icons are canon AppIcon glyphs (PARITY-ICON)
+BleManager 初始化失败: Unsupported operation: flutter_blue_plus is unsupported on this platform
+00:11 +67: E:/project/xf/smart-ble/apps/flutter/test/widget_test.dart: canon icon set renders all glyphs without error
+00:12 +68: E:/project/xf/smart-ble/apps/flutter/test/widget_test.dart: canon empty-state illustrations render without error
+00:12 +69: All tests passed!

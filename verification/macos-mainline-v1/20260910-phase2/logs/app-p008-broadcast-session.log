@@ -1,0 +1,7 @@
+[APP] static main entered
+[APP] applicationDidFinishLaunching
+[BLE] 蓝牙已开启
+[BLE] 外围模式已就绪
+[BLE] 开始广播 · name=SmartBLE uuid=FFE0 platform=Desktop·macOS
+[BLE] 广播已启动
+[BLE] 广播已停止

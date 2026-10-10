@@ -1,16 +1,20 @@
 <template>
-	<scroll-view class="page-container" scroll-y>
-		<view class="settings-section">
-			<view class="settings-heading">
-				<text class="section-title">广播设置</text>
-				<view class="settings-meta">
-					<text class="platform-tag">{{ platformLabel }}</text>
-					<view class="runtime-state" :class="{ active: advertising, ready: !advertising && isSupported }">
-						<view class="status-indicator-dot"></view>
-						<text>{{ broadcastStateText }}</text>
-					</view>
+	<view class="ble-shell broadcast-shell">
+		<AppNavbar kicker="PERIPHERAL" title="广播">
+			<template #status>
+				<view class="nav-status-group">
+					<AppChip :text="'平台：' + platformLabel" tone="neutral" />
+					<AppBadge :text="statusBadge.text" :tone="statusBadge.tone" :dot="statusBadge.dot" />
 				</view>
-			</view>
+			</template>
+		</AppNavbar>
+
+		<view class="ble-content page-content">
+		<scroll-view class="page-container" scroll-y>
+			<view class="settings-section">
+				<view class="settings-heading">
+					<text class="section-title">广播设置</text>
+				</view>
 
 			<view class="field-group">
 				<view class="field-label-row">
@@ -38,7 +42,7 @@
 					<picker @change="onModeChange" :value="modeIndex" :range="modeOptions">
 						<view class="field-picker">
 							<text>{{modeOptions[modeIndex]}}</text>
-							<text class="picker-arrow">▼</text>
+							<AppIcon name="chev-d" :size="26" tone="mut" class="picker-arrow" />
 						</view>
 					</picker>
 				</view>
@@ -48,7 +52,7 @@
 					<picker @change="onPowerChange" :value="powerIndex" :range="powerOptions">
 						<view class="field-picker">
 							<text>{{powerOptions[powerIndex]}}</text>
-							<text class="picker-arrow">▼</text>
+							<AppIcon name="chev-d" :size="26" tone="mut" class="picker-arrow" />
 						</view>
 					</picker>
 				</view>
@@ -93,32 +97,34 @@
 			</view>
 		</view>
 
-		<log-panel
+		<LogPanel
 			class="broadcast-log"
 			variant="card"
-			compact
-			clearable
-			title="操作日志"
-			caption="记录广播启动、停止和支持检查结果。"
-			empty-title="暂无日志"
-			empty-description="开始广播或检查支持后，这里会显示操作记录。"
+			empty-text="暂无日志 · 开始广播或检查支持后，操作记录会显示在这里"
 			:logs="logs"
 			@clear="clearLogs"
+			@export="exportLogs"
 		/>
-	</scroll-view>
+		</scroll-view>
+		</view>
+	</view>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
-import { onHide, onLoad, onShow, onUnload, onShareAppMessage } from '@dcloudio/uni-app';
+// UI-G2：P008 改挂正典组件层（AppNavbar 平台 chip + 状态 badge / LogPanel card + 导出）
+import AppNavbar from '../../components/ui/AppNavbar.vue';
+import AppChip from '../../components/ui/AppChip.vue';
+import AppBadge from '../../components/ui/AppBadge.vue';
+import LogPanel from '../../components/ui/LogPanel.vue';
+import AppIcon from '../../components/ui/AppIcon.vue'; // UI-PARITY-G0 正典图标入口
+import { onHide, onLoad, onUnload } from '@dcloudio/uni-app';
+import { hasFeatureConsent, requestFeatureConsent } from '../../services/privacy-consent.js';
 import { logger } from '../../../../core/ble-core/utils/logger';
 import { useBleStore } from '../../store/ble';
-import { createWxPeripheralAdapterController } from '../../services/wx-peripheral-mode.js';
-import { createWxPeripheralServerController } from '../../services/wx-peripheral-server.js';
 import {
 	DEFAULT_ADVERTISING_PAYLOAD,
-	analyzeAdvertisingPayload,
-	manufacturerDataBuffer
+	analyzeAdvertisingPayload
 } from '../../utils/advertising-payload.js';
 import { validateAppBroadcastStart } from '../../services/broadcast/validation.js';
 import {
@@ -126,7 +132,10 @@ import {
 	buildBroadcastPayload,
 } from '../../services/broadcast/index.js';
 import { useBroadcastSession } from '../../composables/use-broadcast-session.js';
-import LogPanel from '../../components/log-panel/log-panel.vue';
+// #ifdef H5
+// H5 假数据通道：暴露广播页本地态给 window.__MOCK__（?mock=1 时才有消费者）
+import { registerPageTargets } from '../../services/mock/mock-registry.js';
+// #endif
 const bleStore = useBleStore();
 
 const blePeripheral = ref(null);
@@ -148,6 +157,7 @@ const {
 	logs,
 	broadcastStateText: sessionStateText,
 	pageState,
+	sessionSnap,
 	addLog: sessionAddLog,
 	clearLogs: sessionClearLogs,
 	reportBroadcastError: sessionReportError,
@@ -163,13 +173,6 @@ const {
 	owner: { type: 'PAGE', id: 'PAGE-008' },
 });
 
-// #ifdef MP-WEIXIN
-const wxPeripheralAdapter = createWxPeripheralAdapterController({
-	platform: wx,
-	getConnectedCount: () => bleStore.connectedDevicesList.length
-});
-const wxPeripheralServer = createWxPeripheralServerController({ platform: wx });
-// #endif
 
 // Android 参数
 const androidSettings = ref({
@@ -189,13 +192,24 @@ const modeOptions = ['低功耗', '平衡', '低延迟'];
 const powerOptions = ['超低功率', '低功率', '中功率', '高功率'];
 const manufacturerId = ref('');
 const manufacturerData = ref('');
-const platformLabel = computed(() => ({ android: 'Android', ios: 'iOS', weixin: '微信', web: 'Web' }[platform.value] || 'BLE'));
+
+// #ifdef H5
+// H5 假数据通道：暴露广播页本地态给 window.__MOCK__（?mock=1 时才有消费者；置于表单 refs 声明后避免 TDZ）
+registerPageTargets('p008', { sessionSnap, isSupported, logs, sessionAddLog, platform, deviceName, serviceUUID, manufacturerId, manufacturerData, androidSettings });
+// #endif
+const platformLabel = computed(() => ({ android: 'Android', ios: 'iOS', web: 'Web' }[platform.value] || 'BLE'));
 const broadcastStateText = computed(() => {
 	if (advertising.value) return '广播中';
 	if (platform.value === 'web') return '不支持';
 	if (pageState.value === 'Error') return '失败';
 	if (pageState.value === 'Stopped') return '已停止';
 	return isSupported.value ? '已就绪' : '未就绪';
+});
+// 正典 P008 导航栏状态徽章：广播中 on / 失败 err / 已就绪 warn / 其余 dim；「不支持」无点
+const statusBadge = computed(() => {
+	const text = broadcastStateText.value;
+	const tone = text === '广播中' ? 'on' : text === '失败' ? 'err' : text === '已就绪' ? 'warn' : 'dim';
+	return { text, tone, dot: text !== '不支持' };
 });
 
 const payloadAnalysis = computed(() => buildBroadcastPayload({
@@ -229,7 +243,16 @@ const clearLogs = () => {
 	sessionClearLogs();
 };
 
+const exportLogs = () => {
+	const lines = logs.value.map((l) => `[${l.timestamp || l.time || '--:--:--'}][${l.type}] ${l.message || l.msg || ''}`);
+	uni.setClipboardData({
+		data: lines.join('\n') || '（空日志）',
+		success: () => uni.showToast({ title: '日志已复制', icon: 'success' })
+	});
+};
+
 const checkSupport = () => {
+	if (!hasFeatureConsent()) { addLog('系统', '使用广播前请阅读并授权隐私说明。'); return; }
 	// #ifdef APP-PLUS
 	if (!blePeripheral.value) {
 		addLog('错误', '插件未初始化');
@@ -243,52 +266,11 @@ const checkSupport = () => {
 	});
 	// #endif
 
-	// #ifdef MP-WEIXIN
-	checkWxBleSupport();
-	// #endif
-
 	// #ifndef APP-PLUS
-	// #ifndef MP-WEIXIN
 	markSupported(false);
-	addLog('系统', '当前平台不支持 BLE 广播，请使用微信小程序或 App。');
-	// #endif
+	addLog('系统', '当前平台不支持 BLE 广播，请使用 App。');
 	// #endif
 };
-
-// #ifdef MP-WEIXIN
-const checkWxBleSupport = async () => {
-	try {
-		await wxPeripheralAdapter.open();
-		await wxPeripheralServer.ensureCreated();
-		addLog('系统', '蓝牙从机模式已就绪');
-		markSupported(true);
-	} catch (error) {
-		if (error?.code === 'released_during_open') return;
-		const detail = error?.errMsg || error?.message || JSON.stringify(error);
-		if (isWeixinDevTools()) addLog('系统', '开发者工具不支持 BLE 外围服务，请使用真机调试广播功能');
-		else addLog('错误', '蓝牙从机模式初始化失败: ' + detail);
-		markSupported(false);
-	}
-};
-
-const isWeixinDevTools = () => {
-	try {
-		return wx.getDeviceInfo?.().platform === 'devtools';
-	} catch {
-		return false;
-	}
-};
-
-const releaseWxPeripheralMode = async () => {
-	await wxPeripheralServer.close().catch((error) => {
-		addLog('错误', '关闭 BLE 外围服务器失败: ' + (error?.errMsg || error?.message || error));
-	});
-	await cleanup().catch(() => {});
-	markSupported(false);
-	await wxPeripheralAdapter.release();
-	wxPeripheralServer.invalidate();
-};
-// #endif
 
 const openAppSettings = () => {
 	if (platform.value !== 'android') return;
@@ -404,31 +386,6 @@ const requestAndroidPermissions = (onGranted, onDenied) => {
 
 const calcAdvertiseBytes = () => payloadAnalysis.value.totalBytes;
 
-// #ifdef MP-WEIXIN
-const getPowerLevel = () => {
-	const levels = ['low', 'medium', 'high', 'high'];
-	return levels[powerIndex.value] || 'high';
-};
-const runWxStart = async (payload) => {
-	const advertiseRequest = {
-		deviceName: payload.deviceName,
-		serviceUuids: payload.serviceUuid ? [payload.serviceUuid] : []
-	};
-	if (payload.manufacturerId != null) {
-		advertiseRequest.manufacturerData = [{
-			manufacturerId: payload.manufacturerId,
-			manufacturerSpecificData: manufacturerDataBuffer(payload.manufacturerData)
-		}];
-	}
-	await wxPeripheralServer.start(advertiseRequest, getPowerLevel());
-	return { ok: true };
-};
-const runWxStop = async () => {
-	await wxPeripheralServer.stop();
-	return { ok: true };
-};
-// #endif
-
 // #ifdef APP-PLUS
 const runAppStart = (payload) => new Promise((resolve, reject) => {
 	if (!blePeripheral.value) {
@@ -487,13 +444,8 @@ platformStartAdvertising = async (payload) => {
 	// #ifdef APP-PLUS
 	return runAppStart(payload);
 	// #endif
-	// #ifdef MP-WEIXIN
-	return runWxStart(payload);
-	// #endif
 	// #ifndef APP-PLUS
-	// #ifndef MP-WEIXIN
 	throw new Error('当前平台不支持 BLE 广播');
-	// #endif
 	// #endif
 };
 
@@ -501,13 +453,8 @@ platformStopAdvertising = async () => {
 	// #ifdef APP-PLUS
 	return runAppStop();
 	// #endif
-	// #ifdef MP-WEIXIN
-	return runWxStop();
-	// #endif
 	// #ifndef APP-PLUS
-	// #ifndef MP-WEIXIN
 	return { ok: true };
-	// #endif
 	// #endif
 };
 
@@ -550,56 +497,52 @@ const stopAdvertising = async () => {
 };
 
 const checkBluetoothAndPermissionsBeforeAdvertise = () => {
-	// #ifdef APP-ANDROID
-	try {
-		const BluetoothAdapter = plus.android.importClass("android.bluetooth.BluetoothAdapter");
-		const bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-		if (!bluetoothAdapter || !bluetoothAdapter.isEnabled()) {
-			uni.showModal({
-				title: '提示',
-				content: '请先开启系统蓝牙',
-				confirmText: '去开启',
-				success: (res) => {
-					if (res.confirm) {
-						try {
-							const Intent = plus.android.importClass("android.content.Intent");
-							const enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-							plus.android.runtimeMainActivity().startActivityForResult(enableIntent, 1);
-						} catch (error) {
-							reportBroadcastError('无法打开系统蓝牙设置：' + (error?.message || '未知错误'));
+	// WIN-UAND-002 修复：原 `#ifdef APP-ANDROID/APP-IOS` 条件块编译期被丢（token
+	// 未定义），此函数曾被编译成空函数——改运行时 platform 分支（platform 由
+	// onLoad 依 systemInfo 设置）。
+	if (platform.value === 'android') {
+		try {
+			const BluetoothAdapter = plus.android.importClass("android.bluetooth.BluetoothAdapter");
+			const bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+			if (!bluetoothAdapter || !bluetoothAdapter.isEnabled()) {
+				uni.showModal({
+					title: '提示',
+					content: '请先开启系统蓝牙',
+					confirmText: '去开启',
+					success: (res) => {
+						if (res.confirm) {
+							try {
+								const Intent = plus.android.importClass("android.content.Intent");
+								const enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+								plus.android.runtimeMainActivity().startActivityForResult(enableIntent, 1);
+							} catch (error) {
+								reportBroadcastError('无法打开系统蓝牙设置：' + (error?.message || '未知错误'));
+							}
 						}
 					}
-				}
-			});
-			return;
+				});
+				return;
+			}
+			requestAndroidPermissions(
+				() => startAdvertising(),
+				(reason) => reportBroadcastError(reason || '未获得启动广播所需权限。')
+			);
+		} catch (error) {
+			reportBroadcastError('检查 Android 蓝牙状态失败：' + (error?.message || '未知错误'));
 		}
-		requestAndroidPermissions(
-			() => startAdvertising(),
-			(reason) => reportBroadcastError(reason || '未获得启动广播所需权限。')
-		);
-	} catch (error) {
-		reportBroadcastError('检查 Android 蓝牙状态失败：' + (error?.message || '未知错误'));
+		return;
 	}
-	// #endif
-	// #ifdef APP-IOS
-	startAdvertising();
-	// #endif
-	// #ifdef MP-WEIXIN
-	wxPeripheralAdapter.open()
-			.then(() => wxPeripheralServer.ensureCreated())
-			.then(() => startAdvertising())
-		.catch((error) => {
-			const content = error?.code === 'active_connections'
-				? error.message
-				: error?.errCode === 10001 ? '请先开启系统蓝牙。' : '当前无法启动蓝牙广播。';
-			uni.showModal({ title: '无法开始广播', content, showCancel: false });
-		});
-	// #endif
+	if (platform.value === 'ios') {
+		startAdvertising();
+		return;
+	}
 };
 
-const toggleAdvertising = () => {
+const toggleAdvertising = async () => {
+	if (!await requestFeatureConsent()) return;
+	initializeNativeBroadcast();
 	if (platform.value === 'web') {
-		reportBroadcastError('当前平台不支持 BLE 广播，请使用微信小程序或 App。');
+		reportBroadcastError('当前平台不支持 BLE 广播，请使用 App。');
 		return;
 	}
 	if (advertising.value) {
@@ -619,51 +562,46 @@ const onConnectableChange = (e) => androidSettings.value.connectable = e.detail.
 const onIncludeDeviceNameChange = (e) => androidSettings.value.includeDeviceName = e.detail.value;
 const onAddServiceUuidChange = (e) => androidSettings.value.addServiceUuid = e.detail.value;
 
-onLoad(() => {
+const initializeNativeBroadcast = () => {
+	// WIN-UAND-002：`#ifdef APP-ANDROID/#ifdef APP-IOS` 在本仓工具链（HBuilderX CLI
+	// 标准基座与 npm build:app）中不被定义，条件块整体编译丢弃——Android 参数块/
+	// 默认载荷/权限前置链路曾为死代码。App 端细分平台改用运行时 systemInfo 判定；
+	// APP-PLUS / H5 单层 token 已验证有效，保留条件编译。
 	// #ifdef APP-PLUS
+	if (!hasFeatureConsent() || blePeripheral.value) return;
 	blePeripheral.value = uni.requireNativePlugin('LysBlePeripheral');
-	// #ifdef APP-ANDROID
+	const sysPlatform = String(plus.os?.name || '').toLowerCase();
+	if (sysPlatform === 'android') {
 		platform.value = 'android';
 		deviceName.value = 'SmartBLE-A';
-		serviceUUID.value = DEFAULT_ADVERTISING_PAYLOAD.serviceUuid;
-		manufacturerId.value = DEFAULT_ADVERTISING_PAYLOAD.manufacturerId;
-		manufacturerData.value = DEFAULT_ADVERTISING_PAYLOAD.manufacturerData;
-	// #endif
-	// #ifdef APP-IOS
+	} else if (sysPlatform === 'ios') {
 		platform.value = 'ios';
 		deviceName.value = 'SmartBLE-I';
-		serviceUUID.value = DEFAULT_ADVERTISING_PAYLOAD.serviceUuid;
-		manufacturerId.value = DEFAULT_ADVERTISING_PAYLOAD.manufacturerId;
-		manufacturerData.value = DEFAULT_ADVERTISING_PAYLOAD.manufacturerData;
-	// #endif
-	// #endif
-
-	// #ifdef MP-WEIXIN
-	platform.value = 'weixin';
-	deviceName.value = DEFAULT_ADVERTISING_PAYLOAD.deviceName;
+	}
 	serviceUUID.value = DEFAULT_ADVERTISING_PAYLOAD.serviceUuid;
 	manufacturerId.value = DEFAULT_ADVERTISING_PAYLOAD.manufacturerId;
 	manufacturerData.value = DEFAULT_ADVERTISING_PAYLOAD.manufacturerData;
 	// #endif
-
-	// #ifndef MP-WEIXIN
-	// #ifndef APP-PLUS
+	// #ifdef H5
 	platform.value = 'web';
 	// #endif
 	checkSupport();
-	// #endif
-});
+};
+onLoad(initializeNativeBroadcast);
 
-onShow(() => {
-	// #ifdef MP-WEIXIN
-	checkSupport();
-	// #endif
-});
 
 onMounted(() => {
+	// 恢复全局日志历史到会话面板。历史条目 type 是 logger 词汇（info/success/...），
+	// 页面面板用 UI 词汇（系统/成功/...）——先归一化再按 type|message 去重，
+	// 防止 onLoad/onShow 的 checkSupport 已写入的同一条日志双显
+	const LOGGER_TYPE_TO_UI = { info: '系统', success: '成功', error: '错误', warning: '系统', receive: '接收', send: '操作' };
 	const history = logger.getHistory('broadcast') || [];
+	const present = new Set(logs.value.map((l) => `${l.type}|${l.message}`));
 	for (const entry of [...history].reverse()) {
-		sessionAddLog(entry.type || '系统', entry.message || entry);
+		const type = LOGGER_TYPE_TO_UI[entry.type] || entry.type || '系统';
+		const message = entry.message || entry;
+		if (present.has(`${type}|${message}`)) continue;
+		sessionAddLog(type, message);
 	}
 	stopOnLeave(() => cleanup());
 });
@@ -673,35 +611,30 @@ onUnmounted(() => {
 });
 
 onHide(() => {
-	// #ifndef MP-WEIXIN
 	if (advertising.value) stopAdvertising();
-	// #endif
-	// #ifdef MP-WEIXIN
-	releaseWxPeripheralMode();
-	// #endif
 });
 
 onUnload(() => {
-	// #ifdef MP-WEIXIN
-	releaseWxPeripheralMode();
-	// #endif
 	cleanup().catch(() => {});
 });
-
-// #ifdef MP-WEIXIN
-onShareAppMessage(() => ({
-	title: '分享一个好用的BLE工具: BLE Toolkit+ - 广播',
-	path: '/pages/index/index'
-}));
-// #endif
 </script>
 
 <style>
+.page-content {
+	height: calc(100vh - 2rpx);
+}
+
 .page-container {
-	min-height: 100vh;
-	padding: 20rpx;
+	min-height: 100%;
+	padding: 32rpx;
 	box-sizing: border-box;
 	background: transparent;
+}
+
+.nav-status-group {
+	display: flex;
+	align-items: center;
+	gap: 12rpx;
 }
 
 .settings-section {
@@ -709,7 +642,7 @@ onShareAppMessage(() => ({
 	border: 1rpx solid var(--ble-line);
 	border-radius: var(--ble-radius-lg);
 	box-shadow: var(--ble-shadow-soft);
-	padding: 24rpx;
+	padding: 32rpx;
 	display: flex;
 	flex-direction: column;
 	gap: 14rpx;
@@ -732,28 +665,12 @@ onShareAppMessage(() => ({
 	color: var(--ble-text);
 }
 
-.settings-meta,
-.runtime-state,
 .field-label-row {
 	display: flex;
 	align-items: center;
+	justify-content: space-between;
+	gap: 12rpx;
 }
-
-.settings-meta { gap: 10rpx; }
-.field-label-row { justify-content: space-between; gap: 12rpx; }
-
-.platform-tag,
-.runtime-state {
-	padding: 8rpx 14rpx;
-	border-radius: 999rpx;
-	font-size: 20rpx;
-	font-weight: 700;
-}
-
-.platform-tag { color: var(--ble-brand); background: rgba(27, 109, 255, 0.08); }
-.runtime-state { gap: 8rpx; color: #a6630a; background: rgba(255, 159, 67, 0.12); }
-.runtime-state.ready { color: #0e8d75; background: rgba(23, 199, 168, 0.12); }
-.runtime-state.active { color: #ffffff; background: var(--ble-gradient-brand); }
 
 .field-group {
 	display: flex;
@@ -763,7 +680,7 @@ onShareAppMessage(() => ({
 
 .field-label,
 .switch-label {
-	font-size: 25rpx;
+	font-size: 26rpx;
 	font-weight: 600;
 	color: var(--ble-text);
 }
@@ -774,19 +691,18 @@ onShareAppMessage(() => ({
 .field-picker {
 	height: 76rpx;
 	padding: 0 22rpx;
-	border-radius: 22rpx;
+	border-radius: var(--ble-radius-sm);
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	background: rgba(241, 246, 252, 0.92);
 	border: 1rpx solid var(--ble-line-soft);
-	font-size: 25rpx;
+	font-size: 26rpx;
 	color: var(--ble-text);
 }
 
 .picker-arrow {
-	font-size: 20rpx;
-	color: var(--ble-text-muted);
+	flex-shrink: 0;
 }
 
 .switch-row {
@@ -804,7 +720,7 @@ onShareAppMessage(() => ({
 .uuid-hint,
 .bytes-hint {
 	padding: 14rpx 18rpx;
-	border-radius: 22rpx;
+	border-radius: var(--ble-radius-sm);
 	display: flex;
 	align-items: center;
 	gap: 10rpx;
@@ -816,8 +732,8 @@ onShareAppMessage(() => ({
 
 .uuid-hint-text {
 	font-size: 22rpx;
-	line-height: 1.5;
-	color: #a6630a;
+	line-height: 1.55;
+	color: var(--c-warning-deep); /* #a6630a → #C77E14 圈外值收敛 UI-CONV 2026-09-10 */
 }
 
 .bytes-hint {
@@ -825,12 +741,12 @@ onShareAppMessage(() => ({
 }
 
 .bytes-hint-text {
-	font-size: 23rpx;
+	font-size: 24rpx;
 	color: var(--ble-brand);
 }
 
 .bytes-hint-warn {
-	font-size: 23rpx;
+	font-size: 24rpx;
 	font-weight: 700;
 	color: var(--ble-red);
 }
@@ -843,12 +759,4 @@ onShareAppMessage(() => ({
 
 .action-primary { flex: 1; min-width: 0; }
 .action-secondary { flex: 0 0 190rpx; padding: 0 18rpx; }
-
-.status-indicator-dot {
-	width: 14rpx;
-	height: 14rpx;
-	border-radius: 50%;
-	background: currentColor;
-	flex-shrink: 0;
-}
 </style>

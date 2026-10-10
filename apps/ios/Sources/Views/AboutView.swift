@@ -1,262 +1,419 @@
 import SwiftUI
 
+#if os(iOS)
+import UIKit
+#elseif os(macOS)
+import AppKit
+#endif
+
+private struct AboutVersionRoute: Identifiable {
+    let id: String
+}
+
+private struct SharePayload: Identifiable {
+    let id = UUID()
+    let items: [Any]
+}
+
 struct AboutView: View {
+    private let metadata = ReleaseMetadata.load()
+    @State private var versionRoute: AboutVersionRoute?
+    @State private var sharePayload: SharePayload?
+    @State private var feedbackVisible = false
+    @State private var privacyVisible = false
+
     var body: some View {
-        ScrollView {
-            VStack(spacing: 20) {
-                heroCard
-                sectionCard(title: "产品定位") {
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("Smart BLE 是跨平台 BLE 控制台与统一协议内核，不是单一端上的小工具。")
-                            .font(.headline)
-                            .foregroundStyle(.primary)
-                        Text("它把扫描、连接、读写特征值、通知监听、广播模式和硬件联动收进同一套工作流里，既适合现场调试，也适合作为多平台 BLE 参考实现。")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                }
-
-                sectionCard(title: "核心能力") {
-                    VStack(spacing: 14) {
-                        FeatureRow(icon: "dot.radiowaves.left.and.right", title: "设备扫描", text: "快速发现附近 BLE 设备并实时展示 RSSI 状态")
-                        FeatureRow(icon: "link", title: "连接与服务发现", text: "建立会话后继续查看服务树和特征值层级")
-                        FeatureRow(icon: "arrow.up.arrow.down", title: "读写与监听", text: "支持 HEX / UTF-8 写入、读取和通知订阅")
-                        FeatureRow(icon: "dot.radiowaves.up.forward", title: "广播模式", text: "验证设备名称、UUID 与广播载荷的配置效果")
-                        FeatureRow(icon: "cpu", title: "硬件联动", text: "与 ESP32 / 固件示例配套使用，形成协议验证闭环")
-                    }
-                }
-
-                sectionCard(title: "平台矩阵") {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 10) {
-                            PlatformChip(icon: "iphone", label: "iOS")
-                            PlatformChip(icon: "laptopcomputer", label: "macOS")
-                            PlatformChip(icon: "desktopcomputer", label: "Windows")
-                            PlatformChip(icon: "antenna.radiowaves.left.and.right", label: "UniApp")
-                            PlatformChip(icon: "swift", label: "Native")
-                            PlatformChip(icon: "cpu", label: "Hardware")
-                        }
-                    }
-                }
-
-                sectionCard(title: "相关链接") {
-                    VStack(spacing: 12) {
-                        LinkRow(icon: "globe", title: "项目主页", subtitle: "查看平台矩阵、下载入口与架构说明", url: "https://lightble.i2kai.com/")
-                        LinkRow(icon: "square.stack.3d.up", title: "架构白皮书", subtitle: "统一协议内核、组件拆分与交互流规范", url: "https://lightble.i2kai.com/MASTER_ARCHITECTURE")
-                        LinkRow(icon: "chevron.left.forwardslash.chevron.right", title: "源码仓库", subtitle: "查看全部平台实现与共享资产生成器", url: "https://github.com/luoyaosheng/smart-ble")
-                        LinkRow(icon: "ladybug", title: "问题反馈", subtitle: "提交 issue 或查看已知问题", url: "https://github.com/luoyaosheng/smart-ble/issues")
-                    }
-                }
-
-                Text("© 2026 Smart BLE\nReleased under MIT License")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.top, 8)
+        VStack(spacing: 0) {
+            NativeNavbar(kicker: "ABOUT", title: "关于") {
+                NativeStatusChip(text: displayVersion, tone: NativeDS.muted)
             }
-            .padding()
-            .frame(maxWidth: 860)
+
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 12) {
+                    brandCard
+
+                    NativeSectionHeading(icon: "info.circle", title: "应用信息") {
+                        EmptyView()
+                    }
+                    applicationCard
+                    platformStatusCard
+                    menuCard
+
+                    VStack(spacing: 2) {
+                        Text("日志全局脱敏：敏感凭据显示为 token=***")
+                        Text("BLE Toolkit+ · 跨平台 BLE 调试工具")
+                    }
+                    .scaledFont(10)
+                    .foregroundColor(NativeDS.placeholder)
+                    .multilineTextAlignment(.center)
+                    .padding(.vertical, 8)
+                }
+                .padding(.horizontal, 16)
+                .padding(.top, 12)
+                .padding(.bottom, 20)
+            }
+            .background(NativeDS.page)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(
-            LinearGradient(
-                colors: [Color(red: 0.96, green: 0.98, blue: 1.0), Color(red: 0.93, green: 0.96, blue: 1.0)],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            .ignoresSafeArea()
-        )
+        .nativePageCover(item: $versionRoute) { _ in
+            VersionHistoryView()
+        }
+        .sheet(isPresented: $privacyVisible) {
+            OfflinePrivacyView()
+        }
+        .sheet(isPresented: $feedbackVisible) {
+            FeedbackSheet()
+        }
+        .sheet(item: $sharePayload) { payload in
+            NativeShareSheet(items: payload.items)
+        }
     }
 
-    private var heroCard: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            brandHeroImage
-                .resizable()
-                .scaledToFill()
-                .frame(height: 220)
-                .clipped()
-                .clipShape(RoundedRectangle(cornerRadius: 24))
+    private var brandCard: some View {
+        HStack(spacing: 12) {
+            ZStack {
+                LinearGradient(
+                    colors: [NativeDS.primary, NativeDS.primaryDeep],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                NativeResourceImage(name: "bt")
+                    .scaledToFit()
+                    .frame(width: 22, height: 22)
+            }
+            .frame(width: 42, height: 42)
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+            // 品牌字装饰：语义由相邻 "BLE Toolkit+" 文本承担
+            .accessibilityHidden(true)
 
-            HStack(spacing: 16) {
-                brandIconImage
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 68, height: 68)
-                    .clipShape(RoundedRectangle(cornerRadius: 18))
-                    .shadow(color: .blue.opacity(0.16), radius: 12, y: 8)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("BLE Toolkit+")
+                    .scaledFont(15, .bold)
+                    .foregroundColor(NativeDS.ink)
+                Text("v\(displayVersion) · \(metadata.channel) · 零后端 · 零本地持久化")
+                    .scaledFont(10)
+                    .foregroundColor(NativeDS.muted)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+            }
+            Spacer()
+        }
+        .nativeCard(padding: 14)
+    }
 
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Smart BLE")
-                        .font(.system(size: 30, weight: .bold))
-                    Text("原生 Apple 运行面")
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.blue)
-                }
+    // F028 推广跳转（更多小程序卡）2026-09-10 移除——promotionCard/promotionRow 随之退役
+
+    private var applicationCard: some View {
+        VStack(spacing: 0) {
+            keyValue("当前环境", "原生 iOS · CoreBluetooth")
+            keyValue("设备型号", deviceModel)
+            keyValue("构建", metadata.commit.map { "v+\($0.prefix(8))（Release Metadata 投影）" } ?? "Release Metadata · preview")
+
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 118), spacing: 6)], alignment: .leading, spacing: 6) {
+                ForEach(featureTitles, id: \.self) { featureChip($0) }
+            }
+            .padding(.vertical, 12)
+
+        }
+        .nativeCard(padding: 14)
+    }
+
+    private var platformStatusCard: some View {
+        VStack(spacing: 2) {
+            platformRow("App · Android", capability: "PREVIEW", release: "NOT_RELEASED")
+            platformRow(
+                "App · iOS",
+                capability: metadata.publicSurfaces["ios"]?.capabilityStatus ?? "NOT_RELEASED",
+                release: metadata.publicSurfaces["ios"]?.releaseStatus ?? "NOT_RELEASED"
+            )
+            platformRow("H5 / Web", capability: "UNSUPPORTED", release: "NOT_RELEASED")
+            platformRow("桌面端", capability: "REFERENCE", release: "NOT_RELEASED")
+        }
+        .nativeCard(padding: 14)
+    }
+
+    private var menuCard: some View {
+        VStack(spacing: 0) {
+            Link(destination: URL(string: "https://lightble.i2kai.com/")!) {
+                menuRow(icon: "arrow.up.right.square", title: "官方网站")
+            }
+            Divider()
+            Button(action: { privacyVisible = true }) {
+                menuRow(icon: "hand.raised", title: "隐私说明（离线可读）")
+            }
+            .accessibilityIdentifier("about-privacy-row")
+            Divider()
+            Link(destination: URL(string: "mailto:121912336@qq.com")!) {
+                menuRow(icon: "envelope", title: "联系支持 · 121912336@qq.com")
+            }
+            .accessibilityIdentifier("about-support-email-row")
+            Divider()
+            // 问题反馈：GitHub Issues 引导（2026-09-11 小程序反馈通道裁撤）
+            Button(action: { feedbackVisible = true }) {
+                menuRow(icon: "paperplane", title: "问题反馈")
+            }
+            .accessibilityIdentifier("about-feedback-row")
+            Divider()
+            Button(action: { versionRoute = AboutVersionRoute(id: "versions") }) {
+                menuRow(icon: "doc.text", title: "版本记录")
+            }
+            .accessibilityIdentifier("about-version-row")
+            Divider()
+            Button(action: {
+                sharePayload = SharePayload(items: [
+                    "BLE Toolkit+ · 跨平台 BLE 调试工具",
+                    URL(string: "https://lightble.i2kai.com/")!,
+                ])
+            }) {
+                menuRow(icon: "square.and.arrow.up", title: "分享应用")
+            }
+        }
+        .buttonStyle(.plain)
+        .foregroundColor(NativeDS.ink)
+        .nativeCard(padding: 0)
+    }
+
+    private func menuRow(icon: String, title: String) -> some View {
+        HStack(spacing: 11) {
+            Image(systemName: icon)
+                .scaledFont(15)
+                .foregroundColor(NativeDS.muted)
+                .frame(width: 20)
+            Text(title)
+                .scaledFont(13, .semibold)
+            Spacer()
+            Image(systemName: "chevron.right")
+                .scaledFont(11, .semibold)
+                .foregroundColor(NativeDS.placeholder)
+        }
+        .padding(.horizontal, 14)
+        .frame(height: 46)
+        .frame(maxWidth: .infinity)
+        .contentShape(Rectangle())
+    }
+
+    private func keyValue(_ key: String, _ value: String) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: 8) {
+            Text(key)
+                .scaledFont(12, .semibold)
+                .foregroundColor(NativeDS.muted)
+                .frame(width: 88, alignment: .leading)
+            Text(value)
+                .scaledFont(13)
+                .foregroundColor(NativeDS.ink)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(.vertical, 9)
+        .overlay(alignment: .bottom) { Rectangle().fill(NativeDS.lineSoft).frame(height: 1) }
+    }
+
+    private func featureChip(_ title: String) -> some View {
+        Text(title)
+            .scaledFont(10, .semibold)
+            .foregroundColor(NativeDS.primary)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background(NativeDS.primaryWeak)
+            .clipShape(Capsule())
+    }
+
+    private func platformRow(_ name: String, capability: String, release: String) -> some View {
+        HStack(spacing: 7) {
+            Text(name)
+                .scaledFont(12, .semibold)
+                .frame(width: 92, alignment: .leading)
+            NativeStatusChip(text: capability, tone: statusColor(capability))
+            NativeStatusChip(text: release, tone: statusColor(release))
+            Spacer(minLength: 0)
+        }
+        .padding(.vertical, 4)
+    }
+
+    private func statusColor(_ status: String) -> Color {
+        switch status {
+        case "VERIFIED": return NativeDS.success
+        case "PREVIEW": return NativeDS.primary
+        case "BLOCKED": return NativeDS.warning
+        case "NOT_RELEASED": return NativeDS.danger
+        default: return NativeDS.muted
+        }
+    }
+
+    private var displayVersion: String {
+        metadata.channel == "preview" ? "\(metadata.appVersion)-preview" : metadata.appVersion
+    }
+
+    private var featureTitles: [String] {
+        [
+            "01 蓝牙扫描与筛选", "02 GATT 读写与监听", "03 多设备会话管理",
+            "04 BLE 广播发射", "05 Smart HID 配网", "06 固件升级（受限）",
+        ]
+    }
+
+    private var deviceModel: String {
+        #if os(iOS)
+        UIDevice.current.userInterfaceIdiom == .pad ? "iPad" : "iPhone"
+        #else
+        "Mac"
+        #endif
+    }
+}
+
+#if os(iOS)
+private struct NativeShareSheet: UIViewControllerRepresentable {
+    let items: [Any]
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: items, applicationActivities: nil)
+    }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
+}
+#else
+private struct NativeShareSheet: View {
+    let items: [Any]
+
+    var body: some View {
+        Text("请在 iOS 上使用系统分享")
+            .padding()
+    }
+}
+#endif
+
+/// 问题反馈弹窗（P009）：GitHub Issues 引导；
+/// 2026-09-11 小程序反馈通道裁撤，码图与微信文案一并移除。
+private struct FeedbackSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var linkCopied = false
+
+    private let feedbackUrl = "https://github.com/luoyaosheng/smart-ble/issues"
+
+    var body: some View {
+        VStack(spacing: 16) {
+            HStack {
+                Text("问题反馈")
+                    .scaledFont(16, .bold)
+                    .foregroundColor(NativeDS.ink)
                 Spacer()
+                Button(action: { dismiss() }) {
+                    Image(systemName: "xmark")
+                        .scaledFont(13, .semibold)
+                        .foregroundColor(NativeDS.muted)
+                        .frame(width: 30, height: 30)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("feedback-close")
+            }
+
+            VStack(spacing: 4) {
+                Text("通过 GitHub Issues 提交问题反馈")
+                Text("描述复现步骤与环境信息，我们会尽快跟进处理")
+                Text(feedbackUrl)
+                    .foregroundColor(NativeDS.primary)
+            }
+            .scaledFont(11)
+            .foregroundColor(NativeDS.sub)
+            .multilineTextAlignment(.center)
+
+            if linkCopied {
+                Text("反馈链接已复制")
+                    .scaledFont(11, .semibold)
+                    .foregroundColor(NativeDS.success)
             }
 
             HStack(spacing: 10) {
-                MetaChip(text: "Version 2.0.0")
-                MetaChip(text: "SwiftUI")
-                MetaChip(text: "CoreBluetooth")
-            }
+                Button(action: copyLink) {
+                    Text(linkCopied ? "已复制" : "复制反馈链接")
+                        .scaledFont(13, .semibold)
+                        .foregroundColor(NativeDS.primary)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 42)
+                        .background(NativeDS.primaryWeak)
+                        .clipShape(RoundedRectangle(cornerRadius: NativeDS.radiusMedium))
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("feedback-copy")
 
-            Text("跨平台 BLE 控制台与统一协议内核，用原生 Apple 体验承接扫描、连接、广播和设备调试。")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
+                Button(action: { dismiss() }) {
+                    Text("我知道了")
+                        .scaledFont(13, .semibold)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 42)
+                        .background(
+                            LinearGradient(
+                                colors: [NativeDS.primary, NativeDS.primaryDeep],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .clipShape(RoundedRectangle(cornerRadius: NativeDS.radiusMedium))
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("feedback-done")
+            }
         }
         .padding(20)
-        .background(
-            RoundedRectangle(cornerRadius: 28)
-                .fill(
-                    LinearGradient(
-                        colors: [Color.white.opacity(0.98), Color(red: 0.95, green: 0.98, blue: 1.0)],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 28)
-                .stroke(Color.blue.opacity(0.08), lineWidth: 1)
-        )
-        .shadow(color: Color.black.opacity(0.05), radius: 18, y: 10)
+        .frame(width: 320)
+        .background(Color.white)
+        .clipShape(RoundedRectangle(cornerRadius: NativeDS.radiusLarge))
+        .overlay(RoundedRectangle(cornerRadius: NativeDS.radiusLarge).stroke(NativeDS.line, lineWidth: 1))
+        .padding(24)
     }
 
-    private func sectionCard<Content: View>(title: String, @ViewBuilder content: () -> Content) -> some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text(title)
-                .font(.title3.weight(.bold))
-            content()
-        }
-        .padding(20)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            RoundedRectangle(cornerRadius: 24)
-                .fill(Color.white.opacity(0.94))
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 24)
-                .stroke(Color.blue.opacity(0.06), lineWidth: 1)
-        )
-    }
-}
-
-private extension AboutView {
-    var brandHeroImage: Image {
-        #if SWIFT_PACKAGE
-        Image("about_hero", bundle: .module)
+    private func copyLink() {
+        #if os(iOS)
+        UIPasteboard.general.string = feedbackUrl
         #else
-        Image("AboutHero")
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(feedbackUrl, forType: .string)
         #endif
-    }
-
-    var brandIconImage: Image {
-        #if SWIFT_PACKAGE
-        Image("brand_icon", bundle: .module)
-        #else
-        Image("BrandIcon")
-        #endif
+        withAnimation(.easeInOut(duration: 0.2)) { linkCopied = true }
     }
 }
 
-private struct FeatureRow: View {
-    let icon: String
-    let title: String
-    let text: String
+struct OfflinePrivacyView: View {
+    @Environment(\.dismiss) private var dismiss
+    static let text = """
+BLE Toolkit+ 隐私说明
+更新日期：2026-10-10
+开发者：个人开发者
+联系邮箱：121912336@qq.com
 
+使用目的
+BLE Toolkit+ 用于扫描附近蓝牙设备、查看广播、连接 GATT、读写特征、监听通知和配置支持的设备。核心调试无需注册账号。
+
+权限说明
+蓝牙权限用于扫描、连接、读写、通知和受平台支持的广播功能。Android 的扫描兼容路径可能需要位置权限；应用不读取 GPS 坐标，不记录定位轨迹。
+相机仅在您选择扫码时用于识别 ControlHub 配对二维码，不保存拍摄图像。您也可以选择手动输入或粘贴配对信息。
+剪贴板、系统分享和文件选择仅在您主动复制、导出、分享或选择固件时使用。
+您可以拒绝授权并继续查看应用信息、版本记录和本说明；相关蓝牙或扫码功能将不可用。
+
+业务会话数据
+扫描会读取设备名称、标识符、信号强度、服务 UUID 和广播数据；连接后读取您选择的特征值。这些业务数据保留在运行内存中，不保存为设备历史。退出应用后清除会话内存数据。
+日志对 Wi-Fi 密码和配对 token 等敏感凭据脱敏。业务状态的零持久化不包括系统或 SDK 自身的运行文件。
+
+Smart HID 配网
+配网可能与您指定的 ControlHub 交换配对信息，并将您填写的 Wi-Fi 信息、ControlHub 地址和一次性配对 token 通过蓝牙发送给您选择的设备。配套设备和 ControlHub 可以保存其配置；客户端的会话内存规则不代表整个设备系统不保存配置。
+
+外部服务
+您主动打开项目网站、发送支持邮件或使用系统分享时，会进入网站、邮件客户端或其他应用，其数据处理规则由相应服务提供方说明。提交反馈前请移除日志中的私人信息。
+
+联系与更新
+如需咨询隐私、权限或使用问题，请联系 121912336@qq.com。应用更新后的数据处理变化将在新版说明中披露。
+"""
     var body: some View {
-        HStack(alignment: .top, spacing: 14) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(Color.blue.opacity(0.1))
-                    .frame(width: 42, height: 42)
-                Image(systemName: icon)
-                    .foregroundStyle(.blue)
+        VStack(spacing: 0) {
+            NativeSubnavBar(title: "隐私说明", onBack: { dismiss() })
+            ScrollView {
+                Text(Self.text)
+                    .scaledFont(14)
+                    .foregroundColor(NativeDS.ink)
+                    .textSelection(.enabled)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(20)
             }
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text(title)
-                    .font(.subheadline.weight(.semibold))
-                Text(text)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-
-            Spacer()
         }
-    }
-}
-
-private struct PlatformChip: View {
-    let icon: String
-    let label: String
-
-    var body: some View {
-        HStack(spacing: 6) {
-            Image(systemName: icon)
-                .font(.caption)
-            Text(label)
-                .font(.caption.weight(.semibold))
-        }
-        .foregroundStyle(.blue)
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
-        .background(Capsule().fill(Color.blue.opacity(0.08)))
-    }
-}
-
-private struct MetaChip: View {
-    let text: String
-
-    var body: some View {
-        Text(text)
-            .font(.caption.weight(.semibold))
-            .foregroundStyle(.blue)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .background(Capsule().fill(Color.blue.opacity(0.08)))
-    }
-}
-
-private struct LinkRow: View {
-    let icon: String
-    let title: String
-    let subtitle: String
-    let url: String
-
-    var body: some View {
-        Link(destination: URL(string: url)!) {
-            HStack(spacing: 14) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.blue.opacity(0.1))
-                        .frame(width: 42, height: 42)
-                    Image(systemName: icon)
-                        .foregroundStyle(.blue)
-                }
-
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(title)
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.primary)
-                    Text(subtitle)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-
-                Spacer()
-
-                Image(systemName: "arrow.up.right")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            .padding(.vertical, 4)
-        }
-        .buttonStyle(.plain)
+        .background(NativeDS.page)
     }
 }

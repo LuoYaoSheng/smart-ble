@@ -6,6 +6,51 @@ export LC_ALL=C
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
+# ---------------------------------------------------------------------------
+# Resolve a Node runtime capable of importing the locked .ts protocol mirror
+# (core/protocols/hid-provisioning-protocol.ts) directly: needs built-in type
+# stripping (Node >= 23.6.0, or >= 22.18.0). The app itself never hits this
+# because vite/HBuilderX compiles .ts; only bare-node unit tests do.
+# Resolution order: NODE_BIN env -> system node -> nvm-windows installs.
+# ---------------------------------------------------------------------------
+node_supports_ts() {
+	local v major minor
+	v="$("$1" --version 2>/dev/null)" || return 1
+	v="${v#v}"
+	major="${v%%.*}"
+	minor="$(printf '%s' "$v" | cut -d. -f2)"
+	case "$major" in
+		''|*[!0-9]*) return 1 ;;
+	esac
+	if [ "$major" -ge 24 ]; then return 0; fi
+	if [ "$major" -eq 23 ] && [ "$minor" -ge 6 ]; then return 0; fi
+	if [ "$major" -eq 22 ] && [ "$minor" -ge 18 ]; then return 0; fi
+	return 1
+}
+
+if [ -n "${NODE_BIN:-}" ]; then
+	:
+elif node_supports_ts "$(command -v node)"; then
+	NODE_BIN="$(command -v node)"
+else
+	NVM_ROOT="${NVM_HOME:-${APPDATA:-}/nvm}"
+	found=""
+	if [ -d "$NVM_ROOT" ]; then
+		for cand in $(ls -1d "$NVM_ROOT"/v* 2>/dev/null | sort -V); do
+			exe="$cand/node.exe"
+			[ -f "$exe" ] || continue
+			if node_supports_ts "$exe"; then found="$exe"; fi
+		done
+	fi
+	if [ -z "$found" ]; then
+		printf 'BLOCKED: no Node with built-in .ts type stripping on PATH or under NVM_HOME.\n' >&2
+		printf 'Unit tests import core/protocols/hid-provisioning-protocol.ts; need Node >= 22.18 or >= 23.6, or set NODE_BIN.\n' >&2
+		exit 1
+	fi
+	NODE_BIN="$found"
+fi
+printf 'unit-test node: %s (%s)\n' "$NODE_BIN" "$("$NODE_BIN" --version)"
+
 run_check() {
 	local label="$1"
 	shift
@@ -15,7 +60,7 @@ run_check() {
 
 # Test-only fault injection proves set -e propagates a failed child command.
 if [[ "${UNIAPP_VERIFY_INJECT_FAILURE:-0}" == "1" ]]; then
-	run_check "injected failure" node -e 'process.exit(17)'
+	run_check "injected failure" "$NODE_BIN" -e 'process.exit(17)'
 fi
 
 shopt -s nullglob
@@ -26,19 +71,36 @@ if [[ "${#test_files[@]}" -eq 0 ]]; then
 fi
 
 for test_file in "${test_files[@]}"; do
-	run_check "$test_file" node "$test_file"
+	run_check "$test_file" "$NODE_BIN" "$test_file"
 done
 
-run_check "Smart HID protocol contract" node scripts/check-smart-hid-contract.mjs
-run_check "UniApp package lock" node scripts/check-uniapp-package-lock.mjs
-run_check "UniApp static assets" node scripts/check-uniapp-assets.mjs
-run_check "UniApp Vue SFC parse" node scripts/check-uniapp-sfc.mjs
-run_check "UniAutomator config syntax" node --check apps/uniapp/env.js
-run_check "UniAutomator Jest syntax" node --check apps/uniapp/jest.config.js
-run_check "UniAutomator page-test syntax" node --check apps/uniapp/pages/index/index.test.js
-run_check "UniAutomator page-flow syntax" node --check apps/uniapp/pages/page-flow.test.js
-run_check "Release metadata check" node scripts/generate-release-metadata.mjs --check
-run_check "Version consistency" node scripts/check-version-consistency.mjs
-run_check "Git whitespace" git diff --check
+run_check "Smart HID protocol contract" "$NODE_BIN" scripts/check-smart-hid-contract.mjs
+run_check "UniApp package lock" "$NODE_BIN" scripts/check-uniapp-package-lock.mjs
+run_check "UniApp static assets" "$NODE_BIN" scripts/check-uniapp-assets.mjs
+run_check "UniApp Vue SFC parse" "$NODE_BIN" scripts/check-uniapp-sfc.mjs
+run_check "UniAutomator config syntax" "$NODE_BIN" --check apps/uniapp/env.js
+run_check "UniAutomator Jest syntax" "$NODE_BIN" --check apps/uniapp/jest.config.js
+run_check "UniAutomator page-test syntax" "$NODE_BIN" --check apps/uniapp/pages/index/index.test.js
+run_check "UniAutomator page-flow syntax" "$NODE_BIN" --check apps/uniapp/pages/page-flow.test.js
+# Release metadata check
+run_check "Release metadata check" "$NODE_BIN" scripts/generate-release-metadata.mjs --check
+run_check "Version consistency" "$NODE_BIN" scripts/check-version-consistency.mjs
+run_check "Privacy policy mirrors" "$NODE_BIN" scripts/generate-privacy-policy.mjs --check
+# 跨语言协议向量 parity：js 线（本机 NODE_BIN 已具备 .ts 能力）+ dart/kotlin/swift 线状态登记；
+# 断言失败才非零退出，BLOCKED(toolchain)/NOT_IMPLEMENTED(kotlin W3) 为在册状态。
+run_check "Smart HID platform parity" "$NODE_BIN" scripts/check-platform-parity.mjs
+# MAC-008：产品级向量（logRedaction js/dart/kotlin + otaTargets/otaSemVer js/swift）；
+# 已登记分歧（D-SEMVER-1/2）为 per-platform expect，不算失败。
+run_check "Product vectors parity" "$NODE_BIN" scripts/check-product-parity.mjs
+# F023 零持久化红线（W3）：全实现线静态扫——存储调用/known_devices 残留/PAGE004 路由/
+# 首页面板字符串/uniapp hid 路由白名单（正典 STORAGE_POLICY Z-2/§8 + PRD 2026-09-02）。
+run_check "F023 zero persistence & residue" "$NODE_BIN" scripts/check-f023-zero-persistence.mjs
+# F030 不做国际化红线（W5）：全实现线静态扫——i18n 机器（I18nManager/data-i18n/vue-i18n/
+# AppLocalizations 接线/NSLocalizedString…）/语言切换入口/Android localeConfig/locale 资产
+# （正典 PRD §5 F030 + §8 R30 + 2026-09-02 P-05 关闭决议；flutter l10n 未接线脚手架白名单）。
+run_check "F030 no-i18n gate" "$NODE_BIN" scripts/check-f030-no-i18n.mjs
+# 原始证据日志（ESP32 串口等）必须逐字保留，行尾空白是设备输出的一部分；
+# 空白门禁只针对产品源码与脚本的未提交改动。
+run_check "Git whitespace" git diff --check -- . ':(exclude)verification'
 
-printf '\nUniApp verification PASS (%d unit files plus 11 static gates)\n' "${#test_files[@]}"
+printf '\nUniApp verification PASS (%d unit files plus 15 static gates)\n' "${#test_files[@]}"

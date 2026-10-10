@@ -5,9 +5,15 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+val releaseSigningKeys = listOf("SMART_BLE_KEYSTORE", "SMART_BLE_STORE_PASSWORD", "SMART_BLE_KEY_ALIAS", "SMART_BLE_KEY_PASSWORD")
+val hasReleaseSigning = releaseSigningKeys.all { !System.getenv(it).isNullOrBlank() }
+if (System.getenv("SMART_BLE_REQUIRE_SIGNING") == "1" && !hasReleaseSigning) {
+    throw GradleException("Release signing requires SMART_BLE_KEYSTORE, SMART_BLE_STORE_PASSWORD, SMART_BLE_KEY_ALIAS, SMART_BLE_KEY_PASSWORD")
+}
+
 android {
     namespace = "com.smartble.flutter"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -20,17 +26,27 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.smartble.flutter"
+        applicationId = "com.i2kai.open.smartble"
         minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        targetSdk = 36
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
 
+    signingConfigs {
+        if (hasReleaseSigning) {
+            create("storeRelease") {
+                storeFile = file(System.getenv("SMART_BLE_KEYSTORE"))
+                storePassword = System.getenv("SMART_BLE_STORE_PASSWORD")
+                keyAlias = System.getenv("SMART_BLE_KEY_ALIAS")
+                keyPassword = System.getenv("SMART_BLE_KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // Signing with the debug key keeps local release builds simple.
-            signingConfig = signingConfigs.getByName("debug")
+            if (hasReleaseSigning) signingConfig = signingConfigs.getByName("storeRelease")
         }
     }
 }

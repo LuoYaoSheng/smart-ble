@@ -1,0 +1,121 @@
+[APP] static main entered
+[APP] applicationDidFinishLaunching
+[SOAK] mode=soak-scans rounds=12 app=SmartBLE-mac
+[BLE] 蓝牙已开启
+[BLE] 外围模式已就绪
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：midea（-89 dBm）
+[BLE] 发现设备：未命名 BLE · 2628（-53 dBm）
+[BLE] 发现设备：midea（-89 dBm）
+[BLE] 发现设备：未命名 BLE · 3AD4（-75 dBm）
+[BLE] 发现设备：未命名 BLE · 9F1A（-92 dBm）
+[BLE] 扫描完成 · 发现 5 台设备
+[SOAK] round=1/12 auto-stopped listed_devices=5 summary="扫描完成 · 发现 5 台"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：未命名 BLE · 3AD4（-83 dBm）
+[BLE] 发现设备：未命名 BLE · 9F1A（-88 dBm）
+[BLE] 发现设备：midea（-84 dBm）
+[BLE] 发现设备：midea（-89 dBm）
+[BLE] 发现设备：未命名 BLE · EC09（-92 dBm）
+[BLE] 发现设备：未命名 BLE · B4FB（-94 dBm）
+[BLE] 扫描完成 · 发现 6 台设备
+[SOAK] round=2/12 auto-stopped listed_devices=6 summary="扫描完成 · 发现 6 台"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：midea（-84 dBm）
+[BLE] 发现设备：未命名 BLE · 3AD4（-69 dBm）
+[BLE] 发现设备：midea（-88 dBm）
+[BLE] 发现设备：midea（-97 dBm）
+[BLE] 发现设备：未命名 BLE · 871D（-93 dBm）
+[BLE] 扫描完成 · 发现 5 台设备
+[SOAK] round=3/12 auto-stopped listed_devices=5 summary="扫描完成 · 发现 5 台"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：未命名 BLE · 3AD4（-79 dBm）
+[BLE] 发现设备：midea（-88 dBm）
+[BLE] 发现设备：未命名 BLE · B4FB（-84 dBm）
+[BLE] 发现设备：midea（-95 dBm）
+[BLE] 扫描完成 · 发现 4 台设备
+[SOAK] round=4/12 auto-stopped listed_devices=4 summary="扫描完成 · 发现 4 台"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：midea（-89 dBm）
+[BLE] 发现设备：未命名 BLE · 3AD4（-74 dBm）
+[BLE] 发现设备：未命名 BLE · B4FB（-85 dBm）
+[BLE] 发现设备：未命名 BLE · 2628（-53 dBm）
+[BLE] 发现设备：midea（-95 dBm）
+[BLE] 发现设备：未命名 BLE · EC09（-92 dBm）
+[BLE] 扫描完成 · 发现 6 台设备
+[SOAK] round=5/12 auto-stopped listed_devices=6 summary="扫描完成 · 发现 6 台"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：未命名 BLE · 5A3A（-52 dBm）
+[BLE] 发现设备：未命名 BLE · 3AD4（-81 dBm）
+[BLE] 发现设备：未命名 BLE · DF54（-95 dBm）
+[BLE] 发现设备：midea（-89 dBm）
+[BLE] 发现设备：未命名 BLE · EC09（-90 dBm）
+[BLE] 发现设备：未命名 BLE · 871D（-94 dBm）
+[BLE] 发现设备：midea（-87 dBm）
+[BLE] 扫描完成 · 发现 7 台设备
+[SOAK] round=6/12 auto-stopped listed_devices=7 summary="扫描完成 · 发现 7 台"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：未命名 BLE · 3AD4（-68 dBm）
+[BLE] 发现设备：midea（-94 dBm）
+[BLE] 发现设备：midea（-88 dBm）
+[BLE] 发现设备：未命名 BLE · DF54（-96 dBm）
+[BLE] 发现设备：未命名 BLE · 9F1A（-88 dBm）
+[BLE] 发现设备：未命名 BLE · EC09（-79 dBm）
+[BLE] 扫描完成 · 发现 6 台设备
+[SOAK] round=7/12 auto-stopped listed_devices=6 summary="扫描完成 · 发现 6 台"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：未命名 BLE · 3AD4（-81 dBm）
+[BLE] 发现设备：midea（-87 dBm）
+[BLE] 发现设备：未命名 BLE · 2628（-53 dBm）
+[BLE] 发现设备：未命名 BLE · 4B76（-90 dBm）
+[BLE] 发现设备：未命名 BLE · 9F1A（-91 dBm）
+[BLE] 发现设备：midea（-89 dBm）
+[BLE] 扫描完成 · 发现 6 台设备
+[SOAK] round=8/12 auto-stopped listed_devices=6 summary="扫描完成 · 发现 6 台"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：midea（-84 dBm）
+[BLE] 发现设备：未命名 BLE · 5A3A（-53 dBm）
+[BLE] 发现设备：未命名 BLE · DF54（-95 dBm）
+[BLE] 发现设备：midea（-94 dBm）
+[BLE] 发现设备：未命名 BLE · EC09（-88 dBm）
+[BLE] 发现设备：未命名 BLE · 3AD4（-79 dBm）
+[BLE] 发现设备：未命名 BLE · 4C9D（-75 dBm）
+[BLE] 发现设备：未命名 BLE · B4FB（-87 dBm）
+[BLE] 扫描完成 · 发现 8 台设备
+[SOAK] round=9/12 auto-stopped listed_devices=8 summary="扫描完成 · 发现 8 台"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：midea（-89 dBm）
+[BLE] 发现设备：midea（-90 dBm）
+[BLE] 发现设备：未命名 BLE · 9F1A（-90 dBm）
+[BLE] 发现设备：未命名 BLE · 3AD4（-74 dBm）
+[BLE] 发现设备：未命名 BLE · EC09（-91 dBm）
+[BLE] 发现设备：midea（-95 dBm）
+[BLE] 发现设备：未命名 BLE · DF54（-96 dBm）
+[BLE] 发现设备：未命名 BLE · 5A3A（-53 dBm）
+[BLE] 发现设备：未命名 BLE · B4FB（-85 dBm）
+[BLE] 扫描完成 · 发现 9 台设备
+[SOAK] round=10/12 auto-stopped listed_devices=9 summary="扫描完成 · 发现 9 台"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：midea（-89 dBm）
+[BLE] 发现设备：midea（-89 dBm）
+[BLE] 发现设备：未命名 BLE · DF54（-95 dBm）
+[BLE] 发现设备：未命名 BLE · 3AD4（-77 dBm）
+[BLE] 发现设备：未命名 BLE · 4C9D（-72 dBm）
+[BLE] 扫描完成 · 发现 5 台设备
+[SOAK] round=11/12 auto-stopped listed_devices=5 summary="扫描完成 · 发现 5 台"
+[BLE] 开始扫描 · 5s 会话
+[BLE] 发现设备：midea（-84 dBm）
+[BLE] 发现设备：未命名 BLE · 4C9D（-77 dBm）
+[BLE] 发现设备：midea（-93 dBm）
+[BLE] 发现设备：midea（-96 dBm）
+[BLE] 发现设备：未命名 BLE · 5A3A（-52 dBm）
+[BLE] 发现设备：未命名 BLE · 3AD4（-78 dBm）
+[BLE] 发现设备：未命名 BLE · 2628（-53 dBm）
+[BLE] 发现设备：未命名 BLE · EC09（-91 dBm）
+[BLE] 扫描完成 · 发现 8 台设备
+[SOAK] round=12/12 auto-stopped listed_devices=8 summary="扫描完成 · 发现 8 台"
+[SOAK] result=PASS detail="全部 12 轮完成（实际 12）"
+[SOAK] result=PASS detail="日志条数不超上限 500（当前 101）"
+[SOAK] mem before=94400KB after=50976KB delta=-42.4MB
+[SOAK] result=PASS detail="驻留内存增量 < 64MB（实测 -42.4MB）"
+[SOAK] done failures=0

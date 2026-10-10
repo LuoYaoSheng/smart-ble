@@ -1,0 +1,129 @@
+Activating ESP-IDF 5.4
+* Checking python version ... 3.13.2
+* Checking python dependencies ... OK
+* Deactivating the current ESP-IDF environment (if any) ... OK
+* Establishing a new ESP-IDF environment ... OK
+* Identifying shell ... cmd.exe
+* Detecting outdated tools in system ... Found tools that are not used by active ESP-IDF version.
+For removing old versions of amazon-corretto-11-x64-windows-jdk, espressif-ide use command 'python.exe D:\Espressif\frameworks\esp-idf-v5.4\tools\idf_tools.py uninstall'
+To free up even more space, remove installation packages of those tools.
+Use option python.exe D:\Espressif\frameworks\esp-idf-v5.4\tools\idf_tools.py uninstall --remove-archives.
+
+Done! You can now compile ESP-IDF projects.
+Go to the project directory and run:
+
+  idf.py build
+
+Executing action: erase-flash
+Running esptool.py in directory E:\project\xf\smart-hid-workspace\smart-hid-firmware\build
+Executing "D:\Espressif\python_env\idf5.4_py3.13_env\Scripts\python.exe D:\Espressif\frameworks\esp-idf-v5.4\components/esptool_py/esptool/esptool.py -p COM12 -b 460800 --before default_reset --after hard_reset --chip esp32s3 erase_flash"...
+esptool.py v4.10.0
+Serial port COM12
+Connecting....
+Chip is ESP32-S3 (QFN56) (revision v0.2)
+Features: WiFi, BLE, Embedded PSRAM 8MB (AP_3v3)
+Crystal is 40MHz
+MAC: 10:b4:1d:cd:23:8c
+Uploading stub...
+Running stub...
+Stub running...
+Changing baud rate to 460800
+Changed.
+Erasing flash (this may take a while)...
+Chip erase completed successfully in 2.2 seconds.
+Hard resetting via RTS pin...
+Done
+Executing action: flash
+Running ninja in directory E:\project\xf\smart-hid-workspace\smart-hid-firmware\build
+Executing "ninja flash"...
+[1/5] C:\Windows\system32\cmd.exe /C "cd /D E:\project\xf\smart-hid-workspace\smart-hid-firmware\build\esp-idf\esptool_py && D:\Espressif\python_env\idf5.4_py3.13_env\Scripts\python.exe D:/Espressif/frameworks/esp-idf-v5.4/components/partition_table/check_sizes.py --offset 0x8000 partition --type app E:/project/xf/smart-hid-workspace/smart-hid-firmware/build/partition_table/partition-table.bin E:/project/xf/smart-hid-workspace/smart-hid-firmware/build/smart-hid-firmware.bin"
+smart-hid-firmware.bin binary size 0x10ad50 bytes. Smallest app partition is 0x180000 bytes. 0x752b0 bytes (31%) free.
+[2/5] Performing build step for 'bootloader'
+[1/1] C:\Windows\system32\cmd.exe /C "cd /D E:\project\xf\smart-hid-workspace\smart-hid-firmware\build\bootloader\esp-idf\esptool_py && D:\Espressif\python_env\idf5.4_py3.13_env\Scripts\python.exe D:/Espressif/frameworks/esp-idf-v5.4/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x0 E:/project/xf/smart-hid-workspace/smart-hid-firmware/build/bootloader/bootloader.bin"
+Bootloader binary size 0x5210 bytes. 0x2df0 bytes (36%) free.
+[3/5] No install step for 'bootloader'
+[4/5] Completed 'bootloader'
+[4/5] C:\Windows\system32\cmd.exe /C "cd /D D:\Espressif\frameworks\esp-idf-v5.4\components\esptool_py && D:\Espressif\tools\cmake\3.30.2\bin\cmake.exe -D IDF_PATH=D:/Espressif/frameworks/esp-idf-v5.4 -D SERIAL_TOOL=D:/Espressif/python_env/idf5.4_py3.13_env/Scripts/python.exe;;D:/Espressif/frameworks/esp-idf-v5.4/components/esptool_py/esptool/esptool.py;--chip;esp32s3 -D SERIAL_TOOL_ARGS=--before=default_reset;--after=hard_reset;write_flash;@flash_args -D WORKING_DIRECTORY=E:/project/xf/smart-hid-workspace/smart-hid-firmware/build -P D:/Espressif/frameworks/esp-idf-v5.4/components/esptool_py/run_serial_tool.cmake"
+esptool.py --chip esp32s3 -p COM12 -b 460800 --before=default_reset --after=hard_reset write_flash --flash_mode dio --flash_freq 80m --flash_size 8MB 0x0 bootloader/bootloader.bin 0x20000 smart-hid-firmware.bin 0x8000 partition_table/partition-table.bin 0x11000 ota_data_initial.bin
+esptool.py v4.10.0
+Serial port COM12
+Connecting....
+Chip is ESP32-S3 (QFN56) (revision v0.2)
+Features: WiFi, BLE, Embedded PSRAM 8MB (AP_3v3)
+Crystal is 40MHz
+MAC: 10:b4:1d:cd:23:8c
+Uploading stub...
+Running stub...
+Stub running...
+Changing baud rate to 460800
+Changed.
+Configuring flash size...
+Flash will be erased from 0x00000000 to 0x00005fff...
+Flash will be erased from 0x00020000 to 0x0012afff...
+Flash will be erased from 0x00008000 to 0x00008fff...
+Flash will be erased from 0x00011000 to 0x00012fff...
+SHA digest in image updated
+Compressed 21008 bytes to 13378...
+Writing at 0x00000000... (100 %)
+Wrote 21008 bytes (13378 compressed) at 0x00000000 in 0.4 seconds (effective 445.6 kbit/s)...
+Hash of data verified.
+Compressed 1092944 bytes to 714732...
+Writing at 0x00020000... (2 %)
+Writing at 0x0002cc47... (4 %)
+Writing at 0x000390d8... (6 %)
+Writing at 0x0004175b... (9 %)
+Writing at 0x0004d9c2... (11 %)
+Writing at 0x0005361e... (13 %)
+Writing at 0x00058e96... (15 %)
+Writing at 0x0005ead9... (18 %)
+Writing at 0x000642f1... (20 %)
+Writing at 0x00069e39... (22 %)
+Writing at 0x0006fa99... (25 %)
+Writing at 0x000754c4... (27 %)
+Writing at 0x0007b035... (29 %)
+Writing at 0x0008060e... (31 %)
+Writing at 0x00085e30... (34 %)
+Writing at 0x0008b91d... (36 %)
+Writing at 0x00091215... (38 %)
+Writing at 0x00096aea... (40 %)
+Writing at 0x0009bba3... (43 %)
+Writing at 0x000a112f... (45 %)
+Writing at 0x000a66ef... (47 %)
+Writing at 0x000aba89... (50 %)
+Writing at 0x000b0b51... (52 %)
+Writing at 0x000b5ac2... (54 %)
+Writing at 0x000baea0... (56 %)
+Writing at 0x000c030f... (59 %)
+Writing at 0x000c546a... (61 %)
+Writing at 0x000ca687... (63 %)
+Writing at 0x000d01ad... (65 %)
+Writing at 0x000d521a... (68 %)
+Writing at 0x000da375... (70 %)
+Writing at 0x000df7a5... (72 %)
+Writing at 0x000e49aa... (75 %)
+Writing at 0x000e9a3c... (77 %)
+Writing at 0x000eeb9d... (79 %)
+Writing at 0x000f4282... (81 %)
+Writing at 0x000f9c88... (84 %)
+Writing at 0x00100ab4... (86 %)
+Writing at 0x0010b12f... (88 %)
+Writing at 0x00110bfe... (90 %)
+Writing at 0x001163fd... (93 %)
+Writing at 0x0011bd34... (95 %)
+Writing at 0x00121c08... (97 %)
+Writing at 0x0012741a... (100 %)
+Wrote 1092944 bytes (714732 compressed) at 0x00020000 in 15.9 seconds (effective 548.9 kbit/s)...
+Hash of data verified.
+Compressed 3072 bytes to 141...
+Writing at 0x00008000... (100 %)
+Wrote 3072 bytes (141 compressed) at 0x00008000 in 0.0 seconds (effective 1585.2 kbit/s)...
+Hash of data verified.
+Compressed 8192 bytes to 31...
+Writing at 0x00011000... (100 %)
+Wrote 8192 bytes (31 compressed) at 0x00011000 in 0.0 seconds (effective 2450.3 kbit/s)...
+Hash of data verified.
+
+Leaving...
+Hard resetting via RTS pin...
+Done
+E14_FLASH_OK

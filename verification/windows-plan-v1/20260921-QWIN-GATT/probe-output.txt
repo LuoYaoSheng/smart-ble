@@ -1,0 +1,24 @@
+[probe] scan done in 5.2s, 9 device(s)
+[probe]   SHID-00000001  -42 dBm  10:B4:1D:CD:23:8E
+[probe]   (unnamed)  -57 dBm  17:74:EB:41:0E:D6
+[probe]   (unnamed)  -69 dBm  06:FF:73:83:68:43
+[probe]   (unnamed)  -69 dBm  69:1C:AB:CF:41:89
+[probe]   (unnamed)  -71 dBm  0D:5C:27:F9:11:8A
+[probe]   (unnamed)  -73 dBm  4F:F4:21:65:B9:DF
+[probe]   (unnamed)  -80 dBm  13:2F:21:F7:76:2D
+[probe]   (unnamed)  -92 dBm  58:4F:DD:E5:7C:A0
+[probe]   (unnamed)  -93 dBm  29:7A:B5:06:CE:F3
+[probe] target: SHID-00000001 @ 10:B4:1D:CD:23:8E
+[probe] connected: True (mtu=256)
+[probe] SVC 9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04
+[probe]   CHAR 9f1d1002-e73b-4c8f-9d2a-6f0b5e8a1c04 props=['notify', 'read']
+[probe]   CHAR 9f1d1003-e73b-4c8f-9d2a-6f0b5e8a1c04 props=['write']
+[probe]   CHAR 9f1d1004-e73b-4c8f-9d2a-6f0b5e8a1c04 props=['notify', 'read']
+[probe] enumeration: 1 service(s), 3 char(s)
+[probe] INFO read: 130B hex=7B 22 70 72 6F 64 75 63 74 22 3A 22 73 6D 61 72 74 2D 68 69 64 22 2C 22 70 72 6F 74 6F 63 6F 6C 22 3A 22 31 2E 30 22 2C 22 64 65 76 69 63 65 5F 69 64 22 3A 22 48 49 44 2D 30 30 30 30 30 30 30 31 22 2C 22 66 69 72 6D 77 61 72 65 22 3A 22 31 2E 32 2E 30 22 2C 22 73 74 61 74 65 22 3A 22 75 6E 70 72 6F 76 69 73 69 6F 6E 65 64 22 2C 22 70 72 6F 76 69 73 69 6F 6E 65 64 22 3A 66 61 6C 73 65 7D
+[probe] INFO text: '{"product":"smart-hid","protocol":"1.0","device_id":"HID-00000001","firmware":"1.2.0","state":"unprovisioned","provisioned":false}'
+[probe] STATUS notify subscribed, waiting 8s …
+[probe] notify events: 0
+[probe] STATUS notify unsubscribed
+[probe] disconnected callback fired (is_connected=True)
+[probe] disconnected (context exit) — probe OK

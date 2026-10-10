@@ -61,7 +61,7 @@ struct OtaUpgradeDialog: View {
                                 .lineLimit(1)
                             Spacer()
                             Text("\(Double(otaManager.state.fileSize) / 1024.0, specifier: "%.1f") KB")
-                                .font(.caption)
+                                .scaledFont(12)
                                 .foregroundColor(.gray)
                         } else {
                             Text("未选择文件")
@@ -101,18 +101,18 @@ struct OtaUpgradeDialog: View {
                     
                     HStack {
                         Text(otaManager.state.statusMessage)
-                            .font(.caption)
+                            .scaledFont(12)
                             .foregroundColor(otaManager.state.isCompleted ? .green : .primary)
                         
                         if let error = otaManager.state.errorMessage {
                             Text(error)
-                                .font(.caption)
+                                .scaledFont(12)
                                 .foregroundColor(.red)
                         }
                         
                         Spacer()
                         Text("\(otaManager.state.sentBytes) / \(otaManager.state.totalBytes) B")
-                            .font(.caption)
+                            .scaledFont(12)
                             .foregroundColor(.gray)
                     }
                 }

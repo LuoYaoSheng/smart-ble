@@ -1,0 +1,8 @@
+[FX] t=1789010031.563 MODE=shid DURATION=4.0 NAME=SHID-5EEDC0DE SCENARIO=payload-driven
+[FX] t=1789010031.570 info {"product":"smart-hid","protocol":"1.0","device_id":"HID-5EEDC0DE","firmware":"1.2.0-sim","state":"unprovisioned","provisioned":false}
+[FX] t=1789010031.570 status {"state":"unprovisioned","step":"","error":null}
+[FX] t=1789010031.594 PERIPHERAL_STATE=5
+[FX] t=1789010031.594 EVENT=service_added uuid=9F1D1001-E73B-4C8F-9D2A-6F0B5E8A1C04
+[FX] t=1789010031.594 EVENT=advertising_started name=SHID-5EEDC0DE
+[FX] t=1789010035.792 EVENT=advertising_stopped
+[FX] t=1789010035.793 RESULT=DONE mode=shid

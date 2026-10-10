@@ -1,0 +1,28 @@
+PASS app ready (SmartHidDesktop + __TAURI__)
+PASS 扫码 sheet 打开：标题 | "扫描 ControlHub 配对码"
+PASS 扫码 sheet：video 取景器在位
+PASS 扫码 sheet：兜底入口在位 | 无法扫码？粘贴 / 手输配对码 →
+PASS 摄像头状态落位（识别中或超时降级提示） | 摄像头启动超时（宿主未授权或未响应）——请改用粘贴 / 手输入口
+PASS 兜底 sheet 打开：标题（兜底） | "粘贴 / 手输配对码（兜底）"
+PASS 粘贴解析回填 token | "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6"
+PASS hub 格式化回填 | "192.168.1.8:17892"
+PASS 模态关闭
+PASS bigact 徽章翻转（已获取） | 已获取
+PASS WM_CLOSE 投递 | WM_CLOSE posted
+PASS close 被拦截→退出确认模态弹出 | connected=0
+PASS 空闲文案（常驻口径） | 
+                桌面端为常驻运行。确认退出？
+                
+           
+PASS 「继续使用」→模态关闭且页面存活
+PASS 「继续使用」→进程仍存活
+Get-Process : �Ҳ�����Ϊ��smart-ble-tauri���Ľ��̡�����֤�ý������ƣ�Ȼ���ٴε��� cmdlet��
+����λ�� ��:1 �ַ�: 2
++ (Get-Process smart-ble-tauri -ErrorAction Stop | Measure-Object).Coun ...
++  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (smart-ble-tauri:String) [Get-Process], ProcessCommandException
+    + FullyQualifiedErrorId : NoProcessFoundForGivenName,Microsoft.PowerShell.Commands.GetProcessCommand
+ 
+PASS 「退出」→应用退出（进程消亡）
+
+SUMMARY: 16/16 pass

@@ -1,0 +1,56 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BLE Toolkit+ low-fi · Web 子集</title><link rel="icon" href="data:,">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,"PingFang SC",sans-serif;background:#F2F3F5;color:#333;display:flex;gap:20px;padding:24px;justify-content:center;min-height:100vh;}
+.side{width:250px;flex-shrink:0;align-self:flex-start;}
+.side h1{font-size:15px;margin-bottom:4px;}
+.side .sub{font-size:11px;color:#888;line-height:1.6;margin-bottom:12px;}
+.pg{display:flex;justify-content:space-between;width:100%;background:#fff;border:1px solid #DDD;border-radius:8px;padding:8px 10px;margin-bottom:5px;cursor:pointer;font-size:12px;font-family:inherit;}
+.pg.on{border-color:#555;background:#333;color:#fff;}
+.pg .id{font-family:monospace;font-size:10px;opacity:.7;}
+.stage{width:410px;flex-shrink:0;align-self:flex-start;}
+.frame{border:2px solid #999;border-radius:18px;background:#fff;height:700px;padding:14px;display:flex;flex-direction:column;gap:10px;overflow:auto;}
+.wfb{border:1.5px dashed #AAA;border-radius:8px;background:#F7F8FA;color:#777;font-size:11px;padding:10px 12px;}
+.wfb.nav{height:44px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.wfb.hero{height:84px;flex-shrink:0;}
+.wfb.row{height:54px;flex-shrink:0;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.wfb.tall{flex:1;}
+.wfb .cap{font-weight:600;color:#555;}
+.states h2{font-size:11px;color:#666;letter-spacing:1px;margin:14px 0 6px;}
+.st{display:inline-block;border:1px solid #BBB;border-radius:999px;padding:4px 10px;font-size:11px;margin:0 5px 6px 0;cursor:pointer;background:#fff;color:#555;}
+.st.on{background:#333;color:#fff;border-color:#333;}
+.cur{font-size:11px;color:#888;margin-top:8px;line-height:1.7;}
+.flow{display:flex;gap:8px;margin-top:12px;}
+.fbtn{flex:1;border:1px solid #999;background:#fff;border-radius:8px;padding:8px;font-size:12px;cursor:pointer;font-family:inherit;}
+.fbtn:hover{background:#EEEFF2;}
+.pf{display:inline-block;background:#E4E6EB;border-radius:4px;padding:2px 7px;font-size:10px;color:#555;}
+.note{font-size:10px;color:#999;margin-top:10px;line-height:1.6;}
+</style></head><body>
+<div class="side"><h1>BLE Toolkit+ low-fi · Web 子集</h1><div class="sub">Web · 「GATT 调试器」子集页面集（D3 暂缓 · 原型先行）<br>2026-09-03 · 缺失域显式 ✗+指引</div><div id="pgs"></div>
+<div class="note">Low-Fi 线框：验证<b>页面 · 流程 · 功能 · 状态</b>覆盖（无视觉/品牌/交互细节）。<br>视觉与交互见 <a href="../high-fi/index.html">../high-fi/</a>。<br>依据《多平台 HTML 原型生成规范 v1.0》§2。</div></div>
+<div class="stage"><div class="frame" id="frame"></div>
+<div class="states"><h2>状态（当前页 · 六态口径）</h2><div id="sts"></div>
+<div class="cur" id="cur"></div>
+<div class="flow"><button class="fbtn" onclick="nav(-1)">&#8592; 上一页</button><button class="fbtn" onclick="nav(1)">下一页 &#8594;</button></div>
+<div class="note" id="pfnote"></div></div></div>
+<script>
+const DATA={"pages": [{"id": "w-home", "t": "首页 · 能力门禁", "r": [["环境门禁（HTTPS/浏览器/蓝牙可用）", "hero"], ["六域可用性徽章", "row"], ["功能入口", "tall"]], "s": ["HTTPS · Chrome（默认）", "HTTP 不安全上下文", "Firefox（不支持）"], "flow": "门禁通过 → 选择设备 / GATT；缺失域 → 指引页", "pf": null, "pfnote": ""}, {"id": "w-pick", "t": "选择设备", "r": [["过滤条件（名称/UUID）", "row"], ["系统选择器（浏览器渲染）", "tall"], ["已选设备卡（基准 C1 口径 · RSSI 显式缺省）", "row"]], "s": ["未选择（默认）", "选择器弹窗中", "已选中 SHID（标准 GATT + 扩展配网双入口）", "已选中标准设备（仅 GATT）"], "flow": "requestDevice 选择器 → 选择即授权 → 设备卡（SHID = 标准 + 扩展，特殊设备是标准设备的扩展）→ GATT 工作台 / 配网指引", "pf": ["W2 设备卡双入口（2026-09-03 修正）"], "pfnote": ""}, {"id": "w-gatt", "t": "GATT 工作台", "r": [["会话头（chooser 授权）", "row"], ["服务/特征树（演示）", "tall"], ["读写监听 / 页签可见性", "row"], ["通信日志", "tall"]], "s": ["未选设备（守卫）", "已连接 · 监听中", "页签不可见（连接保持）"], "flow": "S1b 域全量：read/write/notify/日志/OTA(BLOCKED)", "pf": null, "pfnote": ""}, {"id": "w-bcast", "t": "广播（不支持）", "r": [["不支持说明（U-03 口径）", "hero"], ["四平台对比", "row"], ["指引：去小程序/App", "row"]], "s": ["默认（不支持指引）"], "flow": "显式 ✗ + 指引（10_platform §7 检查 1）", "pf": null, "pfnote": ""}, {"id": "w-prov", "t": "配网（不可达）", "r": [["不可达说明（S2 依赖扫描）", "hero"], ["指引：去小程序/App", "row"]], "s": ["默认（不可达指引）"], "flow": "显式 ✗ + 指引", "pf": null, "pfnote": ""}, {"id": "w-about", "t": "关于与导出", "r": [["版本（投影回退）", "row"], ["出口：复制 URL / 下载日志", "row"], ["候选增强（拦截）", "row"]], "s": ["默认", "已复制 URL"], "flow": "F027 回退 / F029 复制 URL / F011 下载", "pf": null, "pfnote": ""}]};
+let pi=0, si=0;
+function render(){
+  const p=DATA.pages[pi];
+  document.getElementById('pgs').innerHTML=DATA.pages.map((x,i)=>'<button class="pg '+(i===pi?'on':'')+'" onclick="go('+i+')"><span>'+x.t+'</span><span class="id">'+x.id.toUpperCase()+'</span></button>').join('');
+  document.getElementById('frame').innerHTML=
+    '<div class="wfb nav"><span class="cap">'+p.t+' · 导航</span><span>'+p.id.toUpperCase()+'</span></div>'+
+    p.r.map(function(r){return '<div class="wfb '+r[1]+'"><span class="cap">'+r[0]+'</span></div>';}).join('')+
+    (p.pf?'<div class="wfb row"><span class="cap">平台差异注入点</span>'+p.pf.map(function(x){return '<span class="pf">'+x+'</span>';}).join('')+'</div>':'');
+  document.getElementById('sts').innerHTML=p.s.map(function(x,i){return '<span class="st '+(i===si?'on':'')+'" onclick="sst('+i+')">'+x+'</span>';}).join('');
+  document.getElementById('cur').textContent='页面 '+(pi+1)+'/'+DATA.pages.length+' · 状态「'+p.s[si]+'」 · 流程：'+(p.flow||'—');
+  document.getElementById('pfnote').textContent=p.pfnote||'';
+}
+function go(i){pi=i;si=0;render();}
+function sst(i){si=i;render();}
+function nav(d){pi=(pi+d+DATA.pages.length)%DATA.pages.length;si=0;render();}
+render();
+</script></body></html>

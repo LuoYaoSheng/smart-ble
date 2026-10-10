@@ -42,7 +42,6 @@ const versionRaw = existsSync(resolve(ROOT, 'VERSION')) ? read('VERSION') : '';
 const version = versionRaw.replace(/^\uFEFF/, '').split(/\r?\n/)[0]?.trim() || '';
 
 if (!SEMVER.test(version)) fail(`根 VERSION 不是合法 SemVer: ${JSON.stringify(version)}`);
-if (version !== '1.0.5') fail(`本轮产品 VERSION 必须为 1.0.5，实际 ${version}`);
 if (!versionRaw.endsWith('\n')) fail('VERSION 必须以 LF 换行结尾');
 if (versionRaw.includes('\r')) fail('VERSION 不得含 CR');
 
@@ -60,9 +59,26 @@ const landing = read('docs/index.md');
 if (uniManifest.versionName !== version) {
   fail(`manifest versionName=${uniManifest.versionName} ≠ VERSION=${version}`);
 }
-if (String(uniManifest.versionCode) !== '101') {
-  fail(`versionCode 本轮应保留 101，实际 ${uniManifest.versionCode}`);
+const buildCode = Number(uniManifest.versionCode);
+if (!Number.isSafeInteger(buildCode) || buildCode < 1) fail('UniApp versionCode 必须为正整数');
+if (read('apps/flutter/pubspec.yaml').match(/^version:\s*(\S+)/m)?.[1] !== `${version}+${buildCode}`) fail('Flutter 包版本或 build number 漂移');
+const androidBuild = read('apps/android/app/build.gradle.kts');
+if (!androidBuild.includes('rootProject.file("../../VERSION").readText().trim()')) fail('Android versionName 必须消费根 VERSION');
+if (Number(androidBuild.match(/versionCode\s*=\s*(\d+)/)?.[1]) !== buildCode) fail('Android versionCode 漂移');
+const tauriConfig = readJson('apps/desktop/tauri/src-tauri/tauri.conf.json');
+if (tauriConfig.package.version !== version) fail('Tauri bundle version 漂移');
+if (read('apps/desktop/tauri/src-tauri/Cargo.toml').match(/^version\s*=\s*"([^"]+)"/m)?.[1] !== version) fail('Tauri Cargo version 漂移');
+if (readJson('apps/desktop/electron/package.json').version !== version) fail('Electron version 漂移');
+for (const rel of ['apps/ios/project.yml', 'apps/ios/SmartBLE.xcodeproj/project.pbxproj', 'apps/desktop/macos/SmartBLE-mac/project.yml', 'apps/desktop/macos/SmartBLE-mac/SmartBLEMac.xcodeproj/project.pbxproj']) {
+  const text = read(rel);
+  for (const match of text.matchAll(/MARKETING_VERSION\s*[:=]\s*([^;\s]+)/g)) if (match[1] !== version) fail(`${rel}: marketing version 漂移`);
+  for (const match of text.matchAll(/CURRENT_PROJECT_VERSION\s*[:=]\s*([^;\s]+)/g)) if (Number(match[1]) !== buildCode) fail(`${rel}: build number 漂移`);
 }
+const macPlist = read('apps/desktop/macos/SmartBLE-mac/Info.plist');
+const tauriMacPlist = read('apps/desktop/tauri/src-tauri/Info.plist');
+if (tauriMacPlist.match(/<key>CFBundleShortVersionString<\/key>\s*<string>([^<]+)/)?.[1] !== version) fail('Tauri macOS bundle template version 漂移');
+if (macPlist.match(/<key>CFBundleShortVersionString<\/key>\s*<string>([^<]+)/)?.[1] !== version) fail('原生 macOS bundle version 漂移');
+if (Number(macPlist.match(/<key>CFBundleVersion<\/key>\s*<string>([^<]+)/)?.[1]) !== buildCode) fail('原生 macOS build number 漂移');
 if (uniPkg.version !== version) {
   fail(`apps/uniapp/package.json version=${uniPkg.version} ≠ VERSION=${version}`);
 }
@@ -86,8 +102,8 @@ if (!Array.isArray(releaseManifest.artifacts) || releaseManifest.artifacts.lengt
 if (releaseManifest.release_tag != null) fail('PREVIEW release_tag 必须为 null（不得生成 v1.0.5 tag 投影）');
 if (releaseManifest.commit != null) fail('PREVIEW commit 必须为 null');
 if (releaseManifest.built_at != null) fail('PREVIEW built_at 必须为 null');
-if (releaseManifest.wechat_qr?.image != null) fail('WeChat QR image 必须为 null');
-if (releaseManifest.wechat_qr?.status !== 'not_released') fail('WeChat QR status 必须为 not_released');
+// 2026-09-11（小程序整体裁撤）：wechat_qr 字段随生成器移除，不得回流
+if (releaseManifest.wechat_qr != null) fail('wechat_qr 已随小程序裁撤，metadata 不得再携带该字段');
 
 const fakeUrl = JSON.stringify(releaseManifest).match(/"url"\s*:\s*"[^"]+"/);
 const fakeSha = JSON.stringify(releaseManifest).match(/"sha256"\s*:\s*"[^"]+"/);
@@ -132,4 +148,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`check-version-consistency PASS (VERSION=${version}, versionCode=101)`);
+console.log(`check-version-consistency PASS (all implementations: VERSION=${version}, buildCode=${buildCode})`);

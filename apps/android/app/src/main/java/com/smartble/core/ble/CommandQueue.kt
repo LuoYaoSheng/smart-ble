@@ -37,7 +37,8 @@ enum class CommandStatus {
     PENDING,
     SENDING,
     SUCCESS,
-    FAILED
+    FAILED,
+    CANCELLED
 }
 
 /**
@@ -63,201 +64,149 @@ data class QueueState(
  */
 class CommandQueue(
     private val sender: suspend (CommandItem) -> Unit,
-    var intervalMs: Long = 50L
+    var intervalMs: Long = 50L,
+    val maxDepth: Int = 16,
+    val writeTimeoutMs: Long = 5000L,
+    private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 ) {
-    private val _queue = mutableListOf<CommandItem>()
-    private val _history = mutableListOf<CommandItem>()
-
-    private var isRunning = false
-    private var isPaused = false
-    private var isLooping = false
-    private var loopCount = 0  // 0 = 无限循环
+    private val pending = mutableListOf<CommandItem>()
+    private val active = mutableMapOf<String, CommandItem>()
+    private val jobs = mutableMapOf<String, Job>()
+    private val completed = mutableListOf<CommandItem>()
+    private var generation = 0L
+    private var paused = false
+    private var looping = false
+    private var loopCount = 0
     private var currentLoop = 0
     private var loopTemplate: List<CommandItem>? = null
-    private var processingJob: Job? = null
-
     private val _state = MutableStateFlow(QueueState())
     val state: StateFlow<QueueState> = _state.asStateFlow()
-
-    // 回调
     var onCommandStart: ((CommandItem) -> Unit)? = null
     var onCommandComplete: ((CommandItem) -> Unit)? = null
     var onCommandError: ((CommandItem) -> Unit)? = null
     var onQueueEmpty: (() -> Unit)? = null
+    val pendingCount: Int @Synchronized get() = pending.size
+    val history: List<CommandItem> @Synchronized get() = completed.toList()
 
-    val pendingCount: Int get() = _queue.size
-    val history: List<CommandItem> get() = _history.toList()
+    @Synchronized fun enqueue(command: CommandItem) = enqueueBatch(listOf(command))
 
-    /**
-     * 添加单条指令
-     */
-    fun enqueue(command: CommandItem) {
-        _queue.add(command)
-        emitState()
+    @Synchronized fun enqueueBatch(commands: List<CommandItem>) {
+        commands.groupingBy { it.deviceId }.eachCount().forEach { (id, count) ->
+            require(pending.count { it.deviceId == id } + (if (active.containsKey(id)) 1 else 0) + count <= maxDepth) {
+                "写队列已满（$maxDepth）"
+            }
+        }
+        pending.addAll(commands)
         startProcessing()
+        emitState()
     }
 
-    /**
-     * 批量添加指令
-     */
-    fun enqueueBatch(commands: List<CommandItem>) {
-        _queue.addAll(commands)
-        emitState()
-        startProcessing()
-    }
-
-    /**
-     * 开始循环发送
-     */
-    fun startLoop(commands: List<CommandItem>, loopCount: Int = 0) {
+    @Synchronized fun startLoop(commands: List<CommandItem>, loopCount: Int = 0) {
+        require(commands.isNotEmpty()) { "循环模板不能为空" }
+        require(loopCount >= 0) { "循环次数不能为负数" }
+        commands.groupingBy { it.deviceId }.eachCount().forEach { (id, count) ->
+            require(count + pending.count { it.deviceId == id } + (if (active.containsKey(id)) 1 else 0) <= maxDepth) {
+                "循环模板超过队列深度 $maxDepth"
+            }
+        }
         stopLoop()
-        isLooping = true
+        looping = true
         this.loopCount = loopCount
-        currentLoop = 0
-        loopTemplate = commands
+        loopTemplate = commands.toList()
         enqueueNextLoop()
+        startProcessing()
         emitState()
     }
 
-    /**
-     * 停止循环
-     */
-    fun stopLoop() {
-        isLooping = false
+    @Synchronized fun stopLoop() {
+        looping = false
         loopTemplate = null
         loopCount = 0
         currentLoop = 0
         emitState()
     }
 
-    /**
-     * 暂停队列
-     */
-    fun pause() {
-        isPaused = true
-        emitState()
-    }
+    @Synchronized fun pause() { paused = true; emitState() }
+    @Synchronized fun resume() { paused = false; startProcessing(); emitState() }
 
-    /**
-     * 恢复队列
-     */
-    fun resume() {
-        isPaused = false
-        emitState()
-        startProcessing()
-    }
-
-    /**
-     * 清空队列
-     */
-    fun clear() {
-        processingJob?.cancel()
-        _queue.clear()
+    @Synchronized fun clear() {
+        generation++
+        (pending + active.values).forEach { it.status = CommandStatus.CANCELLED }
+        jobs.values.forEach { it.cancel() }
+        jobs.clear()
+        pending.clear()
+        active.clear()
+        paused = false
         stopLoop()
-        isRunning = false
-        isPaused = false
         emitState()
     }
 
-    /**
-     * 清空历史
-     */
-    fun clearHistory() {
-        _history.clear()
-    }
+    @Synchronized fun clearHistory() { completed.clear() }
 
     private fun startProcessing() {
-        if (isRunning || isPaused || _queue.isEmpty()) return
-        isRunning = true
-        processingJob = CoroutineScope(Dispatchers.IO).launch {
-            processNext()
+        if (paused) return
+        pending.map { it.deviceId }.distinct().forEach { deviceId ->
+            if (jobs.containsKey(deviceId)) return@forEach
+            val run = generation
+            val job = scope.launch(start = CoroutineStart.LAZY) { process(deviceId, run) }
+            jobs[deviceId] = job
+            job.start()
         }
     }
 
-    private suspend fun processNext() {
-        if (isPaused || _queue.isEmpty()) {
-            isRunning = false
-            if (_queue.isEmpty() && !isLooping) {
-                onQueueEmpty?.invoke()
-            }
-            if (_queue.isEmpty() && isLooping) {
-                enqueueNextLoop()
-                if (_queue.isNotEmpty()) {
-                    processNext()
-                } else {
-                    isRunning = false
+    private suspend fun process(deviceId: String, run: Long) {
+        while (true) {
+            val command = synchronized(this) {
+                if (run != generation) return
+                val index = if (paused) -1 else pending.indexOfFirst { it.deviceId == deviceId }
+                if (index < 0) {
+                    jobs.remove(deviceId)
+                    if (pending.isEmpty() && active.isEmpty() && looping) enqueueNextLoop()
+                    startProcessing()
+                    emitState()
+                    if (pending.isEmpty() && active.isEmpty() && !looping) onQueueEmpty?.invoke()
+                    return
+                }
+                pending.removeAt(index).also {
+                    active[deviceId] = it
+                    it.status = CommandStatus.SENDING
+                    it.sentAt = System.currentTimeMillis()
+                    emitState()
                 }
             }
-            emitState()
-            return
-        }
-
-        val command = _queue.removeAt(0)
-        command.status = CommandStatus.SENDING
-        command.sentAt = System.currentTimeMillis()
-        onCommandStart?.invoke(command)
-        emitState()
-
-        try {
-            sender(command)
-            command.status = CommandStatus.SUCCESS
-            onCommandComplete?.invoke(command)
-        } catch (e: Exception) {
-            command.status = CommandStatus.FAILED
-            command.error = e.message
-            onCommandError?.invoke(command)
-        }
-
-        _history.add(command)
-        emitState()
-
-        // 间隔后处理下一条
-        if (_queue.isNotEmpty() || isLooping) {
-            delay(intervalMs)
-            processNext()
-        } else {
-            isRunning = false
-            onQueueEmpty?.invoke()
-            emitState()
+            onCommandStart?.invoke(command)
+            var failure: Exception? = null
+            try { withTimeout(writeTimeoutMs) { sender(command) } }
+            catch (e: TimeoutCancellationException) { failure = e }
+            catch (e: CancellationException) { throw e }
+            catch (e: Exception) { failure = e }
+            synchronized(this) {
+                if (run != generation) return
+                active.remove(deviceId)
+                command.status = if (failure == null) CommandStatus.SUCCESS else CommandStatus.FAILED
+                command.error = failure?.message
+                completed.add(command)
+                if (failure == null) onCommandComplete?.invoke(command) else onCommandError?.invoke(command)
+                emitState()
+            }
+            if (intervalMs > 0) delay(intervalMs)
         }
     }
 
     private fun enqueueNextLoop() {
-        if (!isLooping || loopTemplate == null) return
-
-        if (loopCount > 0 && currentLoop >= loopCount) {
-            isLooping = false
-            loopTemplate = null
-            onQueueEmpty?.invoke()
-            emitState()
-            return
-        }
-
+        val template = loopTemplate ?: return
+        if (loopCount > 0 && currentLoop >= loopCount) { looping = false; loopTemplate = null; return }
         currentLoop++
-
-        val newCommands = loopTemplate!!.map { template ->
-            CommandItem(
-                id = "${template.deviceId}_loop$currentLoop",
-                deviceId = template.deviceId,
-                serviceUuid = template.serviceUuid,
-                characteristicUuid = template.characteristicUuid,
-                data = template.data.copyOf(),
-                withoutResponse = template.withoutResponse,
-                displayHex = template.displayHex
-            )
-        }
-
-        _queue.addAll(newCommands)
+        pending.addAll(template.mapIndexed { index, item -> item.copy(
+            id = "${item.id}_loop${currentLoop}_$index", data = item.data.copyOf(), status = CommandStatus.PENDING,
+            error = null, sentAt = 0
+        ) })
     }
 
     private fun emitState() {
         _state.value = QueueState(
-            isRunning = isRunning,
-            isPaused = isPaused,
-            isLooping = isLooping,
-            pendingCount = _queue.size,
-            currentLoop = currentLoop,
-            targetLoopCount = loopCount
+            isRunning = jobs.isNotEmpty(), isPaused = paused, isLooping = looping,
+            pendingCount = pending.size, currentLoop = currentLoop, targetLoopCount = loopCount
         )
     }
 

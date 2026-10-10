@@ -1,0 +1,546 @@
+[
+  {
+    "adv_type": "ConnectableUndirected",
+    "rssi": -34,
+    "local_name": "",
+    "sections": [
+      {
+        "type": 1,
+        "hex": "06"
+      },
+      {
+        "type": 7,
+        "hex": "041c8a5e0b6f2a9d8f4c3be701101d9f"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": [
+      "9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04"
+    ]
+  },
+  {
+    "adv_type": "Extended",
+    "rssi": -34,
+    "local_name": "SHID-00000001",
+    "sections": [
+      {
+        "type": 9,
+        "hex": "534849442d3030303030303031"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": []
+  },
+  {
+    "adv_type": "ConnectableUndirected",
+    "rssi": -33,
+    "local_name": "",
+    "sections": [
+      {
+        "type": 1,
+        "hex": "06"
+      },
+      {
+        "type": 7,
+        "hex": "041c8a5e0b6f2a9d8f4c3be701101d9f"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": [
+      "9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04"
+    ]
+  },
+  {
+    "adv_type": "Extended",
+    "rssi": -33,
+    "local_name": "SHID-00000001",
+    "sections": [
+      {
+        "type": 9,
+        "hex": "534849442d3030303030303031"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": []
+  },
+  {
+    "adv_type": "ConnectableUndirected",
+    "rssi": -35,
+    "local_name": "",
+    "sections": [
+      {
+        "type": 1,
+        "hex": "06"
+      },
+      {
+        "type": 7,
+        "hex": "041c8a5e0b6f2a9d8f4c3be701101d9f"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": [
+      "9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04"
+    ]
+  },
+  {
+    "adv_type": "Extended",
+    "rssi": -35,
+    "local_name": "SHID-00000001",
+    "sections": [
+      {
+        "type": 9,
+        "hex": "534849442d3030303030303031"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": []
+  },
+  {
+    "adv_type": "ConnectableUndirected",
+    "rssi": -35,
+    "local_name": "",
+    "sections": [
+      {
+        "type": 1,
+        "hex": "06"
+      },
+      {
+        "type": 7,
+        "hex": "041c8a5e0b6f2a9d8f4c3be701101d9f"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": [
+      "9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04"
+    ]
+  },
+  {
+    "adv_type": "Extended",
+    "rssi": -35,
+    "local_name": "SHID-00000001",
+    "sections": [
+      {
+        "type": 9,
+        "hex": "534849442d3030303030303031"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": []
+  },
+  {
+    "adv_type": "ConnectableUndirected",
+    "rssi": -34,
+    "local_name": "",
+    "sections": [
+      {
+        "type": 1,
+        "hex": "06"
+      },
+      {
+        "type": 7,
+        "hex": "041c8a5e0b6f2a9d8f4c3be701101d9f"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": [
+      "9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04"
+    ]
+  },
+  {
+    "adv_type": "Extended",
+    "rssi": -34,
+    "local_name": "SHID-00000001",
+    "sections": [
+      {
+        "type": 9,
+        "hex": "534849442d3030303030303031"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": []
+  },
+  {
+    "adv_type": "ConnectableUndirected",
+    "rssi": -35,
+    "local_name": "",
+    "sections": [
+      {
+        "type": 1,
+        "hex": "06"
+      },
+      {
+        "type": 7,
+        "hex": "041c8a5e0b6f2a9d8f4c3be701101d9f"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": [
+      "9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04"
+    ]
+  },
+  {
+    "adv_type": "Extended",
+    "rssi": -35,
+    "local_name": "SHID-00000001",
+    "sections": [
+      {
+        "type": 9,
+        "hex": "534849442d3030303030303031"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": []
+  },
+  {
+    "adv_type": "ConnectableUndirected",
+    "rssi": -34,
+    "local_name": "",
+    "sections": [
+      {
+        "type": 1,
+        "hex": "06"
+      },
+      {
+        "type": 7,
+        "hex": "041c8a5e0b6f2a9d8f4c3be701101d9f"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": [
+      "9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04"
+    ]
+  },
+  {
+    "adv_type": "Extended",
+    "rssi": -34,
+    "local_name": "SHID-00000001",
+    "sections": [
+      {
+        "type": 9,
+        "hex": "534849442d3030303030303031"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": []
+  },
+  {
+    "adv_type": "ConnectableUndirected",
+    "rssi": -41,
+    "local_name": "",
+    "sections": [
+      {
+        "type": 1,
+        "hex": "06"
+      },
+      {
+        "type": 7,
+        "hex": "041c8a5e0b6f2a9d8f4c3be701101d9f"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": [
+      "9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04"
+    ]
+  },
+  {
+    "adv_type": "Extended",
+    "rssi": -41,
+    "local_name": "SHID-00000001",
+    "sections": [
+      {
+        "type": 9,
+        "hex": "534849442d3030303030303031"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": []
+  },
+  {
+    "adv_type": "ConnectableUndirected",
+    "rssi": -35,
+    "local_name": "",
+    "sections": [
+      {
+        "type": 1,
+        "hex": "06"
+      },
+      {
+        "type": 7,
+        "hex": "041c8a5e0b6f2a9d8f4c3be701101d9f"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": [
+      "9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04"
+    ]
+  },
+  {
+    "adv_type": "Extended",
+    "rssi": -35,
+    "local_name": "SHID-00000001",
+    "sections": [
+      {
+        "type": 9,
+        "hex": "534849442d3030303030303031"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": []
+  },
+  {
+    "adv_type": "ConnectableUndirected",
+    "rssi": -34,
+    "local_name": "",
+    "sections": [
+      {
+        "type": 1,
+        "hex": "06"
+      },
+      {
+        "type": 7,
+        "hex": "041c8a5e0b6f2a9d8f4c3be701101d9f"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": [
+      "9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04"
+    ]
+  },
+  {
+    "adv_type": "Extended",
+    "rssi": -34,
+    "local_name": "SHID-00000001",
+    "sections": [
+      {
+        "type": 9,
+        "hex": "534849442d3030303030303031"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": []
+  },
+  {
+    "adv_type": "ConnectableUndirected",
+    "rssi": -35,
+    "local_name": "",
+    "sections": [
+      {
+        "type": 1,
+        "hex": "06"
+      },
+      {
+        "type": 7,
+        "hex": "041c8a5e0b6f2a9d8f4c3be701101d9f"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": [
+      "9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04"
+    ]
+  },
+  {
+    "adv_type": "Extended",
+    "rssi": -35,
+    "local_name": "SHID-00000001",
+    "sections": [
+      {
+        "type": 9,
+        "hex": "534849442d3030303030303031"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": []
+  },
+  {
+    "adv_type": "ConnectableUndirected",
+    "rssi": -34,
+    "local_name": "",
+    "sections": [
+      {
+        "type": 1,
+        "hex": "06"
+      },
+      {
+        "type": 7,
+        "hex": "041c8a5e0b6f2a9d8f4c3be701101d9f"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": [
+      "9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04"
+    ]
+  },
+  {
+    "adv_type": "Extended",
+    "rssi": -34,
+    "local_name": "SHID-00000001",
+    "sections": [
+      {
+        "type": 9,
+        "hex": "534849442d3030303030303031"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": []
+  },
+  {
+    "adv_type": "ConnectableUndirected",
+    "rssi": -35,
+    "local_name": "",
+    "sections": [
+      {
+        "type": 1,
+        "hex": "06"
+      },
+      {
+        "type": 7,
+        "hex": "041c8a5e0b6f2a9d8f4c3be701101d9f"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": [
+      "9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04"
+    ]
+  },
+  {
+    "adv_type": "Extended",
+    "rssi": -35,
+    "local_name": "SHID-00000001",
+    "sections": [
+      {
+        "type": 9,
+        "hex": "534849442d3030303030303031"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": []
+  },
+  {
+    "adv_type": "ConnectableUndirected",
+    "rssi": -35,
+    "local_name": "",
+    "sections": [
+      {
+        "type": 1,
+        "hex": "06"
+      },
+      {
+        "type": 7,
+        "hex": "041c8a5e0b6f2a9d8f4c3be701101d9f"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": [
+      "9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04"
+    ]
+  },
+  {
+    "adv_type": "Extended",
+    "rssi": -35,
+    "local_name": "SHID-00000001",
+    "sections": [
+      {
+        "type": 9,
+        "hex": "534849442d3030303030303031"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": []
+  },
+  {
+    "adv_type": "ConnectableUndirected",
+    "rssi": -35,
+    "local_name": "",
+    "sections": [
+      {
+        "type": 1,
+        "hex": "06"
+      },
+      {
+        "type": 7,
+        "hex": "041c8a5e0b6f2a9d8f4c3be701101d9f"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": [
+      "9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04"
+    ]
+  },
+  {
+    "adv_type": "Extended",
+    "rssi": -36,
+    "local_name": "SHID-00000001",
+    "sections": [
+      {
+        "type": 9,
+        "hex": "534849442d3030303030303031"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": []
+  },
+  {
+    "adv_type": "ConnectableUndirected",
+    "rssi": -35,
+    "local_name": "",
+    "sections": [
+      {
+        "type": 1,
+        "hex": "06"
+      },
+      {
+        "type": 7,
+        "hex": "041c8a5e0b6f2a9d8f4c3be701101d9f"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": [
+      "9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04"
+    ]
+  },
+  {
+    "adv_type": "Extended",
+    "rssi": -35,
+    "local_name": "SHID-00000001",
+    "sections": [
+      {
+        "type": 9,
+        "hex": "534849442d3030303030303031"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": []
+  },
+  {
+    "adv_type": "ConnectableUndirected",
+    "rssi": -34,
+    "local_name": "",
+    "sections": [
+      {
+        "type": 1,
+        "hex": "06"
+      },
+      {
+        "type": 7,
+        "hex": "041c8a5e0b6f2a9d8f4c3be701101d9f"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": [
+      "9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04"
+    ]
+  },
+  {
+    "adv_type": "Extended",
+    "rssi": -34,
+    "local_name": "SHID-00000001",
+    "sections": [
+      {
+        "type": 9,
+        "hex": "534849442d3030303030303031"
+      }
+    ],
+    "manufacturer_data": [],
+    "service_uuids": []
+  }
+]
