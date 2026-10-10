@@ -99,3 +99,15 @@
 - Electron/Tauri/Wails 前端修外设名称/诊断内容 HTML 注入，Electron sandbox/contextIsolation 与 CSP 的实际窗口验证通过；jsQR 加载、模拟拒绝相机和粘贴入口可用。测试脚本保存于 tests/desktop/electron-security-ui-smoke.mjs。
 - Electron lock 增显式 encoding 依赖，干净目录 npm 10 安装成功；Flutter macOS 候选使用 config-only 和明确无签名 xcodebuild，本机候选构建通过，不改正式签名配置。
 - 上轮 CI 基础门禁绿，全实现候选仍有 Electron/Qt/Flutter Windows/macOS 构建失败；本轮修复需提交后复跑。当前修改后的最终签名包和真机证据尚未完成。
+
+### 2026-10-10 完整能力与 CPU 架构复核
+
+- AppKit 实际 BLE 回调补真实通知状态、3 秒读取、写超时退役、服务/特征对象归属和取消终态；19 项测试、80 项核心断言通过。iOS 通用 GATT 与 HID 固定服务边界完善，31 项测试通过。
+- Qt/Avalonia 原有 OTA 空缺已补原生选包、manifest 六字段/size/SHA256 校验、ready/success 回执、取消/失败/断链和重启待确认状态；模糊 not_ready/not_success 不再误判成功。Avalonia Windows 86 项测试通过；Qt 本地 45 方法通过。
+- Qt 通用 GATT、HID、OTA 共用每连接 ATT 执行器，含在途最大 16，读取/写入/通知 3/5/3 秒；跨设备并行。超时退役旧连接、丢弃旧 ACK/通知；Windows 测试以实际进入/完成事件同步，替代有时钟依赖的毫秒 sleep。
+- Android 原生与 Flutter 新权限流程不在启动自动申请；用途说明、离线政策和支持邮箱可访问，拒绝后可浏览。Flutter Android 扫码需单独确认 ML Kit 的设备/应用信息、每安装标识和诊断处理；同意只在内存，已授权相机也不能绕过，拒绝使用粘贴。Flutter 144 项测试及 analyze 通过。
+- Flutter mobile_scanner 固定升级 7.4.2，Android 使用 bundled ML Kit 17.3.0/CameraX 1.6.1，无动态模型下载依赖；iOS/macOS 改 Apple Vision，Pods lock 已移除旧 Google 库。实际 APK/AAB 的 12 个 64 位原生库 ELF 都满足 16 KB，ZIP 对齐与正式证书验签通过。
+- 发布 runner 校验实际包名、版本/build number、target SDK、正式签名公钥指纹、APK/AAB ELF 及 ZIP 对齐，生成 SHA256/source commit/source tree 报告。候选与签名报告分开，完整应用目录/Archive 打包，缺任何当前平台必需格式均失败；不能把单个 apphost EXE 的 hash 当完整 .NET 或 Flutter 应用的 hash。
+- Windows/Linux x64 与 ARM64 纳入候选矩阵；macOS AppKit/Flutter/Electron/Tauri 准备 universal。Windows Flutter 使用全新官方 3.47.7 源码引导原生 ARM64 Dart/引擎，并检查程序/插件 PE Machine，未将 x64 仿真当原生 ARM64。当前 CI 该路径、Flutter x64、Avalonia/Wails 双架构均通过。
+- 国内上架主体按用户确认的个人，公开联系邮箱 121912336@qq.com；其他正式上架资料按用户指令暂缓。离线隐私源与 SDK 原生启动策略完善，公开 URL、申报、实际 SDK 安装包审计仍单独待验。
+- Electron 更换维护中的 N-API 后端以适应最新编译器，实构建/加载与原生架构验证正在收尾；Linux 格式依 builder 的真实 arch 映射，Tauri 只检查对应操作系统格式。CI 当前部分成功，尚不宣称全矩阵绿；任何实际无线、OTA 重启版本核验、安装升级、分发签名和商店审核均不从单测推断。

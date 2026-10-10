@@ -7,11 +7,11 @@ const lock = JSON.parse(readFileSync(new URL('package-lock.json', directory), 'u
 
 test('Linux keeps its native BLE backend using the pinned N-API HCI implementation', () => {
   assert.equal(manifest.devDependencies.electron, '44.7.0');
-  assert.equal(manifest.overrides['@abandonware/bluetooth-hci-socket'], 'npm:@stoprocent/bluetooth-hci-socket@2.3.0');
-  const sockets = Object.entries(lock.packages).filter(([path]) => path.endsWith('/@abandonware/bluetooth-hci-socket'));
+  assert.equal(manifest.overrides['@stoprocent/bluetooth-hci-socket'], '2.3.0');
+  const sockets = Object.entries(lock.packages).filter(([path]) => path.endsWith('/@stoprocent/bluetooth-hci-socket'));
   assert.equal(sockets.length, 1);
   const socket = sockets[0][1];
-  assert.equal(socket.name, '@stoprocent/bluetooth-hci-socket');
+  assert.ok(socket.name === undefined || socket.name === '@stoprocent/bluetooth-hci-socket');
   assert.equal(socket.version, '2.3.0');
   assert.ok(socket.dependencies['node-addon-api']);
   assert.equal(socket.dependencies.nan, undefined);
@@ -52,4 +52,30 @@ test('Windows setup and portable outputs have distinct target-specific names for
     assert.ok(expand(setup).endsWith('-setup.exe'));
     assert.ok(expand(portable).endsWith('-portable.exe'));
   }
+});
+
+test('WinRT backend is pinned to the maintained standard C++20 implementation', () => {
+  assert.equal(manifest.dependencies['@abandonware/noble'], 'npm:@stoprocent/noble@2.8.0');
+  const noble = lock.packages['node_modules/@abandonware/noble'];
+  assert.equal(noble.name, '@stoprocent/noble');
+  assert.equal(noble.version, '2.8.0');
+  assert.ok(noble.dependencies['node-addon-api']);
+});
+
+test('universal exceptions cover only fat Darwin native prebuilds and require architecture validation', async () => {
+  const { createRequire } = await import('node:module');
+  const require = createRequire(import.meta.url);
+  const { assertUniversal } = require('../../apps/desktop/electron/scripts/native-package-checks.cjs');
+  assert.doesNotThrow(() => assertUniversal(['x86_64', 'arm64'], 'real-fat.node'));
+  assert.throws(() => assertUniversal(['x86_64'], 'thin.node'), /not universal/);
+  assert.throws(() => assertUniversal(['arm64'], 'thin.node'), /not universal/);
+  assert.match(manifest.build.mac.x64ArchFiles, /prebuilds\/darwin-x64\+arm64\/\*\.node$/);
+  assert.equal(manifest.build.afterPack, 'scripts/verify-native-pack.cjs');
+  assert.equal(manifest.build.afterAllArtifactBuild, 'scripts/verify-universal-pack.cjs');
+});
+
+test('macOS excludes only the mislabeled unused HCI stub and preserves the real BLE binding', () => {
+  assert.deepEqual(manifest.build.mac.files, ['!**/node_modules/@stoprocent/bluetooth-hci-socket/prebuilds/darwin-x64+arm64/@stoprocent+bluetooth-hci-socket.node']);
+  assert.equal(manifest.build.mac.x64ArchFiles.includes('@stoprocent/bluetooth-hci-socket'), false);
+  assert.equal(manifest.build.mac.x64ArchFiles.includes('@abandonware/noble'), true);
 });

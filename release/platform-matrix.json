@@ -22,9 +22,15 @@
         "h5"
       ],
       "packaging": "HBuilderX native build; H5 is a browser-limited surface",
-      "build": "NOT_RUN",
+      "build": "RESOURCES_BUILT_NATIVE_BLOCKED",
       "hardware": "NOT_RUN",
-      "distribution": "NOT_RUN"
+      "distribution": "NOT_RUN",
+      "software_checks": {
+        "status": "PASS",
+        "unit_files": 27,
+        "static_gates": 15
+      },
+      "native_packaging_reason": "HBuilderX/custom native base and signing still require verification; H5/App resource compilation is not a native package."
     },
     {
       "id": "flutter",
@@ -48,12 +54,18 @@
           "x86_64"
         ],
         "windows": [
-          "x64"
+          "x64",
+          "arm64"
         ]
       },
-      "build": "NOT_RUN",
+      "build": "SIGNED_ANDROID_AND_DESKTOP_APPLE_CANDIDATES_BUILT",
       "hardware": "NOT_RUN",
-      "distribution": "NOT_RUN"
+      "distribution": "NOT_RUN",
+      "software_checks": {
+        "status": "PASS",
+        "unit_widget_tests": 144,
+        "analysis": "PASS"
+      }
     },
     {
       "id": "kotlin",
@@ -61,9 +73,13 @@
         "android"
       ],
       "packaging": "APK + AAB with environment-supplied release signing",
-      "build": "NOT_RUN",
+      "build": "SIGNED_BUILD",
       "hardware": "NOT_RUN",
-      "distribution": "NOT_RUN"
+      "distribution": "NOT_RUN",
+      "software_checks": {
+        "status": "PASS",
+        "unit_tests": 100
+      }
     },
     {
       "id": "swiftui",
@@ -74,9 +90,13 @@
         "arm64"
       ],
       "packaging": "Archive + App Store Connect export",
-      "build": "NOT_RUN",
+      "build": "CANDIDATE_BUILT",
       "hardware": "NOT_RUN",
-      "distribution": "NOT_RUN"
+      "distribution": "NOT_RUN",
+      "software_checks": {
+        "status": "PASS",
+        "unit_tests": 31
+      }
     },
     {
       "id": "appkit",
@@ -88,9 +108,14 @@
         "x86_64"
       ],
       "packaging": "Universal app; distribution signing and notarization required",
-      "build": "NOT_RUN",
+      "build": "CANDIDATE_BUILT",
       "hardware": "NOT_RUN",
-      "distribution": "NOT_RUN"
+      "distribution": "NOT_RUN",
+      "software_checks": {
+        "status": "PASS",
+        "unit_tests": 19,
+        "core_assertions": 80
+      }
     },
     {
       "id": "electron",
@@ -104,9 +129,13 @@
         "arm64"
       ],
       "packaging": "NSIS/portable, DMG/zip, AppImage/deb/rpm",
-      "build": "NOT_RUN",
+      "build": "NATIVE_PACKAGING_FIX_IN_PROGRESS",
       "hardware": "NOT_RUN",
-      "distribution": "NOT_RUN"
+      "distribution": "NOT_RUN",
+      "software_checks": {
+        "status": "PASS",
+        "shared_desktop_tests": 162
+      }
     },
     {
       "id": "tauri",
@@ -120,9 +149,14 @@
         "arm64"
       ],
       "packaging": "MSI/NSIS, DMG, deb/AppImage",
-      "build": "NOT_RUN",
+      "build": "PACKAGES_BUILT_REPORT_VALIDATION_FOLLOWUP_FIXED",
       "hardware": "NOT_RUN",
-      "distribution": "NOT_RUN"
+      "distribution": "NOT_RUN",
+      "software_checks": {
+        "status": "PASS",
+        "shared_desktop_tests": 162,
+        "rust_tests_macos": 6
+      }
     },
     {
       "id": "avalonia",
@@ -134,9 +168,17 @@
         "arm64"
       ],
       "packaging": "Self-contained .NET application",
-      "build": "NOT_RUN",
+      "build": "CANDIDATE_BUILT",
       "hardware": "NOT_RUN",
-      "distribution": "NOT_RUN"
+      "distribution": "NOT_RUN",
+      "software_checks": {
+        "status": "PASS",
+        "unit_tests_windows": 86
+      },
+      "candidate_architectures_built": [
+        "x64",
+        "arm64"
+      ]
     },
     {
       "id": "qt",
@@ -147,9 +189,13 @@
         "x64"
       ],
       "packaging": "PyInstaller self-contained application",
-      "build": "NOT_RUN",
+      "build": "WINDOWS_TEST_FAILURE_FOLLOWUP_FIXED",
       "hardware": "NOT_RUN",
-      "distribution": "NOT_RUN"
+      "distribution": "NOT_RUN",
+      "software_checks": {
+        "status": "PASS",
+        "test_methods": 45
+      }
     },
     {
       "id": "wails",
@@ -161,9 +207,17 @@
         "arm64"
       ],
       "packaging": "Native Windows executable",
-      "build": "NOT_RUN",
+      "build": "CANDIDATE_BUILT",
       "hardware": "NOT_RUN",
-      "distribution": "NOT_RUN"
+      "distribution": "NOT_RUN",
+      "software_checks": {
+        "status": "PASS",
+        "pure_session_tests": 3
+      },
+      "candidate_architectures_built": [
+        "x64",
+        "arm64"
+      ]
     }
   ],
   "open_gates": [
@@ -176,5 +230,14 @@
     "clean installation and upgrade"
   ],
   "application_id": "com.i2kai.open.smartble",
-  "local_evidence_note": "2026-10-10 local tests/builds are documented in docs/plans/2026-10-10-unified-project-release.md; final artifacts must be rebuilt after source is committed."
+  "local_evidence_note": "Current signed Android APK/AAB have matching product identity, registered certificate and hashes. Flutter has 12 aligned 64-bit native libraries; zip and ELF alignment pass. Current-source physical BLE/OTA, clean installation/upgrade, Apple export, desktop distribution signing and store submission remain independent open gates.",
+  "publisher_type": "individual",
+  "public_support_email": "121912336@qq.com",
+  "store_materials_status": "DEFERRED_BY_USER",
+  "last_candidate_run": {
+    "url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/38021819900",
+    "source_commit": "fa282049a7dde794e1679e898ca3ff055a9b2d2e",
+    "status": "PARTIAL",
+    "note": "Individual successful jobs are recorded below; run-wide success is not claimed. Known packaging/test failures have follow-up fixes."
+  }
 }

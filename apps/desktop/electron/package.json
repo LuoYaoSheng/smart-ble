@@ -23,7 +23,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@abandonware/noble": "^1.9.2-15"
+    "@abandonware/noble": "npm:@stoprocent/noble@2.8.0"
   },
   "devDependencies": {
     "electron": "44.7.0",
@@ -66,7 +66,11 @@
       "extendInfo": {
         "NSBluetoothAlwaysUsageDescription": "用于扫描、连接和调试附近的 BLE 设备。",
         "NSCameraUsageDescription": "用于扫描 ControlHub 配对二维码，不保存图像。"
-      }
+      },
+      "x64ArchFiles": "**/node_modules/{@abandonware/noble,@serialport/bindings-cpp,usb}/prebuilds/darwin-x64+arm64/*.node",
+      "files": [
+        "!**/node_modules/@stoprocent/bluetooth-hci-socket/prebuilds/darwin-x64+arm64/@stoprocent+bluetooth-hci-socket.node"
+      ]
     },
     "linux": {
       "target": [
@@ -85,10 +89,12 @@
     },
     "portable": {
       "artifactName": "Smart-BLE-Open-${version}-${os}-${arch}-portable.${ext}"
-    }
+    },
+    "afterPack": "scripts/verify-native-pack.cjs",
+    "afterAllArtifactBuild": "scripts/verify-universal-pack.cjs"
   },
   "overrides": {
-    "@abandonware/bluetooth-hci-socket": "npm:@stoprocent/bluetooth-hci-socket@2.3.0",
-    "node-gyp": "12.4.0"
+    "node-gyp": "12.4.0",
+    "@stoprocent/bluetooth-hci-socket": "2.3.0"
   }
 }
