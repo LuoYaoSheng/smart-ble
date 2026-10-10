@@ -137,7 +137,9 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
           wasConnected; // 之前是连接状态，现在断开了 → 可能在重连
 
       // O-2 断连错误态：非用户主动断开且从连接态跌落 → 置位（不再静默降级）
-      final lostUnexpectedly = !connected && wasConnected && !_userDisconnecting;
+      final lostUnexpectedly =
+          !connected && wasConnected && !_userDisconnecting;
+      if (!connected && wasConnected) _commandQueue?.clear();
 
       setState(() {
         _isConnected = connected;
@@ -446,6 +448,9 @@ class _DeviceDetailPageState extends ConsumerState<DeviceDetailPage> {
     // dispose 期间 mounted 仍为 true，setState 打到 defunct 元素会炸框架
     // 收尾断言（WIN-FAND-006）
     _commandQueue?.onQueueStateChanged = null;
+    _commandQueue?.onQueueEmpty = null;
+    _commandQueue?.onCommandComplete = null;
+    _commandQueue?.onCommandError = null;
     _commandQueue?.clear();
     // O-2 插桩：路由弹出即 dispose——若「弹回列表」非用户操作，此行与
     // 「断开连接（用户操作）」日志的时间差即为定位线索

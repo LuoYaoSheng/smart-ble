@@ -48,6 +48,20 @@ public class BleServiceTests
         Assert.Equal(expectedDowngraded, downgraded);
     }
 
+    [Fact]
+    public void UnsupportedWriteCannotClaimDowngrade()
+        => Assert.Throws<InvalidOperationException>(() => BleService.ResolveWriteOption(true, false, false));
+
+    [Theory]
+    [InlineData(GattCharacteristicProperties.Notify, GattClientCharacteristicConfigurationDescriptorValue.Notify)]
+    [InlineData(GattCharacteristicProperties.Indicate, GattClientCharacteristicConfigurationDescriptorValue.Indicate)]
+    public void NotificationModeUsesActualCharacteristicCapability(GattCharacteristicProperties properties, GattClientCharacteristicConfigurationDescriptorValue expected)
+        => Assert.Equal(expected, BleService.ResolveNotificationMode(properties));
+
+    [Fact]
+    public void UnsupportedNotificationFailsBeforeCccdWrite()
+        => Assert.Throws<InvalidOperationException>(() => BleService.ResolveNotificationMode(GattCharacteristicProperties.Read));
+
     // —— 服务/特征名称映射：对齐 E-WIN BleUtils.js 正典注册表
     //    （20260920-VWIN-UIALIGN：短 4 位 + 8 位自定义前缀双匹配 + 中文正典词） ——
 

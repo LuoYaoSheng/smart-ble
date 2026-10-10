@@ -235,5 +235,10 @@ jobs:
       - name: Version consistency
         run: node scripts/check-version-consistency.mjs
 
+      - name: All desktop contracts and release configuration
+        run: |
+          node --test tests/desktop/*.test.mjs
+          python3 scripts/release/check-config.py
+
       - name: Target contract suite (system layer)
         run: node scripts/verify-target.mjs --mode=system --format=json

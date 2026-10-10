@@ -134,7 +134,7 @@ async def provision(client, candidate, on_status, timeout=60):
     # Validate before any device write; INFO identity must match the selected Profile.
     payload = candidate_json(candidate).encode('utf-8')
     info = parse_info(bytes(await client.read_gatt_char(INFO)).decode('utf-8'))
-    if not info or info['product'] != 'smart-hid' or info['protocol'] != C['protocolVersion']:
+    if not info or info['product'] != 'smart-hid' or info['protocol'] != C['protocolVersion'] or not re.fullmatch(C['deviceIdPattern'], info['device_id']):
         raise ProtocolError('设备身份或协议不匹配，未下发配置')
     loop = asyncio.get_running_loop()
     queue = asyncio.Queue()
@@ -154,8 +154,10 @@ async def provision(client, candidate, on_status, timeout=60):
         while not queue.empty():
             queue.get_nowait()
         frames = build_frames(payload, chunk_size(getattr(client, 'mtu_size', 23)))
-        for frame in frames:
+        for index, frame in enumerate(frames):
             await client.write_gatt_char(INPUT, frame, response=True)
+            if index + 1 < len(frames):
+                await asyncio.sleep(0.03)
         deadline = loop.time() + timeout
         observed_attempt = False
         while loop.time() < deadline:

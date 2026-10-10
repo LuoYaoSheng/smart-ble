@@ -86,3 +86,16 @@
 - Electron 更新至 44.7.0 / builder 26.15.3，双架构原生插件合并需排除编译临时文件；通用 DMG/zip 已构建。旧网络直连超时通过本机现有代理解决。
 - App Store 导出实测返回 No Accounts/缺新 ID 的分发 profile；Xcode 已为用户打开，等待账号配置。已有证书不等于可导出 App Store 包。
 - Windows/Linux 当前源码构建交由候选 CI，未跑的项保持 NOT_RUN；硬件全链、安装升级、真实分发签名、商店资料与提交仍开放。
+
+### 2026-10-10 并行补齐与复核
+
+- 用户批准三名子代理，在同一工程分别复核移动实现、Windows 原生实现和 Electron/Tauri/Wails 前端；未创建新的独立工程。
+- Kotlin 所有 ATT 操作按设备串行、跨设备并行，队列深 16，读/写/连接 3/5/10 秒超时，旧 GATT 回调隔离。100 项单测及 Debug 构建通过。
+- Flutter 修复清空队列后旧任务污染、循环未启动和连接生命周期；139 项测试与 analyze 通过。Windows 权限插件由旧 /await 迁移至标准 C++20 协程，仍需 Windows CI 实编验证。
+- iOS 实际 BLEManager 补连接超时、写队列、无响应背压、通知真实状态、旧特征归属和完整清理；29 项单测与模拟器构建通过。PrivacyInfo 补实际 uptime/用户选择文件对应的 required reason。
+- Avalonia 补多设备独立会话、串行原语、取消所有权、Smart HID V1 配网/详情/诊断和有效配对链接导入；AXAML 构建及 69 项非 WinRT 测试通过，另外 2 项 WinRT 测试等待 Windows runner。相机尚未接入，当前提供可用粘贴入口。
+- Qt 15 个方法通过，补未知状态绘制、迟到扫描/GATT/通知隔离；发布脚本改绝对资源路径。Wails 增加三项设备与服务归属测试，Windows 交叉编译通过，CI 仅运行无硬件的测试，空口验证单独保留。
+- Electron/Tauri 操作超时、队列与会话失效处理；E/T/G 真实调用链重连修复，失败继续 1/3/5 秒三次尝试、用户取消终止。126 项桌面测试、Tauri 6 项 Rust 测试通过。
+- Electron/Tauri/Wails 前端修外设名称/诊断内容 HTML 注入，Electron sandbox/contextIsolation 与 CSP 的实际窗口验证通过；jsQR 加载、模拟拒绝相机和粘贴入口可用。测试脚本保存于 tests/desktop/electron-security-ui-smoke.mjs。
+- Electron lock 增显式 encoding 依赖，干净目录 npm 10 安装成功；Flutter macOS 候选使用 config-only 和明确无签名 xcodebuild，本机候选构建通过，不改正式签名配置。
+- 上轮 CI 基础门禁绿，全实现候选仍有 Electron/Qt/Flutter Windows/macOS 构建失败；本轮修复需提交后复跑。当前修改后的最终签名包和真机证据尚未完成。

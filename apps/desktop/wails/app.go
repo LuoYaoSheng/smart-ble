@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"encoding/hex"
 	"embed"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"io/fs"
@@ -31,9 +31,11 @@ type App struct {
 	adapter       *bluetooth.Adapter
 	adapterFailed string // 非空 = 适配器不可用原因
 	scanning      bool
-	scanEntries   map[string]*scanEntry      // id -> 合并后的广播状态（ADV+RSP）
+	scanEntries   map[string]*scanEntry        // id -> 合并后的广播状态（ADV+RSP）
 	scanHits      map[string]bluetooth.Address // id -> 地址（Connect 用）
 	conns         map[string]*gattConn
+	connectEpoch  map[string]uint64
+	closing       bool
 	wbridge       *winBridge // Win32 广播边车（WIN-BRIDGE 同构，winbridge*.go）
 	exitConfirmed bool
 }
@@ -58,7 +60,7 @@ type gattConn struct {
 func (c *gattConn) lookupChar(serviceUUID, charUUID string) (bluetooth.DeviceCharacteristic, bool) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
-	ch, ok := c.chars[charKey(charUUID)]
+	ch, ok := c.chars[gattKey(serviceUUID, charUUID)]
 	return ch, ok
 }
 
@@ -109,8 +111,8 @@ type serviceData struct {
 }
 
 type servicesResult struct {
-	Success  bool         `json:"success"`
-	Error    string       `json:"error,omitempty"`
+	Success  bool          `json:"success"`
+	Error    string        `json:"error,omitempty"`
 	Services []serviceData `json:"services"`
 }
 
@@ -126,10 +128,10 @@ type valueResult struct {
 }
 
 type charValueChangedEvent struct {
-	DeviceID          string `json:"deviceId"`
-	ServiceUUID       string `json:"serviceUuid"`
+	DeviceID           string `json:"deviceId"`
+	ServiceUUID        string `json:"serviceUuid"`
 	CharacteristicUUID string `json:"characteristicUuid"`
-	Value             string `json:"value"`
+	Value              string `json:"value"`
 }
 
 // ─── UUID 工具：tinygo 全量 128 位小写 -> noble 展示口径（16 位短格式）───
@@ -259,10 +261,11 @@ func propertyNames(bits uint32) []string {
 
 func NewApp(assets embed.FS) *App {
 	return &App{
-		assets:      assets,
-		scanEntries: map[string]*scanEntry{},
-		scanHits:    map[string]bluetooth.Address{},
-		conns:       map[string]*gattConn{},
+		assets:       assets,
+		scanEntries:  map[string]*scanEntry{},
+		scanHits:     map[string]bluetooth.Address{},
+		conns:        map[string]*gattConn{},
+		connectEpoch: map[string]uint64{},
 	}
 }
 
@@ -311,13 +314,24 @@ func (a *App) ensureAdapter() (*bluetooth.Adapter, error) {
 	return ad, nil
 }
 
+func gattKey(serviceUUID, charUUID string) string {
+	return charKey(serviceUUID) + "|" + charKey(charUUID)
+}
+
 func (a *App) getConn(deviceID string) *gattConn {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 	if c, ok := a.conns[deviceID]; ok {
 		return c
 	}
-	// E-WIN 口径：无 id 时回退第一条已连接设备
+	// An unknown explicit ID must never target another device.
+	if deviceID != "" {
+		return nil
+	}
+	// Legacy callers may omit the ID only when exactly one device is connected.
+	if len(a.conns) != 1 {
+		return nil
+	}
 	for _, c := range a.conns {
 		return c
 	}
@@ -326,6 +340,12 @@ func (a *App) getConn(deviceID string) *gattConn {
 
 // shutdownBLE E-WIN before-quit 口径：停广播（边车）→ 停扫描 → 断开全部链路。
 func (a *App) shutdownBLE() {
+	a.mu.Lock()
+	a.closing = true
+	for id := range a.connectEpoch {
+		a.connectEpoch[id]++
+	}
+	a.mu.Unlock()
 	a.killWinBridge()
 	if a.adapter == nil {
 		return
@@ -500,11 +520,20 @@ func (a *App) Connect(deviceID string) plainResult {
 		return plainResult{Error: "BLE module not loaded: " + err.Error()}
 	}
 	a.mu.Lock()
+	if a.closing {
+		a.mu.Unlock()
+		return plainResult{Error: "Application is closing"}
+	}
 	addr, ok := a.scanHits[deviceID]
 	if _, dup := a.conns[deviceID]; dup {
 		a.mu.Unlock()
 		return plainResult{Success: true}
 	}
+	if a.connectEpoch == nil {
+		a.connectEpoch = map[string]uint64{}
+	}
+	a.connectEpoch[deviceID]++
+	epoch := a.connectEpoch[deviceID]
 	a.mu.Unlock()
 	if !ok {
 		return plainResult{Error: "Device not found"}
@@ -528,6 +557,11 @@ func (a *App) Connect(deviceID string) plainResult {
 			return plainResult{Error: o.err.Error()}
 		}
 		a.mu.Lock()
+		if a.closing || a.connectEpoch[deviceID] != epoch {
+			a.mu.Unlock()
+			_ = o.dev.Disconnect()
+			return plainResult{Error: "Connection was cancelled"}
+		}
 		a.conns[deviceID] = &gattConn{id: deviceID, device: o.dev, chars: map[string]bluetooth.DeviceCharacteristic{}}
 		a.mu.Unlock()
 		wruntime.EventsEmit(a.ctx, "ble:deviceConnected", map[string]string{"id": deviceID})
@@ -544,6 +578,12 @@ func (a *App) Connect(deviceID string) plainResult {
 }
 
 func (a *App) Disconnect(deviceID string) plainResult {
+	a.mu.Lock()
+	if a.connectEpoch == nil {
+		a.connectEpoch = map[string]uint64{}
+	}
+	a.connectEpoch[deviceID]++
+	a.mu.Unlock()
 	c := a.getConn(deviceID)
 	if c == nil {
 		return plainResult{Success: true} // E-WIN：不在册视为成功
@@ -598,7 +638,7 @@ func (a *App) DiscoverServices(deviceID string) servicesResult {
 		}
 		for _, ch := range chars {
 			cu := ch.UUID()
-			c.chars[charKey(cu.String())] = ch
+			c.chars[gattKey(svc.UUID().String(), cu.String())] = ch
 			c.services[i].Characteristics = append(c.services[i].Characteristics, charData{
 				UUID:       uuidDisplay(cu),
 				Name:       charDisplayName(cu),
@@ -695,6 +735,9 @@ func (a *App) NotifyCharacteristic(deviceID, serviceUUID, charUUID string, notif
 	}
 	if notify {
 		err := ch.EnableNotifications(func(buf []byte) {
+			if a.getConn(c.id) != c {
+				return
+			}
 			wruntime.EventsEmit(a.ctx, "ble:characteristicValueChanged", charValueChangedEvent{
 				DeviceID: c.id, ServiceUUID: serviceUUID, CharacteristicUUID: charUUID,
 				Value: strings.Join(splitPairs(hex.EncodeToString(buf)), " "),
@@ -727,12 +770,12 @@ func (a *App) StartAdvertising(name string, serviceUuids []string, manufacturerI
 			idStr = "0001"
 		}
 		v, err := strconv.ParseUint(idStr, 16, 16)
-		if err != nil || v == 0 {
-			v = 1
+		if err != nil {
+			return plainResult{Error: "Invalid manufacturer ID"}
 		}
 		data := []byte(manufacturerData)
 		if len(data) == 0 {
-			data = []byte("BLE")
+			return plainResult{Error: "Windows advertising requires nonempty manufacturer data"}
 		}
 		nums := make([]int, len(data))
 		for i, c := range data {

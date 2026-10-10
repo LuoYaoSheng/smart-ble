@@ -30,6 +30,7 @@ public partial class MainWindowViewModel : ObservableObject
 
     // 剪贴板由窗口注入（TopLevel.Clipboard 不在 VM 层可达）
     internal Func<string, Task>? ClipboardWriter;
+    internal Func<Task<string?>>? ClipboardReader;
 
     // 关闭请求（退出确认通过后由窗口执行 Close）
     public event Action? CloseRequested;
@@ -48,18 +49,19 @@ public partial class MainWindowViewModel : ObservableObject
         _bleService.ScanAutoStopped += OnScanAutoStopped;
         _bleService.AdvertisingStateChanged += OnAdvertisingStateChanged;
 
-        InitializeAsync();
+        _ = InitializeAsync();
     }
 
     private async Task InitializeAsync()
     {
-        await _bleService.InitializeAsync();
+        try { await _bleService.InitializeAsync(); }
+        catch (Exception) { OnBluetoothStateChanged("Unavailable"); }
     }
 
     // ═══════════════════════ 视图路由（.view.active 等价机制） ═══════════════════════
 
     [ObservableProperty]
-    private string _activeView = "scan"; // scan|connected|broadcast|about|versions|gatt|hidprov
+    private string _activeView = "scan"; // scan|connected|broadcast|about|versions|gatt|hidprov|hiddetail|hiddiag
 
     [ObservableProperty]
     private string _activeTab = "scan";  // tabbar 高亮（versions 保持 about）
@@ -71,6 +73,8 @@ public partial class MainWindowViewModel : ObservableObject
     public bool IsVersionsView => ActiveView == "versions";
     public bool IsGattView => ActiveView == "gatt";
     public bool IsHidProvView => ActiveView == "hidprov";
+    public bool IsHidDetailView => ActiveView == "hiddetail";
+    public bool IsHidDiagnosticsView => ActiveView == "hiddiag";
 
     public bool IsScanTabActive => ActiveTab == "scan";
     public bool IsConnectedTabActive => ActiveTab == "connected";
@@ -86,6 +90,8 @@ public partial class MainWindowViewModel : ObservableObject
         OnPropertyChanged(nameof(IsVersionsView));
         OnPropertyChanged(nameof(IsGattView));
         OnPropertyChanged(nameof(IsHidProvView));
+        OnPropertyChanged(nameof(IsHidDetailView));
+        OnPropertyChanged(nameof(IsHidDiagnosticsView));
     }
 
     partial void OnActiveTabChanged(string value)
@@ -99,6 +105,12 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private async Task SwitchTabAsync(string tab)
     {
+        if (ActiveView is "hidprov" or "hiddetail" or "hiddiag")
+        {
+            CancelHidTask();
+            HidWifiPwd = HidToken = HidPairingText = "";
+            await _bleService.DisconnectAsync(HidDevId);
+        }
         // 正典：切换 Tab 时停止扫描（E-WIN switchTab 对 broadcast 的口径推广到全部 Tab）
         if (IsScanning)
             await StopScanInternalAsync();
@@ -262,7 +274,7 @@ public partial class MainWindowViewModel : ObservableObject
             if (existing == null)
             {
                 // 仅新设备触发列表过滤/重排（E-WIN 同口径：新设备重渲染列表）
-                Devices.Add(new BleDeviceViewModel(device, IsGattConnected));
+                Devices.Add(new BleDeviceViewModel(device, _bleService.IsConnected(device.Id)));
                 ApplyFilters();
                 OnPropertyChanged(nameof(ScanStatusText));
             }
@@ -331,7 +343,7 @@ public partial class MainWindowViewModel : ObservableObject
         OnPropertyChanged(nameof(ExitConfirmDetail));
         // 扫描卡「已连接」态同步（连接注册表在本 VM，不在设备对象上）
         foreach (var d in Devices)
-            d.SetConnectedHint(value && d.Id == CurrentDeviceId);
+            d.SetConnectedHint(_bleService.IsConnected(d.Id));
     }
 
     partial void OnIsGattConnectingChanged(bool value)
@@ -340,7 +352,7 @@ public partial class MainWindowViewModel : ObservableObject
         OnPropertyChanged(nameof(GattStFill));
     }
 
-    // P007 已连接页（单会话 = one 模式；正典两台及以上才出汇总卡）
+    // P007 renders every owned device session.
     public ObservableCollection<BleDeviceViewModel> ConnectedDevices { get; } = new();
 
     public int ConnectedCount => ConnectedDevices.Count;
@@ -352,14 +364,16 @@ public partial class MainWindowViewModel : ObservableObject
     private void RefreshConnectedPanel()
     {
         ConnectedDevices.Clear();
-        if (IsGattConnected)
+        foreach (var id in _bleService.ConnectedDeviceIds)
         {
-            var d = Devices.FirstOrDefault(x => x.Id == CurrentDeviceId)
-                    ?? new BleDeviceViewModel(new BleDevice(CurrentDeviceId,
-                        CurrentDeviceName, 0, null), true);
+            var d = Devices.FirstOrDefault(x => x.Id == id)
+                    ?? new BleDeviceViewModel(new BleDevice(id, id, 0, null), true);
             d.SetConnectedHint(true);
             ConnectedDevices.Add(d);
         }
+        foreach (var d in Devices) d.SetConnectedHint(_bleService.IsConnected(d.Id));
+        OnPropertyChanged(nameof(ExitConfirmBusyText));
+        OnPropertyChanged(nameof(ExitConfirmDetail));
 
         OnPropertyChanged(nameof(ConnectedCount));
         OnPropertyChanged(nameof(ConnectedBadgeVisible));
@@ -375,26 +389,40 @@ public partial class MainWindowViewModel : ObservableObject
 
     private readonly Dictionary<string, BleCharacteristicViewModel> _charVmByKey = new();
 
-    private void OnServiceDiscovered(BleServiceInfo[]? services)
+    private readonly Dictionary<string, BleServiceViewModel[]> _deviceTrees = new(StringComparer.OrdinalIgnoreCase);
+
+    partial void OnCurrentDeviceIdChanged(string value)
+    {
+        CloseWriteDialog();
+        IsGattConnected = _bleService.IsConnected(value);
+        IsGattConnecting = false;
+        RenderDeviceTree();
+    }
+
+    private void RenderDeviceTree()
+    {
+        Services.Clear();
+        _charVmByKey.Clear();
+        if (_deviceTrees.TryGetValue(CurrentDeviceId, out var tree))
+            foreach (var service in tree)
+            {
+                Services.Add(service);
+                foreach (var characteristic in service.Characteristics) _charVmByKey[characteristic.CommandKey] = characteristic;
+            }
+        OnPropertyChanged(nameof(ServiceSummaryChip));
+    }
+
+    private void OnServiceDiscovered(string deviceId, BleServiceInfo[]? services)
     {
         Dispatcher.UIThread.Post(() =>
         {
-            Services.Clear();
-            _charVmByKey.Clear();
-            if (services != null)
+            if (!_bleService.IsConnected(deviceId)) return;
+            _deviceTrees[deviceId] = (services ?? Array.Empty<BleServiceInfo>()).Select((s, i) => new BleServiceViewModel(s, i == 0)).ToArray();
+            if (string.Equals(deviceId, CurrentDeviceId, StringComparison.OrdinalIgnoreCase))
             {
-                foreach (var (service, idx) in services.Select((s, i) => (s, i)))
-                {
-                    var svm = new BleServiceViewModel(service, idx == 0);
-                    foreach (var c in svm.Characteristics)
-                        _charVmByKey[c.CommandKey] = c;
-                    Services.Add(svm);
-                }
+                RenderDeviceTree();
+                AddLog("sys", $"发现 {Services.Count} 个服务 / {Services.Sum(s => s.Characteristics.Count)} 特征");
             }
-
-            OnPropertyChanged(nameof(ServiceSummaryChip));
-            AddLog("sys", $"发现 {Services.Count} 个服务 / " +
-                         $"{Services.Sum(s => s.Characteristics.Count)} 特征");
         });
     }
 
@@ -402,9 +430,13 @@ public partial class MainWindowViewModel : ObservableObject
     {
         Dispatcher.UIThread.Post(() =>
         {
-            IsGattConnected = true;
-            IsGattConnecting = false;
-            AddLog("ok", "设备已连接");
+            if (!_bleService.IsConnected(deviceId)) return;
+            if (string.Equals(deviceId, CurrentDeviceId, StringComparison.OrdinalIgnoreCase))
+            {
+                IsGattConnected = true;
+                IsGattConnecting = false;
+                AddLog("ok", "设备已连接");
+            }
             RefreshConnectedPanel();
         });
     }
@@ -413,6 +445,15 @@ public partial class MainWindowViewModel : ObservableObject
     {
         Dispatcher.UIThread.Post(() =>
         {
+            if (_bleService.IsConnected(deviceId)) return;
+            _deviceTrees.Remove(deviceId);
+            if (string.Equals(deviceId, HidDevId, StringComparison.OrdinalIgnoreCase))
+            {
+                CancelHidTask();
+                HidIsConnected = false;
+                HidLostBannerVisible = true;
+                HidBusy = false;
+            }
             if (!string.Equals(deviceId, CurrentDeviceId, StringComparison.OrdinalIgnoreCase))
             {
                 RefreshConnectedPanel();
@@ -471,10 +512,17 @@ public partial class MainWindowViewModel : ObservableObject
         CurrentDeviceName = device?.DisplayName ?? id;
         CurrentDeviceId = id;
 
+        if (IsScanning) await StopScanInternalAsync();
         AddLog("sys", "正在连接设备…");
         IsGattConnecting = true;
         ActiveView = "gatt";
-        await _bleService.ConnectAsync(id);
+        var connected = await _bleService.ConnectAsync(id);
+        if (CurrentDeviceId == id)
+        {
+            IsGattConnected = connected;
+            IsGattConnecting = false;
+            OnServiceDiscovered(id, _bleService.GetServices(id));
+        }
         RefreshConnectedPanel();
     }
 
@@ -485,6 +533,8 @@ public partial class MainWindowViewModel : ObservableObject
         if (device == null) return;
         CurrentDeviceName = device.DisplayName;
         CurrentDeviceId = deviceId;
+        IsGattConnected = _bleService.IsConnected(deviceId);
+        RenderDeviceTree();
         ActiveView = "gatt";
     }
 
@@ -657,13 +707,13 @@ public partial class MainWindowViewModel : ObservableObject
     // 断开=纯会话操作，不导航（E-WIN 口径：断开后停留当前页，P007 列表刷新空态 /
     // P006 devhead 翻「未连接」；返回导航由各页返回键独立承担）
     [RelayCommand]
-    private async Task DisconnectAsync()
+    private async Task DisconnectAsync(string? deviceId)
     {
-        await _bleService.DisconnectAsync();
+        await _bleService.DisconnectAsync(deviceId ?? CurrentDeviceId);
     }
 
     [RelayCommand]
-    private async Task DisconnectAllAsync() => await DisconnectAsync();
+    private async Task DisconnectAllAsync() => await _bleService.DisconnectAllAsync();
 
     // ═══════════════════════ 读 / 写 / 监听（P006 特征行操作） ═══════════════════════
 
@@ -686,8 +736,9 @@ public partial class MainWindowViewModel : ObservableObject
         if (charUuid == null) return;
 
         AddLog("sys", $"读取特征值 {ShortUuid(charUuid)}…");
-        var data = await _bleService.ReadCharacteristicAsync(serviceUuid!, charUuid);
-        if (data != null)
+        var deviceId = CurrentDeviceId;
+        var data = await _bleService.ReadCharacteristicAsync(deviceId, serviceUuid!, charUuid);
+        if (data != null && deviceId == CurrentDeviceId)
         {
             var text = TryDecodeText(data);
             if (_charVmByKey.TryGetValue(ParameterOf(serviceUuid!, charUuid), out var vm))
@@ -737,6 +788,7 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     private string _loopIntervalText = "1000";
 
+    private string _currentWriteDeviceId = string.Empty;
     private string _currentWriteServiceUuid = string.Empty;
     private string _currentWriteCharUuid = string.Empty;
     private CancellationTokenSource? _loopCts;
@@ -766,7 +818,13 @@ public partial class MainWindowViewModel : ObservableObject
     {
         var (serviceUuid, charUuid) = SplitCommandKey(parameter);
         if (charUuid == null) return;
+        if (string.Equals(charUuid, HidProtocol.Input, StringComparison.OrdinalIgnoreCase))
+        {
+            AddLog("err", "Smart HID INPUT 仅允许通过已验证身份的配网流程写入");
+            return;
+        }
 
+        _currentWriteDeviceId = CurrentDeviceId;
         _currentWriteServiceUuid = serviceUuid!;
         _currentWriteCharUuid = charUuid;
         WriteCharUuid = charUuid;
@@ -788,6 +846,9 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private async Task ConfirmWriteAsync()
     {
+        var deviceId = _currentWriteDeviceId;
+        var serviceUuid = _currentWriteServiceUuid;
+        var charUuid = _currentWriteCharUuid;
         var text = WriteInputText.Trim();
         if (text.Length == 0) return;
 
@@ -839,7 +900,7 @@ public partial class MainWindowViewModel : ObservableObject
             AddLog("sys",
                 $"循环写入开始（{ShortUuid(_currentWriteCharUuid)} · " +
                 $"{(loopCount == 0 ? "无限" : $"{loopCount} 次")} · 间隔 {intervalMs}ms，关闭弹窗即停止）");
-            _ = RunLoopWriteAsync(payloads[0], loopCount, intervalMs, token);
+            _ = RunLoopWriteAsync(deviceId, serviceUuid, charUuid, payloads[0], loopCount, intervalMs, token);
             return; // 循环模式保持弹窗打开
         }
 
@@ -847,14 +908,14 @@ public partial class MainWindowViewModel : ObservableObject
         {
             AddLog("sys", $"写入 {ShortUuid(_currentWriteCharUuid)}: {WritePreview(payload)}");
             var ok = await _bleService.WriteCharacteristicAsync(
-                _currentWriteServiceUuid, _currentWriteCharUuid, payload);
+                deviceId, serviceUuid, charUuid, payload);
             if (!ok) return;
         }
 
         CloseWriteDialog();
     }
 
-    private async Task RunLoopWriteAsync(byte[] payload, int count, int intervalMs,
+    private async Task RunLoopWriteAsync(string deviceId, string serviceUuid, string charUuid, byte[] payload, int count, int intervalMs,
         CancellationToken token)
     {
         var sent = 0;
@@ -863,7 +924,7 @@ public partial class MainWindowViewModel : ObservableObject
             while (!token.IsCancellationRequested && (count == 0 || sent < count))
             {
                 var ok = await _bleService.WriteCharacteristicAsync(
-                    _currentWriteServiceUuid, _currentWriteCharUuid, payload);
+                    deviceId, serviceUuid, charUuid, payload);
                 if (!token.IsCancellationRequested && !ok) break;
                 sent++;
                 if (token.IsCancellationRequested) break;
@@ -896,8 +957,9 @@ public partial class MainWindowViewModel : ObservableObject
 
         var isOn = _charVmByKey.TryGetValue(parameter!, out var vm) && vm.IsNotifying;
         AddLog("sys", $"{(isOn ? "停止" : "启用")}通知 {ShortUuid(charUuid)}…");
-        var success = await _bleService.SetNotificationAsync(serviceUuid!, charUuid, !isOn);
-        if (success && vm != null)
+        var deviceId = CurrentDeviceId;
+        var success = await _bleService.SetNotificationAsync(deviceId, serviceUuid!, charUuid, !isOn);
+        if (success && deviceId == CurrentDeviceId && vm != null)
             vm.IsNotifying = !isOn;
     }
 
@@ -1208,7 +1270,7 @@ public partial class MainWindowViewModel : ObservableObject
         AddLog("sys", "版本信息已复制到剪贴板");
     }
 
-    // ═══════════════════════ P002 Smart HID 配网（阶段一真实 GATT；下发=明确降级） ═══════════════════════
+    // ═══════════════════════ P002–P004 Smart HID V1 配网 / 详情 / 诊断 ═══════════════════════
 
     [ObservableProperty]
     private int _hidStepIndex; // 0 连接设备 / 1 填写配置 / 2 下发状态
@@ -1265,7 +1327,7 @@ public partial class MainWindowViewModel : ObservableObject
     public string HidDevInitial => string.IsNullOrEmpty(HidDevName) ? "S"
         : char.ToUpperInvariant(HidDevName.Trim()[0]).ToString();
 
-    public string HidDevIdLine => HidDevId == "—" ? "—" : $"{HidDevId} · Device Info 已验证";
+    public string HidDevIdLine => HidDevId == "—" ? "—" : $"{HidDevId} · {(HidIsConnected ? "Device Info 已验证" : "待验证")}";
 
     public bool HidStepDone0 => HidStepIndex > 0;
     public bool HidStepCur0 => HidStepIndex == 0;
@@ -1277,8 +1339,71 @@ public partial class MainWindowViewModel : ObservableObject
     public bool HidConfigurePhaseVisible => HidStepIndex == 1;
     public bool HidStatusPhaseVisible => HidStepIndex == 2;
 
-    public bool HidSubmitEnabled =>
-        HidWifiSsid.Trim().Length > 0 && HidHubAddr.Trim().Length > 0;
+    private CancellationTokenSource? _hidTask;
+    private DateTimeOffset _hidPairingExpires;
+    private int _hidGeneration;
+    [ObservableProperty] private bool _hidBusy;
+    [ObservableProperty] private string _hidPairingText = string.Empty;
+    [ObservableProperty] private string _hidToken = string.Empty;
+    [ObservableProperty] private string _hidStatusText = "等待设备状态";
+    [ObservableProperty] private string _hidState = "—";
+    [ObservableProperty] private string _hidFirmware = "—";
+    [ObservableProperty] private string _hidProtocolVersion = "—";
+    [ObservableProperty] private string _hidIdentity = "—";
+    [ObservableProperty] private string _hidRecoveryText = string.Empty;
+
+    public bool HidSubmitEnabled => HidIsConnected && !HidBusy &&
+        HidWifiSsid.Trim().Length > 0 && HidHubAddr.Trim().Length > 0 && HidToken.Length == 32;
+    partial void OnHidBusyChanged(bool value) => OnPropertyChanged(nameof(HidSubmitEnabled));
+    partial void OnHidIsConnectedChanged(bool value) => OnPropertyChanged(nameof(HidSubmitEnabled));
+    partial void OnHidTokenChanged(string value) => OnPropertyChanged(nameof(HidSubmitEnabled));
+
+    private bool OwnsHid(string id, int generation) => id == HidDevId && generation == _hidGeneration;
+    private void CancelHidTask()
+    {
+        _hidGeneration++;
+        _hidTask?.Cancel();
+        _hidTask = null;
+        HidBusy = false;
+    }
+
+    private void SetHidIdentity(HidProtocol.DeviceInfo info)
+    {
+        HidIdentity = info.DeviceId; HidFirmware = info.Firmware; HidProtocolVersion = info.Protocol;
+        HidState = info.State;
+        HidDevSummary = $"{info.DeviceId} · fw {info.Firmware}";
+    }
+
+    private void SetHidStatus(HidProtocol.DeviceStatus status)
+    {
+        HidState = status.State; HidStatusText = HidProtocol.StatusText(status);
+        HidErrVisible = status.Error != null || status.State is "error" or "recovery";
+        HidErrCode = status.Error ?? "";
+        HidErrText = status.Error != null ? HidProtocol.ErrorHint(status.Error) : "";
+        HidRecoveryText = HidProtocol.RecoveryAction(status.Error ?? "") switch
+        {
+            "form" => "请返回修改 Wi-Fi 配置后重新下发。",
+            "pairing" => "请在 ControlHub 生成新的配对码并重新导入。",
+            "diagnostics" => "请读取诊断状态并检查 MQTT 服务。",
+            _ => "可重新读取设备状态或主动重试；重连不会重复下发配置。"
+        };
+    }
+
+    private sealed class HidTransport : HidProvisioning.ITransport, IDisposable
+    {
+        private readonly BleService _ble; private readonly string _id;
+        public event Action<byte[]>? StatusReceived;
+        public HidTransport(BleService ble, string id) { _ble = ble; _id = id; _ble.CharacteristicValueChanged += OnValue; }
+        private void OnValue(string id, string uuid, byte[] bytes)
+        {
+            if (string.Equals(id, _id, StringComparison.OrdinalIgnoreCase) && string.Equals(uuid, HidProtocol.Status, StringComparison.OrdinalIgnoreCase)) StatusReceived?.Invoke(bytes);
+        }
+        public Task<byte[]?> ReadInfoAsync() => _ble.ReadCharacteristicAsync(_id, HidProtocol.Service, HidProtocol.Info);
+        public Task<bool> SubscribeAsync(bool enable) => _ble.SetNotificationAsync(_id, HidProtocol.Service, HidProtocol.Status, enable);
+        public Task<bool> WriteFrameAsync(byte[] bytes) => _ble.WriteCharacteristicAsync(_id, HidProtocol.Service, HidProtocol.Input, bytes, withResponse: true, sensitive: true);
+        public void Dispose() => _ble.CharacteristicValueChanged -= OnValue;
+    }
+
 
     partial void OnHidStepIndexChanged(int value)
     {
@@ -1299,98 +1424,168 @@ public partial class MainWindowViewModel : ObservableObject
     private async Task OpenHidProvisionAsync(string? deviceId)
     {
         var id = deviceId ?? "";
+        if (id.Length == 0) return;
+        var previous = HidDevId;
+        CancelHidTask();
+        var generation = _hidGeneration;
+        if (previous != id)
+        {
+            HidWifiSsid = HidWifiPwd = HidHubAddr = HidToken = HidPairingText = "";
+            HidIdentity = HidFirmware = HidProtocolVersion = HidState = "—";
+            HidStatusText = "等待设备状态";
+        }
         var device = Devices.FirstOrDefault(d => d.Id == id);
-        HidDevName = device?.DisplayName ?? "Smart HID 设备";
-        HidDevId = string.IsNullOrEmpty(id) ? "—" : id;
-        OnPropertyChanged(nameof(HidDevName));
-        OnPropertyChanged(nameof(HidDevId));
-        OnPropertyChanged(nameof(HidDevInitial));
-        OnPropertyChanged(nameof(HidDevIdLine));
-
-        ActiveView = "hidprov";
-        HidStepIndex = 0;
-        HidConnecting = true;
-        HidConnErrorVisible = false;
-        HidLostBannerVisible = false;
-        HidIsConnected = false;
-        HidDevSummary = "—";
-        CurrentDeviceName = HidDevName;
-        CurrentDeviceId = id;
-
-        AddLog("sys", $"Smart HID 配网：连接并确认设备（{HidDevName}）…");
+        HidDevName = device?.DisplayName ?? id;
+        HidDevId = id;
+        OnPropertyChanged(nameof(HidDevName)); OnPropertyChanged(nameof(HidDevId));
+        OnPropertyChanged(nameof(HidDevInitial)); OnPropertyChanged(nameof(HidDevIdLine));
+        ActiveView = "hidprov"; HidStepIndex = 0;
+        HidConnecting = true; HidConnErrorVisible = false; HidLostBannerVisible = false; HidIsConnected = false;
+        CurrentDeviceName = HidDevName; CurrentDeviceId = id;
+        if (IsScanning) await StopScanInternalAsync();
         IsGattConnecting = true;
-        await _bleService.ConnectAsync(id);
-        HidConnecting = false;
-        IsGattConnecting = false;
-
-        if (!IsGattConnected)
+        var connected = await _bleService.ConnectAsync(id);
+        if (!OwnsHid(id, generation)) return;
+        HidConnecting = false; IsGattConnecting = false; IsGattConnected = connected;
+        if (!connected || !await ReadHidIdentityAsync(id, generation))
         {
             HidConnErrorVisible = true;
-            HidConnErrorText = "无法建立 GATT 连接或读取 Device Info。请确认设备在附近且处于配网模式后重试。";
+            HidConnErrorText = "无法建立 GATT 连接或设备身份/协议不匹配。请确认设备在附近且处于配网模式后重试。";
             return;
         }
-
-        HidStepIndex = 1;
-        HidIsConnected = true;
-        await ReadHidIdentityAsync();
+        if (!OwnsHid(id, generation)) return;
+        HidStepIndex = 1; HidIsConnected = true;
+        OnPropertyChanged(nameof(HidDevIdLine));
         RefreshConnectedPanel();
     }
 
-    // 阶段一身份确认：读 INFO（…1002）解析 device_id / firmware（只读，无 INPUT 写）
-    private async Task ReadHidIdentityAsync()
+    private async Task<bool> ReadHidIdentityAsync(string id, int generation)
     {
-        const string hidSvc = "9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04";
-        const string infoChar = "9f1d1002-e73b-4c8f-9d2a-6f0b5e8a1c04";
-        var data = await _bleService.ReadCharacteristicAsync(hidSvc, infoChar);
-        if (data == null)
-        {
-            HidDevSummary = $"{HidDevId}";
-            return;
-        }
-
-        var json = Encoding.UTF8.GetString(data);
-        var deviceId = Regex.Match(json, "\"device_id\"\\s*:\\s*\"([^\"]+)\"").Groups[1].Value;
-        var firmware = Regex.Match(json, "\"firmware\"\\s*:\\s*\"([^\"]+)\"").Groups[1].Value;
-        var bits = new List<string>();
-        if (deviceId.Length > 0) bits.Add(deviceId);
-        if (firmware.Length > 0) bits.Add($"fw {firmware}");
-        HidDevSummary = bits.Count > 0 ? string.Join(" · ", bits) : HidDevId;
-        AddLog("read", $"设备身份：{HidDevSummary}");
+        var data = await _bleService.ReadCharacteristicAsync(id, HidProtocol.Service, HidProtocol.Info);
+        if (!OwnsHid(id, generation)) return false;
+        var info = data == null ? null : HidProtocol.ParseInfo(Encoding.UTF8.GetString(data));
+        if (!HidProtocol.Compatible(info)) return false;
+        SetHidIdentity(info!);
+        return true;
     }
 
     [RelayCommand]
-    private async Task HidReconnectAsync() => await OpenHidProvisionAsync(CurrentDeviceId);
+    private async Task HidReconnectAsync() => await OpenHidProvisionAsync(HidDevId);
 
-    // 向导返回即断开（DESKTOP-LEAVE-001 语义，与 E/T 双壳一致）
     [RelayCommand]
     private async Task HidBackToListAsync()
     {
-        if (IsGattConnected)
-            await _bleService.DisconnectAsync();
-        ActiveTab = "scan";
-        ActiveView = "scan";
+        var id = HidDevId;
+        CancelHidTask();
+        HidWifiPwd = HidToken = HidPairingText = "";
+        await _bleService.DisconnectAsync(id);
+        ActiveTab = "scan"; ActiveView = "scan";
     }
 
     [RelayCommand]
     private void HidTogglePwd() => HidShowPwd = !HidShowPwd;
 
     [RelayCommand]
-    private void HidQrEntry()
+    private async Task HidQrEntryAsync()
     {
-        // V-WIN 明确降级：无摄像头扫码链路（E/T 主路径 getUserMedia+jsQR）
-        HidErrVisible = true;
-        HidErrCode = "vwin_camera_unsupported";
-        HidErrText = "V-WIN 实验级无摄像头扫码链路。请通过 ControlHub 界面手动记录地址与令牌后填写，或使用 Electron/Tauri 壳扫码获取配对码。";
+        if (HidPairingText.Trim().Length == 0 && ClipboardReader != null) HidPairingText = await ClipboardReader() ?? "";
+        var pairing = HidProtocol.ParseQr(HidPairingText);
+        if (pairing == null)
+        {
+            HidErrVisible = true; HidErrCode = "pairing_invalid";
+            HidErrText = "请粘贴 ControlHub 的完整 shid://pair 配对链接后重新导入。";
+            return;
+        }
+        HidToken = pairing.Token;
+        _hidPairingExpires = DateTimeOffset.UtcNow.AddMinutes(5);
+        HidHubAddr = pairing.Host.Contains(':') ? $"[{pairing.Host}]:{pairing.Port}" : $"{pairing.Host}:{pairing.Port}";
+        HidPairingText = ""; HidErrVisible = false;
     }
 
     [RelayCommand]
-    private void HidSubmit()
+    private async Task HidSubmitAsync()
     {
-        // V-WIN 明确降级：配网协议客户端（candidate 分帧 + STATUS 七步）未移植 Avalonia
-        HidErrVisible = true;
-        HidErrCode = "vwin_provisioning_not_ported";
-        HidErrText = "Smart HID 配网下发模块未移植至 Avalonia 实验级（hid-service 为 Electron/Tauri 共用 JS 实现）。请使用 Electron 或 Tauri 壳完成配网下发。";
-        AddLog("err", "配网下发不可用：V-WIN 实验级未移植协议客户端");
+        if (HidBusy || !HidIsConnected) return;
+        if (_hidPairingExpires <= DateTimeOffset.UtcNow)
+        {
+            HidToken = ""; HidErrVisible = true; HidErrCode = "pairing_expired";
+            HidErrText = HidProtocol.ErrorHint("pairing_expired");
+            return;
+        }
+        string candidate;
+        try
+        {
+            var address = HidHubAddr.Trim();
+            var uri = new Uri("http://" + address);
+            if (uri.AbsolutePath != "/" || uri.Query.Length > 0 || uri.UserInfo.Length > 0) throw new ArgumentException();
+            var port = address.EndsWith(":80", StringComparison.Ordinal) || !uri.IsDefaultPort ? uri.Port : 17892;
+            candidate = HidProtocol.Candidate(HidWifiSsid, HidWifiPwd, uri.Host, port, HidToken);
+        }
+        catch (Exception ex) when (ex is UriFormatException or ArgumentException)
+        {
+            HidErrVisible = true; HidErrCode = "invalid_payload"; HidErrText = "配置内容非法，请检查 Wi-Fi、ControlHub 地址和配对码。";
+            return;
+        }
+        var id = HidDevId;
+        CancelHidTask();
+        var generation = _hidGeneration;
+        _hidTask = new CancellationTokenSource();
+        var token = _hidTask.Token;
+        HidBusy = true; HidStepIndex = 2; HidErrVisible = false; HidStatusText = "正在下发配置";
+        try
+        {
+            using var transport = new HidTransport(_bleService, id);
+            var result = await HidProvisioning.RunAsync(transport, candidate, status => Dispatcher.UIThread.Post(() =>
+            {
+                if (OwnsHid(id, generation)) SetHidStatus(status);
+            }), token);
+            if (!OwnsHid(id, generation)) return;
+            SetHidIdentity(result.Info); SetHidStatus(result.Status);
+            if (result.Ok) { HidWifiPwd = HidToken = HidPairingText = ""; ActiveView = "hiddetail"; }
+        }
+        catch (OperationCanceledException) { }
+        catch (Exception ex)
+        {
+            if (!OwnsHid(id, generation)) return;
+            HidErrVisible = true; HidErrCode = ex is TimeoutException ? "status_timeout" : "provision_failed";
+            HidErrText = ex is TimeoutException ? ex.Message : "蓝牙下发失败，请重连后读取状态；不会自动重复下发配置。";
+        }
+        finally { if (OwnsHid(id, generation)) HidBusy = false; }
+    }
+
+    [RelayCommand]
+    private void HidStop()
+    {
+        CancelHidTask();
+        HidStatusText = "已停止状态跟踪；设备可能继续处理，请读取设备状态。";
+    }
+    [RelayCommand]
+    private void HidEdit() { CancelHidTask(); HidStepIndex = 1; ActiveView = "hidprov"; }
+    [RelayCommand]
+    private async Task HidDetailAsync() { ActiveView = "hiddetail"; await HidRefreshAsync(); }
+    [RelayCommand]
+    private async Task HidDiagnosticsAsync() { ActiveView = "hiddiag"; await HidRefreshAsync(); }
+    [RelayCommand]
+    private async Task HidRefreshAsync()
+    {
+        if (HidBusy) return;
+        var id = HidDevId; var generation = _hidGeneration;
+        HidBusy = true;
+        try
+        {
+            if (!_bleService.IsConnected(id) && !await _bleService.ConnectAsync(id)) throw new InvalidOperationException();
+            if (!await ReadHidIdentityAsync(id, generation)) throw new InvalidOperationException();
+            var bytes = await _bleService.ReadCharacteristicAsync(id, HidProtocol.Service, HidProtocol.Status);
+            if (!OwnsHid(id, generation)) return;
+            var status = bytes == null ? null : HidProtocol.ParseStatus(Encoding.UTF8.GetString(bytes));
+            if (status == null) throw new InvalidOperationException();
+            HidIsConnected = true; HidLostBannerVisible = false; SetHidStatus(status);
+        }
+        catch (Exception)
+        {
+            if (OwnsHid(id, generation)) { HidErrVisible = true; HidErrCode = "status_read_failed"; HidErrText = "无法读取身份或状态，请检查连接后重试。"; }
+        }
+        finally { if (OwnsHid(id, generation)) HidBusy = false; }
     }
 
     // ═══════════════════════ 退出确认（10_platform §4 常驻 + 确认退出） ═══════════════════════
@@ -1398,24 +1593,25 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     private bool _showExitConfirm;
 
-    public bool ExitConfirmBusy => IsGattConnected || IsBroadcasting;
+    public bool ExitConfirmBusy => ConnectedCount > 0 || IsBroadcasting;
 
     public string ExitConfirmBusyText => ExitConfirmBusy
         ? "有 BLE 会话正在运行（连接/广播）。确认退出将断开会话并停止监听。"
         : "桌面端为常驻运行。确认退出？";
 
-    public string ExitConfirmDetail => IsGattConnected
+    public string ExitConfirmDetail => ConnectedCount > 0
         ? $"当前连接设备：{ConnectedCount} 台"
         : IsBroadcasting
             ? "广播发射中，确认退出将停止广播"
             : "（10_platform §4 生命周期：常驻，退出确认）";
 
     [RelayCommand]
-    private void ConfirmExit()
+    private async Task ConfirmExitAsync()
     {
+        _hidTask?.Cancel();
+        _loopCts?.Cancel();
+        await _bleService.ShutdownAsync();
         _exitConfirmed = true;
-        if (_bleService.IsAdvertising)
-            _bleService.StopAdvertising();
         ShowExitConfirm = false;
         CloseRequested?.Invoke();
     }

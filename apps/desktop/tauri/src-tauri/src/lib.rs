@@ -17,6 +17,8 @@ use std::sync::Arc;
 use std::time::Duration;
 use tauri::State;
 use tokio::sync::Mutex;
+mod write_queue;
+use write_queue::{WriteQueue, CONNECT_TIMEOUT, READ_TIMEOUT, WRITE_TIMEOUT};
 
 // Win32 广播边车（WIN-BRIDGE 同构，2026-09-24 广播模板复制轮；仅厂商块 0xFF）
 #[cfg(any(target_os = "windows", test))]
@@ -29,11 +31,123 @@ struct BleState {
     manager: Option<Manager>,
     central: Option<btleplug::platform::Adapter>,
     /// Multi-device: deviceId -> Peripheral
-    connected_peripherals: HashMap<String, btleplug::platform::Peripheral>,
+    connected_peripherals: HashMap<String, Arc<BleSession>>,
     scanning: bool,
     scan_handle: Option<tokio::task::JoinHandle<()>>,
     /// Multi-device: deviceId -> notify task handle
     notify_handles: HashMap<String, tokio::task::JoinHandle<()>>,
+    event_handle: Option<tokio::task::JoinHandle<()>>,
+    connection_locks: HashMap<String, Arc<Mutex<()>>>,
+    connecting: HashMap<String, Arc<AtomicBool>>,
+    scan_io: Arc<Mutex<()>>,
+}
+
+struct BleSession {
+    peripheral: btleplug::platform::Peripheral,
+    writes: WriteQueue,
+}
+
+impl<T> Response<T> {
+    fn ok(data: T) -> Self {
+        Self {
+            success: true,
+            data: Some(data),
+            error: None,
+            value: None,
+        }
+    }
+    fn fail(error: impl Into<String>) -> Self {
+        Self {
+            success: false,
+            data: None,
+            error: Some(error.into()),
+            value: None,
+        }
+    }
+}
+
+fn retire_session(state: &mut BleState, device_id: &str) -> Option<Arc<BleSession>> {
+    let session = state.connected_peripherals.remove(device_id);
+    if let Some(session) = &session {
+        session.writes.close();
+    }
+    let prefix = format!("{}::", device_id);
+    let keys: Vec<_> = state
+        .notify_handles
+        .keys()
+        .filter(|key| key.starts_with(&prefix))
+        .cloned()
+        .collect();
+    for key in keys {
+        if let Some(handle) = state.notify_handles.remove(&key) {
+            handle.abort();
+        }
+    }
+    session
+}
+
+fn matches_uuid(a: &str, b: &str) -> bool {
+    fn normalized(value: &str) -> String {
+        let value = value.to_lowercase().replace('-', "");
+        match value.len() {
+            4 => format!("0000{}00001000800000805f9b34fb", value),
+            8 => format!("{}00001000800000805f9b34fb", value),
+            _ => value,
+        }
+    }
+    normalized(a) == normalized(b)
+}
+
+fn find_characteristic(session: &BleSession, service: &str, uuid: &str) -> Option<Characteristic> {
+    session.peripheral.characteristics().into_iter().find(|c| {
+        matches_uuid(&c.uuid.to_string(), uuid)
+            && matches_uuid(&c.service_uuid.to_string(), service)
+    })
+}
+
+async fn write_session(
+    state: &Arc<Mutex<BleState>>,
+    device_id: &str,
+    session: Arc<BleSession>,
+    characteristic: Characteristic,
+    bytes: Vec<u8>,
+    kind: WriteType,
+    window: tauri::Window,
+) -> Response<bool> {
+    let result = session
+        .writes
+        .run(WRITE_TIMEOUT, async {
+            session
+                .peripheral
+                .write(&characteristic, &bytes, kind)
+                .await
+                .map_err(|e| format!("Write failed: {}", e))
+        })
+        .await;
+    if session.writes.is_closed() {
+        let mut state = state.lock().await;
+        // A stale timeout must never remove a replacement connection.
+        if state
+            .connected_peripherals
+            .get(device_id)
+            .map(|current| Arc::ptr_eq(current, &session))
+            .unwrap_or(false)
+        {
+            retire_session(&mut state, device_id);
+            let _ = window.emit(
+                "device-disconnected",
+                serde_json::json!({ "deviceId": device_id }),
+            );
+            let peripheral = session.peripheral.clone();
+            tokio::spawn(async move {
+                let _ = tokio::time::timeout(CONNECT_TIMEOUT, peripheral.disconnect()).await;
+            });
+        }
+    }
+    match result {
+        Ok(_) => Response::ok(true),
+        Err(error) => Response::fail(error),
+    }
 }
 
 // Write format
@@ -118,8 +232,9 @@ async fn init_ble(
     state: State<'_, Arc<Mutex<BleState>>>,
     window: tauri::Window,
 ) -> Result<Response<String>, String> {
-    let mut ble_state = state.lock().await;
-
+    if state.lock().await.central.is_some() {
+        return Ok(Response::ok("BLE initialized".to_string()));
+    }
     match Manager::new().await {
         Ok(manager) => {
             // N3：无线电关闭时以 BLUETOOTH_OFF 前缀失败，前端显示「蓝牙未开启」红点
@@ -154,6 +269,10 @@ async fn init_ble(
             if let Some(adapter) = adapters.first() {
                 let central = adapter.clone();
 
+                let mut ble_state = state.lock().await;
+                if ble_state.central.is_some() {
+                    return Ok(Response::ok("BLE initialized".to_string()));
+                }
                 ble_state.manager = Some(manager);
                 ble_state.central = Some(central.clone());
 
@@ -162,7 +281,7 @@ async fn init_ble(
                 let state_clone = Arc::clone(&state.inner());
 
                 // Track BLE events in background to emit disconnection
-                tokio::spawn(async move {
+                ble_state.event_handle = Some(tokio::spawn(async move {
                     use btleplug::api::CentralEvent;
 
                     if let Ok(mut events) = central_events.events().await {
@@ -171,32 +290,36 @@ async fn init_ble(
                                 eprintln!("[BLE] Device disconnected: {:?}", id);
 
                                 let device_id = id.to_string();
-                                let mut ble_state_lock = state_clone.lock().await;
-
-                                // 收尾该设备全部通知流（key: "deviceId::charUuid"）：
-                                // 被动掉链路径此前不收尾，任务句柄滞留 notify_handles
-                                let prefix = format!("{}::", device_id);
-                                let notify_keys: Vec<String> = ble_state_lock
-                                    .notify_handles
-                                    .keys()
-                                    .filter(|k| k.starts_with(&prefix))
-                                    .cloned()
-                                    .collect();
-                                for key in notify_keys {
-                                    if let Some(handle) = ble_state_lock.notify_handles.remove(&key)
-                                    {
-                                        handle.abort();
-                                    }
-                                }
-
-                                // Remove from connected_peripherals cleanly.
-                                // 仅真实会话丢失去通知前端：connect 内的强制清缓存
-                                // disconnect() 也会触发本事件，那时设备已不在表内，
-                                // 不向前端发伪断连
-                                let was_session = ble_state_lock
+                                let session = state_clone
+                                    .lock()
+                                    .await
                                     .connected_peripherals
-                                    .remove(&device_id)
-                                    .is_some();
+                                    .get(&device_id)
+                                    .cloned();
+                                let Some(session) = session else {
+                                    continue;
+                                };
+                                if matches!(
+                                    tokio::time::timeout(
+                                        READ_TIMEOUT,
+                                        session.peripheral.is_connected()
+                                    )
+                                    .await,
+                                    Ok(Ok(true))
+                                ) {
+                                    continue;
+                                }
+                                let mut ble_state_lock = state_clone.lock().await;
+                                if !ble_state_lock
+                                    .connected_peripherals
+                                    .get(&device_id)
+                                    .map(|current| Arc::ptr_eq(current, &session))
+                                    .unwrap_or(false)
+                                {
+                                    continue;
+                                }
+                                let was_session =
+                                    retire_session(&mut ble_state_lock, &device_id).is_some();
                                 drop(ble_state_lock);
 
                                 if was_session {
@@ -207,8 +330,9 @@ async fn init_ble(
                             }
                         }
                     }
-                });
+                }));
 
+                drop(ble_state);
                 Ok(Response {
                     success: true,
                     data: Some("BLE initialized".to_string()),
@@ -238,6 +362,8 @@ async fn start_scan(
     state: State<'_, Arc<Mutex<BleState>>>,
     window: tauri::Window,
 ) -> Result<Response<Vec<DeviceInfo>>, String> {
+    let scan_io = state.lock().await.scan_io.clone();
+    let _scan_guard = scan_io.lock().await;
     let mut ble_state = state.lock().await;
 
     // If already scanning, just return success
@@ -268,14 +394,18 @@ async fn start_scan(
         }
     };
 
+    drop(ble_state);
     eprintln!("[BLE] Starting scan...");
 
-    let result = central
-        .start_scan(btleplug::api::ScanFilter::default())
-        .await;
+    let result = tokio::time::timeout(
+        READ_TIMEOUT,
+        central.start_scan(btleplug::api::ScanFilter::default()),
+    )
+    .await;
 
     match result {
-        Ok(_) => {
+        Ok(Ok(_)) => {
+            let mut ble_state = state.lock().await;
             eprintln!("[BLE] Scan started successfully");
             ble_state.scanning = true;
             drop(ble_state);
@@ -387,7 +517,7 @@ async fn start_scan(
                 value: None,
             })
         }
-        Err(e) => {
+        Ok(Err(e)) => {
             eprintln!("[BLE] Scan failed: {:?}", e);
             Ok(Response {
                 success: false,
@@ -396,42 +526,29 @@ async fn start_scan(
                 value: None,
             })
         }
+        Err(_) => Ok(Response::fail("Start scan timed out")),
     }
 }
 
 #[tauri::command]
 async fn stop_scan(state: State<'_, Arc<Mutex<BleState>>>) -> Result<Response<bool>, String> {
-    let mut ble_state = state.lock().await;
-
-    // Abort the scan task
-    if let Some(handle) = ble_state.scan_handle.take() {
-        handle.abort();
-    }
-
-    ble_state.scanning = false;
-
-    if let Some(central) = &ble_state.central {
-        match central.stop_scan().await {
-            Ok(_) => Ok(Response {
-                success: true,
-                data: Some(true),
-                error: None,
-                value: None,
-            }),
-            Err(e) => Ok(Response {
-                success: false,
-                data: None,
-                error: Some(format!("Stop scan failed: {}", e)),
-                value: None,
-            }),
+    let scan_io = state.lock().await.scan_io.clone();
+    let _scan_guard = scan_io.lock().await;
+    let central = {
+        let mut state = state.lock().await;
+        if let Some(handle) = state.scan_handle.take() {
+            handle.abort();
         }
-    } else {
-        Ok(Response {
-            success: false,
-            data: None,
-            error: Some("BLE not initialized".to_string()),
-            value: None,
-        })
+        state.scanning = false;
+        state.central.clone()
+    };
+    match central {
+        Some(central) => match tokio::time::timeout(READ_TIMEOUT, central.stop_scan()).await {
+            Ok(Ok(_)) => Ok(Response::ok(true)),
+            Ok(Err(e)) => Ok(Response::fail(format!("Stop scan failed: {}", e))),
+            Err(_) => Ok(Response::fail("Stop scan timed out")),
+        },
+        None => Ok(Response::fail("BLE not initialized")),
     }
 }
 
@@ -441,113 +558,136 @@ async fn connect(
     deviceId: String,
     state: State<'_, Arc<Mutex<BleState>>>,
 ) -> Result<Response<bool>, String> {
-    let device_id = deviceId;
-
-    // F012 断线重连：WinRT 适配器缓存会在断链后丢弃外设，直接查 peripherals() 会
-    // "Device not found"（noble/E-WIN 持有 peripheral 对象可直连，btleplug 须重扫
-    // 重建缓存后再连接）。未在扫描态时临时起一轮短扫描。
-    let find_peripheral = |peripherals: &[btleplug::platform::Peripheral]| {
-        peripherals
-            .iter()
-            .find(|p| p.id().to_string() == device_id)
-            .cloned()
-    };
-
-    let first_pass = {
-        let ble_state = state.lock().await;
-        match &ble_state.central {
-            Some(central) => central.peripherals().await.unwrap_or_default(),
-            None => {
-                return Ok(Response {
-                    success: false,
-                    data: None,
-                    error: Some("BLE not initialized".to_string()),
-                    value: None,
-                })
-            }
-        }
-    };
-    let mut peripheral_opt = find_peripheral(&first_pass);
-
-    if peripheral_opt.is_none() {
-        let was_scanning = {
-            let mut ble_state = state.lock().await;
-            let scanning = ble_state.scanning;
-            if !scanning {
-                if let Some(central) = &ble_state.central {
-                    let _ = central
-                        .start_scan(btleplug::api::ScanFilter::default())
-                        .await;
-                }
-                ble_state.scanning = true;
-            }
-            scanning
+    let (central, connection_lock) = {
+        let mut state = state.lock().await;
+        let Some(central) = state.central.clone() else {
+            return Ok(Response::fail("BLE not initialized"));
         };
-        tokio::time::sleep(Duration::from_secs(6)).await;
-        let second_pass = {
-            let mut ble_state = state.lock().await;
+        let lock = state
+            .connection_locks
+            .entry(deviceId.clone())
+            .or_insert_with(|| Arc::new(Mutex::new(())))
+            .clone();
+        (central, lock)
+    };
+    // Serialize lifecycle for one device only. All native I/O is outside BleState.
+    let cancelled = Arc::new(AtomicBool::new(false));
+    let cleanup_peripheral = Arc::new(Mutex::new(None));
+    let result = tokio::time::timeout(CONNECT_TIMEOUT, async {
+        let _guard = connection_lock.lock().await;
+        if state
+            .lock()
+            .await
+            .connected_peripherals
+            .contains_key(&deviceId)
+        {
+            return Ok(());
+        }
+        state
+            .lock()
+            .await
+            .connecting
+            .insert(deviceId.clone(), cancelled.clone());
+        let mut found = central
+            .peripherals()
+            .await
+            .map_err(|e| e.to_string())?
+            .into_iter()
+            .find(|p| p.id().to_string() == deviceId);
+        if found.is_none() {
+            // Short rescan rebuilds WinRT's cache. Its own lock coordinates scan
+            // ownership without blocking connected devices' GATT transactions.
+            let scan_io = state.lock().await.scan_io.clone();
+            let _scan_guard = scan_io.lock().await;
+            let was_scanning = state.lock().await.scanning;
             if !was_scanning {
-                if let Some(central) = &ble_state.central {
-                    let _ = central.stop_scan().await;
+                central
+                    .start_scan(btleplug::api::ScanFilter::default())
+                    .await
+                    .map_err(|e| e.to_string())?;
+            }
+            for _ in 0..12 {
+                if cancelled.load(Ordering::SeqCst) {
+                    break;
                 }
-                ble_state.scanning = false;
-            }
-            match &ble_state.central {
-                Some(central) => central.peripherals().await.unwrap_or_default(),
-                None => Vec::new(),
-            }
-        };
-        peripheral_opt = find_peripheral(&second_pass);
-    }
-
-    match peripheral_opt {
-        Some(peripheral) => {
-            // T-WIN-DEF-001：被动掉链只走连接状态回调，btleplug 不会清 ble_services，
-            // 旧特征句柄包裹已关闭的 WinRT 对象；且 discover_services 对已存在的
-            // uuid 跳过重枚举，重连后读写永远命中死句柄（HRESULT 0x80000013）。
-            // 未处于连接态时先 disconnect() 一次清空死缓存，再建全新连接；
-            // 对从未连接过的设备是无副作用的状态复位。
-            if !peripheral.is_connected().await.unwrap_or(false) {
-                let _ = peripheral.disconnect().await;
-            }
-
-            match peripheral.connect().await {
-                Ok(_) => {
-                    // Store connected peripheral in HashMap (multi-device)
-                    let mut ble_state = state.lock().await;
-                    ble_state
-                        .connected_peripherals
-                        .insert(device_id.clone(), peripheral.clone());
-                    drop(ble_state);
-
-                    // 连接成功即重建全新 GATT 句柄：覆盖所有调用路径（含不重新
-                    // discover 的重连场景），读写连接后立即可用；失败不阻断连接
-                    // 结果，仍可手动调 discover_services 兜底
-                    if let Err(e) = peripheral.discover_services().await {
-                        eprintln!("[BLE] Post-connect discovery failed: {:?}", e);
-                    }
-
-                    Ok(Response {
-                        success: true,
-                        data: Some(true),
-                        error: None,
-                        value: None,
-                    })
+                tokio::time::sleep(Duration::from_millis(250)).await;
+                found = central
+                    .peripherals()
+                    .await
+                    .map_err(|e| e.to_string())?
+                    .into_iter()
+                    .find(|p| p.id().to_string() == deviceId);
+                if found.is_some() {
+                    break;
                 }
-                Err(e) => Ok(Response {
-                    success: false,
-                    data: None,
-                    error: Some(format!("Connect failed: {}", e)),
-                    value: None,
-                }),
+            }
+            if !was_scanning {
+                let _ = central.stop_scan().await;
             }
         }
-        None => Ok(Response {
-            success: false,
-            data: None,
-            error: Some("Device not found".to_string()),
-            value: None,
-        }),
+        if cancelled.load(Ordering::SeqCst) {
+            return Err("Connection cancelled".into());
+        }
+        let peripheral = found.ok_or_else(|| "Device not found".to_string())?;
+        *cleanup_peripheral.lock().await = Some(peripheral.clone());
+        if !peripheral.is_connected().await.unwrap_or(false) {
+            let _ = peripheral.disconnect().await;
+        }
+        peripheral
+            .connect()
+            .await
+            .map_err(|e| format!("Connect failed: {}", e))?;
+        // Discovery is part of a usable connection, not best-effort success.
+        if let Err(e) = peripheral.discover_services().await {
+            let _ = peripheral.disconnect().await;
+            return Err(format!("Discover services failed: {}", e));
+        }
+        if cancelled.load(Ordering::SeqCst) {
+            let _ = peripheral.disconnect().await;
+            return Err("Connection cancelled".into());
+        }
+        let mut ble_state = state.lock().await;
+        if cancelled.load(Ordering::SeqCst) {
+            drop(ble_state);
+            let _ = peripheral.disconnect().await;
+            return Err("Connection cancelled".into());
+        }
+        ble_state.connected_peripherals.insert(
+            deviceId.clone(),
+            Arc::new(BleSession {
+                peripheral,
+                writes: WriteQueue::new(),
+            }),
+        );
+        Ok::<(), String>(())
+    })
+    .await;
+    {
+        let mut ble_state = state.lock().await;
+        if ble_state
+            .connecting
+            .get(&deviceId)
+            .map(|current| Arc::ptr_eq(current, &cancelled))
+            .unwrap_or(false)
+        {
+            ble_state.connecting.remove(&deviceId);
+        }
+    }
+    match result {
+        Ok(Ok(_)) => Ok(Response::ok(true)),
+        Ok(Err(error)) => Ok(Response::fail(error)),
+        Err(_) => {
+            cancelled.store(true, Ordering::SeqCst);
+            // Cleanup only the peripheral actually attempted by this command;
+            // timing out while waiting for another connect must not drop it.
+            if let Some(peripheral) = cleanup_peripheral.lock().await.take() {
+                tokio::spawn(async move {
+                    let _guard = connection_lock.lock().await;
+                    let _ = tokio::time::timeout(CONNECT_TIMEOUT, peripheral.disconnect()).await;
+                });
+            }
+            Ok(Response::fail("Connect timed out"))
+        }
     }
 }
 
@@ -557,56 +697,23 @@ async fn disconnect(
     deviceId: Option<String>,
     state: State<'_, Arc<Mutex<BleState>>>,
 ) -> Result<Response<bool>, String> {
-    let mut ble_state = state.lock().await;
-
-    // Determine which device to disconnect
-    let target_id = deviceId.or_else(|| ble_state.connected_peripherals.keys().next().cloned());
-
-    if let Some(device_id) = target_id {
-        // Abort ALL notification streams for this device (key format: "deviceId::charUuid")
-        let prefix = format!("{}::", device_id);
-        let notify_keys: Vec<String> = ble_state
-            .notify_handles
-            .keys()
-            .filter(|k| k.starts_with(&prefix))
-            .cloned()
-            .collect();
-        for key in notify_keys {
-            if let Some(handle) = ble_state.notify_handles.remove(&key) {
-                handle.abort();
+    let session = {
+        let mut state = state.lock().await;
+        let target = deviceId.or_else(|| state.connected_peripherals.keys().next().cloned());
+        target.and_then(|id| {
+            if let Some(cancelled) = state.connecting.remove(&id) {
+                cancelled.store(true, Ordering::SeqCst);
             }
-        }
-
-        if let Some(peripheral) = ble_state.connected_peripherals.remove(&device_id) {
-            match peripheral.disconnect().await {
-                Ok(_) => Ok(Response {
-                    success: true,
-                    data: Some(true),
-                    error: None,
-                    value: None,
-                }),
-                Err(e) => Ok(Response {
-                    success: false,
-                    data: None,
-                    error: Some(format!("Disconnect failed: {}", e)),
-                    value: None,
-                }),
-            }
-        } else {
-            Ok(Response {
-                success: true,
-                data: Some(true),
-                error: None,
-                value: None,
-            })
-        }
-    } else {
-        Ok(Response {
-            success: true,
-            data: Some(true),
-            error: None,
-            value: None,
+            retire_session(&mut state, &id)
         })
+    };
+    let Some(session) = session else {
+        return Ok(Response::ok(true));
+    };
+    match tokio::time::timeout(CONNECT_TIMEOUT, session.peripheral.disconnect()).await {
+        Ok(Ok(_)) => Ok(Response::ok(true)),
+        Ok(Err(e)) => Ok(Response::fail(format!("Disconnect failed: {}", e))),
+        Err(_) => Ok(Response::fail("Disconnect timed out")),
     }
 }
 
@@ -622,9 +729,10 @@ async fn discover_services(
         ble_state.connected_peripherals.get(&deviceId).cloned()
     };
 
-    if let Some(peripheral) = peripheral {
-        match peripheral.discover_services().await {
-            Ok(_) => {
+    if let Some(session) = peripheral {
+        let peripheral = &session.peripheral;
+        match tokio::time::timeout(CONNECT_TIMEOUT, peripheral.discover_services()).await {
+            Ok(Ok(_)) => {
                 let characteristics = peripheral.characteristics();
                 let services = peripheral.services();
 
@@ -657,12 +765,13 @@ async fn discover_services(
                     value: None,
                 })
             }
-            Err(e) => Ok(Response {
+            Ok(Err(e)) => Ok(Response {
                 success: false,
                 data: None,
                 error: Some(format!("Discover services failed: {}", e)),
                 value: None,
             }),
+            Err(_) => Ok(Response::fail("Discover services timed out")),
         }
     } else {
         Ok(Response {
@@ -682,61 +791,33 @@ async fn read_characteristic(
     charUuid: String,
     state: State<'_, Arc<Mutex<BleState>>>,
 ) -> Result<Response<Vec<CharacteristicInfo>>, String> {
-    let service_uuid = serviceUuid;
-    let char_uuid = charUuid;
-    let ble_state = state.lock().await;
-
-    if let Some(peripheral) = ble_state.connected_peripherals.get(&deviceId) {
-        let characteristics = peripheral.characteristics();
-
-        let characteristic = characteristics.iter().find(|c| {
-            c.uuid.to_string() == char_uuid && c.service_uuid.to_string() == service_uuid
-        });
-
-        if let Some(char) = characteristic {
-            let peripheral = peripheral.clone();
-            drop(ble_state);
-
-            match peripheral.read(&char).await {
-                Ok(data) => {
-                    let hex_value = hex::encode(&data);
-                    let formatted: String = hex_value
-                        .chars()
-                        .collect::<Vec<char>>()
-                        .chunks(2)
-                        .map(|c| c.iter().collect::<String>())
-                        .collect::<Vec<String>>()
-                        .join(" ");
-
-                    Ok(Response {
-                        success: true,
-                        data: Some(vec![]),
-                        error: None,
-                        value: Some(formatted),
-                    })
-                }
-                Err(e) => Ok(Response {
-                    success: false,
-                    data: None,
-                    error: Some(format!("Read failed: {}", e)),
-                    value: None,
-                }),
-            }
-        } else {
-            Ok(Response {
-                success: false,
-                data: None,
-                error: Some("Characteristic not found".to_string()),
-                value: None,
-            })
-        }
-    } else {
-        Ok(Response {
-            success: false,
-            data: None,
-            error: Some("No device connected".to_string()),
-            value: None,
-        })
+    let session = state
+        .lock()
+        .await
+        .connected_peripherals
+        .get(&deviceId)
+        .cloned();
+    let Some(session) = session else {
+        return Ok(Response::fail("No device connected"));
+    };
+    let Some(char) = find_characteristic(&session, &serviceUuid, &charUuid) else {
+        return Ok(Response::fail("Characteristic not found"));
+    };
+    match tokio::time::timeout(READ_TIMEOUT, session.peripheral.read(&char)).await {
+        Ok(Ok(data)) if !session.writes.is_closed() => Ok(Response {
+            success: true,
+            data: Some(vec![]),
+            error: None,
+            value: Some(
+                data.iter()
+                    .map(|b| format!("{:02x}", b))
+                    .collect::<Vec<_>>()
+                    .join(" "),
+            ),
+        }),
+        Ok(Ok(_)) => Ok(Response::fail("Device disconnected")),
+        Ok(Err(e)) => Ok(Response::fail(format!("Read failed: {}", e))),
+        Err(_) => Ok(Response::fail("Read timed out")),
     }
 }
 
@@ -749,74 +830,48 @@ async fn write_characteristic(
     data: String,
     format: WriteFormat,
     state: State<'_, Arc<Mutex<BleState>>>,
+    window: tauri::Window,
 ) -> Result<Response<bool>, String> {
-    let service_uuid = serviceUuid;
-    let char_uuid = charUuid;
-    let ble_state = state.lock().await;
-
-    if let Some(peripheral) = ble_state.connected_peripherals.get(&deviceId) {
-        let characteristics = peripheral.characteristics();
-
-        let characteristic = characteristics.iter().find(|c| {
-            c.uuid.to_string() == char_uuid && c.service_uuid.to_string() == service_uuid
-        });
-
-        if let Some(char) = characteristic {
-            let bytes = match format {
-                WriteFormat::Hex => {
-                    let clean = data.replace(" ", "").replace("-", "");
-                    hex::decode(&clean).map_err(|e| format!("Invalid hex: {}", e))?
-                }
-                WriteFormat::Utf8 => data.into_bytes(),
-            };
-
-            let peripheral = peripheral.clone();
-            drop(ble_state);
-
-            // Determine write type based on characteristic properties
-            let write_type = if char
-                .properties
-                .contains(btleplug::api::CharPropFlags::WRITE)
-            {
-                WriteType::WithResponse
-            } else {
-                WriteType::WithoutResponse
-            };
-
-            match peripheral.write(&char, &bytes, write_type).await {
-                Ok(_) => Ok(Response {
-                    success: true,
-                    data: Some(true),
-                    error: None,
-                    value: None,
-                }),
-                Err(e) => Ok(Response {
-                    success: false,
-                    data: None,
-                    error: Some(format!("Write failed: {}", e)),
-                    value: None,
-                }),
-            }
-        } else {
-            Ok(Response {
-                success: false,
-                data: None,
-                error: Some("Characteristic not found".to_string()),
-                value: None,
-            })
-        }
+    let session = state
+        .lock()
+        .await
+        .connected_peripherals
+        .get(&deviceId)
+        .cloned();
+    let Some(session) = session else {
+        return Ok(Response::fail("No device connected"));
+    };
+    let Some(char) = find_characteristic(&session, &serviceUuid, &charUuid) else {
+        return Ok(Response::fail("Characteristic not found"));
+    };
+    let bytes = match format {
+        WriteFormat::Hex => match hex::decode(
+            data.chars()
+                .filter(|c| !c.is_whitespace() && *c != '-')
+                .collect::<String>(),
+        ) {
+            Ok(bytes) => bytes,
+            Err(e) => return Ok(Response::fail(format!("Invalid hex: {}", e))),
+        },
+        WriteFormat::Utf8 => data.into_bytes(),
+    };
+    let kind = if char
+        .properties
+        .contains(btleplug::api::CharPropFlags::WRITE)
+    {
+        WriteType::WithResponse
+    } else if char
+        .properties
+        .contains(btleplug::api::CharPropFlags::WRITE_WITHOUT_RESPONSE)
+    {
+        WriteType::WithoutResponse
     } else {
-        Ok(Response {
-            success: false,
-            data: None,
-            error: Some("No device connected".to_string()),
-            value: None,
-        })
-    }
+        return Ok(Response::fail("Characteristic is not writable"));
+    };
+    Ok(write_session(state.inner(), &deviceId, session, char, bytes, kind, window).await)
 }
 
-/// Write raw bytes (for OTA firmware transfer).
-/// `data` is a byte array; `writeWithResponse` controls WriteType.
+/// OTA writes share the same per-session queue as generic GATT writes.
 #[tauri::command]
 #[allow(non_snake_case)]
 async fn write_raw(
@@ -826,56 +881,26 @@ async fn write_raw(
     data: Vec<u8>,
     writeWithResponse: bool,
     state: State<'_, Arc<Mutex<BleState>>>,
+    window: tauri::Window,
 ) -> Result<Response<bool>, String> {
-    let service_uuid = serviceUuid;
-    let char_uuid = charUuid;
-    let ble_state = state.lock().await;
-
-    if let Some(peripheral) = ble_state.connected_peripherals.get(&deviceId) {
-        let characteristics = peripheral.characteristics();
-        let characteristic = characteristics.iter().find(|c| {
-            c.uuid.to_string() == char_uuid && c.service_uuid.to_string() == service_uuid
-        });
-
-        if let Some(char) = characteristic {
-            let write_type = if writeWithResponse {
-                WriteType::WithResponse
-            } else {
-                WriteType::WithoutResponse
-            };
-            let peripheral = peripheral.clone();
-            drop(ble_state);
-
-            match peripheral.write(&char, &data, write_type).await {
-                Ok(_) => Ok(Response {
-                    success: true,
-                    data: Some(true),
-                    error: None,
-                    value: None,
-                }),
-                Err(e) => Ok(Response {
-                    success: false,
-                    data: None,
-                    error: Some(format!("Write raw failed: {}", e)),
-                    value: None,
-                }),
-            }
-        } else {
-            Ok(Response {
-                success: false,
-                data: None,
-                error: Some("Characteristic not found".to_string()),
-                value: None,
-            })
-        }
+    let session = state
+        .lock()
+        .await
+        .connected_peripherals
+        .get(&deviceId)
+        .cloned();
+    let Some(session) = session else {
+        return Ok(Response::fail("No device connected"));
+    };
+    let Some(char) = find_characteristic(&session, &serviceUuid, &charUuid) else {
+        return Ok(Response::fail("Characteristic not found"));
+    };
+    let kind = if writeWithResponse {
+        WriteType::WithResponse
     } else {
-        Ok(Response {
-            success: false,
-            data: None,
-            error: Some("No device connected".to_string()),
-            value: None,
-        })
-    }
+        WriteType::WithoutResponse
+    };
+    Ok(write_session(state.inner(), &deviceId, session, char, data, kind, window).await)
 }
 
 #[tauri::command]
@@ -893,40 +918,45 @@ async fn notify_characteristic(
     let mut ble_state = state.lock().await;
 
     // Get the peripheral for this device from HashMap
-    let peripheral = ble_state.connected_peripherals.get(&deviceId).cloned();
+    let session = ble_state.connected_peripherals.get(&deviceId).cloned();
+    let peripheral = session.as_ref().map(|session| session.peripheral.clone());
 
     // Find the characteristic
     let char_option = peripheral.as_ref().and_then(|p| {
         let characteristics = p.characteristics();
         characteristics
             .iter()
-            .find(|c| c.uuid.to_string() == char_uuid && c.service_uuid.to_string() == service_uuid)
+            .find(|c| {
+                matches_uuid(&c.uuid.to_string(), &char_uuid)
+                    && matches_uuid(&c.service_uuid.to_string(), &service_uuid)
+            })
             .cloned()
     });
 
     if let Some(char) = char_option {
         // Cancel existing notification stream if stopping
         if !notify {
-            let notify_key = format!("{}::{}", deviceId, char_uuid);
+            let notify_key = format!("{}::{}::{}", deviceId, char.service_uuid, char.uuid);
             if let Some(handle) = ble_state.notify_handles.remove(&notify_key) {
                 handle.abort();
             }
             drop(ble_state);
 
             if let Some(peripheral) = peripheral {
-                match peripheral.unsubscribe(&char).await {
-                    Ok(_) => Ok(Response {
+                match tokio::time::timeout(READ_TIMEOUT, peripheral.unsubscribe(&char)).await {
+                    Ok(Ok(_)) => Ok(Response {
                         success: true,
                         data: Some(true),
                         error: None,
                         value: None,
                     }),
-                    Err(e) => Ok(Response {
+                    Ok(Err(e)) => Ok(Response {
                         success: false,
                         data: None,
                         error: Some(format!("Unsubscribe failed: {}", e)),
                         value: None,
                     }),
+                    Err(_) => Ok(Response::fail("Unsubscribe timed out")),
                 }
             } else {
                 Ok(Response {
@@ -945,18 +975,27 @@ async fn notify_characteristic(
             let char_uuid_filter = char_uuid.clone();
             drop(ble_state); // release lock before async subscribe
 
-            match peripheral_ref.subscribe(&char).await {
-                Ok(_) => {
+            let stream_result =
+                match tokio::time::timeout(READ_TIMEOUT, peripheral_ref.notifications()).await {
+                    Ok(Ok(stream)) => stream,
+                    Ok(Err(e)) => {
+                        return Ok(Response::fail(format!("Notification stream failed: {}", e)))
+                    }
+                    Err(_) => return Ok(Response::fail("Notification stream timed out")),
+                };
+            match tokio::time::timeout(READ_TIMEOUT, peripheral_ref.subscribe(&char)).await {
+                Ok(Ok(_)) => {
                     // Get notification stream — btleplug pushes ValueNotification items here
-                    match peripheral_ref.notifications().await {
-                        Ok(mut notif_stream) => {
+                    {
+                        let mut notif_stream = stream_result;
+                        {
                             let device_id_for_event = deviceId.clone();
                             let handle = tokio::spawn(async move {
                                 while let Some(ValueNotification { uuid, value }) =
                                     notif_stream.next().await
                                 {
                                     // Filter: only forward notifications for our subscribed char
-                                    if uuid.to_string() != char_uuid_filter {
+                                    if !matches_uuid(&uuid.to_string(), &char_uuid_filter) {
                                         continue;
                                     }
                                     if !value.is_empty() {
@@ -987,9 +1026,22 @@ async fn notify_characteristic(
                             });
 
                             // Store handle keyed by "deviceId::charUuid" (supports multi-char notify)
-                            let notify_key = format!("{}::{}", deviceId, char_uuid);
+                            let notify_key =
+                                format!("{}::{}::{}", deviceId, char.service_uuid, char.uuid);
                             let mut ble_state = state.lock().await;
-                            ble_state.notify_handles.insert(notify_key, handle);
+                            if session
+                                .as_ref()
+                                .map(|session| session.writes.is_closed())
+                                .unwrap_or(true)
+                            {
+                                handle.abort();
+                                return Ok(Response::fail("Device disconnected"));
+                            }
+                            if let Some(previous) =
+                                ble_state.notify_handles.insert(notify_key, handle)
+                            {
+                                previous.abort();
+                            }
 
                             Ok(Response {
                                 success: true,
@@ -998,20 +1050,15 @@ async fn notify_characteristic(
                                 value: None,
                             })
                         }
-                        Err(e) => Ok(Response {
-                            success: false,
-                            data: None,
-                            error: Some(format!("Failed to get notification stream: {}", e)),
-                            value: None,
-                        }),
                     }
                 }
-                Err(e) => Ok(Response {
+                Ok(Err(e)) => Ok(Response {
                     success: false,
                     data: None,
                     error: Some(format!("Subscribe failed: {}", e)),
                     value: None,
                 }),
+                Err(_) => Ok(Response::fail("Subscribe timed out")),
             }
         }
     } else {
@@ -1243,15 +1290,52 @@ fn get_properties(char: &Characteristic) -> Vec<String> {
 // 退出确认回执（10_platform §4 生命周期：常驻，退出确认）：前端模态「退出」→ 置旗并关窗
 // （CloseRequested 见旗放行；「继续使用」不调本命令，直接关模态继续运行）
 #[tauri::command]
-fn confirm_exit(quit: bool, window: tauri::Window, state: State<'_, Arc<AtomicBool>>) {
+async fn confirm_exit(
+    quit: bool,
+    window: tauri::Window,
+    state: State<'_, Arc<AtomicBool>>,
+    ble: State<'_, Arc<Mutex<BleState>>>,
+) -> Result<(), String> {
     if quit {
         // dwin-quit 正典顺序：退出前先停广播（WIN-BRIDGE 边车）再放行关闭
         #[cfg(target_os = "windows")]
         win_bridge::shutdown();
+        let (central, sessions) = {
+            let mut ble = ble.lock().await;
+            ble.scanning = false;
+            if let Some(handle) = ble.scan_handle.take() {
+                handle.abort();
+            }
+            if let Some(handle) = ble.event_handle.take() {
+                handle.abort();
+            }
+            for cancelled in ble.connecting.values() {
+                cancelled.store(true, Ordering::SeqCst);
+            }
+            let ids: Vec<_> = ble.connected_peripherals.keys().cloned().collect();
+            let sessions: Vec<_> = ids
+                .iter()
+                .filter_map(|id| retire_session(&mut ble, id))
+                .collect();
+            (ble.central.clone(), sessions)
+        };
+        let cleanup = async move {
+            let stop_scan = async {
+                if let Some(central) = central {
+                    let _ = central.stop_scan().await;
+                }
+            };
+            let disconnects = sessions.into_iter().map(|session| async move {
+                let _ = session.peripheral.disconnect().await;
+            });
+            tokio::join!(stop_scan, futures::future::join_all(disconnects));
+        };
+        let _ = tokio::time::timeout(READ_TIMEOUT, cleanup).await;
         state.store(true, Ordering::SeqCst);
         eprintln!("[APP] Exit confirmed by user -> closing");
         let _ = window.close();
     }
+    Ok(())
 }
 
 // Run the app
@@ -1263,6 +1347,10 @@ pub fn run() {
         scanning: false,
         scan_handle: None,
         notify_handles: HashMap::new(),
+        event_handle: None,
+        connection_locks: HashMap::new(),
+        connecting: HashMap::new(),
+        scan_io: Arc::new(Mutex::new(())),
     }));
     // 退出确认旗：前端确认后置 true，放行下一次 CloseRequested（window.close 会再触发）
     let exit_confirmed = Arc::new(AtomicBool::new(false));

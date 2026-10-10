@@ -45,10 +45,11 @@ class FakeClient:
     mtu_size = 23
     def __init__(self, statuses, product='smart-hid'):
         self.statuses, self.product = statuses, product
+        self.device_id = 'HID-00000001'
         self.writes, self.stops = [], 0
     async def read_gatt_char(self, uuid):
         assert uuid == INFO
-        return json.dumps({'product': self.product, 'protocol': '1.0', 'device_id': 'HID-00000001', 'firmware': '1.2.0', 'state': 'unprovisioned'}).encode()
+        return json.dumps({'product': self.product, 'protocol': '1.0', 'device_id': self.device_id, 'firmware': '1.2.0', 'state': 'unprovisioned'}).encode()
     async def start_notify(self, uuid, callback):
         assert uuid == STATUS
         self.callback = callback
@@ -80,6 +81,12 @@ class TransactionTests(unittest.IsolatedAsyncioTestCase):
         result = await provision(client, self.candidate(), lambda _: None, timeout=.2)
         self.assertFalse(result['ok'])
         self.assertEqual(result['status']['error'], 'wifi_failed')
+    async def test_invalid_device_id_never_writes(self):
+        client = FakeClient([])
+        client.device_id = 'unverified-device'
+        with self.assertRaises(ProtocolError): await provision(client, self.candidate(), lambda _: None)
+        self.assertEqual(client.writes, [])
+
     async def test_wrong_identity_never_writes(self):
         client = FakeClient([], product='other-device')
         with self.assertRaises(ProtocolError): await provision(client, self.candidate(), lambda _: None)

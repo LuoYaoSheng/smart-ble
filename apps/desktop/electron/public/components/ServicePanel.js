@@ -24,7 +24,7 @@ class ServicePanel extends HTMLElement {
     }
 
     updateCharacteristicValue(serviceUuid, charUuid, value) {
-        const charItem = this.querySelector(`[data-service-uuid="${serviceUuid}"][data-char-uuid="${charUuid}"]`);
+        const charItem = [...this.querySelectorAll('.char')].find(item => item.dataset.serviceUuid === serviceUuid && item.dataset.charUuid === charUuid);
         if (!charItem) return;
 
         let valueDiv = charItem.querySelector('.char-value');
@@ -37,9 +37,9 @@ class ServicePanel extends HTMLElement {
     }
 
     escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text == null ? '' : String(text);
-        return div.innerHTML;
+        return String(text == null ? '' : text).replace(/[&<>"']/g, (c) => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[c]));
     }
 
     ic(name, cls = '') {

@@ -4,10 +4,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import os
 os.environ.setdefault('QT_QPA_PLATFORM', 'offscreen')
 import unittest
+from concurrent.futures import Future
 from pathlib import Path
 from PySide6.QtWidgets import QApplication
 from main import MainWindow
 from theme import QSS
+from widgets import BtDot
 
 
 class PageTests(unittest.TestCase):
@@ -25,6 +27,37 @@ class PageTests(unittest.TestCase):
         self.window._exit_confirmed = True
         self.window.close()
         self.app.processEvents()
+
+    def test_unknown_adapter_state_renders_neutral_dot(self):
+        dot = BtDot()
+        dot.set_state('unknown')
+        dot.show()
+        self.app.processEvents()
+        self.assertFalse(dot.grab().isNull())
+        dot.close()
+
+    def test_late_gatt_completion_cannot_mutate_replacement_session(self):
+        ble = self.window._ble
+        previous, replacement = object(), object()
+        future = Future()
+        original_submit = ble._gatt.submit
+        async def read(): return b'old'
+        def submit(coro):
+            coro.close()
+            return future
+        ble._gatt.submit = submit
+        seen = []
+        try:
+            ble._clients['A'] = previous
+            ble._generations['A'] = 1
+            ble._submit_op('read', 'A', 'char', read(), seen.append)
+            ble._clients['A'] = replacement
+            ble._generations['A'] = 2
+            future.set_result(b'old')
+            self.assertEqual(seen, [])
+        finally:
+            ble._clients.pop('A', None)
+            ble._gatt.submit = original_submit
 
     def test_nine_pages_and_secondary_navigation_preserve_tab_contract(self):
         self.assertEqual(self.window._stack.count(), 9)

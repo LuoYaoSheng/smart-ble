@@ -206,9 +206,11 @@ class App {
                 const { serviceUuid, charUuid, data, format, mode } = e.detail;
                 if (!this.currentDevice) return;
 
+                const writeDeviceId = this.currentDevice.id;
                 const writeOnce = async (payload) => {
+                    if (!this.connectedDevices.has(writeDeviceId)) return { success: false, error: 'Device disconnected' };
                     const result = await window.bleAPI.writeCharacteristic(
-                        this.currentDevice.id,
+                        writeDeviceId,
                         serviceUuid,
                         charUuid,
                         payload,
@@ -1294,17 +1296,18 @@ class App {
         this.updateDeviceList();
     }
 
-    async connectToDevice(device) {
-        try {
+    async connectToDevice(device, reconnect = false) {
+        if (!reconnect) {
             this.userDisconnected.delete(device.id);
             this.reconnectAttempts.set(device.id, 0);
             if (this.reconnectTimers.has(device.id)) {
                 clearTimeout(this.reconnectTimers.get(device.id));
                 this.reconnectTimers.delete(device.id);
             }
-
+        }
+        const showProgress = !reconnect || this.currentDevice?.id === device.id;
+        if (showProgress) {
             this.currentDevice = device;
-            // 进入详情视图并写头部（修复历史缺陷：从扫描卡直连时头部名称/ID 从未写入）
             document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
             document.getElementById('deviceDetailView')?.classList.add('active');
             const nameEl = document.getElementById('deviceName');
@@ -1315,22 +1318,29 @@ class App {
             this.updateConnectionStatus('connecting');
             this.isConnecting = true;
             this.renderServices();
-            this.addLog(`正在连接 ${device.name || device.id}...`, 'info');
-
-            const result = await window.bleAPI.connect(device.id);
-            this.isConnecting = false;
-            if (!result.success) {
-                this.addLog(`连接失败: ${result.error}`, 'error');
-                this.updateConnectionStatus('disconnected');
-            }
-        } catch (error) {
-            this.isConnecting = false;
-            this.addLog('连接失败: ' + error.message, 'error');
-            this.updateConnectionStatus('disconnected');
         }
+        this.addLog(`正在连接 ${device.name || device.id}...`, 'info');
+        let result;
+        try { result = await window.bleAPI.connect(device.id); }
+        catch (error) { result = { success: false, error: error.message || String(error) }; }
+        if (showProgress) this.isConnecting = false;
+        // A user can cancel while the native connection is still completing.
+        if (this.userDisconnected.has(device.id)) {
+            if (result.success) await window.bleAPI.disconnect(device.id);
+            return { success: false, error: 'Connection cancelled' };
+        }
+        if (!result.success) {
+            this.addLog(`连接失败: ${result.error}`, 'error');
+            if (showProgress) this.updateConnectionStatus('disconnected');
+        }
+        return result;
     }
 
     onDeviceConnected(deviceId) {
+        if (this.userDisconnected.has(deviceId)) { window.bleAPI.disconnect(deviceId).catch(() => {}); return; }
+        this.reconnectAttempts.set(deviceId, 0);
+        if (this.reconnectTimers.has(deviceId)) clearTimeout(this.reconnectTimers.get(deviceId));
+        this.reconnectTimers.delete(deviceId);
         this.connectedDevices.add(deviceId);
         
         if (this.currentDevice && this.currentDevice.id === deviceId) {
@@ -1359,29 +1369,30 @@ class App {
             return;
         }
 
-        // Handle auto reconnect
-        if (this.autoReconnectEnabled && !this.userDisconnected.has(deviceId)) {
-            const attempts = this.reconnectAttempts.get(deviceId) || 0;
-            const maxAttempts = (window.BleUtils && window.BleUtils.MAX_RECONNECT_ATTEMPTS) || 3;
-            
-            if (attempts < maxAttempts) {
-                const nextAttempt = attempts + 1;
-                this.reconnectAttempts.set(deviceId, nextAttempt);
-                const delay = window.BleUtils ? window.BleUtils.reconnectDelay(nextAttempt) : ([1000, 3000, 5000][nextAttempt - 1]);
+        this.servicesByDevice.delete(deviceId);
+        this.attemptReconnect(deviceId);
+    }
 
-                this.addLog(`设备 ${deviceId} 意外断开，将在 ${delay/1000}s 后尝试重连... (第 ${nextAttempt}/${maxAttempts} 次)`, 'warning');
-                
-                if (this.reconnectTimers.has(deviceId)) clearTimeout(this.reconnectTimers.get(deviceId));
-                this.reconnectTimers.set(deviceId, setTimeout(() => {
-                    this.addLog(`尝试自动重连 ${deviceId}... (第 ${nextAttempt}/${maxAttempts} 次)`, 'info');
-                    const device = this.devices.get(deviceId);
-                    if (device) this.connectToDevice(device);
-                }, delay));
-            } else {
-                this.addLog(`设备 ${deviceId} 已达到最大重连次数，放弃重连。`, 'error');
-                this.reconnectAttempts.delete(deviceId);
-            }
+    attemptReconnect(deviceId) {
+        if (!this.autoReconnectEnabled || this.userDisconnected.has(deviceId) || this.reconnectTimers.has(deviceId) || this.connectedDevices.has(deviceId)) return;
+        if (window.SmartHidService?.ownsDevice?.(deviceId)) return;
+        const attempts = this.reconnectAttempts.get(deviceId) || 0;
+        const maxAttempts = window.BleUtils.MAX_RECONNECT_ATTEMPTS;
+        if (attempts >= maxAttempts) {
+            this.addLog(`设备 ${deviceId} 已达到最大重连次数，放弃重连。`, 'error');
+            return;
         }
+        const nextAttempt = attempts + 1;
+        this.reconnectAttempts.set(deviceId, nextAttempt);
+        const delay = window.BleUtils.reconnectDelay(nextAttempt);
+        this.addLog(`设备 ${deviceId} 将在 ${delay / 1000}s 后尝试重连（第 ${nextAttempt}/${maxAttempts} 次）`, 'warning');
+        this.reconnectTimers.set(deviceId, setTimeout(async () => {
+            this.reconnectTimers.delete(deviceId);
+            if (!this.autoReconnectEnabled || this.userDisconnected.has(deviceId) || window.SmartHidService?.ownsDevice?.(deviceId)) return;
+            const device = this.devices.get(deviceId) || { id: deviceId };
+            const result = await this.connectToDevice(device, true);
+            if (!result.success) this.attemptReconnect(deviceId);
+        }, delay));
     }
 
     async disconnect() {
@@ -1475,7 +1486,7 @@ class App {
             <div class="op ${mode === 'loading' ? '' : mode}">
                 ${mode === 'loading' ? '<span class="spin"></span>'
                     : `<span class="ico" style="color:${mode === 'ok' ? '#0E9A80' : mode === 'warn' ? '#C77E14' : 'var(--c-danger)'}"><svg class="ic" aria-hidden="true"><use href="#i-${mode === 'warn' ? 'warn' : 'x'}"/></svg></span>`}
-                <div style="flex:1"><div class="t">${title}</div>${desc ? `<div class="d">${desc}</div>` : ''}</div>
+                <div style="flex:1"><div class="t">${escapeHtml(title)}</div>${desc ? `<div class="d">${escapeHtml(desc)}</div>` : ''}</div>
             </div>`;
 
         if (!isConn) {
@@ -1799,7 +1810,7 @@ class App {
         card.innerHTML = rows.map(([key, label]) => {
             const state = (p.progress || {})[key] || 'pending';
             const glyph = state === 'done' ? '✓' : state === 'fail' ? '✕' : '·';
-            const dt = (p.err && p.err.row === key) ? `<span class="dt mono">${p.err.code}</span>` : '';
+            const dt = (p.err && p.err.row === key) ? `<span class="dt mono">${escapeHtml(p.err.code)}</span>` : '';
             return `<div class="prow ${state}"><span class="st-i">${glyph}</span><span class="t">${label}</span>${dt}</div>`;
         }).join('');
     }
@@ -1864,7 +1875,7 @@ class App {
         mask.id = 'hidModalMask';
         mask.innerHTML = `
             <div class="modal" style="max-width:440px">
-                <div class="t">${title}</div>
+                <div class="t">${escapeHtml(title)}</div>
                 <div class="m-body" id="hidModalBody">${bodyHtml || ''}</div>
                 <div class="acts" style="display:flex;gap:9px;margin-top:14px" id="hidModalActs"></div>
             </div>`;
@@ -2399,21 +2410,21 @@ class App {
                 : r.state === 'warn' ? '<svg class="ic sm" aria-hidden="true"><use href="#i-warn"/></svg>'
                     : r.state === 'fail' ? '<svg class="ic sm" aria-hidden="true"><use href="#i-x"/></svg>'
                         : '·';
-            return `<div class="diag ${r.state}"><span class="ico">${icon}</span>
-                <div style="flex:1"><div style="display:flex;align-items:center"><span class="t">${r.label}</span>
-                <span class="word">${wordMap[r.state] || r.state}</span></div>
-                ${r.detail ? `<div class="dt">${r.detail}</div>` : ''}</div></div>`;
+            return `<div class="diag ${escapeHtml(r.state)}"><span class="ico">${icon}</span>
+                <div style="flex:1"><div style="display:flex;align-items:center"><span class="t">${escapeHtml(r.label)}</span>
+                <span class="word">${escapeHtml(wordMap[r.state] || r.state)}</span></div>
+                ${r.detail ? `<div class="dt">${escapeHtml(r.detail)}</div>` : ''}</div></div>`;
         }).join('');
         body.innerHTML = `
             <div class="card" style="margin-top:12px;display:flex;align-items:center;gap:10px">
                 <span class="badge ${tone}"><span class="dot"></span><span>${word}</span></span>
-                <span class="mono" style="font-size:var(--fs-mini);color:var(--c-mut)">${d.deviceId}</span></div>
+                <span class="mono" style="font-size:var(--fs-mini);color:var(--c-mut)">${escapeHtml(d.deviceId)}</span></div>
             <div class="card">${rowsHtml}</div>
             ${d.error ? `
             <div class="op ${d.state === 'error' ? 'err' : 'warn'}" style="margin-bottom:12px">
-                <div><div class="t">错误详情</div><div class="d">${d.error.message}</div></div></div>
+                <div><div class="t">错误详情</div><div class="d">${escapeHtml(d.error.message)}</div></div></div>
             <button class="btn ghost sm" id="hidDiagToggleErr" style="width:100%">${d.showErr ? '隐藏错误码' : '显示错误码（详细信息）'}</button>
-            ${d.showErr ? `<div class="ad-sec" style="margin-top:10px"><div class="hd"><span>code</span></div><div class="hex mono" style="color:#FF8B94">${d.error.code}</div></div>` : ''}` : ''}
+            ${d.showErr ? `<div class="ad-sec" style="margin-top:10px"><div class="hd"><span>code</span></div><div class="hex mono" style="color:#FF8B94">${escapeHtml(d.error.code)}</div></div>` : ''}` : ''}
             <div style="margin-top:14px;display:flex;flex-direction:column;gap:9px">
                 <button class="btn primary" id="hidDiagRun" style="width:100%" ${d.connecting || d.state === 'checking' ? 'disabled' : ''}>
                     <svg class="ic sm" aria-hidden="true"><use href="#i-refresh"/></svg><span>${d.connecting || d.state === 'checking' ? '检测中…' : '重新检测'}</span></button>

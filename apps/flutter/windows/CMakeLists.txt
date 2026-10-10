@@ -61,6 +61,24 @@ add_subdirectory("runner")
 # them to the application.
 include(flutter/generated_plugins.cmake)
 
+# permission_handler_windows 0.2.2 still adds /await, which forces deprecated
+# Coroutines TS even with /std:c++20 and fails on MSVC 14.51 (STL1011).
+# Migrate the plugin target to standard coroutines. Including <coroutine> first
+# also makes __cpp_lib_coroutine visible to the pinned C++/WinRT headers.
+# https://github.com/microsoft/cppwinrt/issues/1520
+# https://learn.microsoft.com/en-us/cpp/build/reference/await-enable-coroutine-support
+if(TARGET permission_handler_windows_plugin)
+  get_target_property(PERMISSION_COMPILE_OPTIONS permission_handler_windows_plugin COMPILE_OPTIONS)
+  if(PERMISSION_COMPILE_OPTIONS)
+    list(FILTER PERMISSION_COMPILE_OPTIONS EXCLUDE REGEX "^/await(:.*)?$")
+    set_property(TARGET permission_handler_windows_plugin PROPERTY
+      COMPILE_OPTIONS "${PERMISSION_COMPILE_OPTIONS}")
+  endif()
+  target_compile_features(permission_handler_windows_plugin PRIVATE cxx_std_20)
+  target_precompile_headers(permission_handler_windows_plugin PRIVATE <coroutine>)
+endif()
+
+
 
 # === Installation ===
 # Support files are copied into place next to the executable, so that it can

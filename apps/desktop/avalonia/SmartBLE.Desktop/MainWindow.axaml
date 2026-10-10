@@ -348,7 +348,7 @@
                                                 </StackPanel>
                                                 <Button Grid.Column="2" Classes="soft dangert sm" VerticalAlignment="Top"
                                                         AutomationProperties.Name="断开"
-                                                        Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).DisconnectCommand}">
+                                                        Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).DisconnectCommand}" CommandParameter="{Binding Id}">
                                                     <StackPanel Orientation="Horizontal" Spacing="6">
                                                         <Path Classes="ic sm" Data="{StaticResource IcoX}"
                                                               Stroke="{Binding $parent[Button].Foreground}"/>
@@ -1322,16 +1322,18 @@
                                     </StackPanel>
                                 </Border>
 
-                                <!-- bigact：配对码入口（V-WIN 无摄像头 → 点击给降级横幅） -->
+                                <TextBox Classes="inp mono" Watermark="粘贴 shid://pair 配对链接"
+                                         Text="{Binding HidPairingText, Mode=TwoWay}" PasswordChar="●"/>
+                                <!-- Validated memory-only pairing link import. -->
                                 <Border Classes="bigact" Tapped="OnHidQrEntryTapped">
                                     <StackPanel Orientation="Horizontal" Spacing="12">
                                         <Path Classes="ic lg" Data="{StaticResource IcoQr}"
                                               Stroke="{DynamicResource CPrimary}"/>
                                         <StackPanel Spacing="2">
-                                            <TextBlock Text="扫描 ControlHub 配对码" FontSize="15" FontWeight="Bold"
+                                            <TextBlock Text="导入 ControlHub 配对码" FontSize="15" FontWeight="Bold"
                                                        Foreground="{DynamicResource CPrimary}"/>
                                             <StackPanel Orientation="Horizontal" Spacing="6">
-                                                <TextBlock Text="摄像头读取 ControlHub 屏显二维码，识别后自动回填地址与令牌"
+                                                <TextBlock Text="粘贴完整配对链接；也可从剪贴板导入，自动填写地址与令牌"
                                                            FontSize="11" Foreground="{DynamicResource CMut}"
                                                            VerticalAlignment="Center"/>
                                                 <Border Classes="chip warningc" VerticalAlignment="Center">
@@ -1372,9 +1374,68 @@
                                     </StackPanel>
                                 </Border>
                             </StackPanel>
+                            <StackPanel Spacing="12" IsVisible="{Binding HidStatusPhaseVisible}">
+                                <Border Classes="card">
+                                    <StackPanel Spacing="10">
+                                        <TextBlock Text="下发状态" FontSize="17" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding HidStatusText}" TextWrapping="Wrap"/>
+                                        <TextBlock Text="{Binding HidState}" Classes="mono"/>
+                                        <ProgressBar IsIndeterminate="True" IsVisible="{Binding HidBusy}" Height="4"/>
+                                        <TextBlock Text="{Binding HidErrText}" TextWrapping="Wrap" IsVisible="{Binding HidErrVisible}"/>
+                                        <TextBlock Text="{Binding HidRecoveryText}" TextWrapping="Wrap"/>
+                                        <Button Classes="soft" Content="停止跟踪" Command="{Binding HidStopCommand}" IsVisible="{Binding HidBusy}"/>
+                                        <Button Classes="primary" Content="读取设备状态" Command="{Binding HidRefreshCommand}" IsEnabled="{Binding !HidBusy}"/>
+                                        <Button Classes="soft" Content="修改配置" Command="{Binding HidEditCommand}" IsEnabled="{Binding !HidBusy}"/>
+                                        <Button Classes="soft" Content="设备详情" Command="{Binding HidDetailCommand}" IsEnabled="{Binding !HidBusy}"/>
+                                        <Button Classes="soft" Content="诊断" Command="{Binding HidDiagnosticsCommand}" IsEnabled="{Binding !HidBusy}"/>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+
                         </StackPanel>
                     </ScrollViewer>
                 </Grid>
+
+                <ScrollViewer IsVisible="{Binding IsHidDetailView}">
+                    <StackPanel Margin="16" Spacing="12">
+                        <TextBlock Text="Smart HID 设备详情" FontSize="20" FontWeight="Bold"/>
+                        <Border Classes="card">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="{Binding HidDevName}" FontSize="17"/>
+                                <TextBlock Text="{Binding HidIdentity}" Classes="mono"/>
+                                <TextBlock Text="固件"/><TextBlock Text="{Binding HidFirmware}"/>
+                                <TextBlock Text="协议"/><TextBlock Text="{Binding HidProtocolVersion}"/>
+                                <TextBlock Text="{Binding HidState}" Classes="mono"/>
+                                <TextBlock Text="{Binding HidStatusText}" TextWrapping="Wrap"/>
+                                <TextBlock Text="{Binding HidErrText}" TextWrapping="Wrap" IsVisible="{Binding HidErrVisible}"/>
+                            </StackPanel>
+                        </Border>
+                        <Button Classes="primary" Content="读取最新状态" Command="{Binding HidRefreshCommand}" IsEnabled="{Binding !HidBusy}"/>
+                        <Button Classes="soft" Content="诊断" Command="{Binding HidDiagnosticsCommand}" IsEnabled="{Binding !HidBusy}"/>
+                        <Button Classes="soft" Content="重新配置" Command="{Binding HidEditCommand}" IsEnabled="{Binding !HidBusy}"/>
+                        <Button Classes="soft" Content="返回设备列表" Command="{Binding HidBackToListCommand}"/>
+                    </StackPanel>
+                </ScrollViewer>
+                <ScrollViewer IsVisible="{Binding IsHidDiagnosticsView}">
+                    <StackPanel Margin="16" Spacing="12">
+                        <TextBlock Text="Smart HID 诊断" FontSize="20" FontWeight="Bold"/>
+                        <Border Classes="card">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="{Binding HidIdentity}" Classes="mono"/>
+                                <TextBlock Text="{Binding HidState}" Classes="mono"/>
+                                <TextBlock Text="{Binding HidStatusText}" TextWrapping="Wrap"/>
+                                <TextBlock Text="{Binding HidErrCode}" Classes="mono"/>
+                                <TextBlock Text="{Binding HidErrText}" TextWrapping="Wrap"/>
+                                <TextBlock Text="{Binding HidRecoveryText}" TextWrapping="Wrap"/>
+                                <TextBlock Text="诊断仅从设备读取 INFO / STATUS，重连不会自动重复下发配置。" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+                        <Button Classes="primary" Content="刷新诊断" Command="{Binding HidRefreshCommand}" IsEnabled="{Binding !HidBusy}"/>
+                        <Button Classes="soft" Content="修改配置" Command="{Binding HidEditCommand}" IsEnabled="{Binding !HidBusy}"/>
+                        <Button Classes="soft" Content="返回详情" Command="{Binding HidDetailCommand}" IsEnabled="{Binding !HidBusy}"/>
+                        <Button Classes="soft" Content="返回设备列表" Command="{Binding HidBackToListCommand}"/>
+                    </StackPanel>
+                </ScrollViewer>
             </Grid>
 
             <!-- ════════════════ TabBar（正典底部四枚：扫描/已连接/广播/关于） ════════════════

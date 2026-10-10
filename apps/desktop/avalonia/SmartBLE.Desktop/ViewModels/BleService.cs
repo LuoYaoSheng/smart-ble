@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
+using System.Threading;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
@@ -25,14 +27,27 @@ public class BleService
     private readonly Dictionary<ulong, Dictionary<byte, string>> _advSections = new();
     private readonly Dictionary<ulong, HashSet<string>> _advUuids = new();
     private readonly Dictionary<ulong, (ushort Id, string Hex)> _advMfg = new();
-    private BluetoothLEDevice? _currentDevice;
-    private GattSession? _gattSession;
-    private readonly List<GattDeviceService> _gattServices = new();
-    private readonly Dictionary<string, TypedEventHandler<GattCharacteristic, GattValueChangedEventArgs>>
-        _notifyHandlers = new();
-    private Dictionary<string, GattCharacteristic> _characteristics = new();
-    // 每次“已上报断连”只报一次（被动回调或主动断开二选一先到）
-    private bool _disconnectReported;
+    // Every WinRT handle, subscription and recovery belongs to one device session.
+    private sealed class DeviceSession
+    {
+        public readonly string Id;
+        public readonly CancellationTokenSource Lifetime = new();
+        public readonly SemaphoreSlim Gate = new(1, 1);
+        public BluetoothLEDevice? Device;
+        public GattSession? Gatt;
+        public readonly List<GattDeviceService> Services = new();
+        public readonly Dictionary<string, GattCharacteristic> Characteristics = new();
+        public readonly Dictionary<string, TypedEventHandler<GattCharacteristic, GattValueChangedEventArgs>> Handlers = new();
+        public BleServiceInfo[] Tree = Array.Empty<BleServiceInfo>();
+        public volatile bool Connected;
+        public DeviceSession(string id) => Id = id;
+    }
+    private readonly ConcurrentDictionary<string, DeviceSession> _sessions = new(StringComparer.OrdinalIgnoreCase);
+    public string[] ConnectedDeviceIds => _sessions.Values.Where(s => s.Connected).Select(s => s.Id).ToArray();
+    public bool IsConnected(string id) => _sessions.TryGetValue(id, out var s) && s.Connected;
+    public BleServiceInfo[] GetServices(string id) => _sessions.TryGetValue(id, out var s) ? s.Tree : Array.Empty<BleServiceInfo>();
+    private bool Owns(DeviceSession session) => !session.Lifetime.IsCancellationRequested &&
+        _sessions.TryGetValue(session.Id, out var current) && ReferenceEquals(current, session);
 
     // Auto-stop scan timer - aligned with UniApp (5 seconds)
     private DispatcherTimer? _autoStopTimer;
@@ -41,7 +56,7 @@ public class BleService
     public event Action<BleDevice>? DeviceDiscovered;
     public event Action<string>? DeviceConnected;
     public event Action<string>? DeviceDisconnected;
-    public event Action<BleServiceInfo[]?>? ServiceDiscovered;
+    public event Action<string, BleServiceInfo[]?>? ServiceDiscovered;
     public event Action<string, string, byte[]>? CharacteristicValueChanged;
     public event Action<string, string>? LogMessage;
     // 5s 自动停扫回调（UI 同步 IsScanning/扫描状态词；手动停扫不触发）
@@ -64,6 +79,7 @@ public class BleService
 
     public async Task StartScanAsync()
     {
+        await StopScanAsync();
         _watcher = new BluetoothLEAdvertisementWatcher
         {
             ScanningMode = BluetoothLEScanningMode.Active
@@ -97,14 +113,20 @@ public class BleService
         _autoStopTimer?.Stop();
         _autoStopTimer = null;
 
-        _watcher?.Stop();
+        var watcher = _watcher;
         _watcher = null;
+        if (watcher != null)
+        {
+            watcher.Received -= OnAdvertisementReceived;
+            watcher.Stop();
+        }
         await Task.CompletedTask;
     }
 
     private void OnAdvertisementReceived(BluetoothLEAdvertisementWatcher sender,
         BluetoothLEAdvertisementReceivedEventArgs args)
     {
+        if (!ReferenceEquals(sender, _watcher)) return;
         // 正典 F005 显示名链：无名广播保持空名（由 UI 层「未命名 BLE 设备」兜底），
         // 不再在此伪造「未知设备」
         var name = args.Advertisement.LocalName ?? "";
@@ -279,198 +301,162 @@ public class BleService
         AdvertisingStateChanged?.Invoke(false);
     }
 
-    // V-WIN-DEF-003：连接状态回调（WinRT 线程池线程触发），被动掉链也上报
-    // DeviceDisconnected（此前事件声明了但从未触发，UI 只能靠手动操作感知断连）
     private void OnConnectionStatusChanged(BluetoothLEDevice sender, object? args)
     {
-        if (sender.ConnectionStatus == BluetoothConnectionStatus.Disconnected)
-        {
-            if (!_disconnectReported)
-            {
-                _disconnectReported = true;
-                DeviceDisconnected?.Invoke(sender.BluetoothAddress.ToString("X"));
-            }
-        }
+        var id = sender.BluetoothAddress.ToString("X");
+        if (sender.ConnectionStatus != BluetoothConnectionStatus.Disconnected ||
+            !_sessions.TryGetValue(id, out var session) || !ReferenceEquals(session.Device, sender) || !session.Connected)
+            return;
+        session.Connected = false;
+        DeviceDisconnected?.Invoke(id);
+        _ = RecoverAsync(session);
     }
 
-    public async Task ConnectAsync(string deviceId)
+    public async Task<bool> ConnectAsync(string deviceId)
     {
+        if (!ulong.TryParse(deviceId, System.Globalization.NumberStyles.HexNumber, null, out _))
+        {
+            LogMessage?.Invoke("连接失败", "设备地址非法");
+            return false;
+        }
+        await StopScanAsync();
+        var session = _sessions.GetOrAdd(deviceId, id => new DeviceSession(id));
+        await session.Gate.WaitAsync();
         try
         {
-            // Parse Bluetooth address
-            if (ulong.TryParse(deviceId, System.Globalization.NumberStyles.HexNumber, null, out var address))
-            {
-                // V-WIN-DEF-002：先完整释放旧会话（GattSession + 全部 GattDeviceService +
-                // 设备）。GattDeviceService 不显式 Dispose 时 Windows 仍按旧 GATT 会话
-                // 归属后续查询，重连后特征枚举返回空
-                await DisconnectAsync();
-
-                _currentDevice = await BluetoothLEDevice.FromBluetoothAddressAsync(address);
-
-                if (_currentDevice != null)
-                {
-                    _disconnectReported = false;
-                    _currentDevice.ConnectionStatusChanged += OnConnectionStatusChanged;
-
-                    // GattSession.MaintainConnection 持有连接引用，避免空闲期系统侧拆链
-                    try
-                    {
-                        _gattSession = await GattSession.FromDeviceIdAsync(
-                            BluetoothDeviceId.FromId(_currentDevice.BluetoothDeviceId.Id));
-                        if (_gattSession != null)
-                        {
-                            _gattSession.MaintainConnection = true;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        LogMessage?.Invoke("连接", $"GattSession 建立失败（继续直连）: {DescribeException(ex)}");
-                    }
-
-                    // Wait for connection
-                    await Task.Delay(1000);
-                    DeviceConnected?.Invoke(deviceId);
-
-                    // Discover services
-                    await DiscoverServicesAsync();
-                }
-            }
+            if (!Owns(session)) return false;
+            if (!session.Connected) await EstablishAsync(session);
+            return Owns(session) && session.Connected;
         }
         catch (Exception ex)
         {
-            LogMessage?.Invoke("连接失败", $"连接失败: {DescribeException(ex)}");
-            System.Diagnostics.Debug.WriteLine($"Connect error: {ex.Message}");
+            ReleaseHandles(session);
+            LogMessage?.Invoke("连接失败", $"{deviceId}: {DescribeException(ex)}");
+            return false;
         }
+        finally { session.Gate.Release(); }
     }
 
-    public async Task DisconnectAsync()
+    private async Task EstablishAsync(DeviceSession session)
     {
-        _characteristics.Clear();
-        _notifyHandlers.Clear();
-
-        foreach (var service in _gattServices)
+        ReleaseHandles(session);
+        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(session.Lifetime.Token);
+        timeout.CancelAfter(TimeSpan.FromSeconds(15));
+        var token = timeout.Token;
+        var address = ulong.Parse(session.Id, System.Globalization.NumberStyles.HexNumber);
+        session.Device = await BluetoothLEDevice.FromBluetoothAddressAsync(address).AsTask(token);
+        if (session.Device == null) throw new InvalidOperationException("设备不可用");
+        session.Gatt = await GattSession.FromDeviceIdAsync(session.Device.BluetoothDeviceId).AsTask(token);
+        if (session.Gatt != null) session.Gatt.MaintainConnection = true;
+        var result = await session.Device.GetGattServicesAsync(BluetoothCacheMode.Uncached).AsTask(token);
+        if (result.Status != GattCommunicationStatus.Success)
+            throw new InvalidOperationException($"GATT 服务发现失败: {result.Status}");
+        var tree = new List<BleServiceInfo>();
+        foreach (var service in result.Services)
         {
-            try { service.Dispose(); } catch { /* 释放期对象可能已随会话关闭 */ }
-        }
-        _gattServices.Clear();
-
-        if (_gattSession != null)
-        {
-            try
+            session.Services.Add(service);
+            var chars = await service.GetCharacteristicsAsync(BluetoothCacheMode.Uncached).AsTask(token);
+            if (chars.Status != GattCommunicationStatus.Success)
+                throw new InvalidOperationException($"{service.Uuid} 特征发现失败: {chars.Status}");
+            var nodes = new List<BleCharacteristicInfo>();
+            foreach (var characteristic in chars.Characteristics)
             {
-                _gattSession.MaintainConnection = false;
-                _gattSession.Dispose();
+                session.Characteristics[CharKey(service.Uuid.ToString(), characteristic.Uuid.ToString())] = characteristic;
+                var props = new List<string>();
+                foreach (var pair in new[] {
+                    (GattCharacteristicProperties.Read, "read"), (GattCharacteristicProperties.Write, "write"),
+                    (GattCharacteristicProperties.WriteWithoutResponse, "writeWithoutResponse"),
+                    (GattCharacteristicProperties.Notify, "notify"), (GattCharacteristicProperties.Indicate, "indicate") })
+                    if (characteristic.CharacteristicProperties.HasFlag(pair.Item1)) props.Add(pair.Item2);
+                nodes.Add(new BleCharacteristicInfo(characteristic.Uuid.ToString(), GetCharacteristicName(characteristic.Uuid.ToString()), props.ToArray()));
             }
-            catch { }
-            _gattSession = null;
+            tree.Add(new BleServiceInfo(service.Uuid.ToString(), GetServiceName(service.Uuid.ToString()), nodes.ToArray()));
         }
-
-        if (_currentDevice != null)
-        {
-            var deviceId = _currentDevice.BluetoothAddress.ToString("X");
-            _currentDevice.ConnectionStatusChanged -= OnConnectionStatusChanged;
-            _currentDevice.Dispose();
-            _currentDevice = null;
-
-            // 主动断开也上报（对齐 E-WIN/T-WIN 语义）；_disconnectReported 防止
-            // 被动掉链（回调已报）+ 随后用户显式断开的重复上报
-            if (!_disconnectReported)
-            {
-                _disconnectReported = true;
-                DeviceDisconnected?.Invoke(deviceId);
-            }
-        }
-        await Task.CompletedTask;
+        token.ThrowIfCancellationRequested();
+        if (!Owns(session)) throw new OperationCanceledException();
+        session.Tree = tree.ToArray();
+        session.Connected = true;
+        session.Device.ConnectionStatusChanged += OnConnectionStatusChanged;
+        DeviceConnected?.Invoke(session.Id);
+        ServiceDiscovered?.Invoke(session.Id, session.Tree);
     }
 
-    private async Task DiscoverServicesAsync()
+    private async Task RecoverAsync(DeviceSession session)
     {
-        if (_currentDevice == null) return;
-
+        await session.Gate.WaitAsync();
         try
         {
-            // V-WIN-DEF-002：Uncached 强制走 ATT 重新枚举，与 btleplug(T-WIN)/noble(E-WIN)
-            // 的 WithCacheModeAsync(Uncached) 同口径；无参重载可能命中系统缓存
-            var servicesResult = await _currentDevice.GetGattServicesAsync(BluetoothCacheMode.Uncached);
-
-            if (servicesResult.Status == GattCommunicationStatus.Success)
-            {
-                var services = new List<BleServiceInfo>();
-
-                foreach (var service in servicesResult.Services)
+            await ReconnectPolicy.RunAsync(() => Owns(session) && !session.Connected,
+                () => EstablishAsync(session), ex =>
                 {
-                    _gattServices.Add(service);
-                    var characteristicsResult = await service.GetCharacteristicsAsync(BluetoothCacheMode.Uncached);
-                    var characteristics = new List<BleCharacteristicInfo>();
-
-                    if (characteristicsResult.Status == GattCommunicationStatus.Success)
-                    {
-                        foreach (var characteristic in characteristicsResult.Characteristics)
-                        {
-                            // Store for later access
-                            var key = CharKey(service.Uuid.ToString(), characteristic.Uuid.ToString());
-                            _characteristics[key] = characteristic;
-
-                            var props = new List<string>();
-                            if (characteristic.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Read))
-                                props.Add("read");
-                            if (characteristic.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Write))
-                                props.Add("write");
-                            if (characteristic.CharacteristicProperties.HasFlag(GattCharacteristicProperties.WriteWithoutResponse))
-                                props.Add("writeWithoutResponse");
-                            if (characteristic.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Notify))
-                                props.Add("notify");
-                            if (characteristic.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Indicate))
-                                props.Add("indicate");
-
-                            characteristics.Add(new BleCharacteristicInfo(
-                                characteristic.Uuid.ToString(),
-                                GetCharacteristicName(characteristic.Uuid.ToString()),
-                                props.ToArray()
-                            ));
-                        }
-                    }
-                    else
-                    {
-                        LogMessage?.Invoke("发现服务失败",
-                            $"{service.Uuid} 特征枚举 status={(int)characteristicsResult.Status}({characteristicsResult.Status})");
-                    }
-
-                    services.Add(new BleServiceInfo(
-                        service.Uuid.ToString(),
-                        GetServiceName(service.Uuid.ToString()),
-                        characteristics.ToArray()
-                    ));
-                }
-
-                ServiceDiscovered?.Invoke(services.ToArray());
-            }
-            else
-            {
-                LogMessage?.Invoke("发现服务失败",
-                    $"GetGattServices status={(int)servicesResult.Status}({servicesResult.Status})");
-            }
+                    ReleaseHandles(session);
+                    LogMessage?.Invoke("重连失败", $"{session.Id}: {DescribeException(ex)}");
+                }, session.Lifetime.Token);
         }
-        catch (Exception ex)
-        {
-            LogMessage?.Invoke("发现服务失败", $"发现服务失败: {DescribeException(ex)}");
-            System.Diagnostics.Debug.WriteLine($"Discover services error: {ex.Message}");
-        }
+        catch (OperationCanceledException) { }
+        finally { session.Gate.Release(); }
     }
 
-    public async Task<byte[]?> ReadCharacteristicAsync(string serviceUuid, string characteristicUuid)
+    private void ReleaseHandles(DeviceSession session)
     {
+        session.Connected = false;
+        foreach (var pair in session.Handlers)
+            if (session.Characteristics.TryGetValue(pair.Key, out var ch)) ch.ValueChanged -= pair.Value;
+        session.Handlers.Clear();
+        session.Characteristics.Clear();
+        session.Tree = Array.Empty<BleServiceInfo>();
+        if (session.Device != null) session.Device.ConnectionStatusChanged -= OnConnectionStatusChanged;
+        foreach (var service in session.Services) { try { service.Dispose(); } catch { } }
+        session.Services.Clear();
+        if (session.Gatt != null)
+        {
+            try { session.Gatt.MaintainConnection = false; session.Gatt.Dispose(); } catch { }
+            session.Gatt = null;
+        }
+        try { session.Device?.Dispose(); } catch { }
+        session.Device = null;
+    }
+
+    public async Task DisconnectAsync(string deviceId)
+    {
+        if (!_sessions.TryRemove(deviceId, out var session)) return;
+        session.Lifetime.Cancel(); // invalidates pending connect/recovery before waiting for its gate
+        var wasConnected = session.Connected;
+        await session.Gate.WaitAsync();
+        try { ReleaseHandles(session); }
+        finally { session.Gate.Release(); }
+        if (wasConnected) DeviceDisconnected?.Invoke(deviceId);
+    }
+
+    public async Task DisconnectAllAsync()
+    {
+        foreach (var id in _sessions.Keys.ToArray()) await DisconnectAsync(id);
+    }
+
+    public async Task ShutdownAsync()
+    {
+        await StopScanAsync();
+        StopAdvertising();
+        await DisconnectAllAsync();
+    }
+
+    public async Task<byte[]?> ReadCharacteristicAsync(string deviceId, string serviceUuid, string characteristicUuid)
+    {
+        if (!_sessions.TryGetValue(deviceId, out var session)) return null;
+        await session.Gate.WaitAsync();
+        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(session.Lifetime.Token);
+        timeout.CancelAfter(TimeSpan.FromSeconds(15));
         try
         {
             var key = CharKey(serviceUuid, characteristicUuid);
-            if (!_characteristics.ContainsKey(key))
+            if (!Owns(session) || !session.Connected || !session.Characteristics.TryGetValue(key, out var characteristic))
             {
                 LogMessage?.Invoke("读取失败", "特征值未找到");
                 return null;
             }
 
-            var characteristic = _characteristics[key];
-            var result = await characteristic.ReadValueAsync(BluetoothCacheMode.Uncached);
+            var result = await characteristic.ReadValueAsync(BluetoothCacheMode.Uncached).AsTask(timeout.Token);
+            if (!Owns(session)) return null;
 
             if (result.Status == GattCommunicationStatus.Success)
             {
@@ -490,21 +476,27 @@ public class BleService
             LogMessage?.Invoke("读取失败", $"读取失败: {DescribeException(ex)}");
         }
 
+        finally { session.Gate.Release(); }
         return null;
     }
 
-    public async Task<bool> WriteCharacteristicAsync(string serviceUuid, string characteristicUuid, byte[] data, bool withResponse = true)
+    public async Task<bool> WriteCharacteristicAsync(string deviceId, string serviceUuid, string characteristicUuid, byte[] data, bool withResponse = true, bool sensitive = false)
     {
+        if (!_sessions.TryGetValue(deviceId, out var session)) return false;
+        await session.Gate.WaitAsync();
+        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(session.Lifetime.Token);
+        timeout.CancelAfter(TimeSpan.FromSeconds(15));
         try
         {
+            if (string.Equals(characteristicUuid, HidProtocol.Input, StringComparison.OrdinalIgnoreCase) && !sensitive)
+                throw new InvalidOperationException("Smart HID INPUT 仅允许通过配网流程写入");
             var key = CharKey(serviceUuid, characteristicUuid);
-            if (!_characteristics.ContainsKey(key))
+            if (!Owns(session) || !session.Connected || !session.Characteristics.TryGetValue(key, out var characteristic))
             {
                 LogMessage?.Invoke("写入失败", "特征值未找到");
                 return false;
             }
 
-            var characteristic = _characteristics[key];
 
             // V-WIN-DEF-001：写选项受特征能力约束——请求的模式不被支持时自动降级，
             // 降级由 ResolveWriteOption 统一裁决（可单测的纯函数）
@@ -521,11 +513,12 @@ public class BleService
 
             var writer = new DataWriter();
             writer.WriteBytes(data);
-            var result = await characteristic.WriteValueWithResultAsync(writer.DetachBuffer(), option);
+            var result = await characteristic.WriteValueWithResultAsync(writer.DetachBuffer(), option).AsTask(timeout.Token);
+            if (!Owns(session)) return false;
 
             if (result.Status == GattCommunicationStatus.Success)
             {
-                LogMessage?.Invoke("写入成功", $"写入成功: {BitConverter.ToString(data).Replace('-', ' ')}");
+                LogMessage?.Invoke("写入成功", sensitive ? "配置帧已写入（凭据已隐藏）" : $"写入成功: {BitConverter.ToString(data).Replace('-', ' ')}");
                 return true;
             }
             else
@@ -539,82 +532,61 @@ public class BleService
             LogMessage?.Invoke("写入失败", $"写入失败: {DescribeException(ex)}");
         }
 
+        finally { session.Gate.Release(); }
         return false;
     }
 
-    public async Task<bool> SetNotificationAsync(string serviceUuid, string characteristicUuid, bool enable)
+    public async Task<bool> SetNotificationAsync(string deviceId, string serviceUuid, string characteristicUuid, bool enable)
     {
+        if (!_sessions.TryGetValue(deviceId, out var session)) return false;
+        await session.Gate.WaitAsync();
+        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(session.Lifetime.Token);
+        timeout.CancelAfter(TimeSpan.FromSeconds(15));
+        var key = CharKey(serviceUuid, characteristicUuid);
+        TypedEventHandler<GattCharacteristic, GattValueChangedEventArgs>? addedHandler = null;
+        GattCharacteristic? characteristic = null;
         try
         {
-            var key = CharKey(serviceUuid, characteristicUuid);
-            if (!_characteristics.ContainsKey(key))
-            {
-                LogMessage?.Invoke("设置通知失败", "特征值未找到");
-                return false;
-            }
-
-            var characteristic = _characteristics[key];
-
+            if (!Owns(session) || !session.Connected || !session.Characteristics.TryGetValue(key, out characteristic)) return false;
+            var mode = enable ? ResolveNotificationMode(characteristic.CharacteristicProperties) : GattClientCharacteristicConfigurationDescriptorValue.None;
+            if (enable && session.Handlers.ContainsKey(key)) return true;
             if (enable)
             {
-                // 订阅前先移除旧 handler，避免重复订阅（此前每次启用都挂新 lambda）
-                if (_notifyHandlers.TryGetValue(key, out var oldHandler))
+                addedHandler = (sender, args) =>
                 {
-                    characteristic.ValueChanged -= oldHandler;
-                    _notifyHandlers.Remove(key);
-                }
-
-                var notificationDeviceId = _currentDevice?.BluetoothAddress.ToString("X") ?? "";
-                TypedEventHandler<GattCharacteristic, GattValueChangedEventArgs> handler = (sender, args) =>
-                {
-                    var data = new byte[args.CharacteristicValue.Length];
-                    DataReader.FromBuffer(args.CharacteristicValue).ReadBytes(data);
-                    CharacteristicValueChanged?.Invoke(notificationDeviceId, characteristicUuid, data);
+                    if (Owns(session) && session.Connected)
+                        CharacteristicValueChanged?.Invoke(session.Id, characteristicUuid, ToBytes(args.CharacteristicValue));
                 };
-                _notifyHandlers[key] = handler;
-                characteristic.ValueChanged += handler;
-
-                var result = await characteristic.WriteClientCharacteristicConfigurationDescriptorAsync(
-                    GattClientCharacteristicConfigurationDescriptorValue.Notify);
-
-                if (result == GattCommunicationStatus.Success)
-                {
-                    LogMessage?.Invoke("通知已启用", "通知已启用");
-                    return true;
-                }
-                else
-                {
-                    LogMessage?.Invoke("设置通知失败", $"CCCD 写入 status={(int)result}({result})");
-                }
+                characteristic.ValueChanged += addedHandler;
             }
-            else
+            var result = await characteristic.WriteClientCharacteristicConfigurationDescriptorAsync(mode).AsTask(timeout.Token);
+            if (result != GattCommunicationStatus.Success || !Owns(session))
             {
-                if (_notifyHandlers.TryGetValue(key, out var handler))
-                {
-                    characteristic.ValueChanged -= handler;
-                    _notifyHandlers.Remove(key);
-                }
-
-                var result = await characteristic.WriteClientCharacteristicConfigurationDescriptorAsync(
-                    GattClientCharacteristicConfigurationDescriptorValue.None);
-
-                if (result == GattCommunicationStatus.Success)
-                {
-                    LogMessage?.Invoke("通知已禁用", "通知已禁用");
-                    return true;
-                }
-                else
-                {
-                    LogMessage?.Invoke("设置通知失败", $"CCCD 写入 status={(int)result}({result})");
-                }
+                LogMessage?.Invoke("设置通知失败", $"CCCD 写入 status={(int)result}({result})");
+                return false;
             }
+            if (enable)
+            {
+                session.Handlers[key] = addedHandler!;
+                addedHandler = null; // now owned by the device session
+            }
+            else if (session.Handlers.Remove(key, out var existing)) characteristic.ValueChanged -= existing;
+            LogMessage?.Invoke(enable ? "通知已启用" : "通知已禁用", enable ? "通知已启用" : "通知已禁用");
+            return true;
         }
-        catch (Exception ex)
+        catch (Exception ex) { LogMessage?.Invoke("设置通知失败", $"设置通知失败: {DescribeException(ex)}"); return false; }
+        finally
         {
-            LogMessage?.Invoke("设置通知失败", $"设置通知失败: {DescribeException(ex)}");
+            if (addedHandler != null && characteristic != null) characteristic.ValueChanged -= addedHandler;
+            session.Gate.Release();
         }
+    }
 
-        return false;
+    internal static GattClientCharacteristicConfigurationDescriptorValue ResolveNotificationMode(GattCharacteristicProperties properties)
+    {
+        if (properties.HasFlag(GattCharacteristicProperties.Notify)) return GattClientCharacteristicConfigurationDescriptorValue.Notify;
+        if (properties.HasFlag(GattCharacteristicProperties.Indicate)) return GattClientCharacteristicConfigurationDescriptorValue.Indicate;
+        throw new InvalidOperationException("特征不支持通知或指示");
     }
 
     // WinRT 投影异常的 Message 可能为空串（仅 HRESULT），统一带上类型与错误码
@@ -630,6 +602,7 @@ public class BleService
     internal static (GattWriteOption Option, bool Downgraded) ResolveWriteOption(
         bool withResponse, bool supportsWrite, bool supportsWriteNr)
     {
+        if (!supportsWrite && !supportsWriteNr) throw new InvalidOperationException("特征不支持写入");
         if (!withResponse && supportsWriteNr)
             return (GattWriteOption.WriteWithoutResponse, false);
         if (withResponse && supportsWrite)

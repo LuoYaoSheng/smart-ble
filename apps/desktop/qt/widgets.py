@@ -143,7 +143,7 @@ class BtDot(QWidget):
         self.update()
 
     def paintEvent(self, event) -> None:  # noqa: N802
-        color = {"init": PH, "on": SUCCESS, "off": DANGER}[self._state]
+        color = {"init": PH, "on": SUCCESS, "off": DANGER}.get(self._state, PH)
         painter = QPainter(self)
         painter.setPen(Qt.NoPen)
         painter.setBrush(QColor(color))

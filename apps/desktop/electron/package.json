@@ -23,7 +23,8 @@
   },
   "devDependencies": {
     "electron": "44.7.0",
-    "electron-builder": "26.15.3"
+    "electron-builder": "26.15.3",
+    "encoding": "0.1.13"
   },
   "build": {
     "appId": "com.smartble.electron",

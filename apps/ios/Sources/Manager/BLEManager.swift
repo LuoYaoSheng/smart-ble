@@ -7,6 +7,83 @@ import Foundation
 import Combine
 import SmartHidCore
 
+// MARK: - Per-device write scheduler
+@MainActor
+final class BLEWriteQueue {
+    enum StartResult { case awaitingResponse, completed, blocked, rejected }
+    struct Item {
+        let id = UUID()
+        let key: String
+        let start: () -> StartResult
+    }
+    static let maxDepth = 16
+    static let timeout: TimeInterval = 5
+    private let operationTimeout: TimeInterval
+    init(timeout: TimeInterval = BLEWriteQueue.timeout) { operationTimeout = timeout }
+    private var pending: [String: [Item]] = [:]
+    private var active: [String: Item] = [:]
+    private var timers: [String: Timer] = [:]
+    var onTimeout: ((String) -> Void)?
+
+    func depth(_ deviceId: String) -> Int {
+        (pending[deviceId]?.count ?? 0) + (active[deviceId] == nil ? 0 : 1)
+    }
+
+    @discardableResult
+    func enqueue(deviceId: String, key: String, start: @escaping () -> StartResult) -> Bool {
+        guard depth(deviceId) < Self.maxDepth else { return false }
+        pending[deviceId, default: []].append(Item(key: key, start: start))
+        drain(deviceId)
+        return true
+    }
+
+    func complete(deviceId: String, key: String) {
+        guard active[deviceId]?.key == key else { return }
+        timers.removeValue(forKey: deviceId)?.invalidate()
+        active.removeValue(forKey: deviceId)
+        drain(deviceId)
+    }
+
+    func cancel(deviceId: String) {
+        timers.removeValue(forKey: deviceId)?.invalidate()
+        active.removeValue(forKey: deviceId)
+        pending.removeValue(forKey: deviceId)
+    }
+
+    func drain(_ deviceId: String) {
+        while active[deviceId] == nil, var items = pending[deviceId], !items.isEmpty {
+            let item = items.removeFirst()
+            pending[deviceId] = items
+            switch item.start() {
+            case .completed, .rejected: continue
+            case .blocked:
+                pending[deviceId]?.insert(item, at: 0)
+                // Backpressure must also have a bound; do not keep queued writes forever.
+                if timers[deviceId] == nil { armTimeout(deviceId, id: item.id) }
+                return
+            case .awaitingResponse:
+                timers.removeValue(forKey: deviceId)?.invalidate()
+                active[deviceId] = item
+                armTimeout(deviceId, id: item.id)
+                return
+            }
+        }
+        if active[deviceId] == nil && (pending[deviceId]?.isEmpty ?? true) {
+            timers.removeValue(forKey: deviceId)?.invalidate()
+        }
+    }
+
+    private func armTimeout(_ deviceId: String, id: UUID) {
+        timers[deviceId] = Timer.scheduledTimer(withTimeInterval: operationTimeout, repeats: false) { [weak self] _ in
+            Task { @MainActor in
+                guard let self, self.active[deviceId]?.id == id || self.pending[deviceId]?.first?.id == id else { return }
+                self.cancel(deviceId: deviceId)
+                self.onTimeout?(deviceId)
+            }
+        }
+    }
+}
+
 // MARK: - BLE Manager
 @MainActor
 class BLEManager: NSObject, ObservableObject {
@@ -87,6 +164,21 @@ class BLEManager: NSObject, ObservableObject {
 
     /// Per-device peripheral references (deviceId -> CBPeripheral)
     private var connectedPeripherals: [String: CBPeripheral] = [:]
+    private var sessionPeripherals: [String: CBPeripheral] = [:]
+    private var connectTimers: [String: Timer] = [:]
+    private var readTimers: [String: Timer] = [:]
+    private lazy var writeQueue: BLEWriteQueue = {
+        let queue = BLEWriteQueue()
+        queue.onTimeout = { [weak self] deviceId in
+            guard let self, let peripheral = self.sessionPeripherals[deviceId] else { return }
+            self.logForDevice(deviceId, "写入超时（5s），取消当前 GATT 会话", type: .error)
+            self.clearDeviceOperations(deviceId)
+            self.connectedPeripherals.removeValue(forKey: deviceId)
+            self.servicesByDevice.removeValue(forKey: deviceId)
+            self.centralManager.cancelPeripheralConnection(peripheral)
+        }
+        return queue
+    }()
     private var discoveredPeripherals: [String: CBPeripheral] = [:]
     /// Per-device characteristics cache (deviceId:serviceUUID:charUUID -> CBCharacteristic)
     private var characteristicsMap: [String: CBCharacteristic] = [:]
@@ -204,6 +296,7 @@ class BLEManager: NSObject, ObservableObject {
             return false
         }
 
+        stopScan()
         scanResults.removeAll()
         filteredScanResults.removeAll()
         discoveredPeripherals.removeAll()
@@ -281,21 +374,27 @@ class BLEManager: NSObject, ObservableObject {
             return
         }
 
+        guard connectionStates[device.id] != .connecting,
+              connectionStates[device.id] != .connected,
+              connectionStates[device.id] != .disconnecting else { return }
         // T06: 标记为用户主动连接，允许自动重连
         userInitiatedDisconnects.remove(device.id)
         reconnectAttempts[device.id] = 0
         cancelReconnect(deviceId: device.id)
 
-        connectionStates[device.id] = .connecting
         stopScan()
-
-        centralManager.connect(peripheral, options: nil)
+        beginConnect(peripheral)
         log("Connecting to \(device.name)", type: .info)
     }
 
     /// Disconnect a specific device by ID
     func disconnect(deviceId: String) {
-        guard let peripheral = connectedPeripherals[deviceId] else {
+        userInitiatedDisconnects.insert(deviceId)
+        cancelReconnect(deviceId: deviceId)
+        connectTimers.removeValue(forKey: deviceId)?.invalidate()
+        reconnectAttempts.removeValue(forKey: deviceId)
+        clearDeviceOperations(deviceId)
+        guard let peripheral = sessionPeripherals[deviceId] else {
             connectionStates.removeValue(forKey: deviceId)
             connectedDevices.removeValue(forKey: deviceId)
             servicesByDevice.removeValue(forKey: deviceId)
@@ -307,6 +406,11 @@ class BLEManager: NSObject, ObservableObject {
         cancelReconnect(deviceId: deviceId)
         reconnectAttempts.removeValue(forKey: deviceId)
 
+        if peripheral.state == .disconnected {
+            sessionPeripherals.removeValue(forKey: deviceId)
+            connectionStates.removeValue(forKey: deviceId)
+            return
+        }
         connectionStates[deviceId] = .disconnecting
         centralManager.cancelPeripheralConnection(peripheral)
         log("Disconnecting from \(deviceId)...", type: .info)
@@ -314,7 +418,7 @@ class BLEManager: NSObject, ObservableObject {
 
     /// Disconnect all connected devices
     func disconnectAll() {
-        for deviceId in connectedPeripherals.keys {
+        for deviceId in Array(sessionPeripherals.keys) {
             disconnect(deviceId: deviceId)
         }
     }
@@ -372,6 +476,18 @@ class BLEManager: NSObject, ObservableObject {
             return
         }
         log("Reading characteristic: \(characteristicUUID)", type: .send)
+        guard characteristic.properties.contains(.read) else {
+            logForDevice(deviceId, "特征不支持读取", type: .error)
+            return
+        }
+        let key = "\(deviceId):\(serviceUUID.uppercased()):\(characteristicUUID.uppercased())"
+        guard readTimers[key] == nil else { return }
+        readTimers[key] = Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { [weak self] _ in
+            Task { @MainActor in
+                self?.readTimers.removeValue(forKey: key)
+                self?.logForDevice(deviceId, "读取超时（3s）", type: .error)
+            }
+        }
         peripheral.readValue(for: characteristic)
     }
 
@@ -385,18 +501,30 @@ class BLEManager: NSObject, ObservableObject {
     }
 
     // MARK: - Write Characteristic (Multi-device)
-    func writeCharacteristic(deviceId: String, serviceUUID: String, characteristicUUID: String, data: Data, withoutResponse: Bool = false) {
+    @discardableResult
+    func writeCharacteristic(deviceId: String, serviceUUID: String, characteristicUUID: String, data: Data, withoutResponse: Bool = false) -> Bool {
         guard let (peripheral, characteristic) = findCharacteristic(
-            deviceId: deviceId,
-            serviceUUID: serviceUUID,
-            characteristicUUID: characteristicUUID
+            deviceId: deviceId, serviceUUID: serviceUUID, characteristicUUID: characteristicUUID
         ) else {
-            log("Characteristic not found", type: .error)
-            return
+            logForDevice(deviceId, "Characteristic not found", type: .error)
+            return false
         }
-        log("Writing to characteristic: \(characteristicUUID)", type: .send)
         let type: CBCharacteristicWriteType = withoutResponse ? .withoutResponse : .withResponse
-        peripheral.writeValue(data, for: characteristic, type: type)
+        let required: CBCharacteristicProperties = withoutResponse ? .writeWithoutResponse : .write
+        guard characteristic.properties.contains(required),
+              data.count <= peripheral.maximumWriteValueLength(for: type) else {
+            logForDevice(deviceId, "写入属性或单帧长度不符合设备能力", type: .error)
+            return false
+        }
+        let key = "\(serviceUUID.uppercased()):\(characteristicUUID.uppercased())"
+        let accepted = writeQueue.enqueue(deviceId: deviceId, key: key) { [weak self, weak peripheral] in
+            guard let self, let peripheral, self.connectedPeripherals[deviceId] === peripheral else { return .rejected }
+            if withoutResponse && !peripheral.canSendWriteWithoutResponse { return .blocked }
+            peripheral.writeValue(data, for: characteristic, type: type)
+            return withoutResponse ? .completed : .awaitingResponse
+        }
+        if !accepted { logForDevice(deviceId, "写队列已满（16）", type: .error) }
+        return accepted
     }
 
     /// Backward-compatible write (uses first connected device)
@@ -421,14 +549,6 @@ class BLEManager: NSObject, ObservableObject {
         let action = enabled ? "Enabling" : "Disabling"
         log("\(action) notifications for: \(characteristicUUID)", type: .info)
         peripheral.setNotifyValue(enabled, for: characteristic)
-
-        // Track notify state (per-device)
-        let key = "\(deviceId):\(serviceUUID):\(characteristicUUID)"
-        if enabled {
-            notifyingCharacteristics.insert(key)
-        } else {
-            notifyingCharacteristics.remove(key)
-        }
     }
 
     /// Backward-compatible setNotification (uses first connected device)
@@ -442,7 +562,7 @@ class BLEManager: NSObject, ObservableObject {
 
     // Check if a characteristic is currently notifying (per-device)
     func isNotifying(deviceId: String, serviceUUID: String, characteristicUUID: String) -> Bool {
-        let key = "\(deviceId):\(serviceUUID):\(characteristicUUID)"
+        let key = "\(deviceId):\(serviceUUID.uppercased()):\(characteristicUUID.uppercased())"
         return notifyingCharacteristics.contains(key)
     }
 
@@ -460,12 +580,21 @@ class BLEManager: NSObject, ObservableObject {
     }
 
     // MARK: - Advertising (Peripheral Mode)
+    static func isValidBluetoothUUID(_ value: String) -> Bool {
+        if UUID(uuidString: value) != nil { return true }
+        return (value.count == 4 || value.count == 8) && value.allSatisfy { $0.isASCII && $0.isHexDigit }
+    }
+
     func startAdvertising(name: String, serviceUUIDs: [String]) {
         guard peripheralManager.state == .poweredOn else {
             log("Peripheral not ready for advertising", type: .error)
             return
         }
 
+        guard serviceUUIDs.allSatisfy(Self.isValidBluetoothUUID) else {
+            log("广播服务 UUID 无效", type: .error)
+            return
+        }
         let uuids = serviceUUIDs.map { CBUUID(string: $0) }
 
         let advertisementData: [String: Any] = [
@@ -479,6 +608,7 @@ class BLEManager: NSObject, ObservableObject {
 
     func stopAdvertising() {
         peripheralManager.stopAdvertising()
+        isAdvertising = peripheralManager.isAdvertising
         log("Stopped advertising", type: .info)
     }
 
@@ -566,19 +696,47 @@ class BLEManager: NSObject, ObservableObject {
               }) else {
             return nil
         }
+        let key = "\(deviceId):\(service.uuid.uuidString):\(characteristic.uuid.uuidString)"
+        guard characteristicsMap[key] === characteristic else { return nil }
         return (peripheral, characteristic)
     }
 
 
 
+    private func beginConnect(_ peripheral: CBPeripheral) {
+        let deviceId = peripheral.identifier.uuidString
+        sessionPeripherals[deviceId] = peripheral
+        connectionStates[deviceId] = .connecting
+        connectTimers.removeValue(forKey: deviceId)?.invalidate()
+        connectTimers[deviceId] = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { [weak self, weak peripheral] _ in
+            Task { @MainActor in
+                guard let self, let peripheral,
+                      self.sessionPeripherals[deviceId] === peripheral,
+                      self.connectionStates[deviceId] == .connecting else { return }
+                self.logForDevice(deviceId, "连接超时（10s）", type: .error)
+                self.centralManager.cancelPeripheralConnection(peripheral)
+            }
+        }
+        centralManager.connect(peripheral, options: nil)
+    }
+
+    private func clearDeviceOperations(_ deviceId: String) {
+        writeQueue.cancel(deviceId: deviceId)
+        for key in Array(readTimers.keys) where key.hasPrefix("\(deviceId):") {
+            readTimers.removeValue(forKey: key)?.invalidate()
+        }
+        characteristicsMap = characteristicsMap.filter { !$0.key.hasPrefix("\(deviceId):") }
+        clearNotifyStates(for: deviceId)
+    }
+
     // MARK: - T06: Auto-Reconnect helpers
     private func attemptReconnect(deviceId: String, peripheral: CBPeripheral) {
-        guard autoReconnectEnabled, !userInitiatedDisconnects.contains(deviceId) else { return }
+        guard autoReconnectEnabled, !userInitiatedDisconnects.contains(deviceId),
+              reconnectTimers[deviceId] == nil else { return }
 
         let attempts = reconnectAttempts[deviceId] ?? 0
         guard attempts < maxReconnectAttempts else {
             log("Device \(deviceId.prefix(8))... reached max reconnect attempts (\(maxReconnectAttempts)), giving up", type: .error)
-            reconnectAttempts.removeValue(forKey: deviceId)
             return
         }
 
@@ -591,10 +749,10 @@ class BLEManager: NSObject, ObservableObject {
         cancelReconnect(deviceId: deviceId)
         reconnectTimers[deviceId] = Timer.scheduledTimer(withTimeInterval: delay, repeats: false) { [weak self] _ in
             Task { @MainActor [weak self] in
-                guard let self else { return }
+                guard let self, !self.userInitiatedDisconnects.contains(deviceId), self.autoReconnectEnabled else { return }
+                self.reconnectTimers.removeValue(forKey: deviceId)
                 self.log("Reconnecting to \(deviceId.prefix(8))... (attempt \(nextAttempt))", type: .info)
-                self.connectionStates[deviceId] = .connecting
-                self.centralManager.connect(peripheral, options: nil)
+                self.beginConnect(peripheral)
             }
         }
     }
@@ -662,6 +820,22 @@ extension BLEManager: @preconcurrency CBCentralManagerDelegate {
             return
         }
         #endif
+        if central.state != .poweredOn {
+            autoStopTimer?.invalidate()
+            autoStopTimer = nil
+            isScanning = false
+            for deviceId in Array(sessionPeripherals.keys) {
+                connectTimers.removeValue(forKey: deviceId)?.invalidate()
+                cancelReconnect(deviceId: deviceId)
+                clearDeviceOperations(deviceId)
+                hidEventHandler?(.connectionChanged(deviceId: deviceId, connected: false))
+            }
+            sessionPeripherals.removeAll()
+            connectedPeripherals.removeAll()
+            connectionStates.removeAll()
+            connectedDevices.removeAll()
+            servicesByDevice.removeAll()
+        }
         switch central.state {
         case .unknown:
             bluetoothState = .unknown
@@ -749,6 +923,17 @@ extension BLEManager: @preconcurrency CBCentralManagerDelegate {
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         let deviceId = peripheral.identifier.uuidString
 
+        guard sessionPeripherals[deviceId] === peripheral else {
+            central.cancelPeripheralConnection(peripheral)
+            return
+        }
+        guard !userInitiatedDisconnects.contains(deviceId) else {
+            central.cancelPeripheralConnection(peripheral)
+            return
+        }
+        connectTimers.removeValue(forKey: deviceId)?.invalidate()
+        cancelReconnect(deviceId: deviceId)
+        reconnectAttempts[deviceId] = 0
         connectedPeripherals[deviceId] = peripheral
         connectionStates[deviceId] = .connected
 
@@ -775,7 +960,11 @@ extension BLEManager: @preconcurrency CBCentralManagerDelegate {
 
     func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
         let deviceId = peripheral.identifier.uuidString
+        guard sessionPeripherals[deviceId] === peripheral else { return }
+        connectTimers.removeValue(forKey: deviceId)?.invalidate()
         connectionStates[deviceId] = .disconnected
+        clearDeviceOperations(deviceId)
+        attemptReconnect(deviceId: deviceId, peripheral: peripheral)
         hidEventHandler?(.connectionChanged(deviceId: deviceId, connected: false))
         if let error = error {
             log("Failed to connect: \(error.localizedDescription)", type: .error)
@@ -785,6 +974,9 @@ extension BLEManager: @preconcurrency CBCentralManagerDelegate {
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         let deviceId = peripheral.identifier.uuidString
 
+        guard sessionPeripherals[deviceId] === peripheral else { return }
+        connectTimers.removeValue(forKey: deviceId)?.invalidate()
+        clearDeviceOperations(deviceId)
         hidEventHandler?(.connectionChanged(deviceId: deviceId, connected: false))
 
         connectedPeripherals.removeValue(forKey: deviceId)
@@ -810,6 +1002,7 @@ extension BLEManager: @preconcurrency CBCentralManagerDelegate {
             attemptReconnect(deviceId: deviceId, peripheral: peripheral)
         } else {
             log("Disconnected from \(deviceId.prefix(8))...", type: .info)
+            attemptReconnect(deviceId: deviceId, peripheral: peripheral)
         }
     }
 }
@@ -817,6 +1010,7 @@ extension BLEManager: @preconcurrency CBCentralManagerDelegate {
 // MARK: - CBPeripheralDelegate
 extension BLEManager: @preconcurrency CBPeripheralDelegate {
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
+        guard connectedPeripherals[peripheral.identifier.uuidString] === peripheral else { return }
         if let error = error {
             log("Service discovery failed: \(error.localizedDescription)", type: .error)
             return
@@ -830,6 +1024,7 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
     }
 
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
+        guard connectedPeripherals[peripheral.identifier.uuidString] === peripheral else { return }
         if let error = error {
             log("Characteristic discovery failed for service \(service.uuid): \(error.localizedDescription)", type: .error)
             return
@@ -864,6 +1059,11 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
     }
 
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
+        guard connectedPeripherals[peripheral.identifier.uuidString] === peripheral,
+              let service = characteristic.service,
+              characteristicsMap["\(peripheral.identifier.uuidString):\(service.uuid.uuidString):\(characteristic.uuid.uuidString)"] === characteristic else { return }
+        let readKey = "\(peripheral.identifier.uuidString):\(characteristic.service?.uuid.uuidString.uppercased() ?? ""):\(characteristic.uuid.uuidString.uppercased())"
+        readTimers.removeValue(forKey: readKey)?.invalidate()
         if let error = error {
             log("Failed to update value: \(error.localizedDescription)", type: .error)
             return
@@ -897,12 +1097,17 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
     }
 
     func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
+        guard connectedPeripherals[peripheral.identifier.uuidString] === peripheral,
+              let service = characteristic.service,
+              characteristicsMap["\(peripheral.identifier.uuidString):\(service.uuid.uuidString):\(characteristic.uuid.uuidString)"] === characteristic else { return }
         let deviceId = peripheral.identifier.uuidString
         if let error = error {
             logForDevice(deviceId, "Write failed: \(error.localizedDescription)", type: .error)
         } else {
             logForDevice(deviceId, "Write success", type: .success)
         }
+        let key = "\(characteristic.service?.uuid.uuidString.uppercased() ?? ""):\(characteristic.uuid.uuidString.uppercased())"
+        writeQueue.complete(deviceId: deviceId, key: key)
         // BGT：写结果入文件日志（锁屏取证通道）
         if BackgroundSelfTest.isEnabled, deviceId == bgEchoDeviceId {
             BackgroundSelfTest.appendLog(error == nil
@@ -912,12 +1117,24 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
     }
 
     func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
+        guard connectedPeripherals[peripheral.identifier.uuidString] === peripheral,
+              let service = characteristic.service,
+              characteristicsMap["\(peripheral.identifier.uuidString):\(service.uuid.uuidString):\(characteristic.uuid.uuidString)"] === characteristic else { return }
         if let error = error {
             log("Notification update failed: \(error.localizedDescription)", type: .error)
         } else {
             let state = characteristic.isNotifying ? "enabled" : "disabled"
             log("Notifications \(state)", type: .success)
+            let key = "\(peripheral.identifier.uuidString):\(characteristic.service?.uuid.uuidString.uppercased() ?? ""):\(characteristic.uuid.uuidString.uppercased())"
+            if characteristic.isNotifying { notifyingCharacteristics.insert(key) }
+            else { notifyingCharacteristics.remove(key) }
+            updateServices(for: peripheral)
         }
+    }
+
+    func peripheralIsReady(toSendWriteWithoutResponse peripheral: CBPeripheral) {
+        guard connectedPeripherals[peripheral.identifier.uuidString] === peripheral else { return }
+        writeQueue.drain(peripheral.identifier.uuidString)
     }
 
     func peripheralDidUpdateName(_ peripheral: CBPeripheral) {
@@ -990,14 +1207,13 @@ extension BLEManager: HidProvisionTransport {
         guard hasProvisioningCharacteristic(deviceId: deviceId, characteristicUUID: characteristicUUID) else {
             return false
         }
-        writeCharacteristic(
+        return writeCharacteristic(
             deviceId: deviceId,
             serviceUUID: HidProtocol.serviceUuid,
             characteristicUUID: characteristicUUID,
             data: data,
             withoutResponse: false
         )
-        return true
     }
 
     func provisioningAttMtu(deviceId: String) -> Int {
@@ -1012,6 +1228,7 @@ extension BLEManager: HidProvisionTransport {
 // MARK: - CBPeripheralManagerDelegate
 extension BLEManager: @preconcurrency CBPeripheralManagerDelegate {
     func peripheralManagerDidUpdateState(_ peripheral: CBPeripheralManager) {
+        isAdvertising = peripheral.isAdvertising
         switch peripheral.state {
         case .unknown:
             log("Peripheral state: Unknown", type: .info)
@@ -1035,7 +1252,7 @@ extension BLEManager: @preconcurrency CBPeripheralManagerDelegate {
             isAdvertising = false
             log("Advertising failed: \(error.localizedDescription)", type: .error)
         } else {
-            isAdvertising = true
+            isAdvertising = peripheral.isAdvertising
             log("Advertising started", type: .success)
         }
     }

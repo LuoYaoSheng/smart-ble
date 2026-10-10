@@ -1,5 +1,6 @@
 """A selected device session; background results cannot cross into another device."""
 import asyncio
+import re
 from concurrent.futures import CancelledError
 
 from PySide6.QtCore import QObject, Signal
@@ -113,7 +114,7 @@ class HidSession(QObject):
     def refresh(self):
         async def read(client):
             info = parse_info(bytes(await client.read_gatt_char(INFO)).decode('utf-8'))
-            if not info or info['product'] != 'smart-hid' or info['protocol'] != C['protocolVersion']:
+            if not info or info['product'] != 'smart-hid' or info['protocol'] != C['protocolVersion'] or not re.fullmatch(C['deviceIdPattern'], info['device_id']):
                 raise ProtocolError('设备身份或协议不匹配')
             status = parse_status(bytes(await client.read_gatt_char(STATUS)).decode('utf-8'))
             if status is None:

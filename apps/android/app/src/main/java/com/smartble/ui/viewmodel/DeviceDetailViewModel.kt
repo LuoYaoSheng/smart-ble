@@ -58,6 +58,11 @@ class DeviceDetailViewModel(
         observeConnectionState()
         observeServices()
         observeCharacteristicChanges()
+        viewModelScope.launch {
+            bleManager.operationFailures.collect { event ->
+                if (event.deviceId == deviceId) Logger.error(event.message)
+            }
+        }
         connectToDevice()
     }
 

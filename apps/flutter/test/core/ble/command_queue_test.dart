@@ -40,8 +40,8 @@ void main() {
       expect(queue.isFull, isTrue);
       expect(() => queue.enqueue(item('q16')), throwsStateError);
       // 批量超额整批拒绝
-      expect(() => queue.enqueueBatch([item('x1'), item('x2')]),
-          throwsStateError);
+      expect(
+          () => queue.enqueueBatch([item('x1'), item('x2')]), throwsStateError);
       expect(queue.pendingCount, 16, reason: '拒绝时不得部分入队');
       expect(queue.queue.where((c) => c.id.startsWith('x')), isEmpty);
     });
@@ -76,10 +76,57 @@ void main() {
 
     test('循环模板超过深度上限拒绝启动', () {
       final queue = CommandQueue(sender: (cmd) async {}, intervalMs: 0);
-      expect(
-          () => queue.startLoop(List.generate(17, (i) => item('l$i'))),
+      expect(() => queue.startLoop(List.generate(17, (i) => item('l$i'))),
           throwsStateError);
       expect(queue.isLooping, isFalse);
+    });
+
+    test('clear suppresses old receipts and never creates two workers',
+        () async {
+      final oldReceipt = Completer<void>();
+      final starts = <String>[];
+      final completed = <String>[];
+      final queue = CommandQueue(
+          sender: (cmd) async {
+            starts.add(cmd.id);
+            if (cmd.id == 'old') await oldReceipt.future;
+          },
+          intervalMs: 0,
+          onCommandComplete: (cmd) => completed.add(cmd.id));
+      final old = item('old');
+      queue.enqueueBatch([old, item('discarded')]);
+      queue.clear();
+      queue.enqueueBatch([item('new1'), item('new2')]);
+      expect(starts, ['old']);
+      expect(old.status, CommandStatus.cancelled);
+      oldReceipt.complete();
+      await Future<void>.delayed(const Duration(milliseconds: 30));
+      expect(starts, ['old', 'new1', 'new2']);
+      expect(completed, ['new1', 'new2']);
+      expect(queue.history.map((c) => c.id), ['new1', 'new2']);
+    });
+
+    test('loop starts immediately and terminates at its limit', () async {
+      final sent = <String>[];
+      final queue =
+          CommandQueue(sender: (cmd) async => sent.add(cmd.id), intervalMs: 0);
+      queue.startLoop([item('a'), item('b')], loopCount: 2);
+      await Future<void>.delayed(const Duration(milliseconds: 30));
+      expect(sent, ['a_loop1', 'b_loop1', 'a_loop2', 'b_loop2']);
+      expect(queue.isRunning, isFalse);
+      expect(queue.isLooping, isFalse);
+      expect(() => queue.startLoop([]), throwsArgumentError);
+    });
+
+    test('depth includes in-flight writes and rejects loop overfill', () {
+      final queue =
+          CommandQueue(sender: (_) => Completer<void>().future, maxDepth: 2);
+      queue.enqueue(item('active'));
+      queue.enqueue(item('waiting'));
+      expect(queue.isFull, isTrue);
+      expect(() => queue.enqueue(item('overflow')), throwsStateError);
+      expect(() => queue.startLoop([item('loop')]), throwsStateError);
+      queue.clear();
     });
 
     test('跨设备并行：per-device 队列互不阻塞（F009 跨设备并行语义）', () async {

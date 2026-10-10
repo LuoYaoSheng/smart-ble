@@ -235,11 +235,12 @@ class BleService(QObject):
     def start_scan(self, timeout: float = 5.0) -> None:
         if self.scanning:
             return
-        self._worker = _ScanWorker(timeout)
-        self._worker.finished_ok.connect(self.scan_done)
-        self._worker.failed.connect(self.scan_failed)
-        self._worker.cancelled.connect(self.scan_stopped.emit)
-        self._worker.start()
+        worker = _ScanWorker(timeout)
+        self._worker = worker
+        worker.finished_ok.connect(lambda hits: self.scan_done.emit(hits) if self._worker is worker else None)
+        worker.failed.connect(lambda error: self.scan_failed.emit(error) if self._worker is worker else None)
+        worker.cancelled.connect(lambda: self.scan_stopped.emit() if self._worker is worker else None)
+        worker.start()
 
     def stop_scan(self) -> None:
         if self._worker is not None:
@@ -428,7 +429,8 @@ class BleService(QObject):
             return
 
         def _on_notify(_char, data: bytearray, _a=address, _u=uuid) -> None:
-            self.char_notified.emit(_a, _u, hex_spaced(bytes(data)))
+            if self._clients.get(_a) is client:
+                self.char_notified.emit(_a, _u, hex_spaced(bytes(data)))
 
         async def _start():
             await client.start_notify(uuid, _on_notify)
@@ -457,9 +459,13 @@ class BleService(QObject):
             tab.discard(uuid)
 
     def _submit_op(self, op: str, address: str, uuid: str, aw, on_ok) -> None:
+        client = self._clients.get(address)
+        generation = self._generations.get(address, 0)
         fut = self._gatt.submit(aw)
 
         def _done(f: Future) -> None:
+            if self._clients.get(address) is not client or self._generations.get(address, 0) != generation:
+                return
             try:
                 v = f.result()
             except Exception as exc:  # noqa: BLE001 - GATT 失败落日志

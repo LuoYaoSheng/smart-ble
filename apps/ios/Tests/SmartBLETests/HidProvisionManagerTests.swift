@@ -278,3 +278,72 @@ private final class FakeHidProvisionTransport: HidProvisionTransport {
         emit(.value(deviceId: deviceId, characteristicUUID: uuid, data: Data(text.utf8)))
     }
 }
+
+@MainActor
+final class BLEWriteQueueTests: XCTestCase {
+    func testAdvertisingUuidValidationRejectsUnsafeInput() {
+        XCTAssertTrue(BLEManager.isValidBluetoothUUID("180D"))
+        XCTAssertTrue(BLEManager.isValidBluetoothUUID("12345678"))
+        XCTAssertTrue(BLEManager.isValidBluetoothUUID(HidProtocol.serviceUuid))
+        XCTAssertFalse(BLEManager.isValidBluetoothUUID("oops"))
+        XCTAssertFalse(BLEManager.isValidBluetoothUUID(""))
+        XCTAssertFalse(BLEManager.isValidBluetoothUUID("12Ｚ4"))
+    }
+    func testDeviceIsolationAndAcknowledgementOrder() {
+        let queue = BLEWriteQueue()
+        var order: [String] = []
+        XCTAssertTrue(queue.enqueue(deviceId: "A", key: "first") { order.append("A1"); return .awaitingResponse })
+        XCTAssertTrue(queue.enqueue(deviceId: "A", key: "second") { order.append("A2"); return .awaitingResponse })
+        XCTAssertTrue(queue.enqueue(deviceId: "B", key: "first") { order.append("B1"); return .awaitingResponse })
+        XCTAssertEqual(order, ["A1", "B1"])
+        queue.complete(deviceId: "A", key: "unrelated")
+        XCTAssertEqual(queue.depth("A"), 2)
+        queue.complete(deviceId: "A", key: "first")
+        XCTAssertEqual(order, ["A1", "B1", "A2"])
+        queue.cancel(deviceId: "A")
+        queue.cancel(deviceId: "B")
+    }
+
+    func testDepthIncludesInFlightAndCancelDropsPending() {
+        let queue = BLEWriteQueue()
+        var count = 0
+        for i in 0..<16 {
+            XCTAssertTrue(queue.enqueue(deviceId: "A", key: "\(i)") { count += 1; return .awaitingResponse })
+        }
+        XCTAssertFalse(queue.enqueue(deviceId: "A", key: "overflow") { XCTFail("must not send"); return .completed })
+        XCTAssertEqual(queue.depth("A"), 16)
+        queue.cancel(deviceId: "A")
+        queue.complete(deviceId: "A", key: "0")
+        XCTAssertEqual(count, 1)
+        XCTAssertEqual(queue.depth("A"), 0)
+    }
+
+    func testTimeoutCancelsDeviceWithoutSendingTheNextWrite() async throws {
+        let queue = BLEWriteQueue(timeout: 0.02)
+        var timedOut: [String] = []
+        queue.onTimeout = { timedOut.append($0) }
+        queue.enqueue(deviceId: "A", key: "hang") { .awaitingResponse }
+        queue.enqueue(deviceId: "A", key: "next") { XCTFail("timeout must retire the session"); return .completed }
+        try await Task.sleep(nanoseconds: 100_000_000)
+        XCTAssertEqual(timedOut, ["A"])
+        XCTAssertEqual(queue.depth("A"), 0)
+    }
+
+    func testWithoutResponseBackpressureResumesAndCompletes() {
+        let queue = BLEWriteQueue()
+        var ready = false
+        var sent = 0
+        queue.enqueue(deviceId: "A", key: "noResponse") {
+            if !ready { return .blocked }
+            sent += 1
+            return .completed
+        }
+        XCTAssertEqual(sent, 0)
+        XCTAssertEqual(queue.depth("A"), 1)
+        ready = true
+        queue.drain("A")
+        XCTAssertEqual(sent, 1)
+        XCTAssertEqual(queue.depth("A"), 0)
+        queue.cancel(deviceId: "A")
+    }
+}

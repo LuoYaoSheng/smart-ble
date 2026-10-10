@@ -457,24 +457,24 @@ async function setupTauriListeners() {
     });
 }
 
-// T06: Auto-Reconnect (aligned with Flutter: max 3 attempts, 2s/4s/6s backoff)
+// T06: Auto-Reconnect (aligned with Flutter: max 3 attempts, 1s/3s/5s backoff)
 // MAX_RECONNECT_ATTEMPTS 顶层常量由 BleUtils.js 声明（经典脚本共享全局词法环境）；
 // 此处不得重复声明——重复声明会让整个 app.js 在实例化期 SyntaxError 而完全不执行。
 
 function attemptReconnect(deviceId) {
     const rc = state.reconnect;
-    if (!rc.enabled || rc.userDisconnected.has(deviceId)) return;
+    if (!rc.enabled || rc.userDisconnected.has(deviceId) || rc.timers.has(deviceId) || state.connectedDevices.has(deviceId)) return;
+    if (window.SmartHidService?.ownsDevice?.(deviceId)) return;
 
     const attempts = rc.attempts.get(deviceId) || 0;
     if (attempts >= MAX_RECONNECT_ATTEMPTS) {
         addLog('error', `Max reconnect attempts (${MAX_RECONNECT_ATTEMPTS}) reached for ${deviceId}, giving up`);
-        rc.attempts.delete(deviceId);
         return;
     }
 
     const nextAttempt = attempts + 1;
     rc.attempts.set(deviceId, nextAttempt);
-    const delayMs = nextAttempt * 2000; // 2s, 4s, 6s
+    const delayMs = window.BleUtils.reconnectDelay(nextAttempt); // 1s, 3s, 5s
     addLog('info', `Will reconnect to ${deviceId} in ${delayMs / 1000}s (attempt ${nextAttempt}/${MAX_RECONNECT_ATTEMPTS})`);
 
     // Cancel any pending timer
@@ -484,9 +484,11 @@ function attemptReconnect(deviceId) {
 
     rc.timers.set(deviceId, setTimeout(async () => {
         rc.timers.delete(deviceId);
+        if (!rc.enabled || rc.userDisconnected.has(deviceId) || window.SmartHidService?.ownsDevice?.(deviceId)) return;
         addLog('info', `Reconnecting to ${deviceId} (attempt ${nextAttempt})...`);
         try {
             const result = await invoke('connect', { deviceId });
+            if (rc.userDisconnected.has(deviceId)) { if (result.success) await invoke('disconnect', { deviceId }); return; }
             if (result.success) {
                 rc.attempts.set(deviceId, 0);
                 state.connectedDevices.add(deviceId);
@@ -1382,7 +1384,7 @@ function renderServices() {
         <div class="op ${mode === 'loading' ? '' : mode}">
             ${mode === 'loading' ? '<span class="spin"></span>'
                 : `<span class="ico" style="color:${mode === 'ok' ? '#0E9A80' : mode === 'warn' ? '#C77E14' : 'var(--c-danger)'}"><svg class="ic" aria-hidden="true"><use href="#i-${mode === 'warn' ? 'warn' : 'x'}"/></svg></span>`}
-            <div style="flex:1"><div class="t">${title}</div>${desc ? `<div class="d">${desc}</div>` : ''}</div>
+            <div style="flex:1"><div class="t">${escapeHtml(title)}</div>${desc ? `<div class="d">${escapeHtml(desc)}</div>` : ''}</div>
         </div>`;
 
     if (!isConn) {
@@ -1906,7 +1908,7 @@ function hidRenderProgressCard() {
     card.innerHTML = rows.map(([key, label]) => {
         const st = (p.progress || {})[key] || 'pending';
         const glyph = st === 'done' ? '✓' : st === 'fail' ? '✕' : '·';
-        const dt = (p.err && p.err.row === key) ? `<span class="dt mono">${p.err.code}</span>` : '';
+        const dt = (p.err && p.err.row === key) ? `<span class="dt mono">${escapeHtml(p.err.code)}</span>` : '';
         return `<div class="prow ${st}"><span class="st-i">${glyph}</span><span class="t">${label}</span>${dt}</div>`;
     }).join('');
 }
@@ -1971,7 +1973,7 @@ function hidShowModal({ title, bodyHtml, buttons, onMount }) {
     mask.id = 'hidModalMask';
     mask.innerHTML = `
         <div class="modal" style="max-width:440px">
-            <div class="t">${title}</div>
+            <div class="t">${escapeHtml(title)}</div>
             <div class="m-body" id="hidModalBody">${bodyHtml || ''}</div>
             <div style="display:flex;gap:9px;margin-top:14px" id="hidModalActs"></div>
         </div>`;
@@ -2507,21 +2509,21 @@ function hidRenderDiag() {
             : r.state === 'warn' ? '<svg class="ic sm" aria-hidden="true"><use href="#i-warn"/></svg>'
                 : r.state === 'fail' ? '<svg class="ic sm" aria-hidden="true"><use href="#i-x"/></svg>'
                     : '·';
-        return `<div class="diag ${r.state}"><span class="ico">${icon}</span>
-            <div style="flex:1"><div style="display:flex;align-items:center"><span class="t">${r.label}</span>
-            <span class="word">${wordMap[r.state] || r.state}</span></div>
-            ${r.detail ? `<div class="dt">${r.detail}</div>` : ''}</div></div>`;
+        return `<div class="diag ${escapeHtml(r.state)}"><span class="ico">${icon}</span>
+            <div style="flex:1"><div style="display:flex;align-items:center"><span class="t">${escapeHtml(r.label)}</span>
+            <span class="word">${escapeHtml(wordMap[r.state] || r.state)}</span></div>
+            ${r.detail ? `<div class="dt">${escapeHtml(r.detail)}</div>` : ''}</div></div>`;
     }).join('');
     body.innerHTML = `
         <div class="card" style="margin-top:12px;display:flex;align-items:center;gap:10px">
             <span class="badge ${tone}"><span class="dot"></span><span>${word}</span></span>
-            <span class="mono" style="font-size:var(--fs-mini);color:var(--c-mut)">${d.deviceId}</span></div>
+            <span class="mono" style="font-size:var(--fs-mini);color:var(--c-mut)">${escapeHtml(d.deviceId)}</span></div>
         <div class="card">${rowsHtml}</div>
         ${d.error ? `
         <div class="op ${d.state === 'error' ? 'err' : 'warn'}" style="margin-bottom:12px">
-            <div><div class="t">错误详情</div><div class="d">${d.error.message}</div></div></div>
+            <div><div class="t">错误详情</div><div class="d">${escapeHtml(d.error.message)}</div></div></div>
         <button class="btn ghost sm" id="hidDiagToggleErr" style="width:100%">${d.showErr ? '隐藏错误码' : '显示错误码（详细信息）'}</button>
-        ${d.showErr ? `<div class="ad-sec" style="margin-top:10px"><div class="hd"><span>code</span></div><div class="hex mono" style="color:#FF8B94">${d.error.code}</div></div>` : ''}` : ''}
+        ${d.showErr ? `<div class="ad-sec" style="margin-top:10px"><div class="hd"><span>code</span></div><div class="hex mono" style="color:#FF8B94">${escapeHtml(d.error.code)}</div></div>` : ''}` : ''}
         <div style="margin-top:14px;display:flex;flex-direction:column;gap:9px">
             <button class="btn primary" id="hidDiagRun" style="width:100%" ${d.connecting || d.state === 'checking' ? 'disabled' : ''}>
                 <svg class="ic sm" aria-hidden="true"><use href="#i-refresh"/></svg><span>${d.connecting || d.state === 'checking' ? '检测中…' : '重新检测'}</span></button>

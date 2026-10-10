@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="../../../../core/protocols/smart-hid-v1-vectors.json" Link="smart-hid-v1-vectors.json" CopyToOutputDirectory="PreserveNewest" />
     <ProjectReference Include="..\SmartBLE.Desktop\SmartBLE.Desktop.csproj" />
   </ItemGroup>
 

@@ -33,6 +33,7 @@ public partial class MainWindow : Window
             {
                 if (Clipboard != null) await Clipboard.SetTextAsync(text);
             };
+            vm.ClipboardReader = async () => Clipboard == null ? null : await Clipboard.GetTextAsync();
             vm.ExportLogsRequestedAsync = ExportLogsToFileAsync;
         }
     }
