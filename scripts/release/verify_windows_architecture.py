@@ -1,10 +1,11 @@
-"""Validate native PE application images and plugins in Flutter or Electron outputs."""
+"""Validate native PE application images and plugins in Windows application outputs (including Python extension modules)."""
 import argparse
 import json
 import struct
 from pathlib import Path
 
 MACHINES = {'x64': 0x8664, 'arm64': 0xAA64}
+NATIVE_SUFFIXES = ('.exe', '.dll', '.node', '.pyd')
 
 
 def machine(path):
@@ -30,10 +31,14 @@ def verify(paths, architecture):
     return {'architecture': architecture, 'verified_images': checked}
 
 
+def images(directory):
+    return [p for p in Path(directory).rglob('*') if p.is_file() and p.suffix.lower() in NATIVE_SUFFIXES]
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('directory', type=Path)
     parser.add_argument('--architecture', required=True, choices=MACHINES)
     args = parser.parse_args()
-    files = [p for p in args.directory.rglob('*') if p.is_file() and p.suffix.lower() in ('.exe', '.dll', '.node')]
+    files = images(args.directory)
     print(json.dumps(verify(files, args.architecture), indent=2))
