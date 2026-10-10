@@ -358,8 +358,15 @@ class ScanPage(QWidget):
         self._scan_btn.setObjectName("Primary")
         self._scan_btn.setIcon(QIcon(render_icon("scan", "#FFFFFF", 17)))
         self._scan_btn.clicked.connect(self._toggle)
+        self._scan_btn.setEnabled(False)
         scantool.addWidget(self._scan_btn)
         page.addLayout(scantool)
+        self._availability_hint = QLabel(ble.availability.hint)
+        self._availability_hint.setWordWrap(True)
+        page.addWidget(self._availability_hint)
+        self._retry_bluetooth = QPushButton('重新检测蓝牙')
+        self._retry_bluetooth.clicked.connect(ble.refresh_availability)
+        page.addWidget(self._retry_bluetooth)
 
         # sec-t：芯片图标 + 附近设备 + 数量 chip | 筛选 txtlink
         sect = QHBoxLayout()
@@ -407,14 +414,30 @@ class ScanPage(QWidget):
         ble.scan_failed.connect(self._on_failed)
         ble.scan_stopped.connect(self._on_scan_stopped)
         ble.op_failed.connect(self._on_op_failed)
-        # bt-chip 初始态：bleak 后端可用即就绪（无线电关由扫描失败词映射 off）
-        QTimer.singleShot(0, lambda: self._bt_chip.set_state("unknown", "蓝牙待检测"))
+        ble.availability_changed.connect(self._on_availability)
+        ble.scan_started.connect(self._on_scan_started)
+        self._on_availability(ble.availability)
+
+    def _on_availability(self, state):
+        self._bt_chip.set_state(state.dot, state.word)
+        self._availability_hint.setText(state.hint)
+        pending = self._ble.scan_start_pending
+        self._scan_btn.setEnabled(state.can_scan or self._ble.scanning or pending)
+        self._retry_bluetooth.setEnabled(state.state != 'checking')
+        if not self._ble.scanning and not pending: self._status.setText(state.word)
+
+    def _on_scan_started(self):
+        self._status.setText('正在扫描…')
+        self._scan_btn.setText('停止扫描')
+        self._scan_btn.setEnabled(True)
+        self._live.start()
 
     def _on_scan_stopped(self):
         self._scan_btn.setText('开始扫描')
         self._live.stop()
-        if self._status.text() == '正在扫描…':
+        if self._status.text() in ('正在扫描…', '正在检查蓝牙…'):
             self._status.setText('已停止')
+        self._scan_btn.setEnabled(self._ble.availability.can_scan)
 
     # ── 筛选（E getFilteredDevices 同语义） ──
 
@@ -444,16 +467,15 @@ class ScanPage(QWidget):
     # ── 扫描 ──
 
     def _toggle(self) -> None:
-        if self._ble.scanning:
+        if self._ble.scanning or self._ble.scan_start_pending:
             self._ble.stop_scan()
             self._status.setText("已停止")
             self._scan_btn.setText("开始扫描")
             self._live.stop()
             return
-        self._status.setText("正在扫描…")
-        self._scan_btn.setText("停止扫描")
-        self._live.start()
-        self._ble.start_scan(5.0)
+        if self._ble.start_scan(5.0):
+            self._status.setText('正在检查蓝牙…')
+            self._scan_btn.setText('取消扫描')
 
     def _connect_selected(self) -> None:
         row = self._list.currentRow()
@@ -488,6 +510,7 @@ class ScanPage(QWidget):
         self._hits = hits
         self._status.setText(f"扫描完成 · 发现 {len(hits)} 台")
         self._scan_btn.setText("开始扫描")
+        self._scan_btn.setEnabled(self._ble.availability.can_scan)
         self._live.stop()
         self._rebuild()
 
@@ -513,9 +536,7 @@ class ScanPage(QWidget):
         self._status.setText(f"扫描失败：{msg}")
         self._scan_btn.setText("开始扫描")
         self._live.stop()
-        low = str(msg).lower()
-        if any(k in low for k in ("off", "radio", "turn", "enabled", "power")):
-            self._bt_chip.set_state("off", "蓝牙未开启")
+        self._scan_btn.setEnabled(self._ble.availability.can_scan)
 
     def _on_op_failed(self, op: str, address: str, msg: str) -> None:
         if op == "connect":
@@ -995,6 +1016,11 @@ class BroadcastPage(QWidget):
 
         for edit in (self._f_name, self._f_uuid, self._f_mfg_id, self._f_mfg_data):
             edit.textChanged.connect(self._refresh_budget)
+        ble.availability_changed.connect(self._on_availability)
+        self._refresh_budget()
+
+    def _on_availability(self, state):
+        if not self._ble.advertising: self._status_chip.setText(state.word if not state.can_scan else '未发射')
         self._refresh_budget()
 
     # ── 预算与校验 ──
@@ -1022,7 +1048,7 @@ class BroadcastPage(QWidget):
             self._b_total.setText(f"合计 —— {total} B")
             self._b_total.setStyleSheet("background:transparent;")
         if not self._ble.advertising:
-            self._start_btn.setEnabled(total <= 31)
+            self._start_btn.setEnabled(total <= 31 and self._ble.availability.can_scan)
 
     # ── 启停 ──
 
@@ -1067,7 +1093,7 @@ class BroadcastPage(QWidget):
         else:
             self._status_chip.setText("未发射")
             self._log_line(f"失败：{result.get('error', '未知错误')}")
-        self._start_btn.setEnabled(not self._ble.advertising)
+        self._start_btn.setEnabled(not self._ble.advertising and self._ble.availability.can_scan)
         self._stop_btn.setEnabled(self._ble.advertising)
 
 
@@ -1191,13 +1217,13 @@ class AboutPage(QWidget):
 class MainWindow(QMainWindow):
     IDX_SCAN, IDX_CONNECTED, IDX_BROADCAST, IDX_ABOUT, IDX_DETAIL, IDX_PROVISION, IDX_HID_DETAIL, IDX_DIAGNOSTICS, IDX_VERSIONS = range(9)
 
-    def __init__(self) -> None:
+    def __init__(self, availability_reader=None) -> None:
         super().__init__()
         # 壳家族口径：E/V/F/G 同为 1200x900，标题 SmartBLE
         self.setWindowTitle("BLE Toolkit+")
         self.resize(1200, 900)
         self.setMinimumWidth(940)
-        self._ble = BleService(self)
+        self._ble = BleService(self, availability_reader=availability_reader)
         self._exit_confirmed = False
 
         central = QWidget()
@@ -1254,13 +1280,14 @@ class MainWindow(QMainWindow):
         # 已连接角标 .n 口径：通用连接计数（正典 connectedBadge）
         self._ble.device_connected.connect(lambda *_: self._refresh_badge())
         self._ble.device_disconnected.connect(lambda *_: self._refresh_badge())
+        QTimer.singleShot(0, self._ble.refresh_availability)
 
     # ── 导航 ──
 
     def _on_tab(self, index: int) -> None:
         # win016 正典：切入广播页先停扫描；切出广播页即停广播（边车真停播）
         leaving_broadcast = self._stack.currentIndex() == self.IDX_BROADCAST
-        if index == self.IDX_BROADCAST and self._ble.scanning:
+        if index == self.IDX_BROADCAST and (self._ble.scanning or self._ble.scan_start_pending):
             self._ble.stop_scan()
         if leaving_broadcast and index != self.IDX_BROADCAST and self._ble.advertising:
             self._broadcast_page.stop_from_outside()

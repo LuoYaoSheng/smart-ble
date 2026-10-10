@@ -63,7 +63,7 @@
       "distribution": "NOT_RUN",
       "software_checks": {
         "status": "PASS",
-        "unit_widget_tests": 149,
+        "unit_widget_tests": 156,
         "analysis": "PASS"
       },
       "candidate_architectures_built": {
@@ -262,7 +262,7 @@
       "distribution": "NOT_RUN",
       "software_checks": {
         "status": "PASS",
-        "test_methods": 48
+        "test_methods": 55
       },
       "candidate_architectures_built": [
         "x64",

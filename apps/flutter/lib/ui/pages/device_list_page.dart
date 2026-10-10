@@ -109,6 +109,13 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
     super.dispose();
   }
 
+  bool get _canStartScan {
+    final state = ref.read(bleStateProvider).value;
+    return _isInitialized &&
+        (state == BleState.on ||
+            (Platform.isAndroid && state == BleState.unauthorized));
+  }
+
   Future<void> _initializeBle() async {
     try {
       if (Platform.isAndroid && !await hasAndroidBlePermissions()) {
@@ -389,7 +396,7 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
             label: isScanning ? '停止扫描' : '开始扫描',
             tone: isScanning ? AppButtonTone.danger : AppButtonTone.primary,
             icon: isScanning ? 'stop' : 'scan',
-            disabled: !_isInitialized,
+            disabled: !isScanning && !_canStartScan,
             onTap: _toggleScan,
           ),
         ],
@@ -445,7 +452,7 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
           description: filteredMiss ? '调整筛选条件试试' : '点上方按钮开始扫描附近 BLE 设备',
           actionLabel: !_hasScanned ? '开始扫描' : null,
           actionIcon: 'scan',
-          onAction: _isInitialized ? _startScan : null,
+          onAction: _canStartScan ? _startScan : null,
         ),
       ),
     );

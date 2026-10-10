@@ -138,8 +138,49 @@ final class AccessibilityAuditUITests: XCTestCase {
         .dynamicType, .textClipped, .trait,
     ]
 
+    // CI evidence showed a SpringBoard Apple Intelligence banner over the App
+    // while elementDetection scanned its pixels. Its text has no App AX node.
+    // Wait for this observed interference to actually disappear; never suppress
+    // audit issues or continue through an obstructed screen on timeout.
+    private func waitForObservedSystemBannerToDisappear() throws {
+        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
+        let banner = springboard.staticTexts.matching(NSPredicate(
+            format: "label CONTAINS[c] %@ OR label CONTAINS[c] %@",
+            "Ready for Apple Intelligence",
+            "Time to experience the new personal intelligence system."
+        )).firstMatch
+        guard banner.exists else { return }
+
+        func attachInterference(_ phase: String) {
+            let hierarchy = XCTAttachment(string: springboard.debugDescription)
+            hierarchy.name = "Apple Intelligence system interference \(phase) hierarchy"
+            hierarchy.lifetime = .keepAlways
+            add(hierarchy)
+            let screenshot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+            screenshot.name = "Apple Intelligence system interference \(phase) screen"
+            screenshot.lifetime = .keepAlways
+            add(screenshot)
+        }
+
+        print("[A11Y-SYSTEM-INTERFERENCE] Apple Intelligence banner detected")
+        attachInterference("detected")
+        let disappeared = XCTNSPredicateExpectation(
+            predicate: NSPredicate { _, _ in !banner.exists }, object: nil
+        )
+        guard XCTWaiter.wait(for: [disappeared], timeout: 20) == .completed else {
+            attachInterference("timeout")
+            throw NSError(
+                domain: "AccessibilityAuditSystemInterference", code: 1,
+                userInfo: [NSLocalizedDescriptionKey:
+                    "Apple Intelligence system banner did not disappear before accessibility audit"]
+            )
+        }
+        print("[A11Y-SYSTEM-INTERFERENCE] Apple Intelligence banner disappeared")
+    }
+
     private func auditStrictly(for types: XCUIAccessibilityAuditType = .all) throws {
         for type in Self.iosAuditTypes where types.contains(type) {
+            try waitForObservedSystemBannerToDisappear()
             print("[A11Y-STRUCTURAL] audit=\(type)")
             try app.performAccessibilityAudit(for: type) { issue in
                 let element = issue.element
@@ -168,6 +209,7 @@ final class AccessibilityAuditUITests: XCTestCase {
 
     private func auditLoggingOnly(_ state: String) throws {
         for type in Self.iosAuditTypes {
+            try waitForObservedSystemBannerToDisappear()
             try app.performAccessibilityAudit(for: type) { issue in
                 let el = issue.element
                 let label = el?.label ?? "?"

@@ -21,8 +21,9 @@ from dataclasses import dataclass, field
 from reconnect_policy import reconnect
 from gatt_routing import resolve_characteristic, key as gatt_key
 from att_client import AttClient, owns_native
+from bluetooth_availability import availability, exception_availability, query_windows_availability
 
-from PySide6.QtCore import QObject, QThread, Signal
+from PySide6.QtCore import QObject, QThread, Signal, Slot
 
 # ── UUID 展示名（与 G-WIN app.go 的 serviceNamesCN/charNamesCN 同源移植）──
 
@@ -93,10 +94,13 @@ class _ScanWorker(QThread):
     finished_ok = Signal(list)  # list[ScanHit]
     failed = Signal(str)
     cancelled = Signal()
+    started_scan = Signal()
+    availability_changed = Signal(object)
 
-    def __init__(self, timeout: float = 5.0, parent: QObject | None = None) -> None:
+    def __init__(self, timeout: float = 5.0, parent: QObject | None = None, availability_reader=None) -> None:
         super().__init__(parent)
         self._timeout = timeout
+        self._availability_reader = availability_reader or query_windows_availability
         self._loop = None
         self._task = None
 
@@ -107,9 +111,15 @@ class _ScanWorker(QThread):
 
     def run(self) -> None:  # pragma: no cover - 线程体
         async def _scan() -> list[ScanHit]:
+            state = await self._availability_reader()
+            self.availability_changed.emit(state)
+            if not state.can_scan:
+                raise RuntimeError(state.hint)
             from bleak import BleakScanner
-
-            found = await BleakScanner.discover(timeout=self._timeout, return_adv=True)
+            async with BleakScanner() as scanner:
+                self.started_scan.emit()
+                await asyncio.sleep(self._timeout)
+                found = scanner.discovered_devices_and_advertisement_data
             hits: list[ScanHit] = []
             for dev, adv in found.values():
                 mfr_id = None
@@ -192,6 +202,9 @@ class BleService(QObject):
     scan_done = Signal(list)          # list[ScanHit]
     scan_failed = Signal(str)
     scan_stopped = Signal()
+    scan_started = Signal()
+    availability_changed = Signal(object)
+    _probe_completed = Signal(object)
     device_connected = Signal(str, str, object)   # address, name, gatt_tree(dict)
     device_reconnected = Signal(str, str, object)
     device_disconnected = Signal(str, bool)       # address, expected(手动断开)
@@ -203,8 +216,16 @@ class BleService(QObject):
 
     CONNECT_TIMEOUT = 10.0
 
-    def __init__(self, parent: QObject | None = None) -> None:
+    def __init__(self, parent: QObject | None = None, availability_reader=None) -> None:
         super().__init__(parent)
+        self._availability_reader = availability_reader or query_windows_availability
+        self.availability = availability('checking')
+        self._closing = False
+        self._probe_generation = 0
+        self._probe_future = None
+        self._scan_pending = False
+        self._scanning = False
+        self._probe_completed.connect(self._on_probe_completed)
         self._worker: _ScanWorker | None = None
         self._gatt = GattWorker()
         self._gatt.start()
@@ -221,14 +242,59 @@ class BleService(QObject):
         self._generations = {}
         self._reconnect_tasks = {}
 
+    @Slot(object)
+    def _apply_availability(self, state):
+        sender = self.sender()
+        if self._closing or isinstance(sender, _ScanWorker) and sender is not self._worker: return
+        self.availability = state
+        self.availability_changed.emit(state)
+        if not state.can_scan and self.scanning: self.stop_scan()
+
+    async def _read_availability(self):
+        try:
+            return await asyncio.wait_for(self._availability_reader(), timeout=7)
+        except Exception as error:
+            return exception_availability(error)
+
+    def refresh_availability(self):
+        if self._closing or (self._probe_future is not None and not self._probe_future.done()): return
+        self._probe_generation += 1
+        generation = self._probe_generation
+        self._apply_availability(availability('checking'))
+        future = self._gatt.submit(self._read_availability())
+        self._probe_future = future
+        def done(result):
+            if self._closing: return
+            try: state = result.result()
+            except Exception as error: state = exception_availability(error)
+            self._probe_completed.emit((generation, state))
+        future.add_done_callback(done)
+
+    @Slot(object)
+    def _on_probe_completed(self, result):
+        generation, state = result
+        if not self._closing and generation == self._probe_generation:
+            self._apply_availability(state)
+
+    @property
+    def scan_start_pending(self): return self._scan_pending
+
     # ── 广播（P008 · WIN-BRIDGE 边车） ──
 
     def start_broadcast(self, company_id: int, data: bytes) -> dict:
+        if self._closing: return {'success': False, 'error': '应用正在退出'}
+        self._probe_generation += 1  # a late startup probe cannot overwrite this fresh result
+        try: state = self._gatt.submit(self._read_availability()).result(timeout=8)
+        except Exception as error: state = exception_availability(error)
+        self._apply_availability(state)
+        if not state.can_scan:
+            return {'success': False, 'error': state.hint}
         result = self._broadcast.start(company_id, data)
         self.advertising = bool(result.get("success"))
         return result
 
     def stop_broadcast(self) -> dict:
+        if not self.advertising: return {'success': True}
         result = self._broadcast.stop()
         self.advertising = False
         return result
@@ -237,21 +303,60 @@ class BleService(QObject):
 
     @property
     def scanning(self) -> bool:
-        return self._worker is not None and self._worker.isRunning()
+        return self._scanning
 
-    def start_scan(self, timeout: float = 5.0) -> None:
-        if self.scanning:
-            return
-        worker = _ScanWorker(timeout)
+    def start_scan(self, timeout: float = 5.0) -> bool:
+        if self._closing: return False
+        if not self.availability.can_scan:
+            self.scan_failed.emit(self.availability.hint)
+            return False
+        if self._worker is not None and self._worker.isRunning(): return False
+        worker = _ScanWorker(timeout, availability_reader=self._availability_reader)
         self._worker = worker
-        worker.finished_ok.connect(lambda hits: self.scan_done.emit(hits) if self._worker is worker else None)
-        worker.failed.connect(lambda error: self.scan_failed.emit(error) if self._worker is worker else None)
-        worker.cancelled.connect(lambda: self.scan_stopped.emit() if self._worker is worker else None)
+        self._scan_pending = True
+        worker.availability_changed.connect(self._apply_availability)
+        worker.started_scan.connect(self._on_scan_started)
+        worker.finished_ok.connect(self._on_scan_done)
+        worker.failed.connect(self._on_scan_failed)
+        worker.cancelled.connect(self._on_scan_cancelled)
         worker.start()
+        return True
+
+    @Slot()
+    def _on_scan_started(self):
+        sender = self.sender()
+        if isinstance(sender, _ScanWorker) and sender is not self._worker: return
+        if self._closing or not self._scan_pending: return
+        self._scan_pending = False
+        self._scanning = True
+        self.scan_started.emit()
+
+    @Slot(list)
+    def _on_scan_done(self, hits):
+        sender = self.sender()
+        if isinstance(sender, _ScanWorker) and sender is not self._worker: return
+        self._scan_pending = self._scanning = False
+        if not self._closing: self.scan_done.emit(hits)
+
+    @Slot(str)
+    def _on_scan_failed(self, message):
+        sender = self.sender()
+        if isinstance(sender, _ScanWorker) and sender is not self._worker: return
+        self._scan_pending = self._scanning = False
+        if self._closing: return
+        self.scan_failed.emit(message)
+        self.refresh_availability()  # read real facts; do not infer Off from "radio"
+
+    @Slot()
+    def _on_scan_cancelled(self):
+        sender = self.sender()
+        if isinstance(sender, _ScanWorker) and sender is not self._worker: return
+        self._scan_pending = self._scanning = False
+        if not self._closing: self.scan_stopped.emit()
 
     def stop_scan(self) -> None:
-        if self._worker is not None:
-            self._worker.cancel()
+        self._scan_pending = self._scanning = False
+        if self._worker is not None: self._worker.cancel()
 
     # ── 连接管理 ──
 
@@ -355,6 +460,8 @@ class BleService(QObject):
 
     def shutdown(self) -> None:
         """退出前收尾：先停广播边车（dwin-quit 正典顺序），再断全部连接，停 GATT 线程。"""
+        self._closing = True
+        self._probe_generation += 1
         self._wanted.clear()
         for address in self._generations:
             self._generations[address] += 1

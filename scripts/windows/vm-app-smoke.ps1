@@ -32,7 +32,11 @@ public static class SmartBLEWindow {
 [SmartBLEWindow]::ShowWindow($process.MainWindowHandle,9) | Out-Null
 [SmartBLEWindow]::SetForegroundWindow($process.MainWindowHandle) | Out-Null
 try {
-    $focus = $window.FindFirst([System.Windows.Automation.TreeScope]::Descendants,(New-Object System.Windows.Automation.PropertyCondition([System.Windows.Automation.AutomationElement]::IsKeyboardFocusableProperty,$true)))
+    $focusable = New-Object System.Windows.Automation.PropertyCondition([System.Windows.Automation.AutomationElement]::IsKeyboardFocusableProperty,$true)
+    $enabled = New-Object System.Windows.Automation.PropertyCondition([System.Windows.Automation.AutomationElement]::IsEnabledProperty,$true)
+    $visible = New-Object System.Windows.Automation.PropertyCondition([System.Windows.Automation.AutomationElement]::IsOffscreenProperty,$false)
+    $focusCondition = New-Object System.Windows.Automation.AndCondition($focusable,$enabled,$visible)
+    $focus = $window.FindFirst([System.Windows.Automation.TreeScope]::Descendants,$focusCondition)
     if($focus) {$focus.SetFocus()}
 } catch { }
 

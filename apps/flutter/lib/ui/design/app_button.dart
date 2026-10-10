@@ -36,57 +36,66 @@ class AppButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = _AppButtonColors.of(tone, dangerText, _disabled);
     final sm = size == AppButtonSize.sm;
-    return AnimatedScale(
-      scale: 1,
-      duration: const Duration(milliseconds: AppTokens.durFast),
-      child: Material(
-        color: colors.background,
-        borderRadius: BorderRadius.circular(sm ? AppTokens.rSm : AppTokens.rMd),
-        child: InkWell(
-          onTap: _disabled ? null : onTap,
-          borderRadius: BorderRadius.circular(sm ? AppTokens.rSm : AppTokens.rMd),
-          child: Opacity(
-            opacity: _disabled ? 1 : 1,
-            child: Container(
-              height: sm ? 32.0 : 40.0,
-              padding: EdgeInsets.symmetric(horizontal: sm ? 13.0 : 18.0),
-              decoration: BoxDecoration(
-                gradient: colors.gradient,
-                borderRadius: BorderRadius.circular(sm ? AppTokens.rSm : AppTokens.rMd),
-                border: colors.border,
-                boxShadow: colors.shadow,
-              ),
-              child: Row(
-                mainAxisSize: block ? MainAxisSize.max : MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (loading)
-                    SizedBox(
-                      width: 14,
-                      height: 14,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation(colors.foreground),
+    return Semantics(
+      container: true,
+      button: true,
+      enabled: !_disabled,
+      child: AnimatedScale(
+        scale: 1,
+        duration: const Duration(milliseconds: AppTokens.durFast),
+        child: Material(
+          color: colors.background,
+          borderRadius:
+              BorderRadius.circular(sm ? AppTokens.rSm : AppTokens.rMd),
+          child: InkWell(
+            onTap: _disabled ? null : onTap,
+            borderRadius:
+                BorderRadius.circular(sm ? AppTokens.rSm : AppTokens.rMd),
+            child: Opacity(
+              opacity: _disabled ? 1 : 1,
+              child: Container(
+                height: sm ? 32.0 : 40.0,
+                padding: EdgeInsets.symmetric(horizontal: sm ? 13.0 : 18.0),
+                decoration: BoxDecoration(
+                  gradient: colors.gradient,
+                  borderRadius:
+                      BorderRadius.circular(sm ? AppTokens.rSm : AppTokens.rMd),
+                  border: colors.border,
+                  boxShadow: colors.shadow,
+                ),
+                child: Row(
+                  mainAxisSize: block ? MainAxisSize.max : MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (loading)
+                      SizedBox(
+                        width: 14,
+                        height: 14,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation(colors.foreground),
+                        ),
+                      )
+                    else if (icon != null)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 6),
+                        child: AppIcon(icon!,
+                            size: sm ? 15.0 : 17.0, color: colors.foreground),
                       ),
-                    )
-                  else if (icon != null)
-                    Padding(
-                      padding: const EdgeInsets.only(right: 6),
-                      child: AppIcon(icon!, size: sm ? 15.0 : 17.0, color: colors.foreground),
-                    ),
-                  Flexible(
-                    child: Text(
-                      label,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: colors.foreground,
-                        fontSize: sm ? AppTokens.fsBody : AppTokens.fsH2,
-                        fontWeight: sm ? AppTokens.fsBodyW : AppTokens.fsH2W,
+                    Flexible(
+                      child: Text(
+                        label,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: colors.foreground,
+                          fontSize: sm ? AppTokens.fsBody : AppTokens.fsH2,
+                          fontWeight: sm ? AppTokens.fsBodyW : AppTokens.fsH2W,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -97,6 +106,7 @@ class AppButton extends StatelessWidget {
 }
 
 enum AppButtonTone { primary, danger, ghost, soft }
+
 enum AppButtonSize { md, sm }
 
 class _AppButtonColors {
@@ -113,7 +123,8 @@ class _AppButtonColors {
   final BoxBorder? border;
   final List<BoxShadow>? shadow;
 
-  static _AppButtonColors of(AppButtonTone tone, bool dangerText, bool disabled) {
+  static _AppButtonColors of(
+      AppButtonTone tone, bool dangerText, bool disabled) {
     if (disabled) {
       return const _AppButtonColors(
         background: AppTokens.cFill,
@@ -141,7 +152,12 @@ class _AppButtonColors {
             end: Alignment.bottomRight,
             colors: [AppTokens.cDangerGradHi, AppTokens.cDanger],
           ),
-          shadow: [BoxShadow(offset: Offset(0, 6), blurRadius: 16, color: Color.fromRGBO(242, 85, 95, 0.28))],
+          shadow: [
+            BoxShadow(
+                offset: Offset(0, 6),
+                blurRadius: 16,
+                color: Color.fromRGBO(242, 85, 95, 0.28))
+          ],
         );
       case AppButtonTone.ghost:
         return _AppButtonColors(

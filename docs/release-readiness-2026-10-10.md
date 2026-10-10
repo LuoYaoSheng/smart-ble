@@ -52,6 +52,6 @@ iOS 的预览初始化竞态、窄屏详情宽度、复制反馈和按钮命中�
 
 用户确认所有客户端显示名为 **BLE Toolkit+**，没有 USB 蓝牙适配器时先完成软件验证。窗口、系统显示名称、Mac `.app` 与安装包产品名称已统一；内部工程/目标名称和 `com.i2kai.open.smartble` 保留。
 
-最新本地回归：Flutter 149 项且 analyze 无问题，Windows ARM64 Avalonia 106 项，桌面共享 190 项，Qt 48 项（Windows 实机复核正向测试时限修复中）。SwiftUI 更名后 31 项单测通过。iOS IPA 与 Universal Mac PKG 已重新签名导出并逐包核对名称、Team、签名、描述文件及沙盒/蓝牙/相机权限，见 `release/apple-native-store-build.json`。
+最新本地回归：Flutter 156 项且 analyze 无问题，Windows ARM64 Avalonia 106 项，桌面共享 190 项，Qt 55 项（包含无适配器/操作门禁回归，原生 Windows 包复核中）。SwiftUI 更名后 31 项单测通过。iOS IPA 与 Universal Mac PKG 已重新签名导出并逐包核对名称、Team、签名、描述文件及沙盒/蓝牙/相机权限，见 `release/apple-native-store-build.json`。
 
 虚拟机软件状态与真实无线功能分开记录；无适配器的可用性查询已实际返回 `noAdapter`。详细步骤与最终证据见 `docs/windows-vm-software-validation.md`。

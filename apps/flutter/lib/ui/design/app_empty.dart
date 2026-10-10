@@ -63,6 +63,7 @@ class AppEmpty extends StatelessWidget {
               label: actionLabel!,
               tone: AppButtonTone.soft,
               icon: actionIcon,
+              disabled: onAction == null,
               onTap: onAction,
             ),
           ],

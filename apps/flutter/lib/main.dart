@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'dart:async';
@@ -68,12 +69,18 @@ class _MainScreenState extends State<MainScreen> with WindowListener {
   final PageController _pageController = PageController();
   StreamSubscription<Map<String, BluetoothConnectionState>>? _statesSub;
   Map<String, BluetoothConnectionState> _latestStates = const {};
+  SemanticsHandle? _windowsSemantics;
 
   static const _tabKeys = ['scan', 'connected', 'cast', 'info'];
 
   @override
   void initState() {
     super.initState();
+    if (Platform.isWindows) {
+      // Keep a real accessibility tree for Windows UI Automation and screen
+      // readers throughout the visible app lifetime, including release builds.
+      _windowsSemantics = SemanticsBinding.instance.ensureSemantics();
+    }
     windowManager.addListener(this);
     // 角标口径（正典 tab-bar）：通用连接会话数（+SHID 配网会话，当前实现无该通道）
     _statesSub = BleManager().connectionStatesStream.listen((states) {
@@ -90,6 +97,7 @@ class _MainScreenState extends State<MainScreen> with WindowListener {
   @override
   void dispose() {
     _statesSub?.cancel();
+    _windowsSemantics?.dispose();
     _pageController.dispose();
     windowManager.removeListener(this);
     super.dispose();

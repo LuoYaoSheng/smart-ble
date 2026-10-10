@@ -1,4 +1,4 @@
-﻿param([Parameter(Mandatory=$true)][int]$ProcessId,[Parameter(Mandatory=$true)][string]$Executable,[Parameter(Mandatory=$true)][string]$OutputDirectory,[string]$ExpectedTitle='BLE Toolkit+')
+﻿param([Parameter(Mandatory=$true)][int]$ProcessId,[Parameter(Mandatory=$true)][string]$Executable,[Parameter(Mandatory=$true)][string]$OutputDirectory,[string]$ExpectedTitle='BLE Toolkit+',[string]$BroadcastAnchor='设备名称')
 $ErrorActionPreference='Stop'
 $ProgressPreference='SilentlyContinue'
 [Console]::OutputEncoding=New-Object System.Text.UTF8Encoding($false)
@@ -18,7 +18,7 @@ foreach($name in @('已连接','广播','关于','扫描')) {
  $invoke=$null
  if(-not $button.TryGetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern,[ref]$invoke)){$results+=@{Page=$name;Status='INVOKE_NOT_EXPOSED'};continue}
  $invoke.Invoke()
- $anchor = switch($name) {'已连接' {'通用调试会话'} '广播' {'设备名称'} '关于' {'应用信息'} '扫描' {'附近设备'}}
+ $anchor = switch($name) {'已连接' {'通用调试会话'} '广播' {$BroadcastAnchor} '关于' {'应用信息'} '扫描' {'附近设备'}}
  $deadline=[DateTime]::UtcNow.AddSeconds(8)
  do {
   Start-Sleep -Milliseconds 150

@@ -17,6 +17,8 @@ import '../../core/design/app_icons.dart';
 
 /// 广播状态提供者
 final isAdvertisingProvider = StateProvider<bool>((ref) => false);
+final broadcastPlatformSupportedProvider =
+    Provider<bool>((ref) => BlePeripheralManager.isSupported);
 
 /// 广播页 —— 对齐基准原型 p008：状态收进 AppBar 小徽章，主体为可操作表单
 class BroadcastPage extends ConsumerStatefulWidget {
@@ -43,6 +45,7 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
   String? _errorMessage;
   bool _checked = false;
   bool _runtimeSupported = false;
+  bool _hasStopped = false;
   int _modeIndex = 1; // 0=低延迟 1=平衡 2=低功耗
   int _powerIndex = 3; // 0=超低 1=低 2=中 3=高
   StreamSubscription<PeripheralState>? _stateSubscription;
@@ -51,7 +54,7 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
   static const _modeOptions = ['低延迟', '平衡', '低功耗'];
   static const _powerOptions = ['超低功率', '低功率', '中功率', '高功率'];
 
-  bool get _platformSupported => BlePeripheralManager.isSupported;
+  bool get _platformSupported => ref.read(broadcastPlatformSupportedProvider);
   bool get _isAndroid => Platform.isAndroid;
 
   @override
@@ -70,38 +73,63 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
       return;
     }
 
-    final supported = await _peripheralManager.initialize();
-    if (mounted && supported) {
-      _checked = true;
-      _runtimeSupported = true;
-    }
-
-    // 页面重建（PageView 切换）后状态字段归零，
-    // 以底层真实广播态为准同步，避免 UI 与空口脱节
     try {
+      final supported = await _peripheralManager.isPlatformSupported();
+      if (!mounted) return;
+      setState(() {
+        _checked = true;
+        _runtimeSupported = supported;
+        _errorMessage = null;
+        if (!supported) _peripheralState = PeripheralState.unsupported;
+      });
+      if (!supported) return;
+      // The event channel supplies the current radio state on subscription.
+      // Capability alone does not mean the radio is ready to publish.
+      final stateStream = _peripheralManager.stateStream;
+      if (stateStream != null && _stateSubscription == null) {
+        _stateSubscription = stateStream.listen((state) {
+          if (mounted) {
+            setState(() {
+              _peripheralState = state;
+              _isAdvertising = state == PeripheralState.advertising;
+              ref.read(isAdvertisingProvider.notifier).state = _isAdvertising;
+            });
+          }
+        }, onError: (Object error) {
+          if (mounted) {
+            setState(() {
+              _runtimeSupported = false;
+              _errorMessage = '无法读取广播状态: $error';
+            });
+          }
+        });
+      }
+
       final advertising = await _peripheralManager.isAdvertising;
-      if (mounted && advertising) {
+      if (!mounted) return;
+      if (advertising) {
         setState(() {
           _isAdvertising = true;
           _peripheralState = PeripheralState.advertising;
           ref.read(isAdvertisingProvider.notifier).state = true;
         });
       }
-    } catch (_) {}
-
-    final stateStream = _peripheralManager.stateStream;
-    if (stateStream != null) {
-      _stateSubscription = stateStream.listen((state) {
-        if (mounted) {
-          setState(() {
-            _peripheralState = state;
-            _isAdvertising = state == PeripheralState.advertising;
-            ref.read(isAdvertisingProvider.notifier).state = _isAdvertising;
-          });
-        }
-      });
+    } catch (error) {
+      if (mounted) {
+        setState(() {
+          _checked = true;
+          _runtimeSupported = false;
+          _errorMessage = '无法确认广播就绪状态: $error';
+        });
+      }
     }
   }
+
+  bool get _canStartAdvertising =>
+      _platformSupported &&
+      _checked &&
+      _runtimeSupported &&
+      _peripheralState == PeripheralState.idle;
 
   @override
   void dispose() {
@@ -129,12 +157,15 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
     if (!_platformSupported) return ('不支持', AppBadgeTone.dim, false);
     if (_isAdvertising) return ('广播中', AppBadgeTone.on, true);
     if (_errorMessage != null) return ('失败', AppBadgeTone.err, true);
-    if (_checked &&
-        _runtimeSupported &&
-        _peripheralState == PeripheralState.idle) {
-      return ('已停止', AppBadgeTone.dim, true);
+    if (_checked && !_runtimeSupported) {
+      return ('蓝牙不可用', AppBadgeTone.dim, true);
     }
-    if (_checked && _runtimeSupported) return ('已就绪', AppBadgeTone.warn, true);
+    if (_peripheralState == PeripheralState.poweredOff) {
+      return ('蓝牙未开启', AppBadgeTone.dim, true);
+    }
+    if (_canStartAdvertising) {
+      return (_hasStopped ? '已停止' : '已就绪', AppBadgeTone.warn, true);
+    }
     return ('未就绪', AppBadgeTone.dim, true);
   }
 
@@ -171,6 +202,7 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
   }
 
   Future<void> _startAdvertising() async {
+    if (!_canStartAdvertising) return;
     final uuid = _uuidController.text.trim();
     if (uuid.isEmpty) {
       setState(() => _errorMessage = '请输入服务 UUID');
@@ -226,7 +258,10 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
     try {
       await _peripheralManager.stopAdvertising();
       if (mounted) {
-        setState(() => _isAdvertising = false);
+        setState(() {
+          _isAdvertising = false;
+          _hasStopped = true;
+        });
         ref.read(isAdvertisingProvider.notifier).state = false;
         logger.info('已停止广播');
       }
@@ -246,16 +281,12 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
     if (!await requestAndroidBlePermissions(context, advertise: true)) return;
     if (!mounted) return;
     logger.info('检查广播支持…');
-    final supported = await _peripheralManager.isPlatformSupported();
+    await _initializePeripheral();
     if (!mounted) return;
-    setState(() {
-      _checked = true;
-      _runtimeSupported = supported;
-    });
-    if (supported) {
-      logger.success('设备支持低功耗蓝牙广播');
+    if (_canStartAdvertising) {
+      logger.success('设备支持低功耗蓝牙广播，蓝牙已就绪');
     } else {
-      logger.error('设备不支持低功耗蓝牙广播');
+      logger.error('广播尚未就绪，请确认蓝牙适配器与系统开关');
     }
   }
 
@@ -439,8 +470,12 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
             children: [
               Expanded(
                 child: ElevatedButton.icon(
-                  onPressed:
-                      (_overBudget || _uuidInvalid) ? null : _toggleAdvertising,
+                  onPressed: _isAdvertising ||
+                          (_canStartAdvertising &&
+                              !_overBudget &&
+                              !_uuidInvalid)
+                      ? _toggleAdvertising
+                      : null,
                   icon: AppIcon(_isAdvertising ? 'stop' : 'cast'),
                   label: Text(_isAdvertising ? '停止广播' : '开始广播'),
                   style: ElevatedButton.styleFrom(
