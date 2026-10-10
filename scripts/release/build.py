@@ -138,7 +138,14 @@ def main():
             os_tag = {'Darwin': 'mac', 'Windows': 'win', 'Linux': 'linux'}[host]
             cpu_tag = 'universal' if host == 'Darwin' else architecture
             prefix = f'apps/desktop/electron/dist/Smart-BLE-Open-{version}-{os_tag}-{cpu_tag}'
-            patterns = [f'{prefix}-{kind}.exe' for kind in ('setup', 'portable')] if host == 'Windows' else [f'{prefix}.{extension}' for extension in extensions]
+            if host == 'Windows':
+                patterns = [f'{prefix}-{kind}.exe' for kind in ('setup', 'portable')]
+            else:
+                # Builder translates x64 to amd64 for deb and x86_64 for rpm/AppImage.
+                # Ask the pinned builder rather than guessing a format's CPU suffix.
+                script = 'const u=require("builder-util"); console.log(JSON.stringify(JSON.parse(process.argv[2]).map(e=>u.getArtifactArchName(u.Arch[process.argv[1]],e))))'
+                arch_names = json.loads(subprocess.check_output(['node', '-e', script, cpu_tag, json.dumps(extensions)], cwd=ROOT / 'apps/desktop/electron', text=True, encoding='utf-8', env=env))
+                patterns = [f'apps/desktop/electron/dist/Smart-BLE-Open-{version}-{os_tag}-{cpu}.{extension}' for cpu, extension in zip(arch_names, extensions)]
         elif args.target == 'tauri':
             run(['cargo', 'test', '--locked', '--lib'], ROOT / 'apps/desktop/tauri/src-tauri', env)
             cmd = ['cargo', 'tauri', 'build']
@@ -148,7 +155,8 @@ def main():
                 cmd += ['--target', 'universal-apple-darwin']
                 bundle_dir = 'apps/desktop/tauri/src-tauri/target/universal-apple-darwin/release/bundle'
             run(cmd, ROOT / 'apps/desktop/tauri/src-tauri', env)
-            patterns = [f'{bundle_dir}/**/*.{extension}' for extension in ('dmg', 'msi', 'exe', 'deb', 'AppImage')]
+            bundle_extensions = {'Darwin': ('dmg',), 'Windows': ('msi', 'exe'), 'Linux': ('deb', 'AppImage', 'rpm')}[host]
+            patterns = [f'{bundle_dir}/**/*.{extension}' for extension in bundle_extensions]
         elif args.target == 'avalonia':
             run(['dotnet', 'test', '-c', 'Release'], ROOT / 'apps/desktop/avalonia/SmartBLE.Desktop.Tests', env)
             run(['dotnet', 'publish', '-c', 'Release', '-r', f'win-{architecture}', '--self-contained', 'true', '-o', str(out / 'app')], ROOT / 'apps/desktop/avalonia/SmartBLE.Desktop', env)
