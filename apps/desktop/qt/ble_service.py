@@ -18,6 +18,7 @@ import asyncio
 import threading
 from concurrent.futures import Future
 from dataclasses import dataclass, field
+from reconnect_policy import reconnect
 
 from PySide6.QtCore import QObject, QThread, Signal
 
@@ -185,6 +186,7 @@ class BleService(QObject):
     scan_failed = Signal(str)
     scan_stopped = Signal()
     device_connected = Signal(str, str, object)   # address, name, gatt_tree(dict)
+    device_reconnected = Signal(str, str, object)
     device_disconnected = Signal(str, bool)       # address, expected(手动断开)
     char_read = Signal(str, str, str, str)        # address, uuid, hex, text
     char_notified = Signal(str, str, str)         # address, uuid, hex
@@ -208,6 +210,9 @@ class BleService(QObject):
         self.connected: dict[str, dict] = {}   # address -> {name, tree}
         self._clients: dict[str, object] = {}  # address -> BleakClient
         self._notifying: dict[str, set] = {}   # address -> {uuid}
+        self._wanted = {}
+        self._generations = {}
+        self._reconnect_tasks = {}
 
     # ── 广播（P008 · WIN-BRIDGE 边车） ──
 
@@ -244,18 +249,27 @@ class BleService(QObject):
 
     def connect_device(self, hit: ScanHit) -> None:
         """连接扫描命中的设备；成功发 device_connected（含 GATT 树）。"""
+        self._wanted[hit.address] = hit
         if hit.address in self.connected:
             self.device_connected.emit(hit.address, self.connected[hit.address]["name"],
                                        self.connected[hit.address]["tree"])
             return
+        generation = self._generations.get(hit.address, 0) + 1
+        self._generations[hit.address] = generation
 
         def on_disconnect(client) -> None:
+            if self._clients.get(hit.address) is not client:
+                return
             # 单次事件语义：手动断开路径已自行出表并发射；此处仅处理意外断链
             info = self.connected.pop(hit.address, None)
             self._clients.pop(hit.address, None)
             self._notifying.pop(hit.address, None)
             if info is not None:
                 self.device_disconnected.emit(hit.address, False)
+            if hit.address in self._wanted:
+                task = self._reconnect_tasks.get(hit.address)
+                if task is None or task.done():
+                    self._reconnect_tasks[hit.address] = asyncio.create_task(recover())
 
         async def _connect():
             from bleak import BleakClient
@@ -272,13 +286,33 @@ class BleService(QObject):
                 timeout=self.CONNECT_TIMEOUT,
             )
             await client.connect()
+            if hit.address not in self._wanted or self._generations.get(hit.address) != generation:
+                await client.disconnect()
+                raise asyncio.CancelledError
             tree = self._build_tree(client)
             self._clients[hit.address] = client
             self.connected[hit.address] = {"name": hit.name or hit.address, "tree": tree}
             return tree
 
+        async def recover():
+            tree = None
+            async def attempt():
+                nonlocal tree
+                tree = await _connect()
+            try:
+                restored = await reconnect(lambda: hit.address in self._wanted and self._generations.get(hit.address) == generation, attempt)
+                if restored:
+                    self.device_reconnected.emit(hit.address, hit.name or hit.address, tree)
+                elif hit.address in self._wanted and self._generations.get(hit.address) == generation:
+                    self.op_failed.emit('connect', hit.address, '已尝试三次重连，请手动重试')
+            finally:
+                if self._reconnect_tasks.get(hit.address) is asyncio.current_task():
+                    self._reconnect_tasks.pop(hit.address, None)
+
         fut = self._gatt.submit(_connect())
         def _done(f: Future) -> None:
+            if self._generations.get(hit.address) != generation or hit.address not in self._wanted:
+                return
             try:
                 tree = f.result()
             except Exception as exc:  # noqa: BLE001 - 连接失败落状态词
@@ -288,6 +322,8 @@ class BleService(QObject):
         fut.add_done_callback(_done)
 
     def disconnect_device(self, address: str) -> None:
+        self._wanted.pop(address, None)
+        self._generations[address] = self._generations.get(address, 0) + 1
         client = self._clients.pop(address, None)
         self.connected.pop(address, None)
         self._notifying.pop(address, None)
@@ -304,11 +340,17 @@ class BleService(QObject):
         self.device_disconnected.emit(address, True)
 
     def disconnect_all(self) -> None:
-        for address in list(self._clients):
+        for address in list(set(self._clients) | set(self._wanted)):
             self.disconnect_device(address)
 
     def shutdown(self) -> None:
         """退出前收尾：先停广播边车（dwin-quit 正典顺序），再断全部连接，停 GATT 线程。"""
+        self._wanted.clear()
+        for address in self._generations:
+            self._generations[address] += 1
+        for task in list(self._reconnect_tasks.values()):
+            if self._gatt._loop is not None and self._gatt._loop.is_running():
+                self._gatt._loop.call_soon_threadsafe(task.cancel)
         if self._worker is not None and self._worker.isRunning():
             self._worker.cancel()
             self._worker.wait(6500)

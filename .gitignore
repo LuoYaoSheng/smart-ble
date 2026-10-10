@@ -4,6 +4,7 @@ bin-release/
 [Oo]bj/
 [Bb]in/
 .build/
+.swiftpm/
 build/
 obj/
 bin/

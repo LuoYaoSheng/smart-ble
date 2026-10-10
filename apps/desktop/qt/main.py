@@ -1234,6 +1234,7 @@ class MainWindow(QMainWindow):
         self._about_page.layout().addWidget(version_button)
 
         self._ble.device_connected.connect(self._on_connected)
+        self._ble.device_reconnected.connect(self._on_reconnected)
         # 已连接角标 .n 口径：通用连接计数（正典 connectedBadge）
         self._ble.device_connected.connect(lambda *_: self._refresh_badge())
         self._ble.device_disconnected.connect(lambda *_: self._refresh_badge())
@@ -1285,6 +1286,12 @@ class MainWindow(QMainWindow):
     def _on_connected(self, address: str, name: str, tree: dict) -> None:
         self._connected_page.refresh()
         self._open_detail(address)
+
+    def _on_reconnected(self, address, name, tree):
+        self._connected_page.refresh()
+        self._refresh_badge()
+        if getattr(self._detail_page, '_address', None) == address:
+            self._detail_page.bind(address, name, tree)
 
     def _back_from_detail(self) -> None:
         # P006 返回：连接常驻（正典），回已连接列表

@@ -134,7 +134,10 @@ class ProvisioningPage(SecondaryPage):
         if status:
             self.state.setStyleSheet('')
             prefix = '设备当前状态：' if not self.session.busy else ''
-            self.state.setText(prefix + status_text(status))
+            text = prefix + status_text(status)
+            if self.session.busy and status.get('state') == 'ready':
+                text += '；正在核对本次配置回执'
+            self.state.setText(text)
 
     def failure(self, text):
         self.state.setText(text)
