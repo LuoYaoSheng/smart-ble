@@ -31,6 +31,14 @@ def verify(paths, architecture):
     return {'architecture': architecture, 'verified_images': checked}
 
 
+def verify_application(path, architecture):
+    # Check the native apphost only: managed DLLs and NSIS launchers may be I386.
+    path = Path(path)
+    result = verify([path], architecture)
+    result.update(format='PE', verified_application=str(path), machine=hex(machine(path)))
+    return result
+
+
 def images(directory):
     return [p for p in Path(directory).rglob('*') if p.is_file() and p.suffix.lower() in NATIVE_SUFFIXES]
 

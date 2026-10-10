@@ -81,12 +81,12 @@ jobs:
         run: |
           DEST=$(xcrun simctl list devices available | grep -m1 -o 'iPhone [^(]*' | head -1 | sed 's/ *$//')
           echo "Using simulator: $DEST"
-          # CI 首跑 2026-09-15：macos-latest 的 iOS 运行时对比度审计阈值与本地 Gate 基线不同，
-          # 两个 AccessibilityAudit 测试在 CI 环境误报（本地无障碍 Gate 已有通过证据，见 mac-closeout 轮）。
+          # Strict structural audit tests run every preview scenario, including P003/P005.
+          # The inventory method logs findings only and is not a release gate.
+          # Contrast/Dynamic Type/clipping limitations remain documented in the test scope.
           xcodebuild -project SmartBLE.xcodeproj -scheme SmartBLEiOS \
             -destination "platform=iOS Simulator,name=$DEST" test \
-            -skip-testing:SmartBLEUITests/AccessibilityAuditUITests/testAuditIssueInventoryDiagnostic \
-            -skip-testing:SmartBLEUITests/AccessibilityAuditUITests/testP003P005StatesPassAccessibilityAudit
+            -skip-testing:SmartBLEUITests/AccessibilityAuditUITests/testAuditIssueInventoryDiagnostic
 
       - name: Native macOS build (SmartBLE-mac)
         working-directory: apps/desktop/macos/SmartBLE-mac

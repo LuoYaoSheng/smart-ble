@@ -80,7 +80,10 @@
       ],
       "icon": "assets/icon.png",
       "category": "Development",
-      "executableName": "smart-ble-open"
+      "executableName": "smart-ble-open",
+      "files": [
+        "!**/node_modules/**/prebuilds/!(linux-${arch})/**"
+      ]
     },
     "nativeRebuilder": "sequential",
     "artifactName": "Smart-BLE-Open-${version}-${os}-${arch}.${ext}",

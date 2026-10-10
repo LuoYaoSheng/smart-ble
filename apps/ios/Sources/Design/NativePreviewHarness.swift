@@ -36,6 +36,7 @@ struct NativePreviewRoot: View {
     let scenario: NativePreviewScenario
     private let transport: PreviewHidTransport
     @StateObject private var hidManager: HidProvisionManager
+    @State private var scenarioConfigured = false
 
     init(scenario: NativePreviewScenario) {
         self.scenario = scenario
@@ -62,7 +63,7 @@ struct NativePreviewRoot: View {
             case .p003Detail, .p003MissingFields, .p003Empty:
                 HidDeviceDetailView(deviceId: device.id)
             case .p005Diagnostics:
-                HidDiagnosticsView(manager: hidManager, deviceId: device.id, autoRun: true)
+                HidDiagnosticsView(manager: hidManager, deviceId: device.id, autoRun: false)
             case .p005Offline, .p005Error:
                 HidDiagnosticsView(manager: hidManager, deviceId: device.id, autoRun: false)
             case .p006Gatt:
@@ -78,7 +79,11 @@ struct NativePreviewRoot: View {
             }
         }
         .environmentObject(bleManager)
-        .onAppear { configureScenario() }
+        .onAppear {
+            guard !scenarioConfigured else { return }
+            scenarioConfigured = true
+            configureScenario()
+        }
     }
 
     private var device: ScanResult {
@@ -92,6 +97,11 @@ struct NativePreviewRoot: View {
     }
 
     private func configureScenario() {
+        // All explicit preview scenarios own deterministic adapter state. The
+        // normal app still receives real CoreBluetooth poweredOff callbacks.
+        let state: BLEState = scenario == .p001BluetoothOff ? .poweredOff
+            : scenario == .p001Unsupported ? .unsupported : .poweredOn
+        bleManager.lockBluetoothStateForPreview(state)
         if scenario == .p001FilterExpanded {
             bleManager.lockBluetoothStateForPreview(.poweredOn)
             bleManager.scanResults = previewScanResults
@@ -143,6 +153,17 @@ struct NativePreviewRoot: View {
         bleManager.servicesByDevice[device.id] = previewServices
         bleManager.saveHidSessionSnapshot(previewSnapshot)
 
+        if scenario == .p005Diagnostics {
+            hidManager.configurePreview(
+                deviceId: device.id,
+                stage: .verified,
+                rows: ["wifi": "done", "hub": "done", "conn": "done", "usb": "done"],
+                deviceInfo: previewDeviceInfo,
+                latestStatus: HidProtocol.ProvisionStatus(state: "ready", step: "ready", error: nil)
+            )
+            return
+        }
+
         if scenario == .p002IdentityFailed {
             hidManager.configurePreview(
                 deviceId: device.id,
@@ -183,9 +204,6 @@ struct NativePreviewRoot: View {
             await Task.yield()
             if scenario == .p002Configure {
                 transport.emitValue(uuid: HidProtocol.infoCharUuid, text: previewInfo)
-            } else if scenario == .p005Diagnostics {
-                transport.emitValue(uuid: HidProtocol.infoCharUuid, text: previewInfo)
-                transport.emitValue(uuid: HidProtocol.statusCharUuid, text: #"{"state":"ready","step":"ready","error":null}"#)
             }
         }
     }

@@ -6,12 +6,15 @@ import json
 import os
 import platform
 import plistlib
+import re
 import shutil
 import subprocess
 import sys
 import zipfile
 from pathlib import Path
 from android_artifact import inspect_native_libraries, sdk_tool
+from native_application import verify_linux_application, verify_macos_application
+from verify_windows_architecture import images, machine, verify, verify_application
 
 ROOT = Path(__file__).resolve().parents[2]
 SIGNING_KEYS = ('SMART_BLE_KEYSTORE', 'SMART_BLE_STORE_PASSWORD', 'SMART_BLE_KEY_ALIAS', 'SMART_BLE_KEY_PASSWORD')
@@ -26,6 +29,30 @@ def run(args, cwd=ROOT, env=None):
     if not executable:
         raise OSError('Required build executable is not installed')
     subprocess.run([executable, *args[1:]], cwd=cwd, env=env or os.environ.copy(), check=True)
+
+
+def tauri_application(metadata, config, application_directory, system):
+    manifest = (Path(application_directory) / 'Cargo.toml').resolve()
+    packages = [p for p in metadata['packages'] if Path(p['manifest_path']).resolve() == manifest]
+    if len(packages) != 1:
+        raise RuntimeError('Tauri metadata must identify the application package exactly')
+    package = packages[0]
+    binaries = [target for target in package['targets'] if 'bin' in target['kind']]
+    default = package.get('default_run')
+    if default:
+        binaries = [target for target in binaries if target['name'] == default]
+    if len(binaries) != 1:
+        raise RuntimeError('Tauri must identify one main Rust binary, not a framework library')
+    # Tauri CLI 1.6.3 rename_app preserves productName on Windows and uses
+    # heck kebab-case on Linux; punctuation such as the final '+' is omitted.
+    name = config.get('package', {}).get('productName') or binaries[0]['name']
+    if not name or Path(name).name != name:
+        raise RuntimeError('Tauri application binary name must be one filename')
+    if system == 'Linux' and config.get('package', {}).get('productName'):
+        name = re.sub(r'([A-Z]+)([A-Z][a-z])', r'\1-\2', name)
+        name = re.sub(r'([a-z0-9])([A-Z])', r'\1-\2', name)
+        name = re.sub(r'[\W_]+', '-', name).strip('-').lower()
+    return Path(metadata['target_directory']) / 'release' / (f'{name}.exe' if system == 'Windows' else name)
 
 
 def main():
@@ -128,6 +155,7 @@ def main():
             applications = list((ROOT / 'apps/flutter/build/macos/Build/Products/Release').glob('*.app'))
             if len(applications) != 1:
                 raise RuntimeError('Flutter macOS build must contain exactly one application bundle')
+            report['native_application'] = verify_macos_application(applications[0])
             patterns = [zip_directory(applications[0], f'Smart-BLE-Open-{version}-flutter-macos-universal.zip')]
         elif args.target == 'electron':
             run(['npm', 'ci', '--foreground-scripts'], ROOT / 'apps/desktop/electron', env)
@@ -155,11 +183,23 @@ def main():
                 cmd += ['--target', 'universal-apple-darwin']
                 bundle_dir = 'apps/desktop/tauri/src-tauri/target/universal-apple-darwin/release/bundle'
             run(cmd, ROOT / 'apps/desktop/tauri/src-tauri', env)
+            if host == 'Darwin':
+                applications = list((ROOT / bundle_dir / 'macos').glob('*.app'))
+                if len(applications) != 1:
+                    raise RuntimeError('Tauri macOS build must contain exactly one application bundle')
+                report['native_application'] = verify_macos_application(applications[0])
+            elif host in ('Linux', 'Windows'):
+                app_directory = ROOT / 'apps/desktop/tauri/src-tauri'
+                metadata = json.loads(subprocess.check_output(['cargo', 'metadata', '--no-deps', '--format-version', '1'], cwd=app_directory, text=True, encoding='utf-8', env=env))
+                config = json.loads((app_directory / 'tauri.conf.json').read_text(encoding='utf-8'))
+                application = tauri_application(metadata, config, app_directory, host)
+                report['native_application'] = verify_application(application, architecture) if host == 'Windows' else verify_linux_application(application, architecture)
             bundle_extensions = {'Darwin': ('dmg',), 'Windows': ('msi', 'exe'), 'Linux': ('deb', 'AppImage', 'rpm')}[host]
             patterns = [f'{bundle_dir}/**/*.{extension}' for extension in bundle_extensions]
         elif args.target == 'avalonia':
             run(['dotnet', 'test', '-c', 'Release'], ROOT / 'apps/desktop/avalonia/SmartBLE.Desktop.Tests', env)
             run(['dotnet', 'publish', '-c', 'Release', '-r', f'win-{architecture}', '--self-contained', 'true', '-o', str(out / 'app')], ROOT / 'apps/desktop/avalonia/SmartBLE.Desktop', env)
+            report['native_application'] = verify_application(out / 'app/SmartBLE.Desktop.exe', architecture)
             patterns = [zip_directory(out / 'app', f'Smart-BLE-Open-{version}-avalonia-windows-{architecture}.zip')]
         elif args.target == 'qt':
             run([sys.executable, '-m', 'pip', 'install', '-r', 'requirements.txt', 'pyinstaller'], ROOT / 'apps/desktop/qt', env)
@@ -178,12 +218,16 @@ def main():
             for name, destination in [('VERSION', '.'), ('assets', 'assets'), ('win-broadcast-bridge.ps1', '.'), ('smart-hid-v1-vectors.json', '.'), ('release-manifest.json', '.')]:
                 package += ['--add-data', f'{staging / name}{os.pathsep}{destination}']
             run(package + [str(staging / 'main.py')], staging, env)
+            qt_application = out / 'app/SmartBLE'
+            report['native_application'] = verify(images(qt_application), architecture)
+            report['native_application'].update(format='PE package', verified_application=str(qt_application / 'SmartBLE.exe'), machine=hex(machine(qt_application / 'SmartBLE.exe')))
             patterns = [zip_directory(out / 'app/SmartBLE', f'Smart-BLE-Open-{version}-qt-windows-{architecture}.zip')]
         elif args.target == 'wails':
             run(['npm', 'run', 'build'], ROOT / 'apps/desktop/wails/frontend', env)
             run(['go', 'test', './...', '-run', '^(TestUnknownDeviceNeverFallsBackToAnotherConnection|TestCharacteristicKeysIncludeOwningService|TestDisconnectCancelsPendingConnectionGeneration)$'], ROOT / 'apps/desktop/wails', env)
             run(['wails', 'build', '-clean'], ROOT / 'apps/desktop/wails', env)
-            patterns = ['apps/desktop/wails/build/bin/*.exe']
+            report['native_application'] = verify_application(ROOT / 'apps/desktop/wails/build/bin/smartble.exe', architecture)
+            patterns = ['apps/desktop/wails/build/bin/smartble.exe']
         elif args.target == 'uniapp':
             run(['npm', 'run', 'build:h5'], ROOT / 'apps/uniapp', env)
             run(['npm', 'run', 'build:app'], ROOT / 'apps/uniapp', env)

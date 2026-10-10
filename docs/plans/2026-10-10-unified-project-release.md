@@ -111,3 +111,11 @@
 - Windows/Linux x64 与 ARM64 纳入候选矩阵；macOS AppKit/Flutter/Electron/Tauri 准备 universal。Windows Flutter 使用全新官方 3.47.7 源码引导原生 ARM64 Dart/引擎，并检查程序/插件 PE Machine，未将 x64 仿真当原生 ARM64。当前 CI 该路径、Flutter x64、Avalonia/Wails 双架构均通过。
 - 国内上架主体按用户确认的个人，公开联系邮箱 121912336@qq.com；其他正式上架资料按用户指令暂缓。离线隐私源与 SDK 原生启动策略完善，公开 URL、申报、实际 SDK 安装包审计仍单独待验。
 - Electron 更换维护中的 N-API 后端以适应最新编译器，实构建/加载与原生架构验证正在收尾；Linux 格式依 builder 的真实 arch 映射，Tauri 只检查对应操作系统格式。CI 当前部分成功，尚不宣称全矩阵绿；任何实际无线、OTA 重启版本核验、安装升级、分发签名和商店审核均不从单测推断。
+
+### 2026-10-10 构建矩阵收尾
+
+- 提交 4491fd4 的候选运行 38023481655 全部 23 项通过，23 份应用/安装包归档均存在；覆盖 Windows/Linux x64 与 ARM64、macOS universal 和移动端。Tauri Linux 实际产物包括 deb、AppImage、rpm。
+- 进一步查出 Qt Windows ARM64 被历史矩阵排除；官方原生 Python/PySide6/PyInstaller/WinRT 轮子当前可用，已补真实 ARM64 lane。首次原生 Python/Qt/WinRT 导入、45 项测试与打包通过；最终递归目录定位失败，改为构建器内直接验证精确应用目录所有 EXE/DLL/PYD，不把 x64 仿真当 ARM64。
+- 基础 CI 38023481622 的 iOS 两项 UI 失败已复现：真实模拟器蓝牙状态覆盖预览虚拟连接，以及组合无障碍审计系统超时。预览夹具按明确 launch 参数隔离状态、P005 确定性 seed；正常运行保留真实断链处理。审计按官方类型逐项运行、不吞错误，恢复 P003/P005 结构门。定向三项 UI 验证通过，最终远端门仍待确认。
+- 独立审查收紧了原生验证表述：Electron Windows WinRT/macOS CoreBluetooth 已实际加载；Linux 进一步补所有最终 ELF 架构检查、清理非目标 prebuild，并使用包内 Electron 加载真实 HCI N-API 模块但不初始化适配器。Tauri/Wails 等应用主二进制架构检查与安装器启动架构分开。
+- Kotlin/Flutter 本机正式签名 APK/AAB 的当前文件哈希、应用/共享核心源码树与报告一致；不因其他实现修改而虚构新签名构建。完整验收仍需每实现当前版本真实 BLE/HID/OTA、安装升级与分发签名。iOS 历史 contrast/Dynamic Type/textClipped 豁免及真机 VoiceOver 单独待验，不把结构审计冒充全量无障碍合规。

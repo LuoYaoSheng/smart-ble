@@ -2,7 +2,7 @@
 
 > **统一工程（2026-10-10）**：唯一开发入口是本目录 `smart-ble/`。macOS 与 Apple Native 历史分支已经合入本地 `main`；旧目录仅作为指向本目录的兼容链接，完整历史现场保存于工作区 `.archives/smart-ble/2026-10-10/`。
 >
-> **当前目标**：所有现有技术实现都须按同一产品契约完成验证与发布准备，不因 REFERENCE/Experimental 标签免除验收。渠道为 Apple App Store、国内 Android 商店及桌面正式分发。当前状态及待验项见 [全平台发布矩阵](release/platform-matrix.json) 和 [本轮实施计划](docs/plans/2026-10-10-unified-project-release.md)；候选构建不代表上架完成。
+> **当前目标**：所有现有技术实现都须按同一产品契约完成验证与发布准备，不因 REFERENCE/Experimental 标签免除验收。渠道为 Apple App Store、国内 Android 商店及桌面正式分发。当前状态及待验项见 [全平台发布矩阵](release/platform-matrix.json)、[发布准备状态](docs/release-readiness-2026-10-10.md) 和 [本轮实施计划](docs/plans/2026-10-10-unified-project-release.md)；候选构建不代表上架完成。
 
 [![Windows Version](https://img.shields.io/badge/Windows-Download-blue?style=for-the-badge&logo=windows)](https://github.com/luoyaosheng/smart-ble/releases)
 [![macOS Version](https://img.shields.io/badge/macOS-Download-lightgrey?style=for-the-badge&logo=apple)](https://github.com/luoyaosheng/smart-ble/releases)

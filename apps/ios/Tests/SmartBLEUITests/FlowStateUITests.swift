@@ -38,6 +38,7 @@ final class FlowStateUITests: XCTestCase {
     func testP005HealthyOfflineAndFailureStates() {
         launch("p005-diagnostics")
         XCTAssertTrue(app.staticTexts["实时检测完成"].waitForExistence(timeout: 3))
+        XCTAssertEqual(app.staticTexts.matching(NSPredicate(format: "label == %@", "正常")).count, 5, "Healthy fixture must include five verified diagnostic rows")
 
         launch("p005-offline")
         XCTAssertTrue(app.staticTexts["设备未连接"].waitForExistence(timeout: 3))

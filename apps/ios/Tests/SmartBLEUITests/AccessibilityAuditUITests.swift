@@ -97,7 +97,20 @@ final class AccessibilityAuditUITests: XCTestCase {
         app.terminate()
         app.launchArguments = ["--ui-preview=\(preview)"]
         app.launch()
-        _ = app.staticTexts.firstMatch.waitForExistence(timeout: 3)
+        let ready: XCUIElement
+        switch preview {
+        case "p001-filter-empty", "p001-filter-expanded", "p001-scan-failed":
+            ready = app.staticTexts["附近设备"]
+        case "p002-configure": ready = app.textFields["家庭 / 办公 2.4G Wi-Fi"]
+        case "p002-identity-failed": ready = app.buttons["重新连接"]
+        case "p002-success": ready = app.staticTexts["配置成功 · 设备 READY"]
+        case "p003-detail": ready = app.staticTexts["设备身份"]
+        case "p003-missing-fields": ready = app.staticTexts["协议未记录"]
+        case "p005-diagnostics": ready = app.staticTexts["实时检测完成"]
+        case "p005-offline": ready = app.staticTexts["设备未连接"]
+        default: XCTFail("No readiness anchor for preview \(preview)"); return
+        }
+        XCTAssertTrue(ready.waitForExistence(timeout: 5), "Preview not ready: \(preview)")
     }
 
     /// 严格审计口径：结构类（命中区/元素检测/描述/特质）必须全过；
@@ -112,27 +125,42 @@ final class AccessibilityAuditUITests: XCTestCase {
     ///   与 ScaledFontTests 数学断言证明。
     private static let exemptAuditTypes: [XCUIAccessibilityAuditType] = [.contrast, .dynamicType, .textClipped]
 
+    // iOS exposes seven audit types. Running them one at a time retains the
+    // existing strict issue handler while avoiding the combined .all operation's
+    // fixed system timeout (-56). A timeout/error in any type still fails.
+    // Contrast / Dynamic Type / clipping remain historical, documented gaps;
+    // this structural gate must not be reported as full accessibility compliance.
+    private static let iosAuditTypes: [XCUIAccessibilityAuditType] = [
+        .contrast, .elementDetection, .hitRegion, .sufficientElementDescription,
+        .dynamicType, .textClipped, .trait,
+    ]
+
     private func auditStrictly(for types: XCUIAccessibilityAuditType = .all) throws {
-        try app.performAccessibilityAudit(for: types) { issue in
-            if Self.exemptAuditTypes.contains(issue.auditType) { return true }
-            // 正典数据 chip 豁免：Release Metadata 投影（F027）的版本号 / 发布状态
-            // chip（如 "1.0.5-preview" / "NOT_RELEASED"）是产品正典事实值本身，
-            // 审计"非人类可读"启发式不适用于数据展示。
-            if issue.auditType == .sufficientElementDescription
-                && issue.compactDescription.contains("human-readable") {
-                return true
+        for type in Self.iosAuditTypes where types.contains(type) {
+            print("[A11Y-STRUCTURAL] audit=\(type)")
+            try app.performAccessibilityAudit(for: type) { issue in
+                if Self.exemptAuditTypes.contains(issue.auditType) { return true }
+                // 正典数据 chip 豁免：Release Metadata 投影（F027）的版本号 / 发布状态
+                // chip（如 "1.0.5-preview" / "NOT_RELEASED"）是产品正典事实值本身，
+                // 审计"非人类可读"启发式不适用于数据展示。
+                if issue.auditType == .sufficientElementDescription
+                    && issue.compactDescription.contains("human-readable") {
+                    return true
+                }
+                return false
             }
-            return false
         }
     }
 
     private func auditLoggingOnly(_ state: String) throws {
-        try app.performAccessibilityAudit(for: .all) { issue in
-            let el = issue.element
-            let label = el?.label ?? "?"
-            let frame = el.map { "\($0.frame)" } ?? "?"
-            print("[A11Y-INVENTORY] state=\(state) | \(issue.auditType) | \(issue.compactDescription) | label=\(label) | frame=\(frame)")
-            return true // 诊断模式：记录并忽略，不判败
+        for type in Self.iosAuditTypes {
+            try app.performAccessibilityAudit(for: type) { issue in
+                let el = issue.element
+                let label = el?.label ?? "?"
+                let frame = el.map { "\($0.frame)" } ?? "?"
+                print("[A11Y-INVENTORY] state=\(state) | \(issue.auditType) | \(issue.compactDescription) | label=\(label) | frame=\(frame)")
+                return true // Inventory only; structural gate tests enforce failures.
+            }
         }
     }
 }

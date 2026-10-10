@@ -17,7 +17,7 @@ final class BLEWriteQueue {
         let start: () -> StartResult
     }
     static let maxDepth = 16
-    static let timeout: TimeInterval = 5
+    nonisolated static let timeout: TimeInterval = 5
     private let operationTimeout: TimeInterval
     init(timeout: TimeInterval = BLEWriteQueue.timeout) { operationTimeout = timeout }
     private var pending: [String: [Item]] = [:]

@@ -152,15 +152,6 @@ jobs:
       - if: matrix.target == 'wails'
         run: go install github.com/wailsapp/wails/v2/cmd/wails@v2.16.0
       - run: python scripts/release/build.py ${{ matrix.target }}
-      - name: Verify every native Qt ARM64 package image
-        if: matrix.target == 'qt' && matrix.os == 'windows-11-arm'
-        shell: pwsh
-        run: |
-          $smartBleQtDirectories = @(Get-ChildItem '.tmp/release' -Recurse -Directory | Where-Object { $_.Name -eq 'SmartBLE' -and (Test-Path (Join-Path $_.FullName 'SmartBLE.exe')) })
-          if ($smartBleQtDirectories.Count -ne 1) { throw 'Expected one complete Qt candidate directory' }
-          $smartBleQtProof = Join-Path $smartBleQtDirectories[0].Parent.Parent.FullName 'native-arm64-verification.json'
-          python scripts/release/verify_windows_architecture.py $smartBleQtDirectories[0].FullName --architecture arm64 | Tee-Object -FilePath $smartBleQtProof
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target }}-${{ matrix.os }}-candidate
