@@ -67,11 +67,14 @@ class FakeClient:
 
 
 class TransactionTests(unittest.IsolatedAsyncioTestCase):
+    # Positive receipt tests verify protocol outcomes, not Windows runner scheduling.
+    RECEIPT_TIMEOUT = 5
+
     def candidate(self):
         return VECTORS['suites']['candidate']['cases'][0]['input']
     async def test_ready_requires_an_observed_new_attempt_and_unsubscribes(self):
         client = FakeClient([{'state': 'provisioning', 'step': 'received'}, {'state': 'ready', 'step': 'ready'}])
-        result = await provision(client, self.candidate(), lambda _: None, timeout=.2)
+        result = await provision(client, self.candidate(), lambda _: None, timeout=self.RECEIPT_TIMEOUT)
         self.assertTrue(result['ok'])
         self.assertEqual(client.stops, 1)
         self.assertTrue(client.writes)
@@ -81,7 +84,7 @@ class TransactionTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(client.stops, 1)
     async def test_error_receipt_preserves_failure(self):
         client = FakeClient([{'state': 'error', 'error': 'wifi_failed'}])
-        result = await provision(client, self.candidate(), lambda _: None, timeout=.2)
+        result = await provision(client, self.candidate(), lambda _: None, timeout=self.RECEIPT_TIMEOUT)
         self.assertFalse(result['ok'])
         self.assertEqual(result['status']['error'], 'wifi_failed')
     async def test_invalid_device_id_never_writes(self):
@@ -102,7 +105,7 @@ class TransactionTests(unittest.IsolatedAsyncioTestCase):
             return await original(char)
         client.read_gatt_char = blocked_read
         queued = AttClient(client)
-        profile = asyncio.create_task(provision(queued, self.candidate(), lambda _: None, timeout=.2))
+        profile = asyncio.create_task(provision(queued, self.candidate(), lambda _: None, timeout=self.RECEIPT_TIMEOUT))
         await asyncio.sleep(.005)
         read = asyncio.create_task(queued.read_gatt_char(client.services[0].characteristics[0]))
         await asyncio.sleep(.005)

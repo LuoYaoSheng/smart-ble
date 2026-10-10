@@ -35,6 +35,18 @@ Finder navbar(String title) => find.byWidgetPredicate(
 Finder navbarText(String title, String text) =>
     find.descendant(of: navbar(title), matching: find.text(text));
 
+Future<void> waitForScanTerminal(WidgetTester tester, String stage) async {
+  // A replayed adapter state can render before this page's initialize() future
+  // completes. Require its failure banner as well as the adapter status.
+  await waitFor(
+      tester,
+      () => navbarText('扫描', '蓝牙不可用').evaluate().length == 1 &&
+          find.text('BLE_001').evaluate().length == 1 &&
+          find.text('初始化中…').evaluate().isEmpty,
+      stage);
+  debugPrint('[WINDOWS-NO-ADAPTER] $stage banner=BLE_001 terminal=PASS');
+}
+
 Future<void> selectTab(WidgetTester tester, String label, String key) async {
   final tab =
       find.descendant(of: find.byType(AppTabBar), matching: find.text(label));
@@ -100,10 +112,8 @@ void main() {
 
     await app.main().timeout(const Duration(seconds: 20));
     try {
-      await waitFor(
-          tester,
-          () => navbarText('扫描', '蓝牙不可用').evaluate().isNotEmpty,
-          'real native initialization terminal state');
+      await waitForScanTerminal(
+          tester, 'real native initialization terminal state');
       expect(
           await FlutterBluePlus.isSupported
               .timeout(const Duration(seconds: 15)),
@@ -200,10 +210,8 @@ void main() {
       expect(find.text('BLE Toolkit+'), findsOneWidget);
       expect(find.text('应用信息'), findsOneWidget);
       await selectTab(tester, '扫描', 'scan');
-      await waitFor(
-          tester,
-          () => navbarText('扫描', '蓝牙不可用').evaluate().isNotEmpty,
-          'scan terminal state after tab navigation');
+      await waitForScanTerminal(
+          tester, 'scan terminal state after tab navigation');
       assertScanDisabled(tester);
       expect(tester.takeException(), isNull);
       debugPrint('[WINDOWS-NO-ADAPTER] SOFTWARE_SMOKE=PASS '
