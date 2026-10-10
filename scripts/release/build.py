@@ -155,7 +155,7 @@ def main():
             applications = list((ROOT / 'apps/flutter/build/macos/Build/Products/Release').glob('*.app'))
             if len(applications) != 1:
                 raise RuntimeError('Flutter macOS build must contain exactly one application bundle')
-            report['native_application'] = verify_macos_application(applications[0])
+            report['native_application'] = verify_macos_application(applications[0], version)
             patterns = [zip_directory(applications[0], f'Smart-BLE-Open-{version}-flutter-macos-universal.zip')]
         elif args.target == 'electron':
             run(['npm', 'ci', '--foreground-scripts'], ROOT / 'apps/desktop/electron', env)
@@ -187,7 +187,7 @@ def main():
                 applications = list((ROOT / bundle_dir / 'macos').glob('*.app'))
                 if len(applications) != 1:
                     raise RuntimeError('Tauri macOS build must contain exactly one application bundle')
-                report['native_application'] = verify_macos_application(applications[0])
+                report['native_application'] = verify_macos_application(applications[0], version)
             elif host in ('Linux', 'Windows'):
                 app_directory = ROOT / 'apps/desktop/tauri/src-tauri'
                 metadata = json.loads(subprocess.check_output(['cargo', 'metadata', '--no-deps', '--format-version', '1'], cwd=app_directory, text=True, encoding='utf-8', env=env))

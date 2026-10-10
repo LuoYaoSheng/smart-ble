@@ -450,12 +450,12 @@
     ]
   },
   "last_software_run": {
-    "url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/38027084237",
-    "head_commit": "abf615638370b1538850b496ac3dad8078f12b5e",
+    "url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/38028644320",
+    "head_commit": "3ce1c5ee2939abeed280de9c18edede3dff51b3b",
     "status": "FAILED",
     "jobs_passed": 7,
     "jobs_total": 8,
-    "note": "Initial P001 audit timeout/P005 fixture failures fixed. Restored P003 audit found inaccessible text; advertisement copy transient-feedback test failed. Further actual AX/copy state fixes in progress."
+    "note": "Clipboard tests fixed and passed. Remaining P003 audit caused by preview missing-record modal shown before seed; remote screenshot confirmed. Seed-before-render and actual 44pt button hit targets fixed, targeted tests passed; latest remote confirmation pending."
   },
   "signed_android_evidence": {
     "android": {

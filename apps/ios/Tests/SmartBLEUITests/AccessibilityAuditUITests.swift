@@ -111,6 +111,9 @@ final class AccessibilityAuditUITests: XCTestCase {
         default: XCTFail("No readiness anchor for preview \(preview)"); return
         }
         XCTAssertTrue(ready.waitForExistence(timeout: 5), "Preview not ready: \(preview)")
+        if preview == "p003-detail" || preview == "p003-missing-fields" {
+            XCTAssertFalse(app.alerts["提示"].exists, "有效详情必须在无意外弹窗遮挡时接受结构审计")
+        }
     }
 
     /// 严格审计口径：结构类（命中区/元素检测/描述/特质）必须全过；

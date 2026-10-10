@@ -19,9 +19,14 @@ def verify_linux_application(path, architecture):
     return {'architecture': architecture, 'format': 'ELF64', 'verified_application': str(path), 'machine': machine}
 
 
-def verify_macos_application(bundle):
+def verify_macos_application(bundle, version=None):
     bundle = Path(bundle)
     info = plistlib.loads((bundle / 'Contents/Info.plist').read_bytes())
+    if version is not None and info.get('CFBundleShortVersionString') != version:
+        raise RuntimeError(f'Packaged macOS application version differs from VERSION: {bundle}')
+    for purpose in ('NSBluetoothAlwaysUsageDescription', 'NSCameraUsageDescription'):
+        if not info.get(purpose):
+            raise RuntimeError(f'Packaged macOS application lacks {purpose}: {bundle}')
     executable = bundle / 'Contents/MacOS' / info['CFBundleExecutable']
     architectures = subprocess.check_output(['lipo', '-archs', str(executable)], text=True, encoding='utf-8').split()
     if set(architectures) != {'x86_64', 'arm64'}:

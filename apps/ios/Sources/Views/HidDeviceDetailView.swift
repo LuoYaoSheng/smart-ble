@@ -157,21 +157,28 @@ struct HidDeviceDetailView: View {
         VStack(spacing: 9) {
             Button(action: presentReconfigure) {
                 Label("重新配置", systemImage: "arrow.clockwise")
-                    .font(.subheadline.bold()).frame(maxWidth: .infinity).padding(.vertical, 11)
+                    .font(.subheadline.bold())
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 11)
+                    .nativeHitTarget()
             }
             .buttonStyle(.plain).foregroundColor(.white).background(NativeDS.primary)
             .clipShape(RoundedRectangle(cornerRadius: 10))
 
             HStack(spacing: 9) {
                 Button(action: { diagnosticsRoute = DeviceIdRoute(id: deviceId) }) {
-                    Label("运行诊断", systemImage: "waveform.path.ecg").frame(maxWidth: .infinity)
+                    Label("运行诊断", systemImage: "waveform.path.ecg")
+                        .frame(maxWidth: .infinity)
+                        .nativeHitTarget()
                 }
                 Button(action: { gattRoute = DeviceIdRoute(id: deviceId) }) {
-                    Label("高级 BLE 调试", systemImage: "slider.horizontal.3").frame(maxWidth: .infinity)
+                    Label("高级 BLE 调试", systemImage: "slider.horizontal.3")
+                        .frame(maxWidth: .infinity)
+                        .nativeHitTarget()
                 }
             }
             .buttonStyle(.plain).scaledFont(12, .semibold).foregroundColor(NativeDS.sub)
-            .padding(.vertical, 11).background(NativeDS.fill).clipShape(RoundedRectangle(cornerRadius: 10))
+            .background(NativeDS.fill).clipShape(RoundedRectangle(cornerRadius: 10))
         }
     }
 

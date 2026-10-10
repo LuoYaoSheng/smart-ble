@@ -47,42 +47,53 @@ struct NativePreviewRoot: View {
 
     var body: some View {
         Group {
-            switch scenario {
-            case .p001FilterExpanded:
-                ContentView(scanPreviewScenario: .filterExpanded)
-            case .p001FilterEmpty:
-                ContentView(scanPreviewScenario: .filterEmpty)
-            case .p001ScanFailed:
-                ContentView(scanPreviewScenario: .scanFailed)
-            case .p001BluetoothOff:
-                ContentView(scanPreviewScenario: .bluetoothOff)
-            case .p001Unsupported:
-                ContentView(scanPreviewScenario: .unsupported)
-            case .p002Configure, .p002IdentityFailed, .p002Success, .p002WifiFailed:
-                ProvisioningView(manager: hidManager, device: device, previewSeed: provisioningSeed)
-            case .p003Detail, .p003MissingFields, .p003Empty:
-                HidDeviceDetailView(deviceId: device.id)
-            case .p005Diagnostics:
-                HidDiagnosticsView(manager: hidManager, deviceId: device.id, autoRun: false)
-            case .p005Offline, .p005Error:
-                HidDiagnosticsView(manager: hidManager, deviceId: device.id, autoRun: false)
-            case .p006Gatt:
-                DeviceDetailView(deviceId: device.id)
-            case .p009About:
-                ContentView(initialTab: .about, connectedCountOverride: 3)
-            case .p010Versions:
-                VersionHistoryView()
-            case .tabConnected:
-                ContentView(initialTab: .connected, connectedCountOverride: 3)
-            case .tabBroadcast:
-                ContentView(initialTab: .broadcast, connectedCountOverride: 3)
+            if scenarioConfigured {
+                scenarioContent
+            } else {
+                ProgressView("准备预览")
             }
         }
         .environmentObject(bleManager)
         .onAppear {
             guard !scenarioConfigured else { return }
-            scenarioConfigured = true
+            // Seed before child onAppear handlers inspect snapshots or sessions.
+            // Otherwise valid detail fixtures can present a missing-record alert.
             configureScenario()
+            scenarioConfigured = true
+        }
+    }
+
+    @ViewBuilder
+    private var scenarioContent: some View {
+        switch scenario {
+        case .p001FilterExpanded:
+            ContentView(scanPreviewScenario: .filterExpanded)
+        case .p001FilterEmpty:
+            ContentView(scanPreviewScenario: .filterEmpty)
+        case .p001ScanFailed:
+            ContentView(scanPreviewScenario: .scanFailed)
+        case .p001BluetoothOff:
+            ContentView(scanPreviewScenario: .bluetoothOff)
+        case .p001Unsupported:
+            ContentView(scanPreviewScenario: .unsupported)
+        case .p002Configure, .p002IdentityFailed, .p002Success, .p002WifiFailed:
+            ProvisioningView(manager: hidManager, device: device, previewSeed: provisioningSeed)
+        case .p003Detail, .p003MissingFields, .p003Empty:
+            HidDeviceDetailView(deviceId: device.id)
+        case .p005Diagnostics:
+            HidDiagnosticsView(manager: hidManager, deviceId: device.id, autoRun: false)
+        case .p005Offline, .p005Error:
+            HidDiagnosticsView(manager: hidManager, deviceId: device.id, autoRun: false)
+        case .p006Gatt:
+            DeviceDetailView(deviceId: device.id)
+        case .p009About:
+            ContentView(initialTab: .about, connectedCountOverride: 3)
+        case .p010Versions:
+            VersionHistoryView()
+        case .tabConnected:
+            ContentView(initialTab: .connected, connectedCountOverride: 3)
+        case .tabBroadcast:
+            ContentView(initialTab: .broadcast, connectedCountOverride: 3)
         }
     }
 
@@ -200,11 +211,12 @@ struct NativePreviewRoot: View {
             return
         }
 
-        Task { @MainActor in
-            await Task.yield()
-            if scenario == .p002Configure {
-                transport.emitValue(uuid: HidProtocol.infoCharUuid, text: previewInfo)
-            }
+        if scenario == .p002Configure {
+            hidManager.configurePreview(
+                deviceId: device.id,
+                stage: .verified,
+                deviceInfo: previewDeviceInfo
+            )
         }
     }
 
@@ -270,10 +282,6 @@ struct NativePreviewRoot: View {
         ]
     }
 
-    private var previewInfo: String {
-        #"{"product":"smart-hid","protocol":"1.0","device_id":"HID-9F3E2A1C","firmware":"1.1.0","state":"ready","provisioned":true}"#
-    }
-
     private var previewServices: [BLEService] {
         var info = BLEService(id: HidProtocol.serviceUuid, uuid: HidProtocol.serviceUuid, name: "Smart HID 配网服务")
         info.characteristics = [
@@ -316,9 +324,5 @@ private final class PreviewHidTransport: HidProvisionTransport {
     func writeProvisioningCharacteristic(deviceId: String, characteristicUUID: String, data: Data) -> Bool { true }
     func provisioningAttMtu(deviceId: String) -> Int { 185 }
     func logProvisioning(_ message: String, deviceId: String, isError: Bool) {}
-
-    func emitValue(uuid: String, text: String) {
-        hidEventHandler?(.value(deviceId: "SHID-9F3E2A1C", characteristicUUID: uuid, data: Data(text.utf8)))
-    }
 }
 #endif

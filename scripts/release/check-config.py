@@ -19,8 +19,7 @@ def require(condition, message):
 for relative in ('apps/ios/SmartBLE/Resources/Info.plist', 'apps/flutter/ios/Runner/Info.plist', 'apps/desktop/macos/SmartBLE-mac/Info.plist', 'apps/flutter/macos/Runner/Info.plist', 'apps/desktop/tauri/src-tauri/Info.plist'):
     data = plistlib.loads((ROOT / relative).read_bytes())
     require(bool(data.get('NSBluetoothAlwaysUsageDescription')), f'{relative}: missing Bluetooth usage description')
-    if 'tauri' not in relative:
-        require(bool(data.get('NSCameraUsageDescription')), f'{relative}: missing QR camera usage description')
+    require(bool(data.get('NSCameraUsageDescription')), f'{relative}: missing QR camera usage description')
 
 for relative in ('apps/desktop/macos/SmartBLE-mac/Entitlements.plist', 'apps/flutter/macos/Runner/Release.entitlements'):
     data = plistlib.loads((ROOT / relative).read_bytes())

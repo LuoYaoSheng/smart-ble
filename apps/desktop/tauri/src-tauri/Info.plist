@@ -19,7 +19,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.0</string>
+	<string>1.0.5</string>
 	<key>CSResourcesFileMapped</key>
 	<true/>
 	<key>LSApplicationCategoryType</key>
@@ -45,6 +45,8 @@
 	<string>This app needs Bluetooth access to scan for and connect to BLE devices.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>This app needs Bluetooth access to scan for and connect to BLE devices.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>仅在您选择扫码导入 Smart HID 配对信息时使用相机，也可选择粘贴导入。</string>
 	<key>NSHighResolutionCapable</key>
 	<true/>
 	<key>NSHumanReadableCopyright</key>

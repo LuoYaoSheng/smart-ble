@@ -75,6 +75,8 @@ for (const rel of ['apps/ios/project.yml', 'apps/ios/SmartBLE.xcodeproj/project.
   for (const match of text.matchAll(/CURRENT_PROJECT_VERSION\s*[:=]\s*([^;\s]+)/g)) if (Number(match[1]) !== buildCode) fail(`${rel}: build number 漂移`);
 }
 const macPlist = read('apps/desktop/macos/SmartBLE-mac/Info.plist');
+const tauriMacPlist = read('apps/desktop/tauri/src-tauri/Info.plist');
+if (tauriMacPlist.match(/<key>CFBundleShortVersionString<\/key>\s*<string>([^<]+)/)?.[1] !== version) fail('Tauri macOS bundle template version 漂移');
 if (macPlist.match(/<key>CFBundleShortVersionString<\/key>\s*<string>([^<]+)/)?.[1] !== version) fail('原生 macOS bundle version 漂移');
 if (Number(macPlist.match(/<key>CFBundleVersion<\/key>\s*<string>([^<]+)/)?.[1]) !== buildCode) fail('原生 macOS build number 漂移');
 if (uniPkg.version !== version) {

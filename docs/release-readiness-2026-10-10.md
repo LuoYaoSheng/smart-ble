@@ -37,7 +37,7 @@ Linux Electron 的最终 ELF 主程序与 x64 15 个 / ARM64 9 个原生模块�
 
 候选构建通过与已签名 Android 包不等于商店可发布。机器状态见 [platform-matrix.json](../release/platform-matrix.json)。
 
-- 基础 CI 已通过 7/8 项，恢复审计后发现 P003 不可访问文本及复制提示时序问题，两项 iOS UI 检查继续修复；不能宣称所有软件门已通过。iOS 结构审计与全量无障碍合规分开记录，历史 contrast / Dynamic Type / textClipped 豁免和真机 VoiceOver 仍需复核。
+- 基础 CI 已通过 7/8 项，复制检查在远端已通过；P003 因预览初始化竞态误弹缺记录对话框，已按远端截图定位并修复，实际按钮命中区也补至 44pt，等待最后远端确认；不能宣称所有软件门已通过。iOS 结构审计与全量无障碍合规分开记录，历史 contrast / Dynamic Type / textClipped 豁免和真机 VoiceOver 仍需复核。
 - 每种实现的真实 BLE、Smart HID READY/恢复、OTA 取消/失败/重启版本核验，以及干净安装/升级仍需当前版本真机证据。附近扫描结果与模拟器、单测不能替代该证据。
 - UniApp 还需 HBuilderX / 自定义原生基座、原生 SDK 审计和正式签名包；H5 与 App 资源编译不等于原生包。
 - App Store 导出上次返回 No Accounts / 新 ID 的分发 profile 缺失。Xcode 已打开供用户配置，尚未取得成功导出证据。

@@ -25,7 +25,8 @@ final class FlowStateUITests: XCTestCase {
     func testP003SnapshotMissingFieldsAndMissingRecordStates() {
         launch("p003-detail")
         XCTAssertTrue(app.staticTexts["设备身份"].waitForExistence(timeout: 3))
-        XCTAssertTrue(app.buttons["重新配置"].exists)
+        XCTAssertFalse(app.alerts["提示"].exists, "已有快照的详情不能显示记录不存在弹窗")
+        XCTAssertTrue(app.buttons["重新配置"].isHittable)
         let identity = app.descendants(matching: .any)["hid-detail-device-id"]
         XCTAssertTrue(identity.waitForExistence(timeout: 3))
         XCTAssertTrue(identity.label.contains("Device ID"))
@@ -35,6 +36,8 @@ final class FlowStateUITests: XCTestCase {
 
         launch("p003-missing-fields")
         XCTAssertTrue(app.staticTexts["协议未记录"].waitForExistence(timeout: 3))
+        XCTAssertFalse(app.alerts["提示"].exists, "缺少部分字段的快照仍是有效设备记录")
+        XCTAssertTrue(app.buttons["重新配置"].isHittable)
 
         launch("p003-empty")
         XCTAssertTrue(app.staticTexts["设备记录不存在"].waitForExistence(timeout: 3))
