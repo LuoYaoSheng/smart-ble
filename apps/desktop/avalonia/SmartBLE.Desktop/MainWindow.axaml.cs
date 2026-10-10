@@ -35,6 +35,7 @@ public partial class MainWindow : Window
             };
             vm.ClipboardReader = async () => Clipboard == null ? null : await Clipboard.GetTextAsync();
             vm.ExportLogsRequestedAsync = ExportLogsToFileAsync;
+            vm.OtaPackagePicker = PickOtaPackageAsync;
         }
     }
 
@@ -77,7 +78,7 @@ public partial class MainWindow : Window
         return false;
     }
 
-    // P002 bigact：获取 ControlHub 配对码（V-WIN 无摄像头链路 → VM 层给降级横幅）
+    // P002 bigact：导入并验证 ControlHub 配对链接
     private void OnHidQrEntryTapped(object? sender, TappedEventArgs e)
     {
         if (DataContext is MainWindowViewModel mvm)
@@ -90,6 +91,28 @@ public partial class MainWindow : Window
         base.OnClosing(e);
         if (DataContext is MainWindowViewModel vm && !vm.RequestExit())
             e.Cancel = true;
+    }
+
+    private async Task<MainWindowViewModel.OtaSelection?> PickOtaPackageAsync()
+    {
+        var binaries = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "选择 .bin 固件", AllowMultiple = false,
+            FileTypeFilter = new[] { new FilePickerFileType("固件") { Patterns = new[] { "*.bin" } } }
+        });
+        if (binaries.Count != 1) return null;
+        var manifests = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "选择对应 manifest", AllowMultiple = false,
+            FileTypeFilter = new[] { new FilePickerFileType("manifest") { Patterns = new[] { "*.json" } } }
+        });
+        if (manifests.Count != 1) return null;
+        await using var binStream = await binaries[0].OpenReadAsync();
+        using var data = new System.IO.MemoryStream();
+        await binStream.CopyToAsync(data);
+        await using var manifestStream = await manifests[0].OpenReadAsync();
+        using var reader = new System.IO.StreamReader(manifestStream);
+        return new MainWindowViewModel.OtaSelection(binaries[0].Name, data.ToArray(), await reader.ReadToEndAsync());
     }
 
     // 日志导出落盘（正典 LogPanel.exportLogs 同口径文本；存储选择器由窗口层持有）

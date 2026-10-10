@@ -4,6 +4,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import asyncio
 import json
 import unittest
+from types import SimpleNamespace
 from hid_protocol import C, VECTORS, INFO, INPUT, STATUS, ProtocolError, build_frames, candidate_json, chunk_size, parse_info, parse_pairing_qr, parse_status, profile_match, provision, recovery_action
 
 
@@ -46,18 +47,19 @@ class FakeClient:
     def __init__(self, statuses, product='smart-hid'):
         self.statuses, self.product = statuses, product
         self.device_id = 'HID-00000001'
+        self.services = [SimpleNamespace(uuid=C['serviceUuid'], characteristics=[SimpleNamespace(uuid=value, service_uuid=C['serviceUuid']) for value in (INFO, INPUT, STATUS)])]
         self.writes, self.stops = [], 0
     async def read_gatt_char(self, uuid):
-        assert uuid == INFO
+        assert uuid.uuid == INFO
         return json.dumps({'product': self.product, 'protocol': '1.0', 'device_id': self.device_id, 'firmware': '1.2.0', 'state': 'unprovisioned'}).encode()
     async def start_notify(self, uuid, callback):
-        assert uuid == STATUS
+        assert uuid.uuid == STATUS
         self.callback = callback
     async def stop_notify(self, uuid):
-        assert uuid == STATUS
+        assert uuid.uuid == STATUS
         self.stops += 1
     async def write_gatt_char(self, uuid, frame, response):
-        assert uuid == INPUT and response is True
+        assert uuid.uuid == INPUT and response is True
         self.writes.append(frame)
         if frame[0] == frame[1] - 1:
             for state in self.statuses: self.callback(None, json.dumps(state).encode())

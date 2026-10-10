@@ -75,7 +75,13 @@
       "executableName": "smart-ble-open"
     },
     "nativeRebuilder": "sequential",
-    "artifactName": "Smart-BLE-Open-${version}-${os}-${arch}.${ext}"
+    "artifactName": "Smart-BLE-Open-${version}-${os}-${arch}.${ext}",
+    "nsis": {
+      "artifactName": "Smart-BLE-Open-${version}-${os}-${arch}-setup.${ext}"
+    },
+    "portable": {
+      "artifactName": "Smart-BLE-Open-${version}-${os}-${arch}-portable.${ext}"
+    }
   },
   "overrides": {
     "@abandonware/bluetooth-hci-socket": "npm:@stoprocent/bluetooth-hci-socket@2.3.0",

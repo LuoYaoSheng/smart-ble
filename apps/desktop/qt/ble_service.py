@@ -19,6 +19,7 @@ import threading
 from concurrent.futures import Future
 from dataclasses import dataclass, field
 from reconnect_policy import reconnect
+from gatt_routing import resolve_characteristic, key as gatt_key
 
 from PySide6.QtCore import QObject, QThread, Signal
 
@@ -188,10 +189,10 @@ class BleService(QObject):
     device_connected = Signal(str, str, object)   # address, name, gatt_tree(dict)
     device_reconnected = Signal(str, str, object)
     device_disconnected = Signal(str, bool)       # address, expected(手动断开)
-    char_read = Signal(str, str, str, str)        # address, uuid, hex, text
-    char_notified = Signal(str, str, str)         # address, uuid, hex
-    notify_changed = Signal(str, str, bool)       # address, uuid, on
-    write_done = Signal(str, str, int)            # address, uuid, nbytes
+    char_read = Signal(str, str, str, str, str)        # address, service, uuid, hex, text
+    char_notified = Signal(str, str, str, str)         # address, service, uuid, hex
+    notify_changed = Signal(str, str, str, bool)       # address, service, uuid, on
+    write_done = Signal(str, str, str, int)            # address, service, uuid, nbytes
     op_failed = Signal(str, str, str)             # op, address, msg
 
     CONNECT_TIMEOUT = 10.0
@@ -393,19 +394,25 @@ class BleService(QObject):
 
     # ── GATT 原语 ──
 
-    def read_char(self, address: str, uuid: str) -> None:
+    def read_char(self, address: str, uuid: str, service_uuid: str | None = None) -> None:
         client = self._clients.get(address)
         if client is None:
             self.op_failed.emit("read", address, "未连接")
             return
+        try:
+            characteristic = resolve_characteristic(client, service_uuid, uuid)
+            owner = str(characteristic.service_uuid)
+        except (ValueError, AttributeError) as error:
+            self.op_failed.emit("read", address, str(error))
+            return
 
         async def _read():
-            data = bytes(await client.read_gatt_char(uuid))
+            data = bytes(await client.read_gatt_char(characteristic))
             return data
         self._submit_op("read", address, uuid, _read(),
-                        lambda v: self.char_read.emit(address, uuid, hex_spaced(v), try_utf8(v)))
+                        lambda v: self.char_read.emit(address, owner, uuid, hex_spaced(v), try_utf8(v)))
 
-    def write_char(self, address: str, uuid: str, data: bytes) -> None:
+    def write_char(self, address: str, uuid: str, data: bytes, service_uuid: str | None = None) -> None:
         if uuid.replace("-", "").lower() == INPUT_CHAR_UUID.replace("-", ""):
             self.op_failed.emit("write", address,
                                 "INPUT 特征写入已被禁用（SHID-FW-LOCK-001 设备保护）")
@@ -414,49 +421,64 @@ class BleService(QObject):
         if client is None:
             self.op_failed.emit("write", address, "未连接")
             return
+        try:
+            characteristic = resolve_characteristic(client, service_uuid, uuid)
+            owner = str(characteristic.service_uuid)
+        except (ValueError, AttributeError) as error:
+            self.op_failed.emit("write", address, str(error))
+            return
 
         async def _write():
             # PARITY-007：恒带响应写（writeNoResponse 在 Windows 栈字节腐败）
-            await client.write_gatt_char(uuid, data, response=True)
+            await client.write_gatt_char(characteristic, data, response=True)
             return len(data)
         self._submit_op("write", address, uuid, _write(),
-                        lambda n: self.write_done.emit(address, uuid, n))
+                        lambda n: self.write_done.emit(address, owner, uuid, n))
 
-    def set_notify(self, address: str, uuid: str, on: bool) -> None:
+    def set_notify(self, address: str, uuid: str, on: bool, service_uuid: str | None = None) -> None:
         client = self._clients.get(address)
         if client is None:
             self.op_failed.emit("notify", address, "未连接")
             return
+        try:
+            characteristic = resolve_characteristic(client, service_uuid, uuid)
+            owner = str(characteristic.service_uuid)
+        except (ValueError, AttributeError) as error:
+            self.op_failed.emit("notify", address, str(error))
+            return
 
         def _on_notify(_char, data: bytearray, _a=address, _u=uuid) -> None:
             if self._clients.get(_a) is client:
-                self.char_notified.emit(_a, _u, hex_spaced(bytes(data)))
+                self.char_notified.emit(_a, owner, _u, hex_spaced(bytes(data)))
 
         async def _start():
-            await client.start_notify(uuid, _on_notify)
+            await client.start_notify(characteristic, _on_notify)
         async def _stop():
-            await client.stop_notify(uuid)
+            await client.stop_notify(characteristic)
 
         if on:
             def _ok_start(_v) -> None:
-                self._mark_notify(address, uuid, True)
-                self.notify_changed.emit(address, uuid, True)
+                self._mark_notify(address, uuid, True, owner)
+                self.notify_changed.emit(address, owner, uuid, True)
             self._submit_op("notify", address, uuid, _start(), _ok_start)
         else:
             def _ok_stop(_v) -> None:
-                self._mark_notify(address, uuid, False)
-                self.notify_changed.emit(address, uuid, False)
+                self._mark_notify(address, uuid, False, owner)
+                self.notify_changed.emit(address, owner, uuid, False)
             self._submit_op("notify", address, uuid, _stop(), _ok_stop)
 
-    def notifying(self, address: str, uuid: str) -> bool:
-        return uuid in self._notifying.get(address, set())
+    def notifying(self, address: str, uuid: str, service_uuid: str | None = None) -> bool:
+        subscriptions = self._notifying.get(address, set())
+        if service_uuid:
+            return gatt_key(service_uuid, uuid) in subscriptions
+        matches = [entry for entry in subscriptions if entry[1] == gatt_key('', uuid)[1]]
+        return len(matches) == 1
 
-    def _mark_notify(self, address: str, uuid: str, on: bool) -> None:
-        tab = self._notifying.setdefault(address, set())
-        if on:
-            tab.add(uuid)
-        else:
-            tab.discard(uuid)
+    def _mark_notify(self, address: str, uuid: str, on: bool, service_uuid: str) -> None:
+        table = self._notifying.setdefault(address, set())
+        entry = gatt_key(service_uuid, uuid)
+        if on: table.add(entry)
+        else: table.discard(entry)
 
     def _submit_op(self, op: str, address: str, uuid: str, aw, on_ok) -> None:
         client = self._clients.get(address)

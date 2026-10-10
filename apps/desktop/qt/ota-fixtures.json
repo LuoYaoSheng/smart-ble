@@ -1,0 +1,58 @@
+{
+  "source": [
+    "contracts/target/ota-package.schema.json",
+    "hardware/esp32/LightBLE/src/ota_server.cpp",
+    "core/apple/SmartHidCore/Tests/SmartHidCoreTests/OtaContractTests.swift"
+  ],
+  "firmwareHex": "616263",
+  "manifest": {
+    "format_version": 1,
+    "target": "lightble-peripheral",
+    "hardware": "esp32c3",
+    "firmware_version": "1.2.3",
+    "size": 3,
+    "sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+  },
+  "statuses": [
+    {
+      "text": "{\"type\":\"ota\",\"status\":\"ready\",\"max_chunk\":180}",
+      "kind": "ready"
+    },
+    {
+      "text": "{\"type\":\"ota\",\"status\":\"success\",\"rebooting\":true}",
+      "kind": "success"
+    },
+    {
+      "text": "{\"type\":\"ota\",\"status\":\"failed\",\"code\":\"OTA_ERR_STATE\"}",
+      "kind": "error"
+    },
+    {
+      "text": "{\"type\":\"ota\",\"status\":\"aborted\"}",
+      "kind": "error"
+    },
+    {
+      "text": "{\"type\":\"ota\",\"status\":\"error\",\"detail\":\"not_ready\"}",
+      "kind": "error"
+    },
+    {
+      "text": "{\"type\":\"ota\",\"status\":\"progress\",\"received\":2,\"total\":3}",
+      "kind": null
+    },
+    {
+      "text": "{\"type\":\"other\",\"status\":\"success\"}",
+      "kind": null
+    },
+    {
+      "text": "1.0.5",
+      "kind": null
+    },
+    {
+      "text": "{\"type\":\"ota\",\"status\":\"not_ready\"}",
+      "kind": null
+    },
+    {
+      "text": "{\"type\":\"ota\",\"status\":\"not_success\"}",
+      "kind": null
+    }
+  ]
+}

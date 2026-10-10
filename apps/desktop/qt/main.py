@@ -18,6 +18,7 @@ from __future__ import annotations
 import os
 import sys
 from pathlib import Path
+from ota_dialog import OtaDialog, capable as ota_capable
 
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QColor, QFont, QIcon, QPainter, QLinearGradient, QTransform
@@ -605,10 +606,15 @@ class DeviceDetailPage(QWidget):
         self._act_notify.clicked.connect(self._toggle_notify)
         self._act_write = QPushButton("写入…")
         self._act_write.clicked.connect(self._write)
+        self._act_ota = QPushButton("固件更新")
+        self._act_ota.setObjectName("ota-update")
+        self._act_ota.setEnabled(False)
+        self._act_ota.clicked.connect(self._open_ota)
         for b in (self._act_read, self._act_notify, self._act_write):
             b.setEnabled(False)
             b.setObjectName("Sm")
             actions.addWidget(b)
+        actions.addWidget(self._act_ota)
         actions.addStretch(1)
         cv.addLayout(actions)
         page.addWidget(card)
@@ -644,6 +650,7 @@ class DeviceDetailPage(QWidget):
         self._address = address
         self._name = name
         self._tree_data = tree
+        self._act_ota.setEnabled(ota_capable(tree))
         self._title.setText(name or address)
         self._status.setText(f"{address} · 已连接")
         self._st.set_on(True)
@@ -692,7 +699,7 @@ class DeviceDetailPage(QWidget):
         ch = self._current_char()
         if ch is None:
             return
-        if self._ble.notifying(self._address, ch["uuid"]):
+        if self._ble.notifying(self._address, ch["uuid"], ch["svc"]):
             self._act_notify.setText("取消订阅")
         else:
             self._act_notify.setText("订阅通知")
@@ -703,17 +710,17 @@ class DeviceDetailPage(QWidget):
         ch = self._current_char()
         if ch:
             self._log.appendPlainText(f"读取 {char_display_name(ch['uuid']) or ch['uuid']} …")
-            self._ble.read_char(self._address, ch["uuid"])
+            self._ble.read_char(self._address, ch["uuid"], ch["svc"])
 
     def _toggle_notify(self) -> None:
         ch = self._current_char()
         if ch is None:
             return
-        on = not self._ble.notifying(self._address, ch["uuid"])
+        on = not self._ble.notifying(self._address, ch["uuid"], ch["svc"])
         self._log.appendPlainText(
             f"{'订阅' if on else '取消订阅'} {char_display_name(ch['uuid']) or ch['uuid']} …"
         )
-        self._ble.set_notify(self._address, ch["uuid"], on)
+        self._ble.set_notify(self._address, ch["uuid"], on, ch["svc"])
 
     def _write(self) -> None:
         ch = self._current_char()
@@ -723,16 +730,17 @@ class DeviceDetailPage(QWidget):
         dlg = WriteDialog(char_display_name(ch["uuid"]) or ch["uuid"], self)
         self._write_dlg = dlg
 
+        address, service = self._address, ch["svc"]
         def _finished(result: int, uuid: str = ch["uuid"]) -> None:
-            self._on_write_finished(uuid, result)
+            self._on_write_finished(address, service, uuid, result)
 
         dlg.finished.connect(_finished)
         dlg.open()
 
-    def _on_write_finished(self, uuid: str, result: int) -> None:
+    def _on_write_finished(self, address: str, service: str, uuid: str, result: int) -> None:
         dlg = self._write_dlg
         self._write_dlg = None
-        if dlg is None or result != QDialog.Accepted:
+        if address != self._address or dlg is None or result != QDialog.Accepted:
             self._log.appendPlainText("写入已取消")
             return
         payload = dlg.payload()
@@ -742,39 +750,39 @@ class DeviceDetailPage(QWidget):
         if not payload:
             self._log.appendPlainText("写入失败：内容为空")
             return
-        self._ble.write_char(self._address, uuid, payload)
+        self._ble.write_char(address, uuid, payload, service)
 
     # ── 信号落日志 ──
 
     def _mine(self, address: str) -> bool:
         return address == self._address
 
-    def _on_read(self, address: str, uuid: str, hexs: str, text: str) -> None:
+    def _on_read(self, address: str, service: str, uuid: str, hexs: str, text: str) -> None:
         if not self._mine(address):
             return
-        shown = f"读取成功 · {char_display_name(uuid) or uuid} · {hexs}"
+        shown = f"读取成功 · {service} · {char_display_name(uuid) or uuid} · {hexs}"
         if text:
             shown += f" · 「{text}」"
         self._log.appendPlainText(shown)
 
-    def _on_notified(self, address: str, uuid: str, hexs: str) -> None:
+    def _on_notified(self, address: str, service: str, uuid: str, hexs: str) -> None:
         if not self._mine(address):
             return
-        self._log.appendPlainText(f"收到通知 · {char_display_name(uuid) or uuid} · {hexs}")
+        self._log.appendPlainText(f"收到通知 · {service} · {char_display_name(uuid) or uuid} · {hexs}")
 
-    def _on_notify_changed(self, address: str, uuid: str, on: bool) -> None:
+    def _on_notify_changed(self, address: str, service: str, uuid: str, on: bool) -> None:
         if not self._mine(address):
             return
         self._log.appendPlainText(
-            f"{'订阅成功' if on else '已取消订阅'} · {char_display_name(uuid) or uuid}"
+            f"{'订阅成功' if on else '已取消订阅'} · {service} · {char_display_name(uuid) or uuid}"
         )
         self._refresh_notify_label()
 
-    def _on_write_done(self, address: str, uuid: str, nbytes: int) -> None:
+    def _on_write_done(self, address: str, service: str, uuid: str, nbytes: int) -> None:
         if not self._mine(address):
             return
         self._log.appendPlainText(
-            f"写入成功 · {char_display_name(uuid) or uuid} · {nbytes} 字节（带响应）"
+            f"写入成功 · {service} · {char_display_name(uuid) or uuid} · {nbytes} 字节（带响应）"
         )
 
     def _on_op_failed(self, op: str, address: str, msg: str) -> None:
@@ -782,8 +790,16 @@ class DeviceDetailPage(QWidget):
             return
         self._log.appendPlainText(f"{op} 失败 · {msg}")
 
+    def _open_ota(self):
+        if not self._address or not ota_capable(self._tree_data): return
+        dialog = OtaDialog(self._ble, self._address, self)
+        dialog.setAttribute(Qt.WA_DeleteOnClose)
+        dialog.open()
+        self._ota_dialog = dialog
+
     def _on_disconnected(self, address: str, expected: bool) -> None:
         if self._mine(address):
+            self._act_ota.setEnabled(False)
             self._status.setText(f"{address} · 已断开")
             self._st.set_on(False)
             self._log.appendPlainText("连接已断开" + ("" if expected else "（意外断链）"))
@@ -1269,7 +1285,10 @@ class MainWindow(QMainWindow):
             answer = QMessageBox.question(self, '离开配网', '离开会停止状态跟踪，设备可能仍继续配置。确认离开？')
             if answer != QMessageBox.Yes:
                 return
-            self._hid_session.cancel()
+        self._hid_session.cancel()
+        self._provision_page.clear_credentials()
+        self._ble.disconnect_device(self._hid_session.address)
+        self._hid_session.address = ''
         self._show_root(self.IDX_SCAN)
 
     def _refresh_badge(self) -> None:
@@ -1299,9 +1318,16 @@ class MainWindow(QMainWindow):
 
     # ── 生命周期 ──
 
+    def _cancel_ota(self):
+        dialog = getattr(self._detail_page, '_ota_dialog', None)
+        if dialog is not None:
+            try: dialog.controller.cancel()
+            except RuntimeError: pass  # dialog already closed/deleted
+
     def closeEvent(self, event) -> None:  # noqa: N802 - Qt 命名
         """关窗拦截 → 退出确认（10_platform §4；dwin-quit 文案）。"""
         if self._exit_confirmed:
+            self._cancel_ota()
             self._hid_session.cancel()
             self._ble.shutdown()
             event.accept()
@@ -1325,6 +1351,7 @@ class MainWindow(QMainWindow):
         quit_btn = box.addButton("退出", QMessageBox.AcceptRole)
         box.exec()
         if box.clickedButton() is quit_btn:
+            self._cancel_ota()
             # dwin-quit 正典顺序：先停广播（本壳降级恒无）→ 停扫描 → 断连 → 退出
             if self._ble.scanning:
                 self._ble.stop_scan()

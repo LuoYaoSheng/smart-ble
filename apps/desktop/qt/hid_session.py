@@ -4,7 +4,8 @@ import re
 from concurrent.futures import CancelledError
 
 from PySide6.QtCore import QObject, Signal
-from hid_protocol import C, INFO, STATUS, ProtocolError, parse_info, parse_status, provision
+from gatt_routing import resolve_characteristic
+from hid_protocol import C, SERVICE, INFO, STATUS, ProtocolError, parse_info, parse_status, provision
 
 
 class HidSession(QObject):
@@ -50,7 +51,7 @@ class HidSession(QObject):
         self.changed.emit({'info': {}, 'status': {}})
         self.failed.emit('设备已断开；重连后可读取状态，不会自动重复下发配置')
 
-    async def _client(self, address):
+    async def _client(self, address, generation):
         from bleak import BleakClient
         if self.ble.scanning:
             worker = self.ble._worker
@@ -61,12 +62,16 @@ class HidSession(QObject):
         if client is not None and client.is_connected:
             return client
         def disconnected(_client):
+            if self.ble._clients.get(address) is not _client: return
             self.ble._clients.pop(address, None)
             self.ble.connected.pop(address, None)
             self.ble._notifying.pop(address, None)
             self.ble.device_disconnected.emit(address, False)
         client = BleakClient(address, timeout=10, disconnected_callback=disconnected)
         await client.connect()
+        if generation != self._generation or address != self.address:
+            await client.disconnect()
+            raise asyncio.CancelledError
         self.ble._clients[address] = client
         self.ble.connected[address] = {'name': self.name or address, 'tree': self.ble._build_tree(client)}
         return client
@@ -82,7 +87,7 @@ class HidSession(QObject):
         self.busy_changed.emit(True)
 
         async def execute():
-            client = await self._client(address)
+            client = await self._client(address, generation)
             return await operation(client)
 
         future = self.ble._gatt.submit(execute())
@@ -113,10 +118,10 @@ class HidSession(QObject):
 
     def refresh(self):
         async def read(client):
-            info = parse_info(bytes(await client.read_gatt_char(INFO)).decode('utf-8'))
+            info = parse_info(bytes(await client.read_gatt_char(resolve_characteristic(client, SERVICE, INFO))).decode('utf-8'))
             if not info or info['product'] != 'smart-hid' or info['protocol'] != C['protocolVersion'] or not re.fullmatch(C['deviceIdPattern'], info['device_id']):
                 raise ProtocolError('设备身份或协议不匹配')
-            status = parse_status(bytes(await client.read_gatt_char(STATUS)).decode('utf-8'))
+            status = parse_status(bytes(await client.read_gatt_char(resolve_characteristic(client, SERVICE, STATUS))).decode('utf-8'))
             if status is None:
                 raise ProtocolError('设备未返回有效状态')
             return {'info': info, 'status': status}

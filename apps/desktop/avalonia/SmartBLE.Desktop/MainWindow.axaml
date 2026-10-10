@@ -964,6 +964,18 @@
                                     </StackPanel>
                                 </Border>
 
+                                <Button Classes="soft" Content="固件更新" Command="{Binding OpenOtaCommand}" IsVisible="{Binding IsOtaAvailable}" IsEnabled="{Binding !OtaBusy}"/>
+                                <Border Classes="card" IsVisible="{Binding ShowOtaPanel}" Margin="0,12,0,0">
+                                    <StackPanel Spacing="10">
+                                        <TextBlock Text="固件更新" FontSize="17" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding OtaMessage}" TextWrapping="Wrap"/>
+                                        <ProgressBar Minimum="0" Maximum="100" Value="{Binding OtaProgress}" Height="6"/>
+                                        <Button Classes="soft" Content="选择固件和 manifest" Command="{Binding SelectOtaPackageCommand}" IsEnabled="{Binding !OtaBusy}"/>
+                                        <Button Classes="primary" Content="开始升级" Command="{Binding StartOtaCommand}" IsEnabled="{Binding CanStartOta}"/>
+                                        <Button Classes="soft" Content="取消 / 关闭" Command="{Binding CancelOtaCommand}"/>
+                                    </StackPanel>
+                                </Border>
+
                                 <!-- C4 服务/特征树 -->
                                 <Grid ColumnDefinitions="*,Auto" Margin="2,12,2,10">
                                     <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="7">
@@ -1129,7 +1141,7 @@
                     </Grid>
                 </Grid>
 
-                <!-- ─────────── P002 Smart HID 配网（阶段一真实 GATT；下发=V-WIN 明确降级） ─────────── -->
+                <!-- ─────────── P002 Smart HID 配网（V1 身份校验、分帧下发和真实状态） ─────────── -->
                 <Grid IsVisible="{Binding IsHidProvView}" RowDefinitions="Auto,*">
                     <Border Grid.Row="0" Background="{DynamicResource CCard}"
                             BorderBrush="{DynamicResource CLineSoft}" BorderThickness="0,0,0,1"

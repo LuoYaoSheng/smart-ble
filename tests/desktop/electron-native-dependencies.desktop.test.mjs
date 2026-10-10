@@ -39,3 +39,17 @@ test('native install and Electron rebuild scripts run serially with rebuilding e
   assert.equal(manifest.build.nativeRebuilder, 'sequential');
   assert.notEqual(manifest.build.npmRebuild, false);
 });
+
+test('Windows setup and portable outputs have distinct target-specific names for each CPU', () => {
+  const setup = manifest.build.nsis.artifactName;
+  const portable = manifest.build.portable.artifactName;
+  assert.equal(setup, 'Smart-BLE-Open-${version}-${os}-${arch}-setup.${ext}');
+  assert.equal(portable, 'Smart-BLE-Open-${version}-${os}-${arch}-portable.${ext}');
+  for (const arch of ['x64', 'arm64']) {
+    const values = { version: manifest.version, os: 'win', arch, ext: 'exe' };
+    const expand = pattern => pattern.replace(/\$\{(\w+)\}/g, (_, key) => values[key]);
+    assert.notEqual(expand(setup), expand(portable));
+    assert.ok(expand(setup).endsWith('-setup.exe'));
+    assert.ok(expand(portable).endsWith('-portable.exe'));
+  }
+});

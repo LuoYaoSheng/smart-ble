@@ -1,8 +1,9 @@
 """P002/P003/P005/P010, using real BLE receipts and the shared V1 contract."""
 import json
+import time
 from pathlib import Path
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import QApplication, QFormLayout, QHBoxLayout, QLabel, QLineEdit, QMessageBox, QPushButton, QScrollArea, QVBoxLayout, QWidget
 from hid_protocol import ProtocolError, candidate_json, parse_pairing_qr, recovery_action, status_text
 
@@ -63,6 +64,12 @@ class ProvisioningPage(SecondaryPage):
         self.ssid, self.password, self.host, self.port, self.token = (QLineEdit() for _ in range(5))
         self.password.setEchoMode(QLineEdit.Password)
         self.token.setEchoMode(QLineEdit.Password)
+        self._token_acquired = 0.0
+        self.token.textChanged.connect(lambda _: setattr(self, '_token_acquired', time.monotonic()))
+        self._expiry_timer = QTimer(self)
+        self._expiry_timer.setInterval(30000)
+        self._expiry_timer.timeout.connect(self.expire_pairing)
+        self._expiry_timer.start()
         self.port.setText('17892')
         for text, field in [('Wi-Fi 名称', self.ssid), ('Wi-Fi 密码', self.password), ('ControlHub 地址', self.host), ('配对端口', self.port), ('配对 token', self.token)]:
             field.setMinimumHeight(40)
@@ -92,6 +99,18 @@ class ProvisioningPage(SecondaryPage):
         session.finished.connect(self.finished)
         self.busy(False)
 
+    def clear_credentials(self):
+        self.password.clear()
+        self.token.clear()
+        self.qr.clear()
+
+    def expire_pairing(self):
+        if self.token.text() and not self.session.busy and time.monotonic() - self._token_acquired >= 300:
+            self.clear_credentials()
+            self.failure('配对码已超过 5 分钟，请在 ControlHub 重新生成并导入')
+            return True
+        return False
+
     def bind(self, address):
         if address != self._address:
             for field in (self.ssid, self.password, self.host, self.token, self.qr):
@@ -110,6 +129,7 @@ class ProvisioningPage(SecondaryPage):
         self.state.setText('配对码已解析，请填写 Wi-Fi 信息')
 
     def start(self):
+        if self.expire_pairing(): return
         data = {'wifi_ssid': self.ssid.text(), 'wifi_password': self.password.text(), 'hub_host': self.host.text(), 'hub_port': self.port.text(), 'token': self.token.text()}
         try:
             candidate_json(data)
@@ -146,8 +166,7 @@ class ProvisioningPage(SecondaryPage):
     def finished(self, result):
         status = result['status']
         if result['ok']:
-            self.password.clear()
-            self.token.clear()
+            self.clear_credentials()
             self.state.setText('配网成功，设备已就绪。可打开设备详情和诊断。')
             self.state.setStyleSheet('color:#176B3A;')
             return
@@ -157,6 +176,7 @@ class ProvisioningPage(SecondaryPage):
             self.ssid.setFocus()
         elif action == 'pairing':
             self.token.clear()
+            self.qr.clear()
             self.qr.setFocus()
         elif action == 'diagnostics':
             self.diagnostic_button.setFocus()

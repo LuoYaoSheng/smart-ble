@@ -105,6 +105,7 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private async Task SwitchTabAsync(string tab)
     {
+        if (ShowOtaPanel) CancelOtaForNavigation();
         if (ActiveView is "hidprov" or "hiddetail" or "hiddiag")
         {
             CancelHidTask();
@@ -339,6 +340,8 @@ public partial class MainWindowViewModel : ObservableObject
     {
         OnPropertyChanged(nameof(GattStateWord));
         OnPropertyChanged(nameof(GattStFill));
+        OnPropertyChanged(nameof(IsOtaAvailable));
+        OnPropertyChanged(nameof(CanStartOta));
         OnPropertyChanged(nameof(ExitConfirmBusyText));
         OnPropertyChanged(nameof(ExitConfirmDetail));
         // 扫描卡「已连接」态同步（连接注册表在本 VM，不在设备对象上）
@@ -393,6 +396,7 @@ public partial class MainWindowViewModel : ObservableObject
 
     partial void OnCurrentDeviceIdChanged(string value)
     {
+        CancelOtaForNavigation();
         CloseWriteDialog();
         IsGattConnected = _bleService.IsConnected(value);
         IsGattConnecting = false;
@@ -410,6 +414,8 @@ public partial class MainWindowViewModel : ObservableObject
                 foreach (var characteristic in service.Characteristics) _charVmByKey[characteristic.CommandKey] = characteristic;
             }
         OnPropertyChanged(nameof(ServiceSummaryChip));
+        OnPropertyChanged(nameof(IsOtaAvailable));
+        OnPropertyChanged(nameof(CanStartOta));
     }
 
     private void OnServiceDiscovered(string deviceId, BleServiceInfo[]? services)
@@ -695,6 +701,7 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private void GoBack()
     {
+        CancelOtaForNavigation();
         ActiveTab = "scan";
         ActiveView = "scan";
         Services.Clear();
@@ -1609,6 +1616,7 @@ public partial class MainWindowViewModel : ObservableObject
     private async Task ConfirmExitAsync()
     {
         _hidTask?.Cancel();
+        _otaTask?.Cancel();
         _loopCts?.Cancel();
         await _bleService.ShutdownAsync();
         _exitConfirmed = true;

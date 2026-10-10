@@ -1406,7 +1406,7 @@ function renderServices() {
         if (panel) panel.innerHTML = op('服务发现完成 · 列表为空', '该设备未暴露任何 GATT 服务（或权限受限）。', 'warn');
     } else {
         if (panel) panel.innerHTML = hasOta
-            ? '<div style="margin-bottom:12px"><div class="note warn"><span class="ic"><svg class="ic sm" aria-hidden="true"><use href="#i-warn"/></svg></span><div><b>OTA 走真实契约链路</b>（选包→校验→传输→提交 · R-1/R-2）；无 manifest 时真固件按 missing_target 拒绝。</div></div></div>'
+            ? '<div style="margin-bottom:12px"><div class="note warn"><span class="ic"><svg class="ic sm" aria-hidden="true"><use href="#i-warn"/></svg></span><div>升级前请选择<b>固件 .bin 和对应 manifest</b>，校验目标、版本、大小与 SHA-256 后才能开始。升级期间请保持设备连接。</div></div></div>'
             : '';
     }
 }

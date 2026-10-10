@@ -1,58 +1,21 @@
-# Q-WIN · SmartBLE 桌面壳（Qt / PySide6 + bleak）
+# SmartBLE · Qt / PySide6 Windows 客户端
 
-Windows 桌面第 5 壳（Qt 线）。UI 框架 PySide6（Qt 6），BLE 后端
-[bleak](https://github.com/hbldh/bleak)（WinRT 客户端栈，扫描 + GATT）。
+唯一项目根目录为 `smart-ble/`。本实现使用 PySide6 和 bleak / WinRT，当前发布候选目标为 Windows x64；本轮没有原生 ARM64 包或真机证据。
 
-## 范围（2026-09-21 GATT 续建收口）
+现有九页：扫描、GATT 详情、已连接、广播、关于、版本记录、Smart HID 配网、设备详情、诊断。扫描为真实 5 秒扫描；GATT 支持多设备、读写、notify / indicate、断链后 1 / 3 / 5 秒重连。Smart HID 配网使用 INFO 身份校验、V1 分帧 INPUT 写入和 STATUS 回执；配对链接可粘贴导入，尚未接入相机。密码和配对码仅在内存中使用，离开页面、切换设备及配网成功时清理，配对码保留不超过 5 分钟。
 
-- 页面：
-  - P001 扫描（真 bleak 5s 扫描；列表选中/双击 → 连接）
-  - P006 设备详情（GATT）：服务/特征树（标准 UUID + 9f1d 家族中文名）、
-    特征读取 / 订阅开关（notify+indicate）/ 写入弹窗（UTF-8 / HEX 两模式，
-    恒带响应写 = PARITY-007）、操作日志面板；返回后会话常驻
-  - P007 已连接（连接管理：列表 / 查看详情 / 单断 / 全断）
-  - P008 广播（Windows 无外设栈，降级口径同 V-WIN）
-  - P009 关于（正典环境口径 Desktop · Windows / PC · X64）
-- 生命周期正典（win016，与 E/T/V/F/G 同口径）：
-  - 关窗拦截 → 应用内退出确认（dwin-quit 文案；busy = 连接 OR 广播；
-    连接台数入文案）
-  - 确认退出 → 先停广播（降级线无）→ 停扫描 → 断开全部连接 → 退出
-  - 切入广播页停扫描 / 切出广播页停广播（降级恒无操作）
-- 设备保护铁律（SHID-FW-LOCK-001）：INPUT 特征（9f1d1003）写入在
-  `ble_service.write_char` 内代码级拦截（错误日志「设备保护」），
-  真机永不向 INPUT 发写。
-- 架构：扫描一次性 QThread；GATT 常驻 asyncio loop 线程（GattWorker），
-  UI 线程经 `submit()` 投递协程，结果/通知/断连经 Qt 信号回流
-  （断连单次事件语义：手动断开由显式路径发，意外断链由回调发）。
-- 应用图标：正典 `apps/desktop/electron/public/brand/icon.png` 派生
-  （由 `tools/unify_icons.py` 统一分发）。
+GATT 页面仅在发现完整 OTA 服务和三特征能力后启用“固件更新”。原生文件选择器读取 `.bin` 与 manifest，按 `contracts/target/ota-package.schema.json` 验证六字段、实测大小和 SHA256，然后执行 `start → ready → DATA → commit → success`。DATA 按真实特征能力选择写模式，串行写入并控制间隔；只有设备 success 回执才显示 100%。取消、失败和超时会尝试 abort 并退订，断连没有 success 时不会宣称升级成功；收到 success 后的重启仍须重连核对版本。
 
-## 运行
+广播使用 Windows 厂商数据块发布者。名称和服务 UUID 发射受系统接口限制，不能把配置预览视为已经发射这些字段。
 
-```bash
+运行与测试：
+
+```sh
 pip install -r requirements.txt
 python main.py
+QT_QPA_PLATFORM=offscreen python -m unittest discover -s tests
 ```
 
-无需编译（解释型壳）；门禁见下。
+候选由仓库根 `scripts/release/build.py` 构建 PyInstaller 自包含目录，CI 附件下载为 ZIP。必须保留完整目录，单个 EXE 不能独立分发；该目录不是安装器或已签名正式发行。本轮自动测试与候选构建不能代替当前源码的真实 BLE、多设备恢复、配网、OTA、安装升级和签名验收。
 
-## 门禁
-
-```bash
-python -m compileall -q .   # 语法门禁（CI 用）
-python main.py              # 冒烟：窗口 1200x900 / 标题 SmartBLE
-```
-
-真机验证：扫描 5s 出列表（SHID-00000001 等双击连接）、GATT 树 3 特征、
-INFO 读取出身份 JSON、STATUS 订阅开关、busy 关窗退出确认。
-证据：`verification/windows-plan-v1/20260921-QWIN-GATT/`
-（12/12 走查 + 13 截图 + 无头探针日志）。
-
-## 自动化 seam（测试基建）
-
-`SMARTBLE_AUTOMATION_PORT=<port> python main.py` 时在 127.0.0.1 起
-TCP 行 JSON 服务（state/tab/scan/connect/char_read/char_notify/
-char_write/write_dialog/disconnect_all/close_win/confirm_exit/snap…），
-截图走 Qt 原生 `QWidget.grab()`。不设变量零副作用。已知坑位：
-`Signal(dict)` 跨线程会被 QVariantMap 拷贝断引用（用 `Signal(object)`）；
-closeEvent 内嵌套 `close()` 被重入保护吞掉（确认后直接 `event.accept()`）。
+`SMARTBLE_AUTOMATION_PORT` 仅供本地测试，默认不启动自动化端口。共享 OTA 测试输入位于 `ota-fixtures.json`，由本实现与 Avalonia 测试共同消费；运行时不依赖该文件。

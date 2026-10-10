@@ -44,6 +44,7 @@ public class BleService
     }
     private readonly ConcurrentDictionary<string, DeviceSession> _sessions = new(StringComparer.OrdinalIgnoreCase);
     public string[] ConnectedDeviceIds => _sessions.Values.Where(s => s.Connected).Select(s => s.Id).ToArray();
+    public int GetWriteCapacity(string id) => _sessions.TryGetValue(id, out var session) && session.Gatt != null ? Math.Clamp(session.Gatt.MaxPduSize - 3, 20, 180) : 20;
     public bool IsConnected(string id) => _sessions.TryGetValue(id, out var s) && s.Connected;
     public BleServiceInfo[] GetServices(string id) => _sessions.TryGetValue(id, out var s) ? s.Tree : Array.Empty<BleServiceInfo>();
     private bool Owns(DeviceSession session) => !session.Lifetime.IsCancellationRequested &&
@@ -480,11 +481,11 @@ public class BleService
         return null;
     }
 
-    public async Task<bool> WriteCharacteristicAsync(string deviceId, string serviceUuid, string characteristicUuid, byte[] data, bool withResponse = true, bool sensitive = false)
+    public async Task<bool> WriteCharacteristicAsync(string deviceId, string serviceUuid, string characteristicUuid, byte[] data, bool withResponse = true, bool sensitive = false, CancellationToken cancellationToken = default)
     {
         if (!_sessions.TryGetValue(deviceId, out var session)) return false;
-        await session.Gate.WaitAsync();
-        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(session.Lifetime.Token);
+        await session.Gate.WaitAsync(cancellationToken);
+        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(session.Lifetime.Token, cancellationToken);
         timeout.CancelAfter(TimeSpan.FromSeconds(15));
         try
         {
@@ -518,7 +519,7 @@ public class BleService
 
             if (result.Status == GattCommunicationStatus.Success)
             {
-                LogMessage?.Invoke("写入成功", sensitive ? "配置帧已写入（凭据已隐藏）" : $"写入成功: {BitConverter.ToString(data).Replace('-', ' ')}");
+                LogMessage?.Invoke("写入成功", sensitive ? "受保护数据已写入（内容已隐藏）" : $"写入成功: {BitConverter.ToString(data).Replace('-', ' ')}");
                 return true;
             }
             else
@@ -536,11 +537,11 @@ public class BleService
         return false;
     }
 
-    public async Task<bool> SetNotificationAsync(string deviceId, string serviceUuid, string characteristicUuid, bool enable)
+    public async Task<bool> SetNotificationAsync(string deviceId, string serviceUuid, string characteristicUuid, bool enable, CancellationToken cancellationToken = default)
     {
         if (!_sessions.TryGetValue(deviceId, out var session)) return false;
-        await session.Gate.WaitAsync();
-        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(session.Lifetime.Token);
+        await session.Gate.WaitAsync(cancellationToken);
+        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(session.Lifetime.Token, cancellationToken);
         timeout.CancelAfter(TimeSpan.FromSeconds(15));
         var key = CharKey(serviceUuid, characteristicUuid);
         TypedEventHandler<GattCharacteristic, GattValueChangedEventArgs>? addedHandler = null;

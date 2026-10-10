@@ -13,3 +13,5 @@ After changing these versions, use a clean `npm ci`, build on Linux and Windows,
 Native installs run with project `foreground-scripts=true`, and Electron rebuilds explicitly use `nativeRebuilder: sequential`. Multiple addons reference the same `node-addon-api/nothing` gyp target; concurrent install scripts can delete or write its shared output at the same time. Keep lifecycle scripts enabled, but serialize them.
 
 The UI and application product name remain `BLE Toolkit+`. Linux's executable/product filename is `smart-ble-open`; installer artifacts use the ASCII-safe `Smart-BLE-Open-<version>-<os>-<arch>.<ext>` pattern. AppImage's filename validation rejects `+`, so the executable filename is configured separately from the displayed product name.
+
+Windows NSIS and portable outputs use target-specific `-setup.exe` and `-portable.exe` suffixes. Their default extensions are both `.exe`, so the global artifact pattern alone would overwrite one output with the other.
