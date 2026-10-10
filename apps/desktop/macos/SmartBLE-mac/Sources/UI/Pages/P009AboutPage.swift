@@ -144,7 +144,7 @@ final class P009AboutPage: NSViewController, PageProtocol {
         ], spacing: 0)
         views.append(menuCard)
 
-        let foot = makeLabel("日志全局脱敏：敏感凭据显示为 token=***\nBLE Toolkit+ · Smart BLE 产品家族", size: 10, color: DS.ph, align: .center)
+        let foot = makeLabel("日志全局脱敏：敏感凭据显示为 token=***\nBLE Toolkit+ · 跨平台 BLE 调试工具", size: 10, color: DS.ph, align: .center)
         foot.maximumNumberOfLines = 0
         views.append(foot)
 

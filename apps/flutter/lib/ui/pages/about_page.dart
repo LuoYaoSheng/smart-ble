@@ -119,7 +119,7 @@ class _AboutPageState extends State<AboutPage> {
                     const SizedBox(height: 24),
                     Center(
                       child: Text(
-                        '日志全局脱敏：敏感凭据显示为 token=***\n© 2026 ${ProductConfig.name} · Smart BLE 产品家族',
+                        '日志全局脱敏：敏感凭据显示为 token=***\n© 2026 ${ProductConfig.name}',
                         style: TextStyle(
                           fontSize: 11,
                           color: AppTheme.textSecondary.withValues(alpha: 0.72),

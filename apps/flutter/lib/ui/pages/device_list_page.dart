@@ -45,9 +45,9 @@ final filterExpandedProvider = StateProvider<bool>((ref) => false);
 class DeviceListPage extends ConsumerStatefulWidget {
   const DeviceListPage({super.key});
 
-  /// 蓝牙状态三态词（正典 p001 btWord）：on 就绪 / off+未授权 未开启 / 其余 平台不支持
+  /// 蓝牙状态三态词（正典 p001 btWord）：on 就绪 / off+未授权 未开启 / 其余 蓝牙不可用
   /// 蓝牙状态词（正典 p001 btWord + 桌面壳瞬态）：
-  /// on 就绪 / off+未授权 未开启 / unavailable 平台不支持 / null+unknown+turning* 初始化中…
+  /// on 就绪 / off+未授权 未开启 / unavailable 蓝牙不可用 / null+unknown+turning* 初始化中…
   static String btStatusWord(BleState? state) {
     switch (state) {
       case BleState.on:
@@ -56,7 +56,7 @@ class DeviceListPage extends ConsumerStatefulWidget {
       case BleState.unauthorized:
         return '蓝牙未开启';
       case BleState.unavailable:
-        return '平台不支持';
+        return '蓝牙不可用';
       case null:
       case BleState.unknown:
       case BleState.turningOn:
@@ -143,11 +143,13 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
       if (!await requestAndroidBlePermissions(context)) return;
       if (!mounted) return;
       final initialized = await _bleManager.initialize();
-      if (!initialized || !mounted) return;
+      if (!mounted) return;
       setState(() {
-        _errorCode = null;
-        _errorMessage = null;
+        _isInitialized = initialized;
+        _errorCode = initialized ? null : 'BLE_001';
+        _errorMessage = initialized ? null : '蓝牙不可用';
       });
+      if (!initialized) return;
       await _bleManager.startScan(timeout: const Duration(seconds: 5));
     } catch (e) {
       if (mounted) {

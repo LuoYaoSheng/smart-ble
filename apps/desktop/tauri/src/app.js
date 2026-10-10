@@ -1,3 +1,15 @@
+// A successful OS/library initialization does not prove that a radio exists.
+function desktopBluetoothState(result) {
+    if (result?.state) return result.state;
+    const error = String(result?.error || '');
+    const states = {NO_ADAPTER: 'noAdapter', BLUETOOTH_OFF: 'poweredOff', UNSUPPORTED_ADAPTER: 'unsupportedAdapter', BLUETOOTH_UNAUTHORIZED: 'unauthorized', UNSUPPORTED_PLATFORM: 'unsupported'};
+    for (const [prefix, state] of Object.entries(states)) if (error.includes(prefix + ':')) return state;
+    return result?.success ? 'poweredOn' : 'unavailable';
+}
+function desktopBluetoothLabel(state) {
+    return {poweredOn: '蓝牙就绪', poweredOff: '蓝牙未开启', noAdapter: '未发现蓝牙适配器', unsupportedAdapter: '适配器不支持 BLE', unauthorized: '蓝牙权限未授权', unsupported: '平台不支持', unavailable: '蓝牙状态未确认', unknown: '初始化中…'}[state] || '蓝牙状态未确认';
+}
+
 // SmartBLE Desktop - Tauri Frontend
 
 let invoke, listen;
@@ -25,13 +37,14 @@ const PERIPHERAL_SUPPORT = {
         ? 'macOS 支持自定义广播名称'
         : '自定义广播名称在此平台上可能无效',
     recommendation: PLATFORM.isMacOS
-        ? '建议使用 apps/desktop/macos/SmartBLE-mac 原生应用'
+        ? '建议使用 macOS 原生 BLE Toolkit+'
         : '请使用对应平台的原生应用获取完整支持'
 };
 
 // App State
 const state = {
     bluetoothReady: false,
+    bluetoothState: 'unknown',
     scanning: false,
     connecting: false, // P006 面板状态机：连接中
     hasScanned: false, // P001 正典状态词：扫描完成后显示「扫描完成 · 发现 N 台」
@@ -516,20 +529,12 @@ async function initBluetooth() {
 
     try {
         const result = await invoke('init_ble');
-        if (result.success) {
-            updateStatus('Ready', 'ready');
-        } else if (result.error && String(result.error).startsWith('BLUETOOTH_OFF')) {
-            // N3：无线电关闭≠平台不支持——正典词「蓝牙未开启」红点
-            updateStatus('Bluetooth Off', 'off');
-        } else {
-            updateStatus('Not Ready', 'error');
-        }
-        state.bluetoothReady = result.success;
+        updateStatus('', desktopBluetoothState(result));
         if (!result.success) {
             addLog('error', `Bluetooth init failed: ${result.error}`);
         }
     } catch (error) {
-        updateStatus('Error', 'error');
+        updateStatus('', 'unavailable');
         addLog('error', `Bluetooth init error: ${error}`);
     }
 }
@@ -538,21 +543,14 @@ async function initBluetooth() {
 function updateStatus(text, status) {
     const dot = document.querySelector('#btChip .bt-dot');
     const word = document.getElementById('btWord');
-    if (status === 'ready') {
-        if (dot) dot.className = 'bt-dot on';
-        if (word) word.textContent = '蓝牙就绪';
-    } else if (status === 'off') {
-        // N3 正典词：蓝牙未开启（红点）——后端 BLUETOOTH_OFF（Radio.State=Off）上报
-        if (dot) dot.className = 'bt-dot off';
-        if (word) word.textContent = '蓝牙未开启';
-    } else if (status === 'error') {
-        // init_ble 仅在「无适配器/异常」时返回失败——正典 p001 词汇：平台不支持（灰点，非红）
-        if (dot) dot.className = 'bt-dot';
-        if (word) word.textContent = '平台不支持';
-    } else {
-        if (dot) dot.className = 'bt-dot';
-        if (word) word.textContent = '初始化中…';
-    }
+    const mapped = {ready: 'poweredOn', off: 'poweredOff', error: 'unavailable', initializing: 'unknown'}[status] || status;
+    state.bluetoothState = mapped;
+    state.bluetoothReady = mapped === 'poweredOn';
+    if (dot) dot.className = 'bt-dot ' + (state.bluetoothReady ? 'on' : mapped === 'poweredOff' || mapped === 'unauthorized' ? 'off' : '');
+    if (word) word.textContent = desktopBluetoothLabel(mapped);
+    updateScanButton(state.scanning);
+    if (!state.advertising) updateBroadcastStatus(state.broadcastSupportChecked && state.bluetoothReady && !state.broadcastUnsupported ? 'ready' : 'idle');
+    updateByteBudget();
 }
 
 // Tab Navigation
@@ -981,6 +979,7 @@ async function startScan() {
                 }
             }, 5000);
         } else {
+            updateStatus('', desktopBluetoothState(result));
             addLog('error', `Scan failed: ${result.error}`);
         }
     } catch (error) {
@@ -1005,6 +1004,7 @@ async function stopScan() {
 function updateScanButton(scanning) {
     const btn = elements.scanButton;
     if (!btn) return;
+    btn.disabled = !scanning && !state.bluetoothReady;
     if (scanning) {
         btn.className = 'btn danger';
         btn.innerHTML = '<svg class="ic sm" aria-hidden="true"><use href="#i-stop"/></svg><span>停止扫描</span>';
@@ -1483,7 +1483,7 @@ function updateCharacteristicValue(deviceId, serviceUuid, charUuid, value) {
 // P008 广播表单读取
 function readBroadcastForm() {
     return {
-        name: elements.broadcastName?.value || 'SmartBLE',
+        name: elements.broadcastName?.value || 'BLE Toolkit+',
         uuid: (elements.broadcastServiceUuid?.value || '').trim(),
         mfgId: (elements.broadcastManufacturerId?.value || '').trim(),
         mfgData: elements.broadcastManufacturerData?.value || '',
@@ -1528,23 +1528,24 @@ function updateByteBudget() {
     state.broadcastUuidError = !uuidOk;
 
     const startBtn = document.getElementById('startBroadcastButton');
-    if (startBtn && !state.advertising) startBtn.disabled = over || !uuidOk || state.broadcastUnsupported;
+    if (startBtn && !state.advertising) startBtn.disabled = over || !uuidOk || state.broadcastUnsupported || !state.bluetoothReady;
 }
 
 // P008 广播状态徽章（正典：广播中 on / 失败 err / 已就绪 warn / 未就绪 dim）+ 输入禁用
-function updateBroadcastStatus(state) {
+function updateBroadcastStatus(broadcastState) {
+    if (broadcastState === 'ready' && (!state.bluetoothReady || state.broadcastUnsupported)) broadcastState = 'idle';
     const badge = document.getElementById('broadcastStateBadge');
     const startBtn = document.getElementById('startBroadcastButton');
     const stopBtn = document.getElementById('stopBroadcastButton');
     const lock = document.getElementById('broadcastNameLock');
     const words = { advertising: ['on', '广播中'], failed: ['err', '失败'], ready: ['warn', '已就绪'], idle: ['dim', '未就绪'] };
-    const [tone, word] = words[state] || words.idle;
+    const [tone, word] = words[broadcastState] || words.idle;
 
     if (badge) {
         badge.className = 'badge ' + tone;
         badge.innerHTML = `<i class="dot"></i>${word}`;
     }
-    const advertising = state === 'advertising';
+    const advertising = broadcastState === 'advertising';
     ['broadcastName', 'broadcastServiceUuid', 'broadcastManufacturerId', 'broadcastManufacturerData'].forEach((id) => {
         const el = document.getElementById(id);
         if (el) el.disabled = advertising;
@@ -1562,16 +1563,18 @@ function bLog(type, msg) {
 }
 
 // P008 检查支持（平台原生层口径：win=WIN-BRIDGE 边车已实装 / mac=btleplug 受限 / linux 不支持）
-function checkBroadcastSupport() {
+async function checkBroadcastSupport() {
+    await initBluetooth();
     const uc = navigator.userAgent.toLowerCase();
     const isMac = uc.includes('mac') || uc.includes('darwin');
     const isWin = uc.includes('win');
     state.broadcastOsName = isMac ? 'macOS' : isWin ? 'Windows' : 'Linux';
     // Windows 自 2026-09-24 广播模板复制轮起经 WIN-BRIDGE 边车真发射（仅厂商块 0xFF）
-    state.broadcastUnsupported = !isMac && !isWin;
+    state.broadcastUnsupported = !isWin;
     state.broadcastSupportChecked = true;
 
-    updateBroadcastStatus(isMac || isWin ? 'ready' : 'idle');
+    updateBroadcastStatus(isWin && state.bluetoothReady ? 'ready' : 'idle');
+    if (!state.bluetoothReady) bLog('error', desktopBluetoothLabel(state.bluetoothState));
     const layer = isMac ? 'btleplug/CoreBluetooth' : isWin ? 'WinRT（WIN-BRIDGE 边车 · 仅厂商块）' : 'BlueZ';
     bLog('info', `桌面原生层 ${layer}（${state.broadcastOsName}）——${isWin ? '仅厂商数据块可发，名称/UUID 不可设（平台事实）' : isMac ? '外围能力受限，以实测为准（10_platform §2.4）' : '底层严格限制 BLE 外设广播'}`);
     if (!isMac && !isWin) {
@@ -1581,6 +1584,7 @@ function checkBroadcastSupport() {
 }
 
 async function startAdvertising() {
+    if (!state.bluetoothReady) { bLog('error', desktopBluetoothLabel(state.bluetoothState)); return; }
     const f = readBroadcastForm();
     const b = calcAdvertiseBytes(f);
 
@@ -1613,6 +1617,7 @@ async function startAdvertising() {
             updateBroadcastStatus('advertising');
             bLog('success', `广播已启动 · ${f.name}`);
         } else {
+            updateStatus('', desktopBluetoothState(result));
             updateBroadcastStatus('failed');
             bLog('error', `广播启动失败: ${result.error}`);
             bLog('info', PERIPHERAL_SUPPORT.recommendation);

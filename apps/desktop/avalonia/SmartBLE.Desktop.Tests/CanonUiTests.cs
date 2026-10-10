@@ -11,15 +11,15 @@ public class CanonUiTests
     // —— P008 预算（app.js calcAdvertiseBytes：2+len / 2+字节 / 4+数据长） ——
 
     [Fact]
-    public void CalcAdvertiseBytes_DefaultForm_MatchesElectronDefaults()
+    public void CalcAdvertiseBytes_DefaultFormUsesUnifiedProductName()
     {
-        // E-WIN 默认表单：SmartBLE(8 字符) + FFE0 + 0001 + BLE
-        // name=2+8=10 / uuid=2+2=4 / mfg=4+3=7 → 21
-        var b = CanonUi.CalcAdvertiseBytes("SmartBLE", "FFE0", "0001", "BLE");
-        Assert.Equal(10, b.Name);
+        // Application-generated default: BLE Toolkit+ (12 ASCII bytes).
+        // name=2+12=14 / uuid=2+2=4 / mfg=4+3=7 → 25
+        var b = CanonUi.CalcAdvertiseBytes(MainWindowViewModel.ProductName, "FFE0", "0001", "BLE");
+        Assert.Equal(14, b.Name);
         Assert.Equal(4, b.Uuid);
         Assert.Equal(7, b.Mfg);
-        Assert.Equal(21, b.Total);
+        Assert.Equal(25, b.Total);
     }
 
     [Theory]
@@ -81,11 +81,16 @@ public class CanonUiTests
     [Theory]
     [InlineData("On", "蓝牙就绪", "on")]
     [InlineData("Off", "蓝牙未开启", "off")]
-    [InlineData("Unauthorized", "蓝牙未开启", "off")]
-    [InlineData("Unavailable", "平台不支持", "")]
+    [InlineData("Unauthorized", "蓝牙权限未授予", "off")]
+    [InlineData("Unavailable", "蓝牙检测失败", "")]
+    [InlineData("NoAdapter", "未检测到蓝牙适配器", "")]
+    [InlineData("Unsupported", "平台不支持", "")]
+    [InlineData("UnsupportedAdapter", "适配器不支持 BLE", "")]
+    [InlineData("Disabled", "蓝牙被系统禁用", "off")]
+    [InlineData("Unknown", "蓝牙状态未知", "")]
     [InlineData("Whatever", "初始化中…", "")]
     [InlineData("", "初始化中…", "")]
-    public void CanonicalBtChip_FiveStatesUseCanonWords(string state, string word, string dot)
+    public void CanonicalBtChip_ReportsDistinctBluetoothAvailability(string state, string word, string dot)
     {
         Assert.Equal((word, dot), CanonUi.CanonicalBtChip(state));
     }

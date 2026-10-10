@@ -28,15 +28,18 @@ internal static class CanonUi
     public static int SigQuality(int rssi)
         => rssi >= -60 ? 4 : rssi >= -70 ? 3 : rssi >= -80 ? 2 : 1;
 
-    // ── P001 bt-chip 五态词（app.js stateMap / N3 正典口径） ──
-    // On→蓝牙就绪(绿)；Off/Unauthorized→蓝牙未开启(红)；
-    // Unsupported→平台不支持(灰)；未知→初始化中…(灰)
+    // P001: distinguish hardware absence, power, permission and API support.
     public static (string Word, string DotClass) CanonicalBtChip(string state) => state switch
     {
         "On" => ("蓝牙就绪", "on"),
         "Off" => ("蓝牙未开启", "off"),
-        "Unauthorized" => ("蓝牙未开启", "off"),
-        "Unavailable" => ("平台不支持", ""),
+        "NoAdapter" => ("未检测到蓝牙适配器", ""),
+        "Disabled" => ("蓝牙被系统禁用", "off"),
+        "Unauthorized" => ("蓝牙权限未授予", "off"),
+        "UnsupportedAdapter" => ("适配器不支持 BLE", ""),
+        "Unsupported" => ("平台不支持", ""),
+        "Unknown" => ("蓝牙状态未知", ""),
+        "Error" or "Unavailable" => ("蓝牙检测失败", ""),
         _ => ("初始化中…", ""),
     };
 

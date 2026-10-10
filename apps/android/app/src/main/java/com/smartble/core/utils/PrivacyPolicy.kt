@@ -3,13 +3,13 @@ package com.smartble.core.utils
 object PrivacyPolicy {
     const val SUPPORT_EMAIL = "121912336@qq.com"
     val text = """
-Smart BLE 隐私说明
+BLE Toolkit+ 隐私说明
 更新日期：2026-10-10
 开发者：个人开发者
 联系邮箱：121912336@qq.com
 
 使用目的
-Smart BLE 用于扫描附近蓝牙设备、查看广播、连接 GATT、读写特征、监听通知和配置支持的设备。核心调试无需注册账号。
+BLE Toolkit+ 用于扫描附近蓝牙设备、查看广播、连接 GATT、读写特征、监听通知和配置支持的设备。核心调试无需注册账号。
 
 权限说明
 蓝牙权限用于扫描、连接、读写、通知和受平台支持的广播功能。Android 的扫描兼容路径可能需要位置权限；应用不读取 GPS 坐标，不记录定位轨迹。

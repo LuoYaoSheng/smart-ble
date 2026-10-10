@@ -2,11 +2,11 @@
 # make-app-bundle.sh — r5 上架就绪：产出两种交付形态
 #
 # 用法： scripts/macos/make-app-bundle.sh [--omit-bt-usage] [--config debug|release] [--arch universal|arm64|x86_64]
-#   dist/SmartBLE-macOS.app      → 运行形态（Release、AppIcon.icns、hardened runtime、ad-hoc、非沙盒）
+#   dist/direct/BLE Toolkit+.app      → 运行形态（Release、AppIcon.icns、hardened runtime、ad-hoc、非沙盒）
 #                                   r4 链路保持可复现（ad-hoc 非沙盒下 BLE 可用，见 r4 证据）
-#   dist/SmartBLE-macOS-MAS.app  → MAS 形态（同上 + App Sandbox entitlements；Mac App Store 就绪形态）
+#   dist/mas/BLE Toolkit+.app  → MAS 形态（同上 + App Sandbox entitlements；Mac App Store 就绪形态）
 #                                   BLE 需要 device.bluetooth entitlement + 系统授权；真实分发签名单独验证。
-#   --omit-bt-usage → 追加 dist/SmartBLE-macOS-NoBT.app（删除两个蓝牙用途键，负向对照，非沙盒）
+#   --omit-bt-usage → 追加 dist/negative/BLE Toolkit+.app（删除两个蓝牙用途键，负向对照，非沙盒）
 #   --config X     → 构建配置（默认 release）
 #
 # 约束：仅 ad-hoc 签名（codesign -s -），全程不涉及证书私钥 / Apple 账号 / 公证 / 上传。
@@ -29,9 +29,9 @@ while [ $# -gt 0 ]; do
   esac
 done
 CONFIG_CAP="$(printf '%s' "$CONFIG" | cut -c1 | tr '[:lower:]' '[:upper:]')$(printf '%s' "$CONFIG" | cut -c2-)"
-BUNDLE="$DIST/SmartBLE-macOS.app"
-MAS="$DIST/SmartBLE-macOS-MAS.app"
-NOBT="$DIST/SmartBLE-macOS-NoBT.app"
+BUNDLE="$DIST/direct/BLE Toolkit+.app"
+MAS="$DIST/mas/BLE Toolkit+.app"
+NOBT="$DIST/negative/BLE Toolkit+.app"
 PLIST_SRC="$APP_DIR/Info.plist"
 ICON_SRC="$APP_DIR/Resources/AppIcon.icns"
 ENT_SRC="$APP_DIR/Entitlements.plist"
@@ -66,6 +66,7 @@ for app in "$BUNDLE" "$MAS"; do
   mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
   cp "$BIN" "$app/Contents/MacOS/SmartBLE-mac"
   cp "$PLIST_SRC" "$app/Contents/Info.plist"
+  /usr/libexec/PlistBuddy -c "Set :CFBundleExecutable SmartBLE-mac" "$app/Contents/Info.plist"
   cp "$ICON_SRC" "$app/Contents/Resources/AppIcon.icns"
   rm -rf "$app/Contents/Resources/SmartBLE-mac_SmartBLE-mac.bundle"
   cp -R "$SPM_RES_BUNDLE" "$app/Contents/Resources/SmartBLE-mac_SmartBLE-mac.bundle"
@@ -84,6 +85,7 @@ if [ "$OMIT_BT" = "1" ]; then
   mkdir -p "$NOBT/Contents/MacOS" "$NOBT/Contents/Resources"
   cp "$BIN" "$NOBT/Contents/MacOS/SmartBLE-mac"
   cp "$PLIST_SRC" "$NOBT/Contents/Info.plist"
+  /usr/libexec/PlistBuddy -c "Set :CFBundleExecutable SmartBLE-mac" "$NOBT/Contents/Info.plist"
   cp "$ICON_SRC" "$NOBT/Contents/Resources/AppIcon.icns"
   cp -R "$SPM_RES_BUNDLE" "$NOBT/Contents/Resources/SmartBLE-mac_SmartBLE-mac.bundle"
   /usr/libexec/PlistBuddy -c 'Delete :NSBluetoothAlwaysUsageDescription' \
@@ -94,9 +96,9 @@ fi
 
 step "3. ad-hoc 签名（无证书私钥参与；MAS 形态带 App Sandbox + hardened runtime）"
 codesign --force --sign - --options runtime "$BUNDLE"
-codesign --verify --strict "$BUNDLE" && echo "NVP sign: SmartBLE-macOS.app（运行形态）ad-hoc 签名校验通过"
+codesign --verify --strict "$BUNDLE" && echo "NVP sign: direct/BLE Toolkit+.app（运行形态）ad-hoc 签名校验通过"
 codesign --force --sign - --entitlements "$ENT_SRC" --options runtime "$MAS"
-codesign --verify --strict "$MAS" && echo "NVD sign: SmartBLE-macOS-MAS.app（MAS 形态）ad-hoc 签名校验通过"
+codesign --verify --strict "$MAS" && echo "NVD sign: mas/BLE Toolkit+.app（MAS 形态）ad-hoc 签名校验通过"
 codesign -d --entitlements :- "$MAS" 2>/dev/null | grep 'app-sandbox' > /dev/null \
   && echo "NVD entitlements: app-sandbox 已嵌入"
 codesign -dv "$MAS" 2>&1 | grep -i 'runtime' > /dev/null \

@@ -1,3 +1,15 @@
+// A successful OS/library initialization does not prove that a radio exists.
+function desktopBluetoothState(result) {
+    if (result?.state) return result.state;
+    const error = String(result?.error || '');
+    const states = {NO_ADAPTER: 'noAdapter', BLUETOOTH_OFF: 'poweredOff', UNSUPPORTED_ADAPTER: 'unsupportedAdapter', BLUETOOTH_UNAUTHORIZED: 'unauthorized', UNSUPPORTED_PLATFORM: 'unsupported'};
+    for (const [prefix, state] of Object.entries(states)) if (error.includes(prefix + ':')) return state;
+    return result?.success ? 'poweredOn' : 'unavailable';
+}
+function desktopBluetoothLabel(state) {
+    return {poweredOn: '蓝牙就绪', poweredOff: '蓝牙未开启', noAdapter: '未发现蓝牙适配器', unsupportedAdapter: '适配器不支持 BLE', unauthorized: '蓝牙权限未授权', unsupported: '平台不支持', unavailable: '蓝牙状态未确认', unknown: '初始化中…'}[state] || '蓝牙状态未确认';
+}
+
 //
 // SmartBLE Desktop - Renderer Process
 //
@@ -13,6 +25,8 @@ class App {
         this.logs = [];
         this.currentDevice = null;
         this.isScanning = false;
+        this.bluetoothReady = false;
+        this.bluetoothState = 'unknown';
         this.isConnecting = false;
         this.hasScanned = false; // P001 正典状态词：扫描完成后显示「扫描完成 · 发现 N 台」
         this.writeDialogCallback = null;
@@ -50,7 +64,7 @@ class App {
         if (this.USE_MOCK_BLE && !window.bleAPI) {
             console.warn('[MOCK] Polyfilling window.bleAPI for Playwright test environment');
             window.bleAPI = {
-                init: async () => ({ success: true }),
+                init: async () => ({ success: true, state: 'poweredOn' }),
                 startScan: async () => ({ success: true }),
                 stopScan: async () => ({ success: true }),
                 connect: async (id) => {
@@ -726,7 +740,7 @@ class App {
     // P008 广播表单读取（includeName 恒真：桌面 noble 路径始终带名）
     readBroadcastForm() {
         return {
-            name: document.getElementById('broadcastName')?.value || 'SmartBLE',
+            name: document.getElementById('broadcastName')?.value || 'BLE Toolkit+',
             uuid: (document.getElementById('broadcastServiceUuid')?.value || '').trim(),
             mfgId: (document.getElementById('broadcastManufacturerId')?.value || '').trim(),
             mfgData: document.getElementById('broadcastManufacturerData')?.value || '',
@@ -771,11 +785,12 @@ class App {
         this.broadcastUuidError = !uuidOk;
 
         const startBtn = document.getElementById('startBroadcastButton');
-        if (startBtn && !this.isBroadcasting) startBtn.disabled = over || !uuidOk;
+        if (startBtn && !this.isBroadcasting) startBtn.disabled = over || !uuidOk || !this.bluetoothReady || window.platform?.platform !== 'win32';
     }
 
     // P008 广播状态徽章（正典：广播中 on / 失败 err / 已就绪 warn / 未就绪 dim）+ 输入禁用
     updateBroadcastStatus(state) {
+        if (state === 'ready' && (!this.bluetoothReady || window.platform?.platform !== 'win32')) state = 'idle';
         const badge = document.getElementById('broadcastStateBadge');
         const startBtn = document.getElementById('startBroadcastButton');
         const stopBtn = document.getElementById('stopBroadcastButton');
@@ -806,6 +821,7 @@ class App {
     }
 
     async startBroadcast() {
+        if (!this.bluetoothReady) { this.bLog('error', desktopBluetoothLabel(this.bluetoothState)); return; }
         const f = this.readBroadcastForm();
         const b = this.calcAdvertiseBytes(f);
 
@@ -829,6 +845,7 @@ class App {
                 this.bLog('success', '广播已启动');
                 this.showToast('广播已启动', 'success');
             } else {
+                this.updateBluetoothStatus(desktopBluetoothState(result));
                 this.broadcastFailed = true;
                 this.updateBroadcastStatus('failed');
                 this.bLog('error', `广播启动失败: ${result.error}`);
@@ -856,19 +873,14 @@ class App {
         }
     }
 
-    // P008 检查支持（桌面原生层口径：Linux=BlueZ 可用，mac/win 原生层受限）
-    checkBroadcastSupport() {
-        const os = window.platform?.platform || '';
-        const layer = { linux: 'BlueZ', darwin: 'CoreBluetooth', win32: 'WinRT' }[os] || '未知原生层';
-        const supported = os === 'linux';
+    async checkBroadcastSupport() {
+        await this.initBLE();
+        const supported = window.platform?.platform === 'win32';
         this.broadcastSupportChecked = true;
         this.broadcastFailed = false;
-        this.updateBroadcastStatus(supported ? 'ready' : 'idle');
-        this.bLog('info', `桌面原生层 ${layer}（${os || '未知平台'}）——${supported ? '支持外围广播' : '扫描/连接可用，广播外围受限（10_platform §2.4）'}`);
-        if (!supported) {
-            this.bLog('info', '请使用手机客户端执行虚拟外设测试');
-        }
-        this.showToast(supported ? '已就绪：支持广播' : '当前平台广播外围受限', supported ? 'success' : 'info');
+        this.updateBroadcastStatus(supported && this.bluetoothReady ? 'ready' : 'idle');
+        this.updateByteBudget();
+        this.bLog('info', !this.bluetoothReady ? desktopBluetoothLabel(this.bluetoothState) : supported ? 'WinRT 支持厂商数据广播' : '当前实现不支持外围广播');
     }
 
     async initBLE() {
@@ -876,6 +888,7 @@ class App {
             console.log('Initializing BLE...');
             const result = await window.bleAPI.init();
             console.log('BLE initialized:', result);
+            this.updateBluetoothStatus(desktopBluetoothState(result));
 
             // N4 案 B（用户裁决 2026-09-21）：广播 Tab 恒显四 Tab（正典 A3 形态，
             // 与 Tauri/macOS/Android/F/V/Q 一致）；不支持平台进页显示「未就绪」徽章，
@@ -888,6 +901,7 @@ class App {
             this.updateBroadcastStatus(this.isBroadcasting ? 'advertising' : 'idle');
             this.updateByteBudget();
         } catch (error) {
+            this.updateBluetoothStatus('unavailable');
             console.error('BLE init error:', error);
             this.showError('初始化失败: ' + error.message);
         }
@@ -946,19 +960,13 @@ class App {
     updateBluetoothStatus(state) {
         const dot = document.querySelector('#btChip .bt-dot');
         const word = document.getElementById('btWord');
-        // N3 正典词（对齐 Flutter btStatusWord / MainActivity.kt:147 注释口径）：
-        // off+unauthorized→蓝牙未开启（红点）；unsupported→平台不支持（灰点）；
-        // unknown 及未列状态→初始化中…（灰点，fallback 不再用非正典词「状态未知」）
-        const stateMap = {
-            'poweredOn': { text: '蓝牙就绪', cls: 'on' },
-            'poweredOff': { text: '蓝牙未开启', cls: 'off' },
-            'unauthorized': { text: '蓝牙未开启', cls: 'off' },
-            'unsupported': { text: '平台不支持', cls: '' },
-            'unknown': { text: '初始化中…', cls: '' }
-        };
-        const status = stateMap[state] || { text: '初始化中…', cls: '' };
-        if (dot) dot.className = 'bt-dot ' + status.cls;
-        if (word) word.textContent = status.text;
+        this.bluetoothState = state;
+        this.bluetoothReady = state === 'poweredOn';
+        if (dot) dot.className = 'bt-dot ' + (this.bluetoothReady ? 'on' : state === 'poweredOff' || state === 'unauthorized' ? 'off' : '');
+        if (word) word.textContent = desktopBluetoothLabel(state);
+        this.updateScanButton();
+        if (!this.isBroadcasting) this.updateBroadcastStatus(this.broadcastSupportChecked && this.bluetoothReady ? 'ready' : 'idle');
+        this.updateByteBudget();
     }
 
     async toggleScan() {
@@ -994,6 +1002,7 @@ class App {
     }
 
     async startScan() {
+        if (!this.bluetoothReady) { this.showError(desktopBluetoothLabel(this.bluetoothState)); return; }
         try {
             this.devices.clear();
             this.characteristicsMap.clear();
@@ -1005,6 +1014,7 @@ class App {
 
             const result = await window.bleAPI.startScan();
             if (!result.success) {
+                this.updateBluetoothStatus(desktopBluetoothState(result));
                 this.showError('扫描失败: ' + result.error);
                 this.isScanning = false;
                 this.updateScanButton();
@@ -1078,6 +1088,7 @@ class App {
     updateScanButton() {
         const btn = document.getElementById('scanButton');
         if (!btn) return;
+        btn.disabled = !this.isScanning && !this.bluetoothReady;
         if (this.isScanning) {
             btn.className = 'btn danger';
             btn.innerHTML = '<svg class="ic sm" aria-hidden="true"><use href="#i-stop"/></svg><span>停止扫描</span>';

@@ -5,6 +5,7 @@
 
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
+const { queryWindowsAvailability, availabilityError } = require('./windows-bluetooth-availability');
 const { SessionWriteQueue, callbackTransaction, READ_TIMEOUT_MS, CONNECT_TIMEOUT_MS } = require('./ble-transactions');
 // F026：主进程日志统一脱敏（uniapp logger/log-redaction.js 的桌面锁定镜像，挂 globalThis）
 let LOG_REDACTION = null;
@@ -84,6 +85,20 @@ function matchBleUuid(a, b) {
 
 // 加载 BLE 模块
 let bleModuleLoaded = false;
+let bluetoothState = 'unknown';
+let availabilityRevision = 0;
+function publishBluetoothState(state) { bluetoothState = state; sendToRenderer('ble:stateChanged', { state }); }
+async function currentBluetoothState() {
+  if (process.platform !== 'win32') return bleModule?.state || 'unavailable';
+  const hardware = await queryWindowsAvailability();
+  if (hardware !== 'poweredOn') return hardware;
+  return bleModule?.state === 'poweredOn' ? 'poweredOn' : (bleModule?.state === 'unauthorized' ? 'unauthorized' : 'unavailable');
+}
+async function requireBluetoothReady() {
+  const state = await currentBluetoothState();
+  publishBluetoothState(state);
+  return state === 'poweredOn' ? null : { success: false, state, error: availabilityError(state) };
+}
 
 async function loadBLEModule() {
   const platform = process.platform;
@@ -92,7 +107,7 @@ async function loadBLEModule() {
   if (bleModuleLoaded) {
     debugLog('BLE module already loaded');
     // 渲染层重载后二次 init：noble 不会再发 stateChange，补发当前态，防状态芯片卡「初始化中…」
-    sendToRenderer('ble:stateChanged', { state: bleModule ? bleModule.state : 'unknown' });
+    publishBluetoothState(await currentBluetoothState());
     return true;
   }
 
@@ -124,7 +139,7 @@ async function loadBLEModule() {
 
     // 主动发送当前状态
     debugLog('Sending initial state:', bleModule.state, 'to renderer');
-    sendToRenderer('ble:stateChanged', { state: bleModule.state });
+    publishBluetoothState(await currentBluetoothState());
 
     return true;
   } catch (error) {
@@ -149,7 +164,7 @@ function createWindow() {
       contextIsolation: true,
       sandbox: true // BLE runs in the main process; renderer needs only the IPC preload
     },
-    title: 'SmartBLE - Desktop',
+    title: 'BLE Toolkit+',
     backgroundColor: '#F2F2F7',
     show: false
   });
@@ -190,9 +205,12 @@ function setupBLEEvents() {
   debugLog('Setting up BLE events');
 
   // 状态变化监听
-  bleModule.on('stateChange', (state) => {
-    debugLog('BLE State changed:', state);
-    sendToRenderer('ble:stateChanged', { state });
+  bleModule.on('stateChange', async (state) => {
+    const revision = ++availabilityRevision;
+    const confirmed = process.platform === 'win32' ? await currentBluetoothState() : state;
+    if (revision !== availabilityRevision) return;
+    debugLog('BLE State changed:', confirmed);
+    publishBluetoothState(confirmed);
   });
 
   // 发现设备
@@ -308,12 +326,22 @@ ipcMain.handle('app:confirm-exit', (_event, quit) => {
 
 ipcMain.handle('ble:init', async () => {
   debugLog('IPC: ble:init called');
+  if (process.platform === 'win32') {
+    const hardware = await queryWindowsAvailability();
+    if (hardware !== 'poweredOn') {
+      publishBluetoothState(hardware);
+      return { success: false, platform: process.platform, state: hardware, error: availabilityError(hardware) };
+    }
+  }
   const loaded = await loadBLEModule();
-  debugLog('IPC: ble:init result:', loaded);
-  return { success: loaded, platform: process.platform };
+  const state = loaded ? await currentBluetoothState() : 'unavailable';
+  publishBluetoothState(state);
+  return { success: loaded && state === 'poweredOn', platform: process.platform, state, ...(state !== 'poweredOn' ? { error: availabilityError(state) } : {}) };
 });
 
 ipcMain.handle('ble:startScan', async () => {
+  const unavailable = await requireBluetoothReady();
+  if (unavailable) return unavailable;
   if (!bleModule) return { success: false, error: 'BLE module not loaded' };
 
   try {
@@ -435,6 +463,8 @@ function killWinBridge() {
 ipcMain.handle('ble:startAdvertising', async (event, name, serviceUuids, manufacturerId, manufacturerData, includeName) => {
   // 检查平台支持
   if (process.platform === 'win32') {
+    const unavailable = await requireBluetoothReady();
+    if (unavailable) return unavailable;
     // WIN-BRIDGE：WinRT 仅厂商块可发（LocalName/ServiceUuids 被平台拒绝，
     // 见 20260921-XDEV-BROADCAST 平台事实）——name/uuid 参数在此路径忽略。
     try {
@@ -485,7 +515,7 @@ ipcMain.handle('ble:startAdvertising', async (event, name, serviceUuids, manufac
 
     // 构建广播配置 (适配支持的底层库)
     const advConfig = {
-        name: includeName ? (name || 'SmartBLE') : undefined,
+        name: includeName ? (name || 'BLE Toolkit+') : undefined,
         serviceUuids: [uuid]
     };
     if (manufacturerId && manufacturerData) {

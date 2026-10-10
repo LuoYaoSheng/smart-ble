@@ -18,8 +18,8 @@ func main() {
 
 	// Create application with options
 	err := wails.Run(&options.App{
-		// 壳家族口径：E/V/F/Q 同为 1200x900，标题 SmartBLE
-		Title:     "SmartBLE",
+		// 壳家族口径：E/V/F/Q 同为 1200x900，标题 BLE Toolkit+
+		Title:     "BLE Toolkit+",
 		Width:     1200,
 		Height:    900,
 		MinWidth:  900,

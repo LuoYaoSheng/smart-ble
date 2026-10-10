@@ -141,13 +141,13 @@ def main():
                 run(['xcodebuild', '-exportArchive', '-archivePath', str(archive), '-exportOptionsPlist', str(options_path), '-exportPath', str(out / 'export')], env=env)
                 patterns = [str(out.relative_to(ROOT) / 'export/*.ipa')]
             else:
-                patterns = [zip_directory(archive, f'Smart-BLE-Open-{version}-ios-archive.zip')]
+                patterns = [zip_directory(archive, f'BLE-Toolkit-Plus-{version}-ios-archive.zip')]
         elif args.target == 'flutter-ios':
             run(['flutter', 'build', 'ipa', '--release', '--no-codesign'], ROOT / 'apps/flutter', env)
-            patterns = [zip_directory(ROOT / 'apps/flutter/build/ios/archive/Runner.xcarchive', f'Smart-BLE-Open-{version}-flutter-ios-archive.zip')]
+            patterns = [zip_directory(ROOT / 'apps/flutter/build/ios/archive/Runner.xcarchive', f'BLE-Toolkit-Plus-{version}-flutter-ios-archive.zip')]
         elif args.target == 'macos':
             run(['bash', 'scripts/macos/make-app-bundle.sh'])
-            patterns = [zip_directory(ROOT / f'apps/desktop/macos/dist/{name}.app', f'{name}-{version}-universal.zip') for name in ('SmartBLE-macOS', 'SmartBLE-macOS-MAS')]
+            patterns = [zip_directory(ROOT / f'apps/desktop/macos/dist/{variant}/BLE Toolkit+.app', f'BLE-Toolkit-Plus-{version}-macos-{variant}-universal.zip') for variant in ('direct', 'mas')]
         elif args.target == 'flutter-macos':
             run(['flutter', 'build', 'macos', '--release', '--config-only'], ROOT / 'apps/flutter', env)
             build_dir = ROOT / 'apps/flutter/build/macos'
@@ -156,7 +156,7 @@ def main():
             if len(applications) != 1:
                 raise RuntimeError('Flutter macOS build must contain exactly one application bundle')
             report['native_application'] = verify_macos_application(applications[0], version)
-            patterns = [zip_directory(applications[0], f'Smart-BLE-Open-{version}-flutter-macos-universal.zip')]
+            patterns = [zip_directory(applications[0], f'BLE-Toolkit-Plus-{version}-flutter-macos-universal.zip')]
         elif args.target == 'electron':
             run(['npm', 'ci', '--foreground-scripts'], ROOT / 'apps/desktop/electron', env)
             command = ['npm', 'run', {'Darwin': 'build:mac', 'Windows': 'build:win', 'Linux': 'build:linux'}[host], '--', '--publish', 'never']
@@ -165,7 +165,7 @@ def main():
             extensions = {'Darwin': ('dmg', 'zip'), 'Windows': ('exe',), 'Linux': ('AppImage', 'deb', 'rpm')}[host]
             os_tag = {'Darwin': 'mac', 'Windows': 'win', 'Linux': 'linux'}[host]
             cpu_tag = 'universal' if host == 'Darwin' else architecture
-            prefix = f'apps/desktop/electron/dist/Smart-BLE-Open-{version}-{os_tag}-{cpu_tag}'
+            prefix = f'apps/desktop/electron/dist/BLE-Toolkit-Plus-{version}-{os_tag}-{cpu_tag}'
             if host == 'Windows':
                 patterns = [f'{prefix}-{kind}.exe' for kind in ('setup', 'portable')]
             else:
@@ -173,7 +173,7 @@ def main():
                 # Ask the pinned builder rather than guessing a format's CPU suffix.
                 script = 'const u=require("builder-util"); console.log(JSON.stringify(JSON.parse(process.argv[2]).map(e=>u.getArtifactArchName(u.Arch[process.argv[1]],e))))'
                 arch_names = json.loads(subprocess.check_output(['node', '-e', script, cpu_tag, json.dumps(extensions)], cwd=ROOT / 'apps/desktop/electron', text=True, encoding='utf-8', env=env))
-                patterns = [f'apps/desktop/electron/dist/Smart-BLE-Open-{version}-{os_tag}-{cpu}.{extension}' for cpu, extension in zip(arch_names, extensions)]
+                patterns = [f'apps/desktop/electron/dist/BLE-Toolkit-Plus-{version}-{os_tag}-{cpu}.{extension}' for cpu, extension in zip(arch_names, extensions)]
         elif args.target == 'tauri':
             run(['cargo', 'test', '--locked', '--lib'], ROOT / 'apps/desktop/tauri/src-tauri', env)
             cmd = ['cargo', 'tauri', 'build']
@@ -200,7 +200,7 @@ def main():
             run(['dotnet', 'test', '-c', 'Release'], ROOT / 'apps/desktop/avalonia/SmartBLE.Desktop.Tests', env)
             run(['dotnet', 'publish', '-c', 'Release', '-r', f'win-{architecture}', '--self-contained', 'true', '-o', str(out / 'app')], ROOT / 'apps/desktop/avalonia/SmartBLE.Desktop', env)
             report['native_application'] = verify_application(out / 'app/SmartBLE.Desktop.exe', architecture)
-            patterns = [zip_directory(out / 'app', f'Smart-BLE-Open-{version}-avalonia-windows-{architecture}.zip')]
+            patterns = [zip_directory(out / 'app', f'BLE-Toolkit-Plus-{version}-avalonia-windows-{architecture}.zip')]
         elif args.target == 'qt':
             run([sys.executable, '-m', 'pip', 'install', '-r', 'requirements.txt', 'pyinstaller'], ROOT / 'apps/desktop/qt', env)
             test_env = {**env, 'QT_QPA_PLATFORM': 'offscreen'}
@@ -221,7 +221,7 @@ def main():
             qt_application = out / 'app/SmartBLE'
             report['native_application'] = verify(images(qt_application), architecture)
             report['native_application'].update(format='PE package', verified_application=str(qt_application / 'SmartBLE.exe'), machine=hex(machine(qt_application / 'SmartBLE.exe')))
-            patterns = [zip_directory(out / 'app/SmartBLE', f'Smart-BLE-Open-{version}-qt-windows-{architecture}.zip')]
+            patterns = [zip_directory(out / 'app/SmartBLE', f'BLE-Toolkit-Plus-{version}-qt-windows-{architecture}.zip')]
         elif args.target == 'wails':
             run(['npm', 'run', 'build'], ROOT / 'apps/desktop/wails/frontend', env)
             run(['go', 'test', './...', '-run', '^(TestUnknownDeviceNeverFallsBackToAnotherConnection|TestCharacteristicKeysIncludeOwningService|TestDisconnectCancelsPendingConnectionGeneration)$'], ROOT / 'apps/desktop/wails', env)

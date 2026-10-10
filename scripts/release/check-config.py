@@ -8,7 +8,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 errors = []
-identity = json.loads((ROOT / 'release/product-identity.json').read_text(encoding='utf-8'))['application_id']
+product = json.loads((ROOT / 'release/product-identity.json').read_text(encoding='utf-8'))
+identity = product['application_id']
+display_name = product['display_name']
 
 
 def require(condition, message):
@@ -17,6 +19,11 @@ def require(condition, message):
 
 mac_identity = plistlib.loads((ROOT / 'apps/desktop/macos/SmartBLE-mac/Info.plist').read_bytes())
 require(mac_identity.get('CFBundleIdentifier') == identity, 'Native Mac App Store bundle ID differs from the unified Apple product')
+require(display_name == 'BLE Toolkit+', 'Unified application display name must be BLE Toolkit+')
+for relative in ('apps/ios/SmartBLE/Resources/Info.plist', 'apps/flutter/ios/Runner/Info.plist',
+                 'apps/desktop/macos/SmartBLE-mac/Info.plist', 'apps/flutter/macos/Runner/Info.plist'):
+    data = plistlib.loads((ROOT / relative).read_bytes())
+    require(data.get('CFBundleDisplayName') == display_name, f'{relative}: inconsistent application display name')
 
 
 for relative in ('apps/ios/SmartBLE/Resources/Info.plist', 'apps/flutter/ios/Runner/Info.plist', 'apps/desktop/macos/SmartBLE-mac/Info.plist', 'apps/flutter/macos/Runner/Info.plist', 'apps/desktop/tauri/src-tauri/Info.plist'):
@@ -40,6 +47,9 @@ for relative in ('apps/android/app/build.gradle.kts', 'apps/flutter/android/app/
     require('getByName("debug")' not in release, f'{relative}: release falls back to debug signing')
 
 electron = json.loads((ROOT / 'apps/desktop/electron/package.json').read_text(encoding='utf-8'))
+require(electron['build']['productName'] == display_name, 'Electron package product name differs from unified display name')
+uniapp_manifest = json.loads((ROOT / 'apps/uniapp/manifest.json').read_text(encoding='utf-8'))
+require(uniapp_manifest['name'] == display_name, 'UniApp application name differs from unified display name')
 uniapp = json.loads((ROOT / 'apps/uniapp/manifest.json').read_text(encoding='utf-8'))['app-plus']['distribute']
 require(uniapp['android']['packagename'] == identity and uniapp['ios']['appid'] == identity, 'UniApp mobile IDs differ from product identity')
 for permission in ('permissionPhoneState', 'permissionExternalStorage'):

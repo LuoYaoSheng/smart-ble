@@ -10,6 +10,7 @@ class MainFlutterWindow: NSWindow {
 
     RegisterGeneratedPlugins(registry: flutterViewController)
 
+    self.title = "BLE Toolkit+"
     super.awakeFromNib()
   }
 }

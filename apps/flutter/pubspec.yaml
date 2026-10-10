@@ -1,5 +1,5 @@
 name: smart_ble
-description: Smart BLE - 跨平台蓝牙调试工具
+description: BLE Toolkit+ - 跨平台蓝牙调试工具
 publish_to: 'none'
 version: 1.0.5+101
 
@@ -14,6 +14,7 @@ dependencies:
 
   # BLE 库
   flutter_blue_plus: ^1.32.0
+  flutter_blue_plus_platform_interface: 9.0.3
   flutter_ble_peripheral: ^2.0.1
 
   # 状态管理
@@ -38,7 +39,8 @@ dependencies:
   # 平台特定
   file_picker: ^11.0.2
   flutter_svg: ^2.3.0
-  flutter_blue_plus_winrt: ^0.0.20
+  flutter_blue_plus_winrt:
+    path: packages/flutter_blue_plus_winrt
   window_manager: ^0.5.2
 
 dev_dependencies:

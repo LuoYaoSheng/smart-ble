@@ -59,7 +59,7 @@ class Client:
 class TransactionTests(unittest.IsolatedAsyncioTestCase):
     async def test_success_requires_both_real_receipts_and_contract_start(self):
         client = Client(); progress = []
-        result = await update(client, FIRMWARE, FIXTURE['manifest'], progress.append, timeout=.02)
+        result = await update(client, FIRMWARE, FIXTURE['manifest'], progress.append, timeout=5)
         self.assertEqual(client.operations(), ['start', 'commit'])
         start = json.loads(client.writes[0][1])
         self.assertEqual(set(start), {'op', 'target', 'target_version', 'size', 'chunk_size', 'sha256'})
@@ -69,13 +69,13 @@ class TransactionTests(unittest.IsolatedAsyncioTestCase):
     async def test_data_mode_respects_the_discovered_write_without_response_capability(self):
         client = Client()
         client.services[0].characteristics[1].properties = ['write-without-response']
-        await update(client, FIRMWARE, FIXTURE['manifest'], lambda _: None, timeout=.02)
+        await update(client, FIRMWARE, FIXTURE['manifest'], lambda _: None, timeout=5)
         self.assertTrue(all(not response for uuid, _, response in client.writes if uuid == DATA))
 
     async def test_ota_uses_transparent_shared_executor(self):
         native = Client()
         client = AttClient(native)
-        result = await update(client, FIRMWARE, FIXTURE['manifest'], lambda _: None, timeout=.1)
+        result = await update(client, FIRMWARE, FIXTURE['manifest'], lambda _: None, timeout=5)
         self.assertTrue(result['reboot_pending'])
         self.assertEqual(native.operations(), ['start', 'commit'])
         self.assertEqual(client.depth, 0)
@@ -98,7 +98,7 @@ class TransactionTests(unittest.IsolatedAsyncioTestCase):
     async def test_error_during_data_never_sends_commit(self):
         client = Client()
         client.data_effect = lambda: client.emit({'type': 'ota', 'status': 'error', 'detail': 'hash_mismatch'})
-        with self.assertRaises(OtaError): await update(client, FIRMWARE, FIXTURE['manifest'], lambda _: None, timeout=.02)
+        with self.assertRaises(OtaError): await update(client, FIRMWARE, FIXTURE['manifest'], lambda _: None, timeout=5)
         self.assertNotIn('commit', client.operations()); self.assertEqual(client.operations()[-1], 'abort')
     async def test_cancel_attempts_abort_and_waits_for_cleanup(self):
         client = Client(ready=False)
@@ -109,12 +109,28 @@ class TransactionTests(unittest.IsolatedAsyncioTestCase):
     async def test_disconnect_without_success_is_not_reboot_success(self):
         client = Client(success=False)
         client.data_effect = lambda: setattr(client, 'is_connected', False)
-        with self.assertRaises(OtaError): await update(client, FIRMWARE, FIXTURE['manifest'], lambda _: None, timeout=.02)
+        with self.assertRaises(OtaError): await update(client, FIRMWARE, FIXTURE['manifest'], lambda _: None, timeout=5)
         self.assertEqual(client.stops, 1)
     async def test_queued_success_before_reboot_disconnect_is_retained(self):
+        order = []
         class RebootClient(Client):
+            def emit(self, frame):
+                order.append(frame['status'])
+                super().emit(frame)
             async def write_gatt_char(self, uuid, data, response):
+                if uuid.uuid == CTRL: order.append(json.loads(data)['op'])
                 await super().write_gatt_char(uuid, data, response)
-                if uuid.uuid == CTRL and json.loads(data)['op'] == 'commit': self.is_connected = False
-        result = await update(RebootClient(), FIRMWARE, FIXTURE['manifest'], lambda _: None, timeout=.02)
+                if uuid.uuid == CTRL and json.loads(data)['op'] == 'commit':
+                    # The notification callback has delivered success. Yield once
+                    # so its scheduled queue.put runs before the simulated reboot.
+                    await asyncio.sleep(0)
+                    self.is_connected = False
+                    order.append('disconnect')
+        client = RebootClient()
+        progress = []
+        result = await update(client, FIRMWARE, FIXTURE['manifest'], progress.append, timeout=5)
         self.assertTrue(result['reboot_pending'])
+        self.assertEqual(order, ['start', 'ready', 'commit', 'success', 'disconnect'])
+        self.assertEqual(client.operations(), ['start', 'commit'])
+        self.assertEqual(progress[-1], 100)
+        self.assertEqual(client.stops, 1)

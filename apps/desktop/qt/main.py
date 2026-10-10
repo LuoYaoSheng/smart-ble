@@ -929,7 +929,7 @@ class BroadcastPage(QWidget):
         fhead = QLabel("广播内容")
         fhead.setObjectName("CardHead")
         fv.addWidget(fhead)
-        self._f_name = QLineEdit("SmartBLE")
+        self._f_name = QLineEdit("BLE Toolkit+")
         self._f_uuid = QLineEdit("FFE0")
         self._f_mfg_id = QLineEdit("0001")
         self._f_mfg_data = QLineEdit("BLE")
@@ -1194,7 +1194,7 @@ class MainWindow(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
         # 壳家族口径：E/V/F/G 同为 1200x900，标题 SmartBLE
-        self.setWindowTitle("SmartBLE")
+        self.setWindowTitle("BLE Toolkit+")
         self.resize(1200, 900)
         self.setMinimumWidth(940)
         self._ble = BleService(self)
@@ -1366,6 +1366,8 @@ class MainWindow(QMainWindow):
 
 def main() -> int:
     app = QApplication(sys.argv)
+    app.setApplicationName("BLE Toolkit+")
+    app.setApplicationDisplayName("BLE Toolkit+")
     app.setStyleSheet(QSS)
     icon_path = HERE / "assets" / "app.ico"
     if icon_path.exists():

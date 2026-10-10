@@ -119,7 +119,7 @@ fun AboutContent(
             DsMenuRow(icon = DsIcons.Send, label = "问题反馈", onClick = { showFeedback = true })
             DsMenuRow(icon = DsIcons.Share, label = "分享应用", onClick = { shareApp(context) }, showDivider = false)
         }
-        DsFoot("日志全局脱敏：敏感凭据显示为 token=***\n© 2026 BLE Toolkit+ · Smart BLE 产品家族")
+        DsFoot("日志全局脱敏：敏感凭据显示为 token=***\n© 2026 BLE Toolkit+")
         Spacer(modifier = Modifier.height(8.dp))
     }
 

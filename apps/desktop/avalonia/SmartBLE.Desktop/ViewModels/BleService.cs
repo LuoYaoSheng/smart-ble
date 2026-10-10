@@ -63,49 +63,117 @@ public class BleService
     // 5s 自动停扫回调（UI 同步 IsScanning/扫描状态词；手动停扫不触发）
     public event Action? ScanAutoStopped;
 
-    public async Task InitializeAsync()
+    private readonly Func<Task<string>> _availabilityReader;
+    private Radio? _radio;
+    public string CurrentState { get; private set; } = "Initializing";
+    public bool IsScanning => _watcher != null;
+    public event Action? ScanInterrupted;
+
+    public BleService(Func<Task<string>>? availabilityReader = null)
+        => _availabilityReader = availabilityReader ?? ReadAvailabilityAsync;
+
+    private void PublishState(string state)
     {
-        // Check Bluetooth availability
-        var radios = await Radio.GetRadiosAsync();
-        var bluetoothRadio = radios.FirstOrDefault(r => r.Kind == RadioKind.Bluetooth);
-
-        if (bluetoothRadio == null)
-        {
-            StateChanged?.Invoke("Unavailable");
-            return;
-        }
-
-        StateChanged?.Invoke(bluetoothRadio.State == RadioState.On ? "On" : "Off");
+        CurrentState = state;
+        StateChanged?.Invoke(state);
+        var watcher = _watcher;
+        if (!BluetoothAvailability.CanScan(state) && watcher != null)
+            Dispatcher.UIThread.Post(async () =>
+            {
+                if (!ReferenceEquals(watcher, _watcher)) return;
+                await StopScanAsync();
+                ScanInterrupted?.Invoke();
+            });
     }
 
-    public async Task StartScanAsync()
+    private async Task<string> ReadAvailabilityAsync()
+    {
+        if (_radio != null) { _radio.StateChanged -= OnRadioStateChanged; _radio = null; }
+        if (!OperatingSystem.IsWindows()) return "Unsupported";
+        var adapter = await BluetoothAdapter.GetDefaultAsync().AsTask().WaitAsync(TimeSpan.FromSeconds(3));
+        if (adapter == null) return "NoAdapter";
+        if (!adapter.IsLowEnergySupported) return "UnsupportedAdapter";
+        _radio = await adapter.GetRadioAsync().AsTask().WaitAsync(TimeSpan.FromSeconds(3));
+        if (_radio == null) return "Unknown";
+        _radio.StateChanged += OnRadioStateChanged;
+        return BluetoothAvailability.Resolve(true, true, true, _radio.State.ToString());
+    }
+
+    private void OnRadioStateChanged(Radio sender, object args)
+    {
+        if (!ReferenceEquals(sender, _radio)) return;
+        var state = BluetoothAvailability.Resolve(true, true, true, sender.State.ToString());
+        PublishState(state);
+    }
+
+    public async Task InitializeAsync()
+    {
+        try { PublishState(await _availabilityReader()); }
+        catch (Exception error)
+        {
+            PublishState(BluetoothAvailability.ExceptionState(error));
+            LogMessage?.Invoke("蓝牙检测失败", "未能读取蓝牙状态，请重新检测；未确认平台不支持");
+        }
+    }
+
+    public async Task<bool> StartScanAsync()
     {
         await StopScanAsync();
-        _watcher = new BluetoothLEAdvertisementWatcher
+        await InitializeAsync();
+        if (!BluetoothAvailability.CanScan(CurrentState))
         {
-            ScanningMode = BluetoothLEScanningMode.Active
-        };
-
-        // 新扫描会话重置跨帧合并态（上一会话的旧段不带入）
-        _advSections.Clear();
-        _advUuids.Clear();
-        _advMfg.Clear();
-
-        _watcher.Received += OnAdvertisementReceived;
-        _watcher.Start();
-
-        // Auto-stop after 5 seconds - aligned with UniApp
-        _autoStopTimer = new DispatcherTimer
+            LogMessage?.Invoke("无法扫描", BluetoothAvailability.Hint(CurrentState));
+            return false;
+        }
+        try
         {
-            Interval = TimeSpan.FromSeconds(5)
-        };
-        _autoStopTimer.Tick += async (s, e) =>
+            _watcher = new BluetoothLEAdvertisementWatcher
+            {
+                ScanningMode = BluetoothLEScanningMode.Active
+            };
+
+            // 新扫描会话重置跨帧合并态（上一会话的旧段不带入）
+            _advSections.Clear();
+            _advUuids.Clear();
+            _advMfg.Clear();
+
+            _watcher.Received += OnAdvertisementReceived;
+            _watcher.Stopped += OnWatcherStopped;
+            _watcher.Start();
+
+            // Auto-stop after 5 seconds - aligned with UniApp
+            _autoStopTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(5)
+            };
+            _autoStopTimer.Tick += async (s, e) =>
+            {
+                await StopScanAsync();
+                LogMessage?.Invoke("自动停止", "扫描已自动停止（5秒）");
+                ScanAutoStopped?.Invoke();
+            };
+            _autoStopTimer.Start();
+            return true;
+        }
+        catch (Exception error)
         {
             await StopScanAsync();
-            LogMessage?.Invoke("自动停止", "扫描已自动停止（5秒）");
-            ScanAutoStopped?.Invoke();
-        };
-        _autoStopTimer.Start();
+            PublishState(BluetoothAvailability.ExceptionState(error));
+            LogMessage?.Invoke("扫描失败", "扫描启动失败，请重新检测蓝牙状态");
+            return false;
+        }
+    }
+
+    private void OnWatcherStopped(BluetoothLEAdvertisementWatcher sender, BluetoothLEAdvertisementWatcherStoppedEventArgs args)
+    {
+        Dispatcher.UIThread.Post(async () =>
+        {
+            if (!ReferenceEquals(sender, _watcher)) return;
+            await StopScanAsync();
+            await InitializeAsync();
+            LogMessage?.Invoke("扫描停止", $"扫描已中断：{args.Error}");
+            ScanInterrupted?.Invoke();
+        });
     }
 
     public async Task StopScanAsync()
@@ -119,6 +187,7 @@ public class BleService
         if (watcher != null)
         {
             watcher.Received -= OnAdvertisementReceived;
+            watcher.Stopped -= OnWatcherStopped;
             watcher.Stop();
         }
         await Task.CompletedTask;
@@ -436,6 +505,7 @@ public class BleService
 
     public async Task ShutdownAsync()
     {
+        if (_radio != null) { _radio.StateChanged -= OnRadioStateChanged; _radio = null; }
         await StopScanAsync();
         StopAdvertising();
         await DisconnectAllAsync();

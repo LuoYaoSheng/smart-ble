@@ -231,7 +231,7 @@ packages:
     source: hosted
     version: "7.0.3"
   flutter_blue_plus_platform_interface:
-    dependency: "direct overridden"
+    dependency: "direct main"
     description:
       name: flutter_blue_plus_platform_interface
       sha256: "9378ed463673ab51e7ab72cf4bad3633b134182ca184ddcc598d6f7474ada993"
@@ -249,10 +249,9 @@ packages:
   flutter_blue_plus_winrt:
     dependency: "direct main"
     description:
-      name: flutter_blue_plus_winrt
-      sha256: "0000b2d818e6f79ad07764206fdd8afb69426fd44453c6254c35828fd16aa09f"
-      url: "https://pub.flutter-io.cn"
-    source: hosted
+      path: "packages/flutter_blue_plus_winrt"
+      relative: true
+    source: path
     version: "0.0.20"
   flutter_driver:
     dependency: transitive

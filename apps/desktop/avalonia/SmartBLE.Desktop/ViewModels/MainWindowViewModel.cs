@@ -18,7 +18,7 @@ namespace SmartBLE.Desktop.ViewModels;
 // docs/specs/prototype/platform/desktop/high-fi 正典。
 public partial class MainWindowViewModel : ObservableObject
 {
-    private readonly BleService _bleService = new();
+    private readonly BleService _bleService;
     private static readonly ReleaseMetadata.Model Meta = ReleaseMetadata.Load();
 
     // 产品常量（config/product.js 同源：名称 / 外链 / 功能特性）
@@ -37,8 +37,11 @@ public partial class MainWindowViewModel : ObservableObject
 
     private bool _exitConfirmed;
 
-    public MainWindowViewModel()
+    public MainWindowViewModel() : this(new BleService(), true) { }
+
+    internal MainWindowViewModel(BleService service, bool initialize = false)
     {
+        _bleService = service;
         _bleService.StateChanged += OnBluetoothStateChanged;
         _bleService.DeviceDiscovered += OnDeviceDiscovered;
         _bleService.DeviceConnected += OnDeviceConnected;
@@ -47,15 +50,16 @@ public partial class MainWindowViewModel : ObservableObject
         _bleService.CharacteristicValueChanged += OnCharacteristicValueChanged;
         _bleService.LogMessage += OnLogMessage;
         _bleService.ScanAutoStopped += OnScanAutoStopped;
+        _bleService.ScanInterrupted += OnScanAutoStopped;
         _bleService.AdvertisingStateChanged += OnAdvertisingStateChanged;
 
-        _ = InitializeAsync();
+        if (initialize) _ = InitializeAsync();
     }
 
     private async Task InitializeAsync()
     {
         try { await _bleService.InitializeAsync(); }
-        catch (Exception) { OnBluetoothStateChanged("Unavailable"); }
+        catch (Exception) { OnBluetoothStateChanged("Error"); }
     }
 
     // ═══════════════════════ 视图路由（.view.active 等价机制） ═══════════════════════
@@ -136,21 +140,30 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     private string _btDotShadow = "";
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CanToggleScan))]
+    [NotifyPropertyChangedFor(nameof(BluetoothHint))]
+    [NotifyPropertyChangedFor(nameof(ScanStatusText))]
+    [NotifyCanExecuteChangedFor(nameof(StartScanCommand))]
+    private string _bluetoothAvailabilityState = "Initializing";
+
+    public bool CanToggleScan => BluetoothAvailability.CanToggleScan(BluetoothAvailabilityState, IsScanning);
+    public string BluetoothHint => BluetoothAvailability.Hint(BluetoothAvailabilityState);
+
     private void OnBluetoothStateChanged(string state)
+        => Dispatcher.UIThread.Post(() => ApplyBluetoothState(state));
+
+    internal void ApplyBluetoothState(string state)
     {
-        Dispatcher.UIThread.Post(() =>
-        {
-            var (word, dotClass) = CanonUi.CanonicalBtChip(state);
-            BtWord = word;
-            BtDotFill = dotClass switch
-            {
-                "on" => "#17C7A8",
-                "off" => "#F2555F",
-                _ => "#9AA8B6"
-            };
-            BtDotShadow = dotClass == "on" ? "0 0 8 #17C7A88C" : "";
-        });
+        var (word, dotClass) = CanonUi.CanonicalBtChip(state);
+        BtWord = word;
+        BtDotFill = dotClass switch { "on" => "#17C7A8", "off" => "#F2555F", _ => "#9AA8B6" };
+        BtDotShadow = dotClass == "on" ? "0 0 8 #17C7A88C" : "";
+        BluetoothAvailabilityState = state;
     }
+
+    [RelayCommand]
+    private async Task RefreshBluetoothAsync() => await _bleService.InitializeAsync();
 
     // ═══════════════════════ P001 扫描（正典 scantool 状态词 / 5s 会话） ═══════════════════════
 
@@ -180,6 +193,7 @@ public partial class MainWindowViewModel : ObservableObject
 
     public string ScanStatusText => IsScanning
         ? "扫描中 · 5s 会话"
+        : !BluetoothAvailability.CanScan(BluetoothAvailabilityState) ? BtWord
         : HasScanned ? $"扫描完成 · 发现 {FilteredDevices.Count} 台" : "待开始扫描";
 
     public string ScanButtonLabel => IsScanning ? "停止扫描" : "开始扫描";
@@ -200,6 +214,8 @@ public partial class MainWindowViewModel : ObservableObject
     {
         OnPropertyChanged(nameof(ScanStatusText));
         OnPropertyChanged(nameof(ScanButtonLabel));
+        OnPropertyChanged(nameof(CanToggleScan));
+        StartScanCommand.NotifyCanExecuteChanged();
     }
 
     partial void OnHasScannedChanged(bool value) => OnPropertyChanged(nameof(ScanStatusText));
@@ -230,7 +246,7 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private void ToggleFilterPanel() => ShowFilterPanel = !ShowFilterPanel;
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanToggleScan))]
     private async Task StartScanAsync()
     {
         if (IsScanning)
@@ -242,8 +258,7 @@ public partial class MainWindowViewModel : ObservableObject
         Devices.Clear();
         FilteredDevices.Clear();
         IsDeviceListEmpty = true;
-        await _bleService.StartScanAsync();
-        IsScanning = true;
+        IsScanning = await _bleService.StartScanAsync();
     }
 
     private async Task StopScanInternalAsync()
@@ -1007,7 +1022,7 @@ public partial class MainWindowViewModel : ObservableObject
     {
         var lines = new List<string>
         {
-            "SmartBLE Operation Log",
+            $"{ProductName} Operation Log",
             $"Exported: {DateTime.Now:O}",
             $"Total entries: {Logs.Count}",
             "-------------------",
@@ -1041,7 +1056,7 @@ public partial class MainWindowViewModel : ObservableObject
     // ═══════════════════════ P008 广播（31B 预算真值 + WinRT 真发射，20260921 跨端联调实装） ═══════════════════════
 
     [ObservableProperty]
-    private string _bcName = "SmartBLE";
+    private string _bcName = ProductName;
 
     [ObservableProperty]
     private string _bcUuid = "FFE0";

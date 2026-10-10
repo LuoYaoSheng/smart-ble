@@ -11,7 +11,7 @@
     "tencent-myapp",
     "desktop-distribution"
   ],
-  "status": "SOFTWARE_VERIFIED_RELEASE_GATES_OPEN",
+  "status": "CURRENT_SOURCE_VALIDATION_IN_PROGRESS",
   "rule": "Every implementation requires current-source build, functional and hardware evidence. Candidate packages and static checks are not store-ready releases.",
   "implementations": [
     {
@@ -58,12 +58,12 @@
           "arm64"
         ]
       },
-      "build": "SIGNED_ANDROID_AND_ALL_DECLARED_CANDIDATES_BUILT",
+      "build": "CANDIDATES_REBUILD_PENDING_SIGNED_ANDROID_STALE",
       "hardware": "NOT_RUN",
       "distribution": "NOT_RUN",
       "software_checks": {
         "status": "PASS",
-        "unit_widget_tests": 144,
+        "unit_widget_tests": 149,
         "analysis": "PASS"
       },
       "candidate_architectures_built": {
@@ -91,7 +91,7 @@
         "android"
       ],
       "packaging": "APK + AAB with environment-supplied release signing",
-      "build": "SIGNED_BUILD",
+      "build": "CANDIDATES_REBUILD_PENDING_SIGNED_ANDROID_STALE",
       "hardware": "NOT_RUN",
       "distribution": "NOT_RUN",
       "software_checks": {
@@ -108,7 +108,7 @@
         "arm64"
       ],
       "packaging": "Archive + App Store Connect export",
-      "build": "CANDIDATE_BUILT",
+      "build": "SIGNED_STORE_EXPORT_VERIFIED",
       "hardware": "NOT_RUN",
       "distribution": "NOT_RUN",
       "software_checks": {
@@ -137,7 +137,7 @@
         "x86_64"
       ],
       "packaging": "Universal app; distribution signing and notarization required",
-      "build": "CANDIDATE_BUILT",
+      "build": "SIGNED_STORE_EXPORT_VERIFIED",
       "hardware": "NOT_RUN",
       "distribution": "NOT_RUN",
       "software_checks": {
@@ -159,7 +159,7 @@
       "distribution": "NOT_RUN",
       "software_checks": {
         "status": "PASS",
-        "shared_desktop_tests": 170
+        "shared_desktop_tests": 190
       },
       "candidate_architectures_built": {
         "windows": [
@@ -207,7 +207,7 @@
       "distribution": "NOT_RUN",
       "software_checks": {
         "status": "PASS",
-        "shared_desktop_tests": 170,
+        "shared_desktop_tests": 190,
         "rust_tests_macos": 6
       },
       "candidate_architectures_built": {
@@ -240,7 +240,7 @@
       "distribution": "NOT_RUN",
       "software_checks": {
         "status": "PASS",
-        "unit_tests_windows": 86
+        "unit_tests_windows": 106
       },
       "candidate_architectures_built": [
         "x64",
@@ -262,7 +262,7 @@
       "distribution": "NOT_RUN",
       "software_checks": {
         "status": "PASS",
-        "test_methods": 45
+        "test_methods": 48
       },
       "candidate_architectures_built": [
         "x64",
@@ -314,7 +314,7 @@
     "full accessibility review beyond structural audit and real-device VoiceOver"
   ],
   "application_id": "com.i2kai.open.smartble",
-  "local_evidence_note": "Current signed Android APK/AAB have matching product identity, registered certificate and hashes. Flutter has 12 aligned 64-bit native libraries; zip and ELF alignment pass. Current-source physical BLE/OTA, clean installation/upgrade, Apple export, desktop distribution signing and store submission remain independent open gates.",
+  "local_evidence_note": "Native SwiftUI/AppKit signed exports have been rebuilt and verified with display name BLE Toolkit+, Team 72MZZQB893 and unified ID. Historical signed Android artifacts require rebuilding after current naming/runtime edits. Windows ARM64 VM software validation is in progress; Bluetooth hardware tests are deferred by user.",
   "publisher_type": "individual",
   "public_support_email": "121912336@qq.com",
   "store_materials_status": "DEFERRED_BY_USER",
@@ -448,7 +448,7 @@
       }
     ],
     "artifacts_uploaded": 24,
-    "note": "All declared candidate lanes and native architecture/package checks passed. Hardware, installation, distribution signing and store submission remain open."
+    "note": "Historical 24/24 candidate evidence at the recorded commit. Current Windows availability and application name edits require new candidate runs; hardware, signing and store gates remain separate."
   },
   "last_software_run": {
     "url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/38030372948",
@@ -499,7 +499,7 @@
         "status": "PASS"
       }
     ],
-    "note": "All software gates passed, including 31 native iOS unit tests and 11 UI tests. Accessibility audit covers documented structural scope; historical contrast/Dynamic Type/clipping limitations are not full compliance."
+    "note": "Historical 8/8 software evidence at the recorded commit. Latest source changes are being revalidated; iOS renamed target has separately passed 31 unit tests."
   },
   "signed_android_evidence": {
     "android": {
@@ -509,7 +509,7 @@
         "apps/android": "3beb0c9319c19d96e624c14d82cfe3e19cb61a35",
         "core": "9e85b2bb80b6a443cca3d54abfb9f5ccb6f05b32"
       },
-      "status": "SIGNED_BUILD",
+      "status": "STALE_SOURCE_REBUILD_REQUIRED",
       "artifacts": [
         {
           "path": "apps/android/app/build/outputs/apk/release/app-release.apk",
@@ -529,7 +529,8 @@
           "elf_16kb": "NOT_APPLICABLE",
           "signature_verified": true
         }
-      ]
+      ],
+      "note": "Retained historical signed artifact evidence; app naming/about/privacy and Flutter initialization sources have changed. Do not distribute this artifact as current source."
     },
     "flutter-android": {
       "report": ".tmp/release/flutter-android-darwin-arm64/signed/report.json",
@@ -538,7 +539,7 @@
         "apps/flutter": "75ded4b2e0542681b584cfdf7738f8c1627ce228",
         "core": "9e85b2bb80b6a443cca3d54abfb9f5ccb6f05b32"
       },
-      "status": "SIGNED_BUILD",
+      "status": "STALE_SOURCE_REBUILD_REQUIRED",
       "artifacts": [
         {
           "path": "apps/flutter/build/app/outputs/flutter-apk/app-release.apk",
@@ -566,7 +567,8 @@
           "elf_16kb": "PASS",
           "signature_verified": true
         }
-      ]
+      ],
+      "note": "Retained historical signed artifact evidence; app naming/about/privacy and Flutter initialization sources have changed. Do not distribute this artifact as current source."
     }
   },
   "native_apple_store_track": {
@@ -592,13 +594,13 @@
       "build": "101",
       "unit_tests_passed": 19,
       "privacy_manifest": true,
-      "path": ".tmp/release/apple-native/SmartBLEMac-signed.xcarchive"
+      "path": ".tmp/release/apple-native/macos-renamed.xcarchive"
     },
     "store_export": "SIGNED_EXPORTS_VERIFIED",
     "store_upload": "NOT_RUN",
     "signed_exports": {
-      "ios": ".tmp/release/apple-native/ios-final-export/SmartBLE.ipa",
-      "macos": ".tmp/release/apple-native/macos-final-export/SmartBLE.pkg",
+      "ios": ".tmp/release/apple-native/ios-renamed-export/BLE Toolkit+.ipa",
+      "macos": ".tmp/release/apple-native/macos-renamed-export/BLE Toolkit+.pkg",
       "report": ".tmp/release/apple-native/signed-store-report.json",
       "macos_capabilities": [
         "app-sandbox",
@@ -606,6 +608,8 @@
         "device.camera"
       ],
       "ios_profile": "App Store; get-task-allow=false; no device list"
-    }
-  }
+    },
+    "display_name": "BLE Toolkit+"
+  },
+  "display_name": "BLE Toolkit+"
 }

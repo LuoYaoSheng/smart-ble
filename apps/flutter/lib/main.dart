@@ -6,6 +6,7 @@ import 'dart:io' show Platform;
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:window_manager/window_manager.dart';
 import 'core/ble/ble_manager.dart';
+import 'config/product.dart';
 import 'themes/app_theme.dart';
 import 'ui/design/app_tab_bar.dart';
 import 'ui/pages/device_list_page.dart';
@@ -31,7 +32,7 @@ class SmartBLEApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Smart BLE',
+      title: ProductConfig.name,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,

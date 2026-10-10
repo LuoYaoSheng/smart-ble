@@ -25,7 +25,7 @@ targets:
         buildPhase: resources
     settings:
       base:
-        PRODUCT_NAME: SmartBLE-mac
+        PRODUCT_NAME: "BLE Toolkit+"
         PRODUCT_MODULE_NAME: SmartBLE_mac
         PRODUCT_BUNDLE_IDENTIFIER: com.i2kai.open.smartble
         INFOPLIST_FILE: Info.plist

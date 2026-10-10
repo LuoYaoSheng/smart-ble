@@ -17,6 +17,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:smart_ble/core/ble/ble_manager.dart';
 import 'package:smart_ble/core/models/ble_scan_result.dart';
 import 'package:smart_ble/main.dart';
+import 'package:smart_ble/ui/design/app_navbar.dart';
 import 'package:smart_ble/ui/pages/device_list_page.dart';
 
 /// 正典演示集（与 uniapp services/mock/mock-dataset.js 同源口径）
@@ -30,9 +31,18 @@ List<BleScanResult> canonScanDevices() {
       serviceUuids: const ['9f1d1001-e73b-4c8f-9d2a-6f0b5e8a1c04'],
       timestamp: now,
     ),
-    BleScanResult(deviceId: 'D8:A6:3A:41:F2:09', name: 'Mi Smart Band 8', rssi: -66, timestamp: now),
-    BleScanResult(deviceId: 'EF:6B:12:0C:AA:77', name: '', rssi: -78, timestamp: now),
-    BleScanResult(deviceId: 'SHID-BENCH-02', name: 'SHID-BENCH-02', rssi: -59, timestamp: now),
+    BleScanResult(
+        deviceId: 'D8:A6:3A:41:F2:09',
+        name: 'Mi Smart Band 8',
+        rssi: -66,
+        timestamp: now),
+    BleScanResult(
+        deviceId: 'EF:6B:12:0C:AA:77', name: '', rssi: -78, timestamp: now),
+    BleScanResult(
+        deviceId: 'SHID-BENCH-02',
+        name: 'SHID-BENCH-02',
+        rssi: -59,
+        timestamp: now),
     BleScanResult(
       deviceId: 'BLEToolkit-Server',
       name: 'BLEToolkit-Server',
@@ -40,7 +50,8 @@ List<BleScanResult> canonScanDevices() {
       serviceUuids: const ['4fafc201-1fb5-459e-8fcc-c5c9c331914b'],
       timestamp: now,
     ),
-    BleScanResult(deviceId: 'C4:11:9E:02:3B:5F', name: '', rssi: -85, timestamp: now),
+    BleScanResult(
+        deviceId: 'C4:11:9E:02:3B:5F', name: '', rssi: -85, timestamp: now),
   ];
 }
 
@@ -61,8 +72,10 @@ Future<ProviderContainer> pumpApp(
       if (results != null)
         scanResultsProvider.overrideWith((ref) => Stream.value(results)),
       if (scanning != null) scanningProvider.overrideWith((ref) => scanning),
-      if (filterRssi != null) filterRssiProvider.overrideWith((ref) => filterRssi),
-      if (filterPrefix != null) filterNamePrefixProvider.overrideWith((ref) => filterPrefix),
+      if (filterRssi != null)
+        filterRssiProvider.overrideWith((ref) => filterRssi),
+      if (filterPrefix != null)
+        filterNamePrefixProvider.overrideWith((ref) => filterPrefix),
     ],
   );
   await tester.pumpWidget(
@@ -84,7 +97,8 @@ void main() {
     expect(find.text('蓝牙就绪'), findsOneWidget);
   });
 
-  testWidgets('P001 complete：六设备卡片（强/弱匹配徽章 + 未命名兜底 + Profile 入口）', (tester) async {
+  testWidgets('P001 complete：六设备卡片（强/弱匹配徽章 + 未命名兜底 + Profile 入口）',
+      (tester) async {
     await pumpApp(tester, bleState: BleState.on, results: canonScanDevices());
     expect(find.text('SHID-9F3E2A1C'), findsWidgets);
     expect(find.text('Smart HID · 强匹配'), findsOneWidget);
@@ -111,16 +125,22 @@ void main() {
     expect(find.text('蓝牙未开启'), findsOneWidget);
   });
 
-  testWidgets('P001 unavailable：平台不支持', (tester) async {
+  testWidgets('P001 unavailable：蓝牙不可用', (tester) async {
     await pumpApp(tester, bleState: BleState.unavailable);
-    expect(find.text('平台不支持'), findsOneWidget);
+    expect(
+        find.descendant(
+            of: find.byType(AppNavbar), matching: find.text('蓝牙不可用')),
+        findsOneWidget);
+    expect(find.text('平台不支持'), findsNothing);
   });
 
   // 空态B（当前没有匹配设备/调整筛选条件试试）受 widget 本地 _hasScanned 门控
   // （与 uniapp hasScanned 同口径），harness 无 seam 不可达——真机/F-MAC 真扫描路径
   // 已有 vis1-fmac「扫描完成」截图在册。此处断言同种子条件下的门控行为：回落空态A。
-  testWidgets('P001 filter-empty(未扫描)：_hasScanned 门控回落空态A（与 uniapp 同口径）', (tester) async {
-    await pumpApp(tester, bleState: BleState.on, results: canonScanDevices(), filterPrefix: 'ZZ');
+  testWidgets('P001 filter-empty(未扫描)：_hasScanned 门控回落空态A（与 uniapp 同口径）',
+      (tester) async {
+    await pumpApp(tester,
+        bleState: BleState.on, results: canonScanDevices(), filterPrefix: 'ZZ');
     expect(find.text('还没有扫描结果'), findsOneWidget);
     expect(find.text('当前没有匹配设备'), findsNothing);
   });

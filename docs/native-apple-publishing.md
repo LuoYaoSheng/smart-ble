@@ -36,10 +36,11 @@ App Store Connect 仍需各平台截图、描述、公开支持与隐私政策 U
 
 ## 本次已生成的商店产物
 
-- iOS：`.tmp/release/apple-native/ios-final-export/SmartBLE.ipa`。实际应用/描述文件 Team 为 72MZZQB893，App Store profile，无设备列表、get-task-allow=false，签名验证通过。
-- Mac：`.tmp/release/apple-native/macos-final-export/SmartBLE.pkg`。应用由 Apple Distribution 签名，安装器由该 Team 的 3rd Party Mac Developer Installer 签名；应用保留 app-sandbox、device.bluetooth、device.camera，无调试 entitlement。
+- iOS：`.tmp/release/apple-native/ios-renamed-export/BLE Toolkit+.ipa`。实际应用/描述文件 Team 为 72MZZQB893，App Store profile，无设备列表、get-task-allow=false，签名验证通过。
+- Mac：`.tmp/release/apple-native/macos-renamed-export/BLE Toolkit+.pkg`。应用由 Apple Distribution 签名，安装器由该 Team 的 3rd Party Mac Developer Installer 签名；应用保留 app-sandbox、device.bluetooth、device.camera，无调试 entitlement。
+- 两端应用显示名与实际应用包名均为 **BLE Toolkit+**；iOS 31 项单测在更名后重跑通过。
 - 两端为同一 Bundle ID，1.0.5/build101；Mac arm64/x86_64。
 
-Mac 必须由保留 entitlements 的正式签名 Archive 导出。本轮直接从无签名 Archive 导出的首包遗漏沙盒，已作废；以上 macos-final-export 才是经过完整签名与能力验证的最终商店包。
+Mac 必须由保留 entitlements 的正式签名 Archive 导出。本轮直接从无签名 Archive 导出的首包遗漏沙盒，已作废；以上 macos-renamed-export 才是经过完整签名与能力验证的最终商店包。
 
 当前上传/商店验证尚未执行，正式发布仍需 App Store Connect 记录、真机验收与审核资料。已有包的本地验签成功不等于 Apple 服务端已接受。

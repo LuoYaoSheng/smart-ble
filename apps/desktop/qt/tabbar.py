@@ -13,9 +13,9 @@
 from __future__ import annotations
 
 from PySide6.QtCore import Qt, Signal
-from PySide6.QtGui import QColor, QFont, QFontMetrics, QPainter, QPixmap
+from PySide6.QtGui import QColor, QFont, QFontMetrics, QPainter, QPixmap, QPen
 from PySide6.QtSvg import QSvgRenderer
-from PySide6.QtWidgets import QApplication, QHBoxLayout, QLabel, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QApplication, QHBoxLayout, QLabel, QPushButton, QSizePolicy, QVBoxLayout, QWidget
 
 from theme import DANGER, PRIMARY, TEXT_MUT
 
@@ -57,13 +57,16 @@ def render_icon(sprite: str, color_hex: str, logical: int = 23) -> QPixmap:
     return pm
 
 
-class _TabButton(QWidget):
+class _TabButton(QPushButton):
     """单枚 tab：图标 23 + gap 3 + 文字 10，色彩态，整格可点（.tb flex:1）。"""
-
-    clicked = Signal()
 
     def __init__(self, sprite: str, label: str, parent: QWidget | None = None) -> None:
         super().__init__(parent)
+        self.setText(label)
+        self.setAccessibleName(label)
+        self.setFocusPolicy(Qt.StrongFocus)
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.setStyleSheet('QPushButton { background: transparent; border: none; padding: 0; min-height: 0; }')
         self._sprite = sprite
         self._active = False
         self._badge_n = 0
@@ -97,6 +100,8 @@ class _TabButton(QWidget):
         lay.addWidget(self._text, 0, Qt.AlignHCenter)
         lay.addStretch(1)
 
+        for child in (self._icon, self._text, self._badge):
+            child.setAttribute(Qt.WA_TransparentForMouseEvents)
         self.setCursor(Qt.PointingHandCursor)
         self._apply()
 
@@ -132,12 +137,27 @@ class _TabButton(QWidget):
         super().resizeEvent(event)
         self._reposition_badge()
 
-    def mouseReleaseEvent(self, event) -> None:  # noqa: N802
-        super().mouseReleaseEvent(event)
-        if event.button() == Qt.LeftButton and self.rect().contains(event.position().toPoint()):
-            self.clicked.emit()
+    def keyPressEvent(self, event) -> None:  # noqa: N802
+        # Space uses QPushButton's native press/release behavior. Return/Enter
+        # also activates outside QDialog, where Qt auto-default is unavailable.
+        if event.key() in (Qt.Key_Return, Qt.Key_Enter):
+            if self.isEnabled() and not event.isAutoRepeat(): self.click()
+            event.accept()
+            return
+        super().keyPressEvent(event)
+
+    def paintEvent(self, event) -> None:  # noqa: N802
+        # Preserve the existing icon/label layout; expose keyboard focus clearly.
+        if self.hasFocus():
+            painter = QPainter(self)
+            painter.setRenderHint(QPainter.Antialiasing)
+            painter.setPen(QPen(QColor(PRIMARY), 1, Qt.DotLine))
+            painter.setBrush(Qt.NoBrush)
+            painter.drawRoundedRect(self.rect().adjusted(3, 1, -3, -1), 5, 5)
+            painter.end()
 
     def _apply(self) -> None:
+        self.setAccessibleDescription('当前页面' if self._active else '切换页面')
         color = PRIMARY if self._active else TEXT_MUT
         self._icon.setPixmap(render_icon(self._sprite, color))
         weight = 700 if self._active else 600  # --fw-bold / --fw-med
@@ -160,7 +180,7 @@ class CanonTabBar(QWidget):
         lay.setSpacing(0)
         for label, sprite in items:
             btn = _TabButton(sprite, label)
-            btn.clicked.connect(lambda x=btn: self._on_click(x))
+            btn.clicked.connect(lambda _checked=False, button=btn: self._on_click(button))
             self._buttons.append(btn)
             lay.addWidget(btn, 1)  # .tb flex:1 等宽
 

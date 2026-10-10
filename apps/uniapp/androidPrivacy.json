@@ -1,7 +1,7 @@
 {
   "version": "2026-10-10",
   "prompt": "template",
-  "title": "Smart BLE 隐私说明",
+  "title": "BLE Toolkit+ 隐私说明",
   "message": "蓝牙用于扫描、连接、读写和广播；相机仅在主动扫码时使用。业务会话数据和配网凭据不作为本地历史保存。UniApp 安装包使用 DCloud App 引擎，其启动和异常统计按 SDK 政策处理设备与运行信息。请阅读<a href=\"static/privacy.html\">完整隐私说明</a>。暂不授权仍可浏览基本功能。公开联系邮箱：121912336@qq.com。",
   "buttonAccept": "同意并继续",
   "buttonRefuse": "暂不授权",

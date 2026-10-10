@@ -88,8 +88,8 @@ void main() {
     expect(DeviceListPage.btStatusWord(BleState.on), '蓝牙就绪');
     expect(DeviceListPage.btStatusWord(BleState.off), '蓝牙未开启');
     expect(DeviceListPage.btStatusWord(BleState.unauthorized), '蓝牙未开启');
-    expect(DeviceListPage.btStatusWord(BleState.unavailable), '平台不支持');
-    // 瞬态（null/unknown/turning*）：初始化中…，不得闪「平台不支持」
+    expect(DeviceListPage.btStatusWord(BleState.unavailable), '蓝牙不可用');
+    // 瞬态（null/unknown/turning*）：初始化中…，不得闪「蓝牙不可用」
     expect(DeviceListPage.btStatusWord(BleState.unknown), '初始化中…');
     expect(DeviceListPage.btStatusWord(BleState.turningOn), '初始化中…');
     expect(DeviceListPage.btStatusWord(BleState.turningOff), '初始化中…');
@@ -105,10 +105,10 @@ void main() {
     // 自绘导航栏：kicker + 标题「扫描」（与 Tab 文案同名，共 2 处）
     expect(find.text('BLE TOOLKIT+'), findsOneWidget);
     expect(find.text('扫描'), findsNWidgets(2));
-    // 蓝牙状态 chip 一定是正典词之一（测试环境初始化失败落 unavailable→平台不支持；
+    // 蓝牙状态 chip 一定是正典词之一（测试环境初始化失败落 unavailable→蓝牙不可用；
     // 瞬态期短暂显示「初始化中…」）
     expect(
-      ['蓝牙就绪', '蓝牙未开启', '平台不支持', '初始化中…']
+      ['蓝牙就绪', '蓝牙未开启', '蓝牙不可用', '初始化中…']
           .map((w) => find.text(w).evaluate().isNotEmpty)
           .any((hit) => hit),
       isTrue,

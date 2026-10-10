@@ -27,17 +27,18 @@ type App struct {
 	// 测试自动化缝（SMARTBLE_AUTOMATION_PORT 门控；nil = 未启用，生产零差异）
 	automation *automationServer
 
-	mu            sync.Mutex
-	adapter       *bluetooth.Adapter
-	adapterFailed string // 非空 = 适配器不可用原因
-	scanning      bool
-	scanEntries   map[string]*scanEntry        // id -> 合并后的广播状态（ADV+RSP）
-	scanHits      map[string]bluetooth.Address // id -> 地址（Connect 用）
-	conns         map[string]*gattConn
-	connectEpoch  map[string]uint64
-	closing       bool
-	wbridge       *winBridge // Win32 广播边车（WIN-BRIDGE 同构，winbridge*.go）
-	exitConfirmed bool
+	mu                sync.Mutex
+	adapter           *bluetooth.Adapter
+	adapterFailed     string                       // 最近适配器初始化失败（可重试）
+	availabilityProbe func() bluetoothAvailability // 纯软件测试缝；生产使用 WinRT 查询
+	scanning          bool
+	scanEntries       map[string]*scanEntry        // id -> 合并后的广播状态（ADV+RSP）
+	scanHits          map[string]bluetooth.Address // id -> 地址（Connect 用）
+	conns             map[string]*gattConn
+	connectEpoch      map[string]uint64
+	closing           bool
+	wbridge           *winBridge // Win32 广播边车（WIN-BRIDGE 同构，winbridge*.go）
+	exitConfirmed     bool
 }
 
 // scanEntry 按设备合并的广播状态（WinRT ADV/SCAN_RSP 双事件语义下对齐 noble 单事件）。
@@ -74,6 +75,8 @@ type plainResult struct {
 type initResult struct {
 	Success  bool   `json:"success"`
 	Platform string `json:"platform"`
+	State    string `json:"state"`
+	Error    string `json:"error,omitempty"`
 }
 
 type hostInfo struct {
@@ -277,13 +280,13 @@ func (a *App) startup(ctx context.Context) {
 // ensureAdapter 惰性取适配器，注册断连监听（仅一次）。
 // WinRT 后端：ConnectionStatusChanged -> SetConnectHandler(connected=false)。
 func (a *App) ensureAdapter() (*bluetooth.Adapter, error) {
+	if err := a.bluetoothAvailability().requireReady(); err != nil {
+		return nil, err
+	}
 	a.mu.Lock()
 	defer a.mu.Unlock()
 	if a.adapter != nil {
 		return a.adapter, nil
-	}
-	if a.adapterFailed != "" {
-		return nil, fmt.Errorf("%s", a.adapterFailed)
 	}
 	ad := bluetooth.DefaultAdapter
 	if ad == nil {
@@ -385,15 +388,20 @@ func (a *App) GetAppVersion() string {
 // ─── IPC：初始化与扫描 ───
 
 func (a *App) Init() initResult {
-	r := initResult{Platform: a.HostPlatform().Platform}
-	if _, err := a.ensureAdapter(); err != nil {
-		log.Printf("[GWIN] init failed: %v", err)
-		return r
+	availability := a.bluetoothAvailability()
+	result := initResult{Platform: a.HostPlatform().Platform, State: availability.State}
+	if err := availability.requireReady(); err != nil {
+		result.Error = err.Error()
+	} else if _, err := a.ensureAdapter(); err != nil {
+		result.State = "unavailable"
+		result.Error = err.Error()
+	} else {
+		result.Success = true
 	}
-	r.Success = true
-	// E-WIN：init 后主动发当前态，渲染层重载后二次 init 也补发（防状态芯片卡「初始化中…」）
-	wruntime.EventsEmit(a.ctx, "ble:stateChanged", map[string]string{"state": "poweredOn"})
-	return r
+	if a.ctx != nil {
+		wruntime.EventsEmit(a.ctx, "ble:stateChanged", map[string]string{"state": result.State})
+	}
+	return result
 }
 
 func (a *App) StartScan() plainResult {
@@ -758,6 +766,9 @@ func (a *App) NotifyCharacteristic(deviceID, serviceUUID, charUUID string, notif
 // ─── IPC：广播（win32=WIN-BRIDGE 边车真发射；其他平台正典降级，文案对齐 E-WIN）───
 
 func (a *App) StartAdvertising(name string, serviceUuids []string, manufacturerId string, manufacturerData string, includeName bool) plainResult {
+	if err := a.bluetoothAvailability().requireReady(); err != nil {
+		return plainResult{Error: err.Error()}
+	}
 	if runtime.GOOS == "windows" {
 		// WIN-BRIDGE：WinRT 仅厂商块可发（LocalName/ServiceUuids 被平台拒绝，
 		// 见 20260921-XDEV-BROADCAST 平台事实）——name/uuid 参数在此路径忽略。
@@ -835,4 +846,11 @@ func (a *App) beforeClose(ctx context.Context) bool {
 
 func (a *App) onShutdown(ctx context.Context) {
 	a.shutdownBLE()
+}
+
+func (a *App) bluetoothAvailability() bluetoothAvailability {
+	if a.availabilityProbe != nil {
+		return a.availabilityProbe()
+	}
+	return readBluetoothAvailability()
 }

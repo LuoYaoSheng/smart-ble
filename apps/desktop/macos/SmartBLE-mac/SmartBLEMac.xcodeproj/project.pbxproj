@@ -355,7 +355,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.i2kai.open.smartble;
 				PRODUCT_MODULE_NAME = SmartBLE_mac;
-				PRODUCT_NAME = "SmartBLE-mac";
+				PRODUCT_NAME = "BLE Toolkit+";
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -382,7 +382,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.i2kai.open.smartble;
 				PRODUCT_MODULE_NAME = SmartBLE_mac;
-				PRODUCT_NAME = "SmartBLE-mac";
+				PRODUCT_NAME = "BLE Toolkit+";
 				SDKROOT = macosx;
 			};
 			name = Debug;

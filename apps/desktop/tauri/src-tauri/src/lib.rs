@@ -202,29 +202,55 @@ struct Response<T> {
 
 // Tauri commands
 //
-// N3：蓝牙无线电状态（正典 bt-chip 词表区分「蓝牙未开启」与「平台不支持」）。
-// 返回 Some("BLUETOOTH_OFF: ...") = 蓝牙无线电存在但已关闭；None = 开启或查询失败
-// （查询失败按原路径处理，不因新增检查误伤无无线电平台）。
-#[cfg(target_os = "windows")]
-async fn bluetooth_radio_off() -> Option<String> {
-    use std::future::IntoFuture;
-    use windows::Devices::Radios::{Radio, RadioKind, RadioState};
-
-    let op = Radio::GetRadiosAsync().ok()?;
-    let radios = op.into_future().await.ok()?;
-    let bt = radios
-        .into_iter()
-        .find(|r| matches!(r.Kind(), Ok(RadioKind::Bluetooth)))?;
-    if matches!(bt.State(), Ok(RadioState::Off)) {
-        Some("BLUETOOTH_OFF: Bluetooth radio is turned off".to_string())
+#[cfg(any(target_os = "windows", test))]
+fn availability_query_error(code: i32, adapter_query: bool) -> String {
+    if code == 0x80070005u32 as i32 {
+        "BLUETOOTH_UNAUTHORIZED: Bluetooth access is denied".into()
+    } else if adapter_query && (code == 0x80004003u32 as i32 || code == 0x80070490u32 as i32) {
+        "NO_ADAPTER: No Bluetooth adapter was found".into()
     } else {
-        None
+        "BLUETOOTH_UNAVAILABLE: Bluetooth availability could not be confirmed".into()
+    }
+}
+
+// Confirm a BLE adapter and an enabled radio before initializing WinRT backends.
+#[cfg(target_os = "windows")]
+async fn require_bluetooth_available() -> Result<(), String> {
+    use std::future::IntoFuture;
+    use windows::Devices::{Bluetooth::BluetoothAdapter, Radios::RadioState};
+    let operation = BluetoothAdapter::GetDefaultAsync()
+        .map_err(|e| availability_query_error(e.code().0, true))?;
+    let adapter = match tokio::time::timeout(READ_TIMEOUT, operation.into_future()).await {
+        Ok(Ok(adapter)) => adapter,
+        Ok(Err(error)) => return Err(availability_query_error(error.code().0, true)),
+        _ => {
+            return Err("BLUETOOTH_UNAVAILABLE: Adapter availability could not be confirmed".into())
+        }
+    };
+    if !adapter.IsLowEnergySupported().map_err(|_| {
+        "BLUETOOTH_UNAVAILABLE: Adapter capabilities could not be confirmed".to_string()
+    })? {
+        return Err("UNSUPPORTED_ADAPTER: The adapter does not support BLE".into());
+    }
+    let operation = adapter
+        .GetRadioAsync()
+        .map_err(|e| availability_query_error(e.code().0, false))?;
+    let radio = tokio::time::timeout(READ_TIMEOUT, operation.into_future())
+        .await
+        .map_err(|_| "BLUETOOTH_UNAVAILABLE: Radio query timed out".to_string())?
+        .map_err(|e| availability_query_error(e.code().0, false))?;
+    match radio.State() {
+        Ok(RadioState::On) => Ok(()),
+        Ok(RadioState::Off | RadioState::Disabled) => {
+            Err("BLUETOOTH_OFF: Bluetooth is turned off".into())
+        }
+        _ => Err("BLUETOOTH_UNAVAILABLE: Radio state could not be confirmed".into()),
     }
 }
 
 #[cfg(not(target_os = "windows"))]
-async fn bluetooth_radio_off() -> Option<String> {
-    None
+async fn require_bluetooth_available() -> Result<(), String> {
+    Ok(())
 }
 
 #[tauri::command]
@@ -232,22 +258,14 @@ async fn init_ble(
     state: State<'_, Arc<Mutex<BleState>>>,
     window: tauri::Window,
 ) -> Result<Response<String>, String> {
+    if let Err(error) = require_bluetooth_available().await {
+        return Ok(Response::fail(error));
+    }
     if state.lock().await.central.is_some() {
         return Ok(Response::ok("BLE initialized".to_string()));
     }
     match Manager::new().await {
         Ok(manager) => {
-            // N3：无线电关闭时以 BLUETOOTH_OFF 前缀失败，前端显示「蓝牙未开启」红点
-            if let Some(err) = bluetooth_radio_off().await {
-                eprintln!("[BLE] {}", err);
-                return Ok(Response {
-                    success: false,
-                    data: None,
-                    error: Some(err),
-                    value: None,
-                });
-            }
-
             let mut adapters = manager.adapters().await.unwrap_or_default();
 
             // Retry mechanism for Windows startup delay (Task 6)
@@ -343,7 +361,7 @@ async fn init_ble(
                 Ok(Response {
                     success: false,
                     data: None,
-                    error: Some("No Bluetooth adapter found. On Windows, ensure Bluetooth is turned ON in settings.".to_string()),
+                    error: Some("NO_ADAPTER: No Bluetooth adapter was found".to_string()),
                     value: None,
                 })
             }
@@ -362,6 +380,9 @@ async fn start_scan(
     state: State<'_, Arc<Mutex<BleState>>>,
     window: tauri::Window,
 ) -> Result<Response<Vec<DeviceInfo>>, String> {
+    if let Err(error) = require_bluetooth_available().await {
+        return Ok(Response::fail(error));
+    }
     let scan_io = state.lock().await.scan_io.clone();
     let _scan_guard = scan_io.lock().await;
     let mut ble_state = state.lock().await;
@@ -1085,6 +1106,9 @@ async fn start_advertising(
     manufacturerData: Option<String>,
     includeName: Option<bool>,
 ) -> Result<Response<bool>, String> {
+    if let Err(error) = require_bluetooth_available().await {
+        return Ok(Response::fail(error));
+    }
     #[cfg(target_os = "macos")]
     {
         // macOS: Requires CoreBluetooth peripheral mode (not exposed by btleplug)
@@ -1397,4 +1421,18 @@ pub fn run() {
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+}
+
+#[cfg(test)]
+mod availability_tests {
+    use super::availability_query_error;
+    #[test]
+    fn absent_adapter_and_denied_access_are_not_platform_unsupported() {
+        assert!(availability_query_error(0x80004003u32 as i32, true).starts_with("NO_ADAPTER:"));
+        assert!(availability_query_error(0x80070490u32 as i32, true).starts_with("NO_ADAPTER:"));
+        assert!(availability_query_error(0x80070005u32 as i32, true)
+            .starts_with("BLUETOOTH_UNAUTHORIZED:"));
+        assert!(availability_query_error(0x80004003u32 as i32, false)
+            .starts_with("BLUETOOTH_UNAVAILABLE:"));
+    }
 }

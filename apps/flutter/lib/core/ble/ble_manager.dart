@@ -2,6 +2,7 @@ import 'dart:async';
 import 'device_write_queue.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:flutter_blue_plus_platform_interface/flutter_blue_plus_platform_interface.dart';
 import 'package:rxdart/rxdart.dart';
 import '../models/ble_service.dart';
 import '../models/ble_scan_result.dart' as models;
@@ -57,6 +58,9 @@ class BleManager {
 
   /// 是否已初始化
   bool _isInitialized = false;
+  Future<bool>? _initializationFuture;
+  int _initializationGeneration = 0;
+  static const Duration defaultInitializationTimeout = Duration(seconds: 5);
   final List<StreamSubscription<dynamic>> _platformSubscriptions = [];
   final Map<String, int> _sessionGenerations = {};
   final DeviceWriteQueue _writes = DeviceWriteQueue();
@@ -67,7 +71,8 @@ class BleManager {
       _sessionGenerations[id] == generation;
 
   void _initializeControllers() {
-    _stateController = StreamController<BleState>.broadcast();
+    // Riverpod may subscribe after the native probe already completed.
+    _stateController = BehaviorSubject<BleState>.seeded(BleState.unknown);
     _scanResultsController =
         StreamController<List<models.BleScanResult>>.broadcast();
     _connectionStatesController =
@@ -153,7 +158,15 @@ class BleManager {
   }
 
   /// 初始化 BLE
-  Future<bool> initialize() async {
+  Future<bool> initialize() {
+    return _initializationFuture ??= _initialize().whenComplete(() {
+      _initializationFuture = null;
+    });
+  }
+
+  Future<bool> _initialize() async {
+    final generation = ++_initializationGeneration;
+    final subscriptions = <StreamSubscription<dynamic>>[];
     // 如果控制器已关闭，重新初始化
     if (_stateController.isClosed ||
         _scanResultsController.isClosed ||
@@ -162,98 +175,124 @@ class BleManager {
       _isInitialized = false;
     }
 
-    // 如果已经初始化，直接返回成功
-    if (_isInitialized) return true;
-
     try {
-      // 检查蓝牙是否可用
-      // Windows 平台特殊性：如果系统蓝牙开关关闭，isSupported 会返回 false
-      // 因此我们不直接 return false 中断流程，而是继续注册监听器以便热恢复
-      final isSupported = await FlutterBluePlus.isSupported;
-      if (!isSupported) {
-        if (!_stateController.isClosed) {
+      if (!_isInitialized) {
+        final supported = await FlutterBluePlus.isSupported
+            .timeout(defaultInitializationTimeout);
+        if (generation != _initializationGeneration) return false;
+        if (!supported) {
           _stateController.add(BleState.unavailable);
+          return false;
         }
       }
 
-      // 监听蓝牙状态
-      _platformSubscriptions.add(FlutterBluePlus.adapterState.listen((state) {
-        if (!_stateController.isClosed) {
-          _stateController.add(_convertBleState(state));
-        }
-      }));
-
-      // 监听扫描结果
-      _platformSubscriptions.add(FlutterBluePlus.scanResults.listen((results) {
-        // 不清空现有列表，只更新已存在的设备或添加新设备
-        // 这样可以避免列表跳动
-        for (ScanResult r in results) {
-          final device = r.device;
-          final deviceId = device.remoteId.toString();
-          final deviceName = device.platformName;
-
-          // Convert manufacturerData Map to List<int>
-          int? mfrId;
-          List<int>? manuData;
-          if (r.advertisementData.manufacturerData.isNotEmpty) {
-            mfrId = r.advertisementData.manufacturerData.keys.first;
-            manuData = r.advertisementData.manufacturerData.values.first;
+      if (!_isInitialized) {
+        // Observe real backend events; do not replay FBP's cached initial state
+        // over a fresh query after the user enables or attaches an adapter.
+        subscriptions.add(FlutterBluePlusPlatform.instance.onAdapterStateChanged
+            .listen((state) {
+          if (!_stateController.isClosed) {
+            _stateController.add(_convertBmState(state.adapterState));
           }
+        }, onError: (Object error) {
+          if (!_stateController.isClosed) {
+            _stateController.add(BleState.unavailable);
+          }
+        }));
 
-          // Advertisement fields may change while name/RSSI stay constant.
-          _scannedDevices[deviceId] = models.BleScanResult(
-            deviceId: deviceId,
-            name: deviceName,
-            rssi: r.rssi,
-            advertisData: manuData,
-            serviceUuids: r.advertisementData.serviceUuids
-                .map((u) => u.toString())
-                .toList(),
-            advName: r.advertisementData.advName,
-            manufacturerId: mfrId,
-            manufacturerData: manuData,
-            serviceData: r.advertisementData.serviceData.map(
-              (uuid, bytes) => MapEntry(uuid.toString(), bytes),
-            ),
-            txPowerLevel: r.advertisementData.txPowerLevel,
-            connectable: r.advertisementData.connectable,
-            timestamp: DateTime.now(),
-          );
-        }
-        if (!_scanResultsController.isClosed) {
-          _scanResultsController.add(_scannedDevices.values.toList());
-        }
-      }));
+        // 监听扫描结果
+        subscriptions.add(FlutterBluePlus.scanResults.listen((results) {
+          // 不清空现有列表，只更新已存在的设备或添加新设备
+          // 这样可以避免列表跳动
+          for (ScanResult r in results) {
+            final device = r.device;
+            final deviceId = device.remoteId.toString();
+            final deviceName = device.platformName;
 
-      // DEF-013 修复：以 FBP 扫描态为唯一事实源（含 5s 超时自动停止），
-      // 避免本地标志位滞留 true 导致后续 startScan 静默空转
-      _platformSubscriptions.add(FlutterBluePlus.isScanning.listen((scanning) {
-        _isScanning = scanning;
-      }));
+            // Convert manufacturerData Map to List<int>
+            int? mfrId;
+            List<int>? manuData;
+            if (r.advertisementData.manufacturerData.isNotEmpty) {
+              mfrId = r.advertisementData.manufacturerData.keys.first;
+              manuData = r.advertisementData.manufacturerData.values.first;
+            }
 
-      // 初始化状态
-      final state = await FlutterBluePlus.adapterState.first;
-      if (!_stateController.isClosed) {
-        _stateController.add(_convertBleState(state));
+            // Advertisement fields may change while name/RSSI stay constant.
+            _scannedDevices[deviceId] = models.BleScanResult(
+              deviceId: deviceId,
+              name: deviceName,
+              rssi: r.rssi,
+              advertisData: manuData,
+              serviceUuids: r.advertisementData.serviceUuids
+                  .map((u) => u.toString())
+                  .toList(),
+              advName: r.advertisementData.advName,
+              manufacturerId: mfrId,
+              manufacturerData: manuData,
+              serviceData: r.advertisementData.serviceData.map(
+                (uuid, bytes) => MapEntry(uuid.toString(), bytes),
+              ),
+              txPowerLevel: r.advertisementData.txPowerLevel,
+              connectable: r.advertisementData.connectable,
+              timestamp: DateTime.now(),
+            );
+          }
+          if (!_scanResultsController.isClosed) {
+            _scanResultsController.add(_scannedDevices.values.toList());
+          }
+        }));
+
+        // DEF-013 修复：以 FBP 扫描态为唯一事实源（含 5s 超时自动停止），
+        // 避免本地标志位滞留 true 导致后续 startScan 静默空转
+        subscriptions.add(FlutterBluePlus.isScanning.listen((scanning) {
+          _isScanning = scanning;
+        }));
       }
 
+      final state = await getState();
+      if (generation != _initializationGeneration) return false;
+      _stateController.add(state);
+      if (state == BleState.unavailable) return false;
+      _platformSubscriptions.addAll(subscriptions);
+      subscriptions.clear();
       _isInitialized = true;
       return true;
     } catch (e) {
       print('BleManager 初始化失败: $e');
       // 初始化失败（平台不支持等）也要落定状态，否则芯片永卡「初始化中…」
-      if (!_stateController.isClosed) {
+      if (generation == _initializationGeneration &&
+          !_stateController.isClosed) {
         _stateController.add(BleState.unavailable);
       }
       return false;
+    } finally {
+      // Failed/timed-out attempts must not accumulate listeners on each retry.
+      for (final subscription in subscriptions) {
+        await subscription.cancel();
+      }
     }
   }
 
-  /// 获取当前状态
+  /// Query native state, including retries after an adapter is enabled/attached.
   Future<BleState> getState() async {
-    final state = await FlutterBluePlus.adapterState.first;
-    return _convertBleState(state);
+    final platform = FlutterBluePlusPlatform.instance;
+    final state = await platform
+        .getAdapterState(BmBluetoothAdapterStateRequest())
+        .timeout(defaultInitializationTimeout);
+    if (_isTerminalAdapterState(state.adapterState)) {
+      return _convertBmState(state.adapterState);
+    }
+    final terminal = await platform.onAdapterStateChanged
+        .where((event) => _isTerminalAdapterState(event.adapterState))
+        .first
+        .timeout(defaultInitializationTimeout);
+    return _convertBmState(terminal.adapterState);
   }
+
+  bool _isTerminalAdapterState(BmAdapterStateEnum state) =>
+      state != BmAdapterStateEnum.unknown &&
+      state != BmAdapterStateEnum.turningOn &&
+      state != BmAdapterStateEnum.turningOff;
 
   /// 开始扫描
   ///
@@ -640,6 +679,7 @@ class BleManager {
 
   /// 释放资源
   Future<void> dispose() async {
+    _initializationGeneration += 1;
     for (final id in _sessionGenerations.keys.toList()) {
       _advanceSession(id);
     }
@@ -674,27 +714,23 @@ class BleManager {
     _servicesByDevice.clear();
   }
 
-  /// 转换蓝牙状态
-  BleState _convertBleState(dynamic state) {
-    if (state is BluetoothAdapterState) {
-      switch (state) {
-        case BluetoothAdapterState.unknown:
-          return BleState.unknown;
-        case BluetoothAdapterState.unavailable:
-          return BleState.unavailable;
-        case BluetoothAdapterState.unauthorized:
-          return BleState.unauthorized;
-        case BluetoothAdapterState.turningOn:
-          return BleState.turningOn;
-        case BluetoothAdapterState.on:
-          return BleState.on;
-        case BluetoothAdapterState.turningOff:
-          return BleState.turningOff;
-        case BluetoothAdapterState.off:
-          return BleState.off;
-      }
+  BleState _convertBmState(BmAdapterStateEnum state) {
+    switch (state) {
+      case BmAdapterStateEnum.unknown:
+        return BleState.unknown;
+      case BmAdapterStateEnum.unavailable:
+        return BleState.unavailable;
+      case BmAdapterStateEnum.unauthorized:
+        return BleState.unauthorized;
+      case BmAdapterStateEnum.turningOn:
+        return BleState.turningOn;
+      case BmAdapterStateEnum.on:
+        return BleState.on;
+      case BmAdapterStateEnum.turningOff:
+        return BleState.turningOff;
+      case BmAdapterStateEnum.off:
+        return BleState.off;
     }
-    return BleState.unknown;
   }
 
   /// 转换特征值属性

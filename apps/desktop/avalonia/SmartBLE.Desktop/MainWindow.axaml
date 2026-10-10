@@ -58,7 +58,7 @@
                                                Foreground="{DynamicResource CMut}" VerticalAlignment="Center"/>
                                 </StackPanel>
                                 <Button Grid.Column="1" Classes="primary" Command="{Binding StartScanCommand}"
-                                        AutomationProperties.Name="{Binding ScanButtonLabel}">
+                                        AutomationProperties.Name="{Binding ScanButtonLabel}" IsEnabled="{Binding CanToggleScan}">
                                     <StackPanel Orientation="Horizontal" Spacing="6">
                                         <Path Classes="ic sm" Data="{StaticResource IcoScan}"
                                               Stroke="{Binding $parent[Button].Foreground}"/>
@@ -66,6 +66,11 @@
                                     </StackPanel>
                                 </Button>
                             </Grid>
+
+                            <StackPanel Spacing="8" Margin="0,0,0,12">
+                                <TextBlock Text="{Binding BluetoothHint}" TextWrapping="Wrap" FontSize="12" Foreground="{DynamicResource CMut}"/>
+                                <Button Classes="soft" Content="重新检测蓝牙" Command="{Binding RefreshBluetoothCommand}" HorizontalAlignment="Left" AutomationProperties.Name="重新检测蓝牙"/>
+                            </StackPanel>
 
                             <!-- sec-t：附近设备 + 计数 chip + 筛选 -->
                             <Grid ColumnDefinitions="*,Auto" Margin="2,2,2,10">
@@ -719,7 +724,7 @@
                             <StackPanel Spacing="1" Margin="0,18,0,0">
                                 <TextBlock Text="日志全局脱敏：敏感凭据显示为 token=***" FontSize="10"
                                            Foreground="{DynamicResource CPh}" HorizontalAlignment="Center"/>
-                                <TextBlock Text="BLE Toolkit+ · Smart BLE 产品家族" FontSize="10"
+                                <TextBlock Text="BLE Toolkit+" FontSize="10"
                                            Foreground="{DynamicResource CPh}" HorizontalAlignment="Center"/>
                             </StackPanel>
                         </StackPanel>

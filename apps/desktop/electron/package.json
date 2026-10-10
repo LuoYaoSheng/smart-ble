@@ -1,7 +1,7 @@
 {
   "name": "smart-ble-desktop",
   "version": "1.0.5",
-  "description": "Smart BLE - Desktop Application",
+  "description": "BLE Toolkit+ desktop application",
   "homepage": "https://github.com/LuoYaoSheng/smart-ble",
   "main": "src/main/index.js",
   "scripts": {
@@ -86,12 +86,12 @@
       ]
     },
     "nativeRebuilder": "sequential",
-    "artifactName": "Smart-BLE-Open-${version}-${os}-${arch}.${ext}",
+    "artifactName": "BLE-Toolkit-Plus-${version}-${os}-${arch}.${ext}",
     "nsis": {
-      "artifactName": "Smart-BLE-Open-${version}-${os}-${arch}-setup.${ext}"
+      "artifactName": "BLE-Toolkit-Plus-${version}-${os}-${arch}-setup.${ext}"
     },
     "portable": {
-      "artifactName": "Smart-BLE-Open-${version}-${os}-${arch}-portable.${ext}"
+      "artifactName": "BLE-Toolkit-Plus-${version}-${os}-${arch}-portable.${ext}"
     },
     "afterPack": "scripts/verify-native-pack.cjs",
     "afterAllArtifactBuild": "scripts/verify-universal-pack.cjs"

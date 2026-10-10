@@ -73,7 +73,7 @@
         "fullscreen": false,
         "height": 800,
         "resizable": true,
-        "title": "SmartBLE",
+        "title": "BLE Toolkit+",
         "width": 1200,
         "minWidth": 900,
         "minHeight": 600

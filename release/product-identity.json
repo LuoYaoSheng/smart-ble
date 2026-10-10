@@ -1,5 +1,5 @@
 {
-  "product": "Smart BLE Open",
+  "product": "BLE Toolkit+",
   "application_id": "com.i2kai.open.smartble",
   "publisher_type": "individual",
   "public_support_email": "121912336@qq.com",
@@ -28,5 +28,6 @@
   },
   "apple_store_application_id": "com.i2kai.open.smartble",
   "apple_store_team_id": "72MZZQB893",
-  "apple_store_team_name": "longcan cai"
+  "apple_store_team_name": "longcan cai",
+  "display_name": "BLE Toolkit+"
 }
