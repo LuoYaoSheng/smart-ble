@@ -9,3 +9,7 @@ The legacy HCI dependency's locked NAN 2.24 does not compile against Electron 44
 `node-gyp` is explicitly pinned to 12.4.0 for install scripts and overridden throughout the dependency tree. The previous root version 10.3.1 did not recognize Visual Studio 18/2026 on current Windows builders. Version 12.4 recognizes that toolchain. The Windows WinRT backend itself continues to use N-API.
 
 After changing these versions, use a clean `npm ci`, build on Linux and Windows, and check loading the native bindings under the target Electron runtime. Compilation and API checks do not replace real adapter/GATT verification.
+
+Native installs run with project `foreground-scripts=true`, and Electron rebuilds explicitly use `nativeRebuilder: sequential`. Multiple addons reference the same `node-addon-api/nothing` gyp target; concurrent install scripts can delete or write its shared output at the same time. Keep lifecycle scripts enabled, but serialize them.
+
+The UI and application product name remain `BLE Toolkit+`. Linux's executable/product filename is `smart-ble-open`; installer artifacts use the ASCII-safe `Smart-BLE-Open-<version>-<os>-<arch>.<ext>` pattern. AppImage's filename validation rejects `+`, so the executable filename is configured separately from the displayed product name.

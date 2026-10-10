@@ -110,7 +110,7 @@ def main():
             run(['xcodebuild', '-workspace', 'Runner.xcworkspace', '-scheme', 'Runner', '-configuration', 'Release', '-destination', 'generic/platform=macOS', '-derivedDataPath', str(build_dir), f'OBJROOT={build_dir}/Build/Intermediates.noindex', f'SYMROOT={build_dir}/Build/Products', 'CODE_SIGNING_ALLOWED=NO', 'CODE_SIGNING_REQUIRED=NO', 'COMPILER_INDEX_STORE_ENABLE=NO', 'build'], ROOT / 'apps/flutter/macos', env)
             patterns = ['apps/flutter/build/macos/Build/Products/Release/*.app/Contents/MacOS/*']
         elif args.target == 'electron':
-            run(['npm', 'ci'], ROOT / 'apps/desktop/electron', env)
+            run(['npm', 'ci', '--foreground-scripts'], ROOT / 'apps/desktop/electron', env)
             command = ['npm', 'run', {'Darwin': 'build:mac', 'Windows': 'build:win', 'Linux': 'build:linux'}[host], '--', '--publish', 'never']
             if host == 'Darwin': command.append('--universal')
             run(command, ROOT / 'apps/desktop/electron', env)

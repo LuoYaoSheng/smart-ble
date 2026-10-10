@@ -25,3 +25,17 @@ test('Windows install scripts resolve the node-gyp version supporting Visual Stu
   assert.ok(versions.length > 0);
   assert.ok(versions.every(version => version === '12.4.0'));
 });
+
+test('Linux AppImage product filename is safe while preserving the canonical display brand', () => {
+  assert.equal(manifest.build.productName, 'BLE Toolkit+');
+  assert.equal(manifest.build.linux.executableName, 'smart-ble-open');
+  assert.match(manifest.build.linux.executableName, /^[A-Za-z0-9._ -]+$/);
+  assert.equal(manifest.build.artifactName, 'Smart-BLE-Open-${version}-${os}-${arch}.${ext}');
+});
+
+test('native install and Electron rebuild scripts run serially with rebuilding enabled', () => {
+  const npmrc = readFileSync(new URL('.npmrc', directory), 'utf8');
+  assert.match(npmrc, /^foreground-scripts=true$/m);
+  assert.equal(manifest.build.nativeRebuilder, 'sequential');
+  assert.notEqual(manifest.build.npmRebuild, false);
+});

@@ -71,8 +71,11 @@
         "rpm"
       ],
       "icon": "assets/icon.png",
-      "category": "Development"
-    }
+      "category": "Development",
+      "executableName": "smart-ble-open"
+    },
+    "nativeRebuilder": "sequential",
+    "artifactName": "Smart-BLE-Open-${version}-${os}-${arch}.${ext}"
   },
   "overrides": {
     "@abandonware/bluetooth-hci-socket": "npm:@stoprocent/bluetooth-hci-socket@2.3.0",
