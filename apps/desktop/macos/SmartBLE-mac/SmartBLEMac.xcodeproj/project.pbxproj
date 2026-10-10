@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 63;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -53,23 +53,23 @@
 		23520FFF3867E70CC21E3D54 /* P002ProvisionPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = P002ProvisionPage.swift; sourceTree = "<group>"; };
 		2610168F93799C10C50F8A44 /* SoakRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoakRunner.swift; sourceTree = "<group>"; };
 		3E942DAF935668D50FEF84B5 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
-		3F7865F44495287C6700CE32 /* tab-scan.svg */ = {isa = PBXFileReference; lastKnownFileType = text; path = "tab-scan.svg"; sourceTree = "<group>"; };
+		3F7865F44495287C6700CE32 /* tab-scan.svg */ = {isa = PBXFileReference; path = "tab-scan.svg"; sourceTree = "<group>"; };
 		41FE3BC68C0BD3BE4BD55837 /* P003HidDetailPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = P003HidDetailPage.swift; sourceTree = "<group>"; };
-		451EF3239AC86799D3A8E0D3 /* tab-info.svg */ = {isa = PBXFileReference; lastKnownFileType = text; path = "tab-info.svg"; sourceTree = "<group>"; };
+		451EF3239AC86799D3A8E0D3 /* tab-info.svg */ = {isa = PBXFileReference; path = "tab-info.svg"; sourceTree = "<group>"; };
 		47115A083B875973E0A76D6F /* P006GattPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = P006GattPage.swift; sourceTree = "<group>"; };
 		5707AED56BDA47C530FC3D0F /* CoreUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreUnit.swift; sourceTree = "<group>"; };
 		624F82BF3DA25DE8490B6D59 /* P007ConnectedPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = P007ConnectedPage.swift; sourceTree = "<group>"; };
 		63AF73499F60D0A192E07878 /* P009AboutPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = P009AboutPage.swift; sourceTree = "<group>"; };
 		71727A78CCC1264E1DCB1E62 /* P008BroadcastPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = P008BroadcastPage.swift; sourceTree = "<group>"; };
-		72F42BD92650DD30E0BBBD30 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		72F42BD92650DD30E0BBBD30 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		90DD445692840368138FC840 /* HidProvisionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HidProvisionManager.swift; sourceTree = "<group>"; };
 		9332034E7F0EFA35F327E10C /* PageSmoke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageSmoke.swift; sourceTree = "<group>"; };
 		A309BB9AB1D86907E90E07C9 /* Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
-		A50E5649F6BEE555E5C7FA06 /* radar.svg */ = {isa = PBXFileReference; lastKnownFileType = text; path = radar.svg; sourceTree = "<group>"; };
-		B0FB593E78680D43956BEA98 /* link.svg */ = {isa = PBXFileReference; lastKnownFileType = text; path = link.svg; sourceTree = "<group>"; };
+		A50E5649F6BEE555E5C7FA06 /* radar.svg */ = {isa = PBXFileReference; path = radar.svg; sourceTree = "<group>"; };
+		B0FB593E78680D43956BEA98 /* link.svg */ = {isa = PBXFileReference; path = link.svg; sourceTree = "<group>"; };
 		B11172C6AA7D4908AD44521E /* SmartHidCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = SmartHidCore; path = ../../../../core/apple/SmartHidCore; sourceTree = SOURCE_ROOT; };
 		B3B7BE849B148565CBAA5294 /* MainWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindowController.swift; sourceTree = "<group>"; };
-		B67EA205205AC63B93EBE7D1 /* box.svg */ = {isa = PBXFileReference; lastKnownFileType = text; path = box.svg; sourceTree = "<group>"; };
+		B67EA205205AC63B93EBE7D1 /* box.svg */ = {isa = PBXFileReference; path = box.svg; sourceTree = "<group>"; };
 		B7F08D8E9415BEB27C16AEAF /* P010VersionsPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = P010VersionsPage.swift; sourceTree = "<group>"; };
 		B994F2A9B1FF14597170A2C7 /* DSTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DSTokens.swift; sourceTree = "<group>"; };
 		C5C68532BCCA8E8C0F4E2DAE /* Kit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Kit.swift; sourceTree = "<group>"; };
@@ -77,14 +77,14 @@
 		C6DE88AB698827D77BA5AE20 /* BLEManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEManager.swift; sourceTree = "<group>"; };
 		C7E8A56E1EA1B46D391ECF1D /* QrScannerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QrScannerController.swift; sourceTree = "<group>"; };
 		C8B29128D06A60A8729B933B /* AppIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = AppIcon.icns; sourceTree = "<group>"; };
-		C8CA954487699875AB8DD5A4 /* tab-cast.svg */ = {isa = PBXFileReference; lastKnownFileType = text; path = "tab-cast.svg"; sourceTree = "<group>"; };
+		C8CA954487699875AB8DD5A4 /* tab-cast.svg */ = {isa = PBXFileReference; path = "tab-cast.svg"; sourceTree = "<group>"; };
 		CCB42BBD6A5F694A56F30C67 /* BundleResources.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundleResources.swift; sourceTree = "<group>"; };
-		D35A001C750DE8FB74568F07 /* SmartBLE-mac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SmartBLE-mac.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		D3E8878EFAE514016C2BD2D7 /* bt.svg */ = {isa = PBXFileReference; lastKnownFileType = text; path = bt.svg; sourceTree = "<group>"; };
+		D35A001C750DE8FB74568F07 /* SmartBLEMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SmartBLEMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D3E8878EFAE514016C2BD2D7 /* bt.svg */ = {isa = PBXFileReference; path = bt.svg; sourceTree = "<group>"; };
 		EBDB9403A7B8802BC1F58B9E /* P005DiagnosticsPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = P005DiagnosticsPage.swift; sourceTree = "<group>"; };
-		EC90F6D48B8F4FEC207EE256 /* doc.svg */ = {isa = PBXFileReference; lastKnownFileType = text; path = doc.svg; sourceTree = "<group>"; };
+		EC90F6D48B8F4FEC207EE256 /* doc.svg */ = {isa = PBXFileReference; path = doc.svg; sourceTree = "<group>"; };
 		F4F7354A622051E2481F3089 /* OperationDeadlines.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationDeadlines.swift; sourceTree = "<group>"; };
-		F60D5F907D7E67EA5A5E709E /* tab-link.svg */ = {isa = PBXFileReference; lastKnownFileType = text; path = "tab-link.svg"; sourceTree = "<group>"; };
+		F60D5F907D7E67EA5A5E709E /* tab-link.svg */ = {isa = PBXFileReference; path = "tab-link.svg"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,7 +118,7 @@
 		596C5E1A4D28A35C175A1190 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D35A001C750DE8FB74568F07 /* SmartBLE-mac.app */,
+				D35A001C750DE8FB74568F07 /* SmartBLEMac.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -236,7 +236,7 @@
 				37E9556B72A7227769A7C963 /* SmartHidCore */,
 			);
 			productName = SmartBLEMac;
-			productReference = D35A001C750DE8FB74568F07 /* SmartBLE-mac.app */;
+			productReference = D35A001C750DE8FB74568F07 /* SmartBLEMac.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -249,6 +249,7 @@
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					8E84AD96ADF8E6A258BEFCC4 = {
+						DevelopmentTeam = 72MZZQB893;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -266,6 +267,7 @@
 			packageReferences = (
 				6B1A27A117CDE8333BD66901 /* XCLocalSwiftPackageReference "../../../../core/apple/SmartHidCore" */,
 			);
+			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -347,7 +349,10 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -parse-as-library";
+				OTHER_SWIFT_FLAGS = (
+					"$(inherited)",
+					"-parse-as-library",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.i2kai.open.smartble;
 				PRODUCT_MODULE_NAME = SmartBLE_mac;
 				PRODUCT_NAME = "SmartBLE-mac";
@@ -371,7 +376,10 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -parse-as-library";
+				OTHER_SWIFT_FLAGS = (
+					"$(inherited)",
+					"-parse-as-library",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.i2kai.open.smartble;
 				PRODUCT_MODULE_NAME = SmartBLE_mac;
 				PRODUCT_NAME = "SmartBLE-mac";

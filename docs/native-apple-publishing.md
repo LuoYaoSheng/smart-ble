@@ -13,11 +13,11 @@
 ## 账号与签名
 
 1. 用准备发布的付费 Apple Developer 个人账号登录 Xcode → Settings → Accounts。
-2. 确认该账号的 Team ID。当前电脑的开发证书属于 `L5Q7JP9RH9`，分发证书属于 `72MZZQB893`，不能仅凭证书存在假定是同一发布团队。
-3. 在 workspace 中分别选择两个应用 target，进入 Signing & Capabilities，勾选 Automatically manage signing，选择同一个已确认 Team。原 iOS Team 配置暂未代替用户改动。
+2. 本轮用户已选择 `longcan cai` 的分发团队 `72MZZQB893`；两个目标都按该 Team 配置。不要选择另一个 Team `L5Q7JP9RH9` 的证书作为这次分发身份。
+3. 在 workspace 中分别选择两个应用 target，进入 Signing & Capabilities，勾选 Automatically manage signing，选择同一个已确认 Team。iOS 已是该 Team，Mac 目标也已设置该 Team。
 4. 在该 Team 注册明确的 App ID `com.i2kai.open.smartble`，并在 App Store Connect 建立应用记录。iOS 与 Mac 的分发描述文件分别匹配其平台、同一 Team 与 Bundle ID。Apple 允许 Xcode 管理分发 profiles：[官方说明](https://developer.apple.com/help/account/provisioning-profiles/create-an-app-store-provisioning-profile)。
 
-账号密码、证书私钥、API 私钥不放聊天或 Git。当前尚无本次新 Mac 目标的正式分发签名/导出成功证据。
+账号密码、证书私钥、API 私钥不放聊天或 Git。两端已实际正式签名并成功导出；报告 `.tmp/release/apple-native/signed-store-report.json` 记录产物哈希。
 
 ## 分别生成与上传构建
 
@@ -33,3 +33,13 @@ Mac App Store 要求 App Sandbox，当前目标已配置；Mac 商店安装包�
 App Store Connect 仍需各平台截图、描述、公开支持与隐私政策 URL、隐私回答、年龄分级及审核说明。发布主体为个人，公开邮箱 `121912336@qq.com`；此前用户暂缓的其他资料没有擅自填写或提交。iOS 结构审计通过与完整无障碍合规分别记录。
 
 账号/Team 确认后继续正式 Archive、导出验证与上传准备，审核通过后的公开发布单独确认状态。没有执行本轮商店上传。
+
+## 本次已生成的商店产物
+
+- iOS：`.tmp/release/apple-native/ios-final-export/SmartBLE.ipa`。实际应用/描述文件 Team 为 72MZZQB893，App Store profile，无设备列表、get-task-allow=false，签名验证通过。
+- Mac：`.tmp/release/apple-native/macos-final-export/SmartBLE.pkg`。应用由 Apple Distribution 签名，安装器由该 Team 的 3rd Party Mac Developer Installer 签名；应用保留 app-sandbox、device.bluetooth、device.camera，无调试 entitlement。
+- 两端为同一 Bundle ID，1.0.5/build101；Mac arm64/x86_64。
+
+Mac 必须由保留 entitlements 的正式签名 Archive 导出。本轮直接从无签名 Archive 导出的首包遗漏沙盒，已作废；以上 macos-final-export 才是经过完整签名与能力验证的最终商店包。
+
+当前上传/商店验证尚未执行，正式发布仍需 App Store Connect 记录、真机验收与审核资料。已有包的本地验签成功不等于 Apple 服务端已接受。

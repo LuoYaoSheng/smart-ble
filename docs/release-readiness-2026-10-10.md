@@ -42,8 +42,8 @@ iOS 的预览初始化竞态、窄屏详情宽度、复制反馈和按钮命中�
 - iOS 结构审计已通过；全量无障碍合规分开记录，历史 contrast / Dynamic Type / textClipped 豁免和真机 VoiceOver 仍需复核。
 - 每种实现的真实 BLE、Smart HID READY/恢复、OTA 取消/失败/重启版本核验，以及干净安装/升级仍需当前版本真机证据。附近扫描结果与模拟器、单测不能替代该证据。
 - UniApp 还需 HBuilderX / 自定义原生基座、原生 SDK 审计和正式签名包；H5 与 App 资源编译不等于原生包。
-- App Store 导出上次返回 No Accounts / 新 ID 的分发 profile 缺失。Xcode 已打开供用户配置，尚未取得成功导出证据。
-- macOS 正式分发签名、公证与 Windows Authenticode 尚未验收。
+- 原生 Apple 路线已由用户选择 Team 72MZZQB893，iOS/Mac 共用新 Bundle ID，正式 IPA/PKG 已成功导出并验签。App Store Connect 上传、真机 TestFlight 及审核仍未执行；见 native-apple-publishing.md。
+- 原生 Mac App Store 包签名与沙盒/蓝牙/相机能力已验收；官网 Developer ID 分发、公证及 Windows Authenticode 仍未验收。
 - 用户已明确暂缓其他上架资料；公开隐私 URL、各商店 SDK/权限申报、主体认证和商店提交保持未完成。没有执行商店上传或正式分发。
 
 代码收敛与后续修复在 [草稿 PR #2](https://github.com/LuoYaoSheng/smart-ble/pull/2)；保留完整修改供复核，不将当前构建状态当成发布批准。

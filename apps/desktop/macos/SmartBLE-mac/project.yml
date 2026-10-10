@@ -31,6 +31,7 @@ targets:
         INFOPLIST_FILE: Info.plist
         GENERATE_INFOPLIST_FILE: NO
         CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: 72MZZQB893
         CODE_SIGN_ENTITLEMENTS: Entitlements.plist
         ENABLE_APP_SANDBOX: YES
         ENABLE_HARDENED_RUNTIME: YES

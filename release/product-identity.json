@@ -26,5 +26,7 @@
     "ios": "swiftui",
     "macos": "appkit"
   },
-  "apple_store_application_id": "com.i2kai.open.smartble"
+  "apple_store_application_id": "com.i2kai.open.smartble",
+  "apple_store_team_id": "72MZZQB893",
+  "apple_store_team_name": "longcan cai"
 }

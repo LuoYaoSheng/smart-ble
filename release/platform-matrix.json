@@ -577,9 +577,13 @@
     "workspace": "SmartBLE-Apple.xcworkspace",
     "application_id": "com.i2kai.open.smartble",
     "app_store_connect_model": "one app record with separate iOS and macOS platforms",
-    "team": "WAITING_FOR_USER_SELECTION",
+    "team": {
+      "id": "72MZZQB893",
+      "name": "longcan cai",
+      "selected_by_user": true
+    },
     "macos_xcode_archive": {
-      "status": "UNSIGNED_ARCHIVE_VERIFIED",
+      "status": "SIGNED_ARCHIVE_VERIFIED",
       "architectures": [
         "arm64",
         "x86_64"
@@ -588,9 +592,20 @@
       "build": "101",
       "unit_tests_passed": 19,
       "privacy_manifest": true,
-      "path": ".tmp/release/apple-native/SmartBLEMac.xcarchive"
+      "path": ".tmp/release/apple-native/SmartBLEMac-signed.xcarchive"
     },
-    "store_export": "NOT_RUN",
-    "store_upload": "NOT_RUN"
+    "store_export": "SIGNED_EXPORTS_VERIFIED",
+    "store_upload": "NOT_RUN",
+    "signed_exports": {
+      "ios": ".tmp/release/apple-native/ios-final-export/SmartBLE.ipa",
+      "macos": ".tmp/release/apple-native/macos-final-export/SmartBLE.pkg",
+      "report": ".tmp/release/apple-native/signed-store-report.json",
+      "macos_capabilities": [
+        "app-sandbox",
+        "device.bluetooth",
+        "device.camera"
+      ],
+      "ios_profile": "App Store; get-task-allow=false; no device list"
+    }
   }
 }
