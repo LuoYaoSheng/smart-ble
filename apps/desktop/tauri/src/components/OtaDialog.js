@@ -1,11 +1,10 @@
 /**
- * OtaDialog Web Component — Tauri 版（OTA 契约对齐 · R-1/R-2）
+ * OtaDialog Web Component — 桌面共享实现（OTA 契约对齐 · R-1/R-2）
  *
- * 流程（对齐 macOS OtaManager / core/apple SmartHidCore OtaContract.swift；
- * 与 Electron 版 OtaDialog 互为镜像，差异仅在 BLE 适配层 invoke/listen）：
- *   选包(.bin) → 包校验(manifest 可选：SemVer+size+sha256 实测比对；无 manifest 跳过)
+ * 流程（对齐 macOS OtaManager / core/apple SmartHidCore OtaContract.swift）：
+ *   选包(.bin) → 包校验(manifest 必需：完整契约字段、SemVer、size、sha256 实测比对)
  *   → CTRL 写 {op:start,target,target_version,size,chunk_size,sha256} → 等 ready(30s)
- *   → DATA 分块 writeNoResponse(块间隔 20ms) → {op:commit} 等 success(30s)
+ *   → DATA 分块带响应写(块间隔 20ms) → {op:commit} 等 success(30s)
  *   → 取消 {op:abort}。
  * 状态帧分类走共享 ota-contract.js（子串匹配，failed/aborted 不漏检）。
  * 契约事实源：contracts/target/ota-package.schema.json + 固件 ota_server.cpp；
@@ -17,16 +16,20 @@ class OtaDialog extends HTMLElement {
         this.deviceId = null;
         this.fileBuffer = null;
         this.fileSha256 = null;
-        this.manifestJson = null;   // 可选 manifest（契约六字段）
+        this.manifestJson = null;   // 必需 manifest（契约六字段）
         this.manifestTarget = null;
         this.manifestVersion = null;
         this.chunkSize = 180;
         this._phase = 'idle';       // idle | waiting_ready | transferring | committing | done
         this._cancelled = false;
         this._waitTimer = null;
-        this._unlistenNotification = null;
+        this._unsubscribeValue = null;
+        this._run = null;
+        this._generation = 0;
+        this._packageRevision = 0;
+        this._manifestRevision = 0;
+        this._cancelPromise = null;
 
-        // OTA Service / Characteristic UUIDs (aligned with firmware ota_server.h)
         this.otaServiceUuid  = '4fafc201-1fb5-459e-8fcc-c5c9c331914d';
         this.charControlUuid = 'beb5483e-36e1-4688-b7f5-ea07361b26c0';
         this.charDataUuid    = 'beb5483e-36e1-4688-b7f5-ea07361b26c1';
@@ -49,7 +52,7 @@ class OtaDialog extends HTMLElement {
                     </div>
 
                     <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:var(--fs-cap)">
-                        <span id="manifestState" style="color:var(--c-mut);flex:1">manifest（可选）：未选择</span>
+                        <span id="manifestState" style="color:var(--c-mut);flex:1">manifest（必需）：未选择</span>
                         <input type="file" id="manifestInput" accept=".json" style="display:none;" />
                         <button class="btn soft sm" id="manifestBtn"><span>选择 manifest</span></button>
                     </div>
@@ -75,7 +78,9 @@ class OtaDialog extends HTMLElement {
         this.overlay      = this.querySelector('#overlay');
         this.fileInput    = this.querySelector('#fileInput');
         this.manifestInput = this.querySelector('#manifestInput');
+        this.manifestBtn = this.querySelector('#manifestBtn');
         this.dropZone     = this.querySelector('#dropZone');
+        this.dropTitle    = this.querySelector('#dropTitle');
         this.fileNameEl   = this.querySelector('#fileName');
         this.manifestStateEl = this.querySelector('#manifestState');
         this.statusText   = this.querySelector('#statusText');
@@ -106,22 +111,31 @@ class OtaDialog extends HTMLElement {
     }
 
     show(deviceId) {
+        if (this._run || this._cancelPromise) {
+            this.overlay.style.display = 'flex';
+            return;
+        }
         this.deviceId = deviceId;
         this._resetPackageState();
-        this._setStatus('等待选择固件文件……', '');
+        this._setStatus('请选择固件 .bin 和对应 manifest', '');
         this._setProgress(0);
-        this.startBtn.disabled = true;
         this.overlay.style.display = 'flex';
     }
 
     hide() {
-        this._teardownSession();
+        if (this._run) { this._cancel(); return; }
         this.overlay.style.display = 'none';
         if (this.fileInput) this.fileInput.value = '';
         if (this.manifestInput) this.manifestInput.value = '';
     }
 
+    disconnectedCallback() {
+        if (this._run) this._cancel();
+    }
+
     _resetPackageState() {
+        this._packageRevision++;
+        this._manifestRevision++;
         this.fileBuffer = null;
         this.fileSha256 = null;
         this.manifestJson = null;
@@ -131,8 +145,9 @@ class OtaDialog extends HTMLElement {
         this._cancelled = false;
         this._clearWait();
         this.fileNameEl.textContent = '';
-        this.manifestStateEl.textContent = 'manifest（可选）：未选择';
+        this.manifestStateEl.textContent = 'manifest（必需）：未选择';
         this.manifestStateEl.classList.remove('loaded');
+        this._restoreUi();
     }
 
     _setStatus(msg, type = '') {
@@ -142,302 +157,263 @@ class OtaDialog extends HTMLElement {
         if (bar) bar.className = 'ota-bar' + (type === 'error' ? ' err' : type === 'success' ? ' ok' : '');
     }
 
-    _setProgress(pct) {
-        this.progressFill.style.width = `${pct}%`;
-    }
+    _setProgress(pct) { this.progressFill.style.width = `${pct}%`; }
 
     async _handleFile(file) {
-        if (!file) return;
-        if (!file.name.endsWith('.bin')) {
-            this._setStatus('请选择 .bin 格式的固件文件', 'error');
-            return;
-        }
+        if (!file || this._run || this._cancelPromise) return;
+        const revision = ++this._packageRevision;
+        this.fileBuffer = null;
+        this.fileSha256 = null;
+        this.manifestTarget = null;
+        this.manifestVersion = null;
+        this.startBtn.disabled = true;
+        if (!file.name.toLowerCase().endsWith('.bin')) { this._setStatus('请选择 .bin 格式的固件文件', 'error'); return; }
         this.fileNameEl.textContent = file.name;
         this._setStatus(`正在读取 ${file.name} …`);
-        this.fileBuffer = null;
-        this.startBtn.disabled = true;
-
-        const readAsBuffer = () => new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = (e) => resolve(new Uint8Array(e.target.result));
-            reader.onerror = () => reject(new Error('文件读取失败'));
-            reader.readAsArrayBuffer(file);
-        });
-
         try {
-            const bytes = await readAsBuffer();
-            const OC = window.SmartBLEOtaContract;
-            if (!OC) throw new Error('ota-contract.js 未加载');
+            const bytes = new Uint8Array(await new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = event => resolve(event.target.result);
+                reader.onerror = () => reject(new Error('文件读取失败'));
+                reader.readAsArrayBuffer(file);
+            }));
+            const sha = await window.SmartBLEOtaContract.OtaManifest.sha256Hex(bytes);
+            if (revision !== this._packageRevision) return;
             this.fileBuffer = bytes;
-            this.fileSha256 = await OC.OtaManifest.sha256Hex(bytes);
-            this._setStatus(`已就绪：${bytes.length.toLocaleString()} 字节 · sha256 ${this.fileSha256.slice(0, 12)}…`);
-            if (this.manifestJson) this._validateManifest();
-            this.startBtn.disabled = false;
-        } catch (err) {
-            this._setStatus(`❌ ${err.message || err}`, 'error');
+            this.fileSha256 = sha;
+            this._validateManifest();
+        } catch (error) {
+            if (revision === this._packageRevision) this._setStatus(`文件读取失败：${error.message || error}`, 'error');
         }
     }
 
     _handleManifest(file) {
-        if (!file) return;
+        if (!file || this._run || this._cancelPromise) return;
+        const revision = this._packageRevision;
+        const manifestRevision = ++this._manifestRevision;
+        this.manifestJson = null;
+        this.manifestTarget = null;
+        this.manifestVersion = null;
+        this.startBtn.disabled = true;
         const reader = new FileReader();
-        reader.onload = (e) => {
+        reader.onload = event => {
+            if (revision !== this._packageRevision || manifestRevision !== this._manifestRevision) return;
             try {
-                this.manifestJson = JSON.parse(e.target.result);
+                this.manifestJson = JSON.parse(event.target.result);
                 this.manifestStateEl.textContent = `manifest：${file.name}`;
-                this.manifestStateEl.style.color = 'var(--c-primary)';
                 this._validateManifest();
             } catch {
                 this.manifestJson = null;
-                this.manifestTarget = null;
-                this.manifestVersion = null;
-                this.manifestStateEl.textContent = 'manifest：JSON 解析失败';
-                this.manifestStateEl.style.color = '';
                 this._setStatus('manifest JSON 解析失败', 'error');
             }
         };
+        reader.onerror = () => { if (revision === this._packageRevision) this._setStatus('manifest 文件读取失败', 'error'); };
         reader.readAsText(file);
     }
 
     _validateManifest() {
-        const OC = window.SmartBLEOtaContract;
-        if (!this.manifestJson || !this.fileBuffer || !OC) return;
-        const result = OC.OtaManifest.parse(this.manifestJson, this.fileBuffer.length, this.fileSha256);
-        if (!result.ok) {
-            this.manifestTarget = null;
-            this.manifestVersion = null;
-            this.startBtn.disabled = true;
-            this._setStatus(`❌ 包校验失败（${result.code}）：${result.message}`, 'error');
-            return;
-        }
+        this.manifestTarget = null;
+        this.manifestVersion = null;
+        this.startBtn.disabled = true;
+        if (!this.fileBuffer?.length || !this.fileSha256) { this._setStatus('请选择非空固件 .bin', ''); return false; }
+        const result = window.SmartBLEOtaContract?.OtaManifest.validateRequired(this.manifestJson, this.fileBuffer.length, this.fileSha256);
+        if (!result?.ok) { this._setStatus(`包校验失败（${result?.code || 'missing_contract'}）：${result?.message || 'OTA 契约未加载'}`, 'error'); return false; }
         this.manifestTarget = result.target;
         this.manifestVersion = result.version;
-        this.startBtn.disabled = false;
-        const t = result.target || '—';
-        const v = result.version || '—';
-        this._setStatus(`包校验通过（manifest：target=${t} version=${v} size=${this.fileBuffer.length.toLocaleString()}）`, 'success');
+        this.startBtn.disabled = Boolean(this._run || this._cancelPromise);
+        this._setStatus(`包校验通过：${result.target} · ${result.version} · ${this.fileBuffer.length} 字节`, 'success');
+        return true;
     }
 
-    /** Get resolved invoke() — prefers global, falls back to window.__TAURI__ */
-    _getInvoke() {
-        if (typeof invoke === 'function') return invoke;
-        if (window.__TAURI__?.core?.invoke) return window.__TAURI__.core.invoke;
-        if (window.__TAURI__?.tauri?.invoke) return window.__TAURI__.tauri.invoke;
-        if (window.__TAURI__?.invoke) return window.__TAURI__.invoke;
-        throw new Error('Tauri invoke API not available');
+    _ble() {
+        if (window.bleAPI) return window.bleAPI;
+        const call = typeof invoke === 'function' ? invoke : (window.__TAURI__?.core?.invoke || window.__TAURI__?.tauri?.invoke || window.__TAURI__?.invoke);
+        const events = typeof listen === 'function' ? listen : (window.__TAURI__?.event?.listen || window.__TAURI__?.listen);
+        if (!call || !events) throw new Error('BLE API 未就绪');
+        return {
+            writeRaw: (deviceId, serviceUuid, charUuid, data, withoutResponse) => call('write_raw', { deviceId, serviceUuid, charUuid, data, writeWithResponse: !withoutResponse }),
+            notifyCharacteristic: (deviceId, serviceUuid, charUuid, notify) => call('notify_characteristic', { deviceId, serviceUuid, charUuid, notify }),
+            disconnect: deviceId => call('disconnect', { deviceId }),
+            onCharacteristicValueChanged: callback => events('notification-received', event => { const p = event.payload || {}; callback({ deviceId: p.deviceId, serviceUuid: p.serviceUuid, characteristicUuid: p.charUuid, value: p.value }); }),
+            onDeviceDisconnected: callback => events('device-disconnected', event => callback({ id: event.payload?.deviceId })),
+        };
     }
 
-    /** Get resolved listen() — same resolution order as invoke */
-    _getListen() {
-        if (typeof listen === 'function') return listen;
-        if (window.__TAURI__?.event?.listen) return window.__TAURI__.event.listen;
-        if (window.__TAURI__?.listen) return window.__TAURI__.listen;
-        throw new Error('Tauri listen API not available');
+    _isCurrent(run) { return this._run === run && run.generation === this._generation && !run.stopped; }
+    _assertRun(run) {
+        if (!this._isCurrent(run)) throw new Error('OTA 会话已取消');
+        if (run.error) throw run.error;
+        if (run.disconnected && !run.successSeen) throw new Error('设备已断开，升级结果未确认');
     }
 
-    async _writeRaw(charUuid, bytes, withResponse) {
-        const fn_invoke = this._getInvoke();
-        const result = await fn_invoke('write_raw', {
-            deviceId:          this.deviceId,
-            serviceUuid:       this.otaServiceUuid,
-            charUuid,
-            data:              Array.from(bytes),
-            writeWithResponse: withResponse,
+    async _writeRun(run, charUuid, bytes) {
+        this._assertRun(run);
+        const result = await run.api.writeRaw(run.deviceId, this.otaServiceUuid, charUuid, Array.from(bytes), false);
+        this._assertRun(run);
+        if (result?.success !== true) throw new Error(result?.error || '写入未确认');
+    }
+
+    _onValueChanged(data, run = this._run) {
+        if (!run || !this._isCurrent(run) || data?.deviceId !== run.deviceId) return;
+        const norm = value => String(value || '').toLowerCase().replace(/-/g, '');
+        if (norm(data.characteristicUuid) !== norm(this.charStatusUuid)) return;
+        if (data.serviceUuid && norm(data.serviceUuid) !== norm(this.otaServiceUuid)) return;
+        const contract = window.SmartBLEOtaContract;
+        const text = contract.bytesToUtf8(contract.hexToBytes(data.value || ''));
+        const kind = contract.OtaStatusClassifier.classify(text);
+        if (kind === 'error') {
+            run.error = new Error(`设备报错：${text}`);
+            this._rejectWait(run.error);
+        } else if (this._pendingWait?.run === run && this._pendingWait.kind === kind) {
+            if (kind === 'success') run.successSeen = true;
+            const waiter = this._pendingWait;
+            this._pendingWait = null;
+            this._clearWait();
+            waiter.resolve();
+        }
+    }
+
+    _waitFor(run, kind) {
+        this._assertRun(run);
+        const promise = new Promise((resolve, reject) => {
+            this._pendingWait = { run, kind, resolve, reject };
+            this._armWait(30, () => {
+                const error = new Error(`等待设备 ${kind} 超时（30s）`);
+                run.error = error;
+                this._rejectWait(error);
+            });
         });
-        if (!result.success) throw new Error(result.error || 'write_raw failed');
+        promise.catch(() => {}); // ACK can fail before the waiter is awaited.
+        return promise;
     }
 
-    // ---- 契约状态帧处理（R-2 子串分类） ----
-
-    _onNotification(event) {
-        const { deviceId, charUuid, value } = event.payload || {};
-        if (deviceId !== this.deviceId) return;
-        // UUID 规范化比较：通知事件可能带无横线 UUID，常量是带横线书写
-        const norm = (u) => (u || '').toLowerCase().replace(/-/g, '');
-        if (norm(charUuid) !== norm(this.charStatusUuid)) return;
-        const OC = window.SmartBLEOtaContract;
-        const text = OC.bytesToUtf8(OC.hexToBytes(value || ''));
-        const kind = OC.OtaStatusClassifier.classify(text);
-
-        if (kind === 'ready' && this._phase === 'waiting_ready') {
-            this._clearWait();
-            this._setStatus('设备就绪（ready），开始传输……');
-            this._transferChunks();
-        } else if (kind === 'success' && this._phase === 'committing') {
-            this._clearWait();
-            this._phase = 'done';
-            this._setProgress(100);
-            this._setStatus('✅ OTA 完成！设备正在重启……', 'success');
-            setTimeout(() => this.hide(), 3000);
-        } else if (kind === 'error') {
-            this._clearWait();
-            this._phase = 'idle';
-            this._setStatus(`❌ 设备报错：${text}`, 'error');
-            this._restoreUi();
-        }
-        // ok / 未命中（如版本串）静默忽略
-    }
-
-    _armWait(seconds, onTimeout) {
+    _rejectWait(error) {
         this._clearWait();
-        this._waitTimer = setTimeout(onTimeout, seconds * 1000);
+        const waiter = this._pendingWait;
+        this._pendingWait = null;
+        waiter?.reject(error);
     }
 
-    _clearWait() {
-        if (this._waitTimer) {
-            clearTimeout(this._waitTimer);
-            this._waitTimer = null;
-        }
-    }
+    _armWait(seconds, onTimeout) { this._clearWait(); this._waitTimer = setTimeout(onTimeout, seconds * 1000); }
+    _clearWait() { if (this._waitTimer) clearTimeout(this._waitTimer); this._waitTimer = null; }
 
     async _startOta() {
-        if (!this.fileBuffer || !this.deviceId) return;
-        const OC = window.SmartBLEOtaContract;
-        if (!OC) return;
+        if (this._run || this._cancelPromise || !this.deviceId || !this._validateManifest()) return;
+        let api;
+        try { api = this._ble(); } catch (error) { this._setStatus(error.message || String(error), 'error'); return; }
+        const run = { generation: ++this._generation, deviceId: this.deviceId, bytes: this.fileBuffer.slice(), api, listeners: [], subscribed: false, started: false, stopped: false, disconnected: false, successSeen: false };
+        this._run = run;
         this._cancelled = false;
-        this._phase = 'waiting_ready';
+        this._phase = 'preparing';
         this.startBtn.disabled = true;
         this.dropZone.style.pointerEvents = 'none';
+        if (this.manifestBtn) this.manifestBtn.disabled = true;
         this._setProgress(0);
-
-        const encoder = new TextEncoder();
-
         try {
-            // 订阅 STATUS 特征 notify + 'notification-received' 事件
-            const fn_invoke = this._getInvoke();
-            const sub = await fn_invoke('notify_characteristic', {
-                deviceId: this.deviceId,
-                serviceUuid: this.otaServiceUuid,
-                charUuid: this.charStatusUuid,
-                notify: true,
-            });
-            if (!sub.success) throw new Error(sub.error || 'notify subscribe failed');
-            if (this._unlistenNotification) this._unlistenNotification();
-            this._unlistenNotification = await this._getListen()('notification-received', (e) => this._onNotification(e));
-
-            // 契约 start 帧（R-1 方案 A）：manifest 缺项省略，真固件按 missing_target 诚实拒绝
-            const payload = OC.OtaStartPayload.build({
-                manifestTarget: this.manifestTarget,
-                manifestVersion: this.manifestVersion,
-                fileSize: this.fileBuffer.length,
-                chunkSize: this.chunkSize,
-                sha256: this.fileSha256,
-            });
-            if (!this.manifestTarget || !this.manifestVersion) {
-                this._setStatus('start 帧省略 target/target_version（无 manifest 契约字段）→ 真固件将拒绝（missing_target），详见 OTA_CONTRACT_R1_R2_DECISION', '');
-            } else {
-                this._setStatus(`发送 OTA 开始指令（${OC.OtaStartPayload.display(payload)}）……`);
+            run.listeners.push(await run.api.onCharacteristicValueChanged(data => this._onValueChanged(data, run)));
+            this._assertRun(run);
+            run.listeners.push(await run.api.onDeviceDisconnected(data => {
+                if (!this._isCurrent(run) || (data?.id || data?.deviceId) !== run.deviceId) return;
+                run.disconnected = true;
+                if (!run.successSeen) { run.error = new Error('设备已断开，升级结果未确认'); this._rejectWait(run.error); }
+            }));
+            this._assertRun(run);
+            const subscription = await run.api.notifyCharacteristic(run.deviceId, this.otaServiceUuid, this.charStatusUuid, true);
+            this._assertRun(run);
+            if (subscription?.success !== true) throw new Error(subscription?.error || 'OTA 状态订阅未确认');
+            run.subscribed = true;
+            this._phase = 'waiting_ready';
+            const ready = this._waitFor(run, 'ready'); // Arm before CTRL write; do not lose an early ready.
+            const payload = window.SmartBLEOtaContract.OtaStartPayload.build({ manifestTarget: this.manifestTarget, manifestVersion: this.manifestVersion, fileSize: run.bytes.length, chunkSize: this.chunkSize, sha256: this.fileSha256 });
+            run.started = true;
+            await this._writeRun(run, this.charControlUuid, new TextEncoder().encode(JSON.stringify(payload)));
+            await ready;
+            this._assertRun(run);
+            this._phase = 'transferring';
+            for (let sent = 0; sent < run.bytes.length;) {
+                const end = Math.min(sent + this.chunkSize, run.bytes.length);
+                await this._writeRun(run, this.charDataUuid, run.bytes.slice(sent, end));
+                sent = end;
+                this._setProgress(Math.floor(sent * 100 / run.bytes.length));
+                this._setStatus(`传输中：${sent} / ${run.bytes.length} 字节`);
+                if (sent < run.bytes.length) await this._sleep(20);
+                this._assertRun(run);
             }
-            await this._writeRaw(this.charControlUuid, encoder.encode(JSON.stringify(payload)), true);
-
-            this._armWait(30, () => {
-                if (this._phase !== 'waiting_ready') return;
+            this._phase = 'committing';
+            const success = this._waitFor(run, 'success');
+            await this._writeRun(run, this.charControlUuid, new TextEncoder().encode(JSON.stringify({ op: 'commit' })));
+            await success;
+            this._assertRun(run);
+            this._phase = 'done';
+            this._setProgress(100);
+            this._setStatus('设备确认升级成功，重启后请核验固件版本', 'success');
+        } catch (error) {
+            this._rejectWait(error);
+            if (this._isCurrent(run)) {
                 this._phase = 'idle';
-                this._setStatus('❌ 等待设备 ready 超时（30s）', 'error');
-                this._restoreUi();
-            });
-        } catch (err) {
-            this._phase = 'idle';
-            this._setStatus(`❌ OTA 失败: ${err.message || err}`, 'error');
-            this._restoreUi();
+                this._setStatus(run.successSeen ? '设备已报告成功，但提交写入响应未确认；请重连核验固件版本' : `OTA 失败：${error.message || error}`, 'error');
+                await this._disconnectRun(run); // Never resume a failed transaction on the old handles.
+            }
+        } finally {
+            await this._cleanupRun(run);
+            if (this._run === run) { this._run = null; this._restoreUi(); }
         }
     }
 
-    async _transferChunks() {
-        this._phase = 'transferring';
-        const total = this.fileBuffer.length;
+    async _disconnectRun(run) {
+        // This is a deliberate lifecycle boundary, not a passive drop to retry.
+        window.appInstance?.userDisconnected?.add(run.deviceId);
+        if (typeof state !== 'undefined') state.reconnect?.userDisconnected?.add(run.deviceId);
+        let result;
+        try { result = await run.api.disconnect(run.deviceId); }
+        catch (error) { result = { success: false, error: error.message || String(error) }; }
+        run.disconnected = true;
+        if (result?.success !== true) return result?.error || '断开会话未确认';
+        return null;
+    }
 
-        try {
-            let sent = 0;
-            let lastPct = -1;
-            while (sent < total) {
-                if (this._cancelled) throw new Error('用户已取消');
-
-                const end   = Math.min(sent + this.chunkSize, total);
-                const chunk = this.fileBuffer.slice(sent, end);
-                // W5 实测（2026-09-11 真机剥离实验）：writeNoResponse 在 Windows
-                // BLE 栈下存在字节级腐败（尺寸守恒但 sha256 不符 → commit
-                // OTA_HASH_MISMATCH）；带响应写同镜像同链路 commit SUCCESS。
-                // DATA 改用带响应写（ATT ack 逐块确认 = 契约「分块 ACK」本义）。
-                await this._writeRaw(this.charDataUuid, chunk, true);
-
-                sent = end;
-                const pct = Math.floor((sent / total) * 100);
-                // W5 实测：每块同步刷 DOM 在软件渲染（--disable-gpu）下把渲染主线程
-                // 刷爆（~1s/块）；按整百分比节流后整轮最多 100 次 UI 更新，速率与渲染解耦。
-                if (pct !== lastPct || sent === total) {
-                    lastPct = pct;
-                    this._setProgress(pct);
-                    this._setStatus(`传输中... ${pct}%  (${sent.toLocaleString()} / ${total.toLocaleString()} 字节)`);
-                }
-                await this._sleep(20);
-            }
-
-            // 分块完成 → 提交（op=commit）并等 success（30s）
-            this._phase = 'committing';
-            this._setStatus('分块传输完成，发送提交指令（op=commit）……');
-            const encoder = new TextEncoder();
-            await this._writeRaw(this.charControlUuid, encoder.encode(JSON.stringify({ op: 'commit' })), true);
-            this._armWait(30, () => {
-                if (this._phase !== 'committing') return;
-                this._phase = 'idle';
-                this._setStatus('❌ 等待设备 success 超时（30s）', 'error');
-                this._restoreUi();
-            });
-        } catch (err) {
-            this._phase = 'idle';
-            if (this._cancelled) {
-                this._setStatus('已取消', '');
-            } else {
-                this._setStatus(`❌ OTA 失败: ${err.message || err}`, 'error');
-            }
-            this._restoreUi();
+    async _cleanupRun(run) {
+        for (const stop of run.listeners.splice(0)) { try { stop?.(); } catch (_) {} }
+        if (run.subscribed && !run.disconnected) {
+            run.subscribed = false;
+            try { await run.api.notifyCharacteristic(run.deviceId, this.otaServiceUuid, this.charStatusUuid, false); } catch (_) {}
         }
     }
 
     async _cancel() {
-        if (this._phase === 'waiting_ready' || this._phase === 'transferring' || this._phase === 'committing') {
-            this._cancelled = true;
-            this._clearWait();
-            this._phase = 'idle';
-            try {
-                const encoder = new TextEncoder();
-                await this._writeRaw(this.charControlUuid, encoder.encode(JSON.stringify({ op: 'abort' })), true);
-            } catch { /* 设备可能已断开 */ }
-            this._setStatus('已取消（op=abort 已发送）', '');
-            this._restoreUi();
-        }
-        this.hide();
+        if (this._cancelPromise) return this._cancelPromise;
+        const run = this._run;
+        if (!run) { this.hide(); return; }
+        run.stopped = true;
+        this._generation++;
+        this._cancelled = true;
+        this._phase = 'idle';
+        this._rejectWait(new Error('用户已取消'));
+        this._cancelPromise = (async () => {
+            let failure = null;
+            if (run.started && !run.disconnected) {
+                try {
+                    const result = await run.api.writeRaw(run.deviceId, this.otaServiceUuid, this.charControlUuid, Array.from(new TextEncoder().encode(JSON.stringify({ op: 'abort' }))), false);
+                    if (result?.success !== true) failure = result?.error || '设备取消写入未确认';
+                } catch (error) { failure = error.message || String(error); }
+            }
+            failure = (await this._disconnectRun(run)) || failure;
+            await this._cleanupRun(run);
+            if (this._run === run) this._run = null;
+            this._setStatus(failure ? `已停止传输，但设备取消未确认：${failure}；请重连检查` : '已取消，设备会话已断开', failure ? 'error' : '');
+            if (!failure) this.hide();
+        })();
+        try { await this._cancelPromise; }
+        finally { this._cancelPromise = null; this._restoreUi(); }
     }
 
     _restoreUi() {
         this.dropZone.style.pointerEvents = 'auto';
-        this.startBtn.disabled = !this.fileBuffer;
+        if (this.manifestBtn) this.manifestBtn.disabled = false;
+        this.startBtn.disabled = Boolean(this._run || this._cancelPromise || !this.manifestTarget || !this.manifestVersion || !this.fileBuffer?.length);
     }
 
-    async _teardownSession() {
-        this._clearWait();
-        this._phase = 'idle';
-        if (this._unlistenNotification) {
-            try { this._unlistenNotification(); } catch { /* noop */ }
-            this._unlistenNotification = null;
-        }
-        if (this.deviceId) {
-            try {
-                const fn_invoke = this._getInvoke();
-                await fn_invoke('notify_characteristic', {
-                    deviceId: this.deviceId,
-                    serviceUuid: this.otaServiceUuid,
-                    charUuid: this.charStatusUuid,
-                    notify: false,
-                });
-            } catch { /* 设备可能已断开 */ }
-        }
-    }
-
-    _sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
+    _sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 }
 
 customElements.define('ota-dialog', OtaDialog);

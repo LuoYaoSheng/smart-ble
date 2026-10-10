@@ -190,6 +190,7 @@ mod tests {
     // 停播 → Stopped → 退出。空口收包需外部接收端（本机不自环，20260924 判别
     // 实证：广播中 bleak 可见 SHID 116 帧、自身厂商块 0 帧），此处验证发射链状态机。
     #[test]
+    #[ignore = "requires real BLE hardware; run cargo test bridge_start_stop_roundtrip -- --ignored"]
     fn bridge_start_stop_roundtrip() {
         let started = start(0x4C42, b"BLE");
         assert!(started.is_ok(), "start failed: {started:?}");
@@ -205,11 +206,10 @@ mod tests {
     // AIR_LOG=事件 jsonl 路径；AIR_HOLD=保持秒数（默认 9）。事件即时落盘供
     // 编排器轮询（cargo 捕获输出不可靠）。
     #[test]
+    #[ignore = "requires real BLE hardware and AIR_TAG; run cargo test bridge_air_capture -- --ignored"]
     fn bridge_air_capture() {
         let tag = std::env::var("AIR_TAG").unwrap_or_default();
-        if tag.is_empty() {
-            return;
-        }
+        assert!(!tag.is_empty(), "AIR_TAG is required for real radio capture");
         let hold: u64 = std::env::var("AIR_HOLD")
             .ok()
             .and_then(|v| v.parse().ok())

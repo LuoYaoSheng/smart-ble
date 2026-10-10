@@ -164,10 +164,27 @@
     return { ok: true, target, version, ignoredKeys };
   }
 
+  // Strict release package validation. The permissive legacy parser remains
+  // available for older protocol tooling; the OTA UI requires the schema fields.
+  function validateRequiredManifest(json, fileSize, actualSha256) {
+    const fail = (code, message) => ({ ok: false, code, message });
+    if (!json || typeof json !== 'object' || Array.isArray(json)) return fail('missing_manifest', '请选择完整 manifest');
+    if (json.format_version !== 1) return fail('invalid_format', 'manifest format_version 必须为 1');
+    if (typeof json.hardware !== 'string' || !json.hardware.trim()) return fail('missing_hardware', 'manifest hardware 缺失');
+    if (!isValidTarget(json.target)) return fail('invalid_target', 'manifest target 缺失或不支持');
+    const semver = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/;
+    if (typeof json.firmware_version !== 'string' || !semver.test(json.firmware_version)) return fail('invalid_semver', 'manifest firmware_version 缺失或无效');
+    if (!Number.isInteger(json.size) || json.size < 1 || json.size !== fileSize) return fail('size_mismatch', 'manifest size 与固件实测不符');
+    if (typeof json.sha256 !== 'string' || !/^[0-9a-f]{64}$/.test(json.sha256) || json.sha256 !== actualSha256) return fail('hash_mismatch', 'manifest sha256 与固件实测不符');
+    if (Object.keys(json).some(key => !['format_version', 'target', 'hardware', 'firmware_version', 'size', 'sha256'].includes(key))) return fail('unknown_field', 'manifest 包含未定义字段');
+    return { ok: true, target: json.target, version: json.firmware_version };
+  }
+
   const OtaManifest = {
     isSemVer,
     sha256Hex,
     parse: parseManifest,
+    validateRequired: validateRequiredManifest,
   };
 
   // -------------------------------------------------------------------------
