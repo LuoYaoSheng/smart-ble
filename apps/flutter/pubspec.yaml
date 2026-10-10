@@ -33,7 +33,7 @@ dependencies:
   device_info_plus: ^11.0.0
   share_plus: ^10.0.0
   # Smart HID 配网：ControlHub 配对码扫描（P002 · F020）
-  mobile_scanner: ^5.2.3
+  mobile_scanner: 7.4.2
 
   # 平台特定
   file_picker: ^11.0.2

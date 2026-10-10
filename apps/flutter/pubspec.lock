@@ -480,10 +480,10 @@ packages:
     dependency: "direct main"
     description:
       name: mobile_scanner
-      sha256: d234581c090526676fd8fab4ada92f35c6746e3fb4f05a399665d75a399fb760
+      sha256: "5a51ea79f0cf8293f616a5d08baae185b59b5e6bb24df01f2a63037ade0bade0"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "5.2.3"
+    version: "7.4.2"
   package_config:
     dependency: transitive
     description:
