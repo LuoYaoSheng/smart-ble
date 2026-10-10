@@ -71,7 +71,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-22.04]
+        os: [windows-latest, windows-11-arm, macos-latest, ubuntu-22.04, ubuntu-22.04-arm]
         target: [electron, tauri]
     runs-on: ${{ matrix.os }}
     steps:
@@ -106,15 +106,19 @@ jobs:
           path: |
             .tmp/release/**/report.json
             apps/desktop/electron/dist/
-            apps/desktop/tauri/src-tauri/target/release/bundle/
+            apps/desktop/tauri/src-tauri/target/**/release/bundle/
           if-no-files-found: error
 
   windows-implementations:
     strategy:
       fail-fast: false
       matrix:
+        os: [windows-latest, windows-11-arm]
         target: [avalonia, qt, wails]
-    runs-on: windows-latest
+        exclude:
+          - os: windows-11-arm
+            target: qt
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -122,7 +126,7 @@ jobs:
           node-version: '24'
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: ${{ matrix.os == 'windows-11-arm' && '3.14' || '3.12' }}
       - if: matrix.target == 'avalonia'
         uses: actions/setup-dotnet@v4
         with:
@@ -136,14 +140,18 @@ jobs:
       - run: python scripts/release/build.py ${{ matrix.target }}
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.target }}-windows-x64-candidate
+          name: ${{ matrix.target }}-${{ matrix.os }}-candidate
           path: |
             .tmp/release/
             apps/desktop/wails/build/bin/
           if-no-files-found: error
 
   flutter-windows:
-    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, windows-11-arm]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
@@ -157,6 +165,6 @@ jobs:
           flutter build windows --release
       - uses: actions/upload-artifact@v4
         with:
-          name: flutter-windows-x64-candidate
-          path: apps/flutter/build/windows/x64/runner/Release/
+          name: flutter-${{ matrix.os }}-candidate
+          path: apps/flutter/build/windows/*/runner/Release/
           if-no-files-found: error

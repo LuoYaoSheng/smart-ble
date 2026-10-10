@@ -11,6 +11,7 @@ import subprocess
 import sys
 import zipfile
 from pathlib import Path
+from android_artifact import inspect_native_libraries, sdk_tool
 
 ROOT = Path(__file__).resolve().parents[2]
 SIGNING_KEYS = ('SMART_BLE_KEYSTORE', 'SMART_BLE_STORE_PASSWORD', 'SMART_BLE_KEY_ALIAS', 'SMART_BLE_KEY_PASSWORD')
@@ -34,7 +35,9 @@ def main():
     parser.add_argument('--signing-config', type=Path, help='Local credentials JSON outside Git; values are never printed')
     args = parser.parse_args()
     version = (ROOT / 'VERSION').read_text().strip()
+    build_number = str(json.loads((ROOT / 'apps/uniapp/manifest.json').read_text())['versionCode'])
     host = platform.system()
+    architecture = 'arm64' if platform.machine().lower() in ('arm64', 'aarch64') else 'x64'
     env = os.environ.copy()
     if args.signed and args.target in ('android', 'flutter-android'):
         config = args.signing_config or Path.home() / '.config/smart-ble/signing/credentials.json'
@@ -48,6 +51,8 @@ def main():
     report = {'target': args.target, 'version': version, 'host': host, 'host_architecture': platform.machine(), 'mode': 'signed' if args.signed else 'candidate', 'status': 'NOT_RUN', 'artifacts': [], 'hardware': 'NOT_RUN', 'store_submission': 'NOT_RUN'}
     report['source_commit'] = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
     report['source_dirty'] = bool(subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT, text=True).strip())
+    application_paths = {'android': 'apps/android', 'flutter-android': 'apps/flutter', 'flutter-ios': 'apps/flutter', 'flutter-macos': 'apps/flutter', 'ios': 'apps/ios', 'macos': 'apps/desktop/macos', 'electron': 'apps/desktop/electron', 'tauri': 'apps/desktop/tauri', 'avalonia': 'apps/desktop/avalonia', 'qt': 'apps/desktop/qt', 'wails': 'apps/desktop/wails', 'uniapp': 'apps/uniapp', 'firmware': 'hardware/esp32/LightBLE'}
+    report['source_trees'] = {p: subprocess.check_output(['git', 'rev-parse', f'HEAD:{p}'], cwd=ROOT, text=True).strip() for p in (application_paths[args.target], 'core')}
 
     def block(reason):
         report.update(status='BLOCKED', reason=reason)
@@ -80,7 +85,10 @@ def main():
             if host == 'Darwin' and not env.get('ANDROID_HOME'):
                 env['ANDROID_HOME'] = str(Path.home() / 'Library/Android/sdk')
             run(['gradlew.bat' if host == 'Windows' else './gradlew', 'assembleRelease', 'bundleRelease', 'testReleaseUnitTest', '--max-workers=2'], ROOT / 'apps/android', env)
-            patterns = ['apps/android/app/build/outputs/apk/release/*.apk', 'apps/android/app/build/outputs/bundle/release/*.aab']
+            apk_dir = ROOT / 'apps/android/app/build/outputs/apk/release'
+            metadata = json.loads((apk_dir / 'output-metadata.json').read_text())
+            patterns = [str((apk_dir / item['outputFile']).relative_to(ROOT)) for item in metadata['elements']]
+            patterns.append('apps/android/app/build/outputs/bundle/release/app-release.aab')
         elif args.target == 'flutter-android':
             run(['flutter', 'build', 'apk', '--release'], ROOT / 'apps/flutter', env)
             run(['flutter', 'build', 'appbundle', '--release'], ROOT / 'apps/flutter', env)
@@ -115,14 +123,20 @@ def main():
             if host == 'Darwin': command.append('--universal')
             run(command, ROOT / 'apps/desktop/electron', env)
             extensions = {'Darwin': ('dmg', 'zip'), 'Windows': ('exe',), 'Linux': ('AppImage', 'deb', 'rpm')}[host]
-            patterns = [f'apps/desktop/electron/dist/*{version}*.{extension}' for extension in extensions]
+            patterns = [f'apps/desktop/electron/dist/Smart-BLE-Open-{version}-*.{extension}' for extension in extensions]
         elif args.target == 'tauri':
             run(['cargo', 'test', '--locked', '--lib'], ROOT / 'apps/desktop/tauri/src-tauri', env)
-            run(['cargo', 'tauri', 'build'], ROOT / 'apps/desktop/tauri/src-tauri', env)
-            patterns = ['apps/desktop/tauri/src-tauri/target/release/bundle/**/*.dmg', 'apps/desktop/tauri/src-tauri/target/release/bundle/**/*.msi', 'apps/desktop/tauri/src-tauri/target/release/bundle/**/*.exe', 'apps/desktop/tauri/src-tauri/target/release/bundle/**/*.deb', 'apps/desktop/tauri/src-tauri/target/release/bundle/**/*.AppImage']
+            cmd = ['cargo', 'tauri', 'build']
+            bundle_dir = 'apps/desktop/tauri/src-tauri/target/release/bundle'
+            if host == 'Darwin':
+                run(['rustup', 'target', 'add', 'aarch64-apple-darwin', 'x86_64-apple-darwin'], ROOT / 'apps/desktop/tauri/src-tauri', env)
+                cmd += ['--target', 'universal-apple-darwin']
+                bundle_dir = 'apps/desktop/tauri/src-tauri/target/universal-apple-darwin/release/bundle'
+            run(cmd, ROOT / 'apps/desktop/tauri/src-tauri', env)
+            patterns = [f'{bundle_dir}/**/*.{extension}' for extension in ('dmg', 'msi', 'exe', 'deb', 'AppImage')]
         elif args.target == 'avalonia':
             run(['dotnet', 'test', '-c', 'Release'], ROOT / 'apps/desktop/avalonia/SmartBLE.Desktop.Tests', env)
-            run(['dotnet', 'publish', '-c', 'Release', '-r', 'win-x64', '--self-contained', 'true', '-o', str(out / 'app')], ROOT / 'apps/desktop/avalonia/SmartBLE.Desktop', env)
+            run(['dotnet', 'publish', '-c', 'Release', '-r', f'win-{architecture}', '--self-contained', 'true', '-o', str(out / 'app')], ROOT / 'apps/desktop/avalonia/SmartBLE.Desktop', env)
             patterns = [str(out.relative_to(ROOT) / 'app/SmartBLE.Desktop.exe')]
         elif args.target == 'qt':
             run([sys.executable, '-m', 'pip', 'install', '-r', 'requirements.txt', 'pyinstaller'], ROOT / 'apps/desktop/qt', env)
@@ -161,17 +175,29 @@ def main():
                     report['artifacts'].append({'path': str(path.relative_to(ROOT)), 'bytes': path.stat().st_size, 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()})
         if not report['artifacts']:
             raise RuntimeError('Build returned success without the expected artifact')
+        if args.target in ('android', 'flutter-android'):
+            sdk = Path(env.get('ANDROID_HOME') or env.get('ANDROID_SDK_ROOT') or Path.home() / 'Library/Android/sdk')
+            identity = json.loads((ROOT / 'release/product-identity.json').read_text())['application_id']
+            for item in report['artifacts']:
+                path = ROOT / item['path']
+                item.update(inspect_native_libraries(path))
+                if path.suffix == '.apk':
+                    badging = subprocess.check_output([str(sdk_tool(sdk, 'aapt2')), 'dump', 'badging', str(path)], text=True, env=env)
+                    if f"name='{identity}'" not in badging.splitlines()[0] or f"versionName='{version}'" not in badging.splitlines()[0] or f"versionCode='{build_number}'" not in badging.splitlines()[0] or "targetSdkVersion:'36'" not in badging:
+                        raise RuntimeError('Actual APK identity/version/target SDK differs from release configuration')
+                    subprocess.run([str(sdk_tool(sdk, 'zipalign')), '-c', '-P', '16', '4', str(path)], check=True, env=env)
+                    item.update(application_id=identity, build_number=build_number, target_sdk=36, zip_16kb='PASS')
         if args.signed and args.target in ('android', 'flutter-android'):
             for item in report['artifacts']:
                 path = ROOT / item['path']
                 if path.suffix == '.apk':
                     sdk = Path(env.get('ANDROID_HOME') or env.get('ANDROID_SDK_ROOT') or Path.home() / 'Library/Android/sdk')
-                    verifiers = sorted(sdk.glob('build-tools/*/apksigner*'), reverse=True)
-                    if not verifiers:
-                        raise RuntimeError('APK signature verifier is missing')
-                    verified = subprocess.run([str(verifiers[0]), 'verify', '--verbose', '--print-certs', str(path)], capture_output=True, text=True, env=env)
+                    verified = subprocess.run([str(sdk_tool(sdk, 'apksigner')), 'verify', '--verbose', '--print-certs', str(path)], capture_output=True, text=True, env=env)
                     if verified.returncode or 'CN=Android Debug' in verified.stdout:
                         raise RuntimeError('APK must have a valid non-debug distribution signature')
+                    expected = json.loads((ROOT / 'release/android-signing-public.json').read_text())['certificate_sha256'].lower()
+                    if f'certificate SHA-256 digest: {expected}' not in verified.stdout:
+                        raise RuntimeError('APK signer differs from the registered product release certificate')
                     item['signature_verified'] = True
                 if path.suffix == '.aab':
                     with zipfile.ZipFile(path) as bundle:
@@ -180,10 +206,16 @@ def main():
                     verifier = subprocess.run(['jarsigner', '-J-Duser.language=en', '-verify', str(path)], capture_output=True, text=True, env=env)
                     if verifier.returncode or 'jar verified' not in verifier.stdout:
                         raise RuntimeError('AAB signature verification failed')
+                    cert = subprocess.run(['keytool', '-J-Duser.language=en', '-printcert', '-jarfile', str(path)], capture_output=True, text=True, env=env)
+                    expected = json.loads((ROOT / 'release/android-signing-public.json').read_text())['certificate_sha256'].upper()
+                    if cert.returncode or expected not in cert.stdout.replace(':', '').replace(' ', ''):
+                        raise RuntimeError('AAB signer differs from the registered product release certificate')
                     item['signature_verified'] = True
         report['status'] = 'SIGNED_BUILD' if args.signed else 'CANDIDATE_BUILT'
         return 0
     except (subprocess.CalledProcessError, OSError, RuntimeError) as error:
+        if isinstance(error, RuntimeError):
+            print(f'Artifact validation failed: {error}', file=sys.stderr)
         report.update(status='FAILED', reason=f'{type(error).__name__}: build or artifact validation failed; inspect the build log')
         return 1
     finally:
