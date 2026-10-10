@@ -203,14 +203,36 @@ struct Response<T> {
 // Tauri commands
 //
 #[cfg(any(target_os = "windows", test))]
-fn availability_query_error(code: i32, adapter_query: bool) -> String {
+fn availability_query_error(code: i32, adapter_result: bool) -> String {
     if code == 0x80070005u32 as i32 {
         "BLUETOOTH_UNAUTHORIZED: Bluetooth access is denied".into()
-    } else if adapter_query && (code == 0x80004003u32 as i32 || code == 0x80070490u32 as i32) {
+    // windows-core 0.61 projects a successful null interface result as
+    // Error::empty(), whose code is S_OK (0). Only a completed adapter query
+    // permits this nullable result; a null operation/radio is not evidence that
+    // no adapter exists.
+    } else if adapter_result
+        && (code == 0 || code == 0x80004003u32 as i32 || code == 0x80070490u32 as i32)
+    {
         "NO_ADAPTER: No Bluetooth adapter was found".into()
     } else {
         "BLUETOOTH_UNAVAILABLE: Bluetooth availability could not be confirmed".into()
     }
+}
+
+#[cfg(target_os = "windows")]
+fn native_availability_error(
+    stage: &str,
+    error: windows::core::Error,
+    adapter_result: bool,
+) -> String {
+    if std::env::var("SMARTBLE_BLE_DIAGNOSTICS").as_deref() == Ok("1") {
+        // Opt-in process stderr only: no device names, payloads, or credentials.
+        eprintln!(
+            "[BLE availability] stage={stage} hresult=0x{:08X}",
+            error.code().0 as u32
+        );
+    }
+    availability_query_error(error.code().0, adapter_result)
 }
 
 // Confirm a BLE adapter and an enabled radio before initializing WinRT backends.
@@ -219,29 +241,33 @@ async fn require_bluetooth_available() -> Result<(), String> {
     use std::future::IntoFuture;
     use windows::Devices::{Bluetooth::BluetoothAdapter, Radios::RadioState};
     let operation = BluetoothAdapter::GetDefaultAsync()
-        .map_err(|e| availability_query_error(e.code().0, true))?;
+        .map_err(|e| native_availability_error("adapter.start", e, false))?;
     let adapter = match tokio::time::timeout(READ_TIMEOUT, operation.into_future()).await {
         Ok(Ok(adapter)) => adapter,
-        Ok(Err(error)) => return Err(availability_query_error(error.code().0, true)),
+        Ok(Err(error)) => return Err(native_availability_error("adapter.complete", error, true)),
         _ => {
             return Err("BLUETOOTH_UNAVAILABLE: Adapter availability could not be confirmed".into())
         }
     };
-    if !adapter.IsLowEnergySupported().map_err(|_| {
-        "BLUETOOTH_UNAVAILABLE: Adapter capabilities could not be confirmed".to_string()
-    })? {
+    if !adapter
+        .IsLowEnergySupported()
+        .map_err(|e| native_availability_error("adapter.capability", e, false))?
+    {
         return Err("UNSUPPORTED_ADAPTER: The adapter does not support BLE".into());
     }
     let operation = adapter
         .GetRadioAsync()
-        .map_err(|e| availability_query_error(e.code().0, false))?;
+        .map_err(|e| native_availability_error("radio.start", e, false))?;
     let radio = tokio::time::timeout(READ_TIMEOUT, operation.into_future())
         .await
         .map_err(|_| "BLUETOOTH_UNAVAILABLE: Radio query timed out".to_string())?
-        .map_err(|e| availability_query_error(e.code().0, false))?;
-    match radio.State() {
-        Ok(RadioState::On) => Ok(()),
-        Ok(RadioState::Off | RadioState::Disabled) => {
+        .map_err(|e| native_availability_error("radio.complete", e, false))?;
+    match radio
+        .State()
+        .map_err(|e| native_availability_error("radio.state", e, false))?
+    {
+        RadioState::On => Ok(()),
+        RadioState::Off | RadioState::Disabled => {
             Err("BLUETOOTH_OFF: Bluetooth is turned off".into())
         }
         _ => Err("BLUETOOTH_UNAVAILABLE: Radio state could not be confirmed".into()),
@@ -1434,5 +1460,40 @@ mod availability_tests {
             .starts_with("BLUETOOTH_UNAUTHORIZED:"));
         assert!(availability_query_error(0x80004003u32 as i32, false)
             .starts_with("BLUETOOTH_UNAVAILABLE:"));
+    }
+    #[test]
+    fn nullable_completed_adapter_is_absent_but_other_zero_code_errors_fail_closed() {
+        assert!(availability_query_error(0, true).starts_with("NO_ADAPTER:"));
+        assert!(availability_query_error(0, false).starts_with("BLUETOOTH_UNAVAILABLE:"));
+        for code in [
+            0x800401F0u32 as i32,
+            0x80010106u32 as i32,
+            0x80004005u32 as i32,
+        ] {
+            assert!(availability_query_error(code, true).starts_with("BLUETOOTH_UNAVAILABLE:"));
+        }
+    }
+
+    #[cfg(target_os = "windows")]
+    #[test]
+    fn real_windows_projection_of_null_adapter_matches_completed_query_classification() {
+        use windows::Devices::Bluetooth::BluetoothAdapter;
+        // This is the same interface projection used by IAsyncOperation::GetResults,
+        // without requiring a physical adapter or making a native radio call.
+        let error = unsafe {
+            <BluetoothAdapter as windows::core::Type<BluetoothAdapter>>::from_abi(
+                std::ptr::null_mut(),
+            )
+        }
+        .expect_err("a null projected interface cannot produce a BluetoothAdapter");
+        assert_eq!(
+            error.code().0,
+            0,
+            "the pinned windows-core nullable projection changed"
+        );
+        assert!(availability_query_error(error.code().0, true).starts_with("NO_ADAPTER:"));
+        assert!(
+            availability_query_error(error.code().0, false).starts_with("BLUETOOTH_UNAVAILABLE:")
+        );
     }
 }
