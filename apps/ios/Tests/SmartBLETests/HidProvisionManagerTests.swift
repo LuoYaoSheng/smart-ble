@@ -281,6 +281,29 @@ private final class FakeHidProvisionTransport: HidProvisionTransport {
 
 @MainActor
 final class BLEWriteQueueTests: XCTestCase {
+    func testIdenticalCharacteristicUuidInDifferentServicesKeepsWriteReceiptsSeparate() {
+        let queue = BLEWriteQueue()
+        let a = BLEManager.operationKey(serviceUUID: "FFE0", characteristicUUID: "FFE1")
+        let b = BLEManager.operationKey(serviceUUID: "FFE2", characteristicUUID: "FFE1")
+        var sent: [String] = []
+        queue.enqueue(deviceId: "device", key: a) { sent.append("A"); return .awaitingResponse }
+        queue.enqueue(deviceId: "device", key: b) { sent.append("B"); return .awaitingResponse }
+        queue.complete(deviceId: "device", key: b)
+        XCTAssertEqual(sent, ["A"])
+        XCTAssertEqual(queue.depth("device"), 2)
+        queue.complete(deviceId: "device", key: a)
+        XCTAssertEqual(sent, ["A", "B"])
+        queue.complete(deviceId: "device", key: a)
+        XCTAssertEqual(queue.depth("device"), 1)
+        queue.complete(deviceId: "device", key: b)
+        XCTAssertEqual(queue.depth("device"), 0)
+    }
+
+    func testHidValueRequiresCanonicalServiceContext() {
+        XCTAssertTrue(BLEManager.isProvisioningValue(serviceUUID: HidProtocol.serviceUuid.uppercased(), characteristicUUID: HidProtocol.infoCharUuid.uppercased()))
+        XCTAssertFalse(BLEManager.isProvisioningValue(serviceUUID: "FFE0", characteristicUUID: HidProtocol.infoCharUuid))
+    }
+
     func testAdvertisingUuidValidationRejectsUnsafeInput() {
         XCTAssertTrue(BLEManager.isValidBluetoothUUID("180D"))
         XCTAssertTrue(BLEManager.isValidBluetoothUUID("12345678"))

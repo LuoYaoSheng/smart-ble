@@ -227,6 +227,16 @@ class BLEManager: NSObject, ObservableObject {
     var hidEventHandler: ((HidProvisionTransportEvent) -> Void)?
     lazy var hidProvisionManager = HidProvisionManager(transport: self)
 
+    static func operationKey(serviceUUID: String, characteristicUUID: String) -> String {
+        "\(serviceUUID.uppercased()):\(characteristicUUID.uppercased())"
+    }
+
+    static func isProvisioningValue(serviceUUID: String, characteristicUUID: String) -> Bool {
+        serviceUUID.caseInsensitiveCompare(HidProtocol.serviceUuid) == .orderedSame &&
+            (characteristicUUID.caseInsensitiveCompare(HidProtocol.infoCharUuid) == .orderedSame ||
+             characteristicUUID.caseInsensitiveCompare(HidProtocol.statusCharUuid) == .orderedSame)
+    }
+
     // MARK: - UUID Helper
     // T07: 服务 UUID 中文名称表（对齐 Android BleUuids）
     private func getServiceName(for uuid: CBUUID) -> String {
@@ -480,7 +490,7 @@ class BLEManager: NSObject, ObservableObject {
             logForDevice(deviceId, "特征不支持读取", type: .error)
             return
         }
-        let key = "\(deviceId):\(serviceUUID.uppercased()):\(characteristicUUID.uppercased())"
+        let key = "\(deviceId):\(Self.operationKey(serviceUUID: serviceUUID, characteristicUUID: characteristicUUID))"
         guard readTimers[key] == nil else { return }
         readTimers[key] = Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { [weak self] _ in
             Task { @MainActor in
@@ -516,7 +526,7 @@ class BLEManager: NSObject, ObservableObject {
             logForDevice(deviceId, "写入属性或单帧长度不符合设备能力", type: .error)
             return false
         }
-        let key = "\(serviceUUID.uppercased()):\(characteristicUUID.uppercased())"
+        let key = Self.operationKey(serviceUUID: serviceUUID, characteristicUUID: characteristicUUID)
         let accepted = writeQueue.enqueue(deviceId: deviceId, key: key) { [weak self, weak peripheral] in
             guard let self, let peripheral, self.connectedPeripherals[deviceId] === peripheral else { return .rejected }
             if withoutResponse && !peripheral.canSendWriteWithoutResponse { return .blocked }
@@ -562,7 +572,7 @@ class BLEManager: NSObject, ObservableObject {
 
     // Check if a characteristic is currently notifying (per-device)
     func isNotifying(deviceId: String, serviceUUID: String, characteristicUUID: String) -> Bool {
-        let key = "\(deviceId):\(serviceUUID.uppercased()):\(characteristicUUID.uppercased())"
+        let key = "\(deviceId):\(Self.operationKey(serviceUUID: serviceUUID, characteristicUUID: characteristicUUID))"
         return notifyingCharacteristics.contains(key)
     }
 
@@ -1071,11 +1081,13 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
 
         let value = characteristic.value ?? Data()
         let deviceId = peripheral.identifier.uuidString
-        hidEventHandler?(.value(
-            deviceId: deviceId,
-            characteristicUUID: characteristic.uuid.uuidString,
-            data: value
-        ))
+        if Self.isProvisioningValue(serviceUUID: service.uuid.uuidString, characteristicUUID: characteristic.uuid.uuidString) {
+            hidEventHandler?(.value(
+                deviceId: deviceId,
+                characteristicUUID: characteristic.uuid.uuidString,
+                data: value
+            ))
+        }
 
         // BGT：夹具 StatusNotify → 记录 + 回声（自身回声跳过，见 BackgroundSelfTest 自激防护）
         if BackgroundSelfTest.isEnabled,
@@ -1106,7 +1118,7 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
         } else {
             logForDevice(deviceId, "Write success", type: .success)
         }
-        let key = "\(characteristic.service?.uuid.uuidString.uppercased() ?? ""):\(characteristic.uuid.uuidString.uppercased())"
+        let key = Self.operationKey(serviceUUID: service.uuid.uuidString, characteristicUUID: characteristic.uuid.uuidString)
         writeQueue.complete(deviceId: deviceId, key: key)
         // BGT：写结果入文件日志（锁屏取证通道）
         if BackgroundSelfTest.isEnabled, deviceId == bgEchoDeviceId {

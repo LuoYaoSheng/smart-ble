@@ -39,14 +39,34 @@ final class OperationDeadlines {
     }
 }
 
+/// Canonical GATT identity within one device session. A characteristic UUID
+/// alone is insufficient when multiple services expose that same UUID.
+struct GattCharacteristicAddress: Hashable {
+    let serviceUUID: String
+    let characteristicUUID: String
+    init(serviceUUID: String, characteristicUUID: String) {
+        self.serviceUUID = Self.canonicalUUID(serviceUUID)
+        self.characteristicUUID = Self.canonicalUUID(characteristicUUID)
+    }
+    static func canonicalUUID(_ value: String) -> String {
+        let upper = value.uppercased()
+        if (upper.count == 4 || upper.count == 8) && upper.allSatisfy({ $0.isASCII && $0.isHexDigit }) {
+            let prefix = String(repeating: "0", count: 8 - upper.count) + upper
+            return "\(prefix)-0000-1000-8000-00805F9B34FB"
+        }
+        return upper
+    }
+    var key: String { "\(serviceUUID):\(characteristicUUID)" }
+}
+
 /// User intent never becomes confirmed notification state before the native ACK.
 struct NotificationConfirmation {
-    private(set) var confirmed: Set<String> = []
-    mutating func observe(uuid: String, isNotifying: Bool, succeeded: Bool) {
+    private(set) var confirmed: Set<GattCharacteristicAddress> = []
+    mutating func observe(address: GattCharacteristicAddress, isNotifying: Bool, succeeded: Bool) {
         guard succeeded else { return }
-        if isNotifying { confirmed.insert(uuid.uppercased()) }
-        else { confirmed.remove(uuid.uppercased()) }
+        if isNotifying { confirmed.insert(address) }
+        else { confirmed.remove(address) }
     }
     mutating func clear() { confirmed.removeAll() }
-    func contains(_ uuid: String) -> Bool { confirmed.contains(uuid.uppercased()) }
+    func contains(_ address: GattCharacteristicAddress) -> Bool { confirmed.contains(address) }
 }

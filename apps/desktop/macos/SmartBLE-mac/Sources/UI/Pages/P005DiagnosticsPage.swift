@@ -204,9 +204,8 @@ final class P005DiagnosticsPage: NSViewController, PageProtocol {
         }
 
         let services = ble.sessionServices(d.id)
-        let statusChar = services.flatMap(\.characteristics).first {
-            $0.uuid.uppercased() == HidProtocol.statusCharUuid
-        }
+        let statusChar = BLEManager.resolveCharacteristic(HidProtocol.statusCharUuid,
+                                                          serviceUUID: HidProtocol.serviceUuid, in: services)
         if statusChar != nil, let session = ble.sessions[d.id] {
             // 真实诊断路径：读 + 订阅 STATUS → state/step/error 映射四行（DEVICE_PROFILE_SPEC §3.4）
             ble.hid.onStatusRaw = { [weak self] _, status in
@@ -214,9 +213,9 @@ final class P005DiagnosticsPage: NSViewController, PageProtocol {
                 self.applyStatus(status)
             }
             if statusChar?.properties.contains(.notify) == true {
-                ble.setNotification(characteristicUUID: HidProtocol.statusCharUuid, enabled: true, on: session)
+                ble.setNotification(characteristicUUID: HidProtocol.statusCharUuid, enabled: true, on: session, serviceUUID: HidProtocol.serviceUuid)
             }
-            ble.readCharacteristic(deviceId: d.id, characteristicUUID: HidProtocol.statusCharUuid)
+            ble.readCharacteristic(deviceId: d.id, characteristicUUID: HidProtocol.statusCharUuid, serviceUUID: HidProtocol.serviceUuid)
             // 3.5s 无回值 → 诚实超时（BLOCKED_FIXTURE：无真实 SHID 设备应答）
             DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) { [weak self] in
                 guard let self, self.state == .checking else { return }

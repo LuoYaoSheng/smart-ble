@@ -165,7 +165,7 @@ final class OtaManager: ObservableObject {
             .first { $0.uuid.uppercased() == Self.statusCharUuid }?
             .properties.contains(.notify) ?? false
         if hasNotify {
-            ble.setNotification(characteristicUUID: Self.statusCharUuid, enabled: true, on: session)
+            ble.setNotification(characteristicUUID: Self.statusCharUuid, enabled: true, on: session, serviceUUID: Self.serviceUuid)
         }
 
         // chunk = min(180, ATT 最大写入-3)（正典：chunk_size 180 · MTU-3 分包）
@@ -183,7 +183,7 @@ final class OtaManager: ObservableObject {
         phase = .waitingReady
         _ = ble.enqueueWrite(deviceId: deviceId, characteristicUUID: Self.ctrlCharUuid,
                              data: try! JSONSerialization.data(withJSONObject: startJson),
-                             display: OtaStartPayload.display(startJson), priority: true)
+                             display: OtaStartPayload.display(startJson), priority: true, serviceUUID: Self.serviceUuid)
         armWait(seconds: 30, code: "OTA_READY_TIMEOUT", what: "等待设备 ready（30s）")
     }
 
@@ -203,7 +203,7 @@ final class OtaManager: ObservableObject {
             let commit: [String: Any] = ["op": "commit"]
             _ = ble.enqueueWrite(deviceId: deviceId, characteristicUUID: Self.ctrlCharUuid,
                                  data: try! JSONSerialization.data(withJSONObject: commit),
-                                 display: "op=commit", priority: true)
+                                 display: "op=commit", priority: true, serviceUUID: Self.serviceUuid)
             armWait(seconds: 30, code: "OTA_COMMIT_TIMEOUT", what: "等待设备 success（30s）")
             return
         }
@@ -211,7 +211,7 @@ final class OtaManager: ObservableObject {
         let chunk = firmware.subdata(in: chunkOffset..<end)
         let ok = ble.enqueueWrite(deviceId: deviceId, characteristicUUID: Self.dataCharUuid,
                                   data: chunk, display: "块 @\(chunkOffset)（\(chunk.count)B）",
-                                  priority: true, forceWithoutResponse: true)
+                                  priority: true, forceWithoutResponse: true, serviceUUID: Self.serviceUuid)
         guard ok else {
             fail(code: "OTA_TRANSFER_FAILED", message: "分块入队失败（队列满/会话异常）@\(chunkOffset)")
             return
@@ -240,7 +240,7 @@ final class OtaManager: ObservableObject {
         if ble.sessionState(deviceId) == .connected {
             if !verifyReadSent {
                 verifyReadSent = true
-                ble.readCharacteristic(deviceId: deviceId, characteristicUUID: Self.firmwareVersionCharUuid)
+                ble.readCharacteristic(deviceId: deviceId, characteristicUUID: Self.firmwareVersionCharUuid, serviceUUID: "180A")
                 ble.log("OTA 已发起 firmware_version 回读（2A26），等待回值", .sys)
             }
             // 回值经 didUpdateValueFor → otaStatusHandler → handleStatus(verifying 分支) 收口；此处仅超时兜底
@@ -294,7 +294,7 @@ final class OtaManager: ObservableObject {
             let abort: [String: Any] = ["op": "abort"]
             _ = ble?.enqueueWrite(deviceId: deviceId, characteristicUUID: Self.ctrlCharUuid,
                                   data: try! JSONSerialization.data(withJSONObject: abort),
-                                  display: "op=abort", priority: true)
+                                  display: "op=abort", priority: true, serviceUUID: Self.serviceUuid)
         }
         releaseOwnership()
         ble?.log("OTA 已取消（op=abort）")

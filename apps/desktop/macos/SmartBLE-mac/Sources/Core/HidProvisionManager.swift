@@ -54,7 +54,7 @@ final class HidProvisionManager: ObservableObject {
         ble.hidValueHandler = { [weak self] did, uuid, data in
             guard let self, did == self.deviceId else { return }
             let text = String(data: data, encoding: .utf8) ?? ""
-            switch uuid {
+            switch uuid.lowercased() {
             case HidProtocol.infoCharUuid: self.handleDeviceInfo(text)
             case HidProtocol.statusCharUuid: self.handleStatus(text)
             default: break
@@ -103,7 +103,7 @@ final class HidProvisionManager: ObservableObject {
                     guard let self, let did = self.deviceId, let ble = self.ble,
                           self.stage == .verifying || self.stage == .connecting else { return }
                     let hasService = ble.sessionServices(did).contains {
-                        $0.uuid.uppercased().hasPrefix("9F1D1001")
+                        $0.uuid.caseInsensitiveCompare(HidProtocol.serviceUuid) == .orderedSame
                     }
                     if !hasService {
                         // 普通设备（无配网服务）：诚实 BLOCKED_FIXTURE 错误，不伪造验证；断开配网会话
@@ -122,17 +122,19 @@ final class HidProvisionManager: ObservableObject {
             }
         }
         guard stage == .connecting else { return }
-        stage = .verifying
         // INFO 特征已枚举 → 订阅 INFO/STATUS + 读 Device Info（进入向导即订阅，正典口径）
-        let infoFound = services.flatMap(\.characteristics).contains {
-            $0.uuid.uppercased() == HidProtocol.infoCharUuid
-        }
-        guard infoFound else { return }   // 特征尚在枚举，等下一轮 objectWillChange
+        guard Self.provisioningCharacteristicsReady(in: services) else { return }
+        stage = .verifying
         ble.log("Smart HID 身份验证中 · 读 Device Info（INFO 1002）")
-        ble.setNotification(characteristicUUID: HidProtocol.infoCharUuid, enabled: true, on: session)
-        ble.setNotification(characteristicUUID: HidProtocol.statusCharUuid, enabled: true, on: session)
-        ble.readCharacteristic(deviceId: did, characteristicUUID: HidProtocol.infoCharUuid)
+        ble.setNotification(characteristicUUID: HidProtocol.infoCharUuid, enabled: true, on: session, serviceUUID: HidProtocol.serviceUuid)
+        ble.setNotification(characteristicUUID: HidProtocol.statusCharUuid, enabled: true, on: session, serviceUUID: HidProtocol.serviceUuid)
+        ble.readCharacteristic(deviceId: did, characteristicUUID: HidProtocol.infoCharUuid, serviceUUID: HidProtocol.serviceUuid)
         onUpdate?()
+    }
+
+    static func provisioningCharacteristicsReady(in services: [BLEService]) -> Bool {
+        BLEManager.resolveCharacteristic(HidProtocol.infoCharUuid, serviceUUID: HidProtocol.serviceUuid, in: services) != nil &&
+            BLEManager.resolveCharacteristic(HidProtocol.statusCharUuid, serviceUUID: HidProtocol.serviceUuid, in: services) != nil
     }
 
     private func handleDeviceInfo(_ text: String) {
@@ -208,13 +210,13 @@ final class HidProvisionManager: ObservableObject {
                     let data = Data(frame)
                     let ok = self.ble?.enqueueWrite(deviceId: did, characteristicUUID: HidProtocol.inputCharUuid,
                                                     data: data, display: "配网帧 \(i+1)/\(frames.count)（\(frame.count)B）",
-                                                    priority: true) ?? false
+                                                    priority: true, serviceUUID: HidProtocol.serviceUuid) ?? false
                     if !ok {
                         self.ble?.log("配网帧 \(i+1) 入队失败 · 2s 后重试一次（正典：写失败重试）", .err)
                         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
                             Task { @MainActor [weak self] in
                                 _ = self?.ble?.enqueueWrite(deviceId: did, characteristicUUID: HidProtocol.inputCharUuid,
-                                                           data: data, display: "配网帧 \(i+1) 重试", priority: true)
+                                                           data: data, display: "配网帧 \(i+1) 重试", priority: true, serviceUUID: HidProtocol.serviceUuid)
                             }
                         }
                     }
@@ -243,12 +245,12 @@ final class HidProvisionManager: ObservableObject {
                     self.onUpdate?()
                     return
                 }
-                self.ble?.readCharacteristic(deviceId: did, characteristicUUID: HidProtocol.statusCharUuid)
+                self.ble?.readCharacteristic(deviceId: did, characteristicUUID: HidProtocol.statusCharUuid, serviceUUID: HidProtocol.serviceUuid)
             }
         }
         // 立即读一次
         if let did = deviceId {
-            ble?.readCharacteristic(deviceId: did, characteristicUUID: HidProtocol.statusCharUuid)
+            ble?.readCharacteristic(deviceId: did, characteristicUUID: HidProtocol.statusCharUuid, serviceUUID: HidProtocol.serviceUuid)
         }
         onUpdate?()
     }

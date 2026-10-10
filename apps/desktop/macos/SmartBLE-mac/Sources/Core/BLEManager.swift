@@ -38,6 +38,10 @@ struct WriteQueueItem {
     let priority: Bool             // 优先级插队（PRD §4.2：配网/OTA 帧可插队）
     let enqueuedAt: Date
     var state: State = .pending
+    var address: GattCharacteristicAddress { GattCharacteristicAddress(serviceUUID: serviceUuid, characteristicUUID: characteristicUuid) }
+    func matchesReceipt(serviceUUID: String, characteristicUUID: String) -> Bool {
+        address == GattCharacteristicAddress(serviceUUID: serviceUUID, characteristicUUID: characteristicUUID)
+    }
 
     init(itemId: String, characteristicUuid: String, data: Data, display: String,
          withoutResponse: Bool, priority: Bool = false, serviceUuid: String = "") {
@@ -61,13 +65,13 @@ final class DeviceSession {
     var state: ConnectionState = .connecting
     var services: [BLEService] = []
     var notificationState = NotificationConfirmation()
-    var notifyingCharacteristics: Set<String> { notificationState.confirmed }
+    var notifyingCharacteristics: Set<GattCharacteristicAddress> { notificationState.confirmed }
     let readDeadlines = OperationDeadlines()
     let notificationDeadlines = OperationDeadlines()
     /// Reject value/ACK callbacks immediately while cancelling an unsafe link.
     var retiringConnection = false
     /// 重连成功后需恢复监听的特征（被动断线时从 notifyingCharacteristics 转存）
-    var resubscribeSet: Set<String> = []
+    var resubscribeSet: Set<GattCharacteristicAddress> = []
     /// 连接 10s 超时计时（每会话独立）
     var connectTimer: Timer?
     /// 主动断开标记（重连判定用：主动断开不自动重连）
@@ -596,16 +600,16 @@ class BLEManager: NSObject, ObservableObject {
     }
 
     // MARK: - Characteristic Operations（作用于活动会话）
-    func readCharacteristic(characteristicUUID: String) {
+    func readCharacteristic(characteristicUUID: String, serviceUUID: String? = nil) {
         guard let session = activeSession else { log("无已连接设备", .err); return }
-        readCharacteristic(deviceId: session.id, characteristicUUID: characteristicUUID)
+        readCharacteristic(deviceId: session.id, characteristicUUID: characteristicUUID, serviceUUID: serviceUUID)
     }
 
     static let readTimeoutSec: TimeInterval = 3.0
 
-    func readCharacteristic(deviceId: String, characteristicUUID: String) {
+    func readCharacteristic(deviceId: String, characteristicUUID: String, serviceUUID: String? = nil) {
         guard let session = sessions[deviceId], session.state == .connected, !session.retiringConnection,
-              let char = findCharacteristic(characteristicUUID, in: session.services),
+              let char = findCharacteristic(characteristicUUID, serviceUUID: serviceUUID, in: session.services),
               char.properties.contains(.read), let peripheralChar = char.peripheralCharacteristic else {
             log("读取失败：设备未连接或特征不支持读取 · \(characteristicUUID)", .err)
             return
@@ -635,13 +639,13 @@ class BLEManager: NSObject, ObservableObject {
     @discardableResult
     func enqueueWrite(deviceId: String? = nil, characteristicUUID: String,
                       data: Data, display: String, priority: Bool = false,
-                      forceWithoutResponse: Bool = false) -> Bool {
+                      forceWithoutResponse: Bool = false, serviceUUID: String? = nil) -> Bool {
         let session = deviceId == nil ? activeSession : sessions[deviceId!]
         guard let session else {
             log("写入失败：无会话", .err)
             return false
         }
-        guard let char = findCharacteristic(characteristicUUID, in: session.services),
+        guard let char = findCharacteristic(characteristicUUID, serviceUUID: serviceUUID, in: session.services),
               let peripheralChar = char.peripheralCharacteristic else {
             log("特征未找到：\(characteristicUUID)", .err)
             return false
@@ -691,7 +695,7 @@ class BLEManager: NSObject, ObservableObject {
     }
 
     /// P006 写入弹窗入口（TEXT/HEX 编码后入队）
-    func writeCharacteristic(characteristicUUID: String, text: String, isHex: Bool) {
+    func writeCharacteristic(characteristicUUID: String, text: String, isHex: Bool, serviceUUID: String? = nil) {
         let data: Data
         var display = text
         if isHex {
@@ -702,7 +706,7 @@ class BLEManager: NSObject, ObservableObject {
             data = Data(text.utf8)
         }
         _ = enqueueWrite(characteristicUUID: characteristicUUID, data: data,
-                         display: "\(isHex ? "HEX" : "TEXT"): \(display)")
+                         display: "\(isHex ? "HEX" : "TEXT"): \(display)", serviceUUID: serviceUUID)
     }
 
     private func pumpWrites(_ session: DeviceSession) {
@@ -782,17 +786,17 @@ class BLEManager: NSObject, ObservableObject {
         log("写队列 abort · \(n) 项 CANCELLED（\(reason)）· \(session.device.name)", .err)
     }
 
-    func setNotification(characteristicUUID: String, enabled: Bool) {
+    func setNotification(characteristicUUID: String, enabled: Bool, serviceUUID: String? = nil) {
         guard let session = activeSession else {
             log("特征未找到：\(characteristicUUID)", .err)
             return
         }
-        setNotification(characteristicUUID: characteristicUUID, enabled: enabled, on: session)
+        setNotification(characteristicUUID: characteristicUUID, enabled: enabled, on: session, serviceUUID: serviceUUID)
     }
 
-    func setNotification(characteristicUUID: String, enabled: Bool, on session: DeviceSession) {
+    func setNotification(characteristicUUID: String, enabled: Bool, on session: DeviceSession, serviceUUID: String? = nil) {
         guard sessions[session.id] === session, session.state == .connected, !session.retiringConnection,
-              let char = findCharacteristic(characteristicUUID, in: session.services),
+              let char = findCharacteristic(characteristicUUID, serviceUUID: serviceUUID, in: session.services),
               char.properties.contains(.notify) || char.properties.contains(.indicate),
               let peripheralChar = char.peripheralCharacteristic else {
             log("监听失败：会话失效或特征不支持通知 · \(characteristicUUID)", .err)
@@ -808,12 +812,20 @@ class BLEManager: NSObject, ObservableObject {
         session.peripheral.setNotifyValue(enabled, for: peripheralChar)
     }
 
-    func isNotifying(characteristicUUID: String) -> Bool {
-        activeSession?.notificationState.contains(characteristicUUID) ?? false
+    func isNotifying(characteristicUUID: String, serviceUUID: String? = nil) -> Bool {
+        guard let session = activeSession,
+              let char = findCharacteristic(characteristicUUID, serviceUUID: serviceUUID, in: session.services),
+              let native = char.peripheralCharacteristic else { return false }
+        return session.notificationState.contains(characteristicAddress(native))
+    }
+
+    private func characteristicAddress(_ characteristic: CBCharacteristic) -> GattCharacteristicAddress {
+        GattCharacteristicAddress(serviceUUID: characteristic.service?.uuid.uuidString ?? "",
+                                  characteristicUUID: characteristic.uuid.uuidString)
     }
 
     private func characteristicKey(_ characteristic: CBCharacteristic) -> String {
-        "\(characteristic.service?.uuid.uuidString ?? ""):\(characteristic.uuid.uuidString)".uppercased()
+        characteristicAddress(characteristic).key
     }
 
     private func findCharacteristic(_ uuid: String, serviceUUID: String? = nil, in services: [BLEService]) -> BLECharacteristic? {
@@ -821,8 +833,10 @@ class BLEManager: NSObject, ObservableObject {
     }
 
     static func resolveCharacteristic(_ uuid: String, serviceUUID: String? = nil, in services: [BLEService]) -> BLECharacteristic? {
-        let matches = services.filter { serviceUUID == nil || $0.uuid.caseInsensitiveCompare(serviceUUID!) == .orderedSame }
-            .flatMap(\.characteristics).filter { $0.uuid.caseInsensitiveCompare(uuid) == .orderedSame }
+        let canonicalService = serviceUUID.map(GattCharacteristicAddress.canonicalUUID)
+        let canonicalCharacteristic = GattCharacteristicAddress.canonicalUUID(uuid)
+        let matches = services.filter { canonicalService == nil || GattCharacteristicAddress.canonicalUUID($0.uuid) == canonicalService }
+            .flatMap(\.characteristics).filter { GattCharacteristicAddress.canonicalUUID($0.uuid) == canonicalCharacteristic }
         // UUID-only callers must not silently target a same-UUID characteristic
         // from another service. Require an unambiguous characteristic.
         return matches.count == 1 ? matches[0] : nil
@@ -832,6 +846,12 @@ class BLEManager: NSObject, ObservableObject {
         guard let session = session(for: peripheral), session.state == .connected, !session.retiringConnection,
               Self.ownsCharacteristic(characteristic, in: session.services) else { return nil }
         return session
+    }
+
+    static func isHidValue(serviceUUID: String, characteristicUUID: String) -> Bool {
+        serviceUUID.caseInsensitiveCompare(HidProtocol.serviceUuid) == .orderedSame &&
+            (characteristicUUID.caseInsensitiveCompare(HidProtocol.infoCharUuid) == .orderedSame ||
+             characteristicUUID.caseInsensitiveCompare(HidProtocol.statusCharUuid) == .orderedSame)
     }
 
     static func ownsCharacteristic(_ characteristic: CBCharacteristic, in services: [BLEService]) -> Bool {
@@ -1189,8 +1209,9 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
             let pending = session.resubscribeSet
             session.resubscribeSet = []
             log("重连后恢复监听 · \(session.device.name)（\(pending.count) 特征）")
-            for uuid in pending {
-                setNotification(characteristicUUID: uuid, enabled: true, on: session)
+            for address in pending {
+                setNotification(characteristicUUID: address.characteristicUUID, enabled: true,
+                                on: session, serviceUUID: address.serviceUUID)
             }
             if session.id == activeDeviceId { syncActiveMirror() }
         }
@@ -1210,11 +1231,15 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
         log("[\(session.device.name)] HEX: \(hexString)\nTEXT: \(text.isEmpty ? "（解码失败，省略）" : text)", .recv)
         // OTA 状态/版本回读 + Smart HID INFO/STATUS 特征转发（F025/F019-F022）
         let upper = characteristic.uuid.uuidString.uppercased()
-        if upper == OtaManager.statusCharUuid || upper == OtaManager.firmwareVersionCharUuid {
+        let serviceUUID = characteristic.service?.uuid.uuidString ?? ""
+        let address = characteristicAddress(characteristic)
+        let otaStatus = GattCharacteristicAddress(serviceUUID: OtaManager.serviceUuid, characteristicUUID: OtaManager.statusCharUuid)
+        let firmwareVersion = GattCharacteristicAddress(serviceUUID: "180A", characteristicUUID: OtaManager.firmwareVersionCharUuid)
+        if address == otaStatus || address == firmwareVersion {
             otaStatusHandler?(session.id, data)
         }
-        if upper == HidProtocol.infoCharUuid || upper == HidProtocol.statusCharUuid {
-            hidValueHandler?(session.id, upper, data)
+        if Self.isHidValue(serviceUUID: serviceUUID, characteristicUUID: upper) {
+            hidValueHandler?(session.id, upper.lowercased(), data)
         }
         if let index = session.services.firstIndex(where: { $0.uuid == characteristic.service?.uuid.uuidString }) {
             if let cIndex = session.services[index].characteristics.firstIndex(where: { $0.uuid == characteristic.uuid.uuidString }) {
@@ -1228,8 +1253,9 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
                     error: Error?) {
         guard let session = callbackSession(peripheral, characteristic: characteristic) else { return }
         // 写队列结算（F009：withResponse 完成回调驱动串行续泵）
-        if let inflight = session.writeInFlight, inflight.characteristicUuid == characteristic.uuid.uuidString,
-           inflight.serviceUuid == characteristic.service?.uuid.uuidString {
+        if let inflight = session.writeInFlight,
+           inflight.matchesReceipt(serviceUUID: characteristic.service?.uuid.uuidString ?? "",
+                                   characteristicUUID: characteristic.uuid.uuidString) {
             session.writeTimeoutTask?.cancel()
             session.writeTimeoutTask = nil
             session.writeInFlight = nil
@@ -1254,7 +1280,7 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
                     error: Error?) {
         guard let session = callbackSession(peripheral, characteristic: characteristic) else { return }
         session.notificationDeadlines.complete(key: characteristicKey(characteristic))
-        session.notificationState.observe(uuid: characteristic.uuid.uuidString,
+        session.notificationState.observe(address: characteristicAddress(characteristic),
                                           isNotifying: characteristic.isNotifying, succeeded: error == nil)
         if session.id == activeDeviceId { syncActiveMirror() }
         if let error = error {

@@ -11,7 +11,7 @@ final class P006GattPage: NSViewController, PageProtocol {
     weak var host: PageHost?
     private var scroll: PageScroll!
     private var expanded: [String: Bool] = [:]
-    private var writeTarget: BLECharacteristic?
+    private var writeTarget: (serviceUUID: String, characteristic: BLECharacteristic)?
     private var logPanel: LogPanelView?
 
     init(host: PageHost) {
@@ -210,7 +210,7 @@ final class P006GattPage: NSViewController, PageProtocol {
             var body: [NSView] = [header]
             if isOpen {
                 for ch in service.characteristics {
-                    body.append(charRow(ch))
+                    body.append(charRow(ch, serviceUUID: service.uuid))
                 }
                 if service.characteristics.isEmpty {
                     body.append(makeLabel("特征发现中…", size: 11, color: DS.mut))
@@ -230,7 +230,7 @@ final class P006GattPage: NSViewController, PageProtocol {
         rebuild()
     }
 
-    private func charRow(_ ch: BLECharacteristic) -> NSView {
+    private func charRow(_ ch: BLECharacteristic, serviceUUID: String) -> NSView {
         guard let host else { return NSView() }
         var chips: [NSView] = []
         if ch.properties.contains(.read) { chips.append(chip("read", tone: "primary")) }
@@ -240,19 +240,19 @@ final class P006GattPage: NSViewController, PageProtocol {
         var buttons: [NSView] = []
         if ch.properties.contains(.read) {
             buttons.append(DSButton("读取", tone: .soft, small: true, actionId: "p006-read") { [weak self] in
-                self?.host?.ble.readCharacteristic(characteristicUUID: ch.uuid)
+                self?.host?.ble.readCharacteristic(characteristicUUID: ch.uuid, serviceUUID: serviceUUID)
             })
         }
         if ch.properties.contains(.write) || ch.properties.contains(.writeWithoutResponse) {
             buttons.append(DSButton("写入", tone: .soft, small: true, actionId: "p006-write") { [weak self] in
-                self?.writeTarget = ch
+                self?.writeTarget = (serviceUUID, ch)
                 self?.openWriteDialog()
             })
         }
         if ch.properties.contains(.notify) || ch.properties.contains(.indicate) {
-            let notifying = host.ble.isNotifying(characteristicUUID: ch.uuid)
+            let notifying = host.ble.isNotifying(characteristicUUID: ch.uuid, serviceUUID: serviceUUID)
             buttons.append(DSButton(notifying ? "停止监听" : "开始监听", tone: .ghost, small: true, actionId: "p006-notify") { [weak self] in
-                self?.host?.ble.setNotification(characteristicUUID: ch.uuid, enabled: !notifying)
+                self?.host?.ble.setNotification(characteristicUUID: ch.uuid, enabled: !notifying, serviceUUID: serviceUUID)
             })
         }
         let valueLine = ch.value.map { makeLabel("HEX: \($0)", size: 11, color: DS.sub, mono: true) }
@@ -267,7 +267,8 @@ final class P006GattPage: NSViewController, PageProtocol {
     // MARK: - 写入弹窗（TEXT/HEX + 校验）
 
     private func openWriteDialog() {
-        guard let host, let ch = writeTarget else { return }
+        guard let host, let target = writeTarget else { return }
+        let ch = target.characteristic
         let segmented = NSSegmentedControl(labels: ["TEXT", "HEX"], trackingMode: .selectOne, target: nil, action: nil)
         segmented.selectedSegment = 0
         segmented.translatesAutoresizingMaskIntoConstraints = false
@@ -289,7 +290,7 @@ final class P006GattPage: NSViewController, PageProtocol {
                 }
             }
             self.host?.closeLayer()
-            self.host?.ble.writeCharacteristic(characteristicUUID: ch.uuid, text: v, isHex: isHex)
+            self.host?.ble.writeCharacteristic(characteristicUUID: ch.uuid, text: v, isHex: isHex, serviceUUID: target.serviceUUID)
         }
         let cancel = DSButton("取消", tone: .soft, actionId: "p006-wd-cancel") { [weak self] in
             self?.host?.closeLayer()
