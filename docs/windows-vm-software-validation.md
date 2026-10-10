@@ -54,11 +54,19 @@
 
 | 客户端 | 包 / 主 EXE 架构证据 | 启动与可见页面 | 鼠标 / 键盘 / UIA 导航 | 无适配器行为 | 最终证据路径 |
 | --- | --- | --- | --- | --- | --- |
-| Avalonia | 待填写 | 待填写 | 待填写 | 待填写 | 待填写 |
-| Qt | 待填写 | 待填写 | 待填写 | 待填写 | 待填写 |
-| Wails | 待填写 | 待填写 | 待填写 | 待填写 | 待填写 |
-| Electron | 待填写 | 待填写 | 待填写 | 待填写 | 待填写 |
-| Tauri | 待填写 | 待填写 | 待填写 | 待填写 | 待填写 |
-| Flutter | 待填写 | 待填写 | 待填写 | 待填写 | 待填写 |
+| Avalonia | ARM64 主程序；自包含 .NET 8 | PASS；106 项 VM 测试（SDK/runtime 10 roll-forward） | UIA 四页 PASS | 无适配器、禁扫描、可重试 PASS | `.tmp/verification/windows-vm/evidence/avalonia-current/` |
+| Qt | ARM64 主程序、Python/Qt/WinRT 原生模块 | PASS；55 项回归、资源与窗口正常 | UIA 四页 PASS；真实 Button/Invoke | 无适配器、禁扫描/广播、可重试 PASS | `.tmp/verification/windows-vm/evidence/qt-final/` |
+| Wails | ARM64 原生程序 | PASS；2 项新增 Windows 后端测试 | UIA 四页 PASS | 无适配器、禁扫描 PASS | `.tmp/verification/windows-vm/evidence/wails-current-settled/` |
+| Electron | ARM64 主程序与实际所选 WinRT 绑定 | PASS；实际 Electron 中加载 WinRT；共享 190 项回归 | UIA 四页 PASS | 无适配器、禁扫描 PASS | `.tmp/verification/windows-vm/evidence/electron-final/` |
+| Tauri | ARM64 程序、NSIS 安装器 | 最终包启动/NSIS 安装 PASS；Windows 9 项 Rust 回归 | 最终包 UIA 四页 PASS | 最终包明确无适配器，禁扫描/广播 PASS | `.tmp/verification/windows-vm/evidence/tauri-validated/` |
+| Flutter | ARM64 主程序/插件；Flutter 3.47.7 / Dart 3.13.5 | release 启动 PASS；156 项回归 | 真原生引擎四页集成测试 PASS；系统 UIA 未暴露子控件 | 两扫描入口禁用、广播禁用、两次原生重试 PASS | `.tmp/verification/windows-vm/evidence/flutter-native-smoke-final.log` |
 
 状态区分 `PASS`、`FAILED`、`NOT_RUN` 和带原因的 `BLOCKED`。仅在对应项目有当前源码的实际证据时填写 `PASS`。最终摘要要明确区分原生构建、虚拟机软件运行、蓝牙硬件、安装升级和正式分发五类结果。
+
+Flutter 集成测试源与 QA 运行说明见 [原生引擎软件冒烟](windows-flutter-native-smoke.md)。测试直接调用真实应用与原生插件，没有 mock channel。它证明引擎内页面/手势与原生初始化软件路径；Windows 系统 UIA、屏幕阅读器及真实鼠标/键盘仍分别记录，不由引擎内测试推断通过。
+
+Electron 包包含第三方依赖的多架构 prebuild 与 UAC 安装辅助程序，架构检查针对实际主程序和运行时选中的绑定；不能将未被使用的其他 CPU 文件误记为实际运行模块。实际加载是在该包的 Electron 进程中进行。
+
+所有本轮新进程来自 `SmartBLEQA` 隔离目录；旧测试实例按已知 PID 与映像路径限定清理。未停止用户的其他应用或修改原有 Flutter SDK。
+
+本轮最终软件源码提交 `0926e99` 的 [全平台候选构建](https://github.com/LuoYaoSheng/smart-ble/actions/runs/38041746455) 24/24 与 [基础 CI](https://github.com/LuoYaoSheng/smart-ble/actions/runs/38041746475) 8/8 全部通过。之后的报告整理不改变应用源码。报告：`release/windows-vm-software-verification.json`。

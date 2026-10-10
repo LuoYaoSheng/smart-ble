@@ -23,7 +23,7 @@
 
 Windows ARM64 Flutter 使用官方 SDK 源码引导原生 Dart/引擎，程序与插件 PE Machine 校验通过。Electron 在 Windows WinRT / macOS CoreBluetooth 的实际包内原生模块加载、Windows 主程序 CPU 与 macOS universal 模块校验通过；Linux x64 / ARM64 的最终主程序、原生 ELF 模块和包内 HCI 加载也已在新 CI 通过。完整应用目录/Archive 按完整包归档，缺少当前系统必需格式即失败。
 
-Kotlin 与 Flutter 的正式 Android APK/AAB 已在本机创建并验签。keystore 和密码位于仓库外的受限权限目录，仓库只保存公钥指纹。报告记录 SHA256、源码树、实际包名/版本/build number、target SDK 36 及签名校验；这些是历史签名证据；本轮名称、隐私/关于文案和 Flutter 初始化修复改变了源码，当前正式 Android 包必须重新构建后才能分发。
+Kotlin 与 Flutter 的正式 Android APK/AAB 已在本机创建并验签。keystore 和密码位于仓库外的受限权限目录，仓库只保存公钥指纹。报告记录 SHA256、源码树、实际包名/版本/build number、target SDK 36 及签名校验；本轮名称与初始化修复后，两套 APK/AAB 均已重新构建、正式签名并验签，应用与 core 源码树与当前版本一致。
 
 - Kotlin 报告：`.tmp/release/android-darwin-arm64/signed/report.json`。
 - Flutter 报告：`.tmp/release/flutter-android-darwin-arm64/signed/report.json`；12 个 64 位原生库 ELF 与 ZIP 的 16 KB 对齐均通过。
@@ -52,6 +52,10 @@ iOS 的预览初始化竞态、窄屏详情宽度、复制反馈和按钮命中�
 
 用户确认所有客户端显示名为 **BLE Toolkit+**，没有 USB 蓝牙适配器时先完成软件验证。窗口、系统显示名称、Mac `.app` 与安装包产品名称已统一；内部工程/目标名称和 `com.i2kai.open.smartble` 保留。
 
-最新本地回归：Flutter 156 项且 analyze 无问题，Windows ARM64 Avalonia 106 项，桌面共享 190 项，Qt 55 项（包含无适配器/操作门禁回归，原生 Windows 包复核中）。SwiftUI 更名后 31 项单测通过。iOS IPA 与 Universal Mac PKG 已重新签名导出并逐包核对名称、Team、签名、描述文件及沙盒/蓝牙/相机权限，见 `release/apple-native-store-build.json`。
+最新本地回归：Flutter 156 项且 analyze 无问题，Windows ARM64 Avalonia 106 项，桌面共享 190 项，Qt 55 项（包含无适配器/操作门禁回归，原生 Windows 包已复核）。SwiftUI 更名后 31 项单测通过。iOS IPA 与 Universal Mac PKG 已重新签名导出并逐包核对名称、Team、签名、描述文件及沙盒/蓝牙/相机权限，见 `release/apple-native-store-build.json`。
 
 虚拟机软件状态与真实无线功能分开记录；无适配器的可用性查询已实际返回 `noAdapter`。详细步骤与最终证据见 `docs/windows-vm-software-validation.md`。
+
+Flutter 真实 Windows ARM64 native-engine 冒烟 1 项通过：直接使用原生 WinRT 插件，覆盖两扫描入口、两次重试、四页实际导航与广播门禁；未使用 channel mock。系统 UIA 控件树仍未验证为可用，单独记录；无线硬件仍未测试。当前 Windows 证据见 `release/windows-vm-software-verification.json`。
+
+Windows 六种客户端均完成 ARM64 实际运行的软件复核。Tauri 最终 NSIS 安装、原生无适配器分类、禁用态与四页导航已通过。最终源码 `0926e99` 全平台 24/24 候选构建、基础 8/8 CI 通过；细分范围、Flutter 系统 UIA 限制及硬件未验收项保留在 VM 报告中。
