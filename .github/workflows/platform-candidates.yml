@@ -162,15 +162,37 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
+        if: matrix.os != 'windows-11-arm'
         with:
           channel: stable
           cache: true
           architecture: x64
+      - name: Bootstrap native Windows ARM64 Flutter SDK
+        if: matrix.os == 'windows-11-arm'
+        shell: pwsh
+        run: |
+          $smartBleFlutterSdkPath = Join-Path $env:RUNNER_TEMP 'smartble-flutter-native-arm64'
+          git clone --depth 1 --branch 3.47.7 https://github.com/flutter/flutter.git $smartBleFlutterSdkPath
+          if ($LASTEXITCODE -ne 0) { throw 'Flutter source checkout failed' }
+          & "$smartBleFlutterSdkPath\bin\flutter.bat" --version
+          if ($LASTEXITCODE -ne 0) { throw 'Native Flutter bootstrap failed' }
+          $smartBleDartInfo = (& "$smartBleFlutterSdkPath\bin\cache\dart-sdk\bin\dart.exe" --version 2>&1 | Out-String)
+          Write-Output $smartBleDartInfo
+          if ($smartBleDartInfo -notmatch 'windows_arm64') { throw 'Dart SDK must use the real ARM64 ABI' }
+          & "$smartBleFlutterSdkPath\bin\flutter.bat" precache --windows
+          if ($LASTEXITCODE -ne 0) { throw 'Native Flutter engine download failed' }
+          "$smartBleFlutterSdkPath\bin" | Out-File $env:GITHUB_PATH -Append -Encoding utf8
+          "FLUTTER_ROOT=$smartBleFlutterSdkPath" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
       - working-directory: apps/flutter
         run: |
           flutter analyze
           flutter test
           flutter build windows --release
+      - name: Verify actual Windows native architecture
+        shell: pwsh
+        run: |
+          $smartBleTargetArchitecture = '${{ matrix.os == 'windows-11-arm' && 'arm64' || 'x64' }}'
+          python scripts/release/verify_windows_architecture.py "apps/flutter/build/windows/$smartBleTargetArchitecture/runner/Release" --architecture $smartBleTargetArchitecture
       - uses: actions/upload-artifact@v4
         with:
           name: flutter-${{ matrix.os }}-candidate

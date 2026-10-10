@@ -7,6 +7,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from ota_protocol import SERVICE, CTRL, DATA, STATUS, OtaError, status_frame, update, validate_package
 from ota_dialog import capable
+from att_client import AttClient
 
 FIXTURE = json.loads((Path(__file__).resolve().parents[1] / 'ota-fixtures.json').read_text())
 FIRMWARE = bytes.fromhex(FIXTURE['firmwareHex'])
@@ -70,6 +71,15 @@ class TransactionTests(unittest.IsolatedAsyncioTestCase):
         client.services[0].characteristics[1].properties = ['write-without-response']
         await update(client, FIRMWARE, FIXTURE['manifest'], lambda _: None, timeout=.02)
         self.assertTrue(all(not response for uuid, _, response in client.writes if uuid == DATA))
+
+    async def test_ota_uses_transparent_shared_executor(self):
+        native = Client()
+        client = AttClient(native)
+        result = await update(client, FIRMWARE, FIXTURE['manifest'], lambda _: None, timeout=.1)
+        self.assertTrue(result['reboot_pending'])
+        self.assertEqual(native.operations(), ['start', 'commit'])
+        self.assertEqual(client.depth, 0)
+        client.retire(notify=False, disconnect=False)
 
     async def test_bad_package_has_no_ble_side_effect(self):
         client = Client()

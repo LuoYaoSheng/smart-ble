@@ -5,14 +5,18 @@ import 'package:permission_handler/permission_handler.dart';
 import '../pages/privacy_page.dart';
 
 Future<bool> explainPermissionUse(BuildContext context,
-    {required String title, required String purpose}) async {
+    {required String title,
+    required String purpose,
+    String confirmLabel = '继续申请系统权限',
+    String declineLabel = '暂不授权',
+    String choiceNote = '您可以暂不授权，继续浏览其他页面。'}) async {
   final approved = await showDialog<bool>(
     context: context,
     builder: (dialogContext) => AlertDialog(
       title: Text(title),
       content: SingleChildScrollView(
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Text('$purpose\n\n您可以暂不授权，继续浏览其他页面。'),
+        Text('$purpose\n\n$choiceNote'),
         TextButton(
             onPressed: () => showPrivacyPage(dialogContext),
             child: const Text('查看完整隐私说明')),
@@ -20,10 +24,10 @@ Future<bool> explainPermissionUse(BuildContext context,
       actions: [
         TextButton(
             onPressed: () => Navigator.pop(dialogContext, false),
-            child: const Text('暂不授权')),
+            child: Text(declineLabel)),
         TextButton(
             onPressed: () => Navigator.pop(dialogContext, true),
-            child: const Text('继续申请系统权限')),
+            child: Text(confirmLabel)),
       ],
     ),
   );
@@ -75,3 +79,34 @@ Future<bool> requestAndroidBlePermissions(BuildContext context,
   return permissions
       .every((permission) => result[permission]?.isGranted == true);
 }
+
+/// An SDK decision is independent of the OS camera permission. It is retained
+/// only for the running app session; a new instance starts unapproved.
+class ScannerSdkConsentSession {
+  bool _confirmed = false;
+  Future<bool>? _pending;
+
+  Future<bool> confirm(Future<bool> Function() prompt) {
+    if (_confirmed) return Future<bool>.value(true);
+    return _pending ??= Future<bool>.sync(prompt).then((approved) {
+      _confirmed = approved;
+      return approved;
+    }).whenComplete(() {
+      _pending = null;
+    });
+  }
+}
+
+final _androidScannerSdkConsent = ScannerSdkConsentSession();
+
+Future<bool> requestAndroidScannerSdkConsent(BuildContext context,
+        {ScannerSdkConsentSession? session}) =>
+    (session ?? _androidScannerSdkConsent).confirm(() => explainPermissionUse(
+          context,
+          title: 'Android 扫码 SDK 说明',
+          purpose:
+              '相机扫码使用 Google ML Kit。图像和识别结果在本机处理，但 SDK 会收集设备与应用信息、每安装标识、性能、API 配置及错误诊断，用于诊断和使用分析，并向 Google 发送相关统计。业务会话仅存内存的说明不包含 SDK 诊断缓存。相机权限已授权也不会代替您本次应用运行的 SDK 选择。',
+          confirmLabel: '了解并继续扫码',
+          declineLabel: '使用粘贴',
+          choiceNote: '拒绝启用 SDK 后仍可粘贴 ControlHub 配对码，其他页面可继续浏览。',
+        ));

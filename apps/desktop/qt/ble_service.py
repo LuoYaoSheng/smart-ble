@@ -20,6 +20,7 @@ from concurrent.futures import Future
 from dataclasses import dataclass, field
 from reconnect_policy import reconnect
 from gatt_routing import resolve_characteristic, key as gatt_key
+from att_client import AttClient, owns_native
 
 from PySide6.QtCore import QObject, QThread, Signal
 
@@ -176,7 +177,12 @@ class GattWorker(QThread):
 
     def stop(self) -> None:
         if self._loop is not None and self._loop.is_running():
-            self._loop.call_soon_threadsafe(self._loop.stop)
+            async def drain():
+                tasks = [task for task in asyncio.all_tasks() if task is not asyncio.current_task()]
+                for task in tasks: task.cancel()
+                if tasks: await asyncio.wait(tasks, timeout=1.0)
+                self._loop.stop()
+            asyncio.run_coroutine_threadsafe(drain(), self._loop)
         self.wait(5000)
 
 
@@ -192,7 +198,7 @@ class BleService(QObject):
     char_read = Signal(str, str, str, str, str)        # address, service, uuid, hex, text
     char_notified = Signal(str, str, str, str)         # address, service, uuid, hex
     notify_changed = Signal(str, str, str, bool)       # address, service, uuid, on
-    write_done = Signal(str, str, str, int)            # address, service, uuid, nbytes
+    write_done = Signal(str, str, str, int, bool)            # address, service, uuid, nbytes
     op_failed = Signal(str, str, str)             # op, address, msg
 
     CONNECT_TIMEOUT = 10.0
@@ -260,8 +266,9 @@ class BleService(QObject):
         self._generations[hit.address] = generation
 
         def on_disconnect(client) -> None:
-            if self._clients.get(hit.address) is not client:
-                return
+            current = self._clients.get(hit.address)
+            if not owns_native(current, client): return
+            if isinstance(current, AttClient): current.retire(notify=False, disconnect=False)
             # 单次事件语义：手动断开路径已自行出表并发射；此处仅处理意外断链
             info = self.connected.pop(hit.address, None)
             self._clients.pop(hit.address, None)
@@ -292,7 +299,8 @@ class BleService(QObject):
                 await client.disconnect()
                 raise asyncio.CancelledError
             tree = self._build_tree(client)
-            self._clients[hit.address] = client
+            self._clients[hit.address] = AttClient(client, retired=lambda reason: (
+                self.op_failed.emit('ATT', hit.address, reason), on_disconnect(client)))
             self.connected[hit.address] = {"name": hit.name or hit.address, "tree": tree}
             return tree
 
@@ -428,12 +436,17 @@ class BleService(QObject):
             self.op_failed.emit("write", address, str(error))
             return
 
+        properties = set(characteristic.properties)
+        if not properties & {'write', 'write-without-response'}:
+            self.op_failed.emit('write', address, '特征不支持写入')
+            return
+        with_response = 'write' in properties
         async def _write():
-            # PARITY-007：恒带响应写（writeNoResponse 在 Windows 栈字节腐败）
-            await client.write_gatt_char(characteristic, data, response=True)
+            # Prefer ATT acknowledgement, but honor a WRITE_NR-only characteristic.
+            await client.write_gatt_char(characteristic, data, response=with_response)
             return len(data)
         self._submit_op("write", address, uuid, _write(),
-                        lambda n: self.write_done.emit(address, owner, uuid, n))
+                        lambda n: self.write_done.emit(address, owner, uuid, n, with_response))
 
     def set_notify(self, address: str, uuid: str, on: bool, service_uuid: str | None = None) -> None:
         client = self._clients.get(address)

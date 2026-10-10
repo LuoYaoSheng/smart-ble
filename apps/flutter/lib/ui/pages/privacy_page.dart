@@ -22,6 +22,15 @@ Smart BLE 用于扫描附近蓝牙设备、查看广播、连接 GATT、读写�
 扫描会读取设备名称、标识符、信号强度、服务 UUID 和广播数据；连接后读取您选择的特征值。这些业务数据保留在运行内存中，不保存为设备历史。退出应用后清除会话内存数据。
 日志对 Wi-Fi 密码和配对 token 等敏感凭据脱敏。业务状态的零持久化不包括系统或 SDK 自身的运行文件。
 
+
+扫码 SDK（仅 Flutter Android）
+Flutter Android 的相机扫码使用 Mobile Scanner 和内置 Google ML Kit Barcode Scanning。输入图像及识别结果在本机处理，不发送至 Google 服务器；这不意味着 SDK 没有统计数据。
+按 Google 的说明，内置 ML Kit 收集设备型号、制造商、系统版本和可用机器学习加速硬件，应用包名及版本，每安装标识，延迟等性能指标，图像格式及分辨率等 API 配置，输入输出大小、功能版本、事件类型和错误码，用于诊断及使用分析。每安装标识并非为唯一识别用户或物理设备而设计。SDK 会向 Google 发送性能及使用统计，相关数据通过 HTTPS 传输；SDK 也可能联系 Google 获取修复、模型或硬件兼容信息。
+本次应用运行首次启用相机扫码前，会单独说明这些 SDK 用途，由您主动选择继续；相机权限已经授权也不会代替这一选择。拒绝后仍可粘贴配对码。同意选择仅保留在应用运行内存中，不写入设备历史或持久化业务同意记录。业务数据仅存内存的说明不包含 SDK 的诊断缓存、安装标识及网络通信。
+Flutter iOS/macOS 的扫码使用 Apple Vision 在本机识别，上述 Android ML Kit 数据说明不适用于这两端。
+Google 官方说明：https://developers.google.com/ml-kit/android-data-disclosure
+Google ML Kit 条款与隐私：https://developers.google.com/ml-kit/terms
+
 Smart HID 配网
 配网可能与您指定的 ControlHub 交换配对信息，并将您填写的 Wi-Fi 信息、ControlHub 地址和一次性配对 token 通过蓝牙发送给您选择的设备。配套设备和 ControlHub 可以保存其配置；客户端的会话内存规则不代表整个设备系统不保存配置。
 

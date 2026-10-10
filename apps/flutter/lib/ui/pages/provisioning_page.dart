@@ -197,7 +197,12 @@ class _ProvisioningPageState extends ConsumerState<ProvisioningPage> {
 
     // F-WIN 降级：mobile_scanner 无 Windows 实现（也无相机权限链可走），
     // 跳过相机直达「手动粘贴配对码」（正典桌面线「扫码为主+粘贴兜底」的无摄像头单路径）
-    final cameraAvailable = !Platform.isWindows;
+    var cameraAvailable = !Platform.isWindows;
+    if (cameraAvailable && Platform.isAndroid) {
+      // SDK statistics consent is separate from an existing OS camera grant.
+      cameraAvailable = await requestAndroidScannerSdkConsent(context);
+      if (!mounted) return;
+    }
     if (cameraAvailable) {
       final status = await Permission.camera.status;
       var granted = status.isGranted;
@@ -1444,7 +1449,7 @@ class _QrScannerSheetState extends State<_QrScannerSheet> {
                     border: Border.all(color: AppTheme.borderColor, width: 1.5),
                   ),
                   child: const Text(
-                    'Windows 桌面线暂无摄像头扫码（F-WIN 降级）\n请使用下方「手动粘贴配对码」',
+                    '相机扫码未启用\n请使用下方「手动粘贴配对码」',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         fontSize: 12,

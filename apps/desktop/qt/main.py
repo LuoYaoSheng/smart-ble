@@ -778,11 +778,11 @@ class DeviceDetailPage(QWidget):
         )
         self._refresh_notify_label()
 
-    def _on_write_done(self, address: str, service: str, uuid: str, nbytes: int) -> None:
+    def _on_write_done(self, address: str, service: str, uuid: str, nbytes: int, with_response: bool) -> None:
         if not self._mine(address):
             return
         self._log.appendPlainText(
-            f"写入成功 · {service} · {char_display_name(uuid) or uuid} · {nbytes} 字节（带响应）"
+            f"写入完成 · {service} · {char_display_name(uuid) or uuid} · {nbytes} 字节（{'带响应' if with_response else '无响应'}）"
         )
 
     def _on_op_failed(self, op: str, address: str, msg: str) -> None:

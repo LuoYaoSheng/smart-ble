@@ -5,6 +5,7 @@ from concurrent.futures import CancelledError
 
 from PySide6.QtCore import QObject, Signal
 from gatt_routing import resolve_characteristic
+from att_client import AttClient, owns_native
 from hid_protocol import C, SERVICE, INFO, STATUS, ProtocolError, parse_info, parse_status, provision
 
 
@@ -62,7 +63,9 @@ class HidSession(QObject):
         if client is not None and client.is_connected:
             return client
         def disconnected(_client):
-            if self.ble._clients.get(address) is not _client: return
+            current = self.ble._clients.get(address)
+            if not owns_native(current, _client): return
+            if isinstance(current, AttClient): current.retire(notify=False, disconnect=False)
             self.ble._clients.pop(address, None)
             self.ble.connected.pop(address, None)
             self.ble._notifying.pop(address, None)
@@ -72,9 +75,11 @@ class HidSession(QObject):
         if generation != self._generation or address != self.address:
             await client.disconnect()
             raise asyncio.CancelledError
-        self.ble._clients[address] = client
+        queued = AttClient(client, retired=lambda reason: (
+            self.ble.op_failed.emit('ATT', address, reason), disconnected(client)))
+        self.ble._clients[address] = queued
         self.ble.connected[address] = {'name': self.name or address, 'tree': self.ble._build_tree(client)}
-        return client
+        return queued
 
     def _submit(self, operation):
         if self.busy:

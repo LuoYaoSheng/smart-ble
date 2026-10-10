@@ -76,6 +76,15 @@ def main():
         return block('Signed iOS export requires SMART_BLE_APPLE_TEAM and an installed distribution profile')
 
     patterns = []
+
+    def zip_directory(directory, filename):
+        destination = out / filename
+        if host == 'Darwin':
+            run(['ditto', '-c', '-k', '--sequesterRsrc', '--keepParent', str(directory), str(destination)], env=env)
+        else:
+            shutil.make_archive(str(destination.with_suffix('')), 'zip', root_dir=directory.parent, base_dir=directory.name)
+        return str(destination.relative_to(ROOT))
+
     try:
         run(['node', 'scripts/generate-release-metadata.mjs', '--check'])
         run(['node', 'scripts/check-version-consistency.mjs'])
@@ -105,18 +114,21 @@ def main():
                 run(['xcodebuild', '-exportArchive', '-archivePath', str(archive), '-exportOptionsPlist', str(options_path), '-exportPath', str(out / 'export')], env=env)
                 patterns = [str(out.relative_to(ROOT) / 'export/*.ipa')]
             else:
-                patterns = [str(out.relative_to(ROOT) / 'SmartBLE.xcarchive/Products/Applications/SmartBLE.app/SmartBLE')]
+                patterns = [zip_directory(archive, f'Smart-BLE-Open-{version}-ios-archive.zip')]
         elif args.target == 'flutter-ios':
             run(['flutter', 'build', 'ipa', '--release', '--no-codesign'], ROOT / 'apps/flutter', env)
-            patterns = ['apps/flutter/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app/Runner']
+            patterns = [zip_directory(ROOT / 'apps/flutter/build/ios/archive/Runner.xcarchive', f'Smart-BLE-Open-{version}-flutter-ios-archive.zip')]
         elif args.target == 'macos':
             run(['bash', 'scripts/macos/make-app-bundle.sh'])
-            patterns = [f'apps/desktop/macos/dist/{name}.app/Contents/MacOS/SmartBLE-mac' for name in ('SmartBLE-macOS', 'SmartBLE-macOS-MAS')]
+            patterns = [zip_directory(ROOT / f'apps/desktop/macos/dist/{name}.app', f'{name}-{version}-universal.zip') for name in ('SmartBLE-macOS', 'SmartBLE-macOS-MAS')]
         elif args.target == 'flutter-macos':
             run(['flutter', 'build', 'macos', '--release', '--config-only'], ROOT / 'apps/flutter', env)
             build_dir = ROOT / 'apps/flutter/build/macos'
             run(['xcodebuild', '-workspace', 'Runner.xcworkspace', '-scheme', 'Runner', '-configuration', 'Release', '-destination', 'generic/platform=macOS', '-derivedDataPath', str(build_dir), f'OBJROOT={build_dir}/Build/Intermediates.noindex', f'SYMROOT={build_dir}/Build/Products', 'CODE_SIGNING_ALLOWED=NO', 'CODE_SIGNING_REQUIRED=NO', 'COMPILER_INDEX_STORE_ENABLE=NO', 'build'], ROOT / 'apps/flutter/macos', env)
-            patterns = ['apps/flutter/build/macos/Build/Products/Release/*.app/Contents/MacOS/*']
+            applications = list((ROOT / 'apps/flutter/build/macos/Build/Products/Release').glob('*.app'))
+            if len(applications) != 1:
+                raise RuntimeError('Flutter macOS build must contain exactly one application bundle')
+            patterns = [zip_directory(applications[0], f'Smart-BLE-Open-{version}-flutter-macos-universal.zip')]
         elif args.target == 'electron':
             run(['npm', 'ci', '--foreground-scripts'], ROOT / 'apps/desktop/electron', env)
             command = ['npm', 'run', {'Darwin': 'build:mac', 'Windows': 'build:win', 'Linux': 'build:linux'}[host], '--', '--publish', 'never']
@@ -140,7 +152,7 @@ def main():
         elif args.target == 'avalonia':
             run(['dotnet', 'test', '-c', 'Release'], ROOT / 'apps/desktop/avalonia/SmartBLE.Desktop.Tests', env)
             run(['dotnet', 'publish', '-c', 'Release', '-r', f'win-{architecture}', '--self-contained', 'true', '-o', str(out / 'app')], ROOT / 'apps/desktop/avalonia/SmartBLE.Desktop', env)
-            patterns = [str(out.relative_to(ROOT) / 'app/SmartBLE.Desktop.exe')]
+            patterns = [zip_directory(out / 'app', f'Smart-BLE-Open-{version}-avalonia-windows-{architecture}.zip')]
         elif args.target == 'qt':
             run([sys.executable, '-m', 'pip', 'install', '-r', 'requirements.txt', 'pyinstaller'], ROOT / 'apps/desktop/qt', env)
             test_env = {**env, 'QT_QPA_PLATFORM': 'offscreen'}
@@ -158,7 +170,7 @@ def main():
             for name, destination in [('VERSION', '.'), ('assets', 'assets'), ('win-broadcast-bridge.ps1', '.'), ('smart-hid-v1-vectors.json', '.'), ('release-manifest.json', '.')]:
                 package += ['--add-data', f'{staging / name}{os.pathsep}{destination}']
             run(package + [str(staging / 'main.py')], staging, env)
-            patterns = [str(out.relative_to(ROOT) / 'app/SmartBLE/SmartBLE.exe')]
+            patterns = [zip_directory(out / 'app/SmartBLE', f'Smart-BLE-Open-{version}-qt-windows-{architecture}.zip')]
         elif args.target == 'wails':
             run(['npm', 'run', 'build'], ROOT / 'apps/desktop/wails/frontend', env)
             run(['go', 'test', './...', '-run', '^(TestUnknownDeviceNeverFallsBackToAnotherConnection|TestCharacteristicKeysIncludeOwningService|TestDisconnectCancelsPendingConnectionGeneration)$'], ROOT / 'apps/desktop/wails', env)

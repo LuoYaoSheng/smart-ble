@@ -5,6 +5,7 @@ import asyncio
 import json
 import unittest
 from types import SimpleNamespace
+from att_client import AttClient
 from hid_protocol import C, VECTORS, INFO, INPUT, STATUS, ProtocolError, build_frames, candidate_json, chunk_size, parse_info, parse_pairing_qr, parse_status, profile_match, provision, recovery_action
 
 
@@ -88,6 +89,30 @@ class TransactionTests(unittest.IsolatedAsyncioTestCase):
         client.device_id = 'unverified-device'
         with self.assertRaises(ProtocolError): await provision(client, self.candidate(), lambda _: None)
         self.assertEqual(client.writes, [])
+
+    async def test_profile_operations_use_same_att_queue_as_generic_reads(self):
+        client = FakeClient([{'state': 'provisioning', 'step': 'received'}, {'state': 'ready', 'step': 'ready'}])
+        client.is_connected = True
+        gate = asyncio.Event()
+        original = client.read_gatt_char
+        calls = []
+        async def blocked_read(char):
+            calls.append(char)
+            await gate.wait()
+            return await original(char)
+        client.read_gatt_char = blocked_read
+        queued = AttClient(client)
+        profile = asyncio.create_task(provision(queued, self.candidate(), lambda _: None, timeout=.2))
+        await asyncio.sleep(.005)
+        read = asyncio.create_task(queued.read_gatt_char(client.services[0].characteristics[0]))
+        await asyncio.sleep(.005)
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(queued.depth, 2)
+        gate.set()
+        self.assertTrue((await profile)['ok'])
+        await read
+        self.assertEqual(queued.depth, 0)
+        queued.retire(notify=False, disconnect=False)
 
     async def test_wrong_identity_never_writes(self):
         client = FakeClient([], product='other-device')

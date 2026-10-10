@@ -12,6 +12,7 @@
 <h2>第三方运行组件</h2>
 <p>仅 UniApp 原生安装包使用 DCloud uni-app（5+ App）引擎，提供页面运行、蓝牙和扫码能力。DCloud 引擎的应用启动和异常统计处理应用信息、设备及运行信息；设备标识的具体类别随平台及系统授权而不同，包括 Android ID、DEVICE_ID、OAID 等。引擎的数据处理规则见 <a href="https://dcloud.io/license/appprivacy.html" rel="noreferrer">DCloud App 引擎隐私政策</a>。蓝牙业务日志、Wi-Fi 密码及配对 token 不提交到该统计服务。UniApp 的业务统计 uniStatistics 已关闭；这不等于第三方原生引擎没有启动或异常统计。</p>
 <p>Kotlin、SwiftUI/AppKit 和 Flutter 原生应用不集成上述 DCloud 引擎。本应用没有广告、推送或账号登录功能。</p>
+<p>Flutter Android 的相机扫码使用内置 Google ML Kit 条码识别模型，图像在本机识别。ML Kit 同时处理设备型号和系统版本、应用包名和版本、每次安装的标识、识别性能和错误诊断等数据，用于诊断及使用统计，通过 HTTPS 向 Google 传输。扫码前会说明此用途；拒绝后可使用手动输入或粘贴配对信息。详情见 <a href="https://developers.google.com/ml-kit/android-data-disclosure" rel="noreferrer">ML Kit 数据处理说明</a> 和 <a href="https://developers.google.com/ml-kit/terms" rel="noreferrer">ML Kit 条款及隐私</a>。此项仅适用于 Flutter Android；Flutter iOS/macOS 使用 Apple Vision。本客户端的业务会话不落盘承诺不包括第三方 SDK 自身的诊断记录。</p>
 <h2>选择与联系</h2>
 <p>用户可以拒绝系统权限或暂不启用蓝牙和相机，并继续查看关于、版本和隐私说明。也可以在系统设置中撤销权限；受影响的蓝牙或扫码功能会停止或不可用。退出应用将清空业务会话数据。隐私说明变更后会更新本文日期，并对新增权限用途重新说明。</p>
 <p>问题反馈：121912336@qq.com。</p>

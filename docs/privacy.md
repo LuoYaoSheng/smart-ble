@@ -25,6 +25,8 @@ Smart HID 配网会将用户填写的 Wi-Fi 信息、ControlHub 地址及一次�
 
 Kotlin、SwiftUI/AppKit 和 Flutter 原生应用不集成上述 DCloud 引擎。本应用没有广告、推送或账号登录功能。
 
+Flutter Android 的相机扫码使用内置 Google ML Kit 条码识别模型，图像在本机识别。ML Kit 同时处理设备型号和系统版本、应用包名和版本、每次安装的标识、识别性能和错误诊断等数据，用于诊断及使用统计，通过 HTTPS 向 Google 传输。扫码前会说明此用途；拒绝后可使用手动输入或粘贴配对信息。详情见 [ML Kit 数据处理说明](https://developers.google.com/ml-kit/android-data-disclosure) 和 [ML Kit 条款及隐私](https://developers.google.com/ml-kit/terms)。此项仅适用于 Flutter Android；Flutter iOS/macOS 使用 Apple Vision。本客户端的业务会话不落盘承诺不包括第三方 SDK 自身的诊断记录。
+
 ## 选择与联系
 
 用户可以拒绝系统权限或暂不启用蓝牙和相机，并继续查看关于、版本和隐私说明。也可以在系统设置中撤销权限；受影响的蓝牙或扫码功能会停止或不可用。退出应用将清空业务会话数据。隐私说明变更后会更新本文日期，并对新增权限用途重新说明。
