@@ -6,7 +6,7 @@
 
 ## 已完成验证
 
-[候选构建运行 38027084309](https://github.com/LuoYaoSheng/smart-ble/actions/runs/38027084309) 在 PR head `abf615638370b1538850b496ac3dad8078f12b5e` 全部 24 项通过，24 份产物归档均存在。报告分别记录实际 checkout（PR synthetic merge）与应用源码树。
+[候选构建运行 38030372953](https://github.com/LuoYaoSheng/smart-ble/actions/runs/38030372953) 在 PR head `1eb6b704d1a25be962361a1cf3130252073b853e` 全部 24 项通过，24 份产物归档均存在。报告分别记录实际 checkout（PR synthetic merge）与应用源码树。
 
 | 实现 | 已构建的系统 / CPU | 产物 |
 | --- | --- | --- |
@@ -27,17 +27,19 @@ Kotlin 与 Flutter 的正式 Android APK/AAB 已在本机创建并验签。keyst
 
 - Kotlin 报告：`.tmp/release/android-darwin-arm64/signed/report.json`。
 - Flutter 报告：`.tmp/release/flutter-android-darwin-arm64/signed/report.json`；12 个 64 位原生库 ELF 与 ZIP 的 16 KB 对齐均通过。
-- 软件验证包括 Flutter 144 项、Kotlin 100 项、iOS 31 项、AppKit 19 项、Avalonia Windows 86 项、Qt 45 项、桌面共享 170 项、Wails 3 项纯会话测试及 UniApp 27 个单测文件 / 15 静态门。软件门的最新运行状态以机器矩阵为准。
+- 软件验证包括 Flutter 144 项、Kotlin 100 项、iOS 31 项、AppKit 19 项、Avalonia Windows 86 项、Qt 45 项、桌面共享 170 项、Wails 3 项纯会话测试及 UniApp 27 个单测文件 / 15 静态门。[基础 CI](https://github.com/LuoYaoSheng/smart-ble/actions/runs/38030372948) 全部 8/8 成功，iOS 31 项单测和 11 项界面测试均通过。
 
 Qt 的新增 Windows ARM64 [构建任务](https://github.com/LuoYaoSheng/smart-ble/actions/runs/38027084309/job/114140118989) 已通过 45 项测试、打包与 123 个原生 PE 二进制架构检查（0xAA64），完整产物已上传；未使用 x64 仿真。
 
 Linux Electron 的最终 ELF 主程序与 x64 15 个 / ARM64 9 个原生模块架构核验、包内 HCI N-API 加载已在新 CI 通过。该加载验证不初始化适配器，真实空口仍单独待验。
 
+iOS 的预览初始化竞态、窄屏详情宽度、复制反馈和按钮命中区已修复。结构审计保留全部既定检查，恢复 P003/P005，未新增豁免。macOS 包内实际版本、蓝牙/相机用途说明与主程序双架构均已校验。最后的文档整理不会改变上述已验应用源码。
+
 ## 仍未验收
 
 候选构建通过与已签名 Android 包不等于商店可发布。机器状态见 [platform-matrix.json](../release/platform-matrix.json)。
 
-- 基础 CI 已通过 7/8 项，复制检查在远端已通过；P003 因预览初始化竞态误弹缺记录对话框，已按远端截图定位并修复，实际按钮命中区也补至 44pt，等待最后远端确认；不能宣称所有软件门已通过。iOS 结构审计与全量无障碍合规分开记录，历史 contrast / Dynamic Type / textClipped 豁免和真机 VoiceOver 仍需复核。
+- iOS 结构审计已通过；全量无障碍合规分开记录，历史 contrast / Dynamic Type / textClipped 豁免和真机 VoiceOver 仍需复核。
 - 每种实现的真实 BLE、Smart HID READY/恢复、OTA 取消/失败/重启版本核验，以及干净安装/升级仍需当前版本真机证据。附近扫描结果与模拟器、单测不能替代该证据。
 - UniApp 还需 HBuilderX / 自定义原生基座、原生 SDK 审计和正式签名包；H5 与 App 资源编译不等于原生包。
 - App Store 导出上次返回 No Accounts / 新 ID 的分发 profile 缺失。Xcode 已打开供用户配置，尚未取得成功导出证据。

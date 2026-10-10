@@ -11,7 +11,7 @@
     "tencent-myapp",
     "desktop-distribution"
   ],
-  "status": "IN_PROGRESS",
+  "status": "SOFTWARE_VERIFIED_RELEASE_GATES_OPEN",
   "rule": "Every implementation requires current-source build, functional and hardware evidence. Candidate packages and static checks are not store-ready releases.",
   "implementations": [
     {
@@ -115,7 +115,7 @@
         "status": "PASS",
         "unit_tests": 31,
         "accessibility_scope": {
-          "structural_audit": "FOLLOWUP_IN_PROGRESS",
+          "structural_audit": "PASS",
           "full_accessibility": "NOT_VERIFIED",
           "historical_limitations": [
             "contrast",
@@ -123,7 +123,8 @@
             "textClipped"
           ],
           "real_device_voiceover": "NOT_RUN"
-        }
+        },
+        "ui_tests": 11
       }
     },
     {
@@ -318,144 +319,187 @@
   "public_support_email": "121912336@qq.com",
   "store_materials_status": "DEFERRED_BY_USER",
   "last_candidate_run": {
-    "url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/38027084309",
-    "head_commit": "abf615638370b1538850b496ac3dad8078f12b5e",
+    "url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/38030372953",
+    "head_commit": "1eb6b704d1a25be962361a1cf3130252073b853e",
     "status": "PASS",
     "jobs_passed": 24,
     "jobs_total": 24,
-    "artifacts_uploaded": 24,
-    "note": "All declared native OS/CPU candidate lanes passed and uploaded complete artifacts. Real BLE, installation, distribution signing and store submission remain independent gates.",
-    "checkout_note": "Pull-request runners may use GitHub synthetic merge commits; each build report records its actual checkout commit and application/core source trees.",
+    "checkout_note": "Pull-request runners may use GitHub synthetic merge commits; build reports record actual checkout commit and application/core source trees.",
     "jobs": [
       {
-        "name": "mobile (android)",
-        "id": 114140118868,
-        "status": "PASS"
-      },
-      {
         "name": "flutter-windows (windows-latest)",
-        "id": 114140118928,
-        "status": "PASS"
-      },
-      {
-        "name": "apple (ios)",
-        "id": 114140118938,
-        "status": "PASS"
-      },
-      {
-        "name": "flutter-windows (windows-11-arm)",
-        "id": 114140118975,
-        "status": "PASS"
-      },
-      {
-        "name": "desktop (ubuntu-22.04-arm, electron)",
-        "id": 114140118978,
-        "status": "PASS"
-      },
-      {
-        "name": "windows-implementations (windows-11-arm, qt)",
-        "id": 114140118989,
-        "status": "PASS"
-      },
-      {
-        "name": "windows-implementations (windows-latest, avalonia)",
-        "id": 114140118990,
-        "status": "PASS"
-      },
-      {
-        "name": "desktop (macos-latest, tauri)",
-        "id": 114140118996,
-        "status": "PASS"
-      },
-      {
-        "name": "windows-implementations (windows-11-arm, wails)",
-        "id": 114140119004,
-        "status": "PASS"
-      },
-      {
-        "name": "windows-implementations (windows-latest, wails)",
-        "id": 114140119009,
-        "status": "PASS"
-      },
-      {
-        "name": "mobile (flutter-android)",
-        "id": 114140119011,
-        "status": "PASS"
-      },
-      {
-        "name": "apple (macos)",
-        "id": 114140119012,
-        "status": "PASS"
-      },
-      {
-        "name": "apple (flutter-ios)",
-        "id": 114140119029,
-        "status": "PASS"
-      },
-      {
-        "name": "windows-implementations (windows-latest, qt)",
-        "id": 114140119030,
+        "id": 114149845506,
         "status": "PASS"
       },
       {
         "name": "apple (flutter-macos)",
-        "id": 114140119032,
+        "id": 114149845580,
         "status": "PASS"
       },
       {
-        "name": "desktop (ubuntu-22.04-arm, tauri)",
-        "id": 114140119033,
+        "name": "apple (macos)",
+        "id": 114149845588,
         "status": "PASS"
       },
       {
-        "name": "desktop (windows-11-arm, tauri)",
-        "id": 114140119050,
+        "name": "flutter-windows (windows-11-arm)",
+        "id": 114149845594,
+        "status": "PASS"
+      },
+      {
+        "name": "apple (flutter-ios)",
+        "id": 114149845595,
+        "status": "PASS"
+      },
+      {
+        "name": "apple (ios)",
+        "id": 114149845604,
+        "status": "PASS"
+      },
+      {
+        "name": "mobile (flutter-android)",
+        "id": 114149845609,
+        "status": "PASS"
+      },
+      {
+        "name": "mobile (android)",
+        "id": 114149845639,
+        "status": "PASS"
+      },
+      {
+        "name": "windows-implementations (windows-latest, wails)",
+        "id": 114149845640,
         "status": "PASS"
       },
       {
         "name": "desktop (ubuntu-22.04, tauri)",
-        "id": 114140119063,
+        "id": 114149845685,
+        "status": "PASS"
+      },
+      {
+        "name": "windows-implementations (windows-latest, qt)",
+        "id": 114149845688,
         "status": "PASS"
       },
       {
         "name": "desktop (windows-latest, tauri)",
-        "id": 114140119067,
+        "id": 114149845693,
         "status": "PASS"
       },
       {
-        "name": "desktop (windows-latest, electron)",
-        "id": 114140119077,
+        "name": "desktop (macos-latest, tauri)",
+        "id": 114149845697,
         "status": "PASS"
       },
       {
         "name": "windows-implementations (windows-11-arm, avalonia)",
-        "id": 114140119105,
+        "id": 114149845703,
         "status": "PASS"
       },
       {
-        "name": "desktop (macos-latest, electron)",
-        "id": 114140119136,
+        "name": "desktop (windows-latest, electron)",
+        "id": 114149845717,
         "status": "PASS"
       },
       {
-        "name": "desktop (ubuntu-22.04, electron)",
-        "id": 114140119147,
+        "name": "windows-implementations (windows-11-arm, wails)",
+        "id": 114149845729,
+        "status": "PASS"
+      },
+      {
+        "name": "desktop (ubuntu-22.04-arm, tauri)",
+        "id": 114149845730,
+        "status": "PASS"
+      },
+      {
+        "name": "windows-implementations (windows-latest, avalonia)",
+        "id": 114149845743,
+        "status": "PASS"
+      },
+      {
+        "name": "windows-implementations (windows-11-arm, qt)",
+        "id": 114149845749,
         "status": "PASS"
       },
       {
         "name": "desktop (windows-11-arm, electron)",
-        "id": 114140119208,
+        "id": 114149845754,
+        "status": "PASS"
+      },
+      {
+        "name": "desktop (ubuntu-22.04-arm, electron)",
+        "id": 114149845765,
+        "status": "PASS"
+      },
+      {
+        "name": "desktop (ubuntu-22.04, electron)",
+        "id": 114149845767,
+        "status": "PASS"
+      },
+      {
+        "name": "desktop (macos-latest, electron)",
+        "id": 114149845795,
+        "status": "PASS"
+      },
+      {
+        "name": "desktop (windows-11-arm, tauri)",
+        "id": 114149845809,
         "status": "PASS"
       }
-    ]
+    ],
+    "artifacts_uploaded": 24,
+    "note": "All declared candidate lanes and native architecture/package checks passed. Hardware, installation, distribution signing and store submission remain open."
   },
   "last_software_run": {
-    "url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/38028644320",
-    "head_commit": "3ce1c5ee2939abeed280de9c18edede3dff51b3b",
-    "status": "FAILED",
-    "jobs_passed": 7,
+    "url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/38030372948",
+    "head_commit": "1eb6b704d1a25be962361a1cf3130252073b853e",
+    "status": "PASS",
+    "jobs_passed": 8,
     "jobs_total": 8,
-    "note": "Clipboard tests fixed and passed. Remaining P003 audit caused by preview missing-record modal shown before seed; remote screenshot confirmed. Seed-before-render and actual 44pt button hit targets fixed, targeted tests passed; latest remote confirmation pending."
+    "checkout_note": "Pull-request runners may use GitHub synthetic merge commits; build reports record actual checkout commit and application/core source trees.",
+    "jobs": [
+      {
+        "name": "Apple (Core test + iOS xcodebuild test + native macOS build)",
+        "id": 114149845527,
+        "status": "PASS"
+      },
+      {
+        "name": "Android (build + test, JDK 17)",
+        "id": 114149845628,
+        "status": "PASS"
+      },
+      {
+        "name": "Flutter (analyze + test)",
+        "id": 114149845631,
+        "status": "PASS"
+      },
+      {
+        "name": "Release metadata & gates",
+        "id": 114149845655,
+        "status": "PASS"
+      },
+      {
+        "name": "ESP32 firmware (PlatformIO)",
+        "id": 114149845656,
+        "status": "PASS"
+      },
+      {
+        "name": "Tauri (Linux build → deb/appimage)",
+        "id": 114149845672,
+        "status": "PASS"
+      },
+      {
+        "name": "UniApp (full verify-uniapp.sh + h5 build)",
+        "id": 114149845674,
+        "status": "PASS"
+      },
+      {
+        "name": "Electron (install + lint)",
+        "id": 114149845715,
+        "status": "PASS"
+      }
+    ],
+    "note": "All software gates passed, including 31 native iOS unit tests and 11 UI tests. Accessibility audit covers documented structural scope; historical contrast/Dynamic Type/clipping limitations are not full compliance."
   },
   "signed_android_evidence": {
     "android": {
