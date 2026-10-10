@@ -43,7 +43,7 @@ def main():
             for key in SIGNING_KEYS:
                 if signing.get(key) and not env.get(key):
                     env[key] = str(signing[key])
-    out = ROOT / '.tmp/release' / f'{args.target}-{host.lower()}-{platform.machine()}'
+    out = ROOT / '.tmp/release' / f'{args.target}-{host.lower()}-{platform.machine()}' / ('signed' if args.signed else 'candidate')
     out.mkdir(parents=True, exist_ok=True)
     report = {'target': args.target, 'version': version, 'host': host, 'host_architecture': platform.machine(), 'mode': 'signed' if args.signed else 'candidate', 'status': 'NOT_RUN', 'artifacts': [], 'hardware': 'NOT_RUN', 'store_submission': 'NOT_RUN'}
     report['source_commit'] = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
@@ -114,7 +114,8 @@ def main():
             command = ['npm', 'run', {'Darwin': 'build:mac', 'Windows': 'build:win', 'Linux': 'build:linux'}[host], '--', '--publish', 'never']
             if host == 'Darwin': command.append('--universal')
             run(command, ROOT / 'apps/desktop/electron', env)
-            patterns = ['apps/desktop/electron/dist/*.dmg', 'apps/desktop/electron/dist/*.zip', 'apps/desktop/electron/dist/*.exe', 'apps/desktop/electron/dist/*.AppImage', 'apps/desktop/electron/dist/*.deb', 'apps/desktop/electron/dist/*.rpm']
+            extensions = {'Darwin': ('dmg', 'zip'), 'Windows': ('exe',), 'Linux': ('AppImage', 'deb', 'rpm')}[host]
+            patterns = [f'apps/desktop/electron/dist/*{version}*.{extension}' for extension in extensions]
         elif args.target == 'tauri':
             run(['cargo', 'test', '--locked', '--lib'], ROOT / 'apps/desktop/tauri/src-tauri', env)
             run(['cargo', 'tauri', 'build'], ROOT / 'apps/desktop/tauri/src-tauri', env)

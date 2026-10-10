@@ -1,6 +1,9 @@
 {
   "product": "Smart BLE Open",
   "application_id": "com.i2kai.open.smartble",
+  "publisher_type": "individual",
+  "public_support_email": "121912336@qq.com",
+  "store_materials_status": "DEFERRED_BY_USER",
   "platforms": ["android", "ios"],
   "implementations": ["kotlin", "swiftui", "flutter", "uniapp"],
   "rule": "These are alternative implementations of one product. Each channel release selects one validated package; do not upload parallel implementations under the same build number.",

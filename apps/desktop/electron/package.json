@@ -24,7 +24,8 @@
   "devDependencies": {
     "electron": "44.7.0",
     "electron-builder": "26.15.3",
-    "encoding": "0.1.13"
+    "encoding": "0.1.13",
+    "node-gyp": "12.4.0"
   },
   "build": {
     "appId": "com.smartble.electron",
@@ -72,5 +73,9 @@
       "icon": "assets/icon.png",
       "category": "Development"
     }
+  },
+  "overrides": {
+    "@abandonware/bluetooth-hci-socket": "npm:@stoprocent/bluetooth-hci-socket@2.3.0",
+    "node-gyp": "12.4.0"
   }
 }
