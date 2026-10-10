@@ -352,6 +352,9 @@ struct DeviceDetailSheet: View {
     @Environment(\.dismiss) var dismiss
     let device: ScanResult
     @State private var toast: String?
+    @State private var toastGeneration = 0
+    @State private var deviceInfoCopied = false
+    @State private var advertisementCopied = false
     #if DEBUG
     @State private var pasteEcho: String?
     #endif
@@ -424,7 +427,7 @@ struct DeviceDetailSheet: View {
                 .padding()
             }
         }
-        .frame(minWidth: 450, minHeight: 350)
+        .frame(minWidth: minimumSheetWidth, maxWidth: .infinity, minHeight: 350)
         .overlay(alignment: .bottom) {
             if let toast {
                 Text(toast)
@@ -441,13 +444,22 @@ struct DeviceDetailSheet: View {
         }
     }
 
+    private var minimumSheetWidth: CGFloat? {
+        #if os(macOS)
+        return 450
+        #else
+        return nil
+        #endif
+    }
+
     /// R04：复制反馈 toast（与 macOS 端 2.2s 时长一致）
     private func showToast(_ text: String) {
+        toastGeneration += 1
+        let generation = toastGeneration
         withAnimation(.easeInOut(duration: 0.15)) { toast = text }
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.2) {
-            withAnimation(.easeInOut(duration: 0.2)) {
-                if toast == text { toast = nil }
-            }
+            guard toastGeneration == generation else { return }
+            withAnimation(.easeInOut(duration: 0.2)) { toast = nil }
         }
     }
 
@@ -460,10 +472,13 @@ struct DeviceDetailSheet: View {
                 Spacer()
 
                 Button(action: copyDeviceInfo) {
-                    Label("复制", systemImage: "doc.on.doc")
+                    Label(deviceInfoCopied ? "已复制" : "复制", systemImage: deviceInfoCopied ? "checkmark" : "doc.on.doc")
                         .scaledFont(12)
                 }
                 .buttonStyle(.borderless)
+                .accessibilityIdentifier("device-info-copy")
+                .accessibilityLabel(deviceInfoCopied ? "设备信息已复制" : "复制设备信息")
+                .nativeHitTarget()
             }
 
             InfoRow(label: "设备 ID", value: device.id)
@@ -484,10 +499,13 @@ struct DeviceDetailSheet: View {
                 Spacer()
 
                 Button(action: copyAdvData) {
-                    Label("复制", systemImage: "doc.on.doc")
+                    Label(advertisementCopied ? "已复制" : "复制", systemImage: advertisementCopied ? "checkmark" : "doc.on.doc")
                         .scaledFont(12)
                 }
                 .buttonStyle(.borderless)
+                .accessibilityIdentifier("advertisement-copy")
+                .accessibilityLabel(advertisementCopied ? "广播数据已复制" : "复制广播数据")
+                .nativeHitTarget()
             }
 
             if !device.serviceUUIDs.isEmpty {
@@ -581,8 +599,8 @@ struct DeviceDetailSheet: View {
         信号强度: \(device.rssi) dBm
         可连接: \(device.connectable ? "是" : "否")
         """
-        copyToClipboard(info)
-        showToast("已复制")
+        deviceInfoCopied = copyToClipboard(info)
+        showToast(deviceInfoCopied ? "已复制" : "复制失败")
     }
 
     private func copyAdvData() {
@@ -613,17 +631,26 @@ struct DeviceDetailSheet: View {
             content += miss
         }
         content += "\n\n原始广播整包 hex: \(miss)"
-        copyToClipboard(content)
-        showToast("已复制")
+        advertisementCopied = copyToClipboard(content)
+        showToast(advertisementCopied ? "已复制" : "复制失败")
     }
 
-    private func copyToClipboard(_ string: String) {
+    private func copyToClipboard(_ string: String) -> Bool {
+        #if DEBUG
+        pasteEcho = nil
+        #endif
         #if os(macOS)
         let pasteboard = NSPasteboard.general
+        let previousChangeCount = pasteboard.changeCount
         pasteboard.clearContents()
-        pasteboard.setString(string, forType: .string)
+        let written = pasteboard.setString(string, forType: .string)
+        return written && pasteboard.changeCount > previousChangeCount && pasteboard.string(forType: .string) == string
         #else
-        UIPasteboard.general.string = string
+        let pasteboard = UIPasteboard.general
+        pasteboard.string = string
+        // Re-copying identical content may be coalesced by the system. The
+        // required postcondition is the actual clipboard value, not a counter.
+        return pasteboard.string == string
         #endif
     }
 }

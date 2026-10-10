@@ -79,6 +79,7 @@ struct HidDeviceDetailView: View {
             ZStack {
                 RoundedRectangle(cornerRadius: 14).fill(NativeDS.successWeak)
                 Image(systemName: "keyboard").font(.title2).foregroundColor(NativeDS.success)
+                    .accessibilityHidden(true)
             }
             .frame(width: 54, height: 54)
             VStack(alignment: .leading, spacing: 5) {
@@ -92,6 +93,9 @@ struct HidDeviceDetailView: View {
             Spacer()
         }
         .nativeCard()
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(snapshot.name.isEmpty ? "Smart HID 设备" : snapshot.name)，\(bleManager.isDeviceConnected(deviceId) ? "配置成功，READY" : "会话已断开")")
+        .accessibilityIdentifier("hid-detail-summary")
     }
 
     private func identityCard(_ snapshot: HidSessionSnapshot) -> some View {
@@ -121,13 +125,22 @@ struct HidDeviceDetailView: View {
     }
 
     private func keyValue(_ key: String, _ value: String, mono: Bool = false) -> some View {
-        HStack(alignment: .top) {
-            Text(key).foregroundColor(NativeDS.muted)
-            Spacer()
+        HStack(alignment: .top, spacing: 12) {
+            Text(key)
+                .foregroundColor(NativeDS.muted)
+                .fixedSize(horizontal: false, vertical: true)
+                .layoutPriority(1)
+            Spacer(minLength: 0)
             Text(value)
                 .font(mono ? .system(.subheadline, design: .monospaced) : .subheadline)
                 .multilineTextAlignment(.trailing)
+                .fixedSize(horizontal: false, vertical: true)
         }
+        // A key and value form one readable fact. Keep the visible long value
+        // available to VoiceOver rather than exposing an unlabeled identifier.
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(key)，\(value)")
+        .accessibilityIdentifier("hid-detail-\(key.lowercased().replacingOccurrences(of: " ", with: "-"))")
     }
 
     private var note: some View {

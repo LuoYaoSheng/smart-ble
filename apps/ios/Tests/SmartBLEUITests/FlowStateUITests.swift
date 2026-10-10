@@ -26,6 +26,12 @@ final class FlowStateUITests: XCTestCase {
         launch("p003-detail")
         XCTAssertTrue(app.staticTexts["设备身份"].waitForExistence(timeout: 3))
         XCTAssertTrue(app.buttons["重新配置"].exists)
+        let identity = app.descendants(matching: .any)["hid-detail-device-id"]
+        XCTAssertTrue(identity.waitForExistence(timeout: 3))
+        XCTAssertTrue(identity.label.contains("Device ID"))
+        XCTAssertTrue(identity.label.contains("SHID-9F3E2A1C"))
+        let hub = app.descendants(matching: .any)["hid-detail-controlhub"]
+        XCTAssertTrue(hub.label.contains("192.168.1.8:17892"), "配置值必须在AX树中完整可读")
 
         launch("p003-missing-fields")
         XCTAssertTrue(app.staticTexts["协议未记录"].waitForExistence(timeout: 3))

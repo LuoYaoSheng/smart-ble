@@ -119,3 +119,10 @@
 - 基础 CI 38023481622 的 iOS 两项 UI 失败已复现：真实模拟器蓝牙状态覆盖预览虚拟连接，以及组合无障碍审计系统超时。预览夹具按明确 launch 参数隔离状态、P005 确定性 seed；正常运行保留真实断链处理。审计按官方类型逐项运行、不吞错误，恢复 P003/P005 结构门。定向三项 UI 验证通过，最终远端门仍待确认。
 - 独立审查收紧了原生验证表述：Electron Windows WinRT/macOS CoreBluetooth 已实际加载；Linux 进一步补所有最终 ELF 架构检查、清理非目标 prebuild，并使用包内 Electron 加载真实 HCI N-API 模块但不初始化适配器。Tauri/Wails 等应用主二进制架构检查与安装器启动架构分开。
 - Kotlin/Flutter 本机正式签名 APK/AAB 的当前文件哈希、应用/共享核心源码树与报告一致；不因其他实现修改而虚构新签名构建。完整验收仍需每实现当前版本真实 BLE/HID/OTA、安装升级与分发签名。iOS 历史 contrast/Dynamic Type/textClipped 豁免及真机 VoiceOver 单独待验，不把结构审计冒充全量无障碍合规。
+
+### 2026-10-10 完整原生矩阵与 Apple 界面复核
+
+- 提交 abf6156 的候选运行 38027084309 已全部 24/24 成功，24 份归档产物存在，新增 Qt Windows ARM64 45 项测试与 123 个 EXE/DLL/PYD 的 0xAA64 检查通过。Electron Linux x64/ARM64 分别核验主程序及 15/9 个 ELF 原生模块，包内实际 Electron 加载 HCI N-API 成功；未初始化适配器，空口证据仍独立。
+- Tauri Windows 两架构主程序 PE、Linux 两架构主程序 ELF、macOS universal 主程序及 Flutter macOS 主程序均由发布 runner 实测，而非仅按构建 target 推断。Qt 所有原生 PE、Avalonia apphost、Wails 真正主 EXE 与安装器/managed DLL 分开验证。
+- 该轮基础 CI 7/8 成功；原 P001/P005 问题已修，但恢复的 P003 结构门暴露 Xcode 26.6 的不可访问文本；广播数据复制测试被瞬态 toast 影响。实际修复补齐 hero/键值组合标签与长文本换行、去掉窄屏 iPhone 的 450 最小宽度、复制具体 ID/可点击命中区、真实剪贴板成功后的持久反馈及 toast generation。
+- 本地三项定向 UI 通过，重复复制同文的实际剪贴板回显也通过；不延长测试专用 toast、不新增审计豁免。26.6 远端确认仍待复跑，失败时保留 issue 详情、可访问性树、截图与 xcresult 供追查。

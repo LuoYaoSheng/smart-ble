@@ -173,6 +173,24 @@
           "x64",
           "arm64"
         ]
+      },
+      "linux_native_evidence": {
+        "arm64": {
+          "job_url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/38027084309/job/114140118978",
+          "status": "PASS",
+          "main_executable": "ELF64 AArch64",
+          "native_elf_modules_verified": 9,
+          "packaged_hci_binding_load": "PASS",
+          "adapter_initialization": "NOT_RUN"
+        },
+        "x64": {
+          "job_url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/38027084309/job/114140119147",
+          "status": "PASS",
+          "main_executable": "ELF64 x86_64",
+          "native_elf_modules_verified": 15,
+          "packaged_hci_binding_load": "PASS",
+          "adapter_initialization": "NOT_RUN"
+        }
       }
     },
     {
@@ -234,7 +252,8 @@
         "windows"
       ],
       "architectures_to_verify": [
-        "x64"
+        "x64",
+        "arm64"
       ],
       "packaging": "PyInstaller self-contained application",
       "build": "CANDIDATE_BUILT",
@@ -245,10 +264,20 @@
         "test_methods": 45
       },
       "candidate_architectures_built": [
-        "x64"
+        "x64",
+        "arm64"
       ],
-      "additional_architecture_gate": {
-        "windows_arm64": "UNDER_REVIEW"
+      "arm64_evidence": {
+        "job_url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/38027084309/job/114140118989",
+        "source_commit": "7fdb969d6a2baca7cc3668e4ed75ed0f83d6420b",
+        "source_trees": {
+          "apps/desktop/qt": "74a659f30f813cbb8605db47d4ae127fb7e97536",
+          "core": "9e85b2bb80b6a443cca3d54abfb9f5ccb6f05b32"
+        },
+        "status": "PASS",
+        "native_images_verified": 123,
+        "machine": "0xaa64",
+        "archive_sha256": "ee42b1976cdd4cda614e2f51089f5b71009d162953790f18ca1af77770d7ac1e"
       }
     },
     {
@@ -278,7 +307,6 @@
     "current-version real BLE per implementation",
     "Smart HID provisioning READY and recovery paths",
     "OTA cancel/failure/reboot verification",
-    "Qt Windows ARM64 native packaging coverage",
     "distribution signatures/profiles/notarization",
     "store metadata/privacy URL/SDK declarations",
     "clean installation and upgrade",
@@ -290,137 +318,144 @@
   "public_support_email": "121912336@qq.com",
   "store_materials_status": "DEFERRED_BY_USER",
   "last_candidate_run": {
-    "url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/38023481655",
+    "url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/38027084309",
+    "head_commit": "abf615638370b1538850b496ac3dad8078f12b5e",
     "status": "PASS",
-    "jobs_passed": 23,
-    "jobs_total": 23,
-    "note": "All declared candidate lanes passed and uploaded packages. Qt Windows ARM64 is not covered by this run; native UniApp packaging, real BLE, installation and distribution remain independent gates.",
+    "jobs_passed": 24,
+    "jobs_total": 24,
+    "artifacts_uploaded": 24,
+    "note": "All declared native OS/CPU candidate lanes passed and uploaded complete artifacts. Real BLE, installation, distribution signing and store submission remain independent gates.",
+    "checkout_note": "Pull-request runners may use GitHub synthetic merge commits; each build report records its actual checkout commit and application/core source trees.",
     "jobs": [
       {
-        "name": "mobile (flutter-android)",
-        "id": 114129276002,
-        "status": "PASS"
-      },
-      {
-        "name": "flutter-windows (windows-11-arm)",
-        "id": 114129276060,
-        "status": "PASS"
-      },
-      {
-        "name": "windows-implementations (windows-latest, wails)",
-        "id": 114129276083,
-        "status": "PASS"
-      },
-      {
-        "name": "windows-implementations (windows-latest, qt)",
-        "id": 114129276096,
-        "status": "PASS"
-      },
-      {
-        "name": "windows-implementations (windows-11-arm, avalonia)",
-        "id": 114129276098,
-        "status": "PASS"
-      },
-      {
-        "name": "apple (flutter-ios)",
-        "id": 114129276102,
-        "status": "PASS"
-      },
-      {
-        "name": "apple (flutter-macos)",
-        "id": 114129276110,
-        "status": "PASS"
-      },
-      {
-        "name": "apple (ios)",
-        "id": 114129276115,
-        "status": "PASS"
-      },
-      {
-        "name": "windows-implementations (windows-11-arm, wails)",
-        "id": 114129276137,
+        "name": "mobile (android)",
+        "id": 114140118868,
         "status": "PASS"
       },
       {
         "name": "flutter-windows (windows-latest)",
-        "id": 114129276142,
+        "id": 114140118928,
         "status": "PASS"
       },
       {
-        "name": "mobile (android)",
-        "id": 114129276152,
+        "name": "apple (ios)",
+        "id": 114140118938,
         "status": "PASS"
       },
       {
-        "name": "apple (macos)",
-        "id": 114129276154,
-        "status": "PASS"
-      },
-      {
-        "name": "windows-implementations (windows-latest, avalonia)",
-        "id": 114129276184,
-        "status": "PASS"
-      },
-      {
-        "name": "desktop (windows-11-arm, electron)",
-        "id": 114129276209,
-        "status": "PASS"
-      },
-      {
-        "name": "desktop (windows-latest, electron)",
-        "id": 114129276216,
-        "status": "PASS"
-      },
-      {
-        "name": "desktop (macos-latest, electron)",
-        "id": 114129276270,
-        "status": "PASS"
-      },
-      {
-        "name": "desktop (ubuntu-22.04-arm, tauri)",
-        "id": 114129276304,
-        "status": "PASS"
-      },
-      {
-        "name": "desktop (windows-latest, tauri)",
-        "id": 114129276311,
-        "status": "PASS"
-      },
-      {
-        "name": "desktop (ubuntu-22.04, tauri)",
-        "id": 114129276330,
-        "status": "PASS"
-      },
-      {
-        "name": "desktop (ubuntu-22.04, electron)",
-        "id": 114129276346,
-        "status": "PASS"
-      },
-      {
-        "name": "desktop (windows-11-arm, tauri)",
-        "id": 114129276355,
-        "status": "PASS"
-      },
-      {
-        "name": "desktop (macos-latest, tauri)",
-        "id": 114129276358,
+        "name": "flutter-windows (windows-11-arm)",
+        "id": 114140118975,
         "status": "PASS"
       },
       {
         "name": "desktop (ubuntu-22.04-arm, electron)",
-        "id": 114129276385,
+        "id": 114140118978,
+        "status": "PASS"
+      },
+      {
+        "name": "windows-implementations (windows-11-arm, qt)",
+        "id": 114140118989,
+        "status": "PASS"
+      },
+      {
+        "name": "windows-implementations (windows-latest, avalonia)",
+        "id": 114140118990,
+        "status": "PASS"
+      },
+      {
+        "name": "desktop (macos-latest, tauri)",
+        "id": 114140118996,
+        "status": "PASS"
+      },
+      {
+        "name": "windows-implementations (windows-11-arm, wails)",
+        "id": 114140119004,
+        "status": "PASS"
+      },
+      {
+        "name": "windows-implementations (windows-latest, wails)",
+        "id": 114140119009,
+        "status": "PASS"
+      },
+      {
+        "name": "mobile (flutter-android)",
+        "id": 114140119011,
+        "status": "PASS"
+      },
+      {
+        "name": "apple (macos)",
+        "id": 114140119012,
+        "status": "PASS"
+      },
+      {
+        "name": "apple (flutter-ios)",
+        "id": 114140119029,
+        "status": "PASS"
+      },
+      {
+        "name": "windows-implementations (windows-latest, qt)",
+        "id": 114140119030,
+        "status": "PASS"
+      },
+      {
+        "name": "apple (flutter-macos)",
+        "id": 114140119032,
+        "status": "PASS"
+      },
+      {
+        "name": "desktop (ubuntu-22.04-arm, tauri)",
+        "id": 114140119033,
+        "status": "PASS"
+      },
+      {
+        "name": "desktop (windows-11-arm, tauri)",
+        "id": 114140119050,
+        "status": "PASS"
+      },
+      {
+        "name": "desktop (ubuntu-22.04, tauri)",
+        "id": 114140119063,
+        "status": "PASS"
+      },
+      {
+        "name": "desktop (windows-latest, tauri)",
+        "id": 114140119067,
+        "status": "PASS"
+      },
+      {
+        "name": "desktop (windows-latest, electron)",
+        "id": 114140119077,
+        "status": "PASS"
+      },
+      {
+        "name": "windows-implementations (windows-11-arm, avalonia)",
+        "id": 114140119105,
+        "status": "PASS"
+      },
+      {
+        "name": "desktop (macos-latest, electron)",
+        "id": 114140119136,
+        "status": "PASS"
+      },
+      {
+        "name": "desktop (ubuntu-22.04, electron)",
+        "id": 114140119147,
+        "status": "PASS"
+      },
+      {
+        "name": "desktop (windows-11-arm, electron)",
+        "id": 114140119208,
         "status": "PASS"
       }
-    ],
-    "head_commit": "4491fd49f140a3ceeba51b2fa0e73d5f81caf278",
-    "checkout_note": "Pull-request runners may use GitHub synthetic merge commits; each build report records its actual checkout commit and application/core source trees."
+    ]
   },
   "last_software_run": {
-    "url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/38023481622",
+    "url": "https://github.com/LuoYaoSheng/smart-ble/actions/runs/38027084237",
+    "head_commit": "abf615638370b1538850b496ac3dad8078f12b5e",
     "status": "FAILED",
-    "note": "Seven jobs passed; Apple failed on two iOS UI tests. Follow-up in progress; no all-software PASS claim.",
-    "head_commit": "4491fd49f140a3ceeba51b2fa0e73d5f81caf278",
-    "checkout_note": "Pull-request runners may use GitHub synthetic merge commits; each build report records its actual checkout commit and application/core source trees."
+    "jobs_passed": 7,
+    "jobs_total": 8,
+    "note": "Initial P001 audit timeout/P005 fixture failures fixed. Restored P003 audit found inaccessible text; advertisement copy transient-feedback test failed. Further actual AX/copy state fixes in progress."
   },
   "signed_android_evidence": {
     "android": {

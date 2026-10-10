@@ -139,6 +139,9 @@ final class AccessibilityAuditUITests: XCTestCase {
         for type in Self.iosAuditTypes where types.contains(type) {
             print("[A11Y-STRUCTURAL] audit=\(type)")
             try app.performAccessibilityAudit(for: type) { issue in
+                let element = issue.element
+                let evidence = "audit=\(issue.auditType) | compact=\(issue.compactDescription) | detailed=\(issue.detailedDescription) | label=\(element?.label ?? "nil") | identifier=\(element?.identifier ?? "nil") | frame=\(element.map { String(describing: $0.frame) } ?? "nil")"
+                print("[A11Y-ISSUE] \(evidence)")
                 if Self.exemptAuditTypes.contains(issue.auditType) { return true }
                 // 正典数据 chip 豁免：Release Metadata 投影（F027）的版本号 / 发布状态
                 // chip（如 "1.0.5-preview" / "NOT_RELEASED"）是产品正典事实值本身，
@@ -147,6 +150,14 @@ final class AccessibilityAuditUITests: XCTestCase {
                     && issue.compactDescription.contains("human-readable") {
                     return true
                 }
+                let detail = XCTAttachment(string: evidence + "\n" + (element?.debugDescription ?? "No associated AX element") + "\n\n" + self.app.debugDescription)
+                detail.name = "Accessibility issue and hierarchy"
+                detail.lifetime = .keepAlways
+                self.add(detail)
+                let screenshot = XCTAttachment(screenshot: self.app.screenshot())
+                screenshot.name = "Accessibility failing screen"
+                screenshot.lifetime = .keepAlways
+                self.add(screenshot)
                 return false
             }
         }

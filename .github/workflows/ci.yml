@@ -85,8 +85,18 @@ jobs:
           # The inventory method logs findings only and is not a release gate.
           # Contrast/Dynamic Type/clipping limitations remain documented in the test scope.
           xcodebuild -project SmartBLE.xcodeproj -scheme SmartBLEiOS \
-            -destination "platform=iOS Simulator,name=$DEST" test \
+            -destination "platform=iOS Simulator,name=$DEST" \
+            -resultBundlePath "$RUNNER_TEMP/SmartBLE-ios-tests.xcresult" test \
             -skip-testing:SmartBLEUITests/AccessibilityAuditUITests/testAuditIssueInventoryDiagnostic
+
+      - name: Preserve failed iOS test evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-test-failure-evidence
+          path: ${{ runner.temp }}/SmartBLE-ios-tests.xcresult
+          if-no-files-found: warn
+          retention-days: 14
 
       - name: Native macOS build (SmartBLE-mac)
         working-directory: apps/desktop/macos/SmartBLE-mac
