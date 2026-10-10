@@ -85,6 +85,7 @@ run_check "UniAutomator page-flow syntax" "$NODE_BIN" --check apps/uniapp/pages/
 # Release metadata check
 run_check "Release metadata check" "$NODE_BIN" scripts/generate-release-metadata.mjs --check
 run_check "Version consistency" "$NODE_BIN" scripts/check-version-consistency.mjs
+run_check "Privacy policy mirrors" "$NODE_BIN" scripts/generate-privacy-policy.mjs --check
 # 跨语言协议向量 parity：js 线（本机 NODE_BIN 已具备 .ts 能力）+ dart/kotlin/swift 线状态登记；
 # 断言失败才非零退出，BLOCKED(toolchain)/NOT_IMPLEMENTED(kotlin W3) 为在册状态。
 run_check "Smart HID platform parity" "$NODE_BIN" scripts/check-platform-parity.mjs

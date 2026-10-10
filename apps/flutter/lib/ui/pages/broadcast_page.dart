@@ -9,6 +9,7 @@ import '../../core/models/log_entry.dart';
 import '../../core/utils/logger.dart';
 import '../../themes/app_theme.dart';
 import '../widgets/log_panel.dart';
+import '../widgets/permission_disclosure.dart';
 import '../design/app_navbar.dart';
 import '../design/app_chip.dart';
 import '../design/app_badge.dart';
@@ -64,6 +65,10 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
 
   Future<void> _initializePeripheral() async {
     if (!_platformSupported) return;
+    if (Platform.isAndroid &&
+        !await hasAndroidBlePermissions(advertise: true)) {
+      return;
+    }
 
     final supported = await _peripheralManager.initialize();
     if (mounted && supported) {
@@ -181,6 +186,8 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
       return;
     }
 
+    if (!await requestAndroidBlePermissions(context, advertise: true)) return;
+    if (!mounted) return;
     setState(() => _errorMessage = null);
     logger.info('开始广播…');
 
@@ -236,6 +243,8 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
   }
 
   Future<void> _checkSupport() async {
+    if (!await requestAndroidBlePermissions(context, advertise: true)) return;
+    if (!mounted) return;
     logger.info('检查广播支持…');
     final supported = await _peripheralManager.isPlatformSupported();
     if (!mounted) return;

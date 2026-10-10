@@ -58,7 +58,9 @@ import com.smartble.ui.viewmodel.BroadcastViewModel
  * 开始/停止 + 检查支持；日志面板 cardv 白卡变体。状态徽章在导航栏（MainActivity）。
  */
 @Composable
-fun BroadcastContent(viewModel: BroadcastViewModel) {
+fun BroadcastContent(viewModel: BroadcastViewModel,
+                     onToggleAdvertising: (() -> Unit)? = null,
+                     onCheckSupport: (() -> Unit)? = null) {
     val context = LocalContext.current
     val isAdvertising by viewModel.isAdvertising.collectAsState()
     val nameInput by viewModel.nameInput.collectAsState()
@@ -180,13 +182,13 @@ fun BroadcastContent(viewModel: BroadcastViewModel) {
                     icon = if (isAdvertising) DsIcons.Stop else DsIcons.Cast,
                     danger = isAdvertising,
                     enabled = !over && !viewModel.uuidInvalid,
-                    onClick = { viewModel.toggleAdvertising() },
+                    onClick = { (onToggleAdvertising ?: viewModel::toggleAdvertising).invoke() },
                     modifier = Modifier.weight(1f),
                 )
                 DsSoftButton(
                     label = "检查支持",
                     icon = DsIcons.Refresh,
-                    onClick = { viewModel.checkSupport() },
+                    onClick = { (onCheckSupport ?: viewModel::checkSupport).invoke() },
                     small = true,
                 )
             }

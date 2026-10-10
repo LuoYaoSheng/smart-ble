@@ -41,6 +41,7 @@ verify-desktop-contracts:
 
 verify-release-config:
 	node scripts/check-version-consistency.mjs
+	node scripts/generate-privacy-policy.mjs --check
 	python3 scripts/release/check-config.py
 
 # Example: make release-candidate TARGET=android

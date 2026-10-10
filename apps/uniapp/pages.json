@@ -62,6 +62,13 @@
 				"navigationBarTitleText": "版本记录",
 				"navigationStyle": "custom"
 			}
+		},
+		{
+			"path": "pages/about/privacy",
+			"style": {
+				"navigationBarTitleText": "隐私说明",
+				"navigationStyle": "custom"
+			}
 		}
 	],
 	"globalStyle": {

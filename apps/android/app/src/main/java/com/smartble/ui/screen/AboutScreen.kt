@@ -48,6 +48,9 @@ import androidx.compose.ui.window.Dialog
 import com.smartble.BuildConfig
 import com.smartble.R
 import com.smartble.core.utils.VersionMetadata
+import com.smartble.core.utils.PrivacyPolicy
+import android.widget.Toast
+import androidx.compose.foundation.layout.heightIn
 import com.smartble.ui.design.DsChip
 import com.smartble.ui.design.DsFoot
 import com.smartble.ui.design.DsIcons
@@ -77,6 +80,7 @@ fun AboutContent(
 ) {
     val context = LocalContext.current
     var showFeedback by remember { mutableStateOf(false) }
+    var showPrivacy by remember { mutableStateOf(false) }
     // F027 版本三态：基准 = Release Metadata 投影（verFallback），
     // 运行时渠道（包版本）非空才覆盖，失败保留基准。
     val version = BuildConfig.VERSION_NAME.takeIf { it.isNotBlank() }
@@ -107,6 +111,11 @@ fun AboutContent(
         Column(Modifier.dsCard(innerPadding = 8.dp)) {
             DsMenuRow(icon = DsIcons.Ext, label = "官方网站", onClick = { openUrl(WEBSITE) })
             DsMenuRow(icon = DsIcons.Doc, label = "版本记录", onClick = onOpenVersions)
+            DsMenuRow(icon = DsIcons.Doc, label = "隐私说明（离线可读）", onClick = { showPrivacy = true })
+            DsMenuRow(icon = DsIcons.Send, label = "联系支持 · ${PrivacyPolicy.SUPPORT_EMAIL}", onClick = {
+                runCatching { context.startActivity(Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:${PrivacyPolicy.SUPPORT_EMAIL}"))) }
+                    .onFailure { Toast.makeText(context, "请联系 ${PrivacyPolicy.SUPPORT_EMAIL}", Toast.LENGTH_LONG).show() }
+            })
             DsMenuRow(icon = DsIcons.Send, label = "问题反馈", onClick = { showFeedback = true })
             DsMenuRow(icon = DsIcons.Share, label = "分享应用", onClick = { shareApp(context) }, showDivider = false)
         }
@@ -114,6 +123,7 @@ fun AboutContent(
         Spacer(modifier = Modifier.height(8.dp))
     }
 
+    if (showPrivacy) { PrivacyPolicyDialog(onDismiss = { showPrivacy = false }) }
     if (showFeedback) {
         FeedbackQrDialog(onDismiss = { showFeedback = false })
     }
@@ -233,3 +243,16 @@ private fun shareApp(context: android.content.Context) {
 private const val WEBSITE = "https://lightble.i2kai.com/"
 private const val FEEDBACK_URL = "https://gitee.com/luoyaosheng/smart-ble/issues"
 
+
+@Composable
+fun PrivacyPolicyDialog(onDismiss: () -> Unit) {
+    Dialog(onDismissRequest = onDismiss) {
+        Column(Modifier.fillMaxWidth().heightIn(max = 600.dp).clip(RoundedCornerShape(20.dp)).background(cCard).padding(20.dp)) {
+            Text("隐私说明", fontSize = 16.sp, fontWeight = FontWeight.W700, color = cText)
+            Spacer(Modifier.height(12.dp))
+            Text(PrivacyPolicy.text, modifier = Modifier.weight(1f).verticalScroll(rememberScrollState()), fontSize = 13.sp, lineHeight = 20.sp, color = cText)
+            Spacer(Modifier.height(12.dp))
+            DsPrimaryButton(label = "关闭", icon = null, onClick = onDismiss, modifier = Modifier.fillMaxWidth(), small = true)
+        }
+    }
+}

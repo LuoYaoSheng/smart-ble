@@ -146,6 +146,12 @@ class BleManager {
   /// 扫描态流（含超时自动停止事件），页面据此同步 UI
   Stream<bool> get isScanningStream => FlutterBluePlus.isScanning;
 
+  /// Permission disclosure can render an honest state without probing native
+  /// Bluetooth first (which would cache Android's unauthorized adapter state).
+  void markPermissionRequired() {
+    if (!_stateController.isClosed) _stateController.add(BleState.unauthorized);
+  }
+
   /// 初始化 BLE
   Future<bool> initialize() async {
     // 如果控制器已关闭，重新初始化

@@ -30,6 +30,7 @@ import {
   resetReconnectManagerForTesting,
 } from './reconnect-manager.js';
 import { DISCONNECT_REASON } from './reconnect-policy.js';
+import { hasFeatureConsent, requestFeatureConsent } from '../privacy-consent.js';
 import { createLogger } from '../logger/log-redaction.js';
 import {
   createConnectionDiscovery,
@@ -129,6 +130,7 @@ function call(platform, method, options = {}) {
 
 function ensureCallbacks() {
   const platform = getBlePlatform();
+  if (!hasFeatureConsent()) return platform;
   if (state.callbacksRegistered && state.platform === platform) return platform;
   if (state.callbacksRegistered && state.platform !== platform && registry.listSessions().length) {
     throw new Error('BLE platform cannot change while sessions are active');
@@ -420,6 +422,7 @@ export function getDeviceDiscovery(deviceId) {
 }
 
 export async function connectDevice(deviceId, options = {}) {
+  if (!await requestFeatureConsent()) throw new Error('尚未授权，蓝牙连接未启动。');
   const existing = getRuntimeSession(deviceId);
   if (existing) {
     return enforceSessionRequirements(existing, options);
@@ -458,6 +461,7 @@ export function onAdapterState(callback) {
 
 export async function openAdapter() {
   try {
+    if (!await requestFeatureConsent()) throw new Error('尚未授权，蓝牙适配器未启动。');
     return await call(ensureCallbacks(), 'openBluetoothAdapter');
   } catch (error) {
     if (isAlreadyOpenedError(error)) return { alreadyOpened: true };
@@ -466,6 +470,7 @@ export async function openAdapter() {
 }
 
 export async function startDiscovery(options = {}) {
+  if (!await requestFeatureConsent()) throw new Error('尚未授权，蓝牙扫描未启动。');
   return call(ensureCallbacks(), 'startBluetoothDevicesDiscovery', options);
 }
 

@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:permission_handler/permission_handler.dart';
+import '../widgets/permission_disclosure.dart';
 import '../../core/ble/ble_manager.dart';
 import '../../core/ble/profile_registry.dart';
 import '../../core/models/ble_scan_result.dart';
@@ -111,12 +111,10 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
 
   Future<void> _initializeBle() async {
     try {
-      if (Platform.isAndroid) {
-        await [
-          Permission.location,
-          Permission.bluetoothScan,
-          Permission.bluetoothConnect,
-        ].request();
+      if (Platform.isAndroid && !await hasAndroidBlePermissions()) {
+        _bleManager.markPermissionRequired();
+        if (mounted) setState(() => _isInitialized = true);
+        return;
       }
 
       final success = await _bleManager.initialize();
@@ -142,6 +140,10 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
 
   Future<void> _startScan() async {
     try {
+      if (!await requestAndroidBlePermissions(context)) return;
+      if (!mounted) return;
+      final initialized = await _bleManager.initialize();
+      if (!initialized || !mounted) return;
       setState(() {
         _errorCode = null;
         _errorMessage = null;
@@ -227,8 +229,7 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // 扫描失败横幅（正典 B8 ebanner）
-                    if (_errorMessage != null)
-                      _buildErrorBanner(),
+                    if (_errorMessage != null) _buildErrorBanner(),
 
                     // 扫描工具条（正典 .scantool：左状态标签 + 右按钮）
                     _buildScanTool(isScanning, filteredDevices.length),
@@ -331,14 +332,16 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
           const SizedBox(height: 5),
           Text(
             _errorMessage ?? '',
-            style: const TextStyle(fontSize: AppTokens.fsBody + 1, color: AppTokens.cSub),
+            style: const TextStyle(
+                fontSize: AppTokens.fsBody + 1, color: AppTokens.cSub),
           ),
           const SizedBox(height: 10),
           OutlinedButton.icon(
             onPressed: _startScan,
             icon: const AppIcon('refresh', size: 14, color: AppTokens.cDanger),
             label: const Text('重试',
-                style: TextStyle(fontSize: AppTokens.fsBody, color: AppTokens.cDanger)),
+                style: TextStyle(
+                    fontSize: AppTokens.fsBody, color: AppTokens.cDanger)),
             style: OutlinedButton.styleFrom(
               minimumSize: const Size(0, 32),
               padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -414,9 +417,8 @@ class _DeviceListPageState extends ConsumerState<DeviceListPage> {
           ],
           const Spacer(),
           TextButton(
-            onPressed: () => ref
-                .read(filterExpandedProvider.notifier)
-                .state = !filterExpanded,
+            onPressed: () => ref.read(filterExpandedProvider.notifier).state =
+                !filterExpanded,
             style: TextButton.styleFrom(
               foregroundColor: AppTheme.primaryColor,
               minimumSize: const Size(0, 32),
@@ -537,9 +539,9 @@ class _PulseDotState extends State<_PulseDot>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-        vsync: this, duration: const Duration(seconds: 1))
-      ..repeat();
+    _controller =
+        AnimationController(vsync: this, duration: const Duration(seconds: 1))
+          ..repeat();
   }
 
   @override

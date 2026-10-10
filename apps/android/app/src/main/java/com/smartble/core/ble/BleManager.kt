@@ -15,6 +15,8 @@ import android.bluetooth.le.ScanFilter
 import android.bluetooth.le.ScanResult as LeScanResult
 import android.bluetooth.le.ScanSettings
 import android.content.Context
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.ParcelUuid
 import android.os.Handler
@@ -75,7 +77,12 @@ class BleManager private constructor(private val context: Context) {
     private val bluetoothManager: BluetoothManager =
         context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
     private val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
-    private val bluetoothLeScanner: BluetoothLeScanner? = bluetoothAdapter?.bluetoothLeScanner
+    private val bluetoothLeScanner: BluetoothLeScanner?
+        get() = if (hasPermission(Manifest.permission.BLUETOOTH_SCAN) && hasPermission(Manifest.permission.BLUETOOTH_CONNECT))
+            bluetoothAdapter?.bluetoothLeScanner else null
+
+    private fun hasPermission(permission: String): Boolean = Build.VERSION.SDK_INT < Build.VERSION_CODES.S ||
+        context.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED
 
     private val gattConnections = java.util.concurrent.ConcurrentHashMap<String, BluetoothGatt>()
     private val connectTimeouts = java.util.concurrent.ConcurrentHashMap<String, Runnable>()
@@ -209,6 +216,7 @@ class BleManager private constructor(private val context: Context) {
     val bluetoothState: BluetoothState
         get() = when {
             bluetoothAdapter == null -> BluetoothState.Unavailable
+            !hasPermission(Manifest.permission.BLUETOOTH_CONNECT) -> BluetoothState.Unauthorized
             bluetoothAdapter.isEnabled -> BluetoothState.On
             else -> BluetoothState.Off
         }

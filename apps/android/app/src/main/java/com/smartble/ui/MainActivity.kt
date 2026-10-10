@@ -8,6 +8,12 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.mutableStateOf
+import com.smartble.ui.screen.PrivacyPolicyDialog
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -100,8 +106,8 @@ fun SmartBLEApp(
     deviceListViewModel: DeviceListViewModel,
     application: android.app.Application
 ) {
-    // Request permissions
-    PermissionsWrapper()
+    // Permissions are requested only after a feature action and explicit explanation.
+    val withBlePermission = PermissionsWrapper(onPermissionChanged = { deviceListViewModel.refreshBluetoothState() })
 
     val navController = rememberNavController()
     var selectedItem by remember { mutableIntStateOf(0) }
@@ -208,12 +214,14 @@ fun SmartBLEApp(
             composable(BottomNavItem.Scan.route) {
                 DeviceListContent(
                     viewModel = deviceListViewModel,
+                    onToggleScan = { withBlePermission(false) { deviceListViewModel.refreshBluetoothState(); deviceListViewModel.toggleScan() } },
+                    onEnableBluetooth = { withBlePermission(false) { deviceListViewModel.enableBluetooth() } },
                     onDeviceClick = { deviceId, deviceName ->
-                        navController.navigate("device_detail/$deviceId/$deviceName")
+                        withBlePermission(false) { navController.navigate("device_detail/$deviceId/$deviceName") }
                     },
                     // P001：Smart HID 卡片 Profile 主操作 → P002 配网（HidRoutes.scanCardOpen 同源规则）
                     onProfileAction = { device ->
-                        navController.navigate(HidRoutes.provision(device.deviceId, device.displayName))
+                        withBlePermission(false) { navController.navigate(HidRoutes.provision(device.deviceId, device.displayName)) }
                     },
                 )
             }
@@ -238,7 +246,9 @@ fun SmartBLEApp(
 
             // Broadcast tab
             composable(BottomNavItem.Broadcast.route) {
-                BroadcastContent(viewModel = broadcastViewModel)
+                BroadcastContent(viewModel = broadcastViewModel,
+                    onToggleAdvertising = { withBlePermission(true) { broadcastViewModel.toggleAdvertising() } },
+                    onCheckSupport = { withBlePermission(true) { broadcastViewModel.checkSupport() } })
             }
 
             // About tab
@@ -377,29 +387,41 @@ private fun hidSessionViewModel(
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun PermissionsWrapper() {
-    val permissions = mutableListOf<String>()
-
-    // Bluetooth permissions
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        permissions.add(Manifest.permission.BLUETOOTH_SCAN)
-        permissions.add(Manifest.permission.BLUETOOTH_CONNECT)
-        permissions.add(Manifest.permission.BLUETOOTH_ADVERTISE)
-    } else {
-        permissions.add(Manifest.permission.ACCESS_FINE_LOCATION)
-    }
-
-    // Location permission (always needed for BLE scanning)
-    if (!permissions.contains(Manifest.permission.ACCESS_FINE_LOCATION)) {
-        permissions.add(Manifest.permission.ACCESS_FINE_LOCATION)
-    }
-
-    val permissionsState = rememberMultiplePermissionsState(permissions)
-
-    // Request permissions on first launch
-    LaunchedEffect(Unit) {
-        if (!permissionsState.allPermissionsGranted) {
+fun PermissionsWrapper(onPermissionChanged: () -> Unit = {}): ((Boolean, () -> Unit) -> Unit) {
+    var advertise by remember { mutableStateOf(false) }
+    fun permissionList(forAdvertise: Boolean) = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        if (forAdvertise) listOf(Manifest.permission.BLUETOOTH_ADVERTISE, Manifest.permission.BLUETOOTH_CONNECT)
+        else listOf(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.ACCESS_FINE_LOCATION)
+    } else listOf(Manifest.permission.ACCESS_FINE_LOCATION)
+    val permissions = permissionList(advertise)
+    val context = androidx.compose.ui.platform.LocalContext.current
+    var explanationVisible by remember { mutableStateOf(false) }
+    var privacyVisible by remember { mutableStateOf(false) }
+    var pendingAction by remember { mutableStateOf<(() -> Unit)?>(null) }
+    val permissionsState = rememberMultiplePermissionsState(permissions, onPermissionsResult = { result ->
+        val action = pendingAction
+        pendingAction = null
+        onPermissionChanged()
+        if (permissions.all { result[it] == true || context.checkSelfPermission(it) == android.content.pm.PackageManager.PERMISSION_GRANTED }) action?.invoke()
+    })
+    if (privacyVisible) PrivacyPolicyDialog(onDismiss = { privacyVisible = false })
+    if (explanationVisible) AlertDialog(
+        onDismissRequest = { explanationVisible = false; pendingAction = null },
+        title = { Text(if (advertise) "广播权限用途" else "蓝牙扫描权限用途") },
+        text = { Column {
+            Text(if (advertise) "附近设备权限用于由本机发送蓝牙广播；旧版 Android 使用位置权限兼容广播 API。应用不读取 GPS 坐标或定位轨迹。您可以暂不授权并继续浏览其他页面。"
+                else "附近设备权限用于扫描和连接。位置权限用于 Android 蓝牙扫描兼容；应用不读取 GPS 坐标或定位轨迹。蓝牙业务数据仅保留在当前运行会话中。您可以暂不授权，继续浏览关于、版本记录和隐私说明。")
+            TextButton(onClick = { privacyVisible = true }) { Text("查看完整隐私说明") }
+        } },
+        confirmButton = { TextButton(onClick = {
+            explanationVisible = false
             permissionsState.launchMultiplePermissionRequest()
-        }
+        }) { Text("继续申请系统权限") } },
+        dismissButton = { TextButton(onClick = { explanationVisible = false; pendingAction = null }) { Text("暂不授权") } }
+    )
+    return { forAdvertise, action ->
+        advertise = forAdvertise
+        if (permissionList(forAdvertise).all { context.checkSelfPermission(it) == android.content.pm.PackageManager.PERMISSION_GRANTED }) action()
+        else { pendingAction = action; explanationVisible = true }
     }
 }

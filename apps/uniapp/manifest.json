@@ -22,6 +22,9 @@
         "distribute": {
             "android": {
                 "packagename": "com.i2kai.open.smartble",
+                "abiFilters": ["arm64-v8a", "armeabi-v7a", "x86_64"],
+                "permissionExternalStorage": {"request": "none"},
+                "permissionPhoneState": {"request": "none"},
                 "permissions": [
                     "<uses-permission android:name=\"android.permission.BLUETOOTH\"/>",
                     "<uses-permission android:name=\"android.permission.BLUETOOTH_ADMIN\"/>",

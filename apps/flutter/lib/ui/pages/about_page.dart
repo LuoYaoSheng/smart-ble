@@ -12,6 +12,7 @@ import '../design/app_navbar.dart';
 import '../design/app_chip.dart';
 import '../design/app_tokens.dart';
 import 'versions_page.dart';
+import 'privacy_page.dart';
 import '../../core/design/app_icons.dart';
 
 /// 关于页 —— 对齐基准原型 p009：紧凑品牌行 + 可操作信息，去除大图与展示型区块
@@ -95,44 +96,44 @@ class _AboutPageState extends State<AboutPage> {
       // UI-G2：正典 AppNavbar（ABOUT + 版本 chip mono）
       body: SafeArea(
         child: Column(
-        children: [
-          AppNavbar(
-            kicker: 'ABOUT',
-            title: '关于',
-            status: _version.isNotEmpty
-                ? AppChip(_version, tone: AppChipTone.mono)
-                : null,
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildBrandRow(),
-                  const SizedBox(height: 16),
-                  _buildSectionTitle('应用信息'),
-                  _buildAppInfoCard(),
-                  const SizedBox(height: 16),
-                  _buildMenuCard(),
-                  const SizedBox(height: 24),
-                  Center(
-                    child: Text(
-                      '日志全局脱敏：敏感凭据显示为 token=***\n© 2026 ${ProductConfig.name} · Smart BLE 产品家族',
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: AppTheme.textSecondary.withValues(alpha: 0.72),
-                        height: 1.6,
+          children: [
+            AppNavbar(
+              kicker: 'ABOUT',
+              title: '关于',
+              status: _version.isNotEmpty
+                  ? AppChip(_version, tone: AppChipTone.mono)
+                  : null,
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildBrandRow(),
+                    const SizedBox(height: 16),
+                    _buildSectionTitle('应用信息'),
+                    _buildAppInfoCard(),
+                    const SizedBox(height: 16),
+                    _buildMenuCard(),
+                    const SizedBox(height: 24),
+                    Center(
+                      child: Text(
+                        '日志全局脱敏：敏感凭据显示为 token=***\n© 2026 ${ProductConfig.name} · Smart BLE 产品家族',
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: AppTheme.textSecondary.withValues(alpha: 0.72),
+                          height: 1.6,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
       ),
     );
   }
@@ -214,8 +215,11 @@ class _AboutPageState extends State<AboutPage> {
       ),
       child: Column(
         children: [
-          _kvRow('当前环境',
-              Platform.isWindows ? 'Desktop · Windows' : '${Platform.operatingSystem} · ${Platform.operatingSystemVersion}'),
+          _kvRow(
+              '当前环境',
+              Platform.isWindows
+                  ? 'Desktop · Windows'
+                  : '${Platform.operatingSystem} · ${Platform.operatingSystemVersion}'),
           _kvRow('设备型号', _loadingInfo ? '…' : _deviceModel),
           _kvRow('版本', _loadingInfo ? '…' : _version, last: true),
         ],
@@ -272,6 +276,16 @@ class _AboutPageState extends State<AboutPage> {
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (context) => const VersionsPage()),
             ),
+          ),
+          _MenuRow(
+            icon: 'doc',
+            title: '隐私说明（离线可读）',
+            onTap: () => showPrivacyPage(context),
+          ),
+          _MenuRow(
+            icon: 'send',
+            title: '联系支持 · $supportEmail',
+            onTap: () => _openLink(context, 'mailto:$supportEmail'),
           ),
           _MenuRow(
             icon: 'send',

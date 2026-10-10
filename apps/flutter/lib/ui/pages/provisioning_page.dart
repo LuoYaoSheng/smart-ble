@@ -8,6 +8,7 @@
 // 隐私约定：Wi-Fi 密码与配对 token 只存在于页面内存（TextEditingController /
 // 字段），不写日志、不落存储；离开页面即清空（canon p002Cleanup）。
 
+import '../widgets/permission_disclosure.dart';
 import 'dart:async';
 import 'dart:io' show Platform;
 
@@ -205,6 +206,11 @@ class _ProvisioningPageState extends ConsumerState<ProvisioningPage> {
           setState(() => _qrErr = QrFailureReason.permission);
           return;
         }
+        if (!mounted) return;
+        final approved = await explainPermissionUse(context,
+            title: '相机权限用途',
+            purpose: '相机仅用于识别 ControlHub 配对二维码，不保存拍摄图像。您也可以使用手动输入或粘贴配对信息。');
+        if (!approved || !mounted) return;
         granted = (await Permission.camera.request()).isGranted;
       }
       if (!granted) {
@@ -295,7 +301,8 @@ class _ProvisioningPageState extends ConsumerState<ProvisioningPage> {
         if (!didPop) _confirmLeave();
       },
       child: Scaffold(
-        backgroundColor: AppTokens.cBg /* --c-bg #F8FBFF · UI-CONV 2026-09-10 */,
+        backgroundColor:
+            AppTokens.cBg /* --c-bg #F8FBFF · UI-CONV 2026-09-10 */,
         // UI-G2：正典 AppSubnav（返回走 U-01 离开确认，PopScope 同口径）
         appBar: AppSubnav(title: '配置 Smart HID', onBack: _confirmLeave),
         body: ListView(
@@ -865,7 +872,10 @@ class _ErrorBanner extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(message,
                     style: const TextStyle(
-                        fontSize: 12, height: 1.5, color: AppTokens.cSub /* 正典 .ebanner .d 文本色 --c-sub */)),
+                        fontSize: 12,
+                        height: 1.5,
+                        color:
+                            AppTokens.cSub /* 正典 .ebanner .d 文本色 --c-sub */)),
               ],
             ),
           ),
@@ -905,8 +915,7 @@ class _StatusBadge extends StatelessWidget {
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
-              color:
-                  connected ? AppTokens.cSuccessDeep : AppTokens.cDanger,
+              color: connected ? AppTokens.cSuccessDeep : AppTokens.cDanger,
             ),
           ),
         ],
@@ -1101,9 +1110,7 @@ class _QrErrorPanel extends StatelessWidget {
               style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
-                  color: isWarn
-                      ? AppTokens.cWarningDeep
-                      : AppTokens.cDanger)),
+                  color: isWarn ? AppTokens.cWarningDeep : AppTokens.cDanger)),
           const SizedBox(height: 4),
           Text(descs[reason]!,
               style: const TextStyle(
@@ -1150,7 +1157,9 @@ class _InfoNote extends StatelessWidget {
             child: Text(
               text,
               style: const TextStyle(
-                  fontSize: 12, height: 1.5, color: AppTokens.noteInfoFg /* 正典 .note.info #2E5290 */),
+                  fontSize: 12,
+                  height: 1.5,
+                  color: AppTokens.noteInfoFg /* 正典 .note.info #2E5290 */),
             ),
           ),
         ],
@@ -1288,13 +1297,13 @@ class _PrimaryButton extends StatelessWidget {
                 fontWeight: FontWeight.w600,
                 color: onPressed == null ? AppTokens.cPh : Colors.white)),
         style: ElevatedButton.styleFrom(
-          backgroundColor: onPressed == null ? AppTokens.cFill : AppTheme.primaryColor,
+          backgroundColor:
+              onPressed == null ? AppTokens.cFill : AppTheme.primaryColor,
           foregroundColor: Colors.white,
           disabledBackgroundColor: AppTokens.cFill,
           disabledForegroundColor: AppTokens.cPh,
           padding: const EdgeInsets.symmetric(vertical: 12),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
       ),
     );
@@ -1326,8 +1335,7 @@ class _SoftButton extends StatelessWidget {
         style: OutlinedButton.styleFrom(
           side: const BorderSide(color: AppTheme.borderColor),
           padding: const EdgeInsets.symmetric(vertical: 12),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
       ),
     );
@@ -1433,8 +1441,7 @@ class _QrScannerSheetState extends State<_QrScannerSheet> {
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                        color: AppTheme.borderColor, width: 1.5),
+                    border: Border.all(color: AppTheme.borderColor, width: 1.5),
                   ),
                   child: const Text(
                     'Windows 桌面线暂无摄像头扫码（F-WIN 降级）\n请使用下方「手动粘贴配对码」',

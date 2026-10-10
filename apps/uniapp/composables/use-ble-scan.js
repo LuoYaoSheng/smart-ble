@@ -4,6 +4,7 @@ import { useBleStore } from '../store/ble';
 import { matchScannedDevices } from '../services/provisioning/profiles.js';
 import { requestBleScanPermission } from '../services/scan-permission.js';
 import { filterBleDevices } from '../services/ble-runtime/device-filter.js';
+import { hasFeatureConsent } from '../services/privacy-consent.js';
 
 export function useBleScan() {
   const store = useBleStore();
@@ -35,6 +36,7 @@ export function useBleScan() {
   const filteredDevices = computed(() => filterBleDevices(devices.value, filterSettings.value));
 
   const checkBluetoothState = () => {
+    if (!hasFeatureConsent()) { store.setBleState('initializing'); return; }
     if (typeof uni.getBluetoothAdapterState !== 'function') {
       store.setBleState('unsupported');
       return;

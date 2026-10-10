@@ -40,6 +40,8 @@ for relative in ('apps/android/app/build.gradle.kts', 'apps/flutter/android/app/
 electron = json.loads((ROOT / 'apps/desktop/electron/package.json').read_text())
 uniapp = json.loads((ROOT / 'apps/uniapp/manifest.json').read_text())['app-plus']['distribute']
 require(uniapp['android']['packagename'] == identity and uniapp['ios']['appid'] == identity, 'UniApp mobile IDs differ from product identity')
+for permission in ('permissionPhoneState', 'permissionExternalStorage'):
+    require(uniapp['android'].get(permission, {}).get('request') == 'none', f'UniApp startup must not request {permission}')
 for relative in ('apps/ios/project.yml', 'apps/ios/SmartBLE.xcodeproj/project.pbxproj', 'apps/flutter/ios/Runner.xcodeproj/project.pbxproj'):
     text = (ROOT / relative).read_text()
     ids = re.findall(r'PRODUCT_BUNDLE_IDENTIFIER\s*[:=]\s*([^;\s]+)', text)
@@ -48,6 +50,12 @@ require(bool(electron['build']['mac'].get('extendInfo', {}).get('NSBluetoothAlwa
 require((ROOT / 'apps/ios/SmartBLE/Resources/PrivacyInfo.xcprivacy').is_file(), 'Native iOS privacy manifest missing')
 require((ROOT / 'docs/privacy.md').is_file(), 'Privacy policy source missing')
 require((ROOT / 'release/platform-matrix.json').is_file(), 'Unified platform release matrix missing')
+native_privacy = json.loads((ROOT / 'apps/uniapp/androidPrivacy.json').read_text())
+require(native_privacy.get('prompt') == 'template', 'UniApp requires SDK native privacy template before initialization')
+require(native_privacy.get('hrefLoader') == 'default', 'UniApp local privacy page requires the built-in loader')
+require(native_privacy.get('disagreeMode', {}).get('support') is True, 'UniApp must allow declining optional permissions')
+require(native_privacy.get('disagreeMode', {}).get('loadNativePlugins') is False, 'UniApp visitor mode must not initialize the Bluetooth plugin')
+require((ROOT / 'apps/uniapp/static/privacy.html').is_file(), 'UniApp offline privacy page missing')
 
 if errors:
     print('Release configuration FAILED:\n' + '\n'.join(f'  - {item}' for item in errors), file=sys.stderr)

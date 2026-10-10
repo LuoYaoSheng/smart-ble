@@ -13,7 +13,7 @@
 			<view class="logo-box"><AppIcon name="bt" :size="36" tone="card" /></view>
 		<view class="brand-copy">
 			<text class="app-name">{{ product.name }}</text>
-			<text class="version">{{ appVersion }} · 零后端 · 零本地持久化</text>
+			<text class="version">{{ appVersion }} · 业务会话不落盘</text>
 		</view>
 	</view>
 
@@ -43,6 +43,7 @@
 			<view class="menu-list">
 				<view class="menu-item" hover-class="menu-item-hover" @click="openWebsite"><text>官方网站</text><AppIcon name="chev-r" :size="28" tone="primary" class="menu-arrow" /></view>
 				<view class="menu-item" hover-class="menu-item-hover" @click="goVersion"><text>版本记录</text><AppIcon name="chev-r" :size="28" tone="primary" class="menu-arrow" /></view>
+				<view class="menu-item" hover-class="menu-item-hover" @click="goPrivacy"><text>隐私说明</text><AppIcon name="chev-r" :size="28" tone="primary" class="menu-arrow" /></view>
 				<view class="menu-item" hover-class="menu-item-hover" @click="openFeedback"><text>问题反馈</text><AppIcon name="chev-r" :size="28" tone="primary" class="menu-arrow" /></view>
 				<view class="menu-item" hover-class="menu-item-hover" @click="shareApp"><text>分享应用</text><AppIcon name="chev-r" :size="28" tone="primary" class="menu-arrow" /></view>
 			</view>
@@ -63,6 +64,7 @@
 				<view class="feedback-desc">
 					<text class="feedback-line">通过 GitHub Issues 提交问题反馈，描述复现步骤与环境信息即可。</text>
 					<text class="feedback-line">反馈链接：{{ product.feedback }}</text>
+					<text class="feedback-line">公开联系邮箱：121912336@qq.com</text>
 				</view>
 				<view class="feedback-actions">
 					<button class="ble-btn ble-btn--sm feedback-btn feedback-btn--soft" @click="copyFeedbackLink">复制反馈链接</button>
@@ -80,6 +82,7 @@ import { onLoad } from '@dcloudio/uni-app';
 import AppNavbar from '../../components/ui/AppNavbar.vue';
 import AppChip from '../../components/ui/AppChip.vue';
 import AppIcon from '../../components/ui/AppIcon.vue'; // UI-PARITY-G0 正典图标入口
+import { hasFeatureConsent, requestFeatureConsent } from '../../services/privacy-consent.js';
 import {
 	PRODUCT_FEATURES,
 	PRODUCT_INFO
@@ -111,6 +114,7 @@ const platformStatusLabel = (platform) => {
 };
 
 const getSystemInfo = () => {
+	if (!hasFeatureConsent()) { systemInfo.value = { platform: '未授权', system: '未读取', model: '未读取' }; return; }
 	try {
 		const info = uni.getDeviceInfo?.() || {};
 		systemInfo.value = {
@@ -155,8 +159,10 @@ const openFeedback = () => { feedbackVisible.value = true; };
 const closeFeedback = () => { feedbackVisible.value = false; };
 const copyFeedbackLink = () => copyLink(product.feedback, '反馈链接已复制');
 const goVersion = () => uni.navigateTo({ url: '/pages/about/version' });
+const goPrivacy = () => uni.navigateTo({ url: '/pages/about/privacy' });
 
-const shareApp = () => {
+const shareApp = async () => {
+  if (!await requestFeatureConsent()) return;
 // #ifdef APP-PLUS
 	uni.share({
 		provider: 'system',

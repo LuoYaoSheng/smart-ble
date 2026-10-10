@@ -154,6 +154,12 @@ class DeviceListViewModel(application: Application) : AndroidViewModel(applicati
         updateUiState()
     }
 
+    fun refreshBluetoothState() {
+        _bluetoothState.value = bleManager.bluetoothState
+        _errorMessage.value = null
+        updateUiState()
+    }
+
     fun clearError() {
         _errorMessage.value = null
     }

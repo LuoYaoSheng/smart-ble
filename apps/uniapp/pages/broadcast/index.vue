@@ -119,6 +119,7 @@ import AppBadge from '../../components/ui/AppBadge.vue';
 import LogPanel from '../../components/ui/LogPanel.vue';
 import AppIcon from '../../components/ui/AppIcon.vue'; // UI-PARITY-G0 正典图标入口
 import { onHide, onLoad, onUnload } from '@dcloudio/uni-app';
+import { hasFeatureConsent, requestFeatureConsent } from '../../services/privacy-consent.js';
 import { logger } from '../../../../core/ble-core/utils/logger';
 import { useBleStore } from '../../store/ble';
 import {
@@ -251,6 +252,7 @@ const exportLogs = () => {
 };
 
 const checkSupport = () => {
+	if (!hasFeatureConsent()) { addLog('系统', '使用广播前请阅读并授权隐私说明。'); return; }
 	// #ifdef APP-PLUS
 	if (!blePeripheral.value) {
 		addLog('错误', '插件未初始化');
@@ -536,7 +538,9 @@ const checkBluetoothAndPermissionsBeforeAdvertise = () => {
 	}
 };
 
-const toggleAdvertising = () => {
+const toggleAdvertising = async () => {
+	if (!await requestFeatureConsent()) return;
+	initializeNativeBroadcast();
 	if (platform.value === 'web') {
 		reportBroadcastError('当前平台不支持 BLE 广播，请使用 App。');
 		return;
@@ -558,14 +562,15 @@ const onConnectableChange = (e) => androidSettings.value.connectable = e.detail.
 const onIncludeDeviceNameChange = (e) => androidSettings.value.includeDeviceName = e.detail.value;
 const onAddServiceUuidChange = (e) => androidSettings.value.addServiceUuid = e.detail.value;
 
-onLoad(() => {
+const initializeNativeBroadcast = () => {
 	// WIN-UAND-002：`#ifdef APP-ANDROID/#ifdef APP-IOS` 在本仓工具链（HBuilderX CLI
 	// 标准基座与 npm build:app）中不被定义，条件块整体编译丢弃——Android 参数块/
 	// 默认载荷/权限前置链路曾为死代码。App 端细分平台改用运行时 systemInfo 判定；
 	// APP-PLUS / H5 单层 token 已验证有效，保留条件编译。
 	// #ifdef APP-PLUS
+	if (!hasFeatureConsent() || blePeripheral.value) return;
 	blePeripheral.value = uni.requireNativePlugin('LysBlePeripheral');
-	const sysPlatform = uni.getDeviceInfo?.().platform || '';
+	const sysPlatform = String(plus.os?.name || '').toLowerCase();
 	if (sysPlatform === 'android') {
 		platform.value = 'android';
 		deviceName.value = 'SmartBLE-A';
@@ -581,7 +586,8 @@ onLoad(() => {
 	platform.value = 'web';
 	// #endif
 	checkSupport();
-});
+};
+onLoad(initializeNativeBroadcast);
 
 
 onMounted(() => {

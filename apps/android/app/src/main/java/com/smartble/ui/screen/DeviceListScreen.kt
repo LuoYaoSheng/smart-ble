@@ -100,6 +100,8 @@ fun DeviceListContent(
     onDeviceClick: (String, String) -> Unit,
     modifier: Modifier = Modifier,
     onProfileAction: (BleDevice) -> Unit = {},
+    onToggleScan: (() -> Unit)? = null,
+    onEnableBluetooth: (() -> Unit)? = null,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val filteredScanResults by viewModel.filteredScanResults.collectAsState()
@@ -132,7 +134,7 @@ fun DeviceListContent(
                 when (uiState) {
                     is DeviceListUiState.Initializing -> ConnectingCard(message = "正在初始化蓝牙...")
                     is DeviceListUiState.BluetoothOff -> BluetoothOffCard(
-                        onEnableClick = { viewModel.enableBluetooth() }
+                        onEnableClick = { (onEnableBluetooth ?: viewModel::enableBluetooth).invoke() }
                     )
                     is DeviceListUiState.BluetoothUnavailable -> BluetoothUnavailableCard()
                     is DeviceListUiState.BluetoothUnauthorized -> BluetoothUnauthorizedCard()
@@ -147,7 +149,7 @@ fun DeviceListContent(
                                 ScanTool(
                                     isScanning = isScanning,
                                     foundCount = filteredScanResults.size,
-                                    onToggleScan = { viewModel.toggleScan() }
+                                    onToggleScan = { (onToggleScan ?: viewModel::toggleScan).invoke() }
                                 )
                             }
                             item {
@@ -180,7 +182,7 @@ fun DeviceListContent(
                                                 DsSoftButton(
                                                     label = "开始扫描",
                                                     icon = DsIcons.Scan,
-                                                    onClick = { viewModel.toggleScan() }
+                                                    onClick = { (onToggleScan ?: viewModel::toggleScan).invoke() }
                                                 )
                                             }
                                         }
