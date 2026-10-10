@@ -55,6 +55,7 @@ SmartBLE/.DS_Store
 
 # Android/Gradle
 .gradle/
+.kotlin/
 apps/android/.gradle/
 apps/android/app/build/
 
