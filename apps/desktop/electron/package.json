@@ -2,6 +2,7 @@
   "name": "smart-ble-desktop",
   "version": "1.0.5",
   "description": "Smart BLE - Desktop Application",
+  "homepage": "https://github.com/LuoYaoSheng/smart-ble",
   "main": "src/main/index.js",
   "scripts": {
     "start": "electron .",
@@ -16,7 +17,10 @@
     "bluetooth",
     "electron"
   ],
-  "author": "SmartBLE",
+  "author": {
+    "name": "Smart BLE Open",
+    "email": "121912336@qq.com"
+  },
   "license": "MIT",
   "dependencies": {
     "@abandonware/noble": "^1.9.2-15"

@@ -34,29 +34,29 @@ def main():
     parser.add_argument('--signed', action='store_true', help='Require real distribution signing; never use a debug key')
     parser.add_argument('--signing-config', type=Path, help='Local credentials JSON outside Git; values are never printed')
     args = parser.parse_args()
-    version = (ROOT / 'VERSION').read_text().strip()
-    build_number = str(json.loads((ROOT / 'apps/uniapp/manifest.json').read_text())['versionCode'])
+    version = (ROOT / 'VERSION').read_text(encoding='utf-8').strip()
+    build_number = str(json.loads((ROOT / 'apps/uniapp/manifest.json').read_text(encoding='utf-8'))['versionCode'])
     host = platform.system()
     architecture = 'arm64' if platform.machine().lower() in ('arm64', 'aarch64') else 'x64'
     env = os.environ.copy()
     if args.signed and args.target in ('android', 'flutter-android'):
         config = args.signing_config or Path.home() / '.config/smart-ble/signing/credentials.json'
         if config.is_file():
-            signing = json.loads(config.read_text())
+            signing = json.loads(config.read_text(encoding='utf-8'))
             for key in SIGNING_KEYS:
                 if signing.get(key) and not env.get(key):
                     env[key] = str(signing[key])
     out = ROOT / '.tmp/release' / f'{args.target}-{host.lower()}-{platform.machine()}' / ('signed' if args.signed else 'candidate')
     out.mkdir(parents=True, exist_ok=True)
     report = {'target': args.target, 'version': version, 'host': host, 'host_architecture': platform.machine(), 'mode': 'signed' if args.signed else 'candidate', 'status': 'NOT_RUN', 'artifacts': [], 'hardware': 'NOT_RUN', 'store_submission': 'NOT_RUN'}
-    report['source_commit'] = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
-    report['source_dirty'] = bool(subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT, text=True).strip())
+    report['source_commit'] = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True, encoding='utf-8').strip()
+    report['source_dirty'] = bool(subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT, text=True, encoding='utf-8').strip())
     application_paths = {'android': 'apps/android', 'flutter-android': 'apps/flutter', 'flutter-ios': 'apps/flutter', 'flutter-macos': 'apps/flutter', 'ios': 'apps/ios', 'macos': 'apps/desktop/macos', 'electron': 'apps/desktop/electron', 'tauri': 'apps/desktop/tauri', 'avalonia': 'apps/desktop/avalonia', 'qt': 'apps/desktop/qt', 'wails': 'apps/desktop/wails', 'uniapp': 'apps/uniapp', 'firmware': 'hardware/esp32/LightBLE'}
-    report['source_trees'] = {p: subprocess.check_output(['git', 'rev-parse', f'HEAD:{p}'], cwd=ROOT, text=True).strip() for p in (application_paths[args.target], 'core')}
+    report['source_trees'] = {p: subprocess.check_output(['git', 'rev-parse', f'HEAD:{p}'], cwd=ROOT, text=True, encoding='utf-8').strip() for p in (application_paths[args.target], 'core')}
 
     def block(reason):
         report.update(status='BLOCKED', reason=reason)
-        (out / 'report.json').write_text(json.dumps(report, indent=2) + '\n')
+        (out / 'report.json').write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
         print(reason, file=sys.stderr)
         return 2
 
@@ -81,12 +81,12 @@ def main():
         run(['node', 'scripts/check-version-consistency.mjs'])
         if args.target == 'android':
             if host == 'Darwin' and not env.get('JAVA_HOME'):
-                env['JAVA_HOME'] = subprocess.check_output(['/usr/libexec/java_home', '-v', '17'], text=True).strip()
+                env['JAVA_HOME'] = subprocess.check_output(['/usr/libexec/java_home', '-v', '17'], text=True, encoding='utf-8').strip()
             if host == 'Darwin' and not env.get('ANDROID_HOME'):
                 env['ANDROID_HOME'] = str(Path.home() / 'Library/Android/sdk')
             run(['gradlew.bat' if host == 'Windows' else './gradlew', 'assembleRelease', 'bundleRelease', 'testReleaseUnitTest', '--max-workers=2'], ROOT / 'apps/android', env)
             apk_dir = ROOT / 'apps/android/app/build/outputs/apk/release'
-            metadata = json.loads((apk_dir / 'output-metadata.json').read_text())
+            metadata = json.loads((apk_dir / 'output-metadata.json').read_text(encoding='utf-8'))
             patterns = [str((apk_dir / item['outputFile']).relative_to(ROOT)) for item in metadata['elements']]
             patterns.append('apps/android/app/build/outputs/bundle/release/app-release.aab')
         elif args.target == 'flutter-android':
@@ -111,7 +111,7 @@ def main():
             patterns = ['apps/flutter/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app/Runner']
         elif args.target == 'macos':
             run(['bash', 'scripts/macos/make-app-bundle.sh'])
-            patterns = ['apps/desktop/macos/dist/*.app/Contents/MacOS/SmartBLE-mac']
+            patterns = [f'apps/desktop/macos/dist/{name}.app/Contents/MacOS/SmartBLE-mac' for name in ('SmartBLE-macOS', 'SmartBLE-macOS-MAS')]
         elif args.target == 'flutter-macos':
             run(['flutter', 'build', 'macos', '--release', '--config-only'], ROOT / 'apps/flutter', env)
             build_dir = ROOT / 'apps/flutter/build/macos'
@@ -123,7 +123,10 @@ def main():
             if host == 'Darwin': command.append('--universal')
             run(command, ROOT / 'apps/desktop/electron', env)
             extensions = {'Darwin': ('dmg', 'zip'), 'Windows': ('exe',), 'Linux': ('AppImage', 'deb', 'rpm')}[host]
-            patterns = [f'apps/desktop/electron/dist/Smart-BLE-Open-{version}-*.{extension}' for extension in extensions]
+            os_tag = {'Darwin': 'mac', 'Windows': 'win', 'Linux': 'linux'}[host]
+            cpu_tag = 'universal' if host == 'Darwin' else architecture
+            prefix = f'apps/desktop/electron/dist/Smart-BLE-Open-{version}-{os_tag}-{cpu_tag}'
+            patterns = [f'{prefix}-{kind}.exe' for kind in ('setup', 'portable')] if host == 'Windows' else [f'{prefix}.{extension}' for extension in extensions]
         elif args.target == 'tauri':
             run(['cargo', 'test', '--locked', '--lib'], ROOT / 'apps/desktop/tauri/src-tauri', env)
             cmd = ['cargo', 'tauri', 'build']
@@ -170,19 +173,23 @@ def main():
             run(['pio', 'run', '-e', 'fixture_peripheral_s3', '-e', 'fixture_observer_s3', '-e', 'fixture_shid_sim_s3'], ROOT / 'hardware/esp32/LightBLE', env)
             patterns = ['hardware/esp32/LightBLE/.pio/build/*/firmware.bin']
         for pattern in patterns:
+            matches = 0
             for path in ROOT.glob(pattern):
                 if path.is_file():
+                    matches += 1
                     report['artifacts'].append({'path': str(path.relative_to(ROOT)), 'bytes': path.stat().st_size, 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()})
+            if not matches:
+                raise RuntimeError(f'Expected artifact is missing: {pattern}')
         if not report['artifacts']:
             raise RuntimeError('Build returned success without the expected artifact')
         if args.target in ('android', 'flutter-android'):
             sdk = Path(env.get('ANDROID_HOME') or env.get('ANDROID_SDK_ROOT') or Path.home() / 'Library/Android/sdk')
-            identity = json.loads((ROOT / 'release/product-identity.json').read_text())['application_id']
+            identity = json.loads((ROOT / 'release/product-identity.json').read_text(encoding='utf-8'))['application_id']
             for item in report['artifacts']:
                 path = ROOT / item['path']
                 item.update(inspect_native_libraries(path))
                 if path.suffix == '.apk':
-                    badging = subprocess.check_output([str(sdk_tool(sdk, 'aapt2')), 'dump', 'badging', str(path)], text=True, env=env)
+                    badging = subprocess.check_output([str(sdk_tool(sdk, 'aapt2')), 'dump', 'badging', str(path)], text=True, encoding='utf-8', env=env)
                     if f"name='{identity}'" not in badging.splitlines()[0] or f"versionName='{version}'" not in badging.splitlines()[0] or f"versionCode='{build_number}'" not in badging.splitlines()[0] or "targetSdkVersion:'36'" not in badging:
                         raise RuntimeError('Actual APK identity/version/target SDK differs from release configuration')
                     subprocess.run([str(sdk_tool(sdk, 'zipalign')), '-c', '-P', '16', '4', str(path)], check=True, env=env)
@@ -192,10 +199,10 @@ def main():
                 path = ROOT / item['path']
                 if path.suffix == '.apk':
                     sdk = Path(env.get('ANDROID_HOME') or env.get('ANDROID_SDK_ROOT') or Path.home() / 'Library/Android/sdk')
-                    verified = subprocess.run([str(sdk_tool(sdk, 'apksigner')), 'verify', '--verbose', '--print-certs', str(path)], capture_output=True, text=True, env=env)
+                    verified = subprocess.run([str(sdk_tool(sdk, 'apksigner')), 'verify', '--verbose', '--print-certs', str(path)], capture_output=True, text=True, encoding='utf-8', env=env)
                     if verified.returncode or 'CN=Android Debug' in verified.stdout:
                         raise RuntimeError('APK must have a valid non-debug distribution signature')
-                    expected = json.loads((ROOT / 'release/android-signing-public.json').read_text())['certificate_sha256'].lower()
+                    expected = json.loads((ROOT / 'release/android-signing-public.json').read_text(encoding='utf-8'))['certificate_sha256'].lower()
                     if f'certificate SHA-256 digest: {expected}' not in verified.stdout:
                         raise RuntimeError('APK signer differs from the registered product release certificate')
                     item['signature_verified'] = True
@@ -203,11 +210,11 @@ def main():
                     with zipfile.ZipFile(path) as bundle:
                         if not any(name.startswith('META-INF/') and name.endswith(('.RSA', '.EC', '.DSA')) for name in bundle.namelist()):
                             raise RuntimeError('Unsigned AAB cannot be submitted as a signed build')
-                    verifier = subprocess.run(['jarsigner', '-J-Duser.language=en', '-verify', str(path)], capture_output=True, text=True, env=env)
+                    verifier = subprocess.run(['jarsigner', '-J-Duser.language=en', '-verify', str(path)], capture_output=True, text=True, encoding='utf-8', env=env)
                     if verifier.returncode or 'jar verified' not in verifier.stdout:
                         raise RuntimeError('AAB signature verification failed')
-                    cert = subprocess.run(['keytool', '-J-Duser.language=en', '-printcert', '-jarfile', str(path)], capture_output=True, text=True, env=env)
-                    expected = json.loads((ROOT / 'release/android-signing-public.json').read_text())['certificate_sha256'].upper()
+                    cert = subprocess.run(['keytool', '-J-Duser.language=en', '-printcert', '-jarfile', str(path)], capture_output=True, text=True, encoding='utf-8', env=env)
+                    expected = json.loads((ROOT / 'release/android-signing-public.json').read_text(encoding='utf-8'))['certificate_sha256'].upper()
                     if cert.returncode or expected not in cert.stdout.replace(':', '').replace(' ', ''):
                         raise RuntimeError('AAB signer differs from the registered product release certificate')
                     item['signature_verified'] = True
@@ -219,7 +226,7 @@ def main():
         report.update(status='FAILED', reason=f'{type(error).__name__}: build or artifact validation failed; inspect the build log')
         return 1
     finally:
-        (out / 'report.json').write_text(json.dumps(report, indent=2) + '\n')
+        (out / 'report.json').write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
         print(json.dumps(report, indent=2))
 
 

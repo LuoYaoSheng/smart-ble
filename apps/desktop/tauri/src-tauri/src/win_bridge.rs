@@ -201,8 +201,8 @@ mod tests {
         assert!(stop().unwrap_err().contains("not running"));
     }
 
-    // T-WIN 空口取证驱动（20260924-AIR-GQT）：env 门控，无 AIR_TAG 直接返回
-    // （空跑通过，不伤常规门禁）。AIR_TAG=4 字节载荷标签（如 TWIN）；
+    // T-WIN 空口取证驱动：常规 CI 明确忽略，手工启动必须提供真实硬件与 AIR_TAG。
+    // AIR_TAG=4 字节载荷标签（如 TWIN）；
     // AIR_LOG=事件 jsonl 路径；AIR_HOLD=保持秒数（默认 9）。事件即时落盘供
     // 编排器轮询（cargo 捕获输出不可靠）。
     #[test]
