@@ -43,6 +43,9 @@ from PySide6.QtWidgets import (
 
 from automation import start_automation_if_requested
 from ble_service import BleService, ScanHit, char_display_name
+from hid_protocol import profile_match
+from hid_session import HidSession
+from hid_pages import ProvisioningPage, HidDetailPage, DiagnosticsPage, VersionsPage
 from tabbar import CanonTabBar, render_icon
 from theme import DANGER, LINE_SOFT, MUT, PRIMARY, PRIMARY_DEEP, QSS, SUB
 from widgets import (
@@ -65,7 +68,7 @@ HERE = Path(__file__).resolve().parent
 
 def app_version() -> str:
     """与 E-WIN 同源：仓库根 VERSION（package.json 版本单源同步）。"""
-    for cand in (HERE.parents[2] / "VERSION",):
+    for cand in (HERE / "VERSION", HERE.parents[2] / "VERSION"):
         try:
             return cand.read_text(encoding="utf-8").strip() or "dev"
         except OSError:
@@ -225,7 +228,7 @@ class AdvDialog(QDialog):
             ("设备 ID", hit.address),
             ("名称", hit.name or "（未命名）"),
             ("RSSI", f"{hit.rssi} dBm"),
-            ("profileMatch", "—"),  # Q-WIN ScanHit 无 Profile 匹配字段，如实标注
+            ("profileMatch", profile_match(hit.name, hit.service_uuids) or "—"),
         ]
 
     def _sections(self) -> list[tuple[str, list[tuple[str, str]]]]:
@@ -297,7 +300,7 @@ class AdvDialog(QDialog):
     def _copy_text(self) -> str:
         hit = self._hit
         lines = [f"设备 ID: {hit.address}", f"名称: {hit.name or '（未命名）'}",
-                 f"RSSI: {hit.rssi} dBm", "profileMatch: —"]
+                 f"RSSI: {hit.rssi} dBm", f"profileMatch: {profile_match(hit.name, hit.service_uuids) or chr(8212)}"]
         if hit.service_uuids:
             lines.append("Service UUIDs:")
             lines.extend(hit.service_uuids)
@@ -326,6 +329,7 @@ class ScanPage(QWidget):
         self._ble = ble
         self._hits: list[ScanHit] = []
         self._view: list[ScanHit] = []  # 筛选视图（E getFilteredDevices 同口径）
+        self.configure_profile = None
 
         root = QVBoxLayout(self)
         root.setContentsMargins(0, 0, 0, 0)
@@ -388,15 +392,28 @@ class ScanPage(QWidget):
         body.addWidget(self._empty_all)
         body.addWidget(self._empty_filtered)
         body.addWidget(self._list, 1)
+        self._hid_configure = QPushButton('Smart HID 配网（所选设备）')
+        self._hid_configure.setMinimumHeight(44)
+        self._hid_configure.setEnabled(False)
+        self._hid_configure.clicked.connect(self._configure_selected)
+        self._list.currentRowChanged.connect(self._profile_selection_changed)
+        page.addWidget(self._hid_configure)
         page.addLayout(body, 1)
 
         root.addWidget(scroll, 1)
 
         ble.scan_done.connect(self._on_done)
         ble.scan_failed.connect(self._on_failed)
+        ble.scan_stopped.connect(self._on_scan_stopped)
         ble.op_failed.connect(self._on_op_failed)
         # bt-chip 初始态：bleak 后端可用即就绪（无线电关由扫描失败词映射 off）
-        QTimer.singleShot(0, lambda: self._bt_chip.set_state("on", "蓝牙就绪"))
+        QTimer.singleShot(0, lambda: self._bt_chip.set_state("unknown", "蓝牙待检测"))
+
+    def _on_scan_stopped(self):
+        self._scan_btn.setText('开始扫描')
+        self._live.stop()
+        if self._status.text() == '正在扫描…':
+            self._status.setText('已停止')
 
     # ── 筛选（E getFilteredDevices 同语义） ──
 
@@ -449,6 +466,15 @@ class ScanPage(QWidget):
             return
         self._status.setText(f"正在连接 {hit.name or hit.address} …")
         self._ble.connect_device(hit)
+
+    def _profile_selection_changed(self, row) -> None:
+        hit = self._view[row] if 0 <= row < len(self._view) else None
+        self._hid_configure.setEnabled(bool(hit and profile_match(hit.name, hit.service_uuids)))
+
+    def _configure_selected(self) -> None:
+        row = self._list.currentRow()
+        if 0 <= row < len(self._view) and self.configure_profile:
+            self.configure_profile(self._view[row])
 
     def _show_adv(self) -> None:
         """F004 广播数据弹窗：点击扫描卡本体（正典 p001-advdlg / R04 口径）。"""
@@ -1147,7 +1173,7 @@ class AboutPage(QWidget):
 
 
 class MainWindow(QMainWindow):
-    IDX_SCAN, IDX_CONNECTED, IDX_BROADCAST, IDX_ABOUT, IDX_DETAIL = range(5)
+    IDX_SCAN, IDX_CONNECTED, IDX_BROADCAST, IDX_ABOUT, IDX_DETAIL, IDX_PROVISION, IDX_HID_DETAIL, IDX_DIAGNOSTICS, IDX_VERSIONS = range(9)
 
     def __init__(self) -> None:
         super().__init__()
@@ -1169,6 +1195,13 @@ class MainWindow(QMainWindow):
         self._connected_page = ConnectedPage(self._ble)
         self._about_page = AboutPage()
         self._broadcast_page = BroadcastPage(self._ble)
+        self._hid_session = HidSession(self._ble, self)
+        self._provision_page = ProvisioningPage(self._hid_session, self._back_from_hid, lambda: self._show_secondary(self.IDX_HID_DETAIL), lambda: self._show_secondary(self.IDX_DIAGNOSTICS))
+        self._hid_detail_page = HidDetailPage(self._hid_session, self._back_from_hid, lambda: self._show_secondary(self.IDX_PROVISION), lambda: self._show_secondary(self.IDX_DIAGNOSTICS))
+        self._diagnostics_page = DiagnosticsPage(self._hid_session, lambda: self._show_secondary(self.IDX_HID_DETAIL))
+        self._versions_page = VersionsPage(lambda: self._show_root(self.IDX_ABOUT))
+        self._scan_page.configure_profile = self._configure_profile
+        self._hid_session.changed.connect(lambda _: self._refresh_badge())
         self._detail_page.back_requested = self._back_from_detail
         self._connected_page.open_detail = self._open_detail
 
@@ -1179,6 +1212,10 @@ class MainWindow(QMainWindow):
             ("广播", self._broadcast_page),
             ("关于", self._about_page),
             ("", self._detail_page),  # 详情页无 Tab（隐藏时占位）
+            ("", self._provision_page),
+            ("", self._hid_detail_page),
+            ("", self._diagnostics_page),
+            ("", self._versions_page),
         ]
         for _, page in pages:
             self._stack.addWidget(page)
@@ -1191,6 +1228,10 @@ class MainWindow(QMainWindow):
         self._tabs.setCurrentIndex(0)
         outer.addWidget(self._stack, 1)
         outer.addWidget(self._tabs)
+        version_button = QPushButton('查看版本记录')
+        version_button.setMinimumHeight(44)
+        version_button.clicked.connect(lambda: self._show_secondary(self.IDX_VERSIONS))
+        self._about_page.layout().addWidget(version_button)
 
         self._ble.device_connected.connect(self._on_connected)
         # 已连接角标 .n 口径：通用连接计数（正典 connectedBadge）
@@ -1207,6 +1248,28 @@ class MainWindow(QMainWindow):
         if leaving_broadcast and index != self.IDX_BROADCAST and self._ble.advertising:
             self._broadcast_page.stop_from_outside()
         self._stack.setCurrentIndex(index)
+
+    def _show_root(self, index):
+        self._stack.setCurrentIndex(index)
+        self._tabs.setVisible(True)
+        self._tabs.setCurrentIndex(index)
+
+    def _show_secondary(self, index):
+        self._stack.setCurrentIndex(index)
+        self._tabs.setVisible(False)
+
+    def _configure_profile(self, hit):
+        self._provision_page.bind(hit.address)
+        self._show_secondary(self.IDX_PROVISION)
+        self._hid_session.bind(hit.address, hit.name)
+
+    def _back_from_hid(self):
+        if self._hid_session.busy:
+            answer = QMessageBox.question(self, '离开配网', '离开会停止状态跟踪，设备可能仍继续配置。确认离开？')
+            if answer != QMessageBox.Yes:
+                return
+            self._hid_session.cancel()
+        self._show_root(self.IDX_SCAN)
 
     def _refresh_badge(self) -> None:
         self._tabs.set_badge(1, len(self._ble.connected))
@@ -1225,14 +1288,14 @@ class MainWindow(QMainWindow):
 
     def _back_from_detail(self) -> None:
         # P006 返回：连接常驻（正典），回已连接列表
-        self._tabs.setVisible(True)
-        self._stack.setCurrentIndex(self.IDX_CONNECTED)
+        self._show_root(self.IDX_CONNECTED)
 
     # ── 生命周期 ──
 
     def closeEvent(self, event) -> None:  # noqa: N802 - Qt 命名
         """关窗拦截 → 退出确认（10_platform §4；dwin-quit 文案）。"""
         if self._exit_confirmed:
+            self._hid_session.cancel()
             self._ble.shutdown()
             event.accept()
             return
@@ -1261,6 +1324,7 @@ class MainWindow(QMainWindow):
             self._exit_confirmed = True
             # 直接 accept 本次关闭事件（closeEvent 内嵌套 close() 会被 Qt
             # 重入保护吞掉——坑位账），shutdown 在首个分支统一执行
+            self._hid_session.cancel()
             self._ble.shutdown()
             event.accept()
         # 「继续使用」：事件已 ignore，不退出，保持常驻

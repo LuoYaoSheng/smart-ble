@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter_ble_peripheral/flutter_ble_peripheral.dart';
+import 'broadcast_stop.dart';
 
 /// BLE 外设管理器
 ///
@@ -59,18 +61,14 @@ class BlePeripheralManager {
 
   /// 检查是否支持广播 (运行时检查)
   ///
-  /// 插件 Windows 后端未实现 isSupported method channel（走 else 分支恒
-  /// false），运行时能力以 start 实效为准——start 失败自然走页面错误路径。
+  /// 使用插件当前 Windows 后端的无线电能力结果，不能硬编码支持。
   Future<bool> isPlatformSupported() async {
-    if (Platform.isWindows) return true;
     return await _blePeripheral.isSupported;
   }
 
   /// 初始化外设管理器
   Future<bool> initialize() async {
     if (!isSupported) return false;
-
-    if (Platform.isWindows) return true;
 
     try {
       final supported = await _blePeripheral.isSupported;
@@ -129,6 +127,9 @@ class BlePeripheralManager {
     if (manufacturerData != null &&
         manufacturerData.isNotEmpty &&
         mfrId != null) {
+      if (manufacturerData.codeUnits.any((unit) => unit > 127)) {
+        throw ArgumentError('厂商数据仅支持 ASCII 文本');
+      }
       mfrBytes = Uint8List.fromList(manufacturerData.codeUnits);
     }
 
@@ -220,7 +221,8 @@ class BlePeripheralManager {
     required String manufacturerData,
     bool includeName = true,
   }) {
-    final nameBytes = includeName && name.isNotEmpty ? 2 + name.length : 0;
+    final nameBytes =
+        includeName && name.isNotEmpty ? 2 + utf8.encode(name).length : 0;
     final uuidLen = serviceUuid.trim().length;
     final uuidBytes = uuidLen >= 32 ? 2 + 16 : (uuidLen >= 8 ? 2 + 4 : 2 + 2);
     final hasMfr =
@@ -236,11 +238,12 @@ class BlePeripheralManager {
 
   /// 停止广播
   Future<void> stopAdvertising() async {
-    try {
-      await _blePeripheral.stop();
-    } catch (e) {
-      print('停止广播失败: $e');
-    }
+    await stopBroadcastAndVerify(
+      stop: () async {
+        await _blePeripheral.stop();
+      },
+      isAdvertising: () => _blePeripheral.isAdvertising,
+    );
   }
 
   /// 发送数据给连接的设备

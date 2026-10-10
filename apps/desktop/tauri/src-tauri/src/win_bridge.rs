@@ -38,14 +38,13 @@ fn ensure_bridge() -> Result<WaiterMap, String> {
     if let Some(bridge) = guard.as_ref() {
         return Ok(Arc::clone(&bridge.waiters));
     }
-    let ps1_path = std::env::temp_dir().join("twin-win-broadcast-bridge.ps1");
-    std::fs::write(&ps1_path, PS1).map_err(|e| format!("write sidecar: {e}"))?;
+    let encoded_script = super::powershell_command::encode_script(PS1);
     let mut child = Command::new("powershell.exe")
         .arg("-NoProfile")
         .arg("-ExecutionPolicy")
         .arg("Bypass")
-        .arg("-File")
-        .arg(&ps1_path)
+        .arg("-EncodedCommand")
+        .arg(&encoded_script)
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::null())
@@ -106,7 +105,11 @@ fn ensure_bridge() -> Result<WaiterMap, String> {
     });
 
     let map = Arc::clone(&waiters);
-    *guard = Some(Bridge { child, stdin, waiters });
+    *guard = Some(Bridge {
+        child,
+        stdin,
+        waiters,
+    });
     Ok(map)
 }
 
@@ -163,11 +166,13 @@ pub fn stop() -> BridgeResult {
 
 pub fn shutdown() {
     let mut guard = bridge_slot().lock().unwrap();
-    let Some(mut bridge) = guard.take() else { return };
+    let Some(mut bridge) = guard.take() else {
+        return;
+    };
     let _ = bridge.stdin.write_all(b"{\"cmd\":\"exit\"}\n");
     let _ = bridge.stdin.flush();
     drop(bridge.stdin); // 关管道送 EOF
-    // 优雅等待 ≤1s，超时兜底 kill（防边车孤儿进程；E-WIN killWinBridge 同口径）
+                        // 优雅等待 ≤1s，超时兜底 kill（防边车孤儿进程；E-WIN killWinBridge 同口径）
     for _ in 0..20 {
         if matches!(bridge.child.try_wait(), Ok(Some(_))) {
             return;
@@ -221,8 +226,10 @@ mod tests {
             );
             eprintln!("{}", line.trim_end());
             if !log_path.is_empty() {
-                if let Ok(mut f) =
-                    std::fs::OpenOptions::new().create(true).append(true).open(&log_path)
+                if let Ok(mut f) = std::fs::OpenOptions::new()
+                    .create(true)
+                    .append(true)
+                    .open(&log_path)
                 {
                     let _ = f.write_all(line.as_bytes());
                 }

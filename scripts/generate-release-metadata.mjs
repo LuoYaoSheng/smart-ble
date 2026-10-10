@@ -24,6 +24,8 @@ const OUT_PATHS = {
   appleJson: 'apps/ios/Sources/Resources/Release/release-manifest.json',
   electronJs: 'apps/desktop/electron/public/config/release-metadata.generated.js',
   tauriJs: 'apps/desktop/tauri/src/config/release-metadata.generated.js',
+  wailsJs: 'apps/desktop/wails/frontend/src/config/release-metadata.generated.js',
+  avaloniaJs: 'apps/desktop/avalonia/SmartBLE.Desktop/Assets/release-metadata.js',
   flutterDart: 'apps/flutter/lib/core/config/release_metadata_generated.dart',
   androidKotlin:
     'apps/android/app/src/main/java/com/smartble/core/config/ReleaseMetadataGenerated.kt',
@@ -254,6 +256,8 @@ function main() {
     [OUT_PATHS.appleJson]: stableStringify(manifest),
     [OUT_PATHS.electronJs]: desktopJsModuleSource(manifest),
     [OUT_PATHS.tauriJs]: desktopJsModuleSource(manifest),
+    [OUT_PATHS.wailsJs]: desktopJsModuleSource(manifest),
+    [OUT_PATHS.avaloniaJs]: desktopJsModuleSource(manifest),
     [OUT_PATHS.flutterDart]: dartModuleSource(manifest),
     [OUT_PATHS.androidKotlin]: kotlinModuleSource(manifest),
   };

@@ -36,6 +36,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import java.util.UUID
 
@@ -54,7 +55,6 @@ class BleManager private constructor(private val context: Context) {
         private const val AUTO_STOP_SCAN_DURATION_MS = 5000L
 
         // Auto reconnect policy
-        private const val AUTO_RECONNECT_DELAY_MS = 2000L
         private const val MAX_AUTO_RECONNECT_ATTEMPTS = 3
 
         // 常规连接也统一协商的 MTU（WIN-AAND-006：不协商则通知载荷被截到 20 字节；
@@ -391,19 +391,62 @@ class BleManager private constructor(private val context: Context) {
         val gatt = gattConnections[deviceId] ?: return false
         val characteristic = getCharacteristic(gatt, serviceUuid, characteristicUuid) ?: return false
 
+        val descriptor = characteristic.getDescriptor(CCC_DESCRIPTOR_UUID) ?: return false
         if (!gatt.setCharacteristicNotification(characteristic, enable)) {
             return false
         }
 
         // 写入 CCC Descriptor
-        val descriptor = characteristic.getDescriptor(CCC_DESCRIPTOR_UUID) ?: return false
         descriptor.value = if (enable) {
-            BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
+            if (characteristic.properties and BluetoothGattCharacteristic.PROPERTY_NOTIFY != 0) {
+                BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
+            } else if (characteristic.properties and BluetoothGattCharacteristic.PROPERTY_INDICATE != 0) {
+                BluetoothGattDescriptor.ENABLE_INDICATION_VALUE
+            } else {
+                gatt.setCharacteristicNotification(characteristic, false)
+                return false
+            }
         } else {
             BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE
         }
 
         return gatt.writeDescriptor(descriptor)
+    }
+
+    @SuppressLint("MissingPermission")
+    suspend fun setNotificationAwait(
+        deviceId: String, serviceUuid: String, characteristicUuid: String,
+        enable: Boolean, timeoutMs: Long = 5000,
+    ): Boolean {
+        val previous = _servicesByDevice.value[deviceId]
+            ?.find { it.uuid.equals(serviceUuid, ignoreCase = true) }
+            ?.characteristics?.find { it.uuid.equals(characteristicUuid, ignoreCase = true) }
+            ?.isNotifying ?: false
+        val success = awaitGattAcknowledgement(
+            descriptorWriteEvents.filter {
+                it.deviceId == deviceId &&
+                    it.serviceUuid.equals(serviceUuid, ignoreCase = true) &&
+                    it.characteristicUuid.equals(characteristicUuid, ignoreCase = true)
+            }.map { it.status == BluetoothGatt.GATT_SUCCESS },
+            timeoutMs,
+        ) { setNotification(deviceId, serviceUuid, characteristicUuid, enable) }
+        if (success) {
+            val services = _servicesByDevice.value[deviceId] ?: return false
+            updateServices(deviceId, services.map { service ->
+                if (!service.uuid.equals(serviceUuid, ignoreCase = true)) service
+                else service.copy(characteristics = service.characteristics.map { characteristic ->
+                    if (characteristic.uuid.equals(characteristicUuid, ignoreCase = true))
+                        characteristic.copyWithNotifying(enable) else characteristic
+                })
+            })
+        } else {
+            val gatt = gattConnections[deviceId]
+            val characteristic = gatt?.let { getCharacteristic(it, serviceUuid, characteristicUuid) }
+            if (gatt != null && characteristic != null) {
+                gatt.setCharacteristicNotification(characteristic, previous)
+            }
+        }
+        return success
     }
 
     /**
@@ -491,10 +534,12 @@ class BleManager private constructor(private val context: Context) {
         reconnectAttempts[deviceId] = attempt
         val reconnectRunnable = Runnable {
             Log.i(TAG, "Auto reconnect attempt $attempt/$MAX_AUTO_RECONNECT_ATTEMPTS for $deviceId")
-            connectInternal(deviceId)
+            if (!connectInternal(deviceId) && autoReconnectEnabled.contains(deviceId)) {
+                scheduleAutoReconnect(deviceId)
+            }
         }
         reconnectRunnables[deviceId] = reconnectRunnable
-        reconnectHandler.postDelayed(reconnectRunnable, AUTO_RECONNECT_DELAY_MS)
+        reconnectHandler.postDelayed(reconnectRunnable, reconnectDelayMillis(attempt))
     }
 
     private fun cancelAutoReconnect(deviceId: String) {
@@ -763,6 +808,7 @@ class BleManager private constructor(private val context: Context) {
                     deviceId = gatt.device.address,
                     characteristicUuid = descriptor.characteristic?.uuid?.toString() ?: "",
                     status = status,
+                    serviceUuid = descriptor.characteristic?.service?.uuid?.toString() ?: "",
                 )
             )
         }
@@ -897,6 +943,7 @@ data class DescriptorWriteEvent(
     val deviceId: String,
     val characteristicUuid: String,
     val status: Int,
+    val serviceUuid: String = "",
 )
 
 /**

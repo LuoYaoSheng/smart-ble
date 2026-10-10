@@ -413,6 +413,11 @@ public partial class MainWindowViewModel : ObservableObject
     {
         Dispatcher.UIThread.Post(() =>
         {
+            if (!string.Equals(deviceId, CurrentDeviceId, StringComparison.OrdinalIgnoreCase))
+            {
+                RefreshConnectedPanel();
+                return;
+            }
             IsGattConnected = false;
             IsGattConnecting = false;
             foreach (var s in Services)
@@ -430,10 +435,13 @@ public partial class MainWindowViewModel : ObservableObject
         });
     }
 
-    private void OnCharacteristicValueChanged(string characteristicUuid, byte[] data)
+    private void OnCharacteristicValueChanged(string deviceId, string characteristicUuid, byte[] data)
     {
         Dispatcher.UIThread.Post(() =>
-            AddLog("recv", $"收到通知 {ShortUuid(characteristicUuid)}: {Hex(data)}"));
+        {
+            if (string.Equals(deviceId, CurrentDeviceId, StringComparison.OrdinalIgnoreCase))
+                AddLog("recv", $"收到通知 {ShortUuid(characteristicUuid)}: {Hex(data)}");
+        });
     }
 
     private void OnLogMessage(string title, string message)

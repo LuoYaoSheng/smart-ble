@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 # make-app-bundle.sh — r5 上架就绪：产出两种交付形态
 #
-# 用法： scripts/macos/make-app-bundle.sh [--omit-bt-usage] [--config debug|release]
+# 用法： scripts/macos/make-app-bundle.sh [--omit-bt-usage] [--config debug|release] [--arch universal|arm64|x86_64]
 #   dist/SmartBLE-macOS.app      → 运行形态（Release、AppIcon.icns、hardened runtime、ad-hoc、非沙盒）
 #                                   r4 链路保持可复现（ad-hoc 非沙盒下 BLE 可用，见 r4 证据）
 #   dist/SmartBLE-macOS-MAS.app  → MAS 形态（同上 + App Sandbox entitlements；Mac App Store 就绪形态）
-#                                   注意 r5 平台事实：ad-hoc 签名 + 沙盒下 CoreBluetooth 报 .unsupported，
-#                                   BLE 能力需真实签名链（Apple Distribution + profile）方可验证 → 账号门控 NOT_RUN
+#                                   BLE 需要 device.bluetooth entitlement + 系统授权；真实分发签名单独验证。
 #   --omit-bt-usage → 追加 dist/SmartBLE-macOS-NoBT.app（删除两个蓝牙用途键，负向对照，非沙盒）
 #   --config X     → 构建配置（默认 release）
 #
@@ -20,11 +19,13 @@ APP_DIR="$REPO_ROOT/apps/desktop/macos/SmartBLE-mac"
 DIST="$REPO_ROOT/apps/desktop/macos/dist"
 CONFIG=release
 OMIT_BT=0
+ARCH=universal
 while [ $# -gt 0 ]; do
   case "$1" in
     --omit-bt-usage) OMIT_BT=1; shift ;;
     --config) CONFIG="${2:?--config needs a value}"; shift 2 ;;
-    *) shift ;;
+    --arch) ARCH="${2:?--arch needs a value}"; shift 2 ;;
+    *) echo "unknown option: $1" >&2; exit 2 ;;
   esac
 done
 CONFIG_CAP="$(printf '%s' "$CONFIG" | cut -c1 | tr '[:lower:]' '[:upper:]')$(printf '%s' "$CONFIG" | cut -c2-)"
@@ -37,16 +38,17 @@ ENT_SRC="$APP_DIR/Entitlements.plist"
 
 step() { printf '\n===== %s =====\n' "$1"; }
 
-step "1. swift build (${CONFIG}，优先通用二进制)"
+step "1. swift build (${CONFIG}，${ARCH})"
 cd "$APP_DIR"
 BIN=""
-if swift build --configuration "$CONFIG" --arch arm64 --arch x86_64 > /dev/null 2>&1; then
+if [ "$ARCH" = universal ]; then
+  swift build --configuration "$CONFIG" --arch arm64 --arch x86_64
   BIN="$APP_DIR/.build/apple/Products/$CONFIG_CAP/SmartBLE-mac"
   echo "NVD build: 通用二进制（arm64 + x86_64）"
 else
-  echo "NVD build: 通用二进制不可用，回退本机架构"
-  swift build --configuration "$CONFIG" > /dev/null
-  BIN="$APP_DIR/.build/$CONFIG/SmartBLE-mac"
+  case "$ARCH" in arm64|x86_64) ;; *) echo "invalid arch: $ARCH" >&2; exit 2 ;; esac
+  swift build --configuration "$CONFIG" --arch "$ARCH"
+  BIN="$(swift build --configuration "$CONFIG" --arch "$ARCH" --show-bin-path)/SmartBLE-mac"
 fi
 [ -x "$BIN" ] || { echo "binary missing: $BIN"; exit 1; }
 lipo -info "$BIN"
@@ -57,10 +59,7 @@ rm -rf "$DIST"
 # SwiftPM 资源 bundle（Sources/Resources 经 .process 生成）必须随包分发：
 # resource_bundle_accessor 会在 Bundle.main.resourceURL 查找，缺失即启动崩溃
 # （MAC-007：NVP-03 曾以 "unable to find bundle named SmartBLE-mac_SmartBLE-mac" 崩）。
-SPM_RES_BUNDLE="$APP_DIR/.build/debug/SmartBLE-mac_SmartBLE-mac.bundle"
-if [ ! -d "$SPM_RES_BUNDLE" ]; then
-  SPM_RES_BUNDLE="$(ls -d "$APP_DIR/.build"/*/debug/SmartBLE-mac_SmartBLE-mac.bundle 2>/dev/null | head -1 || true)"
-fi
+SPM_RES_BUNDLE="$(dirname "$BIN")/SmartBLE-mac_SmartBLE-mac.bundle"
 [ -d "$SPM_RES_BUNDLE" ] || { echo "SPM resource bundle missing: $SPM_RES_BUNDLE"; exit 1; }
 
 for app in "$BUNDLE" "$MAS"; do
@@ -86,6 +85,7 @@ if [ "$OMIT_BT" = "1" ]; then
   cp "$BIN" "$NOBT/Contents/MacOS/SmartBLE-mac"
   cp "$PLIST_SRC" "$NOBT/Contents/Info.plist"
   cp "$ICON_SRC" "$NOBT/Contents/Resources/AppIcon.icns"
+  cp -R "$SPM_RES_BUNDLE" "$NOBT/Contents/Resources/SmartBLE-mac_SmartBLE-mac.bundle"
   /usr/libexec/PlistBuddy -c 'Delete :NSBluetoothAlwaysUsageDescription' \
                           -c 'Delete :NSBluetoothPeripheralUsageDescription' \
                           "$NOBT/Contents/Info.plist"

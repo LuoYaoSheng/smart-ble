@@ -114,7 +114,7 @@ QPushButton#Sm {{
     height: 32px;
     font-size: 13px;
 }}
-QPushButton#Primary {{
+QPushButton#Primary, QPushButton[primary="true"] {{
     background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
         stop:0 {PRIMARY}, stop:1 {PRIMARY_DEEP});
     color: white;

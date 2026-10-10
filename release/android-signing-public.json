@@ -1,0 +1,8 @@
+{
+  "application_id": "com.i2kai.open.smartble",
+  "certificate_type": "Android release signing, RSA 4096",
+  "certificate_sha256": "8f0b3a3597f47a10e7d4f481306c9028f68eed8227c69e0e0a649c2ddcce4bb9",
+  "certificate_sha1": "4832a3e77160a672bfd96170632bc541352cf8f2",
+  "certificate_md5": "af37a8d7e1fee25ad393efc11626271f",
+  "private_material": "Never stored in this repository"
+}

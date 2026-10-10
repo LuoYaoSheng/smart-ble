@@ -1,6 +1,6 @@
 .PHONY: verify verify-uniapp verify-uniapp-pages verify-flutter verify-android verify-apple verify-apple-core verify-apple-ios verify-apple-macos verify-tauri verify-hardware
 
-verify: verify-uniapp verify-flutter verify-android verify-apple verify-tauri
+verify: verify-uniapp verify-flutter verify-android verify-apple verify-tauri verify-desktop-contracts verify-release-config
 
 verify-uniapp:
 	./scripts/verify-uniapp.sh
@@ -34,3 +34,15 @@ verify-tauri:
 
 verify-hardware:
 	cd hardware/esp32/LightBLE && pio run
+
+.PHONY: verify-desktop-contracts verify-release-config release-candidate
+verify-desktop-contracts:
+	node --test tests/desktop/*.test.mjs
+
+verify-release-config:
+	node scripts/check-version-consistency.mjs
+	python3 scripts/release/check-config.py
+
+# Example: make release-candidate TARGET=android
+release-candidate:
+	python3 scripts/release/build.py $(TARGET)

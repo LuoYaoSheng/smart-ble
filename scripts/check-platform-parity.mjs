@@ -8,7 +8,7 @@
 //           （桥对 .ts 做类型剥离，需 Node >= 22.18 / >= 23.6；verify-target 同款口径）
 //   dart    spawn `dart run tool/smart_hid_parity.dart`（apps/flutter，纯 Dart）
 //   kotlin  gradle 调 JUnit 向量执行器（core/profile/SmartHidVectorParityTest），
-//           读 apps/android/app/build/smart-hid-parity-kotlin.json（需 JDK 17–19 运行 Gradle 8.2）
+//           读 apps/android/app/build/smart-hid-parity-kotlin.json（需 JDK 17/21）
 //   swift   spawn `swift test` 执行 core/apple/SmartHidCore 的 XCTest 向量消费者
 //
 // 退出码：所有「已执行」平台零失败 → 0；任一平台断言失败 → 1。
@@ -16,6 +16,7 @@
 //
 // 用法：node scripts/check-platform-parity.mjs [--platform=js,dart] [--vectors=<path>]
 
+import { resolveAndroidJavaHome } from './android/java-home.mjs';
 import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync, rmSync, readdirSync } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
@@ -25,7 +26,7 @@ import { importTarget } from '../tests/target/lib/import-target.mjs';
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
 const platformArg = args.find((a) => a.startsWith('--platform='));
-const platformsWanted = platformArg ? platformArg.split('=')[1].split(',') : ['js', 'dart', 'kotlin', 'swift'];
+const platformsWanted = platformArg ? platformArg.split('=')[1].split(',') : ['js', 'dart', 'kotlin', 'swift', 'python'];
 const vectorsArg = args.find((a) => a.startsWith('--vectors='));
 const VECTORS_PATH = vectorsArg ? resolve(ROOT, vectorsArg.split('=')[1]) : join(ROOT, 'core/protocols/smart-hid-v1-vectors.json');
 
@@ -195,28 +196,7 @@ function runDartLane() {
 // ---------------------------------------------------------------------------
 const KOTLIN_RESULT_FILE = 'apps/android/app/build/smart-hid-parity-kotlin.json';
 
-/** Gradle 8.2 运行时需 JDK 17–19（上限 19）；探测 env JAVA_HOME 与 ~/.jdks */
-function resolveGradleJavaHome() {
-  const candidates = [];
-  if (process.env.JAVA_HOME) candidates.push(process.env.JAVA_HOME);
-  const home = process.env.USERPROFILE || process.env.HOME;
-  if (home) {
-    const jdks = join(home, '.jdks');
-    if (existsSync(jdks)) {
-      for (const d of readdirSync(jdks)) candidates.push(join(jdks, d));
-    }
-  }
-  for (const dir of candidates) {
-    const exe = join(dir, 'bin', process.platform === 'win32' ? 'java.exe' : 'java');
-    if (!existsSync(exe)) continue;
-    const v = spawnSync(exe, ['-version'], { encoding: 'utf8' });
-    const m = `${v.stderr || ''}${v.stdout || ''}`.match(/version "(\d+)/);
-    if (!m) continue;
-    const major = m[1] === '1' ? 8 : parseInt(m[1], 10);
-    if (major >= 17 && major <= 19) return dir;
-  }
-  return null;
-}
+// JDK 解析与 Android 统一入口共享。
 
 function runKotlinLane() {
   const protocolFile = join(ROOT, 'apps/android/app/src/main/java/com/smartble/core/profile/SmartHidProtocol.kt');
@@ -229,11 +209,11 @@ function runKotlinLane() {
       failures: [],
     };
   }
-  const javaHome = resolveGradleJavaHome();
+  const javaHome = resolveAndroidJavaHome();
   if (!javaHome) {
     return {
       status: 'BLOCKED',
-      detail: '无可用的 JDK 17–19（Gradle 8.2 运行时上限）：设 JAVA_HOME 或安装到 ~/.jdks',
+      detail: '无可用的 JDK 17/21（支持系统安装目录、JAVA_HOME/ANDROID_JAVA_HOME）：设 JAVA_HOME 或安装到 ~/.jdks',
       pass: 0,
       failures: [],
     };
@@ -314,11 +294,23 @@ function runSwiftLane() {
 }
 
 // ---------------------------------------------------------------------------
+function runPythonLane() {
+  const executable = process.platform === 'win32' ? 'python' : 'python3';
+  const result = spawnSync(executable, ['-m', 'unittest', 'discover', '-s', 'tests', '-p', 'test_hid_protocol.py'], {
+    cwd: join(ROOT, 'apps/desktop/qt'), encoding: 'utf8',
+  });
+  if (result.error?.code === 'ENOENT') return { status: 'BLOCKED', pass: 0, failures: [], detail: 'Python runtime missing' };
+  if (result.status !== 0) return { status: 'FAIL', pass: 0, failures: [{ suite: 'qt', case: 'canonical-vectors-and-transaction', detail: (result.stderr || result.stdout || '').slice(-3000) }] };
+  const pass = ['qr', 'candidate', 'framingMtu', 'frames', 'deviceInfo', 'status', 'errorRecovery'].reduce((total, suite) => total + suiteCaseCount(suite), 0);
+  return { status: 'PASS', pass, failures: [], detail: 'shared vectors plus receipt/timeout/identity transaction guards' };
+}
+
 const LANES = {
   js: { label: 'js', run: runJsLane, async: true },
   dart: { label: 'dart', run: runDartLane, async: false },
   kotlin: { label: 'kotlin', run: runKotlinLane, async: false },
   swift: { label: 'swift', run: runSwiftLane, async: false },
+  python: { label: 'python', run: runPythonLane, async: false },
 };
 
 line(`Smart HID V1 platform parity（vectors ${VECTORS_PATH.replace(`${ROOT}/`, '')}）`);

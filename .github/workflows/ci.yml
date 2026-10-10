@@ -35,7 +35,7 @@ jobs:
         run: flutter test
 
   android:
-    name: Android (build + test, JDK 21)
+    name: Android (build + test, JDK 17)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -45,11 +45,11 @@ jobs:
         uses: actions/checkout@v4
 
       # MAC-011：Android CI 固定 JDK 21（本地门禁固定 17/21，见 scripts/android/verify-android.sh）
-      - name: Setup Java 21
+      - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "21"
+          java-version: "17"
           cache: gradle
 
       # CI 首跑 2026-09-15：setup-android@v3 的 sdkmanager 在 runner 上 exit 1；
@@ -131,7 +131,7 @@ jobs:
           path: |
             apps/desktop/tauri/src-tauri/target/release/bundle/deb/*.deb
             apps/desktop/tauri/src-tauri/target/release/bundle/appimage/*.AppImage
-          if-no-files-found: warn
+          if-no-files-found: error
 
   electron:
     name: Electron (install + lint)

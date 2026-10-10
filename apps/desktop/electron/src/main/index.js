@@ -5,17 +5,6 @@
 
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
-const fs = require('fs');
-
-// Debug logging to file (cross-platform path)
-const { app: _app } = require('electron');
-let debugLogPath;
-function getLogPath() {
-  if (!debugLogPath) {
-    debugLogPath = require('path').join(_app.getPath('logs'), 'electron-main-debug.log');
-  }
-  return debugLogPath;
-}
 // F026：主进程日志统一脱敏（uniapp logger/log-redaction.js 的桌面锁定镜像，挂 globalThis）
 let LOG_REDACTION = null;
 try {
@@ -23,12 +12,14 @@ try {
   LOG_REDACTION = globalThis.SmartBLELogRedaction || null;
 } catch (_) { /* 脱敏镜像缺失时不阻断主进程 */ }
 function debugLog(...args) {
-  let msg = args.map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(' ');
-  if (LOG_REDACTION) msg = LOG_REDACTION.sanitizeLogString(msg);
-  try {
-    fs.appendFileSync(getLogPath(), new Date().toISOString() + ' ' + msg + '\n');
-  } catch (_) { /* ignore log write errors */ }
-  console.log(...args);
+  const msg = args.map(value => {
+    try { return typeof value === 'object' ? JSON.stringify(value) : String(value); }
+    catch (_) { return '[日志对象无法序列化]'; }
+  }).join(' ');
+  // 不主动落盘；所有输出通道都用同一脱敏字符串。组件缺失时禁止回退原始凭据。
+  console.log(LOG_REDACTION
+    ? LOG_REDACTION.sanitizeLogString(msg)
+    : '[日志内容已隐藏：脱敏组件未就绪]');
 }
 debugLog('=== Electron Main Process Started ===');
 

@@ -1367,7 +1367,7 @@ class App {
             if (attempts < maxAttempts) {
                 const nextAttempt = attempts + 1;
                 this.reconnectAttempts.set(deviceId, nextAttempt);
-                const delay = window.BleUtils ? window.BleUtils.reconnectDelay(nextAttempt) : (nextAttempt * 2000);
+                const delay = window.BleUtils ? window.BleUtils.reconnectDelay(nextAttempt) : ([1000, 3000, 5000][nextAttempt - 1]);
 
                 this.addLog(`设备 ${deviceId} 意外断开，将在 ${delay/1000}s 后尝试重连... (第 ${nextAttempt}/${maxAttempts} 次)`, 'warning');
                 

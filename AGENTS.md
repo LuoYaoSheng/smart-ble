@@ -1,5 +1,10 @@
 # Repository Guidelines
 
+## Unified Project and Release Goal (2026-10-10 user decision)
+The only active project root is `smart-ble/`. Former `smart-ble-macos` and `smart-ble-apple-native` paths resolve here; their clean historical source/build environments were preserved outside this repository under `.archives/smart-ble/2026-10-10/`. All their commits are included in local main.
+
+All existing implementation families require correctness and release verification: UniApp, Flutter, Kotlin, SwiftUI, AppKit, Tauri, Electron, Avalonia, Qt and Wails. Previous tier/REFERENCE labels do not waive this goal. Track supported OS/CPU, current-source tests, real BLE, install/upgrade and distribution signing separately in `release/platform-matrix.json`. Target channels are Apple App Store, domestic Android stores and desktop distribution. Do not claim unsigned/ad-hoc candidates or simulator/fake-runtime tests as store readiness. Root verification includes desktop contracts and `scripts/release/check-config.py`; use `scripts/release/build.py` for reproducible candidate builds and explicit signed mobile exports.
+
 ## Project Structure & Module Organization
 `apps/` contains platform clients: `android/` (Kotlin + Compose), `flutter/` (Dart + Riverpod), `uniapp/` (Vue/uni-app), `desktop/electron/`, `desktop/tauri/`, `desktop/macos/`, and `ios/`. Shared BLE abstractions live in `core/ble-core/` and protocol definitions in `core/protocols/`. Hardware examples are under `hardware/esp32/LightBLE/`. Product specs, flow docs, and manual test notes live in `docs/`; the cross-platform product baseline canon (all `apps/*` must follow) is [`docs/specs/README.md`](docs/specs/README.md).
 

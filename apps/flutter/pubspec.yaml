@@ -1,7 +1,7 @@
 name: smart_ble
 description: Smart BLE - 跨平台蓝牙调试工具
 publish_to: 'none'
-version: 2.0.0+1
+version: 1.0.5+101
 
 environment:
   sdk: '>=3.0.0 <4.0.0'

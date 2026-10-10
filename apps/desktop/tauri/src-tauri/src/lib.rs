@@ -19,6 +19,8 @@ use tauri::State;
 use tokio::sync::Mutex;
 
 // Win32 广播边车（WIN-BRIDGE 同构，2026-09-24 广播模板复制轮；仅厂商块 0xFF）
+#[cfg(any(target_os = "windows", test))]
+mod powershell_command;
 #[cfg(target_os = "windows")]
 mod win_bridge;
 
@@ -774,11 +776,11 @@ async fn write_characteristic(
             // Determine write type based on characteristic properties
             let write_type = if char
                 .properties
-                .contains(btleplug::api::CharPropFlags::WRITE_WITHOUT_RESPONSE)
+                .contains(btleplug::api::CharPropFlags::WRITE)
             {
-                WriteType::WithoutResponse
-            } else {
                 WriteType::WithResponse
+            } else {
+                WriteType::WithoutResponse
             };
 
             match peripheral.write(&char, &bytes, write_type).await {

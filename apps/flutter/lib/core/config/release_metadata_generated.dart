@@ -30,13 +30,14 @@ const Map<String, dynamic> kReleaseMetadata = <String, dynamic>{
       'role': 'mainline',
       'capability_status': 'PREVIEW',
       'release_status': 'NOT_RELEASED',
-      'reason': '纯原生 SwiftUI 功能与默认/关键交互态已实现；真机签名 E5 尚未完成',
+      'reason': '原生 SwiftUI 模拟器单测/UI 测试与 unsigned Archive 已通过；真实设备 BLE、分发签名和商店提交分别待验。',
     },
     'flutter_tauri_native': <String, dynamic>{
       'name': 'Flutter / Tauri / 原生端',
-      'role': 'REFERENCE',
-      'capability_status': null,
+      'role': 'mainline',
+      'capability_status': 'PREVIEW',
       'release_status': 'NOT_RELEASED',
+      'reason': '2026-10-10 用户将所有技术实现纳入完整验收与发布范围；各平台当前证据见 release/platform-matrix.json。',
     },
     'peripheral': <String, dynamic>{
       'name': 'LightBLE ESP32 Peripheral',

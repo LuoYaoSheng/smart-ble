@@ -1,5 +1,7 @@
 # Smart BLE 产品基准规范（specs）
 
+> **2026-10-10 用户范围修订**：单一 smart-ble 工程，所有现有技术实现和对应支持平台都必须正确并完成发布准备。旧文档的 REFERENCE/Experimental 投入分级不免除验收；发布渠道为 App Store、国内 Android 商店和桌面正式分发。旧阶段记录保留作历史，本轮状态统一见根 `release/platform-matrix.json` 与 `docs/plans/2026-10-10-unified-project-release.md`。微信目标仍退役。实现/构建/真机/签名/商店各门分别取证。
+
 > **全平台公共文件 · 单一事实源。** 本项目是 `apps/uniapp` 旧工程**改版**（in-place refactor），不是平行创建第二套 App——**docs/specs 是产品事实源**，旧代码是实现证据与复用候选，不是产品需求事实源；改版落位与基线保存（Git commit `2b25725`）规则见 [08_development/IMPLEMENTATION_TARGET](08_development/IMPLEMENTATION_TARGET.md) v1.2。
 > 组织依据：《旧 App AI 重构 SOP v2.0》+《旧产品原型跨平台扩展 SOP v1.0》+《产品基准原型 Base Prototype 规范 v1.0》+《AI 产品重构逻辑评审规范 v1.0》+《AI-Native 应用生成平台架构规范 v1.0》（平台级上位框架，本目录为其在 smart-ble 的单项目实例化，定位说明见下）+《产品模型 Product Model 规范 v2.0》+《多平台 HTML 原型生成规范 v1.0》+《平台设计说明规范 v1.0》（2026-09-03 并入：产品模型五件套 / 每平台 low-fi+high-fi / 每平台四份说明文档）。
 > 原则：**先有产品再有平台**——本目录定义与平台无关的产品基准（功能/页面/流程/交互/数据口径/设计系统），平台只是扩展层，不反向改变产品模型、数据模型与核心流程。

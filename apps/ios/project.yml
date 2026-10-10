@@ -7,10 +7,10 @@ configs:
 settings:
   base:
     PRODUCT_NAME: SmartBLE
-    PRODUCT_BUNDLE_IDENTIFIER: com.smartble.ios
+    PRODUCT_BUNDLE_IDENTIFIER: com.i2kai.open.smartble
     PRODUCT_DISPLAY_NAME: Smart BLE
-    MARKETING_VERSION: 2.0.0
-    CURRENT_PROJECT_VERSION: 1
+    MARKETING_VERSION: 1.0.5
+    CURRENT_PROJECT_VERSION: 101
     SWIFT_VERSION: 5.9
     IPHONEOS_DEPLOYMENT_TARGET: 15.0
     TARGETED_DEVICE_FAMILY: "1,2"
@@ -39,7 +39,7 @@ targets:
       - package: SmartHidCore
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.smartble.ios
+        PRODUCT_BUNDLE_IDENTIFIER: com.i2kai.open.smartble
         INFOPLIST_FILE: SmartBLE/Resources/Info.plist
         CODE_SIGN_ENTITLEMENTS: SmartBLE/Resources/SmartBLE.entitlements
   SmartBLETests:
@@ -55,7 +55,7 @@ targets:
       base:
         PRODUCT_NAME: SmartBLETests
         PRODUCT_MODULE_NAME: SmartBLETests
-        PRODUCT_BUNDLE_IDENTIFIER: com.smartble.ios.tests
+        PRODUCT_BUNDLE_IDENTIFIER: com.i2kai.open.smartble.tests
         GENERATE_INFOPLIST_FILE: YES
         INFOPLIST_FILE: ""
         TEST_HOST: "$(BUILT_PRODUCTS_DIR)/SmartBLE.app/SmartBLE"
@@ -73,7 +73,7 @@ targets:
       base:
         PRODUCT_NAME: SmartBLEUITests
         PRODUCT_MODULE_NAME: SmartBLEUITests
-        PRODUCT_BUNDLE_IDENTIFIER: com.smartble.ios.uitests
+        PRODUCT_BUNDLE_IDENTIFIER: com.i2kai.open.smartble.uitests
         GENERATE_INFOPLIST_FILE: YES
 schemes:
   SmartBLEiOS:

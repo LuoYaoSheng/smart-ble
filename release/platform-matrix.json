@@ -1,0 +1,180 @@
+{
+  "schema_version": "1.0",
+  "canonical_project": "smart-ble",
+  "canonical_branch": "main",
+  "channels": [
+    "apple-app-store",
+    "huawei-appgallery",
+    "xiaomi-getapps",
+    "oppo",
+    "vivo",
+    "tencent-myapp",
+    "desktop-distribution"
+  ],
+  "status": "IN_PROGRESS",
+  "rule": "Every implementation requires current-source build, functional and hardware evidence. Candidate packages and static checks are not store-ready releases.",
+  "implementations": [
+    {
+      "id": "uniapp",
+      "systems": [
+        "android",
+        "ios",
+        "h5"
+      ],
+      "packaging": "HBuilderX native build; H5 is a browser-limited surface",
+      "build": "NOT_RUN",
+      "hardware": "NOT_RUN",
+      "distribution": "NOT_RUN"
+    },
+    {
+      "id": "flutter",
+      "systems": [
+        "android",
+        "ios",
+        "macos",
+        "windows"
+      ],
+      "architectures": {
+        "android": [
+          "arm64-v8a",
+          "armeabi-v7a",
+          "x86_64"
+        ],
+        "ios": [
+          "arm64"
+        ],
+        "macos": [
+          "arm64",
+          "x86_64"
+        ],
+        "windows": [
+          "x64"
+        ]
+      },
+      "build": "NOT_RUN",
+      "hardware": "NOT_RUN",
+      "distribution": "NOT_RUN"
+    },
+    {
+      "id": "kotlin",
+      "systems": [
+        "android"
+      ],
+      "packaging": "APK + AAB with environment-supplied release signing",
+      "build": "NOT_RUN",
+      "hardware": "NOT_RUN",
+      "distribution": "NOT_RUN"
+    },
+    {
+      "id": "swiftui",
+      "systems": [
+        "ios"
+      ],
+      "architectures": [
+        "arm64"
+      ],
+      "packaging": "Archive + App Store Connect export",
+      "build": "NOT_RUN",
+      "hardware": "NOT_RUN",
+      "distribution": "NOT_RUN"
+    },
+    {
+      "id": "appkit",
+      "systems": [
+        "macos"
+      ],
+      "architectures": [
+        "arm64",
+        "x86_64"
+      ],
+      "packaging": "Universal app; distribution signing and notarization required",
+      "build": "NOT_RUN",
+      "hardware": "NOT_RUN",
+      "distribution": "NOT_RUN"
+    },
+    {
+      "id": "electron",
+      "systems": [
+        "windows",
+        "macos",
+        "linux"
+      ],
+      "architectures_to_verify": [
+        "x64",
+        "arm64"
+      ],
+      "packaging": "NSIS/portable, DMG/zip, AppImage/deb/rpm",
+      "build": "NOT_RUN",
+      "hardware": "NOT_RUN",
+      "distribution": "NOT_RUN"
+    },
+    {
+      "id": "tauri",
+      "systems": [
+        "windows",
+        "macos",
+        "linux"
+      ],
+      "architectures_to_verify": [
+        "x64",
+        "arm64"
+      ],
+      "packaging": "MSI/NSIS, DMG, deb/AppImage",
+      "build": "NOT_RUN",
+      "hardware": "NOT_RUN",
+      "distribution": "NOT_RUN"
+    },
+    {
+      "id": "avalonia",
+      "systems": [
+        "windows"
+      ],
+      "architectures_to_verify": [
+        "x64",
+        "arm64"
+      ],
+      "packaging": "Self-contained .NET application",
+      "build": "NOT_RUN",
+      "hardware": "NOT_RUN",
+      "distribution": "NOT_RUN"
+    },
+    {
+      "id": "qt",
+      "systems": [
+        "windows"
+      ],
+      "architectures_to_verify": [
+        "x64"
+      ],
+      "packaging": "PyInstaller self-contained application",
+      "build": "NOT_RUN",
+      "hardware": "NOT_RUN",
+      "distribution": "NOT_RUN"
+    },
+    {
+      "id": "wails",
+      "systems": [
+        "windows"
+      ],
+      "architectures_to_verify": [
+        "x64",
+        "arm64"
+      ],
+      "packaging": "Native Windows executable",
+      "build": "NOT_RUN",
+      "hardware": "NOT_RUN",
+      "distribution": "NOT_RUN"
+    }
+  ],
+  "open_gates": [
+    "current-version real BLE per implementation",
+    "Smart HID provisioning READY and recovery paths",
+    "OTA cancel/failure/reboot verification",
+    "Windows/Linux current-source CI packages",
+    "distribution signatures/profiles/notarization",
+    "store metadata/privacy URL/SDK declarations",
+    "clean installation and upgrade"
+  ],
+  "application_id": "com.i2kai.open.smartble",
+  "local_evidence_note": "2026-10-10 local tests/builds are documented in docs/plans/2026-10-10-unified-project-release.md; final artifacts must be rebuilt after source is committed."
+}

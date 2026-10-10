@@ -22,8 +22,8 @@
     "@abandonware/noble": "^1.9.2-15"
   },
   "devDependencies": {
-    "electron": "^27.3.11",
-    "electron-builder": "^24.6.4"
+    "electron": "44.7.0",
+    "electron-builder": "26.15.3"
   },
   "build": {
     "appId": "com.smartble.electron",
@@ -34,7 +34,14 @@
     "files": [
       "src/**/*",
       "public/**/*",
-      "package.json"
+      "package.json",
+      "!**/node_modules/**/build/**/*.d",
+      "!**/node_modules/**/build/**/*.o",
+      "!**/node_modules/**/build/**/*.a",
+      "!**/node_modules/**/build/**/*.mk",
+      "!**/node_modules/**/build/**/Makefile",
+      "!**/node_modules/**/build/**/*.gypi",
+      "!**/node_modules/**/build/**/obj.target/**"
     ],
     "win": {
       "target": [
@@ -49,7 +56,11 @@
         "zip"
       ],
       "icon": "assets/icon.icns",
-      "category": "public.app-category.developer-tools"
+      "category": "public.app-category.developer-tools",
+      "extendInfo": {
+        "NSBluetoothAlwaysUsageDescription": "用于扫描、连接和调试附近的 BLE 设备。",
+        "NSCameraUsageDescription": "用于扫描 ControlHub 配对二维码，不保存图像。"
+      }
     },
     "linux": {
       "target": [

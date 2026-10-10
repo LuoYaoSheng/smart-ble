@@ -42,7 +42,7 @@ public class BleService
     public event Action<string>? DeviceConnected;
     public event Action<string>? DeviceDisconnected;
     public event Action<BleServiceInfo[]?>? ServiceDiscovered;
-    public event Action<string, byte[]>? CharacteristicValueChanged;
+    public event Action<string, string, byte[]>? CharacteristicValueChanged;
     public event Action<string, string>? LogMessage;
     // 5s 自动停扫回调（UI 同步 IsScanning/扫描状态词；手动停扫不触发）
     public event Action? ScanAutoStopped;
@@ -564,12 +564,12 @@ public class BleService
                     _notifyHandlers.Remove(key);
                 }
 
+                var notificationDeviceId = _currentDevice?.BluetoothAddress.ToString("X") ?? "";
                 TypedEventHandler<GattCharacteristic, GattValueChangedEventArgs> handler = (sender, args) =>
                 {
                     var data = new byte[args.CharacteristicValue.Length];
                     DataReader.FromBuffer(args.CharacteristicValue).ReadBytes(data);
-                    CharacteristicValueChanged?.Invoke(characteristicUuid, data);
-                    LogMessage?.Invoke("收到通知", $"收到通知: {BitConverter.ToString(data).Replace('-', ' ')}");
+                    CharacteristicValueChanged?.Invoke(notificationDeviceId, characteristicUuid, data);
                 };
                 _notifyHandlers[key] = handler;
                 characteristic.ValueChanged += handler;

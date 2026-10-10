@@ -155,7 +155,7 @@ class DeviceDetailViewModel(
 
             val success = bleManager.writeCharacteristic(deviceId, serviceUuid, characteristicUuid, data)
             if (success) {
-                Logger.success("写入成功")
+                Logger.info("写入已提交，等待设备回执")
             } else {
                 Logger.error("写入失败")
             }
@@ -172,22 +172,7 @@ class DeviceDetailViewModel(
 
             Logger.info("$action 通知 ${characteristic?.displayName ?: characteristicUuid}...")
 
-            val success = bleManager.setNotification(deviceId, serviceUuid, characteristicUuid, newState)
-
-            val updatedServices = _services.value.map { currentService ->
-                if (currentService.uuid == serviceUuid) {
-                    currentService.copy(characteristics = currentService.characteristics.map { currentCharacteristic ->
-                        if (currentCharacteristic.uuid == characteristicUuid) {
-                            currentCharacteristic.copyWithNotifying(newState)
-                        } else {
-                            currentCharacteristic
-                        }
-                    })
-                } else {
-                    currentService
-                }
-            }
-            _services.value = updatedServices
+            val success = bleManager.setNotificationAwait(deviceId, serviceUuid, characteristicUuid, newState)
 
             if (success) {
                 Logger.success("通知已${action}")

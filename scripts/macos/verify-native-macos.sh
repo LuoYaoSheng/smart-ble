@@ -186,16 +186,17 @@ if [ "$MAS_LAUNCH_OK" -eq 1 ]; then
 else
   record NVD-06 FAIL "MAS-form bundle failed to launch"
 fi
-# NVD-07：平台事实——ad-hoc + 沙盒下 CoreBluetooth 报 unsupported（rawValue 2），
-# 与启动方式无关；空 entitlements 对照正常；此为账号门控发现，非失败：
+# NVD-07：沙盒必须包含 Bluetooth entitlement；unsupported 是失败，不能充当成功证据。
 "$MAS_BIN" > "$LOGDIR/mas-run.log" 2>&1 & MP=$!
 sleep 8; kill -TERM "$MP" 2>/dev/null; wait "$MP" 2>/dev/null || true
 if grep -q 'CBManagerState(rawValue: 2)' "$LOGDIR/mas-run.log"; then
-  record NVD-07 PASS "platform-fact: BLE=unsupported under ad-hoc sandbox (MAS BLE 需真实签名链验证 → NOT_RUN)"
+  record NVD-07 FAIL "sandbox BLE unsupported; check entitlement, TCC and signing"
+elif grep -q '蓝牙已开启' "$LOGDIR/mas-run.log"; then
+  record NVD-07 PASS "sandbox BLE central poweredOn (distribution signing remains a separate gate)"
 else
-  record NVD-07 FAIL "expected unsupported-state fact in mas-run.log (see log)"
+  record NVD-07 BLOCKED "no poweredOn evidence; check Bluetooth permission/signing on this host"
 fi
-# NVD-08：MAS 形态下 UI 层冒烟（BLE 依赖用例预期 SKIP/同根因 FAIL，UI 结构应 PASS）
+# NVD-08：MAS 形态 UI 冒烟；硬件与授权条件另列，不允许预设 BLE 失败即通过。
 "$MAS_BIN" --smoke-pages > "$LOGDIR/mas-smoke.log" 2>&1 || true
 MAS_UI_PASS=$(grep -c 'result=PASS' "$LOGDIR/mas-smoke.log" || true)
 if [ "${MAS_UI_PASS:-0}" -ge 9 ]; then

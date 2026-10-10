@@ -10,6 +10,8 @@ bin/
 
 # Other files and folders
 .settings/
+__pycache__/
+*.pyc
 
 # Executables
 *.swf

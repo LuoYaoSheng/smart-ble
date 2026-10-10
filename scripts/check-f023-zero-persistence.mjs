@@ -60,7 +60,7 @@ const RULES = [
         /\bindexedDB\s*\.\s*open\s*\(/,
         /\b(?:uni|wx)\s*\.\s*(?:set|get|remove|clear)Storage(?:Sync)?\s*\(/,
         /\bplus\s*\.\s*storage\b/,
-        /\b(?:writeFile|writeFileSync)\s*\(/,
+        /\b(?:writeFile|writeFileSync|appendFile|appendFileSync)\s*\(/,
       ],
       dart: [
         /\bSharedPreferences\b/,

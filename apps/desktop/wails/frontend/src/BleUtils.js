@@ -31,12 +31,15 @@ const OTA_CHUNK_SIZE = 180;
 const MAX_RECONNECT_ATTEMPTS = 3;
 
 /**
- * Get exponential backoff delay for a given attempt number.
+ * Get the product-contract delay for a given attempt number.
  * @param {number} attempt  1-indexed attempt count
- * @returns {number}        Delay in milliseconds (2000 / 4000 / 6000)
+ * @returns {number}        Delay in milliseconds (1000 / 3000 / 5000)
  */
 function reconnectDelay(attempt) {
-    return attempt * 2000;
+    if (!Number.isInteger(attempt) || attempt < 1 || attempt > 3) {
+        throw new RangeError('Reconnect attempt must be 1..3');
+    }
+    return [1000, 3000, 5000][attempt - 1];
 }
 
 // ─── RSSI / Signal Quality ────────────────────────────────────────────────────

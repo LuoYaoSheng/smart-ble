@@ -76,7 +76,7 @@ class VersionMetadataTest {
     }
 
     @Test
-    fun g3_platformCanonKeysAndReferenceRole() {
+    fun g3_platformCanonKeysAndMainlineRole() {
         val platforms = VersionMetadata.platformPublicStatuses()
         // 小程序裁撤（2026-09-11 用户裁决）后 wechat 退出正典键序
         assertEquals(
@@ -87,8 +87,8 @@ class VersionMetadataTest {
             platforms.map { it.key },
         )
         val reference = platforms.first { it.key == "flutter_tauri_native" }
-        assertEquals("REFERENCE", reference.role)
-        assertNull(reference.capabilityStatus)
+        assertEquals("mainline", reference.role)
+        assertEquals("PREVIEW", reference.capabilityStatus)
     }
 
     @Test

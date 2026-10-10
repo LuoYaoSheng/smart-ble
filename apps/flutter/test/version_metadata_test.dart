@@ -72,7 +72,7 @@ void main() {
       expect(caps[1].capabilityStatus, 'PREVIEW');
     });
 
-    test('G3 平台七键顺序 + REFERENCE 角色', () {
+    test('G3 平台键顺序 + 全实现主线角色', () {
       final platforms = getPlatformPublicStatuses();
       expect(platforms.map((p) => p.key).toList(), [
         'android',
@@ -84,8 +84,8 @@ void main() {
       ]);
       final reference = platforms
           .firstWhere((p) => p.key == 'flutter_tauri_native');
-      expect(reference.role, 'REFERENCE');
-      expect(reference.capabilityStatus, isNull);
+      expect(reference.role, 'mainline');
+      expect(reference.capabilityStatus, 'PREVIEW');
     });
 
     test('G4 P009 verFallback 基准：元数据 commit 为 null → -dev.unknown', () {

@@ -3,22 +3,40 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
+val releaseSigningKeys = listOf("SMART_BLE_KEYSTORE", "SMART_BLE_STORE_PASSWORD", "SMART_BLE_KEY_ALIAS", "SMART_BLE_KEY_PASSWORD")
+val hasReleaseSigning = releaseSigningKeys.all { !System.getenv(it).isNullOrBlank() }
+if (System.getenv("SMART_BLE_REQUIRE_SIGNING") == "1" && !hasReleaseSigning) {
+    throw GradleException("Release signing requires SMART_BLE_KEYSTORE, SMART_BLE_STORE_PASSWORD, SMART_BLE_KEY_ALIAS, SMART_BLE_KEY_PASSWORD")
+}
+
 android {
     namespace = "com.smartble"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.smartble.android"
+        applicationId = "com.i2kai.open.smartble"
         minSdk = 24
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0.0"
+        targetSdk = 36
+        versionCode = 101
+        versionName = rootProject.file("../../VERSION").readText().trim()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        if (hasReleaseSigning) {
+            create("storeRelease") {
+                storeFile = file(System.getenv("SMART_BLE_KEYSTORE"))
+                storePassword = System.getenv("SMART_BLE_STORE_PASSWORD")
+                keyAlias = System.getenv("SMART_BLE_KEY_ALIAS")
+                keyPassword = System.getenv("SMART_BLE_KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
+            if (hasReleaseSigning) signingConfig = signingConfigs.getByName("storeRelease")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

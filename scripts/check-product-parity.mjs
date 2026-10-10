@@ -11,6 +11,7 @@
 //   node scripts/check-product-parity.mjs
 //   node scripts/check-product-parity.mjs --platforms=js,dart
 
+import { resolveAndroidJavaHome } from './android/java-home.mjs';
 import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
@@ -162,33 +163,15 @@ function runDartLane() {
 // ---------------------------------------------------------------------------
 const KOTLIN_RESULT_FILE = 'apps/android/app/build/product-parity-kotlin.json';
 
-function resolveGradleJavaHome() {
-  const candidates = [];
-  if (process.env.JAVA_HOME) candidates.push(process.env.JAVA_HOME);
-  const home = process.env.USERPROFILE || process.env.HOME;
-  if (home && existsSync(join(home, '.jdks'))) {
-    for (const d of readdirSync(join(home, '.jdks'))) candidates.push(join(home, '.jdks', d));
-  }
-  for (const dir of candidates) {
-    const exe = join(dir, 'bin', process.platform === 'win32' ? 'java.exe' : 'java');
-    if (!existsSync(exe)) continue;
-    const v = spawnSync(exe, ['-version'], { encoding: 'utf8' });
-    const m = `${v.stderr || ''}${v.stdout || ''}`.match(/version "(\d+)/);
-    if (!m) continue;
-    const major = m[1] === '1' ? 8 : parseInt(m[1], 10);
-    if (major >= 17 && major <= 19) return dir;
-  }
-  return null;
-}
 
 function runKotlinLane() {
   const testFile = join(ROOT, 'apps/android/app/src/test/java/com/smartble/core/profile/ProductVectorParityTest.kt');
   if (!existsSync(testFile)) {
     return { status: 'NOT_IMPLEMENTED', detail: 'ProductVectorParityTest.kt 缺失', pass: 0, failures: [] };
   }
-  const javaHome = resolveGradleJavaHome();
+  const javaHome = resolveAndroidJavaHome();
   if (!javaHome) {
-    return { status: 'BLOCKED', detail: '无可用的 JDK 17–19（Gradle 8.2 运行时上限）', pass: 0, failures: [] };
+    return { status: 'BLOCKED', detail: '无可用的 JDK 17/21（支持系统安装目录、JAVA_HOME/ANDROID_JAVA_HOME）', pass: 0, failures: [] };
   }
   const gradlew = process.platform === 'win32' ? 'gradlew.bat' : './gradlew';
   const r = spawnSync(gradlew, ['testDebugUnitTest', '--tests', '*ProductVectorParity*', '--rerun'], {

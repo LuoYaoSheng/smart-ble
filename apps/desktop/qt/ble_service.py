@@ -89,10 +89,18 @@ class _ScanWorker(QThread):
 
     finished_ok = Signal(list)  # list[ScanHit]
     failed = Signal(str)
+    cancelled = Signal()
 
     def __init__(self, timeout: float = 5.0, parent: QObject | None = None) -> None:
         super().__init__(parent)
         self._timeout = timeout
+        self._loop = None
+        self._task = None
+
+    def cancel(self):
+        self.requestInterruption()
+        if self._loop is not None and self._task is not None and self._loop.is_running():
+            self._loop.call_soon_threadsafe(self._task.cancel)
 
     def run(self) -> None:  # pragma: no cover - 线程体
         async def _scan() -> list[ScanHit]:
@@ -109,8 +117,8 @@ class _ScanWorker(QThread):
                 hits.append(
                     ScanHit(
                         address=str(dev.address),
-                        name=dev.name or "",
-                        rssi=adv.rssi if adv.rssi else -100,
+                        name=adv.local_name or dev.name or "",
+                        rssi=adv.rssi if adv.rssi is not None else -100,
                         manufacturer_id=mfr_id,
                         manufacturer_data=mfr_data,
                         service_uuids=[str(u) for u in adv.service_uuids],
@@ -119,11 +127,20 @@ class _ScanWorker(QThread):
                 )
             # 信号强度降序（与各壳设备列表排序一致）
             hits.sort(key=lambda h: h.rssi, reverse=True)
-            return hits
+            return hits[:100]
+
+        async def execute():
+            self._loop = asyncio.get_running_loop()
+            self._task = asyncio.current_task()
+            if self.isInterruptionRequested():
+                raise asyncio.CancelledError
+            return await _scan()
 
         try:
-            hits = asyncio.run(_scan())
+            hits = asyncio.run(execute())
             self.finished_ok.emit(hits)
+        except asyncio.CancelledError:
+            self.cancelled.emit()
         except Exception as exc:  # noqa: BLE001 - 扫描失败要落到 UI 状态词
             self.failed.emit(str(exc))
 
@@ -166,6 +183,7 @@ class BleService(QObject):
 
     scan_done = Signal(list)          # list[ScanHit]
     scan_failed = Signal(str)
+    scan_stopped = Signal()
     device_connected = Signal(str, str, object)   # address, name, gatt_tree(dict)
     device_disconnected = Signal(str, bool)       # address, expected(手动断开)
     char_read = Signal(str, str, str, str)        # address, uuid, hex, text
@@ -174,7 +192,7 @@ class BleService(QObject):
     write_done = Signal(str, str, int)            # address, uuid, nbytes
     op_failed = Signal(str, str, str)             # op, address, msg
 
-    CONNECT_TIMEOUT = 15.0
+    CONNECT_TIMEOUT = 10.0
 
     def __init__(self, parent: QObject | None = None) -> None:
         super().__init__(parent)
@@ -215,13 +233,12 @@ class BleService(QObject):
         self._worker = _ScanWorker(timeout)
         self._worker.finished_ok.connect(self.scan_done)
         self._worker.failed.connect(self.scan_failed)
+        self._worker.cancelled.connect(self.scan_stopped.emit)
         self._worker.start()
 
     def stop_scan(self) -> None:
-        # bleak discover() 无优雅取消（一次性调用），等待自然超时；
-        # 与 F-WIN 5s 超时口径一致，不强制中断
         if self._worker is not None:
-            self._worker.wait(6500)
+            self._worker.cancel()
 
     # ── 连接管理 ──
 
@@ -242,6 +259,13 @@ class BleService(QObject):
 
         async def _connect():
             from bleak import BleakClient
+
+            worker = self._worker
+            if worker is not None and worker.isRunning():
+                worker.cancel()
+                stopped = await asyncio.to_thread(worker.wait, 6500)
+                if not stopped:
+                    raise RuntimeError('扫描尚未停止，请重试连接')
 
             client = BleakClient(
                 hit.address, disconnected_callback=on_disconnect,
@@ -285,6 +309,9 @@ class BleService(QObject):
 
     def shutdown(self) -> None:
         """退出前收尾：先停广播边车（dwin-quit 正典顺序），再断全部连接，停 GATT 线程。"""
+        if self._worker is not None and self._worker.isRunning():
+            self._worker.cancel()
+            self._worker.wait(6500)
         if self.advertising:
             try:
                 self._broadcast.stop(timeout=3.0)

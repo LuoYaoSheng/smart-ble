@@ -109,7 +109,12 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
     // WIN-016：切走即停广播（对齐 uniapp broadcast onHide 正典）——
     // 原生广播不随页面销毁自停，PageView 切页 dispose 后必须显式停
     if (_isAdvertising) {
-      _peripheralManager.stopAdvertising().catchError((_) {});
+      final advertisingState = ref.read(isAdvertisingProvider.notifier);
+      _peripheralManager.stopAdvertising().then((_) {
+        advertisingState.state = false;
+      }).catchError((Object error) {
+        logger.error('离开页面后停止广播未获确认: $error');
+      });
     }
     super.dispose();
   }
@@ -220,7 +225,11 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
       }
     } catch (e) {
       if (mounted) {
-        setState(() => _errorMessage = '停止广播失败: $e');
+        setState(() {
+          _isAdvertising = true;
+          _errorMessage = '停止广播失败: $e';
+        });
+        ref.read(isAdvertisingProvider.notifier).state = true;
         logger.error('停止广播失败: $e');
       }
     }
@@ -247,64 +256,65 @@ class _BroadcastPageState extends ConsumerState<BroadcastPage> {
       // UI-G2：正典 AppNavbar（PERIPHERAL + 平台 chip + 状态 badge），状态收进导航栏
       body: SafeArea(
         child: Column(
-        children: [
-          AppNavbar(
-            kicker: 'PERIPHERAL',
-            title: '广播',
-            status: Builder(builder: (context) {
-              final (text, tone, dot) = _statusBadge;
-              return Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  AppChip(
-                    '平台：${BlePeripheralManager.platformName}',
-                  ),
-                  const SizedBox(width: 6),
-                  AppBadge(text, tone: tone, dot: dot),
-                ],
-              );
-            }),
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (!_platformSupported)
-                    _buildNote(
-                      color: AppTheme.warningColor,
-                      title: '当前平台不支持 BLE 广播',
-                      message: '该平台未提供外围模式实现，请使用 Android / iOS / macOS / Windows 应用。',
+          children: [
+            AppNavbar(
+              kicker: 'PERIPHERAL',
+              title: '广播',
+              status: Builder(builder: (context) {
+                final (text, tone, dot) = _statusBadge;
+                return Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AppChip(
+                      '平台：${BlePeripheralManager.platformName}',
                     ),
-                  _buildSettingsCard(),
-                  if (_errorMessage != null) ...[
-                    const SizedBox(height: 12),
-                    _buildNote(
-                      color: AppTheme.errorColor,
-                      title: '广播失败',
-                      message: _errorMessage!,
+                    const SizedBox(width: 6),
+                    AppBadge(text, tone: tone, dot: dot),
+                  ],
+                );
+              }),
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (!_platformSupported)
+                      _buildNote(
+                        color: AppTheme.warningColor,
+                        title: '当前平台不支持 BLE 广播',
+                        message:
+                            '该平台未提供外围模式实现，请使用 Android / iOS / macOS / Windows 应用。',
+                      ),
+                    _buildSettingsCard(),
+                    if (_errorMessage != null) ...[
+                      const SizedBox(height: 12),
+                      _buildNote(
+                        color: AppTheme.errorColor,
+                        title: '广播失败',
+                        message: _errorMessage!,
+                      ),
+                    ],
+                    const SizedBox(height: 16),
+                    // LogPanel 内部是 Expanded(ListView)，必须给有界高度，
+                    // 否则放进滚动视图后日志非空即抛无界高度异常
+                    SizedBox(
+                      height: 240,
+                      child: LogPanel(
+                        entries: logger.history,
+                        onClear: () {
+                          logger.clear();
+                          if (mounted) setState(() {});
+                        },
+                      ),
                     ),
                   ],
-                  const SizedBox(height: 16),
-                  // LogPanel 内部是 Expanded(ListView)，必须给有界高度，
-                  // 否则放进滚动视图后日志非空即抛无界高度异常
-                  SizedBox(
-                    height: 240,
-                    child: LogPanel(
-                      entries: logger.history,
-                      onClear: () {
-                        logger.clear();
-                        if (mounted) setState(() {});
-                      },
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
       ),
     );
   }

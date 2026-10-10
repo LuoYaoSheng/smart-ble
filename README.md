@@ -1,5 +1,9 @@
 # Smart BLE
 
+> **统一工程（2026-10-10）**：唯一开发入口是本目录 `smart-ble/`。macOS 与 Apple Native 历史分支已经合入本地 `main`；旧目录仅作为指向本目录的兼容链接，完整历史现场保存于工作区 `.archives/smart-ble/2026-10-10/`。
+>
+> **当前目标**：所有现有技术实现都须按同一产品契约完成验证与发布准备，不因 REFERENCE/Experimental 标签免除验收。渠道为 Apple App Store、国内 Android 商店及桌面正式分发。当前状态及待验项见 [全平台发布矩阵](release/platform-matrix.json) 和 [本轮实施计划](docs/plans/2026-10-10-unified-project-release.md)；候选构建不代表上架完成。
+
 [![Windows Version](https://img.shields.io/badge/Windows-Download-blue?style=for-the-badge&logo=windows)](https://github.com/luoyaosheng/smart-ble/releases)
 [![macOS Version](https://img.shields.io/badge/macOS-Download-lightgrey?style=for-the-badge&logo=apple)](https://github.com/luoyaosheng/smart-ble/releases)
 [![Android Version](https://img.shields.io/badge/Android-APK-green?style=for-the-badge&logo=android)](https://github.com/luoyaosheng/smart-ble/releases)
@@ -154,13 +158,13 @@ smart-ble/
 
 ---
 
-## 平台状态（2026-04）
+## 平台验收范围（2026-10）
 
 | 等级 | 平台 | 说明 |
 |------|------|------|
-| P0 | uni-app、Flutter、Tauri | 当前优先保证可用性、学习入口和对外表达 |
-| P1 | Android 原生、iOS 原生、Electron、macOS Native | 已有实现，承担原生探索、教学对照和历史兼容价值 |
-| P2 | Avalonia、其他未来探索 | 原型验证，不承诺同等投入 |
+| 必须验收 | uni-app、Flutter、Android/iOS 原生、Tauri、Electron、macOS Native、Avalonia、Qt、Wails | 每种实现分别验证功能、构建、适用架构、签名与发行；不得把只编译或旧版证据计为当前完成 |
+| 配套验收 | ESP32 外设/观察者/Smart HID 模拟夹具 | 固件构建与客户端真机测试的版本绑定 |
+| 历史/边界 | 微信小程序、STM32 样板、windows/linux 空占位目录 | 微信目标维持退役；STM32 是协议样板；空目录不计已支持平台 |
 
 ---
 

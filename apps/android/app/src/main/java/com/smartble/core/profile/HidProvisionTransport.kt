@@ -215,25 +215,9 @@ class BleManagerHidTransport(
     private suspend fun enableNotificationAwait(serviceUuid: String, characteristicUuid: String): Boolean {
         repeat(NOTIFY_SUBSCRIBE_ATTEMPTS) { attempt ->
             if (attempt > 0) delay(NOTIFY_SUBSCRIBE_RETRY_MS)
-            // 先挂采集再发起写（SharedFlow 无重放，顺序反了会丢事件）
-            val waiter = CompletableDeferred<Boolean>()
-            val job = scope.launch {
-                val event = bleManager.descriptorWriteEvents.first {
-                    it.deviceId == deviceId &&
-                        it.characteristicUuid.equals(characteristicUuid, ignoreCase = true)
-                }
-                waiter.complete(event.status == 0)
-            }
-            val accepted = runCatching {
-                bleManager.setNotification(deviceId, serviceUuid, characteristicUuid, true)
-            }.getOrDefault(false)
-            if (accepted) {
-                val ok = withTimeoutOrNull(NOTIFY_SUBSCRIBE_ACK_MS) { waiter.await() }
-                job.cancel()
-                if (ok == true) return true
-            } else {
-                job.cancel()
-            }
+            if (bleManager.setNotificationAwait(
+                    deviceId, serviceUuid, characteristicUuid, true, NOTIFY_SUBSCRIBE_ACK_MS,
+                )) return true
         }
         return false
     }

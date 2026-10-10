@@ -1,0 +1,9 @@
+{
+  "product": "Smart BLE Open",
+  "application_id": "com.i2kai.open.smartble",
+  "platforms": ["android", "ios"],
+  "implementations": ["kotlin", "swiftui", "flutter", "uniapp"],
+  "rule": "These are alternative implementations of one product. Each channel release selects one validated package; do not upload parallel implementations under the same build number.",
+  "android_signing_environment": ["SMART_BLE_KEYSTORE", "SMART_BLE_STORE_PASSWORD", "SMART_BLE_KEY_ALIAS", "SMART_BLE_KEY_PASSWORD"],
+  "secrets_location": "External local signing configuration; never commit keystore, passwords, or private signing material."
+}
