@@ -568,5 +568,29 @@
         }
       ]
     }
+  },
+  "native_apple_store_track": {
+    "selected_implementations": {
+      "ios": "swiftui",
+      "macos": "appkit"
+    },
+    "workspace": "SmartBLE-Apple.xcworkspace",
+    "application_id": "com.i2kai.open.smartble",
+    "app_store_connect_model": "one app record with separate iOS and macOS platforms",
+    "team": "WAITING_FOR_USER_SELECTION",
+    "macos_xcode_archive": {
+      "status": "UNSIGNED_ARCHIVE_VERIFIED",
+      "architectures": [
+        "arm64",
+        "x86_64"
+      ],
+      "version": "1.0.5",
+      "build": "101",
+      "unit_tests_passed": 19,
+      "privacy_manifest": true,
+      "path": ".tmp/release/apple-native/SmartBLEMac.xcarchive"
+    },
+    "store_export": "NOT_RUN",
+    "store_upload": "NOT_RUN"
   }
 }

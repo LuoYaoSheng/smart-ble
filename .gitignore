@@ -92,3 +92,6 @@ playwright-report/
 blob-report/
 playwright/.cache/
 output/playwright/
+
+# Xcode window state and per-user scheme preferences stay local.
+**/xcuserdata/

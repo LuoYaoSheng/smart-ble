@@ -15,6 +15,9 @@ def require(condition, message):
     if not condition:
         errors.append(message)
 
+mac_identity = plistlib.loads((ROOT / 'apps/desktop/macos/SmartBLE-mac/Info.plist').read_bytes())
+require(mac_identity.get('CFBundleIdentifier') == identity, 'Native Mac App Store bundle ID differs from the unified Apple product')
+
 
 for relative in ('apps/ios/SmartBLE/Resources/Info.plist', 'apps/flutter/ios/Runner/Info.plist', 'apps/desktop/macos/SmartBLE-mac/Info.plist', 'apps/flutter/macos/Runner/Info.plist', 'apps/desktop/tauri/src-tauri/Info.plist'):
     data = plistlib.loads((ROOT / relative).read_bytes())

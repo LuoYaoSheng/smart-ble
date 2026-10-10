@@ -69,7 +69,7 @@ const tauriConfig = readJson('apps/desktop/tauri/src-tauri/tauri.conf.json');
 if (tauriConfig.package.version !== version) fail('Tauri bundle version 漂移');
 if (read('apps/desktop/tauri/src-tauri/Cargo.toml').match(/^version\s*=\s*"([^"]+)"/m)?.[1] !== version) fail('Tauri Cargo version 漂移');
 if (readJson('apps/desktop/electron/package.json').version !== version) fail('Electron version 漂移');
-for (const rel of ['apps/ios/project.yml', 'apps/ios/SmartBLE.xcodeproj/project.pbxproj']) {
+for (const rel of ['apps/ios/project.yml', 'apps/ios/SmartBLE.xcodeproj/project.pbxproj', 'apps/desktop/macos/SmartBLE-mac/project.yml', 'apps/desktop/macos/SmartBLE-mac/SmartBLEMac.xcodeproj/project.pbxproj']) {
   const text = read(rel);
   for (const match of text.matchAll(/MARKETING_VERSION\s*[:=]\s*([^;\s]+)/g)) if (match[1] !== version) fail(`${rel}: marketing version 漂移`);
   for (const match of text.matchAll(/CURRENT_PROJECT_VERSION\s*[:=]\s*([^;\s]+)/g)) if (Number(match[1]) !== buildCode) fail(`${rel}: build number 漂移`);
